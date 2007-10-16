@@ -1,0 +1,8 @@
+content	treestyletab	jar:chrome/treestyletab.jar!/content/treestyletab/
+
+overlay	chrome://browser/content/browser.xul	chrome://treestyletab/content/treestyletab.xul
+
+locale	treestyletab	en-US	jar:chrome/treestyletab.jar!/locale/en-US/treestyletab/
+locale	treestyletab	ja	jar:chrome/treestyletab.jar!/locale/ja/treestyletab/
+
+skin	treestyletab	classic/1.0	jar:chrome/treestyletab.jar!/skin/classic/treestyletab/

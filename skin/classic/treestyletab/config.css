@@ -1,0 +1,8 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+#prefpane-selection-menu-items,
+#prefpane-context-menu-items {
+	overflow: auto;
+	max-height: 15em;
+}
+

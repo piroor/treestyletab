@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet href="chrome://global/skin/"?>
+<?xml-stylesheet href="chrome://treestyletab/skin/config.css"?>
+
+<!DOCTYPE prefwindow [
+<!ENTITY % mainDTD SYSTEM "chrome://treestyletab/locale/treestyletab.dtd">
+%mainDTD;
+]>
+
+<prefwindow id="treestyletab-config"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	title="&config.title;"
+	onload="sizeToContent();">
+
+<prefpane id="prefpane-general" label="&config.tabs.general;">
+	<preferences>
+		<preference id="extensions.treestyletab."
+			name="extensions.treestyletab."
+			type="int"/>
+	</preferences>
+	<groupbox>
+		<caption label="&config..caption;"/>
+		<vbox>
+			<radiogroup id="extensions.treestyletab.-radiogroup"
+				preference="extensions.treestyletab."
+				orient="vertical">
+				<radio value="0" label="&config..default;"/>
+				<radio value="1" label="&config..;"/>
+				<radio value="2" label="&config..;"/>
+			</radiogroup>
+		</vbox>
+	</groupbox>
+</prefpane>
+
+<prefpane id="prefpane-selection-menu" label="&config.tabs.selectionMenu;">
+	<preferences id="prefpane-selection-menu-preferences">
+		<preference id="extensions.treestyletab."
+			name="extensions.treestyletab."
+			type="bool"/>
+	</preferences>
+	<groupbox>
+		<caption label="&config..caption;"/>
+		<vbox>
+			<checkbox id="extensions.treestyletab.-check"
+				preference="extensions.treestyletab."
+				label="&popup.;"/>
+		</vbox>
+	</groupbox>
+</prefpane>
+
+</prefwindow>
+
