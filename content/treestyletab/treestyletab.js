@@ -173,6 +173,10 @@ var TreeStyleTabService = {
 
 		window.removeEventListener('load', this, false);
 
+		var appcontent = document.getElementById('appcontent');
+		appcontent.addEventListener('SubBrowserAdded', this, false);
+		appcontent.addEventListener('SubBrowserRemoveRequest', this, false);
+
 		this.addPrefListener(this);
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.');
 
@@ -257,6 +261,8 @@ var TreeStyleTabService = {
 		this.destroyTabBrowser(gBrowser);
 
 		window.removeEventListener('unload', this, false);
+		appcontent.removeEventListener('SubBrowserAdded', this, false);
+		appcontent.removeEventListener('SubBrowserRemoveRequest', this, false);
 
 		this.removePrefListener(this);
 
@@ -323,6 +329,14 @@ var TreeStyleTabService = {
 
 			case 'popupshowing':
 //				this.showHideMenuItems(aEvent.target);
+				break;
+
+			case 'SubBrowserAdded':
+				this.initTabBrowser(aEvent.originalTarget.browser);
+				break;
+
+			case 'SubBrowserRemoveRequest':
+				this.destroyTabBrowser(aEvent.originalTarget.browser);
 				break;
 		}
 	},
