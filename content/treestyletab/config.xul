@@ -15,24 +15,24 @@
 
 <prefpane id="prefpane-general" label="&config.tabs.general;">
 	<preferences>
-		<preference id="extensions.treestyletab."
-			name="extensions.treestyletab."
+		<preference id="browser.link.open_newwindow.restriction"
+			name="browser.link.open_newwindow.restriction"
 			type="int"/>
 	</preferences>
 	<groupbox>
-		<caption label="&config..caption;"/>
+		<caption label="&config.jsopen.caption;"/>
 		<vbox>
-			<radiogroup id="extensions.treestyletab.-radiogroup"
-				preference="extensions.treestyletab."
+			<radiogroup id="browser.link.open_newwindow.restriction-radiogroup"
+				preference="browser.link.open_newwindow.restriction"
 				orient="vertical">
-				<radio value="0" label="&config..default;"/>
-				<radio value="1" label="&config..;"/>
-				<radio value="2" label="&config..;"/>
+				<radio value="2" label="&config.jsopen.default;"/>
+				<radio value="0" label="&config.jsopen.forcetab;"/>
 			</radiogroup>
 		</vbox>
 	</groupbox>
 </prefpane>
 
+<!--
 <prefpane id="prefpane-selection-menu" label="&config.tabs.selectionMenu;">
 	<preferences id="prefpane-selection-menu-preferences">
 		<preference id="extensions.treestyletab."
@@ -48,6 +48,7 @@
 		</vbox>
 	</groupbox>
 </prefpane>
+-->
 
 </prefwindow>
 

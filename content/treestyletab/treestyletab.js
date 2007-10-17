@@ -4,7 +4,7 @@ var TreeStyleTabService = {
 	kID       : 'treestyletab-id',
 	kCHILDREN : 'treestyletab-children',
 
-	levelMargin : 16,
+	levelMargin : 12,
 
 	NSResolver : {
 		lookupNamespaceURI : function(aPrefix)
@@ -78,8 +78,26 @@ var TreeStyleTabService = {
 		return (target.localName == 'tab') ? target : null ;
 	},
  
+	getTabFromFrame : function(aFrame, aTabBrowser) 
+	{
+		var b = aTabBrowser || this.browser;
+		var docShell = aFrame.top
+			.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+			.getInterface(Components.interfaces.nsIWebNavigation)
+			.QueryInterface(Components.interfaces.nsIDocShell);
+		var tabs = b.mTabContainer.childNodes;
+		for (var i = 0, maxi = tabs.length; i < maxi; i++)
+		{
+			if (tabs[i].linkedBrowser.docShell == docShell)
+				return tabs[i];
+		}
+		return null;
+	},
+ 
 	getTabBrowserFromChildren : function(aTab) 
 	{
+		if (!aTab) return null;
+
 		if (aTab.__treestyletab__linkedTabBrowser)
 			return aTab.__treestyletab__linkedTabBrowser;
 
@@ -180,6 +198,27 @@ var TreeStyleTabService = {
 		this.addPrefListener(this);
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.');
 
+
+		eval('window.nsBrowserAccess.prototype.openURI = '+
+			window.nsBrowserAccess.prototype.openURI.toSource().replace(
+				/switch\s*\(aWhere\)/,
+				<><![CDATA[
+					if (aOpener &&
+						aWhere == Components.interfaces.nsIBrowserDOMWindow.OPEN_NEWTAB) {
+						var ownerBrowser = ('SplitBrowser' in window) ? TreeStyleTabService.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(aOpener.top).browser) : gBrowser ;
+						var parentTab = TreeStyleTabService.getTabFromFrame(aOpener, ownerBrowser);
+
+						ownerBrowser.__treestyletab__readyToAdoptNewTab = true;
+						ownerBrowser.__treestyletab__parentTab = parentTab.getAttribute(TreeStyleTabService.kID);
+					}
+					switch(aWhere)
+				]]></>
+			)
+		);
+		window.QueryInterface(Components.interfaces.nsIDOMChromeWindow).browserDOMWindow = null;
+		window.QueryInterface(Components.interfaces.nsIDOMChromeWindow).browserDOMWindow = new nsBrowserAccess();
+
+
 		this.initTabBrowser(gBrowser);
 	},
 	
@@ -261,6 +300,8 @@ var TreeStyleTabService = {
 		this.destroyTabBrowser(gBrowser);
 
 		window.removeEventListener('unload', this, false);
+
+		var appcontent = document.getElementById('appcontent');
 		appcontent.removeEventListener('SubBrowserAdded', this, false);
 		appcontent.removeEventListener('SubBrowserRemoveRequest', this, false);
 

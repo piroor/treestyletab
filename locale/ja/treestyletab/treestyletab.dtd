@@ -1,3 +1,7 @@
 <!ENTITY config.title        "ツリー型タブの設定">
 
 <!ENTITY config.tabs.general "全般">
+
+<!ENTITY config.jsopen.caption "スクリプトで開かれるウィンドウの制御">
+<!ENTITY config.jsopen.default "大きさや位置を指定されたウィンドウはウィンドウとして開く（初期値）">
+<!ENTITY config.jsopen.forcetab "スクリプトで開かれるウィンドウはすべてタブで開く">
