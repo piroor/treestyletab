@@ -2,6 +2,10 @@
 
 <!ENTITY config.tabs.general "全般">
 
-<!ENTITY config.jsopen.caption "スクリプトで開かれるウィンドウの制御">
+<!ENTITY config.open_newwindow.caption "Webページのリンクから勝手に開かれたウィンドウの制御">
+<!ENTITY config.open_newwindow.window  "ウィンドウで開く">
+<!ENTITY config.open_newwindow.forcetab "タブで開く（初期値）">
+
+<!ENTITY config.jsopen.caption "Webページのスクリプトで開かれるウィンドウの制御">
 <!ENTITY config.jsopen.default "大きさや位置を指定されたウィンドウはウィンドウとして開く（初期値）">
 <!ENTITY config.jsopen.forcetab "スクリプトで開かれるウィンドウはすべてタブで開く">

@@ -2,6 +2,10 @@
 
 <!ENTITY config.tabs.general "General">
 
+<!ENTITY config.open_newwindow.caption "New Window opened from Links in Webpages unexpectedly">
+<!ENTITY config.open_newwindow.window  "Open as Window">
+<!ENTITY config.open_newwindow.forcetab "Open as Tab (default)">
+
 <!ENTITY config.jsopen.caption "New Window opened from Scripts in Webpages">
 <!ENTITY config.jsopen.default "Open as Window when it have special width, height, etc. (default)">
 <!ENTITY config.jsopen.forcetab "Open as Tab instead of Window anyway">

@@ -15,10 +15,24 @@
 
 <prefpane id="prefpane-general" label="&config.tabs.general;">
 	<preferences>
+		<preference id="browser.link.open_newwindow"
+			name="browser.link.open_newwindow"
+			type="int"/>
 		<preference id="browser.link.open_newwindow.restriction"
 			name="browser.link.open_newwindow.restriction"
 			type="int"/>
 	</preferences>
+	<groupbox>
+		<caption label="&config.open_newwindow.caption;"/>
+		<vbox>
+			<radiogroup id="browser.link.open_newwindow-radiogroup"
+				preference="browser.link.open_newwindow"
+				orient="vertical">
+				<radio value="2" label="&config.open_newwindow.window;"/>
+				<radio value="3" label="&config.open_newwindow.tab;"/>
+			</radiogroup>
+		</vbox>
+	</groupbox>
 	<groupbox>
 		<caption label="&config.jsopen.caption;"/>
 		<vbox>
