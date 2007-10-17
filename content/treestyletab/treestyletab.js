@@ -406,7 +406,7 @@ var TreeStyleTabService = {
 			var adoption   = this.getPref('extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab');
 			var processTab = !adoption ? function(aTab) {
 					self.repudiateTab(aTab);
-					b.moveTabTo(aTab, b.mTabContainer.lastChild._tPos);
+					self.moveTabSubTreeTo(aTab, b.mTabContainer.lastChild._tPos);
 				} :
 				parentTab ? function(aTab) {
 					self.adoptTabTo(aTab, parentTab, tab);
@@ -612,12 +612,20 @@ var TreeStyleTabService = {
 		return lastChild;
 	},
  
-	getChildTabsOf : function(aTab) 
+	getDescendantTabsOf : function(aTab) 
+	{
+		var tabs = [];
+		this.getChildTabsOf(aTab, tabs);
+		return tabs;
+	},
+ 
+	getChildTabsOf : function(aTab, aAllTabsArray) 
 	{
 		var tabs     = [];
-		var id       = aTab.getAttribute(this.kID);
 		var children = aTab.getAttribute(this.kCHILDREN);
 		if (!children) return tabs;
+
+		if (aAllTabsArray) tabs = aAllTabsArray;
 
 		var list = children.split('|');
 		var b    = this.getTabBrowserFromChildren(aTab);
@@ -629,6 +637,8 @@ var TreeStyleTabService = {
 			tab = this.getTabById(list[i], b)
 			if (tab) {
 				tabs.push(tab);
+				if (aAllTabsArray)
+					this.getChildTabsOf(tab, tabs);
 			}
 			else {
 				children = children.replace('|'+list[i], '');
@@ -642,7 +652,6 @@ var TreeStyleTabService = {
  
 	getFirstChildTabOf : function(aTab) 
 	{
-		var id         = aTab.getAttribute(this.kID);
 		var b          = this.getTabBrowserFromChildren(aTab);
 		var children   = aTab.getAttribute(this.kCHILDREN);
 		var firstChild = null;
@@ -664,7 +673,6 @@ var TreeStyleTabService = {
  
 	getLastChildTabOf : function(aTab) 
 	{
-		var id        = aTab.getAttribute(this.kID);
 		var b         = this.getTabBrowserFromChildren(aTab);
 		var children  = aTab.getAttribute(this.kCHILDREN);
 		var lastChild = null;
@@ -748,6 +756,19 @@ var TreeStyleTabService = {
 		{
 			aTabs[i].setAttribute('style', aTabs[i].getAttribute('style')+';margin-left:'+indent+' !important;');
 			this.updateTabsIndent(this.getChildTabsOf(aTabs[i]), aLevel+1);
+		}
+	},
+ 
+	moveTabSubTreeTo : function(aTab, aIndex) 
+	{
+		var tabs = this.getDescendantTabsOf(aTab);
+
+		var b = this.getTabBrowserFromChildren(aTab);
+		b.moveTabTo(aTab, aIndex);
+
+		for (var i = 0, maxi = tabs.length; i < maxi; i++)
+		{
+			b.moveTabTo(tabs[i], aTab._tPos+i+1);
 		}
 	},
  	 
