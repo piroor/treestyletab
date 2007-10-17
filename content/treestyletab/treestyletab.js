@@ -282,12 +282,7 @@ var TreeStyleTabService = {
 	initTab : function(aTab, aTabBrowser) 
 	{
 		var id = 'tab-<'+Date.now()+'-'+parseInt(Math.random() * 65000)+'>';
-		aTab.setAttribute(this.kID, id);
-		try {
-			this.SessionStore.setTabValue(aTab, this.kID, id);
-		}
-		catch(e) {
-		}
+		this.setTabValue(aTab, this.kID, id);
 		aTab.__treestyletab__linkedTabBrowser = aTabBrowser;
 
 		var event = document.createEvent('Events');
@@ -406,32 +401,44 @@ var TreeStyleTabService = {
 		var nextFocusedTab = null;
 
 		if (firstChild) {
-			nextFocusedTab = firstChild;
-			var children = this.getChildTabsOf(tab);
+			var children   = this.getChildTabsOf(tab);
+			var self       = this;
+			var adoption   = this.getPref('extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab');
+			var processTab = !adoption ? function(aTab) {
+					self.repudiateTab(aTab);
+					b.moveTabTo(aTab, b.mTabContainer.lastChild._tPos);
+				} :
+				parentTab ? function(aTab) {
+					self.adoptTabTo(aTab, parentTab, tab);
+				} :
+				function(aTab) {
+					self.repudiateTab(aTab);
+				};
 			for (var i = 0, maxi = children.length; i < maxi; i++)
 			{
-				if (parentTab) {
-					this.adoptTabTo(children[i], parentTab, tab);
-				}
-				else {
-					this.repudiateTab(children[i]);
-				}
+				processTab(children[i]);
+			}
+			if (adoption) {
+				nextFocusedTab = firstChild;
 			}
 		}
-		else if (parentTab) {
-			var firstSibling = this.getFirstChildTabOf(parentTab);
-			var lastSibling  = this.getLastChildTabOf(parentTab);
-			if (tab == lastSibling) {
-				if (tab == firstSibling) { // there is only one child
-					nextFocusedTab = parentTab;
-				}
-				else { // previous sibling tab
-					nextFocusedTab = this.getPreviousSiblingTabOf(tab);
+
+		if (!nextFocusedTab) {
+			if (parentTab) {
+				var firstSibling = this.getFirstChildTabOf(parentTab);
+				var lastSibling  = this.getLastChildTabOf(parentTab);
+				if (tab == lastSibling) {
+					if (tab == firstSibling) { // there is only one child
+						nextFocusedTab = parentTab;
+					}
+					else { // previous sibling tab
+						nextFocusedTab = this.getPreviousSiblingTabOf(tab);
+					}
 				}
 			}
-		}
-		else {
-			nextFocusedTab = this.getNextSiblingTabOf(tab);
+			else {
+				nextFocusedTab = this.getNextSiblingTabOf(tab);
+			}
 		}
 
 		if (nextFocusedTab)

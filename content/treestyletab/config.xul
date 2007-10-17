@@ -1,13 +1,9 @@
 <?xml version="1.0"?>
-
 <?xml-stylesheet href="chrome://global/skin/"?>
-<?xml-stylesheet href="chrome://treestyletab/skin/config.css"?>
-
 <!DOCTYPE prefwindow [
 <!ENTITY % mainDTD SYSTEM "chrome://treestyletab/locale/treestyletab.dtd">
 %mainDTD;
 ]>
-
 <prefwindow id="treestyletab-config"
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	title="&config.title;"
@@ -15,6 +11,10 @@
 
 <prefpane id="prefpane-general" label="&config.tabs.general;">
 	<preferences>
+		<preference id="extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab"
+			name="extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab"
+			type="bool"
+			inverted="true"/>
 		<preference id="browser.link.open_newwindow"
 			name="browser.link.open_newwindow"
 			type="int"/>
@@ -22,6 +22,10 @@
 			name="browser.link.open_newwindow.restriction"
 			type="int"/>
 	</preferences>
+
+	<checkbox id="extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab-check"
+		preference="extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab"
+		label="&config.adoptChildrenToGrandParentOnRemoveTab;"/>
 	<groupbox>
 		<caption label="&config.open_newwindow.caption;"/>
 		<vbox>
