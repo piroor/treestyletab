@@ -15,6 +15,9 @@
 			name="extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab"
 			type="bool"
 			inverted="true"/>
+		<preference id="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
+			name="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
+			type="bool"/>
 		<preference id="browser.link.open_newwindow"
 			name="browser.link.open_newwindow"
 			type="int"/>
@@ -26,6 +29,9 @@
 	<checkbox id="extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab-check"
 		preference="extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab"
 		label="&config.adoptChildrenToGrandParentOnRemoveTab;"/>
+	<checkbox id="extensions.treestyletab.autoExpandSubTreeOnAppendChild-check"
+		preference="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
+		label="&config.autoExpandSubTreeOnAppendChild;"/>
 	<groupbox>
 		<caption label="&config.open_newwindow.caption;"/>
 		<vbox>

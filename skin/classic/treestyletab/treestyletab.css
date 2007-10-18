@@ -1,2 +1,27 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
+
+.treestyletab-tab-tree-twisty {
+	-moz-appearance: none;
+	margin: -2px -3px -2px -4px;
+	padding: 1px;
+	width: auto;
+	height: auto;
+	border: none;
+	outline: none;
+	background: none;
+	list-style-image: url("tree-twisty-expanded.png");
+}
+
+tab[treestyletab-subtree-collapsed="true"] .treestyletab-tab-tree-twisty {
+	list-style-image: url("tree-twisty-collapsed.png");
+}
+
+tab:not([treestyletab-children]) .treestyletab-tab-tree-twisty {
+	display: none;
+}
+
+tab[treestyletab-tab-collapsed="true"] {
+	visibility: collapse;
+}
+

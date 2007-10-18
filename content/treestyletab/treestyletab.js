@@ -1,10 +1,14 @@
 var TreeStyleTabService = { 
 	PREFROOT : 'extensions.treestyletab@piro.sakura.ne.jp',
 
-	kID           : 'treestyletab-id',
-	kCHILDREN     : 'treestyletab-children',
-	kPARENT       : 'treestyletab-parent',
-	kINSERTBEFORE : 'treestyletab-insert-before',
+	kID                : 'treestyletab-id',
+	kCHILDREN          : 'treestyletab-children',
+	kPARENT            : 'treestyletab-parent',
+	kINSERT_BEFORE     : 'treestyletab-insert-before',
+	kSUBTREE_COLLAPSED : 'treestyletab-subtree-collapsed',
+	kCOLLAPSED         : 'treestyletab-tab-collapsed',
+
+	kTWISTY : 'treestyletab-tab-tree-twisty',
 
 	levelMargin : 12,
 
@@ -52,6 +56,16 @@ var TreeStyleTabService = {
 		return false;
 	},
  
+	isEventFiredOnTwisty : function(aEvent) 
+	{
+		var node = aEvent.originalTarget;
+		while (node.getAttribute('class') != this.kTWISTY && node.localName != 'tabs')
+		{
+			node = node.parentNode;
+		}
+		return (node && node.getAttribute('class') == this.kTWISTY) ? true : false ;
+	},
+ 	
 	get browser() 
 	{
 		return 'SplitBrowser' ? SplitBrowser.activeBrowser : gBrowser ;
@@ -186,7 +200,7 @@ var TreeStyleTabService = {
 	},
    
 /* Initializing */ 
-	
+	 
 	init : function() 
 	{
 		if (!('gBrowser' in window)) return;
@@ -223,14 +237,30 @@ var TreeStyleTabService = {
 
 		this.initTabBrowser(gBrowser);
 	},
-	
+	 
 	initTabBrowser : function(aTabBrowser) 
 	{
 		aTabBrowser.mTabContainer.addEventListener('TreeStyleTab:TabOpen', this, true);
 		aTabBrowser.mTabContainer.addEventListener('TabClose', this, true);
 		aTabBrowser.mTabContainer.addEventListener('TabMove', this, true);
 		aTabBrowser.mTabContainer.addEventListener('SSTabRestoring', this, true);
+		aTabBrowser.mTabContainer.addEventListener('click', this, true);
+		aTabBrowser.mTabContainer.addEventListener('mousedown', this, true);
+		aTabBrowser.mTabContainer.addEventListener('select', this, true);
 		aTabBrowser.mPanelContainer.addEventListener('click', this, true);
+
+		eval('aTabBrowser.mTabContainer.selectNewTab = '+
+			aTabBrowser.mTabContainer.selectNewTab.toSource().replace(
+				/\{/,
+				<><![CDATA[
+					{
+						if (aNewTab.__treestyletab__preventSelect) {
+							aNewTab.__treestyletab__preventSelect = false;
+							return;
+						}
+				]]></>
+			)
+		);
 
 
 		var addTabMethod = 'addTab';
@@ -289,11 +319,23 @@ var TreeStyleTabService = {
 		this.setTabValue(aTab, this.kID, id);
 		aTab.__treestyletab__linkedTabBrowser = aTabBrowser;
 
+		this.initTabTwisty(aTab);
+
 		var event = document.createEvent('Events');
 		event.initEvent('TreeStyleTab:TabOpen', true, false);
 		aTab.dispatchEvent(event);
 	},
-  
+	 
+	initTabTwisty : function(aTab) 
+	{
+		if (document.getAnonymousElementByAttribute(aTab, 'class', this.kTWISTY)) return;
+
+		var twisty = document.createElement('toolbarbutton');
+		twisty.setAttribute('class', this.kTWISTY);
+		var icon = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-icon');
+		icon.appendChild(twisty);
+	},
+   
 	destroy : function() 
 	{
 		this.destroyTabBrowser(gBrowser);
@@ -328,6 +370,9 @@ var TreeStyleTabService = {
 		aTabBrowser.mTabContainer.removeEventListener('TabClose', this, true);
 		aTabBrowser.mTabContainer.removeEventListener('TabMove', this, true);
 		aTabBrowser.mTabContainer.removeEventListener('SSTabRestoring', this, true);
+		aTabBrowser.mTabContainer.removeEventListener('click', this, true);
+		aTabBrowser.mTabContainer.removeEventListener('mousedown', this, true);
+		aTabBrowser.mTabContainer.removeEventListener('select', this, true);
 		aTabBrowser.mPanelContainer.removeEventListener('click', this, true);
 
 //		var tabContextMenu = document.getAnonymousElementByAttribute(aTabBrowser, 'anonid', 'tabContextMenu');
@@ -347,25 +392,30 @@ var TreeStyleTabService = {
 		{
 			case 'TreeStyleTab:TabOpen':
 				this.onTabAdded(aEvent);
-				break;
+				return;
 
 			case 'TabClose':
 				this.onTabRemoved(aEvent);
-				break;
+				return;
 
 			case 'TabMove':
 				var tab = aEvent.originalTarget;
-				var b   = this.getTabBrowserFromChildren(tab);
+				this.initTabTwisty(tab); // twisty vanished after the tab is moved!!
+				var b = this.getTabBrowserFromChildren(tab);
 				if (tab.getAttribute(this.kCHILDREN) && !b.__treestyletab__isSubTreeMoving) {
 					this.moveTabSubTreeTo(tab, tab._tPos);
 				}
-				break;
+				return;
 
 			case 'SSTabRestoring':
 				this.onTabRestored(aEvent);
-				break;
+				return;
 
 			case 'click':
+				if (aEvent.target.ownerDocument == document) {
+					this.onTabClick(aEvent);
+					return;
+				}
 				var isMiddleClick = (
 					aEvent.button == 1 ||
 					aEvent.button == 0 && (aEvent.ctrlKey || aEvent.metaKey)
@@ -380,27 +430,40 @@ var TreeStyleTabService = {
 					b.__treestyletab__readyToAdoptNewTab = true;
 					b.__treestyletab__parentTab = b.selectedTab.getAttribute(this.kID);
 				}
-				break;
+				return;
+
+			case 'mousedown':
+				this.onTabMouseDown(aEvent);
+				return;
+
+			case 'select':
+				var b   = this.getTabBrowserFromChildren(aEvent.currentTarget);
+				var tab = b.selectedTab
+				var p;
+				if (tab.getAttribute(this.kCOLLAPSED) && (p = this.getParentTabOf(tab))) {
+					b.selectedTab = p;
+				}
+				return;
 
 			case 'load':
 				this.init();
-				break;
+				return;
 
 			case 'unload':
 				this.destroy();
-				break;
+				return;
 
 			case 'popupshowing':
 //				this.showHideMenuItems(aEvent.target);
-				break;
+				return;
 
 			case 'SubBrowserAdded':
 				this.initTabBrowser(aEvent.originalTarget.browser);
-				break;
+				return;
 
 			case 'SubBrowserRemoveRequest':
 				this.destroyTabBrowser(aEvent.originalTarget.browser);
-				break;
+				return;
 		}
 	},
  
@@ -421,8 +484,17 @@ var TreeStyleTabService = {
  
 	onTabRemoved : function(aEvent) 
 	{
-		var tab            = aEvent.originalTarget;
-		var b              = this.getTabBrowserFromChildren(tab);
+		var tab = aEvent.originalTarget;
+		var b   = this.getTabBrowserFromChildren(tab);
+
+		if (tab.getAttribute(this.kSUBTREE_COLLAPSED)) {
+			var descendant = this.getDescendantTabsOf(tab);
+			for (var i = descendant.length-1; i > -1; i--)
+			{
+				b.removeTab(descendant[i]);
+			}
+		}
+
 		var firstChild     = this.getFirstChildTabOf(tab);
 		var parentTab      = this.getParentTabOf(tab);
 		var nextFocusedTab = null;
@@ -431,7 +503,7 @@ var TreeStyleTabService = {
 			this.setTabValue(tab, this.kPARENT, parentTab.getAttribute(this.kID));
 			var next = this.getNextSiblingTabOf(tab);
 			if (next)
-				this.setTabValue(tab, this.kINSERTBEFORE, next.getAttribute(this.kID));
+				this.setTabValue(tab, this.kINSERT_BEFORE, next.getAttribute(this.kID));
 		}
 
 		if (firstChild) {
@@ -490,6 +562,8 @@ var TreeStyleTabService = {
 		var id  = this.getTabValue(tab, this.kID);
 		this.setTabValue(tab, this.kID, id);
 
+		var isSubTreeCollapsed = (this.getTabValue(tab, this.kSUBTREE_COLLAPSED) == 'true');
+
 		var children = this.getTabValue(tab, this.kCHILDREN);
 		if (children) {
 			children = children.split('|');
@@ -504,7 +578,7 @@ var TreeStyleTabService = {
 		}
 
 		var parent = this.getTabValue(tab, this.kPARENT);
-		var before = this.getTabValue(tab, this.kINSERTBEFORE);
+		var before = this.getTabValue(tab, this.kINSERT_BEFORE);
 		if (parent && (parent = this.getTabById(parent, b))) {
 			this.adoptTabTo(tab, parent, (before ? this.getTabById(before, b) : null ), true);
 			this.deleteTabValue(tab, this.kPARENT);
@@ -513,49 +587,34 @@ var TreeStyleTabService = {
 		else if (children) {
 			this.updateTabsIndent(tabs);
 		}
+
+/*
+		if (isSubTreeCollapsed) {
+			this.collapseExpandTabSubTree(tab, isSubTreeCollapsed);
+		}
+*/
+	},
+ 
+	onTabMouseDown : function(aEvent) 
+	{
+		if (aEvent.button != 0 ||
+			!this.isEventFiredOnTwisty(aEvent))
+			return;
+
+		this.getTabFromEvent(aEvent).__treestyletab__preventSelect = true;
 	},
  
 	onTabClick : function(aEvent) 
 	{
-		if (aEvent.button != 0) return;
+		if (aEvent.button != 0 ||
+			!this.isEventFiredOnTwisty(aEvent))
+			return;
 
 		var tab = this.getTabFromEvent(aEvent);
-		if (tab) {
-			var b = this.getTabBrowserFromChildren(tab);
-			if (aEvent.shiftKey) {
-				var tabs = b.mTabContainer.childNodes;
-				var inSelection = false;
-				for (var i = 0, maxi = tabs.length; i < maxi; i++)
-				{
-					if (tabs[i] == b.selectedTab ||
-						tabs[i] == tab) {
-						inSelection = !inSelection;
-						this.setSelection(tabs[i], true);
-					}
-					else {
-						this.setSelection(tabs[i], inSelection);
-					}
-				}
-				aEvent.preventDefault();
-				aEvent.stopPropagation();
-				return;
-			}
-			else if (aEvent.ctrlKey || aEvent.metaKey) {
-				if (this.tabClickMode != this.TAB_CLICK_MODE_TOGGLE) return;
+		this.collapseExpandTabSubTree(tab, tab.getAttribute(this.kSUBTREE_COLLAPSED) != 'true');
 
-				if (!this.selectionModified && !this.hasSelection())
-					this.setSelection(b.selectedTab, true);
-
-				this.toggleSelection(tab);
-				aEvent.preventDefault();
-				aEvent.stopPropagation();
-				return;
-			}
-		}
-		if (this.selectionModified && !this.hasSelection())
-			this.selectionModified = false;
-
-		this.clearSelection();
+		aEvent.preventDefault();
+		aEvent.stopPropagation();
 	},
   
 /* Tab Utilities */ 
@@ -786,6 +845,21 @@ var TreeStyleTabService = {
 		if (newIndex > aChild._tPos) newIndex--;
 		this.moveTabSubTreeTo(aChild, newIndex);
 
+		if (aParent.getAttribute(this.kSUBTREE_COLLAPSED) == 'true') {
+			if (this.getPref('extensions.treestyletab.autoExpandSubTreeOnAppendChild')) {
+				var p = aParent;
+				do {
+					this.collapseExpandTabSubTree(p, false);
+				}
+				while (p = this.getParentTabOf(p));
+			}
+			else
+				this.collapseExpandTab(aChild, true);
+		}
+
+		if (aParent.getAttribute(this.kCOLLAPSED) == 'true')
+			this.collapseExpandTab(aChild, true);
+
 		if (!aDontUpdateIndent) this.updateTabsIndent([aChild]);
 	},
  
@@ -829,6 +903,8 @@ var TreeStyleTabService = {
  
 	moveTabSubTreeTo : function(aTab, aIndex) 
 	{
+		if (!aTab) return;
+
 		var b = this.getTabBrowserFromChildren(aTab);
 		b.__treestyletab__isSubTreeMoving = true;
 
@@ -842,7 +918,41 @@ var TreeStyleTabService = {
 
 		b.__treestyletab__isSubTreeMoving = false;
 	},
- 	 
+ 
+	collapseExpandTabSubTree : function(aTab, aCollapse) 
+	{
+		if (!aTab) return;
+
+		if (aTab.getAttribute(this.kSUBTREE_COLLAPSED) == String(aCollapse)) return;
+
+		this.setTabValue(aTab, this.kSUBTREE_COLLAPSED, aCollapse);
+
+		var tabs = this.getChildTabsOf(aTab);
+		for (var i = 0, maxi = tabs.length; i < maxi; i++)
+		{
+			this.collapseExpandTab(tabs[i], aCollapse);
+		}
+	},
+ 
+	collapseExpandTab : function(aTab, aCollapse) 
+	{
+		if (!aTab) return;
+
+		this.setTabValue(aTab, this.kCOLLAPSED, aCollapse);
+
+		var b = this.getTabBrowserFromChildren(aTab);
+		var p;
+		if (aTab == b.selectedTab && (p = this.getParentTabOf(aTab))) b.selectedTab = p;
+
+		var isSubTreeCollapsed = (aTab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true');
+		var tabs = this.getChildTabsOf(aTab);
+		for (var i = 0, maxi = tabs.length; i < maxi; i++)
+		{
+			if (!isSubTreeCollapsed)
+				this.collapseExpandTab(tabs[i], aCollapse);
+		}
+	},
+  
 /* Pref Listener */ 
 	 
 	domain : 'extensions.treestyletab', 
