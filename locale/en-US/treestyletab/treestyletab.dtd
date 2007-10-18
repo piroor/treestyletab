@@ -3,9 +3,11 @@
 
 <!ENTITY config.tabs.general "General">
 
-<!ENTITY config.adoptChildrenToGrandParentOnRemoveTab "Liberate child tabs from the tree when the parent tab is closed">
+<!ENTITY config.autoCollapseExpandSubTreeOnSelect "Collapse distractive subtrees automatically, when a tab is focused">
 
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Expand subtree automatically, when tabs are inserted into the subtree">
+
+<!ENTITY config.adoptChildrenToGrandParentOnRemoveTab "Liberate child tabs from the tree when the parent tab is closed">
 
 <!ENTITY config.open_newwindow.caption "New window opened from links in webpages unexpectedly">
 <!ENTITY config.open_newwindow.window  "Open as Window">

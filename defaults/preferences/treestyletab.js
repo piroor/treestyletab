@@ -1,5 +1,6 @@
-pref("extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab", true);
+pref("extensions.treestyletab.autoCollapseExpandSubTreeOnSelect", true);
 pref("extensions.treestyletab.autoExpandSubTreeOnAppendChild", true);
+pref("extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab", true);
 
 pref("browser.link.open_newwindow.restriction", 0);
 

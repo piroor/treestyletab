@@ -11,13 +11,16 @@
 
 <prefpane id="prefpane-general" label="&config.tabs.general;">
 	<preferences>
+		<preference id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
+			name="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
+			type="bool"/>
+		<preference id="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
+			name="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
+			type="bool"/>
 		<preference id="extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab"
 			name="extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab"
 			type="bool"
 			inverted="true"/>
-		<preference id="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
-			name="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
-			type="bool"/>
 		<preference id="browser.link.open_newwindow"
 			name="browser.link.open_newwindow"
 			type="int"/>
@@ -26,12 +29,15 @@
 			type="int"/>
 	</preferences>
 
-	<checkbox id="extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab-check"
-		preference="extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab"
-		label="&config.adoptChildrenToGrandParentOnRemoveTab;"/>
+	<checkbox id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect-check"
+		preference="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
+		label="&config.autoCollapseExpandSubTreeOnSelect;"/>
 	<checkbox id="extensions.treestyletab.autoExpandSubTreeOnAppendChild-check"
 		preference="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
 		label="&config.autoExpandSubTreeOnAppendChild;"/>
+	<checkbox id="extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab-check"
+		preference="extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab"
+		label="&config.adoptChildrenToGrandParentOnRemoveTab;"/>
 	<groupbox>
 		<caption label="&config.open_newwindow.caption;"/>
 		<vbox>

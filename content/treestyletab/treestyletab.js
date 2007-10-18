@@ -171,7 +171,7 @@ var TreeStyleTabService = {
 			var xpathResult = document.evaluate(
 					'descendant::xul:menuseparator',
 					aPopup,
-					this.NSResolver, // document.createNSResolver(document.documentElement),
+					this.NSResolver,
 					XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
 					null
 				);
@@ -188,7 +188,7 @@ var TreeStyleTabService = {
 			var xpathResult = document.evaluate(
 					'descendant::xul:menuseparator[not(@hidden)][not(following-sibling::*[not(@hidden)]) or not(preceding-sibling::*[not(@hidden)]) or local-name(following-sibling::*[not(@hidden)]) = "menuseparator"]',
 					aPopup,
-					this.NSResolver, // document.createNSResolver(document.documentElement),
+					this.NSResolver,
 					XPathResult.FIRST_ORDERED_NODE_TYPE,
 					null
 				);
@@ -437,12 +437,7 @@ var TreeStyleTabService = {
 				return;
 
 			case 'select':
-				var b   = this.getTabBrowserFromChildren(aEvent.currentTarget);
-				var tab = b.selectedTab
-				var p;
-				if (tab.getAttribute(this.kCOLLAPSED) && (p = this.getParentTabOf(tab))) {
-					b.selectedTab = p;
-				}
+				this.onTabSelect(aEvent);
 				return;
 
 			case 'load':
@@ -616,6 +611,67 @@ var TreeStyleTabService = {
 		aEvent.preventDefault();
 		aEvent.stopPropagation();
 	},
+ 
+	onTabSelect : function(aEvent) 
+	{
+		var b   = this.getTabBrowserFromChildren(aEvent.currentTarget);
+		var tab = b.selectedTab
+
+/*
+		var p;
+		if ((tab.getAttribute(this.kCOLLAPSED) == 'true') &&
+			(p = this.getParentTabOf(tab))) {
+			b.selectedTab = p;
+		}
+*/
+		if (tab.getAttribute(this.kCOLLAPSED) == 'true') {
+			var parentTab = tab;
+			while (parentTab = this.getParentTabOf(parentTab))
+			{
+				this.collapseExpandTabSubTree(parentTab, false);
+			}
+		}
+		else if (tab.getAttribute(this.kCHILDREN) &&
+				(tab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true') &&
+				this.getPref('extensions.treestyletab.autoCollapseExpandSubTreeOnSelect')) {
+			var expandedParentTabs = [
+					tab.getAttribute(this.kID)
+				];
+			var parentTab = tab;
+			while (parentTab = this.getParentTabOf(parentTab))
+			{
+				expandedParentTabs.push(parentTab.getAttribute(this.kID));
+			}
+			expandedParentTabs = expandedParentTabs.join('|');
+			try {
+				var xpathResult = document.evaluate(
+						'child::xul:tab[@'+this.kCHILDREN+' and not(@'+this.kCOLLAPSED+'="true") and not(@'+this.kSUBTREE_COLLAPSED+'="true") and not(contains("'+expandedParentTabs+'", @'+this.kID+'))]',
+						b.mTabContainer,
+						this.NSResolver,
+						XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+						null
+					);
+				var collapseTab;
+				var isDescendant;
+				for (var i = 0, maxi = xpathResult.snapshotLength; i < maxi; i++)
+				{
+					isDescendant = false;
+					collapseTab = xpathResult.snapshotItem(i);
+					var parentTab = collapseTab;
+					while (parentTab = this.getParentTabOf(parentTab))
+					{
+						if (parentTab != tab) continue;
+						isDescendant = true;
+					}
+					if (!isDescendant)
+						this.collapseExpandTabSubTree(collapseTab, true);
+				}
+			}
+			catch(e) {
+			}
+			this.collapseExpandTabSubTree(tab, false);
+		}
+	},
   
 /* Tab Utilities */ 
 	 
@@ -661,7 +717,7 @@ var TreeStyleTabService = {
 			var xpathResult = document.evaluate(
 					'descendant::xul:tab[@'+this.kID+' = "'+aId+'"]',
 					aTabBrowser.mTabContainer,
-					this.NSResolver, // document.createNSResolver(document.documentElement),
+					this.NSResolver,
 					XPathResult.FIRST_ORDERED_NODE_TYPE,
 					null
 				);
@@ -679,7 +735,7 @@ var TreeStyleTabService = {
 			var xpathResult = document.evaluate(
 					'parent::*/child::xul:tab[contains(@'+this.kCHILDREN+', "'+id+'")]',
 					aTab,
-					this.NSResolver, // document.createNSResolver(document.documentElement),
+					this.NSResolver,
 					XPathResult.FIRST_ORDERED_NODE_TYPE,
 					null
 				);
