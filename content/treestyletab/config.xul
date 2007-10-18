@@ -14,9 +14,9 @@
 		<preference id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
 			name="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
 			type="bool"/>
-		<preference id="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
+		<!--preference id="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
 			name="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
-			type="bool"/>
+			type="bool"/-->
 		<preference id="extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab"
 			name="extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab"
 			type="bool"
@@ -32,9 +32,9 @@
 	<checkbox id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect-check"
 		preference="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
 		label="&config.autoCollapseExpandSubTreeOnSelect;"/>
-	<checkbox id="extensions.treestyletab.autoExpandSubTreeOnAppendChild-check"
+	<!--checkbox id="extensions.treestyletab.autoExpandSubTreeOnAppendChild-check"
 		preference="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
-		label="&config.autoExpandSubTreeOnAppendChild;"/>
+		label="&config.autoExpandSubTreeOnAppendChild;"/-->
 	<checkbox id="extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab-check"
 		preference="extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab"
 		label="&config.adoptChildrenToGrandParentOnRemoveTab;"/>

@@ -3,7 +3,7 @@
 
 <!ENTITY config.tabs.general "General">
 
-<!ENTITY config.autoCollapseExpandSubTreeOnSelect "Collapse distractive subtrees automatically, when a tab is focused">
+<!ENTITY config.autoCollapseExpandSubTreeOnSelect "Collapse distractive subtrees automatically, when a tab is opened or focused">
 
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Expand subtree automatically, when tabs are inserted into the subtree">
 

@@ -3,7 +3,7 @@
 
 <!ENTITY config.tabs.general "全般">
 
-<!ENTITY config.autoCollapseExpandSubTreeOnSelect "タブを切り替える時、関係ないサブツリーを自動的に折り畳む">
+<!ENTITY config.autoCollapseExpandSubTreeOnSelect "タブを開く時やタブを切り替える時に、関係ないサブツリーを自動的に折り畳む">
 
 <!ENTITY config.autoExpandSubTreeOnAppendChild "折り畳まれたサブツリー内に子孫のタブが追加された時、サブツリーを自動的に展開する">
 

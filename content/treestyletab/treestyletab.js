@@ -39,7 +39,7 @@ var TreeStyleTabService = {
 	_SessionStore : null,
 	 
 /* Utilities */ 
-	 
+	
 	isEventFiredOnTabIcon : function(aEvent) 
 	{
 		var tab = this.getTabFromEvent(aEvent);
@@ -65,7 +65,7 @@ var TreeStyleTabService = {
 		}
 		return (node && node.getAttribute('class') == this.kTWISTY) ? true : false ;
 	},
- 	
+ 
 	get browser() 
 	{
 		return 'SplitBrowser' ? SplitBrowser.activeBrowser : gBrowser ;
@@ -200,7 +200,7 @@ var TreeStyleTabService = {
 	},
    
 /* Initializing */ 
-	 
+	
 	init : function() 
 	{
 		if (!('gBrowser' in window)) return;
@@ -237,7 +237,7 @@ var TreeStyleTabService = {
 
 		this.initTabBrowser(gBrowser);
 	},
-	 
+	
 	initTabBrowser : function(aTabBrowser) 
 	{
 		aTabBrowser.mTabContainer.addEventListener('TreeStyleTab:TabOpen', this, true);
@@ -634,45 +634,10 @@ var TreeStyleTabService = {
 		else if (tab.getAttribute(this.kCHILDREN) &&
 				(tab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true') &&
 				this.getPref('extensions.treestyletab.autoCollapseExpandSubTreeOnSelect')) {
-			var expandedParentTabs = [
-					tab.getAttribute(this.kID)
-				];
-			var parentTab = tab;
-			while (parentTab = this.getParentTabOf(parentTab))
-			{
-				expandedParentTabs.push(parentTab.getAttribute(this.kID));
-			}
-			expandedParentTabs = expandedParentTabs.join('|');
-			try {
-				var xpathResult = document.evaluate(
-						'child::xul:tab[@'+this.kCHILDREN+' and not(@'+this.kCOLLAPSED+'="true") and not(@'+this.kSUBTREE_COLLAPSED+'="true") and not(contains("'+expandedParentTabs+'", @'+this.kID+'))]',
-						b.mTabContainer,
-						this.NSResolver,
-						XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-						null
-					);
-				var collapseTab;
-				var isDescendant;
-				for (var i = 0, maxi = xpathResult.snapshotLength; i < maxi; i++)
-				{
-					isDescendant = false;
-					collapseTab = xpathResult.snapshotItem(i);
-					var parentTab = collapseTab;
-					while (parentTab = this.getParentTabOf(parentTab))
-					{
-						if (parentTab != tab) continue;
-						isDescendant = true;
-					}
-					if (!isDescendant)
-						this.collapseExpandTabSubTree(collapseTab, true);
-				}
-			}
-			catch(e) {
-			}
-			this.collapseExpandTabSubTree(tab, false);
+			this.collapseExpandTreesIntelligentlyFor(tab);
 		}
 	},
-  
+ 	 
 /* Tab Utilities */ 
 	 
 	getTabValue : function(aTab, aKey) 
@@ -901,13 +866,21 @@ var TreeStyleTabService = {
 		if (newIndex > aChild._tPos) newIndex--;
 		this.moveTabSubTreeTo(aChild, newIndex);
 
-		if (aParent.getAttribute(this.kSUBTREE_COLLAPSED) == 'true') {
-			if (this.getPref('extensions.treestyletab.autoExpandSubTreeOnAppendChild')) {
-				var p = aParent;
-				do {
-					this.collapseExpandTabSubTree(p, false);
-				}
-				while (p = this.getParentTabOf(p));
+		if (
+			(
+				aParent.getAttribute(this.kSUBTREE_COLLAPSED) == 'true' ||
+				children.indexOf('|') < 0 // first child
+			) &&
+			this.getPref('extensions.treestyletab.autoCollapseExpandSubTreeOnSelect')
+			) {
+			this.collapseExpandTreesIntelligentlyFor(aChild);
+		}
+		else if (aParent.getAttribute(this.kSUBTREE_COLLAPSED) == 'true') {
+			var p = aParent;
+			do {
+				this.collapseExpandTabSubTree(p, false);
+			}
+			while (p = this.getParentTabOf(p));
 			}
 			else
 				this.collapseExpandTab(aChild, true);
@@ -1007,6 +980,47 @@ var TreeStyleTabService = {
 			if (!isSubTreeCollapsed)
 				this.collapseExpandTab(tabs[i], aCollapse);
 		}
+	},
+ 
+	collapseExpandTreesIntelligentlyFor : function(aTab) 
+	{
+		var b = this.getTabBrowserFromChildren(aTab);
+		var expandedParentTabs = [
+				aTab.getAttribute(this.kID)
+			];
+		var parentTab = aTab;
+		while (parentTab = this.getParentTabOf(parentTab))
+		{
+			expandedParentTabs.push(parentTab.getAttribute(this.kID));
+		}
+		expandedParentTabs = expandedParentTabs.join('|');
+		try {
+			var xpathResult = document.evaluate(
+					'child::xul:tab[@'+this.kCHILDREN+' and not(@'+this.kCOLLAPSED+'="true") and not(@'+this.kSUBTREE_COLLAPSED+'="true") and not(contains("'+expandedParentTabs+'", @'+this.kID+'))]',
+					b.mTabContainer,
+					this.NSResolver,
+					XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+					null
+				);
+			var collapseTab;
+			var isDescendant;
+			for (var i = 0, maxi = xpathResult.snapshotLength; i < maxi; i++)
+			{
+				isDescendant = false;
+				collapseTab = xpathResult.snapshotItem(i);
+				var parentTab = collapseTab;
+				while (parentTab = this.getParentTabOf(parentTab))
+				{
+					if (parentTab != aTab) continue;
+					isDescendant = true;
+				}
+				if (!isDescendant)
+					this.collapseExpandTabSubTree(collapseTab, true);
+			}
+		}
+		catch(e) {
+		}
+		this.collapseExpandTabSubTree(aTab, false);
 	},
   
 /* Pref Listener */ 
