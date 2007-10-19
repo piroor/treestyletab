@@ -8,8 +8,10 @@ var TreeStyleTabService = {
 	kSUBTREE_COLLAPSED : 'treestyletab-subtree-collapsed',
 	kCOLLAPSED         : 'treestyletab-tab-collapsed',
 
-	kTWISTY           : 'treestyletab-tab-tree-twisty',
-	kTWISTY_CONTAINER : 'treestyletab-tab-tree-twisty-container',
+	kTWISTY            : 'treestyletab-tab-tree-twisty',
+	kTWISTY_CONTAINER  : 'treestyletab-tab-tree-twisty-container',
+	kCOUNTER           : 'treestyletab-tab-tree-counter',
+	kCOUNTER_CONTAINER : 'treestyletab-tab-tree-counter-container',
 
 	kMENUITEM_REMOVESUBTREE_MULTIPLETAB_SELECTION : 'multipletab-selection-item-removeTabSubTree',
 	kMENUITEM_REMOVESUBTREE_CONTEXT               : 'context-item-removeTabSubTree',
@@ -260,6 +262,7 @@ var TreeStyleTabService = {
 		aTabBrowser.mTabContainer.addEventListener('TabMove', this, true);
 		aTabBrowser.mTabContainer.addEventListener('SSTabRestoring', this, true);
 		aTabBrowser.mTabContainer.addEventListener('click', this, true);
+		aTabBrowser.mTabContainer.addEventListener('dblclick', this, true);
 		aTabBrowser.mTabContainer.addEventListener('mousedown', this, true);
 		aTabBrowser.mTabContainer.addEventListener('select', this, true);
 		aTabBrowser.mPanelContainer.addEventListener('click', this, true);
@@ -357,26 +360,43 @@ var TreeStyleTabService = {
 		this.setTabValue(aTab, this.kID, id);
 		aTab.__treestyletab__linkedTabBrowser = aTabBrowser;
 
-		this.initTabTwisty(aTab);
+		this.initTabContents(aTab);
 
 		var event = document.createEvent('Events');
 		event.initEvent('TreeStyleTab:TabOpen', true, false);
 		aTab.dispatchEvent(event);
 	},
 	 
-	initTabTwisty : function(aTab) 
+	initTabContents : function(aTab) 
 	{
-		if (document.getAnonymousElementByAttribute(aTab, 'class', this.kTWISTY)) return;
+		if (!document.getAnonymousElementByAttribute(aTab, 'class', this.kTWISTY)) {
+			var twisty = document.createElement('image');
+			twisty.setAttribute('class', this.kTWISTY);
 
-		var twisty = document.createElement('image');
-		twisty.setAttribute('class', this.kTWISTY);
+			var container = document.createElement('hbox');
+			container.setAttribute('class', this.kTWISTY_CONTAINER);
+			container.appendChild(twisty);
 
-		var container = document.createElement('hbox');
-		container.setAttribute('class', this.kTWISTY_CONTAINER);
-		container.appendChild(twisty);
+			var icon = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-icon');
+			icon.appendChild(container);
+		}
 
-		var icon = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-icon');
-		icon.appendChild(container);
+		if (!document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER_CONTAINER)) {
+			var counter = document.createElement('hbox');
+			counter.setAttribute('class', this.kCOUNTER_CONTAINER);
+
+			counter.appendChild(document.createElement('label'));
+			counter.lastChild.setAttribute('class', this.kCOUNTER);
+			counter.lastChild.setAttribute('value', '(0)');
+
+			var text = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-text');
+			if (text) {
+				if (text.nextSibling)
+					text.parentNode.insertBefore(counter, text.nextSibling);
+				else
+					text.parentNode.appendChild(counter);
+			}
+		}
 	},
    
 	destroy : function() 
@@ -414,6 +434,7 @@ var TreeStyleTabService = {
 		aTabBrowser.mTabContainer.removeEventListener('TabMove', this, true);
 		aTabBrowser.mTabContainer.removeEventListener('SSTabRestoring', this, true);
 		aTabBrowser.mTabContainer.removeEventListener('click', this, true);
+		aTabBrowser.mTabContainer.removeEventListener('dblclick', this, true);
 		aTabBrowser.mTabContainer.removeEventListener('mousedown', this, true);
 		aTabBrowser.mTabContainer.removeEventListener('select', this, true);
 		aTabBrowser.mPanelContainer.removeEventListener('click', this, true);
@@ -440,7 +461,7 @@ var TreeStyleTabService = {
 
 			case 'TabMove':
 				var tab = aEvent.originalTarget;
-				this.initTabTwisty(tab); // twisty vanished after the tab is moved!!
+				this.initTabContents(tab); // twisty vanished after the tab is moved!!
 				var b = this.getTabBrowserFromChildren(tab);
 				if (tab.getAttribute(this.kCHILDREN) && !b.__treestyletab__isSubTreeMoving) {
 					this.moveTabSubTreeTo(tab, tab._tPos);
@@ -469,6 +490,17 @@ var TreeStyleTabService = {
 					var b = this.getTabBrowserFromChildren(aEvent.currentTarget);
 					b.__treestyletab__readyToAdoptNewTab = true;
 					b.__treestyletab__parentTab = b.selectedTab.getAttribute(this.kID);
+				}
+				return;
+
+			case 'dblclick':
+				var tab = this.getTabFromEvent(aEvent);
+				if (tab &&
+					tab.getAttribute(this.kCHILDREN) &&
+					this.getPref('extensions.treestyletab.collapseExpandSubTree.dblclick')) {
+					this.collapseExpandTabSubTree(tab, tab.getAttribute(this.kSUBTREE_COLLAPSED) != 'true');
+					aEvent.preventDefault();
+					aEvent.stopPropagation();
 				}
 				return;
 
@@ -586,7 +618,7 @@ var TreeStyleTabService = {
 			}
 		}
 
-		if (nextFocusedTab)
+		if (nextFocusedTab && b.selectedTab == tab)
 			b.selectedTab = nextFocusedTab;
 	},
  
@@ -886,6 +918,7 @@ var TreeStyleTabService = {
 		}
 
 		this.setTabValue(aParent, this.kCHILDREN, children);
+		this.updateTabsCount(aParent);
 
 		if (newIndex > aChild._tPos) newIndex--;
 		this.moveTabSubTreeTo(aChild, newIndex);
@@ -899,6 +932,7 @@ var TreeStyleTabService = {
 				this.getPref('extensions.treestyletab.autoCollapseExpandSubTreeOnSelect')
 				) {
 				this.collapseExpandTreesIntelligentlyFor(aChild);
+				this.collapseExpandTabSubTree(aParent, false);
 			}
 			else if (aParent.getAttribute(this.kSUBTREE_COLLAPSED) == 'true') {
 				if (this.getPref('extensions.treestyletab.autoExpandSubTreeOnAppendChild')) {
@@ -935,6 +969,7 @@ var TreeStyleTabService = {
 						.replace(new RegExp('\\|'+id), '')
 						.replace(/^\|/, '');
 		this.setTabValue(parentTab, this.kCHILDREN, children);
+		this.updateTabsCount(parentTab);
 
 		if (!aDontUpdateIndent) this.updateTabsIndent([aChild]);
 	},
@@ -959,6 +994,17 @@ var TreeStyleTabService = {
 			aTabs[i].setAttribute('style', aTabs[i].getAttribute('style')+';margin-left:'+indent+' !important;');
 			this.updateTabsIndent(this.getChildTabsOf(aTabs[i]), aLevel+1);
 		}
+	},
+ 
+	updateTabsCount : function(aTab) 
+	{
+		var count = document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER);
+		if (count) {
+			count.setAttribute('value', '('+this.getDescendantTabsOf(aTab).length+')');
+		}
+		var parent = this.getParentTabOf(aTab);
+		if (parent)
+			this.updateTabsCount(parent);
 	},
  
 	moveTabSubTreeTo : function(aTab, aIndex) 

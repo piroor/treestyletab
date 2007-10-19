@@ -4,6 +4,7 @@
 <!ENTITY config.tabs.general "General">
 
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "Collapse distractive subtrees automatically, when a tab is opened or focused">
+<!ENTITY config.collapseExpandSubTree.dblclick "Collapse/Expand subtree of the tab by double-click">
 
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Expand subtree automatically, when tabs are inserted into the subtree">
 

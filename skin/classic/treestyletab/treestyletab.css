@@ -19,10 +19,14 @@ tab[treestyletab-subtree-collapsed="true"] .treestyletab-tab-tree-twisty {
 	list-style-image: url("tree-twisty-collapsed.png");
 }
 
-tab:not([treestyletab-children]) .treestyletab-tab-tree-twisty {
-	display: none;
+.treestyletab-tab-tree-counter-container {
+	-moz-box-align: center;
+	-moz-box-pack: end;
 }
 
-tab[treestyletab-tab-collapsed="true"] {
-	visibility: collapse;
+.treestyletab-tab-tree-counter {
+	font-size: 90%;
+	margin: 0;
+	padding: 0;
+	min-width: 0;
 }

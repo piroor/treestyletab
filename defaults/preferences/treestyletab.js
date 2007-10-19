@@ -1,4 +1,5 @@
 pref("extensions.treestyletab.autoCollapseExpandSubTreeOnSelect",     true);
+pref("extensions.treestyletab.collapseExpandSubTree.dblclick",        false);
 pref("extensions.treestyletab.autoExpandSubTreeOnAppendChild",        true);
 pref("extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab", true);
 // 0 = default, 1 = only visible tabs
