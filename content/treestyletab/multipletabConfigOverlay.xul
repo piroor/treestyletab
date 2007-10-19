@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE overlay SYSTEM "chrome://treestyletab/locale/treestyletab.dtd">
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+<preferences id="prefpane-selection-menu-preferences">
+	<preference id="extensions.multipletab.show.multipletab-selection-item-removeTabSubTree"
+		name="extensions.multipletab.show.multipletab-selection-item-removeTabSubTree"
+		type="bool"/>
+</preferences>
+<vbox id="prefpane-selection-menu-items">
+	<checkbox id="extensions.multipletab.show.multipletab-selection-item-removeTabSubTree-check"
+		preference="extensions.multipletab.show.multipletab-selection-item-removeTabSubTree"
+		label="&selection.removeTabSubTree.label;"/>
+</vbox>
+
+<preferences id="prefpane-context-menu-preferences">
+	<preference id="extensions.multipletab.show.context-item-removeTabSubTree"
+		name="extensions.multipletab.show.context-item-removeTabSubTree"
+		type="bool"/>
+</preferences>
+<vbox id="prefpane-context-menu-items">
+	<checkbox id="extensions.multipletab.show.context-item-removeTabSubTree-check"
+		preference="extensions.multipletab.show.context-item-removeTabSubTree"
+		label="&context.removeTabSubTree.label;"/>
+</vbox>
+
+</overlay>

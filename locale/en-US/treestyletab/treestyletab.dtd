@@ -19,3 +19,10 @@
 <!ENTITY config.jsopen.default "Open as Window when it have special width, height, etc. (default)">
 <!ENTITY config.jsopen.forcetab "Open as Tab instead of Window anyway">
 
+
+
+
+<!ENTITY selection.removeTabSubTree.label     "Close Selected Sub Trees">
+<!ENTITY selection.removeTabSubTree.accesskey "s">
+<!ENTITY context.removeTabSubTree.label     "Close this Sub Tree">
+<!ENTITY context.removeTabSubTree.accesskey "s">

@@ -18,3 +18,10 @@
 <!ENTITY config.jsopen.caption "Webページのスクリプトで開かれるウィンドウの制御">
 <!ENTITY config.jsopen.default "大きさや位置を指定されたウィンドウはウィンドウとして開く（初期値）">
 <!ENTITY config.jsopen.forcetab "スクリプトで開かれるウィンドウはすべてタブで開く">
+
+
+
+<!ENTITY selection.removeTabSubTree.label     "すべてのサブツリーを閉じる">
+<!ENTITY selection.removeTabSubTree.accesskey "s">
+<!ENTITY context.removeTabSubTree.label     "このサブツリーを閉じる">
+<!ENTITY context.removeTabSubTree.accesskey "s">

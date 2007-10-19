@@ -8,4 +8,20 @@
 
 <script src="treestyletab.js" type="application/x-javascript"/>
 
+
+<menupopup id="multipletab-selection-menu">
+	<menuitem id="multipletab-selection-item-removeTabSubTree"
+		insertafter="multipletab-selection-removeTabs"
+		label="&selection.removeTabSubTree.label;"
+		accesskey="&selection.removeTabSubTree.accesskey;"
+		oncommand="TreeStyleTabService.removeTabSubTree(MultipleTabService.getSelectedTabs());"/>
+</menupopup>
+
+<menupopup id="multipletab-tabcontext-menu-template">
+	<menuitem id="context-item-removeTabSubTree"
+		label="&context.removeTabSubTree.label;"
+		accesskey="&context.removeTabSubTree.accesskey;"
+		oncommand="TreeStyleTabService.removeTabSubTree(TreeStyleTabService.getTabBrowserFromChildren(this).mContextTab);"/>
+</menupopup>
+
 </overlay>
