@@ -984,7 +984,9 @@ var TreeStyleTabService = {
 
 		var b = this.getTabBrowserFromChildren(aTab);
 		var p;
-		if (aTab == b.selectedTab && (p = this.getParentTabOf(aTab))) b.selectedTab = p;
+		if (aCollapse && aTab == b.selectedTab && (p = this.getParentTabOf(aTab))) {
+			b.selectedTab = p;
+		}
 
 		var isSubTreeCollapsed = (aTab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true');
 		var tabs = this.getChildTabsOf(aTab);
