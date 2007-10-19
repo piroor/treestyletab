@@ -19,7 +19,9 @@ var TreeStyleTabService = {
 	kFOCUS_ALL     : 0,
 	kFOCUS_VISIBLE : 1,
 
-	levelMargin : 12,
+	levelMargin  : 12,
+	positionProp : 'screenY',
+	sizeProp     : 'width',
 
 	NSResolver : {
 		lookupNamespaceURI : function(aPrefix)
@@ -318,6 +320,114 @@ var TreeStyleTabService = {
 			)
 		);
 
+		eval('aTabBrowser.canDrop = '+
+			aTabBrowser.canDrop.toSource().replace(
+				/\.screenX/g, '[TreeStyleTabService.positionProp]'
+			).replace(
+				/\.width/g, '[TreeStyleTabService.sizeProp]'
+			).replace(
+				/return true;/,
+				<><![CDATA[
+					if ((function(aEvent, aDragSession, aSelf) { // is the tab is in the subtree?
+							if (!aDragSession.sourceNode ||
+								aDragSession.sourceNode.parentNode != aSelf.mTabContainer ||
+								aEvent.target.localName != 'tab')
+								return false;
+							var orig = aDragSession.sourceNode;
+							var tab  = aEvent.target;
+							while (tab = TreeStyleTabService.getParentTabOf(tab))
+							{
+								if (tab == orig)
+									return true;
+							}
+							return false;
+						})(aEvent, aDragSession, this))
+						return false;
+					return true;
+				]]></>
+			)
+		);
+
+		eval('aTabBrowser.moveTabForward = '+
+			aTabBrowser.moveTabForward.toSource().replace(
+				'{', '{ var nextTab;'
+			).replace(
+				'tabPos < this.browsers.length - 1',
+				'nextTab = TreeStyleTabService.getNextSiblingTabOf(this.mCurrentTab)'
+			).replace(
+				'tabPos + 1', 'nextTab._tPos'
+			).replace(
+				'this.moveTabTo(',
+				<><![CDATA[
+					var descendant = TreeStyleTabService.getDescendantTabsOf(nextTab);
+					if (descendant.length) {
+						nextTab = descendant[descendant.length-1];
+					}
+					this.moveTabTo(]]></>
+			).replace(
+				'this.moveTabToStart();',
+				<><![CDATA[
+					var parentTab = TreeStyleTabService.getParentTabOf(this.mCurrentTab);
+					if (parentTab) {
+						this.moveTabTo(this.mCurrentTab, TreeStyleTabService.getFirstChildTabOf(parentTab)._tPos);
+						this.mCurrentTab.focus();
+					}
+					else {
+						this.moveTabToStart();
+					}
+				]]></>
+			)
+		);
+
+		eval('aTabBrowser.moveTabBackward = '+
+			aTabBrowser.moveTabBackward.toSource().replace(
+				'{', '{ var prevTab;'
+			).replace(
+				'tabPos > 0',
+				'prevTab = TreeStyleTabService.getPreviousSiblingTabOf(this.mCurrentTab)'
+			).replace(
+				'tabPos - 1', 'prevTab._tPos'
+			).replace(
+				'this.moveTabToEnd();',
+				<><![CDATA[
+					var parentTab = TreeStyleTabService.getParentTabOf(this.mCurrentTab);
+					if (parentTab) {
+						this.moveTabTo(this.mCurrentTab, TreeStyleTabService.getLastChildTabOf(parentTab)._tPos);
+						this.mCurrentTab.focus();
+					}
+					else {
+						this.moveTabToEnd();
+					}
+				]]></>
+			)
+		);
+
+		eval('aTabBrowser.moveTabOver = '+
+			aTabBrowser.moveTabOver.toSource().replace(
+				'{',
+				<><![CDATA[
+					{
+						var parentTab = TreeStyleTabService.getParentTabOf(this.mCurrentTab);
+						if (aEvent.keyCode == KeyEvent.DOM_VK_RIGHT) {
+							if (parentTab &&
+								this.mCurrentTab != TreeStyleTabService.getFirstChildTabOf(parentTab)) {
+								TreeStyleTabService.adoptTabTo(this.mCurrentTab, TreeStyleTabService.getPreviousSiblingTabOf(this.mCurrentTab));
+								this.mCurrentTab.focus();
+								return;
+							}
+						}
+						else if (aEvent.keyCode == KeyEvent.DOM_VK_LEFT) {
+							var grandParent = TreeStyleTabService.getParentTabOf(parentTab);
+							if (grandParent) {
+								TreeStyleTabService.adoptTabTo(this.mCurrentTab, grandParent, { insertBefore : TreeStyleTabService.getNextSiblingTabOf(parentTab) });
+								this.mCurrentTab.focus();
+								return;
+							}
+						}
+				]]></>
+			)
+		);
+
 		var addTabMethod = 'addTab';
 		var removeTabMethod = 'removeTab';
 		if (aTabBrowser.__tabextensions__addTab) {
@@ -468,12 +578,7 @@ var TreeStyleTabService = {
 				return;
 
 			case 'TabMove':
-				var tab = aEvent.originalTarget;
-				this.initTabContents(tab); // twisty vanished after the tab is moved!!
-				var b = this.getTabBrowserFromChildren(tab);
-				if (tab.getAttribute(this.kCHILDREN) && !b.__treestyletab__isSubTreeMoving) {
-					this.moveTabSubTreeTo(tab, tab._tPos);
-				}
+				this.onTabMove(aEvent);
 				return;
 
 			case 'SSTabRestoring':
@@ -628,6 +733,25 @@ var TreeStyleTabService = {
 
 		if (nextFocusedTab && b.selectedTab == tab)
 			b.selectedTab = nextFocusedTab;
+	},
+ 
+	onTabMove : function(aEvent) 
+	{
+		var tab = aEvent.originalTarget;
+		this.initTabContents(tab); // twisty vanished after the tab is moved!!
+
+		var b = this.getTabBrowserFromChildren(tab);
+		if (tab.getAttribute(this.kCHILDREN) && !b.__treestyletab__isSubTreeMoving) {
+			this.moveTabSubTreeTo(tab, tab._tPos);
+		}
+
+		var parentTab = this.getParentTabOf(tab);
+		if (parentTab && !b.__treestyletab__isSubTreeChildrenMoving) {
+			var children = this.getChildTabsOf(parentTab);
+			children.sort(function(aA, aB) { return aA._tPos - aB._tPos; });
+			var self = this;
+			this.setTabValue(parentTab, this.kCHILDREN, children.map(function(aItem) { return aItem.getAttribute(self.kID); }).join('|'));
+		}
 	},
  
 	onTabRestored : function(aEvent) 
@@ -793,11 +917,11 @@ var TreeStyleTabService = {
 			var list = ('|'+children).split('|'+id)[1].split('|');
 			for (var i = 0, maxi = list.length; i < maxi; i++)
 			{
-				firstChild = this.getTabById(list[i], b);
-				if (firstChild) break;
+				var firstChild = this.getTabById(list[i], b);
+				if (firstChild) return firstChild;
 			}
 		}
-		return firstChild;
+		return null;
 	},
  
 	getPreviousSiblingTabOf : function(aTab) 
@@ -820,11 +944,11 @@ var TreeStyleTabService = {
 			var list = ('|'+children).split('|'+id)[0].split('|');
 			for (var i = list.length-1; i > -1; i--)
 			{
-				lastChild = this.getTabById(list[i], b)
-				if (lastChild) break;
+				var lastChild = this.getTabById(list[i], b)
+				if (lastChild) return lastChild;
 			}
 		}
-		return lastChild;
+		return null;
 	},
  
 	getDescendantTabsOf : function(aTab) 
@@ -916,13 +1040,10 @@ var TreeStyleTabService = {
 		}
 		else {
 			children = ((children || '')+'|'+id).replace(/^\|/, '');
-			var refTab    = aParent;
-			var lastChild = this.getLastChildTabOf(aParent);
-			if (lastChild) {
-				var descendant = this.getDescendantTabsOf(lastChild);
-				if (descendant.length) lastChild = descendant[descendant.length-1];
-			}
-			newIndex = (lastChild ? lastChild : aParent )._tPos+1;
+			var refTab = aParent;
+			var descendant = TreeStyleTabService.getDescendantTabsOf(aParent);
+			if (descendant.length) refTab = descendant[descendant.length-1];
+			newIndex = refTab._tPos+1;
 		}
 
 		this.setTabValue(aParent, this.kCHILDREN, children);
@@ -1027,11 +1148,13 @@ var TreeStyleTabService = {
 
 		b.moveTabTo(aTab, aIndex);
 
+		b.__treestyletab__isSubTreeChildrenMoving = true;
 		var tabs = this.getDescendantTabsOf(aTab);
 		for (var i = 0, maxi = tabs.length; i < maxi; i++)
 		{
 			b.moveTabTo(tabs[i], aTab._tPos+i+(aTab._tPos < tabs[i]._tPos ? 1 : 0 ));
 		}
+		b.__treestyletab__isSubTreeChildrenMoving = false;
 
 		b.__treestyletab__isSubTreeMoving = false;
 	},
