@@ -997,7 +997,8 @@ var TreeStyleTabService = {
  
 	collapseExpandTreesIntelligentlyFor : function(aTab) 
 	{
-		var b = this.getTabBrowserFromChildren(aTab);
+		var b      = this.getTabBrowserFromChildren(aTab);
+		var parent = this.getParentTabOf(aTab);
 		var expandedParentTabs = [
 				aTab.getAttribute(this.kID)
 			];
@@ -1016,18 +1017,24 @@ var TreeStyleTabService = {
 					null
 				);
 			var collapseTab;
-			var isDescendant;
+			var dontCollapse;
 			for (var i = 0, maxi = xpathResult.snapshotLength; i < maxi; i++)
 			{
-				isDescendant = false;
-				collapseTab = xpathResult.snapshotItem(i);
-				var parentTab = collapseTab;
-				while (parentTab = this.getParentTabOf(parentTab))
-				{
-					if (parentTab != aTab) continue;
-					isDescendant = true;
+				dontCollapse = false;
+				collapseTab  = xpathResult.snapshotItem(i);
+
+				parentTab = this.getParentTabOf(collapseTab);
+				if (parentTab) {
+					dontCollapse = true;
+					do {
+						if (parentTab != parent) continue;
+						dontCollapse = false;
+						break;
+					}
+					while (parentTab = this.getParentTabOf(parentTab));
 				}
-				if (!isDescendant)
+
+				if (!dontCollapse)
 					this.collapseExpandTabSubTree(collapseTab, true);
 			}
 		}
