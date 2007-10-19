@@ -157,6 +157,14 @@ var TreeStyleTabService = {
 		return (target.localName == 'tabbrowser') ? target : null ;
 	},
  
+	isTabVertical : function(aTabOrChild) 
+	{
+		var b = this.getTabBrowserFromChildren(aTabOrChild);
+		if (!b) return false;
+		var box = b.mTabContainer.mTabstrip || b.mTabContainer ;
+		return (box.getAttribute('orient') || window.getComputedStyle(box, '').getPropertyValue('-moz-box-orient')) == 'vertical';
+	},
+ 
 	cleanUpTabsArray : function(aTabs) 
 	{
 		var b = this.getTabBrowserFromChildren(aTabs[0]);
@@ -174,7 +182,7 @@ var TreeStyleTabService = {
 	},
   
 /* Initializing */ 
-	 
+	
 	init : function() 
 	{
 		if (!('gBrowser' in window)) return;
@@ -254,7 +262,7 @@ var TreeStyleTabService = {
 
 		this.initTabBrowser(gBrowser);
 	},
-	 
+	
 	initTabBrowser : function(aTabBrowser) 
 	{
 		aTabBrowser.mTabContainer.addEventListener('TreeStyleTab:TabOpen', this, true);
@@ -417,7 +425,7 @@ var TreeStyleTabService = {
 			this.destroyTab(tabs[i]);
 		}
 	},
-	 
+	
 	destroyTabBrowser : function(aTabBrowser) 
 	{
 		var tabs = aTabBrowser.mTabContainer.childNodes;
@@ -439,7 +447,7 @@ var TreeStyleTabService = {
 		aTabBrowser.mTabContainer.removeEventListener('select', this, true);
 		aTabBrowser.mPanelContainer.removeEventListener('click', this, true);
 	},
- 	
+ 
 	destroyTab : function(aTab, aTabBrowser) 
 	{
 		delete aTab.__treestyletab__linkedTabBrowser;
@@ -882,7 +890,7 @@ var TreeStyleTabService = {
 	},
   
 /* Commands */ 
-	
+	 
 	adoptTabTo : function(aChild, aParent, aInfo) 
 	{
 		if (!aChild || !aParent) return;
@@ -974,7 +982,7 @@ var TreeStyleTabService = {
 		if (!aDontUpdateIndent) this.updateTabsIndent([aChild]);
 	},
  
-	updateTabsIndent : function(aTabs, aLevel) 
+	updateTabsIndent : function(aTabs, aLevel, aProp) 
 	{
 		if (!aTabs || !aTabs.length) return;
 
@@ -988,14 +996,17 @@ var TreeStyleTabService = {
 			}
 		}
 
+		if (!aProp)
+			aProp = this.isTabVertical(aTabs[0]) ? 'margin-left' : 'margin-top' ;
+
 		var indent = (this.levelMargin * aLevel)+'px';
 		for (var i = 0, maxi = aTabs.length; i < maxi; i++)
 		{
-			aTabs[i].setAttribute('style', aTabs[i].getAttribute('style')+';margin-left:'+indent+' !important;');
-			this.updateTabsIndent(this.getChildTabsOf(aTabs[i]), aLevel+1);
+			aTabs[i].setAttribute('style', aTabs[i].getAttribute('style')+';'+aProp+':'+indent+' !important;');
+			this.updateTabsIndent(this.getChildTabsOf(aTabs[i]), aLevel+1, aProp);
 		}
 	},
- 
+ 	
 	updateTabsCount : function(aTab) 
 	{
 		var count = document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER);
