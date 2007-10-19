@@ -409,20 +409,29 @@ var TreeStyleTabService = {
 					{
 						var parentTab = TreeStyleTabService.getParentTabOf(this.mCurrentTab);
 						if (aEvent.keyCode == KeyEvent.DOM_VK_RIGHT) {
-							if (parentTab &&
-								this.mCurrentTab != TreeStyleTabService.getFirstChildTabOf(parentTab)) {
-								TreeStyleTabService.adoptTabTo(this.mCurrentTab, TreeStyleTabService.getPreviousSiblingTabOf(this.mCurrentTab));
+							var prevTab = TreeStyleTabService.getPreviousSiblingTabOf(this.mCurrentTab);
+							if ((!parentTab && prevTab) ||
+								(parentTab && this.mCurrentTab != TreeStyleTabService.getFirstChildTabOf(parentTab))) {
+								TreeStyleTabService.adoptTabTo(this.mCurrentTab, prevTab);
 								this.mCurrentTab.focus();
 								return;
 							}
 						}
-						else if (aEvent.keyCode == KeyEvent.DOM_VK_LEFT) {
+						else if (aEvent.keyCode == KeyEvent.DOM_VK_LEFT && parentTab) {
 							var grandParent = TreeStyleTabService.getParentTabOf(parentTab);
 							if (grandParent) {
 								TreeStyleTabService.adoptTabTo(this.mCurrentTab, grandParent, { insertBefore : TreeStyleTabService.getNextSiblingTabOf(parentTab) });
 								this.mCurrentTab.focus();
-								return;
 							}
+							else {
+								var nextTab = TreeStyleTabService.getNextSiblingTabOf(parentTab);
+								TreeStyleTabService.repudiateTab(this.mCurrentTab);
+								if (nextTab) {
+									this.moveTabTo(this.mCurrentTab, nextTab._tPos - 1);
+								}
+								this.mCurrentTab.focus();
+							}
+							return;
 						}
 				]]></>
 			)
