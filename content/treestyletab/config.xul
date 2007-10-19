@@ -21,6 +21,9 @@
 			name="extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab"
 			type="bool"
 			inverted="true"/>
+		<preference id="extensions.treestyletab.focusMode"
+			name="extensions.treestyletab.focusMode"
+			type="int"/>
 		<preference id="browser.link.open_newwindow"
 			name="browser.link.open_newwindow"
 			type="int"/>
@@ -38,6 +41,11 @@
 	<checkbox id="extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab-check"
 		preference="extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab"
 		label="&config.adoptChildrenToGrandParentOnRemoveTab;"/>
+	<checkbox id="extensions.treestyletab.focusMode-check"
+		preference="extensions.treestyletab.focusMode"
+		label="&config.focusMode;"
+		onsyncfrompreference="return document.getElementById('extensions.treestyletab.focusMode').value == 0;"
+		onsynctopreference="return document.getElementById('extensions.treestyletab.focusMode-check').checked ? 0 : 1 ;"/>
 	<groupbox>
 		<caption label="&config.open_newwindow.caption;"/>
 		<vbox>

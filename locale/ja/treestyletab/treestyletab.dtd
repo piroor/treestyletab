@@ -9,6 +9,8 @@
 
 <!ENTITY config.adoptChildrenToGrandParentOnRemoveTab "親のタブを閉じたら子孫のタブをツリーから解放する">
 
+<!ENTITY config.focusMode "Control(Command)-Tabでタブを切り替える時、折りたたまれたタブにもフォーカスする">
+
 <!ENTITY config.open_newwindow.caption "Webページのリンクから勝手に開かれたウィンドウの制御">
 <!ENTITY config.open_newwindow.window  "ウィンドウで開く">
 <!ENTITY config.open_newwindow.tab     "タブで開く（初期値）">

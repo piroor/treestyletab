@@ -11,6 +11,9 @@ var TreeStyleTabService = {
 	kTWISTY           : 'treestyletab-tab-tree-twisty',
 	kTWISTY_CONTAINER : 'treestyletab-tab-tree-twisty-container',
 
+	kFOCUS_ALL     : 0,
+	kFOCUS_VISIBLE : 1,
+
 	levelMargin : 12,
 
 	NSResolver : {
@@ -40,7 +43,7 @@ var TreeStyleTabService = {
 	_SessionStore : null,
 	 
 /* Utilities */ 
-	
+	 
 	isEventFiredOnTabIcon : function(aEvent) 
 	{
 		var tab = this.getTabFromEvent(aEvent);
@@ -70,6 +73,30 @@ var TreeStyleTabService = {
 	get browser() 
 	{
 		return 'SplitBrowser' ? SplitBrowser.activeBrowser : gBrowser ;
+	},
+ 
+	evaluateXPath : function(aExpression, aContext, aType) 
+	{
+		if (!aType) aType = XPathResult.ORDERED_NODE_SNAPSHOT_TYPE;
+		try {
+			var xpathResult = document.evaluate(
+					aExpression,
+					aContext,
+					this.NSResolver,
+					aType,
+					null
+				);
+		}
+		catch(e) {
+			return {
+				singleNodeValue : null,
+				snapshotLength  : 0,
+				snapshotItem    : function() {
+					return null
+				}
+			};
+		}
+		return xpathResult;
 	},
  
 	getArrayFromXPathResult : function(aXPathResult) 
@@ -165,43 +192,23 @@ var TreeStyleTabService = {
 			separator.setAttribute('hidden', true);
 		}
 	},
-	
+	 
 	getSeparators : function(aPopup) 
 	{
-		try {
-			var xpathResult = document.evaluate(
-					'descendant::xul:menuseparator',
-					aPopup,
-					this.NSResolver,
-					XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-					null
-				);
-		}
-		catch(e) {
-			return { snapshotLength : 0 };
-		}
-		return xpathResult;
+		return this.evaluateXPath('descendant::xul:menuseparator', aPopup);
 	},
  
 	getObsoleteSeparator : function(aPopup) 
 	{
-		try {
-			var xpathResult = document.evaluate(
-					'descendant::xul:menuseparator[not(@hidden)][not(following-sibling::*[not(@hidden)]) or not(preceding-sibling::*[not(@hidden)]) or local-name(following-sibling::*[not(@hidden)]) = "menuseparator"]',
-					aPopup,
-					this.NSResolver,
-					XPathResult.FIRST_ORDERED_NODE_TYPE,
-					null
-				);
-		}
-		catch(e) {
-			return null;
-		}
-		return xpathResult.singleNodeValue;
+		return this.evaluateXPath(
+				'descendant::xul:menuseparator[not(@hidden)][not(following-sibling::*[not(@hidden)]) or not(preceding-sibling::*[not(@hidden)]) or local-name(following-sibling::*[not(@hidden)]) = "menuseparator"]',
+				aPopup,
+				XPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue;
 	},
    
 /* Initializing */ 
-	
+	 
 	init : function() 
 	{
 		if (!('gBrowser' in window)) return;
@@ -238,7 +245,7 @@ var TreeStyleTabService = {
 
 		this.initTabBrowser(gBrowser);
 	},
-	
+	 
 	initTabBrowser : function(aTabBrowser) 
 	{
 		aTabBrowser.mTabContainer.addEventListener('TreeStyleTab:TabOpen', this, true);
@@ -255,8 +262,36 @@ var TreeStyleTabService = {
 				/\{/,
 				<><![CDATA[
 					{
-						if (aNewTab.__treestyletab__preventSelect) {
-							aNewTab.__treestyletab__preventSelect = false;
+						if (arguments[0].__treestyletab__preventSelect) {
+							arguments[0].__treestyletab__preventSelect = false;
+							return;
+						}
+				]]></>
+			)
+		);
+
+		eval('aTabBrowser.mTabContainer.advanceSelectedTab = '+
+			aTabBrowser.mTabContainer.advanceSelectedTab.toSource().replace(
+				/\{/,
+				<><![CDATA[
+					{
+						if (TreeStyleTabService.getPref('extensions.treestyletab.focusMode') == 1) {
+							var xpathResult = TreeStyleTabService.evaluateXPath(
+										(arguments[0] < 0 ? 'preceding-sibling' : 'following-sibling' )+
+											'::xul:tab[not(@'+TreeStyleTabService.kCOLLAPSED+'="true")]',
+										this.selectedItem
+									);
+							var nextTab = xpathResult.snapshotItem(arguments[0] < 0 ? xpathResult.snapshotLength-1 : 0 );
+							if (!nextTab && arguments[1]) {
+								var xpathResult = TreeStyleTabService.evaluateXPath(
+										'child::xul:tab[not(@'+TreeStyleTabService.kCOLLAPSED+'="true")]',
+										this
+									);
+								nextTab = xpathResult.snapshotItem(arguments[0] < 0 ? xpathResult.snapshotLength-1 : 0 );
+							}
+							if (nextTab && nextTab != this.selectedItem) {
+								this.selectNewTab(nextTab, arguments[0], arguments[1]);
+							}
 							return;
 						}
 				]]></>
@@ -313,7 +348,7 @@ var TreeStyleTabService = {
 		delete tabs;
 
 	},
- 
+ 	
 	initTab : function(aTab, aTabBrowser) 
 	{
 		var id = 'tab-<'+Date.now()+'-'+parseInt(Math.random() * 65000)+'>';
@@ -391,7 +426,7 @@ var TreeStyleTabService = {
 	},
    
 /* Event Handling */ 
-	 
+	
 	handleEvent : function(aEvent) 
 	{
 		switch (aEvent.type)
@@ -641,9 +676,9 @@ var TreeStyleTabService = {
 			this.collapseExpandTreesIntelligentlyFor(tab);
 		}
 	},
- 	 
+  
 /* Tab Utilities */ 
-	 
+	
 	getTabValue : function(aTab, aKey) 
 	{
 		var value = null;
@@ -682,37 +717,21 @@ var TreeStyleTabService = {
  
 	getTabById : function(aId, aTabBrowser) 
 	{
-		try {
-			var xpathResult = document.evaluate(
-					'descendant::xul:tab[@'+this.kID+' = "'+aId+'"]',
-					aTabBrowser.mTabContainer,
-					this.NSResolver,
-					XPathResult.FIRST_ORDERED_NODE_TYPE,
-					null
-				);
-		}
-		catch(e) {
-			return null;
-		}
-		return xpathResult.singleNodeValue;
+		return this.evaluateXPath(
+				'descendant::xul:tab[@'+this.kID+' = "'+aId+'"]',
+				aTabBrowser.mTabContainer,
+				XPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue;
 	},
  
 	getParentTabOf : function(aTab) 
 	{
 		var id = aTab.getAttribute(this.kID);
-		try {
-			var xpathResult = document.evaluate(
-					'parent::*/child::xul:tab[contains(@'+this.kCHILDREN+', "'+id+'")]',
-					aTab,
-					this.NSResolver,
-					XPathResult.FIRST_ORDERED_NODE_TYPE,
-					null
-				);
-		}
-		catch(e) {
-			return null;
-		}
-		return xpathResult.singleNodeValue;
+		return this.evaluateXPath(
+				'parent::*/child::xul:tab[contains(@'+this.kCHILDREN+', "'+id+'")]',
+				aTab,
+				XPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue;
 	},
  
 	getNextSiblingTabOf : function(aTab) 
@@ -832,7 +851,7 @@ var TreeStyleTabService = {
 	},
   
 /* Commands */ 
-	 
+	
 	adoptTabTo : function(aChild, aParent, aInfo) 
 	{
 		if (!aChild || !aParent) return;
@@ -1010,43 +1029,38 @@ var TreeStyleTabService = {
 			expandedParentTabs.push(parentTab.getAttribute(this.kID));
 		}
 		expandedParentTabs = expandedParentTabs.join('|');
-		try {
-			var xpathResult = document.evaluate(
-					'child::xul:tab[@'+this.kCHILDREN+' and not(@'+this.kCOLLAPSED+'="true") and not(@'+this.kSUBTREE_COLLAPSED+'="true") and not(contains("'+expandedParentTabs+'", @'+this.kID+'))]',
-					b.mTabContainer,
-					this.NSResolver,
-					XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-					null
-				);
-			var collapseTab;
-			var dontCollapse;
-			for (var i = 0, maxi = xpathResult.snapshotLength; i < maxi; i++)
-			{
-				dontCollapse = false;
-				collapseTab  = xpathResult.snapshotItem(i);
 
-				parentTab = this.getParentTabOf(collapseTab);
-				if (parentTab) {
-					dontCollapse = true;
-					do {
-						if (parentTab != parent) continue;
-						dontCollapse = false;
-						break;
-					}
-					while (parentTab = this.getParentTabOf(parentTab));
+		var xpathResult = this.evaluateXPath(
+				'child::xul:tab[@'+this.kCHILDREN+' and not(@'+this.kCOLLAPSED+'="true") and not(@'+this.kSUBTREE_COLLAPSED+'="true") and not(contains("'+expandedParentTabs+'", @'+this.kID+'))]',
+				b.mTabContainer
+			);
+		var collapseTab;
+		var dontCollapse;
+		for (var i = 0, maxi = xpathResult.snapshotLength; i < maxi; i++)
+		{
+			dontCollapse = false;
+			collapseTab  = xpathResult.snapshotItem(i);
+
+			parentTab = this.getParentTabOf(collapseTab);
+			if (parentTab) {
+				dontCollapse = true;
+				do {
+					if (parentTab != parent) continue;
+					dontCollapse = false;
+					break;
 				}
-
-				if (!dontCollapse)
-					this.collapseExpandTabSubTree(collapseTab, true);
+				while (parentTab = this.getParentTabOf(parentTab));
 			}
+
+			if (!dontCollapse)
+				this.collapseExpandTabSubTree(collapseTab, true);
 		}
-		catch(e) {
-		}
+
 		this.collapseExpandTabSubTree(aTab, false);
 	},
   
 /* Pref Listener */ 
-	 
+	
 	domain : 'extensions.treestyletab', 
  
 	observe : function(aSubject, aTopic, aPrefName) 
@@ -1065,7 +1079,7 @@ var TreeStyleTabService = {
 	},
   
 /* Save/Load Prefs */ 
-	 
+	
 	get Prefs() 
 	{
 		if (!this._Prefs) {

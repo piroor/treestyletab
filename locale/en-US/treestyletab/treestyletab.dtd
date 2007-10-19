@@ -9,6 +9,8 @@
 
 <!ENTITY config.adoptChildrenToGrandParentOnRemoveTab "Liberate child tabs from the tree when the parent tab is closed">
 
+<!ENTITY config.focusMode "Focus to the next/previous tab even if it is invisible, by Control(Command)-Tab">
+
 <!ENTITY config.open_newwindow.caption "New window opened from links in webpages unexpectedly">
 <!ENTITY config.open_newwindow.window  "Open as Window">
 <!ENTITY config.open_newwindow.tab     "Open as Tab (default)">
