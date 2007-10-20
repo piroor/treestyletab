@@ -30,3 +30,17 @@ tab[treestyletab-subtree-collapsed="true"] .treestyletab-tab-tree-twisty {
 	padding: 0;
 	min-width: 0;
 }
+
+/*
+tab[treestyletab-drop-position="self"] {
+	border: 2px solid black !important;
+}
+
+tab[treestyletab-drop-position="before"] {
+	border-top: 2px solid black !important;
+}
+
+tab[treestyletab-drop-position="after"] {
+	border-bottom: 2px solid black !important;
+}
+*/

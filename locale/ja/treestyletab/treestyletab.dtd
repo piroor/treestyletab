@@ -8,7 +8,7 @@
 
 <!ENTITY config.autoExpandSubTreeOnAppendChild "折り畳まれたサブツリー内に子孫のタブが追加された時、サブツリーを自動的に展開する">
 
-<!ENTITY config.adoptChildrenToGrandParentOnRemoveTab "親のタブを閉じたら子孫のタブをツリーから解放する">
+<!ENTITY config.attachChildrenToGrandParentOnRemoveTab "親のタブを閉じたら子孫のタブをツリーから解放する">
 
 <!ENTITY config.focusMode "Control(Command)-Tabでタブを切り替える時、折りたたまれたタブにもフォーカスする">
 

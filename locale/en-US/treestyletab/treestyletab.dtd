@@ -8,7 +8,7 @@
 
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Expand subtree automatically, when tabs are inserted into the subtree">
 
-<!ENTITY config.adoptChildrenToGrandParentOnRemoveTab "Liberate child tabs from the tree when the parent tab is closed">
+<!ENTITY config.attachChildrenToGrandParentOnRemoveTab "Liberate child tabs from the tree when the parent tab is closed">
 
 <!ENTITY config.focusMode "Focus to the next/previous tab even if it is invisible, by Control(Command)-Tab">
 

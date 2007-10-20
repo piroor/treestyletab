@@ -20,8 +20,8 @@
 		<!--preference id="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
 			name="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
 			type="bool"/-->
-		<preference id="extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab"
-			name="extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab"
+		<preference id="extensions.treestyletab.attachChildrenToGrandParentOnRemoveTab"
+			name="extensions.treestyletab.attachChildrenToGrandParentOnRemoveTab"
 			type="bool"
 			inverted="true"/>
 		<preference id="extensions.treestyletab.focusMode"
@@ -44,9 +44,9 @@
 	<!--checkbox id="extensions.treestyletab.autoExpandSubTreeOnAppendChild-check"
 		preference="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
 		label="&config.autoExpandSubTreeOnAppendChild;"/-->
-	<checkbox id="extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab-check"
-		preference="extensions.treestyletab.adoptChildrenToGrandParentOnRemoveTab"
-		label="&config.adoptChildrenToGrandParentOnRemoveTab;"/>
+	<checkbox id="extensions.treestyletab.attachChildrenToGrandParentOnRemoveTab-check"
+		preference="extensions.treestyletab.attachChildrenToGrandParentOnRemoveTab"
+		label="&config.attachChildrenToGrandParentOnRemoveTab;"/>
 	<checkbox id="extensions.treestyletab.focusMode-check"
 		preference="extensions.treestyletab.focusMode"
 		label="&config.focusMode;"
