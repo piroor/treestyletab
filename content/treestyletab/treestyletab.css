@@ -33,11 +33,20 @@ tabbrowser[treestyletab-vertical="true"] > tabbox {
 	-moz-box-orient: horizontal !important;
 }
 
-tabbrowser[treestyletab-vertical="true"] .tabbrowser-strip {
+tabbrowser[treestyletab-vertical="true"] .tabbrowser-arrowscrollbox > scrollbox {
 	overflow-x: hidden;
 	overflow-y: auto;
 }
 
+tabbrowser[treestyletab-vertical="true"] .tabs-stack > * + * > hbox {
+	-moz-box-flex: 1 !important;
+}
+
+/*
+tabbrowser[treestyletab-vertical="true"] .tabbrowser-arrowscrollbox > scrollbox > .scrollbox-innerbox {
+	-moz-box-flex: 0 !important;
+}
+*/
 
 
 tabbrowser[treestyletab-tabbar-position="right"] .tabbrowser-tab .tab-image-middle {

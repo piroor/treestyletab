@@ -84,7 +84,7 @@ var TreeStyleTabService = {
 	_ObserverService : null,
 	 
 /* Utilities */ 
-	 
+	
 	isEventFiredOnTabIcon : function(aEvent) 
 	{
 		var tab = this.getTabFromEvent(aEvent);
@@ -202,6 +202,17 @@ var TreeStyleTabService = {
 		if (!b) return false;
 		var box = b.mTabContainer.mTabstrip || b.mTabContainer ;
 		return (box.getAttribute('orient') || window.getComputedStyle(box, '').getPropertyValue('-moz-box-orient')) == 'vertical';
+	},
+ 
+	isTabVisible : function(aTab) 
+	{
+		if (!aTab) return false;
+		var tabBox = aTab.boxObject;
+		var barBox = this.getTabBrowserFromChildren(aTab).mTabContainer.mTabstrip.boxObject;
+		return (tabBox.screenX >= barBox.screenX &&
+			tabBox.screenX + tabBox.width <= barBox.screenX + barBox.width &&
+			tabBox.screenY >= barBox.screenY &&
+			tabBox.screenY + tabBox.height <= barBox.screenY + barBox.height);
 	},
  
 	cleanUpTabsArray : function(aTabs) 
@@ -352,6 +363,19 @@ var TreeStyleTabService = {
 									aSelf.selectNewTab(nextTab, aDir, aWrap);
 								}
 							})(arguments[0], arguments[1], this);
+							return;
+						}
+				]]></>
+			)
+		);
+
+		eval('aTabBrowser.mTabContainer._handleTabSelect = '+
+			aTabBrowser.mTabContainer._handleTabSelect.toSource().replace(
+				/\{/,
+				<><![CDATA[
+					{
+						if (!TreeStyleTabService.isTabVisible(this.selectedItem)) {
+							TreeStyleTabService.scrollToTab(this.selectedItem);
 							return;
 						}
 				]]></>
@@ -733,7 +757,7 @@ catch(e) {
 	},
    
 /* Event Handling */ 
-	 
+	
 	handleEvent : function(aEvent) 
 	{
 		switch (aEvent.type)
@@ -1019,7 +1043,7 @@ catch(e) {
 		var b = this.getTabBrowserFromChildren(aEvent.originalTarget);
 		this.setPref('extensions.treestyletab.tabbar.width', b.mStrip.boxObject.width);
 	},
- 	 
+  
 /* Tab Utilities */ 
 	
 	getTabValue : function(aTab, aKey) 
@@ -1389,6 +1413,8 @@ catch(e) {
 			ref.parentNode.insertBefore(splitter, ref);
 		}
 
+		var scrollInnerBox = document.getAnonymousNodes(aTabBrowser.mTabContainer.mTabstrip._scrollbox)[0];
+
 		if (pos & this.kTABBAR_VERTICAL) {
 			this.positionProp     = 'screenY';
 			this.sizeProp         = 'height';
@@ -1396,6 +1422,7 @@ catch(e) {
 
 			aTabBrowser.mTabBox.orient = 'horizontal';
 			aTabBrowser.mTabContainer.orient = aTabBrowser.mTabContainer.mTabstrip.orient = 'vertical';
+			scrollInnerBox.removeAttribute('flex');
 
 			aTabBrowser.mPanelContainer.removeAttribute('width');
 			aTabBrowser.mStrip.setAttribute('width', this.getPref('extensions.treestyletab.tabbar.width'));
@@ -1427,6 +1454,7 @@ catch(e) {
 
 			aTabBrowser.mTabBox.orient = 'vertical';
 			aTabBrowser.mTabContainer.orient = aTabBrowser.mTabContainer.mTabstrip.orient = 'horizontal';
+			scrollInnerBox.setAttribute('flex', 1);
 
 			aTabBrowser.mStrip.removeAttribute('width');
 			aTabBrowser.mPanelContainer.removeAttribute('width');
@@ -1733,6 +1761,9 @@ catch(e) {
 			this.collapseExpandTab(tabs[i], aCollapse);
 		}
 
+		if (!aCollapse)
+			this.scrollToTabSubTree(aTab);
+
 		b.__treestyletab__doingCollapseExpand = false;
 	},
  
@@ -1800,6 +1831,148 @@ catch(e) {
 		}
 
 		this.collapseExpandTabSubTree(aTab, false);
+	},
+  
+/* scroll */ 
+	 
+	scrollTo : function(aTabBrowser, aEndX, aEndY) 
+	{
+		if (this.getPref('extensions.treestyletab.tabbar.scroll.smooth'))
+			this.smoothScrollTo(aTabBrowser, aEndX, aEndY);
+		else
+			this.getTabBrowserFromChildren(aTabBrowser).mTabstrip.scrollBoxObject.scrollTo(aEndX, aEndY);
+	},
+	 
+	smoothScrollTo : function(aTabBrowser, aEndX, aEndY) 
+	{
+		var b = this.getTabBrowserFromChildren(aTabBrowser);
+
+		if (b.__treestyletab__smoothScrollTimer) {
+			window.clearInterval(b.__treestyletab__smoothScrollTimer);
+			b.__treestyletab__smoothScrollTimer = null;
+		}
+
+		var scrollBoxObject = b.mTabContainer.mTabstrip.scrollBoxObject;
+		var x = {}, y = {};
+		scrollBoxObject.getPosition(x, y);
+		b.__treestyletab__smoothScrollTimer = window.setInterval(
+			this.smoothScrollToCallback,
+			10,
+			this,
+			b,
+			x.value,
+			y.value,
+			aEndX,
+			aEndY,
+			Date.now(),
+			this.getPref('extensions.treestyletab.tabbar.scroll.timeout')
+		);
+	},
+ 
+	smoothScrollToCallback : function(aSelf, aTabBrowser, aStartX, aStartY, aEndX, aEndY, aStartTime, aTimeout) 
+	{
+		var newX = aStartX + parseInt(
+				(aEndX - aStartX) * ((Date.now() - aStartTime) / aTimeout)
+			);
+		var newY = aStartY + parseInt(
+				(aEndY - aStartY) * ((Date.now() - aStartTime) / aTimeout)
+			);
+
+		var scrollBoxObject = aTabBrowser.mTabContainer.mTabstrip.scrollBoxObject;
+		var x = {}, y = {};
+		scrollBoxObject.getPosition(x, y);
+
+		var w = {}, h = {};
+		scrollBoxObject.getScrolledSize(w, h);
+		var maxX = Math.max(0, w.value - scrollBoxObject.width);
+		var maxY = Math.max(0, h.value - scrollBoxObject.height);
+
+		if (
+				(
+				aEndX - aStartX > 0 ?
+					x.value >= Math.min(aEndX, maxX) :
+					x.value <= Math.min(aEndX, maxX)
+				) &&
+				(
+				aEndY - aStartY > 0 ?
+					y.value >= Math.min(aEndY, maxY) :
+					y.value <= Math.min(aEndY, maxY)
+				)
+			) {
+			if (aTabBrowser.__treestyletab__smoothScrollTimer) {
+				window.clearInterval(aTabBrowser.__treestyletab__smoothScrollTimer);
+				aTabBrowser.__treestyletab__smoothScrollTimer = null;
+			}
+			return;
+		}
+
+		scrollBoxObject.scrollTo(newX, newY);
+	},
+ 	 
+	scrollToTab : function(aTab) 
+	{
+		if (!aTab || this.isTabVisible(aTab)) return;
+
+		var b = this.getTabBrowserFromChildren(aTab);
+
+		var scrollBoxObject = b.mTabContainer.mTabstrip.scrollBoxObject;
+		var w = {}, h = {};
+		scrollBoxObject.getScrolledSize(w, h);
+
+		var targetTabBox = aTab.boxObject;
+		var baseTabBox = aTab.parentNode.firstChild.boxObject;
+
+		var targetX = (aTab.boxObject.screenX < scrollBoxObject.screenX) ?
+			(targetTabBox.screenX - baseTabBox.screenX) - (targetTabBox.width * 0.5) :
+			(targetTabBox.screenX - baseTabBox.screenX) - scrollBoxObject.width + (targetTabBox.width * 1.5) ;
+
+		var targetY = (aTab.boxObject.screenY < scrollBoxObject.screenY) ?
+			(targetTabBox.screenY - baseTabBox.screenY) - (targetTabBox.height * 0.5) :
+			(targetTabBox.screenY - baseTabBox.screenY) - scrollBoxObject.height + (targetTabBox.height * 1.5) ;
+
+		this.scrollTo(b, targetX, targetY);
+	},
+ 
+	scrollToTabSubTree : function(aTab) 
+	{
+		var b          = this.getTabBrowserFromChildren(aTab);
+		var descendant = this.getDescendantTabs(aTab);
+		var lastVisible = aTab;
+		for (var i = descendant.length-1; i > -1; i--)
+		{
+			if (descendant[i].getAttribute(this.kCOLLAPSED) == 'true') continue;
+			lastVisible = descendant[i];
+			break;
+		}
+
+		var containerPosition = b.mStrip.boxObject[this.positionProp];
+		var containerSize     = b.mStrip.boxObject[this.sizeProp];
+		var parentPosition    = aTab.boxObject[this.positionProp];
+		var lastPosition      = lastVisible.boxObject[this.positionProp];
+		var tabSize           = lastVisible.boxObject[this.sizeProp];
+
+		if (this.isTabVisible(aTab) && this.isTabVisible(lastVisible)) {
+			return;
+		}
+
+		if (lastPosition - parentPosition + tabSize > containerSize - tabSize) { // out of screen
+			var endPos = parentPosition - b.mTabContainer.firstChild.boxObject[this.positionProp] - tabSize * 0.5;
+			var endX = this.isTabVertical(aTab) ? 0 : endPos ;
+			var endY = this.isTabVertical(aTab) ? endPos : 0 ;
+			this.scrollTo(b, endX, endY);
+		}
+		else if (!this.isTabVisible(aTab) && this.isTabVisible(lastVisible)) {
+			this.scrollToTab(aTab);
+		}
+		else if (this.isTabVisible(aTab) && !this.isTabVisible(lastVisible)) {
+			this.scrollToTab(lastVisible);
+		}
+		else if (parentPosition < containerPosition) {
+			this.scrollToTab(aTab);
+		}
+		else {
+			this.scrollToTab(lastVisible);
+		}
 	},
   
 	removeTabSubTree : function(aTabOrTabs) 
