@@ -1211,12 +1211,17 @@ catch(e) {
 		info.canDrop = true;
 		if (info.action & this.kACTION_ATTACH) {
 			var orig = aDragSession.sourceNode;
-			var tab  = info.target;
-			while (tab = this.getParentTab(tab))
-			{
-				if (tab != orig) continue;
+			if (orig == info.parent) {
 				info.canDrop = false;
-				break;
+			}
+			else {
+				var tab  = info.target;
+				while (tab = this.getParentTab(tab))
+				{
+					if (tab != orig) continue;
+					info.canDrop = false;
+					break;
+				}
 			}
 		}
 		return info;
@@ -1443,7 +1448,14 @@ catch(e) {
 	
 	attachTabTo : function(aChild, aParent, aInfo) 
 	{
-		if (!aChild || !aParent || this.getParentTab(aChild) == aParent) return;
+		if (
+			!aChild ||
+			!aParent ||
+			aChild == aParent ||
+			this.getParentTab(aChild) == aParent
+			)
+			return;
+
 		if (!aInfo) aInfo = {};
 
 		var id = aChild.getAttribute(this.kID);
