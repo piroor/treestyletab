@@ -342,6 +342,7 @@ var TreeStyleTabService = {
 				/return true;/,
 				<><![CDATA[
 					if (!(function(aEvent, aDragSession, aSelf) {
+try{
 							if (!aDragSession.sourceNode ||
 								aDragSession.sourceNode.parentNode != aSelf.mTabContainer ||
 								aEvent.target.localName != 'tab')
@@ -354,17 +355,20 @@ var TreeStyleTabService = {
 							if (!(info.action & TreeStyleTabService.kACTION_ATTACH))
 								return true;
 
-//dump('  target : '+info.tab._tPos+'\n  position : '+info.position+'\n  index : '+info.index+'\n  action : '+info.action+'\n');
-
 							// is the tab is in the subtree?
 							var orig = aDragSession.sourceNode;
-							var tab  = info.tab;
+							var tab  = info.target;
 							while (tab = TreeStyleTabService.getParentTab(tab))
 							{
 								if (tab == orig)
 									return false;
 							}
 							return true;
+}
+catch(e) {
+	dump('TreeStyleTabService::canDrop\n'+e+'\n');
+	return false;
+}
 						})(aEvent, aDragSession, this))
 						return false;
 					return true;
@@ -377,6 +381,7 @@ var TreeStyleTabService = {
 				'{',
 				<><![CDATA[
 					{
+try{
 						var xpathResult = TreeStyleTabService.evaluateXPath(
 								'child::xul:tab[@'+TreeStyleTabService.kDROP_POSITION+']',
 								this.mTabContainer
@@ -386,15 +391,42 @@ var TreeStyleTabService = {
 							xpathResult.snapshotItem(i).removeAttribute(TreeStyleTabService.kDROP_POSITION);
 						}
 						var info = TreeStyleTabService.getDropAction(aEvent);
-						if (info.tab) {
-							info.tab.setAttribute(
-								TreeStyleTabService.kDROP_POSITION,
-								info.position == TreeStyleTabService.kDROP_BEFORE ? 'before' :
-								info.position == TreeStyleTabService.kDROP_AFTER ? 'after' :
-								'self'
-							);
+						info.target.setAttribute(
+							TreeStyleTabService.kDROP_POSITION,
+							info.position == TreeStyleTabService.kDROP_BEFORE ? 'before' :
+							info.position == TreeStyleTabService.kDROP_AFTER ? 'after' :
+							'self'
+						);
+}
+catch(e) {
+	dump('TreeStyleTabService::onDragOver\n'+e+'\n');
+}
+						return;
+				]]></>
+			)
+		);
+
+		eval('aTabBrowser.onDrop = '+
+			aTabBrowser.onDrop.toSource().replace(
+				/(if \([^\)]+\) \{)/,
+				'$1'+<><![CDATA[
+					var info = TreeStyleTabService.getDropAction(aEvent);
+					var tab  = aDragSession.sourceNode;
+					var tabs = this.mTabContainer.childNodes;
+					if (info.action & TreeStyleTabService.kACTION_PART) {
+						TreeStyleTabService.partTab(tab);
+						if (info.action & TreeStyleTabService.kACTION_MOVE) {
+							this.moveTabTo(tab, (info.insertBefore ? info.insertBefore._tPos : tabs.length - 1 ));
 						}
 						return;
+					}
+					else if (info.action & TreeStyleTabService.kACTION_ATTACH) {
+						TreeStyleTabService.attachTabTo(tab, info.parent);
+						if (info.action & TreeStyleTabService.kACTION_MOVE) {
+							this.moveTabTo(tab, info.insertBefore ? info.insertBefore._tPos : tabs.length - 1 );
+						}
+						return;
+					}
 				]]></>
 			)
 		);
@@ -751,8 +783,8 @@ var TreeStyleTabService = {
 			var backupChildren = this.getTabValue(tab, this.kCHILDREN);
 			var children   = this.getChildTabs(tab);
 			var self       = this;
-			var attachion   = this.getPref('extensions.treestyletab.attachChildrenToGrandParentOnRemoveTab');
-			var processTab = !attachion ? function(aTab) {
+			var attach     = this.getPref('extensions.treestyletab.attachChildrenToGrandParentOnRemoveTab');
+			var processTab = !attach ? function(aTab) {
 					self.partTab(aTab, true);
 					self.moveTabSubTreeTo(aTab, b.mTabContainer.lastChild._tPos);
 				} :
@@ -767,7 +799,7 @@ var TreeStyleTabService = {
 				processTab(children[i]);
 			}
 			this.updateTabsIndent(children);
-			if (attachion) {
+			if (attach) {
 				nextFocusedTab = firstChild;
 			}
 			this.setTabValue(tab, this.kCHILDREN, backupChildren);
@@ -1101,37 +1133,33 @@ var TreeStyleTabService = {
 		var tabs       = b.mTabContainer.childNodes;
 		var isInverted = this.isTabVertical(b) ? false : window.getComputedStyle(b.parentNode, null).direction == 'ltr';
 		var info       = {
-				tab      : null,
-				target   : null,
-				position : null,
-				index    : null,
-				action   : null
+				target       : null,
+				position     : null,
+				action       : null,
+				parent       : null,
+				insertBefore : null
 			};
 
 		if (tab.localName != 'tab') {
 			if (aEvent[this.positionProp] < tabs[0].boxObject[this.positionProp]) {
-				info.tab      = info.target = tabs[0];
+				info.target   = info.parent = info.insertBefore = tabs[0];
 				info.position = isInverted ? this.kDROP_AFTER : this.kDROP_BEFORE ;
-				info.index    = 0;
 				info.action   = this.kACTION_MOVE | this.kACTION_PART;
 				return info;
 			}
 			else if (aEvent[this.positionProp] > tabs[tabs.length-1].boxObject[this.positionProp] + tabs[tabs.length-1].boxObject[this.sizeProp]) {
-				info.tab      = info.target = tabs[tabs.length-1];
+				info.target   = info.parent = tabs[tabs.length-1];
 				info.position = isInverted ? this.kDROP_BEFORE : this.kDROP_AFTER ;
-				info.index    = tabs.length-1;
 				info.action   = this.kACTION_MOVE | this.kACTION_PART;
 				return info;
 			}
 			else {
-				info.tab = tabs[b.getNewIndex(aEvent)];
+				info.target = tabs[Math.min(b.getNewIndex(aEvent), tabs.length - 1)];
 			}
 		}
 		else {
-			info.tab = tab;
+			info.target = tab;
 		}
-
-		info.target = tab;
 
 		var boxPos  = tab.boxObject[this.positionProp];
 		var boxUnit = Math.round(tab.boxObject[this.sizeProp] / 3);
@@ -1148,8 +1176,9 @@ var TreeStyleTabService = {
 		switch (info.position)
 		{
 			case this.kDROP_ON:
-				info.index  = tab._tPos;
-				info.action = this.kACTION_ATTACH;
+				info.action       = this.kACTION_ATTACH;
+				info.parent       = tab;
+				info.insertBefore = this.getNextVisibleTab(tab);
 				break;
 
 			case this.kDROP_BEFORE:
@@ -1167,17 +1196,19 @@ var TreeStyleTabService = {
 */
 				var prevTab = this.getPreviousVisibleTab(tab);
 				if (!prevTab) {
-					info.index  = 0;
-					info.action = this.kACTION_MOVE | this.kACTION_PART;
+					info.action       = this.kACTION_MOVE | this.kACTION_PART;
+					info.insertBefore = tabs[0];
 				}
 				else {
 					var prevNest   = Number(prevTab.getAttribute(this.kNEST));
 					var targetNest = Number(tab.getAttribute(this.kNEST));
-					info.index     = tab._tPos;
-					info.action    = this.kACTION_MOVE | this.kACTION_ATTACH;
-					info.target = (prevNest < targetNest) ? this.getParentTab(prevTab) :
+					info.action       = this.kACTION_MOVE | this.kACTION_ATTACH;
+					info.parent       = (
+							(prevNest < targetNest) ? this.getParentTab(prevTab) :
 							(prevNest > targetNest) ? prevTab :
-							this.getParentTab(tab);
+							this.getParentTab(tab)
+						) || tab ;
+					info.insertBefore = tab;
 				}
 				break;
 
@@ -1196,16 +1227,17 @@ var TreeStyleTabService = {
 */
 				var nextTab = this.getNextVisibleTab(tab);
 				if (!nextTab) {
-					info.index  = tabs.length-1;
 					info.action = this.kACTION_MOVE | this.kACTION_PART;
 				}
 				else {
 					var targetNest = Number(tab.getAttribute(this.kNEST));
 					var nextNest   = Number(nextTab.getAttribute(this.kNEST));
-					info.index     = tab._tPos + 1;
-					info.action    = this.kACTION_MOVE | this.kACTION_ATTACH;
-					info.target = (targetNest < nextNest) ? tab :
-							this.getParentTab(tab);
+					info.action       = this.kACTION_MOVE | this.kACTION_ATTACH;
+					info.parent       = (
+							(targetNest < nextNest) ? tab :
+							this.getParentTab(tab)
+						) || tab ;
+					info.insertBefore = nextTab;
 				}
 				break;
 		}
@@ -1219,7 +1251,7 @@ var TreeStyleTabService = {
 	
 	attachTabTo : function(aChild, aParent, aInfo) 
 	{
-		if (!aChild || !aParent) return;
+		if (!aChild || !aParent || this.getParentTab(aChild) == aParent) return;
 		if (!aInfo) aInfo = {};
 
 		var id = aChild.getAttribute(this.kID);
