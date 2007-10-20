@@ -16,3 +16,10 @@ tab[treestyletab-drop-position] .treestyletab-drop-marker {
 tab[treestyletab-collapsed="true"] {
 	visibility: collapse;
 }
+
+tabbrowser[treestyletab-vertical="true"] .tabbrowser-arrowscrollbox > .scrollbutton-up,
+tabbrowser[treestyletab-vertical="true"] .tabbrowser-arrowscrollbox > .scrollbutton-down-stack,
+tabbrowser[treestyletab-vertical="true"] .tabs-alltabs-stack,
+tabbrowser[treestyletab-vertical="true"] .tabs-closebutton-box {
+	display: none !important;
+}

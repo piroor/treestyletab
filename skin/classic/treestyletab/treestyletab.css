@@ -1,5 +1,76 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
+tabbrowser[treestyletab-vertical="true"] .tabbrowser-tabs {
+	background: ThreeDShadow !important;
+}
+
+tabbrowser[treestyletab-vertical="true"] .tabs-bottom,
+tabbrowser[treestyletab-vertical="true"] .tabs-left,
+tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab > .tab-image-left,
+tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab > .tab-image-right {
+	display: none !important;
+}
+
+tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab {
+	-moz-appearance: none !important;
+	min-height: 2em;
+	margin: 0 !important;
+	padding: 0 0.2em !important;
+	background: ThreeDFace !important;
+	border-top: 2px solid !important;
+	-moz-border-top-colors: ThreeDFace ThreeDFace !important;
+	border-bottom: 2px solid !important;
+	-moz-border-bottom-colors: ThreeDShadow ThreeDFace !important;
+	-moz-border-radius-topleft : 0 !important;
+	-moz-border-radius-topright : 0 !important;
+	-moz-border-radius-bottomleft : 0 !important;
+	-moz-border-radius-bottomright : 0 !important;
+	-moz-box-align: stretch !important;
+}
+tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab[selected="true"] {
+	margin: 0 !important;
+	padding: 0 !important;
+	background: ThreeDHighlight !important;
+	-moz-border-top-colors: ThreeDHighlight ThreeDHighlight !important;
+	-moz-border-bottom-colors: ThreeDShadow ThreeDHighlight !important;
+}
+
+tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab > .tab-image-middle,
+tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab > .tab-close-button {
+	height: auto;
+	margin: 0 !important;
+	padding: 0 !important;
+	background: transparent;
+}
+tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab[selected="true"] > .tab-image-middle,
+tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab[selected="true"] > .tab-close-button {
+	background: transparent;
+}
+
+tabbrowser[treestyletab-tabbar-position="left"] .tabbrowser-tab {
+	border-left: 2px solid !important;
+	-moz-border-left-colors: ThreeDLightShadow ThreeDFace !important;
+	border-right: 2px solid !important;
+	-moz-border-right-colors: ThreeDLightShadow ThreeDFace !important;
+}
+tabbrowser[treestyletab-tabbar-position="left"] .tabbrowser-tab[selected="true"] {
+	-moz-border-left-colors: ThreeDLightShadow ThreeDHighlight !important;
+	-moz-border-right-colors: ThreeDLightShadow ThreeDHighlight !important;
+}
+
+tabbrowser[treestyletab-tabbar-position="right"] .tabbrowser-tab {
+	border-right: 2px solid !important;
+	-moz-border-right-colors: ThreeDLightShadow ThreeDFace !important;
+	border-left: 2px solid !important;
+	-moz-border-left-colors: ThreeDLightShadow ThreeDFace !important;
+}
+tabbrowser[treestyletab-tabbar-position="right"] .tabbrowser-tab[selected="true"] {
+	-moz-border-right-colors: ThreeDLightShadow ThreeDHighlight !important;
+	-moz-border-left-colors: ThreeDLightShadow ThreeDHighlight !important;
+}
+
+
+
 .treestyletab-twisty-container {
 	margin: 0 3px 0 -3px;
 	-moz-box-pack: start;
@@ -33,32 +104,53 @@ tab[treestyletab-subtree-collapsed="true"] .treestyletab-twisty {
 	-moz-box-pack: center;
 }
 
-tab[treestyletab-drop-position="self"] .treestyletab-drop-marker {
+tabbrowser:not([treestyletab-vertical="true"]) tab[treestyletab-drop-position="self"] .treestyletab-drop-marker {
 	list-style-image: url("dropmarker-down.png");
 }
 
-tab[treestyletab-drop-position="before"] .treestyletab-drop-marker {
+tabbrowser:not([treestyletab-vertical="true"]) tab[treestyletab-drop-position="before"] .treestyletab-drop-marker {
 	list-style-image: url("dropmarker-left.png");
 }
 
-tab[treestyletab-drop-position="after"] .treestyletab-drop-marker {
+tabbrowser:not([treestyletab-vertical="true"]) tab[treestyletab-drop-position="after"] .treestyletab-drop-marker {
 	list-style-image: url("dropmarker-right.png");
 }
 
+/*
 tabbrowser[treestyletab-vertical="true"] tab[treestyletab-drop-position="self"] .treestyletab-drop-marker {
 	list-style-image: url("dropmarker-right.png");
 }
+*/
+tabbrowser[treestyletab-vertical="true"] tab[treestyletab-drop-position="self"] {
+	-moz-border-top-colors: -moz-dialogtext -moz-dialogtext !important;
+	-moz-border-right-colors: -moz-dialogtext -moz-dialogtext !important;
+	-moz-border-bottom-colors: -moz-dialogtext -moz-dialogtext !important;
+	-moz-border-left-colors: -moz-dialogtext -moz-dialogtext !important;
+}
 
+/*
 tabbrowser[treestyletab-vertical="true"] tab[treestyletab-drop-position="before"] .treestyletab-drop-marker {
 	list-style-image: url("dropmarker-up.png");
 }
+*/
+tabbrowser[treestyletab-vertical="true"] tab[treestyletab-drop-position="before"] {
+	-moz-border-top-colors: -moz-dialogtext -moz-dialogtext !important;
+}
 
+/*
 tabbrowser[treestyletab-vertical="true"] tab[treestyletab-drop-position="after"] .treestyletab-drop-marker {
 	list-style-image: url("dropmarker-down.png");
 }
+*/
+tabbrowser[treestyletab-vertical="true"] tab[treestyletab-drop-position="after"] {
+	-moz-border-bottom-colors: -moz-dialogtext -moz-dialogtext !important;
+}
 
-tab[treestyletab-children][treestyletab-drop-position] .treestyletab-twisty,
-tab[treestyletab-drop-position] .tab-icon-image,
-tab[treestyletab-drop-position] .tab-extra-status {
+tabbrowser:not([treestyletab-vertical="true"]) tab[treestyletab-children][treestyletab-drop-position] .treestyletab-twisty,
+tabbrowser:not([treestyletab-vertical="true"]) tab[treestyletab-drop-position] .tab-icon-image,
+tabbrowser:not([treestyletab-vertical="true"]) tab[treestyletab-drop-position] .tab-extra-status {
 	visibility: hidden;
 }
+
+
+

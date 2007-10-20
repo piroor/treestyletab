@@ -9,6 +9,7 @@ var TreeStyleTabService = {
 	kCOLLAPSED         : 'treestyletab-collapsed',
 	kNEST              : 'treestyletab-nest',
 	kDROP_POSITION     : 'treestyletab-drop-position',
+	kTABBAR_POSITION   : 'treestyletab-tabbar-position',
 	kVERTICAL          : 'treestyletab-vertical',
 
 	kTWISTY                : 'treestyletab-twisty',
@@ -31,6 +32,15 @@ var TreeStyleTabService = {
 	kACTION_MOVE   : 1,
 	kACTION_ATTACH : 2,
 	kACTION_PART   : 4,
+
+	kTABBAR_TOP    : 1,
+	kTABBAR_BOTTOM : 2,
+	kTABBAR_LEFT   : 4,
+	kTABBAR_RIGHT  : 8,
+
+	kTABBAR_HORIZONTAL : 3,
+	kTABBAR_VERTICAL   : 12,
+	kTABBAR_INVERTED   : 10,
 
 	levelMargin      : 12,
 	levelMarginProp  : 'margin-left',
@@ -293,6 +303,8 @@ var TreeStyleTabService = {
 	 
 	initTabBrowser : function(aTabBrowser) 
 	{
+		this.initTabbarPosition(aTabBrowser, this.getPref('extensions.treestyletab.tabbarPosition'));
+
 		aTabBrowser.mTabContainer.addEventListener('TreeStyleTab:TabOpen', this, true);
 		aTabBrowser.mTabContainer.addEventListener('TabClose', this, true);
 		aTabBrowser.mTabContainer.addEventListener('TabMove', this, true);
@@ -584,8 +596,6 @@ catch(e) {
 
 		aTabBrowser.__treestyletab__observer = new TreeStyleTabBrowserObserver(aTabBrowser);
 
-		aTabBrowser.setAttribute(this.kVERTICAL, true);
-
 		delete addTabMethod;
 		delete removeTabMethod;
 		delete i;
@@ -598,6 +608,10 @@ catch(e) {
 		var id = 'tab-<'+Date.now()+'-'+parseInt(Math.random() * 65000)+'>';
 		this.setTabValue(aTab, this.kID, id);
 		aTab.__treestyletab__linkedTabBrowser = aTabBrowser;
+
+		var pos = this.getPref('extensions.treestyletab.tabbarPosition');
+		if (pos == 'left' || pos == 'right')
+			aTab.setAttribute('align', 'stretch');
 
 		this.initTabContents(aTab);
 
@@ -1042,7 +1056,7 @@ catch(e) {
 	},
  
 /* tree */ 
-	 
+	
 	getRootTabs : function(aTabBrowser) 
 	{
 		return this.evaluateXPath(
@@ -1327,8 +1341,40 @@ catch(e) {
   
 /* Commands */ 
 	 
+	initTabbarPosition : function(aTabBrowser, aPosition) 
+	{
+		aPosition = String(aPosition).toLowerCase();
+		var pos = (aPosition == 'left') ? this.kTABBAR_LEFT :
+			(aPosition == 'right') ? this.kTABBAR_RIGHT :
+			(aPosition == 'bottom') ? this.kTABBAR_BOTTOM :
+			this.kTABBAR_TOP;
+
+		if (pos & this.kTABBAR_VERTICAL) {
+			this.positionProp     = 'screenY';
+			this.sizeProp         = 'height';
+			this.invertedSizeProp = 'width';
+
+			aTabBrowser.mTabBox.orient = 'horizontal';
+			aTabBrowser.mTabContainer.orient = aTabBrowser.mTabContainer.mTabstrip.orient = 'vertical';
+
+			aTabBrowser.setAttribute(this.kVERTICAL, true);
+			aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'left');
+		}
+		else {
+			this.positionProp     = 'screenX';
+			this.sizeProp         = 'width';
+			this.invertedSizeProp = 'height';
+
+			aTabBrowser.mTabBox.orient = 'vertical';
+			aTabBrowser.mTabContainer.orient = aTabBrowser.mTabContainer.mTabstrip.orient = 'horizontal';
+
+			aTabBrowser.removeAttribute(this.kVERTICAL);
+			aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'top');
+		}
+	},
+ 
 /* attach/part */ 
-	 
+	
 	attachTabTo : function(aChild, aParent, aInfo) 
 	{
 		if (!aChild || !aParent || this.getParentTab(aChild) == aParent) return;
@@ -1467,7 +1513,7 @@ catch(e) {
 //		this.checkTabsIndentOverflow(b);
 	},
  
-	checkTabsIndentOverflow : function(aTabBrowser)
+	checkTabsIndentOverflow : function(aTabBrowser) 
 	{
 		if (this.checkTabsIndentOverflowTimer) {
 			window.clearTimeout(this.checkTabsIndentOverflowTimer);
@@ -1510,7 +1556,7 @@ catch(e) {
 			this.updateAllTabsIndent(b);
 		}
 	},
- 	
+ 
 	updateTabsCount : function(aTab) 
 	{
 		var count = document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER);
@@ -1839,6 +1885,15 @@ TreeStyleTabBrowserObserver.prototype = {
 
 			case 'nsPref:changed':
 				var value = TreeStyleTabService.getPref(aData);
+				switch (aData)
+				{
+					case 'extensions.treestyletab.tabbarPosition':
+						TreeStyleTabService.initTabbarPosition(this.mTabBrowser, value);
+						break;
+
+					default:
+						break;
+				}
 				break;
 
 			default:
@@ -1852,4 +1907,4 @@ TreeStyleTabBrowserObserver.prototype = {
 		delete this.mTabBrowser;
 	}
 };
- 
+ 	
