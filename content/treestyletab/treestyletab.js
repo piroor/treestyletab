@@ -451,15 +451,31 @@ catch(e) {
 							var tabs = aSelf.mTabContainer.childNodes;
 							if (info.action & TreeStyleTabService.kACTION_PART) {
 								TreeStyleTabService.partTab(tab);
-								if (info.action & TreeStyleTabService.kACTION_MOVE) {
-									aSelf.moveTabTo(tab, (info.insertBefore ? info.insertBefore._tPos : tabs.length - 1 ));
+								if (
+									info.action & TreeStyleTabService.kACTION_MOVE &&
+									(
+										!info.insertBefore ||
+										TreeStyleTabService.getNextVisibleTab(tab) != info.insertBefore
+									)
+									) {
+									var newIndex = info.insertBefore ? info.insertBefore._tPos : tabs.length - 1 ;
+									if (info.insertBefore && newIndex > tab._tPos) newIndex--;
+									aSelf.moveTabTo(tab,  newIndex);
 								}
 								return true;
 							}
 							else if (info.action & TreeStyleTabService.kACTION_ATTACH) {
 								TreeStyleTabService.attachTabTo(tab, info.parent);
-								if (info.action & TreeStyleTabService.kACTION_MOVE) {
-									aSelf.moveTabTo(tab, info.insertBefore ? info.insertBefore._tPos : tabs.length - 1 );
+								if (
+									info.action & TreeStyleTabService.kACTION_MOVE &&
+									(
+										!info.insertBefore ||
+										TreeStyleTabService.getNextVisibleTab(tab) != info.insertBefore
+									)
+									) {
+									var newIndex = info.insertBefore ? info.insertBefore._tPos : tabs.length - 1 ;
+									if (info.insertBefore && newIndex > tab._tPos) newIndex--;
+									aSelf.moveTabTo(tab,  newIndex);
 								}
 								return true;
 							}
@@ -1286,13 +1302,13 @@ catch(e) {
 	[TARGET  ] ªpart from parent, and move
 
 	  [      ]
-	[TARGET  ] ªattach to the parent of the previous visible, and move
+	[TARGET  ] ªattach to the parent of the target, and move
 
 	[        ]
 	[TARGET  ] ªattach to the parent of the target, and move
 
 	[        ]
-	  [TARGET] ªattach to the parent of the targetm and move
+	  [TARGET] ªattach to the parent of the target (previous tab), and move
 */
 				var prevTab = this.getPreviousVisibleTab(tab);
 				if (!prevTab) {
@@ -1304,7 +1320,6 @@ catch(e) {
 					var targetNest = Number(tab.getAttribute(this.kNEST));
 					info.action       = this.kACTION_MOVE | this.kACTION_ATTACH;
 					info.parent       = (
-							(prevNest > targetNest) ? this.getParentTab(prevTab) :
 							(prevNest < targetNest) ? prevTab :
 							this.getParentTab(tab)
 						) || tab ;
@@ -1314,7 +1329,7 @@ catch(e) {
 
 			case this.kDROP_AFTER:
 /*
-	[TARGET  ] «part from parent, and move
+	[TARGET  ] «if the target has a parent, attach to it and and move
 
 	  [TARGET] «attach to the parent of the target, and move
 	[        ]
@@ -1327,14 +1342,14 @@ catch(e) {
 */
 				var nextTab = this.getNextVisibleTab(tab);
 				if (!nextTab) {
-					info.action = this.kACTION_MOVE | this.kACTION_PART;
+					info.action = this.kACTION_MOVE | this.kACTION_ATTACH;
+					info.parent = this.getParentTab(tab);
 				}
 				else {
 					var targetNest = Number(tab.getAttribute(this.kNEST));
 					var nextNest   = Number(nextTab.getAttribute(this.kNEST));
 					info.action       = this.kACTION_MOVE | this.kACTION_ATTACH;
 					info.parent       = (
-							(targetNest > nextNest) ? this.getParentTab(nextTab) :
 							(targetNest < nextNest) ? tab :
 							this.getParentTab(tab)
 						) || tab ;
@@ -1547,6 +1562,7 @@ catch(e) {
 
 		if (!aDontUpdateIndent) {
 			this.updateTabsIndent([aChild]);
+			var b = this.getTabBrowserFromChildren(aChild);
 			this.checkTabsIndentOverflow(b);
 		}
 	},
