@@ -6,14 +6,17 @@ var TreeStyleTabService = {
 	kPARENT            : 'treestyletab-parent',
 	kINSERT_BEFORE     : 'treestyletab-insert-before',
 	kSUBTREE_COLLAPSED : 'treestyletab-subtree-collapsed',
-	kCOLLAPSED         : 'treestyletab-tab-collapsed',
+	kCOLLAPSED         : 'treestyletab-collapsed',
 	kNEST              : 'treestyletab-nest',
 	kDROP_POSITION     : 'treestyletab-drop-position',
+	kVERTICAL          : 'treestyletab-vertical',
 
-	kTWISTY            : 'treestyletab-tab-tree-twisty',
-	kTWISTY_CONTAINER  : 'treestyletab-tab-tree-twisty-container',
-	kCOUNTER           : 'treestyletab-tab-tree-counter',
-	kCOUNTER_CONTAINER : 'treestyletab-tab-tree-counter-container',
+	kTWISTY                : 'treestyletab-twisty',
+	kTWISTY_CONTAINER      : 'treestyletab-twisty-container',
+	kDROP_MARKER           : 'treestyletab-drop-marker',
+	kDROP_MARKER_CONTAINER : 'treestyletab-drop-marker-container',
+	kCOUNTER               : 'treestyletab-counter',
+	kCOUNTER_CONTAINER     : 'treestyletab-counter-container',
 
 	kMENUITEM_REMOVESUBTREE_SELECTION : 'multipletab-selection-item-removeTabSubTree',
 	kMENUITEM_REMOVESUBTREE_CONTEXT   : 'context-item-removeTabSubTree',
@@ -29,9 +32,9 @@ var TreeStyleTabService = {
 	kACTION_ATTACH : 2,
 	kACTION_PART   : 4,
 
-	levelMargin  : 12,
-	positionProp : 'screenY',
-	sizeProp     : 'height',
+	levelMargin   : 12,
+	positionProp  : 'screenY',
+	sizeProp      : 'height',
 
 	NSResolver : {
 		lookupNamespaceURI : function(aPrefix)
@@ -79,12 +82,15 @@ var TreeStyleTabService = {
  
 	isEventFiredOnTwisty : function(aEvent) 
 	{
-		var node = aEvent.originalTarget;
-		while (node.getAttribute('class') != this.kTWISTY && node.localName != 'tabs')
-		{
-			node = node.parentNode;
-		}
-		return (node && node.getAttribute('class') == this.kTWISTY) ? true : false ;
+		var tab = this.getTabFromEvent(aEvent);
+		var twisty = document.getAnonymousElementByAttribute(tab, 'class', this.kTWISTY);
+		if (!twisty || !tab.hasAttribute(this.kCHILDREN)) return false;
+
+		var box = twisty.parentNode.parentNode.boxObject;
+		return !(aEvent.screenX < box.screenX ||
+				aEvent.screenX > box.screenX + box.width ||
+				aEvent.screenY < box.screenY ||
+				aEvent.screenY > box.screenY + box.height);
 	},
  
 	get browser() 
@@ -287,6 +293,8 @@ var TreeStyleTabService = {
 		aTabBrowser.mTabContainer.addEventListener('select', this, true);
 		aTabBrowser.mPanelContainer.addEventListener('click', this, true);
 
+		aTabBrowser.setAttribute(this.kVERTICAL, true);
+
 		eval('aTabBrowser.mTabContainer.selectNewTab = '+
 			aTabBrowser.mTabContainer.selectNewTab.toSource().replace(
 				/\{/,
@@ -341,7 +349,7 @@ var TreeStyleTabService = {
 			).replace(
 				/return true;/,
 				<><![CDATA[
-					if (!(function(aEvent, aDragSession, aSelf) {
+					if (!(function(aSelf) {
 try{
 							if (!aDragSession.sourceNode ||
 								aDragSession.sourceNode.parentNode != aSelf.mTabContainer ||
@@ -351,25 +359,14 @@ try{
 							if (aEvent.target.getAttribute(TreeStyleTabService.kCOLLAPSED) == 'true')
 								return false;
 
-							var info = TreeStyleTabService.getDropAction(aEvent);
-							if (!(info.action & TreeStyleTabService.kACTION_ATTACH))
-								return true;
-
-							// is the tab is in the subtree?
-							var orig = aDragSession.sourceNode;
-							var tab  = info.target;
-							while (tab = TreeStyleTabService.getParentTab(tab))
-							{
-								if (tab == orig)
-									return false;
-							}
-							return true;
+							var info = TreeStyleTabService.getDropAction(aEvent, aDragSession);
+							return info.canDrop;
 }
 catch(e) {
 	dump('TreeStyleTabService::canDrop\n'+e+'\n');
 	return false;
 }
-						})(aEvent, aDragSession, this))
+						})(this))
 						return false;
 					return true;
 				]]></>
@@ -381,52 +378,69 @@ catch(e) {
 				'{',
 				<><![CDATA[
 					{
+						(function(aSelf) {
 try{
-						var xpathResult = TreeStyleTabService.evaluateXPath(
-								'child::xul:tab[@'+TreeStyleTabService.kDROP_POSITION+']',
-								this.mTabContainer
+							var info = TreeStyleTabService.getDropAction(aEvent, aDragSession);
+
+							if (!info.target || info.target != TreeStyleTabService.evaluateXPath(
+									'child::xul:tab[@'+TreeStyleTabService.kDROP_POSITION+']',
+									aSelf.mTabContainer,
+									XPathResult.FIRST_ORDERED_NODE_TYPE
+								).singleNodeValue)
+								TreeStyleTabService.clearDropPosition(aSelf);
+
+							if (!aSelf.canDrop(aEvent, aDragSession)) return;
+
+							info.target.setAttribute(
+								TreeStyleTabService.kDROP_POSITION,
+								info.position == TreeStyleTabService.kDROP_BEFORE ? 'before' :
+								info.position == TreeStyleTabService.kDROP_AFTER ? 'after' :
+								'self'
 							);
-						for (var i = 0, maxi = xpathResult.snapshotLength; i < maxi; i++)
-						{
-							xpathResult.snapshotItem(i).removeAttribute(TreeStyleTabService.kDROP_POSITION);
-						}
-						var info = TreeStyleTabService.getDropAction(aEvent);
-						info.target.setAttribute(
-							TreeStyleTabService.kDROP_POSITION,
-							info.position == TreeStyleTabService.kDROP_BEFORE ? 'before' :
-							info.position == TreeStyleTabService.kDROP_AFTER ? 'after' :
-							'self'
-						);
 }
 catch(e) {
 	dump('TreeStyleTabService::onDragOver\n'+e+'\n');
 }
+						})(this);
 						return;
 				]]></>
 			)
 		);
 
+		eval('aTabBrowser.onDragExit = '+
+			aTabBrowser.onDragExit.toSource().replace(
+				/(this.mTabDropIndicatorBar\.[^;]+;)/,
+				'$1; TreeStyleTabService.clearDropPosition(this);'
+			)
+		);
+
 		eval('aTabBrowser.onDrop = '+
 			aTabBrowser.onDrop.toSource().replace(
+				'{', '{ TreeStyleTabService.clearDropPosition(this);'
+			).replace(
 				/(if \([^\)]+\) \{)/,
 				'$1'+<><![CDATA[
-					var info = TreeStyleTabService.getDropAction(aEvent);
-					var tab  = aDragSession.sourceNode;
-					var tabs = this.mTabContainer.childNodes;
-					if (info.action & TreeStyleTabService.kACTION_PART) {
-						TreeStyleTabService.partTab(tab);
-						if (info.action & TreeStyleTabService.kACTION_MOVE) {
-							this.moveTabTo(tab, (info.insertBefore ? info.insertBefore._tPos : tabs.length - 1 ));
-						}
+					if ((function(aSelf) {
+							var info = TreeStyleTabService.getDropAction(aEvent, aDragSession);
+							var tab  = aDragSession.sourceNode;
+							var tabs = aSelf.mTabContainer.childNodes;
+							if (info.action & TreeStyleTabService.kACTION_PART) {
+								TreeStyleTabService.partTab(tab);
+								if (info.action & TreeStyleTabService.kACTION_MOVE) {
+									aSelf.moveTabTo(tab, (info.insertBefore ? info.insertBefore._tPos : tabs.length - 1 ));
+								}
+								return true;
+							}
+							else if (info.action & TreeStyleTabService.kACTION_ATTACH) {
+								TreeStyleTabService.attachTabTo(tab, info.parent);
+								if (info.action & TreeStyleTabService.kACTION_MOVE) {
+									aSelf.moveTabTo(tab, info.insertBefore ? info.insertBefore._tPos : tabs.length - 1 );
+								}
+								return true;
+							}
+							return false;
+						})(this))
 						return;
-					}
-					else if (info.action & TreeStyleTabService.kACTION_ATTACH) {
-						TreeStyleTabService.attachTabTo(tab, info.parent);
-						if (info.action & TreeStyleTabService.kACTION_MOVE) {
-							this.moveTabTo(tab, info.insertBefore ? info.insertBefore._tPos : tabs.length - 1 );
-						}
-						return;
-					}
 				]]></>
 			)
 		);
@@ -583,12 +597,19 @@ catch(e) {
 		if (!document.getAnonymousElementByAttribute(aTab, 'class', this.kTWISTY)) {
 			var twisty = document.createElement('image');
 			twisty.setAttribute('class', this.kTWISTY);
-
 			var container = document.createElement('hbox');
 			container.setAttribute('class', this.kTWISTY_CONTAINER);
 			container.appendChild(twisty);
 
 			var icon = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-icon');
+			icon.appendChild(container);
+
+			var marker = document.createElement('image');
+			marker.setAttribute('class', this.kDROP_MARKER);
+			container = document.createElement('hbox');
+			container.setAttribute('class', this.kDROP_MARKER_CONTAINER);
+			container.appendChild(marker);
+
 			icon.appendChild(container);
 		}
 
@@ -934,7 +955,7 @@ catch(e) {
 	},
   
 /* Tab Utilities */ 
-	
+	 
 	getTabValue : function(aTab, aKey) 
 	{
 		var value = null;
@@ -1126,7 +1147,23 @@ catch(e) {
 		return lastChild;
 	},
   
-	getDropAction : function(aEvent) 
+	getDropAction : function(aEvent, aDragSession) 
+	{
+		var info = this.getDropActionInternal(aEvent);
+		info.canDrop = true;
+		if (info.action & this.kACTION_ATTACH) {
+			var orig = aDragSession.sourceNode;
+			var tab  = info.target;
+			while (tab = this.getParentTab(tab))
+			{
+				if (tab != orig) continue;
+				info.canDrop = false;
+				break;
+			}
+		}
+		return info;
+	},
+	getDropActionInternal : function(aEvent) 
 	{
 		var tab        = aEvent.target;
 		var b          = this.getTabBrowserFromChildren(tab);
@@ -1244,9 +1281,22 @@ catch(e) {
 
 		return info;
 	},
-  
+ 
+	clearDropPosition : function(aTabBrowser) 
+	{
+		var b = this.getTabBrowserFromChildren(aTabBrowser);
+		var xpathResult = this.evaluateXPath(
+				'child::xul:tab[@'+this.kDROP_POSITION+']',
+				b.mTabContainer
+			);
+		for (var i = 0, maxi = xpathResult.snapshotLength; i < maxi; i++)
+		{
+			xpathResult.snapshotItem(i).removeAttribute(this.kDROP_POSITION);
+		}
+	},
+ 	 
 /* Commands */ 
-	
+	 
 /* attach/part */ 
 	
 	attachTabTo : function(aChild, aParent, aInfo) 
@@ -1375,7 +1425,7 @@ catch(e) {
 	},
   
 /* move */ 
-	 
+	
 	moveTabSubTreeTo : function(aTab, aIndex) 
 	{
 		if (!aTab) return;
@@ -1433,7 +1483,7 @@ catch(e) {
 	},
   
 /* collapse/expand */ 
-	 
+	
 	collapseExpandTabSubTree : function(aTab, aCollapse) 
 	{
 		if (!aTab) return;
@@ -1542,7 +1592,7 @@ catch(e) {
 			b.removeTab(tabs[i]);
 		}
 	},
-  	
+  
 /* Pref Listener */ 
 	
 	domain : 'extensions.treestyletab', 

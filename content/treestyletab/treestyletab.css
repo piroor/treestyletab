@@ -1,11 +1,18 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
-tab:not([treestyletab-children]) .treestyletab-tab-tree-twisty,
-tab:not([treestyletab-children]) .treestyletab-tab-tree-counter-container,
-tab:not([treestyletab-subtree-collapsed="true"]) .treestyletab-tab-tree-counter-container {
+tab .treestyletab-twisty,
+tab .treestyletab-counter-container,
+tab .treestyletab-drop-marker,
+tab[treestyletab-children]:not([treestyletab-subtree-collapsed="true"]) .treestyletab-counter-container {
 	display: none;
 }
 
-tab[treestyletab-tab-collapsed="true"] {
+tab[treestyletab-children] .treestyletab-twisty,
+tab[treestyletab-children] .treestyletab-counter-container,
+tab[treestyletab-drop-position] .treestyletab-drop-marker {
+	display: -moz-box;
+}
+
+tab[treestyletab-collapsed="true"] {
 	visibility: collapse;
 }

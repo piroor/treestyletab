@@ -1,46 +1,64 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
-.treestyletab-tab-tree-twisty-container {
+.treestyletab-twisty-container {
 	margin: 0 3px 0 -3px;
 	-moz-box-pack: start;
 	-moz-box-align: center;
 	-moz-box-flex: 1;
 }
 
-.treestyletab-tab-tree-twisty {
-	-moz-appearance: none;
-	border: none;
-	outline: none;
-	background: none;
+.treestyletab-twisty {
 	list-style-image: url("tree-twisty-expanded.png");
 }
 
-tab[treestyletab-subtree-collapsed="true"] .treestyletab-tab-tree-twisty {
+tab[treestyletab-subtree-collapsed="true"] .treestyletab-twisty {
 	list-style-image: url("tree-twisty-collapsed.png");
 }
 
-.treestyletab-tab-tree-counter-container {
+.treestyletab-counter-container {
 	-moz-box-align: center;
 	-moz-box-pack: end;
 }
 
-.treestyletab-tab-tree-counter {
+.treestyletab-counter {
 	font-size: 90%;
 	margin: 0;
 	padding: 0;
 	min-width: 0;
 }
 
-/*
-tab[treestyletab-drop-position="self"] {
-	border: 2px solid black !important;
+
+.treestyletab-drop-marker-container {
+	-moz-box-align: center;
+	-moz-box-pack: center;
 }
 
-tab[treestyletab-drop-position="before"] {
-	border-top: 2px solid black !important;
+tab[treestyletab-drop-position="self"] .treestyletab-drop-marker {
+	list-style-image: url("dropmarker-down.png");
 }
 
-tab[treestyletab-drop-position="after"] {
-	border-bottom: 2px solid black !important;
+tab[treestyletab-drop-position="before"] .treestyletab-drop-marker {
+	list-style-image: url("dropmarker-left.png");
 }
-*/
+
+tab[treestyletab-drop-position="after"] .treestyletab-drop-marker {
+	list-style-image: url("dropmarker-right.png");
+}
+
+tabbrowser[treestyletab-vertical="true"] tab[treestyletab-drop-position="self"] .treestyletab-drop-marker {
+	list-style-image: url("dropmarker-right.png");
+}
+
+tabbrowser[treestyletab-vertical="true"] tab[treestyletab-drop-position="before"] .treestyletab-drop-marker {
+	list-style-image: url("dropmarker-up.png");
+}
+
+tabbrowser[treestyletab-vertical="true"] tab[treestyletab-drop-position="after"] .treestyletab-drop-marker {
+	list-style-image: url("dropmarker-down.png");
+}
+
+tab[treestyletab-children][treestyletab-drop-position] .treestyletab-twisty,
+tab[treestyletab-drop-position] .tab-icon-image,
+tab[treestyletab-drop-position] .tab-extra-status {
+	visibility: hidden;
+}
