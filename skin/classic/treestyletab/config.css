@@ -1,0 +1,7 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+radio.image .radio-label-box,
+radio.image label.radio-label {
+	-moz-box-align: center;
+}
+

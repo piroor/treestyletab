@@ -1,5 +1,8 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
+
+/* Default style */
+
 tabbrowser[treestyletab-vertical="true"] .tabbrowser-tabs {
 	background: darkgray !important;
 }
@@ -78,6 +81,79 @@ tabbrowser[treestyletab-tabbar-position="right"] .tabbrowser-tab[selected="true"
 }
 
 
+/* Vertigo style */
+
+tabbrowser[treestyletab-vertical="true"][treestyletab-style="vertigo"] .tabbrowser-tabs {
+	background: transparent !important;
+}
+tabbrowser[reestyletab-tabbar-position="left"][treestyletab-style="vertigo"] .tabbrowser-tabs {
+	border-right: 1px solid #aaa !important;
+}
+tabbrowser[reestyletab-tabbar-position="right"][treestyletab-style="vertigo"] .tabbrowser-tabs {
+	border-left: 1px solid #aaa !important;
+}
+
+tabbrowser[treestyletab-vertical="true"][treestyletab-style="vertigo"] .tabbrowser-tab {
+	background: transparent !important;
+	-moz-border-top-colors: transparent transparent !important;
+	-moz-border-bottom-colors: transparent transparent !important;
+}
+tabbrowser[treestyletab-vertical="true"][treestyletab-style="vertigo"] .tabbrowser-tab:hover {
+	background: #e0e8f6 !important;
+	-moz-border-top-colors: #e0e8f6 #e0e8f6 !important;
+	-moz-border-bottom-colors: #e0e8f6 #e0e8f6 !important;
+}
+tabbrowser[treestyletab-vertical="true"][treestyletab-style="vertigo"] .tabbrowser-tab[selected="true"] {
+	background: #c1d2ee !important;
+	-moz-border-top-colors: #c1d2ee #c1d2ee !important;
+	-moz-border-bottom-colors: #c1d2ee #c1d2ee !important;
+}
+
+tabbrowser[treestyletab-tabbar-position="left"][treestyletab-style="vertigo"] .tabbrowser-tab,
+tabbrowser[treestyletab-tabbar-position="right"][treestyletab-style="vertigo"] .tabbrowser-tab {
+	-moz-border-left-colors: transparent transparent !important;
+	-moz-border-right-colors: transparent transparent !important;
+}
+tabbrowser[treestyletab-tabbar-position="left"][treestyletab-style="vertigo"] .tabbrowser-tab:hover,
+tabbrowser[treestyletab-tabbar-position="right"][treestyletab-style="vertigo"] .tabbrowser-tab:hover {
+	-moz-border-left-colors: #e0e8f6 #e0e8f6 !important;
+	-moz-border-right-colors: #e0e8f6 #e0e8f6 !important;
+}
+tabbrowser[treestyletab-tabbar-position="left"][treestyletab-style="vertigo"] .tabbrowser-tab[selected="true"],
+tabbrowser[treestyletab-tabbar-position="right"][treestyletab-style="vertigo"] .tabbrowser-tab[selected="true"] {
+	-moz-border-left-colors: #c1d2ee #c1d2ee !important;
+	-moz-border-right-colors: #c1d2ee #c1d2ee !important;
+}
+
+
+/* Mixed style */
+
+tabbrowser[treestyletab-vertical="true"][treestyletab-style="mixed"] .tabbrowser-tab:hover {
+	background: #e0e8f6 !important;
+	-moz-border-top-colors: #e0e8f6 #e0e8f6 !important;
+	-moz-border-bottom-colors: ThreeDShadow #e0e8f6 !important;
+}
+tabbrowser[treestyletab-vertical="true"][treestyletab-style="mixed"] .tabbrowser-tab[selected="true"] {
+	background: #c1d2ee !important;
+	-moz-border-top-colors: #c1d2ee #c1d2ee !important;
+	-moz-border-bottom-colors: ThreeDShadow #c1d2ee !important;
+}
+
+tabbrowser[treestyletab-tabbar-position="left"][treestyletab-style="mixed"] .tabbrowser-tab:hover,
+tabbrowser[treestyletab-tabbar-position="right"][treestyletab-style="mixed"] .tabbrowser-tab:hover {
+	-moz-border-left-colors: ThreeDLightShadow #e0e8f6 !important;
+	-moz-border-right-colors: ThreeDLightShadow #e0e8f6 !important;
+}
+tabbrowser[treestyletab-tabbar-position="left"][treestyletab-style="mixed"] .tabbrowser-tab[selected="true"],
+tabbrowser[treestyletab-tabbar-position="right"][treestyletab-style="mixed"] .tabbrowser-tab[selected="true"] {
+	-moz-border-left-colors: ThreeDLightShadow #c1d2ee !important;
+	-moz-border-right-colors: ThreeDLightShadow #c1d2ee !important;
+}
+
+
+
+
+/* Tree UI */
 
 .treestyletab-twisty-container {
 	margin: 0 3px 0 -3px;
@@ -106,6 +182,8 @@ tab[treestyletab-subtree-collapsed="true"] .treestyletab-twisty {
 	min-width: 0;
 }
 
+
+/* Drop Markers */
 
 .treestyletab-drop-marker-container {
 	-moz-box-align: center;

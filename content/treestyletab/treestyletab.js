@@ -11,6 +11,7 @@ var TreeStyleTabService = {
 	kDROP_POSITION     : 'treestyletab-drop-position',
 	kTABBAR_POSITION   : 'treestyletab-tabbar-position',
 	kVERTICAL          : 'treestyletab-vertical',
+	kSTYLE             : 'treestyletab-style',
 
 	kTWISTY                : 'treestyletab-twisty',
 	kTWISTY_CONTAINER      : 'treestyletab-twisty-container',
@@ -664,6 +665,7 @@ catch(e) {
 		}
 
 		aTabBrowser.__treestyletab__observer = new TreeStyleTabBrowserObserver(aTabBrowser);
+		aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.style');
 
 		delete addTabMethod;
 		delete removeTabMethod;
@@ -2182,6 +2184,9 @@ TreeStyleTabBrowserObserver.prototype = {
 						TreeStyleTabService.initTabbar(this.mTabBrowser, value);
 						TreeStyleTabService.updateAllTabsIndent(this.mTabBrowser);
 						break;
+
+					case 'extensions.treestyletab.tabbar.style':
+						this.mTabBrowser.setAttribute(TreeStyleTabService.kSTYLE, value);
 
 					default:
 						break;

@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/"?>
+<?xml-stylesheet href="chrome://treestyletab/skin/config.css" type="text/css"?>
 <!DOCTYPE prefwindow [
 <!ENTITY % mainDTD SYSTEM "chrome://treestyletab/locale/treestyletab.dtd">
 %mainDTD;
@@ -17,6 +18,9 @@
 		<preference id="extensions.treestyletab.tabbar.position"
 			name="extensions.treestyletab.tabbar.position"
 			type="string"/>
+		<preference id="extensions.treestyletab.tabbar.style"
+			name="extensions.treestyletab.tabbar.style"
+			type="string"/>
 	</preferences>
 
 	<checkbox id="extensions.treestyletab.tabbar.scroll.smooth-check"
@@ -29,6 +33,22 @@
 			orient="horizontal">
 			<radio value="left" label="&config.tabbar.position.left;"/>
 			<radio value="right" label="&config.tabbar.position.right;"/>
+		</radiogroup>
+	</groupbox>
+	<groupbox>
+		<caption label="&config.tabbar.style.caption;"/>
+		<radiogroup id="extensions.treestyletab.tabbar.style-radiogroup"
+			preference="extensions.treestyletab.tabbar.style"
+			orient="horizontal">
+			<radio value="default" label="&config.tabbar.style.default;"
+				class="image" align="center"
+				src="chrome://treestyletab/content/res/style-default.png"/>
+			<radio value="vertigo" label="&config.tabbar.style.vertigo;"
+				class="image" align="center"
+				src="chrome://treestyletab/content/res/style-vertigo.png"/>
+			<radio value="mixed" label="&config.tabbar.style.mixed;"
+				class="image" align="center"
+				src="chrome://treestyletab/content/res/style-mixed.png"/>
 		</radiogroup>
 	</groupbox>
 </prefpane>
