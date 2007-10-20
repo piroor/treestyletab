@@ -13,6 +13,7 @@ pref("browser.link.open_newwindow.restriction", 0);
 
 pref("extensions.multipletab.show.multipletab-selection-item-removeTabSubTree", true);
 pref("extensions.multipletab.show.context-item-removeTabSubTree", true);
+pref("extensions.treestyletab.inSubbrowsers.enabled", false);
 
 
 pref("extensions.treestyletab@piro.sakura.ne.jp.name", "chrome://treestyletab/locale/treestyletab.properties");

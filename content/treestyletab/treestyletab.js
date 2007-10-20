@@ -115,7 +115,7 @@ var TreeStyleTabService = {
  
 	get browser() 
 	{
-		return 'SplitBrowser' ? SplitBrowser.activeBrowser : gBrowser ;
+		return 'SplitBrowser' && this.getPref('extensions.treestyletab.inSubbrowsers.enabled')  ? SplitBrowser.activeBrowser : gBrowser ;
 	},
  
 	evaluateXPath : function(aExpression, aContext, aType) 
@@ -227,9 +227,11 @@ var TreeStyleTabService = {
 
 		window.removeEventListener('load', this, false);
 
-		var appcontent = document.getElementById('appcontent');
-		appcontent.addEventListener('SubBrowserAdded', this, false);
-		appcontent.addEventListener('SubBrowserRemoveRequest', this, false);
+		if (this.getPref('extensions.treestyletab.inSubbrowsers.enabled')) {
+			var appcontent = document.getElementById('appcontent');
+			appcontent.addEventListener('SubBrowserAdded', this, false);
+			appcontent.addEventListener('SubBrowserRemoveRequest', this, false);
+		}
 
 		this.addPrefListener(this);
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.levelMargin');
@@ -665,9 +667,11 @@ catch(e) {
 
 		window.removeEventListener('unload', this, false);
 
-		var appcontent = document.getElementById('appcontent');
-		appcontent.removeEventListener('SubBrowserAdded', this, false);
-		appcontent.removeEventListener('SubBrowserRemoveRequest', this, false);
+		if (this.getPref('extensions.treestyletab.inSubbrowsers.enabled')) {
+			var appcontent = document.getElementById('appcontent');
+			appcontent.removeEventListener('SubBrowserAdded', this, false);
+			appcontent.removeEventListener('SubBrowserRemoveRequest', this, false);
+		}
 
 		this.removePrefListener(this);
 

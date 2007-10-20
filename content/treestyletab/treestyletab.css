@@ -23,3 +23,7 @@ tabbrowser[treestyletab-vertical="true"] .tabs-alltabs-stack,
 tabbrowser[treestyletab-vertical="true"] .tabs-closebutton-box {
 	display: none !important;
 }
+
+tabbrowser[treestyletab-vertical="true"] > tabbox {
+	-moz-box-orient: horizontal !important;
+}
