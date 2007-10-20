@@ -5,9 +5,7 @@ tabbrowser[treestyletab-vertical="true"] .tabbrowser-tabs {
 }
 
 tabbrowser[treestyletab-vertical="true"] .tabs-bottom,
-tabbrowser[treestyletab-vertical="true"] .tabs-left,
-tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab > .tab-image-left,
-tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab > .tab-image-right {
+tabbrowser[treestyletab-vertical="true"] .tabs-left {
 	display: none !important;
 }
 
@@ -34,6 +32,16 @@ tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab[selected="true"] {
 	-moz-border-top-colors: ThreeDHighlight ThreeDHighlight !important;
 	-moz-border-bottom-colors: ThreeDShadow ThreeDHighlight !important;
 }
+
+tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab > .tab-image-left,
+tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab > .tab-image-right {
+	height: auto;
+	margin: 0 !important;
+	padding: 0 !important;
+	background: transparent;
+	width: 0;
+}
+
 
 tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab > .tab-image-middle,
 tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab > .tab-close-button {

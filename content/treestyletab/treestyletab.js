@@ -306,7 +306,7 @@ var TreeStyleTabService = {
 	 
 	initTabBrowser : function(aTabBrowser) 
 	{
-		this.initTabbar(aTabBrowser, this.getPref('extensions.treestyletab.tabbar.position'));
+		this.initTabbar(aTabBrowser);
 
 		aTabBrowser.mTabContainer.addEventListener('TreeStyleTab:TabOpen', this, true);
 		aTabBrowser.mTabContainer.addEventListener('TabClose', this, true);
@@ -1357,6 +1357,7 @@ catch(e) {
 	 
 	initTabbar : function(aTabBrowser, aPosition) 
 	{
+		if (!aPosition) aPosition = this.getPref('extensions.treestyletab.tabbar.position');
 		aPosition = String(aPosition).toLowerCase();
 		var pos = (aPosition == 'left') ? this.kTABBAR_LEFT :
 			(aPosition == 'right') ? this.kTABBAR_RIGHT :
@@ -1381,10 +1382,28 @@ catch(e) {
 			aTabBrowser.mTabBox.orient = 'horizontal';
 			aTabBrowser.mTabContainer.orient = aTabBrowser.mTabContainer.mTabstrip.orient = 'vertical';
 
+			aTabBrowser.mPanelContainer.removeAttribute('width');
 			aTabBrowser.mStrip.setAttribute('width', this.getPref('extensions.treestyletab.tabbar.width'));
 
 			aTabBrowser.setAttribute(this.kVERTICAL, true);
-			aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'left');
+			if (pos == this.kTABBAR_RIGHT) {
+				aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'right');
+				window.setTimeout(function() {
+					aTabBrowser.mStrip.setAttribute('ordinal', 30);
+					splitter.setAttribute('ordinal', 20);
+					aTabBrowser.mPanelContainer.setAttribute('ordinal', 10);
+				}, 0);
+				this.levelMarginProp = 'margin-right';
+			}
+			else {
+				aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'left');
+				window.setTimeout(function() {
+					aTabBrowser.mStrip.setAttribute('ordinal', 10);
+					splitter.setAttribute('ordinal', 20);
+					aTabBrowser.mPanelContainer.setAttribute('ordinal', 30);
+				}, 0);
+				this.levelMarginProp = 'margin-left';
+			}
 		}
 		else {
 			this.positionProp     = 'screenX';
@@ -1395,9 +1414,27 @@ catch(e) {
 			aTabBrowser.mTabContainer.orient = aTabBrowser.mTabContainer.mTabstrip.orient = 'horizontal';
 
 			aTabBrowser.mStrip.removeAttribute('width');
+			aTabBrowser.mPanelContainer.removeAttribute('width');
 
 			aTabBrowser.removeAttribute(this.kVERTICAL);
-			aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'top');
+			if (pos == this.kTABBAR_BOTTOM) {
+				aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'bottom');
+				window.setTimeout(function() {
+					aTabBrowser.mStrip.setAttribute('ordinal', 30);
+					splitter.setAttribute('ordinal', 20);
+					aTabBrowser.mPanelContainer.setAttribute('ordinal', 10);
+				}, 0);
+				this.levelMarginProp = 'margin-bottom';
+			}
+			else {
+				aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'top');
+				window.setTimeout(function() {
+					aTabBrowser.mStrip.setAttribute('ordinal', 10);
+					splitter.setAttribute('ordinal', 20);
+					aTabBrowser.mPanelContainer.setAttribute('ordinal', 30);
+				}, 0);
+				this.levelMarginProp = 'margin-top';
+			}
 		}
 	},
  
@@ -1917,6 +1954,7 @@ TreeStyleTabBrowserObserver.prototype = {
 				{
 					case 'extensions.treestyletab.tabbar.position':
 						TreeStyleTabService.initTabbar(this.mTabBrowser, value);
+						TreeStyleTabService.updateAllTabsIndent(this.mTabBrowser);
 						break;
 
 					default:

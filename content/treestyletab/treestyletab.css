@@ -1,4 +1,5 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+@namespace html url("http://www.w3.org/1999/xhtml");
 
 tab .treestyletab-twisty,
 tab .treestyletab-counter-container,
@@ -22,7 +23,9 @@ tab[treestyletab-collapsed="true"],
 tabbrowser[treestyletab-vertical="true"] .tabbrowser-arrowscrollbox > .scrollbutton-up,
 tabbrowser[treestyletab-vertical="true"] .tabbrowser-arrowscrollbox > .scrollbutton-down-stack,
 tabbrowser[treestyletab-vertical="true"] .tabs-alltabs-stack,
-tabbrowser[treestyletab-vertical="true"] .tabs-closebutton-box {
+tabbrowser[treestyletab-vertical="true"] .tabs-closebutton-box,
+tabbrowser[treestyletab-vertical="true"] .tab-drop-indicator-bar
+ {
 	display: none !important;
 }
 
@@ -34,3 +37,31 @@ tabbrowser[treestyletab-vertical="true"] .tabbrowser-strip {
 	overflow-x: hidden;
 	overflow-y: auto;
 }
+
+
+
+tabbrowser[treestyletab-tabbar-position="right"] .tabbrowser-tab .tab-image-middle {
+	-moz-box-ordinal-group: 20;
+}
+
+tabbrowser[treestyletab-tabbar-position="right"] .tabbrowser-tab .tab-close-button {
+	-moz-box-ordinal-group: 10;
+}
+
+
+tabbrowser[treestyletab-tabbar-position="right"] .tabbrowser-tab .tab-icon {
+	-moz-box-ordinal-group: 50;
+}
+
+tabbrowser[treestyletab-tabbar-position="right"] .tabbrowser-tab html|canvas.informationaltab-thumbnail {
+	-moz-box-ordinal-group: 10;
+}
+
+tabbrowser[treestyletab-tabbar-position="right"] .tabbrowser-tab .tab-text {
+	-moz-box-ordinal-group: 20;
+}
+
+tabbrowser[treestyletab-tabbar-position="right"] .tabbrowser-tab .treestyletab-counter-container {
+	-moz-box-ordinal-group: 30;
+}
+
