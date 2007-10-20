@@ -1299,8 +1299,8 @@ catch(e) {
 					var targetNest = Number(tab.getAttribute(this.kNEST));
 					info.action       = this.kACTION_MOVE | this.kACTION_ATTACH;
 					info.parent       = (
-							(prevNest < targetNest) ? this.getParentTab(prevTab) :
-							(prevNest > targetNest) ? prevTab :
+							(prevNest > targetNest) ? this.getParentTab(prevTab) :
+							(prevNest < targetNest) ? prevTab :
 							this.getParentTab(tab)
 						) || tab ;
 					info.insertBefore = tab;
@@ -1329,6 +1329,7 @@ catch(e) {
 					var nextNest   = Number(nextTab.getAttribute(this.kNEST));
 					info.action       = this.kACTION_MOVE | this.kACTION_ATTACH;
 					info.parent       = (
+							(targetNest > nextNest) ? this.getParentTab(nextTab) :
 							(targetNest < nextNest) ? tab :
 							this.getParentTab(tab)
 						) || tab ;
