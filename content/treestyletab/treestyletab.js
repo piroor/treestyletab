@@ -249,20 +249,71 @@ var TreeStyleTabService = {
 		this.addPrefListener(this);
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.levelMargin');
 
+		eval('nsContextMenu.prototype.openLinkInTab = '+
+			nsContextMenu.prototype.openLinkInTab.toSource().replace(
+				'{',
+				<><![CDATA[
+					{
+						TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);
+				]]></>
+			)
+		);
+		eval('nsContextMenu.prototype.openFrameInTab = '+
+			nsContextMenu.prototype.openFrameInTab.toSource().replace(
+				'{',
+				<><![CDATA[
+					{
+						TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);
+				]]></>
+			)
+		);
+
+		eval('window.handleLinkClick = '+
+			window.handleLinkClick.toSource().replace(
+				/openNewTabWith/g,
+				<><![CDATA[
+					TreeStyleTabService.readyToOpenChildTab(event.target.ownerDocument.defaultView);
+					openNewTabWith(]]></>
+			)
+		);
+
+		eval('window.gotoHistoryIndex = '+
+			window.gotoHistoryIndex.toSource().replace(
+				/openUILinkIn/g,
+				<><![CDATA[
+					if (where == 'tab' || where == 'tabshifted')
+						TreeStyleTabService.readyToOpenChildTab();
+					openUILinkIn]]></>
+			)
+		);
+
+		eval('window.BrowserForward = '+
+			window.BrowserForward.toSource().replace(
+				/openUILinkIn/g,
+				<><![CDATA[
+					if (where == 'tab' || where == 'tabshifted')
+						TreeStyleTabService.readyToOpenChildTab();
+					openUILinkIn]]></>
+			)
+		);
+
+		eval('window.BrowserBack = '+
+			window.BrowserBack.toSource().replace(
+				/openUILinkIn/g,
+				<><![CDATA[
+					if (where == 'tab' || where == 'tabshifted')
+						TreeStyleTabService.readyToOpenChildTab();
+					openUILinkIn]]></>
+			)
+		);
+
 		eval('window.nsBrowserAccess.prototype.openURI = '+
 			window.nsBrowserAccess.prototype.openURI.toSource().replace(
 				/switch\s*\(aWhere\)/,
 				<><![CDATA[
 					if (aOpener &&
 						aWhere == Components.interfaces.nsIBrowserDOMWindow.OPEN_NEWTAB) {
-						(function(aOpener) {
-							var ownerBrowser = ('SplitBrowser' in window) ? TreeStyleTabService.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(aOpener.top).browser) : gBrowser ;
-							var parentTab = TreeStyleTabService.getTabFromFrame(aOpener, ownerBrowser);
-
-							ownerBrowser.__treestyletab__readyToAttachNewTab   = true;
-							ownerBrowser.__treestyletab__readyToAttachMultiple = false;
-							ownerBrowser.__treestyletab__parentTab             = parentTab.getAttribute(TreeStyleTabService.kID);
-						})(aOpener);
+						TreeStyleTabService.readyToOpenChildTab(aOpener);
 					}
 					switch(aWhere)
 				]]></>
@@ -1513,6 +1564,17 @@ catch(e) {
 		}
 	},
  
+	readyToOpenChildTab : function(aFrame) 
+	{
+		if (!aFrame)
+			aFrame = TreeStyleTabService.browser.contentWindow;
+
+		var ownerBrowser = ('SplitBrowser' in window) ? this.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(aFrame.top).browser) : gBrowser ;
+		ownerBrowser.__treestyletab__readyToAttachNewTab   = true;
+		ownerBrowser.__treestyletab__readyToAttachMultiple = false;
+		ownerBrowser.__treestyletab__parentTab             = this.getTabFromFrame(aFrame, ownerBrowser).getAttribute(this.kID);
+	},
+ 	
 /* attach/part */ 
 	
 	attachTabTo : function(aChild, aParent, aInfo) 
@@ -1866,7 +1928,7 @@ catch(e) {
 	},
   
 /* scroll */ 
-	 
+	
 	scrollTo : function(aTabBrowser, aEndX, aEndY) 
 	{
 		if (this.getPref('extensions.treestyletab.tabbar.scroll.smooth'))
@@ -1940,7 +2002,7 @@ catch(e) {
 
 		scrollBoxObject.scrollTo(newX, newY);
 	},
- 	 
+  
 	scrollToTab : function(aTab) 
 	{
 		if (!aTab || this.isTabVisible(aTab)) return;
