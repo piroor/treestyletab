@@ -7,33 +7,35 @@
 <prefwindow id="treestyletab-config"
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	title="&config.title;"
-	onload="sizeToContent(); initGroupBookmarkRadio();">
+	onload="sizeToContent();">
 
-<prefpane id="prefpane-general" label="&config.tabs.general;"
-	onpaneload="">
+<prefpane id="prefpane-appearance" label="&config.tabs.appearance;">
 	<preferences>
-		<preference id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
-			name="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
-			type="bool"/>
-		<preference id="extensions.treestyletab.collapseExpandSubTree.dblclick"
-			name="extensions.treestyletab.collapseExpandSubTree.dblclick"
-			type="bool"/>
-		<!--preference id="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
-			name="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
-			type="bool"/-->
-		<preference id="extensions.treestyletab.attachChildrenToGrandParentOnRemoveTab"
-			name="extensions.treestyletab.attachChildrenToGrandParentOnRemoveTab"
-			type="bool"
-			inverted="true"/>
-		<preference id="extensions.treestyletab.focusMode"
-			name="extensions.treestyletab.focusMode"
-			type="int"/>
 		<preference id="extensions.treestyletab.tabbar.scroll.smooth"
 			name="extensions.treestyletab.tabbar.scroll.smooth"
 			type="bool"/>
 		<preference id="extensions.treestyletab.tabbar.position"
 			name="extensions.treestyletab.tabbar.position"
 			type="string"/>
+	</preferences>
+
+	<checkbox id="extensions.treestyletab.tabbar.scroll.smooth-check"
+		preference="extensions.treestyletab.tabbar.scroll.smooth"
+		label="&config.tabbar.scroll.smooth;"/>
+	<groupbox>
+		<caption label="&config.tabbar.position.caption;"/>
+		<radiogroup id="extensions.treestyletab.tabbar.position-radiogroup"
+			preference="extensions.treestyletab.tabbar.position"
+			orient="horizontal">
+			<radio value="left" label="&config.tabbar.position.left;"/>
+			<radio value="right" label="&config.tabbar.position.right;"/>
+		</radiogroup>
+	</groupbox>
+</prefpane>
+
+<prefpane id="prefpane-tab" label="&config.tabs.tab;"
+	onpaneload="initGroupBookmarkRadio();">
+	<preferences>
 		<preference id="browser.link.open_newwindow"
 			name="browser.link.open_newwindow"
 			type="int"/>
@@ -48,35 +50,6 @@
 			type="bool"/>
 	</preferences>
 
-	<checkbox id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect-check"
-		preference="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
-		label="&config.autoCollapseExpandSubTreeOnSelect;"/>
-	<checkbox id="extensions.treestyletab.collapseExpandSubTree.dblclick-check"
-		preference="extensions.treestyletab.collapseExpandSubTree.dblclick"
-		label="&config.collapseExpandSubTree.dblclick;"/>
-	<!--checkbox id="extensions.treestyletab.autoExpandSubTreeOnAppendChild-check"
-		preference="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
-		label="&config.autoExpandSubTreeOnAppendChild;"/-->
-	<checkbox id="extensions.treestyletab.attachChildrenToGrandParentOnRemoveTab-check"
-		preference="extensions.treestyletab.attachChildrenToGrandParentOnRemoveTab"
-		label="&config.attachChildrenToGrandParentOnRemoveTab;"/>
-	<checkbox id="extensions.treestyletab.focusMode-check"
-		preference="extensions.treestyletab.focusMode"
-		label="&config.focusMode;"
-		onsyncfrompreference="return document.getElementById('extensions.treestyletab.focusMode').value == 0;"
-		onsynctopreference="return document.getElementById('extensions.treestyletab.focusMode-check').checked ? 0 : 1 ;"/>
-	<checkbox id="extensions.treestyletab.tabbar.scroll.smooth-check"
-		preference="extensions.treestyletab.tabbar.scroll.smooth"
-		label="&config.tabbar.scroll.smooth;"/>
-	<groupbox>
-		<caption label="&config.tabbar.position.caption;"/>
-		<radiogroup id="extensions.treestyletab.tabbar.position-radiogroup"
-			preference="extensions.treestyletab.tabbar.position"
-			orient="horizontal">
-			<radio value="left" label="&config.tabbar.position.left;"/>
-			<radio value="right" label="&config.tabbar.position.right;"/>
-		</radiogroup>
-	</groupbox>
 	<groupbox>
 		<caption label="&config.open_newwindow.caption;"/>
 		<radiogroup id="browser.link.open_newwindow-radiogroup"
@@ -105,6 +78,45 @@
 			<radio value="replace" label="&config.openGroupBookmarkAsTabSubTree.replace;"/>
 		</radiogroup>
 	</groupbox>
+</prefpane>
+
+<prefpane id="prefpane-advanced" label="&config.tabs.advanced;">
+	<preferences>
+		<preference id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
+			name="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
+			type="bool"/>
+		<preference id="extensions.treestyletab.collapseExpandSubTree.dblclick"
+			name="extensions.treestyletab.collapseExpandSubTree.dblclick"
+			type="bool"/>
+		<!--preference id="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
+			name="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
+			type="bool"/-->
+		<preference id="extensions.treestyletab.attachChildrenToGrandParentOnRemoveTab"
+			name="extensions.treestyletab.attachChildrenToGrandParentOnRemoveTab"
+			type="bool"
+			inverted="true"/>
+		<preference id="extensions.treestyletab.focusMode"
+			name="extensions.treestyletab.focusMode"
+			type="int"/>
+	</preferences>
+
+	<checkbox id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect-check"
+		preference="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
+		label="&config.autoCollapseExpandSubTreeOnSelect;"/>
+	<checkbox id="extensions.treestyletab.collapseExpandSubTree.dblclick-check"
+		preference="extensions.treestyletab.collapseExpandSubTree.dblclick"
+		label="&config.collapseExpandSubTree.dblclick;"/>
+	<!--checkbox id="extensions.treestyletab.autoExpandSubTreeOnAppendChild-check"
+		preference="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
+		label="&config.autoExpandSubTreeOnAppendChild;"/-->
+	<checkbox id="extensions.treestyletab.attachChildrenToGrandParentOnRemoveTab-check"
+		preference="extensions.treestyletab.attachChildrenToGrandParentOnRemoveTab"
+		label="&config.attachChildrenToGrandParentOnRemoveTab;"/>
+	<checkbox id="extensions.treestyletab.focusMode-check"
+		preference="extensions.treestyletab.focusMode"
+		label="&config.focusMode;"
+		onsyncfrompreference="return document.getElementById('extensions.treestyletab.focusMode').value == 0;"
+		onsynctopreference="return document.getElementById('extensions.treestyletab.focusMode-check').checked ? 0 : 1 ;"/>
 </prefpane>
 
 <script src="config.js" type="application/x-javascript"/>

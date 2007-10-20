@@ -1,22 +1,16 @@
 <!ENTITY config.title        "Configuration of Tree Style Tab">
 
 
-<!ENTITY config.tabs.general "General">
-
-<!ENTITY config.autoCollapseExpandSubTreeOnSelect "Collapse distractive subtrees automatically, when a tab is opened or focused">
-<!ENTITY config.collapseExpandSubTree.dblclick "Collapse/Expand subtree of the tab by double-click">
-
-<!ENTITY config.autoExpandSubTreeOnAppendChild "Expand subtree automatically, when tabs are inserted into the subtree">
-
-<!ENTITY config.attachChildrenToGrandParentOnRemoveTab "Liberate child tabs from the tree when the parent tab is closed">
-
-<!ENTITY config.focusMode "Focus to the next/previous tab even if it is invisible, by Control(Command)-Tab">
+<!ENTITY config.tabs.appearance "Appearance">
 
 <!ENTITY config.tabbar.scroll.smooth "Scroll the tab bar smoothly">
 
 <!ENTITY config.tabbar.position.caption "Tab bar position">
 <!ENTITY config.tabbar.position.left    "Leftside">
 <!ENTITY config.tabbar.position.right   "Rightside">
+
+
+<!ENTITY config.tabs.tab "Tab Operations">
 
 <!ENTITY config.open_newwindow.caption "New window opened from links in webpages unexpectedly">
 <!ENTITY config.open_newwindow.window  "Open as Window">
@@ -30,6 +24,19 @@
 <!ENTITY config.openGroupBookmarkAsTabSubTree.subtree "Open as a sub tree (Recommended)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "Open as separate tabs">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace "Replace all tabs to the pages in the folder (Firefox default)">
+
+
+<!ENTITY config.tabs.advanced "Advanced">
+
+<!ENTITY config.autoCollapseExpandSubTreeOnSelect "Collapse distractive subtrees automatically, when a tab is opened or focused">
+<!ENTITY config.collapseExpandSubTree.dblclick "Collapse/Expand subtree of the tab by double-click">
+
+<!ENTITY config.autoExpandSubTreeOnAppendChild "Expand subtree automatically, when tabs are inserted into the subtree">
+
+<!ENTITY config.attachChildrenToGrandParentOnRemoveTab "Liberate child tabs from the tree when the parent tab is closed">
+
+<!ENTITY config.focusMode "Focus to the next/previous tab even if it is invisible, by Control(Command)-Tab">
+
 
 
 

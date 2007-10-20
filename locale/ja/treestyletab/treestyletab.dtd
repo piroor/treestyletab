@@ -1,22 +1,16 @@
 <!ENTITY config.title        "ツリー型タブの設定">
 
 
-<!ENTITY config.tabs.general "全般">
-
-<!ENTITY config.autoCollapseExpandSubTreeOnSelect "タブを開く時やタブを切り替える時に、関係ないサブツリーを自動的に折り畳む">
-<!ENTITY config.collapseExpandSubTree.dblclick "タブのダブルクリックでサブツリーを開閉する">
-
-<!ENTITY config.autoExpandSubTreeOnAppendChild "折り畳まれたサブツリー内に子孫のタブが追加された時、サブツリーを自動的に展開する">
-
-<!ENTITY config.attachChildrenToGrandParentOnRemoveTab "親のタブを閉じたら子孫のタブをツリーから解放する">
-
-<!ENTITY config.focusMode "Control(Command)-Tabでタブを切り替える時、折りたたまれたタブにもフォーカスする">
+<!ENTITY config.tabs.appearance "外観">
 
 <!ENTITY config.tabbar.scroll.smooth "タブバーをなめらかにスクロールする">
 
 <!ENTITY config.tabbar.position.caption "タブバーの表示位置">
 <!ENTITY config.tabbar.position.left    "ウィンドウの左側">
 <!ENTITY config.tabbar.position.right   "ウィンドウの右側">
+
+
+<!ENTITY config.tabs.tab "タブの開き方">
 
 <!ENTITY config.open_newwindow.caption "Webページのリンクから勝手に開かれたウィンドウの制御">
 <!ENTITY config.open_newwindow.window  "ウィンドウで開く">
@@ -30,6 +24,19 @@
 <!ENTITY config.openGroupBookmarkAsTabSubTree.subtree "一つのサブツリーとして開く（推奨）">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "ばらばらのタブとして開く">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace "現在開いているすべてのタブをブックマークの内容で置き換える（Firefox初期状態）">
+
+
+<!ENTITY config.tabs.advanced "詳細">
+
+<!ENTITY config.autoCollapseExpandSubTreeOnSelect "タブを開く時やタブを切り替える時に、関係ないサブツリーを自動的に折り畳む">
+<!ENTITY config.collapseExpandSubTree.dblclick "タブのダブルクリックでサブツリーを開閉する">
+
+<!ENTITY config.autoExpandSubTreeOnAppendChild "折り畳まれたサブツリー内に子孫のタブが追加された時、サブツリーを自動的に展開する">
+
+<!ENTITY config.attachChildrenToGrandParentOnRemoveTab "親のタブを閉じたら子孫のタブをツリーから解放する">
+
+<!ENTITY config.focusMode "Control(Command)-Tabでタブを切り替える時、折りたたまれたタブにもフォーカスする">
+
 
 
 
