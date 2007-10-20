@@ -1318,11 +1318,8 @@ catch(e) {
 				else {
 					var prevNest   = Number(prevTab.getAttribute(this.kNEST));
 					var targetNest = Number(tab.getAttribute(this.kNEST));
-					info.action       = this.kACTION_MOVE | this.kACTION_ATTACH;
-					info.parent       = (
-							(prevNest < targetNest) ? prevTab :
-							this.getParentTab(tab)
-						) || tab ;
+					info.parent       = (prevNest < targetNest) ? prevTab : this.getParentTab(tab) ;
+					info.action       = this.kACTION_MOVE | (info.parent ? this.kACTION_ATTACH : this.kACTION_PART );
 					info.insertBefore = tab;
 				}
 				break;
@@ -1348,11 +1345,8 @@ catch(e) {
 				else {
 					var targetNest = Number(tab.getAttribute(this.kNEST));
 					var nextNest   = Number(nextTab.getAttribute(this.kNEST));
-					info.action       = this.kACTION_MOVE | this.kACTION_ATTACH;
-					info.parent       = (
-							(targetNest < nextNest) ? tab :
-							this.getParentTab(tab)
-						) || tab ;
+					info.parent       = (targetNest < nextNest) ? tab : this.getParentTab(tab) ;
+					info.action       = this.kACTION_MOVE | (info.parent ? this.kACTION_ATTACH : this.kACTION_PART );
 					info.insertBefore = nextTab;
 				}
 				break;
