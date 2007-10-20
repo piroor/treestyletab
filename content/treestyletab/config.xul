@@ -7,9 +7,10 @@
 <prefwindow id="treestyletab-config"
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	title="&config.title;"
-	onload="sizeToContent();">
+	onload="sizeToContent(); initGroupBookmarkRadio();">
 
-<prefpane id="prefpane-general" label="&config.tabs.general;">
+<prefpane id="prefpane-general" label="&config.tabs.general;"
+	onpaneload="">
 	<preferences>
 		<preference id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
 			name="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
@@ -27,12 +28,24 @@
 		<preference id="extensions.treestyletab.focusMode"
 			name="extensions.treestyletab.focusMode"
 			type="int"/>
+		<preference id="extensions.treestyletab.tabbar.scroll.smooth"
+			name="extensions.treestyletab.tabbar.scroll.smooth"
+			type="bool"/>
+		<preference id="extensions.treestyletab.tabbar.position"
+			name="extensions.treestyletab.tabbar.position"
+			type="string"/>
 		<preference id="browser.link.open_newwindow"
 			name="browser.link.open_newwindow"
 			type="int"/>
 		<preference id="browser.link.open_newwindow.restriction"
 			name="browser.link.open_newwindow.restriction"
 			type="int"/>
+		<preference id="extensions.treestyletab.openGroupBookmarkAsTabSubTree"
+			name="extensions.treestyletab.openGroupBookmarkAsTabSubTree"
+			type="bool"/>
+		<preference id="browser.tabs.loadFolderAndReplace"
+			name="browser.tabs.loadFolderAndReplace"
+			type="bool"/>
 	</preferences>
 
 	<checkbox id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect-check"
@@ -52,47 +65,49 @@
 		label="&config.focusMode;"
 		onsyncfrompreference="return document.getElementById('extensions.treestyletab.focusMode').value == 0;"
 		onsynctopreference="return document.getElementById('extensions.treestyletab.focusMode-check').checked ? 0 : 1 ;"/>
+	<checkbox id="extensions.treestyletab.tabbar.scroll.smooth-check"
+		preference="extensions.treestyletab.tabbar.scroll.smooth"
+		label="&config.tabbar.scroll.smooth;"/>
+	<groupbox>
+		<caption label="&config.tabbar.position.caption;"/>
+		<radiogroup id="extensions.treestyletab.tabbar.position-radiogroup"
+			preference="extensions.treestyletab.tabbar.position"
+			orient="horizontal">
+			<radio value="left" label="&config.tabbar.position.left;"/>
+			<radio value="right" label="&config.tabbar.position.right;"/>
+		</radiogroup>
+	</groupbox>
 	<groupbox>
 		<caption label="&config.open_newwindow.caption;"/>
-		<vbox>
-			<radiogroup id="browser.link.open_newwindow-radiogroup"
-				preference="browser.link.open_newwindow"
-				orient="vertical">
-				<radio value="2" label="&config.open_newwindow.window;"/>
-				<radio value="3" label="&config.open_newwindow.tab;"/>
-			</radiogroup>
-		</vbox>
+		<radiogroup id="browser.link.open_newwindow-radiogroup"
+			preference="browser.link.open_newwindow"
+			orient="vertical">
+			<radio value="2" label="&config.open_newwindow.window;"/>
+			<radio value="3" label="&config.open_newwindow.tab;"/>
+		</radiogroup>
 	</groupbox>
 	<groupbox>
 		<caption label="&config.jsopen.caption;"/>
-		<vbox>
-			<radiogroup id="browser.link.open_newwindow.restriction-radiogroup"
-				preference="browser.link.open_newwindow.restriction"
-				orient="vertical">
-				<radio value="2" label="&config.jsopen.default;"/>
-				<radio value="0" label="&config.jsopen.forcetab;"/>
-			</radiogroup>
-		</vbox>
+		<radiogroup id="browser.link.open_newwindow.restriction-radiogroup"
+			preference="browser.link.open_newwindow.restriction"
+			orient="vertical">
+			<radio value="2" label="&config.jsopen.default;"/>
+			<radio value="0" label="&config.jsopen.forcetab;"/>
+		</radiogroup>
+	</groupbox>
+	<groupbox>
+		<caption label="&config.openGroupBookmarkAsTabSubTree.caption;"/>
+		<radiogroup id="openGroupBookmarkAsTabSubTree-radiogroup"
+			orient="vertical"
+			oncommand="onChangeGroupBookmarkRadio();">
+			<radio value="subtree" label="&config.openGroupBookmarkAsTabSubTree.subtree;"/>
+			<radio value="flat"    label="&config.openGroupBookmarkAsTabSubTree.flat;"/>
+			<radio value="replace" label="&config.openGroupBookmarkAsTabSubTree.replace;"/>
+		</radiogroup>
 	</groupbox>
 </prefpane>
 
-<!--
-<prefpane id="prefpane-selection-menu" label="&config.tabs.selectionMenu;">
-	<preferences id="prefpane-selection-menu-preferences">
-		<preference id="extensions.treestyletab."
-			name="extensions.treestyletab."
-			type="bool"/>
-	</preferences>
-	<groupbox>
-		<caption label="&config..caption;"/>
-		<vbox>
-			<checkbox id="extensions.treestyletab.-check"
-				preference="extensions.treestyletab."
-				label="&popup.;"/>
-		</vbox>
-	</groupbox>
-</prefpane>
--->
+<script src="config.js" type="application/x-javascript"/>
 
 </prefwindow>
 

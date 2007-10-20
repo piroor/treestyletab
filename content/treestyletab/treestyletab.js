@@ -258,8 +258,9 @@ var TreeStyleTabService = {
 							var ownerBrowser = ('SplitBrowser' in window) ? TreeStyleTabService.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(aOpener.top).browser) : gBrowser ;
 							var parentTab = TreeStyleTabService.getTabFromFrame(aOpener, ownerBrowser);
 
-							ownerBrowser.__treestyletab__readyToAttachNewTab = true;
-							ownerBrowser.__treestyletab__parentTab = parentTab.getAttribute(TreeStyleTabService.kID);
+							ownerBrowser.__treestyletab__readyToAttachNewTab   = true;
+							ownerBrowser.__treestyletab__readyToAttachMultiple = false;
+							ownerBrowser.__treestyletab__parentTab             = parentTab.getAttribute(TreeStyleTabService.kID);
 						})(aOpener);
 					}
 					switch(aWhere)
@@ -268,6 +269,31 @@ var TreeStyleTabService = {
 		);
 		window.QueryInterface(Components.interfaces.nsIDOMChromeWindow).browserDOMWindow = null;
 		window.QueryInterface(Components.interfaces.nsIDOMChromeWindow).browserDOMWindow = new nsBrowserAccess();
+
+		eval('BookmarksCommand.openGroupBookmark = '+
+			BookmarksCommand.openGroupBookmark.toSource().replace(
+				'browser.addTab(uri);',
+				<><![CDATA[
+					var openedTab = browser.addTab(uri);
+					if (!TreeStyleTabService.getPref('browser.tabs.loadFolderAndReplace') &&
+						TreeStyleTabService.getPref('extensions.treestyletab.openGroupBookmarkAsTabSubTree') &&
+						!browser.__treestyletab__parentTab) {
+						browser.__treestyletab__readyToAttachNewTab   = true;
+						browser.__treestyletab__readyToAttachMultiple = true;
+						browser.__treestyletab__parentTab             = openedTab.getAttribute(TreeStyleTabService.kID);
+					}
+				]]></>
+			).replace(
+				'if (index == index0)',
+				<><![CDATA[
+					browser.__treestyletab__readyToAttachNewTab   = false;
+					browser.__treestyletab__readyToAttachMultiple = false;
+					browser.__treestyletab__parentTab             = null;
+					if (index == index0)]]></>
+			)
+		);
+
+
 
 		if ('MultipleTabService' in window) {
 			eval('MultipleTabService.showHideMenuItems = '+
@@ -794,7 +820,8 @@ catch(e) {
 				}
 				if (node.href && isMiddleClick) {
 					var b = this.getTabBrowserFromChildren(aEvent.currentTarget);
-					b.__treestyletab__readyToAttachNewTab = true;
+					b.__treestyletab__readyToAttachNewTab   = true;
+					b.__treestyletab__readyToAttachMultiple = false;
 					b.__treestyletab__parentTab = b.selectedTab.getAttribute(this.kID);
 				}
 				return;
@@ -851,8 +878,11 @@ catch(e) {
 				this.attachTabTo(tab, parent);
 		}
 
-		b.__treestyletab__readyToAttachNewTab = false;
-		b.__treestyletab__parentTab = '';
+		if (!b.__treestyletab__readyToAttachMultiple) {
+			b.__treestyletab__readyToAttachNewTab   = false;
+			b.__treestyletab__readyToAttachMultiple = false;
+			b.__treestyletab__parentTab = '';
+		}
 	},
  
 	onTabRemoved : function(aEvent) 

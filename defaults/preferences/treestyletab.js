@@ -9,9 +9,11 @@ pref("extensions.treestyletab.tabbar.width", 200);
 pref("extensions.treestyletab.tabbar.position", "left");
 pref("extensions.treestyletab.tabbar.scroll.smooth", true);
 pref("extensions.treestyletab.tabbar.scroll.timeout", 250);
+pref("extensions.treestyletab.openGroupBookmarkAsTabSubTree", true);
 
 
 pref("browser.link.open_newwindow.restriction", 0);
+pref("browser.tabs.loadFolderAndReplace", false);
 
 
 pref("extensions.multipletab.show.multipletab-selection-item-removeTabSubTree", true);

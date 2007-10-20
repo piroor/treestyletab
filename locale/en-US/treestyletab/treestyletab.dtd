@@ -12,13 +12,24 @@
 
 <!ENTITY config.focusMode "Focus to the next/previous tab even if it is invisible, by Control(Command)-Tab">
 
+<!ENTITY config.tabbar.scroll.smooth "Scroll the tab bar smoothly">
+
+<!ENTITY config.tabbar.position.caption "Tab bar position">
+<!ENTITY config.tabbar.position.left    "Leftside">
+<!ENTITY config.tabbar.position.right   "Rightside">
+
 <!ENTITY config.open_newwindow.caption "New window opened from links in webpages unexpectedly">
 <!ENTITY config.open_newwindow.window  "Open as Window">
-<!ENTITY config.open_newwindow.tab     "Open as Tab (default)">
+<!ENTITY config.open_newwindow.tab     "Open as Tab (Firefox default)">
 
 <!ENTITY config.jsopen.caption "New window opened from scripts in webpages">
-<!ENTITY config.jsopen.default "Open as Window when it have special width, height, etc. (default)">
-<!ENTITY config.jsopen.forcetab "Open as Tab instead of Window anyway">
+<!ENTITY config.jsopen.default "Open as Window when it have special width, height, etc. (Firefox default)">
+<!ENTITY config.jsopen.forcetab "Open as Tab instead of Window anyway (Recommended)">
+
+<!ENTITY config.openGroupBookmarkAsTabSubTree.caption "&quot;Open All in Tabs&quot; from bookmrak folders">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree "Open as a sub tree (Recommended)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "Open as separate tabs">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.replace "Replace all tabs to the pages in the folder (Firefox default)">
 
 
 

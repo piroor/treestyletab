@@ -12,13 +12,24 @@
 
 <!ENTITY config.focusMode "Control(Command)-Tabでタブを切り替える時、折りたたまれたタブにもフォーカスする">
 
+<!ENTITY config.tabbar.scroll.smooth "タブバーをなめらかにスクロールする">
+
+<!ENTITY config.tabbar.position.caption "タブバーの表示位置">
+<!ENTITY config.tabbar.position.left    "ウィンドウの左側">
+<!ENTITY config.tabbar.position.right   "ウィンドウの右側">
+
 <!ENTITY config.open_newwindow.caption "Webページのリンクから勝手に開かれたウィンドウの制御">
 <!ENTITY config.open_newwindow.window  "ウィンドウで開く">
-<!ENTITY config.open_newwindow.tab     "タブで開く（初期値）">
+<!ENTITY config.open_newwindow.tab     "タブで開く（Firefox初期状態）">
 
 <!ENTITY config.jsopen.caption "Webページのスクリプトで開かれるウィンドウの制御">
-<!ENTITY config.jsopen.default "大きさや位置を指定されたウィンドウはウィンドウとして開く（初期値）">
-<!ENTITY config.jsopen.forcetab "スクリプトで開かれるウィンドウはすべてタブで開く">
+<!ENTITY config.jsopen.default "大きさや位置を指定されたウィンドウはウィンドウとして開く（Firefox初期状態）">
+<!ENTITY config.jsopen.forcetab "スクリプトで開かれるウィンドウはすべてタブで開く（推奨）">
+
+<!ENTITY config.openGroupBookmarkAsTabSubTree.caption "ブックマークフォルダの内容をタブで開く時の扱い">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree "一つのサブツリーとして開く（推奨）">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "ばらばらのタブとして開く">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.replace "現在開いているすべてのタブをブックマークの内容で置き換える（Firefox初期状態）">
 
 
 
