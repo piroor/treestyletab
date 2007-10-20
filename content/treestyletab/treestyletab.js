@@ -543,47 +543,35 @@ catch(e) {
 
 		eval('aTabBrowser.onDrop = '+
 			aTabBrowser.onDrop.toSource().replace(
-				'{', '{ TreeStyleTabService.clearDropPosition(this);'
+				'{',
+				<><![CDATA[
+					{
+						TreeStyleTabService.clearDropPosition(this);
+						var dropActionInfo = TreeStyleTabService.getDropAction(aEvent, aDragSession);
+				]]></>
 			).replace(
 				/(if \([^\)]+\) \{)/,
 				'$1'+<><![CDATA[
-					if ((function(aSelf) {
-							var info = TreeStyleTabService.getDropAction(aEvent, aDragSession);
-							var tab  = aDragSession.sourceNode;
-							var tabs = aSelf.mTabContainer.childNodes;
-							if (info.action & TreeStyleTabService.kACTION_PART) {
-								TreeStyleTabService.partTab(tab);
-								if (
-									info.action & TreeStyleTabService.kACTION_MOVE &&
-									(
-										!info.insertBefore ||
-										TreeStyleTabService.getNextVisibleTab(tab) != info.insertBefore
-									)
-									) {
-									var newIndex = info.insertBefore ? info.insertBefore._tPos : tabs.length - 1 ;
-									if (info.insertBefore && newIndex > tab._tPos) newIndex--;
-									aSelf.moveTabTo(tab,  newIndex);
-								}
-								return true;
-							}
-							else if (info.action & TreeStyleTabService.kACTION_ATTACH) {
-								TreeStyleTabService.attachTabTo(tab, info.parent);
-								if (
-									info.action & TreeStyleTabService.kACTION_MOVE &&
-									(
-										!info.insertBefore ||
-										TreeStyleTabService.getNextVisibleTab(tab) != info.insertBefore
-									)
-									) {
-									var newIndex = info.insertBefore ? info.insertBefore._tPos : tabs.length - 1 ;
-									if (info.insertBefore && newIndex > tab._tPos) newIndex--;
-									aSelf.moveTabTo(tab,  newIndex);
-								}
-								return true;
-							}
-							return false;
-						})(this))
+					if (TreeStyleTabService.processDropAction(dropActionInfo, this, aDragSession.sourceNode))
 						return;
+				]]></>
+			).replace(
+				/(this.loadOneTab\([^;]+\));/,
+				<><![CDATA[
+					TreeStyleTabService.processDropAction(dropActionInfo, this, $1);
+					return;
+				]]></>
+			).replace(
+				'document.getBindingParent(aEvent.originalTarget).localName != "tab"',
+				'!TreeStyleTabService.getTabFromEvent(aEvent)'
+			).replace(
+				'var tab = aEvent.target;',
+				<><![CDATA[
+					var tab = aEvent.target;
+					if (dropActionInfo.position != TreeStyleTabService.kDROP_ON) {
+						TreeStyleTabService.processDropAction(dropActionInfo, this, this.loadOneTab(getShortcutOrURI(url), null, null, null, bgLoad, false));
+						return;
+					}
 				]]></>
 			)
 		);
@@ -836,7 +824,7 @@ catch(e) {
 	},
    
 /* Event Handling */ 
-	
+	 
 	handleEvent : function(aEvent) 
 	{
 		switch (aEvent.type)
@@ -1126,7 +1114,35 @@ catch(e) {
 		var b = this.getTabBrowserFromChildren(aEvent.originalTarget);
 		this.setPref('extensions.treestyletab.tabbar.width', b.mStrip.boxObject.width);
 	},
-  
+ 
+	processDropAction : function(aInfo, aTabBrowser, aTarget) 
+	{
+		var b    = this.getTabBrowserFromChildren(aTabBrowser);
+		var tabs = b.mTabContainer.childNodes;
+		if (aTarget && aInfo.action & this.kACTION_PART) {
+			this.partTab(aTarget);
+		}
+		else if (aInfo.action & this.kACTION_ATTACH) {
+			this.attachTabTo(aTarget, aInfo.parent);
+		}
+		else {
+			return false;
+		}
+
+		if (
+			aInfo.action & this.kACTION_MOVE &&
+			(
+				!aInfo.insertBefore ||
+				this.getNextVisibleTab(aTarget) != aInfo.insertBefore
+			)
+			) {
+			var newIndex = aInfo.insertBefore ? aInfo.insertBefore._tPos : tabs.length - 1 ;
+			if (aInfo.insertBefore && newIndex > aTarget._tPos) newIndex--;
+			b.moveTabTo(aTarget,  newIndex);
+		}
+		return true;
+	},
+ 	 
 /* Tab Utilities */ 
 	
 	getTabValue : function(aTab, aKey) 
@@ -1332,7 +1348,10 @@ catch(e) {
 	{
 		var info = this.getDropActionInternal(aEvent);
 		info.canDrop = true;
-		if (info.action & this.kACTION_ATTACH) {
+		if (info.action & this.kACTION_ATTACH &&
+			aDragSession &&
+			aDragSession.sourceNode &&
+			aDragSession.sourceNode.localName == 'tab') {
 			var orig = aDragSession.sourceNode;
 			if (orig == info.parent) {
 				info.canDrop = false;
@@ -1574,7 +1593,7 @@ catch(e) {
 		ownerBrowser.__treestyletab__readyToAttachMultiple = false;
 		ownerBrowser.__treestyletab__parentTab             = this.getTabFromFrame(aFrame, ownerBrowser).getAttribute(this.kID);
 	},
- 	
+ 
 /* attach/part */ 
 	
 	attachTabTo : function(aChild, aParent, aInfo) 
