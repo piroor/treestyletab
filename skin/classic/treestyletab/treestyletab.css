@@ -1,7 +1,7 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
 tabbrowser[treestyletab-vertical="true"] .tabbrowser-tabs {
-	background: ThreeDShadow !important;
+	background: darkgray !important;
 }
 
 tabbrowser[treestyletab-vertical="true"] .tabs-bottom,
@@ -29,7 +29,7 @@ tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab {
 }
 tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab[selected="true"] {
 	margin: 0 !important;
-	padding: 0 !important;
+	padding: 0 0.2em !important;
 	background: ThreeDHighlight !important;
 	-moz-border-top-colors: ThreeDHighlight ThreeDHighlight !important;
 	-moz-border-bottom-colors: ThreeDShadow ThreeDHighlight !important;

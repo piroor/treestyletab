@@ -5,7 +5,8 @@ pref("extensions.treestyletab.attachChildrenToGrandParentOnRemoveTab", true);
 // 0 = default, 1 = only visible tabs
 pref("extensions.treestyletab.focusMode", 1);
 pref("extensions.treestyletab.levelMargin", 12);
-pref("extensions.treestyletab.tabbarPosition", "left");
+pref("extensions.treestyletab.tabbar.width", 200);
+pref("extensions.treestyletab.tabbar.position", "left");
 
 
 pref("browser.link.open_newwindow.restriction", 0);

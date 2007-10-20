@@ -18,6 +18,7 @@ var TreeStyleTabService = {
 	kDROP_MARKER_CONTAINER : 'treestyletab-drop-marker-container',
 	kCOUNTER               : 'treestyletab-counter',
 	kCOUNTER_CONTAINER     : 'treestyletab-counter-container',
+	kSPLITTER              : 'treestyletab-splitter',
 
 	kMENUITEM_REMOVESUBTREE_SELECTION : 'multipletab-selection-item-removeTabSubTree',
 	kMENUITEM_REMOVESUBTREE_CONTEXT   : 'context-item-removeTabSubTree',
@@ -83,7 +84,7 @@ var TreeStyleTabService = {
 	_ObserverService : null,
 	 
 /* Utilities */ 
-	
+	 
 	isEventFiredOnTabIcon : function(aEvent) 
 	{
 		var tab = this.getTabFromEvent(aEvent);
@@ -220,7 +221,7 @@ var TreeStyleTabService = {
 	},
   
 /* Initializing */ 
-	 
+	
 	init : function() 
 	{
 		if (!('gBrowser' in window)) return;
@@ -305,7 +306,7 @@ var TreeStyleTabService = {
 	 
 	initTabBrowser : function(aTabBrowser) 
 	{
-		this.initTabbarPosition(aTabBrowser, this.getPref('extensions.treestyletab.tabbarPosition'));
+		this.initTabbar(aTabBrowser, this.getPref('extensions.treestyletab.tabbar.position'));
 
 		aTabBrowser.mTabContainer.addEventListener('TreeStyleTab:TabOpen', this, true);
 		aTabBrowser.mTabContainer.addEventListener('TabClose', this, true);
@@ -611,9 +612,12 @@ catch(e) {
 		this.setTabValue(aTab, this.kID, id);
 		aTab.__treestyletab__linkedTabBrowser = aTabBrowser;
 
-		var pos = this.getPref('extensions.treestyletab.tabbarPosition');
-		if (pos == 'left' || pos == 'right')
+		var pos = this.getPref('extensions.treestyletab.tabbar.position');
+		if (pos == 'left' || pos == 'right') {
 			aTab.setAttribute('align', 'stretch');
+			aTab.maxWidth = 65000;
+			aTab.minWidth = 0;
+		}
 
 		this.initTabContents(aTab);
 
@@ -713,7 +717,7 @@ catch(e) {
 	},
    
 /* Event Handling */ 
-	
+	 
 	handleEvent : function(aEvent) 
 	{
 		switch (aEvent.type)
@@ -993,9 +997,15 @@ catch(e) {
 			this.collapseExpandTreesIntelligentlyFor(tab);
 		}
 	},
-  
+ 
+	onTabbarResized : function(aEvent) 
+	{
+		var b = this.getTabBrowserFromChildren(aEvent.originalTarget);
+		this.setPref('extensions.treestyletab.tabbar.width', b.mStrip.boxObject.width);
+	},
+ 	 
 /* Tab Utilities */ 
-	 
+	
 	getTabValue : function(aTab, aKey) 
 	{
 		var value = null;
@@ -1345,13 +1355,23 @@ catch(e) {
   
 /* Commands */ 
 	 
-	initTabbarPosition : function(aTabBrowser, aPosition) 
+	initTabbar : function(aTabBrowser, aPosition) 
 	{
 		aPosition = String(aPosition).toLowerCase();
 		var pos = (aPosition == 'left') ? this.kTABBAR_LEFT :
 			(aPosition == 'right') ? this.kTABBAR_RIGHT :
 			(aPosition == 'bottom') ? this.kTABBAR_BOTTOM :
 			this.kTABBAR_TOP;
+
+		var splitter = document.getAnonymousElementByAttribute(aTabBrowser, 'class', this.kSPLITTER);
+		if (!splitter) {
+			splitter = document.createElement('splitter');
+			splitter.setAttribute('class', this.kSPLITTER);
+			splitter.setAttribute('onmouseup', 'TreeStyleTabService.onTabbarResized(event);');
+			splitter.appendChild(document.createElement('grippy'));
+			var ref = aTabBrowser.mPanelContainer;
+			ref.parentNode.insertBefore(splitter, ref);
+		}
 
 		if (pos & this.kTABBAR_VERTICAL) {
 			this.positionProp     = 'screenY';
@@ -1360,6 +1380,8 @@ catch(e) {
 
 			aTabBrowser.mTabBox.orient = 'horizontal';
 			aTabBrowser.mTabContainer.orient = aTabBrowser.mTabContainer.mTabstrip.orient = 'vertical';
+
+			aTabBrowser.mStrip.setAttribute('width', this.getPref('extensions.treestyletab.tabbar.width'));
 
 			aTabBrowser.setAttribute(this.kVERTICAL, true);
 			aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'left');
@@ -1371,6 +1393,8 @@ catch(e) {
 
 			aTabBrowser.mTabBox.orient = 'vertical';
 			aTabBrowser.mTabContainer.orient = aTabBrowser.mTabContainer.mTabstrip.orient = 'horizontal';
+
+			aTabBrowser.mStrip.removeAttribute('width');
 
 			aTabBrowser.removeAttribute(this.kVERTICAL);
 			aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'top');
@@ -1891,8 +1915,8 @@ TreeStyleTabBrowserObserver.prototype = {
 				var value = TreeStyleTabService.getPref(aData);
 				switch (aData)
 				{
-					case 'extensions.treestyletab.tabbarPosition':
-						TreeStyleTabService.initTabbarPosition(this.mTabBrowser, value);
+					case 'extensions.treestyletab.tabbar.position':
+						TreeStyleTabService.initTabbar(this.mTabBrowser, value);
 						break;
 
 					default:
@@ -1911,4 +1935,4 @@ TreeStyleTabBrowserObserver.prototype = {
 		delete this.mTabBrowser;
 	}
 };
- 	
+ 

@@ -3,7 +3,8 @@
 tab .treestyletab-twisty,
 tab .treestyletab-counter-container,
 tab .treestyletab-drop-marker,
-tab[treestyletab-children]:not([treestyletab-subtree-collapsed="true"]) .treestyletab-counter-container {
+tab[treestyletab-children]:not([treestyletab-subtree-collapsed="true"]) .treestyletab-counter-container,
+tabbrowser:not([treestyletab-vertical="true"]) > tabbox > splitter {
 	display: none;
 }
 
@@ -13,7 +14,8 @@ tab[treestyletab-drop-position] .treestyletab-drop-marker {
 	display: -moz-box;
 }
 
-tab[treestyletab-collapsed="true"] {
+tab[treestyletab-collapsed="true"],
+.tabbrowser-strip[collapsed="true"]+splitter {
 	visibility: collapse;
 }
 
@@ -26,4 +28,9 @@ tabbrowser[treestyletab-vertical="true"] .tabs-closebutton-box {
 
 tabbrowser[treestyletab-vertical="true"] > tabbox {
 	-moz-box-orient: horizontal !important;
+}
+
+tabbrowser[treestyletab-vertical="true"] .tabbrowser-strip {
+	overflow-x: hidden;
+	overflow-y: auto;
 }
