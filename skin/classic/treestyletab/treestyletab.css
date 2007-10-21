@@ -47,7 +47,9 @@ tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab > .tab-image-right {
 
 
 tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab > .tab-image-middle,
-tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab > .tab-close-button {
+tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab:not([selected="true"]):not(:hover) > .tab-image-middle,
+tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab > .tab-close-button,
+tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab:not([selected="true"]):not(:hover) > .tab-image-middle > .tab-close-button {
 	height: auto;
 	margin: 0 !important;
 	padding: 0 !important;

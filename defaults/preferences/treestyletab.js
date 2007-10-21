@@ -2,7 +2,7 @@ pref("extensions.treestyletab.tabbar.width",          200);
 pref("extensions.treestyletab.tabbar.position",       "left");
 pref("extensions.treestyletab.tabbar.scroll.smooth",  true);
 pref("extensions.treestyletab.tabbar.scroll.timeout", 250);
-pref("extensions.treestyletab.tabbar.style",          "default");
+pref("extensions.treestyletab.tabbar.style",          "mixed");
 pref("extensions.treestyletab.levelMargin",           12);
 
 pref("extensions.treestyletab.openGroupBookmarkAsTabSubTree", true);

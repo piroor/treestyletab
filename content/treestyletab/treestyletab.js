@@ -326,8 +326,10 @@ var TreeStyleTabService = {
 
 		aTabBrowser.__treestyletab__levelMargin = -1;
 
-		eval('aTabBrowser.mTabContainer.selectNewTab = '+
-			aTabBrowser.mTabContainer.selectNewTab.toSource().replace(
+		var selectNewTab = '_selectNewTab' in aTabBrowser.mTabContainer ? '_selectNewTab' : 'selectNewTab' ; // Fx3 / Fx2
+
+		eval('aTabBrowser.mTabContainer.'+selectNewTab+' = '+
+			aTabBrowser.mTabContainer[selectNewTab].toSource().replace(
 				/\{/,
 				<><![CDATA[
 					{
@@ -355,7 +357,10 @@ var TreeStyleTabService = {
 									nextTab = xpathResult.snapshotItem(aDir < 0 ? xpathResult.snapshotLength-1 : 0 );
 								}
 								if (nextTab && nextTab != aSelf.selectedItem) {
-									aSelf.selectNewTab(nextTab, aDir, aWrap);
+									if ('_selectNewTab' in aSelf)
+										aSelf._selectNewTab(nextTab, aDir, aWrap); // Fx 3
+									else
+										aSelf.selectNewTab(nextTab, aDir, aWrap); // Fx 2
 								}
 							})(arguments[0], arguments[1], this);
 							return;
@@ -757,24 +762,26 @@ catch(e) {
 		window.QueryInterface(Components.interfaces.nsIDOMChromeWindow).browserDOMWindow = null;
 		window.QueryInterface(Components.interfaces.nsIDOMChromeWindow).browserDOMWindow = new nsBrowserAccess();
 
-		eval('BookmarksCommand.openGroupBookmark = '+
-			BookmarksCommand.openGroupBookmark.toSource().replace(
-				'browser.addTab(uri);',
-				<><![CDATA[
-					var openedTab = browser.addTab(uri);
-					if (!TreeStyleTabService.getPref('browser.tabs.loadFolderAndReplace') &&
-						TreeStyleTabService.getPref('extensions.treestyletab.openGroupBookmarkAsTabSubTree') &&
-						!browser.__treestyletab__parentTab) {
-						TreeStyleTabService.readyToOpenChildTab(openedTab, true);
-					}
-				]]></>
-			).replace(
-				'if (index == index0)',
-				<><![CDATA[
-					TreeStyleTabService.stopToOpenChildTab(browser);
-					if (index == index0)]]></>
-			)
-		);
+		if ('BookmarksCommand' in window) {
+			eval('BookmarksCommand.openGroupBookmark = '+
+				BookmarksCommand.openGroupBookmark.toSource().replace(
+					'browser.addTab(uri);',
+					<><![CDATA[
+						var openedTab = browser.addTab(uri);
+						if (!TreeStyleTabService.getPref('browser.tabs.loadFolderAndReplace') &&
+							TreeStyleTabService.getPref('extensions.treestyletab.openGroupBookmarkAsTabSubTree') &&
+							!browser.__treestyletab__parentTab) {
+							TreeStyleTabService.readyToOpenChildTab(openedTab, true);
+						}
+					]]></>
+				).replace(
+					'if (index == index0)',
+					<><![CDATA[
+						TreeStyleTabService.stopToOpenChildTab(browser);
+						if (index == index0)]]></>
+				)
+			);
+		}
 	},
   	
 	destroy : function() 

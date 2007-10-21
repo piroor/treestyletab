@@ -10,7 +10,7 @@
 <!ENTITY config.tabbar.position.right   "Rightside">
 
 <!ENTITY config.tabbar.style.caption "Appearance of the tab bar">
-<!ENTITY config.tabbar.style.default "Default">
+<!ENTITY config.tabbar.style.default "Plain">
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.mixed   "Mixed">
 

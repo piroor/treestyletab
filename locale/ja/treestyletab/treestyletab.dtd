@@ -10,7 +10,7 @@
 <!ENTITY config.tabbar.position.right   "ウィンドウの右側">
 
 <!ENTITY config.tabbar.style.caption "タブバーの表示スタイル">
-<!ENTITY config.tabbar.style.default "標準">
+<!ENTITY config.tabbar.style.default "プレーン">
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.mixed   "Mixed">
 

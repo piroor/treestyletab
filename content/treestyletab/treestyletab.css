@@ -24,6 +24,7 @@ tab[treestyletab-collapsed="true"],
 tabbrowser[treestyletab-vertical="true"] .tabbrowser-arrowscrollbox > .scrollbutton-up,
 tabbrowser[treestyletab-vertical="true"] .tabbrowser-arrowscrollbox > .scrollbutton-down-stack,
 tabbrowser[treestyletab-vertical="true"] .tabs-alltabs-stack,
+tabbrowser[treestyletab-vertical="true"] .tabbrowser-arrowscrollbox + stack, /* "all tabs" button in Firefox 3 */
 tabbrowser[treestyletab-vertical="true"] .tabs-closebutton-box,
 tabbrowser[treestyletab-vertical="true"] .tab-drop-indicator-bar
  {
