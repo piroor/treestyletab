@@ -30,6 +30,10 @@
 <!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "Open as separate tabs">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace "Replace all tabs to the pages in the folder (Firefox default)">
 
+<!ENTITY config.loadDroppedLinkToNewChildTab.caption "Action for drag drop of links or URLs to existing tab">
+<!ENTITY config.loadDroppedLinkToNewChildTab.load    "Load link into the tab (Firefox default)">
+<!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "Open link in a new child tab of the tab">
+
 
 <!ENTITY config.tabs.advanced "Advanced">
 

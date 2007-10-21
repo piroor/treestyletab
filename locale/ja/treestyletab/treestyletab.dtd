@@ -30,6 +30,10 @@
 <!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "ばらばらのタブとして開く">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace "現在開いているすべてのタブをブックマークの内容で置き換える（Firefox初期状態）">
 
+<!ENTITY config.loadDroppedLinkToNewChildTab.caption "リンクやURLをタブにドラッグ＆ドロップした時">
+<!ENTITY config.loadDroppedLinkToNewChildTab.load    "ドロップ先のタブの中に読み込む（Firefox初期状態）">
+<!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "ドロップ先のタブのサブツリーに新しいタブを開く">
+
 
 <!ENTITY config.tabs.advanced "詳細">
 

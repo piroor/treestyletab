@@ -68,6 +68,9 @@
 		<preference id="browser.tabs.loadFolderAndReplace"
 			name="browser.tabs.loadFolderAndReplace"
 			type="bool"/>
+		<preference id="extensions.treestyletab.loadDroppedLinkToNewChildTab"
+			name="extensions.treestyletab.loadDroppedLinkToNewChildTab"
+			type="bool"/>
 	</preferences>
 
 	<groupbox>
@@ -96,6 +99,15 @@
 			<radio value="subtree" label="&config.openGroupBookmarkAsTabSubTree.subtree;"/>
 			<radio value="flat"    label="&config.openGroupBookmarkAsTabSubTree.flat;"/>
 			<radio value="replace" label="&config.openGroupBookmarkAsTabSubTree.replace;"/>
+		</radiogroup>
+	</groupbox>
+	<groupbox>
+		<caption label="&config.loadDroppedLinkToNewChildTab.caption;"/>
+		<radiogroup id="extensions.treestyletab.loadDroppedLinkToNewChildTab-radiogroup"
+			preference="extensions.treestyletab.loadDroppedLinkToNewChildTab"
+			orient="vertical">
+			<radio value="false" label="&config.loadDroppedLinkToNewChildTab.load;"/>
+			<radio value="true"  label="&config.loadDroppedLinkToNewChildTab.newTab;"/>
 		</radiogroup>
 	</groupbox>
 </prefpane>

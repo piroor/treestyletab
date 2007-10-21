@@ -85,7 +85,7 @@ var TreeStyleTabService = {
 	_ObserverService : null,
 	 
 /* API */ 
-	 
+	
 	readyToOpenChildTab : function(aFrameOrTabBrowser, aMultiple) 
 	{
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
@@ -118,7 +118,7 @@ var TreeStyleTabService = {
 	},
   
 /* Utilities */ 
-	 
+	
 	isEventFiredOnTabIcon : function(aEvent) 
 	{
 		var tab = this.getTabFromEvent(aEvent);
@@ -251,7 +251,7 @@ var TreeStyleTabService = {
 
 		return frame;
 	},
- 	
+ 
 	isTabVertical : function(aTabOrChild) 
 	{
 		var b = this.getTabBrowserFromChildren(aTabOrChild);
@@ -288,7 +288,7 @@ var TreeStyleTabService = {
 	},
   
 /* Initializing */ 
-	
+	 
 	init : function() 
 	{
 		if (!('gBrowser' in window)) return;
@@ -304,142 +304,8 @@ var TreeStyleTabService = {
 		this.addPrefListener(this);
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.levelMargin');
 
-		eval('nsContextMenu.prototype.openLinkInTab = '+
-			nsContextMenu.prototype.openLinkInTab.toSource().replace(
-				'{',
-				<><![CDATA[
-					{
-						TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);
-				]]></>
-			)
-		);
-		eval('nsContextMenu.prototype.openFrameInTab = '+
-			nsContextMenu.prototype.openFrameInTab.toSource().replace(
-				'{',
-				<><![CDATA[
-					{
-						TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);
-				]]></>
-			)
-		);
-
-		eval('window.handleLinkClick = '+
-			window.handleLinkClick.toSource().replace(
-				/openNewTabWith/g,
-				<><![CDATA[
-					TreeStyleTabService.readyToOpenChildTab(event.target.ownerDocument.defaultView);
-					openNewTabWith]]></>
-			)
-		);
-
-		eval('window.gotoHistoryIndex = '+
-			window.gotoHistoryIndex.toSource().replace(
-				/openUILinkIn/g,
-				<><![CDATA[
-					if (where == 'tab' || where == 'tabshifted')
-						TreeStyleTabService.readyToOpenChildTab();
-					openUILinkIn]]></>
-			)
-		);
-
-		eval('window.BrowserForward = '+
-			window.BrowserForward.toSource().replace(
-				/openUILinkIn/g,
-				<><![CDATA[
-					if (where == 'tab' || where == 'tabshifted')
-						TreeStyleTabService.readyToOpenChildTab();
-					openUILinkIn]]></>
-			)
-		);
-
-		eval('window.BrowserBack = '+
-			window.BrowserBack.toSource().replace(
-				/openUILinkIn/g,
-				<><![CDATA[
-					if (where == 'tab' || where == 'tabshifted')
-						TreeStyleTabService.readyToOpenChildTab();
-					openUILinkIn]]></>
-			)
-		);
-
-		eval('window.nsBrowserAccess.prototype.openURI = '+
-			window.nsBrowserAccess.prototype.openURI.toSource().replace(
-				/switch\s*\(aWhere\)/,
-				<><![CDATA[
-					if (aOpener &&
-						aWhere == Components.interfaces.nsIBrowserDOMWindow.OPEN_NEWTAB) {
-						TreeStyleTabService.readyToOpenChildTab(aOpener);
-					}
-					switch(aWhere)
-				]]></>
-			)
-		);
-		window.QueryInterface(Components.interfaces.nsIDOMChromeWindow).browserDOMWindow = null;
-		window.QueryInterface(Components.interfaces.nsIDOMChromeWindow).browserDOMWindow = new nsBrowserAccess();
-
-		eval('BookmarksCommand.openGroupBookmark = '+
-			BookmarksCommand.openGroupBookmark.toSource().replace(
-				'browser.addTab(uri);',
-				<><![CDATA[
-					var openedTab = browser.addTab(uri);
-					if (!TreeStyleTabService.getPref('browser.tabs.loadFolderAndReplace') &&
-						TreeStyleTabService.getPref('extensions.treestyletab.openGroupBookmarkAsTabSubTree') &&
-						!browser.__treestyletab__parentTab) {
-						TreeStyleTabService.readyToOpenChildTab(openedTab, true);
-					}
-				]]></>
-			).replace(
-				'if (index == index0)',
-				<><![CDATA[
-					TreeStyleTabService.stopToOpenChildTab(browser);
-					if (index == index0)]]></>
-			)
-		);
-
-
-
-		if ('MultipleTabService' in window) {
-			eval('MultipleTabService.showHideMenuItems = '+
-				MultipleTabService.showHideMenuItems.toSource().replace(
-					/var separators = /,
-					<><![CDATA[
-						(function(aPopup) {
-							var b;
-							var item;
-							var tabs;
-							if (aPopup.id == 'multipletab-selection-menu') {
-								b    = MultipleTabService.browser;
-								item = document.getElementById(TreeStyleTabService.kMENUITEM_REMOVESUBTREE_SELECTION);
-								tabs = MultipleTabService.getSelectedTabs();
-							}
-							else { // context
-								b    = TreeStyleTabService.getTabBrowserFromChildren(aPopup);
-								item = TreeStyleTabService.evaluateXPath(
-										'descendant::xul:menuitem[starts-with(@id, "'+TreeStyleTabService.kMENUITEM_REMOVESUBTREE_CONTEXT+'")]',
-										aPopup,
-										XPathResult.FIRST_ORDERED_NODE_TYPE
-									).singleNodeValue;
-								tabs = [b.mContextTab];
-							}
-
-							if (item.getAttribute('hidden') == 'true') return;
-
-							var hasSubTree = false;
-							for (var i = 0, maxi = tabs.length; i < maxi; i++)
-							{
-								if (!tabs[i].hasAttribute(TreeStyleTabService.kCHILDREN)) continue;
-								hasSubTree = true;
-								break;
-							}
-							if (hasSubTree)
-								item.removeAttribute('hidden');
-							else
-								item.setAttribute('hidden', true);
-						})(aPopup);
-						var separators = ]]></>
-				)
-			);
-		}
+		this.overrideGlobalFunctions();
+		this.overrideExtensions();
 
 		this.initTabBrowser(gBrowser);
 	},
@@ -456,7 +322,7 @@ var TreeStyleTabService = {
 		aTabBrowser.mTabContainer.addEventListener('dblclick', this, true);
 		aTabBrowser.mTabContainer.addEventListener('mousedown', this, true);
 		aTabBrowser.mTabContainer.addEventListener('select', this, true);
-		aTabBrowser.mPanelContainer.addEventListener('click', this, true);
+//		aTabBrowser.mPanelContainer.addEventListener('click', this, true);
 
 		aTabBrowser.__treestyletab__levelMargin = -1;
 
@@ -619,7 +485,8 @@ catch(e) {
 				'var tab = aEvent.target;',
 				<><![CDATA[
 					var tab = aEvent.target;
-					if (dropActionInfo.position != TreeStyleTabService.kDROP_ON) {
+					if (TreeStyleTabService.getPref('extensions.treestyletab.loadDroppedLinkToNewChildTab') ||
+						dropActionInfo.position != TreeStyleTabService.kDROP_ON) {
 						TreeStyleTabService.processDropAction(dropActionInfo, this, this.loadOneTab(getShortcutOrURI(url), null, null, null, bgLoad, false));
 						return;
 					}
@@ -822,7 +689,151 @@ catch(e) {
 			}
 		}
 	},
-   
+  
+	overrideGlobalFunctions : function() 
+	{
+		eval('nsContextMenu.prototype.openLinkInTab = '+
+			nsContextMenu.prototype.openLinkInTab.toSource().replace(
+				'{',
+				<><![CDATA[
+					{
+						TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);
+				]]></>
+			)
+		);
+		eval('nsContextMenu.prototype.openFrameInTab = '+
+			nsContextMenu.prototype.openFrameInTab.toSource().replace(
+				'{',
+				<><![CDATA[
+					{
+						TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);
+				]]></>
+			)
+		);
+
+		eval('window.handleLinkClick = '+
+			window.handleLinkClick.toSource().replace(
+				/openNewTabWith/g,
+				<><![CDATA[
+					TreeStyleTabService.readyToOpenChildTab(event.target.ownerDocument.defaultView);
+					openNewTabWith]]></>
+			)
+		);
+
+		eval('window.gotoHistoryIndex = '+
+			window.gotoHistoryIndex.toSource().replace(
+				/openUILinkIn/g,
+				<><![CDATA[
+					if (where == 'tab' || where == 'tabshifted')
+						TreeStyleTabService.readyToOpenChildTab();
+					openUILinkIn]]></>
+			)
+		);
+
+		eval('window.BrowserForward = '+
+			window.BrowserForward.toSource().replace(
+				/openUILinkIn/g,
+				<><![CDATA[
+					if (where == 'tab' || where == 'tabshifted')
+						TreeStyleTabService.readyToOpenChildTab();
+					openUILinkIn]]></>
+			)
+		);
+
+		eval('window.BrowserBack = '+
+			window.BrowserBack.toSource().replace(
+				/openUILinkIn/g,
+				<><![CDATA[
+					if (where == 'tab' || where == 'tabshifted')
+						TreeStyleTabService.readyToOpenChildTab();
+					openUILinkIn]]></>
+			)
+		);
+
+		eval('window.nsBrowserAccess.prototype.openURI = '+
+			window.nsBrowserAccess.prototype.openURI.toSource().replace(
+				/switch\s*\(aWhere\)/,
+				<><![CDATA[
+					if (aOpener &&
+						aWhere == Components.interfaces.nsIBrowserDOMWindow.OPEN_NEWTAB) {
+						TreeStyleTabService.readyToOpenChildTab(aOpener);
+					}
+					switch(aWhere)
+				]]></>
+			)
+		);
+		window.QueryInterface(Components.interfaces.nsIDOMChromeWindow).browserDOMWindow = null;
+		window.QueryInterface(Components.interfaces.nsIDOMChromeWindow).browserDOMWindow = new nsBrowserAccess();
+
+		eval('BookmarksCommand.openGroupBookmark = '+
+			BookmarksCommand.openGroupBookmark.toSource().replace(
+				'browser.addTab(uri);',
+				<><![CDATA[
+					var openedTab = browser.addTab(uri);
+					if (!TreeStyleTabService.getPref('browser.tabs.loadFolderAndReplace') &&
+						TreeStyleTabService.getPref('extensions.treestyletab.openGroupBookmarkAsTabSubTree') &&
+						!browser.__treestyletab__parentTab) {
+						TreeStyleTabService.readyToOpenChildTab(openedTab, true);
+					}
+				]]></>
+			).replace(
+				'if (index == index0)',
+				<><![CDATA[
+					TreeStyleTabService.stopToOpenChildTab(browser);
+					if (index == index0)]]></>
+			)
+		);
+	},
+ 
+	overrideExtensions : function() 
+	{
+		if ('MultipleTabService' in window) {
+			eval('MultipleTabService.showHideMenuItems = '+
+				MultipleTabService.showHideMenuItems.toSource().replace(
+					/var separators = /,
+					<><![CDATA[
+						(function(aPopup) {
+							var b;
+							var item;
+							var tabs;
+							if (aPopup.id == 'multipletab-selection-menu') {
+								b    = MultipleTabService.browser;
+								item = document.getElementById(TreeStyleTabService.kMENUITEM_REMOVESUBTREE_SELECTION);
+								tabs = MultipleTabService.getSelectedTabs();
+							}
+							else { // context
+								b    = TreeStyleTabService.getTabBrowserFromChildren(aPopup);
+								item = TreeStyleTabService.evaluateXPath(
+										'descendant::xul:menuitem[starts-with(@id, "'+TreeStyleTabService.kMENUITEM_REMOVESUBTREE_CONTEXT+'")]',
+										aPopup,
+										XPathResult.FIRST_ORDERED_NODE_TYPE
+									).singleNodeValue;
+								tabs = [b.mContextTab];
+							}
+
+							if (item.getAttribute('hidden') == 'true') return;
+
+							var hasSubTree = false;
+							for (var i = 0, maxi = tabs.length; i < maxi; i++)
+							{
+								if (!tabs[i].hasAttribute(TreeStyleTabService.kCHILDREN)) continue;
+								hasSubTree = true;
+								break;
+							}
+							if (hasSubTree)
+								item.removeAttribute('hidden');
+							else
+								item.setAttribute('hidden', true);
+						})(aPopup);
+						var separators = ]]></>
+				)
+			);
+		}
+
+		if ('autoHIDE' in window) {
+		}
+	},
+ 	 
 	destroy : function() 
 	{
 		this.destroyTabBrowser(gBrowser);
@@ -843,7 +854,7 @@ catch(e) {
 			this.destroyTab(tabs[i]);
 		}
 	},
-	 
+	
 	destroyTabBrowser : function(aTabBrowser) 
 	{
 		aTabBrowser.__treestyletab__observer.destroy();
@@ -866,7 +877,7 @@ catch(e) {
 		aTabBrowser.mTabContainer.removeEventListener('dblclick', this, true);
 		aTabBrowser.mTabContainer.removeEventListener('mousedown', this, true);
 		aTabBrowser.mTabContainer.removeEventListener('select', this, true);
-		aTabBrowser.mPanelContainer.removeEventListener('click', this, true);
+//		aTabBrowser.mPanelContainer.removeEventListener('click', this, true);
 	},
  
 	destroyTab : function(aTab, aTabBrowser) 
@@ -901,6 +912,7 @@ catch(e) {
 					this.onTabClick(aEvent);
 					return;
 				}
+/*
 				var isMiddleClick = (
 					aEvent.button == 1 ||
 					aEvent.button == 0 && (aEvent.ctrlKey || aEvent.metaKey)
@@ -914,6 +926,7 @@ catch(e) {
 					var b = this.getTabBrowserFromChildren(aEvent.currentTarget);
 					this.readyToOpenChildTab(b.selectedTab);
 				}
+*/
 				return;
 
 			case 'dblclick':

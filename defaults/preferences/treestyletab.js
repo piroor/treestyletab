@@ -1,16 +1,19 @@
+pref("extensions.treestyletab.tabbar.width",          200);
+pref("extensions.treestyletab.tabbar.position",       "left");
+pref("extensions.treestyletab.tabbar.scroll.smooth",  true);
+pref("extensions.treestyletab.tabbar.scroll.timeout", 250);
+pref("extensions.treestyletab.tabbar.style",          "default");
+pref("extensions.treestyletab.levelMargin",           12);
+
+pref("extensions.treestyletab.openGroupBookmarkAsTabSubTree", true);
+pref("extensions.treestyletab.loadDroppedLinkToNewChildTab",  false);
+
 pref("extensions.treestyletab.autoCollapseExpandSubTreeOnSelect",      true);
 pref("extensions.treestyletab.collapseExpandSubTree.dblclick",         false);
 pref("extensions.treestyletab.autoExpandSubTreeOnAppendChild",         true);
 pref("extensions.treestyletab.attachChildrenToGrandParentOnRemoveTab", true);
 // 0 = default, 1 = only visible tabs
 pref("extensions.treestyletab.focusMode", 1);
-pref("extensions.treestyletab.levelMargin", 12);
-pref("extensions.treestyletab.tabbar.width", 200);
-pref("extensions.treestyletab.tabbar.position", "left");
-pref("extensions.treestyletab.tabbar.scroll.smooth", true);
-pref("extensions.treestyletab.tabbar.scroll.timeout", 250);
-pref("extensions.treestyletab.openGroupBookmarkAsTabSubTree", true);
-pref("extensions.treestyletab.tabbar.style", "default");
 
 
 pref("browser.link.open_newwindow.restriction", 0);
