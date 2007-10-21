@@ -5,3 +5,32 @@ radio.image label.radio-label {
 	-moz-box-align: center;
 }
 
+
+radio[pane] {
+	list-style-image: url("jar:resource:///chrome/classic.jar!/skin/classic/browser/preferences/Options.png");
+}
+
+radio[pane="prefpane-appearance"] {
+	-moz-image-region: rect(0px, 32px, 32px, 0px);
+}
+radio[pane="prefpane-appearance"]:hover,
+radio[pane="prefpane-appearance"][selected="true"] {
+	-moz-image-region: rect(32px, 32px, 64px, 0px);
+}
+
+radio[pane="prefpane-tab"] {
+	-moz-image-region: rect(0px, 64px, 32px, 32px);
+}
+radio[pane="prefpane-tab"]:hover,
+radio[pane="prefpane-tab"][selected="true"] {
+	-moz-image-region: rect(32px, 64px, 64px, 32px);
+}
+
+radio[pane="prefpane-advanced"] {
+	-moz-image-region: rect(0px, 224px, 32px, 192px);
+}
+radio[pane="prefpane-advanced"]:hover,
+radio[pane="prefpane-advanced"][selected="true"] {
+	-moz-image-region: rect(32px, 224px, 64px, 192px);
+}
+
