@@ -330,17 +330,13 @@ var TreeStyleTabService = {
 					if (!TreeStyleTabService.getPref('browser.tabs.loadFolderAndReplace') &&
 						TreeStyleTabService.getPref('extensions.treestyletab.openGroupBookmarkAsTabSubTree') &&
 						!browser.__treestyletab__parentTab) {
-						browser.__treestyletab__readyToAttachNewTab   = true;
-						browser.__treestyletab__readyToAttachMultiple = true;
-						browser.__treestyletab__parentTab             = openedTab.getAttribute(TreeStyleTabService.kID);
+						TreeStyleTabService.readyToOpenChildTab(openedTab, true);
 					}
 				]]></>
 			).replace(
 				'if (index == index0)',
 				<><![CDATA[
-					browser.__treestyletab__readyToAttachNewTab   = false;
-					browser.__treestyletab__readyToAttachMultiple = false;
-					browser.__treestyletab__parentTab             = null;
+					TreeStyleTabService.stopToOpenChildTab(browser);
 					if (index == index0)]]></>
 			)
 		);
@@ -861,9 +857,7 @@ catch(e) {
 				}
 				if (node.href && isMiddleClick) {
 					var b = this.getTabBrowserFromChildren(aEvent.currentTarget);
-					b.__treestyletab__readyToAttachNewTab   = true;
-					b.__treestyletab__readyToAttachMultiple = false;
-					b.__treestyletab__parentTab = b.selectedTab.getAttribute(this.kID);
+					this.readyToOpenChildTab(b.selectedTab);
 				}
 				return;
 
@@ -920,9 +914,7 @@ catch(e) {
 		}
 
 		if (!b.__treestyletab__readyToAttachMultiple) {
-			b.__treestyletab__readyToAttachNewTab   = false;
-			b.__treestyletab__readyToAttachMultiple = false;
-			b.__treestyletab__parentTab = '';
+			this.stopToOpenChildTab(b);
 		}
 	},
  
@@ -1586,15 +1578,45 @@ catch(e) {
 		}
 	},
  
-	readyToOpenChildTab : function(aFrame) 
+	readyToOpenChildTab : function(aFrameOrTabBrowser, aMultiple) 
 	{
-		if (!aFrame)
-			aFrame = TreeStyleTabService.browser.contentWindow;
+		var frame = aFrameOrTabBrowser;
+		if (frame == '[object XULElement]') {
+			if (frame.localName == 'tab') {
+				frame = frame.linkedBrowser.contentWindow;
+			}
+			else if (frame.localName == 'browser') {
+				frame = frame.contentWindow;
+			}
+			else {
+				frame = this.getTabBrowserFromChildren(frame);
+				if (!frame) return;
+				frame = frame.contentWindow;
+			}
+		}
+		if (!frame)
+			frame = this.browser.contentWindow;
 
 		var ownerBrowser = ('SplitBrowser' in window) ? this.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(aFrame.top).browser) : gBrowser ;
 		ownerBrowser.__treestyletab__readyToAttachNewTab   = true;
+		ownerBrowser.__treestyletab__readyToAttachMultiple = aMultiple || false ;
+		ownerBrowser.__treestyletab__parentTab             = this.getTabFromFrame(frame, ownerBrowser).getAttribute(this.kID);
+	},
+	stopToOpenChildTab : function(aFrameOrTabBrowser) 
+	{
+		var frame = aFrameOrTabBrowser;
+		if (frame == '[object XULElement]') {
+			frame = this.getTabBrowserFromChildren(frame);
+			if (!frame) return;
+			frame = frame.contentWindow;
+		}
+		if (!frame)
+			frame = this.browser.contentWindow;
+
+		var ownerBrowser = ('SplitBrowser' in window) ? this.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(frame.top).browser) : gBrowser ;
+		ownerBrowser.__treestyletab__readyToAttachNewTab   = false;
 		ownerBrowser.__treestyletab__readyToAttachMultiple = false;
-		ownerBrowser.__treestyletab__parentTab             = this.getTabFromFrame(aFrame, ownerBrowser).getAttribute(this.kID);
+		ownerBrowser.__treestyletab__parentTab             = null;
 	},
  
 /* attach/part */ 
