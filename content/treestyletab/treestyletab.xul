@@ -7,6 +7,7 @@
          xmlns:html="http://www.w3.org/1999/xhtml">
 
 <script src="treestyletab.js" type="application/x-javascript"/>
+<script src="hacks.js" type="application/x-javascript"/>
 
 
 <menupopup id="multipletab-selection-menu">
