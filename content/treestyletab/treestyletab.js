@@ -692,6 +692,8 @@ catch(e) {
   
 	overrideGlobalFunctions : function() 
 	{
+		var funcs;
+
 		eval('nsContextMenu.prototype.openLinkInTab = '+
 			nsContextMenu.prototype.openLinkInTab.toSource().replace(
 				'{',
@@ -711,44 +713,34 @@ catch(e) {
 			)
 		);
 
-		eval('window.handleLinkClick = '+
-			window.handleLinkClick.toSource().replace(
-				/openNewTabWith/g,
-				<><![CDATA[
-					TreeStyleTabService.readyToOpenChildTab(event.target.ownerDocument.defaultView);
-					openNewTabWith]]></>
-			)
-		);
+		funcs = 'handleLinkClick __splitbrowser__handleLinkClick __ctxextensions__handleLinkClick'.split(' ');
+		for (var i in funcs)
+		{
+			if (funcs[i] in window)
+				eval('window.'+funcs[i]+' = '+
+					window[funcs[i]].toSource().replace(
+						/openNewTabWith\(/g,
+						<><![CDATA[
+							TreeStyleTabService.readyToOpenChildTab(event.target.ownerDocument.defaultView);
+							openNewTabWith(]]></>
+					)
+				);
+		}
 
-		eval('window.gotoHistoryIndex = '+
-			window.gotoHistoryIndex.toSource().replace(
-				/openUILinkIn/g,
-				<><![CDATA[
-					if (where == 'tab' || where == 'tabshifted')
-						TreeStyleTabService.readyToOpenChildTab();
-					openUILinkIn]]></>
-			)
-		);
-
-		eval('window.BrowserForward = '+
-			window.BrowserForward.toSource().replace(
-				/openUILinkIn/g,
-				<><![CDATA[
-					if (where == 'tab' || where == 'tabshifted')
-						TreeStyleTabService.readyToOpenChildTab();
-					openUILinkIn]]></>
-			)
-		);
-
-		eval('window.BrowserBack = '+
-			window.BrowserBack.toSource().replace(
-				/openUILinkIn/g,
-				<><![CDATA[
-					if (where == 'tab' || where == 'tabshifted')
-						TreeStyleTabService.readyToOpenChildTab();
-					openUILinkIn]]></>
-			)
-		);
+		funcs = 'gotoHistoryIndex BrowserForward BrowserBack __rewindforward__BrowserForward __rewindforward__BrowserBack'.split(' ');
+		for (var i in funcs)
+		{
+			if (funcs[i] in window)
+				eval('window.'+funcs[i]+' = '+
+					window[funcs[i]].toSource().replace(
+						/openUILinkIn\(/g,
+						<><![CDATA[
+							if (where == 'tab' || where == 'tabshifted')
+								TreeStyleTabService.readyToOpenChildTab();
+							openUILinkIn(]]></>
+					)
+				);
+		}
 
 		eval('window.nsBrowserAccess.prototype.openURI = '+
 			window.nsBrowserAccess.prototype.openURI.toSource().replace(
