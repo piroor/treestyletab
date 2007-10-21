@@ -84,8 +84,41 @@ var TreeStyleTabService = {
 	},
 	_ObserverService : null,
 	 
+/* API */ 
+	 
+	readyToOpenChildTab : function(aFrameOrTabBrowser, aMultiple) 
+	{
+		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
+		if (!frame) return;
+
+		var ownerBrowser = ('SplitBrowser' in window) ? this.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(frame.top).browser) : gBrowser ;
+		ownerBrowser.__treestyletab__readyToAttachNewTab   = true;
+		ownerBrowser.__treestyletab__readyToAttachMultiple = aMultiple || false ;
+		ownerBrowser.__treestyletab__parentTab             = this.getTabFromFrame(frame, ownerBrowser).getAttribute(this.kID);
+	},
+ 
+	stopToOpenChildTab : function(aFrameOrTabBrowser) 
+	{
+		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
+		if (!frame) return;
+
+		var ownerBrowser = ('SplitBrowser' in window) ? this.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(frame.top).browser) : gBrowser ;
+		ownerBrowser.__treestyletab__readyToAttachNewTab   = false;
+		ownerBrowser.__treestyletab__readyToAttachMultiple = false;
+		ownerBrowser.__treestyletab__parentTab             = null;
+	},
+ 
+	checkOpenChildTab : function(aFrameOrTabBrowser) 
+	{
+		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
+		if (!frame) return false;
+
+		var ownerBrowser = ('SplitBrowser' in window) ? this.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(frame.top).browser) : gBrowser ;
+		return ownerBrowser.__treestyletab__readyToAttachNewTab ? true : false ;
+	},
+  
 /* Utilities */ 
-	
+	 
 	isEventFiredOnTabIcon : function(aEvent) 
 	{
 		var tab = this.getTabFromEvent(aEvent);
@@ -197,6 +230,28 @@ var TreeStyleTabService = {
 		return (target.localName == 'tabbrowser') ? target : null ;
 	},
  
+	getFrameFromTabBrowserElements : function(aFrameOrTabBrowser) 
+	{
+		var frame = aFrameOrTabBrowser;
+		if (frame == '[object XULElement]') {
+			if (frame.localName == 'tab') {
+				frame = frame.linkedBrowser.contentWindow;
+			}
+			else if (frame.localName == 'browser') {
+				frame = frame.contentWindow;
+			}
+			else {
+				frame = this.getTabBrowserFromChildren(frame);
+				if (!frame) return null;
+				frame = frame.contentWindow;
+			}
+		}
+		if (!frame)
+			frame = this.browser.contentWindow;
+
+		return frame;
+	},
+ 	
 	isTabVertical : function(aTabOrChild) 
 	{
 		var b = this.getTabBrowserFromChildren(aTabOrChild);
@@ -820,7 +875,7 @@ catch(e) {
 	},
    
 /* Event Handling */ 
-	 
+	
 	handleEvent : function(aEvent) 
 	{
 		switch (aEvent.type)
@@ -1137,7 +1192,7 @@ catch(e) {
 		}
 		return true;
 	},
- 	 
+  
 /* Tab Utilities */ 
 	
 	getTabValue : function(aTab, aKey) 
@@ -1490,7 +1545,7 @@ catch(e) {
 	},
   
 /* Commands */ 
-	 
+	
 	initTabbar : function(aTabBrowser, aPosition) 
 	{
 		if (!aPosition) aPosition = this.getPref('extensions.treestyletab.tabbar.position');
@@ -1576,47 +1631,6 @@ catch(e) {
 				this.levelMarginProp = 'margin-top';
 			}
 		}
-	},
- 
-	readyToOpenChildTab : function(aFrameOrTabBrowser, aMultiple) 
-	{
-		var frame = aFrameOrTabBrowser;
-		if (frame == '[object XULElement]') {
-			if (frame.localName == 'tab') {
-				frame = frame.linkedBrowser.contentWindow;
-			}
-			else if (frame.localName == 'browser') {
-				frame = frame.contentWindow;
-			}
-			else {
-				frame = this.getTabBrowserFromChildren(frame);
-				if (!frame) return;
-				frame = frame.contentWindow;
-			}
-		}
-		if (!frame)
-			frame = this.browser.contentWindow;
-
-		var ownerBrowser = ('SplitBrowser' in window) ? this.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(aFrame.top).browser) : gBrowser ;
-		ownerBrowser.__treestyletab__readyToAttachNewTab   = true;
-		ownerBrowser.__treestyletab__readyToAttachMultiple = aMultiple || false ;
-		ownerBrowser.__treestyletab__parentTab             = this.getTabFromFrame(frame, ownerBrowser).getAttribute(this.kID);
-	},
-	stopToOpenChildTab : function(aFrameOrTabBrowser) 
-	{
-		var frame = aFrameOrTabBrowser;
-		if (frame == '[object XULElement]') {
-			frame = this.getTabBrowserFromChildren(frame);
-			if (!frame) return;
-			frame = frame.contentWindow;
-		}
-		if (!frame)
-			frame = this.browser.contentWindow;
-
-		var ownerBrowser = ('SplitBrowser' in window) ? this.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(frame.top).browser) : gBrowser ;
-		ownerBrowser.__treestyletab__readyToAttachNewTab   = false;
-		ownerBrowser.__treestyletab__readyToAttachMultiple = false;
-		ownerBrowser.__treestyletab__parentTab             = null;
 	},
  
 /* attach/part */ 
@@ -2144,7 +2158,7 @@ catch(e) {
 	},
   
 /* Pref Listener */ 
-	 
+	
 	domain : 'extensions.treestyletab', 
  
 	observe : function(aSubject, aTopic, aPrefName) 
@@ -2165,7 +2179,7 @@ catch(e) {
 	},
   
 /* Save/Load Prefs */ 
-	 
+	
 	get Prefs() 
 	{
 		if (!this._Prefs) {
