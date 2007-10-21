@@ -30,7 +30,7 @@ tabbrowser[treestyletab-vertical="true"] .tab-drop-indicator-bar
 	display: none !important;
 }
 
-/* to modify browser's margin-left/margin-right dynamically */
+/* to modify browser's margin dynamically */
 #appcontent {
 	position: relative;
 	margin: 0;

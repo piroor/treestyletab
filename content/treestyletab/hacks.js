@@ -128,11 +128,13 @@ TreeStyleTabService.overrideExtensions = function() {
 								appcontent.style.marginRight = '-'+autoHIDE.__treestyletab__tabBarWidth+'px';
 								appcontent.__treestyletab__resized = true;
 							}
+/* doesn't work this hack for rightside tab bar
 							else if (treeStyleTabPos == 'right' &&
 								!appcontent.__treestyletab__resized) {
 								appcontent.style.marginLeft = '-'+autoHIDE.__treestyletab__tabBarWidth+'px';
 								appcontent.__treestyletab__resized = true;
 							}
+*/
 							window.setTimeout('autoHIDE.MoveC(true);', 100);
 							return;
 						}
