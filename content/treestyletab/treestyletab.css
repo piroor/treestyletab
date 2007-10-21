@@ -16,7 +16,8 @@ tab[treestyletab-drop-position] .treestyletab-drop-marker {
 }
 
 tab[treestyletab-collapsed="true"],
-.tabbrowser-strip[collapsed="true"]+splitter {
+.tabbrowser-strip[collapsed="true"]+splitter,
+#appcontent[ahFull="true"] .tabbrowser-strip[ahHIDE="true"]+splitter /* AutoHide */ {
 	visibility: collapse;
 }
 
@@ -27,6 +28,12 @@ tabbrowser[treestyletab-vertical="true"] .tabs-closebutton-box,
 tabbrowser[treestyletab-vertical="true"] .tab-drop-indicator-bar
  {
 	display: none !important;
+}
+
+/* to modify browser's margin-left/margin-right dynamically */
+#appcontent {
+	position: relative;
+	margin: 0;
 }
 
 tabbrowser[treestyletab-vertical="true"] > tabbox {
