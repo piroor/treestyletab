@@ -1123,7 +1123,10 @@ catch(e) {
 			this.partTab(aTarget);
 		}
 		else if (aInfo.action & this.kACTION_ATTACH) {
-			this.attachTabTo(aTarget, aInfo.parent);
+			if (aInfo.parent)
+				this.attachTabTo(aTarget, aInfo.parent);
+			else
+				this.partTab(aTarget);
 		}
 		else {
 			return false;
