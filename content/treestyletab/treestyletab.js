@@ -273,7 +273,7 @@ var TreeStyleTabService = {
 				/openNewTabWith/g,
 				<><![CDATA[
 					TreeStyleTabService.readyToOpenChildTab(event.target.ownerDocument.defaultView);
-					openNewTabWith(]]></>
+					openNewTabWith]]></>
 			)
 		);
 
