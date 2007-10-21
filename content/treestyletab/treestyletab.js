@@ -108,7 +108,7 @@ var TreeStyleTabService = {
 		ownerBrowser.__treestyletab__parentTab             = null;
 	},
  
-	checkOpenChildTab : function(aFrameOrTabBrowser) 
+	checkToOpenChildTab : function(aFrameOrTabBrowser) 
 	{
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
 		if (!frame) return false;
