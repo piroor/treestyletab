@@ -773,6 +773,33 @@ catch(e) {
 				]]></>
 			)
 		);
+		eval('nsContextMenu.prototype.viewImage = '+
+			nsContextMenu.prototype.viewImage.toSource().replace(
+				'openUILink(',
+				<><![CDATA[
+					if (String(whereToOpenLink(e, false, true)).indexOf('tab') == 0)
+						TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);
+					openUILink(]]></>
+			)
+		);
+		eval('nsContextMenu.prototype.viewBGImage = '+
+			nsContextMenu.prototype.viewBGImage.toSource().replace(
+				'openUILink(',
+				<><![CDATA[
+					if (String(whereToOpenLink(e, false, true)).indexOf('tab') == 0)
+						TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);
+					openUILink(]]></>
+			)
+		);
+		eval('nsContextMenu.prototype.addDictionaries = '+
+			nsContextMenu.prototype.addDictionaries.toSource().replace(
+				'openUILinkIn(',
+				<><![CDATA[
+					if (where.indexOf('tab') == 0)
+						TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);
+					openUILinkIn(]]></>
+			)
+		);
 
 		funcs = 'handleLinkClick __splitbrowser__handleLinkClick __ctxextensions__handleLinkClick'.split(' ');
 		for (var i in funcs)
@@ -803,6 +830,15 @@ catch(e) {
 				);
 		}
 
+		eval('window.BrowserHomeClick = '+
+			window.BrowserHomeClick.toSource().replace(
+				'gBrowser.loadTabs(',
+				<><![CDATA[
+					TreeStyleTabService.readyToOpenNewTabGroup(gBrowser);
+					gBrowser.loadTabs(]]></>
+			)
+		);
+
 		eval('window.nsBrowserAccess.prototype.openURI = '+
 			window.nsBrowserAccess.prototype.openURI.toSource().replace(
 				/switch\s*\(aWhere\)/,
@@ -817,6 +853,16 @@ catch(e) {
 		);
 		window.QueryInterface(Components.interfaces.nsIDOMChromeWindow).browserDOMWindow = null;
 		window.QueryInterface(Components.interfaces.nsIDOMChromeWindow).browserDOMWindow = new nsBrowserAccess();
+
+		eval('FeedHandler.loadFeed = '+
+			FeedHandler.loadFeed.toSource().replace(
+				'openUILink(',
+				<><![CDATA[
+					if (String(whereToOpenLink(event, false, true)).indexOf('tab') == 0)
+						TreeStyleTabService.readyToOpenChildTab(gBrowser);
+					openUILink(]]></>
+			)
+		);
 
 		if ('BookmarksCommand' in window) { // Firefox 2
 			eval('BookmarksCommand.openGroupBookmark = '+
