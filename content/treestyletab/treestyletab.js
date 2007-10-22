@@ -1746,13 +1746,15 @@ catch(e) {
 
 		if (!aInfo.dontExpand) {
 			if (
+/*
 				(
 					aParent.getAttribute(this.kSUBTREE_COLLAPSED) == 'true' ||
-					children.indexOf('|') < 0 // first child
+					children.indexOf('|') > -1 // not a first child
 				) &&
+*/
 				this.getPref('extensions.treestyletab.autoCollapseExpandSubTreeOnSelect')
 				) {
-				this.collapseExpandTreesIntelligentlyFor(aChild);
+				this.collapseExpandTreesIntelligentlyFor(aParent);
 				var p = aParent;
 				do {
 					this.collapseExpandTabSubTree(p, false);
@@ -2010,7 +2012,7 @@ catch(e) {
 		var b = this.getTabBrowserFromChildren(aTab);
 		if (b.__treestyletab__doingCollapseExpand) return;
 
-		var parent = this.getParentTab(aTab);
+		var sameParentTab = this.getParentTab(aTab);
 		var expandedParentTabs = [
 				aTab.getAttribute(this.kID)
 			];
@@ -2035,12 +2037,15 @@ catch(e) {
 			parentTab = this.getParentTab(collapseTab);
 			if (parentTab) {
 				dontCollapse = true;
-				do {
-					if (parentTab != parent) continue;
-					dontCollapse = false;
-					break;
+				if (parentTab.getAttribute(this.kSUBTREE_COLLAPSED) != 'true') {
+					do {
+						if (expandedParentTabs.indexOf(parentTab.getAttribute(this.kID)) < 0)
+							continue;
+						dontCollapse = false;
+						break;
+					}
+					while (parentTab = this.getParentTab(parentTab));
 				}
-				while (parentTab = this.getParentTab(parentTab));
 			}
 
 			if (!dontCollapse)
