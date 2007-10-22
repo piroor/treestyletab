@@ -57,28 +57,28 @@ tabbrowser[treestyletab-vertical="true"] .tabbrowser-arrowscrollbox > scrollbox 
 */
 
 
-tabbrowser[treestyletab-tabbar-position="right"] .tabbrowser-tab .tab-image-middle {
+tabbrowser[treestyletab-vertical="true"][treestyletab-appearance-inverted="true"] .tabbrowser-tab .tab-image-middle {
 	-moz-box-ordinal-group: 20;
 }
 
-tabbrowser[treestyletab-tabbar-position="right"] .tabbrowser-tab .tab-close-button {
+tabbrowser[treestyletab-vertical="true"][treestyletab-appearance-inverted="true"] .tabbrowser-tab .tab-close-button {
 	-moz-box-ordinal-group: 10;
 }
 
 
-tabbrowser[treestyletab-tabbar-position="right"] .tabbrowser-tab .tab-icon {
+tabbrowser[treestyletab-vertical="true"][treestyletab-appearance-inverted="true"] .tabbrowser-tab .tab-icon {
 	-moz-box-ordinal-group: 50;
 }
 
-tabbrowser[treestyletab-tabbar-position="right"] .tabbrowser-tab html|canvas.informationaltab-thumbnail {
+tabbrowser[treestyletab-vertical="true"][treestyletab-appearance-inverted="true"] .tabbrowser-tab html|canvas.informationaltab-thumbnail {
 	-moz-box-ordinal-group: 10;
 }
 
-tabbrowser[treestyletab-tabbar-position="right"] .tabbrowser-tab .tab-text {
+tabbrowser[treestyletab-vertical="true"][treestyletab-appearance-inverted="true"] .tabbrowser-tab .tab-text {
 	-moz-box-ordinal-group: 20;
 }
 
-tabbrowser[treestyletab-tabbar-position="right"] .tabbrowser-tab .treestyletab-counter-container {
+tabbrowser[treestyletab-vertical="true"][treestyletab-appearance-inverted="true"] .tabbrowser-tab .treestyletab-counter-container {
 	-moz-box-ordinal-group: 30;
 }
 

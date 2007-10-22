@@ -11,6 +11,7 @@ var TreeStyleTabService = {
 	kDROP_POSITION     : 'treestyletab-drop-position',
 	kTABBAR_POSITION   : 'treestyletab-tabbar-position',
 	kVERTICAL          : 'treestyletab-vertical',
+	kINVERTED          : 'treestyletab-appearance-inverted',
 	kSTYLE             : 'treestyletab-style',
 
 	kTWISTY                : 'treestyletab-twisty',
@@ -42,7 +43,6 @@ var TreeStyleTabService = {
 
 	kTABBAR_HORIZONTAL : 3,
 	kTABBAR_VERTICAL   : 12,
-	kTABBAR_INVERTED   : 10,
 
 	levelMargin      : 12,
 	levelMarginProp  : 'margin-left',
@@ -1587,21 +1587,29 @@ catch(e) {
 			aTabBrowser.setAttribute(this.kVERTICAL, true);
 			if (pos == this.kTABBAR_RIGHT) {
 				aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'right');
+				if (this.getPref('extensions.treestyletab.tabbar.invertUI')) {
+					aTabBrowser.setAttribute(this.kINVERTED, 'true');
+					this.levelMarginProp = 'margin-right';
+				}
+				else {
+					aTabBrowser.removeAttribute(this.kINVERTED);
+					this.levelMarginProp = 'margin-left';
+				}
 				window.setTimeout(function() {
 					aTabBrowser.mStrip.setAttribute('ordinal', 30);
 					splitter.setAttribute('ordinal', 20);
 					aTabBrowser.mPanelContainer.setAttribute('ordinal', 10);
 				}, 0);
-				this.levelMarginProp = 'margin-right';
 			}
 			else {
 				aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'left');
+				aTabBrowser.removeAttribute(this.kINVERTED);
+				this.levelMarginProp = 'margin-left';
 				window.setTimeout(function() {
 					aTabBrowser.mStrip.setAttribute('ordinal', 10);
 					splitter.setAttribute('ordinal', 20);
 					aTabBrowser.mPanelContainer.setAttribute('ordinal', 30);
 				}, 0);
-				this.levelMarginProp = 'margin-left';
 			}
 		}
 		else {
@@ -1619,21 +1627,29 @@ catch(e) {
 			aTabBrowser.removeAttribute(this.kVERTICAL);
 			if (pos == this.kTABBAR_BOTTOM) {
 				aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'bottom');
+				if (this.getPref('extensions.treestyletab.tabbar.invertUI')) {
+					aTabBrowser.setAttribute(this.kINVERTED, 'true');
+					this.levelMarginProp = 'margin-bottom';
+				}
+				else {
+					aTabBrowser.removeAttribute(this.kINVERTED);
+					this.levelMarginProp = 'margin-top';
+				}
 				window.setTimeout(function() {
 					aTabBrowser.mStrip.setAttribute('ordinal', 30);
 					splitter.setAttribute('ordinal', 20);
 					aTabBrowser.mPanelContainer.setAttribute('ordinal', 10);
 				}, 0);
-				this.levelMarginProp = 'margin-bottom';
 			}
 			else {
 				aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'top');
+				aTabBrowser.removeAttribute(this.kINVERTED);
+				this.levelMarginProp = 'margin-top';
 				window.setTimeout(function() {
 					aTabBrowser.mStrip.setAttribute('ordinal', 10);
 					splitter.setAttribute('ordinal', 20);
 					aTabBrowser.mPanelContainer.setAttribute('ordinal', 30);
 				}, 0);
-				this.levelMarginProp = 'margin-top';
 			}
 		}
 	},
@@ -2306,7 +2322,8 @@ TreeStyleTabBrowserObserver.prototype = {
 				switch (aData)
 				{
 					case 'extensions.treestyletab.tabbar.position':
-						TreeStyleTabService.initTabbar(this.mTabBrowser, value);
+					case 'extensions.treestyletab.tabbar.invertUI':
+						TreeStyleTabService.initTabbar(this.mTabBrowser);
 						TreeStyleTabService.updateAllTabsIndent(this.mTabBrowser);
 						break;
 

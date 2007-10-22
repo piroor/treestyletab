@@ -10,7 +10,8 @@
 	title="&config.title;"
 	onload="sizeToContent();">
 
-<prefpane id="prefpane-appearance" label="&config.tabs.appearance;">
+<prefpane id="prefpane-appearance" label="&config.tabs.appearance;"
+	onpaneload="onChangeTabbarPosition();">
 	<preferences>
 		<preference id="extensions.treestyletab.tabbar.scroll.smooth"
 			name="extensions.treestyletab.tabbar.scroll.smooth"
@@ -21,6 +22,9 @@
 		<preference id="extensions.treestyletab.tabbar.style"
 			name="extensions.treestyletab.tabbar.style"
 			type="string"/>
+		<preference id="extensions.treestyletab.tabbar.invertUI"
+			name="extensions.treestyletab.tabbar.invertUI"
+			type="bool"/>
 	</preferences>
 
 	<checkbox id="extensions.treestyletab.tabbar.scroll.smooth-check"
@@ -30,9 +34,18 @@
 		<caption label="&config.tabbar.position.caption;"/>
 		<radiogroup id="extensions.treestyletab.tabbar.position-radiogroup"
 			preference="extensions.treestyletab.tabbar.position"
-			orient="horizontal">
-			<radio value="left" label="&config.tabbar.position.left;"/>
-			<radio value="right" label="&config.tabbar.position.right;"/>
+			orient="horizontal"
+			oncommand="onChangeTabbarPosition();">
+			<vbox pack="start">
+				<radio value="left" label="&config.tabbar.position.left;"/>
+			</vbox>
+			<vbox pack="start">
+				<radio value="right" label="&config.tabbar.position.right;"/>
+				<checkbox id="extensions.treestyletab.tabbar.invertUI-check"
+					preference="extensions.treestyletab.tabbar.invertUI"
+					label="&config.tabbar.invertUI;"
+					disabled="true"/>
+			</vbox>
 		</radiogroup>
 	</groupbox>
 	<groupbox>

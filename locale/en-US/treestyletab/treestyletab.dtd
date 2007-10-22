@@ -8,6 +8,7 @@
 <!ENTITY config.tabbar.position.caption "Tab bar position">
 <!ENTITY config.tabbar.position.left    "Leftside">
 <!ENTITY config.tabbar.position.right   "Rightside">
+<!ENTITY config.tabbar.invertUI         "Invert appearance of tabs and tree">
 
 <!ENTITY config.tabbar.style.caption "Appearance of the tab bar">
 <!ENTITY config.tabbar.style.default "Plain">
