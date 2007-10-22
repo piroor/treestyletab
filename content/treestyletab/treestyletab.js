@@ -83,9 +83,17 @@ var TreeStyleTabService = {
 		return this._ObserverService;
 	},
 	_ObserverService : null,
+
+	get IOService() {
+		if (!this._IOService) {
+			this._IOService = Components.classes['@mozilla.org/network/io-service;1'].getService(Components.interfaces.nsIIOService);
+		}
+		return this._IOService;
+	},
+	_IOService : null,
 	 
 /* API */ 
-	
+	 
 	readyToOpenChildTab : function(aFrameOrTabBrowser, aMultiple) 
 	{
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
@@ -299,14 +307,31 @@ var TreeStyleTabService = {
 		}
 		return aTabs;
 	},
+ 
+	makeURIFromSpec : function(aURI) 
+	{
+		var newURI;
+		aURI = aURI || '';
+		if (aURI && String(aURI).indexOf('file:') == 0) {
+			var fileHandler = this.IOService.getProtocolHandler('file').QueryInterface(Components.interfaces.nsIFileProtocolHandler);
+			var tempLocalFile = fileHandler.getFileFromURLSpec(aURI);
+			newURI = this.IOService.newFileURI(tempLocalFile);
+		}
+		else {
+			newURI = this.IOService.newURI(aURI, null, null);
+		}
+		return newURI;
+	},
   
 /* Initializing */ 
-	 
+	
 	init : function() 
 	{
 		if (!('gBrowser' in window)) return;
 
 		window.removeEventListener('load', this, false);
+
+		document.getElementById('contentAreaContextMenu').addEventListener('popupshowing', this, false);
 
 		if (this.getPref('extensions.treestyletab.inSubbrowsers.enabled')) {
 			var appcontent = document.getElementById('appcontent');
@@ -322,7 +347,7 @@ var TreeStyleTabService = {
 
 		this.initTabBrowser(gBrowser);
 	},
-	 
+	
 	initTabBrowser : function(aTabBrowser) 
 	{
 		this.initTabbar(aTabBrowser);
@@ -825,12 +850,14 @@ catch(e) {
 			);
 		}
 	},
-  	
+  
 	destroy : function() 
 	{
 		this.destroyTabBrowser(gBrowser);
 
 		window.removeEventListener('unload', this, false);
+
+		document.getElementById('contentAreaContextMenu').removeEventListener('popupshowing', this, false);
 
 		if (this.getPref('extensions.treestyletab.inSubbrowsers.enabled')) {
 			var appcontent = document.getElementById('appcontent');
@@ -846,7 +873,7 @@ catch(e) {
 			this.destroyTab(tabs[i]);
 		}
 	},
-	
+	 
 	destroyTabBrowser : function(aTabBrowser) 
 	{
 		aTabBrowser.__treestyletab__observer.destroy();
@@ -878,7 +905,7 @@ catch(e) {
 	},
    
 /* Event Handling */ 
-	
+	 
 	handleEvent : function(aEvent) 
 	{
 		switch (aEvent.type)
@@ -949,7 +976,8 @@ catch(e) {
 				return;
 
 			case 'popupshowing':
-//				this.showHideMenuItems(aEvent.target);
+				if (aEvent.target != aEvent.currentTarget) return;
+				this.initContextMenu();
 				return;
 
 			case 'SubBrowserAdded':
@@ -1197,7 +1225,21 @@ catch(e) {
 		}
 		return true;
 	},
-  
+ 
+	initContextMenu : function() 
+	{
+		var item = document.getElementById('context-treestyletab-openSelectionLinks');
+		var sep  = document.getElementById('context-treestyletab-openSelectionLinks-separator');
+		if (this.getPref('extensions.treestyletab.show.openSelectionLinks') && this.getSelectionLinks().length) {
+			item.removeAttribute('hidden');
+			sep.removeAttribute('hidden');
+		}
+		else {
+			item.setAttribute('hidden', true);
+			sep.setAttribute('hidden', true);
+		}
+	},
+ 	 
 /* Tab Utilities */ 
 	
 	getTabValue : function(aTab, aKey) 
@@ -1550,7 +1592,7 @@ catch(e) {
 	},
   
 /* Commands */ 
-	
+	 
 	initTabbar : function(aTabBrowser, aPosition) 
 	{
 		if (!aPosition) aPosition = this.getPref('extensions.treestyletab.tabbar.position');
@@ -2177,7 +2219,120 @@ catch(e) {
 			b.removeTab(tabs[i]);
 		}
 	},
-  
+ 
+	openSelectionLinks : function() 
+	{
+		var links = this.getSelectionLinks();
+		if (!links.length) return;
+
+		var b = this.browser;
+		var targetWindow = document.commandDispatcher.focusedWindow;
+		if (!targetWindow || targetWindow.top == window)
+			targetWindow = b.contentWindow;
+
+		var referrer = this.makeURIFromSpec(targetWindow.location.href);
+
+		this.readyToOpenChildTab(targetWindow, true);
+		var self = this;
+		links.forEach(function(aItem, aIndex) {
+			var tab = b.addTab(aItem.uri, referrer);
+			if (aIndex == 0 && !self.getPref('browser.tabs.loadInBackground'))
+				b.selectedTab = tab;
+		});
+		this.stopToOpenChildTab(targetWindow);
+	},
+	 
+	getSelectionLinks : function() 
+	{
+		var links = [];
+
+		var targetWindow = document.commandDispatcher.focusedWindow;
+		if (!targetWindow || targetWindow.top == window)
+			targetWindow = this.browser.contentWindow;
+
+		var selection = targetWindow.getSelection();
+		if (!selection || !selection.rangeCount)
+			return links;
+
+		const count = selection.rangeCount;
+		var range,
+			node,
+			link,
+			uri,
+			nodeRange = targetWindow.document.createRange();
+		for (var i = 0; i < count; i++)
+		{
+			range = selection.getRangeAt(0);
+			node  = range.startContainer;
+
+			traceTree:
+			while (true)
+			{
+				nodeRange.selectNode(node);
+
+				// 「ノードの終端が、選択範囲の先端より後にあるかどうか」をチェック。
+				// 後にあるならば、そのノードは選択範囲内にあると考えられる。
+				if (nodeRange.compareBoundaryPoints(Range.START_TO_END, range) > -1) {
+					// 「ノードの先端が、選択範囲の終端より後にあるかどうか」をチェック。
+					// 後にあるならば、そのノードは選択範囲外にあると考えられる。
+					if (nodeRange.compareBoundaryPoints(Range.END_TO_START, range) > 0) {
+						// 「リンクテキストが実際には選択されていないリンク」については除外する
+						if (
+							links.length &&
+							range.startContainer.nodeType != Node.ELEMENT_NODE &&
+							range.startOffset == range.startContainer.nodeValue.length &&
+							links[0].node == this.getParentLink(range.startContainer)
+							)
+							links.splice(0, 1);
+
+						if (
+							links.length &&
+							range.endContainer.nodeType != Node.ELEMENT_NODE &&
+							range.endOffset == 0 &&
+							links[links.length-1].node == this.getParentLink(range.endContainer)
+							)
+							links.splice(links.length-1, 1);
+						break;
+					}
+					else if (link = this.getParentLink(node)) {
+						try {
+							uri = link.href;
+							if (uri && uri.indexOf('mailto:') < 0)
+								links.push({ node : link, uri : uri });
+						}
+						catch(e) {
+						}
+					}
+				}
+
+				if (node.hasChildNodes() && !link) {
+					node = node.firstChild;
+				}
+				else {
+					while (!node.nextSibling)
+					{
+						node = node.parentNode;
+						if (!node) break traceTree;
+					}
+					node = node.nextSibling;
+				}
+			}
+		}
+
+		nodeRange.detach();
+
+		return links;
+	},
+	 
+	getParentLink : function(aNode) 
+	{
+		var node = aNode;
+		while (!node.href && node.parentNode)
+			node = node.parentNode;
+
+		return node.href ? node : null ;
+	},
+    
 /* Pref Listener */ 
 	
 	domain : 'extensions.treestyletab', 

@@ -25,6 +25,9 @@
 		<preference id="extensions.treestyletab.tabbar.invertUI"
 			name="extensions.treestyletab.tabbar.invertUI"
 			type="bool"/>
+		<preference id="extensions.treestyletab.show.openSelectionLinks"
+			name="extensions.treestyletab.show.openSelectionLinks"
+			type="bool"/>
 	</preferences>
 
 	<checkbox id="extensions.treestyletab.tabbar.scroll.smooth-check"
@@ -64,6 +67,9 @@
 				src="chrome://treestyletab/content/res/style-mixed.png"/>
 		</radiogroup>
 	</groupbox>
+	<checkbox id="extensions.treestyletab.show.openSelectionLinks-check"
+		preference="extensions.treestyletab.show.openSelectionLinks"
+		label="&config.show.openSelectionLinks;"/>
 </prefpane>
 
 <prefpane id="prefpane-tab" label="&config.tabs.tab;"

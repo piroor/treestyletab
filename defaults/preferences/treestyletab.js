@@ -6,6 +6,8 @@ pref("extensions.treestyletab.tabbar.scroll.timeout", 250);
 pref("extensions.treestyletab.tabbar.style",          "mixed");
 pref("extensions.treestyletab.levelMargin",           12);
 
+pref("extensions.treestyletab.show.openSelectionLinks", true);
+
 pref("extensions.treestyletab.openGroupBookmarkAsTabSubTree", true);
 pref("extensions.treestyletab.loadDroppedLinkToNewChildTab",  false);
 
