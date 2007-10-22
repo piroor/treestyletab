@@ -800,6 +800,69 @@ catch(e) {
 					openUILinkIn(]]></>
 			)
 		);
+		eval('nsContextMenu.prototype.viewPartialSource = '+
+			nsContextMenu.prototype.viewPartialSource.toSource().replace(
+				'window.openDialog(',
+				<><![CDATA[
+					if (TreeStyleTabService.getPref('extensions.treestyletab.viewSourceInTab')) {
+						TreeStyleTabService.viewSource.clear();
+						TreeStyleTabService.viewSource.frame     = focusedWindow;
+						TreeStyleTabService.viewSource.uri       = docUrl;
+						TreeStyleTabService.viewSource.charset   = docCharset;
+						TreeStyleTabService.viewSource.reference = reference;
+						TreeStyleTabService.viewSource.context   = context;
+						var b = ('SplitBrowser' in window) ? TreeStyleTabService.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(frame.top).browser) : gBrowser ;
+						b.selectedTab = b.addTab('chrome://global/content/viewPartialSource.xul');
+					}
+					else
+						window.openDialog(]]></>
+			)
+		);
+		eval('nsContextMenu.prototype.viewFrameSource = '+
+			nsContextMenu.prototype.viewFrameSource.toSource().replace(
+				'{',
+				<><![CDATA[
+					{
+						TreeStyleTabService.viewSource.clear();
+						TreeStyleTabService.viewSource.frame = this.target.ownerDocument.defaultView;
+				]]></>
+			)
+		);
+		eval('window.BrowserViewSourceOfDocument = '+
+			window.BrowserViewSourceOfDocument.toSource().replace(
+				'ViewSourceOfURL(',
+				<><![CDATA[
+					if (!TreeStyleTabService.viewSource.frame) {
+						TreeStyleTabService.viewSource.clear();
+						TreeStyleTabService.viewSource.frame = TreeStyleTabService.browser.contentWindow;
+					}
+					ViewSourceOfURL(]]></>
+			)
+		);
+		eval('window.ViewSourceOfURL = '+
+			window.ViewSourceOfURL.toSource().replace(
+				'gViewSourceUtils.openInExternalEditor(',
+				<><![CDATA[
+					TreeStyleTabService.viewSource.clear();
+					gViewSourceUtils.openInExternalEditor(]]></>
+			)
+		);
+		eval('gViewSourceUtils.openInInternalViewer = '+
+			gViewSourceUtils.openInInternalViewer.toSource().replace(
+				/(openDialog\([^\)]+\))/,
+				<><![CDATA[
+					if (TreeStyleTabService.getPref('extensions.treestyletab.viewSourceInTab')) {
+						TreeStyleTabService.readyToOpenChildTab(TreeStyleTabService.viewSource.target);
+						var b = ('SplitBrowser' in window) ? TreeStyleTabService.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(TreeStyleTabService.viewSource.frame.top).browser) : gBrowser ;
+						b.selectedTab = b.addTab('chrome://global/content/viewSource.xul');
+					}
+					else {
+						TreeStyleTabService.viewSource.clear();
+						$1;
+					}
+				]]></>
+			)
+		);
 
 		funcs = 'handleLinkClick __splitbrowser__handleLinkClick __ctxextensions__handleLinkClick'.split(' ');
 		for (var i in funcs)
@@ -839,8 +902,8 @@ catch(e) {
 			)
 		);
 
-		eval('window.nsBrowserAccess.prototype.openURI = '+
-			window.nsBrowserAccess.prototype.openURI.toSource().replace(
+		eval('nsBrowserAccess.prototype.openURI = '+
+			nsBrowserAccess.prototype.openURI.toSource().replace(
 				/switch\s*\(aWhere\)/,
 				<><![CDATA[
 					if (aOpener &&
@@ -1287,7 +1350,7 @@ catch(e) {
 			sep.setAttribute('hidden', true);
 		}
 	},
- 	 
+  
 /* Tab Utilities */ 
 	
 	getTabValue : function(aTab, aKey) 
@@ -1640,7 +1703,7 @@ catch(e) {
 	},
   
 /* Commands */ 
-	 
+	
 	initTabbar : function(aTabBrowser, aPosition) 
 	{
 		if (!aPosition) aPosition = this.getPref('extensions.treestyletab.tabbar.position');
@@ -2386,6 +2449,24 @@ catch(e) {
 		return node.href ? node : null ;
 	},
     
+/* view source */ 
+	 
+	viewSource : { 
+		clear : function()
+		{
+			this.frame     = null;
+			this.uri       = null;
+			this.charset   = null;
+			this.reference = null;
+			this.context   = null;
+		},
+		frame     : null,
+		uri       : null,
+		charset   : null,
+		reference : null,
+		context   : null
+	},
+ 	 
 /* Pref Listener */ 
 	
 	domain : 'extensions.treestyletab', 
