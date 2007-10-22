@@ -97,15 +97,28 @@ var TreeStyleTabService = {
 		ownerBrowser.__treestyletab__parentTab             = this.getTabFromFrame(frame, ownerBrowser).getAttribute(this.kID);
 	},
  
+	readyToOpenNewTabGroup : function(aFrameOrTabBrowser) 
+	{
+		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
+		if (!frame) return;
+
+		this.stopToOpenChildTab(frame);
+
+		var ownerBrowser = ('SplitBrowser' in window) ? this.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(frame.top).browser) : gBrowser ;
+		ownerBrowser.__treestyletab__readyToAttachNewTabGroup = true;
+		ownerBrowser.__treestyletab__readyToAttachMultiple    = true;
+	},
+ 
 	stopToOpenChildTab : function(aFrameOrTabBrowser) 
 	{
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
 		if (!frame) return;
 
 		var ownerBrowser = ('SplitBrowser' in window) ? this.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(frame.top).browser) : gBrowser ;
-		ownerBrowser.__treestyletab__readyToAttachNewTab   = false;
-		ownerBrowser.__treestyletab__readyToAttachMultiple = false;
-		ownerBrowser.__treestyletab__parentTab             = null;
+		ownerBrowser.__treestyletab__readyToAttachNewTab      = false;
+		ownerBrowser.__treestyletab__readyToAttachNewTabGroup = false;
+		ownerBrowser.__treestyletab__readyToAttachMultiple    = false;
+		ownerBrowser.__treestyletab__parentTab                = null;
 	},
  
 	checkToOpenChildTab : function(aFrameOrTabBrowser) 
@@ -114,7 +127,7 @@ var TreeStyleTabService = {
 		if (!frame) return false;
 
 		var ownerBrowser = ('SplitBrowser' in window) ? this.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(frame.top).browser) : gBrowser ;
-		return ownerBrowser.__treestyletab__readyToAttachNewTab ? true : false ;
+		return ownerBrowser.__treestyletab__readyToAttachNewTab || ownerBrowser.__treestyletab__readyToAttachNewTabGroup ? true : false ;
 	},
   
 /* Utilities */ 
@@ -589,6 +602,22 @@ catch(e) {
 			)
 		);
 
+		eval('aTabBrowser.loadTabs = '+
+			aTabBrowser.loadTabs.toSource().replace(
+				'var tabNum = ',
+				<><![CDATA[
+					if (this.__treestyletab__readyToAttachNewTabGroup)
+						TreeStyleTabService.readyToOpenChildTab(firstTabAdded || this.selectedTab, true);
+					var tabNum = ]]></>
+			).replace(
+				'if (!aLoadInBackground)',
+				<><![CDATA[
+					if (TreeStyleTabService.checkToOpenChildTab(this))
+						TreeStyleTabService.stopToOpenChildTab(this);
+					if (!aLoadInBackground)]]></>
+			)
+		);
+
 		var addTabMethod = 'addTab';
 		var removeTabMethod = 'removeTab';
 		if (aTabBrowser.__tabextensions__addTab) {
@@ -762,7 +791,7 @@ catch(e) {
 		window.QueryInterface(Components.interfaces.nsIDOMChromeWindow).browserDOMWindow = null;
 		window.QueryInterface(Components.interfaces.nsIDOMChromeWindow).browserDOMWindow = new nsBrowserAccess();
 
-		if ('BookmarksCommand' in window) {
+		if ('BookmarksCommand' in window) { // Firefox 2
 			eval('BookmarksCommand.openGroupBookmark = '+
 				BookmarksCommand.openGroupBookmark.toSource().replace(
 					'browser.addTab(uri);',
@@ -779,6 +808,19 @@ catch(e) {
 					<><![CDATA[
 						TreeStyleTabService.stopToOpenChildTab(browser);
 						if (index == index0)]]></>
+				)
+			);
+		}
+
+		if ('PlacesUtils' in window) { // Firefox 3
+			eval('PlacesUtils.openContainerNodeInTabs = '+
+				PlacesUtils.openContainerNodeInTabs.toSource().replace(
+					'this._openTabset(',
+					<><![CDATA[
+						if (TreeStyleTabService.getPref('extensions.treestyletab.openGroupBookmarkAsTabSubTree') &&
+							String(whereToOpenLink(aEvent, false, true)).indexOf('tab') == 0)
+							TreeStyleTabService.readyToOpenNewTabGroup();
+						this._openTabset(]]></>
 				)
 			);
 		}
