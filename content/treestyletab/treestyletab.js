@@ -13,6 +13,7 @@ var TreeStyleTabService = {
 	kVERTICAL          : 'treestyletab-vertical',
 	kINVERTED          : 'treestyletab-appearance-inverted',
 	kSTYLE             : 'treestyletab-style',
+	kFIRSTTAB_BORDER   : 'treestyletab-firsttab-border',
 
 	kTWISTY                : 'treestyletab-twisty',
 	kTWISTY_CONTAINER      : 'treestyletab-twisty-container',
@@ -682,6 +683,7 @@ catch(e) {
 
 		aTabBrowser.__treestyletab__observer = new TreeStyleTabBrowserObserver(aTabBrowser);
 		aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.style');
+		aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.showBorderForFirstTab');
 
 		delete addTabMethod;
 		delete removeTabMethod;
@@ -2484,6 +2486,14 @@ TreeStyleTabBrowserObserver.prototype = {
 
 					case 'extensions.treestyletab.tabbar.style':
 						this.mTabBrowser.setAttribute(TreeStyleTabService.kSTYLE, value);
+						break;
+
+					case 'extensions.treestyletab.showBorderForFirstTab':
+						if (value)
+							this.mTabBrowser.setAttribute(TreeStyleTabService.kFIRSTTAB_BORDER, true);
+						else
+							this.mTabBrowser.removeAttribute(TreeStyleTabService.kFIRSTTAB_BORDER);
+						break;
 
 					default:
 						break;

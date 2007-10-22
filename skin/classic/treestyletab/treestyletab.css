@@ -28,12 +28,18 @@ tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab {
 	-moz-border-radius-bottomright : 0 !important;
 	-moz-box-align: stretch !important;
 }
+tabbrowser[treestyletab-vertical="true"][treestyletab-firsttab-border="true"] .tabbrowser-tab:first-child {
+	-moz-border-top-colors: ThreeDShadow ThreeDFace !important;
+}
 tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab[selected="true"] {
 	margin: 0 !important;
 	padding: 0 0.2em !important;
 	background: ThreeDHighlight !important;
 	-moz-border-top-colors: ThreeDHighlight ThreeDHighlight !important;
 	-moz-border-bottom-colors: ThreeDShadow ThreeDHighlight !important;
+}
+tabbrowser[treestyletab-vertical="true"][treestyletab-firsttab-border="true"] .tabbrowser-tab:first-child[selected="true"] {
+	-moz-border-top-colors: ThreeDShadow ThreeDHighlight !important;
 }
 
 tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab > .tab-image-left,
@@ -135,10 +141,16 @@ tabbrowser[treestyletab-vertical="true"][treestyletab-style="mixed"] .tabbrowser
 	-moz-border-top-colors: #e0e8f6 #e0e8f6 !important;
 	-moz-border-bottom-colors: ThreeDShadow #e0e8f6 !important;
 }
+tabbrowser[treestyletab-vertical="true"][treestyletab-style="mixed"][treestyletab-firsttab-border="true"] .tabbrowser-tab:first-child:hover {
+	-moz-border-top-colors: ThreeDShadow #e0e8f6 !important;
+}
 tabbrowser[treestyletab-vertical="true"][treestyletab-style="mixed"] .tabbrowser-tab[selected="true"] {
 	background: #c1d2ee !important;
 	-moz-border-top-colors: #c1d2ee #c1d2ee !important;
 	-moz-border-bottom-colors: ThreeDShadow #c1d2ee !important;
+}
+tabbrowser[treestyletab-vertical="true"][treestyletab-style="mixed"][treestyletab-firsttab-border="true"] .tabbrowser-tab:first-child[selected="true"] {
+	-moz-border-top-colors: ThreeDShadow #c1d2ee !important;
 }
 
 tabbrowser[treestyletab-vertical="true"][treestyletab-style="mixed"] .tabbrowser-tab:hover,
@@ -209,7 +221,8 @@ tabbrowser[treestyletab-vertical="true"] tab[treestyletab-drop-position="self"] 
 	list-style-image: url("dropmarker-right.png");
 }
 */
-tabbrowser[treestyletab-vertical="true"] tab[treestyletab-drop-position="self"] {
+tabbrowser[treestyletab-vertical="true"] tab[treestyletab-drop-position="self"],
+tabbrowser[treestyletab-vertical="true"][treestyletab-firsttab-border="true"] tab:first-child[treestyletab-drop-position="self"] {
 	-moz-border-top-colors: -moz-dialogtext -moz-dialogtext !important;
 	-moz-border-right-colors: -moz-dialogtext -moz-dialogtext !important;
 	-moz-border-bottom-colors: -moz-dialogtext -moz-dialogtext !important;
@@ -221,7 +234,8 @@ tabbrowser[treestyletab-vertical="true"] tab[treestyletab-drop-position="before"
 	list-style-image: url("dropmarker-up.png");
 }
 */
-tabbrowser[treestyletab-vertical="true"] tab[treestyletab-drop-position="before"] {
+tabbrowser[treestyletab-vertical="true"] tab[treestyletab-drop-position="before"],
+tabbrowser[treestyletab-vertical="true"][treestyletab-firsttab-border="true"] tab:first-child[treestyletab-drop-position="before"] {
 	-moz-border-top-colors: -moz-dialogtext -moz-dialogtext !important;
 }
 
