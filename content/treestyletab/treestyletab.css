@@ -56,6 +56,15 @@ tabbrowser[treestyletab-vertical="true"] .tabbrowser-arrowscrollbox > scrollbox 
 }
 */
 
+tabbrowser[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted="true"] .tabbrowser-arrowscrollbox > scrollbox {
+	direction: rtl !important;
+}
+
+tabbrowser[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted="true"] .tabbrowser-arrowscrollbox > scrollbox > .scrollbox-innerbox {
+	direction: ltr !important;
+}
+
+
 
 tabbrowser[treestyletab-vertical="true"][treestyletab-appearance-inverted="true"] .tabbrowser-tab .tab-image-middle {
 	-moz-box-ordinal-group: 20;

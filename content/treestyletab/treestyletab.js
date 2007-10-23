@@ -1,19 +1,20 @@
 var TreeStyleTabService = { 
 	PREFROOT : 'extensions.treestyletab@piro.sakura.ne.jp',
 
-	kID                : 'treestyletab-id',
-	kCHILDREN          : 'treestyletab-children',
-	kPARENT            : 'treestyletab-parent',
-	kINSERT_BEFORE     : 'treestyletab-insert-before',
-	kSUBTREE_COLLAPSED : 'treestyletab-subtree-collapsed',
-	kCOLLAPSED         : 'treestyletab-collapsed',
-	kNEST              : 'treestyletab-nest',
-	kDROP_POSITION     : 'treestyletab-drop-position',
-	kTABBAR_POSITION   : 'treestyletab-tabbar-position',
-	kVERTICAL          : 'treestyletab-vertical',
-	kINVERTED          : 'treestyletab-appearance-inverted',
-	kSTYLE             : 'treestyletab-style',
-	kFIRSTTAB_BORDER   : 'treestyletab-firsttab-border',
+	kID                 : 'treestyletab-id',
+	kCHILDREN           : 'treestyletab-children',
+	kPARENT             : 'treestyletab-parent',
+	kINSERT_BEFORE      : 'treestyletab-insert-before',
+	kSUBTREE_COLLAPSED  : 'treestyletab-subtree-collapsed',
+	kCOLLAPSED          : 'treestyletab-collapsed',
+	kNEST               : 'treestyletab-nest',
+	kDROP_POSITION      : 'treestyletab-drop-position',
+	kTABBAR_POSITION    : 'treestyletab-tabbar-position',
+	kVERTICAL           : 'treestyletab-vertical',
+	kUI_INVERTED        : 'treestyletab-appearance-inverted',
+	kSCROLLBAR_INVERTED : 'treestyletab-scrollbar-inverted',
+	kSTYLE              : 'treestyletab-style',
+	kFIRSTTAB_BORDER    : 'treestyletab-firsttab-border',
 
 	kTWISTY                : 'treestyletab-twisty',
 	kTWISTY_CONTAINER      : 'treestyletab-twisty-container',
@@ -689,6 +690,7 @@ catch(e) {
 		aTabBrowser.__treestyletab__observer = new TreeStyleTabBrowserObserver(aTabBrowser);
 		aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.style');
 		aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.showBorderForFirstTab');
+		aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.invertScrollbar');
 
 		delete addTabMethod;
 		delete removeTabMethod;
@@ -1747,11 +1749,11 @@ catch(e) {
 			if (pos == this.kTABBAR_RIGHT) {
 				aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'right');
 				if (this.getPref('extensions.treestyletab.tabbar.invertUI')) {
-					aTabBrowser.setAttribute(this.kINVERTED, 'true');
+					aTabBrowser.setAttribute(this.kUI_INVERTED, 'true');
 					this.levelMarginProp = 'margin-right';
 				}
 				else {
-					aTabBrowser.removeAttribute(this.kINVERTED);
+					aTabBrowser.removeAttribute(this.kUI_INVERTED);
 					this.levelMarginProp = 'margin-left';
 				}
 				window.setTimeout(function() {
@@ -1762,7 +1764,7 @@ catch(e) {
 			}
 			else {
 				aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'left');
-				aTabBrowser.removeAttribute(this.kINVERTED);
+				aTabBrowser.removeAttribute(this.kUI_INVERTED);
 				this.levelMarginProp = 'margin-left';
 				window.setTimeout(function() {
 					aTabBrowser.mStrip.setAttribute('ordinal', 10);
@@ -1787,11 +1789,11 @@ catch(e) {
 			if (pos == this.kTABBAR_BOTTOM) {
 				aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'bottom');
 				if (this.getPref('extensions.treestyletab.tabbar.invertUI')) {
-					aTabBrowser.setAttribute(this.kINVERTED, 'true');
+					aTabBrowser.setAttribute(this.kUI_INVERTED, 'true');
 					this.levelMarginProp = 'margin-bottom';
 				}
 				else {
-					aTabBrowser.removeAttribute(this.kINVERTED);
+					aTabBrowser.removeAttribute(this.kUI_INVERTED);
 					this.levelMarginProp = 'margin-top';
 				}
 				window.setTimeout(function() {
@@ -1802,7 +1804,7 @@ catch(e) {
 			}
 			else {
 				aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'top');
-				aTabBrowser.removeAttribute(this.kINVERTED);
+				aTabBrowser.removeAttribute(this.kUI_INVERTED);
 				this.levelMarginProp = 'margin-top';
 				window.setTimeout(function() {
 					aTabBrowser.mStrip.setAttribute('ordinal', 10);
@@ -2636,6 +2638,14 @@ TreeStyleTabBrowserObserver.prototype = {
 							this.mTabBrowser.setAttribute(TreeStyleTabService.kFIRSTTAB_BORDER, true);
 						else
 							this.mTabBrowser.removeAttribute(TreeStyleTabService.kFIRSTTAB_BORDER);
+						break;
+
+					case 'extensions.treestyletab.tabbar.invertScrollbar':
+						if (value &&
+							TreeStyleTabService.getPref('extensions.treestyletab.tabbar.position') == 'left')
+							this.mTabBrowser.setAttribute(TreeStyleTabService.kSCROLLBAR_INVERTED, true);
+						else
+							this.mTabBrowser.removeAttribute(TreeStyleTabService.kSCROLLBAR_INVERTED);
 						break;
 
 					default:

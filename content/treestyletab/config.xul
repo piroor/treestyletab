@@ -22,6 +22,9 @@
 		<preference id="extensions.treestyletab.tabbar.style"
 			name="extensions.treestyletab.tabbar.style"
 			type="string"/>
+		<preference id="extensions.treestyletab.tabbar.invertScrollbar"
+			name="extensions.treestyletab.tabbar.invertScrollbar"
+			type="bool"/>
 		<preference id="extensions.treestyletab.tabbar.invertUI"
 			name="extensions.treestyletab.tabbar.invertUI"
 			type="bool"/>
@@ -41,6 +44,10 @@
 			oncommand="onChangeTabbarPosition();">
 			<vbox pack="start">
 				<radio value="left" label="&config.tabbar.position.left;"/>
+				<checkbox id="extensions.treestyletab.tabbar.invertScrollbar-check"
+					preference="extensions.treestyletab.tabbar.invertScrollbar"
+					label="&config.tabbar.invertScrollbar;"
+					disabled="true"/>
 			</vbox>
 			<vbox pack="start">
 				<radio value="right" label="&config.tabbar.position.right;"/>

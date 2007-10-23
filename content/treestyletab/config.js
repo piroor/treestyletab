@@ -21,5 +21,7 @@ function onChangeGroupBookmarkRadio()
 
 function onChangeTabbarPosition()
 {
-	document.getElementById('extensions.treestyletab.tabbar.invertUI-check').disabled = document.getElementById('extensions.treestyletab.tabbar.position-radiogroup').value != 'right';
+	var pos = document.getElementById('extensions.treestyletab.tabbar.position-radiogroup').value;
+	document.getElementById('extensions.treestyletab.tabbar.invertScrollbar-check').disabled = pos != 'left';
+	document.getElementById('extensions.treestyletab.tabbar.invertUI-check').disabled = pos != 'right';
 }
