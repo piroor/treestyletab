@@ -1,4 +1,4 @@
-var gGroupBookmarkRadio, gGroupBookmarkTreeCheck, gGroupBookmarkReplaceCheck;
+var gGroupBookmarkRadio, gGroupBookmarkTree, gGroupBookmarkReplace;
 
 function initGroupBookmarkRadio()
 {
