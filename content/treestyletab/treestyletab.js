@@ -100,7 +100,7 @@ var TreeStyleTabService = {
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
 		if (!frame) return;
 
-		var ownerBrowser = ('SplitBrowser' in window) ? this.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(frame.top).browser) : gBrowser ;
+		var ownerBrowser = this.getTabBrowserFromFrame(frame);
 		ownerBrowser.__treestyletab__readyToAttachNewTab   = true;
 		ownerBrowser.__treestyletab__readyToAttachMultiple = aMultiple || false ;
 		ownerBrowser.__treestyletab__parentTab             = this.getTabFromFrame(frame, ownerBrowser).getAttribute(this.kID);
@@ -113,7 +113,7 @@ var TreeStyleTabService = {
 
 		this.stopToOpenChildTab(frame);
 
-		var ownerBrowser = ('SplitBrowser' in window) ? this.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(frame.top).browser) : gBrowser ;
+		var ownerBrowser = this.getTabBrowserFromFrame(frame);
 		ownerBrowser.__treestyletab__readyToAttachNewTabGroup = true;
 		ownerBrowser.__treestyletab__readyToAttachMultiple    = true;
 	},
@@ -123,7 +123,7 @@ var TreeStyleTabService = {
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
 		if (!frame) return;
 
-		var ownerBrowser = ('SplitBrowser' in window) ? this.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(frame.top).browser) : gBrowser ;
+		var ownerBrowser = this.getTabBrowserFromFrame(frame);
 		ownerBrowser.__treestyletab__readyToAttachNewTab      = false;
 		ownerBrowser.__treestyletab__readyToAttachNewTabGroup = false;
 		ownerBrowser.__treestyletab__readyToAttachMultiple    = false;
@@ -135,12 +135,12 @@ var TreeStyleTabService = {
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
 		if (!frame) return false;
 
-		var ownerBrowser = ('SplitBrowser' in window) ? this.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(frame.top).browser) : gBrowser ;
+		var ownerBrowser = this.getTabBrowserFromFrame(frame);
 		return ownerBrowser.__treestyletab__readyToAttachNewTab || ownerBrowser.__treestyletab__readyToAttachNewTabGroup ? true : false ;
 	},
   
 /* Utilities */ 
-	
+	 
 	isEventFiredOnTabIcon : function(aEvent) 
 	{
 		var tab = this.getTabFromEvent(aEvent);
@@ -252,6 +252,11 @@ var TreeStyleTabService = {
 		return (target.localName == 'tabbrowser') ? target : null ;
 	},
  
+	getTabBrowserFromFrame : function(aFrame) 
+	{
+		return ('SplitBrowser' in window) ? this.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(aFrame.top).browser) : gBrowser ;
+	},
+ 	
 	getFrameFromTabBrowserElements : function(aFrameOrTabBrowser) 
 	{
 		var frame = aFrameOrTabBrowser;
@@ -811,8 +816,9 @@ catch(e) {
 						TreeStyleTabService.viewSource.charset   = docCharset;
 						TreeStyleTabService.viewSource.reference = reference;
 						TreeStyleTabService.viewSource.context   = context;
-						var b = ('SplitBrowser' in window) ? TreeStyleTabService.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(frame.top).browser) : gBrowser ;
-						b.selectedTab = b.addTab('chrome://global/content/viewPartialSource.xul');
+						TreeStyleTabService.readyToOpenChildTab(focusedWindow);
+						var b = TreeStyleTabService.getTabBrowserFromFrame(focusedWindow);
+						b.loadOneTab('chrome://global/content/viewPartialSource.xul', null, null, null, false);
 					}
 					else
 						window.openDialog(]]></>
@@ -852,9 +858,9 @@ catch(e) {
 				/(openDialog\([^\)]+\))/,
 				<><![CDATA[
 					if (TreeStyleTabService.getPref('extensions.treestyletab.viewSourceInTab')) {
-						TreeStyleTabService.readyToOpenChildTab(TreeStyleTabService.viewSource.target);
-						var b = ('SplitBrowser' in window) ? TreeStyleTabService.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(TreeStyleTabService.viewSource.frame.top).browser) : gBrowser ;
-						b.selectedTab = b.addTab('chrome://global/content/viewSource.xul');
+						TreeStyleTabService.readyToOpenChildTab(TreeStyleTabService.viewSource.frame);
+						var b = TreeStyleTabService.getTabBrowserFromFrame(TreeStyleTabService.viewSource.frame);
+						b.loadOneTab('chrome://global/content/viewSource.xul', null, null, null, false);
 					}
 					else {
 						TreeStyleTabService.viewSource.clear();
@@ -2450,6 +2456,11 @@ catch(e) {
 	},
     
 /* view source */ 
+	kVIEWSOURCE_URI     : 'treestyletab-viewsource-uri',
+	kVIEWSOURCE_CHARSET : 'treestyletab-viewsource-charset',
+	kVIEWSOURCE_REF     : 'treestyletab-viewsource-reference',
+	kVIEWSOURCE_CONTEXT : 'treestyletab-viewsource-context',
+	kVIEWSOURCE_SOURCE  : 'treestyletab-viewsource-source',
 	 
 	viewSource : { 
 		clear : function()
@@ -2466,7 +2477,7 @@ catch(e) {
 		reference : null,
 		context   : null
 	},
- 	 
+  
 /* Pref Listener */ 
 	
 	domain : 'extensions.treestyletab', 
