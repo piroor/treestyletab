@@ -11,7 +11,7 @@ pref("extensions.treestyletab.show.openSelectionLinks", true);
 
 pref("extensions.treestyletab.openGroupBookmarkAsTabSubTree", true);
 pref("extensions.treestyletab.loadDroppedLinkToNewChildTab",  false);
-pref("extensions.treestyletab.viewSourceInTab",               true);
+pref("extensions.treestyletab.viewSourceInTab",               false);
 
 pref("extensions.treestyletab.autoCollapseExpandSubTreeOnSelect",      true);
 pref("extensions.treestyletab.collapseExpandSubTree.dblclick",         false);

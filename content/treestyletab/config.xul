@@ -96,7 +96,7 @@
 		<caption label="&config.open_newwindow.caption;"/>
 		<radiogroup id="browser.link.open_newwindow-radiogroup"
 			preference="browser.link.open_newwindow"
-			orient="vertical">
+			orient="horizontal">
 			<radio value="2" label="&config.open_newwindow.window;"/>
 			<radio value="3" label="&config.open_newwindow.tab;"/>
 		</radiogroup>
