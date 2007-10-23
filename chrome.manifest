@@ -1,8 +1,6 @@
 content	treestyletab	jar:chrome/treestyletab.jar!/content/treestyletab/
 
 overlay	chrome://browser/content/browser.xul	chrome://treestyletab/content/treestyletab.xul
-overlay	chrome://global/content/viewSource.xul	chrome://treestyletab/content/viewSourceOverlay.xul
-overlay	chrome://global/content/viewPartialSource.xul	chrome://treestyletab/content/viewSourceOverlay.xul
 overlay	chrome://multipletab/content/config.xul	chrome://treestyletab/content/multipletabConfigOverlay.xul
 
 locale	treestyletab	en-US	jar:chrome/treestyletab.jar!/locale/en-US/treestyletab/

@@ -95,7 +95,7 @@ var TreeStyleTabService = {
 	_IOService : null,
 	 
 /* API */ 
-	 
+	
 	readyToOpenChildTab : function(aFrameOrTabBrowser, aMultiple) 
 	{
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
@@ -173,7 +173,7 @@ var TreeStyleTabService = {
  
 	get browser() 
 	{
-		return 'SplitBrowser' && this.getPref('extensions.treestyletab.inSubbrowsers.enabled')  ? SplitBrowser.activeBrowser : gBrowser ;
+		return 'SplitBrowser' in window && this.getPref('extensions.treestyletab.inSubbrowsers.enabled')  ? SplitBrowser.activeBrowser : gBrowser ;
 	},
  
 	evaluateXPath : function(aExpression, aContext, aType) 
@@ -257,7 +257,7 @@ var TreeStyleTabService = {
 	{
 		return ('SplitBrowser' in window) ? this.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(aFrame.top).browser) : gBrowser ;
 	},
- 	
+ 
 	getFrameFromTabBrowserElements : function(aFrameOrTabBrowser) 
 	{
 		var frame = aFrameOrTabBrowser;
@@ -331,7 +331,7 @@ var TreeStyleTabService = {
 	},
   
 /* Initializing */ 
-	
+	 
 	init : function() 
 	{
 		if (!('gBrowser' in window)) return;
@@ -354,7 +354,7 @@ var TreeStyleTabService = {
 
 		this.initTabBrowser(gBrowser);
 	},
-	
+	 
 	initTabBrowser : function(aTabBrowser) 
 	{
 		this.initTabbar(aTabBrowser);
@@ -807,70 +807,6 @@ catch(e) {
 					openUILinkIn(]]></>
 			)
 		);
-		eval('nsContextMenu.prototype.viewPartialSource = '+
-			nsContextMenu.prototype.viewPartialSource.toSource().replace(
-				'window.openDialog(',
-				<><![CDATA[
-					if (TreeStyleTabService.getPref('extensions.treestyletab.viewSourceInTab')) {
-						TreeStyleTabService.viewSource.clear();
-						TreeStyleTabService.viewSource.frame     = focusedWindow;
-						TreeStyleTabService.viewSource.uri       = docUrl;
-						TreeStyleTabService.viewSource.charset   = docCharset;
-						TreeStyleTabService.viewSource.reference = reference;
-						TreeStyleTabService.viewSource.context   = context;
-						TreeStyleTabService.readyToOpenChildTab(focusedWindow);
-						var b = TreeStyleTabService.getTabBrowserFromFrame(focusedWindow);
-						b.loadOneTab('chrome://global/content/viewPartialSource.xul', null, null, null, false);
-					}
-					else
-						window.openDialog(]]></>
-			)
-		);
-		eval('nsContextMenu.prototype.viewFrameSource = '+
-			nsContextMenu.prototype.viewFrameSource.toSource().replace(
-				'{',
-				<><![CDATA[
-					{
-						TreeStyleTabService.viewSource.clear();
-						TreeStyleTabService.viewSource.frame = this.target.ownerDocument.defaultView;
-				]]></>
-			)
-		);
-		eval('window.BrowserViewSourceOfDocument = '+
-			window.BrowserViewSourceOfDocument.toSource().replace(
-				'ViewSourceOfURL(',
-				<><![CDATA[
-					if (!TreeStyleTabService.viewSource.frame) {
-						TreeStyleTabService.viewSource.clear();
-						TreeStyleTabService.viewSource.frame = TreeStyleTabService.browser.contentWindow;
-					}
-					ViewSourceOfURL(]]></>
-			)
-		);
-		eval('window.ViewSourceOfURL = '+
-			window.ViewSourceOfURL.toSource().replace(
-				'gViewSourceUtils.openInExternalEditor(',
-				<><![CDATA[
-					TreeStyleTabService.viewSource.clear();
-					gViewSourceUtils.openInExternalEditor(]]></>
-			)
-		);
-		eval('gViewSourceUtils.openInInternalViewer = '+
-			gViewSourceUtils.openInInternalViewer.toSource().replace(
-				/(openDialog\([^\)]+\))/,
-				<><![CDATA[
-					if (TreeStyleTabService.getPref('extensions.treestyletab.viewSourceInTab')) {
-						TreeStyleTabService.readyToOpenChildTab(TreeStyleTabService.viewSource.frame);
-						var b = TreeStyleTabService.getTabBrowserFromFrame(TreeStyleTabService.viewSource.frame);
-						b.loadOneTab('chrome://global/content/viewSource.xul', null, null, null, false);
-					}
-					else {
-						TreeStyleTabService.viewSource.clear();
-						$1;
-					}
-				]]></>
-			)
-		);
 
 		funcs = 'handleLinkClick __splitbrowser__handleLinkClick __ctxextensions__handleLinkClick'.split(' ');
 		for (var i in funcs)
@@ -969,7 +905,7 @@ catch(e) {
 			);
 		}
 	},
-  
+ 	 
 	destroy : function() 
 	{
 		this.destroyTabBrowser(gBrowser);
@@ -1024,7 +960,7 @@ catch(e) {
 	},
    
 /* Event Handling */ 
-	 
+	
 	handleEvent : function(aEvent) 
 	{
 		switch (aEvent.type)
@@ -2457,29 +2393,6 @@ catch(e) {
 		return node.href ? node : null ;
 	},
     
-/* view source */ 
-	kVIEWSOURCE_URI     : 'treestyletab-viewsource-uri',
-	kVIEWSOURCE_CHARSET : 'treestyletab-viewsource-charset',
-	kVIEWSOURCE_REF     : 'treestyletab-viewsource-reference',
-	kVIEWSOURCE_CONTEXT : 'treestyletab-viewsource-context',
-	kVIEWSOURCE_SOURCE  : 'treestyletab-viewsource-source',
-	 
-	viewSource : { 
-		clear : function()
-		{
-			this.frame     = null;
-			this.uri       = null;
-			this.charset   = null;
-			this.reference = null;
-			this.context   = null;
-		},
-		frame     : null,
-		uri       : null,
-		charset   : null,
-		reference : null,
-		context   : null
-	},
-  
 /* Pref Listener */ 
 	
 	domain : 'extensions.treestyletab', 
