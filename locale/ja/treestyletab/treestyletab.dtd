@@ -6,10 +6,12 @@
 <!ENTITY config.tabbar.scroll.smooth "タブバーをなめらかにスクロールする">
 
 <!ENTITY config.tabbar.position.caption "タブバーの表示位置">
-<!ENTITY config.tabbar.position.left    "ウィンドウの左側">
-<!ENTITY config.tabbar.position.right   "ウィンドウの右側">
-<!ENTITY config.tabbar.invertScrollbar  "スクロールバーを左に表示する">
-<!ENTITY config.tabbar.invertUI         "ツリーやタブの外観を左右反転する">
+<!ENTITY config.tabbar.position.left    "左">
+<!ENTITY config.tabbar.position.right   "右">
+<!ENTITY config.tabbar.position.top     "上（Firefox初期状態）">
+<!ENTITY config.tabbar.position.bottom  "下">
+<!ENTITY config.tabbar.invertScrollbar  "スクロールバーを左に表示">
+<!ENTITY config.tabbar.invertUI         "タブを左右反転">
 
 <!ENTITY config.tabbar.style.caption "タブバーの表示スタイル">
 <!ENTITY config.tabbar.style.default "プレーン">

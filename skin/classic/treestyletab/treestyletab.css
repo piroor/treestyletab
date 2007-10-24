@@ -3,16 +3,19 @@
 
 /* Default style */
 
-tabbrowser[treestyletab-vertical="true"] .tabbrowser-tabs {
+tabbrowser[treestyletab-vertical="true"] .tabbrowser-tabs,
+tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tabs {
 	background: darkgray !important;
 }
 
 tabbrowser[treestyletab-vertical="true"] .tabs-bottom,
-tabbrowser[treestyletab-vertical="true"] .tabs-left {
+tabbrowser[treestyletab-vertical="true"] .tabs-left,
+tabbrowser[treestyletab-tabbar-position="bottom"] .tabs-bottom {
 	display: none !important;
 }
 
-tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab {
+tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab,
+tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab {
 	-moz-appearance: none !important;
 	min-height: 2em;
 	margin: 0 !important;
@@ -31,7 +34,9 @@ tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab {
 tabbrowser[treestyletab-vertical="true"][treestyletab-firsttab-border="true"] .tabbrowser-tab:first-child {
 	-moz-border-top-colors: ThreeDShadow ThreeDFace !important;
 }
-tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab[selected="true"] {
+
+tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab[selected="true"],
+tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab[selected="true"] {
 	margin: 0 !important;
 	padding: 0 0.2em !important;
 	background: ThreeDHighlight !important;
@@ -43,7 +48,9 @@ tabbrowser[treestyletab-vertical="true"][treestyletab-firsttab-border="true"] .t
 }
 
 tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab > .tab-image-left,
-tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab > .tab-image-right {
+tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab > .tab-image-right,
+tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab > .tab-image-left,
+tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab > .tab-image-right {
 	height: auto;
 	margin: 0 !important;
 	padding: 0 !important;
@@ -55,14 +62,20 @@ tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab > .tab-image-right {
 tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab > .tab-image-middle,
 tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab:not([selected="true"]):not(:hover) > .tab-image-middle,
 tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab > .tab-close-button,
-tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab:not([selected="true"]):not(:hover) > .tab-image-middle > .tab-close-button {
+tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab:not([selected="true"]):not(:hover) > .tab-image-middle > .tab-close-button,
+tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab > .tab-image-middle,
+tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab:not([selected="true"]):not(:hover) > .tab-image-middle,
+tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab > .tab-close-button,
+tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab:not([selected="true"]):not(:hover) > .tab-image-middle > .tab-close-button {
 	height: auto;
 	margin: 0 !important;
 	padding: 0 !important;
 	background: transparent;
 }
 tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab[selected="true"] > .tab-image-middle,
-tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab[selected="true"] > .tab-close-button {
+tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab[selected="true"] > .tab-close-button,
+tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab[selected="true"] > .tab-image-middle,
+tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab[selected="true"] > .tab-close-button {
 	background: transparent;
 }
 
@@ -77,58 +90,67 @@ tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab[selected="true"] {
 	-moz-border-right-colors: ThreeDLightShadow ThreeDHighlight !important;
 }
 
-tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab {
+tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab {
 	border-right: 2px solid !important;
-	-moz-border-right-colors: ThreeDLightShadow ThreeDFace !important;
+	-moz-border-right-colors: ThreeDShadow ThreeDFace !important;
 	border-left: 2px solid !important;
-	-moz-border-left-colors: ThreeDLightShadow ThreeDFace !important;
+	-moz-border-left-colors: ThreeDShadow ThreeDFace !important;
 }
-tabbrowser[treestyletab-vertical="true"] .tabbrowser-tab[selected="true"] {
-	-moz-border-right-colors: ThreeDLightShadow ThreeDHighlight !important;
-	-moz-border-left-colors: ThreeDLightShadow ThreeDHighlight !important;
+tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab[selected="true"] {
+	-moz-border-right-colors: ThreeDShadow ThreeDHighlight !important;
+	-moz-border-left-colors: ThreeDShadow ThreeDHighlight !important;
 }
 
 
 /* Vertigo style */
 
-tabbrowser[treestyletab-vertical="true"][treestyletab-style="vertigo"] .tabbrowser-tabs {
+tabbrowser[treestyletab-vertical="true"][treestyletab-style="vertigo"] .tabbrowser-tabs,
+tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="vertigo"] .tabbrowser-tabs {
 	background: transparent !important;
 }
-tabbrowser[treestyletab-vertical="true"][treestyletab-style="vertigo"] .tabbrowser-tabs {
+tabbrowser[treestyletab-vertical="true"][treestyletab-style="vertigo"] .tabbrowser-tabs,
+tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="vertigo"] .tabbrowser-tabs {
 	border-right: 1px solid #aaa !important;
 }
-tabbrowser[reestyletab-tabbar-position="right"][treestyletab-style="vertigo"] .tabbrowser-tabs {
+tabbrowser[reestyletab-tabbar-position="right"][treestyletab-style="vertigo"] .tabbrowser-tabs,
+tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="vertigo"] .tabbrowser-tabs {
 	border-left: 1px solid #aaa !important;
 }
 
-tabbrowser[treestyletab-vertical="true"][treestyletab-style="vertigo"] .tabbrowser-tab {
+tabbrowser[treestyletab-vertical="true"][treestyletab-style="vertigo"] .tabbrowser-tab,
+tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="vertigo"] .tabbrowser-tab {
 	background: transparent !important;
 	-moz-border-top-colors: transparent transparent !important;
 	-moz-border-bottom-colors: transparent transparent !important;
 }
-tabbrowser[treestyletab-vertical="true"][treestyletab-style="vertigo"] .tabbrowser-tab:hover {
+tabbrowser[treestyletab-vertical="true"][treestyletab-style="vertigo"] .tabbrowser-tab:hover,
+tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="vertigo"] .tabbrowser-tab:hover {
 	background: #e0e8f6 !important;
 	-moz-border-top-colors: #e0e8f6 #e0e8f6 !important;
 	-moz-border-bottom-colors: #e0e8f6 #e0e8f6 !important;
 }
-tabbrowser[treestyletab-vertical="true"][treestyletab-style="vertigo"] .tabbrowser-tab[selected="true"] {
+tabbrowser[treestyletab-vertical="true"][treestyletab-style="vertigo"] .tabbrowser-tab[selected="true"],
+tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="vertigo"] .tabbrowser-tab[selected="true"] {
 	background: #c1d2ee !important;
 	-moz-border-top-colors: #c1d2ee #c1d2ee !important;
 	-moz-border-bottom-colors: #c1d2ee #c1d2ee !important;
 }
 
 tabbrowser[treestyletab-vertical="true"][treestyletab-style="vertigo"] .tabbrowser-tab,
-tabbrowser[treestyletab-vertical="true"][treestyletab-appearance-inverted="true"][treestyletab-style="vertigo"] .tabbrowser-tab {
+tabbrowser[treestyletab-vertical="true"][treestyletab-appearance-inverted="true"][treestyletab-style="vertigo"] .tabbrowser-tab,
+tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="vertigo"] .tabbrowser-tab {
 	-moz-border-left-colors: transparent transparent !important;
 	-moz-border-right-colors: transparent transparent !important;
 }
 tabbrowser[treestyletab-vertical="true"][treestyletab-style="vertigo"] .tabbrowser-tab:hover,
-tabbrowser[treestyletab-vertical="true"][treestyletab-appearance-inverted="true"][treestyletab-style="vertigo"] .tabbrowser-tab:hover {
+tabbrowser[treestyletab-vertical="true"][treestyletab-appearance-inverted="true"][treestyletab-style="vertigo"] .tabbrowser-tab:hover,
+tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="vertigo"] .tabbrowser-tab:hover {
 	-moz-border-left-colors: #e0e8f6 #e0e8f6 !important;
 	-moz-border-right-colors: #e0e8f6 #e0e8f6 !important;
 }
 tabbrowser[treestyletab-vertical="true"][treestyletab-style="vertigo"] .tabbrowser-tab[selected="true"],
-tabbrowser[treestyletab-vertical="true"][treestyletab-appearance-inverted="true"][treestyletab-style="vertigo"] .tabbrowser-tab[selected="true"] {
+tabbrowser[treestyletab-vertical="true"][treestyletab-appearance-inverted="true"][treestyletab-style="vertigo"] .tabbrowser-tab[selected="true"],
+tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="vertigo"] .tabbrowser-tab[selected="true"] {
 	-moz-border-left-colors: #c1d2ee #c1d2ee !important;
 	-moz-border-right-colors: #c1d2ee #c1d2ee !important;
 }
@@ -136,7 +158,8 @@ tabbrowser[treestyletab-vertical="true"][treestyletab-appearance-inverted="true"
 
 /* Mixed style */
 
-tabbrowser[treestyletab-vertical="true"][treestyletab-style="mixed"] .tabbrowser-tab:hover {
+tabbrowser[treestyletab-vertical="true"][treestyletab-style="mixed"] .tabbrowser-tab:hover,
+tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="mixed"] .tabbrowser-tab:hover  {
 	background: #e0e8f6 !important;
 	-moz-border-top-colors: #e0e8f6 #e0e8f6 !important;
 	-moz-border-bottom-colors: ThreeDShadow #e0e8f6 !important;
@@ -144,7 +167,8 @@ tabbrowser[treestyletab-vertical="true"][treestyletab-style="mixed"] .tabbrowser
 tabbrowser[treestyletab-vertical="true"][treestyletab-style="mixed"][treestyletab-firsttab-border="true"] .tabbrowser-tab:first-child:hover {
 	-moz-border-top-colors: ThreeDShadow #e0e8f6 !important;
 }
-tabbrowser[treestyletab-vertical="true"][treestyletab-style="mixed"] .tabbrowser-tab[selected="true"] {
+tabbrowser[treestyletab-vertical="true"][treestyletab-style="mixed"] .tabbrowser-tab[selected="true"],
+tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="mixed"] .tabbrowser-tab[selected="true"] {
 	background: #c1d2ee !important;
 	-moz-border-top-colors: #c1d2ee #c1d2ee !important;
 	-moz-border-bottom-colors: ThreeDShadow #c1d2ee !important;
@@ -162,6 +186,15 @@ tabbrowser[treestyletab-vertical="true"][treestyletab-style="mixed"] .tabbrowser
 tabbrowser[treestyletab-vertical="true"][treestyletab-appearance-inverted="true"][treestyletab-style="mixed"] .tabbrowser-tab[selected="true"] {
 	-moz-border-left-colors: #c1d2ee #c1d2ee !important;
 	-moz-border-right-colors: #c1d2ee #c1d2ee !important;
+}
+
+tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="mixed"] .tabbrowser-tab:hover {
+	-moz-border-left-colors: ThreeDShadow #e0e8f6 !important;
+	-moz-border-right-colors: ThreeDShadow #e0e8f6 !important;
+}
+tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="mixed"] .tabbrowser-tab[selected="true"] {
+	-moz-border-left-colors: ThreeDShadow #c1d2ee !important;
+	-moz-border-right-colors: ThreeDShadow #c1d2ee !important;
 }
 
 
@@ -204,54 +237,42 @@ tab[treestyletab-subtree-collapsed="true"] .treestyletab-twisty {
 	-moz-box-pack: center;
 }
 
-tabbrowser:not([treestyletab-vertical="true"]) tab[treestyletab-drop-position="self"] .treestyletab-drop-marker {
+tabbrowser[treestyletab-tabbar-position="top"] tab[treestyletab-drop-position="self"] .treestyletab-drop-marker {
 	list-style-image: url("dropmarker-down.png");
 }
 
-tabbrowser:not([treestyletab-vertical="true"]) tab[treestyletab-drop-position="before"] .treestyletab-drop-marker {
-	list-style-image: url("dropmarker-left.png");
+tabbrowser[treestyletab-tabbar-position="top"] tab[treestyletab-children][treestyletab-drop-position="self"] .treestyletab-twisty,
+tabbrowser[treestyletab-tabbar-position="top"] tab[treestyletab-drop-position="self"] .tab-icon-image,
+tabbrowser[treestyletab-tabbar-position="top"] tab[treestyletab-drop-position="self"] .tab-extra-status {
+	visibility: hidden;
 }
 
-tabbrowser:not([treestyletab-vertical="true"]) tab[treestyletab-drop-position="after"] .treestyletab-drop-marker {
-	list-style-image: url("dropmarker-right.png");
-}
 
-/*
-tabbrowser[treestyletab-vertical="true"] tab[treestyletab-drop-position="self"] .treestyletab-drop-marker {
-	list-style-image: url("dropmarker-right.png");
-}
-*/
 tabbrowser[treestyletab-vertical="true"] tab[treestyletab-drop-position="self"],
-tabbrowser[treestyletab-vertical="true"][treestyletab-firsttab-border="true"] tab:first-child[treestyletab-drop-position="self"] {
+tabbrowser[treestyletab-vertical="true"][treestyletab-firsttab-border="true"] tab:first-child[treestyletab-drop-position="self"],
+tabbrowser[treestyletab-tabbar-position="bottom"] tab[treestyletab-drop-position="self"] {
 	-moz-border-top-colors: -moz-dialogtext -moz-dialogtext !important;
 	-moz-border-right-colors: -moz-dialogtext -moz-dialogtext !important;
 	-moz-border-bottom-colors: -moz-dialogtext -moz-dialogtext !important;
 	-moz-border-left-colors: -moz-dialogtext -moz-dialogtext !important;
 }
 
-/*
-tabbrowser[treestyletab-vertical="true"] tab[treestyletab-drop-position="before"] .treestyletab-drop-marker {
-	list-style-image: url("dropmarker-up.png");
-}
-*/
 tabbrowser[treestyletab-vertical="true"] tab[treestyletab-drop-position="before"],
 tabbrowser[treestyletab-vertical="true"][treestyletab-firsttab-border="true"] tab:first-child[treestyletab-drop-position="before"] {
 	-moz-border-top-colors: -moz-dialogtext -moz-dialogtext !important;
 }
 
-/*
-tabbrowser[treestyletab-vertical="true"] tab[treestyletab-drop-position="after"] .treestyletab-drop-marker {
-	list-style-image: url("dropmarker-down.png");
-}
-*/
 tabbrowser[treestyletab-vertical="true"] tab[treestyletab-drop-position="after"] {
 	-moz-border-bottom-colors: -moz-dialogtext -moz-dialogtext !important;
 }
 
-tabbrowser:not([treestyletab-vertical="true"]) tab[treestyletab-children][treestyletab-drop-position] .treestyletab-twisty,
-tabbrowser:not([treestyletab-vertical="true"]) tab[treestyletab-drop-position] .tab-icon-image,
-tabbrowser:not([treestyletab-vertical="true"]) tab[treestyletab-drop-position] .tab-extra-status {
-	visibility: hidden;
+
+tabbrowser[treestyletab-tabbar-position="bottom"] tab[treestyletab-drop-position="before"] {
+	-moz-border-left-colors: -moz-dialogtext -moz-dialogtext !important;
+}
+
+tabbrowser[treestyletab-tabbar-position="bottom"] tab[treestyletab-drop-position="after"] {
+	-moz-border-right-colors: -moz-dialogtext -moz-dialogtext !important;
 }
 
 

@@ -288,7 +288,7 @@ var TreeStyleTabService = {
 		return (box.getAttribute('orient') || window.getComputedStyle(box, '').getPropertyValue('-moz-box-orient')) == 'vertical';
 	},
  
-	isTabVisible : function(aTab) 
+	isTabInViewport : function(aTab) 
 	{
 		if (!aTab) return false;
 		var tabBox = aTab.boxObject;
@@ -419,7 +419,7 @@ var TreeStyleTabService = {
 				/\{/,
 				<><![CDATA[
 					{
-						if (!TreeStyleTabService.isTabVisible(this.selectedItem)) {
+						if (!TreeStyleTabService.isTabInViewport(this.selectedItem)) {
 							TreeStyleTabService.scrollToTab(this.selectedItem);
 							return;
 						}
@@ -472,7 +472,7 @@ catch(e) {
 				'{',
 				<><![CDATA[
 					{
-						(function(aSelf) {
+						if ((function(aSelf) {
 try{
 							var info = TreeStyleTabService.getDropAction(aEvent, aDragSession);
 
@@ -483,7 +483,7 @@ try{
 								).singleNodeValue)
 								TreeStyleTabService.clearDropPosition(aSelf);
 
-							if (!aSelf.canDrop(aEvent, aDragSession)) return;
+							if (!aSelf.canDrop(aEvent, aDragSession)) return true;
 
 							info.target.setAttribute(
 								TreeStyleTabService.kDROP_POSITION,
@@ -491,12 +491,15 @@ try{
 								info.position == TreeStyleTabService.kDROP_AFTER ? 'after' :
 								'self'
 							);
+							aSelf.mTabDropIndicatorBar.setAttribute('dragging', (info.position == TreeStyleTabService.kDROP_ON) ? 'false' : 'true' );
+							return (info.position == TreeStyleTabService.kDROP_ON || aSelf.getAttribute(TreeStyleTabService.kTABBAR_POSITION) != 'top')
 }
 catch(e) {
 	dump('TreeStyleTabService::onDragOver\n'+e+'\n');
 }
-						})(this);
-						return;
+						})(this)) {
+							return;
+						}
 				]]></>
 			)
 		);
@@ -1525,7 +1528,7 @@ catch(e) {
 		var tab        = aEvent.target;
 		var b          = this.getTabBrowserFromChildren(tab);
 		var tabs       = b.mTabContainer.childNodes;
-		var isInverted = this.isTabVertical(b) ? false : window.getComputedStyle(b.parentNode, null).direction == 'ltr';
+		var isInverted = this.isTabVertical(b) ? false : window.getComputedStyle(b.parentNode, null).direction == 'rtl';
 		var info       = {
 				target       : null,
 				position     : null,
@@ -1693,6 +1696,7 @@ catch(e) {
 					this.levelMarginProp = 'margin-left';
 				}
 				window.setTimeout(function() {
+					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
 					aTabBrowser.mStrip.setAttribute('ordinal', 30);
 					splitter.setAttribute('ordinal', 20);
 					aTabBrowser.mPanelContainer.setAttribute('ordinal', 10);
@@ -1703,6 +1707,7 @@ catch(e) {
 				aTabBrowser.removeAttribute(this.kUI_INVERTED);
 				this.levelMarginProp = 'margin-left';
 				window.setTimeout(function() {
+					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
 					aTabBrowser.mStrip.setAttribute('ordinal', 10);
 					splitter.setAttribute('ordinal', 20);
 					aTabBrowser.mPanelContainer.setAttribute('ordinal', 30);
@@ -1722,17 +1727,12 @@ catch(e) {
 			aTabBrowser.mPanelContainer.removeAttribute('width');
 
 			aTabBrowser.removeAttribute(this.kVERTICAL);
+			aTabBrowser.removeAttribute(this.kUI_INVERTED);
 			if (pos == this.kTABBAR_BOTTOM) {
 				aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'bottom');
-				if (this.getPref('extensions.treestyletab.tabbar.invertUI')) {
-					aTabBrowser.setAttribute(this.kUI_INVERTED, 'true');
-					this.levelMarginProp = 'margin-bottom';
-				}
-				else {
-					aTabBrowser.removeAttribute(this.kUI_INVERTED);
-					this.levelMarginProp = 'margin-top';
-				}
+				this.levelMarginProp = 'margin-bottom';
 				window.setTimeout(function() {
+					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
 					aTabBrowser.mStrip.setAttribute('ordinal', 30);
 					splitter.setAttribute('ordinal', 20);
 					aTabBrowser.mPanelContainer.setAttribute('ordinal', 10);
@@ -1740,9 +1740,9 @@ catch(e) {
 			}
 			else {
 				aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'top');
-				aTabBrowser.removeAttribute(this.kUI_INVERTED);
 				this.levelMarginProp = 'margin-top';
 				window.setTimeout(function() {
+					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
 					aTabBrowser.mStrip.setAttribute('ordinal', 10);
 					splitter.setAttribute('ordinal', 20);
 					aTabBrowser.mPanelContainer.setAttribute('ordinal', 30);
@@ -2186,7 +2186,7 @@ catch(e) {
   
 	scrollToTab : function(aTab) 
 	{
-		if (!aTab || this.isTabVisible(aTab)) return;
+		if (!aTab || this.isTabInViewport(aTab)) return;
 
 		var b = this.getTabBrowserFromChildren(aTab);
 
@@ -2226,7 +2226,7 @@ catch(e) {
 		var lastPosition      = lastVisible.boxObject[this.positionProp];
 		var tabSize           = lastVisible.boxObject[this.sizeProp];
 
-		if (this.isTabVisible(aTab) && this.isTabVisible(lastVisible)) {
+		if (this.isTabInViewport(aTab) && this.isTabInViewport(lastVisible)) {
 			return;
 		}
 
@@ -2236,10 +2236,10 @@ catch(e) {
 			var endY = this.isTabVertical(aTab) ? endPos : 0 ;
 			this.scrollTo(b, endX, endY);
 		}
-		else if (!this.isTabVisible(aTab) && this.isTabVisible(lastVisible)) {
+		else if (!this.isTabInViewport(aTab) && this.isTabInViewport(lastVisible)) {
 			this.scrollToTab(aTab);
 		}
-		else if (this.isTabVisible(aTab) && !this.isTabVisible(lastVisible)) {
+		else if (this.isTabInViewport(aTab) && !this.isTabInViewport(lastVisible)) {
 			this.scrollToTab(lastVisible);
 		}
 		else if (parentPosition < containerPosition) {
@@ -2537,8 +2537,7 @@ TreeStyleTabBrowserObserver.prototype = {
 				switch (aData)
 				{
 					case 'extensions.treestyletab.tabbar.position':
-						if (value == 'bottom' ||
-							(value != 'left' && value != 'right')) {
+						if (value != 'left' && value != 'right') {
 							var container = this.mTabBrowser.mTabContainer;
 							Array.prototype.slice.call(container.childNodes).forEach(function(aTab) {
 								aTab.removeAttribute('align');

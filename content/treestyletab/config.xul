@@ -42,20 +42,42 @@
 			preference="extensions.treestyletab.tabbar.position"
 			orient="horizontal"
 			oncommand="onChangeTabbarPosition();">
-			<vbox pack="start">
-				<radio value="left" label="&config.tabbar.position.left;"/>
-				<checkbox id="extensions.treestyletab.tabbar.invertScrollbar-check"
-					preference="extensions.treestyletab.tabbar.invertScrollbar"
-					label="&config.tabbar.invertScrollbar;"
-					disabled="true"/>
-			</vbox>
-			<vbox pack="start">
-				<radio value="right" label="&config.tabbar.position.right;"/>
-				<checkbox id="extensions.treestyletab.tabbar.invertUI-check"
-					preference="extensions.treestyletab.tabbar.invertUI"
-					label="&config.tabbar.invertUI;"
-					disabled="true"/>
-			</vbox>
+			<grid>
+				<columns>
+					<column flex="1"/>
+					<column flex="1"/>
+					<column flex="1"/>
+				</columns>
+				<rows>
+					<row>
+						<spacer/>
+							<radio value="top" label="&config.tabbar.position.top;"/>
+						<spacer/>
+					</row>
+					<row>
+						<vbox pack="start">
+							<radio value="left" label="&config.tabbar.position.left;"/>
+							<checkbox id="extensions.treestyletab.tabbar.invertScrollbar-check"
+								preference="extensions.treestyletab.tabbar.invertScrollbar"
+								label="&config.tabbar.invertScrollbar;"
+								disabled="true"/>
+						</vbox>
+						<box style="border: ThreeDShadow 1px solid; margin: 0.3em; background: white;"/>
+						<vbox pack="start">
+							<radio value="right" label="&config.tabbar.position.right;"/>
+							<checkbox id="extensions.treestyletab.tabbar.invertUI-check"
+								preference="extensions.treestyletab.tabbar.invertUI"
+								label="&config.tabbar.invertUI;"
+								disabled="true"/>
+						</vbox>
+					</row>
+					<row>
+						<spacer/>
+							<radio value="bottom" label="&config.tabbar.position.bottom;"/>
+						<spacer/>
+					</row>
+				</rows>
+			</grid>
 		</radiogroup>
 	</groupbox>
 	<groupbox>
