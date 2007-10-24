@@ -2537,6 +2537,15 @@ TreeStyleTabBrowserObserver.prototype = {
 				switch (aData)
 				{
 					case 'extensions.treestyletab.tabbar.position':
+						if (value == 'bottom' ||
+							(value != 'left' && value != 'right')) {
+							var container = this.mTabBrowser.mTabContainer;
+							Array.prototype.slice.call(container.childNodes).forEach(function(aTab) {
+								aTab.removeAttribute('align');
+								aTab.maxWidth = 250;
+								aTab.minWidth = container.mTabMinWidth;
+							});
+						}
 					case 'extensions.treestyletab.tabbar.invertUI':
 						TreeStyleTabService.initTabbar(this.mTabBrowser);
 						TreeStyleTabService.updateAllTabsIndent(this.mTabBrowser);
