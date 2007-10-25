@@ -13,6 +13,7 @@ var TreeStyleTabService = {
 	kVERTICAL           : 'treestyletab-vertical',
 	kUI_INVERTED        : 'treestyletab-appearance-inverted',
 	kSCROLLBAR_INVERTED : 'treestyletab-scrollbar-inverted',
+	kALLOW_COLLAPSE     : 'treestyletab-allow-subtree-collapse',
 	kSTYLE              : 'treestyletab-style',
 	kFIRSTTAB_BORDER    : 'treestyletab-firsttab-border',
 
@@ -694,6 +695,7 @@ catch(e) {
 		aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.style');
 		aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.showBorderForFirstTab');
 		aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.invertScrollbar');
+		aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.allowSubtreeCollapseExpand');
 
 		delete addTabMethod;
 		delete removeTabMethod;
@@ -716,6 +718,8 @@ catch(e) {
 		}
 
 		this.initTabContents(aTab);
+
+		aTab.setAttribute(this.kNEST, 0);
 
 		var event = document.createEvent('Events');
 		event.initEvent('TreeStyleTab:TabOpen', true, false);
@@ -1875,7 +1879,9 @@ catch(e) {
 			}
 		}
 
-		if (!aProp) aProp = this.levelMarginProp;
+		if (!aProp) {
+			aProp = this.getPref('extensions.treestyletab.enableSubtreeIndent') ? this.levelMarginProp : 0 ;
+		}
 
 		var b      = this.getTabBrowserFromChildren(aTabs[0]);
 		var margin = b.__treestyletab__levelMargin < 0 ? this.levelMargin : b.__treestyletab__levelMargin ;
@@ -1883,7 +1889,7 @@ catch(e) {
 
 		for (var i = 0, maxi = aTabs.length; i < maxi; i++)
 		{
-			aTabs[i].setAttribute('style', aTabs[i].getAttribute('style')+'; margin: 0 !important; '+aProp+':'+indent+'px !important;');
+			aTabs[i].setAttribute('style', aTabs[i].getAttribute('style').replace(/margin(-[^:]+):[^;]+;?/g, '')+'; '+aProp+':'+indent+'px !important;');
 			aTabs[i].setAttribute(this.kNEST, aLevel);
 			this.updateTabsIndent(this.getChildTabs(aTabs[i]), aLevel+1, aProp);
 		}
@@ -2550,6 +2556,10 @@ TreeStyleTabBrowserObserver.prototype = {
 						TreeStyleTabService.updateAllTabsIndent(this.mTabBrowser);
 						break;
 
+					case 'extensions.treestyletab.enableSubtreeIndent':
+						TreeStyleTabService.updateAllTabsIndent(this.mTabBrowser);
+						break;
+
 					case 'extensions.treestyletab.tabbar.style':
 						this.mTabBrowser.setAttribute(TreeStyleTabService.kSTYLE, value);
 						break;
@@ -2567,6 +2577,13 @@ TreeStyleTabBrowserObserver.prototype = {
 							this.mTabBrowser.setAttribute(TreeStyleTabService.kSCROLLBAR_INVERTED, true);
 						else
 							this.mTabBrowser.removeAttribute(TreeStyleTabService.kSCROLLBAR_INVERTED);
+						break;
+
+					case 'extensions.treestyletab.allowSubtreeCollapseExpand':
+						if (value)
+							this.mTabBrowser.setAttribute(TreeStyleTabService.kALLOW_COLLAPSE, true);
+						else
+							this.mTabBrowser.removeAttribute(TreeStyleTabService.kALLOW_COLLAPSE);
 						break;
 
 					default:

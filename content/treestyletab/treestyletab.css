@@ -1,21 +1,21 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 @namespace html url("http://www.w3.org/1999/xhtml");
 
-tab .treestyletab-twisty,
-tab .treestyletab-counter-container,
-tab .treestyletab-drop-marker,
-tab[treestyletab-children]:not([treestyletab-subtree-collapsed="true"]) .treestyletab-counter-container,
+.tabbrowser-tab .treestyletab-twisty,
+.tabbrowser-tab .treestyletab-counter-container,
+.tabbrowser-tab .treestyletab-drop-marker,
+.tabbrowser-tab[treestyletab-children]:not([treestyletab-subtree-collapsed="true"]) .treestyletab-counter-container,
 tabbrowser:not([treestyletab-vertical="true"]) > tabbox > splitter {
 	display: none;
 }
 
-tab[treestyletab-children] .treestyletab-twisty,
-tab[treestyletab-children] .treestyletab-counter-container,
-tab[treestyletab-drop-position] .treestyletab-drop-marker {
+tabbrowser[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyletab-children] .treestyletab-twisty,
+tabbrowser[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyletab-children] .treestyletab-counter-container,
+.tabbrowser-tab[treestyletab-drop-position] .treestyletab-drop-marker {
 	display: -moz-box;
 }
 
-tab[treestyletab-collapsed="true"],
+tabbrowser[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyletab-collapsed="true"],
 .tabbrowser-strip[collapsed="true"]+splitter,
 #appcontent[ahFull="true"] .tabbrowser-strip[ahHIDE="true"]+splitter /* AutoHide */ {
 	visibility: collapse;
@@ -91,3 +91,8 @@ tabbrowser[treestyletab-vertical="true"][treestyletab-appearance-inverted="true"
 	-moz-box-ordinal-group: 30;
 }
 
+
+tabbrowser:not([treestyletab-vertical="true"]) .tabbrowser-tab:not([treestyletab-nest="0"]) + .tabbrowser-tab[treestyletab-nest="0"],
+tabbrowser:not([treestyletab-vertical="true"]) .tabbrowser-tab[treestyletab-nest="0"] + .tabbrowser-tab[treestyletab-nest="0"][treestyletab-children] {
+	margin-left: 0.8em !important;
+}

@@ -5,7 +5,7 @@
   <RDF:Description RDF:about="urn:mozilla:install-manifest"
                    em:id="treestyletab@piro.sakura.ne.jp"
                    em:name="Tree Style Tab"
-                   em:version="0.2.2007102501"
+                   em:version="0.2.2007102601"
                    em:creator="SHIMODA Hiroshi"
                    em:description="Show tabs like a tree."
                    em:homepageURL="http://piro.sakura.ne.jp/xul/treestyletab/"

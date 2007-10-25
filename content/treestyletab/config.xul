@@ -22,6 +22,12 @@
 		<preference id="extensions.treestyletab.tabbar.style"
 			name="extensions.treestyletab.tabbar.style"
 			type="string"/>
+		<preference id="extensions.treestyletab.enableSubtreeIndent"
+			name="extensions.treestyletab.enableSubtreeIndent"
+			type="bool"/>
+		<preference id="extensions.treestyletab.allowSubtreeCollapseExpand"
+			name="extensions.treestyletab.allowSubtreeCollapseExpand"
+			type="bool"/>
 		<preference id="extensions.treestyletab.tabbar.invertScrollbar"
 			name="extensions.treestyletab.tabbar.invertScrollbar"
 			type="bool"/>
@@ -38,10 +44,11 @@
 		label="&config.tabbar.scroll.smooth;"/>
 	<groupbox>
 		<caption label="&config.tabbar.position.caption;"/>
+		<vbox>
 		<radiogroup id="extensions.treestyletab.tabbar.position-radiogroup"
 			preference="extensions.treestyletab.tabbar.position"
 			orient="horizontal"
-			oncommand="onChangeTabbarPosition();">
+			oncommand="onChangeTabbarPosition(true);">
 			<grid>
 				<columns>
 					<column flex="1"/>
@@ -79,6 +86,15 @@
 				</rows>
 			</grid>
 		</radiogroup>
+		<hbox align="center">
+			<checkbox id="extensions.treestyletab.enableSubtreeIndent-check"
+				preference="extensions.treestyletab.enableSubtreeIndent"
+				label="&config.enableSubtreeIndent;"/>
+			<checkbox id="extensions.treestyletab.allowSubtreeCollapseExpand-check"
+				preference="extensions.treestyletab.allowSubtreeCollapseExpand"
+				label="&config.allowSubtreeCollapseExpand;"/>
+		</hbox>
+		</vbox>
 	</groupbox>
 	<groupbox>
 		<caption label="&config.tabbar.style.caption;"/>

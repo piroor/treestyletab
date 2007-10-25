@@ -1,4 +1,5 @@
 var gGroupBookmarkRadio, gGroupBookmarkTree, gGroupBookmarkReplace;
+var gTabbarPlacePositionInitialized = false;
 
 function initGroupBookmarkRadio()
 {
@@ -19,9 +20,24 @@ function onChangeGroupBookmarkRadio()
 }
 
 
-function onChangeTabbarPosition()
+function onChangeTabbarPosition(aOnChange)
 {
 	var pos = document.getElementById('extensions.treestyletab.tabbar.position-radiogroup').value;
 	document.getElementById('extensions.treestyletab.tabbar.invertScrollbar-check').disabled = pos != 'left';
 	document.getElementById('extensions.treestyletab.tabbar.invertUI-check').disabled = pos != 'right';
+
+	var indentPref    = document.getElementById('extensions.treestyletab.enableSubtreeIndent');
+	var collapsePref  = document.getElementById('extensions.treestyletab.allowSubtreeCollapseExpand');
+	var indentCheck   = document.getElementById('extensions.treestyletab.enableSubtreeIndent-check');
+	var collapseCheck = document.getElementById('extensions.treestyletab.allowSubtreeCollapseExpand-check');
+	if (aOnChange) {
+		indentPref.value = indentCheck.checked =
+			collapsePref.value = collapseCheck.checked = (pos == 'left' || pos == 'right');
+	}
+	if (pos == 'left' || pos == 'right')
+		indentCheck.setAttribute('style', 'visibility:hidden');
+	else
+		indentCheck.removeAttribute('style', 'visibility:hidden');
+
+	gTabbarPlacePositionInitialized = true;
 }
