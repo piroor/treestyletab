@@ -120,60 +120,89 @@
 <prefpane id="prefpane-tab" label="&config.tabs.tab;"
 	onpaneload="initGroupBookmarkRadio();">
 	<preferences>
-		<preference id="browser.link.open_newwindow"
-			name="browser.link.open_newwindow"
-			type="int"/>
-		<preference id="browser.link.open_newwindow.restriction"
-			name="browser.link.open_newwindow.restriction"
-			type="int"/>
+		<preference id="extensions.treestyletab.urlbar.loadDifferentDomainToNewTab"
+			name="extensions.treestyletab.urlbar.loadDifferentDomainToNewTab"
+			type="bool"/>
+		<preference id="extensions.treestyletab.urlbar.loadSameDomainToNewChildTab"
+			name="extensions.treestyletab.urlbar.loadSameDomainToNewChildTab"
+			type="bool"/>
+		<preference id="extensions.treestyletab.loadDroppedLinkToNewChildTab"
+			name="extensions.treestyletab.loadDroppedLinkToNewChildTab"
+			type="bool"/>
 		<preference id="extensions.treestyletab.openGroupBookmarkAsTabSubTree"
 			name="extensions.treestyletab.openGroupBookmarkAsTabSubTree"
 			type="bool"/>
 		<preference id="browser.tabs.loadFolderAndReplace"
 			name="browser.tabs.loadFolderAndReplace"
 			type="bool"/>
-		<preference id="extensions.treestyletab.loadDroppedLinkToNewChildTab"
-			name="extensions.treestyletab.loadDroppedLinkToNewChildTab"
-			type="bool"/>
+		<preference id="browser.link.open_newwindow"
+			name="browser.link.open_newwindow"
+			type="int"/>
+		<preference id="browser.link.open_newwindow.restriction"
+			name="browser.link.open_newwindow.restriction"
+			type="int"/>
 	</preferences>
 
-	<groupbox>
-		<caption label="&config.open_newwindow.caption;"/>
-		<radiogroup id="browser.link.open_newwindow-radiogroup"
-			preference="browser.link.open_newwindow"
-			orient="horizontal">
-			<radio value="2" label="&config.open_newwindow.window;"/>
-			<radio value="3" label="&config.open_newwindow.tab;"/>
-		</radiogroup>
-	</groupbox>
-	<groupbox>
-		<caption label="&config.jsopen.caption;"/>
-		<radiogroup id="browser.link.open_newwindow.restriction-radiogroup"
-			preference="browser.link.open_newwindow.restriction"
-			orient="vertical">
-			<radio value="2" label="&config.jsopen.default;"/>
-			<radio value="0" label="&config.jsopen.forcetab;"/>
-		</radiogroup>
-	</groupbox>
-	<groupbox>
-		<caption label="&config.openGroupBookmarkAsTabSubTree.caption;"/>
-		<radiogroup id="openGroupBookmarkAsTabSubTree-radiogroup"
-			orient="vertical"
-			oncommand="onChangeGroupBookmarkRadio();">
-			<radio value="subtree" label="&config.openGroupBookmarkAsTabSubTree.subtree;"/>
-			<radio value="flat"    label="&config.openGroupBookmarkAsTabSubTree.flat;"/>
-			<radio value="replace" label="&config.openGroupBookmarkAsTabSubTree.replace;"/>
-		</radiogroup>
-	</groupbox>
-	<groupbox>
-		<caption label="&config.loadDroppedLinkToNewChildTab.caption;"/>
-		<radiogroup id="extensions.treestyletab.loadDroppedLinkToNewChildTab-radiogroup"
-			preference="extensions.treestyletab.loadDroppedLinkToNewChildTab"
-			orient="vertical">
-			<radio value="false" label="&config.loadDroppedLinkToNewChildTab.load;"/>
-			<radio value="true"  label="&config.loadDroppedLinkToNewChildTab.newTab;"/>
-		</radiogroup>
-	</groupbox>
+	<tabbox orient="vertical">
+		<tabs>
+			<tab label="&config.tabs.context.tab;"/>
+			<tab label="&config.tabs.restriction.tab;"/>
+		</tabs>
+		<tabpanels>
+			<tabpanel orient="vertical">
+				<groupbox>
+					<caption label="&config.urlbar.caption;"/>
+					<vbox>
+						<checkbox id="extensions.treestyletab.urlbar.loadDifferentDomainToNewTab-check"
+							preference="extensions.treestyletab.urlbar.loadDifferentDomainToNewTab"
+							label="&config.urlbar.loadDifferentDomainToNewTab;"/>
+						<checkbox id="extensions.treestyletab.urlbar.loadSameDomainToNewChildTab-check"
+							preference="extensions.treestyletab.urlbar.loadSameDomainToNewChildTab"
+							label="&config.urlbar.loadSameDomainToNewChildTab;"/>
+					</vbox>
+				</groupbox>
+				<groupbox>
+					<caption label="&config.loadDroppedLinkToNewChildTab.caption;"/>
+					<radiogroup id="extensions.treestyletab.loadDroppedLinkToNewChildTab-radiogroup"
+						preference="extensions.treestyletab.loadDroppedLinkToNewChildTab"
+						orient="vertical">
+						<radio value="false" label="&config.loadDroppedLinkToNewChildTab.load;"/>
+						<radio value="true"  label="&config.loadDroppedLinkToNewChildTab.newTab;"/>
+					</radiogroup>
+				</groupbox>
+				<groupbox>
+					<caption label="&config.openGroupBookmarkAsTabSubTree.caption;"/>
+					<radiogroup id="openGroupBookmarkAsTabSubTree-radiogroup"
+						orient="vertical"
+						oncommand="onChangeGroupBookmarkRadio();">
+						<radio value="subtree" label="&config.openGroupBookmarkAsTabSubTree.subtree;"/>
+						<radio value="flat"    label="&config.openGroupBookmarkAsTabSubTree.flat;"/>
+						<radio value="replace" label="&config.openGroupBookmarkAsTabSubTree.replace;"/>
+					</radiogroup>
+				</groupbox>
+			</tabpanel>
+			<tabpanel orient="vertical">
+				<groupbox>
+					<caption label="&config.open_newwindow.caption;"/>
+					<radiogroup id="browser.link.open_newwindow-radiogroup"
+						preference="browser.link.open_newwindow"
+						orient="horizontal">
+						<radio value="2" label="&config.open_newwindow.window;"/>
+						<radio value="3" label="&config.open_newwindow.tab;"/>
+					</radiogroup>
+				</groupbox>
+				<groupbox>
+					<caption label="&config.jsopen.caption;"/>
+					<radiogroup id="browser.link.open_newwindow.restriction-radiogroup"
+						preference="browser.link.open_newwindow.restriction"
+						orient="vertical">
+						<radio value="2" label="&config.jsopen.default;"/>
+						<radio value="0" label="&config.jsopen.forcetab;"/>
+					</radiogroup>
+				</groupbox>
+			</tabpanel>
+		</tabpanels>
+	</tabbox>
 </prefpane>
 
 <prefpane id="prefpane-advanced" label="&config.tabs.advanced;">

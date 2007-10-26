@@ -25,6 +25,23 @@
 
 <!ENTITY config.tabs.tab "タブの開き方">
 
+<!ENTITY config.tabs.context.tab      "場合に応じてタブを開く">
+
+<!ENTITY config.urlbar.caption                      "ロケーションバーへの入力">
+<!ENTITY config.urlbar.loadDifferentDomainToNewTab  "異なるサイトのURIを新しいタブで開く">
+<!ENTITY config.urlbar.loadSameDomainToNewChildTab  "同じサイトのURIを新しい子タブで開く">
+
+<!ENTITY config.loadDroppedLinkToNewChildTab.caption "リンクやURLをタブにドラッグ＆ドロップした時">
+<!ENTITY config.loadDroppedLinkToNewChildTab.load    "ドロップ先のタブの中に読み込む（Firefox初期状態）">
+<!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "ドロップ先のタブのサブツリーに新しいタブを開く">
+
+<!ENTITY config.openGroupBookmarkAsTabSubTree.caption "ブックマークフォルダの内容をタブで開く時の扱い">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree "一つのサブツリーとして開く（推奨）">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "ばらばらのタブとして開く">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.replace "現在開いているすべてのタブをブックマークの内容で置き換える（Firefox初期状態）">
+
+<!ENTITY config.tabs.restriction.tab "ウィンドウの代わりにタブを開く">
+
 <!ENTITY config.open_newwindow.caption "Webページのリンクから勝手に開かれたウィンドウの制御">
 <!ENTITY config.open_newwindow.window  "ウィンドウで開く">
 <!ENTITY config.open_newwindow.tab     "タブで開く（Firefox初期状態）">
@@ -32,15 +49,6 @@
 <!ENTITY config.jsopen.caption "Webページのスクリプトで開かれるウィンドウの制御">
 <!ENTITY config.jsopen.default "大きさや位置を指定されたウィンドウはウィンドウとして開く（Firefox初期状態）">
 <!ENTITY config.jsopen.forcetab "スクリプトで開かれるウィンドウはすべてタブで開く（推奨）">
-
-<!ENTITY config.openGroupBookmarkAsTabSubTree.caption "ブックマークフォルダの内容をタブで開く時の扱い">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree "一つのサブツリーとして開く（推奨）">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "ばらばらのタブとして開く">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.replace "現在開いているすべてのタブをブックマークの内容で置き換える（Firefox初期状態）">
-
-<!ENTITY config.loadDroppedLinkToNewChildTab.caption "リンクやURLをタブにドラッグ＆ドロップした時">
-<!ENTITY config.loadDroppedLinkToNewChildTab.load    "ドロップ先のタブの中に読み込む（Firefox初期状態）">
-<!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "ドロップ先のタブのサブツリーに新しいタブを開く">
 
 
 <!ENTITY config.tabs.advanced "詳細">

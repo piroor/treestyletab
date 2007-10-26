@@ -157,7 +157,7 @@ var TreeStyleTabService = {
  
 	get browser() 
 	{
-		return 'SplitBrowser' in window && this.getPref('extensions.treestyletab.inSubbrowsers.enabled')  ? SplitBrowser.activeBrowser : gBrowser ;
+		return 'SplitBrowser' in window && this.getTreePref('inSubbrowsers.enabled')  ? SplitBrowser.activeBrowser : gBrowser ;
 	},
  
 	evaluateXPath : function(aExpression, aContext, aType) 
@@ -323,7 +323,7 @@ var TreeStyleTabService = {
 
 		document.getElementById('contentAreaContextMenu').addEventListener('popupshowing', this, false);
 
-		if (this.getPref('extensions.treestyletab.inSubbrowsers.enabled')) {
+		if (this.getTreePref('inSubbrowsers.enabled')) {
 			var appcontent = document.getElementById('appcontent');
 			appcontent.addEventListener('SubBrowserAdded', this, false);
 			appcontent.addEventListener('SubBrowserRemoveRequest', this, false);
@@ -374,7 +374,7 @@ var TreeStyleTabService = {
 				/\{/,
 				<><![CDATA[
 					{
-						if (TreeStyleTabService.getPref('extensions.treestyletab.focusMode') == TreeStyleTabService.kFOCUS_VISIBLE) {
+						if (TreeStyleTabService.getTreePref('focusMode') == TreeStyleTabService.kFOCUS_VISIBLE) {
 							(function(aDir, aWrap, aSelf) {
 								var nextTab = (aDir < 0) ? TreeStyleTabService.getPreviousVisibleTab(aSelf.selectedItem) : TreeStyleTabService.getNextVisibleTab(aSelf.selectedItem) ;
 								if (!nextTab && aWrap) {
@@ -521,7 +521,7 @@ catch(e) {
 				'var tab = aEvent.target;',
 				<><![CDATA[
 					var tab = aEvent.target;
-					if (TreeStyleTabService.getPref('extensions.treestyletab.loadDroppedLinkToNewChildTab') ||
+					if (TreeStyleTabService.getTreePref('loadDroppedLinkToNewChildTab') ||
 						dropActionInfo.position != TreeStyleTabService.kDROP_ON) {
 						TreeStyleTabService.processDropAction(dropActionInfo, this, this.loadOneTab(getShortcutOrURI(url), null, null, null, bgLoad, false));
 						return;
@@ -692,7 +692,7 @@ catch(e) {
 		this.setTabValue(aTab, this.kID, id);
 		aTab.__treestyletab__linkedTabBrowser = aTabBrowser;
 
-		var pos = this.getPref('extensions.treestyletab.tabbar.position');
+		var pos = this.getTreePref('tabbar.position');
 		if (pos == 'left' || pos == 'right') {
 			aTab.setAttribute('align', 'stretch');
 			aTab.maxWidth = 65000;
@@ -750,6 +750,40 @@ catch(e) {
 	overrideGlobalFunctions : function() 
 	{
 		var funcs;
+
+		eval('window.BrowserLoadURL = '+
+			window.BrowserLoadURL.toSource().replace(
+				'{',
+				<><![CDATA[
+					{
+						var currentURI = TreeStyleTabService.browser.currentURI;
+						var parentTab  = TreeStyleTabService.getParentTab(TreeStyleTabService.browser.selectedTab);
+				]]></>
+			).replace(
+				'aTriggeringEvent && aTriggeringEvent.altKey',
+				<><![CDATA[
+					(aTriggeringEvent && aTriggeringEvent.altKey) ||
+					(
+						/^\w+:\/\/([^:\/]+)(\/|$)/.test(url) &&
+						(
+							(
+								TreeStyleTabService.getTreePref('urlbar.loadSameDomainToNewChildTab') &&
+								currentURI.host == RegExp.$1 &&
+								(TreeStyleTabService.readyToOpenChildTab(
+									parentTab && parentTab.linkedBrowser.currentURI.host == RegExp.$1 ?
+										parentTab :
+										null
+								), true)
+							) ||
+							(
+								TreeStyleTabService.getTreePref('urlbar.loadSameDomainToNewChildTab') &&
+								currentURI.host != RegExp.$1
+							)
+						)
+					)
+				]]></>
+			)
+		);
 
 		eval('nsContextMenu.prototype.openLinkInTab = '+
 			nsContextMenu.prototype.openLinkInTab.toSource().replace(
@@ -867,7 +901,7 @@ catch(e) {
 					<><![CDATA[
 						var openedTab = browser.addTab(uri);
 						if (!TreeStyleTabService.getPref('browser.tabs.loadFolderAndReplace') &&
-							TreeStyleTabService.getPref('extensions.treestyletab.openGroupBookmarkAsTabSubTree') &&
+							TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree') &&
 							!browser.__treestyletab__parentTab) {
 							TreeStyleTabService.readyToOpenChildTab(openedTab, true);
 						}
@@ -886,7 +920,7 @@ catch(e) {
 				PlacesUtils.openContainerNodeInTabs.toSource().replace(
 					'this._openTabset(',
 					<><![CDATA[
-						if (TreeStyleTabService.getPref('extensions.treestyletab.openGroupBookmarkAsTabSubTree') &&
+						if (TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree') &&
 							String(whereToOpenLink(aEvent, false, true)).indexOf('tab') == 0)
 							TreeStyleTabService.readyToOpenNewTabGroup();
 						this._openTabset(]]></>
@@ -903,7 +937,7 @@ catch(e) {
 
 		document.getElementById('contentAreaContextMenu').removeEventListener('popupshowing', this, false);
 
-		if (this.getPref('extensions.treestyletab.inSubbrowsers.enabled')) {
+		if (this.getTreePref('inSubbrowsers.enabled')) {
 			var appcontent = document.getElementById('appcontent');
 			appcontent.removeEventListener('SubBrowserAdded', this, false);
 			appcontent.removeEventListener('SubBrowserRemoveRequest', this, false);
@@ -987,7 +1021,7 @@ catch(e) {
 				var tab = this.getTabFromEvent(aEvent);
 				if (tab &&
 					tab.getAttribute(this.kCHILDREN) &&
-					this.getPref('extensions.treestyletab.collapseExpandSubTree.dblclick')) {
+					this.getTreePref('collapseExpandSubTree.dblclick')) {
 					this.collapseExpandTabSubTree(tab, tab.getAttribute(this.kSUBTREE_COLLAPSED) != 'true');
 					aEvent.preventDefault();
 					aEvent.stopPropagation();
@@ -1066,7 +1100,7 @@ catch(e) {
 			var backupChildren = this.getTabValue(tab, this.kCHILDREN);
 			var children   = this.getChildTabs(tab);
 			var self       = this;
-			var attach     = this.getPref('extensions.treestyletab.attachChildrenToGrandParentOnRemoveTab');
+			var attach     = this.getTreePref('attachChildrenToGrandParentOnRemoveTab');
 			var processTab = !attach ? function(aTab) {
 					self.partTab(aTab, true);
 					self.moveTabSubTreeTo(aTab, b.mTabContainer.lastChild._tPos);
@@ -1228,7 +1262,7 @@ catch(e) {
 		}
 		else if (tab.getAttribute(this.kCHILDREN) &&
 				(tab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true') &&
-				this.getPref('extensions.treestyletab.autoCollapseExpandSubTreeOnSelect')) {
+				this.getTreePref('autoCollapseExpandSubTreeOnSelect')) {
 			this.collapseExpandTreesIntelligentlyFor(tab);
 		}
 	},
@@ -1274,7 +1308,7 @@ catch(e) {
 	{
 		var item = document.getElementById('context-treestyletab-openSelectionLinks');
 		var sep  = document.getElementById('context-treestyletab-openSelectionLinks-separator');
-		if (this.getPref('extensions.treestyletab.show.openSelectionLinks') && this.getSelectionLinks().length) {
+		if (this.getTreePref('show.openSelectionLinks') && this.getSelectionLinks().length) {
 			item.removeAttribute('hidden');
 			sep.removeAttribute('hidden');
 		}
@@ -1639,7 +1673,7 @@ catch(e) {
 	
 	initTabbar : function(aTabBrowser, aPosition) 
 	{
-		if (!aPosition) aPosition = this.getPref('extensions.treestyletab.tabbar.position');
+		if (!aPosition) aPosition = this.getTreePref('tabbar.position');
 		aPosition = String(aPosition).toLowerCase();
 		var pos = (aPosition == 'left') ? this.kTABBAR_LEFT :
 			(aPosition == 'right') ? this.kTABBAR_RIGHT :
@@ -1668,12 +1702,12 @@ catch(e) {
 			scrollInnerBox.removeAttribute('flex');
 
 			aTabBrowser.mPanelContainer.removeAttribute('width');
-			aTabBrowser.mStrip.setAttribute('width', this.getPref('extensions.treestyletab.tabbar.width'));
+			aTabBrowser.mStrip.setAttribute('width', this.getTreePref('tabbar.width'));
 
 			aTabBrowser.setAttribute(this.kVERTICAL, true);
 			if (pos == this.kTABBAR_RIGHT) {
 				aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'right');
-				if (this.getPref('extensions.treestyletab.tabbar.invertUI')) {
+				if (this.getTreePref('tabbar.invertUI')) {
 					aTabBrowser.setAttribute(this.kUI_INVERTED, 'true');
 					this.levelMarginProp = 'margin-right';
 				}
@@ -1792,7 +1826,7 @@ catch(e) {
 					children.indexOf('|') > -1 // not a first child
 				) &&
 */
-				this.getPref('extensions.treestyletab.autoCollapseExpandSubTreeOnSelect')
+				this.getTreePref('autoCollapseExpandSubTreeOnSelect')
 				) {
 				this.collapseExpandTreesIntelligentlyFor(aParent);
 				var p = aParent;
@@ -1802,7 +1836,7 @@ catch(e) {
 				while (p = this.getParentTab(p));
 			}
 			else if (aParent.getAttribute(this.kSUBTREE_COLLAPSED) == 'true') {
-				if (this.getPref('extensions.treestyletab.autoExpandSubTreeOnAppendChild')) {
+				if (this.getTreePref('autoExpandSubTreeOnAppendChild')) {
 					var p = aParent;
 					do {
 						this.collapseExpandTabSubTree(p, false);
@@ -1863,7 +1897,7 @@ catch(e) {
 		}
 
 		if (!aProp) {
-			aProp = this.getPref('extensions.treestyletab.enableSubtreeIndent') ? this.levelMarginProp : 0 ;
+			aProp = this.getTreePref('enableSubtreeIndent') ? this.levelMarginProp : 0 ;
 		}
 
 		var b      = this.getTabBrowserFromChildren(aTabs[0]);
@@ -2101,7 +2135,7 @@ catch(e) {
 	
 	scrollTo : function(aTabBrowser, aEndX, aEndY) 
 	{
-		if (this.getPref('extensions.treestyletab.tabbar.scroll.smooth'))
+		if (this.getTreePref('tabbar.scroll.smooth'))
 			this.smoothScrollTo(aTabBrowser, aEndX, aEndY);
 		else
 			this.getTabBrowserFromChildren(aTabBrowser).mTabstrip.scrollBoxObject.scrollTo(aEndX, aEndY);
@@ -2129,7 +2163,7 @@ catch(e) {
 			aEndX,
 			aEndY,
 			Date.now(),
-			this.getPref('extensions.treestyletab.tabbar.scroll.timeout')
+			this.getTreePref('tabbar.scroll.timeout')
 		);
 	},
  
@@ -2436,6 +2470,11 @@ catch(e) {
 		return null;
 	},
  
+	getTreePref : function(aPrefstring) 
+	{
+		return this.getPref('extensions.treestyletab.'+aPrefstring);
+	},
+ 
 	setPref : function(aPrefstring, aNewValue) 
 	{
 		var pref = this.Prefs ;
@@ -2556,7 +2595,7 @@ TreeStyleTabBrowserObserver.prototype = {
 
 					case 'extensions.treestyletab.tabbar.invertScrollbar':
 						if (value &&
-							TreeStyleTabService.getPref('extensions.treestyletab.tabbar.position') == 'left')
+							TreeStyleTabService.getTreePref('tabbar.position') == 'left')
 							this.mTabBrowser.setAttribute(TreeStyleTabService.kSCROLLBAR_INVERTED, true);
 						else
 							this.mTabBrowser.removeAttribute(TreeStyleTabService.kSCROLLBAR_INVERTED);
