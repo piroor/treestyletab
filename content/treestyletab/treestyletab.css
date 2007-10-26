@@ -4,7 +4,7 @@
 .tabbrowser-tab .treestyletab-twisty,
 .tabbrowser-tab .treestyletab-counter-container,
 .tabbrowser-tab .treestyletab-drop-marker,
-.tabbrowser-tab[treestyletab-children]:not([treestyletab-subtree-collapsed="true"]) .treestyletab-counter-container,
+tabbrowser[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyletab-children]:not([treestyletab-subtree-collapsed="true"]) .treestyletab-counter-container,
 tabbrowser:not([treestyletab-vertical="true"]) > tabbox > splitter {
 	display: none;
 }
