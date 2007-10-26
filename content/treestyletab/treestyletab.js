@@ -229,11 +229,11 @@ var TreeStyleTabService = {
 		if (aTab.__treestyletab__linkedTabBrowser)
 			return aTab.__treestyletab__linkedTabBrowser;
 
-		var target = aTab;
-		while (target.localName != 'tabbrowser' && target.parentNode)
-			target = target.parentNode;
-
-		return (target.localName == 'tabbrowser') ? target : null ;
+		return this.evaluateXPath(
+				'ancestor-or-self::xul:tabbrowser',
+				aTab,
+				XPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue;
 	},
  
 	getTabBrowserFromFrame : function(aFrame) 
@@ -923,15 +923,6 @@ catch(e) {
 		aTabBrowser.__treestyletab__observer.destroy();
 		delete aTabBrowser.__treestyletab__observer;
 
-		var tabs = aTabBrowser.mTabContainer.childNodes;
-		var parent;
-		for (var i = 0, maxi = tabs.length; i < maxi; i++)
-		{
-			parent = this.getParentTab(tabs[i]);
-			if (parent)
-				this.setTabValue(tabs[i], this.kPARENT, parent.getAttribute(this.kID));
-		}
-
 		aTabBrowser.mTabContainer.removeEventListener('TreeStyleTab:TabOpen', this, true);
 		aTabBrowser.mTabContainer.removeEventListener('TabClose', this, true);
 		aTabBrowser.mTabContainer.removeEventListener('TabMove', this, true);
@@ -1067,12 +1058,9 @@ catch(e) {
 		var parentTab      = this.getParentTab(tab);
 		var nextFocusedTab = null;
 
-		if (parentTab) {
-			this.setTabValue(tab, this.kPARENT, parentTab.getAttribute(this.kID));
-			var next = this.getNextSiblingTab(tab);
-			if (next)
-				this.setTabValue(tab, this.kINSERT_BEFORE, next.getAttribute(this.kID));
-		}
+		var next = this.getNextSiblingTab(tab);
+		if (next)
+			this.setTabValue(tab, this.kINSERT_BEFORE, next.getAttribute(this.kID));
 
 		if (firstChild) {
 			var backupChildren = this.getTabValue(tab, this.kCHILDREN);
@@ -1169,16 +1157,28 @@ catch(e) {
 
 		var parent = this.getTabValue(tab, this.kPARENT);
 		var before = this.getTabValue(tab, this.kINSERT_BEFORE);
-		if (parent && (parent = this.getTabById(parent, b))) {
-			this.attachTabTo(tab, parent, { dontExpand : true, insertBefore : (before ? this.getTabById(before, b) : null ), dontUpdateIndent : true });
-			this.deleteTabValue(tab, this.kPARENT);
-			this.updateTabsIndent([tab]);
-			this.checkTabsIndentOverflow(b);
+		if (parent) {
+			parent = this.getTabById(parent, b);
+			if (parent) {
+				this.attachTabTo(tab, parent, { dontExpand : true, insertBefore : (before ? this.getTabById(before, b) : null ), dontUpdateIndent : true });
+				this.updateTabsIndent([tab]);
+				this.checkTabsIndentOverflow(b);
+			}
+			else {
+				this.deleteTabValue(tab, this.kPARENT);
+			}
 		}
 		else if (children) {
 			this.updateTabsIndent(tabs);
 			this.checkTabsIndentOverflow(b);
 		}
+
+		if (!parent && (before = this.getTabById(before, b))) {
+			var index = before._tPos;
+			if (index > tab._tPos) index--;
+			b.moveTabTo(tab, index);
+		}
+		this.deleteTabValue(tab, this.kINSERT_BEFORE);
 
 		if (isSubTreeCollapsed) {
 			this.collapseExpandTabSubTree(tab, isSubTreeCollapsed);
@@ -1778,6 +1778,7 @@ catch(e) {
 		}
 
 		this.setTabValue(aParent, this.kCHILDREN, children);
+		this.setTabValue(aChild, this.kPARENT, aParent.getAttribute(this.kID));
 		this.updateTabsCount(aParent);
 
 		if (newIndex > aChild._tPos) newIndex--;
