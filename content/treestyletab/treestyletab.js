@@ -1,6 +1,4 @@
 var TreeStyleTabService = { 
-	PREFROOT : 'extensions.treestyletab@piro.sakura.ne.jp',
-
 	kID                 : 'treestyletab-id',
 	kCHILDREN           : 'treestyletab-children',
 	kPARENT             : 'treestyletab-parent',
@@ -776,6 +774,7 @@ catch(e) {
 							(
 								TreeStyleTabService.getTreePref('urlbar.loadSameDomainToNewChildTab') &&
 								currentHost == RegExp.$1 &&
+								currentURI.spec.split('#')[0] != url.split('#')[0] &&
 								(TreeStyleTabService.readyToOpenChildTab(
 									parentHost == RegExp.$1 ?
 										parentTab :
