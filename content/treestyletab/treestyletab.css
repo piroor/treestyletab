@@ -5,7 +5,7 @@
 .tabbrowser-tab .treestyletab-counter-container,
 .tabbrowser-tab .treestyletab-drop-marker,
 tabbrowser[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyletab-children]:not([treestyletab-subtree-collapsed="true"]) .treestyletab-counter-container,
-tabbrowser:not([treestyletab-vertical="true"]) > tabbox > splitter {
+tabbrowser:not([treestyletab-mode="vertical"]) > tabbox > splitter {
 	display: none;
 }
 
@@ -21,13 +21,12 @@ tabbrowser[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyle
 	visibility: collapse;
 }
 
-tabbrowser[treestyletab-vertical="true"] .tabbrowser-arrowscrollbox > .scrollbutton-up,
-tabbrowser[treestyletab-vertical="true"] .tabbrowser-arrowscrollbox > .scrollbutton-down-stack,
-tabbrowser[treestyletab-vertical="true"] .tabs-alltabs-stack,
-tabbrowser[treestyletab-vertical="true"] .tabbrowser-arrowscrollbox + stack, /* "all tabs" button in Firefox 3 */
-tabbrowser[treestyletab-vertical="true"] .tabs-closebutton-box,
-tabbrowser[treestyletab-vertical="true"] .tab-drop-indicator-bar
- {
+tabbrowser:not([treestyletab-mode="horizontal"]) .tabbrowser-arrowscrollbox > .scrollbutton-up,
+tabbrowser:not([treestyletab-mode="horizontal"]) .tabbrowser-arrowscrollbox > .scrollbutton-down-stack,
+tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-stack,
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox + stack, /* "all tabs" button in Firefox 3 */
+tabbrowser[treestyletab-mode="vertical"] .tabs-closebutton-box,
+tabbrowser:not([treestyletab-mode="horizontal"]) .tab-drop-indicator-bar {
 	display: none !important;
 }
 
@@ -37,21 +36,21 @@ tabbrowser[treestyletab-vertical="true"] .tab-drop-indicator-bar
 	margin: 0;
 }
 
-tabbrowser[treestyletab-vertical="true"] > tabbox {
+tabbrowser[treestyletab-mode="vertical"] > tabbox {
 	-moz-box-orient: horizontal !important;
 }
 
-tabbrowser[treestyletab-vertical="true"] .tabbrowser-arrowscrollbox > scrollbox {
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > scrollbox {
 	overflow-x: hidden;
 	overflow-y: auto;
 }
 
-tabbrowser[treestyletab-vertical="true"] .tabs-stack > * + * > hbox {
+tabbrowser[treestyletab-mode="vertical"] .tabs-stack > * + * > hbox {
 	-moz-box-flex: 1 !important;
 }
 
 /*
-tabbrowser[treestyletab-vertical="true"] .tabbrowser-arrowscrollbox > scrollbox > .scrollbox-innerbox {
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > scrollbox > .scrollbox-innerbox {
 	-moz-box-flex: 0 !important;
 }
 */
@@ -66,33 +65,53 @@ tabbrowser[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted=
 
 
 
-tabbrowser[treestyletab-vertical="true"][treestyletab-appearance-inverted="true"] .tabbrowser-tab .tab-image-middle {
+tabbrowser[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab .tab-image-middle {
 	-moz-box-ordinal-group: 20;
 }
 
-tabbrowser[treestyletab-vertical="true"][treestyletab-appearance-inverted="true"] .tabbrowser-tab .tab-close-button {
+tabbrowser[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab .tab-close-button {
 	-moz-box-ordinal-group: 10;
 }
 
 
-tabbrowser[treestyletab-vertical="true"][treestyletab-appearance-inverted="true"] .tabbrowser-tab .tab-icon {
+tabbrowser[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab .tab-icon {
 	-moz-box-ordinal-group: 50;
 }
 
-tabbrowser[treestyletab-vertical="true"][treestyletab-appearance-inverted="true"] .tabbrowser-tab html|canvas.informationaltab-thumbnail {
+tabbrowser[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab html|canvas.informationaltab-thumbnail {
 	-moz-box-ordinal-group: 10;
 }
 
-tabbrowser[treestyletab-vertical="true"][treestyletab-appearance-inverted="true"] .tabbrowser-tab .tab-text {
+tabbrowser[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab .tab-text {
 	-moz-box-ordinal-group: 20;
 }
 
-tabbrowser[treestyletab-vertical="true"][treestyletab-appearance-inverted="true"] .tabbrowser-tab .treestyletab-counter-container {
+tabbrowser[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab .treestyletab-counter-container {
 	-moz-box-ordinal-group: 30;
 }
 
 
-tabbrowser:not([treestyletab-vertical="true"]) .tabbrowser-tab:not([treestyletab-nest="0"]) + .tabbrowser-tab[treestyletab-nest="0"],
-tabbrowser:not([treestyletab-vertical="true"]) .tabbrowser-tab[treestyletab-nest="0"] + .tabbrowser-tab[treestyletab-nest="0"][treestyletab-children] {
+tabbrowser:not([treestyletab-mode="vertical"]) .tabbrowser-tab:not([treestyletab-nest="0"]) + .tabbrowser-tab[treestyletab-nest="0"],
+tabbrowser:not([treestyletab-mode="vertical"]) .tabbrowser-tab[treestyletab-nest="0"] + .tabbrowser-tab[treestyletab-nest="0"][treestyletab-children] {
 	margin-left: 0.8em !important;
 }
+
+
+
+/*
+tabbrowser[treestyletab-mode="multirow"] .tabbrowser-arrowscrollbox > scrollbox > .scrollbox-innerbox {
+	display: block !important;
+	overflow-x: visible !important;
+	overflow-y: visible !important;
+}
+tabbrowser[treestyletab-mode="multirow"] .tabbrowser-arrowscrollbox > scrollbox {
+	display: block !important;
+	overflow-x: visible !important;
+	overflow-y: auto !important;
+	max-height: 100px !important;
+}
+
+tabbrowser[treestyletab-mode="multirow"] .tabbrowser-tab {
+	min-width: 150px !important;
+}
+*/

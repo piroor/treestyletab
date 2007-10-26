@@ -10,7 +10,7 @@ var TreeStyleTabService = {
 	kNEST               : 'treestyletab-nest',
 	kDROP_POSITION      : 'treestyletab-drop-position',
 	kTABBAR_POSITION    : 'treestyletab-tabbar-position',
-	kVERTICAL           : 'treestyletab-vertical',
+	kMODE               : 'treestyletab-mode',
 	kUI_INVERTED        : 'treestyletab-appearance-inverted',
 	kSCROLLBAR_INVERTED : 'treestyletab-scrollbar-inverted',
 	kALLOW_COLLAPSE     : 'treestyletab-allow-subtree-collapse',
@@ -1704,7 +1704,7 @@ catch(e) {
 			aTabBrowser.mPanelContainer.removeAttribute('width');
 			aTabBrowser.mStrip.setAttribute('width', this.getTreePref('tabbar.width'));
 
-			aTabBrowser.setAttribute(this.kVERTICAL, true);
+			aTabBrowser.setAttribute(this.kMODE, 'vertical');
 			if (pos == this.kTABBAR_RIGHT) {
 				aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'right');
 				if (this.getTreePref('tabbar.invertUI')) {
@@ -1746,7 +1746,7 @@ catch(e) {
 			aTabBrowser.mStrip.removeAttribute('width');
 			aTabBrowser.mPanelContainer.removeAttribute('width');
 
-			aTabBrowser.removeAttribute(this.kVERTICAL);
+			aTabBrowser.setAttribute(this.kMODE, this.getTreePref('tabbar.multirow') ? 'multirow' : 'horizontal' );
 			aTabBrowser.removeAttribute(this.kUI_INVERTED);
 			if (pos == this.kTABBAR_BOTTOM) {
 				aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'bottom');
@@ -2573,6 +2573,7 @@ TreeStyleTabBrowserObserver.prototype = {
 								aTab.minWidth = container.mTabMinWidth;
 							});
 						}
+					case 'extensions.treestyletab.tabbar.multirow':
 					case 'extensions.treestyletab.tabbar.invertUI':
 						TreeStyleTabService.initTabbar(this.mTabBrowser);
 						TreeStyleTabService.updateAllTabsIndent(this.mTabBrowser);
