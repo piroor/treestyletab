@@ -62,7 +62,7 @@
 						<spacer/>
 					</row>
 					<row>
-						<vbox pack="start">
+						<vbox pack="start" align="end">
 							<radio value="left" label="&config.tabbar.position.left;"/>
 							<checkbox id="extensions.treestyletab.tabbar.invertScrollbar-check"
 								preference="extensions.treestyletab.tabbar.invertScrollbar"
@@ -70,7 +70,7 @@
 								disabled="true"/>
 						</vbox>
 						<box style="border: ThreeDShadow 1px solid; margin: 0.3em; background: white;"/>
-						<vbox pack="start">
+						<vbox pack="start" align="start">
 							<radio value="right" label="&config.tabbar.position.right;"/>
 							<checkbox id="extensions.treestyletab.tabbar.invertUI-check"
 								preference="extensions.treestyletab.tabbar.invertUI"

@@ -557,6 +557,7 @@ catch(e) {
 			).replace(
 				'this.moveTabToStart();',
 				<><![CDATA[
+					this.__treestyletab__internallyTabMoving = true;
 					var parentTab = TreeStyleTabService.getParentTab(this.mCurrentTab);
 					if (parentTab) {
 						this.moveTabTo(this.mCurrentTab, TreeStyleTabService.getFirstChildTab(parentTab)._tPos);
@@ -565,6 +566,7 @@ catch(e) {
 					else {
 						this.moveTabToStart();
 					}
+					this.__treestyletab__internallyTabMoving = false;
 				]]></>
 			)
 		);
@@ -580,6 +582,7 @@ catch(e) {
 			).replace(
 				'this.moveTabToEnd();',
 				<><![CDATA[
+					this.__treestyletab__internallyTabMoving = true;
 					var parentTab = TreeStyleTabService.getParentTab(this.mCurrentTab);
 					if (parentTab) {
 						this.moveTabTo(this.mCurrentTab, TreeStyleTabService.getLastChildTab(parentTab)._tPos);
@@ -588,6 +591,7 @@ catch(e) {
 					else {
 						this.moveTabToEnd();
 					}
+					this.__treestyletab__internallyTabMoving = false;
 				]]></>
 			)
 		);
@@ -1153,18 +1157,54 @@ catch(e) {
 		var tab = aEvent.originalTarget;
 		this.initTabContents(tab); // twisty vanished after the tab is moved!!
 
+		var rebuildTreeDone = false;
+
 		var b = this.getTabBrowserFromChildren(tab);
 		if (tab.getAttribute(this.kCHILDREN) && !b.__treestyletab__isSubTreeMoving) {
 			this.moveTabSubTreeTo(tab, tab._tPos);
+			rebuildTreeDone = true;
 		}
 
 		var parentTab = this.getParentTab(tab);
 		if (parentTab && !b.__treestyletab__isSubTreeChildrenMoving) {
-			var children = this.getChildTabs(parentTab);
-			children.sort(function(aA, aB) { return aA._tPos - aB._tPos; });
-			var self = this;
-			this.setTabValue(parentTab, this.kCHILDREN, children.map(function(aItem) { return aItem.getAttribute(self.kID); }).join('|'));
+			this.updateChildrenArray(parentTab);
 		}
+
+		if (
+			rebuildTreeDone ||
+			b.__treestyletab__isSubTreeMoving ||
+			b.__treestyletab__internallyTabMoving
+			)
+			return;
+
+		var nest     = Number(tab.getAttribute(this.kNEST) || 0);
+		var parent     = this.getParentTab(tab);
+		var prevParent = this.getParentTab(tab.previousSibling);
+		var nextParent = this.getParentTab(tab.nextSibling);
+		var prevNest   = tab.previousSibling ? Number(tab.previousSibling.getAttribute(this.kNEST)) : -1 ;
+		var nextNest   = tab.nextSibling ? Number(tab.nextSibling.getAttribute(this.kNEST)) : -1 ;
+
+		if (
+			!tab.previousSibling || !tab.nextSibling ||
+			prevParent == nextParent ||
+			prevNest > nextNest
+			) {
+			if (prevParent)
+				this.attachTabTo(tab, prevParent, { insertBefore : tab.nextSibling });
+			else
+				this.partTab(tab);
+		}
+		else if (prevNest < nextNest) {
+			this.attachTabTo(tab, tab.previousSibling, { insertBefore : tab.nextSibling });
+		}
+	},
+	updateChildrenArray : function(aTab)
+	{
+		var children = this.getChildTabs(aTab);
+		children.sort(function(aA, aB) { return aA._tPos - aB._tPos; });
+		var self = this;
+		this.setTabValue(aTab, this.kCHILDREN,
+			children.map(function(aItem) { return aItem.getAttribute(self.kID); }).join('|'));
 	},
  
 	onTabRestored : function(aEvent) 
@@ -1210,7 +1250,9 @@ catch(e) {
 		if (!parent && (before = this.getTabById(before, b))) {
 			var index = before._tPos;
 			if (index > tab._tPos) index--;
+			b.__treestyletab__internallyTabMoving = true;
 			b.moveTabTo(tab, index);
+			b.__treestyletab__internallyTabMoving = false;
 		}
 		this.deleteTabValue(tab, this.kINSERT_BEFORE);
 
@@ -1299,7 +1341,9 @@ catch(e) {
 			) {
 			var newIndex = aInfo.insertBefore ? aInfo.insertBefore._tPos : tabs.length - 1 ;
 			if (aInfo.insertBefore && newIndex > aTarget._tPos) newIndex--;
+			b.__treestyletab__internallyTabMoving = true;
 			b.moveTabTo(aTarget,  newIndex);
+			b.__treestyletab__internallyTabMoving = false;
 		}
 		return true;
 	},
@@ -1395,9 +1439,9 @@ catch(e) {
  
 	getParentTab : function(aTab) 
 	{
-		var id = aTab.getAttribute(this.kID);
+		if (!aTab) return null;
 		return this.evaluateXPath(
-				'parent::*/child::xul:tab[contains(@'+this.kCHILDREN+', "'+id+'")]',
+				'parent::*/child::xul:tab[contains(@'+this.kCHILDREN+', "'+aTab.getAttribute(this.kID)+'")]',
 				aTab,
 				XPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
@@ -1405,6 +1449,8 @@ catch(e) {
  
 	getNextSiblingTab : function(aTab) 
 	{
+		if (!aTab) return null;
+
 		var id        = aTab.getAttribute(this.kID);
 		var parentTab = this.getParentTab(aTab);
 
@@ -1432,6 +1478,8 @@ catch(e) {
  
 	getPreviousSiblingTab : function(aTab) 
 	{
+		if (!aTab) return null;
+
 		var id        = aTab.getAttribute(this.kID);
 		var parentTab = this.getParentTab(aTab);
 
@@ -1459,7 +1507,9 @@ catch(e) {
  
 	getChildTabs : function(aTab, aAllTabsArray) 
 	{
-		var tabs     = [];
+		var tabs = [];
+		if (!aTab) return null;
+
 		var children = aTab.getAttribute(this.kCHILDREN);
 		if (!children) return tabs;
 
@@ -1489,6 +1539,8 @@ catch(e) {
  
 	getFirstChildTab : function(aTab) 
 	{
+		if (!aTab) return null;
+
 		var b          = this.getTabBrowserFromChildren(aTab);
 		var children   = aTab.getAttribute(this.kCHILDREN);
 		var firstChild = null;
@@ -1505,6 +1557,8 @@ catch(e) {
  
 	getLastChildTab : function(aTab) 
 	{
+		if (!aTab) return null;
+
 		var b         = this.getTabBrowserFromChildren(aTab);
 		var children  = aTab.getAttribute(this.kCHILDREN);
 		var lastChild = null;
@@ -1988,14 +2042,18 @@ catch(e) {
 		var b = this.getTabBrowserFromChildren(aTab);
 		b.__treestyletab__isSubTreeMoving = true;
 
+		b.__treestyletab__internallyTabMoving = true;
 		b.moveTabTo(aTab, aIndex);
+		b.__treestyletab__internallyTabMoving = false;
 
 		b.__treestyletab__isSubTreeChildrenMoving = true;
+		b.__treestyletab__internallyTabMoving     = true;
 		var tabs = this.getDescendantTabs(aTab);
 		for (var i = 0, maxi = tabs.length; i < maxi; i++)
 		{
 			b.moveTabTo(tabs[i], aTab._tPos+i+(aTab._tPos < tabs[i]._tPos ? 1 : 0 ));
 		}
+		b.__treestyletab__internallyTabMoving     = false;
 		b.__treestyletab__isSubTreeChildrenMoving = false;
 
 		b.__treestyletab__isSubTreeMoving = false;
@@ -2024,12 +2082,14 @@ catch(e) {
 			else {
 				var nextTab = this.getNextSiblingTab(parentTab);
 				this.partTab(b.mCurrentTab);
+				b.__treestyletab__internallyTabMoving = true;
 				if (nextTab) {
 					b.moveTabTo(b.mCurrentTab, nextTab._tPos - 1);
 				}
 				else {
 					b.moveTabTo(b.mCurrentTab, b.mTabContainer.lastChild._tPos);
 				}
+				b.__treestyletab__internallyTabMoving = false;
 				b.mCurrentTab.focus();
 				return true;
 			}
