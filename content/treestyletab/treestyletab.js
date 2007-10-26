@@ -760,8 +760,11 @@ catch(e) {
 				'{',
 				<><![CDATA[
 					{
-						var currentURI = TreeStyleTabService.browser.currentURI;
-						var parentTab  = TreeStyleTabService.getParentTab(TreeStyleTabService.browser.selectedTab);
+						var currentURI  = TreeStyleTabService.browser.currentURI;
+						var currentHost = currentURI.spec.match(/^\w+:\/\/[^:\/]+(\/|$)/) ? currentURI.host : null ;
+						var parentTab   = TreeStyleTabService.getParentTab(TreeStyleTabService.browser.selectedTab);
+						var parentURI   = parentTab ? parentTab.linkedBrowser.currentURI : null ;
+						var parentHost  = parentURI && parentURI.spec.match(/^\w+:\/\/[^:\/]+(\/|$)/) ? parentURI.host : null ;
 				]]></>
 			).replace(
 				'aTriggeringEvent && aTriggeringEvent.altKey',
@@ -772,16 +775,17 @@ catch(e) {
 						(
 							(
 								TreeStyleTabService.getTreePref('urlbar.loadSameDomainToNewChildTab') &&
-								currentURI.host == RegExp.$1 &&
+								currentHost == RegExp.$1 &&
 								(TreeStyleTabService.readyToOpenChildTab(
-									parentTab && parentTab.linkedBrowser.currentURI.host == RegExp.$1 ?
+									parentHost == RegExp.$1 ?
 										parentTab :
 										null
 								), true)
 							) ||
 							(
 								TreeStyleTabService.getTreePref('urlbar.loadSameDomainToNewChildTab') &&
-								currentURI.host != RegExp.$1
+								currentHost != RegExp.$1 &&
+								currentURI.spec != 'about:blank'
 							)
 						)
 					)
