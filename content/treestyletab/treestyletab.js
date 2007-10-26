@@ -776,6 +776,7 @@ catch(e) {
 							(
 								TreeStyleTabService.getTreePref('urlbar.loadSameDomainToNewChildTab') &&
 								currentHost == RegExp.$1 &&
+								currentURI.spec.split('#')[0] != irl.split('#')[0] &&
 								(TreeStyleTabService.readyToOpenChildTab(
 									parentHost == RegExp.$1 ?
 										parentTab :
