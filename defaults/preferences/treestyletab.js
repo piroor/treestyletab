@@ -14,7 +14,7 @@ pref("extensions.treestyletab.levelMargin",            12);
 pref("extensions.treestyletab.show.openSelectionLinks", true);
 
 pref("extensions.treestyletab.urlbar.loadDifferentDomainToNewTab", true);
-pref("extensions.treestyletab.urlbar.loadSameDomainToNewChildTab", false);
+pref("extensions.treestyletab.urlbar.loadSameDomainToNewChildTab", true);
 pref("extensions.treestyletab.loadDroppedLinkToNewChildTab",  false);
 pref("extensions.treestyletab.openGroupBookmarkAsTabSubTree", true);
 
