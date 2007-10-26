@@ -209,11 +209,20 @@ tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="mixed"] .t
 	-moz-box-flex: 1;
 }
 
+tabbrowser:not([treestyletab-vertical="true"]) .treestyletab-twisty-container {
+	position: relative;
+	margin: 0 16px 0 -16px;
+}
+
+tabbrowser:not([treestyletab-vertical="true"])[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyletab-children] .tab-icon {
+	margin-left: 16px;
+}
+
 .treestyletab-twisty {
 	list-style-image: url("tree-twisty-expanded.png");
 }
 
-tab[treestyletab-subtree-collapsed="true"] .treestyletab-twisty {
+.tabbrowser-tab[treestyletab-subtree-collapsed="true"] .treestyletab-twisty {
 	list-style-image: url("tree-twisty-collapsed.png");
 }
 

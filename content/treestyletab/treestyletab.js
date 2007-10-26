@@ -143,33 +143,16 @@ var TreeStyleTabService = {
   
 /* Utilities */ 
 	 
-	isEventFiredOnTabIcon : function(aEvent) 
+	isEventFiredOnTwisty : function(aEvent) 
 	{
 		var tab = this.getTabFromEvent(aEvent);
 		if (!tab) return false;
 
-		var icon = document.getAnonymousElementByAttribute(tab, 'class', 'tab-icon');
-		var box = icon.boxObject;
-		if (aEvent.screenX > box.screenX &&
-			aEvent.screenY > box.screenY &&
-			aEvent.screenX < box.screenX + box.width &&
-			aEvent.screenY < box.screenY + box.height)
-			return true;
-
-		return false;
-	},
- 
-	isEventFiredOnTwisty : function(aEvent) 
-	{
-		var tab = this.getTabFromEvent(aEvent);
-		var twisty = document.getAnonymousElementByAttribute(tab, 'class', this.kTWISTY);
-		if (!twisty || !tab.hasAttribute(this.kCHILDREN)) return false;
-
-		var box = twisty.parentNode.parentNode.boxObject;
-		return !(aEvent.screenX < box.screenX ||
-				aEvent.screenX > box.screenX + box.width ||
-				aEvent.screenY < box.screenY ||
-				aEvent.screenY > box.screenY + box.height);
+		return tab.hasAttribute(this.kCHILDREN) && this.evaluateXPath(
+				'ancestor-or-self::*[@class="'+this.kTWISTY+'" or @class="tab-icon"]',
+				aEvent.originalTarget || aEvent.target,
+				XPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue ? true : false ;
 	},
  
 	get browser() 
@@ -217,11 +200,10 @@ var TreeStyleTabService = {
  
 	getTabFromEvent : function(aEvent) 
 	{
-		var target = aEvent.originalTarget || aEvent.target;
-		while (target.localName != 'tab' && target.localName != 'tabs' && target.parentNode)
-			target = target.parentNode;
-
-		return (target.localName == 'tab') ? target : null ;
+		return this.evaluateXPath(
+				'ancestor-or-self::xul:tab',
+				aEvent.originalTarget || aEvent.target, XPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue;
 	},
  
 	getTabFromFrame : function(aFrame, aTabBrowser) 
