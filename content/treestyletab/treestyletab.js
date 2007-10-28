@@ -139,12 +139,16 @@ var TreeStyleTabService = {
 		return ownerBrowser.__treestyletab__readyToAttachNewTab || ownerBrowser.__treestyletab__readyToAttachNewTabGroup ? true : false ;
 	},
  
-	checkReadyToOpenNewChildTab : function(aFrameOrTabBrowser, aURI, aNewTabForDifferentDomain, aNewTabForSameDomain) 
+	checkReadyToOpenNewChildTab : function(aFrameOrTabBrowser, aInfo) 
 	{
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
 		if (!frame) return false;
 
-		var targetHost  = /^\w+:\/\/([^:\/]+)(\/|$)/.test(aURI) ? RegExp.$1 : null ;
+		var info     = aInfo || { uri : '' };
+		var external = info.external || {};
+		var internal = info.internal || {};
+
+		var targetHost  = /^\w+:\/\/([^:\/]+)(\/|$)/.test(info.uri) ? RegExp.$1 : null ;
 		var currentURI  = frame.location.href;
 		var currentHost = currentURI.match(/^\w+:\/\/([^:\/]+)(\/|$)/) ? RegExp.$1 : null ;
 		var parentTab   = this.getParentTab(this.getTabFromFrame(frame));
@@ -153,19 +157,20 @@ var TreeStyleTabService = {
 
 		return (
 				(
-					aNewTabForSameDomain &&
+					internal.newTab &&
 					currentHost == targetHost &&
-					currentURI.split('#')[0] != aURI.split('#')[0] &&
+					currentURI.split('#')[0] != info.uri.split('#')[0] &&
 					(this.readyToOpenChildTab(
-						parentHost == targetHost ?
+						parentHost == targetHost && !internal.forceChild ?
 							parentTab :
 							frame
 					), true)
 				) ||
 				(
-					aNewTabForDifferentDomain &&
+					external.newTab &&
 					currentHost != targetHost &&
-					currentURI != 'about:blank'
+					currentURI != 'about:blank' &&
+					(external.forceChild ? (this.readyToOpenChildTab(frame), true) : true )
 				)
 			);
 	},
@@ -791,9 +796,11 @@ catch(e) {
 					(aTriggeringEvent && aTriggeringEvent.altKey) ||
 					TreeStyleTabService.checkReadyToOpenNewChildTab(
 						TreeStyleTabService.browser,
-						url,
-						TreeStyleTabService.getTreePref('urlbar.loadDifferentDomainToNewTab'),
-						TreeStyleTabService.getTreePref('urlbar.loadSameDomainToNewChildTab')
+						{
+							uri      : url,
+							external : { newTab : TreeStyleTabService.getTreePref('urlbar.loadDifferentDomainToNewTab') },
+							internal : { newTab : TreeStyleTabService.getTreePref('urlbar.loadSameDomainToNewChildTab') }
+						}
 					)
 				]]></>
 			)
@@ -861,10 +868,48 @@ catch(e) {
 							$1 ||
 							TreeStyleTabService.checkReadyToOpenNewChildTab(
 								TreeStyleTabService.browser,
-								href,
-								TreeStyleTabService.getTreePref('openOuterLinkInNewTab') || TreeStyleTabService.getTreePref('openAnyLinkInNewTab'),
-								TreeStyleTabService.getTreePref('openAnyLinkInNewTab')
+								{
+									uri      : href,
+									external : {
+										newTab : TreeStyleTabService.getTreePref('openOuterLinkInNewTab') || TreeStyleTabService.getTreePref('openAnyLinkInNewTab'),
+										forceChild : true
+									},
+									internal : {
+										newTab : TreeStyleTabService.getTreePref('openAnyLinkInNewTab')
+									}
+								}
 							)
+						]]></>
+					)
+				);
+		}
+
+		funcs = 'contentAreaClick __ctxextensions__contentAreaClick'.split(' ');
+		for (var i in funcs)
+		{
+			if (funcs[i] in window && /^function contentAreaClick/.test(window[funcs[i]].toString()))
+				eval('window.'+funcs[i]+' = '+
+					window[funcs[i]].toSource().replace(
+						/(openWebPanel\([^\(]+\("webPanels"\), wrapper.href\);event.preventDefault\(\);return false;\})/,
+						<><![CDATA[
+							$1
+							else if (TreeStyleTabService.checkReadyToOpenNewChildTab(
+								TreeStyleTabService.browser,
+								{
+									uri      : wrapper.href,
+									external : {
+										newTab : TreeStyleTabService.getTreePref('openOuterLinkInNewTab') || TreeStyleTabService.getTreePref('openAnyLinkInNewTab'),
+										forceChild : true
+									},
+									internal : {
+										newTab : TreeStyleTabService.getTreePref('openAnyLinkInNewTab')
+									}
+								})) {
+								event.stopPropagation();
+								event.preventDefault();
+								handleLinkClick(event, wrapper.href, linkNode);
+								return true;
+							}
 						]]></>
 					)
 				);
