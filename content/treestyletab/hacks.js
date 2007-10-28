@@ -77,6 +77,7 @@ TreeStyleTabService.overrideExtensions = function() {
 			autoHIDE.HideToolbar.toSource().replace(
 				'if (this.Show) {',
 				<><![CDATA[
+					window.setTimeout('TreeStyleTabService.checkTabsIndentOverflow(gBrowser);', 0);
 					var treeStyleTabPos = TreeStyleTabService.getPref("extensions.treestyletab.tabbar.position");
 					if (this.Show) {
 						var appcontent = document.getElementById('appcontent');
@@ -99,6 +100,7 @@ TreeStyleTabService.overrideExtensions = function() {
 							appcontent.style.marginLeft  = 0;
 							appcontent.style.marginRight = 0;
 						}
+						window.setTimeout('TreeStyleTabService.checkTabsIndentOverflow(gBrowser);', 0);
 				]]></>
 			)
 		);
