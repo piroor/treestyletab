@@ -27,6 +27,10 @@
 
 <!ENTITY config.tabs.context.tab      "場合に応じてタブを開く">
 
+<!ENTITY config.link.caption           "リンク">
+<!ENTITY config.openOuterLinkInNewTab  "異なるサイトへのリンクを新しいタブで開く">
+<!ENTITY config.openAnyLinkInNewTab    "すべてのリンクを新しいタブで開く">
+
 <!ENTITY config.urlbar.caption                      "ロケーションバーへの入力">
 <!ENTITY config.urlbar.loadDifferentDomainToNewTab  "異なるサイトのURIを新しいタブで開く">
 <!ENTITY config.urlbar.loadSameDomainToNewChildTab  "同じサイトのURIを新しい子タブで開く">

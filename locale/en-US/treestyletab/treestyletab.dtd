@@ -27,6 +27,10 @@
 
 <!ENTITY config.tabs.context.tab      "Open tabs contextually">
 
+<!ENTITY config.link.caption           "Links">
+<!ENTITY config.openOuterLinkInNewTab  "Open links to different website in new tab">
+<!ENTITY config.openAnyLinkInNewTab    "Open any link in new tab">
+
 <!ENTITY config.urlbar.caption                      "Action for entering URI to the location bar">
 <!ENTITY config.urlbar.loadDifferentDomainToNewTab  "Load into new tab if it is a different website">
 <!ENTITY config.urlbar.loadSameDomainToNewChildTab  "Load into new child tab if it is the same website">

@@ -1,8 +1,16 @@
-var gGroupBookmarkRadio, gGroupBookmarkTree, gGroupBookmarkReplace;
+var gOuterLinkCheck,
+	gAnyLinkCheck,
+	gGroupBookmarkRadio,
+	gGroupBookmarkTree,
+	gGroupBookmarkReplace;
 var gTabbarPlacePositionInitialized = false;
 
-function initGroupBookmarkRadio()
+function initTabPane()
 {
+	gOuterLinkCheck = document.getElementById('extensions.treestyletab.openOuterLinkInNewTab-check');
+	gAnyLinkCheck = document.getElementById('extensions.treestyletab.openAnyLinkInNewTab-check');
+	gOuterLinkCheck.disabled = gAnyLinkCheck.checked;
+
 	gGroupBookmarkRadio = document.getElementById('openGroupBookmarkAsTabSubTree-radiogroup');
 	gGroupBookmarkTree = document.getElementById('extensions.treestyletab.openGroupBookmarkAsTabSubTree');
 	gGroupBookmarkReplace = document.getElementById('browser.tabs.loadFolderAndReplace');

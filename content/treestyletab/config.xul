@@ -118,8 +118,14 @@
 </prefpane>
 
 <prefpane id="prefpane-tab" label="&config.tabs.tab;"
-	onpaneload="initGroupBookmarkRadio();">
+	onpaneload="initTabPane();">
 	<preferences>
+		<preference id="extensions.treestyletab.openOuterLinkInNewTab"
+			name="extensions.treestyletab.openOuterLinkInNewTab"
+			type="bool"/>
+		<preference id="extensions.treestyletab.openAnyLinkInNewTab"
+			name="extensions.treestyletab.openAnyLinkInNewTab"
+			type="bool"/>
 		<preference id="extensions.treestyletab.urlbar.loadDifferentDomainToNewTab"
 			name="extensions.treestyletab.urlbar.loadDifferentDomainToNewTab"
 			type="bool"/>
@@ -150,6 +156,18 @@
 		</tabs>
 		<tabpanels>
 			<tabpanel orient="vertical">
+				<groupbox>
+					<caption label="&config.link.caption;"/>
+					<vbox>
+						<checkbox id="extensions.treestyletab.openOuterLinkInNewTab-check"
+							preference="extensions.treestyletab.openOuterLinkInNewTab"
+							label="&config.openOuterLinkInNewTab;"/>
+						<checkbox id="extensions.treestyletab.openAnyLinkInNewTab-check"
+							preference="extensions.treestyletab.openAnyLinkInNewTab"
+							label="&config.openAnyLinkInNewTab;"
+							oncommand="gOuterLinkCheck.disabled = gAnyLinkCheck.checked;"/>
+					</vbox>
+				</groupbox>
 				<groupbox>
 					<caption label="&config.urlbar.caption;"/>
 					<vbox>
