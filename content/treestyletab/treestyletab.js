@@ -1196,23 +1196,21 @@ catch(e) {
 			this.setTabValue(tab, this.kCHILDREN, backupChildren);
 		}
 
-		if (!nextFocusedTab) {
-			if (parentTab) {
-				var firstSibling = this.getFirstChildTab(parentTab);
-				var lastSibling  = this.getLastChildTab(parentTab);
-				if (tab == lastSibling) {
-					if (tab == firstSibling) { // there is only one child
-						nextFocusedTab = parentTab;
-					}
-					else { // previous sibling tab
-						nextFocusedTab = this.getPreviousSiblingTab(tab);
-					}
+		if (parentTab) {
+			var firstSibling = this.getFirstChildTab(parentTab);
+			var lastSibling  = this.getLastChildTab(parentTab);
+			if (tab == lastSibling) {
+				if (tab == firstSibling) { // there is only one child
+					nextFocusedTab = parentTab;
 				}
-				this.partTab(tab, true);
+				else { // previous sibling tab
+					nextFocusedTab = this.getPreviousSiblingTab(tab);
+				}
 			}
-			else {
-				nextFocusedTab = this.getNextSiblingTab(tab);
-			}
+			this.partTab(tab, true);
+		}
+		if (!nextFocusedTab) {
+			nextFocusedTab = this.getNextSiblingTab(tab);
 		}
 
 		if (nextFocusedTab && b.selectedTab == tab)
