@@ -94,7 +94,7 @@ var TreeStyleTabService = {
 	_IOService : null,
 	 
 /* API */ 
-	
+	 
 	readyToOpenChildTab : function(aFrameOrTabBrowser, aMultiple) 
 	{
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
@@ -138,7 +138,38 @@ var TreeStyleTabService = {
 		var ownerBrowser = this.getTabBrowserFromFrame(frame);
 		return ownerBrowser.__treestyletab__readyToAttachNewTab || ownerBrowser.__treestyletab__readyToAttachNewTabGroup ? true : false ;
 	},
-  
+ 
+	checkReadyToOpenNewChildTab : function(aFrameOrTabBrowser, aURI, aNewTabForDifferentDomain, aNewTabForSameDomain) 
+	{
+		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
+		if (!frame) return false;
+
+		var targetHost  = /^\w+:\/\/([^:\/]+)(\/|$)/.test(aURI) ? RegExp.$1 : null ;
+		var currentURI  = frame.location.href;
+		var currentHost = currentURI.match(/^\w+:\/\/([^:\/]+)(\/|$)/) ? RegExp.$1 : null ;
+		var parentTab   = this.getParentTab(this.getTabFromFrame(frame));
+		var parentURI   = parentTab ? parentTab.linkedBrowser.currentURI : null ;
+		var parentHost  = parentURI && parentURI.spec.match(/^\w+:\/\/([^:\/]+)(\/|$)/) ? RegExp.$1 : null ;
+
+		return (
+				(
+					aNewTabForSameDomain &&
+					currentHost == targetHost &&
+					currentURI.split('#')[0] != aURI.split('#')[0] &&
+					(this.readyToOpenChildTab(
+						parentHost == targetHost ?
+							parentTab :
+							frame
+					), true)
+				) ||
+				(
+					aNewTabForDifferentDomain &&
+					currentHost != targetHost &&
+					currentURI != 'about:blank'
+				)
+			);
+	},
+ 	 
 /* Utilities */ 
 	 
 	isEventFiredOnTwisty : function(aEvent) 
@@ -755,38 +786,14 @@ catch(e) {
 
 		eval('window.BrowserLoadURL = '+
 			window.BrowserLoadURL.toSource().replace(
-				'{',
-				<><![CDATA[
-					{
-						var currentURI  = TreeStyleTabService.browser.currentURI;
-						var currentHost = currentURI.spec.match(/^\w+:\/\/[^:\/]+(\/|$)/) ? currentURI.host : null ;
-						var parentTab   = TreeStyleTabService.getParentTab(TreeStyleTabService.browser.selectedTab);
-						var parentURI   = parentTab ? parentTab.linkedBrowser.currentURI : null ;
-						var parentHost  = parentURI && parentURI.spec.match(/^\w+:\/\/[^:\/]+(\/|$)/) ? parentURI.host : null ;
-				]]></>
-			).replace(
 				'aTriggeringEvent && aTriggeringEvent.altKey',
 				<><![CDATA[
 					(aTriggeringEvent && aTriggeringEvent.altKey) ||
-					(
-						/^\w+:\/\/([^:\/]+)(\/|$)/.test(url) &&
-						(
-							(
-								TreeStyleTabService.getTreePref('urlbar.loadSameDomainToNewChildTab') &&
-								currentHost == RegExp.$1 &&
-								currentURI.spec.split('#')[0] != url.split('#')[0] &&
-								(TreeStyleTabService.readyToOpenChildTab(
-									parentHost == RegExp.$1 ?
-										parentTab :
-										null
-								), true)
-							) ||
-							(
-								TreeStyleTabService.getTreePref('urlbar.loadSameDomainToNewChildTab') &&
-								currentHost != RegExp.$1 &&
-								currentURI.spec != 'about:blank'
-							)
-						)
+					TreeStyleTabService.checkReadyToOpenNewChildTab(
+						TreeStyleTabService.browser,
+						url,
+						TreeStyleTabService.getTreePref('urlbar.loadDifferentDomainToNewTab'),
+						TreeStyleTabService.getTreePref('urlbar.loadSameDomainToNewChildTab')
 					)
 				]]></>
 			)
@@ -841,13 +848,24 @@ catch(e) {
 		funcs = 'handleLinkClick __splitbrowser__handleLinkClick __ctxextensions__handleLinkClick'.split(' ');
 		for (var i in funcs)
 		{
-			if (funcs[i] in window)
+			if (funcs[i] in window && /^function handleLinkClick/.test(window[funcs[i]].toString()))
 				eval('window.'+funcs[i]+' = '+
 					window[funcs[i]].toSource().replace(
 						/openNewTabWith\(/g,
 						<><![CDATA[
 							TreeStyleTabService.readyToOpenChildTab(event.target.ownerDocument.defaultView);
 							openNewTabWith(]]></>
+					).replace(
+						/(event.ctrlKey|event.metaKey)/,
+						<><![CDATA[
+							$1 ||
+							TreeStyleTabService.checkReadyToOpenNewChildTab(
+								TreeStyleTabService.browser,
+								href,
+								TreeStyleTabService.getTreePref('openOuterLinkInNewTab') || TreeStyleTabService.getTreePref('openAnyLinkInNewTab'),
+								TreeStyleTabService.getTreePref('openAnyLinkInNewTab')
+							)
+						]]></>
 					)
 				);
 		}
@@ -855,7 +873,8 @@ catch(e) {
 		funcs = 'gotoHistoryIndex BrowserForward BrowserBack __rewindforward__BrowserForward __rewindforward__BrowserBack'.split(' ');
 		for (var i in funcs)
 		{
-			if (funcs[i] in window)
+			if (funcs[i] in window &&
+				/^function (gotoHistoryIndex|BrowserForward|BrowserBack)/.test(window[funcs[i]].toString()))
 				eval('window.'+funcs[i]+' = '+
 					window[funcs[i]].toSource().replace(
 						/openUILinkIn\(/g,
@@ -935,7 +954,7 @@ catch(e) {
 			);
 		}
 	},
- 	 
+  
 	destroy : function() 
 	{
 		this.destroyTabBrowser(gBrowser);
