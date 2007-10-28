@@ -112,9 +112,11 @@ tabbrowser[treestyletab-mode="vertical"][treestyletab-style="vertigo"] .tabbrows
 tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="vertigo"] .tabbrowser-tabs {
 	border-right: 1px solid #aaa !important;
 }
-tabbrowser[reestyletab-tabbar-position="right"][treestyletab-style="vertigo"] .tabbrowser-tabs,
-tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="vertigo"] .tabbrowser-tabs {
+tabbrowser[reestyletab-tabbar-position="right"][treestyletab-style="vertigo"] .tabbrowser-tabs {
 	border-left: 1px solid #aaa !important;
+}
+tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="vertigo"] .tabbrowser-tabs {
+	border-top: 1px solid #aaa !important;
 }
 
 tabbrowser[treestyletab-mode="vertical"][treestyletab-style="vertigo"] .tabbrowser-tab,
@@ -135,6 +137,12 @@ tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="vertigo"] 
 	-moz-border-top-colors: #c1d2ee #c1d2ee !important;
 	-moz-border-bottom-colors: #c1d2ee #c1d2ee !important;
 }
+tabbrowser[treestyletab-mode="vertical"][treestyletab-style="vertigo"] .tabbrowser-tab[selected="true"]:hover,
+tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="vertigo"] .tabbrowser-tab[selected="true"]:hover {
+	background: #d1e2fe !important;
+	-moz-border-top-colors: #d1e2fe #d1e2fe !important;
+	-moz-border-bottom-colors: #d1e2fe #d1e2fe !important;
+}
 
 tabbrowser[treestyletab-mode="vertical"][treestyletab-style="vertigo"] .tabbrowser-tab,
 tabbrowser[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"][treestyletab-style="vertigo"] .tabbrowser-tab,
@@ -153,6 +161,12 @@ tabbrowser[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"
 tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="vertigo"] .tabbrowser-tab[selected="true"] {
 	-moz-border-left-colors: #c1d2ee #c1d2ee !important;
 	-moz-border-right-colors: #c1d2ee #c1d2ee !important;
+}
+tabbrowser[treestyletab-mode="vertical"][treestyletab-style="vertigo"] .tabbrowser-tab[selected="true"]:hover,
+tabbrowser[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"][treestyletab-style="vertigo"] .tabbrowser-tab[selected="true"]:hover,
+tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="vertigo"] .tabbrowser-tab[selected="true"]:hover {
+	-moz-border-left-colors: #d1e2fe #d1e2fe !important;
+	-moz-border-right-colors: #d1e2fe #d1e2fe !important;
 }
 
 
@@ -176,6 +190,16 @@ tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="mixed"] .t
 tabbrowser[treestyletab-mode="vertical"][treestyletab-style="mixed"][treestyletab-firsttab-border="true"] .tabbrowser-tab:first-child[selected="true"] {
 	-moz-border-top-colors: ThreeDShadow #c1d2ee !important;
 }
+tabbrowser[treestyletab-mode="vertical"][treestyletab-style="mixed"] .tabbrowser-tab[selected="true"]:hover,
+tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="mixed"] .tabbrowser-tab[selected="true"]:hover {
+	background: #d1e2fe !important;
+	-moz-border-top-colors: #d1e2fe #d1e2fe !important;
+	-moz-border-bottom-colors: ThreeDShadow #d1e2fe !important;
+}
+tabbrowser[treestyletab-mode="vertical"][treestyletab-style="mixed"][treestyletab-firsttab-border="true"] .tabbrowser-tab:first-child[selected="true"]:hover {
+	-moz-border-top-colors: ThreeDShadow #d1e2fe !important;
+}
+
 
 tabbrowser[treestyletab-mode="vertical"][treestyletab-style="mixed"] .tabbrowser-tab:hover,
 tabbrowser[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"][treestyletab-style="mixed"] .tabbrowser-tab:hover {
@@ -187,6 +211,11 @@ tabbrowser[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"
 	-moz-border-left-colors: #c1d2ee #c1d2ee !important;
 	-moz-border-right-colors: #c1d2ee #c1d2ee !important;
 }
+tabbrowser[treestyletab-mode="vertical"][treestyletab-style="mixed"] .tabbrowser-tab[selected="true"]:hover,
+tabbrowser[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"][treestyletab-style="mixed"] .tabbrowser-tab[selected="true"]:hover {
+	-moz-border-left-colors: #d1e2fe #d1e2fe !important;
+	-moz-border-right-colors: #d1e2fe #d1e2fe !important;
+}
 
 tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="mixed"] .tabbrowser-tab:hover {
 	-moz-border-left-colors: ThreeDShadow #e0e8f6 !important;
@@ -195,6 +224,10 @@ tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="mixed"] .t
 tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="mixed"] .tabbrowser-tab[selected="true"] {
 	-moz-border-left-colors: ThreeDShadow #c1d2ee !important;
 	-moz-border-right-colors: ThreeDShadow #c1d2ee !important;
+}
+tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="mixed"] .tabbrowser-tab[selected="true"]:hover {
+	-moz-border-left-colors: ThreeDShadow #d1e2fe !important;
+	-moz-border-right-colors: ThreeDShadow #d1e2fe !important;
 }
 
 
