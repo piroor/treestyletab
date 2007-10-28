@@ -144,7 +144,9 @@ var TreeStyleTabService = {
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
 		if (!frame) return false;
 
-		var info     = aInfo || { uri : '' };
+		var info = aInfo || { uri : '' };
+		if (/^javascript:/.test(info.uri)) return false;
+
 		var external = info.external || {};
 		var internal = info.internal || {};
 
