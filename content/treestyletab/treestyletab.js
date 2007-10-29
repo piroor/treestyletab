@@ -1209,7 +1209,7 @@ catch(e) {
 			}
 			this.partTab(tab, true);
 		}
-		if (!nextFocusedTab) {
+		else if (!nextFocusedTab) {
 			nextFocusedTab = this.getNextSiblingTab(tab);
 		}
 
