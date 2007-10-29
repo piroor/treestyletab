@@ -95,7 +95,7 @@ var TreeStyleTabService = {
 	 
 /* API */ 
 	 
-	readyToOpenChildTab : function(aFrameOrTabBrowser, aMultiple) 
+	readyToOpenChildTab : function(aFrameOrTabBrowser, aMultiple, aInsertBefore) 
 	{
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
 		if (!frame) return;
@@ -104,6 +104,7 @@ var TreeStyleTabService = {
 		ownerBrowser.__treestyletab__readyToAttachNewTab   = true;
 		ownerBrowser.__treestyletab__readyToAttachMultiple = aMultiple || false ;
 		ownerBrowser.__treestyletab__parentTab             = this.getTabFromFrame(frame, ownerBrowser).getAttribute(this.kID);
+		ownerBrowser.__treestyletab__insertBefore          = aInsertBefore ? aInsertBefore.getAttribute(this.kID) : null ;
 	},
  
 	readyToOpenNewTabGroup : function(aFrameOrTabBrowser) 
@@ -128,6 +129,7 @@ var TreeStyleTabService = {
 		ownerBrowser.__treestyletab__readyToAttachNewTabGroup = false;
 		ownerBrowser.__treestyletab__readyToAttachMultiple    = false;
 		ownerBrowser.__treestyletab__parentTab                = null;
+		ownerBrowser.__treestyletab__insertBefore             = null;
 	},
  
 	checkToOpenChildTab : function(aFrameOrTabBrowser) 
@@ -144,6 +146,27 @@ var TreeStyleTabService = {
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
 		if (!frame) return false;
 
+/*
+	挙動の説明
+
+	・現在のサイトと異なるサイトを読み込む場合にタブを開く時：
+	  →特に何もしない。新しく開くタブを子タブにする場合は別途
+	    readyToOpenChildTabを使う。
+
+	・現在のサイトと同じサイトのページを読み込む場合にタブを開く時：
+	  →親のタブは同じサイトか？
+	    No ：子タブを開く
+	    Yes：兄弟としてタブを開く。ただし、このタブからのタブはすべて
+	         現在のタブと次の兄弟タブとの間に開かれ、仮想サブツリーとなる。
+	         →現在のタブに「__treestyletab__next」プロパティが
+	           あるか？
+	           Yes：__treestyletab__nextで示されたタブの直前に
+	                新しい兄弟タブを挿入する。
+	           No ：現在のタブの次の兄弟タブのIDを__treestyletab__next
+	                プロパティに保持し、仮想の子タブを挿入する位置の
+	                基準とする。
+*/
+
 		var info = aInfo || { uri : '' };
 		if (/^javascript:/.test(info.uri)) return false;
 
@@ -151,31 +174,39 @@ var TreeStyleTabService = {
 		var internal = info.internal || {};
 
 		var targetHost  = /^\w+:\/\/([^:\/]+)(\/|$)/.test(info.uri) ? RegExp.$1 : null ;
+		var currentTab  = this.getTabFromFrame(frame);
 		var currentURI  = frame.location.href;
 		var currentHost = currentURI.match(/^\w+:\/\/([^:\/]+)(\/|$)/) ? RegExp.$1 : null ;
-		var parentTab   = this.getParentTab(this.getTabFromFrame(frame));
+		var parentTab   = this.getParentTab(currentTab);
 		var parentURI   = parentTab ? parentTab.linkedBrowser.currentURI : null ;
 		var parentHost  = parentURI && parentURI.spec.match(/^\w+:\/\/([^:\/]+)(\/|$)/) ? RegExp.$1 : null ;
 
+		var b       = this.getTabBrowserFromFrame(frame);
+		var nextTab = this.getNextSiblingTab(currentTab);
+
 		return (
-				(
-					internal.newTab &&
-					currentHost == targetHost &&
-					currentURI != 'about:blank' &&
-					currentURI.split('#')[0] != info.uri.split('#')[0] &&
-					(this.readyToOpenChildTab(
-						parentHost == targetHost && !internal.forceChild ?
-							parentTab :
-							frame
-					), true)
-				) ||
-				(
-					external.newTab &&
-					currentHost != targetHost &&
-					currentURI != 'about:blank' &&
-					(external.forceChild ? (this.readyToOpenChildTab(frame), true) : true )
-				)
-			);
+			(
+				internal.newTab &&
+				currentHost == targetHost &&
+				currentURI != 'about:blank' &&
+				currentURI.split('#')[0] != info.uri.split('#')[0] &&
+				(this.readyToOpenChildTab(
+					(parentHost == targetHost && !internal.forceChild ? parentTab : frame),
+					false,
+					(parentHost == targetHost && !internal.forceChild && (
+						this.getTabById(currentTab.__treestyletab__next, b) ||
+						(nextTab ? (currentTab.__treestyletab__next = nextTab.getAttribute(this.kID), nextTab) : null )
+					))
+				),
+				true)
+			) ||
+			(
+				external.newTab &&
+				currentHost != targetHost &&
+				currentURI != 'about:blank' &&
+				(external.forceChild ? (this.readyToOpenChildTab(frame), true) : true )
+			)
+		);
 	},
  	 
 /* Utilities */ 
@@ -1177,6 +1208,16 @@ catch(e) {
 			var parent = this.getTabById(b.__treestyletab__parentTab, b);
 			if (parent)
 				this.attachTabTo(tab, parent);
+
+			var insertBefore;
+			if (b.__treestyletab__insertBefore &&
+				(insertBefore = this.getTabById(b.__treestyletab__insertBefore, b))) {
+				var index = insertBefore._tPos;
+				if (index > tab._tPos) index--;
+				b.__treestyletab__internallyTabMoving = true;
+				b.moveTabTo(tab, index);
+				b.__treestyletab__internallyTabMoving = false;
+			}
 		}
 
 		if (!b.__treestyletab__readyToAttachMultiple) {
@@ -1505,6 +1546,7 @@ catch(e) {
  
 	getTabById : function(aId, aTabBrowser) 
 	{
+		if (!aId || !aTabBrowser) return null;
 		return this.evaluateXPath(
 				'descendant::xul:tab[@'+this.kID+' = "'+aId+'"]',
 				aTabBrowser.mTabContainer,
