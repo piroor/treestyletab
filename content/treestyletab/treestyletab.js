@@ -141,7 +141,7 @@ var TreeStyleTabService = {
 		return ownerBrowser.__treestyletab__readyToAttachNewTab || ownerBrowser.__treestyletab__readyToAttachNewTabGroup ? true : false ;
 	},
  
-	checkReadyToOpenNewChildTab : function(aInfo) 
+	checkReadyToOpenNewTab : function(aInfo) 
 	{
 /*
 	ãììÆÇÃê‡ñæ
@@ -184,29 +184,40 @@ var TreeStyleTabService = {
 		var b       = this.getTabBrowserFromFrame(frame);
 		var nextTab = this.getNextSiblingTab(currentTab);
 
-		return (
-			(
-				internal.newTab &&
-				currentHost == targetHost &&
-				currentURI != 'about:blank' &&
-				currentURI.split('#')[0] != info.uri.split('#')[0] &&
-				(this.readyToOpenChildTab(
-					(parentHost == targetHost && !internal.forceChild ? parentTab : frame),
-					false,
-					(parentHost == targetHost && !internal.forceChild && (
-						this.getTabById(currentTab.__treestyletab__next, b) ||
-						(nextTab ? (currentTab.__treestyletab__next = nextTab.getAttribute(this.kID), nextTab) : null )
-					))
-				),
-				true)
-			) ||
-			(
-				external.newTab &&
-				currentHost != targetHost &&
-				currentURI != 'about:blank' &&
-				(external.forceChild ? (this.readyToOpenChildTab(frame), true) : true )
-			)
-		);
+		var openTab      = false;
+		var parent       = null;
+		var insertBefore = null;
+
+		if (info.modifier) openTab = true;
+
+		if (
+			internal.newTab &&
+			currentHost == targetHost &&
+			currentURI != 'about:blank' &&
+			currentURI.split('#')[0] != info.uri.split('#')[0]
+			) {
+			openTab = info.modifier && info.invert ? !openTab : true ;
+			parent = parentHost == targetHost && !internal.forceChild ? parentTab : frame ;
+			insertBefore = parentHost == targetHost && !internal.forceChild && (
+					this.getTabById(currentTab.__treestyletab__next, b) ||
+					(nextTab ? (currentTab.__treestyletab__next = nextTab.getAttribute(this.kID), nextTab) : null )
+				);
+		}
+		else if (
+			external.newTab &&
+			currentHost != targetHost &&
+			currentURI != 'about:blank'
+			) {
+			openTab = info.modifier && info.invert ? !openTab : true ;
+			if (external.forceChild) {
+				parent = frame;
+			}
+		}
+
+		if (openTab && parent) {
+			this.readyToOpenChildTab(parent, false, insertBefore);
+		}
+		return openTab;
 	},
  	 
 /* Utilities */ 
@@ -827,22 +838,13 @@ catch(e) {
 			window.BrowserLoadURL.toSource().replace(
 				'aTriggeringEvent && aTriggeringEvent.altKey',
 				<><![CDATA[
-					(
-						(aTriggeringEvent && aTriggeringEvent.altKey) ||
-						TreeStyleTabService.checkReadyToOpenNewChildTab({
-							uri      : url,
-							external : { newTab : TreeStyleTabService.getTreePref('urlbar.loadDifferentDomainToNewTab') },
-							internal : { newTab : TreeStyleTabService.getTreePref('urlbar.loadSameDomainToNewChildTab') }
-						})
-					) &&
-					(
-						(aTriggeringEvent && aTriggeringEvent.altKey) != TreeStyleTabService.checkToOpenChildTab() ||
-						!TreeStyleTabService.getTreePref('urlbar.invertDefaultBehavior') ||
-						(
-							TreeStyleTabService.checkToOpenChildTab() &&
-							(TreeStyleTabService.stopToOpenChildTab(), false)
-						)
-					)
+					TreeStyleTabService.checkReadyToOpenNewTab({
+						uri      : url,
+						external : { newTab : TreeStyleTabService.getTreePref('urlbar.loadDifferentDomainToNewTab') },
+						internal : { newTab : TreeStyleTabService.getTreePref('urlbar.loadSameDomainToNewChildTab') },
+						modifier : aTriggeringEvent && aTriggeringEvent.altKey,
+						invert   : TreeStyleTabService.getTreePref('urlbar.invertDefaultBehavior')
+					})
 				]]></>
 			)
 		);
@@ -906,32 +908,22 @@ catch(e) {
 					).replace(
 						/(event.ctrlKey|event.metaKey)/,
 						<><![CDATA[
-							(
-								$1 ||
-								TreeStyleTabService.checkReadyToOpenNewChildTab({
-									uri      : href,
-									external : {
-										newTab : TreeStyleTabService.getTreePref('openOuterLinkInNewTab') || TreeStyleTabService.getTreePref('openAnyLinkInNewTab'),
-										forceChild : true
-									},
-									internal : {
-										newTab : TreeStyleTabService.getTreePref('openAnyLinkInNewTab')
-									}
-								})
-							) &&
-							(
-								$1 != TreeStyleTabService.checkToOpenChildTab() ||
-								!TreeStyleTabService.getTreePref('link.invertDefaultBehavior') ||
-								(
-									TreeStyleTabService.readyToOpenChildTab(),
-									false
-								)
-							) // don't cancel child tab at this point, because I reuse the flag to load link after this block.
+							TreeStyleTabService.checkReadyToOpenNewTab({
+								uri      : href,
+								external : {
+									newTab : TreeStyleTabService.getTreePref('openOuterLinkInNewTab') || TreeStyleTabService.getTreePref('openAnyLinkInNewTab'),
+									forceChild : true
+								},
+								internal : {
+									newTab : TreeStyleTabService.getTreePref('openAnyLinkInNewTab')
+								},
+								modifier : $1,
+								invert   : TreeStyleTabService.getTreePref('link.invertDefaultBehavior')
+							}) ? true : (TreeStyleTabService.readyToOpenChildTab(), false)
 						]]></>
 					).replace(
 						'return false;case 1:',
 						<><![CDATA[
-								// cancel child tab at this point and load link to imitate default link behavior.
 								if (TreeStyleTabService.checkToOpenChildTab()) {
 									TreeStyleTabService.stopToOpenChildTab();
 									urlSecurityCheck(href, linkNode.ownerDocument.location.href);
@@ -956,7 +948,7 @@ catch(e) {
 						/(openWebPanel\([^\(]+\("webPanels"\), wrapper.href\);event.preventDefault\(\);return false;\})/,
 						<><![CDATA[
 							$1
-							else if (TreeStyleTabService.checkReadyToOpenNewChildTab({
+							else if (TreeStyleTabService.checkReadyToOpenNewTab({
 									uri      : wrapper.href,
 									external : {
 										newTab : TreeStyleTabService.getTreePref('openOuterLinkInNewTab') || TreeStyleTabService.getTreePref('openAnyLinkInNewTab'),
