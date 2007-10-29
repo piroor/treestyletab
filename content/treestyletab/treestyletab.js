@@ -141,11 +141,8 @@ var TreeStyleTabService = {
 		return ownerBrowser.__treestyletab__readyToAttachNewTab || ownerBrowser.__treestyletab__readyToAttachNewTabGroup ? true : false ;
 	},
  
-	checkReadyToOpenNewChildTab : function(aFrameOrTabBrowser, aInfo) 
+	checkReadyToOpenNewChildTab : function(aInfo) 
 	{
-		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
-		if (!frame) return false;
-
 /*
 	ãììÆÇÃê‡ñæ
 
@@ -169,6 +166,9 @@ var TreeStyleTabService = {
 
 		var info = aInfo || { uri : '' };
 		if (/^javascript:/.test(info.uri)) return false;
+
+		var frame = this.getFrameFromTabBrowserElements(info.target);
+		if (!frame) return false;
 
 		var external = info.external || {};
 		var internal = info.internal || {};
@@ -829,21 +829,18 @@ catch(e) {
 				<><![CDATA[
 					(
 						(aTriggeringEvent && aTriggeringEvent.altKey) ||
-						TreeStyleTabService.checkReadyToOpenNewChildTab(
-							TreeStyleTabService.browser,
-							{
-								uri      : url,
-								external : { newTab : TreeStyleTabService.getTreePref('urlbar.loadDifferentDomainToNewTab') },
-								internal : { newTab : TreeStyleTabService.getTreePref('urlbar.loadSameDomainToNewChildTab') }
-							}
-						)
+						TreeStyleTabService.checkReadyToOpenNewChildTab({
+							uri      : url,
+							external : { newTab : TreeStyleTabService.getTreePref('urlbar.loadDifferentDomainToNewTab') },
+							internal : { newTab : TreeStyleTabService.getTreePref('urlbar.loadSameDomainToNewChildTab') }
+						})
 					) &&
 					(
-						!aTriggeringEvent || !aTriggeringEvent.altKey ||
+						(aTriggeringEvent && aTriggeringEvent.altKey) != TreeStyleTabService.checkToOpenChildTab() ||
 						!TreeStyleTabService.getTreePref('urlbar.invertDefaultBehavior') ||
 						(
-							TreeStyleTabService.checkToOpenChildTab(TreeStyleTabService.browser) &&
-							(TreeStyleTabService.stopToOpenChildTab(TreeStyleTabService.browser), false)
+							TreeStyleTabService.checkToOpenChildTab() &&
+							(TreeStyleTabService.stopToOpenChildTab(), false)
 						)
 					)
 				]]></>
@@ -911,25 +908,22 @@ catch(e) {
 						<><![CDATA[
 							(
 								$1 ||
-								TreeStyleTabService.checkReadyToOpenNewChildTab(
-									TreeStyleTabService.browser,
-									{
-										uri      : href,
-										external : {
-											newTab : TreeStyleTabService.getTreePref('openOuterLinkInNewTab') || TreeStyleTabService.getTreePref('openAnyLinkInNewTab'),
-											forceChild : true
-										},
-										internal : {
-											newTab : TreeStyleTabService.getTreePref('openAnyLinkInNewTab')
-										}
+								TreeStyleTabService.checkReadyToOpenNewChildTab({
+									uri      : href,
+									external : {
+										newTab : TreeStyleTabService.getTreePref('openOuterLinkInNewTab') || TreeStyleTabService.getTreePref('openAnyLinkInNewTab'),
+										forceChild : true
+									},
+									internal : {
+										newTab : TreeStyleTabService.getTreePref('openAnyLinkInNewTab')
 									}
-								)
+								})
 							) &&
 							(
-								!event || !($1) ||
+								$1 != TreeStyleTabService.checkToOpenChildTab() ||
 								!TreeStyleTabService.getTreePref('link.invertDefaultBehavior') ||
 								(
-									TreeStyleTabService.readyToOpenChildTab(TreeStyleTabService.browser),
+									TreeStyleTabService.readyToOpenChildTab(),
 									false
 								)
 							) // don't cancel child tab at this point, because I reuse the flag to load link after this block.
@@ -938,8 +932,8 @@ catch(e) {
 						'return false;case 1:',
 						<><![CDATA[
 								// cancel child tab at this point and load link to imitate default link behavior.
-								if (TreeStyleTabService.checkToOpenChildTab(TreeStyleTabService.browser)) {
-									TreeStyleTabService.stopToOpenChildTab(TreeStyleTabService.browser);
+								if (TreeStyleTabService.checkToOpenChildTab()) {
+									TreeStyleTabService.stopToOpenChildTab();
 									urlSecurityCheck(href, linkNode.ownerDocument.location.href);
 									var postData = {};
 									href = getShortcutOrURI(href, postData);
@@ -962,9 +956,7 @@ catch(e) {
 						/(openWebPanel\([^\(]+\("webPanels"\), wrapper.href\);event.preventDefault\(\);return false;\})/,
 						<><![CDATA[
 							$1
-							else if (TreeStyleTabService.checkReadyToOpenNewChildTab(
-								TreeStyleTabService.browser,
-								{
+							else if (TreeStyleTabService.checkReadyToOpenNewChildTab({
 									uri      : wrapper.href,
 									external : {
 										newTab : TreeStyleTabService.getTreePref('openOuterLinkInNewTab') || TreeStyleTabService.getTreePref('openAnyLinkInNewTab'),
