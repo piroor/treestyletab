@@ -15,8 +15,10 @@ pref("extensions.treestyletab.show.openSelectionLinks", true);
 
 pref("extensions.treestyletab.openOuterLinkInNewTab",              false);
 pref("extensions.treestyletab.openAnyLinkInNewTab",                false);
+pref("extensions.treestyletab.link.invertDefaultBehavior",         true);
 pref("extensions.treestyletab.urlbar.loadDifferentDomainToNewTab", true);
 pref("extensions.treestyletab.urlbar.loadSameDomainToNewChildTab", true);
+pref("extensions.treestyletab.urlbar.invertDefaultBehavior",       true);
 pref("extensions.treestyletab.loadDroppedLinkToNewChildTab",       false);
 pref("extensions.treestyletab.openGroupBookmarkAsTabSubTree",      true);
 

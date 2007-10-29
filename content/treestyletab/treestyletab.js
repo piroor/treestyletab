@@ -161,6 +161,7 @@ var TreeStyleTabService = {
 				(
 					internal.newTab &&
 					currentHost == targetHost &&
+					currentURI != 'about:blank' &&
 					currentURI.split('#')[0] != info.uri.split('#')[0] &&
 					(this.readyToOpenChildTab(
 						parentHost == targetHost && !internal.forceChild ?
@@ -795,14 +796,24 @@ catch(e) {
 			window.BrowserLoadURL.toSource().replace(
 				'aTriggeringEvent && aTriggeringEvent.altKey',
 				<><![CDATA[
-					(aTriggeringEvent && aTriggeringEvent.altKey) ||
-					TreeStyleTabService.checkReadyToOpenNewChildTab(
-						TreeStyleTabService.browser,
-						{
-							uri      : url,
-							external : { newTab : TreeStyleTabService.getTreePref('urlbar.loadDifferentDomainToNewTab') },
-							internal : { newTab : TreeStyleTabService.getTreePref('urlbar.loadSameDomainToNewChildTab') }
-						}
+					(
+						(aTriggeringEvent && aTriggeringEvent.altKey) ||
+						TreeStyleTabService.checkReadyToOpenNewChildTab(
+							TreeStyleTabService.browser,
+							{
+								uri      : url,
+								external : { newTab : TreeStyleTabService.getTreePref('urlbar.loadDifferentDomainToNewTab') },
+								internal : { newTab : TreeStyleTabService.getTreePref('urlbar.loadSameDomainToNewChildTab') }
+							}
+						)
+					) &&
+					(
+						!aTriggeringEvent || !aTriggeringEvent.altKey ||
+						!TreeStyleTabService.getTreePref('urlbar.invertDefaultBehavior') ||
+						(
+							TreeStyleTabService.checkToOpenChildTab(TreeStyleTabService.browser) &&
+							(TreeStyleTabService.stopToOpenChildTab(TreeStyleTabService.browser), false)
+						)
 					)
 				]]></>
 			)
@@ -867,19 +878,29 @@ catch(e) {
 					).replace(
 						/(event.ctrlKey|event.metaKey)/,
 						<><![CDATA[
-							$1 ||
-							TreeStyleTabService.checkReadyToOpenNewChildTab(
-								TreeStyleTabService.browser,
-								{
-									uri      : href,
-									external : {
-										newTab : TreeStyleTabService.getTreePref('openOuterLinkInNewTab') || TreeStyleTabService.getTreePref('openAnyLinkInNewTab'),
-										forceChild : true
-									},
-									internal : {
-										newTab : TreeStyleTabService.getTreePref('openAnyLinkInNewTab')
+							(
+								$1 ||
+								TreeStyleTabService.checkReadyToOpenNewChildTab(
+									TreeStyleTabService.browser,
+									{
+										uri      : href,
+										external : {
+											newTab : TreeStyleTabService.getTreePref('openOuterLinkInNewTab') || TreeStyleTabService.getTreePref('openAnyLinkInNewTab'),
+											forceChild : true
+										},
+										internal : {
+											newTab : TreeStyleTabService.getTreePref('openAnyLinkInNewTab')
+										}
 									}
-								}
+								)
+							) &&
+							(
+								!event || !($1) ||
+								!TreeStyleTabService.getTreePref('link.invertDefaultBehavior') ||
+								(
+									TreeStyleTabService.checkToOpenChildTab(TreeStyleTabService.browser) &&
+									(TreeStyleTabService.stopToOpenChildTab(TreeStyleTabService.browser), false)
+								)
 							)
 						]]></>
 					)
