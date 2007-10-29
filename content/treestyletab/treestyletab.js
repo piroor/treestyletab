@@ -873,7 +873,7 @@ catch(e) {
 					window[funcs[i]].toSource().replace(
 						/openNewTabWith\(/g,
 						<><![CDATA[
-							TreeStyleTabService.readyToOpenChildTab(event.target.ownerDocument.defaultView);
+							if (!TreeStyleTabService.checkToOpenChildTab(event.target.ownerDocument.defaultView)) TreeStyleTabService.readyToOpenChildTab(event.target.ownerDocument.defaultView);
 							openNewTabWith(]]></>
 					).replace(
 						/(event.ctrlKey|event.metaKey)/,
