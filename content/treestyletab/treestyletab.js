@@ -898,10 +898,25 @@ catch(e) {
 								!event || !($1) ||
 								!TreeStyleTabService.getTreePref('link.invertDefaultBehavior') ||
 								(
-									TreeStyleTabService.checkToOpenChildTab(TreeStyleTabService.browser) &&
-									(TreeStyleTabService.stopToOpenChildTab(TreeStyleTabService.browser), false)
+									TreeStyleTabService.readyToOpenChildTab(TreeStyleTabService.browser),
+									false
 								)
-							)
+							) // don't cancel child tab at this point, because I reuse the flag to load link after this block.
+						]]></>
+					).replace(
+						'return false;case 1:',
+						<><![CDATA[
+								// cancel child tab at this point and load link to imitate default link behavior.
+								if (TreeStyleTabService.checkToOpenChildTab(TreeStyleTabService.browser)) {
+									TreeStyleTabService.stopToOpenChildTab(TreeStyleTabService.browser);
+									urlSecurityCheck(href, linkNode.ownerDocument.location.href);
+									var postData = {};
+									href = getShortcutOrURI(href, postData);
+									if (!href) return false;
+									loadURI(href, null, postData.value, false);
+								}
+								return false;
+							case 1:
 						]]></>
 					)
 				);
