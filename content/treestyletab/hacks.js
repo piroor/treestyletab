@@ -5,7 +5,7 @@ TreeStyleTabService.overrideExtensions = function() {
 				/var separators = /,
 				<><![CDATA[
 					if (aPopup.id == 'multipletab-selection-menu') {
-						TreeStyleTabService.showHideRemoveSubTreeMenuItem(document.getElementById(TreeStyleTabService.kMENUITEM_REMOVESUBTREE_SELECTION), [MultipleTabService.getSelectedTabs()]);
+						TreeStyleTabService.showHideRemoveSubTreeMenuItem(document.getElementById(TreeStyleTabService.kMENUITEM_REMOVESUBTREE_SELECTION), MultipleTabService.getSelectedTabs());
 					}
 					var separators = ]]></>
 			)
