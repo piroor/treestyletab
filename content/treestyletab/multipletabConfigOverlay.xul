@@ -13,15 +13,4 @@
 		label="&selection.removeTabSubTree.label;"/>
 </vbox>
 
-<preferences id="prefpane-context-menu-preferences">
-	<preference id="extensions.multipletab.show.context-item-removeTabSubTree"
-		name="extensions.multipletab.show.context-item-removeTabSubTree"
-		type="bool"/>
-</preferences>
-<vbox id="prefpane-context-menu-items">
-	<checkbox id="extensions.multipletab.show.context-item-removeTabSubTree-check"
-		preference="extensions.multipletab.show.context-item-removeTabSubTree"
-		label="&context.removeTabSubTree.label;"/>
-</vbox>
-
 </overlay>
