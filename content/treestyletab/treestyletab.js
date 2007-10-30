@@ -421,10 +421,10 @@ var TreeStyleTabService = {
 	{
 		this.initTabbar(aTabBrowser);
 
-		aTabBrowser.mTabContainer.addEventListener('TreeStyleTab:TabOpen', this, true);
-		aTabBrowser.mTabContainer.addEventListener('TabClose', this, true);
-		aTabBrowser.mTabContainer.addEventListener('TabMove', this, true);
-		aTabBrowser.mTabContainer.addEventListener('SSTabRestoring', this, true);
+		aTabBrowser.addEventListener('TabOpen',        this, true);
+		aTabBrowser.addEventListener('TabClose',       this, true);
+		aTabBrowser.addEventListener('TabMove',        this, true);
+		aTabBrowser.addEventListener('SSTabRestoring', this, true);
 		aTabBrowser.mTabContainer.addEventListener('click', this, true);
 		aTabBrowser.mTabContainer.addEventListener('dblclick', this, true);
 		aTabBrowser.mTabContainer.addEventListener('mousedown', this, true);
@@ -719,37 +719,6 @@ catch(e) {
 			)
 		);
 
-		var addTabMethod = 'addTab';
-		var removeTabMethod = 'removeTab';
-		if (aTabBrowser.__tabextensions__addTab) {
-			addTabMethod = '__tabextensions__addTab';
-			removeTabMethod = '__tabextensions__removeTab';
-		}
-
-		aTabBrowser.__treestyletab__originalAddTab = aTabBrowser[addTabMethod];
-		aTabBrowser[addTabMethod] = function() {
-			var tab = this.__treestyletab__originalAddTab.apply(this, arguments);
-			try {
-				TreeStyleTabService.initTab(tab, this);
-			}
-			catch(e) {
-			}
-			return tab;
-		};
-
-		aTabBrowser.__treestyletab__originalRemoveTab = aTabBrowser[removeTabMethod];
-		aTabBrowser[removeTabMethod] = function(aTab) {
-			TreeStyleTabService.destroyTab(aTab, this);
-			var retVal = this.__treestyletab__originalRemoveTab.apply(this, arguments);
-			try {
-				if (aTab.parentNode)
-					TreeStyleTabService.initTab(aTab, this);
-			}
-			catch(e) {
-			}
-			return retVal;
-		};
-
 		var tabs = aTabBrowser.mTabContainer.childNodes;
 		for (var i = 0, maxi = tabs.length; i < maxi; i++)
 		{
@@ -796,10 +765,6 @@ catch(e) {
 		this.initTabContents(aTab);
 
 		aTab.setAttribute(this.kNEST, 0);
-
-		var event = document.createEvent('Events');
-		event.initEvent('TreeStyleTab:TabOpen', true, false);
-		aTab.dispatchEvent(event);
 	},
 	 
 	initTabContents : function(aTab) 
@@ -1092,10 +1057,10 @@ catch(e) {
 		aTabBrowser.__treestyletab__observer.destroy();
 		delete aTabBrowser.__treestyletab__observer;
 
-		aTabBrowser.mTabContainer.removeEventListener('TreeStyleTab:TabOpen', this, true);
-		aTabBrowser.mTabContainer.removeEventListener('TabClose', this, true);
-		aTabBrowser.mTabContainer.removeEventListener('TabMove', this, true);
-		aTabBrowser.mTabContainer.removeEventListener('SSTabRestoring', this, true);
+		aTabBrowser.removeEventListener('TabOpen',        this, true);
+		aTabBrowser.removeEventListener('TabClose',       this, true);
+		aTabBrowser.removeEventListener('TabMove',        this, true);
+		aTabBrowser.removeEventListener('SSTabRestoring', this, true);
 		aTabBrowser.mTabContainer.removeEventListener('click', this, true);
 		aTabBrowser.mTabContainer.removeEventListener('dblclick', this, true);
 		aTabBrowser.mTabContainer.removeEventListener('mousedown', this, true);
@@ -1117,7 +1082,7 @@ catch(e) {
 	{
 		switch (aEvent.type)
 		{
-			case 'TreeStyleTab:TabOpen':
+			case 'TabOpen':
 				this.onTabAdded(aEvent);
 				return;
 
@@ -1217,6 +1182,8 @@ catch(e) {
 		var tab = aEvent.originalTarget;
 		var b   = this.getTabBrowserFromChildren(tab);
 
+		this.initTab(tab, b);
+
 		if (b.__treestyletab__readyToAttachNewTab) {
 			var parent = this.getTabById(b.__treestyletab__parentTab, b);
 			if (parent)
@@ -1242,6 +1209,8 @@ catch(e) {
 	{
 		var tab = aEvent.originalTarget;
 		var b   = this.getTabBrowserFromChildren(tab);
+
+		this.destroyTab(tab, b);
 
 		if (tab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true') {
 			var descendant = this.getDescendantTabs(tab);
