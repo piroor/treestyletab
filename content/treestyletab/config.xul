@@ -37,6 +37,9 @@
 		<preference id="extensions.treestyletab.show.openSelectionLinks"
 			name="extensions.treestyletab.show.openSelectionLinks"
 			type="bool"/>
+		<preference id="extensions.treestyletab.show.context-item-removeTabSubTree"
+			name="extensions.treestyletab.show.context-item-removeTabSubTree"
+			type="bool"/>
 	</preferences>
 
 	<checkbox id="extensions.treestyletab.tabbar.scroll.smooth-check"
@@ -115,6 +118,9 @@
 	<checkbox id="extensions.treestyletab.show.openSelectionLinks-check"
 		preference="extensions.treestyletab.show.openSelectionLinks"
 		label="&config.show.openSelectionLinks;"/>
+	<checkbox id="extensions.treestyletab.show.context-item-removeTabSubTree-check"
+		preference="extensions.treestyletab.show.context-item-removeTabSubTree"
+		label="&config.show.contextItemRemoveTabSubTree;"/>
 </prefpane>
 
 <prefpane id="prefpane-tab" label="&config.tabs.tab;"

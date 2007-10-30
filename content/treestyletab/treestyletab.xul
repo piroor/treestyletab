@@ -28,11 +28,13 @@
 		oncommand="TreeStyleTabService.removeTabSubTree(MultipleTabService.getSelectedTabs());"/>
 </menupopup>
 
-<menupopup id="multipletab-tabcontext-menu-template">
-	<menuitem id="context-item-removeTabSubTree"
-		label="&context.removeTabSubTree.label;"
-		accesskey="&context.removeTabSubTree.accesskey;"
-		oncommand="TreeStyleTabService.removeTabSubTree(TreeStyleTabService.getTabBrowserFromChildren(this).mContextTab);"/>
-</menupopup>
+<window id="main-window">
+	<data id="multipletab-tabcontext-menu-template" collapsed="true">
+		<menuitem id="context-item-removeTabSubTree"
+			label="&context.removeTabSubTree.label;"
+			accesskey="&context.removeTabSubTree.accesskey;"
+			oncommand="TreeStyleTabService.removeTabSubTree(TreeStyleTabService.getTabBrowserFromChildren(this).mContextTab);"/>
+	</data>
+</window>
 
 </overlay>

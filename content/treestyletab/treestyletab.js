@@ -219,7 +219,7 @@ var TreeStyleTabService = {
 		}
 		return openTab;
 	},
- 	 
+  
 /* Utilities */ 
 	 
 	isEventFiredOnTwisty : function(aEvent) 
@@ -756,6 +756,14 @@ catch(e) {
 			this.initTab(tabs[i], aTabBrowser);
 		}
 
+		var tabContext = document.getAnonymousElementByAttribute(aTabBrowser, 'anonid', 'tabContextMenu');
+		tabContext.addEventListener('popupshowing', this, false);
+		window.setTimeout(function(aSelf) {
+			var contextItem = document.getElementById(aSelf.kMENUITEM_REMOVESUBTREE_CONTEXT).cloneNode(true);
+			contextItem.setAttribute('id', contextItem.getAttribute('id')+'-'+parseInt(Math.random() * 65000));
+			tabContext.appendChild(contextItem);
+		}, 0, this);
+
 		aTabBrowser.__treestyletab__observer = new TreeStyleTabBrowserObserver(aTabBrowser);
 		aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.style');
 		aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.showBorderForFirstTab');
@@ -1093,6 +1101,9 @@ catch(e) {
 		aTabBrowser.mTabContainer.removeEventListener('mousedown', this, true);
 		aTabBrowser.mTabContainer.removeEventListener('select', this, true);
 //		aTabBrowser.mPanelContainer.removeEventListener('click', this, true);
+
+		var tabContext = document.getAnonymousElementByAttribute(aTabBrowser, 'anonid', 'tabContextMenu');
+		tabContext.removeEventListener('popupshowing', this, false);
 	},
  
 	destroyTab : function(aTab, aTabBrowser) 
@@ -1101,7 +1112,7 @@ catch(e) {
 	},
    
 /* Event Handling */ 
-	
+	 
 	handleEvent : function(aEvent) 
 	{
 		switch (aEvent.type)
@@ -1173,7 +1184,22 @@ catch(e) {
 
 			case 'popupshowing':
 				if (aEvent.target != aEvent.currentTarget) return;
-				this.initContextMenu();
+				if (aEvent.currentTarget.id == 'contentAreaContextMenu') {
+					this.initContextMenu();
+				}
+				else {
+					var b = this.getTabBrowserFromChildren(aEvent.currentTarget);
+					var item = this.evaluateXPath(
+						'descendant::xul:menuitem[starts-with(@id, "'+this.kMENUITEM_REMOVESUBTREE_CONTEXT+'")]',
+						aEvent.currentTarget,
+						XPathResult.FIRST_ORDERED_NODE_TYPE
+					).singleNodeValue;
+					if (this.getTreePref('show.context-item-removeTabSubTree'))
+						item.removeAttribute('hidden');
+					else
+						item.setAttribute('hidden', true);
+					this.showHideRemoveSubTreeMenuItem(item, [b.mContextTab]);
+				}
 				return;
 
 			case 'SubBrowserAdded':
@@ -1492,7 +1518,28 @@ catch(e) {
 			sep.setAttribute('hidden', true);
 		}
 	},
-  
+ 
+	showHideRemoveSubTreeMenuItem : function(aMenuItem, aTabs) 
+	{
+		if (!aMenuItem ||
+			aMenuItem.getAttribute('hidden') == 'true' ||
+			!aTabs ||
+			!aTabs.length)
+			return;
+
+		var hasSubTree = false;
+		for (var i = 0, maxi = aTabs.length; i < maxi; i++)
+		{
+			if (!aTabs[i].hasAttribute(this.kCHILDREN)) continue;
+			hasSubTree = true;
+			break;
+		}
+		if (hasSubTree)
+			aMenuItem.removeAttribute('hidden');
+		else
+			aMenuItem.setAttribute('hidden', true);
+	},
+ 	 
 /* Tab Utilities */ 
 	
 	getTabValue : function(aTab, aKey) 

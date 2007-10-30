@@ -21,6 +21,7 @@
 <!ENTITY config.tabbar.style.mixed   "Mixed">
 
 <!ENTITY config.show.openSelectionLinks "コンテキストメニューに「選択したリンクをすべてタブで開く」を加える">
+<!ENTITY config.show.contextItemRemoveTabSubTree "サブツリーを含むタブのコンテキストメニューに「このサブツリーを閉じる」を加える">
 
 
 <!ENTITY config.tabs.tab "タブの開き方">

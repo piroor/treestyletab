@@ -12,6 +12,7 @@ pref("extensions.treestyletab.showBorderForFirstTab",  false);
 pref("extensions.treestyletab.levelMargin",            12);
 
 pref("extensions.treestyletab.show.openSelectionLinks", true);
+pref("extensions.treestyletab.show.context-item-removeTabSubTree", true);
 
 pref("extensions.treestyletab.openOuterLinkInNewTab",              false);
 pref("extensions.treestyletab.openAnyLinkInNewTab",                false);
@@ -35,7 +36,6 @@ pref("browser.tabs.loadFolderAndReplace", false);
 
 
 pref("extensions.multipletab.show.multipletab-selection-item-removeTabSubTree", true);
-pref("extensions.multipletab.show.context-item-removeTabSubTree", true);
 pref("extensions.treestyletab.inSubbrowsers.enabled", false);
 
 

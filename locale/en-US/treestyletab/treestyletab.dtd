@@ -21,6 +21,7 @@
 <!ENTITY config.tabbar.style.mixed   "Mixed">
 
 <!ENTITY config.show.openSelectionLinks "Add &quot;Open Selection Links in Tabs&quot; to the context menu">
+<!ENTITY config.show.contextItemRemoveTabSubTree "Add &quot;Close this Sub Tree&quot; to the context menu on tabs which have sub tree">
 
 
 <!ENTITY config.tabs.tab "Tab Operations">

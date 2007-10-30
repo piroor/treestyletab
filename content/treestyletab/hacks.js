@@ -4,39 +4,9 @@ TreeStyleTabService.overrideExtensions = function() {
 			MultipleTabService.showHideMenuItems.toSource().replace(
 				/var separators = /,
 				<><![CDATA[
-					(function(aPopup) {
-						var b;
-						var item;
-						var tabs;
-						if (aPopup.id == 'multipletab-selection-menu') {
-							b    = MultipleTabService.browser;
-							item = document.getElementById(TreeStyleTabService.kMENUITEM_REMOVESUBTREE_SELECTION);
-							tabs = MultipleTabService.getSelectedTabs();
-						}
-						else { // context
-							b    = TreeStyleTabService.getTabBrowserFromChildren(aPopup);
-							item = TreeStyleTabService.evaluateXPath(
-									'descendant::xul:menuitem[starts-with(@id, "'+TreeStyleTabService.kMENUITEM_REMOVESUBTREE_CONTEXT+'")]',
-									aPopup,
-									XPathResult.FIRST_ORDERED_NODE_TYPE
-								).singleNodeValue;
-							tabs = [b.mContextTab];
-						}
-
-						if (item.getAttribute('hidden') == 'true') return;
-
-						var hasSubTree = false;
-						for (var i = 0, maxi = tabs.length; i < maxi; i++)
-						{
-							if (!tabs[i].hasAttribute(TreeStyleTabService.kCHILDREN)) continue;
-							hasSubTree = true;
-							break;
-						}
-						if (hasSubTree)
-							item.removeAttribute('hidden');
-						else
-							item.setAttribute('hidden', true);
-					})(aPopup);
+					if (aPopup.id == 'multipletab-selection-menu') {
+						TreeStyleTabService.showHideRemoveSubTreeMenuItem(document.getElementById(TreeStyleTabService.kMENUITEM_REMOVESUBTREE_SELECTION), [MultipleTabService.getSelectedTabs()]);
+					}
 					var separators = ]]></>
 			)
 		);
