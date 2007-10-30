@@ -66,28 +66,24 @@ tabbrowser[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted=
 
 
 tabbrowser[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab .tab-image-middle {
-	-moz-box-ordinal-group: 20;
+	-moz-box-ordinal-group: 20 !important;
 }
 
 tabbrowser[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab .tab-close-button {
-	-moz-box-ordinal-group: 10;
+	-moz-box-ordinal-group: 10 !important;
 }
 
 
 tabbrowser[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab .tab-icon {
-	-moz-box-ordinal-group: 50;
-}
-
-tabbrowser[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab html|canvas.informationaltab-thumbnail {
-	-moz-box-ordinal-group: 10;
+	-moz-box-ordinal-group: 50 !important;
 }
 
 tabbrowser[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab .tab-text {
-	-moz-box-ordinal-group: 20;
+	-moz-box-ordinal-group: 20 !important;
 }
 
 tabbrowser[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab .treestyletab-counter-container {
-	-moz-box-ordinal-group: 30;
+	-moz-box-ordinal-group: 30 !important;
 }
 
 

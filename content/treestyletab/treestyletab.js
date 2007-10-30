@@ -778,6 +778,9 @@ catch(e) {
 		var pos = this.getTreePref('tabbar.position');
 		if (pos == 'left' || pos == 'right') {
 			aTab.setAttribute('align', 'stretch');
+			aTab.removeAttribute('maxwidth');
+			aTab.removeAttribute('minwidth');
+			aTab.removeAttribute('width');
 			aTab.maxWidth = 65000;
 			aTab.minWidth = 0;
 		}
@@ -1882,6 +1885,7 @@ catch(e) {
 
 			aTabBrowser.mTabBox.orient = 'horizontal';
 			aTabBrowser.mTabContainer.orient = aTabBrowser.mTabContainer.mTabstrip.orient = 'vertical';
+			aTabBrowser.mTabContainer.setAttribute('align', 'stretch'); // for Mac OS X
 			scrollInnerBox.removeAttribute('flex');
 
 			aTabBrowser.mPanelContainer.removeAttribute('width');
@@ -1924,6 +1928,7 @@ catch(e) {
 
 			aTabBrowser.mTabBox.orient = 'vertical';
 			aTabBrowser.mTabContainer.orient = aTabBrowser.mTabContainer.mTabstrip.orient = 'horizontal';
+			aTabBrowser.mTabContainer.removeAttribute('align'); // for Mac OS X
 			scrollInnerBox.setAttribute('flex', 1);
 
 			aTabBrowser.mStrip.removeAttribute('width');
@@ -2758,6 +2763,9 @@ TreeStyleTabBrowserObserver.prototype = {
 							var container = this.mTabBrowser.mTabContainer;
 							Array.prototype.slice.call(container.childNodes).forEach(function(aTab) {
 								aTab.removeAttribute('align');
+								aTab.setAttribute('maxwidth', 250);
+								aTab.setAttribute('minwidth', container.mTabMinWidth);
+								aTab.setAttribute('width', '0');
 								aTab.maxWidth = 250;
 								aTab.minWidth = container.mTabMinWidth;
 							});
