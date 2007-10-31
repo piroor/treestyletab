@@ -67,6 +67,9 @@
 
 <!ENTITY config.focusMode "Control(Command)-Tabでタブを切り替える時、折りたたまれたタブにもフォーカスする">
 
+<!ENTITY config.insertNewChildAt.caption "新しい子タブを開く位置">
+<!ENTITY config.insertNewChildAt.first "サブツリーの最初の位置に挿入する">
+<!ENTITY config.insertNewChildAt.last "サブツリーの末尾に追加する">
 
 
 

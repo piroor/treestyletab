@@ -247,6 +247,9 @@
 		<preference id="extensions.treestyletab.focusMode"
 			name="extensions.treestyletab.focusMode"
 			type="int"/>
+		<preference id="extensions.treestyletab.insertNewChildAt"
+			name="extensions.treestyletab.insertNewChildAt"
+			type="int"/>
 	</preferences>
 
 	<checkbox id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect-check"
@@ -266,6 +269,15 @@
 		label="&config.focusMode;"
 		onsyncfrompreference="return document.getElementById('extensions.treestyletab.focusMode').value == 0;"
 		onsynctopreference="return document.getElementById('extensions.treestyletab.focusMode-check').checked ? 0 : 1 ;"/>
+	<groupbox>
+		<caption label="&config.insertNewChildAt.caption;"/>
+		<radiogroup id="extensions.treestyletab.insertNewChildAt-radiogroup"
+			preference="extensions.treestyletab.insertNewChildAt"
+			orient="vertical">
+			<radio value="0" label="&config.insertNewChildAt.first;"/>
+			<radio value="1" label="&config.insertNewChildAt.last;"/>
+		</radiogroup>
+	</groupbox>
 </prefpane>
 
 <script src="config.js" type="application/x-javascript"/>

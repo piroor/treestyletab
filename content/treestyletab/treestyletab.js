@@ -45,6 +45,9 @@ var TreeStyleTabService = {
 	kTABBAR_HORIZONTAL : 3,
 	kTABBAR_VERTICAL   : 12,
 
+	kINSERT_FISRT : 0,
+	kINSERT_LAST  : 1,
+
 	levelMargin      : 12,
 	levelMarginProp  : 'margin-left',
 	positionProp     : 'screenY',
@@ -103,6 +106,7 @@ var TreeStyleTabService = {
 		var ownerBrowser = this.getTabBrowserFromFrame(frame);
 		ownerBrowser.__treestyletab__readyToAttachNewTab   = true;
 		ownerBrowser.__treestyletab__readyToAttachMultiple = aMultiple || false ;
+		ownerBrowser.__treestyletab__multipleCount         = 0;
 		ownerBrowser.__treestyletab__parentTab             = this.getTabFromFrame(frame, ownerBrowser).getAttribute(this.kID);
 		ownerBrowser.__treestyletab__insertBefore          = aInsertBefore ? aInsertBefore.getAttribute(this.kID) : null ;
 	},
@@ -117,6 +121,7 @@ var TreeStyleTabService = {
 		var ownerBrowser = this.getTabBrowserFromFrame(frame);
 		ownerBrowser.__treestyletab__readyToAttachNewTabGroup = true;
 		ownerBrowser.__treestyletab__readyToAttachMultiple    = true;
+		ownerBrowser.__treestyletab__multipleCount            = 0;
 	},
  
 	stopToOpenChildTab : function(aFrameOrTabBrowser) 
@@ -128,6 +133,7 @@ var TreeStyleTabService = {
 		ownerBrowser.__treestyletab__readyToAttachNewTab      = false;
 		ownerBrowser.__treestyletab__readyToAttachNewTabGroup = false;
 		ownerBrowser.__treestyletab__readyToAttachMultiple    = false;
+		ownerBrowser.__treestyletab__multipleCount            = 0;
 		ownerBrowser.__treestyletab__parentTab                = null;
 		ownerBrowser.__treestyletab__insertBefore             = null;
 	},
@@ -198,10 +204,14 @@ var TreeStyleTabService = {
 			) {
 			openTab = info.modifier && info.invert ? !openTab : true ;
 			parent = parentHost == targetHost && !internal.forceChild ? parentTab : frame ;
-			insertBefore = parentHost == targetHost && !internal.forceChild && (
-					this.getTabById(currentTab.__treestyletab__next, b) ||
-					(nextTab ? (currentTab.__treestyletab__next = nextTab.getAttribute(this.kID), nextTab) : null )
-				);
+			insertBefore = parentHost == targetHost && !internal.forceChild &&
+					(this.getTreePref('insertNewChildAt') == this.kINSERT_FIRST ?
+						nextTab :
+						(
+							this.getTabById(currentTab.__treestyletab__next, b) ||
+							(nextTab ? (currentTab.__treestyletab__next = nextTab.getAttribute(this.kID), nextTab) : null )
+						)
+					);
 		}
 		else if (
 			external.newTab &&
@@ -1189,19 +1199,36 @@ catch(e) {
 			if (parent)
 				this.attachTabTo(tab, parent);
 
-			var insertBefore;
+			var refTab;
+			var newIndex = -1;
 			if (b.__treestyletab__insertBefore &&
-				(insertBefore = this.getTabById(b.__treestyletab__insertBefore, b))) {
-				var index = insertBefore._tPos;
-				if (index > tab._tPos) index--;
+				(refTab = this.getTabById(b.__treestyletab__insertBefore, b))) {
+				newIndex = refTab._tPos;
+			}
+			else if (parent &&
+				this.getTreePref('insertNewChildAt') == this.kINSERT_FISRT &&
+				b.__treestyletab__multipleCount == 0) {
+				/* 複数の子タブを一気に開く場合、最初に開いたタブだけを
+				   子タブの最初の位置に挿入し、続くタブは「最初の開いたタブ」と
+				   「元々最初の子だったタブ」との間に挿入していく */
+				newIndex = parent._tPos + 1;
+				if (refTab = this.getFirstChildTab(parent))
+					b.__treestyletab__insertBefore = refTab.getAttribute(this.kID);
+			}
+
+			if (newIndex > -1) {
+				if (newIndex > tab._tPos) newIndex--;
 				b.__treestyletab__internallyTabMoving = true;
-				b.moveTabTo(tab, index);
+				b.moveTabTo(tab, newIndex);
 				b.__treestyletab__internallyTabMoving = false;
 			}
 		}
 
 		if (!b.__treestyletab__readyToAttachMultiple) {
 			this.stopToOpenChildTab(b);
+		}
+		else {
+			b.__treestyletab__multipleCount++;
 		}
 	},
  

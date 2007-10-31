@@ -10,6 +10,8 @@ pref("extensions.treestyletab.enableSubtreeIndent",    true);
 pref("extensions.treestyletab.allowSubtreeCollapseExpand", true);
 pref("extensions.treestyletab.showBorderForFirstTab",  false);
 pref("extensions.treestyletab.levelMargin",            12);
+// 0 = first child, 1 = last child
+pref("extensions.treestyletab.insertNewChildAt", 1);
 
 pref("extensions.treestyletab.show.openSelectionLinks", true);
 pref("extensions.treestyletab.show.context-item-removeTabSubTree", true);
