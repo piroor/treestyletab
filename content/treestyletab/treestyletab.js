@@ -14,7 +14,6 @@ var TreeStyleTabService = {
 	kALLOW_COLLAPSE     : 'treestyletab-allow-subtree-collapse',
 	kSTYLE              : 'treestyletab-style',
 	kFIRSTTAB_BORDER    : 'treestyletab-firsttab-border',
-	kLAST_FOCUS         : 'treestyletab-last-focus',
 
 	kTWISTY                : 'treestyletab-twisty',
 	kTWISTY_CONTAINER      : 'treestyletab-twisty-container',
@@ -753,6 +752,16 @@ catch(e) {
 		delete i;
 		delete maxi;
 		delete tabs;
+
+		/* To move up content area on the tab bar, switch tab.
+		   If we don't do it, a gray space appears on the content area
+		   by negative margin of it. */
+		if (this.getTreePref('tabbar.position') == 'left' &&
+			this.getTreePref('tabbar.invertScrollbar')) {
+			aTabBrowser.removeTab(
+				aTabBrowser.selectedTab = aTabBrowser.addTab('about:blank')
+			);
+		}
 	},
  
 	initTab : function(aTab, aTabBrowser) 
@@ -1145,7 +1154,6 @@ catch(e) {
 				return;
 
 			case 'select':
-				aEvent.currentTarget.setAttribute(this.kLAST_FOCUS, Date.now());
 				this.onTabSelect(aEvent);
 				return;
 
