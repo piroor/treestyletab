@@ -14,6 +14,7 @@ var TreeStyleTabService = {
 	kALLOW_COLLAPSE     : 'treestyletab-allow-subtree-collapse',
 	kSTYLE              : 'treestyletab-style',
 	kFIRSTTAB_BORDER    : 'treestyletab-firsttab-border',
+	kLAST_FOCUS         : 'treestyletab-last-focus',
 
 	kTWISTY                : 'treestyletab-twisty',
 	kTWISTY_CONTAINER      : 'treestyletab-twisty-container',
@@ -447,7 +448,7 @@ var TreeStyleTabService = {
 
 		eval('aTabBrowser.mTabContainer.'+selectNewTab+' = '+
 			aTabBrowser.mTabContainer[selectNewTab].toSource().replace(
-				/\{/,
+				'{',
 				<><![CDATA[
 					{
 						if (arguments[0].__treestyletab__preventSelect) {
@@ -460,7 +461,7 @@ var TreeStyleTabService = {
 
 		eval('aTabBrowser.mTabContainer.advanceSelectedTab = '+
 			aTabBrowser.mTabContainer.advanceSelectedTab.toSource().replace(
-				/\{/,
+				'{',
 				<><![CDATA[
 					{
 						if (TreeStyleTabService.getTreePref('focusMode') == TreeStyleTabService.kFOCUS_VISIBLE) {
@@ -488,7 +489,7 @@ var TreeStyleTabService = {
 
 		eval('aTabBrowser.mTabContainer._handleTabSelect = '+
 			aTabBrowser.mTabContainer._handleTabSelect.toSource().replace(
-				/\{/,
+				'{',
 				<><![CDATA[
 					{
 						if (!TreeStyleTabService.isTabInViewport(this.selectedItem)) {
@@ -749,8 +750,6 @@ catch(e) {
 		aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.invertScrollbar');
 		aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.allowSubtreeCollapseExpand');
 
-		delete addTabMethod;
-		delete removeTabMethod;
 		delete i;
 		delete maxi;
 		delete tabs;
@@ -1146,6 +1145,7 @@ catch(e) {
 				return;
 
 			case 'select':
+				aEvent.currentTarget.setAttribute(this.kLAST_FOCUS, Date.now());
 				this.onTabSelect(aEvent);
 				return;
 
@@ -2836,21 +2836,10 @@ TreeStyleTabBrowserObserver.prototype = {
 
 					case 'extensions.treestyletab.tabbar.invertScrollbar':
 						if (value &&
-							TreeStyleTabService.getTreePref('tabbar.position') == 'left') {
+							TreeStyleTabService.getTreePref('tabbar.position') == 'left')
 							this.mTabBrowser.setAttribute(TreeStyleTabService.kSCROLLBAR_INVERTED, true);
-/* if there is scrollbar, closeboxes of tabs cannot be clicked because
-   they are "under the rightside scrollbar" even if it is moved to
-   leftside by the above rule. This seems a bug. Following rules move
-   the "hidden rightside scrollbar" out of the box, then we can click
-   closeboxes again. */
-							this.mTabBrowser.mTabContainer.mTabstrip._scrollbox.marginRight = '-1em';
-							this.mTabBrowser.mTabContainer.mTabstrip._scrollbox.paddingRight = '1em';
-						}
-						else {
+						else
 							this.mTabBrowser.removeAttribute(TreeStyleTabService.kSCROLLBAR_INVERTED);
-							this.mTabBrowser.mTabContainer.mTabstrip._scrollbox.marginRight =
-								this.mTabBrowser.mTabContainer.mTabstrip._scrollbox.paddingRight = '0';
-						}
 						break;
 
 					case 'extensions.treestyletab.allowSubtreeCollapseExpand':
