@@ -780,13 +780,18 @@ catch(e) {
 			aTab.minWidth = 0;
 		}
 
-		this.initTabContents(aTab);
+		this.initTabContents(aTab, aTabBrowser);
 
 		aTab.setAttribute(this.kNEST, 0);
 	},
 	 
-	initTabContents : function(aTab) 
+	initTabContents : function(aTab, aTabBrowser) 
 	{
+		var icon  = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-icon');
+		var label = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-text');
+		var close = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-close-button');
+		var counter = document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER_CONTAINER)
+
 		if (!document.getAnonymousElementByAttribute(aTab, 'class', this.kTWISTY)) {
 			var twisty = document.createElement('image');
 			twisty.setAttribute('class', this.kTWISTY);
@@ -794,7 +799,6 @@ catch(e) {
 			container.setAttribute('class', this.kTWISTY_CONTAINER);
 			container.appendChild(twisty);
 
-			var icon = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-icon');
 			icon.appendChild(container);
 
 			var marker = document.createElement('image');
@@ -806,7 +810,7 @@ catch(e) {
 			icon.appendChild(container);
 		}
 
-		if (!document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER_CONTAINER)) {
+		if (!counter) {
 			var counter = document.createElement('hbox');
 			counter.setAttribute('class', this.kCOUNTER_CONTAINER);
 
@@ -814,12 +818,38 @@ catch(e) {
 			counter.lastChild.setAttribute('class', this.kCOUNTER);
 			counter.lastChild.setAttribute('value', '(0)');
 
-			var text = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-text');
-			if (text) {
-				if (text.nextSibling)
-					text.parentNode.insertBefore(counter, text.nextSibling);
+			if (label) {
+				if (label.nextSibling)
+					label.parentNode.insertBefore(counter, label.nextSibling);
 				else
-					text.parentNode.appendChild(counter);
+					label.parentNode.appendChild(counter);
+			}
+		}
+
+		var nodes = document.getAnonymousNodes(aTab);
+		for (var i = 0, maxi = nodes.length; i < maxi; i++)
+		{
+			nodes[i].setAttribute('ordinal', (i + 1) * 10);
+		}
+
+		nodes = label.parentNode.childNodes;
+		if (this.getTreePref('tabbar.position') == 'right' &&
+			this.getTreePref('tabbar.invertUI')) {
+			for (var i = 0, maxi = nodes.length; i < maxi; i++)
+			{
+				if (nodes[i].getAttribute('class') == 'informationaltab-thumbnail-container')
+					continue;
+				nodes[i].setAttribute('ordinal', (nodes.length - i + 1) * 10);
+			}
+			counter.setAttribute('ordinal', parseInt(label.getAttribute('ordinal')) + 1);
+			close.setAttribute('ordinal', parseInt(label.parentNode.getAttribute('ordinal')) - 5);
+		}
+		else {
+			for (var i = 0, maxi = nodes.length; i < maxi; i++)
+			{
+				if (nodes[i].getAttribute('class') == 'informationaltab-thumbnail-container')
+					continue;
+				nodes[i].setAttribute('ordinal', (i + 1) * 10);
 			}
 		}
 	},
@@ -1316,11 +1346,11 @@ catch(e) {
 	onTabMove : function(aEvent) 
 	{
 		var tab = aEvent.originalTarget;
-		this.initTabContents(tab); // twisty vanished after the tab is moved!!
+		var b   = this.getTabBrowserFromChildren(tab);
+		this.initTabContents(tab, b); // twisty vanished after the tab is moved!!
 
 		var rebuildTreeDone = false;
 
-		var b = this.getTabBrowserFromChildren(tab);
 		if (tab.getAttribute(this.kCHILDREN) && !b.__treestyletab__isSubTreeMoving) {
 			this.moveTabSubTreeTo(tab, tab._tPos);
 			rebuildTreeDone = true;
@@ -2807,12 +2837,12 @@ TreeStyleTabBrowserObserver.prototype = {
 
 			case 'nsPref:changed':
 				var value = TreeStyleTabService.getPref(aData);
+				var tabs  = Array.prototype.slice.call(this.mTabBrowser.mTabContainer.childNodes);
 				switch (aData)
 				{
 					case 'extensions.treestyletab.tabbar.position':
 						if (value != 'left' && value != 'right') {
-							var container = this.mTabBrowser.mTabContainer;
-							Array.prototype.slice.call(container.childNodes).forEach(function(aTab) {
+							tabs.forEach(function(aTab) {
 								aTab.removeAttribute('align');
 								aTab.setAttribute('maxwidth', 250);
 								aTab.setAttribute('minwidth', container.mTabMinWidth);
@@ -2821,10 +2851,14 @@ TreeStyleTabBrowserObserver.prototype = {
 								aTab.minWidth = container.mTabMinWidth;
 							});
 						}
-					case 'extensions.treestyletab.tabbar.multirow':
 					case 'extensions.treestyletab.tabbar.invertUI':
-						TreeStyleTabService.initTabbar(this.mTabBrowser);
-						TreeStyleTabService.updateAllTabsIndent(this.mTabBrowser);
+					case 'extensions.treestyletab.tabbar.multirow':
+						var b = this.mTabBrowser;
+						TreeStyleTabService.initTabbar(b);
+						TreeStyleTabService.updateAllTabsIndent(b);
+						tabs.forEach(function(aTab) {
+							TreeStyleTabService.initTabContents(aTab, b);
+						});
 						break;
 
 					case 'extensions.treestyletab.enableSubtreeIndent':
