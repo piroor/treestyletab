@@ -2836,10 +2836,21 @@ TreeStyleTabBrowserObserver.prototype = {
 
 					case 'extensions.treestyletab.tabbar.invertScrollbar':
 						if (value &&
-							TreeStyleTabService.getTreePref('tabbar.position') == 'left')
+							TreeStyleTabService.getTreePref('tabbar.position') == 'left') {
 							this.mTabBrowser.setAttribute(TreeStyleTabService.kSCROLLBAR_INVERTED, true);
-						else
+/* if there is scrollbar, closeboxes of tabs cannot be clicked because
+   they are "under the rightside scrollbar" even if it is moved to
+   leftside by the above rule. This seems a bug. Following rules move
+   the "hidden rightside scrollbar" out of the box, then we can click
+   closeboxes again. */
+							this.mTabBrowser.mTabContainer.mTabstrip._scrollbox.marginRight = '-1em';
+							this.mTabBrowser.mTabContainer.mTabstrip._scrollbox.paddingRight = '1em';
+						}
+						else {
 							this.mTabBrowser.removeAttribute(TreeStyleTabService.kSCROLLBAR_INVERTED);
+							this.mTabBrowser.mTabContainer.mTabstrip._scrollbox.marginRight =
+								this.mTabBrowser.mTabContainer.mTabstrip._scrollbox.paddingRight = '0';
+						}
 						break;
 
 					case 'extensions.treestyletab.allowSubtreeCollapseExpand':
