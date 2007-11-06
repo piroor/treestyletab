@@ -11,6 +11,7 @@
                    em:homepageURL="http://piro.sakura.ne.jp/xul/treestyletab/"
                    em:iconURL="chrome://treestyletab/content/res/icon32.png"
                    em:optionsURL="chrome://treestyletab/content/config.xul">
+  <em:translator>Godai71.Extenzilla (it-IT locale)</em:translator>
 
 
     <em:updateURL>http://piro.sakura.ne.jp/xul/update.rdf</em:updateURL>
@@ -26,6 +27,11 @@
       <RDF:Description em:locale="ja"
                        em:name="ツリー型タブ"
                        em:description="タブをツリー状に表示します。"/>
+    </em:localized>
+    <em:localized>
+      <RDF:Description em:locale="it-IT"
+                       em:name="Tree Style Tab"
+                       em:description="Permette di visualizzare la barra delle schede in forma di albero"/>
     </em:localized>
 
 

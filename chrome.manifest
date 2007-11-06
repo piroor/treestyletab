@@ -5,5 +5,6 @@ overlay	chrome://multipletab/content/config.xul	chrome://treestyletab/content/mu
 
 locale	treestyletab	en-US	jar:chrome/treestyletab.jar!/locale/en-US/treestyletab/
 locale	treestyletab	ja	jar:chrome/treestyletab.jar!/locale/ja/treestyletab/
+locale	treestyletab	it-IT	jar:chrome/treestyletab.jar!/locale/it-IT/treestyletab/
 
 skin	treestyletab	classic/1.0	jar:chrome/treestyletab.jar!/skin/classic/treestyletab/

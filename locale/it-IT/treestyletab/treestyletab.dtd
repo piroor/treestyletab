@@ -1,0 +1,84 @@
+<!ENTITY config.title        "Configurazione di Tree Style Tab">
+
+
+<!ENTITY config.tabs.appearance "Aspetto">
+
+<!ENTITY config.tabbar.scroll.smooth "Scorri gradualmente la barra delle schede">
+
+<!ENTITY config.tabbar.position.caption "Posiziona barra delle schede">
+<!ENTITY config.tabbar.position.left    "sul lato sinistro">
+<!ENTITY config.tabbar.position.right   "sul lato destro">
+<!ENTITY config.tabbar.position.top     "in alto (comportamento predefinito di Firefox)">
+<!ENTITY config.tabbar.position.bottom  "in basso">
+<!ENTITY config.tabbar.invertScrollbar  "Visualizza la barra di scorrimento all&apos;estrema sinistra">
+<!ENTITY config.tabbar.invertUI         "Inverti la visualizzazione delle schede">
+<!ENTITY config.enableSubtreeIndent         "Indenta schede figlie">
+<!ENTITY config.allowSubtreeCollapseExpand  "Permetti di contrarre/espandere sottoalberi delle schede">
+
+<!ENTITY config.tabbar.style.caption "Aspetto delle barra delle schede">
+<!ENTITY config.tabbar.style.default "Semplice">
+<!ENTITY config.tabbar.style.vertigo "Vertigo">
+<!ENTITY config.tabbar.style.mixed   "Misto">
+
+<!ENTITY config.show.openSelectionLinks "Aggiungi &quot;Apri collegamenti selezionati in schede&quot; al menu contestuale">
+<!ENTITY config.show.contextItemRemoveTabSubTree "Aggiungi&quot;Chiudi questo sottoalbero&quot; al menu contestuale delle schede che possiedono sottoalberi">
+
+
+<!ENTITY config.tabs.tab "Navigazione">
+
+<!ENTITY config.tabs.context.tab      "Schede"> <!-- DA controllare -->
+
+<!ENTITY config.link.caption           "Collegamenti">
+<!ENTITY config.openOuterLinkInNewTab  "Apri i collegamenti provenienti da altri siti in una nuova scheda">
+<!ENTITY config.openAnyLinkInNewTab    "Apri tutti i collegamenti in una nuova scheda">
+
+<!ENTITY config.urlbar.caption                      "L&apos;inserimento di un indirizzo nella barra degli indirizzi">
+<!ENTITY config.urlbar.loadDifferentDomainToNewTab  "Apre una nuova scheda se appartiene a un sito web differente">
+<!ENTITY config.urlbar.loadSameDomainToNewChildTab  "Apre una nuova scheda figlia se appartiene allo stesso sito web">
+
+<!ENTITY config.loadDroppedLinkToNewChildTab.caption "Il trascinamento di collegamenti o indirizzi su una scheda esistente">
+<!ENTITY config.loadDroppedLinkToNewChildTab.load    "Carica il collegamento nella scheda (comportamento predefinito di Firefox)">
+<!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "Apre il collegamento in una nuova scheda figlia">
+
+<!ENTITY config.openGroupBookmarkAsTabSubTree.caption "&quot;Apri tutti in schede&quot; nel menu Segnalibri">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree "Apre come sottoalbero (Raccomandato)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "Apre in schede separate">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.replace "Sostituisce tutte le schede con i collegamenti contenuti nella cartella (comportamento predefinito di Firefox)">
+
+<!ENTITY config.tabs.restriction.tab "Finestre"> <!-- DA controllare -->
+
+<!ENTITY config.open_newwindow.caption "Forza i collegamenti che aprono nuove finestre">
+<!ENTITY config.open_newwindow.window  "ad aprirsi in una nuova finestra">
+<!ENTITY config.open_newwindow.tab     "ad aprirsi in una nuova scheda (comportamento predefinito di Firefox)">
+
+<!ENTITY config.jsopen.caption "Forza gli script che aprono nuove finestre">
+<!ENTITY config.jsopen.default "ad aprire una nuova finestra se questa è ridimensionata (comportamento predefinito di Firefox)">
+<!ENTITY config.jsopen.forcetab "ad aprirsi tutti in nuove schede (Raccomandato)">
+
+
+<!ENTITY config.tabs.advanced "Avanzate">
+
+<!ENTITY config.autoCollapseExpandSubTreeOnSelect "Contrai automaticamente gli altri sottoalberi quando viene aperta o selezionata una scheda">
+<!ENTITY config.collapseExpandSubTree.dblclick "Contrai/espandi sottoalberi della scheda con un doppio-clic">
+
+<!ENTITY config.autoExpandSubTreeOnAppendChild "Espandi automaticamente i sottoalberi all'inserimento di nuove schede">
+
+<!ENTITY config.attachChildrenToGrandParentOnRemoveTab "Elimina dall&apos;albero le schede figlie alla chiusura della scheda madre">
+
+<!ENTITY config.focusMode "Attiva la scheda successiva/precedente, anche se è nascosta, con Ctrl(Command)-Tab">
+
+<!ENTITY config.insertNewChildAt.caption "Posizione di inserimento di nuove schede figlie">
+<!ENTITY config.insertNewChildAt.first "Inserisci all&apos;inizio del sottoalbero, come prima figlia">
+<!ENTITY config.insertNewChildAt.last "Accoda all&apos;ultimo sottoalbero">
+
+
+
+
+
+<!ENTITY context.openSelectionLinks.label     "Apri collegamenti selezionati in schede">
+<!ENTITY context.openSelectionLinks.accesskey "c">
+
+<!ENTITY selection.removeTabSubTree.label     "Chiudi i sottoalberi selezionati">
+<!ENTITY selection.removeTabSubTree.accesskey "s">
+<!ENTITY context.removeTabSubTree.label     "Chiudi questo sottoalbero">
+<!ENTITY context.removeTabSubTree.accesskey "s">
