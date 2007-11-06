@@ -250,6 +250,10 @@ tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="mixed"] .t
 	-moz-box-flex: 1;
 }
 
+tabbrowser[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .treestyletab-twisty-container {
+	margin: 0 -3px 0 3px;
+}
+
 tabbrowser:not([treestyletab-mode="vertical"]) .treestyletab-twisty-container {
 	position: relative;
 	margin: 0 16px 0 -16px;
