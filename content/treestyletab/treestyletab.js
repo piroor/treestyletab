@@ -827,7 +827,7 @@ catch(e) {
 		}
 
 		var nodes = document.getAnonymousNodes(aTab);
-		for (var i = 0, maxi = nodes.length; i < maxi; i++)
+		for (var i = nodes.length-1; i > -1; i--)
 		{
 			nodes[i].setAttribute('ordinal', (i + 1) * 10);
 		}
@@ -835,7 +835,7 @@ catch(e) {
 		nodes = label.parentNode.childNodes;
 		if (this.getTreePref('tabbar.position') == 'right' &&
 			this.getTreePref('tabbar.invertUI')) {
-			for (var i = 0, maxi = nodes.length; i < maxi; i++)
+			for (var i = nodes.length-1; i > -1; i--)
 			{
 				if (nodes[i].getAttribute('class') == 'informationaltab-thumbnail-container')
 					continue;
@@ -845,7 +845,7 @@ catch(e) {
 			close.setAttribute('ordinal', parseInt(label.parentNode.getAttribute('ordinal')) - 5);
 		}
 		else {
-			for (var i = 0, maxi = nodes.length; i < maxi; i++)
+			for (var i = nodes.length-1; i > -1; i--)
 			{
 				if (nodes[i].getAttribute('class') == 'informationaltab-thumbnail-container')
 					continue;
@@ -2837,7 +2837,8 @@ TreeStyleTabBrowserObserver.prototype = {
 
 			case 'nsPref:changed':
 				var value = TreeStyleTabService.getPref(aData);
-				var tabs  = Array.prototype.slice.call(this.mTabBrowser.mTabContainer.childNodes);
+				var tabContainer = this.mTabBrowser.mTabContainer;
+				var tabs  = Array.prototype.slice.call(tabContainer.childNodes);
 				switch (aData)
 				{
 					case 'extensions.treestyletab.tabbar.position':
@@ -2845,10 +2846,10 @@ TreeStyleTabBrowserObserver.prototype = {
 							tabs.forEach(function(aTab) {
 								aTab.removeAttribute('align');
 								aTab.setAttribute('maxwidth', 250);
-								aTab.setAttribute('minwidth', container.mTabMinWidth);
+								aTab.setAttribute('minwidth', tabContainer.mTabMinWidth);
 								aTab.setAttribute('width', '0');
 								aTab.maxWidth = 250;
-								aTab.minWidth = container.mTabMinWidth;
+								aTab.minWidth = tabContainer.mTabMinWidth;
 							});
 						}
 					case 'extensions.treestyletab.tabbar.invertUI':
