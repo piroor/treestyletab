@@ -7,7 +7,7 @@ pref("extensions.treestyletab.tabbar.scroll.smooth",   true);
 pref("extensions.treestyletab.tabbar.scroll.timeout",  250);
 pref("extensions.treestyletab.tabbar.style",           "mixed");
 pref("extensions.treestyletab.tabbar.autoHide",        false);
-pref("extensions.treestyletab.tabbar.autoHide.delay",  50);
+pref("extensions.treestyletab.tabbar.autoHide.delay",  400);
 pref("extensions.treestyletab.enableSubtreeIndent",    true);
 pref("extensions.treestyletab.allowSubtreeCollapseExpand", true);
 pref("extensions.treestyletab.showBorderForFirstTab",  false);

@@ -1182,7 +1182,18 @@ catch(e) {
 				return;
 
 			case 'mousedown':
-				this.onTabMouseDown(aEvent);
+				if (aEvent.currentTarget.localName == 'tabs')
+					this.onTabMouseDown(aEvent);
+				else
+					this.cancelShowHideTabbar();
+				return;
+
+			case 'mouseup':
+				this.cancelShowHideTabbar();
+				return;
+
+			case 'mousemove':
+				this.showHideTabbar(aEvent);
 				return;
 
 			case 'select':
@@ -1215,10 +1226,6 @@ catch(e) {
 						item.setAttribute('hidden', true);
 					this.showHideRemoveSubTreeMenuItem(item, [b.mContextTab]);
 				}
-				return;
-
-			case 'mousemove':
-				this.showHideTabbar(aEvent);
 				return;
 
 			case 'SubBrowserAdded':
@@ -2708,12 +2715,16 @@ catch(e) {
 	startAutoHide : function(aTabBrowser) 
 	{
 		var appcontent = document.getElementById('appcontent');
+		appcontent.addEventListener('mousedown', this, true);
+		appcontent.addEventListener('mouseup', this, true);
 		appcontent.addEventListener('mousemove', this, true);
 	},
  
 	endAutoHide : function(aTabBrowser) 
 	{
 		var appcontent = document.getElementById('appcontent');
+		appcontent.removeEventListener('mousedown', this, true);
+		appcontent.removeEventListener('mouseup', this, true);
 		appcontent.removeEventListener('mousemove', this, true);
 
 		if (appcontent.__treestyletab__resized) {
@@ -2759,7 +2770,7 @@ catch(e) {
 				))
 				this.showHideTabbarTimer = window.setTimeout(
 					'TreeStyleTabService.delayedShowHideTabbar();',
-					10
+					this.getTreePref('tabbar.autoHide.delay')
 				);
 	},
 	showHideTabbarTimer : null,
@@ -2769,6 +2780,7 @@ catch(e) {
 		window.setTimeout('TreeStyleTabService.checkTabsIndentOverflow(TreeStyleTabService.browser);', 0);
 		var b = this.browser;
 		if (this.tabbarShown) {
+			this.tabbarShown = false;
 			var splitter = document.getAnonymousElementByAttribute(b, 'class', this.kSPLITTER);
 			this.tabbarHeight = b.mStrip.boxObject.height;
 			this.tabbarWidth = b.mStrip.boxObject.width +
@@ -2778,15 +2790,13 @@ catch(e) {
 				appcontent.__treestyletab__resized = false;
 				appcontent.style.margin = 0;
 			}
-			this.tabbarShown = false;
 			b.setAttribute(this.kAUTOHIDE, true);
-			this.forceRedraw();
+			this.redrawContentArea();
 		}
 		else {
 			this.tabbarShown = true;
 			b.removeAttribute(this.kAUTOHIDE);
 			this.redrawContentArea();
-			this.forceRedraw();
 		}
 	},
  	
@@ -2801,9 +2811,9 @@ catch(e) {
 	redrawContentArea : function(aDelayed) 
 	{
 		var pos = this.getTreePref('tabbar.position');
-		if (!aDelayed) {
+//		if (!aDelayed) {
 			var appcontent = document.getElementById('appcontent');
-			if (!appcontent.__treestyletab__resized) {
+			if (this.tabbarShown && !appcontent.__treestyletab__resized) {
 				switch (pos)
 				{
 					case 'left':
@@ -2821,32 +2831,34 @@ catch(e) {
 				}
 				appcontent.__treestyletab__resized = true;
 			}
-			window.setTimeout('TreeStyleTabService.redrawContentArea(true);', 100);
-			return;
+//			window.setTimeout('TreeStyleTabService.redrawContentArea(true);', 100);
+//			return;
+//		}
+		try {
+			var v = this.browser.markupDocumentViewer;
+			if (this.tabbarShown) {
+				v.move(
+					(
+						!this.tabbarShown ? 0 :
+						pos == 'left' ? -this.tabbarWidth :
+						pos == 'right' ? this.tabbarWidth :
+						0
+					),
+					(
+						!this.tabbarShown ? 0 :
+						pos == 'top' ? -this.tabbarHeight :
+						pos == 'bottom' ? this.tabbarHeight :
+						0
+					)
+				);
+			}
+			else {
+				v.move(window.outerWidth,window.outerHeight);
+				v.move(0,0);
+			}
 		}
-	    try {
-	    	this.browser.markupDocumentViewer.move(
-				(
-					pos == 'left' ? -this.tabbarWidth :
-					pos == 'right' ? this.tabbarWidth :
-					0
-				),
-				(
-					pos == 'top' ? -this.tabbarHeight :
-					pos == 'bottom' ? this.tabbarHeight :
-					0
-				)
-			);
-	    }
-	    catch(e) {
+		catch(e) {
 		}
-		this.forceRedraw();
-	},
- 
-	forceRedraw : function()
-	{
-//		this.browser.markupDocumentViewer.enableRendering = false;
-//		window.setTimeout('TreeStyleService.browser.markupDocumentViewer.enableRendering = true;', 100);
 	},
    
 /* Pref Listener */ 
