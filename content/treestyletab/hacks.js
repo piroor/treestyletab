@@ -16,7 +16,7 @@ TreeStyleTabService.overrideExtensions = function() {
 		eval('autoHIDE.ShowMenu = '+
 			autoHIDE.ShowMenu.toSource().replace(
 				'{',
-				'{ var treeStyleTabPos = TreeStyleTabService.getPref("extensions.treestyletab.tabbar.position");'
+				'{ var treeStyleTabPos = TreeStyleTabService.getTreePref("tabbar.position");'
 			).replace(
 				'e.screenY <= autoHIDE.Win.boxObject.screenY + autoHIDE.space',
 				<><![CDATA[(e.screenY <= autoHIDE.Win.boxObject.screenY + autoHIDE.space ||
@@ -48,7 +48,7 @@ TreeStyleTabService.overrideExtensions = function() {
 				'if (this.Show) {',
 				<><![CDATA[
 					window.setTimeout('TreeStyleTabService.checkTabsIndentOverflow(gBrowser);', 0);
-					var treeStyleTabPos = TreeStyleTabService.getPref("extensions.treestyletab.tabbar.position");
+					var treeStyleTabPos = TreeStyleTabService.getTreePref("tabbar.position");
 					if (this.Show) {
 						var appcontent = document.getElementById('appcontent');
 						if (appcontent.__treestyletab__resized) {
@@ -92,7 +92,7 @@ TreeStyleTabService.overrideExtensions = function() {
 				'{',
 				<><![CDATA[
 					{
-						var treeStyleTabPos = TreeStyleTabService.getPref("extensions.treestyletab.tabbar.position");
+						var treeStyleTabPos = TreeStyleTabService.getTreePref("tabbar.position");
 						if (!arguments.length) {
 							var appcontent = document.getElementById('appcontent');
 							if (treeStyleTabPos == 'left' &&
