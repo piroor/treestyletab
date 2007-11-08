@@ -2727,11 +2727,7 @@ catch(e) {
 		appcontent.removeEventListener('mouseup', this, true);
 		appcontent.removeEventListener('mousemove', this, true);
 
-		if (appcontent.__treestyletab__resized) {
-			appcontent.__treestyletab__resized = false;
-			appcontent.style.marginRight = 0;
-			appcontent.style.marginLeft = 0;
-		}
+		appcontent.style.margin = 0;
 		this.browser.removeAttribute(this.kAUTOHIDE);
 	},
  
@@ -2779,22 +2775,34 @@ catch(e) {
 	{
 		window.setTimeout('TreeStyleTabService.checkTabsIndentOverflow(TreeStyleTabService.browser);', 0);
 		var b = this.browser;
+		var appcontent = document.getElementById('appcontent');
 		if (this.tabbarShown) {
 			this.tabbarShown = false;
 			var splitter = document.getAnonymousElementByAttribute(b, 'class', this.kSPLITTER);
 			this.tabbarHeight = b.mStrip.boxObject.height;
 			this.tabbarWidth = b.mStrip.boxObject.width +
 				(splitter ? splitter.boxObject.width : 0 );
-			var appcontent = document.getElementById('appcontent');
-			if (appcontent.__treestyletab__resized) {
-				appcontent.__treestyletab__resized = false;
-				appcontent.style.margin = 0;
-			}
+			appcontent.style.margin = 0;
 			b.setAttribute(this.kAUTOHIDE, true);
 			this.redrawContentArea();
 		}
 		else {
 			this.tabbarShown = true;
+			switch (this.getTreePref('tabbar.position'))
+			{
+				case 'left':
+					appcontent.style.marginRight = '-'+this.tabbarWidth+'px';
+					break;
+				case 'right':
+					appcontent.style.marginLeft = '-'+this.tabbarWidth+'px';
+					break;
+				case 'bottom':
+					appcontent.style.marginTop = '-'+this.tabbarHeight+'px';
+					break;
+				default:
+					appcontent.style.marginBottom = '-'+this.tabbarHeight+'px';
+					break;
+			}
 			b.removeAttribute(this.kAUTOHIDE);
 			this.redrawContentArea();
 		}
@@ -2808,32 +2816,9 @@ catch(e) {
 		}
 	},
   
-	redrawContentArea : function(aDelayed) 
+	redrawContentArea : function() 
 	{
 		var pos = this.getTreePref('tabbar.position');
-//		if (!aDelayed) {
-			var appcontent = document.getElementById('appcontent');
-			if (this.tabbarShown && !appcontent.__treestyletab__resized) {
-				switch (pos)
-				{
-					case 'left':
-						appcontent.style.marginRight = '-'+this.tabbarWidth+'px';
-						break;
-					case 'right':
-						appcontent.style.marginLeft = '-'+this.tabbarWidth+'px';
-						break;
-					case 'bottom':
-						appcontent.style.marginTop = '-'+this.tabbarHeight+'px';
-						break;
-					default:
-						appcontent.style.marginBottom = '-'+this.tabbarHeight+'px';
-						break;
-				}
-				appcontent.__treestyletab__resized = true;
-			}
-//			window.setTimeout('TreeStyleTabService.redrawContentArea(true);', 100);
-//			return;
-//		}
 		try {
 			var v = this.browser.markupDocumentViewer;
 			if (this.tabbarShown) {
