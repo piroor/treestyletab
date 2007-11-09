@@ -751,6 +751,7 @@ catch(e) {
 
 		var tabContext = document.getAnonymousElementByAttribute(aTabBrowser, 'anonid', 'tabContextMenu');
 		tabContext.addEventListener('popupshowing', this, false);
+		tabContext.addEventListener('popuphiding', this, false);
 		window.setTimeout(function(aSelf) {
 			var suffix = '-'+parseInt(Math.random() * 65000);
 			var item = document.getElementById(aSelf.kMENUITEM_REMOVESUBTREE_CONTEXT).cloneNode(true);
@@ -1144,6 +1145,7 @@ catch(e) {
 
 		var tabContext = document.getAnonymousElementByAttribute(aTabBrowser, 'anonid', 'tabContextMenu');
 		tabContext.removeEventListener('popupshowing', this, false);
+		tabContext.removeEventListener('popuphiding', this, false);
 	},
  
 	destroyTab : function(aTab, aTabBrowser) 
@@ -1225,7 +1227,8 @@ catch(e) {
 
 			case 'mousemove':
 				if (!this.tabbarResizing) {
-					this.showHideTabbar(aEvent);
+					if (!this.tabContextMenuShown)
+						this.showHideTabbar(aEvent);
 					return;
 				}
 			case 'resize':
@@ -1270,10 +1273,17 @@ catch(e) {
 
 			case 'popupshowing':
 				if (aEvent.target != aEvent.currentTarget) return;
-				if (aEvent.currentTarget.id == 'contentAreaContextMenu')
+				if (aEvent.currentTarget.id == 'contentAreaContextMenu') {
 					this.initContextMenu();
-				else
+				}
+				else {
+					this.tabContextMenuShown = true;
 					this.initTabContextMenu(aEvent);
+				}
+				return;
+
+			case 'popuphiding':
+				this.tabContextMenuShown = false;
 				return;
 
 			case 'SubBrowserAdded':
