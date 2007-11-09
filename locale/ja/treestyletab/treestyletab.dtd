@@ -15,7 +15,7 @@
 <!ENTITY config.enableSubtreeIndent         "タブをインデント表示する">
 <!ENTITY config.allowSubtreeCollapseExpand  "サブツリーを折りたためるようにする">
 <!ENTITY config.tabbar.autoHide.enabled     "タブバーを自動的に隠す">
-<!ENTITY config.tabbar.hideAlltabsButton    "「タブの一覧を表示」ボタンを隠す">
+<!ENTITY config.tabbar.hideAlltabsButton    "「タブの一覧を表示」ボタンを表示する">
 
 <!ENTITY config.tabbar.style.caption "タブバーの表示スタイル">
 <!ENTITY config.tabbar.style.default "プレーン">

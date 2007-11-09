@@ -341,10 +341,21 @@ tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab[treestyletab-d
 
 /* vertical tab bar */
 
+/* Firefox 2 */
+tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-stack > hbox {
+	position: static !important;
+}
+tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-stack > hbox:not(:last-child) {
+	display: none !important;
+}
+
 tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-box,
 tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-box-animate,
 tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-button {
-	width: 100% !important;
-	height: 100% !important;
 	background-image: none !important;
+	margin: 0 !important;
+	padding: 0 2px !important;
+	width: 100% !important;
+	min-height: 0 !important;
+	height: 16px !important;
 }

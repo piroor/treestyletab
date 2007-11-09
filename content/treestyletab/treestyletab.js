@@ -2088,6 +2088,7 @@ catch(e) {
 		}
 
 		var scrollInnerBox = document.getAnonymousNodes(aTabBrowser.mTabContainer.mTabstrip._scrollbox)[0];
+		var allTabsButton = document.getAnonymousElementByAttribute(aTabBrowser.mTabContainer, 'class', 'tabs-alltabs-button');
 
 		if (pos & this.kTABBAR_VERTICAL) {
 			this.positionProp     = 'screenY';
@@ -2098,6 +2099,9 @@ catch(e) {
 			aTabBrowser.mTabContainer.orient =
 				aTabBrowser.mTabContainer.mTabstrip.orient =
 					aTabBrowser.mTabContainer.mTabstrip.parentNode.orient = 'vertical';
+			if (allTabsButton.parentNode.localName == 'hbox') // Firefox 2
+					allTabsButton.parentNode.orient = 'vertical';
+			allTabsButton.firstChild.setAttribute('position', 'before_start');
 			aTabBrowser.mTabContainer.setAttribute('align', 'stretch'); // for Mac OS X
 			scrollInnerBox.removeAttribute('flex');
 
@@ -2143,6 +2147,9 @@ catch(e) {
 			aTabBrowser.mTabContainer.orient =
 				aTabBrowser.mTabContainer.mTabstrip.orient =
 					aTabBrowser.mTabContainer.mTabstrip.parentNode.orient = 'horizontal';
+			if (allTabsButton.parentNode.localName == 'hbox') // Firefox 2
+					allTabsButton.parentNode.orient = 'horizontal';
+			allTabsButton.firstChild.setAttribute('position', 'after_end');
 			aTabBrowser.mTabContainer.removeAttribute('align'); // for Mac OS X
 			scrollInnerBox.setAttribute('flex', 1);
 
