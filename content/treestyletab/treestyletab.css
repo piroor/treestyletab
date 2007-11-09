@@ -32,9 +32,8 @@ tabbrowser:not([treestyletab-mode="horizontal"]) .tab-drop-indicator-bar {
 	display: none !important;
 }
 
-/* to modify browser's margin dynamically */
 #appcontent {
-	position: relative;
+/*	position: relative;*/
 	margin: 0;
 }
 
