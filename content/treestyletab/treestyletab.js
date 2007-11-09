@@ -2121,6 +2121,9 @@ catch(e) {
 					this.levelMarginProp = 'margin-left';
 				}
 				window.setTimeout(function(aWidth) {
+					/* in Firefox 3, the width of the rightside tab bar
+					   unexpectedly becomes 0 on the startup. so, we have
+					   to set the width again. */
 					aTabBrowser.mStrip.setAttribute('width', aWidth);
 					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
 					aTabBrowser.mStrip.setAttribute('ordinal', 30);
