@@ -100,6 +100,19 @@ var TreeStyleTabService = {
 		return this._IOService;
 	},
 	_IOService : null,
+
+	get isGecko18() {
+		var version = this.XULAppInfo.platformVersion.split('.');
+		return parseInt(version[0]) <= 1 && parseInt(version[1]) <= 8;
+	},
+
+	get XULAppInfo() {
+		if (!this._XULAppInfo) {
+			this._XULAppInfo = Components.classes['@mozilla.org/xre/app-info;1'].getService(Components.interfaces.nsIXULAppInfo);
+		}
+		return this._XULAppInfo;
+	},
+	_XULAppInfo : null,
 	 
 /* API */ 
 	
@@ -3195,7 +3208,8 @@ TreeStyleTabBrowserObserver.prototype = {
 
 					case 'extensions.treestyletab.tabbar.invertScrollbar':
 						if (value &&
-							sv.getTreePref('tabbar.position') == 'left')
+							sv.getTreePref('tabbar.position') == 'left' &&
+							sv.isGecko18)
 							this.mTabBrowser.setAttribute(sv.kSCROLLBAR_INVERTED, true);
 						else
 							this.mTabBrowser.removeAttribute(sv.kSCROLLBAR_INVERTED);
