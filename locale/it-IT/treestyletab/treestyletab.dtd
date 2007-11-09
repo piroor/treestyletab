@@ -14,6 +14,7 @@
 <!ENTITY config.tabbar.invertUI         "Inverti la visualizzazione delle schede">
 <!ENTITY config.enableSubtreeIndent         "Indenta schede figlie">
 <!ENTITY config.allowSubtreeCollapseExpand  "Permetti di contrarre/espandere sottoalberi delle schede">
+<!ENTITY config.tabbar.autoHide.enabled     "Auto hide tab bar">
 
 <!ENTITY config.tabbar.style.caption "Aspetto delle barra delle schede">
 <!ENTITY config.tabbar.style.default "Semplice">

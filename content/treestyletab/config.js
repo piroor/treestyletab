@@ -36,16 +36,22 @@ function onChangeTabbarPosition(aOnChange)
 
 	var indentPref    = document.getElementById('extensions.treestyletab.enableSubtreeIndent');
 	var collapsePref  = document.getElementById('extensions.treestyletab.allowSubtreeCollapseExpand');
+	var autoHidePref  = document.getElementById('extensions.treestyletab.tabbar.autoHide.enabled');
 	var indentCheck   = document.getElementById('extensions.treestyletab.enableSubtreeIndent-check');
 	var collapseCheck = document.getElementById('extensions.treestyletab.allowSubtreeCollapseExpand-check');
+	var autoHideCheck = document.getElementById('extensions.treestyletab.tabbar.autoHide.enabled-check');
 	if (aOnChange) {
 		indentPref.value = indentCheck.checked =
 			collapsePref.value = collapseCheck.checked = (pos == 'left' || pos == 'right');
 	}
-	if (pos == 'left' || pos == 'right')
-		indentCheck.setAttribute('style', 'visibility:hidden');
-	else
-		indentCheck.removeAttribute('style', 'visibility:hidden');
+	if (pos == 'left' || pos == 'right') {
+		indentCheck.setAttribute('style', 'visibility:collapse');
+		autoHideCheck.removeAttribute('style');
+	}
+	else {
+		indentCheck.removeAttribute('style');
+		autoHideCheck.setAttribute('style', 'visibility:collapse');
+	}
 
 	gTabbarPlacePositionInitialized = true;
 }

@@ -14,6 +14,7 @@
 <!ENTITY config.tabbar.invertUI         "Invert tab appearance">
 <!ENTITY config.enableSubtreeIndent         "Indent tabs">
 <!ENTITY config.allowSubtreeCollapseExpand  "Allow to collapse/expand sub tree of tabs">
+<!ENTITY config.tabbar.autoHide.enabled     "Auto hide tab bar">
 
 <!ENTITY config.tabbar.style.caption "Appearance of the tab bar">
 <!ENTITY config.tabbar.style.default "Plain">

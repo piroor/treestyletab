@@ -14,6 +14,7 @@
 <!ENTITY config.tabbar.invertUI         "タブを左右反転">
 <!ENTITY config.enableSubtreeIndent         "タブをインデント表示する">
 <!ENTITY config.allowSubtreeCollapseExpand  "サブツリーを折りたためるようにする">
+<!ENTITY config.tabbar.autoHide.enabled     "タブバーを自動的に隠す">
 
 <!ENTITY config.tabbar.style.caption "タブバーの表示スタイル">
 <!ENTITY config.tabbar.style.default "プレーン">

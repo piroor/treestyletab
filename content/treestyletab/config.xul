@@ -28,6 +28,9 @@
 		<preference id="extensions.treestyletab.allowSubtreeCollapseExpand"
 			name="extensions.treestyletab.allowSubtreeCollapseExpand"
 			type="bool"/>
+		<preference id="extensions.treestyletab.tabbar.autoHide.enabled"
+			name="extensions.treestyletab.tabbar.autoHide.enabled"
+			type="bool"/>
 		<preference id="extensions.treestyletab.tabbar.invertScrollbar"
 			name="extensions.treestyletab.tabbar.invertScrollbar"
 			type="bool"/>
@@ -90,12 +93,15 @@
 			</grid>
 		</radiogroup>
 		<hbox align="center">
-			<checkbox id="extensions.treestyletab.enableSubtreeIndent-check"
-				preference="extensions.treestyletab.enableSubtreeIndent"
-				label="&config.enableSubtreeIndent;"/>
 			<checkbox id="extensions.treestyletab.allowSubtreeCollapseExpand-check"
 				preference="extensions.treestyletab.allowSubtreeCollapseExpand"
 				label="&config.allowSubtreeCollapseExpand;"/>
+			<checkbox id="extensions.treestyletab.enableSubtreeIndent-check"
+				preference="extensions.treestyletab.enableSubtreeIndent"
+				label="&config.enableSubtreeIndent;"/>
+			<checkbox id="extensions.treestyletab.tabbar.autoHide.enabled-check"
+				preference="extensions.treestyletab.tabbar.autoHide.enabled"
+				label="&config.tabbar.autoHide.enabled;"/>
 		</hbox>
 		</vbox>
 	</groupbox>
