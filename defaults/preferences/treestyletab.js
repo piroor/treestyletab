@@ -6,8 +6,10 @@ pref("extensions.treestyletab.tabbar.invertUI",        true);
 pref("extensions.treestyletab.tabbar.scroll.smooth",   true);
 pref("extensions.treestyletab.tabbar.scroll.timeout",  250);
 pref("extensions.treestyletab.tabbar.style",           "mixed");
-pref("extensions.treestyletab.tabbar.autoHide",        false);
-pref("extensions.treestyletab.tabbar.autoHide.delay",  50);
+pref("extensions.treestyletab.tabbar.autoHide.enabled",    false);
+pref("extensions.treestyletab.tabbar.autoHide.delay",      50);
+pref("extensions.treestyletab.tabbar.autoHide.area",       25);
+pref("extensions.treestyletab.tabbar.autoHide.expandArea", false);
 pref("extensions.treestyletab.enableSubtreeIndent",    true);
 pref("extensions.treestyletab.allowSubtreeCollapseExpand", true);
 pref("extensions.treestyletab.showBorderForFirstTab",  false);
@@ -17,6 +19,7 @@ pref("extensions.treestyletab.insertNewChildAt", 1);
 
 pref("extensions.treestyletab.show.openSelectionLinks", true);
 pref("extensions.treestyletab.show.context-item-removeTabSubTree", true);
+pref("extensions.treestyletab.show.context-item-toggleAutoHide",   true);
 
 pref("extensions.treestyletab.openOuterLinkInNewTab",              false);
 pref("extensions.treestyletab.openAnyLinkInNewTab",                false);

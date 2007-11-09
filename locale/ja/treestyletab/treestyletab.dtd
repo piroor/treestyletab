@@ -80,3 +80,5 @@
 <!ENTITY selection.removeTabSubTree.accesskey "s">
 <!ENTITY context.removeTabSubTree.label     "このサブツリーを閉じる">
 <!ENTITY context.removeTabSubTree.accesskey "s">
+<!ENTITY context.toggleAutoHide.label     "タブバーを自動的に隠す">
+<!ENTITY context.toggleAutoHide.accesskey "h">

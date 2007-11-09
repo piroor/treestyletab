@@ -26,6 +26,8 @@ var TreeStyleTabService = {
 
 	kMENUITEM_REMOVESUBTREE_SELECTION : 'multipletab-selection-item-removeTabSubTree',
 	kMENUITEM_REMOVESUBTREE_CONTEXT   : 'context-item-removeTabSubTree',
+	kMENUITEM_AUTOHIDE_CONTEXT        : 'context-item-toggleAutoHide',
+	kMENUITEM_AUTOHIDE_SEPARATOR_CONTEXT : 'context-separator-toggleAutoHide',
 
 	kFOCUS_ALL     : 0,
 	kFOCUS_VISIBLE : 1,
@@ -750,9 +752,17 @@ catch(e) {
 		var tabContext = document.getAnonymousElementByAttribute(aTabBrowser, 'anonid', 'tabContextMenu');
 		tabContext.addEventListener('popupshowing', this, false);
 		window.setTimeout(function(aSelf) {
-			var contextItem = document.getElementById(aSelf.kMENUITEM_REMOVESUBTREE_CONTEXT).cloneNode(true);
-			contextItem.setAttribute('id', contextItem.getAttribute('id')+'-'+parseInt(Math.random() * 65000));
-			tabContext.appendChild(contextItem);
+			var suffix = '-'+parseInt(Math.random() * 65000);
+			var item = document.getElementById(aSelf.kMENUITEM_REMOVESUBTREE_CONTEXT).cloneNode(true);
+			item.setAttribute('id', item.getAttribute('id')+suffix);
+			tabContext.appendChild(item);
+
+			item = document.getElementById(aSelf.kMENUITEM_AUTOHIDE_SEPARATOR_CONTEXT).cloneNode(true);
+			item.setAttribute('id', item.getAttribute('id')+suffix);
+			tabContext.appendChild(item);
+			item = document.getElementById(aSelf.kMENUITEM_AUTOHIDE_CONTEXT).cloneNode(true);
+			item.setAttribute('id', item.getAttribute('id')+suffix);
+			tabContext.appendChild(item);
 		}, 0, this);
 
 		aTabBrowser.__treestyletab__observer = new TreeStyleTabBrowserObserver(aTabBrowser);
@@ -761,7 +771,7 @@ catch(e) {
 		aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.invertScrollbar');
 		aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.allowSubtreeCollapseExpand');
 		window.setTimeout(function() {
-			aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.autoHide');
+			aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.autoHide.enabled');
 		}, 0);
 
 		delete i;
@@ -1260,22 +1270,10 @@ catch(e) {
 
 			case 'popupshowing':
 				if (aEvent.target != aEvent.currentTarget) return;
-				if (aEvent.currentTarget.id == 'contentAreaContextMenu') {
+				if (aEvent.currentTarget.id == 'contentAreaContextMenu')
 					this.initContextMenu();
-				}
-				else {
-					var b = this.getTabBrowserFromChildren(aEvent.currentTarget);
-					var item = this.evaluateXPath(
-						'descendant::xul:menuitem[starts-with(@id, "'+this.kMENUITEM_REMOVESUBTREE_CONTEXT+'")]',
-						aEvent.currentTarget,
-						XPathResult.FIRST_ORDERED_NODE_TYPE
-					).singleNodeValue;
-					if (this.getTreePref('show.context-item-removeTabSubTree'))
-						item.removeAttribute('hidden');
-					else
-						item.setAttribute('hidden', true);
-					this.showHideRemoveSubTreeMenuItem(item, [b.mContextTab]);
-				}
+				else
+					this.initTabContextMenu(aEvent);
 				return;
 
 			case 'SubBrowserAdded':
@@ -1612,6 +1610,47 @@ catch(e) {
 		if (this.getTreePref('show.openSelectionLinks') && this.getSelectionLinks().length) {
 			item.removeAttribute('hidden');
 			sep.removeAttribute('hidden');
+		}
+		else {
+			item.setAttribute('hidden', true);
+			sep.setAttribute('hidden', true);
+		}
+	},
+ 
+	initTabContextMenu : function(aEvent)
+	{
+		var b = this.getTabBrowserFromChildren(aEvent.currentTarget);
+		var item = this.evaluateXPath(
+			'descendant::xul:menuitem[starts-with(@id, "'+this.kMENUITEM_REMOVESUBTREE_CONTEXT+'")]',
+			aEvent.currentTarget,
+			XPathResult.FIRST_ORDERED_NODE_TYPE
+		).singleNodeValue;
+		if (this.getTreePref('show.context-item-removeTabSubTree'))
+			item.removeAttribute('hidden');
+		else
+			item.setAttribute('hidden', true);
+		this.showHideRemoveSubTreeMenuItem(item, [b.mContextTab]);
+
+		item = this.evaluateXPath(
+			'descendant::xul:menuitem[starts-with(@id, "'+this.kMENUITEM_AUTOHIDE_CONTEXT+'")]',
+			aEvent.currentTarget,
+			XPathResult.FIRST_ORDERED_NODE_TYPE
+		).singleNodeValue;
+		var sep = this.evaluateXPath(
+			'descendant::xul:menuseparator[starts-with(@id, "'+this.kMENUITEM_AUTOHIDE_SEPARATOR_CONTEXT+'")]',
+			aEvent.currentTarget,
+			XPathResult.FIRST_ORDERED_NODE_TYPE
+		).singleNodeValue;
+		var pos = this.getTreePref('tabbar.position');
+		if (this.getTreePref('show.context-item-toggleAutoHide') &&
+			(pos == 'left' || pos == 'right')) {
+			item.removeAttribute('hidden');
+			sep.removeAttribute('hidden');
+
+			if (this.getTreePref('tabbar.autoHide.enabled'))
+				item.setAttribute('checked', true);
+			else
+				item.removeAttribute('checked');
 		}
 		else {
 			item.setAttribute('hidden', true);
@@ -2760,8 +2799,7 @@ catch(e) {
 /* auto hide */ 
 	autoHideEnabled : false,
 	tabbarShown : true,
-	areaPadding : 25,
-
+	 
 	get tabbarWidth()
 	{
 		if (this.tabbarShown) {
@@ -2778,7 +2816,7 @@ catch(e) {
 		return this._tabbarWidth;
 	},
 	_tabbarWidth : 0,
-
+ 
 	get tabbarHeight()
 	{
 		if (this.tabbarShown) {
@@ -2793,7 +2831,18 @@ catch(e) {
 		return this._tabbarHeight;
 	},
 	_tabbarHeight : 0,
-	 
+ 
+	toggleAutoHide : function()
+	{
+		this.setTreePref('tabbar.autoHide.enabled',
+			!this.getTreePref('tabbar.autoHide.enabled'));
+	},
+ 
+	get areaPadding()
+	{
+		return this.getTreePref('tabbar.autoHide.area');
+	},
+ 
 	startAutoHide : function(aTabBrowser) 
 	{
 		if (this.autoHideEnabled) return;
@@ -2833,17 +2882,18 @@ catch(e) {
 
 		this.cancelShowHideTabbar();
 
-		var pos = this.getTreePref('tabbar.position');
+		var pos    = this.getTreePref('tabbar.position');
+		var expand = this.getTreePref('tabbar.autoHide.expandArea');
 		var b = this.browser;
 		if (!this.tabbarShown &&
 			(
 				pos == 'left' ?
-					(aEvent.screenX <= b.boxObject.screenX + this.tabbarWidth + this.areaPadding) :
+					(aEvent.screenX <= b.boxObject.screenX + (expand ? this.tabbarWidth : 0 ) + this.areaPadding) :
 				pos == 'right' ?
-					(aEvent.screenX >= b.boxObject.screenX + b.boxObject.width - this.tabbarWidth - this.areaPadding) :
+					(aEvent.screenX >= b.boxObject.screenX + b.boxObject.width - (expand ? this.tabbarWidth : 0 ) - this.areaPadding) :
 				pos == 'bottom' ?
-					(aEvent.screenY >= b.boxObject.screenY + b.boxObject.height - this.tabbarHeight - this.areaPadding) :
-					(aEvent.screenY <= b.boxObject.screenY + this.tabbarHeight + this.areaPadding)
+					(aEvent.screenY >= b.boxObject.screenY + b.boxObject.height - (expand ? this.tabbarHeight : 0 ) - this.areaPadding) :
+					(aEvent.screenY <= b.boxObject.screenY + (expand ? this.tabbarHeight : 0 ) + this.areaPadding)
 				))
 				this.showHideTabbarTimer = window.setTimeout(
 					'TreeStyleTabService.showHideTabbarInternal();',
@@ -3025,6 +3075,11 @@ catch(e) {
 		return true;
 	},
  
+	setTreePref : function(aPrefstring, aNewValue) 
+	{
+		return this.setPref('extensions.treestyletab.'+aPrefstring, aNewValue);
+	},
+ 
 	clearPref : function(aPrefstring) 
 	{
 		try {
@@ -3142,7 +3197,7 @@ TreeStyleTabBrowserObserver.prototype = {
 							this.mTabBrowser.removeAttribute(sv.kALLOW_COLLAPSE);
 						break;
 
-					case 'extensions.treestyletab.tabbar.autoHide':
+					case 'extensions.treestyletab.tabbar.autoHide.enabled':
 						var pos = sv.getTreePref('tabbar.position');
 						if (value && (pos == 'left' || pos == 'right'))
 							sv.startAutoHide(this.mTabBrowser);

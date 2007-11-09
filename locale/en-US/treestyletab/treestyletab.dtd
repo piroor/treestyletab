@@ -82,3 +82,5 @@
 <!ENTITY selection.removeTabSubTree.accesskey "s">
 <!ENTITY context.removeTabSubTree.label     "Close this Sub Tree">
 <!ENTITY context.removeTabSubTree.accesskey "s">
+<!ENTITY context.toggleAutoHide.label     "Auto hide tab bar">
+<!ENTITY context.toggleAutoHide.accesskey "h">
