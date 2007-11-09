@@ -2082,6 +2082,7 @@ catch(e) {
 			splitter = document.createElement('splitter');
 			splitter.setAttribute('class', this.kSPLITTER);
 			splitter.setAttribute('onmouseup', 'TreeStyleTabService.onTabbarResized(event);');
+			splitter.setAttribute('state', 'open');
 			splitter.appendChild(document.createElement('grippy'));
 			var ref = aTabBrowser.mPanelContainer;
 			ref.parentNode.insertBefore(splitter, ref);
@@ -2105,7 +2106,7 @@ catch(e) {
 			aTabBrowser.mTabContainer.setAttribute('align', 'stretch'); // for Mac OS X
 			scrollInnerBox.removeAttribute('flex');
 
-			aTabBrowser.mPanelContainer.removeAttribute('width');
+			aTabBrowser.mStrip.removeAttribute('width');
 			aTabBrowser.mStrip.setAttribute('width', this.getTreePref('tabbar.width'));
 
 			aTabBrowser.setAttribute(this.kMODE, 'vertical');
@@ -2119,12 +2120,14 @@ catch(e) {
 					aTabBrowser.removeAttribute(this.kUI_INVERTED);
 					this.levelMarginProp = 'margin-left';
 				}
-				window.setTimeout(function() {
+				window.setTimeout(function(aWidth) {
+					aTabBrowser.mStrip.setAttribute('width', aWidth);
 					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
 					aTabBrowser.mStrip.setAttribute('ordinal', 30);
 					splitter.setAttribute('ordinal', 20);
 					aTabBrowser.mPanelContainer.setAttribute('ordinal', 10);
-				}, 0);
+					splitter.setAttribute('collapse', 'after');
+				}, 0, this.getTreePref('tabbar.width'));
 			}
 			else {
 				aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'left');
@@ -2135,6 +2138,7 @@ catch(e) {
 					aTabBrowser.mStrip.setAttribute('ordinal', 10);
 					splitter.setAttribute('ordinal', 20);
 					aTabBrowser.mPanelContainer.setAttribute('ordinal', 30);
+					splitter.setAttribute('collapse', 'before');
 				}, 0);
 			}
 		}
