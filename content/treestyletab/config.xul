@@ -100,6 +100,8 @@
 			<checkbox id="extensions.treestyletab.allowSubtreeCollapseExpand-check"
 				preference="extensions.treestyletab.allowSubtreeCollapseExpand"
 				label="&config.allowSubtreeCollapseExpand;"/>
+		</hbox>
+		<hbox align="center">
 			<checkbox id="extensions.treestyletab.enableSubtreeIndent-check"
 				preference="extensions.treestyletab.enableSubtreeIndent"
 				label="&config.enableSubtreeIndent;"/>
