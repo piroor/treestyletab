@@ -53,8 +53,7 @@ TreeStyleTabService.overrideExtensions = function() {
 						var appcontent = document.getElementById('appcontent');
 						if (appcontent.__treestyletab__resized) {
 							appcontent.__treestyletab__resized = false;
-							appcontent.style.marginLeft  = 0;
-							appcontent.style.marginRight = 0;
+							appcontent.style.margin = 0;
 						}
 				]]></>
 			)
@@ -67,8 +66,7 @@ TreeStyleTabService.overrideExtensions = function() {
 						var appcontent = document.getElementById('appcontent');
 						if (appcontent.__treestyletab__resized) {
 							appcontent.__treestyletab__resized = false;
-							appcontent.style.marginLeft  = 0;
-							appcontent.style.marginRight = 0;
+							appcontent.style.margin = 0;
 						}
 						window.setTimeout('TreeStyleTabService.checkTabsIndentOverflow(gBrowser);', 0);
 				]]></>
@@ -81,7 +79,7 @@ TreeStyleTabService.overrideExtensions = function() {
 					{
 						if (arguments.length && arguments[0]) {
 							var treeStyleTabSplitter = document.getAnonymousElementByAttribute(gBrowser, 'class', TreeStyleTabService.kSPLITTER);
-							this.__treestyletab__tabBarWidth = gBrowser.mStrip.boxObject.width +
+							TreeStyleTabService.tabbarWidth = gBrowser.mStrip.boxObject.width +
 								(treeStyleTabSplitter ? treeStyleTabSplitter.boxObject.width : 0 );
 						}
 				]]></>
@@ -97,24 +95,56 @@ TreeStyleTabService.overrideExtensions = function() {
 							var appcontent = document.getElementById('appcontent');
 							if (treeStyleTabPos == 'left' &&
 								!appcontent.__treestyletab__resized) {
-								appcontent.style.marginRight = '-'+autoHIDE.__treestyletab__tabBarWidth+'px';
+								appcontent.style.marginRight = '-'+TreeStyleTabService.tabbarWidth+'px';
 								appcontent.__treestyletab__resized = true;
 							}
-/* doesn't work this hack for rightside tab bar
 							else if (treeStyleTabPos == 'right' &&
 								!appcontent.__treestyletab__resized) {
-								appcontent.style.marginLeft = '-'+autoHIDE.__treestyletab__tabBarWidth+'px';
+								appcontent.style.marginLeft = '-'+TreeStyleTabService.tabbarWidth+'px';
 								appcontent.__treestyletab__resized = true;
 							}
-*/
 							window.setTimeout('autoHIDE.MoveC(true);', 100);
 							return;
 						}
 				]]></>
 			).replace(
 				'.move(0, - this.delta)',
-				'.move((treeStyleTabPos == "left" ? -this.__treestyletab__tabBarWidth : 0 ), -this.delta)'
+				<><![CDATA[.move(
+					(
+						treeStyleTabPos == 'left' ? -TreeStyleTabService.tabbarWidth :
+						treeStyleTabPos == 'right' ? TreeStyleTabService.tabbarWidth :
+						0
+					),
+					-this.delta
+				)]]></>
 			)
 		);
+		var autoHideEventListener = {
+				handleEvent : function(aEvent)
+				{
+					switch (aEvent.type)
+					{
+						case 'fullscreen':
+							var autoHide = TreeStyleTabService.getTreePref('tabbar.autoHide.enabled');
+							var pos      = TreeStyleTabService.getTreePref('tabbar.position');
+							if (window.fullScreen) { // restore
+								if (autoHide && (pos == 'left' || pos == 'right'))
+									TreeStyleTabService.startAutoHide();
+							}
+							else { // turn to fullscreen
+								TreeStyleTabService.endAutoHide();
+							}
+							break;
+
+						case 'unload':
+							var t = aEvent.currentTarget;
+							t.removeEventListener('unload', this, false);
+							t.removeEventListener('fullscreen', this, false);
+							break;
+					}
+				}
+			};
+		window.addEventListener('fullscreen', autoHideEventListener, false);
+		window.addEventListener('unload', autoHideEventListener, false);
 	}
 };
