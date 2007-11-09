@@ -3158,6 +3158,7 @@ TreeStyleTabBrowserObserver.prototype = {
 				{
 					case 'extensions.treestyletab.tabbar.position':
 						if (value != 'left' && value != 'right') {
+							sv.endAutoHide(this.mTabBrowser);
 							tabs.forEach(function(aTab) {
 								aTab.removeAttribute('align');
 								aTab.setAttribute('maxwidth', 250);
