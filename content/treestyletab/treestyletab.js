@@ -55,6 +55,8 @@ var TreeStyleTabService = {
 	sizeProp         : 'height',
 	invertedSizeProp : 'width',
 
+	tabbarResizing : false,
+
 	NSResolver : {
 		lookupNamespaceURI : function(aPrefix)
 		{
@@ -1195,18 +1197,50 @@ catch(e) {
 				return;
 
 			case 'mousedown':
-				if (aEvent.currentTarget.localName == 'tabs')
-					this.onTabMouseDown(aEvent);
-				else
+				if (aEvent.originalTarget.getAttribute('class') == this.kSPLITTER)
+					this.tabbarResizing = true;
+				if (aEvent.currentTarget == this.container) {
 					this.cancelShowHideTabbar();
+				}
+				else {
+					this.onTabMouseDown(aEvent);
+				}
 				return;
 
 			case 'mouseup':
+				if (aEvent.originalTarget.getAttribute('class') == this.kSPLITTER)
+					this.tabbarResizing = false;
 				this.cancelShowHideTabbar();
 				return;
 
 			case 'mousemove':
-				this.showHideTabbar(aEvent);
+				if (!this.tabbarResizing) {
+					this.showHideTabbar(aEvent);
+					return;
+				}
+			case 'resize':
+				if (this.tabbarShown) {
+					switch (this.getTreePref('tabbar.position'))
+					{
+						case 'left':
+							this.container.style.marginRight = '-'+this.tabbarWidth+'px';
+							break;
+						case 'right':
+							this.container.style.marginLeft = '-'+this.tabbarWidth+'px';
+							break;
+						case 'bottom':
+							this.container.style.marginTop = '-'+this.tabbarHeight+'px';
+							break;
+						default:
+							this.container.style.marginBottom = '-'+this.tabbarHeight+'px';
+							break;
+					}
+					this.redrawContentArea();
+				}
+				return;
+
+			case 'scroll':
+				this.redrawContentArea();
 				return;
 
 			case 'select':
@@ -1214,7 +1248,10 @@ catch(e) {
 				return;
 
 			case 'load':
-				this.init();
+				if (aEvent.currentTarget == this.container)
+					this.redrawContentArea();
+				else
+					this.init();
 				return;
 
 			case 'unload':
@@ -1525,7 +1562,7 @@ catch(e) {
 			this.collapseExpandTreesIntelligentlyFor(tab);
 		}
 
-		if (this.getTreePref('tabbar.autoHide') && this.tabbarShown)
+		if (this.autoHideEnabled && this.tabbarShown)
 			this.redrawContentArea();
 	},
  
@@ -2723,8 +2760,39 @@ catch(e) {
 /* auto hide */ 
 	autoHideEnabled : false,
 	tabbarShown : true,
-	tabbarWidth : 0,
-	tabbarHeight : 0,
+	areaPadding : 25,
+
+	get tabbarWidth()
+	{
+		if (this.tabbarShown) {
+			var b = this.browser;
+			var splitter = document.getAnonymousElementByAttribute(b, 'class', this.kSPLITTER);
+			this._tabbarWidth = b.mStrip.boxObject.width +
+				(splitter ? splitter.boxObject.width : 0 );
+		}
+		return this._tabbarWidth;
+	},
+	set tabbarWidth(aNewWidth)
+	{
+		this._tabbarWidth = aNewWidth;
+		return this._tabbarWidth;
+	},
+	_tabbarWidth : 0,
+
+	get tabbarHeight()
+	{
+		if (this.tabbarShown) {
+			var b = this.browser;
+			this._tabbarHeight = b.mStrip.boxObject.height;
+		}
+		return this._tabbarHeight;
+	},
+	set tabbarHeight(aNewHeight)
+	{
+		this._tabbarHeight = aNewHeight;
+		return this._tabbarHeight;
+	},
+	_tabbarHeight : 0,
 	 
 	startAutoHide : function(aTabBrowser) 
 	{
@@ -2734,6 +2802,10 @@ catch(e) {
 		this.container.addEventListener('mousedown', this, true);
 		this.container.addEventListener('mouseup', this, true);
 		this.container.addEventListener('mousemove', this, true);
+		this.container.addEventListener('scroll', this, true);
+		this.container.addEventListener('resize', this, true);
+		this.container.addEventListener('load', this, true);
+
 		this.tabbarShown = true;
 		this.showHideTabbarInternal();
 	},
@@ -2746,6 +2818,9 @@ catch(e) {
 		this.container.removeEventListener('mousedown', this, true);
 		this.container.removeEventListener('mouseup', this, true);
 		this.container.removeEventListener('mousemove', this, true);
+		this.container.removeEventListener('scroll', this, true);
+		this.container.removeEventListener('resize', this, true);
+		this.container.removeEventListener('load', this, true);
 
 		this.container.style.margin = 0;
 		this.browser.removeAttribute(this.kAUTOHIDE);
@@ -2763,12 +2838,12 @@ catch(e) {
 		if (!this.tabbarShown &&
 			(
 				pos == 'left' ?
-					(aEvent.screenX <= b.boxObject.screenX + this.tabbarWidth) :
+					(aEvent.screenX <= b.boxObject.screenX + this.tabbarWidth + this.areaPadding) :
 				pos == 'right' ?
-					(aEvent.screenX >= b.boxObject.screenX + b.boxObject.width - this.tabbarWidth) :
+					(aEvent.screenX >= b.boxObject.screenX + b.boxObject.width - this.tabbarWidth - this.areaPadding) :
 				pos == 'bottom' ?
-					(aEvent.screenY >= b.boxObject.screenY + b.boxObject.height - this.tabbarHeight) :
-					(aEvent.screenY <= b.boxObject.screenY + this.tabbarHeight)
+					(aEvent.screenY >= b.boxObject.screenY + b.boxObject.height - this.tabbarHeight - this.areaPadding) :
+					(aEvent.screenY <= b.boxObject.screenY + this.tabbarHeight + this.areaPadding)
 				))
 				this.showHideTabbarTimer = window.setTimeout(
 					'TreeStyleTabService.showHideTabbarInternal();',
@@ -2778,12 +2853,12 @@ catch(e) {
 		if (this.tabbarShown &&
 			(
 				pos == 'left' ?
-					(aEvent.screenX > b.mCurrentBrowser.boxObject.screenX + 25) :
+					(aEvent.screenX > b.mCurrentBrowser.boxObject.screenX + this.areaPadding) :
 				pos == 'right' ?
-					(aEvent.screenX < b.mCurrentBrowser.boxObject.screenX + b.mCurrentBrowser.boxObject.width - 25) :
+					(aEvent.screenX < b.mCurrentBrowser.boxObject.screenX + b.mCurrentBrowser.boxObject.width - this.areaPadding) :
 				pos == 'bottom' ?
-					(aEvent.screenY < b.mCurrentBrowser.boxObject.screenY + b.mCurrentBrowser.boxObject.height - 25) :
-					(aEvent.screenY > b.mCurrentBrowser.boxObject.screenY + 25)
+					(aEvent.screenY < b.mCurrentBrowser.boxObject.screenY + b.mCurrentBrowser.boxObject.height - this.areaPadding) :
+					(aEvent.screenY > b.mCurrentBrowser.boxObject.screenY + this.areaPadding)
 				))
 				this.showHideTabbarTimer = window.setTimeout(
 					'TreeStyleTabService.showHideTabbarInternal();',
@@ -2796,17 +2871,15 @@ catch(e) {
 	{
 		var b = this.browser;
 		if (this.tabbarShown) {
-			this.tabbarShown = false;
 			var splitter = document.getAnonymousElementByAttribute(b, 'class', this.kSPLITTER);
 			this.tabbarHeight = b.mStrip.boxObject.height;
 			this.tabbarWidth = b.mStrip.boxObject.width +
 				(splitter ? splitter.boxObject.width : 0 );
 			this.container.style.margin = 0;
 			b.setAttribute(this.kAUTOHIDE, true);
-			this.redrawContentArea();
+			this.tabbarShown = false;
 		}
 		else {
-			this.tabbarShown = true;
 			switch (this.getTreePref('tabbar.position'))
 			{
 				case 'left':
@@ -2823,8 +2896,9 @@ catch(e) {
 					break;
 			}
 			b.removeAttribute(this.kAUTOHIDE);
-			this.redrawContentArea();
+			this.tabbarShown = true;
 		}
+		this.redrawContentArea();
 		window.setTimeout('TreeStyleTabService.checkTabsIndentOverflow(TreeStyleTabService.browser);', 0);
 	},
  	
