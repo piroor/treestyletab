@@ -31,6 +31,10 @@
 		<preference id="extensions.treestyletab.tabbar.autoHide.enabled"
 			name="extensions.treestyletab.tabbar.autoHide.enabled"
 			type="bool"/>
+		<preference id="extensions.treestyletab.tabbar.hideAlltabsButton"
+			name="extensions.treestyletab.tabbar.hideAlltabsButton"
+			type="bool"
+			inverted="true"/>
 		<preference id="extensions.treestyletab.tabbar.invertScrollbar"
 			name="extensions.treestyletab.tabbar.invertScrollbar"
 			type="bool"/>
@@ -102,6 +106,9 @@
 			<checkbox id="extensions.treestyletab.tabbar.autoHide.enabled-check"
 				preference="extensions.treestyletab.tabbar.autoHide.enabled"
 				label="&config.tabbar.autoHide.enabled;"/>
+			<checkbox id="extensions.treestyletab.tabbar.hideAlltabsButton-check"
+				preference="extensions.treestyletab.tabbar.hideAlltabsButton"
+				label="&config.tabbar.hideAlltabsButton;"/>
 		</hbox>
 		</vbox>
 	</groupbox>

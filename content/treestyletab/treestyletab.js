@@ -12,6 +12,7 @@ var TreeStyleTabService = {
 	kUI_INVERTED        : 'treestyletab-appearance-inverted',
 	kSCROLLBAR_INVERTED : 'treestyletab-scrollbar-inverted',
 	kALLOW_COLLAPSE     : 'treestyletab-allow-subtree-collapse',
+	kHIDE_ALLTABS       : 'treestyletab-hide-alltabs-button',
 	kSTYLE              : 'treestyletab-style',
 	kFIRSTTAB_BORDER    : 'treestyletab-firsttab-border',
 	kAUTOHIDE           : 'treestyletab-tabbar-autohide',
@@ -783,6 +784,7 @@ catch(e) {
 		aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.style');
 		aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.showBorderForFirstTab');
 		aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.invertScrollbar');
+		aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.hideAlltabsButton');
 		aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.allowSubtreeCollapseExpand');
 		window.setTimeout(function() {
 			aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.autoHide.enabled');
@@ -2093,7 +2095,9 @@ catch(e) {
 			this.invertedSizeProp = 'width';
 
 			aTabBrowser.mTabBox.orient = 'horizontal';
-			aTabBrowser.mTabContainer.orient = aTabBrowser.mTabContainer.mTabstrip.orient = 'vertical';
+			aTabBrowser.mTabContainer.orient =
+				aTabBrowser.mTabContainer.mTabstrip.orient =
+					aTabBrowser.mTabContainer.mTabstrip.parentNode.orient = 'vertical';
 			aTabBrowser.mTabContainer.setAttribute('align', 'stretch'); // for Mac OS X
 			scrollInnerBox.removeAttribute('flex');
 
@@ -2136,7 +2140,9 @@ catch(e) {
 			this.invertedSizeProp = 'height';
 
 			aTabBrowser.mTabBox.orient = 'vertical';
-			aTabBrowser.mTabContainer.orient = aTabBrowser.mTabContainer.mTabstrip.orient = 'horizontal';
+			aTabBrowser.mTabContainer.orient =
+				aTabBrowser.mTabContainer.mTabstrip.orient =
+					aTabBrowser.mTabContainer.mTabstrip.parentNode.orient = 'horizontal';
 			aTabBrowser.mTabContainer.removeAttribute('align'); // for Mac OS X
 			scrollInnerBox.setAttribute('flex', 1);
 
@@ -3213,6 +3219,14 @@ TreeStyleTabBrowserObserver.prototype = {
 							this.mTabBrowser.setAttribute(sv.kSCROLLBAR_INVERTED, true);
 						else
 							this.mTabBrowser.removeAttribute(sv.kSCROLLBAR_INVERTED);
+						break;
+
+					case 'extensions.treestyletab.tabbar.hideAlltabsButton':
+						var pos = sv.getTreePref('tabbar.position');
+						if (value && (pos == 'left' || pos == 'right'))
+							this.mTabBrowser.setAttribute(sv.kHIDE_ALLTABS, true);
+						else
+							this.mTabBrowser.removeAttribute(sv.kHIDE_ALLTABS);
 						break;
 
 					case 'extensions.treestyletab.allowSubtreeCollapseExpand':

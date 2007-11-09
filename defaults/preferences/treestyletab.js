@@ -3,6 +3,7 @@ pref("extensions.treestyletab.tabbar.position",        "left");
 pref("extensions.treestyletab.tabbar.multirow",        false);
 pref("extensions.treestyletab.tabbar.invertScrollbar", true);
 pref("extensions.treestyletab.tabbar.invertUI",        true);
+pref("extensions.treestyletab.tabbar.hideAlltabsButton", true);
 pref("extensions.treestyletab.tabbar.scroll.smooth",   true);
 pref("extensions.treestyletab.tabbar.scroll.timeout",  250);
 pref("extensions.treestyletab.tabbar.style",           "mixed");

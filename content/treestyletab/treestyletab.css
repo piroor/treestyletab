@@ -25,8 +25,8 @@ tabbrowser[treestyletab-tabbar-autohide="true"] .tabbrowser-strip+splitter,
 
 tabbrowser:not([treestyletab-mode="horizontal"]) .tabbrowser-arrowscrollbox > .scrollbutton-up,
 tabbrowser:not([treestyletab-mode="horizontal"]) .tabbrowser-arrowscrollbox > .scrollbutton-down-stack,
-tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-stack,
-tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox + stack, /* "all tabs" button in Firefox 3 */
+tabbrowser[treestyletab-hide-alltabs-button="true"] .tabs-alltabs-stack,
+tabbrowser[treestyletab-hide-alltabs-button="true"] .tabbrowser-arrowscrollbox + stack, /* "all tabs" button in Firefox 3 */
 tabbrowser[treestyletab-mode="vertical"] .tabs-closebutton-box,
 tabbrowser:not([treestyletab-mode="horizontal"]) .tab-drop-indicator-bar {
 	display: none !important;

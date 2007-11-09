@@ -339,3 +339,12 @@ tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab[treestyletab-d
 
 
 
+/* vertical tab bar */
+
+tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-box,
+tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-box-animate,
+tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-button {
+	width: 100% !important;
+	height: 100% !important;
+	background-image: none !important;
+}
