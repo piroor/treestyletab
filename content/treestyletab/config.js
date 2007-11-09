@@ -31,8 +31,16 @@ function onChangeGroupBookmarkRadio()
 function onChangeTabbarPosition(aOnChange)
 {
 	var pos = document.getElementById('extensions.treestyletab.tabbar.position-radiogroup').value;
-	document.getElementById('extensions.treestyletab.tabbar.invertScrollbar-check').disabled = pos != 'left';
+	var invertScrollbar = document.getElementById('extensions.treestyletab.tabbar.invertScrollbar-check');
+	invertScrollbar.disabled = pos != 'left';
 	document.getElementById('extensions.treestyletab.tabbar.invertUI-check').disabled = pos != 'right';
+
+	if (isGecko18()) {
+		invertScrollbar.removeAttribute('collapsed');
+	}
+	else {
+		invertScrollbar.setAttribute('collapsed', true);
+	}
 
 	var indentPref    = document.getElementById('extensions.treestyletab.enableSubtreeIndent');
 	var collapsePref  = document.getElementById('extensions.treestyletab.allowSubtreeCollapseExpand');
@@ -45,13 +53,20 @@ function onChangeTabbarPosition(aOnChange)
 			collapsePref.value = collapseCheck.checked = (pos == 'left' || pos == 'right');
 	}
 	if (pos == 'left' || pos == 'right') {
-		indentCheck.setAttribute('style', 'visibility:collapse');
-		autoHideCheck.removeAttribute('style');
+		indentCheck.setAttribute('collapsed', true);
+		autoHideCheck.removeAttribute('collapsed');
 	}
 	else {
-		indentCheck.removeAttribute('style');
-		autoHideCheck.setAttribute('style', 'visibility:collapse');
+		indentCheck.removeAttribute('collapsed');
+		autoHideCheck.setAttribute('collapsed', true);
 	}
 
 	gTabbarPlacePositionInitialized = true;
+}
+
+function isGecko18()
+{
+	const XULAppInfo = Components.classes['@mozilla.org/xre/app-info;1'].getService(Components.interfaces.nsIXULAppInfo);
+	var version = XULAppInfo.platformVersion.split('.');
+	return parseInt(version[0]) <= 1 && parseInt(version[1]) <= 8;
 }
