@@ -1515,7 +1515,11 @@ catch(e) {
 		if (parent) {
 			parent = this.getTabById(parent, b);
 			if (parent) {
-				this.attachTabTo(tab, parent, { dontExpand : true, insertBefore : (before ? this.getTabById(before, b) : null ), dontUpdateIndent : true });
+				this.attachTabTo(tab, parent, {
+					dontExpand : true,
+					insertBefore : (before ? this.getTabById(before, b) : null ),
+					dontUpdateIndent : true
+				});
 				this.updateTabsIndent([tab]);
 				this.checkTabsIndentOverflow(b);
 			}
@@ -2095,20 +2099,36 @@ catch(e) {
 		var scrollInnerBox = document.getAnonymousNodes(aTabBrowser.mTabContainer.mTabstrip._scrollbox)[0];
 		var allTabsButton = document.getAnonymousElementByAttribute(aTabBrowser.mTabContainer, 'class', 'tabs-alltabs-button');
 
+		// Tab Mix Plus
+		var scrollFrame = document.getAnonymousElementByAttribute(aTabBrowser.mTabContainer, 'id', 'scroll-tabs-frame');
+		var newTabBox = document.getAnonymousElementByAttribute(aTabBrowser.mTabContainer, 'id', 'tabs-newbutton-box');
+		var tabBarMode = this.getPref('extensions.tabmix.tabBarMode');
+
 		if (pos & this.kTABBAR_VERTICAL) {
 			this.positionProp     = 'screenY';
 			this.sizeProp         = 'height';
 			this.invertedSizeProp = 'width';
 
 			aTabBrowser.mTabBox.orient = 'horizontal';
-			aTabBrowser.mTabContainer.orient =
+			aTabBrowser.mStrip.orient =
+				aTabBrowser.mTabContainer.orient =
 				aTabBrowser.mTabContainer.mTabstrip.orient =
-					aTabBrowser.mTabContainer.mTabstrip.parentNode.orient = 'vertical';
+				aTabBrowser.mTabContainer.mTabstrip.parentNode.orient = 'vertical';
 			if (allTabsButton.parentNode.localName == 'hbox') // Firefox 2
 					allTabsButton.parentNode.orient = 'vertical';
 			allTabsButton.firstChild.setAttribute('position', 'before_start');
 			aTabBrowser.mTabContainer.setAttribute('align', 'stretch'); // for Mac OS X
 			scrollInnerBox.removeAttribute('flex');
+
+			if (scrollFrame) { // Tab Mix Plus
+				scrollFrame.parentNode.orient =
+					scrollFrame.orient = 'vertical';
+				newTabBox.orient = 'horizontal';
+				scrollFrame.setAttribute('flex', 0);
+				scrollFrame.setAttribute('align', 'stretch');
+				if (tabBarMode == 2)
+					this.setPref('extensions.tabmix.tabBarMode', 1);
+			}
 
 			aTabBrowser.mStrip.removeAttribute('width');
 			aTabBrowser.mStrip.setAttribute('width', this.getTreePref('tabbar.width'));
@@ -2155,14 +2175,23 @@ catch(e) {
 			this.invertedSizeProp = 'height';
 
 			aTabBrowser.mTabBox.orient = 'vertical';
-			aTabBrowser.mTabContainer.orient =
+			aTabBrowser.mStrip.orient =
+				aTabBrowser.mTabContainer.orient =
 				aTabBrowser.mTabContainer.mTabstrip.orient =
-					aTabBrowser.mTabContainer.mTabstrip.parentNode.orient = 'horizontal';
+				aTabBrowser.mTabContainer.mTabstrip.parentNode.orient = 'horizontal';
 			if (allTabsButton.parentNode.localName == 'hbox') // Firefox 2
 					allTabsButton.parentNode.orient = 'horizontal';
 			allTabsButton.firstChild.setAttribute('position', 'after_end');
 			aTabBrowser.mTabContainer.removeAttribute('align'); // for Mac OS X
 			scrollInnerBox.setAttribute('flex', 1);
+
+			if (scrollFrame) { // Tab Mix Plus
+				scrollFrame.parentNode.orient =
+					scrollFrame.orient = 'horizontal';
+				newTabBox.orient = 'vertical';
+				scrollFrame.setAttribute('flex', 1);
+				scrollFrame.removeAttribute('align');
+			}
 
 			aTabBrowser.mStrip.removeAttribute('width');
 			aTabBrowser.mPanelContainer.removeAttribute('width');
@@ -2442,7 +2471,9 @@ catch(e) {
 		else if (aEvent.keyCode == KeyEvent.DOM_VK_LEFT && parentTab) {
 			var grandParent = this.getParentTab(parentTab);
 			if (grandParent) {
-				this.attachTabTo(b.mCurrentTab, grandParent, { insertBefore : this.getNextSiblingTab(parentTab) });
+				this.attachTabTo(b.mCurrentTab, grandParent, {
+					insertBefore : this.getNextSiblingTab(parentTab)
+				});
 				b.mCurrentTab.focus();
 				return true;
 			}

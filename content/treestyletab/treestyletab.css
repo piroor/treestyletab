@@ -28,7 +28,11 @@ tabbrowser:not([treestyletab-mode="horizontal"]) .tabbrowser-arrowscrollbox > .s
 tabbrowser[treestyletab-hide-alltabs-button="true"] .tabs-alltabs-stack,
 tabbrowser[treestyletab-hide-alltabs-button="true"] .tabbrowser-arrowscrollbox + stack, /* "all tabs" button in Firefox 3 */
 tabbrowser[treestyletab-mode="vertical"] .tabs-closebutton-box,
-tabbrowser:not([treestyletab-mode="horizontal"]) .tab-drop-indicator-bar {
+tabbrowser:not([treestyletab-mode="horizontal"]) .tab-drop-indicator-bar,
+tabbrowser:not([treestyletab-mode="horizontal"]) #vide-bar, /* Tab Mix Plus */
+tabbrowser:not([treestyletab-mode="horizontal"]) #tabs-scroll-up-down-box, /* Tab Mix Plus */
+tabbrowser:not([treestyletab-mode="horizontal"]) #alltabs-place-holder, /* Tab Mix Plus */
+tabbrowser:not([treestyletab-mode="horizontal"]) .tabs-scroll /* Tab Mix Plus */ {
 	display: none !important;
 }
 
