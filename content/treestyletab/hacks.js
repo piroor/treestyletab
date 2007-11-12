@@ -154,19 +154,83 @@ TreeStyleTabService.overrideExtensions = function() {
 		eval('window.TMupdateSettings = '+
 			window.TMupdateSettings.toSource().replace(
 				/(\{aTab.removeAttribute\("tabxleft"\);\})(\})/,
-				'$1;TreeStyleTabService.initTab(aTab);$2'
+				<><![CDATA[$1
+					TreeStyleTabService.initTabAttributes(aTab);
+					TreeStyleTabService.initTabContentsOrder(aTab);
+				$2]]></>
 			)
 		);
-	}
-	if ('tabxTabAdded' in window) {
+
 		gBrowser.mTabContainer.removeEventListener('DOMNodeInserted', tabxTabAdded, true);
 		eval('window.tabxTabAdded = '+
 			window.tabxTabAdded.toSource().replace(
 				/(\})(\)?)$/,
-				'TreeStyleTabService.initTab(aTab);$1$2'
+				<><![CDATA[
+					TreeStyleTabService.initTabAttributes(aTab);
+					TreeStyleTabService.initTabContentsOrder(aTab);
+				$1$2]]></>
 			)
 		);
 		gBrowser.mTabContainer.addEventListener('DOMNodeInserted', tabxTabAdded, true);
+
+		eval('window.TMP_TabDragGesture = '+
+			window.TMP_TabDragGesture.toSource().replace(
+				'{',
+				<><![CDATA[
+				{
+					if (gBrowser.getAttribute(TreeStyleTabService.kMODE) == 'vertical') {
+						nsDragAndDrop.startDrag(aEvent, gBrowser);
+						aEvent.stopPropagation();
+						return;
+					}
+				]]></>
+			)
+		);
+		eval('window.TMP_TabDragOver = '+
+			window.TMP_TabDragOver.toSource().replace(
+				'{',
+				<><![CDATA[
+				{
+					if (gBrowser.getAttribute(TreeStyleTabService.kMODE) == 'vertical') {
+						nsDragAndDrop.dragOver(aEvent, gBrowser);
+						aEvent.stopPropagation();
+						return;
+					}
+				]]></>
+			)
+		);
+		eval('window.TMP_TabDragDrop = '+
+			window.TMP_TabDragDrop.toSource().replace(
+				'{',
+				<><![CDATA[
+				{
+					if (gBrowser.getAttribute(TreeStyleTabService.kMODE) == 'vertical') {
+						nsDragAndDrop.drop(aEvent, gBrowser);
+						aEvent.stopPropagation();
+						return;
+					}
+				]]></>
+			)
+		);
+		eval('window.TMP_TabDragExit = '+
+			window.TMP_TabDragExit.toSource().replace(
+				'{',
+				<><![CDATA[
+				{
+					if (gBrowser.getAttribute(TreeStyleTabService.kMODE) == 'vertical') {
+						nsDragAndDrop.dragExit(aEvent, gBrowser);
+						aEvent.stopPropagation();
+						return;
+					}
+				]]></>
+			)
+		);
+
+		window.setTimeout(function() {
+			var t = gBrowser.mTabContainer.firstChild;
+			TreeStyleTabService.initTabAttributes(t, gBrowser);
+			TreeStyleTabService.initTabContentsOrder(t, gBrowser);
+		}, 0);
 	}
 
 };
