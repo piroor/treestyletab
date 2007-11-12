@@ -1389,7 +1389,11 @@ catch(e) {
 					self.moveTabSubTreeTo(aTab, b.mTabContainer.lastChild._tPos);
 				} :
 				parentTab ? function(aTab) {
-					self.attachTabTo(aTab, parentTab, { insertBefore : tab, dontUpdateIndent : true });
+					self.attachTabTo(aTab, parentTab, {
+						insertBefore : tab,
+						dontUpdateIndent : true,
+						dontExpand : true
+					});
 				} :
 				function(aTab) {
 					self.partTab(aTab, true);
