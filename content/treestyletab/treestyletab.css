@@ -45,9 +45,10 @@ tabbrowser[treestyletab-mode="vertical"] > tabbox {
 	-moz-box-orient: horizontal !important;
 }
 
-tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > scrollbox {
-	overflow-x: hidden;
-	overflow-y: auto;
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > scrollbox,
+tabbrowser[treestyletab-mode="vertical"] tabs[flowing] > * .tabs-frame /* Tab Mix Plus */ {
+	overflow-x: hidden !important;
+	overflow-y: auto !important;
 }
 
 tabbrowser[treestyletab-mode="vertical"] .tabs-stack > * + * > hbox {
@@ -60,7 +61,8 @@ tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > scrollbox 
 }
 */
 
-tabbrowser[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted="true"] .tabbrowser-arrowscrollbox > scrollbox {
+tabbrowser[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted="true"] .tabbrowser-arrowscrollbox > scrollbox,
+tabbrowser[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted="true"] .tabs-frame /* Tab Mix Plus */ {
 	direction: rtl !important;
 	/* if there is scrollbar, closeboxes of tabs cannot be clicked because
 	   they are "under the rightside scrollbar" even if it is moved to
@@ -71,7 +73,8 @@ tabbrowser[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted=
 	padding-right: 1em !important;
 }
 
-tabbrowser[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted="true"] .tabbrowser-arrowscrollbox > scrollbox > .scrollbox-innerbox {
+tabbrowser[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted="true"] .tabbrowser-arrowscrollbox > scrollbox > .scrollbox-innerbox,
+tabbrowser[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted="true"] .tabbrowser-tabs[firefox2][flowing][closebutton][hideAllTabsButton][tabBarSpace] .tabbrowser-tab /* Tab Mix Plus */ {
 	direction: ltr !important;
 }
 

@@ -807,8 +807,11 @@ catch(e) {
  
 	initTab : function(aTab, aTabBrowser) 
 	{
-		var id = 'tab-<'+Date.now()+'-'+parseInt(Math.random() * 65000)+'>';
-		this.setTabValue(aTab, this.kID, id);
+		if (!aTab.hasAttribute(this.kID)) {
+			var id = 'tab-<'+Date.now()+'-'+parseInt(Math.random() * 65000)+'>';
+			this.setTabValue(aTab, this.kID, id);
+		}
+
 		aTab.__treestyletab__linkedTabBrowser = aTabBrowser;
 
 		var pos = this.getTreePref('tabbar.position');
@@ -817,8 +820,10 @@ catch(e) {
 			aTab.removeAttribute('maxwidth');
 			aTab.removeAttribute('minwidth');
 			aTab.removeAttribute('width');
+			aTab.removeAttribute('flex');
 			aTab.maxWidth = 65000;
 			aTab.minWidth = 0;
+			aTab.setAttribute('dir', 'ltr');
 		}
 
 		this.initTabContents(aTab, aTabBrowser);
@@ -2124,8 +2129,6 @@ catch(e) {
 				scrollFrame.parentNode.orient =
 					scrollFrame.orient = 'vertical';
 				newTabBox.orient = 'horizontal';
-				scrollFrame.setAttribute('flex', 0);
-				scrollFrame.setAttribute('align', 'stretch');
 				if (tabBarMode == 2)
 					this.setPref('extensions.tabmix.tabBarMode', 1);
 			}
@@ -2189,8 +2192,6 @@ catch(e) {
 				scrollFrame.parentNode.orient =
 					scrollFrame.orient = 'horizontal';
 				newTabBox.orient = 'vertical';
-				scrollFrame.setAttribute('flex', 1);
-				scrollFrame.removeAttribute('align');
 			}
 
 			aTabBrowser.mStrip.removeAttribute('width');
@@ -2673,7 +2674,12 @@ catch(e) {
 
 		var scrollBoxObject = b.mTabContainer.mTabstrip.scrollBoxObject;
 		var w = {}, h = {};
-		scrollBoxObject.getScrolledSize(w, h);
+		try {
+			scrollBoxObject.getScrolledSize(w, h);
+		}
+		catch(e) { // Tab Mix Plus
+			return;
+		}
 
 		var targetTabBox = aTab.boxObject;
 		var baseTabBox = aTab.parentNode.firstChild.boxObject;
@@ -3232,8 +3238,10 @@ TreeStyleTabBrowserObserver.prototype = {
 								aTab.setAttribute('maxwidth', 250);
 								aTab.setAttribute('minwidth', tabContainer.mTabMinWidth);
 								aTab.setAttribute('width', '0');
+								aTab.setAttribute('flex', 100);
 								aTab.maxWidth = 250;
 								aTab.minWidth = tabContainer.mTabMinWidth;
+								aTab.removeAttribute('dir');
 							});
 						}
 					case 'extensions.treestyletab.tabbar.invertUI':

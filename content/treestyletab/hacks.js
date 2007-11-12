@@ -1,5 +1,5 @@
 TreeStyleTabService.overrideExtensions = function() {
-	if ('MultipleTabService' in window) {
+	if ('MultipleTabService' in window) { // Multiple Tab Handler
 		eval('MultipleTabService.showHideMenuItems = '+
 			MultipleTabService.showHideMenuItems.toSource().replace(
 				/var separators = /,
@@ -12,7 +12,7 @@ TreeStyleTabService.overrideExtensions = function() {
 		);
 	}
 
-	if ('autoHIDE' in window) {
+	if ('autoHIDE' in window) { // Autohide
 		eval('autoHIDE.ShowMenu = '+
 			autoHIDE.ShowMenu.toSource().replace(
 				'{',
@@ -147,4 +147,26 @@ TreeStyleTabService.overrideExtensions = function() {
 		window.addEventListener('fullscreen', autoHideEventListener, false);
 		window.addEventListener('unload', autoHideEventListener, false);
 	}
+
+
+	// Tab Mix Plus
+	if ('TMupdateSettings' in window) {
+		eval('window.TMupdateSettings = '+
+			window.TMupdateSettings.toSource().replace(
+				/(\{aTab.removeAttribute\("tabxleft"\);\})(\})/,
+				'$1;TreeStyleTabService.initTab(aTab);$2'
+			)
+		);
+	}
+	if ('tabxTabAdded' in window) {
+		gBrowser.mTabContainer.removeEventListener('DOMNodeInserted', tabxTabAdded, true);
+		eval('window.tabxTabAdded = '+
+			window.tabxTabAdded.toSource().replace(
+				/(\})(\)?)$/,
+				'TreeStyleTabService.initTab(aTab);$1$2'
+			)
+		);
+		gBrowser.mTabContainer.addEventListener('DOMNodeInserted', tabxTabAdded, true);
+	}
+
 };
