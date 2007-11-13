@@ -279,6 +279,17 @@ TreeStyleTabService.overrideExtensions = function() {
 				)
 			);
 
+			eval('window.TMP_BrowserOpenTab = '+
+				window.TMP_BrowserOpenTab.toSource().replace(
+					/(var newTab = )/,
+					'gBrowser.__treestyletab__internallyTabMoving = true; $1'
+				).replace(
+					/(content.focus\(\))/,
+					'gBrowser.__treestyletab__internallyTabMoving = false; $1'
+				)
+			);
+			window.BrowserOpenTab = window.TMP_BrowserOpenTab;
+
 		}, 0);
 	}
 
