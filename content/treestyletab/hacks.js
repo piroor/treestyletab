@@ -229,20 +229,46 @@ TreeStyleTabService.overrideExtensions = function() {
 		eval('window.TM_BrowserHome = '+
 			window.TM_BrowserHome.toSource().replace(
 				/(var bgLoad = )/,
-				'TreeStyleTabService.readyToOpenChildTab(firstTabAdded, true); $1'
+				<><![CDATA[
+					gBrowser.__treestyletab__internallyTabMoving = true;
+					TreeStyleTabService.readyToOpenChildTab(firstTabAdded, true);
+					$1
+				]]></>
 			).replace(
 				/(\})(\)?)$/,
-				'TreeStyleTabService.stopToOpenChildTab(firstTabAdded); $1$2'
+				<><![CDATA[
+					TreeStyleTabService.stopToOpenChildTab(firstTabAdded);
+					gBrowser.__treestyletab__internallyTabMoving = false;
+					$1$2
+				]]></>
+			)
+		);
+
+		eval('window.TMP_BrowserOpenTab = '+
+			window.TMP_BrowserOpenTab.toSource().replace(
+				/(var newTab = )/,
+				'gBrowser.__treestyletab__internallyTabMoving = true; $1'
+			).replace(
+				/(content.focus\(\))/,
+				'gBrowser.__treestyletab__internallyTabMoving = false; $1'
 			)
 		);
 
 		eval('window.TMP_openURL = '+
 			window.TMP_openURL.toSource().replace(
 				/(var firstTab = [^\(]+\([^\)]+\))/,
-				'$1; TreeStyleTabService.readyToOpenChildTab(firstTab, true);'
+				<><![CDATA[
+					anyBrowser.__treestyletab__internallyTabMoving = true;
+					$1;
+					TreeStyleTabService.readyToOpenChildTab(firstTab, true);
+				]]></>
 			).replace(
 				/(anyBrowser.mTabContainer.nextTab)/,
-				'TreeStyleTabService.stopToOpenChildTab(firstTab); $1'
+				<><![CDATA[
+					TreeStyleTabService.stopToOpenChildTab(firstTab);
+					anyBrowser.__treestyletab__internallyTabMoving = false;
+					$1
+				]]></>
 			)
 		);
 
@@ -300,17 +326,8 @@ TreeStyleTabService.overrideExtensions = function() {
 				)
 			);
 
-			eval('window.TMP_BrowserOpenTab = '+
-				window.TMP_BrowserOpenTab.toSource().replace(
-					/(var newTab = )/,
-					'gBrowser.__treestyletab__internallyTabMoving = true; $1'
-				).replace(
-					/(content.focus\(\))/,
-					'gBrowser.__treestyletab__internallyTabMoving = false; $1'
-				)
-			);
+			window.BrowserHome = window.TM_BrowserHome;
 			window.BrowserOpenTab = window.TMP_BrowserOpenTab;
-
 		}, 0);
 	}
 
