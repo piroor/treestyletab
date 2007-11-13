@@ -258,11 +258,32 @@ TreeStyleTabService.overrideExtensions = function() {
 
 		eval('TMP_Bookmark.openGroup = '+
 			TMP_Bookmark.openGroup.toSource().replace(
-				/(tabToSelect = aTab;)/,
-				'$1 TreeStyleTabService.readyToOpenChildTab(tabToSelect, true);'
+				/(var tabToSelect = null;)/,
+				<><![CDATA[
+					$1
+					browser.__treestyletab__internallyTabMoving = true;
+				]]></>
+			).replace(
+				'index = prevTab._tPos + 1;',
+				<><![CDATA[
+					index = TreeStyleTabService.getNextSiblingTab(TreeStyleTabService.getRootTab(prevTab));
+					if (tabToSelect == aTab) index = TreeStyleTabService.getNextSiblingTab(index);
+					index = index ? index._tPos : (prevTab._tPos + 1);
+				]]></>
+			).replace(
+				/(prevTab = aTab;)/,
+				<><![CDATA[
+					$1
+					if (tabToSelect == aTab) {
+						TreeStyleTabService.readyToOpenChildTab(tabToSelect, true, TreeStyleTabService.getNextSiblingTab(tabToSelect));
+					}
+				]]></>
 			).replace(
 				/(browser.mTabContainer.nextTab)/,
-				'TreeStyleTabService.stopToOpenChildTab(tabToSelect); $1'
+				<><![CDATA[
+					TreeStyleTabService.stopToOpenChildTab(tabToSelect);
+					browser.__treestyletab__internallyTabMoving = false;
+					$1]]></>
 			)
 		);
 

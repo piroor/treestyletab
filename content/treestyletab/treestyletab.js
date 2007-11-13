@@ -1854,6 +1854,17 @@ catch(e) {
 			).singleNodeValue;
 	},
  
+	getRootTab : function(aTab) 
+	{
+		var parent = aTab;
+		var root   = aTab;
+		while (parent = this.getParentTab(parent))
+		{
+			root = parent;
+		}
+		return root;
+	},
+ 
 	getNextSiblingTab : function(aTab) 
 	{
 		if (!aTab) return null;
