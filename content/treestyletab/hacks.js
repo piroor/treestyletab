@@ -226,10 +226,59 @@ TreeStyleTabService.overrideExtensions = function() {
 			)
 		);
 
+		eval('window.TM_BrowserHome = '+
+			window.TM_BrowserHome.toSource().replace(
+				/(var bgLoad = )/,
+				'TreeStyleTabService.readyToOpenChildTab(firstTabAdded, true); $1'
+			).replace(
+				/(\})(\)?)$/,
+				'TreeStyleTabService.stopToOpenChildTab(firstTabAdded); $1$2'
+			)
+		);
+
+		eval('window.TMP_openURL = '+
+			window.TMP_openURL.toSource().replace(
+				/(var firstTab = [^\(]+\([^\)]+\))/,
+				'$1; TreeStyleTabService.readyToOpenChildTab(firstTab, true);'
+			).replace(
+				/(anyBrowser.mTabContainer.nextTab)/,
+				'TreeStyleTabService.stopToOpenChildTab(firstTab); $1'
+			)
+		);
+
+		eval('window.openMultipleLinks = '+
+			window.openMultipleLinks.toSource().replace(
+				/(firstTab = newTab;)/,
+				'$1 TreeStyleTabService.readyToOpenChildTab(firstTab, true);'
+			).replace(
+				/return true;/,
+				'if (rangeCount > 0) { TreeStyleTabService.stopToOpenChildTab(firstTab); }; $1'
+			)
+		);
+
+		eval('TMP_Bookmark.openGroup = '+
+			TMP_Bookmark.openGroup.toSource().replace(
+				/(tabToSelect = aTab;)/,
+				'$1 TreeStyleTabService.readyToOpenChildTab(tabToSelect, true);'
+			).replace(
+				/(browser.mTabContainer.nextTab)/,
+				'TreeStyleTabService.stopToOpenChildTab(tabToSelect); $1'
+			)
+		);
+
 		window.setTimeout(function() {
+			// correct broken appearance of the first tab
 			var t = gBrowser.mTabContainer.firstChild;
 			TreeStyleTabService.initTabAttributes(t, gBrowser);
 			TreeStyleTabService.initTabContentsOrder(t, gBrowser);
+
+			eval('gBrowser.openInverseLink = '+
+				gBrowser.openInverseLink.toSource().replace(
+					/(var newTab)/,
+					'TreeStyleTabService.readyToOpenChildTab(aTab); $1'
+				)
+			);
+
 		}, 0);
 	}
 
