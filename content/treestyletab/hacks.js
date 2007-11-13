@@ -230,7 +230,6 @@ TreeStyleTabService.overrideExtensions = function() {
 			window.TM_BrowserHome.toSource().replace(
 				/(var bgLoad = )/,
 				<><![CDATA[
-					gBrowser.__treestyletab__internallyTabMoving = true;
 					TreeStyleTabService.readyToOpenChildTab(firstTabAdded, true);
 					$1
 				]]></>
@@ -238,19 +237,8 @@ TreeStyleTabService.overrideExtensions = function() {
 				/(\})(\)?)$/,
 				<><![CDATA[
 					TreeStyleTabService.stopToOpenChildTab(firstTabAdded);
-					gBrowser.__treestyletab__internallyTabMoving = false;
 					$1$2
 				]]></>
-			)
-		);
-
-		eval('window.TMP_BrowserOpenTab = '+
-			window.TMP_BrowserOpenTab.toSource().replace(
-				/(var newTab = )/,
-				'gBrowser.__treestyletab__internallyTabMoving = true; $1'
-			).replace(
-				/(content.focus\(\))/,
-				'gBrowser.__treestyletab__internallyTabMoving = false; $1'
 			)
 		);
 
@@ -258,7 +246,6 @@ TreeStyleTabService.overrideExtensions = function() {
 			window.TMP_openURL.toSource().replace(
 				/(var firstTab = [^\(]+\([^\)]+\))/,
 				<><![CDATA[
-					anyBrowser.__treestyletab__internallyTabMoving = true;
 					$1;
 					TreeStyleTabService.readyToOpenChildTab(firstTab, true);
 				]]></>
@@ -266,7 +253,6 @@ TreeStyleTabService.overrideExtensions = function() {
 				/(anyBrowser.mTabContainer.nextTab)/,
 				<><![CDATA[
 					TreeStyleTabService.stopToOpenChildTab(firstTab);
-					anyBrowser.__treestyletab__internallyTabMoving = false;
 					$1
 				]]></>
 			)
@@ -284,12 +270,6 @@ TreeStyleTabService.overrideExtensions = function() {
 
 		eval('TMP_Bookmark.openGroup = '+
 			TMP_Bookmark.openGroup.toSource().replace(
-				/(var tabToSelect = null;)/,
-				<><![CDATA[
-					$1
-					browser.__treestyletab__internallyTabMoving = true;
-				]]></>
-			).replace(
 				'index = prevTab._tPos + 1;',
 				<><![CDATA[
 					index = TreeStyleTabService.getNextSiblingTab(TreeStyleTabService.getRootTab(prevTab));
@@ -308,7 +288,6 @@ TreeStyleTabService.overrideExtensions = function() {
 				/(browser.mTabContainer.nextTab)/,
 				<><![CDATA[
 					TreeStyleTabService.stopToOpenChildTab(tabToSelect);
-					browser.__treestyletab__internallyTabMoving = false;
 					$1]]></>
 			)
 		);
@@ -326,9 +305,33 @@ TreeStyleTabService.overrideExtensions = function() {
 				)
 			);
 
+			eval('gBrowser.TMP_openTabNext = '+
+				gBrowser.TMP_openTabNext.toSource().replace(
+					'{',
+					'{ var tabs = TreeStyleTabService.getDescendantTabs(TreeStyleTabService.getRootTab(this.mCurrentTab));'
+				).replace(
+					/((this.mCurrentTab._tPos)( \+ this.mTabContainer.nextTab))/,
+					'((tabs.length ? tabs[tabs.length-1]._tPos : $2 )$3)'
+				)
+			);
+
+			eval('gBrowser.TMmoveTabTo = '+
+				gBrowser.TMmoveTabTo.toSource().replace(
+					/(aTab.dispatchEvent)/,
+					'this.__treestyletab__internallyTabMoving = true; $1'
+				).replace(
+					/(return aTab;\})(\)?)$/,
+					'this.__treestyletab__internallyTabMoving = false; $1$2'
+				)
+			);
+
 			window.BrowserHome = window.TM_BrowserHome;
 			window.BrowserOpenTab = window.TMP_BrowserOpenTab;
+
+			gBrowser.__treestyletab__internallyTabMoving = false;
 		}, 0);
+
+		gBrowser.__treestyletab__internallyTabMoving = true; // until "TMmoveTabTo" method is overwritten
 	}
 
 };
