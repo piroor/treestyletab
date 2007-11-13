@@ -248,11 +248,11 @@ TreeStyleTabService.overrideExtensions = function() {
 
 		eval('window.openMultipleLinks = '+
 			window.openMultipleLinks.toSource().replace(
-				/(firstTab = newTab;)/,
-				'$1 TreeStyleTabService.readyToOpenChildTab(firstTab, true);'
+				/(if \(rangeCount > 0\) \{)/,
+				'$1 TreeStyleTabService.readyToOpenChildTab(focusedWindow, true);'
 			).replace(
-				/return true;/,
-				'if (rangeCount > 0) { TreeStyleTabService.stopToOpenChildTab(firstTab); }; $1'
+				/(return true;)/,
+				'if (rangeCount > 0) { TreeStyleTabService.stopToOpenChildTab(focusedWindow); }; $1'
 			)
 		);
 
