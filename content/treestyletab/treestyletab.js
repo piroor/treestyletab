@@ -52,7 +52,7 @@ var TreeStyleTabService = {
 	kINSERT_FISRT : 0,
 	kINSERT_LAST  : 1,
 
-	levelMargin : 12,
+	baseLebelMargin : 12,
 
 	NSResolver : {
 		lookupNamespaceURI : function(aPrefix)
@@ -108,7 +108,7 @@ var TreeStyleTabService = {
 		return this._XULAppInfo;
 	},
 	_XULAppInfo : null,
-	 
+	
 /* API */ 
 	
 	readyToOpenChildTab : function(aFrameOrTabBrowser, aMultiple, aInsertBefore) 
@@ -117,11 +117,11 @@ var TreeStyleTabService = {
 		if (!frame) return;
 
 		var ownerBrowser = this.getTabBrowserFromFrame(frame);
-		ownerBrowser.__treestyletab__readyToAttachNewTab   = true;
-		ownerBrowser.__treestyletab__readyToAttachMultiple = aMultiple || false ;
-		ownerBrowser.__treestyletab__multipleCount         = 0;
-		ownerBrowser.__treestyletab__parentTab             = this.getTabFromFrame(frame, ownerBrowser).getAttribute(this.kID);
-		ownerBrowser.__treestyletab__insertBefore          = aInsertBefore ? aInsertBefore.getAttribute(this.kID) : null ;
+		ownerBrowser.treeStyleTab.readyToAttachNewTab   = true;
+		ownerBrowser.treeStyleTab.readyToAttachMultiple = aMultiple || false ;
+		ownerBrowser.treeStyleTab.multipleCount         = 0;
+		ownerBrowser.treeStyleTab.parentTab             = this.getTabFromFrame(frame, ownerBrowser).getAttribute(this.kID);
+		ownerBrowser.treeStyleTab.insertBefore          = aInsertBefore ? aInsertBefore.getAttribute(this.kID) : null ;
 	},
  
 	readyToOpenNewTabGroup : function(aFrameOrTabBrowser) 
@@ -132,9 +132,9 @@ var TreeStyleTabService = {
 		this.stopToOpenChildTab(frame);
 
 		var ownerBrowser = this.getTabBrowserFromFrame(frame);
-		ownerBrowser.__treestyletab__readyToAttachNewTabGroup = true;
-		ownerBrowser.__treestyletab__readyToAttachMultiple    = true;
-		ownerBrowser.__treestyletab__multipleCount            = 0;
+		ownerBrowser.treeStyleTab.readyToAttachNewTabGroup = true;
+		ownerBrowser.treeStyleTab.readyToAttachMultiple    = true;
+		ownerBrowser.treeStyleTab.multipleCount            = 0;
 	},
  
 	stopToOpenChildTab : function(aFrameOrTabBrowser) 
@@ -143,12 +143,12 @@ var TreeStyleTabService = {
 		if (!frame) return;
 
 		var ownerBrowser = this.getTabBrowserFromFrame(frame);
-		ownerBrowser.__treestyletab__readyToAttachNewTab      = false;
-		ownerBrowser.__treestyletab__readyToAttachNewTabGroup = false;
-		ownerBrowser.__treestyletab__readyToAttachMultiple    = false;
-		ownerBrowser.__treestyletab__multipleCount            = 0;
-		ownerBrowser.__treestyletab__parentTab                = null;
-		ownerBrowser.__treestyletab__insertBefore             = null;
+		ownerBrowser.treeStyleTab.readyToAttachNewTab      = false;
+		ownerBrowser.treeStyleTab.readyToAttachNewTabGroup = false;
+		ownerBrowser.treeStyleTab.readyToAttachMultiple    = false;
+		ownerBrowser.treeStyleTab.multipleCount            = 0;
+		ownerBrowser.treeStyleTab.parentTab                = null;
+		ownerBrowser.treeStyleTab.insertBefore             = null;
 	},
  
 	checkToOpenChildTab : function(aFrameOrTabBrowser) 
@@ -157,7 +157,7 @@ var TreeStyleTabService = {
 		if (!frame) return false;
 
 		var ownerBrowser = this.getTabBrowserFromFrame(frame);
-		return ownerBrowser.__treestyletab__readyToAttachNewTab || ownerBrowser.__treestyletab__readyToAttachNewTabGroup ? true : false ;
+		return ownerBrowser.treeStyleTab.readyToAttachNewTab || ownerBrowser.treeStyleTab.readyToAttachNewTabGroup ? true : false ;
 	},
  
 	checkReadyToOpenNewTab : function(aInfo) 
@@ -192,16 +192,16 @@ var TreeStyleTabService = {
 		var external = info.external || {};
 		var internal = info.internal || {};
 
+		var b       = this.getTabBrowserFromFrame(frame);
+		var nextTab = b.treeStyleTab.getNextSiblingTab(currentTab);
+
 		var targetHost  = /^\w+:\/\/([^:\/]+)(\/|$)/.test(info.uri) ? RegExp.$1 : null ;
 		var currentTab  = this.getTabFromFrame(frame);
 		var currentURI  = frame.location.href;
 		var currentHost = currentURI.match(/^\w+:\/\/([^:\/]+)(\/|$)/) ? RegExp.$1 : null ;
-		var parentTab   = this.getParentTab(currentTab);
+		var parentTab   = b.treeStyleTab.getParentTab(currentTab);
 		var parentURI   = parentTab ? parentTab.linkedBrowser.currentURI : null ;
 		var parentHost  = parentURI && parentURI.spec.match(/^\w+:\/\/([^:\/]+)(\/|$)/) ? RegExp.$1 : null ;
-
-		var b       = this.getTabBrowserFromFrame(frame);
-		var nextTab = this.getNextSiblingTab(currentTab);
 
 		var openTab      = false;
 		var parent       = null;
@@ -221,7 +221,7 @@ var TreeStyleTabService = {
 					(this.getTreePref('insertNewChildAt') == this.kINSERT_FIRST ?
 						nextTab :
 						(
-							this.getTabById(currentTab.__treestyletab__next, b) ||
+							b.treeStyleTab.getTabById(currentTab.__treestyletab__next) ||
 							(nextTab ? (currentTab.__treestyletab__next = nextTab.getAttribute(this.kID), nextTab) : null )
 						)
 					);
@@ -243,6 +243,30 @@ var TreeStyleTabService = {
 		return openTab;
 	},
   
+/* backward compatibility */ 
+	getTempTreeStyleTab : function(aTabBrowser)
+	{
+		return aTabBrowser.treeStyleTab || new TreeStyleTabBrowser(aTabBrowser);
+	},
+	
+	initTabAttributes : function(aTab, aTabBrowser) 
+	{
+		var b = aTabBrowser || this.getTabBrowserFromChildren(aTab);
+		this.getTempTreeStyleTab(b).initTabAttributes(aTab);
+	},
+ 
+	initTabContents : function(aTab, aTabBrowser) 
+	{
+		var b = aTabBrowser || this.getTabBrowserFromChildren(aTab);
+		this.getTempTreeStyleTab(b).initTabContents(aTab);
+	},
+ 
+	initTabContentsOrder : function(aTab, aTabBrowser) 
+	{
+		var b = aTabBrowser || this.getTabBrowserFromChildren(aTab);
+		this.getTempTreeStyleTab(b).initTabContentsOrder(aTab);
+	},
+  
 /* Utilities */ 
 	 
 	isEventFiredOnTwisty : function(aEvent) 
@@ -261,15 +285,6 @@ var TreeStyleTabService = {
 	{
 		return 'SplitBrowser' in window ? SplitBrowser.activeBrowser : gBrowser ;
 	},
- 
-	get container() 
-	{
-		if (!this._container) {
-			this._container = document.getElementById('appcontent');
-		}
-		return this._container;
-	},
-	_container : null,
  
 	evaluateXPath : function(aExpression, aContext, aType) 
 	{
@@ -374,41 +389,6 @@ var TreeStyleTabService = {
 		return frame;
 	},
  
-	isTabVertical : function(aTabOrChild) 
-	{
-		var b = this.getTabBrowserFromChildren(aTabOrChild);
-		if (!b) return false;
-		var box = b.mTabContainer.mTabstrip || b.mTabContainer ;
-		return (box.getAttribute('orient') || window.getComputedStyle(box, '').getPropertyValue('-moz-box-orient')) == 'vertical';
-	},
- 
-	isTabInViewport : function(aTab) 
-	{
-		if (!aTab) return false;
-		var tabBox = aTab.boxObject;
-		var barBox = this.getTabBrowserFromChildren(aTab).mTabContainer.mTabstrip.boxObject;
-		return (tabBox.screenX >= barBox.screenX &&
-			tabBox.screenX + tabBox.width <= barBox.screenX + barBox.width &&
-			tabBox.screenY >= barBox.screenY &&
-			tabBox.screenY + tabBox.height <= barBox.screenY + barBox.height);
-	},
- 
-	cleanUpTabsArray : function(aTabs) 
-	{
-		var b = this.getTabBrowserFromChildren(aTabs[0]);
-
-		var self = this;
-		aTabs = aTabs.map(function(aTab) { return aTab.getAttribute(self.kID); });
-		aTabs.sort();
-		aTabs = aTabs.join('|').replace(/([^\|]+)(\|\1)+/g, '$1').split('|');
-
-		for (var i = 0, maxi = aTabs.length; i < maxi; i++)
-		{
-			aTabs[i] = this.getTabById(aTabs[i], b);
-		}
-		return aTabs;
-	},
- 
 	makeURIFromSpec : function(aURI) 
 	{
 		var newURI;
@@ -424,20 +404,12 @@ var TreeStyleTabService = {
 		return newURI;
 	},
  
-	getTabLabel : function(aTab) 
+	toggleAutoHide : function() 
 	{
-		var label = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-text-container') || // Tab Mix Plus
-					document.getAnonymousElementByAttribute(aTab, 'class', 'tab-text');
-		return label;
+		this.setTreePref('tabbar.autoHide.enabled',
+			!this.getTreePref('tabbar.autoHide.enabled'));
 	},
- 
-	getTabClosebox : function(aTab) 
-	{
-		var close = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-close-button tabs-closebutton always-right') || // Tab Mix Plus
-					document.getAnonymousElementByAttribute(aTab, 'class', 'tab-close-button');
-		return close;
-	},
- 	 
+  
 /* Initializing */ 
 	
 	init : function() 
@@ -445,7 +417,6 @@ var TreeStyleTabService = {
 		if (!('gBrowser' in window)) return;
 
 		window.removeEventListener('load', this, false);
-
 		document.getElementById('contentAreaContextMenu').addEventListener('popupshowing', this, false);
 
 		var appcontent = document.getElementById('appcontent');
@@ -453,268 +424,35 @@ var TreeStyleTabService = {
 		appcontent.addEventListener('SubBrowserRemoveRequest', this, false);
 
 		this.addPrefListener(this);
-		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.levelMargin');
 
+		this.overrideExtensionsBeforeInit(); // hacks.js
 		this.overrideGlobalFunctions();
-		this.overrideExtensions(); // hacks.js
-
 		this.initTabBrowser(gBrowser);
+		this.overrideExtensionsAfterInit(); // hacks.js
+		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.levelMargin');
 	},
 	 
 	initTabBrowser : function(aTabBrowser) 
 	{
-		this.initTabbar(aTabBrowser);
-
-		aTabBrowser.addEventListener('TabOpen',        this, true);
-		aTabBrowser.addEventListener('TabClose',       this, true);
-		aTabBrowser.addEventListener('TabMove',        this, true);
-		aTabBrowser.addEventListener('SSTabRestoring', this, true);
-		aTabBrowser.mTabContainer.addEventListener('click', this, true);
-		aTabBrowser.mTabContainer.addEventListener('dblclick', this, true);
-		aTabBrowser.mTabContainer.addEventListener('mousedown', this, true);
-		aTabBrowser.mTabContainer.addEventListener('select', this, true);
-//		aTabBrowser.mPanelContainer.addEventListener('click', this, true);
-
-		aTabBrowser.__treestyletab__levelMargin = -1;
-
-		var selectNewTab = '_selectNewTab' in aTabBrowser.mTabContainer ? '_selectNewTab' : 'selectNewTab' ; // Fx3 / Fx2
-
-		eval('aTabBrowser.mTabContainer.'+selectNewTab+' = '+
-			aTabBrowser.mTabContainer[selectNewTab].toSource().replace(
-				'{',
-				<><![CDATA[
-					{
-						if (arguments[0].__treestyletab__preventSelect) {
-							arguments[0].__treestyletab__preventSelect = false;
-							return;
-						}
-				]]></>
-			)
-		);
-
-		eval('aTabBrowser.mTabContainer.advanceSelectedTab = '+
-			aTabBrowser.mTabContainer.advanceSelectedTab.toSource().replace(
-				'{',
-				<><![CDATA[
-					{
-						if (TreeStyleTabService.getTreePref('focusMode') == TreeStyleTabService.kFOCUS_VISIBLE) {
-							(function(aDir, aWrap, aSelf) {
-								var nextTab = (aDir < 0) ? TreeStyleTabService.getPreviousVisibleTab(aSelf.selectedItem) : TreeStyleTabService.getNextVisibleTab(aSelf.selectedItem) ;
-								if (!nextTab && aWrap) {
-									var xpathResult = TreeStyleTabService.evaluateXPath(
-											'child::xul:tab[not(@'+TreeStyleTabService.kCOLLAPSED+'="true")]',
-											aSelf
-										);
-									nextTab = xpathResult.snapshotItem(aDir < 0 ? xpathResult.snapshotLength-1 : 0 );
-								}
-								if (nextTab && nextTab != aSelf.selectedItem) {
-									if ('_selectNewTab' in aSelf)
-										aSelf._selectNewTab(nextTab, aDir, aWrap); // Fx 3
-									else
-										aSelf.selectNewTab(nextTab, aDir, aWrap); // Fx 2
-								}
-							})(arguments[0], arguments[1], this);
-							return;
-						}
-				]]></>
-			)
-		);
-
-		eval('aTabBrowser.mTabContainer._handleTabSelect = '+
-			aTabBrowser.mTabContainer._handleTabSelect.toSource().replace(
-				'{',
-				<><![CDATA[
-					{
-						if (!TreeStyleTabService.isTabInViewport(this.selectedItem)) {
-							TreeStyleTabService.scrollToTab(this.selectedItem);
-							return;
-						}
-				]]></>
-			)
-		);
-
-		eval('aTabBrowser.mTabContainer._notifyBackgroundTab = '+
-			aTabBrowser.mTabContainer._notifyBackgroundTab.toSource().replace(
-				/\.screenX/g, '[TreeStyleTabService.getTabBrowserFromChildren(this).positionProp]'
-			).replace(
-				/\.width/g, '[TreeStyleTabService.getTabBrowserFromChildren(this).sizeProp]'
-			)
-		);
-
-		this.updateTabDNDObserver(aTabBrowser);
-
-		eval('aTabBrowser.getNewIndex = '+
-			aTabBrowser.getNewIndex.toSource().replace(
-				/\.screenX/g, '[TreeStyleTabService.getTabBrowserFromChildren(this).positionProp]'
-			).replace(
-				/\.width/g, '[TreeStyleTabService.getTabBrowserFromChildren(this).sizeProp]'
-			)
-		);
-
-		eval('aTabBrowser.moveTabForward = '+
-			aTabBrowser.moveTabForward.toSource().replace(
-				'{', '{ var nextTab;'
-			).replace(
-				'tabPos < this.browsers.length - 1',
-				'nextTab = TreeStyleTabService.getNextSiblingTab(this.mCurrentTab)'
-			).replace(
-				'tabPos + 1', 'nextTab._tPos'
-			).replace(
-				'this.moveTabTo(',
-				<><![CDATA[
-					var descendant = TreeStyleTabService.getDescendantTabs(nextTab);
-					if (descendant.length) {
-						nextTab = descendant[descendant.length-1];
-					}
-					this.moveTabTo(]]></>
-			).replace(
-				'this.moveTabToStart();',
-				<><![CDATA[
-					this.__treestyletab__internallyTabMoving = true;
-					var parentTab = TreeStyleTabService.getParentTab(this.mCurrentTab);
-					if (parentTab) {
-						this.moveTabTo(this.mCurrentTab, TreeStyleTabService.getFirstChildTab(parentTab)._tPos);
-						this.mCurrentTab.focus();
-					}
-					else {
-						this.moveTabToStart();
-					}
-					this.__treestyletab__internallyTabMoving = false;
-				]]></>
-			)
-		);
-
-		eval('aTabBrowser.moveTabBackward = '+
-			aTabBrowser.moveTabBackward.toSource().replace(
-				'{', '{ var prevTab;'
-			).replace(
-				'tabPos > 0',
-				'prevTab = TreeStyleTabService.getPreviousSiblingTab(this.mCurrentTab)'
-			).replace(
-				'tabPos - 1', 'prevTab._tPos'
-			).replace(
-				'this.moveTabToEnd();',
-				<><![CDATA[
-					this.__treestyletab__internallyTabMoving = true;
-					var parentTab = TreeStyleTabService.getParentTab(this.mCurrentTab);
-					if (parentTab) {
-						this.moveTabTo(this.mCurrentTab, TreeStyleTabService.getLastChildTab(parentTab)._tPos);
-						this.mCurrentTab.focus();
-					}
-					else {
-						this.moveTabToEnd();
-					}
-					this.__treestyletab__internallyTabMoving = false;
-				]]></>
-			)
-		);
-
-		eval('aTabBrowser._keyEventHandler.handleEvent = '+
-			aTabBrowser._keyEventHandler.handleEvent.toSource().replace(
-				'this.tabbrowser.moveTabOver(aEvent);',
-				<><![CDATA[
-					if (!TreeStyleTabService.isTabVertical(this.tabbrowser) ||
-						!TreeStyleTabService.moveTabLevel(aEvent)) {
-						this.tabbrowser.moveTabOver(aEvent);
-					}
-				]]></>
-			).replace(
-				'this.tabbrowser.moveTabForward();',
-				<><![CDATA[
-					if (TreeStyleTabService.isTabVertical(this.tabbrowser) ||
-						!TreeStyleTabService.moveTabLevel(aEvent)) {
-						this.tabbrowser.moveTabForward();
-					}
-				]]></>
-			).replace(
-				'this.tabbrowser.moveTabBackward();',
-				<><![CDATA[
-					if (TreeStyleTabService.isTabVertical(this.tabbrowser) ||
-						!TreeStyleTabService.moveTabLevel(aEvent)) {
-						this.tabbrowser.moveTabBackward();
-					}
-				]]></>
-			)
-		);
-
-		eval('aTabBrowser.loadTabs = '+
-			aTabBrowser.loadTabs.toSource().replace(
-				'var tabNum = ',
-				<><![CDATA[
-					if (this.__treestyletab__readyToAttachNewTabGroup)
-						TreeStyleTabService.readyToOpenChildTab(firstTabAdded || this.selectedTab, true);
-					var tabNum = ]]></>
-			).replace(
-				'if (!aLoadInBackground)',
-				<><![CDATA[
-					if (TreeStyleTabService.checkToOpenChildTab(this))
-						TreeStyleTabService.stopToOpenChildTab(this);
-					if (!aLoadInBackground)]]></>
-			)
-		);
-
-		var tabs = aTabBrowser.mTabContainer.childNodes;
-		for (var i = 0, maxi = tabs.length; i < maxi; i++)
-		{
-			this.initTab(tabs[i], aTabBrowser);
-		}
-
-		var tabContext = document.getAnonymousElementByAttribute(aTabBrowser, 'anonid', 'tabContextMenu');
-		tabContext.addEventListener('popupshowing', this, false);
-		tabContext.addEventListener('popuphiding', this, false);
-		window.setTimeout(function(aSelf) {
-			var suffix = '-'+parseInt(Math.random() * 65000);
-			var item = document.getElementById(aSelf.kMENUITEM_REMOVESUBTREE_CONTEXT).cloneNode(true);
-			item.setAttribute('id', item.getAttribute('id')+suffix);
-			tabContext.appendChild(item);
-
-			item = document.getElementById(aSelf.kMENUITEM_AUTOHIDE_SEPARATOR_CONTEXT).cloneNode(true);
-			item.setAttribute('id', item.getAttribute('id')+suffix);
-			tabContext.appendChild(item);
-			item = document.getElementById(aSelf.kMENUITEM_AUTOHIDE_CONTEXT).cloneNode(true);
-			item.setAttribute('id', item.getAttribute('id')+suffix);
-			tabContext.appendChild(item);
-		}, 0, this);
-
-		aTabBrowser.__treestyletab__observer = new TreeStyleTabBrowserObserver(aTabBrowser);
-		aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.style');
-		aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.showBorderForFirstTab');
-		aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.invertScrollbar');
-		aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.hideAlltabsButton');
-		aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.allowSubtreeCollapseExpand');
-		window.setTimeout(function() {
-			aTabBrowser.__treestyletab__observer.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.autoHide.enabled');
-		}, 0);
-
-		delete i;
-		delete maxi;
-		delete tabs;
-
-		/* To move up content area on the tab bar, switch tab.
-		   If we don't do it, a gray space appears on the content area
-		   by negative margin of it. */
-		if (aTabBrowser.getAttribute(this.kTABBAR_POSITION) == 'left' &&
-			aTabBrowser.getAttribute(this.kSCROLLBAR_INVERTED) == 'true') {
-			aTabBrowser.removeTab(
-				aTabBrowser.selectedTab = aTabBrowser.addTab('about:blank')
-			);
-		}
+		if (aTabBrowser.localName != 'tabbrowser') return;
+		aTabBrowser.treeStyleTab = new TreeStyleTabBrowser(aTabBrowser);
+		aTabBrowser.treeStyleTab.init();
 	},
  
-	updateTabDNDObserver : function(aObserver)
+	updateTabDNDObserver : function(aObserver) 
 	{
 		eval('aObserver.canDrop = '+
 			aObserver.canDrop.toSource().replace(
 				'{',
 				'{ var TSTTabBrowser = this;'
 			).replace(
-				/\.screenX/g, '[TreeStyleTabService.getTabBrowserFromChildren(TSTTabBrowser).positionProp]'
+				/\.screenX/g, '[TreeStyleTabService.getTabBrowserFromChildren(TSTTabBrowser).treeStyleTab.positionProp]'
 			).replace(
-				/\.width/g, '[TreeStyleTabService.getTabBrowserFromChildren(TSTTabBrowser).sizeProp]'
+				/\.width/g, '[TreeStyleTabService.getTabBrowserFromChildren(TSTTabBrowser).treeStyleTab.sizeProp]'
 			).replace( // Tab Mix Plus
-				/\.screenY/g, '[TreeStyleTabService.getTabBrowserFromChildren(TSTTabBrowser).invertedPositionProp]'
+				/\.screenY/g, '[TreeStyleTabService.getTabBrowserFromChildren(TSTTabBrowser).treeStyleTab.invertedPositionProp]'
 			).replace( // Tab Mix Plus
-				/\.height/g, '[TreeStyleTabService.getTabBrowserFromChildren(TSTTabBrowser).invertedSizeProp]'
+				/\.height/g, '[TreeStyleTabService.getTabBrowserFromChildren(TSTTabBrowser).treeStyleTab.invertedSizeProp]'
 			).replace(
 				/(return true;)/,
 				<><![CDATA[
@@ -728,7 +466,7 @@ try{
 							if (aEvent.target.getAttribute(TreeStyleTabService.kCOLLAPSED) == 'true')
 								return false;
 
-							var info = TreeStyleTabService.getDropAction(aEvent, aDragSession);
+							var info = TSTTabBrowser.treeStyleTab.getDropAction(aEvent, aDragSession);
 							return info.canDrop;
 }
 catch(e) {
@@ -750,14 +488,14 @@ catch(e) {
 						var TSTTabBrowser = this;
 						if ((function(aSelf) {
 try{
-							var info = TreeStyleTabService.getDropAction(aEvent, aDragSession);
+							var info = TSTTabBrowser.treeStyleTab.getDropAction(aEvent, aDragSession);
 
 							if (!info.target || info.target != TreeStyleTabService.evaluateXPath(
 									'child::xul:tab[@'+TreeStyleTabService.kDROP_POSITION+']',
 									aSelf.mTabContainer,
 									XPathResult.FIRST_ORDERED_NODE_TYPE
 								).singleNodeValue)
-								TreeStyleTabService.clearDropPosition(aSelf);
+								TSTTabBrowser.treeStyleTab.clearDropPosition();
 
 							if (!aSelf.canDrop(aEvent, aDragSession)) return true;
 
@@ -783,7 +521,7 @@ catch(e) {
 		eval('aObserver.onDragExit = '+
 			aObserver.onDragExit.toSource().replace(
 				/(this.mTabDropIndicatorBar\.[^;]+;)/,
-				'$1; TreeStyleTabService.clearDropPosition(this);'
+				'$1; this.treeStyleTab.clearDropPosition();'
 			)
 		);
 
@@ -793,19 +531,19 @@ catch(e) {
 				<><![CDATA[
 					{
 						var TSTTabBrowser = this;
-						TreeStyleTabService.clearDropPosition(TSTTabBrowser);
-						var dropActionInfo = TreeStyleTabService.getDropAction(aEvent, aDragSession);
+						TSTTabBrowser.treeStyleTab.clearDropPosition();
+						var dropActionInfo = TSTTabBrowser.treeStyleTab.getDropAction(aEvent, aDragSession);
 				]]></>
 			).replace(
 				/(if \(aDragSession[^\)]+\) \{)/,
 				'$1'+<><![CDATA[
-					if (TreeStyleTabService.processDropAction(dropActionInfo, TSTTabBrowser, aDragSession.sourceNode))
+					if (TSTTabBrowser.treeStyleTab.processDropAction(dropActionInfo, aDragSession.sourceNode))
 						return;
 				]]></>
 			).replace(
 				/(this.loadOneTab\([^;]+\));/,
 				<><![CDATA[
-					TreeStyleTabService.processDropAction(dropActionInfo, TSTTabBrowser, $1);
+					TSTTabBrowser.treeStyleTab.processDropAction(dropActionInfo, $1);
 					return;
 				]]></>
 			).replace(
@@ -820,7 +558,7 @@ catch(e) {
 						TreeStyleTabService.getTreePref('loadDroppedLinkToNewChildTab') ||
 						dropActionInfo.position != TreeStyleTabService.kDROP_ON
 						) {
-						TreeStyleTabService.processDropAction(dropActionInfo, TSTTabBrowser, TSTTabBrowser.loadOneTab(getShortcutOrURI(url), null, null, null, bgLoad, false));
+						TSTTabBrowser.treeStyleTab.processDropAction(dropActionInfo, TSTTabBrowser.loadOneTab(getShortcutOrURI(url), null, null, null, bgLoad, false));
 						return;
 					}
 				]]></>
@@ -828,135 +566,6 @@ catch(e) {
 		);
 	},
  
-	initTab : function(aTab, aTabBrowser) 
-	{
-		if (!aTabBrowser)
-			aTabBrowser = this.getTabBrowserFromChildren(aTab);
-
-		if (!aTab.hasAttribute(this.kID)) {
-			var id = 'tab-<'+Date.now()+'-'+parseInt(Math.random() * 65000)+'>';
-			this.setTabValue(aTab, this.kID, id);
-		}
-
-		aTab.__treestyletab__linkedTabBrowser = aTabBrowser;
-
-		this.initTabAttributes(aTab, aTabBrowser);
-		this.initTabContents(aTab, aTabBrowser);
-
-		aTab.setAttribute(this.kNEST, 0);
-	},
-	 
-	initTabAttributes : function(aTab, aTabBrowser) 
-	{
-		if (!aTabBrowser)
-			aTabBrowser = this.getTabBrowserFromChildren(aTab);
-
-		var pos = aTabBrowser.getAttribute(this.kTABBAR_POSITION);
-		if (pos == 'left' || pos == 'right') {
-			aTab.setAttribute('align', 'stretch');
-			aTab.removeAttribute('maxwidth');
-			aTab.removeAttribute('minwidth');
-			aTab.removeAttribute('width');
-			aTab.removeAttribute('flex');
-			aTab.maxWidth = 65000;
-			aTab.minWidth = 0;
-			aTab.setAttribute('dir', 'ltr'); // Tab Mix Plus
-		}
-		else {
-			aTab.removeAttribute('align');
-			aTab.setAttribute('maxwidth', 250);
-			aTab.setAttribute('minwidth', aTabBrowser.mTabContainer.mTabMinWidth);
-			aTab.setAttribute('width', '0');
-			aTab.setAttribute('flex', 100);
-			aTab.maxWidth = 250;
-			aTab.minWidth = aTabBrowser.mTabContainer.mTabMinWidth;
-			aTab.removeAttribute('dir'); // Tab Mix Plus
-		}
-	},
- 
-	initTabContents : function(aTab, aTabBrowser) 
-	{
-		if (!aTabBrowser)
-			aTabBrowser = this.getTabBrowserFromChildren(aTab);
-
-		var icon  = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-icon');
-		var label = this.getTabLabel(aTab);
-		var close = this.getTabClosebox(aTab);
-		var counter = document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER_CONTAINER);
-
-		if (!document.getAnonymousElementByAttribute(aTab, 'class', this.kTWISTY)) {
-			var twisty = document.createElement('image');
-			twisty.setAttribute('class', this.kTWISTY);
-			var container = document.createElement('hbox');
-			container.setAttribute('class', this.kTWISTY_CONTAINER);
-			container.appendChild(twisty);
-
-			icon.appendChild(container);
-
-			var marker = document.createElement('image');
-			marker.setAttribute('class', this.kDROP_MARKER);
-			container = document.createElement('hbox');
-			container.setAttribute('class', this.kDROP_MARKER_CONTAINER);
-			container.appendChild(marker);
-
-			icon.appendChild(container);
-		}
-
-		if (!counter) {
-			var counter = document.createElement('hbox');
-			counter.setAttribute('class', this.kCOUNTER_CONTAINER);
-
-			counter.appendChild(document.createElement('label'));
-			counter.lastChild.setAttribute('class', this.kCOUNTER);
-			counter.lastChild.setAttribute('value', '(0)');
-
-			if (label) {
-				if (label.nextSibling)
-					label.parentNode.insertBefore(counter, label.nextSibling);
-				else
-					label.parentNode.appendChild(counter);
-			}
-		}
-		this.initTabContentsOrder(aTab, aTabBrowser);
-	},
- 
-	initTabContentsOrder : function(aTab, aTabBrowser) 
-	{
-		if (!aTabBrowser)
-			aTabBrowser = this.getTabBrowserFromChildren(aTab);
-
-		var label = this.getTabLabel(aTab);
-		var close = this.getTabClosebox(aTab);
-		var counter = document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER_CONTAINER);
-
-		var nodes = document.getAnonymousNodes(aTab);
-		for (var i = nodes.length-1; i > -1; i--)
-		{
-			nodes[i].setAttribute('ordinal', (i + 1) * 10);
-		}
-
-		nodes = label.parentNode.childNodes;
-		if (aTabBrowser.getAttribute(this.kTABBAR_POSITION) == 'right' &&
-			aTabBrowser.getAttribute(this.kUI_INVERTED) == 'true') {
-			for (var i = nodes.length-1; i > -1; i--)
-			{
-				if (nodes[i].getAttribute('class') == 'informationaltab-thumbnail-container')
-					continue;
-				nodes[i].setAttribute('ordinal', (nodes.length - i + 1) * 10);
-			}
-			counter.setAttribute('ordinal', parseInt(label.getAttribute('ordinal')) + 1);
-			close.setAttribute('ordinal', parseInt(label.parentNode.getAttribute('ordinal')) - 5);
-		}
-		else {
-			for (var i = nodes.length-1; i > -1; i--)
-			{
-				if (nodes[i].getAttribute('class') == 'informationaltab-thumbnail-container')
-					continue;
-				nodes[i].setAttribute('ordinal', (i + 1) * 10);
-			}
-		}
-	},
-  
 	overrideGlobalFunctions : function() 
 	{
 		var funcs;
@@ -1153,7 +762,7 @@ catch(e) {
 						var openedTab = browser.addTab(uri);
 						if (!TreeStyleTabService.getPref('browser.tabs.loadFolderAndReplace') &&
 							TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree') &&
-							!browser.__treestyletab__parentTab) {
+							!browser.treeStyleTab.parentTab) {
 							TreeStyleTabService.readyToOpenChildTab(openedTab, true);
 						}
 					]]></>
@@ -1182,11 +791,9 @@ catch(e) {
   
 	destroy : function() 
 	{
-		this.endAutoHide();
+		window.removeEventListener('unload', this, false);
 
 		this.destroyTabBrowser(gBrowser);
-
-		window.removeEventListener('unload', this, false);
 
 		document.getElementById('contentAreaContextMenu').removeEventListener('popupshowing', this, false);
 
@@ -1195,37 +802,13 @@ catch(e) {
 		appcontent.removeEventListener('SubBrowserRemoveRequest', this, false);
 
 		this.removePrefListener(this);
-
-		var tabs = gBrowser.mTabContainer.childNodes;
-		for (var i = 0, maxi = tabs.length; i < maxi; i++)
-		{
-			this.destroyTab(tabs[i]);
-		}
 	},
 	 
 	destroyTabBrowser : function(aTabBrowser) 
 	{
-		aTabBrowser.__treestyletab__observer.destroy();
-		delete aTabBrowser.__treestyletab__observer;
-
-		aTabBrowser.removeEventListener('TabOpen',        this, true);
-		aTabBrowser.removeEventListener('TabClose',       this, true);
-		aTabBrowser.removeEventListener('TabMove',        this, true);
-		aTabBrowser.removeEventListener('SSTabRestoring', this, true);
-		aTabBrowser.mTabContainer.removeEventListener('click', this, true);
-		aTabBrowser.mTabContainer.removeEventListener('dblclick', this, true);
-		aTabBrowser.mTabContainer.removeEventListener('mousedown', this, true);
-		aTabBrowser.mTabContainer.removeEventListener('select', this, true);
-//		aTabBrowser.mPanelContainer.removeEventListener('click', this, true);
-
-		var tabContext = document.getAnonymousElementByAttribute(aTabBrowser, 'anonid', 'tabContextMenu');
-		tabContext.removeEventListener('popupshowing', this, false);
-		tabContext.removeEventListener('popuphiding', this, false);
-	},
- 
-	destroyTab : function(aTab, aTabBrowser) 
-	{
-		delete aTab.__treestyletab__linkedTabBrowser;
+		if (aTabBrowser.localName != 'tabbrowser') return;
+		aTabBrowser.treeStyleTab.destroy();
+		delete aTabBrowser.treeStyleTab;
 	},
    
 /* Event Handling */ 
@@ -1234,112 +817,8 @@ catch(e) {
 	{
 		switch (aEvent.type)
 		{
-			case 'TabOpen':
-				this.onTabAdded(aEvent);
-				return;
-
-			case 'TabClose':
-				this.onTabRemoved(aEvent);
-				return;
-
-			case 'TabMove':
-				this.onTabMove(aEvent);
-				return;
-
-			case 'SSTabRestoring':
-				this.onTabRestored(aEvent);
-				return;
-
-			case 'click':
-				if (aEvent.target.ownerDocument == document) {
-					this.onTabClick(aEvent);
-					return;
-				}
-/*
-				var isMiddleClick = (
-					aEvent.button == 1 ||
-					aEvent.button == 0 && (aEvent.ctrlKey || aEvent.metaKey)
-					);
-				var node = aEvent.originalTarget;
-				while (node.parentNode && !node.href)
-				{
-					node = node.parentNode;
-				}
-				if (node.href && isMiddleClick) {
-					var b = this.getTabBrowserFromChildren(aEvent.currentTarget);
-					this.readyToOpenChildTab(b.selectedTab);
-				}
-*/
-				return;
-
-			case 'dblclick':
-				var tab = this.getTabFromEvent(aEvent);
-				if (tab &&
-					tab.getAttribute(this.kCHILDREN) &&
-					this.getTreePref('collapseExpandSubTree.dblclick')) {
-					this.collapseExpandTabSubTree(tab, tab.getAttribute(this.kSUBTREE_COLLAPSED) != 'true');
-					aEvent.preventDefault();
-					aEvent.stopPropagation();
-				}
-				return;
-
-			case 'mousedown':
-				if (aEvent.originalTarget.getAttribute('class') == this.kSPLITTER)
-					this.getTabBrowserFromChildren(aEvent.currentTarget).tabbarResizing = true;
-				if (aEvent.currentTarget == this.container) {
-					this.cancelShowHideTabbar();
-				}
-				else {
-					this.onTabMouseDown(aEvent);
-				}
-				return;
-
-			case 'mouseup':
-				if (aEvent.originalTarget.getAttribute('class') == this.kSPLITTER)
-					this.getTabBrowserFromChildren(aEvent.currentTarget).tabbarResizing = false;
-				this.cancelShowHideTabbar();
-				return;
-
-			case 'mousemove':
-				if (!this.getTabBrowserFromChildren(aEvent.currentTarget).tabbarResizing) {
-					if (!this.tabContextMenuShown)
-						this.showHideTabbar(aEvent);
-					return;
-				}
-			case 'resize':
-				if (this.tabbarShown) {
-					switch (this.getTreePref('tabbar.position'))
-					{
-						case 'left':
-							this.container.style.marginRight = '-'+this.tabbarWidth+'px';
-							break;
-						case 'right':
-							this.container.style.marginLeft = '-'+this.tabbarWidth+'px';
-							break;
-						case 'bottom':
-							this.container.style.marginTop = '-'+this.tabbarHeight+'px';
-							break;
-						default:
-							this.container.style.marginBottom = '-'+this.tabbarHeight+'px';
-							break;
-					}
-					this.redrawContentArea();
-				}
-				return;
-
-			case 'scroll':
-				this.redrawContentArea();
-				return;
-
-			case 'select':
-				this.onTabSelect(aEvent);
-				return;
-
 			case 'load':
-				if (aEvent.currentTarget == this.container)
-					this.redrawContentArea();
-				else
-					this.init();
+				this.init();
 				return;
 
 			case 'unload':
@@ -1348,17 +827,7 @@ catch(e) {
 
 			case 'popupshowing':
 				if (aEvent.target != aEvent.currentTarget) return;
-				if (aEvent.currentTarget.id == 'contentAreaContextMenu') {
-					this.initContextMenu();
-				}
-				else {
-					this.tabContextMenuShown = true;
-					this.initTabContextMenu(aEvent);
-				}
-				return;
-
-			case 'popuphiding':
-				this.tabContextMenuShown = false;
+				this.initContextMenu();
 				return;
 
 			case 'SubBrowserAdded':
@@ -1371,329 +840,13 @@ catch(e) {
 		}
 	},
  
-	onTabAdded : function(aEvent) 
-	{
-		var tab = aEvent.originalTarget;
-		var b   = this.getTabBrowserFromChildren(tab);
-
-		this.initTab(tab, b);
-
-		if (b.__treestyletab__readyToAttachNewTab) {
-			var parent = this.getTabById(b.__treestyletab__parentTab, b);
-			if (parent)
-				this.attachTabTo(tab, parent);
-
-			var refTab;
-			var newIndex = -1;
-			if (b.__treestyletab__insertBefore &&
-				(refTab = this.getTabById(b.__treestyletab__insertBefore, b))) {
-				newIndex = refTab._tPos;
-			}
-			else if (parent &&
-				this.getTreePref('insertNewChildAt') == this.kINSERT_FISRT &&
-				b.__treestyletab__multipleCount == 0) {
-				/* 複数の子タブを一気に開く場合、最初に開いたタブだけを
-				   子タブの最初の位置に挿入し、続くタブは「最初の開いたタブ」と
-				   「元々最初の子だったタブ」との間に挿入していく */
-				newIndex = parent._tPos + 1;
-				if (refTab = this.getFirstChildTab(parent))
-					b.__treestyletab__insertBefore = refTab.getAttribute(this.kID);
-			}
-
-			if (newIndex > -1) {
-				if (newIndex > tab._tPos) newIndex--;
-				b.__treestyletab__internallyTabMoving = true;
-				b.moveTabTo(tab, newIndex);
-				b.__treestyletab__internallyTabMoving = false;
-			}
-		}
-
-		if (!b.__treestyletab__readyToAttachMultiple) {
-			this.stopToOpenChildTab(b);
-		}
-		else {
-			b.__treestyletab__multipleCount++;
-		}
-	},
- 
-	onTabRemoved : function(aEvent) 
-	{
-		var tab = aEvent.originalTarget;
-		var b   = this.getTabBrowserFromChildren(tab);
-
-		this.destroyTab(tab, b);
-
-		if (tab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true') {
-			var descendant = this.getDescendantTabs(tab);
-			for (var i = descendant.length-1; i > -1; i--)
-			{
-				b.removeTab(descendant[i]);
-			}
-		}
-
-		var firstChild     = this.getFirstChildTab(tab);
-		var parentTab      = this.getParentTab(tab);
-		var nextFocusedTab = null;
-
-		var next = this.getNextSiblingTab(tab);
-		if (next)
-			this.setTabValue(tab, this.kINSERT_BEFORE, next.getAttribute(this.kID));
-
-		if (firstChild) {
-			var backupChildren = this.getTabValue(tab, this.kCHILDREN);
-			var children   = this.getChildTabs(tab);
-			var self       = this;
-			var attach     = this.getTreePref('attachChildrenToGrandParentOnRemoveTab');
-			var processTab = !attach ? function(aTab) {
-					self.partTab(aTab, true);
-					self.moveTabSubTreeTo(aTab, b.mTabContainer.lastChild._tPos);
-				} :
-				parentTab ? function(aTab) {
-					self.attachTabTo(aTab, parentTab, {
-						insertBefore : tab,
-						dontUpdateIndent : true,
-						dontExpand : true
-					});
-				} :
-				function(aTab) {
-					self.partTab(aTab, true);
-				};
-			for (var i = 0, maxi = children.length; i < maxi; i++)
-			{
-				processTab(children[i]);
-			}
-			this.updateTabsIndent(children);
-			this.checkTabsIndentOverflow(b);
-			if (attach) {
-				nextFocusedTab = firstChild;
-			}
-			this.setTabValue(tab, this.kCHILDREN, backupChildren);
-		}
-
-		if (parentTab) {
-			var firstSibling = this.getFirstChildTab(parentTab);
-			var lastSibling  = this.getLastChildTab(parentTab);
-			if (tab == lastSibling) {
-				if (tab == firstSibling) { // there is only one child
-					nextFocusedTab = parentTab;
-				}
-				else { // previous sibling tab
-					nextFocusedTab = this.getPreviousSiblingTab(tab);
-				}
-			}
-			this.partTab(tab, true);
-		}
-		else if (!nextFocusedTab) {
-			nextFocusedTab = this.getNextSiblingTab(tab);
-		}
-
-		if (nextFocusedTab && b.selectedTab == tab)
-			b.selectedTab = nextFocusedTab;
-
-		this.checkTabsIndentOverflow(b);
-	},
- 
-	onTabMove : function(aEvent) 
-	{
-		var tab = aEvent.originalTarget;
-		var b   = this.getTabBrowserFromChildren(tab);
-		this.initTabContents(tab, b); // twisty vanished after the tab is moved!!
-
-		var rebuildTreeDone = false;
-
-		if (tab.getAttribute(this.kCHILDREN) && !b.__treestyletab__isSubTreeMoving) {
-			this.moveTabSubTreeTo(tab, tab._tPos);
-			rebuildTreeDone = true;
-		}
-
-		var parentTab = this.getParentTab(tab);
-		if (parentTab && !b.__treestyletab__isSubTreeChildrenMoving) {
-			this.updateChildrenArray(parentTab);
-		}
-
-		if (
-			rebuildTreeDone ||
-			b.__treestyletab__isSubTreeMoving ||
-			b.__treestyletab__internallyTabMoving
-			)
-			return;
-
-		var nest     = Number(tab.getAttribute(this.kNEST) || 0);
-		var parent     = this.getParentTab(tab);
-		var prevParent = this.getParentTab(tab.previousSibling);
-		var nextParent = this.getParentTab(tab.nextSibling);
-		var prevNest   = tab.previousSibling ? Number(tab.previousSibling.getAttribute(this.kNEST)) : -1 ;
-		var nextNest   = tab.nextSibling ? Number(tab.nextSibling.getAttribute(this.kNEST)) : -1 ;
-
-		if (
-			!tab.previousSibling || !tab.nextSibling ||
-			prevParent == nextParent ||
-			prevNest > nextNest
-			) {
-			if (prevParent)
-				this.attachTabTo(tab, prevParent, { insertBefore : tab.nextSibling });
-			else
-				this.partTab(tab);
-		}
-		else if (prevNest < nextNest) {
-			this.attachTabTo(tab, tab.previousSibling, { insertBefore : tab.nextSibling });
-		}
-	},
-	updateChildrenArray : function(aTab)
-	{
-		var children = this.getChildTabs(aTab);
-		children.sort(function(aA, aB) { return aA._tPos - aB._tPos; });
-		var self = this;
-		this.setTabValue(aTab, this.kCHILDREN,
-			children.map(function(aItem) { return aItem.getAttribute(self.kID); }).join('|'));
-	},
- 
-	onTabRestored : function(aEvent) 
-	{
-		var tab = aEvent.originalTarget;
-		var b   = this.getTabBrowserFromChildren(tab);
-		var id  = this.getTabValue(tab, this.kID);
-		this.setTabValue(tab, this.kID, id);
-
-		var isSubTreeCollapsed = (this.getTabValue(tab, this.kSUBTREE_COLLAPSED) == 'true');
-
-		var children = this.getTabValue(tab, this.kCHILDREN);
-		if (children) {
-			children = children.split('|');
-			var tabs = [];
-			for (var i = 0, maxi = children.length; i < maxi; i++)
-			{
-				if (children[i] && (children[i] = this.getTabById(children[i], b))) {
-					this.attachTabTo(children[i], tab, { dontExpand : true, dontUpdateIndent : true });
-					tabs.push(children[i]);
-				}
-			}
-		}
-
-		var parent = this.getTabValue(tab, this.kPARENT);
-		var before = this.getTabValue(tab, this.kINSERT_BEFORE);
-		if (parent) {
-			parent = this.getTabById(parent, b);
-			if (parent) {
-				this.attachTabTo(tab, parent, {
-					dontExpand : true,
-					insertBefore : (before ? this.getTabById(before, b) : null ),
-					dontUpdateIndent : true
-				});
-				this.updateTabsIndent([tab]);
-				this.checkTabsIndentOverflow(b);
-			}
-			else {
-				this.deleteTabValue(tab, this.kPARENT);
-			}
-		}
-		else if (children) {
-			this.updateTabsIndent(tabs);
-			this.checkTabsIndentOverflow(b);
-		}
-
-		if (!parent && (before = this.getTabById(before, b))) {
-			var index = before._tPos;
-			if (index > tab._tPos) index--;
-			b.__treestyletab__internallyTabMoving = true;
-			b.moveTabTo(tab, index);
-			b.__treestyletab__internallyTabMoving = false;
-		}
-		this.deleteTabValue(tab, this.kINSERT_BEFORE);
-
-		if (isSubTreeCollapsed) {
-			this.collapseExpandTabSubTree(tab, isSubTreeCollapsed);
-		}
-	},
- 
-	onTabMouseDown : function(aEvent) 
-	{
-		if (aEvent.button != 0 ||
-			!this.isEventFiredOnTwisty(aEvent))
-			return;
-
-		this.getTabFromEvent(aEvent).__treestyletab__preventSelect = true;
-	},
- 
-	onTabClick : function(aEvent) 
-	{
-		if (aEvent.button != 0 ||
-			!this.isEventFiredOnTwisty(aEvent))
-			return;
-
-		var tab = this.getTabFromEvent(aEvent);
-		this.collapseExpandTabSubTree(tab, tab.getAttribute(this.kSUBTREE_COLLAPSED) != 'true');
-
-		aEvent.preventDefault();
-		aEvent.stopPropagation();
-	},
- 
-	onTabSelect : function(aEvent) 
-	{
-		var b   = this.getTabBrowserFromChildren(aEvent.currentTarget);
-		var tab = b.selectedTab
-
-/*
-		var p;
-		if ((tab.getAttribute(this.kCOLLAPSED) == 'true') &&
-			(p = this.getParentTab(tab))) {
-			b.selectedTab = p;
-		}
-*/
-		if (tab.getAttribute(this.kCOLLAPSED) == 'true') {
-			var parentTab = tab;
-			while (parentTab = this.getParentTab(parentTab))
-			{
-				this.collapseExpandTabSubTree(parentTab, false);
-			}
-		}
-		else if (tab.getAttribute(this.kCHILDREN) &&
-				(tab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true') &&
-				this.getTreePref('autoCollapseExpandSubTreeOnSelect')) {
-			this.collapseExpandTreesIntelligentlyFor(tab);
-		}
-
-		if (this.autoHideEnabled && this.tabbarShown)
-			this.redrawContentArea();
-	},
- 
 	onTabbarResized : function(aEvent) 
 	{
-		var b = this.getTabBrowserFromChildren(aEvent.originalTarget);
-		this.setPref('extensions.treestyletab.tabbar.width', b.mStrip.boxObject.width);
-	},
- 
-	processDropAction : function(aInfo, aTabBrowser, aTarget) 
-	{
-		var b    = this.getTabBrowserFromChildren(aTabBrowser);
-		var tabs = b.mTabContainer.childNodes;
-		if (aTarget && aInfo.action & this.kACTION_PART) {
-			this.partTab(aTarget);
-		}
-		else if (aInfo.action & this.kACTION_ATTACH) {
-			if (aInfo.parent)
-				this.attachTabTo(aTarget, aInfo.parent);
-			else
-				this.partTab(aTarget);
-		}
-		else {
-			return false;
-		}
-
-		if (
-			aInfo.action & this.kACTION_MOVE &&
-			(
-				!aInfo.insertBefore ||
-				this.getNextVisibleTab(aTarget) != aInfo.insertBefore
-			)
-			) {
-			var newIndex = aInfo.insertBefore ? aInfo.insertBefore._tPos : tabs.length - 1 ;
-			if (aInfo.insertBefore && newIndex > aTarget._tPos) newIndex--;
-			b.__treestyletab__internallyTabMoving = true;
-			b.moveTabTo(aTarget,  newIndex);
-			b.__treestyletab__internallyTabMoving = false;
-		}
-		return true;
+		this.setPref(
+			'extensions.treestyletab.tabbar.width',
+			TreeStyleTabService.getTabBrowserFromChildren(aEvent.currentTarget)
+				.mStrip.boxObject.width
+		);
 	},
  
 	initContextMenu : function() 
@@ -1703,47 +856,6 @@ catch(e) {
 		if (this.getTreePref('show.openSelectionLinks') && this.getSelectionLinks().length) {
 			item.removeAttribute('hidden');
 			sep.removeAttribute('hidden');
-		}
-		else {
-			item.setAttribute('hidden', true);
-			sep.setAttribute('hidden', true);
-		}
-	},
- 
-	initTabContextMenu : function(aEvent) 
-	{
-		var b = this.getTabBrowserFromChildren(aEvent.currentTarget);
-		var item = this.evaluateXPath(
-			'descendant::xul:menuitem[starts-with(@id, "'+this.kMENUITEM_REMOVESUBTREE_CONTEXT+'")]',
-			aEvent.currentTarget,
-			XPathResult.FIRST_ORDERED_NODE_TYPE
-		).singleNodeValue;
-		if (this.getTreePref('show.context-item-removeTabSubTree'))
-			item.removeAttribute('hidden');
-		else
-			item.setAttribute('hidden', true);
-		this.showHideRemoveSubTreeMenuItem(item, [b.mContextTab]);
-
-		item = this.evaluateXPath(
-			'descendant::xul:menuitem[starts-with(@id, "'+this.kMENUITEM_AUTOHIDE_CONTEXT+'")]',
-			aEvent.currentTarget,
-			XPathResult.FIRST_ORDERED_NODE_TYPE
-		).singleNodeValue;
-		var sep = this.evaluateXPath(
-			'descendant::xul:menuseparator[starts-with(@id, "'+this.kMENUITEM_AUTOHIDE_SEPARATOR_CONTEXT+'")]',
-			aEvent.currentTarget,
-			XPathResult.FIRST_ORDERED_NODE_TYPE
-		).singleNodeValue;
-		var pos = b.getAttribute(this.kTABBAR_POSITION);
-		if (this.getTreePref('show.context-item-toggleAutoHide') &&
-			(pos == 'left' || pos == 'right')) {
-			item.removeAttribute('hidden');
-			sep.removeAttribute('hidden');
-
-			if (this.getTreePref('tabbar.autoHide.enabled'))
-				item.setAttribute('checked', true);
-			else
-				item.removeAttribute('checked');
 		}
 		else {
 			item.setAttribute('hidden', true);
@@ -1772,1051 +884,8 @@ catch(e) {
 			aMenuItem.setAttribute('hidden', true);
 	},
   
-/* Tab Utilities */ 
-	
-	getTabValue : function(aTab, aKey) 
-	{
-		var value = null;
-		try {
-			value = this.SessionStore.getTabValue(aTab, aKey);
-		}
-		catch(e) {
-		}
-
-		return value;
-	},
- 
-	setTabValue : function(aTab, aKey, aValue) 
-	{
-		if (!aValue) {
-			return this.deleteTabValue(aTab, aKey);
-		}
-		aTab.setAttribute(aKey, aValue);
-		try {
-			this.SessionStore.setTabValue(aTab, aKey, aValue);
-		}
-		catch(e) {
-		}
-		return aValue;
-	},
- 
-	deleteTabValue : function(aTab, aKey) 
-	{
-		aTab.removeAttribute(aKey);
-		try {
-			this.SessionStore.deleteTabValue(aTab, aKey);
-		}
-		catch(e) {
-		}
-	},
- 
-	getTabById : function(aId, aTabBrowser) 
-	{
-		if (!aId || !aTabBrowser) return null;
-		return this.evaluateXPath(
-				'descendant::xul:tab[@'+this.kID+' = "'+aId+'"]',
-				aTabBrowser.mTabContainer,
-				XPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue;
-	},
- 
-	getNextVisibleTab : function(aTab) 
-	{
-		var xpathResult = this.evaluateXPath(
-				'following-sibling::xul:tab[not(@'+TreeStyleTabService.kCOLLAPSED+'="true")]',
-				aTab
-			);
-		return xpathResult.snapshotItem(0);
-	},
- 
-	getPreviousVisibleTab : function(aTab) 
-	{
-		var xpathResult = this.evaluateXPath(
-				'preceding-sibling::xul:tab[not(@'+TreeStyleTabService.kCOLLAPSED+'="true")]',
-				aTab
-			);
-		return xpathResult.snapshotItem(xpathResult.snapshotLength-1);
-	},
- 
-/* tree */ 
-	
-	getRootTabs : function(aTabBrowser) 
-	{
-		return this.evaluateXPath(
-				'child::xul:tab[not(@'+this.kNEST+') or @'+this.kNEST+'="0" or @'+this.kNEST+'=""]',
-				aTabBrowser.mTabContainer
-			);
-	},
- 
-	getParentTab : function(aTab) 
-	{
-		if (!aTab) return null;
-		var id = aTab.getAttribute(this.kID);
-		if (!id) return null; // not initialized yet
-		return this.evaluateXPath(
-				'parent::*/child::xul:tab[contains(@'+this.kCHILDREN+', "'+id+'")]',
-				aTab,
-				XPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue;
-	},
- 
-	getRootTab : function(aTab) 
-	{
-		var parent = aTab;
-		var root   = aTab;
-		while (parent = this.getParentTab(parent))
-		{
-			root = parent;
-		}
-		return root;
-	},
- 
-	getNextSiblingTab : function(aTab) 
-	{
-		if (!aTab) return null;
-
-		var parentTab = this.getParentTab(aTab);
-
-		if (!parentTab) {
-			var next = aTab;
-			do {
-				next = next.nextSibling;
-			}
-			while (next && this.getParentTab(next));
-			return next;
-		}
-
-		var b        = this.getTabBrowserFromChildren(aTab);
-		var children = parentTab.getAttribute(this.kCHILDREN);
-		if (children) {
-			var list = ('|'+children).split('|'+aTab.getAttribute(this.kID))[1].split('|');
-			for (var i = 0, maxi = list.length; i < maxi; i++)
-			{
-				var firstChild = this.getTabById(list[i], b);
-				if (firstChild) return firstChild;
-			}
-		}
-		return null;
-	},
- 
-	getPreviousSiblingTab : function(aTab) 
-	{
-		if (!aTab) return null;
-
-		var parentTab = this.getParentTab(aTab);
-
-		if (!parentTab) {
-			var prev = aTab;
-			do {
-				prev = prev.previousSibling;
-			}
-			while (prev && this.getParentTab(prev));
-			return prev;
-		}
-
-		var b        = this.getTabBrowserFromChildren(aTab);
-		var children = parentTab.getAttribute(this.kCHILDREN);
-		if (children) {
-			var list = ('|'+children).split('|'+aTab.getAttribute(this.kID))[0].split('|');
-			for (var i = list.length-1; i > -1; i--)
-			{
-				var lastChild = this.getTabById(list[i], b)
-				if (lastChild) return lastChild;
-			}
-		}
-		return null;
-	},
- 
-	getChildTabs : function(aTab, aAllTabsArray) 
-	{
-		var tabs = [];
-		if (!aTab) return null;
-
-		var children = aTab.getAttribute(this.kCHILDREN);
-		if (!children) return tabs;
-
-		if (aAllTabsArray) tabs = aAllTabsArray;
-
-		var list = children.split('|');
-		var b    = this.getTabBrowserFromChildren(aTab);
-		var tab;
-		for (var i = 0, maxi = list.length; i < maxi; i++)
-		{
-			tab = this.getTabById(list[i], b)
-			if (!tab) continue;
-			tabs.push(tab);
-			if (aAllTabsArray)
-				this.getChildTabs(tab, tabs);
-		}
-
-		return tabs;
-	},
- 
-	getDescendantTabs : function(aTab) 
-	{
-		var tabs = [];
-		this.getChildTabs(aTab, tabs);
-		return tabs;
-	},
- 
-	getFirstChildTab : function(aTab) 
-	{
-		if (!aTab) return null;
-
-		var b          = this.getTabBrowserFromChildren(aTab);
-		var children   = aTab.getAttribute(this.kCHILDREN);
-		var firstChild = null;
-		if (children) {
-			var list = children.split('|');
-			for (var i = 0, maxi = list.length; i < maxi; i++)
-			{
-				firstChild = this.getTabById(list[i], b)
-				if (firstChild) break;
-			}
-		}
-		return firstChild;
-	},
- 
-	getLastChildTab : function(aTab) 
-	{
-		if (!aTab) return null;
-
-		var b         = this.getTabBrowserFromChildren(aTab);
-		var children  = aTab.getAttribute(this.kCHILDREN);
-		var lastChild = null;
-		if (children) {
-			var list = children.split('|');
-			for (var i = list.length-1; i > -1; i--)
-			{
-				lastChild = this.getTabById(list[i], b)
-				if (lastChild) break;
-			}
-		}
-		return lastChild;
-	},
-  
-	getDropAction : function(aEvent, aDragSession) 
-	{
-		var info = this.getDropActionInternal(aEvent);
-		info.canDrop = true;
-		if (info.action & this.kACTION_ATTACH &&
-			aDragSession &&
-			aDragSession.sourceNode &&
-			aDragSession.sourceNode.localName == 'tab') {
-			var orig = aDragSession.sourceNode;
-			if (orig == info.parent) {
-				info.canDrop = false;
-			}
-			else {
-				var tab  = info.target;
-				while (tab = this.getParentTab(tab))
-				{
-					if (tab != orig) continue;
-					info.canDrop = false;
-					break;
-				}
-			}
-		}
-		return info;
-	},
-	getDropActionInternal : function(aEvent)
-	{
-		var tab        = aEvent.target;
-		var b          = this.getTabBrowserFromChildren(tab);
-		var tabs       = b.mTabContainer.childNodes;
-		var isInverted = this.isTabVertical(b) ? false : window.getComputedStyle(b.parentNode, null).direction == 'rtl';
-		var info       = {
-				target       : null,
-				position     : null,
-				action       : null,
-				parent       : null,
-				insertBefore : null
-			};
-
-		if (tab.localName != 'tab') {
-			if (aEvent[b.positionProp] < tabs[0].boxObject[b.positionProp]) {
-				info.target   = info.parent = info.insertBefore = tabs[0];
-				info.position = isInverted ? this.kDROP_AFTER : this.kDROP_BEFORE ;
-				info.action   = this.kACTION_MOVE | this.kACTION_PART;
-				return info;
-			}
-			else if (aEvent[b.positionProp] > tabs[tabs.length-1].boxObject[b.positionProp] + tabs[tabs.length-1].boxObject[b.sizeProp]) {
-				info.target   = info.parent = tabs[tabs.length-1];
-				info.position = isInverted ? this.kDROP_BEFORE : this.kDROP_AFTER ;
-				info.action   = this.kACTION_MOVE | this.kACTION_PART;
-				return info;
-			}
-			else {
-				info.target = tabs[Math.min(b.getNewIndex(aEvent), tabs.length - 1)];
-			}
-		}
-		else {
-			info.target = tab;
-		}
-
-		var boxPos  = tab.boxObject[b.positionProp];
-		var boxUnit = Math.round(tab.boxObject[b.sizeProp] / 3);
-		if (aEvent[b.positionProp] < boxPos + boxUnit) {
-			info.position = isInverted ? this.kDROP_AFTER : this.kDROP_BEFORE ;
-		}
-		else if (aEvent[b.positionProp] > boxPos + boxUnit + boxUnit) {
-			info.position = isInverted ? this.kDROP_BEFORE : this.kDROP_AFTER ;
-		}
-		else {
-			info.position = this.kDROP_ON;
-		}
-
-		switch (info.position)
-		{
-			case this.kDROP_ON:
-				info.action       = this.kACTION_ATTACH;
-				info.parent       = tab;
-				info.insertBefore = this.getNextVisibleTab(tab);
-				break;
-
-			case this.kDROP_BEFORE:
-/*
-	[TARGET  ] ↑part from parent, and move
-
-	  [      ]
-	[TARGET  ] ↑attach to the parent of the target, and move
-
-	[        ]
-	[TARGET  ] ↑attach to the parent of the target, and move
-
-	[        ]
-	  [TARGET] ↑attach to the parent of the target (previous tab), and move
-*/
-				var prevTab = this.getPreviousVisibleTab(tab);
-				if (!prevTab) {
-					info.action       = this.kACTION_MOVE | this.kACTION_PART;
-					info.insertBefore = tabs[0];
-				}
-				else {
-					var prevNest   = Number(prevTab.getAttribute(this.kNEST));
-					var targetNest = Number(tab.getAttribute(this.kNEST));
-					info.parent       = (prevNest < targetNest) ? prevTab : this.getParentTab(tab) ;
-					info.action       = this.kACTION_MOVE | (info.parent ? this.kACTION_ATTACH : this.kACTION_PART );
-					info.insertBefore = tab;
-				}
-				break;
-
-			case this.kDROP_AFTER:
-/*
-	[TARGET  ] ↓if the target has a parent, attach to it and and move
-
-	  [TARGET] ↓attach to the parent of the target, and move
-	[        ]
-
-	[TARGET  ] ↓attach to the parent of the target, and move
-	[        ]
-
-	[TARGET  ] ↓attach to the target, and move
-	  [      ]
-*/
-				var nextTab = this.getNextVisibleTab(tab);
-				if (!nextTab) {
-					info.action = this.kACTION_MOVE | this.kACTION_ATTACH;
-					info.parent = this.getParentTab(tab);
-				}
-				else {
-					var targetNest = Number(tab.getAttribute(this.kNEST));
-					var nextNest   = Number(nextTab.getAttribute(this.kNEST));
-					info.parent       = (targetNest < nextNest) ? tab : this.getParentTab(tab) ;
-					info.action       = this.kACTION_MOVE | (info.parent ? this.kACTION_ATTACH : this.kACTION_PART );
-					info.insertBefore = nextTab;
-				}
-				break;
-		}
-
-		return info;
-	},
- 
-	clearDropPosition : function(aTabBrowser) 
-	{
-		var b = this.getTabBrowserFromChildren(aTabBrowser);
-		var xpathResult = this.evaluateXPath(
-				'child::xul:tab[@'+this.kDROP_POSITION+']',
-				b.mTabContainer
-			);
-		for (var i = 0, maxi = xpathResult.snapshotLength; i < maxi; i++)
-		{
-			xpathResult.snapshotItem(i).removeAttribute(this.kDROP_POSITION);
-		}
-	},
-  
 /* Commands */ 
-	 
-	initTabbar : function(aTabBrowser, aPosition) 
-	{
-		if (!aPosition) aPosition = this.getTreePref('tabbar.position');
-		aPosition = String(aPosition).toLowerCase();
-
-		if (aTabBrowser.getAttribute('id') != 'content') {
-			aPosition = 'top';
-		}
-
-		var pos = (aPosition == 'left') ? this.kTABBAR_LEFT :
-			(aPosition == 'right') ? this.kTABBAR_RIGHT :
-			(aPosition == 'bottom') ? this.kTABBAR_BOTTOM :
-			this.kTABBAR_TOP;
-
-		var splitter = document.getAnonymousElementByAttribute(aTabBrowser, 'class', this.kSPLITTER);
-		if (!splitter) {
-			splitter = document.createElement('splitter');
-			splitter.setAttribute('class', this.kSPLITTER);
-			splitter.setAttribute('onmouseup', 'TreeStyleTabService.onTabbarResized(event);');
-			splitter.setAttribute('state', 'open');
-			splitter.appendChild(document.createElement('grippy'));
-			var ref = aTabBrowser.mPanelContainer;
-			ref.parentNode.insertBefore(splitter, ref);
-		}
-
-		var scrollInnerBox = document.getAnonymousNodes(aTabBrowser.mTabContainer.mTabstrip._scrollbox)[0];
-		var allTabsButton = document.getAnonymousElementByAttribute(aTabBrowser.mTabContainer, 'class', 'tabs-alltabs-button');
-
-		// Tab Mix Plus
-		var scrollFrame = document.getAnonymousElementByAttribute(aTabBrowser.mTabContainer, 'id', 'scroll-tabs-frame');
-		var newTabBox = document.getAnonymousElementByAttribute(aTabBrowser.mTabContainer, 'id', 'tabs-newbutton-box');
-		var tabBarMode = this.getPref('extensions.tabmix.tabBarMode');
-
-		aTabBrowser.tabbarResizing = false;
-
-		if (pos & this.kTABBAR_VERTICAL) {
-			aTabBrowser.positionProp         = 'screenY';
-			aTabBrowser.sizeProp             = 'height';
-			aTabBrowser.invertedPositionProp = 'screenX';
-			aTabBrowser.invertedSizeProp     = 'width';
-
-			aTabBrowser.mTabBox.orient = 'horizontal';
-			aTabBrowser.mStrip.orient =
-				aTabBrowser.mTabContainer.orient =
-				aTabBrowser.mTabContainer.mTabstrip.orient =
-				aTabBrowser.mTabContainer.mTabstrip.parentNode.orient = 'vertical';
-			if (allTabsButton.parentNode.localName == 'hbox') { // Firefox 2
-				allTabsButton.parentNode.orient = 'vertical';
-				allTabsButton.parentNode.setAttribute('align', 'stretch');
-			}
-			allTabsButton.firstChild.setAttribute('position', 'before_start');
-			aTabBrowser.mTabContainer.setAttribute('align', 'stretch'); // for Mac OS X
-			scrollInnerBox.removeAttribute('flex');
-
-			if (scrollFrame) { // Tab Mix Plus
-				scrollFrame.parentNode.orient =
-					scrollFrame.orient = 'vertical';
-				newTabBox.orient = 'horizontal';
-				if (tabBarMode == 2)
-					this.setPref('extensions.tabmix.tabBarMode', 1);
-			}
-
-			aTabBrowser.mStrip.removeAttribute('width');
-			aTabBrowser.mStrip.setAttribute('width', this.getTreePref('tabbar.width'));
-
-			aTabBrowser.setAttribute(this.kMODE, 'vertical');
-			if (pos == this.kTABBAR_RIGHT) {
-				aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'right');
-				if (this.getTreePref('tabbar.invertUI')) {
-					aTabBrowser.setAttribute(this.kUI_INVERTED, 'true');
-					aTabBrowser.levelMarginProp = 'margin-right';
-				}
-				else {
-					aTabBrowser.removeAttribute(this.kUI_INVERTED);
-					aTabBrowser.levelMarginProp = 'margin-left';
-				}
-				window.setTimeout(function(aWidth) {
-					/* in Firefox 3, the width of the rightside tab bar
-					   unexpectedly becomes 0 on the startup. so, we have
-					   to set the width again. */
-					aTabBrowser.mStrip.setAttribute('width', aWidth);
-					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
-					aTabBrowser.mStrip.setAttribute('ordinal', 30);
-					splitter.setAttribute('ordinal', 20);
-					aTabBrowser.mPanelContainer.setAttribute('ordinal', 10);
-					splitter.setAttribute('collapse', 'after');
-				}, 0, this.getTreePref('tabbar.width'));
-			}
-			else {
-				aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'left');
-				aTabBrowser.removeAttribute(this.kUI_INVERTED);
-				aTabBrowser.levelMarginProp = 'margin-left';
-				window.setTimeout(function() {
-					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
-					aTabBrowser.mStrip.setAttribute('ordinal', 10);
-					splitter.setAttribute('ordinal', 20);
-					aTabBrowser.mPanelContainer.setAttribute('ordinal', 30);
-					splitter.setAttribute('collapse', 'before');
-				}, 0);
-			}
-		}
-		else {
-			aTabBrowser.positionProp         = 'screenX';
-			aTabBrowser.sizeProp             = 'width';
-			aTabBrowser.invertedPositionProp = 'screenY';
-			aTabBrowser.invertedSizeProp     = 'height';
-
-			aTabBrowser.mTabBox.orient = 'vertical';
-			aTabBrowser.mStrip.orient =
-				aTabBrowser.mTabContainer.orient =
-				aTabBrowser.mTabContainer.mTabstrip.orient =
-				aTabBrowser.mTabContainer.mTabstrip.parentNode.orient = 'horizontal';
-			if (allTabsButton.parentNode.localName == 'hbox') { // Firefox 2
-				allTabsButton.parentNode.orient = 'horizontal';
-				allTabsButton.parentNode.removeAttribute('align');
-			}
-			allTabsButton.firstChild.setAttribute('position', 'after_end');
-			aTabBrowser.mTabContainer.removeAttribute('align'); // for Mac OS X
-			scrollInnerBox.setAttribute('flex', 1);
-
-			if (scrollFrame) { // Tab Mix Plus
-				scrollFrame.parentNode.orient =
-					scrollFrame.orient = 'horizontal';
-				newTabBox.orient = 'vertical';
-			}
-
-			aTabBrowser.mStrip.removeAttribute('width');
-			aTabBrowser.mPanelContainer.removeAttribute('width');
-
-			aTabBrowser.setAttribute(this.kMODE, this.getTreePref('tabbar.multirow') ? 'multirow' : 'horizontal' );
-			aTabBrowser.removeAttribute(this.kUI_INVERTED);
-			if (pos == this.kTABBAR_BOTTOM) {
-				aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'bottom');
-				aTabBrowser.levelMarginProp = 'margin-bottom';
-				window.setTimeout(function() {
-					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
-					aTabBrowser.mStrip.setAttribute('ordinal', 30);
-					splitter.setAttribute('ordinal', 20);
-					aTabBrowser.mPanelContainer.setAttribute('ordinal', 10);
-				}, 0);
-			}
-			else {
-				aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'top');
-				aTabBrowser.levelMarginProp = 'margin-top';
-				window.setTimeout(function() {
-					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
-					aTabBrowser.mStrip.setAttribute('ordinal', 10);
-					splitter.setAttribute('ordinal', 20);
-					aTabBrowser.mPanelContainer.setAttribute('ordinal', 30);
-				}, 0);
-			}
-		}
-	},
- 
-/* attach/part */ 
 	
-	attachTabTo : function(aChild, aParent, aInfo) 
-	{
-		if (
-			!aChild ||
-			!aParent ||
-			aChild == aParent ||
-			this.getParentTab(aChild) == aParent
-			)
-			return;
-
-		if (!aInfo) aInfo = {};
-
-		var id = aChild.getAttribute(this.kID);
-		if (!id || !aParent.getAttribute(this.kID))
-			return; // if the tab is not initialized yet, do nothing.
-
-		this.partTab(aChild, true);
-
-		var b        = this.getTabBrowserFromChildren(aParent);
-		var children = aParent.getAttribute(this.kCHILDREN);
-		var newIndex;
-
-		if (children.indexOf(id) > -1) {
-			children = ('|'+children).replace('|'+id, '').replace(/^\|/);
-		}
-
-		var insertBefore = aInfo.insertBefore;
-		var beforeTab = insertBefore ? insertBefore.getAttribute(this.kID) : null ;
-		if (beforeTab && children.indexOf(beforeTab) > -1) {
-			children = children.replace(beforeTab, id+'|'+beforeTab);
-			newIndex = insertBefore._tPos;
-		}
-		else {
-			children = ((children || '')+'|'+id).replace(/^\|/, '');
-			var refTab = aParent;
-			var descendant = this.getDescendantTabs(aParent);
-			if (descendant.length) refTab = descendant[descendant.length-1];
-			newIndex = refTab._tPos+1;
-		}
-
-		this.setTabValue(aParent, this.kCHILDREN, children);
-		this.setTabValue(aChild, this.kPARENT, aParent.getAttribute(this.kID));
-		this.updateTabsCount(aParent);
-
-		if (newIndex > aChild._tPos) newIndex--;
-		this.moveTabSubTreeTo(aChild, newIndex);
-
-		if (!aInfo.dontExpand) {
-			if (
-/*
-				(
-					aParent.getAttribute(this.kSUBTREE_COLLAPSED) == 'true' ||
-					children.indexOf('|') > -1 // not a first child
-				) &&
-*/
-				this.getTreePref('autoCollapseExpandSubTreeOnSelect')
-				) {
-				this.collapseExpandTreesIntelligentlyFor(aParent);
-				var p = aParent;
-				do {
-					this.collapseExpandTabSubTree(p, false);
-				}
-				while (p = this.getParentTab(p));
-			}
-			else if (aParent.getAttribute(this.kSUBTREE_COLLAPSED) == 'true') {
-				if (this.getTreePref('autoExpandSubTreeOnAppendChild')) {
-					var p = aParent;
-					do {
-						this.collapseExpandTabSubTree(p, false);
-					}
-					while (p = this.getParentTab(p));
-				}
-				else
-					this.collapseExpandTab(aChild, true);
-			}
-
-			if (aParent.getAttribute(this.kCOLLAPSED) == 'true')
-				this.collapseExpandTab(aChild, true);
-		}
-		else if (aParent.getAttribute(this.kSUBTREE_COLLAPSED) == 'true' ||
-				aParent.getAttribute(this.kCOLLAPSED) == 'true') {
-			this.collapseExpandTab(aChild, true);
-		}
-
-		if (!aInfo.dontUpdateIndent) {
-			this.updateTabsIndent([aChild]);
-			this.checkTabsIndentOverflow(b);
-		}
-	},
- 
-	partTab : function(aChild, aDontUpdateIndent) 
-	{
-		if (!aChild) return;
-
-		var parentTab = this.getParentTab(aChild);
-		if (!parentTab) return;
-
-		var id = aChild.getAttribute(this.kID);
-		var children = ('|'+parentTab.getAttribute(this.kCHILDREN))
-						.replace(new RegExp('\\|'+id), '')
-						.replace(/^\|/, '');
-		this.setTabValue(parentTab, this.kCHILDREN, children);
-		this.updateTabsCount(parentTab);
-
-		if (!aDontUpdateIndent) {
-			this.updateTabsIndent([aChild]);
-			var b = this.getTabBrowserFromChildren(aChild);
-			this.checkTabsIndentOverflow(b);
-		}
-	},
- 
-	updateTabsIndent : function(aTabs, aLevel, aProp) 
-	{
-		if (!aTabs || !aTabs.length) return;
-
-		if (aLevel === void(0)) {
-			var parentTab = this.getParentTab(aTabs[0]);
-			var aLevel = 0;
-			while (parentTab)
-			{
-				aLevel++;
-				parentTab = this.getParentTab(parentTab);
-			}
-		}
-
-		var b      = this.getTabBrowserFromChildren(aTabs[0]);
-		if (!aProp) {
-			aProp = this.getTreePref('enableSubtreeIndent') ? b.levelMarginProp : 0 ;
-		}
-		var margin = b.__treestyletab__levelMargin < 0 ? this.levelMargin : b.__treestyletab__levelMargin ;
-		var indent = margin * aLevel;
-
-		for (var i = 0, maxi = aTabs.length; i < maxi; i++)
-		{
-			aTabs[i].setAttribute('style', aTabs[i].getAttribute('style').replace(/margin(-[^:]+):[^;]+;?/g, '')+'; '+aProp+':'+indent+'px !important;');
-			aTabs[i].setAttribute(this.kNEST, aLevel);
-			this.updateTabsIndent(this.getChildTabs(aTabs[i]), aLevel+1, aProp);
-		}
-	},
- 
-	updateAllTabsIndent : function(aTabBrowser) 
-	{
-		var b = this.getTabBrowserFromChildren(aTabBrowser);
-		this.updateTabsIndent(
-			this.getArrayFromXPathResult(
-				this.getRootTabs(b)
-			),
-			0
-		);
-//		this.checkTabsIndentOverflow(b);
-	},
- 
-	checkTabsIndentOverflow : function(aTabBrowser) 
-	{
-		if (this.checkTabsIndentOverflowTimer) {
-			window.clearTimeout(this.checkTabsIndentOverflowTimer);
-			this.checkTabsIndentOverflowTimer = null;
-		}
-		this.checkTabsIndentOverflowTimer = window.setTimeout(function(aSelf, aTabBrowser) {
-			aSelf.checkTabsIndentOverflowCallback(aTabBrowser);
-		}, 100, this, aTabBrowser);
-	},
-	checkTabsIndentOverflowTimer : null,
-	checkTabsIndentOverflowCallback : function(aTabBrowser)
-	{
-		var b    = aTabBrowser;
-		var tabs = this.getArrayFromXPathResult(this.evaluateXPath(
-				'child::xul:tab[@'+this.kNEST+' and not(@'+this.kNEST+'="0" or @'+this.kNEST+'="")]',
-				b.mTabContainer
-			));
-		if (!tabs.length) return;
-
-		var self = this;
-		tabs.sort(function(aA, aB) { return Number(aA.getAttribute(self.kNEST)) - Number(aB.getAttribute(self.kNEST)); });
-		var nest = tabs[tabs.length-1].getAttribute(self.kNEST);
-		if (!nest) return;
-
-		var oldMargin = b.__treestyletab__levelMargin;
-		var indent    = (oldMargin < 0 ? this.levelMargin : oldMargin ) * nest;
-		var maxIndent = b.mTabContainer.childNodes[0].boxObject[b.invertedSizeProp] * 0.33;
-
-		var marginUnit = Math.max(Math.floor(maxIndent / nest), 1);
-		if (indent > maxIndent) {
-			b.__treestyletab__levelMargin = marginUnit;
-		}
-		else {
-			b.__treestyletab__levelMargin = -1;
-			if ((this.levelMargin * nest) > maxIndent)
-				b.__treestyletab__levelMargin = marginUnit;
-		}
-
-		if (oldMargin != b.__treestyletab__levelMargin) {
-			this.updateAllTabsIndent(b);
-		}
-	},
- 
-	updateTabsCount : function(aTab) 
-	{
-		var count = document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER);
-		if (count) {
-			count.setAttribute('value', '('+this.getDescendantTabs(aTab).length+')');
-		}
-		var parent = this.getParentTab(aTab);
-		if (parent)
-			this.updateTabsCount(parent);
-	},
-  
-/* move */ 
-	
-	moveTabSubTreeTo : function(aTab, aIndex) 
-	{
-		if (!aTab) return;
-
-		var b = this.getTabBrowserFromChildren(aTab);
-		b.__treestyletab__isSubTreeMoving = true;
-
-		b.__treestyletab__internallyTabMoving = true;
-		b.moveTabTo(aTab, aIndex);
-		b.__treestyletab__internallyTabMoving = false;
-
-		b.__treestyletab__isSubTreeChildrenMoving = true;
-		b.__treestyletab__internallyTabMoving     = true;
-		var tabs = this.getDescendantTabs(aTab);
-		for (var i = 0, maxi = tabs.length; i < maxi; i++)
-		{
-			b.moveTabTo(tabs[i], aTab._tPos+i+(aTab._tPos < tabs[i]._tPos ? 1 : 0 ));
-		}
-		b.__treestyletab__internallyTabMoving     = false;
-		b.__treestyletab__isSubTreeChildrenMoving = false;
-
-		b.__treestyletab__isSubTreeMoving = false;
-	},
- 
-	moveTabLevel : function(aEvent) 
-	{
-		var b = this.getTabBrowserFromChildren(aEvent.target);
-		var parentTab = this.getParentTab(b.mCurrentTab);
-		if (aEvent.keyCode == KeyEvent.DOM_VK_RIGHT) {
-			var prevTab = this.getPreviousSiblingTab(b.mCurrentTab);
-			if ((!parentTab && prevTab) ||
-				(parentTab && b.mCurrentTab != this.getFirstChildTab(parentTab))) {
-				this.attachTabTo(b.mCurrentTab, prevTab);
-				b.mCurrentTab.focus();
-				return true;
-			}
-		}
-		else if (aEvent.keyCode == KeyEvent.DOM_VK_LEFT && parentTab) {
-			var grandParent = this.getParentTab(parentTab);
-			if (grandParent) {
-				this.attachTabTo(b.mCurrentTab, grandParent, {
-					insertBefore : this.getNextSiblingTab(parentTab)
-				});
-				b.mCurrentTab.focus();
-				return true;
-			}
-			else {
-				var nextTab = this.getNextSiblingTab(parentTab);
-				this.partTab(b.mCurrentTab);
-				b.__treestyletab__internallyTabMoving = true;
-				if (nextTab) {
-					b.moveTabTo(b.mCurrentTab, nextTab._tPos - 1);
-				}
-				else {
-					b.moveTabTo(b.mCurrentTab, b.mTabContainer.lastChild._tPos);
-				}
-				b.__treestyletab__internallyTabMoving = false;
-				b.mCurrentTab.focus();
-				return true;
-			}
-		}
-		return false;
-	},
-  
-/* collapse/expand */ 
-	
-	collapseExpandTabSubTree : function(aTab, aCollapse) 
-	{
-		if (!aTab) return;
-
-		if ((aTab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true') == aCollapse) return;
-
-		var b = this.getTabBrowserFromChildren(aTab);
-		b.__treestyletab__doingCollapseExpand = true;
-
-		this.setTabValue(aTab, this.kSUBTREE_COLLAPSED, aCollapse);
-
-		var tabs = this.getChildTabs(aTab);
-		for (var i = 0, maxi = tabs.length; i < maxi; i++)
-		{
-			this.collapseExpandTab(tabs[i], aCollapse);
-		}
-
-		if (!aCollapse)
-			this.scrollToTabSubTree(aTab);
-
-		b.__treestyletab__doingCollapseExpand = false;
-	},
- 
-	collapseExpandTab : function(aTab, aCollapse) 
-	{
-		if (!aTab) return;
-
-		this.setTabValue(aTab, this.kCOLLAPSED, aCollapse);
-
-		var b = this.getTabBrowserFromChildren(aTab);
-		var p;
-		if (aCollapse && aTab == b.selectedTab && (p = this.getParentTab(aTab))) {
-			b.selectedTab = p;
-		}
-
-		var isSubTreeCollapsed = (aTab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true');
-		var tabs = this.getChildTabs(aTab);
-		for (var i = 0, maxi = tabs.length; i < maxi; i++)
-		{
-			if (!isSubTreeCollapsed)
-				this.collapseExpandTab(tabs[i], aCollapse);
-		}
-	},
- 
-	collapseExpandTreesIntelligentlyFor : function(aTab) 
-	{
-		var b = this.getTabBrowserFromChildren(aTab);
-		if (b.__treestyletab__doingCollapseExpand) return;
-
-		var sameParentTab = this.getParentTab(aTab);
-		var expandedParentTabs = [
-				aTab.getAttribute(this.kID)
-			];
-		var parentTab = aTab;
-		while (parentTab = this.getParentTab(parentTab))
-		{
-			expandedParentTabs.push(parentTab.getAttribute(this.kID));
-		}
-		expandedParentTabs = expandedParentTabs.join('|');
-
-		var xpathResult = this.evaluateXPath(
-				'child::xul:tab[@'+this.kCHILDREN+' and not(@'+this.kCOLLAPSED+'="true") and not(@'+this.kSUBTREE_COLLAPSED+'="true") and @'+this.kID+' and not(contains("'+expandedParentTabs+'", @'+this.kID+'))]',
-				b.mTabContainer
-			);
-		var collapseTab;
-		var dontCollapse;
-		for (var i = 0, maxi = xpathResult.snapshotLength; i < maxi; i++)
-		{
-			dontCollapse = false;
-			collapseTab  = xpathResult.snapshotItem(i);
-
-			parentTab = this.getParentTab(collapseTab);
-			if (parentTab) {
-				dontCollapse = true;
-				if (parentTab.getAttribute(this.kSUBTREE_COLLAPSED) != 'true') {
-					do {
-						if (expandedParentTabs.indexOf(parentTab.getAttribute(this.kID)) < 0)
-							continue;
-						dontCollapse = false;
-						break;
-					}
-					while (parentTab = this.getParentTab(parentTab));
-				}
-			}
-
-			if (!dontCollapse)
-				this.collapseExpandTabSubTree(collapseTab, true);
-		}
-
-		this.collapseExpandTabSubTree(aTab, false);
-	},
-  
-/* scroll */ 
-	
-	scrollTo : function(aTabBrowser, aEndX, aEndY) 
-	{
-		if (this.getTreePref('tabbar.scroll.smooth'))
-			this.smoothScrollTo(aTabBrowser, aEndX, aEndY);
-		else
-			this.getTabBrowserFromChildren(aTabBrowser).mTabstrip.scrollBoxObject.scrollTo(aEndX, aEndY);
-	},
-	 
-	smoothScrollTo : function(aTabBrowser, aEndX, aEndY) 
-	{
-		var b = this.getTabBrowserFromChildren(aTabBrowser);
-
-		if (b.__treestyletab__smoothScrollTimer) {
-			window.clearInterval(b.__treestyletab__smoothScrollTimer);
-			b.__treestyletab__smoothScrollTimer = null;
-		}
-
-		var scrollBoxObject = b.mTabContainer.mTabstrip.scrollBoxObject;
-		var x = {}, y = {};
-		scrollBoxObject.getPosition(x, y);
-		b.__treestyletab__smoothScrollTimer = window.setInterval(
-			this.smoothScrollToCallback,
-			10,
-			this,
-			b,
-			x.value,
-			y.value,
-			aEndX,
-			aEndY,
-			Date.now(),
-			this.getTreePref('tabbar.scroll.timeout')
-		);
-	},
- 
-	smoothScrollToCallback : function(aSelf, aTabBrowser, aStartX, aStartY, aEndX, aEndY, aStartTime, aTimeout) 
-	{
-		var newX = aStartX + parseInt(
-				(aEndX - aStartX) * ((Date.now() - aStartTime) / aTimeout)
-			);
-		var newY = aStartY + parseInt(
-				(aEndY - aStartY) * ((Date.now() - aStartTime) / aTimeout)
-			);
-
-		var scrollBoxObject = aTabBrowser.mTabContainer.mTabstrip.scrollBoxObject;
-		var x = {}, y = {};
-		scrollBoxObject.getPosition(x, y);
-
-		var w = {}, h = {};
-		scrollBoxObject.getScrolledSize(w, h);
-		var maxX = Math.max(0, w.value - scrollBoxObject.width);
-		var maxY = Math.max(0, h.value - scrollBoxObject.height);
-
-		if (
-				(
-				aEndX - aStartX > 0 ?
-					x.value >= Math.min(aEndX, maxX) :
-					x.value <= Math.min(aEndX, maxX)
-				) &&
-				(
-				aEndY - aStartY > 0 ?
-					y.value >= Math.min(aEndY, maxY) :
-					y.value <= Math.min(aEndY, maxY)
-				)
-			) {
-			if (aTabBrowser.__treestyletab__smoothScrollTimer) {
-				window.clearInterval(aTabBrowser.__treestyletab__smoothScrollTimer);
-				aTabBrowser.__treestyletab__smoothScrollTimer = null;
-			}
-			return;
-		}
-
-		scrollBoxObject.scrollTo(newX, newY);
-	},
-  
-	scrollToTab : function(aTab) 
-	{
-		if (!aTab || this.isTabInViewport(aTab)) return;
-
-		var b = this.getTabBrowserFromChildren(aTab);
-
-		var scrollBoxObject = b.mTabContainer.mTabstrip.scrollBoxObject;
-		var w = {}, h = {};
-		try {
-			scrollBoxObject.getScrolledSize(w, h);
-		}
-		catch(e) { // Tab Mix Plus
-			return;
-		}
-
-		var targetTabBox = aTab.boxObject;
-		var baseTabBox = aTab.parentNode.firstChild.boxObject;
-
-		var targetX = (aTab.boxObject.screenX < scrollBoxObject.screenX) ?
-			(targetTabBox.screenX - baseTabBox.screenX) - (targetTabBox.width * 0.5) :
-			(targetTabBox.screenX - baseTabBox.screenX) - scrollBoxObject.width + (targetTabBox.width * 1.5) ;
-
-		var targetY = (aTab.boxObject.screenY < scrollBoxObject.screenY) ?
-			(targetTabBox.screenY - baseTabBox.screenY) - (targetTabBox.height * 0.5) :
-			(targetTabBox.screenY - baseTabBox.screenY) - scrollBoxObject.height + (targetTabBox.height * 1.5) ;
-
-		this.scrollTo(b, targetX, targetY);
-	},
- 
-	scrollToTabSubTree : function(aTab) 
-	{
-		var b          = this.getTabBrowserFromChildren(aTab);
-		var descendant = this.getDescendantTabs(aTab);
-		var lastVisible = aTab;
-		for (var i = descendant.length-1; i > -1; i--)
-		{
-			if (descendant[i].getAttribute(this.kCOLLAPSED) == 'true') continue;
-			lastVisible = descendant[i];
-			break;
-		}
-
-		var containerPosition = b.mStrip.boxObject[b.positionProp];
-		var containerSize     = b.mStrip.boxObject[b.sizeProp];
-		var parentPosition    = aTab.boxObject[b.positionProp];
-		var lastPosition      = lastVisible.boxObject[b.positionProp];
-		var tabSize           = lastVisible.boxObject[b.sizeProp];
-
-		if (this.isTabInViewport(aTab) && this.isTabInViewport(lastVisible)) {
-			return;
-		}
-
-		if (lastPosition - parentPosition + tabSize > containerSize - tabSize) { // out of screen
-			var endPos = parentPosition - b.mTabContainer.firstChild.boxObject[b.positionProp] - tabSize * 0.5;
-			var endX = this.isTabVertical(aTab) ? 0 : endPos ;
-			var endY = this.isTabVertical(aTab) ? endPos : 0 ;
-			this.scrollTo(b, endX, endY);
-		}
-		else if (!this.isTabInViewport(aTab) && this.isTabInViewport(lastVisible)) {
-			this.scrollToTab(aTab);
-		}
-		else if (this.isTabInViewport(aTab) && !this.isTabInViewport(lastVisible)) {
-			this.scrollToTab(lastVisible);
-		}
-		else if (parentPosition < containerPosition) {
-			this.scrollToTab(aTab);
-		}
-		else {
-			this.scrollToTab(lastVisible);
-		}
-	},
-  
 	removeTabSubTree : function(aTabOrTabs) 
 	{
 		var tabs = aTabOrTabs;
@@ -2824,17 +893,17 @@ catch(e) {
 			tabs = [aTabOrTabs];
 		}
 
+		var b = this.getTabBrowserFromChildren(tabs[0]);
 		var descendant = [];
 		for (var i = 0, maxi = tabs.length; i < maxi; i++)
 		{
-			descendant = descendant.concat(this.getDescendantTabs(tabs[i]));
+			descendant = descendant.concat(b.treeStyleTab.getDescendantTabs(tabs[i]));
 		}
 		tabs = this.cleanUpTabsArray(tabs.concat(descendant));
 
 		var max = tabs.length;
 		if (!max) return;
 
-		var b = this.getTabBrowserFromChildren(tabs[0]);
 		if (
 			max > 1 &&
 			!b.warnAboutClosingTabs(true, max)
@@ -2846,7 +915,23 @@ catch(e) {
 			b.removeTab(tabs[i]);
 		}
 	},
- 
+	 
+	cleanUpTabsArray : function(aTabs) 
+	{
+		var b = this.getTabBrowserFromChildren(aTabs[0]);
+
+		var self = this;
+		aTabs = aTabs.map(function(aTab) { return aTab.getAttribute(self.kID); });
+		aTabs.sort();
+		aTabs = aTabs.join('|').replace(/([^\|]+)(\|\1)+/g, '$1').split('|');
+
+		for (var i = 0, maxi = aTabs.length; i < maxi; i++)
+		{
+			aTabs[i] = b.treeStyleTab.getTabById(aTabs[i]);
+		}
+		return aTabs;
+	},
+  
 	openSelectionLinks : function() 
 	{
 		var links = this.getSelectionLinks();
@@ -2868,7 +953,7 @@ catch(e) {
 		});
 		this.stopToOpenChildTab(targetWindow);
 	},
-	
+	 
 	getSelectionLinks : function() 
 	{
 		var links = [];
@@ -2959,201 +1044,7 @@ catch(e) {
 
 		return node.href ? node : null ;
 	},
-   
-/* auto hide */ 
-	autoHideEnabled : false,
-	tabbarShown : true,
-	 
-	get tabbarWidth() 
-	{
-		if (this.tabbarShown) {
-			var b = this.browser;
-			var splitter = document.getAnonymousElementByAttribute(b, 'class', this.kSPLITTER);
-			this._tabbarWidth = b.mStrip.boxObject.width +
-				(splitter ? splitter.boxObject.width : 0 );
-		}
-		return this._tabbarWidth;
-	},
-	set tabbarWidth(aNewWidth)
-	{
-		this._tabbarWidth = aNewWidth;
-		return this._tabbarWidth;
-	},
-	_tabbarWidth : 0,
- 
-	get tabbarHeight() 
-	{
-		if (this.tabbarShown) {
-			var b = this.browser;
-			this._tabbarHeight = b.mStrip.boxObject.height;
-		}
-		return this._tabbarHeight;
-	},
-	set tabbarHeight(aNewHeight)
-	{
-		this._tabbarHeight = aNewHeight;
-		return this._tabbarHeight;
-	},
-	_tabbarHeight : 0,
- 
-	toggleAutoHide : function() 
-	{
-		this.setTreePref('tabbar.autoHide.enabled',
-			!this.getTreePref('tabbar.autoHide.enabled'));
-	},
- 
-	get areaPadding() 
-	{
-		return this.getTreePref('tabbar.autoHide.area');
-	},
- 
-	startAutoHide : function(aTabBrowser) 
-	{
-		if (this.autoHideEnabled) return;
-		this.autoHideEnabled = true;
-
-		this.container.addEventListener('mousedown', this, true);
-		this.container.addEventListener('mouseup', this, true);
-		this.container.addEventListener('mousemove', this, true);
-		this.container.addEventListener('scroll', this, true);
-		this.container.addEventListener('resize', this, true);
-		this.container.addEventListener('load', this, true);
-
-		this.tabbarShown = true;
-		this.showHideTabbarInternal();
-	},
- 
-	endAutoHide : function(aTabBrowser) 
-	{
-		if (!this.autoHideEnabled) return;
-		this.autoHideEnabled = false;
-
-		this.container.removeEventListener('mousedown', this, true);
-		this.container.removeEventListener('mouseup', this, true);
-		this.container.removeEventListener('mousemove', this, true);
-		this.container.removeEventListener('scroll', this, true);
-		this.container.removeEventListener('resize', this, true);
-		this.container.removeEventListener('load', this, true);
-
-		this.container.style.margin = 0;
-		this.browser.removeAttribute(this.kAUTOHIDE);
-		this.tabbarShown = true;
-	},
- 
-	showHideTabbar : function(aEvent) 
-	{
-		if ('gestureInProgress' in window && window.gestureInProgress) return;
-
-		this.cancelShowHideTabbar();
-
-		var b      = this.browser;
-		var pos    = b.getAttribute(this.kTABBAR_POSITION);
-		var expand = this.getTreePref('tabbar.autoHide.expandArea');
-		if (!this.tabbarShown &&
-			(
-				pos == 'left' ?
-					(aEvent.screenX <= b.boxObject.screenX + (expand ? this.tabbarWidth : 0 ) + this.areaPadding) :
-				pos == 'right' ?
-					(aEvent.screenX >= b.boxObject.screenX + b.boxObject.width - (expand ? this.tabbarWidth : 0 ) - this.areaPadding) :
-				pos == 'bottom' ?
-					(aEvent.screenY >= b.boxObject.screenY + b.boxObject.height - (expand ? this.tabbarHeight : 0 ) - this.areaPadding) :
-					(aEvent.screenY <= b.boxObject.screenY + (expand ? this.tabbarHeight : 0 ) + this.areaPadding)
-				))
-				this.showHideTabbarTimer = window.setTimeout(
-					'TreeStyleTabService.showHideTabbarInternal();',
-					this.getTreePref('tabbar.autoHide.delay')
-				);
-
-		if (this.tabbarShown &&
-			(
-				pos == 'left' ?
-					(aEvent.screenX > b.mCurrentBrowser.boxObject.screenX + this.areaPadding) :
-				pos == 'right' ?
-					(aEvent.screenX < b.mCurrentBrowser.boxObject.screenX + b.mCurrentBrowser.boxObject.width - this.areaPadding) :
-				pos == 'bottom' ?
-					(aEvent.screenY < b.mCurrentBrowser.boxObject.screenY + b.mCurrentBrowser.boxObject.height - this.areaPadding) :
-					(aEvent.screenY > b.mCurrentBrowser.boxObject.screenY + this.areaPadding)
-				))
-				this.showHideTabbarTimer = window.setTimeout(
-					'TreeStyleTabService.showHideTabbarInternal();',
-					this.getTreePref('tabbar.autoHide.delay')
-				);
-	},
-	showHideTabbarTimer : null,
-	 
-	showHideTabbarInternal : function() 
-	{
-		var b = this.browser;
-		if (this.tabbarShown) {
-			var splitter = document.getAnonymousElementByAttribute(b, 'class', this.kSPLITTER);
-			this.tabbarHeight = b.mStrip.boxObject.height;
-			this.tabbarWidth = b.mStrip.boxObject.width +
-				(splitter ? splitter.boxObject.width : 0 );
-			this.container.style.margin = 0;
-			b.setAttribute(this.kAUTOHIDE, true);
-			this.tabbarShown = false;
-		}
-		else {
-			switch (b.getAttribute(this.kTABBAR_POSITION))
-			{
-				case 'left':
-					this.container.style.marginRight = '-'+this.tabbarWidth+'px';
-					break;
-				case 'right':
-					this.container.style.marginLeft = '-'+this.tabbarWidth+'px';
-					break;
-				case 'bottom':
-					this.container.style.marginTop = '-'+this.tabbarHeight+'px';
-					break;
-				default:
-					this.container.style.marginBottom = '-'+this.tabbarHeight+'px';
-					break;
-			}
-			b.removeAttribute(this.kAUTOHIDE);
-			this.tabbarShown = true;
-		}
-		this.redrawContentArea();
-		window.setTimeout('TreeStyleTabService.checkTabsIndentOverflow(TreeStyleTabService.browser);', 0);
-	},
- 
-	cancelShowHideTabbar : function() 
-	{
-		if (this.showHideTabbarTimer) {
-			window.clearTimeout(this.showHideTabbarTimer);
-			this.showHideTabbarTimer = null;
-		}
-	},
-  
-	redrawContentArea : function() 
-	{
-		var pos = this.browser.getAttribute(this.kTABBAR_POSITION);
-		try {
-			var v = this.browser.markupDocumentViewer;
-			if (this.tabbarShown) {
-				v.move(
-					(
-						!this.tabbarShown ? 0 :
-						pos == 'left' ? -this.tabbarWidth :
-						pos == 'right' ? this.tabbarWidth :
-						0
-					),
-					(
-						!this.tabbarShown ? 0 :
-						pos == 'top' ? -this.tabbarHeight :
-						pos == 'bottom' ? this.tabbarHeight :
-						0
-					)
-				);
-			}
-			else {
-				v.move(window.outerWidth,window.outerHeight);
-				v.move(0,0);
-			}
-		}
-		catch(e) {
-		}
-	},
-   
+    
 /* Pref Listener */ 
 	
 	domain : 'extensions.treestyletab', 
@@ -3166,7 +1057,7 @@ catch(e) {
 		switch (aPrefName)
 		{
 			case 'extensions.treestyletab.levelMargin':
-				this.levelMargin = value;
+				this.baseLebelMargin = value;
 				this.ObserverService.notifyObservers(null, 'TreeStyleTab:levelMarginModified', value);
 				break;
 
@@ -3283,111 +1174,4 @@ catch(e) {
 
 window.addEventListener('load', TreeStyleTabService, false);
 window.addEventListener('unload', TreeStyleTabService, false);
- 
-function TreeStyleTabBrowserObserver(aTabBrowser) 
-{
-	this.mTabBrowser = aTabBrowser;
-	TreeStyleTabService.ObserverService.addObserver(this, 'TreeStyleTab:levelMarginModified', false);
-	TreeStyleTabService.addPrefListener(this);
-}
-TreeStyleTabBrowserObserver.prototype = {
-	domain      : 'extensions.treestyletab',
-	mTabBrowser : null,
-	observe : function(aSubject, aTopic, aData)
-	{
-		var sv = TreeStyleTabService;
-		var b = this.mTabBrowser;
-		switch (aTopic)
-		{
-			case 'TreeStyleTab:levelMarginModified':
-				if (b.__treestyletab__levelMargin > -1) {
-					sv.updateAllTabsIndent(b);
-				}
-				break;
-
-			case 'nsPref:changed':
-				var value = sv.getPref(aData);
-				var tabContainer = b.mTabContainer;
-				var tabs  = Array.prototype.slice.call(tabContainer.childNodes);
-				switch (aData)
-				{
-					case 'extensions.treestyletab.tabbar.position':
-						if (value != 'left' && value != 'right') {
-							sv.endAutoHide(b);
-						}
-						tabs.forEach(function(aTab) {
-							sv.initTabAttributes(aTab, b);
-						});
-					case 'extensions.treestyletab.tabbar.invertUI':
-					case 'extensions.treestyletab.tabbar.multirow':
-						sv.initTabbar(b);
-						sv.updateAllTabsIndent(b);
-						tabs.forEach(function(aTab) {
-							sv.initTabContents(aTab, b);
-						});
-						break;
-
-					case 'extensions.treestyletab.enableSubtreeIndent':
-						sv.updateAllTabsIndent(b);
-						break;
-
-					case 'extensions.treestyletab.tabbar.style':
-						b.setAttribute(sv.kSTYLE, value);
-						break;
-
-					case 'extensions.treestyletab.showBorderForFirstTab':
-						if (value)
-							b.setAttribute(sv.kFIRSTTAB_BORDER, true);
-						else
-							b.removeAttribute(sv.kFIRSTTAB_BORDER);
-						break;
-
-					case 'extensions.treestyletab.tabbar.invertScrollbar':
-						if (value &&
-							sv.getTreePref('tabbar.position') == 'left' &&
-							sv.isGecko18)
-							b.setAttribute(sv.kSCROLLBAR_INVERTED, true);
-						else
-							b.removeAttribute(sv.kSCROLLBAR_INVERTED);
-						break;
-
-					case 'extensions.treestyletab.tabbar.hideAlltabsButton':
-						var pos = sv.getTreePref('tabbar.position');
-						if (value && (pos == 'left' || pos == 'right'))
-							b.setAttribute(sv.kHIDE_ALLTABS, true);
-						else
-							b.removeAttribute(sv.kHIDE_ALLTABS);
-						break;
-
-					case 'extensions.treestyletab.allowSubtreeCollapseExpand':
-						if (value)
-							b.setAttribute(sv.kALLOW_COLLAPSE, true);
-						else
-							b.removeAttribute(sv.kALLOW_COLLAPSE);
-						break;
-
-					case 'extensions.treestyletab.tabbar.autoHide.enabled':
-						var pos = sv.getTreePref('tabbar.position');
-						if (value && (pos == 'left' || pos == 'right'))
-							sv.startAutoHide(b);
-						else
-							sv.endAutoHide(b);
-						break;
-
-					default:
-						break;
-				}
-				break;
-
-			default:
-				break;
-		}
-	},
-	destroy : function()
-	{
-		TreeStyleTabService.ObserverService.removeObserver(this, 'TreeStyleTab:levelMarginModified');
-		TreeStyleTabService.removePrefListener(this);
-		delete this.mTabBrowser;
-	}
-};
- 
+ 	

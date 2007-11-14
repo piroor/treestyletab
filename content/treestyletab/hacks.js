@@ -1,4 +1,18 @@
-TreeStyleTabService.overrideExtensions = function() {
+TreeStyleTabService.overrideExtensionsBeforeInit = function() {
+
+	// Tab Mix Plus
+	if ('TMP_LastTab' in window) {
+		TMP_LastTab.TabBar = gBrowser.mTabContainer;
+	}
+	if ('flst' in window) {
+		flst.tb = gBrowser;
+		flst.tabBox = flst.tb.mTabBox;
+	}
+
+};
+
+TreeStyleTabService.overrideExtensionsAfterInit = function() {
+
 	if ('MultipleTabService' in window) { // Multiple Tab Handler
 		eval('MultipleTabService.showHideMenuItems = '+
 			MultipleTabService.showHideMenuItems.toSource().replace(
@@ -31,14 +45,14 @@ TreeStyleTabService.overrideExtensions = function() {
 				))]]></>
 			).replace(
 				'e.screenY > getBrowser().mCurrentBrowser.boxObject.screenY + 25',
-				<><![CDATA[(e.screenY > getBrowser().mCurrentBrowser.boxObject.screenY + 25 &&
+				<><![CDATA[(e.screenY > gBrowser.mCurrentBrowser.boxObject.screenY + 25 &&
 				(
 				treeStyleTabPos == 'left' ?
-					(e.screenX > getBrowser().mCurrentBrowser.boxObject.screenX + 25) :
+					(e.screenX > gBrowser.mCurrentBrowser.boxObject.screenX + 25) :
 				treeStyleTabPos == 'right' ?
-					(e.screenX < getBrowser().mCurrentBrowser.boxObject.screenX + getBrowser().mCurrentBrowser.boxObject.width - 25) :
+					(e.screenX < gBrowser.mCurrentBrowser.boxObject.screenX + gBrowser.mCurrentBrowser.boxObject.width - 25) :
 				treeStyleTabPos == 'bottom' ?
-					(e.screenY < getBrowser().mCurrentBrowser.boxObject.screenY + getBrowser().mCurrentBrowser.boxObject.height - 25) :
+					(e.screenY < gBrowser.mCurrentBrowser.boxObject.screenY + gBrowser.mCurrentBrowser.boxObject.height - 25) :
 					true
 				))]]></>
 			)
@@ -47,7 +61,7 @@ TreeStyleTabService.overrideExtensions = function() {
 			autoHIDE.HideToolbar.toSource().replace(
 				'if (this.Show) {',
 				<><![CDATA[
-					window.setTimeout('TreeStyleTabService.checkTabsIndentOverflow(gBrowser);', 0);
+					window.setTimeout('gBrowser.treeStyleTab.checkTabsIndentOverflow();', 0);
 					var treeStyleTabPos = gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION);
 					if (this.Show) {
 						var appcontent = document.getElementById('appcontent');
@@ -68,7 +82,7 @@ TreeStyleTabService.overrideExtensions = function() {
 							appcontent.__treestyletab__resized = false;
 							appcontent.style.margin = 0;
 						}
-						window.setTimeout('TreeStyleTabService.checkTabsIndentOverflow(gBrowser);', 0);
+						window.setTimeout('gBrowser.treeStyleTab.checkTabsIndentOverflow();', 0);
 				]]></>
 			)
 		);
@@ -79,7 +93,7 @@ TreeStyleTabService.overrideExtensions = function() {
 					{
 						if (arguments.length && arguments[0]) {
 							var treeStyleTabSplitter = document.getAnonymousElementByAttribute(gBrowser, 'class', TreeStyleTabService.kSPLITTER);
-							TreeStyleTabService.tabbarWidth = gBrowser.mStrip.boxObject.width +
+							gBrowser.treeStyleTab.tabbarWidth = gBrowser.mStrip.boxObject.width +
 								(treeStyleTabSplitter ? treeStyleTabSplitter.boxObject.width : 0 );
 						}
 				]]></>
@@ -95,12 +109,12 @@ TreeStyleTabService.overrideExtensions = function() {
 							var appcontent = document.getElementById('appcontent');
 							if (treeStyleTabPos == 'left' &&
 								!appcontent.__treestyletab__resized) {
-								appcontent.style.marginRight = '-'+TreeStyleTabService.tabbarWidth+'px';
+								appcontent.style.marginRight = '-'+gBrowser.treeStyleTab.tabbarWidth+'px';
 								appcontent.__treestyletab__resized = true;
 							}
 							else if (treeStyleTabPos == 'right' &&
 								!appcontent.__treestyletab__resized) {
-								appcontent.style.marginLeft = '-'+TreeStyleTabService.tabbarWidth+'px';
+								appcontent.style.marginLeft = '-'+gBrowser.treeStyleTab.tabbarWidth+'px';
 								appcontent.__treestyletab__resized = true;
 							}
 							window.setTimeout('autoHIDE.MoveC(true);', 100);
@@ -111,8 +125,8 @@ TreeStyleTabService.overrideExtensions = function() {
 				'.move(0, - this.delta)',
 				<><![CDATA[.move(
 					(
-						treeStyleTabPos == 'left' ? -TreeStyleTabService.tabbarWidth :
-						treeStyleTabPos == 'right' ? TreeStyleTabService.tabbarWidth :
+						treeStyleTabPos == 'left' ? -gBrowser.treeStyleTab.tabbarWidth :
+						treeStyleTabPos == 'right' ? gBrowser.treeStyleTab.tabbarWidth :
 						0
 					),
 					-this.delta
@@ -129,10 +143,10 @@ TreeStyleTabService.overrideExtensions = function() {
 							var pos      = gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION);
 							if (window.fullScreen) { // restore
 								if (autoHide && (pos == 'left' || pos == 'right'))
-									TreeStyleTabService.startAutoHide();
+									gBrowser.treeStyleTab.startAutoHide();
 							}
 							else { // turn to fullscreen
-								TreeStyleTabService.endAutoHide();
+								gBrowser.treeStyleTab.endAutoHide();
 							}
 							break;
 
@@ -155,8 +169,8 @@ TreeStyleTabService.overrideExtensions = function() {
 			window.TMupdateSettings.toSource().replace(
 				/(\{aTab.removeAttribute\("tabxleft"\);\})(\})/,
 				<><![CDATA[$1
-					TreeStyleTabService.initTabAttributes(aTab);
-					TreeStyleTabService.initTabContentsOrder(aTab);
+					gBrowser.treeStyleTab.initTabAttributes(aTab);
+					gBrowser.treeStyleTab.initTabContentsOrder(aTab);
 				$2]]></>
 			)
 		);
@@ -166,8 +180,8 @@ TreeStyleTabService.overrideExtensions = function() {
 			window.tabxTabAdded.toSource().replace(
 				/(\})(\)?)$/,
 				<><![CDATA[
-					TreeStyleTabService.initTabAttributes(aTab);
-					TreeStyleTabService.initTabContentsOrder(aTab);
+					gBrowser.treeStyleTab.initTabAttributes(aTab);
+					gBrowser.treeStyleTab.initTabContentsOrder(aTab);
 				$1$2]]></>
 			)
 		);
@@ -230,7 +244,7 @@ TreeStyleTabService.overrideExtensions = function() {
 		eval('TabDNDObserver.clearDragmark = '+
 			TabDNDObserver.clearDragmark.toSource().replace(
 				/(\})(\))?$/,
-				'TreeStyleTabService.clearDropPosition(gBrowser); $1$2'
+				'gBrowser.treeStyleTab.clearDropPosition(); $1$2'
 			)
 		);
 		eval('TabDNDObserver.canDrop = '+
@@ -256,13 +270,13 @@ TreeStyleTabService.overrideExtensions = function() {
 			).replace(
 				/(var newIndex =)/,
 				<><![CDATA[
-					if (isTabReorder && TreeStyleTabService.processDropAction(dropActionInfo, TSTTabBrowser, aDragSession.sourceNode))
+					if (isTabReorder && TSTTabBrowser.treeStyleTab.processDropAction(dropActionInfo, aDragSession.sourceNode))
 						return;
 				]]></>
 			).replace(
 				/(aTab = gBrowser.addTab\(url\));/,
 				<><![CDATA[
-					TreeStyleTabService.processDropAction(dropActionInfo, TSTTabBrowser, $1);
+					TSTTabBrowser.treeStyleTab.processDropAction(dropActionInfo, $1);
 					return;
 				]]></>
 			).replace(
@@ -274,7 +288,7 @@ TreeStyleTabService.overrideExtensions = function() {
 						TreeStyleTabService.getTreePref('loadDroppedLinkToNewChildTab') ||
 						dropActionInfo.position != TreeStyleTabService.kDROP_ON
 						) {
-						TreeStyleTabService.processDropAction(dropActionInfo, TSTTabBrowser, TSTTabBrowser.loadOneTab(url, null, null, null, bgLoad, false));
+						TSTTabBrowser.treeStyleTab.processDropAction(dropActionInfo, TSTTabBrowser.loadOneTab(url, null, null, null, bgLoad, false));
 						return;
 					}
 				]]></>
@@ -331,8 +345,8 @@ TreeStyleTabService.overrideExtensions = function() {
 			TMP_Bookmark.openGroup.toSource().replace(
 				'index = prevTab._tPos + 1;',
 				<><![CDATA[
-					index = TreeStyleTabService.getNextSiblingTab(TreeStyleTabService.getRootTab(prevTab));
-					if (tabToSelect == aTab) index = TreeStyleTabService.getNextSiblingTab(index);
+					index = gBrowser.treeStyleTab.getNextSiblingTab(gBrowser.treeStyleTab.getRootTab(prevTab));
+					if (tabToSelect == aTab) index = gBrowser.treeStyleTab.getNextSiblingTab(index);
 					index = index ? index._tPos : (prevTab._tPos + 1);
 				]]></>
 			).replace(
@@ -340,7 +354,7 @@ TreeStyleTabService.overrideExtensions = function() {
 				<><![CDATA[
 					$1
 					if (tabToSelect == aTab) {
-						TreeStyleTabService.readyToOpenChildTab(tabToSelect, true, TreeStyleTabService.getNextSiblingTab(tabToSelect));
+						TreeStyleTabService.readyToOpenChildTab(tabToSelect, true, gBrowser.treeStyleTab.getNextSiblingTab(tabToSelect));
 					}
 				]]></>
 			).replace(
@@ -354,8 +368,8 @@ TreeStyleTabService.overrideExtensions = function() {
 		window.setTimeout(function() {
 			// correct broken appearance of the first tab
 			var t = gBrowser.mTabContainer.firstChild;
-			TreeStyleTabService.initTabAttributes(t, gBrowser);
-			TreeStyleTabService.initTabContentsOrder(t, gBrowser);
+			gBrowser.treeStyleTab.initTabAttributes(t);
+			gBrowser.treeStyleTab.initTabContentsOrder(t);
 
 			eval('gBrowser.openInverseLink = '+
 				gBrowser.openInverseLink.toSource().replace(
@@ -367,7 +381,7 @@ TreeStyleTabService.overrideExtensions = function() {
 			eval('gBrowser.TMP_openTabNext = '+
 				gBrowser.TMP_openTabNext.toSource().replace(
 					'{',
-					'{ var tabs = TreeStyleTabService.getDescendantTabs(TreeStyleTabService.getRootTab(this.mCurrentTab));'
+					'{ var tabs = this.treeStyleTab.getDescendantTabs(this.treeStyleTab.getRootTab(this.mCurrentTab));'
 				).replace(
 					/((this.mCurrentTab._tPos)( \+ this.mTabContainer.nextTab))/,
 					'((tabs.length ? tabs[tabs.length-1]._tPos : $2 )$3)'
@@ -377,20 +391,19 @@ TreeStyleTabService.overrideExtensions = function() {
 			eval('gBrowser.TMmoveTabTo = '+
 				gBrowser.TMmoveTabTo.toSource().replace(
 					/(aTab.dispatchEvent)/,
-					'this.__treestyletab__internallyTabMoving = true; $1'
+					'this.treeStyleTab.internallyTabMoving = true; $1'
 				).replace(
 					/(return aTab;\})(\)?)$/,
-					'this.__treestyletab__internallyTabMoving = false; $1$2'
+					'this.treeStyleTab.internallyTabMoving = false; $1$2'
 				)
 			);
 
 			window.BrowserHome = window.TM_BrowserHome;
 			window.BrowserOpenTab = window.TMP_BrowserOpenTab;
 
-			gBrowser.__treestyletab__internallyTabMoving = false;
+			gBrowser.treeStyleTab.internallyTabMoving = false;
 		}, 0);
 
-		gBrowser.__treestyletab__internallyTabMoving = true; // until "TMmoveTabTo" method is overwritten
+		gBrowser.treeStyleTab.internallyTabMoving = true; // until "TMmoveTabTo" method is overwritten
 	}
-
 };
