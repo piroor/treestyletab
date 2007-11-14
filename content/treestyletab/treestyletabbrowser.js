@@ -59,11 +59,13 @@ TreeStyleTabBrowser.prototype = {
   
 /* tree */ 
 	
-	getRootTabs : function() 
+	get rootTabs() 
 	{
-		return this.evaluateXPath(
-				'child::xul:tab[not(@'+this.kNEST+') or @'+this.kNEST+'="0" or @'+this.kNEST+'=""]',
-				this.mTabBrowser.mTabContainer
+		return this.getArrayFromXPathResult(
+				this.evaluateXPath(
+					'child::xul:tab[not(@'+this.kNEST+') or @'+this.kNEST+'="0" or @'+this.kNEST+'=""]',
+					this.mTabBrowser.mTabContainer
+				)
 			);
 	},
  
@@ -223,7 +225,7 @@ TreeStyleTabBrowser.prototype = {
 			value = this.SessionStore.getTabValue(aTab, aKey);
 		}
 		catch(e) {
-dump		}
+		}
 
 		return value;
 	},
@@ -266,7 +268,7 @@ dump		}
 		return close;
 	},
  
-	isTabVertical : function() 
+	get isVertical() 
 	{
 		var b = this.mTabBrowser;
 		if (!b) return false;
@@ -429,12 +431,7 @@ dump		}
  
 	updateAllTabsIndent : function() 
 	{
-		this.updateTabsIndent(
-			this.getArrayFromXPathResult(
-				this.getRootTabs()
-			),
-			0
-		);
+		this.updateTabsIndent(this.rootTabs, 0);
 //		this.checkTabsIndentOverflow();
 	},
  
@@ -786,8 +783,8 @@ dump		}
 
 		if (lastPosition - parentPosition + tabSize > containerSize - tabSize) { // out of screen
 			var endPos = parentPosition - b.mTabContainer.firstChild.boxObject[this.positionProp] - tabSize * 0.5;
-			var endX = this.isTabVertical() ? 0 : endPos ;
-			var endY = this.isTabVertical() ? endPos : 0 ;
+			var endX = this.isVertical ? 0 : endPos ;
+			var endY = this.isVertical ? endPos : 0 ;
 			this.scrollTo(endX, endY);
 		}
 		else if (!this.isTabInViewport(aTab) && this.isTabInViewport(lastVisible)) {
@@ -1388,7 +1385,7 @@ dump		}
 		var tab        = aEvent.target;
 		var b          = this.mTabBrowser;
 		var tabs       = b.mTabContainer.childNodes;
-		var isInverted = this.isTabVertical() ? false : window.getComputedStyle(b.parentNode, null).direction == 'rtl';
+		var isInverted = this.isVertical ? false : window.getComputedStyle(b.parentNode, null).direction == 'rtl';
 		var info       = {
 				target       : null,
 				position     : null,
@@ -1887,7 +1884,7 @@ dump		}
 			b._keyEventHandler.handleEvent.toSource().replace(
 				'this.tabbrowser.moveTabOver(aEvent);',
 				<><![CDATA[
-					if (!this.tabbrowser.treeStyleTab.isTabVertical() ||
+					if (!this.tabbrowser.treeStyleTab.isVertical ||
 						!this.tabbrowser.treeStyleTab.moveTabLevel(aEvent)) {
 						this.tabbrowser.moveTabOver(aEvent);
 					}
@@ -1895,7 +1892,7 @@ dump		}
 			).replace(
 				'this.tabbrowser.moveTabForward();',
 				<><![CDATA[
-					if (this.tabbrowser.treeStyleTab.isTabVertical() ||
+					if (this.tabbrowser.treeStyleTab.isVertical ||
 						!this.tabbrowser.treeStyleTab.moveTabLevel(aEvent)) {
 						this.tabbrowser.moveTabForward();
 					}
@@ -1903,7 +1900,7 @@ dump		}
 			).replace(
 				'this.tabbrowser.moveTabBackward();',
 				<><![CDATA[
-					if (this.tabbrowser.treeStyleTab.isTabVertical() ||
+					if (this.tabbrowser.treeStyleTab.isVertical ||
 						!this.tabbrowser.treeStyleTab.moveTabLevel(aEvent)) {
 						this.tabbrowser.moveTabBackward();
 					}
