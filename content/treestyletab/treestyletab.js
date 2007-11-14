@@ -258,7 +258,7 @@ var TreeStyleTabService = {
 		if (!tab) return false;
 
 		return tab.hasAttribute(this.kCHILDREN) && this.evaluateXPath(
-				'ancestor-or-self::*[@class="'+this.kTWISTY+'" or @class="tab-icon"]',
+				'ancestor-or-self::*[@class="'+this.kTWISTY+'" or (ancestor::xul:tabbrowser[@'+this.kMODE+'="vertical"] and @class="tab-icon")]',
 				aEvent.originalTarget || aEvent.target,
 				XPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue ? true : false ;
