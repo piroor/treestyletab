@@ -1847,8 +1847,10 @@ catch(e) {
 	getParentTab : function(aTab) 
 	{
 		if (!aTab) return null;
+		var id = aTab.getAttribute(this.kID);
+		if (!id) return null; // not initialized yet
 		return this.evaluateXPath(
-				'parent::*/child::xul:tab[contains(@'+this.kCHILDREN+', "'+aTab.getAttribute(this.kID)+'")]',
+				'parent::*/child::xul:tab[contains(@'+this.kCHILDREN+', "'+id+'")]',
 				aTab,
 				XPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
@@ -1869,7 +1871,6 @@ catch(e) {
 	{
 		if (!aTab) return null;
 
-		var id        = aTab.getAttribute(this.kID);
 		var parentTab = this.getParentTab(aTab);
 
 		if (!parentTab) {
@@ -1884,7 +1885,7 @@ catch(e) {
 		var b        = this.getTabBrowserFromChildren(aTab);
 		var children = parentTab.getAttribute(this.kCHILDREN);
 		if (children) {
-			var list = ('|'+children).split('|'+id)[1].split('|');
+			var list = ('|'+children).split('|'+aTab.getAttribute(this.kID))[1].split('|');
 			for (var i = 0, maxi = list.length; i < maxi; i++)
 			{
 				var firstChild = this.getTabById(list[i], b);
@@ -1898,7 +1899,6 @@ catch(e) {
 	{
 		if (!aTab) return null;
 
-		var id        = aTab.getAttribute(this.kID);
 		var parentTab = this.getParentTab(aTab);
 
 		if (!parentTab) {
@@ -1913,7 +1913,7 @@ catch(e) {
 		var b        = this.getTabBrowserFromChildren(aTab);
 		var children = parentTab.getAttribute(this.kCHILDREN);
 		if (children) {
-			var list = ('|'+children).split('|'+id)[0].split('|');
+			var list = ('|'+children).split('|'+aTab.getAttribute(this.kID))[0].split('|');
 			for (var i = list.length-1; i > -1; i--)
 			{
 				var lastChild = this.getTabById(list[i], b)
@@ -2303,10 +2303,12 @@ catch(e) {
 		if (!aInfo) aInfo = {};
 
 		var id = aChild.getAttribute(this.kID);
-		var b  = this.getTabBrowserFromChildren(aParent);
+		if (!id || !aParent.getAttribute(this.kID))
+			return; // if the tab is not initialized yet, do nothing.
 
 		this.partTab(aChild, true);
 
+		var b        = this.getTabBrowserFromChildren(aParent);
 		var children = aParent.getAttribute(this.kCHILDREN);
 		var newIndex;
 
@@ -2625,7 +2627,7 @@ catch(e) {
 		expandedParentTabs = expandedParentTabs.join('|');
 
 		var xpathResult = this.evaluateXPath(
-				'child::xul:tab[@'+this.kCHILDREN+' and not(@'+this.kCOLLAPSED+'="true") and not(@'+this.kSUBTREE_COLLAPSED+'="true") and not(contains("'+expandedParentTabs+'", @'+this.kID+'))]',
+				'child::xul:tab[@'+this.kCHILDREN+' and not(@'+this.kCOLLAPSED+'="true") and not(@'+this.kSUBTREE_COLLAPSED+'="true") and @'+this.kID+' and not(contains("'+expandedParentTabs+'", @'+this.kID+'))]',
 				b.mTabContainer
 			);
 		var collapseTab;
