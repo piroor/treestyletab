@@ -52,14 +52,7 @@ var TreeStyleTabService = {
 	kINSERT_FISRT : 0,
 	kINSERT_LAST  : 1,
 
-	levelMargin          : 12,
-	levelMarginProp      : 'margin-left',
-	positionProp         : 'screenY',
-	sizeProp             : 'height',
-	invertedPositionProp : 'screenX',
-	invertedSizeProp     : 'width',
-
-	tabbarResizing : false,
+	levelMargin : 12,
 
 	NSResolver : {
 		lookupNamespaceURI : function(aPrefix)
@@ -266,7 +259,7 @@ var TreeStyleTabService = {
  
 	get browser() 
 	{
-		return 'SplitBrowser' in window && this.getTreePref('inSubbrowsers.enabled')  ? SplitBrowser.activeBrowser : gBrowser ;
+		return 'SplitBrowser' in window ? SplitBrowser.activeBrowser : gBrowser ;
 	},
  
 	get container() 
@@ -356,7 +349,7 @@ var TreeStyleTabService = {
  
 	getTabBrowserFromFrame : function(aFrame) 
 	{
-		return ('SplitBrowser' in window) ? this.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(aFrame.top).browser) : gBrowser ;
+		return ('SplitBrowser' in window) ? this.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(aFrame.top).browser) : this.browser ;
 	},
  
 	getFrameFromTabBrowserElements : function(aFrameOrTabBrowser) 
@@ -455,11 +448,9 @@ var TreeStyleTabService = {
 
 		document.getElementById('contentAreaContextMenu').addEventListener('popupshowing', this, false);
 
-		if (this.getTreePref('inSubbrowsers.enabled')) {
-			var appcontent = document.getElementById('appcontent');
-			appcontent.addEventListener('SubBrowserAdded', this, false);
-			appcontent.addEventListener('SubBrowserRemoveRequest', this, false);
-		}
+		var appcontent = document.getElementById('appcontent');
+		appcontent.addEventListener('SubBrowserAdded', this, false);
+		appcontent.addEventListener('SubBrowserRemoveRequest', this, false);
 
 		this.addPrefListener(this);
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.levelMargin');
@@ -544,9 +535,9 @@ var TreeStyleTabService = {
 
 		eval('aTabBrowser.mTabContainer._notifyBackgroundTab = '+
 			aTabBrowser.mTabContainer._notifyBackgroundTab.toSource().replace(
-				/\.screenX/g, '[TreeStyleTabService.positionProp]'
+				/\.screenX/g, '[TreeStyleTabService.getTabBrowserFromChildren(this).positionProp]'
 			).replace(
-				/\.width/g, '[TreeStyleTabService.sizeProp]'
+				/\.width/g, '[TreeStyleTabService.getTabBrowserFromChildren(this).sizeProp]'
 			)
 		);
 
@@ -554,9 +545,9 @@ var TreeStyleTabService = {
 
 		eval('aTabBrowser.getNewIndex = '+
 			aTabBrowser.getNewIndex.toSource().replace(
-				/\.screenX/g, '[TreeStyleTabService.positionProp]'
+				/\.screenX/g, '[TreeStyleTabService.getTabBrowserFromChildren(this).positionProp]'
 			).replace(
-				/\.width/g, '[TreeStyleTabService.sizeProp]'
+				/\.width/g, '[TreeStyleTabService.getTabBrowserFromChildren(this).sizeProp]'
 			)
 		);
 
@@ -702,8 +693,8 @@ var TreeStyleTabService = {
 		/* To move up content area on the tab bar, switch tab.
 		   If we don't do it, a gray space appears on the content area
 		   by negative margin of it. */
-		if (this.getTreePref('tabbar.position') == 'left' &&
-			this.getTreePref('tabbar.invertScrollbar')) {
+		if (aTabBrowser.getAttribute(this.kTABBAR_POSITION) == 'left' &&
+			aTabBrowser.getAttribute(this.kSCROLLBAR_INVERTED) == 'true') {
 			aTabBrowser.removeTab(
 				aTabBrowser.selectedTab = aTabBrowser.addTab('about:blank')
 			);
@@ -714,17 +705,19 @@ var TreeStyleTabService = {
 	{
 		eval('aObserver.canDrop = '+
 			aObserver.canDrop.toSource().replace(
-				/\.screenX/g, '[TreeStyleTabService.positionProp]'
+				'{',
+				'{ var TSTTabBrowser = this;'
 			).replace(
-				/\.width/g, '[TreeStyleTabService.sizeProp]'
+				/\.screenX/g, '[TreeStyleTabService.getTabBrowserFromChildren(TSTTabBrowser).positionProp]'
+			).replace(
+				/\.width/g, '[TreeStyleTabService.getTabBrowserFromChildren(TSTTabBrowser).sizeProp]'
 			).replace( // Tab Mix Plus
-				/\.screenY/g, '[TreeStyleTabService.invertedPositionProp]'
+				/\.screenY/g, '[TreeStyleTabService.getTabBrowserFromChildren(TSTTabBrowser).invertedPositionProp]'
 			).replace( // Tab Mix Plus
-				/\.height/g, '[TreeStyleTabService.invertedSizeProp]'
+				/\.height/g, '[TreeStyleTabService.getTabBrowserFromChildren(TSTTabBrowser).invertedSizeProp]'
 			).replace(
 				/(return true;)/,
 				<><![CDATA[
-					var TSTTabBrowser = this;
 					if (!(function(aSelf) {
 try{
 							if (!aDragSession.sourceNode ||
@@ -858,7 +851,7 @@ catch(e) {
 		if (!aTabBrowser)
 			aTabBrowser = this.getTabBrowserFromChildren(aTab);
 
-		var pos = this.getTreePref('tabbar.position');
+		var pos = aTabBrowser.getAttribute(this.kTABBAR_POSITION);
 		if (pos == 'left' || pos == 'right') {
 			aTab.setAttribute('align', 'stretch');
 			aTab.removeAttribute('maxwidth');
@@ -943,8 +936,8 @@ catch(e) {
 		}
 
 		nodes = label.parentNode.childNodes;
-		if (this.getTreePref('tabbar.position') == 'right' &&
-			this.getTreePref('tabbar.invertUI')) {
+		if (aTabBrowser.getAttribute(this.kTABBAR_POSITION) == 'right' &&
+			aTabBrowser.getAttribute(this.kUI_INVERTED) == 'true') {
 			for (var i = nodes.length-1; i > -1; i--)
 			{
 				if (nodes[i].getAttribute('class') == 'informationaltab-thumbnail-container')
@@ -1197,11 +1190,9 @@ catch(e) {
 
 		document.getElementById('contentAreaContextMenu').removeEventListener('popupshowing', this, false);
 
-		if (this.getTreePref('inSubbrowsers.enabled')) {
-			var appcontent = document.getElementById('appcontent');
-			appcontent.removeEventListener('SubBrowserAdded', this, false);
-			appcontent.removeEventListener('SubBrowserRemoveRequest', this, false);
-		}
+		var appcontent = document.getElementById('appcontent');
+		appcontent.removeEventListener('SubBrowserAdded', this, false);
+		appcontent.removeEventListener('SubBrowserRemoveRequest', this, false);
 
 		this.removePrefListener(this);
 
@@ -1294,7 +1285,7 @@ catch(e) {
 
 			case 'mousedown':
 				if (aEvent.originalTarget.getAttribute('class') == this.kSPLITTER)
-					this.tabbarResizing = true;
+					this.getTabBrowserFromChildren(aEvent.currentTarget).tabbarResizing = true;
 				if (aEvent.currentTarget == this.container) {
 					this.cancelShowHideTabbar();
 				}
@@ -1305,12 +1296,12 @@ catch(e) {
 
 			case 'mouseup':
 				if (aEvent.originalTarget.getAttribute('class') == this.kSPLITTER)
-					this.tabbarResizing = false;
+					this.getTabBrowserFromChildren(aEvent.currentTarget).tabbarResizing = false;
 				this.cancelShowHideTabbar();
 				return;
 
 			case 'mousemove':
-				if (!this.tabbarResizing) {
+				if (!this.getTabBrowserFromChildren(aEvent.currentTarget).tabbarResizing) {
 					if (!this.tabContextMenuShown)
 						this.showHideTabbar(aEvent);
 					return;
@@ -1743,7 +1734,7 @@ catch(e) {
 			aEvent.currentTarget,
 			XPathResult.FIRST_ORDERED_NODE_TYPE
 		).singleNodeValue;
-		var pos = this.getTreePref('tabbar.position');
+		var pos = b.getAttribute(this.kTABBAR_POSITION);
 		if (this.getTreePref('show.context-item-toggleAutoHide') &&
 			(pos == 'left' || pos == 'right')) {
 			item.removeAttribute('hidden');
@@ -2043,13 +2034,13 @@ catch(e) {
 			};
 
 		if (tab.localName != 'tab') {
-			if (aEvent[this.positionProp] < tabs[0].boxObject[this.positionProp]) {
+			if (aEvent[b.positionProp] < tabs[0].boxObject[b.positionProp]) {
 				info.target   = info.parent = info.insertBefore = tabs[0];
 				info.position = isInverted ? this.kDROP_AFTER : this.kDROP_BEFORE ;
 				info.action   = this.kACTION_MOVE | this.kACTION_PART;
 				return info;
 			}
-			else if (aEvent[this.positionProp] > tabs[tabs.length-1].boxObject[this.positionProp] + tabs[tabs.length-1].boxObject[this.sizeProp]) {
+			else if (aEvent[b.positionProp] > tabs[tabs.length-1].boxObject[b.positionProp] + tabs[tabs.length-1].boxObject[b.sizeProp]) {
 				info.target   = info.parent = tabs[tabs.length-1];
 				info.position = isInverted ? this.kDROP_BEFORE : this.kDROP_AFTER ;
 				info.action   = this.kACTION_MOVE | this.kACTION_PART;
@@ -2063,12 +2054,12 @@ catch(e) {
 			info.target = tab;
 		}
 
-		var boxPos  = tab.boxObject[this.positionProp];
-		var boxUnit = Math.round(tab.boxObject[this.sizeProp] / 3);
-		if (aEvent[this.positionProp] < boxPos + boxUnit) {
+		var boxPos  = tab.boxObject[b.positionProp];
+		var boxUnit = Math.round(tab.boxObject[b.sizeProp] / 3);
+		if (aEvent[b.positionProp] < boxPos + boxUnit) {
 			info.position = isInverted ? this.kDROP_AFTER : this.kDROP_BEFORE ;
 		}
-		else if (aEvent[this.positionProp] > boxPos + boxUnit + boxUnit) {
+		else if (aEvent[b.positionProp] > boxPos + boxUnit + boxUnit) {
 			info.position = isInverted ? this.kDROP_BEFORE : this.kDROP_AFTER ;
 		}
 		else {
@@ -2160,6 +2151,11 @@ catch(e) {
 	{
 		if (!aPosition) aPosition = this.getTreePref('tabbar.position');
 		aPosition = String(aPosition).toLowerCase();
+
+		if (aTabBrowser.getAttribute('id') != 'content') {
+			aPosition = 'top';
+		}
+
 		var pos = (aPosition == 'left') ? this.kTABBAR_LEFT :
 			(aPosition == 'right') ? this.kTABBAR_RIGHT :
 			(aPosition == 'bottom') ? this.kTABBAR_BOTTOM :
@@ -2184,11 +2180,13 @@ catch(e) {
 		var newTabBox = document.getAnonymousElementByAttribute(aTabBrowser.mTabContainer, 'id', 'tabs-newbutton-box');
 		var tabBarMode = this.getPref('extensions.tabmix.tabBarMode');
 
+		aTabBrowser.tabbarResizing = false;
+
 		if (pos & this.kTABBAR_VERTICAL) {
-			this.positionProp         = 'screenY';
-			this.sizeProp             = 'height';
-			this.invertedPositionProp = 'screenX';
-			this.invertedSizeProp     = 'width';
+			aTabBrowser.positionProp         = 'screenY';
+			aTabBrowser.sizeProp             = 'height';
+			aTabBrowser.invertedPositionProp = 'screenX';
+			aTabBrowser.invertedSizeProp     = 'width';
 
 			aTabBrowser.mTabBox.orient = 'horizontal';
 			aTabBrowser.mStrip.orient =
@@ -2219,11 +2217,11 @@ catch(e) {
 				aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'right');
 				if (this.getTreePref('tabbar.invertUI')) {
 					aTabBrowser.setAttribute(this.kUI_INVERTED, 'true');
-					this.levelMarginProp = 'margin-right';
+					aTabBrowser.levelMarginProp = 'margin-right';
 				}
 				else {
 					aTabBrowser.removeAttribute(this.kUI_INVERTED);
-					this.levelMarginProp = 'margin-left';
+					aTabBrowser.levelMarginProp = 'margin-left';
 				}
 				window.setTimeout(function(aWidth) {
 					/* in Firefox 3, the width of the rightside tab bar
@@ -2240,7 +2238,7 @@ catch(e) {
 			else {
 				aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'left');
 				aTabBrowser.removeAttribute(this.kUI_INVERTED);
-				this.levelMarginProp = 'margin-left';
+				aTabBrowser.levelMarginProp = 'margin-left';
 				window.setTimeout(function() {
 					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
 					aTabBrowser.mStrip.setAttribute('ordinal', 10);
@@ -2251,10 +2249,10 @@ catch(e) {
 			}
 		}
 		else {
-			this.positionProp         = 'screenX';
-			this.sizeProp             = 'width';
-			this.invertedPositionProp = 'screenY';
-			this.invertedSizeProp     = 'height';
+			aTabBrowser.positionProp         = 'screenX';
+			aTabBrowser.sizeProp             = 'width';
+			aTabBrowser.invertedPositionProp = 'screenY';
+			aTabBrowser.invertedSizeProp     = 'height';
 
 			aTabBrowser.mTabBox.orient = 'vertical';
 			aTabBrowser.mStrip.orient =
@@ -2282,7 +2280,7 @@ catch(e) {
 			aTabBrowser.removeAttribute(this.kUI_INVERTED);
 			if (pos == this.kTABBAR_BOTTOM) {
 				aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'bottom');
-				this.levelMarginProp = 'margin-bottom';
+				aTabBrowser.levelMarginProp = 'margin-bottom';
 				window.setTimeout(function() {
 					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
 					aTabBrowser.mStrip.setAttribute('ordinal', 30);
@@ -2292,7 +2290,7 @@ catch(e) {
 			}
 			else {
 				aTabBrowser.setAttribute(this.kTABBAR_POSITION, 'top');
-				this.levelMarginProp = 'margin-top';
+				aTabBrowser.levelMarginProp = 'margin-top';
 				window.setTimeout(function() {
 					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
 					aTabBrowser.mStrip.setAttribute('ordinal', 10);
@@ -2430,11 +2428,10 @@ catch(e) {
 			}
 		}
 
-		if (!aProp) {
-			aProp = this.getTreePref('enableSubtreeIndent') ? this.levelMarginProp : 0 ;
-		}
-
 		var b      = this.getTabBrowserFromChildren(aTabs[0]);
+		if (!aProp) {
+			aProp = this.getTreePref('enableSubtreeIndent') ? b.levelMarginProp : 0 ;
+		}
 		var margin = b.__treestyletab__levelMargin < 0 ? this.levelMargin : b.__treestyletab__levelMargin ;
 		var indent = margin * aLevel;
 
@@ -2485,7 +2482,7 @@ catch(e) {
 
 		var oldMargin = b.__treestyletab__levelMargin;
 		var indent    = (oldMargin < 0 ? this.levelMargin : oldMargin ) * nest;
-		var maxIndent = b.mTabContainer.childNodes[0].boxObject[this.invertedSizeProp] * 0.33;
+		var maxIndent = b.mTabContainer.childNodes[0].boxObject[b.invertedSizeProp] * 0.33;
 
 		var marginUnit = Math.max(Math.floor(maxIndent / nest), 1);
 		if (indent > maxIndent) {
@@ -2790,18 +2787,18 @@ catch(e) {
 			break;
 		}
 
-		var containerPosition = b.mStrip.boxObject[this.positionProp];
-		var containerSize     = b.mStrip.boxObject[this.sizeProp];
-		var parentPosition    = aTab.boxObject[this.positionProp];
-		var lastPosition      = lastVisible.boxObject[this.positionProp];
-		var tabSize           = lastVisible.boxObject[this.sizeProp];
+		var containerPosition = b.mStrip.boxObject[b.positionProp];
+		var containerSize     = b.mStrip.boxObject[b.sizeProp];
+		var parentPosition    = aTab.boxObject[b.positionProp];
+		var lastPosition      = lastVisible.boxObject[b.positionProp];
+		var tabSize           = lastVisible.boxObject[b.sizeProp];
 
 		if (this.isTabInViewport(aTab) && this.isTabInViewport(lastVisible)) {
 			return;
 		}
 
 		if (lastPosition - parentPosition + tabSize > containerSize - tabSize) { // out of screen
-			var endPos = parentPosition - b.mTabContainer.firstChild.boxObject[this.positionProp] - tabSize * 0.5;
+			var endPos = parentPosition - b.mTabContainer.firstChild.boxObject[b.positionProp] - tabSize * 0.5;
 			var endX = this.isTabVertical(aTab) ? 0 : endPos ;
 			var endY = this.isTabVertical(aTab) ? endPos : 0 ;
 			this.scrollTo(b, endX, endY);
@@ -3049,9 +3046,9 @@ catch(e) {
 
 		this.cancelShowHideTabbar();
 
-		var pos    = this.getTreePref('tabbar.position');
+		var b      = this.browser;
+		var pos    = b.getAttribute(this.kTABBAR_POSITION);
 		var expand = this.getTreePref('tabbar.autoHide.expandArea');
-		var b = this.browser;
 		if (!this.tabbarShown &&
 			(
 				pos == 'left' ?
@@ -3097,7 +3094,7 @@ catch(e) {
 			this.tabbarShown = false;
 		}
 		else {
-			switch (this.getTreePref('tabbar.position'))
+			switch (b.getAttribute(this.kTABBAR_POSITION))
 			{
 				case 'left':
 					this.container.style.marginRight = '-'+this.tabbarWidth+'px';
@@ -3129,7 +3126,7 @@ catch(e) {
   
 	redrawContentArea : function() 
 	{
-		var pos = this.getTreePref('tabbar.position');
+		var pos = this.browser.getAttribute(this.kTABBAR_POSITION);
 		try {
 			var v = this.browser.markupDocumentViewer;
 			if (this.tabbarShown) {

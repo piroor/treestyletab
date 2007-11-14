@@ -41,10 +41,6 @@ tabbrowser:not([treestyletab-mode="horizontal"]) .tabs-scroll /* Tab Mix Plus */
 	margin: 0;
 }
 
-tabbrowser[treestyletab-mode="vertical"] > tabbox {
-	-moz-box-orient: horizontal !important;
-}
-
 tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > scrollbox,
 tabbrowser[treestyletab-mode="vertical"] tabs[flowing] > * .tabs-frame /* Tab Mix Plus */ {
 	overflow-x: hidden !important;

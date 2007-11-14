@@ -16,7 +16,7 @@ TreeStyleTabService.overrideExtensions = function() {
 		eval('autoHIDE.ShowMenu = '+
 			autoHIDE.ShowMenu.toSource().replace(
 				'{',
-				'{ var treeStyleTabPos = TreeStyleTabService.getTreePref("tabbar.position");'
+				'{ var treeStyleTabPos = gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION);'
 			).replace(
 				'e.screenY <= autoHIDE.Win.boxObject.screenY + autoHIDE.space',
 				<><![CDATA[(e.screenY <= autoHIDE.Win.boxObject.screenY + autoHIDE.space ||
@@ -48,7 +48,7 @@ TreeStyleTabService.overrideExtensions = function() {
 				'if (this.Show) {',
 				<><![CDATA[
 					window.setTimeout('TreeStyleTabService.checkTabsIndentOverflow(gBrowser);', 0);
-					var treeStyleTabPos = TreeStyleTabService.getTreePref("tabbar.position");
+					var treeStyleTabPos = gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION);
 					if (this.Show) {
 						var appcontent = document.getElementById('appcontent');
 						if (appcontent.__treestyletab__resized) {
@@ -90,7 +90,7 @@ TreeStyleTabService.overrideExtensions = function() {
 				'{',
 				<><![CDATA[
 					{
-						var treeStyleTabPos = TreeStyleTabService.getTreePref("tabbar.position");
+						var treeStyleTabPos = gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION);
 						if (!arguments.length) {
 							var appcontent = document.getElementById('appcontent');
 							if (treeStyleTabPos == 'left' &&
@@ -126,7 +126,7 @@ TreeStyleTabService.overrideExtensions = function() {
 					{
 						case 'fullscreen':
 							var autoHide = TreeStyleTabService.getTreePref('tabbar.autoHide.enabled');
-							var pos      = TreeStyleTabService.getTreePref('tabbar.position');
+							var pos      = gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION);
 							if (window.fullScreen) { // restore
 								if (autoHide && (pos == 'left' || pos == 'right'))
 									TreeStyleTabService.startAutoHide();
