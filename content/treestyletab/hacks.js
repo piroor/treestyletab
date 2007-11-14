@@ -178,8 +178,8 @@ TreeStyleTabService.overrideExtensions = function() {
 				'{',
 				<><![CDATA[
 				{
-					if (gBrowser.getAttribute(TreeStyleTabService.kMODE) == 'vertical') {
-						nsDragAndDrop.startDrag(aEvent, gBrowser);
+					if (TreeStyleTabService.getPref('extensions.tabmix.tabBarMode', 1) != 2) {
+						nsDragAndDrop.startDrag(aEvent, (gBrowser.getAttribute(TreeStyleTabService.kMODE) == 'vertical' ? gBrowser : TabDNDObserver ));
 						aEvent.stopPropagation();
 						return;
 					}
@@ -191,8 +191,8 @@ TreeStyleTabService.overrideExtensions = function() {
 				'{',
 				<><![CDATA[
 				{
-					if (gBrowser.getAttribute(TreeStyleTabService.kMODE) == 'vertical') {
-						nsDragAndDrop.dragOver(aEvent, gBrowser);
+					if (TreeStyleTabService.getPref('extensions.tabmix.tabBarMode', 1) != 2) {
+						nsDragAndDrop.dragOver(aEvent, (gBrowser.getAttribute(TreeStyleTabService.kMODE) == 'vertical' ? gBrowser : TabDNDObserver ));
 						aEvent.stopPropagation();
 						return;
 					}
@@ -204,8 +204,8 @@ TreeStyleTabService.overrideExtensions = function() {
 				'{',
 				<><![CDATA[
 				{
-					if (gBrowser.getAttribute(TreeStyleTabService.kMODE) == 'vertical') {
-						nsDragAndDrop.drop(aEvent, gBrowser);
+					if (TreeStyleTabService.getPref('extensions.tabmix.tabBarMode', 1) != 2) {
+						nsDragAndDrop.drop(aEvent, (gBrowser.getAttribute(TreeStyleTabService.kMODE) == 'vertical' ? gBrowser : TabDNDObserver ));
 						aEvent.stopPropagation();
 						return;
 					}
@@ -217,12 +217,71 @@ TreeStyleTabService.overrideExtensions = function() {
 				'{',
 				<><![CDATA[
 				{
-					if (gBrowser.getAttribute(TreeStyleTabService.kMODE) == 'vertical') {
-						nsDragAndDrop.dragExit(aEvent, gBrowser);
+					if (TreeStyleTabService.getPref('extensions.tabmix.tabBarMode', 1) != 2) {
+						nsDragAndDrop.dragExit(aEvent, (gBrowser.getAttribute(TreeStyleTabService.kMODE) == 'vertical' ? gBrowser : TabDNDObserver ));
 						aEvent.stopPropagation();
 						return;
 					}
 				]]></>
+			)
+		);
+
+		this.updateTabDNDObserver(TabDNDObserver);
+		eval('TabDNDObserver.clearDragmark = '+
+			TabDNDObserver.clearDragmark.toSource().replace(
+				/(\})(\))?$/,
+				'TreeStyleTabService.clearDropPosition(gBrowser); $1$2'
+			)
+		);
+		eval('TabDNDObserver.canDrop = '+
+			TabDNDObserver.canDrop.toSource().replace(
+				'var TSTTabBrowser = this;',
+				'var TSTTabBrowser = gBrowser;'
+			)
+		);
+		eval('TabDNDObserver.onDragOver = '+
+			TabDNDObserver.onDragOver.toSource().replace(
+				'var TSTTabBrowser = this;',
+				'var TSTTabBrowser = gBrowser;'
+			).replace(
+				/aEvent/g, 'event'
+			).replace(
+				/aDragSession/g, 'session'
+			)
+		);
+		eval('TabDNDObserver.onDrop = '+
+			TabDNDObserver.onDrop.toSource().replace(
+				'var TSTTabBrowser = this;',
+				'var TSTTabBrowser = gBrowser;'
+			).replace(
+				/(var newIndex =)/,
+				<><![CDATA[
+					if (isTabReorder && TreeStyleTabService.processDropAction(dropActionInfo, TSTTabBrowser, aDragSession.sourceNode))
+						return;
+				]]></>
+			).replace(
+				/(aTab = gBrowser.addTab\(url\));/,
+				<><![CDATA[
+					TreeStyleTabService.processDropAction(dropActionInfo, TSTTabBrowser, $1);
+					return;
+				]]></>
+			).replace(
+				/(aTab = event.target;)/,
+				<><![CDATA[
+					$1
+					if (
+						aTab.getAttribute('locked') == 'true' ||
+						TreeStyleTabService.getTreePref('loadDroppedLinkToNewChildTab') ||
+						dropActionInfo.position != TreeStyleTabService.kDROP_ON
+						) {
+						TreeStyleTabService.processDropAction(dropActionInfo, TSTTabBrowser, TSTTabBrowser.loadOneTab(url, null, null, null, bgLoad, false));
+						return;
+					}
+				]]></>
+			).replace(
+				/aEvent/g, 'event'
+			).replace(
+				/aDragSession/g, 'session'
 			)
 		);
 

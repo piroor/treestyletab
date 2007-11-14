@@ -52,11 +52,12 @@ var TreeStyleTabService = {
 	kINSERT_FISRT : 0,
 	kINSERT_LAST  : 1,
 
-	levelMargin      : 12,
-	levelMarginProp  : 'margin-left',
-	positionProp     : 'screenY',
-	sizeProp         : 'height',
-	invertedSizeProp : 'width',
+	levelMargin          : 12,
+	levelMarginProp      : 'margin-left',
+	positionProp         : 'screenY',
+	sizeProp             : 'height',
+	invertedPositionProp : 'screenX',
+	invertedSizeProp     : 'width',
 
 	tabbarResizing : false,
 
@@ -549,120 +550,7 @@ var TreeStyleTabService = {
 			)
 		);
 
-		eval('aTabBrowser.canDrop = '+
-			aTabBrowser.canDrop.toSource().replace(
-				/\.screenX/g, '[TreeStyleTabService.positionProp]'
-			).replace(
-				/\.width/g, '[TreeStyleTabService.sizeProp]'
-			).replace(
-				/return true;/,
-				<><![CDATA[
-					if (!(function(aSelf) {
-try{
-							if (!aDragSession.sourceNode ||
-								aDragSession.sourceNode.parentNode != aSelf.mTabContainer ||
-								aEvent.target.localName != 'tab')
-								return true;
-
-							if (aEvent.target.getAttribute(TreeStyleTabService.kCOLLAPSED) == 'true')
-								return false;
-
-							var info = TreeStyleTabService.getDropAction(aEvent, aDragSession);
-							return info.canDrop;
-}
-catch(e) {
-	dump('TreeStyleTabService::canDrop\n'+e+'\n');
-	return false;
-}
-						})(this))
-						return false;
-					return true;
-				]]></>
-			)
-		);
-
-		eval('aTabBrowser.onDragOver = '+
-			aTabBrowser.onDragOver.toSource().replace(
-				'{',
-				<><![CDATA[
-					{
-						if ((function(aSelf) {
-try{
-							var info = TreeStyleTabService.getDropAction(aEvent, aDragSession);
-
-							if (!info.target || info.target != TreeStyleTabService.evaluateXPath(
-									'child::xul:tab[@'+TreeStyleTabService.kDROP_POSITION+']',
-									aSelf.mTabContainer,
-									XPathResult.FIRST_ORDERED_NODE_TYPE
-								).singleNodeValue)
-								TreeStyleTabService.clearDropPosition(aSelf);
-
-							if (!aSelf.canDrop(aEvent, aDragSession)) return true;
-
-							info.target.setAttribute(
-								TreeStyleTabService.kDROP_POSITION,
-								info.position == TreeStyleTabService.kDROP_BEFORE ? 'before' :
-								info.position == TreeStyleTabService.kDROP_AFTER ? 'after' :
-								'self'
-							);
-							aSelf.mTabDropIndicatorBar.setAttribute('dragging', (info.position == TreeStyleTabService.kDROP_ON) ? 'false' : 'true' );
-							return (info.position == TreeStyleTabService.kDROP_ON || aSelf.getAttribute(TreeStyleTabService.kTABBAR_POSITION) != 'top')
-}
-catch(e) {
-	dump('TreeStyleTabService::onDragOver\n'+e+'\n');
-}
-						})(this)) {
-							return;
-						}
-				]]></>
-			)
-		);
-
-		eval('aTabBrowser.onDragExit = '+
-			aTabBrowser.onDragExit.toSource().replace(
-				/(this.mTabDropIndicatorBar\.[^;]+;)/,
-				'$1; TreeStyleTabService.clearDropPosition(this);'
-			)
-		);
-
-		eval('aTabBrowser.onDrop = '+
-			aTabBrowser.onDrop.toSource().replace(
-				'{',
-				<><![CDATA[
-					{
-						TreeStyleTabService.clearDropPosition(this);
-						var dropActionInfo = TreeStyleTabService.getDropAction(aEvent, aDragSession);
-				]]></>
-			).replace(
-				/(if \([^\)]+\) \{)/,
-				'$1'+<><![CDATA[
-					if (TreeStyleTabService.processDropAction(dropActionInfo, this, aDragSession.sourceNode))
-						return;
-				]]></>
-			).replace(
-				/(this.loadOneTab\([^;]+\));/,
-				<><![CDATA[
-					TreeStyleTabService.processDropAction(dropActionInfo, this, $1);
-					return;
-				]]></>
-			).replace(
-				'document.getBindingParent(aEvent.originalTarget).localName != "tab"',
-				'!TreeStyleTabService.getTabFromEvent(aEvent)'
-			).replace(
-				'var tab = aEvent.target;',
-				<><![CDATA[
-					var tab = aEvent.target;
-					if (
-						tab.getAttribute('locked') == 'true' || // Tab Mix Plus
-						TreeStyleTabService.getTreePref('loadDroppedLinkToNewChildTab') ||
-						dropActionInfo.position != TreeStyleTabService.kDROP_ON
-						) {
-						TreeStyleTabService.processDropAction(dropActionInfo, this, this.loadOneTab(getShortcutOrURI(url), null, null, null, bgLoad, false));
-						return;
-					}
-				]]></>
-			)
-		);
+		this.updateTabDNDObserver(aTabBrowser);
 
 		eval('aTabBrowser.getNewIndex = '+
 			aTabBrowser.getNewIndex.toSource().replace(
@@ -820,6 +708,131 @@ catch(e) {
 				aTabBrowser.selectedTab = aTabBrowser.addTab('about:blank')
 			);
 		}
+	},
+ 
+	updateTabDNDObserver : function(aObserver)
+	{
+		eval('aObserver.canDrop = '+
+			aObserver.canDrop.toSource().replace(
+				/\.screenX/g, '[TreeStyleTabService.positionProp]'
+			).replace(
+				/\.width/g, '[TreeStyleTabService.sizeProp]'
+			).replace( // Tab Mix Plus
+				/\.screenY/g, '[TreeStyleTabService.invertedPositionProp]'
+			).replace( // Tab Mix Plus
+				/\.height/g, '[TreeStyleTabService.invertedSizeProp]'
+			).replace(
+				/(return true;)/,
+				<><![CDATA[
+					var TSTTabBrowser = this;
+					if (!(function(aSelf) {
+try{
+							if (!aDragSession.sourceNode ||
+								aDragSession.sourceNode.parentNode != aSelf.mTabContainer ||
+								aEvent.target.localName != 'tab')
+								return true;
+
+							if (aEvent.target.getAttribute(TreeStyleTabService.kCOLLAPSED) == 'true')
+								return false;
+
+							var info = TreeStyleTabService.getDropAction(aEvent, aDragSession);
+							return info.canDrop;
+}
+catch(e) {
+	dump('TreeStyleTabService::canDrop\n'+e+'\n');
+	return false;
+}
+						})(TSTTabBrowser))
+						return false;
+					$1
+				]]></>
+			)
+		);
+
+		eval('aObserver.onDragOver = '+
+			aObserver.onDragOver.toSource().replace(
+				'{',
+				<><![CDATA[
+					{
+						var TSTTabBrowser = this;
+						if ((function(aSelf) {
+try{
+							var info = TreeStyleTabService.getDropAction(aEvent, aDragSession);
+
+							if (!info.target || info.target != TreeStyleTabService.evaluateXPath(
+									'child::xul:tab[@'+TreeStyleTabService.kDROP_POSITION+']',
+									aSelf.mTabContainer,
+									XPathResult.FIRST_ORDERED_NODE_TYPE
+								).singleNodeValue)
+								TreeStyleTabService.clearDropPosition(aSelf);
+
+							if (!aSelf.canDrop(aEvent, aDragSession)) return true;
+
+							info.target.setAttribute(
+								TreeStyleTabService.kDROP_POSITION,
+								info.position == TreeStyleTabService.kDROP_BEFORE ? 'before' :
+								info.position == TreeStyleTabService.kDROP_AFTER ? 'after' :
+								'self'
+							);
+							aSelf.mTabDropIndicatorBar.setAttribute('dragging', (info.position == TreeStyleTabService.kDROP_ON) ? 'false' : 'true' );
+							return (info.position == TreeStyleTabService.kDROP_ON || aSelf.getAttribute(TreeStyleTabService.kTABBAR_POSITION) != 'top')
+}
+catch(e) {
+	dump('TreeStyleTabService::onDragOver\n'+e+'\n');
+}
+						})(TSTTabBrowser)) {
+							return;
+						}
+				]]></>
+			)
+		);
+
+		eval('aObserver.onDragExit = '+
+			aObserver.onDragExit.toSource().replace(
+				/(this.mTabDropIndicatorBar\.[^;]+;)/,
+				'$1; TreeStyleTabService.clearDropPosition(this);'
+			)
+		);
+
+		eval('aObserver.onDrop = '+
+			aObserver.onDrop.toSource().replace(
+				'{',
+				<><![CDATA[
+					{
+						var TSTTabBrowser = this;
+						TreeStyleTabService.clearDropPosition(TSTTabBrowser);
+						var dropActionInfo = TreeStyleTabService.getDropAction(aEvent, aDragSession);
+				]]></>
+			).replace(
+				/(if \(aDragSession[^\)]+\) \{)/,
+				'$1'+<><![CDATA[
+					if (TreeStyleTabService.processDropAction(dropActionInfo, TSTTabBrowser, aDragSession.sourceNode))
+						return;
+				]]></>
+			).replace(
+				/(this.loadOneTab\([^;]+\));/,
+				<><![CDATA[
+					TreeStyleTabService.processDropAction(dropActionInfo, TSTTabBrowser, $1);
+					return;
+				]]></>
+			).replace(
+				'document.getBindingParent(aEvent.originalTarget).localName != "tab"',
+				'!TreeStyleTabService.getTabFromEvent(aEvent)'
+			).replace(
+				'var tab = aEvent.target;',
+				<><![CDATA[
+					var tab = aEvent.target;
+					if (
+						tab.getAttribute('locked') == 'true' || // Tab Mix Plus
+						TreeStyleTabService.getTreePref('loadDroppedLinkToNewChildTab') ||
+						dropActionInfo.position != TreeStyleTabService.kDROP_ON
+						) {
+						TreeStyleTabService.processDropAction(dropActionInfo, TSTTabBrowser, TSTTabBrowser.loadOneTab(getShortcutOrURI(url), null, null, null, bgLoad, false));
+						return;
+					}
+				]]></>
+			)
+		);
 	},
  
 	initTab : function(aTab, aTabBrowser) 
@@ -2172,9 +2185,10 @@ catch(e) {
 		var tabBarMode = this.getPref('extensions.tabmix.tabBarMode');
 
 		if (pos & this.kTABBAR_VERTICAL) {
-			this.positionProp     = 'screenY';
-			this.sizeProp         = 'height';
-			this.invertedSizeProp = 'width';
+			this.positionProp         = 'screenY';
+			this.sizeProp             = 'height';
+			this.invertedPositionProp = 'screenX';
+			this.invertedSizeProp     = 'width';
 
 			aTabBrowser.mTabBox.orient = 'horizontal';
 			aTabBrowser.mStrip.orient =
@@ -2237,9 +2251,10 @@ catch(e) {
 			}
 		}
 		else {
-			this.positionProp     = 'screenX';
-			this.sizeProp         = 'width';
-			this.invertedSizeProp = 'height';
+			this.positionProp         = 'screenX';
+			this.sizeProp             = 'width';
+			this.invertedPositionProp = 'screenY';
+			this.invertedSizeProp     = 'height';
 
 			aTabBrowser.mTabBox.orient = 'vertical';
 			aTabBrowser.mStrip.orient =
