@@ -1766,7 +1766,8 @@ TreeStyleTabBrowser.prototype = {
 					{
 						if (TreeStyleTabService.getTreePref('focusMode') == TreeStyleTabService.kFOCUS_VISIBLE) {
 							(function(aDir, aWrap, aSelf) {
-								var nextTab = (aDir < 0) ? aSelf.treeStyleTab.getPreviousVisibleTab(aSelf.selectedItem) : aSelf.treeStyleTab.getNextVisibleTab(aSelf.selectedItem) ;
+								var treeStyleTab = TreeStyleTabService.getTabBrowserFromChildren(aSelf).treeStyleTab;
+								var nextTab = (aDir < 0) ? treeStyleTab.getPreviousVisibleTab(aSelf.selectedItem) : treeStyleTab.getNextVisibleTab(aSelf.selectedItem) ;
 								if (!nextTab && aWrap) {
 									var xpathResult = TreeStyleTabService.evaluateXPath(
 											'child::xul:tab[not(@'+TreeStyleTabService.kCOLLAPSED+'="true")]',
