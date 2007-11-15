@@ -660,7 +660,7 @@ catch(e) {
 					).replace(
 						'return false;case 1:',
 						<><![CDATA[
-								if (!('TMP_contentAreaClick' in window) &&
+								if (!('TMP_contentAreaClick' in window) && // do nothing for Tab Mix Plus
 									TreeStyleTabService.checkToOpenChildTab()) {
 									TreeStyleTabService.stopToOpenChildTab();
 									urlSecurityCheck(href, linkNode.ownerDocument.location.href);
@@ -686,7 +686,7 @@ catch(e) {
 						/(openWebPanel\([^\(]+\("webPanels"\), wrapper.href\);event.preventDefault\(\);return false;\})/,
 						<><![CDATA[
 							$1
-							else if (!('TMP_contentAreaClick' in window) &&
+							else if (!('TMP_contentAreaClick' in window) && // do nothing for Tab Mix Plus
 								TreeStyleTabService.checkReadyToOpenNewTab({
 									uri      : wrapper.href,
 									external : {

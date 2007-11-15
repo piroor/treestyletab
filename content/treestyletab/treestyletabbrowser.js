@@ -392,6 +392,7 @@ TreeStyleTabBrowser.prototype = {
 						.replace(new RegExp('\\|'+id), '')
 						.replace(/^\|/, '');
 		this.setTabValue(parentTab, this.kCHILDREN, children);
+//		this.deleteTabValue(aChild, this.kPARENT);
 		this.updateTabsCount(parentTab);
 
 		if (!aDontUpdateIndent) {
@@ -479,14 +480,14 @@ TreeStyleTabBrowser.prototype = {
 		}
 	},
  
-	updateTabsCount : function(aTab) 
+	updateTabsCount : function(aTab, aDontUpdateAncestor) 
 	{
 		var count = document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER);
 		if (count) {
 			count.setAttribute('value', '('+this.getDescendantTabs(aTab).length+')');
 		}
 		var parent = this.getParentTab(aTab);
-		if (parent)
+		if (parent && !aDontUpdateAncestor)
 			this.updateTabsCount(parent);
 	},
   
@@ -1167,6 +1168,8 @@ TreeStyleTabBrowser.prototype = {
 			this.updateChildrenArray(parentTab);
 		}
 
+		this.updateTabsCount(tab, true);
+
 		if (
 			rebuildTreeDone ||
 			this.isSubTreeMoving ||
@@ -1215,9 +1218,9 @@ TreeStyleTabBrowser.prototype = {
 		var isSubTreeCollapsed = (this.getTabValue(tab, this.kSUBTREE_COLLAPSED) == 'true');
 
 		var children = this.getTabValue(tab, this.kCHILDREN);
+		var tabs = [];
 		if (children) {
 			children = children.split('|');
-			var tabs = [];
 			for (var i = 0, maxi = children.length; i < maxi; i++)
 			{
 				if (children[i] && (children[i] = this.getTabById(children[i]))) {
