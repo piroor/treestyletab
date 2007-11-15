@@ -660,7 +660,8 @@ catch(e) {
 					).replace(
 						'return false;case 1:',
 						<><![CDATA[
-								if (TreeStyleTabService.checkToOpenChildTab()) {
+								if (!('TMP_contentAreaClick' in window) &&
+									TreeStyleTabService.checkToOpenChildTab()) {
 									TreeStyleTabService.stopToOpenChildTab();
 									urlSecurityCheck(href, linkNode.ownerDocument.location.href);
 									var postData = {};
@@ -675,16 +676,18 @@ catch(e) {
 				);
 		}
 
-		funcs = 'contentAreaClick __ctxextensions__contentAreaClick'.split(' ');
+		funcs = 'contentAreaClick __contentAreaClick __ctxextensions__contentAreaClick'.split(' ');
 		for (var i in funcs)
 		{
-			if (funcs[i] in window && /^function contentAreaClick/.test(window[funcs[i]].toString()))
+			if (funcs[i] in window && window[funcs[i]] &&
+				/^function contentAreaClick/.test(window[funcs[i]].toString()))
 				eval('window.'+funcs[i]+' = '+
 					window[funcs[i]].toSource().replace(
 						/(openWebPanel\([^\(]+\("webPanels"\), wrapper.href\);event.preventDefault\(\);return false;\})/,
 						<><![CDATA[
 							$1
-							else if (TreeStyleTabService.checkReadyToOpenNewTab({
+							else if (!('TMP_contentAreaClick' in window) &&
+								TreeStyleTabService.checkReadyToOpenNewTab({
 									uri      : wrapper.href,
 									external : {
 										newTab : TreeStyleTabService.getTreePref('openOuterLinkInNewTab') || TreeStyleTabService.getTreePref('openAnyLinkInNewTab'),
