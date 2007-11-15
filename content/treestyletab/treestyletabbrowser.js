@@ -1212,7 +1212,15 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var tab = aEvent.originalTarget;
 		var b   = this.mTabBrowser;
-		var id  = this.getTabValue(tab, this.kID);
+
+		/* If it has a parent, it is wrongly attacched by tab moving
+		   on restoring. Restoring the old ID (the next statement)
+		   breaks the children list of the temporary parent and causes
+		   many problems. So, to prevent these problems, I part the tab
+		   from the temporary parent manually. */
+		if (this.getParentTab(tab)) this.partTab(tab);
+
+		var id = this.getTabValue(tab, this.kID);
 		this.setTabValue(tab, this.kID, id);
 
 		var isSubTreeCollapsed = (this.getTabValue(tab, this.kSUBTREE_COLLAPSED) == 'true');
