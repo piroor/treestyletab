@@ -1354,7 +1354,9 @@ TreeStyleTabBrowser.prototype = {
 	onDragEnter : function(aEvent, aDragSession)
 	{
 		var tab = aEvent.target;
-		if (tab.localName != 'tab') return;
+		if (tab.localName != 'tab' ||
+			!this.getTreePref('autoExpand.enabled'))
+			return;
 
 		var now = (new Date()).getTime();
 
@@ -1368,7 +1370,7 @@ TreeStyleTabBrowser.prototype = {
 					if (tab &&
 						tab.getAttribute(aSelf.kSUBTREE_COLLAPSED) == 'true' &&
 						tab.getAttribute(aSelf.kDROP_POSITION) == 'self') {
-						if (aSelf.getTreePref('autoExpand.intelligently') {
+						if (aSelf.getTreePref('autoExpand.intelligently')) {
 							aSelf.collapseExpandTreesIntelligentlyFor(tab);
 						}
 						else {
@@ -1415,7 +1417,7 @@ TreeStyleTabBrowser.prototype = {
 			if (tab &&
 				tab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true' &&
 				tab.getAttribute(this.kDROP_POSITION) == 'self') {
-				if (this.getTreePref('autoExpand.intelligently') {
+				if (this.getTreePref('autoExpand.intelligently')) {
 					this.collapseExpandTreesIntelligentlyFor(tab);
 				}
 				else {
