@@ -35,6 +35,17 @@
 			label="&context.removeTabSubTree.label;"
 			accesskey="&context.removeTabSubTree.accesskey;"
 			oncommand="TreeStyleTabService.removeTabSubTree(TreeStyleTabService.getTabBrowserFromChildren(this).mContextTab);"/>
+
+		<menuseparator id="context-separator-collapseExpandAll"/>
+		<menuitem id="context-item-collapseAllSubtree"
+			label="&context.collapseAllSubtree.label;"
+			accesskey="&context.collapseAllSubtree.accesskey;"
+			oncommand="TreeStyleTabService.getTabBrowserFromChildren(this).treeStyleTab.collapseExpandAllSubtree(true);"/>
+		<menuitem id="context-item-expandAllSubtree"
+			label="&context.expandAllSubtree.label;"
+			accesskey="&context.expandAllSubtree.accesskey;"
+			oncommand="TreeStyleTabService.getTabBrowserFromChildren(this).treeStyleTab.collapseExpandAllSubtree(false);"/>
+
 		<menuseparator id="context-separator-toggleAutoHide"/>
 		<menuitem id="context-item-toggleAutoHide"
 			label="&context.toggleAutoHide.label;"

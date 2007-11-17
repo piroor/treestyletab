@@ -4,6 +4,13 @@ function TreeStyleTabBrowser(aTabBrowser)
 }
  
 TreeStyleTabBrowser.prototype = { 
+
+	kMENUITEM_REMOVESUBTREE            : 'context-item-removeTabSubTree',
+	kMENUITEM_COLLAPSEEXPAND_SEPARATOR : 'context-separator-collapseExpandAll',
+	kMENUITEM_COLLAPSE                 : 'context-item-collapseAllSubtree',
+	kMENUITEM_EXPAND                   : 'context-item-expandAllSubtree',
+	kMENUITEM_AUTOHIDE_SEPARATOR       : 'context-separator-toggleAutoHide',
+	kMENUITEM_AUTOHIDE                 : 'context-item-toggleAutoHide',
 	 
 	mTabBrowser : null, 
 
@@ -511,18 +518,20 @@ TreeStyleTabBrowser.prototype = {
 		var tabContext = document.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu');
 		tabContext.addEventListener('popupshowing', this, false);
 		tabContext.addEventListener('popuphiding', this, false);
-		window.setTimeout(function(sv) {
+		window.setTimeout(function(aSelf) {
 			var suffix = '-'+parseInt(Math.random() * 65000);
-			var item = document.getElementById(sv.kMENUITEM_REMOVESUBTREE_CONTEXT).cloneNode(true);
-			item.setAttribute('id', item.getAttribute('id')+suffix);
-			tabContext.appendChild(item);
-
-			item = document.getElementById(sv.kMENUITEM_AUTOHIDE_SEPARATOR_CONTEXT).cloneNode(true);
-			item.setAttribute('id', item.getAttribute('id')+suffix);
-			tabContext.appendChild(item);
-			item = document.getElementById(sv.kMENUITEM_AUTOHIDE_CONTEXT).cloneNode(true);
-			item.setAttribute('id', item.getAttribute('id')+suffix);
-			tabContext.appendChild(item);
+			[
+				aSelf.kMENUITEM_REMOVESUBTREE,
+				aSelf.kMENUITEM_COLLAPSEEXPAND_SEPARATOR,
+				aSelf.kMENUITEM_COLLAPSE,
+				aSelf.kMENUITEM_EXPAND,
+				aSelf.kMENUITEM_AUTOHIDE_SEPARATOR,
+				aSelf.kMENUITEM_AUTOHIDE
+			].forEach(function(aID) {
+				var item = document.getElementById(aID).cloneNode(true);
+				item.setAttribute('id', item.getAttribute('id')+suffix);
+				tabContext.appendChild(item);
+			});
 		}, 0, this);
 
 		var allTabPopup = document.getAnonymousElementByAttribute(b.mTabContainer, 'anonid', 'alltabs-popup');
@@ -1403,29 +1412,97 @@ TreeStyleTabBrowser.prototype = {
 	initTabContextMenu : function(aEvent) 
 	{
 		var b = this.mTabBrowser;
-		var item = this.evaluateXPath(
-			'descendant::xul:menuitem[starts-with(@id, "'+this.kMENUITEM_REMOVESUBTREE_CONTEXT+'")]',
+		var item, sep;
+
+		// remove subtree
+		item = this.evaluateXPath(
+			'descendant::xul:menuitem[starts-with(@id, "'+this.kMENUITEM_REMOVESUBTREE+'")]',
 			aEvent.currentTarget,
 			XPathResult.FIRST_ORDERED_NODE_TYPE
 		).singleNodeValue;
-		if (this.getTreePref('show.context-item-removeTabSubTree'))
+		if (this.getTreePref('show.'+this.kMENUITEM_REMOVESUBTREE))
 			item.removeAttribute('hidden');
 		else
 			item.setAttribute('hidden', true);
 		this.showHideRemoveSubTreeMenuItem(item, [b.mContextTab]);
 
-		item = this.evaluateXPath(
-			'descendant::xul:menuitem[starts-with(@id, "'+this.kMENUITEM_AUTOHIDE_CONTEXT+'")]',
+		// collapse/expand all
+		sep = this.evaluateXPath(
+			'descendant::xul:menuseparator[starts-with(@id, "'+this.kMENUITEM_COLLAPSEEXPAND_SEPARATOR+'")]',
 			aEvent.currentTarget,
 			XPathResult.FIRST_ORDERED_NODE_TYPE
 		).singleNodeValue;
-		var sep = this.evaluateXPath(
-			'descendant::xul:menuseparator[starts-with(@id, "'+this.kMENUITEM_AUTOHIDE_SEPARATOR_CONTEXT+'")]',
+		var collapseItem = this.evaluateXPath(
+			'descendant::xul:menuitem[starts-with(@id, "'+this.kMENUITEM_COLLAPSE+'")]',
+			aEvent.currentTarget,
+			XPathResult.FIRST_ORDERED_NODE_TYPE
+		).singleNodeValue;
+		var expanndItem = this.evaluateXPath(
+			'descendant::xul:menuitem[starts-with(@id, "'+this.kMENUITEM_EXPAND+'")]',
+			aEvent.currentTarget,
+			XPathResult.FIRST_ORDERED_NODE_TYPE
+		).singleNodeValue;
+		if (this.evaluateXPath(
+				'child::xul:tab[@'+this.kCHILDREN+']',
+				b.mTabContainer
+			).snapshotLength) {
+			if (this.getTreePref('show.'+this.kMENUITEM_COLLAPSE)) {
+				collapseItem.removeAttribute('hidden');
+				if (this.evaluateXPath(
+						'child::xul:tab[@'+this.kCHILDREN+' and not(@'+this.kSUBTREE_COLLAPSED+'="true")]',
+						b.mTabContainer
+					).snapshotLength) {
+					collapseItem.removeAttribute('disabled');
+				}
+				else {
+					collapseItem.setAttribute('disabled', true);
+				}
+			}
+			else {
+				collapseItem.setAttribute('hidden', true);
+			}
+
+			if (this.getTreePref('show.'+this.kMENUITEM_EXPAND)) {
+				expanndItem.removeAttribute('hidden');
+				if (this.evaluateXPath(
+						'child::xul:tab[@'+this.kCHILDREN+' and @'+this.kSUBTREE_COLLAPSED+'="true"]',
+						b.mTabContainer
+					).snapshotLength) {
+					expanndItem.removeAttribute('disabled');
+				}
+				else {
+					expanndItem.setAttribute('disabled', true);
+				}
+			}
+			else {
+				expanndItem.setAttribute('hidden', true);
+			}
+		}
+		else {
+			collapseItem.setAttribute('hidden', true);
+			expanndItem.setAttribute('hidden', true);
+		}
+		if (collapseItem.getAttribute('hidden') == 'true' &&
+			expanndItem.getAttribute('hidden') == 'true') {
+			sep.setAttribute('hidden', true);
+		}
+		else {
+			sep.removeAttribute('hidden');
+		}
+
+		// auto hide
+		item = this.evaluateXPath(
+			'descendant::xul:menuitem[starts-with(@id, "'+this.kMENUITEM_AUTOHIDE+'")]',
+			aEvent.currentTarget,
+			XPathResult.FIRST_ORDERED_NODE_TYPE
+		).singleNodeValue;
+		sep = this.evaluateXPath(
+			'descendant::xul:menuseparator[starts-with(@id, "'+this.kMENUITEM_AUTOHIDE_SEPARATOR+'")]',
 			aEvent.currentTarget,
 			XPathResult.FIRST_ORDERED_NODE_TYPE
 		).singleNodeValue;
 		var pos = b.getAttribute(this.kTABBAR_POSITION);
-		if (this.getTreePref('show.context-item-toggleAutoHide') &&
+		if (this.getTreePref('show.'+this.kMENUITEM_AUTOHIDE) &&
 			(pos == 'left' || pos == 'right')) {
 			item.removeAttribute('hidden');
 			sep.removeAttribute('hidden');
@@ -1443,7 +1520,7 @@ TreeStyleTabBrowser.prototype = {
  
 	initAllTabsPopup : function(aEvent)
 	{
-		if (!this.getTreePref('enableSubtreeIndent')) return;
+		if (!this.getTreePref('enableSubtreeIndent.allTabsPopup')) return;
 		var items = aEvent.target.childNodes;
 		var tabs = this.mTabBrowser.mTabContainer.childNodes;
 		for (var i = 0, maxi = items.length; i < maxi; i++)

@@ -12,6 +12,7 @@ pref("extensions.treestyletab.tabbar.autoHide.delay",      50);
 pref("extensions.treestyletab.tabbar.autoHide.area",       25);
 pref("extensions.treestyletab.tabbar.autoHide.expandArea", false);
 pref("extensions.treestyletab.enableSubtreeIndent",    true);
+pref("extensions.treestyletab.enableSubtreeIndent.allTabsPopup", true);
 pref("extensions.treestyletab.allowSubtreeCollapseExpand", true);
 pref("extensions.treestyletab.showBorderForFirstTab",  false);
 pref("extensions.treestyletab.levelMargin",            12);
@@ -20,6 +21,8 @@ pref("extensions.treestyletab.insertNewChildAt", 1);
 
 pref("extensions.treestyletab.show.openSelectionLinks", true);
 pref("extensions.treestyletab.show.context-item-removeTabSubTree", true);
+pref("extensions.treestyletab.show.context-item-collapseAllSubtree", true);
+pref("extensions.treestyletab.show.context-item-expandAllSubtree", true);
 pref("extensions.treestyletab.show.context-item-toggleAutoHide",   true);
 
 pref("extensions.treestyletab.openOuterLinkInNewTab",              false);

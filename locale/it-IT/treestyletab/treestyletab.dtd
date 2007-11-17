@@ -14,8 +14,8 @@
 <!ENTITY config.tabbar.invertUI         "Inverti la visualizzazione delle schede">
 <!ENTITY config.enableSubtreeIndent         "Indenta schede figlie">
 <!ENTITY config.allowSubtreeCollapseExpand  "Permetti di contrarre/espandere sottoalberi delle schede">
-<!ENTITY config.tabbar.autoHide.enabled     "Auto hide tab bar">
-<!ENTITY config.tabbar.hideAlltabsButton    "Show &quot;List all tabs&quot; button">
+<!ENTITY config.tabbar.autoHide.enabled     "Nascondi automaticamente la barra delle schede">
+<!ENTITY config.tabbar.hideAlltabsButton    "Visualizza la maniglia per elencare tutte le schede">
 
 <!ENTITY config.tabbar.style.caption "Aspetto delle barra delle schede">
 <!ENTITY config.tabbar.style.default "Semplice">
@@ -28,7 +28,7 @@
 
 <!ENTITY config.tabs.tab "Navigazione">
 
-<!ENTITY config.tabs.context.tab      "Schede"> <!-- DA controllare -->
+<!ENTITY config.tabs.context.tab      "Schede">
 
 <!ENTITY config.link.caption           "Collegamenti">
 <!ENTITY config.openOuterLinkInNewTab  "Apri i collegamenti provenienti da altri siti in una nuova scheda">
@@ -47,7 +47,7 @@
 <!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "Apre in schede separate">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace "Sostituisce tutte le schede con i collegamenti contenuti nella cartella (comportamento predefinito di Firefox)">
 
-<!ENTITY config.tabs.restriction.tab "Finestre"> <!-- DA controllare -->
+<!ENTITY config.tabs.restriction.tab "Finestre">
 
 <!ENTITY config.open_newwindow.caption "Forza i collegamenti che aprono nuove finestre">
 <!ENTITY config.open_newwindow.window  "ad aprirsi in una nuova finestra">
@@ -84,5 +84,9 @@
 <!ENTITY selection.removeTabSubTree.accesskey "s">
 <!ENTITY context.removeTabSubTree.label     "Chiudi questo sottoalbero">
 <!ENTITY context.removeTabSubTree.accesskey "s">
-<!ENTITY context.toggleAutoHide.label     "Auto hide tab bar">
-<!ENTITY context.toggleAutoHide.accesskey "h">
+<!ENTITY context.collapseAllSubtree.label     "Collapse All Trees">
+<!ENTITY context.collapseAllSubtree.accesskey "c">
+<!ENTITY context.expandAllSubtree.label     "Expand All Trees">
+<!ENTITY context.expandAllSubtree.accesskey "e">
+<!ENTITY context.toggleAutoHide.label     "Nascondi automaticamente la barra delle schede">
+<!ENTITY context.toggleAutoHide.accesskey "N">

@@ -26,9 +26,6 @@ var TreeStyleTabService = {
 	kSPLITTER              : 'treestyletab-splitter',
 
 	kMENUITEM_REMOVESUBTREE_SELECTION : 'multipletab-selection-item-removeTabSubTree',
-	kMENUITEM_REMOVESUBTREE_CONTEXT   : 'context-item-removeTabSubTree',
-	kMENUITEM_AUTOHIDE_CONTEXT        : 'context-item-toggleAutoHide',
-	kMENUITEM_AUTOHIDE_SEPARATOR_CONTEXT : 'context-separator-toggleAutoHide',
 
 	kFOCUS_ALL     : 0,
 	kFOCUS_VISIBLE : 1,

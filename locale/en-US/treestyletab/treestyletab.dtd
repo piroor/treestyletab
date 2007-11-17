@@ -23,7 +23,7 @@
 <!ENTITY config.tabbar.style.mixed   "Mixed">
 
 <!ENTITY config.show.openSelectionLinks "Add &quot;Open Selection Links in Tabs&quot; to the context menu">
-<!ENTITY config.show.contextItemRemoveTabSubTree "Add &quot;Close this Sub Tree&quot; to the context menu on tabs which have sub tree">
+<!ENTITY config.show.contextItemRemoveTabSubTree "Add &quot;Close this Tree&quot; to the context menu on tabs which have sub tree">
 
 
 <!ENTITY config.tabs.tab "Tab Operations">
@@ -80,9 +80,13 @@
 <!ENTITY context.openSelectionLinks.label     "Open Selection Links in Tabs">
 <!ENTITY context.openSelectionLinks.accesskey "l">
 
-<!ENTITY selection.removeTabSubTree.label     "Close Selected Sub Trees">
+<!ENTITY selection.removeTabSubTree.label     "Close Selected Trees">
 <!ENTITY selection.removeTabSubTree.accesskey "s">
-<!ENTITY context.removeTabSubTree.label     "Close this Sub Tree">
+<!ENTITY context.removeTabSubTree.label     "Close this Tree">
 <!ENTITY context.removeTabSubTree.accesskey "s">
+<!ENTITY context.collapseAllSubtree.label     "Collapse All Trees">
+<!ENTITY context.collapseAllSubtree.accesskey "c">
+<!ENTITY context.expandAllSubtree.label     "Expand All Trees">
+<!ENTITY context.expandAllSubtree.accesskey "e">
 <!ENTITY context.toggleAutoHide.label     "Auto hide tab bar">
 <!ENTITY context.toggleAutoHide.accesskey "h">
