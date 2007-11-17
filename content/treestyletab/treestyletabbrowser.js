@@ -551,12 +551,11 @@ TreeStyleTabBrowser.prototype = {
 		this.ObserverService.addObserver(this, 'TreeStyleTab:collapseExpandAllSubtree', false);
 		this.addPrefListener(this);
 	},
-	
+	 
 	initTab : function(aTab) 
 	{
 		if (!aTab.hasAttribute(this.kID)) {
-			var id = 'tab-<'+Date.now()+'-'+parseInt(Math.random() * 65000)+'>';
-			this.setTabValue(aTab, this.kID, id);
+			this.setTabValue(aTab, this.kID, this.makeNewId());
 		}
 
 		aTab.__treestyletab__linkedTabBrowser = this.mTabBrowser;
@@ -566,7 +565,7 @@ TreeStyleTabBrowser.prototype = {
 
 		aTab.setAttribute(this.kNEST, 0);
 	},
-	
+	 
 	initTabAttributes : function(aTab) 
 	{
 		var pos = this.mTabBrowser.getAttribute(this.kTABBAR_POSITION);
@@ -668,7 +667,7 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 	},
-  
+  	
 	initTabbar : function(aPosition) 
 	{
 		var b = this.mTabBrowser;
@@ -864,7 +863,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		delete aTab.__treestyletab__linkedTabBrowser;
 	},
-  	 
+   
 /* nsIObserver */ 
 	 
 	domain : 'extensions.treestyletab', 
@@ -1297,14 +1296,22 @@ TreeStyleTabBrowser.prototype = {
 		var tab = aEvent.originalTarget;
 		var b   = this.mTabBrowser;
 
+		var isDuplicated = false;
+
+		var id = this.getTabValue(tab, this.kID);
+		if (this.getTabById(id)) { // this is a duplicated tab!
+			isDuplicated = true;
+			id += 'd';
+		}
+
 		/* If it has a parent, it is wrongly attacched by tab moving
 		   on restoring. Restoring the old ID (the next statement)
 		   breaks the children list of the temporary parent and causes
 		   many problems. So, to prevent these problems, I part the tab
 		   from the temporary parent manually. */
-		if (this.getParentTab(tab)) this.partTab(tab);
+		if (!isDuplicated && this.getParentTab(tab))
+			this.partTab(tab);
 
-		var id = this.getTabValue(tab, this.kID);
 		this.setTabValue(tab, this.kID, id);
 
 		var isSubTreeCollapsed = (this.getTabValue(tab, this.kSUBTREE_COLLAPSED) == 'true');
@@ -1313,6 +1320,8 @@ TreeStyleTabBrowser.prototype = {
 		var tabs = [];
 		if (children) {
 			children = children.split('|');
+			if (isDuplicated)
+				children = children.map(function(aChild) { return aChild += 'd'; });
 			for (var i = 0, maxi = children.length; i < maxi; i++)
 			{
 				if (children[i] && (children[i] = this.getTabById(children[i]))) {
@@ -1322,9 +1331,12 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 
-		var parent = this.getTabValue(tab, this.kPARENT);
 		var before = this.getTabValue(tab, this.kINSERT_BEFORE);
+		if (before && isDuplicated) before += 'd';
+
+		var parent = this.getTabValue(tab, this.kPARENT);
 		if (parent) {
+			if (isDuplicated) parent += 'd';
 			parent = this.getTabById(parent);
 			if (parent) {
 				this.attachTabTo(tab, parent, {
@@ -1518,7 +1530,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 	},
  
-	initAllTabsPopup : function(aEvent)
+	initAllTabsPopup : function(aEvent) 
 	{
 		if (!this.getTreePref('enableSubtreeIndent.allTabsPopup')) return;
 		var items = aEvent.target.childNodes;

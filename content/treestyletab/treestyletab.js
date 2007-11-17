@@ -265,7 +265,7 @@ var TreeStyleTabService = {
 	},
   
 /* Utilities */ 
-	
+	 
 	isEventFiredOnTwisty : function(aEvent) 
 	{
 		var tab = this.getTabFromEvent(aEvent);
@@ -386,6 +386,11 @@ var TreeStyleTabService = {
 		return frame;
 	},
  
+	makeNewId : function() 
+	{
+		return 'tab-<'+Date.now()+'-'+parseInt(Math.random() * 65000)+'>';
+	},
+ 	
 	makeURIFromSpec : function(aURI) 
 	{
 		var newURI;
@@ -1053,7 +1058,7 @@ catch(e) {
 			(aCollapse ? 'collapse' : 'open' )
 		);
 	},
- 	 
+  
 /* Pref Listener */ 
 	 
 	domain : 'extensions.treestyletab', 
