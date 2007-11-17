@@ -88,6 +88,9 @@ TreeStyleTabBrowser.prototype = {
 		b.addEventListener('TabClose',       this, true);
 		b.addEventListener('TabMove',        this, true);
 		b.addEventListener('SSTabRestoring', this, true);
+		b.mStrip.addEventListener('dragenter', this, false);
+		b.mStrip.addEventListener('dragexit', this, false);
+		b.mStrip.addEventListener('dragover', this, false);
 		b.mTabContainer.addEventListener('click', this, true);
 		b.mTabContainer.addEventListener('dblclick', this, true);
 		b.mTabContainer.addEventListener('mousedown', this, true);
@@ -618,6 +621,9 @@ TreeStyleTabBrowser.prototype = {
 		b.removeEventListener('TabClose',       this, true);
 		b.removeEventListener('TabMove',        this, true);
 		b.removeEventListener('SSTabRestoring', this, true);
+		b.removeEventListener.addEventListener('dragenter', this, false);
+		b.removeEventListener.addEventListener('dragexit', this, false);
+		b.removeEventListener.addEventListener('dragover', this, false);
 		b.mTabContainer.removeEventListener('click', this, true);
 		b.mTabContainer.removeEventListener('dblclick', this, true);
 		b.mTabContainer.removeEventListener('mousedown', this, true);
@@ -881,6 +887,18 @@ TreeStyleTabBrowser.prototype = {
 						this.tabContextMenuShown = false;
 						break;
 				}
+				return;
+
+			case 'dragenter':
+				nsDragAndDrop.dragEnter(aEvent, this);
+				return;
+
+			case 'dragexit':
+				nsDragAndDrop.dragExit(aEvent, this);
+				return;
+
+			case 'dragover':
+				nsDragAndDrop.dragOver(aEvent, this);
 				return;
 		}
 	},
@@ -1320,7 +1338,76 @@ TreeStyleTabBrowser.prototype = {
 	},
   
 /* drag and drop */ 
+	isPlatformNotSupported : navigator.platform.indexOf('Mac') != -1, // see bug 136524 
+	isTimerSupported       : navigator.platform.indexOf('Win') == -1, // see bug 232795.
+
+	autoExpandTimer  : null,
+	autoExpandTarget : null,
+	autoExpandDelay  : 500,
 	
+	onDragEnter : function(aEvent, aDragSession)
+	{
+		var tab = aEvent.target;
+		if (tab.localName != 'tab') return;
+
+		var now = (new Date()).getTime();
+
+		if (this.isPlatformNotSupported) return;
+		if (this.isTimerSupported || !aDragSession.sourceNode) {
+			window.clearTimeout(this.autoExpandTimer);
+			if (aEvent.target == aDragSession.sourceNode) return;
+			this.autoExpandTimer = window.setTimeout(function(aSelf, aTarget) {
+				var tab = aSelf.getTabById(aTarget);
+				if (tab && tab.getAttribute(aSelf.kSUBTREE_COLLAPSED) == 'true')
+					aSelf.collapseExpandTreesIntelligentlyFor(tab);
+			}, this.autoCollapseExpandDelay, this, tab.getAttribute(this.kID));
+		}
+		else {
+			this.autoExpandTimer  = now;
+			this.autoExpandTarget = tab.getAttribute(this.kID);
+		}
+	},
+ 
+	onDragExit : function(aEvent, aDragSession) 
+	{
+		var now = (new Date()).getTime();
+
+		if (this.isPlatformNotSupported) return;
+		if (this.isTimerSupported || !aDragSession.sourceNode) {
+			window.clearTimeout(this.autoExpandTimer);
+			this.autoExpandTimer = null;
+		}
+		else {
+			this.autoExpandTimer  = null;
+			this.autoExpandTarget = null;
+		}
+	},
+ 
+	onDragOver : function(aEvent, aFlavour, aDragSession) 
+	{
+		if (this.isPlatformNotSupported) return;
+		if (this.isTimerSupported || !aDragSession.sourceNode) return;
+
+		var now   = (new Date()).getTime();
+		var delay = this.autoExpandDelay;
+		if (this.autoExpandTimer && (now - delay > this.autoExpandTimer)) {
+			var tab = this.getTabById(this.autoExpandTarget);
+			if (tab && tab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true')
+				this.collapseExpandTreesIntelligentlyFor(tab);
+			this.autoExpandTimer  = null;
+			this.autoExpandTarget = null;
+		}
+	},
+ 
+	getSupportedFlavours : function() 
+	{
+		var flavourSet = new FlavourSet();
+		flavourSet.appendFlavour('text/x-moz-url');
+		flavourSet.appendFlavour('text/unicode');
+		flavourSet.appendFlavour('application/x-moz-file', 'nsIFile');
+		return flavourSet;
+	},
+ 
 	getDropAction : function(aEvent, aDragSession) 
 	{
 		var info = this.getDropActionInternal(aEvent);
