@@ -115,7 +115,7 @@ TreeStyleTabBrowser.prototype = {
 					{
 						if (TreeStyleTabService.getTreePref('focusMode') == TreeStyleTabService.kFOCUS_VISIBLE) {
 							(function(aDir, aWrap, aSelf) {
-								var treeStyleTab = TreeStyleTabService.getTabBrowserFromChildren(aSelf).treeStyleTab;
+								var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(aSelf).treeStyleTab;
 								var nextTab = (aDir < 0) ? treeStyleTab.getPreviousVisibleTab(aSelf.selectedItem) : treeStyleTab.getNextVisibleTab(aSelf.selectedItem) ;
 								if (!nextTab && aWrap) {
 									var xpathResult = TreeStyleTabService.evaluateXPath(
@@ -142,7 +142,7 @@ TreeStyleTabBrowser.prototype = {
 				'{',
 				<><![CDATA[
 					{
-						var treeStyleTab = TreeStyleTabService.getTabBrowserFromChildren(this).treeStyleTab;
+						var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;
 						if (!treeStyleTab.isTabInViewport(this.selectedItem)) {
 							treeStyleTab.scrollToTab(this.selectedItem);
 							return;
@@ -154,7 +154,7 @@ TreeStyleTabBrowser.prototype = {
 		eval('b.mTabContainer._notifyBackgroundTab = '+
 			b.mTabContainer._notifyBackgroundTab.toSource().replace(
 				'{',
-				'{ var treeStyleTab = TreeStyleTabService.getTabBrowserFromChildren(this).treeStyleTab;'
+				'{ var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;'
 			).replace(
 				/\.screenX/g, '[treeStyleTab.positionProp]'
 			).replace(

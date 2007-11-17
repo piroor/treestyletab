@@ -248,19 +248,19 @@ var TreeStyleTabService = {
 	
 	initTabAttributes : function(aTab, aTabBrowser) 
 	{
-		var b = aTabBrowser || this.getTabBrowserFromChildren(aTab);
+		var b = aTabBrowser || this.getTabBrowserFromChild(aTab);
 		this.getTempTreeStyleTab(b).initTabAttributes(aTab);
 	},
  
 	initTabContents : function(aTab, aTabBrowser) 
 	{
-		var b = aTabBrowser || this.getTabBrowserFromChildren(aTab);
+		var b = aTabBrowser || this.getTabBrowserFromChild(aTab);
 		this.getTempTreeStyleTab(b).initTabContents(aTab);
 	},
  
 	initTabContentsOrder : function(aTab, aTabBrowser) 
 	{
-		var b = aTabBrowser || this.getTabBrowserFromChildren(aTab);
+		var b = aTabBrowser || this.getTabBrowserFromChild(aTab);
 		this.getTempTreeStyleTab(b).initTabContentsOrder(aTab);
 	},
   
@@ -345,7 +345,7 @@ var TreeStyleTabService = {
 		return null;
 	},
  
-	getTabBrowserFromChildren : function(aTab) 
+	getTabBrowserFromChild : function(aTab) 
 	{
 		if (!aTab) return null;
 
@@ -361,7 +361,7 @@ var TreeStyleTabService = {
  
 	getTabBrowserFromFrame : function(aFrame) 
 	{
-		return ('SplitBrowser' in window) ? this.getTabBrowserFromChildren(SplitBrowser.getSubBrowserAndBrowserFromFrame(aFrame.top).browser) : this.browser ;
+		return ('SplitBrowser' in window) ? this.getTabBrowserFromChild(SplitBrowser.getSubBrowserAndBrowserFromFrame(aFrame.top).browser) : this.browser ;
 	},
  
 	getFrameFromTabBrowserElements : function(aFrameOrTabBrowser) 
@@ -375,7 +375,7 @@ var TreeStyleTabService = {
 				frame = frame.contentWindow;
 			}
 			else {
-				frame = this.getTabBrowserFromChildren(frame);
+				frame = this.getTabBrowserFromChild(frame);
 				if (!frame) return null;
 				frame = frame.contentWindow;
 			}
@@ -417,7 +417,7 @@ var TreeStyleTabService = {
 	getTabById : function(aId, aTabBrowserChildren) 
 	{
 		if (!aId) return null;
-		var b = this.getTabBrowserFromChildren(aTabBrowserChildren);
+		var b = aTabBrowserChildren ? this.getTabBrowserFromChild(aTabBrowserChildren) : null ;
 		if (!b) b = this.browser;
 		return this.evaluateXPath(
 				'descendant::xul:tab[@'+this.kID+' = "'+aId+'"]',
@@ -672,13 +672,13 @@ var TreeStyleTabService = {
 				'{',
 				'{ var TSTTabBrowser = this;'
 			).replace(
-				/\.screenX/g, '[TreeStyleTabService.getTabBrowserFromChildren(TSTTabBrowser).treeStyleTab.positionProp]'
+				/\.screenX/g, '[TreeStyleTabService.getTabBrowserFromChild(TSTTabBrowser).treeStyleTab.positionProp]'
 			).replace(
-				/\.width/g, '[TreeStyleTabService.getTabBrowserFromChildren(TSTTabBrowser).treeStyleTab.sizeProp]'
+				/\.width/g, '[TreeStyleTabService.getTabBrowserFromChild(TSTTabBrowser).treeStyleTab.sizeProp]'
 			).replace( // Tab Mix Plus
-				/\.screenY/g, '[TreeStyleTabService.getTabBrowserFromChildren(TSTTabBrowser).treeStyleTab.invertedPositionProp]'
+				/\.screenY/g, '[TreeStyleTabService.getTabBrowserFromChild(TSTTabBrowser).treeStyleTab.invertedPositionProp]'
 			).replace( // Tab Mix Plus
-				/\.height/g, '[TreeStyleTabService.getTabBrowserFromChildren(TSTTabBrowser).treeStyleTab.invertedSizeProp]'
+				/\.height/g, '[TreeStyleTabService.getTabBrowserFromChild(TSTTabBrowser).treeStyleTab.invertedSizeProp]'
 			).replace(
 				/(return true;)/,
 				<><![CDATA[
@@ -1073,7 +1073,7 @@ catch(e) {
 	{
 		this.setPref(
 			'extensions.treestyletab.tabbar.width',
-			TreeStyleTabService.getTabBrowserFromChildren(aEvent.currentTarget)
+			TreeStyleTabService.getTabBrowserFromChild(aEvent.currentTarget)
 				.mStrip.boxObject.width
 		);
 	},
@@ -1122,7 +1122,7 @@ catch(e) {
 			tabs = [aTabOrTabs];
 		}
 
-		var b = this.getTabBrowserFromChildren(tabs[0]);
+		var b = this.getTabBrowserFromChild(tabs[0]);
 		var descendant = [];
 		for (var i = 0, maxi = tabs.length; i < maxi; i++)
 		{
@@ -1147,7 +1147,7 @@ catch(e) {
 	
 	cleanUpTabsArray : function(aTabs) 
 	{
-		var b = this.getTabBrowserFromChildren(aTabs[0]);
+		var b = this.getTabBrowserFromChild(aTabs[0]);
 
 		var self = this;
 		aTabs = aTabs.map(function(aTab) { return aTab.getAttribute(self.kID); });
