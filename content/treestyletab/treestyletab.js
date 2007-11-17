@@ -390,7 +390,7 @@ var TreeStyleTabService = {
 	{
 		return 'tab-<'+Date.now()+'-'+parseInt(Math.random() * 65000)+'>';
 	},
- 	
+ 
 	makeURIFromSpec : function(aURI) 
 	{
 		var newURI;
@@ -411,7 +411,231 @@ var TreeStyleTabService = {
 		this.setTreePref('tabbar.autoHide.enabled',
 			!this.getTreePref('tabbar.autoHide.enabled'));
 	},
+ 
+/* get tab(s) */ 
+	 
+	getTabById : function(aId, aTabBrowserChildren) 
+	{
+		if (!aId) return null;
+		var b = this.getTabBrowserFromChildren(aTabBrowserChildren);
+		if (!b) b = this.browser;
+		return this.evaluateXPath(
+				'descendant::xul:tab[@'+this.kID+' = "'+aId+'"]',
+				b.mTabContainer,
+				XPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue;
+	},
+ 	
+	getNextVisibleTab : function(aTab) 
+	{
+		var xpathResult = this.evaluateXPath(
+				'following-sibling::xul:tab[not(@'+this.kCOLLAPSED+'="true")]',
+				aTab
+			);
+		return xpathResult.snapshotItem(0);
+	},
+ 
+	getPreviousVisibleTab : function(aTab) 
+	{
+		var xpathResult = this.evaluateXPath(
+				'preceding-sibling::xul:tab[not(@'+this.kCOLLAPSED+'="true")]',
+				aTab
+			);
+		return xpathResult.snapshotItem(xpathResult.snapshotLength-1);
+	},
   
+/* tree manipulations */ 
+	 
+	get rootTabs() 
+	{
+		return this.getArrayFromXPathResult(
+				this.evaluateXPath(
+					'child::xul:tab[not(@'+this.kNEST+') or @'+this.kNEST+'="0" or @'+this.kNEST+'=""]',
+					this.browser.mTabContainer
+				)
+			);
+	},
+ 
+	getParentTab : function(aTab) 
+	{
+		if (!aTab) return null;
+		var id = aTab.getAttribute(this.kID);
+		if (!id) return null; // not initialized yet
+		return this.evaluateXPath(
+				'parent::*/child::xul:tab[contains(@'+this.kCHILDREN+', "'+id+'")]',
+				aTab,
+				XPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue;
+	},
+ 
+	getRootTab : function(aTab) 
+	{
+		var parent = aTab;
+		var root   = aTab;
+		while (parent = this.getParentTab(parent))
+		{
+			root = parent;
+		}
+		return root;
+	},
+ 
+	getNextSiblingTab : function(aTab) 
+	{
+		if (!aTab) return null;
+
+		var parentTab = this.getParentTab(aTab);
+
+		if (!parentTab) {
+			var next = aTab;
+			do {
+				next = next.nextSibling;
+			}
+			while (next && this.getParentTab(next));
+			return next;
+		}
+
+		var children = parentTab.getAttribute(this.kCHILDREN);
+		if (children) {
+			var list = ('|'+children).split('|'+aTab.getAttribute(this.kID))[1].split('|');
+			for (var i = 0, maxi = list.length; i < maxi; i++)
+			{
+				var firstChild = this.getTabById(list[i], aTab);
+				if (firstChild) return firstChild;
+			}
+		}
+		return null;
+	},
+ 
+	getPreviousSiblingTab : function(aTab) 
+	{
+		if (!aTab) return null;
+
+		var parentTab = this.getParentTab(aTab);
+
+		if (!parentTab) {
+			var prev = aTab;
+			do {
+				prev = prev.previousSibling;
+			}
+			while (prev && this.getParentTab(prev));
+			return prev;
+		}
+
+		var children = parentTab.getAttribute(this.kCHILDREN);
+		if (children) {
+			var list = ('|'+children).split('|'+aTab.getAttribute(this.kID))[0].split('|');
+			for (var i = list.length-1; i > -1; i--)
+			{
+				var lastChild = this.getTabById(list[i], aTab);
+				if (lastChild) return lastChild;
+			}
+		}
+		return null;
+	},
+ 
+	getChildTabs : function(aTab, aAllTabsArray) 
+	{
+		var tabs = [];
+		if (!aTab) return null;
+
+		var children = aTab.getAttribute(this.kCHILDREN);
+		if (!children) return tabs;
+
+		if (aAllTabsArray) tabs = aAllTabsArray;
+
+		var list = children.split('|');
+		var tab;
+		for (var i = 0, maxi = list.length; i < maxi; i++)
+		{
+			tab = this.getTabById(list[i], aTab);
+			if (!tab) continue;
+			tabs.push(tab);
+			if (aAllTabsArray)
+				this.getChildTabs(tab, tabs);
+		}
+
+		return tabs;
+	},
+ 
+	getDescendantTabs : function(aTab) 
+	{
+		var tabs = [];
+		this.getChildTabs(aTab, tabs);
+		return tabs;
+	},
+ 
+	getFirstChildTab : function(aTab) 
+	{
+		if (!aTab) return null;
+
+		var children   = aTab.getAttribute(this.kCHILDREN);
+		var firstChild = null;
+		if (children) {
+			var list = children.split('|');
+			for (var i = 0, maxi = list.length; i < maxi; i++)
+			{
+				firstChild = this.getTabById(list[i], aTab);
+				if (firstChild) break;
+			}
+		}
+		return firstChild;
+	},
+ 
+	getLastChildTab : function(aTab) 
+	{
+		if (!aTab) return null;
+
+		var children  = aTab.getAttribute(this.kCHILDREN);
+		var lastChild = null;
+		if (children) {
+			var list = children.split('|');
+			for (var i = list.length-1; i > -1; i--)
+			{
+				lastChild = this.getTabById(list[i], aTab);
+				if (lastChild) break;
+			}
+		}
+		return lastChild;
+	},
+  
+/* Session Store API */ 
+	
+	getTabValue : function(aTab, aKey) 
+	{
+		var value = null;
+		try {
+			value = this.SessionStore.getTabValue(aTab, aKey);
+		}
+		catch(e) {
+		}
+
+		return value;
+	},
+ 
+	setTabValue : function(aTab, aKey, aValue) 
+	{
+		if (!aValue) {
+			return this.deleteTabValue(aTab, aKey);
+		}
+		aTab.setAttribute(aKey, aValue);
+		try {
+			this.SessionStore.setTabValue(aTab, aKey, aValue);
+		}
+		catch(e) {
+		}
+		return aValue;
+	},
+ 
+	deleteTabValue : function(aTab, aKey) 
+	{
+		aTab.removeAttribute(aKey);
+		try {
+			this.SessionStore.deleteTabValue(aTab, aKey);
+		}
+		catch(e) {
+		}
+	},
+   
 /* Initializing */ 
 	
 	init : function() 
