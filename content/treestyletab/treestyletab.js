@@ -108,7 +108,7 @@ var TreeStyleTabService = {
 		return this._XULAppInfo;
 	},
 	_XULAppInfo : null,
-	
+	 
 /* API */ 
 	
 	readyToOpenChildTab : function(aFrameOrTabBrowser, aMultiple, aInsertBefore) 
@@ -268,7 +268,7 @@ var TreeStyleTabService = {
 	},
   
 /* Utilities */ 
-	 
+	
 	isEventFiredOnTwisty : function(aEvent) 
 	{
 		var tab = this.getTabFromEvent(aEvent);
@@ -888,7 +888,7 @@ catch(e) {
 	},
   
 /* Commands */ 
-	
+	 
 	removeTabSubTree : function(aTabOrTabs) 
 	{
 		var tabs = aTabOrTabs;
@@ -918,7 +918,7 @@ catch(e) {
 			b.removeTab(tabs[i]);
 		}
 	},
-	 
+	
 	cleanUpTabsArray : function(aTabs) 
 	{
 		var b = this.getTabBrowserFromChildren(aTabs[0]);
@@ -956,7 +956,7 @@ catch(e) {
 		});
 		this.stopToOpenChildTab(targetWindow);
 	},
-	 
+	
 	getSelectionLinks : function() 
 	{
 		var links = [];
@@ -1047,9 +1047,18 @@ catch(e) {
 
 		return node.href ? node : null ;
 	},
-    
+   
+	collapseExpandAllSubtree : function(aCollapse) 
+	{
+		this.ObserverService.notifyObservers(
+			window,
+			'TreeStyleTab:collapseExpandAllSubtree',
+			(aCollapse ? 'collapse' : 'open' )
+		);
+	},
+ 	 
 /* Pref Listener */ 
-	
+	 
 	domain : 'extensions.treestyletab', 
  
 	observe : function(aSubject, aTopic, aPrefName) 
@@ -1177,4 +1186,4 @@ catch(e) {
 
 window.addEventListener('load', TreeStyleTabService, false);
 window.addEventListener('unload', TreeStyleTabService, false);
- 	
+ 
