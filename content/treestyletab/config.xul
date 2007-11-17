@@ -47,6 +47,15 @@
 		<preference id="extensions.treestyletab.show.context-item-removeTabSubTree"
 			name="extensions.treestyletab.show.context-item-removeTabSubTree"
 			type="bool"/>
+		<preference id="extensions.treestyletab.show.context-item-collapseAllSubtree"
+			name="extensions.treestyletab.show.context-item-collapseAllSubtree"
+			type="bool"/>
+		<preference id="extensions.treestyletab.show.context-item-expandAllSubtree"
+			name="extensions.treestyletab.show.context-item-expandAllSubtree"
+			type="bool"/>
+		<preference id="extensions.treestyletab.show.context-item-toggleAutoHide"
+			name="extensions.treestyletab.show.context-item-toggleAutoHide"
+			type="bool"/>
 	</preferences>
 
 	<checkbox id="extensions.treestyletab.tabbar.scroll.smooth-check"
@@ -130,12 +139,26 @@
 				src="chrome://treestyletab/content/res/style-mixed.png"/>
 		</radiogroup>
 	</groupbox>
+	<groupbox orient="vertical">
+		<caption label="&config.show.tabContextMenu.caption;"/>
+		<hbox align="center">
+			<checkbox id="extensions.treestyletab.show.context-item-removeTabSubTree-check"
+				preference="extensions.treestyletab.show.context-item-removeTabSubTree"
+				label="&context.removeTabSubTree.label;"/>
+			<checkbox id="extensions.treestyletab.show.context-item-collapseAllSubtree-check"
+				preference="extensions.treestyletab.show.context-item-collapseAllSubtree"
+				label="&context.collapseAllSubtree.label;"/>
+			<checkbox id="extensions.treestyletab.show.context-item-expandAllSubtree-check"
+				preference="extensions.treestyletab.show.context-item-expandAllSubtree"
+				label="&context.expandAllSubtree.label;"/>
+		</hbox>
+		<checkbox id="extensions.treestyletab.show.context-item-toggleAutoHide-check"
+			preference="extensions.treestyletab.show.context-item-toggleAutoHide"
+			label="&context.toggleAutoHide.label;"/>
+	</groupbox>
 	<checkbox id="extensions.treestyletab.show.openSelectionLinks-check"
 		preference="extensions.treestyletab.show.openSelectionLinks"
 		label="&config.show.openSelectionLinks;"/>
-	<checkbox id="extensions.treestyletab.show.context-item-removeTabSubTree-check"
-		preference="extensions.treestyletab.show.context-item-removeTabSubTree"
-		label="&config.show.contextItemRemoveTabSubTree;"/>
 </prefpane>
 
 <prefpane id="prefpane-tab" label="&config.tabs.tab;"

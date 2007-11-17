@@ -22,8 +22,8 @@
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.mixed   "Mixed">
 
+<!ENTITY config.show.tabContextMenu.caption "タブのコンテキストメニューに以下の項目を追加する">
 <!ENTITY config.show.openSelectionLinks "コンテキストメニューに「選択したリンクをすべてタブで開く」を加える">
-<!ENTITY config.show.contextItemRemoveTabSubTree "サブツリーがあるタブのコンテキストメニューに「このサブツリーを閉じる」を加える">
 
 
 <!ENTITY config.tabs.tab "タブの開き方">

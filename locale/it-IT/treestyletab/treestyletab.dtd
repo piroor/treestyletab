@@ -22,8 +22,8 @@
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.mixed   "Misto">
 
+<!ENTITY config.show.tabContextMenu.caption "Add following items to the context menu on tabs">
 <!ENTITY config.show.openSelectionLinks "Aggiungi &quot;Apri collegamenti selezionati in schede&quot; al menu contestuale">
-<!ENTITY config.show.contextItemRemoveTabSubTree "Aggiungi&quot;Chiudi questo sottoalbero&quot; al menu contestuale delle schede che possiedono sottoalberi">
 
 
 <!ENTITY config.tabs.tab "Navigazione">
