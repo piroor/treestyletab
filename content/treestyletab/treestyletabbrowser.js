@@ -91,6 +91,7 @@ TreeStyleTabBrowser.prototype = {
 		b.mStrip.addEventListener('dragenter', this, false);
 		b.mStrip.addEventListener('dragexit', this, false);
 		b.mStrip.addEventListener('dragover', this, false);
+		b.mStrip.addEventListener('dragdrop', this, false);
 		b.mTabContainer.addEventListener('click', this, true);
 		b.mTabContainer.addEventListener('dblclick', this, true);
 		b.mTabContainer.addEventListener('mousedown', this, true);
@@ -621,9 +622,10 @@ TreeStyleTabBrowser.prototype = {
 		b.removeEventListener('TabClose',       this, true);
 		b.removeEventListener('TabMove',        this, true);
 		b.removeEventListener('SSTabRestoring', this, true);
-		b.removeEventListener.addEventListener('dragenter', this, false);
-		b.removeEventListener.addEventListener('dragexit', this, false);
-		b.removeEventListener.addEventListener('dragover', this, false);
+		b.mStrip.removeEventListener('dragenter', this, false);
+		b.mStrip.removeEventListener('dragexit', this, false);
+		b.mStrip.removeEventListener('dragover', this, false);
+		b.mStrip.removeEventListener('dragdrop', this, false);
 		b.mTabContainer.removeEventListener('click', this, true);
 		b.mTabContainer.removeEventListener('dblclick', this, true);
 		b.mTabContainer.removeEventListener('mousedown', this, true);
@@ -899,6 +901,10 @@ TreeStyleTabBrowser.prototype = {
 
 			case 'dragover':
 				nsDragAndDrop.dragOver(aEvent, this);
+				return;
+
+			case 'dragdrop':
+				nsDragAndDrop.drop(aEvent, this);
 				return;
 		}
 	},
@@ -1343,7 +1349,7 @@ TreeStyleTabBrowser.prototype = {
 
 	autoExpandTimer  : null,
 	autoExpandTarget : null,
-	autoExpandDelay  : 500,
+	autoExpandedTabs : [],
 	
 	onDragEnter : function(aEvent, aDragSession)
 	{
@@ -1356,11 +1362,25 @@ TreeStyleTabBrowser.prototype = {
 		if (this.isTimerSupported || !aDragSession.sourceNode) {
 			window.clearTimeout(this.autoExpandTimer);
 			if (aEvent.target == aDragSession.sourceNode) return;
-			this.autoExpandTimer = window.setTimeout(function(aSelf, aTarget) {
-				var tab = aSelf.getTabById(aTarget);
-				if (tab && tab.getAttribute(aSelf.kSUBTREE_COLLAPSED) == 'true')
-					aSelf.collapseExpandTreesIntelligentlyFor(tab);
-			}, this.autoCollapseExpandDelay, this, tab.getAttribute(this.kID));
+			this.autoExpandTimer = window.setTimeout(
+				function(aSelf, aTarget) {
+					var tab = aSelf.getTabById(aTarget);
+					if (tab &&
+						tab.getAttribute(aSelf.kSUBTREE_COLLAPSED) == 'true' &&
+						tab.getAttribute(aSelf.kDROP_POSITION) == 'self') {
+						if (aSelf.getTreePref('autoExpand.intelligently') {
+							aSelf.collapseExpandTreesIntelligentlyFor(tab);
+						}
+						else {
+							aSelf.autoExpandedTabs.push(aTarget);
+							aSelf.collapseExpandSubtree(tab, false);
+						}
+					}
+				},
+				this.getTreePref('autoExpand.delay'),
+				this,
+				tab.getAttribute(this.kID)
+			);
 		}
 		else {
 			this.autoExpandTimer  = now;
@@ -1389,14 +1409,35 @@ TreeStyleTabBrowser.prototype = {
 		if (this.isTimerSupported || !aDragSession.sourceNode) return;
 
 		var now   = (new Date()).getTime();
-		var delay = this.autoExpandDelay;
+		var delay = this.getTreePref('autoExpand.delay');
 		if (this.autoExpandTimer && (now - delay > this.autoExpandTimer)) {
 			var tab = this.getTabById(this.autoExpandTarget);
-			if (tab && tab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true')
-				this.collapseExpandTreesIntelligentlyFor(tab);
+			if (tab &&
+				tab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true' &&
+				tab.getAttribute(this.kDROP_POSITION) == 'self') {
+				if (this.getTreePref('autoExpand.intelligently') {
+					this.collapseExpandTreesIntelligentlyFor(tab);
+				}
+				else {
+					this.autoExpandedTabs.push(this.autoExpandTarget);
+					this.collapseExpandSubtree(tab, false);
+				}
+			}
 			this.autoExpandTimer  = null;
 			this.autoExpandTarget = null;
 		}
+	},
+ 
+	onDrop : function(aEvent, aXferData, aDragSession) 
+	{
+		if (!this.autoExpandedTabs.length) return;
+		if (this.getTreePref('autoExpand.collapseFinally')) {
+			var self = this;
+			this.autoExpandedTabs.forEach(function(aTarget) {
+				self.collapseExpandSubtree(self.getTabById(aTarget), true);
+			});
+		}
+		this.autoExpandedTabs = [];
 	},
  
 	getSupportedFlavours : function() 

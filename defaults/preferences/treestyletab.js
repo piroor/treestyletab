@@ -15,6 +15,9 @@ pref("extensions.treestyletab.enableSubtreeIndent",    true);
 pref("extensions.treestyletab.enableSubtreeIndent.allTabsPopup", true);
 pref("extensions.treestyletab.allowSubtreeCollapseExpand", true);
 pref("extensions.treestyletab.showBorderForFirstTab",  false);
+pref("extensions.treestyletab.autoExpand.delay",       500);
+pref("extensions.treestyletab.autoExpand.intelligently", true);
+pref("extensions.treestyletab.autoExpand.collapseFinally", false);
 pref("extensions.treestyletab.levelMargin",            12);
 // 0 = first child, 1 = last child
 pref("extensions.treestyletab.insertNewChildAt", 1);
