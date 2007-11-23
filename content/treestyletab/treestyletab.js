@@ -986,10 +986,20 @@ catch(e) {
 		if ('BookmarksCommand' in window) { // Firefox 2
 			eval('BookmarksCommand.openGroupBookmark = '+
 				BookmarksCommand.openGroupBookmark.toSource().replace(
+					/(tabPanels\[index\])(\.loadURI\(uri\);)/,
+					<><![CDATA[
+						$1$2
+						if (!doReplace &&
+							TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree') &&
+							!browser.treeStyleTab.parentTab) {
+							TreeStyleTabService.readyToOpenChildTab($1, true);
+						}
+					]]></>
+				).replace(
 					'browser.addTab(uri);',
 					<><![CDATA[
-						var openedTab = browser.addTab(uri);
-						if (!TreeStyleTabService.getPref('browser.tabs.loadFolderAndReplace') &&
+						var openedTab = $&
+						if (!doReplace &&
 							TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree') &&
 							!browser.treeStyleTab.parentTab) {
 							TreeStyleTabService.readyToOpenChildTab(openedTab, true);
@@ -999,7 +1009,7 @@ catch(e) {
 					'if (index == index0)',
 					<><![CDATA[
 						TreeStyleTabService.stopToOpenChildTab(browser);
-						if (index == index0)]]></>
+						$&]]></>
 				)
 			);
 		}
