@@ -1440,6 +1440,11 @@ TreeStyleTabBrowser.prototype = {
 		this.autoExpandedTabs = [];
 	},
  
+	canDrop : function(aEvent, aDragSession) 
+	{
+		return this.getDropAction(aEvent, aDragSession).canDrop;
+	},
+ 
 	getSupportedFlavours : function() 
 	{
 		var flavourSet = new FlavourSet();
