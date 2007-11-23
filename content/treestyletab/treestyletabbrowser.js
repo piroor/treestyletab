@@ -1814,7 +1814,10 @@ TreeStyleTabBrowser.prototype = {
 
 		var oldMargin = this.levelMargin;
 		var indent    = (oldMargin < 0 ? this.baseLebelMargin : oldMargin ) * nest;
-		var maxIndent = b.mTabContainer.boxObject[this.invertedSizeProp] * 0.33;
+		var maxIndent = (
+				b.mTabContainer.childNodes[0].boxObject[this.invertedSizeProp] ||
+				b.mTabContainer.boxObject[this.invertedSizeProp]
+			) * 0.33;
 
 		var marginUnit = Math.max(Math.floor(maxIndent / nest), 1);
 		if (indent > maxIndent) {
@@ -1935,7 +1938,7 @@ TreeStyleTabBrowser.prototype = {
  
 	collapseExpandTab : function(aTab, aCollapse) 
 	{
-		if (!aTab) return;
+		if (!aTab || !this.getParentTab(aTab)) return;
 
 		this.setTabValue(aTab, this.kCOLLAPSED, aCollapse);
 
