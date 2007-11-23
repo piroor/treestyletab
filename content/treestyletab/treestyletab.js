@@ -992,6 +992,7 @@ catch(e) {
 						if (!doReplace &&
 							TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree') &&
 							!browser.treeStyleTab.parentTab) {
+							browser.treeStyleTab.partTab(browser.mTabContainer.childNodes[index]);
 							TreeStyleTabService.readyToOpenChildTab($1, true);
 						}
 					]]></>
