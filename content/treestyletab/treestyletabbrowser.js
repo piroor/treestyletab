@@ -1106,13 +1106,22 @@ TreeStyleTabBrowser.prototype = {
 			id += 'd';
 		}
 
-		/* If it has a parent, it is wrongly attacched by tab moving
-		   on restoring. Restoring the old ID (the next statement)
-		   breaks the children list of the temporary parent and causes
-		   many problems. So, to prevent these problems, I part the tab
-		   from the temporary parent manually. */
-		if (!isDuplicated && this.getParentTab(tab))
+		if (!isDuplicated) {
+			/* If it has a parent, it is wrongly attacched by tab moving
+			   on restoring. Restoring the old ID (the next statement)
+			   breaks the children list of the temporary parent and causes
+			   many problems. So, to prevent these problems, I part the tab
+			   from the temporary parent manually. */
 			this.partTab(tab);
+			/* reset attributes before restoring */
+			tab.removeAttribute(this.kID);
+			tab.removeAttribute(this.kPARENT);
+			tab.removeAttribute(this.kCHILDREN);
+			tab.removeAttribute(this.kSUBTREE_COLLAPSED);
+			tab.removeAttribute(this.kCOLLAPSED);
+			tab.removeAttribute(this.kNEST);
+			this.updateTabsIndent([tab]);
+		}
 
 		this.setTabValue(tab, this.kID, id);
 
@@ -1161,7 +1170,9 @@ TreeStyleTabBrowser.prototype = {
 		if (!parent && (before = this.getTabById(before))) {
 			var index = before._tPos;
 			if (index > tab._tPos) index--;
+//			b.treeStyleTab.internallyTabMoving = true;
 			b.moveTabTo(tab, index);
+//			b.treeStyleTab.internallyTabMoving = false;
 		}
 		this.deleteTabValue(tab, this.kINSERT_BEFORE);
 
