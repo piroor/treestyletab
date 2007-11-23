@@ -1161,9 +1161,7 @@ TreeStyleTabBrowser.prototype = {
 		if (!parent && (before = this.getTabById(before))) {
 			var index = before._tPos;
 			if (index > tab._tPos) index--;
-			this.internallyTabMoving = true;
 			b.moveTabTo(tab, index);
-			this.internallyTabMoving = false;
 		}
 		this.deleteTabValue(tab, this.kINSERT_BEFORE);
 
