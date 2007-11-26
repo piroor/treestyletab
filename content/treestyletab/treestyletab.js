@@ -2,7 +2,7 @@ var TreeStyleTabService = {
 	kID                 : 'treestyletab-id',
 	kCHILDREN           : 'treestyletab-children',
 	kPARENT             : 'treestyletab-parent',
-	kANCESTORS          : 'treestyletab-ancestors',
+	kANCESTOR           : 'treestyletab-ancestors',
 	kINSERT_BEFORE      : 'treestyletab-insert-before',
 	kSUBTREE_COLLAPSED  : 'treestyletab-subtree-collapsed',
 	kCOLLAPSED          : 'treestyletab-collapsed',

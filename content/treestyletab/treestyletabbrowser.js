@@ -1033,7 +1033,7 @@ TreeStyleTabBrowser.prototype = {
 					this.setTabValue(tab, this.kINSERT_BEFORE, next.getAttribute(this.kID));
 			}
 			while (parentTab = this.getParentTab(parentTab));
-			this.setTabValue(tab, this.kANCESTORS, ancestors.join('|'));
+			this.setTabValue(tab, this.kANCESTOR, ancestors.join('|'));
 
 			this.partTab(tab, true);
 		}
@@ -1179,7 +1179,7 @@ TreeStyleTabBrowser.prototype = {
 		var before = this.getTabValue(tab, this.kINSERT_BEFORE);
 		if (before && isDuplicated) before += 'd';
 
-		var ancestors = (this.getTabValue(tab, this.kANCESTORS) || this.getTabValue(tab, this.kPARENT) || '').split('|');
+		var ancestors = (this.getTabValue(tab, this.kANCESTOR) || this.getTabValue(tab, this.kPARENT) || '').split('|');
 		var parent = null;
 		for (var i in ancestors)
 		{
@@ -1189,7 +1189,7 @@ TreeStyleTabBrowser.prototype = {
 				break;
 			}
 		}
-		this.deleteTabValue(tab, this.kANCESTORS);
+		this.deleteTabValue(tab, this.kANCESTOR);
 
 		if (parent) {
 			if (isDuplicated) parent += 'd';
@@ -1215,7 +1215,10 @@ TreeStyleTabBrowser.prototype = {
 		if (!parent && (before = this.getTabById(before))) {
 			var index = before._tPos;
 			if (index > tab._tPos) index--;
+//			this.internallyTabMoving = true;
 			b.moveTabTo(tab, index);
+//			this.internallyTabMoving = false;
+//			this.attachTabFromPosition(tab);
 		}
 		this.deleteTabValue(tab, this.kINSERT_BEFORE);
 
@@ -1801,7 +1804,7 @@ TreeStyleTabBrowser.prototype = {
 						.replace(new RegExp('\\|'+id), '')
 						.replace(/^\|/, '');
 		this.setTabValue(parentTab, this.kCHILDREN, children);
-//		this.deleteTabValue(aChild, this.kPARENT);
+		this.deleteTabValue(aChild, this.kPARENT);
 		this.updateTabsCount(parentTab);
 
 		if (!aDontUpdateIndent) {
