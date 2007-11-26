@@ -34,7 +34,8 @@
 		<menuitem id="context-item-removeTabSubTree"
 			label="&context.removeTabSubTree.label;"
 			accesskey="&context.removeTabSubTree.accesskey;"
-			oncommand="TreeStyleTabService.removeTabSubTree(TreeStyleTabService.getTabBrowserFromChild(this).mContextTab);"/>
+			oncommand="TreeStyleTabService.removeTabSubTree(TreeStyleTabService.getTabBrowserFromChild(this).mContextTab);"
+			onclick="if (event.button == 1 || (event.button == 0 &amp;&amp; (navigator.platform.indexOf('Mac') &lt; 0 ? event.ctrlKey : event.metaKey ))) { TreeStyleTabService.removeTabSubTree(TreeStyleTabService.getTabBrowserFromChild(this).mContextTab, true); event.stopPropagation(); this.parentNode.hidePopup(); }"/>
 
 		<menuseparator id="context-separator-collapseExpandAll"/>
 		<menuitem id="context-item-collapseAllSubtree"

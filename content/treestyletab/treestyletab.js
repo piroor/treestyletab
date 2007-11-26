@@ -1126,7 +1126,7 @@ catch(e) {
   
 /* Commands */ 
 	 
-	removeTabSubTree : function(aTabOrTabs) 
+	removeTabSubTree : function(aTabOrTabs, aOnlyChildren) 
 	{
 		var tabs = aTabOrTabs;
 		if (!(tabs instanceof Array)) {
@@ -1139,7 +1139,11 @@ catch(e) {
 		{
 			descendant = descendant.concat(b.treeStyleTab.getDescendantTabs(tabs[i]));
 		}
-		tabs = this.cleanUpTabsArray(tabs.concat(descendant));
+
+		if (aOnlyChildren)
+			tabs = this.cleanUpTabsArray(descendant);
+		else
+			tabs = this.cleanUpTabsArray(tabs.concat(descendant));
 
 		var max = tabs.length;
 		if (!max) return;
