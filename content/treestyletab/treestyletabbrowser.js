@@ -1025,6 +1025,16 @@ TreeStyleTabBrowser.prototype = {
 					nextFocusedTab = this.getPreviousSiblingTab(tab);
 				}
 			}
+
+			var ancestors = [];
+			do {
+				ancestors.push(parentTab.getAttribute(this.kID));
+				if (!next && (next = this.getNextSiblingTab(parentTab)))
+					this.setTabValue(tab, this.kINSERT_BEFORE, next.getAttribute(this.kID));
+			}
+			while (parentTab = this.getParentTab(parentTab));
+			this.setTabValue(tab, this.kANCESTORS, ancestors.join('|'));
+
 			this.partTab(tab, true);
 		}
 		else if (!nextFocusedTab) {
@@ -1064,28 +1074,50 @@ TreeStyleTabBrowser.prototype = {
 			)
 			return;
 
-		var nest       = Number(tab.getAttribute(this.kNEST) || 0);
-		var parent     = this.getParentTab(tab);
-		var prevParent = this.getParentTab(tab.previousSibling);
-		var nextParent = this.getParentTab(tab.nextSibling);
-		var prevNest   = tab.previousSibling ? Number(tab.previousSibling.getAttribute(this.kNEST)) : -1 ;
-		var nextNest   = tab.nextSibling ? Number(tab.nextSibling.getAttribute(this.kNEST)) : -1 ;
-
-		if (
-			!tab.previousSibling || !tab.nextSibling ||
-			prevParent == nextParent ||
-			prevNest > nextNest
-			) {
-			if (prevParent)
-				this.attachTabTo(tab, prevParent, { insertBefore : tab.nextSibling });
-			else
-				this.partTab(tab);
-		}
-		else if (prevNest < nextNest) {
-			this.attachTabTo(tab, tab.previousSibling, { insertBefore : tab.nextSibling });
-		}
+		this.attachTabFromPosition(tab, aEvent.detail);
 	},
 	
+	attachTabFromPosition : function(aTab, aOldPosition) 
+	{
+		var nest       = Number(aTab.getAttribute(this.kNEST) || 0);
+		var parent     = this.getParentTab(aTab);
+		var prevParent = this.getParentTab(aTab.previousSibling);
+		var nextParent = this.getParentTab(aTab.nextSibling);
+		var prevNest   = aTab.previousSibling ? Number(aTab.previousSibling.getAttribute(this.kNEST)) : -1 ;
+		var nextNest   = aTab.hasAttribute(this.kCHILDREN) ? (
+				this.getNextSiblingTab(aTab) ? Number(this.getNextSiblingTab(aTab).getAttribute(this.kNEST)) : 0
+			) :
+			aTab.nextSibling ? Number(aTab.nextSibling.getAttribute(this.kNEST)) : -1 ;
+
+		if (aOldPosition === void(0)) aOldPosition = aTab._tPos;
+
+		if (!aTab.previousSibling) {
+			this.partTab(aTab);
+		}
+		else if (
+			prevParent == nextParent ||
+			(
+				(!aTab.nextSibling || prevNest > nextNest) &&
+				aOldPosition < aTab._tPos &&
+				aTab._tPos - aOldPosition < 2
+			)
+			) {
+			if (prevParent)
+				this.attachTabTo(aTab, prevParent, { insertBefore : aTab.nextSibling });
+			else
+				this.partTab(aTab);
+		}
+		else if (prevNest > nextNest) {
+			if (parent && prevParent && parent != prevParent)
+				this.attachTabTo(aTab, prevParent, { insertBefore : aTab.nextSibling });
+			else
+				this.partTab(aTab);
+		}
+		else if (prevNest < nextNest) {
+			this.attachTabTo(aTab, aTab.previousSibling, { insertBefore : aTab.nextSibling });
+		}
+	},
+ 
 	updateChildrenArray : function(aTab) 
 	{
 		var children = this.getChildTabs(aTab);
@@ -1147,7 +1179,18 @@ TreeStyleTabBrowser.prototype = {
 		var before = this.getTabValue(tab, this.kINSERT_BEFORE);
 		if (before && isDuplicated) before += 'd';
 
-		var parent = this.getTabValue(tab, this.kPARENT);
+		var ancestors = (this.getTabValue(tab, this.kANCESTORS) || this.getTabValue(tab, this.kPARENT) || '').split('|');
+		var parent = null;
+		for (var i in ancestors)
+		{
+			parent = this.getTabById(ancestors[i]);
+			if (parent) {
+				parent = ancestors[i];
+				break;
+			}
+		}
+		this.deleteTabValue(tab, this.kANCESTORS);
+
 		if (parent) {
 			if (isDuplicated) parent += 'd';
 			parent = this.getTabById(parent);
@@ -1172,9 +1215,7 @@ TreeStyleTabBrowser.prototype = {
 		if (!parent && (before = this.getTabById(before))) {
 			var index = before._tPos;
 			if (index > tab._tPos) index--;
-//			b.treeStyleTab.internallyTabMoving = true;
 			b.moveTabTo(tab, index);
-//			b.treeStyleTab.internallyTabMoving = false;
 		}
 		this.deleteTabValue(tab, this.kINSERT_BEFORE);
 
@@ -1188,13 +1229,6 @@ TreeStyleTabBrowser.prototype = {
 		var b   = this.mTabBrowser;
 		var tab = b.selectedTab
 
-/*
-		var p;
-		if ((tab.getAttribute(this.kCOLLAPSED) == 'true') &&
-			(p = this.getParentTab(tab))) {
-			b.selectedTab = p;
-		}
-*/
 		if (tab.getAttribute(this.kCOLLAPSED) == 'true') {
 			var parentTab = tab;
 			while (parentTab = this.getParentTab(parentTab))
