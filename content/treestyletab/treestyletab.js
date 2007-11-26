@@ -610,10 +610,7 @@ var TreeStyleTabService = {
 	getChildIndex : function(aTab, aParent) 
 	{
 		var parent = this.getParentTab(aTab);
-		if (!aParent) {
-			if (!parent) return -1;
-		}
-		else {
+		if (!aParent || !parent || aParent != parent) {
 			parent = aTab;
 			while (parent && parent != aParent)
 			{
