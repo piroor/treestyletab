@@ -1079,42 +1079,53 @@ TreeStyleTabBrowser.prototype = {
 	
 	attachTabFromPosition : function(aTab, aOldPosition) 
 	{
-		var nest       = Number(aTab.getAttribute(this.kNEST) || 0);
-		var parent     = this.getParentTab(aTab);
-		var prevParent = this.getParentTab(aTab.previousSibling);
-		var nextParent = this.getParentTab(aTab.nextSibling);
-		var prevNest   = aTab.previousSibling ? Number(aTab.previousSibling.getAttribute(this.kNEST)) : -1 ;
-		var nextNest   = aTab.hasAttribute(this.kCHILDREN) ? (
+		var parent = this.getParentTab(aTab);
+
+		var prevTab = aTab.previousSibling;
+		var nextTab = aTab.nextSibling;
+
+		var prevParent = this.getParentTab(prevTab);
+		var prevLevel  = aTab.previousSibling ? Number(prevTab.getAttribute(this.kNEST)) : -1 ;
+
+		var nextParent = this.getParentTab(nextTab);
+		var nextLevel  = aTab.hasAttribute(this.kCHILDREN) ? (
 				this.getNextSiblingTab(aTab) ? Number(this.getNextSiblingTab(aTab).getAttribute(this.kNEST)) : 0
 			) :
-			aTab.nextSibling ? Number(aTab.nextSibling.getAttribute(this.kNEST)) : -1 ;
+			nextTab ? Number(nextTab.getAttribute(this.kNEST)) : -1 ;
 
 		if (aOldPosition === void(0)) aOldPosition = aTab._tPos;
 
-		if (!aTab.previousSibling) {
-			this.partTab(aTab);
+		var pos    = this.getChildIndex(aTab, parent);
+		var oldPos = this.getChildIndex(this.mTabBrowser.mTabContainer.childNodes[aOldPosition], parent);
+		if (pos < 0 || oldPos < 0) {
+			pos = this.getVisibleIndex(aTab);
+			oldPos = this.getVisibleIndex(this.mTabBrowser.mTabContainer.childNodes[aOldPosition]);
 		}
-		else if (
-			prevParent == nextParent ||
-			(
-				(!aTab.nextSibling || prevNest > nextNest) &&
-				aOldPosition < aTab._tPos &&
-				aTab._tPos - aOldPosition < 2
-			)
-			) {
-			if (prevParent)
-				this.attachTabTo(aTab, prevParent, { insertBefore : aTab.nextSibling });
+		var delta = Math.abs(pos - oldPos);
+		if (pos < oldPos) delta--;
+
+		var newParent = null;
+
+		if (!prevTab) {
+		}
+		else if (!nextTab) {
+			newParent = (delta > 1) ? prevParent : parent ;
+		}
+		else if (prevParent == nextParent) {
+			newParent = prevParent;
+		}
+		else if (prevLevel > nextLevel) {
+			newParent = (delta > 1) ? prevParent : this.getParentTab(prevParent) ;
+		}
+		else if (prevLevel < nextLevel) {
+			newParent = aTab.previousSibling;
+		}
+
+		if (newParent != parent) {
+			if (newParent)
+				this.attachTabTo(aTab, newParent, { insertBefore : aTab.nextSibling });
 			else
 				this.partTab(aTab);
-		}
-		else if (prevNest > nextNest) {
-			if (parent && prevParent && parent != prevParent)
-				this.attachTabTo(aTab, prevParent, { insertBefore : aTab.nextSibling });
-			else
-				this.partTab(aTab);
-		}
-		else if (prevNest < nextNest) {
-			this.attachTabTo(aTab, aTab.previousSibling, { insertBefore : aTab.nextSibling });
 		}
 	},
  
@@ -1614,9 +1625,9 @@ TreeStyleTabBrowser.prototype = {
 					info.insertBefore = tabs[0];
 				}
 				else {
-					var prevNest   = Number(prevTab.getAttribute(this.kNEST));
+					var prevLevel   = Number(prevTab.getAttribute(this.kNEST));
 					var targetNest = Number(tab.getAttribute(this.kNEST));
-					info.parent       = (prevNest < targetNest) ? prevTab : this.getParentTab(tab) ;
+					info.parent       = (prevLevel < targetNest) ? prevTab : this.getParentTab(tab) ;
 					info.action       = this.kACTION_MOVE | (info.parent ? this.kACTION_ATTACH : this.kACTION_PART );
 					info.insertBefore = tab;
 				}
@@ -1642,8 +1653,8 @@ TreeStyleTabBrowser.prototype = {
 				}
 				else {
 					var targetNest = Number(tab.getAttribute(this.kNEST));
-					var nextNest   = Number(nextTab.getAttribute(this.kNEST));
-					info.parent       = (targetNest < nextNest) ? tab : this.getParentTab(tab) ;
+					var nextLevel   = Number(nextTab.getAttribute(this.kNEST));
+					info.parent       = (targetNest < nextLevel) ? tab : this.getParentTab(tab) ;
 					info.action       = this.kACTION_MOVE | (info.parent ? this.kACTION_ATTACH : this.kACTION_PART );
 					info.insertBefore = nextTab;
 				}

@@ -444,6 +444,14 @@ var TreeStyleTabService = {
 			);
 		return xpathResult.snapshotItem(xpathResult.snapshotLength-1);
 	},
+ 
+	getVisibleIndex : function(aTab) 
+	{
+		return this.evaluateXPath(
+				'preceding-sibling::xul:tab[not(@'+this.kCOLLAPSED+'="true")]',
+				aTab
+			).snapshotLength;
+	},
   
 /* tree manipulations */ 
 	 
@@ -597,6 +605,42 @@ var TreeStyleTabService = {
 			}
 		}
 		return lastChild;
+	},
+ 
+	getChildIndex : function(aTab, aParent) 
+	{
+		var parent = this.getParentTab(aTab);
+		if (!aParent) {
+			if (!parent) return -1;
+		}
+		else {
+			while (parent && parent != aParent)
+			{
+				aTab = parent;
+				parent = this.getParentTab(parent);
+			}
+			if (parent != aParent)
+				return -1;
+			aParent = parent;
+		}
+
+		if (aParent) {
+			var children = aParent.getAttribute(this.kCHILDREN);
+			var list = children.split('|');
+			var id = aTab.getAttribute(this.kID);
+			for (var i = 0, maxi = list.length; i < maxi; i++)
+			{
+				if (list[i] == id) return i;
+			}
+			return -1;
+		}
+		else {
+			var tabs = this.rootTabs;
+			for (var i = 0, maxi = tabs.length; i < maxi; i++)
+			{
+				if (tabs[i] == aTab) return i;
+			}
+		}
 	},
   
 /* Session Store API */ 
