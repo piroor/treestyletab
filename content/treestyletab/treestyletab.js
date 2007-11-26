@@ -614,6 +614,7 @@ var TreeStyleTabService = {
 			if (!parent) return -1;
 		}
 		else {
+			parent = aTab;
 			while (parent && parent != aParent)
 			{
 				aTab = parent;
