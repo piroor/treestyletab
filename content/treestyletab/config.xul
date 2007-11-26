@@ -47,6 +47,9 @@
 		<preference id="extensions.treestyletab.show.context-item-removeTabSubTree"
 			name="extensions.treestyletab.show.context-item-removeTabSubTree"
 			type="bool"/>
+		<preference id="extensions.treestyletab.show.context-item-removeDescendantTabs"
+			name="extensions.treestyletab.show.context-item-removeDescendantTabs"
+			type="bool"/>
 		<preference id="extensions.treestyletab.show.context-item-collapseAllSubtree"
 			name="extensions.treestyletab.show.context-item-collapseAllSubtree"
 			type="bool"/>
@@ -145,16 +148,21 @@
 			<checkbox id="extensions.treestyletab.show.context-item-removeTabSubTree-check"
 				preference="extensions.treestyletab.show.context-item-removeTabSubTree"
 				label="&context.removeTabSubTree.label;"/>
+			<checkbox id="extensions.treestyletab.show.context-item-removeDescendantTabs-check"
+				preference="extensions.treestyletab.show.context-item-removeDescendantTabs"
+				label="&context.removeDescendantTabs.label;"/>
+		</hbox>
+		<hbox align="center">
 			<checkbox id="extensions.treestyletab.show.context-item-collapseAllSubtree-check"
 				preference="extensions.treestyletab.show.context-item-collapseAllSubtree"
 				label="&context.collapseAllSubtree.label;"/>
 			<checkbox id="extensions.treestyletab.show.context-item-expandAllSubtree-check"
 				preference="extensions.treestyletab.show.context-item-expandAllSubtree"
 				label="&context.expandAllSubtree.label;"/>
+			<checkbox id="extensions.treestyletab.show.context-item-toggleAutoHide-check"
+				preference="extensions.treestyletab.show.context-item-toggleAutoHide"
+				label="&context.toggleAutoHide.label;"/>
 		</hbox>
-		<checkbox id="extensions.treestyletab.show.context-item-toggleAutoHide-check"
-			preference="extensions.treestyletab.show.context-item-toggleAutoHide"
-			label="&context.toggleAutoHide.label;"/>
 	</groupbox>
 	<checkbox id="extensions.treestyletab.show.openSelectionLinks-check"
 		preference="extensions.treestyletab.show.openSelectionLinks"

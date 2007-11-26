@@ -82,6 +82,8 @@
 <!ENTITY selection.removeTabSubTree.accesskey "s">
 <!ENTITY context.removeTabSubTree.label     "このサブツリーを閉じる">
 <!ENTITY context.removeTabSubTree.accesskey "s">
+<!ENTITY context.removeDescendantTabs.label     "このタブの子タブをすべて閉じる">
+<!ENTITY context.removeDescendantTabs.accesskey "d">
 <!ENTITY context.collapseAllSubtree.label     "サブツリーをすべてたたむ">
 <!ENTITY context.collapseAllSubtree.accesskey "c">
 <!ENTITY context.expandAllSubtree.label     "サブツリーをすべて展開する">

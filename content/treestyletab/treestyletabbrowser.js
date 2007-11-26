@@ -6,6 +6,7 @@ function TreeStyleTabBrowser(aTabBrowser)
 TreeStyleTabBrowser.prototype = { 
 
 	kMENUITEM_REMOVESUBTREE            : 'context-item-removeTabSubTree',
+	kMENUITEM_REMOVECHILDREN           : 'context-item-removeDescendantTabs',
 	kMENUITEM_COLLAPSEEXPAND_SEPARATOR : 'context-separator-collapseExpandAll',
 	kMENUITEM_COLLAPSE                 : 'context-item-collapseAllSubtree',
 	kMENUITEM_EXPAND                   : 'context-item-expandAllSubtree',
@@ -304,6 +305,7 @@ TreeStyleTabBrowser.prototype = {
 			var suffix = '-'+parseInt(Math.random() * 65000);
 			[
 				aSelf.kMENUITEM_REMOVESUBTREE,
+				aSelf.kMENUITEM_REMOVECHILDREN,
 				aSelf.kMENUITEM_COLLAPSEEXPAND_SEPARATOR,
 				aSelf.kMENUITEM_COLLAPSE,
 				aSelf.kMENUITEM_EXPAND,
@@ -1244,6 +1246,17 @@ TreeStyleTabBrowser.prototype = {
 			XPathResult.FIRST_ORDERED_NODE_TYPE
 		).singleNodeValue;
 		if (this.getTreePref('show.'+this.kMENUITEM_REMOVESUBTREE))
+			item.removeAttribute('hidden');
+		else
+			item.setAttribute('hidden', true);
+		this.showHideRemoveSubTreeMenuItem(item, [b.mContextTab]);
+
+		item = this.evaluateXPath(
+			'descendant::xul:menuitem[starts-with(@id, "'+this.kMENUITEM_REMOVECHILDREN+'")]',
+			aEvent.currentTarget,
+			XPathResult.FIRST_ORDERED_NODE_TYPE
+		).singleNodeValue;
+		if (this.getTreePref('show.'+this.kMENUITEM_REMOVECHILDREN))
 			item.removeAttribute('hidden');
 		else
 			item.setAttribute('hidden', true);

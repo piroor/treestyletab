@@ -25,6 +25,7 @@ pref("extensions.treestyletab.insertNewChildAt", 1);
 
 pref("extensions.treestyletab.show.openSelectionLinks", true);
 pref("extensions.treestyletab.show.context-item-removeTabSubTree", true);
+pref("extensions.treestyletab.show.context-item-removeDescendantTabs", false);
 pref("extensions.treestyletab.show.context-item-collapseAllSubtree", true);
 pref("extensions.treestyletab.show.context-item-expandAllSubtree", true);
 pref("extensions.treestyletab.show.context-item-toggleAutoHide",   true);
