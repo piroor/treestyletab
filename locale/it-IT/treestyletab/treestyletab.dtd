@@ -22,7 +22,7 @@
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.mixed   "Misto">
 
-<!ENTITY config.show.tabContextMenu.caption "Add following items to the context menu on tabs">
+<!ENTITY config.show.tabContextMenu.caption "Voci da aggiungere al menu contestuale delle schede">
 <!ENTITY config.show.openSelectionLinks "Aggiungi &quot;Apri collegamenti selezionati in schede&quot; al menu contestuale">
 
 
@@ -78,17 +78,17 @@
 
 
 <!ENTITY context.openSelectionLinks.label     "Apri collegamenti selezionati in schede">
-<!ENTITY context.openSelectionLinks.accesskey "c">
+<!ENTITY context.openSelectionLinks.accesskey "z">
 
 <!ENTITY selection.removeTabSubTree.label     "Chiudi i sottoalberi selezionati">
 <!ENTITY selection.removeTabSubTree.accesskey "s">
 <!ENTITY context.removeTabSubTree.label     "Chiudi questo sottoalbero">
-<!ENTITY context.removeTabSubTree.accesskey "s">
+<!ENTITY context.removeTabSubTree.accesskey "h">
 <!ENTITY context.removeDescendantTabs.label     "Close Children">
 <!ENTITY context.removeDescendantTabs.accesskey "d">
-<!ENTITY context.collapseAllSubtree.label     "Collapse All Trees">
-<!ENTITY context.collapseAllSubtree.accesskey "c">
-<!ENTITY context.expandAllSubtree.label     "Expand All Trees">
-<!ENTITY context.expandAllSubtree.accesskey "e">
+<!ENTITY context.collapseAllSubtree.label     "Contrai tutti i sottoalberi">
+<!ENTITY context.collapseAllSubtree.accesskey "o">
+<!ENTITY context.expandAllSubtree.label     "Espandi tutti i sottoalberi">
+<!ENTITY context.expandAllSubtree.accesskey "E">
 <!ENTITY context.toggleAutoHide.label     "Nascondi automaticamente la barra delle schede">
-<!ENTITY context.toggleAutoHide.accesskey "N">
+<!ENTITY context.toggleAutoHide.accesskey "b">
