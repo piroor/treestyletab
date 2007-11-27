@@ -1675,12 +1675,14 @@ TreeStyleTabBrowser.prototype = {
 		var tabs = b.mTabContainer.childNodes;
 		if (aTarget && aInfo.action & this.kACTION_PART) {
 			this.partTab(aTarget);
+			this.collapseExpandTab(aTarget, false);
 		}
 		else if (aInfo.action & this.kACTION_ATTACH) {
 			if (aInfo.parent)
 				this.attachTabTo(aTarget, aInfo.parent);
 			else
 				this.partTab(aTarget);
+			this.collapseExpandTab(aTarget, false);
 		}
 		else {
 			return false;
@@ -1697,6 +1699,7 @@ TreeStyleTabBrowser.prototype = {
 			if (aInfo.insertBefore && newIndex > aTarget._tPos) newIndex--;
 			this.internallyTabMoving = true;
 			b.moveTabTo(aTarget,  newIndex);
+			this.collapseExpandTab(aTarget, false);
 			this.internallyTabMoving = false;
 		}
 		return true;
