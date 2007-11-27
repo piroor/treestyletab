@@ -1053,11 +1053,11 @@ TreeStyleTabBrowser.prototype = {
 		var b   = this.mTabBrowser;
 		this.initTabContents(tab); // twisty vanished after the tab is moved!!
 
-		var rebuildTreeDone = false;
+//		var rebuildTreeDone = false;
 
 		if (tab.getAttribute(this.kCHILDREN) && !this.isSubTreeMoving) {
 			this.moveTabSubTreeTo(tab, tab._tPos);
-			rebuildTreeDone = true;
+//			rebuildTreeDone = true;
 		}
 
 		var parentTab = this.getParentTab(tab);
@@ -1068,7 +1068,7 @@ TreeStyleTabBrowser.prototype = {
 		this.updateTabsCount(tab, true);
 
 		if (
-			rebuildTreeDone ||
+//			rebuildTreeDone ||
 			this.isSubTreeMoving ||
 			this.internallyTabMoving
 			)
@@ -1095,14 +1095,22 @@ TreeStyleTabBrowser.prototype = {
 
 		if (aOldPosition === void(0)) aOldPosition = aTab._tPos;
 
-		var pos    = this.getChildIndex(aTab, parent);
+		var pos = this.getChildIndex(aTab, parent);
+		if (aTab._tPos < aOldPosition) aOldPosition--;
 		var oldPos = this.getChildIndex(this.mTabBrowser.mTabContainer.childNodes[aOldPosition], parent);
-		if (pos < 0 || oldPos < 0) {
-			pos = this.getVisibleIndex(aTab);
-			oldPos = this.getVisibleIndex(this.mTabBrowser.mTabContainer.childNodes[aOldPosition]);
+		var delta;
+		if (
+//			(parent && (
+//				parent != prevParent ||
+//				parent != nextParent
+//			)) ||
+			pos < 0 || oldPos < 0
+			) {
+			delta = 2;
 		}
-		var delta = Math.abs(pos - oldPos);
-		if (pos < oldPos) delta--;
+		else {
+			delta = Math.abs(pos - oldPos);
+		}
 
 		var newParent = null;
 
