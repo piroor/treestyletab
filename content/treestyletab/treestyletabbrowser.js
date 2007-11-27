@@ -1081,40 +1081,39 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var parent = this.getParentTab(aTab);
 
-		var prevTab = aTab.previousSibling;
-		var nextTab = aTab.nextSibling;
-
-		var prevParent = this.getParentTab(prevTab);
-		var prevLevel  = aTab.previousSibling ? Number(prevTab.getAttribute(this.kNEST)) : -1 ;
-
-		var nextParent = this.getParentTab(nextTab);
-		var nextLevel  = aTab.hasAttribute(this.kCHILDREN) ? (
-				this.getNextSiblingTab(aTab) ? Number(this.getNextSiblingTab(aTab).getAttribute(this.kNEST)) : 0
-			) :
-			nextTab ? Number(nextTab.getAttribute(this.kNEST)) : -1 ;
-
 		if (aOldPosition === void(0)) aOldPosition = aTab._tPos;
 
 		var pos = this.getChildIndex(aTab, parent);
-		if (aTab._tPos < aOldPosition) aOldPosition--;
 		var oldPos = this.getChildIndex(this.mTabBrowser.mTabContainer.childNodes[aOldPosition], parent);
 		var delta;
-		if (
-//			(parent && (
-//				parent != prevParent ||
-//				parent != nextParent
-//			)) ||
-			pos < 0 || oldPos < 0
-			) {
+		if (pos == oldPos) { // no move?
+			return;
+		}
+		else if (pos < 0 || oldPos < 0) {
 			delta = 2;
 		}
 		else {
 			delta = Math.abs(pos - oldPos);
 		}
 
-		var newParent = null;
+		var prevTab = aTab.previousSibling;
+		var nextTab = aTab.nextSibling;
+
+		var tabs = this.getDescendantTabs(aTab);
+		if (tabs.length) {
+			nextTab = tabs[tabs.length-1].nextSibling;
+		}
+
+		var prevParent = this.getParentTab(prevTab);
+		var nextParent = this.getParentTab(nextTab);
+
+		var prevLevel  = prevTab ? Number(prevTab.getAttribute(this.kNEST)) : -1 ;
+		var nextLevel  = nextTab ? Number(nextTab.getAttribute(this.kNEST)) : -1 ;
+
+		var newParent;
 
 		if (!prevTab) {
+			newParent = null;
 		}
 		else if (!nextTab) {
 			newParent = (delta > 1) ? prevParent : parent ;
@@ -1123,7 +1122,8 @@ TreeStyleTabBrowser.prototype = {
 			newParent = prevParent;
 		}
 		else if (prevLevel > nextLevel) {
-			newParent = (delta > 1) ? prevParent : this.getParentTab(prevParent) ;
+			var realDelta = Math.abs(aTab._tPos - aOldPosition);
+			newParent = realDelta < 2 ? prevParent : parent ;
 		}
 		else if (prevLevel < nextLevel) {
 			newParent = aTab.previousSibling;
@@ -1131,7 +1131,7 @@ TreeStyleTabBrowser.prototype = {
 
 		if (newParent != parent) {
 			if (newParent)
-				this.attachTabTo(aTab, newParent, { insertBefore : aTab.nextSibling });
+				this.attachTabTo(aTab, newParent, { insertBefore : nextTab });
 			else
 				this.partTab(aTab);
 		}
@@ -1234,10 +1234,7 @@ TreeStyleTabBrowser.prototype = {
 		if (!parent && (before = this.getTabById(before))) {
 			var index = before._tPos;
 			if (index > tab._tPos) index--;
-//			this.internallyTabMoving = true;
 			b.moveTabTo(tab, index);
-//			this.internallyTabMoving = false;
-//			this.attachTabFromPosition(tab);
 		}
 		this.deleteTabValue(tab, this.kINSERT_BEFORE);
 
