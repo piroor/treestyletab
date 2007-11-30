@@ -93,6 +93,8 @@ TreeStyleTabBrowser.prototype = {
 		b.mStrip.addEventListener('dragexit', this, false);
 		b.mStrip.addEventListener('dragover', this, false);
 		b.mStrip.addEventListener('dragdrop', this, false);
+		b.mTabContainer.addEventListener('mouseover', this, true);
+		b.mTabContainer.addEventListener('mouseout', this, true);
 		b.mTabContainer.addEventListener('click', this, true);
 		b.mTabContainer.addEventListener('dblclick', this, true);
 		b.mTabContainer.addEventListener('mousedown', this, true);
@@ -293,6 +295,27 @@ TreeStyleTabBrowser.prototype = {
 					if (TreeStyleTabService.checkToOpenChildTab(this))
 						TreeStyleTabService.stopToOpenChildTab(this);
 					if (!aLoadInBackground)]]></>
+			)
+		);
+
+		eval('b.createTooltip = '+
+			b.createTooltip.toSource().replace(
+				'if (tn.hasAttribute("label")) {',
+				<><![CDATA[
+					else if (tn.getAttribute(TreeStyleTabService.kTWISTY_HOVER) == 'true') {
+						var key = tn.getAttribute(TreeStyleTabService.kSUBTREE_COLLAPSED) == 'true' ? 'tooltip.expandSubtree' : 'tooltip.collapseSubtree' ;
+						event.target.setAttribute(
+							'label',
+							tn.hasAttribute('label') ?
+								TreeStyleTabService.stringbundle.getFormattedString(
+									key+'.labeled',
+									[tn.getAttribute('label')]
+								) :
+								TreeStyleTabService.stringbundle.getString(key)
+						);
+						return true;
+					}
+					$&]]></>
 			)
 		);
 
@@ -924,6 +947,18 @@ TreeStyleTabBrowser.prototype = {
 
 			case 'dragdrop':
 				nsDragAndDrop.drop(aEvent, this);
+				return;
+
+			case 'mouseover':
+				if (this.isEventFiredOnTwisty(aEvent)) {
+					aEvent.target.setAttribute(this.kTWISTY_HOVER, true);
+				}
+				return;
+
+			case 'mouseout':
+				if (this.isEventFiredOnTwisty(aEvent)) {
+					aEvent.target.removeAttribute(this.kTWISTY_HOVER);
+				}
 				return;
 		}
 	},

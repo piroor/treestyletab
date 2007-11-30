@@ -5,10 +5,10 @@
   <RDF:Description RDF:about="urn:mozilla:install-manifest"
                    em:id="treestyletab@piro.sakura.ne.jp"
                    em:name="Tree Style Tab"
-                   em:version="0.5.2007113001"
+                   em:version="0.5.2007120101"
                    em:creator="SHIMODA Hiroshi"
                    em:description="Show tabs like a tree."
-                   em:homepageURL="http://piro.sakura.ne.jp/xul/treestyletab/"
+                   em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
                    em:iconURL="chrome://treestyletab/content/res/icon32.png"
                    em:optionsURL="chrome://treestyletab/content/config.xul">
   <em:translator>Godai71.Extenzilla (it-IT locale)</em:translator>
@@ -26,7 +26,8 @@
     <em:localized>
       <RDF:Description em:locale="ja"
                        em:name="ツリー型タブ"
-                       em:description="タブをツリー状に表示します。"/>
+                       em:description="タブをツリー状に表示します。"
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html"/>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="it-IT"

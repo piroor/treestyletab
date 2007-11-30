@@ -6,6 +6,7 @@ var TreeStyleTabService = {
 	kINSERT_BEFORE      : 'treestyletab-insert-before',
 	kSUBTREE_COLLAPSED  : 'treestyletab-subtree-collapsed',
 	kCOLLAPSED          : 'treestyletab-collapsed',
+	kTWISTY_HOVER       : 'treestyletab-twisty-hover',
 	kNEST               : 'treestyletab-nest',
 	kDROP_POSITION      : 'treestyletab-drop-position',
 	kTABBAR_POSITION    : 'treestyletab-tabbar-position',
@@ -25,6 +26,7 @@ var TreeStyleTabService = {
 	kCOUNTER               : 'treestyletab-counter',
 	kCOUNTER_CONTAINER     : 'treestyletab-counter-container',
 	kSPLITTER              : 'treestyletab-splitter',
+	kSTRINGBUNDLE          : 'treestyletab-stringbundle',
 
 	kMENUITEM_REMOVESUBTREE_SELECTION : 'multipletab-selection-item-removeTabSubTree',
 
@@ -106,6 +108,14 @@ var TreeStyleTabService = {
 		return this._XULAppInfo;
 	},
 	_XULAppInfo : null,
+
+	get stringbundle() {
+		if (!this._stringbundle) {
+			this._stringbundle = document.getElementById(this.kSTRINGBUNDLE);
+		}
+		return this._stringbundle;
+	},
+	_stringbundle : null,
 	 
 /* API */ 
 	

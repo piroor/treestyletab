@@ -29,6 +29,11 @@
 		oncommand="TreeStyleTabService.removeTabSubTree(MultipleTabService.getSelectedTabs());"/>
 </menupopup>
 
+<stringbundleset id="stringbundleset">
+	<stringbundle id="treestyletab-stringbundle"
+		src="chrome://treestyletab/locale/treestyletab.properties"/>
+</stringbundleset>
+
 <window id="main-window">
 	<data id="multipletab-tabcontext-menu-template" collapsed="true">
 		<menuitem id="context-item-removeTabSubTree"
