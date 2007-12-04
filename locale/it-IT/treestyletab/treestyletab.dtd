@@ -83,9 +83,9 @@
 <!ENTITY selection.removeTabSubTree.label     "Chiudi i sottoalberi selezionati">
 <!ENTITY selection.removeTabSubTree.accesskey "s">
 <!ENTITY context.removeTabSubTree.label     "Chiudi questo sottoalbero">
-<!ENTITY context.removeTabSubTree.accesskey "h">
-<!ENTITY context.removeDescendantTabs.label     "Close Children">
-<!ENTITY context.removeDescendantTabs.accesskey "d">
+<!ENTITY context.removeTabSubTree.accesskey "u">
+<!ENTITY context.removeDescendantTabs.label     "Chiudi sottoalberi figli">
+<!ENTITY context.removeDescendantTabs.accesskey "i">
 <!ENTITY context.collapseAllSubtree.label     "Contrai tutti i sottoalberi">
 <!ENTITY context.collapseAllSubtree.accesskey "o">
 <!ENTITY context.expandAllSubtree.label     "Espandi tutti i sottoalberi">
