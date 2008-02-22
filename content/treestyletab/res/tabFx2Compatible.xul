@@ -12,7 +12,7 @@ window.addEventListener('DOMContentLoaded', function() {
 	switch (window.getComputedStyle(b.selectedTab, '').getPropertyValue('-moz-binding'))
 	{
 		case 'url(chrome://browser/content/tabbrowser.xml#tabbrowser-tab)':
-			b.setAttribute('tabFx2Compatible', true);
+			document.documentElement.setAttribute('tabFx2Compatible', true);
 			break;
 	}
 }, true);

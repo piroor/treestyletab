@@ -418,13 +418,6 @@ TreeStyleTabBrowser.prototype = {
 	initTabContents : function(aTab) 
 	{
 		var icon  = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-icon');
-		if (!icon) { // retry after a while
-			window.setTimeout(function(aSelf, aTab) {
-				aSelf.initTabContents(aTab);
-			}, 100, this, aTab);
-			return;
-		}
-
 		var label = this.getTabLabel(aTab);
 		var close = this.getTabClosebox(aTab);
 		var counter = document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER_CONTAINER);
@@ -470,12 +463,6 @@ TreeStyleTabBrowser.prototype = {
 		var label = this.getTabLabel(aTab);
 		var close = this.getTabClosebox(aTab);
 		var counter = document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER_CONTAINER);
-		if (!counter) { // retry after a while
-			window.setTimeout(function(aSelf, aTab) {
-				aSelf.initTabContentsOrder(aTab);
-			}, 100, this, aTab);
-			return;
-		}
 
 		var nodes = document.getAnonymousNodes(aTab);
 		for (var i = nodes.length-1; i > -1; i--)
