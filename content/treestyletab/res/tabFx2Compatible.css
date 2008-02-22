@@ -8,3 +8,7 @@
 	list-style-image: url("chrome://global/skin/throbber/Throbber-small.gif") !important;
 	opacity: 0.6;
 }
+
+:root[tabFx2Compatible="1"] .tabbrowser-tab[selected="true"]:focus > hbox > .tab-text {
+	border: 1px dotted -moz-DialogText;
+}
