@@ -74,7 +74,9 @@ var TreeStyleTabService = {
 
 	get SessionStore() {
 		if (!this._SessionStore) {
-			this._SessionStore = Components.classes['@mozilla.org/browser/sessionstore;1'].getService(Components.interfaces.nsISessionStore);
+			this._SessionStore = Components
+					.classes['@mozilla.org/browser/sessionstore;1']
+					.getService(Components.interfaces.nsISessionStore);
 		}
 		return this._SessionStore;
 	},
@@ -82,7 +84,9 @@ var TreeStyleTabService = {
 
 	get ObserverService() {
 		if (!this._ObserverService) {
-			this._ObserverService = Components.classes['@mozilla.org/observer-service;1'].getService(Components.interfaces.nsIObserverService);
+			this._ObserverService = Components
+					.classes['@mozilla.org/observer-service;1']
+					.getService(Components.interfaces.nsIObserverService);
 		}
 		return this._ObserverService;
 	},
@@ -90,11 +94,23 @@ var TreeStyleTabService = {
 
 	get IOService() {
 		if (!this._IOService) {
-			this._IOService = Components.classes['@mozilla.org/network/io-service;1'].getService(Components.interfaces.nsIIOService);
+			this._IOService = Components
+					.classes['@mozilla.org/network/io-service;1']
+					.getService(Components.interfaces.nsIIOService);
 		}
 		return this._IOService;
 	},
 	_IOService : null,
+
+	get WindowMediator() {
+		if (!this._WindowMediator) {
+			this._WindowMediator = Components
+					.classes['@mozilla.org/appshell/window-mediator;1']
+					.getService(Components.interfaces.nsIWindowMediator);
+		}
+		return this._WindowMediator;
+	},
+	_WindowMediator : null,
 
 	get isGecko18() {
 		var version = this.XULAppInfo.platformVersion.split('.');
@@ -289,9 +305,17 @@ var TreeStyleTabService = {
 			).singleNodeValue ? true : false ;
 	},
  
+	get browserWindow() 
+	{
+		return this.WindowMediator.getMostRecentWindow('navigator:browser');
+	},
+ 
 	get browser() 
 	{
-		return 'SplitBrowser' in window ? SplitBrowser.activeBrowser : gBrowser ;
+		var w = this.browserWindow;
+		return !w ? null :
+			'SplitBrowser' in w ? w.plitBrowser.activeBrowser :
+			w.gBrowser ;
 	},
  
 	evaluateXPath : function(aExpression, aContext, aType) 
@@ -372,7 +396,10 @@ var TreeStyleTabService = {
  
 	getTabBrowserFromFrame : function(aFrame) 
 	{
-		return ('SplitBrowser' in window) ? this.getTabBrowserFromChild(SplitBrowser.getSubBrowserAndBrowserFromFrame(aFrame.top).browser) : this.browser ;
+		var w = this.browserWindow;
+		return !w ? null :
+			('SplitBrowser' in w) ? this.getTabBrowserFromChild(w.SplitBrowser.getSubBrowserAndBrowserFromFrame(aFrame.top).browser) :
+			this.browser ;
 	},
  
 	getFrameFromTabBrowserElements : function(aFrameOrTabBrowser) 
@@ -696,6 +723,7 @@ var TreeStyleTabService = {
 		if (!('gBrowser' in window)) return;
 
 		window.removeEventListener('load', this, false);
+		window.addEventListener('unload', this, false);
 		document.getElementById('contentAreaContextMenu').addEventListener('popupshowing', this, false);
 
 		var appcontent = document.getElementById('appcontent');
@@ -1037,51 +1065,6 @@ catch(e) {
 					openUILink(]]></>
 			)
 		);
-
-		if ('BookmarksCommand' in window) { // Firefox 2
-			eval('BookmarksCommand.openGroupBookmark = '+
-				BookmarksCommand.openGroupBookmark.toSource().replace(
-					/(tabPanels\[index\])(\.loadURI\(uri\);)/,
-					<><![CDATA[
-						$1$2
-						if (!doReplace &&
-							TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree') &&
-							!browser.treeStyleTab.parentTab) {
-							browser.treeStyleTab.partTab(browser.mTabContainer.childNodes[index]);
-							TreeStyleTabService.readyToOpenChildTab($1, true);
-						}
-					]]></>
-				).replace(
-					'browser.addTab(uri);',
-					<><![CDATA[
-						var openedTab = $&
-						if (!doReplace &&
-							TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree') &&
-							!browser.treeStyleTab.parentTab) {
-							TreeStyleTabService.readyToOpenChildTab(openedTab, true);
-						}
-					]]></>
-				).replace(
-					'if (index == index0)',
-					<><![CDATA[
-						TreeStyleTabService.stopToOpenChildTab(browser);
-						$&]]></>
-				)
-			);
-		}
-
-		if ('PlacesUtils' in window) { // Firefox 3
-			eval('PlacesUtils.openContainerNodeInTabs = '+
-				PlacesUtils.openContainerNodeInTabs.toSource().replace(
-					'this._openTabset(',
-					<><![CDATA[
-						if (TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree') &&
-							String(whereToOpenLink(aEvent, false, true)).indexOf('tab') == 0)
-							TreeStyleTabService.readyToOpenNewTabGroup();
-						this._openTabset(]]></>
-				)
-			);
-		}
 	},
   
 	destroy : function() 
@@ -1481,5 +1464,4 @@ catch(e) {
 }; 
 
 window.addEventListener('load', TreeStyleTabService, false);
-window.addEventListener('unload', TreeStyleTabService, false);
  

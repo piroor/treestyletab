@@ -9,6 +9,7 @@
 
 <script src="treestyletab.js" type="application/x-javascript"/>
 <script src="treestyletabbrowser.js" type="application/x-javascript"/>
+<script src="bookmarksOverlay.js" type="application/x-javascript"/>
 <script src="hacks.js" type="application/x-javascript"/>
 
 
