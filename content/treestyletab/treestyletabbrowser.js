@@ -1314,6 +1314,9 @@ TreeStyleTabBrowser.prototype = {
 		if (isSubTreeCollapsed) {
 			this.collapseExpandSubtree(tab, isSubTreeCollapsed);
 		}
+
+		if (isDuplicated)
+			this.updateDuplicatedIDs();
 	},
  
 	onTabSelect : function(aEvent) 
@@ -2046,6 +2049,51 @@ TreeStyleTabBrowser.prototype = {
 		var parent = this.getParentTab(aTab);
 		if (parent && !aDontUpdateAncestor)
 			this.updateTabsCount(parent);
+	},
+ 
+	updateDuplicatedIDs : function() 
+	{
+		if (this.updateDuplicatedIDsTimer) {
+			window.clearTimeout(this.updateDuplicatedIDsTimer);
+			this.updateDuplicatedIDsTimer = null;
+		}
+		this.updateDuplicatedIDsTimer = window.setTimeout(function(aSelf) {
+			aSelf.updateDuplicatedIDsCallback();
+		}, 200, this);
+	},
+	updateDuplicatedIDsTimer : null,
+	updateDuplicatedIDsCallback : function()
+	{
+		var b    = this.mTabBrowser;
+		var tabs = this.getArrayFromXPathResult(this.evaluateXPath(
+				'child::xul:tab[contains(concat(@'+this.kID+', "|", @'+this.kCHILDREN+', "|", @'+this.kPARENT+', "|", @'+this.kANCESTOR+'), ">d")]',
+				b.mTabContainer
+			));
+		if (!tabs.length) return;
+
+		var ids = {};
+		var self = this;
+		var duplicatedIDPattern = /tab-<\d+>d+/g;
+		var replaceID = function(aID) {
+				if (!(aID in ids))
+					ids[aID] = self.makeNewId();
+				return ids[aID];
+			};
+		tabs.forEach(function(aTab) {
+			[
+				self.kID,
+				self.kCHILDREN,
+				self.kPARENT,
+				self.kANCESTOR
+			].forEach(function(aProp) {
+				self.setTabValue(
+					aTab,
+					aProp,
+					self.getTabValue(aTab, aProp)
+						.replace(duplicatedIDPattern, replaceID)
+				);
+			});
+		});
 	},
   
 /* move */ 
