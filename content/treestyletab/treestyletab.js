@@ -848,6 +848,7 @@ catch(e) {
 	overrideGlobalFunctions : function() 
 	{
 		var funcs;
+		var func;
 
 		eval('window.BrowserLoadURL = '+
 			window.BrowserLoadURL.toSource().replace(
@@ -1002,8 +1003,9 @@ catch(e) {
 				);
 		}
 
-		eval('window.BrowserHomeClick = '+
-			window.BrowserHomeClick.toSource().replace(
+		func = 'BrowserGoHome' in window ? 'BrowserGoHome' : 'BrowserHomeClick' ;
+		eval('window.'+func+' = '+
+			window[func].toSource().replace(
 				'gBrowser.loadTabs(',
 				<><![CDATA[
 					TreeStyleTabService.readyToOpenNewTabGroup(gBrowser);

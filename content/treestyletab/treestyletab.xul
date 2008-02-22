@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="treestyletab.css" type="text/css"?>
 <?xml-stylesheet href="chrome://treestyletab/skin/treestyletab.css" type="text/css"?>
+<?xul-overlay href="res/tabFx2Compatible.xul"?>
 <!DOCTYPE overlay SYSTEM "chrome://treestyletab/locale/treestyletab.dtd">
 <overlay id="treestyletab-overlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
