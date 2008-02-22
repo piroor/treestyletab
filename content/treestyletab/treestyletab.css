@@ -103,7 +103,8 @@ tabbrowser[treestyletab-mode="multirow"] .tabbrowser-tab {
 */
 
 
+/* for some themes */
 image.tab-icon {
 	display: -moz-stack;
-	-moz-binding: url(tabicon.xml#tabbrowser-tab-icon);
+	-moz-binding: url(treestyletab.xml#tab-icon);
 }

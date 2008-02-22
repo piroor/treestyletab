@@ -4,7 +4,7 @@
 	xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	xmlns:xbl="http://www.mozilla.org/xbl">
 
-	<binding id="tabbrowser-tab-icon"
+	<binding id="tab-icon"
 		extends="xul:stack">
 		<content>
 			<xul:image xbl:inherits="validate,src" class="tab-icon-image"/>
