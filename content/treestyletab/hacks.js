@@ -393,6 +393,10 @@ TreeStyleTabService.overrideExtensionsAfterInit = function() {
 				'tabBarScrollStatus(); $&'
 			)
 		);
+		TreeStyleTabBrowser.prototype.isMultiRow = function()
+		{
+			return window.tabscroll == 2;
+		};
 
 		window.setTimeout(function() {
 			// correct broken appearance of the first tab

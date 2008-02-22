@@ -39,9 +39,9 @@ TreeStyleTabBrowser.prototype = {
 	_container : null,
  
 /* utils */ 
-	
-/* get tab contents */ 
 	 
+/* get tab contents */ 
+	
 	getTabLabel : function(aTab) 
 	{
 		var label = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-text-container') || // Tab Mix Plus
@@ -57,7 +57,7 @@ TreeStyleTabBrowser.prototype = {
 	},
   
 /* status */ 
-	 
+	
 	get isVertical() 
 	{
 		var b = this.mTabBrowser;
@@ -76,7 +76,12 @@ TreeStyleTabBrowser.prototype = {
 			tabBox.screenY >= barBox.screenY &&
 			tabBox.screenY + tabBox.height <= barBox.screenY + barBox.height);
 	},
-   	
+  
+	isMultiRow : function() 
+	{
+		return false;
+	},
+ 	 
 /* initialize */ 
 	
 	init : function() 
@@ -693,7 +698,7 @@ TreeStyleTabBrowser.prototype = {
 	},
    
 /* nsIObserver */ 
-	 
+	
 	domain : 'extensions.treestyletab', 
  
 	observe : function(aSubject, aTopic, aData) 
@@ -1471,14 +1476,14 @@ TreeStyleTabBrowser.prototype = {
 	},
   
 /* drag and drop */ 
-	isPlatformNotSupported : navigator.platform.indexOf('Mac') != -1, // see bug 136524 
+	isPlatformNotSupported : navigator.platform.indexOf('Mac') != -1, // see bug 136524
 	isTimerSupported       : navigator.platform.indexOf('Win') == -1, // see bug 232795.
 
 	autoExpandTimer  : null,
 	autoExpandTarget : null,
 	autoExpandedTabs : [],
 	
-	onDragEnter : function(aEvent, aDragSession)
+	onDragEnter : function(aEvent, aDragSession) 
 	{
 		var tab = aEvent.target;
 		if (tab.localName != 'tab' ||
@@ -1905,9 +1910,23 @@ TreeStyleTabBrowser.prototype = {
 		var margin = this.levelMargin < 0 ? this.baseLebelMargin : this.levelMargin ;
 		var indent = margin * aLevel;
 
+		var multirow = this.isMultiRow();
+		var topBottom = this.levelMarginProp.match(/top|bottom/);
+		var innerBoxes, j;
+
 		for (var i = 0, maxi = aTabs.length; i < maxi; i++)
 		{
-			aTabs[i].setAttribute('style', aTabs[i].getAttribute('style').replace(/margin(-[^:]+):[^;]+;?/g, '')+'; '+aProp+':'+indent+'px !important;');
+			if (multirow) {
+				innerBoxes = document.getAnonymousNodes(aTabs[i]);
+				for (j = 0, maxj = innerBoxes.length; j < maxj; j++)
+				{
+					if (innerBoxes[j].nodeType != Node.ELEMENT_NODE) continue;
+					innerBoxes[j].setAttribute('style', innerBoxes[j].getAttribute('style').replace(/border-(top|bottom).*:[^;]+;?/g, '')+'; border-'+topBottom+': solid transparent '+(aLevel * 4)+'px !important;');
+				}
+			}
+			else {
+				aTabs[i].setAttribute('style', aTabs[i].getAttribute('style').replace(/margin(-[^:]+):[^;]+;?/g, '')+'; '+aProp+':'+indent+'px !important;');
+			}
 			aTabs[i].setAttribute(this.kNEST, aLevel);
 			this.updateTabsIndent(this.getChildTabs(aTabs[i]), aLevel+1, aProp);
 		}
