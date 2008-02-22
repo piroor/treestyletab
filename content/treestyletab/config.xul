@@ -296,6 +296,12 @@
 		<preference id="extensions.treestyletab.insertNewChildAt"
 			name="extensions.treestyletab.insertNewChildAt"
 			type="int"/>
+		<preference id="extensions.treestyletab.tabbar.autoHide.area"
+			name="extensions.treestyletab.tabbar.autoHide.area"
+			type="int"/>
+		<preference id="extensions.treestyletab.tabbar.autoHide.delay"
+			name="extensions.treestyletab.tabbar.autoHide.delay"
+			type="int"/>
 	</preferences>
 
 	<checkbox id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect-check"
@@ -323,6 +329,30 @@
 			<radio value="0" label="&config.insertNewChildAt.first;"/>
 			<radio value="1" label="&config.insertNewChildAt.last;"/>
 		</radiogroup>
+	</groupbox>
+
+	<groupbox>
+		<caption label="&config.autoHide.caption;"/>
+		<hbox align="center">
+			<label value="&config.autoHide.area.before;"
+				control="extensions.treestyletab.tabbar.autoHide.area-textbox"/>
+			<textbox id="extensions.treestyletab.tabbar.autoHide.area-textbox"
+				preference="extensions.treestyletab.tabbar.autoHide.area"
+				type="number"
+				min="0" increment="1" style="width:4em;"/>
+			<label value="&config.autoHide.area.after;"
+				control="extensions.treestyletab.tabbar.autoHide.area-textbox"/>
+		</hbox>
+		<hbox align="center">
+			<label value="&config.autoHide.delay.before;"
+				control="extensions.treestyletab.tabbar.autoHide.delay-textbox"/>
+			<textbox id="extensions.treestyletab.tabbar.autoHide.delay-textbox"
+				preference="extensions.treestyletab.tabbar.autoHide.delay"
+				type="number"
+				min="0" increment="1" style="width:4em;"/>
+			<label value="&config.autoHide.delay.after;"
+				control="extensions.treestyletab.tabbar.autoHide.delay-textbox"/>
+		</hbox>
 	</groupbox>
 </prefpane>
 

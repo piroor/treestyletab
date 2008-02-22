@@ -73,6 +73,12 @@
 <!ENTITY config.insertNewChildAt.first "Inserisci all&apos;inizio del sottoalbero, come prima figlia">
 <!ENTITY config.insertNewChildAt.last "Accoda all&apos;ultimo sottoalbero">
 
+<!ENTITY config.autoHide.caption "Auto hide tab bar">
+<!ENTITY config.autoHide.area.before "Sensitive area:">
+<!ENTITY config.autoHide.area.after "pixels from window edges">
+<!ENTITY config.autoHide.delay.before "Delay:">
+<!ENTITY config.autoHide.delay.after "msec.">
+
 
 
 

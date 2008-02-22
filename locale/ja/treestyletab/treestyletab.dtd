@@ -73,6 +73,12 @@
 <!ENTITY config.insertNewChildAt.first "サブツリーの最初の位置に挿入する">
 <!ENTITY config.insertNewChildAt.last "サブツリーの末尾に追加する">
 
+<!ENTITY config.autoHide.caption "タブバーを自動的に隠す">
+<!ENTITY config.autoHide.area.before "反応する領域：ウィンドウの端から">
+<!ENTITY config.autoHide.area.after "ピクセルの範囲">
+<!ENTITY config.autoHide.delay.before "遅延：">
+<!ENTITY config.autoHide.delay.after "ミリ秒">
+
 
 
 <!ENTITY context.openSelectionLinks.label     "選択したリンクをすべてタブで開く">
