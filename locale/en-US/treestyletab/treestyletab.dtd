@@ -36,6 +36,7 @@
 
 <!ENTITY config.urlbar.caption                      "Action for entering URI to the location bar">
 <!ENTITY config.urlbar.loadDifferentDomainToNewTab  "Load into new tab if it is a different website">
+<!ENTITY config.urlbar.loadDifferentDomainToNewTab.asChild  "as a child of the current tab">
 <!ENTITY config.urlbar.loadSameDomainToNewChildTab  "Load into new child tab if it is the same website">
 
 <!ENTITY config.loadDroppedLinkToNewChildTab.caption "Action for drag drop of links or URLs to existing tab">

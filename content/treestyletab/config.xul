@@ -181,6 +181,9 @@
 		<preference id="extensions.treestyletab.urlbar.loadDifferentDomainToNewTab"
 			name="extensions.treestyletab.urlbar.loadDifferentDomainToNewTab"
 			type="bool"/>
+		<preference id="extensions.treestyletab.urlbar.loadDifferentDomainToNewTab.asChild"
+			name="extensions.treestyletab.urlbar.loadDifferentDomainToNewTab.asChild"
+			type="bool"/>
 		<preference id="extensions.treestyletab.urlbar.loadSameDomainToNewChildTab"
 			name="extensions.treestyletab.urlbar.loadSameDomainToNewChildTab"
 			type="bool"/>
@@ -223,9 +226,14 @@
 				<groupbox>
 					<caption label="&config.urlbar.caption;"/>
 					<vbox>
+						<hbox align="center">
 						<checkbox id="extensions.treestyletab.urlbar.loadDifferentDomainToNewTab-check"
 							preference="extensions.treestyletab.urlbar.loadDifferentDomainToNewTab"
 							label="&config.urlbar.loadDifferentDomainToNewTab;"/>
+						<checkbox id="extensions.treestyletab.urlbar.loadDifferentDomainToNewTab.asChild-check"
+							preference="extensions.treestyletab.urlbar.loadDifferentDomainToNewTab.asChild"
+							label="&config.urlbar.loadDifferentDomainToNewTab.asChild;"/>
+						</hbox>
 						<checkbox id="extensions.treestyletab.urlbar.loadSameDomainToNewChildTab-check"
 							preference="extensions.treestyletab.urlbar.loadSameDomainToNewChildTab"
 							label="&config.urlbar.loadSameDomainToNewChildTab;"/>

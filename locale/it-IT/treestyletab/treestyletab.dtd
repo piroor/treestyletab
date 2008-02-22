@@ -36,6 +36,7 @@
 
 <!ENTITY config.urlbar.caption                      "L&apos;inserimento di un indirizzo nella barra degli indirizzi">
 <!ENTITY config.urlbar.loadDifferentDomainToNewTab  "Apre una nuova scheda se appartiene a un sito web differente">
+<!ENTITY config.urlbar.loadDifferentDomainToNewTab.asChild  "as a child of the current tab">
 <!ENTITY config.urlbar.loadSameDomainToNewChildTab  "Apre una nuova scheda figlia se appartiene allo stesso sito web">
 
 <!ENTITY config.loadDroppedLinkToNewChildTab.caption "Il trascinamento di collegamenti o indirizzi su una scheda esistente">

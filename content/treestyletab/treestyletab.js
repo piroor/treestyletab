@@ -902,7 +902,10 @@ catch(e) {
 				<><![CDATA[
 					TreeStyleTabService.checkReadyToOpenNewTab({
 						uri      : url,
-						external : { newTab : TreeStyleTabService.getTreePref('urlbar.loadDifferentDomainToNewTab') },
+						external : {
+							newTab : TreeStyleTabService.getTreePref('urlbar.loadDifferentDomainToNewTab'),
+							forceChild : TreeStyleTabService.getTreePref('urlbar.loadDifferentDomainToNewTab.asChild')
+						},
 						internal : { newTab : TreeStyleTabService.getTreePref('urlbar.loadSameDomainToNewChildTab') },
 						modifier : aTriggeringEvent && aTriggeringEvent.altKey,
 						invert   : TreeStyleTabService.getTreePref('urlbar.invertDefaultBehavior')

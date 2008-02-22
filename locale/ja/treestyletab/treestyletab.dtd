@@ -36,6 +36,7 @@
 
 <!ENTITY config.urlbar.caption                      "ロケーションバーへの入力">
 <!ENTITY config.urlbar.loadDifferentDomainToNewTab  "異なるサイトのURIを新しいタブで開く">
+<!ENTITY config.urlbar.loadDifferentDomainToNewTab.asChild  "現在のタブの子にする">
 <!ENTITY config.urlbar.loadSameDomainToNewChildTab  "同じサイトのURIを新しい子タブで開く">
 
 <!ENTITY config.loadDroppedLinkToNewChildTab.caption "リンクやURLをタブにドラッグ＆ドロップした時">
