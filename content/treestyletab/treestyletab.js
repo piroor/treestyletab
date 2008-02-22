@@ -41,6 +41,7 @@ var TreeStyleTabService = {
 	kACTION_MOVE   : 1,
 	kACTION_ATTACH : 2,
 	kACTION_PART   : 4,
+	kACTION_DUPLICATE : 8,
 
 	kTABBAR_TOP    : 1,
 	kTABBAR_BOTTOM : 2,
@@ -875,8 +876,7 @@ catch(e) {
 			).replace( // Firefox 3
 				'if (accelKeyPressed) {',
 				<><![CDATA[
-					if (!accelKeyPressed &&
-						TSTTabBrowser.treeStyleTab.processDropAction(dropActionInfo, draggedTab))
+					if (TSTTabBrowser.treeStyleTab.processDropAction(dropActionInfo, draggedTab))
 						return;
 					$&]]></>
 			).replace( // Firefox 3, duplication of tab

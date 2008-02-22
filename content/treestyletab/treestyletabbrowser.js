@@ -1636,21 +1636,26 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var info = this.getDropActionInternal(aEvent);
 		info.canDrop = true;
-		if (info.action & this.kACTION_ATTACH &&
-			aDragSession &&
+		if (aDragSession &&
 			aDragSession.sourceNode &&
 			aDragSession.sourceNode.localName == 'tab') {
-			var orig = aDragSession.sourceNode;
-			if (orig == info.parent) {
-				info.canDrop = false;
-			}
-			else {
-				var tab  = info.target;
-				while (tab = this.getParentTab(tab))
-				{
-					if (tab != orig) continue;
+			if ('duplicateTab' in this.mTabBrowser &&
+				navigator.platform.toLowerCase().indexOf('mac') == 0 ? aEvent.metaKey : aEvent.ctrlKey )
+				info.action = info.action | this.kACTION_DUPLICATE;
+
+			if (info.action & this.kACTION_ATTACH) {
+				var orig = aDragSession.sourceNode;
+				if (orig == info.parent) {
 					info.canDrop = false;
-					break;
+				}
+				else {
+					var tab  = info.target;
+					while (tab = this.getParentTab(tab))
+					{
+						if (tab != orig) continue;
+						info.canDrop = false;
+						break;
+					}
 				}
 			}
 		}
@@ -1770,20 +1775,61 @@ TreeStyleTabBrowser.prototype = {
 		return info;
 	},
   
-	processDropAction : function(aInfo, aTarget) 
+	processDropAction : function(aInfo, aDraggedTab) 
 	{
 		var b    = this.mTabBrowser;
 		var tabs = b.mTabContainer.childNodes;
-		if (aTarget && aInfo.action & this.kACTION_PART) {
-			this.partTab(aTarget);
-			this.collapseExpandTab(aTarget, false);
+		var self = this;
+
+		var draggedTabs = [aDraggedTab];
+
+		if ('MultipleTabService' in window &&
+			MultipleTabService.isSelected(aDraggedTab) &&
+			MultipleTabService.allowMoveMultipleTabs) {
+			draggedTabs = MultipleTabService.getSelectedTabs(b);
+			var baseParent;
+			var roots = [];
+			var keepStructure = true;
+			draggedTabs.forEach(function(aTab) {
+				var parent = aTab,
+					current;
+				do {
+					current = parent;
+					parent = self.getParentTab(parent)
+					if (parent && MultipleTabService.isSelected(parent)) continue;
+					roots.push(current);
+					if (baseParent === void(0)) {
+						baseParent = parent;
+					}
+					else if (parent != baseParent) {
+						keepStructure = false;
+					}
+					return;
+				}
+				while (parent);
+			});
+			if (keepStructure)
+				draggedTabs = roots;
+		}
+
+		if (aDraggedTab && aInfo.action & this.kACTION_PART) {
+			b.movingSelectedTabs = true;
+			draggedTabs.forEach(function(aTab) {
+				self.partTab(aTab);
+				self.collapseExpandTab(aTab, false);
+			});
+			b.movingSelectedTabs = false;
 		}
 		else if (aInfo.action & this.kACTION_ATTACH) {
-			if (aInfo.parent)
-				this.attachTabTo(aTarget, aInfo.parent);
-			else
-				this.partTab(aTarget);
-			this.collapseExpandTab(aTarget, false);
+			b.movingSelectedTabs = true;
+			draggedTabs.forEach(function(aTab) {
+				if (aInfo.parent)
+					self.attachTabTo(aTab, aInfo.parent);
+				else
+					self.partTab(aTab);
+				self.collapseExpandTab(aTab, false);
+			});
+			b.movingSelectedTabs = false;
 		}
 		else {
 			return false;
@@ -1793,15 +1839,26 @@ TreeStyleTabBrowser.prototype = {
 			aInfo.action & this.kACTION_MOVE &&
 			(
 				!aInfo.insertBefore ||
-				this.getNextVisibleTab(aTarget) != aInfo.insertBefore
+				this.getNextVisibleTab(draggedTabs[0]) != aInfo.insertBefore
 			)
 			) {
-			var newIndex = aInfo.insertBefore ? aInfo.insertBefore._tPos : tabs.length - 1 ;
-			if (aInfo.insertBefore && newIndex > aTarget._tPos) newIndex--;
-			this.internallyTabMoving = true;
-			b.moveTabTo(aTarget,  newIndex);
-			this.collapseExpandTab(aTarget, false);
-			this.internallyTabMoving = false;
+			b.movingSelectedTabs = true;
+			var tab, newIndex;
+			for (var i = draggedTabs.length-1; i > -1; i--)
+			{
+				tab = draggedTabs[i];
+				if (aInfo.action & this.kACTION_DUPLICATE)
+					tab = b.duplicateTab(tab);
+
+				newIndex = aInfo.insertBefore ? aInfo.insertBefore._tPos : tabs.length - 1 ;
+				if (aInfo.insertBefore && newIndex > tab._tPos) newIndex--;
+
+				this.internallyTabMoving = true;
+				b.moveTabTo(tab, newIndex);
+				this.collapseExpandTab(tab, false);
+				this.internallyTabMoving = false;
+			}
+			b.movingSelectedTabs = false;
 		}
 		return true;
 	},
