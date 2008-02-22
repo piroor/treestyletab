@@ -42,6 +42,11 @@ tabbrowser[treestyletab-mode="vertical"][treestyletab-firsttab-border="true"] .t
 	-moz-border-top-colors: ThreeDShadow ThreeDFace !important;
 }
 
+tabbrowser[treestyletab-mode="vertical"] .tab-icon-image,
+tabbrowser[treestyletab-tabbar-position="bottom"] .tab-icon-image {
+	margin-left: 0;
+}
+
 tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"],
 tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab[selected="true"] {
 	margin: 0 !important;
