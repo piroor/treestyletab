@@ -325,6 +325,13 @@ TreeStyleTabBrowser.prototype = {
 			)
 		);
 
+		eval('b.onTabBarDblClick = '+
+			b.onTabBarDblClick.toSource().replace(
+				'aEvent.originalTarget.localName == "box"',
+				'/^(box|(arrow)?scrollbox|tabs)$/.test(aEvent.originalTarget.localName)'
+			)
+		);
+
 		var tabs = b.mTabContainer.childNodes;
 		for (var i = 0, maxi = tabs.length; i < maxi; i++)
 		{
