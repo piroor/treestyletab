@@ -1912,16 +1912,30 @@ TreeStyleTabBrowser.prototype = {
 
 		var multirow = this.isMultiRow();
 		var topBottom = this.levelMarginProp.match(/top|bottom/);
-		var innerBoxes, j;
+		var innerBoxes,
+			j,
+			colors,
+			maxIndent = parseInt(aTabs[0].boxObject.height / 2);
+dump(aLevel+'/'+maxIndent+'\n');
 
 		for (var i = 0, maxi = aTabs.length; i < maxi; i++)
 		{
 			if (multirow) {
+				indent = Math.min(aLevel * 3, maxIndent);
 				innerBoxes = document.getAnonymousNodes(aTabs[i]);
+				colors = '-moz-border-top-colors:'+(function(aNum) {
+					var retVal = [];
+					for (var i = 1; i < aNum; i++)
+					{
+						retVal.push('transparent');
+					}
+					retVal.push('ThreeDShadow');
+					return retVal.length == 1 ? 'none' : retVal.join(' ') ;
+				})(indent)+' !important;';
 				for (j = 0, maxj = innerBoxes.length; j < maxj; j++)
 				{
 					if (innerBoxes[j].nodeType != Node.ELEMENT_NODE) continue;
-					innerBoxes[j].setAttribute('style', innerBoxes[j].getAttribute('style').replace(/border-(top|bottom).*:[^;]+;?/g, '')+'; border-'+topBottom+': solid transparent '+(aLevel * 4)+'px !important;');
+					innerBoxes[j].setAttribute('style', innerBoxes[j].getAttribute('style').replace(/(-moz-)?border-(top|bottom)(-[^:]*)?.*:[^;]+;?/g, '')+'; border-'+topBottom+': solid transparent '+indent+'px !important;'+colors);
 				}
 			}
 			else {

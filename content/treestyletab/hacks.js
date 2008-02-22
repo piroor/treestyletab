@@ -376,7 +376,7 @@ TreeStyleTabService.overrideExtensionsAfterInit = function() {
 			window.getRowHeight.toSource().replace(
 				'var tabs = getBrowser().mTabContainer.childNodes;',
 				<><![CDATA[
-					var tabsResult = TreeStyleTabService.getVisibleTabs(getBrowser.selectedTab);
+					var tabsResult = TreeStyleTabService.getVisibleTabs(getBrowser().selectedTab);
 					var tabs = [];
 					for (var t = 0, maxt = tabsResult.snapshotLength; t < maxt; t++)
 						tabs.push(tabsResult.snapshotItem(t));
