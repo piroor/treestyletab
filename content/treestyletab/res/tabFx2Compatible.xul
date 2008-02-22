@@ -6,13 +6,29 @@
 window.addEventListener('DOMContentLoaded', function() {
 	window.removeEventListener('DOMContentLoaded', arguments.callee, true);
 
+	const currentRevision = 1;
+
 	var b = document.getElementById('content');
 	if (!b || b.localName != 'tabbrowser') return;
+
+	var root = document.documentElement;
+
+	var loadedRevision = root.getAttribute('tabFx2Compatible');
+	if (loadedRevision) {
+		loadedRevision = Number(loadedRevision);
+		if (loadedRevision >= currentRevision) {
+			return;
+		}
+		else if (loadedRevision < currentRevision) {
+			root.setAttribute('tabFx2Compatible', currentRevision);
+			return;
+		}
+	}
 
 	switch (window.getComputedStyle(b.selectedTab, '').getPropertyValue('-moz-binding'))
 	{
 		case 'url(chrome://browser/content/tabbrowser.xml#tabbrowser-tab)':
-			document.documentElement.setAttribute('tabFx2Compatible', true);
+			root.setAttribute('tabFx2Compatible', currentRevision);
 			break;
 	}
 }, true);

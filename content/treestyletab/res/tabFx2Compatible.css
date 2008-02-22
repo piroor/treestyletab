@@ -1,10 +1,10 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
-:root[tabFx2Compatible="true"] .tabbrowser-tab {
+:root[tabFx2Compatible="1"] .tabbrowser-tab {
 	-moz-binding: url(tabFx2Compatible.xml#tabbrowser-tab) !important;
 }
 
-:root[tabFx2Compatible="true"] .tabbrowser-tab[busy] > hbox > stack > .tab-icon-image {
+:root[tabFx2Compatible="1"] .tabbrowser-tab[busy] > hbox > stack > .tab-icon-image {
 	list-style-image: url("chrome://global/skin/throbber/Throbber-small.gif") !important;
 	opacity: 0.6;
 }
