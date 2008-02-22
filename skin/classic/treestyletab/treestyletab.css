@@ -14,6 +14,11 @@ tabbrowser[treestyletab-tabbar-position="bottom"] .tabs-bottom {
 	display: none !important;
 }
 
+tabbrowser[treestyletab-mode="vertical"] .tabs-container {
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+
 tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab,
 tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab:not([selected="true"]),
 tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab,
@@ -354,6 +359,14 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-stack > hbox {
 }
 tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-stack > hbox:not(:last-child) {
 	display: none !important;
+}
+tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-button {
+	border-top: 1px solid;
+	-moz-border-top-colors: ThreeDShadow;
+	background: ThreeDFace;
+}
+tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-button:hover {
+	background: ThreeDHighlight;
 }
 
 tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-box,
