@@ -8,6 +8,13 @@ tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tabs {
 	background: darkgray !important;
 }
 
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tabs {
+	height: auto !important;
+	max-height: none !important;
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+
 tabbrowser[treestyletab-mode="vertical"] .tabs-bottom,
 tabbrowser[treestyletab-mode="vertical"] .tabs-left,
 tabbrowser[treestyletab-tabbar-position="bottom"] .tabs-bottom {
