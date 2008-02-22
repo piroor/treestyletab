@@ -8,7 +8,10 @@ tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tabs {
 	background: darkgray !important;
 }
 
-tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tabs {
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-strip,
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tabs,
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox,
+tabbrowser[treestyletab-mode="vertical"] .tabs-container {
 	height: auto !important;
 	max-height: none !important;
 	padding-left: 0 !important;
@@ -19,11 +22,6 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-bottom,
 tabbrowser[treestyletab-mode="vertical"] .tabs-left,
 tabbrowser[treestyletab-tabbar-position="bottom"] .tabs-bottom {
 	display: none !important;
-}
-
-tabbrowser[treestyletab-mode="vertical"] .tabs-container {
-	padding-left: 0 !important;
-	padding-right: 0 !important;
 }
 
 tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab,

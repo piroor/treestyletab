@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<bindings xmlns="http://www.mozilla.org/xbl"
+	xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	xmlns:xbl="http://www.mozilla.org/xbl">
+
+	<binding id="tabbrowser-tab-icon"
+		extends="xul:stack">
+		<content>
+			<xul:image xbl:inherits="validate,src" class="tab-icon-image"/>
+			<xbl:children/>
+		</content>
+	</binding>
+
+</bindings>

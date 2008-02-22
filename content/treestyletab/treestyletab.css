@@ -101,3 +101,9 @@ tabbrowser[treestyletab-mode="multirow"] .tabbrowser-tab {
 	min-width: 150px !important;
 }
 */
+
+
+image.tab-icon {
+	display: -moz-stack;
+	-moz-binding: url(tabicon.xml#tabbrowser-tab-icon);
+}
