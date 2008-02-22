@@ -314,7 +314,7 @@ var TreeStyleTabService = {
 	{
 		var w = this.browserWindow;
 		return !w ? null :
-			'SplitBrowser' in w ? w.plitBrowser.activeBrowser :
+			'SplitBrowser' in w ? w.SplitBrowser.activeBrowser :
 			w.gBrowser ;
 	},
  
