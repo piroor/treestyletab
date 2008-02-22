@@ -866,11 +866,24 @@ catch(e) {
 						TSTTabBrowser.treeStyleTab.clearDropPosition();
 						var dropActionInfo = TSTTabBrowser.treeStyleTab.getDropAction(aEvent, aDragSession);
 				]]></>
-			).replace(
+			).replace( // Firefox 2
 				/(if \(aDragSession[^\)]+\) \{)/,
-				'$1'+<><![CDATA[
+				<><![CDATA[$1
 					if (TSTTabBrowser.treeStyleTab.processDropAction(dropActionInfo, aDragSession.sourceNode))
 						return;
+				]]></>
+			).replace( // Firefox 3
+				'if (accelKeyPressed) {',
+				<><![CDATA[
+					if (!accelKeyPressed &&
+						TSTTabBrowser.treeStyleTab.processDropAction(dropActionInfo, draggedTab))
+						return;
+					$&]]></>
+			).replace( // Firefox 3, duplication of tab
+				/(this.selectedTab = newTab;(\s*\})?)/g,
+				<><![CDATA[$1;
+					if (dropActionInfo.position == TreeStyleTabService.kDROP_ON)
+						TSTTabBrowser.treeStyleTab.attachTabTo(newTab, dropActionInfo.target);
 				]]></>
 			).replace(
 				/(this.loadOneTab\([^;]+\));/,

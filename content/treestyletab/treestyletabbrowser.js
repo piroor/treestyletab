@@ -1955,7 +1955,6 @@ TreeStyleTabBrowser.prototype = {
 			j,
 			colors,
 			maxIndent = parseInt(aTabs[0].boxObject.height / 2);
-dump(aLevel+'/'+maxIndent+'\n');
 
 		for (var i = 0, maxi = aTabs.length; i < maxi; i++)
 		{
