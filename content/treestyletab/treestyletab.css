@@ -19,7 +19,8 @@ tabbrowser[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyle
 .tabbrowser-strip[collapsed="true"]+splitter:not([state="collapsed"]),
 tabbrowser[treestyletab-tabbar-autohide="true"] .tabbrowser-strip,
 tabbrowser[treestyletab-tabbar-autohide="true"] .tabbrowser-strip+splitter,
-#appcontent[ahFull="true"] .tabbrowser-strip[ahHIDE="true"]+splitter /* AutoHide */ {
+#appcontent[ahFull="true"] .tabbrowser-strip[ahHIDE="true"]+splitter /* AutoHide */,
+tabbrowser[treestyletab-tabbar-fixed="true"] .tabbrowser-strip+splitter {
 	visibility: collapse;
 }
 

@@ -99,3 +99,5 @@
 <!ENTITY context.expandAllSubtree.accesskey "E">
 <!ENTITY context.toggleAutoHide.label     "Nascondi automaticamente la barra delle schede">
 <!ENTITY context.toggleAutoHide.accesskey "b">
+<!ENTITY context.toggleFixed.label     "Fix width of tab bar">
+<!ENTITY context.toggleFixed.accesskey "f">

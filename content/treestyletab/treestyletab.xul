@@ -66,6 +66,12 @@
 			type="checkbox"
 			autocheck="false"
 			oncommand="TreeStyleTabService.toggleAutoHide();"/>
+		<menuitem id="context-item-toggleFixed"
+			label="&context.toggleFixed.label;"
+			accesskey="&context.toggleFixed.accesskey;"
+			type="checkbox"
+			autocheck="false"
+			oncommand="TreeStyleTabService.toggleFixed();"/>
 	</data>
 </window>
 

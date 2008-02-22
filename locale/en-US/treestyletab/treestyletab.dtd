@@ -99,3 +99,5 @@
 <!ENTITY context.expandAllSubtree.accesskey "e">
 <!ENTITY context.toggleAutoHide.label     "Auto hide tab bar">
 <!ENTITY context.toggleAutoHide.accesskey "h">
+<!ENTITY context.toggleFixed.label     "Fix width of tab bar">
+<!ENTITY context.toggleFixed.accesskey "f">

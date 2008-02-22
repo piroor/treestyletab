@@ -18,6 +18,13 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-container {
 	padding-right: 0 !important;
 }
 
+tabbrowser[treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"] .tabbrowser-strip {
+	border-right: 1px solid ThreeDShadow;
+}
+tabbrowser[treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"] .tabbrowser-strip {
+	border-left: 1px solid ThreeDShadow;
+}
+
 tabbrowser[treestyletab-mode="vertical"] .tabs-bottom,
 tabbrowser[treestyletab-mode="vertical"] .tabs-left,
 tabbrowser[treestyletab-tabbar-position="bottom"] .tabs-bottom {

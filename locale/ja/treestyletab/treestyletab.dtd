@@ -97,3 +97,5 @@
 <!ENTITY context.expandAllSubtree.accesskey "e">
 <!ENTITY context.toggleAutoHide.label     "タブバーを自動的に隠す">
 <!ENTITY context.toggleAutoHide.accesskey "h">
+<!ENTITY context.toggleFixed.label     "タブバーの幅を固定">
+<!ENTITY context.toggleFixed.accesskey "f">

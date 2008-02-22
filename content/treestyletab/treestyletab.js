@@ -18,6 +18,7 @@ var TreeStyleTabService = {
 	kSTYLE              : 'treestyletab-style',
 	kFIRSTTAB_BORDER    : 'treestyletab-firsttab-border',
 	kAUTOHIDE           : 'treestyletab-tabbar-autohide',
+	kFIXED              : 'treestyletab-tabbar-fixed',
 
 	kTWISTY                : 'treestyletab-twisty',
 	kTWISTY_CONTAINER      : 'treestyletab-twisty-container',
@@ -450,8 +451,14 @@ var TreeStyleTabService = {
 			!this.getTreePref('tabbar.autoHide.enabled'));
 	},
  
+	toggleFixed : function() 
+	{
+		this.setTreePref('tabbar.fixed',
+			!this.getTreePref('tabbar.fixed'));
+	},
+ 	
 /* get tab(s) */ 
-	 
+	
 	getTabById : function(aId, aTabBrowserChildren) 
 	{
 		if (!aId) return null;
@@ -463,7 +470,7 @@ var TreeStyleTabService = {
 				XPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
 	},
- 	
+ 
 	getNextVisibleTab : function(aTab) 
 	{
 		var xpathResult = this.evaluateXPath(
@@ -509,7 +516,7 @@ var TreeStyleTabService = {
 	},
   
 /* tree manipulations */ 
-	 
+	
 	get rootTabs() 
 	{
 		return this.getArrayFromXPathResult(
@@ -1111,7 +1118,7 @@ catch(e) {
 	},
    
 /* Event Handling */ 
-	
+	 
 	handleEvent : function(aEvent) 
 	{
 		switch (aEvent.type)
