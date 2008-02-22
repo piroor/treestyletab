@@ -482,6 +482,24 @@ var TreeStyleTabService = {
 		return xpathResult.snapshotItem(xpathResult.snapshotLength-1);
 	},
  
+	getLastVisibleTab : function(aTab) 
+	{
+		var xpathResult = this.evaluateXPath(
+				'child::xul:tab[not(@'+this.kCOLLAPSED+'="true")]',
+				aTab.parentNode
+			);
+		return xpathResult.snapshotItem(xpathResult.snapshotLength-1);
+	},
+ 
+	getVisibleTabs : function(aTab) 
+	{
+		var xpathResult = this.evaluateXPath(
+				'child::xul:tab[not(@'+this.kCOLLAPSED+'="true")]',
+				aTab.parentNode
+			);
+		return xpathResult;
+	},
+ 
 	getVisibleIndex : function(aTab) 
 	{
 		return this.evaluateXPath(

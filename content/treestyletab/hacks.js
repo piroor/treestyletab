@@ -365,6 +365,35 @@ TreeStyleTabService.overrideExtensionsAfterInit = function() {
 			)
 		);
 
+		eval('window.setMultibarAttribute = '+
+			window.setMultibarAttribute.toSource().replace(
+				/tabBar.lastChild/g,
+				'TreeStyleTabService.getLastVisibleTab($&)'
+			)
+		);
+
+		eval('window.getRowHeight = '+
+			window.getRowHeight.toSource().replace(
+				'var tabs = getBrowser().mTabContainer.childNodes;',
+				<><![CDATA[
+					var tabsResult = TreeStyleTabService.getVisibleTabs(getBrowser.selectedTab);
+					var tabs = [];
+					for (var t = 0, maxt = tabsResult.snapshotLength; t < maxt; t++)
+						tabs.push(tabsResult.snapshotItem(t));
+				]]></>
+			).replace(
+				/tabs.item\(([^\)]+)\)/g,
+				'tabs[$1]'
+			)
+		);
+
+		eval('TreeStyleTabBrowser.prototype.collapseExpandSubtree = '+
+			TreeStyleTabBrowser.prototype.collapseExpandSubtree.toSource().replace(
+				'})',
+				'tabBarScrollStatus(); $&'
+			)
+		);
+
 		window.setTimeout(function() {
 			// correct broken appearance of the first tab
 			var t = gBrowser.mTabContainer.firstChild;
