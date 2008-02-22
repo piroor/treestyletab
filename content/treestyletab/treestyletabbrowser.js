@@ -1256,6 +1256,7 @@ TreeStyleTabBrowser.prototype = {
 		var children = this.getTabValue(tab, this.kCHILDREN);
 		var tabs = [];
 		if (children) {
+			this.deleteTabValue(tab, this.kCHILDREN);
 			children = children.split('|');
 			if (isDuplicated)
 				children = children.map(function(aChild) { return aChild += 'd'; });
@@ -1285,6 +1286,7 @@ TreeStyleTabBrowser.prototype = {
 
 		if (parent) {
 			if (isDuplicated) parent += 'd';
+			this.deleteTabValue(tab, this.kPARENT);
 			parent = this.getTabById(parent);
 			if (parent) {
 				this.attachTabTo(tab, parent, {
@@ -2059,33 +2061,34 @@ TreeStyleTabBrowser.prototype = {
 		}
 		this.updateDuplicatedIDsTimer = window.setTimeout(function(aSelf) {
 			aSelf.updateDuplicatedIDsCallback();
-		}, 200, this);
+		}, 100, this);
 	},
 	updateDuplicatedIDsTimer : null,
 	updateDuplicatedIDsCallback : function()
 	{
+		var props = [
+				this.kID,
+				this.kCHILDREN,
+				this.kPARENT
+			];
 		var b    = this.mTabBrowser;
 		var tabs = this.getArrayFromXPathResult(this.evaluateXPath(
-				'child::xul:tab[contains(concat(@'+this.kID+', "|", @'+this.kCHILDREN+', "|", @'+this.kPARENT+', "|", @'+this.kANCESTOR+'), ">d")]',
+				'child::xul:tab[contains(concat(@'+props.join(', "|", @')+'), ">d")]',
 				b.mTabContainer
 			));
 		if (!tabs.length) return;
 
 		var ids = {};
 		var self = this;
-		var duplicatedIDPattern = /tab-<\d+>d+/g;
+		var duplicatedIDPattern = /tab-<[^>]+>d+/g;
 		var replaceID = function(aID) {
-				if (!(aID in ids))
+				if (!(aID in ids)) {
 					ids[aID] = self.makeNewId();
+				}
 				return ids[aID];
 			};
 		tabs.forEach(function(aTab) {
-			[
-				self.kID,
-				self.kCHILDREN,
-				self.kPARENT,
-				self.kANCESTOR
-			].forEach(function(aProp) {
+			props.forEach(function(aProp) {
 				self.setTabValue(
 					aTab,
 					aProp,
