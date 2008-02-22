@@ -533,7 +533,7 @@ var TreeStyleTabService = {
 		var id = aTab.getAttribute(this.kID);
 		if (!id) return null; // not initialized yet
 		return this.evaluateXPath(
-				'parent::*/child::xul:tab[contains(@'+this.kCHILDREN+', "'+id+'")]',
+				'parent::*/child::xul:tab[contains(concat("|", @'+this.kCHILDREN+', "|"), "|'+id+'|")]',
 				aTab,
 				XPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
