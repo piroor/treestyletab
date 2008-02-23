@@ -1640,7 +1640,7 @@ TreeStyleTabBrowser.prototype = {
 			aDragSession.sourceNode &&
 			aDragSession.sourceNode.localName == 'tab') {
 			if ('duplicateTab' in this.mTabBrowser &&
-				navigator.platform.toLowerCase().indexOf('mac') == 0 ? aEvent.metaKey : aEvent.ctrlKey )
+				(navigator.platform.toLowerCase().indexOf('mac') == 0 ? aEvent.metaKey : aEvent.ctrlKey ))
 				info.action = info.action | this.kACTION_DUPLICATE;
 
 			if (info.action & this.kACTION_ATTACH) {
@@ -1813,42 +1813,44 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		if (aDraggedTab && aInfo.action & this.kACTION_PART) {
-			b.movingSelectedTabs = true;
-			draggedTabs.forEach(function(aTab) {
-				self.partTab(aTab);
-				self.collapseExpandTab(aTab, false);
-			});
-			b.movingSelectedTabs = false;
+			if (!(aInfo.action & this.kACTION_DUPLICATE))
+				this.partTabsOnDrop(draggedTabs);
 		}
 		else if (aInfo.action & this.kACTION_ATTACH) {
-			b.movingSelectedTabs = true;
-			draggedTabs.forEach(function(aTab) {
-				if (aInfo.parent)
-					self.attachTabTo(aTab, aInfo.parent);
-				else
-					self.partTab(aTab);
-				self.collapseExpandTab(aTab, false);
-			});
-			b.movingSelectedTabs = false;
+			if (!(aInfo.action & this.kACTION_DUPLICATE))
+				this.attachTabsOnDrop(draggedTabs, aInfo.parent);
 		}
 		else {
 			return false;
 		}
 
+		var newSelection = [];
 		if (
-			aInfo.action & this.kACTION_MOVE &&
+			(
+				aInfo.action & this.kACTION_MOVE ||
+				aInfo.action & this.kACTION_DUPLICATE
+			) &&
 			(
 				!aInfo.insertBefore ||
 				this.getNextVisibleTab(draggedTabs[0]) != aInfo.insertBefore
 			)
 			) {
-			b.movingSelectedTabs = true;
+			b.movingSelectedTabs = true; // Multiple Tab Handler
+
 			var tab, newIndex;
+			var newRoots = [];
 			for (var i = draggedTabs.length-1; i > -1; i--)
 			{
 				tab = draggedTabs[i];
-				if (aInfo.action & this.kACTION_DUPLICATE)
+				if (aInfo.action & this.kACTION_DUPLICATE) {
+					if ('MultipleTabService' in window)
+						MultipleTabService.setSelection(tab, false);
 					tab = b.duplicateTab(tab);
+					if ('MultipleTabService' in window)
+						MultipleTabService.setSelection(tab, true);
+					if (!this.getParentTab(tab))
+						newRoots.push(tab);
+				}
 
 				newIndex = aInfo.insertBefore ? aInfo.insertBefore._tPos : tabs.length - 1 ;
 				if (aInfo.insertBefore && newIndex > tab._tPos) newIndex--;
@@ -1858,9 +1860,38 @@ TreeStyleTabBrowser.prototype = {
 				this.collapseExpandTab(tab, false);
 				this.internallyTabMoving = false;
 			}
-			b.movingSelectedTabs = false;
+
+			if (aInfo.action & this.kACTION_DUPLICATE &&
+				aInfo.action & this.kACTION_ATTACH)
+				this.attachTabsOnDrop(newRoots, aInfo.parent);
+
+			b.movingSelectedTabs = false; // Multiple Tab Handler
 		}
+
 		return true;
+	},
+	attachTabsOnDrop : function(aTabs, aParent)
+	{
+		this.mTabBrowser.movingSelectedTabs = true; // Multiple Tab Handler
+		var self = this;
+		aTabs.forEach(function(aTab) {
+			if (aParent)
+				self.attachTabTo(aTab, aParent);
+			else
+				self.partTab(aTab);
+			self.collapseExpandTab(aTab, false);
+		});
+		this.mTabBrowser.movingSelectedTabs = false; // Multiple Tab Handler
+	},
+	partTabsOnDrop : function(aTabs)
+	{
+		this.mTabBrowser.movingSelectedTabs = true; // Multiple Tab Handler
+		var self = this;
+		aTabs.forEach(function(aTab) {
+			self.partTab(aTab);
+			self.collapseExpandTab(aTab, false);
+		});
+		this.mTabBrowser.movingSelectedTabs = false; // Multiple Tab Handler
 	},
  
 	clearDropPosition : function() 
