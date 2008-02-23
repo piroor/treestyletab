@@ -1782,19 +1782,36 @@ TreeStyleTabBrowser.prototype = {
 		var self = this;
 
 		var draggedTabs = [aDraggedTab];
+		var draggedRoots = [aDraggedTab];
 
 		if ('MultipleTabService' in window &&
 			MultipleTabService.isSelected(aDraggedTab) &&
-			MultipleTabService.allowMoveMultipleTabs)
+			MultipleTabService.allowMoveMultipleTabs) {
 			draggedTabs = MultipleTabService.getSelectedTabs(b);
+			if (!(aInfo.action & this.kACTION_DUPLICATE)) {
+				draggedRoots = [];
+				draggedTabs.forEach(function(aTab) {
+					var parent = aTab,
+						current;
+					do {
+						current = parent;
+						parent = self.getParentTab(parent)
+						if (parent && MultipleTabService.isSelected(parent)) continue;
+						draggedRoots.push(current);
+						return;
+					}
+					while (parent);
+				});
+			}
+		}
 
 		if (aDraggedTab && aInfo.action & this.kACTION_PART) {
 			if (!(aInfo.action & this.kACTION_DUPLICATE))
-				this.partTabsOnDrop(draggedTabs);
+				this.partTabsOnDrop(draggedRoots);
 		}
 		else if (aInfo.action & this.kACTION_ATTACH) {
 			if (!(aInfo.action & this.kACTION_DUPLICATE))
-				this.attachTabsOnDrop(draggedTabs, aInfo.parent);
+				this.attachTabsOnDrop(draggedRoots, aInfo.parent);
 		}
 		else {
 			return false;
