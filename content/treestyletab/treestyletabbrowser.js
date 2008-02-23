@@ -1785,32 +1785,8 @@ TreeStyleTabBrowser.prototype = {
 
 		if ('MultipleTabService' in window &&
 			MultipleTabService.isSelected(aDraggedTab) &&
-			MultipleTabService.allowMoveMultipleTabs) {
+			MultipleTabService.allowMoveMultipleTabs)
 			draggedTabs = MultipleTabService.getSelectedTabs(b);
-			var baseParent;
-			var roots = [];
-			var keepStructure = true;
-			draggedTabs.forEach(function(aTab) {
-				var parent = aTab,
-					current;
-				do {
-					current = parent;
-					parent = self.getParentTab(parent)
-					if (parent && MultipleTabService.isSelected(parent)) continue;
-					roots.push(current);
-					if (baseParent === void(0)) {
-						baseParent = parent;
-					}
-					else if (parent != baseParent) {
-						keepStructure = false;
-					}
-					return;
-				}
-				while (parent);
-			});
-			if (keepStructure)
-				draggedTabs = roots;
-		}
 
 		if (aDraggedTab && aInfo.action & this.kACTION_PART) {
 			if (!(aInfo.action & this.kACTION_DUPLICATE))
