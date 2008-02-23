@@ -1832,27 +1832,26 @@ TreeStyleTabBrowser.prototype = {
 
 			var tab, newIndex;
 			var newRoots = [];
-			for (var i = draggedTabs.length-1; i > -1; i--)
-			{
-				tab = draggedTabs[i];
-				if (aInfo.action & this.kACTION_DUPLICATE) {
+			draggedTabs.forEach(function(aTab) {
+				if (aInfo.action & self.kACTION_DUPLICATE) {
+					var hasParent = self.getParentTab(aTab);
 					if ('MultipleTabService' in window)
-						MultipleTabService.setSelection(tab, false);
-					tab = b.duplicateTab(tab);
+						MultipleTabService.setSelection(aTab, false);
+					aTab = b.duplicateTab(aTab);
 					if ('MultipleTabService' in window)
-						MultipleTabService.setSelection(tab, true);
-					if (!this.getParentTab(tab))
-						newRoots.push(tab);
+						MultipleTabService.setSelection(aTab, true);
+					if (!hasParent)
+						newRoots.push(aTab);
 				}
 
 				newIndex = aInfo.insertBefore ? aInfo.insertBefore._tPos : tabs.length - 1 ;
-				if (aInfo.insertBefore && newIndex > tab._tPos) newIndex--;
+				if (aInfo.insertBefore && newIndex > aTab._tPos) newIndex--;
 
-				this.internallyTabMoving = true;
-				b.moveTabTo(tab, newIndex);
-				this.collapseExpandTab(tab, false);
-				this.internallyTabMoving = false;
-			}
+				self.internallyTabMoving = true;
+				b.moveTabTo(aTab, newIndex);
+				self.collapseExpandTab(aTab, false);
+				self.internallyTabMoving = false;
+			});
 
 			if (aInfo.action & this.kACTION_DUPLICATE &&
 				aInfo.action & this.kACTION_ATTACH)
