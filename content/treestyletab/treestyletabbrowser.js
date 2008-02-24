@@ -1821,10 +1821,13 @@ TreeStyleTabBrowser.prototype = {
 		var draggedTabs = [aDraggedTab];
 		var draggedRoots = [aDraggedTab];
 
-		if ('MultipleTabService' in window &&
-			MultipleTabService.isSelected(aDraggedTab) &&
+		var ownerWindow = aInfo.action & this.kACTION_MOVE_FROM_OTHER_WINDOW ? aDraggedTab.ownerDocument.defaultView : window ;
+		var ownerBrowser = ownerWindow ? ownerWindow.TreeStyleTabService.getTabBrowserFromChild(aDraggedTab) : this.mTabBrowser ;
+
+		if ('MultipleTabService' in ownerWindow &&
+			ownerWindow.MultipleTabService.isSelected(aDraggedTab) &&
 			MultipleTabService.allowMoveMultipleTabs) {
-			draggedTabs = MultipleTabService.getSelectedTabs(b);
+			draggedTabs = ownerWindow.MultipleTabService.getSelectedTabs(ownerBrowser);
 			if (!(aInfo.action & this.kACTION_DUPLICATE)) {
 				draggedRoots = [];
 				draggedTabs.forEach(function(aTab) {
@@ -1832,8 +1835,8 @@ TreeStyleTabBrowser.prototype = {
 						current;
 					do {
 						current = parent;
-						parent = self.getParentTab(parent)
-						if (parent && MultipleTabService.isSelected(parent)) continue;
+						parent = ownerBrowser.treeStyleTab.getParentTab(parent)
+						if (parent && ownerWindow.MultipleTabService.isSelected(parent)) continue;
 						draggedRoots.push(current);
 						return;
 					}
@@ -1862,7 +1865,7 @@ TreeStyleTabBrowser.prototype = {
 			) &&
 			(
 				!aInfo.insertBefore ||
-				this.getNextVisibleTab(draggedTabs[0]) != aInfo.insertBefore
+				ownerBrowser.treeStyleTab.getNextVisibleTab(draggedTabs[0]) != aInfo.insertBefore
 			)
 			) {
 			b.duplicatingSelectedTabs = aInfo.action & self.kACTION_DUPLICATE ? true : false ; // Multiple Tab Handler
@@ -1870,18 +1873,16 @@ TreeStyleTabBrowser.prototype = {
 
 			var tab, newIndex;
 			var newRoots = [];
-			var remoteWindow = aInfo.action & self.kACTION_MOVE_FROM_OTHER_WINDOW ? aDraggedTab.ownerDocument.defaultView : null ;
-			var remoteBrowser = remoteWindow ? remoteWindow.TreeStyleTabService.getTabBrowserFromChild(aDraggedTab) : null ;
 			var windowShouldBeClosed = (
-					remoteBrowser &&
-					remoteBrowser.mTabContainer.childNodes.length == draggedTabs.length
+					ownerWindow != window &&
+					ownerBrowser.mTabContainer.childNodes.length == draggedTabs.length
 				);
 			draggedTabs.forEach(function(aTab) {
 				var tab = aTab;
 				if (aInfo.action & self.kACTION_DUPLICATE) {
-					var parent = self.getParentTab(tab);
-					if ('MultipleTabService' in window)
-						remoteWindow.MultipleTabService.setSelection(tab, false);
+					var parent = ownerBrowser.treeStyleTab.getParentTab(tab);
+					if ('MultipleTabService' in ownerWindow)
+						ownerWindow.MultipleTabService.setSelection(tab, false);
 					tab = b.duplicateTab(tab);
 					if ('MultipleTabService' in window)
 						MultipleTabService.setSelection(tab, true);
@@ -1897,8 +1898,8 @@ TreeStyleTabBrowser.prototype = {
 				self.collapseExpandTab(tab, false);
 				self.internallyTabMoving = false;
 
-				if (remoteBrowser)
-					remoteBrowser.removeTab(aTab);
+				if (ownerWindow != window)
+					ownerBrowser.removeTab(aTab);
 			});
 
 			if (aInfo.action & this.kACTION_DUPLICATE &&
@@ -1906,7 +1907,7 @@ TreeStyleTabBrowser.prototype = {
 				this.attachTabsOnDrop(newRoots, aInfo.parent);
 
 			if (windowShouldBeClosed)
-				remoteWindow.close();
+				ownerWindow.close();
 
 			b.movingSelectedTabs = false; // Multiple Tab Handler
 			b.duplicatingSelectedTabs = false; // Multiple Tab Handler
