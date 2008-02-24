@@ -1905,9 +1905,13 @@ TreeStyleTabBrowser.prototype = {
 				self.collapseExpandTab(tab, false);
 				self.internallyTabMoving = false;
 
-				if (ownerWindow != window)
-					ownerBrowser.removeTab(aTab);
 			});
+
+			if (ownerWindow != window) {
+				draggedTabs.forEach(function(aTab) {
+					ownerBrowser.removeTab(aTab);
+				});
+			}
 
 			if (aInfo.action & this.kACTION_DUPLICATE &&
 				aInfo.action & this.kACTION_ATTACH)
