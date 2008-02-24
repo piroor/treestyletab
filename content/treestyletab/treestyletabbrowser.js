@@ -819,9 +819,9 @@ TreeStyleTabBrowser.prototype = {
 				break;
 		}
 	},
- 	 
+  
 /* DOM Event Handling */ 
-	
+	 
 	handleEvent : function(aEvent) 
 	{
 		switch (aEvent.type)
@@ -1323,17 +1323,17 @@ TreeStyleTabBrowser.prototype = {
 			this.collapseExpandSubtree(tab, isSubTreeCollapsed);
 		}
 
-		if (isDuplicated) {
-			this.clearCachedIds();
-		}
+		if (isDuplicated) this.clearCachedIds();
 	},
-	getDuplicatedId : function(aId)
+	 
+	getDuplicatedId : function(aId) 
 	{
 		if (!(aId in this.duplicatedIdsHash))
 			this.duplicatedIdsHash[aId] = this.makeNewId();
 		return this.duplicatedIdsHash[aId];
 	},
 	duplicatedIdsHash : {},
+ 
 	clearCachedIds : function() 
 	{
 		if (this.clearCachedIdsTimer) {
@@ -1349,7 +1349,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		this.duplicatedIdsHash = {};
 	},
- 
+ 	 
 	onTabSelect : function(aEvent) 
 	{
 		var b   = this.mTabBrowser;
@@ -1857,6 +1857,7 @@ TreeStyleTabBrowser.prototype = {
 				this.getNextVisibleTab(draggedTabs[0]) != aInfo.insertBefore
 			)
 			) {
+			b.duplicatingSelectedTabs = aInfo.action & self.kACTION_DUPLICATE ? true : false ; // Multiple Tab Handler
 			b.movingSelectedTabs = true; // Multiple Tab Handler
 
 			var tab, newIndex;
@@ -1887,6 +1888,7 @@ TreeStyleTabBrowser.prototype = {
 				this.attachTabsOnDrop(newRoots, aInfo.parent);
 
 			b.movingSelectedTabs = false; // Multiple Tab Handler
+			b.duplicatingSelectedTabs = false; // Multiple Tab Handler
 		}
 
 		return true;
