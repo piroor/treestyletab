@@ -1228,6 +1228,7 @@ TreeStyleTabBrowser.prototype = {
 		var isDuplicated = false;
 
 		var id = this.getTabValue(tab, this.kID);
+
 		if (this.getTabById(id)) { // this is a duplicated tab!
 			isDuplicated = true;
 			id = this.getDuplicatedId(id);
@@ -1257,7 +1258,7 @@ TreeStyleTabBrowser.prototype = {
 		var children = this.getTabValue(tab, this.kCHILDREN);
 		var tabs = [];
 		if (children) {
-			this.deleteTabValue(tab, this.kCHILDREN);
+			tab.removeAttribute(this.kCHILDREN);
 			children = children.split('|');
 			if (isDuplicated)
 				children = children.map(function(aChild) {
@@ -1281,6 +1282,7 @@ TreeStyleTabBrowser.prototype = {
 		var parent = null;
 		for (var i in ancestors)
 		{
+			if (isDuplicated) ancestors[i] = this.getDuplicatedId(ancestors[i]);
 			parent = this.getTabById(ancestors[i]);
 			if (parent) {
 				parent = ancestors[i];
@@ -1291,7 +1293,7 @@ TreeStyleTabBrowser.prototype = {
 
 		if (parent) {
 			if (isDuplicated) parent = this.getDuplicatedId(parent);
-			this.deleteTabValue(tab, this.kPARENT);
+			tab.removeAttribute(this.kPARENT);
 			parent = this.getTabById(parent);
 			if (parent) {
 				this.attachTabTo(tab, parent, {
