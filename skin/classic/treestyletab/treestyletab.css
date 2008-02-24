@@ -19,10 +19,12 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-container {
 }
 
 tabbrowser[treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"] .tabbrowser-strip {
-	border-right: 1px solid ThreeDShadow;
+	border-right: 1px solid ThreeDShadow !important;
+	-moz-border-right-colors: ThreeDShadow !important;
 }
 tabbrowser[treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"] .tabbrowser-strip {
-	border-left: 1px solid ThreeDShadow;
+	border-left: 1px solid ThreeDShadow !important;
+	-moz-border-left-colors: ThreeDShadow !important;
 }
 
 tabbrowser[treestyletab-mode="vertical"] .tabs-bottom,
