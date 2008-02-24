@@ -1830,28 +1830,26 @@ TreeStyleTabBrowser.prototype = {
 				MultipleTabService.allowMoveMultipleTabs
 			);
 
-		if (ownerWindow != window || moveSelection) {
-			if (moveSelection) {
-				draggedTabs = moveSelection ? ownerWindow.MultipleTabService.getSelectedTabs(ownerBrowser);
-				if (!(aInfo.action & this.kACTION_DUPLICATE)) {
-					draggedRoots = [];
-					draggedTabs.forEach(function(aTab) {
-						var parent = aTab,
-							current;
-						do {
-							current = parent;
-							parent = ownerBrowser.treeStyleTab.getParentTab(parent)
-							if (parent && ownerWindow.MultipleTabService.isSelected(parent)) continue;
-							draggedRoots.push(current);
-							return;
-						}
-						while (parent);
-					});
-				}
+		if (moveSelection) {
+			draggedTabs = ownerWindow.MultipleTabService.getSelectedTabs(ownerBrowser);
+			if (!(aInfo.action & this.kACTION_DUPLICATE)) {
+				draggedRoots = [];
+				draggedTabs.forEach(function(aTab) {
+					var parent = aTab,
+						current;
+					do {
+						current = parent;
+						parent = ownerBrowser.treeStyleTab.getParentTab(parent)
+						if (parent && ownerWindow.MultipleTabService.isSelected(parent)) continue;
+						draggedRoots.push(current);
+						return;
+					}
+					while (parent);
+				});
 			}
-			else {
-				draggedTabs = draggedTabs.concat(ownerBrowser.treeStyleTab.getDescendantTabs(aDraggedTab));
-			}
+		}
+		else if (ownerWindow != window) {
+			draggedTabs = draggedTabs.concat(ownerBrowser.treeStyleTab.getDescendantTabs(aDraggedTab));
 		}
 
 		if (aDraggedTab && aInfo.action & this.kACTION_PART) {
