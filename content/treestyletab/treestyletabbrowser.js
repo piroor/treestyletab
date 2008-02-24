@@ -1292,7 +1292,6 @@ TreeStyleTabBrowser.prototype = {
 		this.deleteTabValue(tab, this.kANCESTOR);
 
 		if (parent) {
-			if (isDuplicated) parent = this.getDuplicatedId(parent);
 			tab.removeAttribute(this.kPARENT);
 			parent = this.getTabById(parent);
 			if (parent) {
