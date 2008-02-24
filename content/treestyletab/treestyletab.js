@@ -42,6 +42,7 @@ var TreeStyleTabService = {
 	kACTION_ATTACH : 2,
 	kACTION_PART   : 4,
 	kACTION_DUPLICATE : 8,
+	kACTION_MOVE_FROM_OTHER_WINDOW : 16,
 
 	kTABBAR_TOP    : 1,
 	kTABBAR_BOTTOM : 2,
@@ -884,6 +885,12 @@ catch(e) {
 				<><![CDATA[$1;
 					if (dropActionInfo.position == TreeStyleTabService.kDROP_ON)
 						TSTTabBrowser.treeStyleTab.attachTabTo(newTab, dropActionInfo.target);
+				]]></>
+			).replace( // Firefox 3, dragging tab from another window
+				'else if (draggedTab) {',
+				<><![CDATA[$&
+					if (TSTTabBrowser.treeStyleTab.processDropAction(dropActionInfo, draggedTab))
+						return;
 				]]></>
 			).replace(
 				/(this.loadOneTab\([^;]+\));/,

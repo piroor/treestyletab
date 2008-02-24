@@ -1668,9 +1668,17 @@ TreeStyleTabBrowser.prototype = {
 		if (aDragSession &&
 			aDragSession.sourceNode &&
 			aDragSession.sourceNode.localName == 'tab') {
-			if ('duplicateTab' in this.mTabBrowser &&
-				(navigator.platform.toLowerCase().indexOf('mac') == 0 ? aEvent.metaKey : aEvent.ctrlKey ))
+			if (
+				'duplicateTab' in this.mTabBrowser &&
+				(
+					(navigator.platform.toLowerCase().indexOf('mac') == 0 ? aEvent.metaKey : aEvent.ctrlKey ) ||
+					aDragSession.sourceNode.ownerDocument != document
+				)
+				) {
 				info.action = info.action | this.kACTION_DUPLICATE;
+				if (aDragSession.sourceNode.ownerDocument != document)
+					info.action = info.action | this.kACTION_MOVE_FROM_OTHER_WINDOW;
+			}
 
 			if (info.action & this.kACTION_ATTACH) {
 				var orig = aDragSession.sourceNode;
@@ -1862,30 +1870,43 @@ TreeStyleTabBrowser.prototype = {
 
 			var tab, newIndex;
 			var newRoots = [];
+			var remoteWindow = aInfo.action & self.kACTION_MOVE_FROM_OTHER_WINDOW ? aDraggedTab.ownerDocument.defaultView : null ;
+			var remoteBrowser = remoteWindow ? remoteWindow.TreeStyleTabService.getTabBrowserFromChild(aDraggedTab) : null ;
+			var windowShouldBeClosed = (
+					remoteBrowser &&
+					remoteBrowser.mTabContainer.childNodes.length == draggedTabs.length
+				);
 			draggedTabs.forEach(function(aTab) {
+				var tab = aTab;
 				if (aInfo.action & self.kACTION_DUPLICATE) {
-					var parent = self.getParentTab(aTab);
+					var parent = self.getParentTab(tab);
 					if ('MultipleTabService' in window)
-						MultipleTabService.setSelection(aTab, false);
-					aTab = b.duplicateTab(aTab);
+						remoteWindow.MultipleTabService.setSelection(tab, false);
+					tab = b.duplicateTab(tab);
 					if ('MultipleTabService' in window)
-						MultipleTabService.setSelection(aTab, true);
+						MultipleTabService.setSelection(tab, true);
 					if (!parent || draggedTabs.indexOf(parent) < 0)
-						newRoots.push(aTab);
+						newRoots.push(tab);
 				}
 
 				newIndex = aInfo.insertBefore ? aInfo.insertBefore._tPos : tabs.length - 1 ;
-				if (aInfo.insertBefore && newIndex > aTab._tPos) newIndex--;
+				if (aInfo.insertBefore && newIndex > tab._tPos) newIndex--;
 
 				self.internallyTabMoving = true;
-				b.moveTabTo(aTab, newIndex);
-				self.collapseExpandTab(aTab, false);
+				b.moveTabTo(tab, newIndex);
+				self.collapseExpandTab(tab, false);
 				self.internallyTabMoving = false;
+
+				if (remoteBrowser)
+					remoteBrowser.removeTab(aTab);
 			});
 
 			if (aInfo.action & this.kACTION_DUPLICATE &&
 				aInfo.action & this.kACTION_ATTACH)
 				this.attachTabsOnDrop(newRoots, aInfo.parent);
+
+			if (windowShouldBeClosed)
+				remoteWindow.close();
 
 			b.movingSelectedTabs = false; // Multiple Tab Handler
 			b.duplicatingSelectedTabs = false; // Multiple Tab Handler
