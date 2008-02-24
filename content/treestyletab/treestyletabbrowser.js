@@ -1824,24 +1824,33 @@ TreeStyleTabBrowser.prototype = {
 		var ownerWindow = aInfo.action & this.kACTION_MOVE_FROM_OTHER_WINDOW ? aDraggedTab.ownerDocument.defaultView : window ;
 		var ownerBrowser = ownerWindow ? ownerWindow.TreeStyleTabService.getTabBrowserFromChild(aDraggedTab) : this.mTabBrowser ;
 
-		if ('MultipleTabService' in ownerWindow &&
-			ownerWindow.MultipleTabService.isSelected(aDraggedTab) &&
-			MultipleTabService.allowMoveMultipleTabs) {
-			draggedTabs = ownerWindow.MultipleTabService.getSelectedTabs(ownerBrowser);
-			if (!(aInfo.action & this.kACTION_DUPLICATE)) {
-				draggedRoots = [];
-				draggedTabs.forEach(function(aTab) {
-					var parent = aTab,
-						current;
-					do {
-						current = parent;
-						parent = ownerBrowser.treeStyleTab.getParentTab(parent)
-						if (parent && ownerWindow.MultipleTabService.isSelected(parent)) continue;
-						draggedRoots.push(current);
-						return;
-					}
-					while (parent);
-				});
+		var moveSelection = (
+				'MultipleTabService' in ownerWindow &&
+				ownerWindow.MultipleTabService.isSelected(aDraggedTab) &&
+				MultipleTabService.allowMoveMultipleTabs
+			);
+
+		if (ownerWindow != window || moveSelection) {
+			if (moveSelection) {
+				draggedTabs = moveSelection ? ownerWindow.MultipleTabService.getSelectedTabs(ownerBrowser);
+				if (!(aInfo.action & this.kACTION_DUPLICATE)) {
+					draggedRoots = [];
+					draggedTabs.forEach(function(aTab) {
+						var parent = aTab,
+							current;
+						do {
+							current = parent;
+							parent = ownerBrowser.treeStyleTab.getParentTab(parent)
+							if (parent && ownerWindow.MultipleTabService.isSelected(parent)) continue;
+							draggedRoots.push(current);
+							return;
+						}
+						while (parent);
+					});
+				}
+			}
+			else {
+				draggedTabs = draggedTabs.concat(ownerBrowser.treeStyleTab.getDescendantTabs(aDraggedTab));
 			}
 		}
 
@@ -1881,10 +1890,10 @@ TreeStyleTabBrowser.prototype = {
 				var tab = aTab;
 				if (aInfo.action & self.kACTION_DUPLICATE) {
 					var parent = ownerBrowser.treeStyleTab.getParentTab(tab);
-					if ('MultipleTabService' in ownerWindow)
+					if (moveSelection)
 						ownerWindow.MultipleTabService.setSelection(tab, false);
 					tab = b.duplicateTab(tab);
-					if ('MultipleTabService' in window)
+					if (moveSelection)
 						MultipleTabService.setSelection(tab, true);
 					if (!parent || draggedTabs.indexOf(parent) < 0)
 						newRoots.push(tab);
