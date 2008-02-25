@@ -36,7 +36,7 @@
 
 <!ENTITY config.urlbar.caption                      "L&apos;inserimento di un indirizzo nella barra degli indirizzi">
 <!ENTITY config.urlbar.loadDifferentDomainToNewTab  "Apre una nuova scheda se appartiene a un sito web differente">
-<!ENTITY config.urlbar.loadDifferentDomainToNewTab.asChild  "as a child of the current tab">
+<!ENTITY config.urlbar.loadDifferentDomainToNewTab.asChild  "come figlia della scheda attuale">
 <!ENTITY config.urlbar.loadSameDomainToNewChildTab  "Apre una nuova scheda figlia se appartiene allo stesso sito web">
 
 <!ENTITY config.loadDroppedLinkToNewChildTab.caption "Il trascinamento di collegamenti o indirizzi su una scheda esistente">
@@ -74,10 +74,10 @@
 <!ENTITY config.insertNewChildAt.first "Inserisci all&apos;inizio del sottoalbero, come prima figlia">
 <!ENTITY config.insertNewChildAt.last "Accoda all&apos;ultimo sottoalbero">
 
-<!ENTITY config.autoHide.caption "Auto hide tab bar">
-<!ENTITY config.autoHide.area.before "Sensitive area:">
-<!ENTITY config.autoHide.area.after "pixels from window edges">
-<!ENTITY config.autoHide.delay.before "Delay:">
+<!ENTITY config.autoHide.caption "Nascondi automaticamente la barra delle schede">
+<!ENTITY config.autoHide.area.before "Area di attivazione:">
+<!ENTITY config.autoHide.area.after "distanza dai bordi della finestra (in pixel)">
+<!ENTITY config.autoHide.delay.before "Ritardo:">
 <!ENTITY config.autoHide.delay.after "msec.">
 
 
@@ -99,5 +99,5 @@
 <!ENTITY context.expandAllSubtree.accesskey "E">
 <!ENTITY context.toggleAutoHide.label     "Nascondi automaticamente la barra delle schede">
 <!ENTITY context.toggleAutoHide.accesskey "b">
-<!ENTITY context.toggleFixed.label     "Fix width of tab bar">
-<!ENTITY context.toggleFixed.accesskey "f">
+<!ENTITY context.toggleFixed.label     "Blocca larghezza della barra delle schede">
+<!ENTITY context.toggleFixed.accesskey "h">
