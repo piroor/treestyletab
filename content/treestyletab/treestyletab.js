@@ -745,6 +745,13 @@ var TreeStyleTabService = {
    
 /* Initializing */ 
 	
+	preInit : function() 
+	{
+		window.removeEventListener('DOMContentLoaded', this, false);
+		if (!document.getElementById('content')) return;
+
+		this.overrideExtensionsPreInit(); // hacks.js
+	},
 	init : function() 
 	{
 		if (!('gBrowser' in window)) return;
@@ -759,10 +766,10 @@ var TreeStyleTabService = {
 
 		this.addPrefListener(this);
 
-		this.overrideExtensionsBeforeInit(); // hacks.js
+		this.overrideExtensionsOnInitBefore(); // hacks.js
 		this.overrideGlobalFunctions();
 		this.initTabBrowser(gBrowser);
-		this.overrideExtensionsAfterInit(); // hacks.js
+		this.overrideExtensionsOnInitAfter(); // hacks.js
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.levelMargin');
 	},
 	 
@@ -987,7 +994,7 @@ catch(e) {
 			)
 		);
 
-		funcs = 'handleLinkClick __splitbrowser__handleLinkClick __ctxextensions__handleLinkClick'.split(' ');
+		funcs = 'handleLinkClick __splitbrowser__handleLinkClick __ctxextensions__handleLinkClick __treestyletab__highlander__origHandleLinkClick'.split(' ');
 		for (var i in funcs)
 		{
 			if (funcs[i] in window && /^function handleLinkClick/.test(window[funcs[i]].toString()))
@@ -1143,6 +1150,10 @@ catch(e) {
 	{
 		switch (aEvent.type)
 		{
+			case 'DOMContentLoaded':
+				this.preInit();
+				return;
+
 			case 'load':
 				this.init();
 				return;
@@ -1511,5 +1522,6 @@ catch(e) {
    
 }; 
 
+window.addEventListener('DOMContentLoaded', TreeStyleTabService, false);
 window.addEventListener('load', TreeStyleTabService, false);
  

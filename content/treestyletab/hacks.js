@@ -1,4 +1,18 @@
-TreeStyleTabService.overrideExtensionsBeforeInit = function() {
+TreeStyleTabService.overrideExtensionsPreInit = function() {
+
+	// Highlander
+	if ('Highlander' in window) {
+		eval('Highlander.overrideHandleLinkClick = '+
+			Highlander.overrideHandleLinkClick.toSource().replace(
+				/(var )?origHandleLinkClick/g,
+				'window.__treestyletab__highlander__origHandleLinkClick'
+			)
+		);
+	}
+
+};
+
+TreeStyleTabService.overrideExtensionsOnInitBefore = function() {
 
 	// Tab Mix Plus
 	if ('TMP_LastTab' in window) {
@@ -11,7 +25,7 @@ TreeStyleTabService.overrideExtensionsBeforeInit = function() {
 
 };
 
-TreeStyleTabService.overrideExtensionsAfterInit = function() {
+TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 
 	if ('MultipleTabService' in window) { // Multiple Tab Handler
 		eval('MultipleTabService.showHideMenuItems = '+
