@@ -929,24 +929,35 @@ catch(e) {
 	{
 		var funcs;
 		var func;
+		var overwriteProcess;
 
-		eval('window.BrowserLoadURL = '+
-			window.BrowserLoadURL.toSource().replace(
-				'aTriggeringEvent && aTriggeringEvent.altKey',
-				<><![CDATA[
-					TreeStyleTabService.checkReadyToOpenNewTab({
-						uri      : url,
-						external : {
-							newTab : TreeStyleTabService.getTreePref('urlbar.loadDifferentDomainToNewTab'),
-							forceChild : TreeStyleTabService.getTreePref('urlbar.loadDifferentDomainToNewTab.asChild')
-						},
-						internal : { newTab : TreeStyleTabService.getTreePref('urlbar.loadSameDomainToNewChildTab') },
-						modifier : aTriggeringEvent && aTriggeringEvent.altKey,
-						invert   : TreeStyleTabService.getTreePref('urlbar.invertDefaultBehavior')
-					})
-				]]></>
-			)
-		);
+		overwriteProcess = function(aName) {
+			var overwroteFunc;
+			eval('overwroteFunc = '+aName);
+			if (overwroteFunc.toSource().indexOf('(function BrowserLoadURL') != 0) return;
+			eval(aName + ' = '+
+				overwroteFunc.toSource().replace(
+					'aTriggeringEvent && aTriggeringEvent.altKey',
+					<><![CDATA[
+						TreeStyleTabService.checkReadyToOpenNewTab({
+							uri      : url,
+							external : {
+								newTab : TreeStyleTabService.getTreePref('urlbar.loadDifferentDomainToNewTab'),
+								forceChild : TreeStyleTabService.getTreePref('urlbar.loadDifferentDomainToNewTab.asChild')
+							},
+							internal : { newTab : TreeStyleTabService.getTreePref('urlbar.loadSameDomainToNewChildTab') },
+							modifier : aTriggeringEvent && aTriggeringEvent.altKey,
+							invert   : TreeStyleTabService.getTreePref('urlbar.invertDefaultBehavior')
+						})
+					]]></>
+				)
+			);
+		};
+		overwriteProcess('window.BrowserLoadURL');
+		if ('permaTabs' in window &&
+			'window.BrowserLoadURL' in permaTabs.utils.wrappedFunctions)
+			overwriteProcess('permaTabs.utils.wrappedFunctions["window.BrowserLoadURL"]');
+
 
 		eval('nsContextMenu.prototype.openLinkInTab = '+
 			nsContextMenu.prototype.openLinkInTab.toSource().replace(
@@ -1040,35 +1051,43 @@ catch(e) {
 		}
 
 		funcs = 'contentAreaClick __contentAreaClick __ctxextensions__contentAreaClick'.split(' ');
+		overwriteProcess = function(aName) {
+			var overwroteFunc;
+			eval('overwroteFunc = '+aName);
+			if (overwroteFunc.toSource().indexOf('(function contentAreaClick') != 0) return;
+			eval(aName + ' = '+
+				overwroteFunc.toSource().replace(
+					/(openWebPanel\([^\(]+\("webPanels"\), wrapper.href\);event.preventDefault\(\);return false;\})/,
+					<><![CDATA[
+						$1
+						else if (!('TMP_contentAreaClick' in window) && // do nothing for Tab Mix Plus
+							TreeStyleTabService.checkReadyToOpenNewTab({
+								uri      : wrapper.href,
+								external : {
+									newTab : TreeStyleTabService.getTreePref('openOuterLinkInNewTab') || TreeStyleTabService.getTreePref('openAnyLinkInNewTab'),
+									forceChild : true
+								},
+								internal : {
+									newTab : TreeStyleTabService.getTreePref('openAnyLinkInNewTab')
+								}
+							})) {
+							event.stopPropagation();
+							event.preventDefault();
+							handleLinkClick(event, wrapper.href, linkNode);
+							return true;
+						}
+					]]></>
+				)
+			);
+		};
 		for (var i in funcs)
 		{
-			if (funcs[i] in window && window[funcs[i]] &&
-				/^function contentAreaClick/.test(window[funcs[i]].toString()))
-				eval('window.'+funcs[i]+' = '+
-					window[funcs[i]].toSource().replace(
-						/(openWebPanel\([^\(]+\("webPanels"\), wrapper.href\);event.preventDefault\(\);return false;\})/,
-						<><![CDATA[
-							$1
-							else if (!('TMP_contentAreaClick' in window) && // do nothing for Tab Mix Plus
-								TreeStyleTabService.checkReadyToOpenNewTab({
-									uri      : wrapper.href,
-									external : {
-										newTab : TreeStyleTabService.getTreePref('openOuterLinkInNewTab') || TreeStyleTabService.getTreePref('openAnyLinkInNewTab'),
-										forceChild : true
-									},
-									internal : {
-										newTab : TreeStyleTabService.getTreePref('openAnyLinkInNewTab')
-									}
-								})) {
-								event.stopPropagation();
-								event.preventDefault();
-								handleLinkClick(event, wrapper.href, linkNode);
-								return true;
-							}
-						]]></>
-					)
-				);
+			if (funcs[i] in window && window[funcs[i]])
+				overwriteProcess('window.'+funcs[i]);
 		}
+		if ('permaTabs' in window &&
+			'window.contentAreaClick' in permaTabs.utils.wrappedFunctions)
+			overwriteProcess('permaTabs.utils.wrappedFunctions["window.contentAreaClick"]');
 
 		funcs = 'gotoHistoryIndex BrowserForward BrowserBack __rewindforward__BrowserForward __rewindforward__BrowserBack'.split(' ');
 		for (var i in funcs)
@@ -1087,14 +1106,23 @@ catch(e) {
 		}
 
 		func = 'BrowserGoHome' in window ? 'BrowserGoHome' : 'BrowserHomeClick' ;
-		eval('window.'+func+' = '+
-			window[func].toSource().replace(
-				'gBrowser.loadTabs(',
-				<><![CDATA[
-					TreeStyleTabService.readyToOpenNewTabGroup(gBrowser);
-					gBrowser.loadTabs(]]></>
-			)
-		);
+		overwriteProcess = function(aName, aFunc) {
+			var overwroteFunc;
+			eval('overwroteFunc = '+aName);
+			if (overwroteFunc.toSource().indexOf('(function '+func) != 0) return;
+			eval(aName + ' = '+
+				overwroteFunc.toSource().replace(
+					'gBrowser.loadTabs(',
+					<><![CDATA[
+						TreeStyleTabService.readyToOpenNewTabGroup(gBrowser);
+						gBrowser.loadTabs(]]></>
+				)
+			);
+		};
+		overwriteProcess('window.'+func);
+		if ('permaTabs' in window &&
+			'window.BrowserHomeClick' in permaTabs.utils.wrappedFunctions)
+			overwriteProcess('permaTabs.utils.wrappedFunctions["window.BrowserHomeClick"]');
 
 		eval('nsBrowserAccess.prototype.openURI = '+
 			nsBrowserAccess.prototype.openURI.toSource().replace(

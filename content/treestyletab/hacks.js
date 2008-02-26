@@ -10,6 +10,19 @@ TreeStyleTabService.overrideExtensionsPreInit = function() {
 		);
 	}
 
+/*
+	// Perma Tabs
+	if ('permaTabs' in window) {
+		// if this line exists, perma tabs crashes always. wyh?
+		eval('permaTabs.showPermaTab = '+
+			permaTabs.showPermaTab.toSource().replace(
+				'tab.setAttribute("permaTabId", props.id);',
+				'if (this.delayedStartupCall) $&'
+			)
+		);
+	}
+*/
+
 };
 
 TreeStyleTabService.overrideExtensionsOnInitBefore = function() {
