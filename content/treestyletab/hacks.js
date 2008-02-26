@@ -12,6 +12,7 @@ TreeStyleTabService.overrideExtensionsPreInit = function() {
 
 /*
 	// Perma Tabs
+	// どうやら、Perma Tabs自体の機能によってタブが復元されると落ちるらしい。
 	if ('permaTabs' in window) {
 		// if this line exists, perma tabs crashes always. wyh?
 		eval('permaTabs.showPermaTab = '+
