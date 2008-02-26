@@ -747,7 +747,7 @@ var TreeStyleTabService = {
 	
 	preInit : function() 
 	{
-		window.removeEventListener('DOMContentLoaded', this, false);
+		window.removeEventListener('DOMContentLoaded', this, true);
 		if (!document.getElementById('content')) return;
 
 		this.overrideExtensionsPreInit(); // hacks.js
@@ -1550,6 +1550,6 @@ catch(e) {
    
 }; 
 
-window.addEventListener('DOMContentLoaded', TreeStyleTabService, false);
+window.addEventListener('DOMContentLoaded', TreeStyleTabService, true);
 window.addEventListener('load', TreeStyleTabService, false);
  

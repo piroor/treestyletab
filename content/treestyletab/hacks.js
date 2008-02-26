@@ -10,19 +10,16 @@ TreeStyleTabService.overrideExtensionsPreInit = function() {
 		);
 	}
 
-/*
-	// Perma Tabs
-	// どうやら、Perma Tabs自体の機能によってタブが復元されると落ちるらしい。
+	// PermaTabs
 	if ('permaTabs' in window) {
-		// if this line exists, perma tabs crashes always. wyh?
-		eval('permaTabs.showPermaTab = '+
-			permaTabs.showPermaTab.toSource().replace(
-				'tab.setAttribute("permaTabId", props.id);',
-				'if (this.delayedStartupCall) $&'
+		// without delay, Firefox crashes on startup.
+		eval('permaTabs.__init = '+
+			permaTabs.__init.toSource().replace(
+				'aTab.setAttribute(\\"image\\", ',
+				'window.setTimeout(function(aTab, aImage) { aTab.setAttribute(\\"image\\", aImage); }, 100, aTab, '
 			)
 		);
 	}
-*/
 
 };
 
