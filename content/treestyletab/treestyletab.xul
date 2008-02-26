@@ -72,6 +72,21 @@
 			type="checkbox"
 			autocheck="false"
 			oncommand="TreeStyleTabService.toggleFixed();"/>
+		<menu id="context-menu-tabbarPosition"
+			label="&context.tabbarPosition.label;"
+			accesskey="&context.tabbarPosition.accesskey;">
+			<menupopup oncommand="TreeStyleTabService.changeTabbarPosition(event.target.getAttribute('value'));">
+				<menuitem label="&config.tabbar.position.left;"
+					type="radio" value="left"/>
+				<menuitem label="&config.tabbar.position.right;"
+					type="radio" value="right"/>
+				<menuseparator/>
+				<menuitem label="&config.tabbar.position.top;"
+					type="radio" value="top"/>
+				<menuitem label="&config.tabbar.position.bottom;"
+					type="radio" value="bottom"/>
+			</menupopup>
+		</menu>
 	</data>
 </window>
 

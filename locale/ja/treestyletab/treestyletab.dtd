@@ -99,3 +99,5 @@
 <!ENTITY context.toggleAutoHide.accesskey "h">
 <!ENTITY context.toggleFixed.label     "タブバーの幅を固定">
 <!ENTITY context.toggleFixed.accesskey "f">
+<!ENTITY context.tabbarPosition.label     "タブバーの位置">
+<!ENTITY context.tabbarPosition.accesskey "p">

@@ -458,6 +458,21 @@ var TreeStyleTabService = {
 		this.setTreePref('tabbar.fixed',
 			!this.getTreePref('tabbar.fixed'));
 	},
+ 
+	changeTabbarPosition : function(aNewPosition) 
+	{
+		if (!aNewPosition || !/^(top|bottom|left|right)$/i.test(aNewPosition))
+			aNewPosition = 'top';
+
+		aNewPosition = aNewPosition.toLowerCase();
+		this.setTreePref('tabbar.position', aNewPosition);
+
+		if (!this.getTreePref('tabbar.syncRelatedPrefsForDynamicPosition')) return;
+
+		var vertical = (aNewPosition == 'left' || aNewPosition == 'right');
+		this.setTreePref('enableSubtreeIndent', vertical);
+		this.setTreePref('allowSubtreeCollapseExpand', vertical);
+	},
  	
 /* get tab(s) */ 
 	
@@ -752,7 +767,7 @@ var TreeStyleTabService = {
 
 		this.overrideExtensionsPreInit(); // hacks.js
 	},
-	init : function() 
+	init : function()
 	{
 		if (!('gBrowser' in window)) return;
 

@@ -13,6 +13,7 @@ TreeStyleTabBrowser.prototype = {
 	kMENUITEM_AUTOHIDE_SEPARATOR       : 'context-separator-toggleAutoHide',
 	kMENUITEM_AUTOHIDE                 : 'context-item-toggleAutoHide',
 	kMENUITEM_FIXED                    : 'context-item-toggleFixed',
+	kMENUITEM_POSITION                 : 'context-menu-tabbarPosition',
 	 
 	mTabBrowser : null, 
 
@@ -365,7 +366,8 @@ TreeStyleTabBrowser.prototype = {
 				aSelf.kMENUITEM_EXPAND,
 				aSelf.kMENUITEM_AUTOHIDE_SEPARATOR,
 				aSelf.kMENUITEM_AUTOHIDE,
-				aSelf.kMENUITEM_FIXED
+				aSelf.kMENUITEM_FIXED,
+				aSelf.kMENUITEM_POSITION
 			].forEach(function(aID) {
 				var item = document.getElementById(aID).cloneNode(true);
 				item.setAttribute('id', item.getAttribute('id')+suffix);
@@ -1524,13 +1526,28 @@ TreeStyleTabBrowser.prototype = {
 			fixed.setAttribute('hidden', true);
 		}
 
+		// position
+		var position = this.evaluateXPath(
+			'descendant::xul:menu[starts-with(@id, "'+this.kMENUITEM_POSITION+'")]',
+			aEvent.currentTarget,
+			XPathResult.FIRST_ORDERED_NODE_TYPE
+		).singleNodeValue;
+		if (this.getTreePref('show.'+this.kMENUITEM_POSITION)) {
+			position.removeAttribute('hidden');
+			position.getElementsByAttribute('value', pos)[0].setAttribute('checked', true);
+		}
+		else {
+			position.setAttribute('hidden', true);
+		}
+
 		sep = this.evaluateXPath(
 			'descendant::xul:menuseparator[starts-with(@id, "'+this.kMENUITEM_AUTOHIDE_SEPARATOR+'")]',
 			aEvent.currentTarget,
 			XPathResult.FIRST_ORDERED_NODE_TYPE
 		).singleNodeValue;
 		if (autohide.getAttribute('hidden') != 'true' ||
-			fixed.getAttribute('hidden') != 'true') {
+			fixed.getAttribute('hidden') != 'true' ||
+			position.getAttribute('hidden') != 'true') {
 			sep.removeAttribute('hidden');
 		}
 		else {

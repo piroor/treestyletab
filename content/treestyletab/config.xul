@@ -62,6 +62,9 @@
 		<preference id="extensions.treestyletab.show.context-item-toggleFixed"
 			name="extensions.treestyletab.show.context-item-toggleFixed"
 			type="bool"/>
+		<preference id="extensions.treestyletab.show.context-menu-tabbarPosition"
+			name="extensions.treestyletab.show.context-menu-tabbarPosition"
+			type="bool"/>
 	</preferences>
 
 	<checkbox id="extensions.treestyletab.tabbar.scroll.smooth-check"
@@ -157,17 +160,20 @@
 			<checkbox id="extensions.treestyletab.show.context-item-collapseAllSubtree-check"
 				preference="extensions.treestyletab.show.context-item-collapseAllSubtree"
 				label="&context.collapseAllSubtree.label;"/>
-		</hbox>
-		<hbox align="center">
 			<checkbox id="extensions.treestyletab.show.context-item-expandAllSubtree-check"
 				preference="extensions.treestyletab.show.context-item-expandAllSubtree"
 				label="&context.expandAllSubtree.label;"/>
+		</hbox>
+		<hbox align="center">
 			<checkbox id="extensions.treestyletab.show.context-item-toggleAutoHide-check"
 				preference="extensions.treestyletab.show.context-item-toggleAutoHide"
 				label="&context.toggleAutoHide.label;"/>
 			<checkbox id="extensions.treestyletab.show.context-item-toggleFixed-check"
 				preference="extensions.treestyletab.show.context-item-toggleFixed"
 				label="&context.toggleFixed.label;"/>
+			<checkbox id="extensions.treestyletab.show.context-menu-tabbarPosition-check"
+				preference="extensions.treestyletab.show.context-menu-tabbarPosition"
+				label="&context.tabbarPosition.label;"/>
 		</hbox>
 	</groupbox>
 	<checkbox id="extensions.treestyletab.show.openSelectionLinks-check"

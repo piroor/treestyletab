@@ -12,6 +12,7 @@ pref("extensions.treestyletab.tabbar.autoHide.delay",      50);
 pref("extensions.treestyletab.tabbar.autoHide.area",       25);
 pref("extensions.treestyletab.tabbar.autoHide.expandArea", false);
 pref("extensions.treestyletab.tabbar.fixed", false);
+pref("extensions.treestyletab.tabbar.syncRelatedPrefsForDynamicPosition", true);
 pref("extensions.treestyletab.enableSubtreeIndent",    true);
 pref("extensions.treestyletab.enableSubtreeIndent.allTabsPopup", true);
 pref("extensions.treestyletab.allowSubtreeCollapseExpand", true);
@@ -31,6 +32,7 @@ pref("extensions.treestyletab.show.context-item-collapseAllSubtree", true);
 pref("extensions.treestyletab.show.context-item-expandAllSubtree", true);
 pref("extensions.treestyletab.show.context-item-toggleAutoHide", true);
 pref("extensions.treestyletab.show.context-item-toggleFixed", true);
+pref("extensions.treestyletab.show.context-menu-tabbarPosition", false);
 
 pref("extensions.treestyletab.openOuterLinkInNewTab",              false);
 pref("extensions.treestyletab.openAnyLinkInNewTab",                false);

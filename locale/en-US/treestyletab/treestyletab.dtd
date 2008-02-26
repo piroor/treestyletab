@@ -101,3 +101,5 @@
 <!ENTITY context.toggleAutoHide.accesskey "h">
 <!ENTITY context.toggleFixed.label     "Fix width of tab bar">
 <!ENTITY context.toggleFixed.accesskey "f">
+<!ENTITY context.tabbarPosition.label     "Position">
+<!ENTITY context.tabbarPosition.accesskey "p">
