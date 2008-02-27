@@ -949,7 +949,7 @@ catch(e) {
 		overwriteProcess = function(aName) {
 			var overwroteFunc;
 			eval('overwroteFunc = '+aName);
-			if (overwroteFunc.toSource().indexOf('(function BrowserLoadURL') != 0) return;
+			if (overwroteFunc.toSource().indexOf('function BrowserLoadURL') != 0) return;
 			eval(aName + ' = '+
 				overwroteFunc.toSource().replace(
 					'aTriggeringEvent && aTriggeringEvent.altKey',
@@ -1069,7 +1069,7 @@ catch(e) {
 		overwriteProcess = function(aName) {
 			var overwroteFunc;
 			eval('overwroteFunc = '+aName);
-			if (overwroteFunc.toSource().indexOf('(function contentAreaClick') != 0) return;
+			if (overwroteFunc.toSource().indexOf('function contentAreaClick') != 0) return;
 			eval(aName + ' = '+
 				overwroteFunc.toSource().replace(
 					/(openWebPanel\([^\(]+\("webPanels"\), wrapper.href\);event.preventDefault\(\);return false;\})/,
@@ -1124,7 +1124,7 @@ catch(e) {
 		overwriteProcess = function(aName, aFunc) {
 			var overwroteFunc;
 			eval('overwroteFunc = '+aName);
-			if (overwroteFunc.toSource().indexOf('(function '+func) != 0) return;
+			if (overwroteFunc.toSource().indexOf('function '+func) != 0) return;
 			eval(aName + ' = '+
 				overwroteFunc.toSource().replace(
 					'gBrowser.loadTabs(',
