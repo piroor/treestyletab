@@ -961,7 +961,7 @@ catch(e) {
 								forceChild : TreeStyleTabService.getTreePref('urlbar.loadDifferentDomainToNewTab.asChild')
 							},
 							internal : { newTab : TreeStyleTabService.getTreePref('urlbar.loadSameDomainToNewChildTab') },
-							modifier : aTriggeringEvent && aTriggeringEvent.altKey,
+							modifier : $&,
 							invert   : TreeStyleTabService.getTreePref('urlbar.invertDefaultBehavior')
 						})
 					]]></>
@@ -977,18 +977,16 @@ catch(e) {
 		eval('nsContextMenu.prototype.openLinkInTab = '+
 			nsContextMenu.prototype.openLinkInTab.toSource().replace(
 				'{',
-				<><![CDATA[
-					{
-						TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);
+				<><![CDATA[$&
+					TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);
 				]]></>
 			)
 		);
 		eval('nsContextMenu.prototype.openFrameInTab = '+
 			nsContextMenu.prototype.openFrameInTab.toSource().replace(
 				'{',
-				<><![CDATA[
-					{
-						TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);
+				<><![CDATA[$&
+					TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);
 				]]></>
 			)
 		);
@@ -998,7 +996,7 @@ catch(e) {
 				<><![CDATA[
 					if (String(whereToOpenLink(e, false, true)).indexOf('tab') == 0)
 						TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);
-					openUILink(]]></>
+					$&]]></>
 			)
 		);
 		eval('nsContextMenu.prototype.viewBGImage = '+
@@ -1007,7 +1005,7 @@ catch(e) {
 				<><![CDATA[
 					if (String(whereToOpenLink(e, false, true)).indexOf('tab') == 0)
 						TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);
-					openUILink(]]></>
+					$&]]></>
 			)
 		);
 		eval('nsContextMenu.prototype.addDictionaries = '+
@@ -1016,7 +1014,7 @@ catch(e) {
 				<><![CDATA[
 					if (where.indexOf('tab') == 0)
 						TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);
-					openUILinkIn(]]></>
+					$&]]></>
 			)
 		);
 
@@ -1026,10 +1024,10 @@ catch(e) {
 			if (funcs[i] in window && /^function handleLinkClick/.test(window[funcs[i]].toString()))
 				eval('window.'+funcs[i]+' = '+
 					window[funcs[i]].toSource().replace(
-						/openNewTabWith\(/g,
+						/(openNewTabWith\()/g,
 						<><![CDATA[
 							if (!TreeStyleTabService.checkToOpenChildTab(event.target.ownerDocument.defaultView)) TreeStyleTabService.readyToOpenChildTab(event.target.ownerDocument.defaultView);
-							openNewTabWith(]]></>
+							$1]]></>
 					).replace(
 						/(event.ctrlKey|event.metaKey)/,
 						<><![CDATA[
@@ -1111,11 +1109,11 @@ catch(e) {
 				/^function (gotoHistoryIndex|BrowserForward|BrowserBack)/.test(window[funcs[i]].toString()))
 				eval('window.'+funcs[i]+' = '+
 					window[funcs[i]].toSource().replace(
-						/openUILinkIn\(/g,
+						/(openUILinkIn\()/g,
 						<><![CDATA[
 							if (where == 'tab' || where == 'tabshifted')
 								TreeStyleTabService.readyToOpenChildTab();
-							openUILinkIn(]]></>
+							$1]]></>
 					)
 				);
 		}
@@ -1130,7 +1128,7 @@ catch(e) {
 					'gBrowser.loadTabs(',
 					<><![CDATA[
 						TreeStyleTabService.readyToOpenNewTabGroup(gBrowser);
-						gBrowser.loadTabs(]]></>
+						$&]]></>
 				)
 			);
 		};
@@ -1141,14 +1139,13 @@ catch(e) {
 
 		eval('nsBrowserAccess.prototype.openURI = '+
 			nsBrowserAccess.prototype.openURI.toSource().replace(
-				/switch\s*\(aWhere\)/,
+				/(switch\s*\(aWhere\))/,
 				<><![CDATA[
 					if (aOpener &&
 						aWhere == Components.interfaces.nsIBrowserDOMWindow.OPEN_NEWTAB) {
 						TreeStyleTabService.readyToOpenChildTab(aOpener);
 					}
-					switch(aWhere)
-				]]></>
+					$1]]></>
 			)
 		);
 		window.QueryInterface(Components.interfaces.nsIDOMChromeWindow).browserDOMWindow = null;
@@ -1160,7 +1157,7 @@ catch(e) {
 				<><![CDATA[
 					if (String(whereToOpenLink(event, false, true)).indexOf('tab') == 0)
 						TreeStyleTabService.readyToOpenChildTab(gBrowser);
-					openUILink(]]></>
+					$&]]></>
 			)
 		);
 	},

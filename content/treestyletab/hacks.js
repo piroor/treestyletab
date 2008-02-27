@@ -41,12 +41,12 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 	if ('MultipleTabService' in window) { // Multiple Tab Handler
 		eval('MultipleTabService.showHideMenuItems = '+
 			MultipleTabService.showHideMenuItems.toSource().replace(
-				/var separators = /,
+				'var separators = ',
 				<><![CDATA[
 					if (aPopup.id == 'multipletab-selection-menu') {
 						TreeStyleTabService.showHideRemoveSubTreeMenuItem(document.getElementById(TreeStyleTabService.kMENUITEM_REMOVESUBTREE_SELECTION), MultipleTabService.getSelectedTabs());
 					}
-					var separators = ]]></>
+					$&]]></>
 			)
 		);
 	}
@@ -100,51 +100,48 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		eval('autoHIDE.EndFull = '+
 			autoHIDE.EndFull.toSource().replace(
 				'{',
-				<><![CDATA[
-					{
-						var appcontent = document.getElementById('appcontent');
-						if (appcontent.__treestyletab__resized) {
-							appcontent.__treestyletab__resized = false;
-							appcontent.style.margin = 0;
-						}
-						window.setTimeout('gBrowser.treeStyleTab.checkTabsIndentOverflow();', 0);
+				<><![CDATA[$&
+					var appcontent = document.getElementById('appcontent');
+					if (appcontent.__treestyletab__resized) {
+						appcontent.__treestyletab__resized = false;
+						appcontent.style.margin = 0;
+					}
+					window.setTimeout('gBrowser.treeStyleTab.checkTabsIndentOverflow();', 0);
 				]]></>
 			)
 		);
 		eval('autoHIDE.SetMenu = '+
 			autoHIDE.SetMenu.toSource().replace(
 				'{',
-				<><![CDATA[
-					{
-						if (arguments.length && arguments[0]) {
-							var treeStyleTabSplitter = document.getAnonymousElementByAttribute(gBrowser, 'class', TreeStyleTabService.kSPLITTER);
-							gBrowser.treeStyleTab.tabbarWidth = gBrowser.mStrip.boxObject.width +
-								(treeStyleTabSplitter ? treeStyleTabSplitter.boxObject.width : 0 );
-						}
+				<><![CDATA[$&
+					if (arguments.length && arguments[0]) {
+						var treeStyleTabSplitter = document.getAnonymousElementByAttribute(gBrowser, 'class', TreeStyleTabService.kSPLITTER);
+						gBrowser.treeStyleTab.tabbarWidth = gBrowser.mStrip.boxObject.width +
+							(treeStyleTabSplitter ? treeStyleTabSplitter.boxObject.width : 0 );
+					}
 				]]></>
 			)
 		);
 		eval('autoHIDE.MoveC = '+
 			autoHIDE.MoveC.toSource().replace(
 				'{',
-				<><![CDATA[
-					{
-						var treeStyleTabPos = gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION);
-						if (!arguments.length) {
-							var appcontent = document.getElementById('appcontent');
-							if (treeStyleTabPos == 'left' &&
-								!appcontent.__treestyletab__resized) {
-								appcontent.style.marginRight = '-'+gBrowser.treeStyleTab.tabbarWidth+'px';
-								appcontent.__treestyletab__resized = true;
-							}
-							else if (treeStyleTabPos == 'right' &&
-								!appcontent.__treestyletab__resized) {
-								appcontent.style.marginLeft = '-'+gBrowser.treeStyleTab.tabbarWidth+'px';
-								appcontent.__treestyletab__resized = true;
-							}
-							window.setTimeout('autoHIDE.MoveC(true);', 100);
-							return;
+				<><![CDATA[$&
+					var treeStyleTabPos = gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION);
+					if (!arguments.length) {
+						var appcontent = document.getElementById('appcontent');
+						if (treeStyleTabPos == 'left' &&
+							!appcontent.__treestyletab__resized) {
+							appcontent.style.marginRight = '-'+gBrowser.treeStyleTab.tabbarWidth+'px';
+							appcontent.__treestyletab__resized = true;
 						}
+						else if (treeStyleTabPos == 'right' &&
+							!appcontent.__treestyletab__resized) {
+							appcontent.style.marginLeft = '-'+gBrowser.treeStyleTab.tabbarWidth+'px';
+							appcontent.__treestyletab__resized = true;
+						}
+						window.setTimeout('autoHIDE.MoveC(true);', 100);
+						return;
+					}
 				]]></>
 			).replace(
 				'.move(0, - this.delta)',
@@ -215,8 +212,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		eval('window.TMP_TabDragGesture = '+
 			window.TMP_TabDragGesture.toSource().replace(
 				'{',
-				<><![CDATA[
-				{
+				<><![CDATA[$&
 					if (TreeStyleTabService.getPref('extensions.tabmix.tabBarMode', 1) != 2) {
 						nsDragAndDrop.startDrag(aEvent, (gBrowser.getAttribute(TreeStyleTabService.kMODE) == 'vertical' ? gBrowser : TabDNDObserver ));
 						aEvent.stopPropagation();
@@ -228,8 +224,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		eval('window.TMP_TabDragOver = '+
 			window.TMP_TabDragOver.toSource().replace(
 				'{',
-				<><![CDATA[
-				{
+				<><![CDATA[$&
 					if (TreeStyleTabService.getPref('extensions.tabmix.tabBarMode', 1) != 2) {
 						nsDragAndDrop.dragOver(aEvent, (gBrowser.getAttribute(TreeStyleTabService.kMODE) == 'vertical' ? gBrowser : TabDNDObserver ));
 						aEvent.stopPropagation();
@@ -241,8 +236,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		eval('window.TMP_TabDragDrop = '+
 			window.TMP_TabDragDrop.toSource().replace(
 				'{',
-				<><![CDATA[
-				{
+				<><![CDATA[$&
 					if (TreeStyleTabService.getPref('extensions.tabmix.tabBarMode', 1) != 2) {
 						nsDragAndDrop.drop(aEvent, (gBrowser.getAttribute(TreeStyleTabService.kMODE) == 'vertical' ? gBrowser : TabDNDObserver ));
 						aEvent.stopPropagation();
@@ -254,8 +248,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		eval('window.TMP_TabDragExit = '+
 			window.TMP_TabDragExit.toSource().replace(
 				'{',
-				<><![CDATA[
-				{
+				<><![CDATA[$&
 					if (TreeStyleTabService.getPref('extensions.tabmix.tabBarMode', 1) != 2) {
 						nsDragAndDrop.dragExit(aEvent, (gBrowser.getAttribute(TreeStyleTabService.kMODE) == 'vertical' ? gBrowser : TabDNDObserver ));
 						aEvent.stopPropagation();
