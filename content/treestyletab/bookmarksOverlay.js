@@ -38,9 +38,20 @@ window.addEventListener('load', function() {
 			PlacesUtils._openTabset.toSource().replace(
 				'browserWindow.getBrowser().loadTabs(',
 				<><![CDATA[
-					if (TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree') &&
-						where.indexOf('tab') == 0)
+					if (
+						TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree') &&
+						(
+							where.indexOf('tab') == 0 ||
+							aEvent.target.getAttribute('openInTabs') == 'true'
+						)
+						)
+						{
 						TreeStyleTabService.readyToOpenNewTabGroup();
+						replaceCurrentTab = false;
+					}
+					else if (!TreeStyleTabService.getPref('browser.tabs.loadFolderAndReplace')) {
+						replaceCurrentTab = false;
+					}
 					$&]]></>
 			)
 		);
