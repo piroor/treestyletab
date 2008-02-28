@@ -111,5 +111,5 @@
 <!ENTITY context.toggleAutoHide.accesskey "b">
 <!ENTITY context.toggleFixed.label     "Blocca larghezza della barra delle schede">
 <!ENTITY context.toggleFixed.accesskey "h">
-<!ENTITY context.tabbarPosition.label     "Posizione">
+<!ENTITY context.tabbarPosition.label     "Posiziona">
 <!ENTITY context.tabbarPosition.accesskey "p">
