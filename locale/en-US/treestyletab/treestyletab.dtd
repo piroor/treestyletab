@@ -27,8 +27,8 @@
 <!ENTITY config.twisty.style.caption "Tree twisties">
 <!ENTITY config.twisty.style.none    "None">
 <!ENTITY config.twisty.style.retro   "Retro">
-<!ENTITY config.twisty.style.delta.black "Black Modern">
-<!ENTITY config.twisty.style.delta.white "White Modern">
+<!ENTITY config.twisty.style.modern.black "Black Modern">
+<!ENTITY config.twisty.style.modern.white "White Modern">
 
 <!ENTITY config.tabs.menu.tab "Menu">
 

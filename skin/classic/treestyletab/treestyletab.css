@@ -277,46 +277,46 @@ tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="mixed"] .t
 tabbrowser[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .treestyletab-twisty-container {
 	margin: 0 -3px 0 3px;
 }
-tabbrowser[treestyletab-twisty-style^="delta"] .treestyletab-twisty-container {
+tabbrowser[treestyletab-twisty-style^="modern"] .treestyletab-twisty-container {
 	position: relative;
 	margin: 0 12px 0 -12px;
 }
-tabbrowser[treestyletab-twisty-style^="delta"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .treestyletab-twisty-container {
+tabbrowser[treestyletab-twisty-style^="modern"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .treestyletab-twisty-container {
 	margin: 0 -12px 0 12px;
 }
 
 
-tabbrowser[treestyletab-twisty-style="basic"]:not([treestyletab-mode="vertical"]) .treestyletab-twisty-container {
+tabbrowser[treestyletab-twisty-style="retro"]:not([treestyletab-mode="vertical"]) .treestyletab-twisty-container {
 	position: relative;
 	margin: 0 16px 0 -16px;
 }
 
-tabbrowser[treestyletab-twisty-style="basic"]:not([treestyletab-mode="vertical"])[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyletab-children] .tab-icon {
+tabbrowser[treestyletab-twisty-style="retro"]:not([treestyletab-mode="vertical"])[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyletab-children] .tab-icon {
 	margin-left: 16px;
 }
-tabbrowser[treestyletab-twisty-style^="delta"][treestyletab-allow-subtree-collapse="true"][treestyletab-mode="horizontal"] .tab-icon,
-tabbrowser[treestyletab-twisty-style^="delta"][treestyletab-allow-subtree-collapse="true"][treestyletab-mode="vertical"]:not([treestyletab-appearance-inverted="true"]) .tab-icon {
+tabbrowser[treestyletab-twisty-style^="modern"][treestyletab-allow-subtree-collapse="true"][treestyletab-mode="horizontal"] .tab-icon,
+tabbrowser[treestyletab-twisty-style^="modern"][treestyletab-allow-subtree-collapse="true"][treestyletab-mode="vertical"]:not([treestyletab-appearance-inverted="true"]) .tab-icon {
 	margin-left: 6px;
 }
-tabbrowser[treestyletab-twisty-style^="delta"][treestyletab-allow-subtree-collapse="true"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tab-icon {
+tabbrowser[treestyletab-twisty-style^="modern"][treestyletab-allow-subtree-collapse="true"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tab-icon {
 	margin-right: 6px;
 }
 
 .treestyletab-twisty {
-	list-style-image: url("tree-twisty.png");
+	list-style-image: url("twisty-retro.png");
 	-moz-image-region: rect(0, 32px, 16px, 16px);
 }
-tabbrowser[treestyletab-twisty-style="delta-black"] .treestyletab-twisty {
-	list-style-image: url("tree-twisty-delta-b-l.png");
+tabbrowser[treestyletab-twisty-style="modern-black"] .treestyletab-twisty {
+	list-style-image: url("twisty-modern-b-l.png");
 }
-tabbrowser[treestyletab-twisty-style="delta-black"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .treestyletab-twisty {
-	list-style-image: url("tree-twisty-delta-b-r.png");
+tabbrowser[treestyletab-twisty-style="modern-black"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .treestyletab-twisty {
+	list-style-image: url("twisty-modern-b-r.png");
 }
-tabbrowser[treestyletab-twisty-style="delta-white"] .treestyletab-twisty {
-	list-style-image: url("tree-twisty-delta-w-l.png");
+tabbrowser[treestyletab-twisty-style="modern-white"] .treestyletab-twisty {
+	list-style-image: url("twisty-modern-w-l.png");
 }
-tabbrowser[treestyletab-twisty-style="delta-white"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .treestyletab-twisty {
-	list-style-image: url("tree-twisty-delta-w-r.png");
+tabbrowser[treestyletab-twisty-style="modern-white"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .treestyletab-twisty {
+	list-style-image: url("twisty-modern-w-r.png");
 }
 
 .tabbrowser-tab[treestyletab-subtree-collapsed="true"] .treestyletab-twisty {

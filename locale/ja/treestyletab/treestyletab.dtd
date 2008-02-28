@@ -27,8 +27,8 @@
 <!ENTITY config.twisty.style.caption "つまみ">
 <!ENTITY config.twisty.style.none    "なし">
 <!ENTITY config.twisty.style.retro   "レトロ">
-<!ENTITY config.twisty.style.delta.black "モダン黒">
-<!ENTITY config.twisty.style.delta.white "モダン白">
+<!ENTITY config.twisty.style.modern.black "モダン黒">
+<!ENTITY config.twisty.style.modern.white "モダン白">
 
 <!ENTITY config.tabs.menu.tab "メニュー">
 
