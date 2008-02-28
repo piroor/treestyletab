@@ -457,4 +457,39 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 
 		gBrowser.treeStyleTab.internallyTabMoving = true; // until "TMmoveTabTo" method is overwritten
 	}
+
+
+	// Super DragAndGo
+	if ('superDrag' in window) {
+		eval('superDrag.onDrop = '+
+			superDrag.onDrop.toSource().replace(
+				/(var newTab = getBrowser\(\).addTab\([^\)]+\);)/g,
+				<><![CDATA[
+					TreeStyleTabService.readyToOpenChildTab(getBrowser());
+					$1
+				]]></>
+			)
+		);
+	}
+
+	// Drag de Go
+	if ('ddg_ges' in window) {
+		eval('ddg_ges.Open = '+
+			ddg_ges.Open.toSource().replace(
+				'if (mode[1] == "h" || mode[1] == "f") {',
+				<><![CDATA[$&
+					TreeStyleTabService.readyToOpenChildTab(getBrowser());
+				]]></>
+			)
+		);
+		eval('ddg_ges.Search = '+
+			ddg_ges.Search.toSource().replace(
+				'if (mode[1] == "h" || mode[1] == "f") {',
+				<><![CDATA[$&
+					TreeStyleTabService.readyToOpenChildTab(getBrowser());
+				]]></>
+			)
+		);
+	}
+
 };
