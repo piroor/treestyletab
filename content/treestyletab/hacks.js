@@ -465,7 +465,9 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 			superDrag.onDrop.toSource().replace(
 				/(var newTab = getBrowser\(\).addTab\([^\)]+\);)/g,
 				<><![CDATA[
-					TreeStyleTabService.readyToOpenChildTab(getBrowser());
+					if (aDragSession.sourceNode &&
+						aDragSession.sourceNode.ownerDocument.defaultView.top == getBrowser().contentWindow)
+						TreeStyleTabService.readyToOpenChildTab(getBrowser());
 					$1
 				]]></>
 			)
