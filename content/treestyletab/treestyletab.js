@@ -140,6 +140,8 @@ var TreeStyleTabService = {
 	
 	readyToOpenChildTab : function(aFrameOrTabBrowser, aMultiple, aInsertBefore) 
 	{
+		if (!this.getTreePref('autoAttachNewTabsAsChildren')) return;
+
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
 		if (!frame) return;
 
@@ -153,6 +155,8 @@ var TreeStyleTabService = {
  
 	readyToOpenNewTabGroup : function(aFrameOrTabBrowser) 
 	{
+		if (!this.getTreePref('autoAttachNewTabsAsChildren')) return;
+
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
 		if (!frame) return;
 
