@@ -166,12 +166,15 @@
 			preference="extensions.treestyletab.twisty.style"
 			orient="horizontal">
 			<radio value="none" label="&config.twisty.style.none;" align="center"/>
-			<radio value="basic" label="&config.twisty.style.basic;"
+			<radio value="retro" label="&config.twisty.style.retro;"
 				class="image" align="center"
-				src="chrome://treestyletab/content/res/twisty-basic.png"/>
-			<radio value="adobe" label="&config.twisty.style.adobe;"
+				src="chrome://treestyletab/content/res/twisty-retro.png"/>
+			<radio value="modern-black" label="&config.twisty.style.modern.black;"
 				class="image" align="center"
-				src="chrome://treestyletab/content/res/twisty-adobe.png"/>
+				src="chrome://treestyletab/content/res/twisty-modern-b.png"/>
+			<radio value="modern-white" label="&config.twisty.style.modern.white;"
+				class="image" align="center"
+				src="chrome://treestyletab/content/res/twisty-modern-w.png"/>
 		</radiogroup>
 	</groupbox>
 
