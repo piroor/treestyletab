@@ -478,7 +478,8 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 			ddg_ges.Open.toSource().replace(
 				'if (mode[1] == "h" || mode[1] == "f") {',
 				<><![CDATA[$&
-					TreeStyleTabService.readyToOpenChildTab(getBrowser());
+					if ('sourceNode' in aData) // only for dragging from the content tarea.
+						TreeStyleTabService.readyToOpenChildTab(getBrowser());
 				]]></>
 			)
 		);
@@ -486,7 +487,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 			ddg_ges.Search.toSource().replace(
 				'if (mode[1] == "h" || mode[1] == "f") {',
 				<><![CDATA[$&
-					TreeStyleTabService.readyToOpenChildTab(getBrowser());
+						TreeStyleTabService.readyToOpenChildTab(getBrowser());
 				]]></>
 			)
 		);
