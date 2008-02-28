@@ -2,6 +2,7 @@
 @namespace html url("http://www.w3.org/1999/xhtml");
 
 .tabbrowser-tab .treestyletab-twisty,
+tabbrowser[treestyletab-twisty-style="none"] .treestyletab-twisty-container,
 .tabbrowser-tab .treestyletab-counter-container,
 .tabbrowser-tab .treestyletab-drop-marker,
 tabbrowser[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyletab-children]:not([treestyletab-subtree-collapsed="true"]) .treestyletab-counter-container,

@@ -3,6 +3,8 @@
 
 <!ENTITY config.tabs.appearance "Aspetto">
 
+<!ENTITY config.tabs.tabbar.tab "Tab Bar">
+
 <!ENTITY config.tabbar.scroll.smooth "Scorri gradualmente la barra delle schede">
 
 <!ENTITY config.tabbar.position.caption "Posiziona barra delle schede">
@@ -21,6 +23,13 @@
 <!ENTITY config.tabbar.style.default "Semplice">
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.mixed   "Misto">
+
+<!ENTITY config.twisty.style.caption "Tree twisties">
+<!ENTITY config.twisty.style.none    "None">
+<!ENTITY config.twisty.style.basic   "Tree">
+<!ENTITY config.twisty.style.adobe   "Adobe">
+
+<!ENTITY config.tabs.menu.tab "Menu">
 
 <!ENTITY config.show.tabContextMenu.caption "Voci da aggiungere al menu contestuale delle schede">
 <!ENTITY config.show.openSelectionLinks "Aggiungi &quot;Apri collegamenti selezionati in schede&quot; al menu contestuale">

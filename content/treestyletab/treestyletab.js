@@ -16,6 +16,7 @@ var TreeStyleTabService = {
 	kALLOW_COLLAPSE     : 'treestyletab-allow-subtree-collapse',
 	kHIDE_ALLTABS       : 'treestyletab-hide-alltabs-button',
 	kSTYLE              : 'treestyletab-style',
+	kTWISTY_STYLE       : 'treestyletab-twisty-style',
 	kFIRSTTAB_BORDER    : 'treestyletab-firsttab-border',
 	kAUTOHIDE           : 'treestyletab-tabbar-autohide',
 	kFIXED              : 'treestyletab-tabbar-fixed',

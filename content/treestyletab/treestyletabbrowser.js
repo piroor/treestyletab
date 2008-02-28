@@ -340,6 +340,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.style');
+		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.twisty.style');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.showBorderForFirstTab');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.invertScrollbar');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.hideAlltabsButton');
@@ -765,6 +766,10 @@ TreeStyleTabBrowser.prototype = {
 
 					case 'extensions.treestyletab.tabbar.style':
 						b.setAttribute(this.kSTYLE, value);
+						break;
+
+					case 'extensions.treestyletab.twisty.style':
+						b.setAttribute(this.kTWISTY_STYLE, value);
 						break;
 
 					case 'extensions.treestyletab.showBorderForFirstTab':

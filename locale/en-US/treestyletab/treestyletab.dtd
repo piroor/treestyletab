@@ -3,6 +3,8 @@
 
 <!ENTITY config.tabs.appearance "Appearance">
 
+<!ENTITY config.tabs.tabbar.tab "Tab Bar">
+
 <!ENTITY config.tabbar.scroll.smooth "Scroll the tab bar smoothly">
 
 <!ENTITY config.tabbar.position.caption "Tab bar position">
@@ -21,6 +23,13 @@
 <!ENTITY config.tabbar.style.default "Plain">
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.mixed   "Mixed">
+
+<!ENTITY config.twisty.style.caption "Tree twisties">
+<!ENTITY config.twisty.style.none    "None">
+<!ENTITY config.twisty.style.basic   "Tree">
+<!ENTITY config.twisty.style.adobe   "Adobe">
+
+<!ENTITY config.tabs.menu.tab "Menu">
 
 <!ENTITY config.show.tabContextMenu.caption "Add following items to the context menu on tabs">
 <!ENTITY config.show.openSelectionLinks "Add &quot;Open Selection Links in Tabs&quot; to the context menu">

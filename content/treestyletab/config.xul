@@ -41,6 +41,9 @@
 		<preference id="extensions.treestyletab.tabbar.invertUI"
 			name="extensions.treestyletab.tabbar.invertUI"
 			type="bool"/>
+		<preference id="extensions.treestyletab.twisty.style"
+			name="extensions.treestyletab.twisty.style"
+			type="string"/>
 		<preference id="extensions.treestyletab.show.openSelectionLinks"
 			name="extensions.treestyletab.show.openSelectionLinks"
 			type="bool"/>
@@ -66,6 +69,15 @@
 			name="extensions.treestyletab.show.context-menu-tabbarPosition"
 			type="bool"/>
 	</preferences>
+
+
+	<tabbox orient="vertical">
+		<tabs>
+			<tab label="&config.tabs.tabbar.tab;"/>
+			<tab label="&config.tabs.menu.tab;"/>
+		</tabs>
+		<tabpanels>
+			<tabpanel orient="vertical">
 
 	<checkbox id="extensions.treestyletab.tabbar.scroll.smooth-check"
 		preference="extensions.treestyletab.tabbar.scroll.smooth"
@@ -148,6 +160,26 @@
 				src="chrome://treestyletab/content/res/style-mixed.png"/>
 		</radiogroup>
 	</groupbox>
+	<groupbox>
+		<caption label="&config.twisty.style.caption;"/>
+		<radiogroup id="extensions.treestyletab.twisty.style-radiogroup"
+			preference="extensions.treestyletab.twisty.style"
+			orient="horizontal">
+			<radio value="none" label="&config.twisty.style.none;" align="center"/>
+			<radio value="basic" label="&config.twisty.style.basic;"
+				class="image" align="center"
+				src="chrome://treestyletab/content/res/twisty-basic.png"/>
+			<radio value="adobe" label="&config.twisty.style.adobe;"
+				class="image" align="center"
+				src="chrome://treestyletab/content/res/twisty-adobe.png"/>
+		</radiogroup>
+	</groupbox>
+
+			</tabpanel>
+
+
+			<tabpanel orient="vertical">
+
 	<groupbox orient="vertical">
 		<caption label="&config.show.tabContextMenu.caption;"/>
 		<hbox align="center">
@@ -181,6 +213,11 @@
 	<checkbox id="extensions.treestyletab.show.openSelectionLinks-check"
 		preference="extensions.treestyletab.show.openSelectionLinks"
 		label="&config.show.openSelectionLinks;"/>
+
+			</tabpanel>
+		</tabpanels>
+	</tabbox>
+
 </prefpane>
 
 <prefpane id="prefpane-tab" label="&config.tabs.tab;"

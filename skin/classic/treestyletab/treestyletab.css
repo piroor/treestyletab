@@ -277,30 +277,53 @@ tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="mixed"] .t
 tabbrowser[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .treestyletab-twisty-container {
 	margin: 0 -3px 0 3px;
 }
+tabbrowser[treestyletab-twisty-style="adobe"] .treestyletab-twisty-container {
+	position: relative;
+	margin: 0 12px 0 -12px;
+}
+tabbrowser[treestyletab-twisty-style="adobe"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .treestyletab-twisty-container {
+	margin: 0 -12px 0 12px;
+}
 
-tabbrowser:not([treestyletab-mode="vertical"]) .treestyletab-twisty-container {
+
+tabbrowser[treestyletab-twisty-style="basic"]:not([treestyletab-mode="vertical"]) .treestyletab-twisty-container {
 	position: relative;
 	margin: 0 16px 0 -16px;
 }
 
-tabbrowser:not([treestyletab-mode="vertical"])[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyletab-children] .tab-icon {
+tabbrowser[treestyletab-twisty-style="basic"]:not([treestyletab-mode="vertical"])[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyletab-children] .tab-icon {
 	margin-left: 16px;
+}
+tabbrowser[treestyletab-twisty-style="adobe"][treestyletab-allow-subtree-collapse="true"][treestyletab-mode="horizontal"] .tab-icon,
+tabbrowser[treestyletab-twisty-style="adobe"][treestyletab-allow-subtree-collapse="true"][treestyletab-mode="vertical"]:not([treestyletab-appearance-inverted="true"]) .tab-icon {
+	margin-left: 6px;
+}
+tabbrowser[treestyletab-twisty-style="adobe"][treestyletab-allow-subtree-collapse="true"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tab-icon {
+	margin-right: 6px;
 }
 
 .treestyletab-twisty {
 	list-style-image: url("tree-twisty.png");
 	-moz-image-region: rect(0, 32px, 16px, 16px);
 }
+tabbrowser[treestyletab-twisty-style="adobe"] .treestyletab-twisty {
+	list-style-image: url("tree-twisty-adobe-l.png");
+}
+tabbrowser[treestyletab-twisty-style="adobe"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .treestyletab-twisty {
+	list-style-image: url("tree-twisty-adobe-r.png");
+}
+
 .tabbrowser-tab[treestyletab-subtree-collapsed="true"] .treestyletab-twisty {
 	-moz-image-region: rect(0, 16px, 16px, 0);
 }
-
 .tabbrowser-tab[treestyletab-twisty-hover="true"] .treestyletab-twisty {
 	-moz-image-region: rect(16px, 32px, 32px, 16px);
 }
 .tabbrowser-tab[treestyletab-subtree-collapsed="true"][treestyletab-twisty-hover="true"] .treestyletab-twisty {
 	-moz-image-region: rect(16px, 16px, 32px, 0);
 }
+
+
 
 .treestyletab-counter-container {
 	-moz-box-align: center;
