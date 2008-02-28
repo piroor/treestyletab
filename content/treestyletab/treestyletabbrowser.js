@@ -1992,8 +1992,10 @@ TreeStyleTabBrowser.prototype = {
 			!aParent ||
 			aChild == aParent ||
 			this.getParentTab(aChild) == aParent
-			)
+			) {
+			this.attachTabPostProcess(aChild, aParent);
 			return;
+		}
 
 		if (!aInfo) aInfo = {};
 
@@ -2072,6 +2074,15 @@ TreeStyleTabBrowser.prototype = {
 			this.updateTabsIndent([aChild]);
 			this.checkTabsIndentOverflow();
 		}
+
+		this.attachTabPostProcess(aChild, aParent);
+	},
+	attachTabPostProcess : function(aChild, aParent)
+	{
+		var self = this;
+		this._attachTabPostProcesses.forEach(function(aProcess) {
+			aProcess(aChild, aParent, self);
+		});
 	},
  
 	partTab : function(aChild, aDontUpdateIndent) 
@@ -2093,6 +2104,8 @@ TreeStyleTabBrowser.prototype = {
 			this.updateTabsIndent([aChild]);
 			this.checkTabsIndentOverflow();
 		}
+
+		this.attachTabPostProcess(aChild, null);
 	},
  
 	updateTabsIndent : function(aTabs, aLevel, aProp) 

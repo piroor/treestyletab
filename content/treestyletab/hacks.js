@@ -495,4 +495,20 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		);
 	}
 
+	// ColorfulTab
+	if ('clrtabsInit' in window) {
+		this.registerAttachTabPostProcess(function(aChild, aParent, aService) {
+			if (aChild && aParent) {
+				setColor(aChild, aService.SessionStore.getTabValue(aParent, 'tabClr'));
+			}
+			else if (aChild) {
+				aService.SessionStore.setTabValue(aChild, 'tabClr', '')
+				calcTabClr({
+					target : aChild,
+					originalTarget : aChild,
+				});
+			}
+		});
+	}
+
 };

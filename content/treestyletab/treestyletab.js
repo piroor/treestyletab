@@ -477,7 +477,7 @@ var TreeStyleTabService = {
 		this.setTreePref('enableSubtreeIndent', vertical);
 		this.setTreePref('allowSubtreeCollapseExpand', vertical);
 	},
- 	
+ 
 /* get tab(s) */ 
 	
 	getTabById : function(aId, aTabBrowserChildren) 
@@ -1189,7 +1189,7 @@ catch(e) {
 	},
    
 /* Event Handling */ 
-	 
+	
 	handleEvent : function(aEvent) 
 	{
 		switch (aEvent.type)
@@ -1438,7 +1438,13 @@ catch(e) {
 			(aCollapse ? 'collapse' : 'open' )
 		);
 	},
-  
+ 
+	registerAttachTabPostProcess : function(aProcess) 
+	{
+		this._attachTabPostProcesses.push(aProcess);
+	},
+	_attachTabPostProcesses : [],
+ 	 
 /* Pref Listener */ 
 	 
 	domain : 'extensions.treestyletab', 
