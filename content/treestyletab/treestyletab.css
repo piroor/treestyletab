@@ -111,3 +111,8 @@ image.tab-icon {
 	display: -moz-stack;
 	-moz-binding: url(treestyletab.xml#tab-icon);
 }
+
+/* for Tabbrowser Preferences */
+.tabs-left > .tabs-newbutton {
+	max-width: none !important;
+}
