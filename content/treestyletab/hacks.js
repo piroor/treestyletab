@@ -516,4 +516,11 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		});
 	}
 
+	// FLST
+	if ('flst' in window) {
+		TreeStyleTabService.registerTabFocusAllowance(function(aTabBrowser) {
+			return !aTabBrowser.treeStyleTab.getPref('extensions.flst.enabled');
+		});
+	}
+
 };
