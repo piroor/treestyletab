@@ -1,0 +1,115 @@
+<!ENTITY config.title        "树形标签设置">
+
+
+<!ENTITY config.tabs.appearance "外观">
+
+<!ENTITY config.tabbar.scroll.smooth "平滑滚动标签栏">
+
+<!ENTITY config.tabbar.position.caption "标签栏位置">
+<!ENTITY config.tabbar.position.left    "左侧">
+<!ENTITY config.tabbar.position.right   "右侧">
+<!ENTITY config.tabbar.position.top     "顶部 (Firefox 默认)">
+<!ENTITY config.tabbar.position.bottom  "底部">
+<!ENTITY config.tabbar.invertScrollbar  "在最左侧显示滚动条">
+<!ENTITY config.tabbar.invertUI         "反转标签外观">
+<!ENTITY config.enableSubtreeIndent         "缩进标签">
+<!ENTITY config.allowSubtreeCollapseExpand  "允许折叠/展开标签子树">
+<!ENTITY config.tabbar.autoHide.enabled     "自动隐藏标签栏">
+<!ENTITY config.tabbar.hideAlltabsButton    "显示 &quot;列出所有标签&quot; 按钮">
+
+<!ENTITY config.tabbar.style.caption "标签栏外观">
+<!ENTITY config.tabbar.style.default "简洁">
+<!ENTITY config.tabbar.style.vertigo "Vertigo">
+<!ENTITY config.tabbar.style.mixed   "混合">
+
+<!ENTITY config.twisty.style.caption "Tree twisties">
+<!ENTITY config.twisty.style.auto    "Auto">
+<!ENTITY config.twisty.style.none    "None">
+<!ENTITY config.twisty.style.retro   "Retro">
+<!ENTITY config.twisty.style.modern.black "Black Modern">
+<!ENTITY config.twisty.style.modern.white "White Modern">
+
+
+<!ENTITY config.tabs.menu "Menu">
+
+<!ENTITY config.show.tabContextMenu.caption "在标签的上下文菜单中添加以下项目">
+<!ENTITY config.show.openSelectionLinks "添加 &quot;在标签上打开选择链接&quot; 到上下文菜单">
+
+
+<!ENTITY config.tabs.tab "标签操作">
+
+<!ENTITY config.tabs.context.tab      "打开上下级相关标签">
+
+<!ENTITY config.link.caption           "链接">
+<!ENTITY config.openOuterLinkInNewTab  "在新标签中打开不同网站的链接">
+<!ENTITY config.openAnyLinkInNewTab    "在新标签中打开所有链接">
+
+<!ENTITY config.urlbar.caption                      "在定位栏中输入URI后的行为">
+<!ENTITY config.urlbar.loadDifferentDomainToNewTab  "如果是不同网站，在新标签中加载">
+<!ENTITY config.urlbar.loadDifferentDomainToNewTab.asChild  "作为当前标签的子标签">
+<!ENTITY config.urlbar.loadSameDomainToNewChildTab  "如果是相同网站，加载到新的子标签">
+
+<!ENTITY config.loadDroppedLinkToNewChildTab.caption "将链接或URL拖拽到现有标签后的行为">
+<!ENTITY config.loadDroppedLinkToNewChildTab.load    "在标签中加载链接 (Firefox 默认)">
+<!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "在此标签的新建子标签中打开链接">
+
+<!ENTITY config.openGroupBookmarkAsTabSubTree.caption "&quot;在标签中打开所有的&quot;书签文件夹">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree "在子树中打开 (推荐)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "在单独标签中打开">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.replace "将文件夹中所有标签置换为页面 (Firefox 默认)">
+
+<!ENTITY config.tabs.restriction.tab "打开标签而非窗口">
+
+<!ENTITY config.open_newwindow.caption "从任意网页链接上打开的新窗口">
+<!ENTITY config.open_newwindow.window  "在窗口中打开">
+<!ENTITY config.open_newwindow.tab     "在标签中打开 (Firefox 默认)">
+
+<!ENTITY config.jsopen.caption "从网页脚本上打开的新窗口">
+<!ENTITY config.jsopen.default "如果已指定宽度,高度等等，则在新窗口中打开 (Firefox 默认)">
+<!ENTITY config.jsopen.forcetab "在任何情况下在标签而非窗口中打开 (推荐)">
+
+
+<!ENTITY config.tabs.advanced "高级">
+
+<!ENTITY config.autoCollapseExpandSubTreeOnSelect "当标签被打开或获得焦点时，自动折叠无关的子树">
+<!ENTITY config.collapseExpandSubTree.dblclick "通过双击折叠/展开标签的子树">
+
+<!ENTITY config.autoExpandSubTreeOnAppendChild "当标签被插入子树时，自动展开子树">
+
+<!ENTITY config.attachChildrenToGrandParentOnRemoveTab "当父标签关闭时从树中释放子标签">
+
+<!ENTITY config.focusMode "用 Control(命令)-Tab聚焦到下个/上个标签，即便其不可见。">
+
+<!ENTITY config.insertNewChildAt.caption "新建子标签的插入位置">
+<!ENTITY config.insertNewChildAt.first "插入到子树顶部，成为首个子标签">
+<!ENTITY config.insertNewChildAt.last "添加到子树的最后">
+
+<!ENTITY config.autoHide.caption "自动隐藏标签栏">
+<!ENTITY config.autoHide.area.before "敏感区域:">
+<!ENTITY config.autoHide.area.after "个像素（距离窗口边缘）">
+<!ENTITY config.autoHide.delay.before "延迟:">
+<!ENTITY config.autoHide.delay.after "毫秒">
+
+
+
+
+
+<!ENTITY context.openSelectionLinks.label     "在标签中打开选择的链接">
+<!ENTITY context.openSelectionLinks.accesskey "l">
+
+<!ENTITY selection.removeTabSubTree.label     "关闭所选的树">
+<!ENTITY selection.removeTabSubTree.accesskey "s">
+<!ENTITY context.removeTabSubTree.label     "关闭此树">
+<!ENTITY context.removeTabSubTree.accesskey "s">
+<!ENTITY context.removeDescendantTabs.label     "关闭子标签">
+<!ENTITY context.removeDescendantTabs.accesskey "d">
+<!ENTITY context.collapseAllSubtree.label     "折叠所有树">
+<!ENTITY context.collapseAllSubtree.accesskey "c">
+<!ENTITY context.expandAllSubtree.label     "展开所有树">
+<!ENTITY context.expandAllSubtree.accesskey "e">
+<!ENTITY context.toggleAutoHide.label     "自动隐藏标签栏">
+<!ENTITY context.toggleAutoHide.accesskey "h">
+<!ENTITY context.toggleFixed.label     "修正标签栏宽度">
+<!ENTITY context.toggleFixed.accesskey "f">
+<!ENTITY context.tabbarPosition.label     "位置">
+<!ENTITY context.tabbarPosition.accesskey "p">
