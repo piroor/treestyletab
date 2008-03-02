@@ -113,6 +113,6 @@ image.tab-icon {
 }
 
 /* for Tabbrowser Preferences */
-.tabs-left > .tabs-newbutton {
+tabbrowser .tabs-newbutton {
 	max-width: none !important;
 }
