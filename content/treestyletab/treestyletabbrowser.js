@@ -541,7 +541,8 @@ TreeStyleTabBrowser.prototype = {
 		var allTabsButton = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-alltabs-button');
 
 		// Tab Mix Plus
-		var scrollFrame = document.getAnonymousElementByAttribute(b.mTabContainer, 'id', 'scroll-tabs-frame');
+		var scrollFrame = document.getAnonymousElementByAttribute(b.mTabContainer, 'id', 'scroll-tabs-frame') ||
+						document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-frame'); // 0.3.6.1 or later
 		var newTabBox = document.getAnonymousElementByAttribute(b.mTabContainer, 'id', 'tabs-newbutton-box');
 		var tabBarMode = this.getPref('extensions.tabmix.tabBarMode');
 
@@ -769,6 +770,14 @@ TreeStyleTabBrowser.prototype = {
 						break;
 
 					case 'extensions.treestyletab.twisty.style':
+						if (value == 'auto') {
+							if (document.documentElement.getAttribute('informationaltab-thumbnail-enabled') == 'true') {
+								value = 'retro';
+							}
+							else {
+								value = 'modern-black';
+							}
+						}
 						b.setAttribute(this.kTWISTY_STYLE, value);
 						break;
 

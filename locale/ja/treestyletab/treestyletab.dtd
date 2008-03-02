@@ -25,6 +25,7 @@
 <!ENTITY config.tabbar.style.mixed   "Mixed">
 
 <!ENTITY config.twisty.style.caption "つまみ">
+<!ENTITY config.twisty.style.auto    "自動">
 <!ENTITY config.twisty.style.none    "なし">
 <!ENTITY config.twisty.style.retro   "レトロ">
 <!ENTITY config.twisty.style.modern.black "モダン黒">

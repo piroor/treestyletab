@@ -18,6 +18,7 @@ Portions created by the Initial Developer are Copyright (C) 2007
 the Initial Developer. All Rights Reserved.
 
 Contributor(s): Godai71.Extenzilla <godai71.extenzilla@gmail.com>
+                http://www.extenzilla.org/scheda_estensione.php?id=749
 
 Alternatively, the contents of this file may be used under the terms of
 either the GNU General Public License Version 2 or later (the "GPL"), or

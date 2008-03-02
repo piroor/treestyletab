@@ -25,6 +25,7 @@
 <!ENTITY config.tabbar.style.mixed   "Mixed">
 
 <!ENTITY config.twisty.style.caption "Tree twisties">
+<!ENTITY config.twisty.style.auto    "Auto">
 <!ENTITY config.twisty.style.none    "None">
 <!ENTITY config.twisty.style.retro   "Retro">
 <!ENTITY config.twisty.style.modern.black "Black Modern">

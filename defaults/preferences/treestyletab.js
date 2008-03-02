@@ -24,7 +24,7 @@ pref("extensions.treestyletab.autoExpand.collapseFinally", false);
 pref("extensions.treestyletab.levelMargin",            12);
 // 0 = first child, 1 = last child
 pref("extensions.treestyletab.insertNewChildAt", 1);
-pref("extensions.treestyletab.twisty.style", "retro"); // none, retro, modern-white, modern-black
+pref("extensions.treestyletab.twisty.style", "auto"); // none, retro, modern-black, modern-white, auto
 
 pref("extensions.treestyletab.show.openSelectionLinks", true);
 pref("extensions.treestyletab.show.context-item-removeTabSubTree", true);
