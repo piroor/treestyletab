@@ -44,40 +44,7 @@
 		<preference id="extensions.treestyletab.twisty.style"
 			name="extensions.treestyletab.twisty.style"
 			type="string"/>
-		<preference id="extensions.treestyletab.show.openSelectionLinks"
-			name="extensions.treestyletab.show.openSelectionLinks"
-			type="bool"/>
-		<preference id="extensions.treestyletab.show.context-item-removeTabSubTree"
-			name="extensions.treestyletab.show.context-item-removeTabSubTree"
-			type="bool"/>
-		<preference id="extensions.treestyletab.show.context-item-removeDescendantTabs"
-			name="extensions.treestyletab.show.context-item-removeDescendantTabs"
-			type="bool"/>
-		<preference id="extensions.treestyletab.show.context-item-collapseAllSubtree"
-			name="extensions.treestyletab.show.context-item-collapseAllSubtree"
-			type="bool"/>
-		<preference id="extensions.treestyletab.show.context-item-expandAllSubtree"
-			name="extensions.treestyletab.show.context-item-expandAllSubtree"
-			type="bool"/>
-		<preference id="extensions.treestyletab.show.context-item-toggleAutoHide"
-			name="extensions.treestyletab.show.context-item-toggleAutoHide"
-			type="bool"/>
-		<preference id="extensions.treestyletab.show.context-item-toggleFixed"
-			name="extensions.treestyletab.show.context-item-toggleFixed"
-			type="bool"/>
-		<preference id="extensions.treestyletab.show.context-menu-tabbarPosition"
-			name="extensions.treestyletab.show.context-menu-tabbarPosition"
-			type="bool"/>
 	</preferences>
-
-
-	<tabbox orient="vertical">
-		<tabs>
-			<tab label="&config.tabs.tabbar.tab;"/>
-			<tab label="&config.tabs.menu.tab;"/>
-		</tabs>
-		<tabpanels>
-			<tabpanel orient="vertical">
 
 	<checkbox id="extensions.treestyletab.tabbar.scroll.smooth-check"
 		preference="extensions.treestyletab.tabbar.scroll.smooth"
@@ -179,10 +146,35 @@
 		</radiogroup>
 	</groupbox>
 
-			</tabpanel>
+</prefpane>
 
-
-			<tabpanel orient="vertical">
+<prefpane id="prefpane-menu" label="&config.tabs.menu;">
+	<preferences>
+		<preference id="extensions.treestyletab.show.openSelectionLinks"
+			name="extensions.treestyletab.show.openSelectionLinks"
+			type="bool"/>
+		<preference id="extensions.treestyletab.show.context-item-removeTabSubTree"
+			name="extensions.treestyletab.show.context-item-removeTabSubTree"
+			type="bool"/>
+		<preference id="extensions.treestyletab.show.context-item-removeDescendantTabs"
+			name="extensions.treestyletab.show.context-item-removeDescendantTabs"
+			type="bool"/>
+		<preference id="extensions.treestyletab.show.context-item-collapseAllSubtree"
+			name="extensions.treestyletab.show.context-item-collapseAllSubtree"
+			type="bool"/>
+		<preference id="extensions.treestyletab.show.context-item-expandAllSubtree"
+			name="extensions.treestyletab.show.context-item-expandAllSubtree"
+			type="bool"/>
+		<preference id="extensions.treestyletab.show.context-item-toggleAutoHide"
+			name="extensions.treestyletab.show.context-item-toggleAutoHide"
+			type="bool"/>
+		<preference id="extensions.treestyletab.show.context-item-toggleFixed"
+			name="extensions.treestyletab.show.context-item-toggleFixed"
+			type="bool"/>
+		<preference id="extensions.treestyletab.show.context-menu-tabbarPosition"
+			name="extensions.treestyletab.show.context-menu-tabbarPosition"
+			type="bool"/>
+	</preferences>
 
 	<groupbox orient="vertical">
 		<caption label="&config.show.tabContextMenu.caption;"/>
@@ -217,10 +209,6 @@
 	<checkbox id="extensions.treestyletab.show.openSelectionLinks-check"
 		preference="extensions.treestyletab.show.openSelectionLinks"
 		label="&config.show.openSelectionLinks;"/>
-
-			</tabpanel>
-		</tabpanels>
-	</tabbox>
 
 </prefpane>
 

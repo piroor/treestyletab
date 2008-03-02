@@ -3,8 +3,6 @@
 
 <!ENTITY config.tabs.appearance "Appearance">
 
-<!ENTITY config.tabs.tabbar.tab "Tab Bar">
-
 <!ENTITY config.tabbar.scroll.smooth "Scroll the tab bar smoothly">
 
 <!ENTITY config.tabbar.position.caption "Tab bar position">
@@ -31,7 +29,8 @@
 <!ENTITY config.twisty.style.modern.black "Black Modern">
 <!ENTITY config.twisty.style.modern.white "White Modern">
 
-<!ENTITY config.tabs.menu.tab "Menu">
+
+<!ENTITY config.tabs.menu "Menu">
 
 <!ENTITY config.show.tabContextMenu.caption "Add following items to the context menu on tabs">
 <!ENTITY config.show.openSelectionLinks "Add &quot;Open Selection Links in Tabs&quot; to the context menu">

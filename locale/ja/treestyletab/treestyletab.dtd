@@ -3,8 +3,6 @@
 
 <!ENTITY config.tabs.appearance "外観">
 
-<!ENTITY config.tabs.tabbar.tab "タブバー">
-
 <!ENTITY config.tabbar.scroll.smooth "タブバーをなめらかにスクロールする">
 
 <!ENTITY config.tabbar.position.caption "タブバーの表示位置">
@@ -31,7 +29,8 @@
 <!ENTITY config.twisty.style.modern.black "モダン黒">
 <!ENTITY config.twisty.style.modern.white "モダン白">
 
-<!ENTITY config.tabs.menu.tab "メニュー">
+
+<!ENTITY config.tabs.menu "メニュー">
 
 <!ENTITY config.show.tabContextMenu.caption "タブのコンテキストメニューに以下の項目を追加する">
 <!ENTITY config.show.openSelectionLinks "コンテキストメニューに「選択したリンクをすべてタブで開く」を加える">

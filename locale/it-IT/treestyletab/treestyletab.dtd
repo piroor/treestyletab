@@ -3,8 +3,6 @@
 
 <!ENTITY config.tabs.appearance "Aspetto">
 
-<!ENTITY config.tabs.tabbar.tab "Tab Bar">
-
 <!ENTITY config.tabbar.scroll.smooth "Scorri gradualmente la barra delle schede">
 
 <!ENTITY config.tabbar.position.caption "Posiziona barra delle schede">
@@ -31,7 +29,8 @@
 <!ENTITY config.twisty.style.modern.black "Black Modern">
 <!ENTITY config.twisty.style.modern.white "White Modern">
 
-<!ENTITY config.tabs.menu.tab "Menu">
+
+<!ENTITY config.tabs.menu "Menu">
 
 <!ENTITY config.show.tabContextMenu.caption "Voci da aggiungere al menu contestuale delle schede">
 <!ENTITY config.show.openSelectionLinks "Aggiungi &quot;Apri collegamenti selezionati in schede&quot; al menu contestuale">
