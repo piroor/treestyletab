@@ -50,7 +50,8 @@ tabbrowser[treestyletab-mode="vertical"] tabs[flowing] > * .tabs-frame /* Tab Mi
 	overflow-y: auto !important;
 }
 
-tabbrowser[treestyletab-mode="vertical"] .tabs-stack > * + * > hbox {
+tabbrowser[treestyletab-mode="vertical"] .tabs-stack > * + * > hbox,
+tabbrowser[treestyletab-mode="vertical"] tabs[flowing] > * .tabs-frame /* Tab Mix Plus */ {
 	-moz-box-flex: 1 !important;
 }
 

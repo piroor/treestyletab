@@ -383,12 +383,15 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 			)
 		);
 
-		eval('window.setMultibarAttribute = '+
-			window.setMultibarAttribute.toSource().replace(
-				/tabBar.lastChild/g,
-				'TreeStyleTabService.getLastVisibleTab($&)'
-			)
-		);
+		'setMultibarAttribute getMultiRowAttribute tabxTabClosed'.split(' ').forEach(function(aFunc) {
+			if (aFunc in window)
+				eval('window.'+aFunc+' = '+
+					window[aFunc].toSource().replace(
+						/(tabBar.lastChild)/g,
+						'TreeStyleTabService.getLastVisibleTab($1)'
+					)
+				);
+		});
 
 		eval('window.getRowHeight = '+
 			window.getRowHeight.toSource().replace(

@@ -537,8 +537,10 @@ TreeStyleTabBrowser.prototype = {
 			ref.parentNode.insertBefore(splitter, ref);
 		}
 
-		var scrollInnerBox = document.getAnonymousNodes(b.mTabContainer.mTabstrip._scrollbox)[0];
-		var allTabsButton = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-alltabs-button');
+		var scrollInnerBox = b.mTabContainer.mTabstrip._scrollbox ? document.getAnonymousNodes(b.mTabContainer.mTabstrip._scrollbox)[0] :
+				document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-frame'); // Tab Mix Plus
+		var allTabsButton = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-alltabs-button') ||
+				document.getAnonymousElementByAttribute(b.mTabContainer, 'anonid', 'alltabs-button'); // Tab Mix Plus
 
 		// Tab Mix Plus
 		var scrollFrame = document.getAnonymousElementByAttribute(b.mTabContainer, 'id', 'scroll-tabs-frame') ||

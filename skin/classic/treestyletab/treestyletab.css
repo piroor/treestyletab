@@ -121,6 +121,10 @@ tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"] {
 	-moz-border-right-colors: ThreeDLightShadow ThreeDHighlight !important;
 }
 
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab .tab-close-button {
+	margin-right: 0 !important;
+}
+
 tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab,
 tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab:not([selected="true"]) {
 	border-right: 2px solid !important;
