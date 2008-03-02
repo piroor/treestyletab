@@ -408,16 +408,18 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 			)
 		);
 
-		eval('TreeStyleTabBrowser.prototype.collapseExpandSubtree = '+
-			TreeStyleTabBrowser.prototype.collapseExpandSubtree.toSource().replace(
-				'})',
-				'tabBarScrollStatus(); $&'
-			)
-		);
+		TreeStyleTabService.registerCollapseExpandPostProcess(function() {
+			tabBarScrollStatus();
+		});
+
 		TreeStyleTabBrowser.prototype.isMultiRow = function()
 		{
 			return window.tabscroll == 2;
 		};
+
+		TreeStyleTabService.registerTabFocusAllowance(function(aTabBrowser) {
+			return aTabBrowser.treeStyleTab.getPref('extensions.tabmix.focusTab') == 2;
+		});
 
 		window.setTimeout(function() {
 			// correct broken appearance of the first tab

@@ -1133,7 +1133,13 @@ TreeStyleTabBrowser.prototype = {
 			nextFocusedTab = this.getNextSiblingTab(tab);
 		}
 
-		if (nextFocusedTab && b.selectedTab == tab)
+		if (
+			nextFocusedTab &&
+			b.selectedTab == tab &&
+			this._tabFocusAllowance.every(function(aFunc) {
+				return aFunc(b);
+			})
+			)
 			b.selectedTab = nextFocusedTab;
 
 		this.checkTabsIndentOverflow();

@@ -1445,6 +1445,18 @@ catch(e) {
 		this._attachTabPostProcesses.push(aProcess);
 	},
 	_attachTabPostProcesses : [],
+ 
+	registerTabFocusAllowance : function(aProcess) 
+	{
+		this._tabFocusAllowance.push(aProcess);
+	},
+	_tabFocusAllowance : [],
+ 
+	registerCollapseExpandPostProcess : function(aProcess) 
+	{
+		this._collapseExpandPostProcess.push(aProcess);
+	},
+	_collapseExpandPostProcess : [],
  	 
 /* Pref Listener */ 
 	 
