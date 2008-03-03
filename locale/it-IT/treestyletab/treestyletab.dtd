@@ -22,15 +22,15 @@
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.mixed   "Misto">
 
-<!ENTITY config.twisty.style.caption "Tree twisties">
-<!ENTITY config.twisty.style.auto    "Auto">
-<!ENTITY config.twisty.style.none    "None">
+<!ENTITY config.twisty.style.caption "Aspetto controlli contrazione/espansione sottoalberi">
+<!ENTITY config.twisty.style.auto    "Auto"><!-- not translated yet -->
+<!ENTITY config.twisty.style.none    "Nessuno">
 <!ENTITY config.twisty.style.retro   "Retro">
 <!ENTITY config.twisty.style.modern.black "Black Modern">
 <!ENTITY config.twisty.style.modern.white "White Modern">
 
 
-<!ENTITY config.tabs.menu "Menu">
+<!ENTITY config.tabs.menu "Menu contestuale">
 
 <!ENTITY config.show.tabContextMenu.caption "Voci da aggiungere al menu contestuale delle schede">
 <!ENTITY config.show.openSelectionLinks "Aggiungi &quot;Apri collegamenti selezionati in schede&quot; al menu contestuale">
