@@ -129,41 +129,53 @@ TreeStyleTabBrowser.prototype = {
 		eval('b.mTabContainer.'+selectNewTab+' = '+
 			b.mTabContainer[selectNewTab].toSource().replace(
 				'{',
-				<><![CDATA[
-					{
-						if (arguments[0].__treestyletab__preventSelect) {
-							arguments[0].__treestyletab__preventSelect = false;
-							return;
-						}
+				<><![CDATA[$&
+					if (arguments[0].__treestyletab__preventSelect) {
+						arguments[0].__treestyletab__preventSelect = false;
+						return;
+					}
 				]]></>
+			)
+		);
+
+		eval('b.mTabContainer.adjustTabstrip = '+
+			b.mTabContainer.adjustTabstrip.toSource().replace(
+				/(\})(\)?)$/,
+				<><![CDATA[
+					window.setTimeout(function(aSelf) {
+						var b = TreeStyleTabService.getTabBrowserFromChild(aSelf);
+						Array.prototype.slice.call(b.mTabContainer.childNodes).forEach(function(aTab) {
+							b.treeStyleTab.initTabContentsOrder(aTab);
+						});
+					}, 0, this);
+				$1$2]]></>
 			)
 		);
 
 		eval('b.mTabContainer.advanceSelectedTab = '+
 			b.mTabContainer.advanceSelectedTab.toSource().replace(
 				'{',
-				<><![CDATA[
-					{
-						if (TreeStyleTabService.getTreePref('focusMode') == TreeStyleTabService.kFOCUS_VISIBLE) {
-							(function(aDir, aWrap, aSelf) {
-								var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(aSelf).treeStyleTab;
-								var nextTab = (aDir < 0) ? treeStyleTab.getPreviousVisibleTab(aSelf.selectedItem) : treeStyleTab.getNextVisibleTab(aSelf.selectedItem) ;
-								if (!nextTab && aWrap) {
-									var xpathResult = TreeStyleTabService.evaluateXPath(
-											'child::xul:tab[not(@'+TreeStyleTabService.kCOLLAPSED+'="true")]',
-											aSelf
-										);
-									nextTab = xpathResult.snapshotItem(aDir < 0 ? xpathResult.snapshotLength-1 : 0 );
-								}
-								if (nextTab && nextTab != aSelf.selectedItem) {
-									if ('_selectNewTab' in aSelf)
-										aSelf._selectNewTab(nextTab, aDir, aWrap); // Fx 3
-									else
-										aSelf.selectNewTab(nextTab, aDir, aWrap); // Fx 2
-								}
-							})(arguments[0], arguments[1], this);
-							return;
-						}
+				<><![CDATA[$&
+					if (TreeStyleTabService.getTreePref('focusMode') == TreeStyleTabService.kFOCUS_VISIBLE) {
+						(function(aDir, aWrap, aSelf) {
+							var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(aSelf).treeStyleTab;
+							var nextTab = (aDir < 0) ? treeStyleTab.getPreviousVisibleTab(aSelf.selectedItem) : treeStyleTab.getNextVisibleTab(aSelf.selectedItem) ;
+							if (!nextTab && aWrap) {
+								var xpathResult = TreeStyleTabService.evaluateXPath(
+										'child::xul:tab[not(@'+TreeStyleTabService.kCOLLAPSED+'="true")]',
+										aSelf
+									);
+								nextTab = xpathResult.snapshotItem(aDir < 0 ? xpathResult.snapshotLength-1 : 0 );
+							}
+							if (nextTab && nextTab != aSelf.selectedItem) {
+								if ('_selectNewTab' in aSelf)
+									aSelf._selectNewTab(nextTab, aDir, aWrap); // Fx 3
+								else
+									aSelf.selectNewTab(nextTab, aDir, aWrap); // Fx 2
+							}
+						})(arguments[0], arguments[1], this);
+						return;
+					}
 				]]></>
 			)
 		);
@@ -171,13 +183,12 @@ TreeStyleTabBrowser.prototype = {
 		eval('b.mTabContainer._handleTabSelect = '+
 			b.mTabContainer._handleTabSelect.toSource().replace(
 				'{',
-				<><![CDATA[
-					{
-						var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;
-						if (!treeStyleTab.isTabInViewport(this.selectedItem)) {
-							treeStyleTab.scrollToTab(this.selectedItem);
-							return;
-						}
+				<><![CDATA[$&
+					var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;
+					if (!treeStyleTab.isTabInViewport(this.selectedItem)) {
+						treeStyleTab.scrollToTab(this.selectedItem);
+						return;
+					}
 				]]></>
 			)
 		);
@@ -218,7 +229,7 @@ TreeStyleTabBrowser.prototype = {
 					if (descendant.length) {
 						nextTab = descendant[descendant.length-1];
 					}
-					this.moveTabTo(]]></>
+					$&]]></>
 			).replace(
 				'this.moveTabToStart();',
 				<><![CDATA[
@@ -229,7 +240,7 @@ TreeStyleTabBrowser.prototype = {
 						this.mCurrentTab.focus();
 					}
 					else {
-						this.moveTabToStart();
+						$&
 					}
 					this.treeStyleTab.internallyTabMoving = false;
 				]]></>
@@ -254,7 +265,7 @@ TreeStyleTabBrowser.prototype = {
 						this.mCurrentTab.focus();
 					}
 					else {
-						this.moveTabToEnd();
+						$&
 					}
 					this.treeStyleTab.internallyTabMoving = false;
 				]]></>
@@ -267,7 +278,7 @@ TreeStyleTabBrowser.prototype = {
 				<><![CDATA[
 					if (!this.tabbrowser.treeStyleTab.isVertical ||
 						!this.tabbrowser.treeStyleTab.moveTabLevel(aEvent)) {
-						this.tabbrowser.moveTabOver(aEvent);
+						$&
 					}
 				]]></>
 			).replace(
@@ -275,7 +286,7 @@ TreeStyleTabBrowser.prototype = {
 				<><![CDATA[
 					if (this.tabbrowser.treeStyleTab.isVertical ||
 						!this.tabbrowser.treeStyleTab.moveTabLevel(aEvent)) {
-						this.tabbrowser.moveTabForward();
+						$&
 					}
 				]]></>
 			).replace(
@@ -283,7 +294,7 @@ TreeStyleTabBrowser.prototype = {
 				<><![CDATA[
 					if (this.tabbrowser.treeStyleTab.isVertical ||
 						!this.tabbrowser.treeStyleTab.moveTabLevel(aEvent)) {
-						this.tabbrowser.moveTabBackward();
+						$&
 					}
 				]]></>
 			)
@@ -295,13 +306,13 @@ TreeStyleTabBrowser.prototype = {
 				<><![CDATA[
 					if (this.treeStyleTab.readyToAttachNewTabGroup)
 						TreeStyleTabService.readyToOpenChildTab(firstTabAdded || this.selectedTab, true);
-					var tabNum = ]]></>
+					$&]]></>
 			).replace(
 				'if (!aLoadInBackground)',
 				<><![CDATA[
 					if (TreeStyleTabService.checkToOpenChildTab(this))
 						TreeStyleTabService.stopToOpenChildTab(this);
-					if (!aLoadInBackground)]]></>
+					$&]]></>
 			)
 		);
 
