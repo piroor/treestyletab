@@ -116,3 +116,11 @@ image.tab-icon {
 tabbrowser .tabs-newbutton {
 	max-width: none !important;
 }
+
+/* for All-in-One Sidebar */
+#aiostbx-tableft-toolbox:not([incustomisemode="true"]) > toolbar[currentset="__empty"],
+#aiostbx-tableft-toolbox:not([incustomisemode="true"]) > toolbar:not([currentset]),
+#aiostbx-tabright-toolbox:not([incustomisemode="true"]) > toolbar[currentset="__empty"],
+#aiostbx-tabright-toolbox:not([incustomisemode="true"]) > toolbar:not([currentset]) {
+	visibility: collapse;
+}

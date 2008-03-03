@@ -548,6 +548,10 @@ TreeStyleTabBrowser.prototype = {
 		var newTabBox = document.getAnonymousElementByAttribute(b.mTabContainer, 'id', 'tabs-newbutton-box');
 		var tabBarMode = this.getPref('extensions.tabmix.tabBarMode');
 
+		// All-in-One Sidebar
+		var toolboxContainer = document.getAnonymousElementByAttribute(b.mStrip, 'anonid', 'aiostbx-toolbox-tableft');
+		if (toolboxContainer) toolboxContainer = toolboxContainer.parentNode;
+
 		this.tabbarResizing = false;
 
 		if (pos & this.kTABBAR_VERTICAL) {
@@ -576,6 +580,9 @@ TreeStyleTabBrowser.prototype = {
 				if (tabBarMode == 2)
 					this.setPref('extensions.tabmix.tabBarMode', 1);
 			}
+
+			if (toolboxContainer)
+				toolboxContainer.orient = 'vertical';
 
 			b.mStrip.removeAttribute('width');
 			b.mStrip.setAttribute('width', this.getTreePref('tabbar.width'));
@@ -640,6 +647,9 @@ TreeStyleTabBrowser.prototype = {
 					scrollFrame.orient = 'horizontal';
 				newTabBox.orient = 'vertical';
 			}
+
+			if (toolboxContainer)
+				toolboxContainer.orient = 'horizontal';
 
 			b.mStrip.removeAttribute('width');
 			b.mPanelContainer.removeAttribute('width');
