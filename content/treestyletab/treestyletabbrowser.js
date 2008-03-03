@@ -43,7 +43,7 @@ TreeStyleTabBrowser.prototype = {
 /* utils */ 
 	
 /* get tab contents */ 
-	
+	 
 	getTabLabel : function(aTab) 
 	{
 		var label = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-text-container') || // Tab Mix Plus
@@ -85,7 +85,7 @@ TreeStyleTabBrowser.prototype = {
 	},
   
 /* initialize */ 
-	
+	 
 	init : function() 
 	{
 		var b = this.mTabBrowser;
@@ -142,12 +142,8 @@ TreeStyleTabBrowser.prototype = {
 			b.mTabContainer.adjustTabstrip.toSource().replace(
 				/(\})(\)?)$/,
 				<><![CDATA[
-					window.setTimeout(function(aSelf) {
-						var b = TreeStyleTabService.getTabBrowserFromChild(aSelf);
-						Array.prototype.slice.call(b.mTabContainer.childNodes).forEach(function(aTab) {
-							b.treeStyleTab.initTabContentsOrder(aTab);
-						});
-					}, 0, this);
+					var b = TreeStyleTabService.getTabBrowserFromChild(this);
+					b.treeStyleTab.updateInvertedTabContentsOrder(true);
 				$1$2]]></>
 			)
 		);
@@ -520,7 +516,25 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 	},
-  
+ 
+	updateInvertedTabContentsOrder : function(aAll) 
+	{
+		if (this.getTreePref('tabbar.position') != 'right' ||
+			!this.getTreePref('tabbar.invertUI')) return;
+
+		window.setTimeout(function(aSelf) {
+			var b = aSelf.mTabBrowser;
+			if (aAll) {
+				Array.prototype.slice.call(b.mTabContainer.childNodes).forEach(function(aTab) {
+					aSelf.initTabContentsOrder(aTab);
+				});
+			}
+			else {
+				aSelf.initTabContentsOrder(b.selectedTab);
+			}
+		}, 0, this);
+	},
+ 	 
 	initTabbar : function(aPosition) 
 	{
 		var b = this.mTabBrowser;
@@ -735,7 +749,7 @@ TreeStyleTabBrowser.prototype = {
 	},
    
 /* nsIObserver */ 
-	 
+	
 	domain : 'extensions.treestyletab', 
  
 	observe : function(aSubject, aTopic, aData) 
@@ -861,7 +875,7 @@ TreeStyleTabBrowser.prototype = {
 	},
   
 /* DOM Event Handling */ 
-	 
+	
 	handleEvent : function(aEvent) 
 	{
 		switch (aEvent.type)
@@ -1395,7 +1409,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		this.duplicatedIdsHash = {};
 	},
- 	 
+  
 	onTabSelect : function(aEvent) 
 	{
 		var b   = this.mTabBrowser;
@@ -1416,6 +1430,8 @@ TreeStyleTabBrowser.prototype = {
 
 		if (this.autoHideEnabled && this.tabbarShown)
 			this.redrawContentArea();
+
+		this.updateInvertedTabContentsOrder();
 	},
  
 	onTabClick : function(aEvent) 
