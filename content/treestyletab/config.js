@@ -13,7 +13,28 @@ function initTabPane()
 
 	gGroupBookmarkRadio = document.getElementById('openGroupBookmarkAsTabSubTree-radiogroup');
 	gGroupBookmarkTree = document.getElementById('extensions.treestyletab.openGroupBookmarkAsTabSubTree');
-	gGroupBookmarkReplace = document.getElementById('browser.tabs.loadFolderAndReplace');
+
+
+	var Prefs = Components.classes['@mozilla.org/preferences;1']
+			.getService(Components.interfaces.nsIPrefBranch);
+
+	var restrictionKey = 'browser.link.open_newwindow.restriction';
+	var restriction = document.getElementById(restrictionKey);
+	try {
+		restriction.value = Prefs.getIntPref(restrictionKey);
+	}
+	catch(e) {
+		Prefs.setIntPref(restrictionKey, parseInt(restriction.value));
+	}
+
+	var bookmarkReplaceKey = 'browser.tabs.loadFolderAndReplace';
+	gGroupBookmarkReplace = document.getElementById(bookmarkReplaceKey);
+	try {
+		gGroupBookmarkReplace.value = Prefs.getBoolPref(bookmarkReplaceKey);
+	}
+	catch(e) {
+		Prefs.setBoolPref(bookmarkReplaceKey, gGroupBookmarkReplace.value != 'false');
+	}
 
 	gGroupBookmarkRadio.value =
 		gGroupBookmarkTree.value && !gGroupBookmarkReplace.value ? 'subtree' :

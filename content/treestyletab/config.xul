@@ -237,13 +237,13 @@
 			name="extensions.treestyletab.openGroupBookmarkAsTabSubTree"
 			type="bool"/>
 		<preference id="browser.tabs.loadFolderAndReplace"
-			name="browser.tabs.loadFolderAndReplace"
+			name="browser.tabs.loadFolderAndReplace.override"
 			type="bool"/>
 		<preference id="browser.link.open_newwindow"
 			name="browser.link.open_newwindow"
 			type="int"/>
 		<preference id="browser.link.open_newwindow.restriction"
-			name="browser.link.open_newwindow.restriction"
+			name="browser.link.open_newwindow.restriction.override"
 			type="int"/>
 	</preferences>
 

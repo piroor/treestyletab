@@ -790,7 +790,10 @@ var TreeStyleTabService = {
 		this.overrideGlobalFunctions();
 		this.initTabBrowser(gBrowser);
 		this.overrideExtensionsOnInitAfter(); // hacks.js
+
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.levelMargin');
+		this.observe(null, 'nsPref:changed', 'browser.link.open_newwindow.restriction.override');
+		this.observe(null, 'nsPref:changed', 'browser.tabs.loadFolderAndReplace.override');
 	},
 	 
 	initTabBrowser : function(aTabBrowser) 
@@ -1460,7 +1463,11 @@ catch(e) {
  	 
 /* Pref Listener */ 
 	 
-	domain : 'extensions.treestyletab', 
+	domains : [ 
+		'extensions.treestyletab',
+		'browser.link.open_newwindow.restriction.override',
+		'browser.tabs.loadFolderAndReplace.override'
+	],
  
 	observe : function(aSubject, aTopic, aPrefName) 
 	{
@@ -1472,6 +1479,12 @@ catch(e) {
 			case 'extensions.treestyletab.levelMargin':
 				this.baseLebelMargin = value;
 				this.ObserverService.notifyObservers(null, 'TreeStyleTab:levelMarginModified', value);
+				break;
+
+			case 'browser.link.open_newwindow.restriction.override':
+			case 'browser.tabs.loadFolderAndReplace.override':
+				var target = aPrefName.replace('.override', '');
+				this.setPref(target, this.getPref(aPrefName));
 				break;
 
 			default:

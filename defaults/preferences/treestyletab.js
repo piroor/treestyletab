@@ -54,8 +54,8 @@ pref("extensions.treestyletab.autoAttachNewTabsAsChildren", true);
 pref("extensions.treestyletab.focusMode", 1);
 
 
-pref("browser.link.open_newwindow.restriction", 0);
-pref("browser.tabs.loadFolderAndReplace", false);
+pref("browser.link.open_newwindow.restriction.override", 0);
+pref("browser.tabs.loadFolderAndReplace.override", false);
 
 
 pref("extensions.multipletab.show.multipletab-selection-item-removeTabSubTree", true);
