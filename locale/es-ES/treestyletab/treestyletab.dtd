@@ -1,0 +1,115 @@
+<!ENTITY config.title        "Configuración de Tree Style Tab (Pestañas estilo árbol)">
+
+
+<!ENTITY config.tabs.appearance "Apariencia">
+
+<!ENTITY config.tabbar.scroll.smooth "Desplazar la barra de pestañas suavemente">
+
+<!ENTITY config.tabbar.position.caption "Posición de la barra de pestañas">
+<!ENTITY config.tabbar.position.left    "Lado izquierdo">
+<!ENTITY config.tabbar.position.right   "Lado derecho">
+<!ENTITY config.tabbar.position.top     "Encima (Predeterminado en Firefox)">
+<!ENTITY config.tabbar.position.bottom  "Debajo">
+<!ENTITY config.tabbar.invertScrollbar  "Mostrar barra de desplazamiento a la izquierda">
+<!ENTITY config.tabbar.invertUI         "Invertir apariencia de pestaña">
+<!ENTITY config.enableSubtreeIndent         "Añadir margen a las pestañas">
+<!ENTITY config.allowSubtreeCollapseExpand  "Permitir colapsar/expandir los sub-árboles de las pestañas">
+<!ENTITY config.tabbar.autoHide.enabled     "Auto-ocultar la barra de pestañas">
+<!ENTITY config.tabbar.hideAlltabsButton    "Mostrar el botón &quot;Listar todas las pestañas&quot;">
+
+<!ENTITY config.tabbar.style.caption "Apariencia de la barra de pestañas">
+<!ENTITY config.tabbar.style.default "Plano">
+<!ENTITY config.tabbar.style.vertigo "Vértigo">
+<!ENTITY config.tabbar.style.mixed   "Mezclado">
+
+<!ENTITY config.twisty.style.caption "Estilo del botón de colapsar/expandir">
+<!ENTITY config.twisty.style.auto    "Automático">
+<!ENTITY config.twisty.style.none    "Ninguno">
+<!ENTITY config.twisty.style.retro   "Retro">
+<!ENTITY config.twisty.style.modern.black "Negro moderno">
+<!ENTITY config.twisty.style.modern.white "Blanco moderno">
+
+
+<!ENTITY config.tabs.menu "Menú">
+
+<!ENTITY config.show.tabContextMenu.caption "Añadir los siguientes items al menú contextual de las pestañas">
+<!ENTITY config.show.openSelectionLinks "Añadir &quot;Abrir selección de enlaces en pestañas&quot; al menú contextual">
+
+
+<!ENTITY config.tabs.tab "Operaciones">
+
+<!ENTITY config.tabs.context.tab      "Abrir pestañas contextualmente">
+
+<!ENTITY config.link.caption           "Enlaces">
+<!ENTITY config.openOuterLinkInNewTab  "Abrir enlaces a un diferente sitio en una nueva pestaña">
+<!ENTITY config.openAnyLinkInNewTab    "Abrir cualquier enlace en una nueva pestaña">
+
+<!ENTITY config.urlbar.caption                      "Acción al ingresar una URI a la barra de ubicación">
+<!ENTITY config.urlbar.loadDifferentDomainToNewTab  "Cargar en una nueva pestaña si es un sitio diferente al actual">
+<!ENTITY config.urlbar.loadDifferentDomainToNewTab.asChild  "como hija de la pestaña actual">
+<!ENTITY config.urlbar.loadSameDomainToNewChildTab  "Cargar en una nueva hija si pertenece al mismo sitio">
+
+<!ENTITY config.loadDroppedLinkToNewChildTab.caption "Acción para arrastrar y soltar de enlaces or URIs en pestañas existentes">
+<!ENTITY config.loadDroppedLinkToNewChildTab.load    "Cargar enlace dentro de una nueva pestaña (Predeterminado en Firefox)">
+<!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "Abrir enlace como hija de la pestaña actual">
+
+<!ENTITY config.openGroupBookmarkAsTabSubTree.caption "&quot;Abrir todos en pestañas&quot; desde carpetas de marcadores">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree "Abrir como un sub-árbol (Recomendado)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "Abrir como pestañas separadas">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.replace "Remplazar todas las pestañas con las páginas en la carpeta (Predeterminado en Firefox)">
+
+<!ENTITY config.tabs.restriction.tab "Abrir pestañas en vez de ventanas">
+
+<!ENTITY config.open_newwindow.caption "Nuevas ventanas abiertas desde enlaces inesperadamente">
+<!ENTITY config.open_newwindow.window  "Abrir como una ventana">
+<!ENTITY config.open_newwindow.tab     "Abrir como pestaña (Predeterminado en Firefox)">
+
+<!ENTITY config.jsopen.caption "Nuevas ventanas abiertas desde Scripts">
+<!ENTITY config.jsopen.default "Abrir como ventana cuando contienen un ancho o altura especial. (Predeterminado en Firefox)">
+<!ENTITY config.jsopen.forcetab "Abrir como pestañas en ves de ventanas (Recomendado)">
+
+
+<!ENTITY config.tabs.advanced "Avanzado">
+
+<!ENTITY config.autoCollapseExpandSubTreeOnSelect "Colapsar otros árboles automáticamente cuando una pestaña es abierta o seleccionada">
+<!ENTITY config.collapseExpandSubTree.dblclick "Colapsar/Expandir sub-árboles de la pestaña al hacer doble-click">
+
+<!ENTITY config.autoExpandSubTreeOnAppendChild "Expandir sub-árboles automáticamente cuando una pestaña es insertada dentro del sub-árbol">
+
+<!ENTITY config.attachChildrenToGrandParentOnRemoveTab "Liberar las pestañas hijas del árbol cuando el árbol es cerrado">
+
+<!ENTITY config.focusMode "Seleccionar la próxima/anterior pestaña aunque no este visible, cuando se presiona Control(Comando)-Tab">
+
+<!ENTITY config.insertNewChildAt.caption "Posición de inserción de nuevas pestañas hijas">
+<!ENTITY config.insertNewChildAt.first "Insertar arriba del todo en el árbol">
+<!ENTITY config.insertNewChildAt.last "Insertar abajo del todo en el árbol">
+
+<!ENTITY config.autoHide.caption "Auto-ocultar la barra de pestañas">
+<!ENTITY config.autoHide.area.before "Área sensible:">
+<!ENTITY config.autoHide.area.after "pixeles del borde de la ventana">
+<!ENTITY config.autoHide.delay.before "Retraso:">
+<!ENTITY config.autoHide.delay.after "mseg.">
+
+
+
+
+
+<!ENTITY context.openSelectionLinks.label     "Abrir selección de enlaces en pestañas">
+<!ENTITY context.openSelectionLinks.accesskey "l">
+
+<!ENTITY selection.removeTabSubTree.label     "Cerrar árboles seleccionados">
+<!ENTITY selection.removeTabSubTree.accesskey "s">
+<!ENTITY context.removeTabSubTree.label     "Cerrar este árbol">
+<!ENTITY context.removeTabSubTree.accesskey "s">
+<!ENTITY context.removeDescendantTabs.label     "Cerrar hija">
+<!ENTITY context.removeDescendantTabs.accesskey "d">
+<!ENTITY context.collapseAllSubtree.label     "Colapsar todos los árboles">
+<!ENTITY context.collapseAllSubtree.accesskey "c">
+<!ENTITY context.expandAllSubtree.label     "Expandir todos los árboles">
+<!ENTITY context.expandAllSubtree.accesskey "e">
+<!ENTITY context.toggleAutoHide.label     "Auto-ocultar la barra de pestañas">
+<!ENTITY context.toggleAutoHide.accesskey "h">
+<!ENTITY context.toggleFixed.label     "Anclar la barra de pestañas">
+<!ENTITY context.toggleFixed.accesskey "f">
+<!ENTITY context.tabbarPosition.label     "Posición">
+<!ENTITY context.tabbarPosition.accesskey "p">

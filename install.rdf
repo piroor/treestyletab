@@ -13,6 +13,7 @@
                    em:optionsURL="chrome://treestyletab/content/config.xul">
   <em:translator>Godai71.Extenzilla (it-IT locale)</em:translator>
   <em:translator>Fatiaomao (zh-CN locale)</em:translator>
+  <em:translator>tito (es-ES locale)</em:translator>
 
 
     <em:updateURL>http://piro.sakura.ne.jp/xul/update.rdf</em:updateURL>
@@ -41,6 +42,12 @@
       <RDF:Description em:locale="zh-CN"
                        em:name="Tree Style Tab"
                        em:description="以树的形式显示标签。"
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"/>
+    </em:localized>
+    <em:localized>
+      <RDF:Description em:locale="es-ES"
+                       em:name="Tree Style Tab (Pestañas estilo árbol)"
+                       em:description="Muesta las pestañas en vista de árbol"
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"/>
     </em:localized>
 
