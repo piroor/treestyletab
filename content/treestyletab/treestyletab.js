@@ -1058,7 +1058,7 @@ catch(e) {
 								if (!('TMP_contentAreaClick' in window) && // do nothing for Tab Mix Plus
 									TreeStyleTabService.checkToOpenChildTab()) {
 									TreeStyleTabService.stopToOpenChildTab();
-									urlSecurityCheck(href, linkNode.ownerDocument.location.href);
+									urlSecurityCheck(href, 'nodePrincipal' in linkNode.ownerDocument ? linkNode.ownerDocument.nodePrincipal : linkNode.ownerDocument.location.href );
 									var postData = {};
 									href = getShortcutOrURI(href, postData);
 									if (!href) return false;
