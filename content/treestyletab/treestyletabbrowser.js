@@ -776,9 +776,9 @@ TreeStyleTabBrowser.prototype = {
 				switch (aData)
 				{
 					case 'extensions.treestyletab.tabbar.position':
-						if (value != 'left' && value != 'right') {
-							this.endAutoHide();
-						}
+//						if (value != 'left' && value != 'right') {
+//							this.endAutoHide();
+//						}
 						this.initTabbar();
 						tabs.forEach(function(aTab) {
 							self.initTabAttributes(aTab);
@@ -851,7 +851,7 @@ TreeStyleTabBrowser.prototype = {
 
 					case 'extensions.treestyletab.tabbar.autoHide.enabled':
 						var pos = this.mTabBrowser.getAttribute(this.kTABBAR_POSITION);
-						if (value && (pos == 'left' || pos == 'right'))
+						if (value/* && (pos == 'left' || pos == 'right')*/)
 							this.startAutoHide();
 						else
 							this.endAutoHide();
@@ -1555,8 +1555,8 @@ TreeStyleTabBrowser.prototype = {
 			XPathResult.FIRST_ORDERED_NODE_TYPE
 		).singleNodeValue;
 		var pos = b.getAttribute(this.kTABBAR_POSITION);
-		if (this.getTreePref('show.'+this.kMENUITEM_AUTOHIDE) &&
-			(pos == 'left' || pos == 'right')) {
+		if (this.getTreePref('show.'+this.kMENUITEM_AUTOHIDE)/* &&
+			(pos == 'left' || pos == 'right')*/) {
 			autohide.removeAttribute('hidden');
 			if (this.getTreePref('tabbar.autoHide.enabled'))
 				autohide.setAttribute('checked', true);

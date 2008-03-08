@@ -99,12 +99,12 @@
 				label="&config.allowSubtreeCollapseExpand;"/>
 		</hbox>
 		<hbox align="center">
-			<checkbox id="extensions.treestyletab.enableSubtreeIndent-check"
-				preference="extensions.treestyletab.enableSubtreeIndent"
-				label="&config.enableSubtreeIndent;"/>
 			<checkbox id="extensions.treestyletab.tabbar.autoHide.enabled-check"
 				preference="extensions.treestyletab.tabbar.autoHide.enabled"
 				label="&config.tabbar.autoHide.enabled;"/>
+			<checkbox id="extensions.treestyletab.enableSubtreeIndent-check"
+				preference="extensions.treestyletab.enableSubtreeIndent"
+				label="&config.enableSubtreeIndent;"/>
 			<checkbox id="extensions.treestyletab.tabbar.hideAlltabsButton-check"
 				preference="extensions.treestyletab.tabbar.hideAlltabsButton"
 				label="&config.tabbar.hideAlltabsButton;"/>

@@ -68,7 +68,7 @@ function onChangeTabbarPosition(aOnChange)
 
 	var indentCheck   = document.getElementById('extensions.treestyletab.enableSubtreeIndent-check');
 	var collapseCheck = document.getElementById('extensions.treestyletab.allowSubtreeCollapseExpand-check');
-	var autoHideCheck = document.getElementById('extensions.treestyletab.tabbar.autoHide.enabled-check');
+//	var autoHideCheck = document.getElementById('extensions.treestyletab.tabbar.autoHide.enabled-check');
 	var hideAllTabsCheck = document.getElementById('extensions.treestyletab.tabbar.hideAlltabsButton-check');
 
 	if (aOnChange) {
@@ -77,12 +77,12 @@ function onChangeTabbarPosition(aOnChange)
 	}
 	if (pos == 'left' || pos == 'right') {
 		indentCheck.setAttribute('collapsed', true);
-		autoHideCheck.removeAttribute('collapsed');
+//		autoHideCheck.removeAttribute('collapsed');
 		hideAllTabsCheck.removeAttribute('collapsed');
 	}
 	else {
 		indentCheck.removeAttribute('collapsed');
-		autoHideCheck.setAttribute('collapsed', true);
+//		autoHideCheck.setAttribute('collapsed', true);
 		hideAllTabsCheck.setAttribute('collapsed', true);
 	}
 
