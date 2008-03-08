@@ -779,6 +779,7 @@ TreeStyleTabBrowser.prototype = {
 //						if (value != 'left' && value != 'right') {
 //							this.endAutoHide();
 //						}
+						if (this.autoHideEnabled && this.tabbarShown) this.hideTabbar();
 						this.initTabbar();
 						tabs.forEach(function(aTab) {
 							self.initTabAttributes(aTab);
@@ -787,6 +788,7 @@ TreeStyleTabBrowser.prototype = {
 						tabs.forEach(function(aTab) {
 							self.initTabContents(aTab);
 						});
+						if (this.autoHideEnabled) this.showTabbar();
 						break;
 
 					case 'extensions.treestyletab.tabbar.invertUI':
@@ -2716,7 +2718,7 @@ TreeStyleTabBrowser.prototype = {
 				);
 
 		if (this.tabbarShown &&
-			this.showHideTabbarReason == this.kSHOWN_BY_MOUSEMOVE &&
+			this.showHideTabbarReason != this.kSHOWN_BY_SHORTCUT &&
 			(
 				pos == 'left' ?
 					(aEvent.screenX > b.mCurrentBrowser.boxObject.screenX + this.areaPadding) :
