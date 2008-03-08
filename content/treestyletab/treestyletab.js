@@ -1317,37 +1317,6 @@ catch(e) {
 		var shown  = sv.tabbarShown;
 
 		sv.hideTabbar(!switchTabAction);
-
-		// if this even hides the popup, re-dispatch a new event for other features.
-		if (shown &&
-			!sv.tabbarShown &&
-			!switchTabAction &&
-			aEvent && aEvent.type == 'keypress') {
-			var event = document.createEvent('KeyEvents');
-			event.initKeyEvent(
-				aEvent.type,
-				aEvent.canBubble,
-				aEvent.cancelable,
-				aEvent.view,
-				aEvent.ctrlKey,
-				aEvent.altKey,
-				aEvent.shiftKey,
-				aEvent.metaKey,
-				aEvent.keyCode,
-				aEvent.charCode
-			);
-			var target;
-			try {
-				target = aEvent.originalTarget;
-			}
-			catch(e) {
-			}
-			if (!target) target = aEvent.target;
-			target.dispatchEvent(event);
-
-			aEvent.preventDefault();
-			aEvent.stopPropagation();
-		}
 	},
  
 	keyEventListening : false, 
