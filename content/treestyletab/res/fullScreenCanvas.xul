@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
-<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-         xmlns:html="http://www.w3.org/1999/xhtml">
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 <script type="application/x-javascript"><![CDATA[
 
 window.addEventListener('DOMContentLoaded', function() {
@@ -30,6 +29,11 @@ window.addEventListener('DOMContentLoaded', function() {
 			var h = window.innerHeight;
 			canvas.style.width = (canvas.width = w)+'px';
 			canvas.style.height = (canvas.height = h)+'px';
+			var frame = this.frame;
+			if (frame) {
+				frame.style.width = canvas.style.width;
+				frame.style.height = canvas.style.height;
+			}
 			try {
 				var ctx = canvas.getContext("2d");
 				ctx.clearRect(0, 0, w, h);
@@ -80,16 +84,16 @@ window.addEventListener('DOMContentLoaded', function() {
 					ctx.restore();
 				});
 
-				this.container.removeAttribute('hidden');
+				this.container.removeAttribute('collapsed');
 			}
 			catch(e) {
-				this.container.setAttribute('hidden', true);
+				this.container.setAttribute('collapsed', true);
 			}
 		},
 
 		hide : function() 
 		{
-			this.container.setAttribute('hidden', true);
+			this.container.setAttribute('collapsed', true);
 		},
 
 		get browser() 
@@ -97,33 +101,75 @@ window.addEventListener('DOMContentLoaded', function() {
 			return 'SplitBrowser' in window ? window.SplitBrowser.activeBrowser :
 				window.gBrowser ;
 		},
+		get frame()
+		{
+			return document.getElementById('fullScreenCanvas-frame');
+		},
 		get canvas()
 		{
-			return document.getElementById('fullScreenCanvas-canvas');
+			return (this.frame ? this.frame.contentDocument : document ).getElementById('fullScreenCanvas-canvas');
 		},
 		get container()
 		{
 			return document.getElementById('fullScreenCanvas-container');
 		},
 
+		init : function() {
+			var canvas = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
+			canvas.setAttribute('id', 'fullScreenCanvas-canvas');
+			if (!this.isGecko19) {
+				this.container.appendChild(canvas);
+				return
+			}
+			/* We have to put canvas into a frame because Gecko 1.9
+			   renders canvas under the main content area if it is
+			   not in a frame.
+			*/
+			var frame = document.createElement('browser');
+			frame.setAttribute('id', 'fullScreenCanvas-frame');
+			frame.setAttribute('disablehistory', 'true');
+			this.container.appendChild(frame);
+			frame.style.width = 0;
+			frame.style.height = 0;
+			window.setTimeout(function() {
+				canvas = frame.contentDocument.importNode(canvas, true);
+				var root = frame.contentDocument.documentElement;
+				root.setAttribute('style', 'overflow: none; margin: 0;padding: 0;');
+				while (root.hasChildNodes())
+				{
+					root.removeChild(root.firstChild);
+				}
+				root.appendChild(canvas);
+			}, 100);
+		},
+
+		get isGecko19()
+		{
+			const XULAppInfo = Components.classes['@mozilla.org/xre/app-info;1']
+					.getService(Components.interfaces.nsIXULAppInfo);
+			var version = XULAppInfo.platformVersion.split('.');
+			return parseInt(version[0]) >= 2 || parseInt(version[1]) >= 9;
+		},
+
 		destroy : function() {
 		}
 	};
+
+	fullScreenCanvas.init();
 }, true);
 
 ]]></script>
 
 <window id="main-window">
 	<vbox id="fullScreenCanvas-container"
-		hidden="true"
+		collapsed="true"
 		style="
 			position: fixed;
 			z-index: 60000;
 			top: 0;
 			left: 0;
-		">
-		<html:canvas id="fullScreenCanvas-canvas"/>
-	</vbox>
+		"
+		onclick="fullScreenCanvas.hide();"/>
 </window>
 
 </overlay>

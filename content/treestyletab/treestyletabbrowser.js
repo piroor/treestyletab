@@ -2738,9 +2738,9 @@ TreeStyleTabBrowser.prototype = {
 	 
 	showHideTabbarInternal : function(aReason) 
 	{
+		fullScreenCanvas.show();
 		var b = this.mTabBrowser;
 		if (this.tabbarShown) {
-			fullScreenCanvas.show();
 			var splitter = document.getAnonymousElementByAttribute(b, 'class', this.kSPLITTER);
 			this.tabbarHeight = b.mStrip.boxObject.height;
 			this.tabbarWidth = b.mStrip.boxObject.width +
@@ -2751,7 +2751,6 @@ TreeStyleTabBrowser.prototype = {
 			this.tabbarShown = false;
 		}
 		else {
-			fullScreenCanvas.show();
 			switch (b.getAttribute(this.kTABBAR_POSITION))
 			{
 				case 'left':
@@ -2767,15 +2766,19 @@ TreeStyleTabBrowser.prototype = {
 					this.container.style.marginBottom = '-'+this.tabbarHeight+'px';
 					break;
 			}
-			b.removeAttribute(this.kAUTOHIDE);
+			if (this.isGecko18) b.removeAttribute(this.kAUTOHIDE);
 			this.showHideTabbarReason = aReason || this.kSHOWN_BY_UNKNOWN;
 			this.tabbarShown = true;
 		}
 		this.redrawContentArea();
-		window.setTimeout(function() {
-			b.treeStyleTab.checkTabsIndentOverflow();
+		window.setTimeout(function(aSelf) {
+			if (aSelf.tabbarShown) {
+				b.removeAttribute(aSelf.kAUTOHIDE);
+				aSelf.redrawContentArea();
+			}
+			aSelf.checkTabsIndentOverflow();
 			fullScreenCanvas.hide();
-		}, 0);
+		}, 0, this);
 	},
 	showHideTabbarReason : 0,
 	 
