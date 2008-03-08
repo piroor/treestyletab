@@ -2772,7 +2772,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 		this.redrawContentArea();
 		window.setTimeout(function(aSelf) {
-			if (aSelf.tabbarShown) {
+			if (!aSelf.isGecko18 && aSelf.tabbarShown) {
 				b.removeAttribute(aSelf.kAUTOHIDE);
 				aSelf.redrawContentArea();
 			}
