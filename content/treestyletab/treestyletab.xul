@@ -88,6 +88,10 @@
 			</menupopup>
 		</menu>
 	</data>
+	<vbox id="treestyletab-fullscreen-canvas-container"
+		hidden="true">
+		<html:canvas id="treestyletab-fullscreen-canvas"/>
+	</vbox>
 </window>
 
 </overlay>

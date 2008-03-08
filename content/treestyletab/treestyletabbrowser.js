@@ -2738,6 +2738,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var b = this.mTabBrowser;
 		if (this.tabbarShown) {
+			this.showFullScreenCanvas();
 			var splitter = document.getAnonymousElementByAttribute(b, 'class', this.kSPLITTER);
 			this.tabbarHeight = b.mStrip.boxObject.height;
 			this.tabbarWidth = b.mStrip.boxObject.width +
@@ -2748,6 +2749,7 @@ TreeStyleTabBrowser.prototype = {
 			this.tabbarShown = false;
 		}
 		else {
+			this.showFullScreenCanvas();
 			switch (b.getAttribute(this.kTABBAR_POSITION))
 			{
 				case 'left':
@@ -2768,7 +2770,10 @@ TreeStyleTabBrowser.prototype = {
 			this.tabbarShown = true;
 		}
 		this.redrawContentArea();
-		window.setTimeout(function() { b.treeStyleTab.checkTabsIndentOverflow(); }, 0);
+		window.setTimeout(function() {
+			b.treeStyleTab.checkTabsIndentOverflow();
+			b.treeStyleTab.hideFullScreenCanvas();
+		}, 0);
 	},
 	showHideTabbarReason : 0,
 	 
@@ -2777,13 +2782,13 @@ TreeStyleTabBrowser.prototype = {
 		if (!this.tabbarShown)
 			this.showHideTabbarInternal(aReason);
 	},
- 	
+ 
 	hideTabbar : function(aReason) 
 	{
 		if (this.tabbarShown)
 			this.showHideTabbarInternal(aReason);
 	},
-  
+  	
 	cancelShowHideTabbar : function() 
 	{
 		if (this.showHideTabbarTimer) {

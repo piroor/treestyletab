@@ -106,6 +106,14 @@ tabbrowser[treestyletab-mode="multirow"] .tabbrowser-tab {
 */
 
 
+#treestyletab-fullscreen-canvas-container {
+	position: fixed;
+	z-index: 60000;
+	top: 0;
+	left: 0;
+}
+
+
 /* for some themes */
 image.tab-icon {
 	display: -moz-stack;
