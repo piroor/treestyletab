@@ -2,10 +2,10 @@
 <?xml-stylesheet href="treestyletab.css" type="text/css"?>
 <?xml-stylesheet href="chrome://treestyletab/skin/treestyletab.css" type="text/css"?>
 <?xul-overlay href="res/tabFx2Compatible.xul"?>
+<?xul-overlay href="res/fullScreenCanvas.xul"?>
 <!DOCTYPE overlay SYSTEM "chrome://treestyletab/locale/treestyletab.dtd">
 <overlay id="treestyletab-overlay"
-         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-         xmlns:html="http://www.w3.org/1999/xhtml">
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 <script src="treestyletab.js" type="application/x-javascript"/>
 <script src="treestyletabbrowser.js" type="application/x-javascript"/>
@@ -88,10 +88,6 @@
 			</menupopup>
 		</menu>
 	</data>
-	<vbox id="treestyletab-fullscreen-canvas-container"
-		hidden="true">
-		<html:canvas id="treestyletab-fullscreen-canvas"/>
-	</vbox>
 </window>
 
 </overlay>

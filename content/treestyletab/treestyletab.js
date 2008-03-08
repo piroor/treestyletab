@@ -483,73 +483,6 @@ var TreeStyleTabService = {
 		this.setTreePref('allowSubtreeCollapseExpand', vertical);
 	},
  
-	showFullScreenCanvas : function() 
-	{
-		var canvas = document.getElementById('treestyletab-fullscreen-canvas');
-		var w = window.innerWidth;
-		var h = window.innerHeight;
-		canvas.style.width = (canvas.width = w)+'px';
-		canvas.style.height = (canvas.height = h)+'px';
-		try {
-			var ctx = canvas.getContext("2d");
-			ctx.clearRect(0, 0, w, h);
-			ctx.save();
-			ctx.drawWindow(window, 0, 0, w, h, "rgb(255,255,255)");
-			ctx.restore();
-
-			var browsers = [this.browser];
-			if ('SplitBrowser' in window) browsers = browsers.concat(SplitBrowser.browsers);
-			browsers.forEach(function(aBrowser) {
-				var b = aBrowser;
-				if (b.localName == 'subbrowser') b = b.browser;
-				var sv = b.treeStyleTab;
-				var frame = b.contentWindow;
-				var x = (b.localName == 'tabbrowser' ? b.mCurrentBrowser : b ).boxObject.x;
-				var y = (b.localName == 'tabbrowser' ? b.mCurrentBrowser : b ).boxObject.y;
-				var w = frame.innerWidth;
-				var h = frame.innerHeight;
-				var dx = 0;
-				var dy = 0;
-				if (sv && sv.autoHideEnabled && sv.tabbarShown) {
-					var pos = b.getAttribute(sv.kTABBAR_POSITION);
-					switch (pos)
-					{
-						case 'left':
-							dx = sv.tabbarWidth;
-							w -= sv.tabbarWidth;
-							break;
-						case 'right':
-							x += sv.tabbarWidth;
-							w -= sv.tabbarWidth;
-							break;
-						case 'top':
-							dy = sv.tabbarHeight;
-							h -= sv.tabbarHeight;
-							break;
-						case 'bottom':
-							y += sv.tabbarHeight;
-							h -= sv.tabbarHeight;
-							break;
-					}
-				}
-				ctx.save();
-				ctx.translate(x, y);
-				ctx.drawWindow(frame, dx+frame.scrollX, dy+frame.scrollY, w, h, "rgb(255,255,255)");
-				ctx.restore();
-			});
-
-			canvas.parentNode.removeAttribute('hidden');
-		}
-		catch(e) {
-			canvas.parentNode.setAttribute('hidden', true);
-		}
-	},
- 	
-	hideFullScreenCanvas : function() 
-	{
-		document.getElementById('treestyletab-fullscreen-canvas-container').setAttribute('hidden', true);
-	},
- 
 /* get tab(s) */ 
 	
 	getTabById : function(aId, aTabBrowserChildren) 
@@ -607,7 +540,7 @@ var TreeStyleTabService = {
 				aTab
 			).snapshotLength;
 	},
-  
+  	
 /* tree manipulations */ 
 	
 	get rootTabs() 

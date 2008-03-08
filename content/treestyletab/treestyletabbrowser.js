@@ -2740,7 +2740,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var b = this.mTabBrowser;
 		if (this.tabbarShown) {
-			this.showFullScreenCanvas();
+			fullScreenCanvas.show();
 			var splitter = document.getAnonymousElementByAttribute(b, 'class', this.kSPLITTER);
 			this.tabbarHeight = b.mStrip.boxObject.height;
 			this.tabbarWidth = b.mStrip.boxObject.width +
@@ -2751,7 +2751,7 @@ TreeStyleTabBrowser.prototype = {
 			this.tabbarShown = false;
 		}
 		else {
-			this.showFullScreenCanvas();
+			fullScreenCanvas.show();
 			switch (b.getAttribute(this.kTABBAR_POSITION))
 			{
 				case 'left':
@@ -2774,7 +2774,7 @@ TreeStyleTabBrowser.prototype = {
 		this.redrawContentArea();
 		window.setTimeout(function() {
 			b.treeStyleTab.checkTabsIndentOverflow();
-			b.treeStyleTab.hideFullScreenCanvas();
+			fullScreenCanvas.hide();
 		}, 0);
 	},
 	showHideTabbarReason : 0,

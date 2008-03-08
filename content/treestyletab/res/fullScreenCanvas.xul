@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+         xmlns:html="http://www.w3.org/1999/xhtml">
+<script type="application/x-javascript"><![CDATA[
+
+window.addEventListener('DOMContentLoaded', function() {
+	window.removeEventListener('DOMContentLoaded', arguments.callee, true);
+
+	const currentRevision = 1;
+	var root = document.documentElement;
+
+	var loadedRevision = root.getAttribute('fullScreenCanvas');
+	if (loadedRevision) {
+		loadedRevision = Number(loadedRevision);
+		if (loadedRevision >= currentRevision) {
+			return;
+		}
+		else if (loadedRevision < currentRevision) {
+			root.setAttribute('fullScreenCanvas', currentRevision);
+			window.fullScreenCanvas.destroy();
+		}
+	}
+
+	window.fullScreenCanvas = {
+		show : function() 
+		{
+			var canvas = this.canvas;
+
+			var w = window.innerWidth;
+			var h = window.innerHeight;
+			canvas.style.width = (canvas.width = w)+'px';
+			canvas.style.height = (canvas.height = h)+'px';
+			try {
+				var ctx = canvas.getContext("2d");
+				ctx.clearRect(0, 0, w, h);
+				ctx.save();
+				ctx.drawWindow(window, 0, 0, w, h, "rgb(255,255,255)");
+				ctx.restore();
+
+				var browsers = [this.browser];
+				if ('SplitBrowser' in window) browsers = browsers.concat(SplitBrowser.browsers);
+				browsers.forEach(function(aBrowser) {
+					var b = aBrowser;
+					if (b.localName == 'subbrowser') b = b.browser;
+					var TST = b.treeStyleTab;
+					var frame = b.contentWindow;
+					var x = (b.localName == 'tabbrowser' ? b.mCurrentBrowser : b ).boxObject.x;
+					var y = (b.localName == 'tabbrowser' ? b.mCurrentBrowser : b ).boxObject.y;
+					var w = frame.innerWidth;
+					var h = frame.innerHeight;
+					var dx = 0;
+					var dy = 0;
+					if (TST &&
+						TST.autoHideEnabled &&
+						TST.tabbarShown) {
+						var pos = b.getAttribute(TST.kTABBAR_POSITION);
+						switch (pos)
+						{
+							case 'left':
+								dx = TST.tabbarWidth;
+								w -= TST.tabbarWidth;
+								break;
+							case 'right':
+								x += TST.tabbarWidth;
+								w -= TST.tabbarWidth;
+								break;
+							case 'top':
+								dy = TST.tabbarHeight;
+								h -= TST.tabbarHeight;
+								break;
+							case 'bottom':
+								y += TST.tabbarHeight;
+								h -= TST.tabbarHeight;
+								break;
+						}
+					}
+					ctx.save();
+					ctx.translate(x, y);
+					ctx.drawWindow(frame, dx+frame.scrollX, dy+frame.scrollY, w, h, "rgb(255,255,255)");
+					ctx.restore();
+				});
+
+				this.container.removeAttribute('hidden');
+			}
+			catch(e) {
+				this.container.setAttribute('hidden', true);
+			}
+		},
+
+		hide : function() 
+		{
+			this.container.setAttribute('hidden', true);
+		},
+
+		get browser() 
+		{
+			return 'SplitBrowser' in window ? window.SplitBrowser.activeBrowser :
+				window.gBrowser ;
+		},
+		get canvas()
+		{
+			return document.getElementById('fullScreenCanvas-canvas');
+		},
+		get container()
+		{
+			return document.getElementById('fullScreenCanvas-container');
+		},
+
+		destroy : function() {
+		}
+	};
+}, true);
+
+]]></script>
+
+<window id="main-window">
+	<vbox id="fullScreenCanvas-container"
+		hidden="true"
+		style="
+			position: fixed;
+			z-index: 60000;
+			top: 0;
+			left: 0;
+		">
+		<html:canvas id="fullScreenCanvas-canvas"/>
+	</vbox>
+</window>
+
+</overlay>
