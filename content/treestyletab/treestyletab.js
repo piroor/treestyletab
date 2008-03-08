@@ -53,6 +53,10 @@ var TreeStyleTabService = {
 	kTABBAR_HORIZONTAL : 3,
 	kTABBAR_VERTICAL   : 12,
 
+	kSHOWN_BY_UNKNOWN   : 0,
+	kSHOWN_BY_SHORTCUT  : 1,
+	kSHOWN_BY_MOUSEMOVE : 2,
+
 	kINSERT_FISRT : 0,
 	kINSERT_LAST  : 1,
 
@@ -300,7 +304,7 @@ var TreeStyleTabService = {
 	},
   
 /* Utilities */ 
-	 
+	
 	isEventFiredOnTwisty : function(aEvent) 
 	{
 		var tab = this.getTabFromEvent(aEvent);
@@ -772,7 +776,8 @@ var TreeStyleTabService = {
 
 		this.overrideExtensionsPreInit(); // hacks.js
 	},
-	init : function()
+ 
+	init : function() 
 	{
 		if (!('gBrowser' in window)) return;
 
@@ -792,6 +797,7 @@ var TreeStyleTabService = {
 		this.overrideExtensionsOnInitAfter(); // hacks.js
 
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.levelMargin');
+		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.autoHide.enabled');
 		this.observe(null, 'nsPref:changed', 'browser.link.open_newwindow.restriction.override');
 		this.observe(null, 'nsPref:changed', 'browser.tabs.loadFolderAndReplace.override');
 	},
@@ -1176,6 +1182,8 @@ catch(e) {
 
 		this.destroyTabBrowser(gBrowser);
 
+		this.endListenKeyEvents();
+
 		document.getElementById('contentAreaContextMenu').removeEventListener('popupshowing', this, false);
 
 		var appcontent = document.getElementById('appcontent');
@@ -1193,7 +1201,7 @@ catch(e) {
 	},
    
 /* Event Handling */ 
-	
+	 
 	handleEvent : function(aEvent) 
 	{
 		switch (aEvent.type)
@@ -1215,6 +1223,15 @@ catch(e) {
 				this.initContextMenu();
 				return;
 
+			case 'keydown':
+				this.onKeyDown(aEvent);
+				return;
+
+			case 'keyup':
+			case 'keypress':
+				this.onKeyRelease(aEvent);
+				return;
+
 			case 'SubBrowserAdded':
 				this.initTabBrowser(aEvent.originalTarget.browser);
 				return;
@@ -1224,7 +1241,135 @@ catch(e) {
 				return;
 		}
 	},
+	 
+	onKeyDown : function(aEvent) 
+	{
+		var b = this.browser;
+		if (!b || !b.treeStyleTab) return;
+		var sv = b.treeStyleTab;
+
+		this.cancelDelayedAutoShow();
+
+		if (
+			b.mTabContainer.childNodes.length > 1 &&
+			!aEvent.altKey &&
+			(navigator.platform.match(/mac/i) ? aEvent.metaKey : aEvent.ctrlKey )
+			) {
+			if (this.getTreePref('tabbar.autoShow.ctrlKeyDown')) {
+				this.delayedAutoShowTimer = window.setTimeout(function() {
+					sv.showTabbar(sv.kSHOWN_BY_SHORTCUT);
+				}, this.getTreePref('tabbar.autoShow.ctrlKeyDown.delay'));
+			}
+		}
+		else
+			sv.hideTabbar(sv.kSHOWN_BY_SHORTCUT);
+	},
+	cancelDelayedAutoShow : function()
+	{
+		if (this.delayedAutoShowTimer) {
+			window.clearInterval(this.delayedAutoShowTimer);
+			this.delayedAutoShowTimer = null;
+		}
+	},
+	delayedAutoShowTimer : null,
+ 	
+	onKeyRelease : function(aEvent) 
+	{
+		var b = this.browser;
+		if (!b || !b.treeStyleTab) return;
+		var sv = b.treeStyleTab;
+
+		this.cancelDelayedAutoShow();
+
+		var scrollDown,
+			scrollUp;
+		var isMac = navigator.platform.match(/mac/i);
+
+		var standBy = scrollDown = scrollUp = (!aEvent.altKey && (isMac ? aEvent.metaKey : aEvent.ctrlKey ));
+
+		scrollDown = scrollDown && (
+				!aEvent.shiftKey &&
+				(
+					aEvent.keyCode == aEvent.DOM_VK_TAB ||
+					aEvent.keyCode == aEvent.DOM_VK_PAGE_DOWN
+				)
+			);
+
+		scrollUp = scrollUp && (
+				aEvent.shiftKey ? (aEvent.keyCode == aEvent.DOM_VK_TAB) : (aEvent.keyCode == aEvent.DOM_VK_PAGE_UP)
+			);
+
+		if (
+			scrollDown ||
+			scrollUp ||
+			( // when you release "shift" key
+				sv.tabbarShown &&
+				standBy && !aEvent.shiftKey &&
+				aEvent.charCode == 0 && aEvent.keyCode == 16
+			)
+			) {
+			sv.showTabbar();
+			return;
+		}
+
+		var switchTabAction = aEvent.keyCode == (isMac ? aEvent.DOM_VK_META : aEvent.DOM_VK_CONTROL );
+
+		var shown  = sv.tabbarShown;
+
+		sv.hideTabbar(!switchTabAction);
+
+		// if this even hides the popup, re-dispatch a new event for other features.
+		if (shown &&
+			!sv.tabbarShown &&
+			!switchTabAction &&
+			aEvent && aEvent.type == 'keypress') {
+			var event = document.createEvent('KeyEvents');
+			event.initKeyEvent(
+				aEvent.type,
+				aEvent.canBubble,
+				aEvent.cancelable,
+				aEvent.view,
+				aEvent.ctrlKey,
+				aEvent.altKey,
+				aEvent.shiftKey,
+				aEvent.metaKey,
+				aEvent.keyCode,
+				aEvent.charCode
+			);
+			var target;
+			try {
+				target = aEvent.originalTarget;
+			}
+			catch(e) {
+			}
+			if (!target) target = aEvent.target;
+			target.dispatchEvent(event);
+
+			aEvent.preventDefault();
+			aEvent.stopPropagation();
+		}
+	},
  
+	keyEventListening : false, 
+ 
+	startListenKeyEvents : function() 
+	{
+		if (this.keyEventListening) return;
+		window.addEventListener('keydown',  this, true);
+		window.addEventListener('keyup',    this, true);
+		window.addEventListener('keypress', this, true);
+		this.keyEventListening = true;
+	},
+ 
+	endListenKeyEvents : function() 
+	{
+		if (!this.keyEventListening) return;
+		window.removeEventListener('keydown',  this, true);
+		window.removeEventListener('keyup',    this, true);
+		window.removeEventListener('keypress', this, true);
+		this.keyEventListening = false;
+	},
+  
 	onTabbarResized : function(aEvent) 
 	{
 		this.setPref(
@@ -1460,7 +1605,7 @@ catch(e) {
 		this._collapseExpandPostProcess.push(aProcess);
 	},
 	_collapseExpandPostProcess : [],
- 	 
+  
 /* Pref Listener */ 
 	 
 	domains : [ 
@@ -1479,6 +1624,15 @@ catch(e) {
 			case 'extensions.treestyletab.levelMargin':
 				this.baseLebelMargin = value;
 				this.ObserverService.notifyObservers(null, 'TreeStyleTab:levelMarginModified', value);
+				break;
+
+			case 'extensions.treestyletab.tabbar.autoHide.enabled':
+			case 'extensions.treestyletab.tabbar.autoShow.tabSwitch':
+				if (this.getTreePref('tabbar.autoHide.enabled') &&
+					this.getTreePref('tabbar.autoShow.tabSwitch'))
+					this.startListenKeyEvents();
+				else
+					this.endListenKeyEvents();
 				break;
 
 			case 'browser.link.open_newwindow.restriction.override':

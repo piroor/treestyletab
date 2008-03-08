@@ -85,7 +85,7 @@ TreeStyleTabBrowser.prototype = {
 	},
   
 /* initialize */ 
-	 
+	
 	init : function() 
 	{
 		var b = this.mTabBrowser;
@@ -534,7 +534,7 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}, 0, this);
 	},
- 	 
+  
 	initTabbar : function(aPosition) 
 	{
 		var b = this.mTabBrowser;
@@ -875,7 +875,7 @@ TreeStyleTabBrowser.prototype = {
 	},
   
 /* DOM Event Handling */ 
-	
+	 
 	handleEvent : function(aEvent) 
 	{
 		switch (aEvent.type)
@@ -1385,7 +1385,7 @@ TreeStyleTabBrowser.prototype = {
 
 		if (isDuplicated) this.clearCachedIds();
 	},
-	 
+	
 	getDuplicatedId : function(aId) 
 	{
 		if (!(aId in this.duplicatedIdsHash))
@@ -2619,7 +2619,7 @@ TreeStyleTabBrowser.prototype = {
 /* auto hide */ 
 	autoHideEnabled : false,
 	tabbarShown : true,
-	
+	 
 	get tabbarWidth() 
 	{
 		if (this.tabbarShown) {
@@ -2710,12 +2710,13 @@ TreeStyleTabBrowser.prototype = {
 					(aEvent.screenY <= b.boxObject.screenY + (expand ? this.tabbarHeight : 0 ) + this.areaPadding)
 				))
 				this.showHideTabbarTimer = window.setTimeout(
-					function(aSelf) { aSelf.showHideTabbarInternal(); },
+					function(aSelf) { aSelf.showHideTabbarInternal(aSelf.kSHOWN_BY_MOUSEMOVE); },
 					this.getTreePref('tabbar.autoHide.delay'),
 					this
 				);
 
 		if (this.tabbarShown &&
+			this.showHideTabbarReason == this.kSHOWN_BY_MOUSEMOVE &&
 			(
 				pos == 'left' ?
 					(aEvent.screenX > b.mCurrentBrowser.boxObject.screenX + this.areaPadding) :
@@ -2726,14 +2727,14 @@ TreeStyleTabBrowser.prototype = {
 					(aEvent.screenY > b.mCurrentBrowser.boxObject.screenY + this.areaPadding)
 				))
 				this.showHideTabbarTimer = window.setTimeout(
-					function(aSelf) { aSelf.showHideTabbarInternal(); },
+					function(aSelf) { aSelf.showHideTabbarInternal(aSelf.kSHOWN_BY_MOUSEMOVE); },
 					this.getTreePref('tabbar.autoHide.delay'),
 					this
 				);
 	},
 	showHideTabbarTimer : null,
-	
-	showHideTabbarInternal : function() 
+	 
+	showHideTabbarInternal : function(aReason) 
 	{
 		var b = this.mTabBrowser;
 		if (this.tabbarShown) {
@@ -2743,6 +2744,7 @@ TreeStyleTabBrowser.prototype = {
 				(splitter ? splitter.boxObject.width : 0 );
 			this.container.style.margin = 0;
 			b.setAttribute(this.kAUTOHIDE, true);
+			this.showHideTabbarReason = aReason || this.kSHOWN_BY_UNKNOWN;
 			this.tabbarShown = false;
 		}
 		else {
@@ -2762,12 +2764,26 @@ TreeStyleTabBrowser.prototype = {
 					break;
 			}
 			b.removeAttribute(this.kAUTOHIDE);
+			this.showHideTabbarReason = aReason || this.kSHOWN_BY_UNKNOWN;
 			this.tabbarShown = true;
 		}
 		this.redrawContentArea();
 		window.setTimeout(function() { b.treeStyleTab.checkTabsIndentOverflow(); }, 0);
 	},
- 
+	showHideTabbarReason : 0,
+	 
+	showTabbar : function(aReason) 
+	{
+		if (!this.tabbarShown)
+			this.showHideTabbarInternal(aReason);
+	},
+ 	
+	hideTabbar : function(aReason) 
+	{
+		if (this.tabbarShown)
+			this.showHideTabbarInternal(aReason);
+	},
+  
 	cancelShowHideTabbar : function() 
 	{
 		if (this.showHideTabbarTimer) {
