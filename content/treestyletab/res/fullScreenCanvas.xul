@@ -44,8 +44,7 @@ window.addEventListener('DOMContentLoaded', function() {
 				ctx.drawWindow(window, 0, 0, w, h, color);
 				ctx.restore();
 
-				var browsers = [this.browser];
-				if ('SplitBrowser' in window) browsers = browsers.concat(SplitBrowser.browsers);
+				var browsers = this.browsers;
 				browsers.forEach(function(aBrowser) {
 					var b = aBrowser;
 					if (b.localName == 'subbrowser') b = b.browser;
@@ -101,11 +100,14 @@ window.addEventListener('DOMContentLoaded', function() {
 			this.container.setAttribute('collapsed', true);
 		},
 
-		get browser() 
+		get browsers()
 		{
-			return 'SplitBrowser' in window ? window.SplitBrowser.activeBrowser :
-				window.gBrowser ;
+			browsers = [].concat(Array.prototype.slice.call(document.getElementsByTagName('tabbrowser')))
+						.concat(Array.prototype.slice.call(document.getElementsByTagName('browser')));
+			if ('SplitBrowser' in window) browsers = browsers.concat(SplitBrowser.browsers);
+			return browsers;
 		},
+
 		get frame()
 		{
 			return document.getElementById('fullScreenCanvas-frame');

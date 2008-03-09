@@ -36,7 +36,7 @@ pref("extensions.treestyletab.show.context-item-collapseAllSubtree", true);
 pref("extensions.treestyletab.show.context-item-expandAllSubtree", true);
 pref("extensions.treestyletab.show.context-item-toggleAutoHide", true);
 pref("extensions.treestyletab.show.context-item-toggleFixed", true);
-pref("extensions.treestyletab.show.context-menu-tabbarPosition", false);
+pref("extensions.treestyletab.show.context-menu-tabbarPosition", true);
 
 pref("extensions.treestyletab.openOuterLinkInNewTab",              false);
 pref("extensions.treestyletab.openAnyLinkInNewTab",                false);
