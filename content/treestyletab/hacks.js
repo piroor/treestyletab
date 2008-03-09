@@ -523,4 +523,52 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		});
 	}
 
+	// FireGestures
+	if ('FireGestures' in window) {
+		eval('FireGestures.onExtraGesture = '+
+			FireGestures.onExtraGesture.toSource().replace(
+				'case "keypress-stop":',
+				<><![CDATA[$&
+					if (event.shiftKey) TreeStyleTabService.readyToOpenChildTab(gBrowser, true);
+				]]></>
+			).replace(
+				'break;case "gesture-timeout":',
+				<><![CDATA[$&
+					if (event.shiftKey) TreeStyleTabService.stopToOpenChildTab(gBrowser);
+				$&]]></>
+			)
+		);
+		eval('FireGestures._performAction = '+
+			FireGestures._performAction.toSource().replace(
+				'gBrowser.loadOneTab(',
+				<><![CDATA[
+					TreeStyleTabService.readyToOpenChildTab(gBrowser);
+				$&]]></>
+			)
+		);
+		eval('FireGestures.openURLsInSelection = '+
+			FireGestures.openURLsInSelection.toSource().replace(
+				'var tab =',
+				<><![CDATA[
+					if (!TreeStyleTabService.checkToOpenChildTab(gBrowser))
+						TreeStyleTabService.readyToOpenChildTab(gBrowser, true);
+				$&]]></>
+			).replace(
+				'if (!flag)',
+				<><![CDATA[
+					if (TreeStyleTabService.checkToOpenChildTab(gBrowser))
+						TreeStyleTabService.stopToOpenChildTab(gBrowser);
+				$&]]></>
+			)
+		);
+		eval('FireGestures.handleEvent = '+
+			FireGestures.handleEvent.toSource().replace(
+				'gBrowser.loadOneTab(',
+				<><![CDATA[
+					TreeStyleTabService.readyToOpenChildTab(gBrowser);
+				$&]]></>
+			)
+		);
+	}
+
 };
