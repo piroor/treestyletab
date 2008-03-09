@@ -72,7 +72,7 @@
 
 <!ENTITY config.tabbar.autoHide.enabled     "Auto-ocultar la barra de pestañas">
 <!ENTITY config.tabbar.autoShow.caption "Show tab bar automatically when">
-<!ENTITY config.tabbar.autoShow.ctrlKeyDown "Control(Command) key is pressed a while">
+<!ENTITY config.tabbar.autoShow.accelKeyDown "Control(Command) key is pressed a while">
 <!ENTITY config.tabbar.autoShow.tabSwitch   "Control(Command)-Tab to switch tabs">
 <!ENTITY config.tabbar.autoShow.feedback    "Nwe tabs are opened or some tabs are closed">
 

@@ -1442,7 +1442,8 @@ TreeStyleTabBrowser.prototype = {
 
 		this.updateInvertedTabContentsOrder();
 
-		this.showTabbarForFeedback();
+		if (!this.accelKeyPressed)
+			this.showTabbarForFeedback();
 	},
  
 	onTabClick : function(aEvent) 

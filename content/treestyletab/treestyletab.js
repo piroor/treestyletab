@@ -1257,21 +1257,24 @@ catch(e) {
 			!aEvent.altKey &&
 			(navigator.platform.match(/mac/i) ? aEvent.metaKey : aEvent.ctrlKey )
 			) {
-			if (this.getTreePref('tabbar.autoShow.ctrlKeyDown') && 
+			if (this.getTreePref('tabbar.autoShow.accelKeyDown') && 
 				!sv.tabbarShown) {
 				this.delayedAutoShowTimer = window.setTimeout(
 					function(aSelf) {
 						aSelf.delayedAutoShowDone = true;
+						aSelf.accelKeyPressed = true;
 						sv.showTabbar(sv.kSHOWN_BY_SHORTCUT);
 					},
-					this.getTreePref('tabbar.autoShow.ctrlKeyDown.delay'),
+					this.getTreePref('tabbar.autoShow.accelKeyDown.delay'),
 					this
 				);
 				this.delayedAutoShowDone = false;
 			}
 		}
-		else
+		else {
+			this.accelKeyPressed = false;
 			sv.hideTabbar();
+		}
 	},
 	cancelDelayedAutoShow : function()
 	{
@@ -1282,6 +1285,7 @@ catch(e) {
 	},
 	delayedAutoShowTimer : null,
 	delayedAutoShowDone : true,
+	accelKeyPressed : false,
  
 	onKeyRelease : function(aEvent) 
 	{
@@ -1318,10 +1322,12 @@ catch(e) {
 				aEvent.charCode == 0 && aEvent.keyCode == 16
 			)
 			) {
-dump('show/onKeyRelease\n');
+			this.accelKeyPressed = true;
 			sv.showTabbar(sv.kSHOWN_BY_SHORTCUT);
 			return;
 		}
+
+		this.accelKeyPressed = false;
 
 		if (sv.showHideTabbarReason == sv.kSHOWN_BY_SHORTCUT)
 			sv.hideTabbar();

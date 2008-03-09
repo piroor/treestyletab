@@ -336,8 +336,8 @@
 		<preference id="extensions.treestyletab.tabbar.autoHide.enabled"
 			name="extensions.treestyletab.tabbar.autoHide.enabled"
 			type="bool"/>
-		<preference id="extensions.treestyletab.tabbar.autoShow.ctrlKeyDown"
-			name="extensions.treestyletab.tabbar.autoShow.ctrlKeyDown"
+		<preference id="extensions.treestyletab.tabbar.autoShow.accelKeyDown"
+			name="extensions.treestyletab.tabbar.autoShow.accelKeyDown"
 			type="bool"/>
 		<preference id="extensions.treestyletab.tabbar.autoShow.tabSwitch"
 			name="extensions.treestyletab.tabbar.autoShow.tabSwitch"
@@ -354,9 +354,9 @@
 			label="&config.tabbar.autoHide.enabled;"/>
 		<groupbox orient="vertical">
 			<caption label="&config.tabbar.autoShow.caption;"/>
-			<checkbox id="extensions.treestyletab.tabbar.autoShow.ctrlKeyDown-check"
-				preference="extensions.treestyletab.tabbar.autoShow.ctrlKeyDown"
-				label="&config.tabbar.autoShow.ctrlKeyDown;"/>
+			<checkbox id="extensions.treestyletab.tabbar.autoShow.accelKeyDown-check"
+				preference="extensions.treestyletab.tabbar.autoShow.accelKeyDown"
+				label="&config.tabbar.autoShow.accelKeyDown;"/>
 			<checkbox id="extensions.treestyletab.tabbar.autoShow.tabSwitch-check"
 				preference="extensions.treestyletab.tabbar.autoShow.tabSwitch"
 				label="&config.tabbar.autoShow.tabSwitch;"/>
