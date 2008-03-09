@@ -12,7 +12,7 @@ pref("extensions.treestyletab.tabbar.autoHide.delay",      50);
 pref("extensions.treestyletab.tabbar.autoHide.area",       25);
 pref("extensions.treestyletab.tabbar.autoHide.expandArea", false);
 pref("extensions.treestyletab.tabbar.autoShow.ctrlKeyDown", true);
-pref("extensions.treestyletab.tabbar.autoShow.ctrlKeyDown.delay", 200);
+pref("extensions.treestyletab.tabbar.autoShow.ctrlKeyDown.delay", 800);
 pref("extensions.treestyletab.tabbar.autoShow.tabSwitch", true);
 pref("extensions.treestyletab.tabbar.fixed", false);
 pref("extensions.treestyletab.tabbar.syncRelatedPrefsForDynamicPosition", true);

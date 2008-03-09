@@ -38,7 +38,7 @@ window.addEventListener('DOMContentLoaded', function() {
 				frame.style.height = canvas.style.height;
 			}
 			try {
-				var ctx = canvas.getContext("2d");
+				var ctx = canvas.getContext('2d');
 				ctx.clearRect(0, 0, w, h);
 				ctx.save();
 				ctx.drawWindow(window, 0, 0, w, h, color);
