@@ -100,7 +100,9 @@ window.addEventListener('DOMContentLoaded', function() {
 
 		hide : function() 
 		{
-			this.canvas.style.position = 'static';
+			var canvas = this.canvas;
+			canvas.style.position = 'static';
+			canvas.style.width = canvas.style.height = canvas.style.zIndex = 0;
 			this.container.setAttribute('collapsed', true);
 		},
 
