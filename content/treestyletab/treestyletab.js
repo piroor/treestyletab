@@ -1252,17 +1252,17 @@ catch(e) {
 		if (this.delayedAutoShowDone)
 			this.cancelDelayedAutoShow();
 
+		this.accelKeyPressed = (navigator.platform.match(/mac/i) ? aEvent.metaKey : aEvent.ctrlKey );
 		if (
 			b.mTabContainer.childNodes.length > 1 &&
 			!aEvent.altKey &&
-			(navigator.platform.match(/mac/i) ? aEvent.metaKey : aEvent.ctrlKey )
+			this.accelKeyPressed
 			) {
 			if (this.getTreePref('tabbar.autoShow.accelKeyDown') && 
 				!sv.tabbarShown) {
 				this.delayedAutoShowTimer = window.setTimeout(
 					function(aSelf) {
 						aSelf.delayedAutoShowDone = true;
-						aSelf.accelKeyPressed = true;
 						sv.showTabbar(sv.kSHOWN_BY_SHORTCUT);
 					},
 					this.getTreePref('tabbar.autoShow.accelKeyDown.delay'),
@@ -1272,7 +1272,6 @@ catch(e) {
 			}
 		}
 		else {
-			this.accelKeyPressed = false;
 			sv.hideTabbar();
 		}
 	},
@@ -1299,6 +1298,8 @@ catch(e) {
 			scrollUp;
 		var isMac = navigator.platform.match(/mac/i);
 
+		this.accelKeyPressed = (isMac ? aEvent.metaKey : aEvent.ctrlKey );
+
 		var standBy = scrollDown = scrollUp = (!aEvent.altKey && (isMac ? aEvent.metaKey : aEvent.ctrlKey ));
 
 		scrollDown = scrollDown && (
@@ -1322,12 +1323,10 @@ catch(e) {
 				aEvent.charCode == 0 && aEvent.keyCode == 16
 			)
 			) {
-			this.accelKeyPressed = true;
-			sv.showTabbar(sv.kSHOWN_BY_SHORTCUT);
+			if (this.getTreePref('tabbar.autoShow.tabSwitch'))
+				sv.showTabbar(sv.kSHOWN_BY_SHORTCUT);
 			return;
 		}
-
-		this.accelKeyPressed = false;
 
 		if (sv.showHideTabbarReason == sv.kSHOWN_BY_SHORTCUT)
 			sv.hideTabbar();
@@ -1610,9 +1609,17 @@ catch(e) {
 				break;
 
 			case 'extensions.treestyletab.tabbar.autoHide.enabled':
+			case 'extensions.treestyletab.tabbar.autoShow.accelKeyDown':
 			case 'extensions.treestyletab.tabbar.autoShow.tabSwitch':
-				if (this.getTreePref('tabbar.autoHide.enabled') &&
-					this.getTreePref('tabbar.autoShow.tabSwitch'))
+			case 'extensions.treestyletab.tabbar.autoShow.feedback':
+				if (
+					this.getTreePref('tabbar.autoHide.enabled') &&
+					(
+						this.getTreePref('tabbar.autoShow.accelKeyDown') ||
+						this.getTreePref('tabbar.autoShow.tabSwitch') ||
+						this.getTreePref('tabbar.autoShow.feedback')
+					)
+					)
 					this.startListenKeyEvents();
 				else
 					this.endListenKeyEvents();
