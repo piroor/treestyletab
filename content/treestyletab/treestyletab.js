@@ -56,6 +56,7 @@ var TreeStyleTabService = {
 	kSHOWN_BY_UNKNOWN   : 0,
 	kSHOWN_BY_SHORTCUT  : 1,
 	kSHOWN_BY_MOUSEMOVE : 2,
+	kSHOWN_BY_FEEDBACK  : 3,
 
 	kINSERT_FISRT : 0,
 	kINSERT_LAST  : 1,
@@ -304,7 +305,7 @@ var TreeStyleTabService = {
 	},
   
 /* Utilities */ 
-	 
+	
 	isEventFiredOnTwisty : function(aEvent) 
 	{
 		var tab = this.getTabFromEvent(aEvent);
@@ -540,7 +541,7 @@ var TreeStyleTabService = {
 				aTab
 			).snapshotLength;
 	},
-  	
+  
 /* tree manipulations */ 
 	
 	get rootTabs() 
@@ -1201,7 +1202,7 @@ catch(e) {
 	},
    
 /* Event Handling */ 
-	
+	 
 	handleEvent : function(aEvent) 
 	{
 		switch (aEvent.type)
@@ -1248,21 +1249,29 @@ catch(e) {
 		if (!b || !b.treeStyleTab) return;
 		var sv = b.treeStyleTab;
 
-		this.cancelDelayedAutoShow();
+		if (this.delayedAutoShowDone)
+			this.cancelDelayedAutoShow();
 
 		if (
 			b.mTabContainer.childNodes.length > 1 &&
 			!aEvent.altKey &&
 			(navigator.platform.match(/mac/i) ? aEvent.metaKey : aEvent.ctrlKey )
 			) {
-			if (this.getTreePref('tabbar.autoShow.ctrlKeyDown')) {
-				this.delayedAutoShowTimer = window.setTimeout(function() {
-					sv.showTabbar(sv.kSHOWN_BY_SHORTCUT);
-				}, this.getTreePref('tabbar.autoShow.ctrlKeyDown.delay'));
+			if (this.getTreePref('tabbar.autoShow.ctrlKeyDown') && 
+				!sv.tabbarShown) {
+				this.delayedAutoShowTimer = window.setTimeout(
+					function(aSelf) {
+						aSelf.delayedAutoShowDone = true;
+						sv.showTabbar(sv.kSHOWN_BY_SHORTCUT);
+					},
+					this.getTreePref('tabbar.autoShow.ctrlKeyDown.delay'),
+					this
+				);
+				this.delayedAutoShowDone = false;
 			}
 		}
 		else
-			sv.hideTabbar(sv.kSHOWN_BY_SHORTCUT);
+			sv.hideTabbar();
 	},
 	cancelDelayedAutoShow : function()
 	{
@@ -1272,6 +1281,7 @@ catch(e) {
 		}
 	},
 	delayedAutoShowTimer : null,
+	delayedAutoShowDone : true,
  
 	onKeyRelease : function(aEvent) 
 	{
@@ -1308,17 +1318,15 @@ catch(e) {
 				aEvent.charCode == 0 && aEvent.keyCode == 16
 			)
 			) {
-			sv.showTabbar();
+dump('show/onKeyRelease\n');
+			sv.showTabbar(sv.kSHOWN_BY_SHORTCUT);
 			return;
 		}
 
-		var switchTabAction = aEvent.keyCode == (isMac ? aEvent.DOM_VK_META : aEvent.DOM_VK_CONTROL );
-
-		var shown  = sv.tabbarShown;
-
-		sv.hideTabbar(!switchTabAction);
+		if (sv.showHideTabbarReason == sv.kSHOWN_BY_SHORTCUT)
+			sv.hideTabbar();
 	},
- 
+ 	
 	keyEventListening : false, 
  
 	startListenKeyEvents : function() 
