@@ -46,6 +46,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
 				var browsers = this.browsers;
 				browsers.forEach(function(aBrowser) {
+				try {
 					var b = aBrowser;
 					if (b.localName == 'subbrowser') b = b.browser;
 					var TST = b.treeStyleTab;
@@ -84,6 +85,9 @@ window.addEventListener('DOMContentLoaded', function() {
 					ctx.translate(x, y);
 					ctx.drawWindow(frame, dx+frame.scrollX, dy+frame.scrollY, w, h, color);
 					ctx.restore();
+				}
+				catch(e) {
+				}
 				});
 
 				canvas.style.position = 'fixed';
