@@ -72,6 +72,7 @@
 
 <!ENTITY config.tabbar.autoHide.enabled "タブバーを自動的に隠す">
 <!ENTITY config.tabbar.autoShow.caption "以下の場合に自動的にタブバーを表示する">
+<!ENTITY config.tabbar.autoShow.mousemove "ウィンドウの端にポインタが近づいた時">
 <!ENTITY config.tabbar.autoShow.accelKeyDown "Control(Command)キーを長押しした時">
 <!ENTITY config.tabbar.autoShow.tabSwitch   "Control(Command)-Tabでタブを切り替える時">
 <!ENTITY config.tabbar.autoShow.feedback    "新しいタブが開かれたりタブが閉じられたりした時">

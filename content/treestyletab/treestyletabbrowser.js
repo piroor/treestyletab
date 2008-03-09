@@ -859,6 +859,13 @@ TreeStyleTabBrowser.prototype = {
 							this.endAutoHide();
 						break;
 
+					case 'extensions.treestyletab.tabbar.autoShow.mousemove':
+						if (this.autoHideEnabled && value)
+							this.startListenMouseMove();
+						else
+							this.endListenMouseMove();
+						break;
+
 					case 'extensions.treestyletab.tabbar.fixed':
 						if (value)
 							b.setAttribute(this.kFIXED, true);
@@ -2766,10 +2773,11 @@ TreeStyleTabBrowser.prototype = {
 
 		this.mTabBrowser.addEventListener('mousedown', this, true);
 		this.mTabBrowser.addEventListener('mouseup', this, true);
-		this.mTabBrowser.addEventListener('mousemove', this, true);
 		this.mTabBrowser.addEventListener('scroll', this, true);
 		this.mTabBrowser.addEventListener('resize', this, true);
 		this.mTabBrowser.addEventListener('load', this, true);
+		if (this.getTreePref('tabbar.autoShow.mousemove'))
+			this.startListenMouseMove();
 
 		this.tabbarShown = true;
 		this.showHideTabbarInternal();
@@ -2782,15 +2790,29 @@ TreeStyleTabBrowser.prototype = {
 
 		this.mTabBrowser.removeEventListener('mousedown', this, true);
 		this.mTabBrowser.removeEventListener('mouseup', this, true);
-		this.mTabBrowser.removeEventListener('mousemove', this, true);
 		this.mTabBrowser.removeEventListener('scroll', this, true);
 		this.mTabBrowser.removeEventListener('resize', this, true);
 		this.mTabBrowser.removeEventListener('load', this, true);
+		this.endListenMouseMove();
 
 		this.container.style.margin = 0;
 		this.mTabBrowser.removeAttribute(this.kAUTOHIDE);
 		this.tabbarShown = true;
 	},
+ 
+	startListenMouseMove : function() 
+	{
+		if (this.mouseMoveListening) return;
+		this.mTabBrowser.addEventListener('mousemove', this, true);
+		this.mouseMoveListening = true;
+	},
+	endListenMouseMove : function() 
+	{
+		if (!this.mouseMoveListening) return;
+		this.mTabBrowser.removeEventListener('mousemove', this, true);
+		this.mouseMoveListening = false;
+	},
+	mouseMoveListening : false,
  
 	showHideTabbarOnMousemove : function(aEvent) 
 	{

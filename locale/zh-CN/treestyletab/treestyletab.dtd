@@ -72,6 +72,7 @@
 
 <!ENTITY config.tabbar.autoHide.enabled     "自动隐藏标签栏">
 <!ENTITY config.tabbar.autoShow.caption "Show tab bar automatically when">
+<!ENTITY config.tabbar.autoShow.mousemove "Mouse cursor points window edges">
 <!ENTITY config.tabbar.autoShow.accelKeyDown "Control(Command) key is pressed a while">
 <!ENTITY config.tabbar.autoShow.tabSwitch   "Control(Command)-Tab to switch tabs">
 <!ENTITY config.tabbar.autoShow.feedback    "Nwe tabs are opened or some tabs are closed">
