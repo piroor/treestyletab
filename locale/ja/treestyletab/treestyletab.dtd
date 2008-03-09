@@ -14,7 +14,6 @@
 <!ENTITY config.tabbar.invertUI         "タブを左右反転">
 <!ENTITY config.enableSubtreeIndent         "タブをインデント表示する">
 <!ENTITY config.allowSubtreeCollapseExpand  "サブツリーを折りたためるようにする">
-<!ENTITY config.tabbar.autoHide.enabled     "タブバーを自動的に隠す">
 <!ENTITY config.tabbar.hideAlltabsButton    "「タブの一覧を表示」ボタンを表示する">
 
 <!ENTITY config.tabbar.style.caption "タブバーの表示スタイル">
@@ -67,6 +66,15 @@
 <!ENTITY config.jsopen.caption "Webページのスクリプトで開かれるウィンドウの制御">
 <!ENTITY config.jsopen.default "大きさや位置を指定されたウィンドウはウィンドウとして開く（Firefox初期状態）">
 <!ENTITY config.jsopen.forcetab "スクリプトで開かれるウィンドウはすべてタブで開く（推奨）">
+
+
+<!ENTITY config.tabs.autohide "自動的に隠す">
+
+<!ENTITY config.tabbar.autoHide.enabled "タブバーを自動的に隠す">
+<!ENTITY config.tabbar.autoShow.caption "以下の場合に自動的にタブバーを表示する">
+<!ENTITY config.tabbar.autoShow.ctrlKeyDown "Control(Command)キーを長押しした時">
+<!ENTITY config.tabbar.autoShow.tabSwitch   "Control(Command)-Tabでタブを切り替える時">
+<!ENTITY config.tabbar.autoShow.feedback    "新しいタブが開かれたりタブが閉じられたりした時">
 
 
 <!ENTITY config.tabs.advanced "詳細">

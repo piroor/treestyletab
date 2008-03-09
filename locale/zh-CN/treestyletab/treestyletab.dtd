@@ -14,7 +14,6 @@
 <!ENTITY config.tabbar.invertUI         "反转标签外观">
 <!ENTITY config.enableSubtreeIndent         "缩进标签">
 <!ENTITY config.allowSubtreeCollapseExpand  "允许折叠/展开标签子树">
-<!ENTITY config.tabbar.autoHide.enabled     "自动隐藏标签栏">
 <!ENTITY config.tabbar.hideAlltabsButton    "显示 &quot;列出所有标签&quot; 按钮">
 
 <!ENTITY config.tabbar.style.caption "标签栏外观">
@@ -67,6 +66,15 @@
 <!ENTITY config.jsopen.caption "从网页脚本上打开的新窗口">
 <!ENTITY config.jsopen.default "如果已指定宽度,高度等等，则在新窗口中打开 (Firefox 默认)">
 <!ENTITY config.jsopen.forcetab "在任何情况下在标签而非窗口中打开 (推荐)">
+
+
+<!ENTITY config.tabs.autohide "Auto hide">
+
+<!ENTITY config.tabbar.autoHide.enabled     "自动隐藏标签栏">
+<!ENTITY config.tabbar.autoShow.caption "Show tab bar automatically when">
+<!ENTITY config.tabbar.autoShow.ctrlKeyDown "Control(Command) key is pressed a while">
+<!ENTITY config.tabbar.autoShow.tabSwitch   "Control(Command)-Tab to switch tabs">
+<!ENTITY config.tabbar.autoShow.feedback    "Nwe tabs are opened or some tabs are closed">
 
 
 <!ENTITY config.tabs.advanced "高级">

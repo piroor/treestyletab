@@ -14,7 +14,6 @@
 <!ENTITY config.tabbar.invertUI         "Inverti la visualizzazione delle schede">
 <!ENTITY config.enableSubtreeIndent         "Indenta schede figlie">
 <!ENTITY config.allowSubtreeCollapseExpand  "Permetti di contrarre/espandere sottoalberi delle schede">
-<!ENTITY config.tabbar.autoHide.enabled     "Nascondi automaticamente la barra delle schede">
 <!ENTITY config.tabbar.hideAlltabsButton    "Visualizza la maniglia per elencare tutte le schede">
 
 <!ENTITY config.tabbar.style.caption "Aspetto delle barra delle schede">
@@ -67,6 +66,15 @@
 <!ENTITY config.jsopen.caption "Forza gli script che aprono nuove finestre">
 <!ENTITY config.jsopen.default "ad aprire una nuova finestra se questa è ridimensionata (comportamento predefinito di Firefox)">
 <!ENTITY config.jsopen.forcetab "ad aprirsi tutti in nuove schede (Raccomandato)">
+
+
+<!ENTITY config.tabs.autohide "Auto hide">
+
+<!ENTITY config.tabbar.autoHide.enabled     "Nascondi automaticamente la barra delle schede">
+<!ENTITY config.tabbar.autoShow.caption "Show tab bar automatically when">
+<!ENTITY config.tabbar.autoShow.ctrlKeyDown "Control(Command) key is pressed a while">
+<!ENTITY config.tabbar.autoShow.tabSwitch   "Control(Command)-Tab to switch tabs">
+<!ENTITY config.tabbar.autoShow.feedback    "Nwe tabs are opened or some tabs are closed">
 
 
 <!ENTITY config.tabs.advanced "Avanzate">

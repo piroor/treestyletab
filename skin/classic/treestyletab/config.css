@@ -34,6 +34,14 @@ radio[pane="prefpane-tab"][selected="true"] {
 	-moz-image-region: rect(32px, 64px, 64px, 32px);
 }
 
+radio[pane="prefpane-autohide"] {
+	-moz-image-region: rect(0px, 64px, 32px, 32px);
+}
+radio[pane="prefpane-autohide"]:hover,
+radio[pane="prefpane-autohide"][selected="true"] {
+	-moz-image-region: rect(32px, 64px, 64px, 32px);
+}
+
 radio[pane="prefpane-advanced"] {
 	-moz-image-region: rect(0px, 224px, 32px, 192px);
 }

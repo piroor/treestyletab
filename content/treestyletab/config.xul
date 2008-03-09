@@ -28,9 +28,6 @@
 		<preference id="extensions.treestyletab.allowSubtreeCollapseExpand"
 			name="extensions.treestyletab.allowSubtreeCollapseExpand"
 			type="bool"/>
-		<preference id="extensions.treestyletab.tabbar.autoHide.enabled"
-			name="extensions.treestyletab.tabbar.autoHide.enabled"
-			type="bool"/>
 		<preference id="extensions.treestyletab.tabbar.hideAlltabsButton"
 			name="extensions.treestyletab.tabbar.hideAlltabsButton"
 			type="bool"
@@ -45,6 +42,8 @@
 			name="extensions.treestyletab.twisty.style"
 			type="string"/>
 	</preferences>
+
+	<vbox>
 
 	<checkbox id="extensions.treestyletab.tabbar.scroll.smooth-check"
 		preference="extensions.treestyletab.tabbar.scroll.smooth"
@@ -97,11 +96,6 @@
 			<checkbox id="extensions.treestyletab.allowSubtreeCollapseExpand-check"
 				preference="extensions.treestyletab.allowSubtreeCollapseExpand"
 				label="&config.allowSubtreeCollapseExpand;"/>
-		</hbox>
-		<hbox align="center">
-			<checkbox id="extensions.treestyletab.tabbar.autoHide.enabled-check"
-				preference="extensions.treestyletab.tabbar.autoHide.enabled"
-				label="&config.tabbar.autoHide.enabled;"/>
 			<checkbox id="extensions.treestyletab.enableSubtreeIndent-check"
 				preference="extensions.treestyletab.enableSubtreeIndent"
 				label="&config.enableSubtreeIndent;"/>
@@ -146,6 +140,8 @@
 		</radiogroup>
 	</groupbox>
 
+	</vbox>
+
 </prefpane>
 
 <prefpane id="prefpane-menu" label="&config.tabs.menu;">
@@ -175,6 +171,8 @@
 			name="extensions.treestyletab.show.context-menu-tabbarPosition"
 			type="bool"/>
 	</preferences>
+
+	<vbox>
 
 	<groupbox orient="vertical">
 		<caption label="&config.show.tabContextMenu.caption;"/>
@@ -209,6 +207,8 @@
 	<checkbox id="extensions.treestyletab.show.openSelectionLinks-check"
 		preference="extensions.treestyletab.show.openSelectionLinks"
 		label="&config.show.openSelectionLinks;"/>
+
+	</vbox>
 
 </prefpane>
 
@@ -246,6 +246,8 @@
 			name="browser.link.open_newwindow.restriction.override"
 			type="int"/>
 	</preferences>
+
+	<vbox>
 
 	<tabbox orient="vertical">
 		<tabs>
@@ -324,6 +326,47 @@
 			</tabpanel>
 		</tabpanels>
 	</tabbox>
+
+	</vbox>
+
+</prefpane>
+
+<prefpane id="prefpane-autohide" label="&config.tabs.autohide;">
+	<preferences>
+		<preference id="extensions.treestyletab.tabbar.autoHide.enabled"
+			name="extensions.treestyletab.tabbar.autoHide.enabled"
+			type="bool"/>
+		<preference id="extensions.treestyletab.tabbar.autoShow.ctrlKeyDown"
+			name="extensions.treestyletab.tabbar.autoShow.ctrlKeyDown"
+			type="bool"/>
+		<preference id="extensions.treestyletab.tabbar.autoShow.tabSwitch"
+			name="extensions.treestyletab.tabbar.autoShow.tabSwitch"
+			type="bool"/>
+		<preference id="extensions.treestyletab.tabbar.autoShow.feedback"
+			name="extensions.treestyletab.tabbar.autoShow.feedback"
+			type="bool"/>
+	</preferences>
+
+	<vbox>
+
+		<checkbox id="extensions.treestyletab.tabbar.autoHide.enabled-check"
+			preference="extensions.treestyletab.tabbar.autoHide.enabled"
+			label="&config.tabbar.autoHide.enabled;"/>
+		<groupbox orient="vertical">
+			<caption label="&config.tabbar.autoShow.caption;"/>
+			<checkbox id="extensions.treestyletab.tabbar.autoShow.ctrlKeyDown-check"
+				preference="extensions.treestyletab.tabbar.autoShow.ctrlKeyDown"
+				label="&config.tabbar.autoShow.ctrlKeyDown;"/>
+			<checkbox id="extensions.treestyletab.tabbar.autoShow.tabSwitch-check"
+				preference="extensions.treestyletab.tabbar.autoShow.tabSwitch"
+				label="&config.tabbar.autoShow.tabSwitch;"/>
+			<checkbox id="extensions.treestyletab.tabbar.autoShow.feedback-check"
+				preference="extensions.treestyletab.tabbar.autoShow.feedback"
+				label="&config.tabbar.autoShow.feedback;"/>
+		</groupbox>
+
+	</vbox>
+
 </prefpane>
 
 <prefpane id="prefpane-advanced" label="&config.tabs.advanced;">
@@ -354,6 +397,8 @@
 			name="extensions.treestyletab.tabbar.autoHide.delay"
 			type="int"/>
 	</preferences>
+
+	<vbox>
 
 	<checkbox id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect-check"
 		preference="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
@@ -405,6 +450,8 @@
 				control="extensions.treestyletab.tabbar.autoHide.delay-textbox"/>
 		</hbox>
 	</groupbox>
+
+	</vbox>
 </prefpane>
 
 <script src="config.js" type="application/x-javascript"/>
