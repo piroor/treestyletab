@@ -400,7 +400,7 @@ TreeStyleTabBrowser.prototype = {
 		var stack = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-stack');
 		if (stack) {
 			var canvas = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
-			canvas.setAttribute('style', 'width:0;height:0;');
+			canvas.setAttribute('style', 'visibility:collapse;width:0;height:0;');
 			stack.firstChild.appendChild(canvas);
 			this.tabbarCanvas = canvas;
 			this.clearTabbarCanvas();
@@ -2813,7 +2813,7 @@ TreeStyleTabBrowser.prototype = {
 		this.tabbarCanvas.style.margin = (yOffset || 0)+'px 0 0 '+(xOffset || 0)+'px';
 		this.tabbarCanvas.style.width = (this.tabbarCanvas.width = w)+'px';
 		this.tabbarCanvas.style.height = (this.tabbarCanvas.height = h)+'px';
-		this.tabbarCanvas.style.visibilit = 'visible';
+		this.tabbarCanvas.style.visibility = 'visible';
 		var ctx = this.tabbarCanvas.getContext('2d');
 		ctx.clearRect(0, 0, w, h);
 		ctx.save();
@@ -2830,7 +2830,7 @@ TreeStyleTabBrowser.prototype = {
 			this.tabbarCanvas.style.height = 
 			this.tabbarCanvas.width = 
 			this.tabbarCanvas.height = 0;
-		this.tabbarCanvas.style.visibilit = 'collapse';
+		this.tabbarCanvas.style.visibility = 'collapse';
 	},
  
 	updateTabbarTransparency : function() 
