@@ -2732,7 +2732,7 @@ TreeStyleTabBrowser.prototype = {
 		this.redrawContentArea();
 		window.setTimeout(function(aSelf) {
 			if (!aSelf.isGecko18 && aSelf.tabbarShown) {
-				b.setAttribute(this.kAUTOHIDE, 'show');
+				b.setAttribute(aSelf.kAUTOHIDE, 'show');
 				aSelf.redrawContentArea();
 			}
 			aSelf.checkTabsIndentOverflow();
@@ -2813,6 +2813,7 @@ TreeStyleTabBrowser.prototype = {
 		this.tabbarCanvas.style.margin = (yOffset || 0)+'px 0 0 '+(xOffset || 0)+'px';
 		this.tabbarCanvas.style.width = (this.tabbarCanvas.width = w)+'px';
 		this.tabbarCanvas.style.height = (this.tabbarCanvas.height = h)+'px';
+		this.tabbarCanvas.style.visibilit = 'visible';
 		var ctx = this.tabbarCanvas.getContext('2d');
 		ctx.clearRect(0, 0, w, h);
 		ctx.save();
@@ -2829,6 +2830,7 @@ TreeStyleTabBrowser.prototype = {
 			this.tabbarCanvas.style.height = 
 			this.tabbarCanvas.width = 
 			this.tabbarCanvas.height = 0;
+		this.tabbarCanvas.style.visibilit = 'collapse';
 	},
  
 	updateTabbarTransparency : function() 
