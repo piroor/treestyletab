@@ -1252,7 +1252,11 @@ catch(e) {
 		if (this.delayedAutoShowDone)
 			this.cancelDelayedAutoShow();
 
-		this.accelKeyPressed = (navigator.platform.match(/mac/i) ? aEvent.metaKey : aEvent.ctrlKey );
+		this.accelKeyPressed = (
+				navigator.platform.match(/mac/i) ?
+					(aEvent.metaKey || (aEvent.keyCode == aEvent.DOM_VK_META)) :
+					(aEvent.ctrlKey || (aEvent.keyCode == aEvent.DOM_VK_CONTROL))
+			);
 		if (
 			b.mTabContainer.childNodes.length > 1 &&
 			!aEvent.altKey &&
