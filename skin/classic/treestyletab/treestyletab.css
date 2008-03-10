@@ -18,11 +18,11 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-container {
 	padding-right: 0 !important;
 }
 
-tabbrowser[treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"] .tabbrowser-strip {
+tabbrowser[treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"]:not([treestyletab-tabbar-transparent]) .tabbrowser-strip {
 	border-right: 1px solid ThreeDShadow !important;
 	-moz-border-right-colors: ThreeDShadow !important;
 }
-tabbrowser[treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"] .tabbrowser-strip {
+tabbrowser[treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"]:not([treestyletab-tabbar-transparent]) .tabbrowser-strip {
 	border-left: 1px solid ThreeDShadow !important;
 	-moz-border-left-colors: ThreeDShadow !important;
 }

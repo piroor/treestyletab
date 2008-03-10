@@ -11,6 +11,7 @@ pref("extensions.treestyletab.tabbar.autoHide.enabled",    false);
 pref("extensions.treestyletab.tabbar.autoHide.delay",      50);
 pref("extensions.treestyletab.tabbar.autoHide.area",       25);
 pref("extensions.treestyletab.tabbar.autoHide.expandArea", false);
+pref("extensions.treestyletab.tabbar.transparent", true);
 pref("extensions.treestyletab.tabbar.autoShow.mousemove", true);
 pref("extensions.treestyletab.tabbar.autoShow.accelKeyDown", true);
 pref("extensions.treestyletab.tabbar.autoShow.accelKeyDown.delay", 800);

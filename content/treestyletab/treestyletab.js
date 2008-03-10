@@ -20,6 +20,8 @@ var TreeStyleTabService = {
 	kFIRSTTAB_BORDER    : 'treestyletab-firsttab-border',
 	kAUTOHIDE           : 'treestyletab-tabbar-autohide',
 	kFIXED              : 'treestyletab-tabbar-fixed',
+	kRESIZING           : 'treestyletab-tabbar-resizing',
+	kTRANSPARENT        : 'treestyletab-tabbar-transparent',
 
 	kTWISTY                : 'treestyletab-twisty',
 	kTWISTY_CONTAINER      : 'treestyletab-twisty-container',

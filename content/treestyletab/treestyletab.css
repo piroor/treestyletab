@@ -18,8 +18,8 @@ tabbrowser[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyle
 
 tabbrowser[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyletab-collapsed="true"],
 .tabbrowser-strip[collapsed="true"]+splitter:not([state="collapsed"]),
-tabbrowser[treestyletab-tabbar-autohide="true"] .tabbrowser-strip,
-tabbrowser[treestyletab-tabbar-autohide="true"] .tabbrowser-strip+splitter,
+tabbrowser[treestyletab-tabbar-autohide="hidden"] .tabbrowser-strip,
+tabbrowser[treestyletab-tabbar-autohide="hidden"] .tabbrowser-strip+splitter,
 #appcontent[ahFull="true"] .tabbrowser-strip[ahHIDE="true"]+splitter /* AutoHide */,
 tabbrowser[treestyletab-tabbar-fixed="true"] .tabbrowser-strip+splitter {
 	visibility: collapse;
@@ -104,6 +104,13 @@ tabbrowser[treestyletab-mode="multirow"] .tabbrowser-tab {
 	min-width: 150px !important;
 }
 */
+
+tabbrowser[treestyletab-tabbar-autohide]:not([treestyletab-tabbar-transparent]) .tabs-stack > *:first-child > :not(html|canvas) {
+	display: none !important;
+}
+tabbrowser[treestyletab-tabbar-resizing] .tabs-stack > *:first-child > html|canvas {
+	visibility: hidden !important;
+}
 
 
 /* for some themes */
