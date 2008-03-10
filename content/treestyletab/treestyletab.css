@@ -105,11 +105,9 @@ tabbrowser[treestyletab-mode="multirow"] .tabbrowser-tab {
 }
 */
 
-tabbrowser[treestyletab-tabbar-autohide]:not([treestyletab-tabbar-transparent]) .tabs-stack > *:first-child > :not(html|canvas) {
-	display: none !important;
-}
+tabbrowser[treestyletab-tabbar-autohide]:not([treestyletab-tabbar-transparent]) .tabs-stack > *:first-child > :not(html|canvas),
 tabbrowser[treestyletab-tabbar-resizing] .tabs-stack > *:first-child > html|canvas {
-	visibility: hidden !important;
+	display: none !important;
 }
 
 

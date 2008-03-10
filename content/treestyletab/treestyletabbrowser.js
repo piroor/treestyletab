@@ -400,7 +400,7 @@ TreeStyleTabBrowser.prototype = {
 		var stack = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-stack');
 		if (stack) {
 			var canvas = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
-			canvas.setAttribute('style', 'visibility:collapse;width:0;height:0;');
+			canvas.setAttribute('style', 'display:none;width:1;height:1;');
 			stack.firstChild.appendChild(canvas);
 			this.tabbarCanvas = canvas;
 			this.clearTabbarCanvas();
@@ -2807,13 +2807,14 @@ TreeStyleTabBrowser.prototype = {
 		var yOffset = (pos == 'left' || pos == 'right') ?
 				contentBox.screenY + frame.scrollY - browserBox.screenY :
 				0 ;
-		var w = tabContainerBox.width - xOffset;
-		var h = tabContainerBox.height - yOffset;
+		// zero width (heigh) canvas becomes wrongly size!!
+		var w = Math.max(1, (tabContainerBox.width - xOffset));
+		var h = Math.max(1, (tabContainerBox.height - yOffset));
 
+		this.tabbarCanvas.style.display = 'inline';
 		this.tabbarCanvas.style.margin = (yOffset || 0)+'px 0 0 '+(xOffset || 0)+'px';
 		this.tabbarCanvas.style.width = (this.tabbarCanvas.width = w)+'px';
 		this.tabbarCanvas.style.height = (this.tabbarCanvas.height = h)+'px';
-		this.tabbarCanvas.style.visibility = 'visible';
 		var ctx = this.tabbarCanvas.getContext('2d');
 		ctx.clearRect(0, 0, w, h);
 		ctx.save();
@@ -2825,12 +2826,11 @@ TreeStyleTabBrowser.prototype = {
 	{
 		if (!this.tabbarCanvas) return;
 
-		this.tabbarCanvas.style.margin =
-			this.tabbarCanvas.style.width =
-			this.tabbarCanvas.style.height = 
-			this.tabbarCanvas.width = 
-			this.tabbarCanvas.height = 0;
-		this.tabbarCanvas.style.visibility = 'collapse';
+		this.tabbarCanvas.style.display = 'none';
+		this.tabbarCanvas.style.margin = 0;
+		// zero width (heigh) canvas becomes wrongly size!!
+		this.tabbarCanvas.style.width = this.tabbarCanvas.style.height = '1px';
+		this.tabbarCanvas.width = this.tabbarCanvas.height = 1;
 	},
  
 	updateTabbarTransparency : function() 
