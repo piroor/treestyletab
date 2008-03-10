@@ -805,6 +805,7 @@ TreeStyleTabBrowser.prototype = {
 							self.initTabContents(aTab);
 						});
 						if (this.autoHideEnabled) this.showTabbar();
+						this.updateTabbarTransparency();
 						break;
 
 					case 'extensions.treestyletab.tabbar.invertUI':
@@ -845,7 +846,7 @@ TreeStyleTabBrowser.prototype = {
 
 					case 'extensions.treestyletab.tabbar.invertScrollbar':
 						if (value &&
-							this.mTabBrowser.getAttribute(this.kTABBAR_POSITION) == 'left' &&
+							b.getAttribute(this.kTABBAR_POSITION) == 'left' &&
 							this.isGecko18)
 							b.setAttribute(this.kSCROLLBAR_INVERTED, true);
 						else
@@ -853,7 +854,7 @@ TreeStyleTabBrowser.prototype = {
 						break;
 
 					case 'extensions.treestyletab.tabbar.hideAlltabsButton':
-						var pos = this.mTabBrowser.getAttribute(this.kTABBAR_POSITION);
+						var pos = b.getAttribute(this.kTABBAR_POSITION);
 						if (value && (pos == 'left' || pos == 'right'))
 							b.setAttribute(this.kHIDE_ALLTABS, true);
 						else
@@ -868,17 +869,11 @@ TreeStyleTabBrowser.prototype = {
 						break;
 
 					case 'extensions.treestyletab.tabbar.autoHide.enabled':
-						var pos = this.mTabBrowser.getAttribute(this.kTABBAR_POSITION);
+						var pos = b.getAttribute(this.kTABBAR_POSITION);
 						if (value/* && (pos == 'left' || pos == 'right')*/)
 							this.startAutoHide();
 						else
 							this.endAutoHide();
-					case 'extensions.treestyletab.tabbar.transparent':
-						if (this.getPref('extensions.treestyletab.tabbar.autoHide.enabled') &&
-							this.getPref('extensions.treestyletab.tabbar.transparent'))
-							b.setAttribute(this.kTRANSPARENT, true);
-						else
-							b.removeAttribute(this.kTRANSPARENT);
 						break;
 
 					case 'extensions.treestyletab.tabbar.autoShow.mousemove':
@@ -893,6 +888,10 @@ TreeStyleTabBrowser.prototype = {
 							b.setAttribute(this.kFIXED, true);
 						else
 							b.removeAttribute(this.kFIXED);
+						break;
+
+					case 'extensions.treestyletab.tabbar.transparent':
+						this.updateTabbarTransparency();
 						break;
 
 					default:
@@ -2774,7 +2773,7 @@ TreeStyleTabBrowser.prototype = {
 						0
 					)
 				);
-				if (this.getTreePref('tabbar.transparent'))
+				if (this.mTabBrowser.getAttribute(this.kTRANSPARENT) == 'true')
 					this.drawTabbarCanvas();
 				else
 					this.clearTabbarCanvas();
@@ -2831,6 +2830,17 @@ TreeStyleTabBrowser.prototype = {
 			this.tabbarCanvas.width = 
 			this.tabbarCanvas.height = 0;
 	},
+ 
+	updateTabbarTransparency : function() 
+	{
+		var pos = this.mTabBrowser.getAttribute(this.kTABBAR_POSITION);
+		if (pos != 'top' &&
+			this.getTreePref('tabbar.autoHide.enabled') &&
+			this.getTreePref('tabbar.transparent'))
+			this.mTabBrowser.setAttribute(this.kTRANSPARENT, true);
+		else
+			this.mTabBrowser.removeAttribute(this.kTRANSPARENT);
+	},
   
 /* auto hide */ 
 	autoHideEnabled : false,
@@ -2854,6 +2864,7 @@ TreeStyleTabBrowser.prototype = {
 			this.startListenMouseMove();
 
 		this.clearTabbarCanvas();
+		this.updateTabbarTransparency();
 
 		this.tabbarShown = true;
 		this.showHideTabbarInternal();
@@ -2872,6 +2883,7 @@ TreeStyleTabBrowser.prototype = {
 		this.endListenMouseMove();
 
 		this.clearTabbarCanvas();
+		this.updateTabbarTransparency();
 
 		this.container.style.margin = 0;
 		this.mTabBrowser.removeAttribute(this.kAUTOHIDE);
