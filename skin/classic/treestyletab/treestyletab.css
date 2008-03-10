@@ -432,3 +432,14 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-button {
 	min-height: 0 !important;
 	height: 16px !important;
 }
+
+
+
+/* transaprent tab bar */
+tabbrowser[treestyletab-tabbar-transparent="true"] .tabbrowser-tab {
+	opacity: 0.85;
+}
+tabbrowser[treestyletab-tabbar-transparent="true"] .tabbrowser-tabs:hover .tabbrowser-tab {
+	opacity: 1;
+}
+
