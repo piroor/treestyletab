@@ -2825,7 +2825,11 @@ TreeStyleTabBrowser.prototype = {
 	{
 		if (!this.tabbarCanvas) return;
 
-		this.tabbarCanvas.style.margin = this.tabbarCanvas.style.width = this.tabbarCanvas.style.height = 0;
+		this.tabbarCanvas.style.margin =
+			this.tabbarCanvas.style.width =
+			this.tabbarCanvas.style.height = 
+			this.tabbarCanvas.width = 
+			this.tabbarCanvas.height = 0;
 	},
   
 /* auto hide */ 
@@ -2871,6 +2875,7 @@ TreeStyleTabBrowser.prototype = {
 
 		this.container.style.margin = 0;
 		this.mTabBrowser.removeAttribute(this.kAUTOHIDE);
+		this.mTabBrowser.removeAttribute(this.kTRANSPARENT);
 		this.tabbarShown = true;
 	},
  
