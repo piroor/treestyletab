@@ -5,7 +5,7 @@
 window.addEventListener('DOMContentLoaded', function() {
 	window.removeEventListener('DOMContentLoaded', arguments.callee, true);
 
-	const currentRevision = 1;
+	const currentRevision = 2;
 	var root = document.documentElement;
 
 	var loadedRevision = root.getAttribute('fullScreenCanvas');
@@ -130,6 +130,7 @@ window.addEventListener('DOMContentLoaded', function() {
 		init : function() {
 			var canvas = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
 			canvas.setAttribute('id', 'fullScreenCanvas-canvas');
+			canvas.setAttribute('style', 'width:0;height:0;');
 			if (!this.isGecko19) {
 				this.container.appendChild(canvas);
 				return
