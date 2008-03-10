@@ -168,6 +168,10 @@ window.addEventListener('DOMContentLoaded', function() {
 		},
 
 		destroy : function() {
+			var range = document.createRange();
+			range.selectNodeContents(this.container);
+			range.deleteContents();
+			range.detach();
 		}
 	};
 
