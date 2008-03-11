@@ -11,7 +11,9 @@ pref("extensions.treestyletab.tabbar.autoHide.enabled",    false);
 pref("extensions.treestyletab.tabbar.autoHide.delay",      50);
 pref("extensions.treestyletab.tabbar.autoHide.area",       25);
 pref("extensions.treestyletab.tabbar.autoHide.expandArea", false);
-pref("extensions.treestyletab.tabbar.transparent", true);
+// 0 = not transparent, 1 = partial transparent, 2 = completely transparent
+pref("extensions.treestyletab.tabbar.transparent.style", 1);
+pref("extensions.treestyletab.tabbar.transparent.partialTransparency", "0.25");
 pref("extensions.treestyletab.tabbar.autoShow.mousemove", true);
 pref("extensions.treestyletab.tabbar.autoShow.accelKeyDown", true);
 pref("extensions.treestyletab.tabbar.autoShow.accelKeyDown.delay", 800);

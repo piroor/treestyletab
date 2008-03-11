@@ -2773,7 +2773,7 @@ TreeStyleTabBrowser.prototype = {
 						0
 					)
 				);
-				if (this.mTabBrowser.getAttribute(this.kTRANSPARENT) == 'true')
+				if (this.mTabBrowser.getAttribute(this.kTRANSPARENT) != this.kTRANSPARENT_STYLE[this.kTRANSPARENT_NONE])
 					this.drawTabbarCanvas();
 				else
 					this.clearTabbarCanvas();
@@ -2818,7 +2818,14 @@ TreeStyleTabBrowser.prototype = {
 		var ctx = this.tabbarCanvas.getContext('2d');
 		ctx.clearRect(0, 0, w, h);
 		ctx.save();
+		ctx.globalAlpha = 1;
 		ctx.drawWindow(frame, x+frame.scrollX, y+frame.scrollY, w, h, '-moz-field');
+		if (this.mTabBrowser.getAttribute(this.kTRANSPARENT) != this.kTRANSPARENT_STYLE[this.kTRANSPARENT_FULL]) {
+			var alpha = Number(this.getTreePref('tabbar.transparent.partialTransparency'));
+			if (isNaN(alpha)) alpha = 0.25;
+			ctx.globalAlpha = alpha;
+			ctx.fillRect(0, 0, w, h);
+		}
 		ctx.restore();
 	},
  
@@ -2836,10 +2843,19 @@ TreeStyleTabBrowser.prototype = {
 	updateTabbarTransparency : function() 
 	{
 		var pos = this.mTabBrowser.getAttribute(this.kTABBAR_POSITION);
+		var style = this.kTRANSPARENT_STYLE[
+				Math.max(
+					this.kTRANSPARENT_NONE,
+					Math.min(
+						this.kTRANSPARENT_FULL,
+						this.getTreePref('tabbar.transparent.style')
+					)
+				)
+			];
 		if (pos != 'top' &&
 			this.getTreePref('tabbar.autoHide.enabled') &&
-			this.getTreePref('tabbar.transparent'))
-			this.mTabBrowser.setAttribute(this.kTRANSPARENT, true);
+			style != this.kTRANSPARENT_STYLE[this.kTRANSPARENT_NONE])
+			this.mTabBrowser.setAttribute(this.kTRANSPARENT, style);
 		else
 			this.mTabBrowser.removeAttribute(this.kTRANSPARENT);
 	},

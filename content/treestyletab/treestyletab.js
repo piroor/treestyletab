@@ -60,6 +60,11 @@ var TreeStyleTabService = {
 	kSHOWN_BY_MOUSEMOVE : 2,
 	kSHOWN_BY_FEEDBACK  : 3,
 
+	kTRANSPARENT_NONE : 0,
+	kTRANSPARENT_PART : 1,
+	kTRANSPARENT_FULL : 2,
+	kTRANSPARENT_STYLE : ['none', 'part', 'full'],
+
 	kINSERT_FISRT : 0,
 	kINSERT_LAST  : 1,
 
