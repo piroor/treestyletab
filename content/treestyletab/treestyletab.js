@@ -1265,7 +1265,8 @@ catch(e) {
 			this.accelKeyPressed
 			) {
 			if (this.getTreePref('tabbar.autoShow.accelKeyDown') && 
-				!sv.tabbarShown) {
+				!sv.tabbarShown &&
+				!this.delayedAutoShowTimer) {
 				this.delayedAutoShowTimer = window.setTimeout(
 					function(aSelf) {
 						aSelf.delayedAutoShowDone = true;
@@ -1284,7 +1285,7 @@ catch(e) {
 	cancelDelayedAutoShow : function()
 	{
 		if (this.delayedAutoShowTimer) {
-			window.clearInterval(this.delayedAutoShowTimer);
+			window.clearTimeout(this.delayedAutoShowTimer);
 			this.delayedAutoShowTimer = null;
 		}
 	},
