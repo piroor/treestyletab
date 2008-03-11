@@ -21,15 +21,15 @@
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.mixed   "混合">
 
-<!ENTITY config.twisty.style.caption "Tree twisties">
-<!ENTITY config.twisty.style.auto    "Auto">
-<!ENTITY config.twisty.style.none    "None">
-<!ENTITY config.twisty.style.retro   "Retro">
-<!ENTITY config.twisty.style.modern.black "Black Modern">
-<!ENTITY config.twisty.style.modern.white "White Modern">
+<!ENTITY config.twisty.style.caption "树的标题点外观">
+<!ENTITY config.twisty.style.auto    "自动">
+<!ENTITY config.twisty.style.none    "无">
+<!ENTITY config.twisty.style.retro   "怀旧">
+<!ENTITY config.twisty.style.modern.black "黑色现代">
+<!ENTITY config.twisty.style.modern.white "白色现代">
 
 
-<!ENTITY config.tabs.menu "Menu">
+<!ENTITY config.tabs.menu "菜单">
 
 <!ENTITY config.show.tabContextMenu.caption "在标签的上下文菜单中添加以下项目">
 <!ENTITY config.show.openSelectionLinks "添加 &quot;在标签上打开选择链接&quot; 到上下文菜单">
@@ -68,14 +68,14 @@
 <!ENTITY config.jsopen.forcetab "在任何情况下在标签而非窗口中打开 (推荐)">
 
 
-<!ENTITY config.tabs.autohide "Auto hide">
+<!ENTITY config.tabs.autohide "自动隐藏">
 
 <!ENTITY config.tabbar.autoHide.enabled     "自动隐藏标签栏">
-<!ENTITY config.tabbar.autoShow.caption "Show tab bar automatically when">
-<!ENTITY config.tabbar.autoShow.mousemove "Mouse cursor points window edges">
-<!ENTITY config.tabbar.autoShow.accelKeyDown "Control(Command) key is pressed a while">
-<!ENTITY config.tabbar.autoShow.tabSwitch   "Control(Command)-Tab to switch tabs">
-<!ENTITY config.tabbar.autoShow.feedback    "Nwe tabs are opened or some tabs are closed">
+<!ENTITY config.tabbar.autoShow.caption "自动显示标签栏，当">
+<!ENTITY config.tabbar.autoShow.mousemove "鼠标指针在窗口边缘时">
+<!ENTITY config.tabbar.autoShow.accelKeyDown "按下Control(命令)键片刻之时">
+<!ENTITY config.tabbar.autoShow.tabSwitch   "用Control(命令)-Tab切换标签时">
+<!ENTITY config.tabbar.autoShow.feedback    "打开新标签或关闭其他标签时">
 
 
 <!ENTITY config.tabs.advanced "高级">
