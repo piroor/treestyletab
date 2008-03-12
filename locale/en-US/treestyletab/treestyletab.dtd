@@ -75,7 +75,7 @@
 <!ENTITY config.tabbar.autoShow.mousemove "Mouse cursor points window edges">
 <!ENTITY config.tabbar.autoShow.accelKeyDown "Control(Command) key is pressed a while">
 <!ENTITY config.tabbar.autoShow.tabSwitch   "Control(Command)-Tab to switch tabs">
-<!ENTITY config.tabbar.autoShow.feedback    "Nwe tabs are opened or some tabs are closed">
+<!ENTITY config.tabbar.autoShow.feedback    "New tabs are opened or some tabs are closed">
 
 
 <!ENTITY config.tabs.advanced "Advanced">
