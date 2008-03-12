@@ -1,0 +1,27 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+radio[pane="prefpane-appearance"]:hover,
+radio[pane="prefpane-appearance"][selected="true"] {
+	-moz-image-region: rect(0px, 32px, 32px, 0px);
+}
+
+radio[pane="prefpane-menu"]:hover,
+radio[pane="prefpane-menu"][selected="true"] {
+	-moz-image-region: rect(0px, 32px, 32px, 0px);
+}
+
+radio[pane="prefpane-tab"]:hover,
+radio[pane="prefpane-tab"][selected="true"] {
+	-moz-image-region: rect(0px, 64px, 32px, 32px);
+}
+
+radio[pane="prefpane-autohide"]:hover,
+radio[pane="prefpane-autohide"][selected="true"] {
+	-moz-image-region: rect(0px, 64px, 32px, 32px);
+}
+
+radio[pane="prefpane-advanced"]:hover,
+radio[pane="prefpane-advanced"][selected="true"] {
+	-moz-image-region: rect(0px, 224px, 32px, 192px);
+}
+
