@@ -353,7 +353,7 @@ TreeStyleTabBrowser.prototype = {
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.hideAlltabsButton');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.allowSubtreeCollapseExpand');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.fixed');
-		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.transparent');
+		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.transparent.style');
 		window.setTimeout(function() {
 			b.treeStyleTab.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.autoHide.enabled');
 		}, 0);
@@ -890,7 +890,7 @@ TreeStyleTabBrowser.prototype = {
 							b.removeAttribute(this.kFIXED);
 						break;
 
-					case 'extensions.treestyletab.tabbar.transparent':
+					case 'extensions.treestyletab.tabbar.transparent.style':
 						this.updateTabbarTransparency();
 						break;
 
