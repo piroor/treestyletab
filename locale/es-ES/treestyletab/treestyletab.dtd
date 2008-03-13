@@ -70,12 +70,25 @@
 
 <!ENTITY config.tabs.autohide "Auto hide">
 
-<!ENTITY config.tabbar.autoHide.enabled     "Auto-ocultar la barra de pestañas">
-<!ENTITY config.tabbar.autoShow.caption "Show tab bar automatically when">
-<!ENTITY config.tabbar.autoShow.mousemove "Mouse cursor points window edges">
-<!ENTITY config.tabbar.autoShow.accelKeyDown "Control(Command) key is pressed a while">
-<!ENTITY config.tabbar.autoShow.tabSwitch   "Control(Command)-Tab to switch tabs">
-<!ENTITY config.tabbar.autoShow.feedback    "New tabs are opened or some tabs are closed">
+<!ENTITY config.autoHide.enabled     "Auto-ocultar la barra de pestañas">
+<!ENTITY config.autoShow.caption "Show tab bar automatically when">
+<!ENTITY config.autoShow.mousemove "Mouse cursor points window edges">
+<!ENTITY config.autoHide.area.before "Área sensible:">
+<!ENTITY config.autoHide.area.after "pixeles del borde de la ventana">
+<!ENTITY config.autoHide.delay.before "Retraso:">
+<!ENTITY config.autoHide.delay.after "mseg.">
+<!ENTITY config.autoShow.accelKeyDown "Control(Command) key is pressed a while">
+<!ENTITY config.autoShow.accelKeyDown.delay.before "Show after">
+<!ENTITY config.autoShow.accelKeyDown.delay.after  "msec.">
+<!ENTITY config.autoShow.tabSwitch   "Control(Command)-Tab to switch tabs">
+<!ENTITY config.autoShow.feedback    "New tabs are opened or some tabs are closed">
+<!ENTITY config.autoShow.feedback.delay.before "Hide after">
+<!ENTITY config.autoShow.feedback.delay.after  "msec.">
+
+<!ENTITY config.transparent.style.caption "Background of tab bar">
+<!ENTITY config.transparent.style.0 "Solid">
+<!ENTITY config.transparent.style.1 "Half-transparent">
+<!ENTITY config.transparent.style.2 "Transparent">
 
 
 <!ENTITY config.tabs.advanced "Avanzado">
@@ -92,12 +105,6 @@
 <!ENTITY config.insertNewChildAt.caption "Posición de inserción de nuevas pestañas hijas">
 <!ENTITY config.insertNewChildAt.first "Insertar arriba del todo en el árbol">
 <!ENTITY config.insertNewChildAt.last "Insertar abajo del todo en el árbol">
-
-<!ENTITY config.autoHide.caption "Auto-ocultar la barra de pestañas">
-<!ENTITY config.autoHide.area.before "Área sensible:">
-<!ENTITY config.autoHide.area.after "pixeles del borde de la ventana">
-<!ENTITY config.autoHide.delay.before "Retraso:">
-<!ENTITY config.autoHide.delay.after "mseg.">
 
 
 

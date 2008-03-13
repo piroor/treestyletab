@@ -70,12 +70,25 @@
 
 <!ENTITY config.tabs.autohide "自動的に隠す">
 
-<!ENTITY config.tabbar.autoHide.enabled "タブバーを自動的に隠す">
-<!ENTITY config.tabbar.autoShow.caption "以下の場合に自動的にタブバーを表示する">
-<!ENTITY config.tabbar.autoShow.mousemove "ウィンドウの端にポインタが近づいた時">
-<!ENTITY config.tabbar.autoShow.accelKeyDown "Control(Command)キーを長押しした時">
-<!ENTITY config.tabbar.autoShow.tabSwitch   "Control(Command)-Tabでタブを切り替える時">
-<!ENTITY config.tabbar.autoShow.feedback    "新しいタブが開かれたりタブが閉じられたりした時">
+<!ENTITY config.autoHide.enabled "タブバーを自動的に隠す">
+<!ENTITY config.autoShow.caption "以下の場合に自動的にタブバーを表示する">
+<!ENTITY config.autoShow.mousemove "ウィンドウの端にポインタが近づいた時">
+<!ENTITY config.autoHide.area.before "反応する領域：ウィンドウの端から">
+<!ENTITY config.autoHide.area.after "ピクセルの範囲">
+<!ENTITY config.autoHide.delay.before "遅延：">
+<!ENTITY config.autoHide.delay.after "ミリ秒">
+<!ENTITY config.autoShow.accelKeyDown "Control(Command)キーを長押しした時">
+<!ENTITY config.autoShow.accelKeyDown.delay.before "">
+<!ENTITY config.autoShow.accelKeyDown.delay.after  "ミリ秒以上で反応">
+<!ENTITY config.autoShow.tabSwitch   "Control(Command)-Tabでタブを切り替える時">
+<!ENTITY config.autoShow.feedback    "新しいタブが開かれたりタブが閉じられたりした時">
+<!ENTITY config.autoShow.feedback.delay.before "">
+<!ENTITY config.autoShow.feedback.delay.after  "ミリ秒後に自動で隠す">
+
+<!ENTITY config.transparent.style.caption "自動で隠す時のタブバーの背景">
+<!ENTITY config.transparent.style.0 "透過しない">
+<!ENTITY config.transparent.style.1 "半透明">
+<!ENTITY config.transparent.style.2 "完全な透明">
 
 
 <!ENTITY config.tabs.advanced "詳細">
@@ -92,12 +105,6 @@
 <!ENTITY config.insertNewChildAt.caption "新しい子タブを開く位置">
 <!ENTITY config.insertNewChildAt.first "サブツリーの最初の位置に挿入する">
 <!ENTITY config.insertNewChildAt.last "サブツリーの末尾に追加する">
-
-<!ENTITY config.autoHide.caption "タブバーを自動的に隠す">
-<!ENTITY config.autoHide.area.before "反応する領域：ウィンドウの端から">
-<!ENTITY config.autoHide.area.after "ピクセルの範囲">
-<!ENTITY config.autoHide.delay.before "遅延：">
-<!ENTITY config.autoHide.delay.after "ミリ秒">
 
 
 

@@ -22,7 +22,7 @@
 <!ENTITY config.tabbar.style.mixed   "Misto">
 
 <!ENTITY config.twisty.style.caption "Aspetto controlli contrazione/espansione sottoalberi">
-<!ENTITY config.twisty.style.auto    "Auto"><!-- not translated yet -->
+<!ENTITY config.twisty.style.auto    "Automatico">
 <!ENTITY config.twisty.style.none    "Nessuno">
 <!ENTITY config.twisty.style.retro   "Retro">
 <!ENTITY config.twisty.style.modern.black "Black Modern">
@@ -68,14 +68,27 @@
 <!ENTITY config.jsopen.forcetab "ad aprirsi tutti in nuove schede (Raccomandato)">
 
 
-<!ENTITY config.tabs.autohide "Auto hide">
+<!ENTITY config.tabs.autohide "Visualizzazione">
 
-<!ENTITY config.tabbar.autoHide.enabled     "Nascondi automaticamente la barra delle schede">
-<!ENTITY config.tabbar.autoShow.caption "Show tab bar automatically when">
-<!ENTITY config.tabbar.autoShow.mousemove "Mouse cursor points window edges">
-<!ENTITY config.tabbar.autoShow.accelKeyDown "Control(Command) key is pressed a while">
-<!ENTITY config.tabbar.autoShow.tabSwitch   "Control(Command)-Tab to switch tabs">
-<!ENTITY config.tabbar.autoShow.feedback    "New tabs are opened or some tabs are closed">
+<!ENTITY config.autoHide.enabled     "Nascondi automaticamente la barra delle schede">
+<!ENTITY config.autoShow.caption "Visualizza la barra della schede quando">
+<!ENTITY config.autoShow.mousemove "Viene spostato il mouse in prossimità del bordo della finestra">
+<!ENTITY config.autoHide.area.before "Area di attivazione:">
+<!ENTITY config.autoHide.area.after "distanza dai bordi della finestra (in pixel)">
+<!ENTITY config.autoHide.delay.before "Ritardo:">
+<!ENTITY config.autoHide.delay.after "msec.">
+<!ENTITY config.autoShow.accelKeyDown "Viene tenuto premuto il tasto Control (Command)">
+<!ENTITY config.autoShow.accelKeyDown.delay.before "Show after">
+<!ENTITY config.autoShow.accelKeyDown.delay.after  "msec.">
+<!ENTITY config.autoShow.tabSwitch   "Viene utilizzata la scorciatoia Control (Command)+Tab per passare da una scheda all&apos;altra">
+<!ENTITY config.autoShow.feedback    "Viene aperta o chiusa una scheda">
+<!ENTITY config.autoShow.feedback.delay.before "Hide after">
+<!ENTITY config.autoShow.feedback.delay.after  "msec.">
+
+<!ENTITY config.transparent.style.caption "Background of tab bar">
+<!ENTITY config.transparent.style.0 "Solid">
+<!ENTITY config.transparent.style.1 "Half-transparent">
+<!ENTITY config.transparent.style.2 "Transparent">
 
 
 <!ENTITY config.tabs.advanced "Avanzate">
@@ -92,12 +105,6 @@
 <!ENTITY config.insertNewChildAt.caption "Posizione di inserimento di nuove schede figlie">
 <!ENTITY config.insertNewChildAt.first "Inserisci all&apos;inizio del sottoalbero, come prima figlia">
 <!ENTITY config.insertNewChildAt.last "Accoda all&apos;ultimo sottoalbero">
-
-<!ENTITY config.autoHide.caption "Nascondi automaticamente la barra delle schede">
-<!ENTITY config.autoHide.area.before "Area di attivazione:">
-<!ENTITY config.autoHide.area.after "distanza dai bordi della finestra (in pixel)">
-<!ENTITY config.autoHide.delay.before "Ritardo:">
-<!ENTITY config.autoHide.delay.after "msec.">
 
 
 

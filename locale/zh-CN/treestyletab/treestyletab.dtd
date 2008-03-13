@@ -70,12 +70,25 @@
 
 <!ENTITY config.tabs.autohide "自动隐藏">
 
-<!ENTITY config.tabbar.autoHide.enabled     "自动隐藏标签栏">
-<!ENTITY config.tabbar.autoShow.caption "自动显示标签栏，当">
-<!ENTITY config.tabbar.autoShow.mousemove "鼠标指针在窗口边缘时">
-<!ENTITY config.tabbar.autoShow.accelKeyDown "按下Control(命令)键片刻之时">
-<!ENTITY config.tabbar.autoShow.tabSwitch   "用Control(命令)-Tab切换标签时">
-<!ENTITY config.tabbar.autoShow.feedback    "打开新标签或关闭其他标签时">
+<!ENTITY config.autoHide.enabled     "自动隐藏标签栏">
+<!ENTITY config.autoShow.caption "自动显示标签栏，当">
+<!ENTITY config.autoShow.mousemove "鼠标指针在窗口边缘时">
+<!ENTITY config.autoHide.area.before "敏感区域:">
+<!ENTITY config.autoHide.area.after "个像素（距离窗口边缘）">
+<!ENTITY config.autoHide.delay.before "延迟:">
+<!ENTITY config.autoHide.delay.after "毫秒">
+<!ENTITY config.autoShow.accelKeyDown "按下Control(命令)键片刻之时">
+<!ENTITY config.autoShow.accelKeyDown.delay.before "Show after">
+<!ENTITY config.autoShow.accelKeyDown.delay.after  "msec.">
+<!ENTITY config.autoShow.tabSwitch   "用Control(命令)-Tab切换标签时">
+<!ENTITY config.autoShow.feedback    "打开新标签或关闭其他标签时">
+<!ENTITY config.autoShow.feedback.delay.before "Hide after">
+<!ENTITY config.autoShow.feedback.delay.after  "msec.">
+
+<!ENTITY config.transparent.style.caption "Background of tab bar">
+<!ENTITY config.transparent.style.0 "Solid">
+<!ENTITY config.transparent.style.1 "Half-transparent">
+<!ENTITY config.transparent.style.2 "Transparent">
 
 
 <!ENTITY config.tabs.advanced "高级">
@@ -92,12 +105,6 @@
 <!ENTITY config.insertNewChildAt.caption "新建子标签的插入位置">
 <!ENTITY config.insertNewChildAt.first "插入到子树顶部，成为首个子标签">
 <!ENTITY config.insertNewChildAt.last "添加到子树的最后">
-
-<!ENTITY config.autoHide.caption "自动隐藏标签栏">
-<!ENTITY config.autoHide.area.before "敏感区域:">
-<!ENTITY config.autoHide.area.after "个像素（距离窗口边缘）">
-<!ENTITY config.autoHide.delay.before "延迟:">
-<!ENTITY config.autoHide.delay.after "毫秒">
 
 
 

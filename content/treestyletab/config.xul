@@ -340,36 +340,105 @@
 		<preference id="extensions.treestyletab.tabbar.autoShow.mousemove"
 			name="extensions.treestyletab.tabbar.autoShow.mousemove"
 			type="bool"/>
+		<preference id="extensions.treestyletab.tabbar.autoHide.area"
+			name="extensions.treestyletab.tabbar.autoHide.area"
+			type="int"/>
+		<preference id="extensions.treestyletab.tabbar.autoHide.delay"
+			name="extensions.treestyletab.tabbar.autoHide.delay"
+			type="int"/>
 		<preference id="extensions.treestyletab.tabbar.autoShow.accelKeyDown"
 			name="extensions.treestyletab.tabbar.autoShow.accelKeyDown"
 			type="bool"/>
+		<preference id="extensions.treestyletab.tabbar.autoShow.accelKeyDown.delay"
+			name="extensions.treestyletab.tabbar.autoShow.accelKeyDown.delay"
+			type="int"/>
 		<preference id="extensions.treestyletab.tabbar.autoShow.tabSwitch"
 			name="extensions.treestyletab.tabbar.autoShow.tabSwitch"
 			type="bool"/>
 		<preference id="extensions.treestyletab.tabbar.autoShow.feedback"
 			name="extensions.treestyletab.tabbar.autoShow.feedback"
 			type="bool"/>
+		<preference id="extensions.treestyletab.tabbar.autoShow.feedback.delay"
+			name="extensions.treestyletab.tabbar.autoShow.feedback.delay"
+			type="int"/>
+		<preference id="extensions.treestyletab.tabbar.transparent.style"
+			name="extensions.treestyletab.tabbar.transparent.style"
+			type="int"/>
 	</preferences>
 
 	<vbox>
 
 		<checkbox id="extensions.treestyletab.tabbar.autoHide.enabled-check"
 			preference="extensions.treestyletab.tabbar.autoHide.enabled"
-			label="&config.tabbar.autoHide.enabled;"/>
+			label="&config.autoHide.enabled;"/>
+
 		<groupbox orient="vertical">
-			<caption label="&config.tabbar.autoShow.caption;"/>
+			<caption label="&config.autoShow.caption;"/>
 			<checkbox id="extensions.treestyletab.tabbar.autoShow.mousemove-check"
 				preference="extensions.treestyletab.tabbar.autoShow.mousemove"
-				label="&config.tabbar.autoShow.mousemove;"/>
+				label="&config.autoShow.mousemove;"/>
+			<hbox align="center">
+				<spacer style="width:1em;"/>
+				<label value="&config.autoHide.area.before;"
+					control="extensions.treestyletab.tabbar.autoHide.area-textbox"/>
+				<textbox id="extensions.treestyletab.tabbar.autoHide.area-textbox"
+					preference="extensions.treestyletab.tabbar.autoHide.area"
+					type="number"
+					min="0" increment="1" style="width:4em;"/>
+				<label value="&config.autoHide.area.after;"
+					control="extensions.treestyletab.tabbar.autoHide.area-textbox"/>
+			</hbox>
+			<hbox align="center">
+				<spacer style="width:1em;"/>
+				<label value="&config.autoHide.delay.before;"
+					control="extensions.treestyletab.tabbar.autoHide.delay-textbox"/>
+				<textbox id="extensions.treestyletab.tabbar.autoHide.delay-textbox"
+					preference="extensions.treestyletab.tabbar.autoHide.delay"
+					type="number"
+					min="0" increment="1" style="width:4em;"/>
+				<label value="&config.autoHide.delay.after;"
+					control="extensions.treestyletab.tabbar.autoHide.delay-textbox"/>
+			</hbox>
 			<checkbox id="extensions.treestyletab.tabbar.autoShow.accelKeyDown-check"
 				preference="extensions.treestyletab.tabbar.autoShow.accelKeyDown"
-				label="&config.tabbar.autoShow.accelKeyDown;"/>
+				label="&config.autoShow.accelKeyDown;"/>
+			<hbox align="center">
+				<spacer style="width:1em;"/>
+				<label value="&config.autoShow.accelKeyDown.delay.before;"
+					control="extensions.treestyletab.tabbar.autoShow.accelKeyDown.delay-textbox"/>
+				<textbox id="extensions.treestyletab.tabbar.autoShow.accelKeyDown.delay-textbox"
+					preference="extensions.treestyletab.tabbar.autoShow.accelKeyDown.delay"
+					type="number"
+					min="0" increment="1" style="width:4em;"/>
+				<label value="&config.autoShow.accelKeyDown.delay.after;"
+					control="extensions.treestyletab.tabbar.autoShow.accelKeyDown.delay-textbox"/>
+			</hbox>
 			<checkbox id="extensions.treestyletab.tabbar.autoShow.tabSwitch-check"
 				preference="extensions.treestyletab.tabbar.autoShow.tabSwitch"
-				label="&config.tabbar.autoShow.tabSwitch;"/>
+				label="&config.autoShow.tabSwitch;"/>
 			<checkbox id="extensions.treestyletab.tabbar.autoShow.feedback-check"
 				preference="extensions.treestyletab.tabbar.autoShow.feedback"
-				label="&config.tabbar.autoShow.feedback;"/>
+				label="&config.autoShow.feedback;"/>
+			<hbox align="center">
+				<spacer style="width:1em;"/>
+				<label value="&config.autoShow.feedback.delay.before;"
+					control="extensions.treestyletab.tabbar.autoShow.feedback.delay-textbox"/>
+				<textbox id="extensions.treestyletab.tabbar.autoShow.feedback.delay-textbox"
+					preference="extensions.treestyletab.tabbar.autoShow.feedback.delay"
+					type="number"
+					min="0" increment="1" style="width:4em;"/>
+				<label value="&config.autoShow.feedback.delay.after;"
+					control="extensions.treestyletab.tabbar.autoShow.feedback.delay-textbox"/>
+			</hbox>
+		</groupbox>
+		<groupbox orient="vertical">
+			<caption label="&config.transparent.style.caption;"/>
+			<radiogroup orient="horizontal"
+				preference="extensions.treestyletab.tabbar.transparent.style">
+				<radio label="&config.transparent.style.0;" value="0"/>
+				<radio label="&config.transparent.style.1;" value="1"/>
+				<radio label="&config.transparent.style.2;" value="2"/>
+			</radiogroup>
 		</groupbox>
 
 	</vbox>
@@ -396,12 +465,6 @@
 			type="int"/>
 		<preference id="extensions.treestyletab.insertNewChildAt"
 			name="extensions.treestyletab.insertNewChildAt"
-			type="int"/>
-		<preference id="extensions.treestyletab.tabbar.autoHide.area"
-			name="extensions.treestyletab.tabbar.autoHide.area"
-			type="int"/>
-		<preference id="extensions.treestyletab.tabbar.autoHide.delay"
-			name="extensions.treestyletab.tabbar.autoHide.delay"
 			type="int"/>
 	</preferences>
 
@@ -432,30 +495,6 @@
 			<radio value="0" label="&config.insertNewChildAt.first;"/>
 			<radio value="1" label="&config.insertNewChildAt.last;"/>
 		</radiogroup>
-	</groupbox>
-
-	<groupbox>
-		<caption label="&config.autoHide.caption;"/>
-		<hbox align="center">
-			<label value="&config.autoHide.area.before;"
-				control="extensions.treestyletab.tabbar.autoHide.area-textbox"/>
-			<textbox id="extensions.treestyletab.tabbar.autoHide.area-textbox"
-				preference="extensions.treestyletab.tabbar.autoHide.area"
-				type="number"
-				min="0" increment="1" style="width:4em;"/>
-			<label value="&config.autoHide.area.after;"
-				control="extensions.treestyletab.tabbar.autoHide.area-textbox"/>
-		</hbox>
-		<hbox align="center">
-			<label value="&config.autoHide.delay.before;"
-				control="extensions.treestyletab.tabbar.autoHide.delay-textbox"/>
-			<textbox id="extensions.treestyletab.tabbar.autoHide.delay-textbox"
-				preference="extensions.treestyletab.tabbar.autoHide.delay"
-				type="number"
-				min="0" increment="1" style="width:4em;"/>
-			<label value="&config.autoHide.delay.after;"
-				control="extensions.treestyletab.tabbar.autoHide.delay-textbox"/>
-		</hbox>
 	</groupbox>
 
 	</vbox>
