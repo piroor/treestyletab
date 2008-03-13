@@ -2773,7 +2773,8 @@ TreeStyleTabBrowser.prototype = {
 						0
 					)
 				);
-				if (this.mTabBrowser.getAttribute(this.kTRANSPARENT) != this.kTRANSPARENT_STYLE[this.kTRANSPARENT_NONE])
+				if (this.mTabBrowser.hasAttribute(this.kTRANSPARENT) &&
+					this.mTabBrowser.getAttribute(this.kTRANSPARENT) != this.kTRANSPARENT_STYLE[this.kTRANSPARENT_NONE])
 					this.drawTabbarCanvas();
 				else
 					this.clearTabbarCanvas();
