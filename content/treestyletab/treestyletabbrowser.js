@@ -967,6 +967,7 @@ TreeStyleTabBrowser.prototype = {
 						)
 						)
 						this.hideTabbar();
+					this.lastMouseDownTarget = aEvent.originalTarget.localName;
 				}
 				return;
 
@@ -976,6 +977,7 @@ TreeStyleTabBrowser.prototype = {
 					this.mTabBrowser.removeAttribute(this.kRESIZING);
 				}
 				this.cancelShowHideTabbarOnMousemove();
+				this.lastMouseDownTarget = null;
 				return;
 
 			case 'mousemove':
@@ -990,6 +992,8 @@ TreeStyleTabBrowser.prototype = {
 						this.showHideTabbarOnMousemove(aEvent);
 					return;
 				}
+				if (/^(scrollbar|thumb|slider|scrollbarbutton)$/i.test(this.lastMouseDownTarget))
+					return;
 			case 'resize':
 				if (this.tabbarShown) {
 					switch (this.mTabBrowser.getAttribute(this.kTABBAR_POSITION))
