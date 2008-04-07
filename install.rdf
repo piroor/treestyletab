@@ -14,6 +14,7 @@
   <em:translator>Godai71.Extenzilla (it-IT locale)</em:translator>
   <em:translator>Fatiaomao (zh-CN locale)</em:translator>
   <em:translator>tito (es-ES locale)</em:translator>
+  <em:translator>Andy Pillip (de-DE locale)</em:translator>
 
 
     <em:updateURL>http://piro.sakura.ne.jp/xul/update.rdf</em:updateURL>
@@ -48,6 +49,12 @@
       <RDF:Description em:locale="es-ES"
                        em:name="Tree Style Tab (Pestañas estilo árbol)"
                        em:description="Muesta las pestañas en vista de árbol"
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"/>
+    </em:localized>
+    <em:localized>
+      <RDF:Description em:locale="de-DE"
+                       em:name="Tree Style Tab"
+                       em:description="Stellt Tabs in einer Baumstukur dar"
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"/>
     </em:localized>
 
