@@ -70,12 +70,25 @@
 
 <!ENTITY config.tabs.autohide "Im Hintergrund">
 
-<!ENTITY config.tabbar.autoHide.enabled      "Tableiste immer im Hintergrund">
-<!ENTITY config.tabbar.autoShow.caption      "Tableiste automatisch anzeigen">
-<!ENTITY config.tabbar.autoShow.mousemove    "Wenn der Mauszeiger die Fensterecken berührt">
-<!ENTITY config.tabbar.autoShow.accelKeyDown "Wenn die Strg-Taste eine Zeit lang gedrückt wird">
-<!ENTITY config.tabbar.autoShow.tabSwitch    "Wenn Strg+Tab (wechselt zwischen Tabs) gedrückt wird">
-<!ENTITY config.tabbar.autoShow.feedback     "Wenn neue Tabs geöffnet oder alte geschlossen werden">
+<!ENTITY config.autoHide.enabled      "Tableiste immer im Hintergrund">
+<!ENTITY config.autoShow.caption      "Tableiste automatisch anzeigen">
+<!ENTITY config.autoShow.mousemove    "Wenn der Mauszeiger die Fensterecken berührt">
+<!ENTITY config.autoHide.area.before "Empfindlicher Bereich:">
+<!ENTITY config.autoHide.area.after "Pixel rund um die Fensterecken">
+<!ENTITY config.autoHide.delay.before "Verzögerung:">
+<!ENTITY config.autoHide.delay.after "msec.">
+<!ENTITY config.autoShow.accelKeyDown "Wenn die Strg-Taste eine Zeit lang gedrückt wird">
+<!ENTITY config.autoShow.accelKeyDown.delay.before "Show after">
+<!ENTITY config.autoShow.accelKeyDown.delay.after  "msec.">
+<!ENTITY config.autoShow.tabSwitch    "Wenn Strg+Tab (wechselt zwischen Tabs) gedrückt wird">
+<!ENTITY config.autoShow.feedback     "Wenn neue Tabs geöffnet oder alte geschlossen werden">
+<!ENTITY config.autoShow.feedback.delay.before "Hide after">
+<!ENTITY config.autoShow.feedback.delay.after  "msec.">
+
+<!ENTITY config.transparent.style.caption "Background of tab bar">
+<!ENTITY config.transparent.style.0 "Solid">
+<!ENTITY config.transparent.style.1 "Half-transparent">
+<!ENTITY config.transparent.style.2 "Transparent">
 
 
 <!ENTITY config.tabs.advanced "Erweitert">
@@ -92,12 +105,6 @@
 <!ENTITY config.insertNewChildAt.caption "Einfügeposition neuer untergeordneter Tabs">
 <!ENTITY config.insertNewChildAt.first "Oben im Zweig einfügen">
 <!ENTITY config.insertNewChildAt.last "Unten im Zweig einfügen">
-
-<!ENTITY config.autoHide.caption "Immer im Hintergrund">
-<!ENTITY config.autoHide.area.before "Empfindlicher Bereich:">
-<!ENTITY config.autoHide.area.after "Pixel rund um die Fensterecken">
-<!ENTITY config.autoHide.delay.before "Verzögerung:">
-<!ENTITY config.autoHide.delay.after "msec.">
 
 
 

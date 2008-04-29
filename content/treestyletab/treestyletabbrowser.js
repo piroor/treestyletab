@@ -940,7 +940,7 @@ TreeStyleTabBrowser.prototype = {
 			case 'dblclick':
 				var tab = this.getTabFromEvent(aEvent);
 				if (tab &&
-					tab.getAttribute(this.kCHILDREN) &&
+					this.hasChildTabs(tab) &&
 					this.getTreePref('collapseExpandSubTree.dblclick')) {
 					this.collapseExpandSubtree(tab, tab.getAttribute(this.kSUBTREE_COLLAPSED) != 'true');
 					aEvent.preventDefault();
@@ -1231,7 +1231,7 @@ TreeStyleTabBrowser.prototype = {
 
 //		var rebuildTreeDone = false;
 
-		if (tab.getAttribute(this.kCHILDREN) && !this.isSubTreeMoving) {
+		if (this.hasChildTabs(tab) && !this.isSubTreeMoving) {
 			this.moveTabSubTreeTo(tab, tab._tPos);
 //			rebuildTreeDone = true;
 		}
@@ -1378,9 +1378,9 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 
-		var before = this.getTabValue(tab, this.kINSERT_BEFORE);
-		if (before && isDuplicated) {
-			before = this.getDuplicatedId(before);
+		var nextTab = this.getTabValue(tab, this.kINSERT_BEFORE);
+		if (nextTab && isDuplicated) {
+			nextTab = this.getDuplicatedId(nextTab);
 		}
 
 		var ancestors = (this.getTabValue(tab, this.kANCESTOR) || this.getTabValue(tab, this.kPARENT) || '').split('|');
@@ -1402,7 +1402,7 @@ TreeStyleTabBrowser.prototype = {
 			if (parent) {
 				this.attachTabTo(tab, parent, {
 					dontExpand : true,
-					insertBefore : (before ? this.getTabById(before) : null ),
+					insertBefore : (nextTab ? this.getTabById(nextTab) : null ),
 					dontUpdateIndent : true
 				});
 				this.updateTabsIndent([tab]);
@@ -1417,10 +1417,21 @@ TreeStyleTabBrowser.prototype = {
 			this.checkTabsIndentOverflow();
 		}
 
-		if (!parent && (before = this.getTabById(before))) {
-			var index = before._tPos;
-			if (index > tab._tPos) index--;
-			b.moveTabTo(tab, index);
+		if (!parent) {
+			nextTab = this.getTabById(nextTab);
+			if (!nextTab) nextTab = tab.nextSibling;
+			var parentOfNext = this.getParentTab(nextTab);
+			var newPos = -1;
+			if (parentOfNext) {
+				var descendants = this.getDescendantTabs(parentOfNext);
+				newPos = descendants[descendants.length-1]._tPos;
+			}
+			else if (nextTab) {
+				var newPos = nextTab._tPos;
+				if (newPos > tab._tPos) newPos--;
+			}
+			if (newPos > -1)
+				b.moveTabTo(tab, newPos);
 		}
 		this.deleteTabValue(tab, this.kINSERT_BEFORE);
 
@@ -1467,7 +1478,7 @@ TreeStyleTabBrowser.prototype = {
 				this.collapseExpandSubtree(parentTab, false);
 			}
 		}
-		else if (tab.getAttribute(this.kCHILDREN) &&
+		else if (this.hasChildTabs(tab) &&
 				(tab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true') &&
 				this.getTreePref('autoCollapseExpandSubTreeOnSelect')) {
 			this.collapseExpandTreesIntelligentlyFor(tab);

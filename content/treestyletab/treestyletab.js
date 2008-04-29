@@ -318,7 +318,7 @@ var TreeStyleTabService = {
 		var tab = this.getTabFromEvent(aEvent);
 		if (!tab) return false;
 
-		return tab.hasAttribute(this.kCHILDREN) && this.evaluateXPath(
+		return this.hasChildTabs(tab) && this.evaluateXPath(
 				'ancestor-or-self::*[@class="'+this.kTWISTY+'" or (ancestor::xul:tabbrowser[@'+this.kMODE+'="vertical"] and @class="tab-icon")]',
 				aEvent.originalTarget || aEvent.target,
 				XPathResult.FIRST_ORDERED_NODE_TYPE
@@ -660,6 +660,12 @@ var TreeStyleTabService = {
 		}
 
 		return tabs;
+	},
+ 
+	hasChildTabs : function(aTab) 
+	{
+		if (!aTab) return false;
+		return aTab.hasAttribute(this.kCHILDREN);
 	},
  
 	getDescendantTabs : function(aTab) 
@@ -1398,7 +1404,7 @@ catch(e) {
 		var hasSubTree = false;
 		for (var i = 0, maxi = aTabs.length; i < maxi; i++)
 		{
-			if (!aTabs[i].hasAttribute(this.kCHILDREN)) continue;
+			if (!this.hasChildTabs(aTabs[i])) continue;
 			hasSubTree = true;
 			break;
 		}
