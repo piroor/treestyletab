@@ -33,9 +33,11 @@ window.addEventListener('load', function() {
 		);
 	}
 
-	if ('PlacesUtils' in window) { // Firefox 3
-		eval('PlacesUtils._openTabset = '+
-			PlacesUtils._openTabset.toSource().replace(
+	// Firefox 3
+	if ('PlacesUIUtils' in window || 'PlacesUtils' in window) {
+		var urils = 'PlacesUIUtils' in window ? PlacesUIUtils : PlacesUtils ;
+		eval('urils._openTabset = '+
+			urils._openTabset.toSource().replace(
 				'browserWindow.getBrowser().loadTabs(',
 				<><![CDATA[
 					if (
