@@ -371,14 +371,15 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 				/(prevTab = aTab;)/,
 				<><![CDATA[
 					$1
-					if (tabToSelect == aTab) {
+					if (tabToSelect == aTab && TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree')) {
 						TreeStyleTabService.readyToOpenChildTab(tabToSelect, true, gBrowser.treeStyleTab.getNextSiblingTab(tabToSelect));
 					}
 				]]></>
 			).replace(
 				/(browser.mTabContainer.nextTab)/,
 				<><![CDATA[
-					TreeStyleTabService.stopToOpenChildTab(tabToSelect);
+					if (TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree'))
+						TreeStyleTabService.stopToOpenChildTab(tabToSelect);
 					$1]]></>
 			)
 		);
