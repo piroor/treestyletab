@@ -571,4 +571,14 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		);
 	}
 
+	// Greasemonkey
+	if ('GM_BrowserUI' in window && 'openInTab' in GM_BrowserUI) {
+		eval('GM_BrowserUI.openInTab = '+
+			GM_BrowserUI.openInTab.toSource().replace(
+				'document.getElementById("content")',
+				'TreeStyleTabService.readyToOpenChildTab($&); $&'
+			)
+		);
+	}
+
 };
