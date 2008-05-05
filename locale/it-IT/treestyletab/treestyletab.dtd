@@ -78,17 +78,17 @@
 <!ENTITY config.autoHide.delay.before "Ritardo:">
 <!ENTITY config.autoHide.delay.after "msec.">
 <!ENTITY config.autoShow.accelKeyDown "Viene tenuto premuto il tasto Control (Command)">
-<!ENTITY config.autoShow.accelKeyDown.delay.before "Show after">
+<!ENTITY config.autoShow.accelKeyDown.delay.before "Visualizza dopo">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "msec.">
 <!ENTITY config.autoShow.tabSwitch   "Viene utilizzata la scorciatoia Control (Command)+Tab per passare da una scheda all&apos;altra">
 <!ENTITY config.autoShow.feedback    "Viene aperta o chiusa una scheda">
-<!ENTITY config.autoShow.feedback.delay.before "Hide after">
+<!ENTITY config.autoShow.feedback.delay.before "Nascondi dopo">
 <!ENTITY config.autoShow.feedback.delay.after  "msec.">
 
-<!ENTITY config.transparent.style.caption "Background of tab bar">
-<!ENTITY config.transparent.style.0 "Solid">
-<!ENTITY config.transparent.style.1 "Half-transparent">
-<!ENTITY config.transparent.style.2 "Transparent">
+<!ENTITY config.transparent.style.caption "Sfondo della barra delle schede">
+<!ENTITY config.transparent.style.0 "Solido">
+<!ENTITY config.transparent.style.1 "Semitrasparente">
+<!ENTITY config.transparent.style.2 "Trasparente">
 
 
 <!ENTITY config.tabs.advanced "Avanzate">
