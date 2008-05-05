@@ -15,7 +15,7 @@
   <em:translator>Fatiaomao (zh-CN locale)</em:translator>
   <em:translator>tito (es-ES locale)</em:translator>
   <em:translator>Andy Pillip (de-DE locale)</em:translator>
-  <em:translator>Ytrewq Hk (zh-TW locale)</em:translator>
+  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
 
 
     <em:updateURL>http://piro.sakura.ne.jp/xul/update.rdf</em:updateURL>
@@ -56,6 +56,12 @@
       <RDF:Description em:locale="de-DE"
                        em:name="Tree Style Tab"
                        em:description="Stellt Tabs in einer Baumstukur dar"
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"/>
+    </em:localized>
+    <em:localized>
+      <RDF:Description em:locale="zh-TW"
+                       em:name="Tree Style Tab"
+                       em:description="以樹狀目錄形式顯示分頁"
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"/>
     </em:localized>
 

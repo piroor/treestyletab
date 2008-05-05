@@ -21,7 +21,7 @@
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.mixed   "混合">
 
-<!ENTITY config.twisty.style.caption "圖示">
+<!ENTITY config.twisty.style.caption "摺疊 / 展開的圖示">
 <!ENTITY config.twisty.style.auto    "自動">
 <!ENTITY config.twisty.style.none    "無">
 <!ENTITY config.twisty.style.retro   "懷舊">
@@ -35,7 +35,7 @@
 <!ENTITY config.show.openSelectionLinks "新增「用新分頁開啟所有選取的鏈結」到內容功能表">
 
 
-<!ENTITY config.tabs.tab "如何開啟分頁">
+<!ENTITY config.tabs.tab "分頁操作">
 
 <!ENTITY config.tabs.context.tab      "依情況開啟分頁">
 
