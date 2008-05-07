@@ -52,23 +52,24 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 	}
 
 	if ('autoHIDE' in window) { // Autohide
-		eval('autoHIDE.ShowMenu = '+
-			autoHIDE.ShowMenu.toSource().replace(
+		var func = 'ShowBars' in autoHIDE ? 'ShowBars' : 'ShowMenu' ;
+		eval('autoHIDE.'+func+' = '+
+			autoHIDE[func].toSource().replace(
 				'{',
 				'{ var treeStyleTabPos = gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION);'
 			).replace(
-				'e.screenY <= autoHIDE.Win.boxObject.screenY + autoHIDE.space',
-				<><![CDATA[(e.screenY <= autoHIDE.Win.boxObject.screenY + autoHIDE.space ||
+				/e.screenY <= ((autoHIDE|ah).Win.boxObject).screenY \+ (autoHIDE.space|ah.senseArea)/,
+				<><![CDATA[(e.screenY <= $1.screenY + $3 ||
 				(
 				treeStyleTabPos == 'left' ?
-					(e.screenX <= autoHIDE.Win.boxObject.screenX + autoHIDE.space) :
+					(e.screenX <= $1.screenX + $3) :
 				treeStyleTabPos == 'right' ?
-					(e.screenX >= autoHIDE.Win.boxObject.screenX + autoHIDE.Win.boxObject.width - autoHIDE.space) :
+					(e.screenX >= $1.screenX + $1.width - $3) :
 				treeStyleTabPos == 'bottom' ?
-					(e.screenY >= autoHIDE.Win.boxObject.screenY + autoHIDE.Win.boxObject.height - autoHIDE.space) :
+					(e.screenY >= $1.screenY + $1.height - $3) :
 					false
 				))]]></>
-			).replace(
+			).replace( // for old version
 				'e.screenY > getBrowser().mCurrentBrowser.boxObject.screenY + 25',
 				<><![CDATA[(e.screenY > gBrowser.mCurrentBrowser.boxObject.screenY + 25 &&
 				(
@@ -80,15 +81,27 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 					(e.screenY < gBrowser.mCurrentBrowser.boxObject.screenY + gBrowser.mCurrentBrowser.boxObject.height - 25) :
 					true
 				))]]></>
+			).replace( // for new version
+				'e.screenY > yCondition',
+				<><![CDATA[(e.screenY > yCondition &&
+				(
+				treeStyleTabPos == 'left' ?
+					(e.screenX > gBrowser.mCurrentBrowser.boxObject.screenX + 50) :
+				treeStyleTabPos == 'right' ?
+					(e.screenX < gBrowser.mCurrentBrowser.boxObject.screenX + gBrowser.mCurrentBrowser.boxObject.width - 50) :
+				treeStyleTabPos == 'bottom' ?
+					(e.screenY < gBrowser.mCurrentBrowser.boxObject.screenY + gBrowser.mCurrentBrowser.boxObject.height - 50) :
+					true
+				))]]></>
 			)
 		);
 		eval('autoHIDE.HideToolbar = '+
 			autoHIDE.HideToolbar.toSource().replace(
-				'if (this.Show) {',
+				/if \(((this|ah).Show)\) \{/,
 				<><![CDATA[
 					window.setTimeout('gBrowser.treeStyleTab.checkTabsIndentOverflow();', 0);
 					var treeStyleTabPos = gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION);
-					if (this.Show) {
+					if ($1) {
 						var appcontent = document.getElementById('appcontent');
 						if (appcontent.__treestyletab__resized) {
 							appcontent.__treestyletab__resized = false;
@@ -97,8 +110,9 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 				]]></>
 			)
 		);
-		eval('autoHIDE.EndFull = '+
-			autoHIDE.EndFull.toSource().replace(
+		func = 'RemoveAttrib' in autoHIDE ? 'RemoveAttrib' : 'EndFull' ;
+		eval('autoHIDE.'+func+' = '+
+			autoHIDE[func].toSource().replace(
 				'{',
 				<><![CDATA[$&
 					var appcontent = document.getElementById('appcontent');
@@ -122,8 +136,9 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 				]]></>
 			)
 		);
-		eval('autoHIDE.MoveC = '+
-			autoHIDE.MoveC.toSource().replace(
+		func = 'MoveContent' in autoHIDE ? 'MoveContent' : 'MoveC' ;
+		eval('autoHIDE.'+func+' = '+
+			autoHIDE[func].toSource().replace(
 				'{',
 				<><![CDATA[$&
 					var treeStyleTabPos = gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION);
@@ -144,14 +159,14 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 					}
 				]]></>
 			).replace(
-				'.move(0, - this.delta)',
-				<><![CDATA[.move(
+				/.(move|setPosition)\(0, - (this|ah).delta\)/,
+				<><![CDATA[.$1(
 					(
 						treeStyleTabPos == 'left' ? -gBrowser.treeStyleTab.tabbarWidth :
 						treeStyleTabPos == 'right' ? gBrowser.treeStyleTab.tabbarWidth :
 						0
 					),
-					-this.delta
+					-$2.delta
 				)]]></>
 			)
 		);
