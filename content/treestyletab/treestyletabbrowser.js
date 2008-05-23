@@ -1,6 +1,7 @@
 function TreeStyleTabBrowser(aTabBrowser) 
 {
 	this.mTabBrowser = aTabBrowser;
+	if (TreeStyleTabService.isGecko19) this.isTimerSupported = true;
 }
  
 TreeStyleTabBrowser.prototype = { 
@@ -1686,7 +1687,7 @@ TreeStyleTabBrowser.prototype = {
   
 /* drag and drop */ 
 	isPlatformNotSupported : navigator.platform.indexOf('Mac') != -1, // see bug 136524
-	isTimerSupported       : navigator.platform.indexOf('Win') == -1, // see bug 232795.
+	isTimerSupported       : /* this.isGecko19 || */ navigator.platform.indexOf('Win') == -1, // see bug 232795.
 
 	autoExpandTimer  : null,
 	autoExpandTarget : null,

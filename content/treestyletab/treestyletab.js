@@ -132,6 +132,10 @@ var TreeStyleTabService = {
 		var version = this.XULAppInfo.platformVersion.split('.');
 		return parseInt(version[0]) <= 1 && parseInt(version[1]) <= 8;
 	},
+	get isGecko19() {
+		var version = this.XULAppInfo.platformVersion.split('.');
+		return parseInt(version[0]) >= 2 || parseInt(version[1]) >= 9;
+	},
 
 	get XULAppInfo() {
 		if (!this._XULAppInfo) {
