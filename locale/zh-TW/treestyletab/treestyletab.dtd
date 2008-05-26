@@ -36,12 +36,11 @@
 
 
 <!ENTITY config.tabs.tab "分頁操作">
-
 <!ENTITY config.tabs.context.tab      "依情況開啟分頁">
-
 <!ENTITY config.link.caption           "鏈結">
 <!ENTITY config.openOuterLinkInNewTab  "用新分頁開啟通往不同網站的鏈結">
 <!ENTITY config.openAnyLinkInNewTab    "用新分頁開啟所有鏈結">
+
 <!ENTITY config.urlbar.caption                      "在網址列輸入時">
 <!ENTITY config.urlbar.loadDifferentDomainToNewTab  "用新分頁開啟通往不同網站的 URL">
 <!ENTITY config.urlbar.loadDifferentDomainToNewTab.asChild  "作為目前分頁的子分頁">
@@ -57,14 +56,13 @@
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace "將所有目前開啟的分頁取代為書籤的內容（Firefox 預設）">
 
 <!ENTITY config.tabs.restriction.tab "開啟分頁代替視窗">
-
 <!ENTITY config.open_newwindow.caption "從網頁鏈結開啟新視窗的控制">
 <!ENTITY config.open_newwindow.window  "用新視窗開啟">
 <!ENTITY config.open_newwindow.tab     "用新分頁開啟（Firefox 預設）">
 
 <!ENTITY config.jsopen.caption "從網頁的指令碼開啟新視窗的控制">
 <!ENTITY config.jsopen.default "當指定了大小和位置，則用新視窗開啟（Firefox 預設）">
-<!ENTITY config.jsopen.forcetab "在任何情况下在标签而非窗口中開啟（推薦）">
+<!ENTITY config.jsopen.forcetab "在任何情况下用新分頁而非新視窗開啟（推薦）">
 
 
 <!ENTITY config.tabs.autohide "自動隱藏">
@@ -76,18 +74,18 @@
 <!ENTITY config.autoHide.area.after "個像素的範圍">
 <!ENTITY config.autoHide.delay.before "延遲：">
 <!ENTITY config.autoHide.delay.after "毫秒">
-<!ENTITY config.autoShow.accelKeyDown "按下 CTRL（Command）一段時間後">
-<!ENTITY config.autoShow.accelKeyDown.delay.before "Show after">
-<!ENTITY config.autoShow.accelKeyDown.delay.after  "msec.">
+<!ENTITY config.autoShow.accelKeyDown "按下 Ctrl（Command）一段時間後">
+<!ENTITY config.autoShow.accelKeyDown.delay.before "">
+<!ENTITY config.autoShow.accelKeyDown.delay.after  "毫秒以上才顯示">
 <!ENTITY config.autoShow.tabSwitch   "用 Ctrl（Command）+Tab 切換分頁時">
 <!ENTITY config.autoShow.feedback    "開新分頁或關閉分頁時">
-<!ENTITY config.autoShow.feedback.delay.before "Hide after">
-<!ENTITY config.autoShow.feedback.delay.after  "msec.">
+<!ENTITY config.autoShow.feedback.delay.before "">
+<!ENTITY config.autoShow.feedback.delay.after  "毫秒後就自動隱藏">
 
-<!ENTITY config.transparent.style.caption "Background of tab bar">
-<!ENTITY config.transparent.style.0 "Solid">
-<!ENTITY config.transparent.style.1 "Half-transparent">
-<!ENTITY config.transparent.style.2 "Transparent">
+<!ENTITY config.transparent.style.caption "分頁工具列的背景">
+<!ENTITY config.transparent.style.0 "不透明">
+<!ENTITY config.transparent.style.1 "半透明">
+<!ENTITY config.transparent.style.2 "完全透明">
 
 
 <!ENTITY config.tabs.advanced "進階">
