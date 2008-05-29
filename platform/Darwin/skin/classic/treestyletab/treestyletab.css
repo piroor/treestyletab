@@ -1,0 +1,10 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+tabbrowser[treestyletab-tabbar-position="left"]:not([treestyletab-tabbar-fixed="true"]) .treestyletab-splitter {
+	border-right: 1px solid ThreeDShadow !important;
+	-moz-border-right-colors: ThreeDShadow !important;
+}
+tabbrowser[treestyletab-tabbar-position="right"]:not([treestyletab-tabbar-fixed="true"]) .treestyletab-splitter {
+	border-left: 1px solid ThreeDShadow !important;
+	-moz-border-left-colors: ThreeDShadow !important;
+}

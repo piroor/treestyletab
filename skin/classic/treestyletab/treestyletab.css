@@ -29,7 +29,9 @@ tabbrowser[treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true
 
 tabbrowser[treestyletab-mode="vertical"] .tabs-bottom,
 tabbrowser[treestyletab-mode="vertical"] .tabs-left,
-tabbrowser[treestyletab-tabbar-position="bottom"] .tabs-bottom {
+tabbrowser[treestyletab-tabbar-position="bottom"] .tabs-bottom,
+tabbrowser[treestyletab-mode="vertical"] .tab-text-shadow, /* Mac OS X */
+tabbrowser[treestyletab-tabbar-position="bottom"] .tab-text-shadow /* Mac OS X */ {
 	display: none !important;
 }
 
@@ -135,6 +137,11 @@ tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab:not([selected=
 tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab[selected="true"] {
 	-moz-border-right-colors: ThreeDShadow ThreeDHighlight !important;
 	-moz-border-left-colors: ThreeDShadow ThreeDHighlight !important;
+}
+
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab { /* Mac OS X */
+	text-align: start !important; 
+	-moz-box-pack: start !important;
 }
 
 
