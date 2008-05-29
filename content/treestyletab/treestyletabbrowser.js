@@ -50,7 +50,8 @@ TreeStyleTabBrowser.prototype = {
 	 
 	getTabLabel : function(aTab) 
 	{
-		var label = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-text-container') || // Tab Mix Plus
+		var label = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-text-stack') || // Mac OS X
+					document.getAnonymousElementByAttribute(aTab, 'class', 'tab-text-container') || // Tab Mix Plus
 					document.getAnonymousElementByAttribute(aTab, 'class', 'tab-text');
 		return label;
 	},
