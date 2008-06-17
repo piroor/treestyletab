@@ -2950,12 +2950,14 @@ TreeStyleTabBrowser.prototype = {
 		var browserBox = this.mTabBrowser.mCurrentBrowser.boxObject;
 		var contentBox = frame.document.getBoxObjectFor(frame.document.documentElement);
 
+		var zoom = this.getZoomForFrame(frame);
+
 		var x = (pos == 'right') ? browserBox.width - this.autoHideXOffset : 0 ;
 		var y = (pos == 'bottom') ? browserBox.height - this.autoHideYOffset : 0 ;
-		var xOffset = (pos == 'top' || pos == 'bottom') ?
+		var xOffset = (zoom == 1 && (pos == 'top' || pos == 'bottom')) ?
 				contentBox.screenX + frame.scrollX - browserBox.screenX :
 				0 ;
-		var yOffset = (pos == 'left' || pos == 'right') ?
+		var yOffset = (zoom == 1 && (pos == 'left' || pos == 'right')) ?
 				contentBox.screenY + frame.scrollY - browserBox.screenY :
 				0 ;
 		// zero width (heigh) canvas becomes wrongly size!!
@@ -2982,7 +2984,10 @@ TreeStyleTabBrowser.prototype = {
 			ctx.fillStyle = this.splitterBorderColor;
 			ctx.fillRect((pos == 'left' ? -1 : w+1 ), 0, 1, h);
 		}
-		ctx.drawWindow(frame, x+frame.scrollX, y+frame.scrollY, w, h, '-moz-field');
+		ctx.save();
+		ctx.scale(zoom, zoom);
+		ctx.drawWindow(frame, x+frame.scrollX, y+frame.scrollY, w / zoom, h / zoom, '-moz-field');
+		ctx.restore();
 		if (this.mTabBrowser.getAttribute(this.kTRANSPARENT) != this.kTRANSPARENT_STYLE[this.kTRANSPARENT_FULL]) {
 			var alpha = Number(this.getTreePref('tabbar.transparent.partialTransparency'));
 			if (isNaN(alpha)) alpha = 0.25;
@@ -3015,6 +3020,17 @@ TreeStyleTabBrowser.prototype = {
 				parseInt(parseInt(RegExp.$2) * 0.8),
 				parseInt(parseInt(RegExp.$3) * 0.8)
 			].join(',')+')';
+	},
+	getZoomForFrame : function(aFrame)
+	{
+		if (!this.getPref('browser.zoom.full')) return 1;
+		return  aFrame
+			.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+			.getInterface(Components.interfaces.nsIWebNavigation)
+			.QueryInterface(Components.interfaces.nsIDocShell)
+			.contentViewer
+			.QueryInterface(Components.interfaces.nsIMarkupDocumentViewer)
+			.fullZoom;
 	},
  
 	clearTabbarCanvas : function() 

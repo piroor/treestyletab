@@ -5,7 +5,7 @@
 window.addEventListener('DOMContentLoaded', function() {
 	window.removeEventListener('DOMContentLoaded', arguments.callee, true);
 
-	const currentRevision = 3;
+	const currentRevision = 4;
 	var root = document.documentElement;
 
 	var loadedRevision = root.getAttribute('fullScreenCanvas');
@@ -45,12 +45,14 @@ window.addEventListener('DOMContentLoaded', function() {
 				ctx.restore();
 
 				var browsers = this.browsers;
+				var self = this;
 				browsers.forEach(function(aBrowser) {
 				try {
 					var b = aBrowser;
 					if (b.localName == 'subbrowser') b = b.browser;
 					var TST = b.treeStyleTab;
 					var frame = b.contentWindow;
+					var zoom = self.getZoomForFrame(frame);
 					var x = (b.localName == 'tabbrowser' ? b.mCurrentBrowser : b ).boxObject.x;
 					var y = (b.localName == 'tabbrowser' ? b.mCurrentBrowser : b ).boxObject.y;
 					var w = frame.innerWidth;
@@ -71,26 +73,29 @@ window.addEventListener('DOMContentLoaded', function() {
 						switch (pos)
 						{
 							case 'left':
-								dx = xOffset;
-								w -= xOffset;
+								dx = xOffset / zoom;
+								w -= xOffset / zoom;
 								break;
 							case 'right':
-								x += xOffset;
-								w -= xOffset;
+								x += xOffset / zoom;
+								w -= xOffset / zoom;
 								break;
 							case 'top':
-								dy = yOffset;
-								h -= yOffset;
+								dy = yOffset / zoom;
+								h -= yOffset / zoom;
 								break;
 							case 'bottom':
-								y += yOffset;
-								h -= yOffset;
+								y += yOffset / zoom;
+								h -= yOffset / zoom;
 								break;
 						}
 					}
 					ctx.save();
 					ctx.translate(x, y);
+					ctx.save();
+					ctx.scale(zoom, zoom);
 					ctx.drawWindow(frame, dx+frame.scrollX, dy+frame.scrollY, w, h, color);
+					ctx.restore();
 					ctx.restore();
 				}
 				catch(e) {
@@ -103,6 +108,23 @@ window.addEventListener('DOMContentLoaded', function() {
 			catch(e) {
 				this.container.setAttribute('collapsed', true);
 			}
+		},
+		getZoomForFrame : function(aFrame)
+		{
+			const Prefs = Components.classes['@mozilla.org/preferences;1'].getService(Components.interfaces.nsIPrefBranch);;
+			try {
+				if (Prefs.getBoolPref('browser.zoom.full'))
+					return  aFrame
+						.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+						.getInterface(Components.interfaces.nsIWebNavigation)
+						.QueryInterface(Components.interfaces.nsIDocShell)
+						.contentViewer
+						.QueryInterface(Components.interfaces.nsIMarkupDocumentViewer)
+						.fullZoom;
+			}
+			catch(e) {
+			}
+			return 1;
 		},
 
 		hide : function() 
