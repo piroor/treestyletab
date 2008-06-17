@@ -877,8 +877,12 @@ TreeStyleTabBrowser.prototype = {
 
 					case 'extensions.treestyletab.tabbar.autoHide.mode':
 						this.endAutoHide();
-						if (value != this.kAUTOHIDE_MODE_DISABLED)
-							this.startAutoHide();
+						// update internal property after the appearance of the tab bar is updated.
+						window.setTimeout(function(aSelf) {
+							aSelf.autoHideMode = value;
+							if (value != aSelf.kAUTOHIDE_MODE_DISABLED)
+								aSelf.startAutoHide();
+						}, 0, this);
 						break;
 
 					case 'extensions.treestyletab.tabbar.autoShow.mousemove':
@@ -3125,6 +3129,9 @@ TreeStyleTabBrowser.prototype = {
 	{
 		if (!this.autoHideEnabled) return;
 		this.autoHideEnabled = false;
+
+		if (!this.autoHideShown)
+			this.showHideTabbarInternal();
 
 		this.mTabBrowser.removeEventListener('mousedown', this, true);
 		this.mTabBrowser.removeEventListener('mouseup', this, true);

@@ -1429,8 +1429,7 @@ catch(e) {
 	onTabbarResized : function(aEvent) 
 	{
 		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
-		if (this.autoHideMode == this.kAUTOHIDE_MODE_SHRINK &&
-			!b.treeStyleTab.tabbarExpanded)
+		if (!b.treeStyleTab.tabbarExpanded)
 			this.setTreePref('tabbar.shrunkenWidth', b.mStrip.boxObject.width);
 		else
 			this.setTreePref('tabbar.width', b.mStrip.boxObject.width);
@@ -1684,12 +1683,13 @@ catch(e) {
 				break;
 
 			case 'extensions.treestyletab.tabbar.autoHide.mode':
-				this.autoHideMode = this.getTreePref('tabbar.autoHide.mode');
+				// don't set on this time, because appearance of all tabbrowsers are not updated yet.
+				// this.autoHideMode = this.getTreePref('tabbar.autoHide.mode');
 			case 'extensions.treestyletab.tabbar.autoShow.accelKeyDown':
 			case 'extensions.treestyletab.tabbar.autoShow.tabSwitch':
 			case 'extensions.treestyletab.tabbar.autoShow.feedback':
 				if (
-					this.autoHideMode &&
+					this.getTreePref('tabbar.autoHide.mode') &&
 					(
 						this.getTreePref('tabbar.autoShow.accelKeyDown') ||
 						this.getTreePref('tabbar.autoShow.tabSwitch') ||
