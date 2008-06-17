@@ -2936,18 +2936,11 @@ TreeStyleTabBrowser.prototype = {
 			w -= offset;
 		}
 		ctx.globalAlpha = 1;
-		ctx.drawWindow(frame, x+frame.scrollX, y+frame.scrollY, w, h, '-moz-field');
 		if (pos == 'left' || pos == 'right') {
-			x = pos == 'left' ? -1 : w+1 ;
-			ctx.save();
-			ctx.lineWidth = 0.2;
-			ctx.strokeStyle = 'black';
-			ctx.beginPath();
-			ctx.moveTo(x, 0);
-			ctx.lineTo(x, h);
-			ctx.stroke();
-			ctx.restore();
+			ctx.fillStyle = this.splitterBorderColor;
+			ctx.fillRect((pos == 'left' ? -1 : w+1 ), 0, 1, h);
 		}
+		ctx.drawWindow(frame, x+frame.scrollX, y+frame.scrollY, w, h, '-moz-field');
 		if (this.mTabBrowser.getAttribute(this.kTRANSPARENT) != this.kTRANSPARENT_STYLE[this.kTRANSPARENT_FULL]) {
 			var alpha = Number(this.getTreePref('tabbar.transparent.partialTransparency'));
 			if (isNaN(alpha)) alpha = 0.25;
@@ -2956,6 +2949,30 @@ TreeStyleTabBrowser.prototype = {
 			ctx.fillRect(0, 0, w, h);
 		}
 		ctx.restore();
+	},
+	get splitterBorderColor()
+	{
+		var borderNode = this.getTreePref('tabbar.fixed') ?
+				this.mTabBrowser.mStrip :
+				document.getAnonymousElementByAttribute(this.mTabBrowser, 'class', this.kSPLITTER) ;
+
+		var pos = this.mTabBrowser.getAttribute(this.kTABBAR_POSITION);
+		var prop = pos == 'left' ? 'right' :
+				pos == 'right' ? 'left' :
+				pos == 'top' ? 'bottom' :
+				'top' ;
+
+		var borderColor = window.getComputedStyle(borderNode, null).getPropertyValue('-moz-border-'+prop+'-colors');
+		if (borderColor == 'none')
+			borderRight = window.getComputedStyle(borderNode, null).getPropertyValue('border-'+prop+'-color');
+
+		/rgba?\(([^,]+),([^,]+),([^,]+)(,.*)?\)/.test(borderColor);
+
+		return 'rgb('+[
+				parseInt(parseInt(RegExp.$1) * 0.8),
+				parseInt(parseInt(RegExp.$2) * 0.8),
+				parseInt(parseInt(RegExp.$3) * 0.8)
+			].join(',')+')';
 	},
  
 	clearTabbarCanvas : function() 
