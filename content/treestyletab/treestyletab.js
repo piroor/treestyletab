@@ -1670,6 +1670,21 @@ catch(e) {
 					this.endListenKeyEvents();
 				break;
 
+			case 'extensions.treestyletab.tabbar.width':
+			case 'extensions.treestyletab.tabbar.shrunkenWidth':
+				var expanded = this.getTreePref('tabbar.width');
+				var shrunken = this.getTreePref('tabbar.shrunkenWidth');
+				if (!this.tabbarWidthResetting &&
+					(expanded - this.getTreePref('autoHide.area')) < shrunken) {
+					this.tabbarWidthResetting = true;
+					if (aPrefName == 'extensions.treestyletab.tabbar.width')
+						this.setTreePref('tabbar.shrunkenWidth', parseInt(expanded / 1.2));
+					else
+						this.setTreePref('tabbar.width', parseInt(shrunken * 1.2));
+					this.tabbarWidthResetting = false;
+				}
+				break;
+
 			case 'browser.link.open_newwindow.restriction.override':
 			case 'browser.tabs.loadFolderAndReplace.override':
 				var target = aPrefName.replace('.override', '');
