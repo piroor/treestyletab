@@ -22,7 +22,7 @@ pref("extensions.treestyletab.tabbar.autoShow.mousemove", true);
 pref("extensions.treestyletab.tabbar.autoShow.accelKeyDown", false);
 pref("extensions.treestyletab.tabbar.autoShow.accelKeyDown.delay", 800);
 pref("extensions.treestyletab.tabbar.autoShow.tabSwitch", false);
-pref("extensions.treestyletab.tabbar.autoShow.feedback", true);
+pref("extensions.treestyletab.tabbar.autoShow.feedback", false);
 pref("extensions.treestyletab.tabbar.autoShow.feedback.delay", 3000);
 pref("extensions.treestyletab.tabbar.fixed", false);
 pref("extensions.treestyletab.tabbar.syncRelatedPrefsForDynamicPosition", true);
