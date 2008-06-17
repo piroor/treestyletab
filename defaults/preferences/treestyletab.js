@@ -1,4 +1,5 @@
 pref("extensions.treestyletab.tabbar.width",           200);
+pref("extensions.treestyletab.tabbar.shrunkenWidth",   100);
 pref("extensions.treestyletab.tabbar.position",        "left");
 pref("extensions.treestyletab.tabbar.multirow",        false);
 pref("extensions.treestyletab.tabbar.invertScrollbar", true);
@@ -7,9 +8,11 @@ pref("extensions.treestyletab.tabbar.hideAlltabsButton", true);
 pref("extensions.treestyletab.tabbar.scroll.smooth",   true);
 pref("extensions.treestyletab.tabbar.scroll.timeout",  250);
 pref("extensions.treestyletab.tabbar.style",           "mixed");
-pref("extensions.treestyletab.tabbar.autoHide.enabled",    false);
+pref("extensions.treestyletab.tabbar.autoHide.mode",       0);
+pref("extensions.treestyletab.tabbar.autoHide.mode.toggle", 2);
 pref("extensions.treestyletab.tabbar.autoHide.delay",      50);
 pref("extensions.treestyletab.tabbar.autoHide.area",       25);
+pref("extensions.treestyletab.tabbar.autoHide.area.shrunkenOffset", 7);
 pref("extensions.treestyletab.tabbar.autoHide.expandArea", false);
 // 0 = not transparent, 1 = partial transparent, 2 = completely transparent
 pref("extensions.treestyletab.tabbar.transparent.style", 1);
