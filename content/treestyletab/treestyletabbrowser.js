@@ -970,7 +970,10 @@ TreeStyleTabBrowser.prototype = {
 						this.clearTabbarCanvas();
 						this.mTabBrowser.setAttribute(this.kRESIZING, true);
 						if (this.isGecko19) {
-							// re-send event because we have to make sure the canvas to be hidden!
+							/* canvasを非表示にしたのと同じタイミングでリサイズを行うと、
+							   まだ内部的にcanvasの大きさが残ったままなので、その大きさ以下に
+							   タブバーの幅を縮められなくなる。手動でイベントを再送してやると
+							   この問題を防ぐことができる。 */
 							aEvent.preventDefault();
 							aEvent.stopPropagation();
 							var flags = 0;
