@@ -2986,7 +2986,14 @@ TreeStyleTabBrowser.prototype = {
 		}
 		ctx.save();
 		ctx.scale(zoom, zoom);
-		ctx.drawWindow(frame, x+frame.scrollX, y+frame.scrollY, w / zoom, h / zoom, '-moz-field');
+		ctx.drawWindow(
+			frame,
+			(x / zoom)+frame.scrollX,
+			(y / zoom)+frame.scrollY,
+			w / zoom,
+			h / zoom,
+			'-moz-field'
+		);
 		ctx.restore();
 		if (this.mTabBrowser.getAttribute(this.kTRANSPARENT) != this.kTRANSPARENT_STYLE[this.kTRANSPARENT_FULL]) {
 			var alpha = Number(this.getTreePref('tabbar.transparent.partialTransparency'));
