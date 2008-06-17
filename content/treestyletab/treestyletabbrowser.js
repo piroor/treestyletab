@@ -959,10 +959,33 @@ TreeStyleTabBrowser.prototype = {
 					this.onTabMouseDown(aEvent);
 				}
 				else {
-					if (aEvent.originalTarget.getAttribute('class') == this.kSPLITTER) {
+					if (
+						!this.tabbarResizing &&
+						(
+							aEvent.originalTarget.getAttribute('class') == this.kSPLITTER ||
+							aEvent.originalTarget.parentNode.getAttribute('class') == this.kSPLITTER
+						)
+						) {
 						this.tabbarResizing = true;
 						this.clearTabbarCanvas();
 						this.mTabBrowser.setAttribute(this.kRESIZING, true);
+						if (this.isGecko19) {
+							// re-send event because we have to make sure the canvas to be hidden!
+							aEvent.preventDefault();
+							aEvent.stopPropagation();
+							var flags = 0;
+							const nsIDOMNSEvent = Components.interfaces.nsIDOMNSEvent;
+							if (aEvent.altKey) flags |= nsIDOMNSEvent.ALT_MASK;
+							if (aEvent.ctrlKey) flags |= nsIDOMNSEvent.CONTROL_MASK;
+							if (aEvent.shiftKey) flags |= nsIDOMNSEvent.SHIFT_MASK;
+							if (aEvent.metaKey) flags |= nsIDOMNSEvent.META_MASK;
+							window.setTimeout(function(aX, aY, aButton, aDetail) {
+								window
+									.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+									.getInterface(Components.interfaces.nsIDOMWindowUtils)
+									.sendMouseEvent('mousedown', aX, aY, aButton, aDetail, flags);
+							}, 0, aEvent.clientX, aEvent.clientY, aEvent.button, aEvent.detail);
+						}
 					}
 					this.cancelShowHideTabbarOnMousemove();
 					if (
@@ -979,7 +1002,8 @@ TreeStyleTabBrowser.prototype = {
 				return;
 
 			case 'mouseup':
-				if (aEvent.originalTarget.getAttribute('class') == this.kSPLITTER) {
+				if (aEvent.originalTarget.getAttribute('class') == this.kSPLITTER ||
+					aEvent.originalTarget.parentNode.getAttribute('class') == this.kSPLITTER) {
 					this.tabbarResizing = false;
 					this.mTabBrowser.removeAttribute(this.kRESIZING);
 					if (this.autoHideShown) this.redrawContentArea();
