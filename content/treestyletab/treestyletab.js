@@ -65,11 +65,6 @@ var TreeStyleTabService = {
 	kTRANSPARENT_FULL : 2,
 	kTRANSPARENT_STYLE : ['none', 'part', 'full'],
 
-	kAUTOHIDE_MODE_DISABLED : 0,
-	kAUTOHIDE_MODE_HIDE     : 1,
-	kAUTOHIDE_MODE_SHRINK   : 2,
-	autoHideMode : 0,
-
 	kINSERT_FISRT : 0,
 	kINSERT_LAST  : 1,
 
@@ -475,11 +470,8 @@ var TreeStyleTabService = {
  
 	toggleAutoHide : function() 
 	{
-		this.setTreePref('tabbar.autoHide.mode',
-			this.getTreePref('tabbar.autoHide.mode') == this.kAUTOHIDE_MODE_DISABLED ?
-				this.getTreePref('tabbar.autoHide.mode.toggle') :
-				this.kAUTOHIDE_MODE_DISABLED
-		);
+		this.setTreePref('tabbar.autoHide.enabled',
+			!this.getTreePref('tabbar.autoHide.enabled'));
 	},
  
 	toggleFixed : function() 
@@ -823,7 +815,7 @@ var TreeStyleTabService = {
 		this.overrideExtensionsOnInitAfter(); // hacks.js
 
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.levelMargin');
-		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.autoHide.mode');
+		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.autoHide.enabled');
 		this.observe(null, 'nsPref:changed', 'browser.link.open_newwindow.restriction.override');
 		this.observe(null, 'nsPref:changed', 'browser.tabs.loadFolderAndReplace.override');
 	},
@@ -1384,13 +1376,11 @@ catch(e) {
   
 	onTabbarResized : function(aEvent) 
 	{
-		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
-		if (b.treeStyleTab.tabbarShrunken) {
-			this.setTreePref('tabbar.shrunkenWidth', b.mStrip.boxObject.width);
-		}
-		else {
-			this.setTreePref('tabbar.width', b.mStrip.boxObject.width);
-		}
+		this.setPref(
+			'extensions.treestyletab.tabbar.width',
+			TreeStyleTabService.getTabBrowserFromChild(aEvent.currentTarget)
+				.mStrip.boxObject.width
+		);
 	},
  
 	initContextMenu : function() 
@@ -1640,13 +1630,12 @@ catch(e) {
 				this.ObserverService.notifyObservers(null, 'TreeStyleTab:levelMarginModified', value);
 				break;
 
-			case 'extensions.treestyletab.tabbar.autoHide.mode':
+			case 'extensions.treestyletab.tabbar.autoHide.enabled':
 			case 'extensions.treestyletab.tabbar.autoShow.accelKeyDown':
 			case 'extensions.treestyletab.tabbar.autoShow.tabSwitch':
 			case 'extensions.treestyletab.tabbar.autoShow.feedback':
-				this.autoHideMode = this.getTreePref('tabbar.autoHide.mode');
 				if (
-					this.autoHideMode != this.kAUTOHIDE_MODE_DISABLED &&
+					this.getTreePref('tabbar.autoHide.enabled') &&
 					(
 						this.getTreePref('tabbar.autoShow.accelKeyDown') ||
 						this.getTreePref('tabbar.autoShow.tabSwitch') ||
