@@ -1213,6 +1213,37 @@ catch(e) {
 					$&]]></>
 			)
 		);
+
+
+		// Firefox 3 full screen
+		if ('FullScreen' in window && '_animateUp' in FullScreen) {
+			eval('FullScreen._animateUp = '+
+				FullScreen._animateUp.toSource().replace(
+					'gBrowser.mStrip.boxObject.height',
+					'((gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION) != "top") ? 0 : gBrowser.mStrip.boxObject.height)'
+				)
+			);
+			eval('FullScreen.mouseoverToggle = '+
+				FullScreen.mouseoverToggle.toSource().replace(
+					'gBrowser.mStrip.setAttribute("moz-collapsed", !aShow);',
+					'if (gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION) == "top") { $& }'
+				)
+			);
+			eval('FullScreen.toggle = '+
+				FullScreen.toggle.toSource().replace(
+					'{',
+					<![CDATA[{
+						var treeStyleTab = gBrowser.treeStyleTab;
+						if (gBrowser.getAttribute(treeStyleTab.kTABBAR_POSITION) != 'top') {
+							treeStyleTab.autoHideMode = treeStyleTab.getTreePref(window.fullScreen ? 'tabbar.autoHide.mode' : 'tabbar.autoHide.mode.fullscreen' );
+							treeStyleTab.endAutoHide();
+							if (treeStyleTab.autoHideMode != treeStyleTab.kAUTOHIDE_MODE_DISABLED)
+								treeStyleTab.startAutoHide();
+						}
+					]]>
+				)
+			);
+		}
 	},
   
 	destroy : function() 

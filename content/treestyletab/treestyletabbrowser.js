@@ -877,8 +877,7 @@ TreeStyleTabBrowser.prototype = {
 
 					case 'extensions.treestyletab.tabbar.autoHide.mode':
 						this.endAutoHide();
-						var pos = b.getAttribute(this.kTABBAR_POSITION);
-						if (value != this.kAUTOHIDE_MODE_DISABLED/* && (pos == 'left' || pos == 'right')*/)
+						if (value != this.kAUTOHIDE_MODE_DISABLED)
 							this.startAutoHide();
 						break;
 
@@ -1652,7 +1651,7 @@ TreeStyleTabBrowser.prototype = {
 		if (this.getTreePref('show.'+this.kMENUITEM_AUTOHIDE)/* &&
 			(pos == 'left' || pos == 'right')*/) {
 			autohide.removeAttribute('hidden');
-			if (this.getTreePref('tabbar.autoHide.mode') != this.kAUTOHIDE_MODE_DISABLED)
+			if (this.autoHideMode != this.kAUTOHIDE_MODE_DISABLED)
 				autohide.setAttribute('checked', true);
 			else
 				autohide.removeAttribute('checked');
@@ -2800,9 +2799,19 @@ TreeStyleTabBrowser.prototype = {
 				break;
 		}
 	},
-	get autoHideYOffset() 
+	get autoHideYOffset()
 	{
 		return this.tabbarHeight;
+	},
+ 
+	get autoHideMode() 
+	{
+		return TreeStyleTabService.autoHideMode;
+	},
+	set autoHideMode(aValue)
+	{
+		TreeStyleTabService.autoHideMode = aValue;
+		return aValue;
 	},
  
 	showHideTabbarInternal : function(aReason) 
@@ -3032,7 +3041,7 @@ TreeStyleTabBrowser.prototype = {
 				)
 			];
 		if (pos != 'top' &&
-			this.getTreePref('tabbar.autoHide.mode') != this.kAUTOHIDE_MODE_DISABLED &&
+			this.autoHideMode != this.kAUTOHIDE_MODE_DISABLED &&
 			style != this.kTRANSPARENT_STYLE[this.kTRANSPARENT_NONE])
 			this.mTabBrowser.setAttribute(this.kTRANSPARENT, style);
 		else
