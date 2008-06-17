@@ -5,7 +5,7 @@
 window.addEventListener('DOMContentLoaded', function() {
 	window.removeEventListener('DOMContentLoaded', arguments.callee, true);
 
-	const currentRevision = 2;
+	const currentRevision = 3;
 	var root = document.documentElement;
 
 	var loadedRevision = root.getAttribute('fullScreenCanvas');
@@ -59,25 +59,25 @@ window.addEventListener('DOMContentLoaded', function() {
 					var dy = 0;
 					if (TST &&
 						TST.autoHideEnabled &&
-						TST.tabbarShown) {
+						TST.autoHideShown) {
 						var pos = b.getAttribute(TST.kTABBAR_POSITION);
 						switch (pos)
 						{
 							case 'left':
-								dx = TST.tabbarWidth;
-								w -= TST.tabbarWidth;
+								dx = TST.autoHideXOffset;
+								w -= TST.autoHideXOffset;
 								break;
 							case 'right':
-								x += TST.tabbarWidth;
-								w -= TST.tabbarWidth;
+								x += TST.autoHideXOffset;
+								w -= TST.autoHideXOffset;
 								break;
 							case 'top':
-								dy = TST.tabbarHeight;
-								h -= TST.tabbarHeight;
+								dy = TST.autoHideYOffset;
+								h -= TST.autoHideYOffset;
 								break;
 							case 'bottom':
-								y += TST.tabbarHeight;
-								h -= TST.tabbarHeight;
+								y += TST.autoHideYOffset;
+								h -= TST.autoHideYOffset;
 								break;
 						}
 					}

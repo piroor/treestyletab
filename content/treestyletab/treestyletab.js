@@ -55,6 +55,11 @@ var TreeStyleTabService = {
 	kTABBAR_HORIZONTAL : 3,
 	kTABBAR_VERTICAL   : 12,
 
+	autoHideMode : 0,
+	kAUTOHIDE_MODE_DISABLED : 0,
+	kAUTOHIDE_MODE_HIDE     : 1,
+	kAUTOHIDE_MODE_SHRINK   : 2,
+
 	kSHOWN_BY_UNKNOWN   : 0,
 	kSHOWN_BY_SHORTCUT  : 1,
 	kSHOWN_BY_MOUSEMOVE : 2,
@@ -470,8 +475,11 @@ var TreeStyleTabService = {
  
 	toggleAutoHide : function() 
 	{
-		this.setTreePref('tabbar.autoHide.enabled',
-			!this.getTreePref('tabbar.autoHide.enabled'));
+		this.setTreePref('tabbar.autoHide.mode',
+			this.getTreePref('tabbar.autoHide.mode') == this.kAUTOHIDE_MODE_DISABLED ?
+				this.getTreePref('tabbar.autoHide.mode.toggle') :
+				this.kAUTOHIDE_MODE_DISABLED
+		);
 	},
  
 	toggleFixed : function() 
@@ -815,7 +823,7 @@ var TreeStyleTabService = {
 		this.overrideExtensionsOnInitAfter(); // hacks.js
 
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.levelMargin');
-		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.autoHide.enabled');
+		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.autoHide.mode');
 		this.observe(null, 'nsPref:changed', 'browser.link.open_newwindow.restriction.override');
 		this.observe(null, 'nsPref:changed', 'browser.tabs.loadFolderAndReplace.override');
 	},
@@ -1376,11 +1384,12 @@ catch(e) {
   
 	onTabbarResized : function(aEvent) 
 	{
-		this.setPref(
-			'extensions.treestyletab.tabbar.width',
-			TreeStyleTabService.getTabBrowserFromChild(aEvent.currentTarget)
-				.mStrip.boxObject.width
-		);
+		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
+		if (this.autoHideMode == this.kAUTOHIDE_MODE_SHRINK &&
+			!b.treeStyleTab.tabbarExpanded)
+			this.setTreePref('tabbar.shrunkenWidth', b.mStrip.boxObject.width);
+		else
+			this.setTreePref('tabbar.width', b.mStrip.boxObject.width);
 	},
  
 	initContextMenu : function() 
@@ -1630,12 +1639,21 @@ catch(e) {
 				this.ObserverService.notifyObservers(null, 'TreeStyleTab:levelMarginModified', value);
 				break;
 
-			case 'extensions.treestyletab.tabbar.autoHide.enabled':
+			case 'extensions.treestyletab.tabbar.autoHide.mode':
+				this.autoHideMode = this.getTreePref('tabbar.autoHide.mode');
+				if (
+					this.autoHideMode == this.kAUTOHIDE_MODE_SHRINK &&
+					!(
+						this.getTreePref('tabbar.position') == 'left' ||
+						this.getTreePref('tabbar.position') == 'right'
+					)
+					)
+					this.autoHideMode = this.kATOHIDE_MODE_HIDE;
 			case 'extensions.treestyletab.tabbar.autoShow.accelKeyDown':
 			case 'extensions.treestyletab.tabbar.autoShow.tabSwitch':
 			case 'extensions.treestyletab.tabbar.autoShow.feedback':
 				if (
-					this.getTreePref('tabbar.autoHide.enabled') &&
+					this.autoHideMode &&
 					(
 						this.getTreePref('tabbar.autoShow.accelKeyDown') ||
 						this.getTreePref('tabbar.autoShow.tabSwitch') ||
