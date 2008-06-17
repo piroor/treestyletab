@@ -5,7 +5,7 @@
   <RDF:Description RDF:about="urn:mozilla:install-manifest"
                    em:id="treestyletab@piro.sakura.ne.jp"
                    em:name="Tree Style Tab"
-                   em:version="0.6.2008061601"
+                   em:version="0.7.2008061701"
                    em:creator="SHIMODA Hiroshi"
                    em:description="Show tabs like a tree."
                    em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
@@ -16,6 +16,7 @@
   <em:translator>tito (es-ES locale)</em:translator>
   <em:translator>Andy Pillip (de-DE locale)</em:translator>
   <em:translator>HkYtrewq (zh-TW locale)</em:translator>
+  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
 
 
     <em:updateURL>http://piro.sakura.ne.jp/xul/update.rdf</em:updateURL>
