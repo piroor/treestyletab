@@ -2915,7 +2915,7 @@ TreeStyleTabBrowser.prototype = {
 		var contentBox = frame.document.getBoxObjectFor(frame.document.documentElement);
 
 		var x = (pos == 'right') ? browserBox.width - this.autoHideXOffset : 0 ;
-		var y = (pos == 'bottom') ? browserBox.height - this.autoHideXOffset : 0 ;
+		var y = (pos == 'bottom') ? browserBox.height - this.autoHideYOffset : 0 ;
 		var xOffset = (pos == 'top' || pos == 'bottom') ?
 				contentBox.screenX + frame.scrollX - browserBox.screenX :
 				0 ;
