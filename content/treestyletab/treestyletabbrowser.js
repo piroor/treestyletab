@@ -2929,14 +2929,30 @@ TreeStyleTabBrowser.prototype = {
 		ctx.save();
 		if (this.autoHideMode == this.kAUTOHIDE_MODE_SHRINK) {
 			var offset = this.getTreePref('tabbar.shrunkenWidth') + this.splitterWidth;
-			ctx.translate((pos == 'left' ? offset : -offset ), 0);
+			if (pos == 'left')
+				ctx.translate(offset, 0);
+			else
+				x += this.splitterWidth;
+			w -= offset;
 		}
 		ctx.globalAlpha = 1;
 		ctx.drawWindow(frame, x+frame.scrollX, y+frame.scrollY, w, h, '-moz-field');
+		if (pos == 'left' || pos == 'right') {
+			x = pos == 'left' ? -1 : w+1 ;
+			ctx.save();
+			ctx.lineWidth = 0.2;
+			ctx.strokeStyle = 'black';
+			ctx.beginPath();
+			ctx.moveTo(x, 0);
+			ctx.lineTo(x, h);
+			ctx.stroke();
+			ctx.restore();
+		}
 		if (this.mTabBrowser.getAttribute(this.kTRANSPARENT) != this.kTRANSPARENT_STYLE[this.kTRANSPARENT_FULL]) {
 			var alpha = Number(this.getTreePref('tabbar.transparent.partialTransparency'));
 			if (isNaN(alpha)) alpha = 0.25;
 			ctx.globalAlpha = alpha;
+			ctx.fillStyle = 'black';
 			ctx.fillRect(0, 0, w, h);
 		}
 		ctx.restore();
