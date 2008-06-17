@@ -552,6 +552,8 @@ TreeStyleTabBrowser.prototype = {
   
 	initTabbar : function(aPosition) 
 	{
+		this.clearTabbarCanvas();
+
 		var b = this.mTabBrowser;
 
 		if (!aPosition) aPosition = this.getTreePref('tabbar.position');
@@ -959,6 +961,7 @@ TreeStyleTabBrowser.prototype = {
 				else {
 					if (aEvent.originalTarget.getAttribute('class') == this.kSPLITTER) {
 						this.tabbarResizing = true;
+						this.clearTabbarCanvas();
 						this.mTabBrowser.setAttribute(this.kRESIZING, true);
 					}
 					this.cancelShowHideTabbarOnMousemove();
@@ -979,6 +982,7 @@ TreeStyleTabBrowser.prototype = {
 				if (aEvent.originalTarget.getAttribute('class') == this.kSPLITTER) {
 					this.tabbarResizing = false;
 					this.mTabBrowser.removeAttribute(this.kRESIZING);
+					if (this.autoHideShown) this.redrawContentArea();
 				}
 				this.cancelShowHideTabbarOnMousemove();
 				this.lastMouseDownTarget = null;
@@ -2779,7 +2783,7 @@ TreeStyleTabBrowser.prototype = {
 		fullScreenCanvas.show();
 		var b = this.mTabBrowser;
 
-		var hiddenState;
+		var pos = this.mTabBrowser.getAttribute(this.kTABBAR_POSITION);
 		if (this.autoHideShown) { // to be hidden or shrunken
 			this.tabbarHeight = b.mStrip.boxObject.height;
 			this.tabbarWidth = b.mStrip.boxObject.width;
@@ -2795,7 +2799,8 @@ TreeStyleTabBrowser.prototype = {
 				default:
 				case this.kAUTOHIDE_MODE_SHRINK:
 					b.setAttribute(this.kAUTOHIDE, 'show');
-					b.mStrip.width = this.getTreePref('tabbar.shrunkenWidth');
+					if (pos == 'left' || pos == 'right')
+						b.mStrip.width = this.getTreePref('tabbar.shrunkenWidth');
 					break;
 			}
 			this.showHideTabbarReason = aReason || this.kSHOWN_BY_UNKNOWN;
@@ -2825,7 +2830,8 @@ TreeStyleTabBrowser.prototype = {
 
 				default:
 				case this.kAUTOHIDE_MODE_SHRINK:
-					b.mStrip.width = this.getTreePref('tabbar.width');
+					if (pos == 'left' || pos == 'right')
+						b.mStrip.width = this.getTreePref('tabbar.width');
 					break;
 			}
 			this.showHideTabbarReason = aReason || this.kSHOWN_BY_UNKNOWN;
@@ -2899,7 +2905,7 @@ TreeStyleTabBrowser.prototype = {
  	
 	drawTabbarCanvas : function() 
 	{
-		if (!this.tabbarCanvas) return;
+		if (!this.tabbarCanvas || this.tabbarResizing) return;
 
 		var pos = this.mTabBrowser.getAttribute(this.kTABBAR_POSITION);
 

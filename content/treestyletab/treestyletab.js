@@ -55,10 +55,23 @@ var TreeStyleTabService = {
 	kTABBAR_HORIZONTAL : 3,
 	kTABBAR_VERTICAL   : 12,
 
-	autoHideMode : 0,
 	kAUTOHIDE_MODE_DISABLED : 0,
 	kAUTOHIDE_MODE_HIDE     : 1,
 	kAUTOHIDE_MODE_SHRINK   : 2,
+	get autoHideMode()
+	{
+		if (this._autoHideMode == this.kAUTOHIDE_MODE_SHRINK &&
+			this.getTreePref('tabbar.position') != 'left' &&
+			this.getTreePref('tabbar.position') != 'right')
+			return this.kAUTOHIDE_MODE_HIDE;
+		return this._autoHideMode;
+	},
+	set autoHideMode(aValue)
+	{
+		this._autoHideMode = aValue;
+		return aValue;
+	},
+	_autoHideMode : 0,
 
 	kSHOWN_BY_UNKNOWN   : 0,
 	kSHOWN_BY_SHORTCUT  : 1,
@@ -1641,14 +1654,6 @@ catch(e) {
 
 			case 'extensions.treestyletab.tabbar.autoHide.mode':
 				this.autoHideMode = this.getTreePref('tabbar.autoHide.mode');
-				if (
-					this.autoHideMode == this.kAUTOHIDE_MODE_SHRINK &&
-					!(
-						this.getTreePref('tabbar.position') == 'left' ||
-						this.getTreePref('tabbar.position') == 'right'
-					)
-					)
-					this.autoHideMode = this.kATOHIDE_MODE_HIDE;
 			case 'extensions.treestyletab.tabbar.autoShow.accelKeyDown':
 			case 'extensions.treestyletab.tabbar.autoShow.tabSwitch':
 			case 'extensions.treestyletab.tabbar.autoShow.feedback':
