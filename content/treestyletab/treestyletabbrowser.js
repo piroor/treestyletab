@@ -2979,12 +2979,11 @@ TreeStyleTabBrowser.prototype = {
 	get sensitiveArea() 
 	{
 		var b    = this.mTabBrowser;
-		var area = this.getTreePref('tabbar.autoHide.area');
+		var area = Math.abs(this.getTreePref('tabbar.autoHide.area'));
 		var pos  = b.getAttribute(this.kTABBAR_POSITION);
 		switch (this.autoHideMode)
 		{
 			case this.kAUTOHIDE_MODE_HIDE:
-				area = Math.abs(area);
 				if (!this.tabbarShown &&
 					this.getTreePref('tabbar.autoHide.expandArea'))
 					area += (pos == 'left' || pos == 'right') ?
@@ -2995,13 +2994,8 @@ TreeStyleTabBrowser.prototype = {
 			default:
 			case this.kAUTOHIDE_MODE_SHRINK:
 				if (pos == 'left' || pos == 'right') {
-					if (this.tabbarExpanded)
-						area = Math.abs(area);
-					else
-						area += b.mStrip.boxObject.width;
-				}
-				else {
-					area = Math.abs(area);
+					if (!this.tabbarExpanded)
+						area = b.mStrip.boxObject.width - area;
 				}
 				break;
 		}

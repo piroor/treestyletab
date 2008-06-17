@@ -12,7 +12,7 @@ pref("extensions.treestyletab.tabbar.style",           "mixed");
 pref("extensions.treestyletab.tabbar.autoHide.mode",       0);
 pref("extensions.treestyletab.tabbar.autoHide.mode.toggle", 2);
 pref("extensions.treestyletab.tabbar.autoHide.delay",      50);
-pref("extensions.treestyletab.tabbar.autoHide.area",       -7);
+pref("extensions.treestyletab.tabbar.autoHide.area",       7);
 pref("extensions.treestyletab.tabbar.autoHide.expandArea", false);
 // 0 = not transparent, 1 = partial transparent, 2 = completely transparent
 pref("extensions.treestyletab.tabbar.transparent.style", 1);

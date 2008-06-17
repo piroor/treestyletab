@@ -95,3 +95,39 @@ function isGecko18()
 	var version = XULAppInfo.platformVersion.split('.');
 	return parseInt(version[0]) <= 1 && parseInt(version[1]) <= 8;
 }
+
+
+var gAutoHideModeRadio;
+var gAutoHideModeToggle;
+
+function initAutoHidePane()
+{
+	gAutoHideModeRadio = document.getElementById('extensions.treestyletab.tabbar.autoHide.mode-radio');
+	gAutoHideModeToggle = document.getElementById('extensions.treestyletab.tabbar.autoHide.mode.toggle');
+	updateAutoHideModeLabel();
+}
+
+function onChangeAutoHideMode()
+{
+	if (!gAutoHideModeRadio) return;
+	var mode = gAutoHideModeRadio.value;
+	if (!mode) return;
+	if (gAutoHideModeRadio.value != 0) {
+		gAutoHideModeToggle.value = mode;
+		updateAutoHideModeLabel();
+	}
+}
+
+function updateAutoHideModeLabel()
+{
+	if (!gAutoHideModeRadio) return;
+	var mode = gAutoHideModeRadio.value;
+	var nodes = document.getElementsByAttribute('label-mode'+mode, '*');
+	if (nodes && nodes.length)
+		Array.prototype.slice.call(nodes).forEach(function(aNode) {
+			var label = aNode.getAttribute('label-mode'+mode);
+			var node = document.getElementById(aNode.getAttribute('target'));
+			var attr = node.localName == 'label' ? 'value' : 'label' ;
+			node.setAttribute(attr, label);
+		});
+}

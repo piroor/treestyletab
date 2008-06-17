@@ -70,11 +70,16 @@
 
 <!ENTITY config.tabs.autohide "Auto hide">
 
-<!ENTITY config.autoHide.enabled     "Auto hide tab bar">
+<!ENTITY config.autoHide.mode.0 "Show tab bar always">
+<!ENTITY config.autoHide.mode.1 "Auto Hide tab bar">
+<!ENTITY config.autoHide.mode.2 "Auto Shrink tab bar">
 <!ENTITY config.autoShow.caption "Show tab bar automatically when">
 <!ENTITY config.autoShow.mousemove "Mouse cursor points window edges">
 <!ENTITY config.autoHide.area.before "Sensitive area:">
 <!ENTITY config.autoHide.area.after "pixels from window edges">
+<!ENTITY config.autoShow.mousemove.mode2 "Mouse cursor points tab bar's edge">
+<!ENTITY config.autoHide.area.before.mode2 "Sensitive area:">
+<!ENTITY config.autoHide.area.after.mode2 "pixels from tab bar's edge">
 <!ENTITY config.autoHide.delay.before "Delay:">
 <!ENTITY config.autoHide.delay.after "msec.">
 <!ENTITY config.autoShow.accelKeyDown "Control(Command) key is pressed a while">

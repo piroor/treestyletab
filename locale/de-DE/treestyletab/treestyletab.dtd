@@ -70,11 +70,16 @@
 
 <!ENTITY config.tabs.autohide "Im Hintergrund">
 
-<!ENTITY config.autoHide.enabled      "Tableiste immer im Hintergrund">
+<!ENTITY config.autoHide.mode.0 "Show tab bar always">
+<!ENTITY config.autoHide.mode.1 "Tableiste immer im Hintergrund">
+<!ENTITY config.autoHide.mode.2 "Auto Shrink tab bar">
 <!ENTITY config.autoShow.caption      "Tableiste automatisch anzeigen">
 <!ENTITY config.autoShow.mousemove    "Wenn der Mauszeiger die Fensterecken berührt">
 <!ENTITY config.autoHide.area.before "Empfindlicher Bereich:">
 <!ENTITY config.autoHide.area.after "Pixel rund um die Fensterecken">
+<!ENTITY config.autoShow.mousemove.mode2 "Mouse cursor points tab bar's edge">
+<!ENTITY config.autoHide.area.before.mode2 "Sensitive area:">
+<!ENTITY config.autoHide.area.after.mode2 "pixels from tab bar's edge">
 <!ENTITY config.autoHide.delay.before "Verzögerung:">
 <!ENTITY config.autoHide.delay.after "msec.">
 <!ENTITY config.autoShow.accelKeyDown "Wenn die Strg-Taste eine Zeit lang gedrückt wird">

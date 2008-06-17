@@ -70,11 +70,16 @@
 
 <!ENTITY config.tabs.autohide "自動的に隠す">
 
-<!ENTITY config.autoHide.enabled "タブバーを自動的に隠す">
+<!ENTITY config.autoHide.mode.0 "常にタブバーを表示する">
+<!ENTITY config.autoHide.mode.1 "タブバーを自動的に隠す">
+<!ENTITY config.autoHide.mode.2 "タブバーを自動的に縮める">
 <!ENTITY config.autoShow.caption "以下の場合に自動的にタブバーを表示する">
 <!ENTITY config.autoShow.mousemove "ウィンドウの端にポインタが近づいた時">
 <!ENTITY config.autoHide.area.before "反応する領域：ウィンドウの端から">
 <!ENTITY config.autoHide.area.after "ピクセルの範囲">
+<!ENTITY config.autoShow.mousemove.mode2 "タブバーとの境界にポインタが近づいた時">
+<!ENTITY config.autoHide.area.before.mode2 "反応する領域：タブバーとの境界から">
+<!ENTITY config.autoHide.area.after.mode2 "ピクセルの範囲">
 <!ENTITY config.autoHide.delay.before "遅延：">
 <!ENTITY config.autoHide.delay.after "ミリ秒">
 <!ENTITY config.autoShow.accelKeyDown "Control(Command)キーを長押しした時">

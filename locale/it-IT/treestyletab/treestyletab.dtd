@@ -70,11 +70,16 @@
 
 <!ENTITY config.tabs.autohide "Visualizzazione">
 
-<!ENTITY config.autoHide.enabled     "Nascondi automaticamente la barra delle schede">
+<!ENTITY config.autoHide.mode.0 "Show tab bar always">
+<!ENTITY config.autoHide.mode.1 "Nascondi automaticamente la barra delle schede">
+<!ENTITY config.autoHide.mode.2 "Auto Shrink tab bar">
 <!ENTITY config.autoShow.caption "Visualizza la barra della schede quando">
 <!ENTITY config.autoShow.mousemove "Viene spostato il mouse in prossimità del bordo della finestra">
 <!ENTITY config.autoHide.area.before "Area di attivazione:">
 <!ENTITY config.autoHide.area.after "distanza dai bordi della finestra (in pixel)">
+<!ENTITY config.autoShow.mousemove.mode2 "Mouse cursor points tab bar's edge">
+<!ENTITY config.autoHide.area.before.mode2 "Sensitive area:">
+<!ENTITY config.autoHide.area.after.mode2 "pixels from tab bar's edge">
 <!ENTITY config.autoHide.delay.before "Ritardo:">
 <!ENTITY config.autoHide.delay.after "msec.">
 <!ENTITY config.autoShow.accelKeyDown "Viene tenuto premuto il tasto Control (Command)">

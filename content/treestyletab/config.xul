@@ -332,11 +332,15 @@
 
 </prefpane>
 
-<prefpane id="prefpane-autohide" label="&config.tabs.autohide;">
+<prefpane id="prefpane-autohide" label="&config.tabs.autohide;"
+	onpaneload="initAutoHidePane();">
 	<preferences>
-		<preference id="extensions.treestyletab.tabbar.autoHide.enabled"
-			name="extensions.treestyletab.tabbar.autoHide.enabled"
-			type="bool"/>
+		<preference id="extensions.treestyletab.tabbar.autoHide.mode"
+			name="extensions.treestyletab.tabbar.autoHide.mode"
+			type="int"/>
+		<preference id="extensions.treestyletab.tabbar.autoHide.mode.toggle"
+			name="extensions.treestyletab.tabbar.autoHide.mode.toggle"
+			type="int"/>
 		<preference id="extensions.treestyletab.tabbar.autoShow.mousemove"
 			name="extensions.treestyletab.tabbar.autoShow.mousemove"
 			type="bool"/>
@@ -368,26 +372,44 @@
 
 	<vbox>
 
-		<checkbox id="extensions.treestyletab.tabbar.autoHide.enabled-check"
-			preference="extensions.treestyletab.tabbar.autoHide.enabled"
-			label="&config.autoHide.enabled;"/>
+		<groupbox orient="vertical">
+			<radiogroup orient="vertical"
+				id="extensions.treestyletab.tabbar.autoHide.mode-radio"
+				preference="extensions.treestyletab.tabbar.autoHide.mode"
+				onselect="onChangeAutoHideMode()">
+				<radio label="&config.autoHide.mode.0;" value="0"/>
+				<radio label="&config.autoHide.mode.2;" value="2"/>
+				<radio label="&config.autoHide.mode.1;" value="1"/>
+			</radiogroup>
+		</groupbox>
 
 		<groupbox orient="vertical">
 			<caption label="&config.autoShow.caption;"/>
 			<checkbox id="extensions.treestyletab.tabbar.autoShow.mousemove-check"
 				preference="extensions.treestyletab.tabbar.autoShow.mousemove"
-				label="&config.autoShow.mousemove;"/>
+				label="&config.autoShow.mousemove.mode2;"/>
 			<hbox align="center">
 				<spacer style="width:1em;"/>
-				<label value="&config.autoHide.area.before;"
+				<label id="extensions.treestyletab.tabbar.autoHide.area-befre"
+					value="&config.autoHide.area.before.mode2;"
 					control="extensions.treestyletab.tabbar.autoHide.area-textbox"/>
 				<textbox id="extensions.treestyletab.tabbar.autoHide.area-textbox"
 					preference="extensions.treestyletab.tabbar.autoHide.area"
 					type="number"
 					min="0" increment="1" style="width:4em;"/>
-				<label value="&config.autoHide.area.after;"
+				<label id="extensions.treestyletab.tabbar.autoHide.area-after"
+					value="&config.autoHide.area.after.mode2;"
 					control="extensions.treestyletab.tabbar.autoHide.area-textbox"/>
 			</hbox>
+			<data target="extensions.treestyletab.tabbar.autoShow.mousemove-check"
+				label-mode1="&config.autoShow.mousemove;"
+				label-mode2="&config.autoShow.mousemove.mode2;"/>
+			<data target="extensions.treestyletab.tabbar.autoHide.area-befre"
+				label-mode1="&config.autoHide.area.before;"
+				label-mode2="&config.autoHide.area.before.mode2;"/>
+			<data target="extensions.treestyletab.tabbar.autoHide.area-after"
+				label-mode1="&config.autoHide.area.after;"
+				label-mode2="&config.autoHide.area.after.mode2;"/>
 			<hbox align="center">
 				<spacer style="width:1em;"/>
 				<label value="&config.autoHide.delay.before;"

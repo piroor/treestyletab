@@ -70,11 +70,16 @@
 
 <!ENTITY config.tabs.autohide "自动隐藏">
 
-<!ENTITY config.autoHide.enabled     "自动隐藏标签栏">
+<!ENTITY config.autoHide.mode.0 "Show tab bar always">
+<!ENTITY config.autoHide.mode.1 "自动隐藏标签栏">
+<!ENTITY config.autoHide.mode.2 "Auto Shrink tab bar">
 <!ENTITY config.autoShow.caption "自动显示标签栏，当">
 <!ENTITY config.autoShow.mousemove "鼠标指针在窗口边缘时">
 <!ENTITY config.autoHide.area.before "敏感区域:">
 <!ENTITY config.autoHide.area.after "个像素（距离窗口边缘）">
+<!ENTITY config.autoShow.mousemove.mode2 "Mouse cursor points tab bar's edge">
+<!ENTITY config.autoHide.area.before.mode2 "Sensitive area:">
+<!ENTITY config.autoHide.area.after.mode2 "pixels from tab bar's edge">
 <!ENTITY config.autoHide.delay.before "延迟:">
 <!ENTITY config.autoHide.delay.after "毫秒">
 <!ENTITY config.autoShow.accelKeyDown "按下Control(命令)键片刻之时">

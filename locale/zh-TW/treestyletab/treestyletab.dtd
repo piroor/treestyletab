@@ -67,11 +67,16 @@
 
 <!ENTITY config.tabs.autohide "自動隱藏">
 
-<!ENTITY config.autoHide.enabled "自動隱藏分頁工具列">
+<!ENTITY config.autoHide.mode.0 "Show tab bar always">
+<!ENTITY config.autoHide.mode.1 "自動隱藏分頁工具列">
+<!ENTITY config.autoHide.mode.2 "Auto Shrink tab bar">
 <!ENTITY config.autoShow.caption "在以下的情況自動顯示分頁工具列">
 <!ENTITY config.autoShow.mousemove "滑鼠指標指向視窗邊緣時">
 <!ENTITY config.autoHide.area.before "起反應的區域：距離視窗邊緣">
 <!ENTITY config.autoHide.area.after "個像素的範圍">
+<!ENTITY config.autoShow.mousemove.mode2 "Mouse cursor points tab bar's edge">
+<!ENTITY config.autoHide.area.before.mode2 "Sensitive area:">
+<!ENTITY config.autoHide.area.after.mode2 "pixels from tab bar's edge">
 <!ENTITY config.autoHide.delay.before "延遲：">
 <!ENTITY config.autoHide.delay.after "毫秒">
 <!ENTITY config.autoShow.accelKeyDown "按下 Ctrl（Command）一段時間後">
