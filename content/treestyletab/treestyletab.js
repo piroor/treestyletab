@@ -1332,7 +1332,7 @@ catch(e) {
 			this.accelKeyPressed
 			) {
 			if (this.getTreePref('tabbar.autoShow.accelKeyDown') && 
-				!sv.tabbarShown &&
+				!sv.autoHideShown &&
 				!this.delayedAutoShowTimer) {
 				this.delayedAutoShowTimer = window.setTimeout(
 					function(aSelf) {
@@ -1392,7 +1392,7 @@ catch(e) {
 			scrollDown ||
 			scrollUp ||
 			( // when you release "shift" key
-				sv.tabbarShown &&
+				sv.autoHideShown &&
 				standBy && !aEvent.shiftKey &&
 				aEvent.charCode == 0 && aEvent.keyCode == 16
 			)
