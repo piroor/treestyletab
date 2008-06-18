@@ -186,13 +186,59 @@ TreeStyleTabBrowser.prototype = {
 				'{',
 				<><![CDATA[$&
 					var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;
-					if (!treeStyleTab.isTabInViewport(this.selectedItem)) {
-						treeStyleTab.scrollToTab(this.selectedItem);
+					var ensureTabVisibleByTST = function(aTab) {
+						if (!treeStyleTab.isTabInViewport(aTab)) {
+							treeStyleTab.scrollToTab(aTab);
+							return true;
+						}
+						return false;
+					};
+					if (treeStyleTab.isVertical) {
+						window.setTimeout(ensureTabVisibleByTST, 0, this.selectedItem);
+						return;
+					}
+					else if (ensureTabVisibleByTST(this.selectedItem)) {
 						return;
 					}
 				]]></>
 			)
 		);
+
+/*
+		if ('ensureElementIsVisible' in b.mTabContainer.mTabstrip &&
+			'_smoothScrollByPixels' in b.mTabContainer.mTabstrip) {
+			eval('b.mTabContainer.mTabstrip.ensureElementIsVisible = '+
+				b.mTabContainer.mTabstrip.ensureElementIsVisible.toSource().replace(
+					'{',
+					<><![CDATA[$&
+						var browser = TreeStyleTabService.getTabBrowserFromChild(this);
+						var startProp = browser.treeStyleTab.isVertical ? 'top' : 'left' ;
+						var endProp = browser.treeStyleTab.isVertical ? 'bottom' : 'right' ;
+					]]></>
+				).replace(
+					/\.left/g, '[startProp]'
+				).replace(
+					/\.right/g, '[endProp]'
+				).replace(
+					'|| this.getAttribute("orient") == "vertical"', ''
+				)
+			);
+			eval('b.mTabContainer.mTabstrip._smoothScrollByPixels = '+
+				b.mTabContainer.mTabstrip._smoothScrollByPixels.toSource().replace(
+					'{',
+					<><![CDATA[$&
+						var TST = TreeStyleTabService.getTabBrowserFromChild(this);
+					]]></>
+				).replace(
+					'scrollBy(distance, 0)',
+					<><![CDATA[scrollBy(
+						(TST.isVertical ? 0 : distance ),
+						(TST.isVertical ? distance : 0 )
+					)]]></>
+				)
+			);
+		}
+*/
 
 		eval('b.mTabContainer._notifyBackgroundTab = '+
 			b.mTabContainer._notifyBackgroundTab.toSource().replace(
@@ -2571,7 +2617,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 		else {
 			try {
-				this.mTabBrowser.mTabstrip.scrollBoxObject.scrollTo(aEndX, aEndY);
+				this.mTabBrowser.mTabContainer.mTabstrip.scrollBoxObject.scrollTo(aEndX, aEndY);
 			}
 			catch(e) {
 			}
