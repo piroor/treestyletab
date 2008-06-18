@@ -3231,7 +3231,6 @@ TreeStyleTabBrowser.prototype = {
 	showTabbarForFeedback : function() 
 	{
 		if (!this.autoHideEnabled ||
-			this.autoHideMode != this.kAUTOHIDE_MODE_HIDE ||
 			!this.getTreePref('tabbar.autoShow.feedback'))
 			return;
 
