@@ -306,7 +306,9 @@ tabbrowser[treestyletab-twisty-style="retro"]:not([treestyletab-mode="vertical"]
 tabbrowser[treestyletab-twisty-style="retro"]:not([treestyletab-mode="vertical"])[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyletab-children] .tab-icon {
 	margin-left: 16px;
 }
-tabbrowser[treestyletab-twisty-style^="modern"][treestyletab-allow-subtree-collapse="true"][treestyletab-mode="horizontal"] .tab-icon,
+tabbrowser[treestyletab-twisty-style^="modern"][treestyletab-allow-subtree-collapse="true"][treestyletab-mode="horizontal"] .tab-icon {
+	margin-left: 12px;
+}
 tabbrowser[treestyletab-twisty-style^="modern"][treestyletab-allow-subtree-collapse="true"][treestyletab-mode="vertical"]:not([treestyletab-appearance-inverted="true"]) .tab-icon {
 	margin-left: 9px;
 }
