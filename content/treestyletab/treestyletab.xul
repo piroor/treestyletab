@@ -38,7 +38,7 @@
 </stringbundleset>
 
 <window id="main-window">
-	<data id="multipletab-tabcontext-menu-template" collapsed="true">
+	<data id="treestyletab-tabcontext-menu-template" collapsed="true">
 		<menuitem id="context-item-removeTabSubTree"
 			label="&context.removeTabSubTree.label;"
 			accesskey="&context.removeTabSubTree.accesskey;"
