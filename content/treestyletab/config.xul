@@ -110,7 +110,8 @@
 		<caption label="&config.tabbar.style.caption;"/>
 		<radiogroup id="extensions.treestyletab.tabbar.style-radiogroup"
 			preference="extensions.treestyletab.tabbar.style"
-			orient="horizontal">
+			orient="vertical">
+			<hbox align="center">
 			<radio value="default" label="&config.tabbar.style.default;"
 				class="image" align="center"
 				src="chrome://treestyletab/content/res/style-default.png"/>
@@ -120,6 +121,8 @@
 			<radio value="mixed" label="&config.tabbar.style.mixed;"
 				class="image" align="center"
 				src="chrome://treestyletab/content/res/style-mixed.png"/>
+			</hbox>
+			<radio value="" label="&config.tabbar.style.none;"/>
 		</radiogroup>
 	</groupbox>
 	<groupbox>

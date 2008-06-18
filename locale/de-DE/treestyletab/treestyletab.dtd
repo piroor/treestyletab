@@ -20,6 +20,7 @@
 <!ENTITY config.tabbar.style.default "Plain">
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.mixed   "Gemischt">
+<!ENTITY config.tabbar.style.none    "Default (specified by the Theme)">
 
 <!ENTITY config.twisty.style.caption "Aufklappsymbole">
 <!ENTITY config.twisty.style.auto    "Auto">

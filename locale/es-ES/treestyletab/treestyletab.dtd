@@ -20,6 +20,7 @@
 <!ENTITY config.tabbar.style.default "Plano">
 <!ENTITY config.tabbar.style.vertigo "Vértigo">
 <!ENTITY config.tabbar.style.mixed   "Mezclado">
+<!ENTITY config.tabbar.style.none    "Default (specified by the Theme)">
 
 <!ENTITY config.twisty.style.caption "Estilo del botón de colapsar/expandir">
 <!ENTITY config.twisty.style.auto    "Automático">

@@ -20,6 +20,7 @@
 <!ENTITY config.tabbar.style.default "Semplice">
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.mixed   "Misto">
+<!ENTITY config.tabbar.style.none    "Default (specified by the Theme)">
 
 <!ENTITY config.twisty.style.caption "Aspetto controlli contrazione/espansione sottoalberi">
 <!ENTITY config.twisty.style.auto    "Automatico">

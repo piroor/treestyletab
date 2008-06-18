@@ -875,7 +875,10 @@ TreeStyleTabBrowser.prototype = {
 						break;
 
 					case 'extensions.treestyletab.tabbar.style':
-						b.setAttribute(this.kSTYLE, value);
+						if (value)
+							b.setAttribute(this.kSTYLE, value);
+						else
+							b.removeAttribute(this.kSTYLE);
 						break;
 
 					case 'extensions.treestyletab.twisty.style':
