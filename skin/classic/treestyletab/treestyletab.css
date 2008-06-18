@@ -43,6 +43,7 @@ tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab:not([selected=
 	min-height: 2em;
 	margin: 0 !important;
 	padding: 0 0.2em !important;
+	color: ButtonText;
 	background: ThreeDFace !important;
 	border-top: 2px solid !important;
 	-moz-border-top-colors: ThreeDFace ThreeDFace !important;
