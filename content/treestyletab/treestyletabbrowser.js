@@ -2676,11 +2676,13 @@ TreeStyleTabBrowser.prototype = {
  
 	smoothScrollToCallback : function(aSelf, aStartX, aStartY, aEndX, aEndY, aStartTime, aTimeout) 
 	{
+		var past = Date.now() - aStartTime;
+
 		var newX = aStartX + parseInt(
-				(aEndX - aStartX) * ((Date.now() - aStartTime) / aTimeout)
+				(aEndX - aStartX) * (past / aTimeout)
 			);
 		var newY = aStartY + parseInt(
-				(aEndY - aStartY) * ((Date.now() - aStartTime) / aTimeout)
+				(aEndY - aStartY) * (past / aTimeout)
 			);
 
 		var scrollBoxObject = aSelf.mTabBrowser.mTabContainer.mTabstrip.scrollBoxObject;
@@ -2693,6 +2695,8 @@ TreeStyleTabBrowser.prototype = {
 		var maxY = Math.max(0, h.value - scrollBoxObject.height);
 
 		if (
+			(past > aTimeout) ||
+			(
 				(
 				aEndX - aStartX > 0 ?
 					x.value >= Math.min(aEndX, maxX) :
@@ -2703,6 +2707,7 @@ TreeStyleTabBrowser.prototype = {
 					y.value >= Math.min(aEndY, maxY) :
 					y.value <= Math.min(aEndY, maxY)
 				)
+			)
 			) {
 			if (aSelf.smoothScrollTimer) {
 				window.clearInterval(aSelf.smoothScrollTimer);
@@ -2755,15 +2760,15 @@ TreeStyleTabBrowser.prototype = {
 			break;
 		}
 
+		if (this.isTabInViewport(aTab) && this.isTabInViewport(lastVisible)) {
+			return;
+		}
+
 		var containerPosition = b.mStrip.boxObject[this.positionProp];
 		var containerSize     = b.mStrip.boxObject[this.sizeProp];
 		var parentPosition    = aTab.boxObject[this.positionProp];
 		var lastPosition      = lastVisible.boxObject[this.positionProp];
 		var tabSize           = lastVisible.boxObject[this.sizeProp];
-
-		if (this.isTabInViewport(aTab) && this.isTabInViewport(lastVisible)) {
-			return;
-		}
 
 		if (lastPosition - parentPosition + tabSize > containerSize - tabSize) { // out of screen
 			var endPos = parentPosition - b.mTabContainer.firstChild.boxObject[this.positionProp] - tabSize * 0.5;
