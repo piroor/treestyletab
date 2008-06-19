@@ -972,12 +972,16 @@ TreeStyleTabBrowser.prototype = {
 
 			case 'TabClose':
 				this.onTabRemoved(aEvent);
-
-				var x = {}, y = {};
-				var scrollBoxObject = this.mTabBrowser.mTabContainer.mTabstrip.scrollBoxObject;
-				scrollBoxObject.getPosition(x, y);
-				this.lastScrollX = x.value;
-				this.lastScrollY = y.value;
+				if (this.isVertical) {
+					var x = {}, y = {};
+					var scrollBoxObject = this.mTabBrowser.mTabContainer.mTabstrip.scrollBoxObject;
+					scrollBoxObject.getPosition(x, y);
+					this.lastScrollX = x.value;
+					this.lastScrollY = y.value;
+//					var tab = aEvent.originalTarget;
+//					var delta = tab.boxObject.height;
+//					scrollBoxObject.scrollTo(x.value, y.value-delta);
+				}
 				return;
 
 			case 'TabMove':
