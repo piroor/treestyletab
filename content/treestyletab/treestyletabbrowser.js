@@ -111,6 +111,7 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.addEventListener('dblclick', this, true);
 		b.mTabContainer.addEventListener('mousedown', this, true);
 		b.mTabContainer.addEventListener('select', this, true);
+		b.mTabContainer.addEventListener('scroll', this, true);
 
 		var selectNewTab = '_selectNewTab' in b.mTabContainer ? '_selectNewTab' : 'selectNewTab' ; // Fx3 / Fx2
 
@@ -193,11 +194,7 @@ TreeStyleTabBrowser.prototype = {
 						}
 						return false;
 					};
-					if (treeStyleTab.isVertical) {
-						window.setTimeout(ensureTabVisibleByTST, 0, this.selectedItem);
-						return;
-					}
-					else if (ensureTabVisibleByTST(this.selectedItem)) {
+					if (ensureTabVisibleByTST(this.selectedItem)) {
 						return;
 					}
 				]]></>
@@ -792,6 +789,7 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.removeEventListener('dblclick', this, true);
 		b.mTabContainer.removeEventListener('mousedown', this, true);
 		b.mTabContainer.removeEventListener('select', this, true);
+		b.mTabContainer.removeEventListener('scroll', this, true);
 
 		var tabContext = document.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu');
 		tabContext.removeEventListener('popupshowing', this, false);
@@ -974,6 +972,12 @@ TreeStyleTabBrowser.prototype = {
 
 			case 'TabClose':
 				this.onTabRemoved(aEvent);
+
+				var x = {}, y = {};
+				var scrollBoxObject = this.mTabBrowser.mTabContainer.mTabstrip.scrollBoxObject;
+				scrollBoxObject.getPosition(x, y);
+				this.lastScrollX = x.value;
+				this.lastScrollY = y.value;
 				return;
 
 			case 'TabMove':
@@ -1103,7 +1107,20 @@ TreeStyleTabBrowser.prototype = {
 				return;
 
 			case 'scroll':
-				this.redrawContentArea();
+				var node = aEvent.originalTarget;
+				if (node && node.ownerDocument == document) {
+					if (this.lastScrollX < 0 || this.lastScrollY < 0) return;
+					var x = {}, y = {};
+					var scrollBoxObject = this.mTabBrowser.mTabContainer.mTabstrip.scrollBoxObject;
+					scrollBoxObject.getPosition(x, y);
+					if (x.value != this.lastScrollX || y.value != this.lastScrollY)
+						scrollBoxObject.scrollTo(this.lastScrollX, this.lastScrollY);
+					this.lastScrollX = -1;
+					this.lastScrollY = -1;
+				}
+				else if (this.autoHideEnabled) {
+					this.redrawContentArea();
+				}
 				return;
 
 			case 'load':
@@ -1163,6 +1180,8 @@ TreeStyleTabBrowser.prototype = {
 				return;
 		}
 	},
+	lastScrollX : -1,
+	lastScrollY : -1,
  
 	onTabAdded : function(aEvent) 
 	{
@@ -3160,9 +3179,9 @@ TreeStyleTabBrowser.prototype = {
 
 		this.mTabBrowser.addEventListener('mousedown', this, true);
 		this.mTabBrowser.addEventListener('mouseup', this, true);
-		this.mTabBrowser.addEventListener('scroll', this, true);
 		this.mTabBrowser.addEventListener('resize', this, true);
 		this.mTabBrowser.addEventListener('load', this, true);
+		this.mTabBrowser.mPanelContainer.addEventListener('scroll', this, true);
 		if (this.getTreePref('tabbar.autoShow.mousemove'))
 			this.startListenMouseMove();
 
@@ -3184,9 +3203,9 @@ TreeStyleTabBrowser.prototype = {
 
 		this.mTabBrowser.removeEventListener('mousedown', this, true);
 		this.mTabBrowser.removeEventListener('mouseup', this, true);
-		this.mTabBrowser.removeEventListener('scroll', this, true);
 		this.mTabBrowser.removeEventListener('resize', this, true);
 		this.mTabBrowser.removeEventListener('load', this, true);
+		this.mTabBrowser.mPanelContainer.removeEventListener('scroll', this, true);
 		this.endListenMouseMove();
 
 		this.clearTabbarCanvas();
