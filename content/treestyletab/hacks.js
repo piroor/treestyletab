@@ -93,6 +93,33 @@ TreeStyleTabService.overrideExtensionsOnInitBefore = function() {
 		flst.tb = gBrowser;
 		flst.tabBox = flst.tb.mTabBox;
 	}
+	if ('ensureTabIsVisible' in gBrowser.mTabContainer) {
+		function replaceHorizontalProps(aString)
+		{
+			return aString.replace(
+					/boxObject\.x/g,
+					'boxObject[posProp]'
+				).replace(
+					/boxObject\.width/g,
+					'boxObject[sizeProp]'
+				).replace(
+					'{',
+					<![CDATA[$&
+						var posProp = gBrowser.treeStyleTab.isVertical ? 'y' : 'x' ;
+						var sizeProp = gBrowser.treeStyleTab.isVertical ? 'height' : 'width' ;
+					]]>
+				)
+		}
+		eval('gBrowser.mTabContainer.isTabVisible = '+
+			replaceHorizontalProps(gBrowser.mTabContainer.isTabVisible.toSource())
+		);
+		eval('gBrowser.mTabContainer.ensureTabIsVisible = '+
+			replaceHorizontalProps(gBrowser.mTabContainer.ensureTabIsVisible.toSource().replace(
+				'tabhbox.boxObject.width < 250',
+				'$& && !gBrowser.treeStyleTab.isVertical'
+			))
+		);
+	}
 
 };
 
