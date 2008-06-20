@@ -44,6 +44,15 @@ TreeStyleTabBrowser.prototype = {
 	},
 	_container : null,
  
+	get scrollBox() 
+	{
+		return this.mTabBrowser.mTabContainer.mTabstrip;
+	},
+	get scrollBoxObject() 
+	{
+		return this.scrollBox.scrollBoxObject;
+	},
+ 
 /* utils */ 
 	
 /* get tab contents */ 
@@ -69,7 +78,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var b = this.mTabBrowser;
 		if (!b) return false;
-		var box = b.mTabContainer.mTabstrip || b.mTabContainer ;
+		var box = this.scrollBox || b.mTabContainer ;
 		return (box.getAttribute('orient') || window.getComputedStyle(box, '').getPropertyValue('-moz-box-orient')) == 'vertical';
 	},
  
@@ -77,7 +86,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		if (!aTab) return false;
 		var tabBox = aTab.boxObject;
-		var barBox = this.mTabBrowser.mTabContainer.mTabstrip.boxObject;
+		var barBox = this.scrollBox.boxObject;
 		return (tabBox.screenX >= barBox.screenX &&
 			tabBox.screenX + tabBox.width <= barBox.screenX + barBox.width &&
 			tabBox.screenY >= barBox.screenY &&
@@ -562,7 +571,8 @@ TreeStyleTabBrowser.prototype = {
 					continue;
 				nodes[i].setAttribute('ordinal', (nodes.length - i + 1) * 10);
 			}
-			counter.setAttribute('ordinal', parseInt(label.getAttribute('ordinal')) + 1);
+			if (counter)
+				counter.setAttribute('ordinal', parseInt(label.getAttribute('ordinal')) + 1);
 			close.setAttribute('ordinal', parseInt(label.parentNode.getAttribute('ordinal')) - 5);
 		}
 		else {
@@ -974,7 +984,8 @@ TreeStyleTabBrowser.prototype = {
 				this.onTabRemoved(aEvent);
 				if (this.isVertical) {
 					var x = {}, y = {};
-					var scrollBoxObject = this.mTabBrowser.mTabContainer.mTabstrip.scrollBoxObject;
+					var scrollBoxObject = this.scrollBoxObject;
+					if (!scrollBoxObject) return;
 					scrollBoxObject.getPosition(x, y);
 					this.lastScrollX = x.value;
 					this.lastScrollY = y.value;
@@ -1115,7 +1126,7 @@ TreeStyleTabBrowser.prototype = {
 				if (node && node.ownerDocument == document) {
 					if (this.lastScrollX < 0 || this.lastScrollY < 0) return;
 					var x = {}, y = {};
-					var scrollBoxObject = this.mTabBrowser.mTabContainer.mTabstrip.scrollBoxObject;
+					var scrollBoxObject = this.scrollBoxObject;
 					scrollBoxObject.getPosition(x, y);
 					if (x.value != this.lastScrollX || y.value != this.lastScrollY)
 						scrollBoxObject.scrollTo(this.lastScrollX, this.lastScrollY);
@@ -2643,7 +2654,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 		else {
 			try {
-				this.mTabBrowser.mTabContainer.mTabstrip.scrollBoxObject.scrollTo(aEndX, aEndY);
+				this.scrollBoxObject.scrollTo(aEndX, aEndY);
 			}
 			catch(e) {
 			}
@@ -2658,7 +2669,7 @@ TreeStyleTabBrowser.prototype = {
 			this.smoothScrollTimer = null;
 		}
 
-		var scrollBoxObject = b.mTabContainer.mTabstrip.scrollBoxObject;
+		var scrollBoxObject = this.scrollBoxObject;
 		var x = {}, y = {};
 		scrollBoxObject.getPosition(x, y);
 		this.smoothScrollTimer = window.setInterval(
@@ -2685,7 +2696,7 @@ TreeStyleTabBrowser.prototype = {
 				(aEndY - aStartY) * (past / aTimeout)
 			);
 
-		var scrollBoxObject = aSelf.mTabBrowser.mTabContainer.mTabstrip.scrollBoxObject;
+		var scrollBoxObject = aSelf.scrollBoxObject;
 		var x = {}, y = {};
 		scrollBoxObject.getPosition(x, y);
 
@@ -2725,7 +2736,7 @@ TreeStyleTabBrowser.prototype = {
 
 		var b = this.mTabBrowser;
 
-		var scrollBoxObject = b.mTabContainer.mTabstrip.scrollBoxObject;
+		var scrollBoxObject = this.scrollBoxObject;
 		var w = {}, h = {};
 		try {
 			scrollBoxObject.getScrolledSize(w, h);

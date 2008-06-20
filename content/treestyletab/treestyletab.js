@@ -779,20 +779,28 @@ var TreeStyleTabService = {
 		catch(e) {
 		}
 
+		if (this.useTMPSessionAPI) {
+			var TMPValue = aTab.getAttribute(this.kTMP_SESSION_DATA_PREFIX+aKey);
+			if (TMPValue) value = TMPValue;
+		}
+
 		return value;
 	},
  
 	setTabValue : function(aTab, aKey, aValue) 
 	{
-		if (!aValue) {
-			return this.deleteTabValue(aTab, aKey);
-		}
+		if (!aValue) return this.deleteTabValue(aTab, aKey);
+
 		aTab.setAttribute(aKey, aValue);
 		try {
 			this.SessionStore.setTabValue(aTab, aKey, aValue);
 		}
 		catch(e) {
 		}
+
+		if (this.useTMPSessionAPI)
+			aTab.setAttribute(this.kTMP_SESSION_DATA_PREFIX+aKey, aValue);
+
 		return aValue;
 	},
  
@@ -804,7 +812,13 @@ var TreeStyleTabService = {
 		}
 		catch(e) {
 		}
+
+		if (this.useTMPSessionAPI)
+			aTab.removeAttribute(this.kTMP_SESSION_DATA_PREFIX+aKey);
 	},
+ 
+	useTMPSessionAPI : false,
+	kTMP_SESSION_DATA_PREFIX : 'tmp-session-data-',
    
 /* Initializing */ 
 	

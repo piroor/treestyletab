@@ -21,6 +21,66 @@ TreeStyleTabService.overrideExtensionsPreInit = function() {
 		);
 	}
 
+	// Tab Mix Plus, SessionStore API
+	if ('SessionData' in window &&
+		'getTabProperties' in SessionData &&
+		'setTabProperties' in SessionData) {
+		var prefix = this.kTMP_SESSION_DATA_PREFIX;
+		SessionData.tabTSTProperties = [
+			prefix+this.kID,
+			prefix+this.kCOLLAPSED,
+			prefix+this.kSUBTREE_COLLAPSED,
+			prefix+this.kCHILDREN,
+			prefix+this.kPARENT,
+			prefix+this.kANCESTOR,
+			prefix+this.kINSERT_BEFORE
+		];
+		eval('SessionData.getTabProperties = '+
+			SessionData.getTabProperties.toSource().replace(
+				'return tabProperties;',
+				<![CDATA[
+					this.tabTSTProperties.forEach(function(aProp) {
+						tabProperties += '|' + aProp + '=' + encodeURIComponent(aTab.getAttribute(aProp));
+					});
+				$&]]>
+			)
+		);
+		eval('SessionData.setTabProperties = '+
+			SessionData.setTabProperties.toSource().replace(
+				'{',
+				<![CDATA[$&
+					var TSTProps = tabProperties.split('|');
+					tabProperties = TSTProps.shift();
+					TSTProps.forEach(function(aSet) {
+						var index = aSet.indexOf('=');
+						var name = aSet.substring(0, index);
+						var value = decodeURIComponent(aSet.substring(index+1));
+						if (name && value)
+							aTab.setAttribute(name, value);
+					});
+				]]>
+			)
+		);
+		eval('SessionManager.loadOneTab = '+
+			SessionManager.loadOneTab.toSource().replace(
+				/(\}\))?$/,
+				<![CDATA[
+					if (gBrowser.treeStyleTab.useTMPSessionAPI)
+						gBrowser.treeStyleTab.onTabRestored({ target : aTab, originalTarget : aTab });
+				$1]]>
+			)
+		);
+		var source = tablib.init.toSource().split('gBrowser.restoreTab = ');
+		source[1] = source[1].replace(
+			'return newTab;',
+			<![CDATA[
+				if (this.treeStyleTab.useTMPSessionAPI)
+					this.treeStyleTab.onTabRestored({ target : newTab, originalTarget : newTab });
+			$&]]>
+		);
+		eval('tablib.init = '+source.join('gBrowser.restoreTab = '));
+		this.useTMPSessionAPI = true;
+	}
 };
 
 TreeStyleTabService.overrideExtensionsOnInitBefore = function() {
