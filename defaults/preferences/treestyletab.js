@@ -74,5 +74,8 @@ pref("browser.tabs.loadFolderAndReplace.override", false);
 pref("extensions.multipletab.show.multipletab-selection-item-removeTabSubTree", true);
 
 
+pref("extensions.treestyletab.TMP.doNotUpdate.isTabVisible", false);
+
+
 pref("extensions.treestyletab@piro.sakura.ne.jp.name", "chrome://treestyletab/locale/treestyletab.properties");
 pref("extensions.treestyletab@piro.sakura.ne.jp.description", "chrome://treestyletab/locale/treestyletab.properties");

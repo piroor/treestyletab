@@ -93,7 +93,8 @@ TreeStyleTabService.overrideExtensionsOnInitBefore = function() {
 		flst.tb = gBrowser;
 		flst.tabBox = flst.tb.mTabBox;
 	}
-	if ('ensureTabIsVisible' in gBrowser.mTabContainer) {
+	if ('isTabVisible' in gBrowser.mTabContainer &&
+		'ensureTabIsVisible' in gBrowser.mTabContainer) {
 		function replaceHorizontalProps(aString)
 		{
 			return aString.replace(
@@ -110,15 +111,16 @@ TreeStyleTabService.overrideExtensionsOnInitBefore = function() {
 					]]>
 				)
 		}
-		eval('gBrowser.mTabContainer.isTabVisible = '+
-			replaceHorizontalProps(gBrowser.mTabContainer.isTabVisible.toSource())
-		);
 		eval('gBrowser.mTabContainer.ensureTabIsVisible = '+
 			replaceHorizontalProps(gBrowser.mTabContainer.ensureTabIsVisible.toSource().replace(
 				'tabhbox.boxObject.width < 250',
 				'$& && !gBrowser.treeStyleTab.isVertical'
 			))
 		);
+		if (!this.getTreePref('TMP.doNotUpdate.isTabVisible'))
+			eval('gBrowser.mTabContainer.isTabVisible = '+
+				replaceHorizontalProps(gBrowser.mTabContainer.isTabVisible.toSource())
+			);
 	}
 
 };
