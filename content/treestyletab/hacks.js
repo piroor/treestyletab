@@ -634,12 +634,12 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 			FireGestures.onExtraGesture.toSource().replace(
 				'case "keypress-stop":',
 				<><![CDATA[$&
-					if (event.shiftKey) TreeStyleTabService.readyToOpenChildTab(gBrowser, true);
+					TreeStyleTabService.readyToOpenChildTab(gBrowser, true);
 				]]></>
 			).replace(
 				'break;case "gesture-timeout":',
-				<><![CDATA[$&
-					if (event.shiftKey) TreeStyleTabService.stopToOpenChildTab(gBrowser);
+				<><![CDATA[
+					TreeStyleTabService.stopToOpenChildTab(gBrowser);
 				$&]]></>
 			)
 		);
