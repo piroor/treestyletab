@@ -2979,6 +2979,11 @@ TreeStyleTabBrowser.prototype = {
 			aSelf.checkTabsIndentOverflow();
 			aSelf.redrawContentArea();
 			fullScreenCanvas.hide();
+
+			var event = document.createEvent('Events');
+			event.initEvent('TreeStyleTabAutoHideStateChange', true, true);
+			event.shown = aSelf.autoHideShown;
+			aSelf.mTabBrowser.dispatchEvent(event);
 		}, 0, this);
 	},
 	showHideTabbarReason : 0,
