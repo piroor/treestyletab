@@ -2983,6 +2983,8 @@ TreeStyleTabBrowser.prototype = {
 			var event = document.createEvent('Events');
 			event.initEvent('TreeStyleTabAutoHideStateChange', true, true);
 			event.shown = aSelf.autoHideShown;
+			event.xOffset = aSelf.autoHideXOffset;
+			event.yOffset = aSelf.autoHideYOffset;
 			aSelf.mTabBrowser.dispatchEvent(event);
 		}, 0, this);
 	},
