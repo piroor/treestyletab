@@ -124,7 +124,7 @@ function updateAutoHideModeLabel()
 	var mode = gAutoHideModeRadio.value;
 	var nodes = document.getElementsByAttribute('label-mode'+mode, '*');
 	if (nodes && nodes.length)
-		Array.prototype.slice.call(nodes).forEach(function(aNode) {
+		Array.slice(nodes).forEach(function(aNode) {
 			var label = aNode.getAttribute('label-mode'+mode);
 			var node = document.getElementById(aNode.getAttribute('target'));
 			var attr = node.localName == 'label' ? 'value' : 'label' ;

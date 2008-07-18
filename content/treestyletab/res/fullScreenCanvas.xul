@@ -137,8 +137,8 @@ window.addEventListener('DOMContentLoaded', function() {
 
 		get browsers()
 		{
-			browsers = [].concat(Array.prototype.slice.call(document.getElementsByTagName('tabbrowser')))
-						.concat(Array.prototype.slice.call(document.getElementsByTagName('browser')));
+			browsers = [].concat(Array.slice(document.getElementsByTagName('tabbrowser')))
+						.concat(Array.slice(document.getElementsByTagName('browser')));
 			if ('SplitBrowser' in window) browsers = browsers.concat(SplitBrowser.browsers);
 			return browsers;
 		},

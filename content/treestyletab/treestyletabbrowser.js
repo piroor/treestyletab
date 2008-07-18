@@ -593,7 +593,7 @@ TreeStyleTabBrowser.prototype = {
 		window.setTimeout(function(aSelf) {
 			var b = aSelf.mTabBrowser;
 			if (aAll) {
-				Array.prototype.slice.call(b.mTabContainer.childNodes).forEach(function(aTab) {
+				Array.slice(b.mTabContainer.childNodes).forEach(function(aTab) {
 					aSelf.initTabContentsOrder(aTab);
 				});
 			}
@@ -849,7 +849,7 @@ TreeStyleTabBrowser.prototype = {
 			case 'nsPref:changed':
 				var value = this.getPref(aData);
 				var tabContainer = b.mTabContainer;
-				var tabs  = Array.prototype.slice.call(tabContainer.childNodes);
+				var tabs  = Array.slice(tabContainer.childNodes);
 				switch (aData)
 				{
 					case 'extensions.treestyletab.tabbar.position':
