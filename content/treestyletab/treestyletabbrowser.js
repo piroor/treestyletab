@@ -2535,11 +2535,13 @@ TreeStyleTabBrowser.prototype = {
   
 /* collapse/expand */ 
 	 
-	collapseExpandSubtree : function(aTab, aCollapse) 
+	collapseExpandSubtree : function(aTab, aCollapse, aRoot) 
 	{
 		if (!aTab) return;
 
 		if ((aTab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true') == aCollapse) return;
+
+		if (!aRoot) aRoot = aTab;
 
 		var b = this.mTabBrowser;
 		this.doingCollapseExpand = true;
@@ -2549,7 +2551,7 @@ TreeStyleTabBrowser.prototype = {
 		var tabs = this.getChildTabs(aTab);
 		for (var i = 0, maxi = tabs.length; i < maxi; i++)
 		{
-			this.collapseExpandTab(tabs[i], aCollapse);
+			this.collapseExpandTab(tabs[i], aCollapse, aRoot);
 		}
 
 		if (!aCollapse)
@@ -2558,15 +2560,15 @@ TreeStyleTabBrowser.prototype = {
 		this.doingCollapseExpand = false;
 	},
  
-	collapseExpandTab : function(aTab, aCollapse) 
+	collapseExpandTab : function(aTab, aCollapse, aRoot) 
 	{
 		if (!aTab || !this.getParentTab(aTab)) return;
 
 		this.setTabValue(aTab, this.kCOLLAPSED, aCollapse);
 
 		var b = this.mTabBrowser;
-		var p;
-		if (aCollapse && aTab == b.selectedTab && (p = this.getParentTab(aTab))) {
+		var p = aRoot || this.getParentTab(aTab);
+		if (aCollapse && aTab == b.selectedTab) {
 			b.selectedTab = p;
 		}
 
@@ -2575,7 +2577,7 @@ TreeStyleTabBrowser.prototype = {
 		for (var i = 0, maxi = tabs.length; i < maxi; i++)
 		{
 			if (!isSubTreeCollapsed)
-				this.collapseExpandTab(tabs[i], aCollapse);
+				this.collapseExpandTab(tabs[i], aCollapse, aRoot);
 		}
 	},
  
