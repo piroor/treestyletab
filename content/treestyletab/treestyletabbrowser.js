@@ -960,6 +960,11 @@ TreeStyleTabBrowser.prototype = {
 						this.updateTabbarTransparency();
 						break;
 
+					case 'extensions.treestyletab.tabbar.width':
+					case 'extensions.treestyletab.tabbar.shrunkenWidth':
+						this.checkTabsIndentOverflow();
+						break;
+
 					default:
 						break;
 				}
