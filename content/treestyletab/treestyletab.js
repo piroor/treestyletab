@@ -1256,6 +1256,8 @@ catch(e) {
 						if (gBrowser.getAttribute(treeStyleTab.kTABBAR_POSITION) != 'top') {
 							treeStyleTab.autoHideMode = treeStyleTab.getTreePref(window.fullScreen ? 'tabbar.autoHide.mode' : 'tabbar.autoHide.mode.fullscreen' );
 							treeStyleTab.endAutoHide();
+							if (window.fullScreen)
+								treeStyleTab.checkTabsIndentOverflow();
 							if (treeStyleTab.autoHideMode != treeStyleTab.kAUTOHIDE_MODE_DISABLED)
 								treeStyleTab.startAutoHide();
 						}
