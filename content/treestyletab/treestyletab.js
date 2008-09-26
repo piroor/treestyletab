@@ -308,6 +308,19 @@ var TreeStyleTabService = {
 		}
 		return openTab;
 	},
+	checkReadyToOpenNewTabOnLocationBar : function(aURI, aModifier)
+	{
+		return this.checkReadyToOpenNewTab({
+			uri      : aURI,
+			external : {
+				newTab     : this.getTreePref('urlbar.loadDifferentDomainToNewTab'),
+				forceChild : this.getTreePref('urlbar.loadDifferentDomainToNewTab.asChild')
+			},
+			internal : { newTab : this.getTreePref('urlbar.loadSameDomainToNewChildTab') },
+			modifier : aModifier,
+			invert   : this.getTreePref('urlbar.invertDefaultBehavior')
+		});
+	},
   
 /* backward compatibility */ 
 	getTempTreeStyleTab : function(aTabBrowser)
@@ -817,11 +830,11 @@ var TreeStyleTabService = {
 			aTab.removeAttribute(this.kTMP_SESSION_DATA_PREFIX+aKey);
 	},
  
-	useTMPSessionAPI : false,
+	useTMPSessionAPI : false, 
 	kTMP_SESSION_DATA_PREFIX : 'tmp-session-data-',
    
 /* Initializing */ 
-	
+	 
 	preInit : function() 
 	{
 		window.removeEventListener('DOMContentLoaded', this, true);
@@ -1009,6 +1022,29 @@ catch(e) {
  
 	overrideGlobalFunctions : function() 
 	{
+//		window.__treestyletab__BrowserCustomizeToolbar = window.BrowserCustomizeToolbar;
+//		window.BrowserCustomizeToolbar = function() {
+//			TreeStyleTabService.destroyBar();
+//			window.__treestyletab__BrowserCustomizeToolbar.call(window);
+//		};
+
+		var toolbox = document.getElementById('browser-toolbox') || // Firefox 3
+					document.getElementById('navigator-toolbox'); // Firefox 2
+		if (toolbox.customizeDone) {
+			toolbox.__treestyletab__customizeDone = toolbox.customizeDone;
+			toolbox.customizeDone = function(aChanged) {
+				this.__treestyletab__customizeDone(aChanged);
+				TreeStyleTabService.initBar();
+			};
+		}
+		if ('BrowserToolboxCustomizeDone' in window) {
+			window.__treestyletab__BrowserToolboxCustomizeDone = window.BrowserToolboxCustomizeDone;
+			window.BrowserToolboxCustomizeDone = function(aChanged) {
+				window.__treestyletab__BrowserToolboxCustomizeDone.apply(window, arguments);
+				TreeStyleTabService.initBar();
+			};
+		}
+
 		var funcs;
 		var func;
 		var overwriteProcess;
@@ -1016,24 +1052,15 @@ catch(e) {
 		overwriteProcess = function(aName) {
 			var overwroteFunc;
 			eval('overwroteFunc = '+aName);
-			if (overwroteFunc.toSource().indexOf('function BrowserLoadURL') != 0) return;
-			eval(aName + ' = '+
-				overwroteFunc.toSource().replace(
-					'aTriggeringEvent && aTriggeringEvent.altKey',
-					<><![CDATA[
-						TreeStyleTabService.checkReadyToOpenNewTab({
-							uri      : url,
-							external : {
-								newTab : TreeStyleTabService.getTreePref('urlbar.loadDifferentDomainToNewTab'),
-								forceChild : TreeStyleTabService.getTreePref('urlbar.loadDifferentDomainToNewTab.asChild')
-							},
-							internal : { newTab : TreeStyleTabService.getTreePref('urlbar.loadSameDomainToNewChildTab') },
-							modifier : $&,
-							invert   : TreeStyleTabService.getTreePref('urlbar.invertDefaultBehavior')
-						})
-					]]></>
+			if (
+				!overwroteFunc ||
+				overwroteFunc.toSource().indexOf('function BrowserLoadURL') != 0
 				)
-			);
+				return;
+			eval(aName + ' = ' + overwroteFunc.toSource().replace(
+				'aTriggeringEvent && aTriggeringEvent.altKey',
+				'TreeStyleTabService.checkReadyToOpenNewTabOnLocationBar(url, $&)'
+			));
 		};
 		overwriteProcess('window.BrowserLoadURL');
 		if ('permaTabs' in window &&
@@ -1266,7 +1293,25 @@ catch(e) {
 			);
 		}
 	},
-  
+ 
+	initBar : function() 
+	{
+		var bar = document.getElementById('urlbar');
+		if (!bar) return;
+
+		var source;
+		if (
+			'handleCommand' in bar &&
+			(source = bar.handleCommand.toSource()) &&
+			source.indexOf('TreeStyleTabService') < 0
+			) {
+			eval('bar.handleCommand = '+source.replace(
+				'aTriggeringEvent && aTriggeringEvent.altKey',
+				'TreeStyleTabService.checkReadyToOpenNewTabOnLocationBar(url, $&)'
+			));
+		}
+	},
+ 	 
 	destroy : function() 
 	{
 		window.removeEventListener('unload', this, false);
@@ -1292,7 +1337,7 @@ catch(e) {
 	},
    
 /* Event Handling */ 
-	 
+	
 	handleEvent : function(aEvent) 
 	{
 		switch (aEvent.type)
@@ -1352,7 +1397,7 @@ catch(e) {
 			!aEvent.altKey &&
 			this.accelKeyPressed
 			) {
-			if (this.getTreePref('tabbar.autoShow.accelKeyDown') && 
+			if (this.getTreePref('tabbar.autoShow.accelKeyDown') &&
 				!sv.autoHideShown &&
 				!this.delayedAutoShowTimer) {
 				this.delayedAutoShowTimer = window.setTimeout(
@@ -1426,7 +1471,7 @@ catch(e) {
 		if (sv.showHideTabbarReason == sv.kSHOWN_BY_SHORTCUT)
 			sv.hideTabbar();
 	},
- 	
+ 
 	keyEventListening : false, 
  
 	startListenKeyEvents : function() 
