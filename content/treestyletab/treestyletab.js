@@ -977,11 +977,11 @@ catch(e) {
 						return;
 				]]></>
 			).replace( // Firefox 3
-				'if (accelKeyPressed) {',
+				/(if \((accelKeyPressed|isCopy)\) {)/,
 				<><![CDATA[
 					if (TSTTabBrowser.treeStyleTab.processDropAction(dropActionInfo, draggedTab))
 						return;
-					$&]]></>
+					$1]]></>
 			).replace( // Firefox 3, duplication of tab
 				/(this.selectedTab = newTab;(\s*\})?)/g,
 				<><![CDATA[$1;
