@@ -422,16 +422,19 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-stack > hbox {
 tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-stack > hbox:not(:last-child) {
 	display: none !important;
 }
+tabbrowser[treestyletab-mode="vertical"] .tabs-newtab-button,
 tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-button {
 	-moz-appearance: none !important;
 	border-top: 1px solid ThreeDShadow !important;
 	-moz-border-top-colors: ThreeDShadow !important;
 	background: ThreeDFace !important;
 }
+tabbrowser[treestyletab-mode="vertical"] .tabs-newtab-button:hover,
 tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-button:hover {
 	background: ThreeDHighlight !important;
 }
 
+tabbrowser[treestyletab-mode="vertical"] .tabs-newtab-button,
 tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-box,
 tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-box-animate,
 tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-button {
