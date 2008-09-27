@@ -157,7 +157,7 @@ window.addEventListener('DOMContentLoaded', function() {
 			var canvas = doc.getElementById('fullScreenCanvas-canvas');
 			if (canvas) return canvas;
 
-			canvas = doc.importNode(this._canvas, true);
+			canvas = doc.importNode(this._canvas.cloneNode(true), true);
 			var root = doc.documentElement;
 			root.setAttribute('style', 'overflow: none; margin: 0;padding: 0;');
 			while (root.hasChildNodes())
