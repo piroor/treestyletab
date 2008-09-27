@@ -1761,10 +1761,16 @@ catch(e) {
 						this.getTreePref('tabbar.autoShow.tabSwitch') ||
 						this.getTreePref('tabbar.autoShow.feedback')
 					)
-					)
+					) {
 					this.startListenKeyEvents();
-				else
+				}
+				else {
 					this.endListenKeyEvents();
+				}
+				window.setTimeout(function() {
+					window.resizeBy(-1,-1);
+					window.resizeBy(1,1);
+				}, 0);
 				break;
 
 			case 'extensions.treestyletab.tabbar.width':
