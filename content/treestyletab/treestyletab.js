@@ -1169,7 +1169,7 @@ catch(e) {
 			if (overwroteFunc.toSource().indexOf('function contentAreaClick') != 0) return;
 			eval(aName + ' = '+
 				overwroteFunc.toSource().replace(
-					/(openWebPanel\([^\(]+\("webPanels"\), wrapper.href\);event.preventDefault\(\);return false;\}|event.preventDefault\(\);return false;\}\})/,
+					/((openWebPanel\([^\;]+\);|PlacesUIUtils.showMinimalAddBookmarkUI\([^;]+\);)event.preventDefault\(\);return false;\})/,
 					<><![CDATA[
 						$1
 						else if (!('TMP_contentAreaClick' in window) && // do nothing for Tab Mix Plus
