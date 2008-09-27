@@ -25,6 +25,7 @@ window.addEventListener('DOMContentLoaded', function() {
 		{
 			var color = '-moz-field';
 			var canvas = this.canvas;
+			if (!canvas) return;
 
 			var w = window.innerWidth;
 			var h = window.innerHeight;
@@ -147,10 +148,27 @@ window.addEventListener('DOMContentLoaded', function() {
 		{
 			return document.getElementById('fullScreenCanvas-frame');
 		},
+
 		get canvas()
 		{
-			return (this.frame ? this.frame.contentDocument : document ).getElementById('fullScreenCanvas-canvas');
+			if (!this.frame) return this._canvas;
+
+			var doc = this.frame.contentDocument;
+			var canvas = doc.getElementById('fullScreenCanvas-canvas');
+			if (canvas) return canvas;
+
+			canvas = doc.importNode(this._canvas, true);
+			var root = doc.documentElement;
+			root.setAttribute('style', 'overflow: none; margin: 0;padding: 0;');
+			while (root.hasChildNodes())
+			{
+				root.removeChild(root.firstChild);
+			}
+			root.appendChild(canvas);
+			return canvas;
 		},
+		_canvas : null,
+
 		get container()
 		{
 			return document.getElementById('fullScreenCanvas-container');
@@ -162,6 +180,7 @@ window.addEventListener('DOMContentLoaded', function() {
 			canvas.setAttribute('width', '0');
 			canvas.setAttribute('height', '0');
 			canvas.setAttribute('style', 'width:0;height:0;');
+			this._canvas = canvas;
 			if (!this.isGecko19) {
 				this.container.appendChild(canvas);
 				return
@@ -179,16 +198,6 @@ window.addEventListener('DOMContentLoaded', function() {
 			frame.style.borderWidth = 0;
 			frame.style.margin = 0;
 			frame.style.padding = 0;
-			window.setTimeout(function() {
-				canvas = frame.contentDocument.importNode(canvas, true);
-				var root = frame.contentDocument.documentElement;
-				root.setAttribute('style', 'overflow: none; margin: 0;padding: 0;');
-				while (root.hasChildNodes())
-				{
-					root.removeChild(root.firstChild);
-				}
-				root.appendChild(canvas);
-			}, 100);
 		},
 
 		get isGecko19()
