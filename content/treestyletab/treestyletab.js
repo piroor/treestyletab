@@ -877,8 +877,11 @@ var TreeStyleTabService = {
  
 	updateTabDNDObserver : function(aObserver) 
 	{
-		eval('aObserver.canDrop = '+
-			aObserver.canDrop.toSource().replace(
+		var canDropFunctionName = '_setEffectAllowedForDataTransfer' in aObserver ?
+				'_setEffectAllowedForDataTransfer' : // Firefox 3.1 or later
+				'canDrop' ; // Firefox 3.0.x
+		eval('aObserver.'+canDropFunctionName+' = '+
+			aObserver[canDropFunctionName].toSource().replace(
 				'{',
 				'{ var TSTTabBrowser = this;'
 			).replace(
@@ -910,21 +913,30 @@ catch(e) {
 	return false;
 }
 						})(TSTTabBrowser))
-						return false;
+						return TST_DRAGDROP_DISALLOW_RETRUN_VALUE;
 					$1
 				]]></>
+			).replace(
+				/TST_DRAGDROP_DISALLOW_RETRUN_VALUE/g,
+				(canDropFunctionName == 'canDrop' ?
+					'false' :
+					'dt.effectAllowed = "none"'
+				)
 			)
 		);
 
-		eval('aObserver.onDragOver = '+
-			aObserver.onDragOver.toSource().replace(
+		var dragOverFunctionName = '_onDragOver' in aObserver ?
+				'_onDragOver' : // Firefox 3.1 or later
+				'onDragOver' ; // Firefox 3.0.x
+		eval('aObserver.'+dragOverFunctionName+' = '+
+			aObserver[dragOverFunctionName].toSource().replace(
 				'{',
 				<><![CDATA[
 					{
 						var TSTTabBrowser = this;
 						if ((function(aSelf) {
 try{
-							var info = TSTTabBrowser.treeStyleTab.getDropAction(aEvent, aDragSession);
+							var info = TSTTabBrowser.treeStyleTab.getDropAction(aEvent, TST_DRAGSESSION);
 
 							if (!info.target || info.target != TreeStyleTabService.evaluateXPath(
 									'child::xul:tab[@'+TreeStyleTabService.kDROP_POSITION+']',
@@ -933,7 +945,7 @@ try{
 								).singleNodeValue)
 								TSTTabBrowser.treeStyleTab.clearDropPosition();
 
-							if (!aSelf.canDrop(aEvent, aDragSession)) return true;
+							if (TST_DRAGDROP_DISALLOW_CHECK) return true;
 
 							info.target.setAttribute(
 								TreeStyleTabService.kDROP_POSITION,
@@ -951,33 +963,51 @@ catch(e) {
 							return;
 						}
 				]]></>
+			).replace(
+				/TST_DRAGSESSION/g,
+				(canDropFunctionName == 'canDrop' ?
+					'aDragSession' :
+					'null'
+				)
+			).replace(
+				/TST_DRAGDROP_DISALLOW_CHECK/g,
+				(canDropFunctionName == 'canDrop' ?
+					'!aSelf.canDrop(aEvent, aDragSession)' :
+					'aSelf._setEffectAllowedForDataTransfer == "none"'
+				)
 			)
 		);
 
-		eval('aObserver.onDragExit = '+
-			aObserver.onDragExit.toSource().replace(
+		var dragExitFunctionName = '_onDragLeave' in aObserver ?
+				'_onDragLeave' : // Firefox 3.1 or later
+				'onDragExit' ; // Firefox 3.0.x
+		eval('aObserver.'+dragExitFunctionName+' = '+
+			aObserver[dragExitFunctionName].toSource().replace(
 				/(this.mTabDropIndicatorBar\.[^;]+;)/,
 				'$1; this.treeStyleTab.clearDropPosition();'
 			)
 		);
 
-		eval('aObserver.onDrop = '+
-			aObserver.onDrop.toSource().replace(
+		var dropFunctionName = '_onDrop' in aObserver ?
+				'_onDrop' : // Firefox 3.1 or later
+				'onDrop' ; // Firefox 3.0.x
+		eval('aObserver.'+dropFunctionName+' = '+
+			aObserver[dropFunctionName].toSource().replace(
 				'{',
 				<><![CDATA[
 					{
 						var TSTTabBrowser = this;
 						TSTTabBrowser.treeStyleTab.clearDropPosition();
-						var dropActionInfo = TSTTabBrowser.treeStyleTab.getDropAction(aEvent, aDragSession);
+						var dropActionInfo = TSTTabBrowser.treeStyleTab.getDropAction(aEvent, TST_DRAGSESSION);
 				]]></>
 			).replace( // Firefox 2
 				/(if \(aDragSession[^\)]+\) \{)/,
 				<><![CDATA[$1
-					if (TSTTabBrowser.treeStyleTab.processDropAction(dropActionInfo, aDragSession.sourceNode))
+					if (TSTTabBrowser.treeStyleTab.processDropAction(dropActionInfo, TST_DRAGSESSION.sourceNode))
 						return;
 				]]></>
-			).replace( // Firefox 3
-				/(if \((accelKeyPressed|isCopy)\) {)/,
+			).replace( // Firefox 3.0.x, 3.1 or later
+				/(if \((accelKeyPressed|isCopy|dropEffect == "copy")\) {)/,
 				<><![CDATA[
 					if (TSTTabBrowser.treeStyleTab.processDropAction(dropActionInfo, draggedTab))
 						return;
@@ -1016,6 +1046,12 @@ catch(e) {
 						return;
 					}
 				]]></>
+			).replace(
+				/TST_DRAGSESSION/g,
+				(canDropFunctionName == 'canDrop' ?
+					'aDragSession' :
+					'TSTTabBrowser.treeStyleTab.getCurrentDragSession()'
+				)
 			)
 		);
 	},

@@ -1919,12 +1919,24 @@ TreeStyleTabBrowser.prototype = {
 		var flavourSet = new FlavourSet();
 		flavourSet.appendFlavour('text/x-moz-url');
 		flavourSet.appendFlavour('text/unicode');
+		flavourSet.appendFlavour('text/plain');
 		flavourSet.appendFlavour('application/x-moz-file', 'nsIFile');
 		return flavourSet;
 	},
  
+	getCurrentDragSession : function() 
+	{
+		return Components
+				.classes['@mozilla.org/widget/dragservice;1']
+				.getService(Components.interfaces.nsIDragService)
+				.getCurrentSession();
+	},
+ 
 	getDropAction : function(aEvent, aDragSession) 
 	{
+		if (!aDragSession)
+			aDragSession = this.getCurrentDragSession();
+
 		var info = this.getDropActionInternal(aEvent);
 		info.canDrop = true;
 		if (aDragSession &&
