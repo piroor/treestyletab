@@ -11,7 +11,7 @@
 <!ENTITY config.tabbar.position.top     "Oben (Firefox Standard)">
 <!ENTITY config.tabbar.position.bottom  "Unten">
 <!ENTITY config.tabbar.invertScrollbar  "Scrollbar ganz links anzeigen">
-<!ENTITY config.tabbar.invertUI         "Invert tab appearance">
+<!ENTITY config.tabbar.invertUI         "Reihenfolge der Tabs umdrehen">
 <!ENTITY config.enableSubtreeIndent         "Tabs einrücken">
 <!ENTITY config.allowSubtreeCollapseExpand  "Auf- und Einklappen von Zweigen erlauben">
 <!ENTITY config.tabbar.hideAlltabsButton    "Button zum Auflisten aller Tabs anzeigen">
@@ -20,7 +20,7 @@
 <!ENTITY config.tabbar.style.default "Plain">
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.mixed   "Gemischt">
-<!ENTITY config.tabbar.style.none    "Default (specified by the Theme)">
+<!ENTITY config.tabbar.style.none    "Standard (durch Theme festgelegt)">
 
 <!ENTITY config.twisty.style.caption "Aufklappsymbole">
 <!ENTITY config.twisty.style.auto    "Auto">
@@ -71,29 +71,29 @@
 
 <!ENTITY config.tabs.autohide "Im Hintergrund">
 
-<!ENTITY config.autoHide.mode.0 "Show tab bar always">
+<!ENTITY config.autoHide.mode.0 "Tableiste immer anzeigen">
 <!ENTITY config.autoHide.mode.1 "Tableiste immer im Hintergrund">
-<!ENTITY config.autoHide.mode.2 "Auto Shrink tab bar">
+<!ENTITY config.autoHide.mode.2 "Tableiste automatisch verkleinern">
 <!ENTITY config.autoShow.caption      "Tableiste automatisch anzeigen">
 <!ENTITY config.autoShow.mousemove    "Wenn der Mauszeiger die Fensterecken berührt">
 <!ENTITY config.autoHide.area.before "Empfindlicher Bereich:">
 <!ENTITY config.autoHide.area.after "Pixel rund um die Fensterecken">
-<!ENTITY config.autoShow.mousemove.mode2 "Mouse cursor points tab bar's edge">
-<!ENTITY config.autoHide.area.before.mode2 "Sensitive area:">
-<!ENTITY config.autoHide.area.after.mode2 "pixels from tab bar's edge">
+<!ENTITY config.autoShow.mousemove.mode2 "Wenn der Mauszeiger die Fensterecken berührt">
+<!ENTITY config.autoHide.area.before.mode2 "Empfindlicher Bereich:">
+<!ENTITY config.autoHide.area.after.mode2 "Pixel rund um die Kante der Tableiste">
 <!ENTITY config.autoHide.delay.before "Verzögerung:">
 <!ENTITY config.autoHide.delay.after "msec.">
 <!ENTITY config.autoShow.accelKeyDown "Wenn die Strg-Taste eine Zeit lang gedrückt wird">
-<!ENTITY config.autoShow.accelKeyDown.delay.before "Show after">
-<!ENTITY config.autoShow.accelKeyDown.delay.after  "msec.">
+<!ENTITY config.autoShow.accelKeyDown.delay.before "Nach">
+<!ENTITY config.autoShow.accelKeyDown.delay.after  "msec. anzeigen">
 <!ENTITY config.autoShow.tabSwitch    "Wenn Strg+Tab (wechselt zwischen Tabs) gedrückt wird">
 <!ENTITY config.autoShow.feedback     "Wenn neue Tabs geöffnet oder alte geschlossen werden">
-<!ENTITY config.autoShow.feedback.delay.before "Hide after">
-<!ENTITY config.autoShow.feedback.delay.after  "msec.">
+<!ENTITY config.autoShow.feedback.delay.before "Nach">
+<!ENTITY config.autoShow.feedback.delay.after  "msec. verstecken">
 
-<!ENTITY config.transparent.style.caption "Background of tab bar">
-<!ENTITY config.transparent.style.0 "Solid">
-<!ENTITY config.transparent.style.1 "Half-transparent">
+<!ENTITY config.transparent.style.caption "Hintergrund der Tableiste">
+<!ENTITY config.transparent.style.0 "Gefüllt">
+<!ENTITY config.transparent.style.1 "Halb-transparent">
 <!ENTITY config.transparent.style.2 "Transparent">
 
 
