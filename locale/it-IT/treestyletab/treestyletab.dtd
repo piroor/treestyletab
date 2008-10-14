@@ -20,7 +20,7 @@
 <!ENTITY config.tabbar.style.default "Semplice">
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.mixed   "Misto">
-<!ENTITY config.tabbar.style.none    "Default (specified by the Theme)">
+<!ENTITY config.tabbar.style.none    "Predefinito (varia in base al tema)">
 
 <!ENTITY config.twisty.style.caption "Aspetto controlli contrazione/espansione sottoalberi">
 <!ENTITY config.twisty.style.auto    "Automatico">
@@ -71,16 +71,16 @@
 
 <!ENTITY config.tabs.autohide "Visualizzazione">
 
-<!ENTITY config.autoHide.mode.0 "Show tab bar always">
+<!ENTITY config.autoHide.mode.0 "Mostra sempre la barra delle schede">
 <!ENTITY config.autoHide.mode.1 "Nascondi automaticamente la barra delle schede">
-<!ENTITY config.autoHide.mode.2 "Auto Shrink tab bar">
+<!ENTITY config.autoHide.mode.2 "Riduci automaticamente la barra delle schede">
 <!ENTITY config.autoShow.caption "Visualizza la barra della schede quando">
 <!ENTITY config.autoShow.mousemove "Viene spostato il mouse in prossimità del bordo della finestra">
 <!ENTITY config.autoHide.area.before "Area di attivazione:">
 <!ENTITY config.autoHide.area.after "distanza dai bordi della finestra (in pixel)">
-<!ENTITY config.autoShow.mousemove.mode2 "Mouse cursor points tab bar's edge">
-<!ENTITY config.autoHide.area.before.mode2 "Sensitive area:">
-<!ENTITY config.autoHide.area.after.mode2 "pixels from tab bar's edge">
+<!ENTITY config.autoShow.mousemove.mode2 "Viene spostato il mouse in prossimità del bordo della barra delle schede">
+<!ENTITY config.autoHide.area.before.mode2 "Area di attivazione:">
+<!ENTITY config.autoHide.area.after.mode2 "distanza dai bordi della barra delle schede (in pixel)">
 <!ENTITY config.autoHide.delay.before "Ritardo:">
 <!ENTITY config.autoHide.delay.after "msec.">
 <!ENTITY config.autoShow.accelKeyDown "Viene tenuto premuto il tasto Control (Command)">
