@@ -1608,11 +1608,15 @@ catch(e) {
 		var max = tabs.length;
 		if (!max) return;
 
+		b.__treestyletab__closedTabsNum = max;
 		if (
 			max > 1 &&
-			!b.warnAboutClosingTabs(true, max)
-			)
+			!b.warnAboutClosingTabs(true)
+			) {
+			b.__treestyletab__closedTabsNum = 0;
 			return;
+		}
+		b.__treestyletab__closedTabsNum = 0;
 
 		for (var i = tabs.length-1; i > -1; i--)
 		{

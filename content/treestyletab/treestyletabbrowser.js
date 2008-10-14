@@ -397,6 +397,12 @@ TreeStyleTabBrowser.prototype = {
 			)
 		);
 
+		eval('b.warnAboutClosingTabs = '+
+			b.warnAboutClosingTabs.toSource().replace(
+				'var numTabs = ', 'var numTabs = this.__treestyletab__closedTabsNum || '
+			)
+		);
+
 		var tabs = b.mTabContainer.childNodes;
 		for (var i = 0, maxi = tabs.length; i < maxi; i++)
 		{
