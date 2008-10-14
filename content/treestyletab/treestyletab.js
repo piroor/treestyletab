@@ -837,15 +837,26 @@ var TreeStyleTabService = {
 	 
 	preInit : function() 
 	{
+		if (this.preInitialized) return;
+		this.preInitialized = true;
+
 		window.removeEventListener('DOMContentLoaded', this, true);
 		if (!document.getElementById('content')) return;
 
 		this.overrideExtensionsPreInit(); // hacks.js
 	},
+	preInitialized : false,
  
 	init : function() 
 	{
 		if (!('gBrowser' in window)) return;
+
+		if (this.initialized) return;
+		this.initialized = true;
+
+		if (!this.preInitialized) {
+			this.preInit();
+		}
 
 		window.removeEventListener('load', this, false);
 		window.addEventListener('unload', this, false);
@@ -867,6 +878,7 @@ var TreeStyleTabService = {
 		this.observe(null, 'nsPref:changed', 'browser.link.open_newwindow.restriction.override');
 		this.observe(null, 'nsPref:changed', 'browser.tabs.loadFolderAndReplace.override');
 	},
+	initialized : false,
 	 
 	initTabBrowser : function(aTabBrowser) 
 	{

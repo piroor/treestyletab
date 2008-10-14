@@ -81,6 +81,17 @@ TreeStyleTabService.overrideExtensionsPreInit = function() {
 		eval('tablib.init = '+source.join('gBrowser.restoreTab = '));
 		this.useTMPSessionAPI = true;
 	}
+
+	// Session Manager
+	// We need to initialize TST before Session Manager restores the last session anyway!
+	if ('gSessionManager' in window &&
+		'onLoad_proxy' in gSessionManager &&
+		'onLoad' in gSessionManager) {
+		eval('gSessionManager.onLoad = '+gSessionManager.onLoad.toSource().replace(
+			'{',
+			'{ TreeStyleTabService.init();'
+		));
+	}
 };
 
 TreeStyleTabService.overrideExtensionsOnInitBefore = function() {
