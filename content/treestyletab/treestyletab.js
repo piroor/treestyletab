@@ -1092,6 +1092,7 @@ catch(e) {
 				TreeStyleTabService.initBar();
 			};
 		}
+		this.initBar();
 
 		var funcs;
 		var func;
