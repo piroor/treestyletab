@@ -27,50 +27,106 @@
       <RDF:Description em:locale="en-US"
                        em:name="Tree Style Tab"
                        em:description="Show tabs like a tree."
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"/>
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
+                       em:creator="SHIMODA Hiroshi">
+		  <em:translator>Godai71.Extenzilla (it-IT locale)</em:translator>
+		  <em:translator>Fatiaomao (zh-CN locale)</em:translator>
+		  <em:translator>tito (es-ES locale)</em:translator>
+		  <em:translator>Andy Pillip (de-DE locale)</em:translator>
+		  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
+		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
+      </RDF:Description>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="ja"
                        em:name="ツリー型タブ"
                        em:description="タブをツリー状に表示します。"
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html"/>
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html"
+                       em:creator="SHIMODA Hiroshi">
+		  <em:translator>Godai71.Extenzilla (it-IT locale)</em:translator>
+		  <em:translator>Fatiaomao (zh-CN locale)</em:translator>
+		  <em:translator>tito (es-ES locale)</em:translator>
+		  <em:translator>Andy Pillip (de-DE locale)</em:translator>
+		  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
+		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
+      </RDF:Description>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="it-IT"
                        em:name="Tree Style Tab"
                        em:description="Permette di visualizzare la barra delle schede in forma di albero"
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"/>
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
+                       em:creator="SHIMODA Hiroshi">
+		  <em:translator>Godai71.Extenzilla (it-IT locale)</em:translator>
+		  <em:translator>Fatiaomao (zh-CN locale)</em:translator>
+		  <em:translator>tito (es-ES locale)</em:translator>
+		  <em:translator>Andy Pillip (de-DE locale)</em:translator>
+		  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
+		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
+      </RDF:Description>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="zh-CN"
                        em:name="Tree Style Tab"
                        em:description="以树的形式显示标签。"
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"/>
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
+                       em:creator="SHIMODA Hiroshi">
+		  <em:translator>Godai71.Extenzilla (it-IT locale)</em:translator>
+		  <em:translator>Fatiaomao (zh-CN locale)</em:translator>
+		  <em:translator>tito (es-ES locale)</em:translator>
+		  <em:translator>Andy Pillip (de-DE locale)</em:translator>
+		  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
+		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
+      </RDF:Description>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="es-ES"
                        em:name="Tree Style Tab (Pestañas estilo árbol)"
                        em:description="Muesta las pestañas en vista de árbol"
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"/>
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
+                       em:creator="SHIMODA Hiroshi">
+		  <em:translator>Godai71.Extenzilla (it-IT locale)</em:translator>
+		  <em:translator>Fatiaomao (zh-CN locale)</em:translator>
+		  <em:translator>tito (es-ES locale)</em:translator>
+		  <em:translator>Andy Pillip (de-DE locale)</em:translator>
+		  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
+		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
+      </RDF:Description>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="de-DE"
                        em:name="Tree Style Tab"
                        em:description="Stellt Tabs in einer Baumstukur dar"
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"/>
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
+                       em:creator="SHIMODA Hiroshi">
+		  <em:translator>Godai71.Extenzilla (it-IT locale)</em:translator>
+		  <em:translator>Fatiaomao (zh-CN locale)</em:translator>
+		  <em:translator>tito (es-ES locale)</em:translator>
+		  <em:translator>Andy Pillip (de-DE locale)</em:translator>
+		  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
+		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
+      </RDF:Description>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="zh-TW"
                        em:name="Tree Style Tab"
                        em:description="以樹狀目錄形式顯示分頁"
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"/>
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
+                       em:creator="SHIMODA Hiroshi">
+		  <em:translator>Godai71.Extenzilla (it-IT locale)</em:translator>
+		  <em:translator>Fatiaomao (zh-CN locale)</em:translator>
+		  <em:translator>tito (es-ES locale)</em:translator>
+		  <em:translator>Andy Pillip (de-DE locale)</em:translator>
+		  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
+		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
+      </RDF:Description>
     </em:localized>
 
 
     <em:targetApplication>
       <RDF:Description em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
                        em:minVersion="2.0"
-                       em:maxVersion="3.0.*" />
+                       em:maxVersion="3.1b2pre" />
     </em:targetApplication>
   </RDF:Description>
 </RDF:RDF>
