@@ -430,7 +430,7 @@ TreeStyleTabBrowser.prototype = {
 		tabContext.addEventListener('popupshowing', this, false);
 		tabContext.addEventListener('popuphiding', this, false);
 		window.setTimeout(function(aSelf) {
-			var suffix = '-'+parseInt(Math.random() * 65000);
+			var suffix = '-tabbrowser-'+(b.id || 'instance-'+parseInt(Math.random() * 65000));
 			[
 				aSelf.kMENUITEM_REMOVESUBTREE,
 				aSelf.kMENUITEM_REMOVECHILDREN,
