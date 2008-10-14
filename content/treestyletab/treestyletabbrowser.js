@@ -18,6 +18,7 @@ TreeStyleTabBrowser.prototype = {
 	kMENUITEM_AUTOHIDE                 : 'context-item-toggleAutoHide',
 	kMENUITEM_FIXED                    : 'context-item-toggleFixed',
 	kMENUITEM_POSITION                 : 'context-menu-tabbarPosition',
+	kMENUITEM_BOOKMARKSUBTREE          : 'context-item-bookmarkTabSubTree',
 	 
 	mTabBrowser : null, 
 
@@ -445,6 +446,14 @@ TreeStyleTabBrowser.prototype = {
 				item.setAttribute('id', item.getAttribute('id')+suffix);
 				tabContext.appendChild(item);
 			});
+
+			var item = document.getElementById(aSelf.kMENUITEM_BOOKMARKSUBTREE).cloneNode(true);
+			item.setAttribute('id', item.getAttribute('id')+suffix);
+			var refNodes = tabContext.getElementsByAttribute('command', 'Browser:BookmarkAllTabs');
+			if (refNodes && refNodes.length)
+				tabContext.insertBefore(item, refNodes[0].nextSibling || refNodes[0]);
+			else
+				tabContext.appendChild(item);
 		}, 0, this);
 
 		var allTabPopup = document.getAnonymousElementByAttribute(b.mTabContainer, 'anonid', 'alltabs-popup');
@@ -1662,7 +1671,7 @@ TreeStyleTabBrowser.prototype = {
 			item.removeAttribute('hidden');
 		else
 			item.setAttribute('hidden', true);
-		this.showHideRemoveSubTreeMenuItem(item, [b.mContextTab]);
+		this.showHideSubTreeMenuItem(item, [b.mContextTab]);
 
 		item = this.evaluateXPath(
 			'descendant::xul:menuitem[starts-with(@id, "'+this.kMENUITEM_REMOVECHILDREN+'")]',
@@ -1673,7 +1682,7 @@ TreeStyleTabBrowser.prototype = {
 			item.removeAttribute('hidden');
 		else
 			item.setAttribute('hidden', true);
-		this.showHideRemoveSubTreeMenuItem(item, [b.mContextTab]);
+		this.showHideSubTreeMenuItem(item, [b.mContextTab]);
 
 		// collapse/expand all
 		sep = this.evaluateXPath(
@@ -1803,6 +1812,18 @@ TreeStyleTabBrowser.prototype = {
 		else {
 			sep.setAttribute('hidden', true);
 		}
+
+		// bookmark
+		item = this.evaluateXPath(
+			'descendant::xul:menuitem[starts-with(@id, "'+this.kMENUITEM_BOOKMARKSUBTREE+'")]',
+			aEvent.currentTarget,
+			XPathResult.FIRST_ORDERED_NODE_TYPE
+		).singleNodeValue;
+		if (this.getTreePref('show.'+this.kMENUITEM_BOOKMARKSUBTREE))
+			item.removeAttribute('hidden');
+		else
+			item.setAttribute('hidden', true);
+		this.showHideSubTreeMenuItem(item, [b.mContextTab]);
 	},
  
 	initAllTabsPopup : function(aEvent) 

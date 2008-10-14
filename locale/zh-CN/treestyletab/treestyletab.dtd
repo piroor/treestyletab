@@ -135,3 +135,5 @@
 <!ENTITY context.toggleFixed.accesskey "f">
 <!ENTITY context.tabbarPosition.label     "位置">
 <!ENTITY context.tabbarPosition.accesskey "p">
+<!ENTITY context.bookmarkTabSubTree.label     "Bookmark this Tree...">
+<!ENTITY context.bookmarkTabSubTree.accesskey "t">

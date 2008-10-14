@@ -88,6 +88,12 @@
 					type="radio" value="bottom"/>
 			</menupopup>
 		</menu>
+
+
+		<menuitem id="context-item-bookmarkTabSubTree"
+			label="&context.bookmarkTabSubTree.label;"
+			accesskey="&context.bookmarkTabSubTree.accesskey;"
+			oncommand="TreeStyleTabService.bookmarkTabSubTree(TreeStyleTabService.getTabBrowserFromChild(this).mContextTab);"/>
 	</data>
 </window>
 

@@ -133,3 +133,5 @@
 <!ENTITY context.toggleFixed.accesskey "f">
 <!ENTITY context.tabbarPosition.label     "タブバーの位置">
 <!ENTITY context.tabbarPosition.accesskey "p">
+<!ENTITY context.bookmarkTabSubTree.label     "このサブツリーをブックマーク...">
+<!ENTITY context.bookmarkTabSubTree.accesskey "t">

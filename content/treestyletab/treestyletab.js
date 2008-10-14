@@ -1360,7 +1360,7 @@ catch(e) {
 			));
 		}
 	},
- 	 
+  
 	destroy : function() 
 	{
 		window.removeEventListener('unload', this, false);
@@ -1564,7 +1564,7 @@ catch(e) {
 		}
 	},
  
-	showHideRemoveSubTreeMenuItem : function(aMenuItem, aTabs) 
+	showHideSubTreeMenuItem : function(aMenuItem, aTabs) 
 	{
 		if (!aMenuItem ||
 			aMenuItem.getAttribute('hidden') == 'true' ||
@@ -1586,7 +1586,7 @@ catch(e) {
 	},
   
 /* Commands */ 
-	
+	 
 	removeTabSubTree : function(aTabOrTabs, aOnlyChildren) 
 	{
 		var tabs = aTabOrTabs;
@@ -1624,7 +1624,7 @@ catch(e) {
 			b.removeTab(tabs[i]);
 		}
 	},
-	
+	 
 	cleanUpTabsArray : function(aTabs) 
 	{
 		var b = this.getTabBrowserFromChild(aTabs[0]);
@@ -1641,6 +1641,81 @@ catch(e) {
 		return aTabs;
 	},
   
+	bookmarkTabSubTree : function(aTabOrTabs) 
+	{
+		var tabs = aTabOrTabs;
+		if (!(tabs instanceof Array)) {
+			tabs = [aTabOrTabs];
+		}
+
+		var b = this.getTabBrowserFromChild(tabs[0]);
+		var bookmarkedTabs = [];
+		for (var i = 0, maxi = tabs.length; i < maxi; i++)
+		{
+			bookmarkedTabs.push(tabs[i]);
+			bookmarkedTabs = bookmarkedTabs.concat(b.treeStyleTab.getDescendantTabs(tabs[i]));
+		}
+
+		if ('MultipleTabService' in window &&
+			'addBookmarkFor' in MultipleTabService) {
+			MultipleTabService.addBookmarkFor(bookmarkedTabs);
+		}
+
+		this._addBookmarkFor(bookmarkedTabs);
+	},
+	 
+	_addBookmarkFor : function(aTabs) // from Multiple Tab Handler 
+	{
+		if (!aTabs) return;
+
+		var b = this.getTabBrowserFromChild(aTabs[0]);
+
+		if ('PlacesUIUtils' in window || 'PlacesUtils' in window) { // Firefox 3
+			var utils = 'PlacesUIUtils' in window ? PlacesUIUtils : PlacesUtils ;
+			utils.showMinimalAddMultiBookmarkUI(Array.slice(aTabs).map(function(aTab) {
+				return aTab.linkedBrowser.currentURI;
+			}));
+			return;
+		}
+
+		var currentTabInfo;
+		var tabsInfo = Array.slice(aTabs).map(function(aTab) {
+				var webNav = aTab.linkedBrowser.webNavigation;
+				var url    = webNav.currentURI.spec;
+				var name   = '';
+				var charSet, description;
+				try {
+					var doc = webNav.document;
+					name = doc.title || url;
+					charSet = doc.characterSet;
+					description = BookmarksUtils.getDescriptionFromDocument(doc);
+				}
+				catch (e) {
+					name = url;
+				}
+				return {
+					name        : name,
+					url         : url,
+					charset     : charSet,
+					description : description
+				};
+			});
+
+		window.openDialog(
+			'chrome://browser/content/bookmarks/addBookmark2.xul',
+			'',
+			BROWSER_ADD_BM_FEATURES,
+			(aTabs.length == 1 ?
+				tabsInfo[0] :
+				{
+					name             : gNavigatorBundle.getString('bookmarkAllTabsDefault'),
+					bBookmarkAllTabs : true,
+					objGroup         : tabsInfo
+				}
+			)
+		);
+	},
+ 	 
 	openSelectionLinks : function() 
 	{
 		var links = this.getSelectionLinks();
