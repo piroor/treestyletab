@@ -700,4 +700,11 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		);
 	}
 
+	// LastTab
+	if ('LastTab' in window) {
+		TreeStyleTabService.registerTabFocusAllowance(function(aTabBrowser) {
+			return !aTabBrowser.treeStyleTab.getPref('extensions.lasttab.focusLastTabOnClose');
+		});
+	}
+
 };
