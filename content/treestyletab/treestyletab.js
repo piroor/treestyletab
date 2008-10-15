@@ -1672,9 +1672,7 @@ catch(e) {
 
 		if ('PlacesUIUtils' in window || 'PlacesUtils' in window) { // Firefox 3
 			var utils = 'PlacesUIUtils' in window ? PlacesUIUtils : PlacesUtils ;
-			utils.showMinimalAddMultiBookmarkUI(Array.slice(aTabs).map(function(aTab) {
-				return aTab.linkedBrowser.currentURI;
-			}));
+			utils.showMinimalAddMultiBookmarkUI(Array.slice(aTabs).map(this.addBookmarkTabsFilter));
 			return;
 		}
 
@@ -1714,6 +1712,10 @@ catch(e) {
 				}
 			)
 		);
+	},
+	addBookmarkTabsFilter : function(aTab)
+	{
+		return aTab.linkedBrowser.currentURI;
 	},
  	 
 	openSelectionLinks : function() 
