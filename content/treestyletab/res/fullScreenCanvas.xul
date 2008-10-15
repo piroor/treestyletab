@@ -5,7 +5,7 @@
 window.addEventListener('DOMContentLoaded', function() {
 	window.removeEventListener('DOMContentLoaded', arguments.callee, true);
 
-	const currentRevision = 4;
+	const currentRevision = 5;
 	var root = document.documentElement;
 
 	var loadedRevision = root.getAttribute('fullScreenCanvas');
@@ -141,6 +141,10 @@ window.addEventListener('DOMContentLoaded', function() {
 			browsers = [].concat(Array.slice(document.getElementsByTagName('tabbrowser')))
 						.concat(Array.slice(document.getElementsByTagName('browser')));
 			if ('SplitBrowser' in window) browsers = browsers.concat(SplitBrowser.browsers);
+			if (this.frame) {
+				var index = browsers.indexOf(this.frame);
+				browsers.splice(index, 1);
+			}
 			return browsers;
 		},
 
