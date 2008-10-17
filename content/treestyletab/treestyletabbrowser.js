@@ -627,7 +627,8 @@ TreeStyleTabBrowser.prototype = {
 		if (!aPosition) aPosition = this.getTreePref('tabbar.position');
 		aPosition = String(aPosition).toLowerCase();
 
-		if (b.getAttribute('id') != 'content') {
+		if (b.getAttribute('id') != 'content' &&
+			!this.getTreePref('tabbar.position.subbrowser.enabled')) {
 			aPosition = 'top';
 		}
 
@@ -671,7 +672,7 @@ TreeStyleTabBrowser.prototype = {
 			this.invertedPositionProp = 'screenX';
 			this.invertedSizeProp     = 'width';
 
-			b.mTabBox.orient = 'horizontal';
+			b.mTabBox.orient = splitter.orient = 'horizontal';
 			b.mStrip.orient =
 				b.mTabContainer.orient =
 				b.mTabContainer.mTabstrip.orient =
@@ -740,7 +741,7 @@ TreeStyleTabBrowser.prototype = {
 			this.invertedPositionProp = 'screenY';
 			this.invertedSizeProp     = 'height';
 
-			b.mTabBox.orient = 'vertical';
+			b.mTabBox.orient = splitter.orient = 'vertical';
 			b.mStrip.orient =
 				b.mTabContainer.orient =
 				b.mTabContainer.mTabstrip.orient =
