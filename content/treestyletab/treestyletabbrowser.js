@@ -49,7 +49,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		return this.mTabBrowser.mTabContainer.mTabstrip;
 	},
-	get scrollBoxObject() 
+	get scrollBoxObject()
 	{
 		return this.scrollBox.scrollBoxObject;
 	},
@@ -1849,7 +1849,7 @@ TreeStyleTabBrowser.prototype = {
 	autoExpandTimer  : null,
 	autoExpandTarget : null,
 	autoExpandedTabs : [],
-	
+	 
 	onDragEnter : function(aEvent, aDragSession) 
 	{
 		var tab = aEvent.target;
@@ -1974,26 +1974,31 @@ TreeStyleTabBrowser.prototype = {
 		if (tab) {
 			var isCopy = this.isAccelKeyPressed(aEvent);
 			if (isCopy && 'duplicateTab' in this.mTabBrowser) {
-				info.action = this.kACTION_DUPLICATE;
+				info.action |= this.kACTION_DUPLICATE;
 			}
 			if (
 				!isCopy &&
-				tab.ownerDocument != document &&
+				this.getTabBrowserFromChild(tab) != this.mTabBrowser &&
 				(
 					('duplicateTab' in this.mTabBrowser) ||
 					('swapBrowsersAndCloseOther' in this.mTabBrowser)
 				)
 				) {
-				info.action |= this.kACTION_MOVE_FROM_OTHER_WINDOW;
+				info.action |= this.kACTION_IMPORT;
+			}
+
+			if (info.action & this.kACTIONS_FOR_DESTINATION) {
+				if (info.action & this.kACTION_MOVE) info.action ^= this.kACTION_MOVE;
+				if (info.action & this.kACTION_STAY) info.action ^= this.kACTION_STAY;
 			}
 
 			if (info.action & this.kACTION_ATTACH) {
-				var orig = tab;
-				if (orig == info.parent) {
+				if (info.parent == tab) {
 					info.canDrop = false;
 				}
 				else {
-					var tab  = info.target;
+					var orig = tab;
+					tab  = info.target;
 					while (tab = this.getParentTab(tab))
 					{
 						if (tab != orig) continue;
@@ -2005,7 +2010,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 		return info;
 	},
-	 
+	
 	getDropActionInternal : function(aEvent, aSourceTab) 
 	{
 		var tab        = aEvent.target;
@@ -2023,7 +2028,7 @@ TreeStyleTabBrowser.prototype = {
 		var isTabMoveFromOtherWindow = aSourceTab && aSourceTab.ownerDocument != document;
 
 		if (tab.localName != 'tab') {
-			var action = isTabMoveFromOtherWindow ? 0 : (this.kACTION_MOVE | this.kACTION_PART) ;
+			var action = isTabMoveFromOtherWindow ? this.kACTION_STAY : (this.kACTION_MOVE | this.kACTION_PART) ;
 			if (aEvent[this.positionProp] < tabs[0].boxObject[this.positionProp]) {
 				info.target   = info.parent = info.insertBefore = tabs[0];
 				info.position = isInverted ? this.kDROP_AFTER : this.kDROP_BEFORE ;
@@ -2059,7 +2064,7 @@ TreeStyleTabBrowser.prototype = {
 		switch (info.position)
 		{
 			case this.kDROP_ON:
-				info.action       = this.kACTION_ATTACH;
+				info.action       = this.kACTION_STAY | this.kACTION_ATTACH;
 				info.parent       = tab;
 				info.insertBefore = this.getNextVisibleTab(tab);
 				break;
@@ -2122,7 +2127,7 @@ TreeStyleTabBrowser.prototype = {
 		return info;
 	},
   
-	processDropAction : function(aInfo, aDraggedTab) 
+	performDrop : function(aInfo, aDraggedTab) 
 	{
 		aDraggedTab = this.getTabFromChild(aDraggedTab);
 
@@ -2135,15 +2140,15 @@ TreeStyleTabBrowser.prototype = {
 		var sourceWindow = aDraggedTab.ownerDocument.defaultView;
 		var sourceBrowser = this.getTabBrowserFromChild(aDraggedTab);
 
-		var moveSelection = (
+		var isSelectionMove = (
 				'MultipleTabService' in sourceWindow &&
 				sourceWindow.MultipleTabService.isSelected(aDraggedTab) &&
 				MultipleTabService.allowMoveMultipleTabs
 			);
 
-		if (moveSelection) {
+		if (isSelectionMove) {
 			draggedTabs = sourceWindow.MultipleTabService.getSelectedTabs(sourceBrowser);
-			if (!(aInfo.action & this.kACTION_MAY_DUPLICATE)) {
+			if (!(aInfo.action & this.kACTIONS_FOR_DESTINATION)) {
 				draggedRoots = [];
 				draggedTabs.forEach(function(aTab) {
 					var parent = aTab,
@@ -2159,117 +2164,111 @@ TreeStyleTabBrowser.prototype = {
 				}, this);
 			}
 		}
-		else if (sourceWindow != window || aInfo.action & this.kACTION_DUPLICATE) {
+		else if (aInfo.action & this.kACTIONS_FOR_DESTINATION) {
 			draggedTabs = draggedTabs.concat(sourceBrowser.treeStyleTab.getDescendantTabs(aDraggedTab));
 		}
 
-		if (aDraggedTab && aInfo.action & this.kACTION_PART) {
-			if (!(aInfo.action & this.kACTION_MAY_DUPLICATE))
+		if (aInfo.action & this.kACTIONS_FOR_SOURCE) {
+			if (aInfo.action & this.kACTION_PART) {
 				this.partTabsOnDrop(draggedRoots);
-		}
-		else if (aInfo.action & this.kACTION_ATTACH) {
-			if (!(aInfo.action & this.kACTION_MAY_DUPLICATE))
+			}
+			else if (aInfo.action & this.kACTION_ATTACH) {
 				this.attachTabsOnDrop(draggedRoots, aInfo.parent);
-		}
-		else if (
-			(draggedTabs.length > 1) &&
-			(
-				(aInfo.action & this.kACTION_MOVE_FROM_OTHER_WINDOW) ||
-				(aInfo.action & this.kACTION_MAY_DUPLICATE)
-			)
-			) {
-		}
-		else {
-			return false;
+			}
+			else {
+				return false;
+			}
+
+			if ( // if this move will cause no change...
+				sourceBrowser == targetBrowser &&
+				sourceBrowser.treeStyleTab.getNextVisibleTab(draggedTabs[draggedTabs.length-1]) == aInfo.insertBefore
+				) {
+				// then, do nothing
+				return true;
+			}
 		}
 
-		var newSelection = [];
-		if (
-			(
-				aInfo.action & this.kACTION_MOVE ||
-				aInfo.action & this.kACTION_MAY_DUPLICATE
-			) &&
-			(
-				!aInfo.insertBefore ||
-				sourceBrowser.treeStyleTab.getNextVisibleTab(draggedTabs[0]) != aInfo.insertBefore
-			)
-			) {
-			targetBrowser.duplicatingSelectedTabs = (aInfo.action & this.kACTION_MAY_DUPLICATE) ? true : false ; // Multiple Tab Handler
-			targetBrowser.movingSelectedTabs = true; // Multiple Tab Handler
 
-			var newRoots = [];
-			var shouldClose = (
-					aInfo.action & this.kACTION_MOVE_FROM_OTHER_WINDOW &&
-					sourceBrowser.mTabContainer.childNodes.length == draggedTabs.length
-				);
-			var oldTabs = [];
-			var newTabs = [];
-			var treeStructure = draggedTabs.map(function(aTab) {
-					var parent = sourceBrowser.treeStyleTab.getParentTab(aTab);
-					return parent ? draggedTabs.indexOf(parent) : -1 ;
-				});
+		// prevent Multiple Tab Handler feature
+		targetBrowser.duplicatingSelectedTabs = true;
+		targetBrowser.movingSelectedTabs = true;
 
-			draggedTabs.forEach(function(aTab) {
-				var tab = aTab;
-				if (aInfo.action & this.kACTION_MAY_DUPLICATE) {
-					var parent = sourceBrowser.treeStyleTab.getParentTab(aTab);
-					if (moveSelection)
-						sourceWindow.MultipleTabService.setSelection(aTab, false);
-					if (aInfo.action & this.kACTION_MOVE_FROM_OTHER_WINDOW &&
-						'swapBrowsersAndCloseOther' in targetBrowser) {
-						tab = targetBrowser.addTab();
-						tab.linkedBrowser.stop();
-						tab.linkedBrowser.docShell;
-						targetBrowser.swapBrowsersAndCloseOther(tab, aTab);
-						targetBrowser.setTabTitle(tab);
-					}
-					else {
-						tab = targetBrowser.duplicateTab(aTab);
-						this.deleteTabValue(tab, this.kCHILDREN);
-						this.deleteTabValue(tab, this.kPARENT);
-						if (aInfo.action & this.kACTION_MOVE_FROM_OTHER_WINDOW)
-							oldTabs.push(aTab);
-					}
-					newTabs.push(tab);
-					if (moveSelection)
-						MultipleTabService.setSelection(tab, true);
-					if (!parent || draggedTabs.indexOf(parent) < 0)
-						newRoots.push(tab);
+
+		var newRoots = [];
+		var shouldClose = (
+				aInfo.action & this.kACTION_IMPORT &&
+				sourceBrowser.mTabContainer.childNodes.length == draggedTabs.length
+			);
+		var oldTabs = [];
+		var newTabs = [];
+		var treeStructure = draggedTabs.map(function(aTab) {
+				var parent = sourceBrowser.treeStyleTab.getParentTab(aTab);
+				return parent ? draggedTabs.indexOf(parent) : -1 ;
+			});
+
+		draggedTabs.forEach(function(aTab) {
+			var tab = aTab;
+			if (aInfo.action & this.kACTIONS_FOR_DESTINATION) {
+				var parent = sourceBrowser.treeStyleTab.getParentTab(aTab);
+				if (isSelectionMove)
+					sourceWindow.MultipleTabService.setSelection(aTab, false);
+				if (aInfo.action & this.kACTION_IMPORT &&
+					'swapBrowsersAndCloseOther' in targetBrowser) {
+					tab = targetBrowser.addTab();
+					tab.linkedBrowser.stop();
+					tab.linkedBrowser.docShell;
+					targetBrowser.swapBrowsersAndCloseOther(tab, aTab);
+					targetBrowser.setTabTitle(tab);
 				}
+				else {
+					tab = targetBrowser.duplicateTab(aTab);
+					this.deleteTabValue(tab, this.kCHILDREN);
+					this.deleteTabValue(tab, this.kPARENT);
+					if (aInfo.action & this.kACTION_IMPORT)
+						oldTabs.push(aTab);
+				}
+				newTabs.push(tab);
+				if (isSelectionMove)
+					MultipleTabService.setSelection(tab, true);
+				if (!parent || draggedTabs.indexOf(parent) < 0)
+					newRoots.push(tab);
+			}
 
-				var newIndex = aInfo.insertBefore ? aInfo.insertBefore._tPos : tabs.length - 1 ;
-				if (aInfo.insertBefore && newIndex > tab._tPos) newIndex--;
+			var newIndex = aInfo.insertBefore ? aInfo.insertBefore._tPos : tabs.length - 1 ;
+			if (aInfo.insertBefore && newIndex > tab._tPos) newIndex--;
 
-				this.internallyTabMoving = true;
-				targetBrowser.moveTabTo(tab, newIndex);
-				this.collapseExpandTab(tab, false);
-				this.internallyTabMoving = false;
+			this.internallyTabMoving = true;
+			targetBrowser.moveTabTo(tab, newIndex);
+			this.collapseExpandTab(tab, false);
+			this.internallyTabMoving = false;
 
-			}, this);
+		}, this);
 
-			oldTabs.forEach(function(aTab) {
-				sourceBrowser.removeTab(aTab);
-			});
+		// close imported tabs from the source browser
+		oldTabs.forEach(function(aTab) {
+			sourceBrowser.removeTab(aTab);
+		});
+		if (shouldClose) this.closeOwner(sourceBrowser);
 
-			newTabs.forEach(function(aTab, aIndex) {
-				var index = treeStructure[aIndex];
-				if (index < 0) return;
-				targetBrowser.treeStyleTab.attachTabTo(aTab, newTabs[index]);
-			});
+		// restore tree structure for newly opened tabs
+		newTabs.forEach(function(aTab, aIndex) {
+			var index = treeStructure[aIndex];
+			if (index < 0) return;
+			targetBrowser.treeStyleTab.attachTabTo(aTab, newTabs[index]);
+		});
 
-			if (aInfo.action & this.kACTION_MAY_DUPLICATE &&
-				aInfo.action & this.kACTION_ATTACH)
-				this.attachTabsOnDrop(newRoots, aInfo.parent);
+		if (aInfo.action & this.kACTIONS_FOR_DESTINATION &&
+			aInfo.action & this.kACTION_ATTACH)
+			this.attachTabsOnDrop(newRoots, aInfo.parent);
 
-			if (shouldClose) this.closeOwner(sourceBrowser);
-
-			targetBrowser.movingSelectedTabs = false; // Multiple Tab Handler
-			targetBrowser.duplicatingSelectedTabs = false; // Multiple Tab Handler
-		}
+		// Multiple Tab Handler
+		targetBrowser.movingSelectedTabs = false;
+		targetBrowser.duplicatingSelectedTabs = false;
 
 		return true;
 	},
-	attachTabsOnDrop : function(aTabs, aParent)
+	
+	attachTabsOnDrop : function(aTabs, aParent) 
 	{
 		this.mTabBrowser.movingSelectedTabs = true; // Multiple Tab Handler
 		aTabs.forEach(function(aTab) {
@@ -2281,7 +2280,8 @@ TreeStyleTabBrowser.prototype = {
 		}, this);
 		this.mTabBrowser.movingSelectedTabs = false; // Multiple Tab Handler
 	},
-	partTabsOnDrop : function(aTabs)
+ 
+	partTabsOnDrop : function(aTabs) 
 	{
 		this.mTabBrowser.movingSelectedTabs = true; // Multiple Tab Handler
 		aTabs.forEach(function(aTab) {
@@ -2290,7 +2290,8 @@ TreeStyleTabBrowser.prototype = {
 		}, this);
 		this.mTabBrowser.movingSelectedTabs = false; // Multiple Tab Handler
 	},
-	closeOwner : function(aTabOwner)
+ 
+	closeOwner : function(aTabOwner) 
 	{
 		var w = aTabOwner.ownerDocument.defaultView;
 		if ('SplitBrowser' in w &&
@@ -2303,7 +2304,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 		w.close();
 	},
- 
+  	
 	clearDropPosition : function() 
 	{
 		var b = this.mTabBrowser;
@@ -2907,7 +2908,7 @@ TreeStyleTabBrowser.prototype = {
 /* show/hide tab bar */ 
 	tabbarShown    : true,
 	tabbarExpanded : true,
-	 
+	
 	get tabbarWidth() 
 	{
 		if (this.autoHideShown) {
@@ -2963,7 +2964,7 @@ TreeStyleTabBrowser.prototype = {
 				return this.tabbarExpanded;
 		}
 	},
-	set autoHideShown(aValue) 
+	set autoHideShown(aValue)
 	{
 		switch (this.autoHideMode)
 		{
@@ -3140,7 +3141,7 @@ TreeStyleTabBrowser.prototype = {
 		catch(e) {
 		}
 	},
- 	
+ 
 	drawTabbarCanvas : function() 
 	{
 		if (!this.tabbarCanvas || this.tabbarResizing) return;
@@ -3275,7 +3276,7 @@ TreeStyleTabBrowser.prototype = {
   
 /* auto hide */ 
 	autoHideEnabled : false,
-	 
+	
 	get sensitiveArea() 
 	{
 		var b    = this.mTabBrowser;

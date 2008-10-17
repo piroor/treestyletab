@@ -41,12 +41,14 @@ var TreeStyleTabService = {
 	kDROP_ON     : 0,
 	kDROP_AFTER  : 1,
 
-	kACTION_MOVE   : 1,
-	kACTION_ATTACH : 2,
-	kACTION_PART   : 4,
-	kACTION_DUPLICATE : 8,
-	kACTION_MOVE_FROM_OTHER_WINDOW : 16,
-	kACTION_MAY_DUPLICATE : 24,
+	kACTION_MOVE      : 1,
+	kACTION_STAY      : 2,
+	kACTION_DUPLICATE : 4,
+	kACTION_IMPORT    : 8,
+	kACTION_ATTACH    : 1024,
+	kACTION_PART      : 2048,
+	kACTIONS_FOR_SOURCE      : 1 | 2,
+	kACTIONS_FOR_DESTINATION : 4 | 8,
 
 	kTABBAR_TOP    : 1,
 	kTABBAR_BOTTOM : 2,
@@ -1038,13 +1040,13 @@ catch(e) {
 			).replace( // Firefox 2
 				/(if \(aDragSession[^\)]+\) \{)/,
 				<><![CDATA[$1
-					if (TSTTabBrowser.treeStyleTab.processDropAction(dropActionInfo, TST_DRAGSESSION.sourceNode))
+					if (TSTTabBrowser.treeStyleTab.performDrop(dropActionInfo, TST_DRAGSESSION.sourceNode))
 						return;
 				]]></>
 			).replace( // Firefox 3.0.x, 3.1 or later
 				/(if \((accelKeyPressed|isCopy|dropEffect == "copy")\) {)/,
 				<><![CDATA[
-					if (TSTTabBrowser.treeStyleTab.processDropAction(dropActionInfo, draggedTab))
+					if (TSTTabBrowser.treeStyleTab.performDrop(dropActionInfo, draggedTab))
 						return;
 					$1]]></>
 			).replace( // Firefox 3, duplication of tab
@@ -1056,13 +1058,13 @@ catch(e) {
 			).replace( // Firefox 3, dragging tab from another window
 				'else if (draggedTab) {',
 				<><![CDATA[$&
-					if (TSTTabBrowser.treeStyleTab.processDropAction(dropActionInfo, draggedTab))
+					if (TSTTabBrowser.treeStyleTab.performDrop(dropActionInfo, draggedTab))
 						return;
 				]]></>
 			).replace(
 				/(this.loadOneTab\([^;]+\));/,
 				<><![CDATA[
-					TSTTabBrowser.treeStyleTab.processDropAction(dropActionInfo, $1);
+					TSTTabBrowser.treeStyleTab.performDrop(dropActionInfo, $1);
 					return;
 				]]></>
 			).replace(
@@ -1077,7 +1079,7 @@ catch(e) {
 						TreeStyleTabService.getTreePref('loadDroppedLinkToNewChildTab') ||
 						dropActionInfo.position != TreeStyleTabService.kDROP_ON
 						) {
-						TSTTabBrowser.treeStyleTab.processDropAction(dropActionInfo, TSTTabBrowser.loadOneTab(getShortcutOrURI(url), null, null, null, bgLoad, false));
+						TSTTabBrowser.treeStyleTab.performDrop(dropActionInfo, TSTTabBrowser.loadOneTab(getShortcutOrURI(url), null, null, null, bgLoad, false));
 						return;
 					}
 				]]></>

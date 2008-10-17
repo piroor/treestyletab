@@ -403,13 +403,13 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 			).replace(
 				/(var newIndex =)/,
 				<><![CDATA[
-					if (isTabReorder && TSTTabBrowser.treeStyleTab.processDropAction(dropActionInfo, aDragSession.sourceNode))
+					if (isTabReorder && TSTTabBrowser.treeStyleTab.performDrop(dropActionInfo, aDragSession.sourceNode))
 						return;
 				]]></>
 			).replace(
 				/(aTab = gBrowser.addTab\(url\));/,
 				<><![CDATA[
-					TSTTabBrowser.treeStyleTab.processDropAction(dropActionInfo, $1);
+					TSTTabBrowser.treeStyleTab.performDrop(dropActionInfo, $1);
 					return;
 				]]></>
 			).replace(
@@ -421,7 +421,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 						TreeStyleTabService.getTreePref('loadDroppedLinkToNewChildTab') ||
 						dropActionInfo.position != TreeStyleTabService.kDROP_ON
 						) {
-						TSTTabBrowser.treeStyleTab.processDropAction(dropActionInfo, TSTTabBrowser.loadOneTab(url, null, null, null, bgLoad, false));
+						TSTTabBrowser.treeStyleTab.performDrop(dropActionInfo, TSTTabBrowser.loadOneTab(url, null, null, null, bgLoad, false));
 						return;
 					}
 				]]></>
