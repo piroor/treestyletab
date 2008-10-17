@@ -46,6 +46,7 @@ var TreeStyleTabService = {
 	kACTION_PART   : 4,
 	kACTION_DUPLICATE : 8,
 	kACTION_MOVE_FROM_OTHER_WINDOW : 16,
+	kACTION_MAY_DUPLICATE : 24,
 
 	kTABBAR_TOP    : 1,
 	kTABBAR_BOTTOM : 2,
@@ -360,6 +361,13 @@ var TreeStyleTabService = {
 			).singleNodeValue ? true : false ;
 	},
  
+	isAccelKeyPressed : function(aEvent) 
+	{
+		return navigator.platform.toLowerCase().indexOf('mac') > -1 ?
+			(aEvent.metaKey || (aEvent.keyCode == Components.interfaces.nsIDOMKeyEvent.DOM_VK_META)) :
+			(aEvent.ctrlKey || (aEvent.keyCode == Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL)) ;
+	},
+ 
 	get browserWindow() 
 	{
 		return this.WindowMediator.getMostRecentWindow('navigator:browser');
@@ -377,9 +385,9 @@ var TreeStyleTabService = {
 	{
 		if (!aType) aType = XPathResult.ORDERED_NODE_SNAPSHOT_TYPE;
 		try {
-			var xpathResult = document.evaluate(
+			var xpathResult = (aContext.ownerDocument || aContext || document).evaluate(
 					aExpression,
-					aContext,
+					(aContext || document),
 					this.NSResolver,
 					aType,
 					null
@@ -413,10 +421,7 @@ var TreeStyleTabService = {
  
 	getTabFromEvent : function(aEvent) 
 	{
-		return this.evaluateXPath(
-				'ancestor-or-self::xul:tab',
-				aEvent.originalTarget || aEvent.target, XPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue;
+		return this.getTabFromChild(aEvent.originalTarget || aEvent.target);
 	},
  
 	getTabFromFrame : function(aFrame, aTabBrowser) 
@@ -433,6 +438,15 @@ var TreeStyleTabService = {
 				return tabs[i];
 		}
 		return null;
+	},
+ 
+	getTabFromChild : function(aTab) 
+	{
+		return this.evaluateXPath(
+				'ancestor-or-self::xul:tab[ancestor::xul:tabbrowser]',
+				aTab,
+				XPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue;
 	},
  
 	getTabBrowserFromChild : function(aTab) 
@@ -909,25 +923,34 @@ var TreeStyleTabService = {
 				<><![CDATA[
 					if (!(function(aSelf) {
 try{
-							if (!aDragSession.sourceNode ||
-								aDragSession.sourceNode.parentNode != aSelf.mTabContainer ||
-								aEvent.target.localName != 'tab')
+							var node = TST_DRAGSESSION.sourceNode;
+							var tab = TSTTabBrowser.treeStyleTab.getTabFromChild(node);
+							if (!node ||
+								!tab ||
+								tab.parentNode != aSelf.mTabContainer)
 								return true;
 
-							if (aEvent.target.getAttribute(TreeStyleTabService.kCOLLAPSED) == 'true')
+							if (TSTTabBrowser.treeStyleTab.getTabFromEvent(aEvent).getAttribute(TreeStyleTabService.kCOLLAPSED) == 'true')
 								return false;
 
-							var info = TSTTabBrowser.treeStyleTab.getDropAction(aEvent, aDragSession);
+							var info = TSTTabBrowser.treeStyleTab.getDropAction(aEvent, TST_DRAGSESSION);
 							return info.canDrop;
 }
 catch(e) {
 	dump('TreeStyleTabService::canDrop\n'+e+'\n');
 	return false;
 }
-						})(TSTTabBrowser))
+						})(TSTTabBrowser)) {
 						return TST_DRAGDROP_DISALLOW_RETRUN_VALUE;
+					}
 					$1
 				]]></>
+			).replace(
+				/TST_DRAGSESSION/g,
+				(canDropFunctionName == 'canDrop' ?
+					'aDragSession' :
+					'TSTTabBrowser.treeStyleTab.getCurrentDragSession()'
+				)
 			).replace(
 				/TST_DRAGDROP_DISALLOW_RETRUN_VALUE/g,
 				(canDropFunctionName == 'canDrop' ?
@@ -1436,11 +1459,7 @@ catch(e) {
 		if (this.delayedAutoShowDone)
 			this.cancelDelayedAutoShow();
 
-		this.accelKeyPressed = (
-				navigator.platform.match(/mac/i) ?
-					(aEvent.metaKey || (aEvent.keyCode == aEvent.DOM_VK_META)) :
-					(aEvent.ctrlKey || (aEvent.keyCode == aEvent.DOM_VK_CONTROL))
-			);
+		this.accelKeyPressed = this.isAccelKeyPressed(aEvent);
 		if (
 			b.mTabContainer.childNodes.length > 1 &&
 			!aEvent.altKey &&
@@ -1485,11 +1504,10 @@ catch(e) {
 
 		var scrollDown,
 			scrollUp;
-		var isMac = navigator.platform.match(/mac/i);
 
-		this.accelKeyPressed = (isMac ? aEvent.metaKey : aEvent.ctrlKey );
+		this.accelKeyPressed = this.isAccelKeyPressed(aEvent);
 
-		var standBy = scrollDown = scrollUp = (!aEvent.altKey && (isMac ? aEvent.metaKey : aEvent.ctrlKey ));
+		var standBy = scrollDown = scrollUp = (!aEvent.altKey && this.isAccelKeyPressed(aEvent));
 
 		scrollDown = scrollDown && (
 				!aEvent.shiftKey &&
@@ -1629,8 +1647,9 @@ catch(e) {
 	{
 		var b = this.getTabBrowserFromChild(aTabs[0]);
 
-		var self = this;
-		aTabs = aTabs.map(function(aTab) { return aTab.getAttribute(self.kID); });
+		aTabs = aTabs.map(function(aTab) {
+				return aTab.getAttribute(this.kID);
+			}, this);
 		aTabs.sort();
 		aTabs = aTabs.join('|').replace(/([^\|]+)(\|\1)+/g, '$1').split('|');
 
@@ -1731,12 +1750,11 @@ catch(e) {
 		var referrer = this.makeURIFromSpec(targetWindow.location.href);
 
 		this.readyToOpenChildTab(targetWindow, true);
-		var self = this;
 		links.forEach(function(aItem, aIndex) {
 			var tab = b.addTab(aItem.uri, referrer);
-			if (aIndex == 0 && !self.getPref('browser.tabs.loadInBackground'))
+			if (aIndex == 0 && !this.getPref('browser.tabs.loadInBackground'))
 				b.selectedTab = tab;
-		});
+		}, this);
 		this.stopToOpenChildTab(targetWindow);
 	},
 	
