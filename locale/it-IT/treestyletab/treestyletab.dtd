@@ -135,5 +135,5 @@
 <!ENTITY context.toggleFixed.accesskey "h">
 <!ENTITY context.tabbarPosition.label     "Posiziona">
 <!ENTITY context.tabbarPosition.accesskey "p">
-<!ENTITY context.bookmarkTabSubTree.label     "Bookmark this Tree...">
-<!ENTITY context.bookmarkTabSubTree.accesskey "t">
+<!ENTITY context.bookmarkTabSubTree.label     "Questo sottoalbero nei segnalibri...">
+<!ENTITY context.bookmarkTabSubTree.accesskey "l">
