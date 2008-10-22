@@ -20,7 +20,7 @@
 <!ENTITY config.tabbar.style.default "Plano">
 <!ENTITY config.tabbar.style.vertigo "Vértigo">
 <!ENTITY config.tabbar.style.mixed   "Mezclado">
-<!ENTITY config.tabbar.style.none    "Default (specified by the Theme)">
+<!ENTITY config.tabbar.style.none    "Predeterminado (especificado por el tema actual)">
 
 <!ENTITY config.twisty.style.caption "Estilo del botón de colapsar/expandir">
 <!ENTITY config.twisty.style.auto    "Automático">
@@ -49,7 +49,7 @@
 <!ENTITY config.urlbar.loadDifferentDomainToNewTab.asChild  "como hija de la pestaña actual">
 <!ENTITY config.urlbar.loadSameDomainToNewChildTab  "Cargar en una nueva hija si pertenece al mismo sitio">
 
-<!ENTITY config.loadDroppedLinkToNewChildTab.caption "Acción para arrastrar y soltar de enlaces or URIs en pestañas existentes">
+<!ENTITY config.loadDroppedLinkToNewChildTab.caption "Acción para arrastrar y soltar enlaces o URIs en pestañas existentes">
 <!ENTITY config.loadDroppedLinkToNewChildTab.load    "Cargar enlace dentro de una nueva pestaña (Predeterminado en Firefox)">
 <!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "Abrir enlace como hija de la pestaña actual">
 
@@ -69,32 +69,32 @@
 <!ENTITY config.jsopen.forcetab "Abrir como pestañas en ves de ventanas (Recomendado)">
 
 
-<!ENTITY config.tabs.autohide "Auto hide">
+<!ENTITY config.tabs.autohide "Auto ocultar">
 
-<!ENTITY config.autoHide.mode.0 "Show tab bar always">
+<!ENTITY config.autoHide.mode.0 "Mostrar la barra de pestañas siempre">
 <!ENTITY config.autoHide.mode.1 "Auto-ocultar la barra de pestañas">
 <!ENTITY config.autoHide.mode.2 "Auto Shrink tab bar">
-<!ENTITY config.autoShow.caption "Show tab bar automatically when">
-<!ENTITY config.autoShow.mousemove "Mouse cursor points window edges">
+<!ENTITY config.autoShow.caption "Mostrar la barra de pestañas automáticamente cuando">
+<!ENTITY config.autoShow.mousemove "Al acercar el mouse a los bordes de la ventana">
 <!ENTITY config.autoHide.area.before "Área sensible:">
-<!ENTITY config.autoHide.area.after "pixeles del borde de la ventana">
-<!ENTITY config.autoShow.mousemove.mode2 "Mouse cursor points tab bar's edge">
-<!ENTITY config.autoHide.area.before.mode2 "Sensitive area:">
-<!ENTITY config.autoHide.area.after.mode2 "pixels from tab bar's edge">
+<!ENTITY config.autoHide.area.after "píxeles del borde de la ventana">
+<!ENTITY config.autoShow.mousemove.mode2 "Al acercar el mouse a los bordes de la barra de pestañas">
+<!ENTITY config.autoHide.area.before.mode2 "Área sensible:">
+<!ENTITY config.autoHide.area.after.mode2 "píxeles desde el borde de la barra de pestañas">
 <!ENTITY config.autoHide.delay.before "Retraso:">
 <!ENTITY config.autoHide.delay.after "mseg.">
-<!ENTITY config.autoShow.accelKeyDown "Control(Command) key is pressed a while">
-<!ENTITY config.autoShow.accelKeyDown.delay.before "Show after">
-<!ENTITY config.autoShow.accelKeyDown.delay.after  "msec.">
-<!ENTITY config.autoShow.tabSwitch   "Control(Command)-Tab to switch tabs">
-<!ENTITY config.autoShow.feedback    "New tabs are opened or some tabs are closed">
-<!ENTITY config.autoShow.feedback.delay.before "Hide after">
-<!ENTITY config.autoShow.feedback.delay.after  "msec.">
+<!ENTITY config.autoShow.accelKeyDown "Mientras la tecla Control(Comando) es presionada por un instante">
+<!ENTITY config.autoShow.accelKeyDown.delay.before "Mostrar después">
+<!ENTITY config.autoShow.accelKeyDown.delay.after  "mseg.">
+<!ENTITY config.autoShow.tabSwitch   "Control(Comando)-Tab para cambiar pestañas">
+<!ENTITY config.autoShow.feedback    "Nuevas pestañas son abiertas o algunas pestañas son cerradas">
+<!ENTITY config.autoShow.feedback.delay.before "Ocultar después">
+<!ENTITY config.autoShow.feedback.delay.after  "mseg.">
 
-<!ENTITY config.transparent.style.caption "Background of tab bar">
-<!ENTITY config.transparent.style.0 "Solid">
-<!ENTITY config.transparent.style.1 "Half-transparent">
-<!ENTITY config.transparent.style.2 "Transparent">
+<!ENTITY config.transparent.style.caption "Fondo de la barra de pestañas">
+<!ENTITY config.transparent.style.0 "Solido">
+<!ENTITY config.transparent.style.1 "Medio transparente">
+<!ENTITY config.transparent.style.2 "Transparente">
 
 
 <!ENTITY config.tabs.advanced "Avanzado">
@@ -135,5 +135,5 @@
 <!ENTITY context.toggleFixed.accesskey "f">
 <!ENTITY context.tabbarPosition.label     "Posición">
 <!ENTITY context.tabbarPosition.accesskey "p">
-<!ENTITY context.bookmarkTabSubTree.label     "Bookmark this Tree...">
+<!ENTITY context.bookmarkTabSubTree.label     "Añadir a marcadores este árbol...">
 <!ENTITY context.bookmarkTabSubTree.accesskey "t">
