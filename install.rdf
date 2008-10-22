@@ -82,7 +82,7 @@
     <em:localized>
       <RDF:Description em:locale="es-ES"
                        em:name="Tree Style Tab (Pestañas estilo árbol)"
-                       em:description="Muesta las pestañas en vista de árbol"
+                       em:description="Muestra las pestañas en vista de árbol"
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
                        em:creator="SHIMODA Hiroshi">
 		  <em:translator>Godai71.Extenzilla (it-IT locale)</em:translator>
