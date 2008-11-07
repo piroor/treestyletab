@@ -1920,7 +1920,7 @@ catch(e) {
 					this.endListenKeyEvents();
 				}
 				window.setTimeout(function() {
-					if (window.windowState == Components.interfaces.nsIDOMChromeWindow.STATE_NORMAL) return;
+					if (window.windowState != Components.interfaces.nsIDOMChromeWindow.STATE_NORMAL) return;
 					window.resizeBy(-1,-1);
 					window.resizeBy(1,1);
 				}, 0);
