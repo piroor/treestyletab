@@ -681,7 +681,9 @@ TreeStyleTabBrowser.prototype = {
 				allTabsButton.parentNode.orient = 'vertical';
 				allTabsButton.parentNode.setAttribute('align', 'stretch');
 			}
-			allTabsButton.firstChild.setAttribute('position', 'before_start');
+			if (allTabsButton.hasChildNodes()) {
+				allTabsButton.firstChild.setAttribute('position', 'before_start');
+			}
 			b.mTabContainer.setAttribute('align', 'stretch'); // for Mac OS X
 			scrollInnerBox.removeAttribute('flex');
 
@@ -750,7 +752,9 @@ TreeStyleTabBrowser.prototype = {
 				allTabsButton.parentNode.orient = 'horizontal';
 				allTabsButton.parentNode.removeAttribute('align');
 			}
-			allTabsButton.firstChild.setAttribute('position', 'after_end');
+			if (allTabsButton.hasChildNodes()) {
+				allTabsButton.firstChild.setAttribute('position', 'after_end');
+			}
 			b.mTabContainer.removeAttribute('align'); // for Mac OS X
 			scrollInnerBox.setAttribute('flex', 1);
 

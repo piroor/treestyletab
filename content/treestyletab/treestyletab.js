@@ -1158,8 +1158,9 @@ catch(e) {
 				]]></>
 			)
 		);
-		eval('nsContextMenu.prototype.viewImage = '+
-			nsContextMenu.prototype.viewImage.toSource().replace(
+		var viewImageMethod = ('viewImage' in nsContextMenu.prototype) ? 'viewImage' : 'viewMedia' ;
+		eval('nsContextMenu.prototype.'+viewImageMethod+' = '+
+			nsContextMenu.prototype[viewImageMethod].toSource().replace(
 				'openUILink(',
 				<><![CDATA[
 					if (String(whereToOpenLink(e, false, true)).indexOf('tab') == 0)
