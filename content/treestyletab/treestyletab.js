@@ -932,7 +932,8 @@ try{
 								tab.parentNode != aSelf.mTabContainer)
 								return true;
 
-							if (TSTTabBrowser.treeStyleTab.getTabFromEvent(aEvent).getAttribute(TreeStyleTabService.kCOLLAPSED) == 'true')
+							tab = TSTTabBrowser.treeStyleTab.getTabFromEvent(aEvent);
+							if (tab && tab.getAttribute(TreeStyleTabService.kCOLLAPSED) == 'true')
 								return false;
 
 							var info = TSTTabBrowser.treeStyleTab.getDropAction(aEvent, TST_DRAGSESSION);
