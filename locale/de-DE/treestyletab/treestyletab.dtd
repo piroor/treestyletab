@@ -135,5 +135,5 @@
 <!ENTITY context.toggleFixed.accesskey "f">
 <!ENTITY context.tabbarPosition.label     "Position">
 <!ENTITY context.tabbarPosition.accesskey "p">
-<!ENTITY context.bookmarkTabSubTree.label     "Bookmark this Tree...">
+<!ENTITY context.bookmarkTabSubTree.label     "Baum als Lesezeichen speichern">
 <!ENTITY context.bookmarkTabSubTree.accesskey "t">
