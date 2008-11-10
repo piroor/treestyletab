@@ -1485,16 +1485,16 @@ TreeStyleTabBrowser.prototype = {
 		var tab = aTab;
 		var b   = this.mTabBrowser;
 
-		var isDuplicated = false;
+		var maybeDuplicated = false;
 
 		var id = this.getTabValue(tab, this.kID);
 
 		if (this.getTabById(id)) { // this is a duplicated tab!
-			isDuplicated = true;
-			id = this.getDuplicatedId(id);
+			maybeDuplicated = true;
+			id = this.redirectId(id);
 		}
 
-		if (!isDuplicated) {
+		if (!maybeDuplicated) {
 			/* If it has a parent, it is wrongly attacched by tab moving
 			   on restoring. Restoring the old ID (the next statement)
 			   breaks the children list of the temporary parent and causes
@@ -1520,9 +1520,9 @@ TreeStyleTabBrowser.prototype = {
 		if (children) {
 			tab.removeAttribute(this.kCHILDREN);
 			children = children.split('|');
-			if (isDuplicated)
+			if (maybeDuplicated)
 				children = children.map(function(aChild) {
-					return this.getDuplicatedId(aChild);
+					return this.redirectId(aChild);
 				}, this);
 			for (var i = 0, maxi = children.length; i < maxi; i++)
 			{
@@ -1534,15 +1534,15 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		var nextTab = this.getTabValue(tab, this.kINSERT_BEFORE);
-		if (nextTab && isDuplicated) {
-			nextTab = this.getDuplicatedId(nextTab);
+		if (nextTab && maybeDuplicated) {
+			nextTab = this.redirectId(nextTab);
 		}
 
 		var ancestors = (this.getTabValue(tab, this.kANCESTOR) || this.getTabValue(tab, this.kPARENT) || '').split('|');
 		var parent = null;
 		for (var i in ancestors)
 		{
-			if (isDuplicated) ancestors[i] = this.getDuplicatedId(ancestors[i]);
+			if (maybeDuplicated) ancestors[i] = this.redirectId(ancestors[i]);
 			parent = this.getTabById(ancestors[i]);
 			if (parent) {
 				parent = ancestors[i];
@@ -1594,32 +1594,28 @@ TreeStyleTabBrowser.prototype = {
 			this.collapseExpandSubtree(tab, isSubTreeCollapsed);
 		}
 
-		if (isDuplicated) this.clearCachedIds();
+		if (maybeDuplicated) this.clearRedirectionTable();
 	},
 	
-	getDuplicatedId : function(aId) 
+	redirectId : function(aId) 
 	{
-		if (!(aId in this.duplicatedIdsHash))
-			this.duplicatedIdsHash[aId] = this.makeNewId();
-		return this.duplicatedIdsHash[aId];
+		if (!(aId in this._redirectionTable))
+			this._redirectionTable[aId] = this.makeNewId();
+		return this._redirectionTable[aId];
 	},
-	duplicatedIdsHash : {},
+	_redirectionTable : {},
  
-	clearCachedIds : function() 
+	clearRedirectionTable : function() 
 	{
-		if (this.clearCachedIdsTimer) {
-			window.clearTimeout(this.clearCachedIdsTimer);
-			this.clearCachedIdsTimer = null;
+		if (this._clearRedirectionTableTimer) {
+			window.clearTimeout(this._clearRedirectionTableTimer);
+			this._clearRedirectionTableTimer = null;
 		}
-		this.clearCachedIdsTimer = window.setTimeout(function(aSelf) {
-			aSelf.clearCachedIdsCallback();
+		this._clearRedirectionTableTimer = window.setTimeout(function(aSelf) {
+			aSelf._redirectionTable = {};
 		}, 1000, this);
 	},
-	clearCachedIdsTimer : null,
-	clearCachedIdsCallback : function()
-	{
-		this.duplicatedIdsHash = {};
-	},
+	_clearRedirectionTableTimer : null,
   
 	onTabSelect : function(aEvent) 
 	{
