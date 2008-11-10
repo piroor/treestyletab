@@ -173,7 +173,7 @@ var TreeStyleTabService = {
 		return this._stringbundle;
 	},
 	_stringbundle : null,
-	 
+	
 /* API */ 
 	
 	readyToOpenChildTab : function(aFrameOrTabBrowser, aMultiple, aInsertBefore) 
@@ -850,7 +850,7 @@ var TreeStyleTabService = {
 	kTMP_SESSION_DATA_PREFIX : 'tmp-session-data-',
    
 /* Initializing */ 
-	 
+	
 	preInit : function() 
 	{
 		if (this.preInitialized) return;
@@ -858,6 +858,8 @@ var TreeStyleTabService = {
 
 		window.removeEventListener('DOMContentLoaded', this, true);
 		if (!document.getElementById('content')) return;
+
+		window.addEventListener('SSTabRestoring', this, true);
 
 		this.overrideExtensionsPreInit(); // hacks.js
 	},
@@ -873,6 +875,7 @@ var TreeStyleTabService = {
 		if (!this.preInitialized) {
 			this.preInit();
 		}
+		window.removeEventListener('SSTabRestoring', this, true);
 
 		window.removeEventListener('load', this, false);
 		window.addEventListener('unload', this, false);
@@ -889,13 +892,15 @@ var TreeStyleTabService = {
 		this.initTabBrowser(gBrowser);
 		this.overrideExtensionsOnInitAfter(); // hacks.js
 
+		this.processRestoredTabs();
+
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.levelMargin');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.autoHide.mode');
 		this.observe(null, 'nsPref:changed', 'browser.link.open_newwindow.restriction.override');
 		this.observe(null, 'nsPref:changed', 'browser.tabs.loadFolderAndReplace.override');
 	},
 	initialized : false,
-	 
+	
 	initTabBrowser : function(aTabBrowser) 
 	{
 		if (aTabBrowser.localName != 'tabbrowser') return;
@@ -1404,7 +1409,7 @@ catch(e) {
 
 		this.removePrefListener(this);
 	},
-	 
+	
 	destroyTabBrowser : function(aTabBrowser) 
 	{
 		if (aTabBrowser.localName != 'tabbrowser') return;
@@ -1430,6 +1435,10 @@ catch(e) {
 				this.destroy();
 				return;
 
+			case 'SSTabRestoring':
+				this.onTabRestored(aEvent);
+				return;
+
 			case 'popupshowing':
 				if (aEvent.target != aEvent.currentTarget) return;
 				this.initContextMenu();
@@ -1453,7 +1462,7 @@ catch(e) {
 				return;
 		}
 	},
-	 
+	
 	onKeyDown : function(aEvent) 
 	{
 		var b = this.browser;
@@ -1607,8 +1616,30 @@ catch(e) {
 			aMenuItem.setAttribute('hidden', true);
 	},
   
+/* Tree Style Tabの初期化が行われる前に復元されたセッションについてツリー構造を復元 */ 
+	
+	_restoringTabs : [], 
+ 
+	onTabRestored : function(aEvent) 
+	{
+		this._restoringTabs.push(aEvent.originalTarget);
+	},
+ 
+	processRestoredTabs : function() 
+	{
+		this._restoringTabs.forEach(function(aTab) {
+			try {
+				var b = this.getTabBrowserFromChild(aTab);
+				if (b) b.treeStyleTab.restoreStructure(aTab);
+			}
+			catch(e) {
+			}
+		}, this);
+		this._restoringTabs = [];
+	},
+  
 /* Commands */ 
-	 
+	
 	removeTabSubTree : function(aTabOrTabs, aOnlyChildren) 
 	{
 		var tabs = aTabOrTabs;
@@ -1646,7 +1677,7 @@ catch(e) {
 			b.removeTab(tabs[i]);
 		}
 	},
-	 
+	
 	cleanUpTabsArray : function(aTabs) 
 	{
 		var b = this.getTabBrowserFromChild(aTabs[0]);
@@ -1686,7 +1717,7 @@ catch(e) {
 
 		this._addBookmarkFor(bookmarkedTabs);
 	},
-	 
+	
 	_addBookmarkFor : function(aTabs) // from Multiple Tab Handler 
 	{
 		if (!aTabs) return;
@@ -1740,7 +1771,7 @@ catch(e) {
 	{
 		return aTab.linkedBrowser.currentURI;
 	},
- 	 
+  
 	openSelectionLinks : function() 
 	{
 		var links = this.getSelectionLinks();
@@ -1843,7 +1874,7 @@ catch(e) {
 
 		return links;
 	},
-	 
+	
 	getParentLink : function(aNode) 
 	{
 		var node = aNode;

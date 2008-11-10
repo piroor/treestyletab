@@ -486,7 +486,8 @@ TreeStyleTabBrowser.prototype = {
 	initTab : function(aTab) 
 	{
 		if (!aTab.hasAttribute(this.kID)) {
-			this.setTabValue(aTab, this.kID, this.makeNewId());
+			var id = this.getTabValue(aTab, this.kID) || this.makeNewId();
+			this.setTabValue(aTab, this.kID, id);
 		}
 
 		aTab.__treestyletab__linkedTabBrowser = this.mTabBrowser;
@@ -1477,7 +1478,11 @@ TreeStyleTabBrowser.prototype = {
   
 	onTabRestored : function(aEvent) 
 	{
-		var tab = aEvent.originalTarget;
+		this.restoreStructure(aEvent.originalTarget);
+	},
+	restoreStructure : function(aTab)
+	{
+		var tab = aTab;
 		var b   = this.mTabBrowser;
 
 		var isDuplicated = false;
