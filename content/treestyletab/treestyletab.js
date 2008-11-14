@@ -1196,51 +1196,54 @@ catch(e) {
 		funcs = 'handleLinkClick __splitbrowser__handleLinkClick __ctxextensions__handleLinkClick __treestyletab__highlander__origHandleLinkClick'.split(' ');
 		for (var i in funcs)
 		{
-			if (funcs[i] in window && /^function handleLinkClick/.test(window[funcs[i]].toString()))
-				eval('window.'+funcs[i]+' = '+
-					window[funcs[i]].toSource().replace(
-						/(openNewTabWith\()/g,
-						<><![CDATA[
-							if (!TreeStyleTabService.checkToOpenChildTab(event.target.ownerDocument.defaultView)) TreeStyleTabService.readyToOpenChildTab(event.target.ownerDocument.defaultView);
-							$1]]></>
-					).replace(
-						/(event.ctrlKey|event.metaKey)/,
-						<><![CDATA[
-							TreeStyleTabService.checkReadyToOpenNewTab({
-								uri      : href,
-								external : {
-									newTab : TreeStyleTabService.getTreePref('openOuterLinkInNewTab') || TreeStyleTabService.getTreePref('openAnyLinkInNewTab'),
-									forceChild : true
-								},
-								internal : {
-									newTab : TreeStyleTabService.getTreePref('openAnyLinkInNewTab')
-								},
-								modifier : $1,
-								invert   : TreeStyleTabService.getTreePref('link.invertDefaultBehavior')
-							}) ? true : (TreeStyleTabService.readyToOpenChildTab(), false)
-						]]></>
-					).replace(
-						'return false;case 1:',
-						<><![CDATA[
-								if (!('TMP_contentAreaClick' in window) && // do nothing for Tab Mix Plus
-									TreeStyleTabService.checkToOpenChildTab()) {
-									TreeStyleTabService.stopToOpenChildTab();
-									if (linkNode)
-										urlSecurityCheck(href,
-											'nodePrincipal' in linkNode.ownerDocument ?
-												linkNode.ownerDocument.nodePrincipal :
-												linkNode.ownerDocument.location.href
-										);
-									var postData = {};
-									href = getShortcutOrURI(href, postData);
-									if (!href) return false;
-									loadURI(href, null, postData.value, false);
-								}
-								return false;
-							case 1:
-						]]></>
-					)
-				);
+			if (!(funcs[i] in window) ||
+				!/^function handleLinkClick/.test(window[funcs[i]].toString()))
+				continue;
+			eval('window.'+funcs[i]+' = '+
+				window[funcs[i]].toSource().replace(
+					/(openNewTabWith\()/g,
+					<><![CDATA[
+						if (!TreeStyleTabService.checkToOpenChildTab(event.target.ownerDocument.defaultView)) TreeStyleTabService.readyToOpenChildTab(event.target.ownerDocument.defaultView);
+						$1]]></>
+				).replace(
+					/(event.ctrlKey|event.metaKey)/,
+					<><![CDATA[
+						TreeStyleTabService.checkReadyToOpenNewTab({
+							uri      : href,
+							external : {
+								newTab : TreeStyleTabService.getTreePref('openOuterLinkInNewTab') || TreeStyleTabService.getTreePref('openAnyLinkInNewTab'),
+								forceChild : true
+							},
+							internal : {
+								newTab : TreeStyleTabService.getTreePref('openAnyLinkInNewTab')
+							},
+							modifier : $1,
+							invert   : TreeStyleTabService.getTreePref('link.invertDefaultBehavior')
+						}) ? true : (TreeStyleTabService.readyToOpenChildTab(), false)
+					]]></>
+				).replace(
+					'return false;case 1:',
+					<><![CDATA[
+							if (!('TMP_contentAreaClick' in window) && // do nothing for Tab Mix Plus
+								TreeStyleTabService.checkToOpenChildTab()) {
+								TreeStyleTabService.stopToOpenChildTab();
+								if (linkNode)
+									urlSecurityCheck(href,
+										'nodePrincipal' in linkNode.ownerDocument ?
+											linkNode.ownerDocument.nodePrincipal :
+											linkNode.ownerDocument.location.href
+									);
+								var postData = {};
+								href = getShortcutOrURI(href, postData);
+								if (!href) return false;
+								loadURI(href, null, postData.value, false);
+							}
+							return false;
+						case 1:
+					]]></>
+				)
+			);
+			break;
 		}
 
 		funcs = 'contentAreaClick __contentAreaClick __ctxextensions__contentAreaClick'.split(' ');

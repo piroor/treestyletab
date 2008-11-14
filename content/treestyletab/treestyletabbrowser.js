@@ -457,7 +457,9 @@ TreeStyleTabBrowser.prototype = {
 		}, 0, this);
 
 		var allTabPopup = document.getAnonymousElementByAttribute(b.mTabContainer, 'anonid', 'alltabs-popup');
-		allTabPopup.addEventListener('popupshowing', this, false);
+		if (allTabPopup) {
+			allTabPopup.addEventListener('popupshowing', this, false);
+		}
 
 		/* To move up content area on the tab bar, switch tab.
 		   If we don't do it, a gray space appears on the content area
@@ -827,7 +829,9 @@ TreeStyleTabBrowser.prototype = {
 		tabContext.removeEventListener('popuphiding', this, false);
 
 		var allTabPopup = document.getAnonymousElementByAttribute(b.mTabContainer, 'anonid', 'alltabs-popup');
-		allTabPopup.removeEventListener('popupshowing', this, false);
+		if (allTabPopup) {
+			allTabPopup.removeEventListener('popupshowing', this, false);
+		}
 
 		if (this.tabbarCanvas) {
 			this.tabbarCanvas.parentNode.removeChild(this.tabbarCanvas);
