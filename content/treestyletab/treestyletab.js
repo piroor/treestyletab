@@ -1289,6 +1289,7 @@ catch(e) {
 		for (var i in funcs)
 		{
 			if (funcs[i] in window &&
+				window[funcs[i]] &&
 				/^function (gotoHistoryIndex|BrowserForward|BrowserBack)/.test(window[funcs[i]].toString()))
 				eval('window.'+funcs[i]+' = '+
 					window[funcs[i]].toSource().replace(
