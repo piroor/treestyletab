@@ -718,4 +718,14 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		});
 	}
 
+	// SBM Counter
+	if ('SBMCounter' in window) {
+		eval('SBMCounter.action = '+
+			SBMCounter.action.toSource().replace(
+				'gBrowser.selectedTab = gBrowser.addTab',
+				'TreeStyleTabService.readyToOpenChildTab(gBrowser); $&'
+			)
+		);
+	}
+
 };
