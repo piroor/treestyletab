@@ -1951,7 +1951,12 @@ TreeStyleTabBrowser.prototype = {
  
 	canDrop : function(aEvent, aDragSession) 
 	{
-		return this.getDropAction(aEvent, aDragSession).canDrop;
+		var dropAction = this.getDropAction(aEvent, aDragSession);
+		if ('dataTransfer' in aEvent && dropAction.action & this.kACTION_NEWTAB) {
+			var dt = aEvent.dataTransfer;
+			dt.effectAllowed = dt.dropEffect = 'link';
+		}
+		return dropAction.canDrop;
 	},
  
 	getSupportedFlavours : function() 
@@ -2035,9 +2040,11 @@ TreeStyleTabBrowser.prototype = {
 			};
 
 		var isTabMoveFromOtherWindow = aSourceTab && aSourceTab.ownerDocument != document;
+		var isNewTabAction = !aSourceTab || aSourceTab.ownerDocument != document;
 
 		if (tab.localName != 'tab') {
 			var action = isTabMoveFromOtherWindow ? this.kACTION_STAY : (this.kACTION_MOVE | this.kACTION_PART) ;
+			if (isNewTabAction) action |= this.kACTION_NEWTAB;
 			if (aEvent[this.positionProp] < tabs[0].boxObject[this.positionProp]) {
 				info.target   = info.parent = info.insertBefore = tabs[0];
 				info.position = isInverted ? this.kDROP_AFTER : this.kDROP_BEFORE ;
@@ -2132,6 +2139,8 @@ TreeStyleTabBrowser.prototype = {
 				}
 				break;
 		}
+
+		if (isNewTabAction) action |= this.kACTION_NEWTAB;
 
 		return info;
 	},

@@ -45,6 +45,7 @@ var TreeStyleTabService = {
 	kACTION_STAY      : 2,
 	kACTION_DUPLICATE : 4,
 	kACTION_IMPORT    : 8,
+	kACTION_NEWTAB    : 16,
 	kACTION_ATTACH    : 1024,
 	kACTION_PART      : 2048,
 	kACTIONS_FOR_SOURCE      : 1 | 2,
