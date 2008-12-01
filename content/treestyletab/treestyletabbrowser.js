@@ -19,7 +19,7 @@ TreeStyleTabBrowser.prototype = {
 	kMENUITEM_FIXED                    : 'context-item-toggleFixed',
 	kMENUITEM_POSITION                 : 'context-menu-tabbarPosition',
 	kMENUITEM_BOOKMARKSUBTREE          : 'context-item-bookmarkTabSubTree',
-	 
+	
 	mTabBrowser : null, 
 
 	tabbarResizing : false,
@@ -57,7 +57,7 @@ TreeStyleTabBrowser.prototype = {
 /* utils */ 
 	
 /* get tab contents */ 
-	 
+	
 	getTabLabel : function(aTab) 
 	{
 		var label = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-text-stack') || // Mac OS X
@@ -100,7 +100,7 @@ TreeStyleTabBrowser.prototype = {
 	},
   
 /* initialize */ 
-	 
+	
 	init : function() 
 	{
 		var b = this.mTabBrowser;
@@ -484,7 +484,7 @@ TreeStyleTabBrowser.prototype = {
 		this.ObserverService.addObserver(this, 'TreeStyleTab:collapseExpandAllSubtree', false);
 		this.addPrefListener(this);
 	},
-	 
+	
 	initTab : function(aTab) 
 	{
 		if (!aTab.hasAttribute(this.kID)) {
@@ -844,7 +844,7 @@ TreeStyleTabBrowser.prototype = {
 
 		delete this.mTabBrowser;
 	},
-	 
+	
 	destroyTab : function(aTab) 
 	{
 		delete aTab.__treestyletab__linkedTabBrowser;
@@ -1858,7 +1858,7 @@ TreeStyleTabBrowser.prototype = {
 	autoExpandTimer  : null,
 	autoExpandTarget : null,
 	autoExpandedTabs : [],
-	 
+	
 	onDragEnter : function(aEvent, aDragSession) 
 	{
 		var tab = aEvent.target;
@@ -2147,44 +2147,16 @@ TreeStyleTabBrowser.prototype = {
   
 	performDrop : function(aInfo, aDraggedTab) 
 	{
-		aDraggedTab = this.getTabFromChild(aDraggedTab);
+		var tabsInfo = this.getDraggedTabsInfoFromOneTab(aInfo, aDraggedTab);
+		aDraggedTab = tabsInfo.draggedTab;
+		var draggedTabs = tabsInfo.draggedTabs;
+		var draggedRoots = tabsInfo.draggedRoots;
 
 		var targetBrowser = this.mTabBrowser;
 		var tabs = targetBrowser.mTabContainer.childNodes;
 
-		var draggedTabs = [aDraggedTab];
-		var draggedRoots = [aDraggedTab];
-
 		var sourceWindow = aDraggedTab.ownerDocument.defaultView;
 		var sourceBrowser = this.getTabBrowserFromChild(aDraggedTab);
-
-		var isSelectionMove = (
-				'MultipleTabService' in sourceWindow &&
-				sourceWindow.MultipleTabService.isSelected(aDraggedTab) &&
-				MultipleTabService.allowMoveMultipleTabs
-			);
-
-		if (isSelectionMove) {
-			draggedTabs = sourceWindow.MultipleTabService.getSelectedTabs(sourceBrowser);
-			if (!(aInfo.action & this.kACTIONS_FOR_DESTINATION)) {
-				draggedRoots = [];
-				draggedTabs.forEach(function(aTab) {
-					var parent = aTab,
-						current;
-					do {
-						current = parent;
-						parent = sourceBrowser.treeStyleTab.getParentTab(parent)
-						if (parent && sourceWindow.MultipleTabService.isSelected(parent)) continue;
-						draggedRoots.push(current);
-						return;
-					}
-					while (parent);
-				}, this);
-			}
-		}
-		else if (aInfo.action & this.kACTIONS_FOR_DESTINATION) {
-			draggedTabs = draggedTabs.concat(sourceBrowser.treeStyleTab.getDescendantTabs(aDraggedTab));
-		}
 
 		if (aInfo.action & this.kACTIONS_FOR_SOURCE) {
 			if (aInfo.action & this.kACTION_PART) {
@@ -2228,7 +2200,7 @@ TreeStyleTabBrowser.prototype = {
 			var tab = aTab;
 			if (aInfo.action & this.kACTIONS_FOR_DESTINATION) {
 				var parent = sourceBrowser.treeStyleTab.getParentTab(aTab);
-				if (isSelectionMove)
+				if (tabsInfo.isSelectionMove)
 					sourceWindow.MultipleTabService.setSelection(aTab, false);
 				if (aInfo.action & this.kACTION_IMPORT &&
 					'swapBrowsersAndCloseOther' in targetBrowser) {
@@ -2246,7 +2218,7 @@ TreeStyleTabBrowser.prototype = {
 						oldTabs.push(aTab);
 				}
 				newTabs.push(tab);
-				if (isSelectionMove)
+				if (tabsInfo.isSelectionMove)
 					MultipleTabService.setSelection(tab, true);
 				if (!parent || draggedTabs.indexOf(parent) < 0)
 					newRoots.push(tab);
@@ -2286,6 +2258,56 @@ TreeStyleTabBrowser.prototype = {
 		return true;
 	},
 	
+	getDraggedTabsInfoFromOneTab : function(aInfo, aTab) 
+	{
+		aTab = this.getTabFromChild(aTab);
+
+		var targetBrowser = this.mTabBrowser;
+		var tabs = targetBrowser.mTabContainer.childNodes;
+
+		var draggedTabs = [aTab];
+		var draggedRoots = [aTab];
+
+		var sourceWindow = aTab.ownerDocument.defaultView;
+		var sourceBrowser = this.getTabBrowserFromChild(aTab);
+
+
+		var isSelectionMove = (
+				'MultipleTabService' in sourceWindow &&
+				sourceWindow.MultipleTabService.isSelected(aTab) &&
+				MultipleTabService.allowMoveMultipleTabs
+			);
+
+		if (isSelectionMove) {
+			draggedTabs = sourceWindow.MultipleTabService.getSelectedTabs(sourceBrowser);
+			if (!(aInfo.action & this.kACTIONS_FOR_DESTINATION)) {
+				draggedRoots = [];
+				draggedTabs.forEach(function(aTab) {
+					var parent = aTab,
+						current;
+					do {
+						current = parent;
+						parent = sourceBrowser.treeStyleTab.getParentTab(parent)
+						if (parent && sourceWindow.MultipleTabService.isSelected(parent)) continue;
+						draggedRoots.push(current);
+						return;
+					}
+					while (parent);
+				}, this);
+			}
+		}
+		else if (aInfo.action & this.kACTIONS_FOR_DESTINATION) {
+			draggedTabs = draggedTabs.concat(sourceBrowser.treeStyleTab.getDescendantTabs(aTab));
+		}
+
+		return {
+			draggedTab      : aTab,
+			draggedTabs     : draggedTabs,
+			draggedRoots    : draggedRoots,
+			isSelectionMove : isSelectionMove
+		};
+	},
+ 
 	attachTabsOnDrop : function(aTabs, aParent) 
 	{
 		this.mTabBrowser.movingSelectedTabs = true; // Multiple Tab Handler
@@ -2323,7 +2345,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 		w.close();
 	},
-  	
+  
 	clearDropPosition : function() 
 	{
 		var b = this.mTabBrowser;
@@ -2650,7 +2672,7 @@ TreeStyleTabBrowser.prototype = {
 	},
   
 /* collapse/expand */ 
-	 
+	
 	collapseExpandSubtree : function(aTab, aCollapse) 
 	{
 		if (!aTab) return;
@@ -2769,7 +2791,7 @@ TreeStyleTabBrowser.prototype = {
 	},
   
 /* scroll */ 
-	 
+	
 	scrollTo : function(aEndX, aEndY) 
 	{
 		if (this.getTreePref('tabbar.scroll.smooth')) {
@@ -2783,7 +2805,7 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 	},
-	 
+	
 	smoothScrollTo : function(aEndX, aEndY) 
 	{
 		var b = this.mTabBrowser;
@@ -3112,7 +3134,7 @@ TreeStyleTabBrowser.prototype = {
 		}, 0, this);
 	},
 	showHideTabbarReason : 0,
-	 
+	
 	showTabbar : function(aReason) 
 	{
 		if (!this.autoHideShown)
@@ -3437,7 +3459,7 @@ TreeStyleTabBrowser.prototype = {
 				);
 	},
 	showHideTabbarOnMousemoveTimer : null,
-	 
+	
 	cancelShowHideTabbarOnMousemove : function() 
 	{
 		if (this.showHideTabbarOnMousemoveTimer) {
@@ -3480,7 +3502,7 @@ TreeStyleTabBrowser.prototype = {
 			this
 		);
 	},
-	 
+	
 	cancelHideTabbarForFeedback : function() 
 	{
 		if (this.delayedHideTabbarForFeedbackTimer) {

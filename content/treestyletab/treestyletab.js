@@ -862,6 +862,22 @@ var TreeStyleTabService = {
 
 		window.addEventListener('SSTabRestoring', this, true);
 
+		if ('swapBrowsersAndCloseOther' in document.getElementById('content')) {
+			var source = window.BrowserStartup.toSource();
+			if (source.indexOf('!MultipleTabService.tearOffSelectedTabsFromRemote()') > -1) {
+				eval('window.BrowserStartup = '+source.replace(
+					'!MultipleTabService.tearOffSelectedTabsFromRemote()',
+					'!TreeStyleTabService.tearOffSubTreeFromRemote() && $&'
+				));
+			}
+			else {
+				eval('window.BrowserStartup = '+source.replace(
+					'gBrowser.swapBrowsersAndCloseOther(gBrowser.selectedTab, uriToLoad);',
+					'if (!TreeStyleTabService.tearOffSubTreeFromRemote()) { $& }'
+				));
+			}
+		}
+
 		this.overrideExtensionsPreInit(); // hacks.js
 	},
 	preInitialized : false,
@@ -1915,6 +1931,36 @@ catch(e) {
 		this._collapseExpandPostProcess.push(aProcess);
 	},
 	_collapseExpandPostProcess : [],
+ 
+	tearOffSubTreeFromRemote : function() 
+	{
+		var remoteTab = window.arguments[0];
+		var remoteWindow  = remoteTab.ownerDocument.defaultView;
+		var remoteService = remoteWindow.TreeStyleTabService;
+		var remoteMultipleTabService = remoteWindow.MultipleTabService;
+		if (remoteService.hasChildTabs(remoteTab) ||
+			remoteMultipleTabService.isSelected(remoteTab)) {
+			var remoteBrowser = remoteService.getTabBrowserFromChild(remoteTab);
+			var actionInfo = {
+					action : this.kACTIONS_FOR_DESTINATION | this.kACTION_IMPORT
+				};
+			var tabsInfo = remoteBrowser.treeStyleTab.getDraggedTabsInfoFromOneTab(actionInfo, remoteTab);
+			if (tabsInfo.draggedTabs.length == remoteBrowser.mTabContainer.childNodes.length) {
+				window.close();
+			}
+			else {
+				window.setTimeout(function() {
+					var blankTab = gBrowser.selectedTab;
+					gBrowser.treeStyleTab.performDrop(actionInfo, remoteTab);
+					window.setTimeout(function() {
+						gBrowser.removeTab(blankTab);
+					}, 0);
+				}, 0);
+			}
+			return true;
+		}
+		return false;
+	},
   
 /* Pref Listener */ 
 	
