@@ -404,6 +404,13 @@ TreeStyleTabBrowser.prototype = {
 			)
 		);
 
+		if ('_onDragEnd' in b) {
+			eval('b._onDragEnd = '+b._onDragEnd.toSource().replace(
+				'this._replaceTabWithWindow(',
+				'if (this.treeStyleTab.isDraggingAllTabs(draggedTab)) return; $&'
+			));
+		}
+
 		var tabs = b.mTabContainer.childNodes;
 		for (var i = 0, maxi = tabs.length; i < maxi; i++)
 		{
@@ -2357,6 +2364,15 @@ TreeStyleTabBrowser.prototype = {
 		{
 			xpathResult.snapshotItem(i).removeAttribute(this.kDROP_POSITION);
 		}
+	},
+ 
+	isDraggingAllTabs : function(aTab) 
+	{
+		var actionInfo = {
+				action : this.kACTIONS_FOR_DESTINATION | this.kACTION_IMPORT
+			};
+		var tabsInfo = this.getDraggedTabsInfoFromOneTab(actionInfo, aTab);
+		return tabsInfo.draggedTabs.length == this.mTabBrowser.mTabContainer.childNodes.length;
 	},
   
 /* commands */ 

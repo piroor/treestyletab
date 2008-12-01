@@ -1941,14 +1941,13 @@ catch(e) {
 		if (remoteService.hasChildTabs(remoteTab) ||
 			remoteMultipleTabService.isSelected(remoteTab)) {
 			var remoteBrowser = remoteService.getTabBrowserFromChild(remoteTab);
-			var actionInfo = {
-					action : this.kACTIONS_FOR_DESTINATION | this.kACTION_IMPORT
-				};
-			var tabsInfo = remoteBrowser.treeStyleTab.getDraggedTabsInfoFromOneTab(actionInfo, remoteTab);
-			if (tabsInfo.draggedTabs.length == remoteBrowser.mTabContainer.childNodes.length) {
+			if (remoteBrowser.treeStyleTab.isDraggingAllTabs(remoteTab)) {
 				window.close();
 			}
 			else {
+				var actionInfo = {
+						action : this.kACTIONS_FOR_DESTINATION | this.kACTION_IMPORT
+					};
 				window.setTimeout(function() {
 					var blankTab = gBrowser.selectedTab;
 					gBrowser.treeStyleTab.performDrop(actionInfo, remoteTab);
