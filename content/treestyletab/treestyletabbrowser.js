@@ -411,6 +411,14 @@ TreeStyleTabBrowser.prototype = {
 			));
 		}
 
+		// https://bugzilla.mozilla.org/show_bug.cgi?id=406216
+		if ('_beginRemoveTab' in b) {
+			eval('b._beginRemoveTab = '+b._beginRemoveTab.toSource().replace(
+				'for (let i = 0; i < l; ++i) {',
+				'l = this.mTabs.length; $&'
+			));
+		}
+
 		var tabs = b.mTabContainer.childNodes;
 		for (var i = 0, maxi = tabs.length; i < maxi; i++)
 		{
