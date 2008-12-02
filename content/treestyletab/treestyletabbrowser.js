@@ -429,6 +429,7 @@ TreeStyleTabBrowser.prototype = {
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.twisty.style');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.showBorderForFirstTab');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.invertScrollbar');
+		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.hideNewTabButton');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.hideAlltabsButton');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.allowSubtreeCollapseExpand');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.fixed');
@@ -954,6 +955,14 @@ TreeStyleTabBrowser.prototype = {
 							b.setAttribute(this.kSCROLLBAR_INVERTED, true);
 						else
 							b.removeAttribute(this.kSCROLLBAR_INVERTED);
+						break;
+
+					case 'extensions.treestyletab.tabbar.hideNewTabButton':
+						var pos = b.getAttribute(this.kTABBAR_POSITION);
+						if (value && (pos == 'left' || pos == 'right'))
+							b.setAttribute(this.kHIDE_NEWTAB, true);
+						else
+							b.removeAttribute(this.kHIDE_NEWTAB);
 						break;
 
 					case 'extensions.treestyletab.tabbar.hideAlltabsButton':

@@ -14,6 +14,7 @@
 <!ENTITY config.tabbar.invertUI         "左右反轉分頁外觀">
 <!ENTITY config.enableSubtreeIndent         "縮進分頁">
 <!ENTITY config.allowSubtreeCollapseExpand  "允許摺疊 / 展開樹狀子目錄">
+<!ENTITY config.tabbar.hideNewTabButton     "Show &quot;Open a new tab&quot; button">
 <!ENTITY config.tabbar.hideAlltabsButton    "顯示「列出所有分頁」按鈕">
 
 <!ENTITY config.tabbar.style.caption "分頁工具列的外觀">

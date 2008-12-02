@@ -14,6 +14,7 @@
 <!ENTITY config.tabbar.invertUI         "Invertir apariencia de pestaña">
 <!ENTITY config.enableSubtreeIndent         "Añadir margen a las pestañas">
 <!ENTITY config.allowSubtreeCollapseExpand  "Permitir colapsar/expandir los sub-árboles de las pestañas">
+<!ENTITY config.tabbar.hideNewTabButton     "Show &quot;Open a new tab&quot; button">
 <!ENTITY config.tabbar.hideAlltabsButton    "Mostrar el botón &quot;Listar todas las pestañas&quot;">
 
 <!ENTITY config.tabbar.style.caption "Apariencia de la barra de pestañas">

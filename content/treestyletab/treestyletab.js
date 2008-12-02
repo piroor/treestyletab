@@ -14,6 +14,7 @@ var TreeStyleTabService = {
 	kUI_INVERTED        : 'treestyletab-appearance-inverted',
 	kSCROLLBAR_INVERTED : 'treestyletab-scrollbar-inverted',
 	kALLOW_COLLAPSE     : 'treestyletab-allow-subtree-collapse',
+	kHIDE_NEWTAB        : 'treestyletab-hide-newtab-button',
 	kHIDE_ALLTABS       : 'treestyletab-hide-alltabs-button',
 	kSTYLE              : 'treestyletab-style',
 	kTWISTY_STYLE       : 'treestyletab-twisty-style',

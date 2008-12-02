@@ -14,6 +14,7 @@
 <!ENTITY config.tabbar.invertUI         "反转标签外观">
 <!ENTITY config.enableSubtreeIndent         "缩进标签">
 <!ENTITY config.allowSubtreeCollapseExpand  "允许折叠/展开标签子树">
+<!ENTITY config.tabbar.hideNewTabButton     "Show &quot;Open a new tab&quot; button">
 <!ENTITY config.tabbar.hideAlltabsButton    "显示 &quot;列出所有标签&quot; 按钮">
 
 <!ENTITY config.tabbar.style.caption "标签栏外观">

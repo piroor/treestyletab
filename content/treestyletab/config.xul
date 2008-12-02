@@ -29,6 +29,10 @@
 		<preference id="extensions.treestyletab.allowSubtreeCollapseExpand"
 			name="extensions.treestyletab.allowSubtreeCollapseExpand"
 			type="bool"/>
+		<preference id="extensions.treestyletab.tabbar.hideNewTabButton"
+			name="extensions.treestyletab.tabbar.hideNewTabButton"
+			type="bool"
+			inverted="true"/>
 		<preference id="extensions.treestyletab.tabbar.hideAlltabsButton"
 			name="extensions.treestyletab.tabbar.hideAlltabsButton"
 			type="bool"
@@ -97,9 +101,14 @@
 			<checkbox id="extensions.treestyletab.allowSubtreeCollapseExpand-check"
 				preference="extensions.treestyletab.allowSubtreeCollapseExpand"
 				label="&config.allowSubtreeCollapseExpand;"/>
+		</hbox>
+		<hbox align="center">
 			<checkbox id="extensions.treestyletab.enableSubtreeIndent-check"
 				preference="extensions.treestyletab.enableSubtreeIndent"
 				label="&config.enableSubtreeIndent;"/>
+			<checkbox id="extensions.treestyletab.tabbar.hideNewTabButton-check"
+				preference="extensions.treestyletab.tabbar.hideNewTabButton"
+				label="&config.tabbar.hideNewTabButton;"/>
 			<checkbox id="extensions.treestyletab.tabbar.hideAlltabsButton-check"
 				preference="extensions.treestyletab.tabbar.hideAlltabsButton"
 				label="&config.tabbar.hideAlltabsButton;"/>
