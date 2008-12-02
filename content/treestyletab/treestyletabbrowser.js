@@ -1959,9 +1959,11 @@ TreeStyleTabBrowser.prototype = {
 	canDrop : function(aEvent, aDragSession) 
 	{
 		var dropAction = this.getDropAction(aEvent, aDragSession);
-		if ('dataTransfer' in aEvent && dropAction.action & this.kACTION_NEWTAB) {
+		if ('dataTransfer' in aEvent) {
 			var dt = aEvent.dataTransfer;
-			dt.effectAllowed = dt.dropEffect = 'link';
+			if (dropAction.action & this.kACTION_NEWTAB) {
+				dt.effectAllowed = dt.dropEffect = 'move';
+			}
 		}
 		return dropAction.canDrop;
 	},
@@ -1969,6 +1971,7 @@ TreeStyleTabBrowser.prototype = {
 	getSupportedFlavours : function() 
 	{
 		var flavourSet = new FlavourSet();
+		flavourSet.appendFlavour('application/x-moz-tabbrowser-tab');
 		flavourSet.appendFlavour('text/x-moz-url');
 		flavourSet.appendFlavour('text/unicode');
 		flavourSet.appendFlavour('text/plain');

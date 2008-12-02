@@ -943,7 +943,7 @@ var TreeStyleTabService = {
 			).replace( // Tab Mix Plus
 				/\.height/g, '[TreeStyleTabService.getTabBrowserFromChild(TSTTabBrowser).treeStyleTab.invertedSizeProp]'
 			).replace(
-				/(return true;)/,
+				/(return (?:true|dt.effectAllowed = "copyMove");)/,
 				<><![CDATA[
 					if (!(function(aSelf) {
 try{
@@ -1033,7 +1033,7 @@ catch(e) {
 				/TST_DRAGDROP_DISALLOW_CHECK/g,
 				(canDropFunctionName == 'canDrop' ?
 					'!aSelf.canDrop(aEvent, aDragSession)' :
-					'aSelf._setEffectAllowedForDataTransfer == "none"'
+					'aSelf._setEffectAllowedForDataTransfer(aEvent) == "none"'
 				)
 			)
 		);
@@ -1939,7 +1939,7 @@ catch(e) {
 		var remoteService = remoteWindow.TreeStyleTabService;
 		var remoteMultipleTabService = remoteWindow.MultipleTabService;
 		if (remoteService.hasChildTabs(remoteTab) ||
-			remoteMultipleTabService.isSelected(remoteTab)) {
+			(remoteMultipleTabService && remoteMultipleTabService.isSelected(remoteTab))) {
 			var remoteBrowser = remoteService.getTabBrowserFromChild(remoteTab);
 			if (remoteBrowser.treeStyleTab.isDraggingAllTabs(remoteTab)) {
 				window.close();
