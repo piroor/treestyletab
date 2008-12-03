@@ -1681,16 +1681,10 @@ TreeStyleTabBrowser.prototype = {
 			this.collapseExpandSubtree(tab, tab.getAttribute(this.kSUBTREE_COLLAPSED) != 'true');
 		}
 		else if (!this.getTabFromEvent(aEvent)) {
-			var clickedPoint = aEvent[this.positionProp];
-			Array.slice(this.mTabBrowser.mTabContainer.childNodes).some(function(aTab) {
-				var box = aTab.boxObject;
-				if (box[this.positionProp] > clickedPoint ||
-					box[this.positionProp] + box[this.sizeProp] < clickedPoint) {
-					return false;
-				}
+			var tab = this.getTabFromTabbarEvent(aEvent);
+			if (tab) {
 				this.mTabBrowser.selectedTab = aTab;
-				return true;
-			}, this);
+			}
 		}
 		else {
 			return;
@@ -1698,6 +1692,21 @@ TreeStyleTabBrowser.prototype = {
 
 		aEvent.preventDefault();
 		aEvent.stopPropagation();
+	},
+	getTabFromTabbarEvent : function(aEvent)
+	{
+		var tab = null;
+		var clickedPoint = aEvent[this.positionProp];
+		Array.slice(this.mTabBrowser.mTabContainer.childNodes).some(function(aTab) {
+			var box = aTab.boxObject;
+			if (box[this.positionProp] > clickedPoint ||
+				box[this.positionProp] + box[this.sizeProp] < clickedPoint) {
+				return false;
+			}
+			tab = aTab;
+			return true;
+		}, this);
+		return tab;
 	},
  
 	onTabMouseDown : function(aEvent) 
