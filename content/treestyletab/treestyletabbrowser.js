@@ -1682,9 +1682,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 		else if (!this.getTabFromEvent(aEvent)) {
 			var tab = this.getTabFromTabbarEvent(aEvent);
-			if (tab) {
-				this.mTabBrowser.selectedTab = aTab;
-			}
+			if (tab) this.mTabBrowser.selectedTab = tab;
 		}
 		else {
 			return;
