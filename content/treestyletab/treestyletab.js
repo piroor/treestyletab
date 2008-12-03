@@ -879,6 +879,18 @@ var TreeStyleTabService = {
 			}
 		}
 
+		eval('nsBrowserAccess.prototype.openURI = '+
+			nsBrowserAccess.prototype.openURI.toSource().replace(
+				/(switch\s*\(aWhere\))/,
+				<><![CDATA[
+					if (aOpener &&
+						aWhere == Components.interfaces.nsIBrowserDOMWindow.OPEN_NEWTAB) {
+						TreeStyleTabService.readyToOpenChildTab(aOpener);
+					}
+					$1]]></>
+			)
+		);
+
 		this.overrideExtensionsPreInit(); // hacks.js
 	},
 	preInitialized : false,
@@ -1338,20 +1350,6 @@ catch(e) {
 		if ('permaTabs' in window &&
 			'window.BrowserHomeClick' in permaTabs.utils.wrappedFunctions)
 			overwriteProcess('permaTabs.utils.wrappedFunctions["window.BrowserHomeClick"]');
-
-		eval('nsBrowserAccess.prototype.openURI = '+
-			nsBrowserAccess.prototype.openURI.toSource().replace(
-				/(switch\s*\(aWhere\))/,
-				<><![CDATA[
-					if (aOpener &&
-						aWhere == Components.interfaces.nsIBrowserDOMWindow.OPEN_NEWTAB) {
-						TreeStyleTabService.readyToOpenChildTab(aOpener);
-					}
-					$1]]></>
-			)
-		);
-		window.QueryInterface(Components.interfaces.nsIDOMChromeWindow).browserDOMWindow = null;
-		window.QueryInterface(Components.interfaces.nsIDOMChromeWindow).browserDOMWindow = new nsBrowserAccess();
 
 		eval('FeedHandler.loadFeed = '+
 			FeedHandler.loadFeed.toSource().replace(
