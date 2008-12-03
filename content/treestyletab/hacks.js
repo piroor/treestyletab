@@ -728,4 +728,14 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		);
 	}
 
+	// Aging Tabs
+	if ('agingTabs' in window) {
+		eval('agingTabs.setColor = '+
+			agingTabs.setColor.toSource().replace(
+				'{',
+				'{ important = true;'
+			)
+		);
+	}
+
 };
