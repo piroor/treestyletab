@@ -1088,11 +1088,11 @@ catch(e) {
 						return;
 					$1]]></>
 			).replace( // Firefox 3, duplication of tab
-				/(this.selectedTab = newTab;(\s*\})?)/g,
+				/(this.selectedTab = newTab;)(\s*\})?/g,
 				<><![CDATA[$1;
 					if (dropActionInfo.position == TreeStyleTabService.kDROP_ON)
 						TSTTabBrowser.treeStyleTab.attachTabTo(newTab, dropActionInfo.target);
-				]]></>
+				$2]]></>
 			).replace( // Firefox 3, dragging tab from another window
 				'else if (draggedTab) {',
 				<><![CDATA[$&
