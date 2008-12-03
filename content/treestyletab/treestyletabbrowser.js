@@ -2003,7 +2003,11 @@ TreeStyleTabBrowser.prototype = {
 		if ('dataTransfer' in aEvent) {
 			var dt = aEvent.dataTransfer;
 			if (dropAction.action & this.kACTION_NEWTAB) {
-				dt.effectAllowed = dt.dropEffect = 'move';
+				dt.effectAllowed = dt.dropEffect = (
+					!dropAction.source ? 'link' :
+					this.isAccelKeyPressed(aEvent) ? 'copy' :
+					'move'
+				);
 			}
 		}
 		return dropAction.canDrop;
@@ -2036,6 +2040,7 @@ TreeStyleTabBrowser.prototype = {
 		var tab = aDragSession ? this.getTabFromChild(aDragSession.sourceNode) : null ;
 		var info = this.getDropActionInternal(aEvent, tab);
 		info.canDrop = true;
+		info.source = tab;
 		if (tab) {
 			var isCopy = this.isAccelKeyPressed(aEvent);
 			if (isCopy && 'duplicateTab' in this.mTabBrowser) {
