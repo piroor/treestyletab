@@ -92,6 +92,7 @@ var TreeStyleTabService = {
 	kINSERT_LAST  : 1,
 
 	baseLebelMargin : 12,
+	shouldDetectClickOnIndentSpaces : true,
 
 	NSResolver : {
 		lookupNamespaceURI : function(aPrefix)
@@ -926,6 +927,7 @@ var TreeStyleTabService = {
 
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.levelMargin');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.autoHide.mode');
+		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.clickOnIndentSpaces.enabled');
 		this.observe(null, 'nsPref:changed', 'browser.link.open_newwindow.restriction.override');
 		this.observe(null, 'nsPref:changed', 'browser.tabs.loadFolderAndReplace.override');
 	},
@@ -2025,6 +2027,10 @@ catch(e) {
 			case 'browser.tabs.loadFolderAndReplace.override':
 				var target = aPrefName.replace('.override', '');
 				this.setPref(target, this.getPref(aPrefName));
+				break;
+
+			case 'extensions.treestyletab.clickOnIndentSpaces.enabled':
+				this.shouldDetectClickOnIndentSpaces = this.getPref(aPrefName);
 				break;
 
 			default:

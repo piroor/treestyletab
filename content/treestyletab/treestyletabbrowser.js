@@ -1693,6 +1693,8 @@ TreeStyleTabBrowser.prototype = {
 	},
 	getTabFromTabbarEvent : function(aEvent)
 	{
+		if (!this.shouldDetectClickOnIndentSpaces) return null;
+
 		var tab = null;
 		var clickedPoint = aEvent[this.positionProp];
 		Array.slice(this.mTabBrowser.mTabContainer.childNodes).some(function(aTab) {
