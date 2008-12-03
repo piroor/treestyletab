@@ -1674,12 +1674,27 @@ TreeStyleTabBrowser.prototype = {
  
 	onTabClick : function(aEvent) 
 	{
-		if (aEvent.button != 0 ||
-			!this.isEventFiredOnTwisty(aEvent))
-			return;
+		if (aEvent.button != 0) return;
 
-		var tab = this.getTabFromEvent(aEvent);
-		this.collapseExpandSubtree(tab, tab.getAttribute(this.kSUBTREE_COLLAPSED) != 'true');
+		if (this.isEventFiredOnTwisty(aEvent)) {
+			var tab = this.getTabFromEvent(aEvent);
+			this.collapseExpandSubtree(tab, tab.getAttribute(this.kSUBTREE_COLLAPSED) != 'true');
+		}
+		else if (!this.getTabFromEvent(aEvent)) {
+			var clickedPoint = aEvent[this.positionProp];
+			Array.slice(this.mTabBrowser.mTabContainer.childNodes).some(function(aTab) {
+				var box = aTab.boxObject;
+				if (box[this.positionProp] > clickedPoint ||
+					box[this.positionProp] + box[this.sizeProp] < clickedPoint) {
+					return false;
+				}
+				this.mTabBrowser.selectedTab = aTab;
+				return true;
+			}, this);
+		}
+		else {
+			return;
+		}
 
 		aEvent.preventDefault();
 		aEvent.stopPropagation();
