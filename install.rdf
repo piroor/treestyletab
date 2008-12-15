@@ -16,6 +16,7 @@
   <em:translator>tito (es-ES locale)</em:translator>
   <em:translator>Andy Pillip (de-DE locale)</em:translator>
   <em:translator>HkYtrewq (zh-TW locale)</em:translator>
+  <em:translator>L'Autour (ru-RU locale)</em:translator>
   <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
 
 
@@ -34,6 +35,7 @@
 		  <em:translator>tito (es-ES locale)</em:translator>
 		  <em:translator>Andy Pillip (de-DE locale)</em:translator>
 		  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
+		  <em:translator>L'Autour (ru-RU locale)</em:translator>
 		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
       </RDF:Description>
     </em:localized>
@@ -48,6 +50,7 @@
 		  <em:translator>tito (es-ES locale)</em:translator>
 		  <em:translator>Andy Pillip (de-DE locale)</em:translator>
 		  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
+		  <em:translator>L'Autour (ru-RU locale)</em:translator>
 		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
       </RDF:Description>
     </em:localized>
@@ -62,6 +65,7 @@
 		  <em:translator>tito (es-ES locale)</em:translator>
 		  <em:translator>Andy Pillip (de-DE locale)</em:translator>
 		  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
+		  <em:translator>L'Autour (ru-RU locale)</em:translator>
 		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
       </RDF:Description>
     </em:localized>
@@ -76,6 +80,7 @@
 		  <em:translator>tito (es-ES locale)</em:translator>
 		  <em:translator>Andy Pillip (de-DE locale)</em:translator>
 		  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
+		  <em:translator>L'Autour (ru-RU locale)</em:translator>
 		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
       </RDF:Description>
     </em:localized>
@@ -90,6 +95,7 @@
 		  <em:translator>tito (es-ES locale)</em:translator>
 		  <em:translator>Andy Pillip (de-DE locale)</em:translator>
 		  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
+		  <em:translator>L'Autour (ru-RU locale)</em:translator>
 		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
       </RDF:Description>
     </em:localized>
@@ -104,6 +110,7 @@
 		  <em:translator>tito (es-ES locale)</em:translator>
 		  <em:translator>Andy Pillip (de-DE locale)</em:translator>
 		  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
+		  <em:translator>L'Autour (ru-RU locale)</em:translator>
 		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
       </RDF:Description>
     </em:localized>
@@ -118,6 +125,22 @@
 		  <em:translator>tito (es-ES locale)</em:translator>
 		  <em:translator>Andy Pillip (de-DE locale)</em:translator>
 		  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
+		  <em:translator>L'Autour (ru-RU locale)</em:translator>
+		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
+      </RDF:Description>
+    </em:localized>
+    <em:localized>
+      <RDF:Description em:locale="ru-RU"
+                       em:name="Tree Style Tab (Древовидный стиль вкладок)"
+                       em:description="Отображение вкладок в виде дерева"
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
+                       em:creator="SHIMODA Hiroshi">
+		  <em:translator>Godai71.Extenzilla (it-IT locale)</em:translator>
+		  <em:translator>Fatiaomao (zh-CN locale)</em:translator>
+		  <em:translator>tito (es-ES locale)</em:translator>
+		  <em:translator>Andy Pillip (de-DE locale)</em:translator>
+		  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
+		  <em:translator>L'Autour (ru-RU locale)</em:translator>
 		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
       </RDF:Description>
     </em:localized>

@@ -1,0 +1,140 @@
+<!ENTITY config.title        "Настройки древовидного стиля вкладок">
+
+
+<!ENTITY config.tabs.appearance "Внешний вид">
+
+<!ENTITY config.tabbar.scroll.smooth "Плавная прокрутка панели вкладок">
+
+<!ENTITY config.tabbar.position.caption "Расположение панели вкладок">
+<!ENTITY config.tabbar.position.left    "Слева">
+<!ENTITY config.tabbar.position.right   "Справа">
+<!ENTITY config.tabbar.position.top     "Сверху (в Firefox по умолчанию)">
+<!ENTITY config.tabbar.position.bottom  "Снизу">
+<!ENTITY config.tabbar.invertScrollbar  "Показывать скроллинг у левого края">
+<!ENTITY config.tabbar.invertUI         "Инвертировать вид вкладок">
+<!ENTITY config.enableSubtreeIndent         "Отступы вкладок">
+<!ENTITY config.allowSubtreeCollapseExpand  "Разрешить сворачивать/разворачивать поддеревья вкладок">
+<!ENTITY config.tabbar.hideNewTabButton     "Показывать кнопку &quot;Открыть новую вкладку&quot;">
+<!ENTITY config.tabbar.hideAlltabsButton    "Показывать кнопку &quot;Список всех вкладок&quot;">
+
+<!ENTITY config.tabbar.style.caption "Вид вкладок на панели">
+<!ENTITY config.tabbar.style.default "Плоские кнопки">
+<!ENTITY config.tabbar.style.vertigo "С подсветкой">
+<!ENTITY config.tabbar.style.mixed   "Смешанный">
+<!ENTITY config.tabbar.style.none    "По умолчанию (определяется темой)">
+
+<!ENTITY config.twisty.style.caption "Вид узлов дерева">
+<!ENTITY config.twisty.style.auto    "Авто">
+<!ENTITY config.twisty.style.none    "Нет">
+<!ENTITY config.twisty.style.retro   "Ретро">
+<!ENTITY config.twisty.style.modern.black "Черный новый">
+<!ENTITY config.twisty.style.modern.white "Белый новый">
+
+
+<!ENTITY config.tabs.menu "Меню">
+
+<!ENTITY config.show.tabContextMenu.caption "Добавить следующие элементы в контекстное меню вкладок">
+<!ENTITY config.show.openSelectionLinks "Добавить &quot;Открыть выбранные ссылки во вкладках&quot; в контекстное меню">
+
+
+<!ENTITY config.tabs.tab "Операции с вкладками">
+
+<!ENTITY config.tabs.context.tab      "Действия при открытии вкладок">
+
+<!ENTITY config.link.caption           "Ссылки">
+<!ENTITY config.openOuterLinkInNewTab  "Открывать ссылки на другой сайт в новой вкладке">
+<!ENTITY config.openAnyLinkInNewTab    "Открывать все ссылки в новой вкладке">
+
+<!ENTITY config.urlbar.caption                      "Действие для введенного URI в строке адреса">
+<!ENTITY config.urlbar.loadDifferentDomainToNewTab  "Загружать в новой вкладке если ведут на другой сайт">
+<!ENTITY config.urlbar.loadDifferentDomainToNewTab.asChild  "Как дочернюю от текущей вкладки">
+<!ENTITY config.urlbar.loadSameDomainToNewChildTab  "Загружать в новой дочерней вкладке ведет на тот же сайт">
+
+<!ENTITY config.loadDroppedLinkToNewChildTab.caption "Действие при перетаскивании ссылок или URL-ов в имеющуюся вкладку">
+<!ENTITY config.loadDroppedLinkToNewChildTab.load    "Загрузить ссылку во вкладке (в Firefox по умолчанию)">
+<!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "Открыть ссылку в новой вкладке дочерней от текущей">
+
+<!ENTITY config.openGroupBookmarkAsTabSubTree.caption "&quot;Открытие во вкладках &quot; из папок закладок">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree "Открывать как поддерево (рекомендуется)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "Открывать как раздельные вкладки">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.replace "Заменить все вкладки страницами из папки (в Firefox по умолчанию)">
+
+<!ENTITY config.tabs.restriction.tab "Открытие вкладок вместо окон">
+
+<!ENTITY config.open_newwindow.caption "Открытие высплывающих окон">
+<!ENTITY config.open_newwindow.window  "Открывать как окно">
+<!ENTITY config.open_newwindow.tab     "Открывать как вкладку (по умочанию в Firefox)">
+
+<!ENTITY config.jsopen.caption "Открытие новых окон скриптами на страницах">
+<!ENTITY config.jsopen.default "Открывать как окно, когда используется специальная ширина, высота, и т.д. (по умолчанию в Firefox)">
+<!ENTITY config.jsopen.forcetab "Всегда открывать как вкладку вместо окна (рекомендуется)">
+
+
+<!ENTITY config.tabs.autohide "Автоскрытие/показ панели">
+
+<!ENTITY config.autoHide.mode.0 "Показывать панель вкладок всегда">
+<!ENTITY config.autoHide.mode.1 "Автоскрытие панели вкладок">
+<!ENTITY config.autoHide.mode.2 "Автосжатие панели вкладок">
+<!ENTITY config.autoShow.caption "Автоматически показывать панель вкладок при">
+<!ENTITY config.autoShow.mousemove "Перемещении мышки к краю окна">
+<!ENTITY config.autoHide.area.before "Область срабатывания:">
+<!ENTITY config.autoHide.area.after "пикселов от края окна">
+<!ENTITY config.autoShow.mousemove.mode2 "Перемещении мышки к краю панели вкладок">
+<!ENTITY config.autoHide.area.before.mode2 "Область срабатывания:">
+<!ENTITY config.autoHide.area.after.mode2 "пикселов от края панели вкладок">
+<!ENTITY config.autoHide.delay.before "Задержка:">
+<!ENTITY config.autoHide.delay.after "мсек.">
+<!ENTITY config.autoShow.accelKeyDown "Нажати и удержания кнопки Ctrl">
+<!ENTITY config.autoShow.accelKeyDown.delay.before "Показывать после">
+<!ENTITY config.autoShow.accelKeyDown.delay.after  "мсек.">
+<!ENTITY config.autoShow.tabSwitch   "Переключании вкладок через Ctrl+Tab ">
+<!ENTITY config.autoShow.feedback    "Закрытии вкладок или открытии новых">
+<!ENTITY config.autoShow.feedback.delay.before "Скрыть после">
+<!ENTITY config.autoShow.feedback.delay.after  "мсек.">
+
+<!ENTITY config.transparent.style.caption "Фон панели вкладок">
+<!ENTITY config.transparent.style.0 "Сплошной">
+<!ENTITY config.transparent.style.1 "Полупрозрачный">
+<!ENTITY config.transparent.style.2 "Прозрачный">
+
+
+<!ENTITY config.tabs.advanced "Дополнительно">
+
+<!ENTITY config.autoCollapseExpandSubTreeOnSelect "При открытии или выборе вкладки в поддереве, автоматически сворачивать другие поддеревья">
+<!ENTITY config.collapseExpandSubTree.dblclick "Сворачивать/разворачивать поддерево вкладок по двойному клику">
+
+<!ENTITY config.autoExpandSubTreeOnAppendChild "Разворачивать поддерево автоматически, когда вкладки вставляются в поддерево">
+
+<!ENTITY config.attachChildrenToGrandParentOnRemoveTab "Перенести дочерние вкладки в корень дерева, если родительская вкладка закрыта">
+
+<!ENTITY config.focusMode "Переходить по Ctrl+Tab на следующую/предыдущую вкладку, если очередная отсутствует">
+
+<!ENTITY config.insertNewChildAt.caption "Позиция вставки новых дочерних вкладок">
+<!ENTITY config.insertNewChildAt.first "Вставлять первой в начало поддерева">
+<!ENTITY config.insertNewChildAt.last "Добавлять в конце поддерева">
+
+
+
+
+
+<!ENTITY context.openSelectionLinks.label     "Открыть выбранные ссылки во вкладках">
+<!ENTITY context.openSelectionLinks.accesskey "l">
+
+<!ENTITY selection.removeTabSubTree.label     "Закрыть выбранные деревья">
+<!ENTITY selection.removeTabSubTree.accesskey "s">
+<!ENTITY context.removeTabSubTree.label     "Закрыть это дерево">
+<!ENTITY context.removeTabSubTree.accesskey "s">
+<!ENTITY context.removeDescendantTabs.label     "Закрыть дочерние вкладки">
+<!ENTITY context.removeDescendantTabs.accesskey "d">
+<!ENTITY context.collapseAllSubtree.label     "Свернуть все деревья">
+<!ENTITY context.collapseAllSubtree.accesskey "c">
+<!ENTITY context.expandAllSubtree.label     "Раскрыть все деревья">
+<!ENTITY context.expandAllSubtree.accesskey "e">
+<!ENTITY context.toggleAutoHide.label     "Автоскрытие панели вкладок">
+<!ENTITY context.toggleAutoHide.accesskey "h">
+<!ENTITY context.toggleFixed.label     "Зафиксировать ширину панели вкладок">
+<!ENTITY context.toggleFixed.accesskey "f">
+<!ENTITY context.tabbarPosition.label     "Позиция">
+<!ENTITY context.tabbarPosition.accesskey "p">
+<!ENTITY context.bookmarkTabSubTree.label     "Добавить это дерево в закладки...">
+<!ENTITY context.bookmarkTabSubTree.accesskey "t">
