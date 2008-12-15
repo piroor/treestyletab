@@ -366,6 +366,15 @@ var TreeStyleTabService = {
 			).singleNodeValue ? true : false ;
 	},
  
+	isEventFiredOnClickable : function(aEvent) 
+	{
+		return this.evaluateXPath(
+				'ancestor-or-self::*[contains(" button toolbarbutton ", concat(" ", local-name(), " "))]',
+				aEvent.originalTarget,
+				XPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue ? true : false ;
+	},
+ 
 	isAccelKeyPressed : function(aEvent) 
 	{
 		return navigator.platform.toLowerCase().indexOf('mac') > -1 ?
