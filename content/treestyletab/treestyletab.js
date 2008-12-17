@@ -369,7 +369,7 @@ var TreeStyleTabService = {
 	isEventFiredOnClickable : function(aEvent) 
 	{
 		return this.evaluateXPath(
-				'ancestor-or-self::*[contains(" button toolbarbutton ", concat(" ", local-name(), " "))]',
+				'ancestor-or-self::*[contains(" button toolbarbutton scrollbar popup menupopup tooltip ", concat(" ", local-name(), " "))]',
 				aEvent.originalTarget,
 				XPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue ? true : false ;
