@@ -1263,21 +1263,25 @@ catch(e) {
 						}) ? true : (TreeStyleTabService.readyToOpenChildTab(), false)
 					]]></>
 				).replace(
+					/* あらゆるリンクからタブを開く設定の時に、アクセルキーが押されていた場合は
+					   反転された動作（通常のリンク読み込み）を行う */
 					'return false;case 1:',
 					<><![CDATA[
 							if (!('TMP_contentAreaClick' in window) && // do nothing for Tab Mix Plus
 								TreeStyleTabService.checkToOpenChildTab()) {
 								TreeStyleTabService.stopToOpenChildTab();
-								if (linkNode)
-									urlSecurityCheck(href,
-										'nodePrincipal' in linkNode.ownerDocument ?
-											linkNode.ownerDocument.nodePrincipal :
-											linkNode.ownerDocument.location.href
-									);
-								var postData = {};
-								href = getShortcutOrURI(href, postData);
-								if (!href) return false;
-								loadURI(href, null, postData.value, false);
+								if (TreeStyleTabService.isAccelKeyPressed(event)) {
+									if (linkNode)
+										urlSecurityCheck(href,
+											'nodePrincipal' in linkNode.ownerDocument ?
+												linkNode.ownerDocument.nodePrincipal :
+												linkNode.ownerDocument.location.href
+										);
+									var postData = {};
+									href = getShortcutOrURI(href, postData);
+									if (!href) return false;
+									loadURI(href, null, postData.value, false);
+								}
 							}
 							return false;
 						case 1:
