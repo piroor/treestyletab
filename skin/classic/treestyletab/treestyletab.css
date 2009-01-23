@@ -457,7 +457,9 @@ tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox .tabs-newtab
 tabbrowser[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
 	border-width: 0 1px 1px 0 !important;
 }
-
+tabbrowser[treestyletab-mode="vertical"][treestyletab-style="vertigo"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
+	border-style: none !important;
+}
 
 
 /* transaprent tab bar */
