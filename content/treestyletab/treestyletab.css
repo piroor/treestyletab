@@ -39,6 +39,10 @@ tabbrowser:not([treestyletab-mode="horizontal"]) #alltabs-place-holder, /* Tab M
 tabbrowser:not([treestyletab-mode="horizontal"]) .tabs-scroll /* Tab Mix Plus */ {
 	display: none !important;
 }
+tabbrowser[treestyletab-hide-newtab-button="true"] .tabbrowser-arrowscrollbox .tabs-newtab-button /* "all tabs" button in Firefox 3 and 3.1 */ {
+	display: -moz-box !important;
+	visibility: collapse !important;
+}
 
 #appcontent {
 /*	position: relative;*/
