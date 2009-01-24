@@ -445,11 +445,13 @@ var TreeStyleTabService = {
 			.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
 			.getInterface(Components.interfaces.nsIWebNavigation)
 			.QueryInterface(Components.interfaces.nsIDocShell);
-		var tabs = b.mTabContainer.childNodes;
-		for (var i = 0, maxi = tabs.length; i < maxi; i++)
+		var tabs = this.getTabs(b);
+		var tab;
+		for (var i = 0, maxi = tabs.snapshotLength; i < maxi; i++)
 		{
-			if (tabs[i].linkedBrowser.docShell == docShell)
-				return tabs[i];
+			tab = tabs.snapshotItem(i);
+			if (tab.linkedBrowser.docShell == docShell)
+				return tab;
 		}
 		return null;
 	},
@@ -505,6 +507,25 @@ var TreeStyleTabService = {
 			frame = this.browser.contentWindow;
 
 		return frame;
+	},
+ 
+	getTabs : function(aTabBrowser) 
+	{
+		return this.evaluateXPath(
+				'descendant::xul:tab',
+				aTabBrowser.mTabContainer
+			);
+	},
+ 
+	getTabsArray : function(aTabBrowser) 
+	{
+		var tabs = this.getTabs(aTabBrowser);
+		var array = [];
+		for (var i = 0, maxi = tabs.snapshotLength; i < maxi)
+		{
+			array.push(tabs.snapshotItem(i));
+		}
+		return array;
 	},
  
 	makeNewId : function() 
@@ -569,6 +590,24 @@ var TreeStyleTabService = {
 				b.mTabContainer,
 				XPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
+	},
+ 
+	getNextTab : function(aTab) 
+	{
+		var xpathResult = this.evaluateXPath(
+				'following-sibling::xul:tab',
+				aTab
+			);
+		return xpathResult.snapshotItem(0);
+	},
+ 
+	getPreviousTab : function(aTab) 
+	{
+		var xpathResult = this.evaluateXPath(
+				'preceding-sibling::xul:tab',
+				aTab
+			);
+		return xpathResult.snapshotItem(xpathResult.snapshotLength-1);
 	},
  
 	getNextVisibleTab : function(aTab) 
@@ -661,7 +700,9 @@ var TreeStyleTabService = {
 			do {
 				next = next.nextSibling;
 			}
-			while (next && this.getParentTab(next));
+			while (next &&
+					next.nodeType == Node.ELEMENT_NODE &&
+					this.getParentTab(next));
 			return next;
 		}
 
@@ -688,7 +729,9 @@ var TreeStyleTabService = {
 			do {
 				prev = prev.previousSibling;
 			}
-			while (prev && this.getParentTab(prev));
+			while (prev &&
+					prev.nodeType == Node.ELEMENT_NODE &&
+					this.getParentTab(prev));
 			return prev;
 		}
 
@@ -1119,8 +1162,7 @@ catch(e) {
 				'!TreeStyleTabService.getTabFromEvent(aEvent)'
 			).replace(
 				'var tab = aEvent.target;',
-				<><![CDATA[
-					var tab = aEvent.target;
+				<><![CDATA[$&
 					if (
 						tab.getAttribute('locked') == 'true' || // Tab Mix Plus
 						TreeStyleTabService.getTreePref('loadDroppedLinkToNewChildTab') ||
@@ -1509,7 +1551,7 @@ catch(e) {
 
 		this.accelKeyPressed = this.isAccelKeyPressed(aEvent);
 		if (
-			b.mTabContainer.childNodes.length > 1 &&
+			this.getTabs(b).snapshotLength > 1 &&
 			!aEvent.altKey &&
 			this.accelKeyPressed
 			) {

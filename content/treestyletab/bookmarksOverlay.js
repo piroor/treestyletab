@@ -10,7 +10,7 @@ window.addEventListener('load', function() {
 					if (!doReplace &&
 						TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree') &&
 						!browser.treeStyleTab.parentTab) {
-						browser.treeStyleTab.partTab(browser.mTabContainer.childNodes[index]);
+						browser.treeStyleTab.partTab(browser.treeStyleTab.getTabs(browser).snapshotItem(index));
 						TreeStyleTabService.readyToOpenChildTab($1, true);
 					}
 				]]></>

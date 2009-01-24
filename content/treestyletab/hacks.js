@@ -539,7 +539,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 
 		window.setTimeout(function() {
 			// correct broken appearance of the first tab
-			var t = gBrowser.mTabContainer.firstChild;
+			var t = gBrowser.treeStyleTab.getTabs(gBrowser).snapshotItem(0);
 			gBrowser.treeStyleTab.initTabAttributes(t);
 			gBrowser.treeStyleTab.initTabContentsOrder(t);
 
