@@ -592,6 +592,15 @@ var TreeStyleTabService = {
 		return array;
 	},
  
+	getFirstTab : function(aTabBrowser) 
+	{
+		return this.evaluateXPath(
+				'descendant::xul:tab[1]',
+				aTabBrowser.mTabContainer,
+				XPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue;
+	},
+ 
 	getLastTab : function(aTabBrowser) 
 	{
 		return this.evaluateXPath(

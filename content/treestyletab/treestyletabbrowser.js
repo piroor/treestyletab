@@ -2650,7 +2650,7 @@ TreeStyleTabBrowser.prototype = {
 		var oldMargin = this.levelMargin;
 		var indent    = (oldMargin < 0 ? this.baseLebelMargin : oldMargin ) * nest;
 		var maxIndent = (
-				this.getTabs(b).snapshotItem(0).boxObject[this.invertedSizeProp] ||
+				this.getFirstTab(b).boxObject[this.invertedSizeProp] ||
 				b.mTabContainer.boxObject[this.invertedSizeProp]
 			) * 0.33;
 
@@ -3002,7 +3002,7 @@ TreeStyleTabBrowser.prototype = {
 		var tabSize           = lastVisible.boxObject[this.sizeProp];
 
 		if (lastPosition - parentPosition + tabSize > containerSize - tabSize) { // out of screen
-			var endPos = parentPosition - this.getTabs(b).snapshotItem(0).boxObject[this.positionProp] - tabSize * 0.5;
+			var endPos = parentPosition - this.getFirstTab(b).boxObject[this.positionProp] - tabSize * 0.5;
 			var endX = this.isVertical ? 0 : endPos ;
 			var endY = this.isVertical ? endPos : 0 ;
 			this.scrollTo(endX, endY);
