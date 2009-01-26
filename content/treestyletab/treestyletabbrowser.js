@@ -179,11 +179,12 @@ TreeStyleTabBrowser.prototype = {
 							var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(aSelf).treeStyleTab;
 							var nextTab = (aDir < 0) ? treeStyleTab.getPreviousVisibleTab(aSelf.selectedItem) : treeStyleTab.getNextVisibleTab(aSelf.selectedItem) ;
 							if (!nextTab && aWrap) {
-								var xpathResult = TreeStyleTabService.evaluateXPath(
-										'child::xul:tab[not(@'+TreeStyleTabService.kCOLLAPSED+'="true")]',
+								nextTab = TreeStyleTabService.evaluateXPath(
+										'child::xul:tab[not(@'+TreeStyleTabService.kCOLLAPSED+'="true")]['+
+										(aDir < 0 ? 'last()' : '1' )+
+										']',
 										aSelf
-									);
-								nextTab = xpathResult.snapshotItem(aDir < 0 ? xpathResult.snapshotLength-1 : 0 );
+									).singleNodeValue;
 							}
 							if (nextTab && nextTab != aSelf.selectedItem) {
 								if ('_selectNewTab' in aSelf)

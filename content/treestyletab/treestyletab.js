@@ -594,47 +594,47 @@ var TreeStyleTabService = {
  
 	getNextTab : function(aTab) 
 	{
-		var xpathResult = this.evaluateXPath(
-				'following-sibling::xul:tab',
-				aTab
-			);
-		return xpathResult.snapshotItem(0);
+		return this.evaluateXPath(
+				'following-sibling::xul:tab[1]',
+				aTab,
+				XPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue;
 	},
  
 	getPreviousTab : function(aTab) 
 	{
-		var xpathResult = this.evaluateXPath(
-				'preceding-sibling::xul:tab',
-				aTab
-			);
-		return xpathResult.snapshotItem(xpathResult.snapshotLength-1);
+		return this.evaluateXPath(
+				'preceding-sibling::xul:tab[1]',
+				aTab,
+				XPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue;
 	},
  
 	getNextVisibleTab : function(aTab) 
 	{
-		var xpathResult = this.evaluateXPath(
-				'following-sibling::xul:tab[not(@'+this.kCOLLAPSED+'="true")]',
-				aTab
-			);
-		return xpathResult.snapshotItem(0);
+		return this.evaluateXPath(
+				'following-sibling::xul:tab[not(@'+this.kCOLLAPSED+'="true")][1]',
+				aTab,
+				XPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue;
 	},
  
 	getPreviousVisibleTab : function(aTab) 
 	{
-		var xpathResult = this.evaluateXPath(
-				'preceding-sibling::xul:tab[not(@'+this.kCOLLAPSED+'="true")]',
-				aTab
-			);
-		return xpathResult.snapshotItem(xpathResult.snapshotLength-1);
+		return this.evaluateXPath(
+				'preceding-sibling::xul:tab[not(@'+this.kCOLLAPSED+'="true")][1]',
+				aTab,
+				XPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue;
 	},
  
 	getLastVisibleTab : function(aTab) 
 	{
-		var xpathResult = this.evaluateXPath(
-				'child::xul:tab[not(@'+this.kCOLLAPSED+'="true")]',
-				aTab.parentNode
-			);
-		return xpathResult.snapshotItem(xpathResult.snapshotLength-1);
+		return this.evaluateXPath(
+				'child::xul:tab[not(@'+this.kCOLLAPSED+'="true")][last()]',
+				aTab.parentNode,
+				XPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue;
 	},
  
 	getVisibleTabs : function(aTab) 
@@ -649,9 +649,10 @@ var TreeStyleTabService = {
 	getVisibleIndex : function(aTab) 
 	{
 		return this.evaluateXPath(
-				'preceding-sibling::xul:tab[not(@'+this.kCOLLAPSED+'="true")]',
-				aTab
-			).snapshotLength;
+				'count(preceding-sibling::xul:tab[not(@'+this.kCOLLAPSED+'="true")])',
+				aTab,
+				XPathResult.NUMBER_TYPE
+			).numberValue;
 	},
   
 /* tree manipulations */ 
