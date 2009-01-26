@@ -473,7 +473,7 @@ TreeStyleTabBrowser.prototype = {
 			item.setAttribute('id', item.getAttribute('id')+suffix);
 			var refNodes = tabContext.getElementsByAttribute('command', 'Browser:BookmarkAllTabs');
 			if (refNodes && refNodes.length)
-				tabContext.insertBefore(item, this.getNextTab(refNodes[0]) || refNodes[0]);
+				tabContext.insertBefore(item, aSelf.getNextTab(refNodes[0]) || refNodes[0]);
 			else
 				tabContext.appendChild(item);
 		}, 0, this);
