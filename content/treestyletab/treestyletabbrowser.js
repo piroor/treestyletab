@@ -133,8 +133,7 @@ TreeStyleTabBrowser.prototype = {
 			'{',
 			<![CDATA[$&
 				if (!val) {
-					var tabs = TreeStyleTabService.getTabs(this)
-					val = tabs.snapshotItem(tabs.snapshotLength-1);
+					val = TreeStyleTabService.getLastTab(this);
 				}
 			]]>.toString()
 		));
@@ -1339,8 +1338,7 @@ TreeStyleTabBrowser.prototype = {
 			var attach     = this.getTreePref('attachChildrenToGrandParentOnRemoveTab');
 			var processTab = !attach ? function(aTab) {
 					self.partTab(aTab, true);
-					var tabs = self.getTabs(b);
-					self.moveTabSubTreeTo(aTab, tabs.snapshotItem(tabs.snapshotLength-1)._tPos);
+					self.moveTabSubTreeTo(aTab, self.getLastTab(b)._tPos);
 				} :
 				parentTab ? function(aTab) {
 					self.attachTabTo(aTab, parentTab, {
@@ -2738,8 +2736,7 @@ TreeStyleTabBrowser.prototype = {
 					b.moveTabTo(b.mCurrentTab, nextTab._tPos - 1);
 				}
 				else {
-					var tabs = this.getTabs(b);
-					b.moveTabTo(b.mCurrentTab, tabs.snapshotItem(tabs.snapshotLength-1)._tPos);
+					b.moveTabTo(b.mCurrentTab, this.getLastTab(b)._tPos);
 				}
 				this.internallyTabMoving = false;
 				b.mCurrentTab.focus();

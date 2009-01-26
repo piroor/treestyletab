@@ -509,25 +509,6 @@ var TreeStyleTabService = {
 		return frame;
 	},
  
-	getTabs : function(aTabBrowser) 
-	{
-		return this.evaluateXPath(
-				'descendant::xul:tab',
-				aTabBrowser.mTabContainer
-			);
-	},
- 
-	getTabsArray : function(aTabBrowser) 
-	{
-		var tabs = this.getTabs(aTabBrowser);
-		var array = [];
-		for (var i = 0, maxi = tabs.snapshotLength; i < maxi; i++)
-		{
-			array.push(tabs.snapshotItem(i));
-		}
-		return array;
-	},
- 
 	makeNewId : function() 
 	{
 		return 'tab-<'+Date.now()+'-'+parseInt(Math.random() * 65000)+'>';
@@ -588,6 +569,34 @@ var TreeStyleTabService = {
 		return this.evaluateXPath(
 				'descendant::xul:tab[@'+this.kID+' = "'+aId+'"]',
 				b.mTabContainer,
+				XPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue;
+	},
+ 
+	getTabs : function(aTabBrowser) 
+	{
+		return this.evaluateXPath(
+				'descendant::xul:tab',
+				aTabBrowser.mTabContainer
+			);
+	},
+ 
+	getTabsArray : function(aTabBrowser) 
+	{
+		var tabs = this.getTabs(aTabBrowser);
+		var array = [];
+		for (var i = 0, maxi = tabs.snapshotLength; i < maxi; i++)
+		{
+			array.push(tabs.snapshotItem(i));
+		}
+		return array;
+	},
+ 
+	getLastTab : function(aTabBrowser) 
+	{
+		return this.evaluateXPath(
+				'descendant::xul:tab[last()]',
+				aTabBrowser.mTabContainer,
 				XPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
 	},
