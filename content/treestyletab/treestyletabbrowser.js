@@ -472,10 +472,12 @@ TreeStyleTabBrowser.prototype = {
 			var item = document.getElementById(aSelf.kMENUITEM_BOOKMARKSUBTREE).cloneNode(true);
 			item.setAttribute('id', item.getAttribute('id')+suffix);
 			var refNodes = tabContext.getElementsByAttribute('command', 'Browser:BookmarkAllTabs');
-			if (refNodes && refNodes.length)
-				tabContext.insertBefore(item, aSelf.getNextTab(refNodes[0]) || refNodes[0]);
-			else
-				tabContext.appendChild(item);
+			tabContext.insertBefore(
+				item,
+				(refNodes && refNodes.length) ?
+					(aSelf.getNextTab(refNodes[0]) || refNodes[0]) :
+					null
+			);
 		}, 0, this);
 
 		var allTabPopup = document.getAnonymousElementByAttribute(b.mTabContainer, 'anonid', 'alltabs-popup');
@@ -581,10 +583,7 @@ TreeStyleTabBrowser.prototype = {
 			counter.lastChild.setAttribute('value', '(0)');
 
 			if (label) {
-				if (label.nextSibling)
-					label.parentNode.insertBefore(counter, label.nextSibling);
-				else
-					label.parentNode.appendChild(counter);
+				label.parentNode.insertBefore(counter, label.nextSibling);
 			}
 		}
 		this.initTabContentsOrder(aTab);
