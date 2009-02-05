@@ -1364,7 +1364,7 @@ TreeStyleTabBrowser.prototype = {
 		if (parentTab) {
 			var firstSibling = this.getFirstChildTab(parentTab);
 			var lastSibling  = this.getLastChildTab(parentTab);
-			if (tab == lastSibling) {
+			if (tab == lastSibling && !nextFocusedTab) {
 				if (tab == firstSibling) { // there is only one child
 					nextFocusedTab = parentTab;
 				}
