@@ -1965,7 +1965,7 @@ catch(e) {
 		if (startCount < allLinksCount) {
 			var firstNode = this.evaluateXPath(
 					'descendant-or-self::node()[not(child::node()) and not(preceding-sibling::node())]',
-					linksResult.snapshotItem(startCount),
+					linksResult.snapshotItem(allLinksCount-1),
 					XPathResult.FIRST_ORDERED_NODE_TYPE
 				).singleNodeValue;
 			contentRange.selectNodeContents(firstNode);
