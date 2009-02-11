@@ -666,6 +666,7 @@ var TreeStyleTabService = {
  
 	getVisibleIndex : function(aTab) 
 	{
+		if (aTab.getAttribute(this.kCOLLAPSED) == 'true') return -1;
 		return this.evaluateXPath(
 				'count(preceding-sibling::xul:tab[not(@'+this.kCOLLAPSED+'="true")])',
 				aTab,

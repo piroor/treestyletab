@@ -1,22 +1,27 @@
 var win;
 var sv;
+var tabs;
 
 function setUp()
 {
+	utils.setPref('browser.tabs.warnOnClose', false);
+
 	yield utils.setUpTestWindow();
 	win = utils.getTestWindow();
 	sv = win.TreeStyleTabService;
 
-	utils.setPref('browser.tabs.warnOnClose', false);
 	gBrowser.removeAllTabsBut(gBrowser.selectedTab);
 	yield Do(utils.addTab('about:logo'));
 	yield Do(utils.addTab('../fixtures/frameTest.html'));
 	yield Do(utils.addTab('../fixtures/frameTestInline.html'));
-	assert.equals(4, gBrowser.mTabs.length);
+	tabs = gBrowser.mTabs;
+	assert.equals(4, tabs.length);
 }
 
 function tearDown()
 {
+	win = null;
+	tabs = null;
 	utils.tearDownTestWindow();
 }
 
@@ -27,7 +32,6 @@ function test_getTabFromFrame()
 		assert.equals(aExpected, sv.getTabFromFrame(aArgument));
 	}
 
-	var tabs = gBrowser.mTabs;
 	assertTabFrame(tabs[1], tabs[1].linkedBrowser.contentWindow);
 	assertTabFrame(tabs[2], tabs[2].linkedBrowser.contentWindow.frames[1]);
 	assertTabFrame(tabs[3], tabs[3].linkedBrowser.contentWindow.frames[0]);
@@ -41,9 +45,8 @@ function test_getTabFromChild()
 		assert.equals(aExpected, sv.getTabFromChild(aArgument));
 	}
 
-	var tab = gBrowser.selectedTab;
-	assertTabChild(tab, tab);
-	assertTabChild(tab, tab.ownerDocument.getAnonymousNodes(tab)[0]);
+	assertTabChild(tabs[0], tabs[0]);
+	assertTabChild(tabs[0], tabs[0].ownerDocument.getAnonymousNodes(tabs[0])[0]);
 	assert.isNull(sv.getTabFromChild(gBrowser.parentNode));
 	assert.isNull(sv.getTabFromChild(gBrowser.contentWindow.document.documentElement));
 }
@@ -55,9 +58,8 @@ function test_getTabBrowserFromChild()
 		assert.equals(aExpected, sv.getTabBrowserFromChild(aArgument));
 	}
 
-	var tab = gBrowser.selectedTab;
-	var node = tab.ownerDocument.getAnonymousNodes(tab)[0];
-	assertTabBrowserChild(gBrowser, tab);
+	var node = tabs[0].ownerDocument.getAnonymousNodes(tabs[0])[0];
+	assertTabBrowserChild(gBrowser, tabs[0]);
 	assertTabBrowserChild(gBrowser, node);
 	assert.isNull(sv.getTabBrowserFromChild(gBrowser.parentNode));
 	assert.isNull(sv.getTabBrowserFromChild(gBrowser.contentWindow.document.documentElement));
@@ -70,7 +72,6 @@ function test_getTabBrowserFromFrame()
 		assert.equals(aExpected, sv.getTabBrowserFromFrame(aArgument));
 	}
 
-	var tabs = gBrowser.mTabs;
 	assertTabBrowserFrame(gBrowser, tabs[1].linkedBrowser.contentWindow);
 	assertTabBrowserFrame(gBrowser, tabs[2].linkedBrowser.contentWindow.frames[1]);
 	assertTabBrowserFrame(gBrowser, tabs[3].linkedBrowser.contentWindow.frames[0]);
@@ -85,7 +86,6 @@ function test_getFrameFromTabBrowserElements()
 		assert.equals(aExpected, sv.getFrameFromTabBrowserElements(aArgument));
 	}
 
-	var tabs = gBrowser.mTabs;
 	var tab, frame;
 
 	tab = gBrowser.selectedTab;
@@ -107,3 +107,88 @@ function test_getFrameFromTabBrowserElements()
 	assertFrameTabBrowser(gBrowser.contentWindow, gBrowser);
 	assert.isNull(sv.getFrameFromTabBrowserElements(gBrowser.parentNode));
 }
+
+function test_tabID()
+{
+	var id = sv.makeNewId();
+	assert.match(/^tab-<\d+-\d+>$/, id);
+
+	id = tabs[3].getAttribute(sv.kID);
+	assert.equals(tabs[3], sv.getTabById(id, gBrowser));
+}
+
+function test_getTabs()
+{
+	var result = sv.getTabs(gBrowser);
+	assert.isTrue(result instanceof XPathResult);
+	assert.equals(4, result.snapshotLength);
+
+	var gotTabs = [];
+	for (var i = 0, maxi = result.snapshotLength; i < maxi; i++)
+	{
+		gotTabs.push(result.snapshotItem(i));
+	}
+	assert.equals(4, gotTabs.length);
+	assert.equals(Array.slice(tabs), gotTabs);
+
+	assert.equals(gotTabs, sv.getTabsArray(gBrowser));
+
+	assert.equals(tabs[0], sv.getFirstTab(gBrowser));
+	assert.equals(tabs[3], sv.getLastTab(gBrowser));
+	assert.equals(tabs[1], sv.getNextTab(tabs[0]));
+	assert.isNull(sv.getNextTab(tabs[3]));
+	assert.equals(tabs[1], sv.getPreviousTab(tabs[2]));
+	assert.isNull(sv.getPreviousTab(tabs[0]));
+}
+
+function test_tabsVisibility()
+{
+	tabs[1].setAttribute(sv.kCOLLAPSED, true);
+	tabs[3].setAttribute(sv.kCOLLAPSED, true);
+
+	assert.equals(tabs[2], sv.getNextVisibleTab(tabs[0]));
+	assert.equals(tabs[2], sv.getNextVisibleTab(tabs[1]));
+	assert.isNull(sv.getNextVisibleTab(tabs[2]));
+	assert.isNull(sv.getNextVisibleTab(tabs[3]));
+	assert.isNull(sv.getPreviousVisibleTab(tabs[0]));
+	assert.equals(tabs[0], sv.getPreviousVisibleTab(tabs[1]));
+	assert.equals(tabs[0], sv.getPreviousVisibleTab(tabs[2]));
+	assert.equals(tabs[2], sv.getPreviousVisibleTab(tabs[3]));
+
+	assert.equals(tabs[2], sv.getLastVisibleTab(tabs[0]));
+	assert.equals(tabs[2], sv.getLastVisibleTab(tabs[1]));
+	assert.equals(tabs[2], sv.getLastVisibleTab(tabs[2]));
+	assert.equals(tabs[2], sv.getLastVisibleTab(tabs[3]));
+
+	var visibleResult = sv.getVisibleTabs(tabs[0]);
+	assert.isTrue(visibleResult instanceof XPathResult);
+	assert.equals(2, visibleResult.snapshotLength);
+
+	var visibleTabs = [];
+	for (var i = 0, maxi = visibleResult.snapshotLength; i < maxi; i++)
+	{
+		visibleTabs.push(visibleResult.snapshotItem(i));
+	}
+	assert.equals(2, visibleTabs.length);
+	assert.equals([tabs[0], tabs[2]], visibleTabs);
+
+	assert.equals(0, sv.getVisibleIndex(tabs[0]));
+	assert.equals(-1, sv.getVisibleIndex(tabs[1]));
+	assert.equals(1, sv.getVisibleIndex(tabs[2]));
+	assert.equals(-1, sv.getVisibleIndex(tabs[3]));
+}
+
+
+/*
+
+sv.getTabValue(tab, key)
+sv.setTabValue(tab, key, value)
+sv.deleteTabValue(tab, key)
+sv.cleanUpTabsArray(tabs)
+
+
+sv.registerAttachTabPostProcess(func)
+sv.registerTabFocusAllowance(func)
+
+*/
+
