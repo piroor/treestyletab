@@ -1869,116 +1869,118 @@ catch(e) {
 		return aTab.linkedBrowser.currentURI;
 	},
   
-	openSelectionLinks : function() 
+	openSelectionLinks : function(aFrame) 
 	{
-		var links = this.getSelectionLinks();
-		if (!links.length) return;
+		aFrame = this.getCurrentFrame(aFrame);
 
 		var b = this.browser;
-		var targetWindow = document.commandDispatcher.focusedWindow;
-		if (!targetWindow || targetWindow.top == window)
-			targetWindow = b.contentWindow;
+		var links = this.getSelectionLinks(aFrame);
+		if (!links.length) return;
 
-		var referrer = this.makeURIFromSpec(targetWindow.location.href);
+		var referrer = this.makeURIFromSpec(aFrame.location.href);
 
-		this.readyToOpenChildTab(targetWindow, true);
-		links.forEach(function(aItem, aIndex) {
-			var tab = b.addTab(aItem.uri, referrer);
+		this.readyToOpenChildTab(aFrame, true);
+		links.forEach(function(aLink, aIndex) {
+			var tab = b.addTab(aLink.href, referrer);
 			if (aIndex == 0 && !this.getPref('browser.tabs.loadInBackground'))
 				b.selectedTab = tab;
 		}, this);
-		this.stopToOpenChildTab(targetWindow);
+		this.stopToOpenChildTab(aFrame);
 	},
 	
-	getSelectionLinks : function() 
+	getCurrentFrame : function(aFrame) 
 	{
-		var links = [];
-
+		if (aFrame) return aFrame;
 		var targetWindow = document.commandDispatcher.focusedWindow;
 		if (!targetWindow || targetWindow.top == window)
 			targetWindow = this.browser.contentWindow;
+		return targetWindow;
+	},
+ 
+	getSelectionLinks : function(aFrame) 
+	{
+		aFrame = this.getCurrentFrame(aFrame);
 
-		var selection = targetWindow.getSelection();
+		var links = [];
+
+		var selection = aFrame.getSelection();
 		if (!selection || !selection.rangeCount)
 			return links;
 
-		const count = selection.rangeCount;
-		var range,
-			node,
-			link,
-			uri,
-			nodeRange = targetWindow.document.createRange();
-		for (var i = 0; i < count; i++)
+		for (var i = 0, maxi = selection.rangeCount; i < maxi; i++)
 		{
-			range = selection.getRangeAt(0);
-			node  = range.startContainer;
-
-			traceTree:
-			while (true)
-			{
-				nodeRange.selectNode(node);
-
-				// 「ノードの終端が、選択範囲の先端より後にあるかどうか」をチェック。
-				// 後にあるならば、そのノードは選択範囲内にあると考えられる。
-				if (nodeRange.compareBoundaryPoints(Range.START_TO_END, range) > -1) {
-					// 「ノードの先端が、選択範囲の終端より後にあるかどうか」をチェック。
-					// 後にあるならば、そのノードは選択範囲外にあると考えられる。
-					if (nodeRange.compareBoundaryPoints(Range.END_TO_START, range) > 0) {
-						// 「リンクテキストが実際には選択されていないリンク」については除外する
-						if (
-							links.length &&
-							range.startContainer.nodeType != Node.ELEMENT_NODE &&
-							range.startOffset == range.startContainer.nodeValue.length &&
-							links[0].node == this.getParentLink(range.startContainer)
-							)
-							links.splice(0, 1);
-
-						if (
-							links.length &&
-							range.endContainer.nodeType != Node.ELEMENT_NODE &&
-							range.endOffset == 0 &&
-							links[links.length-1].node == this.getParentLink(range.endContainer)
-							)
-							links.splice(links.length-1, 1);
-						break;
-					}
-					else if (link = this.getParentLink(node)) {
-						try {
-							uri = link.href;
-							if (uri && uri.indexOf('mailto:') < 0)
-								links.push({ node : link, uri : uri });
-						}
-						catch(e) {
-						}
-					}
-				}
-
-				if (node.hasChildNodes() && !link) {
-					node = node.firstChild;
-				}
-				else {
-					while (!node.nextSibling)
-					{
-						node = node.parentNode;
-						if (!node) break traceTree;
-					}
-					node = node.nextSibling;
-				}
-			}
+			links = links.concat(this.getLinksInRange(selection.getRangeAt(i)));
 		}
-
-		nodeRange.detach();
-
 		return links;
 	},
 	
-	getParentLink : function(aNode) 
+	getLinksInRange : function(aRange) 
 	{
-		var node = aNode;
-		while (!node.href && node.parentNode)
-			node = node.parentNode;
+		// http://nanto.asablo.jp/blog/2008/10/18/3829312
+		var links = [];
+		if (aRange.collapsed) return links;
 
-		return node.href ? node : null ;
+		var startCountExpression = 'count(preceding::*[@href])';
+		var startNode = aRange.startContainer;
+		if (startNode.nodeType == Node.ELEMENT_NODE) {
+			if (aRange.startOffset < startNode.childNodes.length) {
+				startNode = startNode.childNodes[aRange.startOffset];
+			}
+			else {
+				startCountExpression += ' + count(descendant::*[@href])';
+			}
+		}
+		var startCount = this.evaluateXPath(
+				startCountExpression,
+				startNode,
+				XPathResult.NUMBER_TYPE
+			).numberValue;
+
+		var linksExpression = 'ancestor::*[@href] | preceding::*[@href]';
+		var endNode = aRange.endContainer;
+		if (endNode.nodeType == Node.ELEMENT_NODE) {
+			if (aRange.endOffset < endNode.childNodes.length) {
+				endNode = endNode.childNodes[aRange.endOffset];
+			}
+			else {
+				linksExpression += ' | descendant-or-self::*[@href]';
+			}
+		}
+		var linksResult = this.evaluateXPath(linksExpression, endNode);
+
+		var allLinksCount = linksResult.snapshotLength;
+		var contentRange = startNode.ownerDocument.createRange();
+		if (startCount < allLinksCount) {
+			var lastNode = this.evaluateXPath(
+					'descendant-or-self::node()[not(child::node()) and not(following-sibling::node())]',
+					linksResult.snapshotItem(startCount),
+					XPathResult.FIRST_ORDERED_NODE_TYPE
+				).singleNodeValue;
+			contentRange.selectNodeContents(lastNode);
+			contentRange.setStart(aRange.startContainer, aRange.startOffset);
+			if (contentRange.collapsed) {
+				startCount++;
+			}
+		}
+		if (startCount < allLinksCount) {
+			var firstNode = this.evaluateXPath(
+					'descendant-or-self::node()[not(child::node()) and not(preceding-sibling::node())]',
+					linksResult.snapshotItem(startCount),
+					XPathResult.FIRST_ORDERED_NODE_TYPE
+				).singleNodeValue;
+			contentRange.selectNodeContents(firstNode);
+			contentRange.setEnd(aRange.endContainer, aRange.endOffset);
+			if (contentRange.collapsed) {
+				allLinksCount--;
+			}
+		}
+		contentRange.detach();
+
+		for (var i = startCount; i < allLinksCount; i++)
+		{
+			links.push(linksResult.snapshotItem(i));
+		}
+		return links;
 	},
    
 	collapseExpandAllSubtree : function(aCollapse) 
