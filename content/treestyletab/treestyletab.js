@@ -2117,110 +2117,19 @@ catch(e) {
   
 /* Save/Load Prefs */ 
 	
-	get Prefs() 
-	{
-		if (!this._Prefs) {
-			this._Prefs = Components.classes['@mozilla.org/preferences;1'].getService(Components.interfaces.nsIPrefBranch);
-		}
-		return this._Prefs;
-	},
-	_Prefs : null,
- 
-	getPref : function(aPrefstring) 
-	{
-		try {
-			switch (this.Prefs.getPrefType(aPrefstring))
-			{
-				case this.Prefs.PREF_STRING:
-					return decodeURIComponent(escape(this.Prefs.getCharPref(aPrefstring)));
-					break;
-				case this.Prefs.PREF_INT:
-					return this.Prefs.getIntPref(aPrefstring);
-					break;
-				default:
-					return this.Prefs.getBoolPref(aPrefstring);
-					break;
-			}
-		}
-		catch(e) {
-		}
-
-		return null;
-	},
- 
 	getTreePref : function(aPrefstring) 
 	{
 		return this.getPref('extensions.treestyletab.'+aPrefstring);
 	},
  
-	setPref : function(aPrefstring, aNewValue) 
-	{
-		var pref = this.Prefs ;
-		var type;
-		try {
-			type = typeof aNewValue;
-		}
-		catch(e) {
-			type = null;
-		}
-
-		switch (type)
-		{
-			case 'string':
-				pref.setCharPref(aPrefstring, unescape(encodeURIComponent(aNewValue)));
-				break;
-			case 'number':
-				pref.setIntPref(aPrefstring, parseInt(aNewValue));
-				break;
-			default:
-				pref.setBoolPref(aPrefstring, aNewValue);
-				break;
-		}
-		return true;
-	},
- 
 	setTreePref : function(aPrefstring, aNewValue) 
 	{
 		return this.setPref('extensions.treestyletab.'+aPrefstring, aNewValue);
-	},
- 
-	clearPref : function(aPrefstring) 
-	{
-		try {
-			this.Prefs.clearUserPref(aPrefstring);
-		}
-		catch(e) {
-		}
-
-		return;
-	},
- 
-	addPrefListener : function(aObserver) 
-	{
-		var domains = ('domains' in aObserver) ? aObserver.domains : [aObserver.domain] ;
-		try {
-			var pbi = this.Prefs.QueryInterface(Components.interfaces.nsIPrefBranchInternal);
-			for (var i = 0; i < domains.length; i++)
-				pbi.addObserver(domains[i], aObserver, false);
-		}
-		catch(e) {
-		}
-	},
- 
-	removePrefListener : function(aObserver) 
-	{
-		var domains = ('domains' in aObserver) ? aObserver.domains : [aObserver.domain] ;
-		try {
-			var pbi = this.Prefs.QueryInterface(Components.interfaces.nsIPrefBranchInternal);
-			for (var i = 0; i < domains.length; i++)
-				pbi.removeObserver(domains[i], aObserver, false);
-		}
-		catch(e) {
-		}
 	}
    
 }; 
 
+TreeStyleTabService.__proto__ = window['piro.sakura.ne.jp'].prefs;
 window.addEventListener('DOMContentLoaded', TreeStyleTabService, true);
 window.addEventListener('load', TreeStyleTabService, false);
  
