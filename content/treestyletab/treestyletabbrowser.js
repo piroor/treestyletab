@@ -182,7 +182,8 @@ TreeStyleTabBrowser.prototype = {
 										'child::xul:tab[not(@'+TreeStyleTabService.kCOLLAPSED+'="true")]['+
 										(aDir < 0 ? 'last()' : '1' )+
 										']',
-										aSelf
+										aSelf,
+										XPathResult.FIRST_ORDERED_NODE_TYPE
 									).singleNodeValue;
 							}
 							if (nextTab && nextTab != aSelf.selectedItem) {
