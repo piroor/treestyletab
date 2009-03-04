@@ -123,6 +123,8 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.addEventListener('select', this, true);
 		b.mTabContainer.addEventListener('scroll', this, true);
 
+		var container = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-container');
+		if (container) container.removeAttribute('overflow');
 
 		/* Closing collapsed last tree breaks selected tab.
 		   To solve this problem, I override the setter to

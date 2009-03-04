@@ -1,6 +1,6 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 @namespace html url("http://www.w3.org/1999/xhtml");
 
-tabbrowser[treestyletab-mode="vertical"] .tabs-container > .tabbrowser-arrowscrollbox {
+tabbrowser .tabs-container > .tabbrowser-arrowscrollbox {
 	-moz-binding: url("chrome://treestyletab/content/treestyletab.xml#tabbrowser-arrowscrollbox");
 }
