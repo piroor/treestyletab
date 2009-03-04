@@ -17,13 +17,13 @@
 		<handlers>
 			<handler event="underflow"><![CDATA[
 				var tabs = document.getBindingParent(this);
-				if ((event.detail == 0) == (tabs.getAttribute('orient') == 'horizontal'))
+				if ((event.detail == 0) == (tabs.orient == 'horizontal'))
 					return;
 				tabs.removeAttribute("overflow");
 			]]></handler>
 			<handler event="overflow"><![CDATA[
 				var tabs = document.getBindingParent(this);
-				if ((event.detail == 0) == (tabs.getAttribute('orient') == 'horizontal'))
+				if ((event.detail == 0) == (tabs.orient == 'horizontal'))
 					return;
 				tabs.setAttribute("overflow", "true");
 				this.scrollBoxObject.ensureElementIsVisible(tabs.selectedItem);
