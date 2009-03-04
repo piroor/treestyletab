@@ -6,6 +6,7 @@
 tabbrowser[treestyletab-style][treestyletab-mode="vertical"] .tabbrowser-tabs,
 tabbrowser[treestyletab-style][treestyletab-tabbar-position="bottom"] .tabbrowser-tabs {
 	background: darkgray !important;
+	-moz-appearance: none;
 }
 
 tabbrowser[treestyletab-style][treestyletab-mode="vertical"] .tabbrowser-strip,
