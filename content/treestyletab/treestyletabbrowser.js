@@ -123,22 +123,27 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.addEventListener('select', this, true);
 		b.mTabContainer.addEventListener('scroll', this, true);
 
+
 		var container = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-container');
 		if (container) container.removeAttribute('overflow');
-		window.setTimeout(function() {
-			var inner = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabbrowser-arrowscrollbox');
-			if (inner) inner = document.getAnonymousElementByAttribute(inner, 'anonid', 'scrollbox');
-			if (inner) inner = document.getAnonymousNodes(inner)[0];
-			if (
-				inner &&
-				(
-					inner.boxObject.width > container.boxObject.width ||
-					inner.boxObject.height > container.boxObject.height
-				)
-				) {
-				container.setAttribute('overflow', true);
-			}
-		}, 100);
+
+		var inner = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabbrowser-arrowscrollbox');
+		if (inner) {
+			window.setTimeout(function() {
+				inner = document.getAnonymousElementByAttribute(inner, 'anonid', 'scrollbox');
+				if (inner) inner = document.getAnonymousNodes(inner)[0];
+				if (
+					inner &&
+					(
+						inner.boxObject.width > container.boxObject.width ||
+						inner.boxObject.height > container.boxObject.height
+					)
+					) {
+					container.setAttribute('overflow', true);
+				}
+			}, 100);
+		}
+
 
 		/* Closing collapsed last tree breaks selected tab.
 		   To solve this problem, I override the setter to

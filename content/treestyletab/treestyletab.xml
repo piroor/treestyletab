@@ -13,7 +13,17 @@
 	</binding>
 
 	<binding id="tabbrowser-arrowscrollbox"
-		extends="chrome://browser/content/tabbrowser.xml#tabbrowser-arrowscrollbox">
+		extends="chrome://global/content/bindings/scrollbox.xml#arrowscrollbox-clicktoscroll">
+<!--
+		extends="chrome://browser/content/tabbrowser.xml#tabbrowser-arrowscrollbox"
+-->
+		<implementation>
+			<method name="_getScrollableElements">
+				<body><![CDATA[
+					return document.getBindingParent(this).childNodes;
+				]]></body>
+			</method>
+		</implementation>
 		<handlers>
 			<handler event="underflow"><![CDATA[
 				var tabs = document.getBindingParent(this);
