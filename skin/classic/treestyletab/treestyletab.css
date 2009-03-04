@@ -276,8 +276,6 @@ tabbrowser[treestyletab-tabbar-position="bottom"][treestyletab-style="mixed"] .t
 }
 
 
-
-
 /* Tree UI */
 
 .treestyletab-twisty-container {
@@ -477,4 +475,3 @@ tabbrowser[treestyletab-tabbar-transparent] .tabbrowser-tabs:hover .tabbrowser-t
 tabbrowser[treestyletab-tabbar-transparent] .tabbrowser-tabs:hover .tabbrowser-tab[selected="true"]:hover {
 	opacity: 0.98 !important;
 }
-

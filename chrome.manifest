@@ -16,3 +16,5 @@ locale	treestyletab	zh-TW	jar:chrome/treestyletab.jar!/locale/zh-TW/treestyletab
 locale	treestyletab	ru-RU	jar:chrome/treestyletab.jar!/locale/ru-RU/treestyletab/
 
 skin	treestyletab	classic/1.0	jar:chrome/treestyletab.jar!/skin/classic/treestyletab/
+
+style chrome://browser/content/browser.xul chrome://treestyletab/skin/treestyletab-3.1.css appversion>=3.1b3pre

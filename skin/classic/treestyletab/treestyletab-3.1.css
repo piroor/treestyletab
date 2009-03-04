@@ -1,0 +1,20 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+/* Shadow of vertival tabs */
+
+tabbrowser[treestyletab-mode="vertical"][treestyletab-style="default"] .tabbrowser-tab,
+tabbrowser[treestyletab-mode="vertical"][treestyletab-style="mixed"] .tabbrowser-tab {
+	-moz-box-shadow: -5px 0 5px rgba(0, 0, 0, 0.15) !important;
+}
+tabbrowser[treestyletab-mode="vertical"][treestyletab-style="default"][treestyletab-appearance-inverted="true"] .tabbrowser-tab,
+tabbrowser[treestyletab-mode="vertical"][treestyletab-style="mixed"][treestyletab-appearance-inverted="true"] .tabbrowser-tab {
+	-moz-box-shadow: 5px 0 5px rgba(0, 0, 0, 0.15) !important;
+}
+tabbrowser[treestyletab-mode="vertical"][treestyletab-style="default"]:not([treestyletab-hide-newtab-button]) .tabs-container:not([overflow="true"]) .scrollbox-innerbox,
+tabbrowser[treestyletab-mode="vertical"][treestyletab-style="mixed"]:not([treestyletab-hide-newtab-button]) .tabs-container:not([overflow="true"]) .scrollbox-innerbox {
+	background: url("dropshadow.png") repeat-x bottom !important;
+}
+tabbrowser[treestyletab-mode="vertical"][treestyletab-style="default"]:not([treestyletab-hide-newtab-button="true"]) .tabs-container:not([overflow="true"]) .tabbrowser-arrowscrollbox .tabs-newtab-button,
+tabbrowser[treestyletab-mode="vertical"][treestyletab-style="mixed"]:not([treestyletab-hide-newtab-button="true"]) .tabs-container:not([overflow="true"]) .tabbrowser-arrowscrollbox .tabs-newtab-button {
+	margin-bottom: 5px !important;
+}
