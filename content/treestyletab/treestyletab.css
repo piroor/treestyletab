@@ -55,16 +55,10 @@ tabbrowser[treestyletab-mode="vertical"] tabs[flowing] > * .tabs-frame /* Tab Mi
 	overflow-y: auto !important;
 }
 
-tabbrowser[treestyletab-mode="vertical"] .tabs-stack > * + * > hbox,
+tabbrowser[treestyletab-mode="vertical"] .tabs-stack > *:first-child + * > hbox, /* Firefox 3.0 (not 3.1) */
 tabbrowser[treestyletab-mode="vertical"] tabs[flowing] > * .tabs-frame /* Tab Mix Plus */ {
 	-moz-box-flex: 1 !important;
 }
-
-/*
-tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > scrollbox > .scrollbox-innerbox {
-	-moz-box-flex: 0 !important;
-}
-*/
 
 tabbrowser[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted="true"] .tabbrowser-arrowscrollbox > scrollbox,
 tabbrowser[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted="true"] .tabs-frame /* Tab Mix Plus */ {

@@ -12,4 +12,21 @@
 		</content>
 	</binding>
 
+	<binding id="tabbrowser-arrowscrollbox"
+		extends="chrome://browser/content/tabbrowser.xml#tabbrowser-arrowscrollbox">
+		<handlers>
+			<handler event="underflow"><![CDATA[
+				if (event.detail != 0) return; // Ignore horizontal events
+				var tabs = document.getBindingParent(this);
+				tabs.removeAttribute("overflow");
+			]]></handler>
+			<handler event="overflow"><![CDATA[
+				if (event.detail != 0) return; // Ignore horizontal events
+				var tabs = document.getBindingParent(this);
+				tabs.setAttribute("overflow", "true");
+				this.scrollBoxObject.ensureElementIsVisible(tabs.selectedItem);
+			]]></handler>
+		</handlers>
+	</binding>
+
 </bindings>
