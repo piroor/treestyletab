@@ -19,19 +19,19 @@ tabbrowser[treestyletab-mode="vertical"][treestyletab-style="vertigo"] .tabbrows
 
 /* Shadow of vertival tabs */
 
-tabbrowser[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"][treestyletab-style="default"] .tabbrowser-tab,
-tabbrowser[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"][treestyletab-style="mixed"] .tabbrowser-tab {
+tabbrowser[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"]:not([treestyletab-style="vertigo"])
+	.tabbrowser-tab {
 	-moz-box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.15) !important;
 }
-tabbrowser[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"][treestyletab-style="default"][treestyletab-appearance-inverted="true"] .tabbrowser-tab,
-tabbrowser[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"][treestyletab-style="mixed"][treestyletab-appearance-inverted="true"] .tabbrowser-tab {
+tabbrowser[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"]:not([treestyletab-style="vertigo"])[treestyletab-appearance-inverted="true"]
+	.tabbrowser-tab {
 	-moz-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.15) !important;
 }
-tabbrowser[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"][treestyletab-style="default"]:not([treestyletab-hide-newtab-button]) .tabs-container:not([overflow="true"]) .scrollbox-innerbox,
-tabbrowser[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"][treestyletab-style="mixed"]:not([treestyletab-hide-newtab-button]) .tabs-container:not([overflow="true"]) .scrollbox-innerbox {
+tabbrowser[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"]:not([treestyletab-style="vertigo"]):not([treestyletab-hide-newtab-button]) .tabs-container:not([overflow="true"])
+	.scrollbox-innerbox {
 	background: url("dropshadow.png") repeat-x bottom !important;
 }
-tabbrowser[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"][treestyletab-style="default"]:not([treestyletab-hide-newtab-button="true"]) .tabs-container:not([overflow="true"]) .tabbrowser-arrowscrollbox .tabs-newtab-button,
-tabbrowser[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"][treestyletab-style="mixed"]:not([treestyletab-hide-newtab-button="true"]) .tabs-container:not([overflow="true"]) .tabbrowser-arrowscrollbox .tabs-newtab-button {
-	margin-bottom: 5px !important;
+tabbrowser[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"]:not([treestyletab-style="vertigo"]):not([treestyletab-hide-newtab-button="true"]) .tabs-container:not([overflow="true"])
+	.tabbrowser-arrowscrollbox .tabs-newtab-button {
+	margin-bottom: 10px !important;
 }
