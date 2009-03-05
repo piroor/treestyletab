@@ -2175,9 +2175,9 @@ TreeStyleTabBrowser.prototype = {
 		switch (info.position)
 		{
 			case this.kDROP_ON:
-				info.action       = this.kACTION_STAY | this.kACTION_ATTACH;
+				info.action       = this.kACTION_MOVE | this.kACTION_ATTACH;
 				info.parent       = tab;
-				info.insertBefore = this.getNextVisibleTab(tab);
+				info.insertBefore = this.getNextSiblingTab(tab);
 				break;
 
 			case this.kDROP_BEFORE:
@@ -2231,6 +2231,15 @@ TreeStyleTabBrowser.prototype = {
 					info.parent       = (targetNest < nextLevel) ? tab : this.getParentTab(tab) ;
 					info.action       = this.kACTION_MOVE | (info.parent ? this.kACTION_ATTACH : this.kACTION_PART );
 					info.insertBefore = nextTab;
+/*
+	[TARGET   ] «attach dragged tab to the parent of the target as its next sibling
+	  [DRAGGED]
+*/
+					if (aSourceTab == nextTab && this.getDescendantTabs(info.parent).length == 1) {
+						info.action = this.kACTION_MOVE | this.kACTION_ATTACH;
+						info.parent = this.getParentTab(tab);
+						info.insertBefore = this.getNextTab(nextTab);
+					}
 				}
 				break;
 		}
