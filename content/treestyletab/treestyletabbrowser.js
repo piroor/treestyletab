@@ -462,6 +462,7 @@ TreeStyleTabBrowser.prototype = {
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.allowSubtreeCollapseExpand');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.fixed');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.transparent.style');
+		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.dropshadow');
 		window.setTimeout(function() {
 			b.treeStyleTab.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.autoHide.mode');
 		}, 0);
@@ -1038,6 +1039,13 @@ TreeStyleTabBrowser.prototype = {
 					case 'extensions.treestyletab.tabbar.width':
 					case 'extensions.treestyletab.tabbar.shrunkenWidth':
 						this.checkTabsIndentOverflow();
+						break;
+
+					case 'extensions.treestyletab.tabbar.dropshadow':
+						if (value)
+							b.setAttribute(this.kDROP_SHADOW, true);
+						else
+							b.removeAttribute(this.kDROP_SHADOW);
 						break;
 
 					default:

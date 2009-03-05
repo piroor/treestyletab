@@ -23,6 +23,7 @@ var TreeStyleTabService = {
 	kFIXED              : 'treestyletab-tabbar-fixed',
 	kRESIZING           : 'treestyletab-tabbar-resizing',
 	kTRANSPARENT        : 'treestyletab-tabbar-transparent',
+	kDROP_SHADOW        : 'treestyletab-tabbar-dropshadow',
 
 	kTWISTY                : 'treestyletab-twisty',
 	kTWISTY_CONTAINER      : 'treestyletab-twisty-container',

@@ -1,20 +1,37 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
+/* new-tab button */
+
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
+	border-style: none solid solid !important;
+	border-width: 0 0 1px 1px !important;
+	border-bottom: 1px solid ThreeDShadow !important;
+	-moz-border-bottom-colors: ThreeDShadow !important;
+	-moz-border-radius: 0 0 2px 2px;
+}
+tabbrowser[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
+	border-width: 0 1px 1px 0 !important;
+}
+tabbrowser[treestyletab-mode="vertical"][treestyletab-style="vertigo"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
+	border-style: none !important;
+}
+
+
 /* Shadow of vertival tabs */
 
-tabbrowser[treestyletab-mode="vertical"][treestyletab-style="default"] .tabbrowser-tab,
-tabbrowser[treestyletab-mode="vertical"][treestyletab-style="mixed"] .tabbrowser-tab {
+tabbrowser[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"][treestyletab-style="default"] .tabbrowser-tab,
+tabbrowser[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"][treestyletab-style="mixed"] .tabbrowser-tab {
 	-moz-box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.15) !important;
 }
-tabbrowser[treestyletab-mode="vertical"][treestyletab-style="default"][treestyletab-appearance-inverted="true"] .tabbrowser-tab,
-tabbrowser[treestyletab-mode="vertical"][treestyletab-style="mixed"][treestyletab-appearance-inverted="true"] .tabbrowser-tab {
+tabbrowser[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"][treestyletab-style="default"][treestyletab-appearance-inverted="true"] .tabbrowser-tab,
+tabbrowser[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"][treestyletab-style="mixed"][treestyletab-appearance-inverted="true"] .tabbrowser-tab {
 	-moz-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.15) !important;
 }
-tabbrowser[treestyletab-mode="vertical"][treestyletab-style="default"]:not([treestyletab-hide-newtab-button]) .tabs-container:not([overflow="true"]) .scrollbox-innerbox,
-tabbrowser[treestyletab-mode="vertical"][treestyletab-style="mixed"]:not([treestyletab-hide-newtab-button]) .tabs-container:not([overflow="true"]) .scrollbox-innerbox {
+tabbrowser[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"][treestyletab-style="default"]:not([treestyletab-hide-newtab-button]) .tabs-container:not([overflow="true"]) .scrollbox-innerbox,
+tabbrowser[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"][treestyletab-style="mixed"]:not([treestyletab-hide-newtab-button]) .tabs-container:not([overflow="true"]) .scrollbox-innerbox {
 	background: url("dropshadow.png") repeat-x bottom !important;
 }
-tabbrowser[treestyletab-mode="vertical"][treestyletab-style="default"]:not([treestyletab-hide-newtab-button="true"]) .tabs-container:not([overflow="true"]) .tabbrowser-arrowscrollbox .tabs-newtab-button,
-tabbrowser[treestyletab-mode="vertical"][treestyletab-style="mixed"]:not([treestyletab-hide-newtab-button="true"]) .tabs-container:not([overflow="true"]) .tabbrowser-arrowscrollbox .tabs-newtab-button {
+tabbrowser[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"][treestyletab-style="default"]:not([treestyletab-hide-newtab-button="true"]) .tabs-container:not([overflow="true"]) .tabbrowser-arrowscrollbox .tabs-newtab-button,
+tabbrowser[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"][treestyletab-style="mixed"]:not([treestyletab-hide-newtab-button="true"]) .tabs-container:not([overflow="true"]) .tabbrowser-arrowscrollbox .tabs-newtab-button {
 	margin-bottom: 5px !important;
 }
