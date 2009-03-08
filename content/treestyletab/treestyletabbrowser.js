@@ -129,6 +129,8 @@ TreeStyleTabBrowser.prototype = {
 
 		var inner = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabbrowser-arrowscrollbox');
 		if (inner) {
+			inner.addEventListener('overflow', this, true);
+			inner.addEventListener('underflow', this, true);
 			window.setTimeout(function() {
 				inner = document.getAnonymousElementByAttribute(inner, 'anonid', 'scrollbox');
 				if (inner) inner = document.getAnonymousNodes(inner)[0];
@@ -868,6 +870,12 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.removeEventListener('select', this, true);
 		b.mTabContainer.removeEventListener('scroll', this, true);
 
+		var inner = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabbrowser-arrowscrollbox');
+		if (inner) {
+			inner.removeEventListener('overflow', this, true);
+			inner.removeEventListener('underflow', this, true);
+		}
+
 		var tabContext = document.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu');
 		tabContext.removeEventListener('popupshowing', this, false);
 		tabContext.removeEventListener('popuphiding', this, false);
@@ -1279,6 +1287,22 @@ TreeStyleTabBrowser.prototype = {
 			case 'mouseout':
 				if (this.isEventFiredOnTwisty(aEvent)) {
 					aEvent.target.removeAttribute(this.kTWISTY_HOVER);
+				}
+				return;
+
+			case 'overflow':
+			case 'underflow':
+				var box = aEvent.currentTarget;
+				var tabs = this.mTabBrowser.mTabContainer;
+				var horizontal = tabs.orient == 'horizontal';
+				if (horizontal) return;
+				aEvent.stopPropagation();
+				if (aEvent.type == 'overflow') {
+					tabs.setAttribute('overflow', 'true');
+					box.scrollBoxObject.ensureElementIsVisible(tabs.selectedItem);
+				}
+				else {
+					tabs.removeAttribute('overflow');
 				}
 				return;
 		}
