@@ -748,4 +748,25 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		);
 	}
 
+	// Mouseless Browsing
+	if ('mouselessbrowsing' in window &&
+		'EventHandler' in mouselessbrowsing) {
+		if ('execute' in mouselessbrowsing.EventHandler) {
+			eval('mouselessbrowsing.EventHandler.execute = '+
+				mouselessbrowsing.EventHandler.execute.toSource().replace(
+					/((?:var [^=]+ = )?Utils.openUrlInNewTab\()/g,
+					'TreeStyleTabService.readyToOpenChildTab(); $1'
+				)
+			);
+		}
+		if ('openLinkInOtherLocationViaPostfixKey' in mouselessbrowsing.EventHandler) {
+			eval('mouselessbrowsing.EventHandler.openLinkInOtherLocationViaPostfixKey = '+
+				mouselessbrowsing.EventHandler.openLinkInOtherLocationViaPostfixKey.toSource().replace(
+					'Utils.openUrlInNewTab(',
+					'TreeStyleTabService.readyToOpenChildTab(); $&'
+				)
+			);
+		}
+	}
+
 };
