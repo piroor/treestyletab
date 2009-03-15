@@ -738,4 +738,14 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		);
 	}
 
+	// Snap Links
+	if ('executeAction' in window && 'openTabs' in window) {
+		eval('window.openTabs = '+
+			window.openTabs.toSource().replace(
+				'sContent.addTab',
+				'TreeStyleTabService.readyToOpenChildTab(sContent); $&'
+			)
+		);
+	}
+
 };
