@@ -1778,19 +1778,14 @@ catch(e) {
 	
 	cleanUpTabsArray : function(aTabs) 
 	{
-		var b = this.getTabBrowserFromChild(aTabs[0]);
-
-		aTabs = aTabs.map(function(aTab) {
-				return aTab.getAttribute(this.kID);
-			}, this);
-		aTabs.sort();
-		aTabs = aTabs.join('|').replace(/([^\|]+)(\|\1)+/g, '$1').split('|');
-
-		for (var i = 0, maxi = aTabs.length; i < maxi; i++)
-		{
-			aTabs[i] = b.treeStyleTab.getTabById(aTabs[i]);
-		}
-		return aTabs;
+		var newTabs = [];
+		aTabs.forEach(function(aTab) {
+			if (newTabs.indexOf(aTab) < 0) newTabs.push(aTab);
+		});
+		newTabs.sort(function(aA, aB) {
+			return aA._tPos - aB._tPos;
+		});
+		return newTabs;
 	},
   
 	bookmarkTabSubTree : function(aTabOrTabs) 

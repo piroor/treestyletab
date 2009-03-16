@@ -226,12 +226,17 @@ function test_setAndGetTabValue()
 	assertSetAndGetTabValue(tabs[2], 'tab2');
 }
 
+function test_cleanUpTabsArray()
+{
+	var array = [0, 1, 2, 1, 3, 0]
+			.map(function(aIndex) {
+				return tabs[aIndex]
+			});
+	assert.equals(tabs, Array.slice(sv.cleanUpTabsArray(array)));
+}
+
 
 /*
-
-sv.cleanUpTabsArray(tabs)
-
-
 sv.registerAttachTabPostProcess(func)
 sv.registerTabFocusAllowance(func)
 
