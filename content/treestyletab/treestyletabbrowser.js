@@ -47,11 +47,17 @@ TreeStyleTabBrowser.prototype = {
  
 	get scrollBox() 
 	{
-		return this.mTabBrowser.mTabContainer.mTabstrip;
+		if (!this._scrollBox) {
+			this._scrollBox = document.getAnonymousElementByAttribute(this.mTabBrowser.mTabContainer, 'class', 'tabs-frame') || // Tab Mix Plus
+						this.mTabBrowser.mTabContainer.mTabstrip;
+		}
+		return this._scrollBox;
 	},
+	_scrollBox : null,
 	get scrollBoxObject()
 	{
-		return this.scrollBox.scrollBoxObject;
+		return this.scrollBox.scrollBoxObject ||
+				this.scrollBox.boxObject.QueryInterface(Components.interfaces.nsIScrollBoxObject); // Tab Mix Plus
 	},
  
 /* utils */ 
@@ -226,15 +232,15 @@ TreeStyleTabBrowser.prototype = {
 			b.mTabContainer._handleTabSelect.toSource().replace(
 				'{',
 				<><![CDATA[$&
-					var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;
-					var ensureTabVisibleByTST = function(aTab) {
-						if (!treeStyleTab.isTabInViewport(aTab)) {
-							treeStyleTab.scrollToTab(aTab);
-							return true;
-						}
-						return false;
-					};
-					if (ensureTabVisibleByTST(this.selectedItem)) {
+					if ((function(aTabs) {
+							var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(aTabs).treeStyleTab;
+							var tab = aTabs.selectedItem;
+							if (!treeStyleTab.isTabInViewport(tab)) {
+								treeStyleTab.scrollToTab(tab);
+								return true;
+							}
+							return false;
+						})(this)) {
 						return;
 					}
 				]]></>
@@ -697,20 +703,20 @@ TreeStyleTabBrowser.prototype = {
 			ref.parentNode.insertBefore(splitter, ref);
 		}
 
-		var scrollInnerBox = b.mTabContainer.mTabstrip._scrollbox ? document.getAnonymousNodes(b.mTabContainer.mTabstrip._scrollbox)[0] :
-				document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-frame'); // Tab Mix Plus
-		var allTabsButton = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-alltabs-button') ||
-				document.getAnonymousElementByAttribute(b.mTabContainer, 'anonid', 'alltabs-button'); // Tab Mix Plus
-
 		// Tab Mix Plus
-		var scrollFrame = document.getAnonymousElementByAttribute(b.mTabContainer, 'id', 'scroll-tabs-frame') ||
-						document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-frame'); // 0.3.6.1 or later
+		var scrollFrame = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-frame');
 		var newTabBox = document.getAnonymousElementByAttribute(b.mTabContainer, 'id', 'tabs-newbutton-box');
 		var tabBarMode = this.getPref('extensions.tabmix.tabBarMode');
 
 		// All-in-One Sidebar
 		var toolboxContainer = document.getAnonymousElementByAttribute(b.mStrip, 'anonid', 'aiostbx-toolbox-tableft');
 		if (toolboxContainer) toolboxContainer = toolboxContainer.parentNode;
+
+		var scrollInnerBox = b.mTabContainer.mTabstrip._scrollbox ?
+				document.getAnonymousNodes(b.mTabContainer.mTabstrip._scrollbox)[0] :
+				scrollFrame; // Tab Mix Plus
+		var allTabsButton = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-alltabs-button') ||
+				document.getAnonymousElementByAttribute(b.mTabContainer, 'anonid', 'alltabs-button'); // Tab Mix Plus
 
 		this.tabbarResizing = false;
 		b.removeAttribute(this.kRESIZING);
