@@ -769,4 +769,22 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		}
 	}
 
+	// Linky
+	if ('LinkyContext' in window &&
+		'prototype' in LinkyContext) {
+		'doSelected,doSelectedText,doImages,doAll,doAllPics,doValidateAll,doValidateSelected'
+			.split(',').forEach(function(aMethod) {
+				if (!(aMethod in LinkyContext.prototype)) return;
+				eval('LinkyContext.prototype.'+aMethod+' = '+
+					LinkyContext.prototype[aMethod].toSource().replace(
+						'{',
+						'{ TreeStyleTabService.readyToOpenChildTab(null, true);'
+					).replace(
+						/(\}\)?)$/,
+						'TreeStyleTabService.stopToOpenChildTab(); $1'
+					)
+				);
+			});
+	}
+
 };
