@@ -14,7 +14,7 @@ function setUp()
 	yield Do(utils.addTab('about:logo'));
 	yield Do(utils.addTab('../fixtures/frameTest.html'));
 	yield Do(utils.addTab('../fixtures/frameTestInline.html'));
-	tabs = gBrowser.mTabs;
+	tabs = Array.slice(gBrowser.mTabs);
 	assert.equals(4, tabs.length);
 }
 
@@ -129,9 +129,9 @@ function test_getTabs()
 		gotTabs.push(result.snapshotItem(i));
 	}
 	assert.equals(4, gotTabs.length);
-	assert.equals(Array.slice(tabs), gotTabs);
+	assert.equals(tabs, gotTabs);
 
-	assert.equals(gotTabs, sv.getTabsArray(gBrowser));
+	assert.equals(gotTabs, Array.slice(sv.getTabsArray(gBrowser)));
 
 	assert.equals(tabs[0], sv.getFirstTab(gBrowser));
 	assert.equals(tabs[3], sv.getLastTab(gBrowser));
@@ -178,12 +178,57 @@ function test_tabsVisibility()
 	assert.equals(-1, sv.getVisibleIndex(tabs[3]));
 }
 
+var randomKey = 'key-'+parseInt(Math.random() * 65000);
+var SessionStore = Cc['@mozilla.org/browser/sessionstore;1']
+					.getService(Ci.nsISessionStore)
+test_setAndGetTabValue.setUp = function() {
+	tabs.forEach(function(aTab) {
+		var value = null;
+		try {
+			value = SessionStore.getTabValue(aTab, randomKey);
+			assert.strictlyEquals('', value);
+		}
+		catch(e) {
+			assert.isNull(value);
+		}
+	});
+};
+test_setAndGetTabValue.tearDown = function() {
+	tabs.forEach(function(aTab) {
+		try {
+			SessionStore.deleteTabValue(aTab, randomKey);
+		}
+		catch(e) {
+		}
+	});
+};
+function assertSetAndGetTabValue(aTab, aValue)
+{
+	assert.strictlyEquals('', sv.getTabValue(aTab, randomKey));
+	sv.setTabValue(aTab, randomKey, aValue);
+	assert.strictlyEquals(aValue, SessionStore.getTabValue(aTab, randomKey));
+	assert.strictlyEquals(aValue, sv.getTabValue(aTab, randomKey));
+	sv.deleteTabValue(aTab, randomKey);
+	var value = null;
+	try {
+		value = SessionStore.getTabValue(aTab, randomKey);
+		assert.strictlyEquals('', value);
+	}
+	catch(e) {
+		assert.isNull(value);
+	}
+	assert.strictlyEquals('', sv.getTabValue(aTab, randomKey));
+}
+function test_setAndGetTabValue()
+{
+	assertSetAndGetTabValue(tabs[0], 'tab0');
+	assertSetAndGetTabValue(tabs[1], 'tab1');
+	assertSetAndGetTabValue(tabs[2], 'tab2');
+}
+
 
 /*
 
-sv.getTabValue(tab, key)
-sv.setTabValue(tab, key, value)
-sv.deleteTabValue(tab, key)
 sv.cleanUpTabsArray(tabs)
 
 
