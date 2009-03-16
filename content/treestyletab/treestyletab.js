@@ -839,6 +839,14 @@ var TreeStyleTabService = {
 		return lastChild;
 	},
  
+	getLastDescendantTab : function(aTab) 
+	{
+		if (!aTab) return null;
+
+		var tabs = this.getDescendantTabs(aTab);
+		return tabs.length ? tabs[tabs.length-1] : null ;
+	},
+ 
 	getChildIndex : function(aTab, aParent) 
 	{
 		var parent = this.getParentTab(aTab);

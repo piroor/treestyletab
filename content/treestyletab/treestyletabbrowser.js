@@ -2214,9 +2214,12 @@ TreeStyleTabBrowser.prototype = {
 		switch (info.position)
 		{
 			case this.kDROP_ON:
-				info.action       = this.kACTION_MOVE | this.kACTION_ATTACH;
+				info.action       = this.kACTION_STAY | this.kACTION_ATTACH;
 				info.parent       = tab;
-				info.insertBefore = this.getNextSiblingTab(tab) || this.getNextVisibleTab(tab);
+				var visible = this.getNextVisibleTab(tab);
+				info.insertBefore = this.getTreePref('insertNewChildAt') == this.kINSERT_FISRT ?
+						(this.getFirstChildTab(tab) || visible) :
+						(this.getNextSiblingTab(tab) || this.getNextTab(this.getLastDescendantTab(tab)) || visible);
 				break;
 
 			case this.kDROP_BEFORE:

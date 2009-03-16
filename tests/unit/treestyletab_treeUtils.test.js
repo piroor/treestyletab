@@ -10,6 +10,7 @@ sv.hasChildTabs(tab)
 sv.getDescendantTabs(tab)
 sv.getFirstChildTab(tab)
 sv.getLastChildTab(tab)
+sv.getLastDescendantTab(tab)
 sv.getChildIndex(tab, parent)
 
 sv.removeTabSubTree(tabs, onlychildren)
