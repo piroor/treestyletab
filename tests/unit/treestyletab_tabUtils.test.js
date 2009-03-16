@@ -131,7 +131,7 @@ function test_getTabs()
 	assert.equals(4, gotTabs.length);
 	assert.equals(tabs, gotTabs);
 
-	assert.equals(gotTabs, Array.slice(sv.getTabsArray(gBrowser)));
+	assert.equals(gotTabs, sv.getTabsArray(gBrowser));
 
 	assert.equals(tabs[0], sv.getFirstTab(gBrowser));
 	assert.equals(tabs[3], sv.getLastTab(gBrowser));
