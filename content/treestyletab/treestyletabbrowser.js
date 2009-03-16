@@ -1640,7 +1640,7 @@ TreeStyleTabBrowser.prototype = {
 			nextTab = this.redirectId(nextTab);
 		}
 
-		var ancestors = (this.getTabValue(tab, this.kANCESTOR) || this.getTabValue(tab, this.kPARENT) || '').split('|');
+		var ancestors = (this.getTabValue(tab, this.kANCESTOR) || this.getTabValue(tab, this.kPARENT)).split('|');
 		var parent = null;
 		for (var i in ancestors)
 		{

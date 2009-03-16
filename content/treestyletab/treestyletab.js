@@ -877,7 +877,7 @@ var TreeStyleTabService = {
 	
 	getTabValue : function(aTab, aKey) 
 	{
-		var value = null;
+		var value = '';
 		try {
 			value = this.SessionStore.getTabValue(aTab, aKey);
 		}
