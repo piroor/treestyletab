@@ -787,4 +787,14 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 			});
 	}
 
+	// QuickDrag
+	if ('QuickDrag' in window && 'dragdrop' in QuickDrag) {
+		eval('QuickDrag.dragdrop = '+
+			QuickDrag.dragdrop.toSource().replace(
+				/(gBrowser.loadOneTab\()/g,
+				'TreeStyleTabService.readyToOpenChildTab(); $1'
+			)
+		);
+	}
+
 };
