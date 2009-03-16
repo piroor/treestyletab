@@ -909,6 +909,7 @@ TreeStyleTabBrowser.prototype = {
 		this.removePrefListener(this);
 
 		delete this.mTabBrowser;
+		delete this._scrollBox;
 	},
 	
 	destroyTab : function(aTab) 
