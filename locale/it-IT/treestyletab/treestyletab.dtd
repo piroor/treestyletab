@@ -12,9 +12,9 @@
 <!ENTITY config.tabbar.position.bottom  "in basso">
 <!ENTITY config.tabbar.invertScrollbar  "Visualizza la barra di scorrimento all&apos;estrema sinistra">
 <!ENTITY config.tabbar.invertUI         "Inverti la visualizzazione delle schede">
-<!ENTITY config.enableSubtreeIndent         "Indenta schede figlie">
+<!ENTITY config.enableSubtreeIndent         "Indenta sottoschede">
 <!ENTITY config.allowSubtreeCollapseExpand  "Permetti di contrarre/espandere sottoalberi delle schede">
-<!ENTITY config.tabbar.hideNewTabButton     "Show &quot;Open a new tab&quot; button">
+<!ENTITY config.tabbar.hideNewTabButton     "Visualizza il pulsante &quot;Apri una nuova scheda&quot;">
 <!ENTITY config.tabbar.hideAlltabsButton    "Visualizza la maniglia per elencare tutte le schede">
 
 <!ENTITY config.tabbar.style.caption "Aspetto delle barra delle schede">
@@ -23,7 +23,7 @@
 <!ENTITY config.tabbar.style.mixed   "Misto">
 <!ENTITY config.tabbar.style.none    "Predefinito (varia in base al tema)">
 
-<!ENTITY config.twisty.style.caption "Aspetto controlli contrazione/espansione sottoalberi">
+<!ENTITY config.twisty.style.caption "Aspetto dei controlli di contrazione/espansione dei sottoalberi">
 <!ENTITY config.twisty.style.auto    "Automatico">
 <!ENTITY config.twisty.style.none    "Nessuno">
 <!ENTITY config.twisty.style.retro   "Retro">
@@ -34,7 +34,7 @@
 <!ENTITY config.tabs.menu "Menu contestuale">
 
 <!ENTITY config.show.tabContextMenu.caption "Voci da aggiungere al menu contestuale delle schede">
-<!ENTITY config.show.openSelectionLinks "Aggiungi &quot;Apri collegamenti selezionati in schede&quot; al menu contestuale">
+<!ENTITY config.show.openSelectionLinks "Aggiungi la voce &quot;Apri collegamenti selezionati in schede&quot; al menu contestuale">
 
 
 <!ENTITY config.tabs.tab "Navigazione">
@@ -42,22 +42,22 @@
 <!ENTITY config.tabs.context.tab      "Schede">
 
 <!ENTITY config.link.caption           "Collegamenti">
-<!ENTITY config.openOuterLinkInNewTab  "Apri i collegamenti provenienti da altri siti in una nuova scheda">
+<!ENTITY config.openOuterLinkInNewTab  "Apri i collegamenti a siti esterni in una nuova scheda">
 <!ENTITY config.openAnyLinkInNewTab    "Apri tutti i collegamenti in una nuova scheda">
 
 <!ENTITY config.urlbar.caption                      "L&apos;inserimento di un indirizzo nella barra degli indirizzi">
 <!ENTITY config.urlbar.loadDifferentDomainToNewTab  "Apre una nuova scheda se appartiene a un sito web differente">
-<!ENTITY config.urlbar.loadDifferentDomainToNewTab.asChild  "come figlia della scheda attuale">
-<!ENTITY config.urlbar.loadSameDomainToNewChildTab  "Apre una nuova scheda figlia se appartiene allo stesso sito web">
+<!ENTITY config.urlbar.loadDifferentDomainToNewTab.asChild  "come sottoscheda della scheda in uso">
+<!ENTITY config.urlbar.loadSameDomainToNewChildTab  "apre una nuova sottoscheda se appartiene allo stesso sito web">
 
 <!ENTITY config.loadDroppedLinkToNewChildTab.caption "Il trascinamento di collegamenti o indirizzi su una scheda esistente">
 <!ENTITY config.loadDroppedLinkToNewChildTab.load    "Carica il collegamento nella scheda (comportamento predefinito di Firefox)">
-<!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "Apre il collegamento in una nuova scheda figlia">
+<!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "apre il collegamento in una nuova sottoscheda">
 
-<!ENTITY config.openGroupBookmarkAsTabSubTree.caption "&quot;Apri tutti in schede&quot; nel menu Segnalibri">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree "Apre come sottoalbero (Raccomandato)">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "Apre in schede separate">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.replace "Sostituisce tutte le schede con i collegamenti contenuti nella cartella (comportamento predefinito di Firefox)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.caption "La voce &quot;Apri tutti in schede&quot; nel menu Segnalibri">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree "apre i segnalibri come sottoalbero (Raccomandato)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "apre i segnalibri in schede separate">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.replace "sostituisce la scheda in uso con i segnalibri contenuti nella cartella selezionata (comportamento predefinito di Firefox)">
 
 <!ENTITY config.tabs.restriction.tab "Finestre">
 
@@ -105,12 +105,12 @@
 
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Espandi automaticamente i sottoalberi all'inserimento di nuove schede">
 
-<!ENTITY config.attachChildrenToGrandParentOnRemoveTab "Elimina dall&apos;albero le schede figlie alla chiusura della scheda madre">
+<!ENTITY config.attachChildrenToGrandParentOnRemoveTab "Elimina le sottoschede dall'albero alla chiusura della scheda principale">
 
-<!ENTITY config.focusMode "Attiva la scheda successiva/precedente, anche se è nascosta, con Ctrl(Command)-Tab">
+<!ENTITY config.focusMode "Attiva la scheda successiva/precedente, anche se è nascosta, con Control(Command)-Tab">
 
-<!ENTITY config.insertNewChildAt.caption "Posizione di inserimento di nuove schede figlie">
-<!ENTITY config.insertNewChildAt.first "Inserisci all&apos;inizio del sottoalbero, come prima figlia">
+<!ENTITY config.insertNewChildAt.caption "Posizione di inserimento di nuove sottoschede">
+<!ENTITY config.insertNewChildAt.first "Inserisci all&apos;inizio del sottoalbero, come prima sottoscheda">
 <!ENTITY config.insertNewChildAt.last "Accoda all&apos;ultimo sottoalbero">
 
 
@@ -124,7 +124,7 @@
 <!ENTITY selection.removeTabSubTree.accesskey "s">
 <!ENTITY context.removeTabSubTree.label     "Chiudi questo sottoalbero">
 <!ENTITY context.removeTabSubTree.accesskey "u">
-<!ENTITY context.removeDescendantTabs.label     "Chiudi sottoalberi figli">
+<!ENTITY context.removeDescendantTabs.label     "Chiudi sottoschede">
 <!ENTITY context.removeDescendantTabs.accesskey "i">
 <!ENTITY context.collapseAllSubtree.label     "Contrai tutti i sottoalberi">
 <!ENTITY context.collapseAllSubtree.accesskey "o">
