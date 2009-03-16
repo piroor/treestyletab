@@ -422,15 +422,21 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-stack > hbox:not(:last-ch
 }
 tabbrowser[treestyletab-mode="vertical"] .tabs-newtab-button,
 tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-button,
-tabbrowser[treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton {
+tabbrowser[treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton,
+tabbrowser[treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton /* Tab Mix Plus */ {
 	-moz-appearance: none !important;
+	border: 0 none !important;
+	-border-right-colors: transparent !important;
+	-border-bottom-colors: transparent !important;
+	-border-left-colors: transparent !important;
 	border-top: 1px solid ThreeDShadow !important;
 	-moz-border-top-colors: ThreeDShadow !important;
 	background: ThreeDFace !important;
 }
 tabbrowser[treestyletab-mode="vertical"] .tabs-newtab-button:hover,
 tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-button:hover,
-tabbrowser[treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton:hover {
+tabbrowser[treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton:hover,
+tabbrowser[treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton:hover /* Tab Mix Plus */ {
 	background: ThreeDHighlight !important;
 }
 
@@ -438,13 +444,22 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-newtab-button,
 tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-box,
 tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-box-animate,
 tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-button,
-tabbrowser[treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton {
+tabbrowser[treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton,
+tabbrowser[treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton /* Tab Mix Plus */ {
 	background-image: none !important;
 	margin: 0 !important;
 	padding: 0 2px !important;
 	width: 100% !important;
 	min-height: 0 !important;
 	height: 16px !important;
+}
+
+/* Tab Mix Plus */
+tabbrowser[treestyletab-mode="vertical"] .tabs-newtab-topbox > .tabs-newtab-button {
+	-moz-box-flex: 1;
+	-moz-box-align: center;
+	-moz-box-pack: center;
+	-moz-box-orient: vertical;
 }
 
 
