@@ -2216,7 +2216,7 @@ TreeStyleTabBrowser.prototype = {
 			case this.kDROP_ON:
 				info.action       = this.kACTION_MOVE | this.kACTION_ATTACH;
 				info.parent       = tab;
-				info.insertBefore = this.getNextSiblingTab(tab);
+				info.insertBefore = this.getNextSiblingTab(tab) || this.getNextVisibleTab(tab);
 				break;
 
 			case this.kDROP_BEFORE:
