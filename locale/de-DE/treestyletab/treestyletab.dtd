@@ -14,7 +14,7 @@
 <!ENTITY config.tabbar.invertUI         "Reihenfolge der Tabs umdrehen">
 <!ENTITY config.enableSubtreeIndent         "Tabs einrücken">
 <!ENTITY config.allowSubtreeCollapseExpand  "Auf- und Einklappen von Zweigen erlauben">
-<!ENTITY config.tabbar.hideNewTabButton     "Show &quot;Open a new tab&quot; button">
+<!ENTITY config.tabbar.hideNewTabButton     "Button &quot;Neues Tab öffnen&quot; anzeigen">
 <!ENTITY config.tabbar.hideAlltabsButton    "Button zum Auflisten aller Tabs anzeigen">
 
 <!ENTITY config.tabbar.style.caption "Aussehen der Tableiste">
