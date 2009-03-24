@@ -974,10 +974,14 @@ TreeStyleTabBrowser.prototype = {
 						break;
 
 					case 'extensions.treestyletab.tabbar.style':
-						if (value)
+						if (value) {
+							if (/^(default|vertigo|mixed)$/.test(value))
+								value = 'square '+value;
 							b.setAttribute(this.kSTYLE, value);
-						else
+						}
+						else {
 							b.removeAttribute(this.kSTYLE);
+						}
 						break;
 
 					case 'extensions.treestyletab.twisty.style':

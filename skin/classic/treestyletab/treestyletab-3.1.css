@@ -12,26 +12,26 @@ tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox .tabs-newtab
 tabbrowser[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
 	border-width: 0 1px 1px 0 !important;
 }
-tabbrowser[treestyletab-mode="vertical"][treestyletab-style="vertigo"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
+tabbrowser[treestyletab-style~="vertigo"][treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
 	border-style: none !important;
 }
 
 
 /* Shadow of vertival tabs */
 
-tabbrowser[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"]:not([treestyletab-style="vertigo"])
+tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"]
 	.tabbrowser-tab {
 	-moz-box-shadow: -0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15) !important;
 }
-tabbrowser[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"]:not([treestyletab-style="vertigo"])[treestyletab-appearance-inverted="true"]
+tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"][treestyletab-appearance-inverted="true"]
 	.tabbrowser-tab {
 	-moz-box-shadow: 0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15) !important;
 }
-tabbrowser[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"]:not([treestyletab-style="vertigo"]):not([treestyletab-hide-newtab-button]) .tabs-container:not([overflow="true"])
+tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"]:not([treestyletab-hide-newtab-button]) .tabs-container:not([overflow="true"])
 	.scrollbox-innerbox {
 	background: url("dropshadow.png") repeat-x bottom !important;
 }
-tabbrowser[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"]:not([treestyletab-style="vertigo"]):not([treestyletab-hide-newtab-button="true"]) .tabs-container:not([overflow="true"])
+tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"][treestyletab-tabbar-dropshadow="true"]:not([treestyletab-hide-newtab-button="true"]) .tabs-container:not([overflow="true"])
 	.tabbrowser-arrowscrollbox .tabs-newtab-button {
 	margin-bottom: 5px !important;
 }
