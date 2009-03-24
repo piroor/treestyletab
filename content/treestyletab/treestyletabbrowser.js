@@ -1143,51 +1143,50 @@ TreeStyleTabBrowser.prototype = {
 			case 'mousedown':
 				if (aEvent.currentTarget == this.mTabBrowser.mTabContainer) {
 					this.onTabMouseDown(aEvent);
+					return;
 				}
-				else {
-					if (
-						!this.tabbarResizing &&
-						(
-							aEvent.originalTarget.getAttribute('class') == this.kSPLITTER ||
-							aEvent.originalTarget.parentNode.getAttribute('class') == this.kSPLITTER
-						)
-						) {
-						this.tabbarResizing = true;
-						this.clearTabbarCanvas();
-						this.mTabBrowser.setAttribute(this.kRESIZING, true);
-						if (this.isGecko19) {
-							/* canvasを非表示にしたのと同じタイミングでリサイズを行うと、
-							   まだ内部的にcanvasの大きさが残ったままなので、その大きさ以下に
-							   タブバーの幅を縮められなくなる。手動でイベントを再送してやると
-							   この問題を防ぐことができる。 */
-							aEvent.preventDefault();
-							aEvent.stopPropagation();
-							var flags = 0;
-							const nsIDOMNSEvent = Components.interfaces.nsIDOMNSEvent;
-							if (aEvent.altKey) flags |= nsIDOMNSEvent.ALT_MASK;
-							if (aEvent.ctrlKey) flags |= nsIDOMNSEvent.CONTROL_MASK;
-							if (aEvent.shiftKey) flags |= nsIDOMNSEvent.SHIFT_MASK;
-							if (aEvent.metaKey) flags |= nsIDOMNSEvent.META_MASK;
-							window.setTimeout(function(aX, aY, aButton, aDetail) {
-								window
-									.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-									.getInterface(Components.interfaces.nsIDOMWindowUtils)
-									.sendMouseEvent('mousedown', aX, aY, aButton, aDetail, flags);
-							}, 0, aEvent.clientX, aEvent.clientY, aEvent.button, aEvent.detail);
-						}
+				if (
+					!this.tabbarResizing &&
+					(
+						aEvent.originalTarget.getAttribute('class') == this.kSPLITTER ||
+						aEvent.originalTarget.parentNode.getAttribute('class') == this.kSPLITTER
+					)
+					) {
+					this.tabbarResizing = true;
+					this.clearTabbarCanvas();
+					this.mTabBrowser.setAttribute(this.kRESIZING, true);
+					if (this.isGecko19) {
+						/* canvasを非表示にしたのと同じタイミングでリサイズを行うと、
+						   まだ内部的にcanvasの大きさが残ったままなので、その大きさ以下に
+						   タブバーの幅を縮められなくなる。手動でイベントを再送してやると
+						   この問題を防ぐことができる。 */
+						aEvent.preventDefault();
+						aEvent.stopPropagation();
+						var flags = 0;
+						const nsIDOMNSEvent = Components.interfaces.nsIDOMNSEvent;
+						if (aEvent.altKey) flags |= nsIDOMNSEvent.ALT_MASK;
+						if (aEvent.ctrlKey) flags |= nsIDOMNSEvent.CONTROL_MASK;
+						if (aEvent.shiftKey) flags |= nsIDOMNSEvent.SHIFT_MASK;
+						if (aEvent.metaKey) flags |= nsIDOMNSEvent.META_MASK;
+						window.setTimeout(function(aX, aY, aButton, aDetail) {
+							window
+								.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+								.getInterface(Components.interfaces.nsIDOMWindowUtils)
+								.sendMouseEvent('mousedown', aX, aY, aButton, aDetail, flags);
+						}, 0, aEvent.clientX, aEvent.clientY, aEvent.button, aEvent.detail);
 					}
-					this.cancelShowHideTabbarOnMousemove();
-					if (
-						this.autoHideEnabled &&
-						this.autoHideShown &&
-						(
-							aEvent.originalTarget.ownerDocument != document ||
-							!this.getTabBrowserFromChild(aEvent.originalTarget)
-						)
-						)
-						this.hideTabbar();
-					this.lastMouseDownTarget = aEvent.originalTarget.localName;
 				}
+				this.cancelShowHideTabbarOnMousemove();
+				if (
+					this.autoHideEnabled &&
+					this.autoHideShown &&
+					(
+						aEvent.originalTarget.ownerDocument != document ||
+						!this.getTabBrowserFromChild(aEvent.originalTarget)
+					)
+					)
+					this.hideTabbar();
+				this.lastMouseDownTarget = aEvent.originalTarget.localName;
 				return;
 
 			case 'mouseup':
@@ -1258,27 +1257,11 @@ TreeStyleTabBrowser.prototype = {
 				return;
 
 			case 'popupshowing':
-				if (aEvent.target != aEvent.currentTarget) return;
-				switch (aEvent.target.getAttribute('anonid'))
-				{
-					case 'tabContextMenu':
-						this.tabContextMenuShown = true;
-						this.initTabContextMenu(aEvent);
-						break;
-					case 'alltabs-popup':
-						this.initAllTabsPopup(aEvent);
-						break;
-				}
+				this.onPopupShowing(aEvent);
 				return;
 
 			case 'popuphiding':
-				if (aEvent.target != aEvent.currentTarget) return;
-				switch (aEvent.target.getAttribute('anonid'))
-				{
-					case 'tabContextMenu':
-						this.tabContextMenuShown = false;
-						break;
-				}
+				this.onPopupHiding(aEvent);
 				return;
 
 			case 'dragenter':
@@ -1311,18 +1294,7 @@ TreeStyleTabBrowser.prototype = {
 
 			case 'overflow':
 			case 'underflow':
-				var box = aEvent.currentTarget;
-				var tabs = this.mTabBrowser.mTabContainer;
-				var horizontal = tabs.orient == 'horizontal';
-				if (horizontal) return;
-				aEvent.stopPropagation();
-				if (aEvent.type == 'overflow') {
-					tabs.setAttribute('overflow', 'true');
-					box.scrollBoxObject.ensureElementIsVisible(tabs.selectedItem);
-				}
-				else {
-					tabs.removeAttribute('overflow');
-				}
+				this.onTabbarOverflow(aEvent);
 				return;
 		}
 	},
@@ -1800,6 +1772,38 @@ TreeStyleTabBrowser.prototype = {
 		this.getTabFromEvent(aEvent).__treestyletab__preventSelect = true;
 	},
  
+	onTabbarOverflow : function(aEvent) 
+	{
+		var box = aEvent.currentTarget;
+		var tabs = this.mTabBrowser.mTabContainer;
+		var horizontal = tabs.orient == 'horizontal';
+		if (horizontal) return;
+		aEvent.stopPropagation();
+		if (aEvent.detail == 1) return;
+		if (aEvent.type == 'overflow') {
+			tabs.setAttribute('overflow', 'true');
+			box.scrollBoxObject.ensureElementIsVisible(tabs.selectedItem);
+		}
+		else {
+			tabs.removeAttribute('overflow');
+		}
+	},
+ 
+	onPopupShowing : function(aEvent) 
+	{
+		if (aEvent.target != aEvent.currentTarget) return;
+		switch (aEvent.target.getAttribute('anonid'))
+		{
+			case 'tabContextMenu':
+				this.tabContextMenuShown = true;
+				this.initTabContextMenu(aEvent);
+				break;
+			case 'alltabs-popup':
+				this.initAllTabsPopup(aEvent);
+				break;
+		}
+	},
+	
 	initTabContextMenu : function(aEvent) 
 	{
 		var b = this.mTabBrowser;
@@ -1978,6 +1982,17 @@ TreeStyleTabBrowser.prototype = {
 		for (var i = 0, maxi = items.length; i < maxi; i++)
 		{
 			items[i].style.paddingLeft = tabs.snapshotItem(i).getAttribute(this.kNEST)+'em';
+		}
+	},
+  
+	onPopupHiding : function(aEvent) 
+	{
+		if (aEvent.target != aEvent.currentTarget) return;
+		switch (aEvent.target.getAttribute('anonid'))
+		{
+			case 'tabContextMenu':
+				this.tabContextMenuShown = false;
+				break;
 		}
 	},
   
