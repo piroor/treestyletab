@@ -28,22 +28,31 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabs-stack {
-	background: #797979 url("metal/shadow-active-l.png") repeat-y top right !important;
+	background: #797979 !important;
 	border: 1px solid #444444 !important;
 	border-width: 1px 0 0 !important;
 	padding: 0 !important;
 }
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
-  .tabs-stack {
-	background: #797979 url("metal/shadow-active-r.png") repeat-y top left !important;
-}
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabs-stack {
-	background: #acacac url("metal/shadow-inactive-l.png") repeat-y top right !important;
+	background: #acacac !important;
+}
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-arrowscrollbox {
+	background: url("metal/shadow-active-l.png") repeat-y top right !important;
+}
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+  .tabbrowser-arrowscrollbox {
+	background: url("metal/shadow-active-r.png") repeat-y top left !important;
+}
+:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-arrowscrollbox {
+	background: url("metal/shadow-inactive-l.png") repeat-y top right !important;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
-  .tabs-stack {
-	background: #acacac url("metal/shadow-inactive-r.png") repeat-y top left !important;
+  .tabbrowser-arrowscrollbox {
+	background: url("metal/shadow-inactive-r.png") repeat-y top left !important;
 }
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]

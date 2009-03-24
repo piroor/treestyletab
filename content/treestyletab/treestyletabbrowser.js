@@ -1147,6 +1147,7 @@ TreeStyleTabBrowser.prototype = {
 				}
 				if (
 					!this.tabbarResizing &&
+					aEvent.originalTarget &&
 					(
 						aEvent.originalTarget.getAttribute('class') == this.kSPLITTER ||
 						aEvent.originalTarget.parentNode.getAttribute('class') == this.kSPLITTER
@@ -1190,7 +1191,8 @@ TreeStyleTabBrowser.prototype = {
 				return;
 
 			case 'mouseup':
-				if (aEvent.originalTarget.getAttribute('class') == this.kSPLITTER ||
+				if (aEvent.originalTarget &&
+					aEvent.originalTarget.getAttribute('class') == this.kSPLITTER ||
 					aEvent.originalTarget.parentNode.getAttribute('class') == this.kSPLITTER) {
 					this.tabbarResizing = false;
 					this.mTabBrowser.removeAttribute(this.kRESIZING);
@@ -1215,24 +1217,29 @@ TreeStyleTabBrowser.prototype = {
 				if (/^(scrollbar|thumb|slider|scrollbarbutton)$/i.test(this.lastMouseDownTarget))
 					return;
 			case 'resize':
-				if (this.autoHideShown) {
-					switch (this.mTabBrowser.getAttribute(this.kTABBAR_POSITION))
-					{
-						case 'left':
-							this.container.style.marginRight = '-'+this.autoHideXOffset+'px';
-							break;
-						case 'right':
-							this.container.style.marginLeft = '-'+this.autoHideXOffset+'px';
-							break;
-						case 'bottom':
-							this.container.style.marginTop = '-'+this.autoHideYOffset+'px';
-							break;
-						default:
-							this.container.style.marginBottom = '-'+this.autoHideYOffset+'px';
-							break;
-					}
-					this.redrawContentArea();
+				if (
+					!aEvent.originalTarget ||
+					aEvent.originalTarget.ownerDocument != document ||
+					!this.autoHideShown
+					) {
+					return;
 				}
+				switch (this.mTabBrowser.getAttribute(this.kTABBAR_POSITION))
+				{
+					case 'left':
+						this.container.style.marginRight = '-'+this.autoHideXOffset+'px';
+						break;
+					case 'right':
+						this.container.style.marginLeft = '-'+this.autoHideXOffset+'px';
+						break;
+					case 'bottom':
+						this.container.style.marginTop = '-'+this.autoHideYOffset+'px';
+						break;
+					default:
+						this.container.style.marginBottom = '-'+this.autoHideYOffset+'px';
+						break;
+				}
+				this.redrawContentArea();
 				return;
 
 			case 'scroll':
@@ -1253,7 +1260,8 @@ TreeStyleTabBrowser.prototype = {
 				return;
 
 			case 'load':
-				this.redrawContentArea();
+				if (aEvent.originalTarget instanceof Components.interfaces.nsIDOMWindow)
+					this.redrawContentArea();
 				return;
 
 			case 'popupshowing':
@@ -3378,9 +3386,27 @@ TreeStyleTabBrowser.prototype = {
 		var yOffset = (zoom == 1 && (pos == 'left' || pos == 'right')) ?
 				contentBox.screenY + frame.scrollY - browserBox.screenY :
 				0 ;
+		var w = tabContainerBox.width - xOffset;
+		var h = tabContainerBox.height - yOffset;
+
+		for (let node = this.tabbarCanvas;
+		     node != this.mTabBrowser.mTabContainer.parentNode;
+		     node = node.parentNode)
+		{
+			let style = window.getComputedStyle(node, null);
+			'border-left-width,border-right-width,margin-left,margin-right'
+				.split(',').forEach(function(aProperty) {
+					w -= parseInt(style.getPropertyValue(aProperty).replace('px', ''));
+				});
+			'border-top-width,border-bottom-width,margin-top,margin-bottom'
+				.split(',').forEach(function(aProperty) {
+					h -= parseInt(style.getPropertyValue(aProperty).replace('px', ''));
+				});
+		}
+
 		// zero width (heigh) canvas becomes wrongly size!!
-		var w = Math.max(1, (tabContainerBox.width - xOffset));
-		var h = Math.max(1, (tabContainerBox.height - yOffset));
+		w = Math.max(1, w);
+		h = Math.max(1, h);
 
 		this.tabbarCanvas.style.display = 'inline';
 		this.tabbarCanvas.style.margin = (yOffset || 0)+'px 0 0 '+(xOffset || 0)+'px';
