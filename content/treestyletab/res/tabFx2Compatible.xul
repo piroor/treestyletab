@@ -6,7 +6,7 @@
 window.addEventListener('DOMContentLoaded', function() {
 	window.removeEventListener('DOMContentLoaded', arguments.callee, true);
 
-	const currentRevision = 1;
+	const currentRevision = 2;
 
 	var b = document.getElementById('content');
 	if (!b || b.localName != 'tabbrowser') return;
