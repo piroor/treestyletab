@@ -1,0 +1,125 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+tabbrowser[treestyletab-style="metal"][treestyletab-twisty-style^="modern"] .treestyletab-twisty-container {
+	position: relative;
+	margin: 0 6px 0 -6px;
+}
+tabbrowser[treestyletab-style="metal"][treestyletab-twisty-style^="modern"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .treestyletab-twisty-container {
+	margin: 0 -6px 0 6px;
+}
+
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tabs * {
+	width: 100% !important;
+}
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-stack {
+	width: 10em !important;
+	padding: 5px 0 0 !important;
+	border-style: solid !important;
+	border-color: #444 !important;
+	border-width: 1px 0 0 !important;
+	background:#797979 url("metal/shadow-l.png") repeat-y top right !important;
+}
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .treestyletab-splitter {
+	border-style: solid !important;
+	border-color: #4e4e4e !important;
+	border-width: 0 1px 0 0 !important;
+	background: #b3b2b3 !important;
+}
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tab .tab-icon {
+	margin: -2px 0 0 0 !important;
+	padding: 0 !important;
+}
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tab .tab-icon .tab-icon-image {
+	width: 16px !important;
+	height: 16px !important;
+}
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tab .tab-text {
+	margin: 0 !important;
+	padding: 3px 4px 4px !important;
+	text-align: center !important;
+}
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tab,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tab:hover,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"],
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"]:hover {
+	background: transparent none !important;
+	border: 2px solid transparent !important;
+	color: black !important;
+	height: 30px !important;
+	margin-bottom: -2px !important;
+	margin-top: -2px !important;
+	padding: 0 !important;
+	-moz-border-top-colors: transparent transparent !important;
+	-moz-border-right-colors: transparent transparent !important;
+	-moz-border-bottom-colors: transparent transparent !important;
+	-moz-border-left-colors: transparent transparent !important;
+}
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-appearance-inverted="true"]) .tabbrowser-tab:not([treestyletab-drop-position]),
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-appearance-inverted="true"]) .tabbrowser-tab[selected="true"]:not([treestyletab-drop-position]) {
+	border-right: 0 none !important;
+	-moz-border-right-colors: none !important;
+}
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab:not([treestyletab-drop-position]),
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab[selected="true"]:not([treestyletab-drop-position]) {
+	border-left: 0 none !important;
+	-moz-border-left-colors: none !important;
+}
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-appearance-inverted="true"]) .tabbrowser-tab:not([treestyletab-drop-position]) .tab-image-right,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-appearance-inverted="true"]) .tabbrowser-tab[selected="true"]:not([treestyletab-drop-position]) .tab-image-right,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab:not([treestyletab-drop-position]) .tab-image-left,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab[selected="true"]:not([treestyletab-drop-position]) .tab-image-left {
+	width: 10px !important;
+}
+
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tab .tab-image-middle,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tab:hover .tab-image-middle,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tab .tab-close-button,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tab:hover .tab-close-button {
+	background: url("metal/tab-middle.png") repeat-x top left !important;
+	margin: 0 !important;
+}
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tab .tab-image-left,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tab:hover .tab-image-left {
+	background: url("metal/tab-left-l.png") no-repeat top left !important;
+	width: 10px !important;
+}
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tab .tab-image-right,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tab:hover .tab-image-right {
+	background: url("metal/tab-right-l.png") no-repeat top right !important;
+	width: 8px !important;
+}
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"] .tab-image-middle,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"]:hover .tab-image-middle,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"] .tab-close-button,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"]:hover .tab-close-button,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"] .tab-image-right,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"]:hover .tab-image-right {
+	background: url("metal/tab-middle-selected.png") repeat-x top left !important;
+}
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"] .tab-image-left,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"]:hover .tab-image-left {
+	background: url("metal/tab-left-selected-l.png") no-repeat top left !important;
+}
+
+
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-bottom,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-left,
+tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="bottom"] .tabs-bottom,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tab-text-shadow, /* Mac OS X */
+tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="bottom"] .tab-text-shadow /* Mac OS X */ {
+	display: none !important;
+}
