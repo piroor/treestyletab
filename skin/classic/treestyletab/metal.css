@@ -16,11 +16,22 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="bottom"]
 }
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab:first-child,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab:first-child:hover,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab:first-child[selected="true"],
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab:first-child[selected="true"]:hover {
+	margin-top: 5px !important;
+}
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabs-stack {
 	background: #797979 url("metal/shadow-active-l.png") repeat-y top right !important;
 	border: 1px solid #444444 !important;
 	border-width: 1px 0 0 !important;
-	padding: 5px 0 0 !important;
+	padding: 0 !important;
 }
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
   .tabs-stack {
@@ -43,13 +54,13 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .treestyletab-splitter {
 	border-style: solid !important;
-	border-color: ThreeDDarkShadow !important;
+	border-color: #666666 !important;
 	border-width: 0 1px 0 0 !important;
 	background: #b3b2b3 !important;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"]
   .treestyletab-splitter {
-	border-color: ThreeDDarkShadow !important;
+	border-color: #666666 !important;
 	background: #e4e4e4 !important;
 }
 tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
@@ -126,28 +137,38 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-conta
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton, /* Tab Mix Plus */
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton:hover /* Tab Mix Plus */ {
 	background: #b3b2b3 !important;
-	border-top: 1px solid #4e4e4e !important;
+	border-top: 1px solid #666666 !important;
 }
 
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
-	margin-top: 3px !important;
-	border: 1px solid #4e4e4e !important;
-	-moz-border-radius: 0 0 6px 6px;
+	margin-top: 2px !important;
+	height: 18px !important;
+	border: 1px solid #666666 !important;
+}
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-appearance-inverted="true"]) .tabbrowser-arrowscrollbox .tabs-newtab-button {
+	background: #9a9a9a url("metal/shadow-active-l.png") repeat-y top right !important;
+	margin-left: 6px !important;
+	-moz-border-radius: 6px 0 0 6px;
+}
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
+	background: #9a9a9a url("metal/shadow-active-r.png") repeat-y top left !important;
+	margin-right: 6px !important;
+	-moz-border-radius: 0 6px 6px 0;
 }
 
 tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="left"] .tabs-newtab-button,
 tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="left"] .tabs-alltabs-button,
 tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="left"] .tabs-container > .tabs-closebutton,
 tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="left"] .tabs-closebutton-topbox > .tabs-closebutton /* Tab Mix Plus */ {
-	border-right: 1px solid #4e4e4e !important;
+	border-right: 1px solid #666666 !important;
 }
 
 tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"] .tabs-newtab-button,
 tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"] .tabs-alltabs-button,
 tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"] .tabs-container > .tabs-closebutton,
 tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"] .tabs-closebutton-topbox > .tabs-closebutton /* Tab Mix Plus */ {
-	border-left: 1px solid #4e4e4e !important;
+	border-left: 1px solid #666666 !important;
 }
 
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-newtab-button,
@@ -159,5 +180,14 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"] .ta
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton, /* Tab Mix Plus */
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton:hover /* Tab Mix Plus */ {
 	background: #e4e4e4 !important;
-	border-color: ThreeDShadow !important;
+	border-color: #666666 !important;
+}
+
+:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-appearance-inverted="true"]) .tabbrowser-arrowscrollbox .tabs-newtab-button {
+	background: #cecece url("metal/shadow-active-l.png") repeat-y top right !important;
+	border-color: #9a9a9a !important;
+}
+:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
+	background: #cecece url("metal/shadow-active-r.png") repeat-y top left !important;
+	border-color: #9a9a9a !important;
 }
