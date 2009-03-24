@@ -1,5 +1,7 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
+/* Square */
+
 tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="left"]:not([treestyletab-tabbar-fixed="true"]) .treestyletab-splitter {
 	border-right: 1px solid ThreeDShadow !important;
 	-moz-border-right-colors: ThreeDShadow !important;

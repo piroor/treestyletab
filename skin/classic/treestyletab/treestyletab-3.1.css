@@ -1,21 +1,5 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
-/* new-tab button */
-
-tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
-	border-style: none solid solid !important;
-	border-width: 0 0 1px 1px !important;
-	border-bottom: 1px solid ThreeDShadow !important;
-	-moz-border-bottom-colors: ThreeDShadow !important;
-	-moz-border-radius: 0 0 2px 2px;
-}
-tabbrowser[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
-	border-width: 0 1px 1px 0 !important;
-}
-tabbrowser[treestyletab-style~="vertigo"][treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
-	border-style: none !important;
-}
-
 
 /* Shadow of vertival tabs */
 

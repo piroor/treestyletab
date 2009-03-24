@@ -1,5 +1,6 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
+/* tab bar */
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabs-bottom,
@@ -14,25 +15,24 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="bottom"]
 	display: none !important;
 }
 
-
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabs-stack {
-	background:#797979 url("metal/shadow-active-l.png") repeat-y top right !important;
+	background: #797979 url("metal/shadow-active-l.png") repeat-y top right !important;
 	border: 1px solid #444444 !important;
 	border-width: 1px 0 0 !important;
 	padding: 5px 0 0 !important;
 }
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
   .tabs-stack {
-	background:#797979 url("metal/shadow-active-r.png") repeat-y top left !important;
+	background: #797979 url("metal/shadow-active-r.png") repeat-y top left !important;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabs-stack {
-	background:#acacac url("metal/shadow-inactive-l.png") repeat-y top right !important;
+	background: #acacac url("metal/shadow-inactive-l.png") repeat-y top right !important;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
   .tabs-stack {
-	background:#acacac url("metal/shadow-inactive-r.png") repeat-y top left !important;
+	background: #acacac url("metal/shadow-inactive-r.png") repeat-y top left !important;
 }
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
@@ -43,13 +43,13 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .treestyletab-splitter {
 	border-style: solid !important;
-	border-color: #4e4e4e !important;
+	border-color: ThreeDDarkShadow !important;
 	border-width: 0 1px 0 0 !important;
 	background: #b3b2b3 !important;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"]
   .treestyletab-splitter {
-	border-color: #f4f4f4 !important;
+	border-color: ThreeDDarkShadow !important;
 	background: #e4e4e4 !important;
 }
 tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
@@ -57,6 +57,8 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
 	border-width: 0 0 0 1px !important;
 }
 
+
+/* tab contents */
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab .tab-icon {
@@ -74,6 +76,16 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyleta
   .tabbrowser-tab .tab-icon .tab-icon-image {
 	margin: 0 6px 0 0 !important;
 }
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab .tab-text {
+	margin: 0 !important;
+	padding: 3px 4px 4px !important;
+	text-align: center !important;
+}
+
+
+/* twisty */
 
 tabbrowser[treestyletab-style="metal"][treestyletab-twisty-style][treestyletab-mode="vertical"]
   .treestyletab-twisty-container {
@@ -102,10 +114,50 @@ tabbrowser[treestyletab-style="metal"][treestyletab-twisty-style="retro"][treest
 }
 
 
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab .tab-text {
-	margin: 0 !important;
-	padding: 3px 4px 4px !important;
-	text-align: center !important;
+
+/* buttons in the tab bar */
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-newtab-button,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-newtab-button:hover,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-alltabs-button,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-alltabs-button:hover,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton:hover,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton, /* Tab Mix Plus */
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton:hover /* Tab Mix Plus */ {
+	background: #b3b2b3 !important;
+	border-top: 1px solid #4e4e4e !important;
 }
 
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
+	margin-top: 3px !important;
+	border: 1px solid #4e4e4e !important;
+	-moz-border-radius: 0 0 6px 6px;
+}
+
+tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="left"] .tabs-newtab-button,
+tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="left"] .tabs-alltabs-button,
+tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="left"] .tabs-container > .tabs-closebutton,
+tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="left"] .tabs-closebutton-topbox > .tabs-closebutton /* Tab Mix Plus */ {
+	border-right: 1px solid #4e4e4e !important;
+}
+
+tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"] .tabs-newtab-button,
+tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"] .tabs-alltabs-button,
+tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"] .tabs-container > .tabs-closebutton,
+tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"] .tabs-closebutton-topbox > .tabs-closebutton /* Tab Mix Plus */ {
+	border-left: 1px solid #4e4e4e !important;
+}
+
+:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-newtab-button,
+:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-newtab-button:hover,
+:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-alltabs-button,
+:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-alltabs-button:hover,
+:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton,
+:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton:hover,
+:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton, /* Tab Mix Plus */
+:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton:hover /* Tab Mix Plus */ {
+	background: #e4e4e4 !important;
+	border-color: ThreeDShadow !important;
+}

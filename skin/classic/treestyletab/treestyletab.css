@@ -151,17 +151,21 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-stack > hbox {
 tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-stack > hbox:not(:last-child) {
 	display: none !important;
 }
+
+
+/* buttons in the tab bar */
+
 tabbrowser[treestyletab-mode="vertical"] .tabs-newtab-button,
 tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-button,
 tabbrowser[treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton,
 tabbrowser[treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton /* Tab Mix Plus */ {
 	-moz-appearance: none !important;
 	border: 0 none !important;
-	-border-right-colors: transparent !important;
-	-border-bottom-colors: transparent !important;
-	-border-left-colors: transparent !important;
+	-moz-border-top-colors: none !important;
+	-moz-border-right-colors: none !important;
+	-moz-border-bottom-colors: none !important;
+	-moz-border-left-colors: none !important;
 	border-top: 1px solid ThreeDShadow !important;
-	-moz-border-top-colors: ThreeDShadow !important;
 	background: ThreeDFace !important;
 }
 tabbrowser[treestyletab-mode="vertical"] .tabs-newtab-button:hover,
@@ -192,6 +196,23 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-newtab-topbox > .tabs-newtab-butt
 	-moz-box-pack: center;
 	-moz-box-orient: vertical;
 }
+
+
+/* new-tab button next to the last tab */
+
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
+	border-style: none solid solid !important;
+	border-width: 0 0 1px 1px !important;
+	border-bottom: 1px solid ThreeDShadow !important;
+	-moz-border-radius: 0 0 3px 3px;
+}
+tabbrowser[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
+	border-width: 0 1px 1px 0 !important;
+}
+tabbrowser[treestyletab-style~="vertigo"][treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
+	border-style: none !important;
+}
+
 
 
 /* transaprent tab bar */
