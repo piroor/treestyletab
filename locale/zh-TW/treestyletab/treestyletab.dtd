@@ -21,6 +21,7 @@
 <!ENTITY config.tabbar.style.default "簡潔">
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.mixed   "混合">
+<!ENTITY config.tabbar.style.metal   "Metal">
 <!ENTITY config.tabbar.style.none    "Default (specified by the Theme)">
 
 <!ENTITY config.twisty.style.caption "摺疊 / 展開的圖示">

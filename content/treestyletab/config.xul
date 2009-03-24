@@ -130,6 +130,9 @@
 			<radio value="mixed" label="&config.tabbar.style.mixed;"
 				class="image" align="center"
 				src="chrome://treestyletab/content/res/style-mixed.png"/>
+			<radio value="metal" label="&config.tabbar.style.metal;"
+				class="image" align="center"
+				src="chrome://treestyletab/content/res/style-metal.png"/>
 			</hbox>
 			<radio value="" label="&config.tabbar.style.none;"/>
 		</radiogroup>

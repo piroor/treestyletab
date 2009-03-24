@@ -21,6 +21,7 @@
 <!ENTITY config.tabbar.style.default "プレーン">
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.mixed   "Mixed">
+<!ENTITY config.tabbar.style.metal   "Metal">
 <!ENTITY config.tabbar.style.none    "なし（テーマ本来の表示スタイル）">
 
 <!ENTITY config.twisty.style.caption "つまみ">
