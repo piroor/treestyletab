@@ -1,11 +1,11 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
-tabbrowser[treestyletab-style="metal"][treestyletab-twisty-style^="modern"] .treestyletab-twisty-container {
+tabbrowser[treestyletab-style="metal"][treestyletab-twisty-style][treestyletab-mode="vertical"] .treestyletab-twisty-container {
 	position: relative;
 	margin: 0 6px 0 -6px;
 }
-tabbrowser[treestyletab-style="metal"][treestyletab-twisty-style^="modern"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .treestyletab-twisty-container {
-	margin: 0 -6px 0 6px;
+tabbrowser[treestyletab-style="metal"][treestyletab-twisty-style][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .treestyletab-twisty-container {
+	margin: 0 -16px 0 16px;
 }
 
 
@@ -21,6 +21,13 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-stack
 	border-width: 1px 0 0 !important;
 	background:#797979 url("metal/shadow-l.png") repeat-y top right !important;
 }
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabs-stack {
+	background:#797979 url("metal/shadow-r.png") repeat-y top left !important;
+}
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-container {
+	padding: 0 !important;
+}
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .treestyletab-splitter {
 	border-style: solid !important;
@@ -28,9 +35,12 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .treestylet
 	border-width: 0 1px 0 0 !important;
 	background: #b3b2b3 !important;
 }
+tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"] .treestyletab-splitter {
+	border-width: 0 0 0 1px !important;
+}
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tab .tab-icon {
-	margin: -2px 0 0 0 !important;
+	margin: -2px 0 0 !important;
 	padding: 0 !important;
 }
 
@@ -112,6 +122,42 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"] .tab-image-left,
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"]:hover .tab-image-left {
 	background: url("metal/tab-left-selected-l.png") no-repeat top left !important;
+}
+
+
+
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab .tab-image-middle,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab:hover .tab-image-middle,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab .tab-close-button,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab:hover .tab-close-button {
+	background: url("metal/tab-middle.png") repeat-x top left !important;
+}
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab .tab-image-left,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab:hover .tab-image-left {
+	background: url("metal/tab-left-r.png") no-repeat top left !important;
+	width: 8px !important;
+}
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab .tab-image-right,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab:hover .tab-image-right {
+	background: url("metal/tab-right-r.png") no-repeat top right !important;
+	width: 10px !important;
+}
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab[selected="true"] .tab-image-middle,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab[selected="true"]:hover .tab-image-middle,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab[selected="true"] .tab-close-button,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab[selected="true"]:hover .tab-close-button,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab[selected="true"] .tab-image-left,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab[selected="true"]:hover .tab-image-left {
+	background: url("metal/tab-middle-selected.png") repeat-x top left !important;
+}
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab[selected="true"] .tab-image-right,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab[selected="true"]:hover .tab-image-right {
+	background: url("metal/tab-right-selected-r.png") no-repeat top right !important;
 }
 
 
