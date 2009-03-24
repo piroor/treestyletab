@@ -1,5 +1,6 @@
 @import url("chrome://treestyletab/skin/square.css");
 @import url("chrome://treestyletab/skin/metal.css");
+@import url("chrome://treestyletab/skin/metal/tab.css");
 
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 

@@ -1,5 +1,3 @@
-@import url("chrome://treestyletab/skin/metal/tab.css");
-
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
 
@@ -16,11 +14,6 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="bottom"]
 	display: none !important;
 }
 
-
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tabs * {
-	width: 100% !important;
-}
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabs-stack {
@@ -87,9 +80,25 @@ tabbrowser[treestyletab-style="metal"][treestyletab-twisty-style][treestyletab-m
 	position: relative;
 	margin: 0 6px 0 -6px;
 }
+tabbrowser[treestyletab-style="metal"][treestyletab-twisty-style="retro"][treestyletab-mode="vertical"]
+  .treestyletab-twisty-container {
+	margin: 0;
+}
+tabbrowser[treestyletab-style="metal"][treestyletab-twisty-style="retro"][treestyletab-mode="vertical"]:not([treestyletab-appearance-inverted="true"])
+  .tabbrowser-tab .tab-icon {
+	margin-left: -6px !important;
+}
 tabbrowser[treestyletab-style="metal"][treestyletab-twisty-style][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
   .treestyletab-twisty-container {
 	margin: 0 -12px 0 12px;
+}
+tabbrowser[treestyletab-style="metal"][treestyletab-twisty-style="retro"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+  .treestyletab-twisty-container {
+	margin: 0 -6px 0 6px;
+}
+tabbrowser[treestyletab-style="metal"][treestyletab-twisty-style="retro"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+  .tabbrowser-tab .tab-icon {
+	margin-right: -6px !important;
 }
 
 

@@ -18,4 +18,4 @@ locale	treestyletab	ru-RU	jar:chrome/treestyletab.jar!/locale/ru-RU/treestyletab
 skin	treestyletab	classic/1.0	jar:chrome/treestyletab.jar!/skin/classic/treestyletab/
 
 style chrome://browser/content/browser.xul chrome://treestyletab/skin/treestyletab-3.1.css appversion>=3.1b3pre
-#override chrome://treestyletab/skin/metal/tab.css	chrome://treestyletab/skin/metal/tab-3.5.css	appversion>=3.5b4pre
+override chrome://treestyletab/skin/metal/tab.css	chrome://treestyletab/skin/metal/tab-3.5.css	appversion>=3.5b4pre
