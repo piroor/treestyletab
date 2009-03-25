@@ -164,7 +164,7 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-close
 
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
-	margin-top: 2px !important;
+	margin-top: 1px !important;
 	height: 18px !important;
 	border: 1px solid #666666 !important;
 }
