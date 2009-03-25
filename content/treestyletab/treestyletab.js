@@ -1011,6 +1011,7 @@ var TreeStyleTabService = {
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.clickOnIndentSpaces.enabled');
 		this.observe(null, 'nsPref:changed', 'browser.link.open_newwindow.restriction.override');
 		this.observe(null, 'nsPref:changed', 'browser.tabs.loadFolderAndReplace.override');
+		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.style');
 	},
 	initialized : false,
 	
@@ -2112,6 +2113,14 @@ catch(e) {
 
 			case 'extensions.treestyletab.clickOnIndentSpaces.enabled':
 				this.shouldDetectClickOnIndentSpaces = this.getPref(aPrefName);
+				break;
+
+			case 'extensions.treestyletab.tabbar.style':
+			case 'extensions.treestyletab.tabbar.position':
+				this.preLoadImagesForStyle([
+					this.getPref('extensions.treestyletab.tabbar.style'),
+					this.getPref('extensions.treestyletab.tabbar.position')
+				].join('-'));
 				break;
 
 			default:
