@@ -2369,10 +2369,15 @@ TreeStyleTabBrowser.prototype = {
 				return parent ? draggedTabs.indexOf(parent) : -1 ;
 			});
 
-		draggedTabs.forEach(function(aTab) {
+		var parentTabsArray = draggedTabs.map(function(aTab) {
+				return (aInfo.action & this.kACTIONS_FOR_DESTINATION) ?
+					sourceBrowser.treeStyleTab.getParentTab(aTab) : null ;
+			}, this);
+
+		draggedTabs.forEach(function(aTab, aIndex) {
 			var tab = aTab;
 			if (aInfo.action & this.kACTIONS_FOR_DESTINATION) {
-				var parent = sourceBrowser.treeStyleTab.getParentTab(aTab);
+				var parent = parentTabsArray[aIndex];
 				if (tabsInfo.isSelectionMove)
 					sourceWindow.MultipleTabService.setSelection(aTab, false);
 				if (aInfo.action & this.kACTION_IMPORT &&
