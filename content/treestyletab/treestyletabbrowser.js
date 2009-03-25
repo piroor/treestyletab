@@ -130,6 +130,7 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.addEventListener('scroll', this, true);
 
 
+		b.mTabContainer.removeAttribute('overflow'); // Firefox 3.0.x
 		var container = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-container');
 		if (container) container.removeAttribute('overflow');
 
@@ -147,7 +148,12 @@ TreeStyleTabBrowser.prototype = {
 						inner.boxObject.height > container.boxObject.height
 					)
 					) {
+					b.mTabContainer.setAttribute('overflow', true); // Firefox 3.0.x
 					container.setAttribute('overflow', true);
+				}
+				else {
+					b.mTabContainer.removeAttribute('overflow'); // Firefox 3.0.x
+					container.removeAttribute('overflow');
 				}
 			}, 100);
 		}
