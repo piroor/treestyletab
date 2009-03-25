@@ -82,8 +82,21 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab .tab-icon {
-	margin: -2px 0 0 !important;
-	padding: 0 !important;
+	margin: -2px -5px -5px !important;
+	padding: 5px !important;
+}
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab:hover .tab-icon,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[selected="true"]:hover .tab-icon {
+	background: url("metal/icon-bg.png") no-repeat right center !important;
+}
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+  .tabbrowser-tab:hover .tab-icon,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+  .tabbrowser-tab[selected="true"]:hover .tab-icon {
+	background-position: left center !important;
 }
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
