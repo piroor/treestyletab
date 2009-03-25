@@ -28,8 +28,7 @@ TreeStyleTabService._preLoadImages = {
 		'chrome://treestyletab/skin/metal/tab-active-selected-l.png',
 		'chrome://treestyletab/skin/metal/tab-inactive-selected-l.png',
 		'chrome://treestyletab/skin/metal/shadow-active-l.png',
-		'chrome://treestyletab/skin/metal/shadow-inactive-l.png',
-		'chrome://treestyletab/skin/metal/icon-bg.png'
+		'chrome://treestyletab/skin/metal/shadow-inactive-l.png'
 	].concat(
 		'MozBorderImage' in document.documentElement.style ?
 			[
@@ -46,8 +45,7 @@ TreeStyleTabService._preLoadImages = {
 		'chrome://treestyletab/skin/metal/tab-active-selected-r.png',
 		'chrome://treestyletab/skin/metal/tab-inactive-selected-r.png',
 		'chrome://treestyletab/skin/metal/shadow-active-r.png',
-		'chrome://treestyletab/skin/metal/shadow-inactive-r.png',
-		'chrome://treestyletab/skin/metal/icon-bg.png'
+		'chrome://treestyletab/skin/metal/shadow-inactive-r.png'
 	].concat(
 		'MozBorderImage' in document.documentElement.style ?
 			[
