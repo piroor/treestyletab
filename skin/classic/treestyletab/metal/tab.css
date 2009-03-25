@@ -25,29 +25,34 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
 	-moz-border-radius: 0 !important;
 }
 
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab .tab-close-button > * {
+	margin: 0 !important;
+}
+
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-appearance-inverted="true"])
-  .tabbrowser-tab:not([treestyletab-drop-position]),
+  .tabbrowser-tab:not([treestyletab-drop-position="self"]),
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-appearance-inverted="true"])
-  .tabbrowser-tab[selected="true"]:not([treestyletab-drop-position]) {
+  .tabbrowser-tab[selected="true"]:not([treestyletab-drop-position="self"]) {
 	border-right: 0 none !important;
 	-moz-border-right-colors: none !important;
 }
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
-  .tabbrowser-tab:not([treestyletab-drop-position]),
+  .tabbrowser-tab:not([treestyletab-drop-position="self"]),
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
-  .tabbrowser-tab[selected="true"]:not([treestyletab-drop-position]) {
+  .tabbrowser-tab[selected="true"]:not([treestyletab-drop-position="self"]) {
 	border-left: 0 none !important;
 	-moz-border-left-colors: none !important;
 }
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-appearance-inverted="true"])
-  .tabbrowser-tab:not([treestyletab-drop-position]) .tab-image-right,
+  .tabbrowser-tab:not([treestyletab-drop-position="self"]) .tab-image-right,
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-appearance-inverted="true"])
-  .tabbrowser-tab[selected="true"]:not([treestyletab-drop-position]) .tab-image-right,
+  .tabbrowser-tab[selected="true"]:not([treestyletab-drop-position="self"]) .tab-image-right,
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
-  .tabbrowser-tab:not([treestyletab-drop-position]) .tab-image-left,
+  .tabbrowser-tab:not([treestyletab-drop-position="self"]) .tab-image-left,
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
-  .tabbrowser-tab[selected="true"]:not([treestyletab-drop-position]) .tab-image-left {
+  .tabbrowser-tab[selected="true"]:not([treestyletab-drop-position="self"]) .tab-image-left {
 	width: 10px !important;
 }
 
