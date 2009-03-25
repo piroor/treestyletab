@@ -2889,6 +2889,11 @@ TreeStyleTabBrowser.prototype = {
 
 		this.setTabValue(aTab, this.kCOLLAPSED, aCollapse);
 
+		var event = document.createEvent('Events');
+		event.initEvent('TreeStyleTabCollapsedStateChange', true, true);
+		event.collapsed = aCollapse;
+		aTab.dispatchEvent(event);
+
 		var b = this.mTabBrowser;
 		var parent;
 		if (aCollapse && aTab == b.selectedTab && (parent = this.getParentTab(aTab))) {
