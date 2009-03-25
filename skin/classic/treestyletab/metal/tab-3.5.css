@@ -19,6 +19,7 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
 	margin-bottom: -2px !important;
 	margin-left: 0;
 	padding: 0 !important;
+	-moz-appearance: none !important;
 	-moz-border-top-colors: transparent transparent !important;
 	-moz-border-right-colors: transparent transparent !important;
 	-moz-border-bottom-colors: transparent transparent !important;
@@ -35,6 +36,7 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-image-right {
 	margin: 0 !important;
+	-moz-appearance: none !important;
 }
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]

@@ -17,6 +17,7 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
 	margin-bottom: -2px !important;
 	margin-left: 0;
 	padding: 0 !important;
+	-moz-appearance: none !important;
 	-moz-border-top-colors: transparent transparent !important;
 	-moz-border-right-colors: transparent transparent !important;
 	-moz-border-bottom-colors: transparent transparent !important;
@@ -60,6 +61,7 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab:hover .tab-close-button {
 	background: url("tab-active-middle.png") repeat-x top left !important;
 	margin: 0 !important;
+	-moz-appearance: none !important;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab .tab-image-middle,
