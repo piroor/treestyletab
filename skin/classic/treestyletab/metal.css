@@ -40,19 +40,27 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
 }
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-arrowscrollbox {
+  .tabbrowser-tabs:not([overflow="true"]) .tabbrowser-arrowscrollbox,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tabs[overflow="true"] .tabbrowser-arrowscrollbox .scrollbox-innerbox {
 	background: url("metal/shadow-active-l.png") repeat-y top right !important;
 }
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
-  .tabbrowser-arrowscrollbox {
+  .tabbrowser-tabs:not([overflow="true"]) .tabbrowser-arrowscrollbox,
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+  .tabbrowser-tabs[overflow="true"] .tabbrowser-arrowscrollbox .scrollbox-innerbox {
 	background: url("metal/shadow-active-r.png") repeat-y top left !important;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-arrowscrollbox {
+  .tabbrowser-tabs:not([overflow="true"]) .tabbrowser-arrowscrollbox,
+:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tabs[overflow="true"] .tabbrowser-arrowscrollbox .scrollbox-innerbox {
 	background: url("metal/shadow-inactive-l.png") repeat-y top right !important;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
-  .tabbrowser-arrowscrollbox {
+  .tabbrowser-tabs:not([overflow="true"]) .tabbrowser-arrowscrollbox,
+:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+  .tabbrowser-tabs[overflow="true"] .tabbrowser-arrowscrollbox .scrollbox-innerbox {
 	background: url("metal/shadow-inactive-r.png") repeat-y top left !important;
 }
 
