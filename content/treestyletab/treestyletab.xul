@@ -9,8 +9,8 @@
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 <script src="prefs.js" type="application/x-javascript"/>
-<script src="treestyletab.js" type="application/x-javascript"/>
-<script src="treestyletabbrowser.js" type="application/x-javascript"/>
+<script src="treestyletab.js" type="application/x-javascript; version=1.7"/>
+<script src="treestyletabbrowser.js" type="application/x-javascript; version=1.7"/>
 <script src="bookmarksOverlay.js" type="application/x-javascript"/>
 <script src="hacks.js" type="application/x-javascript"/>
 
