@@ -81,11 +81,11 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyleta
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-image-left {
 	border-right-width: 0;
-	-moz-border-image: url("fullsize-active-l.png") 10 / 10px 0 10px 10px;
+	-moz-border-image: url("tab-active-l.png") 10 / 10px 0 10px 10px;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-image-left {
-	-moz-border-image: url("fullsize-inactive-l.png") 10 / 10px 0 10px 10px;
+	-moz-border-image: url("tab-inactive-l.png") 10 / 10px 0 10px 10px;
 }
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
@@ -94,23 +94,23 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-close-button {
 	border-left-width: 0;
 	border-right-width: 0;
-	-moz-border-image: url("fullsize-active-l.png") 10 / 10px 0 10px 0;
+	-moz-border-image: url("tab-active-l.png") 10 / 10px 0 10px 0;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-image-middle,
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-close-button {
-	-moz-border-image: url("fullsize-inactive-l.png") 10 / 10px 0 10px 0;
+	-moz-border-image: url("tab-inactive-l.png") 10 / 10px 0 10px 0;
 }
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-image-right {
 	border-left-width: 0;
-	-moz-border-image: url("fullsize-active-l.png") 10 / 10px 10px 10px 0;
+	-moz-border-image: url("tab-active-l.png") 10 / 10px 10px 10px 0;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-image-right {
-	-moz-border-image: url("fullsize-inactive-l.png") 10 / 10px 10px 10px 0;
+	-moz-border-image: url("tab-inactive-l.png") 10 / 10px 10px 10px 0;
 }
 
 
@@ -119,33 +119,33 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
   .tab-image-left {
-	-moz-border-image: url("fullsize-active-r.png") 10 / 10px 0 10px 10px;
+	-moz-border-image: url("tab-active-r.png") 10 / 10px 0 10px 10px;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
   .tab-image-left {
-	-moz-border-image: url("fullsize-inactive-r.png") 10 / 10px 0 10px 10px;
+	-moz-border-image: url("tab-inactive-r.png") 10 / 10px 0 10px 10px;
 }
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
   .tab-image-middle,
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
   .tab-close-button {
-	-moz-border-image: url("fullsize-active-r.png") 10 / 10px 0 10px 0;
+	-moz-border-image: url("tab-active-r.png") 10 / 10px 0 10px 0;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
   .tab-image-middle,
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
   .tab-close-button {
-	-moz-border-image: url("fullsize-inactive-r.png") 10 / 10px 0 10px 0;
+	-moz-border-image: url("tab-inactive-r.png") 10 / 10px 0 10px 0;
 }
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
   .tab-image-right {
-	-moz-border-image: url("fullsize-active-r.png") 10 / 10px 10px 10px 0;
+	-moz-border-image: url("tab-active-r.png") 10 / 10px 10px 10px 0;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
   .tab-image-right {
-	-moz-border-image: url("fullsize-inactive-r.png") 10 / 10px 10px 10px 0;
+	-moz-border-image: url("tab-inactive-r.png") 10 / 10px 10px 10px 0;
 }
 
 
@@ -154,33 +154,33 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyleta
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-image-left[selected="true"] {
-	-moz-border-image: url("fullsize-active-selected-l.png") 10 / 10px 0 10px 10px;
+	-moz-border-image: url("tab-active-selected-l.png") 10 / 10px 0 10px 10px;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-image-left[selected="true"] {
-	-moz-border-image: url("fullsize-inactive-selected-l.png") 10 / 10px 0 10px 10px;
+	-moz-border-image: url("tab-inactive-selected-l.png") 10 / 10px 0 10px 10px;
 }
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-image-middle[selected="true"],
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   [selected="true"] .tab-close-button {
-	-moz-border-image: url("fullsize-active-selected-l.png") 10 / 10px 0 10px 0;
+	-moz-border-image: url("tab-active-selected-l.png") 10 / 10px 0 10px 0;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-image-middle[selected="true"],
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   [selected="true"] .tab-close-button {
-	-moz-border-image: url("fullsize-inactive-selected-l.png") 10 / 10px 0 10px 0;
+	-moz-border-image: url("tab-inactive-selected-l.png") 10 / 10px 0 10px 0;
 }
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-image-right[selected="true"] {
-	-moz-border-image: url("fullsize-active-selected-l.png") 10 / 10px 10px 10px 0;
+	-moz-border-image: url("tab-active-selected-l.png") 10 / 10px 10px 10px 0;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-image-right[selected="true"] {
-	-moz-border-image: url("fullsize-inactive-selected-l.png") 10 / 10px 10px 10px 0;
+	-moz-border-image: url("tab-inactive-selected-l.png") 10 / 10px 10px 10px 0;
 }
 
 
@@ -189,32 +189,32 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
   .tab-image-left[selected="true"] {
-	-moz-border-image: url("fullsize-active-selected-r.png") 10 / 10px 0 10px 10px;
+	-moz-border-image: url("tab-active-selected-r.png") 10 / 10px 0 10px 10px;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
   .tab-image-left[selected="true"] {
-	-moz-border-image: url("fullsize-inactive-selected-r.png") 10 / 10px 0 10px 10px;
+	-moz-border-image: url("tab-inactive-selected-r.png") 10 / 10px 0 10px 10px;
 }
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
   .tab-image-middle[selected="true"],
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
   [selected="true"] .tab-close-button {
-	-moz-border-image: url("fullsize-active-selected-r.png") 10 / 10px 0 10px 0;
+	-moz-border-image: url("tab-active-selected-r.png") 10 / 10px 0 10px 0;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
   .tab-image-middle[selected="true"],
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
   [selected="true"] .tab-close-button {
-	-moz-border-image: url("fullsize-inactive-selected-r.png") 10 / 10px 0 10px 0;
+	-moz-border-image: url("tab-inactive-selected-r.png") 10 / 10px 0 10px 0;
 }
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
   .tab-image-right[selected="true"] {
-	-moz-border-image: url("fullsize-active-selected-r.png") 10 / 10px 10px 10px 0;
+	-moz-border-image: url("tab-active-selected-r.png") 10 / 10px 10px 10px 0;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
   .tab-image-right[selected="true"] {
-	-moz-border-image: url("fullsize-inactive-selected-r.png") 10 / 10px 10px 10px 0;
+	-moz-border-image: url("tab-inactive-selected-r.png") 10 / 10px 10px 10px 0;
 }
 
