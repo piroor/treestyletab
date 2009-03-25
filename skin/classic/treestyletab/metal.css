@@ -63,19 +63,23 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .treestyletab-splitter {
-	border-style: solid !important;
-	border-color: #666666 !important;
-	border-width: 0 1px 0 0 !important;
 	background: #b3b2b3 !important;
+	border: 0 solid #666666 !important;
+	min-width: 5px;
+	-moz-appearance: none !important;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"]
   .treestyletab-splitter {
 	border-color: #666666 !important;
 	background: #e4e4e4 !important;
 }
+tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="left"]
+  .treestyletab-splitter {
+	border-right-width: 1px !important;
+}
 tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
   .treestyletab-splitter {
-	border-width: 0 0 0 1px !important;
+	border-left-width: 1px !important;
 }
 
 
@@ -113,6 +117,14 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyleta
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab .tab-text {
+	margin: 0 !important;
+	padding: 3px 4px 4px !important;
+	text-align: center !important;
+}
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab .tab-close-button {
+	z-index: 1 !important; /* for Linux */
 	margin: 0 !important;
 	padding: 3px 4px 4px !important;
 	text-align: center !important;
