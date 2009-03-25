@@ -206,10 +206,10 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"] .ta
 }
 
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-appearance-inverted="true"]) .tabbrowser-arrowscrollbox .tabs-newtab-button {
-	background: #cecece url("metal/shadow-active-l.png") repeat-y top right !important;
+	background: #cecece url("metal/shadow-inactive-l.png") repeat-y top right !important;
 	border-color: #9a9a9a !important;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
-	background: #cecece url("metal/shadow-active-r.png") repeat-y top left !important;
+	background: #cecece url("metal/shadow-inactive-r.png") repeat-y top left !important;
 	border-color: #9a9a9a !important;
 }
