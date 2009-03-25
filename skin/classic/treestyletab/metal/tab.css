@@ -25,6 +25,7 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
 	-moz-border-radius: 0 !important;
 }
 
+
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-appearance-inverted="true"])
   .tabbrowser-tab:not([treestyletab-drop-position]),
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-appearance-inverted="true"])

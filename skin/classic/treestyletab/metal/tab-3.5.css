@@ -13,7 +13,7 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
 	color: black !important;
 	height: auto !important;
 	max-height: none !important;
-	min-height: 10px !important;
+	min-height: 6px !important;
 	margin-top: -2px !important;
 	margin-right: 0;
 	margin-bottom: -2px !important;
@@ -36,22 +36,23 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-image-right {
 	margin: 0 !important;
+	position: relative !important;
 	-moz-appearance: none !important;
 }
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tab-image-middle > .tab-icon,
+  .tab-image-middle > .tab-icon {
+	margin-top: -16px !important;
+	margin-bottom: -14px !important;
+}
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-image-middle > .tab-text,
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tab-image-middle > * {
-	margin-top: -8px !important;
-	margin-bottom: -8px !important;
-}
+  .tab-image-middle > *,
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-close-button > * {
-	margin-top: -9px !important;
-	margin-bottom: -7px !important;
+	margin-top: -10px !important;
+	margin-bottom: -10px !important;
 }
 
 
