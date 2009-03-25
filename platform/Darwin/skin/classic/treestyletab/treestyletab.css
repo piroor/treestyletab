@@ -34,3 +34,8 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
 	padding-left: 0 !important;
 	padding-right: 0 !important;
 }
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-strip {
+	border-bottom: 0 none !important;
+}
