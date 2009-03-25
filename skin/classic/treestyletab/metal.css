@@ -36,6 +36,7 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabs-stack {
 	background: #acacac !important;
+	border-color: #797979 !important;
 }
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
