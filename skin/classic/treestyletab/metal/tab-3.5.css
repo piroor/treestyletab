@@ -35,6 +35,7 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-close-button,
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-image-right {
+	border: 10px solid transparent;
 	margin: 0 !important;
 	position: relative !important;
 	-moz-appearance: none !important;
@@ -79,6 +80,7 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyleta
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-image-left {
+	border-right-width: 0;
 	-moz-border-image: url("fullsize-active-l.png") 10 / 10px 0 10px 10px;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
@@ -90,6 +92,8 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-image-middle,
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-close-button {
+	border-left-width: 0;
+	border-right-width: 0;
 	-moz-border-image: url("fullsize-active-l.png") 10 / 10px 0 10px 0;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
@@ -101,6 +105,7 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-image-right {
+	border-left-width: 0;
 	-moz-border-image: url("fullsize-active-l.png") 10 / 10px 10px 10px 0;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
