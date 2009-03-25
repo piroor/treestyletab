@@ -25,3 +25,12 @@ tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="right"]:n
 	background: transparent;
 	width: 0;
 }
+
+
+/* Metal */
+
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab .tab-close-button {
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
