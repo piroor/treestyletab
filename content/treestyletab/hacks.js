@@ -754,6 +754,11 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		if ('execute' in mouselessbrowsing.EventHandler) {
 			eval('mouselessbrowsing.EventHandler.execute = '+
 				mouselessbrowsing.EventHandler.execute.toSource().replace(
+					'{',
+					'{ var Prefs = mlb_common.Prefs;'+
+					'  var Utils = mlb_common.Utils;'+
+					'  var MlbUtils = mouselessbrowsing.MlbUtils;'
+				).replace(
 					/((?:var [^=]+ = )?Utils.openUrlInNewTab\()/g,
 					'TreeStyleTabService.readyToOpenChildTab(); $1'
 				)
@@ -762,6 +767,13 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		if ('openLinkInOtherLocationViaPostfixKey' in mouselessbrowsing.EventHandler) {
 			eval('mouselessbrowsing.EventHandler.openLinkInOtherLocationViaPostfixKey = '+
 				mouselessbrowsing.EventHandler.openLinkInOtherLocationViaPostfixKey.toSource().replace(
+					'{',
+					'{ var Prefs = mlb_common.Prefs;'+
+					'  var Utils = mlb_common.Utils;'+
+					'  var MlbUtils = mouselessbrowsing.MlbUtils;'+
+					'  var MlbCommon = mouselessbrowsing.MlbCommon;'+
+					'  var ShortcutManager = mlb_common.ShortcutManager;'
+				).replace(
 					'Utils.openUrlInNewTab(',
 					'TreeStyleTabService.readyToOpenChildTab(); $&'
 				)
