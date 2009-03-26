@@ -963,12 +963,12 @@ var TreeStyleTabService = {
 		eval('nsBrowserAccess.prototype.openURI = '+
 			nsBrowserAccess.prototype.openURI.toSource().replace(
 				/(switch\s*\(aWhere\))/,
-				<><![CDATA[
+				<![CDATA[
 					if (aOpener &&
 						aWhere == Components.interfaces.nsIBrowserDOMWindow.OPEN_NEWTAB) {
 						TreeStyleTabService.readyToOpenChildTab(aOpener);
 					}
-					$1]]></>
+					$1]]>
 			)
 		);
 
@@ -1040,7 +1040,7 @@ var TreeStyleTabService = {
 				/\.height/g, '[TreeStyleTabService.getTabBrowserFromChild(TSTTabBrowser).treeStyleTab.invertedSizeProp]'
 			).replace(
 				/(return (?:true|dt.effectAllowed = "copyMove");)/,
-				<><![CDATA[
+				<![CDATA[
 					if (!(function(aSelf) {
 try{
 							var node = TST_DRAGSESSION.sourceNode;
@@ -1065,7 +1065,7 @@ catch(e) {
 						return TST_DRAGDROP_DISALLOW_RETRUN_VALUE;
 					}
 					$1
-				]]></>
+				]]>
 			).replace(
 				/TST_DRAGSESSION/g,
 				(canDropFunctionName == 'canDrop' ?
@@ -1087,7 +1087,7 @@ catch(e) {
 		eval('aObserver.'+dragOverFunctionName+' = '+
 			aObserver[dragOverFunctionName].toSource().replace(
 				'{',
-				<><![CDATA[
+				<![CDATA[
 					{
 						var TSTTabBrowser = this;
 						if ((function(aSelf) {
@@ -1118,7 +1118,7 @@ catch(e) {
 						})(TSTTabBrowser)) {
 							return;
 						}
-				]]></>
+				]]>
 			).replace(
 				/TST_DRAGSESSION/g,
 				(canDropFunctionName == 'canDrop' ?
@@ -1150,48 +1150,48 @@ catch(e) {
 		eval('aObserver.'+dropFunctionName+' = '+
 			aObserver[dropFunctionName].toSource().replace(
 				'{',
-				<><![CDATA[
+				<![CDATA[
 					{
 						var TSTTabBrowser = this;
 						TSTTabBrowser.treeStyleTab.clearDropPosition();
 						var dropActionInfo = TSTTabBrowser.treeStyleTab.getDropAction(aEvent, TST_DRAGSESSION);
-				]]></>
+				]]>
 			).replace( // Firefox 2
 				/(if \(aDragSession[^\)]+\) \{)/,
-				<><![CDATA[$1
+				<![CDATA[$1
 					if (TSTTabBrowser.treeStyleTab.performDrop(dropActionInfo, TST_DRAGSESSION.sourceNode))
 						return;
-				]]></>
+				]]>
 			).replace( // Firefox 3.0.x, 3.1 or later
 				/(if \((accelKeyPressed|isCopy|dropEffect == "copy")\) {)/,
-				<><![CDATA[
+				<![CDATA[
 					if (TSTTabBrowser.treeStyleTab.performDrop(dropActionInfo, draggedTab))
 						return;
-					$1]]></>
+					$1]]>
 			).replace( // Firefox 3, duplication of tab
 				/(this.selectedTab = newTab;)(\s*\})?/g,
-				<><![CDATA[$1;
+				<![CDATA[$1;
 					if (dropActionInfo.position == TreeStyleTabService.kDROP_ON)
 						TSTTabBrowser.treeStyleTab.attachTabTo(newTab, dropActionInfo.target);
-				$2]]></>
+				$2]]>
 			).replace( // Firefox 3, dragging tab from another window
 				'else if (draggedTab) {',
-				<><![CDATA[$&
+				<![CDATA[$&
 					if (TSTTabBrowser.treeStyleTab.performDrop(dropActionInfo, draggedTab))
 						return;
-				]]></>
+				]]>
 			).replace(
 				/(this.loadOneTab\([^;]+\));/,
-				<><![CDATA[
+				<![CDATA[
 					TSTTabBrowser.treeStyleTab.performDrop(dropActionInfo, $1);
 					return;
-				]]></>
+				]]>
 			).replace(
 				'document.getBindingParent(aEvent.originalTarget).localName != "tab"',
 				'!TreeStyleTabService.getTabFromEvent(aEvent)'
 			).replace(
 				'var tab = aEvent.target;',
-				<><![CDATA[$&
+				<![CDATA[$&
 					if (
 						tab.getAttribute('locked') == 'true' || // Tab Mix Plus
 						TreeStyleTabService.getTreePref('loadDroppedLinkToNewChildTab') ||
@@ -1200,7 +1200,7 @@ catch(e) {
 						TSTTabBrowser.treeStyleTab.performDrop(dropActionInfo, TSTTabBrowser.loadOneTab(getShortcutOrURI(url), null, null, null, bgLoad, false));
 						return;
 					}
-				]]></>
+				]]>
 			).replace(
 				/TST_DRAGSESSION/g,
 				(canDropFunctionName == 'canDrop' ?
@@ -1263,45 +1263,45 @@ catch(e) {
 		eval('nsContextMenu.prototype.openLinkInTab = '+
 			nsContextMenu.prototype.openLinkInTab.toSource().replace(
 				'{',
-				<><![CDATA[$&
+				<![CDATA[$&
 					TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);
-				]]></>
+				]]>
 			)
 		);
 		eval('nsContextMenu.prototype.openFrameInTab = '+
 			nsContextMenu.prototype.openFrameInTab.toSource().replace(
 				'{',
-				<><![CDATA[$&
+				<![CDATA[$&
 					TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);
-				]]></>
+				]]>
 			)
 		);
 		var viewImageMethod = ('viewImage' in nsContextMenu.prototype) ? 'viewImage' : 'viewMedia' ;
 		eval('nsContextMenu.prototype.'+viewImageMethod+' = '+
 			nsContextMenu.prototype[viewImageMethod].toSource().replace(
 				'openUILink(',
-				<><![CDATA[
+				<![CDATA[
 					if (String(whereToOpenLink(e, false, true)).indexOf('tab') == 0)
 						TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);
-					$&]]></>
+					$&]]>
 			)
 		);
 		eval('nsContextMenu.prototype.viewBGImage = '+
 			nsContextMenu.prototype.viewBGImage.toSource().replace(
 				'openUILink(',
-				<><![CDATA[
+				<![CDATA[
 					if (String(whereToOpenLink(e, false, true)).indexOf('tab') == 0)
 						TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);
-					$&]]></>
+					$&]]>
 			)
 		);
 		eval('nsContextMenu.prototype.addDictionaries = '+
 			nsContextMenu.prototype.addDictionaries.toSource().replace(
 				'openUILinkIn(',
-				<><![CDATA[
+				<![CDATA[
 					if (where.indexOf('tab') == 0)
 						TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);
-					$&]]></>
+					$&]]>
 			)
 		);
 
@@ -1314,12 +1314,12 @@ catch(e) {
 			eval('window.'+funcs[i]+' = '+
 				window[funcs[i]].toSource().replace(
 					/(openNewTabWith\()/g,
-					<><![CDATA[
+					<![CDATA[
 						if (!TreeStyleTabService.checkToOpenChildTab(event.target.ownerDocument.defaultView)) TreeStyleTabService.readyToOpenChildTab(event.target.ownerDocument.defaultView);
-						$1]]></>
+						$1]]>
 				).replace(
 					/(event.ctrlKey|event.metaKey)/,
-					<><![CDATA[
+					<![CDATA[
 						TreeStyleTabService.checkReadyToOpenNewTab({
 							uri      : href,
 							external : {
@@ -1332,12 +1332,12 @@ catch(e) {
 							modifier : $1,
 							invert   : TreeStyleTabService.getTreePref('link.invertDefaultBehavior')
 						}) ? true : (TreeStyleTabService.readyToOpenChildTab(), false)
-					]]></>
+					]]>
 				).replace(
 					/* あらゆるリンクからタブを開く設定の時に、アクセルキーが押されていた場合は
 					   反転された動作（通常のリンク読み込み）を行う */
 					'return false;case 1:',
-					<><![CDATA[
+					<![CDATA[
 							if (!('TMP_contentAreaClick' in window) && // do nothing for Tab Mix Plus
 								TreeStyleTabService.checkToOpenChildTab()) {
 								TreeStyleTabService.stopToOpenChildTab();
@@ -1356,7 +1356,7 @@ catch(e) {
 							}
 							return false;
 						case 1:
-					]]></>
+					]]>
 				)
 			);
 			break;
@@ -1370,7 +1370,7 @@ catch(e) {
 			eval(aName + ' = '+
 				overwroteFunc.toSource().replace(
 					/((openWebPanel\([^\;]+\);|PlacesUIUtils.showMinimalAddBookmarkUI\([^;]+\);)event.preventDefault\(\);return false;\})/,
-					<><![CDATA[
+					<![CDATA[
 						$1
 						else if (!('TMP_contentAreaClick' in window) && // do nothing for Tab Mix Plus
 							TreeStyleTabService.checkReadyToOpenNewTab({
@@ -1388,7 +1388,7 @@ catch(e) {
 							handleLinkClick(event, wrapper.href, linkNode);
 							return true;
 						}
-					]]></>
+					]]>
 				)
 			);
 		};
@@ -1410,10 +1410,10 @@ catch(e) {
 				eval('window.'+funcs[i]+' = '+
 					window[funcs[i]].toSource().replace(
 						/(openUILinkIn\()/g,
-						<><![CDATA[
+						<![CDATA[
 							if (where == 'tab' || where == 'tabshifted')
 								TreeStyleTabService.readyToOpenChildTab();
-							$1]]></>
+							$1]]>
 					)
 				);
 		}
@@ -1426,9 +1426,9 @@ catch(e) {
 			eval(aName + ' = '+
 				overwroteFunc.toSource().replace(
 					'gBrowser.loadTabs(',
-					<><![CDATA[
+					<![CDATA[
 						TreeStyleTabService.readyToOpenNewTabGroup(gBrowser);
-						$&]]></>
+						$&]]>
 				)
 			);
 		};
@@ -1440,10 +1440,10 @@ catch(e) {
 		eval('FeedHandler.loadFeed = '+
 			FeedHandler.loadFeed.toSource().replace(
 				'openUILink(',
-				<><![CDATA[
+				<![CDATA[
 					if (String(whereToOpenLink(event, false, true)).indexOf('tab') == 0)
 						TreeStyleTabService.readyToOpenChildTab(gBrowser);
-					$&]]></>
+					$&]]>
 			)
 		);
 

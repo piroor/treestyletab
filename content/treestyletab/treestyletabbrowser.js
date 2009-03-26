@@ -185,29 +185,29 @@ TreeStyleTabBrowser.prototype = {
 		eval('b.mTabContainer.'+selectNewTab+' = '+
 			b.mTabContainer[selectNewTab].toSource().replace(
 				'{',
-				<><![CDATA[$&
+				<![CDATA[$&
 					if (arguments[0].__treestyletab__preventSelect) {
 						arguments[0].__treestyletab__preventSelect = false;
 						return;
 					}
-				]]></>
+				]]>
 			)
 		);
 
 		eval('b.mTabContainer.adjustTabstrip = '+
 			b.mTabContainer.adjustTabstrip.toSource().replace(
 				/(\})(\)?)$/,
-				<><![CDATA[
+				<![CDATA[
 					var b = TreeStyleTabService.getTabBrowserFromChild(this);
 					b.treeStyleTab.updateInvertedTabContentsOrder(true);
-				$1$2]]></>
+				$1$2]]>
 			)
 		);
 
 		eval('b.mTabContainer.advanceSelectedTab = '+
 			b.mTabContainer.advanceSelectedTab.toSource().replace(
 				'{',
-				<><![CDATA[$&
+				<![CDATA[$&
 					if (TreeStyleTabService.getTreePref('focusMode') == TreeStyleTabService.kFOCUS_VISIBLE) {
 						(function(aDir, aWrap, aSelf) {
 							var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(aSelf).treeStyleTab;
@@ -230,14 +230,14 @@ TreeStyleTabBrowser.prototype = {
 						})(arguments[0], arguments[1], this);
 						return;
 					}
-				]]></>
+				]]>
 			)
 		);
 
 		eval('b.mTabContainer._handleTabSelect = '+
 			b.mTabContainer._handleTabSelect.toSource().replace(
 				'{',
-				<><![CDATA[$&
+				<![CDATA[$&
 					if ((function(aTabs) {
 							var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(aTabs).treeStyleTab;
 							var tab = aTabs.selectedItem;
@@ -249,7 +249,7 @@ TreeStyleTabBrowser.prototype = {
 						})(this)) {
 						return;
 					}
-				]]></>
+				]]>
 			)
 		);
 
@@ -259,11 +259,11 @@ TreeStyleTabBrowser.prototype = {
 			eval('b.mTabContainer.mTabstrip.ensureElementIsVisible = '+
 				b.mTabContainer.mTabstrip.ensureElementIsVisible.toSource().replace(
 					'{',
-					<><![CDATA[$&
+					<![CDATA[$&
 						var browser = TreeStyleTabService.getTabBrowserFromChild(this);
 						var startProp = browser.treeStyleTab.isVertical ? 'top' : 'left' ;
 						var endProp = browser.treeStyleTab.isVertical ? 'bottom' : 'right' ;
-					]]></>
+					]]>
 				).replace(
 					/\.left/g, '[startProp]'
 				).replace(
@@ -275,15 +275,15 @@ TreeStyleTabBrowser.prototype = {
 			eval('b.mTabContainer.mTabstrip._smoothScrollByPixels = '+
 				b.mTabContainer.mTabstrip._smoothScrollByPixels.toSource().replace(
 					'{',
-					<><![CDATA[$&
+					<![CDATA[$&
 						var TST = TreeStyleTabService.getTabBrowserFromChild(this);
-					]]></>
+					]]>
 				).replace(
 					'scrollBy(distance, 0)',
-					<><![CDATA[scrollBy(
+					<![CDATA[scrollBy(
 						(TST.isVertical ? 0 : distance ),
 						(TST.isVertical ? distance : 0 )
-					)]]></>
+					)]]>
 				)
 			);
 		}
@@ -320,15 +320,15 @@ TreeStyleTabBrowser.prototype = {
 				'tabPos + 1', 'nextTab._tPos'
 			).replace(
 				'this.moveTabTo(',
-				<><![CDATA[
+				<![CDATA[
 					var descendant = this.treeStyleTab.getDescendantTabs(nextTab);
 					if (descendant.length) {
 						nextTab = descendant[descendant.length-1];
 					}
-					$&]]></>
+					$&]]>
 			).replace(
 				'this.moveTabToStart();',
-				<><![CDATA[
+				<![CDATA[
 					this.treeStyleTab.internallyTabMoving = true;
 					var parentTab = this.treeStyleTab.getParentTab(this.mCurrentTab);
 					if (parentTab) {
@@ -339,7 +339,7 @@ TreeStyleTabBrowser.prototype = {
 						$&
 					}
 					this.treeStyleTab.internallyTabMoving = false;
-				]]></>
+				]]>
 			)
 		);
 
@@ -353,7 +353,7 @@ TreeStyleTabBrowser.prototype = {
 				'tabPos - 1', 'prevTab._tPos'
 			).replace(
 				'this.moveTabToEnd();',
-				<><![CDATA[
+				<![CDATA[
 					this.treeStyleTab.internallyTabMoving = true;
 					var parentTab = this.treeStyleTab.getParentTab(this.mCurrentTab);
 					if (parentTab) {
@@ -364,58 +364,58 @@ TreeStyleTabBrowser.prototype = {
 						$&
 					}
 					this.treeStyleTab.internallyTabMoving = false;
-				]]></>
+				]]>
 			)
 		);
 
 		eval('b._keyEventHandler.handleEvent = '+
 			b._keyEventHandler.handleEvent.toSource().replace(
 				'this.tabbrowser.moveTabOver(aEvent);',
-				<><![CDATA[
+				<![CDATA[
 					if (!this.tabbrowser.treeStyleTab.isVertical ||
 						!this.tabbrowser.treeStyleTab.moveTabLevel(aEvent)) {
 						$&
 					}
-				]]></>
+				]]>
 			).replace(
 				'this.tabbrowser.moveTabForward();',
-				<><![CDATA[
+				<![CDATA[
 					if (this.tabbrowser.treeStyleTab.isVertical ||
 						!this.tabbrowser.treeStyleTab.moveTabLevel(aEvent)) {
 						$&
 					}
-				]]></>
+				]]>
 			).replace(
 				'this.tabbrowser.moveTabBackward();',
-				<><![CDATA[
+				<![CDATA[
 					if (this.tabbrowser.treeStyleTab.isVertical ||
 						!this.tabbrowser.treeStyleTab.moveTabLevel(aEvent)) {
 						$&
 					}
-				]]></>
+				]]>
 			)
 		);
 
 		eval('b.loadTabs = '+
 			b.loadTabs.toSource().replace(
 				'var tabNum = ',
-				<><![CDATA[
+				<![CDATA[
 					if (this.treeStyleTab.readyToAttachNewTabGroup)
 						TreeStyleTabService.readyToOpenChildTab(firstTabAdded || this.selectedTab, true);
-					$&]]></>
+					$&]]>
 			).replace(
 				'if (!aLoadInBackground)',
-				<><![CDATA[
+				<![CDATA[
 					if (TreeStyleTabService.checkToOpenChildTab(this))
 						TreeStyleTabService.stopToOpenChildTab(this);
-					$&]]></>
+					$&]]>
 			)
 		);
 
 		eval('b.createTooltip = '+
 			b.createTooltip.toSource().replace(
 				'if (tn.hasAttribute("label")) {',
-				<><![CDATA[
+				<![CDATA[
 					else if (tn.getAttribute(TreeStyleTabService.kTWISTY_HOVER) == 'true') {
 						var key = tn.getAttribute(TreeStyleTabService.kSUBTREE_COLLAPSED) == 'true' ? 'tooltip.expandSubtree' : 'tooltip.collapseSubtree' ;
 						event.target.setAttribute(
@@ -429,7 +429,17 @@ TreeStyleTabBrowser.prototype = {
 						);
 						return true;
 					}
-					$&]]></>
+					$&]]>
+			).replace(
+				'{',
+				<![CDATA[$&
+					if ((function(aTabBrowser) {
+							var TST = aTabBrowser.treeStyleTab;
+							var session = TST.getCurrentDragSession();
+							return session && TST.getTabFromChild(session.sourceNode);
+						})(this))
+						return false;
+				]]>
 			)
 		);
 
