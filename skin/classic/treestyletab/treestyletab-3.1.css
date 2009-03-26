@@ -4,18 +4,31 @@
 /* Shadow of vertival tabs */
 
 tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"]
-	.tabbrowser-tab {
+  .tabbrowser-tab {
 	-moz-box-shadow: -0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15) !important;
 }
 tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
-	.tabbrowser-tab {
+  .tabbrowser-tab {
 	-moz-box-shadow: 0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15) !important;
 }
-tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"]:not([treestyletab-hide-newtab-button]) .tabs-container:not([overflow="true"])
-	.scrollbox-innerbox {
+tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"]:not([treestyletab-hide-newtab-button])
+  .tabs-container:not([overflow="true"]) .scrollbox-innerbox {
 	background: url("dropshadow.png") repeat-x bottom !important;
 }
-tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"]:not([treestyletab-hide-newtab-button="true"]) .tabs-container:not([overflow="true"])
-	.tabbrowser-arrowscrollbox .tabs-newtab-button {
+tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"]:not([treestyletab-hide-newtab-button="true"])
+  .tabs-container:not([overflow="true"]) .tabbrowser-arrowscrollbox .tabs-newtab-button {
 	margin-bottom: 5px !important;
+}
+
+tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"]
+  .tabbrowser-tabs:not([overflow="true"]) .tabbrowser-arrowscrollbox,
+tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"]
+  .tabbrowser-tabs[overflow="true"] .tabbrowser-arrowscrollbox .scrollbox-innerbox {
+	background: url("metal/shadow-inactive-l.png") repeat-y top right !important;
+}
+tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+  .tabbrowser-tabs:not([overflow="true"]) .tabbrowser-arrowscrollbox,
+tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+  .tabbrowser-tabs[overflow="true"] .tabbrowser-arrowscrollbox .scrollbox-innerbox {
+	background: url("metal/shadow-inactive-r.png") repeat-y top left !important;
 }
