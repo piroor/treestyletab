@@ -271,3 +271,17 @@ tabbrowser[treestyletab-style~="mixed"][treestyletab-tabbar-position="bottom"] .
 	background-image: url("square/tab-bg-highlighted.png") !important;
 }
 
+/* animation */
+
+tabbrowser[treestyletab-style~="mixed"][treestyletab-mode="vertical"] .tabbrowser-tab:not([selected="true"]):hover,
+tabbrowser[treestyletab-style~="mixed"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab:not([selected="true"]):hover {
+	background-color: ThreeDFace !important;
+	background-image: url("square/tab-bg-hover.png") !important;
+}
+
+tabbrowser[treestyletab-style~="mixed"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"]:hover,
+tabbrowser[treestyletab-style~="mixed"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab[selected="true"]:hover {
+	background-color: #c1d2ee !important;
+	background-image: url("square/tab-bg-selected-hover.png") !important;
+}
+
