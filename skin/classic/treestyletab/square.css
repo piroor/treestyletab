@@ -20,11 +20,11 @@ tabbrowser[treestyletab-style~="square"][treestyletab-mode="vertical"] .tabs-con
 
 tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"]:not([treestyletab-tabbar-transparent="full"]) .tabbrowser-strip {
 	border-right: 1px solid ThreeDShadow !important;
-	-moz-border-right-colors: ThreeDShadow !important;
+	-moz-border-right-colors: none !important;
 }
-tabbrowser[treestyletab-style][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"]:not([treestyletab-tabbar-transparent="full"]) .tabbrowser-strip {
+tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"]:not([treestyletab-tabbar-transparent="full"]) .tabbrowser-strip {
 	border-left: 1px solid ThreeDShadow !important;
-	-moz-border-left-colors: ThreeDShadow !important;
+	-moz-border-left-colors: none !important;
 }
 
 tabbrowser[treestyletab-style~="square"][treestyletab-mode="vertical"] .tabs-bottom,

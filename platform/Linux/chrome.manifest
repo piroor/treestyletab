@@ -1,3 +1,4 @@
 skin	treestyletab-platform	classic/1.0	jar:chrome/treestyletab.jar!/skin/classic/treestyletab/
 
+style chrome://browser/content/browser.xul chrome://treestyletab-platform/skin/treestyletab-3.css appversion>=3.0b3pre
 style chrome://browser/content/browser.xul chrome://treestyletab-platform/skin/treestyletab-3.5.css appversion>=3.1b3pre
