@@ -2112,6 +2112,12 @@ TreeStyleTabBrowser.prototype = {
  
 	canDrop : function(aEvent, aDragSession) 
 	{
+		var tooltip = this.mTabBrowser.mStrip.firstChild;
+		if (tooltip &&
+			tooltip.localName == 'tooltip' &&
+			tooltip.popupBoxObject.popupState != 'closed')
+			tooltip.hidePopup();
+
 		var dropAction = this.getDropAction(aEvent, aDragSession);
 		if ('dataTransfer' in aEvent) {
 			var dt = aEvent.dataTransfer;
