@@ -18,6 +18,6 @@ locale	treestyletab	ru-RU	jar:chrome/treestyletab.jar!/locale/ru-RU/treestyletab
 skin	treestyletab	classic/1.0	jar:chrome/treestyletab.jar!/skin/classic/treestyletab/
 
 override chrome://treestyletab/skin/square/compat.css	chrome://treestyletab/skin/square/compat-2.css
-override chrome://treestyletab/skin/square/compat.css	chrome://treestyletab/skin/dummy.css	appversion>=3.0b3pre
+override chrome://treestyletab/skin/square/compat.css	chrome://treestyletab/skin/square/compat-3.css	appversion>=3.0b3pre
 override chrome://treestyletab/skin/square/compat.css	chrome://treestyletab/skin/square/compat-3.5.css	appversion>=3.1b3pre
 override chrome://treestyletab/skin/metal/tab.css	chrome://treestyletab/skin/metal/tab-3.5.css	appversion>=3.1b3pre

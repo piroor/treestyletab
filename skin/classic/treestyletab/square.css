@@ -267,11 +267,7 @@ tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[tr
 }
 
 tabbrowser[treestyletab-style~="mixed"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"],
-tabbrowser[treestyletab-style~="mixed"][treestyletab-mode="vertical"] .tabbrowser-tab:hover,
-tabbrowser[treestyletab-style~="mixed"][treestyletab-mode="vertical"] .tabbrowser-tab:not([selected="true"]):hover,
-tabbrowser[treestyletab-style~="mixed"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab[selected="true"],
-tabbrowser[treestyletab-style~="mixed"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab:hover,
-tabbrowser[treestyletab-style~="mixed"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab:not([selected="true"]):hover {
+tabbrowser[treestyletab-style~="mixed"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab[selected="true"] {
 	background-image: url("square/tab-bg-highlighted.png") !important;
 }
 
