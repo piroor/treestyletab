@@ -430,16 +430,6 @@ TreeStyleTabBrowser.prototype = {
 						return true;
 					}
 					$&]]>
-			).replace(
-				'{',
-				<![CDATA[$&
-					if ((function(aTabBrowser) {
-							var TST = aTabBrowser.treeStyleTab;
-							var session = TST.getCurrentDragSession();
-							return session && TST.getTabFromChild(session.sourceNode);
-						})(this))
-						return false;
-				]]>
 			)
 		);
 
