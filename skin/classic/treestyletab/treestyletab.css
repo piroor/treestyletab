@@ -1,4 +1,5 @@
 @import url("chrome://treestyletab/skin/square.css");
+@import url("chrome://treestyletab/skin/square/compat.css");
 @import url("chrome://treestyletab/skin/metal.css");
 @import url("chrome://treestyletab/skin/metal/tab.css");
 

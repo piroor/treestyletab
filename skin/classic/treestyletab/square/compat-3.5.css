@@ -1,7 +1,7 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
 
-/* Shadow of vertival tabs */
+/* drop-shadow of vertival tabs */
 
 tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"]
   .tabbrowser-tab {
@@ -13,7 +13,7 @@ tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[tr
 }
 tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"]:not([treestyletab-hide-newtab-button])
   .tabs-container:not([overflow="true"]) .scrollbox-innerbox {
-	background: url("dropshadow.png") repeat-x bottom !important;
+	background: url("newtab-shadow.png") repeat-x bottom !important;
 }
 tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"]:not([treestyletab-hide-newtab-button="true"])
   .tabs-container:not([overflow="true"]) .tabbrowser-arrowscrollbox .tabs-newtab-button {
@@ -24,11 +24,12 @@ tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[tr
   .tabbrowser-tabs:not([overflow="true"]) .tabbrowser-arrowscrollbox,
 tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"]
   .tabbrowser-tabs[overflow="true"] .tabbrowser-arrowscrollbox .scrollbox-innerbox {
-	background: url("metal/shadow-inactive-l.png") repeat-y top right !important;
+	background: url("../metal/shadow-inactive-l.png") repeat-y top right !important;
 }
 tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
   .tabbrowser-tabs:not([overflow="true"]) .tabbrowser-arrowscrollbox,
 tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
   .tabbrowser-tabs[overflow="true"] .tabbrowser-arrowscrollbox .scrollbox-innerbox {
-	background: url("metal/shadow-inactive-r.png") repeat-y top left !important;
+	background: url("../metal/shadow-inactive-r.png") repeat-y top left !important;
 }
+

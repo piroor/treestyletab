@@ -1,0 +1,100 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+
+tabbrowser[treestyletab-style~="square"][treestyletab-mode="vertical"] .tabbrowser-tab,
+tabbrowser[treestyletab-style~="square"][treestyletab-mode="vertical"] .tabbrowser-tab:not([selected="true"]),
+tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab,
+tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab:not([selected="true"]) {
+	-moz-border-top-colors: ThreeDFace ThreeDFace !important;
+	-moz-border-bottom-colors: ThreeDShadow ThreeDFace !important;
+}
+
+tabbrowser[treestyletab-style~="square"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"],
+tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab[selected="true"] {
+	-moz-border-top-colors: ThreeDHighlight ThreeDHighlight !important;
+	-moz-border-bottom-colors: ThreeDShadow ThreeDShadow !important;
+}
+
+tabbrowser[treestyletab-style~="square"][treestyletab-mode="vertical"] .tabbrowser-tab,
+tabbrowser[treestyletab-style~="square"][treestyletab-mode="vertical"] .tabbrowser-tab:not([selected="true"]) {
+	-moz-border-left-colors: ThreeDLightShadow ThreeDLightShadow !important;
+	-moz-border-right-colors: ThreeDLightShadow ThreeDLightShadow !important;
+}
+tabbrowser[treestyletab-style~="square"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"] {
+	-moz-border-left-colors: ThreeDLightShadow ThreeDLightShadow !important;
+	-moz-border-right-colors: ThreeDLightShadow ThreeDLightShadow !important;
+}
+tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab,
+tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab:not([selected="true"]) {
+	-moz-border-right-colors: ThreeDShadow ThreeDShadow !important;
+	-moz-border-left-colors: ThreeDShadow ThreeDShadow !important;
+}
+
+
+/* Mixed style */
+
+tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab,
+tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab:not([selected="true"]) {
+	-moz-border-right-colors: ThreeDShadow ThreeDFace !important;
+	-moz-border-left-colors: ThreeDShadow ThreeDFace !important;
+}
+tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab[selected="true"] {
+	-moz-border-right-colors: ThreeDShadow ThreeDHighlight !important;
+	-moz-border-left-colors: ThreeDShadow ThreeDHighlight !important;
+}
+
+
+tabbrowser[treestyletab-style~="mixed"][treestyletab-mode="vertical"] .tabbrowser-tab:not([selected="true"]):hover,
+tabbrowser[treestyletab-style~="mixed"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab:not([selected="true"]):hover  {
+	-moz-border-top-colors: #e0e8f6 #e0e8f6 !important;
+	-moz-border-bottom-colors: ThreeDShadow #e0e8f6 !important;
+}
+tabbrowser[treestyletab-style~="mixed"][treestyletab-mode="vertical"][treestyletab-firsttab-border="true"] .tabbrowser-tab:first-child:not([selected="true"]):hover {
+	-moz-border-top-colors: ThreeDShadow #e0e8f6 !important;
+}
+tabbrowser[treestyletab-style~="mixed"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"],
+tabbrowser[treestyletab-style~="mixed"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab[selected="true"] {
+	-moz-border-top-colors: #c1d2ee #c1d2ee !important;
+	-moz-border-bottom-colors: ThreeDShadow #c1d2ee !important;
+}
+tabbrowser[treestyletab-style~="mixed"][treestyletab-mode="vertical"][treestyletab-firsttab-border="true"] .tabbrowser-tab:first-child[selected="true"] {
+	-moz-border-top-colors: ThreeDShadow #c1d2ee !important;
+}
+tabbrowser[treestyletab-style~="mixed"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"]:hover,
+tabbrowser[treestyletab-style~="mixed"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab[selected="true"]:hover {
+	-moz-border-top-colors: #d1e2fe #d1e2fe !important;
+	-moz-border-bottom-colors: ThreeDShadow #d1e2fe !important;
+}
+tabbrowser[treestyletab-style~="mixed"][treestyletab-mode="vertical"][treestyletab-firsttab-border="true"] .tabbrowser-tab:first-child[selected="true"]:hover {
+	-moz-border-top-colors: ThreeDShadow #d1e2fe !important;
+}
+
+
+tabbrowser[treestyletab-style~="mixed"][treestyletab-mode="vertical"] .tabbrowser-tab:not([selected="true"]):hover,
+tabbrowser[treestyletab-style~="mixed"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab:not([selected="true"]):hover {
+	-moz-border-left-colors: #e0e8f6 #e0e8f6 !important;
+	-moz-border-right-colors: #e0e8f6 #e0e8f6 !important;
+}
+tabbrowser[treestyletab-style~="mixed"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"],
+tabbrowser[treestyletab-style~="mixed"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab[selected="true"] {
+	-moz-border-left-colors: #c1d2ee #c1d2ee !important;
+	-moz-border-right-colors: #c1d2ee #c1d2ee !important;
+}
+tabbrowser[treestyletab-style~="mixed"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"]:hover,
+tabbrowser[treestyletab-style~="mixed"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-tab[selected="true"]:hover {
+	-moz-border-left-colors: #d1e2fe #d1e2fe !important;
+	-moz-border-right-colors: #d1e2fe #d1e2fe !important;
+}
+
+tabbrowser[treestyletab-style~="mixed"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab:not([selected="true"]):hover {
+	-moz-border-left-colors: ThreeDShadow #e0e8f6 !important;
+	-moz-border-right-colors: ThreeDShadow #e0e8f6 !important;
+}
+tabbrowser[treestyletab-style~="mixed"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab[selected="true"] {
+	-moz-border-left-colors: ThreeDShadow #c1d2ee !important;
+	-moz-border-right-colors: ThreeDShadow #c1d2ee !important;
+}
+tabbrowser[treestyletab-style~="mixed"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab[selected="true"]:hover {
+	-moz-border-left-colors: ThreeDShadow #d1e2fe !important;
+	-moz-border-right-colors: ThreeDShadow #d1e2fe !important;
+}
