@@ -1,31 +1,31 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
 
-tabbrowser[treestyletab-style~="square"][treestyletab-mode="vertical"] .tabbrowser-tab,
-tabbrowser[treestyletab-style~="square"][treestyletab-mode="vertical"] .tabbrowser-tab:not([selected="true"]),
-tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab,
-tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab:not([selected="true"]) {
+tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"] .tabbrowser-tab,
+tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"] .tabbrowser-tab:not([selected="true"]),
+tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-tabbar-position="bottom"] .tabbrowser-tab,
+tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-tabbar-position="bottom"] .tabbrowser-tab:not([selected="true"]) {
 	-moz-border-top-colors: ThreeDFace ThreeDFace !important;
 	-moz-border-bottom-colors: ThreeDShadow ThreeDFace !important;
 }
 
-tabbrowser[treestyletab-style~="square"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"],
-tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab[selected="true"] {
+tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"],
+tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-tabbar-position="bottom"] .tabbrowser-tab[selected="true"] {
 	-moz-border-top-colors: ThreeDHighlight ThreeDHighlight !important;
 	-moz-border-bottom-colors: ThreeDShadow ThreeDShadow !important;
 }
 
-tabbrowser[treestyletab-style~="square"][treestyletab-mode="vertical"] .tabbrowser-tab,
-tabbrowser[treestyletab-style~="square"][treestyletab-mode="vertical"] .tabbrowser-tab:not([selected="true"]) {
+tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"] .tabbrowser-tab,
+tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"] .tabbrowser-tab:not([selected="true"]) {
 	-moz-border-left-colors: ThreeDLightShadow ThreeDLightShadow !important;
 	-moz-border-right-colors: ThreeDLightShadow ThreeDLightShadow !important;
 }
-tabbrowser[treestyletab-style~="square"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"] {
+tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"] {
 	-moz-border-left-colors: ThreeDLightShadow ThreeDLightShadow !important;
 	-moz-border-right-colors: ThreeDLightShadow ThreeDLightShadow !important;
 }
-tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab,
-tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab:not([selected="true"]) {
+tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-tabbar-position="bottom"] .tabbrowser-tab,
+tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-tabbar-position="bottom"] .tabbrowser-tab:not([selected="true"]) {
 	-moz-border-right-colors: ThreeDShadow ThreeDShadow !important;
 	-moz-border-left-colors: ThreeDShadow ThreeDShadow !important;
 }
