@@ -3572,6 +3572,8 @@ TreeStyleTabBrowser.prototype = {
 		this.mTabBrowser.mPanelContainer.addEventListener('scroll', this, true);
 		if (this.shouldListenMouseMove)
 			this.startListenMouseMove();
+		if (this.mTabBrowser == gBrowser && this.shouldListenKeyEvents)
+			TreeStyleTabService.startListenKeyEvents();
 
 		this.clearTabbarCanvas();
 		this.updateTabbarTransparency();
@@ -3595,6 +3597,8 @@ TreeStyleTabBrowser.prototype = {
 		this.mTabBrowser.removeEventListener('load', this, true);
 		this.mTabBrowser.mPanelContainer.removeEventListener('scroll', this, true);
 		this.endListenMouseMove();
+		if (this.mTabBrowser == gBrowser)
+			TreeStyleTabService.endListenKeyEvents();
 
 		this.clearTabbarCanvas();
 		this.updateTabbarTransparency();
@@ -3623,6 +3627,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		return this.getTreePref('tabbar.autoShow.mousemove') ||
 				this.getTreePref('tabbar.autoShow.accelKeyDown') ||
+				this.getTreePref('tabbar.autoShow.tabSwitch') ||
 				this.getTreePref('tabbar.autoShow.feedback');
 	},
  

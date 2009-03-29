@@ -1659,8 +1659,6 @@ catch(e) {
 			sv.hideTabbar();
 	},
  
-	keyEventListening : false, 
- 
 	startListenKeyEvents : function() 
 	{
 		if (this.keyEventListening) return;
@@ -1669,14 +1667,20 @@ catch(e) {
 		window.addEventListener('keypress', this, true);
 		this.keyEventListening = true;
 	},
- 
-	endListenKeyEvents : function() 
+	endListenKeyEvents : function()
 	{
 		if (!this.keyEventListening) return;
 		window.removeEventListener('keydown',  this, true);
 		window.removeEventListener('keyup',    this, true);
 		window.removeEventListener('keypress', this, true);
 		this.keyEventListening = false;
+	},
+	keyEventListening : false,
+	get shouldListenKeyEvents()
+	{
+		return this.getTreePref('tabbar.autoShow.accelKeyDown') ||
+				this.getTreePref('tabbar.autoShow.tabSwitch') ||
+				this.getTreePref('tabbar.autoShow.feedback');
 	},
   
 	onTabbarResized : function(aEvent) 
@@ -2072,11 +2076,7 @@ catch(e) {
 			case 'extensions.treestyletab.tabbar.autoShow.feedback':
 				if (
 					this.getTreePref('tabbar.autoHide.mode') &&
-					(
-						this.getTreePref('tabbar.autoShow.accelKeyDown') ||
-						this.getTreePref('tabbar.autoShow.tabSwitch') ||
-						this.getTreePref('tabbar.autoShow.feedback')
-					)
+					this.shouldListenKeyEvents
 					) {
 					this.startListenKeyEvents();
 				}
