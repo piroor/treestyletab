@@ -82,7 +82,7 @@ var TreeStyleTabService = {
 	kSHOWN_BY_SHORTCUT  : 1 << 0,
 	kSHOWN_BY_MOUSEMOVE : 1 << 1,
 	kSHOWN_BY_FEEDBACK  : 1 << 2,
-	kSTAY_ON_MOUSEOVER : (1 << 0) | (1 << 1) | (1 << 2),
+	kKEEP_SHOWN_ON_MOUSEOVER : (1 << 0) | (1 << 1) | (1 << 2),
 
 	kTRANSPARENT_NONE : 0,
 	kTRANSPARENT_PART : 1,

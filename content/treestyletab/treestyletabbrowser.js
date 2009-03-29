@@ -1208,7 +1208,7 @@ TreeStyleTabBrowser.prototype = {
 						!this.tabContextMenuShown &&
 						(
 							!this.autoHideShown ||
-							this.showHideTabbarReason & this.kSTAY_ON_MOUSEOVER
+							this.showHideTabbarReason & this.kKEEP_SHOWN_ON_MOUSEOVER
 						)
 						)
 						this.showHideTabbarOnMousemove(aEvent);
@@ -3646,7 +3646,8 @@ TreeStyleTabBrowser.prototype = {
 		if (this.autoHideShown) {
 			if (
 				shouldKeepShown &&
-				this.showHideTabbarReason & this.kSTAY_ON_MOUSEOVER
+				this.showHideTabbarReason & this.kKEEP_SHOWN_ON_MOUSEOVER &&
+				this.getTreePref('tabbar.autoShow.keepShownOnMouseover')
 				) {
 				this.showHideTabbarReason = this.kSHOWN_BY_MOUSEMOVE;
 				this.cancelDelayedAutoShowForShortcut();
