@@ -30,6 +30,8 @@ TreeStyleTabBrowser.prototype = {
 	sizeProp             : 'height',
 	invertedPositionProp : 'screenX',
 	invertedSizeProp     : 'width',
+
+	togglerSize : 0,
  
 	get browser() 
 	{
@@ -476,6 +478,7 @@ TreeStyleTabBrowser.prototype = {
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.allowSubtreeCollapseExpand');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.fixed');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.transparent.style');
+		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.togglerSize');
 		window.setTimeout(function() {
 			b.treeStyleTab.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.autoHide.mode');
 		}, 0);
@@ -706,6 +709,9 @@ TreeStyleTabBrowser.prototype = {
 			splitter.appendChild(document.createElement('grippy'));
 			var ref = b.mPanelContainer;
 			ref.parentNode.insertBefore(splitter, ref);
+			var toggler = document.createElement('spacer');
+			toggler.setAttribute('class', this.kTABBAR_TOGGLER);
+			b.mStrip.parentNode.insertBefore(toggler, b.mStrip);
 		}
 
 		// Tab Mix Plus
@@ -1073,6 +1079,12 @@ TreeStyleTabBrowser.prototype = {
 					case 'extensions.treestyletab.tabbar.width':
 					case 'extensions.treestyletab.tabbar.shrunkenWidth':
 						this.checkTabsIndentOverflow();
+						break;
+
+					case 'extensions.treestyletab.tabbar.togglerSize':
+						this.togglerSize = value;
+						var toggler = document.getAnonymousElementByAttribute(b, 'class', this.kTABBAR_TOGGLER);
+						toggler.style.minWidth = toggler.style.minHeight = value+'px';
 						break;
 
 					default:
@@ -3224,7 +3236,12 @@ TreeStyleTabBrowser.prototype = {
 		switch (this.autoHideMode)
 		{
 			case this.kAUTOHIDE_MODE_HIDE:
-				return this.tabbarWidth + this.splitterWidth;
+				let offset = this.tabbarWidth + this.splitterWidth;
+				if (this.mTabBrowser.getAttribute(this.kTABBAR_POSITION) == 'left' &&
+					this.autoHideMode == this.kAUTOHIDE_MODE_HIDE) {
+					offset -= this.togglerSize;
+				}
+				return offset;
 				break;
 
 			default:
@@ -3396,6 +3413,8 @@ TreeStyleTabBrowser.prototype = {
 
 		var x = (pos == 'right') ? browserBox.width - this.autoHideXOffset : 0 ;
 		var y = (pos == 'bottom') ? browserBox.height - this.autoHideYOffset : 0 ;
+		if (pos == 'left' && this.autoHideMode == this.kAUTOHIDE_MODE_HIDE)
+			x -= this.togglerSize;
 		var xOffset = (zoom == 1 && (pos == 'top' || pos == 'bottom')) ?
 				contentBox.screenX + frame.scrollX - browserBox.screenX :
 				0 ;
@@ -3406,17 +3425,21 @@ TreeStyleTabBrowser.prototype = {
 		var h = tabContainerBox.height - yOffset;
 
 		for (let node = this.tabbarCanvas;
-		     node != this.mTabBrowser.mTabContainer.parentNode;
+		     node != this.mTabBrowser.mStrip.parentNode;
 		     node = node.parentNode)
 		{
 			let style = window.getComputedStyle(node, null);
 			'border-left-width,border-right-width,margin-left,margin-right,padding-left,padding-right'
 				.split(',').forEach(function(aProperty) {
-					w -= parseInt(style.getPropertyValue(aProperty).replace('px', ''));
+					let value = parseInt(style.getPropertyValue(aProperty).replace('px', ''));
+					w -= value;
+					if (aProperty.indexOf('left') < -1) x += value;
 				});
 			'border-top-width,border-bottom-width,margin-top,margin-bottom,padding-left,padding-right'
 				.split(',').forEach(function(aProperty) {
-					h -= parseInt(style.getPropertyValue(aProperty).replace('px', ''));
+					let value = parseInt(style.getPropertyValue(aProperty).replace('px', ''));
+					h -= value;
+					if (aProperty.indexOf('top') < -1) y += value;
 				});
 		}
 

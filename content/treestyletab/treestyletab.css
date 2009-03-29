@@ -20,6 +20,7 @@ tabbrowser[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyle
 .tabbrowser-strip[collapsed="true"]+splitter:not([state="collapsed"]),
 tabbrowser[treestyletab-tabbar-autohide="hidden"] .tabbrowser-strip,
 tabbrowser[treestyletab-tabbar-autohide="hidden"] .tabbrowser-strip+splitter,
+tabbrowser:not([treestyletab-tabbar-autohide="hidden"]) .treestyletab-tabbar-toggler,
 #appcontent[ahFull="true"] .tabbrowser-strip[ahHIDE="true"]+splitter /* AutoHide */,
 tabbrowser[treestyletab-tabbar-fixed="true"] .tabbrowser-strip+splitter {
 	visibility: collapse;

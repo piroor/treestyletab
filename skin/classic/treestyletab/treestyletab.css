@@ -228,3 +228,14 @@ tabbrowser[treestyletab-tabbar-transparent] .tabbrowser-tabs:hover .tabbrowser-t
 }
 
 
+
+/* auto hide */tabbrowser[treestyletab-tabbar-position="left"] .treestyletab-tabbar-toggler {
+	border-right: 1px solid ThreeDShadow;
+}
+tabbrowser[treestyletab-tabbar-position="right"] .treestyletab-tabbar-toggler {
+	border-left: 1px solid ThreeDShadow;
+}
+tabbrowser[treestyletab-tabbar-position="bottom"] .treestyletab-tabbar-toggler {
+	border-top: 1px solid ThreeDShadow;
+}
+

@@ -28,6 +28,7 @@ pref("extensions.treestyletab.tabbar.autoShow.tabSwitch", true);
 pref("extensions.treestyletab.tabbar.autoShow.feedback", false);
 pref("extensions.treestyletab.tabbar.autoShow.feedback.delay", 3000);
 pref("extensions.treestyletab.tabbar.autoShow.keepShownOnMouseover", true);
+pref("extensions.treestyletab.tabbar.togglerSize", 5);
 pref("extensions.treestyletab.tabbar.fixed", false);
 pref("extensions.treestyletab.tabbar.syncRelatedPrefsForDynamicPosition", true);
 pref("extensions.treestyletab.enableSubtreeIndent",    true);

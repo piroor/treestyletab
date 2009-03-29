@@ -31,6 +31,7 @@ var TreeStyleTabService = {
 	kCOUNTER               : 'treestyletab-counter',
 	kCOUNTER_CONTAINER     : 'treestyletab-counter-container',
 	kSPLITTER              : 'treestyletab-splitter',
+	kTABBAR_TOGGLER        : 'treestyletab-tabbar-toggler',
 	kSTRINGBUNDLE          : 'treestyletab-stringbundle',
 
 	kMENUITEM_REMOVESUBTREE_SELECTION : 'multipletab-selection-item-removeTabSubTree',
