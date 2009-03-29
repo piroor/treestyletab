@@ -3334,8 +3334,8 @@ TreeStyleTabBrowser.prototype = {
 				)
 				) {
 				b.setAttribute(aSelf.kAUTOHIDE, 'show');
+				aSelf.redrawContentArea();
 			}
-			aSelf.redrawContentArea();
 			aSelf.checkTabsIndentOverflow();
 			aSelf.redrawContentArea();
 			fullScreenCanvas.hide();
@@ -3367,7 +3367,8 @@ TreeStyleTabBrowser.prototype = {
 		var pos = this.mTabBrowser.getAttribute(this.kTABBAR_POSITION);
 		try {
 			var v = this.mTabBrowser.markupDocumentViewer;
-			if (this.autoHideShown) {
+			if (this.autoHideEnabled && this.autoHideShown) {
+				v.move(window.outerWidth,window.outerHeight);
 				v.move(
 					(
 						!this.autoHideShown ? 0 :
