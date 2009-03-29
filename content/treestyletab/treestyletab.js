@@ -1469,8 +1469,9 @@ catch(e) {
 					<![CDATA[{
 						var treeStyleTab = gBrowser.treeStyleTab;
 						if (gBrowser.getAttribute(treeStyleTab.kTABBAR_POSITION) != 'top') {
-							treeStyleTab.autoHideMode = treeStyleTab.getTreePref(window.fullScreen ? 'tabbar.autoHide.mode' : 'tabbar.autoHide.mode.fullscreen' );
+							treeStyleTab.autoHideMode = treeStyleTab.getTreePref(window.fullScreen ? 'tabbar.autoHide.mode.fullscreen' : 'tabbar.autoHide.mode' );
 							treeStyleTab.endAutoHide();
+							treeStyleTab.autoHideMode = treeStyleTab.getTreePref(window.fullScreen ? 'tabbar.autoHide.mode' : 'tabbar.autoHide.mode.fullscreen' );
 							if (window.fullScreen)
 								treeStyleTab.checkTabsIndentOverflow();
 							if (treeStyleTab.autoHideMode != treeStyleTab.kAUTOHIDE_MODE_DISABLED)
