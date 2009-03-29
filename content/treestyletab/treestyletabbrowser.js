@@ -3334,8 +3334,8 @@ TreeStyleTabBrowser.prototype = {
 				)
 				) {
 				b.setAttribute(aSelf.kAUTOHIDE, 'show');
-				aSelf.redrawContentArea();
 			}
+			aSelf.redrawContentArea();
 			aSelf.checkTabsIndentOverflow();
 			aSelf.redrawContentArea();
 			fullScreenCanvas.hide();
