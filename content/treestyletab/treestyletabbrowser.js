@@ -3410,11 +3410,11 @@ TreeStyleTabBrowser.prototype = {
 		     node = node.parentNode)
 		{
 			let style = window.getComputedStyle(node, null);
-			'border-left-width,border-right-width,margin-left,margin-right'
+			'border-left-width,border-right-width,margin-left,margin-right,padding-left,padding-right'
 				.split(',').forEach(function(aProperty) {
 					w -= parseInt(style.getPropertyValue(aProperty).replace('px', ''));
 				});
-			'border-top-width,border-bottom-width,margin-top,margin-bottom'
+			'border-top-width,border-bottom-width,margin-top,margin-bottom,padding-left,padding-right'
 				.split(',').forEach(function(aProperty) {
 					h -= parseInt(style.getPropertyValue(aProperty).replace('px', ''));
 				});
