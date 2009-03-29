@@ -1051,7 +1051,9 @@ TreeStyleTabBrowser.prototype = {
 						break;
 
 					case 'extensions.treestyletab.tabbar.autoShow.mousemove':
-						if (this.autoHideEnabled && value)
+					case 'extensions.treestyletab.tabbar.autoShow.accelKeyDown':
+					case 'extensions.treestyletab.tabbar.autoShow.feedback':
+						if (this.autoHideEnabled && this.shouldListenMouseMove)
 							this.startListenMouseMove();
 						else
 							this.endListenMouseMove();
@@ -1206,7 +1208,7 @@ TreeStyleTabBrowser.prototype = {
 						!this.tabContextMenuShown &&
 						(
 							!this.autoHideShown ||
-							this.showHideTabbarReason == this.kSHOWN_BY_MOUSEMOVE
+							this.showHideTabbarReason & this.kSTAY_ON_MOUSEOVER
 						)
 						)
 						this.showHideTabbarOnMousemove(aEvent);
@@ -3568,7 +3570,7 @@ TreeStyleTabBrowser.prototype = {
 		this.mTabBrowser.addEventListener('resize', this, true);
 		this.mTabBrowser.addEventListener('load', this, true);
 		this.mTabBrowser.mPanelContainer.addEventListener('scroll', this, true);
-		if (this.getTreePref('tabbar.autoShow.mousemove'))
+		if (this.shouldListenMouseMove)
 			this.startListenMouseMove();
 
 		this.clearTabbarCanvas();
@@ -3617,6 +3619,12 @@ TreeStyleTabBrowser.prototype = {
 		this.mouseMoveListening = false;
 	},
 	mouseMoveListening : false,
+	get shouldListenMouseMove()
+	{
+		return this.getTreePref('tabbar.autoShow.mousemove') ||
+				this.getTreePref('tabbar.autoShow.accelKeyDown') ||
+				this.getTreePref('tabbar.autoShow.feedback');
+	},
  
 	showHideTabbarOnMousemove : function(aEvent) 
 	{
@@ -3626,12 +3634,40 @@ TreeStyleTabBrowser.prototype = {
 
 		var b   = this.mTabBrowser;
 		var pos = b.getAttribute(this.kTABBAR_POSITION);
-		if (
-			(
-				!this.autoHideShown ||
-				this.showHideTabbarReason == this.kSHOWN_BY_FEEDBACK
-			) &&
-			(
+		var shouldKeepShown = (
+				pos == 'left' ?
+					(aEvent.screenX <= b.mCurrentBrowser.boxObject.screenX + this.sensitiveArea) :
+				pos == 'right' ?
+					(aEvent.screenX >= b.mCurrentBrowser.boxObject.screenX + b.boxObject.width - this.sensitiveArea) :
+				pos == 'bottom' ?
+					(aEvent.screenY >= b.mCurrentBrowser.boxObject.screenY + b.boxObject.height - this.sensitiveArea) :
+					(aEvent.screenY <= b.mCurrentBrowser.boxObject.screenY + this.sensitiveArea)
+			);
+		if (this.autoHideShown) {
+			if (
+				shouldKeepShown &&
+				this.showHideTabbarReason & this.kSTAY_ON_MOUSEOVER
+				) {
+				this.showHideTabbarReason = this.kSHOWN_BY_MOUSEMOVE;
+				this.cancelDelayedAutoShowForShortcut();
+				this.cancelHideTabbarForFeedback();
+			}
+			else if (
+				!shouldKeepShown &&
+				this.getTreePref('tabbar.autoShow.mousemove')
+				) {
+				this.showHideTabbarOnMousemoveTimer = window.setTimeout(
+					function(aSelf) {
+						aSelf.cancelDelayedAutoShowForShortcut();
+						if (aSelf.showHideTabbarReason == aSelf.kSHOWN_BY_MOUSEMOVE)
+							aSelf.hideTabbar(aSelf.kSHOWN_BY_MOUSEMOVE);
+					},
+					this.getTreePref('tabbar.autoHide.delay'),
+					this
+				);
+			}
+		}
+		else if (
 				pos == 'left' ?
 					(aEvent.screenX <= b.boxObject.screenX + this.sensitiveArea) :
 				pos == 'right' ?
@@ -3639,38 +3675,17 @@ TreeStyleTabBrowser.prototype = {
 				pos == 'bottom' ?
 					(aEvent.screenY >= b.boxObject.screenY + b.boxObject.height - this.sensitiveArea) :
 					(aEvent.screenY <= b.boxObject.screenY + this.sensitiveArea)
-				))
-				this.showHideTabbarOnMousemoveTimer = window.setTimeout(
-					function(aSelf) {
-						if (aSelf.showHideTabbarReason == aSelf.kSHOWN_BY_FEEDBACK) {
-							aSelf.showHideTabbarReason = aSelf.kSHOWN_BY_MOUSEMOVE;
-							aSelf.cancelHideTabbarForFeedback();
-						}
-						else
-							aSelf.showTabbar(aSelf.kSHOWN_BY_MOUSEMOVE);
-					},
-					this.getTreePref('tabbar.autoHide.delay'),
-					this
-				);
-
-		if (this.autoHideShown &&
-			(
-				pos == 'left' ?
-					(aEvent.screenX > b.mCurrentBrowser.boxObject.screenX + this.sensitiveArea) :
-				pos == 'right' ?
-					(aEvent.screenX < b.mCurrentBrowser.boxObject.screenX + b.mCurrentBrowser.boxObject.width - this.sensitiveArea) :
-				pos == 'bottom' ?
-					(aEvent.screenY < b.mCurrentBrowser.boxObject.screenY + b.mCurrentBrowser.boxObject.height - this.sensitiveArea) :
-					(aEvent.screenY > b.mCurrentBrowser.boxObject.screenY + this.sensitiveArea)
-				))
-				this.showHideTabbarOnMousemoveTimer = window.setTimeout(
-					function(aSelf) {
-						if (aSelf.showHideTabbarReason == aSelf.kSHOWN_BY_MOUSEMOVE)
-							aSelf.hideTabbar(aSelf.kSHOWN_BY_MOUSEMOVE);
-					},
-					this.getTreePref('tabbar.autoHide.delay'),
-					this
-				);
+			) {
+			this.showHideTabbarOnMousemoveTimer = window.setTimeout(
+				function(aSelf) {
+					aSelf.cancelDelayedAutoShowForShortcut();
+					aSelf.cancelHideTabbarForFeedback();
+					aSelf.showTabbar(aSelf.kSHOWN_BY_MOUSEMOVE);
+				},
+				this.getTreePref('tabbar.autoHide.delay'),
+				this
+			);
+		}
 	},
 	showHideTabbarOnMousemoveTimer : null,
 	

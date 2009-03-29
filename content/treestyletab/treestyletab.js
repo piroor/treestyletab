@@ -42,23 +42,23 @@ var TreeStyleTabService = {
 	kDROP_ON     : 0,
 	kDROP_AFTER  : 1,
 
-	kACTION_MOVE      : 1,
-	kACTION_STAY      : 2,
-	kACTION_DUPLICATE : 4,
-	kACTION_IMPORT    : 8,
-	kACTION_NEWTAB    : 16,
-	kACTION_ATTACH    : 1024,
-	kACTION_PART      : 2048,
-	kACTIONS_FOR_SOURCE      : 1 | 2,
-	kACTIONS_FOR_DESTINATION : 4 | 8,
+	kACTION_MOVE      : 1 << 0,
+	kACTION_STAY      : 1 << 1,
+	kACTION_DUPLICATE : 1 << 2,
+	kACTION_IMPORT    : 1 << 3,
+	kACTION_NEWTAB    : 1 << 4,
+	kACTION_ATTACH    : 1 << 10,
+	kACTION_PART      : 1 << 11,
+	kACTIONS_FOR_SOURCE      : (1 << 0) | (1 << 1),
+	kACTIONS_FOR_DESTINATION : (1 << 2) | (1 << 3),
 
-	kTABBAR_TOP    : 1,
-	kTABBAR_BOTTOM : 2,
-	kTABBAR_LEFT   : 4,
-	kTABBAR_RIGHT  : 8,
+	kTABBAR_TOP    : 1 << 0,
+	kTABBAR_BOTTOM : 1 << 1,
+	kTABBAR_LEFT   : 1 << 2,
+	kTABBAR_RIGHT  : 1 << 3,
 
-	kTABBAR_HORIZONTAL : 3,
-	kTABBAR_VERTICAL   : 12,
+	kTABBAR_HORIZONTAL : (1 << 0) | (1 << 1),
+	kTABBAR_VERTICAL   : (1 << 2) | (1 << 3),
 
 	kAUTOHIDE_MODE_DISABLED : 0,
 	kAUTOHIDE_MODE_HIDE     : 1,
@@ -79,9 +79,10 @@ var TreeStyleTabService = {
 	_autoHideMode : 0,
 
 	kSHOWN_BY_UNKNOWN   : 0,
-	kSHOWN_BY_SHORTCUT  : 1,
-	kSHOWN_BY_MOUSEMOVE : 2,
-	kSHOWN_BY_FEEDBACK  : 3,
+	kSHOWN_BY_SHORTCUT  : 1 << 0,
+	kSHOWN_BY_MOUSEMOVE : 1 << 1,
+	kSHOWN_BY_FEEDBACK  : 1 << 2,
+	kSTAY_ON_MOUSEOVER : (1 << 0) | (1 << 1) | (1 << 2),
 
 	kTRANSPARENT_NONE : 0,
 	kTRANSPARENT_PART : 1,
@@ -1575,8 +1576,8 @@ catch(e) {
 		if (!b || !b.treeStyleTab) return;
 		var sv = b.treeStyleTab;
 
-		if (this.delayedAutoShowDone)
-			this.cancelDelayedAutoShow();
+		if (this.delayedAutoShowForShortcutDone)
+			this.cancelDelayedAutoShowForShortcut();
 
 		this.accelKeyPressed = this.isAccelKeyPressed(aEvent);
 		if (
@@ -1587,30 +1588,30 @@ catch(e) {
 			if (this.getTreePref('tabbar.autoShow.accelKeyDown') &&
 				!sv.autoHideShown &&
 				!this.delayedAutoShowTimer) {
-				this.delayedAutoShowTimer = window.setTimeout(
+				this.delayedAutoShowForShortcutTimer = window.setTimeout(
 					function(aSelf) {
-						aSelf.delayedAutoShowDone = true;
+						aSelf.delayedAutoShowForShortcutDone = true;
 						sv.showTabbar(sv.kSHOWN_BY_SHORTCUT);
 					},
 					this.getTreePref('tabbar.autoShow.accelKeyDown.delay'),
 					this
 				);
-				this.delayedAutoShowDone = false;
+				this.delayedAutoShowForShortcutDone = false;
 			}
 		}
 		else {
 			sv.hideTabbar();
 		}
 	},
-	cancelDelayedAutoShow : function()
+	cancelDelayedAutoShowForShortcut : function()
 	{
-		if (this.delayedAutoShowTimer) {
-			window.clearTimeout(this.delayedAutoShowTimer);
-			this.delayedAutoShowTimer = null;
+		if (this.delayedAutoShowForShortcutTimer) {
+			window.clearTimeout(this.delayedAutoShowForShortcutTimer);
+			this.delayedAutoShowForShortcutTimer = null;
 		}
 	},
-	delayedAutoShowTimer : null,
-	delayedAutoShowDone : true,
+	delayedAutoShowForShortcutTimer : null,
+	delayedAutoShowForShortcutDone : true,
 	accelKeyPressed : false,
  
 	onKeyRelease : function(aEvent) 
@@ -1619,7 +1620,7 @@ catch(e) {
 		if (!b || !b.treeStyleTab) return;
 		var sv = b.treeStyleTab;
 
-		this.cancelDelayedAutoShow();
+		this.cancelDelayedAutoShowForShortcut();
 
 		var scrollDown,
 			scrollUp;
