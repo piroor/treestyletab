@@ -701,6 +701,7 @@ TreeStyleTabBrowser.prototype = {
 			this.kTABBAR_TOP;
 
 		var splitter = document.getAnonymousElementByAttribute(b, 'class', this.kSPLITTER);
+		var toggler = document.getAnonymousElementByAttribute(b, 'class', this.kTABBAR_TOGGLER);
 		if (!splitter) {
 			splitter = document.createElement('splitter');
 			splitter.setAttribute('class', this.kSPLITTER);
@@ -709,7 +710,7 @@ TreeStyleTabBrowser.prototype = {
 			splitter.appendChild(document.createElement('grippy'));
 			var ref = b.mPanelContainer;
 			ref.parentNode.insertBefore(splitter, ref);
-			var toggler = document.createElement('spacer');
+			toggler = document.createElement('spacer');
 			toggler.setAttribute('class', this.kTABBAR_TOGGLER);
 			b.mStrip.parentNode.insertBefore(toggler, b.mStrip);
 		}
@@ -740,6 +741,7 @@ TreeStyleTabBrowser.prototype = {
 
 			b.mTabBox.orient = splitter.orient = 'horizontal';
 			b.mStrip.orient =
+				toggler.orient =
 				b.mTabContainer.orient =
 				b.mTabContainer.mTabstrip.orient =
 				b.mTabContainer.mTabstrip.parentNode.orient = 'vertical';
@@ -786,6 +788,7 @@ TreeStyleTabBrowser.prototype = {
 					b.mTabDropIndicatorBar.setAttribute('ordinal', 1);
 					b.mStrip.setAttribute('ordinal', 30);
 					splitter.setAttribute('ordinal', 20);
+					toggler.setAttribute('ordinal', 40);
 					b.mPanelContainer.setAttribute('ordinal', 10);
 					splitter.setAttribute('collapse', 'after');
 				}, 0, this.getTreePref('tabbar.width'));
@@ -798,6 +801,7 @@ TreeStyleTabBrowser.prototype = {
 					b.mTabDropIndicatorBar.setAttribute('ordinal', 1);
 					b.mStrip.setAttribute('ordinal', 10);
 					splitter.setAttribute('ordinal', 20);
+					toggler.setAttribute('ordinal', 5);
 					b.mPanelContainer.setAttribute('ordinal', 30);
 					splitter.setAttribute('collapse', 'before');
 				}, 0);
@@ -811,6 +815,7 @@ TreeStyleTabBrowser.prototype = {
 
 			b.mTabBox.orient = splitter.orient = 'vertical';
 			b.mStrip.orient =
+				toggler.orient =
 				b.mTabContainer.orient =
 				b.mTabContainer.mTabstrip.orient =
 				b.mTabContainer.mTabstrip.parentNode.orient = 'horizontal';
@@ -845,6 +850,7 @@ TreeStyleTabBrowser.prototype = {
 					b.mTabDropIndicatorBar.setAttribute('ordinal', 1);
 					b.mStrip.setAttribute('ordinal', 30);
 					splitter.setAttribute('ordinal', 20);
+					toggler.setAttribute('ordinal', 40);
 					b.mPanelContainer.setAttribute('ordinal', 10);
 				}, 0);
 			}
@@ -855,6 +861,7 @@ TreeStyleTabBrowser.prototype = {
 					b.mTabDropIndicatorBar.setAttribute('ordinal', 1);
 					b.mStrip.setAttribute('ordinal', 10);
 					splitter.setAttribute('ordinal', 20);
+					toggler.setAttribute('ordinal', 5);
 					b.mPanelContainer.setAttribute('ordinal', 30);
 				}, 0);
 			}
