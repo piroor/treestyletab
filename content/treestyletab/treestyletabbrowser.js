@@ -562,6 +562,11 @@ TreeStyleTabBrowser.prototype = {
 
 		aTab.setAttribute(this.kNEST, 0);
 	},
+	ensureTabInitialized : function(aTab)
+	{
+		if (!aTab || aTab.getAttribute(this.kID)) return;
+		this.initTab(aTab);
+	},
 	
 	initTabAttributes : function(aTab) 
 	{
@@ -2168,6 +2173,8 @@ TreeStyleTabBrowser.prototype = {
 			aDragSession = this.getCurrentDragSession();
 
 		var tab = aDragSession ? this.getTabFromChild(aDragSession.sourceNode) : null ;
+		this.ensureTabInitialized(tab);
+
 		var info = this.getDropActionInternal(aEvent, tab);
 		info.canDrop = true;
 		info.source = tab;
@@ -2248,6 +2255,7 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 		else {
+			this.ensureTabInitialized(tab);
 			info.target = tab;
 		}
 
@@ -2587,11 +2595,12 @@ TreeStyleTabBrowser.prototype = {
 			return;
 		}
 
+		this.ensureTabInitialized(aChild);
+		this.ensureTabInitialized(aParent);
+
 		if (!aInfo) aInfo = {};
 
 		var id = aChild.getAttribute(this.kID);
-		if (!id || !aParent.getAttribute(this.kID))
-			return; // if the tab is not initialized yet, do nothing.
 
 		this.partTab(aChild, true);
 

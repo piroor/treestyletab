@@ -189,11 +189,22 @@ var TreeStyleTabService = {
 		if (!frame) return;
 
 		var ownerBrowser = this.getTabBrowserFromFrame(frame);
+
+		var parentTab = this.getTabFromFrame(frame, ownerBrowser);
+		ownerBrowser.treeStyleTab.ensureTabInitialized(parentTab);
+		var parentId = parentTab.getAttribute(this.kID);
+
+		var refId = null;
+		if (aInsertBefore) {
+			ownerBrowser.treeStyleTab.ensureTabInitialized(parentTab);
+			refId = aInsertBefore.getAttribute(this.kID);
+		}
+
 		ownerBrowser.treeStyleTab.readyToAttachNewTab   = true;
 		ownerBrowser.treeStyleTab.readyToAttachMultiple = aMultiple || false ;
 		ownerBrowser.treeStyleTab.multipleCount         = 0;
-		ownerBrowser.treeStyleTab.parentTab             = this.getTabFromFrame(frame, ownerBrowser).getAttribute(this.kID);
-		ownerBrowser.treeStyleTab.insertBefore          = aInsertBefore ? aInsertBefore.getAttribute(this.kID) : null ;
+		ownerBrowser.treeStyleTab.parentTab             = parentId;
+		ownerBrowser.treeStyleTab.insertBefore          = refId;
 	},
  
 	readyToOpenNewTabGroup : function(aFrameOrTabBrowser) 
