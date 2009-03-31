@@ -3415,7 +3415,7 @@ TreeStyleTabBrowser.prototype = {
 		var frame = this.mTabBrowser.contentWindow;
 		var tabContainerBox = this.mTabBrowser.mTabContainer.boxObject;
 		var browserBox = this.mTabBrowser.mCurrentBrowser.boxObject;
-		var contentBox = frame.document.getBoxObjectFor(frame.document.documentElement);
+		var contentBox = this.getBoxObjectFor(frame.document.documentElement);
 
 		var zoom = this.getZoomForFrame(frame);
 

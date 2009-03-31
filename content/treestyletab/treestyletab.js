@@ -435,6 +435,31 @@ var TreeStyleTabService = {
 		return array;
 	},
  
+	getBoxObjectFor : function(aNode) 
+	{
+		if ('getBoxObjectFor' in aNode.ownerDocument)
+			return aNode.ownerDocument.getBoxObjectFor(aNode);
+
+		var box = {
+				x       : 0,
+				y       : 0,
+				width   : 0,
+				height  : 0,
+				screenX : 0,
+				screenY : 0
+			};
+		try {
+			var rect = aNode.getBoundingClientRect();
+			box.x = rect.left+1;
+			box.y = rect.top+1;
+			box.width  = rect.right-rect.left;
+			box.height = rect.bottom-rect.top;
+		}
+		catch(e) {
+		}
+		return box;
+	},
+ 
 	getTabFromEvent : function(aEvent) 
 	{
 		return this.getTabFromChild(aEvent.originalTarget || aEvent.target);
