@@ -41,12 +41,22 @@
 				};
 			try {
 				var rect = aNode.getBoundingClientRect();
+				var style = this._getComputedStyle(aNode);
 				var frame = aNode.ownerDocument.defaultView;
-				box.x = rect.left + frame.scrollX;
-				box.y = rect.top + frame.scrollY;
+
+				// "x" and "y" are offset positions of the "padding-box" from the document top-left edge.
+				box.x = rect.left + this._getPropertyPixelValue(style, 'border-left-width');
+				box.y = rect.top + this._getPropertyPixelValue(style, 'border-top-width');
+				if (style.getPropertyValue('position') != 'fixed') {
+					box.x += frame.scrollX;
+					box.y += frame.scrollY;
+				}
+
+				// "width" and "height" are sizes of the "border-box".
 				box.width  = rect.right-rect.left;
 				box.height = rect.bottom-rect.top;
 
+				// "screenX" and "screenY" are absolute positions of the "border-box".
 				box.screenX = rect.left;
 				box.screenY = rect.top;
 				var owner = aNode;
@@ -54,6 +64,11 @@
 				{
 					frame = owner.ownerDocument.defaultView;
 					owner = this._getFrameOwnerFromFrame(frame);
+
+					let style = this._getComputedStyle(owner);
+					box.screenX += this._getPropertyPixelValue(style, 'border-left-width');
+					box.screenY += this._getPropertyPixelValue(style, 'border-top-width');
+
 					if (!owner) {
 						box.screenX += frame.screenX;
 						box.screenY += frame.screenY;
@@ -65,6 +80,7 @@
 						box.screenY += ownerBox.screenY;
 						break;
 					}
+
 					let ownerRect = owner.getBoundingClientRect();
 					box.screenX += ownerRect.left;
 					box.screenY += ownerRect.top;
@@ -72,7 +88,23 @@
 			}
 			catch(e) {
 			}
+
+			for (let i in box)
+			{
+				box[i] = parseInt(box[i]);
+			}
+
 			return box;
+		},
+
+		_getComputedStyle : function(aNode)
+		{
+			return aNode.ownerDocument.defaultView.getComputedStyle(aNode, null);
+		},
+
+		_getPropertyPixelValue : function(aStyle, aProperty)
+		{
+			return parseInt(aStyle.getPropertyValue(aProperty).replace('px', ''));
 		},
 
 		_getFrameOwnerFromFrame : function(aFrame)
