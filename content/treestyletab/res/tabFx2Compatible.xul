@@ -6,7 +6,7 @@
 window.addEventListener('DOMContentLoaded', function() {
 	window.removeEventListener('DOMContentLoaded', arguments.callee, true);
 
-	const currentRevision = 1;
+	const currentRevision = 2;
 
 	var b = document.getElementById('content');
 	if (!b || b.localName != 'tabbrowser') return;
@@ -27,7 +27,8 @@ window.addEventListener('DOMContentLoaded', function() {
 
 	switch (window.getComputedStyle(b.selectedTab, '').getPropertyValue('-moz-binding'))
 	{
-		case 'url(chrome://browser/content/tabbrowser.xml#tabbrowser-tab)':
+		case 'url(chrome://browser/content/tabbrowser.xml#tabbrowser-tab)': // -Gecko 1.9
+		case 'url("chrome://browser/content/tabbrowser.xml#tabbrowser-tab")': // Gecko 1.9.1-
 			root.setAttribute('tabFx2Compatible', currentRevision);
 			break;
 	}
