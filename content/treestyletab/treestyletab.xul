@@ -9,6 +9,7 @@
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 <script src="prefs.js" type="application/x-javascript"/>
+<script src="boxObject.js" type="application/x-javascript"/>
 <script src="treestyletab.js" type="application/x-javascript; version=1.7"/>
 <script src="treestyletabbrowser.js" type="application/x-javascript; version=1.7"/>
 <script src="preloadImages.js" type="application/x-javascript; version=1.7"/>
