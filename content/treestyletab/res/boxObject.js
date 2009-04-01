@@ -5,7 +5,7 @@
    https://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/boxObject.js
 */
 (function() {
-	const currentRevision = 1;
+	const currentRevision = 2;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -21,15 +21,40 @@
 	window['piro.sakura.ne.jp'].boxObject = {
 		revision : currentRevision,
 
-		getBoxObjectFor : function(aNode)
+		getBoxObjectFor : function(aNode, aUnify)
 		{
-			if ('getBoxObjectFor' in aNode.ownerDocument)
-				return aNode.ownerDocument.getBoxObjectFor(aNode);
-
-			return this.getBoxObjectFromClientRectFor(aNode);
+			return ('getBoxObjectFor' in aNode.ownerDocument) ?
+					this.getBoxObjectFromBoxObjectFor(aNode, aUnify) :
+					this.getBoxObjectFromClientRectFor(aNode, aUnify) ;
 		},
 
-		getBoxObjectFromClientRectFor : function(aNode)
+		getBoxObjectFromBoxObjectFor : function(aNode, aUnify)
+		{
+			var boxObject = aNode.ownerDocument.getBoxObjectFor(aNode);
+			var box = {
+					x       : boxObject.x,
+					y       : boxObject.y,
+					width   : boxObject.width,
+					height  : boxObject.height,
+					screenX : boxObject.screenX,
+					screenY : boxObject.screenY
+				};
+			if (!aUnify) return box;
+
+			var style = this._getComputedStyle(aNode);
+			box.left = box.x - this._getPropertyPixelValue(style, 'border-left-width');
+			box.top = box.y - this._getPropertyPixelValue(style, 'border-top-width');
+			if (style.getPropertyValue('position') == 'fixed') {
+				box.left -= frame.scrollX;
+				box.top  -= frame.scrollY;
+			}
+			box.right  = box.left + box.width;
+			box.bottom = box.top + box.height;
+
+			return box;
+		},
+
+		getBoxObjectFromClientRectFor : function(aNode, aUnify)
 		{
 			var box = {
 					x       : 0,
@@ -41,6 +66,13 @@
 				};
 			try {
 				var rect = aNode.getBoundingClientRect();
+				if (aUnify) {
+					box.left   = rect.left;
+					box.top    = rect.top;
+					box.right  = rect.right;
+					box.bottom = rect.bottom;
+				}
+
 				var style = this._getComputedStyle(aNode);
 				var frame = aNode.ownerDocument.defaultView;
 
@@ -91,7 +123,7 @@
 
 			for (let i in box)
 			{
-				box[i] = parseInt(box[i]);
+				box[i] = Math.round(box[i]);
 			}
 
 			return box;
