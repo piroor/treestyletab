@@ -156,7 +156,7 @@
 					'/descendant::*[contains(" frame FRAME iframe IFRAME browser tabbrowser ", concat(" ", local-name(), " "))]',
 					parentDocument,
 					null,
-					XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+					Ci.nsIDOMXPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
 					null
 				);
 			for (let i = 0, maxi = nodes.snapshotLength; i < maxi; i++)
