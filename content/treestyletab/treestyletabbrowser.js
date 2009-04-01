@@ -1147,10 +1147,8 @@ TreeStyleTabBrowser.prototype = {
 				return;
 
 			case 'click':
-				if (aEvent.target.ownerDocument == document) {
+				if (aEvent.target.ownerDocument == document)
 					this.onTabClick(aEvent);
-					return;
-				}
 				return;
 
 			case 'dblclick':
@@ -1761,17 +1759,13 @@ TreeStyleTabBrowser.prototype = {
 		if (this.isEventFiredOnTwisty(aEvent)) {
 			var tab = this.getTabFromEvent(aEvent);
 			this.collapseExpandSubtree(tab, tab.getAttribute(this.kSUBTREE_COLLAPSED) != 'true');
+			aEvent.preventDefault();
+			aEvent.stopPropagation();
 		}
 		else if (!this.getTabFromEvent(aEvent)) {
 			var tab = this.getTabFromTabbarEvent(aEvent);
 			if (tab) this.mTabBrowser.selectedTab = tab;
 		}
-		else {
-			return;
-		}
-
-		aEvent.preventDefault();
-		aEvent.stopPropagation();
 	},
 	getTabFromTabbarEvent : function(aEvent)
 	{
