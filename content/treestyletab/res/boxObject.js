@@ -5,7 +5,7 @@
    https://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/boxObject.js
 */
 (function() {
-	const currentRevision = 2;
+	const currentRevision = 3;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -16,6 +16,7 @@
 		return;
 	}
 
+	var Cc = Components.classes;
 	var Ci = Components.interfaces;
 
 	window['piro.sakura.ne.jp'].boxObject = {
@@ -65,6 +66,8 @@
 					screenY : 0
 				};
 			try {
+				var zoom = this.getZoom(aNode.ownerDocument.defaultView);
+
 				var rect = aNode.getBoundingClientRect();
 				if (aUnify) {
 					box.left   = rect.left;
@@ -89,17 +92,18 @@
 				box.height = rect.bottom-rect.top;
 
 				// "screenX" and "screenY" are absolute positions of the "border-box".
-				box.screenX = rect.left;
-				box.screenY = rect.top;
+				box.screenX = rect.left * zoom;
+				box.screenY = rect.top * zoom;
 				var owner = aNode;
 				while (true)
 				{
-					frame = owner.ownerDocument.defaultView;
 					owner = this._getFrameOwnerFromFrame(frame);
+					frame = owner.ownerDocument.defaultView;
+					zoom  = this.getZoom(frame);
 
 					let style = this._getComputedStyle(owner);
-					box.screenX += this._getPropertyPixelValue(style, 'border-left-width');
-					box.screenY += this._getPropertyPixelValue(style, 'border-top-width');
+					box.screenX += this._getPropertyPixelValue(style, 'border-left-width') * zoom;
+					box.screenY += this._getPropertyPixelValue(style, 'border-top-width') * zoom;
 
 					if (!owner) {
 						box.screenX += frame.screenX;
@@ -114,8 +118,8 @@
 					}
 
 					let ownerRect = owner.getBoundingClientRect();
-					box.screenX += ownerRect.left;
-					box.screenY += ownerRect.top;
+					box.screenX += ownerRect.left * zoom;
+					box.screenY += ownerRect.top * zoom;
 				}
 			}
 			catch(e) {
@@ -177,6 +181,28 @@
 				}
 			}
 			return null;
+		},
+
+		Prefs : Cc['@mozilla.org/preferences;1']
+			.getService(Ci.nsIPrefBranch)
+			.QueryInterface(Ci.nsIPrefBranch2),
+
+		getZoom : function(aFrame)
+		{
+			try {
+				if (!this.Prefs.getBoolPref('browser.zoom.full'))
+					return 1;
+			}
+			catch(e) {
+				return 1;
+			}
+			var markupDocumentViewer = aFrame.top
+					.QueryInterface(Ci.nsIInterfaceRequestor)
+					.getInterface(Ci.nsIWebNavigation)
+					.QueryInterface(Ci.nsIDocShell)
+					.contentViewer
+					.QueryInterface(Ci.nsIMarkupDocumentViewer);
+			return markupDocumentViewer.fullZoom;
 		}
 
 	};
