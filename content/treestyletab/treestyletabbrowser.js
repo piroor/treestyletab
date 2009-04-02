@@ -32,6 +32,7 @@ TreeStyleTabBrowser.prototype = {
 	invertedSizeProp     : 'width',
 
 	togglerSize : 0,
+	sensitiveArea : 7,
  
 	get browser() 
 	{
@@ -478,6 +479,7 @@ TreeStyleTabBrowser.prototype = {
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.allowSubtreeCollapseExpand');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.fixed');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.transparent.style');
+		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.autoHide.area');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.togglerSize');
 		window.setTimeout(function() {
 			b.treeStyleTab.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.autoHide.mode');
@@ -1091,6 +1093,10 @@ TreeStyleTabBrowser.prototype = {
 					case 'extensions.treestyletab.tabbar.width':
 					case 'extensions.treestyletab.tabbar.shrunkenWidth':
 						this.checkTabsIndentOverflow();
+						break;
+
+					case 'extensions.treestyletab.tabbar.autoHide.area':
+						this.sensitiveArea = value;
 						break;
 
 					case 'extensions.treestyletab.tabbar.togglerSize':
@@ -3568,32 +3574,6 @@ TreeStyleTabBrowser.prototype = {
 /* auto hide */ 
 	autoHideEnabled : false,
 	
-	get sensitiveArea() 
-	{
-		var b    = this.mTabBrowser;
-		var area = Math.abs(this.getTreePref('tabbar.autoHide.area'));
-		var pos  = b.getAttribute(this.kTABBAR_POSITION);
-		switch (this.autoHideMode)
-		{
-			case this.kAUTOHIDE_MODE_HIDE:
-				if (!this.tabbarShown &&
-					this.getTreePref('tabbar.autoHide.expandArea'))
-					area += (pos == 'left' || pos == 'right') ?
-							this.autoHideXOffset + this.splitterWidth :
-							this.autoHideYOffset ;
-				break;
-
-			default:
-			case this.kAUTOHIDE_MODE_SHRINK:
-				if (pos == 'left' || pos == 'right') {
-					if (!this.tabbarExpanded)
-						area = b.mStrip.boxObject.width - area;
-				}
-				break;
-		}
-		return area;
-	},
- 
 	startAutoHide : function() 
 	{
 		if (this.autoHideEnabled) return;
@@ -3673,14 +3653,15 @@ TreeStyleTabBrowser.prototype = {
 
 		var b   = this.mTabBrowser;
 		var pos = b.getAttribute(this.kTABBAR_POSITION);
+		var box = b.mCurrentBrowser.boxObject;
 		var shouldKeepShown = (
 				pos == 'left' ?
-					(aEvent.screenX <= b.mCurrentBrowser.boxObject.screenX + this.sensitiveArea) :
+					(aEvent.screenX <= box.screenX + this.sensitiveArea) :
 				pos == 'right' ?
-					(aEvent.screenX >= b.mCurrentBrowser.boxObject.screenX + b.boxObject.width - this.sensitiveArea) :
+					(aEvent.screenX >= box.screenX + box.width - this.sensitiveArea) :
 				pos == 'bottom' ?
-					(aEvent.screenY >= b.mCurrentBrowser.boxObject.screenY + b.boxObject.height - this.sensitiveArea) :
-					(aEvent.screenY <= b.mCurrentBrowser.boxObject.screenY + this.sensitiveArea)
+					(aEvent.screenY >= box.screenY + box.height - this.sensitiveArea) :
+					(aEvent.screenY <= box.screenY + this.sensitiveArea)
 			);
 		if (this.autoHideShown) {
 			if (
@@ -3709,12 +3690,12 @@ TreeStyleTabBrowser.prototype = {
 		}
 		else if (
 				pos == 'left' ?
-					(aEvent.screenX <= b.boxObject.screenX + this.sensitiveArea) :
+					(aEvent.screenX <= box.screenX + this.sensitiveArea) :
 				pos == 'right' ?
-					(aEvent.screenX >= b.boxObject.screenX + b.boxObject.width - this.sensitiveArea) :
+					(aEvent.screenX >= box.screenX + box.width - this.sensitiveArea) :
 				pos == 'bottom' ?
-					(aEvent.screenY >= b.boxObject.screenY + b.boxObject.height - this.sensitiveArea) :
-					(aEvent.screenY <= b.boxObject.screenY + this.sensitiveArea)
+					(aEvent.screenY >= box.screenY + box.height - this.sensitiveArea) :
+					(aEvent.screenY <= box.screenY + this.sensitiveArea)
 			) {
 			this.showHideTabbarOnMousemoveTimer = window.setTimeout(
 				function(aSelf) {
