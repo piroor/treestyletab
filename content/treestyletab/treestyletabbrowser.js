@@ -873,14 +873,6 @@ TreeStyleTabBrowser.prototype = {
 				}, 0);
 			}
 		}
-
-		// ‰½ŒÌ‚©xbl:inherits‚É‚æ‚é‘®«’l‚ÌŒp³‚ªŒø‚©‚È‚­‚È‚Á‚Ä‚µ‚Ü‚Á‚Ä‚¢‚é‚ç‚µ‚¢cc
-		var closebutton = document.getAnonymousElementByAttribute(b.mTabContainer, 'anonid', 'tabs-closebutton');
-		if (closebutton &&
-			!closebutton.hasAttribute('oncommand') &&
-			b.mTabContainer.hasAttribute('onclosetab')) {
-			closebutton.setAttribute('oncommand', b.mTabContainer.getAttribute('onclosetab'));
-		}
 	},
   
 	destroy : function() 
