@@ -1391,7 +1391,12 @@ TreeStyleTabBrowser.prototype = {
 
 		this.destroyTab(tab);
 
-		if (tab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true') {
+		var closeParentBehavior = this.getTreePref('closeParentBehavior');
+
+		if (
+			closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_CLOSE ||
+			tab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true'
+			) {
 			var descendant = this.getDescendantTabs(tab);
 			for (var i = descendant.length-1; i > -1; i--)
 			{
@@ -1415,21 +1420,22 @@ TreeStyleTabBrowser.prototype = {
 			var backupChildren = this.getTabValue(tab, this.kCHILDREN);
 			var children   = this.getChildTabs(tab);
 			var self       = this;
-			var attach     = this.getTreePref('attachChildrenToGrandParentOnRemoveTab');
-			var processTab = !attach ? function(aTab) {
-					self.partTab(aTab, true);
-					self.moveTabSubTreeTo(aTab, self.getLastTab(b)._tPos);
-				} :
-				parentTab ? function(aTab) {
-					self.attachTabTo(aTab, parentTab, {
-						insertBefore : tab,
-						dontUpdateIndent : true,
-						dontExpand : true
-					});
-				} :
-				function(aTab) {
-					self.partTab(aTab, true);
-				};
+			var processTab = closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_DETACH ?
+					function(aTab) {
+						self.partTab(aTab, true);
+						self.moveTabSubTreeTo(aTab, self.getLastTab(b)._tPos);
+					} :
+				parentTab ?
+					function(aTab) {
+						self.attachTabTo(aTab, parentTab, {
+							insertBefore : tab,
+							dontUpdateIndent : true,
+							dontExpand : true
+						});
+					} :
+					function(aTab) {
+						self.partTab(aTab, true);
+					};
 			for (var i = 0, maxi = children.length; i < maxi; i++)
 			{
 				processTab(children[i]);
@@ -1482,6 +1488,9 @@ TreeStyleTabBrowser.prototype = {
 
 		this.showTabbarForFeedback();
 	},
+	CLOSE_PARENT_BEHAVIOR_ATTACH : 0,
+	CLOSE_PARENT_BEHAVIOR_DETACH : 1,
+	CLOSE_PARENT_BEHAVIOR_CLOSE  : 2,
  
 	onTabMove : function(aEvent) 
 	{

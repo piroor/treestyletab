@@ -106,7 +106,11 @@
 
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Expandir sub-árboles automáticamente cuando una pestaña es insertada dentro del sub-árbol">
 
-<!ENTITY config.attachChildrenToGrandParentOnRemoveTab "Liberar las pestañas hijas del árbol cuando el árbol es cerrado">
+<!ENTITY config.closeParentBehavior.caption "When a parent tab is closed">
+<!ENTITY config.closeParentBehavior.close   "Close child tabs too">
+<!ENTITY config.closeParentBehavior.attach  "Move child tabs to the level of the closed parent tab">
+<!ENTITY config.closeParentBehavior.detach  "Liberate child tabs from the tree">
+<!--ENTITY config.attachChildrenToGrandParentOnRemoveTab "Liberar las pestañas hijas del árbol cuando el árbol es cerrado"-->
 
 <!ENTITY config.focusMode "Seleccionar la próxima/anterior pestaña aunque no este visible, cuando se presiona Control(Comando)-Tab">
 

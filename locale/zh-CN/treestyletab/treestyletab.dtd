@@ -106,7 +106,11 @@
 
 <!ENTITY config.autoExpandSubTreeOnAppendChild "当标签被插入子树时，自动展开子树">
 
-<!ENTITY config.attachChildrenToGrandParentOnRemoveTab "当父标签关闭时从树中释放子标签">
+<!ENTITY config.closeParentBehavior.caption "When a parent tab is closed">
+<!ENTITY config.closeParentBehavior.close   "Close child tabs too">
+<!ENTITY config.closeParentBehavior.attach  "Move child tabs to the level of the closed parent tab">
+<!ENTITY config.closeParentBehavior.detach  "Liberate child tabs from the tree">
+<!--ENTITY config.attachChildrenToGrandParentOnRemoveTab "当父标签关闭时从树中释放子标签"-->
 
 <!ENTITY config.focusMode "用 Control(命令)-Tab聚焦到下个/上个标签，即便其不可见。">
 

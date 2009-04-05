@@ -106,7 +106,11 @@
 
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Espandi automaticamente i sottoalberi all'inserimento di nuove schede">
 
-<!ENTITY config.attachChildrenToGrandParentOnRemoveTab "Elimina le sottoschede dall'albero alla chiusura della scheda principale">
+<!ENTITY config.closeParentBehavior.caption "When a parent tab is closed">
+<!ENTITY config.closeParentBehavior.close   "Close child tabs too">
+<!ENTITY config.closeParentBehavior.attach  "Move child tabs to the level of the closed parent tab">
+<!ENTITY config.closeParentBehavior.detach  "Liberate child tabs from the tree">
+<!--ENTITY config.attachChildrenToGrandParentOnRemoveTab "Elimina le sottoschede dall'albero alla chiusura della scheda principale"-->
 
 <!ENTITY config.focusMode "Attiva la scheda successiva/precedente, anche se è nascosta, con Control(Command)-Tab">
 

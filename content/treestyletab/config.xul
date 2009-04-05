@@ -501,12 +501,11 @@
 		<!--preference id="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
 			name="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
 			type="bool"/-->
-		<preference id="extensions.treestyletab.attachChildrenToGrandParentOnRemoveTab"
-			name="extensions.treestyletab.attachChildrenToGrandParentOnRemoveTab"
-			type="bool"
-			inverted="true"/>
 		<preference id="extensions.treestyletab.focusMode"
 			name="extensions.treestyletab.focusMode"
+			type="int"/>
+		<preference id="extensions.treestyletab.closeParentBehavior"
+			name="extensions.treestyletab.closeParentBehavior"
 			type="int"/>
 		<preference id="extensions.treestyletab.insertNewChildAt"
 			name="extensions.treestyletab.insertNewChildAt"
@@ -524,14 +523,21 @@
 	<!--checkbox id="extensions.treestyletab.autoExpandSubTreeOnAppendChild-check"
 		preference="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
 		label="&config.autoExpandSubTreeOnAppendChild;"/-->
-	<checkbox id="extensions.treestyletab.attachChildrenToGrandParentOnRemoveTab-check"
-		preference="extensions.treestyletab.attachChildrenToGrandParentOnRemoveTab"
-		label="&config.attachChildrenToGrandParentOnRemoveTab;"/>
 	<checkbox id="extensions.treestyletab.focusMode-check"
 		preference="extensions.treestyletab.focusMode"
 		label="&config.focusMode;"
 		onsyncfrompreference="return document.getElementById('extensions.treestyletab.focusMode').value == 0;"
 		onsynctopreference="return document.getElementById('extensions.treestyletab.focusMode-check').checked ? 0 : 1 ;"/>
+	<groupbox>
+		<caption label="&config.closeParentBehavior.caption;"/>
+		<radiogroup id="extensions.treestyletab.closeParentBehavior-radiogroup"
+			preference="extensions.treestyletab.closeParentBehavior"
+			orient="vertical">
+			<radio value="2" label="&config.closeParentBehavior.close;"/>
+			<radio value="0" label="&config.closeParentBehavior.attach;"/>
+			<radio value="1" label="&config.closeParentBehavior.detach;"/>
+		</radiogroup>
+	</groupbox>
 	<groupbox>
 		<caption label="&config.insertNewChildAt.caption;"/>
 		<radiogroup id="extensions.treestyletab.insertNewChildAt-radiogroup"

@@ -68,10 +68,11 @@ pref("extensions.treestyletab.openGroupBookmarkAsTabSubTree",      true);
 pref("extensions.treestyletab.autoCollapseExpandSubTreeOnSelect",      true);
 pref("extensions.treestyletab.collapseExpandSubTree.dblclick",         false);
 pref("extensions.treestyletab.autoExpandSubTreeOnAppendChild",         true);
-pref("extensions.treestyletab.attachChildrenToGrandParentOnRemoveTab", true);
 pref("extensions.treestyletab.autoAttachNewTabsAsChildren", true);
 // 0 = default, 1 = only visible tabs
 pref("extensions.treestyletab.focusMode", 1);
+// 0 = attach chldren to the grand parent, 1 = detach all children, 2 = close all children too
+pref("extensions.treestyletab.closeParentBehavior", 0);
 
 
 pref("browser.link.open_newwindow.restriction.override", 0);
