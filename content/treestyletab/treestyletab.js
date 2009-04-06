@@ -1110,6 +1110,8 @@ catch(e) {
 						var TSTTabBrowser = this;
 						if ((function(aSelf) {
 try{
+							if (TSTTabBrowser.treeStyleTab.processAutoScroll(aEvent)) return true;
+
 							var info = TSTTabBrowser.treeStyleTab.getDropAction(aEvent, TST_DRAGSESSION);
 
 							if (!info.target || info.target != TreeStyleTabService.evaluateXPath(

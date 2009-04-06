@@ -2579,6 +2579,39 @@ TreeStyleTabBrowser.prototype = {
 		var tabsInfo = this.getDraggedTabsInfoFromOneTab(actionInfo, aTab);
 		return tabsInfo.draggedTabs.length == this.getTabs(this.mTabBrowser).snapshotLength;
 	},
+ 
+	processAutoScroll : function(aEvent) 
+	{
+		var tabs = this.mTabBrowser.mTabContainer;
+		if (tabs.getAttribute('overflow') != 'true') return false;
+
+		var tabStrip = tabs.mTabstrip;
+		var pixels   = tabStrip.scrollIncrement;
+		var box      = tabs.boxObject;
+		if (this.isVertical) {
+			if (aEvent.screenY < box.screenY + this.autoScrollArea) {
+				pixels *= -1;
+			}
+			else if (aEvent.screenY < box.screenY + box.height - this.autoScrollArea) {
+				return false;
+			}
+		}
+		else {
+			var ltr = window.getComputedStyle(this.parentNode, null).direction == 'ltr';
+			if (aEvent.screenX < box.screenX + this.autoScrollArea) {
+				pixels *= -1;
+			}
+			else if (aEvent.screenX < box.screenX + box.width - this.autoScrollArea) {
+				return false;
+			}
+			pixels = (ltr ? 1 : -1) * pixels;
+		}
+		tabStrip.scrollByPixels(pixels);
+		aEvent.preventDefault();
+		aEvent.stopPropagation();
+		return true;
+	},
+	autoScrollArea : 20,
   
 /* commands */ 
 	
