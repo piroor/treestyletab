@@ -2586,9 +2586,10 @@ TreeStyleTabBrowser.prototype = {
 		if (tabs.getAttribute('overflow') != 'true') return false;
 
 		var tabStrip = tabs.mTabstrip;
-		var pixels   = tabStrip.scrollIncrement;
 		var box      = tabs.boxObject;
+		var pixels;
 		if (this.isVertical) {
+			pixels = tabs.childNodes[0].boxObject.height * 0.5;
 			if (aEvent.screenY < box.screenY + this.autoScrollArea) {
 				pixels *= -1;
 			}
@@ -2597,6 +2598,7 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 		else {
+			pixels = tabStrip.scrollIncrement;
 			var ltr = window.getComputedStyle(this.parentNode, null).direction == 'ltr';
 			if (aEvent.screenX < box.screenX + this.autoScrollArea) {
 				pixels *= -1;
