@@ -84,6 +84,11 @@ TreeStyleTabBrowser.prototype = {
   
 /* status */ 
 	
+	get isOverflow() 
+	{
+		return this.mTabBrowser.mTabContainer.getAttribute('overflow') == 'true';
+	},
+ 
 	get isVertical() 
 	{
 		var b = this.mTabBrowser;
@@ -137,29 +142,26 @@ TreeStyleTabBrowser.prototype = {
 		var container = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-container');
 		if (container) container.removeAttribute('overflow');
 
-		var inner = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabbrowser-arrowscrollbox');
-		if (inner) {
-			inner.addEventListener('overflow', this, true);
-			inner.addEventListener('underflow', this, true);
-			window.setTimeout(function() {
-				inner = document.getAnonymousElementByAttribute(inner, 'anonid', 'scrollbox');
-				if (inner) inner = document.getAnonymousNodes(inner)[0];
-				if (
-					inner &&
-					(
-						inner.boxObject.width > container.boxObject.width ||
-						inner.boxObject.height > container.boxObject.height
-					)
-					) {
-					b.mTabContainer.setAttribute('overflow', true); // Firefox 3.0.x
-					container.setAttribute('overflow', true);
-				}
-				else {
-					b.mTabContainer.removeAttribute('overflow'); // Firefox 3.0.x
-					container.removeAttribute('overflow');
-				}
-			}, 100);
-		}
+		this.scrollBox.addEventListener('overflow', this, true);
+		this.scrollBox.addEventListener('underflow', this, true);
+		window.setTimeout(function(aBox) {
+			aBox = document.getAnonymousElementByAttribute(aBox, 'anonid', 'scrollbox');
+			if (aBox) aBox = document.getAnonymousNodes(aBox)[0];
+			if (
+				aBox &&
+				(
+					aBox.boxObject.width > container.boxObject.width ||
+					aBox.boxObject.height > container.boxObject.height
+				)
+				) {
+				b.mTabContainer.setAttribute('overflow', true); // Firefox 3.0.x
+				container.setAttribute('overflow', true);
+			}
+			else {
+				b.mTabContainer.removeAttribute('overflow'); // Firefox 3.0.x
+				container.removeAttribute('overflow');
+			}
+		}, 100, this.scrollBox);
 
 
 		/* Closing collapsed last tree breaks selected tab.
@@ -901,11 +903,8 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.removeEventListener('select', this, true);
 		b.mTabContainer.removeEventListener('scroll', this, true);
 
-		var inner = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabbrowser-arrowscrollbox');
-		if (inner) {
-			inner.removeEventListener('overflow', this, true);
-			inner.removeEventListener('underflow', this, true);
-		}
+		this.scrollBox.removeEventListener('overflow', this, true);
+		this.scrollBox.removeEventListener('underflow', this, true);
 
 		var tabContext = document.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu');
 		tabContext.removeEventListener('popupshowing', this, false);
@@ -2582,11 +2581,10 @@ TreeStyleTabBrowser.prototype = {
  
 	processAutoScroll : function(aEvent) 
 	{
-		var tabs = this.mTabBrowser.mTabContainer;
-		if (tabs.getAttribute('overflow') != 'true') return false;
+		if (!this.isOverflow) return false;
 
-		var tabStrip = tabs.mTabstrip;
-		var box      = tabs.boxObject;
+		var tabs = this.mTabBrowser.mTabContainer;
+		var box = tabs.boxObject;
 		var pixels;
 		if (this.isVertical) {
 			pixels = tabs.childNodes[0].boxObject.height * 0.5;
@@ -2598,7 +2596,7 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 		else {
-			pixels = tabStrip.scrollIncrement;
+			pixels = this.scrollBox.scrollIncrement;
 			var ltr = window.getComputedStyle(this.parentNode, null).direction == 'ltr';
 			if (aEvent.screenX < box.screenX + this.autoScrollArea) {
 				pixels *= -1;
@@ -2608,7 +2606,17 @@ TreeStyleTabBrowser.prototype = {
 			}
 			pixels = (ltr ? 1 : -1) * pixels;
 		}
-		tabStrip.scrollByPixels(pixels);
+
+		if ('scrollByPixels' in this.scrollBox) {
+			this.scrollBox.scrollByPixels(pixels);
+		}
+		else { // Tab Mix Plus?
+			if (this.isVertical)
+				this.scrollBoxObject.scrollBy(0, pixels);
+			else
+				this.scrollBoxObject.scrollBy(pixels, 0);
+		}
+
 		aEvent.preventDefault();
 		aEvent.stopPropagation();
 		return true;
