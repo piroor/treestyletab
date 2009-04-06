@@ -106,11 +106,11 @@
 
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Rozwiń poddrzewo automatycznie, kiedy karty są wstawione do poddrzewa">
 
-<!ENTITY config.closeParentBehavior.caption "When a parent tab is closed">
-<!ENTITY config.closeParentBehavior.close   "Close child tabs too">
-<!ENTITY config.closeParentBehavior.attach  "Move child tabs to the level of the closed parent tab">
-<!ENTITY config.closeParentBehavior.detach  "Liberate child tabs from the tree">
-<!--ENTITY config.attachChildrenToGrandParentOnRemoveTab "Uwolnij podrzędne karty jeśli karta nadrzędna zostaje zamknięta"-->
+<!ENTITY config.closeParentBehavior.caption "Kiedy nadrzędna karta zostaje zamknięta">
+<!ENTITY config.closeParentBehavior.close   "Zamknij również podrzędne karty">
+<!ENTITY config.closeParentBehavior.attach  "Przenieś podrzędne karty na poziom nadrzędnej">
+<!ENTITY config.closeParentBehavior.detach  "Uwolnij podrzędne karty z drzewa">
+<!--ENTITY config.attachChildrenToGrandParentOnRemoveTab "Uwolnij podrzędne karty kiedy karta nadrzedna zostaje zamknięta"-->
 
 <!ENTITY config.focusMode "Po wciśnięciu Ctrl-Tab wybierz następną/poprzednią kartę nawet jeśli jest niewidoczna">
 
