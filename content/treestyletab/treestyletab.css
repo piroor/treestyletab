@@ -16,7 +16,7 @@ tabbrowser[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyle
 	display: -moz-box;
 }
 
-tabbrowser[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyletab-collapsed="true"],
+tabbrowser[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyletab-collapsed-done="true"],
 .tabbrowser-strip[collapsed="true"]+splitter:not([state="collapsed"]),
 tabbrowser[treestyletab-tabbar-autohide="hidden"] .tabbrowser-strip,
 tabbrowser[treestyletab-tabbar-autohide="hidden"] .tabbrowser-strip+splitter,
@@ -25,6 +25,7 @@ tabbrowser:not([treestyletab-tabbar-autohide="hidden"]) .treestyletab-tabbar-tog
 tabbrowser[treestyletab-tabbar-fixed="true"] .tabbrowser-strip+splitter {
 	visibility: collapse;
 }
+
 
 tabbrowser:not([treestyletab-mode="horizontal"]) .tabbrowser-arrowscrollbox > .scrollbutton-up,
 tabbrowser:not([treestyletab-mode="horizontal"]) .tabbrowser-arrowscrollbox > .scrollbutton-down-stack,

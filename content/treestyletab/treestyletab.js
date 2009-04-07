@@ -6,6 +6,8 @@ var TreeStyleTabService = {
 	kINSERT_BEFORE      : 'treestyletab-insert-before',
 	kSUBTREE_COLLAPSED  : 'treestyletab-subtree-collapsed',
 	kCOLLAPSED          : 'treestyletab-collapsed',
+	kCOLLAPSED_DONE     : 'treestyletab-collapsed-done',
+	kCOLLAPSING         : 'treestyletab-collapsing',
 	kTWISTY_HOVER       : 'treestyletab-twisty-hover',
 	kNEST               : 'treestyletab-nest',
 	kDROP_POSITION      : 'treestyletab-drop-position',
@@ -93,9 +95,12 @@ var TreeStyleTabService = {
 	kINSERT_FISRT : 0,
 	kINSERT_LAST  : 1,
 
-	baseLebelMargin : 12,
+	baseIndent : 12,
 	shouldDetectClickOnIndentSpaces : true,
+
 	animationEnabled : true,
+	indentDelay      : 200,
+	collapseDelay    : 150,
 
 	NSResolver : {
 		lookupNamespaceURI : function(aPrefix)
@@ -1032,13 +1037,15 @@ var TreeStyleTabService = {
 
 		this.processRestoredTabs();
 
-		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.levelMargin');
+		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.indent');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.autoHide.mode');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.clickOnIndentSpaces.enabled');
 		this.observe(null, 'nsPref:changed', 'browser.link.open_newwindow.restriction.override');
 		this.observe(null, 'nsPref:changed', 'browser.tabs.loadFolderAndReplace.override');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.style');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.animation.enabled');
+		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.animation.indent.delay');
+		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.animation.collapse.delay');
 	},
 	initialized : false,
 	
@@ -2093,9 +2100,9 @@ catch(e) {
 		var value = this.getPref(aPrefName);
 		switch (aPrefName)
 		{
-			case 'extensions.treestyletab.levelMargin':
-				this.baseLebelMargin = value;
-				this.ObserverService.notifyObservers(null, 'TreeStyleTab:levelMarginModified', value);
+			case 'extensions.treestyletab.indent':
+				this.baseIndent = value;
+				this.ObserverService.notifyObservers(null, 'TreeStyleTab:indentModified', value);
 				break;
 
 			case 'extensions.treestyletab.tabbar.autoHide.mode':
@@ -2147,6 +2154,12 @@ catch(e) {
 
 			case 'extensions.treestyletab.animation.enabled':
 				this.animationEnabled = value;
+				break;
+			case 'extensions.treestyletab.animation.indent.delay':
+				this.indentDelay = value;
+				break;
+			case 'extensions.treestyletab.animation.collapse.delay':
+				this.collapseDelay = value;
 				break;
 
 			case 'extensions.treestyletab.tabbar.style':
