@@ -2218,6 +2218,7 @@ TreeStyleTabBrowser.prototype = {
 		var tab        = aEvent.target;
 		var b          = this.mTabBrowser;
 		var tabs       = this.getTabsArray(b);
+		var lastTabIndex = tabs.length -1;
 		var isInverted = this.isVertical ? false : window.getComputedStyle(b.parentNode, null).direction == 'rtl';
 		var info       = {
 				target       : null,
@@ -2239,14 +2240,14 @@ TreeStyleTabBrowser.prototype = {
 				info.action   = action;
 				return info;
 			}
-			else if (aEvent[this.positionProp] > tabs[tabs.length-1].boxObject[this.positionProp] + tabs[tabs.length-1].boxObject[this.sizeProp]) {
-				info.target   = info.parent = tabs[tabs.length-1];
+			else if (aEvent[this.positionProp] > tabs[lastTabIndex].boxObject[this.positionProp] + tabs[lastTabIndex].boxObject[this.sizeProp]) {
+				info.target   = info.parent = tabs[lastTabIndex];
 				info.position = isInverted ? this.kDROP_BEFORE : this.kDROP_AFTER ;
 				info.action   = action;
 				return info;
 			}
 			else {
-				info.target = tabs[Math.min(b.getNewIndex(aEvent), tabs.length - 1)];
+				info.target = tabs[Math.min(b.getNewIndex(aEvent), lastTabIndex)];
 			}
 		}
 		else {
@@ -2402,6 +2403,7 @@ TreeStyleTabBrowser.prototype = {
 					sourceBrowser.treeStyleTab.getParentTab(aTab) : null ;
 			}, this);
 
+		var lastTabIndex = tabs.length -1;
 		draggedTabs.forEach(function(aTab, aIndex) {
 			var tab = aTab;
 			if (aInfo.action & this.kACTIONS_FOR_DESTINATION) {
@@ -2428,9 +2430,10 @@ TreeStyleTabBrowser.prototype = {
 					MultipleTabService.setSelection(tab, true);
 				if (!parent || draggedTabs.indexOf(parent) < 0)
 					newRoots.push(tab);
+				lastTabIndex++;
 			}
 
-			var newIndex = aInfo.insertBefore ? aInfo.insertBefore._tPos : tabs.length - 1 ;
+			var newIndex = aInfo.insertBefore ? aInfo.insertBefore._tPos : lastTabIndex ;
 			if (aInfo.insertBefore && newIndex > tab._tPos) newIndex--;
 
 			this.internallyTabMoving = true;
