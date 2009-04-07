@@ -1616,7 +1616,7 @@ TreeStyleTabBrowser.prototype = {
   
 	onTabRestored : function(aEvent) 
 	{
-		this.restoreStructure(aEvent.originalTarget, true);
+		this.restoreStructure(aEvent.originalTarget);
 	},
 	restoreStructure : function(aTab, aWithoutAnimation)
 	{
