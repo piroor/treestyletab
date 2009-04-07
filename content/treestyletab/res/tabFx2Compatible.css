@@ -1,3 +1,17 @@
+/*
+ Firefox 2 compatible tab structure library for Firefox 3 or later
+
+ Usage:
+   <?xul-overlay href="tabFx2Compatible.xul"?>
+
+ lisence: The MIT License, Copyright (c) 2009 SHIMODA "Piro" Hiroshi
+   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/license.txt
+ original:
+   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/tabFx2Compatible.xul
+   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/tabFx2Compatible.xml
+   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/tabFx2Compatible.css
+*/
+
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
 :root[tabFx2Compatible="2"] .tabbrowser-tab {

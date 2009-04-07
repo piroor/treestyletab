@@ -1,4 +1,17 @@
 <?xml version="1.0"?>
+<!--
+ Full Screen Canvas
+
+ Usage:
+   window.fullScreenCanvas.show();
+   ... // do something
+   window.fullScreenCanvas.hide();
+
+ lisence: The MIT License, Copyright (c) 2009 SHIMODA "Piro" Hiroshi
+   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/license.txt
+ original:
+   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/fullScreenCanvas.xul
+-->
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 <script type="application/x-javascript"><![CDATA[
 
