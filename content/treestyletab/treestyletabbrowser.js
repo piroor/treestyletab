@@ -84,11 +84,6 @@ TreeStyleTabBrowser.prototype = {
   
 /* status */ 
 	
-	get isOverflow() 
-	{
-		return this.mTabBrowser.mTabContainer.getAttribute('overflow') == 'true';
-	},
- 
 	get isVertical() 
 	{
 		var b = this.mTabBrowser;
@@ -2578,50 +2573,6 @@ TreeStyleTabBrowser.prototype = {
 		var tabsInfo = this.getDraggedTabsInfoFromOneTab(actionInfo, aTab);
 		return tabsInfo.draggedTabs.length == this.getTabs(this.mTabBrowser).snapshotLength;
 	},
- 
-	processAutoScroll : function(aEvent) 
-	{
-		if (!this.isOverflow) return false;
-
-		var tabs = this.mTabBrowser.mTabContainer;
-		var box = tabs.boxObject;
-		var pixels;
-		if (this.isVertical) {
-			pixels = tabs.childNodes[0].boxObject.height * 0.5;
-			if (aEvent.screenY < box.screenY + this.autoScrollArea) {
-				pixels *= -1;
-			}
-			else if (aEvent.screenY < box.screenY + box.height - this.autoScrollArea) {
-				return false;
-			}
-		}
-		else {
-			pixels = this.scrollBox.scrollIncrement;
-			var ltr = window.getComputedStyle(tabs, null).direction == 'ltr';
-			if (aEvent.screenX < box.screenX + this.autoScrollArea) {
-				pixels *= -1;
-			}
-			else if (aEvent.screenX < box.screenX + box.width - this.autoScrollArea) {
-				return false;
-			}
-			pixels = (ltr ? 1 : -1) * pixels;
-		}
-
-		if ('scrollByPixels' in this.scrollBox) {
-			this.scrollBox.scrollByPixels(pixels);
-		}
-		else { // Tab Mix Plus?
-			if (this.isVertical)
-				this.scrollBoxObject.scrollBy(0, pixels);
-			else
-				this.scrollBoxObject.scrollBy(pixels, 0);
-		}
-
-		aEvent.preventDefault();
-		aEvent.stopPropagation();
-		return true;
-	},
-	autoScrollArea : 20,
   
 /* commands */ 
 	
