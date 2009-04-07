@@ -1611,9 +1611,9 @@ TreeStyleTabBrowser.prototype = {
   
 	onTabRestored : function(aEvent) 
 	{
-		this.restoreStructure(aEvent.originalTarget);
+		this.restoreStructure(aEvent.originalTarget, true);
 	},
-	restoreStructure : function(aTab)
+	restoreStructure : function(aTab, aWithoutAnimation)
 	{
 		var tab = aTab;
 		var b   = this.mTabBrowser;
@@ -1641,7 +1641,7 @@ TreeStyleTabBrowser.prototype = {
 			tab.removeAttribute(this.kSUBTREE_COLLAPSED);
 			tab.removeAttribute(this.kCOLLAPSED);
 			tab.removeAttribute(this.kNEST);
-			this.updateTabsIndent([tab]);
+			this.updateTabsIndent([tab], undefined, undefined, aWithoutAnimation);
 		}
 
 		this.setTabValue(tab, this.kID, id);
@@ -1693,7 +1693,7 @@ TreeStyleTabBrowser.prototype = {
 					insertBefore : (nextTab ? this.getTabById(nextTab) : null ),
 					dontUpdateIndent : true
 				});
-				this.updateTabsIndent([tab]);
+				this.updateTabsIndent([tab], undefined, undefined, aWithoutAnimation);
 				this.checkTabsIndentOverflow();
 			}
 			else {
@@ -1701,7 +1701,7 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 		else if (children) {
-			this.updateTabsIndent(tabs);
+			this.updateTabsIndent(tabs, undefined, undefined, aWithoutAnimation);
 			this.checkTabsIndentOverflow();
 		}
 
@@ -1724,7 +1724,7 @@ TreeStyleTabBrowser.prototype = {
 		this.deleteTabValue(tab, this.kINSERT_BEFORE);
 
 		if (isSubTreeCollapsed) {
-			this.collapseExpandSubtree(tab, isSubTreeCollapsed);
+			this.collapseExpandSubtree(tab, isSubTreeCollapsed, aWithoutAnimation);
 		}
 
 		if (maybeDuplicated) this.clearRedirectionTable();
@@ -2122,11 +2122,11 @@ TreeStyleTabBrowser.prototype = {
 				tab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true' &&
 				tab.getAttribute(this.kDROP_POSITION) == 'self') {
 				if (this.getTreePref('autoExpand.intelligently')) {
-					this.collapseExpandTreesIntelligentlyFor(tab);
+					this.collapseExpandTreesIntelligentlyFor(tab, true);
 				}
 				else {
 					this.autoExpandedTabs.push(this.autoExpandTarget);
-					this.collapseExpandSubtree(tab, false);
+					this.collapseExpandSubtree(tab, false, true);
 				}
 			}
 			this.autoExpandTimer  = null;
@@ -2139,7 +2139,7 @@ TreeStyleTabBrowser.prototype = {
 		if (!this.autoExpandedTabs.length) return;
 		if (this.getTreePref('autoExpand.collapseFinally')) {
 			this.autoExpandedTabs.forEach(function(aTarget) {
-				this.collapseExpandSubtree(this.getTabById(aTarget), true);
+				this.collapseExpandSubtree(this.getTabById(aTarget), true, true);
 			}, this);
 		}
 		this.autoExpandedTabs = [];
@@ -2735,7 +2735,7 @@ TreeStyleTabBrowser.prototype = {
 		this.attachTabPostProcess(aChild, null);
 	},
  
-	updateTabsIndent : function(aTabs, aLevel, aProp) 
+	updateTabsIndent : function(aTabs, aLevel, aProp, aJustNow) 
 	{
 		if (!aTabs || !aTabs.length) return;
 
@@ -2784,20 +2784,21 @@ TreeStyleTabBrowser.prototype = {
 				}
 			}
 			else {
-				this.updateTabIndent(aTabs[i], aProp, indent);
+				this.updateTabIndent(aTabs[i], aProp, indent, aJustNow);
 			}
 			aTabs[i].setAttribute(this.kNEST, aLevel);
 			this.updateTabsIndent(this.getChildTabs(aTabs[i]), aLevel+1, aProp);
 		}
 	},
  
-	updateTabIndent : function(aTab, aProp, aIndent, aWithoutAnimation) 
+	updateTabIndent : function(aTab, aProp, aIndent, aJustNow) 
 	{
 		this.stopTabIndentAnimation(aTab);
 
 		var regexp = this.indentRulesRegExp;
 		if (
 			!this.animationEnabled ||
+			aJustNow ||
 			!aProp ||
 			(aTab.getAttribute(this.kCOLLAPSED) == 'true')
 			) {
@@ -2979,7 +2980,7 @@ TreeStyleTabBrowser.prototype = {
   
 /* collapse/expand */ 
 	
-	collapseExpandSubtree : function(aTab, aCollapse) 
+	collapseExpandSubtree : function(aTab, aCollapse, aJustNow) 
 	{
 		if (!aTab) return;
 
@@ -2993,7 +2994,7 @@ TreeStyleTabBrowser.prototype = {
 		var tabs = this.getChildTabs(aTab);
 		for (var i = 0, maxi = tabs.length; i < maxi; i++)
 		{
-			this.collapseExpandTab(tabs[i], aCollapse);
+			this.collapseExpandTab(tabs[i], aCollapse, aJustNow);
 		}
 
 		if (!aCollapse)
@@ -3002,12 +3003,12 @@ TreeStyleTabBrowser.prototype = {
 		this.doingCollapseExpand = false;
 	},
  
-	collapseExpandTab : function(aTab, aCollapse) 
+	collapseExpandTab : function(aTab, aCollapse, aJustNow) 
 	{
 		if (!aTab || !this.getParentTab(aTab)) return;
 
 		this.setTabValue(aTab, this.kCOLLAPSED, aCollapse);
-		this.updateTabCollapsed(aTab, aCollapse);
+		this.updateTabCollapsed(aTab, aCollapse, aJustNow);
 
 		var event = document.createEvent('Events');
 		event.initEvent('TreeStyleTabCollapsedStateChange', true, true);
@@ -3032,7 +3033,7 @@ TreeStyleTabBrowser.prototype = {
 		for (var i = 0, maxi = tabs.length; i < maxi; i++)
 		{
 			if (!isSubTreeCollapsed)
-				this.collapseExpandTab(tabs[i], aCollapse);
+				this.collapseExpandTab(tabs[i], aCollapse, aJustNow);
 		}
 	},
 	updateTabCollapsed : function(aTab, aCollapsed, aJustNow)
@@ -3119,7 +3120,7 @@ TreeStyleTabBrowser.prototype = {
 		aTab.__treestyletab__updateTabCollapsedTimer = null;
 	},
  
-	collapseExpandTreesIntelligentlyFor : function(aTab) 
+	collapseExpandTreesIntelligentlyFor : function(aTab, aJustNow) 
 	{
 		var b = this.mTabBrowser;
 		if (this.doingCollapseExpand) return;
@@ -3161,10 +3162,10 @@ TreeStyleTabBrowser.prototype = {
 			}
 
 			if (!dontCollapse)
-				this.collapseExpandSubtree(collapseTab, true);
+				this.collapseExpandSubtree(collapseTab, true, aJustNow);
 		}
 
-		this.collapseExpandSubtree(aTab, false);
+		this.collapseExpandSubtree(aTab, false, aJustNow);
 	},
  
 	collapseExpandAllSubtree : function(aCollapse) 
