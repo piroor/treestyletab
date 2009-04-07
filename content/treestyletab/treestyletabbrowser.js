@@ -2597,7 +2597,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 		else {
 			pixels = this.scrollBox.scrollIncrement;
-			var ltr = window.getComputedStyle(this.parentNode, null).direction == 'ltr';
+			var ltr = window.getComputedStyle(tabs, null).direction == 'ltr';
 			if (aEvent.screenX < box.screenX + this.autoScrollArea) {
 				pixels *= -1;
 			}
