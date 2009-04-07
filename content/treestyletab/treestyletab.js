@@ -1110,11 +1110,7 @@ catch(e) {
 						var TSTTabBrowser = this;
 						if ((function(aSelf) {
 try{
-							if (window['piro.sakura.ne.jp'].autoScroll.processAutoScroll(aEvent)) {
-								aEvent.preventDefault();
-								aEvent.stopPropagation();
-								return true;
-							}
+							window['piro.sakura.ne.jp'].autoScroll.processAutoScroll(aEvent);
 
 							var info = TSTTabBrowser.treeStyleTab.getDropAction(aEvent, TST_DRAGSESSION);
 
