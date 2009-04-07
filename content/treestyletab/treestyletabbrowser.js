@@ -1375,6 +1375,7 @@ TreeStyleTabBrowser.prototype = {
 		var tab = aEvent.originalTarget;
 		var b   = this.mTabBrowser;
 
+		this.stopTabIndentAnimation(tab);
 		this.destroyTab(tab);
 
 		var closeParentBehavior = this.getTreePref('closeParentBehavior');
@@ -2583,15 +2584,21 @@ TreeStyleTabBrowser.prototype = {
 	
 	attachTabTo : function(aChild, aParent, aInfo) 
 	{
+		var currentParent;
 		if (
 			!aChild ||
 			!aParent ||
 			aChild == aParent ||
-			this.getParentTab(aChild) == aParent
+			(currentParent = this.getParentTab(aChild)) == aParent
 			) {
 			this.attachTabPostProcess(aChild, aParent);
 			return;
 		}
+
+		shouldInheritIndent = (
+			!currentParent ||
+			(currentParent.getAttribute(this.kNEST) == aParent.getAttribute(this.kNEST))
+		);
 
 		this.ensureTabInitialized(aChild);
 		this.ensureTabInitialized(aParent);
@@ -2626,6 +2633,7 @@ TreeStyleTabBrowser.prototype = {
 		this.setTabValue(aParent, this.kCHILDREN, children);
 		this.setTabValue(aChild, this.kPARENT, aParent.getAttribute(this.kID));
 		this.updateTabsCount(aParent);
+		if (shouldInheritIndent) this.inheritTabIndent(aChild, aParent);
 
 		if (newIndex > aChild._tPos) newIndex--;
 		this.moveTabSubTreeTo(aChild, newIndex);
@@ -2720,7 +2728,7 @@ TreeStyleTabBrowser.prototype = {
 
 		var b = this.mTabBrowser;
 		if (!aProp) {
-			aProp = this.getTreePref('enableSubtreeIndent') ? this.levelMarginProp : 0 ;
+			aProp = this.getTreePref('enableSubtreeIndent') ? this.levelMarginProp : null ;
 		}
 		var margin = this.levelMargin < 0 ? this.baseLebelMargin : this.levelMargin ;
 		var indent = margin * aLevel;
@@ -2753,15 +2761,66 @@ TreeStyleTabBrowser.prototype = {
 				}
 			}
 			else {
-				this.setTabMargin(aTabs[i], aProp, indent);
+				this.updateTabIndent(aTabs[i], aProp, indent);
 			}
 			aTabs[i].setAttribute(this.kNEST, aLevel);
 			this.updateTabsIndent(this.getChildTabs(aTabs[i]), aLevel+1, aProp);
 		}
 	},
-	setTabMargin : function(aTab, aProp, aIndent) 
+ 
+	updateTabIndent : function(aTab, aProp, aIndent, aWithoutAnimation) 
 	{
-		aTab.setAttribute('style', aTab.getAttribute('style').replace(/margin(-[^:]+):[^;]+;?/g, '')+'; '+aProp+':'+aIndent+'px !important;');
+		this.stopTabIndentAnimation(aTab);
+
+		if (
+			!this.animationEnabled ||
+			!aProp ||
+			(aTab.getAttribute(this.kCOLLAPSED) == 'true')
+			) {
+			aTab.setAttribute(
+				'style',
+				aTab.getAttribute('style')
+					.replace(this.kMARGIN_RULES_PATTERN, '')+';'+
+					(aProp ? aProp+':'+aIndent+'px !important;' : '' )
+			);
+			return;
+		}
+
+		var startIndent = this.getPropertyPixelValue(aTab, aProp);
+		var delta       = aIndent - startIndent;
+		var delay       = 200;
+		var startTime   = Date.now();
+		aTab.__treestyletab__updateTabIndentTimer = window.setInterval(function(aSelf) {
+			var power = Math.min(1, (Date.now() - startTime) / delay);
+			var indent = (power == 1) ?
+						aIndent :
+						startIndent + (delta * Math.sin(power * 90 * Math.PI / 180));
+			aTab.setAttribute(
+				'style',
+				aTab.getAttribute('style')
+					.replace(aSelf.kMARGIN_RULES_PATTERN, '')+';'+
+					aProp+':'+indent+'px !important;'
+			);
+
+			if (power == 1) aSelf.stopTabIndentAnimation(aTab);
+		}, 10, this);
+	},
+	stopTabIndentAnimation : function(aTab)
+	{
+		if (!aTab.__treestyletab__updateTabIndentTimer) return;
+		window.clearInterval(aTab.__treestyletab__updateTabIndentTimer);
+		aTab.__treestyletab__updateTabIndentTimer = null;
+	},
+	kMARGIN_RULES_PATTERN : /margin(-[^:]+):[^;]+;?/g,
+ 
+	inheritTabIndent : function(aNewTab, aExistingTab) 
+	{
+		var margins = (aExistingTab.getAttribute('style') || '').match(this.kMARGIN_RULES_PATTERN);
+		aNewTab.setAttribute(
+			'style',
+			aNewTab.getAttribute('style')
+				.replace(this.kMARGIN_RULES_PATTERN, '')+';'+margins.join(';')
+		);
 	},
  
 	updateAllTabsIndent : function() 
@@ -3450,13 +3509,13 @@ TreeStyleTabBrowser.prototype = {
 			let style = window.getComputedStyle(node, null);
 			'border-left-width,border-right-width,margin-left,margin-right,padding-left,padding-right'
 				.split(',').forEach(function(aProperty) {
-					let value = parseInt(style.getPropertyValue(aProperty).replace('px', ''));
+					let value = this.getPropertyPixelValue(style, aProperty);
 					w -= value;
 					if (aProperty.indexOf('left') < -1) x += value;
 				});
 			'border-top-width,border-bottom-width,margin-top,margin-bottom,padding-left,padding-right'
 				.split(',').forEach(function(aProperty) {
-					let value = parseInt(style.getPropertyValue(aProperty).replace('px', ''));
+					let value = this.getPropertyPixelValue(style, aProperty);
 					h -= value;
 					if (aProperty.indexOf('top') < -1) y += value;
 				});

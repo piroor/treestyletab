@@ -1,3 +1,5 @@
+pref("extensions.treestyletab.animation.enabled", true);
+
 pref("extensions.treestyletab.tabbar.width",           200);
 pref("extensions.treestyletab.tabbar.shrunkenWidth",   80);
 pref("extensions.treestyletab.tabbar.position",        "left");

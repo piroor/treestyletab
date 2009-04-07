@@ -95,6 +95,7 @@ var TreeStyleTabService = {
 
 	baseLebelMargin : 12,
 	shouldDetectClickOnIndentSpaces : true,
+	animationEnabled : true,
 
 	NSResolver : {
 		lookupNamespaceURI : function(aPrefix)
@@ -545,6 +546,14 @@ var TreeStyleTabService = {
 			newURI = this.IOService.newURI(aURI, null, null);
 		}
 		return newURI;
+	},
+ 
+	getPropertyPixelValue : function(aElementOrStyle, aProp) 
+	{
+		var style = aElementOrStyle instanceof Components.interfaces.nsIDOMCSSStyleDeclaration ?
+					aElementOrStyle :
+					window.getComputedStyle(aElementOrStyle, null) ;
+		return Number(style.getPropertyValue(aProp).replace(/px$/, ''));
 	},
  
 	toggleAutoHide : function() 
@@ -1029,6 +1038,7 @@ var TreeStyleTabService = {
 		this.observe(null, 'nsPref:changed', 'browser.link.open_newwindow.restriction.override');
 		this.observe(null, 'nsPref:changed', 'browser.tabs.loadFolderAndReplace.override');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.style');
+		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.animation.enabled');
 	},
 	initialized : false,
 	
@@ -2133,6 +2143,10 @@ catch(e) {
 
 			case 'extensions.treestyletab.clickOnIndentSpaces.enabled':
 				this.shouldDetectClickOnIndentSpaces = this.getPref(aPrefName);
+				break;
+
+			case 'extensions.treestyletab.animation.enabled':
+				this.animationEnabled = value;
 				break;
 
 			case 'extensions.treestyletab.tabbar.style':
