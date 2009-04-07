@@ -888,6 +888,10 @@ TreeStyleTabBrowser.prototype = {
 				}, 0);
 			}
 		}
+
+		this.getTabsArray(b).forEach(function(aTab) {
+			this.updateTabCollapsed(aTab, aTab.getAttribute(this.kCOLLAPSED) == 'true', true);
+		}, this);
 	},
   
 	destroy : function() 
@@ -3031,12 +3035,16 @@ TreeStyleTabBrowser.prototype = {
 				this.collapseExpandTab(tabs[i], aCollapse);
 		}
 	},
-	updateTabCollapsed : function(aTab, aCollapsed)
+	updateTabCollapsed : function(aTab, aCollapsed, aJustNow)
 	{
 		this.stopTabCollapseAnimation(aTab);
 
 		var regexp = this.collapseRulesRegExp;
-		if (!this.isVertical || !this.animationEnabled) {
+		if (
+			!this.isVertical ||
+			!this.animationEnabled ||
+			aJustNow
+			) {
 			aTab.setAttribute(
 				'style',
 				aTab.getAttribute('style')
