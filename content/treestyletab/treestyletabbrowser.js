@@ -1389,6 +1389,11 @@ TreeStyleTabBrowser.prototype = {
 			this.multipleCount++;
 		}
 
+		if (this.animationEnabled) {
+			this.updateTabCollapsed(tab, true, true);
+			this.updateTabCollapsed(tab, false);
+		}
+
 		this.showTabbarForFeedback();
 	},
  
