@@ -1,4 +1,6 @@
-pref("extensions.treestyletab.animation.enabled", true);
+pref("extensions.treestyletab.animation.enabled",        true);
+pref("extensions.treestyletab.animation.indent.delay",   200);
+pref("extensions.treestyletab.animation.collapse.delay", 150);
 
 pref("extensions.treestyletab.tabbar.width",           200);
 pref("extensions.treestyletab.tabbar.shrunkenWidth",   80);
@@ -41,7 +43,7 @@ pref("extensions.treestyletab.autoExpand.enabled",     true);
 pref("extensions.treestyletab.autoExpand.delay",       500);
 pref("extensions.treestyletab.autoExpand.intelligently", true);
 pref("extensions.treestyletab.autoExpand.collapseFinally", false);
-pref("extensions.treestyletab.levelMargin",            12);
+pref("extensions.treestyletab.indent",                 12);
 // 0 = first child, 1 = last child
 pref("extensions.treestyletab.insertNewChildAt", 1);
 pref("extensions.treestyletab.twisty.style", "auto"); // none, retro, modern-black, modern-white, auto
