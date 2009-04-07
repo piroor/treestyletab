@@ -2753,11 +2753,15 @@ TreeStyleTabBrowser.prototype = {
 				}
 			}
 			else {
-				aTabs[i].setAttribute('style', aTabs[i].getAttribute('style').replace(/margin(-[^:]+):[^;]+;?/g, '')+'; '+aProp+':'+indent+'px !important;');
+				this.setTabMargin(aTabs[i], aProp, indent);
 			}
 			aTabs[i].setAttribute(this.kNEST, aLevel);
 			this.updateTabsIndent(this.getChildTabs(aTabs[i]), aLevel+1, aProp);
 		}
+	},
+	setTabMargin : function(aTab, aProp, aIndent) 
+	{
+		aTab.setAttribute('style', aTab.getAttribute('style').replace(/margin(-[^:]+):[^;]+;?/g, '')+'; '+aProp+':'+aIndent+'px !important;');
 	},
  
 	updateAllTabsIndent : function() 
