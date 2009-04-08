@@ -3,7 +3,7 @@
 
 <!ENTITY config.tabs.appearance "Aspetto">
 
-<!ENTITY config.tabbar.scroll.smooth "Scorri gradualmente la barra delle schede">
+<!ENTITY config.animation.enabled "Abilita effetti di animazione">
 
 <!ENTITY config.tabbar.position.caption "Posiziona barra delle schede">
 <!ENTITY config.tabbar.position.left    "sul lato sinistro">

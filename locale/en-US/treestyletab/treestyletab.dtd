@@ -3,7 +3,7 @@
 
 <!ENTITY config.tabs.appearance "Appearance">
 
-<!ENTITY config.tabbar.scroll.smooth "Scroll the tab bar smoothly">
+<!ENTITY config.animation.enabled "Enable Animation Effects">
 
 <!ENTITY config.tabbar.position.caption "Tab bar position">
 <!ENTITY config.tabbar.position.left    "Leftside">

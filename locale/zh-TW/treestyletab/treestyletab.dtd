@@ -3,7 +3,7 @@
 
 <!ENTITY config.tabs.appearance "外觀">
 
-<!ENTITY config.tabbar.scroll.smooth "平滑捲動分頁工具列">
+<!ENTITY config.animation.enabled "Enable Animation Effects">
 
 <!ENTITY config.tabbar.position.caption "分頁工具列位置">
 <!ENTITY config.tabbar.position.left    "左側">

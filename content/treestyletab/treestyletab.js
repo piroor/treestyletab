@@ -100,6 +100,9 @@ var TreeStyleTabService = {
 	baseIndent : 12,
 	shouldDetectClickOnIndentSpaces : true,
 
+	smoothScrollEnabled : true,
+	smoothScrollDelay   : 150,
+
 	animationEnabled : true,
 	indentDelay      : 200,
 	collapseDelay    : 150,
@@ -1062,6 +1065,8 @@ var TreeStyleTabService = {
 		this.observe(null, 'nsPref:changed', 'browser.link.open_newwindow.restriction.override');
 		this.observe(null, 'nsPref:changed', 'browser.tabs.loadFolderAndReplace.override');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.style');
+		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.scroll.smooth');
+		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.scroll.delay');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.animation.enabled');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.animation.indent.delay');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.animation.collapse.delay');
@@ -2170,6 +2175,13 @@ catch(e) {
 
 			case 'extensions.treestyletab.clickOnIndentSpaces.enabled':
 				this.shouldDetectClickOnIndentSpaces = this.getPref(aPrefName);
+				break;
+
+			case 'extensions.treestyletab.tabbar.scroll.smooth':
+				this.smoothScrollEnabled = value;
+				break;
+			case 'extensions.treestyletab.tabbar.scroll.delay':
+				this.smoothScrollDelay = value;
 				break;
 
 			case 'extensions.treestyletab.animation.enabled':

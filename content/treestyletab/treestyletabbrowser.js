@@ -3234,7 +3234,7 @@ TreeStyleTabBrowser.prototype = {
 	
 	scrollTo : function(aEndX, aEndY) 
 	{
-		if (this.getTreePref('tabbar.scroll.smooth')) {
+		if (this.animationEnabled || this.smoothScrollEnabled) {
 			this.smoothScrollTo(aEndX, aEndY);
 		}
 		else {
@@ -3284,7 +3284,7 @@ TreeStyleTabBrowser.prototype = {
 		};
 		window['piro.sakura.ne.jp'].animationManager.addTask(
 			this.smoothScrollTask,
-			0, 0, this.getTreePref('tabbar.scroll.timeout')
+			0, 0, this.smoothScrollDelay
 		);
 	},
 	smoothScrollTask : null,

@@ -3,7 +3,7 @@
 
 <!ENTITY config.tabs.appearance "外观">
 
-<!ENTITY config.tabbar.scroll.smooth "平滑滚动标签栏">
+<!ENTITY config.animation.enabled "使用动画效果">
 
 <!ENTITY config.tabbar.position.caption "标签栏位置">
 <!ENTITY config.tabbar.position.left    "左侧">

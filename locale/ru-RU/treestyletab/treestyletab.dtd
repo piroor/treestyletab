@@ -3,7 +3,7 @@
 
 <!ENTITY config.tabs.appearance "Внешний вид">
 
-<!ENTITY config.tabbar.scroll.smooth "Плавная прокрутка панели вкладок">
+<!ENTITY config.animation.enabled "Использование эффектов анимации">
 
 <!ENTITY config.tabbar.position.caption "Расположение панели вкладок">
 <!ENTITY config.tabbar.position.left    "Слева">

@@ -3,7 +3,7 @@
 
 <!ENTITY config.tabs.appearance "Darstellung">
 
-<!ENTITY config.tabbar.scroll.smooth "Tableiste weich scrollen">
+<!ENTITY config.animation.enabled "Aktivieren Sie Animationseffekte">
 
 <!ENTITY config.tabbar.position.caption "Position der Tableiste">
 <!ENTITY config.tabbar.position.left    "Links">

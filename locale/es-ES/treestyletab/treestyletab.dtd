@@ -3,7 +3,7 @@
 
 <!ENTITY config.tabs.appearance "Apariencia">
 
-<!ENTITY config.tabbar.scroll.smooth "Desplazar la barra de pestañas suavemente">
+<!ENTITY config.animation.enabled "Activar los efectos de animación">
 
 <!ENTITY config.tabbar.position.caption "Posición de la barra de pestañas">
 <!ENTITY config.tabbar.position.left    "Lado izquierdo">

@@ -12,7 +12,7 @@ pref("extensions.treestyletab.tabbar.invertUI",        true);
 pref("extensions.treestyletab.tabbar.hideNewTabButton", false);
 pref("extensions.treestyletab.tabbar.hideAlltabsButton", true);
 pref("extensions.treestyletab.tabbar.scroll.smooth",   true);
-pref("extensions.treestyletab.tabbar.scroll.timeout",  250);
+pref("extensions.treestyletab.tabbar.scroll.delay",    250);
 // default, vertigo, mixed
 pref("extensions.treestyletab.tabbar.style",           "mixed");
 // 0 = disabled, 1 = hide, 2 = shrink

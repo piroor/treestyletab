@@ -3,7 +3,7 @@
 
 <!ENTITY config.tabs.appearance "外観">
 
-<!ENTITY config.tabbar.scroll.smooth "タブバーをなめらかにスクロールする">
+<!ENTITY config.animation.enabled "アニメーション効果を有効にする">
 
 <!ENTITY config.tabbar.position.caption "タブバーの表示位置">
 <!ENTITY config.tabbar.position.left    "左">

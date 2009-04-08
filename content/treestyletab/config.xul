@@ -14,8 +14,8 @@
 <prefpane id="prefpane-appearance" label="&config.tabs.appearance;"
 	onpaneload="onChangeTabbarPosition();">
 	<preferences>
-		<preference id="extensions.treestyletab.tabbar.scroll.smooth"
-			name="extensions.treestyletab.tabbar.scroll.smooth"
+		<preference id="extensions.treestyletab.animation.enabled"
+			name="extensions.treestyletab.animation.enabled"
 			type="bool"/>
 		<preference id="extensions.treestyletab.tabbar.position"
 			name="extensions.treestyletab.tabbar.position"
@@ -50,9 +50,9 @@
 
 	<vbox>
 
-	<checkbox id="extensions.treestyletab.tabbar.scroll.smooth-check"
-		preference="extensions.treestyletab.tabbar.scroll.smooth"
-		label="&config.tabbar.scroll.smooth;"/>
+	<checkbox id="extensions.treestyletab.animation.enabled-check"
+		preference="extensions.treestyletab.animation.enabled"
+		label="&config.animation.enabled;"/>
 	<groupbox>
 		<caption label="&config.tabbar.position.caption;"/>
 		<vbox>
