@@ -18,7 +18,7 @@
 window.addEventListener('DOMContentLoaded', function() {
 	window.removeEventListener('DOMContentLoaded', arguments.callee, true);
 
-	const currentRevision = 5;
+	const currentRevision = 6;
 	var root = document.documentElement;
 
 	var loadedRevision = root.getAttribute('fullScreenCanvas');
@@ -34,28 +34,46 @@ window.addEventListener('DOMContentLoaded', function() {
 	}
 
 	window.fullScreenCanvas = {
-		show : function() 
+		show : function(aTargetElement) 
 		{
 			var color = '-moz-field';
 			var canvas = this.canvas;
 			if (!canvas) return;
 
-			var w = window.innerWidth;
-			var h = window.innerHeight;
-			canvas.style.width = (canvas.width = w)+'px';
-			canvas.style.height = (canvas.height = h)+'px';
-			canvas.style.top = canvas.style.left = 0;
+			var rootBox = document.documentElement.boxObject;
+			var canvasW = window.innerWidth;
+			var canvasH = window.innerHeight;
+
+			var x, y, w, h;
+			if (aTargetElement && aTargetElement.ownerDocument == document) {
+				var box = aTargetElement.boxObject;
+				y = box.screenY - rootBox.screenY;
+				x = box.screenX - rootBox.screenX;
+				w = box.width;
+				h = box.height;
+			}
+			else {
+				x = y = 0;
+				w = canvasW;
+				h = canvasH;
+			}
+
+			canvas.style.left   = 0;
+			canvas.style.top    = 0;
+			canvas.style.width  = (canvas.width = canvasW)+'px';
+			canvas.style.height = (canvas.height = canvasH)+'px';
 			canvas.style.zIndex = 65000;
 			var frame = this.frame;
 			if (frame) {
-				frame.style.width = canvas.style.width;
+				frame.style.width  = canvas.style.width;
 				frame.style.height = canvas.style.height;
 			}
 			try {
 				var ctx = canvas.getContext('2d');
-				ctx.clearRect(0, 0, w, h);
+				ctx.clearRect(0, 0, canvasW, canvasH);
 				ctx.save();
-				ctx.drawWindow(window, 0, 0, w, h, color);
+				ctx.translate(x, y);
+				ctx.drawWindow(window, x, y, w, h, color);
 				ctx.restore();
 
 				var browsers = this.browsers;
