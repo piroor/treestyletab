@@ -3845,14 +3845,24 @@ TreeStyleTabBrowser.prototype = {
 		var b   = this.mTabBrowser;
 		var pos = b.getAttribute(this.kTABBAR_POSITION);
 		var box = b.mCurrentBrowser.boxObject;
+
+		var sensitiveArea = this.sensitiveArea;
+		/* For resizing of shrunken tab bar and clicking closeboxes,
+		   we have to shrink sensitive area a little. */
+		if (!this.autoHideShown && this.autoHideMode == this.kAUTOHIDE_MODE_SHRINK) {
+			sensitiveArea = 0;
+			if (pos != 'right' || b.getAttribute(this.kUI_INVERTED) == 'true')
+				sensitiveArea -= 20;
+		}
+
 		var shouldKeepShown = (
 				pos == 'left' ?
-					(aEvent.screenX <= box.screenX + this.sensitiveArea) :
+					(aEvent.screenX <= box.screenX + sensitiveArea) :
 				pos == 'right' ?
-					(aEvent.screenX >= box.screenX + box.width - this.sensitiveArea) :
+					(aEvent.screenX >= box.screenX + box.width - sensitiveArea) :
 				pos == 'bottom' ?
-					(aEvent.screenY >= box.screenY + box.height - this.sensitiveArea) :
-					(aEvent.screenY <= box.screenY + this.sensitiveArea)
+					(aEvent.screenY >= box.screenY + box.height - sensitiveArea) :
+					(aEvent.screenY <= box.screenY + sensitiveArea)
 			);
 		if (this.autoHideShown) {
 			if (
@@ -3881,12 +3891,12 @@ TreeStyleTabBrowser.prototype = {
 		}
 		else if (
 				pos == 'left' ?
-					(aEvent.screenX <= box.screenX + this.sensitiveArea) :
+					(aEvent.screenX <= box.screenX + sensitiveArea) :
 				pos == 'right' ?
-					(aEvent.screenX >= box.screenX + box.width - this.sensitiveArea) :
+					(aEvent.screenX >= box.screenX + box.width - sensitiveArea) :
 				pos == 'bottom' ?
-					(aEvent.screenY >= box.screenY + box.height - this.sensitiveArea) :
-					(aEvent.screenY <= box.screenY + this.sensitiveArea)
+					(aEvent.screenY >= box.screenY + box.height - sensitiveArea) :
+					(aEvent.screenY <= box.screenY + sensitiveArea)
 			) {
 			this.showHideTabbarOnMousemoveTimer = window.setTimeout(
 				function(aSelf) {
