@@ -2,10 +2,17 @@
  Animation Task Manager
 
  Usage:
-   window['piro.sakura.ne.jp'].animationManager.task(function() {
-     // some animation task runned by interval
-     return isFinish; // boolean
-   });
+   window['piro.sakura.ne.jp'].animationManager.addTask(
+     function(aTime, aBeginningValue, aFinishValue, aDelay) {
+       // some animation task runned by interval
+       var current = someEasingFunction(aTime, aBeginningValue, aFinishValue, aDelay);
+       target.style.left = current+'px';
+       return aTime > aDelay; // return true if the animation finished.
+     },
+     100, // beginning
+     200, // finish
+     250  // msec
+   );
    // stop all
    window['piro.sakura.ne.jp'].animationManager.stop();
 
