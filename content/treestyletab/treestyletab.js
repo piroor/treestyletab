@@ -8,6 +8,8 @@ var TreeStyleTabService = {
 	kCOLLAPSED          : 'treestyletab-collapsed',
 	kCOLLAPSED_DONE     : 'treestyletab-collapsed-done',
 	kCOLLAPSING         : 'treestyletab-collapsing',
+	kX_OFFSET           : 'treestyletab-x-offset',
+	kY_OFFSET           : 'treestyletab-y-offset',
 	kTWISTY_HOVER       : 'treestyletab-twisty-hover',
 	kNEST               : 'treestyletab-nest',
 	kDROP_POSITION      : 'treestyletab-drop-position',

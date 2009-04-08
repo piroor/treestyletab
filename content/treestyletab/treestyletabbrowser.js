@@ -3054,6 +3054,9 @@ TreeStyleTabBrowser.prototype = {
 	{
 		this.stopTabCollapseAnimation(aTab);
 
+		aTab.removeAttribute(this.kX_OFFSET);
+		aTab.removeAttribute(this.kY_OFFSET);
+
 		var regexp = this.collapseRulesRegExp;
 		if (
 			!this.animationEnabled ||
@@ -3075,16 +3078,27 @@ TreeStyleTabBrowser.prototype = {
 			return;
 		}
 
-		var height = this.getFirstTab(this.mTabBrowser).boxObject.height;
+		var maxMargin;
+		var offsetAttr;
+		if (this.isVertical) {
+			maxMargin = this.getFirstTab(this.mTabBrowser).boxObject.height;
+			offsetAttr = this.kY_OFFSET;
+		}
+		else {
+			maxMargin = this.getFirstTab(this.mTabBrowser).boxObject.width;
+			offsetAttr = this.kX_OFFSET;
+		}
+
 		var startMargin, endMargin, startOpacity, endOpacity;
 		if (aCollapsed) {
 			startMargin  = 0;
-			endMargin    = height;
+			endMargin    = maxMargin;
 			startOpacity = 1;
 			endOpacity   = 0;
 		}
 		else {
-			startMargin  = height;
+			aTab.setAttribute(offsetAttr, -maxMargin);
+			startMargin  = maxMargin;
 			endMargin    = 0;
 			startOpacity = 0;
 			endOpacity   = 1;
@@ -3101,6 +3115,7 @@ TreeStyleTabBrowser.prototype = {
 				collapseProp+': -'+startMargin+'px !important;'+
 				'opacity: '+startOpacity+' !important;'
 		);
+
 		if (!aCollapsed) aTab.removeAttribute(this.kCOLLAPSED_DONE);
 
 		var radian = 90 * Math.PI / 180;
@@ -3108,14 +3123,15 @@ TreeStyleTabBrowser.prototype = {
 		aTab.__treestyletab__updateTabCollapsedTask = function(aTime, aBeginning, aFinal, aDelay) {
 			if (aTime >= aDelay) {
 				delete aTab.__treestyletab__updateTabCollapsedTask;
-				if (aCollapsed) aTab.setAttribute(self.kCOLLAPSED_DONE, true);
 				aTab.removeAttribute(self.kCOLLAPSING);
+				if (aCollapsed) aTab.setAttribute(self.kCOLLAPSED_DONE, true);
 				aTab.setAttribute(
 					'style',
 					aTab.getAttribute('style')
 						.replace(regexp, '')
 						.replace(self.kOPACITY_RULE_REGEXP, '')
 				);
+				aTab.removeAttribute(offsetAttr);
 				return true;
 			}
 			else {
@@ -3129,6 +3145,7 @@ TreeStyleTabBrowser.prototype = {
 						collapseProp+': -'+margin+'px !important;'+
 						'opacity: '+opacity+' !important;'
 				);
+				aTab.setAttribute(offsetAttr, -maxMargin);
 				return false;
 			}
 		};
