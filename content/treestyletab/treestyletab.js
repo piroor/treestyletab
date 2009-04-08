@@ -917,7 +917,7 @@ var TreeStyleTabService = {
 	getXOffsetOfTab : function(aTab) 
 	{
 		return this.evaluateXPath(
-			'sum((self::* | preceding-sibling::xul:tab)/attribute::'+this.kX_OFFSET+')',
+			'sum((self::* | preceding-sibling::xul:tab[not(@'+this.kCOLLAPSED+'="true")])/attribute::'+this.kX_OFFSET+')',
 			aTab,
 			XPathResult.NUMBER_TYPE
 		).numberValue;
@@ -925,7 +925,7 @@ var TreeStyleTabService = {
 	getYOffsetOfTab : function(aTab)
 	{
 		return this.evaluateXPath(
-			'sum((self::* | preceding-sibling::xul:tab)/attribute::'+this.kY_OFFSET+')',
+			'sum((self::* | preceding-sibling::xul:tab[not(@'+this.kCOLLAPSED+'="true")])/attribute::'+this.kY_OFFSET+')',
 			aTab,
 			XPathResult.NUMBER_TYPE
 		).numberValue;
