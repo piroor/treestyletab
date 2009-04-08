@@ -2,6 +2,7 @@
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 <script src="res/prefs.js" type="application/x-javascript"/>
 <script src="res/boxObject.js" type="application/x-javascript"/>
+<script src="res/animationManager.js" type="application/x-javascript"/>
 <script src="treestyletab.js" type="application/x-javascript"/>
 <script src="bookmarksOverlay.js" type="application/x-javascript"/>
 </overlay>
