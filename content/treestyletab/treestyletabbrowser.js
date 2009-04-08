@@ -3453,7 +3453,7 @@ TreeStyleTabBrowser.prototype = {
  
 	showHideTabbarInternal : function(aReason) 
 	{
-		fullScreenCanvas.show();
+		fullScreenCanvas.show(document.getElementById('appcontent'));
 		var b = this.mTabBrowser;
 
 		var pos = this.mTabBrowser.getAttribute(this.kTABBAR_POSITION);
@@ -3620,13 +3620,13 @@ TreeStyleTabBrowser.prototype = {
 					let value = this.getPropertyPixelValue(style, aProperty);
 					w -= value;
 					if (aProperty.indexOf('left') < -1) x += value;
-				});
+				}, this);
 			'border-top-width,border-bottom-width,margin-top,margin-bottom,padding-left,padding-right'
 				.split(',').forEach(function(aProperty) {
 					let value = this.getPropertyPixelValue(style, aProperty);
 					h -= value;
 					if (aProperty.indexOf('top') < -1) y += value;
-				});
+				}, this);
 		}
 
 		// zero width (heigh) canvas becomes wrongly size!!
