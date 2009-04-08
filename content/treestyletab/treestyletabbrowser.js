@@ -3230,71 +3230,45 @@ TreeStyleTabBrowser.prototype = {
 	smoothScrollTo : function(aEndX, aEndY) 
 	{
 		var b = this.mTabBrowser;
-		if (this.smoothScrollTimer) {
-			window.clearInterval(this.smoothScrollTimer);
-			this.smoothScrollTimer = null;
-		}
+		window['piro.sakura.ne.jp'].animationManager.removeTask(this.smoothScrollTask);
 
 		var scrollBoxObject = this.scrollBoxObject;
 		var x = {}, y = {};
 		scrollBoxObject.getPosition(x, y);
-		this.smoothScrollTimer = window.setInterval(
-			this.smoothScrollToCallback,
-			10,
-			this,
-			x.value,
-			y.value,
-			aEndX,
-			aEndY,
-			Date.now(),
-			this.getTreePref('tabbar.scroll.timeout')
+		var startX = x.value;
+		var startY = y.value;
+		var deltaX = aEndX - startX;
+		var deltaY = aEndY - startY;
+
+		var self = this;
+		this.smoothScrollTask = function(aTime, aBeginning, aFinal, aDelay) {
+			var scrollBoxObject = self.scrollBoxObject;
+			var power = Math.min(1, aTime / aDelay);
+			if (power == 1) {
+				scrollBoxObject.scrollTo(aEndX, aEndY);
+				return true;
+			}
+
+			var powerForPositioning = Math.sin(90 * power * Math.PI / 180);
+			var newX = startX + parseInt(deltaX * powerForPositioning);
+			var newY = startY + parseInt(deltaY * powerForPositioning);
+
+			var x = {}, y = {};
+			scrollBoxObject.getPosition(x, y);
+
+			var w = {}, h = {};
+			scrollBoxObject.getScrolledSize(w, h);
+			var maxX = Math.max(0, w.value - scrollBoxObject.width);
+			var maxY = Math.max(0, h.value - scrollBoxObject.height);
+			scrollBoxObject.scrollTo(newX, newY);
+			return false;
+		};
+		window['piro.sakura.ne.jp'].animationManager.addTask(
+			this.smoothScrollTask,
+			0, 0, this.getTreePref('tabbar.scroll.timeout')
 		);
 	},
- 
-	smoothScrollToCallback : function(aSelf, aStartX, aStartY, aEndX, aEndY, aStartTime, aTimeout) 
-	{
-		var past = Date.now() - aStartTime;
-
-		var newX = aStartX + parseInt(
-				(aEndX - aStartX) * (past / aTimeout)
-			);
-		var newY = aStartY + parseInt(
-				(aEndY - aStartY) * (past / aTimeout)
-			);
-
-		var scrollBoxObject = aSelf.scrollBoxObject;
-		var x = {}, y = {};
-		scrollBoxObject.getPosition(x, y);
-
-		var w = {}, h = {};
-		scrollBoxObject.getScrolledSize(w, h);
-		var maxX = Math.max(0, w.value - scrollBoxObject.width);
-		var maxY = Math.max(0, h.value - scrollBoxObject.height);
-
-		if (
-			(past > aTimeout) ||
-			(
-				(
-				aEndX - aStartX > 0 ?
-					x.value >= Math.min(aEndX, maxX) :
-					x.value <= Math.min(aEndX, maxX)
-				) &&
-				(
-				aEndY - aStartY > 0 ?
-					y.value >= Math.min(aEndY, maxY) :
-					y.value <= Math.min(aEndY, maxY)
-				)
-			)
-			) {
-			if (aSelf.smoothScrollTimer) {
-				window.clearInterval(aSelf.smoothScrollTimer);
-				aSelf.smoothScrollTimer = null;
-			}
-			return;
-		}
-
-		scrollBoxObject.scrollTo(newX, newY);
-	},
+	smoothScrollTask : null,
   
 	scrollToTab : function(aTab) 
 	{
