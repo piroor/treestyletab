@@ -87,7 +87,7 @@
 		{
 			// task should return true if it finishes.
 			aSelf.tasks = aSelf.tasks.filter(function(aTask) {
-				return !aTask(
+				return !aTask.task(
 					Date.now() - aTask.start,
 					aTask.beginning,
 					aTask.final,
