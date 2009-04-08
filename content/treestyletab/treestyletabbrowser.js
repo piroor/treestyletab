@@ -2822,9 +2822,10 @@ TreeStyleTabBrowser.prototype = {
 		var startTime   = Date.now();
 		aTab.__treestyletab__updateTabIndentTimer = window.setInterval(function(aSelf) {
 			var power = Math.min(1, (Date.now() - startTime) / delay);
+			var powerForStyle = Math.sin(90 * power * Math.PI / 180);
 			var indent = (power == 1) ?
 						aIndent :
-						startIndent + (delta * Math.sin(((power * 120)-30) * Math.PI / 180));
+						startIndent + (delta * powerForStyle);
 			aTab.setAttribute(
 				'style',
 				aTab.getAttribute('style')
@@ -3088,7 +3089,7 @@ TreeStyleTabBrowser.prototype = {
 
 		aTab.__treestyletab__updateTabCollapsedTimer = window.setInterval(function(aSelf) {
 			var power = Math.min(1, (Date.now() - startTime) / delay);
-			var powerForStyle = Math.sin(((power * 120)-30) * Math.PI / 180);
+			var powerForStyle = Math.sin(90 * power * Math.PI / 180);
 			var margin = (power == 1) ?
 						endMargin :
 						startMargin + (deltaMargin * powerForStyle);
