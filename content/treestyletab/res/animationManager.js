@@ -37,6 +37,9 @@
 	var Cc = Components.classes;
 	var Ci = Components.interfaces;
 
+	if (tasks.length)
+		window['piro.sakura.ne.jp'].animationManager.stop();
+
 	window['piro.sakura.ne.jp'].animationManager = {
 		revision : currentRevision,
 
