@@ -963,6 +963,50 @@ var TreeStyleTabService = {
  
 	useTMPSessionAPI : false, 
 	kTMP_SESSION_DATA_PREFIX : 'tmp-session-data-',
+  
+/* animation */ 
+	animationTasks    : [],
+	animationInterval : 10,
+	animationTimer    : null,
+	
+	addAnimationTask : function(aTask) 
+	{
+		if (!aTask) return;
+		this.animationTasks.push(aTask);
+		if (this.animationTasks.length > 1) return;
+		this.endAnimations();
+		this.animationTimer = window.setInterval(
+			this.animationCallback,
+			this.animationInterval,
+			this
+		);
+	},
+ 
+	removeAnimationTask : function(aTask) 
+	{
+		if (!aTask) return;
+		var index = this.animationTasks.indexOf(aTask);
+		if (index > -1) this.animationTasks.splice(index, 1);
+		if (!this.animationTasks.length)
+			this.endAnimations();
+	},
+ 
+	endAnimations : function() 
+	{
+		if (!this.animationTimer) return;
+		window.clearInterval(this.animationTimer);
+		this.animationTimer = null;
+	},
+ 
+	animationCallback : function(aSelf) 
+	{
+		// task should return true if it finishes.
+		aSelf.animationTasks = aSelf.animationTasks.filter(function(aTask) {
+			return !aTask();
+		});
+		if (!aSelf.animationTasks.length)
+			aSelf.endAnimations();
+	},
    
 /* Initializing */ 
 	
@@ -1541,6 +1585,7 @@ catch(e) {
 	{
 		window.removeEventListener('unload', this, false);
 
+		this.endAnimations();
 		this.destroyTabBrowser(gBrowser);
 
 		this.endListenKeyEvents();

@@ -2821,7 +2821,9 @@ TreeStyleTabBrowser.prototype = {
 		var delta       = aIndent - startIndent;
 		var delay       = this.indentDelay;
 		var startTime   = Date.now();
-		aTab.__treestyletab__updateTabIndentTimer = window.setInterval(function(aSelf) {
+
+		var self = this;
+		aTab.__treestyletab__updateTabIndentTask = function() {
 			var power = Math.min(1, (Date.now() - startTime) / delay);
 			var powerForStyle = Math.sin(90 * power * Math.PI / 180);
 			var indent = (power == 1) ?
@@ -2834,14 +2836,19 @@ TreeStyleTabBrowser.prototype = {
 					aProp+':'+indent+'px !important;'
 			);
 
-			if (power == 1) aSelf.stopTabIndentAnimation(aTab);
-		}, 10, this);
+			if (power == 1) {
+				delete aTab.__treestyletab__updateTabIndentTask;
+				return true;
+			}
+			else {
+				return false;
+			}
+		};
+		TreeStyleTabService.addAnimationTask(aTab.__treestyletab__updateTabIndentTask);
 	},
 	stopTabIndentAnimation : function(aTab)
 	{
-		if (!aTab.__treestyletab__updateTabIndentTimer) return;
-		window.clearInterval(aTab.__treestyletab__updateTabIndentTimer);
-		aTab.__treestyletab__updateTabIndentTimer = null;
+		TreeStyleTabService.removeAnimationTask(aTab.__treestyletab__updateTabIndentTask);
 	},
  
 	inheritTabIndent : function(aNewTab, aExistingTab) 
@@ -3089,7 +3096,8 @@ TreeStyleTabBrowser.prototype = {
 		);
 		if (!aCollapsed) aTab.removeAttribute(this.kCOLLAPSED_DONE);
 
-		aTab.__treestyletab__updateTabCollapsedTimer = window.setInterval(function(aSelf) {
+		var self = this;
+		aTab.__treestyletab__updateTabCollapsedTask = function() {
 			var power = Math.min(1, (Date.now() - startTime) / delay);
 			var powerForStyle = Math.sin(90 * power * Math.PI / 180);
 			var margin = (power == 1) ?
@@ -3107,25 +3115,29 @@ TreeStyleTabBrowser.prototype = {
 			);
 
 			if (power == 1) {
-				aSelf.stopTabCollapseAnimation(aTab);
-				aTab.removeAttribute(aSelf.kCOLLAPSING);
+				aTab.removeAttribute(self.kCOLLAPSING);
 				aTab.setAttribute(
 					'style',
 					aTab.getAttribute('style')
 						.replace(regexp, '')
-						.replace(aSelf.kOPACITY_RULE_REGEXP, '')
+						.replace(self.kOPACITY_RULE_REGEXP, '')
 				);
-				if (aCollapsed)
-					aTab.setAttribute(aSelf.kCOLLAPSED_DONE, true);
+				if (aCollapsed) {
+					aTab.setAttribute(self.kCOLLAPSED_DONE, true);
+				}
+				delete aTab.__treestyletab__updateTabCollapsedTask;
+				return true;
 			}
-		}, 10, this);
+			else {
+				return false;
+			}
+		};
+		TreeStyleTabService.addAnimationTask(aTab.__treestyletab__updateTabCollapsedTask);
 	},
 	kOPACITY_RULE_REGEXP : /opacity\s*:[^;]+;?/,
 	stopTabCollapseAnimation : function(aTab)
 	{
-		if (!aTab.__treestyletab__updateTabCollapsedTimer) return;
-		window.clearInterval(aTab.__treestyletab__updateTabCollapsedTimer);
-		aTab.__treestyletab__updateTabCollapsedTimer = null;
+		TreeStyleTabService.removeAnimationTask(aTab.__treestyletab__updateTabCollapsedTask);
 	},
  
 	collapseExpandTreesIntelligentlyFor : function(aTab, aJustNow) 
