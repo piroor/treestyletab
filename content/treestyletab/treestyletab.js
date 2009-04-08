@@ -913,6 +913,23 @@ var TreeStyleTabService = {
 			}
 		}
 	},
+ 
+	getXOffsetOfTab : function(aTab) 
+	{
+		return this.evaluateXPath(
+			'sum((self::* | preceding-sibling::xul:tab)/attribute::'+this.kX_OFFSET+')',
+			aTab,
+			XPathResult.NUMBER_TYPE
+		).numberValue;
+	},
+	getYOffsetOfTab : function(aTab)
+	{
+		return this.evaluateXPath(
+			'sum((self::* | preceding-sibling::xul:tab)/attribute::'+this.kY_OFFSET+')',
+			aTab,
+			XPathResult.NUMBER_TYPE
+		).numberValue;
+	},
   
 /* Session Store API */ 
 	

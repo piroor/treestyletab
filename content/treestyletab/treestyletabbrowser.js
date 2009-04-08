@@ -113,10 +113,12 @@ TreeStyleTabBrowser.prototype = {
 		if (!aTab) return false;
 		var tabBox = aTab.boxObject;
 		var barBox = this.scrollBox.boxObject;
-		return (tabBox.screenX >= barBox.screenX &&
-			tabBox.screenX + tabBox.width <= barBox.screenX + barBox.width &&
-			tabBox.screenY >= barBox.screenY &&
-			tabBox.screenY + tabBox.height <= barBox.screenY + barBox.height);
+		var xOffset = this.getXOffsetOfTab(aTab);
+		var yOffset = this.getYOffsetOfTab(aTab);
+		return (tabBox.screenX + xOffset >= barBox.screenX &&
+			tabBox.screenX + xOffset + tabBox.width <= barBox.screenX + barBox.width &&
+			tabBox.screenY + yOffset >= barBox.screenY &&
+			tabBox.screenY + yOffset + tabBox.height <= barBox.screenY + barBox.height);
 	},
   
 	isMultiRow : function() 
@@ -3097,7 +3099,7 @@ TreeStyleTabBrowser.prototype = {
 			endOpacity   = 0;
 		}
 		else {
-			aTab.setAttribute(offsetAttr, -maxMargin);
+			aTab.setAttribute(offsetAttr, maxMargin);
 			startMargin  = maxMargin;
 			endMargin    = 0;
 			startOpacity = 0;
@@ -3145,7 +3147,7 @@ TreeStyleTabBrowser.prototype = {
 						collapseProp+': -'+margin+'px !important;'+
 						'opacity: '+opacity+' !important;'
 				);
-				aTab.setAttribute(offsetAttr, -maxMargin);
+				aTab.setAttribute(offsetAttr, maxMargin);
 				return false;
 			}
 		};
@@ -3305,13 +3307,16 @@ TreeStyleTabBrowser.prototype = {
 		var targetTabBox = aTab.boxObject;
 		var baseTabBox = aTab.parentNode.firstChild.boxObject;
 
-		var targetX = (aTab.boxObject.screenX < scrollBoxObject.screenX) ?
-			(targetTabBox.screenX - baseTabBox.screenX) - (targetTabBox.width * 0.5) :
-			(targetTabBox.screenX - baseTabBox.screenX) - scrollBoxObject.width + (targetTabBox.width * 1.5) ;
+		var xOffset = this.getXOffsetOfTab(aTab);
+		var yOffset = this.getYOffsetOfTab(aTab);
 
-		var targetY = (aTab.boxObject.screenY < scrollBoxObject.screenY) ?
-			(targetTabBox.screenY - baseTabBox.screenY) - (targetTabBox.height * 0.5) :
-			(targetTabBox.screenY - baseTabBox.screenY) - scrollBoxObject.height + (targetTabBox.height * 1.5) ;
+		var targetX = (aTab.boxObject.screenX + xOffset < scrollBoxObject.screenX) ?
+			(targetTabBox.screenX + xOffset - baseTabBox.screenX) - (targetTabBox.width * 0.5) :
+			(targetTabBox.screenX + xOffset - baseTabBox.screenX) - scrollBoxObject.width + (targetTabBox.width * 1.5) ;
+
+		var targetY = (aTab.boxObject.screenY + yOffset < scrollBoxObject.screenY) ?
+			(targetTabBox.screenY + yOffset - baseTabBox.screenY) - (targetTabBox.height * 0.5) :
+			(targetTabBox.screenY + yOffset - baseTabBox.screenY) - scrollBoxObject.height + (targetTabBox.height * 1.5) ;
 
 		this.scrollTo(targetX, targetY);
 	},
