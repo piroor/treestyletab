@@ -2804,6 +2804,7 @@ TreeStyleTabBrowser.prototype = {
 		if (
 			!this.animationEnabled ||
 			aJustNow ||
+			this.indentDelay < 1 ||
 			!aProp ||
 			(aTab.getAttribute(this.kCOLLAPSED) == 'true')
 			) {
@@ -3048,9 +3049,10 @@ TreeStyleTabBrowser.prototype = {
 
 		var regexp = this.collapseRulesRegExp;
 		if (
-			!this.isVertical ||
 			!this.animationEnabled ||
-			aJustNow
+			aJustNow ||
+			this.collapseDelay < 1 ||
+			!this.isVertical
 			) {
 			aTab.setAttribute(
 				'style',
