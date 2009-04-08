@@ -2819,27 +2819,25 @@ TreeStyleTabBrowser.prototype = {
 
 		var startIndent = this.getPropertyPixelValue(aTab, aProp);
 		var delta       = aIndent - startIndent;
+		var radian      = 90 * Math.PI / 180;
 		var self        = this;
 		aTab.__treestyletab__updateTabIndentTask = function(aTime, aBeginning, aFinal, aDelay) {
-			var power = Math.min(1, aTime / aDelay);
-			var powerForStyle = Math.sin(90 * power * Math.PI / 180);
-			var indent = (power == 1) ?
-						aIndent :
-						startIndent + (delta * powerForStyle);
-			aTab.setAttribute(
-				'style',
-				aTab.getAttribute('style')
-					.replace(regexp, '')+';'+
-					aProp+':'+indent+'px !important;'
-			);
-
-			if (power == 1) {
+			var indent, finished;
+			if (aTime >= aDelay) {
 				delete aTab.__treestyletab__updateTabIndentTask;
-				return true;
+				indent = aIndent;
+				finished = true;
 			}
 			else {
-				return false;
+				indent = startIndent + (delta * Math.sin(aTime / aDelay * radian));
+				finished = false;
 			}
+			aTab.setAttribute(
+				'style',
+				aTab.getAttribute('style').replace(regexp, '')+';'+
+				aProp+':'+indent+'px !important;'
+			);
+			return finished;
 		};
 		window['piro.sakura.ne.jp'].animationManager.addTask(
 			aTab.__treestyletab__updateTabIndentTask,
@@ -3078,11 +3076,20 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		var height = this.getFirstTab(this.mTabBrowser).boxObject.height;
-		var startMargin  = aCollapsed ? 0 : height ;
-		var endMargin    = aCollapsed ? height : 0 ;
+		var startMargin, endMargin, startOpacity, endOpacity;
+		if (aCollapsed) {
+			startMargin  = 0;
+			endMargin    = height;
+			startOpacity = 1;
+			endOpacity   = 0;
+		}
+		else {
+			startMargin  = height;
+			endMargin    = 0;
+			startOpacity = 0;
+			endOpacity   = 1;
+		}
 		var deltaMargin  = endMargin - startMargin;
-		var startOpacity = aCollapsed ? 1 : 0 ;
-		var endOpacity   = aCollapsed ? 0 : 1 ;
 		var deltaOpacity = endOpacity - startOpacity;
 		var collapseProp = this.collapseProp;
 
@@ -3096,25 +3103,12 @@ TreeStyleTabBrowser.prototype = {
 		);
 		if (!aCollapsed) aTab.removeAttribute(this.kCOLLAPSED_DONE);
 
-		var self = this;
+		var radian = 90 * Math.PI / 180;
+		var self   = this;
 		aTab.__treestyletab__updateTabCollapsedTask = function(aTime, aBeginning, aFinal, aDelay) {
-			var power = Math.min(1, aTime / aDelay);
-			var powerForStyle = Math.sin(90 * power * Math.PI / 180);
-			var margin = (power == 1) ?
-						endMargin :
-						startMargin + (deltaMargin * powerForStyle);
-			var opacity = (power == 1) ?
-						endOpacity :
-						startOpacity + (deltaOpacity  * powerForStyle);
-			aTab.setAttribute(
-				'style',
-				aTab.getAttribute('style')
-					.replace(regexp, '')+';'+
-					collapseProp+': -'+margin+'px !important;'+
-					'opacity: '+opacity+' !important;'
-			);
-
-			if (power == 1) {
+			if (aTime >= aDelay) {
+				delete aTab.__treestyletab__updateTabCollapsedTask;
+				if (aCollapsed) aTab.setAttribute(self.kCOLLAPSED_DONE, true);
 				aTab.removeAttribute(self.kCOLLAPSING);
 				aTab.setAttribute(
 					'style',
@@ -3122,13 +3116,19 @@ TreeStyleTabBrowser.prototype = {
 						.replace(regexp, '')
 						.replace(self.kOPACITY_RULE_REGEXP, '')
 				);
-				if (aCollapsed) {
-					aTab.setAttribute(self.kCOLLAPSED_DONE, true);
-				}
-				delete aTab.__treestyletab__updateTabCollapsedTask;
 				return true;
 			}
 			else {
+				var power   = Math.sin(aTime / aDelay * radian);
+				var margin  = startMargin + (deltaMargin * power);
+				var opacity = startOpacity + (deltaOpacity  * power);
+				aTab.setAttribute(
+					'style',
+					aTab.getAttribute('style')
+						.replace(regexp, '')+';'+
+						collapseProp+': -'+margin+'px !important;'+
+						'opacity: '+opacity+' !important;'
+				);
 				return false;
 			}
 		};
@@ -3240,18 +3240,18 @@ TreeStyleTabBrowser.prototype = {
 		var deltaX = aEndX - startX;
 		var deltaY = aEndY - startY;
 
+		var radian = 90 * Math.PI / 180;
 		var self = this;
 		this.smoothScrollTask = function(aTime, aBeginning, aFinal, aDelay) {
 			var scrollBoxObject = self.scrollBoxObject;
-			var power = Math.min(1, aTime / aDelay);
-			if (power == 1) {
+			if (aTime >= aDelay) {
 				scrollBoxObject.scrollTo(aEndX, aEndY);
 				return true;
 			}
 
-			var powerForPositioning = Math.sin(90 * power * Math.PI / 180);
-			var newX = startX + parseInt(deltaX * powerForPositioning);
-			var newY = startY + parseInt(deltaY * powerForPositioning);
+			var power = Math.sin(aTime / aDelay * radian);
+			var newX = startX + parseInt(deltaX * power);
+			var newY = startY + parseInt(deltaY * power);
 
 			var x = {}, y = {};
 			scrollBoxObject.getPosition(x, y);

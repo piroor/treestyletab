@@ -22,7 +22,7 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/animationManager.js
 */
 (function() {
-	const currentRevision = 2;
+	const currentRevision = 3;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -96,10 +96,11 @@
 		onAnimation : function(aSelf) 
 		{
 			// task should return true if it finishes.
+			var now = Date.now();
 			aSelf.tasks = aSelf.tasks.filter(function(aTask) {
 				try {
 					return !aTask.task(
-						Date.now() - aTask.start,
+						now - aTask.start,
 						aTask.beginning,
 						aTask.final,
 						aTask.delay
