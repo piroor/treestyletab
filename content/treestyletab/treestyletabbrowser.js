@@ -2824,7 +2824,7 @@ TreeStyleTabBrowser.prototype = {
 			var power = Math.min(1, (Date.now() - startTime) / delay);
 			var indent = (power == 1) ?
 						aIndent :
-						startIndent + (delta * Math.sin(power * 90 * Math.PI / 180));
+						startIndent + (delta * Math.sin(((power * 120)-30) * Math.PI / 180));
 			aTab.setAttribute(
 				'style',
 				aTab.getAttribute('style')
@@ -3088,7 +3088,7 @@ TreeStyleTabBrowser.prototype = {
 
 		aTab.__treestyletab__updateTabCollapsedTimer = window.setInterval(function(aSelf) {
 			var power = Math.min(1, (Date.now() - startTime) / delay);
-			var powerForStyle = Math.sin(power * 90 * Math.PI / 180);
+			var powerForStyle = Math.sin(((power * 120)-30) * Math.PI / 180);
 			var margin = (power == 1) ?
 						endMargin :
 						startMargin + (deltaMargin * powerForStyle);
