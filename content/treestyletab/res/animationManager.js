@@ -24,7 +24,7 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/animationManager.js
 */
 (function() {
-	const currentRevision = 5;
+	const currentRevision = 4;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -50,7 +50,7 @@
 			if (!aTask) return;
 			this.tasks.push({
 				task      : aTask,
-				start     : Date.now(),
+				start     : (new Date()).getTime(),
 				beginning : aBeginningValue,
 				change    : aTotalChange,
 				duration  : aDuration
@@ -109,7 +109,7 @@
 		onAnimation : function(aSelf) 
 		{
 			// task should return true if it finishes.
-			var now = Date.now();
+			var now = (new Date()).getTime();
 			aSelf.tasks = aSelf.tasks.filter(function(aTask) {
 				try {
 					return !aTask.task(
@@ -128,4 +128,7 @@
 		}
 
 	};
+
+	if (tasks.length)
+		window['piro.sakura.ne.jp'].animationManager.start();
 })();
