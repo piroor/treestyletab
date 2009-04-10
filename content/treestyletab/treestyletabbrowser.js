@@ -2806,7 +2806,7 @@ TreeStyleTabBrowser.prototype = {
 		if (
 			!this.animationEnabled ||
 			aJustNow ||
-			this.indentDelay < 1 ||
+			this.indentDuration < 1 ||
 			!aProp ||
 			(aTab.getAttribute(this.kCOLLAPSED) == 'true')
 			) {
@@ -2823,15 +2823,15 @@ TreeStyleTabBrowser.prototype = {
 		var delta       = aIndent - startIndent;
 		var radian      = 90 * Math.PI / 180;
 		var self        = this;
-		aTab.__treestyletab__updateTabIndentTask = function(aTime, aBeginning, aFinal, aDelay) {
+		aTab.__treestyletab__updateTabIndentTask = function(aTime, aBeginning, aChange, aDuration) {
 			var indent, finished;
-			if (aTime >= aDelay) {
+			if (aTime >= aDuration) {
 				delete aTab.__treestyletab__updateTabIndentTask;
 				indent = aIndent;
 				finished = true;
 			}
 			else {
-				indent = startIndent + (delta * Math.sin(aTime / aDelay * radian));
+				indent = startIndent + (delta * Math.sin(aTime / aDuration * radian));
 				finished = false;
 			}
 			aTab.setAttribute(
@@ -2843,7 +2843,7 @@ TreeStyleTabBrowser.prototype = {
 		};
 		window['piro.sakura.ne.jp'].animationManager.addTask(
 			aTab.__treestyletab__updateTabIndentTask,
-			0, 0, this.indentDelay
+			0, 0, this.indentDuration
 		);
 	},
 	stopTabIndentAnimation : function(aTab)
@@ -3063,7 +3063,7 @@ TreeStyleTabBrowser.prototype = {
 		if (
 			!this.animationEnabled ||
 			aJustNow ||
-			this.collapseDelay < 1 ||
+			this.collapseDuration < 1 ||
 			!this.isVertical
 			) {
 			aTab.setAttribute(
@@ -3122,8 +3122,8 @@ TreeStyleTabBrowser.prototype = {
 
 		var radian = 90 * Math.PI / 180;
 		var self   = this;
-		aTab.__treestyletab__updateTabCollapsedTask = function(aTime, aBeginning, aFinal, aDelay) {
-			if (aTime >= aDelay) {
+		aTab.__treestyletab__updateTabCollapsedTask = function(aTime, aBeginning, aChange, aDuration) {
+			if (aTime >= aDuration) {
 				delete aTab.__treestyletab__updateTabCollapsedTask;
 				aTab.removeAttribute(self.kCOLLAPSING);
 				if (aCollapsed) aTab.setAttribute(self.kCOLLAPSED_DONE, true);
@@ -3137,7 +3137,7 @@ TreeStyleTabBrowser.prototype = {
 				return true;
 			}
 			else {
-				var power   = Math.sin(aTime / aDelay * radian);
+				var power   = Math.sin(aTime / aDuration * radian);
 				var margin  = startMargin + (deltaMargin * power);
 				var opacity = startOpacity + (deltaOpacity  * power);
 				aTab.setAttribute(
@@ -3153,7 +3153,7 @@ TreeStyleTabBrowser.prototype = {
 		};
 		window['piro.sakura.ne.jp'].animationManager.addTask(
 			aTab.__treestyletab__updateTabCollapsedTask,
-			0, 0, this.collapseDelay
+			0, 0, this.collapseDuration
 		);
 	},
 	kOPACITY_RULE_REGEXP : /opacity\s*:[^;]+;?/,
@@ -3261,14 +3261,14 @@ TreeStyleTabBrowser.prototype = {
 
 		var radian = 90 * Math.PI / 180;
 		var self = this;
-		this.smoothScrollTask = function(aTime, aBeginning, aFinal, aDelay) {
+		this.smoothScrollTask = function(aTime, aBeginning, aChange, aDuration) {
 			var scrollBoxObject = self.scrollBoxObject;
-			if (aTime >= aDelay) {
+			if (aTime >= aDuration) {
 				scrollBoxObject.scrollTo(aEndX, aEndY);
 				return true;
 			}
 
-			var power = Math.sin(aTime / aDelay * radian);
+			var power = Math.sin(aTime / aDuration * radian);
 			var newX = startX + parseInt(deltaX * power);
 			var newY = startY + parseInt(deltaY * power);
 
@@ -3284,7 +3284,7 @@ TreeStyleTabBrowser.prototype = {
 		};
 		window['piro.sakura.ne.jp'].animationManager.addTask(
 			this.smoothScrollTask,
-			0, 0, this.smoothScrollDelay
+			0, 0, this.smoothScrollDuration
 		);
 	},
 	smoothScrollTask : null,

@@ -100,12 +100,12 @@ var TreeStyleTabService = {
 	baseIndent : 12,
 	shouldDetectClickOnIndentSpaces : true,
 
-	smoothScrollEnabled : true,
-	smoothScrollDelay   : 150,
+	smoothScrollEnabled  : true,
+	smoothScrollDuration : 150,
 
 	animationEnabled : true,
-	indentDelay      : 200,
-	collapseDelay    : 150,
+	indentDuration   : 200,
+	collapseDuration : 150,
 
 	NSResolver : {
 		lookupNamespaceURI : function(aPrefix)
@@ -1066,10 +1066,10 @@ var TreeStyleTabService = {
 		this.observe(null, 'nsPref:changed', 'browser.tabs.loadFolderAndReplace.override');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.style');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.scroll.smooth');
-		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.scroll.delay');
+		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.scroll.duration');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.animation.enabled');
-		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.animation.indent.delay');
-		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.animation.collapse.delay');
+		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.animation.indent.duration');
+		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.animation.collapse.duration');
 	},
 	initialized : false,
 	
@@ -2180,18 +2180,18 @@ catch(e) {
 			case 'extensions.treestyletab.tabbar.scroll.smooth':
 				this.smoothScrollEnabled = value;
 				break;
-			case 'extensions.treestyletab.tabbar.scroll.delay':
-				this.smoothScrollDelay = value;
+			case 'extensions.treestyletab.tabbar.scroll.duration':
+				this.smoothScrollDuration = value;
 				break;
 
 			case 'extensions.treestyletab.animation.enabled':
 				this.animationEnabled = value;
 				break;
-			case 'extensions.treestyletab.animation.indent.delay':
-				this.indentDelay = value;
+			case 'extensions.treestyletab.animation.indent.duration':
+				this.indentDuration = value;
 				break;
-			case 'extensions.treestyletab.animation.collapse.delay':
-				this.collapseDelay = value;
+			case 'extensions.treestyletab.animation.collapse.duration':
+				this.collapseDuration = value;
 				break;
 
 			case 'extensions.treestyletab.tabbar.style':

@@ -1,6 +1,6 @@
-pref("extensions.treestyletab.animation.enabled",        true);
-pref("extensions.treestyletab.animation.indent.delay",   200);
-pref("extensions.treestyletab.animation.collapse.delay", 150);
+pref("extensions.treestyletab.animation.enabled",           true);
+pref("extensions.treestyletab.animation.indent.duration",   200);
+pref("extensions.treestyletab.animation.collapse.duration", 150);
 
 pref("extensions.treestyletab.tabbar.width",           200);
 pref("extensions.treestyletab.tabbar.shrunkenWidth",   80);
@@ -12,7 +12,7 @@ pref("extensions.treestyletab.tabbar.invertUI",        true);
 pref("extensions.treestyletab.tabbar.hideNewTabButton", false);
 pref("extensions.treestyletab.tabbar.hideAlltabsButton", true);
 pref("extensions.treestyletab.tabbar.scroll.smooth",   true);
-pref("extensions.treestyletab.tabbar.scroll.delay",    250);
+pref("extensions.treestyletab.tabbar.scroll.duration", 250);
 // default, vertigo, mixed
 pref("extensions.treestyletab.tabbar.style",           "mixed");
 // 0 = disabled, 1 = hide, 2 = shrink
