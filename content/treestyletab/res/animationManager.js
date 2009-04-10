@@ -15,6 +15,8 @@
    );
    // stop all
    window['piro.sakura.ne.jp'].animationManager.stop();
+   // restart after doing something
+   window['piro.sakura.ne.jp'].animationManager.start();
 
  lisence: The MIT License, Copyright (c) 2009 SHIMODA "Piro" Hiroshi
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/license.txt
@@ -22,7 +24,7 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/animationManager.js
 */
 (function() {
-	const currentRevision = 4;
+	const currentRevision = 5;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -53,13 +55,8 @@
 				change    : aTotalChange,
 				duration  : aDuration
 			});
-			if (this.tasks.length > 1) return;
-			this.stop();
-			this.timer = window.setInterval(
-				this.onAnimation,
-				this.interval,
-				this
-			);
+			if (this.tasks.length == 1)
+				this.start();
 		},
 
 		removeTask : function(aTask) 
@@ -80,6 +77,16 @@
 			}
 			if (!this.tasks.length)
 				this.stop();
+		},
+
+		start : function()
+		{
+			this.stop();
+			this.timer = window.setInterval(
+				this.onAnimation,
+				this.interval,
+				this
+			);
 		},
 
 		stop : function() 
