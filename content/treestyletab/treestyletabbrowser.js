@@ -1459,7 +1459,7 @@ TreeStyleTabBrowser.prototype = {
 			}
 			this.updateTabsIndent(children);
 			this.checkTabsIndentOverflow();
-			if (attach) {
+			if (closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_ATTACH) {
 				nextFocusedTab = firstChild;
 			}
 			this.setTabValue(tab, this.kCHILDREN, backupChildren);
