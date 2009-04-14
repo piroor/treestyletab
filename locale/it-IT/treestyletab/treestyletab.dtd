@@ -3,7 +3,7 @@
 
 <!ENTITY config.tabs.appearance "Aspetto">
 
-<!ENTITY config.animation.enabled "Abilita effetti di animazione">
+<!ENTITY config.animation.enabled "Attiva effetti di animazione">
 
 <!ENTITY config.tabbar.position.caption "Posiziona barra delle schede">
 <!ENTITY config.tabbar.position.left    "sul lato sinistro">
@@ -47,12 +47,12 @@
 <!ENTITY config.openAnyLinkInNewTab    "Apri tutti i collegamenti in una nuova scheda">
 
 <!ENTITY config.urlbar.caption                      "L&apos;inserimento di un indirizzo nella barra degli indirizzi">
-<!ENTITY config.urlbar.loadDifferentDomainToNewTab  "Apre una nuova scheda se appartiene a un sito web differente">
+<!ENTITY config.urlbar.loadDifferentDomainToNewTab  "apre una nuova scheda se appartiene a un sito web differente">
 <!ENTITY config.urlbar.loadDifferentDomainToNewTab.asChild  "come sottoscheda della scheda in uso">
 <!ENTITY config.urlbar.loadSameDomainToNewChildTab  "apre una nuova sottoscheda se appartiene allo stesso sito web">
 
 <!ENTITY config.loadDroppedLinkToNewChildTab.caption "Il trascinamento di collegamenti o indirizzi su una scheda esistente">
-<!ENTITY config.loadDroppedLinkToNewChildTab.load    "Carica il collegamento nella scheda (comportamento predefinito di Firefox)">
+<!ENTITY config.loadDroppedLinkToNewChildTab.load    "carica il collegamento nella scheda (comportamento predefinito di Firefox)">
 <!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "apre il collegamento in una nuova sottoscheda">
 
 <!ENTITY config.openGroupBookmarkAsTabSubTree.caption "La voce &quot;Apri tutti in schede&quot; nel menu Segnalibri">
@@ -106,10 +106,10 @@
 
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Espandi automaticamente i sottoalberi all'inserimento di nuove schede">
 
-<!ENTITY config.closeParentBehavior.caption "When a parent tab is closed">
-<!ENTITY config.closeParentBehavior.close   "Close child tabs too">
-<!ENTITY config.closeParentBehavior.attach  "Move child tabs to the level of the closed parent tab">
-<!ENTITY config.closeParentBehavior.detach  "Liberate child tabs from the tree">
+<!ENTITY config.closeParentBehavior.caption "Alla chiusura della scheda principale">
+<!ENTITY config.closeParentBehavior.close   "chiudi anche le sottoschede">
+<!ENTITY config.closeParentBehavior.attach  "porta le sottoschede al livello della scheda principale">
+<!ENTITY config.closeParentBehavior.detach  "elimina le sottoschede dall'albero">
 <!--ENTITY config.attachChildrenToGrandParentOnRemoveTab "Elimina le sottoschede dall'albero alla chiusura della scheda principale"-->
 
 <!ENTITY config.focusMode "Attiva la scheda successiva/precedente, anche se è nascosta, con Control(Command)-Tab">
