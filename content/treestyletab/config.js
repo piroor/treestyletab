@@ -2,7 +2,8 @@ var gOuterLinkCheck,
 	gAnyLinkCheck,
 	gGroupBookmarkRadio,
 	gGroupBookmarkTree,
-	gGroupBookmarkReplace;
+	gGroupBookmarkReplace,
+	gLastStateIsVertical;
 var gTabbarPlacePositionInitialized = false;
 
 function initTabPane()
@@ -40,6 +41,9 @@ function initTabPane()
 		gGroupBookmarkTree.value && !gGroupBookmarkReplace.value ? 'subtree' :
 		!gGroupBookmarkTree.value && !gGroupBookmarkReplace.value ? 'flat' :
 		'replace';
+
+	gLastStateIsVertical = document.getElementById('extensions.treestyletab.tabbar.position-radiogroup').value;
+	gLastStateIsVertical = gLastStateIsVertical == 'left' || gLastStateIsVertical == 'right';
 }
 
 function onChangeGroupBookmarkRadio()
@@ -72,9 +76,11 @@ function onChangeTabbarPosition(aOnChange)
 	var hideNewTabCheck = document.getElementById('extensions.treestyletab.tabbar.hideNewTabButton-check');
 	var hideAllTabsCheck = document.getElementById('extensions.treestyletab.tabbar.hideAlltabsButton-check');
 
-	if (aOnChange) {
+	if (aOnChange &&
+		gLastStateIsVertical != (pos == 'left' || pos == 'right')) {
+		gLastStateIsVertical = (pos == 'left' || pos == 'right');
 		indentPref.value = indentCheck.checked =
-			collapsePref.value = collapseCheck.checked = (pos == 'left' || pos == 'right');
+			collapsePref.value = collapseCheck.checked = gLastStateIsVertical;
 	}
 	if (pos == 'left' || pos == 'right') {
 		indentCheck.setAttribute('collapsed', true);
