@@ -174,3 +174,19 @@ tabbrowser[treestyletab-tabbar-position="bottom"] .treestyletab-tabbar-toggler {
 	border-top: 1px solid ThreeDShadow;
 }
 
+
+
+/* horizontal tree */
+
+tabbrowser[treestyletab-style][treestyletab-tabbar-position="top"]
+  .tabbrowser-tab:not([selected="true"]),
+tabbrowser[treestyletab-style][treestyletab-tabbar-position="top"]
+  .tabbrowser-tab[selected="true"],
+tabbrowser[treestyletab-style][treestyletab-tabbar-position="top"]
+  .tabbrowser-tab:hover:not([selected="true"]),
+tabbrowser[treestyletab-style][treestyletab-tabbar-position="top"]
+  .tabbrowser-tab:hover[selected="true"] {
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
