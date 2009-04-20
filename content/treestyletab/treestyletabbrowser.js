@@ -1432,6 +1432,8 @@ TreeStyleTabBrowser.prototype = {
 			this.setTabValue(tab, this.kINSERT_BEFORE, next.getAttribute(this.kID));
 
 		var backupAttributes = {};
+		var indentModifiedTabs = [];
+
 		if (firstChild) {
 			backupAttributes[this.kCHILDREN] = this.getTabValue(tab, this.kCHILDREN);
 			let children   = this.getChildTabs(tab);
@@ -1453,11 +1455,9 @@ TreeStyleTabBrowser.prototype = {
 						this.partTab(aTab, true);
 					}
 			), this);
-			this.updateTabsIndent(children);
-			this.checkTabsIndentOverflow();
-			if (closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_ATTACH) {
+			indentModifiedTabs = indentModifiedTabs.concat(children);
+			if (closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_ATTACH)
 				nextFocusedTab = firstChild;
-			}
 		}
 
 		if (parentTab) {
@@ -1496,8 +1496,9 @@ TreeStyleTabBrowser.prototype = {
 			)
 			b.selectedTab = nextFocusedTab;
 
+		if (indentModifiedTabs.length)
+			this.updateTabsIndentWithDelay(indentModifiedTabs);
 		this.checkTabsIndentOverflow();
-
 		this.showTabbarForFeedback();
 
 		for (var i in backupAttributes)
@@ -2795,6 +2796,23 @@ TreeStyleTabBrowser.prototype = {
 			this.updateTabsIndent(this.getChildTabs(aTab), aLevel+1, aProp);
 		}, this);
 	},
+	updateTabsIndentWithDelay : function()
+	{
+		if (this.updateTabsIndentWithDelayTimer)
+			window.clearTimeout(this.updateTabsIndentWithDelayTimer);
+
+		this.updateTabsIndentWithDelayTasks.push(Array.slice(arguments));
+
+		this.updateTabsIndentWithDelayTimer = window.setTimeout(function(aSelf) {
+			aSelf.updateTabsIndentWithDelayTasks.forEach(function(aTask) {
+				aSelf.updateTabsIndent.apply(aSelf, aTask);
+			}, aSelf);
+			window.clearTimeout(aSelf.updateTabsIndentWithDelayTimer);
+			aSelf.updateTabsIndentWithDelayTimer = null;
+		}, 0, this);
+	},
+	updateTabsIndentWithDelayTasks : [],
+	updateTabsIndentWithDelayTimer : null,
  
 	updateTabIndent : function(aTab, aProp, aIndent, aJustNow) 
 	{
