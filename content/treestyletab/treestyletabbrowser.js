@@ -2654,6 +2654,10 @@ TreeStyleTabBrowser.prototype = {
 			newIndex = refTab._tPos+1;
 		}
 
+		children = children.split('|').filter(function(aId) {
+			return this.getTabById(aId);
+		}, this)
+
 		this.setTabValue(aParent, this.kCHILDREN, children);
 		this.setTabValue(aChild, this.kPARENT, aParent.getAttribute(this.kID));
 		this.updateTabsCount(aParent);
