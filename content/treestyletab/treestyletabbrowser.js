@@ -1431,9 +1431,10 @@ TreeStyleTabBrowser.prototype = {
 		if (next)
 			this.setTabValue(tab, this.kINSERT_BEFORE, next.getAttribute(this.kID));
 
+		var backupChildren;
 		if (firstChild) {
-			var backupChildren = this.getTabValue(tab, this.kCHILDREN);
-			var children   = this.getChildTabs(tab);
+			backupChildren = this.getTabValue(tab, this.kCHILDREN);
+			let children   = this.getChildTabs(tab);
 			children.forEach((
 				closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_DETACH ?
 					function(aTab) {
@@ -1457,12 +1458,11 @@ TreeStyleTabBrowser.prototype = {
 			if (closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_ATTACH) {
 				nextFocusedTab = firstChild;
 			}
-			this.setTabValue(tab, this.kCHILDREN, backupChildren);
 		}
 
 		if (parentTab) {
-			var firstSibling = this.getFirstChildTab(parentTab);
-			var lastSibling  = this.getLastChildTab(parentTab);
+			let firstSibling = this.getFirstChildTab(parentTab);
+			let lastSibling  = this.getLastChildTab(parentTab);
 			if (tab == lastSibling && !nextFocusedTab) {
 				if (tab == firstSibling) { // there is only one child
 					nextFocusedTab = parentTab;
@@ -1472,7 +1472,7 @@ TreeStyleTabBrowser.prototype = {
 				}
 			}
 
-			var ancestors = [];
+			let ancestors = [];
 			do {
 				ancestors.push(parentTab.getAttribute(this.kID));
 				if (!next && (next = this.getNextSiblingTab(parentTab)))
@@ -1499,6 +1499,8 @@ TreeStyleTabBrowser.prototype = {
 		this.checkTabsIndentOverflow();
 
 		this.showTabbarForFeedback();
+
+		if (backupChildren) this.setTabValue(tab, this.kCHILDREN, backupChildren);
 	},
 	CLOSE_PARENT_BEHAVIOR_ATTACH : 0,
 	CLOSE_PARENT_BEHAVIOR_DETACH : 1,
