@@ -656,32 +656,29 @@ TreeStyleTabBrowser.prototype = {
 		var close = this.getTabClosebox(aTab);
 		var counter = document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER_CONTAINER);
 
-		var nodes = document.getAnonymousNodes(aTab);
-		for (var i = nodes.length-1; i > -1; i--)
-		{
-			nodes[i].setAttribute('ordinal', (i + 1) * 10);
-		}
+		Array.slice(document.getAnonymousNodes(aTab)).reverse()
+			.forEach(function(aNode, aIndex) {
+				aNode.setAttribute('ordinal', (aIndex + 1) * 10);
+			}, this);
 
-		nodes = label.parentNode.childNodes;
+		var nodes = Array.slice(label.parentNode.childNodes);
 		if (this.mTabBrowser.getAttribute(this.kTABBAR_POSITION) == 'right' &&
 			this.mTabBrowser.getAttribute(this.kUI_INVERTED) == 'true') {
-			for (var i = nodes.length-1; i > -1; i--)
-			{
-				if (nodes[i].getAttribute('class') == 'informationaltab-thumbnail-container')
-					continue;
-				nodes[i].setAttribute('ordinal', (nodes.length - i + 1) * 10);
-			}
+			nodes.reverse().forEach(function(aNode, aIndex) {
+				if (aNode.getAttribute('class') == 'informationaltab-thumbnail-container')
+					return;
+				aNode.setAttribute('ordinal', (nodes.length - aIndex + 1) * 10);
+			}, this);
 			if (counter)
 				counter.setAttribute('ordinal', parseInt(label.getAttribute('ordinal')) + 1);
 			close.setAttribute('ordinal', parseInt(label.parentNode.getAttribute('ordinal')) - 5);
 		}
 		else {
-			for (var i = nodes.length-1; i > -1; i--)
-			{
-				if (nodes[i].getAttribute('class') == 'informationaltab-thumbnail-container')
-					continue;
-				nodes[i].setAttribute('ordinal', (i + 1) * 10);
-			}
+			nodes.reverse().forEach(function(aNode, aIndex) {
+				if (aNode.getAttribute('class') == 'informationaltab-thumbnail-container')
+					return;
+				aNode.setAttribute('ordinal', (aIndex + 1) * 10);
+			}, this);
 		}
 	},
  
@@ -1414,11 +1411,9 @@ TreeStyleTabBrowser.prototype = {
 			closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_CLOSE ||
 			tab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true'
 			) {
-			var descendant = this.getDescendantTabs(tab);
-			for (var i = descendant.length-1; i > -1; i--)
-			{
-				b.removeTab(descendant[i]);
-			}
+			this.getDescendantTabs(tab).reverse().forEach(function(aTab) {
+				b.removeTab(aTab);
+			}, this);
 
 			if (this.getTabs(b).snapshotLength == 1) { // this is the last tab
 				b.addTab('about:blank');
@@ -1436,27 +1431,24 @@ TreeStyleTabBrowser.prototype = {
 		if (firstChild) {
 			var backupChildren = this.getTabValue(tab, this.kCHILDREN);
 			var children   = this.getChildTabs(tab);
-			var self       = this;
-			var processTab = closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_DETACH ?
+			children.forEach((
+				closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_DETACH ?
 					function(aTab) {
-						self.partTab(aTab, true);
-						self.moveTabSubTreeTo(aTab, self.getLastTab(b)._tPos);
+						this.partTab(aTab, true);
+						this.moveTabSubTreeTo(aTab, this.getLastTab(b)._tPos);
 					} :
 				parentTab ?
 					function(aTab) {
-						self.attachTabTo(aTab, parentTab, {
+						this.attachTabTo(aTab, parentTab, {
 							insertBefore : tab,
 							dontUpdateIndent : true,
 							dontExpand : true
 						});
 					} :
 					function(aTab) {
-						self.partTab(aTab, true);
-					};
-			for (var i = 0, maxi = children.length; i < maxi; i++)
-			{
-				processTab(children[i]);
-			}
+						this.partTab(aTab, true);
+					}
+			), this);
 			this.updateTabsIndent(children);
 			this.checkTabsIndentOverflow();
 			if (closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_ATTACH) {
@@ -1664,13 +1656,12 @@ TreeStyleTabBrowser.prototype = {
 				children = children.map(function(aChild) {
 					return this.redirectId(aChild);
 				}, this);
-			for (var i = 0, maxi = children.length; i < maxi; i++)
-			{
-				if (children[i] && (children[i] = this.getTabById(children[i]))) {
-					this.attachTabTo(children[i], tab, { dontExpand : true, dontUpdateIndent : true });
-					tabs.push(children[i]);
+			children.forEach(function(aTab) {
+				if (aTab && (aTab = this.getTabById(aTab))) {
+					this.attachTabTo(aTab, tab, { dontExpand : true, dontUpdateIndent : true });
+					tabs.push(aTab);
 				}
-			}
+			}, this);
 		}
 
 		var nextTab = this.getTabValue(tab, this.kINSERT_BEFORE);
