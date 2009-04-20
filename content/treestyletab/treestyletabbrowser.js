@@ -656,18 +656,21 @@ TreeStyleTabBrowser.prototype = {
 		var close = this.getTabClosebox(aTab);
 		var counter = document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER_CONTAINER);
 
-		Array.slice(document.getAnonymousNodes(aTab)).reverse()
+		var nodes = document.getAnonymousNodes(aTab);
+		var count = nodes.length;
+		Array.slice(nodes).reverse()
 			.forEach(function(aNode, aIndex) {
-				aNode.setAttribute('ordinal', (aIndex + 1) * 10);
+				aNode.setAttribute('ordinal', (count - aIndex + 1) * 10);
 			}, this);
 
-		var nodes = Array.slice(label.parentNode.childNodes);
+		nodes = Array.slice(label.parentNode.childNodes);
+		count = nodes.length;
 		if (this.mTabBrowser.getAttribute(this.kTABBAR_POSITION) == 'right' &&
 			this.mTabBrowser.getAttribute(this.kUI_INVERTED) == 'true') {
 			nodes.reverse().forEach(function(aNode, aIndex) {
 				if (aNode.getAttribute('class') == 'informationaltab-thumbnail-container')
 					return;
-				aNode.setAttribute('ordinal', (nodes.length - aIndex + 1) * 10);
+				aNode.setAttribute('ordinal', (aIndex + 1) * 10);
 			}, this);
 			if (counter)
 				counter.setAttribute('ordinal', parseInt(label.getAttribute('ordinal')) + 1);
@@ -677,7 +680,7 @@ TreeStyleTabBrowser.prototype = {
 			nodes.reverse().forEach(function(aNode, aIndex) {
 				if (aNode.getAttribute('class') == 'informationaltab-thumbnail-container')
 					return;
-				aNode.setAttribute('ordinal', (aIndex + 1) * 10);
+				aNode.setAttribute('ordinal', (count - aIndex + 1) * 10);
 			}, this);
 		}
 	},
@@ -2756,17 +2759,12 @@ TreeStyleTabBrowser.prototype = {
 
 		var multirow = this.isMultiRow();
 		var topBottom = this.indentProp.match(/top|bottom/);
-		var innerBoxes,
-			j,
-			colors,
-			maxIndent = parseInt(aTabs[0].boxObject.height / 2);
+		var maxIndent = parseInt(aTabs[0].boxObject.height / 2);
 
-		for (var i = 0, maxi = aTabs.length; i < maxi; i++)
-		{
+		Array.slice(aTabs).forEach(function(aTab) {
 			if (multirow) {
 				indent = Math.min(aLevel * 3, maxIndent);
-				innerBoxes = document.getAnonymousNodes(aTabs[i]);
-				colors = '-moz-border-top-colors:'+(function(aNum) {
+				var colors = '-moz-border-top-colors:'+(function(aNum) {
 					var retVal = [];
 					for (var i = 1; i < aNum; i++)
 					{
@@ -2775,18 +2773,21 @@ TreeStyleTabBrowser.prototype = {
 					retVal.push('ThreeDShadow');
 					return retVal.length == 1 ? 'none' : retVal.join(' ') ;
 				})(indent)+' !important;';
-				for (j = 0, maxj = innerBoxes.length; j < maxj; j++)
-				{
-					if (innerBoxes[j].nodeType != Node.ELEMENT_NODE) continue;
-					innerBoxes[j].setAttribute('style', innerBoxes[j].getAttribute('style').replace(/(-moz-)?border-(top|bottom)(-[^:]*)?.*:[^;]+;?/g, '')+'; border-'+topBottom+': solid transparent '+indent+'px !important;'+colors);
-				}
+				Array.slice(document.getAnonymousNodes(aTab)).forEach(function(aBox) {
+					if (aBox.nodeType != Node.ELEMENT_NODE) return;
+					aBox.setAttribute(
+						'style',
+						aBox.getAttribute('style').replace(/(-moz-)?border-(top|bottom)(-[^:]*)?.*:[^;]+;?/g, '') +
+						'; border-'+topBottom+': solid transparent '+indent+'px !important;'+colors
+					);
+				}, this);
 			}
 			else {
-				this.updateTabIndent(aTabs[i], aProp, indent, aJustNow);
+				this.updateTabIndent(aTab, aProp, indent, aJustNow);
 			}
-			aTabs[i].setAttribute(this.kNEST, aLevel);
-			this.updateTabsIndent(this.getChildTabs(aTabs[i]), aLevel+1, aProp);
-		}
+			aTab.setAttribute(this.kNEST, aLevel);
+			this.updateTabsIndent(this.getChildTabs(aTab), aLevel+1, aProp);
+		}, this);
 	},
  
 	updateTabIndent : function(aTab, aProp, aIndent, aJustNow) 
@@ -2934,11 +2935,9 @@ TreeStyleTabBrowser.prototype = {
 
 		this.isSubTreeChildrenMoving = true;
 		this.internallyTabMoving     = true;
-		var tabs = this.getDescendantTabs(aTab);
-		for (var i = 0, maxi = tabs.length; i < maxi; i++)
-		{
-			b.moveTabTo(tabs[i], aTab._tPos+i+(aTab._tPos < tabs[i]._tPos ? 1 : 0 ));
-		}
+		this.getDescendantTabs(aTab).forEach(function(aTab) {
+			b.moveTabTo(aTab, aTab._tPos+i+(aTab._tPos < aTab._tPos ? 1 : 0 ));
+		}, this);
 		this.internallyTabMoving     = false;
 		this.isSubTreeChildrenMoving = false;
 
@@ -2998,11 +2997,9 @@ TreeStyleTabBrowser.prototype = {
 
 		this.setTabValue(aTab, this.kSUBTREE_COLLAPSED, aCollapse);
 
-		var tabs = this.getChildTabs(aTab);
-		for (var i = 0, maxi = tabs.length; i < maxi; i++)
-		{
-			this.collapseExpandTab(tabs[i], aCollapse, aJustNow);
-		}
+		this.getChildTabs(aTab).forEach(function(aTab) {
+			this.collapseExpandTab(aTab, aCollapse, aJustNow);
+		}, this);
 
 		if (!aCollapse)
 			this.scrollToTabSubTree(aTab);
@@ -3035,12 +3032,10 @@ TreeStyleTabBrowser.prototype = {
 			b.selectedTab = newSelection;
 		}
 
-		var isSubTreeCollapsed = (aTab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true');
-		var tabs = this.getChildTabs(aTab);
-		for (var i = 0, maxi = tabs.length; i < maxi; i++)
-		{
-			if (!isSubTreeCollapsed)
-				this.collapseExpandTab(tabs[i], aCollapse, aJustNow);
+		if (aTab.getAttribute(this.kSUBTREE_COLLAPSED) != 'true') {
+			this.getChildTabs(aTab).forEach(function(aTab) {
+				this.collapseExpandTab(aTab, aCollapse, aJustNow);
+			}, this);
 		}
 	},
 	updateTabCollapsed : function(aTab, aCollapsed, aJustNow)
