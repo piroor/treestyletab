@@ -2633,32 +2633,32 @@ TreeStyleTabBrowser.prototype = {
 
 		this.partTab(aChild, true);
 
-		var children = aParent.getAttribute(this.kCHILDREN);
+		var children = aParent.getAttribute(this.kCHILDREN)
+						.split('|').filter(function(aId) {
+							return this.getTabById(aId);
+						}, this);
+
 		var newIndex;
 
-		if (children.indexOf(id) > -1) {
-			children = ('|'+children).replace('|'+id, '').replace(/^\|/);
-		}
+		var oldIndex = children.indexOf(id);
+		if (oldIndex > -1) children = children.splice(oldIndex, 1);
 
 		var insertBefore = aInfo.insertBefore;
 		var beforeTab = insertBefore ? insertBefore.getAttribute(this.kID) : null ;
-		if (beforeTab && children.indexOf(beforeTab) > -1) {
-			children = children.replace(beforeTab, id+'|'+beforeTab);
+		var beforeIndex;
+		if (beforeTab && (beforeIndex = children.indexOf(beforeTab)) > -1) {
+			children.splice(beforeIndex, 0, id);
 			newIndex = insertBefore._tPos;
 		}
 		else {
-			children = ((children || '')+'|'+id).replace(/^\|/, '');
+			children.push(id);
 			var refTab = aParent;
 			var descendant = this.getDescendantTabs(aParent);
 			if (descendant.length) refTab = descendant[descendant.length-1];
 			newIndex = refTab._tPos+1;
 		}
 
-		children = children.split('|').filter(function(aId) {
-			return this.getTabById(aId);
-		}, this)
-
-		this.setTabValue(aParent, this.kCHILDREN, children);
+		this.setTabValue(aParent, this.kCHILDREN, children.join('|'));
 		this.setTabValue(aChild, this.kPARENT, aParent.getAttribute(this.kID));
 		this.updateTabsCount(aParent);
 		if (shouldInheritIndent) this.inheritTabIndent(aChild, aParent);
@@ -2667,15 +2667,7 @@ TreeStyleTabBrowser.prototype = {
 		this.moveTabSubTreeTo(aChild, newIndex);
 
 		if (!aInfo.dontExpand) {
-			if (
-/*
-				(
-					aParent.getAttribute(this.kSUBTREE_COLLAPSED) == 'true' ||
-					children.indexOf('|') > -1 // not a first child
-				) &&
-*/
-				this.getTreePref('autoCollapseExpandSubTreeOnSelect')
-				) {
+			if (this.getTreePref('autoCollapseExpandSubTreeOnSelect')) {
 				this.collapseExpandTreesIntelligentlyFor(aParent);
 				var p = aParent;
 				do {
@@ -2725,10 +2717,15 @@ TreeStyleTabBrowser.prototype = {
 		if (!parentTab) return;
 
 		var id = aChild.getAttribute(this.kID);
-		var children = ('|'+parentTab.getAttribute(this.kCHILDREN))
-						.replace(new RegExp('\\|'+id), '')
-						.replace(/^\|/, '');
-		this.setTabValue(parentTab, this.kCHILDREN, children);
+		this.setTabValue(
+			parentTab,
+			this.kCHILDREN,
+			parentTab.getAttribute(this.kCHILDREN)
+				.split('|')
+				.filter(function(aId) {
+					return this.getTabById(aId) && aId != id;
+				}, this).join('|')
+		);
 		this.deleteTabValue(aChild, this.kPARENT);
 		this.updateTabsCount(parentTab);
 
@@ -2939,8 +2936,8 @@ TreeStyleTabBrowser.prototype = {
 
 		this.isSubTreeChildrenMoving = true;
 		this.internallyTabMoving     = true;
-		this.getDescendantTabs(aTab).forEach(function(aTab) {
-			b.moveTabTo(aTab, aTab._tPos+i+(aTab._tPos < aTab._tPos ? 1 : 0 ));
+		this.getDescendantTabs(aTab).forEach(function(aTab, aIndex) {
+			b.moveTabTo(aTab, aTab._tPos + aIndex + (aTab._tPos < aTab._tPos ? 1 : 0 ));
 		}, this);
 		this.internallyTabMoving     = false;
 		this.isSubTreeChildrenMoving = false;
