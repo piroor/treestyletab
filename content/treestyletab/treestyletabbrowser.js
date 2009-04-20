@@ -2959,8 +2959,8 @@ TreeStyleTabBrowser.prototype = {
 
 		this.isSubTreeChildrenMoving = true;
 		this.internallyTabMoving     = true;
-		this.getDescendantTabs(aTab).forEach(function(aTab, aIndex) {
-			b.moveTabTo(aTab, aTab._tPos + aIndex + (aTab._tPos < aTab._tPos ? 1 : 0 ));
+		this.getDescendantTabs(aTab).forEach(function(aDescendantTab, aIndex) {
+			b.moveTabTo(aDescendantTab, aTab._tPos + aIndex + (aTab._tPos < aDescendantTab._tPos ? 1 : 0 ));
 		}, this);
 		this.internallyTabMoving     = false;
 		this.isSubTreeChildrenMoving = false;
