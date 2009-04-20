@@ -1772,7 +1772,7 @@ TreeStyleTabBrowser.prototype = {
 		else if (this.hasChildTabs(tab) &&
 				(tab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true') &&
 				this.getTreePref('autoCollapseExpandSubTreeOnSelect')) {
-			this.collapseExpandTreesIntelligentlyFor(tab);
+			this.collapseExpandTreesIntelligentlyWithDelayFor(tab);
 		}
 
 		if (this.autoHideEnabled && this.autoHideShown)
@@ -1782,6 +1782,9 @@ TreeStyleTabBrowser.prototype = {
 
 		if (!this.accelKeyPressed)
 			this.showTabbarForFeedback();
+	},
+	collapseExpandForTabSelectWithDelay : function()
+	{
 	},
  
 	onTabClick : function(aEvent) 
@@ -2796,22 +2799,24 @@ TreeStyleTabBrowser.prototype = {
 			this.updateTabsIndent(this.getChildTabs(aTab), aLevel+1, aProp);
 		}, this);
 	},
-	updateTabsIndentWithDelay : function()
+	updateTabsIndentWithDelay : function(aTabs)
 	{
 		if (this.updateTabsIndentWithDelayTimer)
 			window.clearTimeout(this.updateTabsIndentWithDelayTimer);
 
-		this.updateTabsIndentWithDelayTasks.push(Array.slice(arguments));
-
+		this.updateTabsIndentWithDelayTabs = this.updateTabsIndentWithDelayTabs.concat(aTabs);
 		this.updateTabsIndentWithDelayTimer = window.setTimeout(function(aSelf) {
-			aSelf.updateTabsIndentWithDelayTasks.forEach(function(aTask) {
-				aSelf.updateTabsIndent.apply(aSelf, aTask);
-			}, aSelf);
+			var tabs = [];
+			aSelf.updateTabsIndentWithDelayTabs.forEach(function(aTab) {
+				if (tabs.indexOf(aTab) < 0) tabs.push(aTab);
+			});
+			this.updateTabsIndentWithDelayTabs = [];
+			aSelf.updateTabsIndent(tabs);
 			window.clearTimeout(aSelf.updateTabsIndentWithDelayTimer);
 			aSelf.updateTabsIndentWithDelayTimer = null;
 		}, 0, this);
 	},
-	updateTabsIndentWithDelayTasks : [],
+	updateTabsIndentWithDelayTabs : [],
 	updateTabsIndentWithDelayTimer : null,
  
 	updateTabIndent : function(aTab, aProp, aIndent, aJustNow) 
@@ -3222,6 +3227,17 @@ TreeStyleTabBrowser.prototype = {
 
 		this.collapseExpandSubtree(aTab, false, aJustNow);
 	},
+	collapseExpandTreesIntelligentlyWithDelayFor : function(aTab)
+	{
+		if (this.cETIWDFTimer)
+			window.clearTimeout(this.cETIWDFTimer);
+		this.cETIWDFTimer = window.setTimeout(function(aSelf) {
+			window.clearTimeout(aSelf.cETIWDFTimer);
+			aSelf.cETIWDFTimer = null;
+			aSelf.collapseExpandTreesIntelligentlyFor(aTab);
+		}, 0, this);
+	},
+	cETIWDFTimer : null,
  
 	collapseExpandAllSubtree : function(aCollapse) 
 	{
