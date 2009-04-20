@@ -1431,9 +1431,9 @@ TreeStyleTabBrowser.prototype = {
 		if (next)
 			this.setTabValue(tab, this.kINSERT_BEFORE, next.getAttribute(this.kID));
 
-		var backupChildren;
+		var backupAttributes = {};
 		if (firstChild) {
-			backupChildren = this.getTabValue(tab, this.kCHILDREN);
+			backupAttributes[this.kCHILDREN] = this.getTabValue(tab, this.kCHILDREN);
 			let children   = this.getChildTabs(tab);
 			children.forEach((
 				closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_DETACH ?
@@ -1476,10 +1476,10 @@ TreeStyleTabBrowser.prototype = {
 			do {
 				ancestors.push(parentTab.getAttribute(this.kID));
 				if (!next && (next = this.getNextSiblingTab(parentTab)))
-					this.setTabValue(tab, this.kINSERT_BEFORE, next.getAttribute(this.kID));
+					backupAttributes[this.kINSERT_BEFORE] = next.getAttribute(this.kID);
 			}
 			while (parentTab = this.getParentTab(parentTab));
-			this.setTabValue(tab, this.kANCESTOR, ancestors.join('|'));
+			backupAttributes[this.kANCESTOR] = ancestors.join('|');
 
 			this.partTab(tab, true);
 		}
@@ -1500,7 +1500,10 @@ TreeStyleTabBrowser.prototype = {
 
 		this.showTabbarForFeedback();
 
-		if (backupChildren) this.setTabValue(tab, this.kCHILDREN, backupChildren);
+		for (var i in backupAttributes)
+		{
+			this.setTabValue(tab, i, backupAttributes[i]);
+		}
 	},
 	CLOSE_PARENT_BEHAVIOR_ATTACH : 0,
 	CLOSE_PARENT_BEHAVIOR_DETACH : 1,
