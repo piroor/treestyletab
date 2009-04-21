@@ -382,7 +382,9 @@ var TreeStyleTabService = {
 		var treeStyleTab = gBrowser.treeStyleTab;
 		var tabbarWidth = treeStyleTab.splitterWidth + (treeStyleTab.isVertical ? gBrowser.mStrip.boxObject.width : 0 );
 		var contentWidth = gBrowser.boxObject.width - tabbarWidth;
-		if (aKeepWindowSize) {
+		if (aKeepWindowSize ||
+			window.fullScreen ||
+			window.windowState != Components.interfaces.nsIDOMChromeWindow.STATE_NORMAL) {
 			this.setTabbarWidth(Math.max(10, gBrowser.boxObject.width - aWidth));
 		}
 		else if (tabbarWidth + aWidth <= screen.availWidth) {
