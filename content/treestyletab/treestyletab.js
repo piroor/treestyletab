@@ -365,6 +365,64 @@ var TreeStyleTabService = {
 			invert   : this.getTreePref('urlbar.invertDefaultBehavior')
 		});
 	},
+ 
+	setTabbarWidth : function(aWidth, aForceExpanded) 
+	{
+		var treeStyleTab = gBrowser.treeStyleTab;
+		if (aForceExpanded ||
+			treeStyleTab.autoHideShown ||
+			treeStyleTab.autoHideMode !=  this.kAUTOHIDE_MODE_SHRINK)
+			this.setTreePref('tabbar.width', aWidth);
+		else
+			this.setTreePref('tabbar.shrunkenWidth', aWidth);
+	},
+ 
+	setContentWidth : function(aWidth, aKeepWindowSize) 
+	{
+		var treeStyleTab = gBrowser.treeStyleTab;
+		var tabbarWidth = treeStyleTab.splitterWidth + (treeStyleTab.isVertical ? gBrowser.mStrip.boxObject.width : 0 );
+		var contentWidth = gBrowser.boxObject.width - tabbarWidth;
+		if (aKeepWindowSize) {
+			this.setTabbarWidth(Math.max(10, gBrowser.boxObject.width - aWidth));
+		}
+		else if (tabbarWidth + aWidth <= screen.availWidth) {
+			window.resizeBy(aWidth - contentWidth, 0);
+		}
+		else {
+			window.resizeBy(screen.availWidth - window.outerWidth, 0);
+			this.setTabbarWidth(gBrowser.boxObject.width - aWidth);
+		}
+	},
+ 
+	toggleAutoHide : function() 
+	{
+		this.setTreePref('tabbar.autoHide.mode',
+			this.getTreePref('tabbar.autoHide.mode') == this.kAUTOHIDE_MODE_DISABLED ?
+				this.getTreePref('tabbar.autoHide.mode.toggle') :
+				this.kAUTOHIDE_MODE_DISABLED
+		);
+	},
+ 
+	toggleFixed : function() 
+	{
+		this.setTreePref('tabbar.fixed',
+			!this.getTreePref('tabbar.fixed'));
+	},
+ 
+	changeTabbarPosition : function(aNewPosition) 
+	{
+		if (!aNewPosition || !/^(top|bottom|left|right)$/i.test(aNewPosition))
+			aNewPosition = 'top';
+
+		aNewPosition = aNewPosition.toLowerCase();
+		this.setTreePref('tabbar.position', aNewPosition);
+
+		if (!this.getTreePref('tabbar.syncRelatedPrefsForDynamicPosition')) return;
+
+		var vertical = (aNewPosition == 'left' || aNewPosition == 'right');
+		this.setTreePref('enableSubtreeIndent', vertical);
+		this.setTreePref('allowSubtreeCollapseExpand', vertical);
+	},
   
 /* backward compatibility */ 
 	getTempTreeStyleTab : function(aTabBrowser)
@@ -578,36 +636,6 @@ var TreeStyleTabService = {
 					aElementOrStyle :
 					window.getComputedStyle(aElementOrStyle, null) ;
 		return Number(style.getPropertyValue(aProp).replace(/px$/, ''));
-	},
- 
-	toggleAutoHide : function() 
-	{
-		this.setTreePref('tabbar.autoHide.mode',
-			this.getTreePref('tabbar.autoHide.mode') == this.kAUTOHIDE_MODE_DISABLED ?
-				this.getTreePref('tabbar.autoHide.mode.toggle') :
-				this.kAUTOHIDE_MODE_DISABLED
-		);
-	},
- 
-	toggleFixed : function() 
-	{
-		this.setTreePref('tabbar.fixed',
-			!this.getTreePref('tabbar.fixed'));
-	},
- 
-	changeTabbarPosition : function(aNewPosition) 
-	{
-		if (!aNewPosition || !/^(top|bottom|left|right)$/i.test(aNewPosition))
-			aNewPosition = 'top';
-
-		aNewPosition = aNewPosition.toLowerCase();
-		this.setTreePref('tabbar.position', aNewPosition);
-
-		if (!this.getTreePref('tabbar.syncRelatedPrefsForDynamicPosition')) return;
-
-		var vertical = (aNewPosition == 'left' || aNewPosition == 'right');
-		this.setTreePref('enableSubtreeIndent', vertical);
-		this.setTreePref('allowSubtreeCollapseExpand', vertical);
 	},
  
 /* get tab(s) */ 
