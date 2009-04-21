@@ -727,6 +727,7 @@ TreeStyleTabBrowser.prototype = {
 		if (!splitter) {
 			splitter = document.createElement('splitter');
 			splitter.setAttribute('class', this.kSPLITTER);
+			splitter.addEventListener('mousedown', this, true);
 			splitter.setAttribute('onmouseup', 'TreeStyleTabService.onTabbarResized(event);');
 			splitter.setAttribute('state', 'open');
 			splitter.appendChild(document.createElement('grippy'));
@@ -1196,11 +1197,11 @@ TreeStyleTabBrowser.prototype = {
 				}
 				if (
 					!this.tabbarResizing &&
-					aEvent.originalTarget &&
-					(
-						aEvent.originalTarget.getAttribute('class') == this.kSPLITTER ||
-						aEvent.originalTarget.parentNode.getAttribute('class') == this.kSPLITTER
-					)
+					this.evaluateXPath(
+						'ancestor-or-self::*[@class="'+this.kSPLITTER+'"]',
+						aEvent.originalTaret || aEvent.target,
+						XPathResult.BOOLEAN_TYPE
+					).booleanValue
 					) {
 					this.tabbarResizing = true;
 					this.clearTabbarCanvas();
