@@ -1762,10 +1762,12 @@ catch(e) {
 	onTabbarResized : function(aEvent) 
 	{
 		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
+		this.tabbarWidthResetting = true;
 		if (!b.treeStyleTab.tabbarExpanded)
 			this.setTreePref('tabbar.shrunkenWidth', b.mStrip.boxObject.width);
 		else
 			this.setTreePref('tabbar.width', b.mStrip.boxObject.width);
+		this.tabbarWidthResetting = false;
 	},
  
 	initContextMenu : function() 

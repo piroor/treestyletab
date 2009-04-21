@@ -1101,6 +1101,18 @@ TreeStyleTabBrowser.prototype = {
 
 					case 'extensions.treestyletab.tabbar.width':
 					case 'extensions.treestyletab.tabbar.shrunkenWidth':
+						if (!this.tabbarWidthResetting && this.isVertical) {
+							this.mTabBrowser.mStrip.removeAttribute('width');
+							this.mTabBrowser.mStrip.setAttribute(
+								'width',
+								(
+									!this.autoHideShown &&
+									this.autoHideMode ==  this.kAUTOHIDE_MODE_SHRINK
+								) ?
+									this.getTreePref('tabbar.shrunkenWidth') :
+									this.getTreePref('tabbar.width')
+							);
+						}
 						this.checkTabsIndentOverflow();
 						break;
 
