@@ -166,21 +166,35 @@ var TreeStyleTabService = {
 	_WindowMediator : null,
 
 	get isGecko18() {
-		var version = this.XULAppInfo.platformVersion.split('.');
-		return parseInt(version[0]) <= 1 && parseInt(version[1]) <= 8;
+		if (this._isGecko18 === null)
+			this._isGecko18 = this.Comparator.compare(this.XULAppInfo.version, '3.0') < 0;
+		return this._isGecko18;
 	},
+	_isGecko18 : null,
 	get isGecko19() {
-		var version = this.XULAppInfo.platformVersion.split('.');
-		return parseInt(version[0]) >= 2 || parseInt(version[1]) >= 9;
+		if (this._isGecko19 === null)
+			this._isGecko19 = this.Comparator.compare(this.XULAppInfo.version, '3.0') >= 0;
+		return this._isGecko19;
 	},
-
+	_isGecko19 : null,
 	get XULAppInfo() {
 		if (!this._XULAppInfo) {
-			this._XULAppInfo = Components.classes['@mozilla.org/xre/app-info;1'].getService(Components.interfaces.nsIXULAppInfo);
+			this._XULAppInfo = Components
+					.classes['@mozilla.org/xre/app-info;1']
+					.getService(Components.interfaces.nsIXULAppInfo);
 		}
 		return this._XULAppInfo;
 	},
 	_XULAppInfo : null,
+	get Comparator() {
+		if (!this._Comparator) {
+			this._Comparator = Components
+					.classes['@mozilla.org/xpcom/version-comparator;1']
+					.getService(Components.interfaces.nsIVersionComparator);
+		}
+		return this._Comparator;
+	},
+	_Comparator : null,
 
 	get stringbundle() {
 		if (!this._stringbundle) {

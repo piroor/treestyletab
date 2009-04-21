@@ -55,12 +55,17 @@ function onChangeGroupBookmarkRadio()
 
 function onChangeTabbarPosition(aOnChange)
 {
+	const XULAppInfo = Components.classes['@mozilla.org/xre/app-info;1']
+			.getService(Components.interfaces.nsIXULAppInfo);
+	const comparator = Components.classes['@mozilla.org/xpcom/version-comparator;1']
+						.getService(Components.interfaces.nsIVersionComparator);
+
 	var pos = document.getElementById('extensions.treestyletab.tabbar.position-radiogroup').value;
 	var invertScrollbar = document.getElementById('extensions.treestyletab.tabbar.invertScrollbar-check');
 	invertScrollbar.disabled = pos != 'left';
 	document.getElementById('extensions.treestyletab.tabbar.invertUI-check').disabled = pos != 'right';
 
-	if (isGecko18()) {
+	if (comparator.compare(XULAppInfo.version, '3.0') < 0) {
 		invertScrollbar.removeAttribute('collapsed');
 	}
 	else {
@@ -74,7 +79,6 @@ function onChangeTabbarPosition(aOnChange)
 	var collapseCheck = document.getElementById('extensions.treestyletab.allowSubtreeCollapseExpand-check');
 //	var autoHideCheck = document.getElementById('extensions.treestyletab.tabbar.autoHide.enabled-check');
 	var hideNewTabCheck = document.getElementById('extensions.treestyletab.tabbar.hideNewTabButton-check');
-	var hideAllTabsCheck = document.getElementById('extensions.treestyletab.tabbar.hideAlltabsButton-check');
 
 	if (aOnChange &&
 		gLastStateIsVertical != (pos == 'left' || pos == 'right')) {
@@ -85,24 +89,18 @@ function onChangeTabbarPosition(aOnChange)
 	if (pos == 'left' || pos == 'right') {
 		indentCheck.setAttribute('collapsed', true);
 //		autoHideCheck.removeAttribute('collapsed');
-		hideNewTabCheck.removeAttribute('collapsed');
-		hideAllTabsCheck.removeAttribute('collapsed');
+		if (comparator.compare(XULAppInfo.version, '3.1b3') >= 0)
+			hideNewTabCheck.removeAttribute('collapsed');
+		else
+			hideNewTabCheck.setAttribute('collapsed', true);
 	}
 	else {
 		indentCheck.removeAttribute('collapsed');
 //		autoHideCheck.setAttribute('collapsed', true);
 		hideNewTabCheck.setAttribute('collapsed', true);
-		hideAllTabsCheck.setAttribute('collapsed', true);
 	}
 
 	gTabbarPlacePositionInitialized = true;
-}
-
-function isGecko18()
-{
-	const XULAppInfo = Components.classes['@mozilla.org/xre/app-info;1'].getService(Components.interfaces.nsIXULAppInfo);
-	var version = XULAppInfo.platformVersion.split('.');
-	return parseInt(version[0]) <= 1 && parseInt(version[1]) <= 8;
 }
 
 

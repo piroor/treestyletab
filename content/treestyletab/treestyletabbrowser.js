@@ -1056,8 +1056,7 @@ TreeStyleTabBrowser.prototype = {
 						break;
 
 					case 'extensions.treestyletab.tabbar.hideAlltabsButton':
-						var pos = b.getAttribute(this.kTABBAR_POSITION);
-						if (value && (pos == 'left' || pos == 'right'))
+						if (value)
 							b.setAttribute(this.kHIDE_ALLTABS, true);
 						else
 							b.removeAttribute(this.kHIDE_ALLTABS);

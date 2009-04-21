@@ -103,15 +103,15 @@
 				label="&config.allowSubtreeCollapseExpand;"/>
 		</hbox>
 		<hbox align="center">
+			<checkbox id="extensions.treestyletab.tabbar.hideAlltabsButton-check"
+				preference="extensions.treestyletab.tabbar.hideAlltabsButton"
+				label="&config.tabbar.hideAlltabsButton;"/>
 			<checkbox id="extensions.treestyletab.enableSubtreeIndent-check"
 				preference="extensions.treestyletab.enableSubtreeIndent"
 				label="&config.enableSubtreeIndent;"/>
 			<checkbox id="extensions.treestyletab.tabbar.hideNewTabButton-check"
 				preference="extensions.treestyletab.tabbar.hideNewTabButton"
 				label="&config.tabbar.hideNewTabButton;"/>
-			<checkbox id="extensions.treestyletab.tabbar.hideAlltabsButton-check"
-				preference="extensions.treestyletab.tabbar.hideAlltabsButton"
-				label="&config.tabbar.hideAlltabsButton;"/>
 		</hbox>
 		</vbox>
 	</groupbox>
