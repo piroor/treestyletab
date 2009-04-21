@@ -1102,7 +1102,7 @@ TreeStyleTabBrowser.prototype = {
 
 					case 'extensions.treestyletab.tabbar.width':
 					case 'extensions.treestyletab.tabbar.shrunkenWidth':
-						if (!this.tabbarWidthResetting && this.isVertical) {
+						if (!this.tabbarResizing && this.isVertical) {
 							this.mTabBrowser.mStrip.removeAttribute('width');
 							this.mTabBrowser.mStrip.setAttribute(
 								'width',

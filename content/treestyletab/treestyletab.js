@@ -1792,12 +1792,10 @@ catch(e) {
 	onTabbarResized : function(aEvent) 
 	{
 		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
-		this.tabbarWidthResetting = true;
 		if (!b.treeStyleTab.tabbarExpanded)
 			this.setTreePref('tabbar.shrunkenWidth', b.mStrip.boxObject.width);
 		else
 			this.setTreePref('tabbar.width', b.mStrip.boxObject.width);
-		this.tabbarWidthResetting = false;
 	},
  
 	initContextMenu : function() 
@@ -2202,13 +2200,12 @@ catch(e) {
 			case 'extensions.treestyletab.tabbar.shrunkenWidth':
 				var expanded = this.getTreePref('tabbar.width');
 				var shrunken = this.getTreePref('tabbar.shrunkenWidth');
-				if (!this.tabbarWidthResetting &&
-					(expanded - this.getTreePref('autoHide.area')) < shrunken) {
+				if (expanded <= shrunken) {
 					this.tabbarWidthResetting = true;
 					if (aPrefName == 'extensions.treestyletab.tabbar.width')
-						this.setTreePref('tabbar.shrunkenWidth', parseInt(expanded / 1.2));
+						this.setTreePref('tabbar.shrunkenWidth', parseInt(expanded / 1.5));
 					else
-						this.setTreePref('tabbar.width', parseInt(shrunken * 1.2));
+						this.setTreePref('tabbar.width', parseInt(shrunken * 1.5));
 					this.tabbarWidthResetting = false;
 				}
 				break;
