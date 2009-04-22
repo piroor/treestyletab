@@ -2822,7 +2822,7 @@ TreeStyleTabBrowser.prototype = {
 			aSelf.updateTabsIndentWithDelayTabs.forEach(function(aTab) {
 				if (tabs.indexOf(aTab) < 0) tabs.push(aTab);
 			});
-			this.updateTabsIndentWithDelayTabs = [];
+			aSelf.updateTabsIndentWithDelayTabs = [];
 			aSelf.updateTabsIndent(tabs);
 			window.clearTimeout(aSelf.updateTabsIndentWithDelayTimer);
 			aSelf.updateTabsIndentWithDelayTimer = null;
