@@ -3241,6 +3241,7 @@ TreeStyleTabBrowser.prototype = {
 	},
 	collapseExpandTreesIntelligentlyWithDelayFor : function(aTab)
 	{
+		if (this.doingCollapseExpand) return;
 		if (this.cETIWDFTimer)
 			window.clearTimeout(this.cETIWDFTimer);
 		this.cETIWDFTimer = window.setTimeout(function(aSelf) {
