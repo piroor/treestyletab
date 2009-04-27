@@ -3,7 +3,7 @@
 
 <!ENTITY config.tabs.appearance "Wygląd">
 
-<!ENTITY config.tabbar.scroll.smooth "Płynnie przewijaj pasek kart">
+<!ENTITY config.animation.enabled "Włączanie efektów animacji">
 
 <!ENTITY config.tabbar.position.caption "Pozycja paska kart">
 <!ENTITY config.tabbar.position.left    "Lewo">
