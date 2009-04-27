@@ -1604,7 +1604,7 @@ TreeStyleTabBrowser.prototype = {
 			newParent = realDelta < 2 ? prevParent : parent ;
 		}
 		else if (prevLevel < nextLevel) {
-			newParent = this.getParentTab(aTab);
+			newParent = this.getParentTab(aTab) || this.getParentTab(nextTab);
 		}
 
 		if (newParent != parent) {
