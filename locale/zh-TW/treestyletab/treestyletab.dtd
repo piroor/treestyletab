@@ -120,7 +120,7 @@
 <!ENTITY context.openSelectionLinks.label     "用新分頁開啟所有選取的鏈結">
 <!ENTITY context.openSelectionLinks.accesskey "l">
 
-<!ENTITY selection.removeTabSubTree.label     "關關所有選取的樹">
+<!ENTITY selection.removeTabSubTree.label     "關閉所有選取的樹">
 <!ENTITY selection.removeTabSubTree.accesskey "s">
 <!ENTITY context.removeTabSubTree.label     "關閉此樹">
 <!ENTITY context.removeTabSubTree.accesskey "s">
