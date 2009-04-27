@@ -1417,7 +1417,7 @@ catch(e) {
 			)
 		);
 
-		funcs = 'handleLinkClick __splitbrowser__handleLinkClick __ctxextensions__handleLinkClick __treestyletab__highlander__origHandleLinkClick'.split(' ');
+		funcs = '__treestyletab__highlander__origHandleLinkClick __splitbrowser__handleLinkClick __ctxextensions__handleLinkClick handleLinkClick'.split(' ');
 		for (var i in funcs)
 		{
 			if (!(funcs[i] in window) ||
@@ -1474,7 +1474,7 @@ catch(e) {
 			break;
 		}
 
-		funcs = 'contentAreaClick __contentAreaClick __ctxextensions__contentAreaClick'.split(' ');
+		funcs = '__contentAreaClick __ctxextensions__contentAreaClick contentAreaClick'.split(' ');
 		overwriteProcess = function(aName) {
 			var overwroteFunc;
 			eval('overwroteFunc = '+aName);
@@ -1513,7 +1513,7 @@ catch(e) {
 			'window.contentAreaClick' in permaTabs.utils.wrappedFunctions)
 			overwriteProcess('permaTabs.utils.wrappedFunctions["window.contentAreaClick"]');
 
-		funcs = 'gotoHistoryIndex BrowserForward BrowserBack __rewindforward__BrowserForward __rewindforward__BrowserBack'.split(' ');
+		funcs = '__rewindforward__BrowserForward __rewindforward__BrowserBack gotoHistoryIndex BrowserForward BrowserBack'.split(' ');
 		for (var i in funcs)
 		{
 			if (funcs[i] in window &&
