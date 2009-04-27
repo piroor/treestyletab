@@ -1125,6 +1125,10 @@ TreeStyleTabBrowser.prototype = {
 						this.togglerSize = value;
 						var toggler = document.getAnonymousElementByAttribute(b, 'class', this.kTABBAR_TOGGLER);
 						toggler.style.minWidth = toggler.style.minHeight = value+'px';
+						if (this.togglerSize <= 0)
+							toggler.setAttribute('collapsed', true);
+						else
+							toggler.removeAttribute('collapsed');
 						break;
 
 					default:
