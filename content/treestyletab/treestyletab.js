@@ -1580,13 +1580,10 @@ catch(e) {
 					<![CDATA[{
 						var treeStyleTab = gBrowser.treeStyleTab;
 						if (gBrowser.getAttribute(treeStyleTab.kTABBAR_POSITION) != 'top') {
-							treeStyleTab.autoHideMode = treeStyleTab.getTreePref(window.fullScreen ? 'tabbar.autoHide.mode.fullscreen' : 'tabbar.autoHide.mode' );
-							treeStyleTab.endAutoHide();
-							treeStyleTab.autoHideMode = treeStyleTab.getTreePref(window.fullScreen ? 'tabbar.autoHide.mode' : 'tabbar.autoHide.mode.fullscreen' );
 							if (window.fullScreen)
-								treeStyleTab.checkTabsIndentOverflow();
-							if (treeStyleTab.autoHideMode != treeStyleTab.kAUTOHIDE_MODE_DISABLED)
-								treeStyleTab.startAutoHide();
+								treeStyleTab.endAutoHideForFullScreen();
+							else
+								treeStyleTab.startAutoHideForFullScreen();
 						}
 					]]>
 				)
@@ -2131,6 +2128,17 @@ catch(e) {
 		this._collapseExpandPostProcess.push(aProcess);
 	},
 	_collapseExpandPostProcess : [],
+ 
+	registerTabbarAutoShowPostProcess : function(aProcess) 
+	{
+		this._tabbarAutoShowPostProcess.push(aProcess);
+	},
+	registerTabbarAutoHidePostProcess : function(aProcess)
+	{
+		this._tabbarAutoHidePostProcess.push(aProcess);
+	},
+	_tabbarAutoShowPostProcess : [],
+	_tabbarAutoHidePostProcess : [],
  
 	tearOffSubTreeFromRemote : function() 
 	{

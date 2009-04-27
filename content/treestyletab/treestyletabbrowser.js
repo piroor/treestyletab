@@ -3537,6 +3537,9 @@ TreeStyleTabBrowser.prototype = {
 			}
 			this.showHideTabbarReason = aReason || this.kSHOWN_BY_UNKNOWN;
 			this.autoHideShown = false;
+			this._tabbarAutoHidePostProcess.every(function(aFunc) {
+				return aFunc(b);
+			});
 		}
 		else { // to be shown or expanded
 			switch (b.getAttribute(this.kTABBAR_POSITION))
@@ -3568,6 +3571,9 @@ TreeStyleTabBrowser.prototype = {
 			}
 			this.showHideTabbarReason = aReason || this.kSHOWN_BY_UNKNOWN;
 			this.autoHideShown = true;
+			this._tabbarAutoShowPostProcess.every(function(aFunc) {
+				return aFunc(b);
+			});
 		}
 		window.setTimeout(function(aSelf) {
 			if (
@@ -3850,6 +3856,28 @@ TreeStyleTabBrowser.prototype = {
 		this.mTabBrowser.removeAttribute(this.kTRANSPARENT);
 		this.tabbarShown = true;
 		this.tabbarExpanded = true;
+	},
+ 
+	startAutoHideForFullScreen : function() 
+	{
+		this.autoHideMode = this.getTreePref('tabbar.autoHide.mode');
+		this.endAutoHide();
+		this.autoHideMode = this.getTreePref('tabbar.autoHide.mode.fullscreen');
+		if (this.autoHideMode != this.kAUTOHIDE_MODE_DISABLED) {
+			this.startAutoHide();
+			this.mTabBrowser.mStrip.removeAttribute('moz-collapsed');
+			this.mTabBrowser.mTabContainer.removeAttribute('moz-collapsed'); // ”O‚Ì‚½‚ß
+		}
+	},
+ 
+	endAutoHideForFullScreen : function() 
+	{
+		this.autoHideMode = this.getTreePref('tabbar.autoHide.mode.fullscreen');
+		this.endAutoHide();
+		this.autoHideMode = this.getTreePref('tabbar.autoHide.mode');
+		this.checkTabsIndentOverflow();
+		if (this.autoHideMode != this.kAUTOHIDE_MODE_DISABLED)
+			this.startAutoHide();
 	},
  
 	startListenMouseMove : function() 

@@ -162,154 +162,6 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		);
 	}
 
-	if ('autoHIDE' in window) { // Autohide
-		var func = 'ShowBars' in autoHIDE ? 'ShowBars' : 'ShowMenu' ;
-		eval('autoHIDE.'+func+' = '+
-			autoHIDE[func].toSource().replace(
-				'{',
-				'{ var treeStyleTabPos = gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION);'
-			).replace(
-				/e.screenY <= ((autoHIDE|ah).Win.boxObject).screenY \+ (autoHIDE.space|ah.senseArea)/,
-				<![CDATA[(e.screenY <= $1.screenY + $3 ||
-				(
-				treeStyleTabPos == 'left' ?
-					(e.screenX <= $1.screenX + $3) :
-				treeStyleTabPos == 'right' ?
-					(e.screenX >= $1.screenX + $1.width - $3) :
-				treeStyleTabPos == 'bottom' ?
-					(e.screenY >= $1.screenY + $1.height - $3) :
-					false
-				))]]>
-			).replace( // for old version
-				'e.screenY > getBrowser().mCurrentBrowser.boxObject.screenY + 25',
-				<![CDATA[(e.screenY > gBrowser.mCurrentBrowser.boxObject.screenY + 25 &&
-				(
-				treeStyleTabPos == 'left' ?
-					(e.screenX > gBrowser.mCurrentBrowser.boxObject.screenX + 25) :
-				treeStyleTabPos == 'right' ?
-					(e.screenX < gBrowser.mCurrentBrowser.boxObject.screenX + gBrowser.mCurrentBrowser.boxObject.width - 25) :
-				treeStyleTabPos == 'bottom' ?
-					(e.screenY < gBrowser.mCurrentBrowser.boxObject.screenY + gBrowser.mCurrentBrowser.boxObject.height - 25) :
-					true
-				))]]>
-			).replace( // for new version
-				'e.screenY > yCondition',
-				<![CDATA[(e.screenY > yCondition &&
-				(
-				treeStyleTabPos == 'left' ?
-					(e.screenX > gBrowser.mCurrentBrowser.boxObject.screenX + 50) :
-				treeStyleTabPos == 'right' ?
-					(e.screenX < gBrowser.mCurrentBrowser.boxObject.screenX + gBrowser.mCurrentBrowser.boxObject.width - 50) :
-				treeStyleTabPos == 'bottom' ?
-					(e.screenY < gBrowser.mCurrentBrowser.boxObject.screenY + gBrowser.mCurrentBrowser.boxObject.height - 50) :
-					true
-				))]]>
-			)
-		);
-		eval('autoHIDE.HideToolbar = '+
-			autoHIDE.HideToolbar.toSource().replace(
-				/if \(((this|ah).Show)\) \{/,
-				<![CDATA[
-					window.setTimeout('gBrowser.treeStyleTab.checkTabsIndentOverflow();', 0);
-					var treeStyleTabPos = gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION);
-					if ($1) {
-						var appcontent = document.getElementById('appcontent');
-						if (appcontent.__treestyletab__resized) {
-							appcontent.__treestyletab__resized = false;
-							appcontent.style.margin = 0;
-						}
-				]]>
-			)
-		);
-		func = 'RemoveAttrib' in autoHIDE ? 'RemoveAttrib' : 'EndFull' ;
-		eval('autoHIDE.'+func+' = '+
-			autoHIDE[func].toSource().replace(
-				'{',
-				<![CDATA[$&
-					var appcontent = document.getElementById('appcontent');
-					if (appcontent.__treestyletab__resized) {
-						appcontent.__treestyletab__resized = false;
-						appcontent.style.margin = 0;
-					}
-					window.setTimeout('gBrowser.treeStyleTab.checkTabsIndentOverflow();', 0);
-				]]>
-			)
-		);
-		eval('autoHIDE.SetMenu = '+
-			autoHIDE.SetMenu.toSource().replace(
-				'{',
-				<![CDATA[$&
-					if (arguments.length && arguments[0]) {
-						var treeStyleTabSplitter = document.getAnonymousElementByAttribute(gBrowser, 'class', TreeStyleTabService.kSPLITTER);
-						gBrowser.treeStyleTab.tabbarWidth = gBrowser.mStrip.boxObject.width +
-							(treeStyleTabSplitter ? treeStyleTabSplitter.boxObject.width : 0 );
-					}
-				]]>
-			)
-		);
-		func = 'MoveContent' in autoHIDE ? 'MoveContent' : 'MoveC' ;
-		eval('autoHIDE.'+func+' = '+
-			autoHIDE[func].toSource().replace(
-				'{',
-				<![CDATA[$&
-					var treeStyleTabPos = gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION);
-					if (!arguments.length) {
-						var appcontent = document.getElementById('appcontent');
-						if (treeStyleTabPos == 'left' &&
-							!appcontent.__treestyletab__resized) {
-							appcontent.style.marginRight = '-'+gBrowser.treeStyleTab.tabbarWidth+'px';
-							appcontent.__treestyletab__resized = true;
-						}
-						else if (treeStyleTabPos == 'right' &&
-							!appcontent.__treestyletab__resized) {
-							appcontent.style.marginLeft = '-'+gBrowser.treeStyleTab.tabbarWidth+'px';
-							appcontent.__treestyletab__resized = true;
-						}
-						window.setTimeout('autoHIDE.MoveC(true);', 100);
-						return;
-					}
-				]]>
-			).replace(
-				/.(move|setPosition)\(0, - (this|ah).delta\)/,
-				<![CDATA[.$1(
-					(
-						treeStyleTabPos == 'left' ? -gBrowser.treeStyleTab.tabbarWidth :
-						treeStyleTabPos == 'right' ? gBrowser.treeStyleTab.tabbarWidth :
-						0
-					),
-					-$2.delta
-				)]]>
-			)
-		);
-		var autoHideEventListener = {
-				handleEvent : function(aEvent)
-				{
-					switch (aEvent.type)
-					{
-						case 'fullscreen':
-							var autoHide = TreeStyleTabService.getTreePref('tabbar.autoHide.enabled');
-							var pos      = gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION);
-							if (window.fullScreen) { // restore
-								if (autoHide && (pos == 'left' || pos == 'right'))
-									gBrowser.treeStyleTab.startAutoHide();
-							}
-							else { // turn to fullscreen
-								gBrowser.treeStyleTab.endAutoHide();
-							}
-							break;
-
-						case 'unload':
-							var t = aEvent.currentTarget;
-							t.removeEventListener('unload', this, false);
-							t.removeEventListener('fullscreen', this, false);
-							break;
-					}
-				}
-			};
-		window.addEventListener('fullscreen', autoHideEventListener, false);
-		window.addEventListener('unload', autoHideEventListener, false);
-	}
-
 
 	// Tab Mix Plus
 	if ('TMupdateSettings' in window) {
@@ -818,6 +670,59 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 				'TreeStyleTabService.readyToOpenChildTab(); $1'
 			)
 		);
+	}
+
+
+	// Autohide
+	if ('autoHIDE' in window) {
+		TreeStyleTabService.registerTabbarAutoShowPostProcess(function(aTabBrowser) {
+			if (!window.fullScreen) return;
+			aTabBrowser.mStrip.removeAttribute('ahHIDE');
+			if (
+				autoHIDE.statBar &&
+				aTabBrowser.getAttribute(aTabBrowser.treeStyleTab.kTABBAR_POSITION) == 'bottom' &&
+				!aTabBrowser.treeStyleTab.getPref('extensions.autohide.bars.statBar.always') &&
+				aTabBrowser.treeStyleTab.getPref('extensions.autohide.bars.statBar')
+				) {
+				autoHIDE.statBar.removeAttribute('ahHIDE');
+			}
+		});
+		TreeStyleTabService.registerTabbarAutoHidePostProcess(function(aTabBrowser) {
+			if (!window.fullScreen) return;
+			if (
+				autoHIDE.statBar &&
+				aTabBrowser.getAttribute(aTabBrowser.treeStyleTab.kTABBAR_POSITION) == 'bottom' &&
+				!aTabBrowser.treeStyleTab.getPref('extensions.autohide.bars.statBar.always') &&
+				aTabBrowser.treeStyleTab.getPref('extensions.autohide.bars.statBar')
+				) {
+				autoHIDE.statBar.setAttribute('ahHIDE', true);
+			}
+		});
+		var autoHideEventListener = {
+				handleEvent : function(aEvent)
+				{
+					switch (aEvent.type)
+					{
+						case 'fullscreen':
+							var treeStyleTab = gBrowser.treeStyleTab;
+							if (gBrowser.getAttribute(treeStyleTab.kTABBAR_POSITION) != 'top') {
+								if (window.fullScreen)
+									treeStyleTab.endAutoHideForFullScreen();
+								else
+									treeStyleTab.startAutoHideForFullScreen();
+							}
+							break;
+
+						case 'unload':
+							var t = aEvent.currentTarget;
+							t.removeEventListener('unload', this, false);
+							t.removeEventListener('fullscreen', this, false);
+							break;
+					}
+				}
+			};
+		window.addEventListener('fullscreen', autoHideEventListener, false);
+		window.addEventListener('unload', autoHideEventListener, false);
 	}
 
 };
