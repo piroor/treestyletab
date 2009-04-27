@@ -1805,9 +1805,12 @@ TreeStyleTabBrowser.prototype = {
 
 		if (this.isEventFiredOnTwisty(aEvent)) {
 			var tab = this.getTabFromEvent(aEvent);
-			this.collapseExpandSubtree(tab, tab.getAttribute(this.kSUBTREE_COLLAPSED) != 'true');
-			aEvent.preventDefault();
-			aEvent.stopPropagation();
+			if (this.hasChildTabs(tab) &&
+				this.mTabBrowser.getAttribute(this.kALLOW_COLLAPSE) == 'true') {
+				this.collapseExpandSubtree(tab, tab.getAttribute(this.kSUBTREE_COLLAPSED) != 'true');
+				aEvent.preventDefault();
+				aEvent.stopPropagation();
+			}
 		}
 		else if (!this.getTabFromEvent(aEvent)) {
 			var tab = this.getTabFromTabbarEvent(aEvent);

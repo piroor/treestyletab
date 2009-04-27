@@ -1,33 +1,40 @@
 var TreeStyleTabService = { 
+	/* attributes */
 	kID                 : 'treestyletab-id',
 	kCHILDREN           : 'treestyletab-children',
 	kPARENT             : 'treestyletab-parent',
 	kANCESTOR           : 'treestyletab-ancestors',
+	kNEST               : 'treestyletab-nest',
 	kINSERT_BEFORE      : 'treestyletab-insert-before',
+
 	kSUBTREE_COLLAPSED  : 'treestyletab-subtree-collapsed',
 	kCOLLAPSED          : 'treestyletab-collapsed',
 	kCOLLAPSED_DONE     : 'treestyletab-collapsed-done',
 	kCOLLAPSING         : 'treestyletab-collapsing',
+	kALLOW_COLLAPSE     : 'treestyletab-allow-subtree-collapse',
+
 	kX_OFFSET           : 'treestyletab-x-offset',
 	kY_OFFSET           : 'treestyletab-y-offset',
-	kTWISTY_HOVER       : 'treestyletab-twisty-hover',
-	kNEST               : 'treestyletab-nest',
-	kDROP_POSITION      : 'treestyletab-drop-position',
+
 	kTABBAR_POSITION    : 'treestyletab-tabbar-position',
 	kMODE               : 'treestyletab-mode',
 	kUI_INVERTED        : 'treestyletab-appearance-inverted',
 	kSCROLLBAR_INVERTED : 'treestyletab-scrollbar-inverted',
-	kALLOW_COLLAPSE     : 'treestyletab-allow-subtree-collapse',
 	kHIDE_NEWTAB        : 'treestyletab-hide-newtab-button',
 	kHIDE_ALLTABS       : 'treestyletab-hide-alltabs-button',
 	kSTYLE              : 'treestyletab-style',
-	kTWISTY_STYLE       : 'treestyletab-twisty-style',
 	kFIRSTTAB_BORDER    : 'treestyletab-firsttab-border',
 	kAUTOHIDE           : 'treestyletab-tabbar-autohide',
 	kFIXED              : 'treestyletab-tabbar-fixed',
 	kRESIZING           : 'treestyletab-tabbar-resizing',
 	kTRANSPARENT        : 'treestyletab-tabbar-transparent',
 
+	kTWISTY_HOVER       : 'treestyletab-twisty-hover',
+	kTWISTY_STYLE       : 'treestyletab-twisty-style',
+
+	kDROP_POSITION      : 'treestyletab-drop-position',
+
+	/* classes */
 	kTWISTY                : 'treestyletab-twisty',
 	kTWISTY_CONTAINER      : 'treestyletab-twisty-container',
 	kDROP_MARKER           : 'treestyletab-drop-marker',
@@ -460,8 +467,8 @@ var TreeStyleTabService = {
 		return this.hasChildTabs(tab) && this.evaluateXPath(
 				'ancestor-or-self::*[@class="'+this.kTWISTY+'" or (ancestor::xul:tabbrowser[@'+this.kMODE+'="vertical"] and @class="tab-icon")]',
 				aEvent.originalTarget || aEvent.target,
-				XPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue ? true : false ;
+				XPathResult.BOOLEAN_TYPE
+			).booleanValue;
 	},
  
 	isEventFiredOnClickable : function(aEvent) 
@@ -469,8 +476,8 @@ var TreeStyleTabService = {
 		return this.evaluateXPath(
 				'ancestor-or-self::*[contains(" button toolbarbutton scrollbar popup menupopup tooltip ", concat(" ", local-name(), " "))]',
 				aEvent.originalTarget,
-				XPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue ? true : false ;
+				XPathResult.BOOLEAN_TYPE
+			).booleanValue;
 	},
  
 	isAccelKeyPressed : function(aEvent) 
