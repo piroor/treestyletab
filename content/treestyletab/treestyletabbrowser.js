@@ -1795,9 +1795,6 @@ TreeStyleTabBrowser.prototype = {
 		if (!this.accelKeyPressed)
 			this.showTabbarForFeedback();
 	},
-	collapseExpandForTabSelectWithDelay : function()
-	{
-	},
  
 	onTabClick : function(aEvent) 
 	{
