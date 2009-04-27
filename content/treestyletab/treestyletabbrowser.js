@@ -3664,7 +3664,7 @@ TreeStyleTabBrowser.prototype = {
 		var browserBox = this.mTabBrowser.mCurrentBrowser.boxObject;
 		var contentBox = this.getBoxObjectFor(frame.document.documentElement);
 
-		var zoom = window.fullScreenCanvas.getZoomForFrame(frame);
+		var zoom = fullScreenCanvas.getZoomForFrame(frame);
 
 		var x = (pos == 'right') ? browserBox.width - this.autoHideXOffset : 0 ;
 		var y = (pos == 'bottom') ? browserBox.height - this.autoHideYOffset : 0 ;
