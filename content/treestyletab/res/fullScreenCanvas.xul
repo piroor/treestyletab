@@ -6,6 +6,7 @@
    window.fullScreenCanvas.show();
    ... // do something
    window.fullScreenCanvas.hide();
+   var zoom = window.fullScreenCanvas.getZoomForFrame(window.content);
 
  lisence: The MIT License, Copyright (c) 2009 SHIMODA "Piro" Hiroshi
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/license.txt
@@ -141,6 +142,7 @@ window.addEventListener('DOMContentLoaded', function() {
 				this.container.setAttribute('collapsed', true);
 			}
 		},
+
 		getZoomForFrame : function(aFrame)
 		{
 			const Prefs = Components
@@ -155,7 +157,7 @@ window.addEventListener('DOMContentLoaded', function() {
 						.contentViewer
 						.QueryInterface(Components.interfaces.nsIMarkupDocumentViewer)
 						.fullZoom;
-					return zoom;
+					return (zoom * 1000 % 1) ? zoom+0.025 : zoom ;
 				}
 			}
 			catch(e) {

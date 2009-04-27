@@ -3664,7 +3664,7 @@ TreeStyleTabBrowser.prototype = {
 		var browserBox = this.mTabBrowser.mCurrentBrowser.boxObject;
 		var contentBox = this.getBoxObjectFor(frame.document.documentElement);
 
-		var zoom = this.getZoomForFrame(frame);
+		var zoom = window.fullScreenCanvas.getZoomForFrame(frame);
 
 		var x = (pos == 'right') ? browserBox.width - this.autoHideXOffset : 0 ;
 		var y = (pos == 'bottom') ? browserBox.height - this.autoHideYOffset : 0 ;
@@ -3765,17 +3765,6 @@ TreeStyleTabBrowser.prototype = {
 				parseInt(parseInt(RegExp.$2) * 0.8),
 				parseInt(parseInt(RegExp.$3) * 0.8)
 			].join(',')+')';
-	},
-	getZoomForFrame : function(aFrame)
-	{
-		if (!this.getPref('browser.zoom.full')) return 1;
-		return  aFrame
-			.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-			.getInterface(Components.interfaces.nsIWebNavigation)
-			.QueryInterface(Components.interfaces.nsIDocShell)
-			.contentViewer
-			.QueryInterface(Components.interfaces.nsIMarkupDocumentViewer)
-			.fullZoom;
 	},
  
 	clearTabbarCanvas : function() 

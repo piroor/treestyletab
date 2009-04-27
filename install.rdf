@@ -155,7 +155,7 @@
     <em:localized>
       <RDF:Description em:locale="pl-PL"
                        em:name="Tree Style Tab"
-                       em:description="Wyświetl karty jako drzewo."
+                       em:description="Wyświetla karty w układzie drzewa."
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
                        em:creator="SHIMODA Hiroshi">
 		  <em:translator>Godai71.Extenzilla (it-IT locale)</em:translator>
