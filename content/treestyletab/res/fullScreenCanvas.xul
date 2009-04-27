@@ -143,16 +143,19 @@ window.addEventListener('DOMContentLoaded', function() {
 		},
 		getZoomForFrame : function(aFrame)
 		{
-			const Prefs = Components.classes['@mozilla.org/preferences;1'].getService(Components.interfaces.nsIPrefBranch);;
+			const Prefs = Components
+					.classes['@mozilla.org/preferences;1']
+					.getService(Components.interfaces.nsIPrefBranch);
 			try {
 				if (Prefs.getBoolPref('browser.zoom.full'))
-					return  aFrame
+					var zoom = aFrame
 						.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
 						.getInterface(Components.interfaces.nsIWebNavigation)
 						.QueryInterface(Components.interfaces.nsIDocShell)
 						.contentViewer
 						.QueryInterface(Components.interfaces.nsIMarkupDocumentViewer)
 						.fullZoom;
+					return zoom;
 			}
 			catch(e) {
 			}

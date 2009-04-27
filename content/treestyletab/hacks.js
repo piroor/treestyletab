@@ -92,6 +92,17 @@ TreeStyleTabService.overrideExtensionsPreInit = function() {
 			'{ TreeStyleTabService.init();'
 		));
 	}
+
+	// FullerScreen
+	if ('FS_onFullerScreen' in window) {
+		'CheckIfFullScreen,FS_onFullerScreen,FS_onMouseMove'.split(',').forEach(function(aFunc) {
+			if (!(aFunc in window)) return;
+			eval('window.'+aFunc+' = '+window[aFunc].toSource().replace(
+				/FS_data.mTabs.(removeAttribute\("moz-collapsed"\)|setAttribute\("moz-collapsed", "true"\));/g,
+				'if (gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION) == "top") { $& }'
+			));
+		}, this);
+	}
 };
 
 TreeStyleTabService.overrideExtensionsOnInitBefore = function() {

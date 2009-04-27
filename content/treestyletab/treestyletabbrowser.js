@@ -1156,9 +1156,6 @@ TreeStyleTabBrowser.prototype = {
 					scrollBoxObject.getPosition(x, y);
 					this.lastScrollX = x.value;
 					this.lastScrollY = y.value;
-//					var tab = aEvent.originalTarget;
-//					var delta = tab.boxObject.height;
-//					scrollBoxObject.scrollTo(x.value, y.value-delta);
 				}
 				return;
 
