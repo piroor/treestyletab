@@ -1,3 +1,9 @@
+const XULAppInfo = Components.classes['@mozilla.org/xre/app-info;1']
+		.getService(Components.interfaces.nsIXULAppInfo);
+const comparator = Components.classes['@mozilla.org/xpcom/version-comparator;1']
+					.getService(Components.interfaces.nsIVersionComparator);
+
+
 var gOuterLinkCheck,
 	gAnyLinkCheck,
 	gGroupBookmarkRadio,
@@ -44,6 +50,13 @@ function initTabPane()
 
 	gLastStateIsVertical = document.getElementById('extensions.treestyletab.tabbar.position-radiogroup').value;
 	gLastStateIsVertical = gLastStateIsVertical == 'left' || gLastStateIsVertical == 'right';
+
+	var fx2Items = document.getElementsByAttribute('label-fx2', '*');
+	if (comparator.compare(XULAppInfo.version, '3.0') < 0) {
+		Array.slice(fx2Items).forEach(function(aItem) {
+			aItem.setAttribute('label', aItem.getAttribute('label-fx2'));
+		});
+	}
 }
 
 function onChangeGroupBookmarkRadio()
@@ -55,11 +68,6 @@ function onChangeGroupBookmarkRadio()
 
 function onChangeTabbarPosition(aOnChange)
 {
-	const XULAppInfo = Components.classes['@mozilla.org/xre/app-info;1']
-			.getService(Components.interfaces.nsIXULAppInfo);
-	const comparator = Components.classes['@mozilla.org/xpcom/version-comparator;1']
-						.getService(Components.interfaces.nsIVersionComparator);
-
 	var pos = document.getElementById('extensions.treestyletab.tabbar.position-radiogroup').value;
 	var invertScrollbar = document.getElementById('extensions.treestyletab.tabbar.invertScrollbar-check');
 	invertScrollbar.disabled = pos != 'left';

@@ -58,7 +58,8 @@
 <!ENTITY config.openGroupBookmarkAsTabSubTree.caption "&quot;Open All in Tabs&quot; from bookmark folders">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.subtree "Open as a sub tree (Recommended)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "Open as separate tabs">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.replace "Replace all tabs to the pages in the folder (Firefox default)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.replace "Replace the current one tab to the pages in the folder (Firefox default)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.replace.fx2 "Replace all tabs to the pages in the folder (Firefox default)">
 
 <!ENTITY config.tabs.restriction.tab "Open tabs instead of windows">
 
