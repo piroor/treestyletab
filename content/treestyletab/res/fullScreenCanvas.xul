@@ -147,7 +147,7 @@ window.addEventListener('DOMContentLoaded', function() {
 					.classes['@mozilla.org/preferences;1']
 					.getService(Components.interfaces.nsIPrefBranch);
 			try {
-				if (Prefs.getBoolPref('browser.zoom.full'))
+				if (Prefs.getBoolPref('browser.zoom.full')) {
 					var zoom = aFrame
 						.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
 						.getInterface(Components.interfaces.nsIWebNavigation)
@@ -156,6 +156,7 @@ window.addEventListener('DOMContentLoaded', function() {
 						.QueryInterface(Components.interfaces.nsIMarkupDocumentViewer)
 						.fullZoom;
 					return zoom;
+				}
 			}
 			catch(e) {
 			}
