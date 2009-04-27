@@ -44,11 +44,9 @@ window.addEventListener('load', function() {
 						TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree') &&
 						(
 							where.indexOf('tab') == 0 ||
-							aEvent.target.getAttribute('openInTabs') == 'true' ||
-							(
-								gNavigatorBundle in window &&
-								aEvent.target.getAttribute('label') == gNavigatorBundle.getString('menuOpenAllInTabs.label')
-							)
+							aEvent.target.id == 'placesContext_openContainer:tabs' ||
+							aEvent.target == aEvent.target.parentNode._endOptOpenAllInTabs ||
+							aEvent.target.getAttribute('openInTabs') == 'true'
 						)
 						)
 						{
