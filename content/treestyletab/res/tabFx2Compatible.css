@@ -14,15 +14,15 @@
 
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
-:root[tabFx2Compatible="2"] .tabbrowser-tab {
+:root[tabFx2Compatible="3"] .tabbrowser-tab {
 	-moz-binding: url(tabFx2Compatible.xml#tabbrowser-tab) !important;
 }
 
-:root[tabFx2Compatible="2"] .tabbrowser-tab[busy] > hbox > stack > .tab-icon-image {
+:root[tabFx2Compatible="3"] .tabbrowser-tab[busy] > hbox > stack > .tab-icon-image {
 	list-style-image: url("chrome://global/skin/throbber/Throbber-small.gif") !important;
 	opacity: 0.6;
 }
 
-:root[tabFx2Compatible="2"] .tabbrowser-tab[selected="true"]:focus > hbox > .tab-text {
+:root[tabFx2Compatible="3"] .tabbrowser-tab[selected="true"]:focus > hbox > .tab-text {
 	border: 1px dotted -moz-DialogText;
 }

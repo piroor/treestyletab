@@ -19,7 +19,7 @@
 window.addEventListener('DOMContentLoaded', function() {
 	window.removeEventListener('DOMContentLoaded', arguments.callee, true);
 
-	const currentRevision = 2;
+	const currentRevision = 3;
 
 	var b = document.getElementById('content');
 	if (!b || b.localName != 'tabbrowser') return;
@@ -38,10 +38,24 @@ window.addEventListener('DOMContentLoaded', function() {
 		}
 	}
 
-	switch (window.getComputedStyle(b.selectedTab, '').getPropertyValue('-moz-binding'))
+	var url = window.getComputedStyle(b.selectedTab, '').getPropertyValue('-moz-binding');
+	url = url.match(/url\(['"]?(.+)['"]?\)/);
+	url = url ? url[1] : null ;
+	switch (url)
 	{
-		case 'url(chrome://browser/content/tabbrowser.xml#tabbrowser-tab)': // -Gecko 1.9
-		case 'url("chrome://browser/content/tabbrowser.xml#tabbrowser-tab")': // Gecko 1.9.1-
+		case 'chrome://browser/skin/browser.xml#tabbrowser-tab': // defied by theme
+			const Pref = Components.classes['@mozilla.org/preferences;1']
+					.getService(Components.interfaces.nsIPrefBranch);
+			var skin = decodeURIComponent(escape(Pref.getCharPref('general.skins.selectedSkin')));
+			switch (skin.toLowerCase())
+			{
+				case 'classic/1.0': // Default
+				case 'chromifox': // Chromifox Basic: https://addons.mozilla.org/firefox/addon/8782
+					break;
+				default:
+					return;
+			}
+		case 'chrome://browser/content/tabbrowser.xml#tabbrowser-tab': // built-in
 			root.setAttribute('tabFx2Compatible', currentRevision);
 			break;
 	}
