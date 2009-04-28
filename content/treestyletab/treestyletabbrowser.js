@@ -93,7 +93,7 @@ TreeStyleTabBrowser.prototype = {
  
 	getTabClosebox : function(aTab) 
 	{
-		var close = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-close-button tabs-closebutton always-right') || // Tab Mix Plus
+		var close = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-close-button always-right') || // Tab Mix Plus
 					document.getAnonymousElementByAttribute(aTab, 'class', 'tab-close-button');
 		return close;
 	},
@@ -788,6 +788,7 @@ TreeStyleTabBrowser.prototype = {
 			scrollInnerBox.removeAttribute('flex');
 
 			if (scrollFrame) { // Tab Mix Plus
+				document.getAnonymousNodes(scrollFrame)[0].removeAttribute('flex');
 				scrollFrame.parentNode.orient =
 					scrollFrame.orient = 'vertical';
 				newTabBox.orient = 'horizontal';
@@ -863,6 +864,7 @@ TreeStyleTabBrowser.prototype = {
 			scrollInnerBox.setAttribute('flex', 1);
 
 			if (scrollFrame) { // Tab Mix Plus
+				document.getAnonymousNodes(scrollFrame)[0].setAttribute('flex', 1);
 				scrollFrame.parentNode.orient =
 					scrollFrame.orient = 'horizontal';
 				newTabBox.orient = 'vertical';
@@ -1866,7 +1868,6 @@ TreeStyleTabBrowser.prototype = {
  
 	onTabbarOverflow : function(aEvent) 
 	{
-		var box = aEvent.currentTarget;
 		var tabs = this.mTabBrowser.mTabContainer;
 		var horizontal = tabs.orient == 'horizontal';
 		if (horizontal) return;
@@ -1874,7 +1875,7 @@ TreeStyleTabBrowser.prototype = {
 		if (aEvent.detail == 1) return;
 		if (aEvent.type == 'overflow') {
 			tabs.setAttribute('overflow', 'true');
-			box.scrollBoxObject.ensureElementIsVisible(tabs.selectedItem);
+			this.scrollBoxObject.ensureElementIsVisible(tabs.selectedItem);
 		}
 		else {
 			tabs.removeAttribute('overflow');

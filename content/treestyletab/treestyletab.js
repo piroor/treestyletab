@@ -1375,7 +1375,7 @@ catch(e) {
 			window.BrowserLoadURL
 		]]>).forEach(function(aFunc) {
 			var source = this._getFunctionSource(aFunc);
-			if (!source || !/^function BrowserLoadURL/.test(source))
+			if (!source || !/^\(?function BrowserLoadURL/.test(source))
 				return;
 			eval(aFunc+' = '+source.replace(
 				'aTriggeringEvent && aTriggeringEvent.altKey',
@@ -1437,7 +1437,7 @@ catch(e) {
 			window.handleLinkClick
 		]]>).some(function(aFunc) {
 			var source = this._getFunctionSource(aFunc);
-			if (!source || !/^function handleLinkClick/.test(source))
+			if (!source || !/^\(?function handleLinkClick/.test(source))
 				return false;
 			eval(aFunc+' = '+source.replace(
 				/(openNewTabWith\()/g,
@@ -1495,7 +1495,7 @@ catch(e) {
 			window.contentAreaClick
 		]]>).forEach(function(aFunc) {
 			var source = this._getFunctionSource(aFunc);
-			if (!source || !/^function contentAreaClick/.test(source))
+			if (!source || !/^\(?function contentAreaClick/.test(source))
 				return;
 			eval(aFunc+' = '+source.replace(
 				/((openWebPanel\([^\;]+\);|PlacesUIUtils.showMinimalAddBookmarkUI\([^;]+\);)event.preventDefault\(\);return false;\})/,
@@ -1532,7 +1532,7 @@ catch(e) {
 			window.BrowserBack
 		]]>).forEach(function(aFunc) {
 			var source = this._getFunctionSource(aFunc);
-			if (!source || !/^function (gotoHistoryIndex|BrowserForward|BrowserBack)/.test(source))
+			if (!source || !/^\(?function (gotoHistoryIndex|BrowserForward|BrowserBack)/.test(source))
 				return;
 			eval(aFunc+' = '+source.replace(
 				/(openUILinkIn\()/g,
@@ -1549,7 +1549,7 @@ catch(e) {
 			window.BrowserGoHome
 		]]>).forEach(function(aFunc) {
 			var source = this._getFunctionSource(aFunc);
-			if (!source || !/^function (BrowserHomeClick|BrowserGoHome)/.test(source))
+			if (!source || !/^\(?function (BrowserHomeClick|BrowserGoHome)/.test(source))
 				return;
 			eval(aFunc+' = '+source.replace(
 				'gBrowser.loadTabs(',
