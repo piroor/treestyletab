@@ -326,19 +326,13 @@ var TreeStyleTabService = {
 		var b       = this.getTabBrowserFromFrame(frame);
 		var nextTab = b.treeStyleTab.getNextSiblingTab(currentTab);
 
-		var targetHost  = /^\w+:\/\/([^:\/]+)(\/|$)/.test(info.uri) ? RegExp.$1 : null ;
+		var targetHost  = this._getDomainFromURI(info.uri);
 		var currentTab  = this.getTabFromFrame(frame);
 		var currentURI  = frame.location.href;
-		var currentHost = currentURI.match(/^\w+:\/\/([^:\/]+)(\/|$)/) ? RegExp.$1 : null ;
+		var currentHost = this._getDomainFromURI(currentURI);
 		var parentTab   = b.treeStyleTab.getParentTab(currentTab);
 		var parentURI   = parentTab ? parentTab.linkedBrowser.currentURI : null ;
-		var parentHost  = parentURI && parentURI.spec.match(/^\w+:\/\/([^:\/]+)(\/|$)/) ? RegExp.$1 : null ;
-
-		if (this.getTreePref('useEffectiveTLD') && this.EffectiveTLD) {
-			if (targetHost) targetHost = this.EffectiveTLD.getBaseDomainFromHost(targetHost);
-			if (currentHost) currentHost = this.EffectiveTLD.getBaseDomainFromHost(currentHost);
-			if (parentHost) parentHost = this.EffectiveTLD.getBaseDomainFromHost(parentHost);
-		}
+		var parentHost  = parentURI ? this._getDomainFromURI(parentURI.spec) : null ;
 
 		var openTab      = false;
 		var parent       = null;
@@ -391,6 +385,18 @@ var TreeStyleTabService = {
 			modifier : aModifier,
 			invert   : this.getTreePref('urlbar.invertDefaultBehavior')
 		});
+	},
+	_getDomainFromURI : function(aURI)
+	{
+		var host = /^\w+:\/\/([^:\/]+)(\/|$)/.test(aURI) ? RegExp.$1 : null ;
+		if (host && this.getTreePref('useEffectiveTLD') && this.EffectiveTLD) {
+			try {
+				host = this.EffectiveTLD.getBaseDomainFromHost(host);
+			}
+			catch(e) {
+			}
+		}
+		return host;
 	},
  
 	setTabbarWidth : function(aWidth, aForceExpanded) 
