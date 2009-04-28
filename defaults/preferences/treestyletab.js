@@ -9,6 +9,7 @@ pref("extensions.treestyletab.tabbar.position.subbrowser.enabled", false);
 pref("extensions.treestyletab.tabbar.multirow",        false);
 pref("extensions.treestyletab.tabbar.invertScrollbar", true);
 pref("extensions.treestyletab.tabbar.invertUI",        true);
+pref("extensions.treestyletab.tabbar.invertClosebox",  false);
 pref("extensions.treestyletab.tabbar.hideNewTabButton", false);
 pref("extensions.treestyletab.tabbar.hideAlltabsButton", true);
 pref("extensions.treestyletab.tabbar.scroll.smooth",   true);

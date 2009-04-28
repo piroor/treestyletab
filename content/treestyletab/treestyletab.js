@@ -19,6 +19,7 @@ var TreeStyleTabService = {
 	kTABBAR_POSITION    : 'treestyletab-tabbar-position',
 	kMODE               : 'treestyletab-mode',
 	kUI_INVERTED        : 'treestyletab-appearance-inverted',
+	kCLOSEBOX_INVERTED  : 'treestyletab-closebox-inverted',
 	kSCROLLBAR_INVERTED : 'treestyletab-scrollbar-inverted',
 	kHIDE_NEWTAB        : 'treestyletab-hide-newtab-button',
 	kHIDE_ALLTABS       : 'treestyletab-hide-alltabs-button',

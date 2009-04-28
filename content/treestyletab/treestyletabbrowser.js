@@ -489,6 +489,7 @@ TreeStyleTabBrowser.prototype = {
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.twisty.style');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.showBorderForFirstTab');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.invertScrollbar');
+		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.invertClosebox');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.hideNewTabButton');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.hideAlltabsButton');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.allowSubtreeCollapseExpand');
@@ -655,34 +656,41 @@ TreeStyleTabBrowser.prototype = {
 		var label = this.getTabLabel(aTab);
 		var close = this.getTabClosebox(aTab);
 		var counter = document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER_CONTAINER);
+		var inverted = this.mTabBrowser.getAttribute(this.kTABBAR_POSITION) == 'right' &&
+						this.mTabBrowser.getAttribute(this.kUI_INVERTED) == 'true';
 
-		var nodes = document.getAnonymousNodes(aTab);
+		// top-level contents
+		var nodes = Array.slice(document.getAnonymousNodes(aTab));
+		nodes.splice(nodes.indexOf(close), 1);
+		if (inverted) {
+			if (this.mTabBrowser.getAttribute(this.kCLOSEBOX_INVERTED) == 'true')
+				nodes.splice(nodes.indexOf(label.parentNode)+1, 0, close);
+			else
+				nodes.splice(nodes.indexOf(label.parentNode), 0, close);
+		}
+		else {
+			if (this.mTabBrowser.getAttribute(this.kCLOSEBOX_INVERTED) == 'true')
+				nodes.splice(nodes.indexOf(label.parentNode), 0, close);
+			else
+				nodes.splice(nodes.indexOf(label.parentNode)+1, 0, close);
+		}
 		var count = nodes.length;
 		Array.slice(nodes).reverse()
 			.forEach(function(aNode, aIndex) {
-				aNode.setAttribute('ordinal', (count - aIndex + 1) * 10);
+				aNode.setAttribute('ordinal', (count - aIndex + 1) * 100);
 			}, this);
 
+		// contents in "tab-image-middle"
 		nodes = Array.slice(label.parentNode.childNodes);
+		nodes.splice(nodes.indexOf(counter), 1);
+		if (inverted) nodes.reverse();
+		nodes.splice(nodes.indexOf(label)+1, 0, counter);
 		count = nodes.length;
-		if (this.mTabBrowser.getAttribute(this.kTABBAR_POSITION) == 'right' &&
-			this.mTabBrowser.getAttribute(this.kUI_INVERTED) == 'true') {
-			nodes.reverse().forEach(function(aNode, aIndex) {
-				if (aNode.getAttribute('class') == 'informationaltab-thumbnail-container')
-					return;
-				aNode.setAttribute('ordinal', (aIndex + 1) * 10);
-			}, this);
-			if (counter)
-				counter.setAttribute('ordinal', parseInt(label.getAttribute('ordinal')) + 1);
-			close.setAttribute('ordinal', parseInt(label.parentNode.getAttribute('ordinal')) - 5);
-		}
-		else {
-			nodes.reverse().forEach(function(aNode, aIndex) {
-				if (aNode.getAttribute('class') == 'informationaltab-thumbnail-container')
-					return;
-				aNode.setAttribute('ordinal', (count - aIndex + 1) * 10);
-			}, this);
-		}
+		nodes.reverse().forEach(function(aNode, aIndex) {
+			if (aNode.getAttribute('class') == 'informationaltab-thumbnail-container')
+				return;
+			aNode.setAttribute('ordinal', (count - aIndex + 1) * 100);
+		}, this);
 	},
  
 	updateInvertedTabContentsOrder : function(aAll) 
@@ -1000,6 +1008,16 @@ TreeStyleTabBrowser.prototype = {
 					case 'extensions.treestyletab.tabbar.multirow':
 						this.initTabbar();
 						this.updateAllTabsIndent();
+						tabs.forEach(function(aTab) {
+							this.initTabContents(aTab);
+						}, this);
+						break;
+
+					case 'extensions.treestyletab.tabbar.invertClosebox':
+						if (value)
+							b.setAttribute(this.kCLOSEBOX_INVERTED, 'true');
+						else
+							b.removeAttribute(this.kCLOSEBOX_INVERTED);
 						tabs.forEach(function(aTab) {
 							this.initTabContents(aTab);
 						}, this);
