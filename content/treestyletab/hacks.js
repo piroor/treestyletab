@@ -670,9 +670,9 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 	}
 
 	// QuickDrag
-	if ('QuickDrag' in window && 'dragdrop' in QuickDrag) {
-		eval('QuickDrag.dragdrop = '+
-			QuickDrag.dragdrop.toSource().replace(
+	if ('QuickDrag' in window && '_loadTab' in QuickDrag) {
+		eval('QuickDrag._loadTab = '+
+			QuickDrag._loadTab.toSource().replace(
 				/(gBrowser.loadOneTab\()/g,
 				'TreeStyleTabService.readyToOpenChildTab(); $1'
 			)
