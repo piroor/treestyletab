@@ -119,8 +119,8 @@
 <!ENTITY config.insertNewChildAt.last "サブツリーの末尾に追加する">
 
 <!ENTITY config.useEffectiveTLD.caption  "同じサイトかどうかの判別方法">
-<!ENTITY config.useEffectiveTLD.enabled  "ドメイン名で判別する（aaa.example.comとbbb.example.comを同じサイトとして認識）">
-<!ENTITY config.useEffectiveTLD.disabled "ホスト名で判別する（aaa.example.comとbbb.example.comを別のサイトとして認識）">
+<!ENTITY config.useEffectiveTLD.enabled  "ドメイン名で判別する（aaa.example.comとbbb.example.comを同じサイトと見なす）">
+<!ENTITY config.useEffectiveTLD.disabled "ホスト名で判別する（aaa.example.comとbbb.example.comを別のサイトと見なす）">
 
 
 

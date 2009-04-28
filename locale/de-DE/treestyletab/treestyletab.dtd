@@ -121,8 +121,8 @@ auf die Ebene des geschlossenen Tabs verschieben">
 <!ENTITY config.insertNewChildAt.last "Unten im Zweig einfügen">
 
 <!ENTITY config.useEffectiveTLD.caption  "Detecting method for &quot;same website&quot;">
-<!ENTITY config.useEffectiveTLD.enabled  "by Domain name (&quot;aaa.example.com&quot; and &quot;bbb.example.com&quot; are same website)">
-<!ENTITY config.useEffectiveTLD.disabled "by Host name (&quot;aaa.example.com&quot; and &quot;bbb.example.com&quot; are different website)">
+<!ENTITY config.useEffectiveTLD.enabled  "by Domain (&quot;aaa.example.com&quot; and &quot;bbb.example.com&quot; are same websites)">
+<!ENTITY config.useEffectiveTLD.disabled "by Host (&quot;aaa.example.com&quot; and &quot;bbb.example.com&quot; are different websites)">
 
 
 
