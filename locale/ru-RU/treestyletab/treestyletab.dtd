@@ -11,6 +11,7 @@
 <!ENTITY config.tabbar.position.top     "Сверху (в Firefox по умолчанию)">
 <!ENTITY config.tabbar.position.bottom  "Снизу">
 <!ENTITY config.tabbar.invertScrollbar  "Показывать скроллинг у левого края">
+<!ENTITY config.tabbar.invertClosebox   "Show closebox at leftside in each tab">
 <!ENTITY config.tabbar.invertUI         "Инвертировать вид вкладок">
 <!ENTITY config.enableSubtreeIndent         "Отступы вкладок">
 <!ENTITY config.allowSubtreeCollapseExpand  "Разрешить сворачивать/разворачивать поддеревья вкладок">

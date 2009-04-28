@@ -11,6 +11,7 @@
 <!ENTITY config.tabbar.position.top     "顶部 (Firefox 默认)">
 <!ENTITY config.tabbar.position.bottom  "底部">
 <!ENTITY config.tabbar.invertScrollbar  "在最左侧显示滚动条">
+<!ENTITY config.tabbar.invertClosebox   "Show closebox at leftside in each tab">
 <!ENTITY config.tabbar.invertUI         "反转标签外观">
 <!ENTITY config.enableSubtreeIndent         "缩进标签">
 <!ENTITY config.allowSubtreeCollapseExpand  "允许折叠/展开标签子树">

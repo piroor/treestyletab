@@ -40,6 +40,9 @@
 		<preference id="extensions.treestyletab.tabbar.invertScrollbar"
 			name="extensions.treestyletab.tabbar.invertScrollbar"
 			type="bool"/>
+		<preference id="extensions.treestyletab.tabbar.invertClosebox"
+			name="extensions.treestyletab.tabbar.invertClosebox"
+			type="bool"/>
 		<preference id="extensions.treestyletab.tabbar.invertUI"
 			name="extensions.treestyletab.tabbar.invertUI"
 			type="bool"/>
@@ -98,6 +101,9 @@
 			</grid>
 		</radiogroup>
 		<hbox align="center">
+			<checkbox id="extensions.treestyletab.tabbar.invertClosebox-check"
+				preference="extensions.treestyletab.tabbar.invertClosebox"
+				label="&config.tabbar.invertClosebox;"/>
 			<checkbox id="extensions.treestyletab.allowSubtreeCollapseExpand-check"
 				preference="extensions.treestyletab.allowSubtreeCollapseExpand"
 				label="&config.allowSubtreeCollapseExpand;"/>

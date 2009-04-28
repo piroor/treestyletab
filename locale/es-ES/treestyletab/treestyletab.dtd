@@ -11,6 +11,7 @@
 <!ENTITY config.tabbar.position.top     "Encima (Predeterminado en Firefox)">
 <!ENTITY config.tabbar.position.bottom  "Debajo">
 <!ENTITY config.tabbar.invertScrollbar  "Mostrar barra de desplazamiento a la izquierda">
+<!ENTITY config.tabbar.invertClosebox   "Show closebox at leftside in each tab">
 <!ENTITY config.tabbar.invertUI         "Invertir apariencia de pestaña">
 <!ENTITY config.enableSubtreeIndent         "Añadir margen a las pestañas">
 <!ENTITY config.allowSubtreeCollapseExpand  "Permitir colapsar/expandir los sub-árboles de las pestañas">

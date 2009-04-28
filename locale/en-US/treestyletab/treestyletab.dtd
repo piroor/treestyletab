@@ -10,7 +10,8 @@
 <!ENTITY config.tabbar.position.right   "Rightside">
 <!ENTITY config.tabbar.position.top     "Top (Firefox default)">
 <!ENTITY config.tabbar.position.bottom  "Bottom">
-<!ENTITY config.tabbar.invertScrollbar  "Show scrollbar leftmost">
+<!ENTITY config.tabbar.invertScrollbar  "Show scrollbar leftside">
+<!ENTITY config.tabbar.invertClosebox   "Show closebox at leftside in each tab">
 <!ENTITY config.tabbar.invertUI         "Invert tab appearance">
 <!ENTITY config.enableSubtreeIndent         "Indent tabs">
 <!ENTITY config.allowSubtreeCollapseExpand  "Allow to collapse/expand sub tree of tabs">

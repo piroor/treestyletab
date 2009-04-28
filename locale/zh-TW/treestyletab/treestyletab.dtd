@@ -11,6 +11,7 @@
 <!ENTITY config.tabbar.position.top     "上端（Firefox 預設）">
 <!ENTITY config.tabbar.position.bottom  "下端">
 <!ENTITY config.tabbar.invertScrollbar  "在最左側顯示捲軸列">
+<!ENTITY config.tabbar.invertClosebox   "Show closebox at leftside in each tab">
 <!ENTITY config.tabbar.invertUI         "左右反轉分頁外觀">
 <!ENTITY config.enableSubtreeIndent         "縮進分頁">
 <!ENTITY config.allowSubtreeCollapseExpand  "允許摺疊 / 展開樹狀子目錄">

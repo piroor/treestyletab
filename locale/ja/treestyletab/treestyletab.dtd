@@ -11,6 +11,7 @@
 <!ENTITY config.tabbar.position.top     "上（Firefox初期状態）">
 <!ENTITY config.tabbar.position.bottom  "下">
 <!ENTITY config.tabbar.invertScrollbar  "スクロールバーを左に表示">
+<!ENTITY config.tabbar.invertClosebox   "タブのクローズボックスを左に表示">
 <!ENTITY config.tabbar.invertUI         "タブを左右反転">
 <!ENTITY config.enableSubtreeIndent         "タブをインデント表示する">
 <!ENTITY config.allowSubtreeCollapseExpand  "サブツリーを折りたためるようにする">
