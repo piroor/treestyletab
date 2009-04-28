@@ -1349,27 +1349,19 @@ catch(e) {
 		}
 		this.initBar();
 
-		var funcs;
-		var func;
-		var overwriteProcess;
 
-		overwriteProcess = function(aName) {
-			var overwroteFunc;
-			eval('overwroteFunc = '+aName);
-			if (
-				!overwroteFunc ||
-				overwroteFunc.toSource().indexOf('function BrowserLoadURL') != 0
-				)
+		this._splitFunctionNames(<![CDATA[
+			window.permaTabs.utils.wrappedFunctions["window.BrowserLoadURL"]
+			window.BrowserLoadURL
+		]]>).forEach(function(aFunc) {
+			var source = this._getFunctionSource(aFunc);
+			if (!source || !/^function BrowserLoadURL/.test(source))
 				return;
-			eval(aName + ' = ' + overwroteFunc.toSource().replace(
+			eval(aFunc+' = '+source.replace(
 				'aTriggeringEvent && aTriggeringEvent.altKey',
 				'TreeStyleTabService.checkReadyToOpenNewTabOnLocationBar(url, $&)'
 			));
-		};
-		overwriteProcess('window.BrowserLoadURL');
-		if ('permaTabs' in window &&
-			'window.BrowserLoadURL' in permaTabs.utils.wrappedFunctions)
-			overwriteProcess('permaTabs.utils.wrappedFunctions["window.BrowserLoadURL"]');
+		}, this);
 
 
 		eval('nsContextMenu.prototype.openLinkInTab = '+
@@ -1417,137 +1409,135 @@ catch(e) {
 			)
 		);
 
-		funcs = '__treestyletab__highlander__origHandleLinkClick __splitbrowser__handleLinkClick __ctxextensions__handleLinkClick handleLinkClick'.split(' ');
-		for (var i in funcs)
-		{
-			if (!(funcs[i] in window) ||
-				!/^function handleLinkClick/.test(window[funcs[i]].toString()))
-				continue;
-			eval('window.'+funcs[i]+' = '+
-				window[funcs[i]].toSource().replace(
-					/(openNewTabWith\()/g,
-					<![CDATA[
-						if (!TreeStyleTabService.checkToOpenChildTab(event.target.ownerDocument.defaultView)) TreeStyleTabService.readyToOpenChildTab(event.target.ownerDocument.defaultView);
-						$1]]>
-				).replace(
-					/(event.ctrlKey|event.metaKey)/,
-					<![CDATA[
+		this._splitFunctionNames(<![CDATA[
+			window.duplicateTab.handleLinkClick
+			window.__treestyletab__highlander__origHandleLinkClick
+			window.__splitbrowser__handleLinkClick
+			window.__ctxextensions__handleLinkClick
+			window.handleLinkClick
+		]]>).some(function(aFunc) {
+			var source = this._getFunctionSource(aFunc);
+			if (!source || !/^function handleLinkClick/.test(source))
+				return false;
+			eval(aFunc+' = '+source.replace(
+				/(openNewTabWith\()/g,
+				<![CDATA[
+					if (!TreeStyleTabService.checkToOpenChildTab(event.target.ownerDocument.defaultView)) TreeStyleTabService.readyToOpenChildTab(event.target.ownerDocument.defaultView);
+					$1]]>
+			).replace(
+				/(event.ctrlKey|event.metaKey)/,
+				<![CDATA[
+					TreeStyleTabService.checkReadyToOpenNewTab({
+						uri      : href,
+						external : {
+							newTab : TreeStyleTabService.getTreePref('openOuterLinkInNewTab') || TreeStyleTabService.getTreePref('openAnyLinkInNewTab'),
+							forceChild : true
+						},
+						internal : {
+							newTab : TreeStyleTabService.getTreePref('openAnyLinkInNewTab')
+						},
+						modifier : $1,
+						invert   : TreeStyleTabService.getTreePref('link.invertDefaultBehavior')
+					}) ? true : (TreeStyleTabService.readyToOpenChildTab(), false)
+				]]>
+			).replace(
+				/* あらゆるリンクからタブを開く設定の時に、アクセルキーが押されていた場合は
+				   反転された動作（通常のリンク読み込み）を行う */
+				'return false;case 1:',
+				<![CDATA[
+						if (!('TMP_contentAreaClick' in window) && // do nothing for Tab Mix Plus
+							TreeStyleTabService.checkToOpenChildTab()) {
+							TreeStyleTabService.stopToOpenChildTab();
+							if (TreeStyleTabService.isAccelKeyPressed(event)) {
+								if (linkNode)
+									urlSecurityCheck(href,
+										'nodePrincipal' in linkNode.ownerDocument ?
+											linkNode.ownerDocument.nodePrincipal :
+											linkNode.ownerDocument.location.href
+									);
+								var postData = {};
+								href = getShortcutOrURI(href, postData);
+								if (!href) return false;
+								loadURI(href, null, postData.value, false);
+							}
+						}
+						return false;
+					case 1:
+				]]>
+			));
+			return true;
+		}, this);
+
+		this._splitFunctionNames(<![CDATA[
+			window.permaTabs.utils.wrappedFunctions["window.contentAreaClick"]
+			window.__contentAreaClick
+			window.__ctxextensions__contentAreaClick
+			window.contentAreaClick
+		]]>).forEach(function(aFunc) {
+			var source = this._getFunctionSource(aFunc);
+			if (!source || !/^function contentAreaClick/.test(source))
+				return;
+			eval(aFunc+' = '+source.replace(
+				/((openWebPanel\([^\;]+\);|PlacesUIUtils.showMinimalAddBookmarkUI\([^;]+\);)event.preventDefault\(\);return false;\})/,
+				<![CDATA[
+					$1
+					else if (!('TMP_contentAreaClick' in window) && // do nothing for Tab Mix Plus
 						TreeStyleTabService.checkReadyToOpenNewTab({
-							uri      : href,
+							uri      : wrapper.href,
 							external : {
 								newTab : TreeStyleTabService.getTreePref('openOuterLinkInNewTab') || TreeStyleTabService.getTreePref('openAnyLinkInNewTab'),
 								forceChild : true
 							},
 							internal : {
 								newTab : TreeStyleTabService.getTreePref('openAnyLinkInNewTab')
-							},
-							modifier : $1,
-							invert   : TreeStyleTabService.getTreePref('link.invertDefaultBehavior')
-						}) ? true : (TreeStyleTabService.readyToOpenChildTab(), false)
-					]]>
-				).replace(
-					/* あらゆるリンクからタブを開く設定の時に、アクセルキーが押されていた場合は
-					   反転された動作（通常のリンク読み込み）を行う */
-					'return false;case 1:',
-					<![CDATA[
-							if (!('TMP_contentAreaClick' in window) && // do nothing for Tab Mix Plus
-								TreeStyleTabService.checkToOpenChildTab()) {
-								TreeStyleTabService.stopToOpenChildTab();
-								if (TreeStyleTabService.isAccelKeyPressed(event)) {
-									if (linkNode)
-										urlSecurityCheck(href,
-											'nodePrincipal' in linkNode.ownerDocument ?
-												linkNode.ownerDocument.nodePrincipal :
-												linkNode.ownerDocument.location.href
-										);
-									var postData = {};
-									href = getShortcutOrURI(href, postData);
-									if (!href) return false;
-									loadURI(href, null, postData.value, false);
-								}
 							}
-							return false;
-						case 1:
-					]]>
-				)
-			);
-			break;
-		}
+						})) {
+						event.stopPropagation();
+						event.preventDefault();
+						handleLinkClick(event, wrapper.href, linkNode);
+						return true;
+					}
+				]]>
+			));
+		}, this);
 
-		funcs = '__contentAreaClick __ctxextensions__contentAreaClick contentAreaClick'.split(' ');
-		overwriteProcess = function(aName) {
-			var overwroteFunc;
-			eval('overwroteFunc = '+aName);
-			if (overwroteFunc.toSource().indexOf('function contentAreaClick') != 0) return;
-			eval(aName + ' = '+
-				overwroteFunc.toSource().replace(
-					/((openWebPanel\([^\;]+\);|PlacesUIUtils.showMinimalAddBookmarkUI\([^;]+\);)event.preventDefault\(\);return false;\})/,
-					<![CDATA[
-						$1
-						else if (!('TMP_contentAreaClick' in window) && // do nothing for Tab Mix Plus
-							TreeStyleTabService.checkReadyToOpenNewTab({
-								uri      : wrapper.href,
-								external : {
-									newTab : TreeStyleTabService.getTreePref('openOuterLinkInNewTab') || TreeStyleTabService.getTreePref('openAnyLinkInNewTab'),
-									forceChild : true
-								},
-								internal : {
-									newTab : TreeStyleTabService.getTreePref('openAnyLinkInNewTab')
-								}
-							})) {
-							event.stopPropagation();
-							event.preventDefault();
-							handleLinkClick(event, wrapper.href, linkNode);
-							return true;
-						}
-					]]>
-				)
-			);
-		};
-		for (var i in funcs)
-		{
-			if (funcs[i] in window && window[funcs[i]])
-				overwriteProcess('window.'+funcs[i]);
-		}
-		if ('permaTabs' in window &&
-			'window.contentAreaClick' in permaTabs.utils.wrappedFunctions)
-			overwriteProcess('permaTabs.utils.wrappedFunctions["window.contentAreaClick"]');
+		this._splitFunctionNames(<![CDATA[
+			window.duplicateTab.gotoHistoryIndex
+			window.duplicateTab.BrowserBack
+			window.duplicateTab.BrowserForward
+			window.__rewindforward__BrowserForward
+			window.__rewindforward__BrowserBack
+			window.gotoHistoryIndex
+			window.BrowserForward
+			window.BrowserBack
+		]]>).forEach(function(aFunc) {
+			var source = this._getFunctionSource(aFunc);
+			if (!source || !/^function (gotoHistoryIndex|BrowserForward|BrowserBack)/.test(source))
+				return;
+			eval(aFunc+' = '+source.replace(
+				/(openUILinkIn\()/g,
+				<![CDATA[
+					if (where == 'tab' || where == 'tabshifted')
+						TreeStyleTabService.readyToOpenChildTab();
+					$1]]>
+			));
+		}, this);
 
-		funcs = '__rewindforward__BrowserForward __rewindforward__BrowserBack gotoHistoryIndex BrowserForward BrowserBack'.split(' ');
-		for (var i in funcs)
-		{
-			if (funcs[i] in window &&
-				window[funcs[i]] &&
-				/^function (gotoHistoryIndex|BrowserForward|BrowserBack)/.test(window[funcs[i]].toString()))
-				eval('window.'+funcs[i]+' = '+
-					window[funcs[i]].toSource().replace(
-						/(openUILinkIn\()/g,
-						<![CDATA[
-							if (where == 'tab' || where == 'tabshifted')
-								TreeStyleTabService.readyToOpenChildTab();
-							$1]]>
-					)
-				);
-		}
-
-		func = 'BrowserGoHome' in window ? 'BrowserGoHome' : 'BrowserHomeClick' ;
-		overwriteProcess = function(aName, aFunc) {
-			var overwroteFunc;
-			eval('overwroteFunc = '+aName);
-			if (overwroteFunc.toSource().indexOf('function '+func) != 0) return;
-			eval(aName + ' = '+
-				overwroteFunc.toSource().replace(
-					'gBrowser.loadTabs(',
-					<![CDATA[
-						TreeStyleTabService.readyToOpenNewTabGroup(gBrowser);
-						$&]]>
-				)
-			);
-		};
-		overwriteProcess('window.'+func);
-		if ('permaTabs' in window &&
-			'window.BrowserHomeClick' in permaTabs.utils.wrappedFunctions)
-			overwriteProcess('permaTabs.utils.wrappedFunctions["window.BrowserHomeClick"]');
+		this._splitFunctionNames(<![CDATA[
+			permaTabs.utils.wrappedFunctions["window.BrowserHomeClick"]
+			window.BrowserHomeClick
+			window.BrowserGoHome
+		]]>).forEach(function(aFunc) {
+			var source = this._getFunctionSource(aFunc);
+			if (!source || !/^function (BrowserHomeClick|BrowserGoHome)/.test(source))
+				return;
+			eval(aFunc+' = '+source.replace(
+				'gBrowser.loadTabs(',
+				<![CDATA[
+					TreeStyleTabService.readyToOpenNewTabGroup(gBrowser);
+					$&]]>
+			));
+		}, this);
 
 		eval('FeedHandler.loadFeed = '+
 			FeedHandler.loadFeed.toSource().replace(
@@ -1558,7 +1548,6 @@ catch(e) {
 					$&]]>
 			)
 		);
-
 
 		// Firefox 3 full screen
 		if ('FullScreen' in window && '_animateUp' in FullScreen) {
@@ -1589,6 +1578,28 @@ catch(e) {
 				)
 			);
 		}
+	},
+	_splitFunctionNames : function(aString)
+	{
+		return String(aString)
+				.split(/\s+/)
+				.map(function(aString) {
+					return aString
+							.replace(/\/\*.*\*\//g, '')
+							.replace(/\/\/.+$/, '')
+							.replace(/^\s+|\s+$/g, '');
+				});
+	},
+	_getFunctionSource : function(aFunc)
+	{
+		var func;
+		try {
+			eval('func = '+aFunc);
+		}
+		catch(e) {
+			return null;
+		}
+		return func ? func.toSource() : null ;
 	},
  
 	initBar : function() 
