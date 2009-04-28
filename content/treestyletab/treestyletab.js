@@ -326,13 +326,13 @@ var TreeStyleTabService = {
 		var b       = this.getTabBrowserFromFrame(frame);
 		var nextTab = b.treeStyleTab.getNextSiblingTab(currentTab);
 
-		var targetHost  = this._getDomainFromURI(info.uri);
+		var targetHost  = this._getDomainFromURI(this.makeURIFromSpec(info.uri));
 		var currentTab  = this.getTabFromFrame(frame);
 		var currentURI  = frame.location.href;
-		var currentHost = this._getDomainFromURI(currentURI);
+		var currentHost = this._getDomainFromURI(this.makeURIFromSpec(currentURI));
 		var parentTab   = b.treeStyleTab.getParentTab(currentTab);
 		var parentURI   = parentTab ? parentTab.linkedBrowser.currentURI : null ;
-		var parentHost  = parentURI ? this._getDomainFromURI(parentURI.spec) : null ;
+		var parentHost  = this._getDomainFromURI(parentURI);
 
 		var openTab      = false;
 		var parent       = null;
@@ -388,15 +388,17 @@ var TreeStyleTabService = {
 	},
 	_getDomainFromURI : function(aURI)
 	{
-		var host = /^\w+:\/\/([^:\/]+)(\/|$)/.test(aURI) ? RegExp.$1 : null ;
-		if (host && this.getTreePref('useEffectiveTLD') && this.EffectiveTLD) {
+		if (!aURI) return null;
+		var domain;
+		if (this.getTreePref('useEffectiveTLD') && this.EffectiveTLD) {
 			try {
-				host = this.EffectiveTLD.getBaseDomainFromHost(host);
+				domain = this.EffectiveTLD.getBaseDomain(aURI, 0);
 			}
 			catch(e) {
 			}
 		}
-		return host;
+		return domain ||
+			(/^\w+:\/\/([^:\/]+)/.test(aURI.spec) ? RegExp.$1 : null );
 	},
  
 	setTabbarWidth : function(aWidth, aForceExpanded) 
