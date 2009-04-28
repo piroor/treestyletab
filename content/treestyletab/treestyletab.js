@@ -172,6 +172,19 @@ var TreeStyleTabService = {
 	},
 	_WindowMediator : null,
 
+	get EffectiveTLD()
+	{
+		if (!('_EffectiveTLD' in this)) {
+			this._EffectiveTLD = 'nsIEffectiveTLDService' in Components.interfaces ?
+				Components
+					.classes['@mozilla.org/network/effective-tld-service;1']
+					.getService(Components.interfaces.nsIEffectiveTLDService) :
+				null ;
+		}
+		return this._EffectiveTLD;
+	},
+//	_EffectiveTLD : null,
+
 	get isGecko18() {
 		if (this._isGecko18 === null)
 			this._isGecko18 = this.Comparator.compare(this.XULAppInfo.version, '3.0') < 0;
@@ -319,6 +332,12 @@ var TreeStyleTabService = {
 		var parentTab   = b.treeStyleTab.getParentTab(currentTab);
 		var parentURI   = parentTab ? parentTab.linkedBrowser.currentURI : null ;
 		var parentHost  = parentURI && parentURI.spec.match(/^\w+:\/\/([^:\/]+)(\/|$)/) ? RegExp.$1 : null ;
+
+		if (this.getTreePref('useEffectiveTLD') && this.EffectiveTLD) {
+			if (targetHost) targetHost = this.EffectiveTLD.getBaseDomainFromHost(targetHost);
+			if (currentHost) currentHost = this.EffectiveTLD.getBaseDomainFromHost(currentHost);
+			if (parentHost) parentHost = this.EffectiveTLD.getBaseDomainFromHost(parentHost);
+		}
 
 		var openTab      = false;
 		var parent       = null;

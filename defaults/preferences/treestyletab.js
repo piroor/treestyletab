@@ -68,6 +68,7 @@ pref("extensions.treestyletab.urlbar.loadSameDomainToNewChildTab", true);
 pref("extensions.treestyletab.urlbar.invertDefaultBehavior",       true);
 pref("extensions.treestyletab.loadDroppedLinkToNewChildTab",       false);
 pref("extensions.treestyletab.openGroupBookmarkAsTabSubTree",      true);
+pref("extensions.treestyletab.useEffectiveTLD", true);
 
 pref("extensions.treestyletab.autoCollapseExpandSubTreeOnSelect",      true);
 pref("extensions.treestyletab.collapseExpandSubTree.dblclick",         false);
