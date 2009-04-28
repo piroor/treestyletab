@@ -403,7 +403,7 @@ var TreeStyleTabService = {
 
 		var str = aURI;
 		if (str instanceof Ci.nsIURI) str = aURI.spec;
-		return (/^\w+:\/\/([^:\/]+)/.test(getShortcutOrURI(str)) ?
+		return /^\w+:\/\/([^:\/]+)/.test(getShortcutOrURI(str)) ?
 				RegExp.$1 :
 				null ;
 	},
