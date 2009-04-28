@@ -3,6 +3,23 @@ const XULAppInfo = Components.classes['@mozilla.org/xre/app-info;1']
 const comparator = Components.classes['@mozilla.org/xpcom/version-comparator;1']
 					.getService(Components.interfaces.nsIVersionComparator);
 
+function init()
+{
+	var useEffectiveTLD = document.getElementById('useEffectiveTLD');
+	var fx2Items = document.getElementsByAttribute('label-fx2', '*');
+	if (comparator.compare(XULAppInfo.version, '3.0') < 0) {
+		useEffectiveTLD.setAttribute('collapsed', true);
+		Array.slice(fx2Items).forEach(function(aItem) {
+			aItem.setAttribute('label', aItem.getAttribute('label-fx2'));
+		});
+	}
+	else {
+		useEffectiveTLD.removeAttribute('collapsed');
+	}
+
+	sizeToContent();
+}
+
 
 var gOuterLinkCheck,
 	gAnyLinkCheck,
@@ -50,13 +67,6 @@ function initTabPane()
 
 	gLastStateIsVertical = document.getElementById('extensions.treestyletab.tabbar.position-radiogroup').value;
 	gLastStateIsVertical = gLastStateIsVertical == 'left' || gLastStateIsVertical == 'right';
-
-	var fx2Items = document.getElementsByAttribute('label-fx2', '*');
-	if (comparator.compare(XULAppInfo.version, '3.0') < 0) {
-		Array.slice(fx2Items).forEach(function(aItem) {
-			aItem.setAttribute('label', aItem.getAttribute('label-fx2'));
-		});
-	}
 }
 
 function onChangeGroupBookmarkRadio()

@@ -119,6 +119,10 @@
 <!ENTITY config.insertNewChildAt.first "Вставлять первой в начало поддерева">
 <!ENTITY config.insertNewChildAt.last "Добавлять в конце поддерева">
 
+<!ENTITY config.useEffectiveTLD.caption  "Detecting method for &quot;same website&quot;">
+<!ENTITY config.useEffectiveTLD.enabled  "by Domain name (&quot;aaa.example.com&quot; and &quot;bbb.example.com&quot; are same website)">
+<!ENTITY config.useEffectiveTLD.disabled "by Host name (&quot;aaa.example.com&quot; and &quot;bbb.example.com&quot; are different website)">
+
 
 
 

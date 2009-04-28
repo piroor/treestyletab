@@ -9,7 +9,7 @@
 <prefwindow id="treestyletab-config"
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	title="&config.title;"
-	onload="sizeToContent();">
+	onload="init()">
 
 <prefpane id="prefpane-appearance" label="&config.tabs.appearance;"
 	onpaneload="onChangeTabbarPosition();">
@@ -511,6 +511,9 @@
 		<preference id="extensions.treestyletab.insertNewChildAt"
 			name="extensions.treestyletab.insertNewChildAt"
 			type="int"/>
+		<preference id="extensions.treestyletab.useEffectiveTLD"
+			name="extensions.treestyletab.useEffectiveTLD"
+			type="bool"/>
 	</preferences>
 
 	<vbox>
@@ -546,6 +549,15 @@
 			orient="vertical">
 			<radio value="0" label="&config.insertNewChildAt.first;"/>
 			<radio value="1" label="&config.insertNewChildAt.last;"/>
+		</radiogroup>
+	</groupbox>
+	<groupbox id="useEffectiveTLD">
+		<caption label="&config.useEffectiveTLD.caption;"/>
+		<radiogroup id="extensions.treestyletab.useEffectiveTLD-radiogroup"
+			preference="extensions.treestyletab.useEffectiveTLD"
+			orient="vertical">
+			<radio value="true" label="&config.useEffectiveTLD.enabled;"/>
+			<radio value="false" label="&config.useEffectiveTLD.disabled;"/>
 		</radiogroup>
 	</groupbox>
 
