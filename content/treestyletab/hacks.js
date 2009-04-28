@@ -327,6 +327,13 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 			)
 		);
 
+		eval('window.TMP_howToOpen = '+
+			window.TMP_howToOpen.toSource().replace(
+				/(window.openNewTabWith\()/g,
+				'TreeStyleTabService.readyToOpenChildTab(event.target.ownerDocument.defaultView); $1'
+			)
+		);
+
 		eval('window.openMultipleLinks = '+
 			window.openMultipleLinks.toSource().replace(
 				/(if \(rangeCount > 0\) \{)/,
