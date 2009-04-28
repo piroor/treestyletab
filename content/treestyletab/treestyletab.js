@@ -326,10 +326,10 @@ var TreeStyleTabService = {
 		var b       = this.getTabBrowserFromFrame(frame);
 		var nextTab = b.treeStyleTab.getNextSiblingTab(currentTab);
 
-		var targetHost  = this._getDomainFromURI(this.makeURIFromSpec(info.uri));
+		var targetHost  = this._getDomainFromURI(info.uri);
 		var currentTab  = this.getTabFromFrame(frame);
 		var currentURI  = frame.location.href;
-		var currentHost = this._getDomainFromURI(this.makeURIFromSpec(currentURI));
+		var currentHost = this._getDomainFromURI(currentURI);
 		var parentTab   = b.treeStyleTab.getParentTab(currentTab);
 		var parentURI   = parentTab ? parentTab.linkedBrowser.currentURI : null ;
 		var parentHost  = this._getDomainFromURI(parentURI);
@@ -389,16 +389,23 @@ var TreeStyleTabService = {
 	_getDomainFromURI : function(aURI)
 	{
 		if (!aURI) return null;
-		var domain;
+
 		if (this.getTreePref('useEffectiveTLD') && this.EffectiveTLD) {
 			try {
-				domain = this.EffectiveTLD.getBaseDomain(aURI, 0);
+				var uri = aURI;
+				if (!(uri instanceof Ci.nsIURI)) uri = this.makeURIFromSpec(uri);
+				var domain = this.EffectiveTLD.getBaseDomain(uri, 0);
+				if (domain) return domain;
 			}
 			catch(e) {
 			}
 		}
-		return domain ||
-			(/^\w+:\/\/([^:\/]+)/.test(aURI.spec) ? RegExp.$1 : null );
+
+		var str = aURI;
+		if (str instanceof Ci.nsIURI) str = aURI.spec;
+		return (/^\w+:\/\/([^:\/]+)/.test(getShortcutOrURI(str)) ?
+				RegExp.$1 :
+				null ;
 	},
  
 	setTabbarWidth : function(aWidth, aForceExpanded) 
