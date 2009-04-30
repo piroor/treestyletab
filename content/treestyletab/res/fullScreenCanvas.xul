@@ -19,7 +19,7 @@
 window.addEventListener('DOMContentLoaded', function() {
 	window.removeEventListener('DOMContentLoaded', arguments.callee, true);
 
-	const currentRevision = 7;
+	const currentRevision = 8;
 	var root = document.documentElement;
 
 	var loadedRevision = root.getAttribute('fullScreenCanvas');
@@ -37,6 +37,9 @@ window.addEventListener('DOMContentLoaded', function() {
 	window.fullScreenCanvas = {
 		show : function(aTargetElement) 
 		{
+			if (this.shown) return;
+			this.shown = true;
+
 			var color = '-moz-field';
 			var canvas = this.canvas;
 			if (!canvas) return;
@@ -142,6 +145,7 @@ window.addEventListener('DOMContentLoaded', function() {
 				this.container.setAttribute('collapsed', true);
 			}
 		},
+		shown : false,
 
 		getZoomForFrame : function(aFrame)
 		{
@@ -165,12 +169,14 @@ window.addEventListener('DOMContentLoaded', function() {
 			return 1;
 		},
 
-		hide : function() 
+		hide : function()
 		{
+			if (!this.shown) return;
 			var canvas = this.canvas;
 			canvas.style.position = 'static';
 			canvas.style.width = canvas.style.height = canvas.style.zIndex = 0;
 			this.container.setAttribute('collapsed', true);
+			this.shown = false;
 		},
 
 		get browsers()
