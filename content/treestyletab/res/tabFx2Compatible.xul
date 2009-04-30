@@ -19,7 +19,7 @@
 window.addEventListener('DOMContentLoaded', function() {
 	window.removeEventListener('DOMContentLoaded', arguments.callee, true);
 
-	const currentRevision = 3;
+	const currentRevision = 4;
 
 	var b = document.getElementById('content');
 	if (!b || b.localName != 'tabbrowser') return;
@@ -39,8 +39,14 @@ window.addEventListener('DOMContentLoaded', function() {
 	}
 
 	var url = window.getComputedStyle(b.selectedTab, '').getPropertyValue('-moz-binding');
-	url = url.match(/url\(['"]?(.+)['"]?\)/);
-	url = url ? url[1] : null ;
+	url = url.match(/url\((.+)\)/);
+	if (url) {
+		url = url[1];
+		if (url && url.indexOf('"') == 0)
+			url = url.replace(/^"|"$/g, '');
+		else if (url && url.indexOf("'") == 0)
+			url = url.replace(/^'|'$/g, '');
+	}
 	switch (url)
 	{
 		case 'chrome://browser/skin/browser.xml#tabbrowser-tab': // defied by theme
