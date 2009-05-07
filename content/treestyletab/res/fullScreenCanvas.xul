@@ -13,13 +13,14 @@
  original:
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/fullScreenCanvas.xul
 -->
+<?xml-stylesheet type="text/css" href="data:text/css,:root[fullscreencanvas-shown='true'] browser:not(.fullscreencanvas-frame) { visibility: hidden; }"?>
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 <script type="application/x-javascript"><![CDATA[
 
 window.addEventListener('DOMContentLoaded', function() {
 	window.removeEventListener('DOMContentLoaded', arguments.callee, true);
 
-	const currentRevision = 8;
+	const currentRevision = 9;
 	var root = document.documentElement;
 
 	var loadedRevision = root.getAttribute('fullScreenCanvas');
@@ -43,6 +44,8 @@ window.addEventListener('DOMContentLoaded', function() {
 			var color = '-moz-field';
 			var canvas = this.canvas;
 			if (!canvas) return;
+
+			document.documentElement.setAttribute('fullscreencanvas-shown', true);
 
 			var rootBox = document.documentElement.boxObject;
 			var canvasW = window.innerWidth;
@@ -172,6 +175,7 @@ window.addEventListener('DOMContentLoaded', function() {
 		hide : function()
 		{
 			if (!this.shown) return;
+			document.documentElement.removeAttribute('fullscreencanvas-shown');
 			var canvas = this.canvas;
 			canvas.style.position = 'static';
 			canvas.style.width = canvas.style.height = canvas.style.zIndex = 0;
@@ -238,6 +242,7 @@ window.addEventListener('DOMContentLoaded', function() {
 			*/
 			var frame = document.createElement('browser');
 			frame.setAttribute('id', 'fullScreenCanvas-frame');
+			frame.setAttribute('class', 'fullscreencanvas-frame');
 			frame.setAttribute('disablehistory', 'true');
 			this.container.appendChild(frame);
 			frame.style.width = 0;
