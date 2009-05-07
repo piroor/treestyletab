@@ -2587,6 +2587,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		this.mTabBrowser.movingSelectedTabs = true; // Multiple Tab Handler
 		aTabs.forEach(function(aTab) {
+			if (!aTab.parentNode) return; // ignore removed tabs
 			if (aParent)
 				this.attachTabTo(aTab, aParent);
 			else
@@ -2600,6 +2601,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		this.mTabBrowser.movingSelectedTabs = true; // Multiple Tab Handler
 		aTabs.forEach(function(aTab) {
+			if (!aTab.parentNode) return; // ignore removed tabs
 			this.partTab(aTab);
 			this.collapseExpandTab(aTab, false);
 		}, this);
@@ -2806,6 +2808,7 @@ TreeStyleTabBrowser.prototype = {
 		var maxIndent = parseInt(aTabs[0].boxObject.height / 2);
 
 		Array.slice(aTabs).forEach(function(aTab) {
+			if (!aTab.parentNode) return; // ignore removed tabs
 			if (multirow) {
 				indent = Math.min(aLevel * 3, maxIndent);
 				var colors = '-moz-border-top-colors:'+(function(aNum) {
@@ -2842,7 +2845,7 @@ TreeStyleTabBrowser.prototype = {
 		this.updateTabsIndentWithDelayTimer = window.setTimeout(function(aSelf) {
 			var tabs = [];
 			aSelf.updateTabsIndentWithDelayTabs.forEach(function(aTab) {
-				if (tabs.indexOf(aTab) < 0) tabs.push(aTab);
+				if (tabs.indexOf(aTab) < 0 && aTab.parentNode) tabs.push(aTab);
 			});
 			aSelf.updateTabsIndentWithDelayTabs = [];
 			aSelf.updateTabsIndent(tabs);

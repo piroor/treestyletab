@@ -1949,6 +1949,7 @@ catch(e) {
 	{
 		var newTabs = [];
 		aTabs.forEach(function(aTab) {
+			if (!aTab.parentNode) return; // ignore removed tabs
 			if (newTabs.indexOf(aTab) < 0) newTabs.push(aTab);
 		});
 		newTabs.sort(function(aA, aB) {
@@ -1993,7 +1994,11 @@ catch(e) {
 		}
 
 		var currentTabInfo;
-		var tabsInfo = Array.slice(aTabs).map(function(aTab) {
+		var tabsInfo = Array.slice(aTabs)
+			.filter(function(aTab) {
+				return aTab.parentNode; // ignore removed tabs
+			})
+			.map(function(aTab) {
 				var webNav = aTab.linkedBrowser.webNavigation;
 				var url    = webNav.currentURI.spec;
 				var name   = '';
