@@ -497,14 +497,28 @@ var TreeStyleTabService = {
 	isEventFiredOnTwisty : function(aEvent) 
 	{
 		var tab = this.getTabFromEvent(aEvent);
-		if (!tab) return false;
+		if (!tab || !this.hasChildTabs(tab)) return false;
 
-		return this.hasChildTabs(tab) && this.evaluateXPath(
-				'ancestor-or-self::*[@class="'+this.kTWISTY+'" or (ancestor::xul:tabbrowser[@'+this.kMODE+'="vertical"] and @class="tab-icon")]',
+		var expression = 'ancestor-or-self::*[@class="'+this.kTWISTY+'"]';
+		if (this.canExpandTwistyArea(this.getTabBrowserFromChild(tab)))
+			expression += ' | ancestor-or-self::*[@class="tab-icon" and ancestor::xul:tabbrowser[@'+this.kMODE+'="vertical"]]';
+
+		return this.evaluateXPath(
+				expression,
 				aEvent.originalTarget || aEvent.target,
 				XPathResult.BOOLEAN_TYPE
 			).booleanValue;
 	},
+	canExpandTwistyArea : function(aTabBrowser)
+	{
+		return (
+				this.expandTwistyArea &&
+				this._expandTwistyAreaAllowance.every(function(aFunc) {
+					return aFunc(aTabBrowser);
+				})
+			);
+	},
+	expandTwistyArea : true,
  
 	isEventFiredOnClickable : function(aEvent) 
 	{
@@ -1156,6 +1170,7 @@ var TreeStyleTabService = {
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.animation.enabled');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.animation.indent.duration');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.animation.collapse.duration');
+		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.twisty.expandSensitiveArea');
 	},
 	initialized : false,
 	
@@ -2174,6 +2189,12 @@ catch(e) {
 	},
 	_tabFocusAllowance : [],
  
+	registerExpandTwistyAreaAllowance : function(aProcess) 
+	{
+		this._expandTwistyAreaAllowance.push(aProcess);
+	},
+	_expandTwistyAreaAllowance : [],
+ 
 	registerCollapseExpandPostProcess : function(aProcess) 
 	{
 		this._collapseExpandPostProcess.push(aProcess);
@@ -2309,6 +2330,10 @@ catch(e) {
 					this.getPref('extensions.treestyletab.tabbar.style'),
 					this.getPref('extensions.treestyletab.tabbar.position')
 				].join('-'));
+				break;
+
+			case 'extensions.treestyletab.twisty.expandSensitiveArea':
+				this.expandTwistyArea = value;
 				break;
 
 			default:

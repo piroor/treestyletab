@@ -679,7 +679,6 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		);
 	}
 
-
 	// Autohide
 	if ('autoHIDE' in window) {
 		TreeStyleTabService.registerTabbarAutoShowPostProcess(function(aTabBrowser) {
@@ -730,6 +729,13 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 			};
 		window.addEventListener('fullscreen', autoHideEventListener, false);
 		window.addEventListener('unload', autoHideEventListener, false);
+	}
+
+	// TooManyTabs
+	if ('tooManyTabs' in window) {
+		this.registerExpandTwistyAreaAllowance(function(aTabBrowser) {
+			return false;
+		});
 	}
 
 };

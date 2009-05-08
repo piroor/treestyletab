@@ -48,6 +48,7 @@ pref("extensions.treestyletab.indent",                 12);
 // 0 = first child, 1 = last child
 pref("extensions.treestyletab.insertNewChildAt", 1);
 pref("extensions.treestyletab.twisty.style", "auto"); // none, retro, modern-black, modern-white, auto
+pref("extensions.treestyletab.twisty.expandSensitiveArea", true);
 pref("extensions.treestyletab.clickOnIndentSpaces.enabled", true);
 
 pref("extensions.treestyletab.show.openSelectionLinks", true);
