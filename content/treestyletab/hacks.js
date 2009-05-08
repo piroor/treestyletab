@@ -110,62 +110,6 @@ TreeStyleTabService.overrideExtensionsPreInit = function() {
 			return false;
 		});
 	}
-	if ('toomanytabsAddHandler' in window &&
-		'addTMTTab' in toomanytabsAddHandler &&
-		'onTabClick' in toomanytabsAddHandler) {
-		eval('toomanytabsAddHandler.addTMTTab = '+
-			toomanytabsAddHandler.addTMTTab.toSource().replace(
-				'{',
-				'{ var TSTNewItem = null, TSTNewItems = [];'
-			).replace(
-				'gBrowser.removeTab(tabbrowserTab)',
-				<![CDATA[
-					TreeStyleTabService.getTabBrowserFromChild(tabbrowserTab)
-						.treeStyleTab
-						.getDescendantTabs(tabbrowserTab)
-						.reverse()
-						.forEach(function(aTab) {
-							TSTNewItems = TSTNewItems
-								.concat(toomanytabsAddHandler.addTMTTab(aTab, parentFolderId) || []);
-						});
-				$&]]>.toString()
-			).replace(
-				'toomanytabs_BMHander.addTabToBookmarks',
-				'TSTNewItem = $&'
-			).replace(
-				/(\}\)?)$/,
-				<![CDATA[
-					if (TSTNewItem) TSTNewItems.unshift(TSTNewItem);
-					return TSTNewItems;
-				$1]]>.toString()
-			)
-		);
-		eval('toomanytabsAddHandler.onTabClick = '+
-			toomanytabsAddHandler.onTabClick.toSource().replace(
-				'{',
-				'{ var TSTNewItems;'
-			).replace(
-				'toomanytabsAddHandler.addTMTTab',
-				'TSTNewItems = $&'
-			).replace(
-				/(\}\)?)$/,
-				<![CDATA[
-					if (TSTNewItems && TSTNewItems.length) {
-						TSTNewItems.forEach(function(aItem) {
-							PlacesUtils.bookmarks.moveItem(
-								aItem,
-								document.getElementById('toomanytabs')
-									._tabsDeck
-									.selectedPanel
-									.getAttribute('bmId'),
-								999999
-							);
-						});
-					}
-				$1]]>.toString()
-			)
-		);
-	}
 };
 
 TreeStyleTabService.overrideExtensionsOnInitBefore = function() {
