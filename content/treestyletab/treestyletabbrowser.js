@@ -462,9 +462,6 @@ TreeStyleTabBrowser.prototype = {
 			b.warnAboutClosingTabs.toSource().replace(
 				'var numTabs = ',
 				'var numTabs = this.__treestyletab__closedTabsNum || '
-			).replace(
-				'--tabsToClose',
-				'if (numTabs == this.mTabs.length) { $&; }'
 			)
 		);
 
