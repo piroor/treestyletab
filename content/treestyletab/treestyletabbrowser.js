@@ -489,6 +489,7 @@ TreeStyleTabBrowser.prototype = {
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.style');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.twisty.style');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.showBorderForFirstTab');
+		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.enableSubtreeIndent');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.invertScrollbar');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.invertClosebox');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.hideNewTabButton');
@@ -1044,6 +1045,10 @@ TreeStyleTabBrowser.prototype = {
 						break;
 
 					case 'extensions.treestyletab.enableSubtreeIndent':
+						if (value)
+							b.setAttribute(this.kINDENTED, 'true');
+						else
+							b.removeAttribute(this.kINDENTED);
 						this.updateAllTabsIndent();
 						break;
 

@@ -27,6 +27,7 @@ var TreeStyleTabService = {
 	kFIXED              : 'treestyletab-tabbar-fixed',
 	kRESIZING           : 'treestyletab-tabbar-resizing',
 	kTRANSPARENT        : 'treestyletab-tabbar-transparent',
+	kINDENTED           : 'treestyletab-tabs-indented',
 
 	kTAB_INVERTED          : 'treestyletab-tab-inverted',
 	kTAB_CONTENTS_INVERTED : 'treestyletab-tab-contents-inverted',
