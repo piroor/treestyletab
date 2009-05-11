@@ -1,0 +1,18 @@
+/* horizontal tree */
+
+tabbrowser[treestyletab-style][treestyletab-tabbar-position="top"][treestyletab-tabs-indented="true"]
+  .tabbrowser-tab:not([selected="true"]),
+tabbrowser[treestyletab-style][treestyletab-tabbar-position="top"][treestyletab-tabs-indented="true"]
+  .tabbrowser-tab[selected="true"],
+tabbrowser[treestyletab-style][treestyletab-tabbar-position="top"][treestyletab-tabs-indented="true"]
+  .tabbrowser-tab:hover:not([selected="true"]),
+tabbrowser[treestyletab-style][treestyletab-tabbar-position="top"][treestyletab-tabs-indented="true"]
+  .tabbrowser-tab:hover[selected="true"] {
+	padding-top: 0;
+	padding-bottom: 0;
+	margin-bottom: 3px;
+	height: auto;
+	-moz-border-radius: 0 0 0 0;
+	border-top-width: 1px;
+}
+
