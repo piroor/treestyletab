@@ -490,6 +490,7 @@ TreeStyleTabBrowser.prototype = {
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.twisty.style');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.showBorderForFirstTab');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.enableSubtreeIndent');
+		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.invertTabContents');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.invertScrollbar');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.invertClosebox');
 		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.hideNewTabButton');
@@ -658,8 +659,7 @@ TreeStyleTabBrowser.prototype = {
 		var label = this.getTabLabel(aTab);
 		var close = this.getTabClosebox(aTab);
 		var counter = document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER_CONTAINER);
-		var inverted = this.mTabBrowser.getAttribute(this.kTABBAR_POSITION) == 'right' &&
-						this.mTabBrowser.getAttribute(this.kTAB_CONTENTS_INVERTED) == 'true';
+		var inverted = this.mTabBrowser.getAttribute(this.kTAB_CONTENTS_INVERTED) == 'true';
 
 		// top-level contents
 		var nodes = Array.slice(document.getAnonymousNodes(aTab));
@@ -815,12 +815,6 @@ TreeStyleTabBrowser.prototype = {
 					b.removeAttribute(this.kTAB_INVERTED);
 					this.indentProp = 'margin-left';
 				}
-				if (this.getTreePref('tabbar.invertTabContents')) {
-					b.setAttribute(this.kTAB_CONTENTS_INVERTED, 'true');
-				}
-				else {
-					b.removeAttribute(this.kTAB_CONTENTS_INVERTED);
-				}
 				window.setTimeout(function(aWidth) {
 					/* in Firefox 3, the width of the rightside tab bar
 					   unexpectedly becomes 0 on the startup. so, we have
@@ -837,7 +831,6 @@ TreeStyleTabBrowser.prototype = {
 			else {
 				b.setAttribute(this.kTABBAR_POSITION, 'left');
 				b.removeAttribute(this.kTAB_INVERTED);
-				b.removeAttribute(this.kTAB_CONTENTS_INVERTED);
 				this.indentProp = 'margin-left';
 				window.setTimeout(function() {
 					b.mTabDropIndicatorBar.setAttribute('ordinal', 1);
@@ -887,7 +880,6 @@ TreeStyleTabBrowser.prototype = {
 
 			b.setAttribute(this.kMODE, this.getTreePref('tabbar.multirow') ? 'multirow' : 'horizontal' );
 			b.removeAttribute(this.kTAB_INVERTED);
-			b.removeAttribute(this.kTAB_CONTENTS_INVERTED);
 			if (pos == this.kTABBAR_BOTTOM) {
 				b.setAttribute(this.kTABBAR_POSITION, 'bottom');
 				this.indentProp = 'margin-bottom';

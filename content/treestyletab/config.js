@@ -86,7 +86,7 @@ function onChangeTabbarPosition(aOnChange)
 
 	invertScrollbar.disabled = pos != 'left';
 	invertTab.disabled = pos != 'right';
-	invertTabContents.disabled = pos != 'right';
+//	invertTabContents.disabled = pos != 'right';
 	invertClosebox.setAttribute('label',
 		invertClosebox.getAttribute(
 			(pos == 'right' && invertTabContents.checked) ?
@@ -94,6 +94,10 @@ function onChangeTabbarPosition(aOnChange)
 				'label-left'
 		)
 	);
+	if (invertClosebox.checked != document.getElementById('extensions.treestyletab.tabbar.invertClosebox').defaultValue)
+		invertClosebox.removeAttribute('collapsed');
+	else
+		invertClosebox.setAttribute('collapsed', true);
 
 	if (comparator.compare(XULAppInfo.version, '3.0') < 0) {
 		invertScrollbar.removeAttribute('collapsed');

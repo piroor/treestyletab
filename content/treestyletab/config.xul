@@ -94,10 +94,6 @@
 								preference="extensions.treestyletab.tabbar.invertTab"
 								label="&config.tabbar.invertTab;"
 								disabled="true"/>
-							<checkbox id="extensions.treestyletab.tabbar.invertTabContents-check"
-								preference="extensions.treestyletab.tabbar.invertTabContents"
-								label="&config.tabbar.invertTabContents;"
-								disabled="true"/>
 						</vbox>
 					</row>
 					<row>
@@ -108,11 +104,16 @@
 				</rows>
 			</grid>
 		</radiogroup>
-		<checkbox id="extensions.treestyletab.tabbar.invertClosebox-check"
-			preference="extensions.treestyletab.tabbar.invertClosebox"
-			label="&config.tabbar.invertClosebox.left;"
-			label-left="&config.tabbar.invertClosebox.left;"
-			label-right="&config.tabbar.invertClosebox.right;"/>
+		<hbox align="center">
+			<checkbox id="extensions.treestyletab.tabbar.invertTabContents-check"
+				preference="extensions.treestyletab.tabbar.invertTabContents"
+				label="&config.tabbar.invertTabContents;"/>
+			<checkbox id="extensions.treestyletab.tabbar.invertClosebox-check"
+				preference="extensions.treestyletab.tabbar.invertClosebox"
+				label="&config.tabbar.invertClosebox.left;"
+				label-left="&config.tabbar.invertClosebox.left;"
+				label-right="&config.tabbar.invertClosebox.right;"/>
+		</hbox>
 		<checkbox id="extensions.treestyletab.allowSubtreeCollapseExpand-check"
 			preference="extensions.treestyletab.allowSubtreeCollapseExpand"
 			label="&config.allowSubtreeCollapseExpand;"/>

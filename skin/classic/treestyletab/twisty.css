@@ -7,14 +7,14 @@
 	-moz-box-flex: 1;
 }
 
-tabbrowser[treestyletab-mode="vertical"][treestyletab-tab-contents-inverted="true"] .treestyletab-twisty-container {
+tabbrowser[treestyletab-tab-contents-inverted="true"] .treestyletab-twisty-container {
 	margin: 0 -3px 0 3px;
 }
 tabbrowser[treestyletab-twisty-style^="modern"] .treestyletab-twisty-container {
 	position: relative;
 	margin: 0 14px 0 -14px;
 }
-tabbrowser[treestyletab-twisty-style^="modern"][treestyletab-mode="vertical"][treestyletab-tab-contents-inverted="true"] .treestyletab-twisty-container {
+tabbrowser[treestyletab-twisty-style^="modern"][treestyletab-tab-contents-inverted="true"] .treestyletab-twisty-container {
 	margin: 0 -14px 0 14px;
 }
 
@@ -30,10 +30,10 @@ tabbrowser[treestyletab-twisty-style="retro"][treestyletab-mode="horizontal"][tr
 tabbrowser[treestyletab-twisty-style^="modern"][treestyletab-allow-subtree-collapse="true"][treestyletab-mode="horizontal"] .tab-icon {
 	margin-left: 12px;
 }
-tabbrowser[treestyletab-twisty-style^="modern"][treestyletab-allow-subtree-collapse="true"][treestyletab-mode="vertical"]:not([treestyletab-tab-contents-inverted="true"]) .tab-icon {
+tabbrowser[treestyletab-twisty-style^="modern"][treestyletab-allow-subtree-collapse="true"]:not([treestyletab-tab-contents-inverted="true"]) .tab-icon {
 	margin-left: 9px;
 }
-tabbrowser[treestyletab-twisty-style^="modern"][treestyletab-allow-subtree-collapse="true"][treestyletab-mode="vertical"][treestyletab-tab-contents-inverted="true"] .tab-icon {
+tabbrowser[treestyletab-twisty-style^="modern"][treestyletab-allow-subtree-collapse="true"][treestyletab-tab-contents-inverted="true"] .tab-icon {
 	margin-right: 9px;
 }
 
@@ -44,13 +44,13 @@ tabbrowser[treestyletab-twisty-style^="modern"][treestyletab-allow-subtree-colla
 tabbrowser[treestyletab-twisty-style="modern-black"] .treestyletab-twisty {
 	list-style-image: url("twisty-modern-b-l.png");
 }
-tabbrowser[treestyletab-twisty-style="modern-black"][treestyletab-mode="vertical"][treestyletab-tab-contents-inverted="true"] .treestyletab-twisty {
+tabbrowser[treestyletab-twisty-style="modern-black"][treestyletab-tab-contents-inverted="true"] .treestyletab-twisty {
 	list-style-image: url("twisty-modern-b-r.png");
 }
 tabbrowser[treestyletab-twisty-style="modern-white"] .treestyletab-twisty {
 	list-style-image: url("twisty-modern-w-l.png");
 }
-tabbrowser[treestyletab-twisty-style="modern-white"][treestyletab-mode="vertical"][treestyletab-tab-contents-inverted="true"] .treestyletab-twisty {
+tabbrowser[treestyletab-twisty-style="modern-white"][treestyletab-tab-contents-inverted="true"] .treestyletab-twisty {
 	list-style-image: url("twisty-modern-w-r.png");
 }
 
