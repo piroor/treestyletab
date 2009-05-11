@@ -57,19 +57,19 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
 }
 
 
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-appearance-inverted="true"])
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-tab-inverted="true"])
   .tabbrowser-tab:not([treestyletab-drop-position="self"]) {
 	border-right: 0 none !important;
 	-moz-border-right-colors: none !important;
 }
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tabbrowser-tab:not([treestyletab-drop-position="self"]) {
 	border-left: 0 none !important;
 	-moz-border-left-colors: none !important;
 }
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-appearance-inverted="true"])
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-tab-inverted="true"])
   .tabbrowser-tab:not([treestyletab-drop-position="self"]) .tab-image-right,
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tabbrowser-tab:not([treestyletab-drop-position="self"]) .tab-image-left {
 	padding-right: 2px !important;
 }
@@ -117,33 +117,33 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
 
 /* background, right */
 
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-left {
 	-moz-border-image: url("tab-active-r.png") 10 / 10px 0 10px 10px;
 }
-:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-left {
 	-moz-border-image: url("tab-inactive-r.png") 10 / 10px 0 10px 10px;
 }
 
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-middle,
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-close-button {
 	-moz-border-image: url("tab-active-r.png") 10 / 10px 0 10px 0;
 }
-:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-middle,
-:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-close-button {
 	-moz-border-image: url("tab-inactive-r.png") 10 / 10px 0 10px 0;
 }
 
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-right {
 	-moz-border-image: url("tab-active-r.png") 10 / 10px 10px 10px 0;
 }
-:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-right {
 	-moz-border-image: url("tab-inactive-r.png") 10 / 10px 10px 10px 0;
 }
@@ -187,33 +187,33 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
 
 /* foreground, right */
 
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-left[selected="true"] {
 	-moz-border-image: url("tab-active-selected-r.png") 10 / 10px 0 10px 10px;
 }
-:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-left[selected="true"] {
 	-moz-border-image: url("tab-inactive-selected-r.png") 10 / 10px 0 10px 10px;
 }
 
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-middle[selected="true"],
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   [selected="true"] .tab-close-button {
 	-moz-border-image: url("tab-active-selected-r.png") 10 / 10px 0 10px 0;
 }
-:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-middle[selected="true"],
-:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   [selected="true"] .tab-close-button {
 	-moz-border-image: url("tab-inactive-selected-r.png") 10 / 10px 0 10px 0;
 }
 
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-right[selected="true"] {
 	-moz-border-image: url("tab-active-selected-r.png") 10 / 10px 10px 10px 0;
 }
-:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-right[selected="true"] {
 	-moz-border-image: url("tab-inactive-selected-r.png") 10 / 10px 10px 10px 0;
 }

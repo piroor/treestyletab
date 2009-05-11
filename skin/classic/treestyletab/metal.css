@@ -45,9 +45,9 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tabs[overflow="true"] .tabbrowser-arrowscrollbox .scrollbox-innerbox {
 	background: url("metal/shadow-active-l.png") repeat-y top right !important;
 }
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tabbrowser-tabs:not([overflow="true"]) .tabbrowser-arrowscrollbox,
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tabbrowser-tabs[overflow="true"] .tabbrowser-arrowscrollbox .scrollbox-innerbox {
 	background: url("metal/shadow-active-r.png") repeat-y top left !important;
 }
@@ -57,9 +57,9 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyleta
   .tabbrowser-tabs[overflow="true"] .tabbrowser-arrowscrollbox .scrollbox-innerbox {
 	background: url("metal/shadow-inactive-l.png") repeat-y top right !important;
 }
-:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tabbrowser-tabs:not([overflow="true"]) .tabbrowser-arrowscrollbox,
-:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tabbrowser-tabs[overflow="true"] .tabbrowser-arrowscrollbox .scrollbox-innerbox {
 	background: url("metal/shadow-inactive-r.png") repeat-y top left !important;
 }
@@ -110,9 +110,9 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab[selected="true"]:hover .tab-icon {
 	background: url("metal/icon-bg.png") no-repeat right center !important;
 }
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-contents-inverted="true"]
   .tabbrowser-tab:hover .tab-icon,
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-contents-inverted="true"]
   .tabbrowser-tab[selected="true"]:hover .tab-icon {
 	background-position: left center !important;
 }
@@ -123,7 +123,7 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
 	height: 16px !important;
 	margin: 0 0 0 6px !important;
 }
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-contents-inverted="true"]
   .tabbrowser-tab .tab-icon .tab-icon-image {
 	margin: 0 6px 0 0 !important;
 }
@@ -155,19 +155,19 @@ tabbrowser[treestyletab-style="metal"][treestyletab-twisty-style="retro"][treest
   .treestyletab-twisty-container {
 	margin: 0;
 }
-tabbrowser[treestyletab-style="metal"][treestyletab-twisty-style="retro"][treestyletab-mode="vertical"]:not([treestyletab-appearance-inverted="true"])
+tabbrowser[treestyletab-style="metal"][treestyletab-twisty-style="retro"][treestyletab-mode="vertical"]:not([treestyletab-tab-contents-inverted="true"])
   .tabbrowser-tab .tab-icon {
 	margin-left: -6px !important;
 }
-tabbrowser[treestyletab-style="metal"][treestyletab-twisty-style][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+tabbrowser[treestyletab-style="metal"][treestyletab-twisty-style][treestyletab-mode="vertical"][treestyletab-tab-contents-inverted="true"]
   .treestyletab-twisty-container {
 	margin: 0 -12px 0 12px;
 }
-tabbrowser[treestyletab-style="metal"][treestyletab-twisty-style="retro"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+tabbrowser[treestyletab-style="metal"][treestyletab-twisty-style="retro"][treestyletab-mode="vertical"][treestyletab-tab-contents-inverted="true"]
   .treestyletab-twisty-container {
 	margin: 0 -6px 0 6px;
 }
-tabbrowser[treestyletab-style="metal"][treestyletab-twisty-style="retro"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"]
+tabbrowser[treestyletab-style="metal"][treestyletab-twisty-style="retro"][treestyletab-mode="vertical"][treestyletab-tab-contents-inverted="true"]
   .tabbrowser-tab .tab-icon {
 	margin-right: -6px !important;
 }
@@ -194,12 +194,12 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser
 	height: 18px !important;
 	border: 1px solid #666666 !important;
 }
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-appearance-inverted="true"]) .tabbrowser-arrowscrollbox .tabs-newtab-button {
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-tab-inverted="true"]) .tabbrowser-arrowscrollbox .tabs-newtab-button {
 	background: #9a9a9a url("metal/shadow-active-l.png") repeat-y top right !important;
 	margin-left: 6px !important;
 	-moz-border-radius: 6px 0 0 6px;
 }
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
 	background: #9a9a9a url("metal/shadow-active-r.png") repeat-y top left !important;
 	margin-right: 6px !important;
 	-moz-border-radius: 0 6px 6px 0;
@@ -231,11 +231,11 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"] .ta
 	border-color: #666666 !important;
 }
 
-:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-appearance-inverted="true"]) .tabbrowser-arrowscrollbox .tabs-newtab-button {
+:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-tab-inverted="true"]) .tabbrowser-arrowscrollbox .tabs-newtab-button {
 	background: #cecece url("metal/shadow-inactive-l.png") repeat-y top right !important;
 	border-color: #9a9a9a !important;
 }
-:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-appearance-inverted="true"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
+:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
 	background: #cecece url("metal/shadow-inactive-r.png") repeat-y top left !important;
 	border-color: #9a9a9a !important;
 }

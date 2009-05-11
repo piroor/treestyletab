@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/"?>
+<?xml-stylesheet href="chrome://treestyletab/content/config.css" type="text/css"?>
 <?xml-stylesheet href="chrome://treestyletab/skin/config.css" type="text/css"?>
 <?xml-stylesheet href="chrome://treestyletab-platform/skin/config.css" type="text/css"?>
 <!DOCTYPE prefwindow [
@@ -43,8 +44,11 @@
 		<preference id="extensions.treestyletab.tabbar.invertClosebox"
 			name="extensions.treestyletab.tabbar.invertClosebox"
 			type="bool"/>
-		<preference id="extensions.treestyletab.tabbar.invertUI"
-			name="extensions.treestyletab.tabbar.invertUI"
+		<preference id="extensions.treestyletab.tabbar.invertTab"
+			name="extensions.treestyletab.tabbar.invertTab"
+			type="bool"/>
+		<preference id="extensions.treestyletab.tabbar.invertTabContents"
+			name="extensions.treestyletab.tabbar.invertTabContents"
 			type="bool"/>
 		<preference id="extensions.treestyletab.twisty.style"
 			name="extensions.treestyletab.twisty.style"
@@ -86,9 +90,13 @@
 						<box style="border: ThreeDShadow 1px solid; margin: 0.3em; background: white;"/>
 						<vbox pack="start" align="start">
 							<radio value="right" label="&config.tabbar.position.right;"/>
-							<checkbox id="extensions.treestyletab.tabbar.invertUI-check"
-								preference="extensions.treestyletab.tabbar.invertUI"
-								label="&config.tabbar.invertUI;"
+							<checkbox id="extensions.treestyletab.tabbar.invertTab-check"
+								preference="extensions.treestyletab.tabbar.invertTab"
+								label="&config.tabbar.invertTab;"
+								disabled="true"/>
+							<checkbox id="extensions.treestyletab.tabbar.invertTabContents-check"
+								preference="extensions.treestyletab.tabbar.invertTabContents"
+								label="&config.tabbar.invertTabContents;"
 								disabled="true"/>
 						</vbox>
 					</row>
@@ -100,14 +108,14 @@
 				</rows>
 			</grid>
 		</radiogroup>
-		<hbox align="center">
-			<checkbox id="extensions.treestyletab.tabbar.invertClosebox-check"
-				preference="extensions.treestyletab.tabbar.invertClosebox"
-				label="&config.tabbar.invertClosebox;"/>
-			<checkbox id="extensions.treestyletab.allowSubtreeCollapseExpand-check"
-				preference="extensions.treestyletab.allowSubtreeCollapseExpand"
-				label="&config.allowSubtreeCollapseExpand;"/>
-		</hbox>
+		<checkbox id="extensions.treestyletab.tabbar.invertClosebox-check"
+			preference="extensions.treestyletab.tabbar.invertClosebox"
+			label="&config.tabbar.invertClosebox.left;"
+			label-left="&config.tabbar.invertClosebox.left;"
+			label-right="&config.tabbar.invertClosebox.right;"/>
+		<checkbox id="extensions.treestyletab.allowSubtreeCollapseExpand-check"
+			preference="extensions.treestyletab.allowSubtreeCollapseExpand"
+			label="&config.allowSubtreeCollapseExpand;"/>
 		<hbox align="center">
 			<checkbox id="extensions.treestyletab.tabbar.hideAlltabsButton-check"
 				preference="extensions.treestyletab.tabbar.hideAlltabsButton"

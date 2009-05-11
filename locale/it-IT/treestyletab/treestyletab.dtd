@@ -11,8 +11,10 @@
 <!ENTITY config.tabbar.position.top     "in alto (comportamento predefinito di Firefox)">
 <!ENTITY config.tabbar.position.bottom  "in basso">
 <!ENTITY config.tabbar.invertScrollbar  "Visualizza la barra di scorrimento all&apos;estrema sinistra">
-<!ENTITY config.tabbar.invertClosebox   "Show closebox at leftside in each tab">
-<!ENTITY config.tabbar.invertUI         "Inverti la visualizzazione delle schede">
+<!ENTITY config.tabbar.invertClosebox.left  "Show closebox at leftside in each tab">
+<!ENTITY config.tabbar.invertClosebox.right "Show closebox at rightside in each tab">
+<!ENTITY config.tabbar.invertTab            "Inverti la visualizzazione delle schede">
+<!ENTITY config.tabbar.invertTabContents    "Invert tab contents">
 <!ENTITY config.enableSubtreeIndent         "Indenta sottoschede">
 <!ENTITY config.allowSubtreeCollapseExpand  "Permetti di contrarre/espandere sottoalberi delle schede">
 <!ENTITY config.tabbar.hideNewTabButton     "Visualizza il pulsante &quot;Apri una nuova scheda&quot;">

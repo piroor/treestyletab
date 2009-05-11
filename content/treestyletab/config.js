@@ -80,8 +80,20 @@ function onChangeTabbarPosition(aOnChange)
 {
 	var pos = document.getElementById('extensions.treestyletab.tabbar.position-radiogroup').value;
 	var invertScrollbar = document.getElementById('extensions.treestyletab.tabbar.invertScrollbar-check');
+	var invertTab = document.getElementById('extensions.treestyletab.tabbar.invertTab-check');
+	var invertTabContents = document.getElementById('extensions.treestyletab.tabbar.invertTabContents-check');
+	var invertClosebox = document.getElementById('extensions.treestyletab.tabbar.invertClosebox-check');
+
 	invertScrollbar.disabled = pos != 'left';
-	document.getElementById('extensions.treestyletab.tabbar.invertUI-check').disabled = pos != 'right';
+	invertTab.disabled = pos != 'right';
+	invertTabContents.disabled = pos != 'right';
+	invertClosebox.setAttribute('label',
+		invertClosebox.getAttribute(
+			(pos == 'right' && invertTabContents.checked) ?
+				'label-right' :
+				'label-left'
+		)
+	);
 
 	if (comparator.compare(XULAppInfo.version, '3.0') < 0) {
 		invertScrollbar.removeAttribute('collapsed');

@@ -11,8 +11,10 @@
 <!ENTITY config.tabbar.position.top     "Na górze (wartość domyślna)">
 <!ENTITY config.tabbar.position.bottom  "Na dole">
 <!ENTITY config.tabbar.invertScrollbar  "Wyświetlaj pasek przewijania po lewej">
-<!ENTITY config.tabbar.invertClosebox   "Show closebox at leftside in each tab">
-<!ENTITY config.tabbar.invertUI         "Odwróć wyświetlanie kart">
+<!ENTITY config.tabbar.invertClosebox.left  "Show closebox at leftside in each tab">
+<!ENTITY config.tabbar.invertClosebox.right "Show closebox at rightside in each tab">
+<!ENTITY config.tabbar.invertTab            "Odwróć wyświetlanie kart">
+<!ENTITY config.tabbar.invertTabContents    "Invert tab contents">
 <!ENTITY config.enableSubtreeIndent         "Stosuj wcięcia">
 <!ENTITY config.allowSubtreeCollapseExpand  "Zezwalaj na zwijanie/rozwijanie drzewa kart">
 <!ENTITY config.tabbar.hideNewTabButton     "Wyświetlaj przycisk „Otwórz w nowej karcie”">

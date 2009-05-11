@@ -658,7 +658,7 @@ TreeStyleTabBrowser.prototype = {
 		var close = this.getTabClosebox(aTab);
 		var counter = document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER_CONTAINER);
 		var inverted = this.mTabBrowser.getAttribute(this.kTABBAR_POSITION) == 'right' &&
-						this.mTabBrowser.getAttribute(this.kUI_INVERTED) == 'true';
+						this.mTabBrowser.getAttribute(this.kTAB_CONTENTS_INVERTED) == 'true';
 
 		// top-level contents
 		var nodes = Array.slice(document.getAnonymousNodes(aTab));
@@ -697,7 +697,7 @@ TreeStyleTabBrowser.prototype = {
 	updateInvertedTabContentsOrder : function(aAll) 
 	{
 		if (this.getTreePref('tabbar.position') != 'right' ||
-			!this.getTreePref('tabbar.invertUI')) return;
+			!this.getTreePref('tabbar.invertTabContents')) return;
 
 		window.setTimeout(function(aSelf) {
 			var b = aSelf.mTabBrowser;
@@ -806,13 +806,19 @@ TreeStyleTabBrowser.prototype = {
 			b.setAttribute(this.kMODE, 'vertical');
 			if (pos == this.kTABBAR_RIGHT) {
 				b.setAttribute(this.kTABBAR_POSITION, 'right');
-				if (this.getTreePref('tabbar.invertUI')) {
-					b.setAttribute(this.kUI_INVERTED, 'true');
+				if (this.getTreePref('tabbar.invertTab')) {
+					b.setAttribute(this.kTAB_INVERTED, 'true');
 					this.indentProp = 'margin-right';
 				}
 				else {
-					b.removeAttribute(this.kUI_INVERTED);
+					b.removeAttribute(this.kTAB_INVERTED);
 					this.indentProp = 'margin-left';
+				}
+				if (this.getTreePref('tabbar.invertTabContents')) {
+					b.setAttribute(this.kTAB_CONTENTS_INVERTED, 'true');
+				}
+				else {
+					b.removeAttribute(this.kTAB_CONTENTS_INVERTED);
 				}
 				window.setTimeout(function(aWidth) {
 					/* in Firefox 3, the width of the rightside tab bar
@@ -829,7 +835,8 @@ TreeStyleTabBrowser.prototype = {
 			}
 			else {
 				b.setAttribute(this.kTABBAR_POSITION, 'left');
-				b.removeAttribute(this.kUI_INVERTED);
+				b.removeAttribute(this.kTAB_INVERTED);
+				b.removeAttribute(this.kTAB_CONTENTS_INVERTED);
 				this.indentProp = 'margin-left';
 				window.setTimeout(function() {
 					b.mTabDropIndicatorBar.setAttribute('ordinal', 1);
@@ -878,7 +885,8 @@ TreeStyleTabBrowser.prototype = {
 			b.mPanelContainer.removeAttribute('width');
 
 			b.setAttribute(this.kMODE, this.getTreePref('tabbar.multirow') ? 'multirow' : 'horizontal' );
-			b.removeAttribute(this.kUI_INVERTED);
+			b.removeAttribute(this.kTAB_INVERTED);
+			b.removeAttribute(this.kTAB_CONTENTS_INVERTED);
 			if (pos == this.kTABBAR_BOTTOM) {
 				b.setAttribute(this.kTABBAR_POSITION, 'bottom');
 				this.indentProp = 'margin-bottom';
@@ -1007,10 +1015,15 @@ TreeStyleTabBrowser.prototype = {
 						this.updateTabbarTransparency();
 						break;
 
-					case 'extensions.treestyletab.tabbar.invertUI':
+					case 'extensions.treestyletab.tabbar.invertTab':
 					case 'extensions.treestyletab.tabbar.multirow':
 						this.initTabbar();
 						this.updateAllTabsIndent();
+						tabs.forEach(function(aTab) {
+							this.initTabContents(aTab);
+						}, this);
+						break;
+					case 'extensions.treestyletab.tabbar.invertTabContents':
 						tabs.forEach(function(aTab) {
 							this.initTabContents(aTab);
 						}, this);
@@ -3934,7 +3947,7 @@ TreeStyleTabBrowser.prototype = {
 		   we have to shrink sensitive area a little. */
 		if (!this.autoHideShown && this.autoHideMode == this.kAUTOHIDE_MODE_SHRINK) {
 			sensitiveArea = 0;
-			if (pos != 'right' || b.getAttribute(this.kUI_INVERTED) == 'true')
+			if (pos != 'right' || b.getAttribute(this.kTAB_INVERTED) == 'true')
 				sensitiveArea -= 20;
 		}
 

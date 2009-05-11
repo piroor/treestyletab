@@ -1,0 +1,9 @@
+[id="extensions.treestyletab.tabbar.style-radiogroup"] radio[src] .radio-icon {
+	width: 52px;
+	height: 62px;
+}
+
+[id="extensions.treestyletab.twisty.style-radiogroup"] radio[src] .radio-icon {
+	width: 24px;
+	height: 24px;
+}
