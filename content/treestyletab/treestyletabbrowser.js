@@ -1024,6 +1024,10 @@ TreeStyleTabBrowser.prototype = {
 						}, this);
 						break;
 					case 'extensions.treestyletab.tabbar.invertTabContents':
+						if (value)
+							b.setAttribute(this.kTAB_CONTENTS_INVERTED, 'true');
+						else
+							b.removeAttribute(this.kTAB_CONTENTS_INVERTED);
 						tabs.forEach(function(aTab) {
 							this.initTabContents(aTab);
 						}, this);
