@@ -535,9 +535,17 @@ var TreeStyleTabService = {
  
 	isAccelKeyPressed : function(aEvent) 
 	{
-		return navigator.platform.toLowerCase().indexOf('mac') > -1 ?
-			(aEvent.metaKey || (aEvent.keyCode == Components.interfaces.nsIDOMKeyEvent.DOM_VK_META)) :
-			(aEvent.ctrlKey || (aEvent.keyCode == Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL)) ;
+		var isMac = navigator.platform.toLowerCase().indexOf('mac') > -1;
+		var nsIDOMKeyEvent = Components.interfaces.nsIDOMKeyEvent;
+		if ( // this is releasing of the accel key!
+			(aEvent.type == 'keyup') &&
+			(aEvent.keyCode == (isMac ? nsIDOMKeyEvent.DOM_VK_META : nsIDOMKeyEvent.DOM_VK_CONTROL ))
+			) {
+			return false;
+		}
+		return isMac ?
+			(aEvent.metaKey || (aEvent.keyCode == nsIDOMKeyEvent.DOM_VK_META)) :
+			(aEvent.ctrlKey || (aEvent.keyCode == nsIDOMKeyEvent.DOM_VK_CONTROL)) ;
 	},
  
 	get browserWindow() 
@@ -1762,10 +1770,11 @@ catch(e) {
 			) {
 			if (this.getTreePref('tabbar.autoShow.accelKeyDown') &&
 				!sv.autoHideShown &&
-				!this.delayedAutoShowTimer) {
+				!sv.delayedAutoShowTimer &&
+				!this.delayedAutoShowForShortcutTimer) {
 				this.delayedAutoShowForShortcutTimer = window.setTimeout(
 					function(aSelf) {
-						aSelf.delayedAutoShowForShortcutDone = true;
+						this.delayedAutoShowForShortcutDone = true;
 						sv.showTabbar(sv.kSHOWN_BY_SHORTCUT);
 					},
 					this.getTreePref('tabbar.autoShow.accelKeyDown.delay'),
@@ -1802,7 +1811,7 @@ catch(e) {
 
 		this.accelKeyPressed = this.isAccelKeyPressed(aEvent);
 
-		var standBy = scrollDown = scrollUp = (!aEvent.altKey && this.isAccelKeyPressed(aEvent));
+		var standBy = scrollDown = scrollUp = (!aEvent.altKey && this.accelKeyPressed);
 
 		scrollDown = scrollDown && (
 				!aEvent.shiftKey &&
