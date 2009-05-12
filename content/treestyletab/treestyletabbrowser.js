@@ -3124,7 +3124,7 @@ TreeStyleTabBrowser.prototype = {
 			!this.animationEnabled ||
 			aJustNow ||
 			this.collapseDuration < 1 ||
-			!this.isVertical ||
+//			!this.isVertical ||
 			this.mTabBrowser.getAttribute(this.kALLOW_COLLAPSE) != 'true'
 			) {
 			aTab.setAttribute(
