@@ -214,11 +214,11 @@ TreeStyleTabBrowser.prototype = {
 
 		eval('b.mTabContainer.adjustTabstrip = '+
 			b.mTabContainer.adjustTabstrip.toSource().replace(
-				/(\})(\)?)$/,
+				/(\}\)?)$/,
 				<![CDATA[
 					var b = TreeStyleTabService.getTabBrowserFromChild(this);
 					b.treeStyleTab.updateInvertedTabContentsOrder(true);
-				$1$2]]>
+				$1]]>
 			)
 		);
 
@@ -661,8 +661,14 @@ TreeStyleTabBrowser.prototype = {
 		var counter = document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER_CONTAINER);
 		var inverted = this.mTabBrowser.getAttribute(this.kTAB_CONTENTS_INVERTED) == 'true';
 
-		// top-level contents
 		var nodes = Array.slice(document.getAnonymousNodes(aTab));
+
+		// reset order
+		nodes.forEach(function(aNode, aIndex) {
+			aNode.setAttribute('ordinal', aIndex);
+		}, this);
+
+		// rearrange top-level contents
 		nodes.splice(nodes.indexOf(close), 1);
 		if (inverted) {
 			if (this.mTabBrowser.getAttribute(this.kCLOSEBOX_INVERTED) == 'true')
@@ -682,7 +688,7 @@ TreeStyleTabBrowser.prototype = {
 				aNode.setAttribute('ordinal', (count - aIndex + 1) * 100);
 			}, this);
 
-		// contents in "tab-image-middle"
+		// rearrange contents in "tab-image-middle"
 		nodes = Array.slice(label.parentNode.childNodes);
 		nodes.splice(nodes.indexOf(counter), 1);
 		if (inverted) nodes.reverse();
@@ -697,19 +703,13 @@ TreeStyleTabBrowser.prototype = {
  
 	updateInvertedTabContentsOrder : function(aAll) 
 	{
-		if (this.getTreePref('tabbar.position') != 'right' ||
-			!this.getTreePref('tabbar.invertTabContents')) return;
-
+		if (!this.getTreePref('tabbar.invertTabContents')) return;
 		window.setTimeout(function(aSelf) {
 			var b = aSelf.mTabBrowser;
-			if (aAll) {
-				aSelf.getTabsArray(b).forEach(function(aTab) {
-					aSelf.initTabContentsOrder(aTab);
-				});
-			}
-			else {
-				aSelf.initTabContentsOrder(b.selectedTab);
-			}
+			var tabs = aAll ? aSelf.getTabsArray(b) : [b.selectedTab] ;
+			tabs.forEach(function(aTab) {
+				aSelf.initTabContentsOrder(aTab);
+			});
 		}, 0, this);
 	},
   
