@@ -508,37 +508,48 @@ TreeStyleTabBrowser.prototype = {
 		delete maxi;
 		delete tabs;
 
-		var tabContext = document.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu');
-		tabContext.addEventListener('popupshowing', this, false);
-		tabContext.addEventListener('popuphiding', this, false);
-		window.setTimeout(function(aSelf) {
-			var suffix = '-tabbrowser-'+(b.id || 'instance-'+parseInt(Math.random() * 65000));
-			[
-				aSelf.kMENUITEM_REMOVESUBTREE,
-				aSelf.kMENUITEM_REMOVECHILDREN,
-				aSelf.kMENUITEM_COLLAPSEEXPAND_SEPARATOR,
-				aSelf.kMENUITEM_COLLAPSE,
-				aSelf.kMENUITEM_EXPAND,
-				aSelf.kMENUITEM_AUTOHIDE_SEPARATOR,
-				aSelf.kMENUITEM_AUTOHIDE,
-				aSelf.kMENUITEM_FIXED,
-				aSelf.kMENUITEM_POSITION
-			].forEach(function(aID) {
-				var item = document.getElementById(aID).cloneNode(true);
-				item.setAttribute('id', item.getAttribute('id')+suffix);
-				tabContext.appendChild(item);
-			});
+		var tabContextMenu = document.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu');
+		tabContextMenu.addEventListener('popupshowing', this, false);
+		tabContextMenu.addEventListener('popuphiding', this, false);
+		if (!('MultipleTabService' in window)) {
+			window.setTimeout(function(aSelf) {
+				var suffix = '-tabbrowser-'+(b.id || 'instance-'+parseInt(Math.random() * 65000));
+				[
+					aSelf.kMENUITEM_REMOVESUBTREE,
+					aSelf.kMENUITEM_REMOVECHILDREN,
+					aSelf.kMENUITEM_COLLAPSEEXPAND_SEPARATOR,
+					aSelf.kMENUITEM_COLLAPSE,
+					aSelf.kMENUITEM_EXPAND,
+					aSelf.kMENUITEM_AUTOHIDE_SEPARATOR,
+					aSelf.kMENUITEM_AUTOHIDE,
+					aSelf.kMENUITEM_FIXED,
+					aSelf.kMENUITEM_POSITION,
+					aSelf.kMENUITEM_BOOKMARKSUBTREE
+				].forEach(function(aID) {
+					let item = document.getElementById(aID).cloneNode(true);
+					item.setAttribute('id', item.getAttribute('id')+suffix);
 
-			var item = document.getElementById(aSelf.kMENUITEM_BOOKMARKSUBTREE).cloneNode(true);
-			item.setAttribute('id', item.getAttribute('id')+suffix);
-			var refNodes = tabContext.getElementsByAttribute('command', 'Browser:BookmarkAllTabs');
-			tabContext.insertBefore(
-				item,
-				(refNodes && refNodes.length) ?
-					(aSelf.getNextTab(refNodes[0]) || refNodes[0]) :
-					null
-			);
-		}, 0, this);
+					let refNode = void(0);
+					let insertAfter = item.getAttribute('multipletab-insertafter');
+					if (insertAfter) {
+						try {
+							eval('refNode = ('+insertAfter+').nextSibling');
+						}
+						catch(e) {
+						}
+					}
+					let insertBefore = item.getAttribute('multipletab-insertbefore');
+					if (refNode === void(0) && insertBefore) {
+						try {
+							eval('refNode = '+insertBefore);
+						}
+						catch(e) {
+						}
+					}
+					tabContextMenu.insertBefore(item, refNode || null);
+				});
+			}, 0, this);
+		}
 
 		var allTabPopup = document.getAnonymousElementByAttribute(b.mTabContainer, 'anonid', 'alltabs-popup');
 		if (allTabPopup) {
@@ -938,9 +949,9 @@ TreeStyleTabBrowser.prototype = {
 		this.scrollBox.removeEventListener('overflow', this, true);
 		this.scrollBox.removeEventListener('underflow', this, true);
 
-		var tabContext = document.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu');
-		tabContext.removeEventListener('popupshowing', this, false);
-		tabContext.removeEventListener('popuphiding', this, false);
+		var tabContextMenu = document.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu');
+		tabContextMenu.removeEventListener('popupshowing', this, false);
+		tabContextMenu.removeEventListener('popuphiding', this, false);
 
 		var allTabPopup = document.getAnonymousElementByAttribute(b.mTabContainer, 'anonid', 'alltabs-popup');
 		if (allTabPopup) {
