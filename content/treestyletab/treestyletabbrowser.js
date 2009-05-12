@@ -3202,7 +3202,20 @@ TreeStyleTabBrowser.prototype = {
 		var radian = 90 * Math.PI / 180;
 		var self   = this;
 		aTab.__treestyletab__updateTabCollapsedTask = function(aTime, aBeginning, aChange, aDuration) {
-			if (aTime >= aDuration) {
+			// If this is the last tab, negative scroll happens.
+			// Then, we shouldn't do animation.
+			var stopAnimation = false;
+			var scrollBox = self.scrollBox;
+			if (scrollBox) {
+				if (scrollBox._scrollbox) scrollBox = scrollBox._scrollbox;
+				if ('scrollTop' in scrollBox &&
+					(scrollBox.scrollTop < 0 || scrollBox.scrollLeft < 0)) {
+					scrollBox.scrollTop = 0;
+					scrollBox.scrollLeft = 0;
+					stopAnimation = true;
+				}
+			}
+			if (aTime >= aDuration || stopAnimation) {
 				delete aTab.__treestyletab__updateTabCollapsedTask;
 				aTab.removeAttribute(self.kCOLLAPSING);
 				if (aCollapsed) aTab.setAttribute(self.kCOLLAPSED_DONE, true);
