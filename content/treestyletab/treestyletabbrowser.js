@@ -809,11 +809,11 @@ TreeStyleTabBrowser.prototype = {
 				b.setAttribute(this.kTABBAR_POSITION, 'right');
 				if (this.getTreePref('tabbar.invertTab')) {
 					b.setAttribute(this.kTAB_INVERTED, 'true');
-					this.indentProp = 'margin-right';
+					this.indentProp = this.getTreePref('indent.property.right');
 				}
 				else {
 					b.removeAttribute(this.kTAB_INVERTED);
-					this.indentProp = 'margin-left';
+					this.indentProp = this.getTreePref('indent.property.left');
 				}
 				window.setTimeout(function(aWidth) {
 					/* in Firefox 3, the width of the rightside tab bar
@@ -831,7 +831,7 @@ TreeStyleTabBrowser.prototype = {
 			else {
 				b.setAttribute(this.kTABBAR_POSITION, 'left');
 				b.removeAttribute(this.kTAB_INVERTED);
-				this.indentProp = 'margin-left';
+				this.indentProp = this.getTreePref('indent.property.left');
 				window.setTimeout(function() {
 					b.mTabDropIndicatorBar.setAttribute('ordinal', 1);
 					b.mStrip.setAttribute('ordinal', 10);
@@ -882,7 +882,7 @@ TreeStyleTabBrowser.prototype = {
 			b.removeAttribute(this.kTAB_INVERTED);
 			if (pos == this.kTABBAR_BOTTOM) {
 				b.setAttribute(this.kTABBAR_POSITION, 'bottom');
-				this.indentProp = 'margin-bottom';
+				this.indentProp = this.getTreePref('indent.property.bottom');
 				window.setTimeout(function() {
 					b.mTabDropIndicatorBar.setAttribute('ordinal', 1);
 					b.mStrip.setAttribute('ordinal', 30);
@@ -893,7 +893,7 @@ TreeStyleTabBrowser.prototype = {
 			}
 			else {
 				b.setAttribute(this.kTABBAR_POSITION, 'top');
-				this.indentProp = 'margin-top';
+				this.indentProp = this.getTreePref('indent.property.top');
 				window.setTimeout(function() {
 					b.mTabDropIndicatorBar.setAttribute('ordinal', 1);
 					b.mStrip.setAttribute('ordinal', 10);
@@ -2826,7 +2826,7 @@ TreeStyleTabBrowser.prototype = {
 			if (!aTab.parentNode) return; // ignore removed tabs
 			if (multirow) {
 				indent = Math.min(aLevel * 3, maxIndent);
-				var colors = '-moz-border-top-colors:'+(function(aNum) {
+				var colors = '-moz-border-'+topBottom+'-colors:'+(function(aNum) {
 					var retVal = [];
 					for (var i = 1; i < aNum; i++)
 					{
