@@ -510,7 +510,6 @@ TreeStyleTabBrowser.prototype = {
 
 		var tabContextMenu = document.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu');
 		tabContextMenu.addEventListener('popupshowing', this, false);
-		tabContextMenu.addEventListener('popuphiding', this, false);
 		if (!('MultipleTabService' in window)) {
 			window.setTimeout(function(aSelf) {
 				var suffix = '-tabbrowser-'+(b.id || 'instance-'+parseInt(Math.random() * 65000));
@@ -951,7 +950,6 @@ TreeStyleTabBrowser.prototype = {
 
 		var tabContextMenu = document.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu');
 		tabContextMenu.removeEventListener('popupshowing', this, false);
-		tabContextMenu.removeEventListener('popuphiding', this, false);
 
 		var allTabPopup = document.getAnonymousElementByAttribute(b.mTabContainer, 'anonid', 'alltabs-popup');
 		if (allTabPopup) {
@@ -1302,7 +1300,7 @@ TreeStyleTabBrowser.prototype = {
 			case 'mousemove':
 				if (!this.tabbarResizing) {
 					if (
-						!this.tabContextMenuShown &&
+						!this.popupMenuShown &&
 						(
 							!this.autoHideShown ||
 							this.showHideTabbarReason & this.kKEEP_SHOWN_ON_MOUSEOVER
@@ -1363,10 +1361,6 @@ TreeStyleTabBrowser.prototype = {
 
 			case 'popupshowing':
 				this.onPopupShowing(aEvent);
-				return;
-
-			case 'popuphiding':
-				this.onPopupHiding(aEvent);
 				return;
 
 			case 'dragenter':
@@ -1914,7 +1908,6 @@ TreeStyleTabBrowser.prototype = {
 		switch (aEvent.target.getAttribute('anonid'))
 		{
 			case 'tabContextMenu':
-				this.tabContextMenuShown = true;
 				this.initTabContextMenu(aEvent);
 				break;
 			case 'alltabs-popup':
@@ -2103,18 +2096,7 @@ TreeStyleTabBrowser.prototype = {
 			items[i].style.paddingLeft = tabs.snapshotItem(i).getAttribute(this.kNEST)+'em';
 		}
 	},
-  
-	onPopupHiding : function(aEvent) 
-	{
-		if (aEvent.target != aEvent.currentTarget) return;
-		switch (aEvent.target.getAttribute('anonid'))
-		{
-			case 'tabContextMenu':
-				this.tabContextMenuShown = false;
-				break;
-		}
-	},
-  
+   
 /* drag and drop */ 
 	isPlatformNotSupported : /* !this.isGecko19 && */ navigator.platform.indexOf('Mac') != -1, // see bug 136524
 	isTimerSupported       : /* this.isGecko19 || */ navigator.platform.indexOf('Win') == -1, // see bug 232795.

@@ -1157,6 +1157,8 @@ var TreeStyleTabService = {
 		window.removeEventListener('load', this, false);
 		window.addEventListener('unload', this, false);
 		document.getElementById('contentAreaContextMenu').addEventListener('popupshowing', this, false);
+		document.addEventListener('popupshowing', this, false);
+		document.addEventListener('popuphiding', this, false);
 
 		var appcontent = document.getElementById('appcontent');
 		appcontent.addEventListener('SubBrowserAdded', this, false);
@@ -1692,6 +1694,8 @@ catch(e) {
 		this.endListenKeyEvents();
 
 		document.getElementById('contentAreaContextMenu').removeEventListener('popupshowing', this, false);
+		document.removeEventListener('popupshowing', this, false);
+		document.removeEventListener('popuphiding', this, false);
 
 		var appcontent = document.getElementById('appcontent');
 		appcontent.removeEventListener('SubBrowserAdded', this, false);
@@ -1730,8 +1734,25 @@ catch(e) {
 				return;
 
 			case 'popupshowing':
-				if (aEvent.target != aEvent.currentTarget) return;
-				this.initContextMenu();
+				if (aEvent.currentTarget.id == 'contentAreaContextMenu' &&
+					aEvent.target == aEvent.currentTarget) {
+					this.initContextMenu();
+				}
+				if (!this.evaluateXPath(
+						'parent::*/ancestor-or-self::*[local-name()="popup" or local-name()="menupopup"]',
+						aEvent.originalTarget,
+						XPathResult.BOOLEAN_TYPE
+					).booleanValue)
+					this.popupMenuShown = true;
+				return;
+
+			case 'popuphiding':
+				if (!this.evaluateXPath(
+						'parent::*/ancestor-or-self::*[local-name()="popup" or local-name()="menupopup"]',
+						aEvent.originalTarget,
+						XPathResult.BOOLEAN_TYPE
+					).booleanValue)
+					this.popupMenuShown = false;
 				return;
 
 			case 'keydown':
