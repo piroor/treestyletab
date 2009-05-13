@@ -1395,36 +1395,39 @@ catch(e) {
 //			window.__treestyletab__BrowserCustomizeToolbar.call(window);
 //		};
 
-		var toolbox = document.getElementById('browser-toolbox') || // Firefox 3
-					document.getElementById('navigator-toolbox'); // Firefox 2
-		if (toolbox.customizeDone) {
-			toolbox.__treestyletab__customizeDone = toolbox.customizeDone;
-			toolbox.customizeDone = function(aChanged) {
-				this.__treestyletab__customizeDone(aChanged);
-				TreeStyleTabService.initBar();
-			};
+		let (toolbox) {
+			toolbox = document.getElementById('browser-toolbox') || // Firefox 3
+						document.getElementById('navigator-toolbox'); // Firefox 2
+			if (toolbox.customizeDone) {
+				toolbox.__treestyletab__customizeDone = toolbox.customizeDone;
+				toolbox.customizeDone = function(aChanged) {
+					this.__treestyletab__customizeDone(aChanged);
+					TreeStyleTabService.initBar();
+				};
+			}
+			if ('BrowserToolboxCustomizeDone' in window) {
+				window.__treestyletab__BrowserToolboxCustomizeDone = window.BrowserToolboxCustomizeDone;
+				window.BrowserToolboxCustomizeDone = function(aChanged) {
+					window.__treestyletab__BrowserToolboxCustomizeDone.apply(window, arguments);
+					TreeStyleTabService.initBar();
+				};
+			}
+			this.initBar();
+			toolbox = null;
 		}
-		if ('BrowserToolboxCustomizeDone' in window) {
-			window.__treestyletab__BrowserToolboxCustomizeDone = window.BrowserToolboxCustomizeDone;
-			window.BrowserToolboxCustomizeDone = function(aChanged) {
-				window.__treestyletab__BrowserToolboxCustomizeDone.apply(window, arguments);
-				TreeStyleTabService.initBar();
-			};
-		}
-		this.initBar();
-
 
 		this._splitFunctionNames(<![CDATA[
 			window.permaTabs.utils.wrappedFunctions["window.BrowserLoadURL"]
 			window.BrowserLoadURL
 		]]>).forEach(function(aFunc) {
-			var source = this._getFunctionSource(aFunc);
+			let source = this._getFunctionSource(aFunc);
 			if (!source || !/^\(?function BrowserLoadURL/.test(source))
 				return;
 			eval(aFunc+' = '+source.replace(
 				'aTriggeringEvent && aTriggeringEvent.altKey',
 				'TreeStyleTabService.checkReadyToOpenNewTabOnLocationBar(url, $&)'
 			));
+			source = null;
 		}, this);
 
 
@@ -1480,7 +1483,7 @@ catch(e) {
 			window.__ctxextensions__handleLinkClick
 			window.handleLinkClick
 		]]>).some(function(aFunc) {
-			var source = this._getFunctionSource(aFunc);
+			let source = this._getFunctionSource(aFunc);
 			if (!source || !/^\(?function handleLinkClick/.test(source))
 				return false;
 			eval(aFunc+' = '+source.replace(
@@ -1529,6 +1532,7 @@ catch(e) {
 					case 1:
 				]]>
 			));
+			source = null;
 			return true;
 		}, this);
 
@@ -1538,7 +1542,7 @@ catch(e) {
 			window.__ctxextensions__contentAreaClick
 			window.contentAreaClick
 		]]>).forEach(function(aFunc) {
-			var source = this._getFunctionSource(aFunc);
+			let source = this._getFunctionSource(aFunc);
 			if (!source || !/^\(?function contentAreaClick/.test(source))
 				return;
 			eval(aFunc+' = '+source.replace(
@@ -1563,6 +1567,7 @@ catch(e) {
 					}
 				]]>
 			));
+			source = null;
 		}, this);
 
 		this._splitFunctionNames(<![CDATA[
@@ -1575,7 +1580,7 @@ catch(e) {
 			window.BrowserForward
 			window.BrowserBack
 		]]>).forEach(function(aFunc) {
-			var source = this._getFunctionSource(aFunc);
+			let source = this._getFunctionSource(aFunc);
 			if (!source || !/^\(?function (gotoHistoryIndex|BrowserForward|BrowserBack)/.test(source))
 				return;
 			eval(aFunc+' = '+source.replace(
@@ -1585,6 +1590,7 @@ catch(e) {
 						TreeStyleTabService.readyToOpenChildTab();
 					$1]]>
 			));
+			source = null;
 		}, this);
 
 		this._splitFunctionNames(<![CDATA[
@@ -1592,7 +1598,7 @@ catch(e) {
 			window.BrowserHomeClick
 			window.BrowserGoHome
 		]]>).forEach(function(aFunc) {
-			var source = this._getFunctionSource(aFunc);
+			let source = this._getFunctionSource(aFunc);
 			if (!source || !/^\(?function (BrowserHomeClick|BrowserGoHome)/.test(source))
 				return;
 			eval(aFunc+' = '+source.replace(
@@ -1601,6 +1607,7 @@ catch(e) {
 					TreeStyleTabService.readyToOpenNewTabGroup(gBrowser);
 					$&]]>
 			));
+			source = null;
 		}, this);
 
 		eval('FeedHandler.loadFeed = '+
@@ -1682,6 +1689,8 @@ catch(e) {
 				'TreeStyleTabService.checkReadyToOpenNewTabOnLocationBar(url, $&)'
 			));
 		}
+		bar    = null;
+		source = null;
 	},
   
 	destroy : function() 
@@ -1797,6 +1806,8 @@ catch(e) {
 					function(aSelf) {
 						this.delayedAutoShowForShortcutDone = true;
 						sv.showTabbar(sv.kSHOWN_BY_SHORTCUT);
+						sv = null;
+						b = null;
 					},
 					this.getTreePref('tabbar.autoShow.accelKeyDown.delay'),
 					this
@@ -1864,6 +1875,24 @@ catch(e) {
 			sv.hideTabbar();
 	},
  
+	updateAutoHideKeyListeners : function() 
+	{
+		if (
+			this.getTreePref('tabbar.autoHide.mode') &&
+			this.shouldListenKeyEvents
+			) {
+			this.startListenKeyEvents();
+		}
+		else {
+			this.endListenKeyEvents();
+		}
+		window.setTimeout(function() {
+			if (window.windowState != Components.interfaces.nsIDOMChromeWindow.STATE_NORMAL) return;
+			window.resizeBy(-1,-1);
+			window.resizeBy(1,1);
+		}, 0);
+	},
+	
 	startListenKeyEvents : function() 
 	{
 		if (this.keyEventListening) return;
@@ -1872,7 +1901,8 @@ catch(e) {
 		window.addEventListener('keypress', this, true);
 		this.keyEventListening = true;
 	},
-	endListenKeyEvents : function()
+ 
+	endListenKeyEvents : function() 
 	{
 		if (!this.keyEventListening) return;
 		window.removeEventListener('keydown',  this, true);
@@ -1880,14 +1910,16 @@ catch(e) {
 		window.removeEventListener('keypress', this, true);
 		this.keyEventListening = false;
 	},
-	keyEventListening : false,
-	get shouldListenKeyEvents()
+ 
+	keyEventListening : false, 
+ 
+	get shouldListenKeyEvents() 
 	{
 		return this.getTreePref('tabbar.autoShow.accelKeyDown') ||
 				this.getTreePref('tabbar.autoShow.tabSwitch') ||
 				this.getTreePref('tabbar.autoShow.feedback');
 	},
-  
+   
 	onTabbarResized : function(aEvent) 
 	{
 		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
@@ -1930,6 +1962,20 @@ catch(e) {
 			aMenuItem.removeAttribute('hidden');
 		else
 			aMenuItem.setAttribute('hidden', true);
+	},
+ 
+	updateTabWidthPrefs : function() 
+	{
+		var expanded = this.getTreePref('tabbar.width');
+		var shrunken = this.getTreePref('tabbar.shrunkenWidth');
+		if (expanded <= shrunken) {
+			this.tabbarWidthResetting = true;
+			if (aPrefName == 'extensions.treestyletab.tabbar.width')
+				this.setTreePref('tabbar.shrunkenWidth', parseInt(expanded / 1.5));
+			else
+				this.setTreePref('tabbar.width', parseInt(shrunken * 1.5));
+			this.tabbarWidthResetting = false;
+		}
 	},
   
 /* Tree Style Tabの初期化が行われる前に復元されたセッションについてツリー構造を復元 */ 
@@ -2267,6 +2313,12 @@ catch(e) {
 					gBrowser.treeStyleTab.performDrop(actionInfo, remoteTab);
 					window.setTimeout(function() {
 						gBrowser.removeTab(blankTab);
+
+						remoteTab = null;
+						remoteBrowser = null;
+						remoteWindow = null
+						remoteService = null;
+						remoteMultipleTabService = null;
 					}, 0);
 				}, 0);
 			}
@@ -2301,40 +2353,17 @@ catch(e) {
 			case 'extensions.treestyletab.tabbar.autoShow.accelKeyDown':
 			case 'extensions.treestyletab.tabbar.autoShow.tabSwitch':
 			case 'extensions.treestyletab.tabbar.autoShow.feedback':
-				if (
-					this.getTreePref('tabbar.autoHide.mode') &&
-					this.shouldListenKeyEvents
-					) {
-					this.startListenKeyEvents();
-				}
-				else {
-					this.endListenKeyEvents();
-				}
-				window.setTimeout(function() {
-					if (window.windowState != Components.interfaces.nsIDOMChromeWindow.STATE_NORMAL) return;
-					window.resizeBy(-1,-1);
-					window.resizeBy(1,1);
-				}, 0);
+				this.updateAutoHideKeyListeners();
 				break;
 
 			case 'extensions.treestyletab.tabbar.width':
 			case 'extensions.treestyletab.tabbar.shrunkenWidth':
-				var expanded = this.getTreePref('tabbar.width');
-				var shrunken = this.getTreePref('tabbar.shrunkenWidth');
-				if (expanded <= shrunken) {
-					this.tabbarWidthResetting = true;
-					if (aPrefName == 'extensions.treestyletab.tabbar.width')
-						this.setTreePref('tabbar.shrunkenWidth', parseInt(expanded / 1.5));
-					else
-						this.setTreePref('tabbar.width', parseInt(shrunken * 1.5));
-					this.tabbarWidthResetting = false;
-				}
+				this.updateTabWidthPrefs();
 				break;
 
 			case 'browser.link.open_newwindow.restriction.override':
 			case 'browser.tabs.loadFolderAndReplace.override':
-				var target = aPrefName.replace('.override', '');
-				this.setPref(target, this.getPref(aPrefName));
+				this.setPref(aPrefName.replace('.override', ''), this.getPref(aPrefName));
 				break;
 
 			case 'extensions.treestyletab.clickOnIndentSpaces.enabled':
