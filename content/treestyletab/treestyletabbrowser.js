@@ -3219,13 +3219,20 @@ TreeStyleTabBrowser.prototype = {
 
 		var maxMargin;
 		var offsetAttr;
-		if (this.isVertical) {
-			maxMargin = this.getFirstTab(this.mTabBrowser).boxObject.height;
-			offsetAttr = this.kY_OFFSET;
-		}
-		else {
-			maxMargin = this.getFirstTab(this.mTabBrowser).boxObject.width;
-			offsetAttr = this.kX_OFFSET;
+		let (firstTab) {
+			firstTab = this.getFirstTab(this.mTabBrowser);
+			if (this.isVertical) {
+				maxMargin = firstTab.boxObject.height;
+				offsetAttr = this.kY_OFFSET;
+				if (firstTab.style.height)
+					aTab.style.height = firstTab.style.height;
+			}
+			else {
+				maxMargin = firstTab.boxObject.width;
+				offsetAttr = this.kX_OFFSET;
+				if (firstTab.style.width)
+					aTab.style.width = firstTab.style.width;
+			}
 		}
 
 		var startMargin, endMargin, startOpacity, endOpacity;
