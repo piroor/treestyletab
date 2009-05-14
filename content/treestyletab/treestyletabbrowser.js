@@ -517,8 +517,8 @@ TreeStyleTabBrowser.prototype = {
 			tabContextMenu = document.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu');
 			tabContextMenu.addEventListener('popupshowing', this, false);
 			if (!('MultipleTabService' in window)) {
-				window.setTimeout(function(aSelf) {
-					let suffix = '-tabbrowser-'+(b.id || 'instance-'+parseInt(Math.random() * 65000));
+				window.setTimeout(function(aSelf, aTabBrowser) {
+					let suffix = '-tabbrowser-'+(aTabBrowser.id || 'instance-'+parseInt(Math.random() * 65000));
 					[
 						aSelf.kMENUITEM_REMOVESUBTREE,
 						aSelf.kMENUITEM_REMOVECHILDREN,
@@ -554,7 +554,7 @@ TreeStyleTabBrowser.prototype = {
 						tabContextMenu.insertBefore(item, refNode || null);
 					});
 					tabContextMenu = null;
-				}, 0, this);
+				}, 0, this, b);
 			}
 		}
 
