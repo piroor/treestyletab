@@ -1752,8 +1752,13 @@ catch(e) {
 						'parent::*/ancestor-or-self::*[local-name()="popup" or local-name()="menupopup"]',
 						aEvent.originalTarget,
 						XPathResult.BOOLEAN_TYPE
-					).booleanValue)
+					).booleanValue) {
 					this.popupMenuShown = true;
+					window.setTimeout(function(aSelf, aPopup) {
+						if (!aPopup.boxObject.width || !aPopup.boxObject.height)
+							aSelf.popupMenuShown = false;
+					}, 10, this, aEvent.originalTarget);
+				}
 				return;
 
 			case 'popuphiding':
@@ -1762,8 +1767,9 @@ catch(e) {
 						'parent::*/ancestor-or-self::*[local-name()="popup" or local-name()="menupopup"]',
 						aEvent.originalTarget,
 						XPathResult.BOOLEAN_TYPE
-					).booleanValue)
+					).booleanValue) {
 					this.popupMenuShown = false;
+				}
 				return;
 
 			case 'keydown':
