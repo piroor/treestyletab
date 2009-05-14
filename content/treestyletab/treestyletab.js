@@ -1964,7 +1964,7 @@ catch(e) {
 			aMenuItem.setAttribute('hidden', true);
 	},
  
-	updateTabWidthPrefs : function() 
+	updateTabWidthPrefs : function(aPrefName) 
 	{
 		var expanded = this.getTreePref('tabbar.width');
 		var shrunken = this.getTreePref('tabbar.shrunkenWidth');
@@ -2358,7 +2358,7 @@ catch(e) {
 
 			case 'extensions.treestyletab.tabbar.width':
 			case 'extensions.treestyletab.tabbar.shrunkenWidth':
-				this.updateTabWidthPrefs();
+				this.updateTabWidthPrefs(aPrefName);
 				break;
 
 			case 'browser.link.open_newwindow.restriction.override':
