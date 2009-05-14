@@ -517,7 +517,7 @@ TreeStyleTabBrowser.prototype = {
 			tabContextMenu = document.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu');
 			tabContextMenu.addEventListener('popupshowing', this, false);
 			if (!('MultipleTabService' in window)) {
-				window.setTimeout(function(aSelf, aTabBrowser) {
+				window.setTimeout(function(aSelf, aTabBrowser, aPopup) {
 					let suffix = '-tabbrowser-'+(aTabBrowser.id || 'instance-'+parseInt(Math.random() * 65000));
 					[
 						aSelf.kMENUITEM_REMOVESUBTREE,
@@ -551,11 +551,11 @@ TreeStyleTabBrowser.prototype = {
 							catch(e) {
 							}
 						}
-						tabContextMenu.insertBefore(item, refNode || null);
+						aPopup.insertBefore(item, refNode || null);
 					});
-					tabContextMenu = null;
-				}, 0, this, b);
+				}, 0, this, b, tabContextMenu);
 			}
+			tabContextMenu = null;
 		}
 
 		let (allTabPopup) {
@@ -1873,8 +1873,7 @@ TreeStyleTabBrowser.prototype = {
 	onMouseUp : function(aEvent) 
 	{
 		if (aEvent.originalTarget &&
-			aEvent.originalTarget.getAttribute('class') == this.kSPLITTER ||
-			aEvent.originalTarget.parentNode.getAttribute('class') == this.kSPLITTER) {
+			this.evaluateXPath('ancestor::*[@class="'+this.kSPLITTER+'"]', aEvent.originalTarget, XPathResult.BOOLEAN_TYPE).booleanValue) {
 			this.tabbarResizing = false;
 			this.mTabBrowser.removeAttribute(this.kRESIZING);
 			if (this.autoHideShown) this.redrawContentArea();
