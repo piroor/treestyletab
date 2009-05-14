@@ -1747,29 +1747,23 @@ catch(e) {
 					aEvent.target == aEvent.currentTarget) {
 					this.initContextMenu();
 				}
-				if (!this.popupMenuShown &&
-					!this.evaluateXPath(
+				if (!this.evaluateXPath(
 						'local-name() = "tooltip" or local-name() ="panel" or '+
 						'parent::*/ancestor-or-self::*[local-name()="popup" or local-name()="menupopup"]',
 						aEvent.originalTarget,
 						XPathResult.BOOLEAN_TYPE
-					).booleanValue) {
-					Application.console.log('show '+aEvent.originalTarget.localName+'#'+aEvent.originalTarget.id);
+					).booleanValue)
 					this.popupMenuShown = true;
-				}
 				return;
 
 			case 'popuphiding':
-				if (this.popupMenuShown &&
-					!this.evaluateXPath(
+				if (!this.evaluateXPath(
 						'local-name() = "tooltip" or local-name() ="panel" or '+
 						'parent::*/ancestor-or-self::*[local-name()="popup" or local-name()="menupopup"]',
 						aEvent.originalTarget,
 						XPathResult.BOOLEAN_TYPE
-					).booleanValue) {
-					Application.console.log('hide '+aEvent.originalTarget.id);
+					).booleanValue)
 					this.popupMenuShown = false;
-				}
 				return;
 
 			case 'keydown':
