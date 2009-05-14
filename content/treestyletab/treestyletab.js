@@ -1748,6 +1748,7 @@ catch(e) {
 					this.initContextMenu();
 				}
 				if (!this.evaluateXPath(
+						'not(self::*[local-name()="tooltip" or local-name()="panel"]) and '+
 						'parent::*/ancestor-or-self::*[local-name()="popup" or local-name()="menupopup"]',
 						aEvent.originalTarget,
 						XPathResult.BOOLEAN_TYPE
@@ -1757,6 +1758,7 @@ catch(e) {
 
 			case 'popuphiding':
 				if (!this.evaluateXPath(
+						'not(self::*[local-name()="tooltip" or local-name()="panel"]) and '+
 						'parent::*/ancestor-or-self::*[local-name()="popup" or local-name()="menupopup"]',
 						aEvent.originalTarget,
 						XPathResult.BOOLEAN_TYPE

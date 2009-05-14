@@ -1884,8 +1884,9 @@ TreeStyleTabBrowser.prototype = {
  
 	handleMouseMove : function(aEvent) 
 	{
-		if (this.tabbarResizing)
-			return /^(scrollbar|thumb|slider|scrollbarbutton)$/i.test(this.lastMouseDownTarget);
+		if (this.tabbarResizing &&
+			/^(scrollbar|thumb|slider|scrollbarbutton)$/i.test(this.lastMouseDownTarget))
+			return true;
 
 		if (
 			!this.popupMenuShown &&
@@ -3752,6 +3753,7 @@ TreeStyleTabBrowser.prototype = {
 				b.setAttribute(aSelf.kAUTOHIDE, 'show');
 				aSelf.redrawContentArea();
 			}
+			b.mTabContainer.adjustTabstrip();
 			aSelf.checkTabsIndentOverflow();
 			aSelf.redrawContentArea();
 			fullScreenCanvas.hide();
