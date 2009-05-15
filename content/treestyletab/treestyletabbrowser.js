@@ -2720,7 +2720,7 @@ TreeStyleTabBrowser.prototype = {
 	
 /* attach/part */ 
 	
-	attachTabTo : function(aChild, aParent, aInfo) 
+	attachTabTo : function(aChild, aParent, aInfo) /* PUBLIC API */ 
 	{
 		var currentParent;
 		if (
@@ -2823,7 +2823,7 @@ TreeStyleTabBrowser.prototype = {
 		}, this);
 	},
  
-	partTab : function(aChild, aDontUpdateIndent) 
+	partTab : function(aChild, aDontUpdateIndent) /* PUBLIC API */ 
 	{
 		if (!aChild) return;
 
@@ -3137,7 +3137,7 @@ TreeStyleTabBrowser.prototype = {
   
 /* collapse/expand */ 
 	
-	collapseExpandSubtree : function(aTab, aCollapse, aJustNow) 
+	collapseExpandSubtree : function(aTab, aCollapse, aJustNow) /* PUBLIC API */ 
 	{
 		if (!aTab) return;
 
@@ -3165,6 +3165,7 @@ TreeStyleTabBrowser.prototype = {
 		this.setTabValue(aTab, this.kCOLLAPSED, aCollapse);
 		this.updateTabCollapsed(aTab, aCollapse, aJustNow);
 
+		/* PUBLIC API */
 		var event = document.createEvent('Events');
 		event.initEvent('TreeStyleTabCollapsedStateChange', true, true);
 		event.collapsed = aCollapse;
@@ -3758,6 +3759,7 @@ TreeStyleTabBrowser.prototype = {
 			aSelf.redrawContentArea();
 			fullScreenCanvas.hide();
 
+			/* PUBLIC API */
 			var event = document.createEvent('Events');
 			event.initEvent('TreeStyleTabAutoHideStateChange', true, true);
 			event.shown = aSelf.autoHideShown;

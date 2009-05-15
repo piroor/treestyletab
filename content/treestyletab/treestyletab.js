@@ -231,7 +231,7 @@ var TreeStyleTabService = {
 	
 /* API */ 
 	
-	readyToOpenChildTab : function(aFrameOrTabBrowser, aMultiple, aInsertBefore) 
+	readyToOpenChildTab : function(aFrameOrTabBrowser, aMultiple, aInsertBefore) /* PUBLIC API */ 
 	{
 		if (!this.getTreePref('autoAttachNewTabsAsChildren')) return;
 
@@ -257,7 +257,7 @@ var TreeStyleTabService = {
 		ownerBrowser.treeStyleTab.insertBefore          = refId;
 	},
  
-	readyToOpenNewTabGroup : function(aFrameOrTabBrowser) 
+	readyToOpenNewTabGroup : function(aFrameOrTabBrowser) /* PUBLIC API */ 
 	{
 		if (!this.getTreePref('autoAttachNewTabsAsChildren')) return;
 
@@ -272,7 +272,7 @@ var TreeStyleTabService = {
 		ownerBrowser.treeStyleTab.multipleCount            = 0;
 	},
  
-	stopToOpenChildTab : function(aFrameOrTabBrowser) 
+	stopToOpenChildTab : function(aFrameOrTabBrowser) /* PUBLIC API */ 
 	{
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
 		if (!frame) return;
@@ -286,7 +286,7 @@ var TreeStyleTabService = {
 		ownerBrowser.treeStyleTab.insertBefore             = null;
 	},
  
-	checkToOpenChildTab : function(aFrameOrTabBrowser) 
+	checkToOpenChildTab : function(aFrameOrTabBrowser) /* PUBLIC API */ 
 	{
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
 		if (!frame) return false;
@@ -412,7 +412,7 @@ var TreeStyleTabService = {
 				null ;
 	},
  
-	setTabbarWidth : function(aWidth, aForceExpanded) 
+	setTabbarWidth : function(aWidth, aForceExpanded) /* PUBLIC API */ 
 	{
 		var treeStyleTab = gBrowser.treeStyleTab;
 		if (aForceExpanded ||
@@ -423,7 +423,7 @@ var TreeStyleTabService = {
 			this.setTreePref('tabbar.shrunkenWidth', aWidth);
 	},
  
-	setContentWidth : function(aWidth, aKeepWindowSize) 
+	setContentWidth : function(aWidth, aKeepWindowSize) /* PUBLIC API */ 
 	{
 		var treeStyleTab = gBrowser.treeStyleTab;
 		var tabbarWidth = treeStyleTab.splitterWidth + (treeStyleTab.isVertical ? gBrowser.mStrip.boxObject.width : 0 );
@@ -457,7 +457,7 @@ var TreeStyleTabService = {
 			!this.getTreePref('tabbar.fixed'));
 	},
  
-	changeTabbarPosition : function(aNewPosition) 
+	changeTabbarPosition : function(aNewPosition) /* PUBLIC API */ 
 	{
 		if (!aNewPosition || !/^(top|bottom|left|right)$/i.test(aNewPosition))
 			aNewPosition = 'top';
@@ -825,7 +825,7 @@ var TreeStyleTabService = {
   
 /* tree manipulations */ 
 	
-	get rootTabs() 
+	get rootTabs() /* PUBLIC API */ 
 	{
 		return this.getArrayFromXPathResult(
 				this.evaluateXPath(
@@ -835,7 +835,7 @@ var TreeStyleTabService = {
 			);
 	},
  
-	getParentTab : function(aTab) 
+	getParentTab : function(aTab) /* PUBLIC API */ 
 	{
 		if (!aTab) return null;
 		var id = aTab.getAttribute(this.kID);
@@ -847,7 +847,7 @@ var TreeStyleTabService = {
 			).singleNodeValue;
 	},
  
-	getRootTab : function(aTab) 
+	getRootTab : function(aTab) /* PUBLIC API */ 
 	{
 		var parent = aTab;
 		var root   = aTab;
@@ -858,7 +858,7 @@ var TreeStyleTabService = {
 		return root;
 	},
  
-	getNextSiblingTab : function(aTab) 
+	getNextSiblingTab : function(aTab) /* PUBLIC API */ 
 	{
 		if (!aTab) return null;
 
@@ -887,7 +887,7 @@ var TreeStyleTabService = {
 		return null;
 	},
  
-	getPreviousSiblingTab : function(aTab) 
+	getPreviousSiblingTab : function(aTab) /* PUBLIC API */ 
 	{
 		if (!aTab) return null;
 
@@ -916,7 +916,7 @@ var TreeStyleTabService = {
 		return null;
 	},
  
-	getChildTabs : function(aTab, aAllTabsArray) 
+	getChildTabs : function(aTab, aAllTabsArray) /* PUBLIC API */ 
 	{
 		var tabs = [];
 		if (!aTab) return null;
@@ -940,20 +940,20 @@ var TreeStyleTabService = {
 		return tabs;
 	},
  
-	hasChildTabs : function(aTab) 
+	hasChildTabs : function(aTab) /* PUBLIC API */ 
 	{
 		if (!aTab) return false;
 		return aTab.hasAttribute(this.kCHILDREN);
 	},
  
-	getDescendantTabs : function(aTab) 
+	getDescendantTabs : function(aTab) /* PUBLIC API */ 
 	{
 		var tabs = [];
 		this.getChildTabs(aTab, tabs);
 		return tabs;
 	},
  
-	getFirstChildTab : function(aTab) 
+	getFirstChildTab : function(aTab) /* PUBLIC API */ 
 	{
 		if (!aTab) return null;
 
@@ -970,7 +970,7 @@ var TreeStyleTabService = {
 		return firstChild;
 	},
  
-	getLastChildTab : function(aTab) 
+	getLastChildTab : function(aTab) /* PUBLIC API */ 
 	{
 		if (!aTab) return null;
 
@@ -987,7 +987,7 @@ var TreeStyleTabService = {
 		return lastChild;
 	},
  
-	getLastDescendantTab : function(aTab) 
+	getLastDescendantTab : function(aTab) /* PUBLIC API */ 
 	{
 		if (!aTab) return null;
 
@@ -2265,35 +2265,35 @@ catch(e) {
 		);
 	},
  
-	registerAttachTabPostProcess : function(aProcess) 
+	registerAttachTabPostProcess : function(aProcess) /* PUBLIC API */ 
 	{
 		this._attachTabPostProcesses.push(aProcess);
 	},
 	_attachTabPostProcesses : [],
  
-	registerTabFocusAllowance : function(aProcess) 
+	registerTabFocusAllowance : function(aProcess) /* PUBLIC API */ 
 	{
 		this._tabFocusAllowance.push(aProcess);
 	},
 	_tabFocusAllowance : [],
  
-	registerExpandTwistyAreaAllowance : function(aProcess) 
+	registerExpandTwistyAreaAllowance : function(aProcess) /* PUBLIC API */ 
 	{
 		this._expandTwistyAreaAllowance.push(aProcess);
 	},
 	_expandTwistyAreaAllowance : [],
  
-	registerCollapseExpandPostProcess : function(aProcess) 
+	registerCollapseExpandPostProcess : function(aProcess) /* PUBLIC API */ 
 	{
 		this._collapseExpandPostProcess.push(aProcess);
 	},
 	_collapseExpandPostProcess : [],
  
-	registerTabbarAutoShowPostProcess : function(aProcess) 
+	registerTabbarAutoShowPostProcess : function(aProcess) /* PUBLIC API */ 
 	{
 		this._tabbarAutoShowPostProcess.push(aProcess);
 	},
-	registerTabbarAutoHidePostProcess : function(aProcess)
+	registerTabbarAutoHidePostProcess : function(aProcess) /* PUBLIC API */
 	{
 		this._tabbarAutoHidePostProcess.push(aProcess);
 	},
