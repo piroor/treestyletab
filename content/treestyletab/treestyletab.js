@@ -2265,12 +2265,6 @@ catch(e) {
 		);
 	},
  
-	registerAttachTabPostProcess : function(aProcess) /* PUBLIC API */ 
-	{
-		this._attachTabPostProcesses.push(aProcess);
-	},
-	_attachTabPostProcesses : [],
- 
 	registerTabFocusAllowance : function(aProcess) /* PUBLIC API */ 
 	{
 		this._tabFocusAllowance.push(aProcess);
@@ -2282,23 +2276,6 @@ catch(e) {
 		this._expandTwistyAreaAllowance.push(aProcess);
 	},
 	_expandTwistyAreaAllowance : [],
- 
-	registerCollapseExpandPostProcess : function(aProcess) /* PUBLIC API */ 
-	{
-		this._collapseExpandPostProcess.push(aProcess);
-	},
-	_collapseExpandPostProcess : [],
- 
-	registerTabbarAutoShowPostProcess : function(aProcess) /* PUBLIC API */ 
-	{
-		this._tabbarAutoShowPostProcess.push(aProcess);
-	},
-	registerTabbarAutoHidePostProcess : function(aProcess) /* PUBLIC API */
-	{
-		this._tabbarAutoHidePostProcess.push(aProcess);
-	},
-	_tabbarAutoShowPostProcess : [],
-	_tabbarAutoHidePostProcess : [],
  
 	tearOffSubTreeFromRemote : function() 
 	{

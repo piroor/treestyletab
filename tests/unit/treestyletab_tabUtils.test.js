@@ -237,8 +237,8 @@ function test_cleanUpTabsArray()
 
 
 /*
-sv.registerAttachTabPostProcess(func)
 sv.registerTabFocusAllowance(func)
+sv.registerExpandTwistyAreaAllowance(func)
 
 */
 

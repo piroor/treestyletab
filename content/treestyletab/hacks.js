@@ -401,9 +401,21 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 			)
 		);
 
-		TreeStyleTabService.registerCollapseExpandPostProcess(function() {
-			tabBarScrollStatus();
-		});
+		let listener = {
+				handleEvent : function(aEvent)
+				{
+					case 'TreeStyleTabCollapsedStateChange':
+						tabBarScrollStatus();
+						break;
+
+					case 'unload':
+						window.removeEventListener('TreeStyleTabCollapsedStateChange', this, false);
+						window.removeEventListener('unload', this, false);
+						break;
+				}
+			};
+		window.addEventListener('TreeStyleTabCollapsedStateChange', listener, false);
+		window.addEventListener('unload', listener, false);
 
 		TreeStyleTabBrowser.prototype.isMultiRow = function()
 		{
@@ -506,18 +518,32 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 
 	// ColorfulTab
 	if ('clrtabsInit' in window) {
-		this.registerAttachTabPostProcess(function(aChild, aParent, aService) {
-			if (aChild && aParent) {
-				setColor(aChild, aService.SessionStore.getTabValue(aParent, 'tabClr'));
-			}
-			else if (aChild) {
-				aService.SessionStore.setTabValue(aChild, 'tabClr', '')
-				calcTabClr({
-					target : aChild,
-					originalTarget : aChild,
-				});
-			}
-		});
+		let listener = {
+				handleEvent : function(aEvent)
+				{
+					case 'TreeStyleTabAttached':
+						var child = aEvent.originalTarget;
+						var parent = aEvent.parentTab;
+						if (child && parent) {
+							setColor(child, TreeStyleTabService.SessionStore.getTabValue(parent, 'tabClr'));
+						}
+						else if (child) {
+							TreeStyleTabService.SessionStore.setTabValue(child, 'tabClr', '')
+							calcTabClr({
+								target : child,
+								originalTarget : child,
+							});
+						}
+						break;
+
+					case 'unload':
+						window.removeEventListener('TreeStyleTabAttached', this, false);
+						window.removeEventListener('unload', this, false);
+						break;
+				}
+			};
+		window.addEventListener('TreeStyleTabAttached', listener, false);
+		window.addEventListener('unload', listener, false);
 	}
 
 	// FLST
@@ -688,34 +714,36 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 
 	// Autohide
 	if ('autoHIDE' in window) {
-		TreeStyleTabService.registerTabbarAutoShowPostProcess(function(aTabBrowser) {
-			if (!window.fullScreen) return;
-			aTabBrowser.mStrip.removeAttribute('ahHIDE');
-			if (
-				autoHIDE.statBar &&
-				aTabBrowser.getAttribute(aTabBrowser.treeStyleTab.kTABBAR_POSITION) == 'bottom' &&
-				!aTabBrowser.treeStyleTab.getPref('extensions.autohide.bars.statBar.always') &&
-				aTabBrowser.treeStyleTab.getPref('extensions.autohide.bars.statBar')
-				) {
-				autoHIDE.statBar.removeAttribute('ahHIDE');
-			}
-		});
-		TreeStyleTabService.registerTabbarAutoHidePostProcess(function(aTabBrowser) {
-			if (!window.fullScreen) return;
-			if (
-				autoHIDE.statBar &&
-				aTabBrowser.getAttribute(aTabBrowser.treeStyleTab.kTABBAR_POSITION) == 'bottom' &&
-				!aTabBrowser.treeStyleTab.getPref('extensions.autohide.bars.statBar.always') &&
-				aTabBrowser.treeStyleTab.getPref('extensions.autohide.bars.statBar')
-				) {
-				autoHIDE.statBar.setAttribute('ahHIDE', true);
-			}
-		});
-		var autoHideEventListener = {
+		let autoHideEventListener = {
 				handleEvent : function(aEvent)
 				{
 					switch (aEvent.type)
 					{
+						case 'TreeStyleTabAutoHideStateChange':
+							if (!window.fullScreen) return;
+							if (aEvent.collapsed) {
+								if (
+									autoHIDE.statBar &&
+									gBrowser.getAttribute(gBrowser.treeStyleTab.kTABBAR_POSITION) == 'bottom' &&
+									!gBrowser.treeStyleTab.getPref('extensions.autohide.bars.statBar.always') &&
+									gBrowser.treeStyleTab.getPref('extensions.autohide.bars.statBar')
+									) {
+									autoHIDE.statBar.setAttribute('ahHIDE', true);
+								}
+							}
+							else {
+								gBrowser.mStrip.removeAttribute('ahHIDE');
+								if (
+									autoHIDE.statBar &&
+									aTabBrowser.getAttribute(gBrowser.treeStyleTab.kTABBAR_POSITION) == 'bottom' &&
+									!aTabBrowser.treeStyleTab.getPref('extensions.autohide.bars.statBar.always') &&
+									aTabBrowser.treeStyleTab.getPref('extensions.autohide.bars.statBar')
+									) {
+									autoHIDE.statBar.removeAttribute('ahHIDE');
+								}
+							}
+							break;
+
 						case 'fullscreen':
 							var treeStyleTab = gBrowser.treeStyleTab;
 							if (gBrowser.getAttribute(treeStyleTab.kTABBAR_POSITION) != 'top') {
@@ -728,12 +756,14 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 
 						case 'unload':
 							var t = aEvent.currentTarget;
+							t.removeEventListener('TreeStyleTabAutoHideStateChange', this, false);
 							t.removeEventListener('unload', this, false);
 							t.removeEventListener('fullscreen', this, false);
 							break;
 					}
 				}
 			};
+		window.addEventListener('TreeStyleTabAutoHideStateChange', autoHideEventListener, false);
 		window.addEventListener('fullscreen', autoHideEventListener, false);
 		window.addEventListener('unload', autoHideEventListener, false);
 	}

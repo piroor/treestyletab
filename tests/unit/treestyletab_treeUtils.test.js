@@ -16,7 +16,5 @@ sv.getChildIndex(tab, parent)
 sv.removeTabSubTree(tabs, onlychildren)
 sv.collapseExpandAllSubtree(collapse)
 
-sv.registerCollapseExpandPostProcess(func)
-
 
 */

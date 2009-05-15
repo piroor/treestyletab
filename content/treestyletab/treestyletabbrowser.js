@@ -2814,7 +2814,10 @@ TreeStyleTabBrowser.prototype = {
 			this.checkTabsIndentOverflow();
 		}
 
-		this.attachTabPostProcess(aChild, aParent);
+		var event = document.createEvent('Events');
+		event.initEvent('TreeStyleTabAttached', true, true);
+		event.parentTab = aParent;
+		aChild.dispatchEvent(event);
 	},
 	attachTabPostProcess : function(aChild, aParent)
 	{
