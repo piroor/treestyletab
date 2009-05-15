@@ -522,6 +522,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 				handleEvent : function(aEvent)
 				{
 					case 'TreeStyleTabAttached':
+					case 'TreeStyleTabParted':
 						var child = aEvent.originalTarget;
 						var parent = aEvent.parentTab;
 						if (child && parent) {
@@ -538,11 +539,13 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 
 					case 'unload':
 						window.removeEventListener('TreeStyleTabAttached', this, false);
+						window.removeEventListener('TreeStyleTabParted', this, false);
 						window.removeEventListener('unload', this, false);
 						break;
 				}
 			};
 		window.addEventListener('TreeStyleTabAttached', listener, false);
+		window.addEventListener('TreeStyleTabParted', listener, false);
 		window.addEventListener('unload', listener, false);
 	}
 
@@ -719,7 +722,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 				{
 					switch (aEvent.type)
 					{
-						case 'TreeStyleTabAutoHideStateChange':
+						case 'TreeStyleTabAutoHideStateChanging':
 							if (!window.fullScreen) return;
 							if (aEvent.collapsed) {
 								if (
@@ -756,14 +759,14 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 
 						case 'unload':
 							var t = aEvent.currentTarget;
-							t.removeEventListener('TreeStyleTabAutoHideStateChange', this, false);
+							t.removeEventListener('TreeStyleTabAutoHideStateChanging', this, false);
 							t.removeEventListener('unload', this, false);
 							t.removeEventListener('fullscreen', this, false);
 							break;
 					}
 				}
 			};
-		window.addEventListener('TreeStyleTabAutoHideStateChange', autoHideEventListener, false);
+		window.addEventListener('TreeStyleTabAutoHideStateChanging', autoHideEventListener, false);
 		window.addEventListener('fullscreen', autoHideEventListener, false);
 		window.addEventListener('unload', autoHideEventListener, false);
 	}

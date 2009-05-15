@@ -2729,7 +2729,11 @@ TreeStyleTabBrowser.prototype = {
 			aChild == aParent ||
 			(currentParent = this.getParentTab(aChild)) == aParent
 			) {
-			this.attachTabPostProcess(aChild, aParent);
+			/* PUBLIC API */
+			let event = document.createEvent('Events');
+			event.initEvent('TreeStyleTabAttached', true, true);
+			event.parentTab = aParent;
+			aChild.dispatchEvent(event);
 			return;
 		}
 
@@ -2814,16 +2818,11 @@ TreeStyleTabBrowser.prototype = {
 			this.checkTabsIndentOverflow();
 		}
 
+		/* PUBLIC API */
 		var event = document.createEvent('Events');
 		event.initEvent('TreeStyleTabAttached', true, true);
 		event.parentTab = aParent;
 		aChild.dispatchEvent(event);
-	},
-	attachTabPostProcess : function(aChild, aParent)
-	{
-		this._attachTabPostProcesses.forEach(function(aProcess) {
-			aProcess(aChild, aParent, this);
-		}, this);
 	},
  
 	partTab : function(aChild, aDontUpdateIndent) /* PUBLIC API */ 
@@ -2851,7 +2850,10 @@ TreeStyleTabBrowser.prototype = {
 			this.checkTabsIndentOverflow();
 		}
 
-		this.attachTabPostProcess(aChild, null);
+		/* PUBLIC API */
+		var event = document.createEvent('Events');
+		event.initEvent('TreeStyleTabParted', true, true);
+		aChild.dispatchEvent(event);
 	},
  
 	updateTabsIndent : function(aTabs, aLevel, aProp, aJustNow) 
@@ -3708,9 +3710,6 @@ TreeStyleTabBrowser.prototype = {
 			}
 			this.showHideTabbarReason = aReason || this.kSHOWN_BY_UNKNOWN;
 			this.autoHideShown = false;
-			this._tabbarAutoHidePostProcess.every(function(aFunc) {
-				return aFunc(b);
-			});
 		}
 		else { // to be shown or expanded
 			switch (b.getAttribute(this.kTABBAR_POSITION))
@@ -3742,10 +3741,14 @@ TreeStyleTabBrowser.prototype = {
 			}
 			this.showHideTabbarReason = aReason || this.kSHOWN_BY_UNKNOWN;
 			this.autoHideShown = true;
-			this._tabbarAutoShowPostProcess.every(function(aFunc) {
-				return aFunc(b);
-			});
 		}
+
+		/* PUBLIC API */
+		let event = document.createEvent('Events');
+		event.initEvent('TreeStyleTabAutoHideStateChanging', true, true);
+		event.shown = this.autoHideShown;
+		this.mTabBrowser.dispatchEvent(event);
+
 		window.setTimeout(function(aSelf) {
 			if (
 				aSelf.autoHideShown &&
@@ -3763,7 +3766,7 @@ TreeStyleTabBrowser.prototype = {
 			fullScreenCanvas.hide();
 
 			/* PUBLIC API */
-			var event = document.createEvent('Events');
+			let event = document.createEvent('Events');
 			event.initEvent('TreeStyleTabAutoHideStateChange', true, true);
 			event.shown = aSelf.autoHideShown;
 			event.xOffset = aSelf.autoHideXOffset;
