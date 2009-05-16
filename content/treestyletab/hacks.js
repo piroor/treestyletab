@@ -404,14 +404,17 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		let listener = {
 				handleEvent : function(aEvent)
 				{
-					case 'TreeStyleTabCollapsedStateChange':
-						tabBarScrollStatus();
-						break;
+					switch (aEvent.type)
+					{
+						case 'TreeStyleTabCollapsedStateChange':
+							tabBarScrollStatus();
+							break;
 
-					case 'unload':
-						window.removeEventListener('TreeStyleTabCollapsedStateChange', this, false);
-						window.removeEventListener('unload', this, false);
-						break;
+						case 'unload':
+							window.removeEventListener('TreeStyleTabCollapsedStateChange', this, false);
+							window.removeEventListener('unload', this, false);
+							break;
+					}
 				}
 			};
 		window.addEventListener('TreeStyleTabCollapsedStateChange', listener, false);
@@ -521,27 +524,30 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		let listener = {
 				handleEvent : function(aEvent)
 				{
-					case 'TreeStyleTabAttached':
-					case 'TreeStyleTabParted':
-						var child = aEvent.originalTarget;
-						var parent = aEvent.parentTab;
-						if (child && parent) {
-							setColor(child, TreeStyleTabService.SessionStore.getTabValue(parent, 'tabClr'));
-						}
-						else if (child) {
-							TreeStyleTabService.SessionStore.setTabValue(child, 'tabClr', '')
-							calcTabClr({
-								target : child,
-								originalTarget : child,
-							});
-						}
-						break;
+					switch (aEvent.type)
+					{
+						case 'TreeStyleTabAttached':
+						case 'TreeStyleTabParted':
+							var child = aEvent.originalTarget;
+							var parent = aEvent.parentTab;
+							if (child && parent) {
+								setColor(child, TreeStyleTabService.SessionStore.getTabValue(parent, 'tabClr'));
+							}
+							else if (child) {
+								TreeStyleTabService.SessionStore.setTabValue(child, 'tabClr', '')
+								calcTabClr({
+									target : child,
+									originalTarget : child,
+								});
+							}
+							break;
 
-					case 'unload':
-						window.removeEventListener('TreeStyleTabAttached', this, false);
-						window.removeEventListener('TreeStyleTabParted', this, false);
-						window.removeEventListener('unload', this, false);
-						break;
+						case 'unload':
+							window.removeEventListener('TreeStyleTabAttached', this, false);
+							window.removeEventListener('TreeStyleTabParted', this, false);
+							window.removeEventListener('unload', this, false);
+							break;
+					}
 				}
 			};
 		window.addEventListener('TreeStyleTabAttached', listener, false);
