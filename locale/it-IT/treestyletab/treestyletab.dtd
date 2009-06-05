@@ -11,10 +11,10 @@
 <!ENTITY config.tabbar.position.top     "in alto (comportamento predefinito di Firefox)">
 <!ENTITY config.tabbar.position.bottom  "in basso">
 <!ENTITY config.tabbar.invertScrollbar  "Visualizza la barra di scorrimento all&apos;estrema sinistra">
-<!ENTITY config.tabbar.invertClosebox.left  "Show closebox at leftside in each tab">
-<!ENTITY config.tabbar.invertClosebox.right "Show closebox at rightside in each tab">
+<!ENTITY config.tabbar.invertClosebox.left  "Visualizza il pulsante di chiusura alla sinistra di ogni scheda">
+<!ENTITY config.tabbar.invertClosebox.right "Visualizza il pulsante di chiusura alla destra di ogni scheda"> <!-- NUOVA -->
 <!ENTITY config.tabbar.invertTab            "Inverti la visualizzazione delle schede">
-<!ENTITY config.tabbar.invertTabContents    "Invert tab contents">
+<!ENTITY config.tabbar.invertTabContents    "Inverti la visualizzazione dei controlli di contrazione/espansione dei sottoalberi"> <!-- NUOVA -->
 <!ENTITY config.enableSubtreeIndent         "Indenta sottoschede">
 <!ENTITY config.allowSubtreeCollapseExpand  "Permetti di contrarre/espandere sottoalberi delle schede">
 <!ENTITY config.tabbar.hideNewTabButton     "Visualizza il pulsante &quot;Apri una nuova scheda&quot;">
@@ -61,7 +61,7 @@
 <!ENTITY config.openGroupBookmarkAsTabSubTree.caption "La voce &quot;Apri tutti in schede&quot; nel menu Segnalibri">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.subtree "apre i segnalibri come sottoalbero (Raccomandato)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "apre i segnalibri in schede separate">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.replace "Replace the current one tab to the pages in the folder (Firefox default)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.replace "sostituisce la scheda in uso con i segnalibri contenuti nella cartella selezionata (comportamento predefinito di Firefox)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace.fx2 "sostituisce la scheda in uso con i segnalibri contenuti nella cartella selezionata (comportamento predefinito di Firefox)">
 
 <!ENTITY config.tabs.restriction.tab "Finestre">
@@ -122,9 +122,9 @@
 <!ENTITY config.insertNewChildAt.first "Inserisci all&apos;inizio del sottoalbero, come prima sottoscheda">
 <!ENTITY config.insertNewChildAt.last "Accoda all&apos;ultimo sottoalbero">
 
-<!ENTITY config.useEffectiveTLD.caption  "Detecting method for &quot;same website&quot;">
-<!ENTITY config.useEffectiveTLD.enabled  "by Domain (&quot;aaa.example.com&quot; and &quot;bbb.example.com&quot; are same websites)">
-<!ENTITY config.useEffectiveTLD.disabled "by Host (&quot;aaa.example.com&quot; and &quot;bbb.example.com&quot; are different websites)">
+<!ENTITY config.useEffectiveTLD.caption  "Metodo di individuazione per lo stesso sito web">
+<!ENTITY config.useEffectiveTLD.enabled  "Per dominio(&quot;aaa.example.com&quot; e &quot;bbb.example.com&quot; sono lo stesso sito web)">
+<!ENTITY config.useEffectiveTLD.disabled "Per indirizzo (&quot;aaa.example.com&quot; e &quot;bbb.example.com&quot; sono siti web diversi)">
 
 
 
