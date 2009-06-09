@@ -1382,6 +1382,7 @@ TreeStyleTabBrowser.prototype = {
 		this.destroyTab(tab);
 
 		var closeParentBehavior = this.getTreePref('closeParentBehavior');
+		var closeRootBehavior = this.getTreePref('closeRootBehavior');
 
 		if (
 			closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_CLOSE ||
@@ -1411,13 +1412,38 @@ TreeStyleTabBrowser.prototype = {
 			backupAttributes[this.kCHILDREN] = this.getTabValue(tab, this.kCHILDREN);
 			let children   = this.getChildTabs(tab);
 			children.forEach((
-				closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_DETACH ?
+				(closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_DETACH) ?
 					function(aTab) {
+						indentModifiedTabs.push(aTab);
 						this.partTab(aTab, true);
 						this.moveTabSubTreeTo(aTab, this.getLastTab(b)._tPos);
 					} :
+				(parentTab ?
+					closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_ESCALATE_FIRST :
+					closeRootBehavior   == this.CLOSE_ROOT_BEHAVIOR_ESCALATE_FIRST
+				) ?
+					function(aTab, aIndex) {
+						this.partTab(aTab, true);
+						if (aIndex == 0) {
+							indentModifiedTabs.push(aTab);
+							if (parentTab) {
+								this.attachTabTo(aTab, parentTab, {
+									insertBefore : tab,
+									dontUpdateIndent : true,
+									dontExpand : true
+								});
+							}
+						}
+						else {
+							this.attachTabTo(aTab, children[0], {
+								dontUpdateIndent : true,
+								dontExpand : true
+							});
+						}
+					} :
 				parentTab ?
 					function(aTab) {
+						indentModifiedTabs.push(aTab);
 						this.attachTabTo(aTab, parentTab, {
 							insertBefore : tab,
 							dontUpdateIndent : true,
@@ -1425,11 +1451,11 @@ TreeStyleTabBrowser.prototype = {
 						});
 					} :
 					function(aTab) {
+						indentModifiedTabs.push(aTab);
 						this.partTab(aTab, true);
 					}
 			), this);
-			indentModifiedTabs = indentModifiedTabs.concat(children);
-			if (closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_ATTACH)
+			if (closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_ESCALATE_ALL)
 				nextFocusedTab = firstChild;
 		}
 
@@ -1479,9 +1505,12 @@ TreeStyleTabBrowser.prototype = {
 			this.setTabValue(tab, i, backupAttributes[i]);
 		}
 	},
-	CLOSE_PARENT_BEHAVIOR_ATTACH : 0,
-	CLOSE_PARENT_BEHAVIOR_DETACH : 1,
-	CLOSE_PARENT_BEHAVIOR_CLOSE  : 2,
+	CLOSE_PARENT_BEHAVIOR_ESCALATE_FIRST : 3,
+	CLOSE_PARENT_BEHAVIOR_ESCALATE_ALL   : 0,
+	CLOSE_PARENT_BEHAVIOR_DETACH         : 1,
+	CLOSE_PARENT_BEHAVIOR_CLOSE          : 2,
+	CLOSE_ROOT_BEHAVIOR_ESCALATE_FIRST : 0,
+	CLOSE_ROOT_BEHAVIOR_DETACH         : 1,
  
 	onTabMove : function(aEvent) 
 	{

@@ -83,8 +83,18 @@ pref("extensions.treestyletab.autoExpandSubTreeOnAppendChild",         true);
 pref("extensions.treestyletab.autoAttachNewTabsAsChildren", true);
 // 0 = default, 1 = only visible tabs
 pref("extensions.treestyletab.focusMode", 1);
-// 0 = attach chldren to the grand parent, 1 = detach all children, 2 = close all children too
+/*
+  3 = escalate only the first child tab to the parent level
+  0 = escalate all children to the parent level
+  1 = detach all children
+  2 = close all children too
+*/
 pref("extensions.treestyletab.closeParentBehavior", 0);
+/*
+  0 = escalate only the first child tab to the root level
+  1 = escalate all children to new roots
+*/
+pref("extensions.treestyletab.closeRootBehavior", 0);
 
 
 pref("browser.link.open_newwindow.restriction.override", 0);
