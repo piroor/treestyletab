@@ -92,7 +92,8 @@ pref("extensions.treestyletab.focusMode", 1);
 pref("extensions.treestyletab.closeParentBehavior", 0);
 /*
   0 = escalate only the first child tab to the root level
-  1 = escalate all children to new roots
+  1 = escalate all children to new roots (=detach all children)
+  Note: this affects only when closeParentBehavior == 0
 */
 pref("extensions.treestyletab.closeRootBehavior", 0);
 
