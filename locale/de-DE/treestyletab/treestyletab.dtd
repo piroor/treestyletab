@@ -110,12 +110,14 @@
 
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Zweig automatisch aufklappen, wenn ein Tab in den Zweig eingefügt wird">
 
-<!ENTITY config.closeParentBehavior.caption "Wenn ein Tab geschlossen wird">
-<!ENTITY config.closeParentBehavior.close   "Untergeordnete Tabs auch schließen">
-<!ENTITY config.closeParentBehavior.attach  "Untergeordnete Tabs
+<!ENTITY config.closeParentBehavior.caption       "Wenn ein Tab geschlossen wird">
+<!ENTITY config.closeParentBehavior.close         "Untergeordnete Tabs auch schließen">
+<!ENTITY config.closeParentBehavior.escalateFirst "Raise the first child tab up to the new parent">
+<!ENTITY config.closeParentBehavior.escalateAll   "Untergeordnete Tabs
 auf die Ebene des geschlossenen Tabs verschieben">
-<!ENTITY config.closeParentBehavior.detach  "Untergeordnete Tabs aus dem Baum ausgliedern">
+<!ENTITY config.closeParentBehavior.detach        "Untergeordnete Tabs aus dem Baum ausgliedern">
 <!--ENTITY config.attachChildrenToGrandParentOnRemoveTab "Beim Schließen eines Tabs untergeordnete Tabs aus Zweig ausgliedern"-->
+<!ENTITY config.closeRootBehavior.escalateFirst   "Raise the first child tab up to the new parent, if the closed parent has no parent">
 
 <!ENTITY config.focusMode "Strg+Tab selektiert auch versteckte Tabs">
 

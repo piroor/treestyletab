@@ -110,10 +110,12 @@
 
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Rozwijaj drzewo potomne automatycznie, gdy są do niego wstawione karty">
 
-<!ENTITY config.closeParentBehavior.caption "Kiedy karta główna jest zamykana:">
-<!ENTITY config.closeParentBehavior.close   "Zamykaj również potomne karty">
-<!ENTITY config.closeParentBehavior.attach  "Przenoś potomne karty na poziom głównej karty">
-<!ENTITY config.closeParentBehavior.detach  "Odłączaj potomne karty od drzewa">
+<!ENTITY config.closeParentBehavior.caption       "Kiedy karta główna jest zamykana:">
+<!ENTITY config.closeParentBehavior.close         "Zamykaj również potomne karty">
+<!ENTITY config.closeParentBehavior.escalateFirst "Raise the first child tab up to the new parent">
+<!ENTITY config.closeParentBehavior.escalateAll   "Przenoś potomne karty na poziom głównej karty">
+<!ENTITY config.closeParentBehavior.detach        "Odłączaj potomne karty od drzewa">
+<!ENTITY config.closeRootBehavior.escalateFirst   "Raise the first child tab up to the new parent, if the closed parent has no parent">
 
 <!ENTITY config.focusMode "Skrót [Ctrl(Command)+Tab] uaktywnia następną/poprzednią kartę nawet jeśli jest niewidoczna">
 

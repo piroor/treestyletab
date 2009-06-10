@@ -107,10 +107,11 @@
 
 <!ENTITY config.autoExpandSubTreeOnAppendChild "當新增分頁到子樹時，自動展開子樹">
 
-<!ENTITY config.closeParentBehavior.caption "When a parent tab is closed">
-<!ENTITY config.closeParentBehavior.close   "Close child tabs too">
-<!ENTITY config.closeParentBehavior.attach  "Move child tabs to the level of the closed parent tab">
-<!ENTITY config.closeParentBehavior.detach  "Liberate child tabs from the tree">
+<!ENTITY config.closeParentBehavior.caption       "When a parent tab is closed">
+<!ENTITY config.closeParentBehavior.close         "Close child tabs too">
+<!ENTITY config.closeParentBehavior.escalateFirst "Raise the first child tab up to the new parent">
+<!ENTITY config.closeParentBehavior.escalateAll   "Raise all child tabs up to the level of the closed parent tab">
+<!ENTITY config.closeParentBehavior.detach        "Liberate child tabs from the tree">
 <!--ENTITY config.attachChildrenToGrandParentOnRemoveTab "當關閉父分頁時，從樹裡釋放子分頁"-->
 
 <!ENTITY config.focusMode "用 Ctrl（Command）+Tab 切換分頁時，即使是摺疊了的分頁也切換">

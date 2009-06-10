@@ -172,3 +172,13 @@ function updateAutoHideModeLabel()
 			node.setAttribute(attr, label);
 		});
 }
+
+function updateCloseRootBehaviorCheck()
+{
+	var closeParentBehavior = document.getElementById('extensions.treestyletab.closeParentBehavior-radiogroup').value;
+	var closeRootBehavior = document.getElementById('extensions.treestyletab.closeRootBehavior-check');
+	if (closeParentBehavior == 0)
+		closeRootBehavior.removeAttribute('disabled');
+	else
+		closeRootBehavior.setAttribute('disabled', true);
+}

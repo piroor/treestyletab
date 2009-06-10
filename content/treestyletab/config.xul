@@ -506,7 +506,8 @@
 
 </prefpane>
 
-<prefpane id="prefpane-advanced" label="&config.tabs.advanced;">
+<prefpane id="prefpane-advanced" label="&config.tabs.advanced;"
+	onpaneload="updateCloseRootBehaviorCheck();">
 	<preferences>
 		<preference id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
 			name="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
@@ -522,6 +523,9 @@
 			type="int"/>
 		<preference id="extensions.treestyletab.closeParentBehavior"
 			name="extensions.treestyletab.closeParentBehavior"
+			type="int"/>
+		<preference id="extensions.treestyletab.closeRootBehavior"
+			name="extensions.treestyletab.closeRootBehavior"
 			type="int"/>
 		<preference id="extensions.treestyletab.insertNewChildAt"
 			name="extensions.treestyletab.insertNewChildAt"
@@ -551,9 +555,19 @@
 		<caption label="&config.closeParentBehavior.caption;"/>
 		<radiogroup id="extensions.treestyletab.closeParentBehavior-radiogroup"
 			preference="extensions.treestyletab.closeParentBehavior"
-			orient="vertical">
+			orient="vertical"
+			oncommand="updateCloseRootBehaviorCheck();">
 			<radio value="2" label="&config.closeParentBehavior.close;"/>
-			<radio value="0" label="&config.closeParentBehavior.attach;"/>
+			<radio value="3" label="&config.closeParentBehavior.escalateFirst;"/>
+			<radio value="0" label="&config.closeParentBehavior.escalateAll;"/>
+			<hbox align="center">
+				<spacer style="width:1em;"/>
+				<checkbox id="extensions.treestyletab.closeRootBehavior-check"
+					label="&config.closeRootBehavior.escalateFirst;"
+					preference="extensions.treestyletab.closeRootBehavior"
+					onsyncfrompreference="return document.getElementById('extensions.treestyletab.closeRootBehavior').value == 3;"
+					onsynctopreference="return document.getElementById('extensions.treestyletab.closeRootBehavior-check').checked ? 3 : 1 ;"/>
+			</hbox>
 			<radio value="1" label="&config.closeParentBehavior.detach;"/>
 		</radiogroup>
 	</groupbox>

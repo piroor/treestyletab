@@ -110,10 +110,12 @@
 
 <!ENTITY config.autoExpandSubTreeOnAppendChild "折り畳まれたサブツリー内に子孫のタブが追加された時、サブツリーを自動的に展開する">
 
-<!ENTITY config.closeParentBehavior.caption "親のタブを閉じた時の挙動">
-<!ENTITY config.closeParentBehavior.close   "子孫のタブも一緒に閉じる">
-<!ENTITY config.closeParentBehavior.attach  "閉じた親タブの階層に子孫のタブを移動する">
-<!ENTITY config.closeParentBehavior.detach  "子孫のタブをツリーから解放する">
+<!ENTITY config.closeParentBehavior.caption       "親のタブを閉じた時の挙動">
+<!ENTITY config.closeParentBehavior.close         "子孫のタブも一緒に閉じる">
+<!ENTITY config.closeParentBehavior.escalateFirst "最初の子タブを新しい親にする">
+<!ENTITY config.closeParentBehavior.escalateAll   "閉じた親タブの階層に子孫のタブを移動する">
+<!ENTITY config.closeParentBehavior.detach        "子孫のタブをツリーから解放する">
+<!ENTITY config.closeRootBehavior.escalateFirst   "最上位の親タブを閉じた時だけは、最初の子タブを新しい親にする">
 
 <!ENTITY config.focusMode "Control(Command)-Tabでタブを切り替える時、折りたたまれたタブにもフォーカスする">
 
