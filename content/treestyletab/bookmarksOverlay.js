@@ -4,8 +4,34 @@ window.addEventListener('load', function() {
 	if ('BookmarksCommand' in window) { // Firefox 2
 		eval('BookmarksCommand.openGroupBookmark = '+
 			BookmarksCommand.openGroupBookmark.toSource().replace(
+				'var index = index0;',
+				<![CDATA[$&
+					if (TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree.underParent')) {
+						containerChildren = {
+							hasMoreElements : function()
+							{
+								return this.isFirst ? true : this._children.hasMoreElements();
+							},
+							getNext : function()
+							{
+								if (!this.isFirst)
+									return this._children.getNext();
+
+								this.isFirst = false;
+								return {
+									QueryInterface : function() {
+										return this;
+									}
+								};
+							},
+							_children : containerChildren,
+							isFirst : true
+						};
+					}
+				]]>
+			).replace(
 				/(tabPanels\[index\])(\.loadURI\(uri\);)/,
-				<><![CDATA[
+				<![CDATA[
 					$1$2
 					if (!doReplace &&
 						TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree') &&
@@ -13,22 +39,22 @@ window.addEventListener('load', function() {
 						browser.treeStyleTab.partTab(browser.treeStyleTab.getTabs(browser).snapshotItem(index));
 						TreeStyleTabService.readyToOpenChildTab($1, true);
 					}
-				]]></>
+				]]>
 			).replace(
 				'browser.addTab(uri);',
-				<><![CDATA[
+				<![CDATA[
 					var openedTab = $&
 					if (!doReplace &&
 						TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree') &&
 						!browser.treeStyleTab.parentTab) {
 						TreeStyleTabService.readyToOpenChildTab(openedTab, true);
 					}
-				]]></>
+				]]>
 			).replace(
 				'if (index == index0)',
-				<><![CDATA[
+				<![CDATA[
 					TreeStyleTabService.stopToOpenChildTab(browser);
-					$&]]></>
+					$&]]>
 			)
 		);
 	}
@@ -41,7 +67,7 @@ window.addEventListener('load', function() {
 				'$1, aFolderTitle$2'
 			).replace(
 				'browserWindow.getBrowser().loadTabs(',
-				<><![CDATA[
+				<![CDATA[
 					if (
 						TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree') &&
 						(
@@ -53,13 +79,13 @@ window.addEventListener('load', function() {
 						) {
 						TreeStyleTabService.readyToOpenNewTabGroup();
 						if (TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree.underParent'))
-							urls.unshift('data:text/html,'+encodeURIComponent(TreeStyleTabService.createFolderTabHTML(aFolderTitle)));
+							urls.unshift(TreeStyleTabService.getFolderTabURI(aFolderTitle));
 						replaceCurrentTab = false;
 					}
 					else if (!TreeStyleTabService.getPref('browser.tabs.loadFolderAndReplace')) {
 						replaceCurrentTab = false;
 					}
-					$&]]></>
+					$&]]>
 			)
 		);
 		eval('PlacesUIUtils.openContainerNodeInTabs = '+

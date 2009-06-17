@@ -716,13 +716,14 @@ var TreeStyleTabService = {
 		return Number(style.getPropertyValue(aProp).replace(/px$/, ''));
 	},
  
-	createFolderTabHTML : function(aTitle) 
+	getFolderTabURI : function(aTitle) 
 	{
-		return '<title>'+
+		var html = '<title>'+
 			String(aTitle).replace(/&/g, '$amp;')
 				.replace(/</g, '$lt;')
 				.replace(/>/g, '$gt;')+
 			'</title>';
+		return 'data:text/html;charset=UTF-8,'+encodeURIComponent(html);
 	},
  
 /* get tab(s) */ 
