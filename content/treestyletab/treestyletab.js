@@ -228,6 +228,14 @@ var TreeStyleTabService = {
 		return this._stringbundle;
 	},
 	_stringbundle : null,
+
+	get tabbrowserBundle() {
+		if (!this._tabbrowserBundle) {
+			this._tabbrowserBundle = document.getElementById('treestyletab-tabbrowserBundle');
+		}
+		return this._tabbrowserBundle;
+	},
+	_tabbrowserBundle : null,
 	
 /* API */ 
 	
@@ -2029,23 +2037,39 @@ catch(e) {
 		else
 			tabs = this.cleanUpTabsArray(tabs.concat(descendant));
 
-		var max = tabs.length;
-		if (!max) return;
-
-		b.__treestyletab__closedTabsNum = max;
-		if (
-			max > 1 &&
-			!b.warnAboutClosingTabs(true)
-			) {
-			b.__treestyletab__closedTabsNum = 0;
+		if (!this.warnAboutClosingTabs(tabs.length))
 			return;
-		}
-		b.__treestyletab__closedTabsNum = 0;
 
 		for (var i = tabs.length-1; i > -1; i--)
 		{
 			b.removeTab(tabs[i]);
 		}
+	},
+	warnAboutClosingTabs : function(aTabsCount)
+	{
+		if (
+			aTabsCount <= 1 ||
+			this.getPref('browser.tabs.warnOnClose')
+			)
+			return true;
+		var promptService = Components
+							.classes['@mozilla.org/embedcomp/prompt-service;1']
+							.getService(Components.interfaces.nsIPromptService);
+		var checked = { value:true };
+		window.focus();
+		var shouldClose = promptService.confirmEx(window,
+				this.tabbrowserBundle.getString('tabs.closeWarningTitle'),
+				this.tabbrowserBundle.getFormattedString('tabs.closeWarningMultipleTabs', [aTabsCount]),
+				(promptService.BUTTON_TITLE_IS_STRING * promptService.BUTTON_POS_0) +
+				(promptService.BUTTON_TITLE_CANCEL * promptService.BUTTON_POS_1),
+				this.tabbrowserBundle.getString('tabs.closeButtonMultiple'),
+				null, null,
+				this.tabbrowserBundle.getString('tabs.closeWarningPromptMe'),
+				checked
+			) == 0;
+		if (shouldClose && !checked.value)
+			this.setPref('browser.tabs.warnOnClose', false);
+		return shouldClose;
 	},
 	
 	cleanUpTabsArray : function(aTabs) 

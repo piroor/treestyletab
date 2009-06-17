@@ -465,13 +465,6 @@ TreeStyleTabBrowser.prototype = {
 			)
 		);
 
-		eval('b.warnAboutClosingTabs = '+
-			b.warnAboutClosingTabs.toSource().replace(
-				'var numTabs = ',
-				'var numTabs = this.__treestyletab__closedTabsNum || '
-			)
-		);
-
 		if ('_onDragEnd' in b) {
 			eval('b._onDragEnd = '+b._onDragEnd.toSource().replace(
 				'this._replaceTabWithWindow(',
