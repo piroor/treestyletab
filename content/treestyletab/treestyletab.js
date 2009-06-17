@@ -2049,7 +2049,7 @@ catch(e) {
 	{
 		if (
 			aTabsCount <= 1 ||
-			this.getPref('browser.tabs.warnOnClose')
+			!this.getPref('browser.tabs.warnOnClose')
 			)
 			return true;
 		var promptService = Components
