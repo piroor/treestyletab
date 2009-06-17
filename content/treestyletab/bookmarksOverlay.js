@@ -48,9 +48,10 @@ window.addEventListener('load', function() {
 							aEvent.target == aEvent.target.parentNode._endOptOpenAllInTabs ||
 							aEvent.target.getAttribute('openInTabs') == 'true'
 						)
-						)
-						{
+						) {
 						TreeStyleTabService.readyToOpenNewTabGroup();
+						if (TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree.underParent'))
+							urls.unshift('data:text/html,'+encodeURIComponent('<title>group</title>'));
 						replaceCurrentTab = false;
 					}
 					else if (!TreeStyleTabService.getPref('browser.tabs.loadFolderAndReplace')) {
