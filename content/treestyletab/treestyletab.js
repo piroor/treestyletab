@@ -716,6 +716,15 @@ var TreeStyleTabService = {
 		return Number(style.getPropertyValue(aProp).replace(/px$/, ''));
 	},
  
+	createFolderTabHTML : function(aTitle) 
+	{
+		return '<title>'+
+			String(aTitle).replace(/&/g, '$amp;')
+				.replace(/</g, '$lt;')
+				.replace(/>/g, '$gt;')+
+			'</title>';
+	},
+ 
 /* get tab(s) */ 
 	
 	getTabById : function(aId, aTabBrowserChildren) 

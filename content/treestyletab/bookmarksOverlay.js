@@ -34,10 +34,12 @@ window.addEventListener('load', function() {
 	}
 
 	// Firefox 3
-	if ('PlacesUIUtils' in window || 'PlacesUtils' in window) {
-		var urils = 'PlacesUIUtils' in window ? PlacesUIUtils : PlacesUtils ;
-		eval('urils._openTabset = '+
-			urils._openTabset.toSource().replace(
+	if ('PlacesUIUtils' in window) {
+		eval('PlacesUIUtils._openTabset = '+
+			PlacesUIUtils._openTabset.toSource().replace(
+				/(function[^\(]*\([^\)]+)(\))/,
+				'$1, aFolderTitle$2'
+			).replace(
 				'browserWindow.getBrowser().loadTabs(',
 				<><![CDATA[
 					if (
@@ -51,13 +53,19 @@ window.addEventListener('load', function() {
 						) {
 						TreeStyleTabService.readyToOpenNewTabGroup();
 						if (TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree.underParent'))
-							urls.unshift('data:text/html,'+encodeURIComponent('<title>group</title>'));
+							urls.unshift('data:text/html,'+encodeURIComponent(TreeStyleTabService.createFolderTabHTML(aFolderTitle)));
 						replaceCurrentTab = false;
 					}
 					else if (!TreeStyleTabService.getPref('browser.tabs.loadFolderAndReplace')) {
 						replaceCurrentTab = false;
 					}
 					$&]]></>
+			)
+		);
+		eval('PlacesUIUtils.openContainerNodeInTabs = '+
+			PlacesUIUtils.openContainerNodeInTabs.toSource().replace(
+				/(this\._openTabset\([^\)]+)(\))/,
+				'$1, aNode.title$2'
 			)
 		);
 	}
