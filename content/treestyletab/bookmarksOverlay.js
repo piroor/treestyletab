@@ -6,7 +6,8 @@ window.addEventListener('load', function() {
 			BookmarksCommand.openGroupBookmark.toSource().replace(
 				'var index = index0;',
 				<![CDATA[
-					if (TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree.underParent')) {
+					if (TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree') &&
+						TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree.underParent')) {
 						var folderTitle = BMDS.GetTarget(resource, RDF.GetResource(gNC_NS + 'Name'), true)
 											.QueryInterface(kRDFLITIID)
 											.Value;
@@ -16,7 +17,7 @@ window.addEventListener('load', function() {
 							tabPanels[index0].loadURI(folderTitleURI);
 						}
 						else {
-							treeStyleTabService.readyToOpenChildTab(
+							TreeStyleTabService.readyToOpenChildTab(
 								browser.addTab(folderTitleURI),
 								true
 							);
