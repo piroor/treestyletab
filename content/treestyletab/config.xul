@@ -275,6 +275,9 @@
 		<preference id="extensions.treestyletab.openGroupBookmarkAsTabSubTree"
 			name="extensions.treestyletab.openGroupBookmarkAsTabSubTree"
 			type="bool"/>
+		<preference id="extensions.treestyletab.openGroupBookmarkAsTabSubTree.underParent"
+			name="extensions.treestyletab.openGroupBookmarkAsTabSubTree.underParent"
+			type="bool"/>
 		<preference id="browser.tabs.loadFolderAndReplace"
 			name="browser.tabs.loadFolderAndReplace.override"
 			type="bool"/>
@@ -337,7 +340,12 @@
 					<radiogroup id="openGroupBookmarkAsTabSubTree-radiogroup"
 						orient="vertical"
 						oncommand="onChangeGroupBookmarkRadio();">
-						<radio value="subtree" label="&config.openGroupBookmarkAsTabSubTree.subtree;"/>
+						<hbox align="center">
+							<radio value="subtree" label="&config.openGroupBookmarkAsTabSubTree.subtree;"/>
+							<checkbox id="openGroupBookmarkAsTabSubTree.underParent-check"
+								label="&config.openGroupBookmarkAsTabSubTree.underParent;"
+								preference="extensions.treestyletab.openGroupBookmarkAsTabSubTree.underParent"/>
+						</hbox>
 						<radio value="flat"    label="&config.openGroupBookmarkAsTabSubTree.flat;"/>
 						<radio value="replace" label="&config.openGroupBookmarkAsTabSubTree.replace;"
 							label-fx2="&config.openGroupBookmarkAsTabSubTree.replace.fx2;"/>

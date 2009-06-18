@@ -63,6 +63,7 @@
 <!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "Als eigenständige Tabs öffnen">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace "Replace the current one tab to the pages in the folder (Firefox default)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace.fx2 "Die Seiten im Lesezeichenverzeichnis in existierende Tabs laden (Firefox Standard)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.underParent "Put tabs under a dummy tab for grouping">
 
 <!ENTITY config.tabs.restriction.tab "Neue Tabs statt neue Fenster öffnen">
 

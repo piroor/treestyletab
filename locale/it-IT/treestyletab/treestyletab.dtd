@@ -63,6 +63,7 @@
 <!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "apre i segnalibri in schede separate">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace "sostituisce la scheda in uso con i segnalibri contenuti nella cartella selezionata (comportamento predefinito di Firefox)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace.fx2 "sostituisce la scheda in uso con i segnalibri contenuti nella cartella selezionata (comportamento predefinito di Firefox)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.underParent "Put tabs under a dummy tab for grouping">
 
 <!ENTITY config.tabs.restriction.tab "Finestre">
 

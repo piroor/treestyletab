@@ -63,6 +63,7 @@
 <!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "在单独标签中打开">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace "Replace the current one tab to the pages in the folder (Firefox default)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace.fx2 "将文件夹中所有标签置换为页面 (Firefox 默认)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.underParent "Put tabs under a dummy tab for grouping">
 
 <!ENTITY config.tabs.restriction.tab "打开标签而非窗口">
 
