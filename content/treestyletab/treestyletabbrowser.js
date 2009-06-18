@@ -436,6 +436,13 @@ TreeStyleTabBrowser.prototype = {
 					if (TreeStyleTabService.checkToOpenChildTab(this))
 						TreeStyleTabService.stopToOpenChildTab(this);
 					$&]]>
+			).replace(
+				'this.selectedTab = firstTabAdded;',
+				<![CDATA[
+					this.selectedTab = aURIs[0].indexOf('about:treestyletab-group') < 0 ?
+						firstTabAdded :
+						TreeStyleTabService.getNextTab(firstTabAdded) ;
+				]]>
 			)
 		);
 
