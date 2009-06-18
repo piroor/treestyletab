@@ -154,28 +154,30 @@ TreeStyleTabBrowser.prototype = {
 		let (container) {
 			b.mTabContainer.removeAttribute('overflow'); // Firefox 3.0.x
 			container = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-container');
-			if (container) container.removeAttribute('overflow');
+			if (container) {
+				container.removeAttribute('overflow');
 
-			this.scrollBox.addEventListener('overflow', this, true);
-			this.scrollBox.addEventListener('underflow', this, true);
-			window.setTimeout(function(aBox, aTabBrowser, aContainer) {
-				aBox = document.getAnonymousElementByAttribute(aBox, 'anonid', 'scrollbox');
-				if (aBox) aBox = document.getAnonymousNodes(aBox)[0];
-				if (
-					aBox &&
-					(
-						aBox.boxObject.width > aContainer.boxObject.width ||
-						aBox.boxObject.height > aContainer.boxObject.height
-					)
-					) {
-					aTabBrowser.mTabContainer.setAttribute('overflow', true); // Firefox 3.0.x
-					aContainer.setAttribute('overflow', true);
-				}
-				else {
-					aTabBrowser.mTabContainer.removeAttribute('overflow'); // Firefox 3.0.x
-					aContainer.removeAttribute('overflow');
-				}
-			}, 100, this.scrollBox, b, container);
+				this.scrollBox.addEventListener('overflow', this, true);
+				this.scrollBox.addEventListener('underflow', this, true);
+				window.setTimeout(function(aBox, aTabBrowser, aContainer) {
+					aBox = document.getAnonymousElementByAttribute(aBox, 'anonid', 'scrollbox');
+					if (aBox) aBox = document.getAnonymousNodes(aBox)[0];
+					if (
+						aBox &&
+						(
+							aBox.boxObject.width > aContainer.boxObject.width ||
+							aBox.boxObject.height > aContainer.boxObject.height
+						)
+						) {
+						aTabBrowser.mTabContainer.setAttribute('overflow', true); // Firefox 3.0.x
+						aContainer.setAttribute('overflow', true);
+					}
+					else {
+						aTabBrowser.mTabContainer.removeAttribute('overflow'); // Firefox 3.0.x
+						aContainer.removeAttribute('overflow');
+					}
+				}, 100, this.scrollBox, b, container);
+			}
 			container = null;
 		}
 

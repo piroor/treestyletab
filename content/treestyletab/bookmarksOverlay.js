@@ -5,30 +5,26 @@ window.addEventListener('load', function() {
 		eval('BookmarksCommand.openGroupBookmark = '+
 			BookmarksCommand.openGroupBookmark.toSource().replace(
 				'var index = index0;',
-				<![CDATA[$&
+				<![CDATA[
 					if (TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree.underParent')) {
-						containerChildren = {
-							hasMoreElements : function()
-							{
-								return this.isFirst ? true : this._children.hasMoreElements();
-							},
-							getNext : function()
-							{
-								if (!this.isFirst)
-									return this._children.getNext();
-
-								this.isFirst = false;
-								return {
-									QueryInterface : function() {
-										return this;
-									}
-								};
-							},
-							_children : containerChildren,
-							isFirst : true
-						};
+						var folderTitle = BMDS.GetTarget(resource, RDF.GetResource(gNC_NS + 'Name'), true)
+											.QueryInterface(kRDFLITIID)
+											.Value;
+						var folderTitleURI = TreeStyleTabService.getFolderTabURI(folderTitle);
+						if (doReplace || index0 < tabCount) {
+							browser.treeStyleTab.partTab(browser.treeStyleTab.getTabs(browser).snapshotItem(index0));
+							tabPanels[index0].loadURI(folderTitleURI);
+						}
+						else {
+							treeStyleTabService.readyToOpenChildTab(
+								browser.addTab(folderTitleURI),
+								true
+							);
+							tabCount++;
+						}
+						index0++;
 					}
-				]]>
+				$&]]>
 			).replace(
 				/(tabPanels\[index\])(\.loadURI\(uri\);)/,
 				<![CDATA[
