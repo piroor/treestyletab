@@ -11,7 +11,7 @@ window.addEventListener('load', function() {
 						var folderTitle = BMDS.GetTarget(resource, RDF.GetResource(gNC_NS + 'Name'), true)
 											.QueryInterface(kRDFLITIID)
 											.Value;
-						var folderTitleURI = TreeStyleTabService.getFolderTabURI(folderTitle);
+						var folderTitleURI = TreeStyleTabService.getGroupTabURI(folderTitle);
 						if (doReplace || index0 < tabCount) {
 							browser.treeStyleTab.partTab(browser.treeStyleTab.getTabs(browser).snapshotItem(index0));
 							tabPanels[index0].loadURI(folderTitleURI);
@@ -76,7 +76,7 @@ window.addEventListener('load', function() {
 						) {
 						TreeStyleTabService.readyToOpenNewTabGroup();
 						if (TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree.underParent'))
-							urls.unshift(TreeStyleTabService.getFolderTabURI(aFolderTitle));
+							urls.unshift(TreeStyleTabService.getGroupTabURI(aFolderTitle));
 						replaceCurrentTab = false;
 					}
 					else if (!TreeStyleTabService.getPref('browser.tabs.loadFolderAndReplace')) {

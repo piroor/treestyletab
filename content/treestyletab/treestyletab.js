@@ -716,14 +716,9 @@ var TreeStyleTabService = {
 		return Number(style.getPropertyValue(aProp).replace(/px$/, ''));
 	},
  
-	getFolderTabURI : function(aTitle) 
+	getGroupTabURI : function(aTitle) 
 	{
-		var html = '<title>'+
-			String(aTitle).replace(/&/g, '$amp;')
-				.replace(/</g, '$lt;')
-				.replace(/>/g, '$gt;')+
-			'</title>';
-		return 'data:text/html;charset=UTF-8,'+encodeURIComponent(html);
+		return 'about:treestyletab-group?'+encodeURIComponent(aTitle);
 	},
  
 /* get tab(s) */ 

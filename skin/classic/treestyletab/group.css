@@ -1,0 +1,17 @@
+page {
+	background: -moz-dialog;
+	margin: 1em;
+	-moz-appearance: window;
+}
+
+label {
+	color: -moz-dialogtext;
+	font-family: message-box;
+	font-size: large;
+	font-weight: normal;
+}
+
+#icon {
+	list-style-image: url("chrome://global/skin/icons/folder-item.png");
+	-moz-image-region: rect(0, 32px, 16px, 16px);
+}

@@ -1,0 +1,21 @@
+<?xml-stylesheet type="text/css" href="chrome://global/skin/"?>
+<?xml-stylesheet type="text/css" href="chrome://treestyletab/skin/group.css"?>
+<page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<hbox align="center">
+	<image id="icon"/>
+	<label id="label"/>
+</hbox>
+<link xmlns="http://www.w3.org/1999/xhtml" rel="icon"
+	href="chrome://treestyletab/skin/group-icon"/>
+<script type="application/x-javascript"><![CDATA[
+
+var title = location.href.split('?')[1];
+if (title) {
+	title = decodeURIComponent(title);
+	document.title = title;
+	document.documentElement.setAttribute('title', title);
+	document.getElementById('label').value = title;
+}
+
+]]></script>
+</page>
