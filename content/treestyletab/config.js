@@ -73,6 +73,12 @@ function onChangeGroupBookmarkRadio()
 {
 	gGroupBookmarkTree.value    = gGroupBookmarkRadio.value == 'subtree';
 	gGroupBookmarkReplace.value = gGroupBookmarkRadio.value == 'replace';
+
+	var underParent = document.getElementById('openGroupBookmarkAsTabSubTree.underParent-check');
+	if (gGroupBookmarkTree.value)
+		underParent.removeAttribute('disabled');
+	else
+		underParent.setAttribute('disabled', true);
 }
 
 
