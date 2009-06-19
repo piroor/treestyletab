@@ -1473,16 +1473,25 @@ TreeStyleTabBrowser.prototype = {
 				}
 			}
 
-			let ancestors = [];
+			let ancestors = [],
+				ancestor = parentTab;
 			do {
-				ancestors.push(parentTab.getAttribute(this.kID));
-				if (!next && (next = this.getNextSiblingTab(parentTab)))
+				ancestors.push(ancestor.getAttribute(this.kID));
+				if (!next && (next = this.getNextSiblingTab(ancestor)))
 					backupAttributes[this.kINSERT_BEFORE] = next.getAttribute(this.kID);
 			}
-			while (parentTab = this.getParentTab(parentTab));
+			while (ancestor = this.getParentTab(ancestor));
 			backupAttributes[this.kANCESTOR] = ancestors.join('|');
 
 			this.partTab(tab, true);
+
+			if (parentTab.linkedBrowser.sessionHistory.count == 1 &&
+				parentTab.linkedBrowser.currentURI.spec.indexOf('about:treestyletab-group') > -1 &&
+				!this.getDescendantTabs(parentTab).length) {
+				if (nextFocusedTab == parentTab)
+					nextFocusedTab = null;
+				b.removeTab(parentTab);
+			}
 		}
 		else if (!nextFocusedTab) {
 			nextFocusedTab = this.getNextSiblingTab(tab);
