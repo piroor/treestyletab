@@ -69,11 +69,13 @@
 
 <!ENTITY config.open_newwindow.caption "New window opened from links in webpages unexpectedly">
 <!ENTITY config.open_newwindow.window  "Open as Window">
-<!ENTITY config.open_newwindow.tab     "Open as Tab (Firefox default)">
+<!ENTITY config.open_newwindow.tab     "Open as Tab (Firefox default, recommended)">
+<!ENTITY config.open_newwindow.current "Load into the Current Tab anyway">
 
 <!ENTITY config.jsopen.caption "New window opened from scripts in webpages">
 <!ENTITY config.jsopen.default "Open as Window when it have special width, height, etc. (Firefox default)">
 <!ENTITY config.jsopen.forcetab "Open as Tab instead of Window anyway (Recommended)">
+<!ENTITY config.jsopen.current  "Load into the Current Tab anyway">
 
 
 <!ENTITY config.tabs.autohide "Auto hide">

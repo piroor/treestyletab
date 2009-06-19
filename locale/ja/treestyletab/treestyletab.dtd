@@ -69,11 +69,13 @@
 
 <!ENTITY config.open_newwindow.caption "Webページのリンクから勝手に開かれたウィンドウの制御">
 <!ENTITY config.open_newwindow.window  "ウィンドウで開く">
-<!ENTITY config.open_newwindow.tab     "タブで開く（Firefox初期状態）">
+<!ENTITY config.open_newwindow.tab     "タブで開く（Firefox初期状態・推奨）">
+<!ENTITY config.open_newwindow.current "ウィンドウやタブを開かず、常に元のタブで読み込む">
 
 <!ENTITY config.jsopen.caption "Webページのスクリプトで開かれるウィンドウの制御">
 <!ENTITY config.jsopen.default "大きさや位置を指定されたウィンドウはウィンドウとして開く（Firefox初期状態）">
 <!ENTITY config.jsopen.forcetab "スクリプトで開かれるウィンドウはすべてタブで開く（推奨）">
+<!ENTITY config.jsopen.current  "ウィンドウやタブを開かず、常に元のタブで読み込む">
 
 
 <!ENTITY config.tabs.autohide "自動的に隠す">
