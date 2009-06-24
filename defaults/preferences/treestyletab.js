@@ -90,7 +90,7 @@ pref("extensions.treestyletab.focusMode", 1);
   1 = detach all children
   2 = close all children too
 */
-pref("extensions.treestyletab.closeParentBehavior", 0);
+pref("extensions.treestyletab.closeParentBehavior", 3);
 /*
   3 = escalate only the first child tab to the root level
   1 = escalate all children to new roots (=detach all children)
