@@ -19,7 +19,7 @@
 window.addEventListener('DOMContentLoaded', function() {
 	window.removeEventListener('DOMContentLoaded', arguments.callee, true);
 
-	const currentRevision = 4;
+	const currentRevision = 5;
 
 	var b = document.getElementById('content');
 	if (!b || b.localName != 'tabbrowser') return;
@@ -63,6 +63,12 @@ window.addEventListener('DOMContentLoaded', function() {
 			}
 		case 'chrome://browser/content/tabbrowser.xml#tabbrowser-tab': // built-in
 			root.setAttribute('tabFx2Compatible', currentRevision);
+			var flags = [];
+			if (navigator.platform.toLowerCase().indexOf('mac') > -1)
+				flags.push('mac');
+			if ('nsPIPlacesDatabase' in Components.interfaces)
+				flags.push('png-throbber');
+			root.setAttribute('tabFx2Compatible-flags', flags.join(' '));
 			break;
 	}
 }, true);
