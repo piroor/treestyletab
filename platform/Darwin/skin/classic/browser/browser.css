@@ -1,11 +1,12 @@
-.tabbrowser-tab[selected="true"] .tab-icon-image {
-	list-style-image: url("chrome://global/skin/tree/item.png");
+:root[tabFx2Compatible] .tabbrowser-tab[selected="true"] .tab-icon-image {
+	list-style-image: url("chrome://global/skin/tree/item.png") !important;
 }
 
-.tabbrowser-tab[busy] .tab-icon-image {
+:root[tabFx2Compatible] .tabbrowser-tab[busy] > hbox > stack > .tab-icon-image {
 	list-style-image: url("chrome://global/skin/icons/loading_16.png") !important;
+	opacity: 1;
 }
 
-.tabbrowser-tab:not(:hover):not([selected="true"]) .tab-icon-image {
-	opacity: .6;
+:root[tabFx2Compatible] .tabbrowser-tab:not(:hover):not([selected="true"]) .tab-icon-image {
+	opacity: 0.6;
 }
