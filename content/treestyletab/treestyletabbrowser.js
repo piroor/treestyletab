@@ -2819,7 +2819,8 @@ TreeStyleTabBrowser.prototype = {
 		this.setTabValue(aParent, this.kCHILDREN, children.join('|'));
 		this.setTabValue(aChild, this.kPARENT, aParent.getAttribute(this.kID));
 		this.updateTabsCount(aParent);
-		if (shouldInheritIndent) this.inheritTabIndent(aChild, aParent);
+		if (shouldInheritIndent && !aInfo.dontUpdateIndent)
+			this.inheritTabIndent(aChild, aParent);
 
 		if (newIndex > aChild._tPos) newIndex--;
 		this.moveTabSubTreeTo(aChild, newIndex);
