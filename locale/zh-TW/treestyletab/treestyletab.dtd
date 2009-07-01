@@ -1,9 +1,9 @@
-﻿<!ENTITY config.title        "樹狀分頁設定">
+<!ENTITY config.title        "樹狀分頁設定">
 
 
 <!ENTITY config.tabs.appearance "外觀">
 
-<!ENTITY config.animation.enabled "Enable Animation Effects">
+<!ENTITY config.animation.enabled "啟用動畫效果">
 
 <!ENTITY config.tabbar.position.caption "分頁工具列位置">
 <!ENTITY config.tabbar.position.left    "左側">
@@ -11,21 +11,21 @@
 <!ENTITY config.tabbar.position.top     "上端（Firefox 預設）">
 <!ENTITY config.tabbar.position.bottom  "下端">
 <!ENTITY config.tabbar.invertScrollbar  "在最左側顯示捲軸列">
-<!ENTITY config.tabbar.invertClosebox.left  "Show closebox at leftside in each tab">
-<!ENTITY config.tabbar.invertClosebox.right "Show closebox at rightside in each tab">
-<!ENTITY config.tabbar.invertTab            "左右反轉分頁外觀">
-<!ENTITY config.tabbar.invertTabContents    "Invert tab contents">
+<!ENTITY config.tabbar.invertClosebox.left  "於各分頁左端顯示關閉鈕">
+<!ENTITY config.tabbar.invertClosebox.right "於各分頁右端顯示關閉鈕">
+<!ENTITY config.tabbar.invertTab            "頁籤外側互調">
+<!ENTITY config.tabbar.invertTabContents    "頁籤內側互調">
 <!ENTITY config.enableSubtreeIndent         "縮進分頁">
 <!ENTITY config.allowSubtreeCollapseExpand  "允許摺疊 / 展開樹狀子目錄">
-<!ENTITY config.tabbar.hideNewTabButton     "Show &quot;Open a new tab&quot; button">
+<!ENTITY config.tabbar.hideNewTabButton     "顯示「開啟新分頁」按鈕">
 <!ENTITY config.tabbar.hideAlltabsButton    "顯示「列出所有分頁」按鈕">
 
 <!ENTITY config.tabbar.style.caption "分頁工具列的外觀">
 <!ENTITY config.tabbar.style.default "簡潔">
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.mixed   "混合">
-<!ENTITY config.tabbar.style.metal   "Metal">
-<!ENTITY config.tabbar.style.none    "Default (specified by the Theme)">
+<!ENTITY config.tabbar.style.metal   "金屬">
+<!ENTITY config.tabbar.style.none    "預設 (由主題自行指定)">
 
 <!ENTITY config.twisty.style.caption "摺疊 / 展開的圖示">
 <!ENTITY config.twisty.style.auto    "自動">
@@ -59,32 +59,34 @@
 <!ENTITY config.openGroupBookmarkAsTabSubTree.caption "按書籤資料夾的「全部開啟」時">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.subtree "用一個子樹開啟（推薦）">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "用分開的分頁開啟">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.replace "Replace the current one tab to the pages in the folder (Firefox default)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.replace "將目前瀏覽的分頁取代為書籤的內容（Firefox 預設）">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace.fx2 "將所有目前開啟的分頁取代為書籤的內容（Firefox 預設）">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.underParent "Put tabs under a dummy tab for grouping">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.underParent "將各分頁開啟於一虛分頁之下以便分組">
 
 <!ENTITY config.tabs.restriction.tab "開啟分頁代替視窗">
 <!ENTITY config.open_newwindow.caption "從網頁鏈結開啟新視窗的控制">
 <!ENTITY config.open_newwindow.window  "用新視窗開啟">
 <!ENTITY config.open_newwindow.tab     "用新分頁開啟（Firefox 預設）">
+<!ENTITY config.open_newwindow.current "直接開在目前瀏覽的分頁">
 
 <!ENTITY config.jsopen.caption "從網頁的指令碼開啟新視窗的控制">
 <!ENTITY config.jsopen.default "當指定了大小和位置，則用新視窗開啟（Firefox 預設）">
 <!ENTITY config.jsopen.forcetab "在任何情况下用新分頁而非新視窗開啟（推薦）">
+<!ENTITY config.jsopen.current  "直接開在目前瀏覽的分頁">
 
 
 <!ENTITY config.tabs.autohide "自動隱藏">
 
-<!ENTITY config.autoHide.mode.0 "Show tab bar always">
+<!ENTITY config.autoHide.mode.0 "永遠顯示分頁工具列">
 <!ENTITY config.autoHide.mode.1 "自動隱藏分頁工具列">
-<!ENTITY config.autoHide.mode.2 "Auto Shrink tab bar">
+<!ENTITY config.autoHide.mode.2 "自動縮小分頁工具列">
 <!ENTITY config.autoShow.caption "在以下的情況自動顯示分頁工具列">
 <!ENTITY config.autoShow.mousemove "滑鼠指標指向視窗邊緣時">
 <!ENTITY config.autoHide.area.before "起反應的區域：距離視窗邊緣">
 <!ENTITY config.autoHide.area.after "個像素的範圍">
-<!ENTITY config.autoShow.mousemove.mode2 "Mouse cursor points tab bar's edge">
-<!ENTITY config.autoHide.area.before.mode2 "Sensitive area:">
-<!ENTITY config.autoHide.area.after.mode2 "pixels from tab bar's edge">
+<!ENTITY config.autoShow.mousemove.mode2 "滑鼠指標指在分頁工具列邊緣">
+<!ENTITY config.autoHide.area.before.mode2 "感應區:">
+<!ENTITY config.autoHide.area.after.mode2 "像素(距分頁工具列內緣)">
 <!ENTITY config.autoHide.delay.before "延遲：">
 <!ENTITY config.autoHide.delay.after "毫秒">
 <!ENTITY config.autoShow.accelKeyDown "按下 Ctrl（Command）一段時間後">
@@ -108,12 +110,12 @@
 
 <!ENTITY config.autoExpandSubTreeOnAppendChild "當新增分頁到子樹時，自動展開子樹">
 
-<!ENTITY config.closeParentBehavior.caption       "When a parent tab is closed">
-<!ENTITY config.closeParentBehavior.close         "Close child tabs too">
-<!ENTITY config.closeParentBehavior.escalateFirst "Raise the first child tab up to the new parent">
-<!ENTITY config.closeParentBehavior.escalateAll   "Raise all child tabs up to the level of the closed parent tab">
-<!ENTITY config.closeParentBehavior.detach        "Liberate child tabs from the tree">
-<!--ENTITY config.attachChildrenToGrandParentOnRemoveTab "當關閉父分頁時，從樹裡釋放子分頁"-->
+<!ENTITY config.closeParentBehavior.caption "當關閉親分頁時">
+<!ENTITY config.closeParentBehavior.close   "一併關閉所屬子分頁">
+<!ENTITY config.closeParentBehavior.escalateFirst "提升第一子分頁到親分頁所在位階">
+<!ENTITY config.closeParentBehavior.escalateAll   "所有子分頁都提升到親分頁所在位階">
+<!ENTITY config.closeParentBehavior.detach  "從該樹釋放所屬子分頁">
+<!ENTITY config.closeRootBehavior.escalateFirst   "若親分頁上無親分頁，則提升第一子分頁成為親分頁">
 
 <!ENTITY config.focusMode "用 Ctrl（Command）+Tab 切換分頁時，即使是摺疊了的分頁也切換">
 
@@ -121,9 +123,9 @@
 <!ENTITY config.insertNewChildAt.first "插入到子樹的開端">
 <!ENTITY config.insertNewChildAt.last "新增到子樹的末端">
 
-<!ENTITY config.useEffectiveTLD.caption  "Detecting method for &quot;same website&quot;">
-<!ENTITY config.useEffectiveTLD.enabled  "by Domain (&quot;aaa.example.com&quot; and &quot;bbb.example.com&quot; are same websites)">
-<!ENTITY config.useEffectiveTLD.disabled "by Host (&quot;aaa.example.com&quot; and &quot;bbb.example.com&quot; are different websites)">
+<!ENTITY config.useEffectiveTLD.caption  "「同類其他分頁」定義依據">
+<!ENTITY config.useEffectiveTLD.enabled  "依據網域(&quot;aaa.example.com&quot; 與 &quot;bbb.example.com&quot; 視為同類)">
+<!ENTITY config.useEffectiveTLD.disabled "依據主機(&quot;aaa.example.com&quot; 與 &quot;bbb.example.com&quot; 不算同類)">
 
 
 
@@ -146,5 +148,5 @@
 <!ENTITY context.toggleFixed.accesskey "f">
 <!ENTITY context.tabbarPosition.label     "分頁工具列的位置">
 <!ENTITY context.tabbarPosition.accesskey "p">
-<!ENTITY context.bookmarkTabSubTree.label     "Bookmark this Tree...">
+<!ENTITY context.bookmarkTabSubTree.label     "此樹加入書籤...">
 <!ENTITY context.bookmarkTabSubTree.accesskey "t">
