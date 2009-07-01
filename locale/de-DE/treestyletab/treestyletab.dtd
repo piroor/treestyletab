@@ -59,11 +59,11 @@
 <!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "Seite in einem neuen untergeordneten Tab laden">
 
 <!ENTITY config.openGroupBookmarkAsTabSubTree.caption "Verhalten von &quot;Alle in Tabs öffnen&quot; für Seiten in einem Lesezeichenordner">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree "Als Zweig öffnen mit erster Seite als Wurzel (Empfohlen)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree "Als Zweig öffnen (Empfohlen)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "Als eigenständige Tabs öffnen">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace "Aktuelles Tab durch die neuen Tabs ersetzen (Firefox Standard)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace.fx2 "Die Seiten im Lesezeichenordner in existierende Tabs laden (Firefox Standard)">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.underParent "Put tabs under a dummy tab for grouping">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.underParent "Seiten zur Gruppierung einem Dummytab unterordnen">
 
 <!ENTITY config.tabs.restriction.tab "Neue Tabs statt neue Fenster öffnen">
 
@@ -113,10 +113,10 @@
 
 <!ENTITY config.closeParentBehavior.caption "Wenn ein Tab geschlossen wird">
 <!ENTITY config.closeParentBehavior.close   "Untergeordnete Tabs auch schließen">
-<!ENTITY config.closeParentBehavior.escalateFirst "Raise the first child tab up to the new parent">
+<!ENTITY config.closeParentBehavior.escalateFirst "Das geschlossene Tab durch das erste untergeordnete ersetzen">
 <!ENTITY config.closeParentBehavior.escalateAll   "Untergeordnete Tabs auf die Ebene des geschlossenen Tabs verschieben">
-<!ENTITY config.closeParentBehavior.detach        "Untergeordnete Tabs aus dem Zweig ausgliedern">
-<!ENTITY config.closeRootBehavior.escalateFirst   "Raise the first child tab up to the new parent, if the closed parent has no parent">
+<!ENTITY config.closeParentBehavior.detach        "Untergeordnete Tabs ganz aus dem Zweig ausgliedern">
+<!ENTITY config.closeRootBehavior.escalateFirst   "Das geschlossene Tab durch das erste untergeordnete ersetzen, wenn das geschlossene Tab kein übergordnetes hatte">
 
 <!ENTITY config.focusMode "Strg+Tab selektiert auch nicht sichtbare Tabs">
 
