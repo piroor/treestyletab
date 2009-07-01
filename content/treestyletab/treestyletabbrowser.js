@@ -1427,6 +1427,7 @@ TreeStyleTabBrowser.prototype = {
 					function(aTab, aIndex) {
 						this.partTab(aTab, true);
 						if (aIndex == 0) {
+							nextFocusedTab = aTab;
 							indentModifiedTabs.push(aTab);
 							if (parentTab) {
 								this.attachTabTo(aTab, parentTab, {
