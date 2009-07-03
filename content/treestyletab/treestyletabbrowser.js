@@ -1017,8 +1017,13 @@ TreeStyleTabBrowser.prototype = {
 				break;
 
 			case 'TreeStyleTab:collapseExpandAllSubtree':
-				if (aSubject == window)
-					this.collapseExpandAllSubtree(aData == 'collapse');
+				if (aSubject == window) {
+					aData = String(aData);
+					this.collapseExpandAllSubtree(
+						aData.indexOf('collapse') > -1,
+						aData.indexOf('now') > -1
+					);
+				}
 				break;
 
 			case 'nsPref:changed':
@@ -3443,7 +3448,7 @@ TreeStyleTabBrowser.prototype = {
 	},
 	cETIWDFTimer : null,
  
-	collapseExpandAllSubtree : function(aCollapse) 
+	collapseExpandAllSubtree : function(aCollapse, aJustNow) 
 	{
 		var xpathResult = this.evaluateXPath(
 				'child::xul:tab[@'+this.kID+' and @'+this.kCHILDREN+
@@ -3457,7 +3462,7 @@ TreeStyleTabBrowser.prototype = {
 			);
 		for (var i = 0, maxi = xpathResult.snapshotLength; i < maxi; i++)
 		{
-			this.collapseExpandSubtree(xpathResult.snapshotItem(i), aCollapse);
+			this.collapseExpandSubtree(xpathResult.snapshotItem(i), aCollapse, aJustNow);
 		}
 	},
   

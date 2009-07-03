@@ -1178,6 +1178,7 @@ var TreeStyleTabService = {
 		appcontent.addEventListener('SubBrowserRemoveRequest', this, false);
 
 		this.addPrefListener(this);
+		this.ObserverService.addObserver(this, 'private-browsing-change-granted', false);
 
 		this.overrideExtensionsOnInitBefore(); // hacks.js
 		this.overrideGlobalFunctions();
@@ -1724,6 +1725,7 @@ catch(e) {
 		appcontent.removeEventListener('SubBrowserRemoveRequest', this, false);
 
 		this.removePrefListener(this);
+		this.ObserverService.removeObserver(this, 'private-browsing-change-granted');
 	},
 	
 	destroyTabBrowser : function(aTabBrowser) 
@@ -2341,6 +2343,21 @@ catch(e) {
 		return false;
 	},
   
+	observe : function(aSubject, aTopic, aData) 
+	{
+		switch (aTopic)
+		{
+			case 'nsPref:changed':
+				this.onPrefChange(aData);
+				return;
+
+			case 'private-browsing-change-granted':
+				if (aData == 'enter')
+					this.ObserverService.notifyObservers(window, 'TreeStyleTab:collapseExpandAllSubtree', 'expand-now');
+				return;
+		}
+	},
+ 
 /* Pref Listener */ 
 	
 	domains : [ 
@@ -2349,10 +2366,8 @@ catch(e) {
 		'browser.tabs.loadFolderAndReplace.override'
 	],
  
-	observe : function(aSubject, aTopic, aPrefName) 
+	onPrefChange : function(aPrefName) 
 	{
-		if (aTopic != 'nsPref:changed') return;
-
 		var value = this.getPref(aPrefName);
 		switch (aPrefName)
 		{
