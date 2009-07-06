@@ -1494,6 +1494,10 @@ TreeStyleTabBrowser.prototype = {
 			if (this.isGroupTab(parentTab) && !this.getDescendantTabs(parentTab).length) {
 				if (nextFocusedTab == parentTab)
 					nextFocusedTab = this.getNextSiblingTab(parentTab) || this.getPreviousSiblingTab(parentTab);
+				// when closing the last tab on Firefox 3.0
+				if (!this.getPref('browser.tabs.closeWindowWithLastTab') &&
+					this.getTabs(b).snapshotLength == 2)
+					b.addTab('about:blank');
 				b.removeTab(parentTab);
 			}
 		}
