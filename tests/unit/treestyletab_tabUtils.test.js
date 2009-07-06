@@ -240,5 +240,7 @@ function test_cleanUpTabsArray()
 sv.registerTabFocusAllowance(func)
 sv.registerExpandTwistyAreaAllowance(func)
 
+sv.isGroupTab(tab)
+
 */
 

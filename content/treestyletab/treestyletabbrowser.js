@@ -1491,11 +1491,9 @@ TreeStyleTabBrowser.prototype = {
 
 			this.partTab(tab, true);
 
-			if (parentTab.linkedBrowser.sessionHistory.count == 1 &&
-				parentTab.linkedBrowser.currentURI.spec.indexOf('about:treestyletab-group') > -1 &&
-				!this.getDescendantTabs(parentTab).length) {
+			if (this.isGroupTab(parentTab) && !this.getDescendantTabs(parentTab).length) {
 				if (nextFocusedTab == parentTab)
-					nextFocusedTab = null;
+					nextFocusedTab = this.getNextSiblingTab(parentTab) || this.getPreviousSiblingTab(parentTab);
 				b.removeTab(parentTab);
 			}
 		}

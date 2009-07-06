@@ -1058,6 +1058,14 @@ var TreeStyleTabService = {
 			XPathResult.NUMBER_TYPE
 		).numberValue;
 	},
+ 
+	isGroupTab : function(aTab) 
+	{
+		return (
+			aTab.linkedBrowser.sessionHistory.count == 1 &&
+			aTab.linkedBrowser.currentURI.spec.indexOf('about:treestyletab-group') > -1
+		);
+	},
   
 /* Session Store API */ 
 	
