@@ -1516,8 +1516,8 @@ TreeStyleTabBrowser.prototype = {
 			nextFocusedTab &&
 			b.selectedTab == tab &&
 			this._tabFocusAllowance.every(function(aFunc) {
-				return aFunc(b);
-			})
+				return aFunc.call(this, b);
+			}, this)
 			)
 			b.selectedTab = nextFocusedTab;
 

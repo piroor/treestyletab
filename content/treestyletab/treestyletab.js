@@ -526,8 +526,8 @@ var TreeStyleTabService = {
 		return (
 				this.expandTwistyArea &&
 				this._expandTwistyAreaAllowance.every(function(aFunc) {
-					return aFunc(aTabBrowser);
-				})
+					return aFunc.call(this, aTabBrowser);
+				}, this)
 			);
 	},
 	expandTwistyArea : true,
@@ -1160,9 +1160,24 @@ var TreeStyleTabService = {
 		);
 
 		this.overrideExtensionsPreInit(); // hacks.js
+
+		this.registerTabFocusAllowance(this.defaultTabFocusAllowance);
 	},
 	preInitialized : false,
- 
+	
+	defaultTabFocusAllowance : function(aBrowser) 
+	{
+		var tab = aBrowser.selectedTab;
+		return (
+			!this.getPref('browser.tabs.selectOwnerOnClose') ||
+			!tab.owner ||
+			(
+				aBrowser._removingTabs &&
+				aBrowser._removingTabs.indexOf(tab.owner) > -1
+			)
+		);
+	},
+  
 	init : function() 
 	{
 		if (!('gBrowser' in window)) return;
