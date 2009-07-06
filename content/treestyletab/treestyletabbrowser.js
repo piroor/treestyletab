@@ -1500,7 +1500,7 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 		else if (!nextFocusedTab) {
-			nextFocusedTab = this.getNextSiblingTab(tab);
+			nextFocusedTab = this.getNextSiblingTab(tab) || this.getPreviousSiblingTab(tab);
 		}
 
 		if (
