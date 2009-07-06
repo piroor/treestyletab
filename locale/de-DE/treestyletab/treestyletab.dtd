@@ -137,6 +137,10 @@
 
 <!ENTITY selection.removeTabSubTree.label     "Ausgewählte Zweige schließen">
 <!ENTITY selection.removeTabSubTree.accesskey "s">
+<!ENTITY context.reloadTabSubTree.label     "Reload this Tree">
+<!ENTITY context.reloadTabSubTree.accesskey "r">
+<!ENTITY context.reloadDescendantTabs.label     "Reload Children">
+<!ENTITY context.reloadDescendantTabs.accesskey "r">
 <!ENTITY context.removeTabSubTree.label     "Diesen Zweig schließen">
 <!ENTITY context.removeTabSubTree.accesskey "s">
 <!ENTITY context.removeDescendantTabs.label     "Untergeordnete Tabs schließen">

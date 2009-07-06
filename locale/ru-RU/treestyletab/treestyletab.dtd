@@ -137,6 +137,10 @@
 
 <!ENTITY selection.removeTabSubTree.label     "Закрыть выбранные деревья">
 <!ENTITY selection.removeTabSubTree.accesskey "s">
+<!ENTITY context.reloadTabSubTree.label     "Reload this Tree">
+<!ENTITY context.reloadTabSubTree.accesskey "r">
+<!ENTITY context.reloadDescendantTabs.label     "Reload Children">
+<!ENTITY context.reloadDescendantTabs.accesskey "r">
 <!ENTITY context.removeTabSubTree.label     "Закрыть это дерево">
 <!ENTITY context.removeTabSubTree.accesskey "s">
 <!ENTITY context.removeDescendantTabs.label     "Закрыть дочерние вкладки">

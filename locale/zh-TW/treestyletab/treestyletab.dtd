@@ -134,6 +134,10 @@
 
 <!ENTITY selection.removeTabSubTree.label     "關閉所有選取的樹">
 <!ENTITY selection.removeTabSubTree.accesskey "s">
+<!ENTITY context.reloadTabSubTree.label     "Reload this Tree">
+<!ENTITY context.reloadTabSubTree.accesskey "r">
+<!ENTITY context.reloadDescendantTabs.label     "Reload Children">
+<!ENTITY context.reloadDescendantTabs.accesskey "r">
 <!ENTITY context.removeTabSubTree.label     "關閉此樹">
 <!ENTITY context.removeTabSubTree.accesskey "s">
 <!ENTITY context.removeDescendantTabs.label     "關閉所有子分頁">

@@ -2035,26 +2035,11 @@ catch(e) {
 	
 	removeTabSubTree : function(aTabOrTabs, aOnlyChildren) 
 	{
-		var tabs = aTabOrTabs;
-		if (!(tabs instanceof Array)) {
-			tabs = [aTabOrTabs];
-		}
-
-		var b = this.getTabBrowserFromChild(tabs[0]);
-		var descendant = [];
-		for (var i = 0, maxi = tabs.length; i < maxi; i++)
-		{
-			descendant = descendant.concat(b.treeStyleTab.getDescendantTabs(tabs[i]));
-		}
-
-		if (aOnlyChildren)
-			tabs = this.cleanUpTabsArray(descendant);
-		else
-			tabs = this.cleanUpTabsArray(tabs.concat(descendant));
-
+		var tabs = this._normalizeToTabs(aTabOrTabs, aOnlyChildren);
 		if (!this.warnAboutClosingTabs(tabs.length))
 			return;
 
+		var b = this.getTabBrowserFromChild(tabs[0]);
 		for (var i = tabs.length-1; i > -1; i--)
 		{
 			b.removeTab(tabs[i]);
@@ -2087,6 +2072,28 @@ catch(e) {
 		return shouldClose;
 	},
 	
+	_normalizeToTabs : function(aTabOrTabs, aOnlyChildren) 
+	{
+		var tabs = aTabOrTabs;
+		if (!(tabs instanceof Array)) {
+			tabs = [aTabOrTabs];
+		}
+
+		var b = this.getTabBrowserFromChild(tabs[0]);
+		var descendant = [];
+		for (var i = 0, maxi = tabs.length; i < maxi; i++)
+		{
+			descendant = descendant.concat(b.treeStyleTab.getDescendantTabs(tabs[i]));
+		}
+
+		if (aOnlyChildren)
+			tabs = this.cleanUpTabsArray(descendant);
+		else
+			tabs = this.cleanUpTabsArray(tabs.concat(descendant));
+
+		return tabs;
+	},
+ 
 	cleanUpTabsArray : function(aTabs) 
 	{
 		var newTabs = [];
@@ -2100,6 +2107,16 @@ catch(e) {
 		return newTabs;
 	},
   
+	reloadTabSubTree : function(aTabOrTabs, aOnlyChildren) 
+	{
+		var tabs = this._normalizeToTabs(aTabOrTabs, aOnlyChildren);
+		var b = this.getTabBrowserFromChild(tabs[0]);
+		for (var i = tabs.length-1; i > -1; i--)
+		{
+			b.reloadTab(tabs[i]);
+		}
+	},
+ 
 	bookmarkTabSubTree : function(aTabOrTabs) 
 	{
 		var tabs = aTabOrTabs;

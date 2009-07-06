@@ -180,6 +180,12 @@
 		<preference id="extensions.treestyletab.show.openSelectionLinks"
 			name="extensions.treestyletab.show.openSelectionLinks"
 			type="bool"/>
+		<preference id="extensions.treestyletab.show.context-item-reloadTabSubTree"
+			name="extensions.treestyletab.show.context-item-reloadTabSubTree"
+			type="bool"/>
+		<preference id="extensions.treestyletab.show.context-item-reloadDescendantTabs"
+			name="extensions.treestyletab.show.context-item-reloadDescendantTabs"
+			type="bool"/>
 		<preference id="extensions.treestyletab.show.context-item-removeTabSubTree"
 			name="extensions.treestyletab.show.context-item-removeTabSubTree"
 			type="bool"/>
@@ -210,6 +216,14 @@
 
 	<groupbox orient="vertical">
 		<caption label="&config.show.tabContextMenu.caption;"/>
+		<hbox align="center">
+			<checkbox id="extensions.treestyletab.show.context-item-reloadTabSubTree-check"
+				preference="extensions.treestyletab.show.context-item-reloadTabSubTree"
+				label="&context.reloadTabSubTree.label;"/>
+			<checkbox id="extensions.treestyletab.show.context-item-reloadDescendantTabs-check"
+				preference="extensions.treestyletab.show.context-item-reloadDescendantTabs"
+				label="&context.reloadDescendantTabs.label;"/>
+		</hbox>
 		<hbox align="center">
 			<checkbox id="extensions.treestyletab.show.context-item-removeTabSubTree-check"
 				preference="extensions.treestyletab.show.context-item-removeTabSubTree"

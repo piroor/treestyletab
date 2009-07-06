@@ -57,6 +57,8 @@ pref("extensions.treestyletab.twisty.expandSensitiveArea", true);
 pref("extensions.treestyletab.clickOnIndentSpaces.enabled", true);
 
 pref("extensions.treestyletab.show.openSelectionLinks", true);
+pref("extensions.treestyletab.show.context-item-reloadTabSubTree", true);
+pref("extensions.treestyletab.show.context-item-reloadDescendantTabs", false);
 pref("extensions.treestyletab.show.context-item-removeTabSubTree", true);
 pref("extensions.treestyletab.show.context-item-removeDescendantTabs", false);
 pref("extensions.treestyletab.show.context-item-collapseAllSubtree", true);

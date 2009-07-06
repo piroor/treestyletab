@@ -137,6 +137,10 @@
 
 <!ENTITY selection.removeTabSubTree.label     "すべてのサブツリーを閉じる">
 <!ENTITY selection.removeTabSubTree.accesskey "s">
+<!ENTITY context.reloadTabSubTree.label     "このサブツリーを再読み込み">
+<!ENTITY context.reloadTabSubTree.accesskey "r">
+<!ENTITY context.reloadDescendantTabs.label     "このタブの子タブをすべて再読み込み">
+<!ENTITY context.reloadDescendantTabs.accesskey "r">
 <!ENTITY context.removeTabSubTree.label     "このサブツリーを閉じる">
 <!ENTITY context.removeTabSubTree.accesskey "s">
 <!ENTITY context.removeDescendantTabs.label     "このタブの子タブをすべて閉じる">
