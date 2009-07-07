@@ -462,10 +462,13 @@ var TreeStyleTabService = {
 	toggleFixed : function() 
 	{
 		var pos = this.getTreePref('tabbar.position');
-		var pref = (pos == 'left' || pos == 'right') ?
-					'tabbar.fixed.vertical' :
-					'tabbar.fixed.horizontal' ;
+		var isVertical = (pos == 'left' || pos == 'right');
+
+		var pref = isVertical ? 'tabbar.fixed.vertical' : 'tabbar.fixed.horizontal' ;
 		this.setTreePref(pref, !this.getTreePref(pref));
+
+		if (!isVertical)
+			this.setTreePref('enableSubtreeIndent', !this.getTreePref(pref));
 	},
  
 	changeTabbarPosition : function(aNewPosition) /* PUBLIC API */ 
