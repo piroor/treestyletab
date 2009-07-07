@@ -534,6 +534,10 @@
 		<preference id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
 			name="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
 			type="bool"/>
+		<preference id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove"
+			name="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove"
+			type="bool"
+			inverted="true"/>
 		<preference id="extensions.treestyletab.collapseExpandSubTree.dblclick"
 			name="extensions.treestyletab.collapseExpandSubTree.dblclick"
 			type="bool"/>
@@ -562,6 +566,12 @@
 	<checkbox id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect-check"
 		preference="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
 		label="&config.autoCollapseExpandSubTreeOnSelect;"/>
+	<hbox align="center">
+		<spacer style="width:1em;"/>
+		<checkbox id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove-check"
+			label="&config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove;"
+			preference="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove"/>
+	</hbox>
 	<checkbox id="extensions.treestyletab.collapseExpandSubTree.dblclick-check"
 		preference="extensions.treestyletab.collapseExpandSubTree.dblclick"
 		label="&config.collapseExpandSubTree.dblclick;"/>

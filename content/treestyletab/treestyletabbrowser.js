@@ -1518,14 +1518,16 @@ TreeStyleTabBrowser.prototype = {
 			nextFocusedTab = this.getNextFocusedTab(tab);
 		}
 
-		if (
-			nextFocusedTab &&
-			b.selectedTab == tab &&
-			this._tabFocusAllowance.every(function(aFunc) {
-				return aFunc.call(this, b);
-			}, this)
-			)
-			b.selectedTab = nextFocusedTab;
+		if (b.selectedTab == tab) {
+			this._focusChangedByCurrentTabRemove = true;
+			if (
+				nextFocusedTab &&
+				this._tabFocusAllowance.every(function(aFunc) {
+					return aFunc.call(this, b);
+				}, this)
+				)
+				b.selectedTab = nextFocusedTab;
+		}
 
 		if (indentModifiedTabs.length)
 			this.updateTabsIndentWithDelay(indentModifiedTabs);
@@ -1812,8 +1814,12 @@ TreeStyleTabBrowser.prototype = {
 		else if (this.hasChildTabs(tab) &&
 				(tab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true') &&
 				this.getTreePref('autoCollapseExpandSubTreeOnSelect')) {
-			this.collapseExpandTreesIntelligentlyWithDelayFor(tab);
+			if (!this._focusChangedByCurrentTabRemove ||
+				this.getTreePref('autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove'))
+				this.collapseExpandTreesIntelligentlyWithDelayFor(tab);
 		}
+
+		this._focusChangedByCurrentTabRemove = false;
 
 		if (this.autoHideEnabled && this.autoHideShown)
 			this.redrawContentArea();

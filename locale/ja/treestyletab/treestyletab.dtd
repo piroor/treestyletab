@@ -108,7 +108,8 @@
 
 <!ENTITY config.tabs.advanced "詳細">
 
-<!ENTITY config.autoCollapseExpandSubTreeOnSelect "タブを開く時やタブを切り替える時に、関係ないサブツリーを自動的に折り畳む">
+<!ENTITY config.autoCollapseExpandSubTreeOnSelect "タブを切り替えた時は、フォーカスされたタブのツリーを自動的に展開して、他のツリーを折り畳む">
+<!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "現在のタブを閉じてタブのフォーカスが切り替わった場合は何もしない">
 <!ENTITY config.collapseExpandSubTree.dblclick "タブのダブルクリックでサブツリーを開閉する">
 
 <!ENTITY config.autoExpandSubTreeOnAppendChild "折り畳まれたサブツリー内に子孫のタブが追加された時、サブツリーを自動的に展開する">

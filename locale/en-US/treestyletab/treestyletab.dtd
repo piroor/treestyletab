@@ -108,7 +108,8 @@
 
 <!ENTITY config.tabs.advanced "Advanced">
 
-<!ENTITY config.autoCollapseExpandSubTreeOnSelect "Collapse distractive subtrees automatically, when a tab is opened or focused">
+<!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
+<!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
 <!ENTITY config.collapseExpandSubTree.dblclick "Collapse/Expand subtree of the tab by double-click">
 
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Expand subtree automatically, when tabs are inserted into the subtree">

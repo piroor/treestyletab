@@ -105,7 +105,9 @@
 
 <!ENTITY config.tabs.advanced "進階">
 
-<!ENTITY config.autoCollapseExpandSubTreeOnSelect "當開新分頁或切換分頁時，自動摺疊無關的子樹">
+<!--ENTITY config.autoCollapseExpandSubTreeOnSelect "當開新分頁或切換分頁時，自動摺疊無關的子樹"-->
+<!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
+<!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
 <!ENTITY config.collapseExpandSubTree.dblclick "按兩下分頁開關子樹">
 
 <!ENTITY config.autoExpandSubTreeOnAppendChild "當新增分頁到子樹時，自動展開子樹">

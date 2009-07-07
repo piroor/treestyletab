@@ -81,6 +81,7 @@ pref("extensions.treestyletab.openGroupBookmarkAsTabSubTree.underParent", true);
 pref("extensions.treestyletab.useEffectiveTLD", true);
 
 pref("extensions.treestyletab.autoCollapseExpandSubTreeOnSelect",      true);
+pref("extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove", true);
 pref("extensions.treestyletab.collapseExpandSubTree.dblclick",         false);
 pref("extensions.treestyletab.autoExpandSubTreeOnAppendChild",         true);
 pref("extensions.treestyletab.autoAttachNewTabsAsChildren", true);

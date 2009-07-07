@@ -106,7 +106,9 @@
 
 <!ENTITY config.tabs.advanced "Avanzate">
 
-<!ENTITY config.autoCollapseExpandSubTreeOnSelect "Contrai automaticamente gli altri sottoalberi quando viene aperta o selezionata una scheda">
+<!--ENTITY config.autoCollapseExpandSubTreeOnSelect "Contrai automaticamente gli altri sottoalberi quando viene aperta o selezionata una scheda"-->
+<!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
+<!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
 <!ENTITY config.collapseExpandSubTree.dblclick "Contrai/espandi sottoalberi della scheda con un doppio-clic">
 
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Espandi automaticamente i sottoalberi all'inserimento di nuove schede">
