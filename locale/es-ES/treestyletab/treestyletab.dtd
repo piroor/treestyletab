@@ -154,7 +154,9 @@
 <!ENTITY context.expandAllSubtree.accesskey "e">
 <!ENTITY context.toggleAutoHide.label     "Auto-ocultar la barra de pestañas">
 <!ENTITY context.toggleAutoHide.accesskey "h">
-<!ENTITY context.toggleFixed.label     "Anclar la barra de pestañas">
+<!ENTITY context.toggleFixed.label            "Fix width/height of tab bar">
+<!ENTITY context.toggleFixed.label.horizontal "Fix height of tab bar">
+<!ENTITY context.toggleFixed.label.vertical   "Anclar la barra de pestañas">
 <!ENTITY context.toggleFixed.accesskey "f">
 <!ENTITY context.tabbarPosition.label     "Posición">
 <!ENTITY context.tabbarPosition.accesskey "p">

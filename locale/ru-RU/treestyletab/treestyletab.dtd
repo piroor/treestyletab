@@ -153,7 +153,9 @@
 <!ENTITY context.expandAllSubtree.accesskey "e">
 <!ENTITY context.toggleAutoHide.label     "Автоскрытие панели вкладок">
 <!ENTITY context.toggleAutoHide.accesskey "h">
-<!ENTITY context.toggleFixed.label     "Зафиксировать ширину панели вкладок">
+<!ENTITY context.toggleFixed.label            "Fix width/height of tab bar">
+<!ENTITY context.toggleFixed.label.horizontal "Fix height of tab bar">
+<!ENTITY context.toggleFixed.label.vertical   "Зафиксировать ширину панели вкладок">
 <!ENTITY context.toggleFixed.accesskey "f">
 <!ENTITY context.tabbarPosition.label     "Позиция">
 <!ENTITY context.tabbarPosition.accesskey "p">

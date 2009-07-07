@@ -153,7 +153,9 @@
 <!ENTITY context.expandAllSubtree.accesskey "e">
 <!ENTITY context.toggleAutoHide.label     "Tableiste verstecken">
 <!ENTITY context.toggleAutoHide.accesskey "h">
-<!ENTITY context.toggleFixed.label     "Feste Breite der Tableiste">
+<!ENTITY context.toggleFixed.label            "Fix width/height of tab bar">
+<!ENTITY context.toggleFixed.label.horizontal "Fix height of tab bar">
+<!ENTITY context.toggleFixed.label.vertical   "Feste Breite der Tableiste">
 <!ENTITY context.toggleFixed.accesskey "f">
 <!ENTITY context.tabbarPosition.label     "Position">
 <!ENTITY context.tabbarPosition.accesskey "p">

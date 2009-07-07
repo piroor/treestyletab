@@ -150,7 +150,9 @@
 <!ENTITY context.expandAllSubtree.accesskey "e">
 <!ENTITY context.toggleAutoHide.label     "自動隱藏分頁工具列">
 <!ENTITY context.toggleAutoHide.accesskey "h">
-<!ENTITY context.toggleFixed.label     "固定分頁工具列的寬度">
+<!ENTITY context.toggleFixed.label            "Fix width/height of tab bar">
+<!ENTITY context.toggleFixed.label.horizontal "Fix height of tab bar">
+<!ENTITY context.toggleFixed.label.vertical   "固定分頁工具列的寬度">
 <!ENTITY context.toggleFixed.accesskey "f">
 <!ENTITY context.tabbarPosition.label     "分頁工具列的位置">
 <!ENTITY context.tabbarPosition.accesskey "p">

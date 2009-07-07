@@ -2149,33 +2149,25 @@ TreeStyleTabBrowser.prototype = {
 
 		// auto hide
 		var autohide = items[this.kMENUITEM_AUTOHIDE];
-		var pos = b.getAttribute(this.kTABBAR_POSITION);
-		if (this.getTreePref('show.'+this.kMENUITEM_AUTOHIDE)/* &&
-			(pos == 'left' || pos == 'right')*/) {
-			if (this.autoHideMode != this.kAUTOHIDE_MODE_DISABLED)
-				autohide.setAttribute('checked', true);
-			else
-				autohide.removeAttribute('checked');
-		}
-		else {
-			autohide.setAttribute('hidden', true);
-		}
+		if (this.autoHideMode != this.kAUTOHIDE_MODE_DISABLED)
+			autohide.setAttribute('checked', true);
+		else
+			autohide.removeAttribute('checked');
 
 		// fix
 		var fixed = items[this.kMENUITEM_FIXED];
-		if (this.getTreePref('show.'+this.kMENUITEM_FIXED)/* &&
-			(pos == 'left' || pos == 'right')*/) {
-			if (this.getTreePref('tabbar.fixed'))
-				fixed.setAttribute('checked', true);
-			else
-				fixed.removeAttribute('checked');
-		}
-		else {
-			fixed.setAttribute('hidden', true);
-		}
+		if (this.getTreePref('tabbar.fixed'))
+			fixed.setAttribute('checked', true);
+		else
+			fixed.removeAttribute('checked');
+		if (this.isVertical)
+			fixed.setAttribute('label', fixed.getAttribute('label-vertical'));
+		else
+			fixed.setAttribute('label', fixed.getAttribute('label-horizontal'));
 
 		// position
 		var position = items[this.kMENUITEM_POSITION];
+		var pos = b.getAttribute(this.kTABBAR_POSITION);
 		position.getElementsByAttribute('value', pos)[0].setAttribute('checked', true);
 
 		sep = this.evaluateXPath(

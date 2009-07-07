@@ -135,6 +135,8 @@
 			oncommand="TreeStyleTabService.toggleAutoHide();"/>
 		<menuitem id="context-item-toggleFixed"
 			label="&context.toggleFixed.label;"
+			label-horizontal="&context.toggleFixed.label.horizontal;"
+			label-vertical="&context.toggleFixed.label.vertical;"
 			accesskey="&context.toggleFixed.accesskey;"
 			type="checkbox"
 			autocheck="false"
