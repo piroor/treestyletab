@@ -1062,12 +1062,14 @@ TreeStyleTabBrowser.prototype = {
 				tabs.forEach(function(aTab) {
 					this.initTabAttributes(aTab);
 				}, this);
-				this.updateAllTabsIndent();
 				tabs.forEach(function(aTab) {
 					this.initTabContents(aTab);
 				}, this);
 				if (this.autoHideEnabled) this.showTabbar();
 				this.updateTabbarTransparency();
+				window.setTimeout(function(aSelf) {
+					aSelf.checkTabsIndentOverflow();
+				}, 0, this);
 				break;
 
 			case 'extensions.treestyletab.tabbar.invertTab':
