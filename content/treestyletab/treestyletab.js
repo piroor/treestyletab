@@ -2151,8 +2151,9 @@ catch(e) {
 			'addBookmarkFor' in MultipleTabService) {
 			MultipleTabService.addBookmarkFor(bookmarkedTabs);
 		}
-
-		this._addBookmarkFor(bookmarkedTabs);
+		else {
+			this._addBookmarkFor(bookmarkedTabs);
+		}
 	},
 	
 	_addBookmarkFor : function(aTabs) // from Multiple Tab Handler 
