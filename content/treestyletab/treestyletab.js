@@ -479,7 +479,7 @@ var TreeStyleTabService = {
 		if (!this.getTreePref('tabbar.syncRelatedPrefsForDynamicPosition')) return;
 
 		var vertical = (aNewPosition == 'left' || aNewPosition == 'right');
-		this.setTreePref('enableSubtreeIndent', vertical);
+		this.setTreePref('enableSubtreeIndent', vertical || !this.getTreePref('tabbar.fixed.horizontal'));
 		this.setTreePref('allowSubtreeCollapseExpand', vertical);
 	},
   
