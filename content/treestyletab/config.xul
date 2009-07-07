@@ -27,9 +27,6 @@
 		<preference id="extensions.treestyletab.enableSubtreeIndent"
 			name="extensions.treestyletab.enableSubtreeIndent"
 			type="bool"/>
-		<preference id="extensions.treestyletab.tabbar.fixed"
-			name="extensions.treestyletab.tabbar.fixed"
-			type="bool"/>
 		<preference id="extensions.treestyletab.allowSubtreeCollapseExpand"
 			name="extensions.treestyletab.allowSubtreeCollapseExpand"
 			type="bool"/>
@@ -116,9 +113,6 @@
 				label="&config.tabbar.invertClosebox.left;"
 				label-left="&config.tabbar.invertClosebox.left;"
 				label-right="&config.tabbar.invertClosebox.right;"/>
-			<checkbox id="extensions.treestyletab.tabbar.fixed-check"
-				preference="extensions.treestyletab.tabbar.fixed"
-				label="&context.toggleFixed.label;"/>
 		</hbox>
 		<checkbox id="extensions.treestyletab.allowSubtreeCollapseExpand-check"
 			preference="extensions.treestyletab.allowSubtreeCollapseExpand"

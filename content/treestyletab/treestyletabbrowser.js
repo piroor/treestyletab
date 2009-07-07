@@ -509,7 +509,6 @@ TreeStyleTabBrowser.prototype = {
 		this.onPrefChange('extensions.treestyletab.tabbar.hideNewTabButton');
 		this.onPrefChange('extensions.treestyletab.tabbar.hideAlltabsButton');
 		this.onPrefChange('extensions.treestyletab.allowSubtreeCollapseExpand');
-		this.onPrefChange('extensions.treestyletab.tabbar.fixed');
 		this.onPrefChange('extensions.treestyletab.tabbar.transparent.style');
 		this.onPrefChange('extensions.treestyletab.tabbar.autoHide.area');
 		this.onPrefChange('extensions.treestyletab.tabbar.togglerSize');
@@ -842,6 +841,11 @@ TreeStyleTabBrowser.prototype = {
 
 			b.mStrip.setAttribute('width', this.getTreePref('tabbar.width'));
 
+			if (this.getTreePref('tabbar.fixed.vertical'))
+				b.setAttribute(this.kFIXED, true);
+			else
+				b.removeAttribute(this.kFIXED);
+
 			b.setAttribute(this.kMODE, 'vertical');
 			if (pos == this.kTABBAR_RIGHT) {
 				b.setAttribute(this.kTABBAR_POSITION, 'right');
@@ -913,7 +917,16 @@ TreeStyleTabBrowser.prototype = {
 			if (toolboxContainer)
 				toolboxContainer.orient = 'horizontal';
 
-			b.mStrip.setAttribute('height', this.getTreePref('tabbar.height'));
+
+			if (this.getTreePref('tabbar.fixed.horizontal')) {
+				b.setAttribute(this.kFIXED, true);
+				b.mStrip.removeAttribute('height');
+				b.mPanelContainer.removeAttribute('height');
+			}
+			else {
+				b.removeAttribute(this.kFIXED);
+				b.mStrip.setAttribute('height', this.getTreePref('tabbar.height'));
+			}
 
 			b.setAttribute(this.kMODE, this.getTreePref('tabbar.multirow') ? 'multirow' : 'horizontal' );
 			b.removeAttribute(this.kTAB_INVERTED);
@@ -1182,17 +1195,24 @@ TreeStyleTabBrowser.prototype = {
 					this.endListenMouseMove();
 				break;
 
-			case 'extensions.treestyletab.tabbar.fixed':
-				if (value) {
-					b.setAttribute(this.kFIXED, true);
-					if (!this.isVertical) {
+			case 'extensions.treestyletab.tabbar.fixed.vertical':
+				if (this.isVertical) {
+					if (value)
+						b.setAttribute(this.kFIXED, true);
+					else
+						b.removeAttribute(this.kFIXED);
+				}
+				break;
+
+			case 'extensions.treestyletab.tabbar.fixed.horizontal':
+				if (!this.isVertical) {
+					if (value) {
+						b.setAttribute(this.kFIXED, true);
 						b.mStrip.removeAttribute('height');
 						b.mPanelContainer.removeAttribute('height');
 					}
-				}
-				else {
-					b.removeAttribute(this.kFIXED);
-					if (!this.isVertical) {
+					else {
+						b.removeAttribute(this.kFIXED);
 						b.mStrip.setAttribute('height', this.getTreePref('tabbar.height'));
 					}
 				}
@@ -2115,8 +2135,8 @@ TreeStyleTabBrowser.prototype = {
 			aEvent.currentTarget,
 			XPathResult.FIRST_ORDERED_NODE_TYPE
 		).singleNodeValue;
-		var collapseItem = items[this.kMENUITEM_COLLAPSE];
-		var expanndItem = items[this.kMENUITEM_EXPAND];
+		let collapseItem = items[this.kMENUITEM_COLLAPSE];
+		let expanndItem = items[this.kMENUITEM_EXPAND];
 		if (this.evaluateXPath(
 				'child::xul:tab[@'+this.kCHILDREN+']',
 				b.mTabContainer
@@ -2150,26 +2170,33 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		// auto hide
-		var autohide = items[this.kMENUITEM_AUTOHIDE];
+		let autohide = items[this.kMENUITEM_AUTOHIDE];
 		if (this.autoHideMode != this.kAUTOHIDE_MODE_DISABLED)
 			autohide.setAttribute('checked', true);
 		else
 			autohide.removeAttribute('checked');
 
 		// fix
-		var fixed = items[this.kMENUITEM_FIXED];
-		if (this.getTreePref('tabbar.fixed'))
+		let fixedPref;
+		let fixedLabel;
+		if (this.isVertical) {
+			fixedPref = 'tabbar.fixed.vertical';
+			fixedLabel = 'label-vertical';
+		}
+		else {
+			fixedPref = 'tabbar.fixed.horizontal';
+			fixedLabel = 'label-horizontal';
+		}
+		let fixed = items[this.kMENUITEM_FIXED];
+		fixed.setAttribute('label', fixed.getAttribute(fixedLabel));
+		if (this.getTreePref(fixedPref))
 			fixed.setAttribute('checked', true);
 		else
 			fixed.removeAttribute('checked');
-		if (this.isVertical)
-			fixed.setAttribute('label', fixed.getAttribute('label-vertical'));
-		else
-			fixed.setAttribute('label', fixed.getAttribute('label-horizontal'));
 
 		// position
-		var position = items[this.kMENUITEM_POSITION];
-		var pos = b.getAttribute(this.kTABBAR_POSITION);
+		let position = items[this.kMENUITEM_POSITION];
+		let pos = b.getAttribute(this.kTABBAR_POSITION);
 		position.getElementsByAttribute('value', pos)[0].setAttribute('checked', true);
 
 		sep = this.evaluateXPath(
@@ -3960,7 +3987,11 @@ TreeStyleTabBrowser.prototype = {
 	},
 	get splitterBorderColor()
 	{
-		var borderNode = this.getTreePref('tabbar.fixed') ?
+		var borderNode = this.getTreePref(
+					this.isVertical ?
+						'tabbar.fixed.vertical' :
+						'tabbar.fixed.horizontal' 
+				) ?
 				this.mTabBrowser.mStrip :
 				document.getAnonymousElementByAttribute(this.mTabBrowser, 'class', this.kSPLITTER) ;
 

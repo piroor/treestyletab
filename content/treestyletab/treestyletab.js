@@ -461,8 +461,11 @@ var TreeStyleTabService = {
  
 	toggleFixed : function() 
 	{
-		this.setTreePref('tabbar.fixed',
-			!this.getTreePref('tabbar.fixed'));
+		var pos = this.getTreePref('tabbar.position');
+		var pref = (pos == 'left' || pos == 'right') ?
+					'tabbar.fixed.vertical' :
+					'tabbar.fixed.horizontal' ;
+		this.setTreePref(pref, !this.getTreePref(pref));
 	},
  
 	changeTabbarPosition : function(aNewPosition) /* PUBLIC API */ 
@@ -478,7 +481,6 @@ var TreeStyleTabService = {
 		var vertical = (aNewPosition == 'left' || aNewPosition == 'right');
 		this.setTreePref('enableSubtreeIndent', vertical);
 		this.setTreePref('allowSubtreeCollapseExpand', vertical);
-		this.setTreePref('tabbar.fixed', !vertical);
 	},
   
 /* backward compatibility */ 
