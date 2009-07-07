@@ -467,6 +467,8 @@ var TreeStyleTabService = {
 		var pref = isVertical ? 'tabbar.fixed.vertical' : 'tabbar.fixed.horizontal' ;
 		this.setTreePref(pref, !this.getTreePref(pref));
 
+		if (!this.getTreePref('syncRelatedPrefs')) return;
+
 		if (!isVertical)
 			this.setTreePref('enableSubtreeIndent', !this.getTreePref(pref));
 	},
@@ -479,7 +481,7 @@ var TreeStyleTabService = {
 		aNewPosition = aNewPosition.toLowerCase();
 		this.setTreePref('tabbar.position', aNewPosition);
 
-		if (!this.getTreePref('tabbar.syncRelatedPrefsForDynamicPosition')) return;
+		if (!this.getTreePref('syncRelatedPrefs')) return;
 
 		var vertical = (aNewPosition == 'left' || aNewPosition == 'right');
 		this.setTreePref('enableSubtreeIndent', vertical || !this.getTreePref('tabbar.fixed.horizontal'));
