@@ -1506,10 +1506,12 @@ TreeStyleTabBrowser.prototype = {
 			this.partTab(tab, true);
 
 			if (shouldCloseParentTab) {
-				window.setTimeout(function(aSelf) {
+				window.setTimeout(function() {
 					if (parentTab.parentNode)
 						b.removeTab(parentTab);
-				}, 0, this);
+					parentTab = null;
+					b = null;
+				}, 0);
 			}
 		}
 		else if (!nextFocusedTab) {
