@@ -1506,16 +1506,10 @@ TreeStyleTabBrowser.prototype = {
 			this.partTab(tab, true);
 
 			if (shouldCloseParentTab) {
-				// when closing the last tab on Firefox 3.0
-				let shouldAddBlankTab = (
-						!this.getPref('browser.tabs.closeWindowWithLastTab') &&
-						this.getTabs(b).snapshotLength == 2
-					);
-				window.setTimeout(function() {
-					if (!parentTab.parentNode) return;
-					if (shouldAddBlankTab) b.addTab('about:blank');
-					b.removeTab(parentTab);
-				}, 0);
+				window.setTimeout(function(aSelf) {
+					if (parentTab.parentNode)
+						b.removeTab(parentTab);
+				}, 0, this);
 			}
 		}
 		else if (!nextFocusedTab) {
