@@ -3,6 +3,7 @@ pref("extensions.treestyletab.animation.indent.duration",   200);
 pref("extensions.treestyletab.animation.collapse.duration", 150);
 
 pref("extensions.treestyletab.tabbar.width",           200);
+pref("extensions.treestyletab.tabbar.height",          32);
 pref("extensions.treestyletab.tabbar.shrunkenWidth",   80);
 pref("extensions.treestyletab.tabbar.position",        "left");
 pref("extensions.treestyletab.tabbar.position.subbrowser.enabled", false);

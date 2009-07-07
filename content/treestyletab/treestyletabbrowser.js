@@ -800,6 +800,11 @@ TreeStyleTabBrowser.prototype = {
 		this.tabbarResizing = false;
 		b.removeAttribute(this.kRESIZING);
 
+		b.mStrip.removeAttribute('width');
+		b.mStrip.removeAttribute('height');
+		b.mPanelContainer.removeAttribute('width');
+		b.mPanelContainer.removeAttribute('height');
+
 		if (pos & this.kTABBAR_VERTICAL) {
 			this.collapseProp = 'margin-top';
 			this.positionProp         = 'screenY';
@@ -835,7 +840,6 @@ TreeStyleTabBrowser.prototype = {
 			if (toolboxContainer)
 				toolboxContainer.orient = 'vertical';
 
-			b.mStrip.removeAttribute('width');
 			b.mStrip.setAttribute('width', this.getTreePref('tabbar.width'));
 
 			b.setAttribute(this.kMODE, 'vertical');
@@ -909,8 +913,7 @@ TreeStyleTabBrowser.prototype = {
 			if (toolboxContainer)
 				toolboxContainer.orient = 'horizontal';
 
-			b.mStrip.removeAttribute('width');
-			b.mPanelContainer.removeAttribute('width');
+			b.mStrip.setAttribute('height', this.getTreePref('tabbar.height'));
 
 			b.setAttribute(this.kMODE, this.getTreePref('tabbar.multirow') ? 'multirow' : 'horizontal' );
 			b.removeAttribute(this.kTAB_INVERTED);
@@ -1178,10 +1181,19 @@ TreeStyleTabBrowser.prototype = {
 				break;
 
 			case 'extensions.treestyletab.tabbar.fixed':
-				if (value)
+				if (value) {
 					b.setAttribute(this.kFIXED, true);
-				else
+					if (!this.isVertical) {
+						b.mStrip.removeAttribute('height');
+						b.mPanelContainer.removeAttribute('height');
+					}
+				}
+				else {
 					b.removeAttribute(this.kFIXED);
+					if (!this.isVertical) {
+						b.mStrip.setAttribute('height', this.getTreePref('tabbar.height'));
+					}
+				}
 				break;
 
 			case 'extensions.treestyletab.tabbar.transparent.style':
@@ -1202,6 +1214,11 @@ TreeStyleTabBrowser.prototype = {
 							this.getTreePref('tabbar.width')
 					);
 				}
+				this.checkTabsIndentOverflow();
+				break;
+
+			case 'extensions.treestyletab.tabbar.height':
+				this._horizontalTabMaxIndentBase = 0;
 				this.checkTabsIndentOverflow();
 				break;
 
@@ -2133,8 +2150,8 @@ TreeStyleTabBrowser.prototype = {
 
 		// fix
 		var fixed = items[this.kMENUITEM_FIXED];
-		if (this.getTreePref('show.'+this.kMENUITEM_FIXED) &&
-			(pos == 'left' || pos == 'right')) {
+		if (this.getTreePref('show.'+this.kMENUITEM_FIXED)/* &&
+			(pos == 'left' || pos == 'right')*/) {
 			if (this.getTreePref('tabbar.fixed'))
 				fixed.setAttribute('checked', true);
 			else
@@ -3057,8 +3074,8 @@ TreeStyleTabBrowser.prototype = {
 
 		var oldIndent = this.indent;
 		var indent    = (oldIndent < 0 ? this.baseIndent : oldIndent ) * nest;
-		var maxIndentBase = (
-					this.getFirstTab(b).boxObject[this.invertedSizeProp] ||
+		var maxIndentBase = Math.min(
+					this.getFirstTab(b).boxObject[this.invertedSizeProp],
 					b.mTabContainer.boxObject[this.invertedSizeProp]
 				);
 		if (!this.isVertical) {

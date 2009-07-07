@@ -478,6 +478,7 @@ var TreeStyleTabService = {
 		var vertical = (aNewPosition == 'left' || aNewPosition == 'right');
 		this.setTreePref('enableSubtreeIndent', vertical);
 		this.setTreePref('allowSubtreeCollapseExpand', vertical);
+		this.setTreePref('tabbar.fixed', !vertical);
 	},
   
 /* backward compatibility */ 
@@ -1210,18 +1211,18 @@ var TreeStyleTabService = {
 
 		this.processRestoredTabs();
 
-		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.indent');
-		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.autoHide.mode');
-		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.clickOnIndentSpaces.enabled');
-		this.observe(null, 'nsPref:changed', 'browser.link.open_newwindow.restriction.override');
-		this.observe(null, 'nsPref:changed', 'browser.tabs.loadFolderAndReplace.override');
-		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.style');
-		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.scroll.smooth');
-		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.tabbar.scroll.duration');
-		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.animation.enabled');
-		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.animation.indent.duration');
-		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.animation.collapse.duration');
-		this.observe(null, 'nsPref:changed', 'extensions.treestyletab.twisty.expandSensitiveArea');
+		this.onPrefChange('extensions.treestyletab.indent');
+		this.onPrefChange('extensions.treestyletab.tabbar.autoHide.mode');
+		this.onPrefChange('extensions.treestyletab.clickOnIndentSpaces.enabled');
+		this.onPrefChange('browser.link.open_newwindow.restriction.override');
+		this.onPrefChange('browser.tabs.loadFolderAndReplace.override');
+		this.onPrefChange('extensions.treestyletab.tabbar.style');
+		this.onPrefChange('extensions.treestyletab.tabbar.scroll.smooth');
+		this.onPrefChange('extensions.treestyletab.tabbar.scroll.duration');
+		this.onPrefChange('extensions.treestyletab.animation.enabled');
+		this.onPrefChange('extensions.treestyletab.animation.indent.duration');
+		this.onPrefChange('extensions.treestyletab.animation.collapse.duration');
+		this.onPrefChange('extensions.treestyletab.twisty.expandSensitiveArea');
 	},
 	initialized : false,
 	
@@ -1969,10 +1970,15 @@ catch(e) {
 	onTabbarResized : function(aEvent) 
 	{
 		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
-		if (!b.treeStyleTab.tabbarExpanded)
-			this.setTreePref('tabbar.shrunkenWidth', b.mStrip.boxObject.width);
-		else
-			this.setTreePref('tabbar.width', b.mStrip.boxObject.width);
+		if (!b.treeStyleTab.isVertical) {
+			this.setTreePref('tabbar.height', b.mStrip.boxObject.height);
+		}
+		else {
+			if (!b.treeStyleTab.tabbarExpanded)
+				this.setTreePref('tabbar.shrunkenWidth', b.mStrip.boxObject.width);
+			else
+				this.setTreePref('tabbar.width', b.mStrip.boxObject.width);
+		}
 	},
  
 	initContextMenu : function() 
