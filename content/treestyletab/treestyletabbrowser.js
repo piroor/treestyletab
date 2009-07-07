@@ -77,8 +77,8 @@ TreeStyleTabBrowser.prototype = {
 	_scrollBox : null,
 	get scrollBoxObject()
 	{
-		return this.scrollBox.scrollBoxObject ||
-				this.scrollBox.boxObject.QueryInterface(Components.interfaces.nsIScrollBoxObject); // Tab Mix Plus
+		return (this.scrollBox.scrollBoxObject || this.scrollBox.boxObject)
+				.QueryInterface(Components.interfaces.nsIScrollBoxObject); // Tab Mix Plus
 	},
  
 /* utils */ 
