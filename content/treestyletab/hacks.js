@@ -444,11 +444,19 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 
 			eval('gBrowser.TMP_openTabNext = '+
 				gBrowser.TMP_openTabNext.toSource().replace(
-					'{',
-					'{ var tabs = this.treeStyleTab.getDescendantTabs(this.treeStyleTab.getRootTab(this.mCurrentTab));'
-				).replace(
-					/((this.mCurrentTab._tPos)( \+ this.mTabContainer.nextTab))/,
-					'((tabs.length ? tabs[tabs.length-1]._tPos : $2 )$3)'
+					'this.mCurrentTab._tPos + this.mTabContainer.nextTab',
+					<![CDATA[
+						(function() {
+							var tabs = this.treeStyleTab.getDescendantTabs(this.mCurrentTab);
+							var index = !tabs.length ?
+										($&) :
+									this.treeStyleTab.getPref("extensions.tabmix.openTabNextInverse") ?
+										tabs[tabs.length - 1]._tPos :
+										this.mCurrentTab._tPos ;
+							if (index < aTab._tPos) index++;
+							return index;
+						}).call(this)
+					]]>
 				)
 			);
 
