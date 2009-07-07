@@ -1496,11 +1496,16 @@ TreeStyleTabBrowser.prototype = {
 			while (ancestor = this.getParentTab(ancestor));
 			backupAttributes[this.kANCESTOR] = ancestors.join('|');
 
+			var shouldCloseParentTab = (
+					this.isGroupTab(parentTab) &&
+					this.getDescendantTabs(parentTab).length == 1
+				);
+			if (shouldCloseParentTab && nextFocusedTab == parentTab)
+				nextFocusedTab = this.getNextFocusedTab(parentTab);
+
 			this.partTab(tab, true);
 
-			if (this.isGroupTab(parentTab) && !this.getDescendantTabs(parentTab).length) {
-				if (nextFocusedTab == parentTab)
-					nextFocusedTab = this.getNextSiblingTab(parentTab) || this.getPreviousSiblingTab(parentTab);
+			if (shouldCloseParentTab) {
 				// when closing the last tab on Firefox 3.0
 				if (!this.getPref('browser.tabs.closeWindowWithLastTab') &&
 					this.getTabs(b).snapshotLength == 2)
@@ -1509,7 +1514,7 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 		else if (!nextFocusedTab) {
-			nextFocusedTab = this.getNextSiblingTab(tab) || this.getPreviousSiblingTab(tab);
+			nextFocusedTab = this.getNextFocusedTab(tab);
 		}
 
 		if (
@@ -1537,6 +1542,12 @@ TreeStyleTabBrowser.prototype = {
 	CLOSE_PARENT_BEHAVIOR_CLOSE          : 2,
 	CLOSE_ROOT_BEHAVIOR_ESCALATE_FIRST : 3,
 	CLOSE_ROOT_BEHAVIOR_DETACH         : 1,
+	getNextFocusedTab : function(aTab)
+	{
+		return this.getNextSiblingTab(aTab) ||
+				this.getPreviousSiblingTab(aTab) ||
+				this.getPreviousVisibleTab(aTab);
+	},
  
 	onTabMove : function(aEvent) 
 	{
