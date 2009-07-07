@@ -973,7 +973,7 @@ TreeStyleTabBrowser.prototype = {
 		else {
 			if (this.getTreePref('tabbar.fixed.horizontal')) {
 				b.setAttribute(this.kFIXED, true);
-				if (!this.isMultiRow) {
+				if (!this.isMultiRow()) {
 					b.mStrip.removeAttribute('height');
 					b.mPanelContainer.removeAttribute('height');
 				}
