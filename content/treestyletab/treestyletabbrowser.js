@@ -800,11 +800,10 @@ TreeStyleTabBrowser.prototype = {
 		b.removeAttribute(this.kRESIZING);
 
 		b.mStrip.removeAttribute('width');
-		b.mStrip.removeAttribute('height');
 		b.mPanelContainer.removeAttribute('width');
-		b.mPanelContainer.removeAttribute('height');
 
 		if (pos & this.kTABBAR_VERTICAL) {
+
 			this.collapseProp = 'margin-top';
 			this.positionProp         = 'screenY';
 			this.sizeProp             = 'height';
@@ -839,14 +838,14 @@ TreeStyleTabBrowser.prototype = {
 			if (toolboxContainer)
 				toolboxContainer.orient = 'vertical';
 
-			b.mStrip.setAttribute('width', this.getTreePref('tabbar.width'));
-
-			if (this.getTreePref('tabbar.fixed.vertical'))
-				b.setAttribute(this.kFIXED, true);
-			else
-				b.removeAttribute(this.kFIXED);
-
 			b.setAttribute(this.kMODE, 'vertical');
+
+			b.mStrip.setAttribute('width', this.getTreePref('tabbar.width'));
+			b.mStrip.removeAttribute('height');
+			b.mPanelContainer.removeAttribute('height');
+
+			this.updateTabbarFixedState();
+
 			if (pos == this.kTABBAR_RIGHT) {
 				b.setAttribute(this.kTABBAR_POSITION, 'right');
 				if (this.getTreePref('tabbar.invertTab')) {
@@ -917,19 +916,11 @@ TreeStyleTabBrowser.prototype = {
 			if (toolboxContainer)
 				toolboxContainer.orient = 'horizontal';
 
-
-			if (this.getTreePref('tabbar.fixed.horizontal')) {
-				b.setAttribute(this.kFIXED, true);
-				b.mStrip.removeAttribute('height');
-				b.mPanelContainer.removeAttribute('height');
-			}
-			else {
-				b.removeAttribute(this.kFIXED);
-				b.mStrip.setAttribute('height', this.getTreePref('tabbar.height'));
-			}
-
 			b.setAttribute(this.kMODE, this.getTreePref('tabbar.multirow') ? 'multirow' : 'horizontal' );
 			b.removeAttribute(this.kTAB_INVERTED);
+
+			this.updateTabbarFixedState();
+
 			if (pos == this.kTABBAR_BOTTOM) {
 				b.setAttribute(this.kTABBAR_POSITION, 'bottom');
 				this.indentProp = this.getTreePref('indent.property.bottom');
@@ -969,6 +960,29 @@ TreeStyleTabBrowser.prototype = {
 		scrollInnerBox = null;
 		scrollInnerBox = null;
 		allTabsButton = null;
+	},
+	updateTabbarFixedState : function()
+	{
+		var b = this.mTabBrowser;
+		if (this.isVertical) {
+			if (this.getTreePref('tabbar.fixed.vertical'))
+				b.setAttribute(this.kFIXED, true);
+			else
+				b.removeAttribute(this.kFIXED);
+		}
+		else {
+			if (this.getTreePref('tabbar.fixed.horizontal')) {
+				b.setAttribute(this.kFIXED, true);
+				if (!this.isMultiRow) {
+					b.mStrip.removeAttribute('height');
+					b.mPanelContainer.removeAttribute('height');
+				}
+			}
+			else {
+				b.removeAttribute(this.kFIXED);
+				b.mStrip.setAttribute('height', this.getTreePref('tabbar.height'));
+			}
+		}
 	},
   
 	destroy : function() 
@@ -1196,26 +1210,8 @@ TreeStyleTabBrowser.prototype = {
 				break;
 
 			case 'extensions.treestyletab.tabbar.fixed.vertical':
-				if (this.isVertical) {
-					if (value)
-						b.setAttribute(this.kFIXED, true);
-					else
-						b.removeAttribute(this.kFIXED);
-				}
-				break;
-
 			case 'extensions.treestyletab.tabbar.fixed.horizontal':
-				if (!this.isVertical) {
-					if (value) {
-						b.setAttribute(this.kFIXED, true);
-						b.mStrip.removeAttribute('height');
-						b.mPanelContainer.removeAttribute('height');
-					}
-					else {
-						b.removeAttribute(this.kFIXED);
-						b.mStrip.setAttribute('height', this.getTreePref('tabbar.height'));
-					}
-				}
+				this.updateTabbarFixedState();
 				break;
 
 			case 'extensions.treestyletab.tabbar.transparent.style':
