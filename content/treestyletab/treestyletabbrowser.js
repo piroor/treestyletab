@@ -1496,7 +1496,7 @@ TreeStyleTabBrowser.prototype = {
 			while (ancestor = this.getParentTab(ancestor));
 			backupAttributes[this.kANCESTOR] = ancestors.join('|');
 
-			var shouldCloseParentTab = (
+			let shouldCloseParentTab = (
 					this.isGroupTab(parentTab) &&
 					this.getDescendantTabs(parentTab).length == 1
 				);
@@ -1507,10 +1507,15 @@ TreeStyleTabBrowser.prototype = {
 
 			if (shouldCloseParentTab) {
 				// when closing the last tab on Firefox 3.0
-				if (!this.getPref('browser.tabs.closeWindowWithLastTab') &&
-					this.getTabs(b).snapshotLength == 2)
-					b.addTab('about:blank');
-				b.removeTab(parentTab);
+				let shouldAddBlankTab = (
+						!this.getPref('browser.tabs.closeWindowWithLastTab') &&
+						this.getTabs(b).snapshotLength == 2
+					);
+				window.setTimeout(function() {
+					if (!parentTab.parentNode) return;
+					if (shouldAddBlankTab) b.addTab('about:blank');
+					b.removeTab(parentTab);
+				}, 0);
 			}
 		}
 		else if (!nextFocusedTab) {
