@@ -2091,7 +2091,20 @@ TreeStyleTabBrowser.prototype = {
 				item.removeAttribute('hidden');
 			else
 				item.setAttribute('hidden', true);
-			this.showHideSubTreeMenuItem(item, [b.mContextTab]);
+			switch (aID)
+			{
+				case this.kMENUITEM_RELOADSUBTREE:
+				case this.kMENUITEM_RELOADCHILDREN:
+				case this.kMENUITEM_REMOVESUBTREE:
+				case this.kMENUITEM_REMOVECHILDREN:
+				case this.kMENUITEM_COLLAPSE:
+				case this.kMENUITEM_EXPAND:
+				case this.kMENUITEM_BOOKMARKSUBTREE:
+					this.showHideSubTreeMenuItem(item, [b.mContextTab]);
+					break;
+				default:
+					break;
+			}
 		}, this);
 
 		// collapse/expand all
