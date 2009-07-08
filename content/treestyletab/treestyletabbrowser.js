@@ -842,8 +842,6 @@ TreeStyleTabBrowser.prototype = {
 			b.mStrip.removeAttribute('height');
 			b.mPanelContainer.removeAttribute('height');
 
-			this.updateTabbarState();
-
 			if (pos == this.kTABBAR_RIGHT) {
 				b.setAttribute(this.kTABBAR_POSITION, 'right');
 				if (this.getTreePref('tabbar.invertTab')) {
@@ -917,8 +915,6 @@ TreeStyleTabBrowser.prototype = {
 			b.setAttribute(this.kMODE, this.getTreePref('tabbar.multirow') ? 'multirow' : 'horizontal' );
 			b.removeAttribute(this.kTAB_INVERTED);
 
-			this.updateTabbarState();
-
 			if (pos == this.kTABBAR_BOTTOM) {
 				b.setAttribute(this.kTABBAR_POSITION, 'bottom');
 				this.indentProp = this.getTreePref('indent.property.bottom');
@@ -946,6 +942,10 @@ TreeStyleTabBrowser.prototype = {
 		this.getTabsArray(b).forEach(function(aTab) {
 			this.updateTabCollapsed(aTab, aTab.getAttribute(this.kCOLLAPSED) == 'true', true);
 		}, this);
+
+		window.setTimeout(function(aSelf) {
+			aSelf.updateTabbarState();
+		}, 0, this);
 
 		b = null;
 		pos = null;
