@@ -112,31 +112,27 @@ function onChangeTabbarPosition(aOnChange)
 		invertScrollbar.setAttribute('collapsed', true);
 	}
 
-	var indentPref    = document.getElementById('extensions.treestyletab.enableSubtreeIndent');
-	var collapsePref  = document.getElementById('extensions.treestyletab.allowSubtreeCollapseExpand');
-
-	var indentCheck   = document.getElementById('extensions.treestyletab.enableSubtreeIndent-check');
-	var collapseCheck = document.getElementById('extensions.treestyletab.allowSubtreeCollapseExpand-check');
-//	var autoHideCheck = document.getElementById('extensions.treestyletab.tabbar.autoHide.enabled-check');
+	var indentCheckH   = document.getElementById('extensions.treestyletab.enableSubtreeIndent.horizontal-check');
+	var indentCheckV   = document.getElementById('extensions.treestyletab.enableSubtreeIndent.vertical-check');
+	var collapseCheckH = document.getElementById('extensions.treestyletab.allowSubtreeCollapseExpand.horizontal-check');
+	var collapseCheckV = document.getElementById('extensions.treestyletab.allowSubtreeCollapseExpand.vertical-check');
 	var hideNewTabCheck = document.getElementById('extensions.treestyletab.tabbar.hideNewTabButton-check');
 
-	if (aOnChange &&
-		gLastStateIsVertical != (pos == 'left' || pos == 'right')) {
-		gLastStateIsVertical = (pos == 'left' || pos == 'right');
-		indentPref.value = indentCheck.checked =
-			collapsePref.value = collapseCheck.checked = gLastStateIsVertical;
-	}
 	if (pos == 'left' || pos == 'right') {
-		indentCheck.setAttribute('collapsed', true);
-//		autoHideCheck.removeAttribute('collapsed');
+		indentCheckH.setAttribute('collapsed', true);
+		indentCheckV.removeAttribute('collapsed');
+		collapseCheckH.setAttribute('collapsed', true);
+		collapseCheckV.removeAttribute('collapsed');
 		if (comparator.compare(XULAppInfo.version, '3.1b3') >= 0)
 			hideNewTabCheck.removeAttribute('collapsed');
 		else
 			hideNewTabCheck.setAttribute('collapsed', true);
 	}
 	else {
-		indentCheck.removeAttribute('collapsed');
-//		autoHideCheck.setAttribute('collapsed', true);
+		indentCheckH.removeAttribute('collapsed');
+		indentCheckV.setAttribute('collapsed', true);
+		collapseCheckH.removeAttribute('collapsed');
+		collapseCheckV.setAttribute('collapsed', true);
 		hideNewTabCheck.setAttribute('collapsed', true);
 	}
 
