@@ -776,6 +776,7 @@ var TreeStyleTabService = {
  
 	getNextTab : function(aTab) 
 	{
+		if (!aTab) return null;
 		return this.evaluateXPath(
 				'following-sibling::xul:tab[1]',
 				aTab,
@@ -785,6 +786,7 @@ var TreeStyleTabService = {
  
 	getPreviousTab : function(aTab) 
 	{
+		if (!aTab) return null;
 		return this.evaluateXPath(
 				'preceding-sibling::xul:tab[1]',
 				aTab,
@@ -794,6 +796,7 @@ var TreeStyleTabService = {
  
 	getNextVisibleTab : function(aTab) 
 	{
+		if (!aTab) return null;
 		return this.evaluateXPath(
 				'following-sibling::xul:tab[not(@'+this.kCOLLAPSED+'="true")][1]',
 				aTab,
@@ -803,6 +806,7 @@ var TreeStyleTabService = {
  
 	getPreviousVisibleTab : function(aTab) 
 	{
+		if (!aTab) return null;
 		return this.evaluateXPath(
 				'preceding-sibling::xul:tab[not(@'+this.kCOLLAPSED+'="true")][1]',
 				aTab,
@@ -812,6 +816,7 @@ var TreeStyleTabService = {
  
 	getLastVisibleTab : function(aTab) 
 	{
+		if (!aTab) return null;
 		return this.evaluateXPath(
 				'child::xul:tab[not(@'+this.kCOLLAPSED+'="true")][last()]',
 				aTab.parentNode,
@@ -830,7 +835,7 @@ var TreeStyleTabService = {
  
 	getVisibleIndex : function(aTab) 
 	{
-		if (aTab.getAttribute(this.kCOLLAPSED) == 'true') return -1;
+		if (!aTab || aTab.getAttribute(this.kCOLLAPSED) == 'true') return -1;
 		return this.evaluateXPath(
 				'count(preceding-sibling::xul:tab[not(@'+this.kCOLLAPSED+'="true")])',
 				aTab,
