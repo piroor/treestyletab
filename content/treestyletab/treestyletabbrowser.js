@@ -1003,13 +1003,7 @@ TreeStyleTabBrowser.prototype = {
 
 		var b = this.mTabBrowser;
 
-		var tabs = this.getTabsArray(b);
-		tabs.forEach(function(aTab) {
-			let next = this.getNextSiblingTab(aTab);
-			if (next)
-				this.setTabValue(aTab, this.kINSERT_BEFORE, next.getAttribute(this.kID));
-		}, this);
-		tabs.forEach(function(aTab) {
+		this.getTabsArray(b).forEach(function(aTab) {
 			this.destroyTab(aTab);
 		}, this);
 
@@ -1426,6 +1420,10 @@ TreeStyleTabBrowser.prototype = {
 			this.updateTabCollapsed(tab, false);
 		}
 
+		var prev = this.getPreviousSiblingTab(tab);
+		if (prev)
+			this.setTabValue(prev, this.kINSERT_BEFORE, tab.getAttribute(this.kID));
+
 		this.showTabbarForFeedback();
 	},
  
@@ -1461,6 +1459,14 @@ TreeStyleTabBrowser.prototype = {
 		var next = this.getNextSiblingTab(tab);
 		if (next)
 			this.setTabValue(tab, this.kINSERT_BEFORE, next.getAttribute(this.kID));
+
+		var prev = this.getPreviousSiblingTab(tab);
+		if (prev) {
+			if (next)
+				this.setTabValue(prev, this.kINSERT_BEFORE, next.getAttribute(this.kID));
+			else
+				this.deleteTabValue(prev, this.kINSERT_BEFORE);
+		}
 
 		var backupAttributes = {};
 		var indentModifiedTabs = [];
@@ -1601,11 +1607,8 @@ TreeStyleTabBrowser.prototype = {
 		var b   = this.mTabBrowser;
 		this.initTabContents(tab); // twisty vanished after the tab is moved!!
 
-//		var rebuildTreeDone = false;
-
 		if (this.hasChildTabs(tab) && !this.isSubTreeMoving) {
 			this.moveTabSubTreeTo(tab, tab._tPos);
-//			rebuildTreeDone = true;
 		}
 
 		var parentTab = this.getParentTab(tab);
@@ -1615,8 +1618,22 @@ TreeStyleTabBrowser.prototype = {
 
 		this.updateTabsCount(tab, true);
 
+		var next = this.getNextSiblingTab(tab);
+		if (next)
+			this.setTabValue(tab, this.kINSERT_BEFORE, next.getAttribute(this.kID));
+		else
+			this.deleteTabValue(tab, this.kINSERT_BEFORE);
+
+		var old = aEvent.detail;
+		if (old > tab._tPos) old--;
+		old = this.getTabs(b).snapshotItem(old);
+		next = this.getNextSiblingTab(old);
+		if (next)
+			this.setTabValue(old, this.kINSERT_BEFORE, next.getAttribute(this.kID));
+		else
+			this.deleteTabValue(old, this.kINSERT_BEFORE);
+
 		if (
-//			rebuildTreeDone ||
 			this.isSubTreeMoving ||
 			this.internallyTabMoving
 			)
@@ -1811,7 +1828,6 @@ TreeStyleTabBrowser.prototype = {
 			if (newPos > -1)
 				b.moveTabTo(tab, newPos);
 		}
-		this.deleteTabValue(tab, this.kINSERT_BEFORE);
 
 		if (isSubTreeCollapsed) {
 			this.collapseExpandSubtree(tab, isSubTreeCollapsed, aWithoutAnimation);
