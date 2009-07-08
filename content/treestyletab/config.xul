@@ -24,6 +24,12 @@
 		<preference id="extensions.treestyletab.tabbar.style"
 			name="extensions.treestyletab.tabbar.style"
 			type="string"/>
+		<preference id="extensions.treestyletab.tabbar.fixed.horizontal"
+			name="extensions.treestyletab.tabbar.fixed.horizontal"
+			type="bool"/>
+		<preference id="extensions.treestyletab.tabbar.syncRelatedPrefsForDynamicPosition"
+			name="extensions.treestyletab.tabbar.syncRelatedPrefsForDynamicPosition"
+			type="bool"/>
 		<preference id="extensions.treestyletab.enableSubtreeIndent.horizontal"
 			name="extensions.treestyletab.enableSubtreeIndent.horizontal"
 			type="bool"/>
@@ -129,7 +135,11 @@
 				label="&config.allowSubtreeCollapseExpand;"/>
 			<checkbox id="extensions.treestyletab.enableSubtreeIndent.horizontal-check"
 				preference="extensions.treestyletab.enableSubtreeIndent.horizontal"
-				label="&config.enableSubtreeIndent;"/>
+				label="&config.enableSubtreeIndent;"
+				oncommand="
+					if (document.getElementById('extensions.treestyletab.tabbar.syncRelatedPrefsForDynamicPosition').value)
+						document.getElementById('extensions.treestyletab.tabbar.fixed.horizontal').value = !this.checked;
+				"/>
 			<checkbox id="extensions.treestyletab.enableSubtreeIndent.vertical-check"
 				preference="extensions.treestyletab.enableSubtreeIndent.vertical"
 				label="&config.enableSubtreeIndent;"/>

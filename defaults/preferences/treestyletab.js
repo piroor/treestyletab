@@ -38,7 +38,7 @@ pref("extensions.treestyletab.tabbar.autoShow.keepShownOnMouseover", true);
 pref("extensions.treestyletab.tabbar.togglerSize", 5);
 pref("extensions.treestyletab.tabbar.fixed.horizontal", true);
 pref("extensions.treestyletab.tabbar.fixed.vertical", false);
-pref("extensions.treestyletab.syncRelatedPrefs", true);
+pref("extensions.treestyletab.tabbar.syncRelatedPrefsForDynamicPosition", true);
 pref("extensions.treestyletab.enableSubtreeIndent.horizontal", false);
 pref("extensions.treestyletab.enableSubtreeIndent.vertical",   true);
 pref("extensions.treestyletab.enableSubtreeIndent.allTabsPopup", true);

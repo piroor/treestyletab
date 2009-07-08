@@ -1208,12 +1208,15 @@ TreeStyleTabBrowser.prototype = {
 				break;
 
 			case 'extensions.treestyletab.enableSubtreeIndent.horizontal':
-			case 'extensions.treestyletab.enableSubtreeIndent.vertical':
 			case 'extensions.treestyletab.allowSubtreeCollapseExpand.horizontal':
+			case 'extensions.treestyletab.tabbar.fixed.horizontal':
+				if (!this.isVertical) this.updateTabbarState();
+				break;
+
+			case 'extensions.treestyletab.enableSubtreeIndent.vertical':
 			case 'extensions.treestyletab.allowSubtreeCollapseExpand.vertical':
 			case 'extensions.treestyletab.tabbar.fixed.vertical':
-			case 'extensions.treestyletab.tabbar.fixed.horizontal':
-				this.updateTabbarState();
+				if (this.isVertical) this.updateTabbarState();
 				break;
 
 			case 'extensions.treestyletab.tabbar.transparent.style':
