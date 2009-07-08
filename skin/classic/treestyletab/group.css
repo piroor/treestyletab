@@ -7,11 +7,14 @@ page {
 label {
 	color: -moz-dialogtext;
 	font-family: message-box;
+}
+
+label, editor, editor *|* {
 	font-size: large;
 	font-weight: normal;
 }
 
-#icon {
+.icon {
 	list-style-image: url("chrome://treestyletab/skin/group-icon");
 /*
 	list-style-image: url("chrome://global/skin/icons/folder-item.png");

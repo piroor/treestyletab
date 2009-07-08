@@ -1,20 +1,89 @@
 <?xml-stylesheet type="text/css" href="chrome://global/skin/"?>
 <?xml-stylesheet type="text/css" href="chrome://treestyletab/skin/group.css"?>
-<page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-<hbox align="center">
-	<image id="icon"/>
-	<label id="label"/>
+<page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	onclick="onClick(event)"
+	ondblclick="onDblClick(event)">
+<hbox>
+	<deck id="deck" flex="1">
+		<hbox align="center">
+			<image class="icon"/>
+			<label id="label"
+				flex="1"
+				crop="end"/>
+		</hbox>
+		<hbox align="center">
+			<image class="icon"/>
+			<textbox id="editor"
+				flex="1"
+				onkeypress="onKeyPress(event)"/>
+		</hbox>
+	</deck>
 </hbox>
 <link xmlns="http://www.w3.org/1999/xhtml" rel="icon"
 	href="chrome://treestyletab/skin/group-icon"/>
 <script type="application/x-javascript"><![CDATA[
+
+var gIcon = document.getElementById('icon');
+var gLabel = document.getElementById('label');
+var gEdit = document.getElementById('editor');
+var gDeck = document.getElementById('deck');
 
 var title = location.href.split('?')[1];
 if (title) {
 	title = decodeURIComponent(title);
 	document.title = title;
 	document.documentElement.setAttribute('title', title);
-	document.getElementById('label').value = title;
+	gLabel.value = title;
+	gEdit.value = title;
+}
+
+function enterEdit()
+{
+	gEdit.value = gLabel.value;
+	gDeck.selectedIndex = 1;
+	gEdit.focus();
+}
+
+function exitEdit()
+{
+	if (gDeck.selectedIndex == 0) return;
+
+	var value = gEdit.value.replace(/^\s+|\s+$/g, '');
+	document.title = gLabel.value = value;
+	document.documentElement.setAttribute('title', value);
+
+	var uri = location.href.split('?')[0];
+	if (value) uri += '?'+encodeURIComponent(gLabel.value);
+	if (uri != location.href) location.replace(uri);
+
+	gEdit.blur();
+	gDeck.selectedIndex = 0;
+}
+
+function onClick(aEvent)
+{
+	if (aEvent.target == gEdit) return;
+	if (aEvent.target == gLabel)
+		enterEdit();
+	else
+		exitEdit();
+}
+
+function onDblClick(aEvent)
+{
+	if (aEvent.target == gEdit) return;
+	if (gDeck.selectedIndex == 0)
+		enterEdit();
+	else
+		exitEdit();
+}
+
+function onKeyPress(aEvent)
+{
+	if (aEvent.keyCode == aEvent.DOM_VK_ENTER ||
+		aEvent.keyCode == aEvent.DOM_VK_RETURN ||
+		aEvent.keyCode == aEvent.DOM_VK_ESCAPE)
+		exitEdit();
 }
 
 ]]></script>
