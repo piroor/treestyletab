@@ -466,6 +466,11 @@ var TreeStyleTabService = {
 
 		var pref = isVertical ? 'tabbar.fixed.vertical' : 'tabbar.fixed.horizontal' ;
 		this.setTreePref(pref, !this.getTreePref(pref));
+
+		if (!this.getTreePref('syncRelatedPrefs')) return;
+
+		if (!isVertical)
+			this.setTreePref('enableSubtreeIndent.horizontal', !this.getTreePref(pref));
 	},
  
 	changeTabbarPosition : function(aNewPosition) /* PUBLIC API */ 

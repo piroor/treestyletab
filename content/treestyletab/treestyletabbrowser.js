@@ -507,7 +507,6 @@ TreeStyleTabBrowser.prototype = {
 		this.onPrefChange('extensions.treestyletab.tabbar.invertClosebox');
 		this.onPrefChange('extensions.treestyletab.tabbar.hideNewTabButton');
 		this.onPrefChange('extensions.treestyletab.tabbar.hideAlltabsButton');
-		this.onPrefChange('extensions.treestyletab.allowSubtreeCollapseExpand');
 		this.onPrefChange('extensions.treestyletab.tabbar.transparent.style');
 		this.onPrefChange('extensions.treestyletab.tabbar.autoHide.area');
 		this.onPrefChange('extensions.treestyletab.tabbar.togglerSize');
