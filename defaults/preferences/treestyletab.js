@@ -39,9 +39,11 @@ pref("extensions.treestyletab.tabbar.togglerSize", 5);
 pref("extensions.treestyletab.tabbar.fixed.horizontal", true);
 pref("extensions.treestyletab.tabbar.fixed.vertical", false);
 pref("extensions.treestyletab.syncRelatedPrefs", true);
-pref("extensions.treestyletab.enableSubtreeIndent",    true);
+pref("extensions.treestyletab.enableSubtreeIndent.horizontal", false);
+pref("extensions.treestyletab.enableSubtreeIndent.vertical",   true);
 pref("extensions.treestyletab.enableSubtreeIndent.allTabsPopup", true);
-pref("extensions.treestyletab.allowSubtreeCollapseExpand", true);
+pref("extensions.treestyletab.allowSubtreeCollapseExpand.horizontal", false);
+pref("extensions.treestyletab.allowSubtreeCollapseExpand.vertical",   true);
 pref("extensions.treestyletab.showBorderForFirstTab",  false);
 pref("extensions.treestyletab.autoExpand.enabled",     true);
 pref("extensions.treestyletab.autoExpand.delay",       500);
@@ -112,6 +114,9 @@ pref("extensions.multipletab.show.multipletab-selection-item-removeTabSubTree", 
 
 
 pref("extensions.treestyletab.TMP.doNotUpdate.isTabVisible", false);
+
+
+pref("extensions.treestyletab.orientalPrefsMigrated", 0);
 
 
 pref("extensions.treestyletab@piro.sakura.ne.jp.name", "chrome://treestyletab/locale/treestyletab.properties");

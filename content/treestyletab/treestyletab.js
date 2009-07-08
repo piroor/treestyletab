@@ -466,11 +466,6 @@ var TreeStyleTabService = {
 
 		var pref = isVertical ? 'tabbar.fixed.vertical' : 'tabbar.fixed.horizontal' ;
 		this.setTreePref(pref, !this.getTreePref(pref));
-
-		if (!this.getTreePref('syncRelatedPrefs')) return;
-
-		if (!isVertical)
-			this.setTreePref('enableSubtreeIndent', !this.getTreePref(pref));
 	},
  
 	changeTabbarPosition : function(aNewPosition) /* PUBLIC API */ 
@@ -480,12 +475,6 @@ var TreeStyleTabService = {
 
 		aNewPosition = aNewPosition.toLowerCase();
 		this.setTreePref('tabbar.position', aNewPosition);
-
-		if (!this.getTreePref('syncRelatedPrefs')) return;
-
-		var vertical = (aNewPosition == 'left' || aNewPosition == 'right');
-		this.setTreePref('enableSubtreeIndent', vertical || !this.getTreePref('tabbar.fixed.horizontal'));
-		this.setTreePref('allowSubtreeCollapseExpand', vertical);
 	},
   
 /* backward compatibility */ 
@@ -1170,6 +1159,25 @@ var TreeStyleTabService = {
 		this.overrideExtensionsPreInit(); // hacks.js
 
 		this.registerTabFocusAllowance(this.defaultTabFocusAllowance);
+
+		// migrate old prefs
+		switch (this.getTreePref('orientalPrefsMigrated'))
+		{
+			case 0:
+				[
+					'extensions.treestyletab.tabbar.fixed',
+					'extensions.treestyletab.enableSubtreeIndent',
+					'extensions.treestyletab.allowSubtreeCollapseExpand'
+				].forEach(function(aPref) {
+					let value = this.getPref(aPref);
+					if (value === null) return;
+					this.setPref(aPref+'.horizontal', value);
+					this.setPref(aPref+'.vertical', value);
+				}, this);
+			default:
+				break;
+		}
+		this.setTreePref('orientalPrefsMigrated', 1);
 	},
 	preInitialized : false,
 	

@@ -25,7 +25,7 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/prefs.js
 */
 (function() {
-	const currentRevision = 1;
+	const currentRevision = 2;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -47,20 +47,30 @@
 			return this._Prefs;
 		},
 		_Prefs : null,
-	 
-		getPref : function(aPrefstring) 
+
+		get DefaultPrefs() 
 		{
+			if (!this._DefaultPrefs) {
+				this._DefaultPrefs = Components.classes['@mozilla.org/preferences-service;1'].getService(Components.interfaces.nsIPrefService).getDefaultBranch(null);
+			}
+			return this._DefaultPrefs;
+		},
+		_DefaultPrefs : null,
+	 
+		getPref : function(aPrefstring, aBranch) 
+		{
+			if (!aBranch) aBranch = this.Prefs;
 			try {
-				switch (this.Prefs.getPrefType(aPrefstring))
+				switch (aBranch.getPrefType(aPrefstring))
 				{
 					case this.Prefs.PREF_STRING:
-						return decodeURIComponent(escape(this.Prefs.getCharPref(aPrefstring)));
+						return decodeURIComponent(escape(aBranch.getCharPref(aPrefstring)));
 						break;
 					case this.Prefs.PREF_INT:
-						return this.Prefs.getIntPref(aPrefstring);
+						return aBranch.getIntPref(aPrefstring);
 						break;
 					default:
-						return this.Prefs.getBoolPref(aPrefstring);
+						return aBranch.getBoolPref(aPrefstring);
 						break;
 				}
 			}
@@ -69,10 +79,16 @@
 
 			return null;
 		},
-	 
-		setPref : function(aPrefstring, aNewValue) 
+
+		getDefaultPref : function(aPrefstring)
 		{
-			var pref = this.Prefs ;
+			return this.getPref(aPrefstring, this.DefaultPrefs);
+		},
+	 
+		setPref : function(aPrefstring, aNewValue, aBranch) 
+		{
+			if (!aBranch) aBranch = this.Prefs;
+
 			var type;
 			try {
 				type = typeof aNewValue;
@@ -84,16 +100,21 @@
 			switch (type)
 			{
 				case 'string':
-					pref.setCharPref(aPrefstring, unescape(encodeURIComponent(aNewValue)));
+					aBranch.setCharPref(aPrefstring, unescape(encodeURIComponent(aNewValue)));
 					break;
 				case 'number':
-					pref.setIntPref(aPrefstring, parseInt(aNewValue));
+					aBranch.setIntPref(aPrefstring, parseInt(aNewValue));
 					break;
 				default:
-					pref.setBoolPref(aPrefstring, aNewValue);
+					aBranch.setBoolPref(aPrefstring, aNewValue);
 					break;
 			}
 			return true;
+		},
+
+		setDefaultPref : function(aPrefstring)
+		{
+			return this.setPref(aPrefstring, aNewValue, this.DefaultPrefs);
 		},
 	 
 		clearPref : function(aPrefstring) 

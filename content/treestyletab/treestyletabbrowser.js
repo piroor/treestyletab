@@ -502,7 +502,6 @@ TreeStyleTabBrowser.prototype = {
 		this.onPrefChange('extensions.treestyletab.tabbar.style');
 		this.onPrefChange('extensions.treestyletab.twisty.style');
 		this.onPrefChange('extensions.treestyletab.showBorderForFirstTab');
-		this.onPrefChange('extensions.treestyletab.enableSubtreeIndent');
 		this.onPrefChange('extensions.treestyletab.tabbar.invertTabContents');
 		this.onPrefChange('extensions.treestyletab.tabbar.invertScrollbar');
 		this.onPrefChange('extensions.treestyletab.tabbar.invertClosebox');
@@ -844,7 +843,7 @@ TreeStyleTabBrowser.prototype = {
 			b.mStrip.removeAttribute('height');
 			b.mPanelContainer.removeAttribute('height');
 
-			this.updateTabbarFixedState();
+			this.updateTabbarState();
 
 			if (pos == this.kTABBAR_RIGHT) {
 				b.setAttribute(this.kTABBAR_POSITION, 'right');
@@ -919,7 +918,7 @@ TreeStyleTabBrowser.prototype = {
 			b.setAttribute(this.kMODE, this.getTreePref('tabbar.multirow') ? 'multirow' : 'horizontal' );
 			b.removeAttribute(this.kTAB_INVERTED);
 
-			this.updateTabbarFixedState();
+			this.updateTabbarState();
 
 			if (pos == this.kTABBAR_BOTTOM) {
 				b.setAttribute(this.kTABBAR_POSITION, 'bottom');
@@ -961,16 +960,19 @@ TreeStyleTabBrowser.prototype = {
 		scrollInnerBox = null;
 		allTabsButton = null;
 	},
-	updateTabbarFixedState : function()
+	updateTabbarState : function()
 	{
 		var b = this.mTabBrowser;
+		var orient;
 		if (this.isVertical) {
+			orient = 'vertical';
 			if (this.getTreePref('tabbar.fixed.vertical'))
 				b.setAttribute(this.kFIXED, true);
 			else
 				b.removeAttribute(this.kFIXED);
 		}
 		else {
+			orient = 'horizontal';
 			if (this.getTreePref('tabbar.fixed.horizontal')) {
 				b.setAttribute(this.kFIXED, true);
 				if (!this.isMultiRow()) {
@@ -983,6 +985,18 @@ TreeStyleTabBrowser.prototype = {
 				b.mStrip.setAttribute('height', this.getTreePref('tabbar.height'));
 			}
 		}
+
+		if (this.getTreePref('enableSubtreeIndent.'+orient))
+			b.setAttribute(this.kINDENTED, 'true');
+		else
+			b.removeAttribute(this.kINDENTED);
+
+		if (this.getTreePref('allowSubtreeCollapseExpand.'+orient))
+			b.setAttribute(this.kALLOW_COLLAPSE, 'true');
+		else
+			b.removeAttribute(this.kALLOW_COLLAPSE);
+
+		this.updateAllTabsIndent();
 	},
   
 	destroy : function() 
@@ -1127,14 +1141,6 @@ TreeStyleTabBrowser.prototype = {
 				}, this);
 				break;
 
-			case 'extensions.treestyletab.enableSubtreeIndent':
-				if (value)
-					b.setAttribute(this.kINDENTED, 'true');
-				else
-					b.removeAttribute(this.kINDENTED);
-				this.updateAllTabsIndent();
-				break;
-
 			case 'extensions.treestyletab.tabbar.style':
 				if (value) {
 					if (/^(default|vertigo|mixed)$/.test(value))
@@ -1189,13 +1195,6 @@ TreeStyleTabBrowser.prototype = {
 					b.removeAttribute(this.kHIDE_ALLTABS);
 				break;
 
-			case 'extensions.treestyletab.allowSubtreeCollapseExpand':
-				if (value)
-					b.setAttribute(this.kALLOW_COLLAPSE, true);
-				else
-					b.removeAttribute(this.kALLOW_COLLAPSE);
-				break;
-
 			case 'extensions.treestyletab.tabbar.autoHide.mode':
 				this.updateAutoHideMode();
 				break;
@@ -1209,9 +1208,13 @@ TreeStyleTabBrowser.prototype = {
 					this.endListenMouseMove();
 				break;
 
+			case 'extensions.treestyletab.enableSubtreeIndent.horizontal':
+			case 'extensions.treestyletab.enableSubtreeIndent.vertical':
+			case 'extensions.treestyletab.allowSubtreeCollapseExpand.horizontal':
+			case 'extensions.treestyletab.allowSubtreeCollapseExpand.vertical':
 			case 'extensions.treestyletab.tabbar.fixed.vertical':
 			case 'extensions.treestyletab.tabbar.fixed.horizontal':
-				this.updateTabbarFixedState();
+				this.updateTabbarState();
 				break;
 
 			case 'extensions.treestyletab.tabbar.transparent.style':
@@ -2939,7 +2942,8 @@ TreeStyleTabBrowser.prototype = {
 
 		var b = this.mTabBrowser;
 		if (!aProp) {
-			aProp = this.getTreePref('enableSubtreeIndent') ? this.indentProp : null ;
+			let orient = this.isVertical ? 'vertical' : 'horizontal' ;
+			aProp = this.getTreePref('enableSubtreeIndent.'+orient) ? this.indentProp : null ;
 		}
 		var margin = this.indent < 0 ? this.baseIndent : this.indent ;
 		var indent = margin * aLevel;
