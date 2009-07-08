@@ -4,7 +4,7 @@ page {
 	-moz-appearance: window;
 }
 
-label {
+#label {
 	color: -moz-dialogtext;
 	font-family: message-box;
 	font-size: large;
