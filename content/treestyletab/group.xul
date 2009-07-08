@@ -48,13 +48,13 @@ function exitEdit()
 {
 	if (gDeck.selectedIndex == 0) return;
 
+	var old = gLabel.value.replace(/^\s+|\s+$/g, '');
 	var value = gEdit.value.replace(/^\s+|\s+$/g, '');
 	document.title = gLabel.value = value;
 	document.documentElement.setAttribute('title', value);
 
-	var uri = location.href.split('?')[0];
-	if (value) uri += '?'+encodeURIComponent(gLabel.value);
-	if (uri != location.href) location.replace(uri);
+	if (value != old)
+		location.replace(location.href.split('?')[0]+'?'+encodeURIComponent(value));
 
 	gEdit.blur();
 	gDeck.selectedIndex = 0;
