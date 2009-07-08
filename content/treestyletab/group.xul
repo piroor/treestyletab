@@ -28,12 +28,18 @@ var gLabel = document.getElementById('label');
 var gEdit = document.getElementById('editor');
 var gDeck = document.getElementById('deck');
 
+function trim(aString)
+{
+	return aString.replace(/^\s+|\s+$/g, '');
+}
+
 var title = location.href.split('?')[1];
 if (title) {
-	title = decodeURIComponent(title);
+	title = trim(decodeURIComponent(title));
 	document.title = title;
 	document.documentElement.setAttribute('title', title);
 	gLabel.value = title;
+	gLabel.setAttribute('tooltiptext', title);
 	gEdit.value = title;
 }
 
@@ -48,9 +54,10 @@ function exitEdit()
 {
 	if (gDeck.selectedIndex == 0) return;
 
-	var old = gLabel.value.replace(/^\s+|\s+$/g, '');
-	var value = gEdit.value.replace(/^\s+|\s+$/g, '');
+	var old = trim(gLabel.value);
+	var value = trim(gEdit.value);
 	document.title = gLabel.value = value;
+	gLabel.setAttribute('tooltiptext', value);
 	document.documentElement.setAttribute('title', value);
 
 	if (value != old)

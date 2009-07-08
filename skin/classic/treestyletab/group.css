@@ -7,9 +7,6 @@ page {
 label {
 	color: -moz-dialogtext;
 	font-family: message-box;
-}
-
-label, editor {
 	font-size: large;
 	font-weight: normal;
 }
