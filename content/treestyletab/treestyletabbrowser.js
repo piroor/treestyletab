@@ -800,6 +800,8 @@ TreeStyleTabBrowser.prototype = {
 		b.mStrip.removeAttribute('width');
 		b.mPanelContainer.removeAttribute('width');
 
+		var delayedPostProcess;
+
 		if (pos & this.kTABBAR_VERTICAL) {
 
 			this.collapseProp = 'margin-top';
@@ -852,31 +854,31 @@ TreeStyleTabBrowser.prototype = {
 					b.removeAttribute(this.kTAB_INVERTED);
 					this.indentProp = this.getTreePref('indent.property.left');
 				}
-				window.setTimeout(function(aWidth, aTabBrowser, aSplitter, aToggler) {
+				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
 					/* in Firefox 3, the width of the rightside tab bar
 					   unexpectedly becomes 0 on the startup. so, we have
 					   to set the width again. */
-					aTabBrowser.mStrip.setAttribute('width', aWidth);
+					aTabBrowser.mStrip.setAttribute('width', aSelf.getTreePref('tabbar.width'));
 					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
 					aTabBrowser.mStrip.setAttribute('ordinal', 30);
 					aSplitter.setAttribute('ordinal', 20);
 					aToggler.setAttribute('ordinal', 40);
 					aTabBrowser.mPanelContainer.setAttribute('ordinal', 10);
 					aSplitter.setAttribute('collapse', 'after');
-				}, 0, this.getTreePref('tabbar.width'), b, splitter, toggler);
+				};
 			}
 			else {
 				b.setAttribute(this.kTABBAR_POSITION, 'left');
 				b.removeAttribute(this.kTAB_INVERTED);
 				this.indentProp = this.getTreePref('indent.property.left');
-				window.setTimeout(function(aTabBrowser, aSplitter, aToggler) {
+				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
 					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
 					aTabBrowser.mStrip.setAttribute('ordinal', 10);
 					aSplitter.setAttribute('ordinal', 20);
 					aToggler.setAttribute('ordinal', 5);
 					aTabBrowser.mPanelContainer.setAttribute('ordinal', 30);
 					aSplitter.setAttribute('collapse', 'before');
-				}, 0, b, splitter, toggler);
+				};
 			}
 		}
 		else {
@@ -918,24 +920,24 @@ TreeStyleTabBrowser.prototype = {
 			if (pos == this.kTABBAR_BOTTOM) {
 				b.setAttribute(this.kTABBAR_POSITION, 'bottom');
 				this.indentProp = this.getTreePref('indent.property.bottom');
-				window.setTimeout(function(aTabBrowser, aSplitter, aToggler) {
+				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
 					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
 					aTabBrowser.mStrip.setAttribute('ordinal', 30);
 					aToggler.setAttribute('ordinal', 20);
 					toggler.setAttribute('ordinal', 40);
 					aTabBrowser.mPanelContainer.setAttribute('ordinal', 10);
-				}, 0, b, splitter, toggler);
+				};
 			}
 			else {
 				b.setAttribute(this.kTABBAR_POSITION, 'top');
 				this.indentProp = this.getTreePref('indent.property.top');
-				window.setTimeout(function(aTabBrowser, aSplitter, aToggler) {
+				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
 					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
 					aTabBrowser.mStrip.setAttribute('ordinal', 10);
 					aSplitter.setAttribute('ordinal', 20);
 					aToggler.setAttribute('ordinal', 5);
 					aTabBrowser.mPanelContainer.setAttribute('ordinal', 30);
-				}, 0, b, splitter, toggler);
+				};
 			}
 		}
 
@@ -943,9 +945,11 @@ TreeStyleTabBrowser.prototype = {
 			this.updateTabCollapsed(aTab, aTab.getAttribute(this.kCOLLAPSED) == 'true', true);
 		}, this);
 
-		window.setTimeout(function(aSelf) {
+		window.setTimeout(function(aSelf, aTabBrowser, aSplitter, aToggler) {
+			delayedPostProcess(aSelf, aTabBrowser, aSplitter, aToggler);
 			aSelf.updateTabbarState();
-		}, 0, this);
+			delayedPostProcess = null;
+		}, 0, this, b, splitter, toggler);
 
 		b = null;
 		pos = null;
