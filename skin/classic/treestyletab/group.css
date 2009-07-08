@@ -9,7 +9,7 @@ label {
 	font-family: message-box;
 }
 
-label, editor, editor *|* {
+label, editor {
 	font-size: large;
 	font-weight: normal;
 }
