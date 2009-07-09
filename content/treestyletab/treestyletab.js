@@ -2178,6 +2178,9 @@ catch(e) {
 			bookmarkedTabs = bookmarkedTabs.concat(b.treeStyleTab.getDescendantTabs(tabs[i]));
 		}
 
+		if (this.isGroupTab(bookmarkedTabs[0]))
+			bookmarkedTabs[0].splice(0, 1);
+
 		if ('MultipleTabService' in window &&
 			'addBookmarkFor' in MultipleTabService) {
 			MultipleTabService.addBookmarkFor(bookmarkedTabs);
