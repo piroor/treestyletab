@@ -7,23 +7,21 @@
 	<box class="background-image-container">
 		<image class="icon background-image"/>
 	</box>
-	<vbox class="content" flex="1">
-		<hbox>
-			<deck id="deck" flex="1">
-				<hbox align="center">
-					<image class="icon"/>
-					<label id="label"
-						flex="1"
-						crop="end"/>
-				</hbox>
-				<hbox align="center">
-					<image class="icon"/>
-					<textbox id="editor"
-						flex="1"
-						onkeypress="onKeyPress(event)"/>
-				</hbox>
-			</deck>
-		</hbox>
+	<vbox class="label-container" flex="1">
+		<deck id="deck">
+			<hbox align="center">
+				<image class="icon"/>
+				<label id="label"
+					flex="1"
+					crop="end"/>
+			</hbox>
+			<hbox align="center">
+				<image class="icon"/>
+				<textbox id="editor"
+					flex="1"
+					onkeypress="onKeyPress(event)"/>
+			</hbox>
+		</deck>
 	</vbox>
 </stack>
 <link xmlns="http://www.w3.org/1999/xhtml" rel="icon"
