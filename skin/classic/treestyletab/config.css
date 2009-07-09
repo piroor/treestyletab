@@ -10,28 +10,35 @@ radio[pane] {
 	list-style-image: url("jar:resource:///chrome/classic.jar!/skin/classic/browser/preferences/Options.png");
 }
 
-radio[pane="prefpane-appearance"],
-radio[pane="prefpane-menu"] {
+radio[pane="prefpane-appearance"] {
 	-moz-image-region: rect(0px, 32px, 32px, 0px);
 }
 radio[pane="prefpane-appearance"]:hover,
-radio[pane="prefpane-appearance"][selected="true"],
+radio[pane="prefpane-appearance"][selected="true"] {
+	-moz-image-region: rect(32px, 32px, 64px, 0px);
+}
+
+radio[pane="prefpane-menu"] {
+	-moz-image-region: rect(0px, 32px, 32px, 0px);
+}
 radio[pane="prefpane-menu"]:hover,
 radio[pane="prefpane-menu"][selected="true"] {
 	-moz-image-region: rect(32px, 32px, 64px, 0px);
 }
 
-radio[pane="prefpane-tab"],
-radio[pane="prefpane-autohide"],
-radio[pane="prefpane-focus"] {
+radio[pane="prefpane-tab"] {
 	-moz-image-region: rect(0px, 64px, 32px, 32px);
 }
 radio[pane="prefpane-tab"]:hover,
-radio[pane="prefpane-tab"][selected="true"],
+radio[pane="prefpane-tab"][selected="true"] {
+	-moz-image-region: rect(32px, 64px, 64px, 32px);
+}
+
+radio[pane="prefpane-autohide"] {
+	-moz-image-region: rect(0px, 64px, 32px, 32px);
+}
 radio[pane="prefpane-autohide"]:hover,
-radio[pane="prefpane-autohide"][selected="true"],
-radio[pane="prefpane-focus"]:hover,
-radio[pane="prefpane-focus"][selected="true"] {
+radio[pane="prefpane-autohide"][selected="true"] {
 	-moz-image-region: rect(32px, 64px, 64px, 32px);
 }
 

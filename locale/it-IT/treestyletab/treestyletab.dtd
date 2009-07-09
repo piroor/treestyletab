@@ -104,18 +104,11 @@
 <!ENTITY config.transparent.style.2 "Trasparente">
 
 
-<!ENTITY config.tabs.focus "Focus">
+<!ENTITY config.tabs.advanced "Avanzate">
 
 <!--ENTITY config.autoCollapseExpandSubTreeOnSelect "Contrai automaticamente gli altri sottoalberi quando viene aperta o selezionata una scheda"-->
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
-<!ENTITY config.autoExpandSubTreeOnCollapsedChildFocused.caption "When a tab in collapsed tree gets focus">
-<!ENTITY config.autoExpandSubTreeOnCollapsedChildFocused.true  "Expand the tree automatically">
-<!ENTITY config.autoExpandSubTreeOnCollapsedChildFocused.false "Focus to the parent">
-
-
-<!ENTITY config.tabs.advanced "Avanzate">
-
 <!ENTITY config.collapseExpandSubTree.dblclick "Contrai/espandi sottoalberi della scheda con un doppio-clic">
 
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Espandi automaticamente i sottoalberi all'inserimento di nuove schede">
