@@ -1066,10 +1066,10 @@ var TreeStyleTabService = {
 		).numberValue;
 	},
  
-	isGroupTab : function(aTab) 
+	isGroupTab : function(aTab, aLazyCheck) 
 	{
 		return (
-			aTab.linkedBrowser.sessionHistory.count == 1 &&
+			(aLazyCheck || aTab.linkedBrowser.sessionHistory.count == 1) &&
 			aTab.linkedBrowser.currentURI.spec.indexOf('about:treestyletab-group') > -1
 		);
 	},
@@ -2170,27 +2170,29 @@ catch(e) {
 			tabs = [aTabOrTabs];
 		}
 
-		var b = this.getTabBrowserFromChild(tabs[0]);
-		var bookmarkedTabs = [];
-		for (var i = 0, maxi = tabs.length; i < maxi; i++)
-		{
-			bookmarkedTabs.push(tabs[i]);
-			bookmarkedTabs = bookmarkedTabs.concat(b.treeStyleTab.getDescendantTabs(tabs[i]));
+		var folderName = null;
+		if (this.isGroupTab(tabs[0], true)) {
+			folderName = tabs[0].label;
+			tabs.splice(0, 1);
 		}
 
-		if (this.isGroupTab(bookmarkedTabs[0]))
-			bookmarkedTabs[0].splice(0, 1);
+		var b = this.getTabBrowserFromChild(tabs[0]);
+		var bookmarkedTabs = [];
+		tabs.forEach(function(aTab) {
+			if (!this.isGroupTab(aTab)) bookmarkedTabs.push(aTab);
+			bookmarkedTabs = bookmarkedTabs.concat(b.treeStyleTab.getDescendantTabs(aTab));
+		}, this);
 
 		if ('MultipleTabService' in window &&
 			'addBookmarkFor' in MultipleTabService) {
-			MultipleTabService.addBookmarkFor(bookmarkedTabs);
+			MultipleTabService.addBookmarkFor(bookmarkedTabs, folderName);
 		}
 		else {
-			this._addBookmarkFor(bookmarkedTabs);
+			this._addBookmarkFor(bookmarkedTabs, folderName);
 		}
 	},
 	
-	_addBookmarkFor : function(aTabs) // from Multiple Tab Handler 
+	_addBookmarkFor : function(aTabs, aFolder) // from Multiple Tab Handler 
 	{
 		if (!aTabs) return;
 
@@ -2236,7 +2238,7 @@ catch(e) {
 			(aTabs.length == 1 ?
 				tabsInfo[0] :
 				{
-					name             : gNavigatorBundle.getString('bookmarkAllTabsDefault'),
+					name             : (aFolderName || gNavigatorBundle.getString('bookmarkAllTabsDefault')),
 					bBookmarkAllTabs : true,
 					objGroup         : tabsInfo
 				}
