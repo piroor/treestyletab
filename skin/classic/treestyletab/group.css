@@ -1,7 +1,12 @@
-page {
+:root {
 	background: -moz-dialog;
-	margin: 1em;
 	-moz-appearance: window;
+	margin: 0;
+	padding: 0;
+}
+
+.content {
+	padding: 1em;
 }
 
 #label {
@@ -17,4 +22,29 @@ page {
 	list-style-image: url("chrome://global/skin/icons/folder-item.png");
 	-moz-image-region: rect(0, 32px, 16px, 16px);
 */
+}
+
+.background-image {
+	width: 320px;
+	max-width: 320px;
+	height: 320px;
+	max-height: 320px;
+	position: fixed;
+	top: auto;
+	right: 0;
+	bottom: 0;
+	left: auto;
+	opacity: 0.3;
+	image-rendering: -moz-crisp-edges;
+	margin: 0 -0.3em -0.3em 0;
+	transform: rotate(8deg);
+	-moz-transform: rotate(8deg);
+}
+
+.background-image-container {
+	position: fixed;
+	top: auto;
+	right: 0;
+	bottom: 0;
+	left: auto;
 }
