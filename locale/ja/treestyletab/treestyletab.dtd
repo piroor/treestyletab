@@ -114,6 +114,7 @@
 <!ENTITY config.autoExpandSubTreeOnCollapsedChildFocused.true  "ツリーを自動的に展開する">
 <!ENTITY config.autoExpandSubTreeOnCollapsedChildFocused.false "ツリーの親にフォーカスする">
 
+
 <!ENTITY config.tabs.advanced "詳細">
 
 <!ENTITY config.collapseExpandSubTree.dblclick "タブのダブルクリックでサブツリーを開閉する">
