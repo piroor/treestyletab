@@ -2170,86 +2170,18 @@ catch(e) {
 			tabs = [aTabOrTabs];
 		}
 
-		var folderName = null;
-		if (this.isGroupTab(tabs[0], true)) {
-			folderName = tabs[0].label;
-			tabs.splice(0, 1);
-		}
+		var folderName = this.isGroupTab(tabs[0], true) ? tabs[0].label : 0 ;
 
 		var b = this.getTabBrowserFromChild(tabs[0]);
 		var bookmarkedTabs = [];
-		tabs.forEach(function(aTab) {
-			if (!this.isGroupTab(aTab)) bookmarkedTabs.push(aTab);
+		tabs.forEach(function(aTab, aIndex) {
+			if (!this.isGroupTab(aTab, aIndex == 0)) bookmarkedTabs.push(aTab);
 			bookmarkedTabs = bookmarkedTabs.concat(b.treeStyleTab.getDescendantTabs(aTab));
 		}, this);
 
-		if ('MultipleTabService' in window &&
-			'addBookmarkFor' in MultipleTabService) {
-			MultipleTabService.addBookmarkFor(bookmarkedTabs, folderName);
-		}
-		else {
-			this._addBookmarkFor(bookmarkedTabs, folderName);
-		}
+		window['piro.sakura.ne.jp'].bookmarkMultipleTabs.addBookmarkFor(bookmarkedTabs, folderName);
 	},
-	
-	_addBookmarkFor : function(aTabs, aFolder) // from Multiple Tab Handler 
-	{
-		if (!aTabs) return;
-
-		var b = this.getTabBrowserFromChild(aTabs[0]);
-
-		if ('PlacesUIUtils' in window || 'PlacesUtils' in window) { // Firefox 3
-			var utils = 'PlacesUIUtils' in window ? PlacesUIUtils : PlacesUtils ;
-			utils.showMinimalAddMultiBookmarkUI(Array.slice(aTabs).map(this.addBookmarkTabsFilter));
-			return;
-		}
-
-		var currentTabInfo;
-		var tabsInfo = Array.slice(aTabs)
-			.filter(function(aTab) {
-				return aTab.parentNode; // ignore removed tabs
-			})
-			.map(function(aTab) {
-				var webNav = aTab.linkedBrowser.webNavigation;
-				var url    = webNav.currentURI.spec;
-				var name   = '';
-				var charSet, description;
-				try {
-					var doc = webNav.document;
-					name = doc.title || url;
-					charSet = doc.characterSet;
-					description = BookmarksUtils.getDescriptionFromDocument(doc);
-				}
-				catch (e) {
-					name = url;
-				}
-				return {
-					name        : name,
-					url         : url,
-					charset     : charSet,
-					description : description
-				};
-			});
-
-		window.openDialog(
-			'chrome://browser/content/bookmarks/addBookmark2.xul',
-			'',
-			BROWSER_ADD_BM_FEATURES,
-			(aTabs.length == 1 ?
-				tabsInfo[0] :
-				{
-					name             : (aFolderName || gNavigatorBundle.getString('bookmarkAllTabsDefault')),
-					bBookmarkAllTabs : true,
-					objGroup         : tabsInfo
-				}
-			)
-		);
-	},
-	addBookmarkTabsFilter : function(aTab)
-	{
-		return aTab.linkedBrowser.currentURI;
-	},
-  
+ 
 	openSelectionLinks : function(aFrame) 
 	{
 		aFrame = this.getCurrentFrame(aFrame);

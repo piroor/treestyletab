@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<!--
+ Bookmark Multiple Tabs library for Firefox 2 or later
+
+ Usage:
+   in chrome.manifest:
+     overlay  chrome://browser/content/browser.xul
+              chrome://***/content/bookmarkMultipleTabs.xul
+     overlay  chrome://browser/content/places/bookmarkProperties2.xul
+              chrome://***/content/bookmarkMultipleTabs_bookmarkPropertiesOverlay.xul
+
+   in JS files:
+     window['piro.sakura.ne.jp'].bookmarkMultipleTabs.addBookmarkFor(tabsArray, folderName);
+
+ lisence: The MIT License, Copyright (c) 2009 SHIMODA "Piro" Hiroshi
+   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/license.txt
+ original:
+   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/bookmarkMultipleTabs.xul
+   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/bookmarkMultipleTabs_bookmarkPropertiesOverlay.xul
+-->
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<script type="application/x-javascript"><![CDATA[
+
+window.addEventListener('DOMContentLoaded', function() {
+	window.removeEventListener('DOMContentLoaded', arguments.callee, true);
+
+	const currentRevision = 1;
+
+	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
+
+	var loadedRevision = 'bookmarkMultipleTabs' in window['piro.sakura.ne.jp'] ?
+			window['piro.sakura.ne.jp'].bookmarkMultipleTabs.revision :
+			0 ;
+	if (loadedRevision && loadedRevision > currentRevision) {
+		return;
+	}
+
+	window['piro.sakura.ne.jp'].bookmarkMultipleTabs = {
+		revision : currentRevision,
+
+		addBookmarkFor : function(aTabs, aFolderName) 
+		{
+			if (!aTabs) return;
+
+			var b = this.getTabBrowserFromChild(aTabs[0]);
+
+			if ('PlacesUIUtils' in window || 'PlacesUtils' in window) { // Firefox 3
+				if (aFolderName)
+					this.Prefs.setCharPref('temp.showMinimalAddMultiBookmarkUI.folderName', unescape(encodeURIComponent(aFolderName)));
+				var utils = 'PlacesUIUtils' in window ? PlacesUIUtils : PlacesUtils ;
+				utils.showMinimalAddMultiBookmarkUI(Array.slice(aTabs).map(this.addBookmarkTabsFilter));
+				this.Prefs.clearUserPref('temp.showMinimalAddMultiBookmarkUI.folderName');
+				return;
+			}
+
+			var currentTabInfo;
+			var tabsInfo = Array.slice(aTabs).map(function(aTab) {
+					var webNav = aTab.linkedBrowser.webNavigation;
+					var url    = webNav.currentURI.spec;
+					var name   = '';
+					var charSet, description;
+					try {
+						var doc = webNav.document;
+						name = doc.title || url;
+						charSet = doc.characterSet;
+						description = BookmarksUtils.getDescriptionFromDocument(doc);
+					}
+					catch (e) {
+						name = url;
+					}
+					return {
+						name        : name,
+						url         : url,
+						charset     : charSet,
+						description : description
+					};
+				});
+
+			window.openDialog(
+				'chrome://browser/content/bookmarks/addBookmark2.xul',
+				'',
+				BROWSER_ADD_BM_FEATURES,
+				(aTabs.length == 1 ?
+					tabsInfo[0] :
+					{
+						name             : (aFolderName || gNavigatorBundle.getString('bookmarkAllTabsDefault')),
+						bBookmarkAllTabs : true,
+						objGroup         : tabsInfo
+					}
+				)
+			);
+		},
+		addBookmarkTabsFilter : function(aTab)
+		{
+			return aTab.linkedBrowser.currentURI;
+		},
+
+		Prefs : Components.classes['@mozilla.org/preferences;1']
+					.getService(Components.interfaces.nsIPrefBranch),
+
+		getTabBrowserFromChild : function(aTab) 
+		{
+			return aTab.ownerDocument.evaluate(
+					'ancestor-or-self::*[local-name()="tabbrowser"]',
+					aTab,
+					null,
+					XPathResult.FIRST_ORDERED_NODE_TYPE,
+					null
+				).singleNodeValue;
+		}
+	};
+}, true);
+
+]]></script>
+</overlay>

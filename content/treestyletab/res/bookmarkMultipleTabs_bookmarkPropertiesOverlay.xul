@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!--
+ Bookmark Multiple Tabs library for Firefox 2 or later
+
+ Usage:
+   in chrome.manifest:
+     overlay  chrome://browser/content/browser.xul
+              chrome://***/content/bookmarkMultipleTabs.xul
+     overlay  chrome://browser/content/places/bookmarkProperties2.xul
+              chrome://***/content/bookmarkMultipleTabs_bookmarkPropertiesOverlay.xul
+
+   in JS files:
+     window['piro.sakura.ne.jp'].bookmarkMultipleTabs.addBookmarkFor(tabsArray, folderName);
+
+ lisence: The MIT License, Copyright (c) 2009 SHIMODA "Piro" Hiroshi
+   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/license.txt
+ original:
+   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/bookmarkMultipleTabs.xul
+   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/bookmarkMultipleTabs_bookmarkPropertiesOverlay.xul
+-->
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<script type="application/x-javascript; version=1.7"><![CDATA[
+(function() {
+	if (!('BookmarkPropertiesPanel' in window) ||
+		!BookmarkPropertiesPanel._determineItemInfo ||
+		BookmarkPropertiesPanel._determineItemInfo.toSource().indexOf('__folderNameOverride') > -1)
+		return;
+
+	eval('BookmarkPropertiesPanel._determineItemInfo = '+
+		BookmarkPropertiesPanel._determineItemInfo.toSource().replace(
+			'{',
+			['{',
+				'var __folderNameOverride = null;',
+				'try {',
+				'	__folderNameOverride = Components.classes["@mozilla.org/preferences;1"]',
+				'		.getService(Components.interfaces.nsIPrefBranch)',
+				'		.getCharPref("temp.showMinimalAddMultiBookmarkUI.folderName");',
+				'	__folderNameOverride = decodeURIComponent(escape(__folderNameOverride));',
+				'}',
+				'catch(e) {',
+				'}'
+			].join('')
+		).replace(
+			'this._strings.getString("bookmarkAllTabsDefault")',
+			'__folderNameOverride || $&'
+		).replace()
+	);
+})();
+]]></script>
+</overlay>
