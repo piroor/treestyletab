@@ -70,10 +70,12 @@
 <!ENTITY config.open_newwindow.caption "Forza i collegamenti che aprono nuove finestre">
 <!ENTITY config.open_newwindow.window  "ad aprirsi in una nuova finestra">
 <!ENTITY config.open_newwindow.tab     "ad aprirsi in una nuova scheda (comportamento predefinito di Firefox)">
+<!ENTITY config.open_newwindow.current "Load into the Current Tab anyway">
 
 <!ENTITY config.jsopen.caption "Forza gli script che aprono nuove finestre">
 <!ENTITY config.jsopen.default "ad aprire una nuova finestra se questa è ridimensionata (comportamento predefinito di Firefox)">
 <!ENTITY config.jsopen.forcetab "ad aprirsi tutti in nuove schede (Raccomandato)">
+<!ENTITY config.jsopen.current  "Load into the Current Tab anyway">
 
 
 <!ENTITY config.tabs.autohide "Visualizzazione">

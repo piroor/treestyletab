@@ -70,10 +70,12 @@
 <!ENTITY config.open_newwindow.caption "Открытие высплывающих окон">
 <!ENTITY config.open_newwindow.window  "Открывать как окно">
 <!ENTITY config.open_newwindow.tab     "Открывать как вкладку (по умочанию в Firefox)">
+<!ENTITY config.open_newwindow.current "Load into the Current Tab anyway">
 
 <!ENTITY config.jsopen.caption "Открытие новых окон скриптами на страницах">
 <!ENTITY config.jsopen.default "Открывать как окно, когда используется специальная ширина, высота, и т.д. (по умолчанию в Firefox)">
 <!ENTITY config.jsopen.forcetab "Всегда открывать как вкладку вместо окна (рекомендуется)">
+<!ENTITY config.jsopen.current  "Load into the Current Tab anyway">
 
 
 <!ENTITY config.tabs.autohide "Автоскрытие/показ панели">

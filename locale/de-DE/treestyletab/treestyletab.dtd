@@ -70,10 +70,12 @@
 <!ENTITY config.open_newwindow.caption "Links, die sich unerwartet in einem neuen Fenster öffnen">
 <!ENTITY config.open_newwindow.window  "Als Fenster öffnen">
 <!ENTITY config.open_newwindow.tab     "Als neues Tab öffnen (Firefox Standard)">
+<!ENTITY config.open_newwindow.current "Load into the Current Tab anyway">
 
 <!ENTITY config.jsopen.caption "Fenster, die sich durch Skripte öffnen">
 <!ENTITY config.jsopen.default "Als Fenster öffnen, wenn das Skript eine bestimmte Fenstergröße vorgibt (Firefox Standard)">
 <!ENTITY config.jsopen.forcetab "Auf jeden Fall als Tab öffnen (Empfohlen)">
+<!ENTITY config.jsopen.current  "Load into the Current Tab anyway">
 
 
 <!ENTITY config.tabs.autohide "Platz sparen">

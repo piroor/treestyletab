@@ -70,10 +70,12 @@
 <!ENTITY config.open_newwindow.caption "Nuevas ventanas abiertas desde enlaces inesperadamente">
 <!ENTITY config.open_newwindow.window  "Abrir como una ventana">
 <!ENTITY config.open_newwindow.tab     "Abrir como pestaña (Predeterminado en Firefox)">
+<!ENTITY config.open_newwindow.current "Load into the Current Tab anyway">
 
 <!ENTITY config.jsopen.caption "Nuevas ventanas abiertas desde Scripts">
 <!ENTITY config.jsopen.default "Abrir como ventana cuando contienen un ancho o altura especial. (Predeterminado en Firefox)">
 <!ENTITY config.jsopen.forcetab "Abrir como pestañas en ves de ventanas (Recomendado)">
+<!ENTITY config.jsopen.current  "Load into the Current Tab anyway">
 
 
 <!ENTITY config.tabs.autohide "Auto ocultar">

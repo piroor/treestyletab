@@ -70,10 +70,12 @@
 <!ENTITY config.open_newwindow.caption "Nowe okno niespodziewanie otwierane z odnośników na stronie">
 <!ENTITY config.open_newwindow.window  "Otwieraj jako okno">
 <!ENTITY config.open_newwindow.tab     "Otwieraj jako kartę (domyślnie działanie Firefoksa)">
+<!ENTITY config.open_newwindow.current "Load into the Current Tab anyway">
 
 <!ENTITY config.jsopen.caption "Nowe okno otwierane przez skrypt na stronie">
 <!ENTITY config.jsopen.default "Otwieraj jako okno jeśli ma określoną wysokość, szerokość itp. (domyślnie działanie Firefoksa)">
 <!ENTITY config.jsopen.forcetab "Otwieraj jako kartę zamiast okna (zalecane)">
+<!ENTITY config.jsopen.current  "Load into the Current Tab anyway">
 
 
 <!ENTITY config.tabs.autohide "Automatyczne ukrywanie">
