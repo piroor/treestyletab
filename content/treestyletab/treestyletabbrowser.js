@@ -2852,10 +2852,7 @@ TreeStyleTabBrowser.prototype = {
 		var insertBefore = aInfo.insertBefore;
 		var beforeTab = insertBefore ? insertBefore.getAttribute(this.kID) : null ;
 		var beforeIndex;
-Application.console.log('insertBefore '+insertBefore);
-Application.console.log('beforeTab '+beforeTab);
 		if (beforeTab && (beforeIndex = children.indexOf(beforeTab)) > -1) {
-Application.console.log('beforeIndex '+beforeIndex);
 			children.splice(beforeIndex, 0, id);
 			newIndex = insertBefore._tPos;
 		}
@@ -2874,7 +2871,6 @@ Application.console.log('beforeIndex '+beforeIndex);
 			this.inheritTabIndent(aChild, aParent);
 
 		if (newIndex > aChild._tPos) newIndex--;
-Application.console.log('newIndex '+newIndex);
 		this.moveTabSubTreeTo(aChild, newIndex);
 
 		if (!aInfo.dontExpand) {
