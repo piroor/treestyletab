@@ -119,6 +119,7 @@
 <!ENTITY config.closeParentBehavior.escalateAll   "Raise all child tabs up to the level of the closed parent tab">
 <!ENTITY config.closeParentBehavior.detach        "Liberate child tabs from the tree">
 <!--ENTITY config.attachChildrenToGrandParentOnRemoveTab "Перенести дочерние вкладки в корень дерева, если родительская вкладка закрыта"-->
+<!ENTITY config.closeRootBehavior.escalateFirst   "Raise the first child tab up to the new parent, if the closed parent has no parent">
 
 <!ENTITY config.focusMode "Переходить по Ctrl+Tab на следующую/предыдущую вкладку, если очередная отсутствует">
 
