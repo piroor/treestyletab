@@ -552,7 +552,7 @@
 
 </prefpane>
 
-<prefpane id="prefpane-advanced" label="&config.tabs.advanced;"
+<prefpane id="prefpane-focus" label="&config.tabs.focus;"
 	onpaneload="updateCloseRootBehaviorCheck();">
 	<preferences>
 		<preference id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
@@ -562,6 +562,33 @@
 			name="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove"
 			type="bool"
 			inverted="true"/>
+		<preference id="extensions.treestyletab.autoExpandSubTreeOnCollapsedChildFocused"
+			name="extensions.treestyletab.autoExpandSubTreeOnCollapsedChildFocused"
+			type="bool"/>
+	</preferences>
+
+	<checkbox id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect-check"
+		preference="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
+		label="&config.autoCollapseExpandSubTreeOnSelect;"/>
+	<hbox align="center">
+		<spacer style="width:1em;"/>
+		<checkbox id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove-check"
+			label="&config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove;"
+			preference="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove"/>
+	</hbox>
+	<groupbox>
+		<caption label="&config.autoExpandSubTreeOnCollapsedChildFocused.caption;"/>
+		<radiogroup id="extensions.treestyletab.autoExpandSubTreeOnCollapsedChildFocused-radiogroup"
+			preference="extensions.treestyletab.autoExpandSubTreeOnCollapsedChildFocused"
+			orient="horizontal">
+			<radio value="true" label="&config.autoExpandSubTreeOnCollapsedChildFocused.true;"/>
+			<radio value="false" label="&config.autoExpandSubTreeOnCollapsedChildFocused.false;"/>
+		</radiogroup>
+	</groupbox>
+</prefpane>
+
+<prefpane id="prefpane-advanced" label="&config.tabs.advanced;">
+	<preferences>
 		<preference id="extensions.treestyletab.collapseExpandSubTree.dblclick"
 			name="extensions.treestyletab.collapseExpandSubTree.dblclick"
 			type="bool"/>
@@ -587,15 +614,6 @@
 
 	<vbox>
 
-	<checkbox id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect-check"
-		preference="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
-		label="&config.autoCollapseExpandSubTreeOnSelect;"/>
-	<hbox align="center">
-		<spacer style="width:1em;"/>
-		<checkbox id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove-check"
-			label="&config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove;"
-			preference="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove"/>
-	</hbox>
 	<checkbox id="extensions.treestyletab.collapseExpandSubTree.dblclick-check"
 		preference="extensions.treestyletab.collapseExpandSubTree.dblclick"
 		label="&config.collapseExpandSubTree.dblclick;"/>

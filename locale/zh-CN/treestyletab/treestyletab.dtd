@@ -106,11 +106,18 @@
 <!ENTITY config.transparent.style.2 "完全透明">
 
 
-<!ENTITY config.tabs.advanced "高级">
+<!ENTITY config.tabs.focus "Focus">
 
 <!--ENTITY config.autoCollapseExpandSubTreeOnSelect "当新建或切换标签时，自动折叠无关的子树"-->
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
+<!ENTITY config.autoExpandSubTreeOnCollapsedChildFocused.caption "When a tab in collapsed tree gets focus">
+<!ENTITY config.autoExpandSubTreeOnCollapsedChildFocused.true  "Expand the tree automatically">
+<!ENTITY config.autoExpandSubTreeOnCollapsedChildFocused.false "Focus to the parent">
+
+
+<!ENTITY config.tabs.advanced "高级">
+
 <!ENTITY config.collapseExpandSubTree.dblclick "通过双击折叠/展开标签的子树">
 
 <!ENTITY config.autoExpandSubTreeOnAppendChild "当标签被插入子树时，自动展开子树">

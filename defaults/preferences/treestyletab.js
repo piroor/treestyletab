@@ -87,6 +87,7 @@ pref("extensions.treestyletab.useEffectiveTLD", true);
 pref("extensions.treestyletab.autoCollapseExpandSubTreeOnSelect",      true);
 pref("extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove", true);
 pref("extensions.treestyletab.collapseExpandSubTree.dblclick",         false);
+pref("extensions.treestyletab.autoExpandSubTreeOnCollapsedChildFocused", true);
 pref("extensions.treestyletab.autoExpandSubTreeOnAppendChild",         true);
 pref("extensions.treestyletab.autoAttachNewTabsAsChildren", true);
 // 0 = default, 1 = only visible tabs

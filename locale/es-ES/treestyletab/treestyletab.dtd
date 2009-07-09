@@ -104,11 +104,18 @@
 <!ENTITY config.transparent.style.2 "Transparente">
 
 
-<!ENTITY config.tabs.advanced "Avanzado">
+<!ENTITY config.tabs.focus "Focus">
 
 <!--ENTITY config.autoCollapseExpandSubTreeOnSelect "Colapsar otros árboles automáticamente cuando una pestaña es abierta o seleccionada"-->
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
+<!ENTITY config.autoExpandSubTreeOnCollapsedChildFocused.caption "When a tab in collapsed tree gets focus">
+<!ENTITY config.autoExpandSubTreeOnCollapsedChildFocused.true  "Expand the tree automatically">
+<!ENTITY config.autoExpandSubTreeOnCollapsedChildFocused.false "Focus to the parent">
+
+
+<!ENTITY config.tabs.advanced "Avanzado">
+
 <!ENTITY config.collapseExpandSubTree.dblclick "Colapsar/Expandir sub-árboles de la pestaña al hacer doble-click">
 
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Expandir sub-árboles automáticamente cuando una pestaña es insertada dentro del sub-árbol">

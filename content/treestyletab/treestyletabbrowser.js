@@ -1862,10 +1862,15 @@ TreeStyleTabBrowser.prototype = {
 		var tab = b.selectedTab
 
 		if (tab.getAttribute(this.kCOLLAPSED) == 'true') {
-			var parentTab = tab;
-			while (parentTab = this.getParentTab(parentTab))
-			{
-				this.collapseExpandSubtree(parentTab, false);
+			if (this.getTreePref('autoExpandSubTreeOnCollapsedChildFocused')) {
+				var parentTab = tab;
+				while (parentTab = this.getParentTab(parentTab))
+				{
+					this.collapseExpandSubtree(parentTab, false);
+				}
+			}
+			else {
+				b.selectedTab = this.getRootTab(tab);
 			}
 		}
 		else if (this.hasChildTabs(tab) &&
