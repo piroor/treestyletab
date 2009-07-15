@@ -478,8 +478,15 @@ TreeStyleTabBrowser.prototype = {
 
 		if ('_onDragEnd' in b) {
 			eval('b._onDragEnd = '+b._onDragEnd.toSource().replace(
-				/(this\._?replaceTabWithWindow\()',
+				/(this\._?replaceTabWithWindow\()/,
 				'if (this.treeStyleTab.isDraggingAllTabs(draggedTab)) return; $1'
+			).replace(
+				'{',
+				'{ var treeStyleTab = this.treeStyleTab;'
+			).replace(
+				/\.screenX/g, '[treeStyleTab.invertedPositionProp]'
+			).replace(
+				/\.width/g, '[treeStyleTab.invertedSizeProp]'
 			));
 		}
 
