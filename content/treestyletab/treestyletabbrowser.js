@@ -478,8 +478,8 @@ TreeStyleTabBrowser.prototype = {
 
 		if ('_onDragEnd' in b) {
 			eval('b._onDragEnd = '+b._onDragEnd.toSource().replace(
-				'this._replaceTabWithWindow(',
-				'if (this.treeStyleTab.isDraggingAllTabs(draggedTab)) return; $&'
+				/(this\._?replaceTabWithWindow\()',
+				'if (this.treeStyleTab.isDraggingAllTabs(draggedTab)) return; $1'
 			));
 		}
 
