@@ -484,6 +484,10 @@ TreeStyleTabBrowser.prototype = {
 				'{',
 				'{ var treeStyleTab = this.treeStyleTab;'
 			).replace(
+				/window\.screenX/g, 'gBrowser.boxObject.screenX'
+			).replace(
+				/window\.outerWidth/g, 'gBrowser.boxObject.width'
+			).replace(
 				/\.screenX/g, '[treeStyleTab.positionProp]'
 			).replace(
 				/\.width/g, '[treeStyleTab.sizeProp]'
