@@ -12,7 +12,7 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/autoScroll.js
 */
 (function() {
-	const currentRevision = 1;
+	const currentRevision = 2;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -50,7 +50,11 @@
 			var innerBoxObject = (box.localName == 'arrowscrollbox' ? box._scrollbox : box ).boxObject;
 
 			var orientBox = box || tabs;
-			var isVertical = (orientBox.getAttribute('orient') || window.getComputedStyle(orientBox, '').getPropertyValue('-moz-box-orient')) == 'vertical';
+			var isMultirow = tabs.getAttribute('flowing') == 'multibar'; // Tab Mix Plus
+			var isVertical = (
+					isMultirow ||
+					((orientBox.getAttribute('orient') || window.getComputedStyle(orientBox, '').getPropertyValue('-moz-box-orient')) == 'vertical')
+				);
 
 			var maxX = {}, maxY = {}, curX = {}, curY = {};
 			boxObject.getScrolledSize(maxX, maxY);
@@ -59,6 +63,7 @@
 			var pixels;
 			if (isVertical) {
 				pixels = tabs.childNodes[0].boxObject.height * 0.5;
+				if (isMultirow) pixels *= 0.5;
 				if (aEvent.screenY < boxObject.screenY + this.getUpButtonHeight(b)) {
 					if (curY.value == 0) return false;
 					pixels *= -1;
@@ -108,8 +113,8 @@
 		getScrollBoxObject : function(aTabBrowser) 
 		{
 			var box = this.getScrollBox(aTabBrowser);
-			return box.scrollBoxObject ||
-					box.boxObject.QueryInterface(Ci.nsIScrollBoxObject); // Tab Mix Plus
+			return (box.scrollBoxObject || box.boxObject)
+					.QueryInterface(Ci.nsIScrollBoxObject); // Tab Mix Plus
 		},
 
 		getUpButton : function(aTabBrowser)
