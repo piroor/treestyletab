@@ -1165,7 +1165,8 @@ TreeStyleTabBrowser.prototype = {
 
 			case 'extensions.treestyletab.twisty.style':
 				if (value == 'auto') {
-					if (document.documentElement.getAttribute('informationaltab-thumbnail-enabled') == 'true') {
+					if (window['piro.sakura.ne.jp'].extensions.isAvailable('informationaltab@piro.sakura.ne.jp') &&
+						this.getPref('extensions.informationaltab.thumbnail.enabled')) {
 						value = 'retro';
 					}
 					else {
