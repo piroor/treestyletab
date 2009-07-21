@@ -1165,8 +1165,11 @@ TreeStyleTabBrowser.prototype = {
 
 			case 'extensions.treestyletab.twisty.style':
 				if (value == 'auto') {
-					if (window['piro.sakura.ne.jp'].extensions.isAvailable('informationaltab@piro.sakura.ne.jp') &&
-						this.getPref('extensions.informationaltab.thumbnail.enabled')) {
+					if (
+						window['piro.sakura.ne.jp'].extensions.isAvailable('informationaltab@piro.sakura.ne.jp') &&
+						this.getPref('extensions.informationaltab.thumbnail.enabled') &&
+						this.getPref('extensions.informationaltab.thumbnail.position') < 100
+						) {
 						value = 'retro';
 					}
 					else {
