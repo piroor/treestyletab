@@ -1,6 +1,7 @@
 TreeStyleTabService.overrideExtensionsPreInit = function() {
 
 	// Highlander
+	// https://addons.mozilla.org/firefox/addon/4086
 	if ('Highlander' in window) {
 		eval('Highlander.overrideHandleLinkClick = '+
 			Highlander.overrideHandleLinkClick.toSource().replace(
@@ -11,6 +12,7 @@ TreeStyleTabService.overrideExtensionsPreInit = function() {
 	}
 
 	// PermaTabs
+	// https://addons.mozilla.org/firefox/addon/2558
 	if ('permaTabs' in window) {
 		// without delay, Firefox crashes on startup.
 		eval('permaTabs.__init = '+
@@ -83,6 +85,7 @@ TreeStyleTabService.overrideExtensionsPreInit = function() {
 	}
 
 	// Session Manager
+	// https://addons.mozilla.org/firefox/addon/2324
 	// We need to initialize TST before Session Manager restores the last session anyway!
 	if ('gSessionManager' in window &&
 		'onLoad_proxy' in gSessionManager &&
@@ -94,6 +97,7 @@ TreeStyleTabService.overrideExtensionsPreInit = function() {
 	}
 
 	// FullerScreen
+	// https://addons.mozilla.org/firefox/addon/4650
 	if ('FS_onFullerScreen' in window) {
 		'CheckIfFullScreen,FS_onFullerScreen,FS_onMouseMove'.split(',').forEach(function(aFunc) {
 			if (!(aFunc in window)) return;
@@ -105,6 +109,7 @@ TreeStyleTabService.overrideExtensionsPreInit = function() {
 	}
 
 	// TooManyTabs
+	// https://addons.mozilla.org/firefox/addon/9429
 	if ('tooManyTabs' in window) {
 		this.registerExpandTwistyAreaAllowance(function(aTabBrowser) {
 			return false;
@@ -156,7 +161,8 @@ TreeStyleTabService.overrideExtensionsOnInitBefore = function() {
 
 TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 
-	if ('MultipleTabService' in window) { // Multiple Tab Handler
+	// Multiple Tab Handler
+	if ('MultipleTabService' in window) {
 		eval('MultipleTabService.showHideMenuItems = '+
 			MultipleTabService.showHideMenuItems.toSource().replace(
 				'var separators = ',
@@ -478,9 +484,21 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 
 		gBrowser.treeStyleTab.internallyTabMoving = true; // until "TMmoveTabTo" method is overwritten
 	}
+	if ('TMP_Places' in window &&
+		'getTabFixedTitle' in TMP_Places) {
+		TreeStyleTabService.addBookmarkTabsFilter = function(aTab) {
+			var b = aTab.linkedBrowser;
+			var uri = b.currentURI;
+			return {
+				uri   : uri,
+				title : TMP_Places.getTabFixedTitle(b, uri)
+			};
+		};
+	}
 
 
 	// Super DragAndGo
+	// https://addons.mozilla.org/firefox/addon/137
 	if ('superDrag' in window) {
 		eval('superDrag.onDrop = '+
 			superDrag.onDrop.toSource().replace(
@@ -494,19 +512,9 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 			)
 		);
 	}
-	if ('TMP_Places' in window &&
-		'getTabFixedTitle' in TMP_Places) {
-		TreeStyleTabService.addBookmarkTabsFilter = function(aTab) {
-			var b = aTab.linkedBrowser;
-			var uri = b.currentURI;
-			return {
-				uri   : uri,
-				title : TMP_Places.getTabFixedTitle(b, uri)
-			};
-		};
-	}
 
 	// Drag de Go
+	// https://addons.mozilla.org/firefox/addon/2918
 	if ('ddg_ges' in window) {
 		eval('ddg_ges.Open = '+
 			ddg_ges.Open.toSource().replace(
@@ -527,7 +535,8 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		);
 	}
 
-	// ColorfulTab
+	// Colorful Tabs
+	// https://addons.mozilla.org/firefox/addon/1368
 	if ('clrtabsInit' in window) {
 		let listener = {
 				handleEvent : function(aEvent)
@@ -564,7 +573,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 	}
 
 	// FLST (Focus Last Selected Tab)
-	// https://addons.mozilla.org/ja/firefox/addon/32
+	// https://addons.mozilla.org/firefox/addon/32
 	if ('flst' in window) {
 		TreeStyleTabService.registerTabFocusAllowance(function(aTabBrowser) {
 			return !aTabBrowser.treeStyleTab.getPref('extensions.flst.enabled');
@@ -573,14 +582,22 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 
 	// Focus Last Selected Tab 0.9.5.x
 	// http://www.gozer.org/mozilla/extensions/
-	if (window['piro.sakura.ne.jp'].extensions.isInstalled('focuslastselectedtab@gozer.org') &&
-		window['piro.sakura.ne.jp'].extensions.isEnabled('focuslastselectedtab@gozer.org')) {
+	if (window['piro.sakura.ne.jp'].extensions.isAvailable('focuslastselectedtab@gozer.org')) {
 		TreeStyleTabService.registerTabFocusAllowance(function(aTabBrowser) {
 			return !aTabBrowser.selectedTab.hasAttribute('lastselected');
 		});
 	}
 
+	// LastTab
+	// https://addons.mozilla.org/firefox/addon/112
+	if ('LastTab' in window) {
+		TreeStyleTabService.registerTabFocusAllowance(function(aTabBrowser) {
+			return !aTabBrowser.treeStyleTab.getPref('extensions.lasttab.focusLastTabOnClose');
+		});
+	}
+
 	// FireGestures
+	// https://addons.mozilla.org/firefox/addon/6366
 	if ('FireGestures' in window) {
 		eval('FireGestures.onExtraGesture = '+
 			FireGestures.onExtraGesture.toSource().replace(
@@ -629,6 +646,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 	}
 
 	// Greasemonkey
+	// https://addons.mozilla.org/firefox/addon/748
 	if ('GM_BrowserUI' in window && 'openInTab' in GM_BrowserUI) {
 		eval('GM_BrowserUI.openInTab = '+
 			GM_BrowserUI.openInTab.toSource().replace( // old
@@ -641,14 +659,8 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		);
 	}
 
-	// LastTab
-	if ('LastTab' in window) {
-		TreeStyleTabService.registerTabFocusAllowance(function(aTabBrowser) {
-			return !aTabBrowser.treeStyleTab.getPref('extensions.lasttab.focusLastTabOnClose');
-		});
-	}
-
 	// SBM Counter
+	// http://miniturbo.org/products/sbmcounter/
 	if ('SBMCounter' in window) {
 		eval('SBMCounter.action = '+
 			SBMCounter.action.toSource().replace(
@@ -659,6 +671,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 	}
 
 	// Aging Tabs
+	// https://addons.mozilla.org/firefox/addon/3542
 	if ('agingTabs' in window) {
 		eval('agingTabs.setColor = '+
 			agingTabs.setColor.toSource().replace(
@@ -669,6 +682,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 	}
 
 	// Snap Links
+	// https://addons.mozilla.org/firefox/addon/4336
 	if ('executeAction' in window && 'openTabs' in window) {
 		eval('window.openTabs = '+
 			window.openTabs.toSource().replace(
@@ -679,6 +693,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 	}
 
 	// Mouseless Browsing
+	// https://addons.mozilla.org/firefox/addon/879
 	if ('mouselessbrowsing' in window &&
 		'EventHandler' in mouselessbrowsing) {
 		if ('execute' in mouselessbrowsing.EventHandler) {
@@ -712,6 +727,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 	}
 
 	// Linky
+	// https://addons.mozilla.org/firefox/addon/425
 	if ('LinkyContext' in window &&
 		'prototype' in LinkyContext) {
 		'doSelected,doSelectedText,doImages,doAll,doAllPics,doValidateAll,doValidateSelected'
@@ -730,6 +746,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 	}
 
 	// QuickDrag
+	// https://addons.mozilla.org/firefox/addon/6912
 	if ('QuickDrag' in window && '_loadTab' in QuickDrag) {
 		eval('QuickDrag._loadTab = '+
 			QuickDrag._loadTab.toSource().replace(
@@ -740,6 +757,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 	}
 
 	// Autohide
+	// http://www.krickelkrackel.de/autohide/
 	if ('autoHIDE' in window) {
 		let autoHideEventListener = {
 				handleEvent : function(aEvent)

@@ -2,9 +2,12 @@
  Extensions Compatibility Library
 
  Usage:
-   if (window['piro.sakura.ne.jp'].extensions.isInstalled('my.extension.id@example.com') &&
-       window['piro.sakura.ne.jp'].extensions.isEnabled('my.extension.id@example.com'))
+   if (window['piro.sakura.ne.jp'].extensions.isAvailable('my.extension.id@example.com'))
        window['piro.sakura.ne.jp'].extensions.goToOptions('my.extension.id@example.com');
+   // just same to:
+   // if (window['piro.sakura.ne.jp'].extensions.isInstalled('my.extension.id@example.com') &&
+   //     window['piro.sakura.ne.jp'].extensions.isEnabled('my.extension.id@example.com'))
+   //     window['piro.sakura.ne.jp'].extensions.goToOptions('my.extension.id@example.com');
 
  lisence: The MIT License, Copyright (c) 2009 SHIMODA "Piro" Hiroshi
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/license.txt
@@ -12,7 +15,7 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/extensions.js
 */
 (function() {
-	const currentRevision = 1;
+	const currentRevision = 2;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -34,6 +37,11 @@
 			.getService(Components.interfaces.nsIWindowMediator),
 		Prefs : Components.classes['@mozilla.org/preferences;1']
 			.getService(Components.interfaces.nsIPrefBranch),
+
+		isAvailable : function(aId)
+		{
+			return this.isInstalled(aId) && this.isEnabled(aId);
+		},
 
 		isInstalled : function(aId)
 		{
