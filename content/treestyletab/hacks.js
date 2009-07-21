@@ -432,7 +432,8 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		};
 
 		TreeStyleTabService.registerTabFocusAllowance(function(aTabBrowser) {
-			return aTabBrowser.treeStyleTab.getPref('extensions.tabmix.focusTab') == 2;
+			var mode = aTabBrowser.treeStyleTab.getPref('extensions.tabmix.focusTab');
+			return mode == 2 || mode == 5;
 		});
 
 		window.setTimeout(function() {
