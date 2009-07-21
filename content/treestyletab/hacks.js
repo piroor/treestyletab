@@ -563,10 +563,20 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		window.addEventListener('unload', listener, false);
 	}
 
-	// FLST
+	// FLST (Focus Last Selected Tab)
+	// https://addons.mozilla.org/ja/firefox/addon/32
 	if ('flst' in window) {
 		TreeStyleTabService.registerTabFocusAllowance(function(aTabBrowser) {
 			return !aTabBrowser.treeStyleTab.getPref('extensions.flst.enabled');
+		});
+	}
+
+	// Focus Last Selected Tab 0.9.5.x
+	// http://www.gozer.org/mozilla/extensions/
+	if (window['piro.sakura.ne.jp'].extensions.isInstalled('focuslastselectedtab@gozer.org') &&
+		window['piro.sakura.ne.jp'].extensions.isEnabled('focuslastselectedtab@gozer.org')) {
+		TreeStyleTabService.registerTabFocusAllowance(function(aTabBrowser) {
+			return !aTabBrowser.selectedTab.hasAttribute('lastselected');
 		});
 	}
 
