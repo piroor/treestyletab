@@ -1612,7 +1612,6 @@ TreeStyleTabBrowser.prototype = {
 	getNextFocusedTab : function(aTab)
 	{
 		return this.getNextSiblingTab(aTab) ||
-				this.getPreviousSiblingTab(aTab) ||
 				this.getPreviousVisibleTab(aTab);
 	},
  
