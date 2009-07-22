@@ -1153,7 +1153,7 @@ var TreeStyleTabService = {
 				null,
 				this.stringbundle.getString('dropLinkOnTab.never'),
 				checked
-			) == 0;
+			) != 1;
 		if (checked.value) {
 			this.setTreePref('loadDroppedLinkToNewChildTab.confirm', false);
 			this.setTreePref('loadDroppedLinkToNewChildTab', newChildTab);
@@ -1191,9 +1191,9 @@ var TreeStyleTabService = {
 
 		switch (behavior)
 		{
+			default:
 			case 0: behavior = this.kGROUP_BOOKMARK_SUBTREE | dummyTabFlag; break;
 			case 1: behavior = this.kGROUP_BOOKMARK_REPLACE; break;
-			default:
 			case 2: behavior = this.kGROUP_BOOKMARK_SEPARATE; break;
 		}
 
