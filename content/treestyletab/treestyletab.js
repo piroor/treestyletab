@@ -1171,23 +1171,31 @@ var TreeStyleTabService = {
 		this.registerTabFocusAllowance(this.defaultTabFocusAllowance);
 
 		// migrate old prefs
+		var orientalPrefs = [];
 		switch (this.getTreePref('orientalPrefsMigrated'))
 		{
 			case 0:
-				[
+				orientalPrefs = orientalPrefs.concat([
 					'extensions.treestyletab.tabbar.fixed',
 					'extensions.treestyletab.enableSubtreeIndent',
 					'extensions.treestyletab.allowSubtreeCollapseExpand'
-				].forEach(function(aPref) {
+				]);
+			case 1:
+				orientalPrefs = orientalPrefs.concat([
+					'extensions.treestyletab.tabbar.hideNewTabButton',
+					'extensions.treestyletab.tabbar.hideAlltabsButton'
+				]);
+			default:
+				orientalPrefs.forEach(function(aPref) {
 					let value = this.getPref(aPref);
 					if (value === null) return;
 					this.setPref(aPref+'.horizontal', value);
 					this.setPref(aPref+'.vertical', value);
+					this.clearPref(aPref);
 				}, this);
-			default:
 				break;
 		}
-		this.setTreePref('orientalPrefsMigrated', 1);
+		this.setTreePref('orientalPrefsMigrated', 2);
 	},
 	preInitialized : false,
 	

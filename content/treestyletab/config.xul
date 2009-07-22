@@ -42,12 +42,20 @@
 		<preference id="extensions.treestyletab.allowSubtreeCollapseExpand.vertical"
 			name="extensions.treestyletab.allowSubtreeCollapseExpand.vertical"
 			type="bool"/>
-		<preference id="extensions.treestyletab.tabbar.hideNewTabButton"
-			name="extensions.treestyletab.tabbar.hideNewTabButton"
+		<preference id="extensions.treestyletab.tabbar.hideNewTabButton.horizontal"
+			name="extensions.treestyletab.tabbar.hideNewTabButton.horizontal"
 			type="bool"
 			inverted="true"/>
-		<preference id="extensions.treestyletab.tabbar.hideAlltabsButton"
-			name="extensions.treestyletab.tabbar.hideAlltabsButton"
+		<preference id="extensions.treestyletab.tabbar.hideNewTabButton.vertical"
+			name="extensions.treestyletab.tabbar.hideNewTabButton.vertical"
+			type="bool"
+			inverted="true"/>
+		<preference id="extensions.treestyletab.tabbar.hideAlltabsButton.horizontal"
+			name="extensions.treestyletab.tabbar.hideAlltabsButton.horizontal"
+			type="bool"
+			inverted="true"/>
+		<preference id="extensions.treestyletab.tabbar.hideAlltabsButton.vertical"
+			name="extensions.treestyletab.tabbar.hideAlltabsButton.vertical"
 			type="bool"
 			inverted="true"/>
 		<preference id="extensions.treestyletab.tabbar.invertScrollbar"
@@ -145,11 +153,19 @@
 				label="&config.enableSubtreeIndent;"/>
 		</hbox>
 		<hbox align="center">
-			<checkbox id="extensions.treestyletab.tabbar.hideAlltabsButton-check"
-				preference="extensions.treestyletab.tabbar.hideAlltabsButton"
+			<checkbox id="extensions.treestyletab.tabbar.hideAlltabsButton.horizontal-check"
+				preference="extensions.treestyletab.tabbar.hideAlltabsButton.horizontal"
+				label="&config.tabbar.hideAlltabsButton;"
+				collapsed="true"/>
+			<checkbox id="extensions.treestyletab.tabbar.hideAlltabsButton.vertical-check"
+				preference="extensions.treestyletab.tabbar.hideAlltabsButton.vertical"
 				label="&config.tabbar.hideAlltabsButton;"/>
-			<checkbox id="extensions.treestyletab.tabbar.hideNewTabButton-check"
-				preference="extensions.treestyletab.tabbar.hideNewTabButton"
+			<checkbox id="extensions.treestyletab.tabbar.hideNewTabButton.horizontal-check"
+				preference="extensions.treestyletab.tabbar.hideNewTabButton.horizontal"
+				label="&config.tabbar.hideNewTabButton;"
+				collapsed="true"/>
+			<checkbox id="extensions.treestyletab.tabbar.hideNewTabButton.vertical-check"
+				preference="extensions.treestyletab.tabbar.hideNewTabButton.vertical"
 				label="&config.tabbar.hideNewTabButton;"/>
 		</hbox>
 		</vbox>

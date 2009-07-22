@@ -116,24 +116,40 @@ function onChangeTabbarPosition(aOnChange)
 	var indentCheckV   = document.getElementById('extensions.treestyletab.enableSubtreeIndent.vertical-check');
 	var collapseCheckH = document.getElementById('extensions.treestyletab.allowSubtreeCollapseExpand.horizontal-check');
 	var collapseCheckV = document.getElementById('extensions.treestyletab.allowSubtreeCollapseExpand.vertical-check');
-	var hideNewTabCheck = document.getElementById('extensions.treestyletab.tabbar.hideNewTabButton-check');
+	var hideNewTabCheckH = document.getElementById('extensions.treestyletab.tabbar.hideNewTabButton.horizontal-check');
+	var hideNewTabCheckV = document.getElementById('extensions.treestyletab.tabbar.hideNewTabButton.vertical-check');
+	var hideAllTabsCheckH = document.getElementById('extensions.treestyletab.tabbar.hideAlltabsButton.horizontal-check');
+	var hideAllTabsCheckV = document.getElementById('extensions.treestyletab.tabbar.hideAlltabsButton.vertical-check');
+
+	var newTabAvailable = comparator.compare(XULAppInfo.version, '3.1b3') >= 0;
+	if (!newTabAvailable) {
+		hideNewTabCheckH.setAttribute('collapsed', true);
+		hideNewTabCheckV.setAttribute('collapsed', true);
+	}
 
 	if (pos == 'left' || pos == 'right') {
 		indentCheckH.setAttribute('collapsed', true);
 		indentCheckV.removeAttribute('collapsed');
 		collapseCheckH.setAttribute('collapsed', true);
 		collapseCheckV.removeAttribute('collapsed');
-		if (comparator.compare(XULAppInfo.version, '3.1b3') >= 0)
-			hideNewTabCheck.removeAttribute('collapsed');
-		else
-			hideNewTabCheck.setAttribute('collapsed', true);
-	}
+		if (newTabAvailable) {
+			hideNewTabCheckH.setAttribute('collapsed', true);
+			hideNewTabCheckV.removeAttribute('collapsed');
+		}
+		hideAllTabsCheckH.setAttribute('collapsed', true);
+		hideAllTabsCheckV.removeAttribute('collapsed');
+	}       
 	else {
 		indentCheckH.removeAttribute('collapsed');
 		indentCheckV.setAttribute('collapsed', true);
 		collapseCheckH.removeAttribute('collapsed');
 		collapseCheckV.setAttribute('collapsed', true);
-		hideNewTabCheck.setAttribute('collapsed', true);
+		if (newTabAvailable) {
+			hideNewTabCheckH.removeAttribute('collapsed');
+			hideNewTabCheckV.setAttribute('collapsed', true);
+		}
+		hideAllTabsCheckH.removeAttribute('collapsed');
+		hideAllTabsCheckV.setAttribute('collapsed', true);
 	}
 
 	gTabbarPlacePositionInitialized = true;

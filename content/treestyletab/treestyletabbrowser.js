@@ -520,8 +520,6 @@ TreeStyleTabBrowser.prototype = {
 		this.onPrefChange('extensions.treestyletab.tabbar.invertTabContents');
 		this.onPrefChange('extensions.treestyletab.tabbar.invertScrollbar');
 		this.onPrefChange('extensions.treestyletab.tabbar.invertClosebox');
-		this.onPrefChange('extensions.treestyletab.tabbar.hideNewTabButton');
-		this.onPrefChange('extensions.treestyletab.tabbar.hideAlltabsButton');
 		this.onPrefChange('extensions.treestyletab.tabbar.transparent.style');
 		this.onPrefChange('extensions.treestyletab.tabbar.autoHide.area');
 		this.onPrefChange('extensions.treestyletab.tabbar.togglerSize');
@@ -1009,6 +1007,16 @@ TreeStyleTabBrowser.prototype = {
 		else
 			b.removeAttribute(this.kALLOW_COLLAPSE);
 
+		if (this.getTreePref('tabbar.hideNewTabButton.'+orient))
+			b.setAttribute(this.kHIDE_NEWTAB, 'true');
+		else
+			b.removeAttribute(this.kHIDE_NEWTAB);
+
+		if (this.getTreePref('tabbar.hideAlltabsButton.'+orient))
+			b.setAttribute(this.kHIDE_ALLTABS, 'true');
+		else
+			b.removeAttribute(this.kHIDE_ALLTABS);
+
 		this.updateAllTabsIndent();
 	},
   
@@ -1195,21 +1203,6 @@ TreeStyleTabBrowser.prototype = {
 					b.removeAttribute(this.kSCROLLBAR_INVERTED);
 				break;
 
-			case 'extensions.treestyletab.tabbar.hideNewTabButton':
-				var pos = b.getAttribute(this.kTABBAR_POSITION);
-				if (value && (pos == 'left' || pos == 'right'))
-					b.setAttribute(this.kHIDE_NEWTAB, true);
-				else
-					b.removeAttribute(this.kHIDE_NEWTAB);
-				break;
-
-			case 'extensions.treestyletab.tabbar.hideAlltabsButton':
-				if (value)
-					b.setAttribute(this.kHIDE_ALLTABS, true);
-				else
-					b.removeAttribute(this.kHIDE_ALLTABS);
-				break;
-
 			case 'extensions.treestyletab.tabbar.autoHide.mode':
 				this.updateAutoHideMode();
 				break;
@@ -1226,12 +1219,16 @@ TreeStyleTabBrowser.prototype = {
 			case 'extensions.treestyletab.enableSubtreeIndent.horizontal':
 			case 'extensions.treestyletab.allowSubtreeCollapseExpand.horizontal':
 			case 'extensions.treestyletab.tabbar.fixed.horizontal':
+			case 'extensions.treestyletab.tabbar.hideNewTabButton.horizontal':
+			case 'extensions.treestyletab.tabbar.hideAlltabsButton.horizontal':
 				if (!this.isVertical) this.updateTabbarState();
 				break;
 
 			case 'extensions.treestyletab.enableSubtreeIndent.vertical':
 			case 'extensions.treestyletab.allowSubtreeCollapseExpand.vertical':
 			case 'extensions.treestyletab.tabbar.fixed.vertical':
+			case 'extensions.treestyletab.tabbar.hideNewTabButton.vertical':
+			case 'extensions.treestyletab.tabbar.hideAlltabsButton.vertical':
 				if (this.isVertical) this.updateTabbarState();
 				break;
 
