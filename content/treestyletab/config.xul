@@ -83,6 +83,8 @@
 	<groupbox>
 		<caption label="&config.tabbar.position.caption;"/>
 		<vbox>
+		<hbox>
+		<spacer flex="1"/>
 		<radiogroup id="extensions.treestyletab.tabbar.position-radiogroup"
 			preference="extensions.treestyletab.tabbar.position"
 			orient="horizontal"
@@ -124,6 +126,8 @@
 				</rows>
 			</grid>
 		</radiogroup>
+		<spacer flex="1"/>
+		</hbox>
 		<hbox align="center">
 			<checkbox id="extensions.treestyletab.tabbar.invertTabContents-check"
 				preference="extensions.treestyletab.tabbar.invertTabContents"
