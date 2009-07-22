@@ -17,7 +17,7 @@ function init()
 		useEffectiveTLD.removeAttribute('collapsed');
 	}
 
-	sizeToContent();
+//	sizeToContent();
 }
 
 
