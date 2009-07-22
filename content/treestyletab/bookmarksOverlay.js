@@ -4,10 +4,21 @@ window.addEventListener('load', function() {
 	if ('BookmarksCommand' in window) { // Firefox 2
 		eval('BookmarksCommand.openGroupBookmark = '+
 			BookmarksCommand.openGroupBookmark.toSource().replace(
-				'var index = index0;',
+				'var index0;',
 				<![CDATA[
 					var howToOpenGroupBookmark = TreeStyleTabService.howToOpenGroupBookmark();
-					if (howToOpenGroupBookmark & TreeStyleTabService.kGROUP_BOOKMARK_USE_DUMMY)) {
+					if (howToOpenGroupBookmark & TreeStyleTabService.kGROUP_BOOKMARK_REPLACE) {
+						doReplace = true;
+						browser.treeStyleTab.getTabsArray(browser).forEach(function(aTab) {
+							aTab.removeAttribute(browser.treeStyleTab.kCOLLAPSED);
+							browser.treeStyleTab.partTab(aTab);
+						});
+					}
+				$&]]>
+			).replace(
+				'var index = index0;',
+				<![CDATA[
+					if (howToOpenGroupBookmark & TreeStyleTabService.kGROUP_BOOKMARK_USE_DUMMY) {
 						var folderTitle = BMDS.GetTarget(resource, RDF.GetResource(gNC_NS + 'Name'), true)
 											.QueryInterface(kRDFLITIID)
 											.Value;

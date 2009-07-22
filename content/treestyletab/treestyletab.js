@@ -1153,7 +1153,7 @@ var TreeStyleTabService = {
 				null,
 				this.stringbundle.getString('dropLinkOnTab.never'),
 				checked
-			) != 1;
+			) == 0;
 		if (checked.value) {
 			this.setTreePref('loadDroppedLinkToNewChildTab.confirm', false);
 			this.setTreePref('loadDroppedLinkToNewChildTab', newChildTab);
@@ -1175,6 +1175,8 @@ var TreeStyleTabService = {
 					this.kGROUP_BOOKMARK_SEPARATE ;
 		}
 
+		var isGecko18 = this.isGecko18;
+
 		var checked = { value : false };
 		var behavior = this.PromptService.confirmEx(window,
 				this.stringbundle.getString('openGroupBookmarkBehavior.title'),
@@ -1183,19 +1185,23 @@ var TreeStyleTabService = {
 				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_1) +
 				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_2),
 				this.stringbundle.getString('openGroupBookmarkBehavior.subTree'),
-				this.stringbundle.getString('openGroupBookmarkBehavior.replace'+(this.isGecko18 ? '2' : '' )),
-				this.stringbundle.getString('openGroupBookmarkBehavior.separate'),
+				this.stringbundle.getString(isGecko18 ?
+							'openGroupBookmarkBehavior.replaceOld' :
+							'openGroupBookmarkBehavior.separate'),
+				this.stringbundle.getString(isGecko18 ?
+							'openGroupBookmarkBehavior.separateOld' :
+							'openGroupBookmarkBehavior.replace'),
 				this.stringbundle.getString('openGroupBookmarkBehavior.never'),
 				checked
 			);
 
-		switch (behavior)
-		{
-			default:
-			case 0: behavior = this.kGROUP_BOOKMARK_SUBTREE | dummyTabFlag; break;
-			case 1: behavior = this.kGROUP_BOOKMARK_REPLACE; break;
-			case 2: behavior = this.kGROUP_BOOKMARK_SEPARATE; break;
-		}
+		if (behavior < 0) behavior = 1;
+		var behaviors = [
+				this.kGROUP_BOOKMARK_SUBTREE | dummyTabFlag,
+				isGecko18 ? this.kGROUP_BOOKMARK_REPLACE : this.kGROUP_BOOKMARK_SEPARATE,
+				isGecko18 ? this.kGROUP_BOOKMARK_SEPARATE : this.kGROUP_BOOKMARK_REPLACE
+			];
+		behavior = behaviors[behavior];
 
 		if (checked.value) {
 			this.setTreePref('openGroupBookmarkBehavior.confirm', false);
