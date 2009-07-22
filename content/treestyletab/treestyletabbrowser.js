@@ -153,37 +153,6 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.addEventListener('scroll', this, true);
 
 
-		let (container) {
-			b.mTabContainer.removeAttribute('overflow'); // Firefox 3.0.x
-			container = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-container');
-			if (container) {
-				container.removeAttribute('overflow');
-
-				this.scrollBox.addEventListener('overflow', this, true);
-				this.scrollBox.addEventListener('underflow', this, true);
-				window.setTimeout(function(aBox, aTabBrowser, aContainer) {
-					aBox = document.getAnonymousElementByAttribute(aBox, 'anonid', 'scrollbox');
-					if (aBox) aBox = document.getAnonymousNodes(aBox)[0];
-					if (
-						aBox &&
-						(
-							aBox.boxObject.width > aContainer.boxObject.width ||
-							aBox.boxObject.height > aContainer.boxObject.height
-						)
-						) {
-						aTabBrowser.mTabContainer.setAttribute('overflow', true); // Firefox 3.0.x
-						aContainer.setAttribute('overflow', true);
-					}
-					else {
-						aTabBrowser.mTabContainer.removeAttribute('overflow'); // Firefox 3.0.x
-						aContainer.removeAttribute('overflow');
-					}
-				}, 100, this.scrollBox, b, container);
-			}
-			container = null;
-		}
-
-
 		/* Closing collapsed last tree breaks selected tab.
 		   To solve this problem, I override the setter to
 		   force to set a tab and forbid it becomes null. */
@@ -956,6 +925,7 @@ TreeStyleTabBrowser.prototype = {
 		window.setTimeout(function(aSelf, aTabBrowser, aSplitter, aToggler) {
 			delayedPostProcess(aSelf, aTabBrowser, aSplitter, aToggler);
 			aSelf.updateTabbarState();
+			aSelf.updateTabbarOverflow();
 			delayedPostProcess = null;
 		}, 0, this, b, splitter, toggler);
 
@@ -971,7 +941,8 @@ TreeStyleTabBrowser.prototype = {
 		scrollInnerBox = null;
 		allTabsButton = null;
 	},
-	updateTabbarState : function()
+	
+	updateTabbarState : function() 
 	{
 		var b = this.mTabBrowser;
 		var orient;
@@ -1019,7 +990,40 @@ TreeStyleTabBrowser.prototype = {
 
 		this.updateAllTabsIndent();
 	},
-  
+ 
+	updateTabbarOverflow : function() 
+	{
+		var b = this.mTabBrowser;
+		b.mTabContainer.removeAttribute('overflow'); // Firefox 3.0.x
+		var container = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-container');
+
+		if (!container) return;
+
+		container.removeAttribute('overflow');
+
+		var scrollBox = this.scrollBox;
+		scrollBox.addEventListener('overflow', this, true);
+		scrollBox.addEventListener('underflow', this, true);
+		window.setTimeout(function() {
+			scrollBox = document.getAnonymousElementByAttribute(scrollBox, 'anonid', 'scrollbox');
+			if (scrollBox) scrollBox = document.getAnonymousNodes(scrollBox)[0];
+			if (
+				scrollBox &&
+				(
+					scrollBox.boxObject.width > container.boxObject.width ||
+					scrollBox.boxObject.height > container.boxObject.height
+				)
+				) {
+				b.mTabContainer.setAttribute('overflow', true); // Firefox 3.0.x
+				container.setAttribute('overflow', true);
+			}
+			else {
+				b.mTabContainer.removeAttribute('overflow'); // Firefox 3.0.x
+				container.removeAttribute('overflow');
+			}
+		}, 100);
+	},
+   
 	destroy : function() 
 	{
 		this.endAutoHide();
@@ -4029,7 +4033,7 @@ TreeStyleTabBrowser.prototype = {
 		var borderNode = this.getTreePref(
 					this.isVertical ?
 						'tabbar.fixed.vertical' :
-						'tabbar.fixed.horizontal' 
+						'tabbar.fixed.horizontal'
 				) ?
 				this.mTabBrowser.mStrip :
 				document.getAnonymousElementByAttribute(this.mTabBrowser, 'class', this.kSPLITTER) ;
