@@ -1160,6 +1160,54 @@ var TreeStyleTabService = {
 		}
 		return newChildTab
 	},
+ 
+	howToOpenGroupBookmark : function() 
+	{
+		var dummyTabFlag = this.getTreePref('openGroupBookmarkAsTabSubTree.underParent') ?
+							this.kGROUP_BOOKMARK_USE_DUMMY :
+							0 ;
+
+		if (!this.getTreePref('openGroupBookmarkBehavior.confirm')) {
+			return this.getTreePref('openGroupBookmarkAsTabSubTree') ?
+					this.kGROUP_BOOKMARK_SUBTREE | dummyTabFlag :
+				this.getPref('browser.tabs.loadFolderAndReplace') ?
+					this.kGROUP_BOOKMARK_REPLACE :
+					this.kGROUP_BOOKMARK_SEPARATE ;
+		}
+
+		var checked = { value : false };
+		var behavior = this.PromptService.confirmEx(window,
+				this.stringbundle.getString('openGroupBookmarkBehavior.title'),
+				this.stringbundle.getString('openGroupBookmarkBehavior.text'),
+				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_0) +
+				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_1) +
+				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_2),
+				this.stringbundle.getString('openGroupBookmarkBehavior.subTree'),
+				this.stringbundle.getString('openGroupBookmarkBehavior.replace'+(this.isGecko18 ? '2' : '' )),
+				this.stringbundle.getString('openGroupBookmarkBehavior.separate'),
+				this.stringbundle.getString('openGroupBookmarkBehavior.never'),
+				checked
+			);
+
+		switch (behavior)
+		{
+			case 0: behavior = this.kGROUP_BOOKMARK_SUBTREE | dummyTabFlag; break;
+			case 1: behavior = this.kGROUP_BOOKMARK_REPLACE; break;
+			default:
+			case 2: behavior = this.kGROUP_BOOKMARK_SEPARATE; break;
+		}
+
+		if (checked.value) {
+			this.setTreePref('openGroupBookmarkBehavior.confirm', false);
+			this.setTreePref('openGroupBookmarkAsTabSubTree', behavior & this.kGROUP_BOOKMARK_SUBTREE ? true : false );
+			this.setPref('browser.tabs.loadFolderAndReplace', behavior & this.kGROUP_BOOKMARK_REPLACE ? true : false );
+		}
+		return behavior;
+	},
+	kGROUP_BOOKMARK_SUBTREE   : 1,
+	kGROUP_BOOKMARK_SEPARATE  : 2,
+	kGROUP_BOOKMARK_REPLACE   : 4,
+	kGROUP_BOOKMARK_USE_DUMMY : 256,
   
 /* Initializing */ 
 	

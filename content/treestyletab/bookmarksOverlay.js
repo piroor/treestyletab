@@ -6,8 +6,8 @@ window.addEventListener('load', function() {
 			BookmarksCommand.openGroupBookmark.toSource().replace(
 				'var index = index0;',
 				<![CDATA[
-					if (TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree') &&
-						TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree.underParent')) {
+					var howToOpenGroupBookmark = TreeStyleTabService.howToOpenGroupBookmark();
+					if (howToOpenGroupBookmark & TreeStyleTabService.kGROUP_BOOKMARK_USE_DUMMY)) {
 						var folderTitle = BMDS.GetTarget(resource, RDF.GetResource(gNC_NS + 'Name'), true)
 											.QueryInterface(kRDFLITIID)
 											.Value;
@@ -31,7 +31,7 @@ window.addEventListener('load', function() {
 				<![CDATA[
 					$1$2
 					if (!doReplace &&
-						TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree') &&
+						howToOpenGroupBookmark & TreeStyleTabService.kGROUP_BOOKMARK_SUBTREE &&
 						!browser.treeStyleTab.parentTab) {
 						browser.treeStyleTab.partTab(browser.treeStyleTab.getTabs(browser).snapshotItem(index));
 						TreeStyleTabService.readyToOpenChildTab($1, true);
@@ -42,7 +42,7 @@ window.addEventListener('load', function() {
 				<![CDATA[
 					var openedTab = $&
 					if (!doReplace &&
-						TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree') &&
+						howToOpenGroupBookmark & TreeStyleTabService.kGROUP_BOOKMARK_SUBTREE &&
 						!browser.treeStyleTab.parentTab) {
 						TreeStyleTabService.readyToOpenChildTab(openedTab, true);
 					}
@@ -65,22 +65,22 @@ window.addEventListener('load', function() {
 			).replace(
 				'browserWindow.getBrowser().loadTabs(',
 				<![CDATA[
+					var howToOpenGroupBookmark = TreeStyleTabService.howToOpenGroupBookmark();
 					if (
-						TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree') &&
-						(
-							where.indexOf('tab') == 0 ||
-							aEvent.target.id == 'placesContext_openContainer:tabs' ||
-							aEvent.target == aEvent.target.parentNode._endOptOpenAllInTabs ||
-							aEvent.target.getAttribute('openInTabs') == 'true'
-						)
+						where.indexOf('tab') == 0 ||
+						aEvent.target.id == 'placesContext_openContainer:tabs' ||
+						aEvent.target == aEvent.target.parentNode._endOptOpenAllInTabs ||
+						aEvent.target.getAttribute('openInTabs') == 'true'
 						) {
-						TreeStyleTabService.readyToOpenNewTabGroup();
-						if (TreeStyleTabService.getTreePref('openGroupBookmarkAsTabSubTree.underParent'))
-							urls.unshift(TreeStyleTabService.getGroupTabURI(aFolderTitle));
-						replaceCurrentTab = false;
-					}
-					else if (!TreeStyleTabService.getPref('browser.tabs.loadFolderAndReplace')) {
-						replaceCurrentTab = false;
+						if (howToOpenGroupBookmark & TreeStyleTabService.kGROUP_BOOKMARK_SUBTREE) {
+							TreeStyleTabService.readyToOpenNewTabGroup();
+							if (howToOpenGroupBookmark & TreeStyleTabService.kGROUP_BOOKMARK_USE_DUMMY)
+								urls.unshift(TreeStyleTabService.getGroupTabURI(aFolderTitle));
+							replaceCurrentTab = false;
+						}
+						else {
+							replaceCurrentTab = howToOpenGroupBookmark & TreeStyleTabService.kGROUP_BOOKMARK_REPLACE ? true : false ;
+						}
 					}
 					$&]]>
 			)
