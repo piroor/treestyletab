@@ -404,7 +404,8 @@
 								label="&config.openGroupBookmarkAsTabSubTree.underParent;"
 								preference="extensions.treestyletab.openGroupBookmarkAsTabSubTree.underParent"/>
 						</hbox>
-						<radio value="flat"    label="&config.openGroupBookmarkAsTabSubTree.flat;"/>
+						<radio value="flat"    label="&config.openGroupBookmarkAsTabSubTree.flat;"
+							label-fx2="&config.openGroupBookmarkAsTabSubTree.flat.fx2;"/>
 						<radio value="replace" label="&config.openGroupBookmarkAsTabSubTree.replace;"
 							label-fx2="&config.openGroupBookmarkAsTabSubTree.replace.fx2;"/>
 					</radiogroup>

@@ -58,10 +58,11 @@
 <!ENTITY config.loadDroppedLinkToNewChildTab.load    "ドロップ先のタブの中に読み込む（Firefox初期状態）">
 <!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "ドロップ先のタブのサブツリーに新しいタブを開く">
 
-<!ENTITY config.openGroupBookmarkAsTabSubTree.caption "ブックマークフォルダの内容をタブで開く時の扱い">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree "一つのサブツリーとして開く（推奨）">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "ばらばらのタブとして開く">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.replace "現在のタブ1つだけをブックマークの内容で置き換える（Firefox初期状態）">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.caption     "ブックマークフォルダの内容をタブで開く時の扱い">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree     "一つのサブツリーとして開く（推奨）">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.flat        "ばらばらのタブとして開く（Firefox初期状態）">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.flat.fx2    "ばらばらのタブとして開く">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.replace     "現在のタブ1つだけをブックマークの内容で置き換える">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace.fx2 "現在開いているすべてのタブをブックマークの内容で置き換える（Firefox初期状態）">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.underParent "グループ化用のダミーのタブを親にする">
 

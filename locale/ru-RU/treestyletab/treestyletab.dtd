@@ -58,10 +58,11 @@
 <!ENTITY config.loadDroppedLinkToNewChildTab.load    "Загрузить ссылку во вкладке (в Firefox по умолчанию)">
 <!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "Открыть ссылку в новой вкладке дочерней от текущей">
 
-<!ENTITY config.openGroupBookmarkAsTabSubTree.caption "&quot;Открытие во вкладках &quot; из папок закладок">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree "Открывать как поддерево (рекомендуется)">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "Открывать как раздельные вкладки">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.replace "Replace the current one tab with the pages in the folder (Firefox default)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.caption     "&quot;Открытие во вкладках &quot; из папок закладок">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree     "Открывать как поддерево (рекомендуется)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.flat        "Открывать как раздельные вкладки (в Firefox по умолчанию)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.flat.fx2    "Открывать как раздельные вкладки">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.replace     "Replace the current one tab with the pages in the folder">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace.fx2 "Заменить все вкладки страницами из папки (в Firefox по умолчанию)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.underParent "Put tabs under a dummy tab for grouping">
 

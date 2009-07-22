@@ -58,8 +58,9 @@
 
 <!ENTITY config.openGroupBookmarkAsTabSubTree.caption "按書籤資料夾的「全部開啟」時">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.subtree "用一個子樹開啟（推薦）">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "用分開的分頁開啟">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.replace "將目前瀏覽的分頁取代為書籤的內容（Firefox 預設）">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.flat        "用分開的分頁開啟（Firefox 預設）">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.flat.fx2    "用分開的分頁開啟">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.replace     "將目前瀏覽的分頁取代為書籤的內容">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace.fx2 "將所有目前開啟的分頁取代為書籤的內容（Firefox 預設）">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.underParent "將各分頁開啟於一虛分頁之下以便分組">
 

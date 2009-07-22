@@ -58,10 +58,11 @@
 <!ENTITY config.loadDroppedLinkToNewChildTab.load    "Otwieraj odnośnik w nowej karcie (domyślne działanie Firefoksa)">
 <!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "Otwieraj odnośnik w nowej, potomnej karcie">
 
-<!ENTITY config.openGroupBookmarkAsTabSubTree.caption "Działanie funkcji „Otwórz wszystkie w kartach” wywoływanej z poziomu menu zakładek">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree "Otwieraj jako potomne drzewo (zalecane)">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "Otwieraj jako osobne karty">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.replace "Replace the current one tab with the pages in the folder (Firefox default)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.caption     "Działanie funkcji „Otwórz wszystkie w kartach” wywoływanej z poziomu menu zakładek">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree     "Otwieraj jako potomne drzewo (zalecane)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.flat        "Otwieraj jako osobne karty (domyślnie działanie Firefoksa)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.flat.fx2    "Otwieraj jako osobne karty">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.replace     "Replace the current one tab with the pages in the folder">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace.fx2 "Zastąp wszystkie karty stronami z folderu (domyślnie działanie Firefoksa)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.underParent "Put tabs under a dummy tab for grouping">
 

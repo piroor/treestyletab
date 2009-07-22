@@ -58,10 +58,11 @@
 <!ENTITY config.loadDroppedLinkToNewChildTab.load    "Cargar enlace dentro de una nueva pestaña (Predeterminado en Firefox)">
 <!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "Abrir enlace como hija de la pestaña actual">
 
-<!ENTITY config.openGroupBookmarkAsTabSubTree.caption "&quot;Abrir todos en pestañas&quot; desde carpetas de marcadores">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree "Abrir como un sub-árbol (Recomendado)">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "Abrir como pestañas separadas">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.replace "Replace the current one tab with the pages in the folder (Firefox default)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.caption     "&quot;Abrir todos en pestañas&quot; desde carpetas de marcadores">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree     "Abrir como un sub-árbol (Recomendado)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.flat        "Abrir como pestañas separadas (Firefox default)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.flat.fx2    "Abrir como pestañas separadas">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.replace     "Replace the current one tab with the pages in the folder">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace.fx2 "Remplazar todas las pestañas con las páginas en la carpeta (Predeterminado en Firefox)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.underParent "Put tabs under a dummy tab for grouping">
 

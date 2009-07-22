@@ -58,10 +58,11 @@
 <!ENTITY config.loadDroppedLinkToNewChildTab.load    "carica il collegamento nella scheda (comportamento predefinito di Firefox)">
 <!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "apre il collegamento in una nuova sottoscheda">
 
-<!ENTITY config.openGroupBookmarkAsTabSubTree.caption "La voce &quot;Apri tutti in schede&quot; nel menu Segnalibri">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree "apre i segnalibri come sottoalbero (Raccomandato)">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.flat    "apre i segnalibri in schede separate">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.replace "sostituisce la scheda in uso con i segnalibri contenuti nella cartella selezionata (comportamento predefinito di Firefox)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.caption     "La voce &quot;Apri tutti in schede&quot; nel menu Segnalibri">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree     "apre i segnalibri come sottoalbero (Raccomandato)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.flat        "apre i segnalibri in schede separate (comportamento predefinito di Firefox)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.flat.fx2    "apre i segnalibri in schede separate">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.replace     "sostituisce la scheda in uso con i segnalibri contenuti nella cartella selezionata">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace.fx2 "sostituisce la scheda in uso con i segnalibri contenuti nella cartella selezionata (comportamento predefinito di Firefox)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.underParent "Put tabs under a dummy tab for grouping">
 
