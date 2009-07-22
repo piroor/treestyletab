@@ -190,6 +190,17 @@ var TreeStyleTabService = {
 	},
 //	_EffectiveTLD : null,
 
+	get PromptService()
+	{
+		if (!this._PromptService) {
+			this._PromptService = Components
+					.classes['@mozilla.org/embedcomp/prompt-service;1']
+					.getService(Components.interfaces.nsIPromptService);
+		}
+		return this._PromptService;
+	},
+	_PromptService : null,
+
 	get isGecko18() {
 		if (this._isGecko18 === null)
 			this._isGecko18 = this.Comparator.compare(this.XULAppInfo.version, '3.0') < 0;
@@ -1125,7 +1136,31 @@ var TreeStyleTabService = {
  
 	useTMPSessionAPI : false, 
 	kTMP_SESSION_DATA_PREFIX : 'tmp-session-data-',
-   
+  
+	shouldLoadDroppedLinkToNewChildTab : function() 
+	{
+		if (!this.getTreePref('loadDroppedLinkToNewChildTab.confirm'))
+			return this.getTreePref('loadDroppedLinkToNewChildTab');
+
+		var checked = { value : false };
+		var newChildTab = this.PromptService.confirmEx(window,
+				this.stringbundle.getString('dropLinkOnTab.title'),
+				this.stringbundle.getString('dropLinkOnTab.text'),
+				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_0) +
+				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_1),
+				this.stringbundle.getString('dropLinkOnTab.openNewChildTab'),
+				this.stringbundle.getString('dropLinkOnTab.loadInTheTab'),
+				null,
+				this.stringbundle.getString('dropLinkOnTab.never'),
+				checked
+			) == 0;
+		if (checked.value) {
+			this.setTreePref('loadDroppedLinkToNewChildTab.confirm', false);
+			this.setTreePref('loadDroppedLinkToNewChildTab', newChildTab);
+		}
+		return newChildTab
+	},
+  
 /* Initializing */ 
 	
 	preInit : function() 
@@ -1439,10 +1474,17 @@ catch(e) {
 			).replace(
 				'var tab = aEvent.target;',
 				<![CDATA[$&
+					var loadDroppedLinkToNewChildTab = (
+							dropActionInfo.position != TreeStyleTabService.kDROP_ON ||
+							tab.getAttribute('locked') == 'true' // Tab Mix Plus
+						);
+					if (!loadDroppedLinkToNewChildTab &&
+						dropActionInfo.position == TreeStyleTabService.kDROP_ON) {
+						loadDroppedLinkToNewChildTab = TreeStyleTabService.shouldLoadDroppedLinkToNewChildTab();
+					}
 					if (
-						tab.getAttribute('locked') == 'true' || // Tab Mix Plus
-						TreeStyleTabService.getTreePref('loadDroppedLinkToNewChildTab') ||
-						dropActionInfo.position != TreeStyleTabService.kDROP_ON
+						loadDroppedLinkToNewChildTab ||
+						tab.getAttribute('locked') == 'true' // Tab Mix Plus
 						) {
 						TSTTabBrowser.treeStyleTab.performDrop(dropActionInfo, TSTTabBrowser.loadOneTab(getShortcutOrURI(url), null, null, null, bgLoad, false));
 						return;
@@ -2106,16 +2148,13 @@ catch(e) {
 			!this.getPref('browser.tabs.warnOnClose')
 			)
 			return true;
-		var promptService = Components
-							.classes['@mozilla.org/embedcomp/prompt-service;1']
-							.getService(Components.interfaces.nsIPromptService);
 		var checked = { value:true };
 		window.focus();
-		var shouldClose = promptService.confirmEx(window,
+		var shouldClose = this.PromptService.confirmEx(window,
 				this.tabbrowserBundle.getString('tabs.closeWarningTitle'),
 				this.tabbrowserBundle.getFormattedString('tabs.closeWarningMultipleTabs', [aTabsCount]),
-				(promptService.BUTTON_TITLE_IS_STRING * promptService.BUTTON_POS_0) +
-				(promptService.BUTTON_TITLE_CANCEL * promptService.BUTTON_POS_1),
+				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_0) +
+				(this.PromptService.BUTTON_TITLE_CANCEL * this.PromptService.BUTTON_POS_1),
 				this.tabbrowserBundle.getString('tabs.closeButtonMultiple'),
 				null, null,
 				this.tabbrowserBundle.getString('tabs.closeWarningPromptMe'),
