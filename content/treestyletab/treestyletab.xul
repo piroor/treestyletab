@@ -48,7 +48,8 @@
 		insertafter="multipletab-selection-splitWindow"
 		label="&selection.createSubTree.label;"
 		accesskey="&selection.createSubTree.accesskey;"
-		oncommand="TreeStyleTabService.createSubTree(MultipleTabService.getSelectedTabs());"/>
+		oncommand="TreeStyleTabService.createSubTree(MultipleTabService.getSelectedTabs());"
+		multipletab-enabled="TreeStyleTabService.canCreateSubTree(MultipleTabService.getSelectedTabs())"/>
 </menupopup>
 
 <stringbundleset id="stringbundleset">

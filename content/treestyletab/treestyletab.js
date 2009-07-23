@@ -2266,20 +2266,43 @@ catch(e) {
  
 	createSubTree : function(aTabs) 
 	{
-		if (!aTabs || !aTabs.length) return;
-
-		aTabs = this.cleanUpTabsArray(aTabs);
+		aTabs = this.getRootTabs(aTabs);
+		if (!aTabs.length) return;
 
 		var b = this.getTabBrowserFromChild(aTabs[0]);
 		var root = b.addTab(this.getGroupTabURI());
+
+		window.setTimeout(function(aSelf) {
+			aTabs.forEach(function(aTab) {
+				b.treeStyleTab.attachTabTo(aTab, root);
+			}, aSelf);
+		}, 0, this);
+	},
+	canCreateSubTree : function(aTabs)
+	{
+		aTabs = this.getRootTabs(aTabs);
+		if (aTabs.length < 2) return false;
+
+		var lastParent = this.getParentTab(aTabs[0]);
+		for (let i = 1, maxi = aTabs.length-1; i < maxi; i++)
+		{
+			let parent = this.getParentTab(aTabs[i]);
+			if (!lastParent || parent != lastParent) return true;
+			lastParent = parent;
+		}
+		return false;
+	},
+	getRootTabs : function(aTabs)
+	{
+		var roots = [];
+		if (!aTabs || !aTabs.length) return roots;
+		aTabs = this.cleanUpTabsArray(aTabs);
 		aTabs.forEach(function(aTab) {
-			var parent = aTab;
-			while (parent = this.getParentTab(parent))
-			{
-				if (aTabs.indexOf(parent) > -1) return;
-			}
-			b.treeStyleTab.attachTabTo(aTab, root);
+			var parent = this.getParentTab(aTab);
+			if (parent && aTabs.indexOf(parent) > -1) return;
+			roots.push(aTab);
 		}, this);
+		return roots;
 	},
  
 	bookmarkTabSubTree : function(aTabOrTabs) 
