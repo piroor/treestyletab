@@ -2967,6 +2967,16 @@ TreeStyleTabBrowser.prototype = {
 		var event = document.createEvent('Events');
 		event.initEvent('TreeStyleTabParted', true, true);
 		aChild.dispatchEvent(event);
+
+		if (this.isGroupTab(parentTab)) {
+			window.setTimeout(function(aSelf) {
+				aSelf.getTabBrowserFromChild(parentTab).removeTab(parentTab);
+			}, 0, this);
+		}
+	},
+	detachTab : function(aChild, aDontUpdateIndent) // alias
+	{
+		return this.partTab(aChild, aDontUpdateIndent);
 	},
  
 	updateTabsIndent : function(aTabs, aLevel, aProp, aJustNow) 
