@@ -2968,7 +2968,7 @@ TreeStyleTabBrowser.prototype = {
 		event.initEvent('TreeStyleTabParted', true, true);
 		aChild.dispatchEvent(event);
 
-		if (this.isGroupTab(parentTab)) {
+		if (this.isGroupTab(parentTab) && !this.hasChildTabs(parentTab)) {
 			window.setTimeout(function(aSelf) {
 				aSelf.getTabBrowserFromChild(parentTab).removeTab(parentTab);
 			}, 0, this);
