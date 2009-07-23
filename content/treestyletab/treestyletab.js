@@ -2274,10 +2274,10 @@ catch(e) {
 
 		var parent = this.getParentTab(aTabs[0]);
 
-		var prev = aTabs[0];
+		var next = aTabs[0];
 		while (
-			(prev = this.getNextSiblingTab(prev)) &&
-			aTabs.indexOf(prev) > -1
+			(next = this.getNextSiblingTab(next)) &&
+			aTabs.indexOf(next) > -1
 		);
 
 		window.setTimeout(function(aSelf) {
@@ -2287,8 +2287,11 @@ catch(e) {
 			}, aSelf);
 			if (parent) {
 				b.treeStyleTab.attachTabTo(root, parent, {
-					insertBefore : prev
+					insertBefore : next
 				});
+			}
+			else if (next) {
+				b.treeStyleTab.moveTabSubTreeTo(root, next._tPos);
 			}
 		}, 0, this);
 	},
