@@ -2272,11 +2272,14 @@ catch(e) {
 		var b = this.getTabBrowserFromChild(aTabs[0]);
 		var root = b.addTab(this.getGroupTabURI());
 
+		var parent = this.getParentTab(aTabs[0]);
+
 		window.setTimeout(function(aSelf) {
 			aTabs.forEach(function(aTab) {
 				b.treeStyleTab.attachTabTo(aTab, root);
 				b.treeStyleTab.collapseExpandTab(aTab, false);
 			}, aSelf);
+			if (parent) b.treeStyleTab.attachTabTo(root, parent);
 		}, 0, this);
 	},
 	canCreateSubTree : function(aTabs)
