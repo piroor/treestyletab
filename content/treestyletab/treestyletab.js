@@ -2274,12 +2274,22 @@ catch(e) {
 
 		var parent = this.getParentTab(aTabs[0]);
 
+		var prev = aTabs[0];
+		while (
+			(prev = this.getNextSiblingTab(prev)) &&
+			aTabs.indexOf(prev) > -1
+		);
+
 		window.setTimeout(function(aSelf) {
 			aTabs.forEach(function(aTab) {
 				b.treeStyleTab.attachTabTo(aTab, root);
 				b.treeStyleTab.collapseExpandTab(aTab, false);
 			}, aSelf);
-			if (parent) b.treeStyleTab.attachTabTo(root, parent);
+			if (parent) {
+				b.treeStyleTab.attachTabTo(root, parent, {
+					insertBefore : prev
+				});
+			}
 		}, 0, this);
 	},
 	canCreateSubTree : function(aTabs)
