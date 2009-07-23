@@ -2969,9 +2969,11 @@ TreeStyleTabBrowser.prototype = {
 		aChild.dispatchEvent(event);
 
 		if (this.isGroupTab(parentTab) && !this.hasChildTabs(parentTab)) {
-			window.setTimeout(function(aSelf) {
-				aSelf.getTabBrowserFromChild(parentTab).removeTab(parentTab);
-			}, 0, this);
+			window.setTimeout(function(aTabBrowser) {
+				if (parentTab.parentNode)
+					aTabBrowser.removeTab(parentTab);
+				parentTab = null;
+			}, 0, this.getTabBrowserFromChild(parentTab));
 		}
 	},
 	detachTab : function(aChild, aDontUpdateIndent) // alias
