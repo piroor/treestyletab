@@ -1,8 +1,10 @@
 <?xml-stylesheet type="text/css" href="chrome://global/skin/"?>
 <?xml-stylesheet type="text/css" href="chrome://treestyletab/skin/group.css"?>
+<!DOCTYPE page SYSTEM "chrome://treestyletab/locale/treestyletab.dtd">
 <page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	onclick="onClick(event)"
-	ondblclick="onDblClick(event)">
+	ondblclick="onDblClick(event)"
+	title="&group.default;">
 <stack flex="1">
 	<box class="background-image-container">
 		<image class="icon background-image"/>
@@ -13,13 +15,16 @@
 				<image class="icon"/>
 				<label id="label"
 					flex="1"
-					crop="end"/>
+					crop="end"
+					value="&group.default;"
+					tooltiptext="&group.default;"/>
 			</hbox>
 			<hbox align="center">
 				<image class="icon"/>
 				<textbox id="editor"
 					flex="1"
-					onkeypress="onKeyPress(event)"/>
+					onkeypress="onKeyPress(event)"
+					value="&group.default;"/>
 			</hbox>
 		</deck>
 	</vbox>
@@ -39,7 +44,7 @@ function trim(aString)
 }
 
 var title = location.href.split('?')[1];
-if (title) {
+if (location.href.indexOf('?') > -1 && title) {
 	title = trim(decodeURIComponent(title));
 	document.title = title;
 	document.documentElement.setAttribute('title', title);

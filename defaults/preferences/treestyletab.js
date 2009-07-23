@@ -116,6 +116,7 @@ pref("browser.tabs.loadFolderAndReplace.override", false);
 
 
 pref("extensions.multipletab.show.multipletab-selection-item-removeTabSubTree", true);
+pref("extensions.multipletab.show.multipletab-selection-item-createSubTree", true);
 
 
 pref("extensions.treestyletab.TMP.doNotUpdate.isTabVisible", false);

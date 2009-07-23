@@ -731,7 +731,7 @@ var TreeStyleTabService = {
  
 	getGroupTabURI : function(aTitle) 
 	{
-		return 'about:treestyletab-group?'+encodeURIComponent(aTitle);
+		return 'about:treestyletab-group'+(aTitle === void(0) ? '' : '?'+encodeURIComponent(aTitle) );
 	},
  
 /* get tab(s) */ 
@@ -2262,6 +2262,24 @@ catch(e) {
 		{
 			b.reloadTab(tabs[i]);
 		}
+	},
+ 
+	createSubTree : function(aTabs) 
+	{
+		if (!aTabs || !aTabs.length) return;
+
+		aTabs = this.cleanUpTabsArray(aTabs);
+
+		var b = this.getTabBrowserFromChild(aTabs[0]);
+		var root = b.addTab(this.getGroupTabURI());
+		aTabs.forEach(function(aTab) {
+			var parent = aTab;
+			while (parent = this.getParentTab(parent))
+			{
+				if (aTabs.indexOf(parent) > -1) return;
+			}
+			b.treeStyleTab.attachTabTo(aTab, root);
+		}, this);
 	},
  
 	bookmarkTabSubTree : function(aTabOrTabs) 

@@ -6,11 +6,17 @@
 	<preference id="extensions.multipletab.show.multipletab-selection-item-removeTabSubTree"
 		name="extensions.multipletab.show.multipletab-selection-item-removeTabSubTree"
 		type="bool"/>
+	<preference id="extensions.multipletab.show.multipletab-selection-item-createSubTree"
+		name="extensions.multipletab.show.multipletab-selection-item-createSubTree"
+		type="bool"/>
 </preferences>
 <vbox id="prefpane-selection-menu-items">
 	<checkbox id="extensions.multipletab.show.multipletab-selection-item-removeTabSubTree-check"
 		preference="extensions.multipletab.show.multipletab-selection-item-removeTabSubTree"
 		label="&selection.removeTabSubTree.label;"/>
+	<checkbox id="extensions.multipletab.show.multipletab-selection-item-createSubTree-check"
+		preference="extensions.multipletab.show.multipletab-selection-item-createSubTree"
+		label="&selection.createSubTree.label;"/>
 </vbox>
 
 </overlay>

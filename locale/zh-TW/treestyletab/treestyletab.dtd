@@ -137,6 +137,9 @@
 
 <!ENTITY selection.removeTabSubTree.label     "關閉所有選取的樹">
 <!ENTITY selection.removeTabSubTree.accesskey "s">
+<!ENTITY selection.createSubTree.label          "Gather to a New Tree">
+<!ENTITY selection.createSubTree.accesskey      "g">
+
 <!ENTITY context.reloadTabSubTree.label     "重新載入此樹">
 <!ENTITY context.reloadTabSubTree.accesskey "r">
 <!ENTITY context.reloadDescendantTabs.label     "重新載入所有子分頁">
@@ -159,3 +162,5 @@
 <!ENTITY context.tabbarPosition.accesskey "p">
 <!ENTITY context.bookmarkTabSubTree.label     "此樹加入書籤...">
 <!ENTITY context.bookmarkTabSubTree.accesskey "t">
+
+<!ENTITY group.default "New Group">

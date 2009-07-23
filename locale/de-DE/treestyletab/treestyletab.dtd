@@ -142,6 +142,9 @@
 
 <!ENTITY selection.removeTabSubTree.label     "Ausgewählte Zweige schließen">
 <!ENTITY selection.removeTabSubTree.accesskey "s">
+<!ENTITY selection.createSubTree.label          "Gather to a New Tree">
+<!ENTITY selection.createSubTree.accesskey      "g">
+
 <!ENTITY context.reloadTabSubTree.label     "Diesen Zweig neu laden">
 <!ENTITY context.reloadTabSubTree.accesskey "r">
 <!ENTITY context.reloadDescendantTabs.label     "Untergeordnete Tabs neu laden">
@@ -164,3 +167,5 @@
 <!ENTITY context.tabbarPosition.accesskey "p">
 <!ENTITY context.bookmarkTabSubTree.label     "Zweig als Lesezeichen speichern">
 <!ENTITY context.bookmarkTabSubTree.accesskey "t">
+
+<!ENTITY group.default "New Group">

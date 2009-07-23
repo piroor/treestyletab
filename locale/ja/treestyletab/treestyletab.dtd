@@ -16,7 +16,7 @@
 <!ENTITY config.tabbar.invertTab            "タブの表示を左右反転">
 <!ENTITY config.tabbar.invertTabContents    "タブの内容を左右反転">
 <!ENTITY config.enableSubtreeIndent         "タブをインデント表示する">
-<!ENTITY config.allowSubtreeCollapseExpand  "サブツリーを折りたためるようにする">
+<!ENTITY config.allowSubtreeCollapseExpand  "ツリーを折りたためるようにする">
 <!ENTITY config.tabbar.hideNewTabButton     "「新しいタブを開く」ボタンを表示する">
 <!ENTITY config.tabbar.hideAlltabsButton    "「タブの一覧を表示」ボタンを表示する">
 
@@ -56,10 +56,10 @@
 
 <!ENTITY config.loadDroppedLinkToNewChildTab.caption "リンクやURLをタブにドラッグ＆ドロップした時">
 <!ENTITY config.loadDroppedLinkToNewChildTab.load    "ドロップ先のタブの中に読み込む（Firefox初期状態）">
-<!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "ドロップ先のタブのサブツリーに新しいタブを開く">
+<!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "ドロップ先のタブのツリーに新しいタブを開く">
 
 <!ENTITY config.openGroupBookmarkAsTabSubTree.caption     "ブックマークフォルダの内容をタブで開く時の扱い">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree     "一つのサブツリーとして開く（推奨）">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree     "一つのツリーとして開く（推奨）">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.flat        "ばらばらのタブとして開く（Firefox初期状態）">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.flat.fx2    "ばらばらのタブとして開く">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace     "現在のタブ1つだけをブックマークの内容で置き換える">
@@ -111,9 +111,9 @@
 
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "タブを切り替えた時は、フォーカスされたタブのツリーを自動的に展開して、他のツリーを折り畳む">
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "現在のタブを閉じてタブのフォーカスが切り替わった場合は何もしない">
-<!ENTITY config.collapseExpandSubTree.dblclick "タブのダブルクリックでサブツリーを開閉する">
+<!ENTITY config.collapseExpandSubTree.dblclick "タブのダブルクリックでツリーを開閉する">
 
-<!ENTITY config.autoExpandSubTreeOnAppendChild "折り畳まれたサブツリー内に子孫のタブが追加された時、サブツリーを自動的に展開する">
+<!ENTITY config.autoExpandSubTreeOnAppendChild "折り畳まれたツリー内に子孫のタブが追加された時、ツリーを自動的に展開する">
 
 <!ENTITY config.closeParentBehavior.caption       "親のタブを閉じた時の挙動">
 <!ENTITY config.closeParentBehavior.close         "子孫のタブも一緒に閉じる">
@@ -125,8 +125,8 @@
 <!ENTITY config.focusMode "Control(Command)-Tabでタブを切り替える時、折りたたまれたタブにもフォーカスする">
 
 <!ENTITY config.insertNewChildAt.caption "新しい子タブを開く位置">
-<!ENTITY config.insertNewChildAt.first "サブツリーの最初の位置に挿入する">
-<!ENTITY config.insertNewChildAt.last "サブツリーの末尾に追加する">
+<!ENTITY config.insertNewChildAt.first "ツリーの最初の位置に挿入する">
+<!ENTITY config.insertNewChildAt.last "ツリーの末尾に追加する">
 
 <!ENTITY config.useEffectiveTLD.caption  "同じサイトかどうかの判別方法">
 <!ENTITY config.useEffectiveTLD.enabled  "ドメイン名で判別する（aaa.example.comとbbb.example.comを同じサイトと見なす）">
@@ -137,27 +137,32 @@
 <!ENTITY context.openSelectionLinks.label     "選択したリンクをすべてタブで開く">
 <!ENTITY context.openSelectionLinks.accesskey "l">
 
-<!ENTITY selection.removeTabSubTree.label     "すべてのサブツリーを閉じる">
-<!ENTITY selection.removeTabSubTree.accesskey "s">
-<!ENTITY context.reloadTabSubTree.label     "このサブツリーを再読み込み">
-<!ENTITY context.reloadTabSubTree.accesskey "r">
+<!ENTITY selection.removeTabSubTree.label       "すべてのツリーを閉じる">
+<!ENTITY selection.removeTabSubTree.accesskey   "s">
+<!ENTITY selection.createSubTree.label          "ひとつのツリーに集める">
+<!ENTITY selection.createSubTree.accesskey      "g">
+
+<!ENTITY context.reloadTabSubTree.label         "このツリーを再読み込み">
+<!ENTITY context.reloadTabSubTree.accesskey     "r">
 <!ENTITY context.reloadDescendantTabs.label     "このタブの子タブをすべて再読み込み">
 <!ENTITY context.reloadDescendantTabs.accesskey "r">
-<!ENTITY context.removeTabSubTree.label     "このサブツリーを閉じる">
-<!ENTITY context.removeTabSubTree.accesskey "s">
+<!ENTITY context.removeTabSubTree.label         "このツリーを閉じる">
+<!ENTITY context.removeTabSubTree.accesskey     "s">
 <!ENTITY context.removeDescendantTabs.label     "このタブの子タブをすべて閉じる">
 <!ENTITY context.removeDescendantTabs.accesskey "d">
-<!ENTITY context.collapseAllSubtree.label     "サブツリーをすべてたたむ">
-<!ENTITY context.collapseAllSubtree.accesskey "c">
-<!ENTITY context.expandAllSubtree.label     "サブツリーをすべて展開する">
-<!ENTITY context.expandAllSubtree.accesskey "e">
-<!ENTITY context.toggleAutoHide.label     "タブバーを自動的に隠す">
-<!ENTITY context.toggleAutoHide.accesskey "h">
-<!ENTITY context.toggleFixed.label            "タブバーの幅/高さを固定">
-<!ENTITY context.toggleFixed.label.horizontal "タブバーの高さを固定">
-<!ENTITY context.toggleFixed.label.vertical   "タブバーの幅を固定">
-<!ENTITY context.toggleFixed.accesskey "f">
-<!ENTITY context.tabbarPosition.label     "タブバーの位置">
-<!ENTITY context.tabbarPosition.accesskey "p">
-<!ENTITY context.bookmarkTabSubTree.label     "このサブツリーをブックマーク...">
-<!ENTITY context.bookmarkTabSubTree.accesskey "t">
+<!ENTITY context.collapseAllSubtree.label       "ツリーをすべてたたむ">
+<!ENTITY context.collapseAllSubtree.accesskey   "c">
+<!ENTITY context.expandAllSubtree.label         "ツリーをすべて展開する">
+<!ENTITY context.expandAllSubtree.accesskey     "e">
+<!ENTITY context.toggleAutoHide.label           "タブバーを自動的に隠す">
+<!ENTITY context.toggleAutoHide.accesskey       "h">
+<!ENTITY context.toggleFixed.label              "タブバーの幅/高さを固定">
+<!ENTITY context.toggleFixed.label.horizontal   "タブバーの高さを固定">
+<!ENTITY context.toggleFixed.label.vertical     "タブバーの幅を固定">
+<!ENTITY context.toggleFixed.accesskey          "f">
+<!ENTITY context.tabbarPosition.label           "タブバーの位置">
+<!ENTITY context.tabbarPosition.accesskey       "p">
+<!ENTITY context.bookmarkTabSubTree.label       "このツリーをブックマーク...">
+<!ENTITY context.bookmarkTabSubTree.accesskey   "t">
+
+<!ENTITY group.default "新しいグループ">

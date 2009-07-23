@@ -16,7 +16,7 @@
 <!ENTITY config.tabbar.invertTab            "Invert tab appearance">
 <!ENTITY config.tabbar.invertTabContents    "Invert tab contents">
 <!ENTITY config.enableSubtreeIndent         "Indent tabs">
-<!ENTITY config.allowSubtreeCollapseExpand  "Allow to collapse/expand sub tree of tabs">
+<!ENTITY config.allowSubtreeCollapseExpand  "Allow to collapse/expand tree of tabs">
 <!ENTITY config.tabbar.hideNewTabButton     "Show &quot;Open a new tab&quot; button">
 <!ENTITY config.tabbar.hideAlltabsButton    "Show &quot;List all tabs&quot; button">
 
@@ -59,7 +59,7 @@
 <!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "Open link in a new child tab of the tab">
 
 <!ENTITY config.openGroupBookmarkAsTabSubTree.caption     "&quot;Open All in Tabs&quot; from bookmark folders">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree     "Open as a sub tree (Recommended)">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree     "Open as a tree (Recommended)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.flat        "Open as separate tabs (Firefox default)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.flat.fx2    "Open as separate tabs">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace     "Replace the current one tab with the pages in the folder">
@@ -111,9 +111,9 @@
 
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
-<!ENTITY config.collapseExpandSubTree.dblclick "Collapse/Expand subtree of the tab by double-click">
+<!ENTITY config.collapseExpandSubTree.dblclick "Collapse/Expand tree of the tab by double-click">
 
-<!ENTITY config.autoExpandSubTreeOnAppendChild "Expand subtree automatically, when tabs are inserted into the subtree">
+<!ENTITY config.autoExpandSubTreeOnAppendChild "Expand tree automatically, when tabs are inserted into the tree">
 
 <!ENTITY config.closeParentBehavior.caption       "When a parent tab is closed">
 <!ENTITY config.closeParentBehavior.close         "Close child tabs too">
@@ -125,8 +125,8 @@
 <!ENTITY config.focusMode "Focus to the next/previous tab even if it is invisible, by Control(Command)-Tab">
 
 <!ENTITY config.insertNewChildAt.caption "Insertion position of new child tabs">
-<!ENTITY config.insertNewChildAt.first "Insert to the top of the sub tree, as the first child">
-<!ENTITY config.insertNewChildAt.last "Append to the last of the sub tree">
+<!ENTITY config.insertNewChildAt.first "Insert to the top of the tree, as the first child">
+<!ENTITY config.insertNewChildAt.last "Append to the last of the tree">
 
 <!ENTITY config.useEffectiveTLD.caption  "Detecting method for &quot;same website&quot;">
 <!ENTITY config.useEffectiveTLD.enabled  "by Domain (&quot;aaa.example.com&quot; and &quot;bbb.example.com&quot; are same websites)">
@@ -136,30 +136,34 @@
 
 
 
-<!ENTITY context.openSelectionLinks.label     "Open Selection Links in Tabs">
-<!ENTITY context.openSelectionLinks.accesskey "l">
+<!ENTITY context.openSelectionLinks.label       "Open Selection Links in Tabs">
+<!ENTITY context.openSelectionLinks.accesskey   "l">
+<!ENTITY selection.createSubTree.label          "Gather to a New Tree">
+<!ENTITY selection.createSubTree.accesskey      "g">
 
-<!ENTITY selection.removeTabSubTree.label     "Close Selected Trees">
-<!ENTITY selection.removeTabSubTree.accesskey "s">
-<!ENTITY context.reloadTabSubTree.label     "Reload this Tree">
-<!ENTITY context.reloadTabSubTree.accesskey "r">
+<!ENTITY selection.removeTabSubTree.label       "Close Selected Trees">
+<!ENTITY selection.removeTabSubTree.accesskey   "s">
+<!ENTITY context.reloadTabSubTree.label         "Reload this Tree">
+<!ENTITY context.reloadTabSubTree.accesskey     "r">
 <!ENTITY context.reloadDescendantTabs.label     "Reload Children">
 <!ENTITY context.reloadDescendantTabs.accesskey "r">
-<!ENTITY context.removeTabSubTree.label     "Close this Tree">
-<!ENTITY context.removeTabSubTree.accesskey "s">
+<!ENTITY context.removeTabSubTree.label         "Close this Tree">
+<!ENTITY context.removeTabSubTree.accesskey     "s">
 <!ENTITY context.removeDescendantTabs.label     "Close Children">
 <!ENTITY context.removeDescendantTabs.accesskey "d">
-<!ENTITY context.collapseAllSubtree.label     "Collapse All Trees">
-<!ENTITY context.collapseAllSubtree.accesskey "c">
-<!ENTITY context.expandAllSubtree.label     "Expand All Trees">
-<!ENTITY context.expandAllSubtree.accesskey "e">
-<!ENTITY context.toggleAutoHide.label     "Auto hide tab bar">
-<!ENTITY context.toggleAutoHide.accesskey "h">
-<!ENTITY context.toggleFixed.label            "Fix width/height of tab bar">
-<!ENTITY context.toggleFixed.label.horizontal "Fix height of tab bar">
-<!ENTITY context.toggleFixed.label.vertical   "Fix width of tab bar">
-<!ENTITY context.toggleFixed.accesskey "f">
-<!ENTITY context.tabbarPosition.label     "Position">
-<!ENTITY context.tabbarPosition.accesskey "p">
-<!ENTITY context.bookmarkTabSubTree.label     "Bookmark this Tree...">
-<!ENTITY context.bookmarkTabSubTree.accesskey "t">
+<!ENTITY context.collapseAllSubtree.label       "Collapse All Trees">
+<!ENTITY context.collapseAllSubtree.accesskey   "c">
+<!ENTITY context.expandAllSubtree.label         "Expand All Trees">
+<!ENTITY context.expandAllSubtree.accesskey     "e">
+<!ENTITY context.toggleAutoHide.label           "Auto hide tab bar">
+<!ENTITY context.toggleAutoHide.accesskey       "h">
+<!ENTITY context.toggleFixed.label              "Fix width/height of tab bar">
+<!ENTITY context.toggleFixed.label.horizontal   "Fix height of tab bar">
+<!ENTITY context.toggleFixed.label.vertical     "Fix width of tab bar">
+<!ENTITY context.toggleFixed.accesskey          "f">
+<!ENTITY context.tabbarPosition.label           "Position">
+<!ENTITY context.tabbarPosition.accesskey       "p">
+<!ENTITY context.bookmarkTabSubTree.label       "Bookmark this Tree...">
+<!ENTITY context.bookmarkTabSubTree.accesskey   "t">
+
+<!ENTITY group.default "New Group">

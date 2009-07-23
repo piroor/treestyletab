@@ -142,6 +142,9 @@
 
 <!ENTITY selection.removeTabSubTree.label     "Zamknij wybrane drzewa">
 <!ENTITY selection.removeTabSubTree.accesskey "M">
+<!ENTITY selection.createSubTree.label          "Gather to a New Tree">
+<!ENTITY selection.createSubTree.accesskey      "g">
+
 <!ENTITY context.reloadTabSubTree.label     "Reload this Tree">
 <!ENTITY context.reloadTabSubTree.accesskey "r">
 <!ENTITY context.reloadDescendantTabs.label     "Reload Children">
@@ -164,3 +167,5 @@
 <!ENTITY context.tabbarPosition.accesskey "E">
 <!ENTITY context.bookmarkTabSubTree.label     "Dodaj zakładki do tego drzewa…">
 <!ENTITY context.bookmarkTabSubTree.accesskey "A">
+
+<!ENTITY group.default "New Group">
