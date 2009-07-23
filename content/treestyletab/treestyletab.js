@@ -2275,6 +2275,7 @@ catch(e) {
 		window.setTimeout(function(aSelf) {
 			aTabs.forEach(function(aTab) {
 				b.treeStyleTab.attachTabTo(aTab, root);
+				b.treeStyleTab.collapseExpandTab(aTab, false);
 			}, aSelf);
 		}, 0, this);
 	},
@@ -2290,7 +2291,7 @@ catch(e) {
 			if (!lastParent || parent != lastParent) return true;
 			lastParent = parent;
 		}
-		return false;
+		return this.getChildTabs(lastParent).length != aTabs.length;
 	},
 	getRootTabs : function(aTabs)
 	{
