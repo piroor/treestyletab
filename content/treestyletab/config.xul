@@ -317,8 +317,11 @@
 		<preference id="extensions.treestyletab.urlbar.loadDifferentDomainToNewTab.asChild"
 			name="extensions.treestyletab.urlbar.loadDifferentDomainToNewTab.asChild"
 			type="bool"/>
-		<preference id="extensions.treestyletab.urlbar.loadSameDomainToNewChildTab"
-			name="extensions.treestyletab.urlbar.loadSameDomainToNewChildTab"
+		<preference id="extensions.treestyletab.urlbar.loadSameDomainToNewTab"
+			name="extensions.treestyletab.urlbar.loadSameDomainToNewTab"
+			type="bool"/>
+		<preference id="extensions.treestyletab.urlbar.loadSameDomainToNewTab.asChild"
+			name="extensions.treestyletab.urlbar.loadSameDomainToNewTab.asChild"
 			type="bool"/>
 		<preference id="extensions.treestyletab.loadDroppedLinkToNewChildTab"
 			name="extensions.treestyletab.loadDroppedLinkToNewChildTab"
@@ -356,7 +359,7 @@
 							orient="horizontal"
 							min="0"
 							max="2"
-							onchange="onOpenLinkInNewTabScaleChange()"/>
+							onchange="gOpenLinkInTabScale.onChange();"/>
 						<deck id="openLinkInNewTab-labels">
 							<label value="&config.link.none;" control="openLinkInNewTab-scale"/>
 							<label value="&config.link.outer;" control="openLinkInNewTab-scale"/>
@@ -366,19 +369,34 @@
 				</groupbox>
 				<groupbox>
 					<caption label="&config.urlbar.caption;"/>
-					<vbox>
-						<hbox align="center">
-						<checkbox id="extensions.treestyletab.urlbar.loadDifferentDomainToNewTab-check"
-							preference="extensions.treestyletab.urlbar.loadDifferentDomainToNewTab"
-							label="&config.urlbar.loadDifferentDomainToNewTab;"/>
-						<checkbox id="extensions.treestyletab.urlbar.loadDifferentDomainToNewTab.asChild-check"
-							preference="extensions.treestyletab.urlbar.loadDifferentDomainToNewTab.asChild"
-							label="&config.urlbar.loadDifferentDomainToNewTab.asChild;"/>
-						</hbox>
-						<checkbox id="extensions.treestyletab.urlbar.loadSameDomainToNewChildTab-check"
-							preference="extensions.treestyletab.urlbar.loadSameDomainToNewChildTab"
-							label="&config.urlbar.loadSameDomainToNewChildTab;"/>
-					</vbox>
+					<hbox align="center">
+						<scale id="loadLocationBarToNewTab-scale"
+							orient="horizontal"
+							min="0"
+							max="2"
+							onchange="
+								gLoadLocationBarToNewTabScale.onChange();
+								gLoadLocationBarToChildTabScale.disabled = gLoadLocationBarToNewTabScale.value == 0;
+							"/>
+						<deck id="loadLocationBarToNewTab-labels">
+							<label value="&config.urlbar.none;" control="loadLocationBarToNewTab-scale"/>
+							<label value="&config.urlbar.outer;" control="loadLocationBarToNewTab-scale"/>
+							<label value="&config.urlbar.any;" control="loadLocationBarToNewTab-scale"/>
+						</deck>
+					</hbox>
+					<hbox align="center">
+						<spacer style="width:1em;"/>
+						<scale id="loadLocationBarToChildTab-scale"
+							orient="horizontal"
+							min="0"
+							max="2"
+							onchange="gLoadLocationBarToChildTabScale.onChange();"/>
+						<deck id="loadLocationBarToChildTab-labels">
+							<label value="&config.urlbar.asChild.none;" control="loadLocationBarToChildTab-scale"/>
+							<label value="&config.urlbar.asChild.inner;" control="loadLocationBarToChildTab-scale"/>
+							<label value="&config.urlbar.asChild.any;" control="loadLocationBarToChildTab-scale"/>
+						</deck>
+					</hbox>
 				</groupbox>
 				<groupbox>
 					<caption label="&config.loadDroppedLinkToNewChildTab.caption;"/>

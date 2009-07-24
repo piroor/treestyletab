@@ -49,10 +49,13 @@
 <!ENTITY config.link.outer   "在新标签中打开外部网站的链接">
 <!ENTITY config.link.any     "在新标签中打开所有链接">
 
-<!ENTITY config.urlbar.caption                      "在地址栏中输入URI后：">
-<!ENTITY config.urlbar.loadDifferentDomainToNewTab  "如果是不同网站，在新标签中加载">
-<!ENTITY config.urlbar.loadDifferentDomainToNewTab.asChild  "作为当前标签的子标签">
-<!ENTITY config.urlbar.loadSameDomainToNewChildTab  "如果是相同网站，加载到新的子标签">
+<!ENTITY config.urlbar.caption       "Automatic New Tab Level for the Location Bar">
+<!ENTITY config.urlbar.none          "Nothing (Firefox default)">
+<!ENTITY config.urlbar.outer         "如果是不同网站，在新标签中加载">
+<!ENTITY config.urlbar.any           "Load into new tab anytime">
+<!ENTITY config.urlbar.asChild.none  "Open as separate tab">
+<!ENTITY config.urlbar.asChild.inner "Open as child tab if it is the same website">
+<!ENTITY config.urlbar.asChild.any   "Open as child tab anytime">
 
 <!ENTITY config.loadDroppedLinkToNewChildTab.caption "将链接或URL拖拽到现有标签后：">
 <!ENTITY config.loadDroppedLinkToNewChildTab.load    "在标签中加载链接 （Firefox 默认）">

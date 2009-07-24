@@ -49,10 +49,13 @@
 <!ENTITY config.link.outer   "異なるサイトへのリンクをタブで開く">
 <!ENTITY config.link.any     "すべてのリンクをタブで開く">
 
-<!ENTITY config.urlbar.caption                      "ロケーションバーへの入力">
-<!ENTITY config.urlbar.loadDifferentDomainToNewTab  "異なるサイトのURIを新しいタブで開く">
-<!ENTITY config.urlbar.loadDifferentDomainToNewTab.asChild  "現在のタブの子にする">
-<!ENTITY config.urlbar.loadSameDomainToNewChildTab  "同じサイトのURIを新しい子タブで開く">
+<!ENTITY config.urlbar.caption       "ロケーションバーから自動的にタブを開くレベル">
+<!ENTITY config.urlbar.none          "なし（Firefox初期状態）">
+<!ENTITY config.urlbar.outer         "異なるサイトを新しいタブで開く">
+<!ENTITY config.urlbar.any           "すべて新しいタブで開く">
+<!ENTITY config.urlbar.asChild.none  "ツリーにしない">
+<!ENTITY config.urlbar.asChild.inner "同じサイトのタブは現在のタブの子として開く">
+<!ENTITY config.urlbar.asChild.any   "常に現在のタブの子として開く">
 
 <!ENTITY config.loadDroppedLinkToNewChildTab.caption "リンクやURLをタブにドラッグ＆ドロップした時">
 <!ENTITY config.loadDroppedLinkToNewChildTab.load    "ドロップ先のタブの中に読み込む（Firefox初期状態）">

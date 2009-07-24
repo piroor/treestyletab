@@ -9,10 +9,9 @@ function init()
 }
 
 
-var gOpenLinkInNewTabScale,
-	gOpenLinkInNewTabLabels,
-	gOuterLinkPref,
-	gAnyLinkPref,
+var gOpenLinkInTabScale,
+	gLoadLocationBarToNewTabScale,
+	gLoadLocationBarToChildTabScale,
 	gGroupBookmarkRadio,
 	gGroupBookmarkTree,
 	gGroupBookmarkReplace,
@@ -21,14 +20,24 @@ var gTabbarPlacePositionInitialized = false;
 
 function initTabPane()
 {
-	gOuterLinkPref = document.getElementById('extensions.treestyletab.openOuterLinkInNewTab');
-	gAnyLinkPref   = document.getElementById('extensions.treestyletab.openAnyLinkInNewTab');
-	gOpenLinkInNewTabScale = document.getElementById('openLinkInNewTab-scale');
-	gOpenLinkInNewTabLabels = document.getElementById('openLinkInNewTab-labels');
-	gOpenLinkInNewTabScale.value = gAnyLinkPref.value ? 2 :
-								gOuterLinkPref.value ? 1 :
-								0 ;
-	gOpenLinkInNewTabLabels.selectedIndex = gOpenLinkInNewTabScale.value;
+	gOpenLinkInTabScale = new ScaleSet(
+		['extensions.treestyletab.openOuterLinkInNewTab',
+		 'extensions.treestyletab.openAnyLinkInNewTab'],
+		'openLinkInNewTab-scale',
+		'openLinkInNewTab-labels'
+	);
+	gLoadLocationBarToNewTabScale = new ScaleSet(
+		['extensions.treestyletab.urlbar.loadDifferentDomainToNewTab',
+		 'extensions.treestyletab.urlbar.loadSameDomainToNewTab'],
+		'loadLocationBarToNewTab-scale',
+		'loadLocationBarToNewTab-labels'
+	);
+	gLoadLocationBarToChildTabScale = new ScaleSet(
+		['extensions.treestyletab.urlbar.loadSameDomainToNewTab.asChild',
+		 'extensions.treestyletab.urlbar.loadDifferentDomainToNewTab.asChild'],
+		'loadLocationBarToChildTab-scale',
+		'loadLocationBarToChildTab-labels'
+	);
 
 	gGroupBookmarkRadio = document.getElementById('openGroupBookmarkAsTabSubTree-radiogroup');
 	gGroupBookmarkTree = document.getElementById('extensions.treestyletab.openGroupBookmarkAsTabSubTree');
@@ -62,13 +71,6 @@ function initTabPane()
 
 	gLastStateIsVertical = document.getElementById('extensions.treestyletab.tabbar.position-radiogroup').value;
 	gLastStateIsVertical = gLastStateIsVertical == 'left' || gLastStateIsVertical == 'right';
-}
-
-function onOpenLinkInNewTabScaleChange()
-{
-	gOuterLinkPref.value = gOpenLinkInNewTabScale.value == 1;
-	gAnyLinkPref.value   = gOpenLinkInNewTabScale.value == 2;
-	gOpenLinkInNewTabLabels.selectedIndex = gOpenLinkInNewTabScale.value;
 }
 
 function onChangeGroupBookmarkRadio()
@@ -203,3 +205,64 @@ function updateCloseRootBehaviorCheck()
 	else
 		closeRootBehavior.setAttribute('disabled', true);
 }
+
+
+
+function ScaleSet(aPrefs, aScale, aLabelsDeck)
+{
+	this.prefs = aPrefs.map(document.getElementById, document);
+	this.scale = document.getElementById(aScale);
+	this.labels = document.getElementById(aLabelsDeck);
+
+	this.scale.value = this.prefs[1].value ? 2 :
+						this.prefs[0].value ? 1 :
+							0 ;
+	this.labels.selectedIndex = this.scale.value;
+}
+ScaleSet.prototype = {
+	onChange : function()
+	{
+		var value = this.value;
+		this.prefs[0].value = value > 0;
+		this.prefs[1].value = value > 1;
+		this.labels.selectedIndex = value;
+	},
+
+	set value(aValue)
+	{
+		this.scale.value = aValue;
+		this.onChange();
+		return aValue;
+	},
+	get value()
+	{
+		return parseInt(this.scale.value);
+	},
+
+	set disabled(aDisabled)
+	{
+		if (aDisabled) {
+			this.scale.setAttribute('disabled', true);
+			Array.slice(this.labels.childNodes).forEach(function(aNode) {
+				aNode.setAttribute('disabled', true);
+			});
+		}
+		else {
+			this.scale.removeAttribute('disabled');
+			Array.slice(this.labels.childNodes).forEach(function(aNode) {
+				aNode.removeAttribute('disabled');
+			});
+		}
+	},
+	get disabled()
+	{
+		return this.scale.getAttribute('disabled') == 'true';
+	},
+
+	destroy : function()
+	{
+		this.prefs = null;
+		this.scale = null;
+		this.labels = null;
+	}
+};

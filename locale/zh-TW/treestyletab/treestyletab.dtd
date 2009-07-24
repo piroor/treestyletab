@@ -48,10 +48,13 @@
 <!ENTITY config.link.outer   "用新分頁開啟通往不同網站的鏈結">
 <!ENTITY config.link.any     "用新分頁開啟所有鏈結">
 
-<!ENTITY config.urlbar.caption                      "在網址列輸入時">
-<!ENTITY config.urlbar.loadDifferentDomainToNewTab  "用新分頁開啟通往不同網站的 URL">
-<!ENTITY config.urlbar.loadDifferentDomainToNewTab.asChild  "作為目前分頁的子分頁">
-<!ENTITY config.urlbar.loadSameDomainToNewChildTab  "用新子分頁開啟往相同網站的鏈結">
+<!ENTITY config.urlbar.caption       "Automatic New Tab Level for the Location Bar">
+<!ENTITY config.urlbar.none          "Nothing (Firefox default)">
+<!ENTITY config.urlbar.outer         "用新分頁開啟通往不同網站的 URL">
+<!ENTITY config.urlbar.any           "Load into new tab anytime">
+<!ENTITY config.urlbar.asChild.none  "Open as separate tab">
+<!ENTITY config.urlbar.asChild.inner "Open as child tab if it is the same website">
+<!ENTITY config.urlbar.asChild.any   "Open as child tab anytime">
 
 <!ENTITY config.loadDroppedLinkToNewChildTab.caption "拖曳鏈結或 URL 到現有的分頁時">
 <!ENTITY config.loadDroppedLinkToNewChildTab.load    "在拖曳目的地分頁載入鏈結（Firefox 預設）">

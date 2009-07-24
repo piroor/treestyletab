@@ -49,10 +49,13 @@
 <!ENTITY config.link.outer   "Abrir enlaces a un diferente sitio en una nueva pestaña">
 <!ENTITY config.link.any     "Abrir cualquier enlace en una nueva pestaña">
 
-<!ENTITY config.urlbar.caption                      "Acción al ingresar una URI a la barra de ubicación">
-<!ENTITY config.urlbar.loadDifferentDomainToNewTab  "Cargar en una nueva pestaña si es un sitio diferente al actual">
-<!ENTITY config.urlbar.loadDifferentDomainToNewTab.asChild  "como hija de la pestaña actual">
-<!ENTITY config.urlbar.loadSameDomainToNewChildTab  "Cargar en una nueva hija si pertenece al mismo sitio">
+<!ENTITY config.urlbar.caption       "Automatic New Tab Level for the Location Bar">
+<!ENTITY config.urlbar.none          "Nothing (Firefox default)">
+<!ENTITY config.urlbar.outer         "Cargar en una nueva pestaña si es un sitio diferente al actual">
+<!ENTITY config.urlbar.any           "Load into new tab anytime">
+<!ENTITY config.urlbar.asChild.none  "Open as separate tab">
+<!ENTITY config.urlbar.asChild.inner "Open as child tab if it is the same website">
+<!ENTITY config.urlbar.asChild.any   "Open as child tab anytime">
 
 <!ENTITY config.loadDroppedLinkToNewChildTab.caption "Acción para arrastrar y soltar enlaces o URIs en pestañas existentes">
 <!ENTITY config.loadDroppedLinkToNewChildTab.load    "Cargar enlace dentro de una nueva pestaña (Predeterminado en Firefox)">

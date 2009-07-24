@@ -49,10 +49,13 @@
 <!ENTITY config.link.outer   "Открывать ссылки на другой сайт в новой вкладке">
 <!ENTITY config.link.any     "Открывать все ссылки в новой вкладке">
 
-<!ENTITY config.urlbar.caption                      "Действие для введенного URI в строке адреса">
-<!ENTITY config.urlbar.loadDifferentDomainToNewTab  "Загружать в новой вкладке если ведут на другой сайт">
-<!ENTITY config.urlbar.loadDifferentDomainToNewTab.asChild  "Как дочернюю от текущей вкладки">
-<!ENTITY config.urlbar.loadSameDomainToNewChildTab  "Загружать в новой дочерней вкладке ведет на тот же сайт">
+<!ENTITY config.urlbar.caption       "Automatic New Tab Level for the Location Bar">
+<!ENTITY config.urlbar.none          "Nothing (Firefox default)">
+<!ENTITY config.urlbar.outer         "Загружать в новой вкладке если ведут на другой сайт">
+<!ENTITY config.urlbar.any           "Load into new tab anytime">
+<!ENTITY config.urlbar.asChild.none  "Open as separate tab">
+<!ENTITY config.urlbar.asChild.inner "Open as child tab if it is the same website">
+<!ENTITY config.urlbar.asChild.any   "Open as child tab anytime">
 
 <!ENTITY config.loadDroppedLinkToNewChildTab.caption "Действие при перетаскивании ссылок или URL-ов в имеющуюся вкладку">
 <!ENTITY config.loadDroppedLinkToNewChildTab.load    "Загрузить ссылку во вкладке (в Firefox по умолчанию)">

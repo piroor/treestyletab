@@ -49,10 +49,13 @@
 <!ENTITY config.link.outer   "Otwieraj odnośniki do innej witryny w nowych kartach">
 <!ENTITY config.link.any     "Otwieraj wszystkie odnośniki w nowych kartach">
 
-<!ENTITY config.urlbar.caption                      "Działanie po wprowadzeniu adresu URI do pasku adresu">
-<!ENTITY config.urlbar.loadDifferentDomainToNewTab  "Jeśli jest to inna witryna, otwórz w nowej karcie">
-<!ENTITY config.urlbar.loadDifferentDomainToNewTab.asChild  "jako potomną aktywnej karty">
-<!ENTITY config.urlbar.loadSameDomainToNewChildTab  "Jeśli jest to ta sama witryna, otwórz w nowej potomnej karcie">
+<!ENTITY config.urlbar.caption       "Automatic New Tab Level for the Location Bar">
+<!ENTITY config.urlbar.none          "Nothing (Firefox default)">
+<!ENTITY config.urlbar.outer         "Jeśli jest to inna witryna, otwórz w nowej karcie">
+<!ENTITY config.urlbar.any           "Load into new tab anytime">
+<!ENTITY config.urlbar.asChild.none  "Open as separate tab">
+<!ENTITY config.urlbar.asChild.inner "Open as child tab if it is the same website">
+<!ENTITY config.urlbar.asChild.any   "Open as child tab anytime">
 
 <!ENTITY config.loadDroppedLinkToNewChildTab.caption "Działanie po przeciągnięciu odnośników lub adresów URL do istniejącej karty">
 <!ENTITY config.loadDroppedLinkToNewChildTab.load    "Otwieraj odnośnik w nowej karcie (domyślne działanie Firefoksa)">

@@ -358,7 +358,9 @@ var TreeStyleTabService = {
 			currentURI.split('#')[0] != info.uri.split('#')[0]
 			) {
 			openTab = info.modifier && info.invert ? !openTab : true ;
-			parent = parentHost == targetHost && !internal.forceChild ? parentTab : frame ;
+			parent = ('forceChild' in internal && !internal.forceChild) ? null :
+					(parentHost == targetHost && !internal.forceChild) ? parentTab :
+					frame ;
 			insertBefore = parentHost == targetHost && !internal.forceChild &&
 					(this.getTreePref('insertNewChildAt') == this.kINSERT_FIRST ?
 						nextTab :
@@ -392,7 +394,10 @@ var TreeStyleTabService = {
 				newTab     : this.getTreePref('urlbar.loadDifferentDomainToNewTab'),
 				forceChild : this.getTreePref('urlbar.loadDifferentDomainToNewTab.asChild')
 			},
-			internal : { newTab : this.getTreePref('urlbar.loadSameDomainToNewChildTab') },
+			internal : {
+				newTab     : this.getTreePref('urlbar.loadSameDomainToNewTab'),
+				forceChild : this.getTreePref('urlbar.loadSameDomainToNewTab.asChild')
+			},
 			modifier : aModifier,
 			invert   : this.getTreePref('urlbar.invertDefaultBehavior')
 		});
@@ -1256,6 +1261,14 @@ var TreeStyleTabService = {
 					'extensions.treestyletab.tabbar.hideNewTabButton',
 					'extensions.treestyletab.tabbar.hideAlltabsButton'
 				]);
+			case 2:
+				if (this.getTreePref('urlbar.loadSameDomainToNewChildTab') !== null) {
+					let value = this.getTreePref('urlbar.loadSameDomainToNewChildTab');
+					this.setTreePref('urlbar.loadSameDomainToNewTab', value);
+					this.setTreePref('urlbar.loadSameDomainToNewTab.asChild', value);
+					if (value) this.setTreePref('urlbar.loadDifferentDomainToNewTab', value);
+					this.clearPref('extensions.treestyletab.urlbar.loadSameDomainToNewChildTab');
+				}
 			default:
 				orientalPrefs.forEach(function(aPref) {
 					let value = this.getPref(aPref);
@@ -1266,7 +1279,7 @@ var TreeStyleTabService = {
 				}, this);
 				break;
 		}
-		this.setTreePref('orientalPrefsMigrated', 2);
+		this.setTreePref('orientalPrefsMigrated', 3);
 	},
 	preInitialized : false,
 	
