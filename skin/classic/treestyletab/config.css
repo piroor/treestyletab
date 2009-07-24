@@ -50,3 +50,9 @@ radio[pane="prefpane-advanced"][selected="true"] {
 	-moz-image-region: rect(32px, 224px, 64px, 192px);
 }
 
+
+label.scale-label {
+	min-width: 0;
+	margin: 0;
+	font-size: smaller;
+}

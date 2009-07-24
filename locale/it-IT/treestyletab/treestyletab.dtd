@@ -1,5 +1,8 @@
 <!ENTITY config.title        "Configurazione di Tree Style Tab">
 
+<!ENTITY config.scale.min "min">
+<!ENTITY config.scale.max "max">
+
 
 <!ENTITY config.tabs.appearance "Aspetto">
 
@@ -45,17 +48,17 @@
 <!ENTITY config.tabs.context.tab      "Schede">
 
 <!ENTITY config.link.caption "Automatic New Tab Level for Links">
-<!ENTITY config.link.none    "Nothing (Firefox default)">
-<!ENTITY config.link.outer   "Apri i collegamenti a siti esterni in una nuova scheda">
-<!ENTITY config.link.any     "Apri tutti i collegamenti in una nuova scheda">
+<!ENTITY config.link.none    "Lv.0 Nothing (Firefox default)">
+<!ENTITY config.link.outer   "Lv.1 Apri i collegamenti a siti esterni in una nuova scheda">
+<!ENTITY config.link.any     "Lv.2 Apri tutti i collegamenti in una nuova scheda">
 
 <!ENTITY config.urlbar.caption       "Automatic New Tab Level for the Location Bar">
-<!ENTITY config.urlbar.none          "Nothing (Firefox default)">
-<!ENTITY config.urlbar.outer         "apre una nuova scheda se appartiene a un sito web differente">
-<!ENTITY config.urlbar.any           "Load into new tab anytime">
-<!ENTITY config.urlbar.asChild.none  "Open as separate tab">
-<!ENTITY config.urlbar.asChild.inner "Open as child tab if it is the same website">
-<!ENTITY config.urlbar.asChild.any   "Open as child tab anytime">
+<!ENTITY config.urlbar.none          "Lv.0 Nothing (Firefox default)">
+<!ENTITY config.urlbar.outer         "Lv.1 apre una nuova scheda se appartiene a un sito web differente">
+<!ENTITY config.urlbar.any           "Lv.2 Load into new tab anytime">
+<!ENTITY config.urlbar.asChild.none  "Lv.0 Open as separate tab">
+<!ENTITY config.urlbar.asChild.inner "Lv.1 Open as child tab if it is the same website">
+<!ENTITY config.urlbar.asChild.any   "Lv.2 Open as child tab anytime">
 
 <!ENTITY config.loadDroppedLinkToNewChildTab.caption "Il trascinamento di collegamenti o indirizzi su una scheda esistente">
 <!ENTITY config.loadDroppedLinkToNewChildTab.load    "carica il collegamento nella scheda (comportamento predefinito di Firefox)">

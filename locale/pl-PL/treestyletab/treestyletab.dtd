@@ -1,5 +1,8 @@
 <!ENTITY config.title        "Tree Style Tab – ustawienia">
 
+<!ENTITY config.scale.min "min">
+<!ENTITY config.scale.max "max">
+
 
 <!ENTITY config.tabs.appearance "Wygląd">
 
@@ -45,17 +48,17 @@
 <!ENTITY config.tabs.context.tab      "Kontekstowe otwieranie kart">
 
 <!ENTITY config.link.caption "Automatic New Tab Level for Links">
-<!ENTITY config.link.none    "Nothing (Firefox default)">
-<!ENTITY config.link.outer   "Otwieraj odnośniki do innej witryny w nowych kartach">
-<!ENTITY config.link.any     "Otwieraj wszystkie odnośniki w nowych kartach">
+<!ENTITY config.link.none    "Lv.0 Nothing (Firefox default)">
+<!ENTITY config.link.outer   "Lv.1 Otwieraj odnośniki do innej witryny w nowych kartach">
+<!ENTITY config.link.any     "Lv.2 Otwieraj wszystkie odnośniki w nowych kartach">
 
 <!ENTITY config.urlbar.caption       "Automatic New Tab Level for the Location Bar">
-<!ENTITY config.urlbar.none          "Nothing (Firefox default)">
-<!ENTITY config.urlbar.outer         "Jeśli jest to inna witryna, otwórz w nowej karcie">
-<!ENTITY config.urlbar.any           "Load into new tab anytime">
-<!ENTITY config.urlbar.asChild.none  "Open as separate tab">
-<!ENTITY config.urlbar.asChild.inner "Open as child tab if it is the same website">
-<!ENTITY config.urlbar.asChild.any   "Open as child tab anytime">
+<!ENTITY config.urlbar.none          "Lv.0 Nothing (Firefox default)">
+<!ENTITY config.urlbar.outer         "Lv.1 Jeśli jest to inna witryna, otwórz w nowej karcie">
+<!ENTITY config.urlbar.any           "Lv.2 Load into new tab anytime">
+<!ENTITY config.urlbar.asChild.none  "Lv.0 Open as separate tab">
+<!ENTITY config.urlbar.asChild.inner "Lv.1 Open as child tab if it is the same website">
+<!ENTITY config.urlbar.asChild.any   "Lv.2 Open as child tab anytime">
 
 <!ENTITY config.loadDroppedLinkToNewChildTab.caption "Działanie po przeciągnięciu odnośników lub adresów URL do istniejącej karty">
 <!ENTITY config.loadDroppedLinkToNewChildTab.load    "Otwieraj odnośnik w nowej karcie (domyślne działanie Firefoksa)">

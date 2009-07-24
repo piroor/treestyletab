@@ -1,5 +1,8 @@
 <!ENTITY config.title        "ツリー型タブの設定">
 
+<!ENTITY config.scale.min "最小">
+<!ENTITY config.scale.max "最大">
+
 
 <!ENTITY config.tabs.appearance "外観">
 
@@ -45,17 +48,17 @@
 <!ENTITY config.tabs.context.tab      "場合に応じてタブを開く">
 
 <!ENTITY config.link.caption "リンクから自動的にタブを開くレベル">
-<!ENTITY config.link.none    "なし（Firefox初期状態）">
-<!ENTITY config.link.outer   "異なるサイトへのリンクをタブで開く">
-<!ENTITY config.link.any     "すべてのリンクをタブで開く">
+<!ENTITY config.link.none    "Lv.0 なし（Firefox初期状態）">
+<!ENTITY config.link.outer   "Lv.1 異なるサイトへのリンクをタブで開く">
+<!ENTITY config.link.any     "Lv.2 すべてのリンクをタブで開く">
 
 <!ENTITY config.urlbar.caption       "ロケーションバーから自動的にタブを開くレベル">
-<!ENTITY config.urlbar.none          "なし（Firefox初期状態）">
-<!ENTITY config.urlbar.outer         "異なるサイトを新しいタブで開く">
-<!ENTITY config.urlbar.any           "すべて新しいタブで開く">
-<!ENTITY config.urlbar.asChild.none  "ツリーにしない">
-<!ENTITY config.urlbar.asChild.inner "同じサイトのタブを現在のタブの子として開く">
-<!ENTITY config.urlbar.asChild.any   "すべて現在のタブの子として開く">
+<!ENTITY config.urlbar.none          "Lv.0 なし（Firefox初期状態）">
+<!ENTITY config.urlbar.outer         "Lv.1 異なるサイトを新しいタブで開く">
+<!ENTITY config.urlbar.any           "Lv.2 すべて新しいタブで開く">
+<!ENTITY config.urlbar.asChild.none  "Lv.0 ツリーにしない">
+<!ENTITY config.urlbar.asChild.inner "Lv.1 同じサイトのタブを現在のタブの子として開く">
+<!ENTITY config.urlbar.asChild.any   "Lv.2 すべて現在のタブの子として開く">
 
 <!ENTITY config.loadDroppedLinkToNewChildTab.caption "リンクやURLをタブにドラッグ＆ドロップした時">
 <!ENTITY config.loadDroppedLinkToNewChildTab.load    "ドロップ先のタブの中に読み込む（Firefox初期状態）">

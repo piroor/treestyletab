@@ -1,5 +1,8 @@
 <!ENTITY config.title        "树形标签设置">
 
+<!ENTITY config.scale.min "min">
+<!ENTITY config.scale.max "max">
+
 
 <!ENTITY config.tabs.appearance "外观">
 
@@ -45,17 +48,17 @@
 <!ENTITY config.tabs.context.tab      "打开标签">
 
 <!ENTITY config.link.caption "Automatic New Tab Level for Links">
-<!ENTITY config.link.none    "Nothing (Firefox default)">
-<!ENTITY config.link.outer   "在新标签中打开外部网站的链接">
-<!ENTITY config.link.any     "在新标签中打开所有链接">
+<!ENTITY config.link.none    "Lv.0 Nothing (Firefox default)">
+<!ENTITY config.link.outer   "Lv.1 在新标签中打开外部网站的链接">
+<!ENTITY config.link.any     "Lv.2 在新标签中打开所有链接">
 
 <!ENTITY config.urlbar.caption       "Automatic New Tab Level for the Location Bar">
-<!ENTITY config.urlbar.none          "Nothing (Firefox default)">
-<!ENTITY config.urlbar.outer         "如果是不同网站，在新标签中加载">
-<!ENTITY config.urlbar.any           "Load into new tab anytime">
-<!ENTITY config.urlbar.asChild.none  "Open as separate tab">
-<!ENTITY config.urlbar.asChild.inner "Open as child tab if it is the same website">
-<!ENTITY config.urlbar.asChild.any   "Open as child tab anytime">
+<!ENTITY config.urlbar.none          "Lv.0 Nothing (Firefox default)">
+<!ENTITY config.urlbar.outer         "Lv.1 如果是不同网站，在新标签中加载">
+<!ENTITY config.urlbar.any           "Lv.2 Load into new tab anytime">
+<!ENTITY config.urlbar.asChild.none  "Lv.0 Open as separate tab">
+<!ENTITY config.urlbar.asChild.inner "Lv.1 Open as child tab if it is the same website">
+<!ENTITY config.urlbar.asChild.any   "Lv.2 Open as child tab anytime">
 
 <!ENTITY config.loadDroppedLinkToNewChildTab.caption "将链接或URL拖拽到现有标签后：">
 <!ENTITY config.loadDroppedLinkToNewChildTab.load    "在标签中加载链接 （Firefox 默认）">

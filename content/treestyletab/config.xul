@@ -355,11 +355,13 @@
 				<groupbox>
 					<caption label="&config.link.caption;"/>
 					<hbox align="center">
+						<label class="scale-label" value="&config.scale.min;" control="openLinkInNewTab-scale"/>
 						<scale id="openLinkInNewTab-scale"
 							orient="horizontal"
 							min="0"
 							max="2"
 							onchange="gOpenLinkInTabScale.onChange();"/>
+						<label class="scale-label" value="&config.scale.max;" control="openLinkInNewTab-scale"/>
 						<deck id="openLinkInNewTab-labels">
 							<label value="&config.link.none;" control="openLinkInNewTab-scale"/>
 							<label value="&config.link.outer;" control="openLinkInNewTab-scale"/>
@@ -370,6 +372,7 @@
 				<groupbox>
 					<caption label="&config.urlbar.caption;"/>
 					<hbox align="center">
+						<label class="scale-label" value="&config.scale.min;" control="loadLocationBarToNewTab-scale"/>
 						<scale id="loadLocationBarToNewTab-scale"
 							orient="horizontal"
 							min="0"
@@ -378,6 +381,7 @@
 								gLoadLocationBarToNewTabScale.onChange();
 								gLoadLocationBarToChildTabScale.disabled = gLoadLocationBarToNewTabScale.value == 0;
 							"/>
+						<label class="scale-label" value="&config.scale.max;" control="loadLocationBarToNewTab-scale"/>
 						<deck id="loadLocationBarToNewTab-labels">
 							<label value="&config.urlbar.none;" control="loadLocationBarToNewTab-scale"/>
 							<label value="&config.urlbar.outer;" control="loadLocationBarToNewTab-scale"/>
@@ -386,11 +390,13 @@
 					</hbox>
 					<hbox align="center">
 						<spacer style="width:1em;"/>
+						<label class="scale-label" value="&config.scale.min;" control="loadLocationBarToChildTab-scale"/>
 						<scale id="loadLocationBarToChildTab-scale"
 							orient="horizontal"
 							min="0"
 							max="2"
 							onchange="gLoadLocationBarToChildTabScale.onChange();"/>
+						<label class="scale-label" value="&config.scale.max;" control="loadLocationBarToChildTab-scale"/>
 						<deck id="loadLocationBarToChildTab-labels">
 							<label value="&config.urlbar.asChild.none;" control="loadLocationBarToChildTab-scale"/>
 							<label value="&config.urlbar.asChild.inner;" control="loadLocationBarToChildTab-scale"/>
@@ -574,12 +580,14 @@
 		<groupbox orient="vertical">
 			<caption label="&config.transparent.style.caption;"/>
 			<hbox align="center">
+				<label class="scale-label" value="&config.scale.min;" control="tabbarTransparency-scale"/>
 				<scale id="tabbarTransparency-scale"
 					preference="extensions.treestyletab.tabbar.transparent.style"
 					orient="horizontal"
 					min="0"
 					max="2"
 					onchange="onTabbarTransparencyScaleChange()"/>
+				<label class="scale-label" value="&config.scale.max;" control="tabbarTransparency-scale"/>
 				<deck id="tabbarTransparency-labels">
 					<label value="&config.transparent.style.0;" control="tabbarTransparency-scale"/>
 					<label value="&config.transparent.style.1;" control="tabbarTransparency-scale"/>
