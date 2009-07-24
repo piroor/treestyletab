@@ -10,7 +10,6 @@
 <!ENTITY config.tabbar.position.right   "Rightside">
 <!ENTITY config.tabbar.position.top     "Top (Firefox default)">
 <!ENTITY config.tabbar.position.bottom  "Bottom">
-<!ENTITY config.tabbar.invertScrollbar  "Show scrollbar leftside">
 <!ENTITY config.tabbar.invertClosebox.left  "Show closebox at leftside in each tab">
 <!ENTITY config.tabbar.invertClosebox.right "Show closebox at rightside in each tab">
 <!ENTITY config.tabbar.invertTab            "Invert tab appearance">
@@ -61,9 +60,7 @@
 <!ENTITY config.openGroupBookmarkAsTabSubTree.caption     "&quot;Open All in Tabs&quot; from bookmark folders">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.subtree     "Open as a tree (Recommended)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.flat        "Open as separate tabs (Firefox default)">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.flat.fx2    "Open as separate tabs">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace     "Replace the current one tab with the pages in the folder">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.replace.fx2 "Replace all tabs with the pages in the folder (Firefox default)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.underParent "Put tabs under a dummy tab for grouping">
 
 <!ENTITY config.tabs.restriction.tab "Open tabs instead of windows">

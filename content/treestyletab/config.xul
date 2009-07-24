@@ -58,9 +58,6 @@
 			name="extensions.treestyletab.tabbar.hideAlltabsButton.vertical"
 			type="bool"
 			inverted="true"/>
-		<preference id="extensions.treestyletab.tabbar.invertScrollbar"
-			name="extensions.treestyletab.tabbar.invertScrollbar"
-			type="bool"/>
 		<preference id="extensions.treestyletab.tabbar.invertClosebox"
 			name="extensions.treestyletab.tabbar.invertClosebox"
 			type="bool"/>
@@ -104,10 +101,6 @@
 					<row>
 						<vbox pack="start" align="end">
 							<radio value="left" label="&config.tabbar.position.left;"/>
-							<checkbox id="extensions.treestyletab.tabbar.invertScrollbar-check"
-								preference="extensions.treestyletab.tabbar.invertScrollbar"
-								label="&config.tabbar.invertScrollbar;"
-								disabled="true"/>
 						</vbox>
 						<box style="border: ThreeDShadow 1px solid; margin: 0.3em; background: white;"/>
 						<vbox pack="start" align="start">
@@ -404,10 +397,8 @@
 								label="&config.openGroupBookmarkAsTabSubTree.underParent;"
 								preference="extensions.treestyletab.openGroupBookmarkAsTabSubTree.underParent"/>
 						</hbox>
-						<radio value="flat"    label="&config.openGroupBookmarkAsTabSubTree.flat;"
-							label-fx2="&config.openGroupBookmarkAsTabSubTree.flat.fx2;"/>
-						<radio value="replace" label="&config.openGroupBookmarkAsTabSubTree.replace;"
-							label-fx2="&config.openGroupBookmarkAsTabSubTree.replace.fx2;"/>
+						<radio value="flat"    label="&config.openGroupBookmarkAsTabSubTree.flat;"/>
+						<radio value="replace" label="&config.openGroupBookmarkAsTabSubTree.replace;"/>
 					</radiogroup>
 				</groupbox>
 			</tabpanel>

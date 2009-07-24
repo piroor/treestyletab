@@ -56,7 +56,7 @@
 	<stringbundle id="treestyletab-stringbundle"
 		src="chrome://treestyletab/locale/treestyletab.properties"/>
 	<stringbundle id="treestyletab-tabbrowserBundle"
-		src="chrome://global/locale/tabbrowser.properties"/>
+		src="chrome://browser/locale/tabbrowser.properties"/>
 </stringbundleset>
 
 <popupset id="mainPopupSet">

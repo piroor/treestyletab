@@ -10,7 +10,6 @@
 <!ENTITY config.tabbar.position.right   "右侧">
 <!ENTITY config.tabbar.position.top     "顶部 （Firefox 默认）">
 <!ENTITY config.tabbar.position.bottom  "底部">
-<!ENTITY config.tabbar.invertScrollbar  "在最左侧显示滚动条">
 <!ENTITY config.tabbar.invertClosebox.left  "在每个标签左端显示关闭按钮">
 <!ENTITY config.tabbar.invertClosebox.right "在每个标签右端显示关闭按钮">
 <!ENTITY config.tabbar.invertTab            "反转标签外观">
@@ -61,9 +60,7 @@
 <!ENTITY config.openGroupBookmarkAsTabSubTree.caption     "点击“在标签页中打开书签组”菜单：">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.subtree     "在子树中打开 （推荐）">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.flat        "在单独标签中打开 （Firefox 默认）">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.flat.fx2    "在单独标签中打开">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace     "覆盖当前标签打开">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.replace.fx2 "覆盖当前全部标签打开 （Firefox 默认）">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.underParent "将标签置于一伪标签下以便分组">
 
 <!ENTITY config.tabs.restriction.tab "打开标签而非窗口">

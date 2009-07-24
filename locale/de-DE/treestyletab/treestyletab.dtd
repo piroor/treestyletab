@@ -10,7 +10,6 @@
 <!ENTITY config.tabbar.position.right   "Rechts">
 <!ENTITY config.tabbar.position.top     "Oben (Firefox Standard)">
 <!ENTITY config.tabbar.position.bottom  "Unten">
-<!ENTITY config.tabbar.invertScrollbar  "Scrollbar ganz links anzeigen">
 <!ENTITY config.tabbar.invertClosebox.left  "Schließen-Button in jedem Tab links anzeigen">
 <!ENTITY config.tabbar.invertClosebox.right "Schließen-Button in jedem Tab rechts anzeigen">
 <!ENTITY config.tabbar.invertTab            "Tabs von rechts einrücken">
@@ -61,9 +60,7 @@
 <!ENTITY config.openGroupBookmarkAsTabSubTree.caption     "Verhalten von &quot;Alle in Tabs öffnen&quot; für Seiten in einem Lesezeichenordner">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.subtree     "Als Zweig öffnen (Empfohlen)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.flat        "Als eigenständige Tabs öffnen (Firefox Standard)">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.flat.fx2    "Als eigenständige Tabs öffnen">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace     "Aktuelles Tab durch die neuen Tabs ersetzen">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.replace.fx2 "Die Seiten im Lesezeichenordner in existierende Tabs laden (Firefox Standard)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.underParent "Seiten zur Gruppierung einem Dummytab unterordnen">
 
 <!ENTITY config.tabs.restriction.tab "Neue Tabs statt neue Fenster öffnen">

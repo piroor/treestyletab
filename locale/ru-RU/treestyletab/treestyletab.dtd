@@ -10,7 +10,6 @@
 <!ENTITY config.tabbar.position.right   "Справа">
 <!ENTITY config.tabbar.position.top     "Сверху (в Firefox по умолчанию)">
 <!ENTITY config.tabbar.position.bottom  "Снизу">
-<!ENTITY config.tabbar.invertScrollbar  "Показывать скроллинг у левого края">
 <!ENTITY config.tabbar.invertClosebox.left  "Show closebox at leftside in each tab">
 <!ENTITY config.tabbar.invertClosebox.right "Show closebox at rightside in each tab">
 <!ENTITY config.tabbar.invertTab            "Инвертировать вид вкладок">
@@ -61,9 +60,7 @@
 <!ENTITY config.openGroupBookmarkAsTabSubTree.caption     "&quot;Открытие во вкладках &quot; из папок закладок">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.subtree     "Открывать как поддерево (рекомендуется)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.flat        "Открывать как раздельные вкладки (в Firefox по умолчанию)">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.flat.fx2    "Открывать как раздельные вкладки">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace     "Replace the current one tab with the pages in the folder">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.replace.fx2 "Заменить все вкладки страницами из папки (в Firefox по умолчанию)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.underParent "Put tabs under a dummy tab for grouping">
 
 <!ENTITY config.tabs.restriction.tab "Открытие вкладок вместо окон">

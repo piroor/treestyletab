@@ -1,10 +1,6 @@
 function TreeStyleTabBrowser(aTabBrowser) 
 {
 	this.mTabBrowser = aTabBrowser;
-	if (TreeStyleTabService.isGecko19) {
-		this.isPlatformNotSupported = false;
-		this.isTimerSupported = true;
-	}
 }
  
 TreeStyleTabBrowser.prototype = { 
@@ -177,11 +173,8 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 
-		var selectNewTab = '_selectNewTab' in b.mTabContainer ?
-				'_selectNewTab' : // Firefox 3
-				'selectNewTab' ; // Firefox 2
-		eval('b.mTabContainer.'+selectNewTab+' = '+
-			b.mTabContainer[selectNewTab].toSource().replace(
+		eval('b.mTabContainer._selectNewTab = '+
+			b.mTabContainer._selectNewTab].toSource().replace(
 				'{',
 				<![CDATA[$&
 					if (arguments[0].__treestyletab__preventSelect) {
@@ -487,7 +480,6 @@ TreeStyleTabBrowser.prototype = {
 		this.onPrefChange('extensions.treestyletab.twisty.style');
 		this.onPrefChange('extensions.treestyletab.showBorderForFirstTab');
 		this.onPrefChange('extensions.treestyletab.tabbar.invertTabContents');
-		this.onPrefChange('extensions.treestyletab.tabbar.invertScrollbar');
 		this.onPrefChange('extensions.treestyletab.tabbar.invertClosebox');
 		this.onPrefChange('extensions.treestyletab.tabbar.transparent.style');
 		this.onPrefChange('extensions.treestyletab.tabbar.autoHide.area');
@@ -793,10 +785,6 @@ TreeStyleTabBrowser.prototype = {
 				b.mTabContainer.orient =
 				b.mTabContainer.mTabstrip.orient =
 				b.mTabContainer.mTabstrip.parentNode.orient = 'vertical';
-			if (allTabsButton.parentNode.localName == 'hbox') { // Firefox 2
-				allTabsButton.parentNode.orient = 'vertical';
-				allTabsButton.parentNode.setAttribute('align', 'stretch');
-			}
 			if (allTabsButton.hasChildNodes()) {
 				allTabsButton.firstChild.setAttribute('position', 'before_start');
 			}
@@ -871,10 +859,6 @@ TreeStyleTabBrowser.prototype = {
 				b.mTabContainer.orient =
 				b.mTabContainer.mTabstrip.orient =
 				b.mTabContainer.mTabstrip.parentNode.orient = 'horizontal';
-			if (allTabsButton.parentNode.localName == 'hbox') { // Firefox 2
-				allTabsButton.parentNode.orient = 'horizontal';
-				allTabsButton.parentNode.removeAttribute('align');
-			}
 			if (allTabsButton.hasChildNodes()) {
 				allTabsButton.firstChild.setAttribute('position', 'after_end');
 			}
@@ -1196,15 +1180,6 @@ TreeStyleTabBrowser.prototype = {
 					b.setAttribute(this.kFIRSTTAB_BORDER, true);
 				else
 					b.removeAttribute(this.kFIRSTTAB_BORDER);
-				break;
-
-			case 'extensions.treestyletab.tabbar.invertScrollbar':
-				if (value &&
-					b.getAttribute(this.kTABBAR_POSITION) == 'left' &&
-					this.isGecko18)
-					b.setAttribute(this.kSCROLLBAR_INVERTED, true);
-				else
-					b.removeAttribute(this.kSCROLLBAR_INVERTED);
 				break;
 
 			case 'extensions.treestyletab.tabbar.autoHide.mode':
@@ -1980,27 +1955,25 @@ TreeStyleTabBrowser.prototype = {
 			this.tabbarResizing = true;
 			this.clearTabbarCanvas();
 			this.mTabBrowser.setAttribute(this.kRESIZING, true);
-			if (this.isGecko19) {
-				/* canvasを非表示にしたのと同じタイミングでリサイズを行うと、
-				   まだ内部的にcanvasの大きさが残ったままなので、その大きさ以下に
-				   タブバーの幅を縮められなくなる。手動でイベントを再送してやると
-				   この問題を防ぐことができる。 */
-				aEvent.preventDefault();
-				aEvent.stopPropagation();
-				var flags = 0;
-				const nsIDOMNSEvent = Components.interfaces.nsIDOMNSEvent;
-				if (aEvent.altKey) flags |= nsIDOMNSEvent.ALT_MASK;
-				if (aEvent.ctrlKey) flags |= nsIDOMNSEvent.CONTROL_MASK;
-				if (aEvent.shiftKey) flags |= nsIDOMNSEvent.SHIFT_MASK;
-				if (aEvent.metaKey) flags |= nsIDOMNSEvent.META_MASK;
-				window.setTimeout(function(aX, aY, aButton, aDetail) {
-					window
-						.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-						.getInterface(Components.interfaces.nsIDOMWindowUtils)
-						.sendMouseEvent('mousedown', aX, aY, aButton, aDetail, flags);
-					flags = null;
-				}, 0, aEvent.clientX, aEvent.clientY, aEvent.button, aEvent.detail);
-			}
+			/* canvasを非表示にしたのと同じタイミングでリサイズを行うと、
+			   まだ内部的にcanvasの大きさが残ったままなので、その大きさ以下に
+			   タブバーの幅を縮められなくなる。手動でイベントを再送してやると
+			   この問題を防ぐことができる。 */
+			aEvent.preventDefault();
+			aEvent.stopPropagation();
+			var flags = 0;
+			const nsIDOMNSEvent = Components.interfaces.nsIDOMNSEvent;
+			if (aEvent.altKey) flags |= nsIDOMNSEvent.ALT_MASK;
+			if (aEvent.ctrlKey) flags |= nsIDOMNSEvent.CONTROL_MASK;
+			if (aEvent.shiftKey) flags |= nsIDOMNSEvent.SHIFT_MASK;
+			if (aEvent.metaKey) flags |= nsIDOMNSEvent.META_MASK;
+			window.setTimeout(function(aX, aY, aButton, aDetail) {
+				window
+					.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+					.getInterface(Components.interfaces.nsIDOMWindowUtils)
+					.sendMouseEvent('mousedown', aX, aY, aButton, aDetail, flags);
+				flags = null;
+			}, 0, aEvent.clientX, aEvent.clientY, aEvent.button, aEvent.detail);
 		}
 		this.cancelShowHideTabbarOnMousemove();
 		if (
@@ -2268,9 +2241,6 @@ TreeStyleTabBrowser.prototype = {
 	},
    
 /* drag and drop */ 
-	isPlatformNotSupported : /* !this.isGecko19 && */ navigator.platform.indexOf('Mac') != -1, // see bug 136524
-	isTimerSupported       : /* this.isGecko19 || */ navigator.platform.indexOf('Win') == -1, // see bug 232795.
-
 	autoExpandTimer  : null,
 	autoExpandTarget : null,
 	autoExpandedTabs : [],
@@ -2284,34 +2254,27 @@ TreeStyleTabBrowser.prototype = {
 
 		var now = (new Date()).getTime();
 
-		if (this.isPlatformNotSupported) return;
-		if (this.isTimerSupported || !aDragSession.sourceNode) {
-			window.clearTimeout(this.autoExpandTimer);
-			if (aEvent.target == aDragSession.sourceNode) return;
-			this.autoExpandTimer = window.setTimeout(
-				function(aSelf, aTarget) {
-					let tab = aSelf.getTabById(aTarget);
-					if (tab &&
-						tab.getAttribute(aSelf.kSUBTREE_COLLAPSED) == 'true' &&
-						tab.getAttribute(aSelf.kDROP_POSITION) == 'self') {
-						if (aSelf.getTreePref('autoExpand.intelligently')) {
-							aSelf.collapseExpandTreesIntelligentlyFor(tab);
-						}
-						else {
-							aSelf.autoExpandedTabs.push(aTarget);
-							aSelf.collapseExpandSubtree(tab, false);
-						}
+		window.clearTimeout(this.autoExpandTimer);
+		if (aEvent.target == aDragSession.sourceNode) return;
+		this.autoExpandTimer = window.setTimeout(
+			function(aSelf, aTarget) {
+				let tab = aSelf.getTabById(aTarget);
+				if (tab &&
+					tab.getAttribute(aSelf.kSUBTREE_COLLAPSED) == 'true' &&
+					tab.getAttribute(aSelf.kDROP_POSITION) == 'self') {
+					if (aSelf.getTreePref('autoExpand.intelligently')) {
+						aSelf.collapseExpandTreesIntelligentlyFor(tab);
 					}
-				},
-				this.getTreePref('autoExpand.delay'),
-				this,
-				tab.getAttribute(this.kID)
-			);
-		}
-		else {
-			this.autoExpandTimer  = now;
-			this.autoExpandTarget = tab.getAttribute(this.kID);
-		}
+					else {
+						aSelf.autoExpandedTabs.push(aTarget);
+						aSelf.collapseExpandSubtree(tab, false);
+					}
+				}
+			},
+			this.getTreePref('autoExpand.delay'),
+			this,
+			tab.getAttribute(this.kID)
+		);
 
 		tab = null;
 		now = null;
@@ -2321,40 +2284,12 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var now = (new Date()).getTime();
 
-		if (this.isPlatformNotSupported) return;
-		if (this.isTimerSupported || !aDragSession.sourceNode) {
-			window.clearTimeout(this.autoExpandTimer);
-			this.autoExpandTimer = null;
-		}
-		else {
-			this.autoExpandTimer  = null;
-			this.autoExpandTarget = null;
-		}
+		window.clearTimeout(this.autoExpandTimer);
+		this.autoExpandTimer = null;
 	},
  
 	onDragOver : function(aEvent, aFlavour, aDragSession) 
 	{
-		if (this.isPlatformNotSupported) return;
-		if (this.isTimerSupported || !aDragSession.sourceNode) return;
-
-		var now   = (new Date()).getTime();
-		var delay = this.getTreePref('autoExpand.delay');
-		if (this.autoExpandTimer && (now - delay > this.autoExpandTimer)) {
-			var tab = this.getTabById(this.autoExpandTarget);
-			if (tab &&
-				tab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true' &&
-				tab.getAttribute(this.kDROP_POSITION) == 'self') {
-				if (this.getTreePref('autoExpand.intelligently')) {
-					this.collapseExpandTreesIntelligentlyFor(tab, true);
-				}
-				else {
-					this.autoExpandedTabs.push(this.autoExpandTarget);
-					this.collapseExpandSubtree(tab, false, true);
-				}
-			}
-			this.autoExpandTimer  = null;
-			this.autoExpandTarget = null;
-		}
 	},
  
 	onDrop : function(aEvent, aXferData, aDragSession) 
@@ -3853,7 +3788,6 @@ TreeStyleTabBrowser.prototype = {
 					this.container.style.marginBottom = '-'+this.autoHideYOffset+'px';
 					break;
 			}
-			if (this.isGecko18) b.setAttribute(this.kAUTOHIDE, 'show');
 			switch (this.autoHideMode)
 			{
 				case this.kAUTOHIDE_MODE_HIDE:
@@ -3876,13 +3810,7 @@ TreeStyleTabBrowser.prototype = {
 		this.mTabBrowser.dispatchEvent(event);
 
 		window.setTimeout(function(aSelf) {
-			if (
-				aSelf.autoHideShown &&
-				(
-					aSelf.autoHideMode == aSelf.kAUTOHIDE_MODE_SHRINK ||
-					!aSelf.isGecko18
-				)
-				) {
+			if (aSelf.autoHideShown) {
 				b.setAttribute(aSelf.kAUTOHIDE, 'show');
 				aSelf.redrawContentArea();
 			}

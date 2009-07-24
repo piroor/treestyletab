@@ -5,18 +5,6 @@ const comparator = Components.classes['@mozilla.org/xpcom/version-comparator;1']
 
 function init()
 {
-	var useEffectiveTLD = document.getElementById('useEffectiveTLD');
-	var fx2Items = document.getElementsByAttribute('label-fx2', '*');
-	if (comparator.compare(XULAppInfo.version, '3.0') < 0) {
-		useEffectiveTLD.setAttribute('collapsed', true);
-		Array.slice(fx2Items).forEach(function(aItem) {
-			aItem.setAttribute('label', aItem.getAttribute('label-fx2'));
-		});
-	}
-	else {
-		useEffectiveTLD.removeAttribute('collapsed');
-	}
-
 //	sizeToContent();
 }
 
@@ -85,12 +73,10 @@ function onChangeGroupBookmarkRadio()
 function onChangeTabbarPosition(aOnChange)
 {
 	var pos = document.getElementById('extensions.treestyletab.tabbar.position-radiogroup').value;
-	var invertScrollbar = document.getElementById('extensions.treestyletab.tabbar.invertScrollbar-check');
 	var invertTab = document.getElementById('extensions.treestyletab.tabbar.invertTab-check');
 	var invertTabContents = document.getElementById('extensions.treestyletab.tabbar.invertTabContents-check');
 	var invertClosebox = document.getElementById('extensions.treestyletab.tabbar.invertClosebox-check');
 
-	invertScrollbar.disabled = pos != 'left';
 	invertTab.disabled = pos != 'right';
 //	invertTabContents.disabled = pos != 'right';
 	invertClosebox.setAttribute('label',
@@ -104,13 +90,6 @@ function onChangeTabbarPosition(aOnChange)
 		invertClosebox.removeAttribute('collapsed');
 	else
 		invertClosebox.setAttribute('collapsed', true);
-
-	if (comparator.compare(XULAppInfo.version, '3.0') < 0) {
-		invertScrollbar.removeAttribute('collapsed');
-	}
-	else {
-		invertScrollbar.setAttribute('collapsed', true);
-	}
 
 	var indentCheckH   = document.getElementById('extensions.treestyletab.enableSubtreeIndent.horizontal-check');
 	var indentCheckV   = document.getElementById('extensions.treestyletab.enableSubtreeIndent.vertical-check');

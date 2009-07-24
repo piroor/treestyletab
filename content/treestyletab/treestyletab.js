@@ -201,18 +201,6 @@ var TreeStyleTabService = {
 	},
 	_PromptService : null,
 
-	get isGecko18() {
-		if (this._isGecko18 === null)
-			this._isGecko18 = this.Comparator.compare(this.XULAppInfo.version, '3.0') < 0;
-		return this._isGecko18;
-	},
-	_isGecko18 : null,
-	get isGecko19() {
-		if (this._isGecko19 === null)
-			this._isGecko19 = this.Comparator.compare(this.XULAppInfo.version, '3.0') >= 0;
-		return this._isGecko19;
-	},
-	_isGecko19 : null,
 	get XULAppInfo() {
 		if (!this._XULAppInfo) {
 			this._XULAppInfo = Components
@@ -1175,8 +1163,6 @@ var TreeStyleTabService = {
 					this.kGROUP_BOOKMARK_SEPARATE ;
 		}
 
-		var isGecko18 = this.isGecko18;
-
 		var checked = { value : false };
 		var behavior = this.PromptService.confirmEx(window,
 				this.stringbundle.getString('openGroupBookmarkBehavior.title'),
@@ -1185,12 +1171,8 @@ var TreeStyleTabService = {
 				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_1) +
 				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_2),
 				this.stringbundle.getString('openGroupBookmarkBehavior.subTree'),
-				this.stringbundle.getString(isGecko18 ?
-							'openGroupBookmarkBehavior.replaceOld' :
-							'openGroupBookmarkBehavior.separate'),
-				this.stringbundle.getString(isGecko18 ?
-							'openGroupBookmarkBehavior.separateOld' :
-							'openGroupBookmarkBehavior.replace'),
+				this.stringbundle.getString('openGroupBookmarkBehavior.separate'),
+				this.stringbundle.getString('openGroupBookmarkBehavior.replace'),
 				this.stringbundle.getString('openGroupBookmarkBehavior.never'),
 				checked
 			);
@@ -1198,8 +1180,8 @@ var TreeStyleTabService = {
 		if (behavior < 0) behavior = 1;
 		var behaviors = [
 				this.kGROUP_BOOKMARK_SUBTREE | dummyTabFlag,
-				isGecko18 ? this.kGROUP_BOOKMARK_REPLACE : this.kGROUP_BOOKMARK_SEPARATE,
-				isGecko18 ? this.kGROUP_BOOKMARK_SEPARATE : this.kGROUP_BOOKMARK_REPLACE
+				this.kGROUP_BOOKMARK_SEPARATE,
+				this.kGROUP_BOOKMARK_REPLACE
 			];
 		behavior = behaviors[behavior];
 
@@ -1492,12 +1474,6 @@ catch(e) {
 						TSTTabBrowser.treeStyleTab.clearDropPosition();
 						var dropActionInfo = TSTTabBrowser.treeStyleTab.getDropAction(aEvent, TST_DRAGSESSION);
 				]]>
-			).replace( // Firefox 2
-				/(if \(aDragSession[^\)]+\) \{)/,
-				<![CDATA[$1
-					if (TSTTabBrowser.treeStyleTab.performDrop(dropActionInfo, TST_DRAGSESSION.sourceNode))
-						return;
-				]]>
 			).replace( // Firefox 3.0.x, 3.1 or later
 				/(if \((accelKeyPressed|isCopy|dropEffect == "copy")\) {)/,
 				<![CDATA[
@@ -1563,8 +1539,7 @@ catch(e) {
 //		};
 
 		let (toolbox) {
-			toolbox = document.getElementById('browser-toolbox') || // Firefox 3
-						document.getElementById('navigator-toolbox'); // Firefox 2
+			toolbox = document.getElementById('navigator-toolbox');
 			if (toolbox.customizeDone) {
 				toolbox.__treestyletab__customizeDone = toolbox.customizeDone;
 				toolbox.customizeDone = function(aChanged) {

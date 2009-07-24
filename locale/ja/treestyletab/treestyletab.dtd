@@ -10,7 +10,6 @@
 <!ENTITY config.tabbar.position.right   "右">
 <!ENTITY config.tabbar.position.top     "上（Firefox初期状態）">
 <!ENTITY config.tabbar.position.bottom  "下">
-<!ENTITY config.tabbar.invertScrollbar  "スクロールバーを左に表示">
 <!ENTITY config.tabbar.invertClosebox.left  "タブのクローズボックスを左に表示">
 <!ENTITY config.tabbar.invertClosebox.right "タブのクローズボックスを右に表示">
 <!ENTITY config.tabbar.invertTab            "タブの表示を左右反転">
@@ -61,9 +60,7 @@
 <!ENTITY config.openGroupBookmarkAsTabSubTree.caption     "ブックマークフォルダの内容をタブで開く時の扱い">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.subtree     "一つのツリーとして開く（推奨）">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.flat        "ばらばらのタブとして開く（Firefox初期状態）">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.flat.fx2    "ばらばらのタブとして開く">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace     "現在のタブ1つだけをブックマークの内容で置き換える">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.replace.fx2 "現在開いているすべてのタブをブックマークの内容で置き換える（Firefox初期状態）">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.underParent "グループ化用のダミーのタブを親にする">
 
 <!ENTITY config.tabs.restriction.tab "ウィンドウの代わりにタブを開く">

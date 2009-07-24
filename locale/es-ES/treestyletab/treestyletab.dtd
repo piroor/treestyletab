@@ -10,7 +10,6 @@
 <!ENTITY config.tabbar.position.right   "Lado derecho">
 <!ENTITY config.tabbar.position.top     "Encima (Predeterminado en Firefox)">
 <!ENTITY config.tabbar.position.bottom  "Debajo">
-<!ENTITY config.tabbar.invertScrollbar  "Mostrar barra de desplazamiento a la izquierda">
 <!ENTITY config.tabbar.invertClosebox.left  "Show closebox at leftside in each tab">
 <!ENTITY config.tabbar.invertClosebox.right "Show closebox at rightside in each tab">
 <!ENTITY config.tabbar.invertTab            "Invertir apariencia de pestaña">
@@ -61,9 +60,7 @@
 <!ENTITY config.openGroupBookmarkAsTabSubTree.caption     "&quot;Abrir todos en pestañas&quot; desde carpetas de marcadores">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.subtree     "Abrir como un sub-árbol (Recomendado)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.flat        "Abrir como pestañas separadas (Firefox default)">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.flat.fx2    "Abrir como pestañas separadas">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace     "Replace the current one tab with the pages in the folder">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.replace.fx2 "Remplazar todas las pestañas con las páginas en la carpeta (Predeterminado en Firefox)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.underParent "Put tabs under a dummy tab for grouping">
 
 <!ENTITY config.tabs.restriction.tab "Abrir pestañas en vez de ventanas">

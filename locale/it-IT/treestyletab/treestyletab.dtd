@@ -10,7 +10,6 @@
 <!ENTITY config.tabbar.position.right   "sul lato destro">
 <!ENTITY config.tabbar.position.top     "in alto (comportamento predefinito di Firefox)">
 <!ENTITY config.tabbar.position.bottom  "in basso">
-<!ENTITY config.tabbar.invertScrollbar  "Visualizza la barra di scorrimento all&apos;estrema sinistra">
 <!ENTITY config.tabbar.invertClosebox.left  "Visualizza il pulsante di chiusura alla sinistra di ogni scheda">
 <!ENTITY config.tabbar.invertClosebox.right "Visualizza il pulsante di chiusura alla destra di ogni scheda"> <!-- NUOVA -->
 <!ENTITY config.tabbar.invertTab            "Inverti la visualizzazione delle schede">
@@ -61,9 +60,7 @@
 <!ENTITY config.openGroupBookmarkAsTabSubTree.caption     "La voce &quot;Apri tutti in schede&quot; nel menu Segnalibri">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.subtree     "apre i segnalibri come sottoalbero (Raccomandato)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.flat        "apre i segnalibri in schede separate (comportamento predefinito di Firefox)">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.flat.fx2    "apre i segnalibri in schede separate">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace     "sostituisce la scheda in uso con i segnalibri contenuti nella cartella selezionata">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.replace.fx2 "sostituisce la scheda in uso con i segnalibri contenuti nella cartella selezionata (comportamento predefinito di Firefox)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.underParent "Put tabs under a dummy tab for grouping">
 
 <!ENTITY config.tabs.restriction.tab "Finestre">

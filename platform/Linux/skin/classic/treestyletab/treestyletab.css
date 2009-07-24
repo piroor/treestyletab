@@ -1,3 +1,6 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+
 /* horizontal tree */
 
 tabbrowser[treestyletab-style][treestyletab-tabbar-position="top"][treestyletab-tabs-indented="true"]
@@ -9,5 +12,17 @@ tabbrowser[treestyletab-style][treestyletab-tabbar-position="top"][treestyletab-
 	margin-bottom: 0;
 	height: 1.5em;
 	-moz-border-radius: 0 0 0 0;
+}
+
+
+/* vertical tree */
+
+tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="left"]:not([treestyletab-tabbar-transparent="full"]) .tabbrowser-strip {
+	border-right: 1px solid ThreeDShadow !important;
+	-moz-border-right-colors: none !important;
+}
+tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="right"]:not([treestyletab-tabbar-transparent="full"]) .tabbrowser-strip {
+	border-left: 1px solid ThreeDShadow !important;
+	-moz-border-right-colors: none !important;
 }
 

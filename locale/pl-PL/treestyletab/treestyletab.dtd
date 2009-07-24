@@ -10,7 +10,6 @@
 <!ENTITY config.tabbar.position.right   "Po prawej stronie">
 <!ENTITY config.tabbar.position.top     "Na górze (wartość domyślna)">
 <!ENTITY config.tabbar.position.bottom  "Na dole">
-<!ENTITY config.tabbar.invertScrollbar  "Wyświetlaj pasek przewijania po lewej">
 <!ENTITY config.tabbar.invertClosebox.left  "Show closebox at leftside in each tab">
 <!ENTITY config.tabbar.invertClosebox.right "Show closebox at rightside in each tab">
 <!ENTITY config.tabbar.invertTab            "Odwróć wyświetlanie kart">
@@ -61,9 +60,7 @@
 <!ENTITY config.openGroupBookmarkAsTabSubTree.caption     "Działanie funkcji „Otwórz wszystkie w kartach” wywoływanej z poziomu menu zakładek">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.subtree     "Otwieraj jako potomne drzewo (zalecane)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.flat        "Otwieraj jako osobne karty (domyślnie działanie Firefoksa)">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.flat.fx2    "Otwieraj jako osobne karty">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.replace     "Replace the current one tab with the pages in the folder">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.replace.fx2 "Zastąp wszystkie karty stronami z folderu (domyślnie działanie Firefoksa)">
 <!ENTITY config.openGroupBookmarkAsTabSubTree.underParent "Put tabs under a dummy tab for grouping">
 
 <!ENTITY config.tabs.restriction.tab "Otwieranie kart zamiast okien">

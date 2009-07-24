@@ -8,7 +8,6 @@ pref("extensions.treestyletab.tabbar.shrunkenWidth",   80);
 pref("extensions.treestyletab.tabbar.position",        "left");
 pref("extensions.treestyletab.tabbar.position.subbrowser.enabled", false);
 pref("extensions.treestyletab.tabbar.multirow",        false);
-pref("extensions.treestyletab.tabbar.invertScrollbar", true);
 pref("extensions.treestyletab.tabbar.invertTab",       true);
 pref("extensions.treestyletab.tabbar.invertTabContents", false);
 pref("extensions.treestyletab.tabbar.invertClosebox",  false);
