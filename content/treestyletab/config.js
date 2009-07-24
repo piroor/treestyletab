@@ -149,14 +149,18 @@ function onChangeTabbarPosition(aOnChange)
 }
 
 
-var gAutoHideModeRadio;
-var gAutoHideModeToggle;
-
+var gAutoHideModeRadio,
+	gAutoHideModeToggle,
+	gTabbarTransparencyScale,
+	gTabbarTransparencyLabels;
 function initAutoHidePane()
 {
 	gAutoHideModeRadio = document.getElementById('extensions.treestyletab.tabbar.autoHide.mode-radio');
 	gAutoHideModeToggle = document.getElementById('extensions.treestyletab.tabbar.autoHide.mode.toggle');
+	gTabbarTransparencyScale = document.getElementById('tabbarTransparency-scale');
+	gTabbarTransparencyLabels = document.getElementById('tabbarTransparency-labels');
 	updateAutoHideModeLabel();
+	onTabbarTransparencyScaleChange();
 }
 
 function onChangeAutoHideMode()
@@ -183,6 +187,12 @@ function updateAutoHideModeLabel()
 			node.setAttribute(attr, label);
 		});
 }
+
+function onTabbarTransparencyScaleChange()
+{
+	gTabbarTransparencyLabels.selectedIndex = gTabbarTransparencyScale.value;
+}
+
 
 function updateCloseRootBehaviorCheck()
 {

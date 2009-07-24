@@ -555,12 +555,19 @@
 		</groupbox>
 		<groupbox orient="vertical">
 			<caption label="&config.transparent.style.caption;"/>
-			<radiogroup orient="horizontal"
-				preference="extensions.treestyletab.tabbar.transparent.style">
-				<radio label="&config.transparent.style.0;" value="0"/>
-				<radio label="&config.transparent.style.1;" value="1"/>
-				<radio label="&config.transparent.style.2;" value="2"/>
-			</radiogroup>
+			<hbox align="center">
+				<scale id="tabbarTransparency-scale"
+					preference="extensions.treestyletab.tabbar.transparent.style"
+					orient="horizontal"
+					min="0"
+					max="2"
+					onchange="onTabbarTransparencyScaleChange()"/>
+				<deck id="tabbarTransparency-labels">
+					<label value="&config.transparent.style.0;" control="tabbarTransparency-scale"/>
+					<label value="&config.transparent.style.1;" control="tabbarTransparency-scale"/>
+					<label value="&config.transparent.style.2;" control="tabbarTransparency-scale"/>
+				</deck>
+			</hbox>
 		</groupbox>
 
 	</vbox>

@@ -99,7 +99,7 @@
 <!ENTITY config.autoShow.feedback.delay.before "">
 <!ENTITY config.autoShow.feedback.delay.after  "ミリ秒後に自動で隠す">
 
-<!ENTITY config.transparent.style.caption "自動で隠す時のタブバーの背景">
+<!ENTITY config.transparent.style.caption "自動で隠す時のタブバーの背景の透明度">
 <!ENTITY config.transparent.style.0 "透過しない">
 <!ENTITY config.transparent.style.1 "半透明">
 <!ENTITY config.transparent.style.2 "完全な透明">
