@@ -174,7 +174,7 @@ TreeStyleTabBrowser.prototype = {
 
 
 		eval('b.mTabContainer._selectNewTab = '+
-			b.mTabContainer._selectNewTab].toSource().replace(
+			b.mTabContainer._selectNewTab.toSource().replace(
 				'{',
 				<![CDATA[$&
 					if (arguments[0].__treestyletab__preventSelect) {
