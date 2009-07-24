@@ -42,9 +42,11 @@
 
 <!ENTITY config.tabs.tab "分頁操作">
 <!ENTITY config.tabs.context.tab      "依情況開啟分頁">
-<!ENTITY config.link.caption           "鏈結">
-<!ENTITY config.openOuterLinkInNewTab  "用新分頁開啟通往不同網站的鏈結">
-<!ENTITY config.openAnyLinkInNewTab    "用新分頁開啟所有鏈結">
+
+<!ENTITY config.link.caption "Automatic New Tab Level for Links">
+<!ENTITY config.link.none    "Nothing (Firefox default)">
+<!ENTITY config.link.outer   "用新分頁開啟通往不同網站的鏈結">
+<!ENTITY config.link.any     "用新分頁開啟所有鏈結">
 
 <!ENTITY config.urlbar.caption                      "在網址列輸入時">
 <!ENTITY config.urlbar.loadDifferentDomainToNewTab  "用新分頁開啟通往不同網站的 URL">

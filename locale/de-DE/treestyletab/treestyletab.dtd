@@ -44,9 +44,11 @@
 
 <!ENTITY config.tabs.context.tab      "Tabs abhängig vom Kontext öffnen">
 
-<!ENTITY config.link.caption           "Links">
-<!ENTITY config.openOuterLinkInNewTab  "Links auf andere Webseiten in einem neuen Tab öffnen">
-<!ENTITY config.openAnyLinkInNewTab    "Jeden Link in einem neuen Tab öffnen">
+
+<!ENTITY config.link.caption "Automatic New Tab Level for Links">
+<!ENTITY config.link.none    "Nothing (Firefox default)">
+<!ENTITY config.link.outer   "Links auf andere Webseiten in einem neuen Tab öffnen">
+<!ENTITY config.link.any     "Jeden Link in einem neuen Tab öffnen">
 
 <!ENTITY config.urlbar.caption                      "Verhalten beim Eingeben einer URL in die Adresszeile">
 <!ENTITY config.urlbar.loadDifferentDomainToNewTab  "In neuem Tab laden, falls es eine andere Webseite ist">

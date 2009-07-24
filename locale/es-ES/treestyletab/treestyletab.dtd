@@ -44,9 +44,10 @@
 
 <!ENTITY config.tabs.context.tab      "Abrir pestañas contextualmente">
 
-<!ENTITY config.link.caption           "Enlaces">
-<!ENTITY config.openOuterLinkInNewTab  "Abrir enlaces a un diferente sitio en una nueva pestaña">
-<!ENTITY config.openAnyLinkInNewTab    "Abrir cualquier enlace en una nueva pestaña">
+<!ENTITY config.link.caption "Automatic New Tab Level for Links">
+<!ENTITY config.link.none    "Nothing (Firefox default)">
+<!ENTITY config.link.outer   "Abrir enlaces a un diferente sitio en una nueva pestaña">
+<!ENTITY config.link.any     "Abrir cualquier enlace en una nueva pestaña">
 
 <!ENTITY config.urlbar.caption                      "Acción al ingresar una URI a la barra de ubicación">
 <!ENTITY config.urlbar.loadDifferentDomainToNewTab  "Cargar en una nueva pestaña si es un sitio diferente al actual">

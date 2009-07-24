@@ -351,15 +351,18 @@
 			<tabpanel orient="vertical">
 				<groupbox>
 					<caption label="&config.link.caption;"/>
-					<vbox>
-						<checkbox id="extensions.treestyletab.openOuterLinkInNewTab-check"
-							preference="extensions.treestyletab.openOuterLinkInNewTab"
-							label="&config.openOuterLinkInNewTab;"/>
-						<checkbox id="extensions.treestyletab.openAnyLinkInNewTab-check"
-							preference="extensions.treestyletab.openAnyLinkInNewTab"
-							label="&config.openAnyLinkInNewTab;"
-							oncommand="gOuterLinkCheck.disabled = gAnyLinkCheck.checked;"/>
-					</vbox>
+					<hbox align="center">
+						<scale id="openLinkInNewTab-scale"
+							orient="horizontal"
+							min="0"
+							max="2"
+							onchange="onOpenLinkInNewTabScaleChange()"/>
+						<deck id="openLinkInNewTab-labels">
+							<label value="&config.link.none;" control="openLinkInNewTab-scale"/>
+							<label value="&config.link.outer;" control="openLinkInNewTab-scale"/>
+							<label value="&config.link.any;" control="openLinkInNewTab-scale"/>
+						</deck>
+					</hbox>
 				</groupbox>
 				<groupbox>
 					<caption label="&config.urlbar.caption;"/>

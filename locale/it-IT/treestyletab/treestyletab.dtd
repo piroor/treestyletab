@@ -44,9 +44,10 @@
 
 <!ENTITY config.tabs.context.tab      "Schede">
 
-<!ENTITY config.link.caption           "Collegamenti">
-<!ENTITY config.openOuterLinkInNewTab  "Apri i collegamenti a siti esterni in una nuova scheda">
-<!ENTITY config.openAnyLinkInNewTab    "Apri tutti i collegamenti in una nuova scheda">
+<!ENTITY config.link.caption "Automatic New Tab Level for Links">
+<!ENTITY config.link.none    "Nothing (Firefox default)">
+<!ENTITY config.link.outer   "Apri i collegamenti a siti esterni in una nuova scheda">
+<!ENTITY config.link.any     "Apri tutti i collegamenti in una nuova scheda">
 
 <!ENTITY config.urlbar.caption                      "L&apos;inserimento di un indirizzo nella barra degli indirizzi">
 <!ENTITY config.urlbar.loadDifferentDomainToNewTab  "apre una nuova scheda se appartiene a un sito web differente">

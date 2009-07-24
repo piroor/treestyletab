@@ -9,8 +9,10 @@ function init()
 }
 
 
-var gOuterLinkCheck,
-	gAnyLinkCheck,
+var gOpenLinkInNewTabScale,
+	gOpenLinkInNewTabLabels,
+	gOuterLinkPref,
+	gAnyLinkPref,
 	gGroupBookmarkRadio,
 	gGroupBookmarkTree,
 	gGroupBookmarkReplace,
@@ -19,9 +21,14 @@ var gTabbarPlacePositionInitialized = false;
 
 function initTabPane()
 {
-	gOuterLinkCheck = document.getElementById('extensions.treestyletab.openOuterLinkInNewTab-check');
-	gAnyLinkCheck = document.getElementById('extensions.treestyletab.openAnyLinkInNewTab-check');
-	gOuterLinkCheck.disabled = gAnyLinkCheck.checked;
+	gOuterLinkPref = document.getElementById('extensions.treestyletab.openOuterLinkInNewTab');
+	gAnyLinkPref   = document.getElementById('extensions.treestyletab.openAnyLinkInNewTab');
+	gOpenLinkInNewTabScale = document.getElementById('openLinkInNewTab-scale');
+	gOpenLinkInNewTabLabels = document.getElementById('openLinkInNewTab-labels');
+	gOpenLinkInNewTabScale.value = gAnyLinkPref.value ? 2 :
+								gOuterLinkPref.value ? 1 :
+								0 ;
+	gOpenLinkInNewTabLabels.selectedIndex = gOpenLinkInNewTabScale.value;
 
 	gGroupBookmarkRadio = document.getElementById('openGroupBookmarkAsTabSubTree-radiogroup');
 	gGroupBookmarkTree = document.getElementById('extensions.treestyletab.openGroupBookmarkAsTabSubTree');
@@ -55,6 +62,13 @@ function initTabPane()
 
 	gLastStateIsVertical = document.getElementById('extensions.treestyletab.tabbar.position-radiogroup').value;
 	gLastStateIsVertical = gLastStateIsVertical == 'left' || gLastStateIsVertical == 'right';
+}
+
+function onOpenLinkInNewTabScaleChange()
+{
+	gOuterLinkPref.value = gOpenLinkInNewTabScale.value == 1;
+	gAnyLinkPref.value   = gOpenLinkInNewTabScale.value == 2;
+	gOpenLinkInNewTabLabels.selectedIndex = gOpenLinkInNewTabScale.value;
 }
 
 function onChangeGroupBookmarkRadio()

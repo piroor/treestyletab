@@ -44,9 +44,10 @@
 
 <!ENTITY config.tabs.context.tab      "Kontekstowe otwieranie kart">
 
-<!ENTITY config.link.caption           "Odnośniki">
-<!ENTITY config.openOuterLinkInNewTab  "Otwieraj odnośniki do innej witryny w nowych kartach">
-<!ENTITY config.openAnyLinkInNewTab    "Otwieraj wszystkie odnośniki w nowych kartach">
+<!ENTITY config.link.caption "Automatic New Tab Level for Links">
+<!ENTITY config.link.none    "Nothing (Firefox default)">
+<!ENTITY config.link.outer   "Otwieraj odnośniki do innej witryny w nowych kartach">
+<!ENTITY config.link.any     "Otwieraj wszystkie odnośniki w nowych kartach">
 
 <!ENTITY config.urlbar.caption                      "Działanie po wprowadzeniu adresu URI do pasku adresu">
 <!ENTITY config.urlbar.loadDifferentDomainToNewTab  "Jeśli jest to inna witryna, otwórz w nowej karcie">

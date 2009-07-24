@@ -44,9 +44,10 @@
 
 <!ENTITY config.tabs.context.tab      "Действия при открытии вкладок">
 
-<!ENTITY config.link.caption           "Ссылки">
-<!ENTITY config.openOuterLinkInNewTab  "Открывать ссылки на другой сайт в новой вкладке">
-<!ENTITY config.openAnyLinkInNewTab    "Открывать все ссылки в новой вкладке">
+<!ENTITY config.link.caption "Automatic New Tab Level for Links">
+<!ENTITY config.link.none    "Nothing (Firefox default)">
+<!ENTITY config.link.outer   "Открывать ссылки на другой сайт в новой вкладке">
+<!ENTITY config.link.any     "Открывать все ссылки в новой вкладке">
 
 <!ENTITY config.urlbar.caption                      "Действие для введенного URI в строке адреса">
 <!ENTITY config.urlbar.loadDifferentDomainToNewTab  "Загружать в новой вкладке если ведут на другой сайт">

@@ -44,9 +44,10 @@
 
 <!ENTITY config.tabs.context.tab      "打开标签">
 
-<!ENTITY config.link.caption           "链接">
-<!ENTITY config.openOuterLinkInNewTab  "在新标签中打开外部网站的链接">
-<!ENTITY config.openAnyLinkInNewTab    "在新标签中打开所有链接">
+<!ENTITY config.link.caption "Automatic New Tab Level for Links">
+<!ENTITY config.link.none    "Nothing (Firefox default)">
+<!ENTITY config.link.outer   "在新标签中打开外部网站的链接">
+<!ENTITY config.link.any     "在新标签中打开所有链接">
 
 <!ENTITY config.urlbar.caption                      "在地址栏中输入URI后：">
 <!ENTITY config.urlbar.loadDifferentDomainToNewTab  "如果是不同网站，在新标签中加载">

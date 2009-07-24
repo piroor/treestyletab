@@ -44,9 +44,10 @@
 
 <!ENTITY config.tabs.context.tab      "場合に応じてタブを開く">
 
-<!ENTITY config.link.caption           "リンク">
-<!ENTITY config.openOuterLinkInNewTab  "異なるサイトへのリンクを新しいタブで開く">
-<!ENTITY config.openAnyLinkInNewTab    "すべてのリンクを新しいタブで開く">
+<!ENTITY config.link.caption "リンクから自動的にタブを開くレベル">
+<!ENTITY config.link.none    "なし（Firefox初期状態）">
+<!ENTITY config.link.outer   "異なるサイトへのリンクをタブで開く">
+<!ENTITY config.link.any     "すべてのリンクをタブで開く">
 
 <!ENTITY config.urlbar.caption                      "ロケーションバーへの入力">
 <!ENTITY config.urlbar.loadDifferentDomainToNewTab  "異なるサイトのURIを新しいタブで開く">
