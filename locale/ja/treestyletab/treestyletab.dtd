@@ -54,8 +54,8 @@
 <!ENTITY config.urlbar.outer         "異なるサイトを新しいタブで開く">
 <!ENTITY config.urlbar.any           "すべて新しいタブで開く">
 <!ENTITY config.urlbar.asChild.none  "ツリーにしない">
-<!ENTITY config.urlbar.asChild.inner "同じサイトのタブは現在のタブの子として開く">
-<!ENTITY config.urlbar.asChild.any   "常に現在のタブの子として開く">
+<!ENTITY config.urlbar.asChild.inner "同じサイトのタブを現在のタブの子として開く">
+<!ENTITY config.urlbar.asChild.any   "すべて現在のタブの子として開く">
 
 <!ENTITY config.loadDroppedLinkToNewChildTab.caption "リンクやURLをタブにドラッグ＆ドロップした時">
 <!ENTITY config.loadDroppedLinkToNewChildTab.load    "ドロップ先のタブの中に読み込む（Firefox初期状態）">
