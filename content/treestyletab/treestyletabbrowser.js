@@ -213,10 +213,7 @@ TreeStyleTabBrowser.prototype = {
 									).singleNodeValue;
 							}
 							if (nextTab && nextTab != aSelf.selectedItem) {
-								if ('_selectNewTab' in aSelf)
-									aSelf._selectNewTab(nextTab, aDir, aWrap); // Fx 3
-								else
-									aSelf.selectNewTab(nextTab, aDir, aWrap); // Fx 2
+								aSelf._selectNewTab(nextTab, aDir, aWrap);
 							}
 						})(arguments[0], arguments[1], this);
 						return;
