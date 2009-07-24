@@ -950,7 +950,7 @@ var TreeStyleTabService = {
 	getChildTabs : function(aTab, aAllTabsArray) /* PUBLIC API */ 
 	{
 		var tabs = [];
-		if (!aTab) return null;
+		if (!aTab) return tabs;
 
 		var children = aTab.getAttribute(this.kCHILDREN);
 		if (!children) return tabs;
@@ -2270,7 +2270,6 @@ catch(e) {
 		if (!aTabs.length) return;
 
 		var b = this.getTabBrowserFromChild(aTabs[0]);
-		var root = b.addTab(this.getGroupTabURI());
 
 		var parent = this.getParentTab(aTabs[0]);
 
@@ -2280,6 +2279,9 @@ catch(e) {
 			aTabs.indexOf(next) > -1
 		);
 
+		var root = this.getTreePref('createSubTree.underParent') ?
+					b.addTab(this.getGroupTabURI()) :
+					aTabs.shift() ;
 		window.setTimeout(function(aSelf) {
 			aTabs.forEach(function(aTab) {
 				b.treeStyleTab.attachTabTo(aTab, root);
