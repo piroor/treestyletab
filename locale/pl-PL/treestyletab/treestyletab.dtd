@@ -65,7 +65,8 @@
 <!ENTITY config.dropLinksOnTab.load    "Otwieraj odnośnik w nowej karcie (domyślne działanie Firefoksa)">
 <!ENTITY config.dropLinksOnTab.newTab  "Otwieraj odnośnik w nowej, potomnej karcie">
 
-<!ENTITY config.openGroupBookmark.caption     "Działanie funkcji „Otwórz wszystkie w kartach” wywoływanej z poziomu menu zakładek">
+<!ENTITY config.openGroupBookmark.caption     "Behavior of &quot;Open All in Tabs&quot; for bookmark folders">
+<!--ENTITY config.openGroupBookmark.caption     "Działanie funkcji „Otwórz wszystkie w kartach” wywoływanej z poziomu menu zakładek"-->
 <!ENTITY config.openGroupBookmark.ask         "Ask me always">
 <!ENTITY config.openGroupBookmark.subtree     "Otwieraj jako potomne drzewo (zalecane)">
 <!ENTITY config.openGroupBookmark.flat        "Otwieraj jako osobne karty (domyślnie działanie Firefoksa)">

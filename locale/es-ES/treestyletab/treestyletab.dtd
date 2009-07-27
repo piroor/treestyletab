@@ -65,7 +65,8 @@
 <!ENTITY config.dropLinksOnTab.load    "Cargar enlace dentro de una nueva pestaña (Predeterminado en Firefox)">
 <!ENTITY config.dropLinksOnTab.newTab  "Abrir enlace como hija de la pestaña actual">
 
-<!ENTITY config.openGroupBookmark.caption     "&quot;Abrir todos en pestañas&quot; desde carpetas de marcadores">
+<!ENTITY config.openGroupBookmark.caption     "Behavior of &quot;Open All in Tabs&quot; for bookmark folders">
+<!--ENTITY config.openGroupBookmark.caption     "&quot;Abrir todos en pestañas&quot; desde carpetas de marcadores"-->
 <!ENTITY config.openGroupBookmark.ask         "Ask me always">
 <!ENTITY config.openGroupBookmark.subtree     "Abrir como un sub-árbol (Recomendado)">
 <!ENTITY config.openGroupBookmark.flat        "Abrir como pestañas separadas (Firefox default)">

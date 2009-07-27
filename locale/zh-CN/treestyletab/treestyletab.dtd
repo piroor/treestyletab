@@ -65,7 +65,8 @@
 <!ENTITY config.dropLinksOnTab.load    "在标签中加载链接 （Firefox 默认）">
 <!ENTITY config.dropLinksOnTab.newTab  "在此标签的新建子标签中打开链接">
 
-<!ENTITY config.openGroupBookmark.caption     "点击“在标签页中打开书签组”菜单：">
+<!ENTITY config.openGroupBookmark.caption     "Behavior of &quot;Open All in Tabs&quot; for bookmark folders">
+<!--ENTITY config.openGroupBookmark.caption     "点击“在标签页中打开书签组”菜单："-->
 <!ENTITY config.openGroupBookmark.ask         "Ask me always">
 <!ENTITY config.openGroupBookmark.subtree     "在子树中打开 （推荐）">
 <!ENTITY config.openGroupBookmark.flat        "在单独标签中打开 （Firefox 默认）">

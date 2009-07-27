@@ -65,7 +65,7 @@
 <!ENTITY config.dropLinksOnTab.load    "ドロップ先のタブの中に読み込む（Firefox初期状態）">
 <!ENTITY config.dropLinksOnTab.newTab  "ドロップ先のタブのツリーに新しいタブを開く">
 
-<!ENTITY config.openGroupBookmark.caption     "ブックマークフォルダの内容をタブで開く時の扱い">
+<!ENTITY config.openGroupBookmark.caption     "ブックマークフォルダの内容をタブで開く時">
 <!ENTITY config.openGroupBookmark.ask         "どうするか毎回尋ねる">
 <!ENTITY config.openGroupBookmark.subtree     "一つのツリーとして開く（推奨）">
 <!ENTITY config.openGroupBookmark.flat        "ばらばらのタブとして開く（Firefox初期状態）">

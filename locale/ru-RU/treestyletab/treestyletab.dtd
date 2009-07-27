@@ -65,7 +65,8 @@
 <!ENTITY config.dropLinksOnTab.load    "Загрузить ссылку во вкладке (в Firefox по умолчанию)">
 <!ENTITY config.dropLinksOnTab.newTab  "Открыть ссылку в новой вкладке дочерней от текущей">
 
-<!ENTITY config.openGroupBookmark.caption     "&quot;Открытие во вкладках &quot; из папок закладок">
+<!ENTITY config.openGroupBookmark.caption     "Behavior of &quot;Open All in Tabs&quot; for bookmark folders">
+<!--ENTITY config.openGroupBookmark.caption     "&quot;Открытие во вкладках &quot; из папок закладок"-->
 <!ENTITY config.openGroupBookmark.ask         "Ask me always">
 <!ENTITY config.openGroupBookmark.subtree     "Открывать как поддерево (рекомендуется)">
 <!ENTITY config.openGroupBookmark.flat        "Открывать как раздельные вкладки (в Firefox по умолчанию)">

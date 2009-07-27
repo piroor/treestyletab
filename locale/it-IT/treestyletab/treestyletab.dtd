@@ -65,7 +65,8 @@
 <!ENTITY config.dropLinksOnTab.load    "carica il collegamento nella scheda (comportamento predefinito di Firefox)">
 <!ENTITY config.dropLinksOnTab.newTab  "apre il collegamento in una nuova sottoscheda">
 
-<!ENTITY config.openGroupBookmark.caption     "La voce &quot;Apri tutti in schede&quot; nel menu Segnalibri">
+<!ENTITY config.openGroupBookmark.caption     "Behavior of &quot;Open All in Tabs&quot; for bookmark folders">
+<!--ENTITY config.openGroupBookmark.caption     "La voce &quot;Apri tutti in schede&quot; nel menu Segnalibri"-->
 <!ENTITY config.openGroupBookmark.ask         "Ask me always">
 <!ENTITY config.openGroupBookmark.subtree     "apre i segnalibri come sottoalbero (Raccomandato)">
 <!ENTITY config.openGroupBookmark.flat        "apre i segnalibri in schede separate (comportamento predefinito di Firefox)">

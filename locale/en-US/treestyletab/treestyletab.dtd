@@ -65,7 +65,7 @@
 <!ENTITY config.dropLinksOnTab.load    "Load link into the tab (Firefox default)">
 <!ENTITY config.dropLinksOnTab.newTab  "Open link in a new child tab of the tab">
 
-<!ENTITY config.openGroupBookmark.caption     "&quot;Open All in Tabs&quot; from bookmark folders">
+<!ENTITY config.openGroupBookmark.caption     "Behavior of &quot;Open All in Tabs&quot; for bookmark folders">
 <!ENTITY config.openGroupBookmark.ask         "Ask me always">
 <!ENTITY config.openGroupBookmark.subtree     "Open as a tree (Recommended)">
 <!ENTITY config.openGroupBookmark.flat        "Open as separate tabs (Firefox default)">
