@@ -1305,12 +1305,13 @@ var TreeStyleTabService = {
 					if (this.getTreePref('openGroupBookmarkAsTabSubTree.underParent'))
 						behavior += this.kGROUP_BOOKMARK_USE_DUMMY;
 					if (!this.getTreePref('openGroupBookmarkBehavior.confirm')) {
-						if (this.getTreePref('openGroupBookmarkAsTabSubTree'))
-							behavior += this.kGROUP_BOOKMARK_SUBTREE;
-						else if (this.getTreePref('browser.tabs.loadFolderAndReplace'))
-							behavior += this.kGROUP_BOOKMARK_REPLACE;
-						else
-							behavior += this.kGROUP_BOOKMARK_SEPARATE;
+						behavior += (
+							this.getTreePref('openGroupBookmarkAsTabSubTree') ?
+								this.kGROUP_BOOKMARK_SUBTREE :
+							this.getTreePref('browser.tabs.loadFolderAndReplace') ?
+								this.kGROUP_BOOKMARK_REPLACE :
+								this.kGROUP_BOOKMARK_SEPARATE
+						);
 					}
 					this.setTreePref('openGroupBookmark.behavior', behavior);
 					this.clearTreePref('openGroupBookmarkBehavior.confirm');
