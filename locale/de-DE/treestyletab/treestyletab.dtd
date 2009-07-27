@@ -56,10 +56,10 @@
 <!ENTITY config.urlbar.caption       "Automatic New Tab Level for the Location Bar">
 <!ENTITY config.urlbar.none          "Lv.0 Nothing (Firefox default)">
 <!ENTITY config.urlbar.outer         "Lv.1 In neuem Tab laden, falls es eine andere Webseite ist">
-<!ENTITY config.urlbar.any           "Lv.2 Load into new tab anytime">
+<!ENTITY config.urlbar.any           "Lv.2 Load into new tab always">
 <!ENTITY config.urlbar.asChild.none  "Lv.0 Open as separate tab">
 <!ENTITY config.urlbar.asChild.inner "Lv.1 Open as child tab if it is the same website">
-<!ENTITY config.urlbar.asChild.any   "Lv.2 Open as child tab anytime">
+<!ENTITY config.urlbar.asChild.any   "Lv.2 Open as child tab always">
 
 <!ENTITY config.dropLinksOnTab.caption "Verhalten für das Drag &amp; Drop von URLs auf Tabs">
 <!ENTITY config.dropLinksOnTab.ask     "Ask me always">
