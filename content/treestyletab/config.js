@@ -8,23 +8,23 @@ var Prefs = Components
 
 var gGroupBookmarkRadio,
 	gGroupBookmarkUnderParent,
-	gGroupBookmarkPref,
-	gGroupBookmarkReplace;
+	gGroupBookmarkBehaviorPref,
+	gGroupBookmarkReplacePref;
 
 function ensureGroupBookmarkItems()
 {
-	if (gGroupBookmarkPref) return;
+	if (gGroupBookmarkBehaviorPref) return;
 
-	gGroupBookmarkRadio = document.getElementById('openGroupBookmark-radiogroup');
-	gGroupBookmarkPref = document.getElementById('extensions.treestyletab.openGroupBookmark.behavior');
-	gGroupBookmarkUnderParent = document.getElementById('openGroupBookmark.underParent-check');
+	gGroupBookmarkRadio        = document.getElementById('openGroupBookmark-radiogroup');
+	gGroupBookmarkUnderParent  = document.getElementById('openGroupBookmark.underParent-check');
+	gGroupBookmarkBehaviorPref = document.getElementById('extensions.treestyletab.openGroupBookmark.behavior');
 	var bookmarkReplaceKey = 'browser.tabs.loadFolderAndReplace';
-	gGroupBookmarkReplace = document.getElementById(bookmarkReplaceKey);
+	gGroupBookmarkReplacePref = document.getElementById(bookmarkReplaceKey);
 	try {
-		gGroupBookmarkReplace.value = Prefs.getBoolPref(bookmarkReplaceKey);
+		gGroupBookmarkReplacePref.value = Prefs.getBoolPref(bookmarkReplaceKey);
 	}
 	catch(e) {
-		Prefs.setBoolPref(bookmarkReplaceKey, gGroupBookmarkReplace.value != 'false');
+		Prefs.setBoolPref(bookmarkReplaceKey, gGroupBookmarkReplacePref.value != 'false');
 	}
 }
 
@@ -35,7 +35,9 @@ function init()
 }
 
 
-var gOpenLinkInTabScale,
+var gDropLinksOnRadioSet,
+	gGroupBookmarkRadioSet,
+	gOpenLinkInTabScale,
 	gLoadLocationBarToNewTabScale,
 	gLoadLocationBarToChildTabScale,
 	gLastStateIsVertical;
@@ -43,6 +45,19 @@ var gTabbarPlacePositionInitialized = false;
 
 function initTabPane()
 {
+	gDropLinksOnTabRadioSet = new RadioSet(
+		'extensions.treestyletab.dropLinksOnTab.behavior',
+		'dropLinksOnTab-radiogroup',
+		'dropLinksOnTab-check',
+		'dropLinksOnTab-deck'
+	);
+	gGroupBookmarkRadioSet = new RadioSet(
+		'extensions.treestyletab.openGroupBookmark.behavior',
+		'openGroupBookmark-radiogroup',
+		'openGroupBookmark-check',
+		'openGroupBookmark-deck'
+	);
+
 	gOpenLinkInTabScale = new ScaleSet(
 		['extensions.treestyletab.openOuterLinkInNewTab',
 		 'extensions.treestyletab.openAnyLinkInNewTab'],
@@ -76,7 +91,7 @@ function initTabPane()
 	gLastStateIsVertical = gLastStateIsVertical == 'left' || gLastStateIsVertical == 'right';
 }
 
-function onSyncGroupBookmarkRadioToPref()
+function onSyncGroupBookmarkUIToPref()
 {
 	ensureGroupBookmarkItems();
 	var behavior = parseInt(gGroupBookmarkRadio.value);
@@ -90,14 +105,14 @@ function onSyncGroupBookmarkRadioToPref()
 	return behavior;
 }
 
-function onSyncPrefToGroupBookmarkRadio()
+function onSyncGroupBookmarkPrefToUI()
 {
 	ensureGroupBookmarkItems();
-	var behavior = gGroupBookmarkPref.value & 1 ? 1 :
-					gGroupBookmarkPref.value & 2 ? 2 :
-					gGroupBookmarkPref.value & 4 ? 4 :
+	var behavior = gGroupBookmarkBehaviorPref.value & 1 ? 1 :
+					gGroupBookmarkBehaviorPref.value & 2 ? 2 :
+					gGroupBookmarkBehaviorPref.value & 4 ? 4 :
 					0;
-	gGroupBookmarkUnderParent.checked = gGroupBookmarkPref.value & 256 ? true : false ;
+	gGroupBookmarkUnderParent.checked = gGroupBookmarkBehaviorPref.value & 256 ? true : false ;
 	return behavior;
 }
 
@@ -280,5 +295,57 @@ ScaleSet.prototype = {
 		this.prefs = null;
 		this.scale = null;
 		this.labels = null;
+	}
+};
+
+function RadioSet(aPref, aRadio, aCheck, aDeck)
+{
+	this.pref  = document.getElementById(aPref);
+	this.radio = document.getElementById(aRadio);
+	this.check = document.getElementById(aCheck);
+	this.deck  = document.getElementById(aDeck);
+	this.backup = this.value || 1;
+
+	if (this.value == 0) {
+		this.check.checked = true;
+		this.deck.selectedIndex = 0;
+	}
+	else {
+		this.check.checked = false;
+		this.deck.selectedIndex = 1;
+	}
+}
+RadioSet.prototype = {
+	onChange : function(aDontUpdatePref)
+	{
+		if (this.checked) {
+			this.backup = this.value;
+			this.deck.selectedIndex = 0;
+			this.value = 0;
+		}
+		else {
+			this.deck.selectedIndex = 1;
+			this.value = this.backup;
+		}
+		if (!aDontUpdatePref)
+			this.pref.value = this.value;
+	},
+
+	get checked()
+	{
+		return this.check.checked;
+	},
+	set checked(aValue)
+	{
+		return this.check.checked = aValue;
+	},
+
+	get value()
+	{
+		return parseInt(this.radio.value);
+	},
+	set value(aValue)
+	{
+		return this.radio.value = aValue;
 	}
 };
