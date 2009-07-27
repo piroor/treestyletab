@@ -61,15 +61,17 @@
 <!ENTITY config.urlbar.asChild.inner "Lv.1 Open as child tab if it is the same website">
 <!ENTITY config.urlbar.asChild.any   "Lv.2 Open as child tab anytime">
 
-<!ENTITY config.loadDroppedLinkToNewChildTab.caption "Verhalten für das Drag &amp; Drop von URLs auf Tabs">
-<!ENTITY config.loadDroppedLinkToNewChildTab.load    "Seite im Tab laden (Firefox Standard)">
-<!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "Seite in einem neuen untergeordneten Tab laden">
+<!ENTITY config.dropLinksOnTab.caption "Verhalten für das Drag &amp; Drop von URLs auf Tabs">
+<!ENTITY config.dropLinksOnTab.ask     "Ask me always">
+<!ENTITY config.dropLinksOnTab.load    "Seite im Tab laden (Firefox Standard)">
+<!ENTITY config.dropLinksOnTab.newTab  "Seite in einem neuen untergeordneten Tab laden">
 
-<!ENTITY config.openGroupBookmarkAsTabSubTree.caption     "Verhalten von &quot;Alle in Tabs öffnen&quot; für Seiten in einem Lesezeichenordner">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree     "Als Zweig öffnen (Empfohlen)">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.flat        "Als eigenständige Tabs öffnen (Firefox Standard)">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.replace     "Aktuelles Tab durch die neuen Tabs ersetzen">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.underParent "Seiten zur Gruppierung einem Dummytab unterordnen">
+<!ENTITY config.openGroupBookmark.caption     "Verhalten von &quot;Alle in Tabs öffnen&quot; für Seiten in einem Lesezeichenordner">
+<!ENTITY config.openGroupBookmark.ask         "Ask me always">
+<!ENTITY config.openGroupBookmark.subtree     "Als Zweig öffnen (Empfohlen)">
+<!ENTITY config.openGroupBookmark.flat        "Als eigenständige Tabs öffnen (Firefox Standard)">
+<!ENTITY config.openGroupBookmark.replace     "Aktuelles Tab durch die neuen Tabs ersetzen">
+<!ENTITY config.openGroupBookmark.underParent "Seiten zur Gruppierung einem Dummytab unterordnen">
 
 <!ENTITY config.tabs.restriction.tab "Neue Tabs statt neue Fenster öffnen">
 

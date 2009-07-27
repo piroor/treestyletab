@@ -81,11 +81,10 @@ pref("extensions.treestyletab.urlbar.loadDifferentDomainToNewTab.asChild", false
 pref("extensions.treestyletab.urlbar.loadSameDomainToNewTab",      true);
 pref("extensions.treestyletab.urlbar.loadSameDomainToNewTab.asChild", true);
 pref("extensions.treestyletab.urlbar.invertDefaultBehavior",       true);
-pref("extensions.treestyletab.loadDroppedLinkToNewChildTab",       false);
-pref("extensions.treestyletab.loadDroppedLinkToNewChildTab.confirm", true);
-pref("extensions.treestyletab.openGroupBookmarkBehavior.confirm", true);
-pref("extensions.treestyletab.openGroupBookmarkAsTabSubTree",      true);
-pref("extensions.treestyletab.openGroupBookmarkAsTabSubTree.underParent", true);
+// 0 = always ask, 1 = load into the tab, 2 = open new child tab
+pref("extensions.treestyletab.dropLinksOnTab.behavior", 0);
+// 0 = always ask, 1 = tree, 2 = separate, 4 = replace, 256 = use dummy tab (for subtree)
+pref("extensions.treestyletab.openGroupBookmark.behavior", 256);
 pref("extensions.treestyletab.useEffectiveTLD", true);
 
 pref("extensions.treestyletab.autoCollapseExpandSubTreeOnSelect",      true);
@@ -123,7 +122,7 @@ pref("extensions.multipletab.show.multipletab-selection-item-createSubTree", tru
 pref("extensions.treestyletab.TMP.doNotUpdate.isTabVisible", false);
 
 
-pref("extensions.treestyletab.orientalPrefsMigrated", 0);
+pref("extensions.treestyletab.prefsVersion", 0);
 
 
 pref("extensions.treestyletab@piro.sakura.ne.jp.name", "chrome://treestyletab/locale/treestyletab.properties");

@@ -8,21 +8,21 @@ window.addEventListener('load', function() {
 		).replace(
 			'browserWindow.getBrowser().loadTabs(',
 			<![CDATA[
-				var howToOpenGroupBookmark = TreeStyleTabService.howToOpenGroupBookmark();
+				var openGroupBookmarkBehavior = TreeStyleTabService.openGroupBookmarkBehavior();
 				if (
 					where.indexOf('tab') == 0 ||
 					aEvent.target.id == 'placesContext_openContainer:tabs' ||
 					aEvent.target == aEvent.target.parentNode._endOptOpenAllInTabs ||
 					aEvent.target.getAttribute('openInTabs') == 'true'
 					) {
-					if (howToOpenGroupBookmark & TreeStyleTabService.kGROUP_BOOKMARK_SUBTREE) {
+					if (openGroupBookmarkBehavior & TreeStyleTabService.kGROUP_BOOKMARK_SUBTREE) {
 						TreeStyleTabService.readyToOpenNewTabGroup();
-						if (howToOpenGroupBookmark & TreeStyleTabService.kGROUP_BOOKMARK_USE_DUMMY)
+						if (openGroupBookmarkBehavior & TreeStyleTabService.kGROUP_BOOKMARK_USE_DUMMY)
 							urls.unshift(TreeStyleTabService.getGroupTabURI(aFolderTitle));
 						replaceCurrentTab = false;
 					}
 					else {
-						replaceCurrentTab = howToOpenGroupBookmark & TreeStyleTabService.kGROUP_BOOKMARK_REPLACE ? true : false ;
+						replaceCurrentTab = openGroupBookmarkBehavior & TreeStyleTabService.kGROUP_BOOKMARK_REPLACE ? true : false ;
 					}
 				}
 				$&]]>

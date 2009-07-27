@@ -60,15 +60,17 @@
 <!ENTITY config.urlbar.asChild.inner "Lv.1 Open as child tab if it is the same website">
 <!ENTITY config.urlbar.asChild.any   "Lv.2 Open as child tab anytime">
 
-<!ENTITY config.loadDroppedLinkToNewChildTab.caption "将链接或URL拖拽到现有标签后：">
-<!ENTITY config.loadDroppedLinkToNewChildTab.load    "在标签中加载链接 （Firefox 默认）">
-<!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "在此标签的新建子标签中打开链接">
+<!ENTITY config.dropLinksOnTab.caption "将链接或URL拖拽到现有标签后：">
+<!ENTITY config.dropLinksOnTab.ask     "Ask me always">
+<!ENTITY config.dropLinksOnTab.load    "在标签中加载链接 （Firefox 默认）">
+<!ENTITY config.dropLinksOnTab.newTab  "在此标签的新建子标签中打开链接">
 
-<!ENTITY config.openGroupBookmarkAsTabSubTree.caption     "点击“在标签页中打开书签组”菜单：">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree     "在子树中打开 （推荐）">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.flat        "在单独标签中打开 （Firefox 默认）">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.replace     "覆盖当前标签打开">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.underParent "将标签置于一伪标签下以便分组">
+<!ENTITY config.openGroupBookmark.caption     "点击“在标签页中打开书签组”菜单：">
+<!ENTITY config.openGroupBookmark.ask         "Ask me always">
+<!ENTITY config.openGroupBookmark.subtree     "在子树中打开 （推荐）">
+<!ENTITY config.openGroupBookmark.flat        "在单独标签中打开 （Firefox 默认）">
+<!ENTITY config.openGroupBookmark.replace     "覆盖当前标签打开">
+<!ENTITY config.openGroupBookmark.underParent "将标签置于一伪标签下以便分组">
 
 <!ENTITY config.tabs.restriction.tab "打开标签而非窗口">
 

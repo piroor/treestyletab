@@ -59,15 +59,17 @@
 <!ENTITY config.urlbar.asChild.inner "Lv.1 Open as child tab if it is the same website">
 <!ENTITY config.urlbar.asChild.any   "Lv.2 Open as child tab anytime">
 
-<!ENTITY config.loadDroppedLinkToNewChildTab.caption "拖曳鏈結或 URL 到現有的分頁時">
-<!ENTITY config.loadDroppedLinkToNewChildTab.load    "在拖曳目的地分頁載入鏈結（Firefox 預設）">
-<!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "用拖曳目的地分頁之下的新子分頁開啟鏈結">
+<!ENTITY config.dropLinksOnTab.caption "拖曳鏈結或 URL 到現有的分頁時">
+<!ENTITY config.dropLinksOnTab.ask     "Ask me always">
+<!ENTITY config.dropLinksOnTab.load    "在拖曳目的地分頁載入鏈結（Firefox 預設）">
+<!ENTITY config.dropLinksOnTab.newTab  "用拖曳目的地分頁之下的新子分頁開啟鏈結">
 
-<!ENTITY config.openGroupBookmarkAsTabSubTree.caption "按書籤資料夾的「全部開啟」時">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree "用一個子樹開啟（推薦）">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.flat        "用分開的分頁開啟（Firefox 預設）">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.replace     "將目前瀏覽的分頁取代為書籤的內容">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.underParent "將各分頁開啟於一虛分頁之下以便分組">
+<!ENTITY config.openGroupBookmark.caption     "按書籤資料夾的「全部開啟」時">
+<!ENTITY config.openGroupBookmark.ask         "Ask me always">
+<!ENTITY config.openGroupBookmark.subtree     "用一個子樹開啟（推薦）">
+<!ENTITY config.openGroupBookmark.flat        "用分開的分頁開啟（Firefox 預設）">
+<!ENTITY config.openGroupBookmark.replace     "將目前瀏覽的分頁取代為書籤的內容">
+<!ENTITY config.openGroupBookmark.underParent "將各分頁開啟於一虛分頁之下以便分組">
 
 <!ENTITY config.tabs.restriction.tab "開啟分頁代替視窗">
 <!ENTITY config.open_newwindow.caption "從網頁鏈結開啟新視窗的控制">

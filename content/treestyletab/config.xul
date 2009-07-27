@@ -323,15 +323,12 @@
 		<preference id="extensions.treestyletab.urlbar.loadSameDomainToNewTab.asChild"
 			name="extensions.treestyletab.urlbar.loadSameDomainToNewTab.asChild"
 			type="bool"/>
-		<preference id="extensions.treestyletab.loadDroppedLinkToNewChildTab"
-			name="extensions.treestyletab.loadDroppedLinkToNewChildTab"
-			type="bool"/>
-		<preference id="extensions.treestyletab.openGroupBookmarkAsTabSubTree"
-			name="extensions.treestyletab.openGroupBookmarkAsTabSubTree"
-			type="bool"/>
-		<preference id="extensions.treestyletab.openGroupBookmarkAsTabSubTree.underParent"
-			name="extensions.treestyletab.openGroupBookmarkAsTabSubTree.underParent"
-			type="bool"/>
+		<preference id="extensions.treestyletab.dropLinksOnTab.behavior"
+			name="extensions.treestyletab.dropLinksOnTab.behavior"
+			type="int"/>
+		<preference id="extensions.treestyletab.openGroupBookmark.behavior"
+			name="extensions.treestyletab.openGroupBookmark.behavior"
+			type="int"/>
 		<preference id="browser.tabs.loadFolderAndReplace"
 			name="browser.tabs.loadFolderAndReplace.override"
 			type="bool"/>
@@ -405,27 +402,31 @@
 					</hbox>
 				</groupbox>
 				<groupbox>
-					<caption label="&config.loadDroppedLinkToNewChildTab.caption;"/>
-					<radiogroup id="extensions.treestyletab.loadDroppedLinkToNewChildTab-radiogroup"
-						preference="extensions.treestyletab.loadDroppedLinkToNewChildTab"
+					<caption label="&config.dropLinksOnTab.caption;"/>
+					<radiogroup id="extensions.treestyletab.dropLinksOnTab.behavior-radiogroup"
+						preference="extensions.treestyletab.dropLinksOnTab.behavior"
 						orient="vertical">
-						<radio value="false" label="&config.loadDroppedLinkToNewChildTab.load;"/>
-						<radio value="true"  label="&config.loadDroppedLinkToNewChildTab.newTab;"/>
+						<radio value="0" label="&config.dropLinksOnTab.ask;"/>
+						<radio value="1" label="&config.dropLinksOnTab.load;"/>
+						<radio value="2" label="&config.dropLinksOnTab.newTab;"/>
 					</radiogroup>
 				</groupbox>
 				<groupbox>
-					<caption label="&config.openGroupBookmarkAsTabSubTree.caption;"/>
-					<radiogroup id="openGroupBookmarkAsTabSubTree-radiogroup"
+					<caption label="&config.openGroupBookmark.caption;"/>
+					<radiogroup id="openGroupBookmark-radiogroup"
 						orient="vertical"
-						oncommand="onChangeGroupBookmarkRadio();">
+						onsynctopreference="return onSyncGroupBookmarkRadioToPref();"
+						onsyncfrompreference="return onSyncPrefToGroupBookmarkRadio();"
+						preference="extensions.treestyletab.openGroupBookmark.behavior">
+						<radio value="0" label="&config.openGroupBookmark.ask;"/>
 						<hbox align="center">
-							<radio value="subtree" label="&config.openGroupBookmarkAsTabSubTree.subtree;"/>
-							<checkbox id="openGroupBookmarkAsTabSubTree.underParent-check"
-								label="&config.openGroupBookmarkAsTabSubTree.underParent;"
-								preference="extensions.treestyletab.openGroupBookmarkAsTabSubTree.underParent"/>
+							<radio value="1" label="&config.openGroupBookmark.subtree;"/>
+							<checkbox id="openGroupBookmark.underParent-check"
+								label="&config.openGroupBookmark.underParent;"
+								oncommand="gGroupBookmarkPref.value = onSyncGroupBookmarkRadioToPref();"/>
 						</hbox>
-						<radio value="flat"    label="&config.openGroupBookmarkAsTabSubTree.flat;"/>
-						<radio value="replace" label="&config.openGroupBookmarkAsTabSubTree.replace;"/>
+						<radio value="2" label="&config.openGroupBookmark.flat;"/>
+						<radio value="4" label="&config.openGroupBookmark.replace;"/>
 					</radiogroup>
 				</groupbox>
 			</tabpanel>

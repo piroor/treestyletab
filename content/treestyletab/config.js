@@ -2,9 +2,35 @@ const XULAppInfo = Components.classes['@mozilla.org/xre/app-info;1']
 		.getService(Components.interfaces.nsIXULAppInfo);
 const comparator = Components.classes['@mozilla.org/xpcom/version-comparator;1']
 					.getService(Components.interfaces.nsIVersionComparator);
+var Prefs = Components
+		.classes['@mozilla.org/preferences;1']
+		.getService(Components.interfaces.nsIPrefBranch);
+
+var gGroupBookmarkRadio,
+	gGroupBookmarkUnderParent,
+	gGroupBookmarkPref,
+	gGroupBookmarkReplace;
+
+function ensureGroupBookmarkItems()
+{
+	if (gGroupBookmarkPref) return;
+
+	gGroupBookmarkRadio = document.getElementById('openGroupBookmark-radiogroup');
+	gGroupBookmarkPref = document.getElementById('extensions.treestyletab.openGroupBookmark.behavior');
+	gGroupBookmarkUnderParent = document.getElementById('openGroupBookmark.underParent-check');
+	var bookmarkReplaceKey = 'browser.tabs.loadFolderAndReplace';
+	gGroupBookmarkReplace = document.getElementById(bookmarkReplaceKey);
+	try {
+		gGroupBookmarkReplace.value = Prefs.getBoolPref(bookmarkReplaceKey);
+	}
+	catch(e) {
+		Prefs.setBoolPref(bookmarkReplaceKey, gGroupBookmarkReplace.value != 'false');
+	}
+}
 
 function init()
 {
+	ensureGroupBookmarkItems();
 //	sizeToContent();
 }
 
@@ -12,9 +38,6 @@ function init()
 var gOpenLinkInTabScale,
 	gLoadLocationBarToNewTabScale,
 	gLoadLocationBarToChildTabScale,
-	gGroupBookmarkRadio,
-	gGroupBookmarkTree,
-	gGroupBookmarkReplace,
 	gLastStateIsVertical;
 var gTabbarPlacePositionInitialized = false;
 
@@ -39,12 +62,6 @@ function initTabPane()
 		'loadLocationBarToChildTab-labels'
 	);
 
-	gGroupBookmarkRadio = document.getElementById('openGroupBookmarkAsTabSubTree-radiogroup');
-	gGroupBookmarkTree = document.getElementById('extensions.treestyletab.openGroupBookmarkAsTabSubTree');
-
-
-	var Prefs = Components.classes['@mozilla.org/preferences;1']
-			.getService(Components.interfaces.nsIPrefBranch);
 
 	var restrictionKey = 'browser.link.open_newwindow.restriction';
 	var restriction = document.getElementById(restrictionKey);
@@ -55,34 +72,33 @@ function initTabPane()
 		Prefs.setIntPref(restrictionKey, parseInt(restriction.value));
 	}
 
-	var bookmarkReplaceKey = 'browser.tabs.loadFolderAndReplace';
-	gGroupBookmarkReplace = document.getElementById(bookmarkReplaceKey);
-	try {
-		gGroupBookmarkReplace.value = Prefs.getBoolPref(bookmarkReplaceKey);
-	}
-	catch(e) {
-		Prefs.setBoolPref(bookmarkReplaceKey, gGroupBookmarkReplace.value != 'false');
-	}
-
-	gGroupBookmarkRadio.value =
-		gGroupBookmarkTree.value && !gGroupBookmarkReplace.value ? 'subtree' :
-		!gGroupBookmarkTree.value && !gGroupBookmarkReplace.value ? 'flat' :
-		'replace';
-
 	gLastStateIsVertical = document.getElementById('extensions.treestyletab.tabbar.position-radiogroup').value;
 	gLastStateIsVertical = gLastStateIsVertical == 'left' || gLastStateIsVertical == 'right';
 }
 
-function onChangeGroupBookmarkRadio()
+function onSyncGroupBookmarkRadioToPref()
 {
-	gGroupBookmarkTree.value    = gGroupBookmarkRadio.value == 'subtree';
-	gGroupBookmarkReplace.value = gGroupBookmarkRadio.value == 'replace';
+	ensureGroupBookmarkItems();
+	var behavior = parseInt(gGroupBookmarkRadio.value);
+	if (gGroupBookmarkUnderParent.checked) behavior += 256;
 
-	var underParent = document.getElementById('openGroupBookmarkAsTabSubTree.underParent-check');
-	if (gGroupBookmarkTree.value)
-		underParent.removeAttribute('disabled');
+	if (behavior & 1)
+		gGroupBookmarkUnderParent.removeAttribute('disabled');
 	else
-		underParent.setAttribute('disabled', true);
+		gGroupBookmarkUnderParent.setAttribute('disabled', true);
+
+	return behavior;
+}
+
+function onSyncPrefToGroupBookmarkRadio()
+{
+	ensureGroupBookmarkItems();
+	var behavior = gGroupBookmarkPref.value & 1 ? 1 :
+					gGroupBookmarkPref.value & 2 ? 2 :
+					gGroupBookmarkPref.value & 4 ? 4 :
+					0;
+	gGroupBookmarkUnderParent.checked = gGroupBookmarkPref.value & 256 ? true : false ;
+	return behavior;
 }
 
 

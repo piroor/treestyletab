@@ -1130,10 +1130,10 @@ var TreeStyleTabService = {
 	useTMPSessionAPI : false, 
 	kTMP_SESSION_DATA_PREFIX : 'tmp-session-data-',
   
-	shouldLoadDroppedLinkToNewChildTab : function() 
+	dropLinksOnTabBehavior : function() 
 	{
-		if (!this.getTreePref('loadDroppedLinkToNewChildTab.confirm'))
-			return this.getTreePref('loadDroppedLinkToNewChildTab');
+		var behavior = this.getTreePref('dropLinksOnTab.behavior');
+		if (behavior & this.kDROPLINK_FIXED) return behavior;
 
 		var checked = { value : false };
 		var newChildTab = this.PromptService.confirmEx(window,
@@ -1147,29 +1147,27 @@ var TreeStyleTabService = {
 				this.stringbundle.getString('dropLinkOnTab.never'),
 				checked
 			) == 0;
-		if (checked.value) {
-			this.setTreePref('loadDroppedLinkToNewChildTab.confirm', false);
-			this.setTreePref('loadDroppedLinkToNewChildTab', newChildTab);
-		}
-		return newChildTab
-	},
- 
-	howToOpenGroupBookmark : function() 
-	{
-		var dummyTabFlag = this.getTreePref('openGroupBookmarkAsTabSubTree.underParent') ?
-							this.kGROUP_BOOKMARK_USE_DUMMY :
-							0 ;
 
-		if (!this.getTreePref('openGroupBookmarkBehavior.confirm')) {
-			return this.getTreePref('openGroupBookmarkAsTabSubTree') ?
-					this.kGROUP_BOOKMARK_SUBTREE | dummyTabFlag :
-				this.getPref('browser.tabs.loadFolderAndReplace') ?
-					this.kGROUP_BOOKMARK_REPLACE :
-					this.kGROUP_BOOKMARK_SEPARATE ;
-		}
+		behavior = newChildTab ? this.kDROPLINK_NEWTAB : this.kDROPLINK_LOAD ;
+		if (checked.value)
+			this.setTreePref('dropLinksOnTab.behavior', behavior);
+
+		return behavior
+	},
+	kDROPLINK_ASK    : 0,
+	kDROPLINK_FIXED  : 1 + 2,
+	kDROPLINK_LOAD   : 1,
+	kDROPLINK_NEWTAB : 2,
+ 
+	openGroupBookmarkBehavior : function() 
+	{
+		var behavior = this.getTreePref('openGroupBookmark.behavior');
+		if (behavior & this.kGROUP_BOOKMARK_FIXED) return behavior;
+
+		var dummyTabFlag = behavior & this.kGROUP_BOOKMARK_USE_DUMMY;
 
 		var checked = { value : false };
-		var behavior = this.PromptService.confirmEx(window,
+		var button = this.PromptService.confirmEx(window,
 				this.stringbundle.getString('openGroupBookmarkBehavior.title'),
 				this.stringbundle.getString('openGroupBookmarkBehavior.text'),
 				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_0) +
@@ -1182,21 +1180,22 @@ var TreeStyleTabService = {
 				checked
 			);
 
-		if (behavior < 0) behavior = 1;
+		if (button < 0) button = 1;
 		var behaviors = [
 				this.kGROUP_BOOKMARK_SUBTREE | dummyTabFlag,
 				this.kGROUP_BOOKMARK_SEPARATE,
 				this.kGROUP_BOOKMARK_REPLACE
 			];
-		behavior = behaviors[behavior];
+		behavior = behaviors[button];
 
 		if (checked.value) {
-			this.setTreePref('openGroupBookmarkBehavior.confirm', false);
-			this.setTreePref('openGroupBookmarkAsTabSubTree', behavior & this.kGROUP_BOOKMARK_SUBTREE ? true : false );
+			this.setTreePref('openGroupBookmark.behavior', behavior);
 			this.setPref('browser.tabs.loadFolderAndReplace', behavior & this.kGROUP_BOOKMARK_REPLACE ? true : false );
 		}
 		return behavior;
 	},
+	kGROUP_BOOKMARK_ASK       : 0,
+	kGROUP_BOOKMARK_FIXED     : 1 + 2 + 4,
 	kGROUP_BOOKMARK_SUBTREE   : 1,
 	kGROUP_BOOKMARK_SEPARATE  : 2,
 	kGROUP_BOOKMARK_REPLACE   : 4,
@@ -1246,9 +1245,29 @@ var TreeStyleTabService = {
 
 		this.registerTabFocusAllowance(this.defaultTabFocusAllowance);
 
+		this.migratePrefs();
+	},
+	preInitialized : false,
+	
+	defaultTabFocusAllowance : function(aBrowser) 
+	{
+		var tab = aBrowser.selectedTab;
+		return (
+			!this.getPref('browser.tabs.selectOwnerOnClose') ||
+			!tab.owner ||
+			(
+				aBrowser._removingTabs &&
+				aBrowser._removingTabs.indexOf(tab.owner) > -1
+			)
+		);
+	},
+ 
+	kPREF_VERSION : 4,
+	migratePrefs : function() 
+	{
 		// migrate old prefs
 		var orientalPrefs = [];
-		switch (this.getTreePref('orientalPrefsMigrated'))
+		switch (this.getTreePref('prefsVersion'))
 		{
 			case 0:
 				orientalPrefs = orientalPrefs.concat([
@@ -1267,7 +1286,37 @@ var TreeStyleTabService = {
 					this.setTreePref('urlbar.loadSameDomainToNewTab', value);
 					this.setTreePref('urlbar.loadSameDomainToNewTab.asChild', value);
 					if (value) this.setTreePref('urlbar.loadDifferentDomainToNewTab', value);
-					this.clearPref('extensions.treestyletab.urlbar.loadSameDomainToNewChildTab');
+					this.clearTreePref('urlbar.loadSameDomainToNewChildTab');
+				}
+			case 3:
+				if (this.getTreePref('loadDroppedLinkToNewChildTab') !== null) {
+					this.setTreePref('dropLinksOnTab.behavior',
+						this.getTreePref('loadDroppedLinkToNewChildTab.confirm') ?
+							this.kDROPLINK_ASK :
+						this.getTreePref('loadDroppedLinkToNewChildTab') ?
+							this.kDROPLINK_NEWTAB :
+							this.kDROPLINK_LOAD
+					);
+					this.clearTreePref('loadDroppedLinkToNewChildTab.confirm');
+					this.clearTreePref('loadDroppedLinkToNewChildTab');
+				}
+				if (this.getTreePref('openGroupBookmarkAsTabSubTree') !== null) {
+					let behavior = 0;
+					if (this.getTreePref('openGroupBookmarkAsTabSubTree.underParent'))
+						behavior += this.kGROUP_BOOKMARK_USE_DUMMY;
+					if (!this.getTreePref('openGroupBookmarkBehavior.confirm')) {
+						if (this.getTreePref('openGroupBookmarkAsTabSubTree'))
+							behavior += this.kGROUP_BOOKMARK_SUBTREE;
+						else if (this.getTreePref('browser.tabs.loadFolderAndReplace'))
+							behavior += this.kGROUP_BOOKMARK_REPLACE;
+						else
+							behavior += this.kGROUP_BOOKMARK_SEPARATE;
+					}
+					this.setTreePref('openGroupBookmark.behavior', behavior);
+					this.clearTreePref('openGroupBookmarkBehavior.confirm');
+					this.clearTreePref('openGroupBookmarkAsTabSubTree');
+					this.clearTreePref('openGroupBookmarkAsTabSubTree.underParent');
+					this.setPref('browser.tabs.loadFolderAndReplace', behavior & this.kGROUP_BOOKMARK_REPLACE ? true : false );
 				}
 			default:
 				orientalPrefs.forEach(function(aPref) {
@@ -1279,21 +1328,7 @@ var TreeStyleTabService = {
 				}, this);
 				break;
 		}
-		this.setTreePref('orientalPrefsMigrated', 3);
-	},
-	preInitialized : false,
-	
-	defaultTabFocusAllowance : function(aBrowser) 
-	{
-		var tab = aBrowser.selectedTab;
-		return (
-			!this.getPref('browser.tabs.selectOwnerOnClose') ||
-			!tab.owner ||
-			(
-				aBrowser._removingTabs &&
-				aBrowser._removingTabs.indexOf(tab.owner) > -1
-			)
-		);
+		this.setTreePref('prefsVersion', this.kPREF_VERSION);
 	},
   
 	init : function() 
@@ -1523,7 +1558,7 @@ catch(e) {
 						);
 					if (!loadDroppedLinkToNewChildTab &&
 						dropActionInfo.position == TreeStyleTabService.kDROP_ON) {
-						loadDroppedLinkToNewChildTab = TreeStyleTabService.shouldLoadDroppedLinkToNewChildTab();
+						loadDroppedLinkToNewChildTab = TreeStyleTabService.dropLinksOnTabBehavior() == TreeStyleTabService.kDROPLINK_NEWTAB;
 					}
 					if (
 						loadDroppedLinkToNewChildTab ||
@@ -2601,6 +2636,11 @@ catch(e) {
 	setTreePref : function(aPrefstring, aNewValue) 
 	{
 		return this.setPref('extensions.treestyletab.'+aPrefstring, aNewValue);
+	},
+ 
+	clearTreePref : function(aPrefstring) 
+	{
+		return this.clearPref('extensions.treestyletab.'+aPrefstring);
 	}
    
 }; 

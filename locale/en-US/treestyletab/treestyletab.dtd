@@ -60,15 +60,17 @@
 <!ENTITY config.urlbar.asChild.inner "Lv.1 Open as child tab if it is the same website">
 <!ENTITY config.urlbar.asChild.any   "Lv.2 Open as child tab anytime">
 
-<!ENTITY config.loadDroppedLinkToNewChildTab.caption "Action for drag drop of links or URLs to existing tab">
-<!ENTITY config.loadDroppedLinkToNewChildTab.load    "Load link into the tab (Firefox default)">
-<!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "Open link in a new child tab of the tab">
+<!ENTITY config.dropLinksOnTab.caption "Action for drag drop of links or URLs to existing tab">
+<!ENTITY config.dropLinksOnTab.ask     "Ask me always">
+<!ENTITY config.dropLinksOnTab.load    "Load link into the tab (Firefox default)">
+<!ENTITY config.dropLinksOnTab.newTab  "Open link in a new child tab of the tab">
 
-<!ENTITY config.openGroupBookmarkAsTabSubTree.caption     "&quot;Open All in Tabs&quot; from bookmark folders">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree     "Open as a tree (Recommended)">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.flat        "Open as separate tabs (Firefox default)">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.replace     "Replace the current one tab with the pages in the folder">
-<!ENTITY config.openGroupBookmarkAsTabSubTree.underParent "Put tabs under a dummy tab for grouping">
+<!ENTITY config.openGroupBookmark.caption     "&quot;Open All in Tabs&quot; from bookmark folders">
+<!ENTITY config.openGroupBookmark.ask         "Ask me always">
+<!ENTITY config.openGroupBookmark.subtree     "Open as a tree (Recommended)">
+<!ENTITY config.openGroupBookmark.flat        "Open as separate tabs (Firefox default)">
+<!ENTITY config.openGroupBookmark.replace     "Replace the current one tab with the pages in the folder">
+<!ENTITY config.openGroupBookmark.underParent "Put tabs under a dummy tab for grouping">
 
 <!ENTITY config.tabs.restriction.tab "Open tabs instead of windows">
 
