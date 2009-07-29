@@ -1474,7 +1474,10 @@ TreeStyleTabBrowser.prototype = {
 						this.moveTabSubTreeTo(aTab, this.getLastTab(b)._tPos);
 					} :
 				(parentTab ?
-					closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_ESCALATE_FIRST :
+					(
+						closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_ESCALATE_FIRST &&
+						this.getChildTabs(parentTab).length > 1
+					) :
 					closeRootBehavior   == this.CLOSE_ROOT_BEHAVIOR_ESCALATE_FIRST
 				) ?
 					function(aTab, aIndex) {
