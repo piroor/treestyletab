@@ -497,41 +497,6 @@ var TreeStyleTabService = {
 		aNewPosition = aNewPosition.toLowerCase();
 		this.setTreePref('tabbar.position', aNewPosition);
 	},
- 
-	beginAddBookmarksFromTabs : function(aTabs) /* PUBLIC API */ 
-	{
-		this._addingBookmarks = [];
-		this._addingBookmarkTreeStructure = aTabs.map(function(aTab) {
-			var parent = this.getParentTab(aTab);
-			return aTabs.indexOf(parent);
-		}, this);
-
-		this.BookmarksService.addObserver(this, false);
-	},
-	endAddBookmarksFromTabs : function() /* PUBLIC API */
-	{
-		this.BookmarksService.removeObserver(this);
-
-		// this is adding bookmark folder from tabs, so ignroe the first item!
-		if (
-			this._addingBookmarks.length == this._addingBookmarkTreeStructure.length+1 &&
-			this.BookmarksService.getItemType(this._addingBookmarks[0].id) == this.BookmarksService.TYPE_FOLDER
-			)
-			this._addingBookmarks.shift();
-
-		if (this._addingBookmarks.length == this._addingBookmarkTreeStructure.length) {
-			this._addingBookmarks.forEach(function(aItem, aIndex) {
-				let index = this._addingBookmarkTreeStructure[aIndex];
-				PlacesUtils.setAnnotationsForItem(aItem.id, [{
-					name    : this.kPARENT,
-					value   : (index > -1 ? this._addingBookmarks[index].id : -1 ),
-					expires : PlacesUtils.annotations.EXPIRE_NEVER
-				}]);
-			}, this);
-		}
-		this._addingBookmarks = [];
-		this._addingBookmarkTreeStructure = [];
-	},
   
 /* backward compatibility */ 
 	getTempTreeStyleTab : function(aTabBrowser)
@@ -2594,6 +2559,42 @@ catch(e) {
   
 /* bookmarks and tabs */ 
 	
+	beginAddBookmarksFromTabs : function(aTabs) /* PUBLIC API */ 
+	{
+		this._addingBookmarks = [];
+		this._addingBookmarkTreeStructure = aTabs.map(function(aTab) {
+			var parent = this.getParentTab(aTab);
+			return aTabs.indexOf(parent);
+		}, this);
+
+		this.BookmarksService.addObserver(this, false);
+	},
+ 
+	endAddBookmarksFromTabs : function() /* PUBLIC API */ 
+	{
+		this.BookmarksService.removeObserver(this);
+
+		// this is adding bookmark folder from tabs, so ignroe the first item!
+		if (
+			this._addingBookmarks.length == this._addingBookmarkTreeStructure.length+1 &&
+			this.BookmarksService.getItemType(this._addingBookmarks[0].id) == this.BookmarksService.TYPE_FOLDER
+			)
+			this._addingBookmarks.shift();
+
+		if (this._addingBookmarks.length == this._addingBookmarkTreeStructure.length) {
+			this._addingBookmarks.forEach(function(aItem, aIndex) {
+				let index = this._addingBookmarkTreeStructure[aIndex];
+				PlacesUtils.setAnnotationsForItem(aItem.id, [{
+					name    : this.kPARENT,
+					value   : (index > -1 ? this._addingBookmarks[index].id : -1 ),
+					expires : PlacesUtils.annotations.EXPIRE_NEVER
+				}]);
+			}, this);
+		}
+		this._addingBookmarks = [];
+		this._addingBookmarkTreeStructure = [];
+	},
+ 
 	// based on PlacesUtils.getURLsForContainerNode()
 	getItemIdsForContainerNode: function(aNode) 
 	{
