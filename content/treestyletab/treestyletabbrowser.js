@@ -1524,7 +1524,8 @@ TreeStyleTabBrowser.prototype = {
 						this.partTab(aTab, true);
 					}
 			), this);
-			if (closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_ESCALATE_ALL)
+			if (closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_ESCALATE_ALL ||
+				closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_ESCALATE_FIRST)
 				nextFocusedTab = firstChild;
 		}
 
