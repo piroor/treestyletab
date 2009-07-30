@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="editBookmarkOverlay.css" type="text/css"?>
+<!DOCTYPE overlay SYSTEM "chrome://treestyletab/locale/treestyletab.dtd">
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<script src="res/prefs.js" type="application/x-javascript; version=1.7"/>
+<script src="res/boxObject.js" type="application/x-javascript; version=1.7"/>
+<script src="res/animationManager.js" type="application/x-javascript; version=1.7"/>
+<script src="treestyletab.js" type="application/x-javascript; version=1.7"/>
+<script src="editBookmarkOverlay.js" type="application/x-javascript; version=1.7"/>
+
+<vbox id="editBookmarkPanelContent">
+	<hbox id="treestyletab-parent-row"
+		align="center"
+		collapsed="true">
+		<label value="&bookmark.parent.label;"
+			control="treestyletab-parent-menulist"/>
+		<menulist id="treestyletab-parent-menulist"
+			flex="1"
+			oncommand="TreeStyleTabBookmarksProperty.onParentChange();">
+			<menupopup id="treestyletab-parent-popup">
+				<menuseparator id="treestyletab-parent-blank-item-separator"/>
+				<menuitem id="treestyletab-parent-blank-item"
+					label="&bookmark.parent.blank.label;"
+					value=""/>
+			</menupopup>
+		</menulist>
+	</hbox>
+</vbox>
+
+</overlay>
