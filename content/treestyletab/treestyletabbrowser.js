@@ -1380,7 +1380,7 @@ TreeStyleTabBrowser.prototype = {
 				parent = (positionInTree > -1 && positionInTree < tabs.length) ? tabs[positionInTree] : parent ;
 			}
 			if (parent) {
-				this.attachTabTo(tab, parent);
+				this.attachTabTo(tab, parent, { dontMove : true });
 			}
 
 			let refTab;
@@ -1480,7 +1480,9 @@ TreeStyleTabBrowser.prototype = {
 				(closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_DETACH) ?
 					function(aTab) {
 						indentModifiedTabs.push(aTab);
-						this.partTab(aTab, true);
+						this.partTab(aTab, {
+							dontUpdateIndent : true
+						});
 						this.moveTabSubTreeTo(aTab, this.getLastTab(b)._tPos);
 					} :
 				(parentTab ?
@@ -1491,22 +1493,23 @@ TreeStyleTabBrowser.prototype = {
 					closeRootBehavior   == this.CLOSE_ROOT_BEHAVIOR_ESCALATE_FIRST
 				) ?
 					function(aTab, aIndex) {
-						this.partTab(aTab, true);
+						this.partTab(aTab, { dontUpdateIndent : true });
 						if (aIndex == 0) {
 							nextFocusedTab = aTab;
 							indentModifiedTabs.push(aTab);
 							if (parentTab) {
 								this.attachTabTo(aTab, parentTab, {
-									insertBefore : tab,
 									dontUpdateIndent : true,
-									dontExpand : true
+									dontExpand       : true,
+									dontMove         : true
 								});
 							}
 						}
 						else {
 							this.attachTabTo(aTab, children[0], {
 								dontUpdateIndent : true,
-								dontExpand : true
+								dontExpand       : true,
+								dontMove         : true
 							});
 						}
 					} :
@@ -1514,14 +1517,14 @@ TreeStyleTabBrowser.prototype = {
 					function(aTab) {
 						indentModifiedTabs.push(aTab);
 						this.attachTabTo(aTab, parentTab, {
-							insertBefore : tab,
 							dontUpdateIndent : true,
-							dontExpand : true
+							dontExpand       : true,
+							dontMove         : true
 						});
 					} :
 					function(aTab) {
 						indentModifiedTabs.push(aTab);
-						this.partTab(aTab, true);
+						this.partTab(aTab, { dontUpdateIndent : true });
 					}
 			), this);
 			if (closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_ESCALATE_ALL ||
@@ -1558,7 +1561,7 @@ TreeStyleTabBrowser.prototype = {
 			if (shouldCloseParentTab && nextFocusedTab == parentTab)
 				nextFocusedTab = this.getNextFocusedTab(parentTab);
 
-			this.partTab(tab, true);
+			this.partTab(tab, { dontUpdateIndent : true });
 
 			if (shouldCloseParentTab) {
 				window.setTimeout(function() {
@@ -1703,7 +1706,7 @@ TreeStyleTabBrowser.prototype = {
 
 		if (newParent != parent) {
 			if (newParent)
-				this.attachTabTo(aTab, newParent, { insertBefore : nextTab });
+				this.attachTabTo(aTab, newParent, { dontMove : true });
 			else
 				this.partTab(aTab);
 		}
@@ -1802,8 +1805,8 @@ TreeStyleTabBrowser.prototype = {
 			parent = this.getTabById(parent);
 			if (parent) {
 				this.attachTabTo(tab, parent, {
-					dontExpand : true,
-					insertBefore : nextTab,
+					dontExpand       : true,
+					insertBefore     : nextTab,
 					dontUpdateIndent : true
 				});
 				this.updateTabsIndent([tab], undefined, undefined, aWithoutAnimation);
@@ -2807,7 +2810,9 @@ TreeStyleTabBrowser.prototype = {
 
 		var id = aChild.getAttribute(this.kID);
 
-		this.partTab(aChild, true);
+		this.partTab(aChild, {
+			dontUpdateIndent : true
+		});
 
 		var children = aParent.getAttribute(this.kCHILDREN)
 						.split('|').filter(function(aId) {
@@ -2828,8 +2833,8 @@ TreeStyleTabBrowser.prototype = {
 		}
 		else {
 			children.push(id);
-			var refTab = aParent;
-			var descendant = this.getDescendantTabs(aParent);
+			let refTab = aParent;
+			let descendant = this.getDescendantTabs(aParent);
 			if (descendant.length) refTab = descendant[descendant.length-1];
 			newIndex = refTab._tPos+1;
 		}
@@ -2840,8 +2845,10 @@ TreeStyleTabBrowser.prototype = {
 		if (shouldInheritIndent && !aInfo.dontUpdateIndent)
 			this.inheritTabIndent(aChild, aParent);
 
-		if (newIndex > aChild._tPos) newIndex--;
-		this.moveTabSubTreeTo(aChild, newIndex);
+		if (!aInfo.dontMove) {
+			if (newIndex > aChild._tPos) newIndex--;
+			this.moveTabSubTreeTo(aChild, newIndex);
+		}
 
 		if (!aInfo.dontExpand) {
 			if (this.getTreePref('autoCollapseExpandSubTreeOnSelect')) {
@@ -2884,9 +2891,10 @@ TreeStyleTabBrowser.prototype = {
 		aChild.dispatchEvent(event);
 	},
  
-	partTab : function(aChild, aDontUpdateIndent) /* PUBLIC API */ 
+	partTab : function(aChild, aInfo) /* PUBLIC API */ 
 	{
 		if (!aChild) return;
+		if (!aInfo) aInfo = {};
 
 		var parentTab = this.getParentTab(aChild);
 		if (!parentTab) return;
@@ -2904,7 +2912,7 @@ TreeStyleTabBrowser.prototype = {
 		this.deleteTabValue(aChild, this.kPARENT);
 		this.updateTabsCount(parentTab);
 
-		if (!aDontUpdateIndent) {
+		if (!aInfo.dontUpdateIndent) {
 			this.updateTabsIndent([aChild]);
 			this.checkTabsIndentOverflow();
 		}
@@ -2922,9 +2930,9 @@ TreeStyleTabBrowser.prototype = {
 			}, 0, this.getTabBrowserFromChild(parentTab));
 		}
 	},
-	detachTab : function(aChild, aDontUpdateIndent) // alias
+	detachTab : function(aChild, aInfo) // alias
 	{
-		return this.partTab(aChild, aDontUpdateIndent);
+		return this.partTab(aChild, aInfo);
 	},
  
 	updateTabsIndent : function(aTabs, aLevel, aProp, aJustNow) 
