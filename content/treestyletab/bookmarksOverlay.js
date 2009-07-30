@@ -46,6 +46,9 @@ window.addEventListener('load', function() {
 							treeStructure.filter(function(aParent) { return aParent == -1; }).length > 1
 							) {
 							treeStructure.unshift(-1);
+							treeStructure = treeStructure.map(function(aPosition) {
+									return aPosition == -1 ? -1 : aPosition + 1;
+								});
 							urls.unshift(TreeStyleTabService.getGroupTabURI(aFolderTitle));
 						}
 						TreeStyleTabService.readyToOpenNewTabGroup(null, treeStructure);
