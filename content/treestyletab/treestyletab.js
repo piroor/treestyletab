@@ -2402,7 +2402,9 @@ catch(e) {
 			tabs = [aTabOrTabs];
 		}
 
-		var folderName = this.isGroupTab(tabs[0], true) ? tabs[0].label : 0 ;
+		var folderName = (this.isGroupTab(tabs[0], true) || tabs.length == 1) ?
+						tabs[0].label :
+						null ;
 
 		var b = this.getTabBrowserFromChild(tabs[0]);
 		var bookmarkedTabs = [];
