@@ -43,7 +43,9 @@ window.addEventListener('load', function() {
 					if (openGroupBookmarkBehavior & TreeStyleTabService.kGROUP_BOOKMARK_SUBTREE) {
 						if (
 							openGroupBookmarkBehavior & TreeStyleTabService.kGROUP_BOOKMARK_USE_DUMMY &&
-							treeStructure.filter(function(aParent) { return aParent == -1; }).length > 1
+							treeStructure.filter(function(aParent, aIndex) {
+								return aParent == -1 || aIndex == aParent;
+							}).length > 1
 							) {
 							treeStructure.unshift(-1);
 							treeStructure = treeStructure.map(function(aPosition) {
