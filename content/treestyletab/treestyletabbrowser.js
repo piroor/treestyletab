@@ -1370,14 +1370,14 @@ TreeStyleTabBrowser.prototype = {
 
 		this.initTab(tab);
 
-		var position = this.treeStructure && this.treeStructure.length ?
-							this.treeStructure.shift() : -1 ;
+		var hasStructure = this.treeStructure && this.treeStructure.length;
+		var positionInTree = hasStructure ? this.treeStructure.shift() : -1 ;
 
 		if (this.readyToAttachNewTab) {
 			let parent = this.getTabById(this.parentTab);
 			if (parent) {
 				let tabs = [parent].concat(this.getDescendantTabs(parent));
-				parent = (position > -1 && position < tabs.length) ? tabs[position] : parent ;
+				parent = (positionInTree > -1 && positionInTree < tabs.length) ? tabs[positionInTree] : parent ;
 			}
 			if (parent) {
 				this.attachTabTo(tab, parent);
@@ -1385,7 +1385,9 @@ TreeStyleTabBrowser.prototype = {
 
 			let refTab;
 			let newIndex = -1;
-			if (this.insertBefore &&
+			if (hasStructure) {
+			}
+			else if (this.insertBefore &&
 				(refTab = this.getTabById(this.insertBefore))) {
 				newIndex = refTab._tPos;
 			}
