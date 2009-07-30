@@ -79,4 +79,32 @@ window.addEventListener('load', function() {
 		)
 	);
 
+	eval('PlacesCommandHook.bookmarkCurrentPages = '+
+		PlacesCommandHook.bookmarkCurrentPages.toSource().replace(
+			'{',
+			<![CDATA[$&
+				TreeStyleTabService.beginAddBookmarksFromTabs((function() {
+					var tabs = [];
+					var seen = {};
+					Array.slice(getBrowser().mTabContainer.childNodes).forEach(function(aTab) {
+						let uri = aTab.linkedBrowser.currentURI.spec;
+						if (uri in seen) return;
+						seen[uri] = true;
+						tabs.push(aTab);
+					});
+					return tabs;
+				})());
+				try {
+			]]>
+		).replace(
+			/(\}\)?)$/,
+			<![CDATA[
+				}
+				catch(e) {
+				}
+				TreeStyleTabService.endAddBookmarksFromTabs();
+			$1]]>
+		)
+	);
+
 }, false);
