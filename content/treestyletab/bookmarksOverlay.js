@@ -24,6 +24,16 @@ window.addEventListener('load', function() {
 						}
 						return -1;
 					});
+				treeStructure = treeStructure.reverse();
+				treeStructure = treeStructure.map(function(aPosition, aIndex) {
+						if (aIndex > 0 &&
+							aIndex < treeStructure.length-1 &&
+							aPosition < 0) {
+							return treeStructure[aIndex-1];
+						}
+						return aPosition;
+					});
+				treeStructure = treeStructure.reverse();
 				if (
 					where.indexOf('tab') == 0 ||
 					aEvent.target.id == 'placesContext_openContainer:tabs' ||
