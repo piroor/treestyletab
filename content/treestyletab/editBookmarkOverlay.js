@@ -65,11 +65,13 @@ var TreeStyleTabBookmarksProperty = {
 
 		var siblings = this._getItemsInFolder(PlacesUtils.bookmarks.getFolderIdForItem(id));
 		var fragment = document.createDocumentFragment();
+		var afterCurrent = false;
 		siblings.forEach(function(aId) {
 			let item = document.createElement('menuitem');
 			item.setAttribute('label', PlacesUtils.bookmarks.getItemTitle(aId));
 			item.setAttribute('value', aId);
-			if (aId == id) item.setAttribute('disabled', true);
+			if (!afterCurrent && aId == id) afterCurrent = true;
+			if (afterCurrent) item.setAttribute('disabled', true);
 			fragment.appendChild(item);
 		});
 		range.insertNode(fragment);
@@ -84,7 +86,9 @@ var TreeStyleTabBookmarksProperty = {
 			break;
 		}
 
-		if (siblings.indexOf(parent) < 0)
+		var index = siblings.indexOf(parent);
+		var current = siblings.indexOf(id);
+		if (index < 0 || index >= current)
 			this.menulist.selectedItem = this.blankItem;
 		else
 			this.menulist.value = parent;
