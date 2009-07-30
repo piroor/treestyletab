@@ -39,6 +39,11 @@ var TreeStyleTabBookmarksProperty = {
 			'$& TreeStyleTabBookmarksProperty.initParentMenuList();'
 		));
 
+		eval('gEditItemOverlay.onItemMoved = '+gEditItemOverlay.onItemMoved.toSource().replace(
+			'{',
+			'$& if (aNewParent == this._getFolderIdFromMenuList()) TreeStyleTabBookmarksProperty.initParentMenuList();'
+		));
+
 		// Bookmarks Property dialog
 		if ('BookmarkPropertiesPanel' in window) {
 			eval('BookmarkPropertiesPanel._endBatch = '+BookmarkPropertiesPanel._endBatch.toSource().replace(
