@@ -61,6 +61,7 @@ var TreeStyleTabBookmarksProperty = {
 	initParentMenuList : function()
 	{
 		var id = gEditItemOverlay.itemId;
+		var parent = TreeStyleTabService.getParentItemForBookmark(id);
 
 		var popup = this.popup;
 		var range = document.createRange();
@@ -71,25 +72,31 @@ var TreeStyleTabBookmarksProperty = {
 		var siblings = this._getItemsInFolder(PlacesUtils.bookmarks.getFolderIdForItem(id));
 		var fragment = document.createDocumentFragment();
 		var afterCurrent = false;
+		var parents = {};
+		parents[id] = parent;
 		siblings.forEach(function(aId) {
 			let item = document.createElement('menuitem');
 			item.setAttribute('label', PlacesUtils.bookmarks.getItemTitle(aId));
 			item.setAttribute('value', aId);
+
+			let parent;
+			let current = aId;
+			let nest = 0;
+			while ((parent = current in parents ? parents[current] : TreeStyleTabService.getParentItemForBookmark(current) ) != -1)
+			{
+				if (siblings.indexOf(parent) >= siblings.indexOf(current)) break;
+				nest++;
+				current = parent;
+			}
+			if (nest) item.setAttribute('style', 'padding-left:'+nest+'em');
+
 			if (!afterCurrent && aId == id) afterCurrent = true;
 			if (afterCurrent) item.setAttribute('disabled', true);
+
 			fragment.appendChild(item);
 		});
 		range.insertNode(fragment);
 		range.detach();
-
-		var annotations = PlacesUtils.getAnnotationsForItem(id);
-		var parent = -1;
-		for (let i in annotations)
-		{
-			if (annotations[i].name != TreeStyleTabService.kPARENT) continue;
-			parent = parseInt(annotations[i].value);
-			break;
-		}
 
 		var index = siblings.indexOf(parent);
 		var current = siblings.indexOf(id);

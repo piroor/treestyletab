@@ -2595,8 +2595,19 @@ catch(e) {
 		this._addingBookmarkTreeStructure = [];
 	},
  
+	getParentItemForBookmark : function(aId) 
+	{
+		var annotations = PlacesUtils.getAnnotationsForItem(aId);
+		for (let i in annotations)
+		{
+			if (annotations[i].name != this.kPARENT) continue;
+			return parseInt(annotations[i].value);
+		}
+		return -1;
+	},
+ 
 	// based on PlacesUtils.getURLsForContainerNode()
-	getItemIdsForContainerNode: function(aNode) 
+	getItemIdsForContainerNode : function(aNode) 
 	{
 		var ids = [];
 		if (!PlacesUtils.nodeIsContainer(aNode)) return ids;

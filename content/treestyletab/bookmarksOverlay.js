@@ -16,13 +16,7 @@ window.addEventListener('load', function() {
 			<![CDATA[
 				var openGroupBookmarkBehavior = TreeStyleTabService.openGroupBookmarkBehavior();
 				var treeStructure = ids.map(function(aId) {
-						let annotations = PlacesUtils.getAnnotationsForItem(aId);
-						for (let i in annotations)
-						{
-							if (annotations[i].name != TreeStyleTabService.kPARENT) continue;
-							return ids.indexOf(annotations[i].value);
-						}
-						return -1;
+						return ids.indexOf(TreeStyleTabService.getParentItemForBookmark(aId));
 					});
 				treeStructure = treeStructure.reverse();
 				treeStructure = treeStructure.map(function(aPosition, aIndex) {
