@@ -125,15 +125,6 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closeb
 	height: 16px !important;
 }
 
-/* Tab Mix Plus */
-tabbrowser[treestyletab-mode="vertical"] .tabs-newtab-topbox > .tabs-newtab-button {
-	-moz-box-flex: 1;
-	-moz-box-align: center;
-	-moz-box-pack: center;
-	-moz-box-orient: vertical;
-}
-
-
 /* new-tab button next to the last tab */
 
 tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
@@ -174,3 +165,16 @@ tabbrowser[treestyletab-tabbar-position="bottom"] .treestyletab-tabbar-toggler {
 	border-top: 1px solid ThreeDShadow;
 }
 
+
+
+/* Tab Mix Plus */
+tabbrowser[treestyletab-mode="vertical"] .tabs-newtab-topbox > .tabs-newtab-button {
+	-moz-box-flex: 1;
+	-moz-box-align: center;
+	-moz-box-pack: center;
+	-moz-box-orient: vertical;
+}
+
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox[type="tabmix"] {
+	visibility: collapse !important;
+}
