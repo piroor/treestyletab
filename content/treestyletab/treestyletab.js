@@ -177,6 +177,16 @@ var TreeStyleTabService = {
 	},
 	_WindowMediator : null,
 
+	get BookmarksService() {
+		if (!this._BookmarksService) {
+			this._BookmarksService = Components
+					.classes['@mozilla.org/browser/nav-bookmarks-service;1']
+					.getService(Components.interfaces.nsINavBookmarksService);
+		}
+		return this._BookmarksService;
+	},
+	_BookmarksService : null,
+
 	get EffectiveTLD()
 	{
 		if (!('_EffectiveTLD' in this)) {
@@ -264,7 +274,7 @@ var TreeStyleTabService = {
 		ownerBrowser.treeStyleTab.insertBefore          = refId;
 	},
  
-	readyToOpenNewTabGroup : function(aFrameOrTabBrowser) /* PUBLIC API */ 
+	readyToOpenNewTabGroup : function(aFrameOrTabBrowser, aTreeStructure) /* PUBLIC API */ 
 	{
 		if (!this.getTreePref('autoAttachNewTabsAsChildren')) return;
 
@@ -277,6 +287,7 @@ var TreeStyleTabService = {
 		ownerBrowser.treeStyleTab.readyToAttachNewTabGroup = true;
 		ownerBrowser.treeStyleTab.readyToAttachMultiple    = true;
 		ownerBrowser.treeStyleTab.multipleCount            = 0;
+		ownerBrowser.treeStyleTab.treeStructure            = aTreeStructure;
 	},
  
 	stopToOpenChildTab : function(aFrameOrTabBrowser) /* PUBLIC API */ 
@@ -291,6 +302,7 @@ var TreeStyleTabService = {
 		ownerBrowser.treeStyleTab.multipleCount            = 0;
 		ownerBrowser.treeStyleTab.parentTab                = null;
 		ownerBrowser.treeStyleTab.insertBefore             = null;
+		ownerBrowser.treeStyleTab.treeStructure            = null;
 	},
  
 	checkToOpenChildTab : function(aFrameOrTabBrowser) /* PUBLIC API */ 
@@ -484,6 +496,41 @@ var TreeStyleTabService = {
 
 		aNewPosition = aNewPosition.toLowerCase();
 		this.setTreePref('tabbar.position', aNewPosition);
+	},
+ 
+	beginAddBookmarksFromTabs : function(aTabs) /* PUBLIC API */ 
+	{
+		this._addingBookmarks = [];
+		this._addingBookmarkTreeStructure = aTabs.map(function(aTab) {
+			var parent = this.getParentTab(aTab);
+			return aTabs.indexOf(parent);
+		}, this);
+
+		this.BookmarksService.addObserver(this, false);
+	},
+	endAddBookmarksFromTabs : function() /* PUBLIC API */
+	{
+		this.BookmarksService.removeObserver(this);
+
+		// this is adding bookmark folder from tabs, so ignroe the first item!
+		if (
+			this._addingBookmarks.length == this._addingBookmarkTreeStructure.length+1 &&
+			this.BookmarksService.getItemType(this._addingBookmarks[0].id) == this.BookmarksService.TYPE_FOLDER
+			)
+			this._addingBookmarks.shift();
+
+		if (this._addingBookmarks.length == this._addingBookmarkTreeStructure.length) {
+			this._addingBookmarks.forEach(function(aItem, aIndex) {
+				let index = this._addingBookmarkTreeStructure[aIndex];
+				PlacesUtils.setAnnotationsForItem(aItem.id, [{
+					name    : this.kPARENT,
+					value   : (index > -1 ? this._addingBookmarks[index].id : -1 ),
+					expires : PlacesUtils.annotations.EXPIRE_NEVER
+				}]);
+			}, this);
+		}
+		this._addingBookmarks = [];
+		this._addingBookmarkTreeStructure = [];
 	},
   
 /* backward compatibility */ 
@@ -2364,7 +2411,13 @@ catch(e) {
 			bookmarkedTabs = bookmarkedTabs.concat(b.treeStyleTab.getDescendantTabs(aTab));
 		}, this);
 
-		window['piro.sakura.ne.jp'].bookmarkMultipleTabs.addBookmarkFor(bookmarkedTabs, folderName);
+		this.beginAddBookmarksFromTabs(bookmarkedTabs);
+		try {
+			window['piro.sakura.ne.jp'].bookmarkMultipleTabs.addBookmarkFor(bookmarkedTabs, folderName);
+		}
+		catch(e) {
+		}
+		this.endAddBookmarksFromTabs();
 	},
  
 	openSelectionLinks : function(aFrame) 
@@ -2536,6 +2589,47 @@ catch(e) {
 		}
 		return false;
 	},
+  
+/* bookmarks and tabs */ 
+	
+	// based on PlacesUtils.getURLsForContainerNode()
+	getItemIdsForContainerNode: function(aNode) 
+	{
+		var ids = [];
+		if (!PlacesUtils.nodeIsContainer(aNode)) return ids;
+
+		var root = PlacesUtils.getContainerNodeWithOptions(aNode, false, true);
+		var oldViewer = root.parentResult.viewer;
+		var wasOpen = root.containerOpen;
+		if (!wasOpen) {
+			root.parentResult.viewer = null;
+			root.containerOpen = true;
+		}
+		for (let i = 0, maxi = root.childCount; i < maxi; ++i)
+		{
+			let child = root.getChild(i);
+			if (PlacesUtils.nodeIsURI(child)) ids.push(child.itemId || -1);
+		}
+		if (!wasOpen) {
+			root.containerOpen = false;
+			root.parentResult.viewer = oldViewer;
+		}
+		return ids;
+	},
+ 
+	// observer for nsINavBookmarksService 
+	onItemAdded : function(aID, aFolderID, aPosition)
+	{
+		this._addingBookmarks.push({
+			id  : aID
+		});
+	},
+	onItemRemoved : function(aID, aFolderID, aPosition) {},
+	onItemMoved : function(aID, aFolderID, aPosition) {},
+	onItemChanged : function(aID, aChange, aIsAnnotation, aNewValue) {},
+	onItemVisited : function(aID, aHistoryID, aDate) {},
+	onBeginUpdateBatch : function() {},
+	onEndUpdateBatch : function() {},
   
 	observe : function(aSubject, aTopic, aData) 
 	{
