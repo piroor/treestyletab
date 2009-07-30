@@ -1380,7 +1380,7 @@ TreeStyleTabBrowser.prototype = {
 				parent = (positionInTree > -1 && positionInTree < tabs.length) ? tabs[positionInTree] : parent ;
 			}
 			if (parent) {
-				this.attachTabTo(tab, parent, { dontMove : true });
+				this.attachTabTo(tab, parent);
 			}
 
 			let refTab;
@@ -1706,7 +1706,7 @@ TreeStyleTabBrowser.prototype = {
 
 		if (newParent != parent) {
 			if (newParent)
-				this.attachTabTo(aTab, newParent, { dontMove : true });
+				this.attachTabTo(aTab, newParent, { insertBefore : nextTab });
 			else
 				this.partTab(aTab);
 		}
