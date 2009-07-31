@@ -80,10 +80,11 @@ var TreeStyleTabBookmarksProperty = {
 	},
 	_createSiblingsFragment : function(aCurrentItem)
 	{
-		var selected = TreeStyleTabService.getParentItemForBookmarkItem(aCurrentItem);
-
 		var items = this._getItemsInFolder(PlacesUtils.bookmarks.getFolderIdForItem(aCurrentItem));
 		var treeStructure = TreeStyleTabService.getTreeStructureFromBookmarkItems(items);
+
+		var selected = treeStructure[current];
+		if (selected > -1) selected = items[selected];
 
 		var fragment = document.createDocumentFragment();
 		var afterCurrent = false;
