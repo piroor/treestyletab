@@ -1813,35 +1813,6 @@ catch(e) {
 			)
 		);
 
-		// Bookmark All Tabs
-		eval('PlacesCommandHook.bookmarkCurrentPages = '+
-			PlacesCommandHook.bookmarkCurrentPages.toSource().replace(
-				'{',
-				<![CDATA[$&
-					TreeStyleTabBookmarksService.beginAddBookmarksFromTabs((function() {
-						var tabs = [];
-						var seen = {};
-						Array.slice(getBrowser().mTabContainer.childNodes).forEach(function(aTab) {
-							let uri = aTab.linkedBrowser.currentURI.spec;
-							if (uri in seen) return;
-							seen[uri] = true;
-							tabs.push(aTab);
-						});
-						return tabs;
-					})());
-					try {
-				]]>
-			).replace(
-				/(\}\)?)$/,
-				<![CDATA[
-					}
-					catch(e) {
-					}
-					TreeStyleTabBookmarksService.endAddBookmarksFromTabs();
-				$1]]>
-			)
-		);
-
 		// Firefox 3 full screen
 		eval('FullScreen._animateUp = '+
 			FullScreen._animateUp.toSource().replace(
@@ -2412,33 +2383,6 @@ catch(e) {
 			roots.push(aTab);
 		}, this);
 		return roots;
-	},
- 
-	bookmarkTabSubTree : function(aTabOrTabs) 
-	{
-		var tabs = aTabOrTabs;
-		if (!(tabs instanceof Array)) {
-			tabs = [aTabOrTabs];
-		}
-
-		var folderName = (this.isGroupTab(tabs[0], true) || tabs.length == 1) ?
-						tabs[0].label :
-						null ;
-
-		var b = this.getTabBrowserFromChild(tabs[0]);
-		var bookmarkedTabs = [];
-		tabs.forEach(function(aTab, aIndex) {
-			if (!this.isGroupTab(aTab, aIndex == 0)) bookmarkedTabs.push(aTab);
-			bookmarkedTabs = bookmarkedTabs.concat(b.treeStyleTab.getDescendantTabs(aTab));
-		}, this);
-
-		TreeStyleTabBookmarksService.beginAddBookmarksFromTabs(bookmarkedTabs);
-		try {
-			window['piro.sakura.ne.jp'].bookmarkMultipleTabs.addBookmarkFor(bookmarkedTabs, folderName);
-		}
-		catch(e) {
-		}
-		TreeStyleTabBookmarksService.endAddBookmarksFromTabs();
 	},
  
 	openSelectionLinks : function(aFrame) 

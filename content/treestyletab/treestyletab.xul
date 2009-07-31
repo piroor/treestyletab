@@ -115,7 +115,7 @@
 		<menuitem id="context-item-bookmarkTabSubTree"
 			label="&context.bookmarkTabSubTree.label;"
 			accesskey="&context.bookmarkTabSubTree.accesskey;"
-			oncommand="TreeStyleTabService.bookmarkTabSubTree(TreeStyleTabService.getTabBrowserFromChild(this).mContextTab);"
+			oncommand="TreeStyleTabBookmarksService.bookmarkTabSubTree(TreeStyleTabService.getTabBrowserFromChild(this).mContextTab);"
 			multipletab-insertafter="TreeStyleTabService.evaluateXPath(
 				&quot;descendant::*[starts-with(@id, 'context_bookmarkTab')][1] | descendant::*[@command='Browser:BookmarkAllTabs']/preceding-sibling[1]&quot;
 			, tabContextMenu, XPathResult.FIRST_ORDERED_NODE_TYPE).singleNodeValue"/>

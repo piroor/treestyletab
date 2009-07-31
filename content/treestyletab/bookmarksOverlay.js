@@ -14,10 +14,10 @@ var TreeStyleTabBookmarksService = {
 	beginAddBookmarksFromTabs : function(aTabs) /* PUBLIC API */ 
 	{
 		this._addingBookmarks = [];
-		this._addingBookmarkTreeStructure = TreeStyleTabService
+		this._addingBookmarkTreeStructure = this
 				.cleanUpTabsArray(aTabs)
 				.map(function(aTab) {
-					var parent = TreeStyleTabService.getParentTab(aTab);
+					var parent = this.getParentTab(aTab);
 					return aTabs.indexOf(parent);
 				}, this);
 
@@ -39,7 +39,7 @@ var TreeStyleTabBookmarksService = {
 			this._addingBookmarks.forEach(function(aItem, aIndex) {
 				let index = this._addingBookmarkTreeStructure[aIndex];
 				PlacesUtils.setAnnotationsForItem(aItem.id, [{
-					name    : TreeStyleTabService.kPARENT,
+					name    : this.kPARENT,
 					value   : (index > -1 ? this._addingBookmarks[index].id : -1 ),
 					expires : PlacesUtils.annotations.EXPIRE_NEVER
 				}]);
@@ -49,13 +49,40 @@ var TreeStyleTabBookmarksService = {
 		this._addingBookmarkTreeStructure = [];
 	},
  
+	bookmarkTabSubTree : function(aTabOrTabs) 
+	{
+		var tabs = aTabOrTabs;
+		if (!(tabs instanceof Array)) {
+			tabs = [aTabOrTabs];
+		}
+
+		var folderName = (this.isGroupTab(tabs[0], true) || tabs.length == 1) ?
+						tabs[0].label :
+						null ;
+
+		var b = this.getTabBrowserFromChild(tabs[0]);
+		var bookmarkedTabs = [];
+		tabs.forEach(function(aTab, aIndex) {
+			if (!this.isGroupTab(aTab, aIndex == 0)) bookmarkedTabs.push(aTab);
+			bookmarkedTabs = bookmarkedTabs.concat(b.treeStyleTab.getDescendantTabs(aTab));
+		}, this);
+
+		this.beginAddBookmarksFromTabs(bookmarkedTabs);
+		try {
+			window['piro.sakura.ne.jp'].bookmarkMultipleTabs.addBookmarkFor(bookmarkedTabs, folderName);
+		}
+		catch(e) {
+		}
+		this.endAddBookmarksFromTabs();
+	},
+ 
 	getParentItem : function(aId) 
 	{
 		if (aId < 0) return -1;
 		var annotations = PlacesUtils.getAnnotationsForItem(aId);
 		for (let i in annotations)
 		{
-			if (annotations[i].name != TreeStyleTabService.kPARENT) continue;
+			if (annotations[i].name != this.kPARENT) continue;
 			return parseInt(annotations[i].value);
 		}
 		return -1;
@@ -145,22 +172,22 @@ var TreeStyleTabBookmarksService = {
 						aEvent.target == aEvent.target.parentNode._endOptOpenAllInTabs ||
 						aEvent.target.getAttribute('openInTabs') == 'true'
 						) {
-						let openGroupBookmarkBehavior = TreeStyleTabService.openGroupBookmarkBehavior();
-						if (openGroupBookmarkBehavior & TreeStyleTabService.kGROUP_BOOKMARK_SUBTREE) {
+						let openGroupBookmarkBehavior = TreeStyleTabBookmarksService.openGroupBookmarkBehavior();
+						if (openGroupBookmarkBehavior & TreeStyleTabBookmarksService.kGROUP_BOOKMARK_SUBTREE) {
 							let treeStructure = TreeStyleTabBookmarksService.getTreeStructureFromItems(ids);
 							if (
-								openGroupBookmarkBehavior & TreeStyleTabService.kGROUP_BOOKMARK_USE_DUMMY &&
+								openGroupBookmarkBehavior & TreeStyleTabBookmarksService.kGROUP_BOOKMARK_USE_DUMMY &&
 								treeStructure.filter(function(aParent, aIndex) { return aParent == -1; }).length > 1
 								) {
 								ids.unshift(-1);
 								treeStructure = TreeStyleTabBookmarksService.getTreeStructureFromItems(ids);
-								urls.unshift(TreeStyleTabService.getGroupTabURI(aFolderTitle));
+								urls.unshift(TreeStyleTabBookmarksService.getGroupTabURI(aFolderTitle));
 							}
-							TreeStyleTabService.readyToOpenNewTabGroup(null, treeStructure);
+							TreeStyleTabBookmarksService.readyToOpenNewTabGroup(null, treeStructure);
 							replaceCurrentTab = false;
 						}
 						else {
-							replaceCurrentTab = openGroupBookmarkBehavior & TreeStyleTabService.kGROUP_BOOKMARK_REPLACE ? true : false ;
+							replaceCurrentTab = openGroupBookmarkBehavior & TreeStyleTabBookmarksService.kGROUP_BOOKMARK_REPLACE ? true : false ;
 						}
 					}
 					$1
@@ -187,7 +214,7 @@ var TreeStyleTabBookmarksService = {
 			).replace(
 				/(this\._openTabset\([^\)]+)(\))/,
 				<![CDATA[$1,
-					TreeStyleTabService.stringbundle
+					TreeStyleTabBookmarksService.stringbundle
 						.getFormattedString(
 							PlacesUtils.nodeIsBookmark(aNodes[0]) ?
 								'openSelectedPlaces.bookmarks' :
@@ -197,6 +224,37 @@ var TreeStyleTabBookmarksService = {
 				$2]]>
 			)
 		);
+
+		if ('PlacesCommandHook' in window && 'bookmarkCurrentPages' in PlacesCommandHook) {
+			// Bookmark All Tabs
+			eval('PlacesCommandHook.bookmarkCurrentPages = '+
+				PlacesCommandHook.bookmarkCurrentPages.toSource().replace(
+					'{',
+					<![CDATA[$&
+						TreeStyleTabBookmarksService.beginAddBookmarksFromTabs((function() {
+							var tabs = [];
+							var seen = {};
+							Array.slice(getBrowser().mTabContainer.childNodes).forEach(function(aTab) {
+								let uri = aTab.linkedBrowser.currentURI.spec;
+								if (uri in seen) return;
+								seen[uri] = true;
+								tabs.push(aTab);
+							});
+							return tabs;
+						})());
+						try {
+					]]>
+				).replace(
+					/(\}\)?)$/,
+					<![CDATA[
+						}
+						catch(e) {
+						}
+						TreeStyleTabBookmarksService.endAddBookmarksFromTabs();
+					$1]]>
+				)
+			);
+		}
 	},
 
 	// observer for nsINavBookmarksService 
@@ -224,5 +282,6 @@ var TreeStyleTabBookmarksService = {
 	}
 
 };
+TreeStyleTabBookmarksService.__proto__ = TreeStyleTabService;
 
 window.addEventListener('load', TreeStyleTabBookmarksService, false);
