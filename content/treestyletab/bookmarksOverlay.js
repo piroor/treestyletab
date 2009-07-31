@@ -186,7 +186,15 @@ var TreeStyleTabBookmarksService = {
 				'id: aNodes[i].itemId, $&'
 			).replace(
 				/(this\._openTabset\([^\)]+)(\))/,
-				'$1, aNodes.map(function(aNode) { return aNode.title || aNode.uri.spec; }).join(", ")$2'
+				<![CDATA[$1,
+					TreeStyleTabService.stringbundle
+						.getFormattedString(
+							PlacesUtils.nodeIsBookmark(aNodes[0]) ?
+								'openSelectedPlaces.bookmarks' :
+								'openSelectedPlaces.history',
+							[aNodes[0].title, aNodes.length]
+						)
+				$2]]>
 			)
 		);
 	},
