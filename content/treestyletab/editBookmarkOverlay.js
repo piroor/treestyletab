@@ -30,7 +30,7 @@ var TreeStyleEditableBookmarkService = {
 		window.removeEventListener('load', this, false);
 
 		eval('gEditItemOverlay._showHideRows = '+gEditItemOverlay._showHideRows.toSource().replace(
-			'this._element("locationRow").collapsed',
+			'this._element("keywordRow").collapsed',
 			'TreeStyleEditableBookmarkService.parentRow.collapsed = $&'
 		));
 
