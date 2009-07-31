@@ -68,12 +68,28 @@ var TreeStyleTabBookmarksProperty = {
 		range.selectNodeContents(popup);
 		range.setEndBefore(this.separator);
 		range.deleteContents();
+		var fragment = this._createSiblingsFragment(id);
+		var siblings = Array.slice(fragment.childNodes)
+						.map(function(aItem) {
+							return parseInt(aItem.getAttribute('value'));
+						});
+		range.insertNode(fragment);
+		range.detach();
 
-		var siblings = this._getItemsInFolder(PlacesUtils.bookmarks.getFolderIdForItem(id));
+		var index = siblings.indexOf(parent);
+		var current = siblings.indexOf(id);
+		if (index < 0 || index >= current)
+			this.menulist.selectedItem = this.blankItem;
+		else
+			this.menulist.value = parent;
+	},
+	_createSiblingsFragment : function(aId)
+	{
 		var fragment = document.createDocumentFragment();
 		var afterCurrent = false;
 		var parents = {};
-		parents[id] = parent;
+		parents[aId] = TreeStyleTabService.getParentItemForBookmarkItem(aId);
+		var siblings = this._getItemsInFolder(PlacesUtils.bookmarks.getFolderIdForItem(aId));
 		siblings.forEach(function(aId) {
 			let item = document.createElement('menuitem');
 			item.setAttribute('label', PlacesUtils.bookmarks.getItemTitle(aId));
@@ -95,15 +111,7 @@ var TreeStyleTabBookmarksProperty = {
 
 			fragment.appendChild(item);
 		});
-		range.insertNode(fragment);
-		range.detach();
-
-		var index = siblings.indexOf(parent);
-		var current = siblings.indexOf(id);
-		if (index < 0 || index >= current)
-			this.menulist.selectedItem = this.blankItem;
-		else
-			this.menulist.value = parent;
+		return fragment;
 	},
 	_getItemsInFolder : function(aId)
 	{
