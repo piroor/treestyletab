@@ -2211,6 +2211,42 @@ catch(e) {
 			this.tabbarWidthResetting = false;
 		}
 	},
+ 
+	handleTooltip : function(aEvent, aTab) 
+	{
+		var label;
+		var collapsed = aTab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true';
+
+		if (collapsed) {
+			let base = parseInt(aTab.getAttribute(this.kNEST) || 0);
+			label = [aTab].concat(this.getDescendantTabs(aTab))
+						.map(function(aTab) {
+							let label = '* '+aTab.getAttribute('label');
+							let nest = parseInt(aTab.getAttribute(this.kNEST) || 0) - base;
+							for (let i = 0; i < nest; i++)
+							{
+								label = '  '+label;
+							}
+							return label;
+						}, this)
+						.join('\n');
+		}
+
+		if (aTab.getAttribute(this.kTWISTY_HOVER) == 'true') {
+			let key = collapsed ?
+						'tooltip.expandSubtree' :
+						'tooltip.collapseSubtree' ;
+			label = label || aTab.getAttribute('label');
+			label = label ?
+					this.stringbundle.getFormattedString(key+'.labeled', [label]) :
+					this.stringbundle.getString(key) ;
+		}
+
+		if (label)
+			aEvent.target.setAttribute('label', label);
+
+		return label;
+	},
   
 /* Tree Style Tabの初期化が行われる前に復元されたセッションについてツリー構造を復元 */ 
 	

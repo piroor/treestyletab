@@ -411,17 +411,7 @@ TreeStyleTabBrowser.prototype = {
 			b.createTooltip.toSource().replace(
 				'if (tn.hasAttribute("label")) {',
 				<![CDATA[
-					else if (tn.getAttribute(TreeStyleTabService.kTWISTY_HOVER) == 'true') {
-						var key = tn.getAttribute(TreeStyleTabService.kSUBTREE_COLLAPSED) == 'true' ? 'tooltip.expandSubtree' : 'tooltip.collapseSubtree' ;
-						event.target.setAttribute(
-							'label',
-							tn.hasAttribute('label') ?
-								TreeStyleTabService.stringbundle.getFormattedString(
-									key+'.labeled',
-									[tn.getAttribute('label')]
-								) :
-								TreeStyleTabService.stringbundle.getString(key)
-						);
+					else if (TreeStyleTabService.getTabBrowserFromChild(tn).treeStyleTab.handleTooltip(event, tn)) {
 						return true;
 					}
 					$&]]>
