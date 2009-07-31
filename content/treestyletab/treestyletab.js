@@ -2624,6 +2624,7 @@ catch(e) {
  
 	getParentItemForBookmark : function(aId) 
 	{
+		if (aId < 0) return -1;
 		var annotations = PlacesUtils.getAnnotationsForItem(aId);
 		for (let i in annotations)
 		{
