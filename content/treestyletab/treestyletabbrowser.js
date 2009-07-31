@@ -944,7 +944,6 @@ TreeStyleTabBrowser.prototype = {
 		else
 			b.removeAttribute(this.kINDENTED);
 
-Application.console.log('COLLAPSE:'+this.getTreePref('allowSubtreeCollapseExpand.'+orient));
 		if (this.getTreePref('allowSubtreeCollapseExpand.'+orient))
 			b.setAttribute(this.kALLOW_COLLAPSE, 'true');
 		else
