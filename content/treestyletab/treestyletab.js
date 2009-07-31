@@ -2634,6 +2634,25 @@ catch(e) {
 		return -1;
 	},
  
+	getTreeStructureFromBookmarkItems : function(aIDs) 
+	{
+		var treeStructure = aIDs.map(function(aId) {
+				let id = this.getParentItemForBookmark(aId);
+				return id < 0 ? -1 : aIDs.indexOf(id);
+			}, this);
+		treeStructure = treeStructure.reverse();
+		treeStructure = treeStructure.map(function(aPosition, aIndex) {
+				if (aIndex > 0 &&
+					aIndex < treeStructure.length-1 &&
+					aPosition < 0) {
+					return treeStructure[aIndex-1];
+				}
+				return aPosition;
+			});
+		treeStructure = treeStructure.reverse();
+		return treeStructure;
+	},
+ 
 	// based on PlacesUtils.getURLsForContainerNode()
 	getItemIdsForContainerNode : function(aNode) 
 	{

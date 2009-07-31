@@ -14,21 +14,6 @@ window.addEventListener('load', function() {
 		).replace(
 			/(browserWindow\.getBrowser\(\)\.loadTabs\([^;]+\);)/,
 			<![CDATA[
-				var openGroupBookmarkBehavior = TreeStyleTabService.openGroupBookmarkBehavior();
-				var treeStructure = ids.map(function(aId) {
-						let id = TreeStyleTabService.getParentItemForBookmark(aId);
-						return id < 0 ? -1 : ids.indexOf(id);
-					});
-				treeStructure = treeStructure.reverse();
-				treeStructure = treeStructure.map(function(aPosition, aIndex) {
-						if (aIndex > 0 &&
-							aIndex < treeStructure.length-1 &&
-							aPosition < 0) {
-							return treeStructure[aIndex-1];
-						}
-						return aPosition;
-					});
-				treeStructure = treeStructure.reverse();
 				if (
 					where.indexOf('tab') == 0 ||
 					aEvent.target.id == 'placesContext_openContainer:tabs' ||
@@ -36,17 +21,17 @@ window.addEventListener('load', function() {
 					aEvent.target == aEvent.target.parentNode._endOptOpenAllInTabs ||
 					aEvent.target.getAttribute('openInTabs') == 'true'
 					) {
+					let openGroupBookmarkBehavior = TreeStyleTabService.openGroupBookmarkBehavior();
 					if (openGroupBookmarkBehavior & TreeStyleTabService.kGROUP_BOOKMARK_SUBTREE) {
+						let treeStructure = TreeStyleTabService.getTreeStructureFromBookmarkItems(ids);
 						if (
 							openGroupBookmarkBehavior & TreeStyleTabService.kGROUP_BOOKMARK_USE_DUMMY &&
 							treeStructure.filter(function(aParent, aIndex) {
 								return aParent == -1 || aIndex == aParent;
 							}).length > 1
 							) {
-							treeStructure.unshift(-1);
-							treeStructure = treeStructure.map(function(aPosition) {
-									return aPosition == -1 ? -1 : aPosition + 1;
-								});
+							ids.unshift(-1);
+							treeStructure = TreeStyleTabService.getTreeStructureFromBookmarkItems(ids);
 							urls.unshift(TreeStyleTabService.getGroupTabURI(aFolderTitle));
 						}
 						TreeStyleTabService.readyToOpenNewTabGroup(null, treeStructure);
