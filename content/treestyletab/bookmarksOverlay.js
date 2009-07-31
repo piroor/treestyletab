@@ -31,6 +31,7 @@ window.addEventListener('load', function() {
 				if (
 					where.indexOf('tab') == 0 ||
 					aEvent.target.id == 'placesContext_openContainer:tabs' ||
+					aEvent.target.id == 'placesContext_openLinks:tabs' ||
 					aEvent.target == aEvent.target.parentNode._endOptOpenAllInTabs ||
 					aEvent.target.getAttribute('openInTabs') == 'true'
 					) {
@@ -75,6 +76,9 @@ window.addEventListener('load', function() {
 		PlacesUIUtils.openURINodesInTabs.toSource().replace(
 			'uri: aNodes[i].uri,',
 			'id: aNodes[i].itemId, $&'
+		).replace(
+			/(this\._openTabset\([^\)]+)(\))/,
+			'$1, aNodes[0].title$2'
 		)
 	);
 
