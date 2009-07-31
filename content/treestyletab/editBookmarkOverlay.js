@@ -80,25 +80,23 @@ var TreeStyleTabBookmarksProperty = {
 	},
 	_createSiblingsFragment : function(aCurrentItem)
 	{
+		var selected = TreeStyleTabService.getParentItemForBookmarkItem(aCurrentItem);
+
+		var items = this._getItemsInFolder(PlacesUtils.bookmarks.getFolderIdForItem(aCurrentItem));
+		var treeStructure = TreeStyleTabService.getTreeStructureFromBookmarkItems(items);
+
 		var fragment = document.createDocumentFragment();
 		var afterCurrent = false;
-		var selected = TreeStyleTabService.getParentItemForBookmarkItem(aCurrentItem);
-		var parents = {};
-		parents[aCurrentItem] = selected;
-		var siblings = this._getItemsInFolder(PlacesUtils.bookmarks.getFolderIdForItem(aCurrentItem));
-		siblings.forEach(function(aId) {
+		items.forEach(function(aId, aIndex) {
 			let item = document.createElement('menuitem');
 			item.setAttribute('label', PlacesUtils.bookmarks.getItemTitle(aId));
 			item.setAttribute('value', aId);
 
-			let parent;
-			let current = aId;
+			let parent = aIndex;
 			let nest = 0;
-			while ((parent = current in parents ? parents[current] : TreeStyleTabService.getParentItemForBookmarkItem(current) ) != -1)
+			while ((parent = treeStructure[parent]) != -1)
 			{
-				if (siblings.indexOf(parent) >= siblings.indexOf(current)) break;
 				nest++;
-				current = parent;
 			}
 			if (nest) item.setAttribute('style', 'padding-left:'+nest+'em');
 

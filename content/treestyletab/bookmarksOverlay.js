@@ -26,9 +26,7 @@ window.addEventListener('load', function() {
 						let treeStructure = TreeStyleTabService.getTreeStructureFromBookmarkItems(ids);
 						if (
 							openGroupBookmarkBehavior & TreeStyleTabService.kGROUP_BOOKMARK_USE_DUMMY &&
-							treeStructure.filter(function(aParent, aIndex) {
-								return aParent == -1 || aIndex == aParent;
-							}).length > 1
+							treeStructure.filter(function(aParent, aIndex) { return aParent == -1; }).length > 1
 							) {
 							ids.unshift(-1);
 							treeStructure = TreeStyleTabService.getTreeStructureFromBookmarkItems(ids);

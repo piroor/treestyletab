@@ -2645,11 +2645,14 @@ catch(e) {
 				if (aIndex > 0 &&
 					aIndex < treeStructure.length-1 &&
 					aPosition < 0) {
-					return treeStructure[aIndex-1];
+					aPosition = treeStructure[aIndex-1];
 				}
 				return aPosition;
 			});
 		treeStructure = treeStructure.reverse();
+		treeStructure = treeStructure.map(function(aPosition, aIndex) {
+				return (aPosition == aIndex) ? -1 : aPosition ;
+			});
 		return treeStructure;
 	},
  
