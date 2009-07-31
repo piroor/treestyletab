@@ -186,7 +186,7 @@ var TreeStyleTabBookmarksService = {
 				'id: aNodes[i].itemId, $&'
 			).replace(
 				/(this\._openTabset\([^\)]+)(\))/,
-				'$1, aNodes[0].title$2'
+				'$1, aNodes.map(function(aNode) { return aNode.title || aNode.uri.spec; }).join(", ")$2'
 			)
 		);
 	},
