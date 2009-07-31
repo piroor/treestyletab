@@ -2636,10 +2636,21 @@ catch(e) {
  
 	getTreeStructureFromBookmarkItems : function(aIDs) 
 	{
-		var treeStructure = aIDs.map(function(aId) {
+		var treeStructure = aIDs.map(function(aId, aIndex) {
 				let id = this.getParentItemForBookmarkItem(aId);
-				return id < 0 ? -1 : aIDs.indexOf(id);
+				let index = id < 0 ? -1 : aIDs.indexOf(id);
+				return index < aIndex ? index : -1 ;
 			}, this);
+
+		/* Correct patterns like:
+		     [TabA]
+		     [TabB] - this has no parent
+		       [TabC] - TabA's child
+		   to:
+		     [TabA]
+		       [TabB]
+		       [TabC]
+		*/
 		treeStructure = treeStructure.reverse();
 		treeStructure = treeStructure.map(function(aPosition, aIndex) {
 				if (aIndex > 0 &&
@@ -2650,6 +2661,7 @@ catch(e) {
 				return aPosition;
 			});
 		treeStructure = treeStructure.reverse();
+
 		treeStructure = treeStructure.map(function(aPosition, aIndex) {
 				return (aPosition == aIndex) ? -1 : aPosition ;
 			});
