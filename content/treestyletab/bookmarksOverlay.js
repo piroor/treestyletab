@@ -16,7 +16,8 @@ window.addEventListener('load', function() {
 			<![CDATA[
 				var openGroupBookmarkBehavior = TreeStyleTabService.openGroupBookmarkBehavior();
 				var treeStructure = ids.map(function(aId) {
-						return ids.indexOf(TreeStyleTabService.getParentItemForBookmark(aId));
+						let id = TreeStyleTabService.getParentItemForBookmark(aId);
+						return id < 0 ? -1 : ids.indexOf(id);
 					});
 				treeStructure = treeStructure.reverse();
 				treeStructure = treeStructure.map(function(aPosition, aIndex) {
