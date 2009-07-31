@@ -2622,7 +2622,7 @@ catch(e) {
 		this._addingBookmarkTreeStructure = [];
 	},
  
-	getParentItemForBookmark : function(aId) 
+	getParentItemForBookmarkItem : function(aId) 
 	{
 		if (aId < 0) return -1;
 		var annotations = PlacesUtils.getAnnotationsForItem(aId);
@@ -2637,7 +2637,7 @@ catch(e) {
 	getTreeStructureFromBookmarkItems : function(aIDs) 
 	{
 		var treeStructure = aIDs.map(function(aId) {
-				let id = this.getParentItemForBookmark(aId);
+				let id = this.getParentItemForBookmarkItem(aId);
 				return id < 0 ? -1 : aIDs.indexOf(id);
 			}, this);
 		treeStructure = treeStructure.reverse();

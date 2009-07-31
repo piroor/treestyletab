@@ -61,7 +61,7 @@ var TreeStyleTabBookmarksProperty = {
 	initParentMenuList : function()
 	{
 		var id = gEditItemOverlay.itemId;
-		var parent = TreeStyleTabService.getParentItemForBookmark(id);
+		var parent = TreeStyleTabService.getParentItemForBookmarkItem(id);
 
 		var popup = this.popup;
 		var range = document.createRange();
@@ -82,7 +82,7 @@ var TreeStyleTabBookmarksProperty = {
 			let parent;
 			let current = aId;
 			let nest = 0;
-			while ((parent = current in parents ? parents[current] : TreeStyleTabService.getParentItemForBookmark(current) ) != -1)
+			while ((parent = current in parents ? parents[current] : TreeStyleTabService.getParentItemForBookmarkItem(current) ) != -1)
 			{
 				if (siblings.indexOf(parent) >= siblings.indexOf(current)) break;
 				nest++;
