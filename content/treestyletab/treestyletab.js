@@ -2217,9 +2217,8 @@ catch(e) {
 		var label;
 		var collapsed = aTab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true';
 
-		if (collapsed) {
-			let base = parseInt(aTab.getAttribute(this.kNEST) || 0);
-			label = [aTab].concat(this.getDescendantTabs(aTab))
+		var base = parseInt(aTab.getAttribute(this.kNEST) || 0);
+		var tree = [aTab].concat(this.getDescendantTabs(aTab))
 						.map(function(aTab) {
 							let label = '* '+aTab.getAttribute('label');
 							let nest = parseInt(aTab.getAttribute(this.kNEST) || 0) - base;
@@ -2230,16 +2229,18 @@ catch(e) {
 							return label;
 						}, this)
 						.join('\n');
-		}
 
 		if (aTab.getAttribute(this.kTWISTY_HOVER) == 'true') {
 			let key = collapsed ?
 						'tooltip.expandSubtree' :
 						'tooltip.collapseSubtree' ;
-			label = label || aTab.getAttribute('label');
+			label = tree || aTab.getAttribute('label');
 			label = label ?
 					this.stringbundle.getFormattedString(key+'.labeled', [label]) :
 					this.stringbundle.getString(key) ;
+		}
+		else if (collapsed) {
+			label = tree;
 		}
 
 		if (label)
