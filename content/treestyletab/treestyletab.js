@@ -2201,7 +2201,8 @@ catch(e) {
 		var collapsed = aTab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true';
 
 		var base = parseInt(aTab.getAttribute(this.kNEST) || 0);
-		var tree = [aTab].concat(this.getDescendantTabs(aTab))
+		var descendant = this.getDescendantTabs(aTab);
+		var tree = [aTab].concat(descendant)
 						.map(function(aTab) {
 							let label = '* '+aTab.getAttribute('label');
 							let nest = parseInt(aTab.getAttribute(this.kNEST) || 0) - base;
@@ -2214,10 +2215,8 @@ catch(e) {
 						.join('\n');
 
 		if ('mOverCloseButton' in aTab && aTab.mOverCloseButton) {
-			if (
-				collapsed ||
-				this.getTreePref('closeParentBehavior') == this.CLOSE_PARENT_BEHAVIOR_CLOSE
-				) {
+			if (descendant.length &&
+				(collapsed || this.getTreePref('closeParentBehavior') == this.CLOSE_PARENT_BEHAVIOR_CLOSE)) {
 				// Close This Tree
 				label = document.getElementById('context-item-removeTabSubTree').label;
 			}
