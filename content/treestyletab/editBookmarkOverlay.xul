@@ -6,7 +6,13 @@
 <script src="res/boxObject.js" type="application/x-javascript; version=1.7"/>
 <script src="res/animationManager.js" type="application/x-javascript; version=1.7"/>
 <script src="treestyletab.js" type="application/x-javascript; version=1.7"/>
+<script src="bookmarksOverlay.js" type="application/x-javascript; version=1.7"/>
 <script src="editBookmarkOverlay.js" type="application/x-javascript; version=1.7"/>
+
+<stringbundleset id="placesStringSet">
+	<stringbundle id="treestyletab-stringbundle"
+		src="chrome://treestyletab/locale/treestyletab.properties"/>
+</stringbundleset>
 
 <vbox id="editBookmarkPanelContent">
 	<hbox id="treestyletab-parent-row"
