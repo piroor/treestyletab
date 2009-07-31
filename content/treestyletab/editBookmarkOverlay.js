@@ -83,7 +83,7 @@ var TreeStyleTabBookmarksProperty = {
 		var items = this._getItemsInFolder(PlacesUtils.bookmarks.getFolderIdForItem(aCurrentItem));
 		var treeStructure = TreeStyleTabService.getTreeStructureFromBookmarkItems(items);
 
-		var selected = treeStructure[current];
+		var selected = treeStructure[items.indexOf(aCurrentItem)];
 		if (selected > -1) selected = items[selected];
 
 		var fragment = document.createDocumentFragment();
