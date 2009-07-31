@@ -488,17 +488,6 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 
 		gBrowser.treeStyleTab.internallyTabMoving = true; // until "TMmoveTabTo" method is overwritten
 	}
-	if ('TMP_Places' in window &&
-		'getTabFixedTitle' in TMP_Places) {
-		TreeStyleTabService.addBookmarkTabsFilter = function(aTab) {
-			var b = aTab.linkedBrowser;
-			var uri = b.currentURI;
-			return {
-				uri   : uri,
-				title : TMP_Places.getTabFixedTitle(b, uri)
-			};
-		};
-	}
 
 
 	// Super DragAndGo

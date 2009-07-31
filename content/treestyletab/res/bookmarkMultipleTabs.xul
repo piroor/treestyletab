@@ -24,7 +24,7 @@
 window.addEventListener('DOMContentLoaded', function() {
 	window.removeEventListener('DOMContentLoaded', arguments.callee, true);
 
-	const currentRevision = 1;
+	const currentRevision = 2;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -33,6 +33,19 @@ window.addEventListener('DOMContentLoaded', function() {
 			0 ;
 	if (loadedRevision && loadedRevision > currentRevision) {
 		return;
+	}
+
+	var addBookmarkTabsFilter = function(aTab) { return aTab.linkedBrowser.currentURI; };
+	// Tab Mix Plus modifies the API.
+	if ('TMP_Places' in window && 'getTabFixedTitle' in TMP_Places) {
+		addBookmarkTabsFilter = function(aTab) {
+			var b = aTab.linkedBrowser;
+			var uri = b.currentURI;
+			return {
+				uri   : uri,
+				title : TMP_Places.getTabFixedTitle(b, uri)
+			};
+		};
 	}
 
 	window['piro.sakura.ne.jp'].bookmarkMultipleTabs = {
@@ -90,10 +103,7 @@ window.addEventListener('DOMContentLoaded', function() {
 				)
 			);
 		},
-		addBookmarkTabsFilter : function(aTab)
-		{
-			return aTab.linkedBrowser.currentURI;
-		},
+		addBookmarkTabsFilter : addBookmarkTabsFilter,
 
 		Prefs : Components.classes['@mozilla.org/preferences;1']
 					.getService(Components.interfaces.nsIPrefBranch),
