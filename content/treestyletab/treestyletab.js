@@ -1823,35 +1823,62 @@ catch(e) {
 			)
 		);
 
+		// Bookmark All Tabs
+		eval('PlacesCommandHook.bookmarkCurrentPages = '+
+			PlacesCommandHook.bookmarkCurrentPages.toSource().replace(
+				'{',
+				<![CDATA[$&
+					TreeStyleTabService.beginAddBookmarksFromTabs((function() {
+						var tabs = [];
+						var seen = {};
+						Array.slice(getBrowser().mTabContainer.childNodes).forEach(function(aTab) {
+							let uri = aTab.linkedBrowser.currentURI.spec;
+							if (uri in seen) return;
+							seen[uri] = true;
+							tabs.push(aTab);
+						});
+						return tabs;
+					})());
+					try {
+				]]>
+			).replace(
+				/(\}\)?)$/,
+				<![CDATA[
+					}
+					catch(e) {
+					}
+					TreeStyleTabService.endAddBookmarksFromTabs();
+				$1]]>
+			)
+		);
+
 		// Firefox 3 full screen
-		if ('FullScreen' in window && '_animateUp' in FullScreen) {
-			eval('FullScreen._animateUp = '+
-				FullScreen._animateUp.toSource().replace(
-					'gBrowser.mStrip.boxObject.height',
-					'((gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION) != "top") ? 0 : gBrowser.mStrip.boxObject.height)'
-				)
-			);
-			eval('FullScreen.mouseoverToggle = '+
-				FullScreen.mouseoverToggle.toSource().replace(
-					'gBrowser.mStrip.setAttribute("moz-collapsed", !aShow);',
-					'if (gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION) == "top") { $& }'
-				)
-			);
-			eval('FullScreen.toggle = '+
-				FullScreen.toggle.toSource().replace(
-					'{',
-					<![CDATA[{
-						var treeStyleTab = gBrowser.treeStyleTab;
-						if (gBrowser.getAttribute(treeStyleTab.kTABBAR_POSITION) != 'top') {
-							if (window.fullScreen)
-								treeStyleTab.endAutoHideForFullScreen();
-							else
-								treeStyleTab.startAutoHideForFullScreen();
-						}
-					]]>
-				)
-			);
-		}
+		eval('FullScreen._animateUp = '+
+			FullScreen._animateUp.toSource().replace(
+				'gBrowser.mStrip.boxObject.height',
+				'((gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION) != "top") ? 0 : gBrowser.mStrip.boxObject.height)'
+			)
+		);
+		eval('FullScreen.mouseoverToggle = '+
+			FullScreen.mouseoverToggle.toSource().replace(
+				'gBrowser.mStrip.setAttribute("moz-collapsed", !aShow);',
+				'if (gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION) == "top") { $& }'
+			)
+		);
+		eval('FullScreen.toggle = '+
+			FullScreen.toggle.toSource().replace(
+				'{',
+				<![CDATA[{
+					var treeStyleTab = gBrowser.treeStyleTab;
+					if (gBrowser.getAttribute(treeStyleTab.kTABBAR_POSITION) != 'top') {
+						if (window.fullScreen)
+							treeStyleTab.endAutoHideForFullScreen();
+						else
+							treeStyleTab.startAutoHideForFullScreen();
+					}
+				]]>
+			)
+		);
 	},
 	_splitFunctionNames : function(aString)
 	{
