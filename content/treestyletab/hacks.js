@@ -294,8 +294,8 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 					$1
 					if (
 						aTab.getAttribute('locked') == 'true' ||
-						TreeStyleTabService.getTreePref('loadDroppedLinkToNewChildTab') ||
-						dropActionInfo.position != TreeStyleTabService.kDROP_ON
+						dropActionInfo.position != TreeStyleTabService.kDROP_ON ||
+						(TreeStyleTabService.dropLinksOnTabBehavior() & TreeStyleTabService.kDROPLINK_NEWTAB)
 						) {
 						TSTTabBrowser.treeStyleTab.performDrop(dropActionInfo, TSTTabBrowser.loadOneTab(url, null, null, null, bgLoad, false));
 						return;
