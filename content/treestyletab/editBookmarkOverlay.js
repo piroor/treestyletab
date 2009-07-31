@@ -61,7 +61,6 @@ var TreeStyleTabBookmarksProperty = {
 	initParentMenuList : function()
 	{
 		var id = gEditItemOverlay.itemId;
-		var parent = TreeStyleTabService.getParentItemForBookmarkItem(id);
 
 		var popup = this.popup;
 		var range = document.createRange();
@@ -76,20 +75,17 @@ var TreeStyleTabBookmarksProperty = {
 		range.insertNode(fragment);
 		range.detach();
 
-		var index = siblings.indexOf(parent);
-		var current = siblings.indexOf(id);
-		if (index < 0 || index >= current)
-			this.menulist.selectedItem = this.blankItem;
-		else
-			this.menulist.value = parent;
+		var selected = popup.getElementsByAttribute('selected', 'true')[0];
+		this.menulist.value = (selected || this.blankItem).value;
 	},
-	_createSiblingsFragment : function(aId)
+	_createSiblingsFragment : function(aCurrentItem)
 	{
 		var fragment = document.createDocumentFragment();
 		var afterCurrent = false;
+		var selected = TreeStyleTabService.getParentItemForBookmarkItem(aCurrentItem);
 		var parents = {};
-		parents[aId] = TreeStyleTabService.getParentItemForBookmarkItem(aId);
-		var siblings = this._getItemsInFolder(PlacesUtils.bookmarks.getFolderIdForItem(aId));
+		parents[aCurrentItem] = selected;
+		var siblings = this._getItemsInFolder(PlacesUtils.bookmarks.getFolderIdForItem(aCurrentItem));
 		siblings.forEach(function(aId) {
 			let item = document.createElement('menuitem');
 			item.setAttribute('label', PlacesUtils.bookmarks.getItemTitle(aId));
@@ -106,8 +102,9 @@ var TreeStyleTabBookmarksProperty = {
 			}
 			if (nest) item.setAttribute('style', 'padding-left:'+nest+'em');
 
-			if (!afterCurrent && aId == id) afterCurrent = true;
+			if (aId == aCurrentItem) afterCurrent = true;
 			if (afterCurrent) item.setAttribute('disabled', true);
+			if (aId == selected && !afterCurrent) item.setAttribute('selected', true);
 
 			fragment.appendChild(item);
 		});
