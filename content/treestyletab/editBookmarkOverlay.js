@@ -1,4 +1,4 @@
-var TreeStyleTabBookmarksProperty = {
+var TreeStyleEditableBookmarkService = {
 
 	instantApply : false,
 
@@ -31,24 +31,24 @@ var TreeStyleTabBookmarksProperty = {
 
 		eval('gEditItemOverlay._showHideRows = '+gEditItemOverlay._showHideRows.toSource().replace(
 			'this._element("locationRow").collapsed',
-			'TreeStyleTabBookmarksProperty.parentRow.collapsed = $&'
+			'TreeStyleEditableBookmarkService.parentRow.collapsed = $&'
 		));
 
 		eval('gEditItemOverlay.initPanel = '+gEditItemOverlay.initPanel.toSource().replace(
 			'if (this._itemType == Ci.nsINavBookmarksService.TYPE_BOOKMARK) {',
-			'$& TreeStyleTabBookmarksProperty.initParentMenuList();'
+			'$& TreeStyleEditableBookmarkService.initParentMenuList();'
 		));
 
 		eval('gEditItemOverlay.onItemMoved = '+gEditItemOverlay.onItemMoved.toSource().replace(
 			'{',
-			'$& if (aNewParent == this._getFolderIdFromMenuList()) TreeStyleTabBookmarksProperty.initParentMenuList();'
+			'$& if (aNewParent == this._getFolderIdFromMenuList()) TreeStyleEditableBookmarkService.initParentMenuList();'
 		));
 
 		// Bookmarks Property dialog
 		if ('BookmarkPropertiesPanel' in window) {
 			eval('BookmarkPropertiesPanel._endBatch = '+BookmarkPropertiesPanel._endBatch.toSource().replace(
 				'PlacesUIUtils.ptm.endBatch();',
-				'$& TreeStyleTabBookmarksProperty.saveParentFor(this._itemId);'
+				'$& TreeStyleEditableBookmarkService.saveParentFor(this._itemId);'
 			));
 		}
 
@@ -81,7 +81,7 @@ var TreeStyleTabBookmarksProperty = {
 	_createSiblingsFragment : function(aCurrentItem)
 	{
 		var items = this._getItemsInFolder(PlacesUtils.bookmarks.getFolderIdForItem(aCurrentItem));
-		var treeStructure = TreeStyleTabService.getTreeStructureFromBookmarkItems(items);
+		var treeStructure = TreeStyleTabBookmarksService.getTreeStructureFromItems(items);
 
 		var selected = treeStructure[items.indexOf(aCurrentItem)];
 		if (selected > -1) selected = items[selected];
@@ -159,4 +159,4 @@ var TreeStyleTabBookmarksProperty = {
 
 };
 
-window.addEventListener('DOMContentLoaded', TreeStyleTabBookmarksProperty, false);
+window.addEventListener('DOMContentLoaded', TreeStyleEditableBookmarkService, false);

@@ -16,7 +16,7 @@
 			control="treestyletab-parent-menulist"/>
 		<menulist id="treestyletab-parent-menulist"
 			flex="1"
-			oncommand="TreeStyleTabBookmarksProperty.onParentChange();">
+			oncommand="TreeStyleEditableBookmarkService.onParentChange();">
 			<menupopup id="treestyletab-parent-popup">
 				<menuseparator id="treestyletab-parent-blank-item-separator"/>
 				<menuitem id="treestyletab-parent-blank-item"
