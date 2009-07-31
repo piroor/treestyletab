@@ -14,10 +14,12 @@ var TreeStyleTabBookmarksService = {
 	beginAddBookmarksFromTabs : function(aTabs) /* PUBLIC API */ 
 	{
 		this._addingBookmarks = [];
-		this._addingBookmarkTreeStructure = aTabs.map(function(aTab) {
-			var parent = TreeStyleTabService.getParentTab(aTab);
-			return aTabs.indexOf(parent);
-		}, this);
+		this._addingBookmarkTreeStructure = TreeStyleTabService
+				.cleanUpTabsArray(aTabs)
+				.map(function(aTab) {
+					var parent = TreeStyleTabService.getParentTab(aTab);
+					return aTabs.indexOf(parent);
+				}, this);
 
 		this.BookmarksService.addObserver(this, false);
 	},
