@@ -409,12 +409,12 @@ TreeStyleTabBrowser.prototype = {
 
 		eval('b.createTooltip = '+
 			b.createTooltip.toSource().replace(
-				'if (tn.hasAttribute("label")) {',
+				'if ("mOverCloseButton" in tn && tn.mOverCloseButton) {',
 				<![CDATA[
-					else if (TreeStyleTabService.getTabBrowserFromChild(tn).treeStyleTab.handleTooltip(event, tn)) {
+					if (TreeStyleTabService.getTabBrowserFromChild(tn).treeStyleTab.handleTooltip(event, tn)) {
 						return true;
 					}
-					$&]]>
+					else $&]]>
 			)
 		);
 
