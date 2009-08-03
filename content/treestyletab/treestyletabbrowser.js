@@ -2814,7 +2814,8 @@ TreeStyleTabBrowser.prototype = {
 		var oldIndex = children.indexOf(id);
 		if (oldIndex > -1) children.splice(oldIndex, 1);
 
-		var insertBefore = aInfo.insertBefore;
+		var insertBefore = aInfo.insertBefore ||
+						(aInfo.dontMove ? this.getNextTab(aChild) : null );
 		var beforeTab = insertBefore ? insertBefore.getAttribute(this.kID) : null ;
 		var beforeIndex;
 		if (beforeTab && (beforeIndex = children.indexOf(beforeTab)) > -1) {
