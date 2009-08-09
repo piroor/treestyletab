@@ -2921,7 +2921,7 @@ TreeStyleTabBrowser.prototype = {
 			}, 0, this.getTabBrowserFromChild(parentTab));
 		}
 	},
-	detachTab : function(aChild, aInfo) // alias
+	detachTab : function(aChild, aInfo) // alias (unstable API!)
 	{
 		return this.partTab(aChild, aInfo);
 	},

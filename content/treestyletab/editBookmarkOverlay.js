@@ -27,7 +27,7 @@ var TreeStyleEditableBookmarkService = {
 
 	init : function()
 	{
-		window.removeEventListener('load', this, false);
+		window.removeEventListener('DOMContentLoaded', this, false);
 
 		eval('gEditItemOverlay._showHideRows = '+gEditItemOverlay._showHideRows.toSource().replace(
 			'this._element("keywordRow").collapsed',
