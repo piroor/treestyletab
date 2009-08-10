@@ -126,7 +126,7 @@ var TreeStyleTabBookmarksService = {
 	getItemIdsForContainerNode : function(aNode) 
 	{
 		var ids = [];
-		if (!PlacesUtils.nodeIsContainer(aNode)) return ids;
+		if (!aNode || !PlacesUtils.nodeIsContainer(aNode)) return ids;
 
 		var root = aNode;
 		if ('getContainerNodeWithOptions' in PlacesUtils) { // Firefox 3.5 or later
@@ -154,6 +154,8 @@ var TreeStyleTabBookmarksService = {
 	init : function()
 	{
 		window.removeEventListener('load', this, false);
+
+		if (!('PlacesUIUtils' in window)) return;
 
 		eval('PlacesUIUtils._openTabset = '+
 			PlacesUIUtils._openTabset.toSource().replace(

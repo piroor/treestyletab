@@ -6,6 +6,10 @@
 <script src="treestyletab.js" type="application/x-javascript; version=1.7"/>
 <script src="bookmarksOverlay.js" type="application/x-javascript; version=1.7"/>
 
+<page id="history-panel">
+	<stringbundleset id="placesStringSet"/>
+</page>
+
 <stringbundleset id="placesStringSet">
 	<stringbundle id="treestyletab-stringbundle"
 		src="chrome://treestyletab/locale/treestyletab.properties"/>
