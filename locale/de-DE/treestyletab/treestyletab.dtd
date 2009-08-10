@@ -48,27 +48,26 @@
 <!ENTITY config.tabs.context.tab      "Tabs abhängig vom Kontext öffnen">
 
 
-<!ENTITY config.link.caption "Automatic New Tab Level for Links">
-<!ENTITY config.link.none    "Lv.0 Nothing (Firefox default)">
-<!ENTITY config.link.outer   "Lv.1 Links auf andere Webseiten in einem neuen Tab öffnen">
-<!ENTITY config.link.any     "Lv.2 Jeden Link in einem neuen Tab öffnen">
+<!ENTITY config.link.caption "Verfolgte Links">
+<!ENTITY config.link.none    "Lv.0 Immer im aktiven Tab laden (Firefox Standard)">
+<!ENTITY config.link.outer   "Lv.1 In einem neuen Tab öffnen, falls es eine andere Webseite ist">
+<!ENTITY config.link.any     "Lv.2 Immer in einem neuen Tab öffnen">
 
-<!ENTITY config.urlbar.caption       "Automatic New Tab Level for the Location Bar">
-<!ENTITY config.urlbar.none          "Lv.0 Nothing (Firefox default)">
+<!ENTITY config.urlbar.caption       "Eingegebene Adressen">
+<!ENTITY config.urlbar.none          "Lv.0 Immer im aktiven Tab laden (Firefox Standard)">
 <!ENTITY config.urlbar.outer         "Lv.1 In neuem Tab laden, falls es eine andere Webseite ist">
-<!ENTITY config.urlbar.any           "Lv.2 Load into new tab always">
-<!ENTITY config.urlbar.asChild.none  "Lv.0 Open as separate tab">
-<!ENTITY config.urlbar.asChild.inner "Lv.1 Open as child tab if it is the same website">
-<!ENTITY config.urlbar.asChild.any   "Lv.2 Open as child tab always">
+<!ENTITY config.urlbar.any           "Lv.2 Immer in einem neuen Tab laden">
+<!ENTITY config.urlbar.asChild.none  "Lv.0 Neues eigenes Tab auf oberster Ebene">
+<!ENTITY config.urlbar.asChild.inner "Lv.1 Neues untergeordnetes Tab, falls es die gleiche Webseite ist">
+<!ENTITY config.urlbar.asChild.any   "Lv.2 Immer als untergeordnetes Tab">
 
 <!ENTITY config.dropLinksOnTab.caption "Verhalten für das Drag &amp; Drop von URLs auf Tabs">
-<!ENTITY config.dropLinksOnTab.ask     "Ask me always">
+<!ENTITY config.dropLinksOnTab.ask     "Jedes Mal nachfragen">
 <!ENTITY config.dropLinksOnTab.load    "Seite im Tab laden (Firefox Standard)">
 <!ENTITY config.dropLinksOnTab.newTab  "Seite in einem neuen untergeordneten Tab laden">
 
-<!ENTITY config.openGroupBookmark.caption     "Behavior of &quot;Open All in Tabs&quot; for bookmark folders">
-<!--ENTITY config.openGroupBookmark.caption     "Verhalten von &quot;Alle in Tabs öffnen&quot; für Seiten in einem Lesezeichenordner"-->
-<!ENTITY config.openGroupBookmark.ask         "Ask me always">
+<!ENTITY config.openGroupBookmark.caption     "Verhalten von &quot;Alle in Tabs öffnen&quot; für Seiten in einem Lesezeichenordner">
+<!ENTITY config.openGroupBookmark.ask         "Jedes Mal nachfragen">
 <!ENTITY config.openGroupBookmark.subtree     "Als Zweig öffnen (Empfohlen)">
 <!ENTITY config.openGroupBookmark.flat        "Als eigenständige Tabs öffnen (Firefox Standard)">
 <!ENTITY config.openGroupBookmark.replace     "Aktuelles Tab durch die neuen Tabs ersetzen">
@@ -79,12 +78,12 @@
 <!ENTITY config.open_newwindow.caption "Links, die sich unerwartet in einem neuen Fenster öffnen">
 <!ENTITY config.open_newwindow.window  "Als Fenster öffnen">
 <!ENTITY config.open_newwindow.tab     "Als neues Tab öffnen (Firefox Standard)">
-<!ENTITY config.open_newwindow.current "Load into the Current Tab anyway">
+<!ENTITY config.open_newwindow.current "Immer im aktiven Tab laden">
 
 <!ENTITY config.jsopen.caption "Fenster, die sich durch Skripte öffnen">
 <!ENTITY config.jsopen.default "Als Fenster öffnen, wenn das Skript eine bestimmte Fenstergröße vorgibt (Firefox Standard)">
 <!ENTITY config.jsopen.forcetab "Auf jeden Fall als Tab öffnen (Empfohlen)">
-<!ENTITY config.jsopen.current  "Load into the Current Tab anyway">
+<!ENTITY config.jsopen.current  "Immer im aktiven Tab laden">
 
 
 <!ENTITY config.tabs.autohide "Platz sparen">
@@ -117,8 +116,7 @@
 
 <!ENTITY config.tabs.advanced "Erweitert">
 
-<!--ENTITY config.autoCollapseExpandSubTreeOnSelect "Ablenkende Zweige einklappen, wenn ein zweigfremdes Tab geöffnet wird"-->
-<!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
+<!ENTITY config.autoCollapseExpandSubTreeOnSelect "Nicht aktive Zweige zuklappen">
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
 <!ENTITY config.collapseExpandSubTree.dblclick "Bei Doppelklick auf Tab untergeordneten Zweig auf- oder zuklappen">
 
@@ -150,7 +148,7 @@
 
 <!ENTITY selection.removeTabSubTree.label     "Ausgewählte Zweige schließen">
 <!ENTITY selection.removeTabSubTree.accesskey "s">
-<!ENTITY selection.createSubTree.label          "Gather to a New Tree">
+<!ENTITY selection.createSubTree.label          "Zweig auf oberste Ebene verschieben">
 <!ENTITY selection.createSubTree.accesskey      "g">
 
 <!ENTITY context.reloadTabSubTree.label     "Diesen Zweig neu laden">
@@ -167,8 +165,8 @@
 <!ENTITY context.expandAllSubtree.accesskey "e">
 <!ENTITY context.toggleAutoHide.label     "Tableiste verstecken">
 <!ENTITY context.toggleAutoHide.accesskey "h">
-<!ENTITY context.toggleFixed.label            "Fix width/height of tab bar">
-<!ENTITY context.toggleFixed.label.horizontal "Fix height of tab bar">
+<!ENTITY context.toggleFixed.label            "Feste Größe der Tableiste">
+<!ENTITY context.toggleFixed.label.horizontal "Feste Höhe der Tableiste">
 <!ENTITY context.toggleFixed.label.vertical   "Feste Breite der Tableiste">
 <!ENTITY context.toggleFixed.accesskey "f">
 <!ENTITY context.tabbarPosition.label     "Position">
@@ -176,7 +174,7 @@
 <!ENTITY context.bookmarkTabSubTree.label     "Zweig als Lesezeichen speichern">
 <!ENTITY context.bookmarkTabSubTree.accesskey "t">
 
-<!ENTITY group.default "New Group">
+<!ENTITY group.default "Neue Gruppe">
 
-<!ENTITY bookmark.parent.label       "Parent tab:">
+<!ENTITY bookmark.parent.label       "Übergeordnetes Tab:">
 <!ENTITY bookmark.parent.blank.label "(nothing)">
