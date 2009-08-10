@@ -115,6 +115,9 @@
 
 
 <!ENTITY config.tabs.advanced "Zaawansowane">
+<!ENTITY config.tabs.advanced.focus "Focus">
+<!ENTITY config.tabs.advanced.tree  "Tree Structure">
+<!ENTITY config.tabs.advanced.misc  "Misc.">
 
 <!--ENTITY config.autoCollapseExpandSubTreeOnSelect "Zwijaj automatycznie drzewa potomne, gdy jest otwierana lub uaktywniana nowa karta"-->
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">

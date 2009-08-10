@@ -113,6 +113,9 @@
 
 
 <!ENTITY config.tabs.advanced "進階">
+<!ENTITY config.tabs.advanced.focus "Focus">
+<!ENTITY config.tabs.advanced.tree  "Tree Structure">
+<!ENTITY config.tabs.advanced.misc  "Misc.">
 
 <!--ENTITY config.autoCollapseExpandSubTreeOnSelect "當開新分頁或切換分頁時，自動摺疊無關的子樹"-->
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "切換分頁時，自動展開該子樹並摺疊無關者">

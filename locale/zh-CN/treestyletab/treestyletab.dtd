@@ -115,6 +115,9 @@
 
 
 <!ENTITY config.tabs.advanced "高级">
+<!ENTITY config.tabs.advanced.focus "Focus">
+<!ENTITY config.tabs.advanced.tree  "Tree Structure">
+<!ENTITY config.tabs.advanced.misc  "Misc.">
 
 <!--ENTITY config.autoCollapseExpandSubTreeOnSelect "当新建或切换标签时，自动折叠无关的子树"-->
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">

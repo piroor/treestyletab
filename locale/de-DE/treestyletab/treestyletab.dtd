@@ -115,6 +115,9 @@
 
 
 <!ENTITY config.tabs.advanced "Erweitert">
+<!ENTITY config.tabs.advanced.focus "Focus">
+<!ENTITY config.tabs.advanced.tree  "Tree Structure">
+<!ENTITY config.tabs.advanced.misc  "Misc.">
 
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "Nicht aktive Zweige zuklappen">
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">

@@ -653,8 +653,15 @@
 			type="bool"/>
 	</preferences>
 
-	<vbox>
+	<tabbox orient="vertical">
+		<tabs orient="horizontal">
+			<tab label="&config.tabs.advanced.focus;"/>
+			<tab label="&config.tabs.advanced.tree;"/>
+			<tab label="&config.tabs.advanced.misc;"/>
+		</tabs>
+		<tabpanels>
 
+<tabpanel orient="vertical">
 	<checkbox id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect-check"
 		preference="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
 		label="&config.autoCollapseExpandSubTreeOnSelect;"/>
@@ -664,17 +671,20 @@
 			label="&config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove;"
 			preference="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove"/>
 	</hbox>
+	<checkbox id="extensions.treestyletab.focusMode-check"
+		preference="extensions.treestyletab.focusMode"
+		label="&config.focusMode;"
+		onsyncfrompreference="return document.getElementById('extensions.treestyletab.focusMode').value == 0;"
+		onsynctopreference="return document.getElementById('extensions.treestyletab.focusMode-check').checked ? 0 : 1 ;"/>
+</tabpanel>
+
+<tabpanel orient="vertical">
 	<checkbox id="extensions.treestyletab.collapseExpandSubTree.dblclick-check"
 		preference="extensions.treestyletab.collapseExpandSubTree.dblclick"
 		label="&config.collapseExpandSubTree.dblclick;"/>
 	<!--checkbox id="extensions.treestyletab.autoExpandSubTreeOnAppendChild-check"
 		preference="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
 		label="&config.autoExpandSubTreeOnAppendChild;"/-->
-	<checkbox id="extensions.treestyletab.focusMode-check"
-		preference="extensions.treestyletab.focusMode"
-		label="&config.focusMode;"
-		onsyncfrompreference="return document.getElementById('extensions.treestyletab.focusMode').value == 0;"
-		onsynctopreference="return document.getElementById('extensions.treestyletab.focusMode-check').checked ? 0 : 1 ;"/>
 	<groupbox>
 		<caption label="&config.closeParentBehavior.caption;"/>
 		<radiogroup id="extensions.treestyletab.closeParentBehavior-radiogroup"
@@ -704,6 +714,10 @@
 			<radio value="1" label="&config.insertNewChildAt.last;"/>
 		</radiogroup>
 	</groupbox>
+</tabpanel>
+
+<tabpanel orient="vertical">
+
 	<groupbox id="useEffectiveTLD">
 		<caption label="&config.useEffectiveTLD.caption;"/>
 		<radiogroup id="extensions.treestyletab.useEffectiveTLD-radiogroup"
@@ -714,7 +728,9 @@
 		</radiogroup>
 	</groupbox>
 
-	</vbox>
+</tabpanel>
+
+	</tabbox>
 </prefpane>
 
 <script src="config.js" type="application/x-javascript"/>

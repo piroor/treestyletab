@@ -115,6 +115,9 @@
 
 
 <!ENTITY config.tabs.advanced "Дополнительно">
+<!ENTITY config.tabs.advanced.focus "Focus">
+<!ENTITY config.tabs.advanced.tree  "Tree Structure">
+<!ENTITY config.tabs.advanced.misc  "Misc.">
 
 <!--ENTITY config.autoCollapseExpandSubTreeOnSelect "При открытии или выборе вкладки в поддереве, автоматически сворачивать другие поддеревья"-->
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
