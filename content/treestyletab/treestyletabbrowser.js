@@ -1051,7 +1051,10 @@ TreeStyleTabBrowser.prototype = {
    
 /* nsIObserver */ 
 	
-	domain : 'extensions.treestyletab', 
+	domains : [ 
+		'extensions.treestyletab',
+		'browser.fullscreen.autohide'
+	],
  
 	observe : function(aSubject, aTopic, aData) 
 	{
@@ -1237,6 +1240,14 @@ TreeStyleTabBrowser.prototype = {
 					toggler.setAttribute('collapsed', true);
 				else
 					toggler.removeAttribute('collapsed');
+				break;
+
+			case 'browser.fullscreen.autohide':
+				if (!window.fullScreen) return;
+				this.endAutoHide();
+				this.autoHideMode = value ? this.getTreePref('tabbar.autoHide.mode.fullscreen') : this.kAUTOHIDE_MODE_DISABLED ;
+				if (this.autoHideMode != this.kAUTOHIDE_MODE_DISABLED)
+					this.startAutoHide();
 				break;
 
 			default:
@@ -4096,7 +4107,9 @@ TreeStyleTabBrowser.prototype = {
 	{
 		this.autoHideMode = this.getTreePref('tabbar.autoHide.mode');
 		this.endAutoHide();
-		this.autoHideMode = this.getTreePref('tabbar.autoHide.mode.fullscreen');
+		this.autoHideMode = this.getPref('browser.fullscreen.autohide') ?
+				this.getTreePref('tabbar.autoHide.mode.fullscreen') :
+				this.kAUTOHIDE_MODE_DISABLED ;
 		if (this.autoHideMode != this.kAUTOHIDE_MODE_DISABLED) {
 			this.startAutoHide();
 			this.mTabBrowser.mStrip.removeAttribute('moz-collapsed');
