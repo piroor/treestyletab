@@ -174,8 +174,11 @@ var TreeStyleTabBookmarksService = {
 						) {
 						let openGroupBookmarkBehavior = TreeStyleTabBookmarksService.openGroupBookmarkBehavior();
 						if (openGroupBookmarkBehavior & TreeStyleTabBookmarksService.kGROUP_BOOKMARK_SUBTREE) {
-							let treeStructure = TreeStyleTabBookmarksService.getTreeStructureFromItems(ids);
+							let treeStructure = openGroupBookmarkBehavior & TreeStyleTabBookmarksService.kGROUP_BOOKMARK_DONT_RESTORE_TREE_STRUCTURE ?
+										null :
+										TreeStyleTabBookmarksService.getTreeStructureFromItems(ids) ;
 							if (
+								treeStructure &&
 								openGroupBookmarkBehavior & TreeStyleTabBookmarksService.kGROUP_BOOKMARK_USE_DUMMY &&
 								treeStructure.filter(function(aParent, aIndex) { return aParent == -1; }).length > 1
 								) {

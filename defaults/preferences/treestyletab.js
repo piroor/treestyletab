@@ -83,7 +83,9 @@ pref("extensions.treestyletab.urlbar.loadSameDomainToNewTab.asChild", true);
 pref("extensions.treestyletab.urlbar.invertDefaultBehavior",       true);
 // 0 = always ask, 1 = load into the tab, 2 = open new child tab
 pref("extensions.treestyletab.dropLinksOnTab.behavior", 0);
-// 0 = always ask, 1 = tree, 2 = separate, 4 = replace, 256 = use dummy tab (for subtree)
+// 0 = always ask, 1 = tree, 2 = separate, 4 = replace
+// 256 = use dummy tab (for subtree)
+// 512 = do not restore tree structure
 pref("extensions.treestyletab.openGroupBookmark.behavior", 256);
 pref("extensions.treestyletab.useEffectiveTLD", true);
 

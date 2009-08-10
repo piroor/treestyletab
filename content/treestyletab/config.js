@@ -94,8 +94,15 @@ function initTabPane()
 function onSyncGroupBookmarkUIToPref()
 {
 	ensureGroupBookmarkItems();
-	var behavior = parseInt(gGroupBookmarkRadio.value);
-	if (gGroupBookmarkUnderParent.checked) behavior += 256;
+	var behavior = gGroupBookmarkBehaviorPref.value;
+	if (behavior & 1) behavior ^= 1;
+	if (behavior & 2) behavior ^= 2;
+	if (behavior & 4) behavior ^= 4;
+	if (behavior & 256) behavior ^= 256;
+
+	behavior |= parseInt(gGroupBookmarkRadio.value);
+
+	if (gGroupBookmarkUnderParent.checked) behavior |= 256;
 
 	if (behavior & 1)
 		gGroupBookmarkUnderParent.removeAttribute('disabled');
