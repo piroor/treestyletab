@@ -2558,7 +2558,11 @@ TreeStyleTabBrowser.prototype = {
 		var sourceWindow = aDraggedTab.ownerDocument.defaultView;
 		var sourceBrowser = this.getTabBrowserFromChild(aDraggedTab);
 
-		while (aInfo.insertBefore && draggedTabs.indexOf(aInfo.insertBefore) > -1)
+		var draggedWholeTree = [].concat(draggedRoots);
+		draggedRoots.forEach(function(aRoot) {
+			draggedWholeTree = draggedWholeTree.concat(this.getDescendantTabs(aRoot));
+		}, this);
+		while (aInfo.insertBefore && draggedWholeTree.indexOf(aInfo.insertBefore) > -1)
 		{
 			aInfo.insertBefore = this.getNextTab(aInfo.insertBefore);
 		}
