@@ -2571,7 +2571,10 @@ TreeStyleTabBrowser.prototype = {
 
 			if ( // if this move will cause no change...
 				sourceBrowser == targetBrowser &&
-				sourceBrowser.treeStyleTab.getNextVisibleTab(draggedTabs[draggedTabs.length-1]) == aInfo.insertBefore
+				(
+					sourceBrowser.treeStyleTab.getNextVisibleTab(draggedTabs[draggedTabs.length-1]) == aInfo.insertBefore ||
+					draggedTabs.indexOf(aInfo.insertBefore) > -1
+				)
 				) {
 				// then, do nothing
 				return true;
