@@ -2203,7 +2203,8 @@ catch(e) {
 
 		var base = parseInt(aTab.getAttribute(this.kNEST) || 0);
 		var descendant = this.getDescendantTabs(aTab);
-		var tree = [aTab].concat(descendant)
+		var tree = this.getTreePref('tooltip.includeChildren') ?
+					[aTab].concat(descendant)
 						.map(function(aTab) {
 							let label = '* '+aTab.getAttribute('label');
 							let nest = parseInt(aTab.getAttribute(this.kNEST) || 0) - base;
@@ -2213,7 +2214,8 @@ catch(e) {
 							}
 							return label;
 						}, this)
-						.join('\n');
+						.join('\n') :
+					null ;
 
 		if ('mOverCloseButton' in aTab && aTab.mOverCloseButton) {
 			if (descendant.length &&
