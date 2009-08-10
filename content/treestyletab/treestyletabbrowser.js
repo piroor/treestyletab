@@ -2558,6 +2558,11 @@ TreeStyleTabBrowser.prototype = {
 		var sourceWindow = aDraggedTab.ownerDocument.defaultView;
 		var sourceBrowser = this.getTabBrowserFromChild(aDraggedTab);
 
+		while (aInfo.insertBefore && draggedTabs.indexOf(aInfo.insertBefore) > -1)
+		{
+			aInfo.insertBefore = this.getNextTab(aInfo.insertBefore);
+		}
+
 		if (aInfo.action & this.kACTIONS_FOR_SOURCE) {
 			if (aInfo.action & this.kACTION_PART) {
 				this.partTabsOnDrop(draggedRoots);
@@ -2571,10 +2576,7 @@ TreeStyleTabBrowser.prototype = {
 
 			if ( // if this move will cause no change...
 				sourceBrowser == targetBrowser &&
-				(
-					sourceBrowser.treeStyleTab.getNextVisibleTab(draggedTabs[draggedTabs.length-1]) == aInfo.insertBefore ||
-					draggedTabs.indexOf(aInfo.insertBefore) > -1
-				)
+				sourceBrowser.treeStyleTab.getNextVisibleTab(draggedTabs[draggedTabs.length-1]) == aInfo.insertBefore
 				) {
 				// then, do nothing
 				return true;
