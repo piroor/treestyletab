@@ -113,8 +113,12 @@ image.tab-icon {
 	-moz-binding: url(treestyletab.xml#tab-icon);
 }
 
-/* for Tabbrowser Preferences */
-tabbrowser .tabs-newbutton {
+/* for Tabbrowser Preferences, and some theme */
+tabbrowser .tabs-newbutton,
+tabbrowser[treestyletab-mode="vertical"] .scrollbutton-up,
+tabbrowser[treestyletab-mode="vertical"] .scrollbutton-down,
+tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-button,
+tabbrowser[treestyletab-mode="vertical"] .close-button.tabs-closebutton {
 	max-width: none !important;
 }
 
