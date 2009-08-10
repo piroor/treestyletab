@@ -472,6 +472,7 @@ TreeStyleTabBrowser.prototype = {
 		this.onPrefChange('extensions.treestyletab.tabbar.autoHide.area');
 		this.onPrefChange('extensions.treestyletab.tabbar.togglerSize');
 		window.setTimeout(function(aTabBrowser) {
+			aTabBrowser.treeStyleTab.updateTabbarState(); // just to be safe
 			aTabBrowser.treeStyleTab.onPrefChange('extensions.treestyletab.tabbar.autoHide.mode');
 		}, 0, b);
 
