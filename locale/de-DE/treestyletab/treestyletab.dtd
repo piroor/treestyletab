@@ -178,6 +178,3 @@
 <!ENTITY context.bookmarkTabSubTree.accesskey "t">
 
 <!ENTITY group.default "Neue Gruppe">
-
-<!ENTITY bookmark.parent.label       "Übergeordnetes Tab:">
-<!ENTITY bookmark.parent.blank.label "(nothing)">

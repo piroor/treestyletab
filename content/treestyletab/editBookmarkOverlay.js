@@ -36,7 +36,7 @@ var TreeStyleEditableBookmarkService = {
 
 /* to be inserted to the container...
 	<row align="center">
-		<label value="&bookmark.parent.label;"
+		<label value=" (bookmarkProperty.parent.label) "
 			control="treestyletab-parent-menulist"/>
 		<menulist id="treestyletab-parent-menulist"
 			flex="1"
@@ -44,7 +44,7 @@ var TreeStyleEditableBookmarkService = {
 			<menupopup id="treestyletab-parent-popup">
 				<menuseparator id="treestyletab-parent-blank-item-separator"/>
 				<menuitem id="treestyletab-parent-blank-item"
-					label="&bookmark.parent.blank.label;"
+					label=" (bookmarkProperty.parent.blank.label) "
 					value=""/>
 			</menupopup>
 		</menulist>

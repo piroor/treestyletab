@@ -176,6 +176,3 @@
 <!ENTITY context.bookmarkTabSubTree.accesskey   "t">
 
 <!ENTITY group.default "新しいグループ">
-
-<!ENTITY bookmark.parent.label       "親のタブ:">
-<!ENTITY bookmark.parent.blank.label "（なし）">
