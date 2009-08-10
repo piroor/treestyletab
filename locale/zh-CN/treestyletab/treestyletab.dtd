@@ -13,6 +13,7 @@
 <!ENTITY config.tabbar.position.right   "右侧">
 <!ENTITY config.tabbar.position.top     "顶部 （Firefox 默认）">
 <!ENTITY config.tabbar.position.bottom  "底部">
+<!ENTITY config.tabbar.invertScrollbar  "在最左侧显示滚动条">
 <!ENTITY config.tabbar.invertClosebox.left  "在每个标签左端显示关闭按钮">
 <!ENTITY config.tabbar.invertClosebox.right "在每个标签右端显示关闭按钮">
 <!ENTITY config.tabbar.invertTab            "反转标签外观">
@@ -47,11 +48,20 @@
 
 <!ENTITY config.tabs.context.tab      "打开标签">
 
+<!--
+<!ENTITY config.link.caption           "链接">
+-->
 <!ENTITY config.link.caption "Automatic New Tab Level for Links">
 <!ENTITY config.link.none    "Lv.0 Nothing (Firefox default)">
 <!ENTITY config.link.outer   "Lv.1 在新标签中打开外部网站的链接">
 <!ENTITY config.link.any     "Lv.2 在新标签中打开所有链接">
 
+<!--
+<!ENTITY config.urlbar.caption                      "在地址栏中输入URI后：">
+<!ENTITY config.urlbar.loadDifferentDomainToNewTab  "如果是不同网站，在新标签中加载">
+<!ENTITY config.urlbar.loadDifferentDomainToNewTab.asChild  "作为当前标签的子标签">
+<!ENTITY config.urlbar.loadSameDomainToNewChildTab  "如果是相同网站，加载到新的子标签">
+-->
 <!ENTITY config.urlbar.caption       "Automatic New Tab Level for the Location Bar">
 <!ENTITY config.urlbar.none          "Lv.0 Nothing (Firefox default)">
 <!ENTITY config.urlbar.outer         "Lv.1 如果是不同网站，在新标签中加载">
@@ -60,11 +70,23 @@
 <!ENTITY config.urlbar.asChild.inner "Lv.1 Open as child tab if it is the same website">
 <!ENTITY config.urlbar.asChild.any   "Lv.2 Open as child tab always">
 
+<!ENTITY config.loadDroppedLinkToNewChildTab.caption "将链接或URL拖拽到现有标签后：">
+<!ENTITY config.loadDroppedLinkToNewChildTab.load    "在标签中加载链接 （Firefox 默认）">
+<!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "在此标签的新建子标签中打开链接">
 <!ENTITY config.dropLinksOnTab.caption "将链接或URL拖拽到现有标签后：">
 <!ENTITY config.dropLinksOnTab.ask     "Ask me always">
 <!ENTITY config.dropLinksOnTab.load    "在标签中加载链接 （Firefox 默认）">
 <!ENTITY config.dropLinksOnTab.newTab  "在此标签的新建子标签中打开链接">
 
+<!--
+<!ENTITY config.openGroupBookmarkAsTabSubTree.caption     "点击“在标签页中打开书签组”菜单：">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.subtree     "在子树中打开 （推荐）">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.flat        "在单独标签中打开 （Firefox 默认）">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.flat.fx2    "在单独标签中打开">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.replace     "覆盖当前标签打开">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.replace.fx2 "覆盖当前全部标签打开 （Firefox 默认）">
+<!ENTITY config.openGroupBookmarkAsTabSubTree.underParent "将标签置于一伪标签下以便分组">
+-->
 <!ENTITY config.openGroupBookmark.caption     "Behavior of &quot;Open All in Tabs&quot; for bookmark folders">
 <!--ENTITY config.openGroupBookmark.caption     "点击“在标签页中打开书签组”菜单："-->
 <!ENTITY config.openGroupBookmark.ask         "Ask me always">
@@ -119,9 +141,8 @@
 <!ENTITY config.tabs.advanced.tree  "Tree Structure">
 <!ENTITY config.tabs.advanced.misc  "Misc.">
 
-<!--ENTITY config.autoCollapseExpandSubTreeOnSelect "当新建或切换标签时，自动折叠无关的子树"-->
-<!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
-<!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
+<!ENTITY config.autoCollapseExpandSubTreeOnSelect "某一标签获得焦点时，自动展开该标签的树和折叠其他标签树">
+<!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "当前标签关闭引起的焦点转移除外">
 <!ENTITY config.collapseExpandSubTree.dblclick "通过双击折叠/展开标签的子树">
 <!ENTITY config.tooltip.includeChildren        "Show tree contents in tooltips on tabs">
 <!ENTITY config.autoExpandSubTreeOnAppendChild "当标签被插入子树时，自动展开子树">
@@ -133,52 +154,52 @@
 <!ENTITY config.closeParentBehavior.detach        "让子标签脱离树状关系">
 <!ENTITY config.closeRootBehavior.escalateFirst   "若父标签之上无父标签，则提升首个子标签为父标签">
 
-<!ENTITY config.focusMode "折叠的标签也可用 Ctrl（Command）-Tab 切换。">
+<!ENTITY config.focusMode "Ctrl（Command）-Tab 切换标签时可切换到折叠起来的标签上。">
 
 <!ENTITY config.insertNewChildAt.caption "新子标签的位置">
 <!ENTITY config.insertNewChildAt.first "插入到子树顶部，成为首个子标签">
 <!ENTITY config.insertNewChildAt.last "添加到子树的最后">
 
 <!ENTITY config.useEffectiveTLD.caption  "“相同网站”的标准">
-<!ENTITY config.useEffectiveTLD.enabled  "相同域名（“aaa.example.com”和“bbb.example.com”视为相同网站）">
-<!ENTITY config.useEffectiveTLD.disabled "相同主机（“aaa.example.com”和“bbb.example.com”视为不同网站）">
+<!ENTITY config.useEffectiveTLD.enabled  "相同域名（“aaa.example.com” 和 “bbb.example.com” 视为相同网站）">
+<!ENTITY config.useEffectiveTLD.disabled "相同主机（“aaa.example.com” 和 “bbb.example.com” 视为不同网站）">
 
 
 
 
 
-<!ENTITY context.openSelectionLinks.label     "在新标签中打开选中链接">
-<!ENTITY context.openSelectionLinks.accesskey "l">
+<!ENTITY context.openSelectionLinks.label       "在新标签中打开选中链接">
+<!ENTITY context.openSelectionLinks.accesskey   "l">
 
-<!ENTITY selection.removeTabSubTree.label     "关闭所选的树">
-<!ENTITY selection.removeTabSubTree.accesskey "s">
-<!ENTITY selection.createSubTree.label          "Gather to a New Tree">
+<!ENTITY selection.createSubTree.label          "以选中标签建立新标签树">
+
 <!ENTITY selection.createSubTree.accesskey      "g">
 
-<!ENTITY context.reloadTabSubTree.label     "刷新所选的树">
-<!ENTITY context.reloadTabSubTree.accesskey "r">
+<!ENTITY selection.removeTabSubTree.label       "关闭选中的树">
+<!ENTITY selection.removeTabSubTree.accesskey   "s">
+<!ENTITY context.reloadTabSubTree.label         "刷新该树">
+<!ENTITY context.reloadTabSubTree.accesskey     "r">
 <!ENTITY context.reloadDescendantTabs.label     "刷新子标签">
 <!ENTITY context.reloadDescendantTabs.accesskey "r">
-<!ENTITY context.removeTabSubTree.label     "关闭此树">
-<!ENTITY context.removeTabSubTree.accesskey "s">
+<!ENTITY context.removeTabSubTree.label         "关闭此树">
+<!ENTITY context.removeTabSubTree.accesskey     "s">
 <!ENTITY context.removeDescendantTabs.label     "关闭子标签">
 <!ENTITY context.removeDescendantTabs.accesskey "d">
-<!ENTITY context.collapseAllSubtree.label     "折叠所有树">
-<!ENTITY context.collapseAllSubtree.accesskey "c">
-<!ENTITY context.expandAllSubtree.label     "展开所有树">
-<!ENTITY context.expandAllSubtree.accesskey "e">
-<!ENTITY context.toggleAutoHide.label     "自动隐藏标签栏">
-<!ENTITY context.toggleAutoHide.accesskey "h">
-<!ENTITY context.toggleFixed.label            "Fix width/height of tab bar">
-<!ENTITY context.toggleFixed.label.horizontal "Fix height of tab bar">
-<!ENTITY context.toggleFixed.label.vertical   "固定标签栏宽度">
-<!ENTITY context.toggleFixed.accesskey "f">
-<!ENTITY context.tabbarPosition.label     "标签栏位置">
-<!ENTITY context.tabbarPosition.accesskey "p">
-<!ENTITY context.bookmarkTabSubTree.label     "将此树加入书签...">
-<!ENTITY context.bookmarkTabSubTree.accesskey "t">
+<!ENTITY context.collapseAllSubtree.label       "折叠所有树">
+<!ENTITY context.collapseAllSubtree.accesskey   "c">
+<!ENTITY context.expandAllSubtree.label         "展开所有树">
+<!ENTITY context.expandAllSubtree.accesskey     "e">
+<!ENTITY context.toggleAutoHide.label           "自动隐藏标签栏">
+<!ENTITY context.toggleAutoHide.accesskey       "h">
+<!ENTITY context.toggleFixed.label              "固定标签栏高／宽度">
+<!ENTITY context.toggleFixed.label.horizontal   "固定标签栏高度">
+<!ENTITY context.toggleFixed.label.vertical     "固定标签栏宽度">
+<!ENTITY context.toggleFixed.accesskey          "f">
+<!ENTITY context.tabbarPosition.label           "标签栏位置">
+<!ENTITY context.tabbarPosition.accesskey       "p">
+<!ENTITY context.bookmarkTabSubTree.label       "将此树加入书签...">
+<!ENTITY context.bookmarkTabSubTree.accesskey   "t">
 
-<!ENTITY group.default "New Group">
-
+<!ENTITY group.default "新建组">
 <!ENTITY bookmark.parent.label       "Parent tab:">
 <!ENTITY bookmark.parent.blank.label "(nothing)">
