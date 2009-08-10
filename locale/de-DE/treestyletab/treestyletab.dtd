@@ -122,7 +122,7 @@
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "Nicht aktive Zweige zuklappen">
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
 <!ENTITY config.collapseExpandSubTree.dblclick "Bei Doppelklick auf Tab untergeordneten Zweig auf- oder zuklappen">
-
+<!ENTITY config.tooltip.includeChildren        "Show tree contents in tooltips on tabs">
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Zweig automatisch aufklappen, wenn ein Tab in den Zweig eingefügt wird">
 
 <!ENTITY config.closeParentBehavior.caption "Wenn ein Tab geschlossen wird">

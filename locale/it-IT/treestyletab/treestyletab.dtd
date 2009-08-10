@@ -123,7 +123,7 @@
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
 <!ENTITY config.collapseExpandSubTree.dblclick "Contrai/espandi sottoalberi della scheda con un doppio-clic">
-
+<!ENTITY config.tooltip.includeChildren        "Show tree contents in tooltips on tabs">
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Espandi automaticamente i sottoalberi all'inserimento di nuove schede">
 
 <!ENTITY config.closeParentBehavior.caption       "Alla chiusura della scheda principale">

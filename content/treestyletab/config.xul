@@ -630,6 +630,9 @@
 			name="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove"
 			type="bool"
 			inverted="true"/>
+		<preference id="extensions.treestyletab.tooltip.includeChildren"
+			name="extensions.treestyletab.tooltip.includeChildren"
+			type="bool"/>
 		<preference id="extensions.treestyletab.collapseExpandSubTree.dblclick"
 			name="extensions.treestyletab.collapseExpandSubTree.dblclick"
 			type="bool"/>
@@ -682,6 +685,9 @@
 	<checkbox id="extensions.treestyletab.collapseExpandSubTree.dblclick-check"
 		preference="extensions.treestyletab.collapseExpandSubTree.dblclick"
 		label="&config.collapseExpandSubTree.dblclick;"/>
+	<checkbox id="extensions.treestyletab.tooltip.includeChildren-check"
+		preference="extensions.treestyletab.tooltip.includeChildren"
+		label="&config.tooltip.includeChildren;"/>
 	<!--checkbox id="extensions.treestyletab.autoExpandSubTreeOnAppendChild-check"
 		preference="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
 		label="&config.autoExpandSubTreeOnAppendChild;"/-->

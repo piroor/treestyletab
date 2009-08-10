@@ -124,7 +124,7 @@
 <!ENTITY config.focusMode "Control(Command)-Tabでタブを切り替える時、折りたたまれたタブにもフォーカスする">
 
 <!ENTITY config.collapseExpandSubTree.dblclick "タブのダブルクリックでツリーを開閉する">
-
+<!ENTITY config.tooltip.includeChildren        "タブのツールチップにツリーの内容を表示する">
 <!ENTITY config.autoExpandSubTreeOnAppendChild "折り畳まれたツリー内に子孫のタブが追加された時、ツリーを自動的に展開する">
 
 <!ENTITY config.closeParentBehavior.caption       "親のタブを閉じた時の挙動">

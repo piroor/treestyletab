@@ -123,7 +123,7 @@
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
 <!ENTITY config.collapseExpandSubTree.dblclick "Zwijaj/rozwijaj drzewo potomne karty za pomocą dwukrotnego kliknięcia">
-
+<!ENTITY config.tooltip.includeChildren        "Show tree contents in tooltips on tabs">
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Rozwijaj drzewo potomne automatycznie, gdy są do niego wstawione karty">
 
 <!ENTITY config.closeParentBehavior.caption       "Kiedy karta główna jest zamykana:">

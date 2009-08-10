@@ -123,7 +123,7 @@
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
 <!ENTITY config.collapseExpandSubTree.dblclick "通过双击折叠/展开标签的子树">
-
+<!ENTITY config.tooltip.includeChildren        "Show tree contents in tooltips on tabs">
 <!ENTITY config.autoExpandSubTreeOnAppendChild "当标签被插入子树时，自动展开子树">
 
 <!ENTITY config.closeParentBehavior.caption       "关闭父标签时">
