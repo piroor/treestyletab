@@ -1,3 +1,5 @@
+if ('TreeStyleTabService' in window && !('overrideExtensionsPreInit' in TreeStyleTabService)) {
+
 TreeStyleTabService.overrideExtensionsPreInit = function() {
 
 	// Highlander
@@ -807,3 +809,5 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 	}
 
 };
+
+}

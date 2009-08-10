@@ -1,4 +1,6 @@
-var TreeStyleEditableBookmarkService = {
+if (!('TreeStyleEditableBookmarkService' in window)) {
+
+window.TreeStyleEditableBookmarkService = {
 
 	instantApply : false,
 
@@ -27,7 +29,29 @@ var TreeStyleEditableBookmarkService = {
 
 	init : function()
 	{
-		window.removeEventListener('DOMContentLoaded', this, false);
+		if (!('gEditItemOverlay' in window) || this.initialized) return;
+
+		var container = document.getElementById('editBookmarkPanelGrid');
+		if (!container) return;
+
+		container = container.getElementsByTagName('rows')[0];
+
+/* to be inserted to the container...
+	<row align="center">
+		<label value="&bookmark.parent.label;"
+			control="treestyletab-parent-menulist"/>
+		<menulist id="treestyletab-parent-menulist"
+			flex="1"
+			oncommand="TreeStyleEditableBookmarkService.onParentChange();">
+			<menupopup id="treestyletab-parent-popup">
+				<menuseparator id="treestyletab-parent-blank-item-separator"/>
+				<menuitem id="treestyletab-parent-blank-item"
+					label="&bookmark.parent.blank.label;"
+					value=""/>
+			</menupopup>
+		</menulist>
+	</row>
+*/
 
 		eval('gEditItemOverlay._showHideRows = '+gEditItemOverlay._showHideRows.toSource().replace(
 			'this._element("keywordRow").collapsed',
@@ -56,7 +80,10 @@ var TreeStyleEditableBookmarkService = {
 		if ('PlacesOrganizer' in window) {
 			this.instantApply = true;
 		}
+
+		this.initialized = true;
 	},
+	initialized : false,
 
 	initParentMenuList : function()
 	{
@@ -152,6 +179,7 @@ var TreeStyleEditableBookmarkService = {
 		switch (aEvent.type)
 		{
 			case 'DOMContentLoaded':
+				window.removeEventListener('DOMContentLoaded', this, false);
 				this.init();
 				break;
 		}
@@ -160,3 +188,5 @@ var TreeStyleEditableBookmarkService = {
 };
 
 window.addEventListener('DOMContentLoaded', TreeStyleEditableBookmarkService, false);
+
+}

@@ -1,3 +1,5 @@
+if ('TreeStyleTabService' in window && !('preLoadImagesForStyle' in TreeStyleTabService)) {
+
 TreeStyleTabService.preLoadImagesForStyle = function(aStyle) {
 	if (!aStyle ||
 		this._preLoadImagesForStyleDone.indexOf(aStyle) > -1)
@@ -57,3 +59,5 @@ TreeStyleTabService._preLoadImages = {
 			[]
 	)
 };
+
+}

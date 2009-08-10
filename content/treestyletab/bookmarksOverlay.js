@@ -1,4 +1,6 @@
-var TreeStyleTabBookmarksService = {
+if (!('TreeStyleTabBookmarksService' in window)) {
+
+window.TreeStyleTabBookmarksService = {
 
 	get BookmarksService() {
 		if (!this._BookmarksService) {
@@ -293,3 +295,5 @@ var TreeStyleTabBookmarksService = {
 TreeStyleTabBookmarksService.__proto__ = TreeStyleTabService;
 
 window.addEventListener('load', TreeStyleTabBookmarksService, false);
+
+}
