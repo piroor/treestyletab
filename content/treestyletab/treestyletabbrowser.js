@@ -1,5 +1,3 @@
-if (!('TreeStyleTabBrowser' in window)) { // start of definition
-
 function TreeStyleTabBrowser(aTabBrowser) 
 {
 	this.mTabBrowser = aTabBrowser;
@@ -4288,7 +4286,4 @@ TreeStyleTabBrowser.prototype = {
 }; 
 
 TreeStyleTabBrowser.prototype.__proto__ = TreeStyleTabService;
-window.TreeStyleTabBrowser = TreeStyleTabBrowser;
-
-} // end of definition
  

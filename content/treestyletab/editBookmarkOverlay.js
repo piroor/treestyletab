@@ -1,6 +1,4 @@
-if (!('TreeStyleEditableBookmarkService' in window)) {
-
-window.TreeStyleEditableBookmarkService = {
+var TreeStyleEditableBookmarkService = {
 
 	instantApply : false,
 
@@ -188,5 +186,3 @@ window.TreeStyleEditableBookmarkService = {
 };
 
 window.addEventListener('DOMContentLoaded', TreeStyleEditableBookmarkService, false);
-
-}

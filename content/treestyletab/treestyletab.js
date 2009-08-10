@@ -1,6 +1,4 @@
-if (!('TreeStyleTabService' in window)) { // start of definition
-
-window.TreeStyleTabService = { 
+var TreeStyleTabService = { 
 	/* attributes */
 	kID                 : 'treestyletab-id',
 	kCHILDREN           : 'treestyletab-children',
@@ -2691,6 +2689,4 @@ catch(e) {
 TreeStyleTabService.__proto__ = window['piro.sakura.ne.jp'].prefs;
 window.addEventListener('DOMContentLoaded', TreeStyleTabService, true);
 window.addEventListener('load', TreeStyleTabService, false);
-
-} // end of definition
  
