@@ -41,7 +41,7 @@ var TreeStyleEditableBookmarkService = {
 
 	initUI : function()
 	{
-		if (!('gEditItemOverlay' in window) || this.UIInitialized) return;
+		if (this.UIInitialized || !('gEditItemOverlay' in window)) return;
 
 		var container = document.getElementById('editBookmarkPanelGrid');
 		if (!container) return;
@@ -122,7 +122,7 @@ var TreeStyleEditableBookmarkService = {
 		range.detach();
 
 		var selected = popup.getElementsByAttribute('selected', 'true')[0];
-		this.menulist.value = (selected || this.blankItem).value;
+		this.menulist.value = (selected || this.blankItem).getAttribute('value');
 	},
 	_createSiblingsFragment : function(aCurrentItem)
 	{
