@@ -13,7 +13,7 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/boxObject.js
 */
 (function() {
-	const currentRevision = 3;
+	const currentRevision = 4;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -96,38 +96,45 @@
 				}
 
 				// "width" and "height" are sizes of the "border-box".
-				box.width  = rect.right-rect.left;
-				box.height = rect.bottom-rect.top;
+				box.width  = rect.right - rect.left;
+				box.height = rect.bottom - rect.top;
 
-				// "screenX" and "screenY" are absolute positions of the "border-box".
 				box.screenX = rect.left * zoom;
 				box.screenY = rect.top * zoom;
-				var owner = aNode;
-				while (true)
-				{
-					owner = this._getFrameOwnerFromFrame(frame);
-					frame = owner.ownerDocument.defaultView;
-					zoom  = this.getZoom(frame);
 
-					let style = this._getComputedStyle(owner);
-					box.screenX += this._getPropertyPixelValue(style, 'border-left-width') * zoom;
-					box.screenY += this._getPropertyPixelValue(style, 'border-top-width') * zoom;
+				if ('mozInnerScreenX' in frame && 'mozInnerScreenY' in frame) {
+					box.screenX += frame.mozInnerScreenX * zoom;
+					box.screenY += frame.mozInnerScreenY * zoom;
+				}
+				else {
+					// "screenX" and "screenY" are absolute positions of the "border-box".
+					var owner = aNode;
+					while (true)
+					{
+						owner = this._getFrameOwnerFromFrame(frame);
+						frame = owner.ownerDocument.defaultView;
+						zoom  = this.getZoom(frame);
 
-					if (!owner) {
-						box.screenX += frame.screenX;
-						box.screenY += frame.screenY;
-						break;
+						let style = this._getComputedStyle(owner);
+						box.screenX += this._getPropertyPixelValue(style, 'border-left-width') * zoom;
+						box.screenY += this._getPropertyPixelValue(style, 'border-top-width') * zoom;
+
+						if (!owner) {
+							box.screenX += frame.screenX;
+							box.screenY += frame.screenY;
+							break;
+						}
+						if (owner.ownerDocument instanceof Ci.nsIDOMXULDocument) {
+							let ownerBox = owner.ownerDocument.getBoxObjectFor(owner);
+							box.screenX += ownerBox.screenX;
+							box.screenY += ownerBox.screenY;
+							break;
+						}
+
+						let ownerRect = owner.getBoundingClientRect();
+						box.screenX += ownerRect.left * zoom;
+						box.screenY += ownerRect.top * zoom;
 					}
-					if (owner.ownerDocument instanceof Ci.nsIDOMXULDocument) {
-						let ownerBox = owner.ownerDocument.getBoxObjectFor(owner);
-						box.screenX += ownerBox.screenX;
-						box.screenY += ownerBox.screenY;
-						break;
-					}
-
-					let ownerRect = owner.getBoundingClientRect();
-					box.screenX += ownerRect.left * zoom;
-					box.screenY += ownerRect.top * zoom;
 				}
 			}
 			catch(e) {
