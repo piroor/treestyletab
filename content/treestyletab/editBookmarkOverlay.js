@@ -66,8 +66,8 @@ var TreeStyleEditableBookmarkService = {
 			</row>
 		]]>.toString().replace(/^\s*|\s*$/g, '').replace(/>\s+</g, '><')));
 		range.detach();
-		document.getElementById('treestyletab-parent-label').setAttribute('value', TreeStyleTabService.treeBundle.getString('bookmarkProperty.parent.label'));
-		this.blankItem.setAttribute('label', TreeStyleTabService.treeBundle.getString('bookmarkProperty.parent.blank.label'));
+		document.getElementById('treestyletab-parent-label').setAttribute('value', this.treeBundle.getString('bookmarkProperty.parent.label'));
+		this.blankItem.setAttribute('label', this.treeBundle.getString('bookmarkProperty.parent.blank.label'));
 
 
 		eval('gEditItemOverlay._showHideRows = '+gEditItemOverlay._showHideRows.toSource().replace(
@@ -181,7 +181,7 @@ var TreeStyleEditableBookmarkService = {
 	saveParentFor : function(aId)
 	{
 		PlacesUtils.setAnnotationsForItem(aId, [{
-			name    : TreeStyleTabService.kPARENT,
+			name    : this.kPARENT,
 			value   : parseInt(this.menulist.value || -1),
 			expires : PlacesUtils.annotations.EXPIRE_NEVER
 		}]);
@@ -205,5 +205,6 @@ var TreeStyleEditableBookmarkService = {
 	}
 
 };
+TreeStyleEditableBookmarkService.__proto__ = TreeStyleTabService;
 
 window.addEventListener('DOMContentLoaded', TreeStyleEditableBookmarkService, false);
