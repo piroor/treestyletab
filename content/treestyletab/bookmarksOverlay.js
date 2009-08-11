@@ -222,7 +222,7 @@ var TreeStyleTabBookmarksService = {
 			).replace(
 				/(this\._openTabset\([^\)]+)(\))/,
 				<![CDATA[$1,
-					TreeStyleTabBookmarksService.stringbundle
+					TreeStyleTabBookmarksService.treeBundle
 						.getFormattedString(
 							PlacesUtils.nodeIsBookmark(aNodes[0]) ?
 								'openSelectedPlaces.bookmarks' :

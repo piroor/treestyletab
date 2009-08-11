@@ -33,23 +33,28 @@ var TreeStyleEditableBookmarkService = {
 		if (!container) return;
 
 		container = container.getElementsByTagName('rows')[0];
+		var range = document.createRange();
+		range.selectNodeContents(container);
+		range.collapse(false);
+		range.insertNode(range.createContextualFragment(<![CDATA[
+			<row align="center">
+				<label id="treestyletab-parent-label"
+					control="treestyletab-parent-menulist"/>
+				<menulist id="treestyletab-parent-menulist"
+					flex="1"
+					oncommand="TreeStyleEditableBookmarkService.onParentChange();">
+					<menupopup id="treestyletab-parent-popup">
+						<menuseparator id="treestyletab-parent-blank-item-separator"/>
+						<menuitem id="treestyletab-parent-blank-item"
+							value=""/>
+					</menupopup>
+				</menulist>
+			</row>
+		]]>.toString().replace(/^\s*|\s*$/g, '').replace(/>\s+</g, '><')));
+		range.detach();
+		document.getElementById('treestyletab-parent-label').setAttribute('value', TreeStyleTabService.treeBundle.getString('bookmarkProperty.parent.label'));
+		this.blankItem.setAttribute('label', TreeStyleTabService.treeBundle.getString('bookmarkProperty.parent.blank.label'));
 
-/* to be inserted to the container...
-	<row align="center">
-		<label value=" (bookmarkProperty.parent.label) "
-			control="treestyletab-parent-menulist"/>
-		<menulist id="treestyletab-parent-menulist"
-			flex="1"
-			oncommand="TreeStyleEditableBookmarkService.onParentChange();">
-			<menupopup id="treestyletab-parent-popup">
-				<menuseparator id="treestyletab-parent-blank-item-separator"/>
-				<menuitem id="treestyletab-parent-blank-item"
-					label=" (bookmarkProperty.parent.blank.label) "
-					value=""/>
-			</menupopup>
-		</menulist>
-	</row>
-*/
 
 		eval('gEditItemOverlay._showHideRows = '+gEditItemOverlay._showHideRows.toSource().replace(
 			'this._element("keywordRow").collapsed',

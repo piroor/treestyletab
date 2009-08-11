@@ -10,6 +10,7 @@
 
 <script src="res/prefs.js" type="application/x-javascript; version=1.7"/>
 <script src="res/boxObject.js" type="application/x-javascript; version=1.7"/>
+<script src="res/stringBundle.js" type="application/x-javascript; version=1.7"/>
 <script src="res/autoScroll.js" type="application/x-javascript; version=1.7"/>
 <script src="res/animationManager.js" type="application/x-javascript; version=1.7"/>
 <script src="res/extensions.js" type="application/x-javascript; version=1.7"/>
@@ -52,13 +53,6 @@
 		oncommand="TreeStyleTabService.createSubTree(MultipleTabService.getSelectedTabs());"
 		multipletab-enabled="TreeStyleTabService.canCreateSubTree(MultipleTabService.getSelectedTabs())"/>
 </menupopup>
-
-<stringbundleset id="stringbundleset">
-	<stringbundle id="treestyletab-stringbundle"
-		src="chrome://treestyletab/locale/treestyletab.properties"/>
-	<stringbundle id="treestyletab-tabbrowserBundle"
-		src="chrome://browser/locale/tabbrowser.properties"/>
-</stringbundleset>
 
 <popupset id="mainPopupSet">
 	<menupopup id="multipletab-tabcontext-menu-template">

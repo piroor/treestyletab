@@ -2,17 +2,8 @@
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 <script src="res/prefs.js" type="application/x-javascript; version=1.7"/>
 <script src="res/boxObject.js" type="application/x-javascript; version=1.7"/>
+<script src="res/stringBundle.js" type="application/x-javascript; version=1.7"/>
 <script src="res/animationManager.js" type="application/x-javascript; version=1.7"/>
 <script src="treestyletab.js" type="application/x-javascript; version=1.7"/>
 <script src="bookmarksOverlay.js" type="application/x-javascript; version=1.7"/>
-
-<page id="history-panel">
-	<stringbundleset id="placesStringSet"/>
-</page>
-
-<stringbundleset id="placesStringSet">
-	<stringbundle id="treestyletab-stringbundle"
-		src="chrome://treestyletab/locale/treestyletab.properties"/>
-</stringbundleset>
-
 </overlay>

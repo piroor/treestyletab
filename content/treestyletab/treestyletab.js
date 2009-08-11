@@ -48,7 +48,6 @@ var TreeStyleTabService = {
 	kCOUNTER_CONTAINER     : 'treestyletab-counter-container',
 	kSPLITTER              : 'treestyletab-splitter',
 	kTABBAR_TOGGLER        : 'treestyletab-tabbar-toggler',
-	kSTRINGBUNDLE          : 'treestyletab-stringbundle',
 
 	kMENUITEM_REMOVESUBTREE_SELECTION : 'multipletab-selection-item-removeTabSubTree',
 
@@ -220,21 +219,16 @@ var TreeStyleTabService = {
 	},
 	_Comparator : null,
 
-	get stringbundle() {
-		if (!this._stringbundle) {
-			this._stringbundle = document.getElementById(this.kSTRINGBUNDLE);
-		}
-		return this._stringbundle;
+	get treeBundle() {
+		return window['piro.sakura.ne.jp']
+				.stringBundle
+				.get('chrome://treestyletab/locale/treestyletab.properties');
 	},
-	_stringbundle : null,
-
 	get tabbrowserBundle() {
-		if (!this._tabbrowserBundle) {
-			this._tabbrowserBundle = document.getElementById('treestyletab-tabbrowserBundle');
-		}
-		return this._tabbrowserBundle;
+		return window['piro.sakura.ne.jp']
+				.stringBundle
+				.get('chrome://browser/locale/tabbrowser.properties');
 	},
-	_tabbrowserBundle : null,
 	
 /* API */ 
 	
@@ -1151,14 +1145,14 @@ var TreeStyleTabService = {
 
 		var checked = { value : false };
 		var newChildTab = this.PromptService.confirmEx(window,
-				this.stringbundle.getString('dropLinkOnTab.title'),
-				this.stringbundle.getString('dropLinkOnTab.text'),
+				this.treeBundle.getString('dropLinkOnTab.title'),
+				this.treeBundle.getString('dropLinkOnTab.text'),
 				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_0) +
 				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_1),
-				this.stringbundle.getString('dropLinkOnTab.openNewChildTab'),
-				this.stringbundle.getString('dropLinkOnTab.loadInTheTab'),
+				this.treeBundle.getString('dropLinkOnTab.openNewChildTab'),
+				this.treeBundle.getString('dropLinkOnTab.loadInTheTab'),
 				null,
-				this.stringbundle.getString('dropLinkOnTab.never'),
+				this.treeBundle.getString('dropLinkOnTab.never'),
 				checked
 			) == 0;
 
@@ -1182,15 +1176,15 @@ var TreeStyleTabService = {
 
 		var checked = { value : false };
 		var button = this.PromptService.confirmEx(window,
-				this.stringbundle.getString('openGroupBookmarkBehavior.title'),
-				this.stringbundle.getString('openGroupBookmarkBehavior.text'),
+				this.treeBundle.getString('openGroupBookmarkBehavior.title'),
+				this.treeBundle.getString('openGroupBookmarkBehavior.text'),
 				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_0) +
 				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_1) +
 				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_2),
-				this.stringbundle.getString('openGroupBookmarkBehavior.subTree'),
-				this.stringbundle.getString('openGroupBookmarkBehavior.separate'),
-				this.stringbundle.getString('openGroupBookmarkBehavior.replace'),
-				this.stringbundle.getString('openGroupBookmarkBehavior.never'),
+				this.treeBundle.getString('openGroupBookmarkBehavior.subTree'),
+				this.treeBundle.getString('openGroupBookmarkBehavior.separate'),
+				this.treeBundle.getString('openGroupBookmarkBehavior.replace'),
+				this.treeBundle.getString('openGroupBookmarkBehavior.never'),
 				checked
 			);
 
@@ -2220,7 +2214,7 @@ catch(e) {
 		if ('mOverCloseButton' in aTab && aTab.mOverCloseButton) {
 			if (descendant.length &&
 				(collapsed || this.getTreePref('closeParentBehavior') == this.CLOSE_PARENT_BEHAVIOR_CLOSE)) {
-				label = this.stringbundle.getString('tooltip.closeTree');
+				label = this.treeBundle.getString('tooltip.closeTree');
 			}
 		}
 		else if (aTab.getAttribute(this.kTWISTY_HOVER) == 'true') {
@@ -2229,8 +2223,8 @@ catch(e) {
 						'tooltip.collapseSubtree' ;
 			label = tree || aTab.getAttribute('label');
 			label = label ?
-					this.stringbundle.getFormattedString(key+'.labeled', [label]) :
-					this.stringbundle.getString(key) ;
+					this.treeBundle.getFormattedString(key+'.labeled', [label]) :
+					this.treeBundle.getString(key) ;
 		}
 		else if (collapsed) {
 			label = tree;
