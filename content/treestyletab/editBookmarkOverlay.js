@@ -27,7 +27,21 @@ var TreeStyleEditableBookmarkService = {
 
 	init : function()
 	{
-		if (!('gEditItemOverlay' in window) || this.initialized) return;
+		if ('StarUI' in window) {
+			if ('_doShowEditBookmarkPanel' in StarUI) {
+				eval('StarUI._doShowEditBookmarkPanel = '+StarUI._doShowEditBookmarkPanel.toSource().replace(
+					'{',
+					'{ TreeStyleEditableBookmarkService.initUI();'
+				));
+			}
+		}
+
+		this.initUI();
+	},
+
+	initUI : function()
+	{
+		if (!('gEditItemOverlay' in window) || this.UIInitialized) return;
 
 		var container = document.getElementById('editBookmarkPanelGrid');
 		if (!container) return;
@@ -37,7 +51,7 @@ var TreeStyleEditableBookmarkService = {
 		range.selectNodeContents(container);
 		range.collapse(false);
 		range.insertNode(range.createContextualFragment(<![CDATA[
-			<row align="center">
+			<row align="center" id="treestyletab-parent-row">
 				<label id="treestyletab-parent-label"
 					control="treestyletab-parent-menulist"/>
 				<menulist id="treestyletab-parent-menulist"
@@ -57,8 +71,10 @@ var TreeStyleEditableBookmarkService = {
 
 
 		eval('gEditItemOverlay._showHideRows = '+gEditItemOverlay._showHideRows.toSource().replace(
-			'this._element("keywordRow").collapsed',
-			'TreeStyleEditableBookmarkService.parentRow.collapsed = $&'
+			/(\}\)?)$/,
+			<![CDATA[
+				TreeStyleEditableBookmarkService.parentRow.collapsed = this._element('keywordRow').collapsed && this._element('folderRow').collapsed;
+			$1]]>
 		));
 
 		eval('gEditItemOverlay.initPanel = '+gEditItemOverlay.initPanel.toSource().replace(
@@ -84,9 +100,9 @@ var TreeStyleEditableBookmarkService = {
 			this.instantApply = true;
 		}
 
-		this.initialized = true;
+		this.UIInitialized = true;
 	},
-	initialized : false,
+	UIInitialized : false,
 
 	initParentMenuList : function()
 	{
