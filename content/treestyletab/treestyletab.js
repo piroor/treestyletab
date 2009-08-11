@@ -2197,16 +2197,18 @@ catch(e) {
 
 		var base = parseInt(aTab.getAttribute(this.kNEST) || 0);
 		var descendant = this.getDescendantTabs(aTab);
+		var indentPart = '  ';
 		var tree = this.getTreePref('tooltip.includeChildren') ?
 					[aTab].concat(descendant)
 						.map(function(aTab) {
-							let label = '* '+aTab.getAttribute('label');
+							let label = aTab.getAttribute('label');
+							let indent = '';
 							let nest = parseInt(aTab.getAttribute(this.kNEST) || 0) - base;
 							for (let i = 0; i < nest; i++)
 							{
-								label = '  '+label;
+								indent += indentPart;
 							}
-							return label;
+							return this.treeBundle.getFormattedString('tooltip.item.label', [label, indent]);
 						}, this)
 						.join('\n') :
 					null ;

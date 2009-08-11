@@ -150,10 +150,9 @@ var TreeStyleTabBookmarksServiceEditable = {
 		if (selected > -1) selected = items[selected];
 
 		var fragment = document.createDocumentFragment();
-		var afterCurrent = false;
 		items.forEach(function(aId, aIndex) {
+			let label = PlacesUtils.bookmarks.getItemTitle(aId);
 			let item = document.createElement('menuitem');
-			item.setAttribute('label', PlacesUtils.bookmarks.getItemTitle(aId));
 			item.setAttribute('value', aId);
 
 			let parent = aIndex;
@@ -166,8 +165,14 @@ var TreeStyleTabBookmarksServiceEditable = {
 			}
 			if (nest) item.setAttribute('style', 'padding-left:'+nest+'em');
 
-			if (disabled || aId == aCurrentItem) item.setAttribute('disabled', true);
-			if (aId == selected && !afterCurrent) item.setAttribute('selected', true);
+			if (disabled || aId == aCurrentItem) {
+				item.setAttribute('disabled', true);
+				if (aId == aCurrentItem)
+					label = this.treeBundle.getFormattedString('bookmarkProperty.parent.current.label', [label]);
+			}
+			if (aId == selected) item.setAttribute('selected', true);
+
+			item.setAttribute('label', label);
 
 			fragment.appendChild(item);
 		});
