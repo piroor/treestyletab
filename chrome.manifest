@@ -5,8 +5,8 @@ overlay	chrome://browser/content/browser.xul	chrome://treestyletab/content/trees
 overlay	chrome://browser/content/bookmarks/bookmarksPanel.xul	chrome://treestyletab/content/bookmarksOverlay.xul
 overlay	chrome://browser/content/history/history-panel.xul	chrome://treestyletab/content/bookmarksOverlay.xul
 
-overlay	chrome://browser/content/places/places.xul	chrome://treestyletab/content/editBookmarkOverlay.xul
-overlay	chrome://browser/content/places/bookmarkProperties.xul	chrome://treestyletab/content/editBookmarkOverlay.xul
+overlay	chrome://browser/content/places/places.xul	chrome://treestyletab/content/bookmarksOverlayEditable.xul
+overlay	chrome://browser/content/places/bookmarkProperties.xul	chrome://treestyletab/content/bookmarksOverlayEditable.xul
 
 overlay	chrome://multipletab/content/config.xul	chrome://treestyletab/content/multipletabConfigOverlay.xul
 
