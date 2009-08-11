@@ -1,4 +1,4 @@
-var TreeStyleEditableBookmarkService = {
+var TreeStyleTabBookmarksServiceEditable = {
 
 	instantApply : false,
 
@@ -31,7 +31,7 @@ var TreeStyleEditableBookmarkService = {
 			if ('_doShowEditBookmarkPanel' in StarUI) {
 				eval('StarUI._doShowEditBookmarkPanel = '+StarUI._doShowEditBookmarkPanel.toSource().replace(
 					'{',
-					'{ TreeStyleEditableBookmarkService.initUI();'
+					'{ TreeStyleTabBookmarksServiceEditable.initUI();'
 				));
 			}
 		}
@@ -56,7 +56,7 @@ var TreeStyleEditableBookmarkService = {
 					control="treestyletab-parent-menulist"/>
 				<menulist id="treestyletab-parent-menulist"
 					flex="1"
-					oncommand="TreeStyleEditableBookmarkService.onParentChange();">
+					oncommand="TreeStyleTabBookmarksServiceEditable.onParentChange();">
 					<menupopup id="treestyletab-parent-popup">
 						<menuseparator id="treestyletab-parent-blank-item-separator"/>
 						<menuitem id="treestyletab-parent-blank-item"
@@ -73,25 +73,25 @@ var TreeStyleEditableBookmarkService = {
 		eval('gEditItemOverlay._showHideRows = '+gEditItemOverlay._showHideRows.toSource().replace(
 			/(\}\)?)$/,
 			<![CDATA[
-				TreeStyleEditableBookmarkService.parentRow.collapsed = this._element('keywordRow').collapsed && this._element('folderRow').collapsed;
+				TreeStyleTabBookmarksServiceEditable.parentRow.collapsed = this._element('keywordRow').collapsed && this._element('folderRow').collapsed;
 			$1]]>
 		));
 
 		eval('gEditItemOverlay.initPanel = '+gEditItemOverlay.initPanel.toSource().replace(
 			'if (this._itemType == Ci.nsINavBookmarksService.TYPE_BOOKMARK) {',
-			'$& TreeStyleEditableBookmarkService.initParentMenuList();'
+			'$& TreeStyleTabBookmarksServiceEditable.initParentMenuList();'
 		));
 
 		eval('gEditItemOverlay.onItemMoved = '+gEditItemOverlay.onItemMoved.toSource().replace(
 			'{',
-			'$& if (aNewParent == this._getFolderIdFromMenuList()) TreeStyleEditableBookmarkService.initParentMenuList();'
+			'$& if (aNewParent == this._getFolderIdFromMenuList()) TreeStyleTabBookmarksServiceEditable.initParentMenuList();'
 		));
 
 		// Bookmarks Property dialog
 		if ('BookmarkPropertiesPanel' in window) {
 			eval('BookmarkPropertiesPanel._endBatch = '+BookmarkPropertiesPanel._endBatch.toSource().replace(
 				'PlacesUIUtils.ptm.endBatch();',
-				'$& TreeStyleEditableBookmarkService.saveParentFor(this._itemId);'
+				'$& TreeStyleTabBookmarksServiceEditable.saveParentFor(this._itemId);'
 			));
 		}
 
@@ -126,8 +126,8 @@ var TreeStyleEditableBookmarkService = {
 	},
 	_createSiblingsFragment : function(aCurrentItem)
 	{
-		var items = this._getItemsInFolder(PlacesUtils.bookmarks.getFolderIdForItem(aCurrentItem));
-		var treeStructure = TreeStyleTabBookmarksService.getTreeStructureFromItems(items);
+		var items = this._getSiblingItems(aCurrentItem);
+		var treeStructure = this.getTreeStructureFromItems(items);
 
 		var currentIndex = items.indexOf(aCurrentItem);
 		var selected = treeStructure[currentIndex];
@@ -179,14 +179,42 @@ var TreeStyleEditableBookmarkService = {
 		}
 		return items;
 	},
+	_getSiblingItems : function(aId)
+	{
+		return this._getItemsInFolder(PlacesUtils.bookmarks.getFolderIdForItem(aId));
+	},
 
 	saveParentFor : function(aId)
 	{
+		var newParentId = parseInt(this.menulist.value || -1);
+		if (newParentId == this.getParentItem(aId)) return;
+
+		var items = this._getSiblingItems(aId);
+		var treeStructure = this.getTreeStructureFromItems(items);
+
+		var parentIndex = items.indexOf(newParentId);
+		var newIndex;
+		if (this.getTreePref('insertNewChildAt') == this.kINSERT_FISRT) {
+			newIndex = treeStructure.indexOf(parentIndex);
+		}
+		else {
+			do {
+				newIndex = parentIndex;
+				parentIndex = treeStructure.lastIndexOf(parentIndex);
+			}
+			while (parentIndex > -1);
+			newIndex++;
+		}
+
 		PlacesUtils.setAnnotationsForItem(aId, [{
 			name    : this.kPARENT,
-			value   : parseInt(this.menulist.value || -1),
+			value   : newParentId,
 			expires : PlacesUtils.annotations.EXPIRE_NEVER
 		}]);
+
+		PlacesUtils.bookmarks.moveItem(aId, PlacesUtils.bookmarks.getFolderIdForItem(aId), newIndex);
+
+		if (this.instantApply) this.initParentMenuList();
 	},
 
 	onParentChange : function()
@@ -207,6 +235,6 @@ var TreeStyleEditableBookmarkService = {
 	}
 
 };
-TreeStyleEditableBookmarkService.__proto__ = TreeStyleTabService;
+TreeStyleTabBookmarksServiceEditable.__proto__ = TreeStyleTabBookmarksService;
 
-window.addEventListener('DOMContentLoaded', TreeStyleEditableBookmarkService, false);
+window.addEventListener('DOMContentLoaded', TreeStyleTabBookmarksServiceEditable, false);
