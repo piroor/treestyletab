@@ -175,7 +175,7 @@ var TreeStyleTabBookmarksServiceEditable = {
 			item.setAttribute('label', label);
 
 			fragment.appendChild(item);
-		});
+		}, this);
 		return fragment;
 	},
 	_getItemsInFolder : function(aId)
