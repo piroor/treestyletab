@@ -129,7 +129,8 @@ var TreeStyleEditableBookmarkService = {
 		var items = this._getItemsInFolder(PlacesUtils.bookmarks.getFolderIdForItem(aCurrentItem));
 		var treeStructure = TreeStyleTabBookmarksService.getTreeStructureFromItems(items);
 
-		var selected = treeStructure[items.indexOf(aCurrentItem)];
+		var currentIndex = items.indexOf(aCurrentItem);
+		var selected = treeStructure[currentIndex];
 		if (selected > -1) selected = items[selected];
 
 		var fragment = document.createDocumentFragment();
@@ -141,14 +142,15 @@ var TreeStyleEditableBookmarkService = {
 
 			let parent = aIndex;
 			let nest = 0;
+			let disabled = false;
 			while ((parent = treeStructure[parent]) != -1)
 			{
 				nest++;
+				if (parent == currentIndex) disabled = true;
 			}
 			if (nest) item.setAttribute('style', 'padding-left:'+nest+'em');
 
-			if (aId == aCurrentItem) afterCurrent = true;
-			if (afterCurrent) item.setAttribute('disabled', true);
+			if (disabled || aId == aCurrentItem) item.setAttribute('disabled', true);
 			if (aId == selected && !afterCurrent) item.setAttribute('selected', true);
 
 			fragment.appendChild(item);
