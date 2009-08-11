@@ -1,6 +1,7 @@
 var TreeStyleTabBookmarksServiceEditable = {
 
 	instantApply : false,
+	canceled : false,
 
 	get parentRow()
 	{
@@ -27,21 +28,47 @@ var TreeStyleTabBookmarksServiceEditable = {
 
 	init : function()
 	{
+		// main browser window
 		if ('StarUI' in window) {
 			if ('_doShowEditBookmarkPanel' in StarUI) {
 				eval('StarUI._doShowEditBookmarkPanel = '+StarUI._doShowEditBookmarkPanel.toSource().replace(
 					'{',
-					'{ TreeStyleTabBookmarksServiceEditable.initUI();'
+					'{ TreeStyleTabBookmarksServiceEditable.initEditUI();'
+				));
+			}
+			if ('quitEditMode' in StarUI) {
+				eval('StarUI.quitEditMode = '+StarUI.quitEditMode.toSource().replace(
+					'{',
+					'{ TreeStyleTabBookmarksServiceEditable.saveParentFor(this._itemId);'
+				));
+			}
+			if ('cancelButtonOnCommand' in StarUI) {
+				eval('StarUI.cancelButtonOnCommand = '+StarUI.cancelButtonOnCommand.toSource().replace(
+					'{',
+					'{ TreeStyleTabBookmarksServiceEditable.canceled = true;'
 				));
 			}
 		}
 
-		this.initUI();
+		// Bookmarks Property dialog
+		if ('BookmarkPropertiesPanel' in window) {
+			eval('BookmarkPropertiesPanel._endBatch = '+BookmarkPropertiesPanel._endBatch.toSource().replace(
+				'PlacesUIUtils.ptm.endBatch();',
+				'$& TreeStyleTabBookmarksServiceEditable.saveParentFor(this._itemId);'
+			));
+		}
+
+		// Places Organizer (Library)
+		if ('PlacesOrganizer' in window) {
+			this.instantApply = true;
+		}
+
+		this.initEditUI();
 	},
 
-	initUI : function()
+	initEditUI : function()
 	{
-		if (this.UIInitialized || !('gEditItemOverlay' in window)) return;
+		if (this.editUIInitialized || !('gEditItemOverlay' in window)) return;
 
 		var container = document.getElementById('editBookmarkPanelGrid');
 		if (!container) return;
@@ -87,22 +114,9 @@ var TreeStyleTabBookmarksServiceEditable = {
 			'$& if (aNewParent == this._getFolderIdFromMenuList()) TreeStyleTabBookmarksServiceEditable.initParentMenuList();'
 		));
 
-		// Bookmarks Property dialog
-		if ('BookmarkPropertiesPanel' in window) {
-			eval('BookmarkPropertiesPanel._endBatch = '+BookmarkPropertiesPanel._endBatch.toSource().replace(
-				'PlacesUIUtils.ptm.endBatch();',
-				'$& TreeStyleTabBookmarksServiceEditable.saveParentFor(this._itemId);'
-			));
-		}
-
-		// Places Organizer (Library)
-		if ('PlacesOrganizer' in window) {
-			this.instantApply = true;
-		}
-
-		this.UIInitialized = true;
+		this.editUIInitialized = true;
 	},
-	UIInitialized : false,
+	editUIInitialized : false,
 
 	initParentMenuList : function()
 	{
@@ -123,6 +137,8 @@ var TreeStyleTabBookmarksServiceEditable = {
 
 		var selected = popup.getElementsByAttribute('selected', 'true')[0];
 		this.menulist.value = (selected || this.blankItem).getAttribute('value');
+
+		this.canceled = false;
 	},
 	_createSiblingsFragment : function(aCurrentItem)
 	{
@@ -187,7 +203,7 @@ var TreeStyleTabBookmarksServiceEditable = {
 	saveParentFor : function(aId)
 	{
 		var newParentId = parseInt(this.menulist.value || -1);
-		if (newParentId == this.getParentItem(aId)) return;
+		if (this.canceled || newParentId == this.getParentItem(aId)) return;
 
 		var items = this._getSiblingItems(aId);
 		var treeStructure = this.getTreeStructureFromItems(items);
