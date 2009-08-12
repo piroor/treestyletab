@@ -1,7 +1,7 @@
 <!ENTITY config.title        "樹狀分頁設定">
 
-<!ENTITY config.scale.min "min">
-<!ENTITY config.scale.max "max">
+<!ENTITY config.scale.min "小">
+<!ENTITY config.scale.max "大">
 
 
 <!ENTITY config.tabs.appearance "外觀">
@@ -46,27 +46,27 @@
 <!ENTITY config.tabs.tab "分頁操作">
 <!ENTITY config.tabs.context.tab      "依情況開啟分頁">
 
-<!ENTITY config.link.caption "Automatic New Tab Level for Links">
-<!ENTITY config.link.none    "Lv.0 Nothing (Firefox default)">
-<!ENTITY config.link.outer   "Lv.1 用新分頁開啟通往不同網站的鏈結">
-<!ENTITY config.link.any     "Lv.2 用新分頁開啟所有鏈結">
+<!ENTITY config.link.caption "鏈結新分頁位階自動化">
+<!ENTITY config.link.none    "位階-0 無 (Firefox 預設)">
+<!ENTITY config.link.outer   "位階-1 用新分頁開啟通往不同網站的鏈結">
+<!ENTITY config.link.any     "位階-2 用新分頁開啟所有鏈結">
 
-<!ENTITY config.urlbar.caption       "Automatic New Tab Level for the Location Bar">
-<!ENTITY config.urlbar.none          "Lv.0 Nothing (Firefox default)">
-<!ENTITY config.urlbar.outer         "Lv.1 用新分頁開啟通往不同網站的 URL">
-<!ENTITY config.urlbar.any           "Lv.2 Load into new tab always">
-<!ENTITY config.urlbar.asChild.none  "Lv.0 Open as separate tab">
-<!ENTITY config.urlbar.asChild.inner "Lv.1 Open as child tab if it is the same website">
-<!ENTITY config.urlbar.asChild.any   "Lv.2 Open as child tab always">
+<!ENTITY config.urlbar.caption       "位址欄新分頁位階自動化">
+<!ENTITY config.urlbar.none          "位階-0 無 (Firefox 預設)">
+<!ENTITY config.urlbar.outer         "位階-1 用新分頁開啟通往不同網站的 URL">
+<!ENTITY config.urlbar.any           "位階-2 固定用新分頁開啟">
+<!ENTITY config.urlbar.asChild.none  "位階-0 開啟為各別分頁">
+<!ENTITY config.urlbar.asChild.inner "位階-1 如果同網站就開啟為子分頁">
+<!ENTITY config.urlbar.asChild.any   "位階-2 一律開啟為子分頁">
 
 <!ENTITY config.dropLinksOnTab.caption "拖曳鏈結或 URL 到現有的分頁時">
-<!ENTITY config.dropLinksOnTab.ask     "Ask me always">
+<!ENTITY config.dropLinksOnTab.ask     "每次都問我">
 <!ENTITY config.dropLinksOnTab.load    "在拖曳目的地分頁載入鏈結（Firefox 預設）">
 <!ENTITY config.dropLinksOnTab.newTab  "用拖曳目的地分頁之下的新子分頁開啟鏈結">
 
-<!ENTITY config.openGroupBookmark.caption     "Behavior of &quot;Open All in Tabs&quot; for bookmark folders">
-<!--ENTITY config.openGroupBookmark.caption     "按書籤資料夾的「全部開啟」時"-->
-<!ENTITY config.openGroupBookmark.ask         "Ask me always">
+<!ENTITY config.openGroupBookmark.caption     "按書籤資料夾的「全部開啟」時">
+<!--ENTITY config.openGroupBookmark.caption   "按書籤資料夾的「全部開啟」時"-->
+<!ENTITY config.openGroupBookmark.ask         "每次都問我">
 <!ENTITY config.openGroupBookmark.subtree     "用一個子樹開啟（推薦）">
 <!ENTITY config.openGroupBookmark.flat        "用分開的分頁開啟（Firefox 預設）">
 <!ENTITY config.openGroupBookmark.replace     "將目前瀏覽的分頁取代為書籤的內容">
@@ -113,15 +113,15 @@
 
 
 <!ENTITY config.tabs.advanced "進階">
-<!ENTITY config.tabs.advanced.focus "Focus">
-<!ENTITY config.tabs.advanced.tree  "Tree Structure">
-<!ENTITY config.tabs.advanced.misc  "Misc.">
+<!ENTITY config.tabs.advanced.focus "前景分頁">
+<!ENTITY config.tabs.advanced.tree  "樹狀結構">
+<!ENTITY config.tabs.advanced.misc  "雜項">
 
 <!--ENTITY config.autoCollapseExpandSubTreeOnSelect "當開新分頁或切換分頁時，自動摺疊無關的子樹"-->
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "切換分頁時，自動展開該子樹並摺疊無關者">
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "不包括因關閉當前分頁而造成的切換">
 <!ENTITY config.collapseExpandSubTree.dblclick "按兩下分頁開關子樹">
-<!ENTITY config.tooltip.includeChildren        "Show tree contents in tooltips on tabs">
+<!ENTITY config.tooltip.includeChildren        "於頁籤提示方塊中顯示該樹的內容">
 <!ENTITY config.autoExpandSubTreeOnAppendChild "當新增分頁到子樹時，自動展開子樹">
 
 <!ENTITY config.closeParentBehavior.caption "當關閉親分頁時">
@@ -148,7 +148,7 @@
 
 <!ENTITY selection.removeTabSubTree.label     "關閉所有選取的樹">
 <!ENTITY selection.removeTabSubTree.accesskey "s">
-<!ENTITY selection.createSubTree.label          "Gather to a New Tree">
+<!ENTITY selection.createSubTree.label          "收容到一新樹">
 <!ENTITY selection.createSubTree.accesskey      "g">
 
 <!ENTITY context.reloadTabSubTree.label     "重新載入此樹">
@@ -174,4 +174,4 @@
 <!ENTITY context.bookmarkTabSubTree.label     "此樹加入書籤...">
 <!ENTITY context.bookmarkTabSubTree.accesskey "t">
 
-<!ENTITY group.default "New Group">
+<!ENTITY group.default "新增群組">
