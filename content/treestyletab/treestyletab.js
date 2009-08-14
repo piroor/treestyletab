@@ -2132,6 +2132,13 @@ catch(e) {
 		this._tabShouldBeExpandedAfterKeyReleased = null;
 	},
  
+	get shouldListenKeyEventsForAutoExpandByFocusChange() 
+	{
+		return !this.getPref('browser.ctrlTab.previews') &&
+					!this.getTreePref('autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut') &&
+					this.getTreePref('autoCollapseExpandSubTreeOnSelect');
+	},
+ 
 	// autohide 
 	
 	updateAutoHideKeyListeners : function() 
@@ -2632,7 +2639,8 @@ catch(e) {
 	domains : [ 
 		'extensions.treestyletab',
 		'browser.link.open_newwindow.restriction.override',
-		'browser.tabs.loadFolderAndReplace.override'
+		'browser.tabs.loadFolderAndReplace.override',
+		'browser.ctrlTab.previews'
 	],
  
 	onPrefChange : function(aPrefName) 
@@ -2699,8 +2707,8 @@ catch(e) {
 
 			case 'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut':
 			case 'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect':
-				if (!this.getTreePref('autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut') &&
-					this.getTreePref('autoCollapseExpandSubTreeOnSelect')) {
+			case 'browser.ctrlTab.previews':
+				if (this.shouldListenKeyEventsForAutoExpandByFocusChange) {
 					this.startListenKeyEventsFor(this.LISTEN_FOR_AUTOEXPAND_BY_FOCUSCHANGE);
 				}
 				else {
