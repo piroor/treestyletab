@@ -1385,6 +1385,7 @@ var TreeStyleTabService = {
 		this.onPrefChange('extensions.treestyletab.animation.indent.duration');
 		this.onPrefChange('extensions.treestyletab.animation.collapse.duration');
 		this.onPrefChange('extensions.treestyletab.twisty.expandSensitiveArea');
+		this.onPrefChange('extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut');
 	},
 	initialized : false,
 	
@@ -1898,7 +1899,8 @@ catch(e) {
 		window['piro.sakura.ne.jp'].animationManager.stop();
 		this.destroyTabBrowser(gBrowser);
 
-		this.endListenKeyEvents();
+		this.endListenKeyEventsFor(this.LISTEN_FOR_AUTOHIDE);
+		this.endListenKeyEventsFor(this.LISTEN_FOR_AUTOEXPAND_BY_FOCUSCHANGE);
 
 		document.getElementById('contentAreaContextMenu').removeEventListener('popupshowing', this, false);
 		document.removeEventListener('popupshowing', this, false);
@@ -1990,6 +1992,36 @@ catch(e) {
 		}
 	},
 	
+	keyEventListening      : false, 
+	keyEventListeningFlags : 0,
+
+	LISTEN_FOR_AUTOHIDE                  : 1,
+	LISTEN_FOR_AUTOEXPAND_BY_FOCUSCHANGE : 2,
+	
+	startListenKeyEventsFor : function(aReason) 
+	{
+		if (this.keyEventListeningFlags & aReason) return;
+		if (!this.keyEventListening) {
+			window.addEventListener('keydown',  this, true);
+			window.addEventListener('keyup',    this, true);
+			window.addEventListener('keypress', this, true);
+			this.keyEventListening = true;
+		}
+		this.keyEventListeningFlags |= aReason;
+	},
+ 
+	endListenKeyEventsFor : function(aReason) 
+	{
+		if (!(this.keyEventListeningFlags & aReason)) return;
+		this.keyEventListeningFlags ^= aReason;
+		if (!this.keyEventListeningFlags && this.keyEventListening) {
+			window.removeEventListener('keydown',  this, true);
+			window.removeEventListener('keyup',    this, true);
+			window.removeEventListener('keypress', this, true);
+			this.keyEventListening = false;
+		}
+	},
+ 
 	onKeyDown : function(aEvent) 
 	{
 		var b = this.browser;
@@ -2005,7 +2037,8 @@ catch(e) {
 			!aEvent.altKey &&
 			this.accelKeyPressed
 			) {
-			if (this.getTreePref('tabbar.autoShow.accelKeyDown') &&
+			if (sv.autoHideEnabled &&
+				this.getTreePref('tabbar.autoShow.accelKeyDown') &&
 				!sv.autoHideShown &&
 				!sv.delayedAutoShowTimer &&
 				!this.delayedAutoShowForShortcutTimer) {
@@ -2023,7 +2056,8 @@ catch(e) {
 			}
 		}
 		else {
-			sv.hideTabbar();
+			if (sv.autoHideEnabled)
+				sv.hideTabbar();
 		}
 	},
 	cancelDelayedAutoShowForShortcut : function()
@@ -2073,25 +2107,43 @@ catch(e) {
 				aEvent.charCode == 0 && aEvent.keyCode == 16
 			)
 			) {
-			if (this.getTreePref('tabbar.autoShow.tabSwitch'))
+			if (sv.autoHideEnabled &&
+				this.getTreePref('tabbar.autoShow.tabSwitch'))
 				sv.showTabbar(sv.kSHOWN_BY_SHORTCUT);
 			return;
 		}
 
-		if (sv.showHideTabbarReason == sv.kSHOWN_BY_SHORTCUT)
+		// when you just release accel key...
+
+		if (sv.autoHideEnabled &&
+			sv.showHideTabbarReason == sv.kSHOWN_BY_SHORTCUT) {
 			sv.hideTabbar();
+		}
+
+		if (this._tabShouldBeExpandedAfterKeyReleased) {
+			let tab = this._tabShouldBeExpandedAfterKeyReleased;
+			if (this.hasChildTabs(tab) &&
+				(tab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true')) {
+				this.getTabBrowserFromChild(tab)
+						.treeStyleTab
+						.collapseExpandTreesIntelligentlyFor(tab);
+			}
+		}
+		this._tabShouldBeExpandedAfterKeyReleased = null;
 	},
  
+	// autohide 
+	
 	updateAutoHideKeyListeners : function() 
 	{
 		if (
 			this.getTreePref('tabbar.autoHide.mode') &&
-			this.shouldListenKeyEvents
+			this.shouldListenKeyEventsForAutoHide
 			) {
-			this.startListenKeyEvents();
+			this.startListenKeyEventsFor(this.LISTEN_FOR_AUTOHIDE);
 		}
 		else {
-			this.endListenKeyEvents();
+			this.endListenKeyEventsFor(this.LISTEN_FOR_AUTOHIDE);
 		}
 		window.setTimeout(function() {
 			if (window.windowState != Components.interfaces.nsIDOMChromeWindow.STATE_NORMAL) return;
@@ -2099,34 +2151,14 @@ catch(e) {
 			window.resizeBy(1,1);
 		}, 0);
 	},
-	
-	startListenKeyEvents : function() 
-	{
-		if (this.keyEventListening) return;
-		window.addEventListener('keydown',  this, true);
-		window.addEventListener('keyup',    this, true);
-		window.addEventListener('keypress', this, true);
-		this.keyEventListening = true;
-	},
  
-	endListenKeyEvents : function() 
-	{
-		if (!this.keyEventListening) return;
-		window.removeEventListener('keydown',  this, true);
-		window.removeEventListener('keyup',    this, true);
-		window.removeEventListener('keypress', this, true);
-		this.keyEventListening = false;
-	},
- 
-	keyEventListening : false, 
- 
-	get shouldListenKeyEvents() 
+	get shouldListenKeyEventsForAutoHide() 
 	{
 		return this.getTreePref('tabbar.autoShow.accelKeyDown') ||
 				this.getTreePref('tabbar.autoShow.tabSwitch') ||
 				this.getTreePref('tabbar.autoShow.feedback');
 	},
-   
+    
 	onTabbarResized : function(aEvent) 
 	{
 		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
@@ -2526,6 +2558,13 @@ catch(e) {
 		);
 	},
  
+	expandTreeAfterKeyReleased : function(aTab) 
+	{
+		if (this.getTreePref('autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut')) return;
+		this._tabShouldBeExpandedAfterKeyReleased = aTab || null;
+	},
+	_tabShouldBeExpandedAfterKeyReleased : null,
+ 
 	registerTabFocusAllowance : function(aProcess) /* PUBLIC API */ 
 	{
 		this._tabFocusAllowance.push(aProcess);
@@ -2656,6 +2695,17 @@ catch(e) {
 
 			case 'extensions.treestyletab.twisty.expandSensitiveArea':
 				this.expandTwistyArea = value;
+				break;
+
+			case 'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut':
+			case 'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect':
+				if (!this.getTreePref('autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut') &&
+					this.getTreePref('autoCollapseExpandSubTreeOnSelect')) {
+					this.startListenKeyEventsFor(this.LISTEN_FOR_AUTOEXPAND_BY_FOCUSCHANGE);
+				}
+				else {
+					this.endListenKeyEventsFor(this.LISTEN_FOR_AUTOEXPAND_BY_FOCUSCHANGE);
+				}
 				break;
 
 			default:

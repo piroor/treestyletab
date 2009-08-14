@@ -92,6 +92,7 @@ pref("extensions.treestyletab.useEffectiveTLD", true);
 
 pref("extensions.treestyletab.autoCollapseExpandSubTreeOnSelect",      true);
 pref("extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove", true);
+pref("extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut", false);
 pref("extensions.treestyletab.collapseExpandSubTree.dblclick",         false);
 pref("extensions.treestyletab.autoExpandSubTreeOnCollapsedChildFocused", true);
 pref("extensions.treestyletab.autoExpandSubTreeOnAppendChild",         true);

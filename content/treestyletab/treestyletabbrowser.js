@@ -199,9 +199,10 @@ TreeStyleTabBrowser.prototype = {
 			b.mTabContainer.advanceSelectedTab.toSource().replace(
 				'{',
 				<![CDATA[$&
-					if (TreeStyleTabService.getTreePref('focusMode') == TreeStyleTabService.kFOCUS_VISIBLE) {
+					var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;
+					treeStyleTab._focusChangedByShortcut = TreeStyleTabService.accelKeyPressed;
+					if (treeStyleTab.getTreePref('focusMode') == treeStyleTab.kFOCUS_VISIBLE) {
 						(function(aDir, aWrap, aSelf) {
-							var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(aSelf).treeStyleTab;
 							var nextTab = (aDir < 0) ? treeStyleTab.getPreviousVisibleTab(aSelf.selectedItem) : treeStyleTab.getNextVisibleTab(aSelf.selectedItem) ;
 							if (!nextTab && aWrap) {
 								nextTab = TreeStyleTabService.evaluateXPath(
@@ -1883,15 +1884,30 @@ TreeStyleTabBrowser.prototype = {
 				b.selectedTab = this.getRootTab(tab);
 			}
 		}
-		else if (this.hasChildTabs(tab) &&
-				(tab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true') &&
-				this.getTreePref('autoCollapseExpandSubTreeOnSelect')) {
-			if (!this._focusChangedByCurrentTabRemove ||
-				this.getTreePref('autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove'))
+		else if (
+				this.getTreePref('autoCollapseExpandSubTreeOnSelect') &&
+				(
+					!this._focusChangedByCurrentTabRemove ||
+					this.getTreePref('autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove')
+				)
+				) {
+			if (!this.hasChildTabs(tab) || (tab.getAttribute(this.kSUBTREE_COLLAPSED) != 'true'))
+				tab = null;
+
+			if (
+				this._focusChangedByShortcut &&
+				this.accelKeyPressed &&
+				!this.getTreePref('autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut')
+				) {
+				TreeStyleTabService.expandTreeAfterKeyReleased(tab);
+			}
+			else {
 				this.collapseExpandTreesIntelligentlyWithDelayFor(tab);
+			}
 		}
 
 		this._focusChangedByCurrentTabRemove = false;
+		this._focusChangedByShortcut = false;
 
 		if (this.autoHideEnabled && this.autoHideShown)
 			this.redrawContentArea();
@@ -3435,9 +3451,9 @@ TreeStyleTabBrowser.prototype = {
  
 	collapseExpandTreesIntelligentlyFor : function(aTab, aJustNow) 
 	{
-		var b = this.mTabBrowser;
-		if (this.doingCollapseExpand) return;
+		if (!aTab || this.doingCollapseExpand) return;
 
+		var b = this.mTabBrowser;
 		var sameParentTab = this.getParentTab(aTab);
 		var expandedParentTabs = [
 				aTab.getAttribute(this.kID)
@@ -4074,8 +4090,8 @@ TreeStyleTabBrowser.prototype = {
 		this.mTabBrowser.mPanelContainer.addEventListener('scroll', this, true);
 		if (this.shouldListenMouseMove)
 			this.startListenMouseMove();
-		if (this.mTabBrowser == gBrowser && this.shouldListenKeyEvents)
-			TreeStyleTabService.startListenKeyEvents();
+		if (this.mTabBrowser == gBrowser && this.shouldListenKeyEventsForAutoHide)
+			TreeStyleTabService.startListenKeyEventsFor(this.LISTEN_FOR_AUTOHIDE);
 
 		this.clearTabbarCanvas();
 		this.updateTabbarTransparency();
@@ -4100,7 +4116,7 @@ TreeStyleTabBrowser.prototype = {
 		this.mTabBrowser.mPanelContainer.removeEventListener('scroll', this, true);
 		this.endListenMouseMove();
 		if (this.mTabBrowser == gBrowser)
-			TreeStyleTabService.endListenKeyEvents();
+			TreeStyleTabService.endListenKeyEventsFor(this.LISTEN_FOR_AUTOHIDE);
 
 		this.clearTabbarCanvas();
 		this.updateTabbarTransparency();
