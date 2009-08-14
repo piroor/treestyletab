@@ -1879,6 +1879,7 @@ TreeStyleTabBrowser.prototype = {
 				{
 					this.collapseExpandSubtree(parentTab, false);
 				}
+				this.collapseExpandTreesIntelligentlyWithDelayFor(tab);
 			}
 			else {
 				b.selectedTab = this.getRootTab(tab);
