@@ -2135,8 +2135,8 @@ catch(e) {
 	get shouldListenKeyEventsForAutoExpandByFocusChange() 
 	{
 		return !this.getPref('browser.ctrlTab.previews') &&
-					!this.getTreePref('autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut') &&
-					this.getTreePref('autoCollapseExpandSubTreeOnSelect');
+				!this.getTreePref('autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut') &&
+				this.getTreePref('autoCollapseExpandSubTreeOnSelect');
 	},
  
 	// autohide 
@@ -2161,9 +2161,12 @@ catch(e) {
  
 	get shouldListenKeyEventsForAutoHide() 
 	{
-		return this.getTreePref('tabbar.autoShow.accelKeyDown') ||
-				this.getTreePref('tabbar.autoShow.tabSwitch') ||
-				this.getTreePref('tabbar.autoShow.feedback');
+		return !this.getPref('browser.ctrlTab.previews') &&
+				(
+					this.getTreePref('tabbar.autoShow.accelKeyDown') ||
+					this.getTreePref('tabbar.autoShow.tabSwitch') ||
+					this.getTreePref('tabbar.autoShow.feedback')
+				);
 	},
     
 	onTabbarResized : function(aEvent) 
@@ -2705,15 +2708,14 @@ catch(e) {
 				this.expandTwistyArea = value;
 				break;
 
+			case 'browser.ctrlTab.previews':
+				this.updateAutoHideKeyListeners();
 			case 'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut':
 			case 'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect':
-			case 'browser.ctrlTab.previews':
-				if (this.shouldListenKeyEventsForAutoExpandByFocusChange) {
+				if (this.shouldListenKeyEventsForAutoExpandByFocusChange)
 					this.startListenKeyEventsFor(this.LISTEN_FOR_AUTOEXPAND_BY_FOCUSCHANGE);
-				}
-				else {
+				else
 					this.endListenKeyEventsFor(this.LISTEN_FOR_AUTOEXPAND_BY_FOCUSCHANGE);
-				}
 				break;
 
 			default:
