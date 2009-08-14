@@ -2134,9 +2134,15 @@ catch(e) {
  
 	get shouldListenKeyEventsForAutoExpandByFocusChange() 
 	{
-		return !this.getPref('browser.ctrlTab.previews') &&
+		return !this.ctrlTabPreviewsEnabled &&
 				!this.getTreePref('autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut') &&
 				this.getTreePref('autoCollapseExpandSubTreeOnSelect');
+	},
+ 
+	get ctrlTabPreviewsEnabled() 
+	{
+		return 'allTabs' in window &&
+				this.getPref('browser.ctrlTab.previews');
 	},
  
 	// autohide 
@@ -2161,7 +2167,7 @@ catch(e) {
  
 	get shouldListenKeyEventsForAutoHide() 
 	{
-		return !this.getPref('browser.ctrlTab.previews') &&
+		return !this.ctrlTabPreviewsEnabled &&
 				(
 					this.getTreePref('tabbar.autoShow.accelKeyDown') ||
 					this.getTreePref('tabbar.autoShow.tabSwitch') ||
