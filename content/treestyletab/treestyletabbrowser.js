@@ -2627,6 +2627,16 @@ TreeStyleTabBrowser.prototype = {
 					sourceBrowser.treeStyleTab.getParentTab(aTab) : null ;
 			}, this);
 
+		var collapseExpandState = [];
+		if (aInfo.action & this.kACTION_IMPORT &&
+			'swapBrowsersAndCloseOther' in targetBrowser) {
+			draggedWholeTree.forEach(function(aTab) {
+				collapseExpandState.push(this.getTabValue(aTab, this.kSUBTREE_COLLAPSED) == 'true');
+				this.collapseExpandSubtree(aTab, false, true);
+				this.collapseExpandTab(aTab, false, true);
+			}, this);
+		}
+
 		var lastTabIndex = tabs.length -1;
 		draggedTabs.forEach(function(aTab, aIndex) {
 			var tab = aTab;
@@ -2662,7 +2672,7 @@ TreeStyleTabBrowser.prototype = {
 
 			this.internallyTabMoving = true;
 			targetBrowser.moveTabTo(tab, newIndex);
-			this.collapseExpandTab(tab, false);
+			this.collapseExpandTab(tab, false, true);
 			this.internallyTabMoving = false;
 
 		}, this);
@@ -2679,6 +2689,11 @@ TreeStyleTabBrowser.prototype = {
 			if (index < 0) return;
 			targetBrowser.treeStyleTab.attachTabTo(aTab, newTabs[index]);
 		});
+		newTabs.reverse();
+		collapseExpandState.reverse();
+		collapseExpandState.forEach(function(aCollapsed, aIndex) {
+			this.collapseExpandSubtree(newTabs[aIndex], aCollapsed, true);
+		}, this);
 
 		if (aInfo.action & this.kACTIONS_FOR_DESTINATION &&
 			aInfo.action & this.kACTION_ATTACH)
