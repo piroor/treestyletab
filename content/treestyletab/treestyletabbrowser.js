@@ -2627,6 +2627,8 @@ TreeStyleTabBrowser.prototype = {
 					sourceBrowser.treeStyleTab.getParentTab(aTab) : null ;
 			}, this);
 
+		// Firefox fails to "move" collapsed tabs. So, expand them first
+		// and collapse them after they are moved.
 		var collapseExpandState = [];
 		if (aInfo.action & this.kACTION_IMPORT &&
 			'swapBrowsersAndCloseOther' in targetBrowser) {
