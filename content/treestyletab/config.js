@@ -37,9 +37,9 @@ function init()
 
 var gDropLinksOnRadioSet,
 	gGroupBookmarkRadioSet,
-	gOpenLinkInTabScale,
-	gLoadLocationBarToNewTabScale,
-	gLoadLocationBarToChildTabScale,
+	gOpenLinkInTabRadio,
+	gLoadLocationBarToNewTabRadio,
+	gLoadLocationBarToChildTabRadio,
 	gLastStateIsVertical;
 var gTabbarPlacePositionInitialized = false;
 
@@ -58,22 +58,22 @@ function initTabPane()
 		'openGroupBookmark-deck'
 	);
 
-	gOpenLinkInTabScale = new ScaleSet(
+	gOpenLinkInTabRadio = new RadioScaleSet(
 		['extensions.treestyletab.openOuterLinkInNewTab',
 		 'extensions.treestyletab.openAnyLinkInNewTab'],
-		'openLinkInNewTab-scale',
+		'openLinkInNewTab-radio',
 		'openLinkInNewTab-labels'
 	);
-	gLoadLocationBarToNewTabScale = new ScaleSet(
+	gLoadLocationBarToNewTabRadio = new RadioScaleSet(
 		['extensions.treestyletab.urlbar.loadDifferentDomainToNewTab',
 		 'extensions.treestyletab.urlbar.loadSameDomainToNewTab'],
-		'loadLocationBarToNewTab-scale',
+		'loadLocationBarToNewTab-radio',
 		'loadLocationBarToNewTab-labels'
 	);
-	gLoadLocationBarToChildTabScale = new ScaleSet(
+	gLoadLocationBarToChildTabRadio = new RadioScaleSet(
 		['extensions.treestyletab.urlbar.loadSameDomainToNewTab.asChild',
 		 'extensions.treestyletab.urlbar.loadDifferentDomainToNewTab.asChild'],
-		'loadLocationBarToChildTab-scale',
+		'loadLocationBarToChildTab-radio',
 		'loadLocationBarToChildTab-labels'
 	);
 
@@ -246,62 +246,58 @@ function updateCloseRootBehaviorCheck()
 
 
 
-function ScaleSet(aPrefs, aScale, aLabelsDeck)
+function RadioScaleSet(aPrefs, aRadio, aLabelsDeck)
 {
 	this.prefs = aPrefs.map(document.getElementById, document);
-	this.scale = document.getElementById(aScale);
-	this.labels = document.getElementById(aLabelsDeck);
+	this.radio = document.getElementById(aRadio);
 
-	this.scale.value = this.prefs[1].value ? 2 :
+	this.radio.value = this.prefs[1].value ? 2 :
 						this.prefs[0].value ? 1 :
 							0 ;
-	this.labels.selectedIndex = this.scale.value;
 }
-ScaleSet.prototype = {
+RadioScaleSet.prototype = {
 	onChange : function()
 	{
 		var value = this.value;
 		this.prefs[0].value = value > 0;
 		this.prefs[1].value = value > 1;
-		this.labels.selectedIndex = value;
 	},
 
 	set value(aValue)
 	{
-		this.scale.value = aValue;
+		this.radio.value = aValue;
 		this.onChange();
 		return aValue;
 	},
 	get value()
 	{
-		return parseInt(this.scale.value);
+		return parseInt(this.radio.value);
 	},
 
 	set disabled(aDisabled)
 	{
 		if (aDisabled) {
-			this.scale.setAttribute('disabled', true);
-			Array.slice(this.labels.childNodes).forEach(function(aNode) {
+			this.radio.setAttribute('disabled', true);
+			Array.slice(this.radio.childNodes).forEach(function(aNode) {
 				aNode.setAttribute('disabled', true);
 			});
 		}
 		else {
-			this.scale.removeAttribute('disabled');
-			Array.slice(this.labels.childNodes).forEach(function(aNode) {
+			this.radio.removeAttribute('disabled');
+			Array.slice(this.radio.childNodes).forEach(function(aNode) {
 				aNode.removeAttribute('disabled');
 			});
 		}
 	},
 	get disabled()
 	{
-		return this.scale.getAttribute('disabled') == 'true';
+		return this.radio.getAttribute('disabled') == 'true';
 	},
 
 	destroy : function()
 	{
 		this.prefs = null;
-		this.scale = null;
-		this.labels = null;
+		this.radio = null;
 	}
 };
 
