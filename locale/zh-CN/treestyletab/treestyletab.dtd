@@ -46,7 +46,7 @@
 
 <!ENTITY config.tabs.tab "标签操作">
 
-<!ENTITY config.tabs.context.tab      "打开标签">
+<!ENTITY config.tabs.autotab.tab      "Automatic New Tab Level">
 
 <!ENTITY config.link.caption "如何打开新链接？">
 <!ENTITY config.link.none    "Lv.0 当前页面打开（Firefox 默认）">
@@ -60,6 +60,8 @@
 <!ENTITY config.urlbar.asChild.none  "Lv.0 打开成独立的标签">
 <!ENTITY config.urlbar.asChild.inner "Lv.1 与当前标签处于相同网站时在新子标签中打开">
 <!ENTITY config.urlbar.asChild.any   "Lv.2 总是在新子标签中打开">
+
+<!ENTITY config.tabs.context.tab      "打开标签">
 
 <!ENTITY config.loadDroppedLinkToNewChildTab.caption "将链接或URL拖拽到现有标签后：">
 <!ENTITY config.loadDroppedLinkToNewChildTab.load    "在标签中加载链接 （Firefox 默认）">

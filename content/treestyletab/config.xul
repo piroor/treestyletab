@@ -344,7 +344,7 @@
 
 	<tabbox orient="vertical">
 		<tabs>
-			<tab label="&config.tabs.context.tab;"/>
+			<tab label="&config.tabs.autotab.tab;"/>
 			<tab label="&config.tabs.context.tab;"/>
 			<tab label="&config.tabs.restriction.tab;"/>
 		</tabs>

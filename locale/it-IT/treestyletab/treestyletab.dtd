@@ -45,7 +45,7 @@
 
 <!ENTITY config.tabs.tab "Navigazione">
 
-<!ENTITY config.tabs.context.tab      "Schede">
+<!ENTITY config.tabs.autotab.tab      "Automatic New Tab Level">
 
 <!ENTITY config.link.caption "Automatic New Tab Level for Links">
 <!ENTITY config.link.none    "Lv.0 Nothing (Firefox default)">
@@ -59,6 +59,8 @@
 <!ENTITY config.urlbar.asChild.none  "Lv.0 Open as separate tab">
 <!ENTITY config.urlbar.asChild.inner "Lv.1 Open as child tab if it is the same website">
 <!ENTITY config.urlbar.asChild.any   "Lv.2 Open as child tab always">
+
+<!ENTITY config.tabs.context.tab      "Schede">
 
 <!ENTITY config.dropLinksOnTab.caption "Il trascinamento di collegamenti o indirizzi su una scheda esistente">
 <!ENTITY config.dropLinksOnTab.ask     "Ask me always">

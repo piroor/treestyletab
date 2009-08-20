@@ -56,3 +56,7 @@ label.scale-label {
 	margin: 0;
 	font-size: smaller;
 }
+
+label[scale-selected="true"] {
+	font-weight: bold;
+}

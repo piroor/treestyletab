@@ -287,7 +287,9 @@ ScaleSet.prototype = {
 		}
 		else {
 			this.scale.removeAttribute('disabled');
-			this.updateLabels();
+			this.labels.childNodes.forEach(function(aNode) {
+				aNode.removeAttribute('disabled');
+			});
 		}
 	},
 	get disabled()
@@ -299,9 +301,9 @@ ScaleSet.prototype = {
 	{
 		this.labels.forEach(function(aLabel, aIndex) {
 			if (aIndex == this.value)
-				aLabel.removeAttribute('disabled');
+				aLabel.setAttribute('scale-selected', true);
 			else
-				aLabel.setAttribute('disabled', true);
+				aLabel.removeAttribute('scale-selected');
 		}, this);
 	},
 

@@ -44,7 +44,8 @@
 
 
 <!ENTITY config.tabs.tab "分頁操作">
-<!ENTITY config.tabs.context.tab      "依情況開啟分頁">
+
+<!ENTITY config.tabs.autotab.tab      "Automatic New Tab Level">
 
 <!ENTITY config.link.caption "鏈結新分頁位階自動化">
 <!ENTITY config.link.none    "位階-0 無 (Firefox 預設)">
@@ -58,6 +59,8 @@
 <!ENTITY config.urlbar.asChild.none  "位階-0 開啟為各別分頁">
 <!ENTITY config.urlbar.asChild.inner "位階-1 如果同網站就開啟為子分頁">
 <!ENTITY config.urlbar.asChild.any   "位階-2 一律開啟為子分頁">
+
+<!ENTITY config.tabs.context.tab      "依情況開啟分頁">
 
 <!ENTITY config.dropLinksOnTab.caption "拖曳鏈結或 URL 到現有的分頁時">
 <!ENTITY config.dropLinksOnTab.ask     "每次都問我">

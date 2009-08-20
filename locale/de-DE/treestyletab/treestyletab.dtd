@@ -45,8 +45,7 @@
 
 <!ENTITY config.tabs.tab "Verhalten">
 
-<!ENTITY config.tabs.context.tab      "Tabs abhängig vom Kontext öffnen">
-
+<!ENTITY config.tabs.autotab.tab      "Automatic New Tab Level">
 
 <!ENTITY config.link.caption "Verfolgte Links">
 <!ENTITY config.link.none    "Lv.0 Immer im aktiven Tab laden (Firefox Standard)">
@@ -60,6 +59,8 @@
 <!ENTITY config.urlbar.asChild.none  "Lv.0 Neues eigenes Tab auf oberster Ebene">
 <!ENTITY config.urlbar.asChild.inner "Lv.1 Neues untergeordnetes Tab, falls es die gleiche Webseite ist">
 <!ENTITY config.urlbar.asChild.any   "Lv.2 Immer als untergeordnetes Tab">
+
+<!ENTITY config.tabs.context.tab      "Tabs abhängig vom Kontext öffnen">
 
 <!ENTITY config.dropLinksOnTab.caption "Verhalten für das Drag &amp; Drop von URLs auf Tabs">
 <!ENTITY config.dropLinksOnTab.ask     "Jedes Mal nachfragen">
