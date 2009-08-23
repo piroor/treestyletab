@@ -1,0 +1,5 @@
+@import url("chrome://treestyletab/skin/config-base.css");
+
+radio[pane] {
+	list-style-image: url("jar:resource:///chrome/browser.jar!/skin/classic/browser/preferences/Options.png");
+}

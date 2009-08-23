@@ -34,3 +34,5 @@ override chrome://treestyletab/skin/group-icon	chrome://treestyletab/skin/group-
 override chrome://treestyletab/skin/square/compat.css	chrome://treestyletab/skin/dummy.css
 override chrome://treestyletab/skin/square/compat.css	chrome://treestyletab/skin/square/compat-3.5.css	appversion>=3.1
 override chrome://treestyletab/skin/metal/tab.css	chrome://treestyletab/skin/metal/tab-3.5.css	appversion>=3.1
+
+override chrome://treestyletab/skin/config.css	chrome://treestyletab/skin/config-3.7.png	appversion>=3.7a1pre
