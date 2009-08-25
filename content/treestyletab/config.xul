@@ -87,19 +87,21 @@
 					<column flex="1"/>
 				</columns>
 				<rows>
-					<row>
+					<row align="end">
 						<spacer/>
-						<radio value="top" label="&config.tabbar.position.top;"/>
+						<radio value="top" label="&config.tabbar.position.top;"
+							style="margin-bottom: 0;"/>
 						<spacer/>
 					</row>
 					<row>
 						<radio value="left" label="&config.tabbar.position.left;"/>
-						<box style="border: ThreeDShadow 1px solid; margin: 0.3em; background: white;"/>
+						<box style="border: ThreeDShadow 1px solid; margin: 0.3em; background: white; margin: 0;"/>
 						<radio value="right" label="&config.tabbar.position.right;"/>
 					</row>
-					<row align="center">
+					<row align="start">
 						<spacer/>
-						<radio value="bottom" label="&config.tabbar.position.bottom;"/>
+						<radio value="bottom" label="&config.tabbar.position.bottom;"
+							style="margin-top: 0;"/>
 						<checkbox id="extensions.treestyletab.tabbar.invertTab-check"
 							preference="extensions.treestyletab.tabbar.invertTab"
 							label="&config.tabbar.invertTab;"
