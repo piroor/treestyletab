@@ -154,7 +154,7 @@ function onChangeTabbarPosition(aOnChange)
 	var hideAllTabsCheckH = document.getElementById('extensions.treestyletab.tabbar.hideAlltabsButton.horizontal-check');
 	var hideAllTabsCheckV = document.getElementById('extensions.treestyletab.tabbar.hideAlltabsButton.vertical-check');
 
-	var newTabAvailable = comparator.compare(XULAppInfo.version, '3.1b3') >= 0;
+	var newTabAvailable = comparator.compare(XULAppInfo.version, '3.5') >= 0;
 	if (!newTabAvailable) {
 		hideNewTabCheckH.setAttribute('collapsed', true);
 		hideNewTabCheckV.setAttribute('collapsed', true);

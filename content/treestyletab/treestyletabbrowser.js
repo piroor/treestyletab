@@ -2473,7 +2473,6 @@ TreeStyleTabBrowser.prototype = {
  
 	onDrop : function(aEvent, aXferData, aDragSession) 
 	{
-		if (!this.canDrop(aEvent, aDragSession)) return;
 		var sv = this.mOwner;
 		var position = this.getDropPosition(aEvent);
 		if (position != sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION))
