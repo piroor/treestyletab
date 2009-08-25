@@ -89,26 +89,21 @@
 				<rows>
 					<row>
 						<spacer/>
-							<radio value="top" label="&config.tabbar.position.top;"/>
+						<radio value="top" label="&config.tabbar.position.top;"/>
 						<spacer/>
 					</row>
 					<row>
-						<vbox pack="start" align="end">
-							<radio value="left" label="&config.tabbar.position.left;"/>
-						</vbox>
+						<radio value="left" label="&config.tabbar.position.left;"/>
 						<box style="border: ThreeDShadow 1px solid; margin: 0.3em; background: white;"/>
-						<vbox pack="start" align="start">
-							<radio value="right" label="&config.tabbar.position.right;"/>
-							<checkbox id="extensions.treestyletab.tabbar.invertTab-check"
-								preference="extensions.treestyletab.tabbar.invertTab"
-								label="&config.tabbar.invertTab;"
-								disabled="true"/>
-						</vbox>
+						<radio value="right" label="&config.tabbar.position.right;"/>
 					</row>
-					<row>
+					<row align="center">
 						<spacer/>
-							<radio value="bottom" label="&config.tabbar.position.bottom;"/>
-						<spacer/>
+						<radio value="bottom" label="&config.tabbar.position.bottom;"/>
+						<checkbox id="extensions.treestyletab.tabbar.invertTab-check"
+							preference="extensions.treestyletab.tabbar.invertTab"
+							label="&config.tabbar.invertTab;"
+							disabled="true"/>
 					</row>
 				</rows>
 			</grid>
