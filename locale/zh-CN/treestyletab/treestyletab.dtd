@@ -177,8 +177,6 @@
 <!ENTITY context.toggleFixed.label.horizontal   "固定标签栏位置／高度">
 <!ENTITY context.toggleFixed.label.vertical     "固定标签栏位置／宽度">
 <!ENTITY context.toggleFixed.accesskey          "f">
-<!ENTITY context.tabbarPosition.label           "标签栏位置">
-<!ENTITY context.tabbarPosition.accesskey       "p">
 <!ENTITY context.bookmarkTabSubTree.label       "将此树加入书签...">
 <!ENTITY context.bookmarkTabSubTree.accesskey   "t">
 

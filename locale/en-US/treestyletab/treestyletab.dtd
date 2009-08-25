@@ -173,8 +173,6 @@
 <!ENTITY context.toggleFixed.label.horizontal   "Fix position and height of tab bar">
 <!ENTITY context.toggleFixed.label.vertical     "Fix position and width of tab bar">
 <!ENTITY context.toggleFixed.accesskey          "f">
-<!ENTITY context.tabbarPosition.label           "Position">
-<!ENTITY context.tabbarPosition.accesskey       "p">
 <!ENTITY context.bookmarkTabSubTree.label       "Bookmark this Tree...">
 <!ENTITY context.bookmarkTabSubTree.accesskey   "t">
 

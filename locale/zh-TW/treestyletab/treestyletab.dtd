@@ -173,8 +173,6 @@
 <!ENTITY context.toggleFixed.label.horizontal "固定分頁工具列的位置／高度">
 <!ENTITY context.toggleFixed.label.vertical   "固定分頁工具列的位置／寬度">
 <!ENTITY context.toggleFixed.accesskey "f">
-<!ENTITY context.tabbarPosition.label     "分頁工具列的位置">
-<!ENTITY context.tabbarPosition.accesskey "p">
 <!ENTITY context.bookmarkTabSubTree.label     "此樹加入書籤...">
 <!ENTITY context.bookmarkTabSubTree.accesskey "t">
 

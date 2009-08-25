@@ -15,7 +15,6 @@ TreeStyleTabBrowser.prototype = {
 	kMENUITEM_AUTOHIDE_SEPARATOR       : 'context-separator-toggleAutoHide',
 	kMENUITEM_AUTOHIDE                 : 'context-item-toggleAutoHide',
 	kMENUITEM_FIXED                    : 'context-item-toggleFixed',
-	kMENUITEM_POSITION                 : 'context-menu-tabbarPosition',
 	kMENUITEM_BOOKMARKSUBTREE          : 'context-item-bookmarkTabSubTree',
 	
 	mTabBrowser : null, 
@@ -498,7 +497,6 @@ TreeStyleTabBrowser.prototype = {
 					aSelf.kMENUITEM_AUTOHIDE_SEPARATOR,
 					aSelf.kMENUITEM_AUTOHIDE,
 					aSelf.kMENUITEM_FIXED,
-					aSelf.kMENUITEM_POSITION,
 					aSelf.kMENUITEM_BOOKMARKSUBTREE
 				].forEach(function(aID) {
 					let item = document.getElementById(aID).cloneNode(true);
@@ -2188,7 +2186,6 @@ TreeStyleTabBrowser.prototype = {
 			this.kMENUITEM_EXPAND,
 			this.kMENUITEM_AUTOHIDE,
 			this.kMENUITEM_FIXED,
-			this.kMENUITEM_POSITION,
 			this.kMENUITEM_BOOKMARKSUBTREE
 		].forEach(function(aID) {
 			let item = this.evaluateXPath(
@@ -2282,19 +2279,13 @@ TreeStyleTabBrowser.prototype = {
 		else
 			fixed.removeAttribute('checked');
 
-		// position
-		let position = items[this.kMENUITEM_POSITION];
-		let pos = b.getAttribute(this.kTABBAR_POSITION);
-		position.getElementsByAttribute('value', pos)[0].setAttribute('checked', true);
-
 		sep = this.evaluateXPath(
 			'descendant::xul:menuseparator[starts-with(@id, "'+this.kMENUITEM_AUTOHIDE_SEPARATOR+'")]',
 			aEvent.currentTarget,
 			XPathResult.FIRST_ORDERED_NODE_TYPE
 		).singleNodeValue;
 		if (autohide.getAttribute('hidden') != 'true' ||
-			fixed.getAttribute('hidden') != 'true' ||
-			position.getAttribute('hidden') != 'true') {
+			fixed.getAttribute('hidden') != 'true') {
 			sep.removeAttribute('hidden');
 		}
 		else {

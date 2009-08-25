@@ -173,8 +173,6 @@
 <!ENTITY context.toggleFixed.label.horizontal   "タブバーの位置と高さを固定">
 <!ENTITY context.toggleFixed.label.vertical     "タブバーの位置と幅を固定">
 <!ENTITY context.toggleFixed.accesskey          "f">
-<!ENTITY context.tabbarPosition.label           "タブバーの位置">
-<!ENTITY context.tabbarPosition.accesskey       "p">
 <!ENTITY context.bookmarkTabSubTree.label       "このツリーをブックマーク...">
 <!ENTITY context.bookmarkTabSubTree.accesskey   "t">
 

@@ -232,9 +232,6 @@
 		<preference id="extensions.treestyletab.show.context-item-toggleFixed"
 			name="extensions.treestyletab.show.context-item-toggleFixed"
 			type="bool"/>
-		<preference id="extensions.treestyletab.show.context-menu-tabbarPosition"
-			name="extensions.treestyletab.show.context-menu-tabbarPosition"
-			type="bool"/>
 		<preference id="extensions.treestyletab.show.context-item-bookmarkTabSubTree"
 			name="extensions.treestyletab.show.context-item-bookmarkTabSubTree"
 			type="bool"/>
@@ -275,9 +272,6 @@
 			<checkbox id="extensions.treestyletab.show.context-item-toggleFixed-check"
 				preference="extensions.treestyletab.show.context-item-toggleFixed"
 				label="&context.toggleFixed.label;"/>
-			<checkbox id="extensions.treestyletab.show.context-menu-tabbarPosition-check"
-				preference="extensions.treestyletab.show.context-menu-tabbarPosition"
-				label="&context.tabbarPosition.label;"/>
 		</hbox>
 		<hbox align="center">
 			<checkbox id="extensions.treestyletab.show.context-item-bookmarkTabSubTree-check"

@@ -174,8 +174,6 @@
 <!ENTITY context.toggleFixed.label.horizontal "Feste Position und Höhe der Tableiste">
 <!ENTITY context.toggleFixed.label.vertical   "Feste Position und Breite der Tableiste">
 <!ENTITY context.toggleFixed.accesskey "f">
-<!ENTITY context.tabbarPosition.label     "Position">
-<!ENTITY context.tabbarPosition.accesskey "p">
 <!ENTITY context.bookmarkTabSubTree.label     "Zweig als Lesezeichen speichern">
 <!ENTITY context.bookmarkTabSubTree.accesskey "t">
 

@@ -177,8 +177,6 @@
 <!ENTITY context.toggleFixed.label.horizontal "Fix position and height of tab bar">
 <!ENTITY context.toggleFixed.label.vertical   "Зафиксировать ширину панели вкладок">
 <!ENTITY context.toggleFixed.accesskey "f">
-<!ENTITY context.tabbarPosition.label     "Позиция">
-<!ENTITY context.tabbarPosition.accesskey "p">
 <!ENTITY context.bookmarkTabSubTree.label     "Добавить это дерево в закладки...">
 <!ENTITY context.bookmarkTabSubTree.accesskey "t">
 
