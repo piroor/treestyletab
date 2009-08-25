@@ -6,16 +6,14 @@
 
 <!ENTITY config.tabs.appearance "Apariencia">
 
-<!ENTITY config.tabbar.caption "Tabs and the tab bar">
-<!--ENTITY config.tabbar.position.caption "Posición de la barra de pestañas"-->
+<!ENTITY config.tabbar.position.caption "Posición de la barra de pestañas">
 <!ENTITY config.tabbar.position.left    "Lado izquierdo">
 <!ENTITY config.tabbar.position.right   "Lado derecho">
 <!ENTITY config.tabbar.position.top     "Encima (Predeterminado en Firefox)">
 <!ENTITY config.tabbar.position.bottom  "Debajo">
 <!ENTITY config.tabbar.invertClosebox.left  "Show closebox at leftside in each tab">
 <!ENTITY config.tabbar.invertClosebox.right "Show closebox at rightside in each tab">
-<!ENTITY config.tabbar.invertTab            "Invert tab appearance in the right side tab bar">
-<!--ENTITY config.tabbar.invertTab            "Invertir apariencia de pestaña"-->
+<!ENTITY config.tabbar.invertTab            "Invertir apariencia de pestaña">
 <!ENTITY config.tabbar.invertTabContents    "Invert tab contents">
 <!ENTITY config.enableSubtreeIndent         "Añadir margen a las pestañas">
 <!ENTITY config.allowSubtreeCollapseExpand  "Permitir colapsar/expandir los sub-árboles de las pestañas">

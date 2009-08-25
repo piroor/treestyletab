@@ -6,16 +6,14 @@
 
 <!ENTITY config.tabs.appearance "Darstellung">
 
-<!ENTITY config.tabbar.caption "Tabs and the tab bar">
-<!--ENTITY config.tabbar.position.caption "Position der Tableiste"-->
+<!ENTITY config.tabbar.position.caption "Position der Tableiste">
 <!ENTITY config.tabbar.position.left    "Links">
 <!ENTITY config.tabbar.position.right   "Rechts">
 <!ENTITY config.tabbar.position.top     "Oben (Firefox Standard)">
 <!ENTITY config.tabbar.position.bottom  "Unten">
 <!ENTITY config.tabbar.invertClosebox.left  "Schließen-Button in jedem Tab links anzeigen">
 <!ENTITY config.tabbar.invertClosebox.right "Schließen-Button in jedem Tab rechts anzeigen">
-<!ENTITY config.tabbar.invertTab            "Invert tab appearance in the right side tab bar">
-<!--ENTITY config.tabbar.invertTab            "Tabs von rechts einrücken"-->
+<!ENTITY config.tabbar.invertTab            "Tabs von rechts einrücken">
 <!ENTITY config.tabbar.invertTabContents    "Symbol und Text in den Tabs vertauschen">
 <!ENTITY config.enableSubtreeIndent         "Tabs einrücken">
 <!ENTITY config.allowSubtreeCollapseExpand  "Auf- und Einklappen von Zweigen erlauben">

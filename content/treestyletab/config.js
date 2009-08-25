@@ -126,10 +126,13 @@ function onSyncGroupBookmarkPrefToUI()
 
 function onChangeTabbarPosition(aOnChange)
 {
-	var pos = document.getElementById('extensions.treestyletab.tabbar.position').value;
+	var pos = document.getElementById('extensions.treestyletab.tabbar.position-radiogroup').value;
+	var invertTab = document.getElementById('extensions.treestyletab.tabbar.invertTab-check');
 	var invertTabContents = document.getElementById('extensions.treestyletab.tabbar.invertTabContents-check');
 	var invertClosebox = document.getElementById('extensions.treestyletab.tabbar.invertClosebox-check');
 
+	invertTab.disabled = pos != 'right';
+//	invertTabContents.disabled = pos != 'right';
 	invertClosebox.setAttribute('label',
 		invertClosebox.getAttribute(
 			(pos == 'right' && invertTabContents.checked) ?

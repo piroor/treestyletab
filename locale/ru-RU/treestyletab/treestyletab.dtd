@@ -6,16 +6,14 @@
 
 <!ENTITY config.tabs.appearance "Внешний вид">
 
-<!ENTITY config.tabbar.caption "Tabs and the tab bar">
-<!--ENTITY config.tabbar.position.caption "Расположение панели вкладок"-->
+<!ENTITY config.tabbar.position.caption "Расположение панели вкладок">
 <!ENTITY config.tabbar.position.left    "Слева">
 <!ENTITY config.tabbar.position.right   "Справа">
 <!ENTITY config.tabbar.position.top     "Сверху (в Firefox по умолчанию)">
 <!ENTITY config.tabbar.position.bottom  "Снизу">
 <!ENTITY config.tabbar.invertClosebox.left  "Show closebox at leftside in each tab">
 <!ENTITY config.tabbar.invertClosebox.right "Show closebox at rightside in each tab">
-<!ENTITY config.tabbar.invertTab            "Invert tab appearance in the right side tab bar">
-<!--ENTITY config.tabbar.invertTab            "Инвертировать вид вкладок"-->
+<!ENTITY config.tabbar.invertTab            "Инвертировать вид вкладок">
 <!ENTITY config.tabbar.invertTabContents    "Invert tab contents">
 <!ENTITY config.enableSubtreeIndent         "Отступы вкладок">
 <!ENTITY config.allowSubtreeCollapseExpand  "Разрешить сворачивать/разворачивать поддеревья вкладок">

@@ -6,16 +6,14 @@
 
 <!ENTITY config.tabs.appearance "外觀">
 
-<!ENTITY config.tabbar.caption "Tabs and the tab bar">
-<!--ENTITY config.tabbar.position.caption "分頁工具列位置"-->
+<!ENTITY config.tabbar.position.caption "分頁工具列位置">
 <!ENTITY config.tabbar.position.left    "左側">
 <!ENTITY config.tabbar.position.right   "右側">
 <!ENTITY config.tabbar.position.top     "上端（Firefox 預設）">
 <!ENTITY config.tabbar.position.bottom  "下端">
 <!ENTITY config.tabbar.invertClosebox.left  "於各分頁左端顯示關閉鈕">
 <!ENTITY config.tabbar.invertClosebox.right "於各分頁右端顯示關閉鈕">
-<!ENTITY config.tabbar.invertTab            "Invert tab appearance in the right side tab bar">
-<!--ENTITY config.tabbar.invertTab            "頁籤外側互調"-->
+<!ENTITY config.tabbar.invertTab            "頁籤外側互調">
 <!ENTITY config.tabbar.invertTabContents    "頁籤內側互調">
 <!ENTITY config.enableSubtreeIndent         "縮進分頁">
 <!ENTITY config.allowSubtreeCollapseExpand  "允許摺疊 / 展開樹狀子目錄">

@@ -6,16 +6,14 @@
 
 <!ENTITY config.tabs.appearance "Aspetto">
 
-<!ENTITY config.tabbar.caption "Tabs and the tab bar">
-<!--ENTITY config.tabbar.position.caption "Posiziona barra delle schede"-->
+<!ENTITY config.tabbar.position.caption "Posiziona barra delle schede">
 <!ENTITY config.tabbar.position.left    "sul lato sinistro">
 <!ENTITY config.tabbar.position.right   "sul lato destro">
 <!ENTITY config.tabbar.position.top     "in alto (comportamento predefinito di Firefox)">
 <!ENTITY config.tabbar.position.bottom  "in basso">
 <!ENTITY config.tabbar.invertClosebox.left  "Visualizza il pulsante di chiusura alla sinistra di ogni scheda">
 <!ENTITY config.tabbar.invertClosebox.right "Visualizza il pulsante di chiusura alla destra di ogni scheda"> <!-- NUOVA -->
-<!ENTITY config.tabbar.invertTab            "Invert tab appearance in the right side tab bar">
-<!--ENTITY config.tabbar.invertTab            "Inverti la visualizzazione delle schede"-->
+<!ENTITY config.tabbar.invertTab            "Inverti la visualizzazione delle schede">
 <!ENTITY config.tabbar.invertTabContents    "Inverti la visualizzazione dei controlli di contrazione/espansione dei sottoalberi"> <!-- NUOVA -->
 <!ENTITY config.enableSubtreeIndent         "Indenta sottoschede">
 <!ENTITY config.allowSubtreeCollapseExpand  "Permetti di contrarre/espandere sottoalberi delle schede">
