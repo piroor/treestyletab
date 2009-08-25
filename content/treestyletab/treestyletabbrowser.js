@@ -149,7 +149,6 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.addEventListener('mousedown', this, true);
 		b.mTabContainer.addEventListener('select', this, true);
 		b.mTabContainer.addEventListener('scroll', this, true);
-		b.mPanelContainer.addEventListener('dragenter', this, false);
 		b.mPanelContainer.addEventListener('dragexit', this, false);
 		b.mPanelContainer.addEventListener('dragover', this, false);
 		b.mPanelContainer.addEventListener('dragdrop', this, false);
@@ -1028,7 +1027,6 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.removeEventListener('mousedown', this, true);
 		b.mTabContainer.removeEventListener('select', this, true);
 		b.mTabContainer.removeEventListener('scroll', this, true);
-		b.mPanelContainer.removeEventListener('dragenter', this, false);
 		b.mPanelContainer.removeEventListener('dragexit', this, false);
 		b.mPanelContainer.removeEventListener('dragover', this, false);
 		b.mPanelContainer.removeEventListener('dragdrop', this, false);
@@ -1336,17 +1334,13 @@ TreeStyleTabBrowser.prototype = {
 				this.onPopupShowing(aEvent);
 				return;
 
+
 			case 'draggesture':
 				nsDragAndDrop.startDrag(aEvent, this.tabbarDNDObserver);
 				return;
 
 			case 'dragenter':
-				nsDragAndDrop.dragEnter(
-					aEvent,
-					aEvent.currentTarget == this.mTabBrowser.mStrip ?
-						this.tabbarDNDObserver :
-						this.panelDNDObserver
-				);
+				nsDragAndDrop.dragEnter(aEvent, this.tabbarDNDObserver);
 				return;
 
 			case 'dragexit':
@@ -1363,22 +1357,23 @@ TreeStyleTabBrowser.prototype = {
 				return;
 
 			case 'dragover':
-				nsDragAndDrop.dragOver(
-					aEvent,
-					aEvent.currentTarget == this.mTabBrowser.mStrip ?
-						this.tabbarDNDObserver :
-						this.panelDNDObserver
-				);
+			case 'dragdrop':
+				let (canDrop, observer) {
+					if (aEvent.currentTarget == this.mTabBrowser.mStrip) {
+						observer = this.tabbarDNDObserver;
+						canDrop = true;
+					}
+					else {
+						observer = this.panelDNDObserver;
+						canDrop = observer.canDrop(aEvent, this.getCurrentDragSession());
+					}
+					// don't use nsDragAndDrop if it can't be dropped!!
+					// http://piro.sakura.ne.jp/latest/blosxom/mozilla/xul/2007-02-02_splitbrowser-dragdrop.htm
+					if (canDrop)
+						nsDragAndDrop[aEvent.type == 'dragover' ? 'dragOver' : 'drop' ](aEvent, observer);
+				}
 				return;
 
-			case 'dragdrop':
-				nsDragAndDrop.drop(
-					aEvent,
-					aEvent.currentTarget == this.mTabBrowser.mStrip ?
-						this.tabbarDNDObserver :
-						this.panelDNDObserver
-				);
-				return;
 
 			case 'mouseover':
 				if (this.isEventFiredOnTwisty(aEvent))
@@ -2460,10 +2455,6 @@ TreeStyleTabBrowser.prototype = {
 			this._panelDNDObserver = {
 				mOwner : this,
 	
-	onDragEnter : function(aEvent, aDragSession) 
-	{
-	},
- 
 	onDragExit : function(aEvent, aDragSession) 
 	{
 		if (!this.canDrop(aEvent, aDragSession)) return;
