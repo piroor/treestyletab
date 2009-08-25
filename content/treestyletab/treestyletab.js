@@ -1433,13 +1433,19 @@ var TreeStyleTabService = {
 		}
 		else { // Firefox 3.0.x
 			eval('aObserver.onDragStart = '+
-				aObserver.onDragStart.toSource().replace(
+				aObserver.onDragStart.toSource().replace( // native
 					'aEvent.target.localName == "tab"',
 					<![CDATA[
 						(
 							(!aEvent.shiftKey || this.getAttribute(this.treeStyleTab.kFIXED) == 'true') &&
 							$&
 						)
+					]]>
+				).replace( // Tab Mix Plus
+					'event.target.localName != "tab"',
+					<![CDATA[
+						(event.shiftKey && gBrowser.getAttribute(gBrowser.treeStyleTab.kFIXED) != 'true') ||
+						$&
 					]]>
 				)
 			);
