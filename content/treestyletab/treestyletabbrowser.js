@@ -136,8 +136,10 @@ TreeStyleTabBrowser.prototype = {
 		b.addEventListener('TabClose',       this, true);
 		b.addEventListener('TabMove',        this, true);
 		b.addEventListener('SSTabRestoring', this, true);
+		b.mStrip.addEventListener('draggesture', this, false);
 		b.mStrip.addEventListener('dragenter', this, false);
 		b.mStrip.addEventListener('dragexit', this, false);
+		b.mStrip.addEventListener('dragend', this, false);
 		b.mStrip.addEventListener('dragover', this, false);
 		b.mStrip.addEventListener('dragdrop', this, false);
 		b.mTabContainer.addEventListener('mouseover', this, true);
@@ -147,6 +149,10 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.addEventListener('mousedown', this, true);
 		b.mTabContainer.addEventListener('select', this, true);
 		b.mTabContainer.addEventListener('scroll', this, true);
+		b.mPanelContainer.addEventListener('dragenter', this, true);
+		b.mPanelContainer.addEventListener('dragexit', this, true);
+		b.mPanelContainer.addEventListener('dragover', this, true);
+		b.mPanelContainer.addEventListener('dragdrop', this, true);
 
 
 		/* Closing collapsed last tree breaks selected tab.
@@ -1011,8 +1017,10 @@ TreeStyleTabBrowser.prototype = {
 		b.removeEventListener('TabClose',       this, true);
 		b.removeEventListener('TabMove',        this, true);
 		b.removeEventListener('SSTabRestoring', this, true);
+		b.mStrip.removeEventListener('draggesture', this, false);
 		b.mStrip.removeEventListener('dragenter', this, false);
 		b.mStrip.removeEventListener('dragexit', this, false);
+		b.mStrip.removeEventListener('dragend', this, false);
 		b.mStrip.removeEventListener('dragover', this, false);
 		b.mStrip.removeEventListener('dragdrop', this, false);
 		b.mTabContainer.removeEventListener('click', this, true);
@@ -1020,6 +1028,15 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.removeEventListener('mousedown', this, true);
 		b.mTabContainer.removeEventListener('select', this, true);
 		b.mTabContainer.removeEventListener('scroll', this, true);
+		b.mPanelContainer.removeEventListener('dragenter', this, true);
+		b.mPanelContainer.removeEventListener('dragexit', this, true);
+		b.mPanelContainer.removeEventListener('dragover', this, true);
+		b.mPanelContainer.removeEventListener('dragdrop', this, true);
+
+		delete this._tabbarDNDObserver.mOwner;
+		delete this._tabbarDNDObserver;
+		delete this._panelDNDObserver.mOwner;
+		delete this._panelDNDObserver;
 
 		this.scrollBox.removeEventListener('overflow', this, true);
 		this.scrollBox.removeEventListener('underflow', this, true);
@@ -1319,20 +1336,48 @@ TreeStyleTabBrowser.prototype = {
 				this.onPopupShowing(aEvent);
 				return;
 
+			case 'draggesture':
+				nsDragAndDrop.startDrag(aEvent, this.tabbarDNDObserver);
+				return;
+
 			case 'dragenter':
-				nsDragAndDrop.dragEnter(aEvent, this);
+				nsDragAndDrop.dragEnter(
+					aEvent,
+					aEvent.currentTarget == this.mTabBrowser.mStrip ?
+						this.tabbarDNDObserver :
+						this.panelDNDObserver
+				);
 				return;
 
 			case 'dragexit':
-				nsDragAndDrop.dragExit(aEvent, this);
+				nsDragAndDrop.dragExit(
+					aEvent,
+					aEvent.currentTarget == this.mTabBrowser.mStrip ?
+						this.tabbarDNDObserver :
+						this.panelDNDObserver
+				);
+				return;
+
+			case 'dragend':
+				this.tabbarDNDObserver.onDragEnd(aEvent);
 				return;
 
 			case 'dragover':
-				nsDragAndDrop.dragOver(aEvent, this);
+				nsDragAndDrop.dragOver(
+					aEvent,
+					aEvent.currentTarget == this.mTabBrowser.mStrip ?
+						this.tabbarDNDObserver :
+						this.panelDNDObserver
+				);
 				return;
 
 			case 'dragdrop':
-				nsDragAndDrop.drop(aEvent, this);
+				nsDragAndDrop.drop(
+					aEvent,
+					aEvent.currentTarget == this.mTabBrowser.mStrip ?
+						this.tabbarDNDObserver :
+						this.panelDNDObserver
+				);
 				return;
 
 			case 'mouseover':
@@ -2278,35 +2323,58 @@ TreeStyleTabBrowser.prototype = {
 	autoExpandTarget : null,
 	autoExpandedTabs : [],
 	
+	// tabbar 
+	get tabbarDNDObserver()
+	{
+		if (!this._tabbarDNDObserver)
+			this._tabbarDNDObserver = {
+				mOwner : this,
+	
+	onDragStart : function(aEvent, aTransferData, aDragAction) 
+	{
+		var sv = this.mOwner;
+		var tab = sv.getTabFromEvent(aEvent);
+		var tabbar = sv.getTabbarFromEvent(aEvent);
+		if (!tabbar || (tab && !aEvent.shiftKey))
+			return false;
+
+		aTransferData.data = new TransferData();
+		aTransferData.data.addDataForFlavour(sv.kDRAG_TYPE_TABBAR, Date.now());
+		sv.mTabBrowser.setAttribute(sv.kDROP_POSITION, 'unknown');
+
+		aEvent.stopPropagation();
+		return true;
+	},
+ 
 	onDragEnter : function(aEvent, aDragSession) 
 	{
+		var sv = this.mOwner;
 		var tab = aEvent.target;
 		if (tab.localName != 'tab' ||
-			!this.getTreePref('autoExpand.enabled'))
+			!sv.getTreePref('autoExpand.enabled'))
 			return;
 
 		var now = (new Date()).getTime();
 
-		window.clearTimeout(this.autoExpandTimer);
+		window.clearTimeout(sv.autoExpandTimer);
 		if (aEvent.target == aDragSession.sourceNode) return;
-		this.autoExpandTimer = window.setTimeout(
-			function(aSelf, aTarget) {
-				let tab = aSelf.getTabById(aTarget);
+		sv.autoExpandTimer = window.setTimeout(
+			function(aTarget) {
+				let tab = sv.getTabById(aTarget);
 				if (tab &&
-					tab.getAttribute(aSelf.kSUBTREE_COLLAPSED) == 'true' &&
-					tab.getAttribute(aSelf.kDROP_POSITION) == 'self') {
-					if (aSelf.getTreePref('autoExpand.intelligently')) {
-						aSelf.collapseExpandTreesIntelligentlyFor(tab);
+					tab.getAttribute(sv.kSUBTREE_COLLAPSED) == 'true' &&
+					tab.getAttribute(sv.kDROP_POSITION) == 'self') {
+					if (sv.getTreePref('autoExpand.intelligently')) {
+						sv.collapseExpandTreesIntelligentlyFor(tab);
 					}
 					else {
-						aSelf.autoExpandedTabs.push(aTarget);
-						aSelf.collapseExpandSubtree(tab, false);
+						sv.autoExpandedTabs.push(aTarget);
+						sv.collapseExpandSubtree(tab, false);
 					}
 				}
 			},
-			this.getTreePref('autoExpand.delay'),
-			this,
-			tab.getAttribute(this.kID)
+			sv.getTreePref('autoExpand.delay'),
+			tab.getAttribute(sv.kID)
 		);
 
 		tab = null;
@@ -2315,10 +2383,20 @@ TreeStyleTabBrowser.prototype = {
  
 	onDragExit : function(aEvent, aDragSession) 
 	{
+		var sv = this.mOwner;
 		var now = (new Date()).getTime();
 
-		window.clearTimeout(this.autoExpandTimer);
-		this.autoExpandTimer = null;
+		window.clearTimeout(sv.autoExpandTimer);
+		sv.autoExpandTimer = null;
+	},
+ 
+	onDragEnd : function(aEvent) 
+	{
+		var sv = this.mOwner;
+		window.setTimeout(function() {
+			sv.mTabBrowser.removeAttribute(sv.kDROP_POSITION);
+		}, 10);
+		aEvent.stopPropagation();
 	},
  
 	onDragOver : function(aEvent, aFlavour, aDragSession) 
@@ -2327,30 +2405,32 @@ TreeStyleTabBrowser.prototype = {
  
 	onDrop : function(aEvent, aXferData, aDragSession) 
 	{
-		if (!this.autoExpandedTabs.length) return;
-		if (this.getTreePref('autoExpand.collapseFinally')) {
-			this.autoExpandedTabs.forEach(function(aTarget) {
+		var sv = this.mOwner;
+		if (!sv.autoExpandedTabs.length) return;
+		if (sv.getTreePref('autoExpand.collapseFinally')) {
+			sv.autoExpandedTabs.forEach(function(aTarget) {
 				this.collapseExpandSubtree(this.getTabById(aTarget), true, true);
-			}, this);
+			}, sv);
 		}
-		this.autoExpandedTabs = [];
+		sv.autoExpandedTabs = [];
 	},
  
 	canDrop : function(aEvent, aDragSession) 
 	{
-		var tooltip = this.mTabBrowser.mStrip.firstChild;
+		var sv = this.mOwner;
+		var tooltip = sv.mTabBrowser.mStrip.firstChild;
 		if (tooltip &&
 			tooltip.localName == 'tooltip' &&
 			tooltip.popupBoxObject.popupState != 'closed')
 			tooltip.hidePopup();
 
-		var dropAction = this.getDropAction(aEvent, aDragSession);
+		var dropAction = sv.getDropAction(aEvent, aDragSession);
 		if ('dataTransfer' in aEvent) {
 			var dt = aEvent.dataTransfer;
 			if (dropAction.action & this.kACTION_NEWTAB) {
 				dt.effectAllowed = dt.dropEffect = (
 					!dropAction.source ? 'link' :
-					this.isAccelKeyPressed(aEvent) ? 'copy' :
+					sv.isAccelKeyPressed(aEvent) ? 'copy' :
 					'move'
 				);
 			}
@@ -2367,8 +2447,91 @@ TreeStyleTabBrowser.prototype = {
 		flavourSet.appendFlavour('text/plain');
 		flavourSet.appendFlavour('application/x-moz-file', 'nsIFile');
 		return flavourSet;
+	}
+ 
+			};
+		return this._tabbarDNDObserver;
+	}, 
+  
+	// content area 
+	get panelDNDObserver()
+	{
+		if (!this._panelDNDObserver)
+			this._panelDNDObserver = {
+				mOwner : this,
+	
+	onDragEnter : function(aEvent, aDragSession) 
+	{
 	},
  
+	onDragExit : function(aEvent, aDragSession) 
+	{
+		var sv = this.mOwner;
+		if (!aDragSession.isDataFlavorSupported(sv.kDRAG_TYPE_TABBAR))
+			return;
+
+		sv.mTabBrowser.setAttribute(sv.kDROP_POSITION, 'unknown');
+
+		aEvent.stopPropagation();
+	},
+ 
+	onDragOver : function(aEvent, aFlavour, aDragSession) 
+	{
+		var sv = this.mOwner;
+		if (!aDragSession.isDataFlavorSupported(sv.kDRAG_TYPE_TABBAR))
+			return;
+
+		var position = this.getDropPosition(aEvent);
+		if (position != sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION))
+			sv.mTabBrowser.setAttribute(sv.kDROP_POSITION, position);
+
+		aEvent.stopPropagation();
+	},
+ 
+	onDrop : function(aEvent, aXferData, aDragSession) 
+	{
+		var sv = this.mOwner;
+		var position = this.getDropPosition(aEvent);
+		if (position != sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION))
+			sv.changeTabbarPosition(position);
+
+		aEvent.stopPropagation();
+	},
+ 
+	getDropPosition : function(aEvent) 
+	{
+		var box = this.mOwner.mTabBrowser.mPanelContainer.boxObject;
+		var W = box.width;
+		var H = box.height;
+		var X = box.screenX;
+		var Y = box.screenY;
+		var x = aEvent.screenX - X;
+		var y = aEvent.screenY - Y;
+
+		var isTL = x <= W - (y * W / H);
+		var isBL = x <= y * W / H;
+		return (isTL && isBL) ? 'left' :
+				(isTL && !isBL) ? 'top' :
+				(!isTL && isBL) ? 'bottom' :
+				'right' ;
+	},
+ 
+	canDrop : function(aEvent, aDragSession) 
+	{
+		return true;
+	},
+ 
+	getSupportedFlavours : function() 
+	{
+		var flavourSet = new FlavourSet();
+		flavourSet.appendFlavour(this.mOwner.kDRAG_TYPE_TABBAR);
+		return flavourSet;
+	}
+ 
+			};
+		return this._panelDNDObserver;
+	}, 
+  
 	getCurrentDragSession : function() 
 	{
 		return Components

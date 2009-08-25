@@ -77,6 +77,27 @@ tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab[treestyletab-drop-posit
 
 
 
+tabbrowser[treestyletab-drop-position] {
+	-moz-appearance: none !important;
+	border: 2px solid transparent !important;
+	-moz-border-top-colors: none !important;
+	-moz-border-right-colors: none !important;
+	-moz-border-bottom-colors: none !important;
+	-moz-border-left-colors: none !important;
+}
+tabbrowser[treestyletab-drop-position="top"] {
+	border-top-color: -moz-dialogtext !important;
+}
+tabbrowser[treestyletab-drop-position="right"] {
+	border-right-color: -moz-dialogtext !important;
+}
+tabbrowser[treestyletab-drop-position="bottom"] {
+	border-bottom-color: -moz-dialogtext !important;
+}
+tabbrowser[treestyletab-drop-position="left"] {
+	border-left-color: -moz-dialogtext !important;
+}
+
 
 
 /* vertical tab bar */

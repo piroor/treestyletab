@@ -38,6 +38,7 @@ var TreeStyleTabService = {
 	kTWISTY_STYLE       : 'treestyletab-twisty-style',
 
 	kDROP_POSITION      : 'treestyletab-drop-position',
+	kDRAG_TYPE_TABBAR   : 'application/x-moz-tabbrowser-tabbar',
 
 	/* classes */
 	kTWISTY                : 'treestyletab-twisty',
@@ -654,6 +655,15 @@ var TreeStyleTabService = {
 		return this.evaluateXPath(
 				'ancestor-or-self::xul:tab[ancestor::xul:tabbrowser]',
 				aTab,
+				XPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue;
+	},
+ 
+	getTabbarFromEvent : function(aEvent) 
+	{
+		return this.evaluateXPath(
+				'ancestor-or-self::*[contains(concat(" ", normalize-space(@class), " "), " tabbrowser-strip ")]',
+				aEvent.originalTarget || aEvent.target,
 				XPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
 	},
@@ -1398,6 +1408,38 @@ var TreeStyleTabService = {
  
 	updateTabDNDObserver : function(aObserver) 
 	{
+		if ('_onDragStart' in aObserver) { // Firefox 3.1 or later
+			eval('aObserver._onDragStart = '+
+				aObserver._onDragStart.toSource().replace(
+					'if (target.localName == "tab"',
+					<![CDATA[
+						if (aEvent.shiftKey) {
+							let dt = aEvent.dataTransfer;
+							dt.mozSetDataAt(this.treeStyleTab.kDRAG_TYPE_TABBAR, Date.now(), 0);
+							dt.mozCursor = 'move';
+							let tabbar = this.mTabContainer;
+							let box = tabbar.boxObject;
+							dt.setDragImage(
+								this.mTabContainer,
+								aEvent.screenX - box.screenX,
+								aEvent.screenY - box.screenY
+							);
+							this.mPanelContainer.setAttribute(this.treeStyleTab.kDROP_POSITION, 'unknown');
+							aEvent.stopPropagation();
+						}
+						else $&]]>
+				)
+			);
+		}
+		else { // Firefox 3.0.x
+			eval('aObserver.onDragStart = '+
+				aObserver.onDragStart.toSource().replace(
+					'aEvent.target.localName == "tab"',
+					'(!aEvent.shiftKey && $&)'
+				)
+			);
+		}
+
 		var canDropFunctionName = '_setEffectAllowedForDataTransfer' in aObserver ?
 				'_setEffectAllowedForDataTransfer' : // Firefox 3.1 or later
 				'canDrop' ; // Firefox 3.0.x
@@ -1848,6 +1890,21 @@ catch(e) {
 				]]>
 			)
 		);
+
+		if (!('getSupportedFlavours' in contentAreaDNDObserver)) { // Firefox 3.1 or later
+			eval('contentAreaDNDObserver.onDrop = '+
+				contentAreaDNDObserver.onDrop.toSource().replace(
+					'var types = aEvent.dataTransfer.types;',
+					<![CDATA[$&
+						if (types.contains(gBrowser.treeStyleTab.kDRAG_TYPE_TABBAR)) {
+							return gBrowser.treeStyleTab.panelDNDObserver.onDrop(aEvent);
+						}
+					]]>
+				)
+			);
+		}
+		else { // Firefox 3.0.x
+		}
 	},
 	_splitFunctionNames : function(aString)
 	{
