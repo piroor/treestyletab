@@ -2503,6 +2503,7 @@ TreeStyleTabBrowser.prototype = {
 	canDrop : function(aEvent, aDragSession) 
 	{
 		return (
+				aDragSession &&
 				aDragSession.isDataFlavorSupported(this.mOwner.kDRAG_TYPE_TABBAR) &&
 				aDragSession.sourceNode
 			) ? true : false ;

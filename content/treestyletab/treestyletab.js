@@ -1891,7 +1891,7 @@ catch(e) {
 			)
 		);
 
-		if (!('getSupportedFlavours' in contentAreaDNDObserver)) { // Firefox 3.1 or later
+		if (!('getSupportedFlavours' in contentAreaDNDObserver)) { // Firefox 3.6 or later
 			eval('contentAreaDNDObserver.onDrop = '+
 				contentAreaDNDObserver.onDrop.toSource().replace(
 					'var types = aEvent.dataTransfer.types;',
@@ -1908,10 +1908,9 @@ catch(e) {
 				contentAreaDNDObserver.onDrop.toSource().replace(
 					'{',
 					<![CDATA[$&
-						if (aXferData.flavour.contentType == gBrowser.treeStyleTab.kDRAG_TYPE_TABBAR) {
+						if (gBrowser.treeStyleTab.panelDNDObserver.canDrop(aEvent, aDragSession)) {
 							aEvent.preventDefault();
-							aEvent.stopPropagation();
-							return gBrowser.treeStyleTab.panelDNDObserver.onDrop(aEvent);
+							return gBrowser.treeStyleTab.panelDNDObserver.onDrop(aEvent, aXferData, aDragSession);
 						}
 					]]>
 				)

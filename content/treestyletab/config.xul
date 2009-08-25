@@ -95,7 +95,7 @@
 					</row>
 					<row>
 						<radio value="left" label="&config.tabbar.position.left;"/>
-						<box style="border: ThreeDShadow 1px solid; margin: 0.3em; background: white; margin: 0;"/>
+						<box style="border: ThreeDShadow 1px solid; background: white; margin: 0;"/>
 						<radio value="right" label="&config.tabbar.position.right;"/>
 					</row>
 					<row align="start">
