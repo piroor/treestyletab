@@ -2469,8 +2469,6 @@ TreeStyleTabBrowser.prototype = {
 		if (!this.canDrop(aEvent, aDragSession)) return;
 		var sv = this.mOwner;
 		sv.mTabBrowser.setAttribute(sv.kDROP_POSITION, 'unknown');
-
-		aEvent.stopPropagation();
 	},
  
 	onDragOver : function(aEvent, aFlavour, aDragSession) 
@@ -2480,12 +2478,11 @@ TreeStyleTabBrowser.prototype = {
 		var position = this.getDropPosition(aEvent);
 		if (position != sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION))
 			sv.mTabBrowser.setAttribute(sv.kDROP_POSITION, position);
-
-		aEvent.stopPropagation();
 	},
  
 	onDrop : function(aEvent, aXferData, aDragSession) 
 	{
+		if (!this.canDrop(aEvent, aDragSession)) return;
 		var sv = this.mOwner;
 		var position = this.getDropPosition(aEvent);
 		if (position != sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION))
@@ -2514,7 +2511,10 @@ TreeStyleTabBrowser.prototype = {
  
 	canDrop : function(aEvent, aDragSession) 
 	{
-		return aDragSession.isDataFlavorSupported(this.mOwner.kDRAG_TYPE_TABBAR) && aDragSession.sourceNode ? true : false ;
+		return (
+				aDragSession.isDataFlavorSupported(this.mOwner.kDRAG_TYPE_TABBAR) &&
+				aDragSession.sourceNode
+			) ? true : false ;
 	},
  
 	getSupportedFlavours : function() 
