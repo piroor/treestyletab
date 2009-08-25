@@ -1904,6 +1904,24 @@ catch(e) {
 			);
 		}
 		else { // Firefox 3.0.x
+			eval('contentAreaDNDObserver.onDrop = '+
+				contentAreaDNDObserver.onDrop.toSource().replace(
+					'{',
+					<![CDATA[$&
+						if (aXferData.flavour.contentType == gBrowser.treeStyleTab.kDRAG_TYPE_TABBAR) {
+							aEvent.preventDefault();
+							aEvent.stopPropagation();
+							return gBrowser.treeStyleTab.panelDNDObserver.onDrop(aEvent);
+						}
+					]]>
+				)
+			);
+			eval('contentAreaDNDObserver.getSupportedFlavours = '+
+				contentAreaDNDObserver.getSupportedFlavours.toSource().replace(
+					'flavourSet.appendFlavour(',
+					'flavourSet.appendFlavour(TreeStyleTabService.kDRAG_TYPE_TABBAR); $&'
+				)
+			);
 		}
 	},
 	_splitFunctionNames : function(aString)

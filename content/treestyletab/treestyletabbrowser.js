@@ -149,10 +149,10 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.addEventListener('mousedown', this, true);
 		b.mTabContainer.addEventListener('select', this, true);
 		b.mTabContainer.addEventListener('scroll', this, true);
-		b.mPanelContainer.addEventListener('dragenter', this, true);
-		b.mPanelContainer.addEventListener('dragexit', this, true);
-		b.mPanelContainer.addEventListener('dragover', this, true);
-		b.mPanelContainer.addEventListener('dragdrop', this, true);
+		b.mPanelContainer.addEventListener('dragenter', this, false);
+		b.mPanelContainer.addEventListener('dragexit', this, false);
+		b.mPanelContainer.addEventListener('dragover', this, false);
+		b.mPanelContainer.addEventListener('dragdrop', this, false);
 
 
 		/* Closing collapsed last tree breaks selected tab.
@@ -1028,10 +1028,10 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.removeEventListener('mousedown', this, true);
 		b.mTabContainer.removeEventListener('select', this, true);
 		b.mTabContainer.removeEventListener('scroll', this, true);
-		b.mPanelContainer.removeEventListener('dragenter', this, true);
-		b.mPanelContainer.removeEventListener('dragexit', this, true);
-		b.mPanelContainer.removeEventListener('dragover', this, true);
-		b.mPanelContainer.removeEventListener('dragdrop', this, true);
+		b.mPanelContainer.removeEventListener('dragenter', this, false);
+		b.mPanelContainer.removeEventListener('dragexit', this, false);
+		b.mPanelContainer.removeEventListener('dragover', this, false);
+		b.mPanelContainer.removeEventListener('dragdrop', this, false);
 
 		delete this._tabbarDNDObserver.mOwner;
 		delete this._tabbarDNDObserver;
@@ -2466,10 +2466,8 @@ TreeStyleTabBrowser.prototype = {
  
 	onDragExit : function(aEvent, aDragSession) 
 	{
+		if (!this.canDrop(aEvent, aDragSession)) return;
 		var sv = this.mOwner;
-		if (!aDragSession.isDataFlavorSupported(sv.kDRAG_TYPE_TABBAR))
-			return;
-
 		sv.mTabBrowser.setAttribute(sv.kDROP_POSITION, 'unknown');
 
 		aEvent.stopPropagation();
@@ -2477,10 +2475,8 @@ TreeStyleTabBrowser.prototype = {
  
 	onDragOver : function(aEvent, aFlavour, aDragSession) 
 	{
+		if (!this.canDrop(aEvent, aDragSession)) return;
 		var sv = this.mOwner;
-		if (!aDragSession.isDataFlavorSupported(sv.kDRAG_TYPE_TABBAR))
-			return;
-
 		var position = this.getDropPosition(aEvent);
 		if (position != sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION))
 			sv.mTabBrowser.setAttribute(sv.kDROP_POSITION, position);
@@ -2518,7 +2514,7 @@ TreeStyleTabBrowser.prototype = {
  
 	canDrop : function(aEvent, aDragSession) 
 	{
-		return true;
+		return aDragSession.isDataFlavorSupported(this.mOwner.kDRAG_TYPE_TABBAR) && aDragSession.sourceNode ? true : false ;
 	},
  
 	getSupportedFlavours : function() 
