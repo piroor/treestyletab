@@ -186,7 +186,6 @@
 			preference="extensions.treestyletab.twisty.style"
 			orient="horizontal">
 			<radio value="auto" label="&config.twisty.style.auto;"/>
-			<radio value="none" label="&config.twisty.style.none;"/>
 			<radio value="retro" label="&config.twisty.style.retro;"
 				class="image" align="center"
 				src="chrome://treestyletab/content/res/twisty-retro.png"/>
@@ -196,6 +195,7 @@
 			<radio value="modern-white" label="&config.twisty.style.modern.white;"
 				class="image" align="center"
 				src="chrome://treestyletab/content/res/twisty-modern-w.png"/>
+			<radio value="none" label="&config.twisty.style.none;"/>
 		</radiogroup>
 	</groupbox>
 
