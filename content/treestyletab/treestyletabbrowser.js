@@ -879,8 +879,8 @@ TreeStyleTabBrowser.prototype = {
 				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
 					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
 					aTabBrowser.mStrip.setAttribute('ordinal', 30);
-					aToggler.setAttribute('ordinal', 20);
-					toggler.setAttribute('ordinal', 40);
+					aSplitter.setAttribute('ordinal', 20);
+					aToggler.setAttribute('ordinal', 40);
 					aTabBrowser.mPanelContainer.setAttribute('ordinal', 10);
 				};
 			}
