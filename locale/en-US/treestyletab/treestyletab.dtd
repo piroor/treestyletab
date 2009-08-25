@@ -6,14 +6,14 @@
 
 <!ENTITY config.tabs.appearance "Appearance">
 
-<!ENTITY config.tabbar.position.caption "Tab bar position">
+<!ENTITY config.tabbar.caption "Tabs and the tab bar">
 <!ENTITY config.tabbar.position.left    "Leftside">
 <!ENTITY config.tabbar.position.right   "Rightside">
 <!ENTITY config.tabbar.position.top     "Top (Firefox default)">
 <!ENTITY config.tabbar.position.bottom  "Bottom">
 <!ENTITY config.tabbar.invertClosebox.left  "Show closebox at leftside in each tab">
 <!ENTITY config.tabbar.invertClosebox.right "Show closebox at rightside in each tab">
-<!ENTITY config.tabbar.invertTab            "Invert tab appearance">
+<!ENTITY config.tabbar.invertTab            "Invert tab appearance in the right side tab bar">
 <!ENTITY config.tabbar.invertTabContents    "Invert tab contents">
 <!ENTITY config.enableSubtreeIndent         "Indent tabs">
 <!ENTITY config.allowSubtreeCollapseExpand  "Allow to collapse/expand tree of tabs">

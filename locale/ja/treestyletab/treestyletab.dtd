@@ -6,15 +6,15 @@
 
 <!ENTITY config.tabs.appearance "外観">
 
-<!ENTITY config.tabbar.position.caption "タブバーの表示位置">
+<!ENTITY config.tabbar.caption "タブとタブバーの内容">
 <!ENTITY config.tabbar.position.left    "左">
 <!ENTITY config.tabbar.position.right   "右">
 <!ENTITY config.tabbar.position.top     "上（Firefox初期状態）">
 <!ENTITY config.tabbar.position.bottom  "下">
 <!ENTITY config.tabbar.invertClosebox.left  "タブのクローズボックスを左に表示">
 <!ENTITY config.tabbar.invertClosebox.right "タブのクローズボックスを右に表示">
-<!ENTITY config.tabbar.invertTab            "タブの表示を左右反転">
-<!ENTITY config.tabbar.invertTabContents    "タブの内容を左右反転">
+<!ENTITY config.tabbar.invertTab            "ウィンドウ右に置いたタブバーでタブの表示を左右反転する">
+<!ENTITY config.tabbar.invertTabContents    "タブの内容を左右反転する">
 <!ENTITY config.enableSubtreeIndent         "タブをインデント表示する">
 <!ENTITY config.allowSubtreeCollapseExpand  "ツリーを折りたためるようにする">
 <!ENTITY config.tabbar.hideNewTabButton     "「新しいタブを開く」ボタンを表示する">

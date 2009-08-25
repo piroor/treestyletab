@@ -6,7 +6,8 @@
 
 <!ENTITY config.tabs.appearance "外观">
 
-<!ENTITY config.tabbar.position.caption "标签栏位置">
+<!ENTITY config.tabbar.caption "Tabs and the tab bar">
+<!--ENTITY config.tabbar.position.caption "标签栏位置"-->
 <!ENTITY config.tabbar.position.left    "左侧">
 <!ENTITY config.tabbar.position.right   "右侧">
 <!ENTITY config.tabbar.position.top     "顶部 （Firefox 默认）">
@@ -14,7 +15,8 @@
 <!ENTITY config.tabbar.invertScrollbar  "在最左侧显示滚动条">
 <!ENTITY config.tabbar.invertClosebox.left  "在每个标签左端显示关闭按钮">
 <!ENTITY config.tabbar.invertClosebox.right "在每个标签右端显示关闭按钮">
-<!ENTITY config.tabbar.invertTab            "反转标签外观">
+<!ENTITY config.tabbar.invertTab            "Invert tab appearance in the right side tab bar">
+<!--ENTITY config.tabbar.invertTab            "反转标签外观"-->
 <!ENTITY config.tabbar.invertTabContents    "反转标签图标和文字位置">
 <!ENTITY config.enableSubtreeIndent         "缩进标签">
 <!ENTITY config.allowSubtreeCollapseExpand  "允许折叠/展开标签子树">

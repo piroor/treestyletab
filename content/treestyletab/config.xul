@@ -72,8 +72,9 @@
 	<vbox>
 
 	<groupbox>
-		<caption label="&config.tabbar.position.caption;"/>
+		<caption label="&config.tabbar.caption;"/>
 		<vbox>
+<!--
 		<hbox>
 		<spacer flex="1"/>
 		<radiogroup id="extensions.treestyletab.tabbar.position-radiogroup"
@@ -112,6 +113,10 @@
 		</radiogroup>
 		<spacer flex="1"/>
 		</hbox>
+-->
+		<checkbox id="extensions.treestyletab.tabbar.invertTab-check"
+			preference="extensions.treestyletab.tabbar.invertTab"
+			label="&config.tabbar.invertTab;"/>
 		<hbox align="center">
 			<checkbox id="extensions.treestyletab.tabbar.invertTabContents-check"
 				preference="extensions.treestyletab.tabbar.invertTabContents"
@@ -516,7 +521,7 @@
 	<vbox>
 
 		<groupbox orient="vertical">
-			<radiogroup orient="vertical"
+			<radiogroup orient="horizontal"
 				id="extensions.treestyletab.tabbar.autoHide.mode-radio"
 				preference="extensions.treestyletab.tabbar.autoHide.mode"
 				onselect="onChangeAutoHideMode()">
