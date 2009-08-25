@@ -287,7 +287,7 @@ ScaleSet.prototype = {
 		}
 		else {
 			this.scale.removeAttribute('disabled');
-			this.labels.childNodes.forEach(function(aNode) {
+			this.labels.forEach(function(aNode) {
 				aNode.removeAttribute('disabled');
 			});
 		}
