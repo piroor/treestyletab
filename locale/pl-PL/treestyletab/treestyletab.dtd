@@ -172,8 +172,8 @@
 <!ENTITY context.expandAllSubtree.accesskey "R">
 <!ENTITY context.toggleAutoHide.label     "Ukrywaj pasek kart">
 <!ENTITY context.toggleAutoHide.accesskey "U">
-<!ENTITY context.toggleFixed.label            "Fix width/height of tab bar">
-<!ENTITY context.toggleFixed.label.horizontal "Fix height of tab bar">
+<!ENTITY context.toggleFixed.label            "Fix position and width/height of tab bar">
+<!ENTITY context.toggleFixed.label.horizontal "Fix position and height of tab bar">
 <!ENTITY context.toggleFixed.label.vertical   "Stała szerokość paska kart">
 <!ENTITY context.toggleFixed.accesskey "S">
 <!ENTITY context.tabbarPosition.label     "Położenie paska kart">

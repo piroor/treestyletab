@@ -1413,7 +1413,7 @@ var TreeStyleTabService = {
 				aObserver._onDragStart.toSource().replace(
 					'if (target.localName == "tab"',
 					<![CDATA[
-						if (aEvent.shiftKey) {
+						if (aEvent.shiftKey && this.getAttribute(this.treeStyleTab.kFIXED) != 'true') {
 							let dt = aEvent.dataTransfer;
 							dt.mozSetDataAt(this.treeStyleTab.kDRAG_TYPE_TABBAR, Date.now(), 0);
 							dt.mozCursor = 'move';
@@ -1435,7 +1435,12 @@ var TreeStyleTabService = {
 			eval('aObserver.onDragStart = '+
 				aObserver.onDragStart.toSource().replace(
 					'aEvent.target.localName == "tab"',
-					'(!aEvent.shiftKey && $&)'
+					<![CDATA[
+						(
+							(!aEvent.shiftKey || this.getAttribute(this.treeStyleTab.kFIXED) == 'true') &&
+							$&
+						)
+					]]>
 				)
 			);
 		}
@@ -1896,8 +1901,8 @@ catch(e) {
 				contentAreaDNDObserver.onDrop.toSource().replace(
 					'var types = aEvent.dataTransfer.types;',
 					<![CDATA[$&
-						if (gBrowser.treeStyleTab.panelDNDObserver.canDrop(aEvent, aDragSession)) {
-							return gBrowser.treeStyleTab.panelDNDObserver.onDrop(aEvent);
+						if (gBrowser.treeStyleTab.panelDNDObserver.canDrop(aEvent, gBrowser.treeStyleTab.getCurrentDragSession())) {
+							return gBrowser.treeStyleTab.panelDNDObserver.onDrop(aEvent, null, gBrowser.treeStyleTab.getCurrentDragSession());
 						}
 					]]>
 				)

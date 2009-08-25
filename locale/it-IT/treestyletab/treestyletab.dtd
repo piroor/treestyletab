@@ -173,8 +173,8 @@
 <!ENTITY context.expandAllSubtree.accesskey "E">
 <!ENTITY context.toggleAutoHide.label     "Nascondi automaticamente la barra delle schede">
 <!ENTITY context.toggleAutoHide.accesskey "b">
-<!ENTITY context.toggleFixed.label            "Fix width/height of tab bar">
-<!ENTITY context.toggleFixed.label.horizontal "Fix height of tab bar">
+<!ENTITY context.toggleFixed.label            "Fix position and width/height of tab bar">
+<!ENTITY context.toggleFixed.label.horizontal "Fix position and height of tab bar">
 <!ENTITY context.toggleFixed.label.vertical   "Blocca larghezza della barra delle schede">
 <!ENTITY context.toggleFixed.accesskey "h">
 <!ENTITY context.tabbarPosition.label     "Posiziona">

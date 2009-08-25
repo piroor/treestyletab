@@ -169,9 +169,9 @@
 <!ENTITY context.expandAllSubtree.accesskey     "e">
 <!ENTITY context.toggleAutoHide.label           "Auto hide tab bar">
 <!ENTITY context.toggleAutoHide.accesskey       "h">
-<!ENTITY context.toggleFixed.label              "Fix width/height of tab bar">
-<!ENTITY context.toggleFixed.label.horizontal   "Fix height of tab bar">
-<!ENTITY context.toggleFixed.label.vertical     "Fix width of tab bar">
+<!ENTITY context.toggleFixed.label              "Fix position and width/height of tab bar">
+<!ENTITY context.toggleFixed.label.horizontal   "Fix position and height of tab bar">
+<!ENTITY context.toggleFixed.label.vertical     "Fix position and width of tab bar">
 <!ENTITY context.toggleFixed.accesskey          "f">
 <!ENTITY context.tabbarPosition.label           "Position">
 <!ENTITY context.tabbarPosition.accesskey       "p">

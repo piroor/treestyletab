@@ -2333,6 +2333,8 @@ TreeStyleTabBrowser.prototype = {
 		if (!tabbar || (tab && !aEvent.shiftKey))
 			return false;
 
+		if (sv.mTabBrowser.getAttribute(sv.kFIXED) == 'true') return;
+
 		aTransferData.data = new TransferData();
 		aTransferData.data.addDataForFlavour(sv.kDRAG_TYPE_TABBAR, Date.now());
 		sv.mTabBrowser.setAttribute(sv.kDROP_POSITION, 'unknown');
