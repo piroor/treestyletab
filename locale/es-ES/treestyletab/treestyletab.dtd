@@ -6,8 +6,6 @@
 
 <!ENTITY config.tabs.appearance "Apariencia">
 
-<!ENTITY config.animation.enabled "Activar los efectos de animación">
-
 <!ENTITY config.tabbar.position.caption "Posición de la barra de pestañas">
 <!ENTITY config.tabbar.position.left    "Lado izquierdo">
 <!ENTITY config.tabbar.position.right   "Lado derecho">
@@ -141,6 +139,8 @@
 <!ENTITY config.insertNewChildAt.caption "Posición de inserción de nuevas pestañas hijas">
 <!ENTITY config.insertNewChildAt.first "Insertar arriba del todo en el árbol">
 <!ENTITY config.insertNewChildAt.last "Insertar abajo del todo en el árbol">
+
+<!ENTITY config.animation.enabled "Activar los efectos de animación">
 
 <!ENTITY config.useEffectiveTLD.caption  "Detecting method for &quot;same website&quot;">
 <!ENTITY config.useEffectiveTLD.enabled  "by Domain (&quot;aaa.example.com&quot; and &quot;bbb.example.com&quot; are same websites)">

@@ -6,8 +6,6 @@
 
 <!ENTITY config.tabs.appearance "外觀">
 
-<!ENTITY config.animation.enabled "啟用動畫效果">
-
 <!ENTITY config.tabbar.position.caption "分頁工具列位置">
 <!ENTITY config.tabbar.position.left    "左側">
 <!ENTITY config.tabbar.position.right   "右側">
@@ -139,6 +137,8 @@
 <!ENTITY config.insertNewChildAt.caption "開啟新子分頁的位置">
 <!ENTITY config.insertNewChildAt.first "插入到子樹的開端">
 <!ENTITY config.insertNewChildAt.last "新增到子樹的末端">
+
+<!ENTITY config.animation.enabled "啟用動畫效果">
 
 <!ENTITY config.useEffectiveTLD.caption  "「同類其他分頁」定義依據">
 <!ENTITY config.useEffectiveTLD.enabled  "依據網域(&quot;aaa.example.com&quot; 與 &quot;bbb.example.com&quot; 視為同類)">

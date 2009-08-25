@@ -6,8 +6,6 @@
 
 <!ENTITY config.tabs.appearance "Darstellung">
 
-<!ENTITY config.animation.enabled "Animationseffekte aktivieren">
-
 <!ENTITY config.tabbar.position.caption "Position der Tableiste">
 <!ENTITY config.tabbar.position.left    "Links">
 <!ENTITY config.tabbar.position.right   "Rechts">
@@ -138,6 +136,8 @@
 <!ENTITY config.insertNewChildAt.caption "Einfügeposition neuer untergeordneter Tabs">
 <!ENTITY config.insertNewChildAt.first "Oben im Zweig einfügen">
 <!ENTITY config.insertNewChildAt.last "Unten im Zweig einfügen">
+
+<!ENTITY config.animation.enabled "Animationseffekte aktivieren">
 
 <!ENTITY config.useEffectiveTLD.caption  "Erkennung der &quot;gleichen Webseite&quot;">
 <!ENTITY config.useEffectiveTLD.enabled  "Nur Domain berücksichtigen (&quot;a.example.com&quot; and &quot;b.example.com&quot; gehören zur gleichen Webseite)">

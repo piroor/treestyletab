@@ -6,8 +6,6 @@
 
 <!ENTITY config.tabs.appearance "Внешний вид">
 
-<!ENTITY config.animation.enabled "Использование эффектов анимации">
-
 <!ENTITY config.tabbar.position.caption "Расположение панели вкладок">
 <!ENTITY config.tabbar.position.left    "Слева">
 <!ENTITY config.tabbar.position.right   "Справа">
@@ -141,6 +139,8 @@
 <!ENTITY config.insertNewChildAt.caption "Позиция вставки новых дочерних вкладок">
 <!ENTITY config.insertNewChildAt.first "Вставлять первой в начало поддерева">
 <!ENTITY config.insertNewChildAt.last "Добавлять в конце поддерева">
+
+<!ENTITY config.animation.enabled "Использование эффектов анимации">
 
 <!ENTITY config.useEffectiveTLD.caption  "Detecting method for &quot;same website&quot;">
 <!ENTITY config.useEffectiveTLD.enabled  "by Domain (&quot;aaa.example.com&quot; and &quot;bbb.example.com&quot; are same websites)">

@@ -15,9 +15,6 @@
 <prefpane id="prefpane-appearance" label="&config.tabs.appearance;"
 	onpaneload="onChangeTabbarPosition();">
 	<preferences>
-		<preference id="extensions.treestyletab.animation.enabled"
-			name="extensions.treestyletab.animation.enabled"
-			type="bool"/>
 		<preference id="extensions.treestyletab.tabbar.position"
 			name="extensions.treestyletab.tabbar.position"
 			type="string"/>
@@ -74,9 +71,6 @@
 
 	<vbox>
 
-	<checkbox id="extensions.treestyletab.animation.enabled-check"
-		preference="extensions.treestyletab.animation.enabled"
-		label="&config.animation.enabled;"/>
 	<groupbox>
 		<caption label="&config.tabbar.position.caption;"/>
 		<vbox>
@@ -657,6 +651,9 @@
 		<preference id="extensions.treestyletab.insertNewChildAt"
 			name="extensions.treestyletab.insertNewChildAt"
 			type="int"/>
+		<preference id="extensions.treestyletab.animation.enabled"
+			name="extensions.treestyletab.animation.enabled"
+			type="bool"/>
 		<preference id="extensions.treestyletab.useEffectiveTLD"
 			name="extensions.treestyletab.useEffectiveTLD"
 			type="bool"/>
@@ -729,7 +726,9 @@
 </tabpanel>
 
 <tabpanel orient="vertical">
-
+	<checkbox id="extensions.treestyletab.animation.enabled-check"
+		preference="extensions.treestyletab.animation.enabled"
+		label="&config.animation.enabled;"/>
 	<groupbox id="useEffectiveTLD">
 		<caption label="&config.useEffectiveTLD.caption;"/>
 		<radiogroup id="extensions.treestyletab.useEffectiveTLD-radiogroup"
@@ -739,7 +738,6 @@
 			<radio value="false" label="&config.useEffectiveTLD.disabled;"/>
 		</radiogroup>
 	</groupbox>
-
 </tabpanel>
 
 		</tabpanels>

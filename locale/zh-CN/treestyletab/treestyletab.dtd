@@ -6,8 +6,6 @@
 
 <!ENTITY config.tabs.appearance "外观">
 
-<!ENTITY config.animation.enabled "使用动画效果">
-
 <!ENTITY config.tabbar.position.caption "标签栏位置">
 <!ENTITY config.tabbar.position.left    "左侧">
 <!ENTITY config.tabbar.position.right   "右侧">
@@ -142,6 +140,8 @@
 <!ENTITY config.insertNewChildAt.caption "新子标签的位置">
 <!ENTITY config.insertNewChildAt.first "插入到子树顶部，成为首个子标签">
 <!ENTITY config.insertNewChildAt.last "添加到子树的最后">
+
+<!ENTITY config.animation.enabled "使用动画效果">
 
 <!ENTITY config.useEffectiveTLD.caption  "“相同网站”的标准">
 <!ENTITY config.useEffectiveTLD.enabled  "相同域名（“aaa.example.com” 和 “bbb.example.com” 视为相同网站）">

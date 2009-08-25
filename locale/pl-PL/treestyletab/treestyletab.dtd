@@ -6,8 +6,6 @@
 
 <!ENTITY config.tabs.appearance "Wygląd">
 
-<!ENTITY config.animation.enabled "Włącz efekty animacji">
-
 <!ENTITY config.tabbar.position.caption "Położenie paska kart">
 <!ENTITY config.tabbar.position.left    "Po lewej stronie">
 <!ENTITY config.tabbar.position.right   "Po prawej stronie">
@@ -140,6 +138,8 @@
 <!ENTITY config.insertNewChildAt.caption "Położenie wstawianych nowych potomnych kart">
 <!ENTITY config.insertNewChildAt.first "Wstaw jako pierwszą na górze drzewa">
 <!ENTITY config.insertNewChildAt.last "Wstaw na końcu drzewa">
+
+<!ENTITY config.animation.enabled "Włącz efekty animacji">
 
 <!ENTITY config.useEffectiveTLD.caption  "Detecting method for &quot;same website&quot;">
 <!ENTITY config.useEffectiveTLD.enabled  "by Domain (&quot;aaa.example.com&quot; and &quot;bbb.example.com&quot; are same websites)">

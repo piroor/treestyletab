@@ -6,8 +6,6 @@
 
 <!ENTITY config.tabs.appearance "Appearance">
 
-<!ENTITY config.animation.enabled "Enable Animation Effects">
-
 <!ENTITY config.tabbar.position.caption "Tab bar position">
 <!ENTITY config.tabbar.position.left    "Leftside">
 <!ENTITY config.tabbar.position.right   "Rightside">
@@ -138,6 +136,8 @@
 <!ENTITY config.insertNewChildAt.caption "Insertion position of new child tabs">
 <!ENTITY config.insertNewChildAt.first "Insert to the top of the tree, as the first child">
 <!ENTITY config.insertNewChildAt.last "Append to the last of the tree">
+
+<!ENTITY config.animation.enabled "Enable Animation Effects">
 
 <!ENTITY config.useEffectiveTLD.caption  "Detecting method for &quot;same website&quot;">
 <!ENTITY config.useEffectiveTLD.enabled  "by Domain (&quot;aaa.example.com&quot; and &quot;bbb.example.com&quot; are same websites)">

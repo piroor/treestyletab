@@ -6,8 +6,6 @@
 
 <!ENTITY config.tabs.appearance "外観">
 
-<!ENTITY config.animation.enabled "アニメーション効果を有効にする">
-
 <!ENTITY config.tabbar.position.caption "タブバーの表示位置">
 <!ENTITY config.tabbar.position.left    "左">
 <!ENTITY config.tabbar.position.right   "右">
@@ -139,6 +137,8 @@
 <!ENTITY config.insertNewChildAt.caption "新しい子タブを開く位置">
 <!ENTITY config.insertNewChildAt.first "ツリーの最初の位置に挿入する">
 <!ENTITY config.insertNewChildAt.last "ツリーの末尾に追加する">
+
+<!ENTITY config.animation.enabled "アニメーション効果を有効にする">
 
 <!ENTITY config.useEffectiveTLD.caption  "同じサイトかどうかの判別方法">
 <!ENTITY config.useEffectiveTLD.enabled  "ドメイン名で判別する（aaa.example.comとbbb.example.comを同じサイトと見なす）">
