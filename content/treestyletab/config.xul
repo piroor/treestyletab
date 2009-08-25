@@ -510,7 +510,7 @@
 	<vbox>
 
 		<groupbox orient="vertical">
-			<radiogroup orient="vertical"
+			<radiogroup orient="horizontal"
 				id="extensions.treestyletab.tabbar.autoHide.mode-radio"
 				preference="extensions.treestyletab.tabbar.autoHide.mode"
 				onselect="onChangeAutoHideMode()">
