@@ -2487,7 +2487,7 @@ TreeStyleTabBrowser.prototype = {
  
 	getDropPosition : function(aEvent) 
 	{
-		var box = this.mOwner.mTabBrowser.mPanelContainer.boxObject;
+		var box = this.mOwner.mTabBrowser.boxObject;
 		var W = box.width;
 		var H = box.height;
 		var X = box.screenX;
