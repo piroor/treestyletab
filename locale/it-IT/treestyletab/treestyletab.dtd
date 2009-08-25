@@ -54,6 +54,7 @@
 <!ENTITY config.urlbar.none          "Lv.0 Nothing (Firefox default)">
 <!ENTITY config.urlbar.outer         "Lv.1 apre una nuova scheda se appartiene a un sito web differente">
 <!ENTITY config.urlbar.any           "Lv.2 Load into new tab always">
+<!ENTITY config.urlbar.asChild.caption "Structuring of opened tabs">
 <!ENTITY config.urlbar.asChild.none  "Lv.0 Open as separate tab">
 <!ENTITY config.urlbar.asChild.inner "Lv.1 Open as child tab if it is the same website">
 <!ENTITY config.urlbar.asChild.any   "Lv.2 Open as child tab always">

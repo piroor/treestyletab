@@ -379,8 +379,9 @@
 							<label value="&config.urlbar.any;" control="loadLocationBarToNewTab-scale"/>
 						</vbox>
 					</hbox>
+					<groupbox>
+						<caption label="&config.urlbar.asChild.caption;" />
 					<hbox align="stretch">
-						<spacer style="width:1em;"/>
 						<scale id="loadLocationBarToChildTab-scale"
 							orient="vertical"
 							min="0"
@@ -395,6 +396,7 @@
 							<label value="&config.urlbar.asChild.any;" control="loadLocationBarToChildTab-scale"/>
 						</vbox>
 					</hbox>
+					</groupbox>
 				</groupbox>
 			</tabpanel>
 			<tabpanel orient="vertical">

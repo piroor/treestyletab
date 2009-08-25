@@ -54,6 +54,7 @@
 <!ENTITY config.urlbar.none          "Lv.0 なし（Firefox初期状態）">
 <!ENTITY config.urlbar.outer         "Lv.1 異なるサイトを新しいタブで開く">
 <!ENTITY config.urlbar.any           "Lv.2 すべて新しいタブで開く">
+<!ENTITY config.urlbar.asChild.caption "開かれたタブのツリー化">
 <!ENTITY config.urlbar.asChild.none  "Lv.0 ツリーにしない">
 <!ENTITY config.urlbar.asChild.inner "Lv.1 同じサイトのタブを現在のタブの子として開く">
 <!ENTITY config.urlbar.asChild.any   "Lv.2 すべて現在のタブの子として開く">

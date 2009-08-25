@@ -54,6 +54,7 @@
 <!ENTITY config.urlbar.none          "位階-0 無 (Firefox 預設)">
 <!ENTITY config.urlbar.outer         "位階-1 用新分頁開啟通往不同網站的 URL">
 <!ENTITY config.urlbar.any           "位階-2 固定用新分頁開啟">
+<!ENTITY config.urlbar.asChild.caption "Structuring of opened tabs">
 <!ENTITY config.urlbar.asChild.none  "位階-0 開啟為各別分頁">
 <!ENTITY config.urlbar.asChild.inner "位階-1 如果同網站就開啟為子分頁">
 <!ENTITY config.urlbar.asChild.any   "位階-2 一律開啟為子分頁">
