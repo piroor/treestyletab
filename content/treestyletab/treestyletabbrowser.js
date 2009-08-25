@@ -2469,7 +2469,8 @@ TreeStyleTabBrowser.prototype = {
 		if (!this.canDrop(aEvent, aDragSession)) return;
 		var sv = this.mOwner;
 		var position = this.getDropPosition(aEvent);
-		if (position != sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION))
+		if (position != 'center' &&
+			position != sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION))
 			sv.mTabBrowser.setAttribute(sv.kDROP_POSITION, position);
 	},
  
@@ -2477,7 +2478,8 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var sv = this.mOwner;
 		var position = this.getDropPosition(aEvent);
-		if (position != sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION))
+		if (position != 'center' &&
+			position != sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION))
 			sv.changeTabbarPosition(position);
 
 		aEvent.stopPropagation();
@@ -2492,6 +2494,12 @@ TreeStyleTabBrowser.prototype = {
 		var Y = box.screenY;
 		var x = aEvent.screenX - X;
 		var y = aEvent.screenY - Y;
+
+		if (x > (W * 0.33) &&
+			x < (W * 0.66) &&
+			y > (H * 0.33) &&
+			y < (H * 0.66))
+			return 'center';
 
 		var isTL = x <= W - (y * W / H);
 		var isBL = x <= y * W / H;
