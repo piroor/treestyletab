@@ -376,9 +376,10 @@
 								gGroupBookmarkRadioSet.pref.value = onSyncGroupBookmarkUIToPref();
 							"/>
 					</hbox>
-					<separator/>
 					<deck id="openGroupBookmark-deck">
 						<spacer flex="1"/>
+						<vbox>
+						<separator class="hr"/>
 						<radiogroup id="openGroupBookmark-radiogroup"
 							orient="vertical"
 							onsynctopreference="return onSyncGroupBookmarkUIToPref();"
@@ -394,6 +395,7 @@
 							<radio value="2" label="&config.openGroupBookmark.flat;"/>
 							<radio value="4" label="&config.openGroupBookmark.replace;"/>
 						</radiogroup>
+						</vbox>
 					</deck>
 				</groupbox>
 			</tabpanel>
@@ -446,9 +448,10 @@
 							label="&config.dropLinksOnTab.ask;"
 							oncommand="gDropLinksOnTabRadioSet.onChange();"/>
 					</hbox>
-					<separator/>
 					<deck id="dropLinksOnTab-deck">
 						<spacer flex="1"/>
+						<vbox>
+						<separator class="hr"/>
 						<radiogroup id="dropLinksOnTab-radiogroup"
 							preference="extensions.treestyletab.dropLinksOnTab.behavior"
 							orient="vertical">
@@ -456,6 +459,7 @@
 							<radio value="1" label="&config.dropLinksOnTab.load;"/>
 							<radio value="2" label="&config.dropLinksOnTab.newTab;"/>
 						</radiogroup>
+						</vbox>
 					</deck>
 				</groupbox>
 			</tabpanel>
