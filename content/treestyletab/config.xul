@@ -332,6 +332,7 @@
 			<tab label="&config.tabs.link.tab;"/>
 			<tab label="&config.tabs.bookmark.tab;"/>
 			<tab label="&config.tabs.urlbar.tab;"/>
+			<tab label="&config.tabs.dragdrop.tab;"/>
 			<tab label="&config.tabs.misc.tab;"/>
 		</tabs>
 		<tabpanels>
@@ -355,24 +356,6 @@
 					</hbox>
 				</groupbox>
 				<groupbox>
-					<caption align="center">
-						<label value="&config.dropLinksOnTab.caption;"/>
-						<checkbox id="dropLinksOnTab-check"
-							label="&config.dropLinksOnTab.ask;"
-							oncommand="gDropLinksOnTabRadioSet.onChange();"/>
-					</caption>
-					<deck id="dropLinksOnTab-deck">
-						<spacer flex="1"/>
-						<radiogroup id="dropLinksOnTab-radiogroup"
-							preference="extensions.treestyletab.dropLinksOnTab.behavior"
-							orient="vertical">
-							<radio value="0" collapsed="true"/>
-							<radio value="1" label="&config.dropLinksOnTab.load;"/>
-							<radio value="2" label="&config.dropLinksOnTab.newTab;"/>
-						</radiogroup>
-					</deck>
-				</groupbox>
-				<groupbox>
 					<caption label="&config.open_newwindow.caption;"/>
 					<radiogroup id="browser.link.open_newwindow-radiogroup"
 						preference="browser.link.open_newwindow"
@@ -384,15 +367,16 @@
 			</tabpanel>
 			<tabpanel orient="vertical">
 				<groupbox>
-					<caption align="center">
-						<label value="&config.openGroupBookmark.caption;"/>
+					<caption label="&config.openGroupBookmark.caption;"/>
+					<hbox>
 						<checkbox id="openGroupBookmark-check"
 							label="&config.openGroupBookmark.ask;"
 							oncommand="
 								gGroupBookmarkRadioSet.onChange(true);
 								gGroupBookmarkRadioSet.pref.value = onSyncGroupBookmarkUIToPref();
 							"/>
-					</caption>
+					</hbox>
+					<separator/>
 					<deck id="openGroupBookmark-deck">
 						<spacer flex="1"/>
 						<radiogroup id="openGroupBookmark-radiogroup"
@@ -452,6 +436,27 @@
 							</vbox>
 						</hbox>
 					</groupbox>
+				</groupbox>
+			</tabpanel>
+			<tabpanel orient="vertical">
+				<groupbox>
+					<caption label="&config.dropLinksOnTab.caption;"/>
+					<hbox>
+						<checkbox id="dropLinksOnTab-check"
+							label="&config.dropLinksOnTab.ask;"
+							oncommand="gDropLinksOnTabRadioSet.onChange();"/>
+					</hbox>
+					<separator/>
+					<deck id="dropLinksOnTab-deck">
+						<spacer flex="1"/>
+						<radiogroup id="dropLinksOnTab-radiogroup"
+							preference="extensions.treestyletab.dropLinksOnTab.behavior"
+							orient="vertical">
+							<radio value="0" collapsed="true"/>
+							<radio value="1" label="&config.dropLinksOnTab.load;"/>
+							<radio value="2" label="&config.dropLinksOnTab.newTab;"/>
+						</radiogroup>
+					</deck>
 				</groupbox>
 			</tabpanel>
 			<tabpanel orient="vertical">

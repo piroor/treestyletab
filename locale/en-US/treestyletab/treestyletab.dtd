@@ -46,6 +46,7 @@
 <!ENTITY config.tabs.link.tab     "Links">
 <!ENTITY config.tabs.urlbar.tab   "Location Bar">
 <!ENTITY config.tabs.bookmark.tab "Bookmarks">
+<!ENTITY config.tabs.dragdrop.tab "Drag &amp; Drop to tabs">
 <!ENTITY config.tabs.misc.tab     "Other Cases">
 
 <!ENTITY config.link.caption "Automatic New Tab Level for Links">
@@ -62,7 +63,7 @@
 <!ENTITY config.urlbar.asChild.inner "Lv.1 Open as child tab if it is the same website">
 <!ENTITY config.urlbar.asChild.any   "Lv.2 Open as child tab always">
 
-<!ENTITY config.dropLinksOnTab.caption "Action for drag drop of links or URLs to existing tab">
+<!ENTITY config.dropLinksOnTab.caption "Action for drag drop of links, URLs, bookmarks or files to existing tab">
 <!ENTITY config.dropLinksOnTab.ask     "Ask me always">
 <!ENTITY config.dropLinksOnTab.load    "Load link into the tab (Firefox default)">
 <!ENTITY config.dropLinksOnTab.newTab  "Open link in a new child tab of the tab">

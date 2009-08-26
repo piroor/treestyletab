@@ -46,6 +46,7 @@
 <!ENTITY config.tabs.link.tab     "リンク">
 <!ENTITY config.tabs.urlbar.tab   "ロケーションバー">
 <!ENTITY config.tabs.bookmark.tab "ブックマーク">
+<!ENTITY config.tabs.dragdrop.tab "タブへのドラッグ＆ドロップ">
 <!ENTITY config.tabs.misc.tab     "その他">
 
 <!ENTITY config.link.caption "リンクから自動的にタブを開くレベル">
@@ -62,7 +63,7 @@
 <!ENTITY config.urlbar.asChild.inner "Lv.1 同じサイトのタブを現在のタブの子として開く">
 <!ENTITY config.urlbar.asChild.any   "Lv.2 すべて現在のタブの子として開く">
 
-<!ENTITY config.dropLinksOnTab.caption "リンクやURLをタブにドラッグ＆ドロップした時">
+<!ENTITY config.dropLinksOnTab.caption "リンクやURL、ブックマーク、ファイルをタブにドラッグ＆ドロップした時">
 <!ENTITY config.dropLinksOnTab.ask     "どうするか毎回尋ねる">
 <!ENTITY config.dropLinksOnTab.load    "ドロップ先のタブの中に読み込む（Firefox初期状態）">
 <!ENTITY config.dropLinksOnTab.newTab  "ドロップ先のタブのツリーに新しいタブを開く">

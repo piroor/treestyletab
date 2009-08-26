@@ -46,6 +46,7 @@
 <!ENTITY config.tabs.link.tab     "Links">
 <!ENTITY config.tabs.urlbar.tab   "Location Bar">
 <!ENTITY config.tabs.bookmark.tab "Bookmarks">
+<!ENTITY config.tabs.dragdrop.tab "Drag &amp; Drop to tabs">
 <!ENTITY config.tabs.misc.tab     "Other Cases">
 
 <!ENTITY config.link.caption "Verfolgte Links">
