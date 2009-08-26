@@ -2328,6 +2328,7 @@ TreeStyleTabBrowser.prototype = {
 		if (!this.canDragTabbar(aEvent))
 			return false;
 
+		var sv = this.mOwner;
 		aTransferData.data = new TransferData();
 		aTransferData.data.addDataForFlavour(
 			sv.kDRAG_TYPE_TABBAR,
