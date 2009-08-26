@@ -43,7 +43,10 @@
 
 <!ENTITY config.tabs.tab "Операции с вкладками">
 
-<!ENTITY config.tabs.autotab.tab      "Automatic New Tab Level">
+<!ENTITY config.tabs.link.tab     "Links">
+<!ENTITY config.tabs.urlbar.tab   "Location Bar">
+<!ENTITY config.tabs.bookmark.tab "Bookmarks">
+<!ENTITY config.tabs.misc.tab     "Other Cases">
 
 <!ENTITY config.link.caption "Automatic New Tab Level for Links">
 <!ENTITY config.link.none    "Lv.0 Nothing (Firefox default)">
@@ -59,8 +62,6 @@
 <!ENTITY config.urlbar.asChild.inner "Lv.1 Open as child tab if it is the same website">
 <!ENTITY config.urlbar.asChild.any   "Lv.2 Open as child tab always">
 
-<!ENTITY config.tabs.context.tab      "Действия при открытии вкладок">
-
 <!ENTITY config.dropLinksOnTab.caption "Действие при перетаскивании ссылок или URL-ов в имеющуюся вкладку">
 <!ENTITY config.dropLinksOnTab.ask     "Ask me always">
 <!ENTITY config.dropLinksOnTab.load    "Загрузить ссылку во вкладке (в Firefox по умолчанию)">
@@ -73,8 +74,6 @@
 <!ENTITY config.openGroupBookmark.flat        "Открывать как раздельные вкладки (в Firefox по умолчанию)">
 <!ENTITY config.openGroupBookmark.replace     "Replace the current one tab with the pages in the folder">
 <!ENTITY config.openGroupBookmark.underParent "Put tabs under a dummy tab for grouping">
-
-<!ENTITY config.tabs.restriction.tab "Открытие вкладок вместо окон">
 
 <!ENTITY config.open_newwindow.caption "Открытие высплывающих окон">
 <!ENTITY config.open_newwindow.window  "Открывать как окно">

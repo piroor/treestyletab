@@ -329,9 +329,10 @@
 
 	<tabbox orient="vertical">
 		<tabs>
-			<tab label="&config.tabs.autotab.tab;"/>
-			<tab label="&config.tabs.context.tab;"/>
-			<tab label="&config.tabs.restriction.tab;"/>
+			<tab label="&config.tabs.link.tab;"/>
+			<tab label="&config.tabs.bookmark.tab;"/>
+			<tab label="&config.tabs.urlbar.tab;"/>
+			<tab label="&config.tabs.misc.tab;"/>
 		</tabs>
 		<tabpanels>
 			<tabpanel orient="vertical">
@@ -354,47 +355,6 @@
 					</hbox>
 				</groupbox>
 				<groupbox>
-					<caption label="&config.urlbar.caption;"/>
-					<hbox align="stretch">
-						<scale id="loadLocationBarToNewTab-scale"
-							orient="vertical"
-							min="0"
-							max="2"
-							style="height:4em;"
-							onchange="
-								gLoadLocationBarToNewTabScale.onChange();
-								gLoadLocationBarToChildTabScale.disabled = gLoadLocationBarToNewTabScale.value == 0;
-							"/>
-						<vbox id="loadLocationBarToNewTab-labels">
-							<label value="&config.urlbar.none;" control="loadLocationBarToNewTab-scale"/>
-							<spacer flex="1"/>
-							<label value="&config.urlbar.outer;" control="loadLocationBarToNewTab-scale"/>
-							<spacer flex="1"/>
-							<label value="&config.urlbar.any;" control="loadLocationBarToNewTab-scale"/>
-						</vbox>
-					</hbox>
-					<groupbox>
-						<caption label="&config.urlbar.asChild.caption;" />
-					<hbox align="stretch">
-						<scale id="loadLocationBarToChildTab-scale"
-							orient="vertical"
-							min="0"
-							max="2"
-							style="height:4em;"
-							onchange="gLoadLocationBarToChildTabScale.onChange();"/>
-						<vbox id="loadLocationBarToChildTab-labels">
-							<label value="&config.urlbar.asChild.none;" control="loadLocationBarToChildTab-scale"/>
-							<spacer flex="1"/>
-							<label value="&config.urlbar.asChild.inner;" control="loadLocationBarToChildTab-scale"/>
-							<spacer flex="1"/>
-							<label value="&config.urlbar.asChild.any;" control="loadLocationBarToChildTab-scale"/>
-						</vbox>
-					</hbox>
-					</groupbox>
-				</groupbox>
-			</tabpanel>
-			<tabpanel orient="vertical">
-				<groupbox>
 					<caption align="center">
 						<label value="&config.dropLinksOnTab.caption;"/>
 						<checkbox id="dropLinksOnTab-check"
@@ -412,6 +372,17 @@
 						</radiogroup>
 					</deck>
 				</groupbox>
+				<groupbox>
+					<caption label="&config.open_newwindow.caption;"/>
+					<radiogroup id="browser.link.open_newwindow-radiogroup"
+						preference="browser.link.open_newwindow"
+						orient="horizontal">
+						<radio value="2" label="&config.open_newwindow.window;"/>
+						<radio value="3" label="&config.open_newwindow.tab;"/>
+					</radiogroup>
+				</groupbox>
+			</tabpanel>
+			<tabpanel orient="vertical">
 				<groupbox>
 					<caption align="center">
 						<label value="&config.openGroupBookmark.caption;"/>
@@ -444,14 +415,46 @@
 			</tabpanel>
 			<tabpanel orient="vertical">
 				<groupbox>
-					<caption label="&config.open_newwindow.caption;"/>
-					<radiogroup id="browser.link.open_newwindow-radiogroup"
-						preference="browser.link.open_newwindow"
-						orient="horizontal">
-						<radio value="2" label="&config.open_newwindow.window;"/>
-						<radio value="3" label="&config.open_newwindow.tab;"/>
-					</radiogroup>
+					<caption label="&config.urlbar.caption;"/>
+					<hbox align="stretch">
+						<scale id="loadLocationBarToNewTab-scale"
+							orient="vertical"
+							min="0"
+							max="2"
+							style="height:4em;"
+							onchange="
+								gLoadLocationBarToNewTabScale.onChange();
+								gLoadLocationBarToChildTabScale.disabled = gLoadLocationBarToNewTabScale.value == 0;
+							"/>
+						<vbox id="loadLocationBarToNewTab-labels">
+							<label value="&config.urlbar.none;" control="loadLocationBarToNewTab-scale"/>
+							<spacer flex="1"/>
+							<label value="&config.urlbar.outer;" control="loadLocationBarToNewTab-scale"/>
+							<spacer flex="1"/>
+							<label value="&config.urlbar.any;" control="loadLocationBarToNewTab-scale"/>
+						</vbox>
+					</hbox>
+					<groupbox>
+						<caption label="&config.urlbar.asChild.caption;" />
+						<hbox align="stretch">
+							<scale id="loadLocationBarToChildTab-scale"
+								orient="vertical"
+								min="0"
+								max="2"
+								style="height:4em;"
+								onchange="gLoadLocationBarToChildTabScale.onChange();"/>
+							<vbox id="loadLocationBarToChildTab-labels">
+								<label value="&config.urlbar.asChild.none;" control="loadLocationBarToChildTab-scale"/>
+								<spacer flex="1"/>
+								<label value="&config.urlbar.asChild.inner;" control="loadLocationBarToChildTab-scale"/>
+								<spacer flex="1"/>
+								<label value="&config.urlbar.asChild.any;" control="loadLocationBarToChildTab-scale"/>
+							</vbox>
+						</hbox>
+					</groupbox>
 				</groupbox>
+			</tabpanel>
+			<tabpanel orient="vertical">
 				<groupbox>
 					<caption label="&config.jsopen.caption;"/>
 					<radiogroup id="browser.link.open_newwindow.restriction-radiogroup"

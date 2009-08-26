@@ -43,7 +43,10 @@
 
 <!ENTITY config.tabs.tab "タブの開き方">
 
-<!ENTITY config.tabs.autotab.tab      "自動的にタブを開くレベル">
+<!ENTITY config.tabs.link.tab     "リンク">
+<!ENTITY config.tabs.urlbar.tab   "ロケーションバー">
+<!ENTITY config.tabs.bookmark.tab "ブックマーク">
+<!ENTITY config.tabs.misc.tab     "その他">
 
 <!ENTITY config.link.caption "リンクから自動的にタブを開くレベル">
 <!ENTITY config.link.none    "Lv.0 なし（Firefox初期状態）">
@@ -59,8 +62,6 @@
 <!ENTITY config.urlbar.asChild.inner "Lv.1 同じサイトのタブを現在のタブの子として開く">
 <!ENTITY config.urlbar.asChild.any   "Lv.2 すべて現在のタブの子として開く">
 
-<!ENTITY config.tabs.context.tab      "場合に応じてタブを開く">
-
 <!ENTITY config.dropLinksOnTab.caption "リンクやURLをタブにドラッグ＆ドロップした時">
 <!ENTITY config.dropLinksOnTab.ask     "どうするか毎回尋ねる">
 <!ENTITY config.dropLinksOnTab.load    "ドロップ先のタブの中に読み込む（Firefox初期状態）">
@@ -72,8 +73,6 @@
 <!ENTITY config.openGroupBookmark.flat        "ばらばらのタブとして開く（Firefox初期状態）">
 <!ENTITY config.openGroupBookmark.replace     "現在のタブ1つだけをブックマークの内容で置き換える">
 <!ENTITY config.openGroupBookmark.underParent "グループ化用のダミーのタブを親にする">
-
-<!ENTITY config.tabs.restriction.tab "ウィンドウの代わりにタブを開く">
 
 <!ENTITY config.open_newwindow.caption "Webページのリンクから勝手に開かれたウィンドウの制御">
 <!ENTITY config.open_newwindow.window  "ウィンドウで開く">

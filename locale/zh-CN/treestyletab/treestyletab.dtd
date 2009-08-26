@@ -44,7 +44,10 @@
 
 <!ENTITY config.tabs.tab "标签操作">
 
-<!ENTITY config.tabs.autotab.tab      "Automatic New Tab Level">
+<!ENTITY config.tabs.link.tab     "Links">
+<!ENTITY config.tabs.urlbar.tab   "Location Bar">
+<!ENTITY config.tabs.bookmark.tab "Bookmarks">
+<!ENTITY config.tabs.misc.tab     "Other Cases">
 
 <!ENTITY config.link.caption "如何打开新链接？">
 <!ENTITY config.link.none    "Lv.0 当前页面打开（Firefox 默认）">
@@ -60,8 +63,6 @@
 <!ENTITY config.urlbar.asChild.inner "Lv.1 与当前标签处于相同网站时在新子标签中打开">
 <!ENTITY config.urlbar.asChild.any   "Lv.2 总是在新子标签中打开">
 
-<!ENTITY config.tabs.context.tab      "打开标签">
-
 <!ENTITY config.loadDroppedLinkToNewChildTab.caption "将链接或URL拖拽到现有标签后：">
 <!ENTITY config.loadDroppedLinkToNewChildTab.load    "在标签中加载链接 （Firefox 默认）">
 <!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "在此标签的新建子标签中打开链接">
@@ -76,8 +77,6 @@
 <!ENTITY config.openGroupBookmark.flat        "在单独标签中打开 （Firefox 默认）">
 <!ENTITY config.openGroupBookmark.replace     "覆盖当前标签打开">
 <!ENTITY config.openGroupBookmark.underParent "将标签置于一伪标签下以便分组">
-
-<!ENTITY config.tabs.restriction.tab "打开标签而非窗口">
 
 <!ENTITY config.open_newwindow.caption "手动打开到新窗口">
 <!ENTITY config.open_newwindow.window  "在窗口中打开">

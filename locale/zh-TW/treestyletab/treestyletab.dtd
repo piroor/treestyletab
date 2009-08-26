@@ -43,7 +43,10 @@
 
 <!ENTITY config.tabs.tab "分頁操作">
 
-<!ENTITY config.tabs.autotab.tab      "Automatic New Tab Level">
+<!ENTITY config.tabs.link.tab     "Links">
+<!ENTITY config.tabs.urlbar.tab   "Location Bar">
+<!ENTITY config.tabs.bookmark.tab "Bookmarks">
+<!ENTITY config.tabs.misc.tab     "Other Cases">
 
 <!ENTITY config.link.caption "鏈結新分頁位階自動化">
 <!ENTITY config.link.none    "位階-0 無 (Firefox 預設)">
@@ -59,8 +62,6 @@
 <!ENTITY config.urlbar.asChild.inner "位階-1 如果同網站就開啟為子分頁">
 <!ENTITY config.urlbar.asChild.any   "位階-2 一律開啟為子分頁">
 
-<!ENTITY config.tabs.context.tab      "依情況開啟分頁">
-
 <!ENTITY config.dropLinksOnTab.caption "拖曳鏈結或 URL 到現有的分頁時">
 <!ENTITY config.dropLinksOnTab.ask     "每次都問我">
 <!ENTITY config.dropLinksOnTab.load    "在拖曳目的地分頁載入鏈結（Firefox 預設）">
@@ -74,7 +75,6 @@
 <!ENTITY config.openGroupBookmark.replace     "將目前瀏覽的分頁取代為書籤的內容">
 <!ENTITY config.openGroupBookmark.underParent "將各分頁開啟於一虛分頁之下以便分組">
 
-<!ENTITY config.tabs.restriction.tab "開啟分頁代替視窗">
 <!ENTITY config.open_newwindow.caption "從網頁鏈結開啟新視窗的控制">
 <!ENTITY config.open_newwindow.window  "用新視窗開啟">
 <!ENTITY config.open_newwindow.tab     "用新分頁開啟（Firefox 預設）">

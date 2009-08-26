@@ -43,7 +43,10 @@
 
 <!ENTITY config.tabs.tab "Verhalten">
 
-<!ENTITY config.tabs.autotab.tab      "Automatic New Tab Level">
+<!ENTITY config.tabs.link.tab     "Links">
+<!ENTITY config.tabs.urlbar.tab   "Location Bar">
+<!ENTITY config.tabs.bookmark.tab "Bookmarks">
+<!ENTITY config.tabs.misc.tab     "Other Cases">
 
 <!ENTITY config.link.caption "Verfolgte Links">
 <!ENTITY config.link.none    "Lv.0 Immer im aktiven Tab laden (Firefox Standard)">
@@ -59,8 +62,6 @@
 <!ENTITY config.urlbar.asChild.inner "Lv.1 Neues untergeordnetes Tab, falls es die gleiche Webseite ist">
 <!ENTITY config.urlbar.asChild.any   "Lv.2 Immer als untergeordnetes Tab">
 
-<!ENTITY config.tabs.context.tab      "Tabs abhängig vom Kontext öffnen">
-
 <!ENTITY config.dropLinksOnTab.caption "Verhalten für das Drag &amp; Drop von URLs auf Tabs">
 <!ENTITY config.dropLinksOnTab.ask     "Jedes Mal nachfragen">
 <!ENTITY config.dropLinksOnTab.load    "Seite im Tab laden (Firefox Standard)">
@@ -72,8 +73,6 @@
 <!ENTITY config.openGroupBookmark.flat        "Als eigenständige Tabs öffnen (Firefox Standard)">
 <!ENTITY config.openGroupBookmark.replace     "Aktuelles Tab durch die neuen Tabs ersetzen">
 <!ENTITY config.openGroupBookmark.underParent "Seiten zur Gruppierung einem Dummytab unterordnen">
-
-<!ENTITY config.tabs.restriction.tab "Neue Tabs statt neue Fenster öffnen">
 
 <!ENTITY config.open_newwindow.caption "Links, die sich unerwartet in einem neuen Fenster öffnen">
 <!ENTITY config.open_newwindow.window  "Als Fenster öffnen">
