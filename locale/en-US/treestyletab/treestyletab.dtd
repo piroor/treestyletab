@@ -114,10 +114,7 @@
 <!ENTITY config.transparent.style.2 "Transparent">
 
 
-<!ENTITY config.tabs.advanced "Advanced">
-<!ENTITY config.tabs.advanced.focus "Focus">
-<!ENTITY config.tabs.advanced.tree  "Tree Structure">
-<!ENTITY config.tabs.advanced.misc  "Misc.">
+<!ENTITY config.tabs.tree "Tree">
 
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
@@ -137,6 +134,9 @@
 <!ENTITY config.insertNewChildAt.caption "Insertion position of new child tabs">
 <!ENTITY config.insertNewChildAt.first "Insert to the top of the tree, as the first child">
 <!ENTITY config.insertNewChildAt.last "Append to the last of the tree">
+
+
+<!ENTITY config.tabs.advanced "Advanced">
 
 <!ENTITY config.animation.enabled "Enable Animation Effects">
 

@@ -116,10 +116,7 @@
 <!ENTITY config.transparent.style.2 "完全透明">
 
 
-<!ENTITY config.tabs.advanced "進階">
-<!ENTITY config.tabs.advanced.focus "前景分頁">
-<!ENTITY config.tabs.advanced.tree  "樹狀結構">
-<!ENTITY config.tabs.advanced.misc  "雜項">
+<!ENTITY config.tabs.tree "樹狀結構">
 
 <!--ENTITY config.autoCollapseExpandSubTreeOnSelect "當開新分頁或切換分頁時，自動摺疊無關的子樹"-->
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "切換分頁時，自動展開該子樹並摺疊無關者">
@@ -140,6 +137,9 @@
 <!ENTITY config.insertNewChildAt.caption "開啟新子分頁的位置">
 <!ENTITY config.insertNewChildAt.first "插入到子樹的開端">
 <!ENTITY config.insertNewChildAt.last "新增到子樹的末端">
+
+
+<!ENTITY config.tabs.advanced "進階">
 
 <!ENTITY config.animation.enabled "啟用動畫效果">
 

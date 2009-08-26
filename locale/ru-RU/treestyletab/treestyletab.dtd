@@ -116,10 +116,7 @@
 <!ENTITY config.transparent.style.2 "Прозрачный">
 
 
-<!ENTITY config.tabs.advanced "Дополнительно">
-<!ENTITY config.tabs.advanced.focus "Focus">
-<!ENTITY config.tabs.advanced.tree  "Tree Structure">
-<!ENTITY config.tabs.advanced.misc  "Misc.">
+<!ENTITY config.tabs.tree "Tree">
 
 <!--ENTITY config.autoCollapseExpandSubTreeOnSelect "При открытии или выборе вкладки в поддереве, автоматически сворачивать другие поддеревья"-->
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
@@ -141,6 +138,8 @@
 <!ENTITY config.insertNewChildAt.caption "Позиция вставки новых дочерних вкладок">
 <!ENTITY config.insertNewChildAt.first "Вставлять первой в начало поддерева">
 <!ENTITY config.insertNewChildAt.last "Добавлять в конце поддерева">
+
+<!ENTITY config.tabs.advanced "Дополнительно">
 
 <!ENTITY config.animation.enabled "Использование эффектов анимации">
 

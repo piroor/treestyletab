@@ -234,7 +234,7 @@ function onTabbarTransparencyScaleChange()
 }
 
 
-function initAdvancedPane()
+function initTreePane()
 {
 	updateCloseRootBehaviorCheck();
 

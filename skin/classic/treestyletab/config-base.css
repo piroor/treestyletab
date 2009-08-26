@@ -50,6 +50,9 @@ radio[pane="prefpane-advanced"][selected="true"] {
 	-moz-image-region: rect(32px, 224px, 64px, 192px);
 }
 
+radio[pane="prefpane-tree"] {
+	list-style-image: url("chrome://treestyletab/content/res/icon32.png");
+}
 
 label.scale-label {
 	min-width: 0;

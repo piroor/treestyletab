@@ -119,10 +119,7 @@
 <!ENTITY config.transparent.style.2 "完全透明">
 
 
-<!ENTITY config.tabs.advanced "高级">
-<!ENTITY config.tabs.advanced.focus "焦点处理">
-<!ENTITY config.tabs.advanced.tree  "树状结构">
-<!ENTITY config.tabs.advanced.misc  "其他">
+<!ENTITY config.tabs.tree "树状结构">
 
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "某一标签获得焦点时，自动展开该标签的树和折叠其他标签树">
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "当前标签关闭引起的焦点转移除外">
@@ -142,6 +139,9 @@
 <!ENTITY config.insertNewChildAt.caption "新子标签的位置">
 <!ENTITY config.insertNewChildAt.first "插入到子树顶部，成为首个子标签">
 <!ENTITY config.insertNewChildAt.last "添加到子树的最后">
+
+
+<!ENTITY config.tabs.advanced "高级">
 
 <!ENTITY config.animation.enabled "使用动画效果">
 

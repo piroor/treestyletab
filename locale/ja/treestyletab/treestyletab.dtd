@@ -114,10 +114,7 @@
 <!ENTITY config.transparent.style.2 "完全な透明">
 
 
-<!ENTITY config.tabs.advanced "詳細">
-<!ENTITY config.tabs.advanced.focus "フォーカス">
-<!ENTITY config.tabs.advanced.tree  "ツリーの構造">
-<!ENTITY config.tabs.advanced.misc  "その他">
+<!ENTITY config.tabs.tree "ツリー">
 
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "タブを切り替えた時は、フォーカスされたタブのツリーを自動的に展開して、他のツリーを折り畳む">
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "現在のタブを閉じてタブのフォーカスが切り替わった場合は何もしない">
@@ -138,6 +135,9 @@
 <!ENTITY config.insertNewChildAt.caption "新しい子タブを開く位置">
 <!ENTITY config.insertNewChildAt.first "ツリーの最初の位置に挿入する">
 <!ENTITY config.insertNewChildAt.last "ツリーの末尾に追加する">
+
+
+<!ENTITY config.tabs.advanced "詳細">
 
 <!ENTITY config.animation.enabled "アニメーション効果を有効にする">
 

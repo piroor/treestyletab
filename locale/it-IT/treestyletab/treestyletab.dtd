@@ -116,10 +116,7 @@
 <!ENTITY config.transparent.style.2 "Trasparente">
 
 
-<!ENTITY config.tabs.advanced "Avanzate">
-<!ENTITY config.tabs.advanced.focus "Focus">
-<!ENTITY config.tabs.advanced.tree  "Tree Structure">
-<!ENTITY config.tabs.advanced.misc  "Misc.">
+<!ENTITY config.tabs.tree "Tree">
 
 <!--ENTITY config.autoCollapseExpandSubTreeOnSelect "Contrai automaticamente gli altri sottoalberi quando viene aperta o selezionata una scheda"-->
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
@@ -141,6 +138,9 @@
 <!ENTITY config.insertNewChildAt.caption "Posizione di inserimento di nuove sottoschede">
 <!ENTITY config.insertNewChildAt.first "Inserisci all&apos;inizio del sottoalbero, come prima sottoscheda">
 <!ENTITY config.insertNewChildAt.last "Accoda all&apos;ultimo sottoalbero">
+
+
+<!ENTITY config.tabs.advanced "Avanzate">
 
 <!ENTITY config.animation.enabled "Attiva effetti di animazione">
 

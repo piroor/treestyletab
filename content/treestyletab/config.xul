@@ -621,8 +621,8 @@
 
 </prefpane>
 
-<prefpane id="prefpane-advanced" label="&config.tabs.advanced;"
-	onpaneload="initAdvancedPane();">
+<prefpane id="prefpane-tree" label="&config.tabs.tree;"
+	onpaneload="initTreePane();">
 	<preferences>
 		<preference id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
 			name="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
@@ -652,22 +652,8 @@
 		<preference id="extensions.treestyletab.insertNewChildAt"
 			name="extensions.treestyletab.insertNewChildAt"
 			type="int"/>
-		<preference id="extensions.treestyletab.animation.enabled"
-			name="extensions.treestyletab.animation.enabled"
-			type="bool"/>
-		<preference id="extensions.treestyletab.useEffectiveTLD"
-			name="extensions.treestyletab.useEffectiveTLD"
-			type="bool"/>
 	</preferences>
 
-	<tabbox orient="vertical">
-		<tabs orient="horizontal">
-			<tab label="&config.tabs.advanced.tree;"/>
-			<tab label="&config.tabs.advanced.misc;"/>
-		</tabs>
-		<tabpanels>
-
-<tabpanel orient="vertical">
 	<checkbox id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect-check"
 		preference="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
 		label="&config.autoCollapseExpandSubTreeOnSelect;"/>
@@ -720,9 +706,19 @@
 			<radio value="1" label="&config.insertNewChildAt.last;"/>
 		</radiogroup>
 	</groupbox>
-</tabpanel>
 
-<tabpanel orient="vertical">
+</prefpane>
+
+<prefpane id="prefpane-advanced" label="&config.tabs.advanced;">
+	<preferences>
+		<preference id="extensions.treestyletab.animation.enabled"
+			name="extensions.treestyletab.animation.enabled"
+			type="bool"/>
+		<preference id="extensions.treestyletab.useEffectiveTLD"
+			name="extensions.treestyletab.useEffectiveTLD"
+			type="bool"/>
+	</preferences>
+
 	<checkbox id="extensions.treestyletab.animation.enabled-check"
 		preference="extensions.treestyletab.animation.enabled"
 		label="&config.animation.enabled;"/>
@@ -735,10 +731,7 @@
 			<radio value="false" label="&config.useEffectiveTLD.disabled;"/>
 		</radiogroup>
 	</groupbox>
-</tabpanel>
 
-		</tabpanels>
-	</tabbox>
 </prefpane>
 
 <script src="config.js" type="application/x-javascript"/>

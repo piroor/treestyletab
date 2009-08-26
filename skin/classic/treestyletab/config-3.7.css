@@ -3,3 +3,7 @@
 radio[pane] {
 	list-style-image: url("jar:resource:///chrome/browser.jar!/skin/classic/browser/preferences/Options.png");
 }
+
+radio[pane="prefpane-tree"] {
+	list-style-image: url("chrome://treestyletab/content/res/icon32.png");
+}

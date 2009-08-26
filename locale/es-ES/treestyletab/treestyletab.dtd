@@ -116,10 +116,7 @@
 <!ENTITY config.transparent.style.2 "Transparente">
 
 
-<!ENTITY config.tabs.advanced "Avanzado">
-<!ENTITY config.tabs.advanced.focus "Focus">
-<!ENTITY config.tabs.advanced.tree  "Tree Structure">
-<!ENTITY config.tabs.advanced.misc  "Misc.">
+<!ENTITY config.tabs.tree "Tree">
 
 <!--ENTITY config.autoCollapseExpandSubTreeOnSelect "Colapsar otros árboles automáticamente cuando una pestaña es abierta o seleccionada"-->
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
@@ -141,6 +138,9 @@
 <!ENTITY config.insertNewChildAt.caption "Posición de inserción de nuevas pestañas hijas">
 <!ENTITY config.insertNewChildAt.first "Insertar arriba del todo en el árbol">
 <!ENTITY config.insertNewChildAt.last "Insertar abajo del todo en el árbol">
+
+
+<!ENTITY config.tabs.advanced "Avanzado">
 
 <!ENTITY config.animation.enabled "Activar los efectos de animación">
 

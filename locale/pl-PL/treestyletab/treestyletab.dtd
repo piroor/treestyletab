@@ -116,10 +116,7 @@
 <!ENTITY config.transparent.style.2 "Przezroczyste">
 
 
-<!ENTITY config.tabs.advanced "Zaawansowane">
-<!ENTITY config.tabs.advanced.focus "Focus">
-<!ENTITY config.tabs.advanced.tree  "Tree Structure">
-<!ENTITY config.tabs.advanced.misc  "Misc.">
+<!ENTITY config.tabs.tree "Tree">
 
 <!--ENTITY config.autoCollapseExpandSubTreeOnSelect "Zwijaj automatycznie drzewa potomne, gdy jest otwierana lub uaktywniana nowa karta"-->
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
@@ -140,6 +137,9 @@
 <!ENTITY config.insertNewChildAt.caption "Położenie wstawianych nowych potomnych kart">
 <!ENTITY config.insertNewChildAt.first "Wstaw jako pierwszą na górze drzewa">
 <!ENTITY config.insertNewChildAt.last "Wstaw na końcu drzewa">
+
+
+<!ENTITY config.tabs.advanced "Zaawansowane">
 
 <!ENTITY config.animation.enabled "Włącz efekty animacji">
 

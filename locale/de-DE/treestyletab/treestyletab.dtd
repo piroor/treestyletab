@@ -115,10 +115,7 @@
 <!ENTITY config.transparent.style.2 "Transparent">
 
 
-<!ENTITY config.tabs.advanced "Erweitert">
-<!ENTITY config.tabs.advanced.focus "Focus">
-<!ENTITY config.tabs.advanced.tree  "Tree Structure">
-<!ENTITY config.tabs.advanced.misc  "Misc.">
+<!ENTITY config.tabs.tree "Tree">
 
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "Nicht aktive Zweige zuklappen">
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
@@ -138,6 +135,9 @@
 <!ENTITY config.insertNewChildAt.caption "Einfügeposition neuer untergeordneter Tabs">
 <!ENTITY config.insertNewChildAt.first "Oben im Zweig einfügen">
 <!ENTITY config.insertNewChildAt.last "Unten im Zweig einfügen">
+
+
+<!ENTITY config.tabs.advanced "Erweitert">
 
 <!ENTITY config.animation.enabled "Animationseffekte aktivieren">
 
