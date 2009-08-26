@@ -54,6 +54,18 @@
 <!ENTITY config.link.outer   "Lv.1 異なるサイトへのリンクをタブで開く">
 <!ENTITY config.link.any     "Lv.2 すべてのリンクをタブで開く">
 
+<!ENTITY config.open_newwindow.caption "Webページのリンクから勝手に開かれたウィンドウの制御">
+<!ENTITY config.open_newwindow.window  "ウィンドウで開く">
+<!ENTITY config.open_newwindow.tab     "タブで開く（Firefox初期状態・推奨）">
+<!ENTITY config.open_newwindow.current "ウィンドウやタブを開かず、常に元のタブで読み込む">
+
+<!ENTITY config.openGroupBookmark.caption     "ブックマークフォルダの内容をタブで開く時">
+<!ENTITY config.openGroupBookmark.ask         "どうするか毎回尋ねる">
+<!ENTITY config.openGroupBookmark.subtree     "一つのツリーとして開く（推奨）">
+<!ENTITY config.openGroupBookmark.flat        "ばらばらのタブとして開く（Firefox初期状態）">
+<!ENTITY config.openGroupBookmark.replace     "現在のタブ1つだけをブックマークの内容で置き換える">
+<!ENTITY config.openGroupBookmark.underParent "グループ化用のダミーのタブを親にする">
+
 <!ENTITY config.urlbar.caption       "ロケーションバーから自動的にタブを開くレベル">
 <!ENTITY config.urlbar.none          "Lv.0 なし（Firefox初期状態）">
 <!ENTITY config.urlbar.outer         "Lv.1 異なるサイトを新しいタブで開く">
@@ -67,18 +79,6 @@
 <!ENTITY config.dropLinksOnTab.ask     "どうするか毎回尋ねる">
 <!ENTITY config.dropLinksOnTab.load    "ドロップ先のタブの中に読み込む（Firefox初期状態）">
 <!ENTITY config.dropLinksOnTab.newTab  "ドロップ先のタブのツリーに新しいタブを開く">
-
-<!ENTITY config.openGroupBookmark.caption     "ブックマークフォルダの内容をタブで開く時">
-<!ENTITY config.openGroupBookmark.ask         "どうするか毎回尋ねる">
-<!ENTITY config.openGroupBookmark.subtree     "一つのツリーとして開く（推奨）">
-<!ENTITY config.openGroupBookmark.flat        "ばらばらのタブとして開く（Firefox初期状態）">
-<!ENTITY config.openGroupBookmark.replace     "現在のタブ1つだけをブックマークの内容で置き換える">
-<!ENTITY config.openGroupBookmark.underParent "グループ化用のダミーのタブを親にする">
-
-<!ENTITY config.open_newwindow.caption "Webページのリンクから勝手に開かれたウィンドウの制御">
-<!ENTITY config.open_newwindow.window  "ウィンドウで開く">
-<!ENTITY config.open_newwindow.tab     "タブで開く（Firefox初期状態・推奨）">
-<!ENTITY config.open_newwindow.current "ウィンドウやタブを開かず、常に元のタブで読み込む">
 
 <!ENTITY config.jsopen.caption "Webページのスクリプトで開かれるウィンドウの制御">
 <!ENTITY config.jsopen.default "大きさや位置を指定されたウィンドウはウィンドウとして開く（Firefox初期状態）">
@@ -122,7 +122,6 @@
 <!ENTITY config.focusMode "Control(Command)-Tabでタブを切り替える時、折りたたまれたタブにもフォーカスする">
 
 <!ENTITY config.collapseExpandSubTree.dblclick "タブのダブルクリックでツリーを開閉する">
-<!ENTITY config.tooltip.includeChildren        "タブのツールチップにツリーの内容を表示する">
 <!ENTITY config.autoExpandSubTreeOnAppendChild "折り畳まれたツリー内に子孫のタブが追加された時、ツリーを自動的に展開する">
 
 <!ENTITY config.closeParentBehavior.caption       "親のタブを閉じた時の挙動">
@@ -140,6 +139,8 @@
 <!ENTITY config.tabs.advanced "詳細">
 
 <!ENTITY config.animation.enabled "アニメーション効果を有効にする">
+
+<!ENTITY config.tooltip.includeChildren        "タブのツールチップにツリーの内容を表示する">
 
 <!ENTITY config.useEffectiveTLD.caption  "同じサイトかどうかの判別方法">
 <!ENTITY config.useEffectiveTLD.enabled  "ドメイン名で判別する（aaa.example.comとbbb.example.comを同じサイトと見なす）">

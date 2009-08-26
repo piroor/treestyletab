@@ -55,6 +55,19 @@
 <!ENTITY config.link.outer   "Lv.1 Otwieraj odnośniki do innej witryny w nowych kartach">
 <!ENTITY config.link.any     "Lv.2 Otwieraj wszystkie odnośniki w nowych kartach">
 
+<!ENTITY config.open_newwindow.caption "Nowe okno niespodziewanie otwierane z odnośników na stronie">
+<!ENTITY config.open_newwindow.window  "Otwieraj jako okno">
+<!ENTITY config.open_newwindow.tab     "Otwieraj jako kartę (domyślnie działanie Firefoksa)">
+<!ENTITY config.open_newwindow.current "Load into the Current Tab anyway">
+
+<!ENTITY config.openGroupBookmark.caption     "Behavior of &quot;Open All in Tabs&quot; for bookmark folders">
+<!--ENTITY config.openGroupBookmark.caption     "Działanie funkcji „Otwórz wszystkie w kartach” wywoływanej z poziomu menu zakładek"-->
+<!ENTITY config.openGroupBookmark.ask         "Ask me always">
+<!ENTITY config.openGroupBookmark.subtree     "Otwieraj jako potomne drzewo (zalecane)">
+<!ENTITY config.openGroupBookmark.flat        "Otwieraj jako osobne karty (domyślnie działanie Firefoksa)">
+<!ENTITY config.openGroupBookmark.replace     "Replace the current one tab with the pages in the folder">
+<!ENTITY config.openGroupBookmark.underParent "Put tabs under a dummy tab for grouping">
+
 <!ENTITY config.urlbar.caption       "Automatic New Tab Level for the Location Bar">
 <!ENTITY config.urlbar.none          "Lv.0 Nothing (Firefox default)">
 <!ENTITY config.urlbar.outer         "Lv.1 Jeśli jest to inna witryna, otwórz w nowej karcie">
@@ -68,19 +81,6 @@
 <!ENTITY config.dropLinksOnTab.ask     "Ask me always">
 <!ENTITY config.dropLinksOnTab.load    "Otwieraj odnośnik w nowej karcie (domyślne działanie Firefoksa)">
 <!ENTITY config.dropLinksOnTab.newTab  "Otwieraj odnośnik w nowej, potomnej karcie">
-
-<!ENTITY config.openGroupBookmark.caption     "Behavior of &quot;Open All in Tabs&quot; for bookmark folders">
-<!--ENTITY config.openGroupBookmark.caption     "Działanie funkcji „Otwórz wszystkie w kartach” wywoływanej z poziomu menu zakładek"-->
-<!ENTITY config.openGroupBookmark.ask         "Ask me always">
-<!ENTITY config.openGroupBookmark.subtree     "Otwieraj jako potomne drzewo (zalecane)">
-<!ENTITY config.openGroupBookmark.flat        "Otwieraj jako osobne karty (domyślnie działanie Firefoksa)">
-<!ENTITY config.openGroupBookmark.replace     "Replace the current one tab with the pages in the folder">
-<!ENTITY config.openGroupBookmark.underParent "Put tabs under a dummy tab for grouping">
-
-<!ENTITY config.open_newwindow.caption "Nowe okno niespodziewanie otwierane z odnośników na stronie">
-<!ENTITY config.open_newwindow.window  "Otwieraj jako okno">
-<!ENTITY config.open_newwindow.tab     "Otwieraj jako kartę (domyślnie działanie Firefoksa)">
-<!ENTITY config.open_newwindow.current "Load into the Current Tab anyway">
 
 <!ENTITY config.jsopen.caption "Nowe okno otwierane przez skrypt na stronie">
 <!ENTITY config.jsopen.default "Otwieraj jako okno jeśli ma określoną wysokość, szerokość itp. (domyślnie działanie Firefoksa)">
@@ -122,7 +122,6 @@
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
 <!ENTITY config.collapseExpandSubTree.dblclick "Zwijaj/rozwijaj drzewo potomne karty za pomocą dwukrotnego kliknięcia">
-<!ENTITY config.tooltip.includeChildren        "Show tree contents in tooltips on tabs">
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Rozwijaj drzewo potomne automatycznie, gdy są do niego wstawione karty">
 
 <!ENTITY config.closeParentBehavior.caption       "Kiedy karta główna jest zamykana:">
@@ -142,6 +141,8 @@
 <!ENTITY config.tabs.advanced "Zaawansowane">
 
 <!ENTITY config.animation.enabled "Włącz efekty animacji">
+
+<!ENTITY config.tooltip.includeChildren        "Show tree contents in tooltips on tabs">
 
 <!ENTITY config.useEffectiveTLD.caption  "Detecting method for &quot;same website&quot;">
 <!ENTITY config.useEffectiveTLD.enabled  "by Domain (&quot;aaa.example.com&quot; and &quot;bbb.example.com&quot; are same websites)">

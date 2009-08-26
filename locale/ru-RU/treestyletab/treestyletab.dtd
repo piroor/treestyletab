@@ -55,6 +55,19 @@
 <!ENTITY config.link.outer   "Lv.1 Открывать ссылки на другой сайт в новой вкладке">
 <!ENTITY config.link.any     "Lv.2 Открывать все ссылки в новой вкладке">
 
+<!ENTITY config.open_newwindow.caption "Открытие высплывающих окон">
+<!ENTITY config.open_newwindow.window  "Открывать как окно">
+<!ENTITY config.open_newwindow.tab     "Открывать как вкладку (по умочанию в Firefox)">
+<!ENTITY config.open_newwindow.current "Load into the Current Tab anyway">
+
+<!ENTITY config.openGroupBookmark.caption     "Behavior of &quot;Open All in Tabs&quot; for bookmark folders">
+<!--ENTITY config.openGroupBookmark.caption     "&quot;Открытие во вкладках &quot; из папок закладок"-->
+<!ENTITY config.openGroupBookmark.ask         "Ask me always">
+<!ENTITY config.openGroupBookmark.subtree     "Открывать как поддерево (рекомендуется)">
+<!ENTITY config.openGroupBookmark.flat        "Открывать как раздельные вкладки (в Firefox по умолчанию)">
+<!ENTITY config.openGroupBookmark.replace     "Replace the current one tab with the pages in the folder">
+<!ENTITY config.openGroupBookmark.underParent "Put tabs under a dummy tab for grouping">
+
 <!ENTITY config.urlbar.caption       "Automatic New Tab Level for the Location Bar">
 <!ENTITY config.urlbar.none          "Lv.0 Nothing (Firefox default)">
 <!ENTITY config.urlbar.outer         "Lv.1 Загружать в новой вкладке если ведут на другой сайт">
@@ -68,19 +81,6 @@
 <!ENTITY config.dropLinksOnTab.ask     "Ask me always">
 <!ENTITY config.dropLinksOnTab.load    "Загрузить ссылку во вкладке (в Firefox по умолчанию)">
 <!ENTITY config.dropLinksOnTab.newTab  "Открыть ссылку в новой вкладке дочерней от текущей">
-
-<!ENTITY config.openGroupBookmark.caption     "Behavior of &quot;Open All in Tabs&quot; for bookmark folders">
-<!--ENTITY config.openGroupBookmark.caption     "&quot;Открытие во вкладках &quot; из папок закладок"-->
-<!ENTITY config.openGroupBookmark.ask         "Ask me always">
-<!ENTITY config.openGroupBookmark.subtree     "Открывать как поддерево (рекомендуется)">
-<!ENTITY config.openGroupBookmark.flat        "Открывать как раздельные вкладки (в Firefox по умолчанию)">
-<!ENTITY config.openGroupBookmark.replace     "Replace the current one tab with the pages in the folder">
-<!ENTITY config.openGroupBookmark.underParent "Put tabs under a dummy tab for grouping">
-
-<!ENTITY config.open_newwindow.caption "Открытие высплывающих окон">
-<!ENTITY config.open_newwindow.window  "Открывать как окно">
-<!ENTITY config.open_newwindow.tab     "Открывать как вкладку (по умочанию в Firefox)">
-<!ENTITY config.open_newwindow.current "Load into the Current Tab anyway">
 
 <!ENTITY config.jsopen.caption "Открытие новых окон скриптами на страницах">
 <!ENTITY config.jsopen.default "Открывать как окно, когда используется специальная ширина, высота, и т.д. (по умолчанию в Firefox)">
@@ -122,7 +122,6 @@
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
 <!ENTITY config.collapseExpandSubTree.dblclick "Сворачивать/разворачивать поддерево вкладок по двойному клику">
-<!ENTITY config.tooltip.includeChildren        "Show tree contents in tooltips on tabs">
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Разворачивать поддерево автоматически, когда вкладки вставляются в поддерево">
 
 <!ENTITY config.closeParentBehavior.caption       "When a parent tab is closed">
@@ -142,6 +141,8 @@
 <!ENTITY config.tabs.advanced "Дополнительно">
 
 <!ENTITY config.animation.enabled "Использование эффектов анимации">
+
+<!ENTITY config.tooltip.includeChildren        "Show tree contents in tooltips on tabs">
 
 <!ENTITY config.useEffectiveTLD.caption  "Detecting method for &quot;same website&quot;">
 <!ENTITY config.useEffectiveTLD.enabled  "by Domain (&quot;aaa.example.com&quot; and &quot;bbb.example.com&quot; are same websites)">

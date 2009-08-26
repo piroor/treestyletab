@@ -55,6 +55,19 @@
 <!ENTITY config.link.outer   "位階-1 用新分頁開啟通往不同網站的鏈結">
 <!ENTITY config.link.any     "位階-2 用新分頁開啟所有鏈結">
 
+<!ENTITY config.open_newwindow.caption "從網頁鏈結開啟新視窗的控制">
+<!ENTITY config.open_newwindow.window  "用新視窗開啟">
+<!ENTITY config.open_newwindow.tab     "用新分頁開啟（Firefox 預設）">
+<!ENTITY config.open_newwindow.current "直接開在目前瀏覽的分頁">
+
+<!ENTITY config.openGroupBookmark.caption     "按書籤資料夾的「全部開啟」時">
+<!--ENTITY config.openGroupBookmark.caption   "按書籤資料夾的「全部開啟」時"-->
+<!ENTITY config.openGroupBookmark.ask         "每次都問我">
+<!ENTITY config.openGroupBookmark.subtree     "用一個子樹開啟（推薦）">
+<!ENTITY config.openGroupBookmark.flat        "用分開的分頁開啟（Firefox 預設）">
+<!ENTITY config.openGroupBookmark.replace     "將目前瀏覽的分頁取代為書籤的內容">
+<!ENTITY config.openGroupBookmark.underParent "將各分頁開啟於一虛分頁之下以便分組">
+
 <!ENTITY config.urlbar.caption       "位址欄新分頁位階自動化">
 <!ENTITY config.urlbar.none          "位階-0 無 (Firefox 預設)">
 <!ENTITY config.urlbar.outer         "位階-1 用新分頁開啟通往不同網站的 URL">
@@ -68,19 +81,6 @@
 <!ENTITY config.dropLinksOnTab.ask     "每次都問我">
 <!ENTITY config.dropLinksOnTab.load    "在拖曳目的地分頁載入鏈結（Firefox 預設）">
 <!ENTITY config.dropLinksOnTab.newTab  "用拖曳目的地分頁之下的新子分頁開啟鏈結">
-
-<!ENTITY config.openGroupBookmark.caption     "按書籤資料夾的「全部開啟」時">
-<!--ENTITY config.openGroupBookmark.caption   "按書籤資料夾的「全部開啟」時"-->
-<!ENTITY config.openGroupBookmark.ask         "每次都問我">
-<!ENTITY config.openGroupBookmark.subtree     "用一個子樹開啟（推薦）">
-<!ENTITY config.openGroupBookmark.flat        "用分開的分頁開啟（Firefox 預設）">
-<!ENTITY config.openGroupBookmark.replace     "將目前瀏覽的分頁取代為書籤的內容">
-<!ENTITY config.openGroupBookmark.underParent "將各分頁開啟於一虛分頁之下以便分組">
-
-<!ENTITY config.open_newwindow.caption "從網頁鏈結開啟新視窗的控制">
-<!ENTITY config.open_newwindow.window  "用新視窗開啟">
-<!ENTITY config.open_newwindow.tab     "用新分頁開啟（Firefox 預設）">
-<!ENTITY config.open_newwindow.current "直接開在目前瀏覽的分頁">
 
 <!ENTITY config.jsopen.caption "從網頁的指令碼開啟新視窗的控制">
 <!ENTITY config.jsopen.default "當指定了大小和位置，則用新視窗開啟（Firefox 預設）">
@@ -122,7 +122,6 @@
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "切換分頁時，自動展開該子樹並摺疊無關者">
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "不包括因關閉當前分頁而造成的切換">
 <!ENTITY config.collapseExpandSubTree.dblclick "按兩下分頁開關子樹">
-<!ENTITY config.tooltip.includeChildren        "於頁籤提示方塊中顯示該樹的內容">
 <!ENTITY config.autoExpandSubTreeOnAppendChild "當新增分頁到子樹時，自動展開子樹">
 
 <!ENTITY config.closeParentBehavior.caption "當關閉親分頁時">
@@ -142,6 +141,8 @@
 <!ENTITY config.tabs.advanced "進階">
 
 <!ENTITY config.animation.enabled "啟用動畫效果">
+
+<!ENTITY config.tooltip.includeChildren        "於頁籤提示方塊中顯示該樹的內容">
 
 <!ENTITY config.useEffectiveTLD.caption  "「同類其他分頁」定義依據">
 <!ENTITY config.useEffectiveTLD.enabled  "依據網域(&quot;aaa.example.com&quot; 與 &quot;bbb.example.com&quot; 視為同類)">

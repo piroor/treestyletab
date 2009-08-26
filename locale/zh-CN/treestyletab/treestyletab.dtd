@@ -56,6 +56,18 @@
 <!ENTITY config.link.outer   "Lv.1 在新标签中打开外部网站的链接">
 <!ENTITY config.link.any     "Lv.2 在新标签中打开所有链接">
 
+<!ENTITY config.open_newwindow.caption "手动打开到新窗口">
+<!ENTITY config.open_newwindow.window  "在窗口中打开">
+<!ENTITY config.open_newwindow.tab     "在标签中打开 （Firefox 默认）">
+<!ENTITY config.open_newwindow.current "覆盖当前标签">
+
+<!ENTITY config.openGroupBookmark.caption     "如何“在标签页中打开书签组”？">
+<!ENTITY config.openGroupBookmark.ask         "总是询问">
+<!ENTITY config.openGroupBookmark.subtree     "在子树中打开 （推荐）">
+<!ENTITY config.openGroupBookmark.flat        "在单独标签中打开 （Firefox 默认）">
+<!ENTITY config.openGroupBookmark.replace     "覆盖当前标签打开">
+<!ENTITY config.openGroupBookmark.underParent "将标签置于一伪标签下以便分组">
+
 <!ENTITY config.urlbar.caption       "如何打开地址栏输入的网址？">
 <!ENTITY config.urlbar.none          "Lv.0 当前页面打开（Firefox 默认）">
 <!ENTITY config.urlbar.outer         "Lv.1 与当前标签处于不同网站时在新标签中打开">
@@ -72,18 +84,6 @@
 <!ENTITY config.dropLinksOnTab.ask     "总是询问">
 <!ENTITY config.dropLinksOnTab.load    "在标签中加载链接 （Firefox 默认）">
 <!ENTITY config.dropLinksOnTab.newTab  "在此标签的新建子标签中打开链接">
-
-<!ENTITY config.openGroupBookmark.caption     "如何“在标签页中打开书签组”？">
-<!ENTITY config.openGroupBookmark.ask         "总是询问">
-<!ENTITY config.openGroupBookmark.subtree     "在子树中打开 （推荐）">
-<!ENTITY config.openGroupBookmark.flat        "在单独标签中打开 （Firefox 默认）">
-<!ENTITY config.openGroupBookmark.replace     "覆盖当前标签打开">
-<!ENTITY config.openGroupBookmark.underParent "将标签置于一伪标签下以便分组">
-
-<!ENTITY config.open_newwindow.caption "手动打开到新窗口">
-<!ENTITY config.open_newwindow.window  "在窗口中打开">
-<!ENTITY config.open_newwindow.tab     "在标签中打开 （Firefox 默认）">
-<!ENTITY config.open_newwindow.current "覆盖当前标签">
 
 <!ENTITY config.jsopen.caption "从网页脚本上打开的新窗口">
 <!ENTITY config.jsopen.default "如果已指定宽度、高度等，则在新窗口中打开 （Firefox 默认）">
@@ -124,7 +124,6 @@
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "某一标签获得焦点时，自动展开该标签的树和折叠其他标签树">
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "当前标签关闭引起的焦点转移除外">
 <!ENTITY config.collapseExpandSubTree.dblclick "通过双击折叠/展开标签的子树">
-<!ENTITY config.tooltip.includeChildren        "在树节点按钮的工具提示中显示树的分支内容">
 <!ENTITY config.autoExpandSubTreeOnAppendChild "当标签被插入子树时，自动展开子树">
 
 <!ENTITY config.closeParentBehavior.caption       "关闭父标签时">
@@ -144,6 +143,8 @@
 <!ENTITY config.tabs.advanced "高级">
 
 <!ENTITY config.animation.enabled "使用动画效果">
+
+<!ENTITY config.tooltip.includeChildren        "在树节点按钮的工具提示中显示树的分支内容">
 
 <!ENTITY config.useEffectiveTLD.caption  "“相同网站”的标准">
 <!ENTITY config.useEffectiveTLD.enabled  "相同域名（“aaa.example.com” 和 “bbb.example.com” 视为相同网站）">

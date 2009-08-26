@@ -635,9 +635,6 @@
 			name="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove"
 			type="bool"
 			inverted="true"/>
-		<preference id="extensions.treestyletab.tooltip.includeChildren"
-			name="extensions.treestyletab.tooltip.includeChildren"
-			type="bool"/>
 		<preference id="extensions.treestyletab.collapseExpandSubTree.dblclick"
 			name="extensions.treestyletab.collapseExpandSubTree.dblclick"
 			type="bool"/>
@@ -675,9 +672,6 @@
 	<checkbox id="extensions.treestyletab.collapseExpandSubTree.dblclick-check"
 		preference="extensions.treestyletab.collapseExpandSubTree.dblclick"
 		label="&config.collapseExpandSubTree.dblclick;"/>
-	<checkbox id="extensions.treestyletab.tooltip.includeChildren-check"
-		preference="extensions.treestyletab.tooltip.includeChildren"
-		label="&config.tooltip.includeChildren;"/>
 	<!--checkbox id="extensions.treestyletab.autoExpandSubTreeOnAppendChild-check"
 		preference="extensions.treestyletab.autoExpandSubTreeOnAppendChild"
 		label="&config.autoExpandSubTreeOnAppendChild;"/-->
@@ -718,6 +712,9 @@
 		<preference id="extensions.treestyletab.animation.enabled"
 			name="extensions.treestyletab.animation.enabled"
 			type="bool"/>
+		<preference id="extensions.treestyletab.tooltip.includeChildren"
+			name="extensions.treestyletab.tooltip.includeChildren"
+			type="bool"/>
 		<preference id="extensions.treestyletab.useEffectiveTLD"
 			name="extensions.treestyletab.useEffectiveTLD"
 			type="bool"/>
@@ -726,6 +723,9 @@
 	<checkbox id="extensions.treestyletab.animation.enabled-check"
 		preference="extensions.treestyletab.animation.enabled"
 		label="&config.animation.enabled;"/>
+	<checkbox id="extensions.treestyletab.tooltip.includeChildren-check"
+		preference="extensions.treestyletab.tooltip.includeChildren"
+		label="&config.tooltip.includeChildren;"/>
 	<groupbox id="useEffectiveTLD">
 		<caption label="&config.useEffectiveTLD.caption;"/>
 		<radiogroup id="extensions.treestyletab.useEffectiveTLD-radiogroup"

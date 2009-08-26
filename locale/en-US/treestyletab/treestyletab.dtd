@@ -54,6 +54,18 @@
 <!ENTITY config.link.outer   "Lv.1 Open links to different website in new tab">
 <!ENTITY config.link.any     "Lv.2 Open any link in new tab">
 
+<!ENTITY config.open_newwindow.caption "New window opened from links in webpages unexpectedly">
+<!ENTITY config.open_newwindow.window  "Open as Window">
+<!ENTITY config.open_newwindow.tab     "Open as Tab (Firefox default, recommended)">
+<!ENTITY config.open_newwindow.current "Load into the Current Tab anyway">
+
+<!ENTITY config.openGroupBookmark.caption     "Behavior of &quot;Open All in Tabs&quot; for bookmark folders">
+<!ENTITY config.openGroupBookmark.ask         "Ask me always">
+<!ENTITY config.openGroupBookmark.subtree     "Open as a tree (Recommended)">
+<!ENTITY config.openGroupBookmark.flat        "Open as separate tabs (Firefox default)">
+<!ENTITY config.openGroupBookmark.replace     "Replace the current one tab with the pages in the folder">
+<!ENTITY config.openGroupBookmark.underParent "Put tabs under a dummy tab for grouping">
+
 <!ENTITY config.urlbar.caption       "Automatic New Tab Level for the Location Bar">
 <!ENTITY config.urlbar.none          "Lv.0 Nothing (Firefox default)">
 <!ENTITY config.urlbar.outer         "Lv.1 Load into new tab if it is a different website">
@@ -67,18 +79,6 @@
 <!ENTITY config.dropLinksOnTab.ask     "Ask me always">
 <!ENTITY config.dropLinksOnTab.load    "Load link into the tab (Firefox default)">
 <!ENTITY config.dropLinksOnTab.newTab  "Open link in a new child tab of the tab">
-
-<!ENTITY config.openGroupBookmark.caption     "Behavior of &quot;Open All in Tabs&quot; for bookmark folders">
-<!ENTITY config.openGroupBookmark.ask         "Ask me always">
-<!ENTITY config.openGroupBookmark.subtree     "Open as a tree (Recommended)">
-<!ENTITY config.openGroupBookmark.flat        "Open as separate tabs (Firefox default)">
-<!ENTITY config.openGroupBookmark.replace     "Replace the current one tab with the pages in the folder">
-<!ENTITY config.openGroupBookmark.underParent "Put tabs under a dummy tab for grouping">
-
-<!ENTITY config.open_newwindow.caption "New window opened from links in webpages unexpectedly">
-<!ENTITY config.open_newwindow.window  "Open as Window">
-<!ENTITY config.open_newwindow.tab     "Open as Tab (Firefox default, recommended)">
-<!ENTITY config.open_newwindow.current "Load into the Current Tab anyway">
 
 <!ENTITY config.jsopen.caption "New window opened from scripts in webpages">
 <!ENTITY config.jsopen.default "Open as Window when it have special width, height, etc. (Firefox default)">
@@ -119,7 +119,6 @@
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
 <!ENTITY config.collapseExpandSubTree.dblclick "Collapse/Expand tree of the tab by double-click">
-<!ENTITY config.tooltip.includeChildren        "Show tree contents in tooltips on tabs">
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Expand tree automatically, when tabs are inserted into the tree">
 
 <!ENTITY config.closeParentBehavior.caption       "When a parent tab is closed">
@@ -139,6 +138,8 @@
 <!ENTITY config.tabs.advanced "Advanced">
 
 <!ENTITY config.animation.enabled "Enable Animation Effects">
+
+<!ENTITY config.tooltip.includeChildren        "Show tree contents in tooltips on tabs">
 
 <!ENTITY config.useEffectiveTLD.caption  "Detecting method for &quot;same website&quot;">
 <!ENTITY config.useEffectiveTLD.enabled  "by Domain (&quot;aaa.example.com&quot; and &quot;bbb.example.com&quot; are same websites)">

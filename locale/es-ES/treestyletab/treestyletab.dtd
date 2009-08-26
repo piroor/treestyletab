@@ -55,6 +55,19 @@
 <!ENTITY config.link.outer   "Lv.1 Abrir enlaces a un diferente sitio en una nueva pestaña">
 <!ENTITY config.link.any     "Lv.2 Abrir cualquier enlace en una nueva pestaña">
 
+<!ENTITY config.open_newwindow.caption "Nuevas ventanas abiertas desde enlaces inesperadamente">
+<!ENTITY config.open_newwindow.window  "Abrir como una ventana">
+<!ENTITY config.open_newwindow.tab     "Abrir como pestaña (Predeterminado en Firefox)">
+<!ENTITY config.open_newwindow.current "Load into the Current Tab anyway">
+
+<!ENTITY config.openGroupBookmark.caption     "Behavior of &quot;Open All in Tabs&quot; for bookmark folders">
+<!--ENTITY config.openGroupBookmark.caption     "&quot;Abrir todos en pestañas&quot; desde carpetas de marcadores"-->
+<!ENTITY config.openGroupBookmark.ask         "Ask me always">
+<!ENTITY config.openGroupBookmark.subtree     "Abrir como un sub-árbol (Recomendado)">
+<!ENTITY config.openGroupBookmark.flat        "Abrir como pestañas separadas (Firefox default)">
+<!ENTITY config.openGroupBookmark.replace     "Replace the current one tab with the pages in the folder">
+<!ENTITY config.openGroupBookmark.underParent "Put tabs under a dummy tab for grouping">
+
 <!ENTITY config.urlbar.caption       "Automatic New Tab Level for the Location Bar">
 <!ENTITY config.urlbar.none          "Lv.0 Nothing (Firefox default)">
 <!ENTITY config.urlbar.outer         "Lv.1 Cargar en una nueva pestaña si es un sitio diferente al actual">
@@ -68,19 +81,6 @@
 <!ENTITY config.dropLinksOnTab.ask     "Ask me always">
 <!ENTITY config.dropLinksOnTab.load    "Cargar enlace dentro de una nueva pestaña (Predeterminado en Firefox)">
 <!ENTITY config.dropLinksOnTab.newTab  "Abrir enlace como hija de la pestaña actual">
-
-<!ENTITY config.openGroupBookmark.caption     "Behavior of &quot;Open All in Tabs&quot; for bookmark folders">
-<!--ENTITY config.openGroupBookmark.caption     "&quot;Abrir todos en pestañas&quot; desde carpetas de marcadores"-->
-<!ENTITY config.openGroupBookmark.ask         "Ask me always">
-<!ENTITY config.openGroupBookmark.subtree     "Abrir como un sub-árbol (Recomendado)">
-<!ENTITY config.openGroupBookmark.flat        "Abrir como pestañas separadas (Firefox default)">
-<!ENTITY config.openGroupBookmark.replace     "Replace the current one tab with the pages in the folder">
-<!ENTITY config.openGroupBookmark.underParent "Put tabs under a dummy tab for grouping">
-
-<!ENTITY config.open_newwindow.caption "Nuevas ventanas abiertas desde enlaces inesperadamente">
-<!ENTITY config.open_newwindow.window  "Abrir como una ventana">
-<!ENTITY config.open_newwindow.tab     "Abrir como pestaña (Predeterminado en Firefox)">
-<!ENTITY config.open_newwindow.current "Load into the Current Tab anyway">
 
 <!ENTITY config.jsopen.caption "Nuevas ventanas abiertas desde Scripts">
 <!ENTITY config.jsopen.default "Abrir como ventana cuando contienen un ancho o altura especial. (Predeterminado en Firefox)">
@@ -122,7 +122,6 @@
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
 <!ENTITY config.collapseExpandSubTree.dblclick "Colapsar/Expandir sub-árboles de la pestaña al hacer doble-click">
-<!ENTITY config.tooltip.includeChildren        "Show tree contents in tooltips on tabs">
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Expandir sub-árboles automáticamente cuando una pestaña es insertada dentro del sub-árbol">
 
 <!ENTITY config.closeParentBehavior.caption       "When a parent tab is closed">
@@ -143,6 +142,8 @@
 <!ENTITY config.tabs.advanced "Avanzado">
 
 <!ENTITY config.animation.enabled "Activar los efectos de animación">
+
+<!ENTITY config.tooltip.includeChildren        "Show tree contents in tooltips on tabs">
 
 <!ENTITY config.useEffectiveTLD.caption  "Detecting method for &quot;same website&quot;">
 <!ENTITY config.useEffectiveTLD.enabled  "by Domain (&quot;aaa.example.com&quot; and &quot;bbb.example.com&quot; are same websites)">

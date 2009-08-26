@@ -55,6 +55,19 @@
 <!ENTITY config.link.outer   "Lv.1 Apri i collegamenti a siti esterni in una nuova scheda">
 <!ENTITY config.link.any     "Lv.2 Apri tutti i collegamenti in una nuova scheda">
 
+<!ENTITY config.open_newwindow.caption "Forza i collegamenti che aprono nuove finestre">
+<!ENTITY config.open_newwindow.window  "ad aprirsi in una nuova finestra">
+<!ENTITY config.open_newwindow.tab     "ad aprirsi in una nuova scheda (comportamento predefinito di Firefox)">
+<!ENTITY config.open_newwindow.current "Load into the Current Tab anyway">
+
+<!ENTITY config.openGroupBookmark.caption     "Behavior of &quot;Open All in Tabs&quot; for bookmark folders">
+<!--ENTITY config.openGroupBookmark.caption     "La voce &quot;Apri tutti in schede&quot; nel menu Segnalibri"-->
+<!ENTITY config.openGroupBookmark.ask         "Ask me always">
+<!ENTITY config.openGroupBookmark.subtree     "apre i segnalibri come sottoalbero (Raccomandato)">
+<!ENTITY config.openGroupBookmark.flat        "apre i segnalibri in schede separate (comportamento predefinito di Firefox)">
+<!ENTITY config.openGroupBookmark.replace     "sostituisce la scheda in uso con i segnalibri contenuti nella cartella selezionata">
+<!ENTITY config.openGroupBookmark.underParent "Put tabs under a dummy tab for grouping">
+
 <!ENTITY config.urlbar.caption       "Automatic New Tab Level for the Location Bar">
 <!ENTITY config.urlbar.none          "Lv.0 Nothing (Firefox default)">
 <!ENTITY config.urlbar.outer         "Lv.1 apre una nuova scheda se appartiene a un sito web differente">
@@ -68,19 +81,6 @@
 <!ENTITY config.dropLinksOnTab.ask     "Ask me always">
 <!ENTITY config.dropLinksOnTab.load    "carica il collegamento nella scheda (comportamento predefinito di Firefox)">
 <!ENTITY config.dropLinksOnTab.newTab  "apre il collegamento in una nuova sottoscheda">
-
-<!ENTITY config.openGroupBookmark.caption     "Behavior of &quot;Open All in Tabs&quot; for bookmark folders">
-<!--ENTITY config.openGroupBookmark.caption     "La voce &quot;Apri tutti in schede&quot; nel menu Segnalibri"-->
-<!ENTITY config.openGroupBookmark.ask         "Ask me always">
-<!ENTITY config.openGroupBookmark.subtree     "apre i segnalibri come sottoalbero (Raccomandato)">
-<!ENTITY config.openGroupBookmark.flat        "apre i segnalibri in schede separate (comportamento predefinito di Firefox)">
-<!ENTITY config.openGroupBookmark.replace     "sostituisce la scheda in uso con i segnalibri contenuti nella cartella selezionata">
-<!ENTITY config.openGroupBookmark.underParent "Put tabs under a dummy tab for grouping">
-
-<!ENTITY config.open_newwindow.caption "Forza i collegamenti che aprono nuove finestre">
-<!ENTITY config.open_newwindow.window  "ad aprirsi in una nuova finestra">
-<!ENTITY config.open_newwindow.tab     "ad aprirsi in una nuova scheda (comportamento predefinito di Firefox)">
-<!ENTITY config.open_newwindow.current "Load into the Current Tab anyway">
 
 <!ENTITY config.jsopen.caption "Forza gli script che aprono nuove finestre">
 <!ENTITY config.jsopen.default "ad aprire una nuova finestra se questa è ridimensionata (comportamento predefinito di Firefox)">
@@ -122,7 +122,6 @@
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
 <!ENTITY config.collapseExpandSubTree.dblclick "Contrai/espandi sottoalberi della scheda con un doppio-clic">
-<!ENTITY config.tooltip.includeChildren        "Show tree contents in tooltips on tabs">
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Espandi automaticamente i sottoalberi all'inserimento di nuove schede">
 
 <!ENTITY config.closeParentBehavior.caption       "Alla chiusura della scheda principale">
@@ -143,6 +142,8 @@
 <!ENTITY config.tabs.advanced "Avanzate">
 
 <!ENTITY config.animation.enabled "Attiva effetti di animazione">
+
+<!ENTITY config.tooltip.includeChildren        "Show tree contents in tooltips on tabs">
 
 <!ENTITY config.useEffectiveTLD.caption  "Metodo di individuazione per lo stesso sito web">
 <!ENTITY config.useEffectiveTLD.enabled  "Per dominio(&quot;aaa.example.com&quot; e &quot;bbb.example.com&quot; sono lo stesso sito web)">

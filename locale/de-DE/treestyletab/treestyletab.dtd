@@ -55,6 +55,18 @@
 <!ENTITY config.link.outer   "Lv.1 In einem neuen Tab öffnen, falls es eine andere Webseite ist">
 <!ENTITY config.link.any     "Lv.2 Immer in einem neuen Tab öffnen">
 
+<!ENTITY config.open_newwindow.caption "Links, die sich unerwartet in einem neuen Fenster öffnen">
+<!ENTITY config.open_newwindow.window  "Als Fenster öffnen">
+<!ENTITY config.open_newwindow.tab     "Als neues Tab öffnen (Firefox Standard)">
+<!ENTITY config.open_newwindow.current "Immer im aktiven Tab laden">
+
+<!ENTITY config.openGroupBookmark.caption     "Verhalten von &quot;Alle in Tabs öffnen&quot; für Seiten in einem Lesezeichenordner">
+<!ENTITY config.openGroupBookmark.ask         "Jedes Mal nachfragen">
+<!ENTITY config.openGroupBookmark.subtree     "Als Zweig öffnen (Empfohlen)">
+<!ENTITY config.openGroupBookmark.flat        "Als eigenständige Tabs öffnen (Firefox Standard)">
+<!ENTITY config.openGroupBookmark.replace     "Aktuelles Tab durch die neuen Tabs ersetzen">
+<!ENTITY config.openGroupBookmark.underParent "Seiten zur Gruppierung einem Dummytab unterordnen">
+
 <!ENTITY config.urlbar.caption       "Eingegebene Adressen">
 <!ENTITY config.urlbar.none          "Lv.0 Immer im aktiven Tab laden (Firefox Standard)">
 <!ENTITY config.urlbar.outer         "Lv.1 In neuem Tab laden, falls es eine andere Webseite ist">
@@ -68,18 +80,6 @@
 <!ENTITY config.dropLinksOnTab.ask     "Jedes Mal nachfragen">
 <!ENTITY config.dropLinksOnTab.load    "Seite im Tab laden (Firefox Standard)">
 <!ENTITY config.dropLinksOnTab.newTab  "Seite in einem neuen untergeordneten Tab laden">
-
-<!ENTITY config.openGroupBookmark.caption     "Verhalten von &quot;Alle in Tabs öffnen&quot; für Seiten in einem Lesezeichenordner">
-<!ENTITY config.openGroupBookmark.ask         "Jedes Mal nachfragen">
-<!ENTITY config.openGroupBookmark.subtree     "Als Zweig öffnen (Empfohlen)">
-<!ENTITY config.openGroupBookmark.flat        "Als eigenständige Tabs öffnen (Firefox Standard)">
-<!ENTITY config.openGroupBookmark.replace     "Aktuelles Tab durch die neuen Tabs ersetzen">
-<!ENTITY config.openGroupBookmark.underParent "Seiten zur Gruppierung einem Dummytab unterordnen">
-
-<!ENTITY config.open_newwindow.caption "Links, die sich unerwartet in einem neuen Fenster öffnen">
-<!ENTITY config.open_newwindow.window  "Als Fenster öffnen">
-<!ENTITY config.open_newwindow.tab     "Als neues Tab öffnen (Firefox Standard)">
-<!ENTITY config.open_newwindow.current "Immer im aktiven Tab laden">
 
 <!ENTITY config.jsopen.caption "Fenster, die sich durch Skripte öffnen">
 <!ENTITY config.jsopen.default "Als Fenster öffnen, wenn das Skript eine bestimmte Fenstergröße vorgibt (Firefox Standard)">
@@ -120,7 +120,6 @@
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "Nicht aktive Zweige zuklappen">
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
 <!ENTITY config.collapseExpandSubTree.dblclick "Bei Doppelklick auf Tab untergeordneten Zweig auf- oder zuklappen">
-<!ENTITY config.tooltip.includeChildren        "Show tree contents in tooltips on tabs">
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Zweig automatisch aufklappen, wenn ein Tab in den Zweig eingefügt wird">
 
 <!ENTITY config.closeParentBehavior.caption "Wenn ein Tab geschlossen wird">
@@ -140,6 +139,8 @@
 <!ENTITY config.tabs.advanced "Erweitert">
 
 <!ENTITY config.animation.enabled "Animationseffekte aktivieren">
+
+<!ENTITY config.tooltip.includeChildren        "Show tree contents in tooltips on tabs">
 
 <!ENTITY config.useEffectiveTLD.caption  "Erkennung der &quot;gleichen Webseite&quot;">
 <!ENTITY config.useEffectiveTLD.enabled  "Nur Domain berücksichtigen (&quot;a.example.com&quot; and &quot;b.example.com&quot; gehören zur gleichen Webseite)">
