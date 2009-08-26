@@ -614,7 +614,7 @@
 </prefpane>
 
 <prefpane id="prefpane-advanced" label="&config.tabs.advanced;"
-	onpaneload="updateCloseRootBehaviorCheck();">
+	onpaneload="initAdvancedPane();">
 	<preferences>
 		<preference id="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
 			name="extensions.treestyletab.autoCollapseExpandSubTreeOnSelect"
@@ -654,7 +654,6 @@
 
 	<tabbox orient="vertical">
 		<tabs orient="horizontal">
-			<tab label="&config.tabs.advanced.focus;"/>
 			<tab label="&config.tabs.advanced.tree;"/>
 			<tab label="&config.tabs.advanced.misc;"/>
 		</tabs>
@@ -675,9 +674,6 @@
 		label="&config.focusMode;"
 		onsyncfrompreference="return document.getElementById('extensions.treestyletab.focusMode').value == 0;"
 		onsynctopreference="return document.getElementById('extensions.treestyletab.focusMode-check').checked ? 0 : 1 ;"/>
-</tabpanel>
-
-<tabpanel orient="vertical">
 	<checkbox id="extensions.treestyletab.collapseExpandSubTree.dblclick-check"
 		preference="extensions.treestyletab.collapseExpandSubTree.dblclick"
 		label="&config.collapseExpandSubTree.dblclick;"/>
@@ -711,7 +707,7 @@
 		<caption label="&config.insertNewChildAt.caption;"/>
 		<radiogroup id="extensions.treestyletab.insertNewChildAt-radiogroup"
 			preference="extensions.treestyletab.insertNewChildAt"
-			orient="vertical">
+			orient="horizontal">
 			<radio value="0" label="&config.insertNewChildAt.first;"/>
 			<radio value="1" label="&config.insertNewChildAt.last;"/>
 		</radiogroup>

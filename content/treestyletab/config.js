@@ -234,6 +234,18 @@ function onTabbarTransparencyScaleChange()
 }
 
 
+function initAdvancedPane()
+{
+	updateCloseRootBehaviorCheck();
+
+	var focusMode = document.getElementById('extensions.treestyletab.focusMode-check');
+	var focusModePref = document.getElementById('extensions.treestyletab.focusMode');
+	if (focusModePref.value != focusModePref.defaultValue)
+		focusMode.removeAttribute('collapsed');
+	else
+		focusMode.setAttribute('collapsed', true);
+}
+
 function updateCloseRootBehaviorCheck()
 {
 	var closeParentBehavior = document.getElementById('extensions.treestyletab.closeParentBehavior-radiogroup').value;
