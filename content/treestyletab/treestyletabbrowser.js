@@ -477,7 +477,6 @@ TreeStyleTabBrowser.prototype = {
 		this.onPrefChange('extensions.treestyletab.tabbar.autoHide.area');
 		this.onPrefChange('extensions.treestyletab.tabbar.togglerSize');
 		window.setTimeout(function(aTabBrowser) {
-			aTabBrowser.treeStyleTab.updateTabbarState(); // just to be safe
 			aTabBrowser.treeStyleTab.onPrefChange('extensions.treestyletab.tabbar.autoHide.mode');
 		}, 0, b);
 
@@ -898,9 +897,9 @@ TreeStyleTabBrowser.prototype = {
 			this.updateTabCollapsed(aTab, aTab.getAttribute(this.kCOLLAPSED) == 'true', true);
 		}, this);
 
+		this.updateTabbarState();
 		window.setTimeout(function(aSelf, aTabBrowser, aSplitter, aToggler) {
 			delayedPostProcess(aSelf, aTabBrowser, aSplitter, aToggler);
-			aSelf.updateTabbarState();
 			aSelf.updateTabbarOverflow();
 			delayedPostProcess = null;
 		}, 0, this, b, splitter, toggler);
@@ -1460,7 +1459,7 @@ TreeStyleTabBrowser.prototype = {
 
 		if (this.animationEnabled) {
 			this.updateTabCollapsed(tab, true, true);
-			this.updateTabCollapsed(tab, false);
+			this.updateTabCollapsed(tab, false, !this.completelyRestored);
 		}
 
 		var prev = this.getPreviousSiblingTab(tab);
@@ -1770,7 +1769,7 @@ TreeStyleTabBrowser.prototype = {
   
 	onTabRestored : function(aEvent) 
 	{
-		this.restoreStructure(aEvent.originalTarget);
+		this.restoreStructure(aEvent.originalTarget, !this.completelyRestored);
 	},
 	restoreStructure : function(aTab, aWithoutAnimation)
 	{
@@ -1792,7 +1791,10 @@ TreeStyleTabBrowser.prototype = {
 			   breaks the children list of the temporary parent and causes
 			   many problems. So, to prevent these problems, I part the tab
 			   from the temporary parent manually. */
-			this.partTab(tab);
+			this.partTab(tab, {
+				dontUpdateIndent : true,
+				dontAnimate      : aWithoutAnimation
+			});
 			/* reset attributes before restoring */
 			tab.removeAttribute(this.kID);
 			tab.removeAttribute(this.kPARENT);
@@ -1818,7 +1820,11 @@ TreeStyleTabBrowser.prototype = {
 				}, this);
 			children.forEach(function(aTab) {
 				if (aTab && (aTab = this.getTabById(aTab))) {
-					this.attachTabTo(aTab, tab, { dontExpand : true, dontUpdateIndent : true });
+					this.attachTabTo(aTab, tab, {
+						dontExpand       : true,
+						dontUpdateIndent : true,
+						dontAnimate      : aWithoutAnimation
+					});
 					tabs.push(aTab);
 				}
 			}, this);
@@ -1848,7 +1854,8 @@ TreeStyleTabBrowser.prototype = {
 				this.attachTabTo(tab, parent, {
 					dontExpand       : true,
 					insertBefore     : nextTab,
-					dontUpdateIndent : true
+					dontUpdateIndent : true,
+					dontAnimate      : aWithoutAnimation
 				});
 				this.updateTabsIndent([tab], undefined, undefined, aWithoutAnimation);
 				this.checkTabsIndentOverflow();
@@ -3052,7 +3059,7 @@ TreeStyleTabBrowser.prototype = {
 				this.collapseExpandTreesIntelligentlyFor(aParent);
 				var p = aParent;
 				do {
-					this.collapseExpandSubtree(p, false);
+					this.collapseExpandSubtree(p, false, aInfo.dontAnimate);
 				}
 				while (p = this.getParentTab(p));
 			}
@@ -3060,24 +3067,24 @@ TreeStyleTabBrowser.prototype = {
 				if (this.getTreePref('autoExpandSubTreeOnAppendChild')) {
 					var p = aParent;
 					do {
-						this.collapseExpandSubtree(p, false);
+						this.collapseExpandSubtree(p, false, aInfo.dontAnimate);
 					}
 					while (p = this.getParentTab(p));
 				}
 				else
-					this.collapseExpandTab(aChild, true);
+					this.collapseExpandTab(aChild, true, aInfo.dontAnimate);
 			}
 
 			if (aParent.getAttribute(this.kCOLLAPSED) == 'true')
-				this.collapseExpandTab(aChild, true);
+				this.collapseExpandTab(aChild, true, aInfo.dontAnimate);
 		}
 		else if (aParent.getAttribute(this.kSUBTREE_COLLAPSED) == 'true' ||
 				aParent.getAttribute(this.kCOLLAPSED) == 'true') {
-			this.collapseExpandTab(aChild, true);
+			this.collapseExpandTab(aChild, true, aInfo.dontAnimate);
 		}
 
 		if (!aInfo.dontUpdateIndent) {
-			this.updateTabsIndent([aChild]);
+			this.updateTabsIndent([aChild], undefined, undefined, aInfo.dontAnimate);
 			this.checkTabsIndentOverflow();
 		}
 
@@ -3110,7 +3117,7 @@ TreeStyleTabBrowser.prototype = {
 		this.updateTabsCount(parentTab);
 
 		if (!aInfo.dontUpdateIndent) {
-			this.updateTabsIndent([aChild]);
+			this.updateTabsIndent([aChild], undefined, undefined, aInfo.dontAnimate);
 			this.checkTabsIndentOverflow();
 		}
 
@@ -3184,7 +3191,7 @@ TreeStyleTabBrowser.prototype = {
 				this.updateTabIndent(aTab, aProp, indent, aJustNow);
 			}
 			aTab.setAttribute(this.kNEST, aLevel);
-			this.updateTabsIndent(this.getChildTabs(aTab), aLevel+1, aProp);
+			this.updateTabsIndent(this.getChildTabs(aTab), aLevel+1, aProp, aJustNow);
 		}, this);
 	},
 	updateTabsIndentWithDelay : function(aTabs)

@@ -1396,8 +1396,19 @@ var TreeStyleTabService = {
 		this.onPrefChange('extensions.treestyletab.animation.collapse.duration');
 		this.onPrefChange('extensions.treestyletab.twisty.expandSensitiveArea');
 		this.onPrefChange('extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut');
+
+		if (
+			this.getPref('browser.sessionstore.enabled') === false ||
+			(
+				this.getPref('browser.startup.page') != 3 &&
+				!this.getPref('browser.sessionstore.resume_session_once') /* &&
+				!this.getPref('browser.sessionstore.resume_from_crash') */
+			)
+			)
+			this.completelyRestored = true;
 	},
 	initialized : false,
+	completelyRestored : false,
 	
 	initTabBrowser : function(aTabBrowser) 
 	{
@@ -1978,6 +1989,7 @@ catch(e) {
 
 		this.removePrefListener(this);
 		this.ObserverService.removeObserver(this, 'private-browsing-change-granted');
+		this.ObserverService.removeObserver(this, 'sessionstore-windows-restored');
 	},
 	
 	destroyTabBrowser : function(aTabBrowser) 
@@ -2366,7 +2378,7 @@ catch(e) {
 		this._restoringTabs.forEach(function(aTab) {
 			try {
 				var b = this.getTabBrowserFromChild(aTab);
-				if (b) b.treeStyleTab.restoreStructure(aTab);
+				if (b) b.treeStyleTab.restoreStructure(aTab, true);
 			}
 			catch(e) {
 			}
@@ -2706,6 +2718,10 @@ catch(e) {
 				if (aData == 'enter')
 					this.ObserverService.notifyObservers(window, 'TreeStyleTab:collapseExpandAllSubtree', 'expand-now');
 				return;
+
+			case 'sessionstore-windows-restored':
+				this.completelyRestored = true;
+				return;
 		}
 	},
  
@@ -2817,4 +2833,5 @@ catch(e) {
 TreeStyleTabService.__proto__ = window['piro.sakura.ne.jp'].prefs;
 window.addEventListener('DOMContentLoaded', TreeStyleTabService, true);
 window.addEventListener('load', TreeStyleTabService, false);
+TreeStyleTabService.ObserverService.addObserver(TreeStyleTabService, 'sessionstore-windows-restored', false);
  
