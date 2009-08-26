@@ -359,7 +359,7 @@
 					<caption label="&config.open_newwindow.caption;"/>
 					<radiogroup id="browser.link.open_newwindow-radiogroup"
 						preference="browser.link.open_newwindow"
-						orient="horizontal">
+						orient="vertical">
 						<radio value="2" label="&config.open_newwindow.window;"/>
 						<radio value="3" label="&config.open_newwindow.tab;"/>
 					</radiogroup>
@@ -715,7 +715,7 @@
 		<caption label="&config.insertNewChildAt.caption;"/>
 		<radiogroup id="extensions.treestyletab.insertNewChildAt-radiogroup"
 			preference="extensions.treestyletab.insertNewChildAt"
-			orient="horizontal">
+			orient="vertical">
 			<radio value="0" label="&config.insertNewChildAt.first;"/>
 			<radio value="1" label="&config.insertNewChildAt.last;"/>
 		</radiogroup>
