@@ -41,7 +41,7 @@
 <!ENTITY config.show.openSelectionLinks "コンテキストメニューに「選択したリンクをすべてタブで開く」を加える">
 
 
-<!ENTITY config.tabs.tab "タブの開き方">
+<!ENTITY config.tabs.tab "新しいタブ">
 
 <!ENTITY config.tabs.link.tab     "リンク">
 <!ENTITY config.tabs.urlbar.tab   "ロケーションバー">

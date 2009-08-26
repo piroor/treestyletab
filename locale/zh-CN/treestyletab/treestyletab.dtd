@@ -42,7 +42,8 @@
 <!ENTITY config.show.openSelectionLinks "添加“在新标签中打开选中链接”到页面右键菜单">
 
 
-<!ENTITY config.tabs.tab "标签操作">
+<!ENTITY config.tabs.tab "New Tabs">
+<!--ENTITY config.tabs.tab "标签操作"-->
 
 <!ENTITY config.tabs.link.tab     "Links">
 <!ENTITY config.tabs.urlbar.tab   "Location Bar">

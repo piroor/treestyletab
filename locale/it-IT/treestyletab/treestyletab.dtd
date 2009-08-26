@@ -41,7 +41,8 @@
 <!ENTITY config.show.openSelectionLinks "Aggiungi la voce &quot;Apri collegamenti selezionati in schede&quot; al menu contestuale">
 
 
-<!ENTITY config.tabs.tab "Navigazione">
+<!ENTITY config.tabs.tab "New Tabs">
+<!--ENTITY config.tabs.tab "Navigazione"-->
 
 <!ENTITY config.tabs.link.tab     "Links">
 <!ENTITY config.tabs.urlbar.tab   "Location Bar">

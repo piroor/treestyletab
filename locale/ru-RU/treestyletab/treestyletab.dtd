@@ -41,7 +41,8 @@
 <!ENTITY config.show.openSelectionLinks "Добавить &quot;Открыть выбранные ссылки во вкладках&quot; в контекстное меню">
 
 
-<!ENTITY config.tabs.tab "Операции с вкладками">
+<!ENTITY config.tabs.tab "New Tabs">
+<!--ENTITY config.tabs.tab "Операции с вкладками"-->
 
 <!ENTITY config.tabs.link.tab     "Links">
 <!ENTITY config.tabs.urlbar.tab   "Location Bar">

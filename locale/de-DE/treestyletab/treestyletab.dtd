@@ -41,7 +41,8 @@
 <!ENTITY config.show.openSelectionLinks "&quot;Links im markierten Webseitentext in Tabs öffnen&quot; im Kontextmenü der Markierung anbieten">
 
 
-<!ENTITY config.tabs.tab "Verhalten">
+<!ENTITY config.tabs.tab "New Tabs">
+<!--ENTITY config.tabs.tab "Verhalten"-->
 
 <!ENTITY config.tabs.link.tab     "Links">
 <!ENTITY config.tabs.urlbar.tab   "Location Bar">

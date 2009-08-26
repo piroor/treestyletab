@@ -41,7 +41,7 @@
 <!ENTITY config.show.openSelectionLinks "Add &quot;Open Selection Links in Tabs&quot; to the context menu">
 
 
-<!ENTITY config.tabs.tab "Tab Operations">
+<!ENTITY config.tabs.tab "New Tabs">
 
 <!ENTITY config.tabs.link.tab     "Links">
 <!ENTITY config.tabs.urlbar.tab   "Location Bar">
