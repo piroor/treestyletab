@@ -38,7 +38,10 @@ var TreeStyleTabService = {
 	kTWISTY_STYLE       : 'treestyletab-twisty-style',
 
 	kDROP_POSITION      : 'treestyletab-drop-position',
-	kDRAG_TYPE_TABBAR   : 'application/x-moz-tabbrowser-tabbar',
+	kDRAG_TYPE_TABBAR   : 'application/x-moz-treestyletab-tabbrowser-tabbar',
+	kDROP_POSITION_UNKNOWN : 'unknown',
+	kTABBAR_MOVE_FORCE  : 'force',
+	kTABBAR_MOVE_NORMAL : 'normal',
 
 	/* classes */
 	kTWISTY                : 'treestyletab-twisty',
@@ -465,7 +468,8 @@ var TreeStyleTabService = {
 		var pos = this.getTreePref('tabbar.position');
 		var isVertical = (pos == 'left' || pos == 'right');
 
-		var pref = isVertical ? 'tabbar.fixed.vertical' : 'tabbar.fixed.horizontal' ;
+		var orient = isVertical ? 'vertical' : 'horizontal' ;
+		var pref = 'tabbar.fixed.'+orient;
 		this.setTreePref(pref, !this.getTreePref(pref));
 
 		if (!this.getTreePref('tabbar.syncRelatedPrefsForDynamicPosition')) return;
@@ -1424,9 +1428,16 @@ var TreeStyleTabService = {
 				aObserver._onDragStart.toSource().replace(
 					'if (target.localName == "tab"',
 					<![CDATA[
-						if (aEvent.shiftKey && this.getAttribute(this.treeStyleTab.kFIXED) != 'true') {
+						if (this.treeStyleTab.tabbarDNDObserver.canDragTabbar(aEvent)) {
+							let sv = this.treeStyleTab;
 							let dt = aEvent.dataTransfer;
-							dt.mozSetDataAt(this.treeStyleTab.kDRAG_TYPE_TABBAR, Date.now(), 0);
+							dt.mozSetDataAt(
+								sv.kDRAG_TYPE_TABBAR,
+								aEvent.shiftKey ?
+									sv.kTABBAR_MOVE_FORCE :
+									sv.kTABBAR_MOVE_NORMAL,
+								0
+							);
 							dt.mozCursor = 'move';
 							let tabbar = this.mTabContainer;
 							let box = tabbar.boxObject;
@@ -1435,7 +1446,7 @@ var TreeStyleTabService = {
 								aEvent.screenX - box.screenX,
 								aEvent.screenY - box.screenY
 							);
-							this.mPanelContainer.setAttribute(this.treeStyleTab.kDROP_POSITION, 'unknown');
+							this.mPanelContainer.setAttribute(sv.kDROP_POSITION, sv.kDROP_POSITION_UNKNOWN);
 							aEvent.stopPropagation();
 						}
 						else $&]]>
@@ -1448,14 +1459,14 @@ var TreeStyleTabService = {
 					'aEvent.target.localName == "tab"',
 					<![CDATA[
 						(
-							(!aEvent.shiftKey || this.getAttribute(this.treeStyleTab.kFIXED) == 'true') &&
+							!this.treeStyleTab.tabbarDNDObserver.canDragTabbar(aEvent) &&
 							$&
 						)
 					]]>
 				).replace( // Tab Mix Plus
 					'event.target.localName != "tab"',
 					<![CDATA[
-						(event.shiftKey && gBrowser.getAttribute(gBrowser.treeStyleTab.kFIXED) != 'true') ||
+						gBrowser.treeStyleTab.tabbarDNDObserver.canDragTabbar(event) ||
 						$&
 					]]>
 				)

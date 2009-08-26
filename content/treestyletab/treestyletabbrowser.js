@@ -2325,20 +2325,34 @@ TreeStyleTabBrowser.prototype = {
 	
 	onDragStart : function(aEvent, aTransferData, aDragAction) 
 	{
-		var sv = this.mOwner;
-		var tab = sv.getTabFromEvent(aEvent);
-		var tabbar = sv.getTabbarFromEvent(aEvent);
-		if (!tabbar || (tab && !aEvent.shiftKey))
+		if (!this.canDragTabbar(aEvent))
 			return false;
 
-		if (sv.mTabBrowser.getAttribute(sv.kFIXED) == 'true') return;
-
 		aTransferData.data = new TransferData();
-		aTransferData.data.addDataForFlavour(sv.kDRAG_TYPE_TABBAR, Date.now());
-		sv.mTabBrowser.setAttribute(sv.kDROP_POSITION, 'unknown');
+		aTransferData.data.addDataForFlavour(
+			sv.kDRAG_TYPE_TABBAR,
+			aEvent.shiftKey ?
+				sv.kTABBAR_MOVE_FORCE :
+				sv.kTABBAR_MOVE_NORMAL
+		);
+		sv.mTabBrowser.setAttribute(sv.kDROP_POSITION, sv.kDROP_POSITION_UNKNOWN);
 
 		aEvent.stopPropagation();
 		return true;
+	},
+ 
+	canDragTabbar : function(aEvent) 
+	{
+		var sv = this.mOwner;
+		var tab = sv.getTabFromEvent(aEvent);
+		var tabbar = sv.getTabbarFromEvent(aEvent);
+		return (
+				(tab ? aEvent.shiftKey : tabbar ) &&
+				(
+					aEvent.shiftKey ||
+					sv.mTabBrowser.getAttribute(sv.kFIXED) != 'true'
+				)
+			);
 	},
  
 	onDragEnter : function(aEvent, aDragSession) 
@@ -2459,7 +2473,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		if (!this.canDrop(aEvent, aDragSession)) return;
 		var sv = this.mOwner;
-		sv.mTabBrowser.setAttribute(sv.kDROP_POSITION, 'unknown');
+		sv.mTabBrowser.setAttribute(sv.kDROP_POSITION, sv.kDROP_POSITION_UNKNOWN);
 	},
  
 	onDragOver : function(aEvent, aFlavour, aDragSession) 
@@ -2477,8 +2491,14 @@ TreeStyleTabBrowser.prototype = {
 		var sv = this.mOwner;
 		var position = this.getDropPosition(aEvent);
 		if (position != 'center' &&
-			position != sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION))
+			position != sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION)) {
+			if (sv.getTreePref('tabbar.fixed.autoCancelOnDrop') &&
+				aXferData.data != sv.kTABBAR_MOVE_FORCE) {
+				let orient = (position == 'left' || position == 'right') ? 'vertical' : 'horizontal' ;
+				sv.setTreePref('tabbar.fixed.'+orient, false);
+			}
 			sv.changeTabbarPosition(position);
+		}
 
 		aEvent.stopPropagation();
 	},
