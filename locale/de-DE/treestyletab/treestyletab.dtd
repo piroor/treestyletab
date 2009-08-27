@@ -63,6 +63,10 @@
 <!ENTITY config.openGroupBookmark.caption     "Verhalten von &quot;Alle in Tabs öffnen&quot; für Seiten in einem Lesezeichenordner">
 <!ENTITY config.openGroupBookmark.ask         "Jedes Mal nachfragen">
 <!ENTITY config.openGroupBookmark.subtree     "Als Zweig öffnen (Empfohlen)">
+<!ENTITY config.openGroupBookmark.subtree.type.before  "">
+<!ENTITY config.openGroupBookmark.subtree.type.restore "Restore">
+<!ENTITY config.openGroupBookmark.subtree.type.flat    "Ignore">
+<!ENTITY config.openGroupBookmark.subtree.type.after   "tree structure of tabs saved to bookmarks">
 <!ENTITY config.openGroupBookmark.flat        "Als eigenständige Tabs öffnen (Firefox Standard)">
 <!ENTITY config.openGroupBookmark.replace     "Aktuelles Tab durch die neuen Tabs ersetzen">
 <!ENTITY config.openGroupBookmark.underParent "Seiten zur Gruppierung einem Dummytab unterordnen">

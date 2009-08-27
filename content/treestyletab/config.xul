@@ -386,11 +386,29 @@
 							onsyncfrompreference="return onSyncGroupBookmarkPrefToUI();"
 							preference="extensions.treestyletab.openGroupBookmark.behavior">
 							<radio value="0" collapsed="true"/>
-							<hbox align="center">
-								<radio value="1" label="&config.openGroupBookmark.subtree;"/>
-								<checkbox id="openGroupBookmark.underParent-check"
-									label="&config.openGroupBookmark.underParent;"
-									oncommand="gGroupBookmarkRadioSet.pref.value = onSyncGroupBookmarkUIToPref();"/>
+							<radio value="1" label="&config.openGroupBookmark.subtree;"/>
+							<hbox>
+								<spacer style="width:1em;"/>
+								<vbox>
+									<checkbox id="openGroupBookmark.underParent-check"
+										label="&config.openGroupBookmark.underParent;"
+										oncommand="gGroupBookmarkRadioSet.pref.value = onSyncGroupBookmarkUIToPref();"/>
+									<hbox align="center">
+										<label id="openGroupBookmark.subtreeType-before"
+											control="openGroupBookmark.subtreeType-menulist"
+											value="&config.openGroupBookmark.subtree.type.before;"/>
+										<menulist id="openGroupBookmark.subtreeType-menulist"
+											oncommand="gGroupBookmarkRadioSet.pref.value = onSyncGroupBookmarkUIToPref();">
+											<menupopup>
+												<menuitem label="&config.openGroupBookmark.subtree.type.restore;" value="false"/>
+												<menuitem label="&config.openGroupBookmark.subtree.type.flat;" value="true"/>
+											</menupopup>
+										</menulist>
+										<label id="openGroupBookmark.subtreeType-after"
+											control="openGroupBookmark.subtreeType-menulist"
+											value="&config.openGroupBookmark.subtree.type.after;"/>
+									</hbox>
+								</vbox>
 							</hbox>
 							<radio value="2" label="&config.openGroupBookmark.flat;"/>
 							<radio value="4" label="&config.openGroupBookmark.replace;"/>

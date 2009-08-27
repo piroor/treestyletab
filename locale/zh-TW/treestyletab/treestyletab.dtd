@@ -64,6 +64,10 @@
 <!--ENTITY config.openGroupBookmark.caption   "按書籤資料夾的「全部開啟」時"-->
 <!ENTITY config.openGroupBookmark.ask         "每次都問我">
 <!ENTITY config.openGroupBookmark.subtree     "用一個子樹開啟（推薦）">
+<!ENTITY config.openGroupBookmark.subtree.type.before  "">
+<!ENTITY config.openGroupBookmark.subtree.type.restore "Restore">
+<!ENTITY config.openGroupBookmark.subtree.type.flat    "Ignore">
+<!ENTITY config.openGroupBookmark.subtree.type.after   "tree structure of tabs saved to bookmarks">
 <!ENTITY config.openGroupBookmark.flat        "用分開的分頁開啟（Firefox 預設）">
 <!ENTITY config.openGroupBookmark.replace     "將目前瀏覽的分頁取代為書籤的內容">
 <!ENTITY config.openGroupBookmark.underParent "將各分頁開啟於一虛分頁之下以便分組">

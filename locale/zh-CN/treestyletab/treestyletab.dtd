@@ -64,6 +64,10 @@
 <!ENTITY config.openGroupBookmark.caption     "如何“在标签页中打开书签组”？">
 <!ENTITY config.openGroupBookmark.ask         "总是询问">
 <!ENTITY config.openGroupBookmark.subtree     "在子树中打开 （推荐）">
+<!ENTITY config.openGroupBookmark.subtree.type.before  "">
+<!ENTITY config.openGroupBookmark.subtree.type.restore "Restore">
+<!ENTITY config.openGroupBookmark.subtree.type.flat    "Ignore">
+<!ENTITY config.openGroupBookmark.subtree.type.after   "tree structure of tabs saved to bookmarks">
 <!ENTITY config.openGroupBookmark.flat        "在单独标签中打开 （Firefox 默认）">
 <!ENTITY config.openGroupBookmark.replace     "覆盖当前标签打开">
 <!ENTITY config.openGroupBookmark.underParent "将标签置于一伪标签下以便分组">

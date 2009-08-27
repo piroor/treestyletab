@@ -62,6 +62,10 @@
 <!ENTITY config.openGroupBookmark.caption     "ブックマークフォルダの内容をタブで開く時">
 <!ENTITY config.openGroupBookmark.ask         "どうするか毎回尋ねる">
 <!ENTITY config.openGroupBookmark.subtree     "一つのツリーとして開く（推奨）">
+<!ENTITY config.openGroupBookmark.subtree.type.before  "ブックマークを保存した時のタブのツリー構造を">
+<!ENTITY config.openGroupBookmark.subtree.type.restore "復元する">
+<!ENTITY config.openGroupBookmark.subtree.type.flat    "無視する">
+<!ENTITY config.openGroupBookmark.subtree.type.after   "">
 <!ENTITY config.openGroupBookmark.flat        "ばらばらのタブとして開く（Firefox初期状態）">
 <!ENTITY config.openGroupBookmark.replace     "現在のタブ1つだけをブックマークの内容で置き換える">
 <!ENTITY config.openGroupBookmark.underParent "グループ化用のダミーのタブを親にする">

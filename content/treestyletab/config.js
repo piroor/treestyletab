@@ -8,6 +8,7 @@ var Prefs = Components
 
 var gGroupBookmarkRadio,
 	gGroupBookmarkUnderParent,
+	gGroupBookmarkType,
 	gGroupBookmarkBehaviorPref,
 	gGroupBookmarkReplacePref;
 
@@ -17,6 +18,7 @@ function ensureGroupBookmarkItems()
 
 	gGroupBookmarkRadio        = document.getElementById('openGroupBookmark-radiogroup');
 	gGroupBookmarkUnderParent  = document.getElementById('openGroupBookmark.underParent-check');
+	gGroupBookmarkType         = document.getElementById('openGroupBookmark.subtreeType-menulist');
 	gGroupBookmarkBehaviorPref = document.getElementById('extensions.treestyletab.openGroupBookmark.behavior');
 	var bookmarkReplaceKey = 'browser.tabs.loadFolderAndReplace';
 	gGroupBookmarkReplacePref = document.getElementById(bookmarkReplaceKey);
@@ -99,15 +101,24 @@ function onSyncGroupBookmarkUIToPref()
 	if (behavior & 2) behavior ^= 2;
 	if (behavior & 4) behavior ^= 4;
 	if (behavior & 256) behavior ^= 256;
+	if (behavior & 512) behavior ^= 512;
 
 	behavior |= parseInt(gGroupBookmarkRadio.value);
 
 	if (gGroupBookmarkUnderParent.checked) behavior |= 256;
+	if (gGroupBookmarkType.value == 'true') behavior |= 512;
 
-	if (behavior & 1)
-		gGroupBookmarkUnderParent.removeAttribute('disabled');
-	else
-		gGroupBookmarkUnderParent.setAttribute('disabled', true);
+	[
+		gGroupBookmarkUnderParent,
+		gGroupBookmarkType,
+		gGroupBookmarkType.previousSibling,
+		gGroupBookmarkType.nextSibling
+	].forEach(function(aNode) {
+		if (behavior & 1)
+			aNode.removeAttribute('disabled');
+		else
+			aNode.setAttribute('disabled', true);
+	});
 
 	return behavior;
 }
@@ -120,6 +131,7 @@ function onSyncGroupBookmarkPrefToUI()
 					gGroupBookmarkBehaviorPref.value & 4 ? 4 :
 					0;
 	gGroupBookmarkUnderParent.checked = gGroupBookmarkBehaviorPref.value & 256 ? true : false ;
+	gGroupBookmarkType.value = gGroupBookmarkBehaviorPref.value & 512 ? 'true' : 'false' ;
 	return behavior;
 }
 

@@ -64,6 +64,10 @@
 <!--ENTITY config.openGroupBookmark.caption     "&quot;Открытие во вкладках &quot; из папок закладок"-->
 <!ENTITY config.openGroupBookmark.ask         "Ask me always">
 <!ENTITY config.openGroupBookmark.subtree     "Открывать как поддерево (рекомендуется)">
+<!ENTITY config.openGroupBookmark.subtree.type.before  "">
+<!ENTITY config.openGroupBookmark.subtree.type.restore "Restore">
+<!ENTITY config.openGroupBookmark.subtree.type.flat    "Ignore">
+<!ENTITY config.openGroupBookmark.subtree.type.after   "tree structure of tabs saved to bookmarks">
 <!ENTITY config.openGroupBookmark.flat        "Открывать как раздельные вкладки (в Firefox по умолчанию)">
 <!ENTITY config.openGroupBookmark.replace     "Replace the current one tab with the pages in the folder">
 <!ENTITY config.openGroupBookmark.underParent "Put tabs under a dummy tab for grouping">

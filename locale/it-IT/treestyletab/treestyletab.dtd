@@ -64,6 +64,10 @@
 <!--ENTITY config.openGroupBookmark.caption     "La voce &quot;Apri tutti in schede&quot; nel menu Segnalibri"-->
 <!ENTITY config.openGroupBookmark.ask         "Ask me always">
 <!ENTITY config.openGroupBookmark.subtree     "apre i segnalibri come sottoalbero (Raccomandato)">
+<!ENTITY config.openGroupBookmark.subtree.type.before  "">
+<!ENTITY config.openGroupBookmark.subtree.type.restore "Restore">
+<!ENTITY config.openGroupBookmark.subtree.type.flat    "Ignore">
+<!ENTITY config.openGroupBookmark.subtree.type.after   "tree structure of tabs saved to bookmarks">
 <!ENTITY config.openGroupBookmark.flat        "apre i segnalibri in schede separate (comportamento predefinito di Firefox)">
 <!ENTITY config.openGroupBookmark.replace     "sostituisce la scheda in uso con i segnalibri contenuti nella cartella selezionata">
 <!ENTITY config.openGroupBookmark.underParent "Put tabs under a dummy tab for grouping">
