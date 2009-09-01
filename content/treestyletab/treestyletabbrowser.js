@@ -1687,14 +1687,29 @@ TreeStyleTabBrowser.prototype = {
 			)
 			return;
 
-		this.attachTabFromPosition(tab);
+		this.attachTabFromPosition(tab, aEvent.detail);
 
 		this.showTabbarForFeedback();
 	},
 	
-	attachTabFromPosition : function(aTab) 
+	attachTabFromPosition : function(aTab, aOldPosition) 
 	{
 		var parent = this.getParentTab(aTab);
+
+		if (aOldPosition === void(0)) aOldPosition = aTab._tPos;
+
+		var pos = this.getChildIndex(aTab, parent);
+		var oldPos = this.getChildIndex(this.getTabs(this.mTabBrowser).snapshotItem(aOldPosition), parent);
+		var delta;
+		if (pos == oldPos) { // no move?
+			return;
+		}
+		else if (pos < 0 || oldPos < 0) {
+			delta = 2;
+		}
+		else {
+			delta = Math.abs(pos - oldPos);
+		}
 
 		var prevTab = this.getPreviousTab(aTab);
 		var nextTab = this.getNextTab(aTab);
@@ -1712,19 +1727,20 @@ TreeStyleTabBrowser.prototype = {
 
 		var newParent;
 
-		if (!prevTab) {
+		if (!prevTab) { // moved to topmost position
 			newParent = null;
 		}
-		else if (!nextTab) {
-			newParent = prevParent || parent ;
+		else if (!nextTab) { // moved to last position
+			newParent = (delta > 1) ? prevParent : parent ;
 		}
-		else if (prevParent == nextParent) {
+		else if (prevParent == nextParent) { // moved into existing tree
 			newParent = prevParent;
 		}
-		else if (prevLevel > nextLevel) {
-			newParent = prevParent || parent || nextParent;
+		else if (prevLevel > nextLevel) { // moved to end of existing tree
+			var realDelta = Math.abs(aTab._tPos - aOldPosition);
+			newParent = realDelta < 2 ? prevParent : (parent || nextParent) ;
 		}
-		else if (prevLevel < nextLevel) {
+		else if (prevLevel < nextLevel) { // moved to first child position of existing tree
 			newParent = parent || nextParent;
 		}
 
