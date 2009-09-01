@@ -473,16 +473,6 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 				)
 			);
 
-			eval('gBrowser.TMmoveTabTo = '+
-				gBrowser.TMmoveTabTo.toSource().replace(
-					/(aTab.dispatchEvent)/,
-					'this.treeStyleTab.internallyTabMoving = true; $1'
-				).replace(
-					/(return aTab;\})(\)?)$/,
-					'this.treeStyleTab.internallyTabMoving = false; $1$2'
-				)
-			);
-
 			window.BrowserHome = window.TM_BrowserHome;
 			window.BrowserOpenTab = window.TMP_BrowserOpenTab;
 

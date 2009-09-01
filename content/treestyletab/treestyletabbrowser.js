@@ -1687,29 +1687,14 @@ TreeStyleTabBrowser.prototype = {
 			)
 			return;
 
-		this.attachTabFromPosition(tab, aEvent.detail);
+		this.attachTabFromPosition(tab);
 
 		this.showTabbarForFeedback();
 	},
 	
-	attachTabFromPosition : function(aTab, aOldPosition) 
+	attachTabFromPosition : function(aTab) 
 	{
 		var parent = this.getParentTab(aTab);
-
-		if (aOldPosition === void(0)) aOldPosition = aTab._tPos;
-
-		var pos = this.getChildIndex(aTab, parent);
-		var oldPos = this.getChildIndex(this.getTabs(this.mTabBrowser).snapshotItem(aOldPosition), parent);
-		var delta;
-		if (pos == oldPos) { // no move?
-			return;
-		}
-		else if (pos < 0 || oldPos < 0) {
-			delta = 2;
-		}
-		else {
-			delta = Math.abs(pos - oldPos);
-		}
 
 		var prevTab = this.getPreviousTab(aTab);
 		var nextTab = this.getNextTab(aTab);
@@ -1731,17 +1716,16 @@ TreeStyleTabBrowser.prototype = {
 			newParent = null;
 		}
 		else if (!nextTab) {
-			newParent = (delta > 1) ? prevParent : parent ;
+			newParent = prevParent || parent ;
 		}
 		else if (prevParent == nextParent) {
 			newParent = prevParent;
 		}
 		else if (prevLevel > nextLevel) {
-			var realDelta = Math.abs(aTab._tPos - aOldPosition);
-			newParent = realDelta < 2 ? prevParent : parent ;
+			newParent = prevParent || parent || nextParent;
 		}
 		else if (prevLevel < nextLevel) {
-			newParent = this.getParentTab(aTab) || this.getParentTab(nextTab);
+			newParent = parent || nextParent;
 		}
 
 		if (newParent != parent) {
