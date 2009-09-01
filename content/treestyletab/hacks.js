@@ -458,13 +458,16 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 					<![CDATA[
 						(function() {
 							var tabs = this.treeStyleTab.getDescendantTabs(this.mCurrentTab);
-							var index = !tabs.length ?
-										($&) :
-									this.treeStyleTab.getPref("extensions.tabmix.openTabNextInverse") ?
-										tabs[tabs.length - 1]._tPos :
-										this.mCurrentTab._tPos ;
-							if (index < aTab._tPos) index++;
-							return index;
+							if (tabs.length) {
+								var index = this.treeStyleTab.getPref("extensions.tabmix.openTabNextInverse") ?
+											tabs[tabs.length - 1]._tPos :
+											this.mCurrentTab._tPos ;
+								if (index < aTab._tPos) index++;
+								return index;
+							}
+							else {
+								return ($&);
+							}
 						}).call(this)
 					]]>
 				)
