@@ -1737,8 +1737,13 @@ TreeStyleTabBrowser.prototype = {
 			newParent = prevParent;
 		}
 		else if (prevLevel > nextLevel) { // moved to end of existing tree
-			var realDelta = Math.abs(aTab._tPos - aOldPosition);
-			newParent = realDelta < 2 ? prevParent : (parent || nextParent) ;
+			if (this.mTabBrowser.selectedTab != aTab) { // maybe newly opened tab
+				newParent = prevParent;
+			}
+			else { // maybe drag and drop
+				var realDelta = Math.abs(aTab._tPos - aOldPosition);
+				newParent = realDelta < 2 ? prevParent : (parent || nextParent) ;
+			}
 		}
 		else if (prevLevel < nextLevel) { // moved to first child position of existing tree
 			newParent = parent || nextParent;
