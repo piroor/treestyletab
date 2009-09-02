@@ -6,6 +6,7 @@ var TreeStyleTabService = {
 	kANCESTOR           : 'treestyletab-ancestors',
 	kNEST               : 'treestyletab-nest',
 	kINSERT_BEFORE      : 'treestyletab-insert-before',
+	kINSERT_AFTER       : 'treestyletab-insert-after',
 
 	kSUBTREE_COLLAPSED  : 'treestyletab-subtree-collapsed',
 	kCOLLAPSED          : 'treestyletab-collapsed',

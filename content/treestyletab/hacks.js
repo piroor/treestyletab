@@ -35,7 +35,8 @@ TreeStyleTabService.overrideExtensionsPreInit = function() {
 			prefix+this.kCHILDREN,
 			prefix+this.kPARENT,
 			prefix+this.kANCESTOR,
-			prefix+this.kINSERT_BEFORE
+			prefix+this.kINSERT_BEFORE,
+			prefix+this.kINSERT_AFTER
 		];
 		eval('SessionData.getTabProperties = '+
 			SessionData.getTabProperties.toSource().replace(
