@@ -1983,17 +1983,14 @@ TreeStyleTabBrowser.prototype = {
  
 	onScroll : function(aEvent) 
 	{
-		var node = aEvent.originalTarget;
-		if (node && node.ownerDocument == document) {
-			if (this.lastScrollX < 0 || this.lastScrollY < 0) return;
-			var x = {}, y = {};
-			var scrollBoxObject = this.scrollBoxObject;
-			scrollBoxObject.getPosition(x, y);
-			if (x.value != this.lastScrollX || y.value != this.lastScrollY)
-				scrollBoxObject.scrollTo(this.lastScrollX, this.lastScrollY);
-			this.lastScrollX = -1;
-			this.lastScrollY = -1;
-		}
+		if (this.lastScrollX < 0 || this.lastScrollY < 0) return;
+		var x = {}, y = {};
+		var scrollBoxObject = this.scrollBoxObject;
+		scrollBoxObject.getPosition(x, y);
+		if (x.value != this.lastScrollX || y.value != this.lastScrollY)
+			scrollBoxObject.scrollTo(this.lastScrollX, this.lastScrollY);
+		this.lastScrollX = -1;
+		this.lastScrollY = -1;
 	},
  
 	onTabbarOverflow : function(aEvent) 
