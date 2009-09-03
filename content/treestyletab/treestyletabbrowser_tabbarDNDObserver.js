@@ -6,7 +6,7 @@ function TreeStyleTabBrowserTabbarDNDObserver(aOwner)
 }
 
 TreeStyleTabBrowserTabbarDNDObserver.prototype = {
-	 
+	
 	onDragStart : function(aEvent, aTransferData, aDragAction) 
 	{
 		if (!this.canDragTabbar(aEvent))

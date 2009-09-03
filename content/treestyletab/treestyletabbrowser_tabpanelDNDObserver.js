@@ -4,7 +4,7 @@ function TreeStyleTabBrowserTabpanelDNDObserver(aOwner)
 }
 
 TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
-	 
+	
 	onDragExit : function(aEvent, aDragSession) 
 	{
 		if (!this.canDrop(aEvent, aDragSession)) return;
