@@ -895,7 +895,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			!this.isResizing &&
 			this.evaluateXPath(
 				'ancestor-or-self::*[@class="'+this.kSPLITTER+'"]',
-				aEvent.originalTaret || aEvent.target,
+				aEvent.originalTarget || aEvent.target,
 				XPathResult.BOOLEAN_TYPE
 			).booleanValue
 			) {
@@ -931,7 +931,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				!this.getTabBrowserFromChild(aEvent.originalTarget)
 			)
 			)
-			sv.hide();
+			this.hide();
 		this.lastMouseDownTarget = aEvent.originalTarget.localName;
 	},
  
