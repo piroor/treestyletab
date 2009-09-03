@@ -126,6 +126,23 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var b = this.mTabBrowser;
 
+		let (splitter, toggler) {
+			splitter = document.getAnonymousElementByAttribute(b, 'class', this.kSPLITTER);
+			if (!splitter) {
+				splitter = document.createElement('splitter');
+				splitter.setAttribute('class', this.kSPLITTER);
+				splitter.addEventListener('mousedown', this, true);
+				splitter.setAttribute('onmouseup', 'TreeStyleTabService.onTabbarResized(event);');
+				splitter.setAttribute('state', 'open');
+				splitter.appendChild(document.createElement('grippy'));
+				let ref = b.mPanelContainer;
+				ref.parentNode.insertBefore(splitter, ref);
+				toggler = document.createElement('spacer');
+				toggler.setAttribute('class', this.kTABBAR_TOGGLER);
+				b.mStrip.parentNode.insertBefore(toggler, b.mStrip);
+			}
+		}
+
 		this.initTabbar();
 
 		b.addEventListener('TabOpen',        this, true);
@@ -535,8 +552,7 @@ TreeStyleTabBrowser.prototype = {
 		this.ObserverService.addObserver(this, 'TreeStyleTab:collapseExpandAllSubtree', false);
 		this.addPrefListener(this);
 
-		// TreeStyleTabBrowserAutoHide fails to initialize before the tab bar is completely initialized!!!
-		this.autoHide = new TreeStyleTabBrowserAutoHide(this);
+		this.autoHide;
 
 		b = null;
 	},
@@ -706,19 +722,6 @@ TreeStyleTabBrowser.prototype = {
 
 		var splitter = document.getAnonymousElementByAttribute(b, 'class', this.kSPLITTER);
 		var toggler = document.getAnonymousElementByAttribute(b, 'class', this.kTABBAR_TOGGLER);
-		if (!splitter) {
-			splitter = document.createElement('splitter');
-			splitter.setAttribute('class', this.kSPLITTER);
-			splitter.addEventListener('mousedown', this, true);
-			splitter.setAttribute('onmouseup', 'TreeStyleTabService.onTabbarResized(event);');
-			splitter.setAttribute('state', 'open');
-			splitter.appendChild(document.createElement('grippy'));
-			var ref = b.mPanelContainer;
-			ref.parentNode.insertBefore(splitter, ref);
-			toggler = document.createElement('spacer');
-			toggler.setAttribute('class', this.kTABBAR_TOGGLER);
-			b.mStrip.parentNode.insertBefore(toggler, b.mStrip);
-		}
 
 		// Tab Mix Plus
 		var scrollFrame = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-frame');
@@ -983,7 +986,7 @@ TreeStyleTabBrowser.prototype = {
 	destroy : function() 
 	{
 		this.autoHide.destroy();
-		delete this.autoHide;
+		delete this._autoHide;
 
 		var b = this.mTabBrowser;
 
@@ -3483,7 +3486,13 @@ TreeStyleTabBrowser.prototype = {
 		}
 	},
    
-/* show/hide tab bar (backward compatibility) */ 
+/* show/hide tab bar */ 
+	get autoHide()
+	{
+		return this._autoHide || (this._autoHide = new TreeStyleTabBrowserAutoHide(this));
+	},
+
+	// for backward compatibility
 	get tabbarShown() { return this.autoHide.tabbarShown; },
 	set tabbarShown(aValue) { return this.autoHide.tabbarShown = aValue; },
 	get tabbarExpanded() { return this.autoHide.tabbarExpanded; },
