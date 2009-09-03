@@ -213,6 +213,7 @@ var TreeStyleTabService = {
 		return (this.tabbrowserBundle = window['piro.sakura.ne.jp']
 				.stringBundle
 				.get('chrome://browser/locale/tabbrowser.properties'));
+	},
 	
 /* API */ 
 	
