@@ -1885,7 +1885,8 @@ catch(e) {
 			)
 		);
 
-		if (!('getSupportedFlavours' in contentAreaDNDObserver)) { // Firefox 3.6 or later
+		if (window.contentAreaDNDObserver &&
+			!('getSupportedFlavours' in contentAreaDNDObserver)) { // Firefox 3.6 or later
 			eval('contentAreaDNDObserver.onDrop = '+
 				contentAreaDNDObserver.onDrop.toSource().replace(
 					'var types = aEvent.dataTransfer.types;',
