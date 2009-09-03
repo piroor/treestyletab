@@ -403,7 +403,7 @@ var TreeStyleTabService = {
  
 	setTabbarWidth : function(aWidth, aForceExpanded) /* PUBLIC API */ 
 	{
-		gBrowser.treeStyleTab.autoHide.setTabbarWidth(aWidth, aForceExpanded);
+		gBrowser.treeStyleTab.autoHide.setWidth(aWidth, aForceExpanded);
 	},
  
 	setContentWidth : function(aWidth, aKeepWindowSize) /* PUBLIC API */ 
