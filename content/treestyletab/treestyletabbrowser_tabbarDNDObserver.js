@@ -141,6 +141,11 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 		flavourSet.appendFlavour('text/plain');
 		flavourSet.appendFlavour('application/x-moz-file', 'nsIFile');
 		return flavourSet;
+	},
+ 
+	destroy : function() 
+	{
+		delete this.mOwner;
 	}
  
 }; 

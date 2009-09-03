@@ -77,6 +77,11 @@ TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
 		var flavourSet = new FlavourSet();
 		flavourSet.appendFlavour(this.mOwner.kDRAG_TYPE_TABBAR);
 		return flavourSet;
+	},
+ 
+	destroy : function() 
+	{
+		delete this.mOwner;
 	}
  
 }; 

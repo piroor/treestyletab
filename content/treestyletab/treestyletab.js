@@ -142,98 +142,77 @@ var TreeStyleTabService = {
 	},
 
 	get SessionStore() {
-		if (!this._SessionStore) {
-			this._SessionStore = Components
+		delete this.SessionStore;
+		return (this.SessionStore = Components
 					.classes['@mozilla.org/browser/sessionstore;1']
-					.getService(Components.interfaces.nsISessionStore);
-		}
-		return this._SessionStore;
+					.getService(Components.interfaces.nsISessionStore));
 	},
-	_SessionStore : null,
 
 	get ObserverService() {
-		if (!this._ObserverService) {
-			this._ObserverService = Components
+		delete this.ObserverService;
+		return (this.ObserverService = Components
 					.classes['@mozilla.org/observer-service;1']
-					.getService(Components.interfaces.nsIObserverService);
-		}
-		return this._ObserverService;
+					.getService(Components.interfaces.nsIObserverService));
 	},
-	_ObserverService : null,
 
 	get IOService() {
-		if (!this._IOService) {
-			this._IOService = Components
+		delete this.IOService;
+		return (this.IOService = Components
 					.classes['@mozilla.org/network/io-service;1']
-					.getService(Components.interfaces.nsIIOService);
-		}
-		return this._IOService;
+					.getService(Components.interfaces.nsIIOService));
 	},
-	_IOService : null,
 
 	get WindowMediator() {
-		if (!this._WindowMediator) {
-			this._WindowMediator = Components
+		delete this.WindowMediator;
+		return (this.WindowMediator = Components
 					.classes['@mozilla.org/appshell/window-mediator;1']
-					.getService(Components.interfaces.nsIWindowMediator);
-		}
-		return this._WindowMediator;
+					.getService(Components.interfaces.nsIWindowMediator));
 	},
-	_WindowMediator : null,
 
 	get EffectiveTLD()
 	{
-		if (!('_EffectiveTLD' in this)) {
-			this._EffectiveTLD = 'nsIEffectiveTLDService' in Components.interfaces ?
-				Components
-					.classes['@mozilla.org/network/effective-tld-service;1']
-					.getService(Components.interfaces.nsIEffectiveTLDService) :
-				null ;
-		}
-		return this._EffectiveTLD;
+		delete this.EffectiveTLD;
+		return (this.EffectiveTLD = (
+					'nsIEffectiveTLDService' in Components.interfaces ?
+						Components
+							.classes['@mozilla.org/network/effective-tld-service;1']
+							.getService(Components.interfaces.nsIEffectiveTLDService) :
+						null
+				));
 	},
-//	_EffectiveTLD : null,
 
 	get PromptService()
 	{
-		if (!this._PromptService) {
-			this._PromptService = Components
+		delete this.PromptService;
+		return (this.PromptService = Components
 					.classes['@mozilla.org/embedcomp/prompt-service;1']
-					.getService(Components.interfaces.nsIPromptService);
-		}
-		return this._PromptService;
+					.getService(Components.interfaces.nsIPromptService));
 	},
-	_PromptService : null,
 
 	get XULAppInfo() {
-		if (!this._XULAppInfo) {
-			this._XULAppInfo = Components
+		delete this.XULAppInfo;
+		return (this.XULAppInfo = Components
 					.classes['@mozilla.org/xre/app-info;1']
-					.getService(Components.interfaces.nsIXULAppInfo);
-		}
-		return this._XULAppInfo;
+					.getService(Components.interfaces.nsIXULAppInfo));
 	},
-	_XULAppInfo : null,
 	get Comparator() {
-		if (!this._Comparator) {
-			this._Comparator = Components
+		delete this.Comparator;
+		return (this.Comparator = Components
 					.classes['@mozilla.org/xpcom/version-comparator;1']
-					.getService(Components.interfaces.nsIVersionComparator);
-		}
-		return this._Comparator;
+					.getService(Components.interfaces.nsIVersionComparator));
 	},
-	_Comparator : null,
 
 	get treeBundle() {
-		return window['piro.sakura.ne.jp']
+		delete this.treeBundle;
+		return (this.treeBundle = window['piro.sakura.ne.jp']
 				.stringBundle
-				.get('chrome://treestyletab/locale/treestyletab.properties');
+				.get('chrome://treestyletab/locale/treestyletab.properties'));
 	},
 	get tabbrowserBundle() {
-		return window['piro.sakura.ne.jp']
+		delete this.tabbrowserBundle;
+		return (this.tabbrowserBundle = window['piro.sakura.ne.jp']
 				.stringBundle
-				.get('chrome://browser/locale/tabbrowser.properties');
-	},
+				.get('chrome://browser/locale/tabbrowser.properties'));
 	
 /* API */ 
 	

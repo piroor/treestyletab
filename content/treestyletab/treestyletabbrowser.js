@@ -54,22 +54,17 @@ TreeStyleTabBrowser.prototype = {
  
 	get container() 
 	{
-		if (!this._container) {
-			this._container = document.getElementById('appcontent');
-		}
-		return this._container;
+		delete this.container;
+		return (this.container = document.getElementById('appcontent'));
 	},
-	_container : null,
  
 	get scrollBox() 
 	{
-		if (!this._scrollBox) {
-			this._scrollBox = document.getAnonymousElementByAttribute(this.mTabBrowser.mTabContainer, 'class', 'tabs-frame') || // Tab Mix Plus
+		delete this.scrollBox;
+		var scrollBox = document.getAnonymousElementByAttribute(this.mTabBrowser.mTabContainer, 'class', 'tabs-frame') || // Tab Mix Plus
 						this.mTabBrowser.mTabContainer.mTabstrip;
-		}
-		return this._scrollBox;
+		return (this.scrollBox = scrollBox);
 	},
-	_scrollBox : null,
 	get scrollBoxObject()
 	{
 		return (this.scrollBox.scrollBoxObject || this.scrollBox.boxObject)
@@ -1028,10 +1023,10 @@ TreeStyleTabBrowser.prototype = {
 		b.mPanelContainer.removeEventListener('dragover', this, false);
 		b.mPanelContainer.removeEventListener('dragdrop', this, false);
 
-		delete this._tabbarDNDObserver.mOwner;
-		delete this._tabbarDNDObserver;
-		delete this._panelDNDObserver.mOwner;
-		delete this._panelDNDObserver;
+		this.tabbarDNDObserver.destroy();
+		delete this.tabbarDNDObserver;
+		this.panelDNDObserver.destroy();
+		delete this.panelDNDObserver;
 
 		this.scrollBox.removeEventListener('overflow', this, true);
 		this.scrollBox.removeEventListener('underflow', this, true);
