@@ -946,7 +946,11 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			).booleanValue) {
 			this.isResizing = false;
 			sv.mTabBrowser.removeAttribute(sv.kRESIZING);
-			if (this.shown) this.redrawContentArea();
+			window.setTimeout(function(aSelf) {
+				if (!aSelf.shown) return;
+				aSelf.redrawContentArea();
+				aSelf.drawBG();
+			}, 0, this);
 		}
 		this.cancelShowHideOnMousemove();
 		this.lastMouseDownTarget = null;
