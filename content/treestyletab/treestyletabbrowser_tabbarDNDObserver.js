@@ -29,6 +29,14 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 	canDragTabbar : function(aEvent) 
 	{
 		var sv = this.mOwner;
+
+		if (sv.evaluateXPath(
+				'ancestor::*[local-name()="menupopup" or local-name()="popup" or local-name()="panel"]',
+				aEvent.originalTarget,
+				XPathResult.BOOLEAN_TYPE
+			).booleanValue)
+			return false;
+
 		var tab = sv.getTabFromEvent(aEvent);
 		var tabbar = sv.getTabbarFromEvent(aEvent);
 		return (
