@@ -2176,7 +2176,7 @@ catch(e) {
 			this.setTreePref('tabbar.height', b.mStrip.boxObject.height);
 		}
 		else {
-			if (!b.treeStyleTab.autoHide.tabbarExpanded)
+			if (!b.treeStyleTab.autoHide.expanded)
 				this.setTreePref('tabbar.shrunkenWidth', b.mStrip.boxObject.width);
 			else
 				this.setTreePref('tabbar.width', b.mStrip.boxObject.width);
