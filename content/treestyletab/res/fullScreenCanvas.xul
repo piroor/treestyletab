@@ -20,7 +20,7 @@
 window.addEventListener('DOMContentLoaded', function() {
 	window.removeEventListener('DOMContentLoaded', arguments.callee, true);
 
-	const currentRevision = 9;
+	const currentRevision = 10;
 	var root = document.documentElement;
 
 	var loadedRevision = root.getAttribute('fullScreenCanvas');
@@ -100,15 +100,18 @@ window.addEventListener('DOMContentLoaded', function() {
 					var dy = 0;
 					if (
 						TST &&
-						TST.autoHideEnabled &&
-						('autoHideShown' in TST ? 
-							TST.autoHideShown :
-							TST.tabbarShown
+						('autoHide' in TST ?
+							(TST.autoHide.enabled && TST.autoHide.shown) :
+							(TST.autoHideEnabled && TST.autoHideShown) // backward compatibility
 						)
 						) {
 						var pos = b.getAttribute(TST.kTABBAR_POSITION);
-						var xOffset = 'autoHideXOffset' in TST ? TST.autoHideXOffset : TST.tabbarWidth ;
-						var yOffset = 'autoHideYOffset' in TST ? TST.autoHideYOffset : TST.tabbarHeight ;
+						var xOffset = 'autoHide' in TST ? TST.autoHide.XOffset :
+										'autoHideXOffset' in TST ? TST.autoHideXOffset :
+										TST.tabbarWidth ;
+						var yOffset = 'autoHide' in TST ? TST.autoHide.YOffset :
+										'autoHideYOffset' in TST ? TST.autoHideYOffset :
+										TST.tabbarHeight ;
 						switch (pos)
 						{
 							case 'left':

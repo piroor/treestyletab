@@ -17,6 +17,7 @@
 
 <script src="treestyletab.js" type="application/x-javascript; version=1.7"/>
 <script src="treestyletabbrowser.js" type="application/x-javascript; version=1.7"/>
+<script src="treestyletabbrowser_autoHide.js" type="application/x-javascript; version=1.7"/>
 <script src="treestyletabbrowser_tabbarDNDObserver.js" type="application/x-javascript; version=1.7"/>
 <script src="treestyletabbrowser_tabpanelDNDObserver.js" type="application/x-javascript; version=1.7"/>
 

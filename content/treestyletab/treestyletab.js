@@ -81,30 +81,6 @@ var TreeStyleTabService = {
 	kTABBAR_HORIZONTAL : (1 << 0) | (1 << 1),
 	kTABBAR_VERTICAL   : (1 << 2) | (1 << 3),
 
-	kAUTOHIDE_MODE_DISABLED : 0,
-	kAUTOHIDE_MODE_HIDE     : 1,
-	kAUTOHIDE_MODE_SHRINK   : 2,
-	get autoHideMode()
-	{
-		if (this._autoHideMode == this.kAUTOHIDE_MODE_SHRINK &&
-			this.getTreePref('tabbar.position') != 'left' &&
-			this.getTreePref('tabbar.position') != 'right')
-			return this.kAUTOHIDE_MODE_HIDE;
-		return this._autoHideMode;
-	},
-	set autoHideMode(aValue)
-	{
-		this._autoHideMode = aValue;
-		return aValue;
-	},
-	_autoHideMode : 0,
-
-	kSHOWN_BY_UNKNOWN   : 0,
-	kSHOWN_BY_SHORTCUT  : 1 << 0,
-	kSHOWN_BY_MOUSEMOVE : 1 << 1,
-	kSHOWN_BY_FEEDBACK  : 1 << 2,
-	kKEEP_SHOWN_ON_MOUSEOVER : (1 << 0) | (1 << 1) | (1 << 2),
-
 	kTRANSPARENT_NONE : 0,
 	kTRANSPARENT_PART : 1,
 	kTRANSPARENT_FULL : 2,
@@ -427,13 +403,7 @@ var TreeStyleTabService = {
  
 	setTabbarWidth : function(aWidth, aForceExpanded) /* PUBLIC API */ 
 	{
-		var treeStyleTab = gBrowser.treeStyleTab;
-		if (aForceExpanded ||
-			treeStyleTab.autoHideShown ||
-			treeStyleTab.autoHideMode !=  this.kAUTOHIDE_MODE_SHRINK)
-			this.setTreePref('tabbar.width', aWidth);
-		else
-			this.setTreePref('tabbar.shrunkenWidth', aWidth);
+		gBrowser.treeStyleTab.autoHide.setTabbarWidth(aWidth, aForceExpanded);
 	},
  
 	setContentWidth : function(aWidth, aKeepWindowSize) /* PUBLIC API */ 
@@ -457,11 +427,7 @@ var TreeStyleTabService = {
  
 	toggleAutoHide : function() 
 	{
-		this.setTreePref('tabbar.autoHide.mode',
-			this.getTreePref('tabbar.autoHide.mode') == this.kAUTOHIDE_MODE_DISABLED ?
-				this.getTreePref('tabbar.autoHide.mode.toggle') :
-				this.kAUTOHIDE_MODE_DISABLED
-		);
+		TreeStyleTabBrowserAutoHide.toggleMode();
 	},
  
 	toggleFixed : function() 
@@ -1917,9 +1883,9 @@ catch(e) {
 					var treeStyleTab = gBrowser.treeStyleTab;
 					if (gBrowser.getAttribute(treeStyleTab.kTABBAR_POSITION) != 'top') {
 						if (window.fullScreen)
-							treeStyleTab.endAutoHideForFullScreen();
+							treeStyleTab.autoHide.endForFullScreen();
 						else
-							treeStyleTab.startAutoHideForFullScreen();
+							treeStyleTab.autoHide.startForFullScreen();
 					}
 				]]>
 			)
@@ -2114,51 +2080,9 @@ catch(e) {
  
 	onKeyDown : function(aEvent) 
 	{
-		var b = this.browser;
-		if (!b || !b.treeStyleTab) return;
-		var sv = b.treeStyleTab;
-
-		if (this.delayedAutoShowForShortcutDone)
-			this.cancelDelayedAutoShowForShortcut();
-
 		this.accelKeyPressed = this.isAccelKeyPressed(aEvent);
-		if (
-			this.getTabs(b).snapshotLength > 1 &&
-			!aEvent.altKey &&
-			this.accelKeyPressed
-			) {
-			if (sv.autoHideEnabled &&
-				this.getTreePref('tabbar.autoShow.accelKeyDown') &&
-				!sv.autoHideShown &&
-				!sv.delayedAutoShowTimer &&
-				!this.delayedAutoShowForShortcutTimer) {
-				this.delayedAutoShowForShortcutTimer = window.setTimeout(
-					function(aSelf) {
-						this.delayedAutoShowForShortcutDone = true;
-						sv.showTabbar(sv.kSHOWN_BY_SHORTCUT);
-						sv = null;
-						b = null;
-					},
-					this.getTreePref('tabbar.autoShow.accelKeyDown.delay'),
-					this
-				);
-				this.delayedAutoShowForShortcutDone = false;
-			}
-		}
-		else {
-			if (sv.autoHideEnabled)
-				sv.hideTabbar();
-		}
+		TreeStyleTabBrowserAutoHide.onKeyDown(aEvent);
 	},
-	cancelDelayedAutoShowForShortcut : function()
-	{
-		if (this.delayedAutoShowForShortcutTimer) {
-			window.clearTimeout(this.delayedAutoShowForShortcutTimer);
-			this.delayedAutoShowForShortcutTimer = null;
-		}
-	},
-	delayedAutoShowForShortcutTimer : null,
-	delayedAutoShowForShortcutDone : true,
 	accelKeyPressed : false,
  
 	onKeyRelease : function(aEvent) 
@@ -2167,7 +2091,7 @@ catch(e) {
 		if (!b || !b.treeStyleTab) return;
 		var sv = b.treeStyleTab;
 
-		this.cancelDelayedAutoShowForShortcut();
+		TreeStyleTabBrowserAutoHide.cancelDelayedShowForShortcut();
 
 		var scrollDown,
 			scrollUp;
@@ -2192,23 +2116,18 @@ catch(e) {
 			scrollDown ||
 			scrollUp ||
 			( // when you release "shift" key
-				sv.autoHideShown &&
+				sv.autoHide.shown &&
 				standBy && !aEvent.shiftKey &&
 				aEvent.charCode == 0 && aEvent.keyCode == 16
 			)
 			) {
-			if (sv.autoHideEnabled &&
-				this.getTreePref('tabbar.autoShow.tabSwitch'))
-				sv.showTabbar(sv.kSHOWN_BY_SHORTCUT);
+			sv.autoHide.onTabSwitchStart();
 			return;
 		}
 
 		// when you just release accel key...
 
-		if (sv.autoHideEnabled &&
-			sv.showHideTabbarReason == sv.kSHOWN_BY_SHORTCUT) {
-			sv.hideTabbar();
-		}
+		sv.autoHide.onTabSwitchEnd();
 
 		if (this._tabShouldBeExpandedAfterKeyReleased) {
 			let tab = this._tabShouldBeExpandedAfterKeyReleased;
@@ -2234,37 +2153,7 @@ catch(e) {
 		return 'allTabs' in window &&
 				this.getPref('browser.ctrlTab.previews');
 	},
- 
-	// autohide 
-	
-	updateAutoHideKeyListeners : function() 
-	{
-		if (
-			this.getTreePref('tabbar.autoHide.mode') &&
-			this.shouldListenKeyEventsForAutoHide
-			) {
-			this.startListenKeyEventsFor(this.LISTEN_FOR_AUTOHIDE);
-		}
-		else {
-			this.endListenKeyEventsFor(this.LISTEN_FOR_AUTOHIDE);
-		}
-		window.setTimeout(function() {
-			if (window.windowState != Components.interfaces.nsIDOMChromeWindow.STATE_NORMAL) return;
-			window.resizeBy(-1,-1);
-			window.resizeBy(1,1);
-		}, 0);
-	},
- 
-	get shouldListenKeyEventsForAutoHide() 
-	{
-		return !this.ctrlTabPreviewsEnabled &&
-				(
-					this.getTreePref('tabbar.autoShow.accelKeyDown') ||
-					this.getTreePref('tabbar.autoShow.tabSwitch') ||
-					this.getTreePref('tabbar.autoShow.feedback')
-				);
-	},
-    
+   
 	onTabbarResized : function(aEvent) 
 	{
 		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
@@ -2272,7 +2161,7 @@ catch(e) {
 			this.setTreePref('tabbar.height', b.mStrip.boxObject.height);
 		}
 		else {
-			if (!b.treeStyleTab.tabbarExpanded)
+			if (!b.treeStyleTab.autoHide.tabbarExpanded)
 				this.setTreePref('tabbar.shrunkenWidth', b.mStrip.boxObject.width);
 			else
 				this.setTreePref('tabbar.width', b.mStrip.boxObject.width);
@@ -2758,11 +2647,11 @@ catch(e) {
 
 			case 'extensions.treestyletab.tabbar.autoHide.mode':
 				// don't set on this time, because appearance of all tabbrowsers are not updated yet.
-				// this.autoHideMode = this.getTreePref('tabbar.autoHide.mode');
+				// this.autoHide.mode = this.getTreePref('tabbar.autoHide.mode');
 			case 'extensions.treestyletab.tabbar.autoShow.accelKeyDown':
 			case 'extensions.treestyletab.tabbar.autoShow.tabSwitch':
 			case 'extensions.treestyletab.tabbar.autoShow.feedback':
-				this.updateAutoHideKeyListeners();
+				TreeStyleTabBrowserAutoHide.updateKeyListeners();
 				break;
 
 			case 'extensions.treestyletab.tabbar.width':
@@ -2809,7 +2698,7 @@ catch(e) {
 				break;
 
 			case 'browser.ctrlTab.previews':
-				this.updateAutoHideKeyListeners();
+				TreeStyleTabBrowserAutoHide.updateKeyListeners();
 			case 'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut':
 			case 'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect':
 				if (this.shouldListenKeyEventsForAutoExpandByFocusChange)

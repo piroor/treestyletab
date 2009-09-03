@@ -780,9 +780,9 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 							var treeStyleTab = gBrowser.treeStyleTab;
 							if (gBrowser.getAttribute(treeStyleTab.kTABBAR_POSITION) != 'top') {
 								if (window.fullScreen)
-									treeStyleTab.endAutoHideForFullScreen();
+									treeStyleTab.autoHide.endForFullScreen();
 								else
-									treeStyleTab.startAutoHideForFullScreen();
+									treeStyleTab.autoHide.startForFullScreen();
 							}
 							break;
 
