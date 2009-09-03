@@ -27,7 +27,6 @@ var TreeStyleTabService = {
 	kAUTOHIDE           : 'treestyletab-tabbar-autohide',
 	kFIXED              : 'treestyletab-tabbar-fixed',
 	kRESIZING           : 'treestyletab-tabbar-resizing',
-	kTRANSPARENT        : 'treestyletab-tabbar-transparent',
 	kINDENTED           : 'treestyletab-tabs-indented',
 
 	kTAB_INVERTED          : 'treestyletab-tab-inverted',
@@ -80,11 +79,6 @@ var TreeStyleTabService = {
 
 	kTABBAR_HORIZONTAL : (1 << 0) | (1 << 1),
 	kTABBAR_VERTICAL   : (1 << 2) | (1 << 3),
-
-	kTRANSPARENT_NONE : 0,
-	kTRANSPARENT_PART : 1,
-	kTRANSPARENT_FULL : 2,
-	kTRANSPARENT_STYLE : ['none', 'part', 'full'],
 
 	kINSERT_FISRT : 0,
 	kINSERT_LAST  : 1,

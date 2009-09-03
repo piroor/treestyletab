@@ -14,6 +14,12 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	kSHOWN_BY_MOUSEMOVE : 1 << 1,
 	kSHOWN_BY_FEEDBACK  : 1 << 2,
 	kKEEP_SHOWN_ON_MOUSEOVER : (1 << 0) | (1 << 1) | (1 << 2),
+
+	kTRANSPARENT       : 'treestyletab-tabbar-transparent',
+	kTRANSPARENT_NONE  : 0,
+	kTRANSPARENT_PART  : 1,
+	kTRANSPARENT_FULL  : 2,
+	kTRANSPARENT_STYLE : ['none', 'part', 'full'],
  
 	get mode() 
 	{
