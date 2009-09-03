@@ -54,17 +54,22 @@ TreeStyleTabBrowser.prototype = {
  
 	get container() 
 	{
-		delete this.container;
-		return (this.container = document.getElementById('appcontent'));
+		if (!this._container) {
+			this._container = document.getElementById('appcontent');
+		}
+		return this._container;
 	},
+	_container : null,
  
 	get scrollBox() 
 	{
-		delete this.scrollBox;
-		var scrollBox = document.getAnonymousElementByAttribute(this.mTabBrowser.mTabContainer, 'class', 'tabs-frame') || // Tab Mix Plus
+		if (!this._scrollBox) {
+			this._scrollBox = document.getAnonymousElementByAttribute(this.mTabBrowser.mTabContainer, 'class', 'tabs-frame') || // Tab Mix Plus
 						this.mTabBrowser.mTabContainer.mTabstrip;
-		return (this.scrollBox = scrollBox);
+		}
+		return this._scrollBox;
 	},
+	_scrollBox : null,
 	get scrollBoxObject()
 	{
 		return (this.scrollBox.scrollBoxObject || this.scrollBox.boxObject)
@@ -1024,9 +1029,9 @@ TreeStyleTabBrowser.prototype = {
 		b.mPanelContainer.removeEventListener('dragdrop', this, false);
 
 		this.tabbarDNDObserver.destroy();
-		delete this.tabbarDNDObserver;
+		delete this._tabbarDNDObserver;
 		this.panelDNDObserver.destroy();
-		delete this.panelDNDObserver;
+		delete this._panelDNDObserver;
 
 		this.scrollBox.removeEventListener('overflow', this, true);
 		this.scrollBox.removeEventListener('underflow', this, true);
@@ -2345,14 +2350,12 @@ TreeStyleTabBrowser.prototype = {
 	
 	get tabbarDNDObserver() 
 	{
-		delete this.tabbarDNDObserver;
-		return (this.tabbarDNDObserver = new TreeStyleTabBrowserTabbarDNDObserver(this));
+		return this._tabbarDNDObserver || (this._tabbarDNDObserver = new TreeStyleTabBrowserTabbarDNDObserver(this));
 	},
  
 	get panelDNDObserver() 
 	{
-		delete this.panelDNDObserver;
-		return (this.panelDNDObserver = new TreeStyleTabBrowserTabpanelDNDObserver(this));
+		return this._panelDNDObserver || (this._panelDNDObserver = new TreeStyleTabBrowserTabpanelDNDObserver(this));
 	},
  
 	getCurrentDragSession : function() 
