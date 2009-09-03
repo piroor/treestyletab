@@ -14,12 +14,19 @@
 <script src="res/autoScroll.js" type="application/x-javascript; version=1.7"/>
 <script src="res/animationManager.js" type="application/x-javascript; version=1.7"/>
 <script src="res/extensions.js" type="application/x-javascript; version=1.7"/>
+
 <script src="treestyletab.js" type="application/x-javascript; version=1.7"/>
 <script src="treestyletabbrowser.js" type="application/x-javascript; version=1.7"/>
+<script src="treestyletabbrowser_tabbarDNDObserver.js" type="application/x-javascript; version=1.7"/>
+<script src="treestyletabbrowser_tabpanelDNDObserver.js" type="application/x-javascript; version=1.7"/>
+
 <script src="preloadImages.js" type="application/x-javascript; version=1.7"/>
+
 <script src="bookmarksOverlay.js" type="application/x-javascript; version=1.7"/>
 <script src="bookmarksOverlayEditable.js" type="application/x-javascript; version=1.7"/>
+
 <script src="hacks.js" type="application/x-javascript; version=1.7"/>
+
 <script type="application/x-javascript; version=1.7"><![CDATA[
 	// preload images
 	TreeStyleTabService.observe(
