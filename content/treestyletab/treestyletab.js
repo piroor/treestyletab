@@ -515,7 +515,7 @@ var TreeStyleTabService = {
 	isEventFiredOnClickable : function(aEvent) 
 	{
 		return this.evaluateXPath(
-				'ancestor-or-self::*[contains(" button toolbarbutton scrollbar popup menupopup tooltip ", concat(" ", local-name(), " "))]',
+				'ancestor-or-self::*[contains(" button toolbarbutton scrollbar popup menupopup panel tooltip ", concat(" ", local-name(), " "))]',
 				aEvent.originalTarget,
 				XPathResult.BOOLEAN_TYPE
 			).booleanValue;

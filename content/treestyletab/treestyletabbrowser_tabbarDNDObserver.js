@@ -30,8 +30,8 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 	{
 		var sv = this.mOwner;
 
-		if (sv.evaluateXPath(
-				'ancestor::*[local-name()="menupopup" or local-name()="popup" or local-name()="panel"]',
+		if (sv.isEventFiredOnClickable(
+				'ancestor-or-self::*[contains(" scrollbar popup menupopup panel tooltip ", concat(" ", local-name(), " "))]',
 				aEvent.originalTarget,
 				XPathResult.BOOLEAN_TYPE
 			).booleanValue)
