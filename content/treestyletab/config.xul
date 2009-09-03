@@ -345,7 +345,7 @@
 							min="0"
 							max="2"
 							style="height:4em;"
-							onchange="gOpenLinkInTabScale.onChange();"/>
+							onchange="if (gOpenLinkInTabScale) gOpenLinkInTabScale.onChange();"/>
 						<vbox id="openLinkInNewTab-labels">
 							<label value="&config.link.none;" control="openLinkInNewTab-scale"/>
 							<spacer flex="1"/>
@@ -427,8 +427,10 @@
 							max="2"
 							style="height:4em;"
 							onchange="
-								gLoadLocationBarToNewTabScale.onChange();
-								gLoadLocationBarToChildTabScale.disabled = gLoadLocationBarToNewTabScale.value == 0;
+								if (gLoadLocationBarToNewTabScale) {
+									gLoadLocationBarToNewTabScale.onChange();
+									gLoadLocationBarToChildTabScale.disabled = gLoadLocationBarToNewTabScale.value == 0;
+								}
 							"/>
 						<vbox id="loadLocationBarToNewTab-labels">
 							<label value="&config.urlbar.none;" control="loadLocationBarToNewTab-scale"/>
@@ -446,7 +448,7 @@
 								min="0"
 								max="2"
 								style="height:4em;"
-								onchange="gLoadLocationBarToChildTabScale.onChange();"/>
+								onchange="if (gLoadLocationBarToChildTabScale) gLoadLocationBarToChildTabScale.onChange();"/>
 							<vbox id="loadLocationBarToChildTab-labels">
 								<label value="&config.urlbar.asChild.none;" control="loadLocationBarToChildTab-scale"/>
 								<spacer flex="1"/>
