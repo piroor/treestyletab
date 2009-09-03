@@ -2,7 +2,7 @@ function TreeStyleTabBrowserTabbarDNDObserver(aOwner)
 {
 	this.mOwner = aOwner;
 	this.mAutoExpandTimer = null;
-	this.mAutoExpandedTabs = [],
+	this.mAutoExpandedTabs = [];
 }
 
 TreeStyleTabBrowserTabbarDNDObserver.prototype = {
