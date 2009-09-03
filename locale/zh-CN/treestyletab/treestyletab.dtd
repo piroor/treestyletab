@@ -11,7 +11,6 @@
 <!ENTITY config.tabbar.position.right   "右侧">
 <!ENTITY config.tabbar.position.top     "顶部 （Firefox 默认）">
 <!ENTITY config.tabbar.position.bottom  "底部">
-<!ENTITY config.tabbar.invertScrollbar  "在最左侧显示滚动条">
 <!ENTITY config.tabbar.invertClosebox.left  "在每个标签左端显示关闭按钮">
 <!ENTITY config.tabbar.invertClosebox.right "在每个标签右端显示关闭按钮">
 <!ENTITY config.tabbar.invertTab            "反转标签外观">
@@ -42,14 +41,13 @@
 <!ENTITY config.show.openSelectionLinks "添加“在新标签中打开选中链接”到页面右键菜单">
 
 
-<!ENTITY config.tabs.tab "New Tabs">
-<!--ENTITY config.tabs.tab "标签操作"-->
+<!ENTITY config.tabs.tab "新标签">
 
-<!ENTITY config.tabs.link.tab     "Links">
-<!ENTITY config.tabs.urlbar.tab   "Location Bar">
-<!ENTITY config.tabs.bookmark.tab "Bookmarks">
-<!ENTITY config.tabs.dragdrop.tab "Drag &amp; Drop to tabs">
-<!ENTITY config.tabs.misc.tab     "Other Cases">
+<!ENTITY config.tabs.link.tab     "从链接">
+<!ENTITY config.tabs.urlbar.tab   "从地址栏">
+<!ENTITY config.tabs.bookmark.tab "从书签">
+<!ENTITY config.tabs.dragdrop.tab "拖放到标签">
+<!ENTITY config.tabs.misc.tab     "其他">
 
 <!ENTITY config.link.caption "如何打开新链接？">
 <!ENTITY config.link.none    "Lv.0 当前页面打开（Firefox 默认）">
@@ -64,10 +62,10 @@
 <!ENTITY config.openGroupBookmark.caption     "如何“在标签页中打开书签组”？">
 <!ENTITY config.openGroupBookmark.ask         "总是询问">
 <!ENTITY config.openGroupBookmark.subtree     "在子树中打开 （推荐）">
-<!ENTITY config.openGroupBookmark.subtree.type.before  "">
-<!ENTITY config.openGroupBookmark.subtree.type.restore "Restore">
-<!ENTITY config.openGroupBookmark.subtree.type.flat    "Ignore">
-<!ENTITY config.openGroupBookmark.subtree.type.after   "tree structure of tabs saved to bookmarks">
+<!ENTITY config.openGroupBookmark.subtree.type.before  "待">
+<!ENTITY config.openGroupBookmark.subtree.type.restore "恢复">
+<!ENTITY config.openGroupBookmark.subtree.type.flat    "忽略">
+<!ENTITY config.openGroupBookmark.subtree.type.after   "保存到书签时的树状结构">
 <!ENTITY config.openGroupBookmark.flat        "在单独标签中打开 （Firefox 默认）">
 <!ENTITY config.openGroupBookmark.replace     "覆盖当前标签打开">
 <!ENTITY config.openGroupBookmark.underParent "将标签置于一伪标签下以便分组">
@@ -76,15 +74,12 @@
 <!ENTITY config.urlbar.none          "Lv.0 当前页面打开（Firefox 默认）">
 <!ENTITY config.urlbar.outer         "Lv.1 与当前标签处于不同网站时在新标签中打开">
 <!ENTITY config.urlbar.any           "Lv.2 总是在新标签中打开">
-<!ENTITY config.urlbar.asChild.caption "Structuring of opened tabs">
+<!ENTITY config.urlbar.asChild.caption "如何放置新标签？">
 <!ENTITY config.urlbar.asChild.none  "Lv.0 打开成独立的标签">
 <!ENTITY config.urlbar.asChild.inner "Lv.1 与当前标签处于相同网站时在新子标签中打开">
 <!ENTITY config.urlbar.asChild.any   "Lv.2 总是在新子标签中打开">
 
 <!ENTITY config.loadDroppedLinkToNewChildTab.caption "将链接或URL拖拽到现有标签后：">
-<!ENTITY config.loadDroppedLinkToNewChildTab.load    "在标签中加载链接 （Firefox 默认）">
-<!ENTITY config.loadDroppedLinkToNewChildTab.newTab  "在此标签的新建子标签中打开链接">
-<!ENTITY config.dropLinksOnTab.caption "将链接或URL拖拽到现有标签后：">
 <!ENTITY config.dropLinksOnTab.ask     "总是询问">
 <!ENTITY config.dropLinksOnTab.load    "在标签中加载链接 （Firefox 默认）">
 <!ENTITY config.dropLinksOnTab.newTab  "在此标签的新建子标签中打开链接">
