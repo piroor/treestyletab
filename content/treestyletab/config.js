@@ -79,6 +79,8 @@ function initTabPane()
 		'loadLocationBarToChildTab-labels'
 	);
 
+	gLoadLocationBarToChildTabScale.disabled = gLoadLocationBarToNewTabScale.value == 0;
+
 
 	var restrictionKey = 'browser.link.open_newwindow.restriction';
 	var restriction = document.getElementById(restrictionKey);
@@ -211,6 +213,10 @@ function initAutoHidePane()
 	gAutoHideModeToggle = document.getElementById('extensions.treestyletab.tabbar.autoHide.mode.toggle');
 	gTabbarTransparencyScale = document.getElementById('tabbarTransparency-scale');
 	gTabbarTransparencyLabels = document.getElementById('tabbarTransparency-labels');
+
+	// for Firefox 3.0.x
+	gTabbarTransparencyScale.value = document.getElementById('extensions.treestyletab.tabbar.transparent.style').value;
+
 	updateAutoHideModeLabel();
 	onTabbarTransparencyScaleChange();
 }
