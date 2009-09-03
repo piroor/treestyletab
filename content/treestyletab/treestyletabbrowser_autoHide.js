@@ -939,7 +939,11 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	{
 		var sv = this.mOwner;
 		if (aEvent.originalTarget &&
-			this.evaluateXPath('ancestor::*[@class="'+this.kSPLITTER+'"]', aEvent.originalTarget, XPathResult.BOOLEAN_TYPE).booleanValue) {
+			this.evaluateXPath(
+				'ancestor-or-self::*[@class="'+this.kSPLITTER+'"]',
+				aEvent.originalTarget,
+				XPathResult.BOOLEAN_TYPE
+			).booleanValue) {
 			this.isResizing = false;
 			sv.mTabBrowser.removeAttribute(sv.kRESIZING);
 			if (this.shown) this.redrawContentArea();
