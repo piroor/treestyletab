@@ -2081,7 +2081,12 @@ catch(e) {
 	onKeyDown : function(aEvent) 
 	{
 		this.accelKeyPressed = this.isAccelKeyPressed(aEvent);
-		TreeStyleTabBrowserAutoHide.onKeyDown(aEvent);
+
+		/* PUBLIC API */
+		let event = document.createEvent('Events');
+		event.initEvent('TreeStyleTabFocusSwitchingKeyDown', true, true);
+		event.sourceEvent = aEvent;
+		this.browser.dispatchEvent(event);
 	},
 	accelKeyPressed : false,
  
@@ -2090,8 +2095,6 @@ catch(e) {
 		var b = this.browser;
 		if (!b || !b.treeStyleTab) return;
 		var sv = b.treeStyleTab;
-
-		TreeStyleTabBrowserAutoHide.cancelDelayedShowForShortcut();
 
 		var scrollDown,
 			scrollUp;
@@ -2112,22 +2115,40 @@ catch(e) {
 				aEvent.shiftKey ? (aEvent.keyCode == aEvent.DOM_VK_TAB) : (aEvent.keyCode == aEvent.DOM_VK_PAGE_UP)
 			);
 
+		var onlyShiftKey = (!aEvent.shiftKey && aEvent.charCode == 0 && aEvent.keyCode == 16);
+
 		if (
 			scrollDown ||
 			scrollUp ||
 			( // when you release "shift" key
-				sv.autoHide.shown &&
-				standBy && !aEvent.shiftKey &&
-				aEvent.charCode == 0 && aEvent.keyCode == 16
+				standBy && onlyShiftKey
 			)
 			) {
-			sv.autoHide.onTabSwitchStart();
+			/* PUBLIC API */
+			let event = document.createEvent('Events');
+			event.initEvent('TreeStyleTabFocusSwitchingStart', true, true);
+			event.scrollDown = scrollDown;
+			event.scrollUp = scrollUp;
+			event.standBy = standBy;
+			event.onlyShiftKey = onlyShiftKey;
+			event.sourceEvent = aEvent;
+			b.dispatchEvent(event);
 			return;
 		}
 
 		// when you just release accel key...
 
-		sv.autoHide.onTabSwitchEnd();
+		/* PUBLIC API */
+		let (event) {
+			event = document.createEvent('Events');
+			event.initEvent('TreeStyleTabFocusSwitchingEnd', true, true);
+			event.scrollDown = scrollDown;
+			event.scrollUp = scrollUp;
+			event.standBy = standBy;
+			event.onlyShiftKey = onlyShiftKey;
+			event.sourceEvent = aEvent;
+			b.dispatchEvent(event);
+		}
 
 		if (this._tabShouldBeExpandedAfterKeyReleased) {
 			let tab = this._tabShouldBeExpandedAfterKeyReleased;

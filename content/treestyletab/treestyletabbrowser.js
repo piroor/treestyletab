@@ -689,8 +689,6 @@ TreeStyleTabBrowser.prototype = {
   
 	initTabbar : function(aPosition) 
 	{
-		if (this.autoHide) this.autoHide.clearTabbarCanvas();
-
 		var b = this.mTabBrowser;
 
 		if (!aPosition) aPosition = this.getTreePref('tabbar.position');
@@ -1089,7 +1087,15 @@ TreeStyleTabBrowser.prototype = {
 		switch (aPrefName)
 		{
 			case 'extensions.treestyletab.tabbar.position':
-				this.autoHide.onBeforeTabbarPositionChange();
+				var oldPosition = b.getAttribute(this.kTABBAR_POSITION);
+				let (event) {
+					/* PUBLIC API */
+					event = document.createEvent('Events');
+					event.initEvent('TreeStyleTabTabbarPositionChanging', true, true);
+					event.oldPosition = oldPosition;
+					event.newPosition = value;
+					this.mTabBrowser.dispatchEvent(event);
+				}
 				this.initTabbar();
 				tabs.forEach(function(aTab) {
 					this.initTabAttributes(aTab);
@@ -1097,7 +1103,14 @@ TreeStyleTabBrowser.prototype = {
 				tabs.forEach(function(aTab) {
 					this.initTabContents(aTab);
 				}, this);
-				this.autoHide.onAfterTabbarPositionChange();
+				let (event) {
+					/* PUBLIC API */
+					event = document.createEvent('Events');
+					event.initEvent('TreeStyleTabTabbarPositionChanged', true, true);
+					event.oldPosition = oldPosition;
+					event.newPosition = value;
+					this.mTabBrowser.dispatchEvent(event);
+				}
 				window.setTimeout(function(aSelf) {
 					aSelf.checkTabsIndentOverflow();
 				}, 0, this);
@@ -1185,15 +1198,7 @@ TreeStyleTabBrowser.prototype = {
 			case 'extensions.treestyletab.tabbar.shrunkenWidth':
 				if (!this.tabbarResizing && this.isVertical) {
 					this.mTabBrowser.mStrip.removeAttribute('width');
-					this.mTabBrowser.mStrip.setAttribute(
-						'width',
-						(
-							!this.autoHide.shown &&
-							this.autoHide.mode ==  this.autoHide.kMODE_SHRINK
-						) ?
-							this.getTreePref('tabbar.shrunkenWidth') :
-							this.getTreePref('tabbar.width')
-					);
+					this.mTabBrowser.mStrip.setAttribute('width', this.autoHide.tabbarWidthFromMode);
 				}
 				this.checkTabsIndentOverflow();
 				break;
@@ -1393,8 +1398,6 @@ TreeStyleTabBrowser.prototype = {
 		var next = this.getNextSiblingTab(tab);
 		if (next)
 			this.setTabValue(next, this.kINSERT_AFTER, tab.getAttribute(this.kID));
-
-		this.autoHide.showTabbarForFeedback();
 	},
  
 	onTabRemoved : function(aEvent) 
@@ -1565,7 +1568,6 @@ TreeStyleTabBrowser.prototype = {
 		if (indentModifiedTabs.length)
 			this.updateTabsIndentWithDelay(indentModifiedTabs);
 		this.checkTabsIndentOverflow();
-		this.autoHide.showTabbarForFeedback();
 
 		for (var i in backupAttributes)
 		{
@@ -1636,8 +1638,6 @@ TreeStyleTabBrowser.prototype = {
 			return;
 
 		this.attachTabFromPosition(tab, aEvent.detail);
-
-		this.autoHide.showTabbarForFeedback();
 	},
 	
 	attachTabFromPosition : function(aTab, aOldPosition) 
@@ -1915,8 +1915,6 @@ TreeStyleTabBrowser.prototype = {
 		this._focusChangedByShortcut = false;
 
 		this.updateInvertedTabContentsOrder();
-
-		this.autoHide.onTabSelect();
 	},
  
 	onTabClick : function(aEvent) 

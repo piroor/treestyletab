@@ -3,7 +3,6 @@ function TreeStyleTabBrowserAutoHide(aOwner)
 	this.mOwner = aOwner;
 	this.init();
 }
-
 TreeStyleTabBrowserAutoHide.prototype = {
 	
 	kMODE_DISABLED : 0, 
@@ -235,7 +234,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				this.getTreePref('tabbar.autoShow.keepShownOnMouseover')
 				) {
 				this.showHideTabbarReason = this.kSHOWN_BY_MOUSEMOVE;
-				TreeStyleTabBrowserAutoHide.cancelDelayedShowForShortcut();
+				this.cancelDelayedShowForShortcut();
 				this.cancelHideTabbarForFeedback();
 			}
 			else if (
@@ -244,7 +243,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				) {
 				this.showHideTabbarOnMousemoveTimer = window.setTimeout(
 					function(aSelf) {
-						TreeStyleTabBrowserAutoHide.cancelDelayedShowForShortcut();
+						aSelf.cancelDelayedShowForShortcut();
 						if (aSelf.showHideTabbarReason == aSelf.kSHOWN_BY_MOUSEMOVE)
 							aSelf.hideTabbar(aSelf.kSHOWN_BY_MOUSEMOVE);
 					},
@@ -264,7 +263,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			) {
 			this.showHideTabbarOnMousemoveTimer = window.setTimeout(
 				function(aSelf) {
-					TreeStyleTabBrowserAutoHide.cancelDelayedShowForShortcut();
+					aSelf.cancelDelayedShowForShortcut();
 					aSelf.cancelHideTabbarForFeedback();
 					aSelf.showTabbar(aSelf.kSHOWN_BY_MOUSEMOVE);
 				},
@@ -367,7 +366,17 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		return this._tabbarWidth;
 	},
 	_tabbarWidth : 0,
- 
+	
+	get tabbarWidthFromMode() 
+	{
+		return (
+					!this.shown &&
+					this.mode ==  this.kMODE_SHRINK
+				) ?
+					this.getTreePref('tabbar.shrunkenWidth') :
+					this.getTreePref('tabbar.width') ;
+	},
+  
 	get tabbarHeight() 
 	{
 		if (this.tabbarShown) {
@@ -810,11 +819,66 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				return;
 
 			case 'scroll':
-				this.onScroll(aEvent);
+				var node = aEvent.originalTarget;
+				if ((!node || node.ownerDocument != document) && this.enabled)
+					this.redrawContentArea();
 				return;
 
 			case 'load':
 				this.redrawContentArea();
+				return;
+
+			case 'TabOpen':
+			case 'TabClose':
+				this.showTabbarForFeedback();
+				return;
+
+			case 'TabMove':
+				if (!this.mOwner.isSubTreeMoving && !this.mOwner.internallyTabMoving)
+					this.showTabbarForFeedback();
+				return;
+
+			case 'select':
+				if (this.enabled && this.shown)
+					this.redrawContentArea();
+				if (!TreeStyleTabService.accelKeyPressed)
+					this.showTabbarForFeedback();
+				return;
+
+			case 'TreeStyleTabTabbarPositionChanging':
+				this.clearTabbarCanvas();
+				if (this.enabled && this.shown) this.hideTabbar();
+				return;
+
+			case 'TreeStyleTabTabbarPositionChanged':
+				if (this.enabled) this.showTabbar();
+				this.updateTabbarTransparency();
+				return;
+
+			case 'TreeStyleTabFocusSwitchingKeyDown':
+				this.onKeyDown(aEvent.sourceEvent);
+				return;
+
+			case 'TreeStyleTabFocusSwitchingStart':
+				this.cancelDelayedShowForShortcut();
+				if (this.enabled &&
+					this.getTreePref('tabbar.autoShow.tabSwitch') &&
+					(
+						aEvent.scrollDown ||
+						aEvent.scrollUp ||
+						( // when you release "shift" key
+							this.shown &&
+							aEvent.standBy && aEvent.onlyShiftKey
+						)
+					))
+					this.showTabbar(this.kSHOWN_BY_SHORTCUT);
+				return;
+
+			case 'TreeStyleTabFocusSwitchingEnd':
+				this.cancelDelayedShowForShortcut();
+				if (this.enabled &&
+					this.showHideTabbarReason == this.kSHOWN_BY_SHORTCUT)
+					this.hideTabbar();
 				return;
 		}
 	},
@@ -925,55 +989,54 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		this.redrawContentArea();
 	},
  
-	onScroll : function(aEvent) 
+	onKeyDown : function(aEvent) 
 	{
-		var node = aEvent.originalTarget;
-		if ((!node || node.ownerDocument != document) && this.enabled) {
-			this.redrawContentArea();
-		}
-	},
- 
-	onTabSwitchStart : function() 
-	{
-		if (this.enabled &&
-			this.getTreePref('tabbar.autoShow.tabSwitch'))
-			this.showTabbar(this.kSHOWN_BY_SHORTCUT);
-	},
- 
-	onTabSwitchEnd : function() 
-	{
-		if (this.enabled &&
-			this.showHideTabbarReason == this.kSHOWN_BY_SHORTCUT) {
-			this.hideTabbar();
-		}
-	},
- 
-	onTabSelect : function() 
-	{
-		if (this.enabled && this.shown)
-			this.redrawContentArea();
+		var sv = this.mOwner;
+		var b  = sv.mTabBrowser;
 
-		if (!TreeStyleTabService.accelKeyPressed)
-			this.showTabbarForFeedback();
+		if (this.delayedShowForShortcutDone)
+			this.cancelDelayedShowForShortcut();
+
+		if (
+			sv.getTabs(b).snapshotLength > 1 &&
+			!aEvent.altKey &&
+			TreeStyleTabService.accelKeyPressed
+			) {
+			if (this.enabled &&
+				this.getTreePref('tabbar.autoShow.accelKeyDown') &&
+				!this.shown &&
+				!this.delayedAutoShowTimer &&
+				!this.delayedShowForShortcutTimer) {
+				this.delayedShowForShortcutTimer = window.setTimeout(
+					function(aSelf) {
+						aSelf.delayedShowForShortcutDone = true;
+						aSelf.showTabbar(aSelf.kSHOWN_BY_SHORTCUT);
+						sv = null;
+						b = null;
+					},
+					this.getTreePref('tabbar.autoShow.accelKeyDown.delay'),
+					this
+				);
+				this.delayedShowForShortcutDone = false;
+			}
+		}
+		else {
+			if (this.enabled)
+				this.hideTabbar();
+		}
+	},
+	
+	cancelDelayedShowForShortcut : function() 
+	{
+		if (this.delayedShowForShortcutTimer) {
+			window.clearTimeout(this.delayedShowForShortcutTimer);
+			this.delayedShowForShortcutTimer = null;
+		}
 	},
  
-	onBeforeTabbarPositionChange : function() 
-	{
-		if (this.enabled && this.shown) this.hideTabbar();
-	},
- 
-	onAfterTabbarPositionChange : function() 
-	{
-		if (this.enabled) this.showTabbar();
-		this.updateTabbarTransparency();
-	},
- 
-	onTabbarWidthPrefChange : function() 
-	{
-		if (this.enabled) this.showTabbar();
-		this.updateTabbarTransparency();
-	},
-   
+	delayedShowForShortcutTimer : null, 
+	delayedShowForShortcutDone : true,
+    
 	init : function() 
 	{
 		this.enabled = false;
@@ -987,13 +1050,22 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		this.delayedShowTabbarForFeedbackTimer = null;
 
 		this.addPrefListener(this);
-
 		this.onPrefChange('extensions.treestyletab.tabbar.autoHide.area');
 		this.onPrefChange('extensions.treestyletab.tabbar.transparent.style');
 		this.onPrefChange('extensions.treestyletab.tabbar.togglerSize');
 		window.setTimeout(function(aSelf) {
 			aSelf.onPrefChange('extensions.treestyletab.tabbar.autoHide.mode');
 		}, 0, this);
+
+		this.mOwner.mTabBrowser.addEventListener('TabOpen', this, false);
+		this.mOwner.mTabBrowser.addEventListener('TabClose', this, false);
+		this.mOwner.mTabBrowser.addEventListener('TabMove', this, false);
+		this.mOwner.mTabBrowser.mTabContainer.addEventListener('select', this, false);
+		this.mOwner.mTabBrowser.addEventListener('TreeStyleTabTabbarPositionChanging', this, false);
+		this.mOwner.mTabBrowser.addEventListener('TreeStyleTabTabbarPositionChanged', this, false);
+		this.mOwner.mTabBrowser.addEventListener('TreeStyleTabFocusSwitchingKeyDown', this, false);
+		this.mOwner.mTabBrowser.addEventListener('TreeStyleTabFocusSwitchingStart', this, false);
+		this.mOwner.mTabBrowser.addEventListener('TreeStyleTabFocusSwitchingEnd', this, false);
 
 		var stack = document.getAnonymousElementByAttribute(this.mOwner.mTabBrowser.mTabContainer, 'class', 'tabs-stack');
 		if (stack) {
@@ -1010,6 +1082,15 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	{
 		this.end();
 		this.removePrefListener(this);
+		this.mOwner.mTabBrowser.removeEventListener('TabOpen', this, false);
+		this.mOwner.mTabBrowser.removeEventListener('TabClose', this, false);
+		this.mOwner.mTabBrowser.removeEventListener('TabMove', this, false);
+		this.mOwner.mTabBrowser.mTabContainer.removeEventListener('select', this, false);
+		this.mOwner.mTabBrowser.removeEventListener('TreeStyleTabTabbarPositionChanging', this, false);
+		this.mOwner.mTabBrowser.removeEventListener('TreeStyleTabTabbarPositionChanged', this, false);
+		this.mOwner.mTabBrowser.removeEventListener('TreeStyleTabFocusSwitchingKeyDown', this, false);
+		this.mOwner.mTabBrowser.removeEventListener('TreeStyleTabFocusSwitchingStart', this, false);
+		this.mOwner.mTabBrowser.removeEventListener('TreeStyleTabFocusSwitchingEnd', this, false);
 	}
  
 }; 
@@ -1069,52 +1150,4 @@ TreeStyleTabBrowserAutoHide.__defineGetter__('shouldListenKeyEvents', function()
 				TreeStyleTabService.getTreePref('tabbar.autoShow.feedback')
 			);
 });
-  
-TreeStyleTabBrowserAutoHide.onKeyDown = function(aEvent) { 
-	var b = TreeStyleTabService.browser;
-	if (!b || !b.treeStyleTab) return;
-	var sv = b.treeStyleTab;
-
-	if (this.delayedShowForShortcutDone)
-		this.cancelDelayedShowForShortcut();
-
-	if (
-		sv.getTabs(b).snapshotLength > 1 &&
-		!aEvent.altKey &&
-		TreeStyleTabService.accelKeyPressed
-		) {
-		if (sv.autoHide.enabled &&
-			sv.getTreePref('tabbar.autoShow.accelKeyDown') &&
-			!sv.autoHide.shown &&
-			!sv.delayedAutoShowTimer &&
-			!this.delayedShowForShortcutTimer) {
-			this.delayedShowForShortcutTimer = window.setTimeout(
-				function(aSelf) {
-					aSelf.delayedShowForShortcutDone = true;
-					sv.autoHide.showTabbar(aSelf.prototype.kSHOWN_BY_SHORTCUT);
-					sv = null;
-					b = null;
-				},
-				sv.getTreePref('tabbar.autoShow.accelKeyDown.delay'),
-				this
-			);
-			this.delayedShowForShortcutDone = false;
-		}
-	}
-	else {
-		if (sv.autoHide.enabled)
-			sv.autoHide.hideTabbar();
-	}
-};
-	
-TreeStyleTabBrowserAutoHide.cancelDelayedShowForShortcut = function() { 
-	if (this.delayedShowForShortcutTimer) {
-		window.clearTimeout(this.delayedShowForShortcutTimer);
-		this.delayedShowForShortcutTimer = null;
-	}
-};
- 
-TreeStyleTabBrowserAutoHide.delayedShowForShortcutTimer = null; 
- 
-TreeStyleTabBrowserAutoHide.delayedShowForShortcutDone = true; 
     
