@@ -80,6 +80,7 @@
 <!ENTITY config.urlbar.asChild.any   "Lv.2 总是在新子标签中打开">
 
 <!ENTITY config.loadDroppedLinkToNewChildTab.caption "将链接或URL拖拽到现有标签后：">
+<!ENTITY config.dropLinksOnTab.caption "将链接或URL拖拽到现有标签后：">
 <!ENTITY config.dropLinksOnTab.ask     "总是询问">
 <!ENTITY config.dropLinksOnTab.load    "在标签中加载链接 （Firefox 默认）">
 <!ENTITY config.dropLinksOnTab.newTab  "在此标签的新建子标签中打开链接">
