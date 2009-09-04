@@ -39,13 +39,43 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 
 		var tab = sv.getTabFromEvent(aEvent);
 		var tabbar = sv.getTabbarFromEvent(aEvent);
-		return (
+		var canDrag = (
 				(tab ? aEvent.shiftKey : tabbar ) &&
 				(
 					aEvent.shiftKey ||
 					sv.mTabBrowser.getAttribute(sv.kFIXED) != 'true'
 				)
 			);
+
+		if (canDrag && !aEvent.shiftKey) {
+			let insensitiveArea = sv.getTreePref('tabbar.fixed.insensitiveArea');
+			let box = tabbar.boxObject;
+			switch (sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION))
+			{
+				case 'right':
+					if (aEvent.screenX < box.screenX + insensitiveArea)
+						canDrag = false;
+					break;
+
+				case 'left':
+					if (aEvent.screenX > box.screenX + box.width - insensitiveArea)
+						canDrag = false;
+					break;
+
+				default:
+				case 'top':
+					if (aEvent.screenY > box.screenY + box.height - insensitiveArea)
+						canDrag = false;
+					break;
+
+				case 'bottom':
+					if (aEvent.screenY < box.screenY + insensitiveArea)
+						canDrag = false;
+					break;
+			}
+		}
+
+		return canDrag;
 	},
  
 	onDragEnter : function(aEvent, aDragSession) 
