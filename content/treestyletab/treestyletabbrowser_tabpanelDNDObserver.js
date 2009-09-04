@@ -9,7 +9,8 @@ TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
 	{
 		if (!this.canDrop(aEvent, aDragSession)) return;
 		var sv = this.mOwner;
-		sv.mTabBrowser.setAttribute(sv.kDROP_POSITION, sv.kDROP_POSITION_UNKNOWN);
+		if (sv.mTabBrowser.hasAttribute(sv.kDROP_POSITION))
+			sv.mTabBrowser.setAttribute(sv.kDROP_POSITION, sv.kDROP_POSITION_UNKNOWN);
 	},
  
 	onDragOver : function(aEvent, aFlavour, aDragSession) 

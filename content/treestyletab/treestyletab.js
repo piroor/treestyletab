@@ -1407,7 +1407,6 @@ var TreeStyleTabService = {
 								aEvent.screenX - box.screenX,
 								aEvent.screenY - box.screenY
 							);
-							this.mPanelContainer.setAttribute(sv.kDROP_POSITION, sv.kDROP_POSITION_UNKNOWN);
 							aEvent.stopPropagation();
 						}
 						else $&]]>

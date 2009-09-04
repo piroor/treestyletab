@@ -20,7 +20,6 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 				sv.kTABBAR_MOVE_FORCE :
 				sv.kTABBAR_MOVE_NORMAL
 		);
-		sv.mTabBrowser.setAttribute(sv.kDROP_POSITION, sv.kDROP_POSITION_UNKNOWN);
 
 		aEvent.stopPropagation();
 		return true;
