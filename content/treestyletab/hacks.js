@@ -670,11 +670,12 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 
 	// Snap Links
 	// https://addons.mozilla.org/firefox/addon/4336
+	// http://snaplinks.mozdev.org/
 	if ('executeAction' in window && 'openTabs' in window) {
 		eval('window.openTabs = '+
 			window.openTabs.toSource().replace(
-				'sContent.addTab',
-				'TreeStyleTabService.readyToOpenChildTab(sContent); $&'
+				/((sContent|gBrowser|getBrowser\(\))\.addTab)/,
+				'TreeStyleTabService.readyToOpenChildTab($2); $1'
 			)
 		);
 	}
