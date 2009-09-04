@@ -164,17 +164,17 @@ tabbrowser[treestyletab-style~="vertigo"][treestyletab-mode="vertical"] .tabbrow
 
 
 /* transaprent tab bar */
-tabbrowser[treestyletab-tabbar-transparent] .tabbrowser-tab {
+tabbrowser[treestyletab-tabbar-autohide][treestyletab-tabbar-transparent] .tabbrowser-tab {
 	opacity: 0.85 !important;
 }
-tabbrowser[treestyletab-tabbar-transparent] .tabbrowser-tabs:hover .tabbrowser-tab {
+tabbrowser[treestyletab-tabbar-autohide][treestyletab-tabbar-transparent] .tabbrowser-tabs:hover .tabbrowser-tab {
 	opacity: 0.9 !important;
 }
-tabbrowser[treestyletab-tabbar-transparent] .tabbrowser-tabs:hover .tabbrowser-tab[selected="true"],
-tabbrowser[treestyletab-tabbar-transparent] .tabbrowser-tabs:hover .tabbrowser-tab:hover {
+tabbrowser[treestyletab-tabbar-autohide][treestyletab-tabbar-transparent] .tabbrowser-tabs:hover .tabbrowser-tab[selected="true"],
+tabbrowser[treestyletab-tabbar-autohide][treestyletab-tabbar-transparent] .tabbrowser-tabs:hover .tabbrowser-tab:hover {
 	opacity: 0.95 !important;
 }
-tabbrowser[treestyletab-tabbar-transparent] .tabbrowser-tabs:hover .tabbrowser-tab[selected="true"]:hover {
+tabbrowser[treestyletab-tabbar-autohide][treestyletab-tabbar-transparent] .tabbrowser-tabs:hover .tabbrowser-tab[selected="true"]:hover {
 	opacity: 0.98 !important;
 }
 

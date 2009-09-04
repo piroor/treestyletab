@@ -9,6 +9,8 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	kMODE_HIDE     : 1,
 	kMODE_SHRINK   : 2,
 
+	kAUTOHIDE : 'treestyletab-tabbar-autohide',
+
 	kSHOWN_BY_UNKNOWN   : 0,
 	kSHOWN_BY_SHORTCUT  : 1 << 0,
 	kSHOWN_BY_MOUSEMOVE : 1 << 1,
@@ -435,7 +437,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 		window.setTimeout(function(aSelf) {
 			if (aSelf.shown) {
-				sv.mTabBrowser.setAttribute(sv.kAUTOHIDE, 'show');
+				sv.mTabBrowser.setAttribute(aSelf.kAUTOHIDE, 'show');
 				aSelf.redrawContentArea();
 			}
 			b.mTabContainer.adjustTabstrip();
@@ -508,12 +510,12 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		switch (this.mode)
 		{
 			case this.kMODE_HIDE:
-				b.setAttribute(sv.kAUTOHIDE, 'hidden');
+				b.setAttribute(this.kAUTOHIDE, 'hidden');
 				break;
 
 			default:
 			case this.kMODE_SHRINK:
-				b.setAttribute(sv.kAUTOHIDE, 'show');
+				b.setAttribute(this.kAUTOHIDE, 'show');
 				if (pos == 'left' || pos == 'right')
 					b.mStrip.width = this.getTreePref('tabbar.shrunkenWidth');
 				break;

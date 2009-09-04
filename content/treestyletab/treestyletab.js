@@ -24,7 +24,6 @@ var TreeStyleTabService = {
 	kHIDE_ALLTABS       : 'treestyletab-hide-alltabs-button',
 	kSTYLE              : 'treestyletab-style',
 	kFIRSTTAB_BORDER    : 'treestyletab-firsttab-border',
-	kAUTOHIDE           : 'treestyletab-tabbar-autohide',
 	kFIXED              : 'treestyletab-tabbar-fixed',
 	kRESIZING           : 'treestyletab-tabbar-resizing',
 	kINDENTED           : 'treestyletab-tabs-indented',
