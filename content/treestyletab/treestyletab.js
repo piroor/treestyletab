@@ -1399,13 +1399,15 @@ var TreeStyleTabService = {
 								0
 							);
 							dt.mozCursor = 'move';
-							let tabbar = this.mTabContainer;
-							let box = tabbar.boxObject;
-							dt.setDragImage(
-								tabbar,
-								aEvent.screenX - box.screenX,
-								aEvent.screenY - box.screenY
-							);
+//							let tabbar = this.mTabContainer;
+//							let box = tabbar.boxObject;
+//							dt.setDragImage(
+//								tabbar,
+//								aEvent.screenX - box.screenX,
+//								aEvent.screenY - box.screenY
+//							);
+							// no feedback image, because it's annoying...
+							dt.setDragImage(new Image(), 0, 0);
 							aEvent.stopPropagation();
 						}
 						else $&]]>
