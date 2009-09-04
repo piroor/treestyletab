@@ -38,7 +38,7 @@ pref("extensions.treestyletab.tabbar.autoShow.feedback.delay", 3000);
 pref("extensions.treestyletab.tabbar.autoShow.keepShownOnMouseover", true);
 pref("extensions.treestyletab.tabbar.togglerSize", 5);
 pref("extensions.treestyletab.tabbar.fixed.autoCancelOnDrop", true);
-pref("extensions.treestyletab.tabbar.fixed.insensitiveArea", 7);
+pref("extensions.treestyletab.tabbar.fixed.insensitiveArea", 10);
 pref("extensions.treestyletab.tabbar.fixed.horizontal", true);
 pref("extensions.treestyletab.tabbar.fixed.vertical", false);
 pref("extensions.treestyletab.tabbar.syncRelatedPrefsForDynamicPosition", true);
