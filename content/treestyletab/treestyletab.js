@@ -1403,7 +1403,7 @@ var TreeStyleTabService = {
 							let tabbar = this.mTabContainer;
 							let box = tabbar.boxObject;
 							dt.setDragImage(
-								this.mTabContainer,
+								tabbar,
 								aEvent.screenX - box.screenX,
 								aEvent.screenY - box.screenY
 							);
