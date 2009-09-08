@@ -1420,7 +1420,11 @@ TreeStyleTabBrowser.prototype = {
 				b.removeTab(aTab);
 			}, this);
 
-			if (this.getTabs(b).snapshotLength == 1) { // this is the last tab
+			// for last tab closing, we have to open new tab manually if running on Firefox 3.0.
+			if (
+				!('_beginRemoveTab' in b) && !('_endRemoveTab' in b) && // Firefox 3.0.x
+				this.getTabs(b).snapshotLength == 1 // last tab
+				) {
 				b.addTab('about:blank');
 			}
 		}
