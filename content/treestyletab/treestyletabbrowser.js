@@ -130,6 +130,7 @@ TreeStyleTabBrowser.prototype = {
 				splitter = document.createElement('splitter');
 				splitter.setAttribute('class', this.kSPLITTER);
 				splitter.addEventListener('mousedown', this, true);
+				splitter.setAttribute('onclick', 'TreeStyleTabService.onTabbarResizerClick(event);');
 				splitter.setAttribute('onmouseup', 'TreeStyleTabService.onTabbarResized(event);');
 				splitter.setAttribute('state', 'open');
 				splitter.appendChild(document.createElement('grippy'));

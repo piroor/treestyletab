@@ -2173,15 +2173,29 @@ catch(e) {
 	onTabbarResized : function(aEvent) 
 	{
 		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
-		if (!b.treeStyleTab.isVertical) {
-			this.setTreePref('tabbar.height', b.mStrip.boxObject.height);
-		}
-		else {
-			if (!b.treeStyleTab.autoHide.expanded)
-				this.setTreePref('tabbar.shrunkenWidth', b.mStrip.boxObject.width);
-			else
-				this.setTreePref('tabbar.width', b.mStrip.boxObject.width);
-		}
+		window.setTimeout(function(aSelf) {
+			if (!b.treeStyleTab.clickedOnTabbarResizerGrippy) {
+				if (!b.treeStyleTab.isVertical) {
+					aSelf.setTreePref('tabbar.height', b.mStrip.boxObject.height);
+				}
+				else {
+					if (!b.treeStyleTab.autoHide.expanded)
+						aSelf.setTreePref('tabbar.shrunkenWidth', b.mStrip.boxObject.width);
+					else
+						aSelf.setTreePref('tabbar.width', b.mStrip.boxObject.width);
+				}
+			}
+			b.treeStyleTab.clickedOnTabbarResizerGrippy = false;
+		}, 10, this);
+	},
+	onTabbarResizerClick : function(aEvent)
+	{
+		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
+		b.treeStyleTab.clickedOnTabbarResizerGrippy = this.evaluateXPath(
+				'ancestor-or-self::xul:grippy',
+				aEvent.originalTarget,
+				XPathResult.BOOLEAN_TYPE
+			).booleanValue;
 	},
  
 	initContextMenu : function() 
