@@ -582,7 +582,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
  
 	get shouldRedraw()
 	{
-		return this.enabled && this.shown && this.mTabBrowser.hasAttribute(this.kTRANSPARENT);
+		return this.enabled && this.shown; // && this.mTabBrowser.hasAttribute(this.kTRANSPARENT);
 	},
  
 	drawBG : function() 
@@ -830,9 +830,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				return;
 
 			case 'scroll':
-				var node = aEvent.originalTarget;
-				if ((!node || node.ownerDocument != document) && this.shouldRedraw)
-					this.redrawContentArea();
+				this.onScroll(aEvent);
 				return;
 
 			case 'load':
@@ -955,7 +953,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			this.isResizing = false;
 			sv.mTabBrowser.removeAttribute(sv.kRESIZING);
 			window.setTimeout(function(aSelf) {
-				if (!aSelf.shown) return;
+				if (!aSelf.shouldRedraw) return;
 				aSelf.redrawContentArea();
 				aSelf.drawBG();
 			}, 0, this);
@@ -987,7 +985,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		if (
 			!aEvent.originalTarget ||
 			aEvent.originalTarget.ownerDocument != document ||
-			!this.shown
+			!this.shouldRedraw
 			) {
 			return;
 		}
@@ -1008,6 +1006,26 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				break;
 		}
 		this.redrawContentArea();
+	},
+ 
+	onScroll : function(aEvent) 
+	{
+		var node = aEvent.originalTarget;
+		if ((node && node.ownerDocument == document) || !this.shouldRedraw) return;
+
+		var tabbarBox, nodeBox;
+		if (
+			!(node instanceof Components.interfaces.nsIDOMElement) ||
+			(
+				(tabbarBox = this.getBoxObjectFor(this.mTabBrowser.mTabContainer)) &&
+				(nodeBox = this.getBoxObjectFor(node)) &&
+				tabbarBox.screenX <= nodeBox.screenX + nodeBox.width &&
+				tabbarBox.screenX + tabbarBox.width >= nodeBox.screenX &&
+				tabbarBox.screenY <= nodeBox.screenY + nodeBox.height &&
+				tabbarBox.screenY + tabbarBox.height >= nodeBox.screenY
+			)
+			)
+			this.redrawContentArea();
 	},
  
 	onKeyDown : function(aEvent) 
