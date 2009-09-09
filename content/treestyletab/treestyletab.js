@@ -225,11 +225,11 @@ var TreeStyleTabService = {
 			refId = aInsertBefore.getAttribute(this.kID);
 		}
 
-		ownerBrowser.treeStyleTab.readyToAttachNewTab   = true;
-		ownerBrowser.treeStyleTab.readyToAttachMultiple = aMultiple || false ;
-		ownerBrowser.treeStyleTab.multipleCount         = 0;
-		ownerBrowser.treeStyleTab.parentTab             = parentId;
-		ownerBrowser.treeStyleTab.insertBefore          = refId;
+		ownerBrowser.treeStyleTab.readiedToAttachNewTab   = true;
+		ownerBrowser.treeStyleTab.readiedToAttachMultiple = aMultiple || false ;
+		ownerBrowser.treeStyleTab.multipleCount           = 0;
+		ownerBrowser.treeStyleTab.parentTab               = parentId;
+		ownerBrowser.treeStyleTab.insertBefore            = refId;
 	},
  
 	readyToOpenNewTabGroup : function(aFrameOrTabBrowser, aTreeStructure) /* PUBLIC API */ 
@@ -242,10 +242,10 @@ var TreeStyleTabService = {
 		this.stopToOpenChildTab(frame);
 
 		var ownerBrowser = this.getTabBrowserFromFrame(frame);
-		ownerBrowser.treeStyleTab.readyToAttachNewTabGroup = true;
-		ownerBrowser.treeStyleTab.readyToAttachMultiple    = true;
-		ownerBrowser.treeStyleTab.multipleCount            = 0;
-		ownerBrowser.treeStyleTab.treeStructure            = aTreeStructure;
+		ownerBrowser.treeStyleTab.readiedToAttachNewTabGroup = true;
+		ownerBrowser.treeStyleTab.readiedToAttachMultiple    = true;
+		ownerBrowser.treeStyleTab.multipleCount              = 0;
+		ownerBrowser.treeStyleTab.treeStructure              = aTreeStructure;
 	},
  
 	stopToOpenChildTab : function(aFrameOrTabBrowser) /* PUBLIC API */ 
@@ -254,13 +254,13 @@ var TreeStyleTabService = {
 		if (!frame) return;
 
 		var ownerBrowser = this.getTabBrowserFromFrame(frame);
-		ownerBrowser.treeStyleTab.readyToAttachNewTab      = false;
-		ownerBrowser.treeStyleTab.readyToAttachNewTabGroup = false;
-		ownerBrowser.treeStyleTab.readyToAttachMultiple    = false;
-		ownerBrowser.treeStyleTab.multipleCount            = 0;
-		ownerBrowser.treeStyleTab.parentTab                = null;
-		ownerBrowser.treeStyleTab.insertBefore             = null;
-		ownerBrowser.treeStyleTab.treeStructure            = null;
+		ownerBrowser.treeStyleTab.readiedToAttachNewTab      = false;
+		ownerBrowser.treeStyleTab.readiedToAttachNewTabGroup = false;
+		ownerBrowser.treeStyleTab.readiedToAttachMultiple    = false;
+		ownerBrowser.treeStyleTab.multipleCount              = 0;
+		ownerBrowser.treeStyleTab.parentTab                  = null;
+		ownerBrowser.treeStyleTab.insertBefore               = null;
+		ownerBrowser.treeStyleTab.treeStructure              = null;
 	},
  
 	checkToOpenChildTab : function(aFrameOrTabBrowser) /* PUBLIC API */ 
@@ -269,7 +269,7 @@ var TreeStyleTabService = {
 		if (!frame) return false;
 
 		var ownerBrowser = this.getTabBrowserFromFrame(frame);
-		return ownerBrowser.treeStyleTab.readyToAttachNewTab || ownerBrowser.treeStyleTab.readyToAttachNewTabGroup ? true : false ;
+		return ownerBrowser.treeStyleTab.readiedToAttachNewTab || ownerBrowser.treeStyleTab.readiedToAttachNewTabGroup ? true : false ;
 	},
  
 	checkReadyToOpenNewTab : function(aInfo) 
@@ -392,6 +392,14 @@ var TreeStyleTabService = {
 		return /^\w+:\/\/([^:\/]+)/.test(getShortcutOrURI(str)) ?
 				RegExp.$1 :
 				null ;
+	},
+ 
+	readyToOpenDivertedTab : function(aFrameOrTabBrowser)
+	{
+		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
+		if (!frame) return;
+		var ownerBrowser = this.getTabBrowserFromFrame(frame);
+		ownerBrowser.treeStyleTab.readiedToOpenDivertedTab = true;
 	},
  
 	setTabbarWidth : function(aWidth, aForceExpanded) /* PUBLIC API */ 
@@ -1742,7 +1750,9 @@ catch(e) {
 						},
 						modifier : $1,
 						invert   : TreeStyleTabService.getTreePref('link.invertDefaultBehavior')
-					}) ? true : (TreeStyleTabService.readyToOpenChildTab(), false)
+					}) ?
+						(TreeStyleTabService.readyToOpenDivertedTab(), true) :
+						(TreeStyleTabService.readyToOpenChildTab(), false)
 				]]>
 			).replace(
 				/* あらゆるリンクからタブを開く設定の時に、アクセルキーが押されていた場合は

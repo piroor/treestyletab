@@ -406,7 +406,7 @@ TreeStyleTabBrowser.prototype = {
 			b.loadTabs.toSource().replace(
 				'var tabNum = ',
 				<![CDATA[
-					if (this.treeStyleTab.readyToAttachNewTabGroup)
+					if (this.treeStyleTab.readiedToAttachNewTabGroup)
 						TreeStyleTabService.readyToOpenChildTab(firstTabAdded || this.selectedTab, true);
 					$&]]>
 			).replace(
@@ -1343,7 +1343,7 @@ TreeStyleTabBrowser.prototype = {
 		var hasStructure = this.treeStructure && this.treeStructure.length;
 		var positionInTree = hasStructure ? this.treeStructure.shift() : -1 ;
 
-		if (this.readyToAttachNewTab) {
+		if (this.readiedToAttachNewTab) {
 			let parent = this.getTabById(this.parentTab);
 			if (parent) {
 				let tabs = [parent].concat(this.getDescendantTabs(parent));
@@ -1380,7 +1380,7 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 
-		if (!this.readyToAttachMultiple) {
+		if (!this.readiedToAttachMultiple) {
 			this.stopToOpenChildTab(b);
 		}
 		else {
@@ -1390,6 +1390,12 @@ TreeStyleTabBrowser.prototype = {
 		if (this.animationEnabled) {
 			this.updateTabCollapsed(tab, true, true);
 			this.updateTabCollapsed(tab, false, !this.completelyRestored);
+		}
+
+		if (this.readiedToOpenDivertedTab) {
+			if (!this.getPref('browser.tabs.loadDivertedInBackground'))
+				b.selectedTab = tab;
+			this.readiedToOpenDivertedTab = false;
 		}
 
 		var prev = this.getPreviousSiblingTab(tab);
