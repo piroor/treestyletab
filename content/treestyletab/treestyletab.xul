@@ -14,6 +14,7 @@
 <script src="res/autoScroll.js" type="application/x-javascript; version=1.7"/>
 <script src="res/animationManager.js" type="application/x-javascript; version=1.7"/>
 <script src="res/extensions.js" type="application/x-javascript; version=1.7"/>
+<script src="res/FUELEventListener.js" type="application/x-javascript; version=1.7"/>
 
 <script src="treestyletab.js" type="application/x-javascript; version=1.7"/>
 <script src="treestyletabbrowser.js" type="application/x-javascript; version=1.7"/>

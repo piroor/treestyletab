@@ -1348,6 +1348,8 @@ var TreeStyleTabService = {
 		this.addPrefListener(this);
 		this.ObserverService.addObserver(this, 'private-browsing-change-granted', false);
 
+		this.registerFUELEventListener();
+
 		this.overrideExtensionsOnInitBefore(); // hacks.js
 		this.overrideGlobalFunctions();
 		this.initTabBrowser(gBrowser);
@@ -1360,6 +1362,7 @@ var TreeStyleTabService = {
 		this.onPrefChange('extensions.treestyletab.clickOnIndentSpaces.enabled');
 		this.onPrefChange('browser.link.open_newwindow.restriction.override');
 		this.onPrefChange('browser.tabs.loadFolderAndReplace.override');
+		this.onPrefChange('browser.tabs.insertRelatedAfterCurrent.override');
 		this.onPrefChange('extensions.treestyletab.tabbar.style');
 		this.onPrefChange('extensions.treestyletab.tabbar.scroll.smooth');
 		this.onPrefChange('extensions.treestyletab.tabbar.scroll.duration');
@@ -1381,6 +1384,30 @@ var TreeStyleTabService = {
 	},
 	initialized : false,
 	completelyRestored : false,
+	registerFUELEventListener : function()
+	{
+		var prefs = window['piro.sakura.ne.jp'].prefs;
+		var restorePrefs = function() {
+				if (!prefs) return;
+				[
+					'browser.link.open_newwindow.restriction',
+					'browser.tabs.loadFolderAndReplace',
+					'browser.tabs.insertRelatedAfterCurrent'
+				].forEach(function(aPref) {
+					var backup = prefs.getPref(aPref+'.backup');
+					if (backup === null) return;
+					prefs.setPref(aPref, backup);
+					prefs.clearPref(aPref+'.backup');
+				});
+				prefs = null;
+				restorePrefs = null;
+			};
+		new window['piro.sakura.ne.jp'].FUELEventListener({
+			extension : Application.extensions.get('treestyletab@piro.sakura.ne.jp'),
+			onuninstalled : restorePrefs,
+			ondisabled : restorePrefs
+		});
+	},
 	
 	initTabBrowser : function(aTabBrowser) 
 	{
@@ -2670,8 +2697,12 @@ catch(e) {
 	
 	domains : [ 
 		'extensions.treestyletab',
+		'browser.link.open_newwindow.restriction',
 		'browser.link.open_newwindow.restriction.override',
+		'browser.tabs.loadFolderAndReplace',
 		'browser.tabs.loadFolderAndReplace.override',
+		'browser.tabs.insertRelatedAfterCurrent',
+		'browser.tabs.insertRelatedAfterCurrent.override',
 		'browser.ctrlTab.previews'
 	],
  
@@ -2699,9 +2730,22 @@ catch(e) {
 				this.updateTabWidthPrefs(aPrefName);
 				break;
 
+			case 'browser.link.open_newwindow.restriction':
+			case 'browser.tabs.loadFolderAndReplace':
+			case 'browser.tabs.insertRelatedAfterCurrent':
+				if (this.prefOverriding) return;
+				aPrefName += '.override';
+				this.setPref(aPrefName, value);
 			case 'browser.link.open_newwindow.restriction.override':
 			case 'browser.tabs.loadFolderAndReplace.override':
-				this.setPref(aPrefName.replace('.override', ''), this.getPref(aPrefName));
+			case 'browser.tabs.insertRelatedAfterCurrent.override':
+				this.prefOverriding = true;
+				var target = aPrefName.replace('.override', '');
+				var originalValue = this.getPref(target);
+				if (originalValue !== null && originalValue != value)
+					this.setPref(target+'.backup', originalValue);
+				this.setPref(target, this.getPref(aPrefName));
+				this.prefOverriding = false;
 				break;
 
 			case 'extensions.treestyletab.clickOnIndentSpaces.enabled':
