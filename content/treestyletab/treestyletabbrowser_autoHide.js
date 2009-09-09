@@ -580,6 +580,11 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		}
 	},
  
+	get shouldRedraw()
+	{
+		return this.enabled && this.shown && this.mTabBrowser.hasAttribute(this.kTRANSPARENT);
+	},
+ 
 	drawBG : function() 
 	{
 		var sv = this.mOwner;
@@ -826,12 +831,13 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 			case 'scroll':
 				var node = aEvent.originalTarget;
-				if ((!node || node.ownerDocument != document) && this.enabled)
+				if ((!node || node.ownerDocument != document) && this.shouldRedraw)
 					this.redrawContentArea();
 				return;
 
 			case 'load':
-				this.redrawContentArea();
+				if (this.shouldRedraw)
+					this.redrawContentArea();
 				return;
 
 			case 'TabOpen':
@@ -845,7 +851,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				return;
 
 			case 'select':
-				if (this.enabled && this.shown)
+				if (this.shouldRedraw)
 					this.redrawContentArea();
 				if (!TreeStyleTabService.accelKeyPressed)
 					this.showForFeedback();
