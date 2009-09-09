@@ -1348,7 +1348,7 @@ var TreeStyleTabService = {
 		this.addPrefListener(this);
 		this.ObserverService.addObserver(this, 'private-browsing-change-granted', false);
 
-		this.registerFUELEventListener();
+		this.initUninstallationListener();
 
 		this.overrideExtensionsOnInitBefore(); // hacks.js
 		this.overrideGlobalFunctions();
@@ -1384,7 +1384,7 @@ var TreeStyleTabService = {
 	},
 	initialized : false,
 	completelyRestored : false,
-	registerFUELEventListener : function()
+	initUninstallationListener : function()
 	{
 		var prefs = window['piro.sakura.ne.jp'].prefs;
 		var restorePrefs = function() {
@@ -1402,8 +1402,8 @@ var TreeStyleTabService = {
 				prefs = null;
 				restorePrefs = null;
 			};
-		new window['piro.sakura.ne.jp'].FUELEventListener({
-			extension : Application.extensions.get('treestyletab@piro.sakura.ne.jp'),
+		new window['piro.sakura.ne.jp'].UninstallationListener({
+			id : 'treestyletab@piro.sakura.ne.jp',
 			onuninstalled : restorePrefs,
 			ondisabled : restorePrefs
 		});
