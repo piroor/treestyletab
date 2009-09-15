@@ -528,6 +528,11 @@ var TreeStyleTabService = {
 			).booleanValue;
 	},
  
+	isNewTabAction : function(aEvent) 
+	{
+		return aEvent.button == 1 || (aEvent.button == 0 && this.isAccelKeyPressed(aEvent));
+	},
+ 
 	isAccelKeyPressed : function(aEvent) 
 	{
 		var isMac = navigator.platform.toLowerCase().indexOf('mac') > -1;
@@ -1778,7 +1783,10 @@ catch(e) {
 						modifier : $1,
 						invert   : TreeStyleTabService.getTreePref('link.invertDefaultBehavior')
 					}) ?
-						(TreeStyleTabService.readyToOpenDivertedTab(), true) :
+						(
+							(TreeStyleTabService.isNewTabAction(event) ? null : TreeStyleTabService.readyToOpenDivertedTab()),
+							true
+						) :
 						(TreeStyleTabService.readyToOpenChildTab(), false)
 				]]>
 			).replace(
