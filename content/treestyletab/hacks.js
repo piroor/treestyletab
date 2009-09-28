@@ -802,4 +802,33 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		window.addEventListener('unload', autoHideEventListener, false);
 	}
 
+
+	// Google Toolbar Sidewiki
+	if ('sidewikiWindowHandler' in window &&
+		window.sidewikiWindowHandler &&
+		sidewikiWindowHandler.barsContainer_ &&
+		sidewikiWindowHandler.barsContainer_.geometry_ &&
+		sidewikiWindowHandler.barsContainer_.geometry_.__proto__.getWindowSizeForDrawers) {
+		let func = sidewikiWindowHandler.barsContainer_.geometry_.__proto__.getWindowSizeForDrawers.toSource();
+		if (func.indexOf('treeStyleTab') < 0) {
+			eval('sidewikiWindowHandler.barsContainer_.geometry_.__proto__.getWindowSizeForDrawers = '+func.replace(
+				'return {',
+				<![CDATA[
+					if ('treeStyleTab' in this.topLevelDocument_.getElementById('content')) {
+						let b = this.topLevelDocument_.getElementById('content');
+						let box = b.mPanelContainer.boxObject;
+						return {
+							height       : box.height,
+							width        : box.width,
+							top          : box.y,
+							left         : box.x,
+							right        : this.topLevelWindow_.innerWidth - box.x - box.width,
+							tabBoxHeight : 0
+						};
+					}
+				$&]]>
+			));
+		}
+	}
+
 };
