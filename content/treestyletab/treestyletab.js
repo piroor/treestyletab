@@ -1109,6 +1109,7 @@ var TreeStyleTabService = {
 
 		aTab.setAttribute(aKey, aValue);
 		try {
+			this.checkCachedSessionDataExpiration(aTab);
 			this.SessionStore.setTabValue(aTab, aKey, aValue);
 		}
 		catch(e) {
@@ -1124,7 +1125,8 @@ var TreeStyleTabService = {
 	{
 		aTab.removeAttribute(aKey);
 		try {
-			this.SessionStore.setTabValue(aTab, '');
+			this.checkCachedSessionDataExpiration(aTab);
+			this.SessionStore.setTabValue(aTab, aKey, '');
 			this.SessionStore.deleteTabValue(aTab, aKey);
 		}
 		catch(e) {
@@ -1132,6 +1134,15 @@ var TreeStyleTabService = {
 
 		if (this.useTMPSessionAPI)
 			aTab.removeAttribute(this.kTMP_SESSION_DATA_PREFIX+aKey);
+	},
+ 
+	// workaround for http://piro.sakura.ne.jp/latest/blosxom/mozilla/extension/treestyletab/2009-09-29_debug.htm
+	checkCachedSessionDataExpiration : function(aTab) 
+	{
+		if (aTab.linkedBrowser.parentNode.__SS_data &&
+			aTab.linkedBrowser.parentNode.__SS_data._tabStillLoading &&
+			aTab.getAttribute('busy') != 'true')
+			aTab.linkedBrowser.parentNode.__SS_data._tabStillLoading = false;
 	},
  
 	useTMPSessionAPI : false, 
