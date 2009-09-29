@@ -93,7 +93,7 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 			function(aTarget) {
 				let tab = sv.getTabById(aTarget);
 				if (tab &&
-					tab.getAttribute(sv.kSUBTREE_COLLAPSED) == 'true' &&
+					sv.shouldTabAutoExpanded(tab) &&
 					tab.getAttribute(sv.kDROP_POSITION) == 'self') {
 					if (sv.getTreePref('autoExpand.intelligently')) {
 						sv.collapseExpandTreesIntelligentlyFor(tab);

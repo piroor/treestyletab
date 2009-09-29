@@ -561,6 +561,7 @@ TreeStyleTabBrowser.prototype = {
 		if (!aTab.hasAttribute(this.kID)) {
 			var id = this.getTabValue(aTab, this.kID) || this.makeNewId();
 			this.setTabValue(aTab, this.kID, id);
+			this.setTabValue(aTab, this.kSUBTREE_COLLAPSED, true);
 		}
 
 		aTab.__treestyletab__linkedTabBrowser = this.mTabBrowser;
@@ -2703,20 +2704,20 @@ TreeStyleTabBrowser.prototype = {
 
 		if (!aInfo.dontExpand) {
 			if (this.getTreePref('autoCollapseExpandSubTreeOnSelect')) {
-				if (aParent.getAttribute(this.kSUBTREE_COLLAPSED) == 'true')
+				if (this.shouldTabAutoExpanded(aParent))
 					this.collapseExpandTreesIntelligentlyFor(aParent);
 				var p = aParent;
 				do {
-					if (p.getAttribute(this.kSUBTREE_COLLAPSED) == 'true')
+					if (this.shouldTabAutoExpanded(p))
 						this.collapseExpandSubtree(p, false, aInfo.dontAnimate);
 				}
 				while (p = this.getParentTab(p));
 			}
-			else if (aParent.getAttribute(this.kSUBTREE_COLLAPSED) == 'true') {
+			else if (this.shouldTabAutoExpanded(aParent)) {
 				if (this.getTreePref('autoExpandSubTreeOnAppendChild')) {
 					var p = aParent;
 					do {
-						if (p.getAttribute(this.kSUBTREE_COLLAPSED) == 'true')
+						if (this.shouldTabAutoExpanded(p))
 							this.collapseExpandSubtree(p, false, aInfo.dontAnimate);
 					}
 					while (p = this.getParentTab(p));
@@ -2728,7 +2729,7 @@ TreeStyleTabBrowser.prototype = {
 			if (aParent.getAttribute(this.kCOLLAPSED) == 'true')
 				this.collapseExpandTab(aChild, true, aInfo.dontAnimate);
 		}
-		else if (aParent.getAttribute(this.kSUBTREE_COLLAPSED) == 'true' ||
+		else if (this.shouldTabAutoExpanded(aParent) ||
 				aParent.getAttribute(this.kCOLLAPSED) == 'true') {
 			this.collapseExpandTab(aChild, true, aInfo.dontAnimate);
 		}
@@ -2743,6 +2744,12 @@ TreeStyleTabBrowser.prototype = {
 		event.initEvent('TreeStyleTabAttached', true, true);
 		event.parentTab = aParent;
 		aChild.dispatchEvent(event);
+	},
+ 
+	shouldTabAutoExpanded : function(aTab)
+	{
+		return this.hasChildTabs(aTab) &&
+				aTab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true';
 	},
  
 	partTab : function(aChild, aInfo) /* PUBLIC API */ 
@@ -2763,6 +2770,8 @@ TreeStyleTabBrowser.prototype = {
 					return this.getTabById(aId) && aId != id;
 				}, this).join('|')
 		);
+		if (!this.hasChildTabs(parentTab))
+			this.setTabValue(parentTab, this.kSUBTREE_COLLAPSED, true);
 		this.deleteTabValue(aChild, this.kPARENT);
 		this.updateTabsCount(parentTab);
 
