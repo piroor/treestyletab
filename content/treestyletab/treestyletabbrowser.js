@@ -1759,16 +1759,16 @@ TreeStyleTabBrowser.prototype = {
 		var tab = aTab;
 		var b   = this.mTabBrowser;
 		var id  = this.getTabValue(tab, this.kID);
-		var maybeDuplicated = false;
+		var mayBeDuplicated = false;
 
 		tab.setAttribute(this.kID+'-temp', id);
 		if (this.isTabDuplicated(tab)) { // this is a duplicated tab!
-			maybeDuplicated = true;
+			mayBeDuplicated = true;
 			id = this.redirectId(id);
 		}
 		tab.removeAttribute(this.kID+'-temp');
 
-		if (!maybeDuplicated) {
+		if (!mayBeDuplicated) {
 			/* If it has a parent, it is wrongly attacched by tab moving
 			   on restoring. Restoring the old ID (the next statement)
 			   breaks the children list of the temporary parent and causes
@@ -1790,14 +1790,27 @@ TreeStyleTabBrowser.prototype = {
 
 		if (tab.getAttribute(this.kID) != id) {
 			this.setTabValue(tab, this.kID, id);
-			window.setTimeout(function(aSelf) {
-				aSelf.restoreStructureInternal(tab, aWithoutAnimation, maybeDuplicated);
+			this.delayedRestoringTasks.push({
+				tab              : tab,
+				withoutAnimation : aWithoutAnimation,
+				mayBeDuplicated  : mayBeDuplicated
+			});
+			if (this.delayedRestoringTimer)
+				window.clearTimeout(this.delayedRestoringTimer);
+			this.delayedRestoringTimer = window.setTimeout(function(aSelf) {
+				aSelf.delayedRestoringTasks.forEach(function(aTask) {
+					aSelf.restoreStructureInternal(aTask.tab, aTask.withoutAnimation, aTask.mayBeDuplicated);
+				});
+				aSelf.delayedRestoringTasks = [];
+				aSelf.delayedRestoringTimer = null;
 			}, 100, this);
 		}
 		else {
-			this.restoreStructureInternal(tab, aWithoutAnimation, maybeDuplicated);
+			this.restoreStructureInternal(tab, aWithoutAnimation, mayBeDuplicated);
 		}
 	},
+	delayedRestoringTimer : null,
+	delayedRestoringTasks : [],
 	restoreStructureInternal : function (aTab, aWithoutAnimation, aMayBeDuplicated)
 	{
 		var tab = aTab;
