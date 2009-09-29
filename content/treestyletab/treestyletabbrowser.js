@@ -561,11 +561,11 @@ TreeStyleTabBrowser.prototype = {
 		if (!aTab.hasAttribute(this.kID)) {
 			var id = this.getTabValue(aTab, this.kID) || this.makeNewId();
 			aTab.setAttribute(this.kID, id);
+			aTab.setAttribute(this.kSUBTREE_COLLAPSED, true);
 			window.setTimeout(function(aSelf) {
 				if (!aSelf.getTabValue(aTab, aSelf.kID))
 					aSelf.setTabValue(aTab, aSelf.kID, id);
 			}, 0, this);
-			this.setTabValue(aTab, this.kSUBTREE_COLLAPSED, true);
 		}
 
 		aTab.__treestyletab__linkedTabBrowser = this.mTabBrowser;
@@ -1788,43 +1788,17 @@ TreeStyleTabBrowser.prototype = {
 			this.updateTabsIndent([tab], undefined, undefined, aWithoutAnimation);
 		}
 
-		if (tab.getAttribute(this.kID) != id) {
-			this.setTabValue(tab, this.kID, id);
-			this.delayedRestoringTasks.push({
-				tab              : tab,
-				withoutAnimation : aWithoutAnimation,
-				mayBeDuplicated  : mayBeDuplicated
-			});
-			if (this.delayedRestoringTimer)
-				window.clearTimeout(this.delayedRestoringTimer);
-			this.delayedRestoringTimer = window.setTimeout(function(aSelf) {
-				aSelf.delayedRestoringTasks.forEach(function(aTask) {
-					aSelf.restoreStructureInternal(aTask.tab, aTask.withoutAnimation, aTask.mayBeDuplicated);
-				});
-				aSelf.delayedRestoringTasks = [];
-				aSelf.delayedRestoringTimer = null;
-			}, 100, this);
-		}
-		else {
-			this.restoreStructureInternal(tab, aWithoutAnimation, mayBeDuplicated);
-		}
-	},
-	delayedRestoringTimer : null,
-	delayedRestoringTasks : [],
-	restoreStructureInternal : function (aTab, aWithoutAnimation, aMayBeDuplicated)
-	{
-		var tab = aTab;
-		var b   = this.mTabBrowser;
-		var id  = this.getTabValue(tab, this.kID);
+		this.setTabValue(tab, this.kID, id);
 
 		var isSubTreeCollapsed = (this.getTabValue(tab, this.kSUBTREE_COLLAPSED) == 'true');
+		this.setTabValue(tab, this.kSUBTREE_COLLAPSED, isSubTreeCollapsed);
 
 		var children = this.getTabValue(tab, this.kCHILDREN);
 		var tabs = [];
 		if (children) {
 			tab.removeAttribute(this.kCHILDREN);
 			children = children.split('|');
-			if (aMayBeDuplicated)
+			if (mayBeDuplicated)
 				children = children.map(function(aChild) {
 					return this.redirectId(aChild);
 				}, this);
@@ -1841,12 +1815,12 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		var nextTab = this.getTabValue(tab, this.kINSERT_BEFORE);
-		if (nextTab && aMayBeDuplicated) nextTab = this.redirectId(nextTab);
+		if (nextTab && mayBeDuplicated) nextTab = this.redirectId(nextTab);
 		nextTab = this.getTabById(nextTab);
 
 		if (!nextTab) {
 			var prevTab = this.getTabValue(tab, this.kINSERT_AFTER);
-			if (prevTab && aMayBeDuplicated) prevTab = this.redirectId(prevTab);
+			if (prevTab && mayBeDuplicated) prevTab = this.redirectId(prevTab);
 			nextTab = this.getNextSiblingTab(this.getTabById(prevTab));
 		}
 
@@ -1854,7 +1828,7 @@ TreeStyleTabBrowser.prototype = {
 		var parent = null;
 		for (var i in ancestors)
 		{
-			if (aMayBeDuplicated) ancestors[i] = this.redirectId(ancestors[i]);
+			if (mayBeDuplicated) ancestors[i] = this.redirectId(ancestors[i]);
 			parent = this.getTabById(ancestors[i]);
 			if (parent) {
 				parent = ancestors[i];
@@ -1905,7 +1879,7 @@ TreeStyleTabBrowser.prototype = {
 			this.collapseExpandSubtree(tab, isSubTreeCollapsed, aWithoutAnimation);
 		}
 
-		if (aMayBeDuplicated) this.clearRedirectionTable();
+		if (mayBeDuplicated) this.clearRedirectionTable();
 	},
 	
 	redirectId : function(aId) 
