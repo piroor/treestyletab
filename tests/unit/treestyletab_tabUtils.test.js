@@ -196,6 +196,7 @@ test_setAndGetTabValue.setUp = function() {
 test_setAndGetTabValue.tearDown = function() {
 	tabs.forEach(function(aTab) {
 		try {
+			SessionStore.setTabValue(aTab, randomKey, '');
 			SessionStore.deleteTabValue(aTab, randomKey);
 		}
 		catch(e) {

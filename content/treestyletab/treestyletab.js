@@ -727,13 +727,24 @@ var TreeStyleTabService = {
 	getTabById : function(aId, aTabBrowserChildren) 
 	{
 		if (!aId) return null;
-		var b = aTabBrowserChildren ? this.getTabBrowserFromChild(aTabBrowserChildren) : null ;
-		if (!b) b = this.browser;
+		var b = this.getTabBrowserFromChild(aTabBrowserChildren) || this.browser;
 		return this.evaluateXPath(
 				'descendant::xul:tab[@'+this.kID+' = "'+aId+'"]',
 				b.mTabContainer,
 				XPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
+	},
+ 
+	isTabDuplicated : function(aTab) 
+	{
+		if (!aTab) return false;
+		var id = this.getTabValue(aTab, this.kID);
+		var b = this.getTabBrowserFromChild(aTab) || this.browser;
+		return this.evaluateXPath(
+				'count(descendant::xul:tab[@'+this.kID+' = "'+id+'" or @'+this.kID+'-temp = "'+id+'"]) > 1',
+				b.mTabContainer,
+				XPathResult.BOOLEAN_TYPE
+			).booleanValue;
 	},
  
 	getTabs : function(aTabBrowser) 
@@ -1113,6 +1124,7 @@ var TreeStyleTabService = {
 	{
 		aTab.removeAttribute(aKey);
 		try {
+			this.SessionStore.setTabValue(aTab, '');
 			this.SessionStore.deleteTabValue(aTab, aKey);
 		}
 		catch(e) {

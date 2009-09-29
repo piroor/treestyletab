@@ -1744,10 +1744,12 @@ TreeStyleTabBrowser.prototype = {
 
 		var id = this.getTabValue(tab, this.kID);
 
-		if (this.getTabById(id)) { // this is a duplicated tab!
+		tab.setAttribute(this.kID+'-temp', id);
+		if (this.isTabDuplicated(tab)) { // this is a duplicated tab!
 			maybeDuplicated = true;
 			id = this.redirectId(id);
 		}
+		tab.removeAttribute(this.kID+'-temp');
 
 		if (!maybeDuplicated) {
 			/* If it has a parent, it is wrongly attacched by tab moving
