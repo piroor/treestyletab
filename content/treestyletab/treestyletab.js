@@ -8,6 +8,9 @@ var TreeStyleTabService = {
 	kINSERT_BEFORE      : 'treestyletab-insert-before',
 	kINSERT_AFTER       : 'treestyletab-insert-after',
 
+	kID_RESTORING       : 'treestyletab-id-restoring',
+	kCHILDREN_RESTORING : 'treestyletab-children-restoring',
+
 	kSUBTREE_COLLAPSED  : 'treestyletab-subtree-collapsed',
 	kCOLLAPSED          : 'treestyletab-collapsed',
 	kCOLLAPSED_DONE     : 'treestyletab-collapsed-done',
@@ -741,7 +744,7 @@ var TreeStyleTabService = {
 		var id = this.getTabValue(aTab, this.kID);
 		var b = this.getTabBrowserFromChild(aTab) || this.browser;
 		return this.evaluateXPath(
-				'count(descendant::xul:tab[@'+this.kID+' = "'+id+'" or @'+this.kID+'-temp = "'+id+'"]) > 1',
+				'count(descendant::xul:tab[@'+this.kID+' = "'+id+'" or @'+this.kID_RESTORING+' = "'+id+'"]) > 1',
 				b.mTabContainer,
 				XPathResult.BOOLEAN_TYPE
 			).booleanValue;

@@ -1761,12 +1761,12 @@ TreeStyleTabBrowser.prototype = {
 		var id  = this.getTabValue(tab, this.kID);
 		var mayBeDuplicated = false;
 
-		tab.setAttribute(this.kID+'-temp', id);
-		if (this.isTabDuplicated(tab)) { // this is a duplicated tab!
+		tab.setAttribute(this.kID_RESTORING, id);
+		if (this.isTabDuplicated(tab)) {
 			mayBeDuplicated = true;
 			id = this.redirectId(id);
 		}
-		tab.removeAttribute(this.kID+'-temp');
+		tab.removeAttribute(this.kID_RESTORING);
 
 		if (!mayBeDuplicated) {
 			/* If it has a parent, it is wrongly attacched by tab moving
@@ -1812,6 +1812,11 @@ TreeStyleTabBrowser.prototype = {
 					tabs.push(aTab);
 				}
 			}, this);
+			children = children.join('|');
+			if (tab.getAttribute(this.kCHILDREN) == children)
+				tab.removeAttribute(this.kCHILDREN_RESTORING);
+			else
+				tab.setAttribute(this.kCHILDREN_RESTORING, children);
 		}
 
 		var nextTab = this.getTabValue(tab, this.kINSERT_BEFORE);
@@ -1819,9 +1824,10 @@ TreeStyleTabBrowser.prototype = {
 		nextTab = this.getTabById(nextTab);
 
 		if (!nextTab) {
-			var prevTab = this.getTabValue(tab, this.kINSERT_AFTER);
+			let prevTab = this.getTabValue(tab, this.kINSERT_AFTER);
 			if (prevTab && mayBeDuplicated) prevTab = this.redirectId(prevTab);
-			nextTab = this.getNextSiblingTab(this.getTabById(prevTab));
+			prevTab = this.getTabById(prevTab);
+			nextTab = this.getNextSiblingTab(prevTab);
 		}
 
 		var ancestors = (this.getTabValue(tab, this.kANCESTOR) || this.getTabValue(tab, this.kPARENT)).split('|');
@@ -1849,6 +1855,15 @@ TreeStyleTabBrowser.prototype = {
 				});
 				this.updateTabsIndent([tab], undefined, undefined, aWithoutAnimation);
 				this.checkTabsIndentOverflow();
+
+				let restoringChildren = parent.getAttribute(this.kCHILDREN_RESTORING);
+				children = parent.getAttribute(this.kCHILDREN);
+				if (restoringChildren != children) {
+					// operations to rearrange child tabs
+					children = parent.getAttribute(this.kCHILDREN);
+				}
+				if (restoringChildren == children)
+					tab.removeAttribute(this.kCHILDREN_RESTORING);
 			}
 			else {
 				this.deleteTabValue(tab, this.kPARENT);
