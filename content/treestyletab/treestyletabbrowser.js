@@ -2703,10 +2703,12 @@ TreeStyleTabBrowser.prototype = {
 
 		if (!aInfo.dontExpand) {
 			if (this.getTreePref('autoCollapseExpandSubTreeOnSelect')) {
-				this.collapseExpandTreesIntelligentlyFor(aParent);
+				if (aParent.getAttribute(this.kSUBTREE_COLLAPSED) == 'true')
+					this.collapseExpandTreesIntelligentlyFor(aParent);
 				var p = aParent;
 				do {
-					this.collapseExpandSubtree(p, false, aInfo.dontAnimate);
+					if (p.getAttribute(this.kSUBTREE_COLLAPSED) == 'true')
+						this.collapseExpandSubtree(p, false, aInfo.dontAnimate);
 				}
 				while (p = this.getParentTab(p));
 			}
@@ -2714,7 +2716,8 @@ TreeStyleTabBrowser.prototype = {
 				if (this.getTreePref('autoExpandSubTreeOnAppendChild')) {
 					var p = aParent;
 					do {
-						this.collapseExpandSubtree(p, false, aInfo.dontAnimate);
+						if (p.getAttribute(this.kSUBTREE_COLLAPSED) == 'true')
+							this.collapseExpandSubtree(p, false, aInfo.dontAnimate);
 					}
 					while (p = this.getParentTab(p));
 				}
