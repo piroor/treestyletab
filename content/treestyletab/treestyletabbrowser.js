@@ -1856,33 +1856,8 @@ TreeStyleTabBrowser.prototype = {
 				this.updateTabsIndent([tab], undefined, undefined, aWithoutAnimation);
 				this.checkTabsIndentOverflow();
 
-				if (parent.getAttribute(this.kCHILDREN_RESTORING)) {
-					if (parent.restoringChildrenTimer)
-						window.clearTimeout(parent.restoringChildrenTimer);
-					parent.restoringChildrenTimer = window.setTimeout(function(aSelf, aTabBrowser, aTab) {
-						let restoringChildren = parent.getAttribute(this.kCHILDREN_RESTORING);
-						let children = aTab.getAttribute(aSelf.kCHILDREN);
-						if (restoringChildren != children) {
-							var restoringChildrenIDs = restoringChildren.split('|');
-							restoringChildrenIDs.forEach(function(aChild, aIndex) {
-								aChild = aSelf.getTabById(aChild);
-								if (!aChild) return;
-								let newPos = aIndex < restoringChildrenIDs.length-1 ?
-											aSelf.getTabById(restoringChildrenIDs[aIndex+1]) :
-											aSelf.getNextSiblingTab(aTab) ;
-								newPos = newPos ?
-										newPos._tPos - 1 :
-										aSelf.getTabs(aTabBrowser).snapshotLength - 1 ;
-								if (newPos > aChild._tPos) newPos--;
-								aSelf.moveTabTo(aChild, newPos);
-							}, aSelf);
-							children = aTab.getAttribute(aSelf.kCHILDREN);
-						}
-						if (restoringChildren == children)
-							aTab.removeAttribute(aSelf.kCHILDREN_RESTORING);
-						aTab.restoringChildrenTimer = null;
-					}, 100, this, b, parent);
-				}
+				if (parent.getAttribute(this.kCHILDREN_RESTORING))
+					this.correctChildTabsOrderWithDelay(parent);
 			}
 			else {
 				this.deleteTabValue(tab, this.kPARENT);
@@ -1914,6 +1889,50 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		if (mayBeDuplicated) this.clearRedirectionTable();
+	},
+	correctChildTabsOrderWithDelay : function(aTab)
+	{
+		if (aTab.correctChildTabsOrderWithDelayTimer)
+			window.clearTimeout(aTab.correctChildTabsOrderWithDelayTimer);
+
+		aTab.correctChildTabsOrderWithDelayTimer = window.setTimeout(function(aSelf) {
+			aSelf.correctChildTabsOrder(aTab);
+		}, 100, this);
+	},
+	correctChildTabsOrder : function(aTab)
+	{
+		var restoringChildren = aTab.getAttribute(this.kCHILDREN_RESTORING);
+		if (!restoringChildren) return;
+
+		var children = aTab.getAttribute(this.kCHILDREN);
+		if (restoringChildren != children) {
+			var restoringChildrenIDs = restoringChildren.split('|');
+			restoringChildrenIDs.reverse().forEach(function(aChild, aIndex) {
+				aChild = this.getTabById(aChild);
+				if (!aChild) return;
+
+				let nextTab = aIndex > 0 ?
+							this.getTabById(restoringChildrenIDs[aIndex-1]) :
+							this.getNextSiblingTab(aTab) ;
+				if (nextTab == this.getNextSiblingTab(aChild)) return;
+
+				let newPos;
+				if (nextTab) {
+					newPos = nextTab._tPos;
+					if (newPos > aChild._tPos) newPos--;
+				}
+				else {
+					newPos = this.getTabs(this.mTabBrowser).snapshotLength - 1;
+				}
+				this.moveTabSubTreeTo(aChild, newPos);
+			}, this);
+			children = aTab.getAttribute(this.kCHILDREN);
+		}
+
+		if (restoringChildren == children)
+			aTab.removeAttribute(this.kCHILDREN_RESTORING);
+
+		aTab.correctChildTabsOrderWithDelayTimer = null;
 	},
 	
 	redirectId : function(aId) 
