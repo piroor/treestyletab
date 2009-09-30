@@ -477,10 +477,10 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 			window.BrowserHome = window.TM_BrowserHome;
 			window.BrowserOpenTab = window.TMP_BrowserOpenTab;
 
-			gBrowser.treeStyleTab.internallyTabMoving = false;
+			gBrowser.treeStyleTab.internallyTabMovingCount--;
 		}, 0);
 
-		gBrowser.treeStyleTab.internallyTabMoving = true; // until "TMmoveTabTo" method is overwritten
+		gBrowser.treeStyleTab.internallyTabMovingCount++; // until "TMmoveTabTo" method is overwritten
 	}
 
 

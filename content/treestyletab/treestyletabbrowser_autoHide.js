@@ -844,7 +844,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				return;
 
 			case 'TabMove':
-				if (!this.mOwner.isSubTreeMoving && !this.mOwner.internallyTabMoving)
+				if (!this.mOwner.subTreeMovingCount && !this.mOwner.internallyTabMovingCount)
 					this.showForFeedback();
 				return;
 

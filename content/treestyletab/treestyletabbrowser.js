@@ -124,6 +124,10 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var b = this.mTabBrowser;
 
+		this.internallyTabMovingCount = 0;
+		this.subTreeMovingCount = 0;
+		this.subTreeChildrenMovingCount = 0;
+
 		let (splitter, toggler) {
 			splitter = document.getAnonymousElementByAttribute(b, 'class', this.kSPLITTER);
 			if (!splitter) {
@@ -335,7 +339,7 @@ TreeStyleTabBrowser.prototype = {
 			).replace(
 				'this.moveTabToStart();',
 				<![CDATA[
-					this.treeStyleTab.internallyTabMoving = true;
+					this.treeStyleTab.internallyTabMovingCount++;
 					var parentTab = this.treeStyleTab.getParentTab(this.mCurrentTab);
 					if (parentTab) {
 						this.moveTabTo(this.mCurrentTab, this.treeStyleTab.getFirstChildTab(parentTab)._tPos);
@@ -344,7 +348,7 @@ TreeStyleTabBrowser.prototype = {
 					else {
 						$&
 					}
-					this.treeStyleTab.internallyTabMoving = false;
+					this.treeStyleTab.internallyTabMovingCount--;
 				]]>
 			)
 		);
@@ -360,7 +364,7 @@ TreeStyleTabBrowser.prototype = {
 			).replace(
 				'this.moveTabToEnd();',
 				<![CDATA[
-					this.treeStyleTab.internallyTabMoving = true;
+					this.treeStyleTab.internallyTabMovingCount++;
 					var parentTab = this.treeStyleTab.getParentTab(this.mCurrentTab);
 					if (parentTab) {
 						this.moveTabTo(this.mCurrentTab, this.treeStyleTab.getLastChildTab(parentTab)._tPos);
@@ -369,7 +373,7 @@ TreeStyleTabBrowser.prototype = {
 					else {
 						$&
 					}
-					this.treeStyleTab.internallyTabMoving = false;
+					this.treeStyleTab.internallyTabMovingCount--;
 				]]>
 			)
 		);
@@ -1379,9 +1383,9 @@ TreeStyleTabBrowser.prototype = {
 
 			if (newIndex > -1) {
 				if (newIndex > tab._tPos) newIndex--;
-				this.internallyTabMoving = true;
+				this.internallyTabMovingCount++;
 				b.moveTabTo(tab, newIndex);
-				this.internallyTabMoving = false;
+				this.internallyTabMovingCount--;
 			}
 		}
 
@@ -1612,12 +1616,12 @@ TreeStyleTabBrowser.prototype = {
 		var b   = this.mTabBrowser;
 		this.initTabContents(tab); // twisty vanished after the tab is moved!!
 
-		if (this.hasChildTabs(tab) && !this.isSubTreeMoving) {
+		if (this.hasChildTabs(tab) && !this.subTreeMovingCount) {
 			this.moveTabSubTreeTo(tab, tab._tPos);
 		}
 
 		var parentTab = this.getParentTab(tab);
-		if (parentTab && !this.isSubTreeChildrenMoving) {
+		if (parentTab && !this.subTreeChildrenMovingCount) {
 			this.updateChildrenArray(parentTab);
 		}
 
@@ -1662,8 +1666,8 @@ TreeStyleTabBrowser.prototype = {
 			this.deleteTabValue(old, this.kINSERT_BEFORE);
 
 		if (
-			this.isSubTreeMoving ||
-			this.internallyTabMoving
+			this.subTreeMovingCount ||
+			this.internallyTabMovingCount
 			)
 			return;
 
@@ -2548,10 +2552,10 @@ TreeStyleTabBrowser.prototype = {
 			var newIndex = aInfo.insertBefore ? aInfo.insertBefore._tPos : lastTabIndex ;
 			if (aInfo.insertBefore && newIndex > tab._tPos) newIndex--;
 
-			this.internallyTabMoving = true;
+			this.internallyTabMovingCount++;
 			targetBrowser.moveTabTo(tab, newIndex);
 			this.collapseExpandTab(tab, false, true);
-			this.internallyTabMoving = false;
+			this.internallyTabMovingCount--;
 
 		}, this);
 
@@ -3096,21 +3100,21 @@ TreeStyleTabBrowser.prototype = {
 		if (!aTab) return;
 
 		var b = this.mTabBrowser;
-		this.isSubTreeMoving = true;
+		this.subTreeMovingCount++;
 
-		this.internallyTabMoving = true;
+		this.internallyTabMovingCount++;
 		b.moveTabTo(aTab, aIndex);
-		this.internallyTabMoving = false;
+		this.internallyTabMovingCount--;
 
-		this.isSubTreeChildrenMoving = true;
-		this.internallyTabMoving     = true;
+		this.subTreeChildrenMovingCount++;
+		this.internallyTabMovingCount++;
 		this.getDescendantTabs(aTab).forEach(function(aDescendantTab, aIndex) {
 			b.moveTabTo(aDescendantTab, aTab._tPos + aIndex + (aTab._tPos < aDescendantTab._tPos ? 1 : 0 ));
 		}, this);
-		this.internallyTabMoving     = false;
-		this.isSubTreeChildrenMoving = false;
+		this.internallyTabMovingCount--;
+		this.subTreeChildrenMovingCount--;
 
-		this.isSubTreeMoving = false;
+		this.subTreeMovingCount--;
 	},
  
 	moveTabLevel : function(aEvent) 
@@ -3138,14 +3142,14 @@ TreeStyleTabBrowser.prototype = {
 			else {
 				var nextTab = this.getNextSiblingTab(parentTab);
 				this.partTab(b.mCurrentTab);
-				this.internallyTabMoving = true;
+				this.internallyTabMovingCount++;
 				if (nextTab) {
 					b.moveTabTo(b.mCurrentTab, nextTab._tPos - 1);
 				}
 				else {
 					b.moveTabTo(b.mCurrentTab, this.getLastTab(b)._tPos);
 				}
-				this.internallyTabMoving = false;
+				this.internallyTabMovingCount--;
 				b.mCurrentTab.focus();
 				return true;
 			}
