@@ -1853,7 +1853,6 @@ TreeStyleTabBrowser.prototype = {
 			if (parent) {
 				this.attachTabTo(tab, parent, {
 					dontExpand       : true,
-					insertBefore     : nextTab,
 					dontUpdateIndent : true,
 					dontAnimate      : aWithoutAnimation
 				});
@@ -1873,7 +1872,10 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		if (!parent) {
-			if (!nextTab) nextTab = this.getNextTab(tab);
+			if (nextTab == tab)
+				nextTab = this.getNextSiblingTab(tab);
+			else if (!nextTab)
+				nextTab = this.getNextTab(tab);
 			let parentOfNext = this.getParentTab(nextTab);
 			let newPos = -1;
 			if (parentOfNext) {
@@ -1883,6 +1885,9 @@ TreeStyleTabBrowser.prototype = {
 			else if (nextTab) {
 				newPos = nextTab._tPos;
 				if (newPos > tab._tPos) newPos--;
+			}
+			else {
+				newPos = this.getTabs(b).snapshotLength - 1;
 			}
 			if (newPos > -1)
 				b.moveTabTo(tab, newPos);
