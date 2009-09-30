@@ -1901,7 +1901,7 @@ TreeStyleTabBrowser.prototype = {
 
 		aTab.correctChildTabsOrderWithDelayTimer = window.setTimeout(function(aSelf) {
 			aSelf.correctChildTabsOrder(aTab);
-		}, 100, this);
+		}, 10, this);
 	},
 	correctChildTabsOrder : function(aTab)
 	{
