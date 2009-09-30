@@ -1856,14 +1856,33 @@ TreeStyleTabBrowser.prototype = {
 				this.updateTabsIndent([tab], undefined, undefined, aWithoutAnimation);
 				this.checkTabsIndentOverflow();
 
-				let restoringChildren = parent.getAttribute(this.kCHILDREN_RESTORING);
-				children = parent.getAttribute(this.kCHILDREN);
-				if (restoringChildren != children) {
-					// operations to rearrange child tabs
-					children = parent.getAttribute(this.kCHILDREN);
+				if (parent.getAttribute(this.kCHILDREN_RESTORING)) {
+					if (parent.restoringChildrenTimer)
+						window.clearTimeout(parent.restoringChildrenTimer);
+					parent.restoringChildrenTimer = window.setTimeout(function(aSelf, aTabBrowser, aTab) {
+						let restoringChildren = parent.getAttribute(this.kCHILDREN_RESTORING);
+						let children = aTab.getAttribute(aSelf.kCHILDREN);
+						if (restoringChildren != children) {
+							var restoringChildrenIDs = restoringChildren.split('|');
+							restoringChildrenIDs.forEach(function(aChild, aIndex) {
+								aChild = aSelf.getTabById(aChild);
+								if (!aChild) return;
+								let newPos = aIndex < restoringChildrenIDs.length-1 ?
+											aSelf.getTabById(restoringChildrenIDs[aIndex+1]) :
+											aSelf.getNextSiblingTab(aTab) ;
+								newPos = newPos ?
+										newPos._tPos - 1 :
+										aSelf.getTabs(aTabBrowser).snapshotLength - 1 ;
+								if (newPos > aChild._tPos) newPos--;
+								aSelf.moveTabTo(aChild, newPos);
+							}, aSelf);
+							children = aTab.getAttribute(aSelf.kCHILDREN);
+						}
+						if (restoringChildren == children)
+							aTab.removeAttribute(aSelf.kCHILDREN_RESTORING);
+						aTab.restoringChildrenTimer = null;
+					}, 100, this, b, parent);
 				}
-				if (restoringChildren == children)
-					tab.removeAttribute(this.kCHILDREN_RESTORING);
 			}
 			else {
 				this.deleteTabValue(tab, this.kPARENT);
@@ -1876,14 +1895,14 @@ TreeStyleTabBrowser.prototype = {
 
 		if (!parent) {
 			if (!nextTab) nextTab = this.getNextTab(tab);
-			var parentOfNext = this.getParentTab(nextTab);
-			var newPos = -1;
+			let parentOfNext = this.getParentTab(nextTab);
+			let newPos = -1;
 			if (parentOfNext) {
-				var descendants = this.getDescendantTabs(parentOfNext);
+				let descendants = this.getDescendantTabs(parentOfNext);
 				newPos = descendants[descendants.length-1]._tPos;
 			}
 			else if (nextTab) {
-				var newPos = nextTab._tPos;
+				newPos = nextTab._tPos;
 				if (newPos > tab._tPos) newPos--;
 			}
 			if (newPos > -1)
