@@ -1920,15 +1920,13 @@ TreeStyleTabBrowser.prototype = {
 							this.getNextSiblingTab(aTab) ;
 				if (nextTab == this.getNextSiblingTab(aChild)) return;
 
-				let newPos;
+				let newPos = -1;
 				if (nextTab) {
 					newPos = nextTab._tPos;
 					if (newPos > aChild._tPos) newPos--;
 				}
-				else {
-					newPos = this.getTabs(this.mTabBrowser).snapshotLength - 1;
-				}
-				this.moveTabSubTreeTo(aChild, newPos);
+				if (newPos > -1)
+					this.moveTabSubTreeTo(aChild, newPos);
 			}, this);
 			children = aTab.getAttribute(this.kCHILDREN);
 		}
