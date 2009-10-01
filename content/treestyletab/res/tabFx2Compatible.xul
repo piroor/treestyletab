@@ -19,7 +19,7 @@
 window.addEventListener('DOMContentLoaded', function() {
 	window.removeEventListener('DOMContentLoaded', arguments.callee, true);
 
-	const currentRevision = 5;
+	const currentRevision = 6;
 
 	var b = document.getElementById('content');
 	if (!b || b.localName != 'tabbrowser') return;
@@ -68,6 +68,8 @@ window.addEventListener('DOMContentLoaded', function() {
 				flags.push('mac');
 			if ('nsPIPlacesDatabase' in Components.interfaces)
 				flags.push('png-throbber');
+			if (b.mTabProgressListener.toSource().indexOf('_startStalledTimer') > -1)
+				flags.push('pie');
 			root.setAttribute('tabFx2Compatible-flags', flags.join(' '));
 			break;
 	}
