@@ -1492,7 +1492,7 @@ TreeStyleTabBrowser.prototype = {
 						closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_ESCALATE_FIRST &&
 						this.getChildTabs(parentTab).length > 1
 					) :
-					closeRootBehavior   == this.CLOSE_ROOT_BEHAVIOR_ESCALATE_FIRST
+					closeRootBehavior == this.CLOSE_ROOT_BEHAVIOR_ESCALATE_FIRST
 				) ?
 					function(aTab, aIndex) {
 						this.partTab(aTab, { dontUpdateIndent : true });
@@ -1506,6 +1506,7 @@ TreeStyleTabBrowser.prototype = {
 									dontMove         : true
 								});
 							}
+							this.deleteTabValue(aTab, this.kSUBTREE_COLLAPSED);
 						}
 						else {
 							this.attachTabTo(aTab, children[0], {
