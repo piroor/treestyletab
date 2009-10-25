@@ -1404,7 +1404,6 @@ var TreeStyleTabService = {
 		this.onPrefChange('extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut');
 	},
 	initialized : false,
-	restoringWindow : false,
 	initUninstallationListener : function()
 	{
 		var prefs = window['piro.sakura.ne.jp'].prefs;
@@ -2716,6 +2715,7 @@ catch(e) {
 				return;
 		}
 	},
+	restoringWindow : false,
 	getRestoringTabsCount : function()
 	{
 		return this.getTabsArray(this.browser)

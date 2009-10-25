@@ -1767,6 +1767,51 @@ TreeStyleTabBrowser.prototype = {
 	},
 	restoreStructure : function(aTab)
 	{
+		/*
+			ウィンドウの復元では以下の順に処理が走る。
+
+				nsSessionStore::restoreWindow()
+				nsSessionStore::restoreHistoryPrecursor()
+				<タブの復元開始>
+				nsSessionStore::restoreHistory() // 現在のタブの復元
+				(SSTabRestoring DOMEvent fired)
+				(sessionstore-windows-restored nsIObserver notification)
+				nsSessionStore::restoreHistory() // 0番目のタブの復元
+				(SSTabRestoring DOMEvent fired)
+				...
+				nsSessionStore::restoreHistory() // 最後のタブの復元
+				(SSTabRestoring DOMEvent fired)
+				<タブの復元終了>
+				nsSessionStore::restoreDocument_proxy() // 最初のタブの復元完了
+				(SSTabRestored DOMEvent fired)
+				...
+				nsSessionStore::restoreDocument_proxy() // 最後のタブの復元完了
+				(SSTabRestored DOMEvent fired)
+				<タブの復元完了>
+
+			この時、nsSessionStore::restoreHistoryPrecursor() 内で
+			nsSessionStore::restoreHistory() が呼ばれるより前に、
+			これから復元するすべてのタブについて
+			tab.linkedBrowser.parentNode.__SS_data._tabStillLoading
+			がtrueにセットされる。
+			そのタブの読み込みが完了した時、
+			tab.linkedBrowser.parentNode.__SS_data
+			はdeleteされる。
+
+			以上のことから、sessionstore-windows-restored が通知された段階で
+			_tabStillLoadingがtrueであるタブがウィンドウ内に2個以上存在して
+			いれば、それは、そのウィンドウが復元中であることを示す証拠となる。
+			よって、restoringWindow を true に設定する。
+
+			restoringWindow が true である場合は、SSTabRestored が発行される度に
+			_tabStillLoadingがtrueであるタブの数を確認し、数が1以下であれば
+			restoringWindow を false にする。
+
+			restoringWindow は、次の sessionstore-windows-restored が通知される
+			までは true になることはない。そのため、手動で連続してタブを複数
+			復元したとしても、それがウィンドウ復元中のタブの復元と誤認される
+			心配はない。
+		*/
 		var restoringMultipleTabs = TreeStyleTabService.restoringWindow;
 
 		var tab = aTab;
