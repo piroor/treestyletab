@@ -1402,19 +1402,9 @@ var TreeStyleTabService = {
 		this.onPrefChange('extensions.treestyletab.animation.collapse.duration');
 		this.onPrefChange('extensions.treestyletab.twisty.expandSensitiveArea');
 		this.onPrefChange('extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut');
-
-		if (
-			this.getPref('browser.sessionstore.enabled') === false ||
-			(
-				this.getPref('browser.startup.page') != 3 &&
-				!this.getPref('browser.sessionstore.resume_session_once') /* &&
-				!this.getPref('browser.sessionstore.resume_from_crash') */
-			)
-			)
-			this.completelyRestored = true;
 	},
 	initialized : false,
-	completelyRestored : false,
+	restoringWindow : false,
 	initUninstallationListener : function()
 	{
 		var prefs = window['piro.sakura.ne.jp'].prefs;
@@ -2722,9 +2712,18 @@ catch(e) {
 				return;
 
 			case 'sessionstore-windows-restored':
-				this.completelyRestored = true;
+				this.restoringWindow = this.getRestoringTabsCount() > 1;
 				return;
 		}
+	},
+	getRestoringTabsCount : function()
+	{
+		return this.getTabsArray(this.browser)
+				.filter(function(aTab) {
+					var owner = aTab.linkedBrowser;
+					var data = owner.parentNode.__SS_data;
+					return data && data._tabStillLoading;
+				}).length;
 	},
  
 /* Pref Listener */ 

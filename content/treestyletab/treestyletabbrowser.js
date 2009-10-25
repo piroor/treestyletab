@@ -152,6 +152,7 @@ TreeStyleTabBrowser.prototype = {
 		b.addEventListener('TabClose',       this, true);
 		b.addEventListener('TabMove',        this, true);
 		b.addEventListener('SSTabRestoring', this, true);
+		b.addEventListener('SSTabRestored',  this, true);
 		b.mStrip.addEventListener('draggesture', this, false);
 		b.mStrip.addEventListener('dragenter', this, false);
 		b.mStrip.addEventListener('dragexit', this, false);
@@ -1005,6 +1006,7 @@ TreeStyleTabBrowser.prototype = {
 		b.removeEventListener('TabClose',       this, true);
 		b.removeEventListener('TabMove',        this, true);
 		b.removeEventListener('SSTabRestoring', this, true);
+		b.removeEventListener('SSTabRestored',  this, true);
 		b.mStrip.removeEventListener('draggesture', this, false);
 		b.mStrip.removeEventListener('dragenter', this, false);
 		b.mStrip.removeEventListener('dragexit', this, false);
@@ -1243,6 +1245,10 @@ TreeStyleTabBrowser.prototype = {
 				return;
 
 			case 'SSTabRestoring':
+				this.onTabRestoring(aEvent);
+				return;
+
+			case 'SSTabRestored':
 				this.onTabRestored(aEvent);
 				return;
 
@@ -1755,12 +1761,14 @@ TreeStyleTabBrowser.prototype = {
 		);
 	},
   
-	onTabRestored : function(aEvent) 
+	onTabRestoring : function(aEvent) 
 	{
-		this.restoreStructure(aEvent.originalTarget, !this.completelyRestored);
+		this.restoreStructure(aEvent.originalTarget);
 	},
-	restoreStructure : function(aTab, aWithoutAnimation)
+	restoreStructure : function(aTab)
 	{
+		var restoringMultipleTabs = TreeStyleTabService.restoringWindow;
+
 		var tab = aTab;
 		var b   = this.mTabBrowser;
 		var id  = this.getTabValue(tab, this.kID);
@@ -1781,7 +1789,7 @@ TreeStyleTabBrowser.prototype = {
 			   from the temporary parent manually. */
 			this.partTab(tab, {
 				dontUpdateIndent : true,
-				dontAnimate      : aWithoutAnimation
+				dontAnimate      : restoringMultipleTabs
 			});
 			/* reset attributes before restoring */
 			tab.removeAttribute(this.kID);
@@ -1790,7 +1798,7 @@ TreeStyleTabBrowser.prototype = {
 			tab.removeAttribute(this.kSUBTREE_COLLAPSED);
 			tab.removeAttribute(this.kCOLLAPSED);
 			tab.removeAttribute(this.kNEST);
-			this.updateTabsIndent([tab], undefined, undefined, aWithoutAnimation);
+			this.updateTabsIndent([tab], undefined, undefined, restoringMultipleTabs);
 		}
 
 		this.setTabValue(tab, this.kID, id);
@@ -1810,9 +1818,9 @@ TreeStyleTabBrowser.prototype = {
 			children.forEach(function(aTab) {
 				if (aTab && (aTab = this.getTabById(aTab))) {
 					this.attachTabTo(aTab, tab, {
-						dontExpand       : true,
+						dontExpand       : restoringMultipleTabs,
 						dontUpdateIndent : true,
-						dontAnimate      : aWithoutAnimation
+						dontAnimate      : restoringMultipleTabs
 					});
 					tabs.push(aTab);
 				}
@@ -1853,12 +1861,12 @@ TreeStyleTabBrowser.prototype = {
 			parent = this.getTabById(parent);
 			if (parent) {
 				this.attachTabTo(tab, parent, {
-					dontExpand       : true,
+					dontExpand       : restoringMultipleTabs,
 					insertBefore     : nextTab,
 					dontUpdateIndent : true,
-					dontAnimate      : aWithoutAnimation
+					dontAnimate      : restoringMultipleTabs
 				});
-				this.updateTabsIndent([tab], undefined, undefined, aWithoutAnimation);
+				this.updateTabsIndent([tab], undefined, undefined, restoringMultipleTabs);
 				this.checkTabsIndentOverflow();
 
 				if (parent.getAttribute(this.kCHILDREN_RESTORING))
@@ -1869,7 +1877,7 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 		else if (children) {
-			this.updateTabsIndent(tabs, undefined, undefined, aWithoutAnimation);
+			this.updateTabsIndent(tabs, undefined, undefined, restoringMultipleTabs);
 			this.checkTabsIndentOverflow();
 		}
 
@@ -1890,7 +1898,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		if (isSubTreeCollapsed) {
-			this.collapseExpandSubtree(tab, isSubTreeCollapsed, aWithoutAnimation);
+			this.collapseExpandSubtree(tab, isSubTreeCollapsed, restoringMultipleTabs);
 		}
 
 		if (mayBeDuplicated) this.clearRedirectionTable();
@@ -1958,6 +1966,13 @@ TreeStyleTabBrowser.prototype = {
 	},
 	_clearRedirectionTableTimer : null,
   
+	onTabRestored : function(aEvent) 
+	{
+		// update the status for the next restoring
+		if (TreeStyleTabService.restoringWindow)
+			TreeStyleTabService.restoringWindow = TreeStyleTabService.getRestoringTabsCount() > 1;
+	},
+ 
 	onTabSelect : function(aEvent) 
 	{
 		var b   = this.mTabBrowser;
