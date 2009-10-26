@@ -1,3 +1,14 @@
+TreeStyleTabService.extraProperties = [
+	TreeStyleTabService.kID,
+	TreeStyleTabService.kCOLLAPSED,
+	TreeStyleTabService.kSUBTREE_COLLAPSED,
+	TreeStyleTabService.kCHILDREN,
+	TreeStyleTabService.kPARENT,
+	TreeStyleTabService.kANCESTOR,
+	TreeStyleTabService.kINSERT_BEFORE,
+	TreeStyleTabService.kINSERT_AFTER
+];
+
 TreeStyleTabService.overrideExtensionsPreInit = function() {
 
 	// Highlander
@@ -13,14 +24,81 @@ TreeStyleTabService.overrideExtensionsPreInit = function() {
 
 	// PermaTabs
 	// https://addons.mozilla.org/firefox/addon/2558
+	// PermaTabs Mod
+	// https://addons.mozilla.org/firefox/addon/7816
 	if ('permaTabs' in window) {
-		// without delay, Firefox crashes on startup.
-		eval('permaTabs.__init = '+
-			permaTabs.__init.toSource().replace(
-				'aTab.setAttribute(\\"image\\", ',
-				'window.setTimeout(function(aTab, aImage) { aTab.setAttribute(\\"image\\", aImage); }, 100, aTab, '
-			)
-		);
+		if ('__init' in permaTabs) {
+			// without delay, Firefox crashes on startup.
+			eval('permaTabs.__init = '+
+				permaTabs.__init.toSource().replace(
+					'aTab.setAttribute(\\"image\\", ',
+					'window.setTimeout(function(aTab, aImage) { aTab.setAttribute(\\"image\\", aImage); }, 100, aTab, '
+				)
+			);
+		}
+		if ('showPermaTab' in permaTabs) {
+			eval('permaTabs.showPermaTab = '+
+				permaTabs.showPermaTab.toSource().replace(
+					/(\}\)?)$/,
+					<![CDATA[
+						(function(tab, id) {
+							if (this.ssWillRestore) return;
+							var TST = TreeStyleTabService;
+							if (this.TSTRestoredPermaTabsInfo === void(0)) {
+								try {
+									eval('this.TSTRestoredPermaTabsInfo = '+(TST.getTreePref('permaTabsInfo') || 'null'));
+								}
+								catch(e) {
+								}
+							}
+							if (!this.TSTRestoredPermaTabsInfo) return;
+
+							var info = this.TSTRestoredPermaTabsInfo[id];
+							if (!info) return;
+
+							for (var i in info)
+							{
+								TST.SessionStore.setTabValue(tab, i, info[i]);
+							}
+							var count = 0;
+							window.setTimeout(function() {
+								var b = TST.getTabBrowserFromChild(tab);
+								if (!b.treeStyleTab) {
+									if (++count < 50)
+										window.setTimeout(arguments.callee, 100);
+									return;
+								}
+								b.treeStyleTab.restoreStructure(tab);
+							}, 0);
+						}).call(this, tab, id)
+					$1]]>
+				)
+			);
+		}
+		if ('savePermaTabs' in permaTabs) {
+			eval('permaTabs.savePermaTabs = '+
+				permaTabs.savePermaTabs.toSource().replace(
+					'{',
+					<![CDATA[$&
+						(function() {
+							var tabsInfo = {};
+							var TST = TreeStyleTabService;
+							Array.slice(getBrowser().mTabContainer.childNodes)
+								.forEach(function(aTab) {
+									var index = this.getPermaTabLocalIndex(aTab);
+									if (index < 0) return;
+									var info = {};
+									TST.extraProperties.forEach(function(aProperty) {
+										info[aProperty] = TST.getTabValue(aTab, aProperty);
+									});
+									tabsInfo[this.permaTabs[index].id] = info;
+								}, this);
+							TST.setTreePref('permaTabsInfo', tabsInfo.toSource());
+						}).call(this);
+					]]>
+				)
+			);
+		}
 	}
 
 	// Tab Mix Plus, SessionStore API
@@ -28,16 +106,9 @@ TreeStyleTabService.overrideExtensionsPreInit = function() {
 		'getTabProperties' in SessionData &&
 		'setTabProperties' in SessionData) {
 		var prefix = this.kTMP_SESSION_DATA_PREFIX;
-		SessionData.tabTSTProperties = [
-			prefix+this.kID,
-			prefix+this.kCOLLAPSED,
-			prefix+this.kSUBTREE_COLLAPSED,
-			prefix+this.kCHILDREN,
-			prefix+this.kPARENT,
-			prefix+this.kANCESTOR,
-			prefix+this.kINSERT_BEFORE,
-			prefix+this.kINSERT_AFTER
-		];
+		SessionData.tabTSTProperties = this.extraProperties.map(function(aProperty) {
+			return prefix+aProperty;
+		});
 		eval('SessionData.getTabProperties = '+
 			SessionData.getTabProperties.toSource().replace(
 				'return tabProperties;',
