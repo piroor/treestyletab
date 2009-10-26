@@ -323,11 +323,15 @@
 		<preference id="browser.link.open_newwindow.restriction"
 			name="browser.link.open_newwindow.restriction.override"
 			type="int"/>
+		<preference id="extensions.treestyletab.preferences.newTab-tabbox.selectedIndex"
+			name="extensions.treestyletab.preferences.newTab-tabbox.selectedIndex"
+			type="int"/>
 	</preferences>
 
 	<vbox>
 
-	<tabbox orient="vertical">
+	<tabbox id="newTab-tabbox"
+		orient="vertical">
 		<tabs>
 			<tab label="&config.tabs.link.tab;"/>
 			<tab label="&config.tabs.bookmark.tab;"/>

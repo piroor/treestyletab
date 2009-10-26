@@ -93,6 +93,8 @@ function initTabPane()
 
 	gLastStateIsVertical = document.getElementById('extensions.treestyletab.tabbar.position-radiogroup').value;
 	gLastStateIsVertical = gLastStateIsVertical == 'left' || gLastStateIsVertical == 'right';
+
+	setUpTabbox('newTab-tabbox');
 }
 
 function onSyncGroupBookmarkUIToPref()
@@ -396,3 +398,18 @@ RadioSet.prototype = {
 		return this.radio.value = aValue;
 	}
 };
+
+function setUpTabbox(aID)
+{
+	var tabbox = document.getElementById(aID);
+	var pref = document.getElementById('extensions.treestyletab.preferences.'+aID+'.selectedIndex')
+	if (pref.value !== null) tabbox.selectedIndex = pref.value;
+	tabbox.setAttribute('onselect', 'onTabboxTabSelected("'+aID+'");');
+}
+
+function onTabboxTabSelected(aID)
+{
+	var tabbox = document.getElementById(aID);
+	var pref = document.getElementById('extensions.treestyletab.preferences.'+aID+'.selectedIndex')
+	pref.valueFromPreferences = tabbox.selectedIndex;
+}
