@@ -1,4 +1,4 @@
-<!ENTITY config.title        "Configuration of Tree Style Tab">
+<!ENTITY config.title        "Tree Style Tab Configuration">
 
 <!ENTITY config.scale.min "min">
 <!ENTITY config.scale.max "max">
@@ -84,9 +84,9 @@
 <!ENTITY config.dropLinksOnTab.load    "Load link into the tab (Firefox default)">
 <!ENTITY config.dropLinksOnTab.newTab  "Open link in a new child tab of the tab">
 
-<!ENTITY config.jsopen.caption "New window opened from scripts in webpages">
-<!ENTITY config.jsopen.default "Open as Window when it have special width, height, etc. (Firefox default)">
-<!ENTITY config.jsopen.forcetab "Open as Tab instead of Window anyway (Recommended)">
+<!ENTITY config.jsopen.caption "New window opened from a web page script">
+<!ENTITY config.jsopen.default "Open new window when it has a special width, height, etc. (Firefox default)">
+<!ENTITY config.jsopen.forcetab "Open new tab instead of window (Recommended)">
 <!ENTITY config.jsopen.current  "Load into the Current Tab anyway">
 
 
@@ -96,10 +96,10 @@
 <!ENTITY config.autoHide.mode.1 "Auto Hide tab bar">
 <!ENTITY config.autoHide.mode.2 "Auto Shrink tab bar">
 <!ENTITY config.autoShow.caption "Show tab bar automatically when">
-<!ENTITY config.autoShow.mousemove "Mouse cursor points window edges">
+<!ENTITY config.autoShow.mousemove "Mouse cursor is close to the window edge">
 <!ENTITY config.autoHide.area.before "Sensitive area:">
 <!ENTITY config.autoHide.area.after "pixels from window edges">
-<!ENTITY config.autoShow.mousemove.mode2 "Mouse cursor points tab bar's edge">
+<!ENTITY config.autoShow.mousemove.mode2 "Mouse cursor is close to the tab bar's edge">
 <!ENTITY config.autoHide.area.before.mode2 "Sensitive area:">
 <!ENTITY config.autoHide.area.after.mode2 "pixels from tab bar's edge">
 <!ENTITY config.autoHide.delay.before "Delay:">
@@ -120,9 +120,9 @@
 
 <!ENTITY config.tabs.tree "Tree">
 
-<!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
+<!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand its tree and collapse others automatically">
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
-<!ENTITY config.collapseExpandSubTree.dblclick "Collapse/Expand tree of the tab by double-click">
+<!ENTITY config.collapseExpandSubTree.dblclick "Double-click on a tab to collapse/expand tree">
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Expand tree automatically, when tabs are inserted into the tree">
 
 <!ENTITY config.closeParentBehavior.caption       "When a parent tab is closed">
