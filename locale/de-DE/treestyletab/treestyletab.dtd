@@ -41,14 +41,13 @@
 <!ENTITY config.show.openSelectionLinks "&quot;Links im markierten Webseitentext in Tabs öffnen&quot; im Kontextmenü der Markierung anbieten">
 
 
-<!ENTITY config.tabs.tab "New Tabs">
-<!--ENTITY config.tabs.tab "Verhalten"-->
+<!ENTITY config.tabs.tab "Tabs Öffnen">
 
 <!ENTITY config.tabs.link.tab     "Links">
-<!ENTITY config.tabs.urlbar.tab   "Location Bar">
-<!ENTITY config.tabs.bookmark.tab "Bookmarks">
-<!ENTITY config.tabs.dragdrop.tab "Drag &amp; Drop to tabs">
-<!ENTITY config.tabs.misc.tab     "Other Cases">
+<!ENTITY config.tabs.urlbar.tab   "Adresszeile">
+<!ENTITY config.tabs.bookmark.tab "Lesezeichen">
+<!ENTITY config.tabs.dragdrop.tab "Ziehen von Links auf Tabs">
+<!ENTITY config.tabs.misc.tab     "Sonstiges">
 
 <!ENTITY config.link.caption "Verfolgte Links">
 <!ENTITY config.link.none    "Lv.0 Immer im aktiven Tab laden (Firefox Standard)">
@@ -64,9 +63,9 @@
 <!ENTITY config.openGroupBookmark.ask         "Jedes Mal nachfragen">
 <!ENTITY config.openGroupBookmark.subtree     "Als Zweig öffnen (Empfohlen)">
 <!ENTITY config.openGroupBookmark.subtree.type.before  "">
-<!ENTITY config.openGroupBookmark.subtree.type.restore "Restore">
-<!ENTITY config.openGroupBookmark.subtree.type.flat    "Ignore">
-<!ENTITY config.openGroupBookmark.subtree.type.after   "tree structure of tabs saved to bookmarks">
+<!ENTITY config.openGroupBookmark.subtree.type.restore "Speichere">
+<!ENTITY config.openGroupBookmark.subtree.type.flat    "Ignoriere">
+<!ENTITY config.openGroupBookmark.subtree.type.after   "Anordnung der Tabs im Zweig beim Speichern als Lesezeichen">
 <!ENTITY config.openGroupBookmark.flat        "Als eigenständige Tabs öffnen (Firefox Standard)">
 <!ENTITY config.openGroupBookmark.replace     "Aktuelles Tab durch die neuen Tabs ersetzen">
 <!ENTITY config.openGroupBookmark.underParent "Seiten zur Gruppierung einem Dummytab unterordnen">
@@ -75,7 +74,7 @@
 <!ENTITY config.urlbar.none          "Lv.0 Immer im aktiven Tab laden (Firefox Standard)">
 <!ENTITY config.urlbar.outer         "Lv.1 In neuem Tab laden, falls es eine andere Webseite ist">
 <!ENTITY config.urlbar.any           "Lv.2 Immer in einem neuen Tab laden">
-<!ENTITY config.urlbar.asChild.caption "Structuring of opened tabs">
+<!ENTITY config.urlbar.asChild.caption "Anordnung des neuen Tabs">
 <!ENTITY config.urlbar.asChild.none  "Lv.0 Neues eigenes Tab auf oberster Ebene">
 <!ENTITY config.urlbar.asChild.inner "Lv.1 Neues untergeordnetes Tab, falls es die gleiche Webseite ist">
 <!ENTITY config.urlbar.asChild.any   "Lv.2 Immer als untergeordnetes Tab">
@@ -119,10 +118,10 @@
 <!ENTITY config.transparent.style.2 "Transparent">
 
 
-<!ENTITY config.tabs.tree "Tree">
+<!ENTITY config.tabs.tree "Verhalten">
 
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect "Nicht aktive Zweige zuklappen">
-<!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
+<!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Keine Fokusänderung beim Schließen des aktiven Tabs">
 <!ENTITY config.collapseExpandSubTree.dblclick "Bei Doppelklick auf Tab untergeordneten Zweig auf- oder zuklappen">
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Zweig automatisch aufklappen, wenn ein Tab in den Zweig eingefügt wird">
 
@@ -144,7 +143,7 @@
 
 <!ENTITY config.animation.enabled "Animationseffekte aktivieren">
 
-<!ENTITY config.tooltip.includeChildren        "Show tree contents in tooltips on tabs">
+<!ENTITY config.tooltip.includeChildren        "Titel der untergeordneten Tabs im Tooltip geschlossener Tabs anzeigen">
 
 <!ENTITY config.useEffectiveTLD.caption  "Erkennung der &quot;gleichen Webseite&quot;">
 <!ENTITY config.useEffectiveTLD.enabled  "Nur Domain berücksichtigen (&quot;a.example.com&quot; and &quot;b.example.com&quot; gehören zur gleichen Webseite)">
