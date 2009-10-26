@@ -2505,6 +2505,8 @@ TreeStyleTabBrowser.prototype = {
 	performDrop : function(aInfo, aDraggedTab) 
 	{
 		var tabsInfo = this.getDraggedTabsInfoFromOneTab(aInfo, aDraggedTab);
+		if (!tabsInfo.draggedTab) return false;
+
 		aDraggedTab = tabsInfo.draggedTab;
 		var draggedTabs = tabsInfo.draggedTabs;
 		var draggedRoots = tabsInfo.draggedRoots;
@@ -2651,6 +2653,13 @@ TreeStyleTabBrowser.prototype = {
 	getDraggedTabsInfoFromOneTab : function(aInfo, aTab) 
 	{
 		aTab = this.getTabFromChild(aTab);
+		if (!aTab)
+			return {
+				draggedTab      : null,
+				draggedTabs     : [],
+				draggedRoots    : [],
+				isSelectionMove : false
+			};
 
 		var targetBrowser = this.mTabBrowser;
 		var tabs = this.getTabsArray(targetBrowser);
