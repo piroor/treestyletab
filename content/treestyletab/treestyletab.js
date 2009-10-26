@@ -707,6 +707,7 @@ var TreeStyleTabService = {
 			newURI = this.IOService.newFileURI(tempLocalFile);
 		}
 		else {
+			if (!/^\w+\:/.test(aURI)) aURI = 'http://'+aURI;
 			newURI = this.IOService.newURI(aURI, null, null);
 		}
 		return newURI;
