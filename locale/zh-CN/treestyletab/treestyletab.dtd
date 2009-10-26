@@ -1,4 +1,4 @@
-<!ENTITY config.title        "树形标签设置">
+<!ENTITY config.title        "Tree Style Tab 设置">
 
 <!ENTITY config.scale.min "低">
 <!ENTITY config.scale.max "高">
@@ -9,7 +9,7 @@
 <!ENTITY config.tabbar.position.caption "标签栏位置">
 <!ENTITY config.tabbar.position.left    "左侧">
 <!ENTITY config.tabbar.position.right   "右侧">
-<!ENTITY config.tabbar.position.top     "顶部 （Firefox 默认）">
+<!ENTITY config.tabbar.position.top     "顶部（Firefox 默认）">
 <!ENTITY config.tabbar.position.bottom  "底部">
 <!ENTITY config.tabbar.invertClosebox.left  "在每个标签左端显示关闭按钮">
 <!ENTITY config.tabbar.invertClosebox.right "在每个标签右端显示关闭按钮">
@@ -38,7 +38,7 @@
 <!ENTITY config.tabs.menu "菜单">
 
 <!ENTITY config.show.tabContextMenu.caption "在标签的右键菜单中添加以下项目">
-<!ENTITY config.show.openSelectionLinks "添加“在新标签中打开选中链接”到页面右键菜单">
+<!ENTITY config.show.openSelectionLinks "在页面右键菜单中添加“在新标签中打开选中链接”">
 
 
 <!ENTITY config.tabs.tab "新标签">
@@ -54,19 +54,19 @@
 <!ENTITY config.link.outer   "Lv.1 在新标签中打开外部网站的链接">
 <!ENTITY config.link.any     "Lv.2 在新标签中打开所有链接">
 
-<!ENTITY config.open_newwindow.caption "手动打开到新窗口">
-<!ENTITY config.open_newwindow.window  "在窗口中打开">
-<!ENTITY config.open_newwindow.tab     "在标签中打开 （Firefox 默认）">
+<!ENTITY config.open_newwindow.caption "如果页面链接要求打开到新窗口的话？">
+<!ENTITY config.open_newwindow.window  "在新窗口中打开">
+<!ENTITY config.open_newwindow.tab     "在新标签中打开（Firefox 默认，推荐）">
 <!ENTITY config.open_newwindow.current "覆盖当前标签">
 
 <!ENTITY config.openGroupBookmark.caption     "如何“在标签页中打开书签组”？">
 <!ENTITY config.openGroupBookmark.ask         "总是询问">
-<!ENTITY config.openGroupBookmark.subtree     "在子树中打开 （推荐）">
-<!ENTITY config.openGroupBookmark.subtree.type.before  "待">
+<!ENTITY config.openGroupBookmark.subtree     "在子树中打开（推荐）">
+<!ENTITY config.openGroupBookmark.subtree.type.before  "">
 <!ENTITY config.openGroupBookmark.subtree.type.restore "恢复">
 <!ENTITY config.openGroupBookmark.subtree.type.flat    "忽略">
 <!ENTITY config.openGroupBookmark.subtree.type.after   "保存到书签时的树状结构">
-<!ENTITY config.openGroupBookmark.flat        "在单独标签中打开 （Firefox 默认）">
+<!ENTITY config.openGroupBookmark.flat        "在单独标签中平行打开（Firefox 默认）">
 <!ENTITY config.openGroupBookmark.replace     "覆盖当前标签打开">
 <!ENTITY config.openGroupBookmark.underParent "将标签置于一伪标签下以便分组">
 
@@ -79,16 +79,15 @@
 <!ENTITY config.urlbar.asChild.inner "Lv.1 与当前标签处于相同网站时在新子标签中打开">
 <!ENTITY config.urlbar.asChild.any   "Lv.2 总是在新子标签中打开">
 
-<!ENTITY config.loadDroppedLinkToNewChildTab.caption "将链接或URL拖拽到现有标签后：">
-<!ENTITY config.dropLinksOnTab.caption "将链接或URL拖拽到现有标签后：">
+<!ENTITY config.dropLinksOnTab.caption "如何打开拖拽到现有标签的链接或URL？">
 <!ENTITY config.dropLinksOnTab.ask     "总是询问">
-<!ENTITY config.dropLinksOnTab.load    "在标签中加载链接 （Firefox 默认）">
-<!ENTITY config.dropLinksOnTab.newTab  "在此标签的新建子标签中打开链接">
+<!ENTITY config.dropLinksOnTab.load    "在该标签中打开（Firefox 默认）">
+<!ENTITY config.dropLinksOnTab.newTab  "在此标签下新建子标签打开">
 
-<!ENTITY config.jsopen.caption "从网页脚本上打开的新窗口">
-<!ENTITY config.jsopen.default "如果已指定宽度、高度等，则在新窗口中打开 （Firefox 默认）">
-<!ENTITY config.jsopen.forcetab "任何情况下都在标签而非窗口中打开 （推荐）">
-<!ENTITY config.jsopen.current  "覆盖当前标签">
+<!ENTITY config.jsopen.caption "如何打开要求新窗口的网页脚本链接？">
+<!ENTITY config.jsopen.default "若已指定窗口宽度、高度等，则在新窗口中打开（Firefox 默认）">
+<!ENTITY config.jsopen.forcetab "任何情况下都在标签中打开 （推荐）">
+<!ENTITY config.jsopen.current  "覆盖当前标签打开">
 
 
 <!ENTITY config.tabs.autohide "自动隐藏">
@@ -98,10 +97,10 @@
 <!ENTITY config.autoHide.mode.2 "自动缩小标签栏">
 <!ENTITY config.autoShow.caption "在以下情况下自动显示标签栏">
 <!ENTITY config.autoShow.mousemove "鼠标指针在窗口边缘时">
-<!ENTITY config.autoHide.area.before "触发区：">
+<!ENTITY config.autoHide.area.before "触发区域：">
 <!ENTITY config.autoHide.area.after "像素（距离窗口边缘）">
 <!ENTITY config.autoShow.mousemove.mode2 "鼠标指针移到标签栏边缘">
-<!ENTITY config.autoHide.area.before.mode2 "触发区：">
+<!ENTITY config.autoHide.area.before.mode2 "触发区域：">
 <!ENTITY config.autoHide.area.after.mode2 "像素（距离标签栏边缘）">
 <!ENTITY config.autoHide.delay.before "延迟:">
 <!ENTITY config.autoHide.delay.after "毫秒">
@@ -121,7 +120,7 @@
 
 <!ENTITY config.tabs.tree "树状结构">
 
-<!ENTITY config.autoCollapseExpandSubTreeOnSelect "某一标签获得焦点时，自动展开该标签的树和折叠其他标签树">
+<!ENTITY config.autoCollapseExpandSubTreeOnSelect "某一标签获得焦点时，自动展开该标签子树并折叠其他标签树">
 <!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "当前标签关闭引起的焦点转移除外">
 <!ENTITY config.collapseExpandSubTree.dblclick "通过双击折叠/展开标签的子树">
 <!ENTITY config.autoExpandSubTreeOnAppendChild "当标签被插入子树时，自动展开子树">
@@ -161,9 +160,9 @@
 
 <!ENTITY selection.removeTabSubTree.label       "关闭选中的树">
 <!ENTITY selection.removeTabSubTree.accesskey   "s">
-<!ENTITY context.reloadTabSubTree.label         "刷新该树">
+<!ENTITY context.reloadTabSubTree.label         "重新载入此树">
 <!ENTITY context.reloadTabSubTree.accesskey     "r">
-<!ENTITY context.reloadDescendantTabs.label     "刷新子标签">
+<!ENTITY context.reloadDescendantTabs.label     "重新载入子标签">
 <!ENTITY context.reloadDescendantTabs.accesskey "r">
 <!ENTITY context.removeTabSubTree.label         "关闭此树">
 <!ENTITY context.removeTabSubTree.accesskey     "s">
