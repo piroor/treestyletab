@@ -2623,7 +2623,15 @@ catch(e) {
 		{
 			links = links.concat(this.getLinksInRange(selection.getRangeAt(i)));
 		}
-		return links;
+
+		var visited = {};
+		var uniqueLinks = [];
+		links.forEach(function(aLink) {
+			if (aLink.href in visited) return;
+			visited[aLink.href] = true;
+			uniqueLinks.push(aLink);
+		});
+		return uniqueLinks;
 	},
 	
 	getLinksInRange : function(aRange) 
