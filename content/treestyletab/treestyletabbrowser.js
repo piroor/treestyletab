@@ -1405,7 +1405,7 @@ TreeStyleTabBrowser.prototype = {
 
 		if (this.animationEnabled) {
 			this.updateTabCollapsed(tab, true, true);
-			this.updateTabCollapsed(tab, false, !this.completelyRestored);
+			this.updateTabCollapsed(tab, false, this.restoringWindow);
 		}
 
 		if (this.readiedToOpenDivertedTab) {
@@ -1827,6 +1827,17 @@ TreeStyleTabBrowser.prototype = {
 		}
 		tab.removeAttribute(this.kID_RESTORING);
 
+		var children = this.getTabValue(tab, this.kCHILDREN);
+		if (!mayBeDuplicated || tab.hasAttribute(this.kCHILDREN)) {
+			// for safety
+			this.getChildTabs(tab).forEach(function(aTab) {
+				this.partTab(aTab, {
+					dontUpdateIndent : true,
+					dontAnimate      : restoringMultipleTabs
+				});
+			}, this);
+		}
+
 		if (!mayBeDuplicated) {
 			/* If it has a parent, it is wrongly attacched by tab moving
 			   on restoring. Restoring the old ID (the next statement)
@@ -1852,7 +1863,6 @@ TreeStyleTabBrowser.prototype = {
 		var isSubTreeCollapsed = (this.getTabValue(tab, this.kSUBTREE_COLLAPSED) == 'true');
 		this.setTabValue(tab, this.kSUBTREE_COLLAPSED, isSubTreeCollapsed);
 
-		var children = this.getTabValue(tab, this.kCHILDREN);
 		var tabs = [];
 		if (children) {
 			tab.removeAttribute(this.kCHILDREN);
