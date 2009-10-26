@@ -648,16 +648,19 @@ var TreeStyleTabService = {
 			).singleNodeValue;
 	},
  
-	getTabBrowserFromChild : function(aTab) 
+	getTabBrowserFromChild : function(aTabBrowserChild) 
 	{
-		if (!aTab) return null;
+		if (!aTabBrowserChild) return null;
 
-		if (aTab.__treestyletab__linkedTabBrowser)
-			return aTab.__treestyletab__linkedTabBrowser;
+		if (aTabBrowserChild.__treestyletab__linkedTabBrowser)
+			return aTabBrowserChild.__treestyletab__linkedTabBrowser;
+
+		if (aTabBrowserChild.localName == 'tabbrowser')
+			return aTabBrowserChild;
 
 		return this.evaluateXPath(
-				'ancestor-or-self::xul:tabbrowser',
-				aTab,
+				'ancestor::xul:tabbrowser[1]',
+				aTabBrowserChild,
 				XPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
 	},
@@ -751,17 +754,18 @@ var TreeStyleTabService = {
 			).booleanValue;
 	},
  
-	getTabs : function(aTabBrowser) 
+	getTabs : function(aTabBrowserChild) 
 	{
+		var b = this.getTabBrowserFromChild(aTabBrowserChild);
 		return this.evaluateXPath(
 				'descendant::xul:tab',
-				aTabBrowser.mTabContainer
+				b.mTabContainer
 			);
 	},
  
-	getTabsArray : function(aTabBrowser) 
+	getTabsArray : function(aTabBrowserChild) 
 	{
-		var tabs = this.getTabs(aTabBrowser);
+		var tabs = this.getTabs(aTabBrowserChild);
 		var array = [];
 		for (var i = 0, maxi = tabs.snapshotLength; i < maxi; i++)
 		{
@@ -770,20 +774,22 @@ var TreeStyleTabService = {
 		return array;
 	},
  
-	getFirstTab : function(aTabBrowser) 
+	getFirstTab : function(aTabBrowserChild) 
 	{
+		var b = this.getTabBrowserFromChild(aTabBrowserChild);
 		return this.evaluateXPath(
-				'descendant::xul:tab[1]',
-				aTabBrowser.mTabContainer,
+				'child::xul:tab[1]',
+				b.mTabContainer,
 				XPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
 	},
  
-	getLastTab : function(aTabBrowser) 
+	getLastTab : function(aTabBrowserChild) 
 	{
+		var b = this.getTabBrowserFromChild(aTabBrowserChild);
 		return this.evaluateXPath(
-				'descendant::xul:tab[last()]',
-				aTabBrowser.mTabContainer,
+				'child::xul:tab[last()]',
+				b.mTabContainer,
 				XPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
 	},
@@ -846,28 +852,30 @@ var TreeStyleTabService = {
 			).singleNodeValue;
 	},
  
-	getLastVisibleTab : function(aTab) 
+	getLastVisibleTab : function(aTabBrowserChild) 
 	{
-		if (!aTab) return null;
+		var b = this.getTabBrowserFromChild(aTabBrowserChild);
+		if (!b) return null;
 
-		if (!this.canCollapseSubtree(aTab))
-			return this.getLastTab(aTab);
+		if (!this.canCollapseSubtree(b))
+			return this.getLastTab(b);
 
 		return this.evaluateXPath(
 				'child::xul:tab[not(@'+this.kCOLLAPSED+'="true")][last()]',
-				aTab.parentNode,
+				b.mTabContainer,
 				XPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
 	},
  
-	getVisibleTabs : function(aTab) 
+	getVisibleTabs : function(aTabBrowserChild) 
 	{
-		if (!this.canCollapseSubtree(aTab))
+		var b = this.getTabBrowserFromChild(aTabBrowserChild);
+		if (!this.canCollapseSubtree(b))
 			return this.getTabs(b);
 
 		var xpathResult = this.evaluateXPath(
 				'child::xul:tab[not(@'+this.kCOLLAPSED+'="true")]',
-				aTab.parentNode
+				b.mTabContainer
 			);
 		return xpathResult;
 	},

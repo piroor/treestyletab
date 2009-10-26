@@ -139,43 +139,136 @@ function test_getTabs()
 	assert.isNull(sv.getNextTab(tabs[3]));
 	assert.equals(tabs[1], sv.getPreviousTab(tabs[2]));
 	assert.isNull(sv.getPreviousTab(tabs[0]));
+
+	assert.equals(0, sv.getTabIndex(tabs[0]));
+	assert.equals(1, sv.getTabIndex(tabs[1]));
+	assert.equals(2, sv.getTabIndex(tabs[2]));
+	assert.equals(3, sv.getTabIndex(tabs[3]));
 }
 
-function test_tabsVisibility()
+function test_canCollapseSubtree()
+{
+	gBrowser.setAttribute(sv.kALLOW_COLLAPSE, true);
+	assert.isTrue(sv.canCollapseSubtree(gBrowser));
+
+	gBrowser.removeAttribute(sv.kALLOW_COLLAPSE);
+	assert.isFalse(sv.canCollapseSubtree(gBrowser));
+}
+
+function test_isCollapsed()
 {
 	tabs[1].setAttribute(sv.kCOLLAPSED, true);
 	tabs[3].setAttribute(sv.kCOLLAPSED, true);
 
+	gBrowser.setAttribute(sv.kALLOW_COLLAPSE, true);
+	assert.isFalse(sv.isCollapsed(tabs[0]));
+	assert.isTrue(sv.isCollapsed(tabs[1]));
+	assert.isFalse(sv.isCollapsed(tabs[2]));
+	assert.isTrue(sv.isCollapsed(tabs[3]));
+
+	gBrowser.removeAttribute(sv.kALLOW_COLLAPSE);
+	assert.isFalse(sv.isCollapsed(tabs[0]));
+	assert.isFalse(sv.isCollapsed(tabs[1]));
+	assert.isFalse(sv.isCollapsed(tabs[2]));
+	assert.isFalse(sv.isCollapsed(tabs[3]));
+}
+
+function test_getNextVisibleTab()
+{
+	tabs[1].setAttribute(sv.kCOLLAPSED, true);
+	tabs[3].setAttribute(sv.kCOLLAPSED, true);
+
+	gBrowser.setAttribute(sv.kALLOW_COLLAPSE, true);
 	assert.equals(tabs[2], sv.getNextVisibleTab(tabs[0]));
 	assert.equals(tabs[2], sv.getNextVisibleTab(tabs[1]));
 	assert.isNull(sv.getNextVisibleTab(tabs[2]));
 	assert.isNull(sv.getNextVisibleTab(tabs[3]));
+
+	gBrowser.removeAttribute(sv.kALLOW_COLLAPSE);
+	assert.equals(tabs[1], sv.getNextVisibleTab(tabs[0]));
+	assert.equals(tabs[2], sv.getNextVisibleTab(tabs[1]));
+	assert.equals(tabs[3], sv.getNextVisibleTab(tabs[2]));
+	assert.isNull(sv.getNextVisibleTab(tabs[3]));
+}
+
+function test_getPreviousVisibleTab()
+{
+	tabs[1].setAttribute(sv.kCOLLAPSED, true);
+	tabs[3].setAttribute(sv.kCOLLAPSED, true);
+
+	gBrowser.setAttribute(sv.kALLOW_COLLAPSE, true);
 	assert.isNull(sv.getPreviousVisibleTab(tabs[0]));
 	assert.equals(tabs[0], sv.getPreviousVisibleTab(tabs[1]));
 	assert.equals(tabs[0], sv.getPreviousVisibleTab(tabs[2]));
 	assert.equals(tabs[2], sv.getPreviousVisibleTab(tabs[3]));
 
+	gBrowser.removeAttribute(sv.kALLOW_COLLAPSE);
+	assert.equals(tabs[1], sv.getNextVisibleTab(tabs[0]));
+	assert.equals(tabs[2], sv.getNextVisibleTab(tabs[1]));
+	assert.equals(tabs[3], sv.getNextVisibleTab(tabs[2]));
+	assert.isNull(sv.getNextVisibleTab(tabs[3]));
+}
+
+function test_getLastVisibleTab()
+{
+	tabs[1].setAttribute(sv.kCOLLAPSED, true);
+	tabs[3].setAttribute(sv.kCOLLAPSED, true);
+
+	gBrowser.setAttribute(sv.kALLOW_COLLAPSE, true);
 	assert.equals(tabs[2], sv.getLastVisibleTab(tabs[0]));
 	assert.equals(tabs[2], sv.getLastVisibleTab(tabs[1]));
 	assert.equals(tabs[2], sv.getLastVisibleTab(tabs[2]));
 	assert.equals(tabs[2], sv.getLastVisibleTab(tabs[3]));
 
+	gBrowser.removeAttribute(sv.kALLOW_COLLAPSE);
+	assert.equals(tabs[3], sv.getLastVisibleTab(tabs[0]));
+	assert.equals(tabs[3], sv.getLastVisibleTab(tabs[1]));
+	assert.equals(tabs[3], sv.getLastVisibleTab(tabs[2]));
+	assert.equals(tabs[3], sv.getLastVisibleTab(tabs[3]));
+}
+
+function test_getVisibleTabs()
+{
+	tabs[1].setAttribute(sv.kCOLLAPSED, true);
+	tabs[3].setAttribute(sv.kCOLLAPSED, true);
+
+	gBrowser.setAttribute(sv.kALLOW_COLLAPSE, true);
+
 	var visibleResult = sv.getVisibleTabs(tabs[0]);
-	assert.isTrue(visibleResult instanceof XPathResult);
+	assert.implementsInterface(Ci.nsIDOMXPathResult, visibleResult);
 	assert.equals(2, visibleResult.snapshotLength);
 
 	var visibleTabs = [];
-	for (var i = 0, maxi = visibleResult.snapshotLength; i < maxi; i++)
+	for (let i = 0, maxi = visibleResult.snapshotLength; i < maxi; i++)
 	{
 		visibleTabs.push(visibleResult.snapshotItem(i));
 	}
 	assert.equals(2, visibleTabs.length);
 	assert.equals([tabs[0], tabs[2]], visibleTabs);
 
+	gBrowser.removeAttribute(sv.kALLOW_COLLAPSE);
+
+	visibleResult = sv.getVisibleTabs(tabs[0]);
+	assert.implementsInterface(Ci.nsIDOMXPathResult, visibleResult);
+	assert.equals(4, visibleResult.snapshotLength);
+}
+
+function test_getVisibleIndex()
+{
+	tabs[1].setAttribute(sv.kCOLLAPSED, true);
+	tabs[3].setAttribute(sv.kCOLLAPSED, true);
+
+	gBrowser.setAttribute(sv.kALLOW_COLLAPSE, true);
 	assert.equals(0, sv.getVisibleIndex(tabs[0]));
 	assert.equals(-1, sv.getVisibleIndex(tabs[1]));
 	assert.equals(1, sv.getVisibleIndex(tabs[2]));
 	assert.equals(-1, sv.getVisibleIndex(tabs[3]));
+
+	gBrowser.removeAttribute(sv.kALLOW_COLLAPSE);
+	assert.equals(0, sv.getVisibleIndex(tabs[0]));
+	assert.equals(1, sv.getVisibleIndex(tabs[1]));
+	assert.equals(2, sv.getVisibleIndex(tabs[2]));
+	assert.equals(3, sv.getVisibleIndex(tabs[3]));
 }
 
 var randomKey = 'key-'+parseInt(Math.random() * 65000);
