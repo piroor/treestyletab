@@ -223,7 +223,7 @@ TreeStyleTabBrowser.prototype = {
 				<![CDATA[$&
 					var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;
 					treeStyleTab._focusChangedByShortcut = TreeStyleTabService.accelKeyPressed;
-					if (treeStyleTab.browser.getAttribute(treeStyleTab.kALLOW_COLLAPSE) == 'true' &&
+					if (treeStyleTab.canCollapseSubtree() &&
 						treeStyleTab.getTreePref('focusMode') == treeStyleTab.kFOCUS_VISIBLE) {
 						(function(aDir, aWrap, aSelf) {
 							var nextTab = (aDir < 0) ? treeStyleTab.getPreviousVisibleTab(aSelf.selectedItem) : treeStyleTab.getNextVisibleTab(aSelf.selectedItem) ;
@@ -2071,8 +2071,7 @@ TreeStyleTabBrowser.prototype = {
 
 		if (this.isEventFiredOnTwisty(aEvent)) {
 			var tab = this.getTabFromEvent(aEvent);
-			if (this.hasChildTabs(tab) &&
-				this.mTabBrowser.getAttribute(this.kALLOW_COLLAPSE) == 'true') {
+			if (this.hasChildTabs(tab) && this.canCollapseSubtree()) {
 				this.collapseExpandSubtree(tab, tab.getAttribute(this.kSUBTREE_COLLAPSED) != 'true');
 				aEvent.preventDefault();
 				aEvent.stopPropagation();
@@ -2218,7 +2217,7 @@ TreeStyleTabBrowser.prototype = {
 		).singleNodeValue;
 		let collapseItem = items[this.kMENUITEM_COLLAPSE];
 		let expanndItem = items[this.kMENUITEM_EXPAND];
-		if (b.getAttribute(this.kALLOW_COLLAPSE) == 'true' &&
+		if (this.canCollapseSubtree(b) &&
 			this.evaluateXPath(
 				'child::xul:tab[@'+this.kCHILDREN+']',
 				b.mTabContainer
@@ -3285,7 +3284,7 @@ TreeStyleTabBrowser.prototype = {
 			aJustNow ||
 			this.collapseDuration < 1 ||
 //			!this.isVertical ||
-			this.mTabBrowser.getAttribute(this.kALLOW_COLLAPSE) != 'true'
+			!this.canCollapseSubtree()
 			) {
 			aTab.setAttribute(
 				'style',
@@ -3421,11 +3420,12 @@ TreeStyleTabBrowser.prototype = {
  
 	collapseExpandTreesIntelligentlyFor : function(aTab, aJustNow) 
 	{
-		if (!aTab || this.doingCollapseExpand) return;
+		if (!aTab ||
+			this.doingCollapseExpand ||
+			!this.canCollapseSubtree())
+			return;
 
 		var b = this.mTabBrowser;
-		if (b.getAttribute(this.kALLOW_COLLAPSE) != 'true') return;
-
 		var sameParentTab = this.getParentTab(aTab);
 		var expandedParentTabs = [
 				aTab.getAttribute(this.kID)

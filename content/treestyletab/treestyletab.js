@@ -821,8 +821,7 @@ var TreeStyleTabService = {
 	{
 		if (!aTab) return null;
 
-		var b = this.getTabBrowserFromChild(aTab) || this.browser;
-		if (b.getAttribute(this.kALLOW_COLLAPSE) != 'true')
+		if (!this.canCollapseSubtree(aTab))
 			return this.getNextTab(aTab);
 
 		return this.evaluateXPath(
@@ -836,8 +835,7 @@ var TreeStyleTabService = {
 	{
 		if (!aTab) return null;
 
-		var b = this.getTabBrowserFromChild(aTab) || this.browser;
-		if (b.getAttribute(this.kALLOW_COLLAPSE) != 'true')
+		if (!this.canCollapseSubtree(aTab))
 			return this.getPreviousTab(aTab);
 
 		return this.evaluateXPath(
@@ -851,8 +849,7 @@ var TreeStyleTabService = {
 	{
 		if (!aTab) return null;
 
-		var b = this.getTabBrowserFromChild(aTab) || this.browser;
-		if (b.getAttribute(this.kALLOW_COLLAPSE) != 'true')
+		if (!this.canCollapseSubtree(aTab))
 			return this.getLastTab(aTab);
 
 		return this.evaluateXPath(
@@ -864,8 +861,7 @@ var TreeStyleTabService = {
  
 	getVisibleTabs : function(aTab) 
 	{
-		var b = this.getTabBrowserFromChild(aTab) || this.browser;
-		if (b.getAttribute(this.kALLOW_COLLAPSE) != 'true')
+		if (!this.canCollapseSubtree(aTab))
 			return this.getTabs(b);
 
 		var xpathResult = this.evaluateXPath(
@@ -879,8 +875,7 @@ var TreeStyleTabService = {
 	{
 		if (!aTab) return -1;
 
-		var b = this.getTabBrowserFromChild(aTab) || this.browser;
-		if (b.getAttribute(this.kALLOW_COLLAPSE) != 'true')
+		if (!this.canCollapseSubtree(aTab))
 			return this.getTabIndex(aTab);
 
 		return aTab.getAttribute(this.kCOLLAPSED) == 'true' ?
@@ -904,12 +899,15 @@ var TreeStyleTabService = {
 			);
 	},
  
+	canCollapseSubtree : function(aTabBrowser) /* PUBLIC API */ 
+	{
+		var b = this.getTabBrowserFromChild(aTabBrowser) || this.browser;
+		return b.getAttribute(this.kALLOW_COLLAPSE) == 'true';
+	},
+ 
 	isCollapsed : function(aTab) /* PUBLIC API */ 
 	{
-		if (!aTab) return false;
-
-		var b = this.getTabBrowserFromChild(aTab) || this.browser;
-		if (b.getAttribute(this.kALLOW_COLLAPSE) == 'true')
+		if (!aTab || !this.canCollapseSubtree(aTab))
 			return false;
 
 		return aTab.getAttribute(this.kCOLLAPSED) == 'true';
@@ -917,10 +915,7 @@ var TreeStyleTabService = {
  
 	isSubtreeCollapsed : function(aTab) /* PUBLIC API */ 
 	{
-		if (!aTab) return false;
-
-		var b = this.getTabBrowserFromChild(aTab) || this.browser;
-		if (b.getAttribute(this.kALLOW_COLLAPSE) == 'true')
+		if (!aTab || !this.canCollapseSubtree(aTab))
 			return false;
 
 		return aTab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true';
@@ -1122,10 +1117,9 @@ var TreeStyleTabService = {
  
 	getXOffsetOfTab : function(aTab) 
 	{
-		var extraCondition = '';
-		var b = this.getTabBrowserFromChild(aTab) || this.browser;
-		if (b.getAttribute(this.kALLOW_COLLAPSE) == 'true')
-			extraCondition = '[not(@'+this.kCOLLAPSED+'="true")]';
+		var extraCondition = this.canCollapseSubtree(aTab) ?
+								'[not(@'+this.kCOLLAPSED+'="true")]' :
+								'' ;
 
 		return this.evaluateXPath(
 			'sum((self::* | preceding-sibling::xul:tab'+extraCondition+')/attribute::'+this.kX_OFFSET+')',
@@ -1135,10 +1129,9 @@ var TreeStyleTabService = {
 	},
 	getYOffsetOfTab : function(aTab)
 	{
-		var extraCondition = '';
-		var b = this.getTabBrowserFromChild(aTab) || this.browser;
-		if (b.getAttribute(this.kALLOW_COLLAPSE) == 'true')
-			extraCondition = '[not(@'+this.kCOLLAPSED+'="true")]';
+		var extraCondition = this.canCollapseSubtree(aTab) ?
+								'[not(@'+this.kCOLLAPSED+'="true")]' :
+								'';
 
 		return this.evaluateXPath(
 			'sum((self::* | preceding-sibling::xul:tab'+extraCondition+')/attribute::'+this.kY_OFFSET+')',
