@@ -1,4 +1,5 @@
-var namespace = {};
+var namespace = { window : { addEventListener : function() {} } };
+utils.include('../../content/treestyletab/res/prefs.js', namespace, 'Shift_JIS');
 utils.include('../../content/treestyletab/treestyletab.js', namespace, 'Shift_JIS');
 
 var sv;
