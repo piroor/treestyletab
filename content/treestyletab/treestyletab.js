@@ -807,9 +807,24 @@ var TreeStyleTabService = {
 			).singleNodeValue;
 	},
  
+	getTabIndex : function(aTab) 
+	{
+		if (!aTab) return -1;
+		return this.evaluateXPath(
+				'count(preceding-sibling::xul:tab)',
+				aTab,
+				XPathResult.NUMBER_TYPE
+			).numberValue;
+	},
+ 
 	getNextVisibleTab : function(aTab) 
 	{
 		if (!aTab) return null;
+
+		var b = this.getTabBrowserFromChild(aTab) || this.browser;
+		if (b.getAttribute(this.kALLOW_COLLAPSE) != 'true')
+			return this.getNextTab(aTab);
+
 		return this.evaluateXPath(
 				'following-sibling::xul:tab[not(@'+this.kCOLLAPSED+'="true")][1]',
 				aTab,
@@ -820,6 +835,11 @@ var TreeStyleTabService = {
 	getPreviousVisibleTab : function(aTab) 
 	{
 		if (!aTab) return null;
+
+		var b = this.getTabBrowserFromChild(aTab) || this.browser;
+		if (b.getAttribute(this.kALLOW_COLLAPSE) != 'true')
+			return this.getPreviousTab(aTab);
+
 		return this.evaluateXPath(
 				'preceding-sibling::xul:tab[not(@'+this.kCOLLAPSED+'="true")][1]',
 				aTab,
@@ -830,6 +850,11 @@ var TreeStyleTabService = {
 	getLastVisibleTab : function(aTab) 
 	{
 		if (!aTab) return null;
+
+		var b = this.getTabBrowserFromChild(aTab) || this.browser;
+		if (b.getAttribute(this.kALLOW_COLLAPSE) != 'true')
+			return this.getLastTab(aTab);
+
 		return this.evaluateXPath(
 				'child::xul:tab[not(@'+this.kCOLLAPSED+'="true")][last()]',
 				aTab.parentNode,
@@ -839,6 +864,10 @@ var TreeStyleTabService = {
  
 	getVisibleTabs : function(aTab) 
 	{
+		var b = this.getTabBrowserFromChild(aTab) || this.browser;
+		if (b.getAttribute(this.kALLOW_COLLAPSE) != 'true')
+			return this.getTabs(b);
+
 		var xpathResult = this.evaluateXPath(
 				'child::xul:tab[not(@'+this.kCOLLAPSED+'="true")]',
 				aTab.parentNode
@@ -848,8 +877,15 @@ var TreeStyleTabService = {
  
 	getVisibleIndex : function(aTab) 
 	{
-		if (!aTab || aTab.getAttribute(this.kCOLLAPSED) == 'true') return -1;
-		return this.evaluateXPath(
+		if (!aTab) return -1;
+
+		var b = this.getTabBrowserFromChild(aTab) || this.browser;
+		if (b.getAttribute(this.kALLOW_COLLAPSE) != 'true')
+			return this.getTabIndex(aTab);
+
+		return aTab.getAttribute(this.kCOLLAPSED) == 'true' ?
+			-1 :
+			this.evaluateXPath(
 				'count(preceding-sibling::xul:tab[not(@'+this.kCOLLAPSED+'="true")])',
 				aTab,
 				XPathResult.NUMBER_TYPE
@@ -866,6 +902,28 @@ var TreeStyleTabService = {
 					this.browser.mTabContainer
 				)
 			);
+	},
+ 
+	isCollapsed : function(aTab) /* PUBLIC API */ 
+	{
+		if (!aTab) return false;
+
+		var b = this.getTabBrowserFromChild(aTab) || this.browser;
+		if (b.getAttribute(this.kALLOW_COLLAPSE) == 'true')
+			return false;
+
+		return aTab.getAttribute(this.kCOLLAPSED) == 'true';
+	},
+ 
+	isSubtreeCollapsed : function(aTab) /* PUBLIC API */ 
+	{
+		if (!aTab) return false;
+
+		var b = this.getTabBrowserFromChild(aTab) || this.browser;
+		if (b.getAttribute(this.kALLOW_COLLAPSE) == 'true')
+			return false;
+
+		return aTab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true';
 	},
  
 	getParentTab : function(aTab) /* PUBLIC API */ 
@@ -1064,16 +1122,26 @@ var TreeStyleTabService = {
  
 	getXOffsetOfTab : function(aTab) 
 	{
+		var extraCondition = '';
+		var b = this.getTabBrowserFromChild(aTab) || this.browser;
+		if (b.getAttribute(this.kALLOW_COLLAPSE) == 'true')
+			extraCondition = '[not(@'+this.kCOLLAPSED+'="true")]';
+
 		return this.evaluateXPath(
-			'sum((self::* | preceding-sibling::xul:tab[not(@'+this.kCOLLAPSED+'="true")])/attribute::'+this.kX_OFFSET+')',
+			'sum((self::* | preceding-sibling::xul:tab'+extraCondition+')/attribute::'+this.kX_OFFSET+')',
 			aTab,
 			XPathResult.NUMBER_TYPE
 		).numberValue;
 	},
 	getYOffsetOfTab : function(aTab)
 	{
+		var extraCondition = '';
+		var b = this.getTabBrowserFromChild(aTab) || this.browser;
+		if (b.getAttribute(this.kALLOW_COLLAPSE) == 'true')
+			extraCondition = '[not(@'+this.kCOLLAPSED+'="true")]';
+
 		return this.evaluateXPath(
-			'sum((self::* | preceding-sibling::xul:tab[not(@'+this.kCOLLAPSED+'="true")])/attribute::'+this.kY_OFFSET+')',
+			'sum((self::* | preceding-sibling::xul:tab'+extraCondition+')/attribute::'+this.kY_OFFSET+')',
 			aTab,
 			XPathResult.NUMBER_TYPE
 		).numberValue;
@@ -1517,7 +1585,7 @@ try{
 								return true;
 
 							tab = TSTTabBrowser.treeStyleTab.getTabFromEvent(aEvent);
-							if (tab && tab.getAttribute(TreeStyleTabService.kCOLLAPSED) == 'true')
+							if (TreeStyleTabService.isCollapsed(tab))
 								return false;
 
 							var info = TSTTabBrowser.treeStyleTab.getDropAction(aEvent, TST_DRAGSESSION);
@@ -2208,7 +2276,7 @@ catch(e) {
 		if (this._tabShouldBeExpandedAfterKeyReleased) {
 			let tab = this._tabShouldBeExpandedAfterKeyReleased;
 			if (this.hasChildTabs(tab) &&
-				(tab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true')) {
+				this.isSubtreeCollapsed(tab)) {
 				this.getTabBrowserFromChild(tab)
 						.treeStyleTab
 						.collapseExpandTreesIntelligentlyFor(tab);
@@ -2310,7 +2378,7 @@ catch(e) {
 	handleTooltip : function(aEvent, aTab) 
 	{
 		var label;
-		var collapsed = aTab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true';
+		var collapsed = this.isSubtreeCollapsed(aTab);
 
 		var base = parseInt(aTab.getAttribute(this.kNEST) || 0);
 		var descendant = this.getDescendantTabs(aTab);
