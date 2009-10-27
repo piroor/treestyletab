@@ -1860,7 +1860,7 @@ TreeStyleTabBrowser.prototype = {
 
 		this.setTabValue(tab, this.kID, id);
 
-		var isSubTreeCollapsed = (this.getTabValue(tab, this.kSUBTREE_COLLAPSED) == 'true');
+		var isSubTreeCollapsed = restoringMultipleTabs && (this.getTabValue(tab, this.kSUBTREE_COLLAPSED) == 'true');
 		this.setTabValue(tab, this.kSUBTREE_COLLAPSED, isSubTreeCollapsed);
 
 		var tabs = [];
