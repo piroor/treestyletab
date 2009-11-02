@@ -2026,7 +2026,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		// update the status for the next restoring
 		if (TreeStyleTabService.restoringWindow)
-			TreeStyleTabService.restoringWindow = TreeStyleTabService.getRestoringTabsCount() > 1;
+			TreeStyleTabService.restoringWindow = TreeStyleTabService.getRestoringTabsCount() > 0;
 	},
  
 	onTabSelect : function(aEvent) 
