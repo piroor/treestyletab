@@ -13,7 +13,7 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/boxObject.js
 */
 (function() {
-	const currentRevision = 4;
+	const currentRevision = 5;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -102,40 +102,8 @@
 				box.screenX = rect.left * zoom;
 				box.screenY = rect.top * zoom;
 
-				if ('mozInnerScreenX' in frame && 'mozInnerScreenY' in frame) {
-					box.screenX += frame.mozInnerScreenX * zoom;
-					box.screenY += frame.mozInnerScreenY * zoom;
-				}
-				else {
-					// "screenX" and "screenY" are absolute positions of the "border-box".
-					var owner = aNode;
-					while (true)
-					{
-						owner = this._getFrameOwnerFromFrame(frame);
-						frame = owner.ownerDocument.defaultView;
-						zoom  = this.getZoom(frame);
-
-						let style = this._getComputedStyle(owner);
-						box.screenX += this._getPropertyPixelValue(style, 'border-left-width') * zoom;
-						box.screenY += this._getPropertyPixelValue(style, 'border-top-width') * zoom;
-
-						if (!owner) {
-							box.screenX += frame.screenX;
-							box.screenY += frame.screenY;
-							break;
-						}
-						if (owner.ownerDocument instanceof Ci.nsIDOMXULDocument) {
-							let ownerBox = owner.ownerDocument.getBoxObjectFor(owner);
-							box.screenX += ownerBox.screenX;
-							box.screenY += ownerBox.screenY;
-							break;
-						}
-
-						let ownerRect = owner.getBoundingClientRect();
-						box.screenX += ownerRect.left * zoom;
-						box.screenY += ownerRect.top * zoom;
-					}
-				}
+				box.screenX += frame.mozInnerScreenX * zoom;
+				box.screenY += frame.mozInnerScreenY * zoom;
 			}
 			catch(e) {
 			}
@@ -156,46 +124,6 @@
 		_getPropertyPixelValue : function(aStyle, aProperty)
 		{
 			return parseInt(aStyle.getPropertyValue(aProperty).replace('px', ''));
-		},
-
-		_getFrameOwnerFromFrame : function(aFrame)
-		{
-			var parentItem = aFrame
-					.QueryInterface(Ci.nsIInterfaceRequestor)
-					.getInterface(Ci.nsIWebNavigation)
-					.QueryInterface(Ci.nsIDocShell)
-					.QueryInterface(Ci.nsIDocShellTreeNode)
-					.QueryInterface(Ci.nsIDocShellTreeItem)
-					.parent;
-			var isChrome = parentItem.itemType == parentItem.typeChrome;
-			var parentDocument = parentItem
-					.QueryInterface(Ci.nsIWebNavigation)
-					.document;
-			var nodes = parentDocument.evaluate(
-					'/descendant::*[contains(" frame FRAME iframe IFRAME browser tabbrowser ", concat(" ", local-name(), " "))]',
-					parentDocument,
-					null,
-					Ci.nsIDOMXPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-					null
-				);
-			for (let i = 0, maxi = nodes.snapshotLength; i < maxi; i++)
-			{
-				let owner = nodes.snapshotItem(i);
-				if (isChrome && owner.wrappedJSObject) owner = owner.wrappedJSObject;
-				if (owner.localName == 'tabbrowser') {
-					let tabs = owner.mTabContainer.childNodes;
-					for (let i = 0, maxi = tabs.length; i < maxi; i++)
-					{
-						let browser = tabs[i].linkedBrowser;
-						if (browser.contentWindow == aFrame)
-							return browser;
-					}
-				}
-				else if (owner.contentWindow == aFrame) {
-					return owner;
-				}
-			}
-			return null;
 		},
 
 		Prefs : Cc['@mozilla.org/preferences;1']
