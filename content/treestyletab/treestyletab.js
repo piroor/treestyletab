@@ -2240,7 +2240,7 @@ catch(e) {
 				aEvent.shiftKey ? (aEvent.keyCode == aEvent.DOM_VK_TAB) : (aEvent.keyCode == aEvent.DOM_VK_PAGE_UP)
 			);
 
-		var onlyShiftKey = (!aEvent.shiftKey && aEvent.charCode == 0 && aEvent.keyCode == 16);
+		var onlyShiftKey = (!aEvent.shiftKey && aEvent.keyCode == 16 && (aEvent.type == 'keyup' || aEvent.charCode == 0));
 
 		if (
 			scrollDown ||
