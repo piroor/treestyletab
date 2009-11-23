@@ -21,6 +21,8 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 				sv.kTABBAR_MOVE_NORMAL
 		);
 
+		this.readyToStartDrag();
+
 		aEvent.stopPropagation();
 		return true;
 	},
@@ -77,6 +79,32 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 		return canDrag;
 	},
  
+	get SSS()
+	{
+		if (this._SSS === void(0)) {
+			if ('@mozilla.org/content/style-sheet-service;1' in Components.classes) {
+				this._SSS = Components.classes['@mozilla.org/content/style-sheet-service;1'].getService(Components.interfaces.nsIStyleSheetService);
+			}
+			if (!this._SSS)
+				this._SSS = null;
+		}
+		return this._SSS;
+	},
+ 
+	readyToStartDrag : function() 
+	{
+		var sheet = this.mOwner.makeURIFromSpec('chrome://treestyletab/content/hide-embed.css');
+		if (!this.SSS.sheetRegistered(sheet, this.SSS.AGENT_SHEET))
+			this.SSS.loadAndRegisterSheet(sheet, this.SSS.AGENT_SHEET);
+	},
+ 
+	readyToEndDrag : function() 
+	{
+		var sheet = this.mOwner.makeURIFromSpec('chrome://treestyletab/content/hide-embed.css');
+		if (this.SSS.sheetRegistered(sheet, this.SSS.AGENT_SHEET))
+			this.SSS.unregisterSheet(sheet, this.SSS.AGENT_SHEET);
+	},
+ 
 	onDragEnter : function(aEvent, aDragSession) 
 	{
 		var sv = this.mOwner;
@@ -123,10 +151,10 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
  
 	onDragEnd : function(aEvent) 
 	{
-		var sv = this.mOwner;
-		window.setTimeout(function() {
-			sv.mTabBrowser.removeAttribute(sv.kDROP_POSITION);
-		}, 10);
+		window.setTimeout(function(aSelf) {
+			aSelf.readyToEndDrag();
+			aSelf.mOwner.mTabBrowser.removeAttribute(aSelf.mOwner.kDROP_POSITION);
+		}, 10, this);
 		aEvent.stopPropagation();
 	},
  

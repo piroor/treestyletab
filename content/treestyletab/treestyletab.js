@@ -1531,6 +1531,7 @@ var TreeStyleTabService = {
 							// no feedback image, because it's annoying...
 							dt.setDragImage(new Image(), 0, 0);
 							aEvent.stopPropagation();
+							this.treeStyleTab.tabbarDNDObserver.readyToStartDrag();
 						}
 						else $&]]>
 				)
