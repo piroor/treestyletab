@@ -247,6 +247,21 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		);
 	}
 
+	// Selection Links
+	// https://addons.mozilla.org/firefox/addon/8644
+	if ('selectionlinks' in window &&
+		'parseSelection' in selectionlinks) {
+		eval('selectionlinks.parseSelection = '+
+			selectionlinks.parseSelection.toSource().replace(
+				/((?:[^\s:;]+.selectedTab\s*=\s*)?([^\s:;]+).addTab\()/g,
+				<![CDATA[
+					if ($2.treeStyleTab)
+						$2.treeStyleTab.readyToOpenChildTab(focusedWindow);
+				$1]]>
+			)
+		);
+	}
+
 
 	// Tab Mix Plus
 	if ('TMupdateSettings' in window) {
