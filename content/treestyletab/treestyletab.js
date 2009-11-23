@@ -396,7 +396,7 @@ var TreeStyleTabService = {
 				null ;
 	},
  
-	readyToOpenDivertedTab : function(aFrameOrTabBrowser)
+	readyToOpenDivertedTab : function(aFrameOrTabBrowser) 
 	{
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
 		if (!frame) return;
@@ -1436,7 +1436,6 @@ var TreeStyleTabService = {
 
 		window.removeEventListener('load', this, false);
 		window.addEventListener('unload', this, false);
-		document.getElementById('contentAreaContextMenu').addEventListener('popupshowing', this, false);
 		document.addEventListener('popupshowing', this, false);
 		document.addEventListener('popuphiding', this, false);
 
@@ -2080,7 +2079,6 @@ catch(e) {
 		this.endListenKeyEventsFor(this.LISTEN_FOR_AUTOHIDE);
 		this.endListenKeyEventsFor(this.LISTEN_FOR_AUTOEXPAND_BY_FOCUSCHANGE);
 
-		document.getElementById('contentAreaContextMenu').removeEventListener('popupshowing', this, false);
 		document.removeEventListener('popupshowing', this, false);
 		document.removeEventListener('popuphiding', this, false);
 
@@ -2123,10 +2121,6 @@ catch(e) {
 				return;
 
 			case 'popupshowing':
-				if (aEvent.currentTarget.id == 'contentAreaContextMenu' &&
-					aEvent.target == aEvent.currentTarget) {
-					this.initContextMenu();
-				}
 				if (!this.evaluateXPath(
 						'local-name() = "tooltip" or local-name() ="panel" or '+
 						'parent::*/ancestor-or-self::*[local-name()="popup" or local-name()="menupopup"]',
@@ -2324,20 +2318,6 @@ catch(e) {
 				aEvent.originalTarget,
 				XPathResult.BOOLEAN_TYPE
 			).booleanValue;
-	},
- 
-	initContextMenu : function() 
-	{
-		var item = document.getElementById('context-treestyletab-openSelectionLinks');
-		var sep  = document.getElementById('context-treestyletab-openSelectionLinks-separator');
-		if (this.getTreePref('show.openSelectionLinks') && this.getSelectionLinks().length) {
-			item.removeAttribute('hidden');
-			sep.removeAttribute('hidden');
-		}
-		else {
-			item.setAttribute('hidden', true);
-			sep.setAttribute('hidden', true);
-		}
 	},
  
 	showHideSubTreeMenuItem : function(aMenuItem, aTabs) 
@@ -2561,7 +2541,8 @@ catch(e) {
 			}
 		}, 0, this);
 	},
-	canCreateSubTree : function(aTabs)
+	
+	canCreateSubTree : function(aTabs) 
 	{
 		aTabs = this.getRootTabs(aTabs);
 		if (aTabs.length < 2) return false;
@@ -2575,7 +2556,8 @@ catch(e) {
 		}
 		return this.getChildTabs(lastParent).length != aTabs.length;
 	},
-	getRootTabs : function(aTabs)
+ 
+	getRootTabs : function(aTabs) 
 	{
 		var roots = [];
 		if (!aTabs || !aTabs.length) return roots;
@@ -2587,129 +2569,7 @@ catch(e) {
 		}, this);
 		return roots;
 	},
- 
-	openSelectionLinks : function(aFrame) 
-	{
-		aFrame = this.getCurrentFrame(aFrame);
-
-		var b = this.browser;
-		var links = this.getSelectionLinks(aFrame);
-		if (!links.length) return;
-
-		var referrer = this.makeURIFromSpec(aFrame.location.href);
-
-		this.readyToOpenChildTab(aFrame, true);
-		links.forEach(function(aLink, aIndex) {
-			var tab = b.addTab(aLink.href, referrer);
-			if (aIndex == 0 && !this.getPref('browser.tabs.loadInBackground'))
-				b.selectedTab = tab;
-		}, this);
-		this.stopToOpenChildTab(aFrame);
-	},
-	
-	getCurrentFrame : function(aFrame) 
-	{
-		if (aFrame) return aFrame;
-		var targetWindow = document.commandDispatcher.focusedWindow;
-		if (!targetWindow || targetWindow.top == window)
-			targetWindow = this.browser.contentWindow;
-		return targetWindow;
-	},
- 
-	getSelectionLinks : function(aFrame) 
-	{
-		aFrame = this.getCurrentFrame(aFrame);
-
-		var links = [];
-
-		var selection = aFrame.getSelection();
-		if (!selection || !selection.rangeCount)
-			return links;
-
-		for (var i = 0, maxi = selection.rangeCount; i < maxi; i++)
-		{
-			links = links.concat(this.getLinksInRange(selection.getRangeAt(i)));
-		}
-
-		var visited = {};
-		var uniqueLinks = [];
-		links.forEach(function(aLink) {
-			if (aLink.href in visited) return;
-			visited[aLink.href] = true;
-			uniqueLinks.push(aLink);
-		});
-		return uniqueLinks;
-	},
-	
-	getLinksInRange : function(aRange) 
-	{
-		// http://nanto.asablo.jp/blog/2008/10/18/3829312
-		var links = [];
-		if (aRange.collapsed) return links;
-
-		var startCountExpression = 'count(preceding::*[@href])';
-		var startNode = aRange.startContainer;
-		if (startNode.nodeType == Node.ELEMENT_NODE) {
-			if (aRange.startOffset < startNode.childNodes.length) {
-				startNode = startNode.childNodes[aRange.startOffset];
-			}
-			else {
-				startCountExpression += ' + count(descendant::*[@href])';
-			}
-		}
-		var startCount = this.evaluateXPath(
-				startCountExpression,
-				startNode,
-				XPathResult.NUMBER_TYPE
-			).numberValue;
-
-		var linksExpression = 'ancestor::*[@href] | preceding::*[@href]';
-		var endNode = aRange.endContainer;
-		if (endNode.nodeType == Node.ELEMENT_NODE) {
-			if (aRange.endOffset < endNode.childNodes.length) {
-				endNode = endNode.childNodes[aRange.endOffset];
-			}
-			else {
-				linksExpression += ' | descendant-or-self::*[@href]';
-			}
-		}
-		var linksResult = this.evaluateXPath(linksExpression, endNode);
-
-		var allLinksCount = linksResult.snapshotLength;
-		var contentRange = startNode.ownerDocument.createRange();
-		if (startCount < allLinksCount) {
-			var lastNode = this.evaluateXPath(
-					'descendant-or-self::node()[not(child::node()) and not(following-sibling::node())]',
-					linksResult.snapshotItem(startCount),
-					XPathResult.FIRST_ORDERED_NODE_TYPE
-				).singleNodeValue;
-			contentRange.selectNodeContents(lastNode);
-			contentRange.setStart(aRange.startContainer, aRange.startOffset);
-			if (contentRange.collapsed) {
-				startCount++;
-			}
-		}
-		if (startCount < allLinksCount) {
-			var firstNode = this.evaluateXPath(
-					'descendant-or-self::node()[not(child::node()) and not(preceding-sibling::node())]',
-					linksResult.snapshotItem(allLinksCount-1),
-					XPathResult.FIRST_ORDERED_NODE_TYPE
-				).singleNodeValue;
-			contentRange.selectNodeContents(firstNode);
-			contentRange.setEnd(aRange.endContainer, aRange.endOffset);
-			if (contentRange.collapsed) {
-				allLinksCount--;
-			}
-		}
-		contentRange.detach();
-
-		for (var i = startCount; i < allLinksCount; i++)
-		{
-			links.push(linksResult.snapshotItem(i));
-		}
-		return links;
-	},
-   
+  
 	collapseExpandAllSubtree : function(aCollapse) 
 	{
 		this.ObserverService.notifyObservers(

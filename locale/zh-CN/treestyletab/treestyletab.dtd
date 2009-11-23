@@ -37,7 +37,6 @@
 <!ENTITY config.tabs.menu "菜单">
 
 <!ENTITY config.show.tabContextMenu.caption "在标签的右键菜单中添加以下项目">
-<!ENTITY config.show.openSelectionLinks "在页面右键菜单中添加“在新标签中打开选中链接”">
 
 
 <!ENTITY config.tabs.tab "新标签">
@@ -152,8 +151,6 @@
 
 
 
-<!ENTITY context.openSelectionLinks.label       "在新标签中打开选中链接">
-<!ENTITY context.openSelectionLinks.accesskey   "l">
 <!ENTITY selection.createSubTree.label          "以选中标签建立新标签树">
 <!ENTITY selection.createSubTree.accesskey      "g">
 

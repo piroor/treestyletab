@@ -37,7 +37,6 @@
 <!ENTITY config.tabs.menu "Menú">
 
 <!ENTITY config.show.tabContextMenu.caption "Añadir los siguientes items al menú contextual de las pestañas">
-<!ENTITY config.show.openSelectionLinks "Añadir &quot;Abrir selección de enlaces en pestañas&quot; al menú contextual">
 
 
 <!ENTITY config.tabs.tab "New Tabs">
@@ -155,9 +154,6 @@
 
 
 
-
-<!ENTITY context.openSelectionLinks.label     "Abrir selección de enlaces en pestañas">
-<!ENTITY context.openSelectionLinks.accesskey "l">
 
 <!ENTITY selection.removeTabSubTree.label     "Cerrar árboles seleccionados">
 <!ENTITY selection.removeTabSubTree.accesskey "s">

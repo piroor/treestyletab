@@ -37,7 +37,6 @@
 <!ENTITY config.tabs.menu "Menu">
 
 <!ENTITY config.show.tabContextMenu.caption "Add following items to the context menu on tabs">
-<!ENTITY config.show.openSelectionLinks "Add &quot;Open Selection Links in Tabs&quot; to the context menu">
 
 
 <!ENTITY config.tabs.tab "New Tabs">
@@ -152,8 +151,6 @@
 
 
 
-<!ENTITY context.openSelectionLinks.label       "Open Selection Links in Tabs">
-<!ENTITY context.openSelectionLinks.accesskey   "l">
 <!ENTITY selection.createSubTree.label          "Gather to a New Tree">
 <!ENTITY selection.createSubTree.accesskey      "g">
 

@@ -39,16 +39,6 @@
 ]]></script>
 
 
-<popup id="contentAreaContextMenu">
-	<menuseparator id="context-treestyletab-openSelectionLinks-separator"
-		insertafter="context-sep-open"/>
-	<menuitem id="context-treestyletab-openSelectionLinks"
-		insertafter="context-sep-open"
-		label="&context.openSelectionLinks.label;"
-		accesskey="&context.openSelectionLinks.accesskey;"
-		oncommand="TreeStyleTabService.openSelectionLinks();"/>
-</popup>
-
 <menupopup id="multipletab-selection-menu">
 	<menuitem id="multipletab-selection-item-removeTabSubTree"
 		insertafter="multipletab-selection-removeTabs"

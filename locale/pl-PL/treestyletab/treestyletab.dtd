@@ -37,7 +37,6 @@
 <!ENTITY config.tabs.menu "Menu">
 
 <!ENTITY config.show.tabContextMenu.caption "Wyświetlaj w menu kontekstowym kart następujące elementy:">
-<!ENTITY config.show.openSelectionLinks "Wyświetlaj w menu kontekstowym element „Otwórz zaznaczone odnośniki w kartach”">
 
 
 <!ENTITY config.tabs.tab "New Tabs">
@@ -154,9 +153,6 @@
 
 
 
-
-<!ENTITY context.openSelectionLinks.label     "Otwórz wybrane odnośniki w kartach">
-<!ENTITY context.openSelectionLinks.accesskey "O">
 
 <!ENTITY selection.removeTabSubTree.label     "Zamknij wybrane drzewa">
 <!ENTITY selection.removeTabSubTree.accesskey "M">

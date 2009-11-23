@@ -152,9 +152,6 @@
 
 
 
-<!ENTITY context.openSelectionLinks.label     "Alle Links in der Auswahl in Tabs öffnen">
-<!ENTITY context.openSelectionLinks.accesskey "l">
-
 <!ENTITY selection.removeTabSubTree.label     "Ausgewählte Zweige schließen">
 <!ENTITY selection.removeTabSubTree.accesskey "s">
 <!ENTITY selection.createSubTree.label          "Zweig auf oberste Ebene verschieben">

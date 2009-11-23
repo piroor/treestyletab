@@ -190,9 +190,6 @@
 
 <prefpane id="prefpane-menu" label="&config.tabs.menu;">
 	<preferences>
-		<preference id="extensions.treestyletab.show.openSelectionLinks"
-			name="extensions.treestyletab.show.openSelectionLinks"
-			type="bool"/>
 		<preference id="extensions.treestyletab.show.context-item-reloadTabSubTree"
 			name="extensions.treestyletab.show.context-item-reloadTabSubTree"
 			type="bool"/>
@@ -264,9 +261,6 @@
 				label="&context.bookmarkTabSubTree.label;"/>
 		</hbox>
 	</groupbox>
-	<checkbox id="extensions.treestyletab.show.openSelectionLinks-check"
-		preference="extensions.treestyletab.show.openSelectionLinks"
-		label="&config.show.openSelectionLinks;"/>
 
 	</vbox>
 

@@ -37,7 +37,6 @@
 <!ENTITY config.tabs.menu "メニュー">
 
 <!ENTITY config.show.tabContextMenu.caption "タブのコンテキストメニューに以下の項目を追加する">
-<!ENTITY config.show.openSelectionLinks "コンテキストメニューに「選択したリンクをすべてタブで開く」を加える">
 
 
 <!ENTITY config.tabs.tab "新しいタブ">
@@ -150,9 +149,6 @@
 <!ENTITY config.useEffectiveTLD.disabled "ホスト名で判別する（aaa.example.comとbbb.example.comを別のサイトと見なす）">
 
 
-
-<!ENTITY context.openSelectionLinks.label     "選択したリンクをすべてタブで開く">
-<!ENTITY context.openSelectionLinks.accesskey "l">
 
 <!ENTITY selection.removeTabSubTree.label       "すべてのツリーを閉じる">
 <!ENTITY selection.removeTabSubTree.accesskey   "s">

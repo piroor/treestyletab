@@ -37,7 +37,6 @@
 <!ENTITY config.tabs.menu "Меню">
 
 <!ENTITY config.show.tabContextMenu.caption "Добавить следующие элементы в контекстное меню вкладок">
-<!ENTITY config.show.openSelectionLinks "Добавить &quot;Открыть выбранные ссылки во вкладках&quot; в контекстное меню">
 
 
 <!ENTITY config.tabs.tab "New Tabs">
@@ -154,9 +153,6 @@
 
 
 
-
-<!ENTITY context.openSelectionLinks.label     "Открыть выбранные ссылки во вкладках">
-<!ENTITY context.openSelectionLinks.accesskey "l">
 
 <!ENTITY selection.removeTabSubTree.label     "Закрыть выбранные деревья">
 <!ENTITY selection.removeTabSubTree.accesskey "s">

@@ -37,7 +37,6 @@
 <!ENTITY config.tabs.menu "選單">
 
 <!ENTITY config.show.tabContextMenu.caption "新增以下項目到分頁的內容功能表">
-<!ENTITY config.show.openSelectionLinks "新增「用新分頁開啟所有選取的鏈結」到內容功能表">
 
 
 <!ENTITY config.tabs.tab "New Tabs">
@@ -152,9 +151,6 @@
 <!ENTITY config.useEffectiveTLD.disabled "依據主機(&quot;aaa.example.com&quot; 與 &quot;bbb.example.com&quot; 不算同類)">
 
 
-
-<!ENTITY context.openSelectionLinks.label     "用新分頁開啟所有選取的鏈結">
-<!ENTITY context.openSelectionLinks.accesskey "l">
 
 <!ENTITY selection.removeTabSubTree.label     "關閉所有選取的樹">
 <!ENTITY selection.removeTabSubTree.accesskey "s">
