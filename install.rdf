@@ -11,16 +11,6 @@
                    em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
                    em:iconURL="chrome://treestyletab/content/res/icon32.png"
                    em:optionsURL="chrome://treestyletab/content/config.xul">
-  <em:translator>Godai71.Extenzilla (it-IT locale)</em:translator>
-  <em:translator>Fatiaomao (zh-CN locale)</em:translator>
-  <em:translator>hzhbest (zh-CN locale)</em:translator>
-  <em:translator>tito (es-ES locale)</em:translator>
-  <em:translator>Andy Pillip (de-DE locale)</em:translator>
-  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
-  <em:translator>Tsprajna (zh-TW locale)</em:translator>
-  <em:translator>L'Autour (ru-RU locale)</em:translator>
-  <em:translator>Andrzej Pasterczyk (pl-PL locale)</em:translator>
-  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
 
 
     <em:updateURL>http://piro.sakura.ne.jp/xul/update.rdf</em:updateURL>
@@ -41,6 +31,8 @@
 		  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
 		  <em:translator>Tsprajna (zh-TW locale)</em:translator>
 		  <em:translator>L'Autour (ru-RU locale)</em:translator>
+		  <em:translator>Andrzej Pasterczyk (pl-PL locale)</em:translator>
+		  <em:translator>Jacek Chrząszcz (pl-PL locale)</em:translator>
 		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
       </RDF:Description>
     </em:localized>
@@ -59,6 +51,7 @@
 		  <em:translator>Tsprajna (zh-TW locale)</em:translator>
 		  <em:translator>L'Autour (ru-RU locale)</em:translator>
 		  <em:translator>Andrzej Pasterczyk (pl-PL locale)</em:translator>
+		  <em:translator>Jacek Chrząszcz (pl-PL locale)</em:translator>
 		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
       </RDF:Description>
     </em:localized>
@@ -77,6 +70,7 @@
 		  <em:translator>Tsprajna (zh-TW locale)</em:translator>
 		  <em:translator>L'Autour (ru-RU locale)</em:translator>
 		  <em:translator>Andrzej Pasterczyk (pl-PL locale)</em:translator>
+		  <em:translator>Jacek Chrząszcz (pl-PL locale)</em:translator>
 		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
       </RDF:Description>
     </em:localized>
@@ -95,6 +89,7 @@
 		  <em:translator>Tsprajna (zh-TW locale)</em:translator>
 		  <em:translator>L'Autour (ru-RU locale)</em:translator>
 		  <em:translator>Andrzej Pasterczyk (pl-PL locale)</em:translator>
+		  <em:translator>Jacek Chrząszcz (pl-PL locale)</em:translator>
 		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
       </RDF:Description>
     </em:localized>
@@ -113,6 +108,7 @@
 		  <em:translator>Tsprajna (zh-TW locale)</em:translator>
 		  <em:translator>L'Autour (ru-RU locale)</em:translator>
 		  <em:translator>Andrzej Pasterczyk (pl-PL locale)</em:translator>
+		  <em:translator>Jacek Chrząszcz (pl-PL locale)</em:translator>
 		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
       </RDF:Description>
     </em:localized>
@@ -131,6 +127,7 @@
 		  <em:translator>Tsprajna (zh-TW locale)</em:translator>
 		  <em:translator>L'Autour (ru-RU locale)</em:translator>
 		  <em:translator>Andrzej Pasterczyk (pl-PL locale)</em:translator>
+		  <em:translator>Jacek Chrząszcz (pl-PL locale)</em:translator>
 		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
       </RDF:Description>
     </em:localized>
@@ -149,6 +146,7 @@
 		  <em:translator>Tsprajna (zh-TW locale)</em:translator>
 		  <em:translator>L'Autour (ru-RU locale)</em:translator>
 		  <em:translator>Andrzej Pasterczyk (pl-PL locale)</em:translator>
+		  <em:translator>Jacek Chrząszcz (pl-PL locale)</em:translator>
 		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
       </RDF:Description>
     </em:localized>
@@ -167,6 +165,7 @@
 		  <em:translator>Tsprajna (zh-TW locale)</em:translator>
 		  <em:translator>L'Autour (ru-RU locale)</em:translator>
 		  <em:translator>Andrzej Pasterczyk (pl-PL locale)</em:translator>
+		  <em:translator>Jacek Chrząszcz (pl-PL locale)</em:translator>
 		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
       </RDF:Description>
     </em:localized>
@@ -185,6 +184,7 @@
 		  <em:translator>Tsprajna (zh-TW locale)</em:translator>
 		  <em:translator>L'Autour (ru-RU locale)</em:translator>
 		  <em:translator>Andrzej Pasterczyk (pl-PL locale)</em:translator>
+		  <em:translator>Jacek Chrząszcz (pl-PL locale)</em:translator>
 		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
       </RDF:Description>
     </em:localized>
