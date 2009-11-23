@@ -11,8 +11,6 @@ pref("extensions.treestyletab.tabbar.multirow",        false);
 pref("extensions.treestyletab.tabbar.invertTab",       true);
 pref("extensions.treestyletab.tabbar.invertTabContents", false);
 pref("extensions.treestyletab.tabbar.invertClosebox",  false);
-pref("extensions.treestyletab.tabbar.hideNewTabButton.horizontal",  false);
-pref("extensions.treestyletab.tabbar.hideNewTabButton.vertical",    false);
 pref("extensions.treestyletab.tabbar.hideAlltabsButton.horizontal", false);
 pref("extensions.treestyletab.tabbar.hideAlltabsButton.vertical",   true);
 pref("extensions.treestyletab.tabbar.scroll.smooth",   true);

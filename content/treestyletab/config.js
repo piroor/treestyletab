@@ -165,26 +165,14 @@ function onChangeTabbarPosition(aOnChange)
 	var indentCheckV   = document.getElementById('extensions.treestyletab.enableSubtreeIndent.vertical-check');
 	var collapseCheckH = document.getElementById('extensions.treestyletab.allowSubtreeCollapseExpand.horizontal-check');
 	var collapseCheckV = document.getElementById('extensions.treestyletab.allowSubtreeCollapseExpand.vertical-check');
-	var hideNewTabCheckH = document.getElementById('extensions.treestyletab.tabbar.hideNewTabButton.horizontal-check');
-	var hideNewTabCheckV = document.getElementById('extensions.treestyletab.tabbar.hideNewTabButton.vertical-check');
 	var hideAllTabsCheckH = document.getElementById('extensions.treestyletab.tabbar.hideAlltabsButton.horizontal-check');
 	var hideAllTabsCheckV = document.getElementById('extensions.treestyletab.tabbar.hideAlltabsButton.vertical-check');
-
-	var newTabAvailable = comparator.compare(XULAppInfo.version, '3.5') >= 0;
-	if (!newTabAvailable) {
-		hideNewTabCheckH.setAttribute('collapsed', true);
-		hideNewTabCheckV.setAttribute('collapsed', true);
-	}
 
 	if (pos == 'left' || pos == 'right') {
 		indentCheckH.setAttribute('collapsed', true);
 		indentCheckV.removeAttribute('collapsed');
 		collapseCheckH.setAttribute('collapsed', true);
 		collapseCheckV.removeAttribute('collapsed');
-		if (newTabAvailable) {
-			hideNewTabCheckH.setAttribute('collapsed', true);
-			hideNewTabCheckV.removeAttribute('collapsed');
-		}
 		hideAllTabsCheckH.setAttribute('collapsed', true);
 		hideAllTabsCheckV.removeAttribute('collapsed');
 	}       
@@ -193,10 +181,6 @@ function onChangeTabbarPosition(aOnChange)
 		indentCheckV.setAttribute('collapsed', true);
 		collapseCheckH.removeAttribute('collapsed');
 		collapseCheckV.setAttribute('collapsed', true);
-		if (newTabAvailable) {
-			hideNewTabCheckH.removeAttribute('collapsed');
-			hideNewTabCheckV.setAttribute('collapsed', true);
-		}
 		hideAllTabsCheckH.removeAttribute('collapsed');
 		hideAllTabsCheckV.setAttribute('collapsed', true);
 	}

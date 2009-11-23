@@ -946,11 +946,6 @@ TreeStyleTabBrowser.prototype = {
 		else
 			b.removeAttribute(this.kALLOW_COLLAPSE);
 
-		if (this.getTreePref('tabbar.hideNewTabButton.'+orient))
-			b.setAttribute(this.kHIDE_NEWTAB, 'true');
-		else
-			b.removeAttribute(this.kHIDE_NEWTAB);
-
 		if (this.getTreePref('tabbar.hideAlltabsButton.'+orient))
 			b.setAttribute(this.kHIDE_ALLTABS, 'true');
 		else
@@ -1194,7 +1189,6 @@ TreeStyleTabBrowser.prototype = {
 			case 'extensions.treestyletab.enableSubtreeIndent.horizontal':
 			case 'extensions.treestyletab.allowSubtreeCollapseExpand.horizontal':
 			case 'extensions.treestyletab.tabbar.fixed.horizontal':
-			case 'extensions.treestyletab.tabbar.hideNewTabButton.horizontal':
 			case 'extensions.treestyletab.tabbar.hideAlltabsButton.horizontal':
 				if (!this.isVertical) this.updateTabbarState();
 				break;
@@ -1202,7 +1196,6 @@ TreeStyleTabBrowser.prototype = {
 			case 'extensions.treestyletab.enableSubtreeIndent.vertical':
 			case 'extensions.treestyletab.allowSubtreeCollapseExpand.vertical':
 			case 'extensions.treestyletab.tabbar.fixed.vertical':
-			case 'extensions.treestyletab.tabbar.hideNewTabButton.vertical':
 			case 'extensions.treestyletab.tabbar.hideAlltabsButton.vertical':
 				if (this.isVertical) this.updateTabbarState();
 				break;

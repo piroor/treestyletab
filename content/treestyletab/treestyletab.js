@@ -23,7 +23,6 @@ var TreeStyleTabService = {
 	kTABBAR_POSITION    : 'treestyletab-tabbar-position',
 	kMODE               : 'treestyletab-mode',
 
-	kHIDE_NEWTAB        : 'treestyletab-hide-newtab-button',
 	kHIDE_ALLTABS       : 'treestyletab-hide-alltabs-button',
 	kSTYLE              : 'treestyletab-style',
 	kFIRSTTAB_BORDER    : 'treestyletab-firsttab-border',
@@ -1369,7 +1368,6 @@ var TreeStyleTabService = {
 				]);
 			case 1:
 				orientalPrefs = orientalPrefs.concat([
-					'extensions.treestyletab.tabbar.hideNewTabButton',
 					'extensions.treestyletab.tabbar.hideAlltabsButton'
 				]);
 			case 2:

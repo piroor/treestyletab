@@ -17,7 +17,6 @@
 <!ENTITY config.tabbar.invertTabContents    "Invert tab contents">
 <!ENTITY config.enableSubtreeIndent         "Отступы вкладок">
 <!ENTITY config.allowSubtreeCollapseExpand  "Разрешить сворачивать/разворачивать поддеревья вкладок">
-<!ENTITY config.tabbar.hideNewTabButton     "Показывать кнопку &quot;Открыть новую вкладку&quot;">
 <!ENTITY config.tabbar.hideAlltabsButton    "Показывать кнопку &quot;Список всех вкладок&quot;">
 
 <!ENTITY config.tabbar.style.caption "Вид вкладок на панели">

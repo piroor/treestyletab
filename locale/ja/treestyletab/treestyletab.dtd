@@ -17,7 +17,6 @@
 <!ENTITY config.tabbar.invertTabContents    "タブの内容を左右反転">
 <!ENTITY config.enableSubtreeIndent         "タブをインデント表示する">
 <!ENTITY config.allowSubtreeCollapseExpand  "ツリーを折りたためるようにする">
-<!ENTITY config.tabbar.hideNewTabButton     "「新しいタブを開く」ボタンを表示する">
 <!ENTITY config.tabbar.hideAlltabsButton    "「タブの一覧を表示」ボタンを表示する">
 
 <!ENTITY config.tabbar.style.caption "タブバーの表示スタイル">

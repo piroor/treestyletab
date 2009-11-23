@@ -17,7 +17,6 @@
 <!ENTITY config.tabbar.invertTabContents    "Inverti la visualizzazione dei controlli di contrazione/espansione dei sottoalberi"> <!-- NUOVA -->
 <!ENTITY config.enableSubtreeIndent         "Indenta sottoschede">
 <!ENTITY config.allowSubtreeCollapseExpand  "Permetti di contrarre/espandere sottoalberi delle schede">
-<!ENTITY config.tabbar.hideNewTabButton     "Visualizza il pulsante &quot;Apri una nuova scheda&quot;">
 <!ENTITY config.tabbar.hideAlltabsButton    "Visualizza la maniglia per elencare tutte le schede">
 
 <!ENTITY config.tabbar.style.caption "Aspetto delle barra delle schede">

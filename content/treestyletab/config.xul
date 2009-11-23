@@ -39,14 +39,6 @@
 		<preference id="extensions.treestyletab.allowSubtreeCollapseExpand.vertical"
 			name="extensions.treestyletab.allowSubtreeCollapseExpand.vertical"
 			type="bool"/>
-		<preference id="extensions.treestyletab.tabbar.hideNewTabButton.horizontal"
-			name="extensions.treestyletab.tabbar.hideNewTabButton.horizontal"
-			type="bool"
-			inverted="true"/>
-		<preference id="extensions.treestyletab.tabbar.hideNewTabButton.vertical"
-			name="extensions.treestyletab.tabbar.hideNewTabButton.vertical"
-			type="bool"
-			inverted="true"/>
 		<preference id="extensions.treestyletab.tabbar.hideAlltabsButton.horizontal"
 			name="extensions.treestyletab.tabbar.hideAlltabsButton.horizontal"
 			type="bool"
@@ -148,13 +140,6 @@
 			<checkbox id="extensions.treestyletab.tabbar.hideAlltabsButton.vertical-check"
 				preference="extensions.treestyletab.tabbar.hideAlltabsButton.vertical"
 				label="&config.tabbar.hideAlltabsButton;"/>
-			<checkbox id="extensions.treestyletab.tabbar.hideNewTabButton.horizontal-check"
-				preference="extensions.treestyletab.tabbar.hideNewTabButton.horizontal"
-				label="&config.tabbar.hideNewTabButton;"
-				collapsed="true"/>
-			<checkbox id="extensions.treestyletab.tabbar.hideNewTabButton.vertical-check"
-				preference="extensions.treestyletab.tabbar.hideNewTabButton.vertical"
-				label="&config.tabbar.hideNewTabButton;"/>
 		</hbox>
 		</vbox>
 	</groupbox>

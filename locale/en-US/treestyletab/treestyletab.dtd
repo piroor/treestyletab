@@ -17,7 +17,6 @@
 <!ENTITY config.tabbar.invertTabContents    "Invert tab contents">
 <!ENTITY config.enableSubtreeIndent         "Indent tabs">
 <!ENTITY config.allowSubtreeCollapseExpand  "Allow to collapse/expand tree of tabs">
-<!ENTITY config.tabbar.hideNewTabButton     "Show &quot;Open a new tab&quot; button">
 <!ENTITY config.tabbar.hideAlltabsButton    "Show &quot;List all tabs&quot; button">
 
 <!ENTITY config.tabbar.style.caption "Appearance of the tab bar">

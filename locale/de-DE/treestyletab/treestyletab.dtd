@@ -17,7 +17,6 @@
 <!ENTITY config.tabbar.invertTabContents    "Symbol und Text in den Tabs vertauschen">
 <!ENTITY config.enableSubtreeIndent         "Tabs einrücken">
 <!ENTITY config.allowSubtreeCollapseExpand  "Auf- und Einklappen von Zweigen erlauben">
-<!ENTITY config.tabbar.hideNewTabButton     "Button &quot;Neues Tab öffnen&quot; anzeigen">
 <!ENTITY config.tabbar.hideAlltabsButton    "Button zum Auflisten aller Tabs anzeigen">
 
 <!ENTITY config.tabbar.style.caption "Aussehen der Tableiste">

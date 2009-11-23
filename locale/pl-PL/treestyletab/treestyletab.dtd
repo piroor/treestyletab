@@ -17,7 +17,6 @@
 <!ENTITY config.tabbar.invertTabContents    "Invert tab contents">
 <!ENTITY config.enableSubtreeIndent         "Stosuj wcięcia">
 <!ENTITY config.allowSubtreeCollapseExpand  "Zezwalaj na zwijanie/rozwijanie drzewa kart">
-<!ENTITY config.tabbar.hideNewTabButton     "Wyświetlaj przycisk „Otwórz w nowej karcie”">
 <!ENTITY config.tabbar.hideAlltabsButton    "Wyświetlaj przycisk „Lista wszystkich kart”">
 
 <!ENTITY config.tabbar.style.caption "Wygląd paska kart">
