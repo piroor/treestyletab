@@ -1538,7 +1538,8 @@ var TreeStyleTabService = {
 			);
 		}
 		else { // Firefox 3.0.x
-			let source = aObserver.onDragStart.toSource().replace( // native
+			eval('aObserver.onDragStart = '+
+				aObserver.onDragStart.toSource().replace( // native
 					'aEvent.target.localName == "tab"',
 					<![CDATA[
 						(
@@ -1546,23 +1547,15 @@ var TreeStyleTabService = {
 							$&
 						)
 					]]>
-				);
-			if (this.getTreePref('compatibility.TMP')) // Tab Mix Plus
-				source = source.replace(
-					'event.target.localName != "tab"',
-					<![CDATA[
-						gBrowser.treeStyleTab.tabbarDNDObserver.canDragTabbar(event) ||
-						$&
-					]]>
-				);
-			eval('aObserver.onDragStart = '+source);
+				)
+			);
 		}
 
 		var canDropFunctionName = '_setEffectAllowedForDataTransfer' in aObserver ?
 				'_setEffectAllowedForDataTransfer' : // Firefox 3.5 or later
 				'canDrop' ; // Firefox 3.0.x
-		let (source) {
-			source = aObserver[canDropFunctionName].toSource().replace(
+		eval('aObserver.'+canDropFunctionName+' = '+
+			aObserver[canDropFunctionName].toSource().replace(
 				'{',
 				'{ var TSTTabBrowser = this;'
 			).replace(
@@ -1609,18 +1602,8 @@ catch(e) {
 					'false' :
 					'dt.effectAllowed = "none"'
 				)
-			);
-			if (this.getTreePref('compatibility.TMP')) // Tab Mix Plus
-				source = source.replace(
-						/\.screenY/g, '[TreeStyleTabService.getTabBrowserFromChild(TSTTabBrowser).treeStyleTab.invertedPositionProp]'
-					).replace(
-						/\.height/g, '[TreeStyleTabService.getTabBrowserFromChild(TSTTabBrowser).treeStyleTab.invertedSizeProp]'
-					).replace(
-						'var TSTTabBrowser = this;',
-						'var TSTTabBrowser = gBrowser;'
-					);
-			eval('aObserver.'+canDropFunctionName+' = '+source);
-		}
+			)
+		);
 
 		var dragOverFunctionName = '_onDragOver' in aObserver ?
 				'_onDragOver' : // Firefox 3.5 or later

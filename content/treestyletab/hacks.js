@@ -351,12 +351,39 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 				'gBrowser.treeStyleTab.clearDropPosition(); $1$2'
 			)
 		);
-		eval('TabDNDObserver.canDrop = '+
-			TabDNDObserver.canDrop.toSource().replace(
-				'var TSTTabBrowser = this;',
-				'var TSTTabBrowser = gBrowser;'
-			)
-		);
+		if (TabDNDObserver.canDrop) {
+			eval('TabDNDObserver.canDrop = '+
+				TabDNDObserver.canDrop.toSource().replace(
+					'var TSTTabBrowser = this;',
+					'var TSTTabBrowser = gBrowser;'
+				).replace(
+					/\.screenY/g,
+					'[TreeStyleTabService.getTabBrowserFromChild(TSTTabBrowser).treeStyleTab.invertedPositionProp]'
+				).replace(
+					/\.height/g,
+					'[TreeStyleTabService.getTabBrowserFromChild(TSTTabBrowser).treeStyleTab.invertedSizeProp]'
+				)
+			);
+		}
+		if (TabDNDObserver._setEffectAllowedForDataTransfer) {
+			eval('TabDNDObserver._setEffectAllowedForDataTransfer = '+
+				TabDNDObserver._setEffectAllowedForDataTransfer.toSource().replace(
+					'var TSTTabBrowser = this;',
+					'var TSTTabBrowser = gBrowser;'
+				)
+			);
+		}
+		if (TabDNDObserver.onDragStart) {
+			eval('TabDNDObserver.onDragStart = '+
+				TabDNDObserver.onDragStart.toSource().replace(
+					'event.target.localName != "tab"',
+					<![CDATA[
+						gBrowser.treeStyleTab.tabbarDNDObserver.canDragTabbar(event) ||
+						$&
+					]]>
+				)
+			);
+		}
 		eval('TabDNDObserver.onDragOver = '+
 			TabDNDObserver.onDragOver.toSource().replace(
 				'var TSTTabBrowser = this;',
