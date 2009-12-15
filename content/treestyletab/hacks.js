@@ -370,7 +370,8 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		eval('TabDNDObserver.onDrop = '+
 			TabDNDObserver.onDrop.toSource().replace(
 				'var TSTTabBrowser = this;',
-				'var TSTTabBrowser = gBrowser;'
+				'var TSTTabBrowser = gBrowser;'+
+				'if (!aDragSession) aDragSession = TSTTabBrowser.treeStyleTab.getCurrentDragSession();'
 			).replace(
 				/(var newIndex =)/,
 				<![CDATA[
