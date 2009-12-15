@@ -101,8 +101,13 @@ TreeStyleTabService.overrideExtensionsPreInit = function() {
 		}
 	}
 
+	// Tab Mix Plus
+	if (this.getTreePref('compatibility.TMP')) {
+		document.documentElement.setAttribute('treestyletab-enable-compatibility-tmp', true);
+	}
 	// Tab Mix Plus, SessionStore API
-	if ('SessionData' in window &&
+	if (this.getTreePref('compatibility.TMP') &&
+		'SessionData' in window &&
 		'getTabProperties' in SessionData &&
 		'setTabProperties' in SessionData) {
 		var prefix = this.kTMP_SESSION_DATA_PREFIX;
@@ -192,14 +197,17 @@ TreeStyleTabService.overrideExtensionsPreInit = function() {
 TreeStyleTabService.overrideExtensionsOnInitBefore = function() {
 
 	// Tab Mix Plus
-	if ('TMP_LastTab' in window) {
+	if (this.getTreePref('compatibility.TMP') &&
+		'TMP_LastTab' in window) {
 		TMP_LastTab.TabBar = gBrowser.mTabContainer;
 	}
-	if ('flst' in window) {
+	if (this.getTreePref('compatibility.TMP') &&
+		'flst' in window) {
 		flst.tb = gBrowser;
 		flst.tabBox = flst.tb.mTabBox;
 	}
-	if ('isTabVisible' in gBrowser.mTabContainer &&
+	if (this.getTreePref('compatibility.TMP') &&
+		'isTabVisible' in gBrowser.mTabContainer &&
 		'ensureTabIsVisible' in gBrowser.mTabContainer) {
 		function replaceHorizontalProps(aString)
 		{
@@ -223,10 +231,9 @@ TreeStyleTabService.overrideExtensionsOnInitBefore = function() {
 				'$& && !gBrowser.treeStyleTab.isVertical'
 			))
 		);
-		if (!this.getTreePref('TMP.doNotUpdate.isTabVisible'))
-			eval('gBrowser.mTabContainer.isTabVisible = '+
-				replaceHorizontalProps(gBrowser.mTabContainer.isTabVisible.toSource())
-			);
+		eval('gBrowser.mTabContainer.isTabVisible = '+
+			replaceHorizontalProps(gBrowser.mTabContainer.isTabVisible.toSource())
+		);
 	}
 
 };
@@ -264,7 +271,8 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 
 
 	// Tab Mix Plus
-	if ('TMupdateSettings' in window) {
+	if (this.getTreePref('compatibility.TMP') &&
+		'TMupdateSettings' in window) {
 		eval('window.TMupdateSettings = '+
 			window.TMupdateSettings.toSource().replace(
 				/(\{aTab.removeAttribute\("tabxleft"\);\})(\})/,

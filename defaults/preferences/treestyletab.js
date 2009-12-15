@@ -121,7 +121,7 @@ pref("extensions.multipletab.show.multipletab-selection-item-removeTabSubTree", 
 pref("extensions.multipletab.show.multipletab-selection-item-createSubTree", true);
 
 
-pref("extensions.treestyletab.TMP.doNotUpdate.isTabVisible", false);
+pref("extensions.treestyletab.compatibility.TMP", false); // Tab Mix Plus
 
 
 pref("extensions.treestyletab.prefsVersion", 0);

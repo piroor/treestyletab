@@ -1,0 +1,40 @@
+/* hacks for Tab Mix Plus */
+
+:root[treestyletab-enable-compatibility-tmp="true"]
+  tabbrowser[treestyletab-mode="vertical"] #vide-bar,
+:root[treestyletab-enable-compatibility-tmp="true"]
+  tabbrowser[treestyletab-mode="vertical"] #tabs-scroll-up-down-box,
+:root[treestyletab-enable-compatibility-tmp="true"]
+  tabbrowser[treestyletab-mode="vertical"] #alltabs-place-holder,
+:root[treestyletab-enable-compatibility-tmp="true"]
+  tabbrowser[treestyletab-mode="vertical"] .tabs-scroll {
+	visibility: collapse !important;
+}
+
+:root[treestyletab-enable-compatibility-tmp="true"]
+  tabbrowser[treestyletab-mode="vertical"] tabs[flowing] > * .tabs-frame {
+	overflow-x: hidden !important;
+	overflow-y: auto !important;
+}
+
+:root[treestyletab-enable-compatibility-tmp="true"]
+  tabbrowser[treestyletab-mode="vertical"] tabs[flowing] > * .tabs-frame {
+	-moz-box-flex: 1 !important;
+}
+
+:root[treestyletab-enable-compatibility-tmp="true"]
+  tabbrowser[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted="true"] .tabs-frame {
+	direction: rtl !important;
+	/* if there is scrollbar, closeboxes of tabs cannot be clicked because
+	   they are "under the rightside scrollbar" even if it is moved to
+	   leftside by the above rule. This seems a bug. Following rules move
+	   the "hidden rightside scrollbar" out of the box, then we can click
+	   closeboxes again. */
+	margin-right: -1em !important;
+	padding-right: 1em !important;
+}
+
+:root[treestyletab-enable-compatibility-tmp="true"]
+  tabbrowser[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted="true"] .tabbrowser-tabs[firefox2][flowing][closebutton][hideAllTabsButton][tabBarSpace] .tabbrowser-tab {
+	direction: ltr !important;
+}

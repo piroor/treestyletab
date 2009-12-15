@@ -1538,8 +1538,7 @@ var TreeStyleTabService = {
 			);
 		}
 		else { // Firefox 3.0.x
-			eval('aObserver.onDragStart = '+
-				aObserver.onDragStart.toSource().replace( // native
+			let source = aObserver.onDragStart.toSource().replace( // native
 					'aEvent.target.localName == "tab"',
 					<![CDATA[
 						(
@@ -1547,31 +1546,29 @@ var TreeStyleTabService = {
 							$&
 						)
 					]]>
-				).replace( // Tab Mix Plus
+				);
+			if (this.getTreePref('compatibility.TMP')) // Tab Mix Plus
+				source = source.replace(
 					'event.target.localName != "tab"',
 					<![CDATA[
 						gBrowser.treeStyleTab.tabbarDNDObserver.canDragTabbar(event) ||
 						$&
 					]]>
-				)
-			);
+				);
+			eval('aObserver.onDragStart = '+source);
 		}
 
 		var canDropFunctionName = '_setEffectAllowedForDataTransfer' in aObserver ?
 				'_setEffectAllowedForDataTransfer' : // Firefox 3.5 or later
 				'canDrop' ; // Firefox 3.0.x
-		eval('aObserver.'+canDropFunctionName+' = '+
-			aObserver[canDropFunctionName].toSource().replace(
+		let (source) {
+			source = aObserver[canDropFunctionName].toSource().replace(
 				'{',
 				'{ var TSTTabBrowser = this;'
 			).replace(
 				/\.screenX/g, '[TreeStyleTabService.getTabBrowserFromChild(TSTTabBrowser).treeStyleTab.positionProp]'
 			).replace(
 				/\.width/g, '[TreeStyleTabService.getTabBrowserFromChild(TSTTabBrowser).treeStyleTab.sizeProp]'
-			).replace( // Tab Mix Plus
-				/\.screenY/g, '[TreeStyleTabService.getTabBrowserFromChild(TSTTabBrowser).treeStyleTab.invertedPositionProp]'
-			).replace( // Tab Mix Plus
-				/\.height/g, '[TreeStyleTabService.getTabBrowserFromChild(TSTTabBrowser).treeStyleTab.invertedSizeProp]'
 			).replace(
 				/(return (?:true|dt.effectAllowed = "copyMove");)/,
 				<![CDATA[
@@ -1612,8 +1609,15 @@ catch(e) {
 					'false' :
 					'dt.effectAllowed = "none"'
 				)
-			)
-		);
+			);
+			if (this.getTreePref('compatibility.TMP')) // Tab Mix Plus
+				source = source.replace(
+						/\.screenY/g, '[TreeStyleTabService.getTabBrowserFromChild(TSTTabBrowser).treeStyleTab.invertedPositionProp]'
+					).replace(
+						/\.height/g, '[TreeStyleTabService.getTabBrowserFromChild(TSTTabBrowser).treeStyleTab.invertedSizeProp]'
+					);
+			eval('aObserver.'+canDropFunctionName+' = '+source);
+		}
 
 		var dragOverFunctionName = '_onDragOver' in aObserver ?
 				'_onDragOver' : // Firefox 3.5 or later
@@ -1724,7 +1728,7 @@ catch(e) {
 				<![CDATA[$&
 					var loadDroppedLinkToNewChildTab = (
 							dropActionInfo.position != TreeStyleTabService.kDROP_ON ||
-							tab.getAttribute('locked') == 'true' // Tab Mix Plus
+							tab.getAttribute('locked') == 'true' // Tab Mix Plus (or others)
 						);
 					if (!loadDroppedLinkToNewChildTab &&
 						dropActionInfo.position == TreeStyleTabService.kDROP_ON) {
@@ -1732,7 +1736,7 @@ catch(e) {
 					}
 					if (
 						loadDroppedLinkToNewChildTab ||
-						tab.getAttribute('locked') == 'true' // Tab Mix Plus
+						tab.getAttribute('locked') == 'true' // Tab Mix Plus (or others)
 						) {
 						TSTTabBrowser.treeStyleTab.performDrop(dropActionInfo, TSTTabBrowser.loadOneTab(getShortcutOrURI(url), null, null, null, bgLoad, false));
 						return;
@@ -1877,7 +1881,10 @@ catch(e) {
 				   反転された動作（通常のリンク読み込み）を行う */
 				'return false;case 1:',
 				<![CDATA[
-						if (!('TMP_contentAreaClick' in window) && // do nothing for Tab Mix Plus
+						if (( // do nothing for Tab Mix Plus
+								!TreeStyleTabService.getTreePref('compatibility.TMP') ||
+								!('TMP_contentAreaClick' in window)
+							) &&
 							TreeStyleTabService.checkToOpenChildTab()) {
 							TreeStyleTabService.stopToOpenChildTab();
 							if (TreeStyleTabService.isAccelKeyPressed(event)) {
@@ -1914,7 +1921,11 @@ catch(e) {
 				/((openWebPanel\([^\;]+\);|PlacesUIUtils.showMinimalAddBookmarkUI\([^;]+\);)event.preventDefault\(\);return false;\})/,
 				<![CDATA[
 					$1
-					else if (!('TMP_contentAreaClick' in window) && // do nothing for Tab Mix Plus
+					else if (
+						( // do nothing for Tab Mix Plus
+							!TreeStyleTabService.getTreePref('compatibility.TMP') ||
+							!('TMP_contentAreaClick' in window)
+						) &&
 						TreeStyleTabService.checkReadyToOpenNewTab({
 							uri      : wrapper.href,
 							external : {
@@ -1924,7 +1935,8 @@ catch(e) {
 							internal : {
 								newTab : TreeStyleTabService.getTreePref('openAnyLinkInNewTab')
 							}
-						})) {
+						})
+						) {
 						event.stopPropagation();
 						event.preventDefault();
 						handleLinkClick(event, wrapper.href, linkNode);

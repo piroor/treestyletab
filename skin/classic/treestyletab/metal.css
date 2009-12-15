@@ -1,3 +1,5 @@
+@import url("metal-tmp.css"); // hacks for Tab Mix Plus
+
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
 /* tab bar */
@@ -181,9 +183,7 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-newta
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-alltabs-button,
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-alltabs-button:hover,
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton,
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton:hover,
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton, /* Tab Mix Plus */
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton:hover /* Tab Mix Plus */ {
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton:hover {
 	background: #b3b2b3 !important;
 	border-top: 1px solid #666666 !important;
 }
@@ -207,15 +207,13 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyleta
 
 tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="left"] .tabs-newtab-button,
 tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="left"] .tabs-alltabs-button,
-tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="left"] .tabs-container > .tabs-closebutton,
-tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="left"] .tabs-closebutton-topbox > .tabs-closebutton /* Tab Mix Plus */ {
+tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="left"] .tabs-container > .tabs-closebutton {
 	border-right: 1px solid #666666 !important;
 }
 
 tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"] .tabs-newtab-button,
 tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"] .tabs-alltabs-button,
-tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"] .tabs-container > .tabs-closebutton,
-tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"] .tabs-closebutton-topbox > .tabs-closebutton /* Tab Mix Plus */ {
+tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"] .tabs-container > .tabs-closebutton {
 	border-left: 1px solid #666666 !important;
 }
 
@@ -224,9 +222,7 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"] .ta
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-alltabs-button,
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-alltabs-button:hover,
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton,
-:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton:hover,
-:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton, /* Tab Mix Plus */
-:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton:hover /* Tab Mix Plus */ {
+:root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton:hover {
 	background: #e4e4e4 !important;
 	border-color: #666666 !important;
 }

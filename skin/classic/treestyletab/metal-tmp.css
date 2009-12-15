@@ -1,0 +1,29 @@
+/* hacks for Tab Mix Plus */
+
+/* buttons in the tab bar */
+
+:root[treestyletab-enable-compatibility-tmp="true"]
+  tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton,
+:root[treestyletab-enable-compatibility-tmp="true"]
+  tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton:hover {
+	background: #b3b2b3 !important;
+	border-top: 1px solid #666666 !important;
+}
+
+:root[treestyletab-enable-compatibility-tmp="true"]
+  tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="left"] .tabs-closebutton-topbox > .tabs-closebutton {
+	border-right: 1px solid #666666 !important;
+}
+
+:root[treestyletab-enable-compatibility-tmp="true"]
+  tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"] .tabs-closebutton-topbox > .tabs-closebutton {
+	border-left: 1px solid #666666 !important;
+}
+
+:root[treestyletab-enable-compatibility-tmp="true"]:not([active="true"])
+  tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton,
+:root[treestyletab-enable-compatibility-tmp="true"]:not([active="true"])
+  tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton:hover {
+	background: #e4e4e4 !important;
+	border-color: #666666 !important;
+}

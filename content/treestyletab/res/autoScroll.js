@@ -50,7 +50,10 @@
 			var innerBoxObject = (box.localName == 'arrowscrollbox' ? box._scrollbox : box ).boxObject;
 
 			var orientBox = box || tabs;
-			var isMultirow = tabs.getAttribute('flowing') == 'multibar'; // Tab Mix Plus
+			var isMultirow = ( // Tab Mix Plus
+					this.getTreePref('compatibility.TMP') &&
+					tabs.getAttribute('flowing') == 'multibar'
+				);
 			var isVertical = (
 					isMultirow ||
 					((orientBox.getAttribute('orient') || window.getComputedStyle(orientBox, '').getPropertyValue('-moz-box-orient')) == 'vertical')
@@ -106,15 +109,18 @@
 
 		getScrollBox : function(aTabBrowser) 
 		{
-			return document.getAnonymousElementByAttribute(aTabBrowser.mTabContainer, 'class', 'tabs-frame') || // Tab Mix Plus
-					aTabBrowser.mTabContainer.mTabstrip;
+			return ( // Tab Mix Plus
+					this.getTreePref('compatibility.TMP') &&
+					document.getAnonymousElementByAttribute(aTabBrowser.mTabContainer, 'class', 'tabs-frame')
+				) ||
+				aTabBrowser.mTabContainer.mTabstrip;
 		},
 
 		getScrollBoxObject : function(aTabBrowser) 
 		{
 			var box = this.getScrollBox(aTabBrowser);
 			return (box.scrollBoxObject || box.boxObject)
-					.QueryInterface(Ci.nsIScrollBoxObject); // Tab Mix Plus
+					.QueryInterface(Ci.nsIScrollBoxObject); // Tab Mix Plus (ensure scrollbox-ed)
 		},
 
 		getUpButton : function(aTabBrowser)
@@ -122,14 +128,20 @@
 			var box = this.getScrollBox(aTabBrowser);
 			return box._scrollButtonUp ||
 				document.getAnonymousElementByAttribute(box, 'class', 'scrollbutton-up') ||
-				document.getAnonymousElementByAttribute(box.previousSibling, 'class', 'scrollbutton-up'); // Tab Mix Plus
+				( // Tab Mix Plus
+					this.getTreePref('compatibility.TMP') &&
+					document.getAnonymousElementByAttribute(box.previousSibling, 'class', 'scrollbutton-up')
+				);
 		},
 		getDownButton : function(aTabBrowser)
 		{
 			var box = this.getScrollBox(aTabBrowser);
 			return box._scrollButtonDown ||
 				document.getAnonymousElementByAttribute(box, 'class', 'scrollbutton-down') ||
-				document.getAnonymousElementByAttribute(box.nextSibling, 'class', 'scrollbutton-up'); // Tab Mix Plus
+				( // Tab Mix Plus
+					this.getTreePref('compatibility.TMP') &&
+					document.getAnonymousElementByAttribute(box.nextSibling, 'class', 'scrollbutton-up')
+				);
 		},
 
 		autoScrollArea : 20,

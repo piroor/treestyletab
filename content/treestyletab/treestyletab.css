@@ -1,3 +1,5 @@
+@import url("treestyletab-tmp.css"); // hacks for Tab Mix Plus
+
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 @namespace html url("http://www.w3.org/1999/xhtml");
 
@@ -33,11 +35,7 @@ tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > .scrollbut
 tabbrowser[treestyletab-hide-alltabs-button="true"] .tabs-alltabs-stack,
 tabbrowser[treestyletab-hide-alltabs-button="true"] .tabbrowser-arrowscrollbox ~ stack, /* "all tabs" button in Firefox 3 and 3.5 */
 tabbrowser[treestyletab-mode="vertical"] .tabs-closebutton-box,
-tabbrowser[treestyletab-mode="vertical"] .tab-drop-indicator-bar,
-tabbrowser[treestyletab-mode="vertical"] #vide-bar, /* Tab Mix Plus */
-tabbrowser[treestyletab-mode="vertical"] #tabs-scroll-up-down-box, /* Tab Mix Plus */
-tabbrowser[treestyletab-mode="vertical"] #alltabs-place-holder, /* Tab Mix Plus */
-tabbrowser[treestyletab-mode="vertical"] .tabs-scroll /* Tab Mix Plus */ {
+tabbrowser[treestyletab-mode="vertical"] .tab-drop-indicator-bar {
 	visibility: collapse !important;
 }
 
@@ -46,19 +44,16 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-scroll /* Tab Mix Plus */ {
 	margin: 0;
 }
 
-tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > scrollbox,
-tabbrowser[treestyletab-mode="vertical"] tabs[flowing] > * .tabs-frame /* Tab Mix Plus */ {
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > scrollbox {
 	overflow-x: hidden !important;
 	overflow-y: auto !important;
 }
 
-tabbrowser[treestyletab-mode="vertical"] .tabs-stack > *:first-child + * > hbox, /* Firefox 3.0 (not 3.5) */
-tabbrowser[treestyletab-mode="vertical"] tabs[flowing] > * .tabs-frame /* Tab Mix Plus */ {
+tabbrowser[treestyletab-mode="vertical"] .tabs-stack > *:first-child + * > hbox /* Firefox 3.0 (not 3.5) */ {
 	-moz-box-flex: 1 !important;
 }
 
-tabbrowser[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted="true"] .tabbrowser-arrowscrollbox > scrollbox,
-tabbrowser[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted="true"] .tabs-frame /* Tab Mix Plus */ {
+tabbrowser[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted="true"] .tabbrowser-arrowscrollbox > scrollbox {
 	direction: rtl !important;
 	/* if there is scrollbar, closeboxes of tabs cannot be clicked because
 	   they are "under the rightside scrollbar" even if it is moved to
@@ -69,8 +64,7 @@ tabbrowser[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted=
 	padding-right: 1em !important;
 }
 
-tabbrowser[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted="true"] .tabbrowser-arrowscrollbox > scrollbox > .scrollbox-innerbox,
-tabbrowser[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted="true"] .tabbrowser-tabs[firefox2][flowing][closebutton][hideAllTabsButton][tabBarSpace] .tabbrowser-tab /* Tab Mix Plus */ {
+tabbrowser[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted="true"] .tabbrowser-arrowscrollbox > scrollbox > .scrollbox-innerbox {
 	direction: ltr !important;
 }
 

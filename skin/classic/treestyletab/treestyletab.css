@@ -4,6 +4,8 @@
 @import url("chrome://treestyletab/skin/metal/tab.css");
 @import url("chrome://treestyletab/skin/twisty.css");
 
+@import url("treestyletab-tmp.css"); // hacks for Tab Mix Plus
+
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
 
@@ -117,8 +119,7 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-stack > hbox:not(:last-ch
 
 tabbrowser[treestyletab-mode="vertical"] .tabs-newtab-button,
 tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-button,
-tabbrowser[treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton,
-tabbrowser[treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton /* Tab Mix Plus */ {
+tabbrowser[treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton {
 	-moz-appearance: none !important;
 	border: 0 none !important;
 	-moz-border-top-colors: none !important;
@@ -130,8 +131,7 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closeb
 }
 tabbrowser[treestyletab-mode="vertical"] .tabs-newtab-button:hover,
 tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-button:hover,
-tabbrowser[treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton:hover,
-tabbrowser[treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton:hover /* Tab Mix Plus */ {
+tabbrowser[treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton:hover {
 	background: ThreeDHighlight !important;
 }
 
@@ -139,8 +139,7 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-newtab-button,
 tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-box,
 tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-box-animate,
 tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-button,
-tabbrowser[treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton,
-tabbrowser[treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton /* Tab Mix Plus */ {
+tabbrowser[treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton {
 	background-image: none !important;
 	margin: 0 !important;
 	padding: 0 2px !important;
@@ -190,16 +189,3 @@ tabbrowser[treestyletab-tabbar-position="bottom"] .treestyletab-tabbar-toggler {
 	border-top: 1px solid ThreeDShadow;
 }
 
-
-
-/* Tab Mix Plus */
-tabbrowser[treestyletab-mode="vertical"] .tabs-newtab-topbox > .tabs-newtab-button {
-	-moz-box-flex: 1;
-	-moz-box-align: center;
-	-moz-box-pack: center;
-	-moz-box-orient: vertical;
-}
-
-tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox[type="tabmix"] {
-	visibility: collapse !important;
-}

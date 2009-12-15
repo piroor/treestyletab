@@ -59,8 +59,11 @@ TreeStyleTabBrowser.prototype = {
 	get scrollBox() 
 	{
 		if (!this._scrollBox) {
-			this._scrollBox = document.getAnonymousElementByAttribute(this.mTabBrowser.mTabContainer, 'class', 'tabs-frame') || // Tab Mix Plus
-						this.mTabBrowser.mTabContainer.mTabstrip;
+			this._scrollBox = ( // Tab Mix Plus
+					this.getTreePref('compatibility.TMP') &&
+					document.getAnonymousElementByAttribute(this.mTabBrowser.mTabContainer, 'class', 'tabs-frame')
+				) ||
+				this.mTabBrowser.mTabContainer.mTabstrip;
 		}
 		return this._scrollBox;
 	},
@@ -68,7 +71,7 @@ TreeStyleTabBrowser.prototype = {
 	get scrollBoxObject()
 	{
 		return (this.scrollBox.scrollBoxObject || this.scrollBox.boxObject)
-				.QueryInterface(Components.interfaces.nsIScrollBoxObject); // Tab Mix Plus
+				.QueryInterface(Components.interfaces.nsIScrollBoxObject); // Tab Mix Plus (ensure scrollbox-ed)
 	},
  
 /* utils */ 
@@ -78,14 +81,20 @@ TreeStyleTabBrowser.prototype = {
 	getTabLabel : function(aTab) 
 	{
 		var label = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-text-stack') || // Mac OS X
-					document.getAnonymousElementByAttribute(aTab, 'class', 'tab-text-container') || // Tab Mix Plus
+					( // Tab Mix Plus
+						this.getTreePref('compatibility.TMP') &&
+						document.getAnonymousElementByAttribute(aTab, 'class', 'tab-text-container')
+					) ||
 					document.getAnonymousElementByAttribute(aTab, 'class', 'tab-text');
 		return label;
 	},
  
 	getTabClosebox : function(aTab) 
 	{
-		var close = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-close-button always-right') || // Tab Mix Plus
+		var close = ( // Tab Mix Plus
+						this.getTreePref('compatibility.TMP') &&
+						document.getAnonymousElementByAttribute(aTab, 'class', 'tab-close-button always-right')
+					) ||
 					document.getAnonymousElementByAttribute(aTab, 'class', 'tab-close-button');
 		return close;
 	},
@@ -598,7 +607,8 @@ TreeStyleTabBrowser.prototype = {
 			aTab.removeAttribute('flex');
 			aTab.maxWidth = 65000;
 			aTab.minWidth = 0;
-			aTab.setAttribute('dir', 'ltr'); // Tab Mix Plus
+			if (this.getTreePref('compatibility.TMP'))
+				aTab.setAttribute('dir', 'ltr'); // Tab Mix Plus
 		}
 		else {
 			aTab.removeAttribute('align');
@@ -608,7 +618,8 @@ TreeStyleTabBrowser.prototype = {
 			aTab.setAttribute('flex', 100);
 			aTab.maxWidth = 250;
 			aTab.minWidth = this.mTabBrowser.mTabContainer.mTabMinWidth;
-			aTab.removeAttribute('dir'); // Tab Mix Plus
+			if (this.getTreePref('compatibility.TMP'))
+				aTab.removeAttribute('dir'); // Tab Mix Plus
 		}
 	},
  
@@ -734,9 +745,12 @@ TreeStyleTabBrowser.prototype = {
 		var toggler = document.getAnonymousElementByAttribute(b, 'class', this.kTABBAR_TOGGLER);
 
 		// Tab Mix Plus
-		var scrollFrame = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-frame');
-		var newTabBox = document.getAnonymousElementByAttribute(b.mTabContainer, 'id', 'tabs-newbutton-box');
-		var tabBarMode = this.getPref('extensions.tabmix.tabBarMode');
+		var scrollFrame, newTabBox, tabBarMode;
+		if (this.getTreePref('compatibility.TMP')) {
+			scrollFrame = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-frame');
+			newTabBox = document.getAnonymousElementByAttribute(b.mTabContainer, 'id', 'tabs-newbutton-box');
+			tabBarMode = this.getPref('extensions.tabmix.tabBarMode');
+		}
 
 		// All-in-One Sidebar
 		var toolboxContainer = document.getAnonymousElementByAttribute(b.mStrip, 'anonid', 'aiostbx-toolbox-tableft');
@@ -775,7 +789,7 @@ TreeStyleTabBrowser.prototype = {
 			b.mTabContainer.setAttribute('align', 'stretch'); // for Mac OS X
 			scrollInnerBox.removeAttribute('flex');
 
-			if (scrollFrame) { // Tab Mix Plus
+			if (this.getTreePref('compatibility.TMP') && scrollFrame) { // Tab Mix Plus
 				document.getAnonymousNodes(scrollFrame)[0].removeAttribute('flex');
 				scrollFrame.parentNode.orient =
 					scrollFrame.orient = 'vertical';
@@ -849,7 +863,7 @@ TreeStyleTabBrowser.prototype = {
 			b.mTabContainer.removeAttribute('align'); // for Mac OS X
 			scrollInnerBox.setAttribute('flex', 1);
 
-			if (scrollFrame) { // Tab Mix Plus
+			if (this.getTreePref('compatibility.TMP') && scrollFrame) { // Tab Mix Plus
 				document.getAnonymousNodes(scrollFrame)[0].setAttribute('flex', 1);
 				scrollFrame.parentNode.orient =
 					scrollFrame.orient = 'horizontal';
@@ -3591,7 +3605,7 @@ TreeStyleTabBrowser.prototype = {
 		try {
 			scrollBoxObject.getScrolledSize(w, h);
 		}
-		catch(e) { // Tab Mix Plus
+		catch(e) { // Tab Mix Plus (or others)
 			return;
 		}
 
