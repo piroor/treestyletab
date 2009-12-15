@@ -1615,6 +1615,9 @@ catch(e) {
 						/\.screenY/g, '[TreeStyleTabService.getTabBrowserFromChild(TSTTabBrowser).treeStyleTab.invertedPositionProp]'
 					).replace(
 						/\.height/g, '[TreeStyleTabService.getTabBrowserFromChild(TSTTabBrowser).treeStyleTab.invertedSizeProp]'
+					).replace(
+						'var TSTTabBrowser = this;',
+						'var TSTTabBrowser = gBrowser;'
 					);
 			eval('aObserver.'+canDropFunctionName+' = '+source);
 		}
