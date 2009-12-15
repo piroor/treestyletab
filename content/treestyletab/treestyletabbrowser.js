@@ -760,7 +760,10 @@ TreeStyleTabBrowser.prototype = {
 				document.getAnonymousNodes(b.mTabContainer.mTabstrip._scrollbox)[0] :
 				scrollFrame; // Tab Mix Plus
 		var allTabsButton = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-alltabs-button') ||
-				document.getAnonymousElementByAttribute(b.mTabContainer, 'anonid', 'alltabs-button'); // Tab Mix Plus
+				( // Tab Mix Plus
+					this.getTreePref('compatibility.TMP') &&
+					document.getAnonymousElementByAttribute(b.mTabContainer, 'anonid', 'alltabs-button')
+				);
 
 		b.removeAttribute(this.kRESIZING);
 
@@ -783,11 +786,12 @@ TreeStyleTabBrowser.prototype = {
 				b.mTabContainer.orient =
 				b.mTabContainer.mTabstrip.orient =
 				b.mTabContainer.mTabstrip.parentNode.orient = 'vertical';
-			if (allTabsButton.hasChildNodes()) {
+			if (allTabsButton && allTabsButton.hasChildNodes()) {
 				allTabsButton.firstChild.setAttribute('position', 'before_start');
 			}
 			b.mTabContainer.setAttribute('align', 'stretch'); // for Mac OS X
-			scrollInnerBox.removeAttribute('flex');
+			if (scrollInnerBox)
+				scrollInnerBox.removeAttribute('flex');
 
 			if (this.getTreePref('compatibility.TMP') && scrollFrame) { // Tab Mix Plus
 				document.getAnonymousNodes(scrollFrame)[0].removeAttribute('flex');
@@ -857,11 +861,12 @@ TreeStyleTabBrowser.prototype = {
 				b.mTabContainer.orient =
 				b.mTabContainer.mTabstrip.orient =
 				b.mTabContainer.mTabstrip.parentNode.orient = 'horizontal';
-			if (allTabsButton.hasChildNodes()) {
+			if (allTabsButton && allTabsButton.hasChildNodes()) {
 				allTabsButton.firstChild.setAttribute('position', 'after_end');
 			}
 			b.mTabContainer.removeAttribute('align'); // for Mac OS X
-			scrollInnerBox.setAttribute('flex', 1);
+			if (scrollInnerBox)
+				scrollInnerBox.setAttribute('flex', 1);
 
 			if (this.getTreePref('compatibility.TMP') && scrollFrame) { // Tab Mix Plus
 				document.getAnonymousNodes(scrollFrame)[0].setAttribute('flex', 1);
