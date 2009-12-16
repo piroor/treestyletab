@@ -1181,8 +1181,14 @@ TreeStyleTabBrowserAutoHide.updateKeyListeners = function() {
 	}
 	window.setTimeout(function() {
 		if (window.windowState != Components.interfaces.nsIDOMChromeWindow.STATE_NORMAL) return;
-		window.resizeBy(-1,-1);
-		window.resizeBy(1,1);
+		var count = 0;
+		var resizeTimer = window.setInterval(function(){
+			if (++count > 100 || window.innerHeight > 0) {
+				window.clearInterval(resizeTimer);
+				window.resizeBy(-1,-1);
+				window.resizeBy(1,1);
+			}
+		}, 250);
 	}, 0);
 };
 	
