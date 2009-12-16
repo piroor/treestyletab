@@ -113,8 +113,6 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 			!sv.getTreePref('autoExpand.enabled'))
 			return;
 
-		var now = (new Date()).getTime();
-
 		window.clearTimeout(this.mAutoExpandTimer);
 		if (aEvent.target == aDragSession.sourceNode) return;
 		this.mAutoExpandTimer = window.setTimeout(
@@ -137,14 +135,10 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 		);
 
 		tab = null;
-		now = null;
 	},
  
 	onDragExit : function(aEvent, aDragSession) 
 	{
-		var sv = this.mOwner;
-		var now = (new Date()).getTime();
-
 		window.clearTimeout(this.mAutoExpandTimer);
 		this.mAutoExpandTimer = null;
 	},
