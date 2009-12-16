@@ -145,7 +145,7 @@ TreeStyleTabService.overrideExtensionsPreInit = function() {
 				/(\}\))?$/,
 				<![CDATA[
 					if (gBrowser.treeStyleTab.useTMPSessionAPI)
-						gBrowser.treeStyleTab.onTabRestored({ target : aTab, originalTarget : aTab });
+						gBrowser.treeStyleTab.restoreStructure(aTab);
 				$1]]>
 			)
 		);
@@ -154,7 +154,7 @@ TreeStyleTabService.overrideExtensionsPreInit = function() {
 			'return newTab;',
 			<![CDATA[
 				if (this.treeStyleTab.useTMPSessionAPI)
-					this.treeStyleTab.onTabRestored({ target : newTab, originalTarget : newTab });
+					this.treeStyleTab.restoreStructure(newTab);
 			$&]]>
 		);
 		eval('tablib.init = '+source.join('gBrowser.restoreTab = '));
