@@ -1866,6 +1866,7 @@ TreeStyleTabBrowser.prototype = {
 			tab.removeAttribute(this.kCHILDREN);
 			tab.removeAttribute(this.kSUBTREE_COLLAPSED);
 			tab.removeAttribute(this.kCOLLAPSED);
+			tab.removeAttribute(this.kCOLLAPSED_DONE);
 			tab.removeAttribute(this.kNEST);
 			this.updateTabsIndent([tab], undefined, undefined, restoringMultipleTabs);
 		}
@@ -2037,7 +2038,7 @@ TreeStyleTabBrowser.prototype = {
 	onTabRestored : function(aEvent) 
 	{
 		// update the status for the next restoring
-		if (TreeStyleTabService.restoringWindow)
+		if (!this.useTMPSessionAPI && TreeStyleTabService.restoringWindow)
 			TreeStyleTabService.restoringWindow = TreeStyleTabService.getRestoringTabsCount() > 0;
 	},
  

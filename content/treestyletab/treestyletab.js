@@ -2662,7 +2662,8 @@ catch(e) {
 				return;
 
 			case 'sessionstore-windows-restored':
-				this.restoringWindow = this.getRestoringTabsCount() > 1;
+				if (!this.useTMPSessionAPI)
+					this.restoringWindow = this.getRestoringTabsCount() > 1;
 				return;
 		}
 	},

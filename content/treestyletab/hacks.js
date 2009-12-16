@@ -158,6 +158,15 @@ TreeStyleTabService.overrideExtensionsPreInit = function() {
 			$&]]>
 		);
 		eval('tablib.init = '+source.join('gBrowser.restoreTab = '));
+		eval('SessionManager.loadOneWindow = '+
+			SessionManager.loadOneWindow.toSource().replace(
+				'gBrowser.tabsToLoad = ',
+				'TreeStyleTabService.restoringWindow = true; $&'
+			).replace(
+				/(\}\))?$/,
+				'TreeStyleTabService.restoringWindow = false; $1'
+			)
+		);
 		this.useTMPSessionAPI = true;
 	}
 
