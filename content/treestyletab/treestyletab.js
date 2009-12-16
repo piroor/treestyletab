@@ -1620,6 +1620,22 @@ try{
 
 							var info = TSTTabBrowser.treeStyleTab.getDropAction(aEvent, TST_DRAGSESSION);
 
+							// auto-switch for staying on tabs (Firefox 3.0 or later)
+							if ('_setEffectAllowedForDataTransfer' in aSelf &&
+								info.target &&
+								!info.target.selected &&
+								'mDragTime' in aSelf &&
+								'mDragOverDelay' in aSelf) {
+								let effects = aSelf._setEffectAllowedForDataTransfer(aEvent);
+								if (effects == 'link') {
+									let now = Date.now();
+									if (!aSelf.mDragTime)
+										aSelf.mDragTime = now;
+									if (now >= aSelf.mDragTime + aSelf.mDragOverDelay)
+										info.target.selected = true;
+								}
+							}
+
 							if (!info.target || info.target != TreeStyleTabService.evaluateXPath(
 									'child::xul:tab[@'+TreeStyleTabService.kDROP_POSITION+']',
 									aSelf.mTabContainer,
