@@ -1632,7 +1632,7 @@ try{
 									if (!aSelf.mDragTime)
 										aSelf.mDragTime = now;
 									if (now >= aSelf.mDragTime + aSelf.mDragOverDelay)
-										info.target.selected = true;
+										aSelf.selectedTab = info.target;
 								}
 							}
 
