@@ -1842,12 +1842,10 @@ TreeStyleTabBrowser.prototype = {
 		var children = this.getTabValue(tab, this.kCHILDREN);
 		if (!mayBeDuplicated || tab.hasAttribute(this.kCHILDREN)) {
 			// for safety
-			this.getChildTabs(tab).forEach(function(aTab) {
-				this.partTab(aTab, {
-					dontUpdateIndent : true,
-					dontAnimate      : restoringMultipleTabs
-				});
-			}, this);
+			this.partAllChildren(tab, {
+				dontUpdateIndent : true,
+				dontAnimate      : restoringMultipleTabs
+			});
 		}
 
 		if (!mayBeDuplicated) {
@@ -1856,19 +1854,7 @@ TreeStyleTabBrowser.prototype = {
 			   breaks the children list of the temporary parent and causes
 			   many problems. So, to prevent these problems, I part the tab
 			   from the temporary parent manually. */
-			this.partTab(tab, {
-				dontUpdateIndent : true,
-				dontAnimate      : restoringMultipleTabs
-			});
-			/* reset attributes before restoring */
-			tab.removeAttribute(this.kID);
-			tab.removeAttribute(this.kPARENT);
-			tab.removeAttribute(this.kCHILDREN);
-			tab.removeAttribute(this.kSUBTREE_COLLAPSED);
-			tab.removeAttribute(this.kCOLLAPSED);
-			tab.removeAttribute(this.kCOLLAPSED_DONE);
-			tab.removeAttribute(this.kNEST);
-			this.updateTabsIndent([tab], undefined, undefined, restoringMultipleTabs);
+			this.resetTab(tab, false);
 		}
 
 		this.setTabValue(tab, this.kID, id);
@@ -2796,6 +2782,39 @@ TreeStyleTabBrowser.prototype = {
   
 /* commands */ 
 	
+/* reset */ 
+	
+	resetTab : function(aTab, aPartChildren) 
+	{
+		if (aPartChildren)
+			this.partAllChildren(aTab, {
+				dontUpdateIndent : true,
+				dontAnimate      : true
+			});
+
+		this.partTab(aTab, {
+			dontUpdateIndent : true,
+			dontAnimate      : true
+		});
+
+		/* reset attributes before restoring */
+		aTab.removeAttribute(this.kID);
+		aTab.removeAttribute(this.kPARENT);
+		aTab.removeAttribute(this.kCHILDREN);
+		aTab.removeAttribute(this.kSUBTREE_COLLAPSED);
+		aTab.removeAttribute(this.kCOLLAPSED);
+		aTab.removeAttribute(this.kCOLLAPSED_DONE);
+		aTab.removeAttribute(this.kNEST);
+		this.updateTabsIndent([aTab], undefined, undefined, true);
+	},
+ 
+	resetAllTabs : function(aPartChildren) 
+	{
+		this.getTabsArray(this.mTabBrowser).forEach(function(aTab) {
+			this.resetTab(aTab, aPartChildren);
+		}, this);
+	},
+  
 /* attach/part */ 
 	
 	attachTabTo : function(aChild, aParent, aInfo) /* PUBLIC API */ 
@@ -2912,7 +2931,7 @@ TreeStyleTabBrowser.prototype = {
 		aChild.dispatchEvent(event);
 	},
  
-	shouldTabAutoExpanded : function(aTab)
+	shouldTabAutoExpanded : function(aTab) 
 	{
 		return this.hasChildTabs(aTab) &&
 				this.isSubtreeCollapsed(aTab);
@@ -2963,7 +2982,14 @@ TreeStyleTabBrowser.prototype = {
 	{
 		return this.partTab(aChild, aInfo);
 	},
- 
+	
+	partAllChildren : function(aTab, aInfo) 
+	{
+		this.getChildTabs(aTab).forEach(function(aTab) {
+			this.partTab(aTab, aInfo);
+		}, this);
+	},
+  
 	updateTabsIndent : function(aTabs, aLevel, aProp, aJustNow) 
 	{
 		if (!aTabs || !aTabs.length) return;

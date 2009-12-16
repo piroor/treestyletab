@@ -161,7 +161,10 @@ TreeStyleTabService.overrideExtensionsPreInit = function() {
 		eval('SessionManager.loadOneWindow = '+
 			SessionManager.loadOneWindow.toSource().replace(
 				'gBrowser.tabsToLoad = ',
-				'TreeStyleTabService.restoringWindow = true; $&'
+				<![CDATA[
+					gBrowser.treeStyleTab.resetAllTabs(true, true);
+					TreeStyleTabService.restoringWindow = true;
+				$&]]>
 			).replace(
 				/(\}\))?$/,
 				'TreeStyleTabService.restoringWindow = false; $1'
