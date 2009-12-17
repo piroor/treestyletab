@@ -13,14 +13,13 @@
  original:
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/fullScreenCanvas.xul
 -->
-<?xml-stylesheet type="text/css" href="data:text/css,:root[fullscreencanvas-shown='true'] browser:not(.fullscreencanvas-frame) { visibility: hidden; }"?>
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-<script type="application/x-javascript"><![CDATA[
+<script type="application/x-javascript; version=1.7"><![CDATA[
 
 window.addEventListener('DOMContentLoaded', function() {
 	window.removeEventListener('DOMContentLoaded', arguments.callee, true);
 
-	const currentRevision = 10;
+	const currentRevision = 11;
 	var root = document.documentElement;
 
 	var loadedRevision = root.getAttribute('fullScreenCanvas');
@@ -36,16 +35,30 @@ window.addEventListener('DOMContentLoaded', function() {
 	}
 
 	window.fullScreenCanvas = {
-		show : function(aTargetElement) 
+		show : function(aTargetElement, aCallback, aThis) 
+		{
+			this.showInternal(aTargetElement);
+			if (!aCallback) return;
+			if (this.shown) {
+				var self = this;
+				this.panel.addEventListener('popupshown', function() {
+					self.panel.removeEventListener('popupshown', arguments.callee, false);
+					aCallback.call(aThis || window);
+				}, false);
+			}
+			else {
+				aCallback.call(aThis || window);
+			}
+		},
+		showInternal : function(aTargetElement) 
 		{
 			if (this.shown) return;
-			this.shown = true;
 
 			var color = '-moz-field';
 			var canvas = this.canvas;
 			if (!canvas) return;
 
-			document.documentElement.setAttribute('fullscreencanvas-shown', true);
+			this.shown = true;
 
 			var rootBox = document.documentElement.boxObject;
 			var canvasW = window.innerWidth;
@@ -53,9 +66,9 @@ window.addEventListener('DOMContentLoaded', function() {
 
 			var x, y, w, h;
 			if (aTargetElement && aTargetElement.ownerDocument == document) {
-				var box = aTargetElement.boxObject;
-				y = box.screenY - rootBox.screenY;
+				let box = aTargetElement.boxObject;
 				x = box.screenX - rootBox.screenX;
+				y = box.screenY - rootBox.screenY;
 				w = box.width;
 				h = box.height;
 			}
@@ -65,16 +78,8 @@ window.addEventListener('DOMContentLoaded', function() {
 				h = canvasH;
 			}
 
-			canvas.style.left   = 0;
-			canvas.style.top    = 0;
-			canvas.style.width  = (canvas.width = canvasW)+'px';
-			canvas.style.height = (canvas.height = canvasH)+'px';
-			canvas.style.zIndex = 65000;
-			var frame = this.frame;
-			if (frame) {
-				frame.style.width  = canvas.style.width;
-				frame.style.height = canvas.style.height;
-			}
+			this.panel.style.width = canvas.style.width  = (canvas.width = canvasW)+'px';
+			this.panel.style.height = canvas.style.height = (canvas.height = canvasH)+'px';
 			try {
 				var ctx = canvas.getContext('2d');
 				ctx.clearRect(0, 0, canvasW, canvasH);
@@ -134,21 +139,18 @@ window.addEventListener('DOMContentLoaded', function() {
 					}
 					ctx.save();
 					ctx.translate(x, y);
-					ctx.save();
 					ctx.scale(zoom, zoom);
 					ctx.drawWindow(frame, dx+frame.scrollX, dy+frame.scrollY, w, h, color);
-					ctx.restore();
 					ctx.restore();
 				}
 				catch(e) {
 				}
 				});
 
-				canvas.style.position = 'fixed';
-				this.container.removeAttribute('collapsed');
+				this.panel.openPopupAtScreen(rootBox.screenX, rootBox.screenY, false);
 			}
 			catch(e) {
-				this.container.setAttribute('collapsed', true);
+				this.hide();
 			}
 		},
 		shown : false,
@@ -178,11 +180,7 @@ window.addEventListener('DOMContentLoaded', function() {
 		hide : function()
 		{
 			if (!this.shown) return;
-			document.documentElement.removeAttribute('fullscreencanvas-shown');
-			var canvas = this.canvas;
-			canvas.style.position = 'static';
-			canvas.style.width = canvas.style.height = canvas.style.zIndex = 0;
-			this.container.setAttribute('collapsed', true);
+			this.panel.hidePopup();
 			this.shown = false;
 		},
 
@@ -191,41 +189,12 @@ window.addEventListener('DOMContentLoaded', function() {
 			browsers = [].concat(Array.slice(document.getElementsByTagName('tabbrowser')))
 						.concat(Array.slice(document.getElementsByTagName('browser')));
 			if ('SplitBrowser' in window) browsers = browsers.concat(SplitBrowser.browsers);
-			if (this.frame) {
-				var index = browsers.indexOf(this.frame);
-				browsers.splice(index, 1);
-			}
 			return browsers;
 		},
 
-		get frame()
+		get panel()
 		{
-			return document.getElementById('fullScreenCanvas-frame');
-		},
-
-		get canvas()
-		{
-			if (!this.frame) return this._canvas;
-
-			var doc = this.frame.contentDocument;
-			var canvas = doc.getElementById('fullScreenCanvas-canvas');
-			if (canvas) return canvas;
-
-			canvas = doc.importNode(this._canvas.cloneNode(true), true);
-			var root = doc.documentElement;
-			root.setAttribute('style', 'overflow: none; margin: 0;padding: 0;');
-			while (root.hasChildNodes())
-			{
-				root.removeChild(root.firstChild);
-			}
-			root.appendChild(canvas);
-			return canvas;
-		},
-		_canvas : null,
-
-		get container()
-		{
-			return document.getElementById('fullScreenCanvas-container');
+			return document.getElementById('fullScreenCanvas-panel');
 		},
 
 		init : function() {
@@ -234,38 +203,13 @@ window.addEventListener('DOMContentLoaded', function() {
 			canvas.setAttribute('width', '0');
 			canvas.setAttribute('height', '0');
 			canvas.setAttribute('style', 'width:0;height:0;');
-			this._canvas = canvas;
-			if (!this.isGecko19) {
-				this.container.appendChild(canvas);
-				return
-			}
-			/* We have to put canvas into a frame because Gecko 1.9
-			   renders canvas under the main content area if it is
-			   not in a frame.
-			*/
-			var frame = document.createElement('browser');
-			frame.setAttribute('id', 'fullScreenCanvas-frame');
-			frame.setAttribute('class', 'fullscreencanvas-frame');
-			frame.setAttribute('disablehistory', 'true');
-			this.container.appendChild(frame);
-			frame.style.width = 0;
-			frame.style.height = 0;
-			frame.style.borderWidth = 0;
-			frame.style.margin = 0;
-			frame.style.padding = 0;
-		},
-
-		get isGecko19()
-		{
-			const XULAppInfo = Components.classes['@mozilla.org/xre/app-info;1']
-					.getService(Components.interfaces.nsIXULAppInfo);
-			var version = XULAppInfo.platformVersion.split('.');
-			return parseInt(version[0]) >= 2 || parseInt(version[1]) >= 9;
+			this.canvas = canvas;
+			this.panel.appendChild(canvas);
 		},
 
 		destroy : function() {
 			var range = document.createRange();
-			range.selectNodeContents(this.container);
+			range.selectNodeContents(this.panel);
 			range.deleteContents();
 			range.detach();
 		}
@@ -277,13 +221,17 @@ window.addEventListener('DOMContentLoaded', function() {
 ]]></script>
 
 <window id="main-window">
-	<vbox id="fullScreenCanvas-container"
-		collapsed="true"
+	<panel id="fullScreenCanvas-panel"
+		noautohide="true"
 		style="
-			position: fixed;
-			z-index: 60000;
-			top: 0;
-			left: 0;
+			-moz-appearance: none;
+			-moz-border-top-colors: none;
+			-moz-border-right-colors: none;
+			-moz-border-bottom-colors: none;
+			-moz-border-left-colors: none;
+			background: transparent;
+			border: 0 none;
+			padding: 0;
 		"
 		onclick="fullScreenCanvas.hide();"/>
 </window>

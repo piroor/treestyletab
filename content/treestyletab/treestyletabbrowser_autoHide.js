@@ -416,37 +416,37 @@ TreeStyleTabBrowserAutoHide.prototype = {
  
 	showHideInternal : function(aReason) 
 	{
-		var sv  = this.mOwner;
-		var b   = sv.mTabBrowser;
-		var pos = b.getAttribute(sv.kTABBAR_POSITION);
+		fullScreenCanvas.show(document.getElementById('appcontent'), function() {
+			var sv  = this.mOwner;
+			var b   = sv.mTabBrowser;
+			var pos = b.getAttribute(sv.kTABBAR_POSITION);
 
-		fullScreenCanvas.show(document.getElementById('appcontent'));
-
-		if (this.shown) { // to be hidden or shrunken
-			this.onHiding();
-			this.showHideReason = aReason || this.kSHOWN_BY_UNKNOWN;
-			this.shown = false;
-		}
-		else { // to be shown or expanded
-			this.onShowing();
-			this.showHideReason = aReason || this.kSHOWN_BY_UNKNOWN;
-			this.shown = true;
-		}
-
-		this.fireStateChangingEvent();
-
-		window.setTimeout(function(aSelf) {
-			if (aSelf.shown) {
-				sv.mTabBrowser.setAttribute(aSelf.kAUTOHIDE, 'show');
-				aSelf.redrawContentArea();
+			if (this.shown) { // to be hidden or shrunken
+				this.onHiding();
+				this.showHideReason = aReason || this.kSHOWN_BY_UNKNOWN;
+				this.shown = false;
 			}
-			b.mTabContainer.adjustTabstrip();
-			sv.checkTabsIndentOverflow();
-			aSelf.redrawContentArea();
-			fullScreenCanvas.hide();
+			else { // to be shown or expanded
+				this.onShowing();
+				this.showHideReason = aReason || this.kSHOWN_BY_UNKNOWN;
+				this.shown = true;
+			}
 
-			aSelf.fireStateChangeEvent();
-		}, 0, this);
+			this.fireStateChangingEvent();
+
+			window.setTimeout(function(aSelf) {
+				if (aSelf.shown) {
+					sv.mTabBrowser.setAttribute(aSelf.kAUTOHIDE, 'show');
+					aSelf.redrawContentArea();
+				}
+				b.mTabContainer.adjustTabstrip();
+				sv.checkTabsIndentOverflow();
+				aSelf.redrawContentArea();
+				fullScreenCanvas.hide();
+
+				aSelf.fireStateChangeEvent();
+			}, 0, this);
+		}, this);
 	},
 	
 	show : function(aReason) 
