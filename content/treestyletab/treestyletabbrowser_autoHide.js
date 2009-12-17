@@ -612,10 +612,13 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				0 ;
 		var w = tabContainerBox.width - xOffset;
 		var h = tabContainerBox.height - yOffset;
+
+		var canvasXOffset = 0;
+		var canvasYOffset = 0;
 		if (pos == 'top' || pos == 'bottom')
-			xOffset -= tabContainerBox.screenX - sv.mTabBrowser.boxObject.screenX;
+			canvasXOffset = tabContainerBox.screenX - sv.mTabBrowser.boxObject.screenX;
 		else
-			yOffset -= tabContainerBox.screenY - sv.mTabBrowser.boxObject.screenY;
+			canvasYOffset = tabContainerBox.screenY - sv.mTabBrowser.boxObject.screenY;
 
 		for (let node = this.tabbarCanvas;
 		     node != sv.mTabBrowser.mStrip.parentNode;
@@ -641,7 +644,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		h = Math.max(1, h);
 
 		this.tabbarCanvas.style.display = 'inline';
-		this.tabbarCanvas.style.margin = (yOffset || 0)+'px 0 0 '+(xOffset || 0)+'px';
+		this.tabbarCanvas.style.margin = (yOffset)+'px 0 0 '+(xOffset)+'px';
 		this.tabbarCanvas.style.width = (this.tabbarCanvas.width = w)+'px';
 		this.tabbarCanvas.style.height = (this.tabbarCanvas.height = h)+'px';
 		var ctx = this.tabbarCanvas.getContext('2d');
@@ -664,8 +667,8 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		ctx.scale(zoom, zoom);
 		ctx.drawWindow(
 			frame,
-			(x / zoom)+frame.scrollX,
-			(y / zoom)+frame.scrollY,
+			(x / zoom)+frame.scrollX+canvasXOffset,
+			(y / zoom)+frame.scrollY+canvasYOffset,
 			w / zoom,
 			h / zoom,
 			'-moz-field'
