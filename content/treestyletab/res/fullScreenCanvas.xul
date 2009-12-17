@@ -186,8 +186,136 @@ window.addEventListener('DOMContentLoaded', function() {
 
 		onClick : function(aEvent)
 		{
+			if (window['piro.sakura.ne.jp'] &&
+				window['piro.sakura.ne.jp'].boxObject)
+				this.setUpClickEvent(aEvent);
+
 			this.hide();
 		},
+
+
+		// resend click event
+		setUpClickEvent : function(aEvent)
+		{
+			var x, y, target;
+			if (!this.browsers.some(function(aBrowser) {
+					var box = (aBrowser.localName == 'tabbrowser' ? aBrowser.mCurrentBrowser : aBrowser )
+								.boxObject;
+					if (!this._isInside(box, aEvent.screenX, aEvent.screenY))
+						return false;
+
+					var frame = this.getFrameElementFromScreenPoint(
+							aBrowser,
+							aEvent.screenX,
+							aEvent.screenY
+						);
+					if (!frame)
+						return false;
+
+					target = frame.contentWindow;
+					var box = this.getBoxObjectFor(frame);
+					x = aEvent.screenX - box.screenX;
+					y = aEvent.screenY - box.screenY;
+					return true;
+				}, this)) {
+				x = aEvent.clientX;
+				y = aEvent.clientY;
+				target = window;
+			}
+
+			var flags = 0;
+			const nsIDOMNSEvent = Components.interfaces.nsIDOMNSEvent;
+			if (aEvent.altKey) flags |= nsIDOMNSEvent.ALT_MASK;
+			if (aEvent.ctrlKey) flags |= nsIDOMNSEvent.CONTROL_MASK;
+			if (aEvent.shiftKey) flags |= nsIDOMNSEvent.SHIFT_MASK;
+			if (aEvent.metaKey) flags |= nsIDOMNSEvent.META_MASK;
+
+			var button = aEvent.button;
+
+			var self = this;
+			this.panel.addEventListener('popuphidden', function() {
+				self.panel.removeEventListener('popuphidden', arguments.callee, false);
+
+				var utils = target
+						.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+						.getInterface(Components.interfaces.nsIDOMWindowUtils);
+				utils.sendMouseEvent('mousedown', x, y, button, 1, flags);
+				utils.sendMouseEvent('mouseup', x, y, button, 1, flags);
+			}, false);
+		},
+
+		getFrameElementFromScreenPoint : function(aCurrent, aScreenX, aScreenY)
+		{
+			var frame = aCurrent.contentWindow;
+			var clientPos = this._getClientPointFromScreenPoint(frame, aScreenX, aScreenY);
+			var elem = frame.document.elementFromPoint(clientPos.x, clientPos.y);
+			if (elem)
+				elem = this._getOriginalTargetFromScreenPoint(elem, aScreenX, aScreenY);
+			if (
+				elem &&
+				/^(i?frame|browser)$/i.test(elem.localName)
+				) {
+				return this.getFrameElementFromScreenPoint(
+						elem,
+						aScreenX + frame.scrollX,
+						aScreenY + frame.scrollY
+					);
+			}
+			return aCurrent;
+		},
+
+		_getClientPointFromScreenPoint : function(aFrame, aScreenX, aScreenY) 
+		{
+			var box = this.getBoxObjectFor(aFrame.document.documentElement);
+			return {
+				x : aScreenX - box.screenX - aFrame.scrollX,
+				y : aScreenY - box.screenY - aFrame.scrollY
+			};
+		},
+
+		_isInside : function(aBox, aScreenX, aScreenY) 
+		{
+			var left   = aBox.screenX;
+			var top    = aBox.screenY;
+			var right  = left + aBox.width;
+			var bottom = top + aBox.height;
+			return !(
+					left   > aScreenX ||
+					right  < aScreenX ||
+					top    > aScreenY ||
+					bottom < aScreenY
+				);
+		},
+
+		_getOriginalTargetFromScreenPoint : function(aElement, aScreenX, aScreenY) 
+		{
+			return this._getOriginalTargetFromScreenPointInternal(aElement, aScreenX, aScreenY) || aElement;
+		},
+		_getOriginalTargetFromScreenPointInternal : function(aElement, aScreenX, aScreenY) 
+		{
+			if (!aElement) return null;
+			var doc = aElement.ownerDocument;
+			var nodes = 'getAnonymousNodes' in doc ? doc.getAnonymousNodes(aElement) : null ;
+			if (!nodes || !nodes.length) nodes = aElement.childNodes;
+			if (!nodes || !nodes.length) return null;
+			for (var i = 0, maxi = nodes.length; i < maxi; i++)
+			{
+				if (nodes[i].nodeType != nodes[i].ELEMENT_NODE ||
+					!this._isInside(this.getBoxObjectFor(nodes[i]), aScreenX, aScreenY))
+					continue;
+				var node = this._getOriginalTargetFromScreenPointInternal(nodes[i], aScreenX, aScreenY);
+				if (node) return node;
+			}
+			return null;
+		},
+
+		getBoxObjectFor : function(aNode)
+		{
+			return window['piro.sakura.ne.jp']
+						.boxObject
+						.getBoxObjectFor(aNode);
+		},
+
 
 		get browsers()
 		{
