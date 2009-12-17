@@ -444,7 +444,8 @@ TreeStyleTabBrowser.prototype = {
 			b.createTooltip.toSource().replace(
 				'if ("mOverCloseButton" in tn && tn.mOverCloseButton) {',
 				<![CDATA[
-					if (TreeStyleTabService.getTabBrowserFromChild(tn).treeStyleTab.handleTooltip(event, tn)) {
+					if (TreeStyleTabService.getTabBrowserFromChild(tn) &&
+						TreeStyleTabService.getTabBrowserFromChild(tn).treeStyleTab.handleTooltip(event, tn)) {
 						return true;
 					}
 					else $&]]>
