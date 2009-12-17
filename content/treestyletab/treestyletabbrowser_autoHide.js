@@ -416,7 +416,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
  
 	showHideInternal : function(aReason) 
 	{
-		var viewer = this.getViewerForFrame(window);
+		var viewer = this.rootContentViewer;
 		viewer.hide();
 
 		var sv  = this.mOwner;
@@ -451,9 +451,9 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		}, 0, this);
 	},
 	
-	getViewerForFrame : function(aFrame) 
+	get rootContentViewer() 
 	{
-		return aFrame
+		return window
 				.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
 				.getInterface(Components.interfaces.nsIWebNavigation)
 				.QueryInterface(Components.interfaces.nsIDocShell)
@@ -728,8 +728,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
  
 	getZoomForFrame : function(aFrame) 
 	{
-		var zoom = this.getViewerForFrame(aFrame)
-			.fullZoom;
+		var zoom = this.rootContentViewer.fullZoom;
 		return (zoom * 1000 % 1) ? zoom+0.025 : zoom ;
 	},
   
