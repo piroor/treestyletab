@@ -612,6 +612,10 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				0 ;
 		var w = tabContainerBox.width - xOffset;
 		var h = tabContainerBox.height - yOffset;
+		if (pos == 'top' || pos == 'bottom')
+			xOffset -= tabContainerBox.screenX - sv.mTabBrowser.boxObject.screenX;
+		else
+			yOffset -= tabContainerBox.screenY - sv.mTabBrowser.boxObject.screenY;
 
 		for (let node = this.tabbarCanvas;
 		     node != sv.mTabBrowser.mStrip.parentNode;
