@@ -2378,7 +2378,7 @@ catch(e) {
 		var base = parseInt(aTab.getAttribute(this.kNEST) || 0);
 		var descendant = this.getDescendantTabs(aTab);
 		var indentPart = '  ';
-		var tree = this.getTreePref('tooltip.includeChildren') ?
+		var tree = (this.getTreePref('tooltip.includeChildren') && descendant.length) ?
 					[aTab].concat(descendant)
 						.map(function(aTab) {
 							let label = aTab.getAttribute('label');
