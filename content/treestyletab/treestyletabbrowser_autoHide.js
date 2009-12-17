@@ -416,8 +416,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
  
 	showHideInternal : function(aReason) 
 	{
-		var viewer = this.rootContentViewer;
-		viewer.hide();
+		this.stopRendering();
 
 		var sv  = this.mOwner;
 		var b   = sv.mTabBrowser;
@@ -447,11 +446,19 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 			aSelf.fireStateChangeEvent();
 
-			viewer.show();
+			aSelf.startRendering();
 		}, 0, this);
 	},
 	
-	get rootContentViewer() 
+	stopRendering : function() 
+	{
+		this.rootContentViewer.hide();
+	},
+	startRendering : function()
+	{
+		this.rootContentViewer.show();
+	},
+	get rootContentViewer()
 	{
 		return window
 				.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
