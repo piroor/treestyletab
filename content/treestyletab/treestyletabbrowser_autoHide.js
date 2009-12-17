@@ -416,44 +416,51 @@ TreeStyleTabBrowserAutoHide.prototype = {
  
 	showHideInternal : function(aReason) 
 	{
-		var doShowHide = function() {
-			var sv  = this.mOwner;
-			var b   = sv.mTabBrowser;
-			var pos = b.getAttribute(sv.kTABBAR_POSITION);
+		var viewer = this.getViewerForFrame(window);
+		viewer.hide();
 
-			if (this.shown) { // to be hidden or shrunken
-				this.onHiding();
-				this.showHideReason = aReason || this.kSHOWN_BY_UNKNOWN;
-				this.shown = false;
-			}
-			else { // to be shown or expanded
-				this.onShowing();
-				this.showHideReason = aReason || this.kSHOWN_BY_UNKNOWN;
-				this.shown = true;
-			}
+		var sv  = this.mOwner;
+		var b   = sv.mTabBrowser;
+		var pos = b.getAttribute(sv.kTABBAR_POSITION);
 
-			this.fireStateChangingEvent();
+		if (this.shown) { // to be hidden or shrunken
+			this.onHiding();
+			this.showHideReason = aReason || this.kSHOWN_BY_UNKNOWN;
+			this.shown = false;
+		}
+		else { // to be shown or expanded
+			this.onShowing();
+			this.showHideReason = aReason || this.kSHOWN_BY_UNKNOWN;
+			this.shown = true;
+		}
 
-			window.setTimeout(function(aSelf) {
-				if (aSelf.shown) {
-					sv.mTabBrowser.setAttribute(aSelf.kAUTOHIDE, 'show');
-					aSelf.redrawContentArea();
-				}
-				b.mTabContainer.adjustTabstrip();
-				sv.checkTabsIndentOverflow();
+		this.fireStateChangingEvent();
+
+		window.setTimeout(function(aSelf) {
+			if (aSelf.shown) {
+				sv.mTabBrowser.setAttribute(aSelf.kAUTOHIDE, 'show');
 				aSelf.redrawContentArea();
-				fullScreenCanvas.hide();
+			}
+			b.mTabContainer.adjustTabstrip();
+			sv.checkTabsIndentOverflow();
+			aSelf.redrawContentArea();
 
-				aSelf.fireStateChangeEvent();
-			}, 0, this);
-		};
+			aSelf.fireStateChangeEvent();
 
-		if (this.getTreePref('tabbar.autoHide.useFullScreenCanvas'))
-			fullScreenCanvas.show(document.getElementById('appcontent'), doShowHide, this);
-		else
-			doShowHide.call(this);
+			viewer.show();
+		}, 0, this);
 	},
 	
+	getViewerForFrame : function(aFrame) 
+	{
+		return aFrame
+				.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+				.getInterface(Components.interfaces.nsIWebNavigation)
+				.QueryInterface(Components.interfaces.nsIDocShell)
+				.contentViewer
+				.QueryInterface(Components.interfaces.nsIMarkupDocumentViewer);
+	},
+ 
 	show : function(aReason) 
 	{
 		if (!this.shown)
@@ -585,7 +592,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		}
 	},
  
-	get shouldRedraw()
+	get shouldRedraw() 
 	{
 		return this.enabled && this.shown; // && this.mTabBrowser.hasAttribute(this.kTRANSPARENT);
 	},
@@ -603,7 +610,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		var browserBox = sv.mTabBrowser.mCurrentBrowser.boxObject;
 		var contentBox = sv.getBoxObjectFor(frame.document.documentElement);
 
-		var zoom = fullScreenCanvas.getZoomForFrame(frame);
+		var zoom = this.getZoomForFrame(frame);
 
 		var x = (pos == 'right') ? browserBox.width - this.XOffset : 0 ;
 		var y = (pos == 'bottom') ? browserBox.height - this.YOffset : 0 ;
@@ -717,6 +724,13 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				parseInt(parseInt(RegExp.$2) * 0.8),
 				parseInt(parseInt(RegExp.$3) * 0.8)
 			].join(',')+')';
+	},
+ 
+	getZoomForFrame : function(aFrame) 
+	{
+		var zoom = this.getViewerForFrame(aFrame)
+			.fullZoom;
+		return (zoom * 1000 % 1) ? zoom+0.025 : zoom ;
 	},
   
 	clearBG : function() 
