@@ -416,7 +416,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
  
 	showHideInternal : function(aReason) 
 	{
-		fullScreenCanvas.show(document.getElementById('appcontent'), function() {
+		var doShowHide = function() {
 			var sv  = this.mOwner;
 			var b   = sv.mTabBrowser;
 			var pos = b.getAttribute(sv.kTABBAR_POSITION);
@@ -446,7 +446,12 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 				aSelf.fireStateChangeEvent();
 			}, 0, this);
-		}, this);
+		};
+
+		if (this.getTreePref('tabbar.autoHide.useFullScreenCanvas'))
+			fullScreenCanvas.show(document.getElementById('appcontent'), doShowHide, this);
+		else
+			doShowHide.call(this);
 	},
 	
 	show : function(aReason) 

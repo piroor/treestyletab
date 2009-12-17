@@ -24,6 +24,7 @@ pref("extensions.treestyletab.tabbar.autoHide.mode.fullscreen", 1);
 pref("extensions.treestyletab.tabbar.autoHide.delay",      50);
 pref("extensions.treestyletab.tabbar.autoHide.area",       7);
 pref("extensions.treestyletab.tabbar.autoHide.expandArea", false);
+pref("extensions.treestyletab.tabbar.autoHide.useFullScreenCanvas", true);
 // 0 = not transparent, 1 = partial transparent, 2 = completely transparent
 pref("extensions.treestyletab.tabbar.transparent.style", 1);
 pref("extensions.treestyletab.tabbar.transparent.partialTransparency", "0.25");
