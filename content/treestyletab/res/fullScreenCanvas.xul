@@ -37,7 +37,7 @@ window.addEventListener('DOMContentLoaded', function() {
 	window.fullScreenCanvas = {
 		show : function(aTargetElement, aCallback, aThis) 
 		{
-			this.showInternal(aTargetElement);
+			this.doShow(aTargetElement);
 			if (!aCallback) return;
 			if (this.shown) {
 				var self = this;
@@ -50,7 +50,7 @@ window.addEventListener('DOMContentLoaded', function() {
 				aCallback.call(aThis || window);
 			}
 		},
-		showInternal : function(aTargetElement) 
+		doShow : function(aTargetElement) 
 		{
 			if (this.shown) return;
 
@@ -184,6 +184,11 @@ window.addEventListener('DOMContentLoaded', function() {
 			this.shown = false;
 		},
 
+		onClick : function(aEvent)
+		{
+			this.hide();
+		},
+
 		get browsers()
 		{
 			browsers = [].concat(Array.slice(document.getElementsByTagName('tabbrowser')))
@@ -197,7 +202,8 @@ window.addEventListener('DOMContentLoaded', function() {
 			return document.getElementById('fullScreenCanvas-panel');
 		},
 
-		init : function() {
+		init : function()
+		{
 			var canvas = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
 			canvas.setAttribute('id', 'fullScreenCanvas-canvas');
 			canvas.setAttribute('width', '0');
@@ -207,7 +213,8 @@ window.addEventListener('DOMContentLoaded', function() {
 			this.panel.appendChild(canvas);
 		},
 
-		destroy : function() {
+		destroy : function()
+		{
 			var range = document.createRange();
 			range.selectNodeContents(this.panel);
 			range.deleteContents();
@@ -233,7 +240,7 @@ window.addEventListener('DOMContentLoaded', function() {
 			border: 0 none;
 			padding: 0;
 		"
-		onclick="fullScreenCanvas.hide();"/>
+		onclick="fullScreenCanvas.onClick(event);"/>
 </window>
 
 </overlay>
