@@ -125,10 +125,10 @@
 
 <!ENTITY config.closeParentBehavior.caption       "关闭父标签时">
 <!ENTITY config.closeParentBehavior.close         "同时关闭子标签">
-<!ENTITY config.closeParentBehavior.escalateFirst "提升首个子标签为父标签">
-<!ENTITY config.closeParentBehavior.escalateAll   "提升所有子标签到父标签的级别">
+<!ENTITY config.closeParentBehavior.promoteFirst "提升首个子标签为父标签">
+<!ENTITY config.closeParentBehavior.promoteAll   "提升所有子标签到父标签的级别">
 <!ENTITY config.closeParentBehavior.detach        "让子标签脱离树状关系">
-<!ENTITY config.closeRootBehavior.escalateFirst   "若父标签之上无父标签，则提升首个子标签为父标签">
+<!ENTITY config.closeRootBehavior.promoteFirst   "若父标签之上无父标签，则提升首个子标签为父标签">
 
 <!ENTITY config.focusMode "Ctrl（Command）-Tab 切换标签时可切换到折叠起来的标签上。">
 

@@ -123,12 +123,12 @@
 <!ENTITY config.collapseExpandSubTree.dblclick "Double-click on a tab to collapse/expand tree">
 <!ENTITY config.autoExpandSubTreeOnAppendChild "Expand tree automatically, when tabs are inserted into the tree">
 
-<!ENTITY config.closeParentBehavior.caption       "When a parent tab is closed">
-<!ENTITY config.closeParentBehavior.close         "Close child tabs too">
-<!ENTITY config.closeParentBehavior.escalateFirst "Raise the first child tab up to the new parent">
-<!ENTITY config.closeParentBehavior.escalateAll   "Raise all child tabs up to the level of the closed parent tab">
-<!ENTITY config.closeParentBehavior.detach        "Liberate child tabs from the tree">
-<!ENTITY config.closeRootBehavior.escalateFirst   "Raise the first child tab up to the new parent, if the closed parent has no parent">
+<!ENTITY config.closeParentBehavior.caption      "When a parent tab is closed">
+<!ENTITY config.closeParentBehavior.close        "Close child tabs too">
+<!ENTITY config.closeParentBehavior.promoteFirst "Promote the first child tab as the new parent">
+<!ENTITY config.closeParentBehavior.promoteAll   "Promote all child tabs as the level of the closed parent tab">
+<!ENTITY config.closeParentBehavior.detach       "Liberate child tabs from the tree">
+<!ENTITY config.closeRootBehavior.promoteFirst   "Promote the first child tab as the new parent, if the closed parent has no parent">
 
 <!ENTITY config.focusMode "Focus to the next/previous tab even if it is invisible, by Control(Command)-Tab">
 

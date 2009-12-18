@@ -98,15 +98,15 @@ pref("extensions.treestyletab.autoAttachNewTabsAsChildren", true);
 // 0 = default, 1 = only visible tabs
 pref("extensions.treestyletab.focusMode", 1);
 /*
-  3 = escalate only the first child tab to the parent level
-  0 = escalate all children to the parent level
+  3 = promote only the first child tab as the parent level
+  0 = promote all children as the parent level
   1 = detach all children
   2 = close all children too
 */
 pref("extensions.treestyletab.closeParentBehavior", 3);
 /*
-  3 = escalate only the first child tab to the root level
-  1 = escalate all children to new roots (=detach all children)
+  3 = promote only the first child tab as the root level
+  1 = promote all children as new roots (=detach all children)
   Note: this affects only when closeParentBehavior == 0
 */
 pref("extensions.treestyletab.closeRootBehavior", 3);

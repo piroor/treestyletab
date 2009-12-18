@@ -128,10 +128,10 @@
 
 <!ENTITY config.closeParentBehavior.caption "當關閉親分頁時">
 <!ENTITY config.closeParentBehavior.close   "一併關閉所屬子分頁">
-<!ENTITY config.closeParentBehavior.escalateFirst "提升第一子分頁到親分頁所在位階">
-<!ENTITY config.closeParentBehavior.escalateAll   "所有子分頁都提升到親分頁所在位階">
+<!ENTITY config.closeParentBehavior.promoteFirst "提升第一子分頁到親分頁所在位階">
+<!ENTITY config.closeParentBehavior.promoteAll   "所有子分頁都提升到親分頁所在位階">
 <!ENTITY config.closeParentBehavior.detach  "從該樹釋放所屬子分頁">
-<!ENTITY config.closeRootBehavior.escalateFirst   "若親分頁上無親分頁，則提升第一子分頁成為親分頁">
+<!ENTITY config.closeRootBehavior.promoteFirst   "若親分頁上無親分頁，則提升第一子分頁成為親分頁">
 
 <!ENTITY config.focusMode "用 Ctrl（Command）+Tab 切換分頁時，即使是摺疊了的分頁也切換">
 

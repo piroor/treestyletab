@@ -17,5 +17,12 @@ sv.isSubtreeCollapsed(parent)
 sv.removeTabSubTree(tabs, onlychildren)
 sv.collapseExpandAllSubtree(collapse)
 
+sv.changeTabbarPosition()
+sv.currentTabbarPosition
+
+sv.partAllChildren()
+sv.resetTab()
+sv.resetAllTabs()
+
 
 */

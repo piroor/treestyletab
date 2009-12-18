@@ -128,10 +128,10 @@
 
 <!ENTITY config.closeParentBehavior.caption       "Alla chiusura della scheda principale">
 <!ENTITY config.closeParentBehavior.close         "chiudi anche le sottoschede">
-<!ENTITY config.closeParentBehavior.escalateFirst "Raise the first child tab up to the new parent">
-<!ENTITY config.closeParentBehavior.escalateAll   "porta le sottoschede al livello della scheda principale">
+<!ENTITY config.closeParentBehavior.promoteFirst "Promote the first child tab as the new parent">
+<!ENTITY config.closeParentBehavior.promoteAll   "porta le sottoschede al livello della scheda principale">
 <!ENTITY config.closeParentBehavior.detach        "elimina le sottoschede dall'albero">
-<!ENTITY config.closeRootBehavior.escalateFirst   "Raise the first child tab up to the new parent, if the closed parent has no parent">
+<!ENTITY config.closeRootBehavior.promoteFirst   "Promote the first child tab as the new parent, if the closed parent has no parent">
 <!--ENTITY config.attachChildrenToGrandParentOnRemoveTab "Elimina le sottoschede dall'albero alla chiusura della scheda principale"-->
 
 <!ENTITY config.focusMode "Attiva la scheda successiva/precedente, anche se è nascosta, con Control(Command)-Tab">

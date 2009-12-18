@@ -127,10 +127,10 @@ When a tab gets focus, expand his tree and collapse others automatically
 
 <!ENTITY config.closeParentBehavior.caption       "Kiedy karta nadrzędna jest zamykana:">
 <!ENTITY config.closeParentBehavior.close         "Zamykaj również potomne karty">
-<!ENTITY config.closeParentBehavior.escalateFirst "Przekształć pierwszą kartę potomną w kartę nadrzędną">
-<!ENTITY config.closeParentBehavior.escalateAll   "Przenoś potomne karty na poziom karty nadrzędnej">
+<!ENTITY config.closeParentBehavior.promoteFirst "Przekształć pierwszą kartę potomną w kartę nadrzędną">
+<!ENTITY config.closeParentBehavior.promoteAll   "Przenoś potomne karty na poziom karty nadrzędnej">
 <!ENTITY config.closeParentBehavior.detach        "Odłączaj potomne karty od drzewa">
-<!ENTITY config.closeRootBehavior.escalateFirst   "Przekształć pierwszą kartę potomną w kartę nadrzędną, o ile zamykana nadrzędna nie ma nadrzędnej">
+<!ENTITY config.closeRootBehavior.promoteFirst   "Przekształć pierwszą kartę potomną w kartę nadrzędną, o ile zamykana nadrzędna nie ma nadrzędnej">
 
 <!ENTITY config.focusMode "Skrót [Ctrl(Command)+Tab] uaktywnia następną/poprzednią kartę nawet jeśli jest niewidoczna">
 

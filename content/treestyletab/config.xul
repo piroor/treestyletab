@@ -685,12 +685,12 @@
 			orient="vertical"
 			oncommand="updateCloseRootBehaviorCheck();">
 			<radio value="2" label="&config.closeParentBehavior.close;"/>
-			<radio value="3" label="&config.closeParentBehavior.escalateFirst;"/>
-			<radio value="0" label="&config.closeParentBehavior.escalateAll;"/>
+			<radio value="3" label="&config.closeParentBehavior.promoteFirst;"/>
+			<radio value="0" label="&config.closeParentBehavior.promoteAll;"/>
 			<hbox align="center">
 				<spacer style="width:1em;"/>
 				<checkbox id="extensions.treestyletab.closeRootBehavior-check"
-					label="&config.closeRootBehavior.escalateFirst;"
+					label="&config.closeRootBehavior.promoteFirst;"
 					preference="extensions.treestyletab.closeRootBehavior"
 					onsyncfrompreference="return document.getElementById('extensions.treestyletab.closeRootBehavior').value == 3;"
 					onsynctopreference="return document.getElementById('extensions.treestyletab.closeRootBehavior-check').checked ? 3 : 1 ;"/>

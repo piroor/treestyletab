@@ -1536,10 +1536,10 @@ TreeStyleTabBrowser.prototype = {
 					} :
 				(parentTab ?
 					(
-						closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_ESCALATE_FIRST &&
+						closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST &&
 						this.getChildTabs(parentTab).length > 1
 					) :
-					closeRootBehavior == this.CLOSE_ROOT_BEHAVIOR_ESCALATE_FIRST
+					closeRootBehavior == this.CLOSE_ROOT_BEHAVIOR_PROMOTE_FIRST
 				) ?
 					function(aTab, aIndex) {
 						this.partTab(aTab, { dontUpdateIndent : true });
@@ -1577,8 +1577,8 @@ TreeStyleTabBrowser.prototype = {
 						this.partTab(aTab, { dontUpdateIndent : true });
 					}
 			), this);
-			if (closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_ESCALATE_ALL ||
-				closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_ESCALATE_FIRST)
+			if (closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_PROMOTE_ALL ||
+				closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST)
 				nextFocusedTab = firstChild;
 		}
 
@@ -1646,12 +1646,12 @@ TreeStyleTabBrowser.prototype = {
 				b.selectedTab = nextFocusedTab;
 		}
 	},
-	CLOSE_PARENT_BEHAVIOR_ESCALATE_FIRST : 3,
-	CLOSE_PARENT_BEHAVIOR_ESCALATE_ALL   : 0,
-	CLOSE_PARENT_BEHAVIOR_DETACH         : 1,
-	CLOSE_PARENT_BEHAVIOR_CLOSE          : 2,
-	CLOSE_ROOT_BEHAVIOR_ESCALATE_FIRST : 3,
-	CLOSE_ROOT_BEHAVIOR_DETACH         : 1,
+	CLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST : 3,
+	CLOSE_PARENT_BEHAVIOR_PROMOTE_ALL   : 0,
+	CLOSE_PARENT_BEHAVIOR_DETACH        : 1,
+	CLOSE_PARENT_BEHAVIOR_CLOSE         : 2,
+	CLOSE_ROOT_BEHAVIOR_PROMOTE_FIRST   : 3,
+	CLOSE_ROOT_BEHAVIOR_DETACH          : 1,
 	getNextFocusedTab : function(aTab)
 	{
 		return this.getNextSiblingTab(aTab) ||
