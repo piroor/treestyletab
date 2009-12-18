@@ -489,6 +489,11 @@ TreeStyleTabBrowser.prototype = {
 			));
 		}
 
+		eval('b.removeCurrentTab = '+b.removeCurrentTab.toSource().replace(
+			'{',
+			'{ if (!this.treeStyleTab.warnAboutClosingTabSubTreeOf(this.selectedTab)) return;'
+		));
+
 		let (tabs, i, maxi) {
 			tabs = this.getTabs(b);
 			for (i = 0, maxi = tabs.snapshotLength; i < maxi; i++)
@@ -2102,15 +2107,9 @@ TreeStyleTabBrowser.prototype = {
 
 		if (this.isEventFiredOnClosebox(aEvent)) {
 			let tab = this.getTabFromEvent(aEvent);
-			if (
-				this.getTreePref('closeParentBehavior') == this.CLOSE_PARENT_BEHAVIOR_CLOSE ||
-				this.isSubtreeCollapsed(tab)
-				) {
-				let tabs = [tab].concat(this.getDescendantTabs(tab));
-				if (tabs.length > 1 && !this.warnAboutClosingTabs(tabs.length)) {
-					aEvent.preventDefault();
-					aEvent.stopPropagation();
-				}
+			if (!this.warnAboutClosingTabSubTreeOf(tab)) {
+				aEvent.preventDefault();
+				aEvent.stopPropagation();
 			}
 			return;
 		}

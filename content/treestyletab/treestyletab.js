@@ -2456,6 +2456,20 @@ catch(e) {
 			b.removeTab(tabs[i]);
 		}
 	},
+	warnAboutClosingTabSubTreeOf : function(aTab)
+	{
+		if (
+			!aTab ||
+			(
+				this.getTreePref('closeParentBehavior') != this.CLOSE_PARENT_BEHAVIOR_CLOSE &&
+				!this.isSubtreeCollapsed(aTab)
+			)
+			)
+			return false;
+
+		var tabs = [aTab].concat(this.getDescendantTabs(aTab));
+		return this.warnAboutClosingTabs(tabs.length);
+	},
 	warnAboutClosingTabs : function(aTabsCount)
 	{
 		if (
