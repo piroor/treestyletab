@@ -1626,6 +1626,15 @@ TreeStyleTabBrowser.prototype = {
 			nextFocusedTab = this.getNextFocusedTab(tab);
 		}
 
+		if (indentModifiedTabs.length)
+			this.updateTabsIndentWithDelay(indentModifiedTabs);
+		this.checkTabsIndentOverflow();
+
+		for (var i in backupAttributes)
+		{
+			this.setTabValue(tab, i, backupAttributes[i]);
+		}
+
 		if (b.selectedTab == tab) {
 			this._focusChangedByCurrentTabRemove = true;
 			if (
@@ -1635,15 +1644,6 @@ TreeStyleTabBrowser.prototype = {
 				}, this)
 				)
 				b.selectedTab = nextFocusedTab;
-		}
-
-		if (indentModifiedTabs.length)
-			this.updateTabsIndentWithDelay(indentModifiedTabs);
-		this.checkTabsIndentOverflow();
-
-		for (var i in backupAttributes)
-		{
-			this.setTabValue(tab, i, backupAttributes[i]);
 		}
 	},
 	CLOSE_PARENT_BEHAVIOR_ESCALATE_FIRST : 3,
