@@ -899,7 +899,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 					{
 						case 'TreeStyleTabAutoHideStateChanging':
 							if (!window.fullScreen) return;
-							if (aEvent.collapsed) {
+							if (!aEvent.shown) {
 								if (
 									autoHIDE.statBar &&
 									gBrowser.getAttribute(gBrowser.treeStyleTab.kTABBAR_POSITION) == 'bottom' &&
