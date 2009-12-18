@@ -3719,10 +3719,10 @@ TreeStyleTabBrowser.prototype = {
 	},
 
 	// for backward compatibility
-	get tabbarShown() { return this.autoHide.reallyShown; },
-	set tabbarShown(aValue) { return this.autoHide.reallyShown = aValue; },
+	get tabbarShown() { return this.autoHide.expanded; },
+	set tabbarShown(aValue) { if (aValue) this.autoHide.show(); else this.autoHide.hide(); return aValue; },
 	get tabbarExpanded() { return this.autoHide.expanded; },
-	set tabbarExpanded(aValue) { return this.autoHide.expanded = aValue; },
+	set tabbarExpanded(aValue) { return this.tabbarShown = aValue; },
 	get tabbarResizing() { return this.autoHide.isResizing; },
 	set tabbarResizing(aValue) { return this.autoHide.isResizing = aValue; },
 	get togglerSize() { return this.autoHide.togglerSize; },
@@ -3738,8 +3738,8 @@ TreeStyleTabBrowser.prototype = {
 	set tabbarHeight(aValue) { return this.autoHide.height = aValue; },
 	get splitterWidth() { return this.autoHide.splitterWidth; },
 
-	set autoHideShown() { return this.autoHide.shown; },
-	set autoHideShown(aValue) { return this.autoHide.shown = aValue; },
+	set autoHideShown() { return this.autoHide.expanded; },
+	set autoHideShown(aValue) { return this.tabbarShown = aValue; },
 	set autoHideXOffset() { return this.autoHide.XOffset; },
 	set autoHideYOffset() { return this.autoHide.YOffset; },
 	get autoHideMode() { return this.autoHide.mode; },

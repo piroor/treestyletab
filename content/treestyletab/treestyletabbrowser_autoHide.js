@@ -37,6 +37,23 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		TreeStyleTabBrowserAutoHide.mode = aValue;
 		return aValue;
 	},
+
+	get state()
+	{
+		return this.mOwner.mTabBrowser.getAttribute(this.kSTATE) || this.kSTATE_EXPANDED;
+	},
+	get expanded()
+	{
+		return this.state == this.kSTATE_EXPANDED;
+	},
+	get shrunken()
+	{
+		return this.state == this.kSTATE_SHRUNKEN;
+	},
+	get hidden()
+	{
+		return this.state == this.kSTATE_HIDDEN;
+	},
 	
 	updateMode : function() 
 	{
@@ -49,34 +66,6 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		}, 0, this);
 	},
   
-	get shown() 
-	{
-		switch (this.mode)
-		{
-			case this.kMODE_HIDE:
-				return this.reallyShown;
-
-			default:
-			case this.kMODE_SHRINK:
-				return this.expanded;
-		}
-	},
-	set shown(aValue)
-	{
-		switch (this.mode)
-		{
-			case this.kMODE_HIDE:
-				this.reallyShown = aValue;
-				break;
-
-			default:
-			case this.kMODE_SHRINK:
-				this.expanded = aValue;
-				break;
-		}
-		return aValue;
-	},
- 
 	togglerSize : 0, 
 	sensitiveArea : 7,
  
@@ -126,8 +115,6 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		this.clearBG();
 		this.updateTransparency();
 
-		this.reallyShown = true;
-		this.expanded = true;
 		this.showHideInternal();
 	},
  
@@ -138,7 +125,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 		var sv = this.mOwner;
 
-		if (!this.shown)
+		if (!this.expanded)
 			this.showHideInternal();
 
 		sv.mTabBrowser.removeEventListener('mousedown', this, true);
@@ -157,8 +144,6 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		sv.mTabBrowser.removeAttribute(this.kAUTOHIDE);
 		sv.mTabBrowser.removeAttribute(this.kSTATE);
 		sv.mTabBrowser.removeAttribute(this.kTRANSPARENT);
-		this.reallyShown = true;
-		this.expanded = true;
 	},
  
 	// fullscreen 
@@ -226,7 +211,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		var sensitiveArea = this.sensitiveArea;
 		/* For resizing of shrunken tab bar and clicking closeboxes,
 		   we have to shrink sensitive area a little. */
-		if (!this.shown && this.mode == this.kMODE_SHRINK) {
+		if (this.shrunken) {
 			sensitiveArea = 0;
 			if (pos != 'right' || b.getAttribute(this.kTAB_INVERTED) == 'true')
 				sensitiveArea -= 20;
@@ -241,7 +226,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 					(aEvent.screenY >= box.screenY + box.height - sensitiveArea) :
 					(aEvent.screenY <= box.screenY + sensitiveArea)
 			);
-		if (this.shown) {
+		if (this.expanded) {
 			if (
 				shouldKeepShown &&
 				this.showHideReason & this.kKEEP_SHOWN_ON_MOUSEOVER &&
@@ -350,7 +335,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	setWidth : function(aWidth, aForceExpanded) 
 	{
 		if (aForceExpanded ||
-			this.shown ||
+			this.expanded ||
 			this.mode !=  this.kMODE_SHRINK)
 			this.setTreePref('tabbar.width', aWidth);
 		else
@@ -369,7 +354,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	
 	get width() 
 	{
-		if (this.shown) {
+		if (this.expanded) {
 			this._width = this.mOwner.mTabBrowser.mStrip.boxObject.width;
 		}
 		return this._width;
@@ -383,17 +368,14 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	
 	get widthFromMode() 
 	{
-		return (
-					!this.shown &&
-					this.mode ==  this.kMODE_SHRINK
-				) ?
+		return (this.shrunken) ?
 					this.getTreePref('tabbar.shrunkenWidth') :
 					this.getTreePref('tabbar.width') ;
 	},
   
 	get height() 
 	{
-		if (this.reallyShown) {
+		if (this.expanded) {
 			this._height = this.mOwner.mTabBrowser.mStrip.boxObject.height;
 		}
 		return this._height;
@@ -407,7 +389,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
  
 	get splitterWidth() 
 	{
-		if (this.reallyShown) {
+		if (this.expanded) {
 			var splitter = document.getAnonymousElementByAttribute(this.mOwner.mTabBrowser, 'class', this.kSPLITTER);
 			this._splitterWidth = (splitter ? splitter.boxObject.width : 0 );
 		}
@@ -428,21 +410,19 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		var b   = sv.mTabBrowser;
 		var pos = b.getAttribute(sv.kTABBAR_POSITION);
 
-		if (this.shown) { // to be hidden or shrunken
+		if (this.expanded) { // to be hidden or shrunken
 			this.onHiding();
 			this.showHideReason = aReason || this.kSHOWN_BY_UNKNOWN;
-			this.shown = false;
 		}
 		else { // to be shown or expanded
 			this.onShowing();
 			this.showHideReason = aReason || this.kSHOWN_BY_UNKNOWN;
-			this.shown = true;
 		}
 
 		this.fireStateChangingEvent();
 
 		window.setTimeout(function(aSelf) {
-			if (aSelf.shown) {
+			if (aSelf.expanded) {
 				sv.mTabBrowser.setAttribute(aSelf.kAUTOHIDE, 'show');
 				aSelf.redrawContentArea();
 			}
@@ -476,13 +456,13 @@ TreeStyleTabBrowserAutoHide.prototype = {
  
 	show : function(aReason) 
 	{
-		if (!this.shown)
+		if (!this.expanded)
 			this.showHideInternal(aReason);
 	},
  
 	hide : function(aReason) 
 	{
-		if (this.shown)
+		if (this.expanded)
 			this.showHideInternal(aReason);
 	},
  
@@ -556,7 +536,8 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		/* PUBLIC API */
 		var event = document.createEvent('Events');
 		event.initEvent('TreeStyleTabAutoHideStateChanging', true, true);
-		event.shown = this.shown;
+		event.shown = this.expanded;
+		event.state = this.state;
 		this.mOwner.mTabBrowser.dispatchEvent(event);
 	},
  
@@ -565,7 +546,8 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		/* PUBLIC API */
 		var event = document.createEvent('Events');
 		event.initEvent('TreeStyleTabAutoHideStateChange', true, true);
-		event.shown = this.shown;
+		event.shown = this.expanded;
+		event.state = this.state;
 		event.xOffset = this.XOffset;
 		event.yOffset = this.YOffset;
 		this.mOwner.mTabBrowser.dispatchEvent(event);
@@ -577,17 +559,15 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		var pos = sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION);
 		try {
 			var v = sv.mTabBrowser.markupDocumentViewer;
-			if (this.enabled && this.shown) {
+			if (this.shouldRedraw) {
 				v.move(window.outerWidth,window.outerHeight);
 				v.move(
 					(
-						!this.shown ? 0 :
 						pos == 'left' ? -this.XOffset :
 						pos == 'right' ? this.XOffset :
 						0
 					),
 					(
-						!this.shown ? 0 :
 						pos == 'top' ? -this.YOffset :
 						pos == 'bottom' ? this.YOffset :
 						0
@@ -611,7 +591,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
  
 	get shouldRedraw() 
 	{
-		return this.enabled && this.shown; // && this.mTabBrowser.hasAttribute(this.kTRANSPARENT);
+		return this.enabled && this.expanded;
 	},
  
 	drawBG : function() 
@@ -900,7 +880,8 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			case 'TreeStyleTabTabbarPositionChanging':
 				this.isResizing = false;
 				this.clearBG();
-				if (this.enabled && this.shown) this.hide();
+				if (this.shouldRedraw)
+					this.hide();
 				return;
 
 			case 'TreeStyleTabTabbarPositionChanged':
@@ -920,8 +901,9 @@ TreeStyleTabBrowserAutoHide.prototype = {
 						aEvent.scrollDown ||
 						aEvent.scrollUp ||
 						( // when you release "shift" key
-							this.shown &&
-							aEvent.standBy && aEvent.onlyShiftKey
+							this.expanded &&
+							aEvent.standBy &&
+							aEvent.onlyShiftKey
 						)
 					))
 					this.show(this.kSHOWN_BY_SHORTCUT);
@@ -973,7 +955,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		this.cancelShowHideOnMousemove();
 		if (
 			this.enabled &&
-			this.shown &&
+			this.expanded &&
 			(
 				aEvent.originalTarget.ownerDocument != document ||
 				!this.getTabBrowserFromChild(aEvent.originalTarget)
@@ -1014,7 +996,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		if (
 			!sv.popupMenuShown &&
 			(
-				!this.shown ||
+				!this.expanded ||
 				this.showHideReason & this.kKEEP_SHOWN_ON_MOUSEOVER
 			)
 			)
@@ -1085,7 +1067,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			) {
 			if (this.enabled &&
 				this.getTreePref('tabbar.autoShow.accelKeyDown') &&
-				!this.shown &&
+				!this.expanded &&
 				!this.delayedAutoShowTimer &&
 				!this.delayedShowForShortcutTimer) {
 				this.delayedShowForShortcutTimer = window.setTimeout(
@@ -1123,8 +1105,6 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		this.enabled = false;
 		this.mouseMoveListening = false;
 		this.showHideReason = 0;
-		this.reallyShown = true;
-		this.expanded = true;
 		this.lastMouseDownTarget = null;
 		this.isResizing = false;
 
