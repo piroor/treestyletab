@@ -24,5 +24,7 @@ sv.partAllChildren()
 sv.resetTab()
 sv.resetAllTabs()
 
+sv.treeViewEnabled
+
 
 */
