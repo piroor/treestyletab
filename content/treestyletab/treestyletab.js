@@ -2465,7 +2465,7 @@ catch(e) {
 				!this.isSubtreeCollapsed(aTab)
 			)
 			)
-			return false;
+			return true;
 
 		var tabs = [aTab].concat(this.getDescendantTabs(aTab));
 		return this.warnAboutClosingTabs(tabs.length);

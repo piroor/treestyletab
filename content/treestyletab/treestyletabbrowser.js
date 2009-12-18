@@ -552,8 +552,19 @@ TreeStyleTabBrowser.prototype = {
 			}, 0, this, b, tabContextMenu);
 		}
 
-		let (allTabPopup) {
-			allTabPopup = document.getAnonymousElementByAttribute(b.mTabContainer, 'anonid', 'alltabs-popup');
+		let (removeTabItem = document.getAnonymousElementByAttribute(b, 'id', 'context_closeTab')) {
+			if (removeTabItem) {
+				removeTabItem.setAttribute(
+					'oncommand',
+					removeTabItem.getAttribute('oncommand').replace(
+						/(tabbrowser\.removeTab\(([^\)]+)\))/,
+						'if (tabbrowser.treeStyleTab.warnAboutClosingTabSubTreeOf($2)) $1'
+					)
+				);
+			}
+		}
+
+		let (allTabPopup = document.getAnonymousElementByAttribute(b.mTabContainer, 'anonid', 'alltabs-popup')) {
 			if (allTabPopup)
 				allTabPopup.addEventListener('popupshowing', this, false);
 		}
