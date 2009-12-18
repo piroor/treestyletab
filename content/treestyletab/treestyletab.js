@@ -435,7 +435,7 @@ var TreeStyleTabService = {
  
 	toggleFixed : function() 
 	{
-		var pos = this.getTreePref('tabbar.position');
+		var pos = this.currentTabbarPosition;
 		var isVertical = (pos == 'left' || pos == 'right');
 
 		var orient = isVertical ? 'vertical' : 'horizontal' ;
@@ -455,6 +455,11 @@ var TreeStyleTabService = {
 
 		aNewPosition = aNewPosition.toLowerCase();
 		this.setTreePref('tabbar.position', aNewPosition);
+	},
+ 
+	get currentTabbarPosition() /* PUBLIC API */ 
+	{
+		return this.getTreePref('tabbar.position') || 'top';
 	},
   
 /* backward compatibility */ 
@@ -2758,7 +2763,7 @@ catch(e) {
 			case 'extensions.treestyletab.tabbar.position':
 				this.preLoadImagesForStyle([
 					this.getPref('extensions.treestyletab.tabbar.style'),
-					this.getPref('extensions.treestyletab.tabbar.position')
+					this.currentTabbarPosition
 				].join('-'));
 				break;
 

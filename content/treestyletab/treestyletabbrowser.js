@@ -729,7 +729,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var b = this.mTabBrowser;
 
-		if (!aPosition) aPosition = this.getTreePref('tabbar.position');
+		if (!aPosition) aPosition = this.currentTabbarPosition;
 		aPosition = String(aPosition).toLowerCase();
 
 		if (b.getAttribute('id') != 'content' &&

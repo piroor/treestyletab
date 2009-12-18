@@ -1178,8 +1178,8 @@ TreeStyleTabBrowserAutoHide.prototype.__proto__ = TreeStyleTabService;
 	
 TreeStyleTabBrowserAutoHide.__defineGetter__('mode', function() { 
 	if (this.mMode == this.prototype.kMODE_SHRINK &&
-		TreeStyleTabService.getTreePref('tabbar.position') != 'left' &&
-		TreeStyleTabService.getTreePref('tabbar.position') != 'right')
+		TreeStyleTabService.currentTabbarPosition != 'left' &&
+		TreeStyleTabService.currentTabbarPosition != 'right')
 		return this.prototype.kMODE_HIDE;
 	return this.mMode;
 });
