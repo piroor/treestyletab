@@ -1185,6 +1185,10 @@ var TreeStyleTabService = {
 	{
 		this.promoteTab(this.browser.selectedTab);
 	},
+	promoteTabs : function(aTabs)
+	{
+		aTabs.slice().reverse().forEach(this.promoteTab, this);
+	},
  
 	demoteTab : function(aTab) 
 	{
@@ -1198,6 +1202,10 @@ var TreeStyleTabService = {
 	demoteCurrentTab : function()
 	{
 		this.demoteTab(this.browser.selectedTab);
+	},
+	demoteTabs : function(aTabs)
+	{
+		aTabs.forEach(this.demoteTab, this);
 	},
   
 /* Session Store API */ 
