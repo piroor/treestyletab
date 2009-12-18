@@ -1,4 +1,4 @@
-function TreeStyleTabBrowser(aTabBrowser) 
+ function TreeStyleTabBrowser(aTabBrowser) 
 {
 	this.mTabBrowser = aTabBrowser;
 }
@@ -19,9 +19,10 @@ TreeStyleTabBrowser.prototype = {
 	
 	mTabBrowser : null, 
 
-	indent          : -1,
-	indentProp           : 'margin-left',
-	collapseProp         : 'margin-top',
+	indent               : -1,
+	indentProp           : 'margin',
+	indentTarget         : 'left',
+	collapseTarget       : 'top',
 	positionProp         : 'screenY',
 	sizeProp             : 'height',
 	invertedPositionProp : 'screenX',
@@ -793,7 +794,7 @@ TreeStyleTabBrowser.prototype = {
 
 		if (pos & this.kTABBAR_VERTICAL) {
 
-			this.collapseProp = 'margin-top';
+			this.collapseTarget       = 'top';
 			this.positionProp         = 'screenY';
 			this.sizeProp             = 'height';
 			this.invertedPositionProp = 'screenX';
@@ -834,11 +835,11 @@ TreeStyleTabBrowser.prototype = {
 				b.setAttribute(this.kTABBAR_POSITION, 'right');
 				if (this.getTreePref('tabbar.invertTab')) {
 					b.setAttribute(this.kTAB_INVERTED, 'true');
-					this.indentProp = this.getTreePref('indent.property.right');
+					this.indentTarget = 'right';
 				}
 				else {
 					b.removeAttribute(this.kTAB_INVERTED);
-					this.indentProp = this.getTreePref('indent.property.left');
+					this.indentTarget = 'left';
 				}
 				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
 					/* in Firefox 3, the width of the rightside tab bar
@@ -856,7 +857,7 @@ TreeStyleTabBrowser.prototype = {
 			else {
 				b.setAttribute(this.kTABBAR_POSITION, 'left');
 				b.removeAttribute(this.kTAB_INVERTED);
-				this.indentProp = this.getTreePref('indent.property.left');
+				this.indentTarget = 'left';
 				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
 					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
 					aTabBrowser.mStrip.setAttribute('ordinal', 10);
@@ -868,7 +869,7 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 		else {
-			this.collapseProp         = 'margin-left';
+			this.collapseTarget       = 'left';
 			this.positionProp         = 'screenX';
 			this.sizeProp             = 'width';
 			this.invertedPositionProp = 'screenY';
@@ -902,7 +903,7 @@ TreeStyleTabBrowser.prototype = {
 
 			if (pos == this.kTABBAR_BOTTOM) {
 				b.setAttribute(this.kTABBAR_POSITION, 'bottom');
-				this.indentProp = this.getTreePref('indent.property.bottom');
+				this.indentTarget = 'bottom';
 				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
 					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
 					aTabBrowser.mStrip.setAttribute('ordinal', 30);
@@ -913,7 +914,7 @@ TreeStyleTabBrowser.prototype = {
 			}
 			else {
 				b.setAttribute(this.kTABBAR_POSITION, 'top');
-				this.indentProp = this.getTreePref('indent.property.top');
+				this.indentTarget = 'top';
 				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
 					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
 					aTabBrowser.mStrip.setAttribute('ordinal', 10);
@@ -923,6 +924,8 @@ TreeStyleTabBrowser.prototype = {
 				};
 			}
 		}
+
+		this.indentProp = this.getTreePref('indent.property');
 
 		this.getTabsArray(b).forEach(function(aTab) {
 			this.updateTabCollapsed(aTab, aTab.getAttribute(this.kCOLLAPSED) == 'true', true);
@@ -2889,7 +2892,7 @@ TreeStyleTabBrowser.prototype = {
 		else {
 			this.browser.removeAttribute(this.kALLOW_COLLAPSE);
 			this.getTabsArray(this.browser).forEach(function(aTab) {
-				this.updateTabIndent(aTab, this.indentProp, 0, true);
+				this.updateTabIndent(aTab, this.indentTarget, 0, true);
 			}, this);
 		}
 		return aValue;
@@ -3071,7 +3074,7 @@ TreeStyleTabBrowser.prototype = {
 		}, this);
 	},
   
-	updateTabsIndent : function(aTabs, aLevel, aProp, aJustNow) 
+	updateTabsIndent : function(aTabs, aLevel, aTarget, aJustNow) 
 	{
 		if (!aTabs || !aTabs.length || !this._treeViewEnabled) return;
 
@@ -3086,18 +3089,24 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		var b = this.mTabBrowser;
-		if (!aProp) {
+		if (!aTarget) {
 			let orient = this.isVertical ? 'vertical' : 'horizontal' ;
-			aProp = this.getTreePref('enableSubtreeIndent.'+orient) ? this.indentProp : null ;
+			aTarget = this.getTreePref('enableSubtreeIndent.'+orient) ? this.indentTarget : null ;
 		}
 		var margin = this.indent < 0 ? this.baseIndent : this.indent ;
 		var indent = margin * aLevel;
 
+		var multirow = this.isMultiRow();
+		if (multirow) {
+			let maxIndent = parseInt(aTabs[0].boxObject.height / 2);
+			indent = Math.min(aLevel * 3, maxIndent);
+		}
+
 		Array.slice(aTabs).forEach(function(aTab) {
 			if (!aTab.parentNode) return; // ignore removed tabs
-			this.updateTabIndent(aTab, aProp, indent, aJustNow);
+			this.updateTabIndent(aTab, aTarget, indent, aJustNow);
 			aTab.setAttribute(this.kNEST, aLevel);
-			this.updateTabsIndent(this.getChildTabs(aTab), aLevel+1, aProp, aJustNow);
+			this.updateTabsIndent(this.getChildTabs(aTab), aLevel+1, aTarget, aJustNow);
 		}, this);
 	},
 	updateTabsIndentWithDelay : function(aTabs)
@@ -3121,59 +3130,51 @@ TreeStyleTabBrowser.prototype = {
 	updateTabsIndentWithDelayTabs : [],
 	updateTabsIndentWithDelayTimer : null,
  
-	updateTabIndent : function(aTab, aProp, aIndent, aJustNow) 
+	updateTabIndent : function(aTab, aTarget, aIndent, aJustNow) 
 	{
 		this.stopTabIndentAnimation(aTab);
 
 		if (this.isMultiRow()) {
-			let topBottom = this.indentProp.match(/top|bottom/);
-			let maxIndent = parseInt(aTabs[0].boxObject.height / 2);
-
-			indent = Math.min(aLevel * 3, maxIndent);
-			var colors = '-moz-border-'+topBottom+'-colors:'+(function(aNum) {
+			let colors = '-moz-border-'+aTarget+'-colors:'+(function() {
 				var retVal = [];
-				for (var i = 1; i < aNum; i++)
+				for (var i = 1; i < aIndent; i++)
 				{
 					retVal.push('transparent');
 				}
 				retVal.push('ThreeDShadow');
 				return retVal.length == 1 ? 'none' : retVal.join(' ') ;
-			})(indent)+' !important;';
+			})()+' !important;';
 			Array.slice(document.getAnonymousNodes(aTab)).forEach(function(aBox) {
 				if (aBox.nodeType != Node.ELEMENT_NODE) return;
 				aBox.setAttribute(
 					'style',
 					aBox.getAttribute('style').replace(/(-moz-)?border-(top|bottom)(-[^:]*)?.*:[^;]+;?/g, '') +
-					'; border-'+topBottom+': solid transparent '+indent+'px !important;'+colors
+					'; border-'+aTarget+': solid transparent '+aIndent+'px !important;'+colors
 				);
 			}, this);
+
+			return;
 		}
 
-
-
-
-
-
-
-
 		var regexp = this.indentRulesRegExp;
+		var property = this.indentProp+'-'+aTarget;
 		if (
 			!this.animationEnabled ||
 			aJustNow ||
 			this.indentDuration < 1 ||
-			!aProp ||
+			!aTarget ||
 			this.isCollapsed(aTab)
 			) {
 			aTab.setAttribute(
 				'style',
 				aTab.getAttribute('style')
 					.replace(regexp, '')+';'+
-					(aProp ? aProp+':'+aIndent+'px !important;' : '' )
+					(aTarget ? property+':'+aIndent+'px !important;' : '' )
 			);
 			return;
 		}
 
-		var startIndent = this.getPropertyPixelValue(aTab, aProp);
+		var startIndent = this.getPropertyPixelValue(aTab, property);
 		var delta       = aIndent - startIndent;
 		var radian      = 90 * Math.PI / 180;
 		var self        = this;
@@ -3191,7 +3192,7 @@ TreeStyleTabBrowser.prototype = {
 			aTab.setAttribute(
 				'style',
 				aTab.getAttribute('style').replace(regexp, '')+';'+
-				aProp+':'+indent+'px !important;'
+				property+':'+indent+'px !important;'
 			);
 			if (finished) {
 				startIndent = null;
@@ -3478,7 +3479,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 		var deltaMargin  = endMargin - startMargin;
 		var deltaOpacity = endOpacity - startOpacity;
-		var collapseProp = this.collapseProp;
+		var collapseProp = 'margin-'+this.collapseTarget;
 
 		aTab.setAttribute(this.kCOLLAPSING, true);
 		aTab.setAttribute(

@@ -50,11 +50,8 @@ pref("extensions.treestyletab.autoExpand.enabled",     true);
 pref("extensions.treestyletab.autoExpand.delay",       500);
 pref("extensions.treestyletab.autoExpand.intelligently", true);
 pref("extensions.treestyletab.autoExpand.collapseFinally", false);
-pref("extensions.treestyletab.indent",                 12);
-pref("extensions.treestyletab.indent.property.left",   "margin-left");
-pref("extensions.treestyletab.indent.property.right",  "margin-right");
-pref("extensions.treestyletab.indent.property.top",    "margin-top");
-pref("extensions.treestyletab.indent.property.bottom", "margin-bottom");
+pref("extensions.treestyletab.indent",          12);
+pref("extensions.treestyletab.indent.property", "margin");
 // 0 = first child, 1 = last child
 pref("extensions.treestyletab.insertNewChildAt", 1);
 pref("extensions.treestyletab.twisty.style", "auto"); // none, retro, modern-black, modern-white, auto
