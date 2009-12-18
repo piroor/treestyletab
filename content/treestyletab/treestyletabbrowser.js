@@ -1438,7 +1438,18 @@ TreeStyleTabBrowser.prototype = {
 			this.setTabValue(tab, this.kINSERT_BEFORE, next.getAttribute(this.kID));
 			this.setTabValue(next, this.kINSERT_AFTER, tab.getAttribute(this.kID));
 		}
+
+		if (!TreeStyleTabService.restoringWindow &&
+			!this.useTMPSessionAPI &&
+			!this._checkRestoringWindowTimerOnTabAdded) {
+			this._checkRestoringWindowTimerOnTabAdded = window.setTimeout(function(aSelf) {
+				aSelf._checkRestoringWindowTimerOnTabAdded = null;
+				if (aSelf.getRestoringTabsCount() > 1)
+					TreeStyleTabService.restoringWindow = true;
+			}, 0, this);
+		}
 	},
+	_checkRestoringWindowTimerOnTabAdded : null,
  
 	onTabRemoved : function(aEvent) 
 	{
