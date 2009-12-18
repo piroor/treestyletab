@@ -34,7 +34,7 @@ TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
 				let orient = (position == 'left' || position == 'right') ? 'vertical' : 'horizontal' ;
 				sv.setTreePref('tabbar.fixed.'+orient, false);
 			}
-			sv.changeTabbarPosition(position);
+			sv.currentTabbarPosition = position;
 		}
 
 		aEvent.stopPropagation();

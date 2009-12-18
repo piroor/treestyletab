@@ -448,18 +448,25 @@ var TreeStyleTabService = {
 			this.setTreePref('enableSubtreeIndent.horizontal', !this.getTreePref(pref));
 	},
  
-	changeTabbarPosition : function(aNewPosition) /* PUBLIC API */ 
+	changeTabbarPosition : function(aNewPosition) /* PUBLIC API (obsolete, for backward compatibility) */ 
 	{
-		if (!aNewPosition || !/^(top|bottom|left|right)$/i.test(aNewPosition))
-			aNewPosition = 'top';
-
-		aNewPosition = aNewPosition.toLowerCase();
-		this.setTreePref('tabbar.position', aNewPosition);
+		this.currentTabbarPosition = aNewPosition;
 	},
  
 	get currentTabbarPosition() /* PUBLIC API */ 
 	{
 		return this.getTreePref('tabbar.position') || 'top';
+	},
+	set currentTabbarPosition(aValue)
+	{
+		var position = String(aValue);
+		if (!position || !/^(top|bottom|left|right)$/i.test(position))
+			position = 'top';
+
+		position = position.toLowerCase();
+		this.setTreePref('tabbar.position', position);
+
+		return aValue;
 	},
   
 /* backward compatibility */ 
