@@ -176,13 +176,23 @@ TreeStyleTabService.overrideExtensionsPreInit = function() {
 	// Session Manager
 	// https://addons.mozilla.org/firefox/addon/2324
 	// We need to initialize TST before Session Manager restores the last session anyway!
-	if ('gSessionManager' in window &&
-		'onLoad_proxy' in gSessionManager &&
-		'onLoad' in gSessionManager) {
-		eval('gSessionManager.onLoad = '+gSessionManager.onLoad.toSource().replace(
-			'{',
-			'{ TreeStyleTabService.init();'
-		));
+	if ('gSessionManager' in window) {
+		if ('onLoad_proxy' in gSessionManager &&
+			'onLoad' in gSessionManager) {
+			eval('gSessionManager.onLoad = '+gSessionManager.onLoad.toSource().replace(
+				'{',
+				'{ TreeStyleTabService.init();'
+			));
+		}
+		if ('load' in gSessionManager) {
+			eval('gSessionManager.load = '+gSessionManager.load.toSource().replace(
+				'var tabcount = ',
+				<![CDATA[
+					gBrowser.treeStyleTab.collapseExpandAllSubtree(false, true);
+					TreeStyleTabService.restoringWindow = true;
+				$&]]>
+			));
+		}
 	}
 
 	// FullerScreen
