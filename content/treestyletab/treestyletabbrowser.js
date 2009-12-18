@@ -2091,16 +2091,35 @@ TreeStyleTabBrowser.prototype = {
 		if (aEvent.button != 0) return;
 
 		if (this.isEventFiredOnTwisty(aEvent)) {
-			var tab = this.getTabFromEvent(aEvent);
+			let tab = this.getTabFromEvent(aEvent);
 			if (this.hasChildTabs(tab) && this.canCollapseSubtree()) {
 				this.collapseExpandSubtree(tab, tab.getAttribute(this.kSUBTREE_COLLAPSED) != 'true');
 				aEvent.preventDefault();
 				aEvent.stopPropagation();
 			}
+			return;
 		}
-		else if (!this.getTabFromEvent(aEvent)) {
-			var tab = this.getTabFromTabbarEvent(aEvent);
+
+		if (this.isEventFiredOnClosebox(aEvent)) {
+			let tab = this.getTabFromEvent(aEvent);
+			if (
+				this.getTreePref('closeParentBehavior') == this.CLOSE_PARENT_BEHAVIOR_CLOSE ||
+				this.isSubtreeCollapsed(tab)
+				) {
+				let tabs = [tab].concat(this.getDescendantTabs(tab));
+				if (tabs.length > 1 && !this.warnAboutClosingTabs(tabs.length)) {
+					aEvent.preventDefault();
+					aEvent.stopPropagation();
+				}
+			}
+			return;
+		}
+
+		// click on indented space on the tab bar
+		if (!this.getTabFromEvent(aEvent)) {
+			let tab = this.getTabFromTabbarEvent(aEvent);
 			if (tab) this.mTabBrowser.selectedTab = tab;
+			return;
 		}
 	},
 	getTabFromTabbarEvent : function(aEvent)

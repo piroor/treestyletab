@@ -516,9 +516,6 @@ var TreeStyleTabService = {
  
 	isEventFiredOnClosebox : function(aEvent) 
 	{
-		var tab = this.getTabFromEvent(aEvent);
-		if (!tab || !this.hasChildTabs(tab)) return false;
-
 		return this.evaluateXPath(
 				'ancestor-or-self::*[contains(concat(" ", normalize-space(@class), " "), " tab-close-button ")]',
 				aEvent.originalTarget || aEvent.target,
