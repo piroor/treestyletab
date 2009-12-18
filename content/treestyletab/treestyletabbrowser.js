@@ -2093,7 +2093,17 @@ TreeStyleTabBrowser.prototype = {
  
 	onTabClick : function(aEvent) 
 	{
-		if (aEvent.button != 0) return;
+		if (aEvent.button == 1) {
+			let tab = this.getTabFromEvent(aEvent);
+			if (tab && !this.warnAboutClosingTabSubTreeOf(tab)) {
+				aEvent.preventDefault();
+				aEvent.stopPropagation();
+			}
+			return;
+		}
+
+		if (aEvent.button != 0)
+			return;
 
 		if (this.isEventFiredOnTwisty(aEvent)) {
 			let tab = this.getTabFromEvent(aEvent);
