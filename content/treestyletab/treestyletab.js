@@ -1157,6 +1157,40 @@ var TreeStyleTabService = {
 			aTab.linkedBrowser.currentURI.spec.indexOf('about:treestyletab-group') > -1
 		);
 	},
+ 
+	promoteTab : function(aTab) 
+	{
+		var b = this.getTabBrowserFromChild(aTab);
+		var sv = b.treeStyleTab;
+
+		var parent = sv.getParentTab(aTab);
+		if (!parent) return;
+
+		var nextSibling = sv.getNextSiblingTab(parent);
+
+		var grandParent = sv.getParentTab(parent);
+		if (grandParent) {
+			sv.attachTabTo(aTab, grandParent, {
+				insertBefore : nextSibling
+			});
+		}
+		else {
+			sv.partTab(aTab);
+			let index = nextSibling ? nextSibling._tPos : b.mTabContainer.childNodes.length ;
+			if (index > aTab._tPos) index--;
+			b.moveTabTo(aTab, index);
+		}
+	},
+ 
+	demoteTab : function(aTab) 
+	{
+		var b = this.getTabBrowserFromChild(aTab);
+		var sv = b.treeStyleTab;
+
+		var previous = this.getPreviousSiblingTab(aTab);
+		if (previous)
+			sv.attachTabTo(aTab, previous);
+	},
   
 /* Session Store API */ 
 	
