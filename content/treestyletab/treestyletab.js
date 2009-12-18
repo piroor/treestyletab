@@ -1181,6 +1181,10 @@ var TreeStyleTabService = {
 			b.moveTabTo(aTab, index);
 		}
 	},
+	promoteCurrentTab : function()
+	{
+		this.promoteTab(this.browser.selectedTab);
+	},
  
 	demoteTab : function(aTab) 
 	{
@@ -1190,6 +1194,10 @@ var TreeStyleTabService = {
 		var previous = this.getPreviousSiblingTab(aTab);
 		if (previous)
 			sv.attachTabTo(aTab, previous);
+	},
+	demoteCurrentTab : function()
+	{
+		this.demoteTab(this.browser.selectedTab);
 	},
   
 /* Session Store API */ 
