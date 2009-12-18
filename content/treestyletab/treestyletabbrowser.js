@@ -2892,7 +2892,7 @@ TreeStyleTabBrowser.prototype = {
 		else {
 			this.browser.removeAttribute(this.kALLOW_COLLAPSE);
 			this.getTabsArray(this.browser).forEach(function(aTab) {
-				this.updateTabIndent(aTab, this.indentTarget, 0, true);
+				this.updateTabIndent(aTab, 0, this.indentTarget, true);
 			}, this);
 		}
 		return aValue;
@@ -3104,7 +3104,7 @@ TreeStyleTabBrowser.prototype = {
 
 		Array.slice(aTabs).forEach(function(aTab) {
 			if (!aTab.parentNode) return; // ignore removed tabs
-			this.updateTabIndent(aTab, aTarget, indent, aJustNow);
+			this.updateTabIndent(aTab, indent, aTarget, aJustNow);
 			aTab.setAttribute(this.kNEST, aLevel);
 			this.updateTabsIndent(this.getChildTabs(aTab), aLevel+1, aTarget, aJustNow);
 		}, this);
@@ -3130,7 +3130,7 @@ TreeStyleTabBrowser.prototype = {
 	updateTabsIndentWithDelayTabs : [],
 	updateTabsIndentWithDelayTimer : null,
  
-	updateTabIndent : function(aTab, aTarget, aIndent, aJustNow) 
+	updateTabIndent : function(aTab, aIndent, aTarget, aJustNow) 
 	{
 		this.stopTabIndentAnimation(aTab);
 
