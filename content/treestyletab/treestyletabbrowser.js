@@ -136,6 +136,7 @@ TreeStyleTabBrowser.prototype = {
 		this.internallyTabMovingCount = 0;
 		this.subTreeMovingCount = 0;
 		this.subTreeChildrenMovingCount = 0;
+		this._treeViewEnabled = true;
 
 		let (splitter, toggler) {
 			splitter = document.getAnonymousElementByAttribute(b, 'class', this.kSPLITTER);
@@ -581,6 +582,7 @@ TreeStyleTabBrowser.prototype = {
 
 		this.ObserverService.addObserver(this, 'TreeStyleTab:indentModified', false);
 		this.ObserverService.addObserver(this, 'TreeStyleTab:collapseExpandAllSubtree', false);
+		this.ObserverService.addObserver(this, 'TreeStyleTab:changeTreeViewAvailability', false);
 		this.addPrefListener(this);
 
 		this.autoHide;
@@ -1077,6 +1079,7 @@ TreeStyleTabBrowser.prototype = {
 
 		this.ObserverService.removeObserver(this, 'TreeStyleTab:indentModified');
 		this.ObserverService.removeObserver(this, 'TreeStyleTab:collapseExpandAllSubtree');
+		this.ObserverService.removeObserver(this, 'TreeStyleTab:changeTreeViewAvailability');
 		this.removePrefListener(this);
 
 		delete this.mTabBrowser;
@@ -1111,6 +1114,10 @@ TreeStyleTabBrowser.prototype = {
 						aData.indexOf('now') > -1
 					);
 				}
+				break;
+
+			case 'TreeStyleTab:changeTreeViewAvailability':
+				this.treeViewEnabled = (aData != 'false');
 				break;
 
 			case 'nsPref:changed':
@@ -2865,6 +2872,29 @@ TreeStyleTabBrowser.prototype = {
 			this.resetTab(aTab, aPartChildren);
 		}, this);
 	},
+ 
+	get treeViewEnabled() /* PUBLIC API */ 
+	{
+		return this._treeViewEnabled;
+	},
+	set treeViewEnabled(aValue)
+	{
+		this._treeViewEnabled = aValue ? true : false ;
+		if (this._treeViewEnabled) {
+			let orient = this.isVertical ? 'vertical' : 'horizontal' ;
+			if (this.getTreePref('allowSubtreeCollapseExpand.'+orient))
+				this.browser.setAttribute(this.kALLOW_COLLAPSE, true);
+			this.updateTabsIndent(this.rootTabs, undefined, undefined, true);
+		}
+		else {
+			this.browser.removeAttribute(this.kALLOW_COLLAPSE);
+			this.getTabsArray(this.browser).forEach(function(aTab) {
+				this.updateTabIndent(aTab, this.indentProp, 0, true);
+			}, this);
+		}
+		return aValue;
+	},
+//	_treeViewEnabled : true,
   
 /* attach/part */ 
 	
@@ -3043,7 +3073,7 @@ TreeStyleTabBrowser.prototype = {
   
 	updateTabsIndent : function(aTabs, aLevel, aProp, aJustNow) 
 	{
-		if (!aTabs || !aTabs.length) return;
+		if (!aTabs || !aTabs.length || !this._treeViewEnabled) return;
 
 		if (aLevel === void(0)) {
 			var parentTab = this.getParentTab(aTabs[0]);
@@ -3063,35 +3093,9 @@ TreeStyleTabBrowser.prototype = {
 		var margin = this.indent < 0 ? this.baseIndent : this.indent ;
 		var indent = margin * aLevel;
 
-		var multirow = this.isMultiRow();
-		var topBottom = this.indentProp.match(/top|bottom/);
-		var maxIndent = parseInt(aTabs[0].boxObject.height / 2);
-
 		Array.slice(aTabs).forEach(function(aTab) {
 			if (!aTab.parentNode) return; // ignore removed tabs
-			if (multirow) {
-				indent = Math.min(aLevel * 3, maxIndent);
-				var colors = '-moz-border-'+topBottom+'-colors:'+(function(aNum) {
-					var retVal = [];
-					for (var i = 1; i < aNum; i++)
-					{
-						retVal.push('transparent');
-					}
-					retVal.push('ThreeDShadow');
-					return retVal.length == 1 ? 'none' : retVal.join(' ') ;
-				})(indent)+' !important;';
-				Array.slice(document.getAnonymousNodes(aTab)).forEach(function(aBox) {
-					if (aBox.nodeType != Node.ELEMENT_NODE) return;
-					aBox.setAttribute(
-						'style',
-						aBox.getAttribute('style').replace(/(-moz-)?border-(top|bottom)(-[^:]*)?.*:[^;]+;?/g, '') +
-						'; border-'+topBottom+': solid transparent '+indent+'px !important;'+colors
-					);
-				}, this);
-			}
-			else {
-				this.updateTabIndent(aTab, aProp, indent, aJustNow);
-			}
+			this.updateTabIndent(aTab, aProp, indent, aJustNow);
 			aTab.setAttribute(this.kNEST, aLevel);
 			this.updateTabsIndent(this.getChildTabs(aTab), aLevel+1, aProp, aJustNow);
 		}, this);
@@ -3120,6 +3124,37 @@ TreeStyleTabBrowser.prototype = {
 	updateTabIndent : function(aTab, aProp, aIndent, aJustNow) 
 	{
 		this.stopTabIndentAnimation(aTab);
+
+		if (this.isMultiRow()) {
+			let topBottom = this.indentProp.match(/top|bottom/);
+			let maxIndent = parseInt(aTabs[0].boxObject.height / 2);
+
+			indent = Math.min(aLevel * 3, maxIndent);
+			var colors = '-moz-border-'+topBottom+'-colors:'+(function(aNum) {
+				var retVal = [];
+				for (var i = 1; i < aNum; i++)
+				{
+					retVal.push('transparent');
+				}
+				retVal.push('ThreeDShadow');
+				return retVal.length == 1 ? 'none' : retVal.join(' ') ;
+			})(indent)+' !important;';
+			Array.slice(document.getAnonymousNodes(aTab)).forEach(function(aBox) {
+				if (aBox.nodeType != Node.ELEMENT_NODE) return;
+				aBox.setAttribute(
+					'style',
+					aBox.getAttribute('style').replace(/(-moz-)?border-(top|bottom)(-[^:]*)?.*:[^;]+;?/g, '') +
+					'; border-'+topBottom+': solid transparent '+indent+'px !important;'+colors
+				);
+			}, this);
+		}
+
+
+
+
+
+
+
 
 		var regexp = this.indentRulesRegExp;
 		if (

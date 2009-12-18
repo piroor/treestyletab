@@ -1157,48 +1157,6 @@ var TreeStyleTabService = {
 			aTab.linkedBrowser.currentURI.spec.indexOf('about:treestyletab-group') > -1
 		);
 	},
- 
-	promoteTab : function(aTab) 
-	{
-		var b = this.getTabBrowserFromChild(aTab);
-		var sv = b.treeStyleTab;
-
-		var parent = sv.getParentTab(aTab);
-		if (!parent) return;
-
-		var nextSibling = sv.getNextSiblingTab(parent);
-
-		var grandParent = sv.getParentTab(parent);
-		if (grandParent) {
-			sv.attachTabTo(aTab, grandParent, {
-				insertBefore : nextSibling
-			});
-		}
-		else {
-			sv.partTab(aTab);
-			let index = nextSibling ? nextSibling._tPos : b.mTabContainer.childNodes.length ;
-			if (index > aTab._tPos) index--;
-			b.moveTabTo(aTab, index);
-		}
-	},
-	promoteCurrentTab : function()
-	{
-		this.promoteTab(this.browser.selectedTab);
-	},
- 
-	demoteTab : function(aTab) 
-	{
-		var b = this.getTabBrowserFromChild(aTab);
-		var sv = b.treeStyleTab;
-
-		var previous = this.getPreviousSiblingTab(aTab);
-		if (previous)
-			sv.attachTabTo(aTab, previous);
-	},
-	demoteCurrentTab : function()
-	{
-		this.demoteTab(this.browser.selectedTab);
-	},
   
 /* Session Store API */ 
 	
@@ -2651,6 +2609,64 @@ catch(e) {
 			(aCollapse ? 'collapse' : 'open' )
 		);
 	},
+ 
+	promoteTab : function(aTab) /* PUBLIC API */ 
+	{
+		var b = this.getTabBrowserFromChild(aTab);
+		var sv = b.treeStyleTab;
+
+		var parent = sv.getParentTab(aTab);
+		if (!parent) return;
+
+		var nextSibling = sv.getNextSiblingTab(parent);
+
+		var grandParent = sv.getParentTab(parent);
+		if (grandParent) {
+			sv.attachTabTo(aTab, grandParent, {
+				insertBefore : nextSibling
+			});
+		}
+		else {
+			sv.partTab(aTab);
+			let index = nextSibling ? nextSibling._tPos : b.mTabContainer.childNodes.length ;
+			if (index > aTab._tPos) index--;
+			b.moveTabTo(aTab, index);
+		}
+	},
+	promoteCurrentTab : function() /* PUBLIC API */
+	{
+		this.promoteTab(this.browser.selectedTab);
+	},
+ 
+	demoteTab : function(aTab) /* PUBLIC API */  
+	{
+		var b = this.getTabBrowserFromChild(aTab);
+		var sv = b.treeStyleTab;
+
+		var previous = this.getPreviousSiblingTab(aTab);
+		if (previous)
+			sv.attachTabTo(aTab, previous);
+	},
+	demoteCurrentTab : function() /* PUBLIC API */
+	{
+		this.demoteTab(this.browser.selectedTab);
+	},
+ 
+	get treeViewEnabled() /* PUBLIC API */ 
+	{
+		return this._treeViewEnabled;
+	},
+	set treeViewEnabled(aValue)
+	{
+		this._treeViewEnabled = aValue ? true : false ;
+		this.ObserverService.notifyObservers(
+			window,
+			'TreeStyleTab:changeTreeViewAvailability',
+			this._treeViewEnabled
+		);
+		return aValue;
+	},
+	_treeViewEnabled : true,
  
 	expandTreeAfterKeyReleased : function(aTab) 
 	{
