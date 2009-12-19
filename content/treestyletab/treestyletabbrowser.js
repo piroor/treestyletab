@@ -483,12 +483,16 @@ TreeStyleTabBrowser.prototype = {
 			));
 		}
 
-		// https://bugzilla.mozilla.org/show_bug.cgi?id=406216
 		if ('_beginRemoveTab' in b) {
-			eval('b._beginRemoveTab = '+b._beginRemoveTab.toSource().replace(
-				'for (let i = 0; i < l; ++i) {',
-				'l = this.mTabs.length; $&'
-			));
+			eval('b._beginRemoveTab = '+
+				b._beginRemoveTab.toSource().replace(
+					'if (l == 1) {',
+					'if (l == 1 || this.treeStyleTab.shouldCloseTabSubTreeOf(aTab)) {'
+				).replace(
+					'this._removingTabs.length == 0',
+					'(this.treeStyleTab.shouldCloseTabSubTreeOf(aTab) || $&)'
+				)
+			);
 		}
 
 		eval('b.removeCurrentTab = '+b.removeCurrentTab.toSource().replace(

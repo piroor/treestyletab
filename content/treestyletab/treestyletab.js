@@ -2465,17 +2465,21 @@ catch(e) {
 	},
 	warnAboutClosingTabSubTreeOf : function(aTab)
 	{
-		if (
-			!aTab ||
-			(
-				this.getTreePref('closeParentBehavior') != this.CLOSE_PARENT_BEHAVIOR_CLOSE &&
-				!this.isSubtreeCollapsed(aTab)
-			)
-			)
+		if (!this.shouldCloseTabSubTreeOf(aTab))
 			return true;
 
 		var tabs = [aTab].concat(this.getDescendantTabs(aTab));
 		return this.warnAboutClosingTabs(tabs.length);
+	},
+	shouldCloseTabSubTreeOf : function(aTab)
+	{
+		return (
+			aTab &&
+			(
+				this.getTreePref('closeParentBehavior') == this.CLOSE_PARENT_BEHAVIOR_CLOSE ||
+				this.isSubtreeCollapsed(aTab)
+			)
+		);
 	},
 	warnAboutClosingTabs : function(aTabsCount)
 	{
