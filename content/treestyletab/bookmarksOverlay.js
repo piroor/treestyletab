@@ -104,7 +104,7 @@ var TreeStyleTabBookmarksService = {
 		var treeStructure = aIDs.map(function(aId, aIndex) {
 				let id = this.getParentItem(aId);
 				let index = aIDs.indexOf(id);
-				return index > aIndex ? aDefaultParent : index ;
+				return index > aIndex ? aDefaultParentID : index ;
 			}, this);
 
 		/* Correct patterns like:
