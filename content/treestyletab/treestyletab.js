@@ -2481,6 +2481,14 @@ catch(e) {
 			)
 		);
 	},
+	shouldCloseLastTabSubTreeOf : function(aTab)
+	{
+		var b = this.getTabBrowserFromChild(aTab);
+		return (
+			this.shouldCloseTabSubTreeOf(aTab) &&
+			this.getDescendantTabs(aTab).length + 1 == this.getTabs(b).snapshotLength
+		);
+	},
 	warnAboutClosingTabs : function(aTabsCount)
 	{
 		if (

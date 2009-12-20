@@ -487,10 +487,10 @@ TreeStyleTabBrowser.prototype = {
 			eval('b._beginRemoveTab = '+
 				b._beginRemoveTab.toSource().replace(
 					'if (l == 1) {',
-					'if (l == 1 || this.treeStyleTab.shouldCloseTabSubTreeOf(aTab)) {'
+					'if (l == 1 || this.treeStyleTab.shouldCloseLastTabSubTreeOf(aTab)) {'
 				).replace(
 					'this._removingTabs.length == 0',
-					'(this.treeStyleTab.shouldCloseTabSubTreeOf(aTab) || $&)'
+					'(this.treeStyleTab.shouldCloseLastTabSubTreeOf(aTab) || $&)'
 				)
 			);
 		}
