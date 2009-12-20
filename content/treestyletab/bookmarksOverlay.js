@@ -88,7 +88,7 @@ var TreeStyleTabBookmarksService = {
 		return -1;
 	},
  
-	getTreeStructureFromItems : function(aIDs) 
+	getTreeStructureFromItems : function(aIDs, aDefaultParentID) 
 	{
 		/* this returns...
 		  [A]     => -1 (parent is not in this tree)
@@ -98,10 +98,13 @@ var TreeStyleTabBookmarksService = {
 		  [E]     => -1 (parent is not in this tree, and this creates another tree)
 		    [F]   => 0 (parent is 1st item in this another tree)
 		*/
+		if (aDefaultParentID === void(0))
+			aDefaultParentID = -1;
+
 		var treeStructure = aIDs.map(function(aId, aIndex) {
 				let id = this.getParentItem(aId);
 				let index = aIDs.indexOf(id);
-				return index < aIndex ? index : -1 ;
+				return index > aIndex ? aDefaultParent : index ;
 			}, this);
 
 		/* Correct patterns like:
@@ -205,7 +208,7 @@ var TreeStyleTabBookmarksService = {
 								treeStructure.filter(function(aParent, aIndex) { return aParent == -1; }).length > 1
 								) {
 								ids.unshift(-1);
-								treeStructure = TreeStyleTabBookmarksService.getTreeStructureFromItems(ids);
+								treeStructure = TreeStyleTabBookmarksService.getTreeStructureFromItems(ids, 0);
 								urls.unshift(TreeStyleTabBookmarksService.getGroupTabURI(aFolderTitle));
 							}
 							TreeStyleTabBookmarksService.readyToOpenNewTabGroup(null, treeStructure);
