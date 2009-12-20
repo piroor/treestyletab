@@ -90,9 +90,17 @@ var TreeStyleTabBookmarksService = {
  
 	getTreeStructureFromItems : function(aIDs) 
 	{
+		/* this returns...
+		  [A]     => -1 (parent is not in this tree)
+		    [B]   => 0 (parent is 1st item in this tree)
+		    [C]   => 0 (parent is 1st item in this tree)
+		      [D] => 2 (parent is 2nd in this tree)
+		  [E]     => -1 (parent is not in this tree, and this creates another tree)
+		    [F]   => 0 (parent is 1st item in this another tree)
+		*/
 		var treeStructure = aIDs.map(function(aId, aIndex) {
 				let id = this.getParentItem(aId);
-				let index = id < 0 ? -1 : aIDs.indexOf(id);
+				let index = aIDs.indexOf(id);
 				return index < aIndex ? index : -1 ;
 			}, this);
 
@@ -116,8 +124,17 @@ var TreeStyleTabBookmarksService = {
 			});
 		treeStructure = treeStructure.reverse();
 
-		treeStructure = treeStructure.map(function(aPosition, aIndex) {
+		var offset = 0;
+		treeStructure = treeStructure
+			.map(function(aPosition, aIndex) {
 				return (aPosition == aIndex) ? -1 : aPosition ;
+			})
+			.map(function(aPosition, aIndex) {
+				if (aPosition == -1) {
+					offset = aIndex;
+					return aPosition;
+				}
+				return aPosition - offset;
 			});
 		return treeStructure;
 	},

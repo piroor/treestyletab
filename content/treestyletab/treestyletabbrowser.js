@@ -1400,13 +1400,17 @@ TreeStyleTabBrowser.prototype = {
 		this.initTab(tab);
 
 		var hasStructure = this.treeStructure && this.treeStructure.length;
-		var positionInTree = hasStructure ? this.treeStructure.shift() : -1 ;
+		var pareintIndexInTree = hasStructure ? this.treeStructure.shift() : 0 ;
 
 		if (this.readiedToAttachNewTab) {
+			if (pareintIndexInTree < 0) { // there is no parent, so this is a new parent!
+				this.parentTab = tab.getAttribute(this.kID);
+			}
+
 			let parent = this.getTabById(this.parentTab);
 			if (parent) {
 				let tabs = [parent].concat(this.getDescendantTabs(parent));
-				parent = (positionInTree > -1 && positionInTree < tabs.length) ? tabs[positionInTree] : parent ;
+				parent = pareintIndexInTree < tabs.length ? tabs[pareintIndexInTree] : parent ;
 			}
 			if (parent) {
 				this.attachTabTo(tab, parent);
