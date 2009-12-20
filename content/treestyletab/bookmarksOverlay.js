@@ -214,8 +214,14 @@ var TreeStyleTabBookmarksService = {
 									else
 										childCount++;
 								});
-								// when there is any orphan, then all of parents and orphans should be grouped under a dummy tab.
-								if (parentCount > 1 && childCount < parentCount) {
+								if (
+									parentCount > 1 &&
+									(
+										openGroupBookmarkBehavior & TreeStyleTabBookmarksService.kGROUP_BOOKMARK_USE_DUMMY_FORCE ||
+										// when there is any orphan, then all of parents and orphans should be grouped under a dummy tab.
+										childCount < parentCount
+									)
+									) {
 									ids.unshift(-1);
 									treeStructure = TreeStyleTabBookmarksService.getTreeStructureFromItems(ids, 0);
 									urls.unshift(TreeStyleTabBookmarksService.getGroupTabURI(aFolderTitle));
