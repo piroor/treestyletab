@@ -204,12 +204,22 @@ var TreeStyleTabBookmarksService = {
 										TreeStyleTabBookmarksService.getTreeStructureFromItems(ids) ;
 							if (
 								treeStructure &&
-								openGroupBookmarkBehavior & TreeStyleTabBookmarksService.kGROUP_BOOKMARK_USE_DUMMY &&
-								treeStructure.filter(function(aParent, aIndex) { return aParent == -1; }).length > 1
+								openGroupBookmarkBehavior & TreeStyleTabBookmarksService.kGROUP_BOOKMARK_USE_DUMMY
 								) {
-								ids.unshift(-1);
-								treeStructure = TreeStyleTabBookmarksService.getTreeStructureFromItems(ids, 0);
-								urls.unshift(TreeStyleTabBookmarksService.getGroupTabURI(aFolderTitle));
+								let parentCount = 0;
+								let childCount = 0;
+								treeStructure.forEach(function(aParent, aIndex) {
+									if (aParent == -1)
+										parentCount++;
+									else
+										childCount++;
+								});
+								// when there is any orphan, then all of parents and orphans should be grouped under a dummy tab.
+								if (parentCount > 1 && childCount < parentCount) {
+									ids.unshift(-1);
+									treeStructure = TreeStyleTabBookmarksService.getTreeStructureFromItems(ids, 0);
+									urls.unshift(TreeStyleTabBookmarksService.getGroupTabURI(aFolderTitle));
+								}
 							}
 							TreeStyleTabBookmarksService.readyToOpenNewTabGroup(null, treeStructure);
 							replaceCurrentTab = false;
