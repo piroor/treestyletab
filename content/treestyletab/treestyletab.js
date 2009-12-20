@@ -2474,7 +2474,7 @@ catch(e) {
 	shouldCloseTabSubTreeOf : function(aTab)
 	{
 		return (
-			aTab &&
+			this.hasChildTabs(aTab) &&
 			(
 				this.getTreePref('closeParentBehavior') == this.CLOSE_PARENT_BEHAVIOR_CLOSE ||
 				this.isSubtreeCollapsed(aTab)
