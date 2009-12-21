@@ -707,7 +707,13 @@ TreeStyleTabBrowserAutoHide.prototype = {
  
 	getZoomForFrame : function(aFrame) 
 	{
-		var zoom = this.rootContentViewer.fullZoom;
+		var zoom = aFrame
+				.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+				.getInterface(Components.interfaces.nsIWebNavigation)
+				.QueryInterface(Components.interfaces.nsIDocShell)
+				.contentViewer
+				.QueryInterface(Components.interfaces.nsIMarkupDocumentViewer)
+				.fullZoom;
 		return (zoom * 1000 % 1) ? zoom+0.025 : zoom ;
 	},
   
