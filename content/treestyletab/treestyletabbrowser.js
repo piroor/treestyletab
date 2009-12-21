@@ -771,7 +771,8 @@ TreeStyleTabBrowser.prototype = {
 		// Tab Mix Plus
 		var scrollFrame, newTabBox, tabBarMode;
 		if (this.getTreePref('compatibility.TMP')) {
-			scrollFrame = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-frame');
+			scrollFrame = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-frame') ||
+							document.getAnonymousElementByAttribute(b.mTabContainer, 'anonid', 'scroll-tabs-frame');
 			newTabBox = document.getAnonymousElementByAttribute(b.mTabContainer, 'id', 'tabs-newbutton-box');
 			tabBarMode = this.getPref('extensions.tabmix.tabBarMode');
 		}
