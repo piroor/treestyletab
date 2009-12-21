@@ -750,6 +750,8 @@ TreeStyleTabBrowser.prototype = {
   
 	initTabbar : function(aPosition) 
 	{
+		this.stopRendering();
+
 		var b = this.mTabBrowser;
 
 		if (!aPosition) aPosition = this.currentTabbarPosition;
@@ -954,10 +956,14 @@ TreeStyleTabBrowser.prototype = {
 		scrollInnerBox = null;
 		scrollInnerBox = null;
 		allTabsButton = null;
+
+		this.startRendering();
 	},
 	
 	updateTabbarState : function() 
 	{
+		this.stopRendering();
+
 		var b = this.mTabBrowser;
 		var orient;
 		if (this.isVertical) {
@@ -997,6 +1003,7 @@ TreeStyleTabBrowser.prototype = {
 		else
 			b.removeAttribute(this.kHIDE_ALLTABS);
 
+		this.startRendering();
 		this.updateAllTabsIndent();
 	},
  
@@ -1498,12 +1505,16 @@ TreeStyleTabBrowser.prototype = {
 		var closeParentBehavior = this.getTreePref('closeParentBehavior');
 		var closeRootBehavior = this.getTreePref('closeRootBehavior');
 
-		var collapsed = this.isSubtreeCollapsed(tab);
+		var collapsed = this.isCollapsed(tab);
+		if (collapsed)
+				this.stopRendering();
+
+		var subtreeCollapsed = this.isSubtreeCollapsed(tab);
 		if (
 			closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_CLOSE ||
-			collapsed
+			subtreeCollapsed
 			) {
-			if (collapsed)
+			if (subtreeCollapsed)
 				this.stopRendering();
 
 			this.getDescendantTabs(tab).reverse().forEach(function(aTab) {
@@ -1518,7 +1529,7 @@ TreeStyleTabBrowser.prototype = {
 				b.addTab('about:blank');
 			}
 
-			if (collapsed)
+			if (subtreeCollapsed)
 				this.startRendering();
 		}
 
@@ -1672,6 +1683,9 @@ TreeStyleTabBrowser.prototype = {
 				)
 				b.selectedTab = nextFocusedTab;
 		}
+
+		if (collapsed)
+			this.startRendering();
 	},
 	CLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST : 3,
 	CLOSE_PARENT_BEHAVIOR_PROMOTE_ALL   : 0,

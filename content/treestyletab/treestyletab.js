@@ -497,12 +497,17 @@ var TreeStyleTabService = {
 	
 	stopRendering : function() 
 	{
-		this.rootContentViewer.hide();
+		if (!this._stopRenderingLevel)
+			this.rootContentViewer.hide();
+		this._stopRenderingLevel++;
 	},
 	startRendering : function()
 	{
-		this.rootContentViewer.show();
+		this._stopRenderingLevel--;
+		if (!this._stopRenderingLevel)
+			this.rootContentViewer.show();
 	},
+	_stopRenderingLevel : 0,
 	get rootContentViewer()
 	{
 		return window
