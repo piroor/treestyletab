@@ -1572,6 +1572,7 @@ TreeStyleTabBrowser.prototype = {
 									dontMove         : true
 								});
 							}
+							this.collapseExpandSubtree(aTab, false);
 							this.deleteTabValue(aTab, this.kSUBTREE_COLLAPSED);
 						}
 						else {
