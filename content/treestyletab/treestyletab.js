@@ -497,25 +497,11 @@ var TreeStyleTabService = {
 	
 	stopRendering : function() 
 	{
-		if (!this._stopRenderingLevel)
-			this.rootContentViewer.hide();
-		this._stopRenderingLevel++;
+		window['piro.sakura.ne.jp'].stopRendering.stop();
 	},
 	startRendering : function()
 	{
-		this._stopRenderingLevel--;
-		if (!this._stopRenderingLevel)
-			this.rootContentViewer.show();
-	},
-	_stopRenderingLevel : 0,
-	get rootContentViewer()
-	{
-		return window
-				.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-				.getInterface(Components.interfaces.nsIWebNavigation)
-				.QueryInterface(Components.interfaces.nsIDocShell)
-				.contentViewer
-				.QueryInterface(Components.interfaces.nsIMarkupDocumentViewer);
+		window['piro.sakura.ne.jp'].stopRendering.start();
 	},
  
 	isEventFiredOnTwisty : function(aEvent) 

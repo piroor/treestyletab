@@ -12,6 +12,7 @@
 <script src="res/stringBundle.js" type="application/x-javascript; version=1.7"/>
 <script src="res/autoScroll.js" type="application/x-javascript; version=1.7"/>
 <script src="res/animationManager.js" type="application/x-javascript; version=1.7"/>
+<script src="res/stopRendering.js" type="application/x-javascript; version=1.7"/>
 <script src="res/extensions.js" type="application/x-javascript; version=1.7"/>
 <script src="res/UninstallationListener.js" type="application/x-javascript; version=1.7"/>
 
