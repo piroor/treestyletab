@@ -436,24 +436,6 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		}, 0, this);
 	},
 	
-	stopRendering : function() 
-	{
-		this.rootContentViewer.hide();
-	},
-	startRendering : function()
-	{
-		this.rootContentViewer.show();
-	},
-	get rootContentViewer()
-	{
-		return window
-				.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-				.getInterface(Components.interfaces.nsIWebNavigation)
-				.QueryInterface(Components.interfaces.nsIDocShell)
-				.contentViewer
-				.QueryInterface(Components.interfaces.nsIMarkupDocumentViewer);
-	},
- 
 	show : function(aReason) 
 	{
 		if (!this.expanded)

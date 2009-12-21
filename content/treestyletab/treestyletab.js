@@ -495,6 +495,24 @@ var TreeStyleTabService = {
   
 /* Utilities */ 
 	
+	stopRendering : function() 
+	{
+		this.rootContentViewer.hide();
+	},
+	startRendering : function()
+	{
+		this.rootContentViewer.show();
+	},
+	get rootContentViewer()
+	{
+		return window
+				.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+				.getInterface(Components.interfaces.nsIWebNavigation)
+				.QueryInterface(Components.interfaces.nsIDocShell)
+				.contentViewer
+				.QueryInterface(Components.interfaces.nsIMarkupDocumentViewer);
+	},
+ 
 	isEventFiredOnTwisty : function(aEvent) 
 	{
 		var tab = this.getTabFromEvent(aEvent);
@@ -2658,7 +2676,7 @@ catch(e) {
 		this.promoteTab(this.browser.selectedTab);
 	},
  
-	demoteTab : function(aTab) /* PUBLIC API */  
+	demoteTab : function(aTab) /* PUBLIC API */ 
 	{
 		var b = this.getTabBrowserFromChild(aTab);
 		var sv = b.treeStyleTab;

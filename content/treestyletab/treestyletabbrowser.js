@@ -1498,10 +1498,14 @@ TreeStyleTabBrowser.prototype = {
 		var closeParentBehavior = this.getTreePref('closeParentBehavior');
 		var closeRootBehavior = this.getTreePref('closeRootBehavior');
 
+		var collapsed = this.isSubtreeCollapsed(tab);
 		if (
 			closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_CLOSE ||
-			this.isSubtreeCollapsed(tab)
+			collapsed
 			) {
+			if (collapsed)
+				this.stopRendering();
+
 			this.getDescendantTabs(tab).reverse().forEach(function(aTab) {
 				b.removeTab(aTab);
 			}, this);
@@ -1513,6 +1517,9 @@ TreeStyleTabBrowser.prototype = {
 				) {
 				b.addTab('about:blank');
 			}
+
+			if (collapsed)
+				this.startRendering();
 		}
 
 		var firstChild     = this.getFirstChildTab(tab);
