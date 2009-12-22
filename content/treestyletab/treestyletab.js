@@ -977,7 +977,7 @@ var TreeStyleTabService = {
 		var parentTab = this.getParentTab(aTab);
 
 		if (!parentTab) {
-			var next = aTab;
+			let next = aTab;
 			do {
 				next = next.nextSibling;
 			}
@@ -989,10 +989,10 @@ var TreeStyleTabService = {
 
 		var children = parentTab.getAttribute(this.kCHILDREN);
 		if (children) {
-			var list = ('|'+children).split('|'+aTab.getAttribute(this.kID))[1].split('|');
-			for (var i = 0, maxi = list.length; i < maxi; i++)
+			let list = ('|'+children).split('|'+aTab.getAttribute(this.kID))[1].split('|');
+			for (let i = 0, maxi = list.length; i < maxi; i++)
 			{
-				var firstChild = this.getTabById(list[i], aTab);
+				let firstChild = this.getTabById(list[i], aTab);
 				if (firstChild) return firstChild;
 			}
 		}
@@ -1006,7 +1006,7 @@ var TreeStyleTabService = {
 		var parentTab = this.getParentTab(aTab);
 
 		if (!parentTab) {
-			var prev = aTab;
+			let prev = aTab;
 			do {
 				prev = prev.previousSibling;
 			}
@@ -1018,10 +1018,10 @@ var TreeStyleTabService = {
 
 		var children = parentTab.getAttribute(this.kCHILDREN);
 		if (children) {
-			var list = ('|'+children).split('|'+aTab.getAttribute(this.kID))[0].split('|');
-			for (var i = list.length-1; i > -1; i--)
+			let list = ('|'+children).split('|'+aTab.getAttribute(this.kID))[0].split('|');
+			for (let i = list.length-1; i > -1; i--)
 			{
-				var lastChild = this.getTabById(list[i], aTab);
+				let lastChild = this.getTabById(list[i], aTab);
 				if (lastChild) return lastChild;
 			}
 		}
@@ -1039,10 +1039,9 @@ var TreeStyleTabService = {
 		if (aAllTabsArray) tabs = aAllTabsArray;
 
 		var list = children.split('|');
-		var tab;
-		for (var i = 0, maxi = list.length; i < maxi; i++)
+		for (let i = 0, maxi = list.length; i < maxi; i++)
 		{
-			tab = this.getTabById(list[i], aTab);
+			let tab = this.getTabById(list[i], aTab);
 			if (!tab) continue;
 			tabs.push(tab);
 			if (aAllTabsArray)
@@ -1072,8 +1071,8 @@ var TreeStyleTabService = {
 		var children   = aTab.getAttribute(this.kCHILDREN);
 		var firstChild = null;
 		if (children) {
-			var list = children.split('|');
-			for (var i = 0, maxi = list.length; i < maxi; i++)
+			let list = children.split('|');
+			for (let i = 0, maxi = list.length; i < maxi; i++)
 			{
 				firstChild = this.getTabById(list[i], aTab);
 				if (firstChild) break;
@@ -1089,8 +1088,8 @@ var TreeStyleTabService = {
 		var children  = aTab.getAttribute(this.kCHILDREN);
 		var lastChild = null;
 		if (children) {
-			var list = children.split('|');
-			for (var i = list.length-1; i > -1; i--)
+			let list = children.split('|');
+			for (let i = list.length-1; i > -1; i--)
 			{
 				lastChild = this.getTabById(list[i], aTab);
 				if (lastChild) break;
@@ -1123,18 +1122,18 @@ var TreeStyleTabService = {
 		}
 
 		if (aParent) {
-			var children = aParent.getAttribute(this.kCHILDREN);
-			var list = children.split('|');
-			var id = aTab.getAttribute(this.kID);
-			for (var i = 0, maxi = list.length; i < maxi; i++)
+			let children = aParent.getAttribute(this.kCHILDREN);
+			let list = children.split('|');
+			let id = aTab.getAttribute(this.kID);
+			for (let i = 0, maxi = list.length; i < maxi; i++)
 			{
 				if (list[i] == id) return i;
 			}
 			return -1;
 		}
 		else {
-			var tabs = this.rootTabs;
-			for (var i = 0, maxi = tabs.length; i < maxi; i++)
+			let tabs = this.rootTabs;
+			for (let i = 0, maxi = tabs.length; i < maxi; i++)
 			{
 				if (tabs[i] == aTab) return i;
 			}
@@ -1186,7 +1185,7 @@ var TreeStyleTabService = {
 		}
 
 		if (this.useTMPSessionAPI) {
-			var TMPValue = aTab.getAttribute(this.kTMP_SESSION_DATA_PREFIX+aKey);
+			let TMPValue = aTab.getAttribute(this.kTMP_SESSION_DATA_PREFIX+aKey);
 			if (TMPValue) value = TMPValue;
 		}
 
@@ -2552,12 +2551,15 @@ catch(e) {
 			if (!aTab.parentNode) return; // ignore removed tabs
 			if (newTabs.indexOf(aTab) < 0) newTabs.push(aTab);
 		});
-		newTabs.sort(function(aA, aB) {
-			return aA._tPos - aB._tPos;
-		});
+		newTabs.sort(this.sortTabsByOrder);
 		return newTabs;
 	},
-  
+	
+	sortTabsByOrder : function(aA, aB) 
+	{
+		return aA._tPos - aB._tPos;
+	},
+   
 	reloadTabSubTree : function(aTabOrTabs, aOnlyChildren) 
 	{
 		var tabs = this._normalizeToTabs(aTabOrTabs, aOnlyChildren);

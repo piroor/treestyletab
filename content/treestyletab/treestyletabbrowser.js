@@ -1831,7 +1831,7 @@ TreeStyleTabBrowser.prototype = {
 	updateChildrenArray : function(aTab) 
 	{
 		var children = this.getChildTabs(aTab);
-		children.sort(function(aA, aB) { return aA._tPos - aB._tPos; });
+		children.sort(this.sortTabsByOrder);
 		this.setTabValue(
 			aTab,
 			this.kCHILDREN,
@@ -2985,6 +2985,14 @@ TreeStyleTabBrowser.prototype = {
 		}
 		else {
 			children.push(id);
+			if (aInfo.dontMove && children.length > 1) {
+				children = children
+							.map(this.getTabById, this)
+							.sort(this.sortTabsByOrder)
+							.map(function(aTab) {
+								return aTab.getAttribute(this.kID);
+							}, this);
+			}
 			let refTab = aParent;
 			let descendant = this.getDescendantTabs(aParent);
 			if (descendant.length) refTab = descendant[descendant.length-1];
