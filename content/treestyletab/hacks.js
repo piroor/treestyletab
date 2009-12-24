@@ -584,46 +584,6 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 			return mode == 2 || mode == 5;
 		});
 
-		window.setTimeout(function() {
-			// correct broken appearance of the first tab
-			var t = gBrowser.treeStyleTab.getFirstTab(gBrowser);
-			gBrowser.treeStyleTab.initTabAttributes(t);
-			gBrowser.treeStyleTab.initTabContentsOrder(t);
-
-			eval('gBrowser.openInverseLink = '+
-				gBrowser.openInverseLink.toSource().replace(
-					/(var newTab)/,
-					'TreeStyleTabService.readyToOpenChildTab(aTab); $1'
-				)
-			);
-
-			eval('gBrowser.TMP_openTabNext = '+
-				gBrowser.TMP_openTabNext.toSource().replace(
-					'this.mCurrentTab._tPos + this.mTabContainer.nextTab',
-					<![CDATA[
-						(function() {
-							var tabs = this.treeStyleTab.getDescendantTabs(this.mCurrentTab);
-							if (tabs.length) {
-								var index = this.treeStyleTab.getPref("extensions.tabmix.openTabNextInverse") ?
-											tabs[tabs.length - 1]._tPos :
-											this.mCurrentTab._tPos ;
-								if (index < aTab._tPos) index++;
-								return index;
-							}
-							else {
-								return ($&);
-							}
-						}).call(this)
-					]]>
-				)
-			);
-
-			window.BrowserHome = window.TM_BrowserHome;
-			window.BrowserOpenTab = window.TMP_BrowserOpenTab;
-
-			gBrowser.treeStyleTab.internallyTabMovingCount--;
-		}, 0);
-
 		gBrowser.treeStyleTab.internallyTabMovingCount++; // until "TMmoveTabTo" method is overwritten
 	}
 
@@ -825,27 +785,6 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		);
 	}
 
-	// Multi Links
-	// https://addons.mozilla.org/firefox/addon/13494
-	if ('MultiLinks_LinksManager' in window &&
-		'OpenInNewTabs' in MultiLinks_LinksManager) {
-		eval('MultiLinks_LinksManager.OpenInNewTabs = '+
-			MultiLinks_LinksManager.OpenInNewTabs.toSource().replace(
-				'{',
-				<![CDATA[{
-					if (!TreeStyleTabService.checkToOpenChildTab(getBrowser()))
-						TreeStyleTabService.readyToOpenChildTab(getBrowser(), true);
-				]]>
-			).replace(
-				/(}\)?)$/,
-				<![CDATA[{
-					if (TreeStyleTabService.checkToOpenChildTab(getBrowser()))
-						TreeStyleTabService.stopToOpenChildTab(getBrowser());
-				$1]]>
-			)
-		);
-	}
-
 	// Mouseless Browsing
 	// https://addons.mozilla.org/firefox/addon/879
 	if ('mouselessbrowsing' in window &&
@@ -994,6 +933,78 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 				$&]]>
 			));
 		}
+	}
+
+	window.setTimeout(function(aSelf) {
+		aSelf.overrideExtensionsDelayed();
+	}, 0, this);
+};
+
+
+TreeStyleTabService.overrideExtensionsDelayed = function() {
+
+	// Tab Mix Plus
+	if (this.getTreePref('compatibility.TMP') &&
+		'TMupdateSettings' in window) {
+		// correct broken appearance of the first tab
+		var t = gBrowser.treeStyleTab.getFirstTab(gBrowser);
+		gBrowser.treeStyleTab.initTabAttributes(t);
+		gBrowser.treeStyleTab.initTabContentsOrder(t);
+
+		eval('gBrowser.openInverseLink = '+
+			gBrowser.openInverseLink.toSource().replace(
+				/(var newTab)/,
+				'TreeStyleTabService.readyToOpenChildTab(aTab); $1'
+			)
+		);
+
+		eval('gBrowser.TMP_openTabNext = '+
+			gBrowser.TMP_openTabNext.toSource().replace(
+				'this.mCurrentTab._tPos + this.mTabContainer.nextTab',
+				<![CDATA[
+					(function() {
+						var tabs = this.treeStyleTab.getDescendantTabs(this.mCurrentTab);
+						if (tabs.length) {
+							var index = this.treeStyleTab.getPref("extensions.tabmix.openTabNextInverse") ?
+										tabs[tabs.length - 1]._tPos :
+										this.mCurrentTab._tPos ;
+							if (index < aTab._tPos) index++;
+							return index;
+						}
+						else {
+							return ($&);
+						}
+					}).call(this)
+				]]>
+			)
+		);
+
+		window.BrowserHome = window.TM_BrowserHome;
+		window.BrowserOpenTab = window.TMP_BrowserOpenTab;
+
+		gBrowser.treeStyleTab.internallyTabMovingCount--;
+	}
+
+	// Multi Links
+	// https://addons.mozilla.org/firefox/addon/13494
+	if ('MultiLinks_Wrapper' in window &&
+		'LinksManager' in MultiLinks_Wrapper &&
+		'OpenInNewTabs' in MultiLinks_Wrapper.LinksManager) {
+		eval('MultiLinks_Wrapper.LinksManager.OpenInNewTabs = '+
+			MultiLinks_Wrapper.LinksManager.OpenInNewTabs.toSource().replace(
+				'{',
+				<![CDATA[{
+					if (!TreeStyleTabService.checkToOpenChildTab(getBrowser()))
+						TreeStyleTabService.readyToOpenChildTab(getBrowser(), true);
+				]]>
+			).replace(
+				/(\}\)?)$/,
+				<![CDATA[
+					if (TreeStyleTabService.checkToOpenChildTab(getBrowser()))
+						TreeStyleTabService.stopToOpenChildTab(getBrowser());
+				$1]]>
+			)
+		);
 	}
 
 };
