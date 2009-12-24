@@ -27,6 +27,7 @@
 		revision : currentRevision,
 
 		_stopLevel : 0,
+		_lastFocusedWindow : null,
 
 		get rootContentViewer()
 		{
@@ -38,14 +39,10 @@
 					.QueryInterface(Components.interfaces.nsIMarkupDocumentViewer);
 		},
 
-		get isActive()
-		{
-			return window.top.document.documentElement.getAttribute('active') == 'true';
-		},
-
 		stop : function()
 		{
 			if (!this._stopLevel) {
+				this._lastFocusedWindow = window.top.document.commandDispatcher.focusedWindow;
 				this.rootContentViewer.hide();
 			}
 			this._stopLevel++;
@@ -56,13 +53,10 @@
 			this._stopLevel--;
 			if (!this._stopLevel) {
 				this.rootContentViewer.show();
-				if (this.isActive && !this.timer) {
-					this.timer = window.setTimeout(function(aSelf) {
-						aSelf.timer = null;
-						window.top.blur();
-						window.top.focus();
-					}, 0, this);
+				if (this._lastFocusedWindow) {
+					window.top.document.commandDispatcher.focusedWindow = this._lastFocusedWindow;
 				}
+				this._lastFocusedWindow = null;
 			}
 		}
 
