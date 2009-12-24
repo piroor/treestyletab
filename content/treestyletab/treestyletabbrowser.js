@@ -950,6 +950,7 @@ TreeStyleTabBrowser.prototype = {
 
 		this.startRendering();
 	},
+	
 	_ensureNewSplitter : function()
 	{
 		var splitter = document.getAnonymousElementByAttribute(b, 'class', this.kSPLITTER);
@@ -974,7 +975,7 @@ TreeStyleTabBrowser.prototype = {
 
 		return splitter;
 	},
-	
+ 
 	updateTabbarState : function() 
 	{
 		this.stopRendering();
