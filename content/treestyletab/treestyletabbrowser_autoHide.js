@@ -104,7 +104,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 		sv.mTabBrowser.addEventListener('mousedown', this, true);
 		sv.mTabBrowser.addEventListener('mouseup', this, true);
-		sv.mTabBrowser.addEventListener('resize', this, true);
+		window.addEventListener('resize', this, true);
 		sv.mTabBrowser.addEventListener('load', this, true);
 		sv.mTabBrowser.mPanelContainer.addEventListener('scroll', this, true);
 		if (this.shouldListenMouseMove)
@@ -130,7 +130,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 		sv.mTabBrowser.removeEventListener('mousedown', this, true);
 		sv.mTabBrowser.removeEventListener('mouseup', this, true);
-		sv.mTabBrowser.removeEventListener('resize', this, true);
+		window.removeEventListener('resize', this, true);
 		sv.mTabBrowser.removeEventListener('load', this, true);
 		sv.mTabBrowser.mPanelContainer.removeEventListener('scroll', this, true);
 		this.endListenMouseMove();
@@ -542,6 +542,12 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		try {
 			var v = sv.mTabBrowser.markupDocumentViewer;
 			if (this.shouldRedraw) {
+				if (sv.mTabBrowser.hasAttribute(this.kTRANSPARENT) &&
+					sv.mTabBrowser.getAttribute(this.kTRANSPARENT) != this.kTRANSPARENT_STYLE[this.kTRANSPARENT_NONE])
+					this.drawBG();
+				else
+					this.clearBG();
+
 				v.move(window.outerWidth,window.outerHeight);
 				v.move(
 					(
@@ -555,16 +561,11 @@ TreeStyleTabBrowserAutoHide.prototype = {
 						0
 					)
 				);
-				if (sv.mTabBrowser.hasAttribute(this.kTRANSPARENT) &&
-					sv.mTabBrowser.getAttribute(this.kTRANSPARENT) != this.kTRANSPARENT_STYLE[this.kTRANSPARENT_NONE])
-					this.drawBG();
-				else
-					this.clearBG();
 			}
 			else {
+				this.clearBG();
 				v.move(window.outerWidth,window.outerHeight);
 				v.move(0,0);
-				this.clearBG();
 			}
 		}
 		catch(e) {
@@ -581,6 +582,9 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		var sv = this.mOwner;
 
 		if (!this.tabbarCanvas || this.isResizing) return;
+
+		this.tabbarCanvas.style.width = (this.tabbarCanvas.width = 1)+'px';
+		this.tabbarCanvas.style.height = (this.tabbarCanvas.height = 1)+'px';
 
 		var pos = sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION);
 
@@ -996,7 +1000,10 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	{
 		if (
 			!aEvent.originalTarget ||
-			aEvent.originalTarget.ownerDocument != document ||
+			(
+				aEvent.originalTarget.ownerDocument != document &&
+				aEvent.originalTarget != window
+			) ||
 			!this.shouldRedraw
 			) {
 			return;
