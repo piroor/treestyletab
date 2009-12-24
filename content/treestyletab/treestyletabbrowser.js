@@ -953,7 +953,7 @@ TreeStyleTabBrowser.prototype = {
 	
 	_ensureNewSplitter : function()
 	{
-		var splitter = document.getAnonymousElementByAttribute(b, 'class', this.kSPLITTER);
+		var splitter = document.getAnonymousElementByAttribute(this.mTabBrowser, 'class', this.kSPLITTER);
 
 		// We always have to re-create splitter, because its "collapse"
 		// behavior becomes broken by repositioning of the tab bar.
