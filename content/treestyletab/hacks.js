@@ -740,12 +740,9 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 	// https://addons.mozilla.org/firefox/addon/748
 	if ('GM_BrowserUI' in window && 'openInTab' in GM_BrowserUI) {
 		eval('GM_BrowserUI.openInTab = '+
-			GM_BrowserUI.openInTab.toSource().replace( // old
-				'document.getElementById("content")',
-				'TreeStyleTabService.readyToOpenChildTab($&); $&'
-			).replace( // GM 0.8 or later
-				/(if\s*\(this\.isMyWindow\(([^\)]+)\)\)\s*\{\s*)(this\.tabBrowser)/,
-				'$1 TreeStyleTabService.readyToOpenChildTab($2); $3'
+			GM_BrowserUI.openInTab.toSource().replace(
+				/(if\s*\(this\.isMyWindow\([^\)]+\)\)\s*\{\s*)(this\.tabBrowser)/,
+				'$1 TreeStyleTabService.readyToOpenChildTab($2); $2'
 			)
 		);
 	}
