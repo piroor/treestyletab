@@ -1,4 +1,4 @@
- function TreeStyleTabBrowser(aTabBrowser) 
+function TreeStyleTabBrowser(aTabBrowser) 
 {
 	this.mTabBrowser = aTabBrowser;
 }
