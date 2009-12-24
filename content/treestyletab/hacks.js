@@ -825,6 +825,27 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 		);
 	}
 
+	// Multi Links
+	// https://addons.mozilla.org/firefox/addon/13494
+	if ('MultiLinks_LinksManager' in window &&
+		'OpenInNewTabs' in MultiLinks_LinksManager) {
+		eval('MultiLinks_LinksManager.OpenInNewTabs = '+
+			MultiLinks_LinksManager.OpenInNewTabs.toSource().replace(
+				'{',
+				<![CDATA[{
+					if (!TreeStyleTabService.checkToOpenChildTab(getBrowser()))
+						TreeStyleTabService.readyToOpenChildTab(getBrowser(), true);
+				]]>
+			).replace(
+				/(}\)?)$/,
+				<![CDATA[{
+					if (TreeStyleTabService.checkToOpenChildTab(getBrowser()))
+						TreeStyleTabService.stopToOpenChildTab(getBrowser());
+				$1]]>
+			)
+		);
+	}
+
 	// Mouseless Browsing
 	// https://addons.mozilla.org/firefox/addon/879
 	if ('mouselessbrowsing' in window &&
