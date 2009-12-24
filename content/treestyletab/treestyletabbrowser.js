@@ -139,18 +139,9 @@ TreeStyleTabBrowser.prototype = {
 		this.subTreeChildrenMovingCount = 0;
 		this._treeViewEnabled = true;
 
-		let (splitter, toggler) {
-			splitter = document.getAnonymousElementByAttribute(b, 'class', this.kSPLITTER);
-			if (!splitter) {
-				splitter = document.createElement('splitter');
-				splitter.setAttribute('class', this.kSPLITTER);
-				splitter.addEventListener('mousedown', this, true);
-				splitter.setAttribute('onclick', 'TreeStyleTabService.onTabbarResizerClick(event);');
-				splitter.setAttribute('onmouseup', 'TreeStyleTabService.onTabbarResized(event);');
-				splitter.setAttribute('state', 'open');
-				splitter.appendChild(document.createElement('grippy'));
-				let ref = b.mPanelContainer;
-				ref.parentNode.insertBefore(splitter, ref);
+		let (toggler) {
+			toggler = document.getAnonymousElementByAttribute(b, 'class', this.kTABBAR_TOGGLER);
+			if (!toggler) {
 				toggler = document.createElement('spacer');
 				toggler.setAttribute('class', this.kTABBAR_TOGGLER);
 				b.mStrip.parentNode.insertBefore(toggler, b.mStrip);
@@ -767,7 +758,7 @@ TreeStyleTabBrowser.prototype = {
 			(aPosition == 'bottom') ? this.kTABBAR_BOTTOM :
 			this.kTABBAR_TOP;
 
-		var splitter = document.getAnonymousElementByAttribute(b, 'class', this.kSPLITTER);
+		var splitter = this._ensureNewSplitter();
 		var toggler = document.getAnonymousElementByAttribute(b, 'class', this.kTABBAR_TOGGLER);
 
 		// Tab Mix Plus
@@ -958,6 +949,30 @@ TreeStyleTabBrowser.prototype = {
 		allTabsButton = null;
 
 		this.startRendering();
+	},
+	_ensureNewSplitter : function()
+	{
+		var splitter = document.getAnonymousElementByAttribute(b, 'class', this.kSPLITTER);
+
+		// We always have to re-create splitter, because its "collapse"
+		// behavior becomes broken by repositioning of the tab bar.
+		if (splitter) {
+			splitter.parentNode.removeChild(splitter);
+			splitter.removeEventListener('mousedown', this, true);
+		}
+
+		splitter = document.createElement('splitter');
+		splitter.setAttribute('class', this.kSPLITTER);
+		splitter.addEventListener('mousedown', this, true);
+		splitter.setAttribute('onclick', 'TreeStyleTabService.onTabbarResizerClick(event);');
+		splitter.setAttribute('onmouseup', 'TreeStyleTabService.onTabbarResized(event);');
+		splitter.setAttribute('state', 'open');
+		splitter.appendChild(document.createElement('grippy'));
+
+		var ref = this.mTabBrowser.mPanelContainer;
+		ref.parentNode.insertBefore(splitter, ref);
+
+		return splitter;
 	},
 	
 	updateTabbarState : function() 
