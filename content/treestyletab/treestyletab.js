@@ -941,7 +941,7 @@ var TreeStyleTabService = {
  
 	isSubtreeCollapsed : function(aTab) /* PUBLIC API */ 
 	{
-		if (!aTab || !this.canCollapseSubtree(aTab))
+		if (!aTab || !this.canCollapseSubtree(aTab) || !this.hasChildTabs(aTab))
 			return false;
 
 		return aTab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true';
