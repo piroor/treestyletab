@@ -16,9 +16,14 @@ var TreeStyleTabService = {
 		return this.utils.currentTabbarPosition = aValue;
 	},
  
-	rollbackTabbarPosition : function TSTService_rollbackTabbarPosition() /* PUBLIC API */ 
+	undoChangeTabbarPosition : function TSTService_undoChangeTabbarPosition() /* PUBLIC API */ 
 	{
-		return this.utils.rollbackTabbarPosition();
+		return this.utils.undoChangeTabbarPosition();
+	},
+ 
+	redoChangeTabbarPosition : function TSTService_redoChangeTabbarPosition() /* PUBLIC API */ 
+	{
+		return this.utils.redoChangeTabbarPosition();
 	},
  
 	get treeViewEnabled() /* PUBLIC API */ 
