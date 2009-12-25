@@ -26,7 +26,7 @@ var TreeStyleTabBookmarksServiceEditable = {
 		return document.getElementById('treestyletab-parent-blank-item');
 	},
 
-	init : function()
+	init : function TSTBMEditable_init()
 	{
 		// main browser window
 		if ('StarUI' in window) {
@@ -66,7 +66,7 @@ var TreeStyleTabBookmarksServiceEditable = {
 		this.initEditUI();
 	},
 
-	initEditUI : function()
+	initEditUI : function TSTBMEditable_initEditUI()
 	{
 		if (this.editUIInitialized || !('gEditItemOverlay' in window)) return;
 
@@ -118,7 +118,7 @@ var TreeStyleTabBookmarksServiceEditable = {
 	},
 	editUIInitialized : false,
 
-	initParentMenuList : function()
+	initParentMenuList : function TSTBMEditable_initParentMenuList()
 	{
 		var id = gEditItemOverlay.itemId;
 
@@ -140,7 +140,7 @@ var TreeStyleTabBookmarksServiceEditable = {
 
 		this.canceled = false;
 	},
-	_createSiblingsFragment : function(aCurrentItem)
+	_createSiblingsFragment : function TSTBMEditable__createSiblingsFragment(aCurrentItem)
 	{
 		var items = this._getSiblingItems(aCurrentItem);
 		var treeStructure = this.getTreeStructureFromItems(items);
@@ -178,7 +178,7 @@ var TreeStyleTabBookmarksServiceEditable = {
 		}, this);
 		return fragment;
 	},
-	_getItemsInFolder : function(aId)
+	_getItemsInFolder : function TSTBMEditable__getItemsInFolder(aId)
 	{
 		var count = 0;
 		var items = [];
@@ -200,12 +200,12 @@ var TreeStyleTabBookmarksServiceEditable = {
 		}
 		return items;
 	},
-	_getSiblingItems : function(aId)
+	_getSiblingItems : function TSTBMEditable__getSiblingItems(aId)
 	{
 		return this._getItemsInFolder(PlacesUtils.bookmarks.getFolderIdForItem(aId));
 	},
 
-	saveParentFor : function(aId)
+	saveParentFor : function TSTBMEditable_saveParentFor(aId)
 	{
 		var newParentId = parseInt(this.menulist.value || -1);
 		if (this.canceled || newParentId == this.getParentItem(aId)) return;
@@ -238,13 +238,13 @@ var TreeStyleTabBookmarksServiceEditable = {
 		if (this.instantApply) this.initParentMenuList();
 	},
 
-	onParentChange : function()
+	onParentChange : function TSTBMEditable_onParentChange()
 	{
 		if (!this.instantApply) return;
 		this.saveParentFor(gEditItemOverlay.itemId);
 	},
 
-	handleEvent : function(aEvent)
+	handleEvent : function TSTBMEditable_handleEvent(aEvent)
 	{
 		switch (aEvent.type)
 		{

@@ -7,7 +7,7 @@ function TreeStyleTabBrowserTabbarDNDObserver(aOwner)
 
 TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 	
-	onDragStart : function(aEvent, aTransferData, aDragAction) 
+	onDragStart : function TSTTabbarDND_onDragStart(aEvent, aTransferData, aDragAction) 
 	{
 		if (!this.canDragTabbar(aEvent))
 			return false;
@@ -27,7 +27,7 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 		return true;
 	},
  
-	canDragTabbar : function(aEvent) 
+	canDragTabbar : function TSTTabbarDND_canDragTabbar(aEvent) 
 	{
 		var sv = this.mOwner;
 
@@ -91,21 +91,21 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 		return this._SSS;
 	},
  
-	readyToStartDrag : function() 
+	readyToStartDrag : function TSTTabbarDND_readyToStartDrag() 
 	{
 		var sheet = this.mOwner.makeURIFromSpec('chrome://treestyletab/content/hide-embed.css');
 		if (!this.SSS.sheetRegistered(sheet, this.SSS.AGENT_SHEET))
 			this.SSS.loadAndRegisterSheet(sheet, this.SSS.AGENT_SHEET);
 	},
  
-	readyToEndDrag : function() 
+	readyToEndDrag : function TSTTabbarDND_readyToEndDrag() 
 	{
 		var sheet = this.mOwner.makeURIFromSpec('chrome://treestyletab/content/hide-embed.css');
 		if (this.SSS.sheetRegistered(sheet, this.SSS.AGENT_SHEET))
 			this.SSS.unregisterSheet(sheet, this.SSS.AGENT_SHEET);
 	},
  
-	onDragEnter : function(aEvent, aDragSession) 
+	onDragEnter : function TSTTabbarDND_onDragEnter(aEvent, aDragSession) 
 	{
 		var sv = this.mOwner;
 		var tab = aEvent.target;
@@ -137,13 +137,13 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 		tab = null;
 	},
  
-	onDragExit : function(aEvent, aDragSession) 
+	onDragExit : function TSTTabbarDND_onDragExit(aEvent, aDragSession) 
 	{
 		window.clearTimeout(this.mAutoExpandTimer);
 		this.mAutoExpandTimer = null;
 	},
  
-	onDragEnd : function(aEvent) 
+	onDragEnd : function TSTTabbarDND_onDragEnd(aEvent) 
 	{
 		window.setTimeout(function(aSelf) {
 			aSelf.readyToEndDrag();
@@ -152,11 +152,11 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 		aEvent.stopPropagation();
 	},
  
-	onDragOver : function(aEvent, aFlavour, aDragSession) 
+	onDragOver : function TSTTabbarDND_onDragOver(aEvent, aFlavour, aDragSession) 
 	{
 	},
  
-	onDrop : function(aEvent, aXferData, aDragSession) 
+	onDrop : function TSTTabbarDND_onDrop(aEvent, aXferData, aDragSession) 
 	{
 		var sv = this.mOwner;
 		if (!this.mAutoExpandedTabs.length) return;
@@ -168,7 +168,7 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 		this.mAutoExpandedTabs = [];
 	},
  
-	canDrop : function(aEvent, aDragSession) 
+	canDrop : function TSTTabbarDND_canDrop(aEvent, aDragSession) 
 	{
 		var sv = this.mOwner;
 		var tooltip = sv.mTabBrowser.mStrip.firstChild;
@@ -191,7 +191,7 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 		return dropAction.canDrop;
 	},
  
-	getSupportedFlavours : function() 
+	getSupportedFlavours : function TSTTabbarDND_getSupportedFlavours() 
 	{
 		var flavourSet = new FlavourSet();
 		flavourSet.appendFlavour('application/x-moz-tabbrowser-tab');
@@ -202,7 +202,7 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 		return flavourSet;
 	},
  
-	destroy : function() 
+	destroy : function TSTTabbarDND_destroy() 
 	{
 		delete this.mOwner;
 	}

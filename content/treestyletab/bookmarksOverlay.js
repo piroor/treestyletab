@@ -11,7 +11,7 @@ var TreeStyleTabBookmarksService = {
 	_BookmarksService : null,
 
 
-	beginAddBookmarksFromTabs : function(aTabs) /* PUBLIC API */ 
+	beginAddBookmarksFromTabs : function TSTBMService_beginAddBookmarksFromTabs(aTabs) /* PUBLIC API */ 
 	{
 		this._addingBookmarks = [];
 		this._addingBookmarkTreeStructure = this
@@ -24,7 +24,7 @@ var TreeStyleTabBookmarksService = {
 		this.BookmarksService.addObserver(this, false);
 	},
  
-	endAddBookmarksFromTabs : function() /* PUBLIC API */ 
+	endAddBookmarksFromTabs : function TSTBMService_endAddBookmarksFromTabs() /* PUBLIC API */ 
 	{
 		this.BookmarksService.removeObserver(this);
 
@@ -49,7 +49,7 @@ var TreeStyleTabBookmarksService = {
 		this._addingBookmarkTreeStructure = [];
 	},
  
-	bookmarkTabSubTree : function(aTabOrTabs) 
+	bookmarkTabSubTree : function TSTBMService_bookmarkTabSubTree(aTabOrTabs) 
 	{
 		var tabs = aTabOrTabs;
 		if (!(tabs instanceof Array)) {
@@ -76,7 +76,7 @@ var TreeStyleTabBookmarksService = {
 		this.endAddBookmarksFromTabs();
 	},
  
-	getParentItem : function(aId) 
+	getParentItem : function TSTBMService_getParentItem(aId) 
 	{
 		if (aId < 0) return -1;
 		var annotations = PlacesUtils.getAnnotationsForItem(aId);
@@ -88,7 +88,7 @@ var TreeStyleTabBookmarksService = {
 		return -1;
 	},
  
-	getTreeStructureFromItems : function(aIDs, aDefaultParentID) 
+	getTreeStructureFromItems : function TSTBMService_getTreeStructureFromItems(aIDs, aDefaultParentID) 
 	{
 		/* this returns...
 		  [A]     => -1 (parent is not in this tree)
@@ -143,7 +143,7 @@ var TreeStyleTabBookmarksService = {
 	},
  
 	// based on PlacesUtils.getURLsForContainerNode()
-	getItemIdsForContainerNode : function(aNode) 
+	getItemIdsForContainerNode : function TSTBMService_getItemIdsForContainerNode(aNode) 
 	{
 		var ids = [];
 		if (!aNode || !PlacesUtils.nodeIsContainer(aNode)) return ids;
@@ -171,7 +171,7 @@ var TreeStyleTabBookmarksService = {
 	},
  
 
-	init : function()
+	init : function TSTBMService_init()
 	{
 		window.removeEventListener('load', this, false);
 
@@ -302,20 +302,20 @@ var TreeStyleTabBookmarksService = {
 	},
 
 	// observer for nsINavBookmarksService 
-	onItemAdded : function(aID, aFolderID, aPosition)
+	onItemAdded : function TSTBMService_onItemAdded(aID, aFolderID, aPosition)
 	{
 		this._addingBookmarks.push({
 			id  : aID
 		});
 	},
-	onItemRemoved : function(aID, aFolderID, aPosition) {},
-	onItemMoved : function(aID, aFolderID, aPosition) {},
-	onItemChanged : function(aID, aChange, aIsAnnotation, aNewValue) {},
-	onItemVisited : function(aID, aHistoryID, aDate) {},
-	onBeginUpdateBatch : function() {},
-	onEndUpdateBatch : function() {},
+	onItemRemoved : function TSTBMService_onItemRemoved(aID, aFolderID, aPosition) {},
+	onItemMoved : function TSTBMService_onItemMoved(aID, aFolderID, aPosition) {},
+	onItemChanged : function TSTBMService_onItemChanged(aID, aChange, aIsAnnotation, aNewValue) {},
+	onItemVisited : function TSTBMService_onItemVisited(aID, aHistoryID, aDate) {},
+	onBeginUpdateBatch : function TSTBMService_onBeginUpdateBatch() {},
+	onEndUpdateBatch : function TSTBMService_onEndUpdateBatch() {},
 
-	handleEvent : function(aEvent)
+	handleEvent : function TSTBMService_handleEvent(aEvent)
 	{
 		switch (aEvent.type)
 		{

@@ -5,7 +5,7 @@ function TreeStyleTabBrowserTabpanelDNDObserver(aOwner)
 
 TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
 	
-	onDragExit : function(aEvent, aDragSession) 
+	onDragExit : function TSTTabpanelDND_onDragExit(aEvent, aDragSession) 
 	{
 		if (!this.canDrop(aEvent, aDragSession)) return;
 		var sv = this.mOwner;
@@ -13,7 +13,7 @@ TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
 			sv.mTabBrowser.setAttribute(sv.kDROP_POSITION, sv.kDROP_POSITION_UNKNOWN);
 	},
  
-	onDragOver : function(aEvent, aFlavour, aDragSession) 
+	onDragOver : function TSTTabpanelDND_onDragOver(aEvent, aFlavour, aDragSession) 
 	{
 		if (!this.canDrop(aEvent, aDragSession)) return;
 		var sv = this.mOwner;
@@ -23,7 +23,7 @@ TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
 			sv.mTabBrowser.setAttribute(sv.kDROP_POSITION, position);
 	},
  
-	onDrop : function(aEvent, aXferData, aDragSession) 
+	onDrop : function TSTTabpanelDND_onDrop(aEvent, aXferData, aDragSession) 
 	{
 		var sv = this.mOwner;
 		var position = this.getDropPosition(aEvent);
@@ -40,7 +40,7 @@ TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
 		aEvent.stopPropagation();
 	},
  
-	getDropPosition : function(aEvent) 
+	getDropPosition : function TSTTabpanelDND_getDropPosition(aEvent) 
 	{
 		var box = this.mOwner.mTabBrowser.boxObject;
 		var W = box.width;
@@ -64,7 +64,7 @@ TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
 				'right' ;
 	},
  
-	canDrop : function(aEvent, aDragSession) 
+	canDrop : function TSTTabpanelDND_canDrop(aEvent, aDragSession) 
 	{
 		return (
 				aDragSession &&
@@ -73,14 +73,14 @@ TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
 			) ? true : false ;
 	},
  
-	getSupportedFlavours : function() 
+	getSupportedFlavours : function TSTTabpanelDND_getSupportedFlavours() 
 	{
 		var flavourSet = new FlavourSet();
 		flavourSet.appendFlavour(this.mOwner.kDRAG_TYPE_TABBAR);
 		return flavourSet;
 	},
  
-	destroy : function() 
+	destroy : function TSTTabpanelDND_destroy() 
 	{
 		delete this.mOwner;
 	}

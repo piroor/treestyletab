@@ -208,7 +208,7 @@ var TreeStyleTabService = {
 	
 /* API */ 
 	
-	readyToOpenChildTab : function(aFrameOrTabBrowser, aMultiple, aInsertBefore) /* PUBLIC API */ 
+	readyToOpenChildTab : function TSTService_readyToOpenChildTab(aFrameOrTabBrowser, aMultiple, aInsertBefore) /* PUBLIC API */ 
 	{
 		if (!this.getTreePref('autoAttachNewTabsAsChildren')) return;
 
@@ -234,7 +234,7 @@ var TreeStyleTabService = {
 		ownerBrowser.treeStyleTab.insertBefore            = refId;
 	},
  
-	readyToOpenNewTabGroup : function(aFrameOrTabBrowser, aTreeStructure) /* PUBLIC API */ 
+	readyToOpenNewTabGroup : function TSTService_readyToOpenNewTabGroup(aFrameOrTabBrowser, aTreeStructure) /* PUBLIC API */ 
 	{
 		if (!this.getTreePref('autoAttachNewTabsAsChildren')) return;
 
@@ -250,7 +250,7 @@ var TreeStyleTabService = {
 		ownerBrowser.treeStyleTab.treeStructure              = aTreeStructure;
 	},
  
-	stopToOpenChildTab : function(aFrameOrTabBrowser) /* PUBLIC API */ 
+	stopToOpenChildTab : function TSTService_stopToOpenChildTab(aFrameOrTabBrowser) /* PUBLIC API */ 
 	{
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
 		if (!frame) return;
@@ -265,7 +265,7 @@ var TreeStyleTabService = {
 		ownerBrowser.treeStyleTab.treeStructure              = null;
 	},
  
-	checkToOpenChildTab : function(aFrameOrTabBrowser) /* PUBLIC API */ 
+	checkToOpenChildTab : function TSTService_checkToOpenChildTab(aFrameOrTabBrowser) /* PUBLIC API */ 
 	{
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
 		if (!frame) return false;
@@ -274,7 +274,7 @@ var TreeStyleTabService = {
 		return ownerBrowser.treeStyleTab.readiedToAttachNewTab || ownerBrowser.treeStyleTab.readiedToAttachNewTabGroup ? true : false ;
 	},
  
-	checkReadyToOpenNewTab : function(aInfo) 
+	checkReadyToOpenNewTab : function TSTService_checkReadyToOpenNewTab(aInfo) 
 	{
 /*
 	‹““®‚Ìà–¾
@@ -358,7 +358,7 @@ var TreeStyleTabService = {
 		}
 		return openTab;
 	},
-	checkReadyToOpenNewTabOnLocationBar : function(aURI, aModifier)
+	checkReadyToOpenNewTabOnLocationBar : function TSTService_checkReadyToOpenNewTabOnLocationBar(aURI, aModifier)
 	{
 		return this.checkReadyToOpenNewTab({
 			uri      : aURI,
@@ -374,7 +374,7 @@ var TreeStyleTabService = {
 			invert   : this.getTreePref('urlbar.invertDefaultBehavior')
 		});
 	},
-	_getDomainFromURI : function(aURI)
+	_getDomainFromURI : function TSTService__getDomainFromURI(aURI)
 	{
 		if (!aURI) return null;
 
@@ -396,7 +396,7 @@ var TreeStyleTabService = {
 				null ;
 	},
  
-	readyToOpenDivertedTab : function(aFrameOrTabBrowser) 
+	readyToOpenDivertedTab : function TSTService_readyToOpenDivertedTab(aFrameOrTabBrowser) 
 	{
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
 		if (!frame) return;
@@ -404,12 +404,12 @@ var TreeStyleTabService = {
 		ownerBrowser.treeStyleTab.readiedToOpenDivertedTab = true;
 	},
  
-	setTabbarWidth : function(aWidth, aForceExpanded) /* PUBLIC API */ 
+	setTabbarWidth : function TSTService_setTabbarWidth(aWidth, aForceExpanded) /* PUBLIC API */ 
 	{
 		gBrowser.treeStyleTab.autoHide.setWidth(aWidth, aForceExpanded);
 	},
  
-	setContentWidth : function(aWidth, aKeepWindowSize) /* PUBLIC API */ 
+	setContentWidth : function TSTService_setContentWidth(aWidth, aKeepWindowSize) /* PUBLIC API */ 
 	{
 		var treeStyleTab = gBrowser.treeStyleTab;
 		var tabbarWidth = treeStyleTab.splitterWidth + (treeStyleTab.isVertical ? gBrowser.mStrip.boxObject.width : 0 );
@@ -428,12 +428,12 @@ var TreeStyleTabService = {
 		}
 	},
  
-	toggleAutoHide : function() 
+	toggleAutoHide : function TSTService_toggleAutoHide() 
 	{
 		TreeStyleTabBrowserAutoHide.toggleMode();
 	},
  
-	toggleFixed : function() 
+	toggleFixed : function TSTService_toggleFixed() 
 	{
 		var pos = this.currentTabbarPosition;
 		var isVertical = (pos == 'left' || pos == 'right');
@@ -448,7 +448,7 @@ var TreeStyleTabService = {
 			this.setTreePref('enableSubtreeIndent.horizontal', !this.getTreePref(pref));
 	},
  
-	changeTabbarPosition : function(aNewPosition) /* PUBLIC API (obsolete, for backward compatibility) */ 
+	changeTabbarPosition : function TSTService_changeTabbarPosition(aNewPosition) /* PUBLIC API (obsolete, for backward compatibility) */ 
 	{
 		this.currentTabbarPosition = aNewPosition;
 	},
@@ -470,24 +470,24 @@ var TreeStyleTabService = {
 	},
   
 /* backward compatibility */ 
-	getTempTreeStyleTab : function(aTabBrowser)
+	getTempTreeStyleTab : function TSTService_getTempTreeStyleTab(aTabBrowser)
 	{
 		return aTabBrowser.treeStyleTab || new TreeStyleTabBrowser(aTabBrowser);
 	},
 	
-	initTabAttributes : function(aTab, aTabBrowser) 
+	initTabAttributes : function TSTService_initTabAttributes(aTab, aTabBrowser) 
 	{
 		var b = aTabBrowser || this.getTabBrowserFromChild(aTab);
 		this.getTempTreeStyleTab(b).initTabAttributes(aTab);
 	},
  
-	initTabContents : function(aTab, aTabBrowser) 
+	initTabContents : function TSTService_initTabContents(aTab, aTabBrowser) 
 	{
 		var b = aTabBrowser || this.getTabBrowserFromChild(aTab);
 		this.getTempTreeStyleTab(b).initTabContents(aTab);
 	},
  
-	initTabContentsOrder : function(aTab, aTabBrowser) 
+	initTabContentsOrder : function TSTService_initTabContentsOrder(aTab, aTabBrowser) 
 	{
 		var b = aTabBrowser || this.getTabBrowserFromChild(aTab);
 		this.getTempTreeStyleTab(b).initTabContentsOrder(aTab);
@@ -495,16 +495,16 @@ var TreeStyleTabService = {
   
 /* Utilities */ 
 	
-	stopRendering : function() 
+	stopRendering : function TSTService_stopRendering() 
 	{
 		window['piro.sakura.ne.jp'].stopRendering.stop();
 	},
-	startRendering : function()
+	startRendering : function TSTService_startRendering()
 	{
 		window['piro.sakura.ne.jp'].stopRendering.start();
 	},
  
-	isEventFiredOnTwisty : function(aEvent) 
+	isEventFiredOnTwisty : function TSTService_isEventFiredOnTwisty(aEvent) 
 	{
 		var tab = this.getTabFromEvent(aEvent);
 		if (!tab || !this.hasChildTabs(tab)) return false;
@@ -519,7 +519,7 @@ var TreeStyleTabService = {
 				XPathResult.BOOLEAN_TYPE
 			).booleanValue;
 	},
-	canExpandTwistyArea : function(aTabBrowser)
+	canExpandTwistyArea : function TSTService_canExpandTwistyArea(aTabBrowser)
 	{
 		return (
 				this.expandTwistyArea &&
@@ -530,7 +530,7 @@ var TreeStyleTabService = {
 	},
 	expandTwistyArea : true,
  
-	isEventFiredOnClosebox : function(aEvent) 
+	isEventFiredOnClosebox : function TSTService_isEventFiredOnClosebox(aEvent) 
 	{
 		return this.evaluateXPath(
 				'ancestor-or-self::*[contains(concat(" ", normalize-space(@class), " "), " tab-close-button ")]',
@@ -539,7 +539,7 @@ var TreeStyleTabService = {
 			).booleanValue;
 	},
  
-	isEventFiredOnClickable : function(aEvent) 
+	isEventFiredOnClickable : function TSTService_isEventFiredOnClickable(aEvent) 
 	{
 		return this.evaluateXPath(
 				'ancestor-or-self::*[contains(" button toolbarbutton scrollbar popup menupopup panel tooltip ", concat(" ", local-name(), " "))]',
@@ -548,12 +548,12 @@ var TreeStyleTabService = {
 			).booleanValue;
 	},
  
-	isNewTabAction : function(aEvent) 
+	isNewTabAction : function TSTService_isNewTabAction(aEvent) 
 	{
 		return aEvent.button == 1 || (aEvent.button == 0 && this.isAccelKeyPressed(aEvent));
 	},
  
-	isAccelKeyPressed : function(aEvent) 
+	isAccelKeyPressed : function TSTService_isAccelKeyPressed(aEvent) 
 	{
 		var isMac = navigator.platform.toLowerCase().indexOf('mac') > -1;
 		var nsIDOMKeyEvent = Components.interfaces.nsIDOMKeyEvent;
@@ -581,7 +581,7 @@ var TreeStyleTabService = {
 			w.gBrowser ;
 	},
  
-	evaluateXPath : function(aExpression, aContext, aType) 
+	evaluateXPath : function TSTService_evaluateXPath(aExpression, aContext, aType) 
 	{
 		if (!aType) aType = XPathResult.ORDERED_NODE_SNAPSHOT_TYPE;
 		try {
@@ -605,7 +605,7 @@ var TreeStyleTabService = {
 		return xpathResult;
 	},
  
-	getArrayFromXPathResult : function(aXPathResult) 
+	getArrayFromXPathResult : function TSTService_getArrayFromXPathResult(aXPathResult) 
 	{
 		var max = aXPathResult.snapshotLength;
 		var array = new Array(max);
@@ -619,17 +619,17 @@ var TreeStyleTabService = {
 		return array;
 	},
  
-	getBoxObjectFor : function(aNode) 
+	getBoxObjectFor : function TSTService_getBoxObjectFor(aNode) 
 	{
 		return window['piro.sakura.ne.jp'].boxObject.getBoxObjectFor(aNode);
 	},
  
-	getTabFromEvent : function(aEvent) 
+	getTabFromEvent : function TSTService_getTabFromEvent(aEvent) 
 	{
 		return this.getTabFromChild(aEvent.originalTarget || aEvent.target);
 	},
  
-	getTabFromFrame : function(aFrame, aTabBrowser) 
+	getTabFromFrame : function TSTService_getTabFromFrame(aFrame, aTabBrowser) 
 	{
 		var b = aTabBrowser || this.browser;
 		var docShell = aFrame.top
@@ -647,7 +647,7 @@ var TreeStyleTabService = {
 		return null;
 	},
  
-	getTabFromChild : function(aTab) 
+	getTabFromChild : function TSTService_getTabFromChild(aTab) 
 	{
 		return this.evaluateXPath(
 				'ancestor-or-self::xul:tab[ancestor::xul:tabbrowser]',
@@ -656,7 +656,7 @@ var TreeStyleTabService = {
 			).singleNodeValue;
 	},
  
-	getTabbarFromEvent : function(aEvent) 
+	getTabbarFromEvent : function TSTService_getTabbarFromEvent(aEvent) 
 	{
 		return this.evaluateXPath(
 				'ancestor-or-self::*[contains(concat(" ", normalize-space(@class), " "), " tabbrowser-strip ")]',
@@ -665,7 +665,7 @@ var TreeStyleTabService = {
 			).singleNodeValue;
 	},
  
-	getTabBrowserFromChild : function(aTabBrowserChild) 
+	getTabBrowserFromChild : function TSTService_getTabBrowserFromChild(aTabBrowserChild) 
 	{
 		if (!aTabBrowserChild) return null;
 
@@ -682,7 +682,7 @@ var TreeStyleTabService = {
 			).singleNodeValue;
 	},
  
-	getTabBrowserFromFrame : function(aFrame) 
+	getTabBrowserFromFrame : function TSTService_getTabBrowserFromFrame(aFrame) 
 	{
 		var w = this.browserWindow;
 		return !w ? null :
@@ -690,7 +690,7 @@ var TreeStyleTabService = {
 			this.browser ;
 	},
  
-	getFrameFromTabBrowserElements : function(aFrameOrTabBrowser) 
+	getFrameFromTabBrowserElements : function TSTService_getFrameFromTabBrowserElements(aFrameOrTabBrowser) 
 	{
 		var frame = aFrameOrTabBrowser;
 		if (frame == '[object XULElement]') {
@@ -712,12 +712,12 @@ var TreeStyleTabService = {
 		return frame;
 	},
  
-	makeNewId : function() 
+	makeNewId : function TSTService_makeNewId() 
 	{
 		return 'tab-<'+Date.now()+'-'+parseInt(Math.random() * 65000)+'>';
 	},
  
-	makeURIFromSpec : function(aURI) 
+	makeURIFromSpec : function TSTService_makeURIFromSpec(aURI) 
 	{
 		var newURI;
 		aURI = aURI || '';
@@ -733,7 +733,7 @@ var TreeStyleTabService = {
 		return newURI;
 	},
  
-	getPropertyPixelValue : function(aElementOrStyle, aProp) 
+	getPropertyPixelValue : function TSTService_getPropertyPixelValue(aElementOrStyle, aProp) 
 	{
 		var style = aElementOrStyle instanceof Components.interfaces.nsIDOMCSSStyleDeclaration ?
 					aElementOrStyle :
@@ -741,14 +741,14 @@ var TreeStyleTabService = {
 		return Number(style.getPropertyValue(aProp).replace(/px$/, ''));
 	},
  
-	getGroupTabURI : function(aTitle) 
+	getGroupTabURI : function TSTService_getGroupTabURI(aTitle) 
 	{
 		return 'about:treestyletab-group'+(aTitle === void(0) ? '' : '?'+encodeURIComponent(aTitle) );
 	},
  
 /* get tab(s) */ 
 	
-	getTabById : function(aId, aTabBrowserChildren) 
+	getTabById : function TSTService_getTabById(aId, aTabBrowserChildren) 
 	{
 		if (!aId) return null;
 		var b = this.getTabBrowserFromChild(aTabBrowserChildren) || this.browser;
@@ -759,7 +759,7 @@ var TreeStyleTabService = {
 			).singleNodeValue;
 	},
  
-	isTabDuplicated : function(aTab) 
+	isTabDuplicated : function TSTService_isTabDuplicated(aTab) 
 	{
 		if (!aTab) return false;
 		var id = this.getTabValue(aTab, this.kID);
@@ -771,7 +771,7 @@ var TreeStyleTabService = {
 			).booleanValue;
 	},
  
-	getTabs : function(aTabBrowserChild) 
+	getTabs : function TSTService_getTabs(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
 		return this.evaluateXPath(
@@ -780,7 +780,7 @@ var TreeStyleTabService = {
 			);
 	},
  
-	getTabsArray : function(aTabBrowserChild) 
+	getTabsArray : function TSTService_getTabsArray(aTabBrowserChild) 
 	{
 		var tabs = this.getTabs(aTabBrowserChild);
 		var array = [];
@@ -791,7 +791,7 @@ var TreeStyleTabService = {
 		return array;
 	},
  
-	getFirstTab : function(aTabBrowserChild) 
+	getFirstTab : function TSTService_getFirstTab(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
 		return this.evaluateXPath(
@@ -801,7 +801,7 @@ var TreeStyleTabService = {
 			).singleNodeValue;
 	},
  
-	getLastTab : function(aTabBrowserChild) 
+	getLastTab : function TSTService_getLastTab(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
 		return this.evaluateXPath(
@@ -811,7 +811,7 @@ var TreeStyleTabService = {
 			).singleNodeValue;
 	},
  
-	getNextTab : function(aTab) 
+	getNextTab : function TSTService_getNextTab(aTab) 
 	{
 		if (!aTab) return null;
 		return this.evaluateXPath(
@@ -821,7 +821,7 @@ var TreeStyleTabService = {
 			).singleNodeValue;
 	},
  
-	getPreviousTab : function(aTab) 
+	getPreviousTab : function TSTService_getPreviousTab(aTab) 
 	{
 		if (!aTab) return null;
 		return this.evaluateXPath(
@@ -831,7 +831,7 @@ var TreeStyleTabService = {
 			).singleNodeValue;
 	},
  
-	getTabIndex : function(aTab) 
+	getTabIndex : function TSTService_getTabIndex(aTab) 
 	{
 		if (!aTab) return -1;
 		return this.evaluateXPath(
@@ -841,7 +841,7 @@ var TreeStyleTabService = {
 			).numberValue;
 	},
  
-	getNextVisibleTab : function(aTab) 
+	getNextVisibleTab : function TSTService_getNextVisibleTab(aTab) 
 	{
 		if (!aTab) return null;
 
@@ -855,7 +855,7 @@ var TreeStyleTabService = {
 			).singleNodeValue;
 	},
  
-	getPreviousVisibleTab : function(aTab) 
+	getPreviousVisibleTab : function TSTService_getPreviousVisibleTab(aTab) 
 	{
 		if (!aTab) return null;
 
@@ -869,7 +869,7 @@ var TreeStyleTabService = {
 			).singleNodeValue;
 	},
  
-	getLastVisibleTab : function(aTabBrowserChild) 
+	getLastVisibleTab : function TSTService_getLastVisibleTab(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
 		if (!b) return null;
@@ -884,7 +884,7 @@ var TreeStyleTabService = {
 			).singleNodeValue;
 	},
  
-	getVisibleTabs : function(aTabBrowserChild) 
+	getVisibleTabs : function TSTService_getVisibleTabs(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
 		if (!this.canCollapseSubtree(b))
@@ -897,7 +897,7 @@ var TreeStyleTabService = {
 		return xpathResult;
 	},
  
-	getVisibleIndex : function(aTab) 
+	getVisibleIndex : function TSTService_getVisibleIndex(aTab) 
 	{
 		if (!aTab) return -1;
 
@@ -925,13 +925,13 @@ var TreeStyleTabService = {
 			);
 	},
  
-	canCollapseSubtree : function(aTabBrowser) /* PUBLIC API */ 
+	canCollapseSubtree : function TSTService_canCollapseSubtree(aTabBrowser) /* PUBLIC API */ 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowser) || this.browser;
 		return b.getAttribute(this.kALLOW_COLLAPSE) == 'true';
 	},
  
-	isCollapsed : function(aTab) /* PUBLIC API */ 
+	isCollapsed : function TSTService_isCollapsed(aTab) /* PUBLIC API */ 
 	{
 		if (!aTab || !this.canCollapseSubtree(aTab))
 			return false;
@@ -939,7 +939,7 @@ var TreeStyleTabService = {
 		return aTab.getAttribute(this.kCOLLAPSED) == 'true';
 	},
  
-	isSubtreeCollapsed : function(aTab) /* PUBLIC API */ 
+	isSubtreeCollapsed : function TSTService_isSubtreeCollapsed(aTab) /* PUBLIC API */ 
 	{
 		if (!aTab || !this.canCollapseSubtree(aTab) || !this.hasChildTabs(aTab))
 			return false;
@@ -947,7 +947,7 @@ var TreeStyleTabService = {
 		return aTab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true';
 	},
  
-	getParentTab : function(aTab) /* PUBLIC API */ 
+	getParentTab : function TSTService_getParentTab(aTab) /* PUBLIC API */ 
 	{
 		if (!aTab) return null;
 		var id = aTab.getAttribute(this.kID);
@@ -959,7 +959,7 @@ var TreeStyleTabService = {
 			).singleNodeValue;
 	},
  
-	getRootTab : function(aTab) /* PUBLIC API */ 
+	getRootTab : function TSTService_getRootTab(aTab) /* PUBLIC API */ 
 	{
 		var parent = aTab;
 		var root   = aTab;
@@ -970,7 +970,7 @@ var TreeStyleTabService = {
 		return root;
 	},
  
-	getNextSiblingTab : function(aTab) /* PUBLIC API */ 
+	getNextSiblingTab : function TSTService_getNextSiblingTab(aTab) /* PUBLIC API */ 
 	{
 		if (!aTab) return null;
 
@@ -999,7 +999,7 @@ var TreeStyleTabService = {
 		return null;
 	},
  
-	getPreviousSiblingTab : function(aTab) /* PUBLIC API */ 
+	getPreviousSiblingTab : function TSTService_getPreviousSiblingTab(aTab) /* PUBLIC API */ 
 	{
 		if (!aTab) return null;
 
@@ -1028,7 +1028,7 @@ var TreeStyleTabService = {
 		return null;
 	},
  
-	getChildTabs : function(aTab, aAllTabsArray) /* PUBLIC API */ 
+	getChildTabs : function TSTService_getChildTabs(aTab, aAllTabsArray) /* PUBLIC API */ 
 	{
 		var tabs = [];
 		if (!aTab) return tabs;
@@ -1051,20 +1051,20 @@ var TreeStyleTabService = {
 		return tabs;
 	},
  
-	hasChildTabs : function(aTab) /* PUBLIC API */ 
+	hasChildTabs : function TSTService_hasChildTabs(aTab) /* PUBLIC API */ 
 	{
 		if (!aTab) return false;
 		return aTab.hasAttribute(this.kCHILDREN);
 	},
  
-	getDescendantTabs : function(aTab) /* PUBLIC API */ 
+	getDescendantTabs : function TSTService_getDescendantTabs(aTab) /* PUBLIC API */ 
 	{
 		var tabs = [];
 		this.getChildTabs(aTab, tabs);
 		return tabs;
 	},
  
-	getFirstChildTab : function(aTab) /* PUBLIC API */ 
+	getFirstChildTab : function TSTService_getFirstChildTab(aTab) /* PUBLIC API */ 
 	{
 		if (!aTab) return null;
 
@@ -1081,7 +1081,7 @@ var TreeStyleTabService = {
 		return firstChild;
 	},
  
-	getLastChildTab : function(aTab) /* PUBLIC API */ 
+	getLastChildTab : function TSTService_getLastChildTab(aTab) /* PUBLIC API */ 
 	{
 		if (!aTab) return null;
 
@@ -1098,7 +1098,7 @@ var TreeStyleTabService = {
 		return lastChild;
 	},
  
-	getLastDescendantTab : function(aTab) /* PUBLIC API */ 
+	getLastDescendantTab : function TSTService_getLastDescendantTab(aTab) /* PUBLIC API */ 
 	{
 		if (!aTab) return null;
 
@@ -1106,7 +1106,7 @@ var TreeStyleTabService = {
 		return tabs.length ? tabs[tabs.length-1] : null ;
 	},
  
-	getChildIndex : function(aTab, aParent) 
+	getChildIndex : function TSTService_getChildIndex(aTab, aParent) 
 	{
 		var parent = this.getParentTab(aTab);
 		if (!aParent || !parent || aParent != parent) {
@@ -1140,7 +1140,7 @@ var TreeStyleTabService = {
 		}
 	},
  
-	getXOffsetOfTab : function(aTab) 
+	getXOffsetOfTab : function TSTService_getXOffsetOfTab(aTab) 
 	{
 		var extraCondition = this.canCollapseSubtree(aTab) ?
 								'[not(@'+this.kCOLLAPSED+'="true")]' :
@@ -1152,7 +1152,7 @@ var TreeStyleTabService = {
 			XPathResult.NUMBER_TYPE
 		).numberValue;
 	},
-	getYOffsetOfTab : function(aTab)
+	getYOffsetOfTab : function TSTService_getYOffsetOfTab(aTab)
 	{
 		var extraCondition = this.canCollapseSubtree(aTab) ?
 								'[not(@'+this.kCOLLAPSED+'="true")]' :
@@ -1165,7 +1165,7 @@ var TreeStyleTabService = {
 		).numberValue;
 	},
  
-	isGroupTab : function(aTab, aLazyCheck) 
+	isGroupTab : function TSTService_isGroupTab(aTab, aLazyCheck) 
 	{
 		return (
 			(aLazyCheck || aTab.linkedBrowser.sessionHistory.count == 1) &&
@@ -1175,7 +1175,7 @@ var TreeStyleTabService = {
   
 /* Session Store API */ 
 	
-	getTabValue : function(aTab, aKey) 
+	getTabValue : function TSTService_getTabValue(aTab, aKey) 
 	{
 		var value = '';
 		try {
@@ -1192,7 +1192,7 @@ var TreeStyleTabService = {
 		return value;
 	},
  
-	setTabValue : function(aTab, aKey, aValue) 
+	setTabValue : function TSTService_setTabValue(aTab, aKey, aValue) 
 	{
 		if (!aValue) return this.deleteTabValue(aTab, aKey);
 
@@ -1210,7 +1210,7 @@ var TreeStyleTabService = {
 		return aValue;
 	},
  
-	deleteTabValue : function(aTab, aKey) 
+	deleteTabValue : function TSTService_deleteTabValue(aTab, aKey) 
 	{
 		aTab.removeAttribute(aKey);
 		try {
@@ -1226,7 +1226,7 @@ var TreeStyleTabService = {
 	},
  
 	// workaround for http://piro.sakura.ne.jp/latest/blosxom/mozilla/extension/treestyletab/2009-09-29_debug.htm
-	checkCachedSessionDataExpiration : function(aTab) 
+	checkCachedSessionDataExpiration : function TSTService_checkCachedSessionDataExpiration(aTab) 
 	{
 		if (aTab.linkedBrowser.parentNode.__SS_data &&
 			aTab.linkedBrowser.parentNode.__SS_data._tabStillLoading &&
@@ -1237,7 +1237,7 @@ var TreeStyleTabService = {
 	useTMPSessionAPI : false, 
 	kTMP_SESSION_DATA_PREFIX : 'tmp-session-data-',
   
-	dropLinksOnTabBehavior : function() 
+	dropLinksOnTabBehavior : function TSTService_dropLinksOnTabBehavior() 
 	{
 		var behavior = this.getTreePref('dropLinksOnTab.behavior');
 		if (behavior & this.kDROPLINK_FIXED) return behavior;
@@ -1266,7 +1266,7 @@ var TreeStyleTabService = {
 	kDROPLINK_LOAD   : 1,
 	kDROPLINK_NEWTAB : 2,
  
-	openGroupBookmarkBehavior : function() 
+	openGroupBookmarkBehavior : function TSTService_openGroupBookmarkBehavior() 
 	{
 		var behavior = this.getTreePref('openGroupBookmark.behavior');
 		if (behavior & this.kGROUP_BOOKMARK_FIXED) return behavior;
@@ -1312,7 +1312,7 @@ var TreeStyleTabService = {
   
 /* Initializing */ 
 	
-	preInit : function() 
+	preInit : function TSTService_preInit() 
 	{
 		if (this.preInitialized) return;
 		this.preInitialized = true;
@@ -1358,7 +1358,7 @@ var TreeStyleTabService = {
 	},
 	preInitialized : false,
 	
-	defaultTabFocusAllowance : function(aBrowser) 
+	defaultTabFocusAllowance : function TSTService_defaultTabFocusAllowance(aBrowser) 
 	{
 		var tab = aBrowser.selectedTab;
 		return (
@@ -1372,7 +1372,7 @@ var TreeStyleTabService = {
 	},
  
 	kPREF_VERSION : 4,
-	migratePrefs : function() 
+	migratePrefs : function TSTService_migratePrefs() 
 	{
 		// migrate old prefs
 		var orientalPrefs = [];
@@ -1440,7 +1440,7 @@ var TreeStyleTabService = {
 		this.setTreePref('prefsVersion', this.kPREF_VERSION);
 	},
   
-	init : function() 
+	init : function TSTService_init() 
 	{
 		if (!('gBrowser' in window)) return;
 
@@ -1489,7 +1489,7 @@ var TreeStyleTabService = {
 		this.onPrefChange('extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut');
 	},
 	initialized : false,
-	initUninstallationListener : function()
+	initUninstallationListener : function TSTService_initUninstallationListener()
 	{
 		var prefs = window['piro.sakura.ne.jp'].prefs;
 		var restorePrefs = function() {
@@ -1514,14 +1514,14 @@ var TreeStyleTabService = {
 		});
 	},
 	
-	initTabBrowser : function(aTabBrowser) 
+	initTabBrowser : function TSTService_initTabBrowser(aTabBrowser) 
 	{
 		if (aTabBrowser.localName != 'tabbrowser') return;
 		aTabBrowser.treeStyleTab = new TreeStyleTabBrowser(aTabBrowser);
 		aTabBrowser.treeStyleTab.init();
 	},
  
-	updateTabDNDObserver : function(aObserver) 
+	updateTabDNDObserver : function TSTService_updateTabDNDObserver(aObserver) 
 	{
 		if ('_onDragStart' in aObserver) { // Firefox 3.5 or later
 			eval('aObserver._onDragStart = '+
@@ -1772,7 +1772,7 @@ catch(e) {
 		);
 	},
  
-	overrideGlobalFunctions : function() 
+	overrideGlobalFunctions : function TSTService_overrideGlobalFunctions() 
 	{
 //		window.__treestyletab__BrowserCustomizeToolbar = window.BrowserCustomizeToolbar;
 //		window.BrowserCustomizeToolbar = function() {
@@ -2059,7 +2059,7 @@ catch(e) {
 			);
 		}
 	},
-	_splitFunctionNames : function(aString)
+	_splitFunctionNames : function TSTService__splitFunctionNames(aString)
 	{
 		return String(aString)
 				.split(/\s+/)
@@ -2070,7 +2070,7 @@ catch(e) {
 							.replace(/^\s+|\s+$/g, '');
 				});
 	},
-	_getFunctionSource : function(aFunc)
+	_getFunctionSource : function TSTService__getFunctionSource(aFunc)
 	{
 		var func;
 		try {
@@ -2082,7 +2082,7 @@ catch(e) {
 		return func ? func.toSource() : null ;
 	},
  
-	initBar : function() 
+	initBar : function TSTService_initBar() 
 	{
 		var bar = document.getElementById('urlbar');
 		if (!bar) return;
@@ -2102,7 +2102,7 @@ catch(e) {
 		source = null;
 	},
   
-	destroy : function() 
+	destroy : function TSTService_destroy() 
 	{
 		window.removeEventListener('unload', this, false);
 
@@ -2124,7 +2124,7 @@ catch(e) {
 		this.ObserverService.removeObserver(this, 'sessionstore-windows-restored');
 	},
 	
-	destroyTabBrowser : function(aTabBrowser) 
+	destroyTabBrowser : function TSTService_destroyTabBrowser(aTabBrowser) 
 	{
 		if (aTabBrowser.localName != 'tabbrowser') return;
 		aTabBrowser.treeStyleTab.destroy();
@@ -2133,7 +2133,7 @@ catch(e) {
    
 /* Event Handling */ 
 	
-	handleEvent : function(aEvent) 
+	handleEvent : function TSTService_handleEvent(aEvent) 
 	{
 		switch (aEvent.type)
 		{
@@ -2204,7 +2204,7 @@ catch(e) {
 	LISTEN_FOR_AUTOHIDE                  : 1,
 	LISTEN_FOR_AUTOEXPAND_BY_FOCUSCHANGE : 2,
 	
-	startListenKeyEventsFor : function(aReason) 
+	startListenKeyEventsFor : function TSTService_startListenKeyEventsFor(aReason) 
 	{
 		if (this.keyEventListeningFlags & aReason) return;
 		if (!this.keyEventListening) {
@@ -2216,7 +2216,7 @@ catch(e) {
 		this.keyEventListeningFlags |= aReason;
 	},
  
-	endListenKeyEventsFor : function(aReason) 
+	endListenKeyEventsFor : function TSTService_endListenKeyEventsFor(aReason) 
 	{
 		if (!(this.keyEventListeningFlags & aReason)) return;
 		this.keyEventListeningFlags ^= aReason;
@@ -2228,7 +2228,7 @@ catch(e) {
 		}
 	},
  
-	onKeyDown : function(aEvent) 
+	onKeyDown : function TSTService_onKeyDown(aEvent) 
 	{
 		this.accelKeyPressed = this.isAccelKeyPressed(aEvent);
 
@@ -2240,7 +2240,7 @@ catch(e) {
 	},
 	accelKeyPressed : false,
  
-	onKeyRelease : function(aEvent) 
+	onKeyRelease : function TSTService_onKeyRelease(aEvent) 
 	{
 		var b = this.browser;
 		if (!b || !b.treeStyleTab) return;
@@ -2325,7 +2325,7 @@ catch(e) {
 				this.getPref('browser.ctrlTab.previews');
 	},
    
-	onTabbarResized : function(aEvent) 
+	onTabbarResized : function TSTService_onTabbarResized(aEvent) 
 	{
 		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
 		window.setTimeout(function(aSelf) {
@@ -2343,7 +2343,7 @@ catch(e) {
 			b.treeStyleTab.clickedOnTabbarResizerGrippy = false;
 		}, 10, this);
 	},
-	onTabbarResizerClick : function(aEvent)
+	onTabbarResizerClick : function TSTService_onTabbarResizerClick(aEvent)
 	{
 		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
 		b.treeStyleTab.clickedOnTabbarResizerGrippy = this.evaluateXPath(
@@ -2353,7 +2353,7 @@ catch(e) {
 			).booleanValue;
 	},
  
-	showHideSubTreeMenuItem : function(aMenuItem, aTabs) 
+	showHideSubTreeMenuItem : function TSTService_showHideSubTreeMenuItem(aMenuItem, aTabs) 
 	{
 		if (!aMenuItem ||
 			aMenuItem.getAttribute('hidden') == 'true' ||
@@ -2374,7 +2374,7 @@ catch(e) {
 			aMenuItem.setAttribute('hidden', true);
 	},
  
-	updateTabWidthPrefs : function(aPrefName) 
+	updateTabWidthPrefs : function TSTService_updateTabWidthPrefs(aPrefName) 
 	{
 		var expanded = this.getTreePref('tabbar.width');
 		var shrunken = this.getTreePref('tabbar.shrunkenWidth');
@@ -2388,7 +2388,7 @@ catch(e) {
 		}
 	},
  
-	handleTooltip : function(aEvent, aTab) 
+	handleTooltip : function TSTService_handleTooltip(aEvent, aTab) 
 	{
 		var label;
 		var collapsed = this.isSubtreeCollapsed(aTab);
@@ -2440,12 +2440,12 @@ catch(e) {
 	
 	_restoringTabs : [], 
  
-	onTabRestored : function(aEvent) 
+	onTabRestored : function TSTService_onTabRestored(aEvent) 
 	{
 		this._restoringTabs.push(aEvent.originalTarget);
 	},
  
-	processRestoredTabs : function() 
+	processRestoredTabs : function TSTService_processRestoredTabs() 
 	{
 		this._restoringTabs.forEach(function(aTab) {
 			try {
@@ -2460,7 +2460,7 @@ catch(e) {
   
 /* Commands */ 
 	
-	removeTabSubTree : function(aTabOrTabs, aOnlyChildren) 
+	removeTabSubTree : function TSTService_removeTabSubTree(aTabOrTabs, aOnlyChildren) 
 	{
 		var tabs = this._normalizeToTabs(aTabOrTabs, aOnlyChildren);
 		if (!this.warnAboutClosingTabs(tabs.length))
@@ -2472,7 +2472,7 @@ catch(e) {
 			b.removeTab(tabs[i]);
 		}
 	},
-	warnAboutClosingTabSubTreeOf : function(aTab)
+	warnAboutClosingTabSubTreeOf : function TSTService_warnAboutClosingTabSubTreeOf(aTab)
 	{
 		if (!this.shouldCloseTabSubTreeOf(aTab))
 			return true;
@@ -2480,7 +2480,7 @@ catch(e) {
 		var tabs = [aTab].concat(this.getDescendantTabs(aTab));
 		return this.warnAboutClosingTabs(tabs.length);
 	},
-	shouldCloseTabSubTreeOf : function(aTab)
+	shouldCloseTabSubTreeOf : function TSTService_shouldCloseTabSubTreeOf(aTab)
 	{
 		return (
 			this.hasChildTabs(aTab) &&
@@ -2490,7 +2490,7 @@ catch(e) {
 			)
 		);
 	},
-	shouldCloseLastTabSubTreeOf : function(aTab)
+	shouldCloseLastTabSubTreeOf : function TSTService_shouldCloseLastTabSubTreeOf(aTab)
 	{
 		var b = this.getTabBrowserFromChild(aTab);
 		return (
@@ -2498,7 +2498,7 @@ catch(e) {
 			this.getDescendantTabs(aTab).length + 1 == this.getTabs(b).snapshotLength
 		);
 	},
-	warnAboutClosingTabs : function(aTabsCount)
+	warnAboutClosingTabs : function TSTService_warnAboutClosingTabs(aTabsCount)
 	{
 		if (
 			aTabsCount <= 1 ||
@@ -2522,7 +2522,7 @@ catch(e) {
 		return shouldClose;
 	},
 	
-	_normalizeToTabs : function(aTabOrTabs, aOnlyChildren) 
+	_normalizeToTabs : function TSTService__normalizeToTabs(aTabOrTabs, aOnlyChildren) 
 	{
 		var tabs = aTabOrTabs;
 		if (!(tabs instanceof Array)) {
@@ -2544,7 +2544,7 @@ catch(e) {
 		return tabs;
 	},
  
-	cleanUpTabsArray : function(aTabs) 
+	cleanUpTabsArray : function TSTService_cleanUpTabsArray(aTabs) 
 	{
 		var newTabs = [];
 		aTabs.forEach(function(aTab) {
@@ -2555,12 +2555,12 @@ catch(e) {
 		return newTabs;
 	},
 	
-	sortTabsByOrder : function(aA, aB) 
+	sortTabsByOrder : function TSTService_sortTabsByOrder(aA, aB) 
 	{
 		return aA._tPos - aB._tPos;
 	},
    
-	reloadTabSubTree : function(aTabOrTabs, aOnlyChildren) 
+	reloadTabSubTree : function TSTService_reloadTabSubTree(aTabOrTabs, aOnlyChildren) 
 	{
 		var tabs = this._normalizeToTabs(aTabOrTabs, aOnlyChildren);
 		var b = this.getTabBrowserFromChild(tabs[0]);
@@ -2570,7 +2570,7 @@ catch(e) {
 		}
 	},
  
-	createSubTree : function(aTabs) 
+	createSubTree : function TSTService_createSubTree(aTabs) 
 	{
 		aTabs = this.getRootTabs(aTabs);
 		if (!aTabs.length) return;
@@ -2604,7 +2604,7 @@ catch(e) {
 		}, 0, this);
 	},
 	
-	canCreateSubTree : function(aTabs) 
+	canCreateSubTree : function TSTService_canCreateSubTree(aTabs) 
 	{
 		aTabs = this.getRootTabs(aTabs);
 		if (aTabs.length < 2) return false;
@@ -2619,7 +2619,7 @@ catch(e) {
 		return this.getChildTabs(lastParent).length != aTabs.length;
 	},
  
-	getRootTabs : function(aTabs) 
+	getRootTabs : function TSTService_getRootTabs(aTabs) 
 	{
 		var roots = [];
 		if (!aTabs || !aTabs.length) return roots;
@@ -2632,7 +2632,7 @@ catch(e) {
 		return roots;
 	},
   
-	collapseExpandAllSubtree : function(aCollapse) 
+	collapseExpandAllSubtree : function TSTService_collapseExpandAllSubtree(aCollapse) 
 	{
 		this.ObserverService.notifyObservers(
 			window,
@@ -2641,7 +2641,7 @@ catch(e) {
 		);
 	},
  
-	promoteTab : function(aTab) /* PUBLIC API */ 
+	promoteTab : function TSTService_promoteTab(aTab) /* PUBLIC API */ 
 	{
 		var b = this.getTabBrowserFromChild(aTab);
 		var sv = b.treeStyleTab;
@@ -2664,12 +2664,12 @@ catch(e) {
 			b.moveTabTo(aTab, index);
 		}
 	},
-	promoteCurrentTab : function() /* PUBLIC API */
+	promoteCurrentTab : function TSTService_promoteCurrentTab() /* PUBLIC API */
 	{
 		this.promoteTab(this.browser.selectedTab);
 	},
  
-	demoteTab : function(aTab) /* PUBLIC API */ 
+	demoteTab : function TSTService_demoteTab(aTab) /* PUBLIC API */ 
 	{
 		var b = this.getTabBrowserFromChild(aTab);
 		var sv = b.treeStyleTab;
@@ -2678,7 +2678,7 @@ catch(e) {
 		if (previous)
 			sv.attachTabTo(aTab, previous);
 	},
-	demoteCurrentTab : function() /* PUBLIC API */
+	demoteCurrentTab : function TSTService_demoteCurrentTab() /* PUBLIC API */
 	{
 		this.demoteTab(this.browser.selectedTab);
 	},
@@ -2699,26 +2699,26 @@ catch(e) {
 	},
 	_treeViewEnabled : true,
  
-	expandTreeAfterKeyReleased : function(aTab) 
+	expandTreeAfterKeyReleased : function TSTService_expandTreeAfterKeyReleased(aTab) 
 	{
 		if (this.getTreePref('autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut')) return;
 		this._tabShouldBeExpandedAfterKeyReleased = aTab || null;
 	},
 	_tabShouldBeExpandedAfterKeyReleased : null,
  
-	registerTabFocusAllowance : function(aProcess) /* PUBLIC API */ 
+	registerTabFocusAllowance : function TSTService_registerTabFocusAllowance(aProcess) /* PUBLIC API */ 
 	{
 		this._tabFocusAllowance.push(aProcess);
 	},
 	_tabFocusAllowance : [],
  
-	registerExpandTwistyAreaAllowance : function(aProcess) /* PUBLIC API */ 
+	registerExpandTwistyAreaAllowance : function TSTService_registerExpandTwistyAreaAllowance(aProcess) /* PUBLIC API */ 
 	{
 		this._expandTwistyAreaAllowance.push(aProcess);
 	},
 	_expandTwistyAreaAllowance : [],
  
-	tearOffSubTreeFromRemote : function() 
+	tearOffSubTreeFromRemote : function TSTService_tearOffSubTreeFromRemote() 
 	{
 		var remoteTab = window.arguments[0];
 		var remoteWindow  = remoteTab.ownerDocument.defaultView;
@@ -2753,7 +2753,7 @@ catch(e) {
 		return false;
 	},
   
-	observe : function(aSubject, aTopic, aData) 
+	observe : function TSTService_observe(aSubject, aTopic, aData) 
 	{
 		switch (aTopic)
 		{
@@ -2773,7 +2773,7 @@ catch(e) {
 		}
 	},
 	restoringWindow : false,
-	getRestoringTabsCount : function()
+	getRestoringTabsCount : function TSTService_getRestoringTabsCount()
 	{
 		return this.getTabsArray(this.browser)
 				.filter(function(aTab) {
@@ -2796,7 +2796,7 @@ catch(e) {
 		'browser.ctrlTab.previews'
 	],
  
-	onPrefChange : function(aPrefName) 
+	onPrefChange : function TSTService_onPrefChange(aPrefName) 
 	{
 		var value = this.getPref(aPrefName);
 		switch (aPrefName)
@@ -2888,17 +2888,17 @@ catch(e) {
   
 /* Save/Load Prefs */ 
 	
-	getTreePref : function(aPrefstring) 
+	getTreePref : function TSTService_getTreePref(aPrefstring) 
 	{
 		return this.getPref('extensions.treestyletab.'+aPrefstring);
 	},
  
-	setTreePref : function(aPrefstring, aNewValue) 
+	setTreePref : function TSTService_setTreePref(aPrefstring, aNewValue) 
 	{
 		return this.setPref('extensions.treestyletab.'+aPrefstring, aNewValue);
 	},
  
-	clearTreePref : function(aPrefstring) 
+	clearTreePref : function TSTService_clearTreePref(aPrefstring) 
 	{
 		return this.clearPref('extensions.treestyletab.'+aPrefstring);
 	}
