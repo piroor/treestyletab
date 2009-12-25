@@ -148,6 +148,9 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 
+		let position = this.currentTabbarPosition;
+		this.fireTabbarPositionEvent('TreeStyleTabTabbarPositionChanging', 'top', position); /* PUBLIC API */
+
 		this.initTabbar();
 
 		b.addEventListener('TabOpen',        this, true);
@@ -582,6 +585,8 @@ TreeStyleTabBrowser.prototype = {
 		this.addPrefListener(this);
 
 		this.autoHide;
+
+		this.fireTabbarPositionEvent('TreeStyleTabTabbarPositionChanged', 'top', position); /* PUBLIC API */
 
 		b = null;
 	},
@@ -1059,6 +1064,17 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}, 100);
 	},
+ 
+	fireTabbarPositionEvent : function TSTBrowser_fireTabbarPositionEvent(aType, aOldPosition, aNewPosition) 
+	{
+		if (aOldPosition == aNewPosition) return;
+
+		var event = document.createEvent('Events');
+		event.initEvent(aType, true, true);
+		event.oldPosition = aOldPosition;
+		event.newPosition = aNewPosition;
+		this.mTabBrowser.dispatchEvent(event);
+	},
    
 	destroy : function TSTBrowser_destroy() 
 	{
@@ -1174,14 +1190,7 @@ TreeStyleTabBrowser.prototype = {
 		{
 			case 'extensions.treestyletab.tabbar.position':
 				var oldPosition = b.getAttribute(this.kTABBAR_POSITION);
-				let (event) {
-					/* PUBLIC API */
-					event = document.createEvent('Events');
-					event.initEvent('TreeStyleTabTabbarPositionChanging', true, true);
-					event.oldPosition = oldPosition;
-					event.newPosition = value;
-					this.mTabBrowser.dispatchEvent(event);
-				}
+				this.fireTabbarPositionEvent('TreeStyleTabTabbarPositionChanging', oldPosition, value); /* PUBLIC API */
 				this.initTabbar();
 				tabs.forEach(function(aTab) {
 					this.initTabAttributes(aTab);
@@ -1189,14 +1198,7 @@ TreeStyleTabBrowser.prototype = {
 				tabs.forEach(function(aTab) {
 					this.initTabContents(aTab);
 				}, this);
-				let (event) {
-					/* PUBLIC API */
-					event = document.createEvent('Events');
-					event.initEvent('TreeStyleTabTabbarPositionChanged', true, true);
-					event.oldPosition = oldPosition;
-					event.newPosition = value;
-					this.mTabBrowser.dispatchEvent(event);
-				}
+				this.fireTabbarPositionEvent('TreeStyleTabTabbarPositionChanged', oldPosition, value); /* PUBLIC API */
 				window.setTimeout(function(aSelf) {
 					aSelf.checkTabsIndentOverflow();
 				}, 0, this);
@@ -1698,7 +1700,12 @@ TreeStyleTabBrowser.prototype = {
 			if (
 				nextFocusedTab &&
 				this._tabFocusAllowance.every(function(aFunc) {
-					return aFunc.call(this, b);
+					try {
+						return aFunc.call(this, b);
+					}
+					catch(e) {
+						return false;
+					}
 				}, this)
 				)
 				b.selectedTab = nextFocusedTab;

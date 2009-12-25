@@ -258,6 +258,52 @@ TreeStyleTabService.overrideExtensionsOnInitBefore = function TSTService_overrid
 		);
 	}
 
+	// Tabberwocky
+	// https://addons.mozilla.org/firefox/addon/14439
+	if ('tabberwocky' in window) {
+		TreeStyleTabBrowser.prototype.isMultiRow = function()
+		{
+			return this.getPref('tabberwocky.multirow') && !this.isVertical;
+		};
+
+		let listener = {
+				handleEvent : function(aEvent)
+				{
+					switch (aEvent.type)
+					{
+						case 'TreeStyleTabTabbarPositionChanged':
+							var b = aEvent.originalTarget;
+							if (b.treeStyleTab.isVertical)
+								b.treeStyleTab.setPref('tabberwocky.multirow', false);
+							break;
+
+						case 'unload':
+							window.removeEventListener('TreeStyleTabTabbarPositionChanged', this, false);
+							window.removeEventListener('unload', this, false);
+							break;
+					}
+				}
+			};
+		window.addEventListener('TreeStyleTabTabbarPositionChanged', listener, false);
+		window.addEventListener('unload', listener, false);
+
+		if ('openSelectedLinks' in tabberwocky) {
+			eval('tabberwocky.openSelectedLinks = '+
+				tabberwocky.openSelectedLinks.toSource().replace(
+					'links.forEach(',
+					<![CDATA[
+						TreeStyleTabService.readyToOpenChildTab(aFrame, true)
+					$&]]>
+				).replace(
+					/(\}\)?)$/,
+					<![CDATA[
+						TreeStyleTabService.stopToOpenChildTab(aFrame)
+					$1]]>
+				)
+			);
+		}
+	}
+
 };
 
 TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_overrideExtensionsOnInitAfter() {
@@ -929,36 +975,6 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 					}
 				$&]]>
 			));
-		}
-	}
-
-	// Tabberwocky
-	// https://addons.mozilla.org/firefox/addon/14439
-	if ('multirow' in window &&
-		'updateMultiRowTabs' in multirow) {
-		eval('multirow.updateMultiRowTabs = '+
-			multirow.updateMultiRowTabs.toSource().replace(
-				'gBrowser.mPrefs.getBoolPref("tabberwocky.multirow")',
-				'$& && !gBrowser.treeStyleTab.isVertical'
-			)
-		);
-		window.setTimeout('multirow.updateMultiRowTabs();', 0);
-	}
-	if ('tabberwocky' in window) {
-		if ('openSelectedLinks' in tabberwocky) {
-			eval('tabberwocky.openSelectedLinks = '+
-				tabberwocky.openSelectedLinks.toSource().replace(
-					'links.forEach(',
-					<![CDATA[
-						TreeStyleTabService.readyToOpenChildTab(aFrame, true)
-					$&]]>
-				).replace(
-					/(\}\)?)$/,
-					<![CDATA[
-						TreeStyleTabService.stopToOpenChildTab(aFrame)
-					$1]]>
-				)
-			);
 		}
 	}
 
