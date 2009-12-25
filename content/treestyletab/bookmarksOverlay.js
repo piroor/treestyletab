@@ -49,7 +49,7 @@ var TreeStyleTabBookmarksService = {
 		this._addingBookmarkTreeStructure = [];
 	},
  
-	bookmarkTabSubTree : function TSTBMService_bookmarkTabSubTree(aTabOrTabs) 
+	bookmarkTabSubtree : function TSTBMService_bookmarkTabSubtree(aTabOrTabs) 
 	{
 		var tabs = aTabOrTabs;
 		if (!(tabs instanceof Array)) {

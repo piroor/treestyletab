@@ -59,15 +59,15 @@ pref("extensions.treestyletab.twisty.expandSensitiveArea", true);
 pref("extensions.treestyletab.clickOnIndentSpaces.enabled", true);
 pref("extensions.treestyletab.tooltip.includeChildren",  true);
 
-pref("extensions.treestyletab.show.context-item-reloadTabSubTree", true);
+pref("extensions.treestyletab.show.context-item-reloadTabSubtree", true);
 pref("extensions.treestyletab.show.context-item-reloadDescendantTabs", false);
-pref("extensions.treestyletab.show.context-item-removeTabSubTree", true);
+pref("extensions.treestyletab.show.context-item-removeTabSubtree", true);
 pref("extensions.treestyletab.show.context-item-removeDescendantTabs", false);
 pref("extensions.treestyletab.show.context-item-collapseAllSubtree", true);
 pref("extensions.treestyletab.show.context-item-expandAllSubtree", true);
 pref("extensions.treestyletab.show.context-item-toggleAutoHide", true);
 pref("extensions.treestyletab.show.context-item-toggleFixed", true);
-pref("extensions.treestyletab.show.context-item-bookmarkTabSubTree", true);
+pref("extensions.treestyletab.show.context-item-bookmarkTabSubtree", true);
 
 pref("extensions.treestyletab.openOuterLinkInNewTab",              false);
 pref("extensions.treestyletab.openAnyLinkInNewTab",                false);
@@ -115,8 +115,8 @@ pref("browser.link.open_newwindow.restriction.override", 0);
 pref("browser.tabs.loadFolderAndReplace.override", false);
 pref("browser.tabs.insertRelatedAfterCurrent.override", false);
 
-pref("extensions.multipletab.show.multipletab-selection-item-removeTabSubTree", true);
-pref("extensions.multipletab.show.multipletab-selection-item-createSubTree", true);
+pref("extensions.multipletab.show.multipletab-selection-item-removeTabSubtree", true);
+pref("extensions.multipletab.show.multipletab-selection-item-createSubtree", true);
 
 
 pref("extensions.treestyletab.compatibility.TMP", true); // Tab Mix Plus

@@ -155,17 +155,17 @@
 
 
 
-<!ENTITY selection.removeTabSubTree.label     "Cerrar árboles seleccionados">
-<!ENTITY selection.removeTabSubTree.accesskey "s">
-<!ENTITY selection.createSubTree.label          "Gather to a New Tree">
-<!ENTITY selection.createSubTree.accesskey      "g">
+<!ENTITY selection.removeTabSubtree.label     "Cerrar árboles seleccionados">
+<!ENTITY selection.removeTabSubtree.accesskey "s">
+<!ENTITY selection.createSubtree.label          "Gather to a New Tree">
+<!ENTITY selection.createSubtree.accesskey      "g">
 
-<!ENTITY context.reloadTabSubTree.label     "Reload this Tree">
-<!ENTITY context.reloadTabSubTree.accesskey "r">
+<!ENTITY context.reloadTabSubtree.label     "Reload this Tree">
+<!ENTITY context.reloadTabSubtree.accesskey "r">
 <!ENTITY context.reloadDescendantTabs.label     "Reload Children">
 <!ENTITY context.reloadDescendantTabs.accesskey "r">
-<!ENTITY context.removeTabSubTree.label     "Cerrar este árbol">
-<!ENTITY context.removeTabSubTree.accesskey "s">
+<!ENTITY context.removeTabSubtree.label     "Cerrar este árbol">
+<!ENTITY context.removeTabSubtree.accesskey "s">
 <!ENTITY context.removeDescendantTabs.label     "Cerrar hija">
 <!ENTITY context.removeDescendantTabs.accesskey "d">
 <!ENTITY context.collapseAllSubtree.label     "Colapsar todos los árboles">
@@ -178,7 +178,7 @@
 <!ENTITY context.toggleFixed.label.horizontal "Fix position and height of tab bar">
 <!ENTITY context.toggleFixed.label.vertical   "Anclar la barra de pestañas">
 <!ENTITY context.toggleFixed.accesskey "f">
-<!ENTITY context.bookmarkTabSubTree.label     "Añadir a marcadores este árbol...">
-<!ENTITY context.bookmarkTabSubTree.accesskey "t">
+<!ENTITY context.bookmarkTabSubtree.label     "Añadir a marcadores este árbol...">
+<!ENTITY context.bookmarkTabSubtree.accesskey "t">
 
 <!ENTITY group.default "New Group">

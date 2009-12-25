@@ -3,20 +3,20 @@
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 <preferences id="prefpane-selection-menu-preferences">
-	<preference id="extensions.multipletab.show.multipletab-selection-item-removeTabSubTree"
-		name="extensions.multipletab.show.multipletab-selection-item-removeTabSubTree"
+	<preference id="extensions.multipletab.show.multipletab-selection-item-removeTabSubtree"
+		name="extensions.multipletab.show.multipletab-selection-item-removeTabSubtree"
 		type="bool"/>
-	<preference id="extensions.multipletab.show.multipletab-selection-item-createSubTree"
-		name="extensions.multipletab.show.multipletab-selection-item-createSubTree"
+	<preference id="extensions.multipletab.show.multipletab-selection-item-createSubtree"
+		name="extensions.multipletab.show.multipletab-selection-item-createSubtree"
 		type="bool"/>
 </preferences>
 <vbox id="prefpane-selection-menu-items">
-	<checkbox id="extensions.multipletab.show.multipletab-selection-item-removeTabSubTree-check"
-		preference="extensions.multipletab.show.multipletab-selection-item-removeTabSubTree"
-		label="&selection.removeTabSubTree.label;"/>
-	<checkbox id="extensions.multipletab.show.multipletab-selection-item-createSubTree-check"
-		preference="extensions.multipletab.show.multipletab-selection-item-createSubTree"
-		label="&selection.createSubTree.label;"/>
+	<checkbox id="extensions.multipletab.show.multipletab-selection-item-removeTabSubtree-check"
+		preference="extensions.multipletab.show.multipletab-selection-item-removeTabSubtree"
+		label="&selection.removeTabSubtree.label;"/>
+	<checkbox id="extensions.multipletab.show.multipletab-selection-item-createSubtree-check"
+		preference="extensions.multipletab.show.multipletab-selection-item-createSubtree"
+		label="&selection.createSubtree.label;"/>
 </vbox>
 
 </overlay>

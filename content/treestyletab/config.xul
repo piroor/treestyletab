@@ -190,14 +190,14 @@
 
 <prefpane id="prefpane-menu" label="&config.tabs.menu;">
 	<preferences>
-		<preference id="extensions.treestyletab.show.context-item-reloadTabSubTree"
-			name="extensions.treestyletab.show.context-item-reloadTabSubTree"
+		<preference id="extensions.treestyletab.show.context-item-reloadTabSubtree"
+			name="extensions.treestyletab.show.context-item-reloadTabSubtree"
 			type="bool"/>
 		<preference id="extensions.treestyletab.show.context-item-reloadDescendantTabs"
 			name="extensions.treestyletab.show.context-item-reloadDescendantTabs"
 			type="bool"/>
-		<preference id="extensions.treestyletab.show.context-item-removeTabSubTree"
-			name="extensions.treestyletab.show.context-item-removeTabSubTree"
+		<preference id="extensions.treestyletab.show.context-item-removeTabSubtree"
+			name="extensions.treestyletab.show.context-item-removeTabSubtree"
 			type="bool"/>
 		<preference id="extensions.treestyletab.show.context-item-removeDescendantTabs"
 			name="extensions.treestyletab.show.context-item-removeDescendantTabs"
@@ -214,8 +214,8 @@
 		<preference id="extensions.treestyletab.show.context-item-toggleFixed"
 			name="extensions.treestyletab.show.context-item-toggleFixed"
 			type="bool"/>
-		<preference id="extensions.treestyletab.show.context-item-bookmarkTabSubTree"
-			name="extensions.treestyletab.show.context-item-bookmarkTabSubTree"
+		<preference id="extensions.treestyletab.show.context-item-bookmarkTabSubtree"
+			name="extensions.treestyletab.show.context-item-bookmarkTabSubtree"
 			type="bool"/>
 	</preferences>
 
@@ -224,17 +224,17 @@
 	<groupbox orient="vertical">
 		<caption label="&config.show.tabContextMenu.caption;"/>
 		<hbox align="center">
-			<checkbox id="extensions.treestyletab.show.context-item-reloadTabSubTree-check"
-				preference="extensions.treestyletab.show.context-item-reloadTabSubTree"
-				label="&context.reloadTabSubTree.label;"/>
+			<checkbox id="extensions.treestyletab.show.context-item-reloadTabSubtree-check"
+				preference="extensions.treestyletab.show.context-item-reloadTabSubtree"
+				label="&context.reloadTabSubtree.label;"/>
 			<checkbox id="extensions.treestyletab.show.context-item-reloadDescendantTabs-check"
 				preference="extensions.treestyletab.show.context-item-reloadDescendantTabs"
 				label="&context.reloadDescendantTabs.label;"/>
 		</hbox>
 		<hbox align="center">
-			<checkbox id="extensions.treestyletab.show.context-item-removeTabSubTree-check"
-				preference="extensions.treestyletab.show.context-item-removeTabSubTree"
-				label="&context.removeTabSubTree.label;"/>
+			<checkbox id="extensions.treestyletab.show.context-item-removeTabSubtree-check"
+				preference="extensions.treestyletab.show.context-item-removeTabSubtree"
+				label="&context.removeTabSubtree.label;"/>
 			<checkbox id="extensions.treestyletab.show.context-item-removeDescendantTabs-check"
 				preference="extensions.treestyletab.show.context-item-removeDescendantTabs"
 				label="&context.removeDescendantTabs.label;"/>
@@ -256,9 +256,9 @@
 				label="&context.toggleFixed.label;"/>
 		</hbox>
 		<hbox align="center">
-			<checkbox id="extensions.treestyletab.show.context-item-bookmarkTabSubTree-check"
-				preference="extensions.treestyletab.show.context-item-bookmarkTabSubTree"
-				label="&context.bookmarkTabSubTree.label;"/>
+			<checkbox id="extensions.treestyletab.show.context-item-bookmarkTabSubtree-check"
+				preference="extensions.treestyletab.show.context-item-bookmarkTabSubtree"
+				label="&context.bookmarkTabSubtree.label;"/>
 		</hbox>
 	</groupbox>
 

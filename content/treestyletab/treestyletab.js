@@ -54,7 +54,7 @@ var TreeStyleTabService = {
 	kSPLITTER              : 'treestyletab-splitter',
 	kTABBAR_TOGGLER        : 'treestyletab-tabbar-toggler',
 
-	kMENUITEM_REMOVESUBTREE_SELECTION : 'multipletab-selection-item-removeTabSubTree',
+	kMENUITEM_REMOVESUBTREE_SELECTION : 'multipletab-selection-item-removeTabSubtree',
 
 	kFOCUS_ALL     : 0,
 	kFOCUS_VISIBLE : 1,
@@ -1327,13 +1327,13 @@ var TreeStyleTabService = {
 			if (source.indexOf('!MultipleTabService.tearOffSelectedTabsFromRemote()') > -1) {
 				eval('window.BrowserStartup = '+source.replace(
 					'!MultipleTabService.tearOffSelectedTabsFromRemote()',
-					'!TreeStyleTabService.tearOffSubTreeFromRemote() && $&'
+					'!TreeStyleTabService.tearOffSubtreeFromRemote() && $&'
 				));
 			}
 			else {
 				eval('window.BrowserStartup = '+source.replace(
 					'gBrowser.swapBrowsersAndCloseOther(gBrowser.selectedTab, uriToLoad);',
-					'if (!TreeStyleTabService.tearOffSubTreeFromRemote()) { $& }'
+					'if (!TreeStyleTabService.tearOffSubtreeFromRemote()) { $& }'
 				));
 			}
 		}
@@ -1371,7 +1371,7 @@ var TreeStyleTabService = {
 		);
 	},
  
-	kPREF_VERSION : 4,
+	kPREF_VERSION : 5,
 	migratePrefs : function TSTService_migratePrefs() 
 	{
 		// migrate old prefs
@@ -1427,6 +1427,19 @@ var TreeStyleTabService = {
 					this.clearTreePref('openGroupBookmarkAsTabSubTree.underParent');
 					this.setPref('browser.tabs.loadFolderAndReplace', behavior & this.kGROUP_BOOKMARK_REPLACE ? true : false );
 				}
+			case 4:
+				[
+					'extensions.treestyletab.show.context-item-reloadTabSubTree',
+					'extensions.treestyletab.show.context-item-removeTabSubTree',
+					'extensions.treestyletab.show.context-item-bookmarkTabSubTree',
+					'extensions.multipletab.show.multipletab-selection-item-removeTabSubTree',
+					'extensions.multipletab.show.multipletab-selection-item-createSubTree'
+				].forEach(function(aPref) {
+					var value = this.getPref(aPref);
+					if (value === null) return;
+					this.setPref(aPref.replace('SubTree', 'Subtree'), value);
+					this.clearPref(aPref);
+				}, this);
 			default:
 				orientalPrefs.forEach(function(aPref) {
 					let value = this.getPref(aPref);
@@ -2353,7 +2366,7 @@ catch(e) {
 			).booleanValue;
 	},
  
-	showHideSubTreeMenuItem : function TSTService_showHideSubTreeMenuItem(aMenuItem, aTabs) 
+	showHideSubtreeMenuItem : function TSTService_showHideSubtreeMenuItem(aMenuItem, aTabs) 
 	{
 		if (!aMenuItem ||
 			aMenuItem.getAttribute('hidden') == 'true' ||
@@ -2361,14 +2374,14 @@ catch(e) {
 			!aTabs.length)
 			return;
 
-		var hasSubTree = false;
+		var hasSubtree = false;
 		for (var i = 0, maxi = aTabs.length; i < maxi; i++)
 		{
 			if (!this.hasChildTabs(aTabs[i])) continue;
-			hasSubTree = true;
+			hasSubtree = true;
 			break;
 		}
-		if (hasSubTree)
+		if (hasSubtree)
 			aMenuItem.removeAttribute('hidden');
 		else
 			aMenuItem.setAttribute('hidden', true);
@@ -2460,7 +2473,7 @@ catch(e) {
   
 /* Commands */ 
 	
-	removeTabSubTree : function TSTService_removeTabSubTree(aTabOrTabs, aOnlyChildren) 
+	removeTabSubtree : function TSTService_removeTabSubtree(aTabOrTabs, aOnlyChildren) 
 	{
 		var tabs = this._normalizeToTabs(aTabOrTabs, aOnlyChildren);
 		if (!this.warnAboutClosingTabs(tabs.length))
@@ -2472,15 +2485,15 @@ catch(e) {
 			b.removeTab(tabs[i]);
 		}
 	},
-	warnAboutClosingTabSubTreeOf : function TSTService_warnAboutClosingTabSubTreeOf(aTab)
+	warnAboutClosingTabSubtreeOf : function TSTService_warnAboutClosingTabSubtreeOf(aTab)
 	{
-		if (!this.shouldCloseTabSubTreeOf(aTab))
+		if (!this.shouldCloseTabSubtreeOf(aTab))
 			return true;
 
 		var tabs = [aTab].concat(this.getDescendantTabs(aTab));
 		return this.warnAboutClosingTabs(tabs.length);
 	},
-	shouldCloseTabSubTreeOf : function TSTService_shouldCloseTabSubTreeOf(aTab)
+	shouldCloseTabSubtreeOf : function TSTService_shouldCloseTabSubtreeOf(aTab)
 	{
 		return (
 			this.hasChildTabs(aTab) &&
@@ -2490,11 +2503,11 @@ catch(e) {
 			)
 		);
 	},
-	shouldCloseLastTabSubTreeOf : function TSTService_shouldCloseLastTabSubTreeOf(aTab)
+	shouldCloseLastTabSubtreeOf : function TSTService_shouldCloseLastTabSubtreeOf(aTab)
 	{
 		var b = this.getTabBrowserFromChild(aTab);
 		return (
-			this.shouldCloseTabSubTreeOf(aTab) &&
+			this.shouldCloseTabSubtreeOf(aTab) &&
 			this.getDescendantTabs(aTab).length + 1 == this.getTabs(b).snapshotLength
 		);
 	},
@@ -2560,7 +2573,7 @@ catch(e) {
 		return aA._tPos - aB._tPos;
 	},
    
-	reloadTabSubTree : function TSTService_reloadTabSubTree(aTabOrTabs, aOnlyChildren) 
+	reloadTabSubtree : function TSTService_reloadTabSubtree(aTabOrTabs, aOnlyChildren) 
 	{
 		var tabs = this._normalizeToTabs(aTabOrTabs, aOnlyChildren);
 		var b = this.getTabBrowserFromChild(tabs[0]);
@@ -2570,7 +2583,7 @@ catch(e) {
 		}
 	},
  
-	createSubTree : function TSTService_createSubTree(aTabs) 
+	createSubtree : function TSTService_createSubtree(aTabs) 
 	{
 		aTabs = this.getRootTabs(aTabs);
 		if (!aTabs.length) return;
@@ -2599,12 +2612,12 @@ catch(e) {
 				});
 			}
 			else if (next) {
-				b.treeStyleTab.moveTabSubTreeTo(root, next._tPos);
+				b.treeStyleTab.moveTabSubtreeTo(root, next._tPos);
 			}
 		}, 0, this);
 	},
 	
-	canCreateSubTree : function TSTService_canCreateSubTree(aTabs) 
+	canCreateSubtree : function TSTService_canCreateSubtree(aTabs) 
 	{
 		aTabs = this.getRootTabs(aTabs);
 		if (aTabs.length < 2) return false;
@@ -2718,7 +2731,7 @@ catch(e) {
 	},
 	_expandTwistyAreaAllowance : [],
  
-	tearOffSubTreeFromRemote : function TSTService_tearOffSubTreeFromRemote() 
+	tearOffSubtreeFromRemote : function TSTService_tearOffSubtreeFromRemote() 
 	{
 		var remoteTab = window.arguments[0];
 		var remoteWindow  = remoteTab.ownerDocument.defaultView;

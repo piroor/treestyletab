@@ -315,7 +315,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 				'var separators = ',
 				<![CDATA[
 					if (aPopup.id == 'multipletab-selection-menu') {
-						TreeStyleTabService.showHideSubTreeMenuItem(document.getElementById(TreeStyleTabService.kMENUITEM_REMOVESUBTREE_SELECTION), MultipleTabService.getSelectedTabs());
+						TreeStyleTabService.showHideSubtreeMenuItem(document.getElementById(TreeStyleTabService.kMENUITEM_REMOVESUBTREE_SELECTION), MultipleTabService.getSelectedTabs());
 					}
 					$&]]>
 			)

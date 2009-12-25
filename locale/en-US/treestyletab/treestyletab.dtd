@@ -151,17 +151,17 @@
 
 
 
-<!ENTITY selection.createSubTree.label          "Gather to a New Tree">
-<!ENTITY selection.createSubTree.accesskey      "g">
+<!ENTITY selection.createSubtree.label          "Gather to a New Tree">
+<!ENTITY selection.createSubtree.accesskey      "g">
 
-<!ENTITY selection.removeTabSubTree.label       "Close Selected Trees">
-<!ENTITY selection.removeTabSubTree.accesskey   "s">
-<!ENTITY context.reloadTabSubTree.label         "Reload this Tree">
-<!ENTITY context.reloadTabSubTree.accesskey     "r">
+<!ENTITY selection.removeTabSubtree.label       "Close Selected Trees">
+<!ENTITY selection.removeTabSubtree.accesskey   "s">
+<!ENTITY context.reloadTabSubtree.label         "Reload this Tree">
+<!ENTITY context.reloadTabSubtree.accesskey     "r">
 <!ENTITY context.reloadDescendantTabs.label     "Reload Children">
 <!ENTITY context.reloadDescendantTabs.accesskey "r">
-<!ENTITY context.removeTabSubTree.label         "Close this Tree">
-<!ENTITY context.removeTabSubTree.accesskey     "s">
+<!ENTITY context.removeTabSubtree.label         "Close this Tree">
+<!ENTITY context.removeTabSubtree.accesskey     "s">
 <!ENTITY context.removeDescendantTabs.label     "Close Children">
 <!ENTITY context.removeDescendantTabs.accesskey "d">
 <!ENTITY context.collapseAllSubtree.label       "Collapse All Trees">
@@ -174,7 +174,7 @@
 <!ENTITY context.toggleFixed.label.horizontal   "Fix position and height of tab bar">
 <!ENTITY context.toggleFixed.label.vertical     "Fix position and width of tab bar">
 <!ENTITY context.toggleFixed.accesskey          "f">
-<!ENTITY context.bookmarkTabSubTree.label       "Bookmark this Tree...">
-<!ENTITY context.bookmarkTabSubTree.accesskey   "t">
+<!ENTITY context.bookmarkTabSubtree.label       "Bookmark this Tree...">
+<!ENTITY context.bookmarkTabSubtree.accesskey   "t">
 
 <!ENTITY group.default "New Group">

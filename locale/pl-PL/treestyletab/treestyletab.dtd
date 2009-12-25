@@ -149,17 +149,17 @@ When a tab gets focus, expand his tree and collapse others automatically
 <!ENTITY config.useEffectiveTLD.enabled  "wg domeny (&quot;aaa.example.com&quot; i &quot;bbb.example.com&quot; są podobne)">
 <!ENTITY config.useEffectiveTLD.disabled "wg hosta (&quot;aaa.example.com&quot; i &quot;bbb.example.com&quot; nie są podobne)">
 
-<!ENTITY selection.removeTabSubTree.label     "Zamknij wybrane drzewa">
-<!ENTITY selection.removeTabSubTree.accesskey "M">
-<!ENTITY selection.createSubTree.label          "Zbierz do nowego drzewa">
-<!ENTITY selection.createSubTree.accesskey      "g">
+<!ENTITY selection.removeTabSubtree.label     "Zamknij wybrane drzewa">
+<!ENTITY selection.removeTabSubtree.accesskey "M">
+<!ENTITY selection.createSubtree.label          "Zbierz do nowego drzewa">
+<!ENTITY selection.createSubtree.accesskey      "g">
 
-<!ENTITY context.reloadTabSubTree.label     "Odśwież drzewo">
-<!ENTITY context.reloadTabSubTree.accesskey "r">
+<!ENTITY context.reloadTabSubtree.label     "Odśwież drzewo">
+<!ENTITY context.reloadTabSubtree.accesskey "r">
 <!ENTITY context.reloadDescendantTabs.label     "Odśwież potomne">
 <!ENTITY context.reloadDescendantTabs.accesskey "r">
-<!ENTITY context.removeTabSubTree.label     "Zamknij drzewo">
-<!ENTITY context.removeTabSubTree.accesskey "T">
+<!ENTITY context.removeTabSubtree.label     "Zamknij drzewo">
+<!ENTITY context.removeTabSubtree.accesskey "T">
 <!ENTITY context.removeDescendantTabs.label     "Zamknij potomne">
 <!ENTITY context.removeDescendantTabs.accesskey "M">
 <!ENTITY context.collapseAllSubtree.label     "Zwiń wszystkie drzewa">
@@ -172,7 +172,7 @@ When a tab gets focus, expand his tree and collapse others automatically
 <!ENTITY context.toggleFixed.label.horizontal "Stała pozycja i wysokość paska kart">
 <!ENTITY context.toggleFixed.label.vertical   "Stała szerokość paska kart">
 <!ENTITY context.toggleFixed.accesskey "S">
-<!ENTITY context.bookmarkTabSubTree.label     "Dodaj zakładki do tego drzewa…">
-<!ENTITY context.bookmarkTabSubTree.accesskey "A">
+<!ENTITY context.bookmarkTabSubtree.label     "Dodaj zakładki do tego drzewa…">
+<!ENTITY context.bookmarkTabSubtree.accesskey "A">
 
 <!ENTITY group.default "Nowa grupa">

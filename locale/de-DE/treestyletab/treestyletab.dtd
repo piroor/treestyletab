@@ -152,17 +152,17 @@
 
 
 
-<!ENTITY selection.removeTabSubTree.label     "Ausgewählte Zweige schließen">
-<!ENTITY selection.removeTabSubTree.accesskey "s">
-<!ENTITY selection.createSubTree.label          "Zweig auf oberste Ebene verschieben">
-<!ENTITY selection.createSubTree.accesskey      "g">
+<!ENTITY selection.removeTabSubtree.label     "Ausgewählte Zweige schließen">
+<!ENTITY selection.removeTabSubtree.accesskey "s">
+<!ENTITY selection.createSubtree.label          "Zweig auf oberste Ebene verschieben">
+<!ENTITY selection.createSubtree.accesskey      "g">
 
-<!ENTITY context.reloadTabSubTree.label     "Diesen Zweig neu laden">
-<!ENTITY context.reloadTabSubTree.accesskey "r">
+<!ENTITY context.reloadTabSubtree.label     "Diesen Zweig neu laden">
+<!ENTITY context.reloadTabSubtree.accesskey "r">
 <!ENTITY context.reloadDescendantTabs.label     "Untergeordnete Tabs neu laden">
 <!ENTITY context.reloadDescendantTabs.accesskey "r">
-<!ENTITY context.removeTabSubTree.label     "Diesen Zweig schließen">
-<!ENTITY context.removeTabSubTree.accesskey "s">
+<!ENTITY context.removeTabSubtree.label     "Diesen Zweig schließen">
+<!ENTITY context.removeTabSubtree.accesskey "s">
 <!ENTITY context.removeDescendantTabs.label     "Untergeordnete Tabs schließen">
 <!ENTITY context.removeDescendantTabs.accesskey "d">
 <!ENTITY context.collapseAllSubtree.label     "Alle Zweige zuklappen">
@@ -175,7 +175,7 @@
 <!ENTITY context.toggleFixed.label.horizontal "Feste Position und Höhe der Tableiste">
 <!ENTITY context.toggleFixed.label.vertical   "Feste Position und Breite der Tableiste">
 <!ENTITY context.toggleFixed.accesskey "f">
-<!ENTITY context.bookmarkTabSubTree.label     "Zweig als Lesezeichen speichern">
-<!ENTITY context.bookmarkTabSubTree.accesskey "t">
+<!ENTITY context.bookmarkTabSubtree.label     "Zweig als Lesezeichen speichern">
+<!ENTITY context.bookmarkTabSubtree.accesskey "t">
 
 <!ENTITY group.default "Neue Gruppe">

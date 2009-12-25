@@ -5,9 +5,9 @@ function TreeStyleTabBrowser(aTabBrowser)
  
 TreeStyleTabBrowser.prototype = { 
 
-	kMENUITEM_RELOADSUBTREE            : 'context-item-reloadTabSubTree',
+	kMENUITEM_RELOADSUBTREE            : 'context-item-reloadTabSubtree',
 	kMENUITEM_RELOADCHILDREN           : 'context-item-reloadDescendantTabs',
-	kMENUITEM_REMOVESUBTREE            : 'context-item-removeTabSubTree',
+	kMENUITEM_REMOVESUBTREE            : 'context-item-removeTabSubtree',
 	kMENUITEM_REMOVECHILDREN           : 'context-item-removeDescendantTabs',
 	kMENUITEM_COLLAPSEEXPAND_SEPARATOR : 'context-separator-collapseExpandAll',
 	kMENUITEM_COLLAPSE                 : 'context-item-collapseAllSubtree',
@@ -15,7 +15,7 @@ TreeStyleTabBrowser.prototype = {
 	kMENUITEM_AUTOHIDE_SEPARATOR       : 'context-separator-toggleAutoHide',
 	kMENUITEM_AUTOHIDE                 : 'context-item-toggleAutoHide',
 	kMENUITEM_FIXED                    : 'context-item-toggleFixed',
-	kMENUITEM_BOOKMARKSUBTREE          : 'context-item-bookmarkTabSubTree',
+	kMENUITEM_BOOKMARKSUBTREE          : 'context-item-bookmarkTabSubtree',
 	
 	mTabBrowser : null, 
 
@@ -481,17 +481,17 @@ TreeStyleTabBrowser.prototype = {
 			eval('b._beginRemoveTab = '+
 				b._beginRemoveTab.toSource().replace(
 					'if (l == 1) {',
-					'if (l == 1 || this.treeStyleTab.shouldCloseLastTabSubTreeOf(aTab)) {'
+					'if (l == 1 || this.treeStyleTab.shouldCloseLastTabSubtreeOf(aTab)) {'
 				).replace(
 					'this._removingTabs.length == 0',
-					'(this.treeStyleTab.shouldCloseLastTabSubTreeOf(aTab) || $&)'
+					'(this.treeStyleTab.shouldCloseLastTabSubtreeOf(aTab) || $&)'
 				)
 			);
 		}
 
 		eval('b.removeCurrentTab = '+b.removeCurrentTab.toSource().replace(
 			'{',
-			'{ if (!this.treeStyleTab.warnAboutClosingTabSubTreeOf(this.selectedTab)) return;'
+			'{ if (!this.treeStyleTab.warnAboutClosingTabSubtreeOf(this.selectedTab)) return;'
 		));
 
 		let (tabs, i, maxi) {
@@ -558,7 +558,7 @@ TreeStyleTabBrowser.prototype = {
 					'oncommand',
 					removeTabItem.getAttribute('oncommand').replace(
 						/(tabbrowser\.removeTab\(([^\)]+)\))/,
-						'if (tabbrowser.treeStyleTab.warnAboutClosingTabSubTreeOf($2)) $1'
+						'if (tabbrowser.treeStyleTab.warnAboutClosingTabSubtreeOf($2)) $1'
 					)
 				);
 			}
@@ -1596,7 +1596,7 @@ TreeStyleTabBrowser.prototype = {
 						this.partTab(aTab, {
 							dontUpdateIndent : true
 						});
-						this.moveTabSubTreeTo(aTab, this.getLastTab(b)._tPos);
+						this.moveTabSubtreeTo(aTab, this.getLastTab(b)._tPos);
 					} :
 				(parentTab ?
 					(
@@ -1743,7 +1743,7 @@ TreeStyleTabBrowser.prototype = {
 		this.initTabContents(tab);
 
 		if (this.hasChildTabs(tab) && !this.subTreeMovingCount) {
-			this.moveTabSubTreeTo(tab, tab._tPos);
+			this.moveTabSubtreeTo(tab, tab._tPos);
 		}
 
 		var parentTab = this.getParentTab(tab);
@@ -1968,8 +1968,8 @@ TreeStyleTabBrowser.prototype = {
 
 		this.setTabValue(tab, this.kID, id);
 
-		var isSubTreeCollapsed = restoringMultipleTabs && (this.getTabValue(tab, this.kSUBTREE_COLLAPSED) == 'true');
-		this.setTabValue(tab, this.kSUBTREE_COLLAPSED, isSubTreeCollapsed);
+		var isSubtreeCollapsed = restoringMultipleTabs && (this.getTabValue(tab, this.kSUBTREE_COLLAPSED) == 'true');
+		this.setTabValue(tab, this.kSUBTREE_COLLAPSED, isSubtreeCollapsed);
 
 		var tabs = [];
 		if (children) {
@@ -2061,8 +2061,8 @@ TreeStyleTabBrowser.prototype = {
 				b.moveTabTo(tab, newPos);
 		}
 
-		if (isSubTreeCollapsed) {
-			this.collapseExpandSubtree(tab, isSubTreeCollapsed, restoringMultipleTabs);
+		if (isSubtreeCollapsed) {
+			this.collapseExpandSubtree(tab, isSubtreeCollapsed, restoringMultipleTabs);
 		}
 
 		if (mayBeDuplicated) this.clearRedirectionTable();
@@ -2099,7 +2099,7 @@ TreeStyleTabBrowser.prototype = {
 					if (newPos > aChild._tPos) newPos--;
 				}
 				if (newPos > -1)
-					this.moveTabSubTreeTo(aChild, newPos);
+					this.moveTabSubtreeTo(aChild, newPos);
 			}, this);
 			children = aTab.getAttribute(this.kCHILDREN);
 		}
@@ -2187,7 +2187,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		if (aEvent.button == 1) {
 			let tab = this.getTabFromEvent(aEvent);
-			if (tab && !this.warnAboutClosingTabSubTreeOf(tab)) {
+			if (tab && !this.warnAboutClosingTabSubtreeOf(tab)) {
 				aEvent.preventDefault();
 				aEvent.stopPropagation();
 			}
@@ -2209,7 +2209,7 @@ TreeStyleTabBrowser.prototype = {
 
 		if (this.isEventFiredOnClosebox(aEvent)) {
 			let tab = this.getTabFromEvent(aEvent);
-			if (!this.warnAboutClosingTabSubTreeOf(tab)) {
+			if (!this.warnAboutClosingTabSubtreeOf(tab)) {
 				aEvent.preventDefault();
 				aEvent.stopPropagation();
 			}
@@ -2343,7 +2343,7 @@ TreeStyleTabBrowser.prototype = {
 				case this.kMENUITEM_COLLAPSE:
 				case this.kMENUITEM_EXPAND:
 				case this.kMENUITEM_BOOKMARKSUBTREE:
-					this.showHideSubTreeMenuItem(item, [b.mContextTab]);
+					this.showHideSubtreeMenuItem(item, [b.mContextTab]);
 					break;
 				default:
 					break;
@@ -3047,7 +3047,7 @@ TreeStyleTabBrowser.prototype = {
 
 		if (!aInfo.dontMove) {
 			if (newIndex > aChild._tPos) newIndex--;
-			this.moveTabSubTreeTo(aChild, newIndex);
+			this.moveTabSubtreeTo(aChild, newIndex);
 		}
 
 		if (!aInfo.dontExpand) {
@@ -3379,7 +3379,7 @@ TreeStyleTabBrowser.prototype = {
   
 /* move */ 
 	
-	moveTabSubTreeTo : function TSTBrowser_moveTabSubTreeTo(aTab, aIndex) 
+	moveTabSubtreeTo : function TSTBrowser_moveTabSubtreeTo(aTab, aIndex) 
 	{
 		if (!aTab) return;
 
@@ -3459,7 +3459,7 @@ TreeStyleTabBrowser.prototype = {
 		}, this);
 
 		if (!aCollapse)
-			this.scrollToTabSubTree(aTab);
+			this.scrollToTabSubtree(aTab);
 
 		this.doingCollapseExpand = false;
 	},
@@ -3824,7 +3824,7 @@ TreeStyleTabBrowser.prototype = {
 		this.scrollTo(targetX, targetY);
 	},
  
-	scrollToTabSubTree : function TSTBrowser_scrollToTabSubTree(aTab) 
+	scrollToTabSubtree : function TSTBrowser_scrollToTabSubtree(aTab) 
 	{
 		var b          = this.mTabBrowser;
 		var descendant = this.getDescendantTabs(aTab);

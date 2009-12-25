@@ -150,17 +150,17 @@
 
 
 
-<!ENTITY selection.removeTabSubTree.label       "すべてのツリーを閉じる">
-<!ENTITY selection.removeTabSubTree.accesskey   "s">
-<!ENTITY selection.createSubTree.label          "ひとつのツリーに集める">
-<!ENTITY selection.createSubTree.accesskey      "g">
+<!ENTITY selection.removeTabSubtree.label       "すべてのツリーを閉じる">
+<!ENTITY selection.removeTabSubtree.accesskey   "s">
+<!ENTITY selection.createSubtree.label          "ひとつのツリーに集める">
+<!ENTITY selection.createSubtree.accesskey      "g">
 
-<!ENTITY context.reloadTabSubTree.label         "このツリーを再読み込み">
-<!ENTITY context.reloadTabSubTree.accesskey     "r">
+<!ENTITY context.reloadTabSubtree.label         "このツリーを再読み込み">
+<!ENTITY context.reloadTabSubtree.accesskey     "r">
 <!ENTITY context.reloadDescendantTabs.label     "このタブの子タブをすべて再読み込み">
 <!ENTITY context.reloadDescendantTabs.accesskey "r">
-<!ENTITY context.removeTabSubTree.label         "このツリーを閉じる">
-<!ENTITY context.removeTabSubTree.accesskey     "s">
+<!ENTITY context.removeTabSubtree.label         "このツリーを閉じる">
+<!ENTITY context.removeTabSubtree.accesskey     "s">
 <!ENTITY context.removeDescendantTabs.label     "このタブの子タブをすべて閉じる">
 <!ENTITY context.removeDescendantTabs.accesskey "d">
 <!ENTITY context.collapseAllSubtree.label       "ツリーをすべてたたむ">
@@ -173,7 +173,7 @@
 <!ENTITY context.toggleFixed.label.horizontal   "タブバーの位置と高さを固定">
 <!ENTITY context.toggleFixed.label.vertical     "タブバーの位置と幅を固定">
 <!ENTITY context.toggleFixed.accesskey          "f">
-<!ENTITY context.bookmarkTabSubTree.label       "このツリーをブックマーク...">
-<!ENTITY context.bookmarkTabSubTree.accesskey   "t">
+<!ENTITY context.bookmarkTabSubtree.label       "このツリーをブックマーク...">
+<!ENTITY context.bookmarkTabSubtree.accesskey   "t">
 
 <!ENTITY group.default "新しいグループ">
