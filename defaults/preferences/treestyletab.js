@@ -86,12 +86,12 @@ pref("extensions.treestyletab.dropLinksOnTab.behavior", 0);
 pref("extensions.treestyletab.openGroupBookmark.behavior", 256);
 pref("extensions.treestyletab.useEffectiveTLD", true);
 
-pref("extensions.treestyletab.autoCollapseExpandSubTreeOnSelect",      true);
-pref("extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove", true);
-pref("extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut", false);
-pref("extensions.treestyletab.collapseExpandSubTree.dblclick",         false);
-pref("extensions.treestyletab.autoExpandSubTreeOnCollapsedChildFocused", true);
-pref("extensions.treestyletab.autoExpandSubTreeOnAppendChild",         true);
+pref("extensions.treestyletab.autoCollapseExpandSubtreeOnSelect",      true);
+pref("extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove", true);
+pref("extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut", false);
+pref("extensions.treestyletab.collapseExpandSubtree.dblclick",         false);
+pref("extensions.treestyletab.autoExpandSubtreeOnCollapsedChildFocused", true);
+pref("extensions.treestyletab.autoExpandSubtreeOnAppendChild",         true);
 pref("extensions.treestyletab.autoAttachNewTabsAsChildren", true);
 // 0 = default, 1 = only visible tabs
 pref("extensions.treestyletab.focusMode", 1);
@@ -108,7 +108,7 @@ pref("extensions.treestyletab.closeParentBehavior", 3);
   Note: this affects only when closeParentBehavior == 0
 */
 pref("extensions.treestyletab.closeRootBehavior", 3);
-pref("extensions.treestyletab.createSubTree.underParent", true);
+pref("extensions.treestyletab.createSubtree.underParent", true);
 
 
 pref("browser.link.open_newwindow.restriction.override", 0);

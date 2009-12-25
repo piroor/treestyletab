@@ -118,13 +118,13 @@
 
 <!ENTITY config.tabs.tree "ツリー">
 
-<!ENTITY config.autoCollapseExpandSubTreeOnSelect "タブを切り替えた時は、フォーカスされたタブのツリーを自動的に展開して、他のツリーを折り畳む">
-<!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "現在のタブを閉じてタブのフォーカスが切り替わった場合は何もしない">
+<!ENTITY config.autoCollapseExpandSubtreeOnSelect "タブを切り替えた時は、フォーカスされたタブのツリーを自動的に展開して、他のツリーを折り畳む">
+<!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "現在のタブを閉じてタブのフォーカスが切り替わった場合は何もしない">
 
 <!ENTITY config.focusMode "Control(Command)-Tabでタブを切り替える時、折りたたまれたタブにもフォーカスする">
 
-<!ENTITY config.collapseExpandSubTree.dblclick "タブのダブルクリックでツリーを開閉する">
-<!ENTITY config.autoExpandSubTreeOnAppendChild "折り畳まれたツリー内に子孫のタブが追加された時、ツリーを自動的に展開する">
+<!ENTITY config.collapseExpandSubtree.dblclick "タブのダブルクリックでツリーを開閉する">
+<!ENTITY config.autoExpandSubtreeOnAppendChild "折り畳まれたツリー内に子孫のタブが追加された時、ツリーを自動的に展開する">
 
 <!ENTITY config.closeParentBehavior.caption      "親のタブを閉じた時の挙動">
 <!ENTITY config.closeParentBehavior.close        "子孫のタブも一緒に閉じる">

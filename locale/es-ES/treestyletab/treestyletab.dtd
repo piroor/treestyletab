@@ -120,11 +120,11 @@
 
 <!ENTITY config.tabs.tree "Tree">
 
-<!--ENTITY config.autoCollapseExpandSubTreeOnSelect "Colapsar otros árboles automáticamente cuando una pestaña es abierta o seleccionada"-->
-<!ENTITY config.autoCollapseExpandSubTreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
-<!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
-<!ENTITY config.collapseExpandSubTree.dblclick "Colapsar/Expandir sub-árboles de la pestaña al hacer doble-click">
-<!ENTITY config.autoExpandSubTreeOnAppendChild "Expandir sub-árboles automáticamente cuando una pestaña es insertada dentro del sub-árbol">
+<!--ENTITY config.autoCollapseExpandSubtreeOnSelect "Colapsar otros árboles automáticamente cuando una pestaña es abierta o seleccionada"-->
+<!ENTITY config.autoCollapseExpandSubtreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
+<!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
+<!ENTITY config.collapseExpandSubtree.dblclick "Colapsar/Expandir sub-árboles de la pestaña al hacer doble-click">
+<!ENTITY config.autoExpandSubtreeOnAppendChild "Expandir sub-árboles automáticamente cuando una pestaña es insertada dentro del sub-árbol">
 
 <!ENTITY config.closeParentBehavior.caption       "When a parent tab is closed">
 <!ENTITY config.closeParentBehavior.close         "Close child tabs too">

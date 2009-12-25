@@ -119,11 +119,11 @@
 
 <!ENTITY config.tabs.tree "Drzewo">
 
-<!ENTITY config.autoCollapseExpandSubTreeOnSelect "Rozwijaj drzewo wybranej karty i zwijaj pozostałe">
+<!ENTITY config.autoCollapseExpandSubtreeOnSelect "Rozwijaj drzewo wybranej karty i zwijaj pozostałe">
 When a tab gets focus, expand his tree and collapse others automatically
-<!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "Poza przypadkiem, gdy wybór się zmieni na skutek zamknięcia bieżącej karty">
-<!ENTITY config.collapseExpandSubTree.dblclick "Zwijaj/rozwijaj drzewo potomne karty za pomocą dwukrotnego kliknięcia">
-<!ENTITY config.autoExpandSubTreeOnAppendChild "Rozwijaj drzewo potomne automatycznie, gdy są do niego wstawione karty">
+<!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "Poza przypadkiem, gdy wybór się zmieni na skutek zamknięcia bieżącej karty">
+<!ENTITY config.collapseExpandSubtree.dblclick "Zwijaj/rozwijaj drzewo potomne karty za pomocą dwukrotnego kliknięcia">
+<!ENTITY config.autoExpandSubtreeOnAppendChild "Rozwijaj drzewo potomne automatycznie, gdy są do niego wstawione karty">
 
 <!ENTITY config.closeParentBehavior.caption       "Kiedy karta nadrzędna jest zamykana:">
 <!ENTITY config.closeParentBehavior.close         "Zamykaj również potomne karty">

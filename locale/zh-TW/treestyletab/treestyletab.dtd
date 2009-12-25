@@ -120,11 +120,11 @@
 
 <!ENTITY config.tabs.tree "樹狀結構">
 
-<!--ENTITY config.autoCollapseExpandSubTreeOnSelect "當開新分頁或切換分頁時，自動摺疊無關的子樹"-->
-<!ENTITY config.autoCollapseExpandSubTreeOnSelect "切換分頁時，自動展開該子樹並摺疊無關者">
-<!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "不包括因關閉當前分頁而造成的切換">
-<!ENTITY config.collapseExpandSubTree.dblclick "按兩下分頁開關子樹">
-<!ENTITY config.autoExpandSubTreeOnAppendChild "當新增分頁到子樹時，自動展開子樹">
+<!--ENTITY config.autoCollapseExpandSubtreeOnSelect "當開新分頁或切換分頁時，自動摺疊無關的子樹"-->
+<!ENTITY config.autoCollapseExpandSubtreeOnSelect "切換分頁時，自動展開該子樹並摺疊無關者">
+<!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "不包括因關閉當前分頁而造成的切換">
+<!ENTITY config.collapseExpandSubtree.dblclick "按兩下分頁開關子樹">
+<!ENTITY config.autoExpandSubtreeOnAppendChild "當新增分頁到子樹時，自動展開子樹">
 
 <!ENTITY config.closeParentBehavior.caption "當關閉親分頁時">
 <!ENTITY config.closeParentBehavior.close   "一併關閉所屬子分頁">

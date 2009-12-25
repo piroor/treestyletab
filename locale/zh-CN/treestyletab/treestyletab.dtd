@@ -118,10 +118,10 @@
 
 <!ENTITY config.tabs.tree "树状结构">
 
-<!ENTITY config.autoCollapseExpandSubTreeOnSelect "某一标签获得焦点时，自动展开该标签子树并折叠其他标签树">
-<!ENTITY config.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove "当前标签关闭引起的焦点转移除外">
-<!ENTITY config.collapseExpandSubTree.dblclick "通过双击折叠/展开标签的子树">
-<!ENTITY config.autoExpandSubTreeOnAppendChild "当标签被插入子树时，自动展开子树">
+<!ENTITY config.autoCollapseExpandSubtreeOnSelect "某一标签获得焦点时，自动展开该标签子树并折叠其他标签树">
+<!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "当前标签关闭引起的焦点转移除外">
+<!ENTITY config.collapseExpandSubtree.dblclick "通过双击折叠/展开标签的子树">
+<!ENTITY config.autoExpandSubtreeOnAppendChild "当标签被插入子树时，自动展开子树">
 
 <!ENTITY config.closeParentBehavior.caption       "关闭父标签时">
 <!ENTITY config.closeParentBehavior.close         "同时关闭子标签">

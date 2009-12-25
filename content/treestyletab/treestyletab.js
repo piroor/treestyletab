@@ -1429,6 +1429,13 @@ var TreeStyleTabService = {
 				}
 			case 4:
 				[
+					'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect',
+					'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove',
+					'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut',
+					'extensions.treestyletab.autoExpandSubTreeOnAppendChild',
+					'extensions.treestyletab.autoExpandSubTreeOnCollapsedChildFocused',
+					'extensions.treestyletab.collapseExpandSubTree.dblclick',
+					'extensions.treestyletab.createSubTree.underParent',
 					'extensions.treestyletab.show.context-item-reloadTabSubTree',
 					'extensions.treestyletab.show.context-item-removeTabSubTree',
 					'extensions.treestyletab.show.context-item-bookmarkTabSubTree',
@@ -1499,7 +1506,7 @@ var TreeStyleTabService = {
 		this.onPrefChange('extensions.treestyletab.animation.indent.duration');
 		this.onPrefChange('extensions.treestyletab.animation.collapse.duration');
 		this.onPrefChange('extensions.treestyletab.twisty.expandSensitiveArea');
-		this.onPrefChange('extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut');
+		this.onPrefChange('extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut');
 	},
 	initialized : false,
 	initUninstallationListener : function TSTService_initUninstallationListener()
@@ -2328,8 +2335,8 @@ catch(e) {
 	get shouldListenKeyEventsForAutoExpandByFocusChange() 
 	{
 		return !this.ctrlTabPreviewsEnabled &&
-				!this.getTreePref('autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut') &&
-				this.getTreePref('autoCollapseExpandSubTreeOnSelect');
+				!this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut') &&
+				this.getTreePref('autoCollapseExpandSubtreeOnSelect');
 	},
  
 	get ctrlTabPreviewsEnabled() 
@@ -2598,7 +2605,7 @@ catch(e) {
 			aTabs.indexOf(next) > -1
 		);
 
-		var root = this.getTreePref('createSubTree.underParent') ?
+		var root = this.getTreePref('createSubtree.underParent') ?
 					b.addTab(this.getGroupTabURI()) :
 					aTabs.shift() ;
 		window.setTimeout(function(aSelf) {
@@ -2714,7 +2721,7 @@ catch(e) {
  
 	expandTreeAfterKeyReleased : function TSTService_expandTreeAfterKeyReleased(aTab) 
 	{
-		if (this.getTreePref('autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut')) return;
+		if (this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut')) return;
 		this._tabShouldBeExpandedAfterKeyReleased = aTab || null;
 	},
 	_tabShouldBeExpandedAfterKeyReleased : null,
@@ -2886,8 +2893,8 @@ catch(e) {
 
 			case 'browser.ctrlTab.previews':
 				TreeStyleTabBrowserAutoHide.updateKeyListeners();
-			case 'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut':
-			case 'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect':
+			case 'extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut':
+			case 'extensions.treestyletab.autoCollapseExpandSubtreeOnSelect':
 				if (this.shouldListenKeyEventsForAutoExpandByFocusChange)
 					this.startListenKeyEventsFor(this.LISTEN_FOR_AUTOEXPAND_BY_FOCUSCHANGE);
 				else

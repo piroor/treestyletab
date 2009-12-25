@@ -2143,7 +2143,7 @@ TreeStyleTabBrowser.prototype = {
 		var tab = b.selectedTab
 
 		if (this.isCollapsed(tab)) {
-			if (this.getTreePref('autoExpandSubTreeOnCollapsedChildFocused')) {
+			if (this.getTreePref('autoExpandSubtreeOnCollapsedChildFocused')) {
 				var parentTab = tab;
 				while (parentTab = this.getParentTab(parentTab))
 				{
@@ -2156,10 +2156,10 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 		else if (
-				this.getTreePref('autoCollapseExpandSubTreeOnSelect') &&
+				this.getTreePref('autoCollapseExpandSubtreeOnSelect') &&
 				(
 					!this._focusChangedByCurrentTabRemove ||
-					this.getTreePref('autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove')
+					this.getTreePref('autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove')
 				)
 				) {
 			if (!this.hasChildTabs(tab) || !this.isSubtreeCollapsed(tab))
@@ -2168,7 +2168,7 @@ TreeStyleTabBrowser.prototype = {
 			if (
 				this._focusChangedByShortcut &&
 				this.accelKeyPressed &&
-				!this.getTreePref('autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut')
+				!this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut')
 				) {
 				TreeStyleTabService.expandTreeAfterKeyReleased(tab);
 			}
@@ -2250,7 +2250,7 @@ TreeStyleTabBrowser.prototype = {
 		var tab = this.getTabFromEvent(aEvent);
 		if (tab &&
 			this.hasChildTabs(tab) &&
-			this.getTreePref('collapseExpandSubTree.dblclick')) {
+			this.getTreePref('collapseExpandSubtree.dblclick')) {
 			this.collapseExpandSubtree(tab, tab.getAttribute(this.kSUBTREE_COLLAPSED) != 'true');
 			aEvent.preventDefault();
 			aEvent.stopPropagation();
@@ -3051,7 +3051,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		if (!aInfo.dontExpand) {
-			if (this.getTreePref('autoCollapseExpandSubTreeOnSelect')) {
+			if (this.getTreePref('autoCollapseExpandSubtreeOnSelect')) {
 				if (this.shouldTabAutoExpanded(aParent))
 					this.collapseExpandTreesIntelligentlyFor(aParent);
 				var p = aParent;
@@ -3062,7 +3062,7 @@ TreeStyleTabBrowser.prototype = {
 				while (p = this.getParentTab(p));
 			}
 			else if (this.shouldTabAutoExpanded(aParent)) {
-				if (this.getTreePref('autoExpandSubTreeOnAppendChild')) {
+				if (this.getTreePref('autoExpandSubtreeOnAppendChild')) {
 					var p = aParent;
 					do {
 						if (this.shouldTabAutoExpanded(p))
