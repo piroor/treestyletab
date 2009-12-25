@@ -1,3 +1,6 @@
+var EXPORTED_SYMBOLS = ['window'];
+var window = {};
+
 /*
  Preferences Library
 

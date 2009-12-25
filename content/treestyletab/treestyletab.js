@@ -455,18 +455,16 @@ var TreeStyleTabService = {
  
 	get currentTabbarPosition() /* PUBLIC API */ 
 	{
-		return this.getTreePref('tabbar.position') || 'top';
+		return this.common.currentTabbarPosition;
 	},
 	set currentTabbarPosition(aValue)
 	{
-		var position = String(aValue);
-		if (!position || !/^(top|bottom|left|right)$/i.test(position))
-			position = 'top';
-
-		position = position.toLowerCase();
-		this.setTreePref('tabbar.position', position);
-
-		return aValue;
+		return this.common.currentTabbarPosition = aValue;
+	},
+ 
+	rollbackTabbarPosition : function TSTService_rollbackTabbarPosition() /* PUBLIC API */ 
+	{
+		return this.common.rollbackTabbarPosition();
 	},
   
 /* backward compatibility */ 
@@ -1319,6 +1317,14 @@ var TreeStyleTabService = {
 
 		window.removeEventListener('DOMContentLoaded', this, true);
 		if (!document.getElementById('content')) return;
+
+		var namespace = {};
+		Components.utils.import(
+			'resource://treestyletab-modules/common.jsm',
+			namespace
+		);
+		this.common = namespace.TreeStyleTabCommon;
+		this.common.init();
 
 		window.addEventListener('SSTabRestoring', this, true);
 
@@ -2935,7 +2941,14 @@ catch(e) {
    
 }; 
 
-TreeStyleTabService.__proto__ = window['piro.sakura.ne.jp'].prefs;
+(function() {
+	var namespace = {};
+	Components.utils.import(
+		'resource://treestyletab-modules/prefs.js',
+		namespace
+	);
+	TreeStyleTabService.__proto__ = namespace.window['piro.sakura.ne.jp'].prefs;
+})();
 window.addEventListener('DOMContentLoaded', TreeStyleTabService, true);
 window.addEventListener('load', TreeStyleTabService, false);
 TreeStyleTabService.ObserverService.addObserver(TreeStyleTabService, 'sessionstore-windows-restored', false);

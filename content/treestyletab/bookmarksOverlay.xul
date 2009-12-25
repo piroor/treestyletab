@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-<script src="res/prefs.js" type="application/x-javascript; version=1.7"/>
 <script src="res/boxObject.js" type="application/x-javascript; version=1.7"/>
 <script src="res/stringBundle.js" type="application/x-javascript; version=1.7"/>
 <script src="res/animationManager.js" type="application/x-javascript; version=1.7"/>
