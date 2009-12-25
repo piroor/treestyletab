@@ -280,6 +280,17 @@ var TreeStyleTabUtils = {
 		return boxObject.getBoxObjectFor(aNode);
 	},
  
+	evalInSandbox : function(aCode, aOwner)
+	{
+		try {
+			var sandbox = new Components.utils.Sandbox(aOwner || 'about:blank');
+			return Components.utils.evalInSandbox(aCode, sandbox);
+		}
+		catch(e) {
+		}
+		return void(0);
+	},
+ 
 	get browserWindow() 
 	{
 		return this.WindowMediator.getMostRecentWindow('navigator:browser');

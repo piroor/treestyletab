@@ -109,6 +109,7 @@ pref("extensions.treestyletab.closeParentBehavior", 3);
 */
 pref("extensions.treestyletab.closeRootBehavior", 3);
 pref("extensions.treestyletab.createSubtree.underParent", true);
+pref("extensions.treestyletab.undoCloseTabSubtree", true);
 
 
 pref("browser.link.open_newwindow.restriction.override", 0);

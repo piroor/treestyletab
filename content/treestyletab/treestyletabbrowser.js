@@ -960,7 +960,7 @@ TreeStyleTabBrowser.prototype = {
 		this.startRendering();
 	},
 	
-	_ensureNewSplitter : function TSTBrowser__ensureNewSplitter()
+	_ensureNewSplitter : function TSTBrowser__ensureNewSplitter() 
 	{
 		var splitter = document.getAnonymousElementByAttribute(this.mTabBrowser, 'class', this.kSPLITTER);
 
@@ -1891,7 +1891,8 @@ TreeStyleTabBrowser.prototype = {
 	{
 		this.restoreStructure(aEvent.originalTarget);
 	},
-	restoreStructure : function TSTBrowser_restoreStructure(aTab)
+	
+	restoreStructure : function TSTBrowser_restoreStructure(aTab) 
 	{
 		/*
 			ウィンドウの復元では以下の順に処理が走る。
@@ -1961,7 +1962,9 @@ TreeStyleTabBrowser.prototype = {
 			});
 		}
 
+		var closeSetId = null;
 		if (!mayBeDuplicated) {
+			closeSetId = this.getTabValue(tab, this.kCLOSED_SET_ID);
 			/* If it has a parent, it is wrongly attacched by tab moving
 			   on restoring. Restoring the old ID (the next statement)
 			   breaks the children list of the temporary parent and causes
@@ -1969,8 +1972,12 @@ TreeStyleTabBrowser.prototype = {
 			   from the temporary parent manually. */
 			this.resetTab(tab, false);
 		}
+		this.deleteTabValue(tab, this.kCLOSED_SET_ID);
 
 		this.setTabValue(tab, this.kID, id);
+
+		if (closeSetId)
+			this.restoreClosedSet(closeSetId, tab);
 
 		var isSubtreeCollapsed = restoringMultipleTabs && (this.getTabValue(tab, this.kSUBTREE_COLLAPSED) == 'true');
 		this.setTabValue(tab, this.kSUBTREE_COLLAPSED, isSubtreeCollapsed);
@@ -2065,13 +2072,14 @@ TreeStyleTabBrowser.prototype = {
 				b.moveTabTo(tab, newPos);
 		}
 
-		if (isSubtreeCollapsed) {
+		if (isSubtreeCollapsed)
 			this.collapseExpandSubtree(tab, isSubtreeCollapsed, restoringMultipleTabs);
-		}
 
-		if (mayBeDuplicated) this.clearRedirectionTable();
+		if (mayBeDuplicated)
+			this.clearRedirectionTable();
 	},
-	correctChildTabsOrderWithDelay : function TSTBrowser_correctChildTabsOrderWithDelay(aTab)
+ 
+	correctChildTabsOrderWithDelay : function TSTBrowser_correctChildTabsOrderWithDelay(aTab) 
 	{
 		if (aTab.correctChildTabsOrderWithDelayTimer)
 			window.clearTimeout(aTab.correctChildTabsOrderWithDelayTimer);
@@ -2080,7 +2088,8 @@ TreeStyleTabBrowser.prototype = {
 			aSelf.correctChildTabsOrder(aTab);
 		}, 10, this);
 	},
-	correctChildTabsOrder : function TSTBrowser_correctChildTabsOrder(aTab)
+ 
+	correctChildTabsOrder : function TSTBrowser_correctChildTabsOrder(aTab) 
 	{
 		var restoringChildren = aTab.getAttribute(this.kCHILDREN_RESTORING);
 		if (!restoringChildren) return;
@@ -2113,7 +2122,7 @@ TreeStyleTabBrowser.prototype = {
 
 		aTab.correctChildTabsOrderWithDelayTimer = null;
 	},
-	
+ 
 	redirectId : function TSTBrowser_redirectId(aId) 
 	{
 		if (!(aId in this._redirectionTable))
@@ -2133,6 +2142,47 @@ TreeStyleTabBrowser.prototype = {
 		}, 1000, this);
 	},
 	_clearRedirectionTableTimer : null,
+ 
+	restoreClosedSet : function(aId, aRestoredTab)
+	{
+		if (
+			this.useTMPSessionAPI ||
+			this._restoringClosedSet ||
+			!this.getTreePref('undoCloseTabSubtree')
+			)
+			return;
+
+		var items = this.evalInSandbox('('+this.SessionStore.getClosedTabData(window)+')');
+		var indexes = [];
+		items.forEach(function(aItem, aIndex) {
+			if (aItem.state.extData &&
+				aItem.state.extData[this.kCLOSED_SET_ID] &&
+				aItem.state.extData[this.kCLOSED_SET_ID] == aId)
+				indexes.push(aIndex);
+		}, this);
+
+		if (!indexes.length) return;
+
+		this._restoringClosedSet = true;
+		this.stopRendering();
+
+		TreeStyleTabService.restoringWindow = true;
+
+		var offset = 0;
+		indexes.forEach(function(aIndex) {
+			undoCloseTab(aIndex - (offset++));
+		});
+
+		if (aRestoredTab) {
+			window.setTimeout(function(aSelf) {
+				aSelf.mTabBrowser.selectedTab = aRestoredTab;
+			}, 0, this);
+		}
+
+		this.startRendering();
+		this._restoringClosedSet = false;
+	},
+	_restoringClosedSet : false,
   
 	onTabRestored : function TSTBrowser_onTabRestored(aEvent) 
 	{
