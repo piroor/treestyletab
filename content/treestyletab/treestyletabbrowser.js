@@ -2165,7 +2165,7 @@ TreeStyleTabBrowser.prototype = {
 				indexes.push(aIndex);
 		}, this);
 
-		var count = aId.split('::')[1];
+		var count = parseInt(aId.split('::')[1]);
 
 		if (
 			!indexes.length ||
