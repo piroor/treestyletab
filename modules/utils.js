@@ -409,22 +409,22 @@ var TreeStyleTabUtils = {
 		if (!tab || !this.hasChildTabs(tab)) return false;
 
 		var expression = 'ancestor-or-self::*[@class="'+this.kTWISTY+'"]';
-		if (this.shouldExpandTwistyArea && !this._expandTwistyAreaBlockeds.length)
+		if (this.shouldExpandTwistyArea && !this._expandTwistyAreaBlockers.length)
 			expression += ' | ancestor-or-self::*[@class="tab-icon" and ancestor::xul:tabbrowser[@'+this.kMODE+'="vertical"]]';
 
 		return this.evaluateXPath(
 				expression,
 				aEvent.originalTarget || aEvent.target,
-				XPathResult.BOOLEAN_TYPE
+				Ci.nsIDOMXPathResult.BOOLEAN_TYPE
 			).booleanValue;
 	},
 	
 	registerExpandTwistyAreaBlocker : function TSTUtils_registerExpandTwistyAreaBlocker(aBlocker) /* PUBLIC API */ 
 	{
-		if (this._expandTwistyAreaBlockeds.indexOf(aBlocker) < 0)
-			this._expandTwistyAreaBlockeds.push(aBlocker);
+		if (this._expandTwistyAreaBlockers.indexOf(aBlocker) < 0)
+			this._expandTwistyAreaBlockers.push(aBlocker);
 	},
-	_expandTwistyAreaBlockeds : [],
+	_expandTwistyAreaBlockers : [],
  
 	registerExpandTwistyAreaAllowance : function TSTUtils_registerExpandTwistyAreaAllowance(aAllowance) /* PUBLIC API, obsolete, for backward compatibility */ 
 	{
