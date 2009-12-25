@@ -1427,6 +1427,9 @@ TreeStyleTabBrowser.prototype = {
 		var tab = aTab || aEvent.originalTarget;
 		var b   = this.mTabBrowser;
 
+		if (this.isTabInitialized(tab))
+			return false;
+
 		this.initTab(tab);
 
 		var hasStructure = this.treeStructure && this.treeStructure.length;
@@ -1512,6 +1515,8 @@ TreeStyleTabBrowser.prototype = {
 					TreeStyleTabService.restoringWindow = true;
 			}, 0, this);
 		}
+
+		return true;
 	},
 	_checkRestoringWindowTimerOnTabAdded : null,
  
@@ -1732,8 +1737,7 @@ TreeStyleTabBrowser.prototype = {
 		var b   = this.mTabBrowser;
 
 		// When the tab was moved before TabOpen event is fired, we have to update manually.
-		if (!this.isTabInitialized(tab))
-			this.onTabAdded(null, tab);
+		var newlyOpened = !this.isTabInitialized(tab) && this.onTabAdded(null, tab);
 
 		// twisty vanished after the tab is moved!!
 		this.initTabContents(tab);
@@ -1789,7 +1793,10 @@ TreeStyleTabBrowser.prototype = {
 
 		if (
 			this.subTreeMovingCount ||
-			this.internallyTabMovingCount
+			this.internallyTabMovingCount ||
+			// We don't have to fixup tree structure for a NEW TAB
+			// which has already been structured.
+			(newlyOpened && this.getParentTab(tab))
 			)
 			return;
 
