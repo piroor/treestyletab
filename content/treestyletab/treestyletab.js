@@ -1,61 +1,4 @@
 var TreeStyleTabService = { 
-	/* attributes */
-	kID                 : 'treestyletab-id',
-	kCHILDREN           : 'treestyletab-children',
-	kPARENT             : 'treestyletab-parent',
-	kANCESTOR           : 'treestyletab-ancestors',
-	kNEST               : 'treestyletab-nest',
-	kINSERT_BEFORE      : 'treestyletab-insert-before',
-	kINSERT_AFTER       : 'treestyletab-insert-after',
-
-	kID_RESTORING       : 'treestyletab-id-restoring',
-	kCHILDREN_RESTORING : 'treestyletab-children-restoring',
-
-	kSUBTREE_COLLAPSED  : 'treestyletab-subtree-collapsed',
-	kCOLLAPSED          : 'treestyletab-collapsed',
-	kCOLLAPSED_DONE     : 'treestyletab-collapsed-done',
-	kCOLLAPSING         : 'treestyletab-collapsing',
-	kALLOW_COLLAPSE     : 'treestyletab-allow-subtree-collapse',
-
-	kX_OFFSET           : 'treestyletab-x-offset',
-	kY_OFFSET           : 'treestyletab-y-offset',
-
-	kTABBAR_POSITION    : 'treestyletab-tabbar-position',
-	kMODE               : 'treestyletab-mode',
-
-	kHIDE_ALLTABS       : 'treestyletab-hide-alltabs-button',
-	kSTYLE              : 'treestyletab-style',
-	kFIRSTTAB_BORDER    : 'treestyletab-firsttab-border',
-	kFIXED              : 'treestyletab-tabbar-fixed',
-	kRESIZING           : 'treestyletab-tabbar-resizing',
-	kINDENTED           : 'treestyletab-tabs-indented',
-
-	kTAB_INVERTED          : 'treestyletab-tab-inverted',
-	kTAB_CONTENTS_INVERTED : 'treestyletab-tab-contents-inverted',
-	kCLOSEBOX_INVERTED     : 'treestyletab-closebox-inverted',
-	kSCROLLBAR_INVERTED    : 'treestyletab-scrollbar-inverted',
-
-	kTWISTY_HOVER       : 'treestyletab-twisty-hover',
-	kTWISTY_STYLE       : 'treestyletab-twisty-style',
-
-	kDROP_POSITION      : 'treestyletab-drop-position',
-	kDRAG_TYPE_TABBAR   : 'application/x-moz-treestyletab-tabbrowser-tabbar',
-	kDROP_POSITION_UNKNOWN : 'unknown',
-	kTABBAR_MOVE_FORCE  : 'force',
-	kTABBAR_MOVE_NORMAL : 'normal',
-
-	/* classes */
-	kTWISTY                : 'treestyletab-twisty',
-	kTWISTY_CONTAINER      : 'treestyletab-twisty-container',
-	kDROP_MARKER           : 'treestyletab-drop-marker',
-	kDROP_MARKER_CONTAINER : 'treestyletab-drop-marker-container',
-	kCOUNTER               : 'treestyletab-counter',
-	kCOUNTER_CONTAINER     : 'treestyletab-counter-container',
-	kSPLITTER              : 'treestyletab-splitter',
-	kTABBAR_TOGGLER        : 'treestyletab-tabbar-toggler',
-
-	kMENUITEM_REMOVESUBTREE_SELECTION : 'multipletab-selection-item-removeTabSubtree',
-
 	kFOCUS_ALL     : 0,
 	kFOCUS_VISIBLE : 1,
 
@@ -94,107 +37,6 @@ var TreeStyleTabService = {
 	indentDuration   : 200,
 	collapseDuration : 150,
 
-	NSResolver : {
-		lookupNamespaceURI : function(aPrefix)
-		{
-			switch (aPrefix)
-			{
-				case 'xul':
-					return 'http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul';
-				case 'html':
-				case 'xhtml':
-					return 'http://www.w3.org/1999/xhtml';
-				case 'xlink':
-					return 'http://www.w3.org/1999/xlink';
-				default:
-					return '';
-			}
-		}
-	},
-
-	get SessionStore() {
-		if (!this._SessionStore) {
-			this._SessionStore = Components
-					.classes['@mozilla.org/browser/sessionstore;1']
-					.getService(Components.interfaces.nsISessionStore);
-		}
-		return this._SessionStore;
-	},
-	_SessionStore : null,
-
-	get ObserverService() {
-		if (!this._ObserverService) {
-			this._ObserverService = Components
-					.classes['@mozilla.org/observer-service;1']
-					.getService(Components.interfaces.nsIObserverService);
-		}
-		return this._ObserverService;
-	},
-	_ObserverService : null,
-
-	get IOService() {
-		if (!this._IOService) {
-			this._IOService = Components
-					.classes['@mozilla.org/network/io-service;1']
-					.getService(Components.interfaces.nsIIOService);
-		}
-		return this._IOService;
-	},
-	_IOService : null,
-
-	get WindowMediator() {
-		if (!this._WindowMediator) {
-			this._WindowMediator = Components
-					.classes['@mozilla.org/appshell/window-mediator;1']
-					.getService(Components.interfaces.nsIWindowMediator);
-		}
-		return this._WindowMediator;
-	},
-	_WindowMediator : null,
-
-	get EffectiveTLD()
-	{
-		if (!('_EffectiveTLD' in this)) {
-			this._EffectiveTLD = 'nsIEffectiveTLDService' in Components.interfaces ?
-				Components
-					.classes['@mozilla.org/network/effective-tld-service;1']
-					.getService(Components.interfaces.nsIEffectiveTLDService) :
-				null ;
-		}
-		return this._EffectiveTLD;
-	},
-//	_EffectiveTLD : null,
-
-	get PromptService()
-	{
-		if (!this._PromptService) {
-			this._PromptService = Components
-					.classes['@mozilla.org/embedcomp/prompt-service;1']
-					.getService(Components.interfaces.nsIPromptService);
-		}
-		return this._PromptService;
-	},
-	_PromptService : null,
-
-	get XULAppInfo() {
-		if (!this._XULAppInfo) {
-			this._XULAppInfo = Components
-					.classes['@mozilla.org/xre/app-info;1']
-					.getService(Components.interfaces.nsIXULAppInfo);
-		}
-		return this._XULAppInfo;
-	},
-	_XULAppInfo : null,
-	get Comparator() {
-		if (!this._Comparator) {
-			this._Comparator = Components
-					.classes['@mozilla.org/xpcom/version-comparator;1']
-					.getService(Components.interfaces.nsIVersionComparator);
-		}
-		return this._Comparator;
-	},
-	_Comparator : null,
-
 	get treeBundle() {
 		return window['piro.sakura.ne.jp']
 				.stringBundle
@@ -208,202 +50,6 @@ var TreeStyleTabService = {
 	
 /* API */ 
 	
-	readyToOpenChildTab : function TSTService_readyToOpenChildTab(aFrameOrTabBrowser, aMultiple, aInsertBefore) /* PUBLIC API */ 
-	{
-		if (!this.getTreePref('autoAttachNewTabsAsChildren')) return;
-
-		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
-		if (!frame) return;
-
-		var ownerBrowser = this.getTabBrowserFromFrame(frame);
-
-		var parentTab = this.getTabFromFrame(frame, ownerBrowser);
-		ownerBrowser.treeStyleTab.ensureTabInitialized(parentTab);
-		var parentId = parentTab.getAttribute(this.kID);
-
-		var refId = null;
-		if (aInsertBefore) {
-			ownerBrowser.treeStyleTab.ensureTabInitialized(parentTab);
-			refId = aInsertBefore.getAttribute(this.kID);
-		}
-
-		ownerBrowser.treeStyleTab.readiedToAttachNewTab   = true;
-		ownerBrowser.treeStyleTab.readiedToAttachMultiple = aMultiple || false ;
-		ownerBrowser.treeStyleTab.multipleCount           = 0;
-		ownerBrowser.treeStyleTab.parentTab               = parentId;
-		ownerBrowser.treeStyleTab.insertBefore            = refId;
-	},
- 
-	readyToOpenNewTabGroup : function TSTService_readyToOpenNewTabGroup(aFrameOrTabBrowser, aTreeStructure) /* PUBLIC API */ 
-	{
-		if (!this.getTreePref('autoAttachNewTabsAsChildren')) return;
-
-		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
-		if (!frame) return;
-
-		this.stopToOpenChildTab(frame);
-
-		var ownerBrowser = this.getTabBrowserFromFrame(frame);
-		ownerBrowser.treeStyleTab.readiedToAttachNewTabGroup = true;
-		ownerBrowser.treeStyleTab.readiedToAttachMultiple    = true;
-		ownerBrowser.treeStyleTab.multipleCount              = 0;
-		ownerBrowser.treeStyleTab.treeStructure              = aTreeStructure;
-	},
- 
-	stopToOpenChildTab : function TSTService_stopToOpenChildTab(aFrameOrTabBrowser) /* PUBLIC API */ 
-	{
-		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
-		if (!frame) return;
-
-		var ownerBrowser = this.getTabBrowserFromFrame(frame);
-		ownerBrowser.treeStyleTab.readiedToAttachNewTab      = false;
-		ownerBrowser.treeStyleTab.readiedToAttachNewTabGroup = false;
-		ownerBrowser.treeStyleTab.readiedToAttachMultiple    = false;
-		ownerBrowser.treeStyleTab.multipleCount              = 0;
-		ownerBrowser.treeStyleTab.parentTab                  = null;
-		ownerBrowser.treeStyleTab.insertBefore               = null;
-		ownerBrowser.treeStyleTab.treeStructure              = null;
-	},
- 
-	checkToOpenChildTab : function TSTService_checkToOpenChildTab(aFrameOrTabBrowser) /* PUBLIC API */ 
-	{
-		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
-		if (!frame) return false;
-
-		var ownerBrowser = this.getTabBrowserFromFrame(frame);
-		return ownerBrowser.treeStyleTab.readiedToAttachNewTab || ownerBrowser.treeStyleTab.readiedToAttachNewTabGroup ? true : false ;
-	},
- 
-	checkReadyToOpenNewTab : function TSTService_checkReadyToOpenNewTab(aInfo) 
-	{
-/*
-	挙動の説明
-
-	・現在のサイトと異なるサイトを読み込む場合にタブを開く時：
-	  →特に何もしない。新しく開くタブを子タブにする場合は別途
-	    readyToOpenChildTabを使う。
-
-	・現在のサイトと同じサイトのページを読み込む場合にタブを開く時：
-	  →親のタブは同じサイトか？
-	    No ：子タブを開く
-	    Yes：兄弟としてタブを開く。ただし、このタブからのタブはすべて
-	         現在のタブと次の兄弟タブとの間に開かれ、仮想サブツリーとなる。
-	         →現在のタブに「__treestyletab__next」プロパティが
-	           あるか？
-	           Yes：__treestyletab__nextで示されたタブの直前に
-	                新しい兄弟タブを挿入する。
-	           No ：現在のタブの次の兄弟タブのIDを__treestyletab__next
-	                プロパティに保持し、仮想の子タブを挿入する位置の
-	                基準とする。
-*/
-
-		var info = aInfo || { uri : '' };
-		if (/^javascript:/.test(info.uri)) return false;
-
-		var frame = this.getFrameFromTabBrowserElements(info.target);
-		if (!frame) return false;
-
-		var external = info.external || {};
-		var internal = info.internal || {};
-
-		var b       = this.getTabBrowserFromFrame(frame);
-		var nextTab = b.treeStyleTab.getNextSiblingTab(currentTab);
-
-		var targetHost  = this._getDomainFromURI(info.uri);
-		var currentTab  = this.getTabFromFrame(frame);
-		var currentURI  = frame.location.href;
-		var currentHost = this._getDomainFromURI(currentURI);
-		var parentTab   = b.treeStyleTab.getParentTab(currentTab);
-		var parentURI   = parentTab ? parentTab.linkedBrowser.currentURI : null ;
-		var parentHost  = this._getDomainFromURI(parentURI);
-
-		var openTab      = false;
-		var parent       = null;
-		var insertBefore = null;
-
-		if (info.modifier) openTab = true;
-
-		if (
-			internal.newTab &&
-			currentHost == targetHost &&
-			currentURI != 'about:blank' &&
-			currentURI.split('#')[0] != info.uri.split('#')[0]
-			) {
-			openTab = info.modifier && info.invert ? !openTab : true ;
-			parent = ('forceChild' in internal && !internal.forceChild) ? null :
-					(parentHost == targetHost && !internal.forceChild) ? parentTab :
-					frame ;
-			insertBefore = parentHost == targetHost && !internal.forceChild &&
-					(this.getTreePref('insertNewChildAt') == this.kINSERT_FIRST ?
-						nextTab :
-						(
-							b.treeStyleTab.getTabById(currentTab.__treestyletab__next) ||
-							(nextTab ? (currentTab.__treestyletab__next = nextTab.getAttribute(this.kID), nextTab) : null )
-						)
-					);
-		}
-		else if (
-			external.newTab &&
-			currentHost != targetHost &&
-			currentURI != 'about:blank'
-			) {
-			openTab = info.modifier && info.invert ? !openTab : true ;
-			if (external.forceChild) {
-				parent = frame;
-			}
-		}
-
-		if (openTab && parent) {
-			this.readyToOpenChildTab(parent, false, insertBefore);
-		}
-		return openTab;
-	},
-	checkReadyToOpenNewTabOnLocationBar : function TSTService_checkReadyToOpenNewTabOnLocationBar(aURI, aModifier)
-	{
-		return this.checkReadyToOpenNewTab({
-			uri      : aURI,
-			external : {
-				newTab     : this.getTreePref('urlbar.loadDifferentDomainToNewTab'),
-				forceChild : this.getTreePref('urlbar.loadDifferentDomainToNewTab.asChild')
-			},
-			internal : {
-				newTab     : this.getTreePref('urlbar.loadSameDomainToNewTab'),
-				forceChild : this.getTreePref('urlbar.loadSameDomainToNewTab.asChild')
-			},
-			modifier : aModifier,
-			invert   : this.getTreePref('urlbar.invertDefaultBehavior')
-		});
-	},
-	_getDomainFromURI : function TSTService__getDomainFromURI(aURI)
-	{
-		if (!aURI) return null;
-
-		if (this.getTreePref('useEffectiveTLD') && this.EffectiveTLD) {
-			try {
-				var uri = aURI;
-				if (!(uri instanceof Ci.nsIURI)) uri = this.makeURIFromSpec(uri);
-				var domain = this.EffectiveTLD.getBaseDomain(uri, 0);
-				if (domain) return domain;
-			}
-			catch(e) {
-			}
-		}
-
-		var str = aURI;
-		if (str instanceof Ci.nsIURI) str = aURI.spec;
-		return /^\w+:\/\/([^:\/]+)/.test(getShortcutOrURI(str)) ?
-				RegExp.$1 :
-				null ;
-	},
- 
-	readyToOpenDivertedTab : function TSTService_readyToOpenDivertedTab(aFrameOrTabBrowser) 
-	{
-		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
-		if (!frame) return;
-		var ownerBrowser = this.getTabBrowserFromFrame(frame);
-		ownerBrowser.treeStyleTab.readiedToOpenDivertedTab = true;
-	},
- 
 	setTabbarWidth : function TSTService_setTabbarWidth(aWidth, aForceExpanded) /* PUBLIC API */ 
 	{
 		gBrowser.treeStyleTab.autoHide.setWidth(aWidth, aForceExpanded);
@@ -465,6 +111,15 @@ var TreeStyleTabService = {
 	rollbackTabbarPosition : function TSTService_rollbackTabbarPosition() /* PUBLIC API */ 
 	{
 		return this.utils.rollbackTabbarPosition();
+	},
+ 
+	get treeViewEnabled() /* PUBLIC API */ 
+	{
+		return this.utils.treeViewEnabled;
+	},
+	set treeViewEnabled(aValue)
+	{
+		return this.utils.treeViewEnabled = aValue;
 	},
   
 /* backward compatibility */ 
@@ -528,207 +183,9 @@ var TreeStyleTabService = {
 	},
 	expandTwistyArea : true,
  
-	isEventFiredOnClosebox : function TSTService_isEventFiredOnClosebox(aEvent) 
-	{
-		return this.evaluateXPath(
-				'ancestor-or-self::*[contains(concat(" ", normalize-space(@class), " "), " tab-close-button ")]',
-				aEvent.originalTarget || aEvent.target,
-				XPathResult.BOOLEAN_TYPE
-			).booleanValue;
-	},
- 
-	isEventFiredOnClickable : function TSTService_isEventFiredOnClickable(aEvent) 
-	{
-		return this.evaluateXPath(
-				'ancestor-or-self::*[contains(" button toolbarbutton scrollbar popup menupopup panel tooltip ", concat(" ", local-name(), " "))]',
-				aEvent.originalTarget,
-				XPathResult.BOOLEAN_TYPE
-			).booleanValue;
-	},
- 
-	isNewTabAction : function TSTService_isNewTabAction(aEvent) 
-	{
-		return aEvent.button == 1 || (aEvent.button == 0 && this.isAccelKeyPressed(aEvent));
-	},
- 
-	isAccelKeyPressed : function TSTService_isAccelKeyPressed(aEvent) 
-	{
-		var isMac = navigator.platform.toLowerCase().indexOf('mac') > -1;
-		var nsIDOMKeyEvent = Components.interfaces.nsIDOMKeyEvent;
-		if ( // this is releasing of the accel key!
-			(aEvent.type == 'keyup') &&
-			(aEvent.keyCode == (isMac ? nsIDOMKeyEvent.DOM_VK_META : nsIDOMKeyEvent.DOM_VK_CONTROL ))
-			) {
-			return false;
-		}
-		return isMac ?
-			(aEvent.metaKey || (aEvent.keyCode == nsIDOMKeyEvent.DOM_VK_META)) :
-			(aEvent.ctrlKey || (aEvent.keyCode == nsIDOMKeyEvent.DOM_VK_CONTROL)) ;
-	},
- 
-	get browserWindow() 
-	{
-		return this.WindowMediator.getMostRecentWindow('navigator:browser');
-	},
- 
-	get browser() 
-	{
-		var w = this.browserWindow;
-		return !w ? null :
-			'SplitBrowser' in w ? w.SplitBrowser.activeBrowser :
-			w.gBrowser ;
-	},
- 
-	evaluateXPath : function TSTService_evaluateXPath(aExpression, aContext, aType) 
-	{
-		if (!aType) aType = XPathResult.ORDERED_NODE_SNAPSHOT_TYPE;
-		try {
-			var xpathResult = (aContext.ownerDocument || aContext || document).evaluate(
-					aExpression,
-					(aContext || document),
-					this.NSResolver,
-					aType,
-					null
-				);
-		}
-		catch(e) {
-			return {
-				singleNodeValue : null,
-				snapshotLength  : 0,
-				snapshotItem    : function() {
-					return null
-				}
-			};
-		}
-		return xpathResult;
-	},
- 
-	getArrayFromXPathResult : function TSTService_getArrayFromXPathResult(aXPathResult) 
-	{
-		var max = aXPathResult.snapshotLength;
-		var array = new Array(max);
-		if (!max) return array;
-
-		for (var i = 0; i < max; i++)
-		{
-			array[i] = aXPathResult.snapshotItem(i);
-		}
-
-		return array;
-	},
- 
 	getBoxObjectFor : function TSTService_getBoxObjectFor(aNode) 
 	{
 		return window['piro.sakura.ne.jp'].boxObject.getBoxObjectFor(aNode);
-	},
- 
-	getTabFromEvent : function TSTService_getTabFromEvent(aEvent) 
-	{
-		return this.getTabFromChild(aEvent.originalTarget || aEvent.target);
-	},
- 
-	getTabFromFrame : function TSTService_getTabFromFrame(aFrame, aTabBrowser) 
-	{
-		var b = aTabBrowser || this.browser;
-		var docShell = aFrame.top
-			.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-			.getInterface(Components.interfaces.nsIWebNavigation)
-			.QueryInterface(Components.interfaces.nsIDocShell);
-		var tabs = this.getTabs(b);
-		var tab;
-		for (var i = 0, maxi = tabs.snapshotLength; i < maxi; i++)
-		{
-			tab = tabs.snapshotItem(i);
-			if (tab.linkedBrowser.docShell == docShell)
-				return tab;
-		}
-		return null;
-	},
- 
-	getTabFromChild : function TSTService_getTabFromChild(aTab) 
-	{
-		return this.evaluateXPath(
-				'ancestor-or-self::xul:tab[ancestor::xul:tabbrowser]',
-				aTab,
-				XPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue;
-	},
- 
-	getTabbarFromEvent : function TSTService_getTabbarFromEvent(aEvent) 
-	{
-		return this.evaluateXPath(
-				'ancestor-or-self::*[contains(concat(" ", normalize-space(@class), " "), " tabbrowser-strip ")]',
-				aEvent.originalTarget || aEvent.target,
-				XPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue;
-	},
- 
-	getTabBrowserFromChild : function TSTService_getTabBrowserFromChild(aTabBrowserChild) 
-	{
-		if (!aTabBrowserChild) return null;
-
-		if (aTabBrowserChild.__treestyletab__linkedTabBrowser)
-			return aTabBrowserChild.__treestyletab__linkedTabBrowser;
-
-		if (aTabBrowserChild.localName == 'tabbrowser')
-			return aTabBrowserChild;
-
-		return this.evaluateXPath(
-				'ancestor::xul:tabbrowser[1]',
-				aTabBrowserChild,
-				XPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue;
-	},
- 
-	getTabBrowserFromFrame : function TSTService_getTabBrowserFromFrame(aFrame) 
-	{
-		var w = this.browserWindow;
-		return !w ? null :
-			('SplitBrowser' in w) ? this.getTabBrowserFromChild(w.SplitBrowser.getSubBrowserAndBrowserFromFrame(aFrame.top).browser) :
-			this.browser ;
-	},
- 
-	getFrameFromTabBrowserElements : function TSTService_getFrameFromTabBrowserElements(aFrameOrTabBrowser) 
-	{
-		var frame = aFrameOrTabBrowser;
-		if (frame == '[object XULElement]') {
-			if (frame.localName == 'tab') {
-				frame = frame.linkedBrowser.contentWindow;
-			}
-			else if (frame.localName == 'browser') {
-				frame = frame.contentWindow;
-			}
-			else {
-				frame = this.getTabBrowserFromChild(frame);
-				if (!frame) return null;
-				frame = frame.contentWindow;
-			}
-		}
-		if (!frame)
-			frame = this.browser.contentWindow;
-
-		return frame;
-	},
- 
-	makeNewId : function TSTService_makeNewId() 
-	{
-		return 'tab-<'+Date.now()+'-'+parseInt(Math.random() * 65000)+'>';
-	},
- 
-	makeURIFromSpec : function TSTService_makeURIFromSpec(aURI) 
-	{
-		var newURI;
-		aURI = aURI || '';
-		if (aURI && String(aURI).indexOf('file:') == 0) {
-			var fileHandler = this.IOService.getProtocolHandler('file').QueryInterface(Components.interfaces.nsIFileProtocolHandler);
-			var tempLocalFile = fileHandler.getFileFromURLSpec(aURI);
-			newURI = this.IOService.newFileURI(tempLocalFile);
-		}
-		else {
-			if (!/^\w+\:/.test(aURI)) aURI = 'http://'+aURI;
-			newURI = this.IOService.newURI(aURI, null, null);
-		}
-		return newURI;
 	},
  
 	getPropertyPixelValue : function TSTService_getPropertyPixelValue(aElementOrStyle, aProp) 
@@ -739,438 +196,6 @@ var TreeStyleTabService = {
 		return Number(style.getPropertyValue(aProp).replace(/px$/, ''));
 	},
  
-	getGroupTabURI : function TSTService_getGroupTabURI(aTitle) 
-	{
-		return 'about:treestyletab-group'+(aTitle === void(0) ? '' : '?'+encodeURIComponent(aTitle) );
-	},
- 
-/* get tab(s) */ 
-	
-	getTabById : function TSTService_getTabById(aId, aTabBrowserChildren) 
-	{
-		if (!aId) return null;
-		var b = this.getTabBrowserFromChild(aTabBrowserChildren) || this.browser;
-		return this.evaluateXPath(
-				'descendant::xul:tab[@'+this.kID+' = "'+aId+'"]',
-				b.mTabContainer,
-				XPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue;
-	},
- 
-	isTabDuplicated : function TSTService_isTabDuplicated(aTab) 
-	{
-		if (!aTab) return false;
-		var id = this.getTabValue(aTab, this.kID);
-		var b = this.getTabBrowserFromChild(aTab) || this.browser;
-		return this.evaluateXPath(
-				'count(descendant::xul:tab[@'+this.kID+' = "'+id+'" or @'+this.kID_RESTORING+' = "'+id+'"]) > 1',
-				b.mTabContainer,
-				XPathResult.BOOLEAN_TYPE
-			).booleanValue;
-	},
- 
-	getTabs : function TSTService_getTabs(aTabBrowserChild) 
-	{
-		var b = this.getTabBrowserFromChild(aTabBrowserChild);
-		return this.evaluateXPath(
-				'descendant::xul:tab',
-				b.mTabContainer
-			);
-	},
- 
-	getTabsArray : function TSTService_getTabsArray(aTabBrowserChild) 
-	{
-		var tabs = this.getTabs(aTabBrowserChild);
-		var array = [];
-		for (var i = 0, maxi = tabs.snapshotLength; i < maxi; i++)
-		{
-			array.push(tabs.snapshotItem(i));
-		}
-		return array;
-	},
- 
-	getFirstTab : function TSTService_getFirstTab(aTabBrowserChild) 
-	{
-		var b = this.getTabBrowserFromChild(aTabBrowserChild);
-		return this.evaluateXPath(
-				'child::xul:tab[1]',
-				b.mTabContainer,
-				XPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue;
-	},
- 
-	getLastTab : function TSTService_getLastTab(aTabBrowserChild) 
-	{
-		var b = this.getTabBrowserFromChild(aTabBrowserChild);
-		return this.evaluateXPath(
-				'child::xul:tab[last()]',
-				b.mTabContainer,
-				XPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue;
-	},
- 
-	getNextTab : function TSTService_getNextTab(aTab) 
-	{
-		if (!aTab) return null;
-		return this.evaluateXPath(
-				'following-sibling::xul:tab[1]',
-				aTab,
-				XPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue;
-	},
- 
-	getPreviousTab : function TSTService_getPreviousTab(aTab) 
-	{
-		if (!aTab) return null;
-		return this.evaluateXPath(
-				'preceding-sibling::xul:tab[1]',
-				aTab,
-				XPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue;
-	},
- 
-	getTabIndex : function TSTService_getTabIndex(aTab) 
-	{
-		if (!aTab) return -1;
-		return this.evaluateXPath(
-				'count(preceding-sibling::xul:tab)',
-				aTab,
-				XPathResult.NUMBER_TYPE
-			).numberValue;
-	},
- 
-	getNextVisibleTab : function TSTService_getNextVisibleTab(aTab) 
-	{
-		if (!aTab) return null;
-
-		if (!this.canCollapseSubtree(aTab))
-			return this.getNextTab(aTab);
-
-		return this.evaluateXPath(
-				'following-sibling::xul:tab[not(@'+this.kCOLLAPSED+'="true")][1]',
-				aTab,
-				XPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue;
-	},
- 
-	getPreviousVisibleTab : function TSTService_getPreviousVisibleTab(aTab) 
-	{
-		if (!aTab) return null;
-
-		if (!this.canCollapseSubtree(aTab))
-			return this.getPreviousTab(aTab);
-
-		return this.evaluateXPath(
-				'preceding-sibling::xul:tab[not(@'+this.kCOLLAPSED+'="true")][1]',
-				aTab,
-				XPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue;
-	},
- 
-	getLastVisibleTab : function TSTService_getLastVisibleTab(aTabBrowserChild) 
-	{
-		var b = this.getTabBrowserFromChild(aTabBrowserChild);
-		if (!b) return null;
-
-		if (!this.canCollapseSubtree(b))
-			return this.getLastTab(b);
-
-		return this.evaluateXPath(
-				'child::xul:tab[not(@'+this.kCOLLAPSED+'="true")][last()]',
-				b.mTabContainer,
-				XPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue;
-	},
- 
-	getVisibleTabs : function TSTService_getVisibleTabs(aTabBrowserChild) 
-	{
-		var b = this.getTabBrowserFromChild(aTabBrowserChild);
-		if (!this.canCollapseSubtree(b))
-			return this.getTabs(b);
-
-		var xpathResult = this.evaluateXPath(
-				'child::xul:tab[not(@'+this.kCOLLAPSED+'="true")]',
-				b.mTabContainer
-			);
-		return xpathResult;
-	},
- 
-	getVisibleIndex : function TSTService_getVisibleIndex(aTab) 
-	{
-		if (!aTab) return -1;
-
-		if (!this.canCollapseSubtree(aTab))
-			return this.getTabIndex(aTab);
-
-		return aTab.getAttribute(this.kCOLLAPSED) == 'true' ?
-			-1 :
-			this.evaluateXPath(
-				'count(preceding-sibling::xul:tab[not(@'+this.kCOLLAPSED+'="true")])',
-				aTab,
-				XPathResult.NUMBER_TYPE
-			).numberValue;
-	},
-  
-/* tree manipulations */ 
-	
-	get rootTabs() /* PUBLIC API */ 
-	{
-		return this.getArrayFromXPathResult(
-				this.evaluateXPath(
-					'child::xul:tab[not(@'+this.kNEST+') or @'+this.kNEST+'="0" or @'+this.kNEST+'=""]',
-					this.browser.mTabContainer
-				)
-			);
-	},
- 
-	canCollapseSubtree : function TSTService_canCollapseSubtree(aTabBrowser) /* PUBLIC API */ 
-	{
-		var b = this.getTabBrowserFromChild(aTabBrowser) || this.browser;
-		return b.getAttribute(this.kALLOW_COLLAPSE) == 'true';
-	},
- 
-	isCollapsed : function TSTService_isCollapsed(aTab) /* PUBLIC API */ 
-	{
-		if (!aTab || !this.canCollapseSubtree(aTab))
-			return false;
-
-		return aTab.getAttribute(this.kCOLLAPSED) == 'true';
-	},
- 
-	isSubtreeCollapsed : function TSTService_isSubtreeCollapsed(aTab) /* PUBLIC API */ 
-	{
-		if (!aTab || !this.canCollapseSubtree(aTab) || !this.hasChildTabs(aTab))
-			return false;
-
-		return aTab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true';
-	},
- 
-	getParentTab : function TSTService_getParentTab(aTab) /* PUBLIC API */ 
-	{
-		if (!aTab) return null;
-		var id = aTab.getAttribute(this.kID);
-		if (!id) return null; // not initialized yet
-		return this.evaluateXPath(
-				'parent::*/child::xul:tab[contains(concat("|", @'+this.kCHILDREN+', "|"), "|'+id+'|")]',
-				aTab,
-				XPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue;
-	},
- 
-	getRootTab : function TSTService_getRootTab(aTab) /* PUBLIC API */ 
-	{
-		var parent = aTab;
-		var root   = aTab;
-		while (parent = this.getParentTab(parent))
-		{
-			root = parent;
-		}
-		return root;
-	},
- 
-	getNextSiblingTab : function TSTService_getNextSiblingTab(aTab) /* PUBLIC API */ 
-	{
-		if (!aTab) return null;
-
-		var parentTab = this.getParentTab(aTab);
-
-		if (!parentTab) {
-			let next = aTab;
-			do {
-				next = next.nextSibling;
-			}
-			while (next &&
-					next.nodeType == Node.ELEMENT_NODE &&
-					this.getParentTab(next));
-			return next;
-		}
-
-		var children = parentTab.getAttribute(this.kCHILDREN);
-		if (children) {
-			let list = ('|'+children).split('|'+aTab.getAttribute(this.kID))[1].split('|');
-			for (let i = 0, maxi = list.length; i < maxi; i++)
-			{
-				let firstChild = this.getTabById(list[i], aTab);
-				if (firstChild) return firstChild;
-			}
-		}
-		return null;
-	},
- 
-	getPreviousSiblingTab : function TSTService_getPreviousSiblingTab(aTab) /* PUBLIC API */ 
-	{
-		if (!aTab) return null;
-
-		var parentTab = this.getParentTab(aTab);
-
-		if (!parentTab) {
-			let prev = aTab;
-			do {
-				prev = prev.previousSibling;
-			}
-			while (prev &&
-					prev.nodeType == Node.ELEMENT_NODE &&
-					this.getParentTab(prev));
-			return prev;
-		}
-
-		var children = parentTab.getAttribute(this.kCHILDREN);
-		if (children) {
-			let list = ('|'+children).split('|'+aTab.getAttribute(this.kID))[0].split('|');
-			for (let i = list.length-1; i > -1; i--)
-			{
-				let lastChild = this.getTabById(list[i], aTab);
-				if (lastChild) return lastChild;
-			}
-		}
-		return null;
-	},
- 
-	getChildTabs : function TSTService_getChildTabs(aTab, aAllTabsArray) /* PUBLIC API */ 
-	{
-		var tabs = [];
-		if (!aTab) return tabs;
-
-		var children = aTab.getAttribute(this.kCHILDREN);
-		if (!children) return tabs;
-
-		if (aAllTabsArray) tabs = aAllTabsArray;
-
-		var list = children.split('|');
-		for (let i = 0, maxi = list.length; i < maxi; i++)
-		{
-			let tab = this.getTabById(list[i], aTab);
-			if (!tab) continue;
-			tabs.push(tab);
-			if (aAllTabsArray)
-				this.getChildTabs(tab, tabs);
-		}
-
-		return tabs;
-	},
- 
-	hasChildTabs : function TSTService_hasChildTabs(aTab) /* PUBLIC API */ 
-	{
-		if (!aTab) return false;
-		return aTab.hasAttribute(this.kCHILDREN);
-	},
- 
-	getDescendantTabs : function TSTService_getDescendantTabs(aTab) /* PUBLIC API */ 
-	{
-		var tabs = [];
-		this.getChildTabs(aTab, tabs);
-		return tabs;
-	},
- 
-	getFirstChildTab : function TSTService_getFirstChildTab(aTab) /* PUBLIC API */ 
-	{
-		if (!aTab) return null;
-
-		var children   = aTab.getAttribute(this.kCHILDREN);
-		var firstChild = null;
-		if (children) {
-			let list = children.split('|');
-			for (let i = 0, maxi = list.length; i < maxi; i++)
-			{
-				firstChild = this.getTabById(list[i], aTab);
-				if (firstChild) break;
-			}
-		}
-		return firstChild;
-	},
- 
-	getLastChildTab : function TSTService_getLastChildTab(aTab) /* PUBLIC API */ 
-	{
-		if (!aTab) return null;
-
-		var children  = aTab.getAttribute(this.kCHILDREN);
-		var lastChild = null;
-		if (children) {
-			let list = children.split('|');
-			for (let i = list.length-1; i > -1; i--)
-			{
-				lastChild = this.getTabById(list[i], aTab);
-				if (lastChild) break;
-			}
-		}
-		return lastChild;
-	},
- 
-	getLastDescendantTab : function TSTService_getLastDescendantTab(aTab) /* PUBLIC API */ 
-	{
-		if (!aTab) return null;
-
-		var tabs = this.getDescendantTabs(aTab);
-		return tabs.length ? tabs[tabs.length-1] : null ;
-	},
- 
-	getChildIndex : function TSTService_getChildIndex(aTab, aParent) 
-	{
-		var parent = this.getParentTab(aTab);
-		if (!aParent || !parent || aParent != parent) {
-			parent = aTab;
-			while (parent && parent != aParent)
-			{
-				aTab = parent;
-				parent = this.getParentTab(parent);
-			}
-			if (parent != aParent)
-				return -1;
-			aParent = parent;
-		}
-
-		if (aParent) {
-			let children = aParent.getAttribute(this.kCHILDREN);
-			let list = children.split('|');
-			let id = aTab.getAttribute(this.kID);
-			for (let i = 0, maxi = list.length; i < maxi; i++)
-			{
-				if (list[i] == id) return i;
-			}
-			return -1;
-		}
-		else {
-			let tabs = this.rootTabs;
-			for (let i = 0, maxi = tabs.length; i < maxi; i++)
-			{
-				if (tabs[i] == aTab) return i;
-			}
-		}
-	},
- 
-	getXOffsetOfTab : function TSTService_getXOffsetOfTab(aTab) 
-	{
-		var extraCondition = this.canCollapseSubtree(aTab) ?
-								'[not(@'+this.kCOLLAPSED+'="true")]' :
-								'' ;
-
-		return this.evaluateXPath(
-			'sum((self::* | preceding-sibling::xul:tab'+extraCondition+')/attribute::'+this.kX_OFFSET+')',
-			aTab,
-			XPathResult.NUMBER_TYPE
-		).numberValue;
-	},
-	getYOffsetOfTab : function TSTService_getYOffsetOfTab(aTab)
-	{
-		var extraCondition = this.canCollapseSubtree(aTab) ?
-								'[not(@'+this.kCOLLAPSED+'="true")]' :
-								'';
-
-		return this.evaluateXPath(
-			'sum((self::* | preceding-sibling::xul:tab'+extraCondition+')/attribute::'+this.kY_OFFSET+')',
-			aTab,
-			XPathResult.NUMBER_TYPE
-		).numberValue;
-	},
- 
-	isGroupTab : function TSTService_isGroupTab(aTab, aLazyCheck) 
-	{
-		return (
-			(aLazyCheck || aTab.linkedBrowser.sessionHistory.count == 1) &&
-			aTab.linkedBrowser.currentURI.spec.indexOf('about:treestyletab-group') > -1
-		);
-	},
-  
 /* Session Store API */ 
 	
 	getTabValue : function TSTService_getTabValue(aTab, aKey) 
@@ -1233,7 +258,8 @@ var TreeStyleTabService = {
 	},
  
 	useTMPSessionAPI : false, 
-	kTMP_SESSION_DATA_PREFIX : 'tmp-session-data-',
+ 
+	kTMP_SESSION_DATA_PREFIX : 'tmp-session-data-', 
   
 	dropLinksOnTabBehavior : function TSTService_dropLinksOnTabBehavior() 
 	{
@@ -2481,7 +1507,7 @@ catch(e) {
 	
 	removeTabSubtree : function TSTService_removeTabSubtree(aTabOrTabs, aOnlyChildren) 
 	{
-		var tabs = this._normalizeToTabs(aTabOrTabs, aOnlyChildren);
+		var tabs = this.normalizeToTabs(aTabOrTabs, aOnlyChildren);
 		if (!this.warnAboutClosingTabs(tabs.length))
 			return;
 
@@ -2491,7 +1517,9 @@ catch(e) {
 			b.removeTab(tabs[i]);
 		}
 	},
-	warnAboutClosingTabSubtreeOf : function TSTService_warnAboutClosingTabSubtreeOf(aTab)
+	removeTabSubTree : function() { return this.removeTabSubtree.apply(this, arguments); }, // obsolete, for backward compatibility
+	
+	warnAboutClosingTabSubtreeOf : function TSTService_warnAboutClosingTabSubtreeOf(aTab) 
 	{
 		if (!this.shouldCloseTabSubtreeOf(aTab))
 			return true;
@@ -2499,25 +1527,9 @@ catch(e) {
 		var tabs = [aTab].concat(this.getDescendantTabs(aTab));
 		return this.warnAboutClosingTabs(tabs.length);
 	},
-	shouldCloseTabSubtreeOf : function TSTService_shouldCloseTabSubtreeOf(aTab)
-	{
-		return (
-			this.hasChildTabs(aTab) &&
-			(
-				this.getTreePref('closeParentBehavior') == this.CLOSE_PARENT_BEHAVIOR_CLOSE ||
-				this.isSubtreeCollapsed(aTab)
-			)
-		);
-	},
-	shouldCloseLastTabSubtreeOf : function TSTService_shouldCloseLastTabSubtreeOf(aTab)
-	{
-		var b = this.getTabBrowserFromChild(aTab);
-		return (
-			this.shouldCloseTabSubtreeOf(aTab) &&
-			this.getDescendantTabs(aTab).length + 1 == this.getTabs(b).snapshotLength
-		);
-	},
-	warnAboutClosingTabs : function TSTService_warnAboutClosingTabs(aTabsCount)
+	warnAboutClosingTabSubTreeOf : function() { return this.warnAboutClosingTabSubtreeOf.apply(this, arguments); }, // obsolete, for backward compatibility
+ 
+	warnAboutClosingTabs : function TSTService_warnAboutClosingTabs(aTabsCount) 
 	{
 		if (
 			aTabsCount <= 1 ||
@@ -2540,53 +1552,10 @@ catch(e) {
 			this.setPref('browser.tabs.warnOnClose', false);
 		return shouldClose;
 	},
-	// obsolete, for backward compatibility
-	removeTabSubTree : function() { return this.removeTabSubtree.apply(this, arguments); },
-	warnAboutClosingTabSubTreeOf : function() { return this.warnAboutClosingTabSubtreeOf.apply(this, arguments); },
-	shouldCloseTabSubTreeOf : function() { return this.shouldCloseTabSubtreeOf.apply(this, arguments); },
-	shouldCloseLastTabSubTreeOf : function() { return this.shouldCloseLastTabSubtreeOf.apply(this, arguments); },
-	
-	_normalizeToTabs : function TSTService__normalizeToTabs(aTabOrTabs, aOnlyChildren) 
-	{
-		var tabs = aTabOrTabs;
-		if (!(tabs instanceof Array)) {
-			tabs = [aTabOrTabs];
-		}
-
-		var b = this.getTabBrowserFromChild(tabs[0]);
-		var descendant = [];
-		for (var i = 0, maxi = tabs.length; i < maxi; i++)
-		{
-			descendant = descendant.concat(b.treeStyleTab.getDescendantTabs(tabs[i]));
-		}
-
-		if (aOnlyChildren)
-			tabs = this.cleanUpTabsArray(descendant);
-		else
-			tabs = this.cleanUpTabsArray(tabs.concat(descendant));
-
-		return tabs;
-	},
- 
-	cleanUpTabsArray : function TSTService_cleanUpTabsArray(aTabs) 
-	{
-		var newTabs = [];
-		aTabs.forEach(function(aTab) {
-			if (!aTab.parentNode) return; // ignore removed tabs
-			if (newTabs.indexOf(aTab) < 0) newTabs.push(aTab);
-		});
-		newTabs.sort(this.sortTabsByOrder);
-		return newTabs;
-	},
-	
-	sortTabsByOrder : function TSTService_sortTabsByOrder(aA, aB) 
-	{
-		return aA._tPos - aB._tPos;
-	},
-   
+  
 	reloadTabSubtree : function TSTService_reloadTabSubtree(aTabOrTabs, aOnlyChildren) 
 	{
-		var tabs = this._normalizeToTabs(aTabOrTabs, aOnlyChildren);
+		var tabs = this.normalizeToTabs(aTabOrTabs, aOnlyChildren);
 		var b = this.getTabBrowserFromChild(tabs[0]);
 		for (var i = tabs.length-1; i > -1; i--)
 		{
@@ -2691,11 +1660,12 @@ catch(e) {
 			b.moveTabTo(aTab, index);
 		}
 	},
-	promoteCurrentTab : function TSTService_promoteCurrentTab() /* PUBLIC API */
+	
+	promoteCurrentTab : function TSTService_promoteCurrentTab() /* PUBLIC API */ 
 	{
 		this.promoteTab(this.browser.selectedTab);
 	},
- 
+  
 	demoteTab : function TSTService_demoteTab(aTab) /* PUBLIC API */ 
 	{
 		var b = this.getTabBrowserFromChild(aTab);
@@ -2705,27 +1675,12 @@ catch(e) {
 		if (previous)
 			sv.attachTabTo(aTab, previous);
 	},
-	demoteCurrentTab : function TSTService_demoteCurrentTab() /* PUBLIC API */
+	
+	demoteCurrentTab : function TSTService_demoteCurrentTab() /* PUBLIC API */ 
 	{
 		this.demoteTab(this.browser.selectedTab);
 	},
- 
-	get treeViewEnabled() /* PUBLIC API */ 
-	{
-		return this._treeViewEnabled;
-	},
-	set treeViewEnabled(aValue)
-	{
-		this._treeViewEnabled = aValue ? true : false ;
-		this.ObserverService.notifyObservers(
-			window,
-			'TreeStyleTab:changeTreeViewAvailability',
-			this._treeViewEnabled
-		);
-		return aValue;
-	},
-	_treeViewEnabled : true,
- 
+  
 	expandTreeAfterKeyReleased : function TSTService_expandTreeAfterKeyReleased(aTab) 
 	{
 		if (this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut')) return;
