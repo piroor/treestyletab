@@ -111,11 +111,6 @@ var TreeStyleTabService = {
 			);
 	},
   
-	getBoxObjectFor : function TSTService_getBoxObjectFor(aNode) 
-	{
-		return window['piro.sakura.ne.jp'].boxObject.getBoxObjectFor(aNode);
-	},
- 
 	getPropertyPixelValue : function TSTService_getPropertyPixelValue(aElementOrStyle, aProp) 
 	{
 		var style = aElementOrStyle instanceof Components.interfaces.nsIDOMCSSStyleDeclaration ?

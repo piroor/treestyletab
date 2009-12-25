@@ -38,6 +38,12 @@ var EXPORTED_SYMBOLS = ['TreeStyleTabUtils'];
 var Cc = Components.classes;
 var Ci = Components.interfaces;
  
+var prefs = {}; 
+Components.utils.import('resource://treestyletab-modules/prefs.js', prefs);
+
+var boxObject = {}; 
+Components.utils.import('resource://treestyletab-modules/boxObject.js', boxObject);
+ 
 var TreeStyleTabUtils = { 
 	
 /* attributes */ 
@@ -253,6 +259,11 @@ var TreeStyleTabUtils = {
  
 /* utilities */ 
 	
+	getBoxObjectFor : function TSTUtils_getBoxObjectFor(aNode) 
+	{
+		return boxObject.window['piro.sakura.ne.jp'].boxObject.getBoxObjectFor(aNode);
+	},
+ 
 	get browserWindow() 
 	{
 		return this.WindowMediator.getMostRecentWindow('navigator:browser');
@@ -1397,6 +1408,5 @@ var TreeStyleTabUtils = {
   
 }; 
  
-Components.utils.import('resource://treestyletab-modules/prefs.js'); 
-TreeStyleTabUtils.__proto__ = window['piro.sakura.ne.jp'].prefs;
+TreeStyleTabUtils.__proto__ = prefs.window['piro.sakura.ne.jp'].prefs; 
   

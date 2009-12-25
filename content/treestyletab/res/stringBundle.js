@@ -2,7 +2,6 @@
  string bundle utility
 
  Usage:
-   // use instead of HTMLDocument.getBoxObjectFor(HTMLElement)
    var bundle = window['piro.sakura.ne.jp']
                          .stringBundle
                          .get('chrome://example/locale/example.properties');

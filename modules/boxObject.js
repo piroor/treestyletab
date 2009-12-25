@@ -1,3 +1,6 @@
+var EXPORTED_SYMBOLS = ['window'];
+var window = {};
+
 /*
  "getBoxObjectFor()" compatibility library for Firefox 3.6 or later
 
