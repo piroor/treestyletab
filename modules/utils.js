@@ -60,6 +60,7 @@ var TreeStyleTabUtils = {
 	kNEST               : 'treestyletab-nest',
 	kINSERT_BEFORE      : 'treestyletab-insert-before',
 	kINSERT_AFTER       : 'treestyletab-insert-after',
+	kCLOSED_SET_ID      : 'treestyletab-closed-set-id',
 
 	kID_RESTORING       : 'treestyletab-id-restoring',
 	kCHILDREN_RESTORING : 'treestyletab-children-restoring',
@@ -438,6 +439,11 @@ var TreeStyleTabUtils = {
 		return 'tab-<'+Date.now()+'-'+parseInt(Math.random() * 65000)+'>';
 	},
  
+	makeNewClosedSetId : function TSTUtils_makeNewId() 
+	{
+		return 'tabs-closed-set-<'+Date.now()+'-'+parseInt(Math.random() * 65000)+'>';
+	},
+ 
 	makeURIFromSpec : function TSTUtils_makeURIFromSpec(aURI) 
 	{
 		var newURI;
@@ -641,7 +647,7 @@ var TreeStyleTabUtils = {
 		return aA._tPos - aB._tPos;
 	},
   
-	normalizeToTabs : function TSTUtils_normalizeToTabs(aTabOrTabs, aOnlyChildren) 
+	gatherSubtreeMemberTabs : function TSTUtils_gatherSubtreeMemberTabs(aTabOrTabs, aOnlyChildren) 
 	{
 		var tabs = aTabOrTabs;
 		if (!(tabs instanceof Array)) {
