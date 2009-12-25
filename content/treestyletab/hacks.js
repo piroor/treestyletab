@@ -9,7 +9,7 @@ TreeStyleTabService.extraProperties = [
 	TreeStyleTabService.kINSERT_AFTER
 ];
 
-TreeStyleTabService.overrideExtensionsPreInit = function() {
+TreeStyleTabService.overrideExtensionsPreInit = function TSTService_overrideExtensionsPreInit() {
 
 	// Highlander
 	// https://addons.mozilla.org/firefox/addon/4086
@@ -216,7 +216,7 @@ TreeStyleTabService.overrideExtensionsPreInit = function() {
 	}
 };
 
-TreeStyleTabService.overrideExtensionsOnInitBefore = function() {
+TreeStyleTabService.overrideExtensionsOnInitBefore = function TSTService_overrideExtensionsOnInitBefore() {
 
 	// Tab Mix Plus
 	if (this.getTreePref('compatibility.TMP') &&
@@ -260,7 +260,7 @@ TreeStyleTabService.overrideExtensionsOnInitBefore = function() {
 
 };
 
-TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
+TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_overrideExtensionsOnInitAfter() {
 
 	// Multiple Tab Handler
 	if ('MultipleTabService' in window) {
@@ -968,7 +968,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function() {
 };
 
 
-TreeStyleTabService.overrideExtensionsDelayed = function() {
+TreeStyleTabService.overrideExtensionsDelayed = function TSTService_overrideExtensionsDelayed() {
 
 	// Tab Mix Plus
 	if (this.getTreePref('compatibility.TMP') &&
