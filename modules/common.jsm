@@ -42,6 +42,7 @@ var TreeStyleTabCommon = {
 		if (this._initialized) return;
 
 		this.addPrefListener(this);
+		this._tabbarPositionHistory.push(this.currentTabbarPosition);
 	},
 	_initialized : false,
 

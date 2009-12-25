@@ -1318,14 +1318,6 @@ var TreeStyleTabService = {
 		window.removeEventListener('DOMContentLoaded', this, true);
 		if (!document.getElementById('content')) return;
 
-		var namespace = {};
-		Components.utils.import(
-			'resource://treestyletab-modules/common.jsm',
-			namespace
-		);
-		this.common = namespace.TreeStyleTabCommon;
-		this.common.init();
-
 		window.addEventListener('SSTabRestoring', this, true);
 
 		if ('swapBrowsersAndCloseOther' in document.getElementById('content')) {
@@ -2948,6 +2940,13 @@ catch(e) {
 		namespace
 	);
 	TreeStyleTabService.__proto__ = namespace.window['piro.sakura.ne.jp'].prefs;
+
+	Components.utils.import(
+		'resource://treestyletab-modules/common.jsm',
+		namespace
+	);
+	TreeStyleTabService.common = namespace.TreeStyleTabCommon;
+	TreeStyleTabService.common.init();
 })();
 window.addEventListener('DOMContentLoaded', TreeStyleTabService, true);
 window.addEventListener('load', TreeStyleTabService, false);
