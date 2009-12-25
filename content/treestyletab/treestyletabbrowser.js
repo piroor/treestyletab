@@ -1544,10 +1544,14 @@ TreeStyleTabBrowser.prototype = {
 			if (subtreeCollapsed)
 				this.stopRendering();
 
+			let tabs = this.getDescendantTabs(tab);
+
 			let id = this.makeNewClosedSetId();
+			id += '::' + (tabs.length+1);
+
 			this.setTabValue(tab, this.kCLOSED_SET_ID, id);
 
-			this.getDescendantTabs(tab).reverse().forEach(function(aTab) {
+			tabs.reverse().forEach(function(aTab) {
 				this.setTabValue(aTab, this.kCLOSED_SET_ID, id);
 				b.removeTab(aTab);
 			}, this);
@@ -2161,7 +2165,16 @@ TreeStyleTabBrowser.prototype = {
 				indexes.push(aIndex);
 		}, this);
 
-		if (!indexes.length) return;
+		var count = aId.split('::')[1];
+
+		if (
+			!indexes.length ||
+			(
+				indexes.length+1 < count &&
+				this.getTreePref('undoCloseTabSubtree.onlyFullSet')
+			)
+			)
+			return;
 
 		this._restoringClosedSet = true;
 		this.stopRendering();

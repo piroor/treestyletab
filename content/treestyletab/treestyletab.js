@@ -1282,7 +1282,7 @@ catch(e) {
 		if (!this.warnAboutClosingTabs(tabs.length))
 			return;
 
-		var id = this.makeNewClosedSetId();
+		var id = this.makeNewClosedSetId() + '::' + tabs.length;
 		var b = this.getTabBrowserFromChild(tabs[0]);
 		for (var i = tabs.length-1; i > -1; i--)
 		{
