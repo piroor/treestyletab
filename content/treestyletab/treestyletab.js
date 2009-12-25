@@ -1016,7 +1016,6 @@ catch(e) {
 		appcontent.removeEventListener('SubBrowserRemoveRequest', this, false);
 
 		this.removePrefListener(this);
-		this.ObserverService.removeObserver(this, 'private-browsing-change-granted');
 		this.ObserverService.removeObserver(this, 'sessionstore-windows-restored');
 	},
 	
