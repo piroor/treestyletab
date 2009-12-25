@@ -605,9 +605,13 @@ TreeStyleTabBrowser.prototype = {
 
 		aTab.setAttribute(this.kNEST, 0);
 	},
+	isTabInitialized : function TSTBrowser_isTabInitialized(aTab)
+	{
+		return aTab.getAttribute(this.kID);
+	},
 	ensureTabInitialized : function TSTBrowser_ensureTabInitialized(aTab)
 	{
-		if (!aTab || aTab.getAttribute(this.kID)) return;
+		if (!aTab || this.isTabInitialized(aTab)) return;
 		this.initTab(aTab);
 	},
 	
@@ -1416,9 +1420,9 @@ TreeStyleTabBrowser.prototype = {
 		this.lastScrollY = y.value;
 	},
   
-	onTabAdded : function TSTBrowser_onTabAdded(aEvent) 
+	onTabAdded : function TSTBrowser_onTabAdded(aEvent, aTab) 
 	{
-		var tab = aEvent.originalTarget;
+		var tab = aTab || aEvent.originalTarget;
 		var b   = this.mTabBrowser;
 
 		this.initTab(tab);
@@ -1719,7 +1723,13 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var tab = aEvent.originalTarget;
 		var b   = this.mTabBrowser;
-		this.initTabContents(tab); // twisty vanished after the tab is moved!!
+
+		// When the tab was moved before TabOpen event is fired, we have to update manually.
+		if (!this.isTabInitialized(tab))
+			this.onTabAdded(null, tab);
+
+		// twisty vanished after the tab is moved!!
+		this.initTabContents(tab);
 
 		if (this.hasChildTabs(tab) && !this.subTreeMovingCount) {
 			this.moveTabSubTreeTo(tab, tab._tPos);
