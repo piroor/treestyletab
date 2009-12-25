@@ -2393,6 +2393,7 @@ catch(e) {
 		else
 			aMenuItem.setAttribute('hidden', true);
 	},
+	showHideSubTreeMenuItem : function() { return this.showHideSubtreeMenuItem.apply(this, arguments); }, // obsolete, for backward compatibility
  
 	updateTabWidthPrefs : function TSTService_updateTabWidthPrefs(aPrefName) 
 	{
@@ -2541,6 +2542,11 @@ catch(e) {
 			this.setPref('browser.tabs.warnOnClose', false);
 		return shouldClose;
 	},
+	// obsolete, for backward compatibility
+	removeTabSubTree : function() { return this.removeTabSubtree.apply(this, arguments); },
+	warnAboutClosingTabSubTreeOf : function() { return this.warnAboutClosingTabSubtreeOf.apply(this, arguments); },
+	shouldCloseTabSubTreeOf : function() { return this.shouldCloseTabSubtreeOf.apply(this, arguments); },
+	shouldCloseLastTabSubTreeOf : function() { return this.shouldCloseLastTabSubtreeOf.apply(this, arguments); },
 	
 	_normalizeToTabs : function TSTService__normalizeToTabs(aTabOrTabs, aOnlyChildren) 
 	{
@@ -2589,6 +2595,7 @@ catch(e) {
 			b.reloadTab(tabs[i]);
 		}
 	},
+	reloadTabSubTree : function() { return this.reloadTabSubtree.apply(this, arguments); }, // obsolete, for backward compatibility
  
 	createSubtree : function TSTService_createSubtree(aTabs) 
 	{
@@ -2623,6 +2630,7 @@ catch(e) {
 			}
 		}, 0, this);
 	},
+	createSubTree : function() { return this.createSubtree.apply(this, arguments); }, // obsolete, for backward compatibility
 	
 	canCreateSubtree : function TSTService_canCreateSubtree(aTabs) 
 	{
@@ -2638,6 +2646,7 @@ catch(e) {
 		}
 		return this.getChildTabs(lastParent).length != aTabs.length;
 	},
+	canCreateSubTree : function() { return this.canCreateSubtree.apply(this, arguments); }, // obsolete, for backward compatibility
  
 	getRootTabs : function TSTService_getRootTabs(aTabs) 
 	{
@@ -2772,6 +2781,7 @@ catch(e) {
 		}
 		return false;
 	},
+	tearOffSubTreeFromRemote : function() { return this.tearOffSubtreeFromRemote.apply(this, arguments); }, // obsolete, for backward compatibility
   
 	observe : function TSTService_observe(aSubject, aTopic, aData) 
 	{

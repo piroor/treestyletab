@@ -75,6 +75,7 @@ var TreeStyleTabBookmarksService = {
 		}
 		this.endAddBookmarksFromTabs();
 	},
+	bookmarkTabSubTree : function() { return this.bookmarkTabSubtree.apply(this, arguments); }, // obsolete, for backward compatibility
  
 	getParentItem : function TSTBMService_getParentItem(aId) 
 	{

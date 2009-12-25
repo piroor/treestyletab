@@ -3400,6 +3400,7 @@ TreeStyleTabBrowser.prototype = {
 
 		this.subTreeMovingCount--;
 	},
+	moveTabSubTreeTo : function() { return this.moveTabSubtreeTo.apply(this, arguments); }, // obsolete, for backward compatibility
  
 	moveTabLevel : function TSTBrowser_moveTabLevel(aEvent) 
 	{
