@@ -46,6 +46,44 @@ var TreeStyleTabUtils = {
 	},
 	_initialized : false,
  
+// tabbar position 
+	
+	get currentTabbarPosition() /* PUBLIC API */ 
+	{
+		return this.getTreePref('tabbar.position') || 'top';
+	},
+	set currentTabbarPosition(aValue)
+	{
+		var position = String(aValue);
+		if (!position || !/^(top|bottom|left|right)$/i.test(position))
+			position = 'top';
+
+		position = position.toLowerCase();
+		this.setTreePref('tabbar.position', position);
+
+		return aValue;
+	},
+ 
+	rollbackTabbarPosition : function TSTUtils_rollbackTabbarPosition() /* PUBLIC API */ 
+	{
+		if (!this._tabbarPositionHistory.length)
+			return false;
+
+		this._inRollbackTabbarPosition = true;
+		this.currentTabbarPosition = this._tabbarPositionHistory.pop();
+		this._inRollbackTabbarPosition = false;
+
+		return true;
+	},
+ 
+	onChangeTabbarPosition : function TSTUtils_onChangeTabbarPosition(aPosition) 
+	{
+		if (this._inRollbackTabbarPosition) return;
+		this._tabbarPositionHistory.push(aPosition);
+	},
+ 
+	_tabbarPositionHistory : [], 
+  
 // pref listener 
 	
 	domains : [ 
@@ -75,44 +113,6 @@ var TreeStyleTabUtils = {
 				break;
 		}
 	},
-  
-// tabbar position 
-	
-	get currentTabbarPosition() /* PUBLIC API */ 
-	{
-		return this.getPref('extensions.treestyletab.tabbar.position') || 'top';
-	},
-	set currentTabbarPosition(aValue)
-	{
-		var position = String(aValue);
-		if (!position || !/^(top|bottom|left|right)$/i.test(position))
-			position = 'top';
-
-		position = position.toLowerCase();
-		this.setPref('extensions.treestyletab.tabbar.position', position);
-
-		return aValue;
-	},
- 
-	rollbackTabbarPosition : function TSTUtils_rollbackTabbarPosition() /* PUBLIC API */ 
-	{
-		if (!this._tabbarPositionHistory.length)
-			return false;
-
-		this._inRollbackTabbarPosition = true;
-		this.currentTabbarPosition = this._tabbarPositionHistory.pop();
-		this._inRollbackTabbarPosition = false;
-
-		return true;
-	},
- 
-	onChangeTabbarPosition : function TSTUtils_onChangeTabbarPosition(aPosition) 
-	{
-		if (this._inRollbackTabbarPosition) return;
-		this._tabbarPositionHistory.push(aPosition);
-	},
- 
-	_tabbarPositionHistory : [], 
   
 /* Save/Load Prefs */ 
 	
