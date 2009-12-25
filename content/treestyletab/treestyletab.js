@@ -1,41 +1,4 @@
 var TreeStyleTabService = { 
-	kFOCUS_ALL     : 0,
-	kFOCUS_VISIBLE : 1,
-
-	kDROP_BEFORE : -1,
-	kDROP_ON     : 0,
-	kDROP_AFTER  : 1,
-
-	kACTION_MOVE      : 1 << 0,
-	kACTION_STAY      : 1 << 1,
-	kACTION_DUPLICATE : 1 << 2,
-	kACTION_IMPORT    : 1 << 3,
-	kACTION_NEWTAB    : 1 << 4,
-	kACTION_ATTACH    : 1 << 10,
-	kACTION_PART      : 1 << 11,
-	kACTIONS_FOR_SOURCE      : (1 << 0) | (1 << 1),
-	kACTIONS_FOR_DESTINATION : (1 << 2) | (1 << 3),
-
-	kTABBAR_TOP    : 1 << 0,
-	kTABBAR_BOTTOM : 1 << 1,
-	kTABBAR_LEFT   : 1 << 2,
-	kTABBAR_RIGHT  : 1 << 3,
-
-	kTABBAR_HORIZONTAL : (1 << 0) | (1 << 1),
-	kTABBAR_VERTICAL   : (1 << 2) | (1 << 3),
-
-	kINSERT_FISRT : 0,
-	kINSERT_LAST  : 1,
-
-	baseIndent : 12,
-	shouldDetectClickOnIndentSpaces : true,
-
-	smoothScrollEnabled  : true,
-	smoothScrollDuration : 150,
-
-	animationEnabled : true,
-	indentDuration   : 200,
-	collapseDuration : 150,
 
 	get treeBundle() {
 		return window['piro.sakura.ne.jp']
@@ -50,50 +13,6 @@ var TreeStyleTabService = {
 	
 /* API */ 
 	
-	setTabbarWidth : function TSTService_setTabbarWidth(aWidth, aForceExpanded) /* PUBLIC API */ 
-	{
-		gBrowser.treeStyleTab.autoHide.setWidth(aWidth, aForceExpanded);
-	},
- 
-	setContentWidth : function TSTService_setContentWidth(aWidth, aKeepWindowSize) /* PUBLIC API */ 
-	{
-		var treeStyleTab = gBrowser.treeStyleTab;
-		var tabbarWidth = treeStyleTab.splitterWidth + (treeStyleTab.isVertical ? gBrowser.mStrip.boxObject.width : 0 );
-		var contentWidth = gBrowser.boxObject.width - tabbarWidth;
-		if (aKeepWindowSize ||
-			window.fullScreen ||
-			window.windowState != Components.interfaces.nsIDOMChromeWindow.STATE_NORMAL) {
-			this.setTabbarWidth(Math.max(10, gBrowser.boxObject.width - aWidth));
-		}
-		else if (tabbarWidth + aWidth <= screen.availWidth) {
-			window.resizeBy(aWidth - contentWidth, 0);
-		}
-		else {
-			window.resizeBy(screen.availWidth - window.outerWidth, 0);
-			this.setTabbarWidth(gBrowser.boxObject.width - aWidth);
-		}
-	},
- 
-	toggleAutoHide : function TSTService_toggleAutoHide() 
-	{
-		TreeStyleTabBrowserAutoHide.toggleMode();
-	},
- 
-	toggleFixed : function TSTService_toggleFixed() 
-	{
-		var pos = this.currentTabbarPosition;
-		var isVertical = (pos == 'left' || pos == 'right');
-
-		var orient = isVertical ? 'vertical' : 'horizontal' ;
-		var pref = 'tabbar.fixed.'+orient;
-		this.setTreePref(pref, !this.getTreePref(pref));
-
-		if (!this.getTreePref('tabbar.syncRelatedPrefsForDynamicPosition')) return;
-
-		if (!isVertical)
-			this.setTreePref('enableSubtreeIndent.horizontal', !this.getTreePref(pref));
-	},
- 
 	changeTabbarPosition : function TSTService_changeTabbarPosition(aNewPosition) /* PUBLIC API (obsolete, for backward compatibility) */ 
 	{
 		this.currentTabbarPosition = aNewPosition;
@@ -120,6 +39,15 @@ var TreeStyleTabService = {
 	set treeViewEnabled(aValue)
 	{
 		return this.utils.treeViewEnabled = aValue;
+	},
+ 
+	get useTMPSessionAPI() /* PUBLIC API */ 
+	{
+		return this.utils.useTMPSessionAPI;
+	},
+	set useTMPSessionAPI(aValue)
+	{
+		return this.utils.useTMPSessionAPI = aValue;
 	},
   
 /* backward compatibility */ 
@@ -172,7 +100,8 @@ var TreeStyleTabService = {
 				XPathResult.BOOLEAN_TYPE
 			).booleanValue;
 	},
-	canExpandTwistyArea : function TSTService_canExpandTwistyArea(aTabBrowser)
+	
+	canExpandTwistyArea : function TSTService_canExpandTwistyArea(aTabBrowser) 
 	{
 		return (
 				this.expandTwistyArea &&
@@ -181,8 +110,7 @@ var TreeStyleTabService = {
 				}, this)
 			);
 	},
-	expandTwistyArea : true,
- 
+  
 	getBoxObjectFor : function TSTService_getBoxObjectFor(aNode) 
 	{
 		return window['piro.sakura.ne.jp'].boxObject.getBoxObjectFor(aNode);
@@ -196,71 +124,6 @@ var TreeStyleTabService = {
 		return Number(style.getPropertyValue(aProp).replace(/px$/, ''));
 	},
  
-/* Session Store API */ 
-	
-	getTabValue : function TSTService_getTabValue(aTab, aKey) 
-	{
-		var value = '';
-		try {
-			value = this.SessionStore.getTabValue(aTab, aKey);
-		}
-		catch(e) {
-		}
-
-		if (this.useTMPSessionAPI) {
-			let TMPValue = aTab.getAttribute(this.kTMP_SESSION_DATA_PREFIX+aKey);
-			if (TMPValue) value = TMPValue;
-		}
-
-		return value;
-	},
- 
-	setTabValue : function TSTService_setTabValue(aTab, aKey, aValue) 
-	{
-		if (!aValue) return this.deleteTabValue(aTab, aKey);
-
-		aTab.setAttribute(aKey, aValue);
-		try {
-			this.checkCachedSessionDataExpiration(aTab);
-			this.SessionStore.setTabValue(aTab, aKey, aValue);
-		}
-		catch(e) {
-		}
-
-		if (this.useTMPSessionAPI)
-			aTab.setAttribute(this.kTMP_SESSION_DATA_PREFIX+aKey, aValue);
-
-		return aValue;
-	},
- 
-	deleteTabValue : function TSTService_deleteTabValue(aTab, aKey) 
-	{
-		aTab.removeAttribute(aKey);
-		try {
-			this.checkCachedSessionDataExpiration(aTab);
-			this.SessionStore.setTabValue(aTab, aKey, '');
-			this.SessionStore.deleteTabValue(aTab, aKey);
-		}
-		catch(e) {
-		}
-
-		if (this.useTMPSessionAPI)
-			aTab.removeAttribute(this.kTMP_SESSION_DATA_PREFIX+aKey);
-	},
- 
-	// workaround for http://piro.sakura.ne.jp/latest/blosxom/mozilla/extension/treestyletab/2009-09-29_debug.htm
-	checkCachedSessionDataExpiration : function TSTService_checkCachedSessionDataExpiration(aTab) 
-	{
-		if (aTab.linkedBrowser.parentNode.__SS_data &&
-			aTab.linkedBrowser.parentNode.__SS_data._tabStillLoading &&
-			aTab.getAttribute('busy') != 'true')
-			aTab.linkedBrowser.parentNode.__SS_data._tabStillLoading = false;
-	},
- 
-	useTMPSessionAPI : false, 
- 
-	kTMP_SESSION_DATA_PREFIX : 'tmp-session-data-', 
-  
 	dropLinksOnTabBehavior : function TSTService_dropLinksOnTabBehavior() 
 	{
 		var behavior = this.getTreePref('dropLinksOnTab.behavior');
@@ -506,7 +369,6 @@ var TreeStyleTabService = {
 		appcontent.addEventListener('SubBrowserRemoveRequest', this, false);
 
 		this.addPrefListener(this);
-		this.ObserverService.addObserver(this, 'private-browsing-change-granted', false);
 
 		this.initUninstallationListener();
 
@@ -517,23 +379,13 @@ var TreeStyleTabService = {
 
 		this.processRestoredTabs();
 
-		this.onPrefChange('extensions.treestyletab.indent');
 		this.onPrefChange('extensions.treestyletab.tabbar.autoHide.mode');
-		this.onPrefChange('extensions.treestyletab.clickOnIndentSpaces.enabled');
-		this.onPrefChange('browser.link.open_newwindow.restriction.override');
-		this.onPrefChange('browser.tabs.loadFolderAndReplace.override');
-		this.onPrefChange('browser.tabs.insertRelatedAfterCurrent.override');
 		this.onPrefChange('extensions.treestyletab.tabbar.style');
-		this.onPrefChange('extensions.treestyletab.tabbar.scroll.smooth');
-		this.onPrefChange('extensions.treestyletab.tabbar.scroll.duration');
-		this.onPrefChange('extensions.treestyletab.animation.enabled');
-		this.onPrefChange('extensions.treestyletab.animation.indent.duration');
-		this.onPrefChange('extensions.treestyletab.animation.collapse.duration');
-		this.onPrefChange('extensions.treestyletab.twisty.expandSensitiveArea');
 		this.onPrefChange('extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut');
 	},
 	initialized : false,
-	initUninstallationListener : function TSTService_initUninstallationListener()
+	
+	initUninstallationListener : function TSTService_initUninstallationListener() 
 	{
 		var prefs = window['piro.sakura.ne.jp'].prefs;
 		var restorePrefs = function() {
@@ -557,7 +409,7 @@ var TreeStyleTabService = {
 			ondisabled : restorePrefs
 		});
 	},
-	
+ 
 	initTabBrowser : function TSTService_initTabBrowser(aTabBrowser) 
 	{
 		if (aTabBrowser.localName != 'tabbrowser') return;
@@ -1419,20 +1271,6 @@ catch(e) {
 	},
 	showHideSubTreeMenuItem : function() { return this.showHideSubtreeMenuItem.apply(this, arguments); }, // obsolete, for backward compatibility
  
-	updateTabWidthPrefs : function TSTService_updateTabWidthPrefs(aPrefName) 
-	{
-		var expanded = this.getTreePref('tabbar.width');
-		var shrunken = this.getTreePref('tabbar.shrunkenWidth');
-		if (expanded <= shrunken) {
-			this.tabbarWidthResetting = true;
-			if (aPrefName == 'extensions.treestyletab.tabbar.width')
-				this.setTreePref('tabbar.shrunkenWidth', parseInt(expanded / 1.5));
-			else
-				this.setTreePref('tabbar.width', parseInt(shrunken * 1.5));
-			this.tabbarWidthResetting = false;
-		}
-	},
- 
 	handleTooltip : function TSTService_handleTooltip(aEvent, aTab) 
 	{
 		var label;
@@ -1505,6 +1343,50 @@ catch(e) {
   
 /* Commands */ 
 	
+	setTabbarWidth : function TSTService_setTabbarWidth(aWidth, aForceExpanded) /* PUBLIC API */ 
+	{
+		gBrowser.treeStyleTab.autoHide.setWidth(aWidth, aForceExpanded);
+	},
+ 
+	setContentWidth : function TSTService_setContentWidth(aWidth, aKeepWindowSize) /* PUBLIC API */ 
+	{
+		var treeStyleTab = gBrowser.treeStyleTab;
+		var tabbarWidth = treeStyleTab.splitterWidth + (treeStyleTab.isVertical ? gBrowser.mStrip.boxObject.width : 0 );
+		var contentWidth = gBrowser.boxObject.width - tabbarWidth;
+		if (aKeepWindowSize ||
+			window.fullScreen ||
+			window.windowState != Components.interfaces.nsIDOMChromeWindow.STATE_NORMAL) {
+			this.setTabbarWidth(Math.max(10, gBrowser.boxObject.width - aWidth));
+		}
+		else if (tabbarWidth + aWidth <= screen.availWidth) {
+			window.resizeBy(aWidth - contentWidth, 0);
+		}
+		else {
+			window.resizeBy(screen.availWidth - window.outerWidth, 0);
+			this.setTabbarWidth(gBrowser.boxObject.width - aWidth);
+		}
+	},
+ 
+	toggleAutoHide : function TSTService_toggleAutoHide() 
+	{
+		TreeStyleTabBrowserAutoHide.toggleMode();
+	},
+ 
+	toggleFixed : function TSTService_toggleFixed() 
+	{
+		var pos = this.currentTabbarPosition;
+		var isVertical = (pos == 'left' || pos == 'right');
+
+		var orient = isVertical ? 'vertical' : 'horizontal' ;
+		var pref = 'tabbar.fixed.'+orient;
+		this.setTreePref(pref, !this.getTreePref(pref));
+
+		if (!this.getTreePref('tabbar.syncRelatedPrefsForDynamicPosition')) return;
+
+		if (!isVertical)
+			this.setTreePref('enableSubtreeIndent.horizontal', !this.getTreePref(pref));
+	},
+ 
 	removeTabSubtree : function TSTService_removeTabSubtree(aTabOrTabs, aOnlyChildren) 
 	{
 		var tabs = this.normalizeToTabs(aTabOrTabs, aOnlyChildren);
@@ -1744,11 +1626,6 @@ catch(e) {
 				this.onPrefChange(aData);
 				return;
 
-			case 'private-browsing-change-granted':
-				if (aData == 'enter')
-					this.ObserverService.notifyObservers(window, 'TreeStyleTab:collapseExpandAllSubtree', 'expand-now');
-				return;
-
 			case 'sessionstore-windows-restored':
 				if (!this.useTMPSessionAPI)
 					this.restoringWindow = this.getRestoringTabsCount() > 1;
@@ -1770,12 +1647,6 @@ catch(e) {
 	
 	domains : [ 
 		'extensions.treestyletab',
-		'browser.link.open_newwindow.restriction',
-		'browser.link.open_newwindow.restriction.override',
-		'browser.tabs.loadFolderAndReplace',
-		'browser.tabs.loadFolderAndReplace.override',
-		'browser.tabs.insertRelatedAfterCurrent',
-		'browser.tabs.insertRelatedAfterCurrent.override',
 		'browser.ctrlTab.previews'
 	],
  
@@ -1784,11 +1655,6 @@ catch(e) {
 		var value = this.getPref(aPrefName);
 		switch (aPrefName)
 		{
-			case 'extensions.treestyletab.indent':
-				this.baseIndent = value;
-				this.ObserverService.notifyObservers(null, 'TreeStyleTab:indentModified', value);
-				break;
-
 			case 'extensions.treestyletab.tabbar.autoHide.mode':
 				// don't set on this time, because appearance of all tabbrowsers are not updated yet.
 				// this.autoHide.mode = this.getTreePref('tabbar.autoHide.mode');
@@ -1798,60 +1664,12 @@ catch(e) {
 				TreeStyleTabBrowserAutoHide.updateKeyListeners();
 				break;
 
-			case 'extensions.treestyletab.tabbar.width':
-			case 'extensions.treestyletab.tabbar.shrunkenWidth':
-				this.updateTabWidthPrefs(aPrefName);
-				break;
-
-			case 'browser.link.open_newwindow.restriction':
-			case 'browser.tabs.loadFolderAndReplace':
-			case 'browser.tabs.insertRelatedAfterCurrent':
-				if (this.prefOverriding) return;
-				aPrefName += '.override';
-				this.setPref(aPrefName, value);
-			case 'browser.link.open_newwindow.restriction.override':
-			case 'browser.tabs.loadFolderAndReplace.override':
-			case 'browser.tabs.insertRelatedAfterCurrent.override':
-				this.prefOverriding = true;
-				var target = aPrefName.replace('.override', '');
-				var originalValue = this.getPref(target);
-				if (originalValue !== null && originalValue != value)
-					this.setPref(target+'.backup', originalValue);
-				this.setPref(target, this.getPref(aPrefName));
-				this.prefOverriding = false;
-				break;
-
-			case 'extensions.treestyletab.clickOnIndentSpaces.enabled':
-				this.shouldDetectClickOnIndentSpaces = this.getPref(aPrefName);
-				break;
-
-			case 'extensions.treestyletab.tabbar.scroll.smooth':
-				this.smoothScrollEnabled = value;
-				break;
-			case 'extensions.treestyletab.tabbar.scroll.duration':
-				this.smoothScrollDuration = value;
-				break;
-
-			case 'extensions.treestyletab.animation.enabled':
-				this.animationEnabled = value;
-				break;
-			case 'extensions.treestyletab.animation.indent.duration':
-				this.indentDuration = value;
-				break;
-			case 'extensions.treestyletab.animation.collapse.duration':
-				this.collapseDuration = value;
-				break;
-
 			case 'extensions.treestyletab.tabbar.style':
 			case 'extensions.treestyletab.tabbar.position':
 				this.preLoadImagesForStyle([
 					this.getPref('extensions.treestyletab.tabbar.style'),
 					this.currentTabbarPosition
 				].join('-'));
-				break;
-
-			case 'extensions.treestyletab.twisty.expandSensitiveArea':
-				this.expandTwistyArea = value;
 				break;
 
 			case 'browser.ctrlTab.previews':

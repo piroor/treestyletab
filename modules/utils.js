@@ -40,7 +40,7 @@ var Ci = Components.interfaces;
  
 var TreeStyleTabUtils = { 
 	
-	/* attributes */ 
+/* attributes */ 
 	kID                 : 'treestyletab-id',
 	kCHILDREN           : 'treestyletab-children',
 	kPARENT             : 'treestyletab-parent',
@@ -85,7 +85,7 @@ var TreeStyleTabUtils = {
 	kTABBAR_MOVE_FORCE  : 'force',
 	kTABBAR_MOVE_NORMAL : 'normal',
  
-	/* classes */ 
+/* classes */ 
 	kTWISTY                : 'treestyletab-twisty',
 	kTWISTY_CONTAINER      : 'treestyletab-twisty-container',
 	kDROP_MARKER           : 'treestyletab-drop-marker',
@@ -96,6 +96,48 @@ var TreeStyleTabUtils = {
 	kTABBAR_TOGGLER        : 'treestyletab-tabbar-toggler',
 
 	kMENUITEM_REMOVESUBTREE_SELECTION : 'multipletab-selection-item-removeTabSubtree',
+ 
+/* other constant values */ 
+	kFOCUS_ALL     : 0,
+	kFOCUS_VISIBLE : 1,
+
+	kDROP_BEFORE : -1,
+	kDROP_ON     : 0,
+	kDROP_AFTER  : 1,
+
+	kACTION_MOVE      : 1 << 0,
+	kACTION_STAY      : 1 << 1,
+	kACTION_DUPLICATE : 1 << 2,
+	kACTION_IMPORT    : 1 << 3,
+	kACTION_NEWTAB    : 1 << 4,
+	kACTION_ATTACH    : 1 << 10,
+	kACTION_PART      : 1 << 11,
+	kACTIONS_FOR_SOURCE      : (1 << 0) | (1 << 1),
+	kACTIONS_FOR_DESTINATION : (1 << 2) | (1 << 3),
+
+	kTABBAR_TOP    : 1 << 0,
+	kTABBAR_BOTTOM : 1 << 1,
+	kTABBAR_LEFT   : 1 << 2,
+	kTABBAR_RIGHT  : 1 << 3,
+
+	kTABBAR_HORIZONTAL : (1 << 0) | (1 << 1),
+	kTABBAR_VERTICAL   : (1 << 2) | (1 << 3),
+
+	kINSERT_FISRT : 0,
+	kINSERT_LAST  : 1,
+ 
+/* base variables */ 
+	baseIndent : 12,
+	shouldDetectClickOnIndentSpaces : true,
+
+	smoothScrollEnabled  : true,
+	smoothScrollDuration : 150,
+
+	animationEnabled : true,
+	indentDuration   : 200,
+	collapseDuration : 150,
+
+	expandTwistyArea : true,
  
 	get SessionStore() { 
 		if (!this._SessionStore) {
@@ -176,11 +218,40 @@ var TreeStyleTabUtils = {
 						.indexOf('mac') > -1;
 
 		this.addPrefListener(this);
+		this.ObserverService.addObserver(this, 'private-browsing-change-granted', false);
+
 		this._tabbarPositionHistory.push(this.currentTabbarPosition);
+
+		this.onPrefChange('extensions.treestyletab.indent');
+		this.onPrefChange('extensions.treestyletab.clickOnIndentSpaces.enabled');
+		this.onPrefChange('browser.link.open_newwindow.restriction.override');
+		this.onPrefChange('browser.tabs.loadFolderAndReplace.override');
+		this.onPrefChange('browser.tabs.insertRelatedAfterCurrent.override');
+		this.onPrefChange('extensions.treestyletab.tabbar.scroll.smooth');
+		this.onPrefChange('extensions.treestyletab.tabbar.scroll.duration');
+		this.onPrefChange('extensions.treestyletab.animation.enabled');
+		this.onPrefChange('extensions.treestyletab.animation.indent.duration');
+		this.onPrefChange('extensions.treestyletab.animation.collapse.duration');
+		this.onPrefChange('extensions.treestyletab.twisty.expandSensitiveArea');
 	},
 	_initialized : false,
  
-// utilities 
+	observe : function TSTUtils_observe(aSubject, aTopic, aData) 
+	{
+		switch (aTopic)
+		{
+			case 'nsPref:changed':
+				this.onPrefChange(aData);
+				return;
+
+			case 'private-browsing-change-granted':
+				if (aData == 'enter')
+					this.ObserverService.notifyObservers(window, 'TreeStyleTab:collapseExpandAllSubtree', 'expand-now');
+				return;
+		}
+	},
+ 
+/* utilities */ 
 	
 	get browserWindow() 
 	{
@@ -318,6 +389,71 @@ var TreeStyleTabUtils = {
 
 		return array;
 	},
+  
+/* Session Store API */ 
+	
+	getTabValue : function TSTUtils_getTabValue(aTab, aKey) 
+	{
+		var value = '';
+		try {
+			value = this.SessionStore.getTabValue(aTab, aKey);
+		}
+		catch(e) {
+		}
+
+		if (this.useTMPSessionAPI) {
+			let TMPValue = aTab.getAttribute(this.kTMP_SESSION_DATA_PREFIX+aKey);
+			if (TMPValue) value = TMPValue;
+		}
+
+		return value;
+	},
+ 
+	setTabValue : function TSTUtils_setTabValue(aTab, aKey, aValue) 
+	{
+		if (!aValue) return this.deleteTabValue(aTab, aKey);
+
+		aTab.setAttribute(aKey, aValue);
+		try {
+			this.checkCachedSessionDataExpiration(aTab);
+			this.SessionStore.setTabValue(aTab, aKey, aValue);
+		}
+		catch(e) {
+		}
+
+		if (this.useTMPSessionAPI)
+			aTab.setAttribute(this.kTMP_SESSION_DATA_PREFIX+aKey, aValue);
+
+		return aValue;
+	},
+ 
+	deleteTabValue : function TSTUtils_deleteTabValue(aTab, aKey) 
+	{
+		aTab.removeAttribute(aKey);
+		try {
+			this.checkCachedSessionDataExpiration(aTab);
+			this.SessionStore.setTabValue(aTab, aKey, '');
+			this.SessionStore.deleteTabValue(aTab, aKey);
+		}
+		catch(e) {
+		}
+
+		if (this.useTMPSessionAPI)
+			aTab.removeAttribute(this.kTMP_SESSION_DATA_PREFIX+aKey);
+	},
+ 
+	// workaround for http://piro.sakura.ne.jp/latest/blosxom/mozilla/extension/treestyletab/2009-09-29_debug.htm
+	checkCachedSessionDataExpiration : function TSTUtils_checkCachedSessionDataExpiration(aTab) 
+	{
+		if (aTab.linkedBrowser.parentNode.__SS_data &&
+			aTab.linkedBrowser.parentNode.__SS_data._tabStillLoading &&
+			aTab.getAttribute('busy') != 'true')
+			aTab.linkedBrowser.parentNode.__SS_data._tabStillLoading = false;
+	},
+ 
+	useTMPSessionAPI : false, 
+ 
+	kTMP_SESSION_DATA_PREFIX : 'tmp-session-data-', 
   
 // tab 
 	
@@ -1114,7 +1250,7 @@ var TreeStyleTabUtils = {
 		);
 	},
   
-// tabbar position 
+/* tabbar position */ 
 	
 	get currentTabbarPosition() /* PUBLIC API */ 
 	{
@@ -1152,36 +1288,96 @@ var TreeStyleTabUtils = {
  
 	_tabbarPositionHistory : [], 
   
-// pref listener 
+/* Pref Listener */ 
 	
 	domains : [ 
-		'extensions.treestyletab.tabbar.position'
+		'extensions.treestyletab.',
+		'browser.link.open_newwindow.restriction',
+		'browser.tabs.loadFolderAndReplace',
+		'browser.tabs.insertRelatedAfterCurrent'
 	],
- 
-	observe : function TSTUtils_observe(aSubject, aTopic, aData) 
-	{
-		switch (aTopic)
-		{
-			case 'nsPref:changed':
-				this.onPrefChange(aData);
-				return;
-		}
-	},
  
 	onPrefChange : function TSTUtils_onPrefChange(aPrefName) 
 	{
 		var value = this.getPref(aPrefName);
 		switch (aPrefName)
 		{
+			case 'extensions.treestyletab.indent':
+				this.baseIndent = value;
+				this.ObserverService.notifyObservers(null, 'TreeStyleTab:indentModified', value);
+				break;
+
+			case 'extensions.treestyletab.tabbar.width':
+			case 'extensions.treestyletab.tabbar.shrunkenWidth':
+				this.updateTabWidthPrefs(aPrefName);
+				break;
+
+			case 'browser.link.open_newwindow.restriction':
+			case 'browser.tabs.loadFolderAndReplace':
+			case 'browser.tabs.insertRelatedAfterCurrent':
+				if (this.prefOverriding) return;
+				aPrefName += '.override';
+				this.setPref(aPrefName, value);
+			case 'browser.link.open_newwindow.restriction.override':
+			case 'browser.tabs.loadFolderAndReplace.override':
+			case 'browser.tabs.insertRelatedAfterCurrent.override':
+				this.prefOverriding = true;
+				var target = aPrefName.replace('.override', '');
+				var originalValue = this.getPref(target);
+				if (originalValue !== null && originalValue != value)
+					this.setPref(target+'.backup', originalValue);
+				this.setPref(target, this.getPref(aPrefName));
+				this.prefOverriding = false;
+				break;
+
+			case 'extensions.treestyletab.clickOnIndentSpaces.enabled':
+				this.shouldDetectClickOnIndentSpaces = this.getPref(aPrefName);
+				break;
+
+			case 'extensions.treestyletab.tabbar.scroll.smooth':
+				this.smoothScrollEnabled = value;
+				break;
+			case 'extensions.treestyletab.tabbar.scroll.duration':
+				this.smoothScrollDuration = value;
+				break;
+
+			case 'extensions.treestyletab.animation.enabled':
+				this.animationEnabled = value;
+				break;
+			case 'extensions.treestyletab.animation.indent.duration':
+				this.indentDuration = value;
+				break;
+			case 'extensions.treestyletab.animation.collapse.duration':
+				this.collapseDuration = value;
+				break;
+
 			case 'extensions.treestyletab.tabbar.position':
 				this.onChangeTabbarPosition(value);
+				break;
+
+			case 'extensions.treestyletab.twisty.expandSensitiveArea':
+				this.expandTwistyArea = value;
 				break;
 
 			default:
 				break;
 		}
 	},
-  
+	
+	updateTabWidthPrefs : function TSTUtils_updateTabWidthPrefs(aPrefName) 
+	{
+		var expanded = this.getTreePref('tabbar.width');
+		var shrunken = this.getTreePref('tabbar.shrunkenWidth');
+		if (expanded <= shrunken) {
+			this.tabbarWidthResetting = true;
+			if (aPrefName == 'extensions.treestyletab.tabbar.width')
+				this.setTreePref('tabbar.shrunkenWidth', parseInt(expanded / 1.5));
+			else
+				this.setTreePref('tabbar.width', parseInt(shrunken * 1.5));
+			this.tabbarWidthResetting = false;
+		}
+	},
+   
 /* Save/Load Prefs */ 
 	
 	getTreePref : function TSTUtils_getTreePref(aPrefstring) 
