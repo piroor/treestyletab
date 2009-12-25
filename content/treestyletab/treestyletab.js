@@ -455,16 +455,16 @@ var TreeStyleTabService = {
  
 	get currentTabbarPosition() /* PUBLIC API */ 
 	{
-		return this.common.currentTabbarPosition;
+		return this.utils.currentTabbarPosition;
 	},
 	set currentTabbarPosition(aValue)
 	{
-		return this.common.currentTabbarPosition = aValue;
+		return this.utils.currentTabbarPosition = aValue;
 	},
  
 	rollbackTabbarPosition : function TSTService_rollbackTabbarPosition() /* PUBLIC API */ 
 	{
-		return this.common.rollbackTabbarPosition();
+		return this.utils.rollbackTabbarPosition();
 	},
   
 /* backward compatibility */ 
@@ -2913,40 +2913,17 @@ catch(e) {
 				break;
 		}
 	},
-  
-/* Save/Load Prefs */ 
-	
-	getTreePref : function TSTService_getTreePref(aPrefstring) 
-	{
-		return this.getPref('extensions.treestyletab.'+aPrefstring);
-	},
- 
-	setTreePref : function TSTService_setTreePref(aPrefstring, aNewValue) 
-	{
-		return this.setPref('extensions.treestyletab.'+aPrefstring, aNewValue);
-	},
- 
-	clearTreePref : function TSTService_clearTreePref(aPrefstring) 
-	{
-		return this.clearPref('extensions.treestyletab.'+aPrefstring);
-	}
    
 }; 
 
 (function() {
 	var namespace = {};
 	Components.utils.import(
-		'resource://treestyletab-modules/prefs.js',
+		'resource://treestyletab-modules/utils.js',
 		namespace
 	);
-	TreeStyleTabService.__proto__ = namespace.window['piro.sakura.ne.jp'].prefs;
-
-	Components.utils.import(
-		'resource://treestyletab-modules/common.jsm',
-		namespace
-	);
-	TreeStyleTabService.common = namespace.TreeStyleTabCommon;
-	TreeStyleTabService.common.init();
+	TreeStyleTabService.__proto__ = TreeStyleTabService.utils = namespace.TreeStyleTabUtils;
+	TreeStyleTabService.utils.init();
 })();
 window.addEventListener('DOMContentLoaded', TreeStyleTabService, true);
 window.addEventListener('load', TreeStyleTabService, false);

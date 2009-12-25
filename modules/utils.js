@@ -1,4 +1,4 @@
-/* ***** BEGIN LICENSE BLOCK *****
+/* ***** BEGIN LICENSE BLOCK ***** 
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
  * The contents of this file are subject to the Mozilla Public License Version
@@ -32,12 +32,12 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ******/
-
-var EXPORTED_SYMBOLS = ['TreeStyleTabCommon'];
-
-var TreeStyleTabCommon = {
-
-	init : function TSTCommon_init()
+ 
+var EXPORTED_SYMBOLS = ['TreeStyleTabUtils']; 
+ 
+var TreeStyleTabUtils = { 
+	
+	init : function TSTUtils_init() 
 	{
 		if (this._initialized) return;
 
@@ -45,9 +45,14 @@ var TreeStyleTabCommon = {
 		this._tabbarPositionHistory.push(this.currentTabbarPosition);
 	},
 	_initialized : false,
-
-
-	observe : function TSTCommon_observe(aSubject, aTopic, aData) 
+ 
+// pref listener 
+	
+	domains : [ 
+		'extensions.treestyletab.tabbar.position'
+	],
+ 
+	observe : function TSTUtils_observe(aSubject, aTopic, aData) 
 	{
 		switch (aTopic)
 		{
@@ -56,12 +61,8 @@ var TreeStyleTabCommon = {
 				return;
 		}
 	},
-
-	domains : [ 
-		'extensions.treestyletab.tabbar.position'
-	],
-
-	onPrefChange : function TSTCommon_onPrefChange(aPrefName) 
+ 
+	onPrefChange : function TSTUtils_onPrefChange(aPrefName) 
 	{
 		var value = this.getPref(aPrefName);
 		switch (aPrefName)
@@ -74,12 +75,10 @@ var TreeStyleTabCommon = {
 				break;
 		}
 	},
-
-
-	// tabbar position API
-
-	/* PUBLIC API */
-	get currentTabbarPosition()
+  
+// tabbar position 
+	
+	get currentTabbarPosition() /* PUBLIC API */ 
 	{
 		return this.getPref('extensions.treestyletab.tabbar.position') || 'top';
 	},
@@ -94,9 +93,8 @@ var TreeStyleTabCommon = {
 
 		return aValue;
 	},
-
-	/* PUBLIC API */
-	rollbackTabbarPosition : function TSTCommon_rollbackTabbarPosition()
+ 
+	rollbackTabbarPosition : function TSTUtils_rollbackTabbarPosition() /* PUBLIC API */ 
 	{
 		if (!this._tabbarPositionHistory.length)
 			return false;
@@ -107,16 +105,34 @@ var TreeStyleTabCommon = {
 
 		return true;
 	},
-
-	onChangeTabbarPosition : function TSTCommon_onChangeTabbarPosition(aPosition)
+ 
+	onChangeTabbarPosition : function TSTUtils_onChangeTabbarPosition(aPosition) 
 	{
 		if (this._inRollbackTabbarPosition) return;
 		this._tabbarPositionHistory.push(aPosition);
 	},
-
-	_tabbarPositionHistory : []
-
-};
-
-Components.utils.import('resource://treestyletab-modules/prefs.js');
-TreeStyleTabCommon.__proto__ = window['piro.sakura.ne.jp'].prefs;
+ 
+	_tabbarPositionHistory : [], 
+  
+/* Save/Load Prefs */ 
+	
+	getTreePref : function TSTUtils_getTreePref(aPrefstring) 
+	{
+		return this.getPref('extensions.treestyletab.'+aPrefstring);
+	},
+ 
+	setTreePref : function TSTUtils_setTreePref(aPrefstring, aNewValue) 
+	{
+		return this.setPref('extensions.treestyletab.'+aPrefstring, aNewValue);
+	},
+ 
+	clearTreePref : function TSTUtils_clearTreePref(aPrefstring) 
+	{
+		return this.clearPref('extensions.treestyletab.'+aPrefstring);
+	}
+  
+}; 
+ 
+Components.utils.import('resource://treestyletab-modules/prefs.js'); 
+TreeStyleTabUtils.__proto__ = window['piro.sakura.ne.jp'].prefs;
+  
