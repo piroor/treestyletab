@@ -1544,7 +1544,11 @@ TreeStyleTabBrowser.prototype = {
 			if (subtreeCollapsed)
 				this.stopRendering();
 
+			let id = this.makeNewClosedSetId();
+			this.setTabValue(tab, this.kCLOSED_SET_ID, id);
+
 			this.getDescendantTabs(tab).reverse().forEach(function(aTab) {
+				this.setTabValue(aTab, this.kCLOSED_SET_ID, id);
 				b.removeTab(aTab);
 			}, this);
 

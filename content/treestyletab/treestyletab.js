@@ -1278,13 +1278,15 @@ catch(e) {
  
 	removeTabSubtree : function TSTService_removeTabSubtree(aTabOrTabs, aOnlyChildren) 
 	{
-		var tabs = this.normalizeToTabs(aTabOrTabs, aOnlyChildren);
+		var tabs = this.gatherSubtreeMemberTabs(aTabOrTabs, aOnlyChildren);
 		if (!this.warnAboutClosingTabs(tabs.length))
 			return;
 
+		var id = this.makeNewClosedSetId();
 		var b = this.getTabBrowserFromChild(tabs[0]);
 		for (var i = tabs.length-1; i > -1; i--)
 		{
+			this.setTabValue(tabs[i], this.kCLOSED_SET_ID, id);
 			b.removeTab(tabs[i]);
 		}
 	},
@@ -1326,7 +1328,7 @@ catch(e) {
   
 	reloadTabSubtree : function TSTService_reloadTabSubtree(aTabOrTabs, aOnlyChildren) 
 	{
-		var tabs = this.normalizeToTabs(aTabOrTabs, aOnlyChildren);
+		var tabs = this.gatherSubtreeMemberTabs(aTabOrTabs, aOnlyChildren);
 		var b = this.getTabBrowserFromChild(tabs[0]);
 		for (var i = tabs.length-1; i > -1; i--)
 		{
