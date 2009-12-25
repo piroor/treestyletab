@@ -1,15 +1,4 @@
 var TreeStyleTabService = { 
-
-	get treeBundle() {
-		return window['piro.sakura.ne.jp']
-				.stringBundle
-				.get('chrome://treestyletab/locale/treestyletab.properties');
-	},
-	get tabbrowserBundle() {
-		return window['piro.sakura.ne.jp']
-				.stringBundle
-				.get('chrome://browser/locale/tabbrowser.properties');
-	},
 	
 /* API */ 
 	
@@ -85,32 +74,6 @@ var TreeStyleTabService = {
 		window['piro.sakura.ne.jp'].stopRendering.start();
 	},
  
-	isEventFiredOnTwisty : function TSTService_isEventFiredOnTwisty(aEvent) 
-	{
-		var tab = this.getTabFromEvent(aEvent);
-		if (!tab || !this.hasChildTabs(tab)) return false;
-
-		var expression = 'ancestor-or-self::*[@class="'+this.kTWISTY+'"]';
-		if (this.canExpandTwistyArea(this.getTabBrowserFromChild(tab)))
-			expression += ' | ancestor-or-self::*[@class="tab-icon" and ancestor::xul:tabbrowser[@'+this.kMODE+'="vertical"]]';
-
-		return this.evaluateXPath(
-				expression,
-				aEvent.originalTarget || aEvent.target,
-				XPathResult.BOOLEAN_TYPE
-			).booleanValue;
-	},
-	
-	canExpandTwistyArea : function TSTService_canExpandTwistyArea(aTabBrowser) 
-	{
-		return (
-				this.expandTwistyArea &&
-				this._expandTwistyAreaAllowance.every(function(aFunc) {
-					return aFunc.call(this, aTabBrowser);
-				}, this)
-			);
-	},
-  
 	getPropertyPixelValue : function TSTService_getPropertyPixelValue(aElementOrStyle, aProp) 
 	{
 		var style = aElementOrStyle instanceof Components.interfaces.nsIDOMCSSStyleDeclaration ?
@@ -118,79 +81,6 @@ var TreeStyleTabService = {
 					window.getComputedStyle(aElementOrStyle, null) ;
 		return Number(style.getPropertyValue(aProp).replace(/px$/, ''));
 	},
- 
-	dropLinksOnTabBehavior : function TSTService_dropLinksOnTabBehavior() 
-	{
-		var behavior = this.getTreePref('dropLinksOnTab.behavior');
-		if (behavior & this.kDROPLINK_FIXED) return behavior;
-
-		var checked = { value : false };
-		var newChildTab = this.PromptService.confirmEx(window,
-				this.treeBundle.getString('dropLinkOnTab.title'),
-				this.treeBundle.getString('dropLinkOnTab.text'),
-				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_0) +
-				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_1),
-				this.treeBundle.getString('dropLinkOnTab.openNewChildTab'),
-				this.treeBundle.getString('dropLinkOnTab.loadInTheTab'),
-				null,
-				this.treeBundle.getString('dropLinkOnTab.never'),
-				checked
-			) == 0;
-
-		behavior = newChildTab ? this.kDROPLINK_NEWTAB : this.kDROPLINK_LOAD ;
-		if (checked.value)
-			this.setTreePref('dropLinksOnTab.behavior', behavior);
-
-		return behavior
-	},
-	kDROPLINK_ASK    : 0,
-	kDROPLINK_FIXED  : 1 + 2,
-	kDROPLINK_LOAD   : 1,
-	kDROPLINK_NEWTAB : 2,
- 
-	openGroupBookmarkBehavior : function TSTService_openGroupBookmarkBehavior() 
-	{
-		var behavior = this.getTreePref('openGroupBookmark.behavior');
-		if (behavior & this.kGROUP_BOOKMARK_FIXED) return behavior;
-
-		var dummyTabFlag = behavior & this.kGROUP_BOOKMARK_USE_DUMMY;
-
-		var checked = { value : false };
-		var button = this.PromptService.confirmEx(window,
-				this.treeBundle.getString('openGroupBookmarkBehavior.title'),
-				this.treeBundle.getString('openGroupBookmarkBehavior.text'),
-				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_0) +
-				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_1) +
-				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_2),
-				this.treeBundle.getString('openGroupBookmarkBehavior.subTree'),
-				this.treeBundle.getString('openGroupBookmarkBehavior.separate'),
-				this.treeBundle.getString('openGroupBookmarkBehavior.replace'),
-				this.treeBundle.getString('openGroupBookmarkBehavior.never'),
-				checked
-			);
-
-		if (button < 0) button = 1;
-		var behaviors = [
-				this.kGROUP_BOOKMARK_SUBTREE | dummyTabFlag,
-				this.kGROUP_BOOKMARK_SEPARATE,
-				this.kGROUP_BOOKMARK_REPLACE
-			];
-		behavior = behaviors[button];
-
-		if (checked.value) {
-			this.setTreePref('openGroupBookmark.behavior', behavior);
-			this.setPref('browser.tabs.loadFolderAndReplace', behavior & this.kGROUP_BOOKMARK_REPLACE ? true : false );
-		}
-		return behavior;
-	},
-	kGROUP_BOOKMARK_ASK       : 0,
-	kGROUP_BOOKMARK_FIXED     : 1 + 2 + 4,
-	kGROUP_BOOKMARK_SUBTREE   : 1,
-	kGROUP_BOOKMARK_SEPARATE  : 2,
-	kGROUP_BOOKMARK_REPLACE   : 4,
-	kGROUP_BOOKMARK_USE_DUMMY : 256,
-	kGROUP_BOOKMARK_USE_DUMMY_FORCE : 1024,
-	kGROUP_BOOKMARK_DONT_RESTORE_TREE_STRUCTURE : 512,
   
 /* Initializing */ 
 	
@@ -1569,12 +1459,6 @@ catch(e) {
 		this._tabFocusAllowance.push(aProcess);
 	},
 	_tabFocusAllowance : [],
- 
-	registerExpandTwistyAreaAllowance : function TSTService_registerExpandTwistyAreaAllowance(aProcess) /* PUBLIC API */ 
-	{
-		this._expandTwistyAreaAllowance.push(aProcess);
-	},
-	_expandTwistyAreaAllowance : [],
  
 	tearOffSubtreeFromRemote : function TSTService_tearOffSubtreeFromRemote() 
 	{

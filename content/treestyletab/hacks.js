@@ -210,9 +210,7 @@ TreeStyleTabService.overrideExtensionsPreInit = function TSTService_overrideExte
 	// TooManyTabs
 	// https://addons.mozilla.org/firefox/addon/9429
 	if ('tooManyTabs' in window) {
-		this.registerExpandTwistyAreaAllowance(function(aTabBrowser) {
-			return false;
-		});
+		this.registerExpandTwistyAreaBlocker('tooManyTabs');
 	}
 };
 

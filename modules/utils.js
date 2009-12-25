@@ -40,9 +40,15 @@ var Ci = Components.interfaces;
  
 var prefs = {}; 
 Components.utils.import('resource://treestyletab-modules/prefs.js', prefs);
+prefs = prefs.window['piro.sakura.ne.jp'].prefs;
 
-var boxObject = {}; 
+var boxObject = {};
 Components.utils.import('resource://treestyletab-modules/boxObject.js', boxObject);
+boxObject = boxObject.window['piro.sakura.ne.jp'].boxObject;
+
+var stringBundle = {};
+Components.utils.import('resource://treestyletab-modules/stringBundle.js', stringBundle);
+stringBundle = stringBundle.window['piro.sakura.ne.jp'].stringBundle;
  
 var TreeStyleTabUtils = { 
 	
@@ -143,7 +149,7 @@ var TreeStyleTabUtils = {
 	indentDuration   : 200,
 	collapseDuration : 150,
 
-	expandTwistyArea : true,
+	shouldExpandTwistyArea : true,
  
 	get SessionStore() { 
 		if (!this._SessionStore) {
@@ -212,6 +218,15 @@ var TreeStyleTabUtils = {
 	},
 	_Comparator : null,
  
+	get treeBundle() { 
+		return stringBundle
+				.get('chrome://treestyletab/locale/treestyletab.properties');
+	},
+	get tabbrowserBundle() {
+		return stringBundle
+				.get('chrome://browser/locale/tabbrowser.properties');
+	},
+ 
 	init : function TSTUtils_init() 
 	{
 		if (this._initialized) return;
@@ -261,7 +276,7 @@ var TreeStyleTabUtils = {
 	
 	getBoxObjectFor : function TSTUtils_getBoxObjectFor(aNode) 
 	{
-		return boxObject.window['piro.sakura.ne.jp'].boxObject.getBoxObjectFor(aNode);
+		return boxObject.getBoxObjectFor(aNode);
 	},
  
 	get browserWindow() 
@@ -276,6 +291,79 @@ var TreeStyleTabUtils = {
 			'SplitBrowser' in w ? w.SplitBrowser.activeBrowser :
 			w.gBrowser ;
 	},
+ 
+	dropLinksOnTabBehavior : function TSTUtils_dropLinksOnTabBehavior() 
+	{
+		var behavior = this.getTreePref('dropLinksOnTab.behavior');
+		if (behavior & this.kDROPLINK_FIXED) return behavior;
+
+		var checked = { value : false };
+		var newChildTab = this.PromptService.confirmEx(this.browserWindow,
+				this.treeBundle.getString('dropLinkOnTab.title'),
+				this.treeBundle.getString('dropLinkOnTab.text'),
+				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_0) +
+				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_1),
+				this.treeBundle.getString('dropLinkOnTab.openNewChildTab'),
+				this.treeBundle.getString('dropLinkOnTab.loadInTheTab'),
+				null,
+				this.treeBundle.getString('dropLinkOnTab.never'),
+				checked
+			) == 0;
+
+		behavior = newChildTab ? this.kDROPLINK_NEWTAB : this.kDROPLINK_LOAD ;
+		if (checked.value)
+			this.setTreePref('dropLinksOnTab.behavior', behavior);
+
+		return behavior
+	},
+	kDROPLINK_ASK    : 0,
+	kDROPLINK_FIXED  : 1 + 2,
+	kDROPLINK_LOAD   : 1,
+	kDROPLINK_NEWTAB : 2,
+ 
+	openGroupBookmarkBehavior : function TSTUtils_openGroupBookmarkBehavior() 
+	{
+		var behavior = this.getTreePref('openGroupBookmark.behavior');
+		if (behavior & this.kGROUP_BOOKMARK_FIXED) return behavior;
+
+		var dummyTabFlag = behavior & this.kGROUP_BOOKMARK_USE_DUMMY;
+
+		var checked = { value : false };
+		var button = this.PromptService.confirmEx(this.browserWindow,
+				this.treeBundle.getString('openGroupBookmarkBehavior.title'),
+				this.treeBundle.getString('openGroupBookmarkBehavior.text'),
+				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_0) +
+				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_1) +
+				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_2),
+				this.treeBundle.getString('openGroupBookmarkBehavior.subTree'),
+				this.treeBundle.getString('openGroupBookmarkBehavior.separate'),
+				this.treeBundle.getString('openGroupBookmarkBehavior.replace'),
+				this.treeBundle.getString('openGroupBookmarkBehavior.never'),
+				checked
+			);
+
+		if (button < 0) button = 1;
+		var behaviors = [
+				this.kGROUP_BOOKMARK_SUBTREE | dummyTabFlag,
+				this.kGROUP_BOOKMARK_SEPARATE,
+				this.kGROUP_BOOKMARK_REPLACE
+			];
+		behavior = behaviors[button];
+
+		if (checked.value) {
+			this.setTreePref('openGroupBookmark.behavior', behavior);
+			this.setPref('browser.tabs.loadFolderAndReplace', behavior & this.kGROUP_BOOKMARK_REPLACE ? true : false );
+		}
+		return behavior;
+	},
+	kGROUP_BOOKMARK_ASK       : 0,
+	kGROUP_BOOKMARK_FIXED     : 1 + 2 + 4,
+	kGROUP_BOOKMARK_SUBTREE   : 1,
+	kGROUP_BOOKMARK_SEPARATE  : 2,
+	kGROUP_BOOKMARK_REPLACE   : 4,
+	kGROUP_BOOKMARK_USE_DUMMY : 256,
+	kGROUP_BOOKMARK_USE_DUMMY_FORCE : 1024,
+	kGROUP_BOOKMARK_DONT_RESTORE_TREE_STRUCTURE : 512,
  
 // event 
 	
@@ -314,7 +402,35 @@ var TreeStyleTabUtils = {
 				Ci.nsIDOMXPathResult.BOOLEAN_TYPE
 			).booleanValue;
 	},
-  
+ 
+	isEventFiredOnTwisty : function TSTUtils_isEventFiredOnTwisty(aEvent) 
+	{
+		var tab = this.getTabFromEvent(aEvent);
+		if (!tab || !this.hasChildTabs(tab)) return false;
+
+		var expression = 'ancestor-or-self::*[@class="'+this.kTWISTY+'"]';
+		if (this.shouldExpandTwistyArea && !this._expandTwistyAreaBlockeds.length)
+			expression += ' | ancestor-or-self::*[@class="tab-icon" and ancestor::xul:tabbrowser[@'+this.kMODE+'="vertical"]]';
+
+		return this.evaluateXPath(
+				expression,
+				aEvent.originalTarget || aEvent.target,
+				XPathResult.BOOLEAN_TYPE
+			).booleanValue;
+	},
+	
+	registerExpandTwistyAreaBlocker : function TSTUtils_registerExpandTwistyAreaBlocker(aBlocker) /* PUBLIC API */ 
+	{
+		if (this._expandTwistyAreaBlockeds.indexOf(aBlocker) < 0)
+			this._expandTwistyAreaBlockeds.push(aBlocker);
+	},
+	_expandTwistyAreaBlockeds : [],
+ 
+	registerExpandTwistyAreaAllowance : function TSTUtils_registerExpandTwistyAreaAllowance(aAllowance) /* PUBLIC API, obsolete, for backward compatibility */ 
+	{
+		this.registerExpandTwistyAreaBlocker(aAllowance.toSource());
+	},
+   
 // string 
 	
 	makeNewId : function TSTUtils_makeNewId() 
@@ -1367,7 +1483,7 @@ var TreeStyleTabUtils = {
 				break;
 
 			case 'extensions.treestyletab.twisty.expandSensitiveArea':
-				this.expandTwistyArea = value;
+				this.shouldExpandTwistyArea = value;
 				break;
 
 			default:
@@ -1408,5 +1524,5 @@ var TreeStyleTabUtils = {
   
 }; 
  
-TreeStyleTabUtils.__proto__ = prefs.window['piro.sakura.ne.jp'].prefs; 
+TreeStyleTabUtils.__proto__ = prefs; 
   
