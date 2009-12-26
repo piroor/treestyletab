@@ -1018,10 +1018,11 @@ catch(e) {
 		this.accelKeyPressed = this.isAccelKeyPressed(aEvent);
 
 		/* PUBLIC API */
-		let event = document.createEvent('Events');
-		event.initEvent('TreeStyleTabFocusSwitchingKeyDown', true, false);
+		var b = this.browser;
+		var event = b.ownerDocument.createEvent('UIEvents');
+		event.initEvent('TreeStyleTabFocusSwitchingKeyDown', true, false, b.ownerDocument.defaultView, aEvent.keyCode);
 		event.sourceEvent = aEvent;
-		this.browser.dispatchEvent(event);
+		b.dispatchEvent(event);
 	},
 	accelKeyPressed : false,
  
@@ -1060,8 +1061,8 @@ catch(e) {
 			)
 			) {
 			/* PUBLIC API */
-			let event = document.createEvent('Events');
-			event.initEvent('TreeStyleTabFocusSwitchingStart', true, false);
+			let event = b.ownerDocument.createEvent('UIEvents');
+			event.initEvent('TreeStyleTabFocusSwitchingStart', true, false, b.ownerDocument.defaultView, aEvent.keyCode);
 			event.scrollDown = scrollDown;
 			event.scrollUp = scrollUp;
 			event.standBy = standBy;
@@ -1075,8 +1076,8 @@ catch(e) {
 
 		/* PUBLIC API */
 		let (event) {
-			event = document.createEvent('Events');
-			event.initEvent('TreeStyleTabFocusSwitchingEnd', true, false);
+			event = document.createEvent('UIEvents');
+			event.initEvent('TreeStyleTabFocusSwitchingEnd', true, false, b.ownerDocument.defaultView, aEvent.keyCode);
 			event.scrollDown = scrollDown;
 			event.scrollUp = scrollUp;
 			event.standBy = standBy;
@@ -1318,8 +1319,8 @@ catch(e) {
 	fireTabSubtreeClosingEvent : function TSTService_fireTabSubtreeClosingEvent(aParentTab, aClosedTabs) 
 	{
 		/* PUBLIC API */
-		var event = document.createEvent('Events');
-		event.initEvent('TreeStyleTabSubtreeClosing', true, true);
+		var event = aParentTab.ownerDocument.createEvent('UIEvents');
+		event.initEvent('TreeStyleTabSubtreeClosing', true, true, aParentTab.ownerDocument.defaultView, aClosedTabs.length);
 		event.parent = aParentTab;
 		event.tabs = aClosedTabs;
 		this.getTabBrowserFromChild(aParentTab).dispatchEvent(event);
@@ -1329,8 +1330,8 @@ catch(e) {
 	fireTabSubtreeClosedEvent : function TSTService_fireTabSubtreeClosedEvent(aTabBrowser, aParentTab, aClosedTabs) 
 	{
 		/* PUBLIC API */
-		var event = document.createEvent('Events');
-		event.initEvent('TreeStyleTabSubtreeClosed', true, false);
+		var event = aTabBrowser.ownerDocument.createEvent('UIEvents');
+		event.initEvent('TreeStyleTabSubtreeClosed', true, false, aTabBrowser.ownerDocument.defaultView, aClosedTabs.length);
 		event.parent = aParentTab;
 		event.tabs = aClosedTabs.filter(function(aTab) { return !aTab.parentNode; });
 		aTabBrowser.dispatchEvent(event);
