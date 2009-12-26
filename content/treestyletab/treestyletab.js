@@ -1282,16 +1282,60 @@ catch(e) {
 		if (!this.warnAboutClosingTabs(tabs.length))
 			return;
 
-		this.markAsClosedSet(tabs);
-
-		var b = this.getTabBrowserFromChild(tabs[0]);
-		for (var i = tabs.length-1; i > -1; i--)
-		{
-			b.removeTab(tabs[i]);
-		}
+		this.splitTabsToSubtrees(tabs).forEach(function(aTabs) {
+			if (!this.fireTabSubtreeClosingEvent(aTabs[0], aTabs))
+				return;
+			this.markAsClosedSet(aTabs);
+			var b = this.getTabBrowserFromChild(aTabs[0]);
+			for (var i = tabs.length-1; i > -1; i--)
+			{
+				b.removeTab(aTabs[i]);
+			}
+			this.fireTabSubtreeClosedEvent(b, aTabs[0], aTabs)
+		}, this);
 	},
 	removeTabSubTree : function() { return this.removeTabSubtree.apply(this, arguments); }, // obsolete, for backward compatibility
 	
+	splitTabsToSubtrees : function TSTService_splitTabsToSubtrees(aTabs) /* PUBLIC API */ 
+	{
+		var groups = [];
+		var group = [];
+		this.cleanUpTabsArray(aTabs)
+			.forEach(function(aTab) {
+				var parent = this.getParentTab(aTab);
+				if (group.indexOf(parent) < 0) {
+					groups.push(group);
+					group = [aTab];
+				}
+				else {
+					group.push(aTab);
+				}
+			}, this);
+		groups.push(group);
+		return groups;
+	},
+ 
+	fireTabSubtreeClosingEvent : function TSTService_fireTabSubtreeClosingEvent(aParentTab, aClosedTabs) 
+	{
+		/* PUBLIC API */
+		var event = document.createEvent('Events');
+		event.initEvent('TreeStyleTabSubtreeClosing', true, true);
+		event.parent = aParentTab;
+		event.tabs = aClosedTabs;
+		this.getTabBrowserFromChild(aParentTab).dispatchEvent(event);
+		return !event.getPreventDefault();
+	},
+ 
+	fireTabSubtreeClosedEvent : function TSTService_fireTabSubtreeClosedEvent(aTabBrowser, aParentTab, aClosedTabs) 
+	{
+		/* PUBLIC API */
+		var event = document.createEvent('Events');
+		event.initEvent('TreeStyleTabSubtreeClosed', true, false);
+		event.parent = aParentTab;
+		event.tabs = aClosedTabs.filter(function(aTab) { return !aTab.parentNode; });
+		aTabBrowser.dispatchEvent(event);
+	},
+ 
 	warnAboutClosingTabSubtreeOf : function TSTService_warnAboutClosingTabSubtreeOf(aTab) 
 	{
 		if (!this.shouldCloseTabSubtreeOf(aTab))

@@ -1550,27 +1550,30 @@ TreeStyleTabBrowser.prototype = {
 			closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_CLOSE ||
 			subtreeCollapsed
 			) {
-			if (subtreeCollapsed)
-				this.stopRendering();
-
 			let tabs = this.getDescendantTabs(tab);
+			if (this.fireTabSubtreeClosingEvent(tab, tabs)) {
+				if (subtreeCollapsed)
+					this.stopRendering();
 
-			this.markAsClosedSet([tab].concat(tabs));
+				this.markAsClosedSet([tab].concat(tabs));
 
-			tabs.reverse().forEach(function(aTab) {
-				b.removeTab(aTab);
-			}, this);
+				tabs.reverse().forEach(function(aTab) {
+					b.removeTab(aTab);
+				}, this);
 
-			// for last tab closing, we have to open new tab manually if running on Firefox 3.0.
-			if (
-				!('_beginRemoveTab' in b) && !('_endRemoveTab' in b) && // Firefox 3.0.x
-				this.getTabs(b).snapshotLength == 1 // last tab
-				) {
-				b.addTab('about:blank');
+				// for last tab closing, we have to open new tab manually if running on Firefox 3.0.
+				if (
+					!('_beginRemoveTab' in b) && !('_endRemoveTab' in b) && // Firefox 3.0.x
+					this.getTabs(b).snapshotLength == 1 // last tab
+					) {
+					b.addTab('about:blank');
+				}
+
+				this.fireTabSubtreeClosedEvent(b, tab, tabs);
+
+				if (subtreeCollapsed)
+					this.startRendering();
 			}
-
-			if (subtreeCollapsed)
-				this.startRendering();
 		}
 
 		var firstChild     = this.getFirstChildTab(tab);
@@ -1746,20 +1749,9 @@ TreeStyleTabBrowser.prototype = {
  
 	onTabsRemoved : function TSTBrowser_onTabsRemoved(aTabs) 
 	{
-		var group = [];
-		this.cleanUpTabsArray(aTabs)
-			.forEach(function(aTab) {
-				var parent = this.getParentTab(aTab);
-				if (group.indexOf(parent) < 0) {
-					this.markAsClosedSet(group);
-					group = [aTab];
-				}
-				else {
-					group.push(aTab);
-				}
-			}, this);
-
-		this.markAsClosedSet(group);
+		this.splitTabsToSubtrees(aTabs).forEach(function(aTabs) {
+			this.markAsClosedSet(aTabs);
+		}, this);
 	},
  
 	onTabMove : function TSTBrowser_onTabMove(aEvent) 
@@ -3074,11 +3066,7 @@ TreeStyleTabBrowser.prototype = {
 			aChild == aParent ||
 			(currentParent = this.getParentTab(aChild)) == aParent
 			) {
-			/* PUBLIC API */
-			let event = document.createEvent('Events');
-			event.initEvent('TreeStyleTabAttached', true, false);
-			event.parentTab = aParent;
-			aChild.dispatchEvent(event);
+			this.fireAttachedEvent(aChild, aParent);
 			return;
 		}
 
@@ -3180,6 +3168,10 @@ TreeStyleTabBrowser.prototype = {
 			this.checkTabsIndentOverflow();
 		}
 
+		this.fireAttachedEvent(aChild, aParent);
+	},
+	fireAttachedEvent : function TSTBrowser_fireAttachedEvent(aChild, aParent)
+	{
 		/* PUBLIC API */
 		var event = document.createEvent('Events');
 		event.initEvent('TreeStyleTabAttached', true, false);
@@ -3224,6 +3216,7 @@ TreeStyleTabBrowser.prototype = {
 		/* PUBLIC API */
 		var event = document.createEvent('Events');
 		event.initEvent('TreeStyleTabParted', true, false);
+		event.parentTab = parentTab;
 		aChild.dispatchEvent(event);
 
 		if (this.isGroupTab(parentTab) && !this.hasChildTabs(parentTab)) {
