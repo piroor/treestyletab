@@ -1072,7 +1072,7 @@ TreeStyleTabBrowser.prototype = {
 		if (aOldPosition == aNewPosition) return;
 
 		var event = document.createEvent('Events');
-		event.initEvent(aType, true, true);
+		event.initEvent(aType, true, false);
 		event.oldPosition = aOldPosition;
 		event.newPosition = aNewPosition;
 		this.mTabBrowser.dispatchEvent(event);
@@ -3076,7 +3076,7 @@ TreeStyleTabBrowser.prototype = {
 			) {
 			/* PUBLIC API */
 			let event = document.createEvent('Events');
-			event.initEvent('TreeStyleTabAttached', true, true);
+			event.initEvent('TreeStyleTabAttached', true, false);
 			event.parentTab = aParent;
 			aChild.dispatchEvent(event);
 			return;
@@ -3182,7 +3182,7 @@ TreeStyleTabBrowser.prototype = {
 
 		/* PUBLIC API */
 		var event = document.createEvent('Events');
-		event.initEvent('TreeStyleTabAttached', true, true);
+		event.initEvent('TreeStyleTabAttached', true, false);
 		event.parentTab = aParent;
 		aChild.dispatchEvent(event);
 	},
@@ -3223,7 +3223,7 @@ TreeStyleTabBrowser.prototype = {
 
 		/* PUBLIC API */
 		var event = document.createEvent('Events');
-		event.initEvent('TreeStyleTabParted', true, true);
+		event.initEvent('TreeStyleTabParted', true, false);
 		aChild.dispatchEvent(event);
 
 		if (this.isGroupTab(parentTab) && !this.hasChildTabs(parentTab)) {
@@ -3567,7 +3567,7 @@ TreeStyleTabBrowser.prototype = {
 
 		/* PUBLIC API */
 		var event = document.createEvent('Events');
-		event.initEvent('TreeStyleTabCollapsedStateChange', true, true);
+		event.initEvent('TreeStyleTabCollapsedStateChange', true, false);
 		event.collapsed = aCollapse;
 		aTab.dispatchEvent(event);
 

@@ -517,7 +517,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	{
 		/* PUBLIC API */
 		var event = document.createEvent('Events');
-		event.initEvent('TreeStyleTabAutoHideStateChanging', true, true);
+		event.initEvent('TreeStyleTabAutoHideStateChanging', true, false);
 		event.shown = this.expanded;
 		event.state = this.state;
 		this.mOwner.mTabBrowser.dispatchEvent(event);
@@ -527,7 +527,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	{
 		/* PUBLIC API */
 		var event = document.createEvent('Events');
-		event.initEvent('TreeStyleTabAutoHideStateChange', true, true);
+		event.initEvent('TreeStyleTabAutoHideStateChange', true, false);
 		event.shown = this.expanded;
 		event.state = this.state;
 		event.xOffset = this.XOffset;

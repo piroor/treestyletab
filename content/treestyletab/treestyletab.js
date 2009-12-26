@@ -1019,7 +1019,7 @@ catch(e) {
 
 		/* PUBLIC API */
 		let event = document.createEvent('Events');
-		event.initEvent('TreeStyleTabFocusSwitchingKeyDown', true, true);
+		event.initEvent('TreeStyleTabFocusSwitchingKeyDown', true, false);
 		event.sourceEvent = aEvent;
 		this.browser.dispatchEvent(event);
 	},
@@ -1061,7 +1061,7 @@ catch(e) {
 			) {
 			/* PUBLIC API */
 			let event = document.createEvent('Events');
-			event.initEvent('TreeStyleTabFocusSwitchingStart', true, true);
+			event.initEvent('TreeStyleTabFocusSwitchingStart', true, false);
 			event.scrollDown = scrollDown;
 			event.scrollUp = scrollUp;
 			event.standBy = standBy;
@@ -1076,7 +1076,7 @@ catch(e) {
 		/* PUBLIC API */
 		let (event) {
 			event = document.createEvent('Events');
-			event.initEvent('TreeStyleTabFocusSwitchingEnd', true, true);
+			event.initEvent('TreeStyleTabFocusSwitchingEnd', true, false);
 			event.scrollDown = scrollDown;
 			event.scrollUp = scrollUp;
 			event.standBy = standBy;
