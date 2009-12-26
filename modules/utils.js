@@ -280,7 +280,7 @@ var TreeStyleTabUtils = {
 		return boxObject.getBoxObjectFor(aNode);
 	},
  
-	evalInSandbox : function(aCode, aOwner)
+	evalInSandbox : function TSTUtils_evalInSandbox(aCode, aOwner)
 	{
 		try {
 			var sandbox = new Components.utils.Sandbox(aOwner || 'about:blank');
@@ -593,6 +593,23 @@ var TreeStyleTabUtils = {
 			aTab.linkedBrowser.parentNode.__SS_data._tabStillLoading &&
 			aTab.getAttribute('busy') != 'true')
 			aTab.linkedBrowser.parentNode.__SS_data._tabStillLoading = false;
+	},
+ 
+	markAsClosedSet : function TSTUtils_markAsClosedSet(aTabs) /* PUBLIC API */ 
+	{
+		if (!aTabs || aTabs.length <= 1) return;
+		var id = this.makeNewClosedSetId() + '::' + aTabs.length;
+		aTabs.forEach(function(aTab) {
+			this.setTabValue(aTab, this.kCLOSED_SET_ID, id);
+		}, this);
+	},
+ 
+	unmarkAsClosedSet : function TSTUtils_unmarkAsClosedSet(aTabs) /* PUBLIC API */ 
+	{
+		if (!aTabs || !aTabs.length) return;
+		aTabs.forEach(function(aTab) {
+			this.deleteTabValue(aTab, this.kCLOSED_SET_ID);
+		}, this);
 	},
  
 	useTMPSessionAPI : false, 
