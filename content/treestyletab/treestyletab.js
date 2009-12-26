@@ -1019,8 +1019,8 @@ catch(e) {
 
 		/* PUBLIC API */
 		var b = this.browser;
-		var event = b.ownerDocument.createEvent('UIEvents');
-		event.initEvent('TreeStyleTabFocusSwitchingKeyDown', true, false, b.ownerDocument.defaultView, aEvent.keyCode);
+		var event = b.ownerDocument.createEvent('Events');
+		event.initEvent('TreeStyleTabFocusSwitchingKeyDown', true, false);
 		event.sourceEvent = aEvent;
 		b.dispatchEvent(event);
 	},
@@ -1061,8 +1061,8 @@ catch(e) {
 			)
 			) {
 			/* PUBLIC API */
-			let event = b.ownerDocument.createEvent('UIEvents');
-			event.initEvent('TreeStyleTabFocusSwitchingStart', true, false, b.ownerDocument.defaultView, aEvent.keyCode);
+			let event = b.ownerDocument.createEvent('Events');
+			event.initEvent('TreeStyleTabFocusSwitchingStart', true, false);
 			event.scrollDown = scrollDown;
 			event.scrollUp = scrollUp;
 			event.standBy = standBy;
@@ -1076,8 +1076,8 @@ catch(e) {
 
 		/* PUBLIC API */
 		let (event) {
-			event = document.createEvent('UIEvents');
-			event.initEvent('TreeStyleTabFocusSwitchingEnd', true, false, b.ownerDocument.defaultView, aEvent.keyCode);
+			event = document.createEvent('Events');
+			event.initEvent('TreeStyleTabFocusSwitchingEnd', true, false);
 			event.scrollDown = scrollDown;
 			event.scrollUp = scrollUp;
 			event.standBy = standBy;
@@ -1331,8 +1331,8 @@ catch(e) {
 	{
 		aClosedTabs = aClosedTabs.filter(function(aTab) { return !aTab.parentNode; });
 		/* PUBLIC API */
-		var event = aTabBrowser.ownerDocument.createEvent('UIEvents');
-		event.initEvent('TreeStyleTabSubtreeClosed', true, false, aTabBrowser.ownerDocument.defaultView, aClosedTabs.length);
+		var event = aTabBrowser.ownerDocument.createEvent('Events');
+		event.initEvent('TreeStyleTabSubtreeClosed', true, false);
 		event.parent = aParentTab;
 		event.tabs = aClosedTabs;
 		aTabBrowser.dispatchEvent(event);
