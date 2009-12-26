@@ -59,37 +59,6 @@
 		kMAX_ENTRIES : 999,
 		kWINDOW_ID : 'UIOperationGlobalHistoryWindowID',
 
-		_doingUndo : false,
-		_tables : tables,
-
-		initialized : false,
-
-		init : function()
-		{
-			var targets = this.WindowMediator.getZOrderDOMWindowEnumerator('navigator:browser', true);
-			while (targets.hasMoreElements())
-			{
-				let target = targets.getNext().QueryInterface(Ci.nsIDOMWindowInternal);
-				if (
-					'piro.sakura.ne.jp' in target &&
-					'operationHistory' in target['piro.sakura.ne.jp'] &&
-					target['piro.sakura.ne.jp'].operationHistory.initialized
-					) {
-					this._tables = target['piro.sakura.ne.jp'].operationHistory._tables;
-					break;
-				}
-			}
-
-			window.addEventListener('unload', this, false);
-
-			this.initialized = true;
-		},
-
-		destroy : function()
-		{
-			window.removeEventListener('unload', this, false);
-		},
-
 		addEntry : function()
 		{
 			if (this._doingUndo)
@@ -156,6 +125,62 @@
 			return true;
 		},
 
+		getWindowId : function(aWindow)
+		{
+			var windowId = this.SessionStore.getWindowValue(aWindow, this.kWINDOW_ID);
+			if (!windowId) {
+				windowId = 'window-'+Date.now()+parseInt(Math.random() * 65000);
+				this.SessionStore.setWindowValue(aWindow, this.kWINDOW_ID, windowId);
+			}
+			return windowId;
+		},
+
+		getWindowById : function(aId)
+		{
+			var targets = this.WindowMediator.getZOrderDOMWindowEnumerator('navigator:browser', true);
+			while (targets.hasMoreElements())
+			{
+				let target = targets.getNext().QueryInterface(Ci.nsIDOMWindowInternal);
+				if (aId == this.SessionStore.getWindowValue(target, this.kWINDOW_ID))
+					return target;
+			}
+			return null;
+		},
+
+
+		/* PRIVATE METHODS */
+
+		_doingUndo : false,
+		_tables : tables,
+
+		initialized : false,
+
+		init : function()
+		{
+			var targets = this.WindowMediator.getZOrderDOMWindowEnumerator('navigator:browser', true);
+			while (targets.hasMoreElements())
+			{
+				let target = targets.getNext().QueryInterface(Ci.nsIDOMWindowInternal);
+				if (
+					'piro.sakura.ne.jp' in target &&
+					'operationHistory' in target['piro.sakura.ne.jp'] &&
+					target['piro.sakura.ne.jp'].operationHistory.initialized
+					) {
+					this._tables = target['piro.sakura.ne.jp'].operationHistory._tables;
+					break;
+				}
+			}
+
+			window.addEventListener('unload', this, false);
+
+			this.initialized = true;
+		},
+
+		destroy : function()
+		{
+			window.removeEventListener('unload', this, false);
+		},
+
 		_dispatchEvent : function(aOptions)
 		{
 			var d = aOptions.window ? aOptions.window.document : document ;
@@ -182,11 +207,7 @@
 			if (!name)
 				name = w ? 'window' : 'global' ;
 
-			var windowId = this.SessionStore.getWindowValue(window, this.kWINDOW_ID);
-			if (!windowId) {
-				windowId = 'window-'+Date.now()+parseInt(Math.random() * 65000);
-				this.SessionStore.setWindowValue(window, this.kWINDOW_ID, windowId);
-			}
+			var windowId = this.getWindowId(window);
 
 			var tableName = w ? encodeURIComponent(name)+'::'+windowId : encodeURIComponent(name) ;
 			if (!(tableName in this._tables)) {
@@ -206,21 +227,9 @@
 			};
 		},
 
-		_getWindowById : function(aId)
-		{
-			var targets = this.WindowMediator.getZOrderDOMWindowEnumerator('navigator:browser', true);
-			while (targets.hasMoreElements())
-			{
-				let target = targets.getNext().QueryInterface(Ci.nsIDOMWindowInternal);
-				if (aId == this.SessionStore.getWindowValue(target, this.kWINDOW_ID))
-					return target;
-			}
-			return null;
-		},
-
 		_deleteWindowTables : function()
 		{
-			var id = this.SessionStore.getWindowValue(window, this.kWINDOW_ID);
+			var id = this.getWindowId(window);
 			if (!id) return;
 
 			var removedTables = [];
