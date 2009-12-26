@@ -1320,7 +1320,7 @@ catch(e) {
 	{
 		/* PUBLIC API */
 		var event = aParentTab.ownerDocument.createEvent('UIEvents');
-		event.initEvent('TreeStyleTabSubtreeClosing', true, true, aParentTab.ownerDocument.defaultView, aClosedTabs.length);
+		event.initUIEvent('TreeStyleTabSubtreeClosing', true, true, aParentTab.ownerDocument.defaultView, aClosedTabs.length);
 		event.parent = aParentTab;
 		event.tabs = aClosedTabs;
 		this.getTabBrowserFromChild(aParentTab).dispatchEvent(event);
