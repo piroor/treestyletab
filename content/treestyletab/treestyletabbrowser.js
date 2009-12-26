@@ -1413,7 +1413,8 @@ TreeStyleTabBrowser.prototype = {
 
 
 			case 'MultipleTabHandlerTabsClosing':
-				this.onTabsRemoved(aEvent.tabs);
+				if (!this.onTabsRemoving(aEvent))
+					aEvent.preventDefault();
 				return;
 		}
 	},
@@ -1747,11 +1748,26 @@ TreeStyleTabBrowser.prototype = {
 				this.getPreviousVisibleTab(aTab);
 	},
  
-	onTabsRemoved : function TSTBrowser_onTabsRemoved(aTabs) 
+	onTabsRemoving : function TSTBrowser_onTabsRemoving(aEvent) 
 	{
-		this.splitTabsToSubtrees(aTabs).forEach(function(aTabs) {
+		var b = this.getTabBrowserFromChild(aEvent.tabs[0]);
+
+		var trees = this.splitTabsToSubtrees(aEvent.tabs);
+		if (trees.some(function(aTabs) {
+				return aTabs.length > 1 &&
+						!this.fireTabSubtreeClosingEvent(aTabs[0], aTabs);
+			}, this))
+			return false;
+
+		trees.forEach(function(aTabs) {
 			this.markAsClosedSet(aTabs);
 		}, this);
+
+		window.setTimeout(function(aSelf) {
+			trees.forEach(function(aTabs) {
+				aSelf.fireTabSubtreeClosedEvent(b, aTabs[0], aTabs);
+			});
+		}, 0, this);
 	},
  
 	onTabMove : function TSTBrowser_onTabMove(aEvent) 
