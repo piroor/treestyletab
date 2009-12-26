@@ -2170,7 +2170,7 @@ TreeStyleTabBrowser.prototype = {
 	},
 	_clearRedirectionTableTimer : null,
  
-	restoreClosedSet : function(aId, aRestoredTab)
+	restoreClosedSet : function TSTBrowser_restoreClosedSet(aId, aRestoredTab)
 	{
 		if (
 			this.useTMPSessionAPI ||
@@ -2195,6 +2195,11 @@ TreeStyleTabBrowser.prototype = {
 			(
 				indexes.length+1 < count &&
 				this.getTreePref('undoCloseTabSubtree.onlyFullSet')
+			) ||
+			(
+				'_confirmOpenInTabs' in PlacesUIUtils &&
+				PlacesUIUtils._confirmOpenInTabs &&
+				!PlacesUIUtils._confirmOpenInTabs(indexes.length)
 			)
 			)
 			return;
@@ -2209,11 +2214,9 @@ TreeStyleTabBrowser.prototype = {
 			undoCloseTab(aIndex - (offset++));
 		});
 
-		if (aRestoredTab) {
-			window.setTimeout(function(aSelf) {
-				aSelf.mTabBrowser.selectedTab = aRestoredTab;
-			}, 0, this);
-		}
+		window.setTimeout(function(aSelf, aNextFocused) {
+			aSelf.mTabBrowser.selectedTab = aNextFocused;
+		}, 0, this, aRestoredTab || aSelf.mTabBrowser.selectedTab);
 
 		this.startRendering();
 		this._restoringClosedSet = false;
