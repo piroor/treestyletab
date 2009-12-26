@@ -175,6 +175,8 @@ TreeStyleTabBrowser.prototype = {
 		b.mPanelContainer.addEventListener('dragover', this, false);
 		b.mPanelContainer.addEventListener('dragdrop', this, false);
 
+		b.addEventListener('MultipleTabHandlerTabsClosing', this, false);
+
 
 		/* Closing collapsed last tree breaks selected tab.
 		   To solve this problem, I override the setter to
@@ -1107,6 +1109,8 @@ TreeStyleTabBrowser.prototype = {
 		b.mPanelContainer.removeEventListener('dragover', this, false);
 		b.mPanelContainer.removeEventListener('dragdrop', this, false);
 
+		b.removeEventListener('MultipleTabHandlerTabsClosing', this, false);
+
 		this.tabbarDNDObserver.destroy();
 		delete this._tabbarDNDObserver;
 		this.panelDNDObserver.destroy();
@@ -1406,6 +1410,11 @@ TreeStyleTabBrowser.prototype = {
 			case 'underflow':
 				this.onTabbarOverflow(aEvent);
 				return;
+
+
+			case 'MultipleTabHandlerTabsClosing':
+				this.onTabsRemoved(aEvent.tabs);
+				return;
 		}
 	},
 	lastScrollX : -1,
@@ -1546,13 +1555,9 @@ TreeStyleTabBrowser.prototype = {
 
 			let tabs = this.getDescendantTabs(tab);
 
-			let id = this.makeNewClosedSetId();
-			id += '::' + (tabs.length+1);
-
-			this.setTabValue(tab, this.kCLOSED_SET_ID, id);
+			this.markAsClosedSet([tab].concat(tabs));
 
 			tabs.reverse().forEach(function(aTab) {
-				this.setTabValue(aTab, this.kCLOSED_SET_ID, id);
 				b.removeTab(aTab);
 			}, this);
 
@@ -1737,6 +1742,24 @@ TreeStyleTabBrowser.prototype = {
 	{
 		return this.getNextSiblingTab(aTab) ||
 				this.getPreviousVisibleTab(aTab);
+	},
+ 
+	onTabsRemoved : function TSTBrowser_onTabsRemoved(aTabs) 
+	{
+		var group = [];
+		this.cleanUpTabsArray(aTabs)
+			.forEach(function(aTab) {
+				var parent = this.getParentTab(aTab);
+				if (group.indexOf(parent) < 0) {
+					this.markAsClosedSet(group);
+					group = [aTab];
+				}
+				else {
+					group.push(aTab);
+				}
+			}, this);
+
+		this.markAsClosedSet(group);
 	},
  
 	onTabMove : function TSTBrowser_onTabMove(aEvent) 
