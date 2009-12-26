@@ -1329,11 +1329,12 @@ catch(e) {
  
 	fireTabSubtreeClosedEvent : function TSTService_fireTabSubtreeClosedEvent(aTabBrowser, aParentTab, aClosedTabs) 
 	{
+		aClosedTabs = aClosedTabs.filter(function(aTab) { return !aTab.parentNode; });
 		/* PUBLIC API */
 		var event = aTabBrowser.ownerDocument.createEvent('UIEvents');
 		event.initEvent('TreeStyleTabSubtreeClosed', true, false, aTabBrowser.ownerDocument.defaultView, aClosedTabs.length);
 		event.parent = aParentTab;
-		event.tabs = aClosedTabs.filter(function(aTab) { return !aTab.parentNode; });
+		event.tabs = aClosedTabs;
 		aTabBrowser.dispatchEvent(event);
 	},
  
