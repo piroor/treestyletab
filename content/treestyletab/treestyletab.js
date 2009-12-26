@@ -1319,10 +1319,23 @@ catch(e) {
 	fireTabSubtreeClosingEvent : function TSTService_fireTabSubtreeClosingEvent(aParentTab, aClosedTabs) 
 	{
 		/* PUBLIC API */
-		var event = aParentTab.ownerDocument.createEvent('UIEvents');
-		event.initUIEvent('TreeStyleTabSubtreeClosing', true, true, aParentTab.ownerDocument.defaultView, aClosedTabs.length);
+		var event = aParentTab.ownerDocument.createEvent('Events');
+		event.initEvent('TreeStyleTabSubtreeClosing', true, true);
 		event.parent = aParentTab;
 		event.tabs = aClosedTabs;
+		if (!event.getPreventDefault) {
+			// getPreventDefault is available on any event on Gecko 1.9.2 or later.
+			// on Gecko 1.9.1 or before, UIEvents only have the method...
+			event.__original__preventDefault = event.preventDefault;
+			event.__canceled = false;
+			event.preventDefault = function() {
+				this.__original__preventDefault();
+				this.__canceled = true;
+			};
+			event.getPreventDefault = function() {
+				return this.__canceled;
+			};
+		}
 		this.getTabBrowserFromChild(aParentTab).dispatchEvent(event);
 		return !event.getPreventDefault();
 	},
