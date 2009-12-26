@@ -242,8 +242,6 @@ var TreeStyleTabUtils = {
 		this.addPrefListener(this);
 		this.ObserverService.addObserver(this, 'private-browsing-change-granted', false);
 
-		this.onChangeTabbarPosition(this.currentTabbarPosition);
-
 		this.onPrefChange('extensions.treestyletab.indent');
 		this.onPrefChange('extensions.treestyletab.clickOnIndentSpaces.enabled');
 		this.onPrefChange('browser.link.open_newwindow.restriction.override');
@@ -1444,73 +1442,6 @@ var TreeStyleTabUtils = {
 
 		return aValue;
 	},
- 
-	undoChangeTabbarPosition : function TSTUtils_undoChangeTabbarPosition() /* PUBLIC API */ 
-	{
-		if (this._tabbarPositionHistoryIndex <= 0)
-			return false;
-
-		this._inRollbackTabbarPosition = true;
-
-		var current = this.currentTabbarPosition;
-		var previous;
-
-		do {
-			previous = this._tabbarPositionHistory[--this._tabbarPositionHistoryIndex];
-		}
-		while (previous && current == previous);
-
-		this.currentTabbarPosition = previous;
-
-		this._inRollbackTabbarPosition = false;
-
-		return current != previous;
-	},
- 
-	redoChangeTabbarPosition : function TSTUtils_redoChangeTabbarPosition() /* PUBLIC API */ 
-	{
-		if (this._tabbarPositionHistoryIndex >= this._tabbarPositionHistory.length-1)
-			return false;
-
-		this._inRollbackTabbarPosition = true;
-
-		var current = this.currentTabbarPosition;
-		var next;
-
-		do {
-			next = this._tabbarPositionHistory[++this._tabbarPositionHistoryIndex];
-		}
-		while (next && current == next);
-
-		this.currentTabbarPosition = next;
-
-		this._inRollbackTabbarPosition = false;
-
-		return current != next;
-	},
- 
-	onChangeTabbarPosition : function TSTUtils_onChangeTabbarPosition(aPosition) 
-	{
-		var history = this._tabbarPositionHistory;
-		var current = history[this._tabbarPositionHistoryIndex];
-		if (
-			this._inRollbackTabbarPosition ||
-			(current && current == aPosition)
-			)
-			return;
-
-		history = history.slice(0, this._tabbarPositionHistoryIndex+1);
-		history.push(aPosition);
-		history = history.slice(-this.kMAX_TABBAR_POSITION_HISTORY);
-
-		this._tabbarPositionHistory = history;
-		this._tabbarPositionHistoryIndex = history.length-1;
-	},
- 
-	_tabbarPositionHistory : [], 
-	_tabbarPositionHistoryIndex : -1,
- 
-	kMAX_TABBAR_POSITION_HISTORY : 999, 
   
 /* Pref Listener */ 
 	
@@ -1573,10 +1504,6 @@ var TreeStyleTabUtils = {
 				break;
 			case 'extensions.treestyletab.animation.collapse.duration':
 				this.collapseDuration = value;
-				break;
-
-			case 'extensions.treestyletab.tabbar.position':
-				this.onChangeTabbarPosition(value);
 				break;
 
 			case 'extensions.treestyletab.twisty.expandSensitiveArea':
