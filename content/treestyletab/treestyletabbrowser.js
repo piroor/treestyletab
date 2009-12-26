@@ -1768,6 +1768,8 @@ TreeStyleTabBrowser.prototype = {
 				aSelf.fireTabSubtreeClosedEvent(b, aTabs[0], aTabs);
 			});
 		}, 0, this);
+
+		return true;
 	},
  
 	onTabMove : function TSTBrowser_onTabMove(aEvent) 
