@@ -2,7 +2,7 @@
  UI Operations Global Undo History Manager
 
  Usage:
-   // window specific events
+   // window specific history
    window['piro.sakura.ne.jp'].operationHistory.addEntry(
      'MyAddonFeature',
      { undo : function() { ... },
@@ -12,20 +12,33 @@
    window['piro.sakura.ne.jp'].operationHistory.undo('MyAddonFeature', window);
    window['piro.sakura.ne.jp'].operationHistory.redo('MyAddonFeature', window);
 
-   // global events (not associated to window)
+   // global history (not associated to window)
    window['piro.sakura.ne.jp'].operationHistory.addEntry(
      'MyAddonFeature',
      { ... }
    );
    window['piro.sakura.ne.jp'].operationHistory.undo('MyAddonFeature');
 
-   // anonymous, window specifit
+   // anonymous, window specific
    window['piro.sakura.ne.jp'].operationHistory.addEntry({ ... }, window);
    window['piro.sakura.ne.jp'].operationHistory.undo(window);
 
    // anonymous, global
    window['piro.sakura.ne.jp'].operationHistory.addEntry({ ... });
    window['piro.sakura.ne.jp'].operationHistory.undo();
+
+   // When you want to use "window" object in the global history,
+   // you should use the ID string instead of the "window" object
+   // to reduce memory leak. For example...
+   var id = window['piro.sakura.ne.jp'].operationHistory.getWindowId(targetWindow);
+   window['piro.sakura.ne.jp'].operationHistory.addEntry({
+     undo : function() {
+       // "this" in undo/redo functions refers the operationHistory service itself.
+       var w = this.getWindowById(id);
+       w.MyAddonService.undoSomething();
+     },
+     redo : ...
+   });
 
  lisence: The MIT License, Copyright (c) 2009 SHIMODA "Piro" Hiroshi
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/license.txt
@@ -89,7 +102,7 @@
 			this._doingUndo = true;
 			var data = history.entries[history.index--];
 			try {
-				data.undo();
+				data.undo.call(this);
 			}
 			catch(e) {
 				error = e;
@@ -113,7 +126,7 @@
 			this._doingUndo = true;
 			var data = history.entries[history.index++];
 			try {
-				data.redo();
+				data.redo.call(this);
 			}
 			catch(e) {
 				error = e;
