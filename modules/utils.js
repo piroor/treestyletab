@@ -726,7 +726,7 @@ var TreeStyleTabUtils = {
 		return aA._tPos - aB._tPos;
 	},
   
-	gatherSubtreeMemberTabs : function TSTUtils_gatherSubtreeMemberTabs(aTabOrTabs, aOnlyChildren) 
+	gatherSubtreeMemberTabs : function TSTUtils_gatherSubtreeMemberTabs(aTabOrTabs) 
 	{
 		var tabs = aTabOrTabs;
 		if (!(tabs instanceof Array)) {
@@ -740,12 +740,28 @@ var TreeStyleTabUtils = {
 			descendant = descendant.concat(b.treeStyleTab.getDescendantTabs(tabs[i]));
 		}
 
-		if (aOnlyChildren)
-			tabs = this.cleanUpTabsArray(descendant);
-		else
-			tabs = this.cleanUpTabsArray(tabs.concat(descendant));
+		tabs = this.cleanUpTabsArray(tabs.concat(descendant));
 
 		return tabs;
+	},
+ 
+	splitTabsToSubtrees : function TSTUtils_splitTabsToSubtrees(aTabs) /* PUBLIC API */ 
+	{
+		var groups = [];
+		var group = [];
+		this.cleanUpTabsArray(aTabs)
+			.forEach(function(aTab) {
+				var parent = this.getParentTab(aTab);
+				if (!parent || group.indexOf(parent) < 0) {
+					if (group.length) groups.push(group);
+					group = [aTab];
+				}
+				else {
+					group.push(aTab);
+				}
+			}, this);
+		if (group.length) groups.push(group);
+		return groups;
 	},
   
 // tabbrowser 
