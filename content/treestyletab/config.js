@@ -238,9 +238,19 @@ function onTabbarTransparencyScaleChange()
 }
 
 
+var gUndoCloseTabSetRadioSet;
+
 function initTreePane()
 {
 	updateCloseRootBehaviorCheck();
+
+	gUndoCloseTabSetRadioSet = new RadioSet(
+		'extensions.treestyletab.undoCloseTabSet.behavior',
+		'undoCloseTabSet-radiogroup',
+		'undoCloseTabSet-check',
+		'undoCloseTabSet-deck',
+		1
+	);
 
 	var focusMode = document.getElementById('extensions.treestyletab.focusMode-check');
 	var focusModePref = document.getElementById('extensions.treestyletab.focusMode');
@@ -331,15 +341,16 @@ ScaleSet.prototype = {
 	}
 };
 
-function RadioSet(aPref, aRadio, aCheck, aDeck)
+function RadioSet(aPref, aRadio, aCheck, aDeck, aAskFlag)
 {
 	this.pref  = document.getElementById(aPref);
 	this.radio = document.getElementById(aRadio);
 	this.check = document.getElementById(aCheck);
 	this.deck  = document.getElementById(aDeck);
 	this.backup = this.value || 1;
+	this.askValue = aAskFlag;
 
-	if (this.value == 0) {
+	if (this.askValue ? this.value & this.askValue : this.value == 0 ) {
 		this.check.checked = true;
 		this.deck.selectedIndex = 0;
 	}
@@ -354,11 +365,19 @@ RadioSet.prototype = {
 		if (this.checked) {
 			this.backup = this.value;
 			this.deck.selectedIndex = 0;
-			this.value = 0;
+			if (this.askValue) {
+				this.value |= this.askValue;
+			}
+			else {
+				this.value = 0;
+			}
 		}
 		else {
 			this.deck.selectedIndex = 1;
 			this.value = this.backup;
+			if (this.askValue && this.value & this.askValue) {
+				this.value ^= this.askValue;
+			}
 		}
 		if (!aDontUpdatePref)
 			this.pref.value = this.value;

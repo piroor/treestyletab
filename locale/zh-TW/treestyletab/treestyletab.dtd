@@ -139,6 +139,11 @@
 <!ENTITY config.insertNewChildAt.first "插入到子樹的開端">
 <!ENTITY config.insertNewChildAt.last "新增到子樹的末端">
 
+<!ENTITY config.undoCloseTabSet.caption  "When a member of a tree is restored by &quot;Undo Close Tab&quot;">
+<!ENTITY config.undoCloseTabSet.ask      "Ask me always">
+<!ENTITY config.undoCloseTabSet.set      "Restore whole of the tree">
+<!ENTITY config.undoCloseTabSet.separate "Restore only one tab (Firefox default)">
+
 
 <!ENTITY config.tabs.advanced "進階">
 

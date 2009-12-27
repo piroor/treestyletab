@@ -140,6 +140,11 @@
 <!ENTITY config.insertNewChildAt.first "Вставлять первой в начало поддерева">
 <!ENTITY config.insertNewChildAt.last "Добавлять в конце поддерева">
 
+<!ENTITY config.undoCloseTabSet.caption  "When a member of a tree is restored by &quot;Undo Close Tab&quot;">
+<!ENTITY config.undoCloseTabSet.ask      "Ask me always">
+<!ENTITY config.undoCloseTabSet.set      "Restore whole of the tree">
+<!ENTITY config.undoCloseTabSet.separate "Restore only one tab (Firefox default)">
+
 <!ENTITY config.tabs.advanced "Дополнительно">
 
 <!ENTITY config.animation.enabled "Использование эффектов анимации">

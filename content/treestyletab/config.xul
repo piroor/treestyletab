@@ -656,6 +656,9 @@
 		<preference id="extensions.treestyletab.insertNewChildAt"
 			name="extensions.treestyletab.insertNewChildAt"
 			type="int"/>
+		<preference id="extensions.treestyletab.undoCloseTabSet.behavior"
+			name="extensions.treestyletab.undoCloseTabSet.behavior"
+			type="int"/>
 	</preferences>
 
 	<checkbox id="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect-check"
@@ -702,10 +705,30 @@
 		<caption label="&config.insertNewChildAt.caption;"/>
 		<radiogroup id="extensions.treestyletab.insertNewChildAt-radiogroup"
 			preference="extensions.treestyletab.insertNewChildAt"
-			orient="vertical">
+			orient="horizontal">
 			<radio value="0" label="&config.insertNewChildAt.first;"/>
 			<radio value="1" label="&config.insertNewChildAt.last;"/>
 		</radiogroup>
+	</groupbox>
+	<groupbox>
+		<caption label="&config.undoCloseTabSet.caption;"/>
+		<hbox>
+			<checkbox id="undoCloseTabSet-check"
+				label="&config.undoCloseTabSet.ask;"
+				oncommand="gUndoCloseTabSetRadioSet.onChange();"/>
+		</hbox>
+		<deck id="undoCloseTabSet-deck">
+			<spacer flex="1"/>
+			<vbox>
+			<separator class="hr"/>
+			<radiogroup id="undoCloseTabSet-radiogroup"
+				preference="extensions.treestyletab.undoCloseTabSet.behavior"
+				orient="horizontal">
+				<radio value="2" label="&config.undoCloseTabSet.set;"/>
+				<radio value="0" label="&config.undoCloseTabSet.separate;"/>
+			</radiogroup>
+			</vbox>
+		</deck>
 	</groupbox>
 
 </prefpane>

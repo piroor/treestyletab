@@ -137,6 +137,11 @@
 <!ENTITY config.insertNewChildAt.first "ツリーの最初の位置に挿入する">
 <!ENTITY config.insertNewChildAt.last "ツリーの末尾に追加する">
 
+<!ENTITY config.undoCloseTabSet.caption  "「閉じたタブを元に戻す」でツリーを構成していたタブが開き直された時">
+<!ENTITY config.undoCloseTabSet.ask      "どうするか毎回尋ねる">
+<!ENTITY config.undoCloseTabSet.set      "ツリー全体を開き直す">
+<!ENTITY config.undoCloseTabSet.separate "そのタブだけを開き直す（Firefox初期状態）">
+
 
 <!ENTITY config.tabs.advanced "詳細">
 

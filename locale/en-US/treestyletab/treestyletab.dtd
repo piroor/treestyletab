@@ -136,6 +136,11 @@
 <!ENTITY config.insertNewChildAt.first "Insert to the top of the tree, as the first child">
 <!ENTITY config.insertNewChildAt.last "Append to the last of the tree">
 
+<!ENTITY config.undoCloseTabSet.caption  "When a member of a tree is restored by &quot;Undo Close Tab&quot;">
+<!ENTITY config.undoCloseTabSet.ask      "Ask me always">
+<!ENTITY config.undoCloseTabSet.set      "Restore whole of the tree">
+<!ENTITY config.undoCloseTabSet.separate "Restore only one tab (Firefox default)">
+
 
 <!ENTITY config.tabs.advanced "Advanced">
 
