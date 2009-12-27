@@ -109,8 +109,13 @@ pref("extensions.treestyletab.closeParentBehavior", 3);
 */
 pref("extensions.treestyletab.closeRootBehavior", 3);
 pref("extensions.treestyletab.createSubtree.underParent", true);
-pref("extensions.treestyletab.undoCloseTabSubtree", true);
-pref("extensions.treestyletab.undoCloseTabSubtree.onlyFullSet", false);
+/*
+  0   = do nothing.
+  1   = always ask.
+  2   = reopen all tabs of the tree if a member of tree is reopened.
+  256 = don't  reopen tree if some tabs are overflowed and lost from the history.
+*/
+pref("extensions.treestyletab.undoCloseTabSet.behavior", 1);
 
 
 pref("browser.link.open_newwindow.restriction.override", 0);

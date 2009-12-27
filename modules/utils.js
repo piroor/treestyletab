@@ -375,6 +375,43 @@ var TreeStyleTabUtils = {
 	kGROUP_BOOKMARK_USE_DUMMY_FORCE : 1024,
 	kGROUP_BOOKMARK_DONT_RESTORE_TREE_STRUCTURE : 512,
  
+	undoCloseTabSetBehavior : function TSTUtils_undoCloseTabSetBehavior(aCount, aSilent) 
+	{
+		var behavior = this.getTreePref('undoCloseTabSet.behavior');
+		if (!(behavior & this.kUNDO_ASK) || aSilent)
+			return behavior;
+
+		var checked = { value : false };
+		var button = this.PromptService.confirmEx(this.browserWindow,
+				this.treeBundle.getString('undoCloseTabSetBehavior.title'),
+				this.treeBundle.getFormattedString('undoCloseTabSetBehavior.text', [aCount]),
+				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_0) +
+				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_1),
+				this.treeBundle.getString('undoCloseTabSetBehavior.set'),
+				this.treeBundle.getString('undoCloseTabSetBehavior.separate'),
+				null,
+				this.treeBundle.getString('undoCloseTabSetBehavior.never'),
+				checked
+			);
+
+		if (button < 0) button = 1;
+		var behaviors = [
+				(behavior | this.kUNDO_CLOSE_SET),
+				(behavior & this.kUNDO_CLOSE_SET ? behavior ^ this.kUNDO_CLOSE_SET : behavior )
+			];
+		behavior = behaviors[button];
+
+		if (checked.value) {
+			behavior ^= this.kUNDO_ASK;
+			this.setTreePref('undoCloseTabSet.behavior', behavior);
+		}
+
+		return behavior;
+	},
+	kUNDO_ASK            : 1,
+	kUNDO_CLOSE_SET      : 2,
+	kUNDO_CLOSE_FULL_SET : 256,
+ 
 // event 
 	
 	ensureEventCancelable : function(aEvent) 
