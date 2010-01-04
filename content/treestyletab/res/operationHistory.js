@@ -143,7 +143,11 @@
 		getHistory : function()
 		{
 			var options = this._getOptionsFromArguments(arguments);
-			return options.history;
+			var history = options.history;
+			return {
+				entries : history.entries,
+				index   : Math.max(0, Math.min(history.entries.length-1, history.index))
+			};
 		},
 
 		undo : function()
@@ -156,9 +160,9 @@
 			this._doingUndo = true;
 			var processed = false;
 			var error;
-			do {
-				let data = history.entries[history.index];
-				history.index = Math.max(0, history.index-1);
+			while (processed === false && history.index > -1)
+			{
+				let data = history.entries[history.index--];
 				if (!data) continue;
 				let f = this._getAvailableFunction(data.onUndo, data.onundo, data.undo);
 				let done = false;
@@ -176,7 +180,6 @@
 				}
 				this._dispatchEvent('UIOperationGlobalHistoryUndo', options, data, done);
 			}
-			while (processed === false && history.index > 0)
 			this._doingUndo = false;
 
 			if (error)
@@ -190,15 +193,15 @@
 			var options = this._getOptionsFromArguments(arguments);
 			var history = options.history;
 			var max = history.entries.length;
-			if (history.index > max-1)
+			if (history.index >= max)
 				return false;
 
 			this._doingUndo = true;
 			var processed = false;
 			var error;
-			do {
-				let data = history.entries[history.index];
-				history.index = Math.min(max-1, history.index+1);
+			while (processed === false && history.index < max)
+			{
+				let data = history.entries[history.index++];
 				if (!data) continue;
 				let f = this._getAvailableFunction(data.onRedo, data.onredo, data.redo);
 				let done = false;
@@ -216,7 +219,6 @@
 				}
 				this._dispatchEvent('UIOperationGlobalHistoryRedo', options, data, done);
 			}
-			while (processed === false && history.index < max-1)
 			this._doingUndo = false;
 
 			if (error)
