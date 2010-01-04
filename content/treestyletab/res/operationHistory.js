@@ -70,7 +70,7 @@
 		revision : currentRevision,
 
 		kMAX_ENTRIES : 999,
-		kWINDOW_ID : 'UIOperationGlobalHistoryWindowID',
+		kWINDOW_ID : 'ui-operation-global-history-window-id',
 
 		addEntry : function()
 		{
@@ -140,21 +140,32 @@
 
 		getWindowId : function(aWindow)
 		{
-			var windowId = this.SessionStore.getWindowValue(aWindow, this.kWINDOW_ID);
+			var windowId;
+			try {
+				windowId = aWindow.document.documentElement.getAttribute(this.kWINDOW_ID) ||
+							this.SessionStore.getWindowValue(aWindow, this.kWINDOW_ID);
+			}
+			catch(e) {
+			}
 			if (!windowId) {
 				windowId = 'window-'+Date.now()+parseInt(Math.random() * 65000);
-				this.SessionStore.setWindowValue(aWindow, this.kWINDOW_ID, windowId);
+				aWindow.document.documentElement.setAttribute(this.kWINDOW_ID, windowId);
+				try {
+					this.SessionStore.setWindowValue(aWindow, this.kWINDOW_ID, windowId);
+				}
+				catch(e) {
+				}
 			}
 			return windowId;
 		},
 
 		getWindowById : function(aId)
 		{
-			var targets = this.WindowMediator.getZOrderDOMWindowEnumerator('navigator:browser', true);
+			var targets = this.WindowMediator.getZOrderDOMWindowEnumerator('*', true);
 			while (targets.hasMoreElements())
 			{
 				let target = targets.getNext().QueryInterface(Ci.nsIDOMWindowInternal);
-				if (aId == this.SessionStore.getWindowValue(target, this.kWINDOW_ID))
+				if (aId == this.getWindowId(target))
 					return target;
 			}
 			return null;
