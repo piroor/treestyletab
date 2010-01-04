@@ -38,11 +38,13 @@ TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
 			sv.currentTabbarPosition = position;
 			window['piro.sakura.ne.jp'].operationHistory.addEntry(
 				'TabbarDNDOperations',
-				{ undo : function() { sv.currentTabbarPosition = current; },
-				  redo : function() { sv.currentTabbarPosition = position; } },
+				{ onUndo : function() { TreeStyleTabService.currentTabbarPosition = current; },
+				  onRedo : function() { TreeStyleTabService.currentTabbarPosition = position; } },
 				window
 			);
 		}
+
+		sv = null;
 
 		aEvent.stopPropagation();
 	},

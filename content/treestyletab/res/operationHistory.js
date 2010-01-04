@@ -5,8 +5,8 @@
    // window specific history
    window['piro.sakura.ne.jp'].operationHistory.addEntry(
      'MyAddonFeature',
-     { undo : function() { ... },
-       redo : function() { ... } },
+     { onUndo : function() { ... },
+       onRedo : function() { ... } },
      window
    );
    window['piro.sakura.ne.jp'].operationHistory.undo('MyAddonFeature', window);
@@ -32,12 +32,12 @@
    // to reduce memory leak. For example...
    var id = window['piro.sakura.ne.jp'].operationHistory.getWindowId(targetWindow);
    window['piro.sakura.ne.jp'].operationHistory.addEntry({
-     undo : function() {
+     onUndo : function() {
        // "this" in undo/redo functions refers the operationHistory service itself.
-       var w = this.getWindowById(id);
+       var w = window['piro.sakura.ne.jp'].operationHistory.getWindowById(id);
        w.MyAddonService.undoSomething();
      },
-     redo : ...
+     onRedo : ...
    });
 
  lisence: The MIT License, Copyright (c) 2009 SHIMODA "Piro" Hiroshi
@@ -46,7 +46,7 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/operationHistory.js
 */
 (function() {
-	const currentRevision = 1;
+	const currentRevision = 2;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -102,7 +102,7 @@
 			this._doingUndo = true;
 			var data = history.entries[history.index--];
 			try {
-				data.undo.call(this);
+				(data.onUndo || data.onundo)();
 			}
 			catch(e) {
 				error = e;
@@ -126,7 +126,7 @@
 			this._doingUndo = true;
 			var data = history.entries[history.index++];
 			try {
-				data.redo.call(this);
+				(data.onRedo || data.onredo)(this);
 			}
 			catch(e) {
 				error = e;
