@@ -70,6 +70,7 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/license.txt
  original:
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/operationHistory.js
+   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/operationHistory.test.js
 */
 (function() {
 	const currentRevision = 4;
@@ -216,10 +217,10 @@
 
 		getWindowId : function(aWindow)
 		{
-			var windowId;
+			var windowId = aWindow.document.documentElement.getAttribute(this.kWINDOW_ID);
 			try {
-				windowId = aWindow.document.documentElement.getAttribute(this.kWINDOW_ID) ||
-							this.SessionStore.getWindowValue(aWindow, this.kWINDOW_ID);
+				if (!windowId)
+					windowId = this.SessionStore.getWindowValue(aWindow, this.kWINDOW_ID);
 			}
 			catch(e) {
 			}
@@ -237,7 +238,7 @@
 
 		getWindowById : function(aId)
 		{
-			var targets = this.WindowMediator.getZOrderDOMWindowEnumerator('*', true);
+			var targets = this.WindowMediator.getZOrderDOMWindowEnumerator(null, true);
 			while (targets.hasMoreElements())
 			{
 				let target = targets.getNext().QueryInterface(Ci.nsIDOMWindowInternal);
@@ -257,7 +258,8 @@
 
 		init : function()
 		{
-			var targets = this.WindowMediator.getZOrderDOMWindowEnumerator('navigator:browser', true);
+			// inherit history table from existing window
+			var targets = this.WindowMediator.getZOrderDOMWindowEnumerator(null, true);
 			while (targets.hasMoreElements())
 			{
 				let target = targets.getNext().QueryInterface(Ci.nsIDOMWindowInternal);
