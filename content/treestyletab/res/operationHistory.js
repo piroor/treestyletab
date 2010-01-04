@@ -102,13 +102,17 @@
 			this._doingUndo = true;
 			var data = history.entries[history.index--];
 			var f = this._getAvailableFunction(data.onUndo, data.onundo, data.undo);
+			var done = false;
 			try {
-				if (f) f.call(data);
+				if (f) {
+					f.call(data);
+					done = true;
+				}
 			}
 			catch(e) {
 				error = e;
 			}
-			this._dispatchEvent(options);
+			this._dispatchEvent(options, data, done);
 			this._doingUndo = false;
 
 			if (error) throw error;
@@ -126,13 +130,17 @@
 
 			this._doingUndo = true;
 			var f = this._getAvailableFunction(data.onRedo, data.onredo, data.redo);
+			var done = false;
 			try {
-				if (f) f.call(data);
+				if (f) {
+					f.call(data);
+					done = true;
+				}
 			}
 			catch(e) {
 				error = e;
 			}
-			this._dispatchEvent(options);
+			this._dispatchEvent(options, data, done);
 			this._doingUndo = false;
 
 			if (error) throw error;
@@ -206,12 +214,14 @@
 			window.removeEventListener('unload', this, false);
 		},
 
-		_dispatchEvent : function(aOptions)
+		_dispatchEvent : function(aOptions, aData, aDone)
 		{
 			var d = aOptions.window ? aOptions.window.document : document ;
 			var event = d.createEvent('Events');
 			event.initEvent('UIOperationGlobalHistoryUndo', true, false);
 			event.name = aOptions.name;
+			event.data = aData;
+			event.done = aDone;
 			d.dispatchEvent(event);
 		},
 
