@@ -33,11 +33,10 @@
    // When you want to use "window" object in the global history,
    // you should use the ID string instead of the "window" object
    // to reduce memory leak. For example...
-   var id = OH.getWindowId(targetWindow);
    OH.addEntry({
+     id : OH.getWindowId(targetWindow),
      onUndo : function() {
-       // "this" in undo/redo functions refers the operationHistory service itself.
-       var w = OH.getWindowById(id);
+       var w = OH.getWindowById(this.id);
        w.MyAddonService.undoSomething();
      },
      onRedo : ...
