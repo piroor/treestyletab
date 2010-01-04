@@ -97,22 +97,28 @@
 			if (history.index < 0)
 				return false;
 
-			var error;
-
 			this._doingUndo = true;
-			var data = history.entries[history.index--];
-			var f = this._getAvailableFunction(data.onUndo, data.onundo, data.undo);
-			var done = false;
-			try {
-				if (f) {
-					f.call(data);
-					done = true;
+			var processed = false;
+			while (processed === false)
+			{
+				let error;
+				let data = history.entries[history.index--];
+				let f = this._getAvailableFunction(data.onUndo, data.onundo, data.undo);
+				let done = false;
+				try {
+					if (f) {
+						processed = f.call(data);
+						done = true;
+					}
+					else {
+						processed = true;
+					}
 				}
+				catch(e) {
+					error = e;
+				}
+				this._dispatchEvent('UIOperationGlobalHistoryUndo', options, data, done);
 			}
-			catch(e) {
-				error = e;
-			}
-			this._dispatchEvent('UIOperationGlobalHistoryUndo', options, data, done);
 			this._doingUndo = false;
 
 			if (error) throw error;
@@ -126,21 +132,27 @@
 			if (history.index > history.entries.length-1)
 				return false;
 
-			var error;
-
 			this._doingUndo = true;
-			var f = this._getAvailableFunction(data.onRedo, data.onredo, data.redo);
-			var done = false;
-			try {
-				if (f) {
-					f.call(data);
-					done = true;
+			var processed = false;
+			while (processed === false)
+			{
+				let error;
+				let f = this._getAvailableFunction(data.onRedo, data.onredo, data.redo);
+				let done = false;
+				try {
+					if (f) {
+						processed = f.call(data);
+						done = true;
+					}
+					else {
+						processed = true;
+					}
 				}
+				catch(e) {
+					error = e;
+				}
+				this._dispatchEvent('UIOperationGlobalHistoryRedo', options, data, done);
 			}
-			catch(e) {
-				error = e;
-			}
-			this._dispatchEvent('UIOperationGlobalHistoryRedo', options, data, done);
 			this._doingUndo = false;
 
 			if (error) throw error;
