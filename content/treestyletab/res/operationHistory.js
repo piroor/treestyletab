@@ -20,6 +20,8 @@
      // history item
      { label  : 'Change tabbar position',
        onUndo : function() { MyService.myProp = oldValue; },
+       /* "onRedo" is optional. If you don't specify it,
+          the undoable task becomes onRedo automatically. */
        onRedo : function() { MyService.myProp = newValue; } }
    );
    OH.undo('MyAddonFeature', window);
@@ -53,8 +55,7 @@
        onUndo : function() {
          var w = OH.getWindowById(this.id);
          w.MyAddonService.myProp = oldValue;
-       },
-       onRedo : ...
+       }
      }
    );
 
@@ -73,7 +74,7 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/operationHistory.test.js
 */
 (function() {
-	const currentRevision = 4;
+	const currentRevision = 5;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -124,9 +125,14 @@
 				error = e;
 			}
 
-			if (!wasInUndoableTask && !this._doingUndo && options.data) {
+			var data = options.data;
+			if (!wasInUndoableTask && !this._doingUndo && data) {
+				let f = this._getAvailableFunction(data.onRedo, data.onredo, data.redo);
+				if (!f && !data.onRedo && !data.onredo && !data.redo && options.task)
+					data.onRedo = options.task;
+
 				entries = entries.slice(0, history.index+1);
-				entries.push(options.data);
+				entries.push(data);
 				entries = entries.slice(-this.MAX_ENTRIES);
 
 				history.entries = entries;
