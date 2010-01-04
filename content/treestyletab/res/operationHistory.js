@@ -146,7 +146,7 @@
 			var history = options.history;
 			return {
 				entries : history.entries,
-				index   : Math.max(0, Math.min(history.entries.length-1, history.index))
+				index   : Math.min(history.entries.length-1, Math.max(0, history.index))
 			};
 		},
 
