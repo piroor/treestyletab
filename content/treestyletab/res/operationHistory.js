@@ -2,43 +2,53 @@
  UI Operations Global Undo History Manager
 
  Usage:
+   var OH = window['piro.sakura.ne.jp'].operationHistory;
+
    // window specific history
-   window['piro.sakura.ne.jp'].operationHistory.addEntry(
+   OH.addEntry(
      'MyAddonFeature',
      { label  : 'Change tabbar position',
        onUndo : function() { ... },
        onRedo : function() { ... } },
      window
    );
-   window['piro.sakura.ne.jp'].operationHistory.undo('MyAddonFeature', window);
-   window['piro.sakura.ne.jp'].operationHistory.redo('MyAddonFeature', window);
+   OH.undo('MyAddonFeature', window);
+   OH.redo('MyAddonFeature', window);
 
    // global history (not associated to window)
-   window['piro.sakura.ne.jp'].operationHistory.addEntry(
+   OH.addEntry(
      'MyAddonFeature',
      { ... }
    );
-   window['piro.sakura.ne.jp'].operationHistory.undo('MyAddonFeature');
+   OH.undo('MyAddonFeature');
 
    // anonymous, window specific
-   window['piro.sakura.ne.jp'].operationHistory.addEntry({ ... }, window);
-   window['piro.sakura.ne.jp'].operationHistory.undo(window);
+   OH.addEntry({ ... }, window);
+   OH.undo(window);
 
    // anonymous, global
-   window['piro.sakura.ne.jp'].operationHistory.addEntry({ ... });
-   window['piro.sakura.ne.jp'].operationHistory.undo();
+   OH.addEntry({ ... });
+   OH.undo();
 
    // When you want to use "window" object in the global history,
    // you should use the ID string instead of the "window" object
    // to reduce memory leak. For example...
-   var id = window['piro.sakura.ne.jp'].operationHistory.getWindowId(targetWindow);
-   window['piro.sakura.ne.jp'].operationHistory.addEntry({
+   var id = OH.getWindowId(targetWindow);
+   OH.addEntry({
      onUndo : function() {
        // "this" in undo/redo functions refers the operationHistory service itself.
-       var w = window['piro.sakura.ne.jp'].operationHistory.getWindowById(id);
+       var w = OH.getWindowById(id);
        w.MyAddonService.undoSomething();
      },
      onRedo : ...
+   });
+
+   // enumerate history entries
+   var history = OH.getHistory('MyAddonFeature', window); // options are same to undo/redo
+   OH.entries.forEach(function(aEntry, aIndex) {
+     var item = MyService.appendItem(aEntry.label);
+     if (aIndex == history.index)
+       item.setAttribute('checked', true);
    });
 
  lisence: The MIT License, Copyright (c) 2009-2010 SHIMODA "Piro" Hiroshi
@@ -47,7 +57,7 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/operationHistory.js
 */
 (function() {
-	const currentRevision = 2;
+	const currentRevision = 3;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -89,6 +99,12 @@
 
 			history.entries = entries;
 			history.index = entries.length-1;
+		},
+
+		getHistory : function()
+		{
+			var options = this._getOptionsFromArguments(arguments);
+			return options.history;
 		},
 
 		undo : function()
@@ -240,7 +256,7 @@
 
 		_getOptionsFromArguments : function(aArguments)
 		{
-			var w, name, data;
+			var w = null, name, data = null;
 			Array.slice(aArguments).some(function(aArg) {
 				if (aArg instanceof Ci.nsIDOMWindow)
 					w = aArg;
@@ -255,9 +271,12 @@
 			if (!name)
 				name = w ? 'window' : 'global' ;
 
-			var windowId = this.getWindowId(window);
+			var tableName = encodeURIComponent(name);
 
-			var tableName = w ? encodeURIComponent(name)+'::'+windowId : encodeURIComponent(name) ;
+			var windowId = w ? this.getWindowId(window) : null ;
+			if (windowId)
+				tableName += '::'+windowId;
+
 			if (!(tableName in this._tables)) {
 				this._tables[tableName] = {
 					entries  : [],
