@@ -38,7 +38,8 @@ TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
 			sv.currentTabbarPosition = position;
 			window['piro.sakura.ne.jp'].operationHistory.addEntry(
 				'TabbarDNDOperations',
-				{ onUndo : function() { TreeStyleTabService.currentTabbarPosition = current; },
+				{ label  : sv.treeBundle.getString('undo_changeTabbarPosition_label'),
+				  onUndo : function() { TreeStyleTabService.currentTabbarPosition = current; },
 				  onRedo : function() { TreeStyleTabService.currentTabbarPosition = position; } },
 				window
 			);

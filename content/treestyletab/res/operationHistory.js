@@ -5,7 +5,8 @@
    // window specific history
    window['piro.sakura.ne.jp'].operationHistory.addEntry(
      'MyAddonFeature',
-     { onUndo : function() { ... },
+     { label  : 'Change tabbar position',
+       onUndo : function() { ... },
        onRedo : function() { ... } },
      window
    );
