@@ -96,8 +96,8 @@
 	window['piro.sakura.ne.jp'].operationHistory = {
 		revision : currentRevision,
 
-		kMAX_ENTRIES : 999,
-		kWINDOW_ID : 'ui-operation-global-history-window-id',
+		MAX_ENTRIES : 999,
+		WINDOW_ID : 'ui-operation-global-history-window-id',
 
 		// old name, for backward compatibility
 		addEntry : function()
@@ -127,7 +127,7 @@
 			if (!wasInUndoableTask && !this._doingUndo && options.data) {
 				entries = entries.slice(0, history.index+1);
 				entries.push(options.data);
-				entries = entries.slice(-this.kMAX_ENTRIES);
+				entries = entries.slice(-this.MAX_ENTRIES);
 
 				history.entries = entries;
 				history.index = entries.length-1;
@@ -217,18 +217,18 @@
 
 		getWindowId : function(aWindow)
 		{
-			var windowId = aWindow.document.documentElement.getAttribute(this.kWINDOW_ID);
+			var windowId = aWindow.document.documentElement.getAttribute(this.WINDOW_ID);
 			try {
 				if (!windowId)
-					windowId = this.SessionStore.getWindowValue(aWindow, this.kWINDOW_ID);
+					windowId = this.SessionStore.getWindowValue(aWindow, this.WINDOW_ID);
 			}
 			catch(e) {
 			}
 			if (!windowId) {
 				windowId = 'window-'+Date.now()+parseInt(Math.random() * 65000);
-				aWindow.document.documentElement.setAttribute(this.kWINDOW_ID, windowId);
+				aWindow.document.documentElement.setAttribute(this.WINDOW_ID, windowId);
 				try {
-					this.SessionStore.setWindowValue(aWindow, this.kWINDOW_ID, windowId);
+					this.SessionStore.setWindowValue(aWindow, this.WINDOW_ID, windowId);
 				}
 				catch(e) {
 				}
@@ -315,7 +315,7 @@
 
 			var tableName = encodeURIComponent(name);
 
-			var windowId = w ? this.getWindowId(window) : null ;
+			var windowId = w ? this.getWindowId(w) : null ;
 			if (windowId)
 				tableName += '::'+windowId;
 
