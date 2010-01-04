@@ -37,18 +37,20 @@
 ]]></script>
 
 
+<!-- Multiple Tab Handler -->
 <menupopup id="multipletab-selection-menu">
 	<menuitem id="multipletab-selection-item-removeTabSubtree"
 		insertafter="multipletab-selection-removeTabs"
 		label="&selection.removeTabSubtree.label;"
 		accesskey="&selection.removeTabSubtree.accesskey;"
-		oncommand="TreeStyleTabService.removeTabSubtree(MultipleTabService.getSelectedTabs());"/>
+		oncommand="TreeStyleTabService.removeTabSubtree(MultipleTabService.getSelectedTabs());"
+		multipletab-available="selectedTabs.length"/>
 	<menuitem id="multipletab-selection-item-createSubtree"
 		insertafter="multipletab-selection-splitWindow"
 		label="&selection.createSubtree.label;"
 		accesskey="&selection.createSubtree.accesskey;"
 		oncommand="TreeStyleTabService.createSubtree(MultipleTabService.getSelectedTabs());"
-		multipletab-enabled="TreeStyleTabService.canCreateSubtree(MultipleTabService.getSelectedTabs())"/>
+		multipletab-enabled="TreeStyleTabService.canCreateSubtree(selectedTabs)"/>
 </menupopup>
 
 <popupset id="mainPopupSet">

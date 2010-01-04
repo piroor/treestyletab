@@ -306,20 +306,6 @@ TreeStyleTabService.overrideExtensionsOnInitBefore = function TSTService_overrid
 
 TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_overrideExtensionsOnInitAfter() {
 
-	// Multiple Tab Handler
-	if ('MultipleTabService' in window) {
-		eval('MultipleTabService.showHideMenuItems = '+
-			MultipleTabService.showHideMenuItems.toSource().replace(
-				'var separators = ',
-				<![CDATA[
-					if (aPopup.id == 'multipletab-selection-menu') {
-						TreeStyleTabService.showHideSubtreeMenuItem(document.getElementById(TreeStyleTabService.kMENUITEM_REMOVESUBTREE_SELECTION), MultipleTabService.getSelectedTabs());
-					}
-					$&]]>
-			)
-		);
-	}
-
 	// Selection Links
 	// https://addons.mozilla.org/firefox/addon/8644
 	if ('selectionlinks' in window &&

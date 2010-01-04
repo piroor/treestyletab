@@ -107,8 +107,6 @@ var TreeStyleTabUtils = {
 	kCOUNTER_CONTAINER     : 'treestyletab-counter-container',
 	kSPLITTER              : 'treestyletab-splitter',
 	kTABBAR_TOGGLER        : 'treestyletab-tabbar-toggler',
-
-	kMENUITEM_REMOVESUBTREE_SELECTION : 'multipletab-selection-item-removeTabSubtree',
  
 /* other constant values */ 
 	kFOCUS_ALL     : 0,
