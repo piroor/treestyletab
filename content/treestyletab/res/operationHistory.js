@@ -101,8 +101,9 @@
 
 			this._doingUndo = true;
 			var data = history.entries[history.index--];
+			var f = this._getAvailableFunction(data.onUndo, data.onundo, data.undo);
 			try {
-				(data.onUndo || data.onundo)();
+				if (f) f.call(data);
 			}
 			catch(e) {
 				error = e;
@@ -124,9 +125,9 @@
 			var error;
 
 			this._doingUndo = true;
-			var data = history.entries[history.index++];
+			var f = this._getAvailableFunction(data.onRedo, data.onredo, data.redo);
 			try {
-				(data.onRedo || data.onredo)(this);
+				if (f) f.call(data);
 			}
 			catch(e) {
 				error = e;
@@ -249,6 +250,18 @@
 				data     : data,
 				history  : this._tables[tableName]
 			};
+		},
+
+		_getAvailableFunction : function()
+		{
+			var functions = Array.slice(arguments);
+			for (var i in functions)
+			{
+				let f = functions[i];
+				if (f && typeof f == 'function')
+					return f;
+			}
+			return null;
 		},
 
 		_deleteWindowTables : function()
