@@ -130,7 +130,7 @@
 				entries = entries.slice(-this.MAX_ENTRIES);
 
 				history.entries = entries;
-				history.index = entries.length-1;
+				history.index = entries.length;
 			}
 
 			if (!wasInUndoableTask)
@@ -146,7 +146,7 @@
 			var history = options.history;
 			return {
 				entries : history.entries,
-				index   : Math.min(history.entries.length-1, Math.max(0, history.index))
+				index   : Math.max(0, Math.min(history.entries.length-1, history.index))
 			};
 		},
 
@@ -201,7 +201,7 @@
 			var error;
 			while (processed === false && history.index < max)
 			{
-				let data = history.entries[history.index++];
+				let data = history.entries[++history.index];
 				if (!data) continue;
 				let f = this._getAvailableFunction(data.onRedo, data.onredo, data.redo);
 				let done = false;
