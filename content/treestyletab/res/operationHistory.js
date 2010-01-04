@@ -5,21 +5,28 @@
    var OH = window['piro.sakura.ne.jp'].operationHistory;
 
    // window specific history
-   OH.addEntry(
-     function() { // the task which should be undo-able.
+   OH.doUndoableTask(
+     // the task which is undo-able (optional)
+     function() {
        MyService.myProp = newValue;
      },
+
+     // name of history (optional)
      'MyAddonFeature',
+
+     // target window for the history (optional)
+     window,
+
+     // history item
      { label  : 'Change tabbar position',
        onUndo : function() { MyService.myProp = oldValue; },
-       onRedo : function() { MyService.myProp = newValue; } },
-     window
+       onRedo : function() { MyService.myProp = newValue; } }
    );
    OH.undo('MyAddonFeature', window);
    OH.redo('MyAddonFeature', window);
 
    // global history (not associated to window)
-   OH.addEntry(
+   OH.doUndoableTask(
      function() { ... }, // task
      'MyAddonFeature',
      { ... }
@@ -27,27 +34,29 @@
    OH.undo('MyAddonFeature');
 
    // anonymous, window specific
-   OH.addEntry(function() { ... }, { ... }, window);
+   OH.doUndoableTask(function() { ... }, { ... }, window);
    OH.undo(window);
 
    // anonymous, global
-   OH.addEntry(function() { ... }, { ... });
+   OH.doUndoableTask(function() { ... }, { ... });
    OH.undo();
 
    // When you want to use "window" object in the global history,
    // you should use the ID string instead of the "window" object
    // to reduce memory leak. For example...
-   OH.addEntry({
+   OH.doUndoableTask(
      function() {
        targetWindow.MyAddonService.myProp = newValue;
      },
-     id : OH.getWindowId(targetWindow),
-     onUndo : function() {
-       var w = OH.getWindowById(this.id);
-       w.MyAddonService.myProp = oldValue;
-     },
-     onRedo : ...
-   });
+     {
+       id : OH.getWindowId(targetWindow),
+       onUndo : function() {
+         var w = OH.getWindowById(this.id);
+         w.MyAddonService.myProp = oldValue;
+       },
+       onRedo : ...
+     }
+   );
 
    // enumerate history entries
    var history = OH.getHistory('MyAddonFeature', window); // options are same to undo/redo
@@ -88,6 +97,11 @@
 
 		kMAX_ENTRIES : 999,
 		kWINDOW_ID : 'ui-operation-global-history-window-id',
+
+		doUndoableTask : function()
+		{
+			this.addEntry.apply(this, arguments);
+		},
 
 		addEntry : function()
 		{
