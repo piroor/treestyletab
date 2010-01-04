@@ -154,7 +154,7 @@
 		{
 			var options = this._getOptionsFromArguments(arguments);
 			var history = options.history;
-			if (history.index < 0)
+			if (history.index < 0 || this._doingUndo)
 				return false;
 
 			this._doingUndo = true;
@@ -193,7 +193,7 @@
 			var options = this._getOptionsFromArguments(arguments);
 			var history = options.history;
 			var max = history.entries.length;
-			if (history.index >= max)
+			if (history.index >= max || this._doingUndo)
 				return false;
 
 			this._doingUndo = true;
@@ -377,9 +377,23 @@
 			}, this);
 		},
 
+		get _doingUndo()
+		{
+			return this._tables._doingUndo;
+		},
+		set _doingUndo(aValue)
+		{
+			if (aValue)
+				this._tables._doingUndo = true;
+			else
+				delete this._tables._doingUndo;
+			return aValue;
+		},
+
 		get WindowMediator() {
 			if (!this._WindowMediator) {
-				this._WindowMediator = Cc['@mozilla.org/appshell/window-mediator;1'].getService(Ci.nsIWindowMediator);
+				this._WindowMediator = Cc['@mozilla.org/appshell/window-mediator;1']
+										.getService(Ci.nsIWindowMediator);
 			}
 			return this._WindowMediator;
 		},
@@ -387,7 +401,8 @@
 
 		get SessionStore() { 
 			if (!this._SessionStore) {
-				this._SessionStore = Cc['@mozilla.org/browser/sessionstore;1'].getService(Ci.nsISessionStore);
+				this._SessionStore = Cc['@mozilla.org/browser/sessionstore;1']
+										.getService(Ci.nsISessionStore);
 			}
 			return this._SessionStore;
 		},
