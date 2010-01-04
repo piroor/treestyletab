@@ -112,7 +112,7 @@
 			catch(e) {
 				error = e;
 			}
-			this._dispatchEvent(options, data, done);
+			this._dispatchEvent('UIOperationGlobalHistoryUndo', options, data, done);
 			this._doingUndo = false;
 
 			if (error) throw error;
@@ -140,7 +140,7 @@
 			catch(e) {
 				error = e;
 			}
-			this._dispatchEvent(options, data, done);
+			this._dispatchEvent('UIOperationGlobalHistoryRedo', options, data, done);
 			this._doingUndo = false;
 
 			if (error) throw error;
@@ -214,11 +214,11 @@
 			window.removeEventListener('unload', this, false);
 		},
 
-		_dispatchEvent : function(aOptions, aData, aDone)
+		_dispatchEvent : function(aType, aOptions, aData, aDone)
 		{
 			var d = aOptions.window ? aOptions.window.document : document ;
 			var event = d.createEvent('Events');
-			event.initEvent('UIOperationGlobalHistoryUndo', true, false);
+			event.initEvent(aType, true, false);
 			event.name = aOptions.name;
 			event.data = aData;
 			event.done = aDone;
