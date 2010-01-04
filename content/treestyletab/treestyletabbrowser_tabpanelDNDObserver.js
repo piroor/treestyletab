@@ -35,7 +35,7 @@ TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
 				sv.setTreePref('tabbar.fixed.'+orient, false);
 			}
 			var current;
-			window['piro.sakura.ne.jp'].operationHistory.addEntry(
+			window['piro.sakura.ne.jp'].operationHistory.doUndoableTask(
 				function() {
 					current = sv.currentTabbarPosition;
 					sv.currentTabbarPosition = position;
