@@ -20,8 +20,8 @@
      // history item
      { label  : 'Change tabbar position',
        onUndo : function() { MyService.myProp = oldValue; },
-       /* "onRedo" is optional. If you don't specify it,
-          the undoable task becomes onRedo automatically. */
+       // "onRedo" is optional. If you don't specify it,
+       // the undoable task becomes onRedo automatically.
        onRedo : function() { MyService.myProp = newValue; } }
    );
    OH.undo('MyAddonFeature', window);
