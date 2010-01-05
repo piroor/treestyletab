@@ -74,7 +74,7 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/operationHistory.test.js
 */
 (function() {
-	const currentRevision = 5;
+	const currentRevision = 6;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -233,24 +233,26 @@
 			return true;
 		},
 
-		getWindowId : function(aWindow)
+		getWindowId : function(aWindow, aForceNewId)
 		{
-			var windowId = aWindow.document.documentElement.getAttribute(this.WINDOW_ID);
+			var root = aWindow.document.documentElement;
+			var windowId = root.getAttribute(this.WINDOW_ID);
 			try {
 				if (!windowId)
 					windowId = this.SessionStore.getWindowValue(aWindow, this.WINDOW_ID);
 			}
 			catch(e) {
 			}
-			if (!windowId) {
+			if (!windowId || aForceNewId) {
 				windowId = 'window-'+Date.now()+parseInt(Math.random() * 65000);
-				aWindow.document.documentElement.setAttribute(this.WINDOW_ID, windowId);
 				try {
 					this.SessionStore.setWindowValue(aWindow, this.WINDOW_ID, windowId);
 				}
 				catch(e) {
 				}
 			}
+			if (root.getAttribute(this.WINDOW_ID) != windowId)
+				root.setAttribute(this.WINDOW_ID, windowId);
 			return windowId;
 		},
 
@@ -331,18 +333,13 @@
 			if (!name)
 				name = w ? 'window' : 'global' ;
 
-			var tableName = encodeURIComponent(name);
-
 			var windowId = w ? this.getWindowId(w) : null ;
-			if (windowId)
-				tableName += '::'+windowId;
+			var table = this._getTable(name, w);
 
-			if (!(tableName in this._tables)) {
-				this._tables[tableName] = {
-					entries  : [],
-					index    : -1,
-					windowId : windowId
-				};
+			// Wrongly duplicated ID, so, we have to create new ID for this window.
+			if (w && table.window && table.window != w) {
+				windowId = this.getWindowId(w, true);
+				table = this._getTable(name, w);
 			}
 
 			return {
@@ -350,9 +347,29 @@
 				window   : w,
 				windowId : windowId,
 				data     : data,
-				history  : this._tables[tableName],
+				history  : table,
 				task     : task
 			};
+		},
+
+		_getTable : function(aName, aWindow)
+		{
+			aName = encodeURIComponent(aName);
+
+			var windowId = aWindow ? this.getWindowId(aWindow) : null ;
+			if (windowId)
+				aName += '::'+aName;
+
+			if (!(aName in this._tables)) {
+				this._tables[aName] = {
+					entries  : [],
+					index    : -1,
+					window   : aWindow,
+					windowId : windowId
+				};
+			}
+
+			return this._tables[aName];
 		},
 
 		_getAvailableFunction : function()
@@ -367,18 +384,22 @@
 			return null;
 		},
 
-		_deleteWindowTables : function()
+		_deleteWindowTables : function(aWindow)
 		{
-			var id = this.getWindowId(window);
-			if (!id) return;
+			var w = aWindow || window;
+			if (!w) return;
 
 			var removedTables = [];
 			for (let i in this._tables)
 			{
-				if (id == this._tables[i].windowId)
+				if (w == this._tables[i].window)
 					removedTables.push(i);
 			}
 			removedTables.forEach(function(aName) {
+				var table = this._tables[aName];
+				delete table.entries;
+				delete table.window;
+				delete table.windowId;
 				delete this._tables[aName];
 			}, this);
 		},
@@ -419,7 +440,7 @@
 			switch (aEvent.type)
 			{
 				case 'unload':
-					this._deleteWindowTables();
+					this._deleteWindowTables(window);
 					this.destroy();
 					return;
 			}
