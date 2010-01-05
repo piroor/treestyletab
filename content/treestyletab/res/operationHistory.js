@@ -143,7 +143,7 @@
 				delete history._inUndoableTask;
 
 			if (error)
-				throw e;
+				throw error;
 		},
 
 		getHistory : function()
