@@ -74,7 +74,8 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/operationHistory.test.js
 */
 (function() {
-	const currentRevision = 11;
+	const currentRevision = 12;
+	const DEBUG = false;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -94,6 +95,11 @@
 	var Cc = Components.classes;
 	var Ci = Components.interfaces;
 
+	function log() {
+		if (DEBUG)
+			Application.console.log(Array.slice(arguments).join('\n'));
+	}
+
 	window['piro.sakura.ne.jp'].operationHistory = {
 		revision : currentRevision,
 
@@ -108,6 +114,7 @@
 
 		doUndoableTask : function()
 		{
+			log('doUndoableTask');
 			var options = this._getOptionsFromArguments(arguments);
 			var history = options.history;
 			var entries = history.entries;
@@ -119,14 +126,17 @@
 
 			var data = options.data;
 			if (!this._doingUndo && data) {
+				log('register entry to history');
 				let f = this._getAvailableFunction(data.onRedo, data.onredo, data.redo);
 				if (!f && !data.onRedo && !data.onredo && !data.redo && options.task)
 					data.onRedo = options.task;
 
 				if (wasInUndoableTask) {
+					log('top level');
 					entries[entries.length-1].children.push(data);
 				}
 				else {
+					log('child level');
 					entries = entries.slice(0, history.index+1);
 					entries.push({
 						__proto__ : data,
@@ -142,7 +152,15 @@
 
 			try {
 				if (options.task)
-					options.task.call(this);
+					options.task.call(
+						this,
+						{
+							level   : 0,
+							parent  : null,
+							done    : false,
+							manager : this
+						}
+					);
 			}
 			catch(e) {
 				error = e;
@@ -167,6 +185,7 @@
 
 		undo : function()
 		{
+			log('undo start');
 			var options = this._getOptionsFromArguments(arguments);
 			var history = options.history;
 			if (history.index < 0 || this._doingUndo)
@@ -179,15 +198,18 @@
 			{
 				let entry = history.entries[history.index--];
 				if (!entry) continue;
+				log('undo '+(history.index+1)+' '+entry.label);
 				let done = false;
 				[entry.data].concat(entry.children).forEach(function(aData, aIndex) {
+					log('undo level '+(aIndex)+' '+aData.label);
 					let f = this._getAvailableFunction(aData.onUndo, aData.onundo, aData.undo);
 					try {
 						if (f) {
 							let info = {
-									level  : aIndex,
-									parent : (aIndex ? entry.data : null ),
-									done   : processed && done
+									level   : aIndex,
+									parent  : (aIndex ? entry.data : null ),
+									done    : processed && done,
+									manager : this
 								};
 							let oneProcessed = f.call(aData, info);
 							done = true;
@@ -205,6 +227,7 @@
 				this._dispatchEvent('UIOperationGlobalHistoryUndo', options, entry.data, done);
 			}
 			this._doingUndo = false;
+			log('undo finish');
 
 			if (error)
 				throw error;
@@ -214,6 +237,7 @@
 
 		redo : function()
 		{
+			log('undo start');
 			var options = this._getOptionsFromArguments(arguments);
 			var history = options.history;
 			var max = history.entries.length;
@@ -227,16 +251,19 @@
 			{
 				let entry = history.entries[++history.index];
 				if (!entry) continue;
+				log('redo '+(history.index)+' '+entry.label);
 				let done = false;
 				[entry.data].concat(entry.children).forEach(function(aData, aIndex) {
+					log('redo level '+(aIndex)+' '+aData.label);
 					let f = this._getAvailableFunction(aData.onRedo, aData.onredo, aData.redo);
 					let done = false;
 					try {
 						if (f) {
 							let info = {
-									level  : aIndex,
-									parent : (aIndex ? entry.data : null ),
-									done   : processed && done
+									level   : aIndex,
+									parent  : (aIndex ? entry.data : null ),
+									done    : processed && done,
+									manager : this
 								};
 							let oneProcessed = f.call(aData, info);
 							done = true;
@@ -254,6 +281,7 @@
 				this._dispatchEvent('UIOperationGlobalHistoryRedo', options, entry.data, done);
 			}
 			this._doingUndo = false;
+			log('redo finish');
 
 			if (error)
 				throw error;
