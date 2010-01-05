@@ -74,7 +74,7 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/operationHistory.test.js
 */
 (function() {
-	const currentRevision = 8;
+	const currentRevision = 9;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -247,10 +247,10 @@
 			return true;
 		},
 
-		getWindowId : function(aWindow)
+		getWindowId : function(aWindow, aDefaultId)
 		{
 			var root = aWindow.document.documentElement;
-			var id = root.getAttribute(this.WINDOW_ID);
+			var id = root.getAttribute(this.WINDOW_ID) || aDefaultId;
 			try {
 				if (!id)
 					id = this.SessionStore.getWindowValue(aWindow, this.WINDOW_ID);
@@ -263,16 +263,17 @@
 			var windows = this._getWindowsById(id);
 			var forceNewId = windows.length && (windows.length > 1 || windows[0] != aWindow);
 
-			if (!id || forceNewId) {
+			if (!id || forceNewId)
 				id = 'window-'+Date.now()+parseInt(Math.random() * 65000);
+
+			if (root.getAttribute(this.WINDOW_ID) != id) {
+				root.setAttribute(this.WINDOW_ID, id);
 				try {
 					this.SessionStore.setWindowValue(aWindow, this.WINDOW_ID, id);
 				}
 				catch(e) {
 				}
 			}
-			if (root.getAttribute(this.WINDOW_ID) != id)
-				root.setAttribute(this.WINDOW_ID, id);
 			return id;
 		},
 
