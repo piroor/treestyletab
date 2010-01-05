@@ -261,7 +261,7 @@
 			// When the ID has been already used by other window,
 			// we have to create new ID for this window.
 			var windows = this._getWindowsById(id);
-			var forceNewId = (windows.length > 1 || windows[0] != aWindow);
+			var forceNewId = windows.length && (windows.length > 1 || windows[0] != aWindow);
 
 			if (!id || forceNewId) {
 				id = 'window-'+Date.now()+parseInt(Math.random() * 65000);
