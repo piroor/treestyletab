@@ -74,7 +74,7 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/operationHistory.test.js
 */
 (function() {
-	const currentRevision = 9;
+	const currentRevision = 10;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -180,11 +180,16 @@
 				let entry = history.entries[history.index--];
 				if (!entry) continue;
 				let done = false;
-				[entry.data].concat(entry.children).forEach(function(aData) {
+				[entry.data].concat(entry.children).forEach(function(aData, aIndex) {
 					let f = this._getAvailableFunction(aData.onUndo, aData.onundo, aData.undo);
 					try {
 						if (f) {
-							processed = f.call(aData);
+							let info = {
+									level  : aIndex,
+									parent : (aIndex ? entry.data : null ),
+									done   : processed && done
+								};
+							processed = f.call(aData, info);
 							done = true;
 						}
 						else {
@@ -221,12 +226,17 @@
 				let entry = history.entries[++history.index];
 				if (!entry) continue;
 				let done = false;
-				[entry.data].concat(entry.children).forEach(function(aData) {
+				[entry.data].concat(entry.children).forEach(function(aData, aIndex) {
 					let f = this._getAvailableFunction(aData.onRedo, aData.onredo, aData.redo);
 					let done = false;
 					try {
 						if (f) {
-							processed = f.call(entry.data);
+							let info = {
+									level  : aIndex,
+									parent : (aIndex ? entry.data : null ),
+									done   : processed && done
+								};
+							processed = f.call(aData, info);
 							done = true;
 						}
 						else {
