@@ -74,7 +74,7 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/operationHistory.test.js
 */
 (function() {
-	const currentRevision = 6;
+	const currentRevision = 8;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -117,26 +117,35 @@
 			if (!wasInUndoableTask)
 				history._inUndoableTask = true;
 
+			var data = options.data;
+			if (!this._doingUndo && data) {
+				let f = this._getAvailableFunction(data.onRedo, data.onredo, data.redo);
+				if (!f && !data.onRedo && !data.onredo && !data.redo && options.task)
+					data.onRedo = options.task;
+
+				if (wasInUndoableTask) {
+					entries[entries.length-1].children.push(data);
+				}
+				else {
+					entries = entries.slice(0, history.index+1);
+					entries.push({
+						__proto__ : data,
+						data      : data,
+						children  : []
+					});
+					entries = entries.slice(-this.MAX_ENTRIES);
+
+					history.entries = entries;
+					history.index = entries.length;
+				}
+			}
+
 			try {
 				if (options.task)
 					options.task.call(this);
 			}
 			catch(e) {
 				error = e;
-			}
-
-			var data = options.data;
-			if (!wasInUndoableTask && !this._doingUndo && data) {
-				let f = this._getAvailableFunction(data.onRedo, data.onredo, data.redo);
-				if (!f && !data.onRedo && !data.onredo && !data.redo && options.task)
-					data.onRedo = options.task;
-
-				entries = entries.slice(0, history.index+1);
-				entries.push(data);
-				entries = entries.slice(-this.MAX_ENTRIES);
-
-				history.entries = entries;
-				history.index = entries.length;
 			}
 
 			if (!wasInUndoableTask)
@@ -168,23 +177,25 @@
 			var error;
 			while (processed === false && history.index > -1)
 			{
-				let data = history.entries[history.index--];
-				if (!data) continue;
-				let f = this._getAvailableFunction(data.onUndo, data.onundo, data.undo);
+				let entry = history.entries[history.index--];
+				if (!entry) continue;
 				let done = false;
-				try {
-					if (f) {
-						processed = f.call(data);
-						done = true;
+				[entry.data].concat(entry.children).forEach(function(aData) {
+					let f = this._getAvailableFunction(aData.onUndo, aData.onundo, aData.undo);
+					try {
+						if (f) {
+							processed = f.call(aData);
+							done = true;
+						}
+						else {
+							processed = true;
+						}
 					}
-					else {
-						processed = true;
+					catch(e) {
+						error = e;
 					}
-				}
-				catch(e) {
-					error = e;
-				}
-				this._dispatchEvent('UIOperationGlobalHistoryUndo', options, data, done);
+				}, this);
+				this._dispatchEvent('UIOperationGlobalHistoryUndo', options, entry.data, done);
 			}
 			this._doingUndo = false;
 
@@ -207,23 +218,26 @@
 			var error;
 			while (processed === false && history.index < max)
 			{
-				let data = history.entries[++history.index];
-				if (!data) continue;
-				let f = this._getAvailableFunction(data.onRedo, data.onredo, data.redo);
+				let entry = history.entries[++history.index];
+				if (!entry) continue;
 				let done = false;
-				try {
-					if (f) {
-						processed = f.call(data);
-						done = true;
+				[entry.data].concat(entry.children).forEach(function(aData) {
+					let f = this._getAvailableFunction(aData.onRedo, aData.onredo, aData.redo);
+					let done = false;
+					try {
+						if (f) {
+							processed = f.call(entry.data);
+							done = true;
+						}
+						else {
+							processed = true;
+						}
 					}
-					else {
-						processed = true;
+					catch(e) {
+						error = e;
 					}
-				}
-				catch(e) {
-					error = e;
-				}
-				this._dispatchEvent('UIOperationGlobalHistoryRedo', options, data, done);
+				}, this);
+				this._dispatchEvent('UIOperationGlobalHistoryRedo', options, entry.data, done);
 			}
 			this._doingUndo = false;
 
@@ -233,27 +247,33 @@
 			return true;
 		},
 
-		getWindowId : function(aWindow, aForceNewId)
+		getWindowId : function(aWindow)
 		{
 			var root = aWindow.document.documentElement;
-			var windowId = root.getAttribute(this.WINDOW_ID);
+			var id = root.getAttribute(this.WINDOW_ID);
 			try {
-				if (!windowId)
-					windowId = this.SessionStore.getWindowValue(aWindow, this.WINDOW_ID);
+				if (!id)
+					id = this.SessionStore.getWindowValue(aWindow, this.WINDOW_ID);
 			}
 			catch(e) {
 			}
-			if (!windowId || aForceNewId) {
-				windowId = 'window-'+Date.now()+parseInt(Math.random() * 65000);
+
+			// When the ID has been already used by other window,
+			// we have to create new ID for this window.
+			var windows = this._getWindowsById(id);
+			var forceNewId = (windows.length > 1 || windows[0] != aWindow);
+
+			if (!id || forceNewId) {
+				id = 'window-'+Date.now()+parseInt(Math.random() * 65000);
 				try {
-					this.SessionStore.setWindowValue(aWindow, this.WINDOW_ID, windowId);
+					this.SessionStore.setWindowValue(aWindow, this.WINDOW_ID, id);
 				}
 				catch(e) {
 				}
 			}
-			if (root.getAttribute(this.WINDOW_ID) != windowId)
-				root.setAttribute(this.WINDOW_ID, windowId);
-			return windowId;
+			if (root.getAttribute(this.WINDOW_ID) != id)
+				root.setAttribute(this.WINDOW_ID, id);
+			return id;
 		},
 
 		getWindowById : function(aId)
@@ -336,12 +356,6 @@
 			var windowId = w ? this.getWindowId(w) : null ;
 			var table = this._getTable(name, w);
 
-			// Wrongly duplicated ID, so, we have to create new ID for this window.
-			if (w && table.window && table.window != w) {
-				windowId = this.getWindowId(w, true);
-				table = this._getTable(name, w);
-			}
-
 			return {
 				name     : name,
 				window   : w,
@@ -402,6 +416,26 @@
 				delete table.windowId;
 				delete this._tables[aName];
 			}, this);
+		},
+
+		_getWindowsById : function(aId)
+		{
+			var targets = this.WindowMediator.getZOrderDOMWindowEnumerator(null, true);
+			var windows = [];
+			while (targets.hasMoreElements())
+			{
+				let target = targets.getNext().QueryInterface(Ci.nsIDOMWindowInternal);
+				let id = target.document.documentElement.getAttribute(this.WINDOW_ID);
+				try {
+					if (!id)
+						id = this.SessionStore.getWindowValue(target, this.WINDOW_ID)
+				}
+				catch(e) {
+				}
+				if (id == aId)
+					windows.push(target);
+			}
+			return windows;
 		},
 
 		get _doingUndo()
