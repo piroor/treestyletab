@@ -88,7 +88,7 @@
 	var tables = {};
 	if (loadedRevision) {
 		tables = window['piro.sakura.ne.jp'].operationHistory._tables;
-		window['piro.sakura.ne.jp'].destroy();
+		window['piro.sakura.ne.jp'].operationHistory.destroy();
 	}
 
 	var Cc = Components.classes;
