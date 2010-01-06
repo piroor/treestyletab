@@ -459,7 +459,7 @@ TreeStyleTabBrowser.prototype = {
 
 		if ('_onDragEnd' in b) {
 			eval('b._onDragEnd = '+b._onDragEnd.toSource().replace(
-				/([^\{\}\(\);]*this\._?replaceTabWithWindow\()/,
+				/([^\{\}\(\);]*this\.replaceTabWithWindow\()/,
 				'if (this.treeStyleTab.isDraggingAllTabs(draggedTab)) return; $1'
 			).replace(
 				'{',
