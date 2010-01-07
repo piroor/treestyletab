@@ -74,8 +74,7 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/operationHistory.test.js
 */
 (function() {
-	const currentRevision = 19;
-	const DEBUG = false;
+	const currentRevision = 26;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -96,12 +95,34 @@
 	const Cc = Components.classes;
 	const Ci = Components.interfaces;
 
-	function log() {
+	const PREF_PREFIX = 'extensions.UIOperationsHistoryManager@piro.sakura.ne.jp.';
+
+	const Prefs = Cc['@mozilla.org/preferences;1']
+					.getService(Ci.nsIPrefBranch);
+
+	var DEBUG = false;
+	try {
+		DEBUG = Prefs.getBoolPref(PREF_PREFIX+'debug');
+	}
+	catch(e) {
+	}
+
+	const oneIndent = '   ';
+	function log(aString, aLevel) {
 		if (!DEBUG) return;
+		aString = String(aString);
+		if (aLevel) {
+			let indent = '';
+			for (let i = 0; i < aLevel; i++)
+			{
+				indent += oneIndent;
+			}
+			aString = aString.replace(/^/gm, indent);
+		}
 		Cc['@mozilla.org/fuel/application;1']
 			.getService(Ci.fuelIApplication)
 			.console
-			.log(Array.slice(arguments).join('\n'));
+			.log(aString);
 	}
 
 	window['piro.sakura.ne.jp'].operationHistory = {
@@ -117,8 +138,8 @@
 		doUndoableTask : function()
 		{
 			var options = this._getOptionsFromArguments(arguments);
-			log('doUndoableTask start ('+options.name+' for '+options.windowId+')');
 			var history = options.history;
+			log('doUndoableTask start ('+options.name+' for '+options.windowId+')', history.inOperationCount);
 
 			var entry = options.entry;
 			if (!this._doingUndo && entry) {
@@ -128,10 +149,11 @@
 				history.addEntry(entry);
 			}
 
-			var currentLevel = history.addingEntryLevel;
-			history.addingEntryLevel++;
-
 			var continuationInfo = new ContinuationInfo();
+			if (history.inOperation)
+				continuationInfo.done = false;
+
+			history.inOperation = true;
 			var error;
 			try {
 				if (options.task)
@@ -144,7 +166,7 @@
 							manager : this,
 							getContinuation : function() {
 								return this.manager._createContinuation(
-										!continuationInfo.created && (currentLevel > 0) ? 'null' : 'undoable',
+										'undoable',
 										options,
 										continuationInfo
 									);
@@ -153,18 +175,29 @@
 					);
 			}
 			catch(e) {
-				log(e);
+				log(e, history.inOperationCount);
 				error = e;
 			}
 
-			continuationInfo.allowed = true;
-			if (continuationInfo.done) {
-				history.addingEntryLevel--;
-				log('  => doUndoableTask finish');
+			if (!continuationInfo.shouldWait) {
+				history.inOperation = false;
+				log('  => doUndoableTask finish / in operation : '+history.inOperation, history.inOperationCount);
+				// wait for all child processes
+				if (history.inOperation)
+					continuationInfo = {
+						get done() {
+							return !history.inOperation;
+						}
+					};
+			}
+			else {
+				continuationInfo.allowed = true;
 			}
 
 			if (error)
 				throw error;
+
+			return continuationInfo;
 		},
 
 		getHistory : function()
@@ -179,7 +212,7 @@
 			var history = options.history;
 			log('undo start ('+history.index+' / '+history.entries.length+', '+options.name+' for '+options.windowId+', '+this._doingUndo+')');
 			if (!history.canUndo || this._doingUndo)
-				return false;
+				return { done : true };
 
 			this._doingUndo = true;
 			var processed = false;
@@ -190,10 +223,10 @@
 				let entries = history.currentEntries;
 				--history.index;
 				if (!entries.length) continue;
-				log('  '+(history.index+1)+' '+entries[0].label);
+				log((history.index+1)+' '+entries[0].label, 1);
 				let done = false;
 				entries.forEach(function(aEntry, aIndex) {
-					log('    level '+(aIndex)+' '+aEntry.label);
+					log('level '+(aIndex)+' '+aEntry.label, 2);
 					let f = this._getAvailableFunction(aEntry.onUndo, aEntry.onundo, aEntry.undo);
 					try {
 						if (f) {
@@ -220,7 +253,7 @@
 						}
 					}
 					catch(e) {
-						log(e);
+						log(e, 2);
 						error = e;
 					}
 				}, this);
@@ -228,16 +261,18 @@
 			}
 			while (processed === false && history.canUndo);
 
-			continuationInfo.allowed = true;
 			if (continuationInfo.done) {
 				this._doingUndo = false;
 				log('  => undo finish');
+			}
+			else {
+				continuationInfo.allowed = true;
 			}
 
 			if (error)
 				throw error;
 
-			return true;
+			return continuationInfo;
 		},
 
 		redo : function()
@@ -247,7 +282,7 @@
 			var max = history.entries.length;
 			log('redo start ('+history.index+' / '+max+', '+options.name+' for '+options.windowId+', '+this._doingUndo+')');
 			if (!history.canRedo || this._doingUndo)
-				return false;
+				return { done : true };
 
 			this._doingUndo = true;
 			var processed = false;
@@ -259,10 +294,10 @@
 				++history.index;
 				let entries = history.currentEntries;
 				if (!entries.length) continue;
-				log('  '+(history.index)+' '+entries[0].label);
+				log((history.index)+' '+entries[0].label, 1);
 				let done = false;
 				entries.forEach(function(aEntry, aIndex) {
-					log('    level '+(aIndex)+' '+aEntry.label);
+					log('level '+(aIndex)+' '+aEntry.label, 2);
 					let f = this._getAvailableFunction(aEntry.onRedo, aEntry.onredo, aEntry.redo);
 					let done = false;
 					try {
@@ -290,23 +325,78 @@
 						}
 					}
 					catch(e) {
-						log(e);
+						log(e, 2);
 						error = e;
 					}
 				}, this);
 				this._dispatchEvent('UIOperationGlobalHistoryRedo', options, entries[0], done);
 			}
 
-			continuationInfo.allowed = true;
 			if (continuationInfo.done) {
 				this._doingUndo = false;
 				log('  => redo finish');
+			}
+			else {
+				continuationInfo.allowed = true;
 			}
 
 			if (error)
 				throw error;
 
-			return true;
+			return continuationInfo;
+		},
+
+		goToIndex : function()
+		{
+			var options = this._getOptionsFromArguments(arguments);
+			var history = options.history;
+			var index = Math.max(0, Math.min(history.entries.length-1, options.index));
+			var current = history.index;
+
+			if (index == current)
+				return { done : true };
+
+			var selfInfo = { done : false };
+			var self = this;
+			var iterator = (function() {
+					while (true)
+					{
+						let info;
+						if (index < current) {
+							if (history.index <= index)
+								break;
+							info = self.undo(options.name, options.window);
+						}
+						else {
+							if (history.index >= index)
+								break;
+							info = self.redo(options.name, options.window);
+						}
+
+						while (!info.done)
+						{
+							yield;
+						}
+					}
+				})();
+
+			var timer = window.setInterval(function() {
+					try {
+						iterator.next();
+					}
+					catch(e) {
+						selfInfo.done = true;
+						window.clearInterval(timer);
+					}
+				}, 10);
+
+			return selfInfo;
+		},
+
+		clear : function()
+		{
+			var options = this._getOptionsFromArguments(arguments);
+			return options.history.clear();
 		},
 
 		getWindowId : function(aWindow, aDefaultId)
@@ -399,18 +489,22 @@
 
 		_getOptionsFromArguments : function(aArguments)
 		{
-			var w = null, name, entry = null, task = null;
+			var w     = null,
+				name  = '',
+				entry = null,
+				task  = null,
+				index = -1;
 			Array.slice(aArguments).some(function(aArg) {
 				if (aArg instanceof Ci.nsIDOMWindow)
 					w = aArg;
 				else if (typeof aArg == 'string')
 					name = aArg;
+				else if (typeof aArg == 'number')
+					index = aArg;
 				else if (typeof aArg == 'function')
 					task = aArg;
 				else if (aArg)
 					entry = aArg;
-
-				return (w && name && entry && task);
 			});
 
 			if (!name)
@@ -425,7 +519,8 @@
 				windowId : windowId,
 				entry    : entry,
 				history  : history,
-				task     : task
+				task     : task,
+				index    : index
 			};
 		},
 
@@ -452,11 +547,15 @@
 			switch (aType)
 			{
 				case 'undoable':
+					aInfo.done = false;
 					continuation = function() {
-						if (aInfo.allowed)
-							history.addingEntryLevel--;
+						if (aInfo.allowed) {
+							history.inOperation = false;
+							if (!history.inOperation)
+								aInfo.done = true;
+						}
 						aInfo.called = true;
-						log('  => doUndoableTask finish (delayed)');
+						log('  => doUndoableTask finish (delayed) / in operation : '+history.inOperationCount+' / '+aInfo.allowed, history.inOperationCount);
 					};
 					self = null;
 					aInfo.created = true;
@@ -596,10 +695,6 @@
 
 	};
 
-	const Prefs = Cc['@mozilla.org/preferences;1']
-					.getService(Ci.nsIPrefBranch);
-	const PREF_PREFIX = 'extensions.UIOperationsHistoryManager@piro.sakura.ne.jp.';
-
 	function UIHistory(aName, aWindow, aId)
 	{
 		this.name     = aName;
@@ -643,24 +738,38 @@
 			return aValue;
 		},
 
+		get inOperation()
+		{
+			return this.inOperationCount > 0;
+		},
+		set inOperation(aValue)
+		{
+			if (aValue)
+				this.inOperationCount++;
+			else if (this.inOperationCount)
+				this.inOperationCount--;
+
+			return this.inOperationCount > 0;
+		},
+
 		clear : function()
 		{
 			this.entries  = [];
 			this.metaData = [];
 			this.index    = -1;
-			this.addingEntryLevel = 0;
+			this.inOperationCount = 0;
 		},
 
 		addEntry : function(aEntry)
 		{
-			log('UIHistory::addEntry / register new entry to history\n  '+aEntry.label);
-			if (this.addingEntryLevel > 0) {
+			log('UIHistory::addEntry / register new entry to history\n  '+aEntry.label+'\n  in operation : '+this.inOperationCount, this.inOperationCount);
+			if (this.inOperation) {
 				this.lastMetaData.children.push(aEntry);
-				log(' => child level ('+(this.lastMetaData.children.length-1)+')');
+				log(' => child level ('+(this.lastMetaData.children.length-1)+')', this.inOperationCount);
 			}
 			else {
 				this._addNewEntry(aEntry);
-				log(' => top level ('+(this.entries.length-1)+')');
+				log(' => top level ('+(this.entries.length-1)+')', this.inOperationCount);
 			}
 		},
 		_addNewEntry : function(aEntry)
@@ -722,9 +831,56 @@
 
 	function UIHistoryProxy(aHistory)
 	{
-		this.__proto__ = aHistory;
-		this.index = Math.max(0, Math.min(aHistory.entries.length-1, aHistory.index));
+		this._original = aHistory;
 	}
+	UIHistoryProxy.prototype = {
+		__proto__ : UIHistory.prototype,
+
+		get index()
+		{
+			return Math.max(0, Math.min(this.entries.length-1, this._original.index));
+		},
+		set index(aValue)
+		{
+			this._original.index = aValue;
+			return aValue;
+		},
+
+		get entries()
+		{
+			return this._original.entries;
+		},
+		set entries(aValue)
+		{
+			this._original.entries = aValue;
+			return aValue;
+		},
+
+		get metaData()
+		{
+			return this._original.metaData;
+		},
+		set metaData(aValue)
+		{
+			this._original.metaData = aValue;
+			return aValue;
+		},
+
+		get inOperationCount()
+		{
+			return this._original.inOperationCount;
+		},
+		set inOperationCount(aValue)
+		{
+			this._original.inOperationCount = aValue;
+			return aValue;
+		},
+
+		clear : function()
+		{
+			return this._original.clear();
+		}
+	};
 
 	function UIHistoryMetaData()
 	{
@@ -742,11 +898,23 @@
 		this.called  = false;
 		this.allowed = false;
 		this.created = false;
+		this._done   = null;
 	}
 	ContinuationInfo.prototype = {
+		get shouldWait()
+		{
+			return this.created && !this.called;
+		},
 		get done()
 		{
-			return !this.created || this.called;
+			if (this._done !== null)
+				return this._done;
+			return !this.shouldWait;
+		},
+		set done(aValue)
+		{
+			this._done = aValue;
+			return aValue;
 		}
 	};
 
