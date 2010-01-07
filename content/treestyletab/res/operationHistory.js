@@ -74,7 +74,7 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/operationHistory.test.js
 */
 (function() {
-	const currentRevision = 26;
+	const currentRevision = 27;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -142,7 +142,9 @@
 			log('doUndoableTask start ('+options.name+' for '+options.windowId+')', history.inOperationCount);
 
 			var entry = options.entry;
-			if (!this._doingUndo && entry) {
+			if (entry &&
+				!this._getUndoingState(options.key) &&
+				!this._getRedoingState(options.key)) {
 				let f = this._getAvailableFunction(entry.onRedo, entry.onredo, entry.redo);
 				if (!f && !entry.onRedo && !entry.onredo && !entry.redo && options.task)
 					entry.onRedo = options.task;
@@ -210,11 +212,12 @@
 		{
 			var options = this._getOptionsFromArguments(arguments);
 			var history = options.history;
-			log('undo start ('+history.index+' / '+history.entries.length+', '+options.name+' for '+options.windowId+', '+this._doingUndo+')');
-			if (!history.canUndo || this._doingUndo)
+			var undoing = this._getUndoingState(options.key);
+			log('undo start ('+history.index+' / '+history.entries.length+', '+options.name+' for '+options.windowId+', '+undoing+')');
+			if (!history.canUndo || undoing)
 				return { done : true };
 
-			this._doingUndo = true;
+			this._setUndoingState(options.key, true);
 			var processed = false;
 			var error;
 			var continuationInfo = new ContinuationInfo();
@@ -262,7 +265,7 @@
 			while (processed === false && history.canUndo);
 
 			if (continuationInfo.done) {
-				this._doingUndo = false;
+				this._setUndoingState(options.key, false);
 				log('  => undo finish');
 			}
 			else {
@@ -280,11 +283,12 @@
 			var options = this._getOptionsFromArguments(arguments);
 			var history = options.history;
 			var max = history.entries.length;
-			log('redo start ('+history.index+' / '+max+', '+options.name+' for '+options.windowId+', '+this._doingUndo+')');
-			if (!history.canRedo || this._doingUndo)
+			var redoing = this._getRedoingState(options.key);
+			log('redo start ('+history.index+' / '+max+', '+options.name+' for '+options.windowId+', '+redoing+')');
+			if (!history.canRedo || redoing)
 				return { done : true };
 
-			this._doingUndo = true;
+			this._setRedoingState(options.key, true);
 			var processed = false;
 			var error;
 			var continuationInfo = new ContinuationInfo();
@@ -333,7 +337,7 @@
 			}
 
 			if (continuationInfo.done) {
-				this._doingUndo = false;
+				this._setRedoingState(options.key, false);
 				log('  => redo finish');
 			}
 			else {
@@ -441,6 +445,17 @@
 			return null;
 		},
 
+		isUndoing : function()
+		{
+			var options = this._getOptionsFromArguments(arguments);
+			return this._getUndoingState(options.key);
+		},
+		isRedoing : function()
+		{
+			var options = this._getOptionsFromArguments(arguments);
+			return this._getRedoingState(options.key);
+		},
+
 
 		/* PRIVATE METHODS */
 
@@ -507,8 +522,9 @@
 					entry = aArg;
 			});
 
+			var type = w ? 'window' : 'global' ;
 			if (!name)
-				name = w ? 'window' : 'global' ;
+				name = type;
 
 			var windowId = w ? this.getWindowId(w) : null ;
 			var history = this._getHistoryFor(name, w);
@@ -517,6 +533,7 @@
 				name     : name,
 				window   : w,
 				windowId : windowId,
+				key      : encodeURIComponent(name)+'::'+type,
 				entry    : entry,
 				history  : history,
 				task     : task,
@@ -543,7 +560,8 @@
 		{
 			var continuation;
 			var history = aOptions.history;
-			var self = this;
+			var key     = aOptions.key;
+			var self    = this;
 			switch (aType)
 			{
 				case 'undoable':
@@ -557,6 +575,7 @@
 						aInfo.called = true;
 						log('  => doUndoableTask finish (delayed) / in operation : '+history.inOperationCount+' / '+aInfo.allowed, history.inOperationCount);
 					};
+					key = null;
 					self = null;
 					aInfo.created = true;
 					break;
@@ -564,7 +583,7 @@
 				case 'undo':
 					continuation = function() {
 						if (aInfo.allowed)
-							self._doingUndo = false;
+							self._setUndoingState(key, false);
 						aInfo.called = true;
 						log('  => undo finish (delayed)');
 					};
@@ -575,7 +594,7 @@
 				case 'redo':
 					continuation = function() {
 						if (aInfo.allowed)
-							self._doingUndo = false;
+							self._setRedoingState(key, false);
 						aInfo.called = true;
 						log('  => redo finish (delayed)');
 					};
@@ -587,6 +606,7 @@
 					continuation = function() {
 					};
 					history = null;
+					key = null;
 					self = null;
 					aInfo.created = true;
 					aInfo = null;
@@ -651,17 +671,34 @@
 			return windows;
 		},
 
-		get _doingUndo()
+		_getUndoingState : function(aKey)
 		{
-			return this._db._doingUndo;
+			return this._db.$undoing && aKey in this._db.$undoing;
 		},
-		set _doingUndo(aValue)
+		_getRedoingState : function(aKey)
 		{
-			if (aValue)
-				this._db._doingUndo = true;
-			else
-				delete this._db._doingUndo;
-			return aValue;
+			return this._db.$redoing && aKey in this._db.$redoing;
+		},
+
+		_setUndoingState : function(aKey, aState)
+		{
+			if (!('$undoing' in this._db))
+				this._db.$undoing = {};
+
+			if (aState)
+				this._db.$undoing[aKey] = true;
+			else if (aKey in this._db.$undoing)
+				delete this._db.$undoing[aKey];
+		},
+		_setRedoingState : function(aKey, aState)
+		{
+			if (!('$redoing' in this._db))
+				this._db.$redoing = {};
+
+			if (aState)
+				this._db.$redoing[aKey] = true;
+			else if (aKey in this._db.$redoing)
+				delete this._db.$redoing[aKey];
 		},
 
 		get WindowMediator() {
