@@ -74,7 +74,7 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/operationHistory.test.js
 */
 (function() {
-	const currentRevision = 27;
+	const currentRevision = 34;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -162,10 +162,11 @@
 					options.task.call(
 						this,
 						{
-							level   : 0,
-							parent  : null,
-							done    : false,
-							manager : this,
+							level     : 0,
+							history   : history,
+							parent    : null,
+							processed : false,
+							manager   : this,
 							getContinuation : function() {
 								return this.manager._createContinuation(
 										'undoable',
@@ -183,7 +184,9 @@
 
 			if (!continuationInfo.shouldWait) {
 				history.inOperation = false;
-				log('  => doUndoableTask finish / in operation : '+history.inOperation, history.inOperationCount);
+				log('  => doUndoableTask finish / in operation : '+history.inOperation+
+					'\n'+history.toString(),
+					history.inOperationCount);
 				// wait for all child processes
 				if (history.inOperation)
 					continuationInfo = {
@@ -227,46 +230,44 @@
 				--history.index;
 				if (!entries.length) continue;
 				log((history.index+1)+' '+entries[0].label, 1);
-				let done = false;
-				entries.forEach(function(aEntry, aIndex) {
+				let oneProcessed = false;
+				entries.some(function(aEntry, aIndex) {
 					log('level '+(aIndex)+' '+aEntry.label, 2);
 					let f = this._getAvailableFunction(aEntry.onUndo, aEntry.onundo, aEntry.undo);
+					if (!f) return;
 					try {
-						if (f) {
-							let info = {
-									level   : aIndex,
-									parent  : (aIndex ? entries[0] : null ),
-									done    : processed && done,
-									manager : this,
-									getContinuation : function() {
-										return this.manager._createContinuation(
-												continuationInfo.created ? 'null' : 'undo',
-												options,
-												continuationInfo
-											);
-									}
-								};
-							let oneProcessed = f.call(aEntry, info);
-							done = true;
-							if (oneProcessed !== false)
-								processed = oneProcessed;
-						}
-						else {
-							processed = true;
-						}
+						let info = {
+								level     : aIndex,
+								history   : history,
+								parent    : (aIndex ? entries[0] : null ),
+								processed : oneProcessed,
+								done      : oneProcessed, // old name
+								manager   : this,
+								getContinuation : function() {
+									return this.manager._createContinuation(
+											continuationInfo.created ? 'null' : 'undo',
+											options,
+											continuationInfo
+										);
+								}
+							};
+						if (f.call(aEntry, info) !== false)
+							oneProcessed = true;
 					}
 					catch(e) {
 						log(e, 2);
-						error = e;
+						return error = e;
 					}
 				}, this);
-				this._dispatchEvent('UIOperationGlobalHistoryUndo', options, entries[0], done);
+				if (error) break;
+				processed = oneProcessed;
+				this._dispatchEvent('UIOperationGlobalHistoryUndo', options, entries[0], oneProcessed);
 			}
 			while (processed === false && history.canUndo);
 
-			if (continuationInfo.done) {
+			if (error || continuationInfo.done) {
 				this._setUndoingState(options.key, false);
-				log('  => undo finish');
+				log('  => undo finish\n'+history.toString());
 			}
 			else {
 				continuationInfo.allowed = true;
@@ -299,46 +300,43 @@
 				let entries = history.currentEntries;
 				if (!entries.length) continue;
 				log((history.index)+' '+entries[0].label, 1);
-				let done = false;
-				entries.forEach(function(aEntry, aIndex) {
+				let oneProcessed = false;
+				entries.some(function(aEntry, aIndex) {
 					log('level '+(aIndex)+' '+aEntry.label, 2);
 					let f = this._getAvailableFunction(aEntry.onRedo, aEntry.onredo, aEntry.redo);
-					let done = false;
+					if (!f) return;
 					try {
-						if (f) {
-							let info = {
-									level   : aIndex,
-									parent  : (aIndex ? entries[0] : null ),
-									done    : processed && done,
-									manager : this,
-									getContinuation : function() {
-										return this.manager._createContinuation(
-												continuationInfo.created ? 'null' : 'redo',
-												options,
-												continuationInfo
-											);
-									}
-								};
-							let oneProcessed = f.call(aEntry, info);
-							done = true;
-							if (oneProcessed !== false)
-								processed = oneProcessed;
-						}
-						else {
-							processed = true;
-						}
+						let info = {
+								level     : aIndex,
+								history   : history,
+								parent    : (aIndex ? entries[0] : null ),
+								processed : oneProcessed,
+								done      : oneProcessed, // old name
+								manager   : this,
+								getContinuation : function() {
+									return this.manager._createContinuation(
+											continuationInfo.created ? 'null' : 'redo',
+											options,
+											continuationInfo
+										);
+								}
+							};
+						if (f.call(aEntry, info) !== false)
+							oneProcessed = true;
 					}
 					catch(e) {
 						log(e, 2);
-						error = e;
+						return error = e;
 					}
 				}, this);
-				this._dispatchEvent('UIOperationGlobalHistoryRedo', options, entries[0], done);
+				if (error) break;
+				processed = oneProcessed;
+				this._dispatchEvent('UIOperationGlobalHistoryRedo', options, entries[0], oneProcessed);
 			}
 
-			if (continuationInfo.done) {
+			if (error || continuationInfo.done) {
 				this._setRedoingState(options.key, false);
-				log('  => redo finish');
+				log('  => redo finish\n'+history.toString());
 			}
 			else {
 				continuationInfo.allowed = true;
@@ -395,6 +393,34 @@
 				}, 10);
 
 			return selfInfo;
+		},
+
+		syncWindowHistoryFocus : function(aOptions)
+		{
+			if (!aOptions.currentEntry)
+				throw 'currentEntry must be specified!';
+			if (!aOptions.entries)
+				throw 'entries must be specified!';
+			if (!aOptions.windows)
+				throw 'windows must be specified!';
+			if (aOptions.entries.length != aOptions.windows.length)
+				throw 'numbers of entries and windows must be same!';
+
+			var name = aOptions.name || 'window';
+
+			log('syncWindowHistoryFocus for '+name+' ('+aOptions.currentEntry.label+')');
+
+			aOptions.entries.forEach(function(aEntry, aIndex) {
+				var history = this.getHistory(name, aOptions.windows[aIndex]);
+				var currentEntries = history.currentEntries;
+				if (currentEntries.indexOf(aOptions.currentEntry) > -1) {
+					return;
+				}
+				if (currentEntries.indexOf(aEntry) > -1) {
+					log(name+' is synced for '+aIndex+' ('+aEntry.label+')');
+					history.index--;
+				}
+			}, this);
 		},
 
 		clear : function()
@@ -490,7 +516,7 @@
 			window.removeEventListener('unload', this, false);
 		},
 
-		_dispatchEvent : function(aType, aOptions, aEntry, aDone)
+		_dispatchEvent : function(aType, aOptions, aEntry, aProcessed)
 		{
 			var d = aOptions.window ? aOptions.window.document : document ;
 			var event = d.createEvent('Events');
@@ -498,7 +524,8 @@
 			event.name  = aOptions.name;
 			event.entry = aEntry;
 			event.data  = aEntry; // old name
-			event.done  = aDone;
+			event.processed = aProcessed || false;
+			event.done      = aProcessed || false; // old name
 			d.dispatchEvent(event);
 		},
 
@@ -573,7 +600,11 @@
 								aInfo.done = true;
 						}
 						aInfo.called = true;
-						log('  => doUndoableTask finish (delayed) / in operation : '+history.inOperationCount+' / '+aInfo.allowed, history.inOperationCount);
+						log('  => doUndoableTask finish (delayed) / '+
+							'in operation : '+history.inOperationCount+' / '+
+							'allowed : '+aInfo.allowed+
+							'\n'+history.toString(),
+							history.inOperationCount);
 					};
 					key = null;
 					self = null;
@@ -585,9 +616,8 @@
 						if (aInfo.allowed)
 							self._setUndoingState(key, false);
 						aInfo.called = true;
-						log('  => undo finish (delayed)');
+						log('  => undo finish (delayed)\n'+history.toString());
 					};
-					history = null;
 					aInfo.created = true;
 					break;
 
@@ -596,9 +626,8 @@
 						if (aInfo.allowed)
 							self._setRedoingState(key, false);
 						aInfo.called = true;
-						log('  => redo finish (delayed)');
+						log('  => redo finish (delayed)\n'+history.toString());
 					};
-					history = null;
 					aInfo.created = true;
 					break;
 
@@ -738,6 +767,8 @@
 		this.window   = aWindow;
 		this.windowId = aId;
 
+		this.key = aName+(aId ? ' ('+aId+')' : '' )
+
 		try {
 			var max = Prefs.getIntPref(this.maxPref);
 			this._max = Math.max(0, Math.min(this.MAX_ENTRIES, max));
@@ -775,6 +806,11 @@
 			return aValue;
 		},
 
+		get safeIndex()
+		{
+			return Math.max(0, Math.min(this.entries.length-1, this.index));
+		},
+
 		get inOperation()
 		{
 			return this.inOperationCount > 0;
@@ -791,6 +827,7 @@
 
 		clear : function()
 		{
+			log('UIHistory::clear '+this.key);
 			this.entries  = [];
 			this.metaData = [];
 			this.index    = -1;
@@ -799,15 +836,25 @@
 
 		addEntry : function(aEntry)
 		{
-			log('UIHistory::addEntry / register new entry to history\n  '+aEntry.label+'\n  in operation : '+this.inOperationCount, this.inOperationCount);
+			log('UIHistory::addEntry '+this.key+
+				'\n  '+aEntry.label+
+				'\n  in operation : '+this.inOperationCount,
+				this.inOperationCount);
 			if (this.inOperation) {
-				this.lastMetaData.children.push(aEntry);
-				log(' => child level ('+(this.lastMetaData.children.length-1)+')', this.inOperationCount);
+				let metaData = this.lastMetaData;
+				metaData.children.push(aEntry);
+				metaData.names.push(aEntry.name);
+				log(' => level '+metaData.children.length+' (child)', this.inOperationCount);
 			}
 			else {
 				this._addNewEntry(aEntry);
-				log(' => top level ('+(this.entries.length-1)+')', this.inOperationCount);
+				log(' => level 0 (new entry at '+(this.entries.length-1)+')', this.inOperationCount);
 			}
+
+			if (aEntry.insertBefore)
+				this._insertBefore(aEntry, aEntry.insertBefore);
+			else if (aEntry.name)
+				this._checkInsertion(aEntry);
 		},
 		_addNewEntry : function(aEntry)
 		{
@@ -815,11 +862,73 @@
 			this.entries.push(aEntry);
 			this.entries = this.entries.slice(-this.max);
 
+			var metaData = new UIHistoryMetaData();
+			metaData.names.push(aEntry.name);
+
 			this.metaData = this.metaData.slice(0, this.index+1);
-			this.metaData.push(new UIHistoryMetaData());
+			this.metaData.push(metaData);
 			this.metaData = this.metaData.slice(-this.max);
 
 			this.index = this.entries.length;
+		},
+		_insertBefore : function(aEntry, aNames)
+		{
+			if (typeof aNames == 'string')
+				aNames = [aNames];
+
+			if (!aNames.length)
+				return;
+
+			var index = this.safeIndex;
+			var metaData = this.metaData[index];
+			var insertionPositions = aNames.map(function(aName) {
+						return metaData.names.indexOf(aName);
+					})
+					.filter(function(aIndex) {
+						return aIndex > -1;
+					})
+					.sort();
+			if (!insertionPositions.length)
+				return;
+
+			var position = insertionPositions[0];
+			var entries = this._getEntriesAt(index);
+			entries.splice(entries.indexOf(aEntry), 1);
+			entries.splice(position, 0, aEntry);
+			this._setEntriesAt(entries, index);
+			log(' => moved (inserted) to level '+position, this.inOperationCount);
+
+			metaData.registerInsertionTarget(aEntry, aNames);
+		},
+		_checkInsertion : function(aEntry)
+		{
+			var name = aEntry.name;
+			var index = this.safeIndex;
+			var metaData = this.metaData[index];
+			if (!(name in metaData.insertionTargets))
+				return;
+
+			var entries = this._getEntriesAt(index);
+			var indexes = metaData
+					.insertionTargets[name]
+					.map(function(aEntry) {
+						return entries.indexOf(aEntry);
+					})
+					.sort()
+					.reverse();
+
+			if (!indexes.length)
+				return;
+
+			var position = indexes[0]+1;
+			var currentPosition = entries.indexOf(aEntry);
+			if (position < currentPosition)
+				return;
+
+			entries.splice(currentPosition, 1);
+			entries.splice(position, 0, aEntry);
+			this._setEntriesAt(entries, index);
+			log(' => moved (inserted) to level '+position, this.inOperationCount);
 		},
 
 		get canUndo()
@@ -863,6 +972,66 @@
 		get lastEntries()
 		{
 			return this._getEntriesAt(this.entries.length-1);
+		},
+
+		_setEntriesAt : function(aEntries, aIndex)
+		{
+			if (aIndex < 0 || aIndex >= this.entries.length)
+				return aEntries;
+
+			this.metaData[aIndex].names = aEntries.map(function(aEntry) {
+					return aEntry.name;
+				});
+			var parent = aEntries[0];
+			var children = aEntries.slice(1);
+			this.entries[aIndex] = parent;
+			this.metaData[aIndex].children = children;
+			return aEntries;
+		},
+		set currentEntries(aEntries)
+		{
+			return this._setEntriesAt(aEntries, this.index);
+		},
+		set lastEntries(aEntries)
+		{
+			return this._setEntriesAt(aEntries, this.entries.length-1);
+		},
+
+		_getPromotionOptions : function(aArguments)
+		{
+			var entry, names = [];
+			Array.slice(aArguments).forEach(function(aArg) {
+				if (typeof aArg == 'string')
+					names.push(aArg);
+				else if (typeof aArg == 'object')
+					entry = aArg;
+			});
+			return [entry, names];
+		},
+
+		toString : function()
+		{
+			var entries = this.entries;
+			var metaData = this.metaData;
+			var index = this.index;
+			var string = entries
+							.map(function(aEntry, aIndex) {
+								var children = metaData[aIndex].children.length;
+								children = children ? ' ('+children+')' : '' ;
+								var name = aEntry.name;
+								name = name ? ' ['+name+']' : '' ;
+								return (aIndex == index ? '*' : ' ' )+
+										' '+aIndex+': '+aEntry.label+
+										name+
+										children;
+							}, this)
+							.join('\n');
+			if (index < 0)
+				string = '* -1: -----\n' + string;
+			else if (index >= entries.length)
+				string += '\n* '+entries.length+': -----';
+
+			return this.key+'\n'+string;
 		}
 	};
 
@@ -875,7 +1044,7 @@
 
 		get index()
 		{
-			return Math.max(0, Math.min(this.entries.length-1, this._original.index));
+			return this._original.safeIndex;
 		},
 		set index(aValue)
 		{
@@ -927,6 +1096,17 @@
 		clear : function()
 		{
 			this.children = [];
+			this.names    = [];
+			this.insertionTargets = {};
+		},
+
+		registerInsertionTarget : function(aEntry, aNames)
+		{
+			aNames.forEach(function(aName) {
+				if (!this.insertionTargets[aName])
+					this.insertionTargets[aName] = [];
+				this.insertionTargets[aName].push(aEntry);
+			}, this);
 		}
 	};
 

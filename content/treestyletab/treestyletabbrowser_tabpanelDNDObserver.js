@@ -41,6 +41,7 @@ TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
 				},
 				'TabbarOperations',
 				{ label  : sv.treeBundle.getString('undo_changeTabbarPosition_label'),
+				  name   : 'treestyletab-changeTabbarPosition',
 				  onUndo : function() { TreeStyleTabService.currentTabbarPosition = current; } },
 				window
 			);
