@@ -74,7 +74,7 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/operationHistory.test.js
 */
 (function() {
-	const currentRevision = 34;
+	const currentRevision = 35;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -85,11 +85,16 @@
 		return;
 	}
 
-	var db = {};
+	var db;
 	if (loadedRevision) {
 		db = window['piro.sakura.ne.jp'].operationHistory._db ||
 				window['piro.sakura.ne.jp'].operationHistory._tables; // old name
+		if (!('histories' in db))
+			db = { histories : db };
 		window['piro.sakura.ne.jp'].operationHistory.destroy();
+	}
+	else {
+		db = { histories : {} };
 	}
 
 	const Cc = Components.classes;
@@ -97,6 +102,8 @@
 
 	const PREF_PREFIX = 'extensions.UIOperationsHistoryManager@piro.sakura.ne.jp.';
 
+	const Application = Cc['@mozilla.org/fuel/application;1']
+					.getService(Ci.fuelIApplication);
 	const Prefs = Cc['@mozilla.org/preferences;1']
 					.getService(Ci.nsIPrefBranch);
 
@@ -119,8 +126,7 @@
 			}
 			aString = aString.replace(/^/gm, indent);
 		}
-		Cc['@mozilla.org/fuel/application;1']
-			.getService(Ci.fuelIApplication)
+		Application
 			.console
 			.log(aString);
 	}
@@ -508,7 +514,38 @@
 
 			window.addEventListener('unload', this, false);
 
+			this._initDBAsObserver();
+
 			this.initialized = true;
+		},
+
+		_initDBAsObserver : function()
+		{
+			if ('observerRegistered' in this._db)
+				return;
+
+			this._db.observerRegistered = true;
+			this._db.observe = function(aSubject, aTopic, aData) {
+				switch (aTopic)
+				{
+					case 'private-browsing':
+						switch (aData)
+						{
+							case 'enter':
+							case 'exit':
+								for (let i in this.histories)
+								{
+									this.histories[i].clear();
+								}
+								this.histories = {};
+								break;
+						}
+						break;
+				}
+			};
+			Cc['@mozilla.org/observer-service;1']
+				.getService(Ci.nsIObserverService)
+				.addObserver(this._db, 'private-browsing', false);
 		},
 
 		destroy : function()
@@ -576,11 +613,11 @@
 			if (windowId)
 				uniqueName += '::'+windowId;
 
-			if (!(uniqueName in this._db)) {
-				this._db[uniqueName] = new UIHistory(aName, aWindow, windowId);
+			if (!(uniqueName in this._db.histories)) {
+				this._db.histories[uniqueName] = new UIHistory(aName, aWindow, windowId);
 			}
 
-			return this._db[uniqueName];
+			return this._db.histories[uniqueName];
 		},
 
 		_createContinuation : function(aType, aOptions, aInfo)
@@ -660,23 +697,23 @@
 			return null;
 		},
 
-		_deleteWindowTables : function(aWindow)
+		_deleteWindowHistories : function(aWindow)
 		{
 			var w = aWindow || window;
 			if (!w) return;
 
 			var removedTables = [];
-			for (let i in this._db)
+			for (let i in this._db.histories)
 			{
-				if (w == this._db[i].window)
+				if (w == this._db.histories[i].window)
 					removedTables.push(i);
 			}
 			removedTables.forEach(function(aName) {
-				var table = this._db[aName];
+				var table = this._db.histories[aName];
 				delete table.entries;
 				delete table.window;
 				delete table.windowId;
-				delete this._db[aName];
+				delete this._db.histories[aName];
 			}, this);
 		},
 
@@ -702,32 +739,32 @@
 
 		_getUndoingState : function(aKey)
 		{
-			return this._db.$undoing && aKey in this._db.$undoing;
+			return this._db.undoing && aKey in this._db.undoing;
 		},
 		_getRedoingState : function(aKey)
 		{
-			return this._db.$redoing && aKey in this._db.$redoing;
+			return this._db.redoing && aKey in this._db.redoing;
 		},
 
 		_setUndoingState : function(aKey, aState)
 		{
-			if (!('$undoing' in this._db))
-				this._db.$undoing = {};
+			if (!('undoing' in this._db))
+				this._db.undoing = {};
 
 			if (aState)
-				this._db.$undoing[aKey] = true;
-			else if (aKey in this._db.$undoing)
-				delete this._db.$undoing[aKey];
+				this._db.undoing[aKey] = true;
+			else if (aKey in this._db.undoing)
+				delete this._db.undoing[aKey];
 		},
 		_setRedoingState : function(aKey, aState)
 		{
-			if (!('$redoing' in this._db))
-				this._db.$redoing = {};
+			if (!('redoing' in this._db))
+				this._db.redoing = {};
 
 			if (aState)
-				this._db.$redoing[aKey] = true;
-			else if (aKey in this._db.$redoing)
-				delete this._db.$redoing[aKey];
+				this._db.redoing[aKey] = true;
+			else if (aKey in this._db.redoing)
+				delete this._db.redoing[aKey];
 		},
 
 		get WindowMediator() {
@@ -753,7 +790,7 @@
 			switch (aEvent.type)
 			{
 				case 'unload':
-					this._deleteWindowTables(window);
+					this._deleteWindowHistories(window);
 					this.destroy();
 					return;
 			}
