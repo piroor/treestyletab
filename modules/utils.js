@@ -412,22 +412,6 @@ var TreeStyleTabUtils = {
  
 // event 
 	
-	ensureEventCancelable : function(aEvent) 
-	{
-		if (aEvent.getPreventDefault) return;
-		// getPreventDefault is available on any event on Gecko 1.9.2 or later.
-		// on Gecko 1.9.1 or before, UIEvents only have the method...
-		aEvent.__original__preventDefault = aEvent.preventDefault;
-		aEvent.__canceled = false;
-		aEvent.preventDefault = function() {
-			this.__original__preventDefault();
-			this.__canceled = true;
-		};
-		aEvent.getPreventDefault = function() {
-			return this.__canceled;
-		};
-	},
- 
 	isNewTabAction : function TSTUtils_isNewTabAction(aEvent) 
 	{
 		return aEvent.button == 1 || (aEvent.button == 0 && this.isAccelKeyPressed(aEvent));

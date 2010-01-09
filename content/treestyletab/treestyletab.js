@@ -1310,9 +1310,7 @@ catch(e) {
 		event.initEvent('TreeStyleTabSubtreeClosing', true, true);
 		event.parent = aParentTab;
 		event.tabs = aClosedTabs;
-		this.ensureEventCancelable(event);
-		this.getTabBrowserFromChild(aParentTab).dispatchEvent(event);
-		return !event.getPreventDefault();
+		return this.getTabBrowserFromChild(aParentTab).dispatchEvent(event);
 	},
  
 	fireTabSubtreeClosedEvent : function TSTService_fireTabSubtreeClosedEvent(aTabBrowser, aParentTab, aClosedTabs) 
