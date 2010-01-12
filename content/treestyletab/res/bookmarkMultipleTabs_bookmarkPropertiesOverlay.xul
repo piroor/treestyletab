@@ -19,7 +19,7 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/bookmarkMultipleTabs_bookmarkPropertiesOverlay.xul
 -->
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-<script type="application/x-javascript; version=1.7"><![CDATA[
+<script type="application/javascript"><![CDATA[
 (function() {
 	if (!('BookmarkPropertiesPanel' in window) ||
 		!BookmarkPropertiesPanel._determineItemInfo ||

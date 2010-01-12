@@ -7,27 +7,27 @@
 <overlay id="treestyletab-overlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-<script src="res/autoScroll.js" type="application/x-javascript; version=1.7"/>
-<script src="res/animationManager.js" type="application/x-javascript; version=1.7"/>
-<script src="res/stopRendering.js" type="application/x-javascript; version=1.7"/>
-<script src="res/extensions.js" type="application/x-javascript; version=1.7"/>
-<script src="res/UninstallationListener.js" type="application/x-javascript; version=1.7"/>
-<script src="res/operationHistory.js" type="application/x-javascript; version=1.7"/>
+<script src="res/autoScroll.js" type="application/javascript"/>
+<script src="res/animationManager.js" type="application/javascript"/>
+<script src="res/stopRendering.js" type="application/javascript"/>
+<script src="res/extensions.js" type="application/javascript"/>
+<script src="res/UninstallationListener.js" type="application/javascript"/>
+<script src="res/operationHistory.js" type="application/javascript"/>
 
-<script src="treestyletab.js" type="application/x-javascript; version=1.7"/>
-<script src="treestyletabbrowser.js" type="application/x-javascript; version=1.7"/>
-<script src="treestyletabbrowser_autoHide.js" type="application/x-javascript; version=1.7"/>
-<script src="treestyletabbrowser_tabbarDNDObserver.js" type="application/x-javascript; version=1.7"/>
-<script src="treestyletabbrowser_tabpanelDNDObserver.js" type="application/x-javascript; version=1.7"/>
+<script src="treestyletab.js" type="application/javascript"/>
+<script src="treestyletabbrowser.js" type="application/javascript"/>
+<script src="treestyletabbrowser_autoHide.js" type="application/javascript"/>
+<script src="treestyletabbrowser_tabbarDNDObserver.js" type="application/javascript"/>
+<script src="treestyletabbrowser_tabpanelDNDObserver.js" type="application/javascript"/>
 
-<script src="preloadImages.js" type="application/x-javascript; version=1.7"/>
+<script src="preloadImages.js" type="application/javascript"/>
 
-<script src="bookmarksOverlay.js" type="application/x-javascript; version=1.7"/>
-<script src="bookmarksOverlayEditable.js" type="application/x-javascript; version=1.7"/>
+<script src="bookmarksOverlay.js" type="application/javascript"/>
+<script src="bookmarksOverlayEditable.js" type="application/javascript"/>
 
-<script src="hacks.js" type="application/x-javascript; version=1.7"/>
+<script src="hacks.js" type="application/javascript"/>
 
-<script type="application/x-javascript; version=1.7"><![CDATA[
+<script type="application/javascript"><![CDATA[
 	// preload images
 	TreeStyleTabService.observe(
 		null,

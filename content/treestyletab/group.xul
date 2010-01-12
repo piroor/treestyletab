@@ -31,7 +31,7 @@
 </stack>
 <link xmlns="http://www.w3.org/1999/xhtml" rel="icon"
 	href="chrome://treestyletab/skin/group-icon"/>
-<script type="application/x-javascript"><![CDATA[
+<script type="application/javascript"><![CDATA[
 
 var gIcon = document.getElementById('icon');
 var gLabel = document.getElementById('label');
