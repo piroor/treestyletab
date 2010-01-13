@@ -13,6 +13,23 @@ var TreeStyleTabService = {
 	},
 	set currentTabbarPosition(aValue)
 	{
+		if ('UndoTabService' in window && UndoTabService.isUndoable()) {
+			var current = this.utils.currentTabbarPosition;
+			var self = this;
+			UndoTabService.doOperation(
+				function() {
+					self.utils.currentTabbarPosition = aValue;
+				},
+				{
+					label  : self.treeBundle.getString('undo_changeTabbarPosition_label'),
+					name   : 'treestyletab-changeTabbarPosition',
+					data   : {
+						oldPosition : current,
+						newPosition : aValue
+					}
+				}
+			);
+		}
 		return this.utils.currentTabbarPosition = aValue;
 	},
  
@@ -257,6 +274,9 @@ var TreeStyleTabService = {
 		var appcontent = document.getElementById('appcontent');
 		appcontent.addEventListener('SubBrowserAdded', this, false);
 		appcontent.addEventListener('SubBrowserRemoveRequest', this, false);
+
+		window.addEventListener('UIOperationHistoryUndo:TabbarOperations', this, false);
+		window.addEventListener('UIOperationHistoryRedo:TabbarOperations', this, false);
 
 		this.addPrefListener(this);
 
@@ -905,6 +925,9 @@ catch(e) {
 		appcontent.removeEventListener('SubBrowserAdded', this, false);
 		appcontent.removeEventListener('SubBrowserRemoveRequest', this, false);
 
+		window.removeEventListener('UIOperationHistoryUndo:TabbarOperations', this, false);
+		window.removeEventListener('UIOperationHistoryRedo:TabbarOperations', this, false);
+
 		this.removePrefListener(this);
 		this.ObserverService.removeObserver(this, 'sessionstore-windows-restored');
 	},
@@ -980,6 +1003,23 @@ catch(e) {
 			case 'SubBrowserRemoveRequest':
 				this.destroyTabBrowser(aEvent.originalTarget.browser);
 				return;
+
+			case 'UIOperationHistoryUndo:TabbarOperations':
+				switch (aEvent.entry.name)
+				{
+					case 'treestyletab-changeTabbarPosition':
+						this.currentTabbarPosition = aEvent.entry.data.oldPosition;
+						return;
+				}
+				break;
+
+			case 'UIOperationHistoryRedo:TabbarOperations':
+				switch (aEvent.entry.name)
+				{
+					case 'treestyletab-changeTabbarPosition':
+						this.currentTabbarPosition = aEvent.entry.data.newPosition;
+						return;
+				}
 		}
 	},
 	

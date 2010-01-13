@@ -12,7 +12,6 @@
 <script src="res/stopRendering.js" type="application/javascript"/>
 <script src="res/extensions.js" type="application/javascript"/>
 <script src="res/UninstallationListener.js" type="application/javascript"/>
-<script src="res/operationHistory.js" type="application/javascript"/>
 
 <script src="treestyletab.js" type="application/javascript"/>
 <script src="treestyletabbrowser.js" type="application/javascript"/>

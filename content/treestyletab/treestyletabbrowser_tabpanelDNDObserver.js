@@ -34,17 +34,7 @@ TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
 				let orient = (position == 'left' || position == 'right') ? 'vertical' : 'horizontal' ;
 				sv.setTreePref('tabbar.fixed.'+orient, false);
 			}
-			var current = sv.currentTabbarPosition;
-			window['piro.sakura.ne.jp'].operationHistory.doUndoableTask(
-				function() {
-					sv.currentTabbarPosition = position;
-				},
-				'TabbarOperations',
-				{ label  : sv.treeBundle.getString('undo_changeTabbarPosition_label'),
-				  name   : 'treestyletab-changeTabbarPosition',
-				  onUndo : function() { TreeStyleTabService.currentTabbarPosition = current; } },
-				window
-			);
+			sv.currentTabbarPosition = position;
 		}
 
 		sv           = null;
