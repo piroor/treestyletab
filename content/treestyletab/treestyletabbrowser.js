@@ -2184,6 +2184,8 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var behavior = this.undoCloseTabSetBehavior(0, true);
 		if (
+			aRestoredTab.__treestyletab__restoredByUndoCloseTab ||
+			!this.browser.__treestyletab__readyToUndoCloseTab ||
 			this.useTMPSessionAPI ||
 			this._restoringClosedSet ||
 			!(behavior & this.kUNDO_CLOSE_SET || behavior & this.kUNDO_ASK)
@@ -2237,6 +2239,8 @@ TreeStyleTabBrowser.prototype = {
   
 	onTabRestored : function TSTBrowser_onTabRestored(aEvent) 
 	{
+		delete aEvent.originalTarget.__treestyletab__restoredByUndoCloseTab;
+
 		// update the status for the next restoring
 		if (!this.useTMPSessionAPI && TreeStyleTabService.restoringWindow)
 			TreeStyleTabService.restoringWindow = TreeStyleTabService.getRestoringTabsCount() > 0;

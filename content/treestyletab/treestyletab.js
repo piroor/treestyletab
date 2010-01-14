@@ -144,6 +144,20 @@ var TreeStyleTabService = {
 			)
 		);
 
+		if ('undoCloseTab' in window) {
+			eval('window.undoCloseTab = '+
+				window.undoCloseTab.toSource().replace(
+					/(\btab\s*=\s*[^\.]+\.undoCloseTab\([^;]+\);)/,
+					<![CDATA[
+						gBrowser.__treestyletab__readyToUndoCloseTab = true;
+						$1
+						tab.__treestyletab__restoredByUndoCloseTab = true;
+						delete gBrowser.__treestyletab__readyToUndoCloseTab;
+					]]>
+				)
+			);
+		}
+
 		this.overrideExtensionsPreInit(); // hacks.js
 
 		this.registerTabFocusAllowance(this.defaultTabFocusAllowance);
