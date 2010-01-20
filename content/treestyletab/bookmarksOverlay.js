@@ -13,6 +13,9 @@ var TreeStyleTabBookmarksService = {
 
 	beginAddBookmarksFromTabs : function TSTBMService_beginAddBookmarksFromTabs(aTabs) /* PUBLIC API */ 
 	{
+		if (this._observing) return;
+		this._observing = true;
+
 		this._addingBookmarks = [];
 		this._addingBookmarkTreeStructure = this
 				.cleanUpTabsArray(aTabs)
@@ -26,6 +29,9 @@ var TreeStyleTabBookmarksService = {
  
 	endAddBookmarksFromTabs : function TSTBMService_endAddBookmarksFromTabs() /* PUBLIC API */ 
 	{
+		if (!this._observing) return;
+		this._observing = false;
+
 		this.BookmarksService.removeObserver(this);
 
 		// this is adding bookmark folder from tabs, so ignroe the first item!
