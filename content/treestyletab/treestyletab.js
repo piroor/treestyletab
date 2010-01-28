@@ -1609,7 +1609,8 @@ catch(e) {
 		return this.getTabsArray(this.browser)
 				.filter(function(aTab) {
 					var owner = aTab.linkedBrowser;
-					var data = owner.parentNode.__SS_data;
+					var data = owner.__SS_data || // Firefox 3.6-
+								owner.parentNode.__SS_data; // -Firefox 3.5
 					return data && data._tabStillLoading;
 				}).length;
 	},

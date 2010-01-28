@@ -1956,10 +1956,14 @@ TreeStyleTabBrowser.prototype = {
 			この時、nsSessionStore::restoreHistoryPrecursor() 内で
 			nsSessionStore::restoreHistory() が呼ばれるより前に、
 			これから復元するすべてのタブについて
-			tab.linkedBrowser.parentNode.__SS_data._tabStillLoading
+			tab.linkedBrowser.__SS_data._tabStillLoading (Firefox 3.6-)
+			または
+			tab.linkedBrowser.parentNode.__SS_data._tabStillLoading (-Firefox 3.5)
 			がtrueにセットされる。
 			そのタブの読み込みが完了した時、
-			tab.linkedBrowser.parentNode.__SS_data
+			tab.linkedBrowser.__SS_data (Firefox 3.6-)
+			または
+			tab.linkedBrowser.parentNode.__SS_data (-Firefox 3.5)
 			はdeleteされる。
 
 			以上のことから、sessionstore-windows-restored が通知された段階で

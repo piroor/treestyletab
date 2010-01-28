@@ -622,10 +622,12 @@ var TreeStyleTabUtils = {
 	// workaround for http://piro.sakura.ne.jp/latest/blosxom/mozilla/extension/treestyletab/2009-09-29_debug.htm
 	checkCachedSessionDataExpiration : function TSTUtils_checkCachedSessionDataExpiration(aTab) 
 	{
-		if (aTab.linkedBrowser.parentNode.__SS_data &&
-			aTab.linkedBrowser.parentNode.__SS_data._tabStillLoading &&
+		var data = aTab.linkedBrowser.__SS_data || // Firefox 3.6-
+					aTab.linkedBrowser.parentNode.__SS_data; // -Frefox 3.5
+		if (data &&
+			data._tabStillLoading &&
 			aTab.getAttribute('busy') != 'true')
-			aTab.linkedBrowser.parentNode.__SS_data._tabStillLoading = false;
+			data._tabStillLoading = false;
 	},
  
 	markAsClosedSet : function TSTUtils_markAsClosedSet(aTabs) /* PUBLIC API */ 
