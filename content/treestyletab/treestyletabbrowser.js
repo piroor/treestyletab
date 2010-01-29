@@ -1495,7 +1495,7 @@ TreeStyleTabBrowser.prototype = {
 
 		if (this.animationEnabled) {
 			this.updateTabCollapsed(tab, true, true);
-			this.updateTabCollapsed(tab, false, this.restoringWindow);
+			this.updateTabCollapsed(tab, false, this.restoringTree);
 		}
 
 		if (this.readiedToOpenDivertedTab) {
@@ -1516,13 +1516,13 @@ TreeStyleTabBrowser.prototype = {
 			this.setTabValue(next, this.kINSERT_AFTER, tab.getAttribute(this.kID));
 		}
 
-		if (!TreeStyleTabService.restoringWindow &&
+		if (!TreeStyleTabService.restoringTree &&
 			!this.useTMPSessionAPI &&
 			!this._checkRestoringWindowTimerOnTabAdded) {
 			this._checkRestoringWindowTimerOnTabAdded = window.setTimeout(function(aSelf) {
 				aSelf._checkRestoringWindowTimerOnTabAdded = null;
 				if (aSelf.getRestoringTabsCount() > 1)
-					TreeStyleTabService.restoringWindow = true;
+					TreeStyleTabService.restoringTree = true;
 			}, 0, this);
 		}
 
@@ -1969,18 +1969,18 @@ TreeStyleTabBrowser.prototype = {
 			以上のことから、sessionstore-windows-restored が通知された段階で
 			_tabStillLoadingがtrueであるタブがウィンドウ内に2個以上存在して
 			いれば、それは、そのウィンドウが復元中であることを示す証拠となる。
-			よって、restoringWindow を true に設定する。
+			よって、restoringTree を true に設定する。
 
-			restoringWindow が true である場合は、SSTabRestored が発行される度に
+			restoringTree が true である場合は、SSTabRestored が発行される度に
 			_tabStillLoadingがtrueであるタブの数を確認し、数が1以下であれば
-			restoringWindow を false にする。
+			restoringTree を false にする。
 
-			restoringWindow は、次の sessionstore-windows-restored が通知される
+			restoringTree は、次の sessionstore-windows-restored が通知される
 			までは true になることはない。そのため、手動で連続してタブを複数
 			復元したとしても、それがウィンドウ復元中のタブの復元と誤認される
 			心配はない。
 		*/
-		var restoringMultipleTabs = TreeStyleTabService.restoringWindow;
+		var restoringMultipleTabs = TreeStyleTabService.restoringTree;
 
 		var tab = aTab;
 		var b   = this.mTabBrowser;
@@ -2225,7 +2225,7 @@ TreeStyleTabBrowser.prototype = {
 		this._restoringClosedSet = true;
 		this.stopRendering();
 
-		TreeStyleTabService.restoringWindow = true;
+		TreeStyleTabService.restoringTree = true;
 
 		var offset = 0;
 		indexes.forEach(function(aIndex) {
@@ -2246,8 +2246,8 @@ TreeStyleTabBrowser.prototype = {
 		delete aEvent.originalTarget.__treestyletab__restoredByUndoCloseTab;
 
 		// update the status for the next restoring
-		if (!this.useTMPSessionAPI && TreeStyleTabService.restoringWindow)
-			TreeStyleTabService.restoringWindow = TreeStyleTabService.getRestoringTabsCount() > 0;
+		if (!this.useTMPSessionAPI && TreeStyleTabService.restoringTree)
+			TreeStyleTabService.restoringTree = TreeStyleTabService.getRestoringTabsCount() > 0;
 	},
  
 	onTabSelect : function TSTBrowser_onTabSelect(aEvent) 

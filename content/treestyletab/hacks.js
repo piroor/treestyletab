@@ -163,11 +163,11 @@ TreeStyleTabService.overrideExtensionsPreInit = function TSTService_overrideExte
 				'gBrowser.tabsToLoad = ',
 				<![CDATA[
 					gBrowser.treeStyleTab.resetAllTabs(true, true);
-					TreeStyleTabService.restoringWindow = true;
+					TreeStyleTabService.restoringTree = true;
 				$&]]>
 			).replace(
 				/(\}\))?$/,
-				'TreeStyleTabService.restoringWindow = false; $1'
+				'TreeStyleTabService.restoringTree = false; $1'
 			)
 		);
 		this.useTMPSessionAPI = true;
@@ -189,7 +189,7 @@ TreeStyleTabService.overrideExtensionsPreInit = function TSTService_overrideExte
 				'var tabcount = ',
 				<![CDATA[
 					gBrowser.treeStyleTab.collapseExpandAllSubtree(false, true);
-					TreeStyleTabService.restoringWindow = true;
+					TreeStyleTabService.restoringTree = true;
 				$&]]>
 			));
 		}

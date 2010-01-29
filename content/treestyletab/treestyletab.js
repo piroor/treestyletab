@@ -1599,11 +1599,11 @@ catch(e) {
 
 			case 'sessionstore-windows-restored':
 				if (!this.useTMPSessionAPI)
-					this.restoringWindow = this.getRestoringTabsCount() > 1;
+					this.restoringTree = this.getRestoringTabsCount() > 1;
 				return;
 		}
 	},
-	restoringWindow : false,
+	restoringTree : false,
 	getRestoringTabsCount : function TSTService_getRestoringTabsCount()
 	{
 		return this.getTabsArray(this.browser)
