@@ -105,6 +105,7 @@ var TreeStyleTabUtils = {
 	kDROP_MARKER_CONTAINER : 'treestyletab-drop-marker-container',
 	kCOUNTER               : 'treestyletab-counter',
 	kCOUNTER_CONTAINER     : 'treestyletab-counter-container',
+	kCOUNTER_PAREN         : 'treestyletab-counter-paren',
 	kSPLITTER              : 'treestyletab-splitter',
 	kTABBAR_TOGGLER        : 'treestyletab-tabbar-toggler',
  

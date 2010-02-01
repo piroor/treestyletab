@@ -16,7 +16,8 @@
 	-moz-box-pack: end;
 }
 
-.treestyletab-counter {
+.treestyletab-counter,
+.treestyletab-counter-paren {
 	font-size: 90%;
 	margin: 0;
 	padding: 0;

@@ -679,8 +679,16 @@ TreeStyleTabBrowser.prototype = {
 			counter.setAttribute('class', this.kCOUNTER_CONTAINER);
 
 			counter.appendChild(document.createElement('label'));
+			counter.lastChild.setAttribute('class', this.kCOUNTER_PAREN);
+			counter.lastChild.setAttribute('value', '(');
+
+			counter.appendChild(document.createElement('label'));
 			counter.lastChild.setAttribute('class', this.kCOUNTER);
-			counter.lastChild.setAttribute('value', '(0)');
+			counter.lastChild.setAttribute('value', '0');
+
+			counter.appendChild(document.createElement('label'));
+			counter.lastChild.setAttribute('class', this.kCOUNTER_PAREN);
+			counter.lastChild.setAttribute('value', ')');
 
 			if (label) {
 				label.parentNode.insertBefore(counter, label.nextSibling);
@@ -3484,7 +3492,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var count = document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER);
 		if (count) {
-			count.setAttribute('value', '('+this.getDescendantTabs(aTab).length+')');
+			count.setAttribute('value', this.getDescendantTabs(aTab).length);
 		}
 		var parent = this.getParentTab(aTab);
 		if (parent && !aDontUpdateAncestor)
