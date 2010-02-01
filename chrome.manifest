@@ -26,8 +26,8 @@ locale	treestyletab	pl-PL	jar:chrome/treestyletab.jar!/locale/pl-PL/treestyletab
 
 skin	treestyletab	classic/1.0	jar:chrome/treestyletab.jar!/skin/classic/treestyletab/
 
-override chrome://treestyletab/skin/group-icon	chrome://treestyletab/skin/group-fx3.png
-override chrome://treestyletab/skin/group-icon	chrome://treestyletab/skin/group-fx3-aero.png	os=WINNT osversion>=6
+override chrome://treestyletab/skin/group/group-icon	chrome://treestyletab/skin/group/group-fx3.png
+override chrome://treestyletab/skin/group/group-icon	chrome://treestyletab/skin/group/group-fx3-aero.png	os=WINNT osversion>=6
 
 override chrome://treestyletab/skin/square/compat.css	chrome://treestyletab/skin/dummy.css
 override chrome://treestyletab/skin/square/compat.css	chrome://treestyletab/skin/square/compat-3.5.css	appversion>=3.5
