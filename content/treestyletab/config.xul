@@ -13,7 +13,7 @@
 	onload="init()">
 
 <prefpane id="prefpane-appearance" label="&config.tabs.appearance;"
-	onpaneload="onChangeTabbarPosition();">
+	onpaneload="initAppearancePane();">
 	<preferences>
 		<preference id="extensions.treestyletab.tabbar.position"
 			name="extensions.treestyletab.tabbar.position"
@@ -147,7 +147,8 @@
 		<caption label="&config.tabbar.style.caption;"/>
 		<radiogroup id="extensions.treestyletab.tabbar.style-radiogroup"
 			preference="extensions.treestyletab.tabbar.style"
-			orient="vertical">
+			orient="vertical"
+			oncommand="onChangeTabbarStyle();">
 			<hbox align="center">
 			<radio value="default" label="&config.tabbar.style.default;"
 				class="image" align="center"
@@ -163,7 +164,8 @@
 				src="chrome://treestyletab/content/res/style-metal.png"/>
 			<radio value="sidebar" label="&config.tabbar.style.sidebar;"
 				class="image" align="center"
-				src="chrome://treestyletab/content/res/style-sidebar.png"/>
+				src="chrome://treestyletab/content/res/style-sidebar.png"
+				id="extensions.treestyletab.tabbar.style-sidebar"/>
 			</hbox>
 			<radio value="" label="&config.tabbar.style.none;"/>
 		</radiogroup>
