@@ -163,3 +163,9 @@ tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .treestyl
 .tabbrowser-tab[selected="true"] .treestyletab-counter {
   color: #929292 !important;
 }
+
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabs-newtab-button {
+  -moz-appearance: none !important;
+  background: transparent !important;
+  border: 0 none !important;
+}
