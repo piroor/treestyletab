@@ -26,7 +26,7 @@
 }
 
 .icon {
-	list-style-image: url("chrome://treestyletab/skin/group-icon");
+	list-style-image: url("chrome://treestyletab/skin/group/group-icon");
 /*
 	list-style-image: url("chrome://global/skin/icons/folder-item.png");
 	-moz-image-region: rect(0, 32px, 16px, 16px);
