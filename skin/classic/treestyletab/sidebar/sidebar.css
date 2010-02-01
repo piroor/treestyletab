@@ -1,0 +1,165 @@
+/*
+***** BEGIN LICENSE BLOCK *****
+Version: MPL 1.1
+
+The contents of these files are subject to the Mozilla Public License Version
+1.1 (the "License"); you may not use these files except in compliance with
+the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+for the specific language governing rights and limitations under the
+License.
+
+The Original Code is the Tree Style Tab.
+
+The Initial Developer of the Original Code is Philipp von Weitershausen.
+Portions created by the Initial Developer are Copyright (C) 2010
+the Initial Developer. All Rights Reserved.
+
+Contributor(s): Philipp von Weitershausen <philipp@weitershausen.de>
+                SHIMODA Hiroshi <piro@p.club.ne.jp>
+
+***** END LICENSE BLOCK *****
+
+*/
+
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+/* Unset bottom border, instead let's have a border on the right-hand
+   side, much like the sidebar does. */
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabbrowser-strip {
+  border-right: 1px solid #404040;
+  border-top: 1px solid #404040;
+  border-bottom: none !important;
+}
+#main-window:not([active="true"])
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabbrowser-strip {
+  border-right: 1px solid #868686;
+  border-top: 1px solid #868686;
+}
+
+/* Background colour for the tree sidebar (light blue when window is
+   active, grey otherwise) */
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabbrowser-tabs {
+  -moz-appearance: none !important;
+  background: transparent !important;
+  background-color: #d4dde5 !important;
+}
+#main-window:not([active="true"])
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabbrowser-tabs {
+  background-color: #e8e8e8 !important;
+}
+
+/* Don't display unnecessary clutter */
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabs-bottom,
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabs-left,
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tab-text-shadow {
+  display: none !important;
+}
+
+/* Style tabs themselves.  Get rid of most of the initial XUL styling */
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabbrowser-tab {
+  -moz-appearance: none !important;
+  background: transparent !important;
+  -moz-border-top-colors: none !important;
+  -moz-border-bottom-colors: none !important;
+  -moz-border-right-colors: none !important;
+  -moz-border-left-colors: none !important;
+  -moz-border-radius-topleft : 0 !important;
+  -moz-border-radius-topright : 0 !important;
+  -moz-border-radius-bottomleft : 0 !important;
+  -moz-border-radius-bottomright : 0 !important;
+  -moz-box-align: stretch !important;
+  margin: 0 !important;
+  padding: 0 3px 1px 10px !important;
+  height: 21px !important;     /* height including border! */
+  text-align: left !important;
+  border: none;
+  border-top: 1px solid transparent !important;
+}
+
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"] {
+  border-top: 1px solid #94A1C0 !important;
+  background: -moz-linear-gradient(top, #A0B0CF, #7386AB) repeat-x !important;
+}
+#main-window:not([active="true"])
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"] {
+  border-top: 1px solid #979797 !important;
+  background: -moz-linear-gradient(top, #B4B4B4, #8A8A8A) repeat-x !important;  
+}
+
+/* Get the favicon and close button off the ground and towards the
+   vertical center of the tab. */
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tab-icon-image,
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tab-close-button {
+  margin-bottom: 1px;
+}
+
+tabbrowser[treestyletab-mode="vertical"] .tab-close-button {
+  margin-left: 3px;
+}
+
+/* Always display the favicon at 100% opacity */
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tab:not(:hover):not([selected="true"]) .tab-icon-image {
+  opacity: 1.0 !important;
+}
+
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tab:not(:hover):not([selected="true"]) > .tab-close-button {
+  display: none !important;
+}
+
+/* Tab label is without special decoration except when selected: then
+   the text is white and bold. */
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tab-text {
+  font-size: 11px;
+  font-weight: normal !important;
+  color: #000000 !important;
+  text-shadow: none !important;
+}
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tab[selected="true"] .tab-text {
+  font-weight: bold !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px #404040 !important;
+}
+
+
+/* Make the tab counter look like the bubbles in Mail.app et.al. */
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .treestyletab-counter-container {
+  padding: 0 6px !important;
+  background-color: #91a0c0 !important;
+  -moz-border-radius: 8px !important;
+}
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .treestyletab-counter {
+  color: #ffffff !important;
+  font-weight: bold !important;
+  text-shadow: none !important;
+}
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+.treestyletab-counter-paren {
+  display: none !important;
+}
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tab[selected="true"] .treestyletab-counter-container {
+  background-color: #ffffff !important;
+}
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tab[selected="true"] .treestyletab-counter {
+  color: #91a0c0 !important;
+}
+#main-window:not([active="true"])
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .treestyletab-counter-container {
+  background-color: #b5b5b5 !important;
+}
+#main-window:not([active="true"]) tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tab[selected="true"] .treestyletab-counter-container {
+  background-color: #ffffff !important;
+}
+#main-window:not([active="true"]) tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tab[selected="true"] .treestyletab-counter {
+  color: #929292 !important;
+}
