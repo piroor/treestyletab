@@ -25,6 +25,7 @@
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.mixed   "Mix">
 <!ENTITY config.tabbar.style.metal   "Metal">
+<!ENTITY config.tabbar.style.sidebar "Sidebar">
 <!ENTITY config.tabbar.style.none    "Domyślny (zależny od motywu)">
 
 <!ENTITY config.twisty.style.caption "Styl drzew">

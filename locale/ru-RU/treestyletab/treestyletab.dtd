@@ -24,6 +24,7 @@
 <!ENTITY config.tabbar.style.vertigo "С подсветкой">
 <!ENTITY config.tabbar.style.mixed   "Смешанный">
 <!ENTITY config.tabbar.style.metal   "Metal">
+<!ENTITY config.tabbar.style.sidebar "Sidebar">
 <!ENTITY config.tabbar.style.none    "По умолчанию (определяется темой)">
 
 <!ENTITY config.twisty.style.caption "Вид узлов дерева">

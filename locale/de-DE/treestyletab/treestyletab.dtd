@@ -24,6 +24,7 @@
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.mixed   "Gemischt">
 <!ENTITY config.tabbar.style.metal   "Metal">
+<!ENTITY config.tabbar.style.sidebar "Sidebar">
 <!ENTITY config.tabbar.style.none    "Standard (durch Theme festgelegt)">
 
 <!ENTITY config.twisty.style.caption "Aufklappsymbole">

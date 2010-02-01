@@ -24,6 +24,7 @@
 <!ENTITY config.tabbar.style.vertigo "Vértigo">
 <!ENTITY config.tabbar.style.mixed   "Mezclado">
 <!ENTITY config.tabbar.style.metal   "Metal">
+<!ENTITY config.tabbar.style.sidebar "Sidebar">
 <!ENTITY config.tabbar.style.none    "Predeterminado (especificado por el tema actual)">
 
 <!ENTITY config.twisty.style.caption "Estilo del botón de colapsar/expandir">

@@ -24,6 +24,7 @@
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.mixed   "混合">
 <!ENTITY config.tabbar.style.metal   "金属">
+<!ENTITY config.tabbar.style.sidebar "Sidebar">
 <!ENTITY config.tabbar.style.none    "默认（跟随主题）">
 
 <!ENTITY config.twisty.style.caption "树的折叠点外观">

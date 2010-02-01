@@ -24,6 +24,7 @@
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.mixed   "Misto">
 <!ENTITY config.tabbar.style.metal   "Metal">
+<!ENTITY config.tabbar.style.sidebar "Sidebar">
 <!ENTITY config.tabbar.style.none    "Predefinito (varia in base al tema)">
 
 <!ENTITY config.twisty.style.caption "Aspetto dei controlli di contrazione/espansione dei sottoalberi">

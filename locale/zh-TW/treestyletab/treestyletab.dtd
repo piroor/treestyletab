@@ -24,6 +24,7 @@
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.mixed   "混合">
 <!ENTITY config.tabbar.style.metal   "金屬">
+<!ENTITY config.tabbar.style.sidebar "Sidebar">
 <!ENTITY config.tabbar.style.none    "預設 (由主題自行指定)">
 
 <!ENTITY config.twisty.style.caption "摺疊 / 展開的圖示">

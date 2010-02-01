@@ -161,6 +161,9 @@
 			<radio value="metal" label="&config.tabbar.style.metal;"
 				class="image" align="center"
 				src="chrome://treestyletab/content/res/style-metal.png"/>
+			<radio value="sidebar" label="&config.tabbar.style.sidebar;"
+				class="image" align="center"
+				src="chrome://treestyletab/content/res/style-sidebar.png"/>
 			</hbox>
 			<radio value="" label="&config.tabbar.style.none;"/>
 		</radiogroup>
