@@ -62,13 +62,13 @@ tabbrowser[treestyletab-style="sidebar"][treestyletab-allow-subtree-collapse="tr
 tabbrowser[treestyletab-twisty-style="modern-black"]
   .treestyletab-twisty,
 tabbrowser[treestyletab-style="sidebar"]
-  .treestyletab-twisty {
+  .tabbrowser-tab:not([selected="true"]) .treestyletab-twisty {
 	list-style-image: url("twisty-modern-b-l.png");
 }
 tabbrowser[treestyletab-twisty-style="modern-black"][treestyletab-tab-contents-inverted="true"]
   .treestyletab-twisty,
 tabbrowser[treestyletab-style="sidebar"][treestyletab-tab-contents-inverted="true"]
-  .treestyletab-twisty {
+  .tabbrowser-tab:not([selected="true"]) .treestyletab-twisty {
 	list-style-image: url("twisty-modern-b-r.png");
 }
 tabbrowser[treestyletab-twisty-style="modern-white"]
