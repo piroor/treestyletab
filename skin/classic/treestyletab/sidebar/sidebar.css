@@ -190,22 +190,6 @@ tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .treestyl
 /* changed from original SidebarStyleTab */
 
 tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
-  .tab-close-button image,
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
-  .tab-close-button:active image,
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
-  .tab-close-button:hover image,
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"] .tab-close-button image {
-  -moz-image-region: auto !important;
-}
-
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
-  .tabbrowser-tabs {
-  -moz-appearance: none !important;
-}
-
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
   .treestyletab-counter-paren {
   display: none !important;
 }
@@ -215,6 +199,28 @@ tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
   -moz-appearance: none !important;
   background: transparent !important;
   border: 0 none !important;
+}
+
+/* for Windows (Winstrip/Strata) */
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tab-close-button image,
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tab-close-button:active image,
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tab-close-button:hover image,
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[selected="true"] .tab-close-button image {
+  -moz-image-region: auto !important;
+}
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tabbrowser-tabs {
+  -moz-appearance: none !important;
+}
+
+/* for Linux (Gnomestrip) */
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tab-close-button {
+  -moz-appearance: none !important;
 }
 
 /* for Multiple Tab Handler */
