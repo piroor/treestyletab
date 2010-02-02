@@ -29,38 +29,48 @@ Contributor(s): Philipp von Weitershausen <philipp@weitershausen.de>
 
 /* Unset bottom border, instead let's have a border on the right-hand
    side, much like the sidebar does. */
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabbrowser-strip {
-  border-right: 1px solid #404040;
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-strip {
   border-top: 1px solid #404040;
   border-bottom: none !important;
 }
 #main-window:not([active="true"])
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabbrowser-strip {
-  border-right: 1px solid #868686;
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-strip {
   border-top: 1px solid #868686;
 }
 
 /* Background colour for the tree sidebar (light blue when window is
    active, grey otherwise) */
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabbrowser-tabs {
-  -moz-appearance: none !important;
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tabs {
   background: transparent !important;
   background-color: #d4dde5 !important;
 }
 #main-window:not([active="true"])
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabbrowser-tabs {
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tabs {
   background-color: #e8e8e8 !important;
 }
 
 /* Don't display unnecessary clutter */
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabs-bottom,
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabs-left,
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tab-text-shadow {
+tabbrowser[treestyletab-mode="vertical"] .tabs-bottom,
+tabbrowser[treestyletab-mode="vertical"] .tabs-left,
+tabbrowser[treestyletab-mode="vertical"] .tab-text-shadow,
+tabbrowser[treestyletab-mode="vertical"] .treestyletab-splitter grippy {
   display: none !important;
 }
 
+/* Use the splitter to display the border of .tabbrowser-strip */
+tabbrowser[treestyletab-mode="vertical"] .treestyletab-splitter {
+  width: 1px !important;
+  min-width: 1px !important;
+  background-image: none;
+  background-color: #404040;
+}
+#main-window:not([active="true"])
+tabbrowser[treestyletab-mode="vertical"] .treestyletab-splitter {
+  background-color: #868686;
+}
+
 /* Style tabs themselves.  Get rid of most of the initial XUL styling */
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabbrowser-tab {
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab {
   -moz-appearance: none !important;
   background: transparent !important;
   -moz-border-top-colors: none !important;
@@ -80,20 +90,20 @@ tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabbrows
   border-top: 1px solid transparent !important;
 }
 
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"] {
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"] {
   border-top: 1px solid #94A1C0 !important;
   background: -moz-linear-gradient(top, #A0B0CF, #7386AB) repeat-x !important;
 }
 #main-window:not([active="true"])
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"] {
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"] {
   border-top: 1px solid #979797 !important;
   background: -moz-linear-gradient(top, #B4B4B4, #8A8A8A) repeat-x !important;  
 }
 
 /* Get the favicon and close button off the ground and towards the
    vertical center of the tab. */
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tab-icon-image,
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tab-close-button {
+tabbrowser[treestyletab-mode="vertical"] .tab-icon-image,
+tabbrowser[treestyletab-mode="vertical"] .tab-close-button {
   margin-bottom: 1px;
 }
 
@@ -101,26 +111,41 @@ tabbrowser[treestyletab-mode="vertical"] .tab-close-button {
   margin-left: 3px;
 }
 
+tabbrowser[treestyletab-mode="vertical"]
+.tab-close-button image {
+  list-style-image: url("closetab.png");
+  opacity: 0.27;  /* turn black into #b9b9b9 */
+}
+tabbrowser[treestyletab-mode="vertical"]
+.tab-close-button:active image {
+  opacity: 0.46;  /* turn black into #8a8a8a */
+}
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"]
+.tab-close-button image {
+  list-style-image: url("closetab-white.png");
+  opacity: 1;
+}
+
 /* Always display the favicon at 100% opacity */
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+tabbrowser[treestyletab-mode="vertical"]
 .tabbrowser-tab:not(:hover):not([selected="true"]) .tab-icon-image {
   opacity: 1.0 !important;
 }
 
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+tabbrowser[treestyletab-mode="vertical"]
 .tabbrowser-tab:not(:hover):not([selected="true"]) > .tab-close-button {
   display: none !important;
 }
 
 /* Tab label is without special decoration except when selected: then
    the text is white and bold. */
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tab-text {
+tabbrowser[treestyletab-mode="vertical"] .tab-text {
   font-size: 11px;
   font-weight: normal !important;
   color: #000000 !important;
   text-shadow: none !important;
 }
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+tabbrowser[treestyletab-mode="vertical"]
 .tabbrowser-tab[selected="true"] .tab-text {
   font-weight: bold !important;
   color: #ffffff !important;
@@ -129,38 +154,55 @@ tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
 
 
 /* Make the tab counter look like the bubbles in Mail.app et.al. */
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .treestyletab-counter-container {
+tabbrowser[treestyletab-mode="vertical"] .treestyletab-counter-container {
   padding: 0 6px !important;
   background-color: #91a0c0 !important;
   -moz-border-radius: 8px !important;
 }
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .treestyletab-counter {
+tabbrowser[treestyletab-mode="vertical"] .treestyletab-counter {
   color: #ffffff !important;
   font-weight: bold !important;
   text-shadow: none !important;
 }
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+tabbrowser[treestyletab-mode="vertical"]
 .tabbrowser-tab[selected="true"] .treestyletab-counter-container {
   background-color: #ffffff !important;
 }
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+tabbrowser[treestyletab-mode="vertical"]
 .tabbrowser-tab[selected="true"] .treestyletab-counter {
   color: #91a0c0 !important;
 }
 #main-window:not([active="true"])
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .treestyletab-counter-container {
+tabbrowser[treestyletab-mode="vertical"] .treestyletab-counter-container {
   background-color: #b5b5b5 !important;
 }
-#main-window:not([active="true"]) tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+#main-window:not([active="true"]) tabbrowser[treestyletab-mode="vertical"]
 .tabbrowser-tab[selected="true"] .treestyletab-counter-container {
   background-color: #ffffff !important;
 }
-#main-window:not([active="true"]) tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+#main-window:not([active="true"]) tabbrowser[treestyletab-mode="vertical"]
 .tabbrowser-tab[selected="true"] .treestyletab-counter {
   color: #929292 !important;
 }
 
 
+
+/* changed from original SidebarStyleTab */
+
+tabbrowser[treestyletab-mode="vertical"]
+.tab-close-button image,
+tabbrowser[treestyletab-mode="vertical"]
+.tab-close-button:active image,
+tabbrowser[treestyletab-mode="vertical"]
+.tab-close-button:hover image,
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"]
+.tab-close-button image {
+  -moz-image-region: auto !important;
+}
+
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabbrowser-tabs {
+  -moz-appearance: none !important;
+}
 
 tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
   .treestyletab-counter-paren {

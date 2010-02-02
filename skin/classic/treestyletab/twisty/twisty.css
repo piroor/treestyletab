@@ -59,6 +59,7 @@ tabbrowser[treestyletab-twisty-style^="osx"][treestyletab-allow-subtree-collapse
 	list-style-image: url("twisty-retro.png");
 	-moz-image-region: rect(0, 32px, 16px, 16px);
 }
+
 tabbrowser[treestyletab-twisty-style="modern-black"]
   .treestyletab-twisty {
 	list-style-image: url("twisty-modern-b-l.png");
@@ -75,13 +76,21 @@ tabbrowser[treestyletab-twisty-style="modern-white"][treestyletab-tab-contents-i
   .treestyletab-twisty {
 	list-style-image: url("twisty-modern-w-r.png");
 }
+
 tabbrowser[treestyletab-twisty-style="osx"]
   .treestyletab-twisty {
 	list-style-image: url("twisty-osx-l.png");
+	opacity: 0.38;
 }
 tabbrowser[treestyletab-twisty-style="osx"][treestyletab-tab-contents-inverted="true"]
   .treestyletab-twisty {
 	list-style-image: url("twisty-osx-r.png");
+}
+tabbrowser[treestyletab-twisty-style="osx"]
+  .treestyletab-twisty:active,
+tabbrowser[treestyletab-twisty-style="osx"]
+  .tabbrowser-tab[selected="true"] .treestyletab-twisty {
+	opacity: 1;
 }
 
 .tabbrowser-tab[treestyletab-subtree-collapsed="true"]
