@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/"?>
-<?xml-stylesheet href="chrome://treestyletab/content/config.css" type="text/css"?>
+<?xml-stylesheet href="config.css" type="text/css"?>
 <?xml-stylesheet href="chrome://treestyletab/skin/config.css" type="text/css"?>
 <?xml-stylesheet href="chrome://treestyletab-platform/skin/config.css" type="text/css"?>
 <!DOCTYPE prefwindow [
@@ -148,7 +148,7 @@
 		<radiogroup id="extensions.treestyletab.tabbar.style-radiogroup"
 			preference="extensions.treestyletab.tabbar.style"
 			orient="vertical">
-			<hbox align="center">
+			<hbox align="center" style="overflow-x: auto;">
 			<radio value="default" label="&config.tabbar.style.default;"
 				class="image" align="center"
 				src="chrome://treestyletab/content/res/style-default.png"/>
