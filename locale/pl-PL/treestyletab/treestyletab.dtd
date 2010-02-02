@@ -34,6 +34,7 @@
 <!ENTITY config.twisty.style.retro   "Retro">
 <!ENTITY config.twisty.style.modern.black "Czarny nowoczesny">
 <!ENTITY config.twisty.style.modern.white "Biały nowoczesny">
+<!ENTITY config.twisty.style.osx     "OS X">
 
 
 <!ENTITY config.tabs.menu "Menu">

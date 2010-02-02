@@ -1257,7 +1257,10 @@ TreeStyleTabBrowser.prototype = {
 
 			case 'extensions.treestyletab.twisty.style':
 				if (value == 'auto') {
-					if (
+					if (this.getTreePref('tabbar.style') == 'sidebar') {
+						value = 'osx';
+					}
+					else if (
 						window['piro.sakura.ne.jp'].extensions.isAvailable('informationaltab@piro.sakura.ne.jp') &&
 						this.getPref('extensions.informationaltab.thumbnail.enabled') &&
 						this.getPref('extensions.informationaltab.thumbnail.position') < 100

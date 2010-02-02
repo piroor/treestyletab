@@ -33,6 +33,7 @@
 <!ENTITY config.twisty.style.retro   "怀旧">
 <!ENTITY config.twisty.style.modern.black "黑色现代">
 <!ENTITY config.twisty.style.modern.white "白色现代">
+<!ENTITY config.twisty.style.osx     "OS X">
 
 
 <!ENTITY config.tabs.menu "菜单">

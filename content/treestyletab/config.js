@@ -40,7 +40,6 @@ function init()
 function initAppearancePane()
 {
 	onChangeTabbarPosition();
-	onChangeTabbarStyle();
 
 	var sidebarItem = document.getElementById('extensions.treestyletab.tabbar.style-sidebar');
 	if (comparator.compare(XULAppInfo.version, '3.6') >= 0)
@@ -199,33 +198,6 @@ function onChangeTabbarPosition(aOnChange)
 	}
 
 	gTabbarPlacePositionInitialized = true;
-}
-
-function onChangeTabbarStyle()
-{
-	var twisty = document.getElementById('extensions.treestyletab.twisty.style');
-	var twistyRadio = document.getElementById('extensions.treestyletab.twisty.style-radiogroup');
-
-	var disabledItems = ['retro', 'modern-white', 'modern-black']
-						.map(function(aStyle) {
-							return twistyRadio.getElementsByAttribute('value', aStyle)[0];
-						});
-
-	var style = document.getElementById('extensions.treestyletab.tabbar.style-radiogroup').value;
-	if (style == 'sidebar') {
-		if (twistyRadio.value != 'auto' &&
-			twistyRadio.value != 'none') {
-			twistyRadio.value = twisty.value = 'auto';
-		}
-		disabledItems.forEach(function(aNode) {
-			aNode.setAttribute('disabled', true);
-		});
-	}
-	else {
-		disabledItems.forEach(function(aNode) {
-			aNode.removeAttribute('disabled');
-		});
-	}
 }
 
 

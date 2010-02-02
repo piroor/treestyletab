@@ -147,8 +147,7 @@
 		<caption label="&config.tabbar.style.caption;"/>
 		<radiogroup id="extensions.treestyletab.tabbar.style-radiogroup"
 			preference="extensions.treestyletab.tabbar.style"
-			orient="vertical"
-			oncommand="onChangeTabbarStyle();">
+			orient="vertical">
 			<hbox align="center">
 			<radio value="default" label="&config.tabbar.style.default;"
 				class="image" align="center"
@@ -185,6 +184,9 @@
 			<radio value="modern-white" label="&config.twisty.style.modern.white;"
 				class="image" align="center"
 				src="chrome://treestyletab/content/res/twisty-modern-w.png"/>
+			<radio value="osx" label="&config.twisty.style.osx;"
+				class="image" align="center"
+				src="chrome://treestyletab/content/res/twisty-osx.png"/>
 			<radio value="none" label="&config.twisty.style.none;"/>
 		</radiogroup>
 	</groupbox>

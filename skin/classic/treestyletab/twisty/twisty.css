@@ -13,14 +13,14 @@ tabbrowser[treestyletab-tab-contents-inverted="true"]
 }
 tabbrowser[treestyletab-twisty-style^="modern"]
   .treestyletab-twisty-container,
-tabbrowser[treestyletab-style="sidebar"]
+tabbrowser[treestyletab-twisty-style^="osx"]
   .treestyletab-twisty-container {
 	position: relative;
 	margin: 0 14px 0 -14px;
 }
 tabbrowser[treestyletab-twisty-style^="modern"][treestyletab-tab-contents-inverted="true"]
   .treestyletab-twisty-container,
-tabbrowser[treestyletab-style="sidebar"][treestyletab-tab-contents-inverted="true"]
+tabbrowser[treestyletab-twisty-style^="osx"][treestyletab-tab-contents-inverted="true"]
   .treestyletab-twisty-container {
 	margin: 0 -14px 0 14px;
 }
@@ -38,19 +38,19 @@ tabbrowser[treestyletab-twisty-style="retro"][treestyletab-mode="horizontal"][tr
 }
 tabbrowser[treestyletab-twisty-style^="modern"][treestyletab-allow-subtree-collapse="true"][treestyletab-mode="horizontal"]
   .tab-icon,
-tabbrowser[treestyletab-style="sidebar"][treestyletab-allow-subtree-collapse="true"][treestyletab-mode="horizontal"]
+tabbrowser[treestyletab-twisty-style^="osx"][treestyletab-allow-subtree-collapse="true"][treestyletab-mode="horizontal"]
   .tab-icon {
 	margin-left: 12px;
 }
 tabbrowser[treestyletab-twisty-style^="modern"][treestyletab-allow-subtree-collapse="true"]:not([treestyletab-tab-contents-inverted="true"])
   .tab-icon,
-tabbrowser[treestyletab-style="sidebar"][treestyletab-allow-subtree-collapse="true"]:not([treestyletab-tab-contents-inverted="true"])
+tabbrowser[treestyletab-twisty-style^="osx"][treestyletab-allow-subtree-collapse="true"]:not([treestyletab-tab-contents-inverted="true"])
   .tab-icon {
 	margin-left: 9px;
 }
 tabbrowser[treestyletab-twisty-style^="modern"][treestyletab-allow-subtree-collapse="true"][treestyletab-tab-contents-inverted="true"]
   .tab-icon,
-tabbrowser[treestyletab-style="sidebar"][treestyletab-allow-subtree-collapse="true"][treestyletab-tab-contents-inverted="true"]
+tabbrowser[treestyletab-twisty-style^="osx"][treestyletab-allow-subtree-collapse="true"][treestyletab-tab-contents-inverted="true"]
   .tab-icon {
 	margin-right: 9px;
 }
@@ -60,40 +60,44 @@ tabbrowser[treestyletab-style="sidebar"][treestyletab-allow-subtree-collapse="tr
 	-moz-image-region: rect(0, 32px, 16px, 16px);
 }
 tabbrowser[treestyletab-twisty-style="modern-black"]
-  .treestyletab-twisty,
-tabbrowser[treestyletab-style="sidebar"]
-  .tabbrowser-tab:not([selected="true"]) .treestyletab-twisty {
+  .treestyletab-twisty {
 	list-style-image: url("twisty-modern-b-l.png");
 }
 tabbrowser[treestyletab-twisty-style="modern-black"][treestyletab-tab-contents-inverted="true"]
-  .treestyletab-twisty,
-tabbrowser[treestyletab-style="sidebar"][treestyletab-tab-contents-inverted="true"]
-  .tabbrowser-tab:not([selected="true"]) .treestyletab-twisty {
+  .treestyletab-twisty {
 	list-style-image: url("twisty-modern-b-r.png");
 }
 tabbrowser[treestyletab-twisty-style="modern-white"]
-  .treestyletab-twisty,
-tabbrowser[treestyletab-style="sidebar"]
-  .tabbrowser-tab[selected="true"] .treestyletab-twisty {
+  .treestyletab-twisty {
 	list-style-image: url("twisty-modern-w-l.png");
 }
 tabbrowser[treestyletab-twisty-style="modern-white"][treestyletab-tab-contents-inverted="true"]
-  .treestyletab-twisty,
-tabbrowser[treestyletab-style="sidebar"][treestyletab-tab-contents-inverted="true"]
-  .tabbrowser-tab[selected="true"] .treestyletab-twisty {
+  .treestyletab-twisty {
 	list-style-image: url("twisty-modern-w-r.png");
+}
+tabbrowser[treestyletab-twisty-style="osx"]
+  .treestyletab-twisty {
+	list-style-image: url("twisty-osx-l.png");
+}
+tabbrowser[treestyletab-twisty-style="osx"][treestyletab-tab-contents-inverted="true"]
+  .treestyletab-twisty {
+	list-style-image: url("twisty-osx-r.png");
 }
 
 .tabbrowser-tab[treestyletab-subtree-collapsed="true"]
   .treestyletab-twisty {
 	-moz-image-region: rect(0, 16px, 16px, 0);
 }
-.tabbrowser-tab[treestyletab-twisty-hover="true"]
-  .treestyletab-twisty {
+tabbrowser:not([treestyletab-twisty-style="osx"])
+  .tabbrowser-tab[treestyletab-twisty-hover="true"] .treestyletab-twisty,
+tabbrowser[treestyletab-twisty-style="osx"]
+  .tabbrowser-tab[selected="true"] .treestyletab-twisty {
 	-moz-image-region: rect(16px, 32px, 32px, 16px);
 }
-.tabbrowser-tab[treestyletab-subtree-collapsed="true"][treestyletab-twisty-hover="true"]
-  .treestyletab-twisty {
+tabbrowser:not([treestyletab-twisty-style="osx"])
+  .tabbrowser-tab[treestyletab-subtree-collapsed="true"][treestyletab-twisty-hover="true"] .treestyletab-twisty,
+tabbrowser[treestyletab-twisty-style="osx"]
+  .tabbrowser-tab[treestyletab-subtree-collapsed="true"][selected="true"] .treestyletab-twisty {
 	-moz-image-region: rect(16px, 16px, 32px, 0);
 }
 
