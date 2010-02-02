@@ -140,10 +140,6 @@ tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .treestyl
   text-shadow: none !important;
 }
 tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
-.treestyletab-counter-paren {
-  display: none !important;
-}
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
 .tabbrowser-tab[selected="true"] .treestyletab-counter-container {
   background-color: #ffffff !important;
 }
@@ -164,7 +160,15 @@ tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .treestyl
   color: #929292 !important;
 }
 
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabs-newtab-button {
+
+
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .treestyletab-counter-paren {
+  display: none !important;
+}
+
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tabs-newtab-button {
   -moz-appearance: none !important;
   background: transparent !important;
   border: 0 none !important;
