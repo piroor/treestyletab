@@ -70,7 +70,7 @@ tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab[treestyletab-d
 }
 
 tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab[treestyletab-drop-position="before"][selected="true"],
-tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab[treestyletab-drop-position="before"][selected="true"],:hover
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab[treestyletab-drop-position="before"][selected="true"]:hover,
 tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab[treestyletab-drop-position="before"]:not([selected="true"]),
 tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab[treestyletab-drop-position="before"]:not([selected="true"]):hover,
 tabbrowser[treestyletab-mode="vertical"][treestyletab-firsttab-border="true"] .tabbrowser-tab:first-child[treestyletab-drop-position="before"][selected="true"],

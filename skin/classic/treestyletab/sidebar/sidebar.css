@@ -186,7 +186,7 @@ tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
 tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
   .tabbrowser-tab[treestyletab-drop-position="before"][selected="true"],
 tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[treestyletab-drop-position="before"][selected="true"],:hover
+  .tabbrowser-tab[treestyletab-drop-position="before"][selected="true"]:hover,
 tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
   .tabbrowser-tab[treestyletab-drop-position="before"]:not([selected="true"]),
 tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
@@ -217,11 +217,11 @@ tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
 }
 tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
   .tabbrowser-tab[treestyletab-drop-position="before"] .treestyletab-drop-marker-container {
-  margin: -11px 22px 11px -22px;
+  margin: -11px 22px 11px -30px /* -22px <= OS X specific? */;
 }
 tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
   .tabbrowser-tab[treestyletab-drop-position="after"] .treestyletab-drop-marker-container {
-  margin: 12px 22px -12px -22px;
+  margin: 12px 22px -12px -30px /* -22px <= OS X specific? */;
 }
 
 
