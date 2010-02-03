@@ -49,7 +49,10 @@ tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > scrollbox 
 	overflow-y: auto !important;
 }
 
-tabbrowser[treestyletab-mode="vertical"] .tabs-stack > *:first-child + * > hbox /* Firefox 3.0 (not 3.5) */ {
+/* Firefox 3.0 (not 3.5) */
+/* ".tabs-apptabs-container" will be introduced by Tab Utilities
+   https://addons.mozilla.org/firefox/addon/59961 */
+tabbrowser[treestyletab-mode="vertical"] .tabs-stack > *:first-child + * > hbox:not(.tabs-apptabs-container) {
 	-moz-box-flex: 1 !important;
 }
 
