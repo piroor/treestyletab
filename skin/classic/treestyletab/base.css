@@ -1,10 +1,3 @@
-@import url("chrome://treestyletab/skin/square/square.css");
-@import url("chrome://treestyletab/skin/metal/metal.css");
-@import url("chrome://treestyletab/skin/sidebar/sidebar.css");
-@import url("chrome://treestyletab/skin/twisty/twisty.css");
-
-@import url("chrome://treestyletab/skin/treestyletab-tmp.css"); /* hacks for Tab Mix Plus */
-
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
 
@@ -43,22 +36,32 @@ tabbrowser[treestyletab-tabbar-position="top"] .tabbrowser-tab[treestyletab-drop
 
 
 tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab[treestyletab-drop-position="before"][selected="true"],
-tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab[treestyletab-drop-position="before"]:not([selected="true"]) {
+tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab[treestyletab-drop-position="before"][selected="true"]:hover,
+tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab[treestyletab-drop-position="before"]:not([selected="true"]),
+tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab[treestyletab-drop-position="before"]:not([selected="true"]):hover {
 	-moz-border-left-colors: -moz-dialogtext -moz-dialogtext !important;
 }
 
 tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab[treestyletab-drop-position="after"][selected="true"],
-tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab[treestyletab-drop-position="after"]:not([selected="true"]) {
+tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab[treestyletab-drop-position="after"][selected="true"]:hover,
+tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab[treestyletab-drop-position="after"]:not([selected="true"]),
+tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab[treestyletab-drop-position="after"]:not([selected="true"]):hover {
 	-moz-border-right-colors: -moz-dialogtext -moz-dialogtext !important;
 }
 
 
 tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab[treestyletab-drop-position="self"][selected="true"],
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab[treestyletab-drop-position="self"][selected="true"]:hover,
 tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab[treestyletab-drop-position="self"]:not([selected="true"]),
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab[treestyletab-drop-position="self"]:not([selected="true"]):hover,
 tabbrowser[treestyletab-mode="vertical"][treestyletab-firsttab-border="true"] .tabbrowser-tab:first-child[treestyletab-style][selected="true"],
+tabbrowser[treestyletab-mode="vertical"][treestyletab-firsttab-border="true"] .tabbrowser-tab:first-child[treestyletab-style][selected="true"]:hover,
 tabbrowser[treestyletab-mode="vertical"][treestyletab-firsttab-border="true"] .tabbrowser-tab:first-child[treestyletab-drop-position="self"]:not([selected="true"]),
+tabbrowser[treestyletab-mode="vertical"][treestyletab-firsttab-border="true"] .tabbrowser-tab:first-child[treestyletab-drop-position="self"]:not([selected="true"]):hover,
 tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab[treestyletab-drop-position="self"][selected="true"],
-tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab[treestyletab-drop-position="self"]:not([selected="true"]) {
+tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab[treestyletab-drop-position="self"][selected="true"]:hover,
+tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab[treestyletab-drop-position="self"]:not([selected="true"]),
+tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab[treestyletab-drop-position="self"]:not([selected="true"]):hover {
 	-moz-border-top-colors: -moz-dialogtext -moz-dialogtext !important;
 	-moz-border-right-colors: -moz-dialogtext -moz-dialogtext !important;
 	-moz-border-bottom-colors: -moz-dialogtext -moz-dialogtext !important;
@@ -66,14 +69,20 @@ tabbrowser[treestyletab-tabbar-position="bottom"] .tabbrowser-tab[treestyletab-d
 }
 
 tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab[treestyletab-drop-position="before"][selected="true"],
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab[treestyletab-drop-position="before"][selected="true"],:hover
 tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab[treestyletab-drop-position="before"]:not([selected="true"]),
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab[treestyletab-drop-position="before"]:not([selected="true"]):hover,
 tabbrowser[treestyletab-mode="vertical"][treestyletab-firsttab-border="true"] .tabbrowser-tab:first-child[treestyletab-drop-position="before"][selected="true"],
-tabbrowser[treestyletab-mode="vertical"][treestyletab-firsttab-border="true"] .tabbrowser-tab:first-child[treestyletab-drop-position="before"]:not([selected="true"]) {
+tabbrowser[treestyletab-mode="vertical"][treestyletab-firsttab-border="true"] .tabbrowser-tab:first-child[treestyletab-drop-position="before"][selected="true"]:hover,
+tabbrowser[treestyletab-mode="vertical"][treestyletab-firsttab-border="true"] .tabbrowser-tab:first-child[treestyletab-drop-position="before"]:not([selected="true"]),
+tabbrowser[treestyletab-mode="vertical"][treestyletab-firsttab-border="true"] .tabbrowser-tab:first-child[treestyletab-drop-position="before"]:not([selected="true"]):hover {
 	-moz-border-top-colors: -moz-dialogtext -moz-dialogtext !important;
 }
 
 tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab[treestyletab-drop-position="after"][selected="true"],
-tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab[treestyletab-drop-position="after"]:not([selected="true"]) {
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab[treestyletab-drop-position="after"][selected="true"]:hover,
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab[treestyletab-drop-position="after"]:not([selected="true"]),
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-tab[treestyletab-drop-position="after"]:not([selected="true"]):hover {
 	-moz-border-bottom-colors: -moz-dialogtext -moz-dialogtext !important;
 }
 

@@ -1,7 +1,7 @@
-@import url("chrome://treestyletab/skin/base.css");
-@import url("chrome://treestyletab/skin/base-tmp.css"); /* hacks for Tab Mix Plus */
-
 @import url("chrome://treestyletab/skin/square/square.css");
 @import url("chrome://treestyletab/skin/metal/metal.css");
 @import url("chrome://treestyletab/skin/sidebar/sidebar.css");
 @import url("chrome://treestyletab/skin/twisty/twisty.css");
+
+@import url("chrome://treestyletab/skin/base.css");
+@import url("chrome://treestyletab/skin/base-tmp.css"); /* hacks for Tab Mix Plus */
