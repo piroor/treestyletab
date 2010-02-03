@@ -1,0 +1,183 @@
+<!ENTITY config.title        "Tree Style Tab – ustawienia">
+
+<!ENTITY config.scale.min "min.">
+<!ENTITY config.scale.max "maks.">
+
+
+<!ENTITY config.tabs.appearance "Wygląd">
+
+<!ENTITY config.tabbar.position.caption "Położenie paska kart">
+<!ENTITY config.tabbar.position.left    "Po lewej stronie">
+<!ENTITY config.tabbar.position.right   "Po prawej stronie">
+<!ENTITY config.tabbar.position.top     "Na górze (wartość domyślna)">
+<!ENTITY config.tabbar.position.bottom  "Na dole">
+<!ENTITY config.tabbar.invertClosebox.left  "Ikona zamknięcia po lewej stronie karty">
+<!ENTITY config.tabbar.invertClosebox.right "Ikona zamknięcia po prawej stronie karty">
+<!ENTITY config.tabbar.invertTab            "Odwróć położenie etykiet kart">
+<!ENTITY config.tabbar.invertTabContents    "Odwróć położenie ikon na etykiecie karty">
+<!ENTITY config.enableSubtreeIndent         "Stosuj wcięcia">
+<!ENTITY config.allowSubtreeCollapseExpand  "Zezwalaj na zwijanie/rozwijanie drzewa kart">
+<!ENTITY config.tabbar.hideAlltabsButton    "Wyświetlaj przycisk „Pokaż wszystkie karty”">
+
+<!ENTITY config.tabbar.style.caption "Wygląd paska kart">
+<!ENTITY config.tabbar.style.default "Prosty">
+<!ENTITY config.tabbar.style.vertigo "Vertigo">
+<!ENTITY config.tabbar.style.mixed   "Mix">
+<!ENTITY config.tabbar.style.metal   "Metal">
+<!ENTITY config.tabbar.style.sidebar "Sidebar">
+<!ENTITY config.tabbar.style.none    "Domyślny (zależny od motywu)">
+
+<!ENTITY config.twisty.style.caption "Styl drzew">
+<!ENTITY config.twisty.style.auto    "Auto">
+<!ENTITY config.twisty.style.none    "Brak">
+<!ENTITY config.twisty.style.retro   "Retro">
+<!ENTITY config.twisty.style.modern.black "Modern czarny">
+<!ENTITY config.twisty.style.modern.white "Modern biały">
+<!ENTITY config.twisty.style.osx     "OS X">
+
+
+<!ENTITY config.tabs.menu "Menu">
+
+<!ENTITY config.show.tabContextMenu.caption "Wyświetlaj w menu kontekstowym kart następujące elementy:">
+
+
+<!ENTITY config.tabs.tab "Nowe karty">
+
+<!ENTITY config.tabs.link.tab     "Odnośniki">
+<!ENTITY config.tabs.urlbar.tab   "Pasek adresu">
+<!ENTITY config.tabs.bookmark.tab "Zakładki">
+<!ENTITY config.tabs.dragdrop.tab "Przeciąganie/Upuszczanie">
+<!ENTITY config.tabs.misc.tab     "Pozostałe">
+
+<!ENTITY config.link.caption "Otwieraj w nowej karcie witryny otwierane przez odnośnik">
+<!ENTITY config.link.none    "Nigdy (domyślne działanie Firefoksa)">
+<!ENTITY config.link.outer   "Jeśli jest to odnośnik do innej witryny">
+<!ENTITY config.link.any     "Zawsze">
+
+<!ENTITY config.open_newwindow.caption "Niespodziewanie otwierane okno z odnośników na stronie otwieraj jako:">
+<!ENTITY config.open_newwindow.window  "okno">
+<!ENTITY config.open_newwindow.tab     "kartę (domyślnie działanie Firefoksa)">
+<!ENTITY config.open_newwindow.current "otwieraj zawsze w aktywnej karcie">
+
+<!ENTITY config.openGroupBookmark.caption     "Działanie funkcji „Otwórz wszystkie w kartach” dla folderów z zakładkami">
+<!ENTITY config.openGroupBookmark.ask         "Zawsze pytaj">
+<!ENTITY config.openGroupBookmark.subtree     "Otwieraj jako potomne drzewo (zalecane)">
+<!ENTITY config.openGroupBookmark.subtree.type.before  "">
+<!ENTITY config.openGroupBookmark.subtree.type.restore "Odtwórz">
+<!ENTITY config.openGroupBookmark.subtree.type.flat    "Zignoruj">
+<!ENTITY config.openGroupBookmark.subtree.type.after   "strukturę drzewiastą kart zapisanych jako zakładki">
+<!ENTITY config.openGroupBookmark.flat        "Otwieraj jako osobne karty (domyślnie działanie Firefoksa)">
+<!ENTITY config.openGroupBookmark.replace     "Zastępuj aktywną kartę stronami z folderu">
+<!ENTITY config.openGroupBookmark.underParent "Umieszczaj karty pod pustą kartą dla lepszego grupowania">
+
+<!ENTITY config.urlbar.caption       "Otwieraj w nowej karcie witryny otwierane z paska adresu">
+<!ENTITY config.urlbar.none          "Nigdy (domyślnie działanie Firefoksa)">
+<!ENTITY config.urlbar.outer         "Jeśli jest to inna witryna niż aktywna">
+<!ENTITY config.urlbar.any           "Zawsze">
+<!ENTITY config.urlbar.asChild.caption "Struktura otwieranych kart">
+<!ENTITY config.urlbar.asChild.none  "Otwieraj jako osobną kartę">
+<!ENTITY config.urlbar.asChild.inner "Otwieraj jako kartę potomną jeśli jest to ta sama witryna">
+<!ENTITY config.urlbar.asChild.any   "Zawsze otwieraj jako kartę potomną">
+
+<!ENTITY config.dropLinksOnTab.caption "Działanie po przeciągnięciu odnośników, URL-i, zakładek lub plików do istniejącej karty">
+<!ENTITY config.dropLinksOnTab.ask     "Zawsze pytaj">
+<!ENTITY config.dropLinksOnTab.load    "Otwieraj odnośnik w nowej karcie (domyślne działanie Firefoksa)">
+<!ENTITY config.dropLinksOnTab.newTab  "Otwieraj odnośnik w nowej, potomnej karcie">
+
+<!ENTITY config.jsopen.caption "Okno otwierane przez skrypt na stronie otwieraj jako:">
+<!ENTITY config.jsopen.default "okno jeśli ma określone parametry (domyślnie działanie Firefoksa)">
+<!ENTITY config.jsopen.forcetab "kartę zamiast okna (zalecane)">
+<!ENTITY config.jsopen.current  "Otwieraj zawsze w aktywnej karcie">
+
+
+<!ENTITY config.tabs.autohide "Ukrywanie">
+
+<!ENTITY config.autoHide.mode.0 "Zawsze wyświetlaj pasek kart">
+<!ENTITY config.autoHide.mode.1 "Ukrywaj pasek kart">
+<!ENTITY config.autoHide.mode.2 "Zmniejszaj pasek kart">
+<!ENTITY config.autoShow.caption "Automatycznie wyświetlaj pasek kart po:">
+<!ENTITY config.autoShow.mousemove "Umieszczeniu kursora myszy w pobliżu krawędzi okna">
+<!ENTITY config.autoHide.area.before "Strefa czułości:">
+<!ENTITY config.autoHide.area.after "pikseli od krawędzi okna">
+<!ENTITY config.autoShow.mousemove.mode2 "Umieszczeniu kursora myszy w pobliżu krawędzi paska kart">
+<!ENTITY config.autoHide.area.before.mode2 "Strefa czułości:">
+<!ENTITY config.autoHide.area.after.mode2 "pikseli od krawędzi paska kart">
+<!ENTITY config.autoHide.delay.before "Opóźnienie:">
+<!ENTITY config.autoHide.delay.after "ms">
+<!ENTITY config.autoShow.accelKeyDown "Naciśnięciu i przytrzymaniu klawisza [Ctrl(Command)]">
+<!ENTITY config.autoShow.accelKeyDown.delay.before "Opóźnienie:">
+<!ENTITY config.autoShow.accelKeyDown.delay.after  "ms">
+<!ENTITY config.autoShow.tabSwitch   "Podczas przełączania kart za pomocą skrótu [Ctrl+Tab]">
+<!ENTITY config.autoShow.feedback    "Podczas otwierania nowych/zamykania kart">
+<!ENTITY config.autoShow.feedback.delay.before "Ukrywaj po">
+<!ENTITY config.autoShow.feedback.delay.after  "ms">
+
+<!ENTITY config.transparent.style.caption "Przezroczystość tła paska kart">
+<!ENTITY config.transparent.style.0 "Nieprzezroczyste">
+<!ENTITY config.transparent.style.1 "Półprzezroczyste">
+<!ENTITY config.transparent.style.2 "Przezroczyste">
+
+
+<!ENTITY config.tabs.tree "Drzewo">
+
+<!ENTITY config.autoCollapseExpandSubtreeOnSelect "Rozwijaj drzewo wybranej karty i zwijaj pozostałe">
+<!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "Z wyjątkiem, gdy wybór się zmieni na skutek zamknięcia aktywnej karty">
+<!ENTITY config.collapseExpandSubtree.dblclick "Zwijaj/rozwijaj drzewo po dwukrotnym kliknięciu etykiety karty">
+<!ENTITY config.autoExpandSubtreeOnAppendChild "Rozwijaj drzewo automatycznie, gdy są do niego wstawiane karty">
+
+<!ENTITY config.closeParentBehavior.caption       "Gdy karta macierzysta jest zamykana:">
+<!ENTITY config.closeParentBehavior.close         "zamykaj również potomne karty">
+<!ENTITY config.closeParentBehavior.promoteFirst "promuj pierwszą kartę potomną na kartę macierzystą">
+<!ENTITY config.closeParentBehavior.promoteAll   "promuj wszystkie potomne karty na poziom zamkniętej karty macierzystej">
+<!ENTITY config.closeParentBehavior.detach        "odłączaj karty potomne od drzewa">
+<!ENTITY config.closeRootBehavior.promoteFirst   "promuj pierwszą potomną, jeśli zamykana karta nie ma macierzystej">
+
+<!ENTITY config.focusMode "Skrót [Ctrl(Command)+Tab] uaktywnia następną/poprzednią kartę nawet jeśli jest niewidoczna">
+
+<!ENTITY config.insertNewChildAt.caption "Położenie wstawianych nowych potomnych kart">
+<!ENTITY config.insertNewChildAt.first "Wstawiaj jako pierwszą potomną na górze drzewa">
+<!ENTITY config.insertNewChildAt.last "Wstawiaj na końcu drzewa">
+
+<!ENTITY config.undoCloseTabSet.caption  "When a member of a tree is restored by &quot;Undo Close Tab&quot;">
+<!ENTITY config.undoCloseTabSet.ask      "Ask me always">
+<!ENTITY config.undoCloseTabSet.set      "Restore whole of the tree">
+<!ENTITY config.undoCloseTabSet.separate "Restore only one tab (Firefox default)">
+
+
+<!ENTITY config.tabs.advanced "Zaawansowane">
+
+<!ENTITY config.animation.enabled "Efekty animacji">
+
+<!ENTITY config.tooltip.includeChildren        "Wyświetlaj zawartość drzewa po umieszczeniu kursora nad jego folderem">
+
+<!ENTITY config.useEffectiveTLD.caption  "Metoda rozpoznawania „tej samej witryny”">
+<!ENTITY config.useEffectiveTLD.enabled  "Według domeny („aaa.example.com” i „bbb.example.com” będą rozpoznane jako te same witryny)">
+<!ENTITY config.useEffectiveTLD.disabled "Według hosta („aaa.example.com” i „bbb.example.com” będą rozpoznane jako różne witryny)">
+
+<!ENTITY selection.createSubtree.label          "Zbierz do nowego drzewa">
+<!ENTITY selection.createSubtree.accesskey      "Z">
+
+<!ENTITY selection.removeTabSubtree.label     "Zamknij wybrane drzewa">
+<!ENTITY selection.removeTabSubtree.accesskey "M">
+<!ENTITY context.reloadTabSubtree.label     "Odśwież drzewo">
+<!ENTITY context.reloadTabSubtree.accesskey "E">
+<!ENTITY context.reloadDescendantTabs.label     "Odśwież potomne">
+<!ENTITY context.reloadDescendantTabs.accesskey "P">
+<!ENTITY context.removeTabSubtree.label     "Zamknij drzewo">
+<!ENTITY context.removeTabSubtree.accesskey "N">
+<!ENTITY context.removeDescendantTabs.label     "Zamknij potomne">
+<!ENTITY context.removeDescendantTabs.accesskey "O">
+<!ENTITY context.collapseAllSubtree.label     "Zwiń wszystkie drzewa">
+<!ENTITY context.collapseAllSubtree.accesskey "T">
+<!ENTITY context.expandAllSubtree.label     "Rozwiń wszystkie drzewa">
+<!ENTITY context.expandAllSubtree.accesskey "Y">
+<!ENTITY context.toggleAutoHide.label     "Ukryj pasek kart">
+<!ENTITY context.toggleAutoHide.accesskey "U">
+<!ENTITY context.toggleFixed.label            "Stała pozycja i szerokość/wysokość paska kart">
+<!ENTITY context.toggleFixed.label.horizontal "Stała pozycja i wysokość paska kart">
+<!ENTITY context.toggleFixed.label.vertical   "Stała pozycja i szerokość paska kart">
+<!ENTITY context.toggleFixed.accesskey "S">
+<!ENTITY context.bookmarkTabSubtree.label     "Dodaj zakładki do tego drzewa…">
+<!ENTITY context.bookmarkTabSubtree.accesskey "A">
+
+<!ENTITY group.default "Nowa grupa">

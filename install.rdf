@@ -31,8 +31,7 @@
 		  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
 		  <em:translator>Tsprajna (zh-TW locale)</em:translator>
 		  <em:translator>L'Autour (ru-RU locale)</em:translator>
-		  <em:translator>Andrzej Pasterczyk (pl-PL locale)</em:translator>
-		  <em:translator>Jacek Chrząszcz (pl-PL locale)</em:translator>
+		  <em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
 		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
 		  <em:contributor>Alice0775 (compatibility problem)</em:contributor>
 		  <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
@@ -52,8 +51,7 @@
 		  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
 		  <em:translator>Tsprajna (zh-TW locale)</em:translator>
 		  <em:translator>L'Autour (ru-RU locale)</em:translator>
-		  <em:translator>Andrzej Pasterczyk (pl-PL locale)</em:translator>
-		  <em:translator>Jacek Chrząszcz (pl-PL locale)</em:translator>
+		  <em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
 		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
 		  <em:contributor>Alice0775 (compatibility problem)</em:contributor>
 		  <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
@@ -73,8 +71,7 @@
 		  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
 		  <em:translator>Tsprajna (zh-TW locale)</em:translator>
 		  <em:translator>L'Autour (ru-RU locale)</em:translator>
-		  <em:translator>Andrzej Pasterczyk (pl-PL locale)</em:translator>
-		  <em:translator>Jacek Chrząszcz (pl-PL locale)</em:translator>
+		  <em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
 		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
 		  <em:contributor>Alice0775 (compatibility problem)</em:contributor>
 		  <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
@@ -94,8 +91,7 @@
 		  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
 		  <em:translator>Tsprajna (zh-TW locale)</em:translator>
 		  <em:translator>L'Autour (ru-RU locale)</em:translator>
-		  <em:translator>Andrzej Pasterczyk (pl-PL locale)</em:translator>
-		  <em:translator>Jacek Chrząszcz (pl-PL locale)</em:translator>
+		  <em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
 		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
 		  <em:contributor>Alice0775 (compatibility problem)</em:contributor>
 		  <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
@@ -115,8 +111,7 @@
 		  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
 		  <em:translator>Tsprajna (zh-TW locale)</em:translator>
 		  <em:translator>L'Autour (ru-RU locale)</em:translator>
-		  <em:translator>Andrzej Pasterczyk (pl-PL locale)</em:translator>
-		  <em:translator>Jacek Chrząszcz (pl-PL locale)</em:translator>
+		  <em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
 		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
 		  <em:contributor>Alice0775 (compatibility problem)</em:contributor>
 		  <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
@@ -136,8 +131,7 @@
 		  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
 		  <em:translator>Tsprajna (zh-TW locale)</em:translator>
 		  <em:translator>L'Autour (ru-RU locale)</em:translator>
-		  <em:translator>Andrzej Pasterczyk (pl-PL locale)</em:translator>
-		  <em:translator>Jacek Chrząszcz (pl-PL locale)</em:translator>
+		  <em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
 		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
 		  <em:contributor>Alice0775 (compatibility problem)</em:contributor>
 		  <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
@@ -157,8 +151,7 @@
 		  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
 		  <em:translator>Tsprajna (zh-TW locale)</em:translator>
 		  <em:translator>L'Autour (ru-RU locale)</em:translator>
-		  <em:translator>Andrzej Pasterczyk (pl-PL locale)</em:translator>
-		  <em:translator>Jacek Chrząszcz (pl-PL locale)</em:translator>
+		  <em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
 		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
 		  <em:contributor>Alice0775 (compatibility problem)</em:contributor>
 		  <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
@@ -178,15 +171,14 @@
 		  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
 		  <em:translator>Tsprajna (zh-TW locale)</em:translator>
 		  <em:translator>L'Autour (ru-RU locale)</em:translator>
-		  <em:translator>Andrzej Pasterczyk (pl-PL locale)</em:translator>
-		  <em:translator>Jacek Chrząszcz (pl-PL locale)</em:translator>
+		  <em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
 		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
 		  <em:contributor>Alice0775 (compatibility problem)</em:contributor>
 		  <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
       </RDF:Description>
     </em:localized>
     <em:localized>
-      <RDF:Description em:locale="pl-PL"
+      <RDF:Description em:locale="pl"
                        em:name="Tree Style Tab"
                        em:description="Wyświetla karty w układzie drzewa."
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
@@ -199,8 +191,7 @@
 		  <em:translator>HkYtrewq (zh-TW locale)</em:translator>
 		  <em:translator>Tsprajna (zh-TW locale)</em:translator>
 		  <em:translator>L'Autour (ru-RU locale)</em:translator>
-		  <em:translator>Andrzej Pasterczyk (pl-PL locale)</em:translator>
-		  <em:translator>Jacek Chrząszcz (pl-PL locale)</em:translator>
+		  <em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
 		  <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
 		  <em:contributor>Alice0775 (compatibility problem)</em:contributor>
 		  <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
