@@ -1311,7 +1311,7 @@ catch(e) {
 		}
 	},
  
-	toggleAutoHide : function TSTService_toggleAutoHide() 
+	toggleAutoHide : function TSTService_toggleAutoHide() /* PUBLIC API, for backward compatibility */ 
 	{
 		TreeStyleTabBrowserAutoHide.toggleMode();
 	},

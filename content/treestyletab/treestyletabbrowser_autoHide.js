@@ -28,7 +28,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	kTRANSPARENT_FULL  : 2,
 	kTRANSPARENT_STYLE : ['none', 'part', 'full'],
  
-	get mode() 
+	get mode() /* PUBLIC API */ 
 	{
 		return TreeStyleTabBrowserAutoHide.mode;
 	},
@@ -436,13 +436,13 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		}, 0, this);
 	},
 	
-	show : function TSTAutoHide_show(aReason) 
+	show : function TSTAutoHide_show(aReason) /* PUBLIC API */ 
 	{
 		if (!this.expanded)
 			this.showHideInternal(aReason);
 	},
  
-	hide : function TSTAutoHide_hide(aReason) 
+	hide : function TSTAutoHide_hide(aReason) /* PUBLIC API */ 
 	{
 		if (this.expanded)
 			this.showHideInternal(aReason);
@@ -1161,7 +1161,7 @@ TreeStyleTabBrowserAutoHide.prototype.__proto__ = TreeStyleTabService;
 	
 // mode 
 	
-TreeStyleTabBrowserAutoHide.__defineGetter__('mode', function() { 
+TreeStyleTabBrowserAutoHide.__defineGetter__('mode', function() { /* PUBLIC API */ 
 	if (this.mMode == this.prototype.kMODE_SHRINK &&
 		TreeStyleTabService.currentTabbarPosition != 'left' &&
 		TreeStyleTabService.currentTabbarPosition != 'right')
@@ -1176,7 +1176,7 @@ TreeStyleTabBrowserAutoHide.__defineSetter__('mode', function(aValue) {
  
 TreeStyleTabBrowserAutoHide.mMode = TreeStyleTabBrowserAutoHide.prototype.kMODE_HIDE; 
   
-TreeStyleTabBrowserAutoHide.toggleMode = function TSTAutoHide_toggleMode() { 
+TreeStyleTabBrowserAutoHide.toggleMode = function TSTAutoHide_toggleMode() { /* PUBLIC API */ 
 	TreeStyleTabService.setTreePref('tabbar.autoHide.mode',
 		TreeStyleTabService.getTreePref('tabbar.autoHide.mode') == this.prototype.kMODE_DISABLED ?
 			TreeStyleTabService.getTreePref('tabbar.autoHide.mode.toggle') :
