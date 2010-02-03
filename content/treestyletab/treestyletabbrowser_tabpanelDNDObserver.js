@@ -37,12 +37,12 @@ TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
 			sv.currentTabbarPosition = position;
 		}
 
+		aEvent.stopPropagation();
+
 		sv           = null;
 		aEvent       = null;
 		aXferData    = null;
 		aDragSession = null;
-
-		aEvent.stopPropagation();
 	},
  
 	getDropPosition : function TSTTabpanelDND_getDropPosition(aEvent) 
