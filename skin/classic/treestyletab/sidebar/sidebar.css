@@ -217,13 +217,18 @@ tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
 }
 tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
   .tabbrowser-tab[treestyletab-drop-position="before"] .treestyletab-drop-marker-container {
-  margin: -11px 22px 11px -30px /* -22px <= OS X specific? */;
+  margin: -11px 22px 11px -22px;
 }
 tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
   .tabbrowser-tab[treestyletab-drop-position="after"] .treestyletab-drop-marker-container {
-  margin: 12px 22px -12px -30px /* -22px <= OS X specific? */;
+  margin: 12px 22px -12px -22px;
 }
-
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"][treestyletab-allow-subtree-collapse="true"]
+  .tabbrowser-tab[treestyletab-drop-position="before"] .treestyletab-drop-marker-container,
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"][treestyletab-allow-subtree-collapse="true"]
+  .tabbrowser-tab[treestyletab-drop-position="after"] .treestyletab-drop-marker-container {
+  margin-left: -30px;
+}
 
 
 
