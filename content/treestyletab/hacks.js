@@ -247,8 +247,8 @@ TreeStyleTabService.overrideExtensionsOnInitBefore = function TSTService_overrid
 		}
 		eval('gBrowser.mTabContainer.ensureTabIsVisible = '+
 			replaceHorizontalProps(gBrowser.mTabContainer.ensureTabIsVisible.toSource().replace(
-				'tabhbox.boxObject.width < 250',
-				'$& && !gBrowser.treeStyleTab.isVertical'
+				'boxObject.width < 250',
+				'$& || gBrowser.treeStyleTab.isVertical'
 			))
 		);
 		eval('gBrowser.mTabContainer.isTabVisible = '+
