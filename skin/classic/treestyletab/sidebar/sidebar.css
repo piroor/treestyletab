@@ -168,7 +168,17 @@ tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
 }
 
 tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
-  .tabs-newtab-button {
+  .tabs-newtab-button,
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tabs-newtab-button:hover,
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tabs-alltabs-button,
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tabs-alltabs-button:hover,
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tabs-container > .tabs-closebutton,
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tabs-container > .tabs-closebutton:hover {
   -moz-appearance: none !important;
   background: transparent !important;
   border: 0 none !important;
