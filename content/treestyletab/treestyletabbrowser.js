@@ -132,6 +132,8 @@ TreeStyleTabBrowser.prototype = {
 	
 	init : function TSTBrowser_init() 
 	{
+		this.stopRendering();
+
 		var b = this.mTabBrowser;
 
 		this.internallyTabMovingCount = 0;
@@ -151,7 +153,7 @@ TreeStyleTabBrowser.prototype = {
 		let position = this.currentTabbarPosition;
 		this.fireTabbarPositionEvent('TreeStyleTabTabbarPositionChanging', 'top', position); /* PUBLIC API */
 
-		this.initTabbar();
+		this.initTabbar(this.kTABBAR_TOP);
 
 		b.addEventListener('TabOpen',        this, true);
 		b.addEventListener('TabClose',       this, true);
@@ -591,6 +593,8 @@ TreeStyleTabBrowser.prototype = {
 		this.fireTabbarPositionEvent('TreeStyleTabTabbarPositionChanged', 'top', position); /* PUBLIC API */
 
 		b = null;
+
+		this.startRendering();
 	},
 	
 	initTab : function TSTBrowser_initTab(aTab) 
@@ -758,24 +762,33 @@ TreeStyleTabBrowser.prototype = {
 		}, 0, this);
 	},
   
-	initTabbar : function TSTBrowser_initTabbar(aPosition) 
+	initTabbar : function TSTBrowser_initTabbar(aOldPosition) 
 	{
 		this.stopRendering();
 
 		var b = this.mTabBrowser;
 
-		if (!aPosition) aPosition = this.currentTabbarPosition;
-		aPosition = String(aPosition).toLowerCase();
-
+		var pos = this.getPositionFlag(this.currentTabbarPosition);
 		if (b.getAttribute('id') != 'content' &&
 			!this.getTreePref('tabbar.position.subbrowser.enabled')) {
-			aPosition = 'top';
+			pos = this.kTABBAR_TOP;
 		}
 
-		var pos = (aPosition == 'left') ? this.kTABBAR_LEFT :
-			(aPosition == 'right') ? this.kTABBAR_RIGHT :
-			(aPosition == 'bottom') ? this.kTABBAR_BOTTOM :
-			this.kTABBAR_TOP;
+		aOldPosition = aOldPosition || pos;
+
+		// We have to use CSS property hack instead, because the stopRendering()
+		// doesn't effect on the first time of startup.
+		//  * This hack works in a "stop"-"start" pair, so, people never see the side effect.
+		//  * This hack works only when "ordinal" properties are modified.
+		// So, this is just for the case: "right" or "bottom" tab bar on the startup.
+		if (
+			pos != aOldPosition &&
+			(
+				((pos & this.kTABBAR_REGULAR) && (aOldPosition & this.kTABBAR_INVERTED)) ||
+				((pos & this.kTABBAR_INVERTED) && (aOldPosition & this.kTABBAR_REGULAR))
+			)
+			)
+			b.style.visibility = 'hidden';
 
 		var splitter = this._ensureNewSplitter();
 		var toggler = document.getAnonymousElementByAttribute(b, 'class', this.kTABBAR_TOGGLER);
@@ -953,6 +966,8 @@ TreeStyleTabBrowser.prototype = {
 			delayedPostProcess(aSelf, aTabBrowser, aSplitter, aToggler);
 			aSelf.updateTabbarOverflow();
 			delayedPostProcess = null;
+			aSelf.mTabBrowser.style.visibility = '';
+			aSelf.startRendering();
 		}, 0, this, b, splitter, toggler);
 
 		b = null;
@@ -966,8 +981,6 @@ TreeStyleTabBrowser.prototype = {
 		scrollInnerBox = null;
 		scrollInnerBox = null;
 		allTabsButton = null;
-
-		this.startRendering();
 	},
 	
 	_ensureNewSplitter : function TSTBrowser__ensureNewSplitter() 
@@ -1203,7 +1216,7 @@ TreeStyleTabBrowser.prototype = {
 			case 'extensions.treestyletab.tabbar.position':
 				var oldPosition = b.getAttribute(this.kTABBAR_POSITION);
 				this.fireTabbarPositionEvent('TreeStyleTabTabbarPositionChanging', oldPosition, value); /* PUBLIC API */
-				this.initTabbar();
+				this.initTabbar(this.getPositionFlag(oldPosition));
 				tabs.forEach(function(aTab) {
 					this.initTabAttributes(aTab);
 				}, this);

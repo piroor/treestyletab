@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is SHIMODA Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2009
+ * Portions created by the Initial Developer are Copyright (C) 2010
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): SHIMODA Hiroshi <piro@p.club.ne.jp>
@@ -134,6 +134,8 @@ var TreeStyleTabUtils = {
 
 	kTABBAR_HORIZONTAL : (1 << 0) | (1 << 1),
 	kTABBAR_VERTICAL   : (1 << 2) | (1 << 3),
+	kTABBAR_REGULAR    : (1 << 0) | (1 << 2),
+	kTABBAR_INVERTED   : (1 << 3) | (1 << 4),
 
 	kINSERT_FISRT : 0,
 	kINSERT_LAST  : 1,
@@ -1479,6 +1481,15 @@ var TreeStyleTabUtils = {
 		this.setTreePref('tabbar.position', position);
 
 		return aValue;
+	},
+ 
+	getPositionFlag : function TSTUtils_getPositionFlag(aPosition) 
+	{
+		aPosition = String(aPosition).toLowerCase();
+		return (aPosition == 'left') ? this.kTABBAR_LEFT :
+			(aPosition == 'right') ? this.kTABBAR_RIGHT :
+			(aPosition == 'bottom') ? this.kTABBAR_BOTTOM :
+			this.kTABBAR_TOP;
 	},
   
 /* Pref Listener */ 
