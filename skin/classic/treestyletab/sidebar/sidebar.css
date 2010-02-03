@@ -56,7 +56,7 @@ tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabbrows
   -moz-border-radius-bottomright : 0 !important;
   -moz-box-align: stretch !important;
   margin: 0 !important;
-  padding: 0 3px 1px 10px !important;
+  padding: 0 3px 2px 10px !important;
   height: 21px !important;     /* height including border! */
   text-align: left !important;
   border: none;
@@ -73,13 +73,7 @@ tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabbrows
   background: -moz-linear-gradient(top, #B4B4B4, #8A8A8A) repeat-x !important;  
 }
 
-/* Get the favicon and close button off the ground and towards the
-   vertical center of the tab. */
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tab-icon-image,
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tab-close-button {
-  margin-bottom: 1px;
-}
-
+/* Keep the close button at a safe distance from the tab label. */
 tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tab-close-button {
   margin-left: 3px;
 }
@@ -117,6 +111,7 @@ tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tab-text
   font-weight: normal !important;
   color: #000000 !important;
   text-shadow: none !important;
+  margin-bottom: 1px;
 }
 tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
 .tabbrowser-tab[selected="true"] .tab-text {
@@ -157,6 +152,94 @@ tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .treestyl
 .tabbrowser-tab[selected="true"] .treestyletab-counter {
   color: #929292 !important;
 }
+
+
+
+
+
+/* Drag'n'drop styling:
+   First we need to disable the standard settings from TreeStyleTab.
+   Its initial CSS rules are quite explicit. :( */
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[treestyletab-drop-position="self"][selected="true"],
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[treestyletab-drop-position="self"][selected="true"]:hover,
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[treestyletab-drop-position="self"]:not([selected="true"]),
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[treestyletab-drop-position="self"]:not([selected="true"]):hover,
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"][treestyletab-firsttab-border="true"]
+  .tabbrowser-tab:first-child[treestyletab-style][selected="true"],
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"][treestyletab-firsttab-border="true"]
+  .tabbrowser-tab:first-child[treestyletab-style][selected="true"]:hover,
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"][treestyletab-firsttab-border="true"]
+  .tabbrowser-tab:first-child[treestyletab-drop-position="self"]:not([selected="true"]),
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"][treestyletab-firsttab-border="true"]
+  .tabbrowser-tab:first-child[treestyletab-drop-position="self"]:not([selected="true"]):hover {
+  -moz-border-top-colors: none !important;
+  -moz-border-bottom-colors: none !important;
+  -moz-border-right-colors: none !important;
+  -moz-border-left-colors: none !important;
+}
+
+/* Round blue rectangle around tabs that are dropping targets. */
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[treestyletab-drop-position="self"]:not([selected="true"]) {
+  border: 2px solid #577bf3 !important; /* not OSX's colour but Firefox's */
+  background: #d0def5 !important;
+  -moz-border-radius: 8px !important;
+}
+
+/* White-blue-white separator for drop indicator. */
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[treestyletab-drop-position="before"][selected="true"],
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[treestyletab-drop-position="before"][selected="true"],:hover
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[treestyletab-drop-position="before"]:not([selected="true"]),
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[treestyletab-drop-position="before"]:not([selected="true"]):hover,
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"][treestyletab-firsttab-border="true"]
+  .tabbrowser-tab:first-child[treestyletab-drop-position="before"][selected="true"],
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"][treestyletab-firsttab-border="true"]
+  .tabbrowser-tab:first-child[treestyletab-drop-position="before"][selected="true"]:hover,
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"][treestyletab-firsttab-border="true"]
+  .tabbrowser-tab:first-child[treestyletab-drop-position="before"]:not([selected="true"]),
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"][treestyletab-firsttab-border="true"]
+  .tabbrowser-tab:first-child[treestyletab-drop-position="before"]:not([selected="true"]):hover {
+  border-top: 4px solid red !important;
+  -moz-border-top-colors: #ffffff #577bf3 #577bf3 #ffffff !important;
+}
+
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[treestyletab-drop-position="after"][selected="true"],
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[treestyletab-drop-position="after"][selected="true"]:hover,
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[treestyletab-drop-position="after"]:not([selected="true"]),
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[treestyletab-drop-position="after"]:not([selected="true"]):hover {
+  border-bottom: 4px solid #577bf3 !important;
+  -moz-border-bottom-colors: #ffffff #577bf3 #577bf3 #ffffff !important;
+}
+
+/* Let's hack in the little round end of the drop indicator using the
+   drop marker image. */
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[treestyletab-drop-position="before"] .treestyletab-drop-marker,
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[treestyletab-drop-position="after"] .treestyletab-drop-marker {
+  list-style-image: url("dropmarker.png");
+}
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[treestyletab-drop-position="before"] .treestyletab-drop-marker-container {
+  margin: -11px 22px 11px -22px;
+}
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[treestyletab-drop-position="after"] .treestyletab-drop-marker-container {
+  margin: 12px 22px -12px -22px;
+}
+
 
 
 
