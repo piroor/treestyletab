@@ -1316,7 +1316,7 @@ catch(e) {
 		TreeStyleTabBrowserAutoHide.toggleMode();
 	},
  
-	toggleFixed : function TSTService_toggleFixed() 
+	toggleFixed : function TSTService_toggleFixed() /* PUBLIC API */ 
 	{
 		var pos = this.currentTabbarPosition;
 		var isVertical = (pos == 'left' || pos == 'right');
