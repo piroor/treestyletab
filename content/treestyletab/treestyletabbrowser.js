@@ -1253,8 +1253,10 @@ TreeStyleTabBrowser.prototype = {
 				else {
 					b.removeAttribute(this.kSTYLE);
 				}
-				break;
-
+				value = this.getTreePref('twisty.style');
+				if (value != 'auto') {
+					break;
+				}
 			case 'extensions.treestyletab.twisty.style':
 				if (value == 'auto') {
 					if (this.getTreePref('tabbar.style') == 'sidebar') {
