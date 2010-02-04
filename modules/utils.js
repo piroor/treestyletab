@@ -454,7 +454,10 @@ var TreeStyleTabUtils = {
 	isEventFiredOnTwisty : function TSTUtils_isEventFiredOnTwisty(aEvent) 
 	{
 		var tab = this.getTabFromEvent(aEvent);
-		if (!tab || !this.hasChildTabs(tab)) return false;
+		if (!tab ||
+			!this.hasChildTabs(tab) ||
+			!this.canCollapseSubtree(tab))
+			return false;
 
 		var expression = 'ancestor-or-self::*[@class="'+this.kTWISTY+'"]';
 		if (this.shouldExpandTwistyArea && !this._expandTwistyAreaBlockers.length)
