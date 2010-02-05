@@ -24,7 +24,7 @@
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.mixed   "Mix">
 <!ENTITY config.tabbar.style.metal   "Metal">
-<!ENTITY config.tabbar.style.sidebar "Sidebar">
+<!ENTITY config.tabbar.style.sidebar "Panel boczny">
 <!ENTITY config.tabbar.style.none    "Domyślny (zależny od motywu)">
 
 <!ENTITY config.twisty.style.caption "Styl drzew">
@@ -138,11 +138,10 @@
 <!ENTITY config.insertNewChildAt.first "Wstawiaj jako pierwszą potomną na górze drzewa">
 <!ENTITY config.insertNewChildAt.last "Wstawiaj na końcu drzewa">
 
-<!ENTITY config.undoCloseTabSet.caption  "When a member of a tree is restored by &quot;Undo Close Tab&quot;">
-<!ENTITY config.undoCloseTabSet.ask      "Ask me always">
-<!ENTITY config.undoCloseTabSet.set      "Restore whole of the tree">
-<!ENTITY config.undoCloseTabSet.separate "Restore only one tab (Firefox default)">
-
+<!ENTITY config.undoCloseTabSet.caption  "Gdy element drzewa jest przywracany za pomocą &quot;Przywróć zamkniętą kartę&quot;">
+<!ENTITY config.undoCloseTabSet.ask      "Zawsze pytaj">
+<!ENTITY config.undoCloseTabSet.set      "Przywracaj całe drzewo">
+<!ENTITY config.undoCloseTabSet.separate "Przywracaj tylko jedną kartę (domyślne)">
 
 <!ENTITY config.tabs.advanced "Zaawansowane">
 
