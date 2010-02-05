@@ -43,25 +43,25 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tabs:not([overflow="true"]) .tabbrowser-arrowscrollbox,
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tabs[overflow="true"] .tabbrowser-arrowscrollbox .scrollbox-innerbox {
-	background: url("metal/shadow-active-l.png") repeat-y top right !important;
+	background: url("shadow-active-l.png") repeat-y top right !important;
 }
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tabbrowser-tabs:not([overflow="true"]) .tabbrowser-arrowscrollbox,
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tabbrowser-tabs[overflow="true"] .tabbrowser-arrowscrollbox .scrollbox-innerbox {
-	background: url("metal/shadow-active-r.png") repeat-y top left !important;
+	background: url("shadow-active-r.png") repeat-y top left !important;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tabs:not([overflow="true"]) .tabbrowser-arrowscrollbox,
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tabs[overflow="true"] .tabbrowser-arrowscrollbox .scrollbox-innerbox {
-	background: url("metal/shadow-inactive-l.png") repeat-y top right !important;
+	background: url("shadow-inactive-l.png") repeat-y top right !important;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tabbrowser-tabs:not([overflow="true"]) .tabbrowser-arrowscrollbox,
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tabbrowser-tabs[overflow="true"] .tabbrowser-arrowscrollbox .scrollbox-innerbox {
-	background: url("metal/shadow-inactive-r.png") repeat-y top left !important;
+	background: url("shadow-inactive-r.png") repeat-y top left !important;
 }
 
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
@@ -108,7 +108,7 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab:hover .tab-icon,
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab[selected="true"]:hover .tab-icon {
-	background: url("metal/icon-bg.png") no-repeat right center !important;
+	background: url("icon-bg.png") no-repeat right center !important;
 }
 tabbrowser[treestyletab-style="metal"][treestyletab-tab-contents-inverted="true"]
   .tabbrowser-tab:hover .tab-icon,
@@ -193,12 +193,12 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser
 	border: 1px solid #666666 !important;
 }
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-tab-inverted="true"]) .tabbrowser-arrowscrollbox .tabs-newtab-button {
-	background: #9a9a9a url("metal/shadow-active-l.png") repeat-y top right !important;
+	background: #9a9a9a url("shadow-active-l.png") repeat-y top right !important;
 	margin-left: 6px !important;
 	-moz-border-radius: 6px 0 0 6px;
 }
 tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
-	background: #9a9a9a url("metal/shadow-active-r.png") repeat-y top left !important;
+	background: #9a9a9a url("shadow-active-r.png") repeat-y top left !important;
 	margin-right: 6px !important;
 	-moz-border-radius: 0 6px 6px 0;
 }
@@ -226,10 +226,10 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"] .ta
 }
 
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-tab-inverted="true"]) .tabbrowser-arrowscrollbox .tabs-newtab-button {
-	background: #cecece url("metal/shadow-inactive-l.png") repeat-y top right !important;
+	background: #cecece url("shadow-inactive-l.png") repeat-y top right !important;
 	border-color: #9a9a9a !important;
 }
 :root:not([active="true"]) tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
-	background: #cecece url("metal/shadow-inactive-r.png") repeat-y top left !important;
+	background: #cecece url("shadow-inactive-r.png") repeat-y top left !important;
 	border-color: #9a9a9a !important;
 }
