@@ -349,27 +349,7 @@ var TreeStyleTabService = {
 					'if (target.localName == "tab"',
 					<![CDATA[
 						if (this.treeStyleTab.tabbarDNDObserver.canDragTabbar(aEvent)) {
-							let sv = this.treeStyleTab;
-							let dt = aEvent.dataTransfer;
-							dt.mozSetDataAt(
-								sv.kDRAG_TYPE_TABBAR,
-								aEvent.shiftKey ?
-									sv.kTABBAR_MOVE_FORCE :
-									sv.kTABBAR_MOVE_NORMAL,
-								0
-							);
-							dt.mozCursor = 'move';
-//							let tabbar = this.mTabContainer;
-//							let box = tabbar.boxObject;
-//							dt.setDragImage(
-//								tabbar,
-//								aEvent.screenX - box.screenX,
-//								aEvent.screenY - box.screenY
-//							);
-							// no feedback image, because it's annoying...
-							dt.setDragImage(new Image(), 0, 0);
-							aEvent.stopPropagation();
-							this.treeStyleTab.tabbarDNDObserver.readyToStartDrag();
+							this.treeStyleTab.onTabbarDragStart(aEvent, this);
 						}
 						else $&]]>
 				)
@@ -403,37 +383,11 @@ var TreeStyleTabService = {
 			).replace(
 				/(return (?:true|dt.effectAllowed = "copyMove");)/,
 				<![CDATA[
-					if (!(function(aSelf) {
-try{
-							var node = TST_DRAGSESSION.sourceNode;
-							var tab = TSTTabBrowser.treeStyleTab.getTabFromChild(node);
-							if (!node ||
-								!tab ||
-								tab.parentNode != aSelf.mTabContainer)
-								return true;
-
-							tab = TSTTabBrowser.treeStyleTab.getTabFromEvent(aEvent);
-							if (TreeStyleTabService.isCollapsed(tab))
-								return false;
-
-							var info = TSTTabBrowser.treeStyleTab.getDropAction(aEvent, TST_DRAGSESSION);
-							return info.canDrop;
-}
-catch(e) {
-	dump('TreeStyleTabService::canDrop\n'+e+'\n');
-	return false;
-}
-						})(TSTTabBrowser)) {
+					if (!this.treeStyleTab.checkCanTabDrop(aEvent, this)) {
 						return TST_DRAGDROP_DISALLOW_RETRUN_VALUE;
 					}
 					$1
 				]]>
-			).replace(
-				/TST_DRAGSESSION/g,
-				(canDropFunctionName == 'canDrop' ?
-					'aDragSession' :
-					'TSTTabBrowser.treeStyleTab.getCurrentDragSession()'
-				)
 			).replace(
 				/TST_DRAGDROP_DISALLOW_RETRUN_VALUE/g,
 				(canDropFunctionName == 'canDrop' ?
@@ -451,66 +405,10 @@ catch(e) {
 				'{',
 				<![CDATA[
 					{
-						var TSTTabBrowser = this;
-						if ((function(aSelf) {
-try{
-							window['piro.sakura.ne.jp'].autoScroll.processAutoScroll(aEvent);
-
-							var info = TSTTabBrowser.treeStyleTab.getDropAction(aEvent, TST_DRAGSESSION);
-
-							// auto-switch for staying on tabs (Firefox 3.0 or later)
-							if ('_setEffectAllowedForDataTransfer' in aSelf &&
-								info.target &&
-								!info.target.selected &&
-								'mDragTime' in aSelf &&
-								'mDragOverDelay' in aSelf) {
-								let effects = aSelf._setEffectAllowedForDataTransfer(aEvent);
-								if (effects == 'link') {
-									let now = Date.now();
-									if (!aSelf.mDragTime)
-										aSelf.mDragTime = now;
-									if (now >= aSelf.mDragTime + aSelf.mDragOverDelay)
-										aSelf.selectedTab = info.target;
-								}
-							}
-
-							if (!info.target || info.target != TreeStyleTabService.evaluateXPath(
-									'child::xul:tab[@'+TreeStyleTabService.kDROP_POSITION+']',
-									aSelf.mTabContainer,
-									XPathResult.FIRST_ORDERED_NODE_TYPE
-								).singleNodeValue)
-								TSTTabBrowser.treeStyleTab.clearDropPosition();
-
-							if (TST_DRAGDROP_DISALLOW_CHECK) return true;
-
-							info.target.setAttribute(
-								TreeStyleTabService.kDROP_POSITION,
-								info.position == TreeStyleTabService.kDROP_BEFORE ? 'before' :
-								info.position == TreeStyleTabService.kDROP_AFTER ? 'after' :
-								'self'
-							);
-							aSelf.mTabDropIndicatorBar.setAttribute('dragging', (info.position == TreeStyleTabService.kDROP_ON) ? 'false' : 'true' );
-							return (info.position == TreeStyleTabService.kDROP_ON || aSelf.getAttribute(TreeStyleTabService.kTABBAR_POSITION) != 'top')
-}
-catch(e) {
-	dump('TreeStyleTabService::onDragOver\n'+e+'\n');
-}
-						})(TSTTabBrowser)) {
+						if (this.treeStyleTab.processTabDragOverEvent(aEvent, this)) {
 							return;
 						}
 				]]>
-			).replace(
-				/TST_DRAGSESSION/g,
-				(canDropFunctionName == 'canDrop' ?
-					'aDragSession' :
-					'null'
-				)
-			).replace(
-				/TST_DRAGDROP_DISALLOW_CHECK/g,
-				(canDropFunctionName == 'canDrop' ?
-					'!aSelf.canDrop(aEvent, aDragSession)' :
-					'aSelf._setEffectAllowedForDataTransfer(aEvent) == "none"'
-				)
 			)
 		);
 
@@ -590,6 +488,103 @@ catch(e) {
 				)
 			)
 		);
+	},
+	onTabbarDragStart : function TSTService_onTabbarDragStart(aEvent, aTabBrowser)
+	{
+		var dt = aEvent.dataTransfer;
+		dt.mozSetDataAt(
+			this.kDRAG_TYPE_TABBAR,
+			aEvent.shiftKey ?
+				this.kTABBAR_MOVE_FORCE :
+				this.kTABBAR_MOVE_NORMAL,
+			0
+		);
+		dt.mozCursor = 'move';
+//		var tabbar = aTabBrowser.mTabContainer;
+//		var box = tabbar.boxObject;
+//		dt.setDragImage(
+//			tabbar,
+//			aEvent.screenX - box.screenX,
+//			aEvent.screenY - box.screenY
+//		);
+		// no feedback image, because it's annoying...
+		dt.setDragImage(new Image(), 0, 0);
+		aEvent.stopPropagation();
+		aTabBrowser.treeStyleTab.tabbarDNDObserver.readyToStartDrag();
+	},
+	checkCanTabDrop : function TSTService_checkCanTabDrop(aEvent, aTabBrowser)
+	{
+try{
+		var session = this.getCurrentDragSession();
+		var node = session.sourceNode;
+		var tab = this.getTabFromChild(node);
+		if (!node ||
+			!tab ||
+			tab.parentNode != aTabBrowser.mTabContainer)
+			return true;
+
+		tab = this.getTabFromEvent(aEvent);
+		if (this.isCollapsed(tab))
+			return false;
+
+		var info = this.getDropAction(aEvent, session);
+		return info.canDrop;
+}
+catch(e) {
+		dump('TreeStyleTabService::canDrop\n'+e+'\n');
+		return false;
+}
+	},
+	processTabDragOverEvent : function TSTService_processTabDragOverEvent(aEvent, aTabBrowser)
+	{
+try{
+		var session = this.getCurrentDragSession();
+		window['piro.sakura.ne.jp'].autoScroll.processAutoScroll(aEvent);
+
+		var info = this.getDropAction(aEvent, session);
+
+		// auto-switch for staying on tabs (Firefox 3.0 or later)
+		var isHTML5Event = '_setEffectAllowedForDataTransfer' in aTabBrowser;
+		if (isHTML5Event &&
+			info.target &&
+			!info.target.selected &&
+			'mDragTime' in aTabBrowser &&
+			'mDragOverDelay' in aTabBrowser) {
+			let effects = aTabBrowser._setEffectAllowedForDataTransfer(aEvent);
+			if (effects == 'link') {
+				let now = Date.now();
+				if (!aTabBrowser.mDragTime)
+					aTabBrowser.mDragTime = now;
+				if (now >= aTabBrowser.mDragTime + aTabBrowser.mDragOverDelay)
+					aTabBrowser.selectedTab = info.target;
+			}
+		}
+
+		if (!info.target || info.target != this.evaluateXPath(
+				'child::xul:tab[@'+this.kDROP_POSITION+']',
+				aTabBrowser.mTabContainer,
+				XPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue)
+			this.clearDropPosition();
+
+		if (isHTML5Event ?
+				(aTabBrowser._setEffectAllowedForDataTransfer(aEvent) == 'none') :
+				!aTabBrowser.canDrop(aEvent, session)
+			)
+			return true;
+
+		info.target.setAttribute(
+			this.kDROP_POSITION,
+			info.position == this.kDROP_BEFORE ? 'before' :
+			info.position == this.kDROP_AFTER ? 'after' :
+			'self'
+		);
+		aTabBrowser.mTabDropIndicatorBar.setAttribute('dragging', (info.position == this.kDROP_ON) ? 'false' : 'true' );
+		return (info.position == this.kDROP_ON || aTabBrowser.getAttribute(this.kTABBAR_POSITION) != 'top')
+}
+catch(e) {
+	dump('TreeStyleTabService::onDragOver\n'+e+'\n');
+}
 	},
  
 	overrideGlobalFunctions : function TSTService_overrideGlobalFunctions() 
