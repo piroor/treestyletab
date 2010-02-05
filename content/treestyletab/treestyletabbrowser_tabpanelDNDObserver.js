@@ -30,7 +30,7 @@ TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
 		if (position != 'center' &&
 			position != sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION)) {
 			if (sv.getTreePref('tabbar.fixed.autoCancelOnDrop') &&
-				aXferData.data != sv.kTABBAR_MOVE_FORCE) {
+				(!aXferData || aXferData.data != sv.kTABBAR_MOVE_FORCE)) {
 				let orient = (position == 'left' || position == 'right') ? 'vertical' : 'horizontal' ;
 				sv.setTreePref('tabbar.fixed.'+orient, false);
 			}
