@@ -44,10 +44,9 @@ tabbrowser[treestyletab-mode="vertical"] .tab-drop-indicator-bar {
 	margin: 0;
 }
 
-tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > scrollbox > .scrollbox-innerbox {
+tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > scrollbox {
 	overflow-x: hidden !important;
 	overflow-y: auto !important;
-	-moz-box-flex: 1 !important;
 }
 
 /* for Firefox 3.0 (not 3.5 and later!) */
