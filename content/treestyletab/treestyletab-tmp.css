@@ -15,12 +15,13 @@
 
 :root[treestyletab-enable-compatibility-tmp="true"]
   tabbrowser[treestyletab-mode="vertical"] tabs[flowing] > * .tabs-frame {
-	overflow-x: hidden !important;
-	overflow-y: auto !important;
+	-moz-box-flex: 1 !important;
 }
 
 :root[treestyletab-enable-compatibility-tmp="true"]
-  tabbrowser[treestyletab-mode="vertical"] tabs[flowing] > * .tabs-frame {
+  tabbrowser[treestyletab-mode="vertical"] tabs[flowing] > * .tabs-frame > .scrollbox-innerbox {
+	overflow-x: hidden !important;
+	overflow-y: auto !important;
 	-moz-box-flex: 1 !important;
 }
 
