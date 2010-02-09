@@ -971,7 +971,8 @@ catch(e) {
 				return;
 
 			case 'popupshowing':
-				if (!this.evaluateXPath(
+				if (aEvent.originalTarget.boxObject &&
+					!this.evaluateXPath(
 						'local-name() = "tooltip" or local-name() ="panel" or '+
 						'parent::*/ancestor-or-self::*[local-name()="popup" or local-name()="menupopup"]',
 						aEvent.originalTarget,
@@ -986,7 +987,8 @@ catch(e) {
 				return;
 
 			case 'popuphiding':
-				if (!this.evaluateXPath(
+				if (aEvent.originalTarget.boxObject &&
+					!this.evaluateXPath(
 						'local-name() = "tooltip" or local-name() ="panel" or '+
 						'parent::*/ancestor-or-self::*[local-name()="popup" or local-name()="menupopup"]',
 						aEvent.originalTarget,
