@@ -962,6 +962,38 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 		}
 	}
 
+
+	// Smoothly Close Tabs
+	// https://addons.mozilla.org/firefox/addon/71410
+	if ('SMOOTHLYCLOSETABS' in window) {
+		let replaceScrollProps = function(aString) {
+			return aString.replace(
+					/\.scrollWidth/g,
+					'[scrollProp]'
+				).replace(
+					/"width"/g,
+					'sizeProp'
+				).replace(
+					/\.maxWidth/g,
+					'[maxSizeProp]'
+				).replace(
+					'{',
+					<![CDATA[$&
+						var scrollProp = gBrowser.treeStyleTab.isVertical ? 'scrollHeight' : 'scrollWidth' ;
+						var sizeProp = gBrowser.treeStyleTab.isVertical ? 'height' : 'width' ;
+						var maxSizeProp = gBrowser.treeStyleTab.isVertical ? 'maxHeight' : 'maxWidth' ;
+					]]>
+				)
+		}
+		eval('SMOOTHLYCLOSETABS.shrinkTab = '+
+			replaceScrollProps(SMOOTHLYCLOSETABS.shrinkTab.toSource())
+		);
+		eval('SMOOTHLYCLOSETABS.shrinkTabIcon = '+
+			replaceScrollProps(SMOOTHLYCLOSETABS.shrinkTabIcon.toSource())
+		);
+	}
+
+
 	window.setTimeout(function(aSelf) {
 		aSelf.overrideExtensionsDelayed();
 	}, 0, this);
