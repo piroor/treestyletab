@@ -389,33 +389,64 @@ TreeStyleTabBrowser.prototype = {
 			)
 		);
 
-		eval('b._keyEventHandler.handleEvent = '+
-			b._keyEventHandler.handleEvent.toSource().replace(
-				'this.tabbrowser.moveTabOver(aEvent);',
-				<![CDATA[
-					if (!this.tabbrowser.treeStyleTab.isVertical ||
-						!this.tabbrowser.treeStyleTab.moveTabLevel(aEvent)) {
-						$&
-					}
-				]]>
-			).replace(
-				'this.tabbrowser.moveTabForward();',
-				<![CDATA[
-					if (this.tabbrowser.treeStyleTab.isVertical ||
-						!this.tabbrowser.treeStyleTab.moveTabLevel(aEvent)) {
-						$&
-					}
-				]]>
-			).replace(
-				'this.tabbrowser.moveTabBackward();',
-				<![CDATA[
-					if (this.tabbrowser.treeStyleTab.isVertical ||
-						!this.tabbrowser.treeStyleTab.moveTabLevel(aEvent)) {
-						$&
-					}
-				]]>
-			)
-		);
+		if ('' in b) { // Firefox 3.7-
+			eval('b._handleKeyEvent = '+
+				b._handleKeyEvent.toSource().replace(
+					'this.moveTabOver(aEvent);',
+					<![CDATA[
+						if (!this.treeStyleTab.isVertical ||
+							!this.treeStyleTab.moveTabLevel(aEvent)) {
+							$&
+						}
+					]]>
+				).replace(
+					'this.moveTabForward();',
+					<![CDATA[
+						if (this.treeStyleTab.isVertical ||
+							!this.treeStyleTab.moveTabLevel(aEvent)) {
+							$&
+						}
+					]]>
+				).replace(
+					'this.moveTabBackward();',
+					<![CDATA[
+						if (this.treeStyleTab.isVertical ||
+							!this.treeStyleTab.moveTabLevel(aEvent)) {
+							$&
+						}
+					]]>
+				)
+			);
+		}
+		else if ('_keyEventHandler' in b) { // -Firefox 3.6
+			eval('b._keyEventHandler.handleEvent = '+
+				_keyEventHandler.handleEvent.toSource().replace(
+					'this.tabbrowser.moveTabOver(aEvent);',
+					<![CDATA[
+						if (!this.tabbrowser.treeStyleTab.isVertical ||
+							!this.tabbrowser.treeStyleTab.moveTabLevel(aEvent)) {
+							$&
+						}
+					]]>
+				).replace(
+					'this.tabbrowser.moveTabForward();',
+					<![CDATA[
+						if (this.tabbrowser.treeStyleTab.isVertical ||
+							!this.tabbrowser.treeStyleTab.moveTabLevel(aEvent)) {
+							$&
+						}
+					]]>
+				).replace(
+					'this.tabbrowser.moveTabBackward();',
+					<![CDATA[
+						if (this.tabbrowser.treeStyleTab.isVertical ||
+							!this.tabbrowser.treeStyleTab.moveTabLevel(aEvent)) {
+							$&
+						}
+					]]>
+				)
+			);
+		}
 
 		eval('b.loadTabs = '+
 			b.loadTabs.toSource().replace(
