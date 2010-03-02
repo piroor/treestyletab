@@ -421,7 +421,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 		else if ('_keyEventHandler' in b) { // -Firefox 3.6
 			eval('b._keyEventHandler.handleEvent = '+
-				_keyEventHandler.handleEvent.toSource().replace(
+				b._keyEventHandler.handleEvent.toSource().replace(
 					'this.tabbrowser.moveTabOver(aEvent);',
 					<![CDATA[
 						if (!this.tabbrowser.treeStyleTab.isVertical ||
