@@ -166,11 +166,12 @@ TreeStyleTabBrowser.prototype = {
 		b.mStrip.addEventListener('dragend', this, false);
 		b.mStrip.addEventListener('dragover', this, false);
 		b.mStrip.addEventListener('dragdrop', this, false);
+		b.mStrip.addEventListener('mousedown', this, true);
+		b.mStrip.addEventListener('mouseup', this, false);
+		b.mStrip.addEventListener('click', this, false);
 		b.mTabContainer.addEventListener('mouseover', this, true);
 		b.mTabContainer.addEventListener('mouseout', this, true);
-		b.mTabContainer.addEventListener('click', this, true);
 		b.mTabContainer.addEventListener('dblclick', this, true);
-		b.mTabContainer.addEventListener('mousedown', this, true);
 		b.mTabContainer.addEventListener('select', this, true);
 		b.mTabContainer.addEventListener('scroll', this, true);
 		b.mPanelContainer.addEventListener('dragexit', this, false);
@@ -1016,22 +1017,26 @@ TreeStyleTabBrowser.prototype = {
 	
 	_ensureNewSplitter : function TSTBrowser__ensureNewSplitter() 
 	{
-		var splitter = document.getAnonymousElementByAttribute(this.mTabBrowser, 'class', this.kSPLITTER);
+		var splitter = document.getAnonymousElementByAttribute(this.mTabBrowser, 'class', this.kSPLITTER) ||
+					document.getAnonymousElementByAttribute(this.mTabBrowser, 'id', 'tabkit-splitter'); // Tab Kit
 
 		// We always have to re-create splitter, because its "collapse"
 		// behavior becomes broken by repositioning of the tab bar.
 		if (splitter) {
-			splitter.parentNode.removeChild(splitter);
-			splitter.removeEventListener('mousedown', this, true);
+			let oldSplitter = splitter;
+			splitter = oldSplitter.cloneNode(true);
+			oldSplitter.parentNode.removeChild(oldSplitter);
+		}
+		else {
+			splitter = document.createElement('splitter');
+			splitter.setAttribute('state', 'open');
+			splitter.appendChild(document.createElement('grippy'));
 		}
 
-		splitter = document.createElement('splitter');
-		splitter.setAttribute('class', this.kSPLITTER);
-		splitter.addEventListener('mousedown', this, true);
-		splitter.setAttribute('onclick', 'TreeStyleTabService.onTabbarResizerClick(event);');
-		splitter.setAttribute('onmouseup', 'TreeStyleTabService.onTabbarResized(event);');
-		splitter.setAttribute('state', 'open');
-		splitter.appendChild(document.createElement('grippy'));
+		var splitterClass = splitter.getAttribute('class') || '';
+		if (splitterClass.indexOf(this.kSPLITTER) < 0)
+			splitterClass += (splitterClass ? ' ' : '' ) + this.kSPLITTER;
+		splitter.setAttribute('class', splitterClass);
 
 		var ref = this.mTabBrowser.mPanelContainer;
 		ref.parentNode.insertBefore(splitter, ref);
@@ -1152,9 +1157,12 @@ TreeStyleTabBrowser.prototype = {
 		b.mStrip.removeEventListener('dragend', this, false);
 		b.mStrip.removeEventListener('dragover', this, false);
 		b.mStrip.removeEventListener('dragdrop', this, false);
-		b.mTabContainer.removeEventListener('click', this, true);
+		b.mStrip.removeEventListener('mousedown', this, true);
+		b.mStrip.removeEventListener('mouseup', this, false);
+		b.mStrip.removeEventListener('click', this, false);
+		b.mTabContainer.removeEventListener('mouseover', this, true);
+		b.mTabContainer.removeEventListener('mouseout', this, true);
 		b.mTabContainer.removeEventListener('dblclick', this, true);
-		b.mTabContainer.removeEventListener('mousedown', this, true);
 		b.mTabContainer.removeEventListener('select', this, true);
 		b.mTabContainer.removeEventListener('scroll', this, true);
 		b.mPanelContainer.removeEventListener('dragexit', this, false);
@@ -1367,72 +1375,58 @@ TreeStyleTabBrowser.prototype = {
 		switch (aEvent.type)
 		{
 			case 'TabOpen':
-				this.onTabAdded(aEvent);
-				return;
+				return this.onTabAdded(aEvent);
 
 			case 'TabClose':
-				this.onTabRemoved(aEvent);
-				this.updateLastScrollPosition();
-				return;
+				return this.onTabRemoved(aEvent);
 
 			case 'TabMove':
-				this.onTabMove(aEvent);
-				return;
+				return this.onTabMove(aEvent);
 
 			case 'SSTabRestoring':
-				this.onTabRestoring(aEvent);
-				return;
+				return this.onTabRestoring(aEvent);
 
 			case 'SSTabRestored':
-				this.onTabRestored(aEvent);
-				return;
+				return this.onTabRestored(aEvent);
 
 			case 'select':
-				this.onTabSelect(aEvent);
-				return;
+				return this.onTabSelect(aEvent);
 
 			case 'click':
-				if (aEvent.target.ownerDocument == document)
-					this.onTabClick(aEvent);
-				return;
+				return this.onClick(aEvent);
 
 			case 'dblclick':
-				this.onDblClick(aEvent);
-				return;
+				return this.onDblClick(aEvent);
 
 			case 'mousedown':
-				this.onMouseDown(aEvent);
-				return;
+				return this.onMouseDown(aEvent);
+
+			case 'mouseup':
+				return this.onMouseUp(aEvent);
 
 			case 'scroll':
-				this.onScroll(aEvent);
-				return;
+				return this.onScroll(aEvent);
 
 			case 'popupshowing':
-				this.onPopupShowing(aEvent);
-				return;
+				return this.onPopupShowing(aEvent)
 
 
 			case 'draggesture':
-				nsDragAndDrop.startDrag(aEvent, this.tabbarDNDObserver);
-				return;
+				return nsDragAndDrop.startDrag(aEvent, this.tabbarDNDObserver);
 
 			case 'dragenter':
-				nsDragAndDrop.dragEnter(aEvent, this.tabbarDNDObserver);
-				return;
+				return nsDragAndDrop.dragEnter(aEvent, this.tabbarDNDObserver);
 
 			case 'dragexit':
-				nsDragAndDrop.dragExit(
+				return nsDragAndDrop.dragExit(
 					aEvent,
 					aEvent.currentTarget == this.mTabBrowser.mStrip ?
 						this.tabbarDNDObserver :
 						this.panelDNDObserver
 				);
-				return;
 
 			case 'dragend':
-				this.tabbarDNDObserver.onDragEnd(aEvent);
-				return;
+				return this.tabbarDNDObserver.onDragEnd(aEvent);
 
 			case 'dragover':
 			case 'dragdrop':
@@ -1465,8 +1459,7 @@ TreeStyleTabBrowser.prototype = {
 
 			case 'overflow':
 			case 'underflow':
-				this.onTabbarOverflow(aEvent);
-				return;
+				return this.onTabbarOverflow(aEvent);
 
 
 			case 'MultipleTabHandlerTabsClosing':
@@ -1601,7 +1594,7 @@ TreeStyleTabBrowser.prototype = {
 
 		var collapsed = this.isCollapsed(tab);
 		if (collapsed)
-				this.stopRendering();
+			this.stopRendering();
 
 		var subtreeCollapsed = this.isSubtreeCollapsed(tab);
 		if (
@@ -1789,6 +1782,8 @@ TreeStyleTabBrowser.prototype = {
 				)
 				b.selectedTab = nextFocusedTab;
 		}
+
+		this.updateLastScrollPosition();
 
 		if (collapsed)
 			this.startRendering();
@@ -2353,11 +2348,12 @@ TreeStyleTabBrowser.prototype = {
 		this.updateInvertedTabContentsOrder();
 	},
  
-	onTabClick : function TSTBrowser_onTabClick(aEvent) 
+	onTabClick : function TSTBrowser_onTabClick(aEvent, aTab) 
 	{
+		aTab = aTab || this.getTabFromEvent(aEvent);
+
 		if (aEvent.button == 1) {
-			let tab = this.getTabFromEvent(aEvent);
-			if (tab && !this.warnAboutClosingTabSubtreeOf(tab)) {
+			if (!this.warnAboutClosingTabSubtreeOf(aTab)) {
 				aEvent.preventDefault();
 				aEvent.stopPropagation();
 			}
@@ -2368,9 +2364,8 @@ TreeStyleTabBrowser.prototype = {
 			return;
 
 		if (this.isEventFiredOnTwisty(aEvent)) {
-			let tab = this.getTabFromEvent(aEvent);
-			if (this.hasChildTabs(tab) && this.canCollapseSubtree()) {
-				this.collapseExpandSubtree(tab, tab.getAttribute(this.kSUBTREE_COLLAPSED) != 'true');
+			if (this.hasChildTabs(aTab) && this.canCollapseSubtree()) {
+				this.collapseExpandSubtree(aTab, aTab.getAttribute(this.kSUBTREE_COLLAPSED) != 'true');
 				aEvent.preventDefault();
 				aEvent.stopPropagation();
 			}
@@ -2378,18 +2373,10 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		if (this.isEventFiredOnClosebox(aEvent)) {
-			let tab = this.getTabFromEvent(aEvent);
-			if (!this.warnAboutClosingTabSubtreeOf(tab)) {
+			if (!this.warnAboutClosingTabSubtreeOf(aTab)) {
 				aEvent.preventDefault();
 				aEvent.stopPropagation();
 			}
-			return;
-		}
-
-		// click on indented space on the tab bar
-		if (!this.getTabFromEvent(aEvent)) {
-			let tab = this.getTabFromTabbarEvent(aEvent);
-			if (tab) this.mTabBrowser.selectedTab = tab;
 			return;
 		}
 	},
@@ -2415,6 +2402,27 @@ TreeStyleTabBrowser.prototype = {
 		return tab;
 	},
  
+	onClick : function TSTBrowser_onClick(aEvent) 
+	{
+		if (aEvent.target.ownerDocument != document)
+			return;
+
+		var tab = this.getTabFromEvent(aEvent);
+		var splitter = tab ? null : this.getSplitterFromEvent(aEvent) ;
+
+		if (tab) {
+			this.onTabClick(aEvent, tab);
+		}
+		else if (splitter) {
+			TreeStyleTabService.onTabbarResizerClick(aEvent);
+		}
+		else {
+			// click on indented space on the tab bar
+			tab = this.getTabFromTabbarEvent(aEvent);
+			if (tab) this.mTabBrowser.selectedTab = tab;
+		}
+	},
+ 
 	onDblClick : function TSTBrowser_onDblClick(aEvent) 
 	{
 		var tab = this.getTabFromEvent(aEvent);
@@ -2434,6 +2442,13 @@ TreeStyleTabBrowser.prototype = {
 			return;
 
 		this.getTabFromEvent(aEvent).__treestyletab__preventSelect = true;
+	},
+ 
+	onMouseUp : function TSTBrowser_onMouseUp(aEvent) 
+	{
+		var splitter = this.getSplitterFromEvent(aEvent);
+		if (splitter)
+			TreeStyleTabService.onTabbarResized(aEvent);
 	},
  
 	onScroll : function TSTBrowser_onScroll(aEvent) 

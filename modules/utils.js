@@ -673,6 +673,15 @@ var TreeStyleTabUtils = {
 		return this.getTabFromChild(aEvent.originalTarget || aEvent.target);
 	},
  
+	getSplitterFromEvent : function TSTUtils_getSplitterFromEvent(aEvent) 
+	{
+		return this.evaluateXPath(
+				'ancestor-or-self::xul:splitter[contains(concat(" ", normalize-space(@class), " "), " '+this.kSPLITTER+' ")]',
+				aEvent.originalTarget,
+				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue;
+	},
+ 
 	getTabFromFrame : function TSTUtils_getTabFromFrame(aFrame, aTabBrowser) 
 	{
 		var b = aTabBrowser || this.browser;
