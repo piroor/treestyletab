@@ -3353,7 +3353,7 @@ TreeStyleTabBrowser.prototype = {
 		var id = aChild.getAttribute(this.kID);
 
 //		if (parentTab.__treestyletab__childTabs) {
-//			parentTab.__treestyletab__childTabs = parentTab.__treestyletab__childTabs.filter(function(aTab) { /r/eturn aTab.parentNode; });
+//			parentTab.__treestyletab__childTabs = parentTab.__treestyletab__childTabs.filter(function(aTab) { return aTab.parentNode; });
 //			let index = parentTab.__treestyletab__childTabs.indexOf(aChild);
 //			if (index > -1)
 //				parentTab.__treestyletab__childTabs.splice(index, 1);
