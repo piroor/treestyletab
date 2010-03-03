@@ -131,20 +131,19 @@ TreeStyleTabBrowser.prototype = {
 	getTabById : function TSTBrowser_getTabById(aId, aTabBrowserChildren) 
 	{
 		if (!aId) return null;
+
 		if (!aTabBrowserChildren)
 			return aId in this._tabsCache ? this._tabsCache[aId] : null ;
 
-		if (aTabBrowserChildren.__treestyletab__linkedTabBrowser)
-			return aTabBrowserChildren.__treestyletab__linkedTabBrowser.treeStyleTab.getTabById(aId);
-
-		return this.utils.getTabById(aId, aTabBrowserChildren);
+		var b = this.getTabBrowserFromChild(aTabBrowserChildren);
+		return b ? b.treeStyleTab.getTabById(aId) : null ;
 	},
  
 	getParentTab : function TSTBrowser_getParentTab(aTab) /* PUBLIC API */ 
 	{
 		if (!aTab) return null;
-		var parent = aTab.getAttribute(this.kPARENT);
-		return aTab.__treestyletab__linkedTabBrowser.treeStyleTab.getTabById(parent);
+		var b = this.getTabBrowserFromChild(aTab);
+		return b.treeStyleTab.getTabById(aTab.getAttribute(this.kPARENT));
 	},
  
 //	getParentTab : function TSTBrowser_getParentTab(aTab) /* PUBLIC API */ 
@@ -578,11 +577,10 @@ TreeStyleTabBrowser.prototype = {
 			'{ if (!this.treeStyleTab.warnAboutClosingTabSubtreeOf(this.selectedTab)) return;'
 		));
 
-		let (tabs, i, maxi) {
-			tabs = this.getTabs(b);
-			for (i = 0, maxi = tabs.snapshotLength; i < maxi; i++)
+		let (tabs = this.getTabsArray(b)) {
+			for each (let tab in tabs)
 			{
-				this.initTab(tabs.snapshotItem(i));
+				this.initTab(tab);
 			}
 		}
 
@@ -1673,7 +1671,7 @@ TreeStyleTabBrowser.prototype = {
 				// for last tab closing, we have to open new tab manually if running on Firefox 3.0.
 				if (
 					!('_beginRemoveTab' in b) && !('_endRemoveTab' in b) && // Firefox 3.0.x
-					this.getTabs(b).snapshotLength == 1 // last tab
+					this.getTabsArray(b).length == 1 // last tab
 					) {
 					b.addTab('about:blank');
 				}
@@ -1925,7 +1923,7 @@ TreeStyleTabBrowser.prototype = {
 
 		var old = aEvent.detail;
 		if (old > tab._tPos) old--;
-		old = this.getTabs(b).snapshotItem(old);
+		old = this.getTabsArray(b)[old];
 
 		prev = this.getPreviousSiblingTab(old);
 		next = this.getNextSiblingTab(old);
@@ -1963,7 +1961,7 @@ TreeStyleTabBrowser.prototype = {
 		if (aOldPosition === void(0)) aOldPosition = aTab._tPos;
 
 		var pos = this.getChildIndex(aTab, parent);
-		var oldPos = this.getChildIndex(this.getTabs(this.mTabBrowser).snapshotItem(aOldPosition), parent);
+		var oldPos = this.getChildIndex(this.getTabsArray(this.mTabBrowser)[aOldPosition], parent);
 		var delta;
 		if (pos == oldPos) { // no move?
 			return;
@@ -2677,10 +2675,10 @@ TreeStyleTabBrowser.prototype = {
 	{
 		if (!this.getTreePref('enableSubtreeIndent.allTabsPopup')) return;
 		var items = aEvent.target.childNodes;
-		var tabs = this.getTabs(this.mTabBrowser);
+		var tabs = this.getTabsArray(this.mTabBrowser);
 		for (var i = 0, maxi = items.length; i < maxi; i++)
 		{
-			items[i].style.paddingLeft = tabs.snapshotItem(i).getAttribute(this.kNEST)+'em';
+			items[i].style.paddingLeft = tabs[i].getAttribute(this.kNEST)+'em';
 		}
 	},
    
@@ -2942,7 +2940,7 @@ TreeStyleTabBrowser.prototype = {
 		var newRoots = [];
 		var shouldClose = (
 				aInfo.action & this.kACTION_IMPORT &&
-				this.getTabs(sourceBrowser).snapshotLength == draggedTabs.length
+				this.getTabsArray(sourceBrowser).length == draggedTabs.length
 			);
 		var oldTabs = [];
 		var newTabs = [];
@@ -3155,7 +3153,7 @@ TreeStyleTabBrowser.prototype = {
 				action : this.kACTIONS_FOR_DESTINATION | this.kACTION_IMPORT
 			};
 		var tabsInfo = this.getDraggedTabsInfoFromOneTab(actionInfo, aTab);
-		return tabsInfo.draggedTabs.length == this.getTabs(this.mTabBrowser).snapshotLength;
+		return tabsInfo.draggedTabs.length == this.getTabsArray(this.mTabBrowser).length;
 	},
   
 /* commands */ 

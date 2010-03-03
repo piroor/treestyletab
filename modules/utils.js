@@ -689,11 +689,9 @@ var TreeStyleTabUtils = {
 			.QueryInterface(Ci.nsIInterfaceRequestor)
 			.getInterface(Ci.nsIWebNavigation)
 			.QueryInterface(Ci.nsIDocShell);
-		var tabs = this.getTabs(b);
-		var tab;
-		for (var i = 0, maxi = tabs.snapshotLength; i < maxi; i++)
+		var tabs = this.getTabsArray(b);
+		for each (var tab in tabs)
 		{
-			tab = tabs.snapshotItem(i);
 			if (tab.linkedBrowser.docShell == docShell)
 				return tab;
 		}
@@ -837,7 +835,7 @@ var TreeStyleTabUtils = {
 			).booleanValue;
 	},
  
-	getTabs : function TSTUtils_getTabs(aTabBrowserChild) 
+	getTabs : function TSTUtils_getTabs(aTabBrowserChild) /* OBSOLETE */ 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
 		return this.evaluateXPath(
@@ -848,109 +846,84 @@ var TreeStyleTabUtils = {
  
 	getTabsArray : function TSTUtils_getTabsArray(aTabBrowserChild) 
 	{
-		var tabs = this.getTabs(aTabBrowserChild);
-		var array = [];
-		for (var i = 0, maxi = tabs.snapshotLength; i < maxi; i++)
-		{
-			array.push(tabs.snapshotItem(i));
-		}
-		return array;
+		var b = this.getTabBrowserFromChild(aTabBrowserChild);
+		return Array.slice(b.mTabContainer.childNodes);
 	},
  
 	getFirstTab : function TSTUtils_getFirstTab(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
-		return this.evaluateXPath(
-				'child::xul:tab[1]',
-				b.mTabContainer,
-				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue;
+		return b.mTabContainer.firstChild;
 	},
  
 	getLastTab : function TSTUtils_getLastTab(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
-		return this.evaluateXPath(
-				'child::xul:tab[last()]',
-				b.mTabContainer,
-				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue;
+		return b.mTabContainer.lastChild;
 	},
  
 	getNextTab : function TSTUtils_getNextTab(aTab) 
 	{
 		if (!aTab) return null;
-		return this.evaluateXPath(
-				'following-sibling::xul:tab[1]',
-				aTab,
-				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue;
+		var tab = aTab.nextSibling;
+		return (tab && tab.localName == 'tab') ? tab : null ;
 	},
  
 	getPreviousTab : function TSTUtils_getPreviousTab(aTab) 
 	{
 		if (!aTab) return null;
-		return this.evaluateXPath(
-				'preceding-sibling::xul:tab[1]',
-				aTab,
-				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue;
+		var tab = aTab.previousSibling;
+		return (tab && tab.localName == 'tab') ? tab : null ;
 	},
  
 	getTabIndex : function TSTUtils_getTabIndex(aTab) 
 	{
 		if (!aTab) return -1;
-		return this.evaluateXPath(
-				'count(preceding-sibling::xul:tab)',
-				aTab,
-				Ci.nsIDOMXPathResult.NUMBER_TYPE
-			).numberValue;
+		var b = this.getTabBrowserFromChild(aTab);
+		return this.getTabsArray(b).indexOf(aTab);
 	},
  
 	getNextVisibleTab : function TSTUtils_getNextVisibleTab(aTab) 
 	{
 		if (!aTab) return null;
 
-		if (!this.canCollapseSubtree(aTab))
+		var b = this.getTabBrowserFromChild(aTab);
+		if (!this.canCollapseSubtree(b))
 			return this.getNextTab(aTab);
 
-		return this.evaluateXPath(
-				'following-sibling::xul:tab[not(@'+this.kCOLLAPSED+'="true")][1]',
-				aTab,
-				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue;
+		var tabs = this.getVisibleTabsArray(b);
+		if (tabs.indexOf(aTab) < 0) tabs.push(aTab);
+		tabs.sort(this.sortTabsByOrder);
+
+		var index = tabs.indexOf(aTab);
+		return (index < tabs.length-1) ? tabs[index+1] : null ;
 	},
  
 	getPreviousVisibleTab : function TSTUtils_getPreviousVisibleTab(aTab) 
 	{
 		if (!aTab) return null;
 
-		if (!this.canCollapseSubtree(aTab))
+		var b = this.getTabBrowserFromChild(aTab);
+		if (!this.canCollapseSubtree(b))
 			return this.getPreviousTab(aTab);
 
-		return this.evaluateXPath(
-				'preceding-sibling::xul:tab[not(@'+this.kCOLLAPSED+'="true")][1]',
-				aTab,
-				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue;
+		var tabs = this.getVisibleTabsArray(b);
+		if (tabs.indexOf(aTab) < 0) tabs.push(aTab);
+		tabs.sort(this.sortTabsByOrder);
+
+		var index = tabs.indexOf(aTab);
+		return (index > 0) ? tabs[index-1] : null ;
 	},
  
 	getLastVisibleTab : function TSTUtils_getLastVisibleTab(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
 		if (!b) return null;
-
-		if (!this.canCollapseSubtree(b))
-			return this.getLastTab(b);
-
-		return this.evaluateXPath(
-				'child::xul:tab[not(@'+this.kCOLLAPSED+'="true")][last()]',
-				b.mTabContainer,
-				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue;
+		var tabs = this.getVisibleTabsArray(b);
+		return tabs.length ? tabs[tabs.length-1] : null ;
 	},
  
-	getVisibleTabs : function TSTUtils_getVisibleTabs(aTabBrowserChild) 
+	getVisibleTabs : function TSTUtils_getVisibleTabs(aTabBrowserChild) /* OBSOLETE */ 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
 		if (!this.canCollapseSubtree(b))
@@ -963,20 +936,22 @@ var TreeStyleTabUtils = {
 		return XPathResult;
 	},
  
+	getVisibleTabsArray : function TSTUtils_getVisibleTabsArray(aTabBrowserChild) 
+	{
+		var b = this.getTabBrowserFromChild(aTabBrowserChild);
+		var tabs = this.getTabsArray(b);
+		return this.canCollapseSubtree(b) ?
+				tabs.filter(function(aTab) {
+					return aTab.getAttribute(this.kCOLLAPSED) != 'true';
+				}, this) :
+				tabs ;
+	},
+ 
 	getVisibleIndex : function TSTUtils_getVisibleIndex(aTab) 
 	{
 		if (!aTab) return -1;
-
-		if (!this.canCollapseSubtree(aTab))
-			return this.getTabIndex(aTab);
-
-		return aTab.getAttribute(this.kCOLLAPSED) == 'true' ?
-			-1 :
-			this.evaluateXPath(
-				'count(preceding-sibling::xul:tab[not(@'+this.kCOLLAPSED+'="true")])',
-				aTab,
-				Ci.nsIDOMXPathResult.NUMBER_TYPE
-			).numberValue;
+		var b = this.getTabBrowserFromChild(aTab);
+		return this.getVisibleTabsArray(b).indexOf(aTab);
 	},
   
 /* notify "ready to open child tab(s)" */ 
@@ -1246,7 +1221,7 @@ var TreeStyleTabUtils = {
 		var b = this.getTabBrowserFromChild(aTab);
 		return (
 			this.shouldCloseTabSubtreeOf(aTab) &&
-			this.getDescendantTabs(aTab).length + 1 == this.getTabs(b).snapshotLength
+			this.getDescendantTabs(aTab).length + 1 == this.getTabsArray(b).length
 		);
 	},
 	shouldCloseLastTabSubTreeOf : function() { return this.shouldCloseLastTabSubtreeOf.apply(this, arguments); }, // obsolete, for backward compatibility

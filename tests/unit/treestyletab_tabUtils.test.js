@@ -253,6 +253,22 @@ function test_getVisibleTabs()
 	assert.equals(4, visibleResult.snapshotLength);
 }
 
+function test_getVisibleTabsArray()
+{
+	tabs[1].setAttribute(sv.kCOLLAPSED, true);
+	tabs[3].setAttribute(sv.kCOLLAPSED, true);
+
+	gBrowser.setAttribute(sv.kALLOW_COLLAPSE, true);
+
+	var visibleTabs = sv.getVisibleTabsArray(tabs[0]);
+	assert.equals([tabs[0], tabs[2]], visibleTabs);
+
+	gBrowser.removeAttribute(sv.kALLOW_COLLAPSE);
+
+	visibleTabs = sv.getVisibleTabsArray(tabs[0]);
+	assert.equals([tabs[0], tabs[1], tabs[2], tabs[3]], visibleTabs);
+}
+
 function test_getVisibleIndex()
 {
 	tabs[1].setAttribute(sv.kCOLLAPSED, true);

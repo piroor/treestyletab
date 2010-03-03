@@ -574,10 +574,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 			window.getRowHeight.toSource().replace(
 				'var tabs = getBrowser().mTabContainer.childNodes;',
 				<![CDATA[
-					var tabsResult = TreeStyleTabService.getVisibleTabs(getBrowser().selectedTab);
-					var tabs = [];
-					for (var t = 0, maxt = tabsResult.snapshotLength; t < maxt; t++)
-						tabs.push(tabsResult.snapshotItem(t));
+					var tabs = TreeStyleTabService.getVisibleTabsArray(getBrowser().selectedTab);
 				]]>
 			).replace(
 				/tabs.item\(([^\)]+)\)/g,
