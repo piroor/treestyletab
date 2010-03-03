@@ -127,6 +127,44 @@ TreeStyleTabBrowser.prototype = {
 	{
 		return false;
 	},
+ 
+//	getTabById : function TSTBrowser_getTabById(aId, aTabBrowserChildren) 
+//	{
+//		if (!aId) return null;
+//		if (!aTabBrowserChildren)
+//			return aId in this._tabsCache ? this._tabsCache[aId] : null ;
+//
+//		if (aTabBrowserChildren.__treestyletab__linkedTabBrowser)
+//			return aTabBrowserChildren.__treestyletab__linkedTabBrowser.treeStyleTab.getTabById(aId);
+//
+//		return this.utils.getTabById(aId, aTabBrowserChildren);
+//	},
+ 
+//	getParentTab : function TSTBrowser_getParentTab(aTab) /* PUBLIC API */ 
+//	{
+//		if (!aTab) return null;
+//		return aTab.__treestyletab__parentTab;
+//	},
+ 
+//	getChildTabs : function TSTBrowser_getChildTabs(aTab, aAllTabsArray) /* PUBLIC API */ 
+//	{
+//		var tabs = [];
+//		if (!aTab) return tabs;
+//
+//		var children = aTab.__treestyletab__childTabs;
+//		if (!children || !children.length) return tabs;
+//
+//		if (aAllTabsArray) tabs = aAllTabsArray;
+//
+//		for (var child in children)
+//		{
+//			tabs.push(child);
+//			if (aAllTabsArray)
+//				this.getChildTabs(child, tabs);
+//		}
+//
+//		return tabs;
+//	},
   
 /* initialize */ 
 	
@@ -135,6 +173,8 @@ TreeStyleTabBrowser.prototype = {
 		this.stopRendering();
 
 		var b = this.mTabBrowser;
+
+//		this._tabsCache = {};
 
 		this.internallyTabMovingCount = 0;
 		this.subTreeMovingCount = 0;
@@ -636,9 +676,14 @@ TreeStyleTabBrowser.prototype = {
 			aTab.setAttribute(this.kID, id);
 			aTab.setAttribute(this.kSUBTREE_COLLAPSED, true);
 			window.setTimeout(function(aSelf) {
-				if (!aSelf.getTabValue(aTab, aSelf.kID))
+				if (!aSelf.getTabValue(aTab, aSelf.kID)) {
 					aSelf.setTabValue(aTab, aSelf.kID, id);
+//					if (!(id in aSelf._tabsCache))
+//						aSelf._tabsCache[id] = aTab;
+				}
 			}, 0, this);
+//			if (!(id in this._tabsCache))
+//				this._tabsCache[id] = aTab;
 		}
 
 		aTab.__treestyletab__linkedTabBrowser = this.mTabBrowser;
@@ -1203,6 +1248,12 @@ TreeStyleTabBrowser.prototype = {
 	
 	destroyTab : function TSTBrowser_destroyTab(aTab) 
 	{
+//		var id = aTab.getAttribute(this.kID);
+//		if (id in this._tabsCache)
+//			delete this._tabsCache[id];
+
+//		delete aTab.__treestyletab__parentTab;
+//		delete aTab.__treestyletab__childTabs;
 		delete aTab.__treestyletab__linkedTabBrowser;
 	},
    
@@ -2068,6 +2119,7 @@ TreeStyleTabBrowser.prototype = {
 		this.deleteTabValue(tab, this.kCLOSED_SET_ID);
 
 		this.setTabValue(tab, this.kID, id);
+//		this._tabsCache[id] = tab;
 
 		if (closeSetId)
 			this.restoreClosedSet(closeSetId, tab);
@@ -2236,7 +2288,7 @@ TreeStyleTabBrowser.prototype = {
 	},
 	_clearRedirectionTableTimer : null,
  
-	restoreClosedSet : function TSTBrowser_restoreClosedSet(aId, aRestoredTab)
+	restoreClosedSet : function TSTBrowser_restoreClosedSet(aId, aRestoredTab) 
 	{
 		var behavior = this.undoCloseTabSetBehavior(0, true);
 		if (
@@ -3221,7 +3273,12 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		this.setTabValue(aParent, this.kCHILDREN, children.join('|'));
+//		aParent.__treestyletab__childTabs = children.map(this.getTabById, this)
+//													.filter(function(aTab) { return aTab; });
+
 		this.setTabValue(aChild, this.kPARENT, aParent.getAttribute(this.kID));
+//		aChild.__treestyletab__parentTab = aParent;
+
 		this.updateTabsCount(aParent);
 		if (shouldInheritIndent && !aInfo.dontUpdateIndent)
 			this.inheritTabIndent(aChild, aParent);
@@ -3294,18 +3351,39 @@ TreeStyleTabBrowser.prototype = {
 		if (!parentTab) return;
 
 		var id = aChild.getAttribute(this.kID);
-		this.setTabValue(
-			parentTab,
-			this.kCHILDREN,
-			parentTab.getAttribute(this.kCHILDREN)
-				.split('|')
-				.filter(function(aId) {
-					return this.getTabById(aId) && aId != id;
-				}, this).join('|')
-		);
+
+//		if (parentTab.__treestyletab__childTabs) {
+//			parentTab.__treestyletab__childTabs = parentTab.__treestyletab__childTabs.filter(function(aTab) { /r/eturn aTab.parentNode; });
+//			let index = parentTab.__treestyletab__childTabs.indexOf(aChild);
+//			if (index > -1)
+//				parentTab.__treestyletab__childTabs.splice(index, 1);
+//			this.setTabValue(
+//				parentTab,
+//				this.kCHILDREN,
+//				parentTab.__treestyletab__childTabs
+//					.map(function(aTab) {
+//						return aTab.getAttribute(this.kID);
+//					}, this).join('|')
+//			);
+//		}
+//		else {
+			this.setTabValue(
+				parentTab,
+				this.kCHILDREN,
+				parentTab.getAttribute(this.kCHILDREN)
+					.split('|')
+					.filter(function(aId) {
+						return this.getTabById(aId) && aId != id;
+					}, this).join('|')
+			);
+//		}
+
 		if (!this.hasChildTabs(parentTab))
 			this.setTabValue(parentTab, this.kSUBTREE_COLLAPSED, true);
+
 		this.deleteTabValue(aChild, this.kPARENT);
+//		delete aChild.__treestyletab__parentTab;
+
 		this.updateTabsCount(parentTab);
 
 		if (!aInfo.dontUpdateIndent) {
