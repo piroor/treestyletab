@@ -128,17 +128,24 @@ TreeStyleTabBrowser.prototype = {
 		return false;
 	},
  
-//	getTabById : function TSTBrowser_getTabById(aId, aTabBrowserChildren) 
-//	{
-//		if (!aId) return null;
-//		if (!aTabBrowserChildren)
-//			return aId in this._tabsCache ? this._tabsCache[aId] : null ;
-//
-//		if (aTabBrowserChildren.__treestyletab__linkedTabBrowser)
-//			return aTabBrowserChildren.__treestyletab__linkedTabBrowser.treeStyleTab.getTabById(aId);
-//
-//		return this.utils.getTabById(aId, aTabBrowserChildren);
-//	},
+	getTabById : function TSTBrowser_getTabById(aId, aTabBrowserChildren) 
+	{
+		if (!aId) return null;
+		if (!aTabBrowserChildren)
+			return aId in this._tabsCache ? this._tabsCache[aId] : null ;
+
+		if (aTabBrowserChildren.__treestyletab__linkedTabBrowser)
+			return aTabBrowserChildren.__treestyletab__linkedTabBrowser.treeStyleTab.getTabById(aId);
+
+		return this.utils.getTabById(aId, aTabBrowserChildren);
+	},
+ 
+	getParentTab : function TSTBrowser_getParentTab(aTab) /* PUBLIC API */ 
+	{
+		if (!aTab) return null;
+		var parent = aTab.getAttribute(this.kPARENT);
+		return aTab.__treestyletab__linkedTabBrowser.treeStyleTab.getTabById(parent);
+	},
  
 //	getParentTab : function TSTBrowser_getParentTab(aTab) /* PUBLIC API */ 
 //	{
@@ -156,14 +163,15 @@ TreeStyleTabBrowser.prototype = {
 //
 //		if (aAllTabsArray) tabs = aAllTabsArray;
 //
-//		for (var child in children)
-//		{
-//			tabs.push(child);
-//			if (aAllTabsArray)
+//		tabs = tabs.concat(children);
+//		if (aAllTabsArray) {
+//			for (let child in children)
+//			{
 //				this.getChildTabs(child, tabs);
+//			}
 //		}
 //
-//		return tabs;
+//		return tabs.sort(this.sortTabsByOrder);
 //	},
   
 /* initialize */ 
@@ -174,7 +182,7 @@ TreeStyleTabBrowser.prototype = {
 
 		var b = this.mTabBrowser;
 
-//		this._tabsCache = {};
+		this._tabsCache = {};
 
 		this.internallyTabMovingCount = 0;
 		this.subTreeMovingCount = 0;
@@ -678,12 +686,12 @@ TreeStyleTabBrowser.prototype = {
 			window.setTimeout(function(aSelf) {
 				if (!aSelf.getTabValue(aTab, aSelf.kID)) {
 					aSelf.setTabValue(aTab, aSelf.kID, id);
-//					if (!(id in aSelf._tabsCache))
-//						aSelf._tabsCache[id] = aTab;
+					if (!(id in aSelf._tabsCache))
+						aSelf._tabsCache[id] = aTab;
 				}
 			}, 0, this);
-//			if (!(id in this._tabsCache))
-//				this._tabsCache[id] = aTab;
+			if (!(id in this._tabsCache))
+				this._tabsCache[id] = aTab;
 		}
 
 		aTab.__treestyletab__linkedTabBrowser = this.mTabBrowser;
@@ -1248,9 +1256,9 @@ TreeStyleTabBrowser.prototype = {
 	
 	destroyTab : function TSTBrowser_destroyTab(aTab) 
 	{
-//		var id = aTab.getAttribute(this.kID);
-//		if (id in this._tabsCache)
-//			delete this._tabsCache[id];
+		var id = aTab.getAttribute(this.kID);
+		if (id in this._tabsCache)
+			delete this._tabsCache[id];
 
 //		delete aTab.__treestyletab__parentTab;
 //		delete aTab.__treestyletab__childTabs;
@@ -1638,7 +1646,6 @@ TreeStyleTabBrowser.prototype = {
 
 		this.stopTabIndentAnimation(tab);
 		this.stopTabCollapseAnimation(tab);
-		this.destroyTab(tab);
 
 		var closeParentBehavior = this.getTreePref('closeParentBehavior');
 		var closeRootBehavior = this.getTreePref('closeRootBehavior');
@@ -1835,6 +1842,8 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		this.updateLastScrollPosition();
+
+		this.destroyTab(tab);
 
 		if (collapsed)
 			this.startRendering();
@@ -2119,7 +2128,7 @@ TreeStyleTabBrowser.prototype = {
 		this.deleteTabValue(tab, this.kCLOSED_SET_ID);
 
 		this.setTabValue(tab, this.kID, id);
-//		this._tabsCache[id] = tab;
+		this._tabsCache[id] = tab;
 
 		if (closeSetId)
 			this.restoreClosedSet(closeSetId, tab);
