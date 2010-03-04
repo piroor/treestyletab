@@ -150,33 +150,6 @@ TreeStyleTabBrowser.prototype = {
 		var b = this.getTabBrowserFromChild(aTab);
 		return b.treeStyleTab.getTabById(aTab.getAttribute(this.kPARENT));
 	},
- 
-//	getParentTab : function TSTBrowser_getParentTab(aTab) /* PUBLIC API */ 
-//	{
-//		if (!aTab) return null;
-//		return aTab.__treestyletab__parentTab;
-//	},
- 
-//	getChildTabs : function TSTBrowser_getChildTabs(aTab, aAllTabsArray) /* PUBLIC API */ 
-//	{
-//		var tabs = [];
-//		if (!aTab) return tabs;
-//
-//		var children = aTab.__treestyletab__childTabs;
-//		if (!children || !children.length) return tabs;
-//
-//		if (aAllTabsArray) tabs = aAllTabsArray;
-//
-//		tabs = tabs.concat(children);
-//		if (aAllTabsArray) {
-//			for (let child in children)
-//			{
-//				this.getChildTabs(child, tabs);
-//			}
-//		}
-//
-//		return tabs.sort(this.sortTabsByOrder);
-//	},
   
 /* initialize */ 
 	
@@ -1263,8 +1236,6 @@ TreeStyleTabBrowser.prototype = {
 		if (id in this._tabsCache)
 			delete this._tabsCache[id];
 
-//		delete aTab.__treestyletab__parentTab;
-//		delete aTab.__treestyletab__childTabs;
 		delete aTab.__treestyletab__linkedTabBrowser;
 	},
    
@@ -3285,11 +3256,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		this.setTabValue(aParent, this.kCHILDREN, children.join('|'));
-//		aParent.__treestyletab__childTabs = children.map(this.getTabById, this)
-//													.filter(function(aTab) { return aTab; });
-
 		this.setTabValue(aChild, this.kPARENT, aParent.getAttribute(this.kID));
-//		aChild.__treestyletab__parentTab = aParent;
 
 		this.updateTabsCount(aParent);
 		if (shouldInheritIndent && !aInfo.dontUpdateIndent)
@@ -3364,37 +3331,20 @@ TreeStyleTabBrowser.prototype = {
 
 		var id = aChild.getAttribute(this.kID);
 
-//		if (parentTab.__treestyletab__childTabs) {
-//			parentTab.__treestyletab__childTabs = parentTab.__treestyletab__childTabs.filter(function(aTab) { return aTab.parentNode; });
-//			let index = parentTab.__treestyletab__childTabs.indexOf(aChild);
-//			if (index > -1)
-//				parentTab.__treestyletab__childTabs.splice(index, 1);
-//			this.setTabValue(
-//				parentTab,
-//				this.kCHILDREN,
-//				parentTab.__treestyletab__childTabs
-//					.map(function(aTab) {
-//						return aTab.getAttribute(this.kID);
-//					}, this).join('|')
-//			);
-//		}
-//		else {
-			this.setTabValue(
-				parentTab,
-				this.kCHILDREN,
-				parentTab.getAttribute(this.kCHILDREN)
-					.split('|')
-					.filter(function(aId) {
-						return this.getTabById(aId) && aId != id;
-					}, this).join('|')
-			);
-//		}
+		this.setTabValue(
+			parentTab,
+			this.kCHILDREN,
+			parentTab.getAttribute(this.kCHILDREN)
+				.split('|')
+				.filter(function(aId) {
+					return this.getTabById(aId) && aId != id;
+				}, this).join('|')
+		);
 
 		if (!this.hasChildTabs(parentTab))
 			this.setTabValue(parentTab, this.kSUBTREE_COLLAPSED, true);
 
 		this.deleteTabValue(aChild, this.kPARENT);
-//		delete aChild.__treestyletab__parentTab;
 
 		this.updateTabsCount(parentTab);
 
