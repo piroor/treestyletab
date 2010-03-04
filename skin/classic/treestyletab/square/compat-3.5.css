@@ -12,7 +12,7 @@ tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[tr
 	-moz-box-shadow: 0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15) !important;
 }
 tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"]
-  .tabs-container:not([overflow="true"]) .scrollbox-innerbox {
+  .tabs-container:not([overflow="true"]) .tabbrowser-arrowscrollbox .scrollbox-innerbox {
 	background: url("newtab-shadow.png") repeat-x bottom !important;
 }
 tabbrowser[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"]
