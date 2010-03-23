@@ -1177,17 +1177,19 @@ catch(e) {
 	onTabbarResized : function TSTService_onTabbarResized(aEvent) 
 	{
 		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
-		var strip = this.getTabStrip(b)
+		var strip = this.getTabStrip(b);
+		var placeholder = b.treeStyleTab.placeholder;
+		var box = (placeholder || strip).boxObject;
 		window.setTimeout(function(aSelf) {
 			if (!b.treeStyleTab.clickedOnTabbarResizerGrippy) {
 				if (!b.treeStyleTab.isVertical) {
-					aSelf.setTreePref('tabbar.height', strip.boxObject.height);
+					aSelf.setTreePref('tabbar.height', box.height);
 				}
 				else {
 					if (!b.treeStyleTab.autoHide.expanded)
-						aSelf.setTreePref('tabbar.shrunkenWidth', strip.boxObject.width);
+						aSelf.setTreePref('tabbar.shrunkenWidth', box.width);
 					else
-						aSelf.setTreePref('tabbar.width', strip.boxObject.width);
+						aSelf.setTreePref('tabbar.width', box.width);
 				}
 			}
 			b.treeStyleTab.clickedOnTabbarResizerGrippy = false;

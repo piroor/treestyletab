@@ -167,12 +167,19 @@ TreeStyleTabBrowser.prototype = {
 		this.subTreeChildrenMovingCount = 0;
 		this._treeViewEnabled = true;
 
-		let (toggler) {
+		let (toggler, placeholder) {
 			toggler = document.getAnonymousElementByAttribute(b, 'class', this.kTABBAR_TOGGLER);
 			if (!toggler) {
 				toggler = document.createElement('spacer');
 				toggler.setAttribute('class', this.kTABBAR_TOGGLER);
 				b.mTabBox.insertBefore(toggler, b.mTabBox.firstChild);
+			}
+			placeholder = document.getAnonymousElementByAttribute(b, 'class', 'tabbrowser-strip');
+			if (!placeholder) {
+				placeholder = document.createElement('spacer');
+				placeholder.setAttribute('class', 'tabbrowser-strip');
+				b.mTabBox.insertBefore(placeholder, toggler.nextSibling);
+				this.placeholder = placeholder;
 			}
 		}
 
@@ -869,6 +876,7 @@ TreeStyleTabBrowser.prototype = {
 			b.style.visibility = 'hidden';
 
 		var strip = this.tabStrip;
+		var placeholder = this.placeholder;
 		var splitter = this._ensureNewSplitter();
 		var toggler = document.getAnonymousElementByAttribute(b, 'class', this.kTABBAR_TOGGLER);
 		var indicator = b.mTabDropIndicatorBar || b.tabContainer._tabDropIndicator;
@@ -898,6 +906,8 @@ TreeStyleTabBrowser.prototype = {
 		this.setTabbarAttribute(this.kRESIZING, null, b);
 
 		strip.removeAttribute('width');
+		if (placeholder)
+			placeholder.removeAttribute('width');
 		b.mPanelContainer.removeAttribute('width');
 
 		var delayedPostProcess;
@@ -916,6 +926,8 @@ TreeStyleTabBrowser.prototype = {
 				b.mTabContainer.orient =
 				b.mTabContainer.mTabstrip.orient =
 				b.mTabContainer.mTabstrip.parentNode.orient = 'vertical';
+			if (placeholder)
+				placeholder.orient = 'vertical';
 			if (allTabsButton && allTabsButton.hasChildNodes()) {
 				allTabsButton.firstChild.setAttribute('position', 'before_start');
 			}
@@ -939,6 +951,10 @@ TreeStyleTabBrowser.prototype = {
 
 			strip.setAttribute('width', this.getTreePref('tabbar.width'));
 			strip.removeAttribute('height');
+			if (placeholder) {
+				placeholder.setAttribute('width', this.getTreePref('tabbar.width'));
+				placeholder.removeAttribute('height');
+			}
 			b.mPanelContainer.removeAttribute('height');
 
 			if (pos == this.kTABBAR_RIGHT) {
@@ -955,9 +971,14 @@ TreeStyleTabBrowser.prototype = {
 					/* in Firefox 3, the width of the rightside tab bar
 					   unexpectedly becomes 0 on the startup. so, we have
 					   to set the width again. */
-					strip.setAttribute('width', aSelf.getTreePref('tabbar.width'));
+					var w = aSelf.getTreePref('tabbar.width');
+					strip.setAttribute('width', w);
+					if (placeholder)
+						placeholder.setAttribute('width', w);
 					indicator.setAttribute('ordinal', 1);
 					strip.setAttribute('ordinal', 30);
+					if (placeholder)
+						placeholder.setAttribute('ordinal', 30);
 					aSplitter.setAttribute('ordinal', 20);
 					aToggler.setAttribute('ordinal', 40);
 					aTabBrowser.mPanelContainer.setAttribute('ordinal', 10);
@@ -971,6 +992,8 @@ TreeStyleTabBrowser.prototype = {
 				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
 					indicator.setAttribute('ordinal', 1);
 					strip.setAttribute('ordinal', 10);
+					if (placeholder)
+						placeholder.setAttribute('ordinal', 10);
 					aSplitter.setAttribute('ordinal', 20);
 					aToggler.setAttribute('ordinal', 5);
 					aTabBrowser.mPanelContainer.setAttribute('ordinal', 30);
@@ -991,6 +1014,8 @@ TreeStyleTabBrowser.prototype = {
 				b.mTabContainer.orient =
 				b.mTabContainer.mTabstrip.orient =
 				b.mTabContainer.mTabstrip.parentNode.orient = 'horizontal';
+			if (placeholder)
+				placeholder.orient = 'horizontal';
 			if (allTabsButton && allTabsButton.hasChildNodes()) {
 				allTabsButton.firstChild.setAttribute('position', 'after_end');
 			}
@@ -1017,6 +1042,8 @@ TreeStyleTabBrowser.prototype = {
 				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
 					indicator.setAttribute('ordinal', 1);
 					strip.setAttribute('ordinal', 30);
+					if (placeholder)
+						placeholder.setAttribute('ordinal', 30);
 					aSplitter.setAttribute('ordinal', 20);
 					aToggler.setAttribute('ordinal', 40);
 					aTabBrowser.mPanelContainer.setAttribute('ordinal', 10);
@@ -1028,6 +1055,8 @@ TreeStyleTabBrowser.prototype = {
 				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
 					indicator.setAttribute('ordinal', 1);
 					strip.setAttribute('ordinal', 10);
+					if (placeholder)
+						placeholder.setAttribute('ordinal', 10);
 					aSplitter.setAttribute('ordinal', 20);
 					aToggler.setAttribute('ordinal', 5);
 					aTabBrowser.mPanelContainer.setAttribute('ordinal', 30);
@@ -1044,6 +1073,7 @@ TreeStyleTabBrowser.prototype = {
 		this.updateTabbarState();
 		window.setTimeout(function(aSelf, aTabBrowser, aSplitter, aToggler) {
 			delayedPostProcess(aSelf, aTabBrowser, aSplitter, aToggler);
+			aSelf.updateTabbarSize();
 			aSelf.updateTabbarOverflow();
 			delayedPostProcess = null;
 			aSelf.mTabBrowser.style.visibility = '';
@@ -1123,6 +1153,27 @@ TreeStyleTabBrowser.prototype = {
 
 		this.startRendering();
 		this.updateAllTabsIndent();
+	},
+ 
+	updateTabbarSize : function TSTBrowser_updateTabbarSize() 
+	{
+		var placeholder = this.placeholder;
+		if (!placeholder) return;
+
+		var strip = this.tabStrip;
+		var box = placeholder.boxObject;
+		if (this.currentTabbarPosition == 'top') {
+			strip.style.position = 'static';
+			strip.style.MozAppearance = '';
+		}
+		else {
+			strip.style.position = 'fixed';
+			strip.style.top = box.y;
+			strip.style.left = box.x;
+			strip.style.MozAppearance = 'none';
+			strip.style.width = (strip.width = box.width)+'px';
+			strip.style.height = (strip.height = box.height)+'px';
+		}
 	},
  
 	updateTabbarOverflow : function TSTBrowser_updateTabbarOverflow() 
