@@ -27,7 +27,8 @@
 }
 
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tabs-stack {
+  .tabs-stack,
+#TabsToolbar .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"] {
 	background: #797979 !important;
 	border: 1px solid #444444 !important;
 	border-width: 1px 0 0 !important;
@@ -35,7 +36,9 @@
 }
 :root:not([active="true"]) 
  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tabs-stack {
+  .tabs-stack,
+:root:not([active="true"]) 
+ #TabsToolbar .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"] {
 	background: #acacac !important;
 	border-color: #797979 !important;
 }
@@ -70,7 +73,8 @@
 }
 
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tabs-container {
+  .tabs-container,
+#TabsToolbar .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"] {
 	padding: 0 !important;
 }
 
@@ -192,7 +196,11 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabs-container > .tabs-closebutton,
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tabs-container > .tabs-closebutton:hover {
+  > .tabs-closebutton,
+.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabs-container > .tabs-closebutton:hover,
+.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  > .tabs-closebutton:hover {
 	background: #b3b2b3 !important;
 	border-top: 1px solid #666666 !important;
 }
@@ -222,7 +230,9 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tabbar-position="left"]
   .tabs-alltabs-button,
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tabbar-position="left"]
-  .tabs-container > .tabs-closebutton {
+  .tabs-container > .tabs-closebutton,
+.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tabbar-position="left"]
+  > .tabs-closebutton {
 	border-right: 1px solid #666666 !important;
 }
 
@@ -231,7 +241,9 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
   .tabs-alltabs-button,
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
-  .tabs-container > .tabs-closebutton {
+  .tabs-container > .tabs-closebutton,
+.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
+  > .tabs-closebutton {
 	border-left: 1px solid #666666 !important;
 }
 
@@ -252,7 +264,13 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
   .tabs-container > .tabs-closebutton,
 :root:not([active="true"])
   .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tabs-container > .tabs-closebutton:hover {
+  > .tabs-closebutton,
+:root:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabs-container > .tabs-closebutton:hover,
+:root:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  > .tabs-closebutton:hover {
 	background: #e4e4e4 !important;
 	border-color: #666666 !important;
 }
