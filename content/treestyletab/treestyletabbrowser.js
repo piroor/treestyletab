@@ -878,7 +878,7 @@ TreeStyleTabBrowser.prototype = {
 					document.getAnonymousElementByAttribute(b.mTabContainer, 'anonid', 'alltabs-button')
 				);
 
-		b.removeAttribute(this.kRESIZING);
+		this.setTabbarAttribute(this.kRESIZING, null, b);
 
 		strip.removeAttribute('width');
 		b.mPanelContainer.removeAttribute('width');
@@ -918,20 +918,20 @@ TreeStyleTabBrowser.prototype = {
 			if (toolboxContainer)
 				toolboxContainer.orient = 'vertical';
 
-			b.setAttribute(this.kMODE, 'vertical');
+			this.setTabbarAttribute(this.kMODE, 'vertical', b);
 
 			strip.setAttribute('width', this.getTreePref('tabbar.width'));
 			strip.removeAttribute('height');
 			b.mPanelContainer.removeAttribute('height');
 
 			if (pos == this.kTABBAR_RIGHT) {
-				b.setAttribute(this.kTABBAR_POSITION, 'right');
+				this.setTabbarAttribute(this.kTABBAR_POSITION, 'right', b);
 				if (this.getTreePref('tabbar.invertTab')) {
-					b.setAttribute(this.kTAB_INVERTED, 'true');
+					this.setTabbarAttribute(this.kTAB_INVERTED, 'true', b);
 					this.indentTarget = 'right';
 				}
 				else {
-					b.removeAttribute(this.kTAB_INVERTED);
+					this.setTabbarAttribute(this.kTAB_INVERTED, null, b);
 					this.indentTarget = 'left';
 				}
 				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
@@ -948,8 +948,8 @@ TreeStyleTabBrowser.prototype = {
 				};
 			}
 			else {
-				b.setAttribute(this.kTABBAR_POSITION, 'left');
-				b.removeAttribute(this.kTAB_INVERTED);
+				this.setTabbarAttribute(this.kTABBAR_POSITION, 'left', b);
+				this.setTabbarAttribute(this.kTAB_INVERTED, null, b);
 				this.indentTarget = 'left';
 				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
 					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
@@ -991,11 +991,11 @@ TreeStyleTabBrowser.prototype = {
 			if (toolboxContainer)
 				toolboxContainer.orient = 'horizontal';
 
-			b.setAttribute(this.kMODE, this.getTreePref('tabbar.multirow') ? 'multirow' : 'horizontal' );
-			b.removeAttribute(this.kTAB_INVERTED);
+			this.setTabbarAttribute(this.kMODE, this.getTreePref('tabbar.multirow') ? 'multirow' : 'horizontal' , b);
+			this.setTabbarAttribute(this.kTAB_INVERTED, null, b);
 
 			if (pos == this.kTABBAR_BOTTOM) {
-				b.setAttribute(this.kTABBAR_POSITION, 'bottom');
+				this.setTabbarAttribute(this.kTABBAR_POSITION, 'bottom', b);
 				this.indentTarget = 'bottom';
 				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
 					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
@@ -1006,7 +1006,7 @@ TreeStyleTabBrowser.prototype = {
 				};
 			}
 			else {
-				b.setAttribute(this.kTABBAR_POSITION, 'top');
+				this.setTabbarAttribute(this.kTABBAR_POSITION, 'top', b);
 				this.indentTarget = 'top';
 				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
 					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
@@ -1083,40 +1083,26 @@ TreeStyleTabBrowser.prototype = {
 		var orient;
 		if (this.isVertical) {
 			orient = 'vertical';
-			if (this.getTreePref('tabbar.fixed.vertical'))
-				b.setAttribute(this.kFIXED, true);
-			else
-				b.removeAttribute(this.kFIXED);
+			this.setTabbarAttribute(this.kFIXED, this.getTreePref('tabbar.fixed.vertical') ? 'true' : null , b);
 		}
 		else {
 			orient = 'horizontal';
 			if (this.getTreePref('tabbar.fixed.horizontal')) {
-				b.setAttribute(this.kFIXED, true);
+				this.setTabbarAttribute(this.kFIXED, true, b);
 				if (!this.isMultiRow()) {
 					this.tabStrip.removeAttribute('height');
 					b.mPanelContainer.removeAttribute('height');
 				}
 			}
 			else {
-				b.removeAttribute(this.kFIXED);
+				this.setTabbarAttribute(this.kFIXED, null, b);
 				this.tabStrip.setAttribute('height', this.getTreePref('tabbar.height'));
 			}
 		}
 
-		if (this.getTreePref('enableSubtreeIndent.'+orient))
-			b.setAttribute(this.kINDENTED, 'true');
-		else
-			b.removeAttribute(this.kINDENTED);
-
-		if (this.getTreePref('allowSubtreeCollapseExpand.'+orient))
-			b.setAttribute(this.kALLOW_COLLAPSE, 'true');
-		else
-			b.removeAttribute(this.kALLOW_COLLAPSE);
-
-		if (this.getTreePref('tabbar.hideAlltabsButton.'+orient))
-			b.setAttribute(this.kHIDE_ALLTABS, 'true');
-		else
-			b.removeAttribute(this.kHIDE_ALLTABS);
+		this.setTabbarAttribute(this.kINDENTED, this.getTreePref('enableSubtreeIndent.'+orient) ? 'true' : null , b);
+		this.setTabbarAttribute(this.kALLOW_COLLAPSE, this.getTreePref('allowSubtreeCollapseExpand.'+orient) ? 'true' : null , b);
+		this.setTabbarAttribute(this.kHIDE_ALLTABS, this.getTreePref('tabbar.hideAlltabsButton.'+orient) ? 'true' : null , b);
 
 		this.startRendering();
 		this.updateAllTabsIndent();
@@ -1313,20 +1299,14 @@ TreeStyleTabBrowser.prototype = {
 				}, this);
 				break;
 			case 'extensions.treestyletab.tabbar.invertTabContents':
-				if (value)
-					b.setAttribute(this.kTAB_CONTENTS_INVERTED, 'true');
-				else
-					b.removeAttribute(this.kTAB_CONTENTS_INVERTED);
+				this.setTabbarAttribute(this.kTAB_CONTENTS_INVERTED, value , b);
 				tabs.forEach(function(aTab) {
 					this.initTabContents(aTab);
 				}, this);
 				break;
 
 			case 'extensions.treestyletab.tabbar.invertClosebox':
-				if (value)
-					b.setAttribute(this.kCLOSEBOX_INVERTED, 'true');
-				else
-					b.removeAttribute(this.kCLOSEBOX_INVERTED);
+				this.setTabbarAttribute(this.kCLOSEBOX_INVERTED, value , b);
 				tabs.forEach(function(aTab) {
 					this.initTabContents(aTab);
 				}, this);
@@ -1336,10 +1316,10 @@ TreeStyleTabBrowser.prototype = {
 				if (value) {
 					if (/^(default|vertigo|mixed)$/.test(value))
 						value = 'square '+value;
-					b.setAttribute(this.kSTYLE, value);
+					this.setTabbarAttribute(this.kSTYLE, value , b);
 				}
 				else {
-					b.removeAttribute(this.kSTYLE);
+					this.setTabbarAttribute(this.kSTYLE, null , b);
 				}
 				value = this.getTreePref('twisty.style');
 				if (value != 'auto') {
@@ -1361,14 +1341,11 @@ TreeStyleTabBrowser.prototype = {
 						value = 'modern-black';
 					}
 				}
-				b.setAttribute(this.kTWISTY_STYLE, value);
+				this.setTabbarAttribute(this.kTWISTY_STYLE, value, b);
 				break;
 
 			case 'extensions.treestyletab.showBorderForFirstTab':
-				if (value)
-					b.setAttribute(this.kFIRSTTAB_BORDER, true);
-				else
-					b.removeAttribute(this.kFIRSTTAB_BORDER);
+				this.setTabbarAttribute(this.kFIRSTTAB_BORDER, value , b);
 				break;
 
 			case 'extensions.treestyletab.enableSubtreeIndent.horizontal':
@@ -3180,11 +3157,11 @@ TreeStyleTabBrowser.prototype = {
 		if (this._treeViewEnabled) {
 			let orient = this.isVertical ? 'vertical' : 'horizontal' ;
 			if (this.getTreePref('allowSubtreeCollapseExpand.'+orient))
-				this.browser.setAttribute(this.kALLOW_COLLAPSE, true);
+				this.setTabbarAttribute(this.kALLOW_COLLAPSE, true , this.browser);
 			this.updateTabsIndent(this.rootTabs, undefined, undefined, true);
 		}
 		else {
-			this.browser.removeAttribute(this.kALLOW_COLLAPSE);
+			this.setTabbarAttribute(this.kALLOW_COLLAPSE, null , this.browser);
 			this.getTabsArray(this.browser).forEach(function(aTab) {
 				this.updateTabIndent(aTab, 0, this.indentTarget, true);
 			}, this);

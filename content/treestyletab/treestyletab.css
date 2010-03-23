@@ -4,23 +4,24 @@
 @namespace html url("http://www.w3.org/1999/xhtml");
 
 .tabbrowser-tab .treestyletab-twisty,
-tabbrowser[treestyletab-twisty-style="none"] .treestyletab-twisty-container,
+.tabbrowser-tabs[treestyletab-twisty-style="none"] .treestyletab-twisty-container,
 .tabbrowser-tab .treestyletab-counter-container,
 .tabbrowser-tab .treestyletab-drop-marker,
-tabbrowser[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyletab-children]:not([treestyletab-subtree-collapsed="true"]) .treestyletab-counter-container {
+.tabbrowser-tabs[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyletab-children]:not([treestyletab-subtree-collapsed="true"]) .treestyletab-counter-container {
 	display: none;
 }
 
-tabbrowser[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyletab-children] .treestyletab-twisty,
-tabbrowser[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyletab-children] .treestyletab-counter-container,
+.tabbrowser-tabs[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyletab-children] .treestyletab-twisty,
+.tabbrowser-tabs[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyletab-children] .treestyletab-counter-container,
 .tabbrowser-tab[treestyletab-drop-position] .treestyletab-drop-marker {
 	display: -moz-box;
 }
 
-tabbrowser:not([treestyletab-allow-subtree-collapse="true"]) .treestyletab-twisty-container,
-tabbrowser[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyletab-collapsed-done="true"],
+.tabbrowser-tabs:not([treestyletab-allow-subtree-collapse="true"]) .treestyletab-twisty-container,
+.tabbrowser-tabs[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyletab-collapsed-done="true"],
 .tabbrowser-strip[collapsed="true"]+splitter:not([state="collapsed"]),
 tabbrowser[treestyletab-tabbar-autohide="hidden"] .tabbrowser-strip,
+.tabbrowser-tabs[treestyletab-tabbar-autohide="hidden"],
 tabbrowser[treestyletab-tabbar-autohide="hidden"] .tabbrowser-strip+splitter,
 tabbrowser:not([treestyletab-tabbar-autohide="hidden"]) .treestyletab-tabbar-toggler,
 #appcontent[ahFull="true"] .tabbrowser-strip[ahHIDE="true"]+splitter /* AutoHide */,
@@ -29,13 +30,13 @@ tabbrowser[treestyletab-tabbar-fixed="true"] .tabbrowser-strip+splitter {
 }
 
 
-tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > .scrollbutton-up,
-tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > .scrollbutton-down-stack,
-tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > .scrollbutton-down, /* Firefox 3 */
-tabbrowser[treestyletab-hide-alltabs-button="true"] .tabs-alltabs-stack,
-tabbrowser[treestyletab-hide-alltabs-button="true"] .tabbrowser-arrowscrollbox ~ stack, /* "all tabs" button in Firefox 3 and 3.5 */
-tabbrowser[treestyletab-mode="vertical"] .tabs-closebutton-box,
-tabbrowser[treestyletab-mode="vertical"] .tab-drop-indicator-bar {
+.tabbrowser-tabs[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > .scrollbutton-up,
+.tabbrowser-tabs[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > .scrollbutton-down-stack,
+.tabbrowser-tabs[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > .scrollbutton-down, /* Firefox 3 */
+.tabbrowser-tabs[treestyletab-hide-alltabs-button="true"] .tabs-alltabs-stack,
+.tabbrowser-tabs[treestyletab-hide-alltabs-button="true"] .tabbrowser-arrowscrollbox ~ stack, /* "all tabs" button in Firefox 3 and 3.5 */
+.tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-closebutton-box,
+.tabbrowser-tabs[treestyletab-mode="vertical"] .tab-drop-indicator-bar {
 	visibility: collapse !important;
 }
 
@@ -44,7 +45,7 @@ tabbrowser[treestyletab-mode="vertical"] .tab-drop-indicator-bar {
 	margin: 0;
 }
 
-tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > scrollbox {
+.tabbrowser-tabs[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > scrollbox {
 	overflow-x: hidden !important;
 	overflow-y: auto !important;
 }
@@ -56,7 +57,7 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-stack > *:first-child + * > hbox:
 	-moz-box-flex: 1 !important;
 }
 
-tabbrowser[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted="true"] .tabbrowser-arrowscrollbox > scrollbox {
+.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted="true"] .tabbrowser-arrowscrollbox > scrollbox {
 	direction: rtl !important;
 	/* if there is scrollbar, closeboxes of tabs cannot be clicked because
 	   they are "under the rightside scrollbar" even if it is moved to
@@ -67,39 +68,39 @@ tabbrowser[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted=
 	padding-right: 1em !important;
 }
 
-tabbrowser[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted="true"] .tabbrowser-arrowscrollbox > scrollbox > .scrollbox-innerbox {
+.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted="true"] .tabbrowser-arrowscrollbox > scrollbox > .scrollbox-innerbox {
 	direction: ltr !important;
 }
 
 
 
-tabbrowser:not([treestyletab-mode="vertical"]) .tabbrowser-tab:not([treestyletab-nest="0"]) + .tabbrowser-tab[treestyletab-nest="0"],
-tabbrowser:not([treestyletab-mode="vertical"]) .tabbrowser-tab[treestyletab-nest="0"] + .tabbrowser-tab[treestyletab-nest="0"][treestyletab-children] {
+.tabbrowser-tabs:not([treestyletab-mode="vertical"]) .tabbrowser-tab:not([treestyletab-nest="0"]) + .tabbrowser-tab[treestyletab-nest="0"],
+.tabbrowser-tabs:not([treestyletab-mode="vertical"]) .tabbrowser-tab[treestyletab-nest="0"] + .tabbrowser-tab[treestyletab-nest="0"][treestyletab-children] {
 	margin-left: 0.8em !important;
 }
 
 
 
 /*
-tabbrowser[treestyletab-mode="multirow"] .tabbrowser-arrowscrollbox > scrollbox > .scrollbox-innerbox {
+.tabbrowser-tabs[treestyletab-mode="multirow"] .tabbrowser-arrowscrollbox > scrollbox > .scrollbox-innerbox {
 	display: block !important;
 	overflow-x: visible !important;
 	overflow-y: visible !important;
 }
-tabbrowser[treestyletab-mode="multirow"] .tabbrowser-arrowscrollbox > scrollbox {
+.tabbrowser-tabs[treestyletab-mode="multirow"] .tabbrowser-arrowscrollbox > scrollbox {
 	display: block !important;
 	overflow-x: visible !important;
 	overflow-y: auto !important;
 	max-height: 100px !important;
 }
 
-tabbrowser[treestyletab-mode="multirow"] .tabbrowser-tab {
+.tabbrowser-tabs[treestyletab-mode="multirow"] .tabbrowser-tab {
 	min-width: 150px !important;
 }
 */
 
-tabbrowser[treestyletab-tabbar-autohide][treestyletab-tabbar-transparent] .tabs-stack > *:first-child > :not(html|canvas),
-tabbrowser[treestyletab-tabbar-resizing] .tabs-stack > *:first-child > html|canvas {
+.tabbrowser-tabs[treestyletab-tabbar-autohide][treestyletab-tabbar-transparent] .tabs-stack > *:first-child > :not(html|canvas),
+.tabbrowser-tabs[treestyletab-tabbar-resizing] .tabs-stack > *:first-child > html|canvas {
 	display: none !important;
 }
 
@@ -111,11 +112,11 @@ image.tab-icon {
 }
 
 /* for Tabbrowser Preferences, and some theme */
-tabbrowser .tabs-newbutton,
-tabbrowser[treestyletab-mode="vertical"] .scrollbutton-up,
-tabbrowser[treestyletab-mode="vertical"] .scrollbutton-down,
-tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-button,
-tabbrowser[treestyletab-mode="vertical"] .close-button.tabs-closebutton {
+.tabbrowser-tabs .tabs-newbutton,
+.tabbrowser-tabs[treestyletab-mode="vertical"] .scrollbutton-up,
+.tabbrowser-tabs[treestyletab-mode="vertical"] .scrollbutton-down,
+.tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-alltabs-button,
+.tabbrowser-tabs[treestyletab-mode="vertical"] .close-button.tabs-closebutton {
 	max-width: none !important;
 }
 

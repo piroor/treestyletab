@@ -923,7 +923,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			) {
 			this.isResizing = true;
 			this.clearBG();
-			sv.mTabBrowser.setAttribute(sv.kRESIZING, true);
+			sv.setTabbarAttribute(sv.kRESIZING, true, sv.mTabBrowser);
 			/* canvasを非表示にしたのと同じタイミングでリサイズを行うと、
 			   まだ内部的にcanvasの大きさが残ったままなので、その大きさ以下に
 			   タブバーの幅を縮められなくなる。手動でイベントを再送してやると
@@ -967,7 +967,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				XPathResult.BOOLEAN_TYPE
 			).booleanValue) {
 			this.isResizing = false;
-			sv.mTabBrowser.removeAttribute(sv.kRESIZING);
+			sv.setTabbarAttribute(sv.kRESIZING, null, sv.mTabBrowser);
 			window.setTimeout(function(aSelf) {
 				if (!aSelf.shouldRedraw) return;
 				aSelf.redrawContentArea();

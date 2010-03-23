@@ -3,9 +3,9 @@
 
 /* buttons in the tab bar */
 
-tabbrowser[treestyletab-mode="vertical"] .tabs-newtab-button,
-tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-button,
-tabbrowser[treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton {
+.tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-newtab-button,
+.tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-alltabs-button,
+.tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton {
 	-moz-appearance: none !important;
 	border: 0 none !important;
 	-moz-border-top-colors: none !important;
@@ -15,17 +15,17 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton {
 	border-top: 1px solid ThreeDShadow !important;
 	background: ThreeDFace !important;
 }
-tabbrowser[treestyletab-mode="vertical"] .tabs-newtab-button:hover,
-tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-button:hover,
-tabbrowser[treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton:hover {
+.tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-newtab-button:hover,
+.tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-alltabs-button:hover,
+.tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton:hover {
 	background: ThreeDHighlight !important;
 }
 
-tabbrowser[treestyletab-mode="vertical"] .tabs-newtab-button,
-tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-box,
-tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-box-animate,
-tabbrowser[treestyletab-mode="vertical"] .tabs-alltabs-button,
-tabbrowser[treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton {
+.tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-newtab-button,
+.tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-alltabs-box,
+.tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-alltabs-box-animate,
+.tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-alltabs-button,
+.tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton {
 	background-image: none !important;
 	margin: 0 !important;
 	padding: 0 2px !important;
@@ -37,12 +37,12 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton {
 
 /* new-tab button next to the last tab */
 
-tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
+.tabbrowser-tabs[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
 	border: 0 none !important;
 	border-bottom: 1px solid ThreeDShadow !important;
 	-moz-border-radius: 0 0 3px 3px;
 }
-tabbrowser[treestyletab-style~="vertigo"][treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
+.tabbrowser-tabs[treestyletab-style~="vertigo"][treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox .tabs-newtab-button {
 	border-style: none !important;
 }
 

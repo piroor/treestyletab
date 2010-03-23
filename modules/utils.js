@@ -461,7 +461,7 @@ var TreeStyleTabUtils = {
 
 		var expression = 'ancestor-or-self::*[@class="'+this.kTWISTY+'"]';
 		if (this.shouldExpandTwistyArea && !this._expandTwistyAreaBlockers.length)
-			expression += ' | ancestor-or-self::*[@class="tab-icon" and ancestor::xul:tabbrowser[@'+this.kMODE+'="vertical"]]';
+			expression += ' | ancestor-or-self::*[@class="tab-icon" and ancestor::xul:tabs[@'+this.kMODE+'="vertical"]]';
 
 		return this.evaluateXPath(
 				expression,
@@ -666,6 +666,21 @@ var TreeStyleTabUtils = {
 	get tabStrip() 
 	{
 		return this.getTabStrip(this.browser);
+	},
+ 
+	setTabbarAttribute : function TSTUtils_setTabbarAttribute(aName, aValue, aTabBrowser) 
+	{
+		aTabBrowser = aTabBrowser || this.browser;
+		if (aValue) {
+			aTabBrowser.setAttribute(aName, aValue);
+			aTabBrowser.mTabContainer.parentNode.setAttribute(aName, aValue);
+			aTabBrowser.mTabContainer.setAttribute(aName, aValue);
+		}
+		else {
+			aTabBrowser.removeAttribute(aName);
+			aTabBrowser.mTabContainer.parentNode.removeAttribute(aName);
+			aTabBrowser.mTabContainer.removeAttribute(aName);
+		}
 	},
  
 	getTabFromChild : function TSTUtils_getTabFromChild(aTab) 
