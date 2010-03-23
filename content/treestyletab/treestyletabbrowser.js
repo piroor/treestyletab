@@ -1209,10 +1209,15 @@ TreeStyleTabBrowser.prototype = {
 	updateTabbarOverflow : function TSTBrowser_updateTabbarOverflow() 
 	{
 		var b = this.mTabBrowser;
-		b.mTabContainer.removeAttribute('overflow'); // Firefox 3.0.x
+		b.mTabContainer.removeAttribute('overflow'); // Firefox 3.0.x / Firefox 3.7
 		var container = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-container');
 
-		if (!container) return;
+		if (!container) {
+			if (this.placeholder)
+				container = b.mTabContainer;
+			else
+				return;
+		}
 
 		container.removeAttribute('overflow');
 
