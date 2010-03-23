@@ -671,7 +671,7 @@ var TreeStyleTabUtils = {
 	getTabFromChild : function TSTUtils_getTabFromChild(aTab) 
 	{
 		return this.evaluateXPath(
-				'ancestor-or-self::xul:tab[ancestor::xul:tabbrowser]',
+				'ancestor-or-self::xul:tab',
 				aTab,
 				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
