@@ -110,11 +110,13 @@ window.addEventListener('DOMContentLoaded', function() {
 
 		getTabBrowserFromChild : function(aTab) 
 		{
-			var b = this.evaluateXPath(
+			var b = aTab.ownerDocument.evaluate(
 					'ancestor-or-self::*[local-name()="tabbrowser"] | '+
-					'ancestor-or-self::*[local-name()="tabs"][@tabbrowser]',
-					aNode,
-					XPathResult.FIRST_ORDERED_NODE_TYPE
+					'ancestor-or-self::*[local-name()="tabs" and @tabbrowser]',
+					aTab,
+					null,
+					XPathResult.FIRST_ORDERED_NODE_TYPE,
+					null
 				).singleNodeValue;
 			return (b && b.tabbrowser) || b;
 		}
