@@ -1165,16 +1165,17 @@ catch(e) {
 	onTabbarResized : function TSTService_onTabbarResized(aEvent) 
 	{
 		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
+		var strip = this.getTabStrip(b)
 		window.setTimeout(function(aSelf) {
 			if (!b.treeStyleTab.clickedOnTabbarResizerGrippy) {
 				if (!b.treeStyleTab.isVertical) {
-					aSelf.setTreePref('tabbar.height', b.mStrip.boxObject.height);
+					aSelf.setTreePref('tabbar.height', strip.boxObject.height);
 				}
 				else {
 					if (!b.treeStyleTab.autoHide.expanded)
-						aSelf.setTreePref('tabbar.shrunkenWidth', b.mStrip.boxObject.width);
+						aSelf.setTreePref('tabbar.shrunkenWidth', strip.boxObject.width);
 					else
-						aSelf.setTreePref('tabbar.width', b.mStrip.boxObject.width);
+						aSelf.setTreePref('tabbar.width', strip.boxObject.width);
 				}
 			}
 			b.treeStyleTab.clickedOnTabbarResizerGrippy = false;
@@ -1292,7 +1293,8 @@ catch(e) {
 	setContentWidth : function TSTService_setContentWidth(aWidth, aKeepWindowSize) /* PUBLIC API */ 
 	{
 		var treeStyleTab = gBrowser.treeStyleTab;
-		var tabbarWidth = treeStyleTab.splitterWidth + (treeStyleTab.isVertical ? gBrowser.mStrip.boxObject.width : 0 );
+		var strip = treeStyleTab.tabStrip;
+		var tabbarWidth = treeStyleTab.splitterWidth + (treeStyleTab.isVertical ? strip.boxObject.width : 0 );
 		var contentWidth = gBrowser.boxObject.width - tabbarWidth;
 		if (aKeepWindowSize ||
 			window.fullScreen ||

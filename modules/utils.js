@@ -659,6 +659,15 @@ var TreeStyleTabUtils = {
   
 // tab 
 	
+	getTabStrip : function TSTUtils_getTabStrip(aTabBrowser) 
+	{
+		return aTabBrowser.mStrip || aTabBrowser.tabContainer.parentNode;
+	},
+	get tabStrip() 
+	{
+		return this.getTabStrip(this.browser);
+	},
+ 
 	getTabFromChild : function TSTUtils_getTabFromChild(aTab) 
 	{
 		return this.evaluateXPath(

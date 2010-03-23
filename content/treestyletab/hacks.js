@@ -894,7 +894,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 								}
 							}
 							else {
-								gBrowser.mStrip.removeAttribute('ahHIDE');
+								TreeStyleTabService.getTabStrip(gBrowser).removeAttribute('ahHIDE');
 								if (
 									autoHIDE.statBar &&
 									aTabBrowser.getAttribute(gBrowser.treeStyleTab.kTABBAR_POSITION) == 'bottom' &&

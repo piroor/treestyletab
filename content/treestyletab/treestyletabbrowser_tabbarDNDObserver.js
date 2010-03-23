@@ -171,7 +171,7 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 	canDrop : function TSTTabbarDND_canDrop(aEvent, aDragSession) 
 	{
 		var sv = this.mOwner;
-		var tooltip = sv.mTabBrowser.mStrip.firstChild;
+		var tooltip = sv.tabStrip.firstChild;
 		if (tooltip &&
 			tooltip.localName == 'tooltip' &&
 			tooltip.popupBoxObject.popupState != 'closed')

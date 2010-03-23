@@ -171,7 +171,7 @@ TreeStyleTabBrowser.prototype = {
 			if (!toggler) {
 				toggler = document.createElement('spacer');
 				toggler.setAttribute('class', this.kTABBAR_TOGGLER);
-				b.mStrip.parentNode.insertBefore(toggler, b.mStrip);
+				this.tabStrip.parentNode.insertBefore(toggler, this.tabStrip);
 			}
 		}
 
@@ -180,20 +180,21 @@ TreeStyleTabBrowser.prototype = {
 
 		this.initTabbar(this.kTABBAR_TOP);
 
-		b.addEventListener('TabOpen',        this, true);
-		b.addEventListener('TabClose',       this, true);
-		b.addEventListener('TabMove',        this, true);
-		b.addEventListener('SSTabRestoring', this, true);
-		b.addEventListener('SSTabRestored',  this, true);
-		b.mStrip.addEventListener('draggesture', this, false);
-		b.mStrip.addEventListener('dragenter', this, false);
-		b.mStrip.addEventListener('dragexit', this, false);
-		b.mStrip.addEventListener('dragend', this, false);
-		b.mStrip.addEventListener('dragover', this, false);
-		b.mStrip.addEventListener('dragdrop', this, false);
-		b.mStrip.addEventListener('mousedown', this, true);
-		b.mStrip.addEventListener('mouseup', this, false);
-		b.mStrip.addEventListener('click', this, false);
+		var strip = this.tabStrip;
+		b.mTabContainer.addEventListener('TabOpen',        this, true);
+		b.mTabContainer.addEventListener('TabClose',       this, true);
+		b.mTabContainer.addEventListener('TabMove',        this, true);
+		b.mTabContainer.addEventListener('SSTabRestoring', this, true);
+		b.mTabContainer.addEventListener('SSTabRestored',  this, true);
+		strip.addEventListener('draggesture', this, false);
+		strip.addEventListener('dragenter', this, false);
+		strip.addEventListener('dragexit', this, false);
+		strip.addEventListener('dragend', this, false);
+		strip.addEventListener('dragover', this, false);
+		strip.addEventListener('dragdrop', this, false);
+		strip.addEventListener('mousedown', this, true);
+		strip.addEventListener('mouseup', this, false);
+		strip.addEventListener('click', this, false);
 		b.mTabContainer.addEventListener('mouseover', this, true);
 		b.mTabContainer.addEventListener('mouseout', this, true);
 		b.mTabContainer.addEventListener('dblclick', this, true);
@@ -851,6 +852,7 @@ TreeStyleTabBrowser.prototype = {
 			)
 			b.style.visibility = 'hidden';
 
+		var strip = this.tabStrip;
 		var splitter = this._ensureNewSplitter();
 		var toggler = document.getAnonymousElementByAttribute(b, 'class', this.kTABBAR_TOGGLER);
 
@@ -864,7 +866,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		// All-in-One Sidebar
-		var toolboxContainer = document.getAnonymousElementByAttribute(b.mStrip, 'anonid', 'aiostbx-toolbox-tableft');
+		var toolboxContainer = document.getAnonymousElementByAttribute(strip, 'anonid', 'aiostbx-toolbox-tableft');
 		if (toolboxContainer) toolboxContainer = toolboxContainer.parentNode;
 
 		var scrollInnerBox = b.mTabContainer.mTabstrip._scrollbox ?
@@ -878,7 +880,7 @@ TreeStyleTabBrowser.prototype = {
 
 		b.removeAttribute(this.kRESIZING);
 
-		b.mStrip.removeAttribute('width');
+		strip.removeAttribute('width');
 		b.mPanelContainer.removeAttribute('width');
 
 		var delayedPostProcess;
@@ -892,7 +894,7 @@ TreeStyleTabBrowser.prototype = {
 			this.invertedSizeProp     = 'width';
 
 			b.mTabBox.orient = splitter.orient = 'horizontal';
-			b.mStrip.orient =
+			strip.orient =
 				toggler.orient =
 				b.mTabContainer.orient =
 				b.mTabContainer.mTabstrip.orient =
@@ -918,8 +920,8 @@ TreeStyleTabBrowser.prototype = {
 
 			b.setAttribute(this.kMODE, 'vertical');
 
-			b.mStrip.setAttribute('width', this.getTreePref('tabbar.width'));
-			b.mStrip.removeAttribute('height');
+			strip.setAttribute('width', this.getTreePref('tabbar.width'));
+			strip.removeAttribute('height');
 			b.mPanelContainer.removeAttribute('height');
 
 			if (pos == this.kTABBAR_RIGHT) {
@@ -936,9 +938,9 @@ TreeStyleTabBrowser.prototype = {
 					/* in Firefox 3, the width of the rightside tab bar
 					   unexpectedly becomes 0 on the startup. so, we have
 					   to set the width again. */
-					aTabBrowser.mStrip.setAttribute('width', aSelf.getTreePref('tabbar.width'));
+					strip.setAttribute('width', aSelf.getTreePref('tabbar.width'));
 					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
-					aTabBrowser.mStrip.setAttribute('ordinal', 30);
+					strip.setAttribute('ordinal', 30);
 					aSplitter.setAttribute('ordinal', 20);
 					aToggler.setAttribute('ordinal', 40);
 					aTabBrowser.mPanelContainer.setAttribute('ordinal', 10);
@@ -951,7 +953,7 @@ TreeStyleTabBrowser.prototype = {
 				this.indentTarget = 'left';
 				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
 					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
-					aTabBrowser.mStrip.setAttribute('ordinal', 10);
+					strip.setAttribute('ordinal', 10);
 					aSplitter.setAttribute('ordinal', 20);
 					aToggler.setAttribute('ordinal', 5);
 					aTabBrowser.mPanelContainer.setAttribute('ordinal', 30);
@@ -967,7 +969,7 @@ TreeStyleTabBrowser.prototype = {
 			this.invertedSizeProp     = 'height';
 
 			b.mTabBox.orient = splitter.orient = 'vertical';
-			b.mStrip.orient =
+			strip.orient =
 				toggler.orient =
 				b.mTabContainer.orient =
 				b.mTabContainer.mTabstrip.orient =
@@ -997,7 +999,7 @@ TreeStyleTabBrowser.prototype = {
 				this.indentTarget = 'bottom';
 				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
 					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
-					aTabBrowser.mStrip.setAttribute('ordinal', 30);
+					strip.setAttribute('ordinal', 30);
 					aSplitter.setAttribute('ordinal', 20);
 					aToggler.setAttribute('ordinal', 40);
 					aTabBrowser.mPanelContainer.setAttribute('ordinal', 10);
@@ -1008,7 +1010,7 @@ TreeStyleTabBrowser.prototype = {
 				this.indentTarget = 'top';
 				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
 					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
-					aTabBrowser.mStrip.setAttribute('ordinal', 10);
+					strip.setAttribute('ordinal', 10);
 					aSplitter.setAttribute('ordinal', 20);
 					aToggler.setAttribute('ordinal', 5);
 					aTabBrowser.mPanelContainer.setAttribute('ordinal', 30);
@@ -1091,13 +1093,13 @@ TreeStyleTabBrowser.prototype = {
 			if (this.getTreePref('tabbar.fixed.horizontal')) {
 				b.setAttribute(this.kFIXED, true);
 				if (!this.isMultiRow()) {
-					b.mStrip.removeAttribute('height');
+					this.tabStrip.removeAttribute('height');
 					b.mPanelContainer.removeAttribute('height');
 				}
 			}
 			else {
 				b.removeAttribute(this.kFIXED);
-				b.mStrip.setAttribute('height', this.getTreePref('tabbar.height'));
+				this.tabStrip.setAttribute('height', this.getTreePref('tabbar.height'));
 			}
 		}
 
@@ -1175,20 +1177,21 @@ TreeStyleTabBrowser.prototype = {
 			this.destroyTab(aTab);
 		}, this);
 
-		b.removeEventListener('TabOpen',        this, true);
-		b.removeEventListener('TabClose',       this, true);
-		b.removeEventListener('TabMove',        this, true);
-		b.removeEventListener('SSTabRestoring', this, true);
-		b.removeEventListener('SSTabRestored',  this, true);
-		b.mStrip.removeEventListener('draggesture', this, false);
-		b.mStrip.removeEventListener('dragenter', this, false);
-		b.mStrip.removeEventListener('dragexit', this, false);
-		b.mStrip.removeEventListener('dragend', this, false);
-		b.mStrip.removeEventListener('dragover', this, false);
-		b.mStrip.removeEventListener('dragdrop', this, false);
-		b.mStrip.removeEventListener('mousedown', this, true);
-		b.mStrip.removeEventListener('mouseup', this, false);
-		b.mStrip.removeEventListener('click', this, false);
+		var strip = this.tabStrip;
+		b.mTabContainer.removeEventListener('TabOpen',        this, true);
+		b.mTabContainer.removeEventListener('TabClose',       this, true);
+		b.mTabContainer.removeEventListener('TabMove',        this, true);
+		b.mTabContainer.removeEventListener('SSTabRestoring', this, true);
+		b.mTabContainer.removeEventListener('SSTabRestored',  this, true);
+		strip.removeEventListener('draggesture', this, false);
+		strip.removeEventListener('dragenter', this, false);
+		strip.removeEventListener('dragexit', this, false);
+		strip.removeEventListener('dragend', this, false);
+		strip.removeEventListener('dragover', this, false);
+		strip.removeEventListener('dragdrop', this, false);
+		strip.removeEventListener('mousedown', this, true);
+		strip.removeEventListener('mouseup', this, false);
+		strip.removeEventListener('click', this, false);
 		b.mTabContainer.removeEventListener('mouseover', this, true);
 		b.mTabContainer.removeEventListener('mouseout', this, true);
 		b.mTabContainer.removeEventListener('dblclick', this, true);
@@ -1385,8 +1388,8 @@ TreeStyleTabBrowser.prototype = {
 			case 'extensions.treestyletab.tabbar.width':
 			case 'extensions.treestyletab.tabbar.shrunkenWidth':
 				if (!this.autoHide.isResizing && this.isVertical) {
-					this.mTabBrowser.mStrip.removeAttribute('width');
-					this.mTabBrowser.mStrip.setAttribute('width', this.autoHide.widthFromMode);
+					this.tabStrip.removeAttribute('width');
+					this.tabStrip.setAttribute('width', this.autoHide.widthFromMode);
 				}
 				this.checkTabsIndentOverflow();
 				break;
@@ -1453,7 +1456,7 @@ TreeStyleTabBrowser.prototype = {
 			case 'dragexit':
 				return nsDragAndDrop.dragExit(
 					aEvent,
-					aEvent.currentTarget == this.mTabBrowser.mStrip ?
+					aEvent.currentTarget == this.tabStrip ?
 						this.tabbarDNDObserver :
 						this.panelDNDObserver
 				);
@@ -1464,7 +1467,7 @@ TreeStyleTabBrowser.prototype = {
 			case 'dragover':
 			case 'dragdrop':
 				let (canDrop, observer) {
-					if (aEvent.currentTarget == this.mTabBrowser.mStrip) {
+					if (aEvent.currentTarget == this.tabStrip) {
 						observer = this.tabbarDNDObserver;
 						canDrop = true;
 					}
@@ -4067,8 +4070,8 @@ TreeStyleTabBrowser.prototype = {
 			return;
 		}
 
-		var containerPosition = b.mStrip.boxObject[this.positionProp];
-		var containerSize     = b.mStrip.boxObject[this.sizeProp];
+		var containerPosition = this.tabStrip.boxObject[this.positionProp];
+		var containerSize     = this.tabStrip.boxObject[this.sizeProp];
 		var parentPosition    = aTab.boxObject[this.positionProp];
 		var lastPosition      = lastVisible.boxObject[this.positionProp];
 		var tabSize           = lastVisible.boxObject[this.sizeProp];
