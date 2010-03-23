@@ -35,6 +35,7 @@ tabbrowser:not([treestyletab-tabbar-autohide="hidden"]) .treestyletab-tabbar-tog
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > .scrollbutton-down, /* Firefox 3 */
 .tabbrowser-tabs[treestyletab-hide-alltabs-button="true"] .tabs-alltabs-stack,
 .tabbrowser-tabs[treestyletab-hide-alltabs-button="true"] .tabbrowser-arrowscrollbox ~ stack, /* "all tabs" button in Firefox 3 and 3.5 */
+.tabbrowser-tabs[treestyletab-hide-alltabs-button="true"] .tabs-alltabs-button, /* Firefox 3.7 */
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-closebutton-box,
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tab-drop-indicator-bar {
 	visibility: collapse !important;
