@@ -105,7 +105,7 @@ window.addEventListener('DOMContentLoaded', function() {
 		},
 		addBookmarkTabsFilter : addBookmarkTabsFilter,
 
-		Prefs : Components.classes['@mozilla.org/preferences-service;']
+		Prefs : Components.classes['@mozilla.org/preferences-service;1']
 					.getService(Components.interfaces.nsIPrefBranch),
 
 		getTabBrowserFromChild : function(aTab) 
