@@ -12,7 +12,7 @@
    in JS files:
      window['piro.sakura.ne.jp'].bookmarkMultipleTabs.addBookmarkFor(tabsArray, folderName);
 
- lisence: The MIT License, Copyright (c) 2009 SHIMODA "Piro" Hiroshi
+ lisence: The MIT License, Copyright (c) 2009-2010 SHIMODA "Piro" Hiroshi
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/license.txt
  original:
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/bookmarkMultipleTabs.xul
@@ -24,7 +24,7 @@
 window.addEventListener('DOMContentLoaded', function() {
 	window.removeEventListener('DOMContentLoaded', arguments.callee, true);
 
-	const currentRevision = 3;
+	const currentRevision = 4;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -105,18 +105,18 @@ window.addEventListener('DOMContentLoaded', function() {
 		},
 		addBookmarkTabsFilter : addBookmarkTabsFilter,
 
-		Prefs : Components.classes['@mozilla.org/preferences;1']
+		Prefs : Components.classes['@mozilla.org/preferences-service;']
 					.getService(Components.interfaces.nsIPrefBranch),
 
 		getTabBrowserFromChild : function(aTab) 
 		{
-			return aTab.ownerDocument.evaluate(
-					'ancestor-or-self::*[local-name()="tabbrowser"]',
-					aTab,
-					null,
-					XPathResult.FIRST_ORDERED_NODE_TYPE,
-					null
+			var b = this.evaluateXPath(
+					'ancestor-or-self::*[local-name()="tabbrowser"] | '+
+					'ancestor-or-self::*[local-name()="tabs"][@tabbrowser]',
+					aNode,
+					XPathResult.FIRST_ORDERED_NODE_TYPE
 				).singleNodeValue;
+			return (b && b.tabbrowser) || b;
 		}
 	};
 }, true);

@@ -782,11 +782,13 @@ var TreeStyleTabUtils = {
 		if (aTabBrowserChild.localName == 'tabbrowser')
 			return aTabBrowserChild;
 
-		return this.evaluateXPath(
-				'ancestor::xul:tabbrowser[1]',
+		var b = this.evaluateXPath(
+				'ancestor::xul:tabbrowser | '+
+				'ancestor::xul:tabs[@tabbrowser]',
 				aTabBrowserChild,
 				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
+		return (b && b.tabbrowser) || b;
 	},
  
 	getTabBrowserFromFrame : function TSTUtils_getTabBrowserFromFrame(aFrame) 
