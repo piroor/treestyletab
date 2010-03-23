@@ -253,7 +253,11 @@ tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .treestyl
 .tabbrowser-tabs[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
   .tabs-container > .tabs-closebutton,
 .tabbrowser-tabs[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
-  .tabs-container > .tabs-closebutton:hover {
+  > .tabs-closebutton,
+.tabbrowser-tabs[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  .tabs-container > .tabs-closebutton:hover,
+.tabbrowser-tabs[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+  > .tabs-closebutton:hover {
   -moz-appearance: none !important;
   background: transparent !important;
   border: 0 none !important;
