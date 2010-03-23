@@ -725,7 +725,7 @@ var TreeStyleTabUtils = {
 	getTabbarFromEvent : function TSTUtils_getTabbarFromEvent(aEvent) 
 	{
 		return this.evaluateXPath(
-				'ancestor-or-self::*[contains(concat(" ", normalize-space(@class), " "), " tabbrowser-strip ")]',
+				'ancestor-or-self::*[contains(concat(" ", normalize-space(@class), " "), " tabbrowser-strip ") or (local-name()="tabs" and @tabbrowser)]',
 				aEvent.originalTarget || aEvent.target,
 				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
@@ -1261,11 +1261,12 @@ var TreeStyleTabUtils = {
 		if (!aTab) return null;
 		var id = aTab.getAttribute(this.kID);
 		if (!id) return null; // not initialized yet
-		return this.evaluateXPath(
+		var tab = this.evaluateXPath(
 				'parent::*/child::xul:tab[contains(concat("|", @'+this.kCHILDREN+', "|"), "|'+id+'|")]',
 				aTab,
 				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
+		return tab == aTab ? null : tab ;
 	},
  
 	getRootTab : function TSTUtils_getRootTab(aTab) /* PUBLIC API */ 
