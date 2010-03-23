@@ -290,3 +290,12 @@ toolbar[treestyletab-style~="square"][treestyletab-tabbar-position="right"][tree
 	background-image: url("tab-bg-selected-hover.png") !important;
 }
 
+
+/* vertical tab bar */
+
+#TabsToolbar .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"] {
+	border: none 0;
+	margin: 0;
+	padding: 0;
+	-moz-box-shadow: none;
+}
