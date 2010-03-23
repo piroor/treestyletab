@@ -20,12 +20,12 @@
 .tabbrowser-tabs:not([treestyletab-allow-subtree-collapse="true"]) .treestyletab-twisty-container,
 .tabbrowser-tabs[treestyletab-allow-subtree-collapse="true"] .tabbrowser-tab[treestyletab-collapsed-done="true"],
 .tabbrowser-strip[collapsed="true"]+splitter:not([state="collapsed"]),
-tabbrowser[treestyletab-tabbar-autohide="hidden"] .tabbrowser-strip,
+.tabbrowser-strip[treestyletab-tabbar-autohide="hidden"],
 .tabbrowser-tabs[treestyletab-tabbar-autohide="hidden"],
-tabbrowser[treestyletab-tabbar-autohide="hidden"] .tabbrowser-strip+splitter,
+.tabbrowser-strip[treestyletab-tabbar-autohide="hidden"]+splitter,
 tabbrowser:not([treestyletab-tabbar-autohide="hidden"]) .treestyletab-tabbar-toggler,
 #appcontent[ahFull="true"] .tabbrowser-strip[ahHIDE="true"]+splitter /* AutoHide */,
-tabbrowser[treestyletab-tabbar-fixed="true"] .tabbrowser-strip+splitter {
+.tabbrowser-strip[treestyletab-tabbar-fixed="true"]+splitter {
 	visibility: collapse;
 }
 
