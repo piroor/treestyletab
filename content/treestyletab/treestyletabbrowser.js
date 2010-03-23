@@ -158,6 +158,7 @@ TreeStyleTabBrowser.prototype = {
 		this.stopRendering();
 
 		var b = this.mTabBrowser;
+		b.tabContainer.treeStyleTab = this;
 
 		this._tabsCache = {};
 
@@ -171,7 +172,7 @@ TreeStyleTabBrowser.prototype = {
 			if (!toggler) {
 				toggler = document.createElement('spacer');
 				toggler.setAttribute('class', this.kTABBAR_TOGGLER);
-				this.tabStrip.parentNode.insertBefore(toggler, this.tabStrip);
+				b.mTabBox.insertBefore(toggler, b.mTabBox.firstChild);
 			}
 		}
 
@@ -350,13 +351,24 @@ TreeStyleTabBrowser.prototype = {
 
 		this.updateTabDNDObserver(b);
 
-		eval('b.getNewIndex = '+
-			b.getNewIndex.toSource().replace(
-				/\.screenX/g, '[this.treeStyleTab.positionProp]'
-			).replace(
-				/\.width/g, '[this.treeStyleTab.sizeProp]'
-			)
-		);
+		if (b.tabContainer && '_getDropIndex' in b.tabContainer) { // Firefox 3.7 or later
+			eval('b.tabContainer._getDropIndex = '+
+				b.tabContainer._getDropIndex.toSource().replace(
+					/\.screenX/g, '[this.treeStyleTab.positionProp]'
+				).replace(
+					/\.width/g, '[this.treeStyleTab.sizeProp]'
+				)
+			);
+		}
+		else if ('getNewIndex' in b) { // Firefox 3.6 or older
+			eval('b.getNewIndex = '+
+				b.getNewIndex.toSource().replace(
+					/\.screenX/g, '[this.treeStyleTab.positionProp]'
+				).replace(
+					/\.width/g, '[this.treeStyleTab.sizeProp]'
+				)
+			);
+		}
 
 		eval('b.moveTabForward = '+
 			b.moveTabForward.toSource().replace(
@@ -416,6 +428,7 @@ TreeStyleTabBrowser.prototype = {
 			)
 		);
 
+/*
 		if ('' in b) { // Firefox 3.7-
 			eval('b._handleKeyEvent = '+
 				b._handleKeyEvent.toSource().replace(
@@ -445,7 +458,7 @@ TreeStyleTabBrowser.prototype = {
 				)
 			);
 		}
-		else if ('_keyEventHandler' in b) { // -Firefox 3.6
+		else */if ('_keyEventHandler' in b) { // Firefox 3.6 or older
 			eval('b._keyEventHandler.handleEvent = '+
 				b._keyEventHandler.handleEvent.toSource().replace(
 					'this.tabbrowser.moveTabOver(aEvent);',
@@ -510,12 +523,14 @@ TreeStyleTabBrowser.prototype = {
 			)
 		);
 
-		eval('b.onTabBarDblClick = '+
-			b.onTabBarDblClick.toSource().replace(
-				'aEvent.originalTarget.localName == "box"',
-				'/^(box|(arrow)?scrollbox|tabs)$/.test(aEvent.originalTarget.localName)'
-			)
-		);
+		if ('onTabBarDblClick' in b) { // Firefox 3.6 or older
+			eval('b.onTabBarDblClick = '+
+				b.onTabBarDblClick.toSource().replace(
+					'aEvent.originalTarget.localName == "box"',
+					'/^(box|(arrow)?scrollbox|tabs)$/.test(aEvent.originalTarget.localName)'
+				)
+			);
+		}
 
 		if ('_onDragEnd' in b) {
 			eval('b._onDragEnd = '+b._onDragEnd.toSource().replace(
@@ -569,7 +584,8 @@ TreeStyleTabBrowser.prototype = {
 		this.onPrefChange('extensions.treestyletab.tabbar.invertTabContents');
 		this.onPrefChange('extensions.treestyletab.tabbar.invertClosebox');
 
-		var tabContextMenu = document.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu');
+		var tabContextMenu = document.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu') ||
+							document.getAnonymousElementByAttribute(b.tabContainer, 'anonid', 'tabContextMenu');
 		tabContextMenu.addEventListener('popupshowing', this, false);
 		if (!('MultipleTabService' in window)) {
 			window.setTimeout(function(aSelf, aTabBrowser, aPopup) {
@@ -855,6 +871,7 @@ TreeStyleTabBrowser.prototype = {
 		var strip = this.tabStrip;
 		var splitter = this._ensureNewSplitter();
 		var toggler = document.getAnonymousElementByAttribute(b, 'class', this.kTABBAR_TOGGLER);
+		var indicator = b.mTabDropIndicatorBar || b.tabContainer._tabDropIndicator;
 
 		// Tab Mix Plus
 		var scrollFrame, newTabBox, tabBarMode;
@@ -939,7 +956,7 @@ TreeStyleTabBrowser.prototype = {
 					   unexpectedly becomes 0 on the startup. so, we have
 					   to set the width again. */
 					strip.setAttribute('width', aSelf.getTreePref('tabbar.width'));
-					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
+					indicator.setAttribute('ordinal', 1);
 					strip.setAttribute('ordinal', 30);
 					aSplitter.setAttribute('ordinal', 20);
 					aToggler.setAttribute('ordinal', 40);
@@ -952,7 +969,7 @@ TreeStyleTabBrowser.prototype = {
 				this.setTabbarAttribute(this.kTAB_INVERTED, null, b);
 				this.indentTarget = 'left';
 				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
-					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
+					indicator.setAttribute('ordinal', 1);
 					strip.setAttribute('ordinal', 10);
 					aSplitter.setAttribute('ordinal', 20);
 					aToggler.setAttribute('ordinal', 5);
@@ -998,7 +1015,7 @@ TreeStyleTabBrowser.prototype = {
 				this.setTabbarAttribute(this.kTABBAR_POSITION, 'bottom', b);
 				this.indentTarget = 'bottom';
 				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
-					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
+					indicator.setAttribute('ordinal', 1);
 					strip.setAttribute('ordinal', 30);
 					aSplitter.setAttribute('ordinal', 20);
 					aToggler.setAttribute('ordinal', 40);
@@ -1009,7 +1026,7 @@ TreeStyleTabBrowser.prototype = {
 				this.setTabbarAttribute(this.kTABBAR_POSITION, 'top', b);
 				this.indentTarget = 'top';
 				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
-					aTabBrowser.mTabDropIndicatorBar.setAttribute('ordinal', 1);
+					indicator.setAttribute('ordinal', 1);
 					strip.setAttribute('ordinal', 10);
 					aSplitter.setAttribute('ordinal', 20);
 					aToggler.setAttribute('ordinal', 5);
@@ -1158,6 +1175,7 @@ TreeStyleTabBrowser.prototype = {
 		delete this._autoHide;
 
 		var b = this.mTabBrowser;
+		delete b.tabContainer.treeStyleTab;
 
 		this.getTabsArray(b).forEach(function(aTab) {
 			this.destroyTab(aTab);

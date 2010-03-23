@@ -789,13 +789,17 @@ var TreeStyleTabUtils = {
 	
 	getTabBrowserFromChild : function TSTUtils_getTabBrowserFromChild(aTabBrowserChild) 
 	{
-		if (!aTabBrowserChild) return null;
+		if (!aTabBrowserChild)
+			return null;
 
-		if (aTabBrowserChild.__treestyletab__linkedTabBrowser)
+		if (aTabBrowserChild.__treestyletab__linkedTabBrowser) // tab
 			return aTabBrowserChild.__treestyletab__linkedTabBrowser;
 
-		if (aTabBrowserChild.localName == 'tabbrowser')
+		if (aTabBrowserChild.localName == 'tabbrowser') // itself
 			return aTabBrowserChild;
+
+		if (aTabBrowserChild.tabbrowser) // tabs, Firefox 3.7 or later
+			return aTabBrowserChild.tabbrowser;
 
 		var b = this.evaluateXPath(
 				'ancestor::xul:tabbrowser | '+
