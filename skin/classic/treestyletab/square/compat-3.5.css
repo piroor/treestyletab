@@ -12,11 +12,13 @@
 	-moz-box-shadow: 0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15) !important;
 }
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"]
-  .tabs-container:not([overflow="true"]) .tabbrowser-arrowscrollbox .scrollbox-innerbox {
+  .tabs-container:not([overflow="true"]) .tabbrowser-arrowscrollbox .scrollbox-innerbox,
+toolbar .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"]:not([overflow="true"]) .tabbrowser-arrowscrollbox .scrollbox-innerbox {
 	background: url("newtab-shadow.png") repeat-x bottom !important;
 }
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"]
-  .tabs-container:not([overflow="true"]) .tabbrowser-arrowscrollbox .tabs-newtab-button {
+  .tabs-container:not([overflow="true"]) .tabbrowser-arrowscrollbox .tabs-newtab-button,
+toolbar .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"]:not([overflow="true"]) .tabbrowser-arrowscrollbox .tabs-newtab-button {
 	margin-bottom: 5px !important;
 }
 

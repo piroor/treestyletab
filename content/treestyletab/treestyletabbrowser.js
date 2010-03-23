@@ -75,6 +75,12 @@ TreeStyleTabBrowser.prototype = {
 				.QueryInterface(Components.interfaces.nsIScrollBoxObject); // Tab Mix Plus (ensure scrollbox-ed)
 	},
  
+	get splitter() 
+	{
+		return document.getAnonymousElementByAttribute(this.mTabBrowser, 'class', this.kSPLITTER) ||
+				document.getAnonymousElementByAttribute(this.mTabBrowser, 'id', 'tabkit-splitter'); // Tab Kit
+	},
+ 
 /* utils */ 
 	
 /* get tab contents */ 
@@ -176,7 +182,7 @@ TreeStyleTabBrowser.prototype = {
 			}
 			placeholder = document.getAnonymousElementByAttribute(b, 'class', 'tabbrowser-strip');
 			if (!placeholder) {
-				placeholder = document.createElement('spacer');
+				placeholder = document.createElement('hbox');
 				placeholder.setAttribute('class', 'tabbrowser-strip');
 				b.mTabBox.insertBefore(placeholder, toggler.nextSibling);
 				this.placeholder = placeholder;
@@ -211,6 +217,9 @@ TreeStyleTabBrowser.prototype = {
 		b.mPanelContainer.addEventListener('dragexit', this, false);
 		b.mPanelContainer.addEventListener('dragover', this, false);
 		b.mPanelContainer.addEventListener('dragdrop', this, false);
+
+		if (this.placeholder)
+			window.addEventListener('resize', this, true);
 
 		b.addEventListener('MultipleTabHandlerTabsClosing', this, false);
 
@@ -1095,12 +1104,17 @@ TreeStyleTabBrowser.prototype = {
 	
 	_ensureNewSplitter : function TSTBrowser__ensureNewSplitter() 
 	{
-		var splitter = document.getAnonymousElementByAttribute(this.mTabBrowser, 'class', this.kSPLITTER) ||
-					document.getAnonymousElementByAttribute(this.mTabBrowser, 'id', 'tabkit-splitter'); // Tab Kit
+		var splitter = this.splitter;
 
 		// We always have to re-create splitter, because its "collapse"
 		// behavior becomes broken by repositioning of the tab bar.
 		if (splitter) {
+			try {
+				splitter.removeEventListener('mouseup', this, false);
+				splitter.removeEventListener('click', this, false);
+			}
+			catch(e) {
+			}
 			let oldSplitter = splitter;
 			splitter = oldSplitter.cloneNode(true);
 			oldSplitter.parentNode.removeChild(oldSplitter);
@@ -1115,6 +1129,9 @@ TreeStyleTabBrowser.prototype = {
 		if (splitterClass.indexOf(this.kSPLITTER) < 0)
 			splitterClass += (splitterClass ? ' ' : '' ) + this.kSPLITTER;
 		splitter.setAttribute('class', splitterClass);
+
+		splitter.addEventListener('mouseup', this, false);
+		splitter.addEventListener('click', this, false);
 
 		var ref = this.mTabBrowser.mPanelContainer;
 		ref.parentNode.insertBefore(splitter, ref);
@@ -1138,14 +1155,21 @@ TreeStyleTabBrowser.prototype = {
 				this.setTabbarAttribute(this.kFIXED, true, b);
 				if (!this.isMultiRow()) {
 					this.tabStrip.removeAttribute('height');
+					if (this.placeholder)
+						this.placeholder.removeAttribute('height');
 					b.mPanelContainer.removeAttribute('height');
 				}
 			}
 			else {
 				this.setTabbarAttribute(this.kFIXED, null, b);
-				this.tabStrip.setAttribute('height', this.getTreePref('tabbar.height'));
+				let h = this.getTreePref('tabbar.height');
+				this.tabStrip.setAttribute('height', h);
+				if (this.placeholder)
+					this.placeholder.setAttribute('height', h);
 			}
 		}
+
+		this.updateTabbarSize();
 
 		this.setTabbarAttribute(this.kINDENTED, this.getTreePref('enableSubtreeIndent.'+orient) ? 'true' : null , b);
 		this.setTabbarAttribute(this.kALLOW_COLLAPSE, this.getTreePref('allowSubtreeCollapseExpand.'+orient) ? 'true' : null , b);
@@ -1161,18 +1185,24 @@ TreeStyleTabBrowser.prototype = {
 		if (!placeholder) return;
 
 		var strip = this.tabStrip;
-		var box = placeholder.boxObject;
+		var tabContainer = this.mTabBrowser.tabContainer;
 		if (this.currentTabbarPosition == 'top') {
 			strip.style.position = 'static';
 			strip.style.MozAppearance = '';
 		}
 		else {
 			strip.style.position = 'fixed';
-			strip.style.top = box.y;
-			strip.style.left = box.x;
 			strip.style.MozAppearance = 'none';
-			strip.style.width = (strip.width = box.width)+'px';
-			strip.style.height = (strip.height = box.height)+'px';
+
+			let box = placeholder.boxObject;
+			let root = document.documentElement.boxObject;
+			strip.style.top = (box.screenY - root.screenY)+'px';
+			strip.style.left = (box.screenX - root.screenX)+'px';
+
+			strip.style.width = (tabContainer.width = box.width)+'px';
+			strip.style.height = (tabContainer.height = box.height)+'px';
+
+			tabContainer.collapsed = (this.splitter && this.splitter.getAttribute('state') == 'collapsed');
 		}
 	},
  
@@ -1255,6 +1285,9 @@ TreeStyleTabBrowser.prototype = {
 		b.mPanelContainer.removeEventListener('dragexit', this, false);
 		b.mPanelContainer.removeEventListener('dragover', this, false);
 		b.mPanelContainer.removeEventListener('dragdrop', this, false);
+
+		if (this.placeholder)
+			window.removeEventListener('resize', this, true);
 
 		b.removeEventListener('MultipleTabHandlerTabsClosing', this, false);
 
@@ -1436,6 +1469,11 @@ TreeStyleTabBrowser.prototype = {
 				if (!this.autoHide.isResizing && this.isVertical) {
 					this.tabStrip.removeAttribute('width');
 					this.tabStrip.setAttribute('width', this.autoHide.widthFromMode);
+					if (this.placeholder) {
+						this.placeholder.removeAttribute('width');
+						this.placeholder.setAttribute('width', this.autoHide.widthFromMode);
+					}
+					this.updateTabbarSize();
 				}
 				this.checkTabsIndentOverflow();
 				break;
@@ -1542,6 +1580,9 @@ TreeStyleTabBrowser.prototype = {
 			case 'overflow':
 			case 'underflow':
 				return this.onTabbarOverflow(aEvent);
+
+			case 'resize':
+				return this.onResize(aEvent);
 
 
 			case 'MultipleTabHandlerTabsClosing':
@@ -2561,6 +2602,21 @@ TreeStyleTabBrowser.prototype = {
 		else {
 			tabs.removeAttribute('overflow');
 		}
+	},
+ 
+	onResize : function TSTBrowser_onResize(aEvent) 
+	{
+		if (
+			!aEvent.originalTarget ||
+			(
+				aEvent.originalTarget.ownerDocument != document &&
+				aEvent.originalTarget != window &&
+				aEvent.originalTarget != this.mTabBrowser.contentWindow
+			)
+			)
+			return;
+
+		this.updateTabbarSize();
 	},
  
 	onPopupShowing : function TSTBrowser_onPopupShowing(aEvent) 
