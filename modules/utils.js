@@ -51,6 +51,7 @@ Components.utils.import('resource://treestyletab-modules/stringBundle.js', strin
 stringBundle = stringBundle.window['piro.sakura.ne.jp'].stringBundle;
  
 var TreeStyleTabUtils = { 
+	tabsHash : null,
 	
 /* attributes */ 
 	kID                 : 'treestyletab-id',
@@ -845,12 +846,20 @@ var TreeStyleTabUtils = {
 	getTabById : function TSTUtils_getTabById(aId, aTabBrowserChildren) 
 	{
 		if (!aId) return null;
+
+		if (aTabBrowserChildren && !(aTabBrowserChildren instanceof Ci.nsIDOMNode))
+			aTabBrowserChildren = null;
+
 		var b = this.getTabBrowserFromChild(aTabBrowserChildren) || this.browser;
+
+		if (this.tabsHash) // XPath-less implementation
+			return this.tabsHash[aId] || null;
+
 		return this.evaluateXPath(
-				'descendant::xul:tab[@'+this.kID+' = "'+aId+'"]',
-				b.mTabContainer,
-				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue;
+			'descendant::xul:tab[@'+this.kID+' = "'+aId+'"]',
+			b.mTabContainer,
+			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
+		).singleNodeValue;
 	},
  
 	isTabDuplicated : function TSTUtils_isTabDuplicated(aTab) 
@@ -859,19 +868,19 @@ var TreeStyleTabUtils = {
 		var id = this.getTabValue(aTab, this.kID);
 		var b = this.getTabBrowserFromChild(aTab) || this.browser;
 		return this.evaluateXPath(
-				'count(descendant::xul:tab[@'+this.kID+' = "'+id+'" or @'+this.kID_RESTORING+' = "'+id+'"]) > 1',
-				b.mTabContainer,
-				Ci.nsIDOMXPathResult.BOOLEAN_TYPE
-			).booleanValue;
+			'count(descendant::xul:tab[@'+this.kID+' = "'+id+'" or @'+this.kID_RESTORING+' = "'+id+'"]) > 1',
+			b.mTabContainer,
+			Ci.nsIDOMXPathResult.BOOLEAN_TYPE
+		).booleanValue;
 	},
  
 	getTabs : function TSTUtils_getTabs(aTabBrowserChild) /* OBSOLETE */ 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
 		return this.evaluateXPath(
-				'descendant::xul:tab',
-				b.mTabContainer
-			);
+			'descendant::xul:tab',
+			b.mTabContainer
+		);
 	},
  
 	getTabsArray : function TSTUtils_getTabsArray(aTabBrowserChild) 
@@ -1259,85 +1268,118 @@ var TreeStyleTabUtils = {
 	getParentTab : function TSTUtils_getParentTab(aTab) /* PUBLIC API */ 
 	{
 		if (!aTab) return null;
-		var id = aTab.getAttribute(this.kID);
-		if (!id) return null; // not initialized yet
+
+		if (this.tabsHash) { // XPath-less implementation
+			let parent = this.getTabById(aTab.getAttribute(this.kPARENT));
+			return (parent && parent._tPos < aTab._tPos) ? parent : null ;
+		}
+
 		return this.evaluateXPath(
-				'preceding-sibling::xul:tab[contains('+
-					'concat("|", @'+this.kCHILDREN+', "|"),'+
-					'"|'+id+'|"'+
-				')][1]',
-				aTab,
-				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue;
+			'preceding-sibling::xul:tab[@'+this.kID+'="'++'"][1]',
+			aTab,
+			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
+		).singleNodeValue;
 	},
  
 	getRootTab : function TSTUtils_getRootTab(aTab) /* PUBLIC API */ 
 	{
-		var parent = aTab;
-		var root   = aTab;
-		while (parent = this.getParentTab(parent))
-		{
-			root = parent;
+		if (!aTab) return null;
+
+		if (this.tabsHash) { // XPath-less implementation
+			let parent = aTab;
+			let root   = aTab;
+			while (parent = this.getParentTab(parent))
+			{
+				root = parent;
+			}
+			return root;
 		}
-		return root;
+
+		return this.evaluateXPath(
+			'(self::*[not(@'+this.kPARENT+')] | preceding-sibling::xul:tab[not(@'+this.kPARENT+')])[last()]',
+			aTab,
+			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
+		).singleNodeValue;
 	},
  
 	getNextSiblingTab : function TSTUtils_getNextSiblingTab(aTab) /* PUBLIC API */ 
 	{
 		if (!aTab) return null;
 
-		var parentTab = this.getParentTab(aTab);
+		if (this.tabsHash) { // XPath-less implementation
+			let parentTab = this.getParentTab(aTab);
 
-		if (!parentTab) {
-			let next = aTab;
-			do {
-				next = next.nextSibling;
+			if (!parentTab) {
+				let next = aTab;
+				do {
+					next = next.nextSibling;
+				}
+				while (next &&
+						next.nodeType == Ci.nsIDOMNode.ELEMENT_NODE &&
+						this.getParentTab(next));
+				return next;
 			}
-			while (next &&
-					next.nodeType == Ci.nsIDOMNode.ELEMENT_NODE &&
-					this.getParentTab(next));
-			return next;
+
+			let children = parentTab.getAttribute(this.kCHILDREN);
+			if (children) {
+				let list = ('|'+children).split('|'+aTab.getAttribute(this.kID))[1].split('|');
+				for (let i = 0, maxi = list.length; i < maxi; i++)
+				{
+					let firstChild = this.getTabById(list[i], aTab);
+					if (firstChild) return firstChild;
+				}
+			}
+			return null;
 		}
 
-		var children = parentTab.getAttribute(this.kCHILDREN);
-		if (children) {
-			let list = ('|'+children).split('|'+aTab.getAttribute(this.kID))[1].split('|');
-			for (let i = 0, maxi = list.length; i < maxi; i++)
-			{
-				let firstChild = this.getTabById(list[i], aTab);
-				if (firstChild) return firstChild;
-			}
-		}
-		return null;
+		var parent = aTab.getAttribute(this.kPARENT);
+		return this.evaluateXPath(
+			'following-sibling::xul:tab['+
+				(parent ? '@'+this.kPARENT+'="'+parent+'"' : 'not(@'+this.kPARENT+')' )+
+			'][1]',
+			aTab,
+			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
+		).singleNodeValue;
 	},
  
 	getPreviousSiblingTab : function TSTUtils_getPreviousSiblingTab(aTab) /* PUBLIC API */ 
 	{
 		if (!aTab) return null;
 
-		var parentTab = this.getParentTab(aTab);
+		if (this.tabsHash) { // XPath-less implementation
+			let parentTab = this.getParentTab(aTab);
 
-		if (!parentTab) {
-			let prev = aTab;
-			do {
-				prev = prev.previousSibling;
+			if (!parentTab) {
+				let prev = aTab;
+				do {
+					prev = prev.previousSibling;
+				}
+				while (prev &&
+						prev.nodeType == Ci.nsIDOMNode.ELEMENT_NODE &&
+						this.getParentTab(prev));
+				return prev;
 			}
-			while (prev &&
-					prev.nodeType == Ci.nsIDOMNode.ELEMENT_NODE &&
-					this.getParentTab(prev));
-			return prev;
+
+			let children = parentTab.getAttribute(this.kCHILDREN);
+			if (children) {
+				let list = ('|'+children).split('|'+aTab.getAttribute(this.kID))[0].split('|');
+				for (let i = list.length-1; i > -1; i--)
+				{
+					let lastChild = this.getTabById(list[i], aTab);
+					if (lastChild) return lastChild;
+				}
+			}
+			return null;
 		}
 
-		var children = parentTab.getAttribute(this.kCHILDREN);
-		if (children) {
-			let list = ('|'+children).split('|'+aTab.getAttribute(this.kID))[0].split('|');
-			for (let i = list.length-1; i > -1; i--)
-			{
-				let lastChild = this.getTabById(list[i], aTab);
-				if (lastChild) return lastChild;
-			}
-		}
-		return null;
+		var parent = aTab.getAttribute(this.kPARENT);
+		return this.evaluateXPath(
+			'preceding-sibling::xul:tab['+
+				(parent ? '@'+this.kPARENT+'="'+parent+'"' : 'not(@'+this.kPARENT+')' )+
+			'][1]',
+			aTab,
+			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
+		).singleNodeValue;
 	},
  
 	getChildTabs : function TSTUtils_getChildTabs(aTab, aAllTabsArray) /* PUBLIC API */ 
@@ -1380,76 +1422,114 @@ var TreeStyleTabUtils = {
 	{
 		if (!aTab) return null;
 
-		var children   = aTab.getAttribute(this.kCHILDREN);
-		var firstChild = null;
-		if (children) {
-			let list = children.split('|');
-			for (let i = 0, maxi = list.length; i < maxi; i++)
-			{
-				firstChild = this.getTabById(list[i], aTab);
-				if (firstChild) break;
+		if (this.tabsHash) { // XPath-less implementation
+			let children   = aTab.getAttribute(this.kCHILDREN);
+			let firstChild = null;
+			if (children) {
+				let list = children.split('|');
+				for (let i = 0, maxi = list.length; i < maxi; i++)
+				{
+					firstChild = this.getTabById(list[i], aTab);
+					if (firstChild) break;
+				}
 			}
+			return firstChild;
 		}
-		return firstChild;
+
+		return this.evaluateXPath(
+			'following-sibling::xul:tab[@'+this.kPARENT+'="'+aTab.getAttribute(this.kID)+'"][1]',
+			aTab,
+			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
+		).singleNodeValue;
 	},
  
 	getLastChildTab : function TSTUtils_getLastChildTab(aTab) /* PUBLIC API */ 
 	{
 		if (!aTab) return null;
 
-		var children  = aTab.getAttribute(this.kCHILDREN);
-		var lastChild = null;
-		if (children) {
-			let list = children.split('|');
-			for (let i = list.length-1; i > -1; i--)
-			{
-				lastChild = this.getTabById(list[i], aTab);
-				if (lastChild) break;
+		if (this.tabsHash) { // XPath-less implementation
+			let children  = aTab.getAttribute(this.kCHILDREN);
+			let lastChild = null;
+			if (children) {
+				let list = children.split('|');
+				for (let i = list.length-1; i > -1; i--)
+				{
+					lastChild = this.getTabById(list[i], aTab);
+					if (lastChild) break;
+				}
 			}
+			return lastChild;
 		}
-		return lastChild;
+
+		return this.evaluateXPath(
+			'following-sibling::xul:tab[@'+this.kPARENT+'="'+aTab.getAttribute(this.kID)+'"][last()]',
+			aTab,
+			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
+		).singleNodeValue;
 	},
  
 	getLastDescendantTab : function TSTUtils_getLastDescendantTab(aTab) /* PUBLIC API */ 
 	{
 		if (!aTab) return null;
 
-		var tabs = this.getDescendantTabs(aTab);
-		return tabs.length ? tabs[tabs.length-1] : null ;
-	},
- 
-	getChildIndex : function TSTUtils_getChildIndex(aTab, aParent) 
-	{
-		var parent = this.getParentTab(aTab);
-		if (!aParent || !parent || aParent != parent) {
-			parent = aTab;
-			while (parent && parent != aParent)
-			{
-				aTab = parent;
-				parent = this.getParentTab(parent);
-			}
-			if (parent != aParent)
-				return -1;
-			aParent = parent;
+		if (this.tabsHash) { // XPath-less implementation
+			let tabs = this.getDescendantTabs(aTab);
+			return tabs.length ? tabs[tabs.length-1] : null ;
 		}
 
-		if (aParent) {
-			let children = aParent.getAttribute(this.kCHILDREN);
-			let list = children.split('|');
-			let id = aTab.getAttribute(this.kID);
-			for (let i = 0, maxi = list.length; i < maxi; i++)
-			{
-				if (list[i] == id) return i;
+		var parent = aTab.getAttribute(this.kPARENT);
+		return this.evaluateXPath(
+			'following-sibling::xul:tab['+
+				(parent ? '@'+this.kPARENT+'="'+parent+'"' : 'not(@'+this.kPARENT+')' )+
+			'][1]/preceding-sibling::xul:tab[1][not(@'+this.kID+'="'+aTab.getAttribute(this.kID)+'")]',
+			aTab,
+			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
+		).singleNodeValue;
+	},
+ 
+	getChildIndex : function TSTUtils_getChildIndex(aTab, aParent) /* PUBLIC API */ 
+	{
+		if (this.tabsHash) { // XPath-less implementation
+			let parent = this.getParentTab(aTab);
+			if (!aParent || !parent || aParent != parent) {
+				parent = aTab;
+				while (parent && parent != aParent)
+				{
+					aTab = parent;
+					parent = this.getParentTab(parent);
+				}
+				if (parent != aParent)
+					return -1;
+				aParent = parent;
+			}
+
+			if (aParent) {
+				let children = aParent.getAttribute(this.kCHILDREN);
+				let list = children.split('|');
+				let id = aTab.getAttribute(this.kID);
+				for (let i = 0, maxi = list.length; i < maxi; i++)
+				{
+					if (list[i] == id) return i;
+				}
+				return -1;
+			}
+			else {
+				let tabs = this.rootTabs;
+				for (let i = 0, maxi = tabs.length; i < maxi; i++)
+				{
+					if (tabs[i] == aTab) return i;
+				}
 			}
 			return -1;
 		}
-		else {
-			let tabs = this.rootTabs;
-			for (let i = 0, maxi = tabs.length; i < maxi; i++)
-			{
-				if (tabs[i] == aTab) return i;
-			}
-		}
+
+		var parent = aTab.getAttribute(this.kPARENT);
+		if (!parent) return -1;
+		return this.evaluateXPath(
+			'count(preceding-sibling::xul:tab[@'+this.kPARENT+' and @'+this.kPARENT+'="'+parent+'"])',
+			aTab,
+			Ci.nsIDOMXPathResult.NUMBER_TYPE
+		).numberValue;
 	},
  
 	getXOffsetOfTab : function TSTUtils_getXOffsetOfTab(aTab) 

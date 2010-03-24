@@ -133,29 +133,6 @@ TreeStyleTabBrowser.prototype = {
 	{
 		return false;
 	},
- 
-	getTabById : function TSTBrowser_getTabById(aId, aTabBrowserChildren) /* PUBLIC API */ 
-	{
-		if (aTabBrowserChildren && !(aTabBrowserChildren instanceof Ci.nsIDOMNode))
-			aTabBrowserChildren = null;
-
-		if (aTabBrowserChildren) {
-			var b = this.getTabBrowserFromChild(aTabBrowserChildren);
-			if (!b)
-				return null;
-			if (b != this.mTabBrowser)
-				return b.treeStyleTab.getTabById(aId);
-		}
-
-		return this._tabsCache[aId] || null;
-	},
- 
-	getParentTab : function TSTBrowser_getParentTab(aTab) /* PUBLIC API */ 
-	{
-		if (!aTab) return null;
-		var b = this.getTabBrowserFromChild(aTab);
-		return b.treeStyleTab.getTabById(aTab.getAttribute(this.kPARENT));
-	},
   
 /* initialize */ 
 	
@@ -166,7 +143,7 @@ TreeStyleTabBrowser.prototype = {
 		var b = this.mTabBrowser;
 		b.tabContainer.treeStyleTab = this;
 
-		this._tabsCache = {};
+		this.tabsHash = {};
 
 		this.internallyTabMovingCount = 0;
 		this.subTreeMovingCount = 0;
@@ -695,12 +672,12 @@ TreeStyleTabBrowser.prototype = {
 			window.setTimeout(function(aSelf) {
 				if (!aSelf.getTabValue(aTab, aSelf.kID)) {
 					aSelf.setTabValue(aTab, aSelf.kID, id);
-					if (!(id in aSelf._tabsCache))
-						aSelf._tabsCache[id] = aTab;
+					if (!(id in aSelf.tabsHash))
+						aSelf.tabsHash[id] = aTab;
 				}
 			}, 0, this);
-			if (!(id in this._tabsCache))
-				this._tabsCache[id] = aTab;
+			if (!(id in this.tabsHash))
+				this.tabsHash[id] = aTab;
 		}
 
 		aTab.__treestyletab__linkedTabBrowser = this.mTabBrowser;
@@ -1329,8 +1306,8 @@ TreeStyleTabBrowser.prototype = {
 	destroyTab : function TSTBrowser_destroyTab(aTab) 
 	{
 		var id = aTab.getAttribute(this.kID);
-		if (id in this._tabsCache)
-			delete this._tabsCache[id];
+		if (id in this.tabsHash)
+			delete this.tabsHash[id];
 
 		delete aTab.__treestyletab__linkedTabBrowser;
 	},
@@ -2197,7 +2174,7 @@ TreeStyleTabBrowser.prototype = {
 		this.deleteTabValue(tab, this.kCLOSED_SET_ID);
 
 		this.setTabValue(tab, this.kID, id);
-		this._tabsCache[id] = tab;
+		this.tabsHash[id] = tab;
 
 		if (closeSetId)
 			this.restoreClosedSet(closeSetId, tab);
