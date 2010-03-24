@@ -423,6 +423,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 		window.setTimeout(function(aSelf) {
 			if (aSelf.expanded) {
+				sv.setTabbarAttribute(aSelf.kAUTOHIDE, 'show', sv.mTabBrowser);
 				sv.mTabBrowser.setAttribute(aSelf.kAUTOHIDE, 'show');
 				aSelf.redrawContentArea();
 			}
@@ -470,6 +471,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				break;
 		}
 
+		sv.setTabbarAttribute(this.kSTATE, this.kSTATE_EXPANDED, b);
 		b.setAttribute(this.kSTATE, this.kSTATE_EXPANDED);
 
 		switch (this.mode)
@@ -499,13 +501,17 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		switch (this.mode)
 		{
 			case this.kMODE_HIDE:
+				sv.setTabbarAttribute(this.kAUTOHIDE, 'hidden', b);
 				b.setAttribute(this.kAUTOHIDE, 'hidden');
+				sv.setTabbarAttribute(this.kSTATE, this.kSTATE_HIDDEN, b);
 				b.setAttribute(this.kSTATE, this.kSTATE_HIDDEN);
 				break;
 
 			default:
 			case this.kMODE_SHRINK:
+				sv.setTabbarAttribute(this.kAUTOHIDE, 'show', b);
 				b.setAttribute(this.kAUTOHIDE, 'show');
+				sv.setTabbarAttribute(this.kSTATE, this.kSTATE_SHRUNKEN, b);
 				b.setAttribute(this.kSTATE, this.kSTATE_SHRUNKEN);
 				if (pos == 'left' || pos == 'right')
 					sv.tabStrip.width = this.getTreePref('tabbar.shrunkenWidth');
@@ -748,10 +754,14 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			];
 		if (pos != 'top' &&
 			this.mode != this.kMODE_DISABLED &&
-			style != this.kTRANSPARENT_STYLE[this.kTRANSPARENT_NONE])
-			b.setAttribute(this.kTRANSPARENT, style);
-		else
+			style != this.kTRANSPARENT_STYLE[this.kTRANSPARENT_NONE]) {
+			sv.setTabbarAttribute(this.kTRANSPARENT, this.style, b);
+			b.setAttribute(this.kTRANSPARENT, this.style);
+		}
+		else {
+			sv.setTabbarAttribute(this.kTRANSPARENT, null, b);
 			b.removeAttribute(this.kTRANSPARENT);
+		}
 	},
   
 	// event handling 
