@@ -342,7 +342,7 @@ TreeStyleTabBrowser.prototype = {
 			)
 		);
 
-		this.updateTabDNDObserver(b);
+		TreeStyleTabService.updateTabDNDObserver(b);
 
 		if (b.tabContainer && '_getDropIndex' in b.tabContainer) { // Firefox 3.7 or later
 			eval('b.tabContainer._getDropIndex = '+
@@ -1266,6 +1266,8 @@ TreeStyleTabBrowser.prototype = {
 
 		b.removeEventListener('MultipleTabHandlerTabsClosing', this, false);
 
+		TreeStyleTabService.destroyTabDNDObserver(b);
+
 		this.tabbarDNDObserver.destroy();
 		delete this._tabbarDNDObserver;
 		this.panelDNDObserver.destroy();
@@ -1274,7 +1276,8 @@ TreeStyleTabBrowser.prototype = {
 		this.scrollBox.removeEventListener('overflow', this, true);
 		this.scrollBox.removeEventListener('underflow', this, true);
 
-		var tabContextMenu = document.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu');
+		var tabContextMenu = document.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu') ||
+							document.getAnonymousElementByAttribute(b.tabContainer, 'anonid', 'tabContextMenu');
 		tabContextMenu.removeEventListener('popupshowing', this, false);
 
 		var allTabPopup = document.getAnonymousElementByAttribute(b.mTabContainer, 'anonid', 'alltabs-popup');
@@ -2839,7 +2842,10 @@ TreeStyleTabBrowser.prototype = {
 				return info;
 			}
 			else {
-				info.target = tabs[Math.min(b.getNewIndex(aEvent), lastTabIndex)];
+				let index = b.getNewIndex ?
+								b.getNewIndex(aEvent) :
+								b.tabContainer._getDropIndex(aEvent) ;
+				info.target = tabs[Math.min(index, lastTabIndex)];
 			}
 		}
 		else {

@@ -723,13 +723,18 @@ var TreeStyleTabUtils = {
 		return null;
 	},
  
-	getTabbarFromEvent : function TSTUtils_getTabbarFromEvent(aEvent) 
+	getTabbarFromChild : function TSTUtils_getTabbarFromChild(aNode) 
 	{
 		return this.evaluateXPath(
 				'ancestor-or-self::*[contains(concat(" ", normalize-space(@class), " "), " tabbrowser-strip ") or (local-name()="tabs" and @tabbrowser)]',
-				aEvent.originalTarget || aEvent.target,
+				aNode,
 				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
+	},
+ 
+	getTabbarFromEvent : function TSTUtils_getTabbarFromEvent(aEvent) 
+	{
+		return this.getTabbarFromChild(aEvent.originalTarget || aEvent.target);
 	},
  
 	cleanUpTabsArray : function TSTUtils_cleanUpTabsArray(aTabs) 
