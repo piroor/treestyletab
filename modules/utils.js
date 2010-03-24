@@ -1275,7 +1275,7 @@ var TreeStyleTabUtils = {
 		}
 
 		return this.evaluateXPath(
-			'preceding-sibling::xul:tab[@'+this.kID+'="'++'"][1]',
+			'preceding-sibling::xul:tab[@'+this.kID+'="'+aTab.getAttribute(this.kPARENT)+'"][1]',
 			aTab,
 			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 		).singleNodeValue;
