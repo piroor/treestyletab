@@ -1262,7 +1262,10 @@ var TreeStyleTabUtils = {
 		var id = aTab.getAttribute(this.kID);
 		if (!id) return null; // not initialized yet
 		return this.evaluateXPath(
-				'preceding-sibling::xul:tab[contains(concat("|", @'+this.kCHILDREN+', "|"), "|'+id+'|")]',
+				'preceding-sibling::xul:tab[contains('+
+					'concat("|", @'+this.kCHILDREN+', "|"),'+
+					'"|'+id+'|"'+
+				')][1]',
 				aTab,
 				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
