@@ -720,7 +720,7 @@ catch(e) {
 
 		if (!draggedTab) {
 			// dropping of urls
-			var url;
+			let url;
 			for (let i = 0; i < tabbar._supportedLinkDropTypes.length; i++) {
 				let dataType = tabbar._supportedLinkDropTypes[i];
 				let isURLList = dataType == 'text/uri-list';
@@ -736,10 +736,10 @@ catch(e) {
 
 			nsDragAndDrop.dragDropSecurityCheck(aEvent, sv.getCurrentDragSession(), url);
 
-			var bgLoad = this.getPref('browser.tabs.loadInBackground');
+			let bgLoad = this.getPref('browser.tabs.loadInBackground');
 			if (aEvent.shiftKey) bgLoad = !bgLoad;
 
-			var tab = sv.getTabFromEvent(aEvent);
+			let tab = sv.getTabFromEvent(aEvent);
 			if (!tab || dt.dropEffect == 'copy') {
 				sv.performDrop(dropActionInfo, b.loadOneTab(getShortcutOrURI(url), { inBackground: bgLoad }));
 			}
