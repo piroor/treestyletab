@@ -104,6 +104,10 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 		sv.mTabBrowser.addEventListener('mousedown', this, true);
 		sv.mTabBrowser.addEventListener('mouseup', this, true);
+		if (sv.placeholder) {
+			sv.tabStrip.addEventListener('mousedown', this, true);
+			sv.tabStrip.addEventListener('mouseup', this, true);
+		}
 		window.addEventListener('resize', this, true);
 		sv.mTabBrowser.addEventListener('load', this, true);
 		sv.mTabBrowser.mPanelContainer.addEventListener('scroll', this, true);
@@ -130,6 +134,10 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 		sv.mTabBrowser.removeEventListener('mousedown', this, true);
 		sv.mTabBrowser.removeEventListener('mouseup', this, true);
+		if (sv.placeholder) {
+			sv.tabStrip.removeEventListener('mousedown', this, true);
+			sv.tabStrip.removeEventListener('mouseup', this, true);
+		}
 		window.removeEventListener('resize', this, true);
 		sv.mTabBrowser.removeEventListener('load', this, true);
 		sv.mTabBrowser.mPanelContainer.removeEventListener('scroll', this, true);
@@ -179,6 +187,8 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	{
 		if (this.mouseMoveListening) return;
 		this.mOwner.mTabBrowser.addEventListener('mousemove', this, true);
+		if (this.mOwner.placeholder)
+			this.mOwner.tabStrip.addEventListener('mousemove', this, true);
 		this.mouseMoveListening = true;
 	},
  
@@ -186,6 +196,8 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	{
 		if (!this.mouseMoveListening) return;
 		this.mOwner.mTabBrowser.removeEventListener('mousemove', this, true);
+		if (this.mOwner.placeholder)
+			this.mOwner.tabStrip.removeEventListener('mousemove', this, true);
 		this.mouseMoveListening = false;
 	},
  
@@ -481,8 +493,13 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 			default:
 			case this.kMODE_SHRINK:
-				if (pos == 'left' || pos == 'right')
+				if (pos == 'left' || pos == 'right') {
 					sv.tabStrip.width = this.getTreePref('tabbar.width');
+					if (sv.placeholder) {
+						sv.placeholder.width = sv.tabStrip.width;
+						sv.updateTabbarSize();
+					}
+				}
 				break;
 		}
 	},
@@ -493,8 +510,10 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		var b   = sv.mTabBrowser;
 		var pos = b.getAttribute(sv.kTABBAR_POSITION);
 
-		this.tabbarHeight = sv.tabStrip.boxObject.height;
-		this.width = sv.tabStrip.boxObject.width;
+		var box = (sv.placeholder || sv.tabStrip).boxObject;
+
+		this.tabbarHeight = box.height;
+		this.width = box.width;
 		var splitter = document.getAnonymousElementByAttribute(b, 'class', sv.kSPLITTER);
 		this.splitterWidth = (splitter ? splitter.boxObject.width : 0 );
 		sv.container.style.margin = 0;
@@ -513,8 +532,13 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				b.setAttribute(this.kAUTOHIDE, 'show');
 				sv.setTabbarAttribute(this.kSTATE, this.kSTATE_SHRUNKEN, b);
 				b.setAttribute(this.kSTATE, this.kSTATE_SHRUNKEN);
-				if (pos == 'left' || pos == 'right')
+				if (pos == 'left' || pos == 'right') {
 					sv.tabStrip.width = this.getTreePref('tabbar.shrunkenWidth');
+					if (sv.placeholder) {
+						sv.placeholder.width = sv.tabStrip.width;
+						sv.updateTabbarSize();
+					}
+				}
 				break;
 		}
 	},
