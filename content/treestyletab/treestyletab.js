@@ -349,6 +349,7 @@ var TreeStyleTabService = {
 			aObserver.addEventListener('dragstart', this, true);
 			aObserver.addEventListener('dragover', this, true);
 			aObserver.addEventListener('dragleave', this, true);
+			aObserver.addEventListener('drop', this, true);
 		}
 
 		var canDropFunctionName = '_setEffectAllowedForDataTransfer' in aObserver ?
@@ -513,6 +514,7 @@ var TreeStyleTabService = {
 			aObserver.removeEventListener('dragstart', this, true);
 			aObserver.removeEventListener('dragover', this, true);
 			aObserver.removeEventListener('dragleave', this, true);
+			aObserver.removeEventListener('drop', this, true);
 		}
 	},
 	
@@ -574,29 +576,41 @@ try{
 
 		// auto-switch for staying on tabs (Firefox 3.0 or later)
 		var setEffectAllowedFunc;
+		var observer = aTabBrowser;
 		if (aTabBrowser._setEffectAllowedForDataTransfer) {
 			setEffectAllowedFunc = function(aEvent) {
 				return aTabBrowser._setEffectAllowedForDataTransfer(aEvent);
 			};
 		}
 		else if (aTabBrowser.tabContainer &&
-			aTabBrowser.tabContainer._setEffectAllowedForDataTransfer) {
+				aTabBrowser.tabContainer._setEffectAllowedForDataTransfer) {
+			observer = aTabBrowser.tabContainer;
 			setEffectAllowedFunc = function(aEvent) {
 				return aTabBrowser.tabContainer._setEffectAllowedForDataTransfer(aEvent);
 			};
 		}
 
-		if (setEffectAllowedFunc &&
+		if (
+			setEffectAllowedFunc &&
 			info.target &&
 			!info.target.selected &&
-			'mDragTime' in aTabBrowser &&
-			'mDragOverDelay' in aTabBrowser) {
+			(
+				('mDragTime' in observer && 'mDragOverDelay' in observer) ||
+				('_dragTime' in observer && '_dragOverDelay' in observer)
+			)
+			) {
+			let time = observer.mDragTime || observer._dragTime || 0;
+			let delay = observer.mDragOverDelay || observer._dragOverDelay || 0;
 			let effects = setEffectAllowedFunc(aEvent);
 			if (effects == 'link') {
 				let now = Date.now();
-				if (!aTabBrowser.mDragTime)
-					aTabBrowser.mDragTime = now;
-				if (now >= aTabBrowser.mDragTime + aTabBrowser.mDragOverDelay)
+				if (!time) {
+					if ('mDragTime' in observer)
+						observer.mDragTime = now;
+					else
+						observer._dragTime = now;
+				}
+				if (now >= time + delay)
 					aTabBrowser.selectedTab = info.target;
 			}
 		}
@@ -651,6 +665,51 @@ catch(e) {
 		var tabbarFromEvent = this.getTabbarFromChild(aEvent.relatedTarget);
 		if (!tabbarFromEvent)
 			tabbar.treeStyleTab.clearDropPosition();
+	},
+ 
+	onTabDNDObserverDrop : function TSTService_onTabDNDObserverDrop(aEvent) 
+	{
+		var tabbar = aEvent.currentTarget;
+		var b = tabbar.tabbrowser;
+		var sv = b.treeStyleTab;
+		var dt = aEvent.dataTransfer;
+
+		sv.clearDropPosition();
+
+		var dropActionInfo = sv.getDropAction(aEvent, sv.getCurrentDragSession());
+
+		var draggedTab;
+		if (dt.dropEffect != 'link') {
+			draggedTab = dt.mozGetDataAt(TAB_DROP_TYPE, 0);
+			if (!draggedTab) {
+				aEvent.stopPropagation();
+				return;
+			}
+		}
+
+		if (sv.performDrop(dropActionInfo, draggedTab)) {
+			aEvent.stopPropagation();
+			return;
+		}
+
+		if (
+			(
+				dt.dropEffect == 'copy' ||
+				draggedTab.parentNode != tabbar
+			) &&
+			dropActionInfo.position == sv.kDROP_ON
+			) {
+			var beforeTabs = Array.slice(b.tabs);
+			window.setTimeout(function() {
+				var afterTabs = Array.slice(b.tabs);
+				var newTabs = afterTabs.filter(function(aTab) {
+						return beforeTabs.indexOf(aTab) < 0;
+					});
+				newTabs.forEach(function(aTab) {
+					sv.attachTabTo(aTab, dropActionInfo.target);
+				});
+			}, 0);
+		}
 	},
    
 	overrideGlobalFunctions : function TSTService_overrideGlobalFunctions() 
@@ -1102,6 +1161,7 @@ catch(e) {
 			case 'dragstart': return this.onTabDNDObserverDragStart(aEvent);
 			case 'dragover': return this.onTabDNDObserverDragOver(aEvent);
 			case 'dragleave': return this.onTabDNDObserverDragLeave(aEvent);
+			case 'drop': return this.onTabDNDObserverDrop(aEvent);
 		}
 	},
 	
