@@ -690,15 +690,15 @@ catch(e) {
 				return;
 			}
 		}
-		if (!draggedTab)
-			return;
 
-		if (sv.performDrop(dropActionInfo, draggedTab)) {
+		if (draggedTab && sv.performDrop(dropActionInfo, draggedTab)) {
 			aEvent.stopPropagation();
 			return;
 		}
 
+		// duplicating of tabs
 		if (
+			draggedTab &&
 			(
 				dt.dropEffect == 'copy' ||
 				draggedTab.parentNode != tabbar
@@ -715,7 +715,57 @@ catch(e) {
 					sv.attachTabTo(aTab, dropActionInfo.target);
 				});
 			}, 0);
+			return;
 		}
+
+		if (draggedTab)
+			return;
+
+		// dropping of urls
+		var url;
+		for (let i = 0; i < tabbar._supportedLinkDropTypes.length; i++) {
+			let dataType = tabbar._supportedLinkDropTypes[i];
+			let isURLList = dataType == 'text/uri-list';
+			let urlData = dt.mozGetDataAt(isURLList ? 'URL' : dataType , 0);
+			if (urlData) {
+				url = transferUtils.retrieveURLFromData(urlData, isURLList ? 'text/plain' : dataType);
+				break;
+			}
+		}
+
+		if (!url || !url.length || url.indexOf(' ', 0) != -1 || /^\s*(javascript|data):/.test(url))
+			return;
+
+		nsDragAndDrop.dragDropSecurityCheck(aEvent, sv.getCurrentDragSession(), url);
+
+		var bgLoad = this.getPref('browser.tabs.loadInBackground');
+		if (aEvent.shiftKey) bgLoad = !bgLoad;
+
+		var tab = sv.getTabFromEvent(aEvent);
+		if (!tab || dt.dropEffect == 'copy') {
+			sv.performDrop(dropActionInfo, b.loadOneTab(getShortcutOrURI(url), { inBackground: bgLoad }));
+		}
+		else {
+			let locked = tab.getAttribute('locked') == 'true';
+			let loadDroppedLinkToNewChildTab = dropActionInfo.position != sv.kDROP_ON || locked;
+			if (!loadDroppedLinkToNewChildTab &&
+				dropActionInfo.position == sv.kDROP_ON)
+				loadDroppedLinkToNewChildTab = sv.dropLinksOnTabBehavior() == sv.kDROPLINK_NEWTAB;
+
+			try {
+				if (loadDroppedLinkToNewChildTab || locked) {
+					sv.performDrop(dropActionInfo, b.loadOneTab(getShortcutOrURI(url), { inBackground: bgLoad }));
+				}
+				else {
+					tab.linkedBrowser.loadURI(getShortcutOrURI(url));
+					if (!bgLoad)
+						b.selectedTab = tab;
+				}
+			}
+			catch(e) {
+			}
+		}
+		aEvent.stopPropagation();
 	},
    
 	overrideGlobalFunctions : function TSTService_overrideGlobalFunctions() 
