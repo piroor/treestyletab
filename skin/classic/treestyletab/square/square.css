@@ -21,6 +21,13 @@ toolbar[treestyletab-style~="square"][treestyletab-mode="vertical"],
 	padding-right: 0 !important;
 }
 
+#TabsToolbar[treestyletab-style~="square"][treestyletab-mode="vertical"]:not([treestyletab-tabbar-position="top"]) {
+	border: 0 none !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	-moz-box-shadow: none !important;
+}
+
 .tabbrowser-strip[treestyletab-style~="square"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"]:not([treestyletab-tabbar-transparent="full"]),
 toolbar[treestyletab-style~="square"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"]:not([treestyletab-tabbar-transparent="full"]) {
 	border-right: 1px solid ThreeDShadow !important;

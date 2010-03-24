@@ -3,14 +3,14 @@
 /* Unset bottom border, instead let's have a border on the right-hand
    side, much like the sidebar does. */
 .tabbrowser-strip[treestyletab-style="sidebar"][treestyletab-mode="vertical"],
-toolbar[treestyletab-style="sidebar"][treestyletab-mode="vertical"] {
+#TabsToolbar[treestyletab-style="sidebar"][treestyletab-mode="vertical"] {
   border-top: 1px solid #404040;
   border-bottom: none !important;
 }
 #main-window:not([active="true"])
 .tabbrowser-strip[treestyletab-style="sidebar"][treestyletab-mode="vertical"],
 #main-window:not([active="true"])
-toolbar[treestyletab-style="sidebar"][treestyletab-mode="vertical"] {
+#TabsToolbar[treestyletab-style="sidebar"][treestyletab-mode="vertical"] {
   border-top: 1px solid #868686;
 }
 
@@ -236,6 +236,13 @@ tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .treestyl
 
 
 /* changed from original SidebarStyleTab */
+
+#TabsToolbar[treestyletab-style="sidebar"][treestyletab-mode="vertical"]:not([treestyletab-tabbar-position="top"]) {
+	border: 0 none !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	-moz-box-shadow: none !important;
+}
 
 .tabbrowser-tabs[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
   .treestyletab-counter-paren {

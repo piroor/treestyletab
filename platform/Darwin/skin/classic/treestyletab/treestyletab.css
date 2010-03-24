@@ -2,23 +2,41 @@
 
 /* Square */
 
-tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="left"]:not([treestyletab-tabbar-fixed="true"]) .treestyletab-splitter {
+tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="left"]:not([treestyletab-tabbar-fixed="true"])
+  .treestyletab-splitter {
 	border-right: 1px solid ThreeDShadow !important;
 	-moz-border-right-colors: ThreeDShadow !important;
 }
-tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="right"]:not([treestyletab-tabbar-fixed="true"]) .treestyletab-splitter {
+tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="right"]:not([treestyletab-tabbar-fixed="true"])
+  .treestyletab-splitter {
 	border-left: 1px solid ThreeDShadow !important;
 	-moz-border-left-colors: ThreeDShadow !important;
 }
 
-#main-window:not([active="true"]) tabbrowser[treestyletab-style~="square"][treestyletab-mode="vertical"] .tabbrowser-tab > .tab-image-middle,
-#main-window:not([active="true"]) tabbrowser[treestyletab-style~="square"][treestyletab-mode="vertical"] .tabbrowser-tab > .tab-close-button,
-#main-window:not([active="true"]) tabbrowser[treestyletab-style~="square"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"] > .tab-image-middle,
-#main-window:not([active="true"]) tabbrowser[treestyletab-style~="square"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"] > .tab-close-button,
-#main-window:not([active="true"]) tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab > .tab-image-middle,
-#main-window:not([active="true"]) tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab > .tab-close-button,
-#main-window:not([active="true"]) tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab[selected="true"] > .tab-image-middle,
-#main-window:not([active="true"]) tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"] .tabbrowser-tab[selected="true"] > .tab-close-button {
+#main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
+  .tabbrowser-tab > .tab-image-middle,
+#main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
+  .tabbrowser-tab > .tab-close-button,
+#main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[selected="true"] > .tab-image-middle,
+#main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[selected="true"] > .tab-close-button,
+#main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"]
+  .tabbrowser-tab > .tab-image-middle,
+#main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"]
+  .tabbrowser-tab > .tab-close-button,
+#main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"]
+  .tabbrowser-tab[selected="true"] > .tab-image-middle,
+#main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"]
+  .tabbrowser-tab[selected="true"] > .tab-close-button {
 	height: auto;
 	margin: 0 !important;
 	padding: 0 !important;
@@ -29,13 +47,13 @@ tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="right"]:n
 
 /* Metal */
 
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab .tab-close-button {
 	padding-left: 0 !important;
 	padding-right: 0 !important;
 }
 
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabbrowser-strip {
 	border-bottom: 0 none !important;
 }
@@ -43,52 +61,67 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
 
 /* horizontal tree */
 
-tabbrowser[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
-  .tabbrowser-tabs {
+.tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"] {
 	height: auto;
 	background: #bbb;
 }
 
-#main-window[active="true"] tabbrowser[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
-  .tabbrowser-tabs {
+#main-window[active="true"]
+  .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"] {
 	background: #777;
 }
 
-#main-window[active="true"] tabbrowser[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+#main-window[active="true"]
+  .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab:not([selected="true"]) .tab-image-middle,
-#main-window[active="true"] tabbrowser[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+#main-window[active="true"]
+  .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab:not([selected="true"]) .tab-close-button,
-#main-window:not([active="true"]) tabbrowser[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+#main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab:not([selected="true"]) .tab-image-middle,
-#main-window:not([active="true"]) tabbrowser[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+#main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab:not([selected="true"]) .tab-close-button,
-#main-window[active="true"] tabbrowser[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+#main-window[active="true"]
+  .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab[selected="true"] .tab-image-middle,
-#main-window[active="true"] tabbrowser[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+#main-window[active="true"]
+  .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab[selected="true"] .tab-close-button,
-#main-window:not([active="true"]) tabbrowser[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+#main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab[selected="true"] .tab-image-middle,
-#main-window:not([active="true"]) tabbrowser[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+#main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab[selected="true"] .tab-close-button {
 	background-position: left bottom;
 	background-repeat: repeat-x;
 }
 
-#main-window[active="true"] tabbrowser[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+#main-window[active="true"]
+  .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab:not([selected="true"]) .tab-image-left,
-#main-window[active="true"] tabbrowser[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+#main-window[active="true"]
+  .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab:not([selected="true"]) .tab-image-right,
-#main-window:not([active="true"]) tabbrowser[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+#main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab:not([selected="true"]) .tab-image-left,
-#main-window:not([active="true"]) tabbrowser[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+#main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab:not([selected="true"]) .tab-image-right,
-#main-window[active="true"] tabbrowser[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+#main-window[active="true"]
+  .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab[selected="true"] .tab-image-left,
-#main-window[active="true"] tabbrowser[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+#main-window[active="true"]
+  .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab[selected="true"] .tab-image-right,
-#main-window:not([active="true"]) tabbrowser[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+#main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab[selected="true"] .tab-image-left,
-#main-window:not([active="true"]) tabbrowser[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+#main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab[selected="true"] .tab-image-right {
 	background-position: left bottom;
 	background-repeat: no-repeat;

@@ -2,6 +2,13 @@
 
 /* tab bar */
 
+#TabsToolbar[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-tabbar-position="top"]) {
+	border: 0 none !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	-moz-box-shadow: none !important;
+}
+
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabs-bottom,
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]

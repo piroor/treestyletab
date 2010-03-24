@@ -3,9 +3,9 @@
 
 /* horizontal tree */
 
-tabbrowser[treestyletab-style][treestyletab-tabbar-position="top"][treestyletab-tabs-indented="true"]
+.tabbrowser-tabs[treestyletab-style][treestyletab-tabbar-position="top"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab:not([selected="true"]),
-tabbrowser[treestyletab-style][treestyletab-tabbar-position="top"][treestyletab-tabs-indented="true"]
+.tabbrowser-tabs[treestyletab-style][treestyletab-tabbar-position="top"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab[selected="true"] {
 	padding-top: 0;
 	padding-bottom: 0;
@@ -17,11 +17,13 @@ tabbrowser[treestyletab-style][treestyletab-tabbar-position="top"][treestyletab-
 
 /* vertical tree */
 
-tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="left"]:not([treestyletab-tabbar-transparent="full"]) .tabbrowser-strip {
+.tabbrowser-strip[treestyletab-style~="square"][treestyletab-tabbar-position="left"]:not([treestyletab-tabbar-transparent="full"]),
+#TabsToolbar[treestyletab-style~="square"][treestyletab-tabbar-position="left"]:not([treestyletab-tabbar-transparent="full"]) {
 	border-right: 1px solid ThreeDShadow !important;
 	-moz-border-right-colors: none !important;
 }
-tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="right"]:not([treestyletab-tabbar-transparent="full"]) .tabbrowser-strip {
+.tabbrowser-strip[treestyletab-style~="square"][treestyletab-tabbar-position="right"]:not([treestyletab-tabbar-transparent="full"]),
+#TabsToolbar[treestyletab-style~="square"][treestyletab-tabbar-position="right"]:not([treestyletab-tabbar-transparent="full"]) {
 	border-left: 1px solid ThreeDShadow !important;
 	-moz-border-right-colors: none !important;
 }
