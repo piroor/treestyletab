@@ -1,3 +1,3 @@
-copy buildscript\make_new.sh .\
-bash make_new.sh treestyletab version=0
-del make_new.sh
+copy buildscript\makexpi.sh .\
+bash makexpi.sh -n treestyletab -v 0
+del makexpi.sh
