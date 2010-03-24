@@ -2590,11 +2590,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		if (
 			!aEvent.originalTarget ||
-			(
-				aEvent.originalTarget.ownerDocument != document &&
-				aEvent.originalTarget != window &&
-				aEvent.originalTarget != this.mTabBrowser.contentWindow
-			)
+			!(aEvent.originalTarget instanceof Ci.nsIDOMWindow)
 			)
 			return;
 
