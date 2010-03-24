@@ -149,6 +149,9 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		this.updateTransparency();
 
 		sv.container.style.margin = 0;
+		sv.setTabbarAttribute(this.kAUTOHIDE, null, sv.mTabBrowser);
+		sv.setTabbarAttribute(this.kSTATE, null, sv.mTabBrowser);
+		sv.setTabbarAttribute(this.kTRANSPARENT, null, sv.mTabBrowser);
 		sv.mTabBrowser.removeAttribute(this.kAUTOHIDE);
 		sv.mTabBrowser.removeAttribute(this.kSTATE);
 		sv.mTabBrowser.removeAttribute(this.kTRANSPARENT);
@@ -166,7 +169,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		if (this.mode != this.kMODE_DISABLED) {
 			this.start();
 			var sv = this.mOwner;
-			sv.tabStrip.removeAttribute('moz-collapsed');
+			sv.setTabbarAttribute('moz-collapsed', null, sv.mTabBrowser);
 			sv.mTabBrowser.mTabContainer.removeAttribute('moz-collapsed'); // ”O‚Ì‚½‚ß
 		}
 	},
@@ -599,6 +602,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			}
 		}
 		catch(e) {
+			dump(e);
 		}
 	},
  
@@ -646,7 +650,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			canvasYOffset = tabContainerBox.screenY - sv.mTabBrowser.boxObject.screenY;
 
 		for (let node = this.tabbarCanvas;
-		     node != sv.tabStrip.parentNode;
+		     node != sv.mTabBrowser.mTabBox;
 		     node = node.parentNode)
 		{
 			let style = window.getComputedStyle(node, null);
@@ -779,8 +783,8 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		if (pos != 'top' &&
 			this.mode != this.kMODE_DISABLED &&
 			style != this.kTRANSPARENT_STYLE[this.kTRANSPARENT_NONE]) {
-			sv.setTabbarAttribute(this.kTRANSPARENT, this.style, b);
-			b.setAttribute(this.kTRANSPARENT, this.style);
+			sv.setTabbarAttribute(this.kTRANSPARENT, style, b);
+			b.setAttribute(this.kTRANSPARENT, style);
 		}
 		else {
 			sv.setTabbarAttribute(this.kTRANSPARENT, null, b);
@@ -1070,7 +1074,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		if (
 			!(node instanceof Components.interfaces.nsIDOMElement) ||
 			(
-				(tabbarBox = this.getBoxObjectFor(this.mTabBrowser.mTabContainer)) &&
+				(tabbarBox = this.getBoxObjectFor(this.mOwner.mTabBrowser.mTabContainer)) &&
 				(nodeBox = this.getBoxObjectFor(node)) &&
 				tabbarBox.screenX <= nodeBox.screenX + nodeBox.width &&
 				tabbarBox.screenX + tabbarBox.width >= nodeBox.screenX &&
@@ -1160,10 +1164,15 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		b.addEventListener('TreeStyleTabFocusSwitchingEnd', this, false);
 
 		var stack = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-stack');
-		if (stack) {
+		if (stack || this.mOwner.placeholder) {
 			let canvas = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
 			canvas.setAttribute('style', 'display:none;width:1;height:1;');
-			stack.firstChild.appendChild(canvas);
+
+			if (stack)
+				stack.firstChild.appendChild(canvas);
+			else
+				this.mOwner.placeholder.appendChild(canvas);
+
 			this.tabbarCanvas = canvas;
 			this.clearBG();
 		}

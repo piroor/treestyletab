@@ -3,9 +3,11 @@
 /* tab bar */
 
 #TabsToolbar[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-tabbar-position="top"]) {
+	background: transparent !important;
 	border: 0 none !important;
 	margin: 0 !important;
 	padding: 0 !important;
+	-moz-appearance: none !important;
 	-moz-box-shadow: none !important;
 }
 
@@ -35,7 +37,7 @@
 
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabs-stack,
-#TabsToolbar .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"] {
+tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-strip {
 	background: #797979 !important;
 	border: 1px solid #444444 !important;
 	border-width: 1px 0 0 !important;
@@ -45,7 +47,7 @@
  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabs-stack,
 :root:not([active="true"]) 
- #TabsToolbar .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"] {
+  tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabbrowser-strip {
 	background: #acacac !important;
 	border-color: #797979 !important;
 }

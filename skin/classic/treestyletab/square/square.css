@@ -5,7 +5,14 @@
 /* Default style */
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"],
-.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"] {
+#TabsToolbar[treestyletab-style~="square"][treestyletab-mode="vertical"],
+.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"],
+#TabsToolbar[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"] {
+	background: transparent !important;
+	-moz-appearance: none;
+}
+tabbrowser[treestyletab-style~="square"][treestyletab-mode="vertical"] .tabbrowser-strip,
+tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"] .tabbrowser-strip {
 	background: darkgray !important;
 	-moz-appearance: none;
 }

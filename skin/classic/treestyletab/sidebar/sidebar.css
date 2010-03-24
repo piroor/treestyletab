@@ -16,12 +16,12 @@
 
 /* Background colour for the tree sidebar (light blue when window is
    active, grey otherwise) */
-.tabbrowser-tabs[treestyletab-style="sidebar"][treestyletab-mode="vertical"] {
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabbrowser-strip {
   background: transparent !important;
   background-color: #d4dde5 !important;
 }
 #main-window:not([active="true"])
-.tabbrowser-tabs[treestyletab-style="sidebar"][treestyletab-mode="vertical"] {
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabbrowser-strip {
   background-color: #e8e8e8 !important;
 }
 
@@ -238,9 +238,11 @@ tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .treestyl
 /* changed from original SidebarStyleTab */
 
 #TabsToolbar[treestyletab-style="sidebar"][treestyletab-mode="vertical"]:not([treestyletab-tabbar-position="top"]) {
+	background: transparent !important;
 	border: 0 none !important;
 	margin: 0 !important;
 	padding: 0 !important;
+	-moz-appearance: none !important;
 	-moz-box-shadow: none !important;
 }
 
