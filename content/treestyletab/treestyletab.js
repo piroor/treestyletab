@@ -507,7 +507,7 @@ var TreeStyleTabService = {
 			);
 		}
 
-		if ('_onDragEnd' in b) { // Firefox 3.6 or older
+		if ('_onDragEnd' in aObserver) { // Firefox 3.6 or older
 			eval('b._onDragEnd = '+b._onDragEnd.toSource().replace(
 				/([^\{\}\(\);]*this\.replaceTabWithWindow\()/,
 				'if (this.treeStyleTab.isDraggingAllTabs(draggedTab)) return; $1'
@@ -796,6 +796,32 @@ catch(e) {
 		var sv = b.treeStyleTab;
 		var dt = aEvent.dataTransfer;
 
+		if (dt.mozUserCancelled || dt.dropEffect != 'none')
+			return;
+
+		// prevent handling of this event by the default handler
+		aEvent.stopPropagation();
+
+		var eventPos = aEvent[sv.positionProp];
+		var boxPos = b.boxObject[sv.positionProp];
+		if (eventPos > boxPos &&
+			eventPos < boxPos + b.boxObject[sv.sizeProp]) {
+			let box = tabbar.mTabstrip.boxObject;
+			boxPos = box[sv.invertedPositionProp] + (1.5 * box[sv.invertedSizeProp]);
+			if (sv.isVertical)
+				boxPos -= box[sv.invertedSizeProp] * 0.25;
+			eventPos = aEvent[sv.invertedPositionProp];
+			if (eventPos < boxPos &&
+				eventPos > b.boxObject[sv.invertedPositionProp]) {
+				return;
+			}
+		}
+
+		var draggedTab = dt.mozGetDataAt(TAB_DROP_TYPE, 0);
+		if (sv.isDraggingAllTabs(draggedTab))
+			return;
+
+		b.replaceTabWithWindow(draggedTab);
 	},
    
 	overrideGlobalFunctions : function TSTService_overrideGlobalFunctions() 
