@@ -3463,11 +3463,10 @@ TreeStyleTabBrowser.prototype = {
 					return this.getTabById(aId) && aId != id;
 				}, this).join('|')
 		);
+		this.deleteTabValue(aChild, this.kPARENT);
 
 		if (!this.hasChildTabs(parentTab))
 			this.setTabValue(parentTab, this.kSUBTREE_COLLAPSED, true);
-
-		this.deleteTabValue(aChild, this.kPARENT);
 
 		this.updateTabsCount(parentTab);
 
@@ -4144,7 +4143,8 @@ TreeStyleTabBrowser.prototype = {
   
 	scrollToTab : function TSTBrowser_scrollToTab(aTab) 
 	{
-		if (!aTab || this.isTabInViewport(aTab)) return;
+		if (!aTab || !aTab.parentNode || this.isTabInViewport(aTab))
+			return;
 
 		var b = this.mTabBrowser;
 

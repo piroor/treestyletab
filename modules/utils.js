@@ -1464,7 +1464,7 @@ var TreeStyleTabUtils = {
 				for (let i = list.length-1; i > -1; i--)
 				{
 					lastChild = this.getTabById(list[i], aTab);
-					if (lastChild && firstChild != aTab) break;
+					if (lastChild && lastChild != aTab) break;
 				}
 			}
 			return lastChild;
