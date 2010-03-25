@@ -796,26 +796,35 @@ catch(e) {
 		var sv = b.treeStyleTab;
 		var dt = aEvent.dataTransfer;
 
+		sv.clearDropPosition();
+
 		if (dt.mozUserCancelled || dt.dropEffect != 'none')
 			return;
 
 		// prevent handling of this event by the default handler
 		aEvent.stopPropagation();
 
-		var eventPos = aEvent[sv.positionProp];
-		var boxPos = b.boxObject[sv.positionProp];
-		if (eventPos > boxPos &&
-			eventPos < boxPos + b.boxObject[sv.sizeProp]) {
-			let box = tabbar.mTabstrip.boxObject;
-			boxPos = box[sv.invertedPositionProp] + (1.5 * box[sv.invertedSizeProp]);
-			if (sv.isVertical)
-				boxPos -= box[sv.invertedSizeProp] * 0.25;
-			eventPos = aEvent[sv.invertedPositionProp];
-			if (eventPos < boxPos &&
-				eventPos > b.boxObject[sv.invertedPositionProp]) {
-				return;
-			}
-		}
+		var eX = aEvent.screenX;
+		var eY = aEvent.screenY;
+		var x, y, w, h;
+
+		// ignore drop on the toolbox
+		x = window.screenX;
+		y = window.screenY;
+		w = window.outerWidth;
+		h = document.getElementById('navigator-toolbox').boxObject.height;
+		if (eX > x && eX < x + w && eY > y && eY < y + h)
+			return;
+
+		// ignore drop near the tab bar
+		var box = tabbar.boxObject;
+		var ignoreArea = Math.max(16, parseInt(tabbar.firstChild.boxObject.height / 2));
+		x = box.screenX - (sv.isVertical ? ignoreArea : 0 );
+		y = box.screenY - ignoreArea;
+		w = box.width + (sv.isVertical ? ignoreArea + ignoreArea : 0 );
+		h = box.height + ignoreArea + ignoreArea;
+		if (eX > x && eX < x + w && eY > y && eY < y + h)
+			return;
 
 		var draggedTab = dt.mozGetDataAt(TAB_DROP_TYPE, 0);
 		if (sv.isDraggingAllTabs(draggedTab))
