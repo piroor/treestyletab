@@ -1159,6 +1159,7 @@ TreeStyleTabBrowser.prototype = {
  
 	updateFloatingTabbar : function TSTBrowser_updateFloatingTabbar() 
 	{
+		// this method is for Firefox 3.7 or later
 		var placeholder = this.placeholder;
 		if (!placeholder) return;
 
