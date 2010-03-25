@@ -321,7 +321,7 @@ var TreeStyleTabService = {
 				].forEach(function(aPref) {
 					var backup = prefs.getPref(aPref+'.backup');
 					if (backup === null) return;
-					prefs.setPref(aPref, backup);
+					prefs.setPref(aPref+'.override', backup); // we have to set to ".override" pref, to avoid unexpectedly reset by the preference listener.
 					prefs.clearPref(aPref+'.backup');
 				});
 				prefs = null;
