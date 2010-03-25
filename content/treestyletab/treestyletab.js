@@ -508,7 +508,7 @@ var TreeStyleTabService = {
 		}
 
 		if ('_onDragEnd' in aObserver) { // Firefox 3.6 or older
-			eval('b._onDragEnd = '+b._onDragEnd.toSource().replace(
+			eval('aObserver._onDragEnd = '+aObserver._onDragEnd.toSource().replace(
 				/([^\{\}\(\);]*this\.replaceTabWithWindow\()/,
 				'if (this.treeStyleTab.isDraggingAllTabs(draggedTab)) return; $1'
 			).replace(
@@ -798,7 +798,11 @@ catch(e) {
 
 		sv.clearDropPosition();
 
-		if (dt.mozUserCancelled || dt.dropEffect != 'none')
+		if (
+			dt.mozUserCancelled ||
+			dt.dropEffect != 'none' ||
+			tabbar.hasAttribute(this.kDROP_POSITION) // ignore dragging of the tabbar itself
+			)
 			return;
 
 		// prevent handling of this event by the default handler
