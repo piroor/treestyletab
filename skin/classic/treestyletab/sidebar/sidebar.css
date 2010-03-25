@@ -44,6 +44,20 @@ tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .treestyl
 tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .treestyletab-splitter {
   background-color: #868686;
 }
+.tabbrowser-strip[treestyletab-style="sidebar"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"] {
+  border-right: 1px solid #404040;
+}
+#main-window:not([active="true"])
+.tabbrowser-strip[treestyletab-style="sidebar"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"] {
+  border-right-color: #868686;
+}
+.tabbrowser-strip[treestyletab-style="sidebar"][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"] {
+  border-left: 1px solid #404040;
+}
+#main-window:not([active="true"])
+.tabbrowser-strip[treestyletab-style="sidebar"][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"] {
+  border-left-color: #868686;
+}
 
 /* Style tabs themselves.  Get rid of most of the initial XUL styling */
 .tabbrowser-tabs[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabbrowser-tab {

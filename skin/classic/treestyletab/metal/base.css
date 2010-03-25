@@ -95,12 +95,16 @@ tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
 	background: #e4e4e4 !important;
 }
 tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="left"]
-  .treestyletab-splitter {
-	border-right-width: 1px !important;
+  .treestyletab-splitter,
+.tabbrowser-strip[treestyletab-style="metal"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"],
+#TabsToolbar[treestyletab-style="metal"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"] {
+	border-right: 1px solid #666666 !important;
 }
 tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
-  .treestyletab-splitter {
-	border-left-width: 1px !important;
+  .treestyletab-splitter,
+.tabbrowser-strip[treestyletab-style="metal"][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"],
+#TabsToolbar[treestyletab-style="metal"][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"] {
+	border-left: 1px solid #666666 !important;
 }
 
 
