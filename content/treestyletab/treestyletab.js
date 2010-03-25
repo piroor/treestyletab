@@ -648,10 +648,8 @@ catch(e) {
 	onTabDNDObserverDragStart : function TSTService_onTabDNDObserverDragStart(aEvent) 
 	{
 		var tabbar = aEvent.currentTarget;
-		if (tabbar.treeStyleTab.tabbarDNDObserver.canDragTabbar(aEvent)) {
+		if (tabbar.treeStyleTab.tabbarDNDObserver.canDragTabbar(aEvent))
 			tabbar.treeStyleTab.onTabbarDragStart(aEvent, tabbar.tabbrowser);
-			aEvent.preventDefault();
-		}
 	},
  
 	onTabDNDObserverDragOver : function TSTService_onTabDNDObserverDragOver(aEvent) 
@@ -659,7 +657,7 @@ catch(e) {
 		var tabbar = aEvent.currentTarget;
 		if (tabbar.treeStyleTab.processTabDragOverEvent(aEvent, tabbar.tabbrowser)) {
 			aEvent.stopPropagation();
-			aEvent.preventDefault();
+			aEvent.preventDefault(); // this is required to override default dragover actions!
 		}
 	},
  
