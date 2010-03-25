@@ -1280,7 +1280,7 @@ var TreeStyleTabUtils = {
 
 		if (this.tabsHash) { // XPath-less implementation
 			let parent = this.getTabById(aTab.getAttribute(this.kPARENT));
-			return (parent && parent._tPos < aTab._tPos) ? parent : null ;
+			return (parent && parent != aTab) ? parent : null ;
 		}
 
 		return this.evaluateXPath(
@@ -1405,7 +1405,7 @@ var TreeStyleTabUtils = {
 		for (let i = 0, maxi = list.length; i < maxi; i++)
 		{
 			let tab = this.getTabById(list[i], aTab);
-			if (!tab) continue;
+			if (!tab || tab == aTab) continue;
 			tabs.push(tab);
 			if (aAllTabsArray)
 				this.getChildTabs(tab, tabs);
@@ -1439,7 +1439,7 @@ var TreeStyleTabUtils = {
 				for (let i = 0, maxi = list.length; i < maxi; i++)
 				{
 					firstChild = this.getTabById(list[i], aTab);
-					if (firstChild) break;
+					if (firstChild && firstChild != aTab) break;
 				}
 			}
 			return firstChild;
@@ -1464,7 +1464,7 @@ var TreeStyleTabUtils = {
 				for (let i = list.length-1; i > -1; i--)
 				{
 					lastChild = this.getTabById(list[i], aTab);
-					if (lastChild) break;
+					if (lastChild && firstChild != aTab) break;
 				}
 			}
 			return lastChild;
