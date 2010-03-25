@@ -1163,7 +1163,8 @@ TreeStyleTabBrowser.prototype = {
 
 		var strip = this.tabStrip;
 		var tabContainer = this.mTabBrowser.tabContainer;
-		if (this.currentTabbarPosition != 'top') {
+		if (this.currentTabbarPosition != 'top' ||
+			this.mTabBrowser.getAttribute(this.kFIXED) != 'true') {
 			let box = placeholder.boxObject;
 			let root = document.documentElement.boxObject;
 			strip.style.top = (box.screenY - root.screenY)+'px';

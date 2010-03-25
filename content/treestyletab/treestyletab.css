@@ -74,7 +74,8 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-stack > *:first-child + * > hbox:
 }
 
 
-#TabsToolbar:not([treestyletab-tabbar-position="top"]) {
+#TabsToolbar:not([treestyletab-tabbar-position="top"]),
+#TabsToolbar[treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
 	line-height: 0 !important;
 	position: fixed !important;
 	-moz-appearance: none !important;

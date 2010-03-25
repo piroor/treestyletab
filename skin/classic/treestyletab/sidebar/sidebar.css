@@ -251,7 +251,8 @@ tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .treestyl
 
 /* changed from original SidebarStyleTab */
 
-#TabsToolbar[treestyletab-style="sidebar"][treestyletab-mode="vertical"]:not([treestyletab-tabbar-position="top"]) {
+#TabsToolbar[treestyletab-style="sidebar"]:not([treestyletab-tabbar-position="top"]),
+#TabsToolbar[treestyletab-style="sidebar"][treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
 	background: transparent !important;
 	border: 0 none !important;
 	margin: 0 !important;

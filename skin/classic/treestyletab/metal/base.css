@@ -2,7 +2,8 @@
 
 /* tab bar */
 
-#TabsToolbar[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-tabbar-position="top"]) {
+#TabsToolbar[treestyletab-style="metal"]:not([treestyletab-tabbar-position="top"]),
+#TabsToolbar[treestyletab-style="metal"][treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
 	background: transparent !important;
 	border: 0 none !important;
 	margin: 0 !important;
@@ -11,15 +12,11 @@
 	-moz-box-shadow: none !important;
 }
 
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style="metal"]:not([treestyletab-tabbar-position="top"])
   .tabs-bottom,
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabs-left,
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tabbar-position="bottom"]
-  .tabs-bottom,
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tab-text-shadow, /* Mac OS X */
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tabbar-position="bottom"]
+.tabbrowser-tabs[treestyletab-style="metal"]:not([treestyletab-tabbar-position="top"])
   .tab-text-shadow /* Mac OS X */ {
 	display: none !important;
 }
