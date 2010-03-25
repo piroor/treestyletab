@@ -306,6 +306,7 @@ tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .treestyl
   -moz-image-region: auto !important;
 }
 .tabbrowser-tabs[treestyletab-style="sidebar"][treestyletab-mode="vertical"] {
+  background: transparent !important;
   -moz-appearance: none !important;
 }
 

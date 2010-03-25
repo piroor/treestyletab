@@ -44,6 +44,11 @@
 	border-color: #797979 !important;
 }
 
+.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"] {
+	background: transparent !important;
+	-moz-appearance: none !important;
+}
+
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([overflow="true"])
   .tabbrowser-arrowscrollbox,
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"][overflow="true"]
