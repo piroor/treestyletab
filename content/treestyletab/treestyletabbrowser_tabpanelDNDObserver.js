@@ -10,7 +10,7 @@ TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
 		if (!this.canDrop(aEvent, aDragSession)) return;
 		var sv = this.mOwner;
 		if (sv.mTabBrowser.hasAttribute(sv.kDROP_POSITION))
-			sv.setTabbarAttribute(sv.kDROP_POSITION, sv.kDROP_POSITION_UNKNOWN, sv.mTabBrowser);
+			sv.setTabbrowserAttribute(sv.kDROP_POSITION, sv.kDROP_POSITION_UNKNOWN, sv.mTabBrowser);
 	},
  
 	onDragOver : function TSTTabpanelDND_onDragOver(aEvent, aFlavour, aDragSession) 
@@ -20,7 +20,7 @@ TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
 		var position = this.getDropPosition(aEvent);
 		if (position != 'center' &&
 			position != sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION))
-			sv.setTabbarAttribute(sv.kDROP_POSITION, position, sv.mTabBrowser);
+			sv.setTabbrowserAttribute(sv.kDROP_POSITION, position, sv.mTabBrowser);
 	},
  
 	onDrop : function TSTTabpanelDND_onDrop(aEvent, aXferData, aDragSession) 

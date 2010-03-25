@@ -97,7 +97,7 @@ tabbrowser[treestyletab-drop-position] {
 	-moz-border-bottom-colors: none !important;
 	-moz-border-left-colors: none !important;
 }
-tabbrowser[treestyletab-drop-position] .tabbrowser-strip,
+.tabbrowser-strip[treestyletab-drop-position],
 .tabbrowser-tabs[treestyletab-drop-position] {
 	opacity: 0.5;
 }

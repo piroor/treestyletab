@@ -669,18 +669,22 @@ var TreeStyleTabUtils = {
 		return this.getTabStrip(this.browser);
 	},
  
-	setTabbarAttribute : function TSTUtils_setTabbarAttribute(aName, aValue, aTabBrowser) 
+	setTabbrowserAttribute : function TSTUtils_setTabbrowserAttribute(aName, aValue, aTabBrowser) 
 	{
 		aTabBrowser = aTabBrowser || this.browser;
 		if (aValue) {
 			aTabBrowser.setAttribute(aName, aValue);
 			aTabBrowser.mTabContainer.parentNode.setAttribute(aName, aValue);
 			aTabBrowser.mTabContainer.setAttribute(aName, aValue);
+			if (aTabBrowser.treeStyleTab && aTabBrowser.treeStyleTab.placeholder)
+				aTabBrowser.treeStyleTab.placeholder.setAttribute(aName, aValue);
 		}
 		else {
 			aTabBrowser.removeAttribute(aName);
 			aTabBrowser.mTabContainer.parentNode.removeAttribute(aName);
 			aTabBrowser.mTabContainer.removeAttribute(aName);
+			if (aTabBrowser.treeStyleTab && aTabBrowser.treeStyleTab.placeholder)
+				aTabBrowser.treeStyleTab.placeholder.removeAttribute(aName);
 		}
 	},
  

@@ -11,14 +11,14 @@
 	background: transparent !important;
 	-moz-appearance: none;
 }
-tabbrowser[treestyletab-style~="square"][treestyletab-mode="vertical"] .tabbrowser-strip,
-tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"] .tabbrowser-strip {
+.tabbrowser-strip[treestyletab-style~="square"][treestyletab-mode="vertical"],
+.tabbrowser-strip[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"] {
 	background: darkgray !important;
 	-moz-appearance: none;
 }
 
 .tabbrowser-strip[treestyletab-style~="square"][treestyletab-mode="vertical"],
-toolbar[treestyletab-style~="square"][treestyletab-mode="vertical"],
+#TabsToolbar[treestyletab-style~="square"][treestyletab-mode="vertical"],
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"],
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox,
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"] .tabs-container {
@@ -36,12 +36,12 @@ toolbar[treestyletab-style~="square"][treestyletab-mode="vertical"],
 }
 
 .tabbrowser-strip[treestyletab-style~="square"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"]:not([treestyletab-tabbar-transparent="full"]),
-toolbar[treestyletab-style~="square"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"]:not([treestyletab-tabbar-transparent="full"]) {
+#TabsToolbar[treestyletab-style~="square"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"]:not([treestyletab-tabbar-transparent="full"]) {
 	border-right: 1px solid ThreeDShadow !important;
 	-moz-border-right-colors: none !important;
 }
 .tabbrowser-strip[treestyletab-style~="square"][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"]:not([treestyletab-tabbar-transparent="full"]),
-toolbar[treestyletab-style~="square"][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"]:not([treestyletab-tabbar-transparent="full"]) {
+#TabsToolbar[treestyletab-style~="square"][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"]:not([treestyletab-tabbar-transparent="full"]) {
 	border-left: 1px solid ThreeDShadow !important;
 	-moz-border-left-colors: none !important;
 }

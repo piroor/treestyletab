@@ -149,12 +149,9 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		this.updateTransparency();
 
 		sv.container.style.margin = 0;
-		sv.setTabbarAttribute(this.kAUTOHIDE, null, sv.mTabBrowser);
-		sv.setTabbarAttribute(this.kSTATE, null, sv.mTabBrowser);
-		sv.setTabbarAttribute(this.kTRANSPARENT, null, sv.mTabBrowser);
-		sv.mTabBrowser.removeAttribute(this.kAUTOHIDE);
-		sv.mTabBrowser.removeAttribute(this.kSTATE);
-		sv.mTabBrowser.removeAttribute(this.kTRANSPARENT);
+		sv.setTabbrowserAttribute(this.kAUTOHIDE, null, sv.mTabBrowser);
+		sv.setTabbrowserAttribute(this.kSTATE, null, sv.mTabBrowser);
+		sv.setTabbrowserAttribute(this.kTRANSPARENT, null, sv.mTabBrowser);
 	},
  
 	// fullscreen 
@@ -169,8 +166,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		if (this.mode != this.kMODE_DISABLED) {
 			this.start();
 			var sv = this.mOwner;
-			sv.setTabbarAttribute('moz-collapsed', null, sv.mTabBrowser);
-			sv.mTabBrowser.mTabContainer.removeAttribute('moz-collapsed'); // 念のため
+			sv.setTabbrowserAttribute('moz-collapsed', null, sv.mTabBrowser);
 		}
 	},
  
@@ -438,8 +434,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 		window.setTimeout(function(aSelf) {
 			if (aSelf.expanded) {
-				sv.setTabbarAttribute(aSelf.kAUTOHIDE, 'show', sv.mTabBrowser);
-				sv.mTabBrowser.setAttribute(aSelf.kAUTOHIDE, 'show');
+				sv.setTabbrowserAttribute(aSelf.kAUTOHIDE, 'show', sv.mTabBrowser);
 				aSelf.redrawContentArea();
 			}
 			b.mTabContainer.adjustTabstrip();
@@ -486,8 +481,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				break;
 		}
 
-		sv.setTabbarAttribute(this.kSTATE, this.kSTATE_EXPANDED, b);
-		b.setAttribute(this.kSTATE, this.kSTATE_EXPANDED);
+		sv.setTabbrowserAttribute(this.kSTATE, this.kSTATE_EXPANDED, b);
 
 		switch (this.mode)
 		{
@@ -523,18 +517,14 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		switch (this.mode)
 		{
 			case this.kMODE_HIDE:
-				sv.setTabbarAttribute(this.kAUTOHIDE, 'hidden', b);
-				b.setAttribute(this.kAUTOHIDE, 'hidden');
-				sv.setTabbarAttribute(this.kSTATE, this.kSTATE_HIDDEN, b);
-				b.setAttribute(this.kSTATE, this.kSTATE_HIDDEN);
+				sv.setTabbrowserAttribute(this.kAUTOHIDE, 'hidden', b);
+				sv.setTabbrowserAttribute(this.kSTATE, this.kSTATE_HIDDEN, b);
 				break;
 
 			default:
 			case this.kMODE_SHRINK:
-				sv.setTabbarAttribute(this.kAUTOHIDE, 'show', b);
-				b.setAttribute(this.kAUTOHIDE, 'show');
-				sv.setTabbarAttribute(this.kSTATE, this.kSTATE_SHRUNKEN, b);
-				b.setAttribute(this.kSTATE, this.kSTATE_SHRUNKEN);
+				sv.setTabbrowserAttribute(this.kAUTOHIDE, 'show', b);
+				sv.setTabbrowserAttribute(this.kSTATE, this.kSTATE_SHRUNKEN, b);
 				if (pos == 'left' || pos == 'right') {
 					sv.tabStrip.width = this.getTreePref('tabbar.shrunkenWidth');
 					if (sv.placeholder) {
@@ -783,12 +773,10 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		if (pos != 'top' &&
 			this.mode != this.kMODE_DISABLED &&
 			style != this.kTRANSPARENT_STYLE[this.kTRANSPARENT_NONE]) {
-			sv.setTabbarAttribute(this.kTRANSPARENT, style, b);
-			b.setAttribute(this.kTRANSPARENT, style);
+			sv.setTabbrowserAttribute(this.kTRANSPARENT, style, b);
 		}
 		else {
-			sv.setTabbarAttribute(this.kTRANSPARENT, null, b);
-			b.removeAttribute(this.kTRANSPARENT);
+			sv.setTabbrowserAttribute(this.kTRANSPARENT, null, b);
 		}
 	},
   
@@ -961,7 +949,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			) {
 			this.isResizing = true;
 			this.clearBG();
-			sv.setTabbarAttribute(sv.kRESIZING, true, sv.mTabBrowser);
+			sv.setTabbrowserAttribute(sv.kRESIZING, true, sv.mTabBrowser);
 			/* canvasを非表示にしたのと同じタイミングでリサイズを行うと、
 			   まだ内部的にcanvasの大きさが残ったままなので、その大きさ以下に
 			   タブバーの幅を縮められなくなる。手動でイベントを再送してやると
@@ -1005,7 +993,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				XPathResult.BOOLEAN_TYPE
 			).booleanValue) {
 			this.isResizing = false;
-			sv.setTabbarAttribute(sv.kRESIZING, null, sv.mTabBrowser);
+			sv.setTabbrowserAttribute(sv.kRESIZING, null, sv.mTabBrowser);
 			window.setTimeout(function(aSelf) {
 				if (!aSelf.shouldRedraw) return;
 				aSelf.redrawContentArea();

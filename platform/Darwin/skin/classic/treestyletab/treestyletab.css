@@ -53,8 +53,7 @@ tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="right"]:n
 	padding-right: 0 !important;
 }
 
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-strip {
+.tabbrowser-strip[treestyletab-style="metal"][treestyletab-mode="vertical"] {
 	border-bottom: 0 none !important;
 }
 

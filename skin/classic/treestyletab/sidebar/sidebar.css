@@ -16,12 +16,12 @@
 
 /* Background colour for the tree sidebar (light blue when window is
    active, grey otherwise) */
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabbrowser-strip {
+.tabbrowser-strip[treestyletab-style="sidebar"][treestyletab-mode="vertical"] {
   background: transparent !important;
   background-color: #d4dde5 !important;
 }
 #main-window:not([active="true"])
-tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabbrowser-strip {
+.tabbrowser-strip[treestyletab-style="sidebar"][treestyletab-mode="vertical"] {
   background-color: #e8e8e8 !important;
 }
 
