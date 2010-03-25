@@ -1088,6 +1088,7 @@ TreeStyleTabBrowser.prototype = {
 			try {
 				splitter.removeEventListener('mouseup', this, false);
 				splitter.removeEventListener('click', this, false);
+				splitter.removeEventListener('dblclick', this, false);
 			}
 			catch(e) {
 			}
@@ -1108,6 +1109,7 @@ TreeStyleTabBrowser.prototype = {
 
 		splitter.addEventListener('mouseup', this, false);
 		splitter.addEventListener('click', this, false);
+		splitter.addEventListener('dblclick', this, false);
 
 		var ref = this.mTabBrowser.mPanelContainer;
 		ref.parentNode.insertBefore(splitter, ref);
@@ -1200,6 +1202,25 @@ TreeStyleTabBrowser.prototype = {
 				toolbox.removeAttribute('height');
 				aSelf.startRendering();
 			}, 0, this);
+		}
+	},
+ 
+	resetTabbarSize : function TSTBrowser_resetTabbarSize() 
+	{
+		if (!this.isVertical) {
+			this.clearTreePref('tabbar.height');
+			if (this.placeholder) {
+				let tabs = this.mTabBrowser.mTabContainer;
+				tabs.removeAttribute('height');
+				this.placeholder.height = tabs.boxObject.height;
+				this.updateFloatingTabbar();
+			}
+		}
+		else {
+			if (!this.autoHide.expanded)
+				this.clearTreePref('tabbar.shrunkenWidth');
+			else
+				this.clearTreePref('tabbar.width');
 		}
 	},
  
@@ -2555,13 +2576,21 @@ TreeStyleTabBrowser.prototype = {
  
 	onDblClick : function TSTBrowser_onDblClick(aEvent) 
 	{
-		var tab = this.getTabFromEvent(aEvent);
-		if (tab &&
-			this.hasChildTabs(tab) &&
-			this.getTreePref('collapseExpandSubtree.dblclick')) {
-			this.collapseExpandSubtree(tab, tab.getAttribute(this.kSUBTREE_COLLAPSED) != 'true');
-			aEvent.preventDefault();
-			aEvent.stopPropagation();
+		switch (aEvent.currentTarget.localName)
+		{
+			case 'splitter':
+				return this.resetTabbarSize();
+
+			default:
+				let tab = this.getTabFromEvent(aEvent);
+				if (tab &&
+					this.hasChildTabs(tab) &&
+					this.getTreePref('collapseExpandSubtree.dblclick')) {
+					this.collapseExpandSubtree(tab, tab.getAttribute(this.kSUBTREE_COLLAPSED) != 'true');
+					aEvent.preventDefault();
+					aEvent.stopPropagation();
+				}
+				return;
 		}
 	},
  
