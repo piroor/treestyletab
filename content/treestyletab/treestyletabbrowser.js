@@ -177,20 +177,20 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.addEventListener('TabMove',        this, true);
 		b.mTabContainer.addEventListener('SSTabRestoring', this, true);
 		b.mTabContainer.addEventListener('SSTabRestored',  this, true);
-		strip.addEventListener('draggesture', this, false);
-		strip.addEventListener('dragenter', this, false);
-		strip.addEventListener('dragexit', this, false);
-		strip.addEventListener('dragend', this, false);
-		strip.addEventListener('dragover', this, false);
-		strip.addEventListener('dragdrop', this, false);
-		strip.addEventListener('mousedown', this, true);
-		strip.addEventListener('mouseup', this, false);
-		strip.addEventListener('click', this, false);
 		b.mTabContainer.addEventListener('mouseover', this, true);
-		b.mTabContainer.addEventListener('mouseout', this, true);
-		b.mTabContainer.addEventListener('dblclick', this, true);
+		b.mTabContainer.addEventListener('mouseout',  this, true);
+		b.mTabContainer.addEventListener('dblclick',  this, true);
 		b.mTabContainer.addEventListener('select', this, true);
 		b.mTabContainer.addEventListener('scroll', this, true);
+		strip.addEventListener('draggesture', this, false);
+		strip.addEventListener('dragenter',   this, false);
+		strip.addEventListener('dragexit',    this, false);
+		strip.addEventListener('dragend',     this, false);
+		strip.addEventListener('dragover',    this, false);
+		strip.addEventListener('dragdrop',    this, false);
+		strip.addEventListener('mousedown', this, true);
+		strip.addEventListener('mouseup',   this, false);
+		strip.addEventListener('click',     this, false);
 		b.mPanelContainer.addEventListener('dragexit', this, false);
 		b.mPanelContainer.addEventListener('dragover', this, false);
 		b.mPanelContainer.addEventListener('dragdrop', this, false);
@@ -199,6 +199,7 @@ TreeStyleTabBrowser.prototype = {
 			window.addEventListener('resize', this, true);
 
 		b.addEventListener('MultipleTabHandlerTabsClosing', this, false);
+
 
 
 		/* Closing collapsed last tree breaks selected tab.
@@ -1259,20 +1260,20 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.removeEventListener('TabMove',        this, true);
 		b.mTabContainer.removeEventListener('SSTabRestoring', this, true);
 		b.mTabContainer.removeEventListener('SSTabRestored',  this, true);
-		strip.removeEventListener('draggesture', this, false);
-		strip.removeEventListener('dragenter', this, false);
-		strip.removeEventListener('dragexit', this, false);
-		strip.removeEventListener('dragend', this, false);
-		strip.removeEventListener('dragover', this, false);
-		strip.removeEventListener('dragdrop', this, false);
-		strip.removeEventListener('mousedown', this, true);
-		strip.removeEventListener('mouseup', this, false);
-		strip.removeEventListener('click', this, false);
 		b.mTabContainer.removeEventListener('mouseover', this, true);
-		b.mTabContainer.removeEventListener('mouseout', this, true);
-		b.mTabContainer.removeEventListener('dblclick', this, true);
+		b.mTabContainer.removeEventListener('mouseout',  this, true);
+		b.mTabContainer.removeEventListener('dblclick',  this, true);
 		b.mTabContainer.removeEventListener('select', this, true);
 		b.mTabContainer.removeEventListener('scroll', this, true);
+		strip.removeEventListener('draggesture', this, false);
+		strip.removeEventListener('dragenter',   this, false);
+		strip.removeEventListener('dragexit',    this, false);
+		strip.removeEventListener('dragend',     this, false);
+		strip.removeEventListener('dragover',    this, false);
+		strip.removeEventListener('dragdrop',    this, false);
+		strip.removeEventListener('mousedown', this, true);
+		strip.removeEventListener('mouseup',   this, false);
+		strip.removeEventListener('click',     this, false);
 		b.mPanelContainer.removeEventListener('dragexit', this, false);
 		b.mPanelContainer.removeEventListener('dragover', this, false);
 		b.mPanelContainer.removeEventListener('dragdrop', this, false);
