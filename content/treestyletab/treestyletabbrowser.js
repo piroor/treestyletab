@@ -1059,7 +1059,6 @@ TreeStyleTabBrowser.prototype = {
 		this.updateTabbarState();
 		window.setTimeout(function(aSelf, aTabBrowser, aSplitter, aToggler) {
 			delayedPostProcess(aSelf, aTabBrowser, aSplitter, aToggler);
-			aSelf.updateTabbarSize();
 			aSelf.updateTabbarOverflow();
 			delayedPostProcess = null;
 			aSelf.mTabBrowser.style.visibility = '';
@@ -1146,25 +1145,30 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 
-		this.updateTabbarSize();
+		window.setTimeout(function(aSelf) {
+			aSelf.updateFloatingTabbar();
+			aSelf.startRendering();
+		}, 0, this);
 
 		this.setTabbrowserAttribute(this.kINDENTED, this.getTreePref('enableSubtreeIndent.'+orient) ? 'true' : null , b);
 		this.setTabbrowserAttribute(this.kALLOW_COLLAPSE, this.getTreePref('allowSubtreeCollapseExpand.'+orient) ? 'true' : null , b);
 		this.setTabbrowserAttribute(this.kHIDE_ALLTABS, this.getTreePref('tabbar.hideAlltabsButton.'+orient) ? 'true' : null , b);
 
-		this.startRendering();
 		this.updateAllTabsIndent();
 	},
  
-	updateTabbarSize : function TSTBrowser_updateTabbarSize() 
+	updateFloatingTabbar : function TSTBrowser_updateFloatingTabbar() 
 	{
 		var placeholder = this.placeholder;
 		if (!placeholder) return;
 
 		var strip = this.tabStrip;
 		var tabContainer = this.mTabBrowser.tabContainer;
+		var positioned = false;
 		if (this.currentTabbarPosition != 'top' ||
 			this.mTabBrowser.getAttribute(this.kFIXED) != 'true') {
+			positioned = true;
+
 			let box = placeholder.boxObject;
 			let root = document.documentElement.boxObject;
 			strip.style.top = (box.screenY - root.screenY)+'px';
@@ -1174,6 +1178,27 @@ TreeStyleTabBrowser.prototype = {
 			strip.style.height = (tabContainer.height = box.height)+'px';
 
 			tabContainer.collapsed = (this.splitter && this.splitter.getAttribute('state') == 'collapsed');
+		}
+
+		var toolbox = strip.parentNode;
+		if (toolbox.localName != 'toolbox')
+			return;
+
+		// hack to reset the height of the toolbox
+		var height = 0;
+		Array.slice(toolbox.childNodes).forEach(function(aNode) {
+			if (aNode.nodeType == Node.ELEMENT_NODE && (aNode != strip || !positioned))
+				height += aNode.boxObject.height;
+		});
+		if (height != toolbox.boxObject.height) {
+			this.stopRendering();
+			// "height" attribute of the toolbar prevents rendering of the toolbox with its correct height.
+			strip.removeAttribute('height');
+			toolbox.setAttribute('height', height);
+			window.setTimeout(function(aSelf) {
+				toolbox.removeAttribute('height');
+				aSelf.startRendering();
+			}, 0, this);
 		}
 	},
  
@@ -1452,7 +1477,7 @@ TreeStyleTabBrowser.prototype = {
 						this.placeholder.removeAttribute('width');
 						this.placeholder.setAttribute('width', this.autoHide.widthFromMode);
 					}
-					this.updateTabbarSize();
+					this.updateFloatingTabbar();
 				}
 				this.checkTabsIndentOverflow();
 				break;
@@ -2591,7 +2616,7 @@ TreeStyleTabBrowser.prototype = {
 			)
 			return;
 
-		this.updateTabbarSize();
+		this.updateFloatingTabbar();
 	},
  
 	onPopupShowing : function TSTBrowser_onPopupShowing(aEvent) 

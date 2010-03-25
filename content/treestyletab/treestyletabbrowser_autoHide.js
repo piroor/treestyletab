@@ -492,10 +492,9 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			case this.kMODE_SHRINK:
 				if (pos == 'left' || pos == 'right') {
 					sv.tabStrip.width = this.getTreePref('tabbar.width');
-					if (sv.placeholder) {
+					if (sv.placeholder)
 						sv.placeholder.width = sv.tabStrip.width;
-						sv.updateTabbarSize();
-					}
+					sv.updateFloatingTabbar();
 				}
 				break;
 		}
@@ -527,10 +526,9 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				sv.setTabbrowserAttribute(this.kSTATE, this.kSTATE_SHRUNKEN, b);
 				if (pos == 'left' || pos == 'right') {
 					sv.tabStrip.width = this.getTreePref('tabbar.shrunkenWidth');
-					if (sv.placeholder) {
+					if (sv.placeholder)
 						sv.placeholder.width = sv.tabStrip.width;
-						sv.updateTabbarSize();
-					}
+					sv.updateFloatingTabbar();
 				}
 				break;
 		}

@@ -1364,7 +1364,7 @@ catch(e) {
 						aSelf.setTreePref('tabbar.width', box.width);
 				}
 			}
-			b.treeStyleTab.updateTabbarSize();
+			b.treeStyleTab.updateFloatingTabbar();
 			b.treeStyleTab.clickedOnTabbarResizerGrippy = false;
 		}, 10, this);
 	},
