@@ -98,23 +98,19 @@ tabbrowser[treestyletab-drop-position] {
 	-moz-border-left-colors: none !important;
 }
 .tabbrowser-strip[treestyletab-drop-position],
-.tabbrowser-tabs[treestyletab-drop-position] {
+#TabsToolbar[treestyletab-drop-position] {
 	opacity: 0.5;
 }
-tabbrowser[treestyletab-drop-position="top"],
-.tabbrowser-tabs[treestyletab-drop-position="top"] {
+tabbrowser[treestyletab-drop-position="top"] {
 	border-top-color: -moz-dialogtext !important;
 }
-tabbrowser[treestyletab-drop-position="right"],
-.tabbrowser-tabs[treestyletab-drop-position="right"] {
+tabbrowser[treestyletab-drop-position="right"] {
 	border-right-color: -moz-dialogtext !important;
 }
-tabbrowser[treestyletab-drop-position="bottom"],
-.tabbrowser-tabs[treestyletab-drop-position="bottom"] {
+tabbrowser[treestyletab-drop-position="bottom"] {
 	border-bottom-color: -moz-dialogtext !important;
 }
-tabbrowser[treestyletab-drop-position="left"],
-.tabbrowser-tabs[treestyletab-drop-position="left"] {
+tabbrowser[treestyletab-drop-position="left"] {
 	border-left-color: -moz-dialogtext !important;
 }
 
