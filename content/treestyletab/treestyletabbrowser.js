@@ -421,8 +421,7 @@ TreeStyleTabBrowser.prototype = {
 			)
 		);
 
-/*
-		if ('' in b) { // Firefox 3.7-
+		if (b.tabContainer.tabbrowser == b) { // Firefox 3.7-
 			eval('b._handleKeyEvent = '+
 				b._handleKeyEvent.toSource().replace(
 					'this.moveTabOver(aEvent);',
@@ -451,7 +450,7 @@ TreeStyleTabBrowser.prototype = {
 				)
 			);
 		}
-		else */if ('_keyEventHandler' in b) { // Firefox 3.6 or older
+		else if ('_keyEventHandler' in b) { // Firefox 3.6 or older
 			eval('b._keyEventHandler.handleEvent = '+
 				b._keyEventHandler.handleEvent.toSource().replace(
 					'this.tabbrowser.moveTabOver(aEvent);',
@@ -515,37 +514,6 @@ TreeStyleTabBrowser.prototype = {
 					else $&]]>
 			)
 		);
-
-		if ('onTabBarDblClick' in b) { // Firefox 3.6 or older
-			eval('b.onTabBarDblClick = '+
-				b.onTabBarDblClick.toSource().replace(
-					'aEvent.originalTarget.localName == "box"',
-					'/^(box|(arrow)?scrollbox|tabs)$/.test(aEvent.originalTarget.localName)'
-				)
-			);
-		}
-
-		if ('_onDragEnd' in b) {
-			eval('b._onDragEnd = '+b._onDragEnd.toSource().replace(
-				/([^\{\}\(\);]*this\.replaceTabWithWindow\()/,
-				'if (this.treeStyleTab.isDraggingAllTabs(draggedTab)) return; $1'
-			).replace(
-				'{',
-				'{ var treeStyleTab = this.treeStyleTab;'
-			).replace(
-				/window\.screenX/g, 'gBrowser.boxObject.screenX'
-			).replace(
-				/window\.outerWidth/g, 'gBrowser.boxObject.width'
-			).replace(
-				/\.screenX/g, '[treeStyleTab.positionProp]'
-			).replace(
-				/\.width/g, '[treeStyleTab.sizeProp]'
-			).replace(
-				/\.screenY/g, '[treeStyleTab.invertedPositionProp]'
-			).replace(
-				/\.height/g, '[treeStyleTab.invertedSizeProp]'
-			));
-		}
 
 		if ('_beginRemoveTab' in b) {
 			eval('b._beginRemoveTab = '+
@@ -2582,6 +2550,23 @@ TreeStyleTabBrowser.prototype = {
 				return this.resetTabbarSize();
 
 			default:
+				if (this.isVertical &&
+					/^(?:(?:arrow)?scrollbox|tabs)$/.test(aEvent.originalTarget.localName)) {
+					// re-send dblclick event from the inner-box of the scrollbox,
+					// because Firefox's event listener (to open new tabs) handles
+					// events only from the box.
+					let box = this.mTabBrowser.tabContainer.mTabstrip;
+					if (box && box._scrollbox) box = box._scrollbox;
+					if (box) box = document.getAnonymousNodes(box)[0];
+					if (box && box.localName == 'box') {
+						let event = document.createEvent('MouseEvents');
+						event.initMouseEvent('dblclick', true, true, window, aEvent.detail, aEvent.screenX, aEvent.screenY, aEvent.x, aEvent.y, aEvent.ctrlKey, aEvent.altKey, aEvent.shiftKey, aEvent.metaKey, aEvent.button, null);
+						box.dispatchEvent(event);
+					}
+					aEvent.preventDefault();
+					aEvent.stopPropagation();
+					return;
+				}
 				let tab = this.getTabFromEvent(aEvent);
 				if (tab &&
 					this.hasChildTabs(tab) &&

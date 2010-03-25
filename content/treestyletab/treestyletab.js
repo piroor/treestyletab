@@ -350,6 +350,7 @@ var TreeStyleTabService = {
 			aObserver.addEventListener('dragover', this, true);
 			aObserver.addEventListener('dragleave', this, true);
 			aObserver.addEventListener('drop', this, true);
+			aObserver.addEventListener('dragend', this, true);
 		}
 
 		var canDropFunctionName = '_setEffectAllowedForDataTransfer' in aObserver ?
@@ -505,6 +506,28 @@ var TreeStyleTabService = {
 				)
 			);
 		}
+
+		if ('_onDragEnd' in b) { // Firefox 3.6 or older
+			eval('b._onDragEnd = '+b._onDragEnd.toSource().replace(
+				/([^\{\}\(\);]*this\.replaceTabWithWindow\()/,
+				'if (this.treeStyleTab.isDraggingAllTabs(draggedTab)) return; $1'
+			).replace(
+				'{',
+				'{ var treeStyleTab = this.treeStyleTab;'
+			).replace(
+				/window\.screenX/g, 'gBrowser.boxObject.screenX'
+			).replace(
+				/window\.outerWidth/g, 'gBrowser.boxObject.width'
+			).replace(
+				/\.screenX/g, '[treeStyleTab.positionProp]'
+			).replace(
+				/\.width/g, '[treeStyleTab.sizeProp]'
+			).replace(
+				/\.screenY/g, '[treeStyleTab.invertedPositionProp]'
+			).replace(
+				/\.height/g, '[treeStyleTab.invertedSizeProp]'
+			));
+		}
 	},
 	destroyTabDNDObserver : function TSTService_destroyTabDNDObserver(aObserver)
 	{
@@ -515,6 +538,7 @@ var TreeStyleTabService = {
 			aObserver.removeEventListener('dragover', this, true);
 			aObserver.removeEventListener('dragleave', this, true);
 			aObserver.removeEventListener('drop', this, true);
+			aObserver.removeEventListener('dragend', this, true);
 		}
 	},
 	
@@ -763,6 +787,15 @@ catch(e) {
 			}
 			aEvent.stopPropagation();
 		}
+	},
+ 
+	onTabDNDObserverDragEnd : function TSTService_onTabDNDObserverDragEnd(aEvent) 
+	{
+		var tabbar = aEvent.currentTarget;
+		var b = tabbar.tabbrowser;
+		var sv = b.treeStyleTab;
+		var dt = aEvent.dataTransfer;
+
 	},
    
 	overrideGlobalFunctions : function TSTService_overrideGlobalFunctions() 
@@ -1215,6 +1248,7 @@ catch(e) {
 			case 'dragover': return this.onTabDNDObserverDragOver(aEvent);
 			case 'dragleave': return this.onTabDNDObserverDragLeave(aEvent);
 			case 'drop': return this.onTabDNDObserverDrop(aEvent);
+			case 'dragend': return this.onTabDNDObserverDragEnd(aEvent);
 		}
 	},
 	
