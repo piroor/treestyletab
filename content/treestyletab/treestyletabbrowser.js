@@ -87,7 +87,7 @@ TreeStyleTabBrowser.prototype = {
 	},
 	set tabStripPlaceHolder(value) 
 	{
-		return this._tabStripPlaceHolder = value;
+		return (this._tabStripPlaceHolder = value);
 	},
  
 /* utils */ 
@@ -955,8 +955,7 @@ TreeStyleTabBrowser.prototype = {
 					/* in Firefox 3, the width of the rightside tab bar
 					   unexpectedly becomes 0 on the startup. so, we have
 					   to set the width again. */
-					var w = aSelf.getTreePref('tabbar.width');
-					aSelf.setTabStripAttribute('width', w);
+					aSelf.setTabStripAttribute('width', aSelf.getTreePref('tabbar.width'));
 					indicator.setAttribute('ordinal', 1);
 					aSelf.setTabStripAttribute('ordinal', 30);
 					aSplitter.setAttribute('ordinal', 20);
