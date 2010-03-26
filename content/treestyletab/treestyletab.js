@@ -324,8 +324,6 @@ var TreeStyleTabService = {
 					prefs.setPref(aPref+'.override', backup); // we have to set to ".override" pref, to avoid unexpectedly reset by the preference listener.
 					prefs.clearPref(aPref+'.backup');
 				});
-				prefs = null;
-				restorePrefs = null;
 			};
 		new window['piro.sakura.ne.jp'].UninstallationListener({
 			id : 'treestyletab@piro.sakura.ne.jp',
