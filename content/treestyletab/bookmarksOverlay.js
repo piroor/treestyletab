@@ -195,7 +195,7 @@ var TreeStyleTabBookmarksService = {
 				'urls.push(item.uri);',
 				'$& ids.push(item.id);'
 			).replace(
-				/(browserWindow\.getBrowser\(\)\.loadTabs\([^;]+\);)/,
+				/(browserWindow\.(?:getBrowser\(\)|gBrowser)\.loadTabs\([^;]+\);)/,
 				<![CDATA[
 					if (
 						where.indexOf('tab') == 0 ||
