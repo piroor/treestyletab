@@ -546,8 +546,8 @@ TreeStyleTabBrowser.prototype = {
 		this.onPrefChange('extensions.treestyletab.tabbar.invertTabContents');
 		this.onPrefChange('extensions.treestyletab.tabbar.invertClosebox');
 
-		var tabContextMenu = document.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu') ||
-							document.getAnonymousElementByAttribute(b.tabContainer, 'anonid', 'tabContextMenu');
+		var tabContextMenu = b.tabContextMenu ||
+							document.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu');
 		tabContextMenu.addEventListener('popupshowing', this, false);
 		if (!('MultipleTabService' in window)) {
 			window.setTimeout(function(aSelf, aTabBrowser, aPopup) {
@@ -1293,8 +1293,8 @@ TreeStyleTabBrowser.prototype = {
 		this.scrollBox.removeEventListener('overflow', this, true);
 		this.scrollBox.removeEventListener('underflow', this, true);
 
-		var tabContextMenu = document.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu') ||
-							document.getAnonymousElementByAttribute(b.tabContainer, 'anonid', 'tabContextMenu');
+		var tabContextMenu = b.tabContextMenu ||
+							document.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu');
 		tabContextMenu.removeEventListener('popupshowing', this, false);
 
 		var allTabPopup = document.getAnonymousElementByAttribute(b.mTabContainer, 'anonid', 'alltabs-popup');
