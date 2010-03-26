@@ -104,7 +104,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 		sv.mTabBrowser.addEventListener('mousedown', this, true);
 		sv.mTabBrowser.addEventListener('mouseup', this, true);
-		if (sv.placeholder) {
+		if (sv.isFloating) {
 			sv.tabStrip.addEventListener('mousedown', this, true);
 			sv.tabStrip.addEventListener('mouseup', this, true);
 		}
@@ -134,7 +134,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 		sv.mTabBrowser.removeEventListener('mousedown', this, true);
 		sv.mTabBrowser.removeEventListener('mouseup', this, true);
-		if (sv.placeholder) {
+		if (sv.isFloating) {
 			sv.tabStrip.removeEventListener('mousedown', this, true);
 			sv.tabStrip.removeEventListener('mouseup', this, true);
 		}
@@ -186,7 +186,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	{
 		if (this.mouseMoveListening) return;
 		this.mOwner.mTabBrowser.addEventListener('mousemove', this, true);
-		if (this.mOwner.placeholder)
+		if (this.mOwner.isFloating)
 			this.mOwner.tabStrip.addEventListener('mousemove', this, true);
 		this.mouseMoveListening = true;
 	},
@@ -195,7 +195,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	{
 		if (!this.mouseMoveListening) return;
 		this.mOwner.mTabBrowser.removeEventListener('mousemove', this, true);
-		if (this.mOwner.placeholder)
+		if (this.mOwner.isFloating)
 			this.mOwner.tabStrip.removeEventListener('mousemove', this, true);
 		this.mouseMoveListening = false;
 	},
@@ -491,9 +491,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			default:
 			case this.kMODE_SHRINK:
 				if (pos == 'left' || pos == 'right') {
-					sv.tabStrip.width = this.getTreePref('tabbar.width');
-					if (sv.placeholder)
-						sv.placeholder.width = sv.tabStrip.width;
+					sv.setTabStripAttribute('width', this.getTreePref('tabbar.width'));
 					sv.updateFloatingTabbar();
 				}
 				break;
@@ -506,7 +504,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		var b   = sv.mTabBrowser;
 		var pos = b.getAttribute(sv.kTABBAR_POSITION);
 
-		var box = (sv.placeholder || sv.tabStrip).boxObject;
+		var box = (sv.tabStripPlaceHolder || sv.tabStrip).boxObject;
 
 		this.tabbarHeight = box.height;
 		this.width = box.width;
@@ -525,9 +523,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				sv.setTabbrowserAttribute(this.kAUTOHIDE, 'show', b);
 				sv.setTabbrowserAttribute(this.kSTATE, this.kSTATE_SHRUNKEN, b);
 				if (pos == 'left' || pos == 'right') {
-					sv.tabStrip.width = this.getTreePref('tabbar.shrunkenWidth');
-					if (sv.placeholder)
-						sv.placeholder.width = sv.tabStrip.width;
+					sv.setTabStripAttribute('width', this.getTreePref('tabbar.shrunkenWidth'));
 					sv.updateFloatingTabbar();
 				}
 				break;
@@ -1150,14 +1146,14 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		b.addEventListener('TreeStyleTabFocusSwitchingEnd', this, false);
 
 		var stack = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-stack');
-		if (stack || this.mOwner.placeholder) {
+		if (stack || this.mOwner.isFloating) {
 			let canvas = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
 			canvas.setAttribute('style', 'display:none;width:1;height:1;');
 
 			if (stack)
 				stack.firstChild.appendChild(canvas);
 			else
-				this.mOwner.placeholder.appendChild(canvas);
+				this.mOwner.tabStripPlaceHolder.appendChild(canvas);
 
 			this.tabbarCanvas = canvas;
 			this.clearBG();

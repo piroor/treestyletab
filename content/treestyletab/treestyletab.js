@@ -1422,9 +1422,7 @@ catch(e) {
 	onTabbarResized : function TSTService_onTabbarResized(aEvent) 
 	{
 		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
-		var strip = this.getTabStrip(b);
-		var placeholder = b.treeStyleTab.placeholder;
-		var box = (placeholder || strip).boxObject;
+		var box = (b.treeStyleTab.tabStripPlaceHolder || this.getTabStrip(b)).boxObject;
 		window.setTimeout(function(aSelf) {
 			if (!b.treeStyleTab.clickedOnTabbarResizerGrippy) {
 				if (!b.treeStyleTab.isVertical) {
