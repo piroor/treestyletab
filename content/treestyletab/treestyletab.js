@@ -1083,12 +1083,21 @@ catch(e) {
 		// Firefox 3 full screen
 		eval('FullScreen._animateUp = '+
 			FullScreen._animateUp.toSource().replace(
-				'gBrowser.mStrip.boxObject.height',
-				'((gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION) != "top") ? 0 : gBrowser.mStrip.boxObject.height)'
+				/((?:gBrowser\.mStrip|gNavToolbox)\.boxObject\.height)/,
+				'((gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION) != "top") ? 0 : $1)'
 			)
 		);
 		eval('FullScreen.mouseoverToggle = '+
 			FullScreen.mouseoverToggle.toSource().replace(
+				// Firefox 3.7 or later
+				'allFSToolbars[i].setAttribute("moz-collapsed", !aShow);',
+				'if (allFSToolbars[i].id != "TabsToolbar" || gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION) == "top") { $& }'
+			).replace(
+				// Firefox 3.7 or later
+				'this._isChromeCollapsed = !aShow;',
+				'gBrowser.treeStyleTab.updateFloatingTabbar(); $&'
+			).replace(
+				// Firefox 3.6 or older
 				'gBrowser.mStrip.setAttribute("moz-collapsed", !aShow);',
 				'if (gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION) == "top") { $& }'
 			)

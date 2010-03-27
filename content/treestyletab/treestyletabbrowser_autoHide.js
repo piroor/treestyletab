@@ -490,12 +490,11 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 			default:
 			case this.kMODE_SHRINK:
-				if (pos == 'left' || pos == 'right') {
+				if (pos == 'left' || pos == 'right')
 					sv.setTabStripAttribute('width', this.getTreePref('tabbar.width'));
-					sv.updateFloatingTabbar();
-				}
 				break;
 		}
+		sv.updateFloatingTabbar();
 	},
  
 	onHiding : function TSTAutoHide_onHiding() 
