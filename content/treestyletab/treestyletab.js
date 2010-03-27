@@ -343,19 +343,19 @@ var TreeStyleTabService = {
 	{
 		var strip = this.getTabStrip(aObserver);
 
+		if (aObserver.tabContainer &&
+			aObserver.tabContainer.tabbrowser == aObserver) { // Firefox 3.7 or later
+			aObserver = aObserver.tabContainer;
+			strip.addEventListener('drop', this, true);
+			strip.addEventListener('dragend', this, true);
+		}
+
 		// Firefox 3.5 or later
 		var useHTML5Events = '_setEffectAllowedForDataTransfer' in aObserver;
 		if (useHTML5Events) {
 			strip.addEventListener('dragstart', this, true);
 			strip.addEventListener('dragover', this, true);
 			strip.addEventListener('dragleave', this, true);
-		}
-
-		if (aObserver.tabContainer &&
-			aObserver.tabContainer.tabbrowser == aObserver) { // Firefox 3.7 or later
-			aObserver = aObserver.tabContainer;
-			strip.addEventListener('drop', this, true);
-			strip.addEventListener('dragend', this, true);
 		}
 
 		var canDropFunctionName = useHTML5Events ?
@@ -518,16 +518,16 @@ var TreeStyleTabService = {
 	{
 		var strip = this.getTabStrip(aObserver);
 
-		// Firefox 3.5 or later
-		var useHTML5Events = '_setEffectAllowedForDataTransfer' in aObserver;
-		if (useHTML5Events) {
+		if (aObserver.tabContainer &&
+			aObserver.tabContainer.tabbrowser == aObserver) { // Firefox 3.7 or later
 			strip.removeEventListener('dragstart', this, true);
 			strip.removeEventListener('dragover', this, true);
 			strip.removeEventListener('dragleave', this, true);
 		}
 
-		if (aObserver.tabContainer &&
-			aObserver.tabContainer.tabbrowser == aObserver) { // Firefox 3.7 or later
+		// Firefox 3.5 or later
+		var useHTML5Events = '_setEffectAllowedForDataTransfer' in aObserver;
+		if (useHTML5Events) {
 			strip.removeEventListener('dragstart', this, true);
 			strip.removeEventListener('dragover', this, true);
 			strip.removeEventListener('dragleave', this, true);
