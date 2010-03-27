@@ -662,6 +662,9 @@ var TreeStyleTabUtils = {
 	
 	getTabStrip : function TSTUtils_getTabStrip(aTabBrowser) 
 	{
+		if (!(aTabBrowser instanceof Ci.nsIDOMElement))
+			return null;
+
 		var strip = aTabBrowser.mStrip;
 		return (strip && strip.localName == 'hbox') ?
 				strip :
@@ -809,6 +812,9 @@ var TreeStyleTabUtils = {
 
 		if (aTabBrowserChild.tabbrowser) // tabs, Firefox 3.7 or later
 			return aTabBrowserChild.tabbrowser;
+
+		if (aTabBrowserChild.id == 'TabsToolbar') // tabs toolbar, Firefox 3.7 or later
+			return aTabBrowserChild.getElementsByTagName('tabs')[0].tabbrowser;
 
 		var b = this.evaluateXPath(
 				'ancestor::xul:tabbrowser | '+

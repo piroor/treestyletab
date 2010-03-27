@@ -1,12 +1,12 @@
 var TreeStyleTabService = { 
 	
 /* API */ 
-	
-	changeTabbarPosition : function TSTService_changeTabbarPosition(aNewPosition) /* PUBLIC API (obsolete, for backward compatibility) */ 
+
+	changeTabbarPosition : function TSTService_changeTabbarPosition(aNewPosition) /* PUBLIC API (obsolete, for backward compatibility) */
 	{
 		this.currentTabbarPosition = aNewPosition;
 	},
- 
+	
 	get currentTabbarPosition() /* PUBLIC API */ 
 	{
 		return this.utils.currentTabbarPosition;
@@ -341,17 +341,24 @@ var TreeStyleTabService = {
  
 	updateTabDNDObserver : function TSTService_updateTabDNDObserver(aObserver) 
 	{
+		var strip = this.getTabStrip(aObserver);
+
+		// Firefox 3.5 or later
+		var useHTML5Events = '_setEffectAllowedForDataTransfer' in aObserver;
+		if (useHTML5Events) {
+			strip.addEventListener('dragstart', this, true);
+			strip.addEventListener('dragover', this, true);
+			strip.addEventListener('dragleave', this, true);
+		}
+
 		if (aObserver.tabContainer &&
 			aObserver.tabContainer.tabbrowser == aObserver) { // Firefox 3.7 or later
 			aObserver = aObserver.tabContainer;
-			aObserver.addEventListener('dragstart', this, true);
-			aObserver.addEventListener('dragover', this, true);
-			aObserver.addEventListener('dragleave', this, true);
-			aObserver.addEventListener('drop', this, true);
-			aObserver.addEventListener('dragend', this, true);
+			strip.addEventListener('drop', this, true);
+			strip.addEventListener('dragend', this, true);
 		}
 
-		var canDropFunctionName = '_setEffectAllowedForDataTransfer' in aObserver ?
+		var canDropFunctionName = useHTML5Events ?
 				'_setEffectAllowedForDataTransfer' : // Firefox 3.5 or later
 				'canDrop' ; // Firefox 3.0.x
 		if (canDropFunctionName in aObserver) {
@@ -381,21 +388,9 @@ var TreeStyleTabService = {
 			);
 		}
 
-		if ('_onDragStart' in aObserver) { // Firefox 3.5 - 3.6
-			eval('aObserver._onDragStart = '+
-				aObserver._onDragStart.toSource().replace(
-					'if (target.localName == "tab"',
-					<![CDATA[
-						if (this.treeStyleTab.tabbarDNDObserver.canDragTabbar(aEvent)) {
-							this.treeStyleTab.onTabbarDragStart(aEvent, this);
-						}
-						else $&]]>
-				)
-			);
-		}
-		else if ('onDragStart' in aObserver) { // Firefox 3.0.x
+		if ('onDragStart' in aObserver) { // Firefox 3.0.x
 			eval('aObserver.onDragStart = '+
-				aObserver.onDragStart.toSource().replace( // native
+				aObserver.onDragStart.toSource().replace(
 					'aEvent.target.localName == "tab"',
 					<![CDATA[
 						(
@@ -407,29 +402,21 @@ var TreeStyleTabService = {
 			);
 		}
 
-		var dragOverFunctionName = '_onDragOver' in aObserver ?
-				'_onDragOver' : // Firefox 3.5 - 3.6
-				'onDragOver' ; // Firefox 3.0.x
-		if (dragOverFunctionName in aObserver) {
-			eval('aObserver.'+dragOverFunctionName+' = '+
-				aObserver[dragOverFunctionName].toSource().replace(
+		if ('onDragOver' in aObserver) { // Firefox 3.0.x
+			eval('aObserver.onDragOver = '+
+				aObserver.onDragOver.toSource().replace(
 					'{',
-					<![CDATA[
-						{
-							if (this.treeStyleTab.processTabDragOverEvent(aEvent, this)) {
+					<![CDATA[$&
+							if (this.treeStyleTab.processTabDragOverEvent(aEvent, this))
 								return;
-							}
 					]]>
 				)
 			);
 		}
 
-		var dragExitFunctionName = '_onDragLeave' in aObserver ?
-				'_onDragLeave' : // Firefox 3.5 - 3.6
-				'onDragExit' ; // Firefox 3.0.x
-		if (dragExitFunctionName in aObserver) {
-			eval('aObserver.'+dragExitFunctionName+' = '+
-				aObserver[dragExitFunctionName].toSource().replace(
+		if ('onDragExit' in aObserver) { // Firefox 3.0.x
+			eval('aObserver.onDragExit = '+
+				aObserver.onDragExit.toSource().replace(
 					/(this.mTabDropIndicatorBar\.[^;]+;)/,
 					'$1; this.treeStyleTab.clearDropPosition();'
 				)
@@ -437,7 +424,7 @@ var TreeStyleTabService = {
 		}
 
 		var dropFunctionName = '_onDrop' in aObserver ?
-				'_onDrop' : // Firefox 3.5 or later
+				'_onDrop' : // Firefox 3.5 - 3.6
 				'onDrop' ; // Firefox 3.0.x
 		if (dropFunctionName in aObserver) {
 			eval('aObserver.'+dropFunctionName+' = '+
@@ -505,7 +492,7 @@ var TreeStyleTabService = {
 			);
 		}
 
-		if ('_onDragEnd' in aObserver) { // Firefox 3.6 or older
+		if ('_onDragEnd' in aObserver) { // Firefox 3.5 - 3.6
 			eval('aObserver._onDragEnd = '+aObserver._onDragEnd.toSource().replace(
 				/([^\{\}\(\);]*this\.replaceTabWithWindow\()/,
 				'if (this.treeStyleTab.isDraggingAllTabs(draggedTab)) return; $1'
@@ -529,15 +516,53 @@ var TreeStyleTabService = {
 	},
 	destroyTabDNDObserver : function TSTService_destroyTabDNDObserver(aObserver)
 	{
+		var strip = this.getTabStrip(aObserver);
+
+		// Firefox 3.5 or later
+		var useHTML5Events = '_setEffectAllowedForDataTransfer' in aObserver;
+		if (useHTML5Events) {
+			strip.removeEventListener('dragstart', this, true);
+			strip.removeEventListener('dragover', this, true);
+			strip.removeEventListener('dragleave', this, true);
+		}
+
 		if (aObserver.tabContainer &&
 			aObserver.tabContainer.tabbrowser == aObserver) { // Firefox 3.7 or later
-			aObserver = aObserver.tabContainer;
-			aObserver.removeEventListener('dragstart', this, true);
-			aObserver.removeEventListener('dragover', this, true);
-			aObserver.removeEventListener('dragleave', this, true);
-			aObserver.removeEventListener('drop', this, true);
-			aObserver.removeEventListener('dragend', this, true);
+			strip.removeEventListener('dragstart', this, true);
+			strip.removeEventListener('dragover', this, true);
+			strip.removeEventListener('dragleave', this, true);
 		}
+	},
+	
+	checkCanTabDrop : function TSTService_checkCanTabDrop(aEvent, aTabBrowser) 
+	{
+try{
+		var session = this.getCurrentDragSession();
+		var node = session.sourceNode;
+		var tab = this.getTabFromChild(node);
+		if (!node ||
+			!tab ||
+			tab.parentNode != aTabBrowser.mTabContainer)
+			return true;
+
+		tab = this.getTabFromEvent(aEvent);
+		if (this.isCollapsed(tab))
+			return false;
+
+		var info = this.getDropAction(aEvent, session);
+		return info.canDrop;
+}
+catch(e) {
+		dump('TreeStyleTabService::canDrop\n'+e+'\n');
+		return false;
+}
+	},
+ 
+	onTabDragStart : function TSTService_onTabDragStart(aEvent) 
+	{
+		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
+		if (b.treeStyleTab.tabbarDNDObserver.canDragTabbar(aEvent))
+			b.treeStyleTab.onTabbarDragStart(aEvent, b);
 	},
 	
 	onTabbarDragStart : function TSTService_onTabbarDragStart(aEvent, aTabBrowser) 
@@ -563,31 +588,16 @@ var TreeStyleTabService = {
 		aEvent.stopPropagation();
 		aTabBrowser.treeStyleTab.tabbarDNDObserver.readyToStartDrag();
 	},
- 
-	checkCanTabDrop : function TSTService_checkCanTabDrop(aEvent, aTabBrowser) 
+  
+	onTabDragOver : function TSTService_onTabDragOver(aEvent) 
 	{
-try{
-		var session = this.getCurrentDragSession();
-		var node = session.sourceNode;
-		var tab = this.getTabFromChild(node);
-		if (!node ||
-			!tab ||
-			tab.parentNode != aTabBrowser.mTabContainer)
-			return true;
-
-		tab = this.getTabFromEvent(aEvent);
-		if (this.isCollapsed(tab))
-			return false;
-
-		var info = this.getDropAction(aEvent, session);
-		return info.canDrop;
-}
-catch(e) {
-		dump('TreeStyleTabService::canDrop\n'+e+'\n');
-		return false;
-}
+		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
+		if (b.treeStyleTab.processTabDragOverEvent(aEvent, b)) {
+			aEvent.stopPropagation();
+			aEvent.preventDefault(); // this is required to override default dragover actions!
+		}
 	},
- 
+	
 	processTabDragOverEvent : function TSTService_processTabDragOverEvent(aEvent, aTabBrowser) 
 	{
 try{
@@ -596,7 +606,6 @@ try{
 
 		var info = this.getDropAction(aEvent, session);
 
-		// auto-switch for staying on tabs (Firefox 3.0 or later)
 		var setEffectAllowedFunc;
 		var observer = aTabBrowser;
 		if (aTabBrowser._setEffectAllowedForDataTransfer) {
@@ -612,13 +621,14 @@ try{
 			};
 		}
 
+		// auto-switch for staying on tabs (Firefox 3.0 or later)
 		if (
 			setEffectAllowedFunc &&
 			info.target &&
 			!info.target.selected &&
 			(
-				('mDragTime' in observer && 'mDragOverDelay' in observer) ||
-				('_dragTime' in observer && '_dragOverDelay' in observer)
+				('mDragTime' in observer && 'mDragOverDelay' in observer) || // Firefox 3.6 or older
+				('_dragTime' in observer && '_dragOverDelay' in observer) // Firefox 3.7 or later
 			)
 			) {
 			let time = observer.mDragTime || observer._dragTime || 0;
@@ -664,34 +674,16 @@ catch(e) {
 	dump('TreeStyleTabService::onDragOver\n'+e+'\n');
 }
 	},
- 
-/* tab DND listening for Firefox 3.7 or later */ 
-	
-	onTabDNDObserverDragStart : function TSTService_onTabDNDObserverDragStart(aEvent) 
+  
+	onTabDragLeave : function TSTService_onTabDragLeave(aEvent) 
 	{
-		var tabbar = aEvent.currentTarget;
-		if (tabbar.treeStyleTab.tabbarDNDObserver.canDragTabbar(aEvent))
-			tabbar.treeStyleTab.onTabbarDragStart(aEvent, tabbar.tabbrowser);
-	},
- 
-	onTabDNDObserverDragOver : function TSTService_onTabDNDObserverDragOver(aEvent) 
-	{
-		var tabbar = aEvent.currentTarget;
-		if (tabbar.treeStyleTab.processTabDragOverEvent(aEvent, tabbar.tabbrowser)) {
-			aEvent.stopPropagation();
-			aEvent.preventDefault(); // this is required to override default dragover actions!
-		}
-	},
- 
-	onTabDNDObserverDragLeave : function TSTService_onTabDNDObserverDragLeave(aEvent) 
-	{
-		var tabbar = aEvent.currentTarget;
+		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
 		var tabbarFromEvent = this.getTabbarFromChild(aEvent.relatedTarget);
 		if (!tabbarFromEvent)
-			tabbar.treeStyleTab.clearDropPosition();
+			b.treeStyleTab.clearDropPosition();
 	},
  
-	onTabDNDObserverDrop : function TSTService_onTabDNDObserverDrop(aEvent) 
+	onTabDrop : function TSTService_onTabDrop(aEvent) 
 	{
 		var tabbar = aEvent.currentTarget;
 		var b = tabbar.tabbrowser;
@@ -738,8 +730,10 @@ catch(e) {
 			return;
 		}
 
+		// dropping of urls
 		if (!draggedTab) {
-			// dropping of urls
+			aEvent.stopPropagation();
+
 			let url;
 			for (let i = 0; i < tabbar._supportedLinkDropTypes.length; i++) {
 				let dataType = tabbar._supportedLinkDropTypes[i];
@@ -783,11 +777,10 @@ catch(e) {
 				catch(e) {
 				}
 			}
-			aEvent.stopPropagation();
 		}
 	},
  
-	onTabDNDObserverDragEnd : function TSTService_onTabDNDObserverDragEnd(aEvent) 
+	onTabDragEnd : function TSTService_onTabDragEnd(aEvent) 
 	{
 		var tabbar = aEvent.currentTarget;
 		var b = tabbar.tabbrowser;
@@ -834,7 +827,7 @@ catch(e) {
 
 		b.replaceTabWithWindow(draggedTab);
 	},
-   
+  
 	overrideGlobalFunctions : function TSTService_overrideGlobalFunctions() 
 	{
 //		window.__treestyletab__BrowserCustomizeToolbar = window.BrowserCustomizeToolbar;
@@ -1289,12 +1282,13 @@ catch(e) {
 						return;
 				}
 
-			// tab drag drop listeners for Firefox 3.7 or later
-			case 'dragstart': return this.onTabDNDObserverDragStart(aEvent);
-			case 'dragover': return this.onTabDNDObserverDragOver(aEvent);
-			case 'dragleave': return this.onTabDNDObserverDragLeave(aEvent);
-			case 'drop': return this.onTabDNDObserverDrop(aEvent);
-			case 'dragend': return this.onTabDNDObserverDragEnd(aEvent);
+			// Firefox 3.5 or later
+			case 'dragstart': return this.onTabDragStart(aEvent);
+			case 'dragover': return this.onTabDragOver(aEvent);
+			case 'dragleave': return this.onTabDragLeave(aEvent);
+			// Firefox 3.7 or later
+			case 'drop': return this.onTabDrop(aEvent);
+			case 'dragend': return this.onTabDragEnd(aEvent);
 		}
 	},
 	
@@ -1922,10 +1916,10 @@ catch(e) {
 				break;
 		}
 	},
-   
+  
 }; 
-
-(function() {
+  
+(function() { 
 	var namespace = {};
 	Components.utils.import(
 		'resource://treestyletab-modules/utils.js',
