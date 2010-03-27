@@ -685,8 +685,8 @@ catch(e) {
  
 	onTabDrop : function TSTService_onTabDrop(aEvent) 
 	{
-		var tabbar = aEvent.currentTarget;
-		var b = tabbar.tabbrowser;
+		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
+		var tabbar = b.mTabContainer;
 		var sv = b.treeStyleTab;
 		var dt = aEvent.dataTransfer;
 
@@ -713,19 +713,17 @@ catch(e) {
 			draggedTab &&
 			(
 				dt.dropEffect == 'copy' ||
-				draggedTab.parentNode != tabbar
+				this.getTabBrowserFromChild(draggedTab) != b
 			) &&
 			dropActionInfo.position == sv.kDROP_ON
 			) {
-			var beforeTabs = Array.slice(b.tabs);
+			var beforeTabs = Array.slice(b.mTabContainer.childNodes);
 			window.setTimeout(function() {
-				var afterTabs = Array.slice(b.tabs);
-				var newTabs = afterTabs.filter(function(aTab) {
+				var newTabs = Array.slice(b.mTabContainer.childNodes).filter(function(aTab) {
 						return beforeTabs.indexOf(aTab) < 0;
 					});
-				newTabs.forEach(function(aTab) {
-					sv.attachTabTo(aTab, dropActionInfo.target);
-				});
+				if (newTabs.length)
+					sv.attachTabTo(newTabs[0], dropActionInfo.target);
 			}, 0);
 			return;
 		}
@@ -782,8 +780,8 @@ catch(e) {
  
 	onTabDragEnd : function TSTService_onTabDragEnd(aEvent) 
 	{
-		var tabbar = aEvent.currentTarget;
-		var b = tabbar.tabbrowser;
+		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
+		var tabbar = b.mTabContainer;
 		var sv = b.treeStyleTab;
 		var dt = aEvent.dataTransfer;
 
