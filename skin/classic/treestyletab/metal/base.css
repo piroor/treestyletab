@@ -46,6 +46,7 @@
 
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"] {
 	background: transparent !important;
+	margin: 0;
 	-moz-appearance: none !important;
 }
 

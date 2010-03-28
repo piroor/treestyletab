@@ -7,6 +7,7 @@
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"]),
 #TabsToolbar[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"]) {
 	background: transparent !important;
+	margin: 0;
 	-moz-appearance: none;
 }
 .tabbrowser-strip[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"]) {

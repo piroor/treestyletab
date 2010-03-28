@@ -307,6 +307,7 @@ tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .treestyl
 }
 .tabbrowser-tabs[treestyletab-style="sidebar"][treestyletab-mode="vertical"] {
   background: transparent !important;
+  margin: 0;
   -moz-appearance: none !important;
 }
 
