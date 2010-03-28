@@ -147,7 +147,7 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 	{
 		window.setTimeout(function(aSelf) {
 			aSelf.readyToEndDrag();
-			aSelf.mOwner.setTabbrowserAttribute(aSelf.mOwner.kDROP_POSITION, null, aSelf.mOwner.mTabBrowser);
+			aSelf.mOwner.removeTabbrowserAttribute(aSelf.mOwner.kDROP_POSITION);
 		}, 10, this);
 		aEvent.stopPropagation();
 	},

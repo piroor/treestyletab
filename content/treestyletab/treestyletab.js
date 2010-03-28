@@ -1121,6 +1121,17 @@ catch(e) {
 				)
 			);
 		}
+
+		if ('PrintUtils' in window) {
+			eval('PrintUtils.printPreview = '+PrintUtils.printPreview.toSource().replace(
+				'{',
+				'{ TreeStyleTabService.onPrintPreviewEnter();'
+			));
+			eval('PrintUtils.exitPrintPreview = '+PrintUtils.exitPrintPreview.toSource().replace(
+				/(\}\)?)$/,
+				'TreeStyleTabService.onPrintPreviewExit(); $1'
+			));
+		}
 	},
 	_splitFunctionNames : function TSTService__splitFunctionNames(aString)
 	{
@@ -1844,6 +1855,20 @@ catch(e) {
 		return false;
 	},
 	tearOffSubTreeFromRemote : function() { return this.tearOffSubtreeFromRemote.apply(this, arguments); }, // obsolete, for backward compatibility
+ 
+	onPrintPreviewEnter : function TSTService_onPrintPreviewEnter() 
+	{
+		var event = document.createEvent('Events');
+		event.initEvent('TreeStyleTabPrintPreviewEntered', true, false);
+		document.documentElement.dispatchEvent(event);
+	},
+ 
+	onPrintPreviewExit : function TSTService_onPrintPreviewExit() 
+	{
+		var event = document.createEvent('Events');
+		event.initEvent('TreeStyleTabPrintPreviewExited', true, false);
+		document.documentElement.dispatchEvent(event);
+	},
   
 	observe : function TSTService_observe(aSubject, aTopic, aData) 
 	{

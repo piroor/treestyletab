@@ -84,6 +84,7 @@ var TreeStyleTabUtils = {
 	kFIXED              : 'treestyletab-tabbar-fixed',
 	kRESIZING           : 'treestyletab-tabbar-resizing',
 	kINDENTED           : 'treestyletab-tabs-indented',
+	kPRINT_PREVIEW      : 'treestyletab-print-preview',
 
 	kTAB_INVERTED          : 'treestyletab-tab-inverted',
 	kTAB_CONTENTS_INVERTED : 'treestyletab-tab-contents-inverted',
@@ -677,7 +678,7 @@ var TreeStyleTabUtils = {
  
 	setTabbrowserAttribute : function TSTUtils_setTabbrowserAttribute(aName, aValue, aTabBrowser) 
 	{
-		aTabBrowser = aTabBrowser || this.browser;
+		aTabBrowser = aTabBrowser || this.mTabBrowser || this.browser;
 		if (aValue) {
 			aTabBrowser.setAttribute(aName, aValue);
 			aTabBrowser.mTabContainer.setAttribute(aName, aValue);
@@ -688,6 +689,11 @@ var TreeStyleTabUtils = {
 			aTabBrowser.mTabContainer.removeAttribute(aName);
 			aTabBrowser.treeStyleTab.removeTabStripAttribute(aName);
 		}
+	},
+ 
+	removeTabbrowserAttribute : function TSTUtils_removeTabbrowserAttribute(aName, aTabBrowser) 
+	{
+		this.setTabbrowserAttribute(aName, null, aTabBrowser);
 	},
  
 	getTabFromChild : function TSTUtils_getTabFromChild(aTab) 
