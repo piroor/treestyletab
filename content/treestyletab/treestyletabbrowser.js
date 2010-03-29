@@ -146,7 +146,7 @@ TreeStyleTabBrowser.prototype = {
  
 	get isFloating() 
 	{
-		return this.tabStrip != this._tabStripPlaceHolder;
+		return this._tabStripPlaceHolder;
 	},
  
 	isTabInViewport : function TSTBrowser_isTabInViewport(aTab) 
