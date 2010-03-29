@@ -146,7 +146,11 @@ var TreeStyleTabBookmarksService = {
 				}
 				return aPosition - offset;
 			});
-		return treeStructure;
+
+		// smaller than -1 (-2, etc.) are invalid values.
+		return treeStructure.map(function(aIndex) {
+				return aIndex < -1 ? aDefaultParentID : aIndex ;
+			}, this);
 	},
  
 	// based on PlacesUtils.getURLsForContainerNode()
