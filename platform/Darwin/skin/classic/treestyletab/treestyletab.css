@@ -16,25 +16,49 @@ tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="right"]:n
 #main-window:not([active="true"])
   .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
   .tabbrowser-tab > .tab-image-middle,
+#main-window:-moz-window-inactive
+  .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
+  .tabbrowser-tab > .tab-image-middle,
 #main-window:not([active="true"])
   .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
   .tabbrowser-tab > .tab-close-button,
+#main-window:-moz-window-inactive
+  .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
+  .tabbrowser-tab > .tab-close-button,
 #main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[selected="true"] > .tab-image-middle,
+#main-window:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
   .tabbrowser-tab[selected="true"] > .tab-image-middle,
 #main-window:not([active="true"])
   .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
   .tabbrowser-tab[selected="true"] > .tab-close-button,
+#main-window:-moz-window-inactive
+  .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[selected="true"] > .tab-close-button,
 #main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"]
+  .tabbrowser-tab > .tab-image-middle,
+#main-window:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"]
   .tabbrowser-tab > .tab-image-middle,
 #main-window:not([active="true"])
   .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"]
   .tabbrowser-tab > .tab-close-button,
+#main-window:-moz-window-inactive
+  .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"]
+  .tabbrowser-tab > .tab-close-button,
 #main-window:not([active="true"])
   .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"]
   .tabbrowser-tab[selected="true"] > .tab-image-middle,
+#main-window:-moz-window-inactive
+  .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"]
+  .tabbrowser-tab[selected="true"] > .tab-image-middle,
 #main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"]
+  .tabbrowser-tab[selected="true"] > .tab-close-button,
+#main-window:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-tabbar-position="bottom"]
   .tabbrowser-tab[selected="true"] > .tab-close-button {
 	height: auto;
@@ -65,61 +89,85 @@ tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="right"]:n
 	background: #bbb;
 }
 
-#main-window[active="true"]
+#main-window
   .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"] {
 	background: #777;
 }
 
-#main-window[active="true"]
+#main-window
   .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab:not([selected="true"]) .tab-image-middle,
-#main-window[active="true"]
+#main-window
   .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab:not([selected="true"]) .tab-close-button,
 #main-window:not([active="true"])
   .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab:not([selected="true"]) .tab-image-middle,
+#main-window:-moz-window-inactive
+  .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+  .tabbrowser-tab:not([selected="true"]) .tab-image-middle,
 #main-window:not([active="true"])
   .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab:not([selected="true"]) .tab-close-button,
-#main-window[active="true"]
+#main-window:-moz-window-inactive
+  .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+  .tabbrowser-tab:not([selected="true"]) .tab-close-button,
+#main-window
   .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab[selected="true"] .tab-image-middle,
-#main-window[active="true"]
+#main-window
   .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab[selected="true"] .tab-close-button,
 #main-window:not([active="true"])
   .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab[selected="true"] .tab-image-middle,
+#main-window:-moz-window-inactive
+  .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+  .tabbrowser-tab[selected="true"] .tab-close-button,
 #main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+  .tabbrowser-tab[selected="true"] .tab-image-middle,
+#main-window:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab[selected="true"] .tab-close-button {
 	background-position: left bottom;
 	background-repeat: repeat-x;
 }
 
-#main-window[active="true"]
+#main-window
   .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab:not([selected="true"]) .tab-image-left,
-#main-window[active="true"]
+#main-window
   .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab:not([selected="true"]) .tab-image-right,
 #main-window:not([active="true"])
   .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab:not([selected="true"]) .tab-image-left,
-#main-window:not([active="true"])
+#main-window:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab:not([selected="true"]) .tab-image-right,
-#main-window[active="true"]
+#main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+  .tabbrowser-tab:not([selected="true"]) .tab-image-left,
+#main-window:-moz-window-inactive
+  .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+  .tabbrowser-tab:not([selected="true"]) .tab-image-right,
+#main-window
   .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab[selected="true"] .tab-image-left,
-#main-window[active="true"]
+#main-window
   .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab[selected="true"] .tab-image-right,
 #main-window:not([active="true"])
   .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab[selected="true"] .tab-image-left,
+#main-window:-moz-window-inactive
+  .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+  .tabbrowser-tab[selected="true"] .tab-image-right,
 #main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+  .tabbrowser-tab[selected="true"] .tab-image-left,
+#main-window:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style][treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab[selected="true"] .tab-image-right {
 	background-position: left bottom;

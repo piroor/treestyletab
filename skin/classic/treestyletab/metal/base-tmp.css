@@ -22,7 +22,11 @@
 
 :root[treestyletab-enable-compatibility-tmp="true"]:not([active="true"])
   tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton,
+:root[treestyletab-enable-compatibility-tmp="true"]:-moz-window-inactive
+  tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton,
 :root[treestyletab-enable-compatibility-tmp="true"]:not([active="true"])
+  tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton:hover,
+:root[treestyletab-enable-compatibility-tmp="true"]:-moz-window-inactive
   tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton:hover {
 	background: #e4e4e4 !important;
 	border-color: #666666 !important;
