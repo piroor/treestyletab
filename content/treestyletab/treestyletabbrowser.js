@@ -1145,9 +1145,21 @@ TreeStyleTabBrowser.prototype = {
  
 	updateFloatingTabbar : function TSTBrowser_updateFloatingTabbar() 
 	{
-		// this method is for Firefox 3.7 or later
-		if (!this.isFloating) return;
+		if (
+			!this.isFloating || // this method is just for Firefox 3.7 or later
+			this.updateFloatingTabbarTimer
+			)
+			return;
 
+		this.stopRendering();
+		this.updateFloatingTabbarTimer = window.setTimeout(function(aSelf) {
+			aSelf.updateFloatingTabbarTimer = null;
+			aSelf.updateFloatingTabbarInternal()
+			aSelf.startRendering();
+		}, 0, this);
+	},
+	updateFloatingTabbarInternal : function TSTBrowser_updateFloatingTabbarInternal()
+	{
 		var strip = this.tabStrip;
 		var tabContainer = this.mTabBrowser.tabContainer;
 		var positioned = false;
