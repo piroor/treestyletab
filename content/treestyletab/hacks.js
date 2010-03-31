@@ -1092,6 +1092,12 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 		});
 	}
 
+	// Remove New Tab Button
+	// https://addons.mozilla.org/firefox/addon/10535
+	if (window['piro.sakura.ne.jp'].extensions.isAvailable('remove-new-tab-button@forerunnerdesigns.com')) {
+		document.documentElement.setAttribute(TreeStyleTabService.kHIDE_NEWTAB, true);
+	}
+
 
 	window.setTimeout(function(aSelf) {
 		aSelf.overrideExtensionsDelayed();
