@@ -302,6 +302,42 @@ TreeStyleTabService.overrideExtensionsOnInitBefore = function TSTService_overrid
 		}
 	}
 
+	// Super Tab Mode
+	// https://addons.mozilla.org/firefox/addon/13288
+	if ('stmM' in window) {
+		var observer = {
+				domain : 'extensions.stm.',
+				observe : function(aSubject, aTopic, aData)
+				{
+					switch (aData)
+					{
+						case 'extensions.stm.tabBarMultiRows':
+						case 'extensions.stm.tabBarPosition':
+							if (
+								TreeStyleTabService.getPref('extensions.stm.tabBarMultiRows') &&
+								TreeStyleTabService.getPref('extensions.stm.tabBarPosition') == 0
+								) {
+								TreeStyleTabService.setPref('extensions.stm.tabBarMultiRows.override', false);
+							}
+							return;
+
+						case 'extensions.stm.newTabBtnPos':
+							if (TreeStyleTabService.getPref(aData) == 0)
+								document.documentElement.removeAttribute('treestyletab-hide-newtab-button');
+							else
+								document.documentElement.setAttribute('treestyletab-hide-newtab-button', true);
+							return;
+					}
+				}
+			};
+		observer.observe(null, null, 'extensions.stm.tabBarMultiRows');
+		observer.observe(null, null, 'extensions.stm.newTabBtnPos');
+		TreeStyleTabService.addPrefListener(observer);
+		window.addEventListener('unload', function() {
+			window.removeEventListener('unload', arguments.callee, false);
+			TreeStyleTabService.removePrefListener(observer);
+		}, false);
+	}
 };
 
 TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_overrideExtensionsOnInitAfter() {

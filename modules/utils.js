@@ -250,6 +250,7 @@ var TreeStyleTabUtils = {
 		this.onPrefChange('browser.link.open_newwindow.restriction.override');
 		this.onPrefChange('browser.tabs.loadFolderAndReplace.override');
 		this.onPrefChange('browser.tabs.insertRelatedAfterCurrent.override');
+		this.onPrefChange('extensions.stm.tabBarMultiRows.override'); // Super Tab Mode
 		this.onPrefChange('extensions.treestyletab.tabbar.scroll.smooth');
 		this.onPrefChange('extensions.treestyletab.tabbar.scroll.duration');
 		this.onPrefChange('extensions.treestyletab.animation.enabled');
@@ -1618,7 +1619,8 @@ var TreeStyleTabUtils = {
 		'extensions.treestyletab.',
 		'browser.link.open_newwindow.restriction',
 		'browser.tabs.loadFolderAndReplace',
-		'browser.tabs.insertRelatedAfterCurrent'
+		'browser.tabs.insertRelatedAfterCurrent',
+		'extensions.stm.tabBarMultiRows' // Super Tab Mode
 	],
  
 	onPrefChange : function TSTUtils_onPrefChange(aPrefName) 
@@ -1639,12 +1641,14 @@ var TreeStyleTabUtils = {
 			case 'browser.link.open_newwindow.restriction':
 			case 'browser.tabs.loadFolderAndReplace':
 			case 'browser.tabs.insertRelatedAfterCurrent':
+			case 'extensions.stm.tabBarMultiRows': // Super Tab Mode
 				if (this.prefOverriding) return;
 				aPrefName += '.override';
 				this.setPref(aPrefName, value);
 			case 'browser.link.open_newwindow.restriction.override':
 			case 'browser.tabs.loadFolderAndReplace.override':
 			case 'browser.tabs.insertRelatedAfterCurrent.override':
+			case 'extensions.stm.tabBarMultiRows.override': // Super Tab Mode
 				this.prefOverriding = true;
 				var target = aPrefName.replace('.override', '');
 				var originalValue = this.getPref(target);

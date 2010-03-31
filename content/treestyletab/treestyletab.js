@@ -317,7 +317,8 @@ var TreeStyleTabService = {
 				[
 					'browser.link.open_newwindow.restriction',
 					'browser.tabs.loadFolderAndReplace',
-					'browser.tabs.insertRelatedAfterCurrent'
+					'browser.tabs.insertRelatedAfterCurrent',
+					'extensions.stm.tabBarMultiRows' // Super Tab Mode
 				].forEach(function(aPref) {
 					var backup = prefs.getPref(aPref+'.backup');
 					if (backup === null) return;
