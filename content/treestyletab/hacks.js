@@ -928,6 +928,36 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 		window.addEventListener('TreeStyleTabAutoHideStateChanging', autoHideEventListener, false);
 		window.addEventListener('fullscreen', autoHideEventListener, false);
 		window.addEventListener('unload', autoHideEventListener, false);
+
+		if ('MoveContent' in autoHIDE) {
+			eval('autoHIDE.MoveContent = '+autoHIDE.MoveContent.toSource().replace(
+				/(;)([^;]*\.setPosition\(0, -\s*ah\.delta\);)/,
+				<![CDATA[$1
+					if (autoHIDE.winUtil)
+						autoHIDE.winUtil.setRedraw(false, false);
+					$2
+					gBrowser.treeStyleTab.autoHide.extraYOffset = ah.delta;
+					window.setTimeout(function() {
+						gBrowser.treeStyleTab.autoHide.redrawContentArea();
+						if (autoHIDE.winUtil)
+							autoHIDE.winUtil.setRedraw(true, false);
+					}, 0);
+				]]>.toString()
+			).replace(
+				/(;)([^;]*\.setPosition\(0, 0\);)/,
+				<![CDATA[$1
+					if (autoHIDE.winUtil)
+						autoHIDE.winUtil.setRedraw(false, false);
+					$2
+					gBrowser.treeStyleTab.autoHide.extraYOffset = 0;
+					window.setTimeout(function() {
+						gBrowser.treeStyleTab.autoHide.redrawContentArea();
+						if (autoHIDE.winUtil)
+							autoHIDE.winUtil.setRedraw(true, false);
+					}, 0);
+				]]>.toString()
+			));
+		}
 	}
 
 

@@ -76,23 +76,41 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		{
 			case this.kMODE_HIDE:
 				let offset = this.width + this.splitterWidth;
-				if (sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION) == 'left' &&
-					this.mode == this.kMODE_HIDE) {
+				if (sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION) == 'left') {
 					offset -= this.togglerSize;
 				}
 				return offset;
-				break;
 
 			default:
 			case this.kMODE_SHRINK:
 				return this.getTreePref('tabbar.width')
-					- this.getTreePref('tabbar.shrunkenWidth');
-				break;
+						- this.getTreePref('tabbar.shrunkenWidth');
 		}
 	},
 	get YOffset()
 	{
 		return this.height;
+	},
+	extraXOffset : 0,
+	extraYOffset : 0,
+ 
+	get currentXOffset()
+	{
+		var sv = this.mOwner;
+		return (
+				sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION) == 'left' &&
+				this.mode != this.kMODE_DISABLED &&
+				this.expanded
+			) ? this.XOffset : 0 ;
+	},
+	get currentYOffset()
+	{
+		var sv = this.mOwner;
+		return (
+				sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION) == 'top' &&
+				this.mode != this.kMODE_DISABLED &&
+				this.expanded
+			) ? this.YOffset : 0 ;
 	},
  
 	start : function TSTAutoHide_start() 
@@ -366,7 +384,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	get width() 
 	{
 		if (this.expanded) {
-			this._width = this.mOwner.tabStrip.boxObject.width;
+			this._width = this.mOwner.tabStrip.boxObject.width || this._width;
 		}
 		return this._width;
 	},
@@ -506,7 +524,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		var box = (sv.tabStripPlaceHolder || sv.tabStrip).boxObject;
 
 		this.tabbarHeight = box.height;
-		this.width = box.width;
+		this.width = box.width || this.width;
 		var splitter = document.getAnonymousElementByAttribute(b, 'class', sv.kSPLITTER);
 		this.splitterWidth = (splitter ? splitter.boxObject.width : 0 );
 		sv.container.style.margin = 0;
@@ -564,29 +582,35 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				else
 					this.clearBG();
 
-				v.move(window.outerWidth,window.outerHeight);
+				v.move(window.outerWidth, window.outerHeight);
 				v.move(
 					(
 						pos == 'left' ? -this.XOffset :
 						pos == 'right' ? this.XOffset :
 						0
-					),
+					) - this.extraXOffset,
 					(
 						pos == 'top' ? -this.YOffset :
 						pos == 'bottom' ? this.YOffset :
 						0
-					)
+					) - this.extraYOffset
 				);
 			}
 			else {
 				this.clearBG();
-				v.move(window.outerWidth,window.outerHeight);
-				v.move(0,0);
+				v.move(window.outerWidth, window.outerHeight);
+				v.move(-this.extraXOffset, -this.extraYOffset);
 			}
 		}
 		catch(e) {
 			dump(e);
 		}
+	},
+	redrawContentAreaWithDelay : function TSTAutoHide_redrawContentAreaWithDelay()
+	{
+		window.setTimeout(function(aSelf) {
+			aSelf.redrawContentArea();
+		}, 0, this);
 	},
  
 	get shouldRedraw() 
@@ -616,14 +640,20 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		var y = (pos == 'bottom') ? browserBox.height - this.YOffset : 0 ;
 		if (pos == 'left' && this.mode == this.kMODE_HIDE)
 			x -= this.togglerSize;
+		x += this.extraXOffset;
+		y += this.extraYOffset;
+
 		var xOffset = (zoom == 1 && (pos == 'top' || pos == 'bottom')) ?
-				contentBox.screenX + frame.scrollX - browserBox.screenX :
+				Math.max(0, contentBox.screenX + frame.scrollX - browserBox.screenX) :
 				0 ;
 		var yOffset = (zoom == 1 && (pos == 'left' || pos == 'right')) ?
-				contentBox.screenY + frame.scrollY - browserBox.screenY :
+				Math.max(0, contentBox.screenY + frame.scrollY - browserBox.screenY) :
 				0 ;
+
 		var w = tabContainerBox.width - xOffset;
 		var h = tabContainerBox.height - yOffset;
+		w -= this.extraXOffset;
+		h -= this.extraYOffset;
 
 		var canvasXOffset = 0;
 		var canvasYOffset = 0;
@@ -659,6 +689,10 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		this.tabbarCanvas.style.margin = (yOffset)+'px 0 0 '+(xOffset)+'px';
 		this.tabbarCanvas.style.width = (this.tabbarCanvas.width = w)+'px';
 		this.tabbarCanvas.style.height = (this.tabbarCanvas.height = h)+'px';
+
+		w += this.extraXOffset;
+		h += this.extraYOffset;
+
 		var ctx = this.tabbarCanvas.getContext('2d');
 		ctx.clearRect(0, 0, w, h);
 		ctx.save();
