@@ -1179,15 +1179,16 @@ TreeStyleTabBrowser.prototype = {
 			if (aNode.nodeType == Node.ELEMENT_NODE && (aNode != strip || !positioned))
 				height += aNode.boxObject.height;
 		});
+		height += parseInt(window.getComputedStyle(toolbox, '').getPropertyValue('margin-top').replace('px', ''));
 		if (height != toolbox.boxObject.height) {
-			this.stopRendering();
+//			this.stopRendering();
 			// "height" attribute of the toolbar prevents rendering of the toolbox with its correct height.
 			strip.removeAttribute('height');
 			toolbox.setAttribute('height', height);
-			window.setTimeout(function(aSelf) {
-				toolbox.removeAttribute('height');
-				aSelf.startRendering();
-			}, 0, this);
+//			window.setTimeout(function(aSelf) {
+//				toolbox.removeAttribute('height');
+//				aSelf.startRendering();
+//			}, 0, this);
 		}
 	},
  
