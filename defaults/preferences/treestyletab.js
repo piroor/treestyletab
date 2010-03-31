@@ -18,9 +18,10 @@ pref("extensions.treestyletab.tabbar.scroll.duration", 250);
 // flat, mixed, vertigo
 pref("extensions.treestyletab.tabbar.style",           "mixed");
 // 0 = disabled, 1 = hide, 2 = shrink
-pref("extensions.treestyletab.tabbar.autoHide.mode",       0);
-pref("extensions.treestyletab.tabbar.autoHide.mode.toggle", 2);
-pref("extensions.treestyletab.tabbar.autoHide.mode.fullscreen", 1);
+pref("extensions.treestyletab.tabbar.autoHide.mode",                   0);
+pref("extensions.treestyletab.tabbar.autoHide.mode.fullscreen",        1);
+pref("extensions.treestyletab.tabbar.autoHide.mode.toggle",            2);
+pref("extensions.treestyletab.tabbar.autoHide.mode.toggle.fullscreen", 1);
 pref("extensions.treestyletab.tabbar.autoHide.delay",      50);
 pref("extensions.treestyletab.tabbar.autoHide.area",       7);
 pref("extensions.treestyletab.tabbar.autoHide.expandArea", false);

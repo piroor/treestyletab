@@ -1241,9 +1241,15 @@ TreeStyleTabBrowserAutoHide.__defineSetter__('mode', function(aValue) {
 TreeStyleTabBrowserAutoHide.mMode = TreeStyleTabBrowserAutoHide.prototype.kMODE_HIDE; 
   
 TreeStyleTabBrowserAutoHide.toggleMode = function TSTAutoHide_toggleMode() { /* PUBLIC API */ 
-	TreeStyleTabService.setTreePref('tabbar.autoHide.mode',
-		TreeStyleTabService.getTreePref('tabbar.autoHide.mode') == this.prototype.kMODE_DISABLED ?
-			TreeStyleTabService.getTreePref('tabbar.autoHide.mode.toggle') :
+	var key       = 'tabbar.autoHide.mode';
+	var toggleKey = 'tabbar.autoHide.mode.toggle';
+	if (window.fullScreen) {
+		key       += '.fullscreen';
+		toggleKey += '.fullscreen';
+	}
+	TreeStyleTabService.setTreePref(key,
+		TreeStyleTabService.getTreePref(key) == this.prototype.kMODE_DISABLED ?
+			TreeStyleTabService.getTreePref(toggleKey) :
 			this.prototype.kMODE_DISABLED
 	);
 };
