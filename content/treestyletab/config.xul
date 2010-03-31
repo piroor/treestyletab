@@ -154,7 +154,8 @@
 				src="chrome://treestyletab/content/res/style-flat.png"/>
 			<radio value="mixed" label="&config.tabbar.style.mixed;"
 				class="image" align="center"
-				src="chrome://treestyletab/content/res/style-mixed.png"/>
+				src="chrome://treestyletab/content/res/style-mixed.png"
+				id="extensions.treestyletab.tabbar.style-mixed"/>
 			<radio value="vertigo" label="&config.tabbar.style.vertigo;"
 				class="image" align="center"
 				src="chrome://treestyletab/content/res/style-vertigo.png"/>

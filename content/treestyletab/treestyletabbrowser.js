@@ -1446,9 +1446,14 @@ TreeStyleTabBrowser.prototype = {
 				break;
 
 			case 'extensions.treestyletab.tabbar.style':
-				if (value == 'default') { // old name (for compatibility)
-					this.setTreePref('tabbar.style', 'flat');
-					return;
+				if (
+					value == 'default' || // old name (for compatibility)
+					( // dropshadow is available only on Firefox 3.5 or later.
+						value == 'mixed' &&
+						this.Comparator.compare(this.XULAppInfo.version, '3.5') < 0
+					)
+					) {
+					this.setTreePref('tabbar.style', value = 'flat');
 				}
 				if (value) {
 					if (/^(flat|mixed|vertigo)$/.test(value))

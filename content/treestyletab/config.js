@@ -41,11 +41,23 @@ function initAppearancePane()
 {
 	onChangeTabbarPosition();
 
-	var sidebarItem = document.getElementById('extensions.treestyletab.tabbar.style-sidebar');
-	if (comparator.compare(XULAppInfo.version, '3.6') >= 0)
-		sidebarItem.removeAttribute('disabled');
-	else
-		sidebarItem.setAttribute('disabled', true);
+	var mixed = document.getElementById('extensions.treestyletab.tabbar.style-mixed');
+	if (comparator.compare(XULAppInfo.version, '3.5') >= 0) {
+		mixed.removeAttribute('disabled');
+	}
+	else {
+		if (mixed.checked)
+			document.getElementById('extensions.treestyletab.tabbar.style-flat').checked = true;
+		mixed.setAttribute('disabled', true);
+	}
+
+	var sidebar = document.getElementById('extensions.treestyletab.tabbar.style-sidebar');
+	if (comparator.compare(XULAppInfo.version, '3.6') >= 0) {
+		sidebar.removeAttribute('disabled');
+	}
+	else {
+		sidebar.setAttribute('disabled', true);
+	}
 }
 
 
