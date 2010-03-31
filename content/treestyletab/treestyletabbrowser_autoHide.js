@@ -60,7 +60,9 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		this.end();
 		// update internal property after the appearance of the tab bar is updated.
 		window.setTimeout(function(aSelf) {
-			aSelf.mode = aSelf.getTreePref('tabbar.autoHide.mode');
+			aSelf.mode = window.fullScreen && aSelf.getPref('browser.fullscreen.autohide') ?
+					aSelf.getTreePref('tabbar.autoHide.mode.fullscreen') :
+					aSelf.getTreePref('tabbar.autoHide.mode') ;
 			if (aSelf.mode != aSelf.kMODE_DISABLED)
 				aSelf.start();
 		}, 0, this);
@@ -74,6 +76,9 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		var sv = this.mOwner;
 		switch (this.mode)
 		{
+			case this.kMODE_DISABLED:
+				return 0;
+
 			case this.kMODE_HIDE:
 				let offset = this.width + this.splitterWidth;
 				if (sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION) == 'left') {
@@ -183,8 +188,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				this.kMODE_DISABLED ;
 		if (this.mode != this.kMODE_DISABLED) {
 			this.start();
-			var sv = this.mOwner;
-			sv.removeTabbrowserAttribute('moz-collapsed');
+			this.mOwner.removeTabbrowserAttribute('moz-collapsed');
 		}
 	},
  
@@ -503,6 +507,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 		switch (this.mode)
 		{
+			case this.kMODE_DISABLED:
 			case this.kMODE_HIDE:
 				break;
 
@@ -530,6 +535,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		sv.container.style.margin = 0;
 		switch (this.mode)
 		{
+			case this.kMODE_DISABLED:
 			case this.kMODE_HIDE:
 				sv.setTabbrowserAttribute(this.kAUTOHIDE, 'hidden');
 				sv.setTabbrowserAttribute(this.kSTATE, this.kSTATE_HIDDEN);
@@ -833,6 +839,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		switch (aPrefName)
 		{
 			case 'extensions.treestyletab.tabbar.autoHide.mode':
+			case 'extensions.treestyletab.tabbar.autoHide.mode.fullscreen':
 				this.updateMode();
 				break;
 
