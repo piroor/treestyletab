@@ -15,7 +15,7 @@ pref("extensions.treestyletab.tabbar.hideAlltabsButton.horizontal", false);
 pref("extensions.treestyletab.tabbar.hideAlltabsButton.vertical",   true);
 pref("extensions.treestyletab.tabbar.scroll.smooth",   true);
 pref("extensions.treestyletab.tabbar.scroll.duration", 250);
-// default, vertigo, mixed
+// flat, mixed, vertigo
 pref("extensions.treestyletab.tabbar.style",           "mixed");
 // 0 = disabled, 1 = hide, 2 = shrink
 pref("extensions.treestyletab.tabbar.autoHide.mode",       0);

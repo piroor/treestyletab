@@ -20,9 +20,9 @@
 <!ENTITY config.tabbar.hideAlltabsButton    "Wyświetlaj przycisk „Pokaż wszystkie karty”">
 
 <!ENTITY config.tabbar.style.caption "Wygląd paska kart">
-<!ENTITY config.tabbar.style.default "Prosty">
-<!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.mixed   "Mix">
+<!ENTITY config.tabbar.style.flat    "Flat">
+<!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.metal   "Metal">
 <!ENTITY config.tabbar.style.sidebar "Panel boczny">
 <!ENTITY config.tabbar.style.none    "Domyślny (zależny od motywu)">

@@ -20,9 +20,9 @@
 <!ENTITY config.tabbar.hideAlltabsButton    "Button zum Auflisten aller Tabs anzeigen">
 
 <!ENTITY config.tabbar.style.caption "Aussehen der Tableiste">
-<!ENTITY config.tabbar.style.default "Plain">
-<!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.mixed   "Gemischt">
+<!ENTITY config.tabbar.style.flat    "Flat">
+<!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.metal   "Metal">
 <!ENTITY config.tabbar.style.sidebar "Sidebar">
 <!ENTITY config.tabbar.style.none    "Standard (durch Theme festgelegt)">

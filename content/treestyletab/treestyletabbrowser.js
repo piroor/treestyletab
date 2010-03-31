@@ -1443,8 +1443,12 @@ TreeStyleTabBrowser.prototype = {
 				break;
 
 			case 'extensions.treestyletab.tabbar.style':
+				if (value == 'default') { // old name (for compatibility)
+					this.setTreePref('tabbar.style', 'flat');
+					return;
+				}
 				if (value) {
-					if (/^(default|vertigo|mixed)$/.test(value))
+					if (/^(flat|mixed|vertigo)$/.test(value))
 						value = 'square '+value;
 					this.setTabbrowserAttribute(this.kSTYLE, value);
 				}

@@ -20,9 +20,9 @@
 <!ENTITY config.tabbar.hideAlltabsButton    "「タブの一覧を表示」ボタンを表示する">
 
 <!ENTITY config.tabbar.style.caption "タブバーの表示スタイル">
-<!ENTITY config.tabbar.style.default "プレーン">
-<!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.mixed   "Mixed">
+<!ENTITY config.tabbar.style.flat    "Flat">
+<!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.metal   "Metal">
 <!ENTITY config.tabbar.style.sidebar "Sidebar">
 <!ENTITY config.tabbar.style.none    "なし（テーマ本来の表示スタイル）">
