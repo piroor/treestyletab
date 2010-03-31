@@ -337,6 +337,30 @@ TreeStyleTabService.overrideExtensionsOnInitBefore = function TSTService_overrid
 			window.removeEventListener('unload', arguments.callee, false);
 			TreeStyleTabService.removePrefListener(observer);
 		}, false);
+
+		let warnPref = 'extensions.multipletab.compatibility.STM.warnForNewTabPosition';
+		if (
+			this.getPref(warnPref) &&
+			this.getPref('extensions.stm.newTabPosition') != 0
+			) {
+			let checked = { value : false };
+			if (this.PromptService.confirmEx(
+					null,
+					this.treeBundle.getString('compatibility_STM_warning_title'),
+					this.treeBundle.getString('compatibility_STM_warning_text'),
+					(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_0) +
+					(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_1),
+					this.treeBundle.getString('compatibility_STM_warning_use_TST'),
+					this.treeBundle.getString('compatibility_STM_warning_use_STM'),
+					null,
+					this.treeBundle.getString('compatibility_STM_warning_never'),
+					checked
+				) == 0) {
+				this.setPref('extensions.stm.newTabPosition', 0);
+			}
+			if (checked.value)
+				this.setPref(warnPref, false);
+		}
 	}
 };
 
