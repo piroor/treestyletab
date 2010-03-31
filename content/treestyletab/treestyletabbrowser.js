@@ -1166,6 +1166,9 @@ TreeStyleTabBrowser.prototype = {
 			tabContainer.collapsed = (this.splitter && this.splitter.getAttribute('state') == 'collapsed');
 		}
 
+		if (this.mTabBrowser != gBrowser)
+			return;
+
 		var toolbox = strip.parentNode;
 		if (toolbox.localName != 'toolbox')
 			return;
