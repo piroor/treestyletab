@@ -301,67 +301,6 @@ TreeStyleTabService.overrideExtensionsOnInitBefore = function TSTService_overrid
 			);
 		}
 	}
-
-	// Super Tab Mode
-	// https://addons.mozilla.org/firefox/addon/13288
-	if ('stmM' in window) {
-		var observer = {
-				domain : 'extensions.stm.',
-				observe : function(aSubject, aTopic, aData)
-				{
-					switch (aData)
-					{
-						case 'extensions.stm.tabBarMultiRows':
-						case 'extensions.stm.tabBarPosition':
-							if (
-								TreeStyleTabService.getPref('extensions.stm.tabBarMultiRows') &&
-								TreeStyleTabService.getPref('extensions.stm.tabBarPosition') == 0
-								) {
-								TreeStyleTabService.setPref('extensions.stm.tabBarMultiRows.override', false);
-							}
-							return;
-
-						case 'extensions.stm.newTabBtnPos':
-							if (TreeStyleTabService.getPref(aData) == 0)
-								document.documentElement.removeAttribute(TreeStyleTabService.kHIDE_NEWTAB);
-							else
-								document.documentElement.setAttribute(TreeStyleTabService.kHIDE_NEWTAB, true);
-							return;
-					}
-				}
-			};
-		observer.observe(null, null, 'extensions.stm.tabBarMultiRows');
-		observer.observe(null, null, 'extensions.stm.newTabBtnPos');
-		TreeStyleTabService.addPrefListener(observer);
-		window.addEventListener('unload', function() {
-			window.removeEventListener('unload', arguments.callee, false);
-			TreeStyleTabService.removePrefListener(observer);
-		}, false);
-
-		let warnPref = 'extensions.treestyletab.compatibility.STM.warnForNewTabPosition';
-		if (
-			this.getPref(warnPref) &&
-			this.getPref('extensions.stm.newTabPosition') != 0
-			) {
-			let checked = { value : false };
-			if (this.PromptService.confirmEx(
-					null,
-					this.treeBundle.getString('compatibility_STM_warning_title'),
-					this.treeBundle.getString('compatibility_STM_warning_text'),
-					(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_0) +
-					(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_1),
-					this.treeBundle.getString('compatibility_STM_warning_use_TST'),
-					this.treeBundle.getString('compatibility_STM_warning_use_STM'),
-					null,
-					this.treeBundle.getString('compatibility_STM_warning_never'),
-					checked
-				) == 0) {
-				this.setPref('extensions.stm.newTabPosition', 0);
-			}
-			if (checked.value)
-				this.setPref(warnPref, false);
-		}
-	}
 };
 
 TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_overrideExtensionsOnInitAfter() {
@@ -1078,6 +1017,71 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 		eval('SMOOTHLYCLOSETABS.shrinkTabIcon = '+
 			replaceScrollProps(SMOOTHLYCLOSETABS.shrinkTabIcon.toSource())
 		);
+	}
+
+	// Super Tab Mode
+	// https://addons.mozilla.org/firefox/addon/13288
+	if ('stmM' in window) {
+		var observer = {
+				domain : 'extensions.stm.',
+				observe : function(aSubject, aTopic, aData)
+				{
+					switch (aData)
+					{
+						case 'extensions.stm.tabBarMultiRows':
+						case 'extensions.stm.tabBarPosition':
+							if (
+								TreeStyleTabService.getPref('extensions.stm.tabBarMultiRows') &&
+								TreeStyleTabService.getPref('extensions.stm.tabBarPosition') == 0
+								) {
+								TreeStyleTabService.setPref('extensions.stm.tabBarMultiRows.override', false);
+							}
+							return;
+
+						case 'extensions.stm.newTabBtnPos':
+							if (TreeStyleTabService.getPref(aData) == 0)
+								document.documentElement.removeAttribute(TreeStyleTabService.kHIDE_NEWTAB);
+							else
+								document.documentElement.setAttribute(TreeStyleTabService.kHIDE_NEWTAB, true);
+							return;
+					}
+				}
+			};
+		observer.observe(null, null, 'extensions.stm.tabBarMultiRows');
+		observer.observe(null, null, 'extensions.stm.newTabBtnPos');
+		TreeStyleTabService.addPrefListener(observer);
+		window.addEventListener('unload', function() {
+			window.removeEventListener('unload', arguments.callee, false);
+			TreeStyleTabService.removePrefListener(observer);
+		}, false);
+
+		let warnPref = 'extensions.treestyletab.compatibility.STM.warnForNewTabPosition';
+		if (
+			this.getPref(warnPref) &&
+			this.getPref('extensions.stm.newTabPosition') != 0
+			) {
+			let checked = { value : false };
+			if (this.PromptService.confirmEx(
+					null,
+					this.treeBundle.getString('compatibility_STM_warning_title'),
+					this.treeBundle.getString('compatibility_STM_warning_text'),
+					(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_0) +
+					(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_1),
+					this.treeBundle.getString('compatibility_STM_warning_use_TST'),
+					this.treeBundle.getString('compatibility_STM_warning_use_STM'),
+					null,
+					this.treeBundle.getString('compatibility_STM_warning_never'),
+					checked
+				) == 0) {
+				this.setPref('extensions.stm.newTabPosition', 0);
+			}
+			if (checked.value)
+				this.setPref(warnPref, false);
+		}
+
+		TreeStyleTabService.registerTabFocusAllowance(function(aTabBrowser) {
+			return aTabBrowser.treeStyleTab.getPref('extensions.stm.focusAfterCloseTab') == 0;
+		});
 	}
 
 
