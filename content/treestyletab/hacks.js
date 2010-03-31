@@ -338,7 +338,7 @@ TreeStyleTabService.overrideExtensionsOnInitBefore = function TSTService_overrid
 			TreeStyleTabService.removePrefListener(observer);
 		}, false);
 
-		let warnPref = 'extensions.multipletab.compatibility.STM.warnForNewTabPosition';
+		let warnPref = 'extensions.treestyletab.compatibility.STM.warnForNewTabPosition';
 		if (
 			this.getPref(warnPref) &&
 			this.getPref('extensions.stm.newTabPosition') != 0

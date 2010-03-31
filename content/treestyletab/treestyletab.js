@@ -467,18 +467,19 @@ var TreeStyleTabService = {
 				).replace(
 					'var tab = aEvent.target;',
 					<![CDATA[$&
+						let locked = (
+								tab.getAttribute('locked') == 'true' || // Tab Mix Plus and others
+								tab.getAttribute('isPageLocked') == 'true' // Super Tab Mode
+							);
 						var loadDroppedLinkToNewChildTab = (
 								dropActionInfo.position != TreeStyleTabService.kDROP_ON ||
-								tab.getAttribute('locked') == 'true' // Tab Mix Plus (or others)
+								locked
 							);
 						if (!loadDroppedLinkToNewChildTab &&
 							dropActionInfo.position == TreeStyleTabService.kDROP_ON) {
 							loadDroppedLinkToNewChildTab = TreeStyleTabService.dropLinksOnTabBehavior() == TreeStyleTabService.kDROPLINK_NEWTAB;
 						}
-						if (
-							loadDroppedLinkToNewChildTab ||
-							tab.getAttribute('locked') == 'true' // Tab Mix Plus (or others)
-							) {
+						if (loadDroppedLinkToNewChildTab || locked) {
 							TSTTabBrowser.treeStyleTab.performDrop(dropActionInfo, TSTTabBrowser.loadOneTab(getShortcutOrURI(url), null, null, null, bgLoad, false));
 							return;
 						}
@@ -757,7 +758,10 @@ catch(e) {
 				sv.performDrop(dropActionInfo, b.loadOneTab(getShortcutOrURI(url), { inBackground: bgLoad }));
 			}
 			else {
-				let locked = tab.getAttribute('locked') == 'true';
+				let locked = (
+						tab.getAttribute('locked') == 'true' || // Tab Mix Plus and others
+						tab.getAttribute('isPageLocked') == 'true' // Super Tab Mode
+					);
 				let loadDroppedLinkToNewChildTab = dropActionInfo.position != sv.kDROP_ON || locked;
 				if (!loadDroppedLinkToNewChildTab &&
 					dropActionInfo.position == sv.kDROP_ON)

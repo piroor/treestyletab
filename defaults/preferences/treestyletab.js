@@ -127,7 +127,7 @@ pref("extensions.multipletab.show.multipletab-selection-item-createSubtree", tru
 
 
 pref("extensions.treestyletab.compatibility.TMP", true); // Tab Mix Plus
-pref("extensions.multipletab.compatibility.STM.warnForNewTabPosition", true); // Super Tab Mode
+pref("extensions.treestyletab.compatibility.STM.warnForNewTabPosition", true); // Super Tab Mode
 
 
 pref("extensions.treestyletab.prefsVersion", 0);
