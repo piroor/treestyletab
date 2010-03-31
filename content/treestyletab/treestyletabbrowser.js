@@ -1143,20 +1143,23 @@ TreeStyleTabBrowser.prototype = {
 		this.updateAllTabsIndent();
 	},
  
-	updateFloatingTabbar : function TSTBrowser_updateFloatingTabbar() 
+	updateFloatingTabbar : function TSTBrowser_updateFloatingTabbar(aJustNow) 
 	{
-		if (
-			!this.isFloating || // this method is just for Firefox 3.7 or later
-			this.updateFloatingTabbarTimer
-			)
-			return;
+		// this method is just for Firefox 3.7 or later
+		if (!this.isFloating) return;
 
-		this.stopRendering();
-		this.updateFloatingTabbarTimer = window.setTimeout(function(aSelf) {
-			aSelf.updateFloatingTabbarTimer = null;
-			aSelf.updateFloatingTabbarInternal()
-			aSelf.startRendering();
-		}, 0, this);
+		if (aJustNow) {
+			if (this.updateFloatingTabbarTimer)
+				window.clearTimeout(this.updateFloatingTabbarTimer);
+			this.updateFloatingTabbarTimer = null;
+			this.updateFloatingTabbarInternal();
+		}
+		else {
+			this.updateFloatingTabbarTimer = window.setTimeout(function(aSelf) {
+				aSelf.updateFloatingTabbarTimer = null;
+				aSelf.updateFloatingTabbarInternal()
+			}, 0, this);
+		}
 	},
 	updateFloatingTabbarInternal : function TSTBrowser_updateFloatingTabbarInternal()
 	{

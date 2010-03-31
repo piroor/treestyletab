@@ -454,17 +454,16 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 		this.fireStateChangingEvent();
 
+		if (this.expanded) {
+			sv.setTabbrowserAttribute(this.kAUTOHIDE, 'show');
+			this.redrawContentArea();
+		}
+		b.mTabContainer.adjustTabstrip();
+		sv.checkTabsIndentOverflow();
+
 		window.setTimeout(function(aSelf) {
-			if (aSelf.expanded) {
-				sv.setTabbrowserAttribute(aSelf.kAUTOHIDE, 'show');
-				aSelf.redrawContentArea();
-			}
-			b.mTabContainer.adjustTabstrip();
-			sv.checkTabsIndentOverflow();
 			aSelf.redrawContentArea();
-
 			aSelf.fireStateChangeEvent();
-
 			aSelf.startRendering();
 		}, 0, this);
 	},
@@ -517,7 +516,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 					sv.setTabStripAttribute('width', this.getTreePref('tabbar.width'));
 				break;
 		}
-		sv.updateFloatingTabbar();
+		sv.updateFloatingTabbar(true);
 	},
  
 	onHiding : function TSTAutoHide_onHiding() 
@@ -547,7 +546,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				sv.setTabbrowserAttribute(this.kSTATE, this.kSTATE_SHRUNKEN);
 				if (pos == 'left' || pos == 'right') {
 					sv.setTabStripAttribute('width', this.getTreePref('tabbar.shrunkenWidth'));
-					sv.updateFloatingTabbar();
+					sv.updateFloatingTabbar(true);
 				}
 				break;
 		}
