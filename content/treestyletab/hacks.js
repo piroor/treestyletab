@@ -1084,6 +1084,14 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 		});
 	}
 
+	// Tab Utilities
+	// https://addons.mozilla.org/firefox/addon/59961
+	if ('tabutils' in window) {
+		TreeStyleTabService.registerTabFocusAllowance(function(aTabBrowser) {
+			return aTabBrowser.treeStyleTab.getPref('extensions.tabutils.selectOnClose') == 0;
+		});
+	}
+
 
 	window.setTimeout(function(aSelf) {
 		aSelf.overrideExtensionsDelayed();
