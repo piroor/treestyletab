@@ -7,27 +7,102 @@
   .tabbrowser-tab {
 	-moz-box-shadow: -0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15) !important;
 }
+
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tabbrowser-tab {
 	-moz-box-shadow: 0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15) !important;
 }
+
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"]
-  .tabs-container:not([overflow="true"]) .tabbrowser-arrowscrollbox .scrollbox-innerbox,
-toolbar .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"]:not([overflow="true"]) .tabbrowser-arrowscrollbox .scrollbox-innerbox {
+  .tabs-container:not([overflow="true"])
+  .tabbrowser-arrowscrollbox
+  .scrollbox-innerbox,
+#TabsToolbar
+  .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"]:not([overflow="true"])
+  .tabbrowser-arrowscrollbox
+  .scrollbox-innerbox {
 	background: url("newtab-shadow.png") repeat-x bottom !important;
 }
+
+/* hide new tab button by Tab Mix Plus
+	https://addons.mozilla.org/firefox/addon/1122 */
+.tabbrowser-tabs[newTabButton="false"][treestyletab-style~="square"][treestyletab-mode="vertical"]
+  .tabs-container:not([overflow="true"])
+  .tabbrowser-arrowscrollbox
+  .scrollbox-innerbox,
+#TabsToolbar
+  .tabbrowser-tabs[newTabButton="false"][treestyletab-style~="square"][treestyletab-mode="vertical"]:not([overflow="true"])
+  .tabbrowser-arrowscrollbox
+  .scrollbox-innerbox,
+/* hide new tab button by Tab Mix Lite
+	https://addons.mozilla.org/firefox/addon/12444 */
+.tabbrowser-tabs[newTabButton="none"][treestyletab-style~="square"][treestyletab-mode="vertical"]
+  .tabs-container:not([overflow="true"])
+  .tabbrowser-arrowscrollbox
+  .scrollbox-innerbox,
+#TabsToolbar
+  .tabbrowser-tabs[newTabButton="none"][treestyletab-style~="square"][treestyletab-mode="vertical"]:not([overflow="true"])
+  .tabbrowser-arrowscrollbox
+  .scrollbox-innerbox,
+/* hide new tab button by Tabberwocky
+	https://addons.mozilla.org/firefox/addon/14439 */
+tabbrowser[tabberwocky-hidenewtabbutton="true"]
+  .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
+  .tabs-container:not([overflow="true"])
+  .tabbrowser-arrowscrollbox
+  .scrollbox-innerbox,
+#TabsToolbar[tabberwocky-hidenewtabbutton="true"] /* not implemented on 1.1, so this is just a random guess... */
+  .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]:not([overflow="true"])
+  .tabbrowser-arrowscrollbox
+  .scrollbox-innerbox,
+/* hide new tab button by Tab Utilities
+	https://addons.mozilla.org/firefox/addon/59961 */
+.tabbrowser-tabs[newbutton="none"][treestyletab-style~="square"][treestyletab-mode="vertical"]
+  .tabs-container:not([overflow="true"])
+  .tabbrowser-arrowscrollbox
+  .scrollbox-innerbox,
+#TabsToolbar
+  .tabbrowser-tabs[newbutton="none"][treestyletab-style~="square"][treestyletab-mode="vertical"]:not([overflow="true"])
+  .tabbrowser-arrowscrollbox
+  .scrollbox-innerbox,
+/* hide new tab button by others */
+:root[treestyletab-hide-newtab-button="true"]
+  .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
+  .tabs-container:not([overflow="true"])
+  .tabbrowser-arrowscrollbox
+  .scrollbox-innerbox,
+:root[treestyletab-hide-newtab-button="true"]
+  #TabsToolbar
+  .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]:not([overflow="true"])
+  .tabbrowser-arrowscrollbox
+  .scrollbox-innerbox {
+	background-image: none !important;
+}
+
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"]
-  .tabs-container:not([overflow="true"]) .tabbrowser-arrowscrollbox .tabs-newtab-button,
-toolbar .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"]:not([overflow="true"]) .tabbrowser-arrowscrollbox .tabs-newtab-button {
+  .tabs-container:not([overflow="true"])
+  .tabbrowser-arrowscrollbox .tabs-newtab-button,
+#TabsToolbar
+  .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"]:not([overflow="true"])
+  .tabbrowser-arrowscrollbox
+  .tabs-newtab-button {
 	margin-bottom: 5px !important;
 }
 
-.tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"]:not([overflow="true"]) .tabbrowser-arrowscrollbox,
-.tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"][overflow="true"] .tabbrowser-arrowscrollbox .scrollbox-innerbox {
+
+.tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"]:not([overflow="true"])
+  .tabbrowser-arrowscrollbox,
+.tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"][overflow="true"]
+  .tabbrowser-arrowscrollbox
+  .scrollbox-innerbox {
 	background: url("../metal/shadow-inactive-l.png") repeat-y top right !important;
 }
-.tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]:not([overflow="true"]) .tabbrowser-arrowscrollbox,
-.tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"][overflow="true"] .tabbrowser-arrowscrollbox .scrollbox-innerbox {
+
+.tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]:not([overflow="true"])
+  .tabbrowser-arrowscrollbox,
+.tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-style~="vertigo"])[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"][overflow="true"]
+  .tabbrowser-arrowscrollbox
+  .scrollbox-innerbox {
 	background: url("../metal/shadow-inactive-r.png") repeat-y top left !important;
 }
 
