@@ -78,6 +78,7 @@ var TreeStyleTabUtils = {
 	kTABBAR_POSITION    : 'treestyletab-tabbar-position',
 	kMODE               : 'treestyletab-mode',
 
+	kHIDE_NEWTAB        : 'treestyletab-hide-newtab-button',
 	kHIDE_ALLTABS       : 'treestyletab-hide-alltabs-button',
 	kSTYLE              : 'treestyletab-style',
 	kFIRSTTAB_BORDER    : 'treestyletab-firsttab-border',

@@ -323,9 +323,9 @@ TreeStyleTabService.overrideExtensionsOnInitBefore = function TSTService_overrid
 
 						case 'extensions.stm.newTabBtnPos':
 							if (TreeStyleTabService.getPref(aData) == 0)
-								document.documentElement.removeAttribute('treestyletab-hide-newtab-button');
+								document.documentElement.removeAttribute(TreeStyleTabService.kHIDE_NEWTAB);
 							else
-								document.documentElement.setAttribute('treestyletab-hide-newtab-button', true);
+								document.documentElement.setAttribute(TreeStyleTabService.kHIDE_NEWTAB, true);
 							return;
 					}
 				}
