@@ -1074,7 +1074,7 @@ catch(e) {
 		// Firefox 3 full screen
 		eval('FullScreen._animateUp = '+
 			FullScreen._animateUp.toSource().replace(
-				/((?:gBrowser\.mStrip|gNavToolbox)\.boxObject\.height)/,
+				/(gBrowser\.mStrip\.boxObject\.height)/,
 				'((gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION) != "top") ? 0 : $1)'
 			)
 		);
