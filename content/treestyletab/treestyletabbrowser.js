@@ -2706,7 +2706,7 @@ TreeStyleTabBrowser.prototype = {
 	onPopupShowing : function TSTBrowser_onPopupShowing(aEvent) 
 	{
 		if (aEvent.target != aEvent.currentTarget) return;
-		switch (aEvent.target.getAttribute('anonid'))
+		switch (aEvent.target.getAttribute('anonid') || aEvent.target.id)
 		{
 			case 'tabContextMenu':
 				this.initTabContextMenu(aEvent);

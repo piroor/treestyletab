@@ -824,6 +824,15 @@ var TreeStyleTabUtils = {
 		if (aTabBrowserChild.id == 'TabsToolbar') // tabs toolbar, Firefox 3.7 or later
 			return aTabBrowserChild.getElementsByTagName('tabs')[0].tabbrowser;
 
+		// tab context menu on Firefox 3.7
+		var popup = this.evaluateXPath(
+				'ancestor-or-self::xul:menupopup[@id="tabContextMenu"]',
+				aTabBrowserChild,
+				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue;
+		if (popup && 'TabContextMenu' in window)
+			return this.getTabBrowserFromChild(TabContextMenu.contextTab);
+
 		var b = this.evaluateXPath(
 				'ancestor::xul:tabbrowser | '+
 				'ancestor::xul:tabs[@tabbrowser]',
