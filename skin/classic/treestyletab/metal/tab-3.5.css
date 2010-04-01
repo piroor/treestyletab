@@ -1,3 +1,5 @@
+@import url("tab-inactive.css");
+
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
