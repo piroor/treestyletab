@@ -108,10 +108,12 @@ var TreeStyleTabBookmarksService = {
 		if (aDefaultParentID === void(0))
 			aDefaultParentID = -1;
 
+		/* Get array of parents. The index becomes to -1,
+		   if there is NO PARENT or the parent is THE TAB ITSELF. */
 		var treeStructure = aIDs.map(function(aId, aIndex) {
 				let id = this.getParentItem(aId);
 				let index = aIDs.indexOf(id);
-				return index > aIndex || index < -1 ? aDefaultParentID : index ;
+				return index >= aIndex ? aDefaultParentID : index ;
 			}, this);
 
 		/* Correct patterns like:
@@ -147,7 +149,8 @@ var TreeStyleTabBookmarksService = {
 				return aPosition - offset;
 			});
 
-		// smaller than -1 (-2, etc.) are invalid values.
+		/* The final step, this validates all of values.
+		   Smaller than -1 is invalid, so it becomes to -1. */
 		return treeStructure.map(function(aIndex) {
 				return aIndex < -1 ? aDefaultParentID : aIndex ;
 			}, this);
