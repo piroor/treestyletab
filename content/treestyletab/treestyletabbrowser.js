@@ -1446,44 +1446,12 @@ TreeStyleTabBrowser.prototype = {
 				break;
 
 			case 'extensions.treestyletab.tabbar.style':
-				if (
-					value == 'default' || // old name (for compatibility)
-					( // dropshadow is available only on Firefox 3.5 or later.
-						value == 'mixed' &&
-						this.Comparator.compare(this.XULAppInfo.version, '3.5') < 0
-					)
-					) {
-					this.setTreePref('tabbar.style', value = 'flat');
-				}
-				if (value) {
-					if (/^(flat|mixed|vertigo)$/.test(value))
-						value = 'square '+value;
-					this.setTabbrowserAttribute(this.kSTYLE, value);
-				}
-				else {
-					this.removeTabbrowserAttribute(this.kSTYLE);
-				}
+				this.setTabbarStyle(value);
 				value = this.getTreePref('twisty.style');
-				if (value != 'auto') {
+				if (value != 'auto')
 					break;
-				}
 			case 'extensions.treestyletab.twisty.style':
-				if (value == 'auto') {
-					if (this.getTreePref('tabbar.style') == 'sidebar') {
-						value = 'osx';
-					}
-					else if (
-						window['piro.sakura.ne.jp'].extensions.isAvailable('informationaltab@piro.sakura.ne.jp') &&
-						this.getPref('extensions.informationaltab.thumbnail.enabled') &&
-						this.getPref('extensions.informationaltab.thumbnail.position') < 100
-						) {
-						value = 'retro';
-					}
-					else {
-						value = 'modern-black';
-					}
-				}
-				this.setTabbrowserAttribute(this.kTWISTY_STYLE, value);
+				this.setTwistyStyle(value);
 				break;
 
 			case 'extensions.treestyletab.showBorderForFirstTab':
@@ -1522,6 +1490,59 @@ TreeStyleTabBrowser.prototype = {
 			default:
 				break;
 		}
+	},
+	setTabbarStyle : function TSTBrowser_setTabbarStyle(aStyle)
+	{
+		if (/^(default|plain|flat|mixed|vertigo|metal|sidebar)$/.test(aStyle))
+			aStyle = aStyle.toLowerCase();
+
+		if (aStyle == 'default') { // old name (for compatibility)
+			this.setTreePref('tabbar.style', aStyle = 'plain');
+		}
+		else if (// dropshadow is available only on Firefox 3.5 or later.
+			aStyle == 'mixed' &&
+			this.Comparator.compare(this.XULAppInfo.version, '3.5') < 0
+			) {
+			this.setTreePref('tabbar.style', aStyle = 'flat');
+		}
+
+		if (aStyle) {
+			let additionalValues = [];
+			if (/^(plain|flat|mixed|vertigo)$/.test(aStyle))
+				additionalValues.push('square');
+			if (/^(plain|flat|mixed)$/.test(aStyle))
+				additionalValues.push('border');
+			if (/^(flat|mixed)$/.test(aStyle))
+				additionalValues.push('color');
+			if (/^(plain|mixed)$/.test(aStyle))
+				additionalValues.push('shadow');
+			if (additionalValues.length)
+				aStyle = additionalValues.join(' ')+' '+aStyle;
+
+			this.setTabbrowserAttribute(this.kSTYLE, aStyle);
+		}
+		else {
+			this.removeTabbrowserAttribute(this.kSTYLE);
+		}
+	},
+	setTwistyStyle : function TSTBrowser_setTwistyStyle(aStyle)
+	{
+		if (aStyle == 'auto') {
+			if (this.getTreePref('tabbar.style') == 'sidebar') {
+				aStyle = 'osx';
+			}
+			else if (
+				window['piro.sakura.ne.jp'].extensions.isAvailable('informationaltab@piro.sakura.ne.jp') &&
+				this.getPref('extensions.informationaltab.thumbnail.enabled') &&
+				this.getPref('extensions.informationaltab.thumbnail.position') < 100
+				) {
+				aStyle = 'retro';
+			}
+			else {
+				aStyle = 'modern-black';
+			}
+		}
+		this.setTabbrowserAttribute(this.kTWISTY_STYLE, aStyle);
 	},
   
 /* DOM Event Handling */ 
