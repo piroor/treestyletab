@@ -1,0 +1,52 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+/* Unset bottom border, instead let's have a border on the right-hand
+   side, much like the sidebar does. */
+#main-window:not([active="true"])
+.tabbrowser-strip[treestyletab-style="sidebar"][treestyletab-mode="vertical"],
+#main-window:not([active="true"])
+#TabsToolbar[treestyletab-style="sidebar"][treestyletab-mode="vertical"] {
+  border-top: 1px solid #868686;
+}
+
+/* Background colour for the tree sidebar (light blue when window is
+   active, grey otherwise) */
+#main-window:not([active="true"])
+.tabbrowser-strip[treestyletab-style="sidebar"][treestyletab-mode="vertical"] {
+  background-color: #e8e8e8 !important;
+}
+
+/* Use the splitter to display the border of .tabbrowser-strip */
+#main-window:not([active="true"])
+tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .treestyletab-splitter {
+  background-color: #868686;
+}
+#main-window:not([active="true"])
+.tabbrowser-strip[treestyletab-style="sidebar"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"] {
+  border-right-color: #868686;
+}
+#main-window:not([active="true"])
+.tabbrowser-strip[treestyletab-style="sidebar"][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"] {
+  border-left-color: #868686;
+}
+
+/* Style tabs themselves.  Get rid of most of the initial XUL styling */
+#main-window:not([active="true"])
+.tabbrowser-tabs[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .tabbrowser-tab[selected="true"] {
+  border-top: 1px solid #979797 !important;
+  background: -moz-linear-gradient(top, #B4B4B4, #8A8A8A) repeat-x !important;  
+}
+
+/* Make the tab counter look like the bubbles in Mail.app et.al. */
+#main-window:not([active="true"])
+.tabbrowser-tabs[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .treestyletab-counter-container {
+  background-color: #b5b5b5 !important;
+}
+#main-window:not([active="true"]) .tabbrowser-tabs[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tab[selected="true"] .treestyletab-counter-container {
+  background-color: #ffffff !important;
+}
+#main-window:not([active="true"]) .tabbrowser-tabs[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tab[selected="true"] .treestyletab-counter {
+  color: #929292 !important;
+}

@@ -83,14 +83,6 @@
 	border-right-width: 0;
 	-moz-border-image: url("tab-active-l.png") 10 / 10px 0 10px 10px;
 }
-:root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tab-image-left,
-:root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tab-image-left {
-	-moz-border-image: url("tab-inactive-l.png") 10 / 10px 0 10px 10px;
-}
 
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-image-middle,
@@ -100,33 +92,11 @@
 	border-right-width: 0;
 	-moz-border-image: url("tab-active-l.png") 10 / 10px 0 10px 0;
 }
-:root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tab-image-middle,
-:root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tab-image-middle,
-:root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tab-close-button,
-:root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tab-close-button {
-	-moz-border-image: url("tab-inactive-l.png") 10 / 10px 0 10px 0;
-}
 
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-image-right {
 	border-left-width: 0;
 	-moz-border-image: url("tab-active-l.png") 10 / 10px 10px 10px 0;
-}
-:root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tab-image-right,
-:root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tab-image-right {
-	-moz-border-image: url("tab-inactive-l.png") 10 / 10px 10px 10px 0;
 }
 
 
@@ -137,14 +107,6 @@
   .tab-image-left {
 	-moz-border-image: url("tab-active-r.png") 10 / 10px 0 10px 10px;
 }
-:root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tab-image-left,
-:root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tab-image-left {
-	-moz-border-image: url("tab-inactive-r.png") 10 / 10px 0 10px 10px;
-}
 
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-middle,
@@ -152,34 +114,11 @@
   .tab-close-button {
 	-moz-border-image: url("tab-active-r.png") 10 / 10px 0 10px 0;
 }
-:root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tab-image-middle,
-:root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tab-image-middle,
-:root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tab-close-button,
-:root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tab-close-button {
-	-moz-border-image: url("tab-inactive-r.png") 10 / 10px 0 10px 0;
-}
 
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-right {
 	-moz-border-image: url("tab-active-r.png") 10 / 10px 10px 10px 0;
 }
-:root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tab-image-right,
-:root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tab-image-right {
-	-moz-border-image: url("tab-inactive-r.png") 10 / 10px 10px 10px 0;
-}
-
 
 
 /* foreground, left */
@@ -188,14 +127,6 @@
   .tab-image-left[selected="true"] {
 	-moz-border-image: url("tab-active-selected-l.png") 10 / 10px 0 10px 10px;
 }
-:root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tab-image-left[selected="true"],
-:root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tab-image-left[selected="true"] {
-	-moz-border-image: url("tab-inactive-selected-l.png") 10 / 10px 0 10px 10px;
-}
 
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-image-middle[selected="true"],
@@ -203,32 +134,10 @@
   [selected="true"] .tab-close-button {
 	-moz-border-image: url("tab-active-selected-l.png") 10 / 10px 0 10px 0;
 }
-:root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tab-image-middle[selected="true"],
-:root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tab-image-middle[selected="true"],
-:root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  [selected="true"] .tab-close-button,
-:root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  [selected="true"] .tab-close-button {
-	-moz-border-image: url("tab-inactive-selected-l.png") 10 / 10px 0 10px 0;
-}
 
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tab-image-right[selected="true"] {
 	-moz-border-image: url("tab-active-selected-l.png") 10 / 10px 10px 10px 0;
-}
-:root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tab-image-right[selected="true"],
-:root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tab-image-right[selected="true"] {
-	-moz-border-image: url("tab-inactive-selected-l.png") 10 / 10px 10px 10px 0;
 }
 
 
@@ -239,14 +148,6 @@
   .tab-image-left[selected="true"] {
 	-moz-border-image: url("tab-active-selected-r.png") 10 / 10px 0 10px 10px;
 }
-:root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tab-image-left[selected="true"],
-:root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tab-image-left[selected="true"] {
-	-moz-border-image: url("tab-inactive-selected-r.png") 10 / 10px 0 10px 10px;
-}
 
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-middle[selected="true"],
@@ -254,31 +155,8 @@
   [selected="true"] .tab-close-button {
 	-moz-border-image: url("tab-active-selected-r.png") 10 / 10px 0 10px 0;
 }
-:root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tab-image-middle[selected="true"],
-:root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tab-image-middle[selected="true"],
-:root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  [selected="true"] .tab-close-button,
-:root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  [selected="true"] .tab-close-button {
-	-moz-border-image: url("tab-inactive-selected-r.png") 10 / 10px 0 10px 0;
-}
 
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-right[selected="true"] {
 	-moz-border-image: url("tab-active-selected-r.png") 10 / 10px 10px 10px 0;
 }
-:root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tab-image-right[selected="true"],
-:root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tab-image-right[selected="true"] {
-	-moz-border-image: url("tab-inactive-selected-r.png") 10 / 10px 10px 10px 0;
-}
-
