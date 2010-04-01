@@ -9,3 +9,7 @@
 	width: 24px;
 	height: 24px;
 }
+
+arrowscrollbox[overflow="true"] {
+	border: 1px inset ThreeDFace;
+}

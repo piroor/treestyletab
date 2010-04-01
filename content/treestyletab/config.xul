@@ -53,6 +53,12 @@
 		<preference id="extensions.treestyletab.tabbar.invertTabContents"
 			name="extensions.treestyletab.tabbar.invertTabContents"
 			type="bool"/>
+		<preference id="extensions.treestyletab.tabbar.style"
+			name="extensions.treestyletab.tabbar.style"
+			type="string"/>
+		<preference id="extensions.treestyletab.twisty.style"
+			name="extensions.treestyletab.twisty.style"
+			type="string"/>
 	</preferences>
 
 	<vbox>
@@ -138,42 +144,13 @@
 		</vbox>
 	</groupbox>
 
-	</vbox>
-
-</prefpane>
-
-<prefpane id="prefpane-style" label="&config.tabs.style;"
-	onpaneload="initStylePane();">
-	<preferences>
-		<preference id="extensions.treestyletab.tabbar.style"
-			name="extensions.treestyletab.tabbar.style"
-			type="string"/>
-		<preference id="extensions.treestyletab.twisty.style"
-			name="extensions.treestyletab.twisty.style"
-			type="string"/>
-	</preferences>
-
 	<groupbox>
 		<caption label="&config.tabbar.style.caption;"/>
 		<radiogroup id="extensions.treestyletab.tabbar.style-radiogroup"
 			preference="extensions.treestyletab.tabbar.style"
 			orient="vertical">
-			<hbox align="center">
-			<radio value="plain" label="&config.tabbar.style.plain;"
-				class="image" align="center"
-				src="chrome://treestyletab/content/res/style-plain.png"/>
-			<radio value="flat" label="&config.tabbar.style.flat;"
-				class="image" align="center"
-				src="chrome://treestyletab/content/res/style-flat.png"/>
-			<radio value="mixed" label="&config.tabbar.style.mixed;"
-				class="image" align="center"
-				src="chrome://treestyletab/content/res/style-mixed.png"
-				id="extensions.treestyletab.tabbar.style-mixed"/>
-			</hbox>
-			<hbox align="center">
-			<radio value="vertigo" label="&config.tabbar.style.vertigo;"
-				class="image" align="center"
-				src="chrome://treestyletab/content/res/style-vertigo.png"/>
+			<arrowscrollbox orient="horizontal" flex="1"
+				id="extensions.treestyletab.tabbar.style-arrowscrollbox">
 			<radio value="metal" label="&config.tabbar.style.metal;"
 				class="image" align="center"
 				src="chrome://treestyletab/content/res/style-metal.png"/>
@@ -181,7 +158,20 @@
 				class="image" align="center"
 				src="chrome://treestyletab/content/res/style-sidebar.png"
 				id="extensions.treestyletab.tabbar.style-sidebar"/>
-			</hbox>
+			<radio value="mixed" label="&config.tabbar.style.mixed;"
+				class="image" align="center"
+				src="chrome://treestyletab/content/res/style-mixed.png"
+				id="extensions.treestyletab.tabbar.style-mixed"/>
+			<radio value="flat" label="&config.tabbar.style.flat;"
+				class="image" align="center"
+				src="chrome://treestyletab/content/res/style-flat.png"/>
+			<radio value="plain" label="&config.tabbar.style.plain;"
+				class="image" align="center"
+				src="chrome://treestyletab/content/res/style-plain.png"/>
+			<radio value="vertigo" label="&config.tabbar.style.vertigo;"
+				class="image" align="center"
+				src="chrome://treestyletab/content/res/style-vertigo.png"/>
+			</arrowscrollbox>
 			<hbox align="center">
 			<radio value="" label="&config.tabbar.style.none;"/>
 			</hbox>
@@ -192,7 +182,8 @@
 		<radiogroup id="extensions.treestyletab.twisty.style-radiogroup"
 			preference="extensions.treestyletab.twisty.style"
 			orient="vertical">
-			<hbox align="center">
+			<arrowscrollbox orient="horizontal" flex="1"
+				id="extensions.treestyletab.twisty.style-arrowscrollbox">
 			<radio value="auto" label="&config.twisty.style.auto;"/>
 			<radio value="retro" label="&config.twisty.style.retro;"
 				class="image" align="center"
@@ -206,12 +197,14 @@
 			<radio value="osx" label="&config.twisty.style.osx;"
 				class="image" align="center"
 				src="chrome://treestyletab/content/res/twisty-osx.png"/>
-			</hbox>
+			</arrowscrollbox>
 			<hbox align="center">
 			<radio value="none" label="&config.twisty.style.none;"/>
 			</hbox>
 		</radiogroup>
 	</groupbox>
+
+	</vbox>
 </prefpane>
 
 <prefpane id="prefpane-menu" label="&config.tabs.menu;">
@@ -790,6 +783,7 @@
 
 </prefpane>
 
+<script src="res/animationManager.js" type="application/javascript"/>
 <script src="config.js" type="application/javascript"/>
 
 </prefwindow>
