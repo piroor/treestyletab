@@ -149,6 +149,9 @@
 			preference="extensions.treestyletab.tabbar.style"
 			orient="vertical">
 			<hbox align="center">
+			<radio value="plain" label="&config.tabbar.style.plain;"
+				class="image" align="center"
+				src="chrome://treestyletab/content/res/style-plain.png"/>
 			<radio value="flat" label="&config.tabbar.style.flat;"
 				class="image" align="center"
 				src="chrome://treestyletab/content/res/style-flat.png"/>
