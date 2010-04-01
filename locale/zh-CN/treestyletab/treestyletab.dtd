@@ -19,6 +19,9 @@
 <!ENTITY config.allowSubtreeCollapseExpand  "允许折叠/展开标签子树">
 <!ENTITY config.tabbar.hideAlltabsButton    "显示“列出所有标签”按钮">
 
+
+<!ENTITY config.tabs.style "Style">
+
 <!ENTITY config.tabbar.style.caption "标签栏外观">
 <!ENTITY config.tabbar.style.plain   "简洁"">
 <!ENTITY config.tabbar.style.flat    "Flat">

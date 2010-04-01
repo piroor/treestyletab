@@ -19,6 +19,9 @@
 <!ENTITY config.allowSubtreeCollapseExpand  "Разрешить сворачивать/разворачивать поддеревья вкладок">
 <!ENTITY config.tabbar.hideAlltabsButton    "Показывать кнопку &quot;Список всех вкладок&quot;">
 
+
+<!ENTITY config.tabs.style "Style">
+
 <!ENTITY config.tabbar.style.caption "Вид вкладок на панели">
 <!ENTITY config.tabbar.style.plain   "Плоские кнопки">
 <!ENTITY config.tabbar.style.flat    "Flat">

@@ -40,7 +40,10 @@ function init()
 function initAppearancePane()
 {
 	onChangeTabbarPosition();
+}
 
+function initStylePane()
+{
 	var mixed = document.getElementById('extensions.treestyletab.tabbar.style-mixed');
 	if (comparator.compare(XULAppInfo.version, '3.5') >= 0) {
 		mixed.removeAttribute('disabled');

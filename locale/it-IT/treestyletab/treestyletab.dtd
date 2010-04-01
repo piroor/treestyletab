@@ -19,6 +19,9 @@
 <!ENTITY config.allowSubtreeCollapseExpand  "Permetti di contrarre/espandere sottoalberi delle schede">
 <!ENTITY config.tabbar.hideAlltabsButton    "Visualizza la maniglia per elencare tutte le schede">
 
+
+<!ENTITY config.tabs.style "Style">
+
 <!ENTITY config.tabbar.style.caption "Aspetto delle barra delle schede">
 <!ENTITY config.tabbar.style.plain   "Semplice">
 <!ENTITY config.tabbar.style.flat    "Flat">

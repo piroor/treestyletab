@@ -19,6 +19,9 @@
 <!ENTITY config.allowSubtreeCollapseExpand  "允許摺疊 / 展開樹狀子目錄">
 <!ENTITY config.tabbar.hideAlltabsButton    "顯示「列出所有分頁」按鈕">
 
+
+<!ENTITY config.tabs.style "Style">
+
 <!ENTITY config.tabbar.style.caption "分頁工具列的外觀">
 <!ENTITY config.tabbar.style.plain   "簡潔">
 <!ENTITY config.tabbar.style.flat    "Flat">

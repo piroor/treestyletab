@@ -5,6 +5,11 @@ radio[pane="prefpane-appearance"][selected="true"] {
 	-moz-image-region: rect(0px, 32px, 32px, 0px);
 }
 
+radio[pane="prefpane-style"]:hover,
+radio[pane="prefpane-style"][selected="true"] {
+	-moz-image-region: rect(0px, 32px, 32px, 0px);
+}
+
 radio[pane="prefpane-menu"]:hover,
 radio[pane="prefpane-menu"][selected="true"] {
 	-moz-image-region: rect(0px, 32px, 32px, 0px);

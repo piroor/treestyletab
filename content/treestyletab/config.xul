@@ -18,9 +18,6 @@
 		<preference id="extensions.treestyletab.tabbar.position"
 			name="extensions.treestyletab.tabbar.position"
 			type="string"/>
-		<preference id="extensions.treestyletab.tabbar.style"
-			name="extensions.treestyletab.tabbar.style"
-			type="string"/>
 		<preference id="extensions.treestyletab.tabbar.fixed.horizontal"
 			name="extensions.treestyletab.tabbar.fixed.horizontal"
 			type="bool"/>
@@ -56,9 +53,6 @@
 		<preference id="extensions.treestyletab.tabbar.invertTabContents"
 			name="extensions.treestyletab.tabbar.invertTabContents"
 			type="bool"/>
-		<preference id="extensions.treestyletab.twisty.style"
-			name="extensions.treestyletab.twisty.style"
-			type="string"/>
 	</preferences>
 
 	<vbox>
@@ -143,6 +137,22 @@
 		</hbox>
 		</vbox>
 	</groupbox>
+
+	</vbox>
+
+</prefpane>
+
+<prefpane id="prefpane-style" label="&config.tabs.style;"
+	onpaneload="initStylePane();">
+	<preferences>
+		<preference id="extensions.treestyletab.tabbar.style"
+			name="extensions.treestyletab.tabbar.style"
+			type="string"/>
+		<preference id="extensions.treestyletab.twisty.style"
+			name="extensions.treestyletab.twisty.style"
+			type="string"/>
+	</preferences>
+
 	<groupbox>
 		<caption label="&config.tabbar.style.caption;"/>
 		<radiogroup id="extensions.treestyletab.tabbar.style-radiogroup"
@@ -159,6 +169,8 @@
 				class="image" align="center"
 				src="chrome://treestyletab/content/res/style-mixed.png"
 				id="extensions.treestyletab.tabbar.style-mixed"/>
+			</hbox>
+			<hbox align="center">
 			<radio value="vertigo" label="&config.tabbar.style.vertigo;"
 				class="image" align="center"
 				src="chrome://treestyletab/content/res/style-vertigo.png"/>
@@ -170,14 +182,17 @@
 				src="chrome://treestyletab/content/res/style-sidebar.png"
 				id="extensions.treestyletab.tabbar.style-sidebar"/>
 			</hbox>
+			<hbox align="center">
 			<radio value="" label="&config.tabbar.style.none;"/>
+			</hbox>
 		</radiogroup>
 	</groupbox>
 	<groupbox>
 		<caption label="&config.twisty.style.caption;"/>
 		<radiogroup id="extensions.treestyletab.twisty.style-radiogroup"
 			preference="extensions.treestyletab.twisty.style"
-			orient="horizontal">
+			orient="vertical">
+			<hbox align="center">
 			<radio value="auto" label="&config.twisty.style.auto;"/>
 			<radio value="retro" label="&config.twisty.style.retro;"
 				class="image" align="center"
@@ -191,12 +206,12 @@
 			<radio value="osx" label="&config.twisty.style.osx;"
 				class="image" align="center"
 				src="chrome://treestyletab/content/res/twisty-osx.png"/>
+			</hbox>
+			<hbox align="center">
 			<radio value="none" label="&config.twisty.style.none;"/>
+			</hbox>
 		</radiogroup>
 	</groupbox>
-
-	</vbox>
-
 </prefpane>
 
 <prefpane id="prefpane-menu" label="&config.tabs.menu;">

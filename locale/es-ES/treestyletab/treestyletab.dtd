@@ -19,6 +19,9 @@
 <!ENTITY config.allowSubtreeCollapseExpand  "Permitir colapsar/expandir los sub-árboles de las pestañas">
 <!ENTITY config.tabbar.hideAlltabsButton    "Mostrar el botón &quot;Listar todas las pestañas&quot;">
 
+
+<!ENTITY config.tabs.style "Style">
+
 <!ENTITY config.tabbar.style.caption "Apariencia de la barra de pestañas">
 <!ENTITY config.tabbar.style.plain   "Plano">
 <!ENTITY config.tabbar.style.flat    "Flat">
