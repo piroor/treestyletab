@@ -20,8 +20,9 @@
 <!ENTITY config.tabbar.hideAlltabsButton    "显示“列出所有标签”按钮">
 
 <!ENTITY config.tabbar.style.caption "标签栏外观">
-<!ENTITY config.tabbar.style.mixed   "混合">
+<!ENTITY config.tabbar.style.plain   "简洁"">
 <!ENTITY config.tabbar.style.flat    "Flat">
+<!ENTITY config.tabbar.style.mixed   "混合">
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.metal   "金属">
 <!ENTITY config.tabbar.style.sidebar "Sidebar">

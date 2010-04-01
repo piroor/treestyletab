@@ -20,8 +20,9 @@
 <!ENTITY config.tabbar.hideAlltabsButton    "Visualizza la maniglia per elencare tutte le schede">
 
 <!ENTITY config.tabbar.style.caption "Aspetto delle barra delle schede">
-<!ENTITY config.tabbar.style.mixed   "Misto">
+<!ENTITY config.tabbar.style.plain   "Semplice">
 <!ENTITY config.tabbar.style.flat    "Flat">
+<!ENTITY config.tabbar.style.mixed   "Misto">
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.metal   "Metal">
 <!ENTITY config.tabbar.style.sidebar "Sidebar">

@@ -20,8 +20,9 @@
 <!ENTITY config.tabbar.hideAlltabsButton    "Mostrar el botón &quot;Listar todas las pestañas&quot;">
 
 <!ENTITY config.tabbar.style.caption "Apariencia de la barra de pestañas">
-<!ENTITY config.tabbar.style.mixed   "Mezclado">
+<!ENTITY config.tabbar.style.plain   "Plano">
 <!ENTITY config.tabbar.style.flat    "Flat">
+<!ENTITY config.tabbar.style.mixed   "Mezclado">
 <!ENTITY config.tabbar.style.vertigo "Vértigo">
 <!ENTITY config.tabbar.style.metal   "Metal">
 <!ENTITY config.tabbar.style.sidebar "Sidebar">

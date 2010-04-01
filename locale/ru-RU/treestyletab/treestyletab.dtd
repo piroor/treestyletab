@@ -20,8 +20,9 @@
 <!ENTITY config.tabbar.hideAlltabsButton    "Показывать кнопку &quot;Список всех вкладок&quot;">
 
 <!ENTITY config.tabbar.style.caption "Вид вкладок на панели">
-<!ENTITY config.tabbar.style.mixed   "Смешанный">
+<!ENTITY config.tabbar.style.plain   "Плоские кнопки">
 <!ENTITY config.tabbar.style.flat    "Flat">
+<!ENTITY config.tabbar.style.mixed   "Смешанный">
 <!ENTITY config.tabbar.style.vertigo "С подсветкой">
 <!ENTITY config.tabbar.style.metal   "Metal">
 <!ENTITY config.tabbar.style.sidebar "Sidebar">

@@ -20,8 +20,9 @@
 <!ENTITY config.tabbar.hideAlltabsButton    "Show &quot;List all tabs&quot; button">
 
 <!ENTITY config.tabbar.style.caption "Appearance of the tab bar">
-<!ENTITY config.tabbar.style.mixed   "Mixed">
+<!ENTITY config.tabbar.style.plain   "Plain">
 <!ENTITY config.tabbar.style.flat    "Flat">
+<!ENTITY config.tabbar.style.mixed   "Mixed">
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.metal   "Metal">
 <!ENTITY config.tabbar.style.sidebar "Sidebar">
