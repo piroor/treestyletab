@@ -1,6 +1,10 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-style="vertigo"])[treestyletab-mode="vertical"]
-  .tabbrowser-tab {
+  .tabbrowser-tab,
+.tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-style="vertigo"])[treestyletab-mode="vertical"]
+  .tabbrowser-arrowscrollbox
+  .tabs-newtab-button {
+	position: relative;
 	z-index: auto;
 }
