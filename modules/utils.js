@@ -273,43 +273,6 @@ var TreeStyleTabUtils = {
 		var ns = {};
 		Components.utils.import('resource://gre/modules/WindowsPreviewPerTab.jsm', ns);
 		this.AeroPeek = ns.AeroPeek;
-
-		// don't override twice!
-		if (this.AeroPeek.__lookupGetter__('previews'))
-			return;
-
-		this.AeroPeek.__treestyletab__previews = this.AeroPeek.previews;
-
-		this.AeroPeek.__treestyletab__kCOLLAPSED = this.kCOLLAPSED;
-		this.AeroPeek.__defineGetter__('previews', function() {
-			var original = this.__treestyletab__previews;
-
-			// clean up the array (for unknown errors)
-			this.__treestyletab__previews = original = original.filter(function(aPreview) {
-					return aPreview;
-				});
-
-			// ignore collapsed tabs!
-			var filtered = original.filter(function(aPreview) {
-					var tab = aPreview.controller.wrappedJSObject.tab;
-					return aPreview.visible = tab.getAttribute(this.__treestyletab__kCOLLAPSED) != 'true';
-				});
-			filtered.push = function(aItem) {
-				original.push(aItem);
-			};
-			filtered.splice = function(aIndex, aLength, aInserted) {
-				var index = original.indexOf(filtered[aIndex]);
-				original.splice(index, aLength, aInserted);
-			};
-			filtered.forEach = function(aCallback, aThis) {
-				original.forEach(aCallback, aThis);
-			};
-			return filtered;
-		});
-
-		this.AeroPeek.__defineSetter__('previews', function(aValue) {
-			return this.__treestyletab__previews = aValue;
-		});
 	},
   
 	observe : function TSTUtils_observe(aSubject, aTopic, aData) 

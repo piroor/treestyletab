@@ -1545,7 +1545,6 @@ catch(e) {
 			this.updateAeroPeekPreviewsTimer ||
 			!('Win7Features' in window) ||
 			!window.Win7Features ||
-			!Win7Features.onOpenWindow ||
 			!this.AeroPeek ||
 			!this.AeroPeek.windows
 			)
@@ -1553,8 +1552,14 @@ catch(e) {
 
 		this.updateAeroPeekPreviewsTimer = window.setTimeout(function(aSelf) {
 			aSelf.updateAeroPeekPreviewsTimer = null;
-			aSelf.updateAeroPeekPreviewsInternal();
-		}, 50, this);
+			try {
+				aSelf.updateAeroPeekPreviewsInternal();
+			}
+			catch(e) {
+				dump(e+'\n');
+				aSelf.updateAeroPeekPreviews();
+			}
+		}, 250, this);
 	},
 	updateAeroPeekPreviewsTimer : null,
 	updateAeroPeekPreviewsInternal : function TSTService_updateAeroPeekPreviewsInternal() 
@@ -1564,9 +1569,8 @@ catch(e) {
 				aTabWindow.previews.forEach(function(aPreview) {
 					if (!aPreview) return;
 					var tab = aPreview.controller.wrappedJSObject.tab;
-					return aPreview.visible = tab.getAttribute(this.AeroPeek.__treestyletab__kCOLLAPSED) != 'true';
+					aPreview.visible = tab.getAttribute(this.kCOLLAPSED) != 'true';
 				}, this);
-				aTabWindow.updateTabOrdering();
 				this.AeroPeek.checkPreviewCount();
 				return true;
 			}
