@@ -284,6 +284,7 @@ var TreeStyleTabService = {
 		window.addEventListener('unload', this, false);
 		document.addEventListener('popupshowing', this, false);
 		document.addEventListener('popuphiding', this, false);
+		document.addEventListener('TreeStyleTabCollapsedStateChange', this, false);
 
 		var appcontent = document.getElementById('appcontent');
 		appcontent.addEventListener('SubBrowserAdded', this, false);
@@ -1193,6 +1194,7 @@ catch(e) {
 
 		document.removeEventListener('popupshowing', this, false);
 		document.removeEventListener('popuphiding', this, false);
+		document.removeEventListener('TreeStyleTabCollapsedStateChange', this, false);
 
 		var appcontent = document.getElementById('appcontent');
 		appcontent.removeEventListener('SubBrowserAdded', this, false);
@@ -1261,6 +1263,9 @@ catch(e) {
 					this.popupMenuShown = false;
 				}
 				return;
+
+			case 'TreeStyleTabCollapsedStateChange':
+				return this.updateAeroPeekPreviews();
 
 			case 'keydown':
 				this.onKeyDown(aEvent);
@@ -1532,6 +1537,41 @@ catch(e) {
 			aEvent.target.setAttribute('label', label);
 
 		return label;
+	},
+ 
+	updateAeroPeekPreviews : function TSTService_updateAeroPeekPreviews() 
+	{
+		if (
+			this.updateAeroPeekPreviewsTimer ||
+			!('Win7Features' in window) ||
+			!window.Win7Features ||
+			!Win7Features.onOpenWindow ||
+			!this.AeroPeek ||
+			!this.AeroPeek.windows
+			)
+			return;
+
+		this.updateAeroPeekPreviewsTimer = window.setTimeout(function(aSelf) {
+			aSelf.updateAeroPeekPreviewsTimer = null;
+			aSelf.updateAeroPeekPreviewsInternal();
+		}, 50, this);
+	},
+	updateAeroPeekPreviewsTimer : null,
+	updateAeroPeekPreviewsInternal : function TSTService_updateAeroPeekPreviewsInternal() 
+	{
+		this.AeroPeek.windows.some(function(aTabWindow) {
+			if (aTabWindow.win == window) {
+				aTabWindow.previews.forEach(function(aPreview) {
+					if (!aPreview) return;
+					var tab = aPreview.controller.wrappedJSObject.tab;
+					return aPreview.visible = tab.getAttribute(this.AeroPeek.__treestyletab__kCOLLAPSED) != 'true';
+				}, this);
+				aTabWindow.updateTabOrdering();
+				this.AeroPeek.checkPreviewCount();
+				return true;
+			}
+			return false;
+		}, this);
 	},
   
 /* Tree Style Tabの初期化が行われる前に復元されたセッションについてツリー構造を復元 */ 
