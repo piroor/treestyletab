@@ -1124,6 +1124,17 @@ TreeStyleTabBrowser.prototype = {
 					this.removeTabStripAttribute('height');
 					b.mPanelContainer.removeAttribute('height');
 				}
+				// remove ordinal for "tabs on top" https://bugzilla.mozilla.org/show_bug.cgi?id=544815
+				if (this.isFloating && this.currentTabbarPosition == 'top') {
+					this.removeTabStripAttribute('ordinal');
+					if ('TabsOnTop' in window) {
+						// workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=555987
+						TabsOnTop.enabled = !TabsOnTop.enabled;
+						window.setTimeout(function() {
+							TabsOnTop.enabled = !TabsOnTop.enabled;
+						}, 0);
+					}
+				}
 			}
 			else {
 				this.removeTabbrowserAttribute(this.kFIXED, b);
@@ -1179,6 +1190,13 @@ TreeStyleTabBrowser.prototype = {
 			strip.style.height = (tabContainer.height = box.height)+'px';
 
 			tabContainer.collapsed = (this.splitter && this.splitter.getAttribute('state') == 'collapsed');
+		}
+		else {
+			tabContainer.collapsed = false;
+			strip.style.top = '';
+			strip.style.left = '';
+			strip.style.width = '';
+			strip.style.height = '';
 		}
 
 		if (this.mTabBrowser != gBrowser)
