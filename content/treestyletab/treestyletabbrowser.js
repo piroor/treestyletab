@@ -2495,6 +2495,11 @@ TreeStyleTabBrowser.prototype = {
 		var b   = this.mTabBrowser;
 		var tab = b.selectedTab
 
+		/* <tabbrowser>.previewTab() focuses to the tab internally,
+		   so we should ignore this event if it is fired from previewTab(). */
+		if (b._previewMode)
+			return;
+
 		if (this.isCollapsed(tab)) {
 			if (this.getTreePref('autoExpandSubtreeOnCollapsedChildFocused')) {
 				var parentTab = tab;
