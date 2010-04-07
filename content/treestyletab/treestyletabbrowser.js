@@ -1112,9 +1112,12 @@ TreeStyleTabBrowser.prototype = {
 
 		var b = this.mTabBrowser;
 		var orient;
+		var toggleTabsOnTop = document.getElementById('cmd_ToggleTabsOnTop');
 		if (this.isVertical) {
 			orient = 'vertical';
 			this.setTabbrowserAttribute(this.kFIXED, this.getTreePref('tabbar.fixed.vertical') ? 'true' : null);
+			if (toggleTabsOnTop)
+				toggleTabsOnTop.setAttribute('disabled', true);
 		}
 		else {
 			orient = 'horizontal';
@@ -1135,10 +1138,18 @@ TreeStyleTabBrowser.prototype = {
 						}, 0);
 					}
 				}
+				if (toggleTabsOnTop) {
+					if (this.currentTabbarPosition == 'top')
+						toggleTabsOnTop.removeAttribute('disabled');
+					else
+						toggleTabsOnTop.setAttribute('disabled', true);
+				}
 			}
 			else {
 				this.removeTabbrowserAttribute(this.kFIXED, b);
 				this.setTabStripAttribute('height', this.getTreePref('tabbar.height'));
+				if (toggleTabsOnTop)
+					toggleTabsOnTop.setAttribute('disabled', true);
 			}
 		}
 
