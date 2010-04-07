@@ -461,7 +461,7 @@ TreeStyleTabBrowser.prototype = {
 			)
 		);
 
-		if (b.tabContainer.tabbrowser == b) { // Firefox 3.7-
+		if (b.tabContainer.tabbrowser == b && '_handleKeyEvent' in b) { // Firefox 3.7-
 			eval('b._handleKeyEvent = '+
 				b._handleKeyEvent.toSource().replace(
 					'this.moveTabOver(aEvent);',
