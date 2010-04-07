@@ -166,10 +166,12 @@ var TreeStyleTabBookmarksService = {
 		if ('getContainerNodeWithOptions' in PlacesUtils) { // Firefox 3.5 or later
 			root = PlacesUtils.getContainerNodeWithOptions(root, false, true);
 		}
+		root = root.QueryInterface(Components.interfaces.nsINavHistoryContainerResultNode);
 		var oldViewer = root.parentResult.viewer;
 		var wasOpen = root.containerOpen;
 		if (!wasOpen) {
-			root.parentResult.viewer = null;
+			if (oldViewer)
+				root.parentResult.viewer = null;
 			root.containerOpen = true;
 		}
 		for (let i = 0, maxi = root.childCount; i < maxi; ++i)
@@ -179,7 +181,8 @@ var TreeStyleTabBookmarksService = {
 		}
 		if (!wasOpen) {
 			root.containerOpen = false;
-			root.parentResult.viewer = oldViewer;
+			if (oldViewer)
+				root.parentResult.viewer = oldViewer;
 		}
 		return ids;
 	},
