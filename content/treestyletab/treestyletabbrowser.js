@@ -1206,22 +1206,27 @@ TreeStyleTabBrowser.prototype = {
 		if (toolbox.localName != 'toolbox')
 			return;
 
-		// hack to reset the height of the toolbox
-		var height = 0;
-		Array.slice(toolbox.childNodes).forEach(function(aNode) {
-			if (aNode.nodeType == Node.ELEMENT_NODE && (aNode != strip || !positioned))
-				height += aNode.boxObject.height;
-		});
-		height += parseInt(window.getComputedStyle(toolbox, '').getPropertyValue('margin-top').replace('px', ''));
-		if (height != toolbox.boxObject.height) {
-//			this.stopRendering();
-			// "height" attribute of the toolbar prevents rendering of the toolbox with its correct height.
-			strip.removeAttribute('height');
-			toolbox.setAttribute('height', height);
-//			window.setTimeout(function(aSelf) {
-//				toolbox.removeAttribute('height');
-//				aSelf.startRendering();
-//			}, 0, this);
+		if (!positioned) {
+			toolbox.removeAttribute('height', height);
+		}
+		else {
+			// hack to reset the height of the toolbox
+			var height = 0;
+			Array.slice(toolbox.childNodes).forEach(function(aNode) {
+				if (aNode.nodeType == Node.ELEMENT_NODE && aNode != strip)
+					height += aNode.boxObject.height;
+			});
+			height += parseInt(window.getComputedStyle(toolbox, '').getPropertyValue('margin-top').replace('px', ''));
+			if (height != toolbox.boxObject.height) {
+//				this.stopRendering();
+				// "height" attribute of the toolbar prevents rendering of the toolbox with its correct height.
+				strip.removeAttribute('height');
+				toolbox.setAttribute('height', height);
+//				window.setTimeout(function(aSelf) {
+//					toolbox.removeAttribute('height');
+//					aSelf.startRendering();
+//				}, 0, this);
+			}
 		}
 	},
  
