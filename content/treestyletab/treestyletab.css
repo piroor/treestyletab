@@ -83,6 +83,10 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-stack > *:first-child + * > hbox:
 	position: fixed !important;
 	-moz-appearance: none !important;
 }
+#TabsToolbar:not([treestyletab-tabbar-position="top"]) .tabbrowser-tabs,
+#TabsToolbar[treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) .tabbrowser-tabs {
+	overflow: hidden !important;
+}
 
 
 
