@@ -2928,8 +2928,7 @@ TreeStyleTabBrowser.prototype = {
 		info.canDrop = true;
 		info.source = tab;
 		if (tab) {
-			var isCopy = this.isAccelKeyPressed(aEvent) ||
-						(aEvent.dataTransfer && aEvent.dataTransfer.dropEffect == 'copy');
+			var isCopy = this.isCopyAction(aEvent);
 			if (isCopy && 'duplicateTab' in this.mTabBrowser) {
 				info.action |= this.kACTION_DUPLICATE;
 			}

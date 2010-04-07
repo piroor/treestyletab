@@ -183,7 +183,7 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 			if (dropAction.action & this.kACTION_NEWTAB) {
 				dt.effectAllowed = dt.dropEffect = (
 					!dropAction.source ? 'link' :
-					sv.isAccelKeyPressed(aEvent) ? 'copy' :
+					sv.isCopyAction(aEvent) ? 'copy' :
 					'move'
 				);
 			}

@@ -451,6 +451,12 @@ var TreeStyleTabUtils = {
 			(aEvent.ctrlKey || (aEvent.keyCode == Ci.nsIDOMKeyEvent.DOM_VK_CONTROL)) ;
 	},
  
+	isCopyAction : function TSTUtils_isCopyAction(aEvent) 
+	{
+		return this.isAccelKeyPressed(aEvent) ||
+				(aEvent.dataTransfer && aEvent.dataTransfer.dropEffect == 'copy');
+	},
+ 
 	isEventFiredOnClosebox : function TSTUtils_isEventFiredOnClosebox(aEvent) 
 	{
 		return this.evaluateXPath(
