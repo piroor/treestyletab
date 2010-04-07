@@ -166,7 +166,6 @@ var TreeStyleTabBookmarksService = {
 		if ('getContainerNodeWithOptions' in PlacesUtils) { // Firefox 3.5 or later
 			root = PlacesUtils.getContainerNodeWithOptions(root, false, true);
 		}
-		root = root.QueryInterface(Components.interfaces.nsINavHistoryContainerResultNode);
 		var oldViewer = root.parentResult.viewer;
 		var wasOpen = root.containerOpen;
 		if (!wasOpen) {
