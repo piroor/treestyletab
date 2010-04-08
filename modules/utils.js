@@ -689,7 +689,7 @@ var TreeStyleTabUtils = {
 			return null;
 
 		var strip = aTabBrowser.mStrip;
-		return (strip && strip.localName == 'hbox') ?
+		return (strip && strip instanceof Ci.nsIDOMElement) ?
 				strip :
 				aTabBrowser.tabContainer.parentNode;
 	},

@@ -343,7 +343,8 @@ var TreeStyleTabService = {
  
 	updateTabDNDObserver : function TSTService_updateTabDNDObserver(aObserver) 
 	{
-		var strip = this.getTabStrip(aObserver);
+		var strip = this.getTabStrip(aObserver) ||
+					gBrowser.mStrip // fallback to the default strip, for Tab Mix Plus;
 
 		if (aObserver.tabContainer &&
 			aObserver.tabContainer.tabbrowser == aObserver) { // Firefox 3.7 or later
@@ -519,7 +520,8 @@ var TreeStyleTabService = {
 	},
 	destroyTabDNDObserver : function TSTService_destroyTabDNDObserver(aObserver)
 	{
-		var strip = this.getTabStrip(aObserver);
+		var strip = this.getTabStrip(aObserver) ||
+					gBrowser.mStrip // fallback to the default strip, for Tab Mix Plus;
 
 		if (aObserver.tabContainer &&
 			aObserver.tabContainer.tabbrowser == aObserver) { // Firefox 3.7 or later
