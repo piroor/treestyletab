@@ -226,7 +226,7 @@ TreeStyleTabBrowser.prototype = {
 		strip.addEventListener('dragdrop',    this, false);
 		strip.addEventListener('mousedown', this, true);
 		strip.addEventListener('mouseup',   this, false);
-		strip.addEventListener('click',     this, false);
+		strip.addEventListener('click',     this, true);
 		b.mPanelContainer.addEventListener('dragexit', this, false);
 		b.mPanelContainer.addEventListener('dragover', this, false);
 		b.mPanelContainer.addEventListener('dragdrop', this, false);
@@ -1340,7 +1340,7 @@ TreeStyleTabBrowser.prototype = {
 		strip.removeEventListener('dragdrop',    this, false);
 		strip.removeEventListener('mousedown', this, true);
 		strip.removeEventListener('mouseup',   this, false);
-		strip.removeEventListener('click',     this, false);
+		strip.removeEventListener('click',     this, true);
 		b.mPanelContainer.removeEventListener('dragexit', this, false);
 		b.mPanelContainer.removeEventListener('dragover', this, false);
 		b.mPanelContainer.removeEventListener('dragdrop', this, false);
@@ -2631,7 +2631,11 @@ TreeStyleTabBrowser.prototype = {
  
 	onClick : function TSTBrowser_onClick(aEvent) 
 	{
-		if (aEvent.target.ownerDocument != document)
+		if (
+			aEvent.target.ownerDocument != document
+			aEvent.button != 0 ||
+			this.isAccelKeyPressed(aEvent)
+			)
 			return;
 
 		var tab = this.getTabFromEvent(aEvent);
