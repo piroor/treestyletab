@@ -2632,7 +2632,7 @@ TreeStyleTabBrowser.prototype = {
 	onClick : function TSTBrowser_onClick(aEvent) 
 	{
 		if (
-			aEvent.target.ownerDocument != document
+			aEvent.target.ownerDocument != document ||
 			aEvent.button != 0 ||
 			this.isAccelKeyPressed(aEvent)
 			)
