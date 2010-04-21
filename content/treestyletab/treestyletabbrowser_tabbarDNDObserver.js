@@ -31,11 +31,14 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 	{
 		var sv = this.mOwner;
 
-		if (sv.evaluateXPath(
+		if (
+			sv.evaluateXPath(
 				'ancestor-or-self::*[contains(" scrollbar popup menupopup panel tooltip ", concat(" ", local-name(), " "))]',
 				aEvent.originalTarget,
 				XPathResult.BOOLEAN_TYPE
-			).booleanValue)
+			).booleanValue ||
+			(window.gToolbox && gToolbox.customizing)
+			)
 			return false;
 
 		var tab = sv.getTabFromEvent(aEvent);
