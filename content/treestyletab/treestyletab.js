@@ -1125,20 +1125,6 @@ catch(e) {
 			)
 		);
 
-		if (window.contentAreaDNDObserver &&
-			!('getSupportedFlavours' in contentAreaDNDObserver)) { // Firefox 3.6 or later
-			eval('contentAreaDNDObserver.onDrop = '+
-				contentAreaDNDObserver.onDrop.toSource().replace(
-					'var types = aEvent.dataTransfer.types;',
-					<![CDATA[$&
-						if (gBrowser.treeStyleTab.panelDNDObserver.canDrop(aEvent, gBrowser.treeStyleTab.getCurrentDragSession())) {
-							return gBrowser.treeStyleTab.panelDNDObserver.onDrop(aEvent, null, gBrowser.treeStyleTab.getCurrentDragSession());
-						}
-					]]>
-				)
-			);
-		}
-
 		if ('PrintUtils' in window) {
 			eval('PrintUtils.printPreview = '+PrintUtils.printPreview.toSource().replace(
 				'{',

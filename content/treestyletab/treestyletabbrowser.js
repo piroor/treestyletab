@@ -230,7 +230,8 @@ TreeStyleTabBrowser.prototype = {
 		strip.addEventListener('click',     this, true);
 		b.mPanelContainer.addEventListener('dragexit', this, false);
 		b.mPanelContainer.addEventListener('dragover', this, false);
-		b.mPanelContainer.addEventListener('dragdrop', this, false);
+		b.mPanelContainer.addEventListener('drop',     this, true);
+		b.mPanelContainer.addEventListener('dragdrop', this, false); // for Firefox 3.5 or older
 
 		if (this.isFloating)
 			window.addEventListener('resize', this, true);
@@ -1344,7 +1345,8 @@ TreeStyleTabBrowser.prototype = {
 		strip.removeEventListener('click',     this, true);
 		b.mPanelContainer.removeEventListener('dragexit', this, false);
 		b.mPanelContainer.removeEventListener('dragover', this, false);
-		b.mPanelContainer.removeEventListener('dragdrop', this, false);
+		b.mPanelContainer.removeEventListener('drop',     this, true);
+		b.mPanelContainer.removeEventListener('dragdrop', this, false); // for Firefox 3.5 or older
 
 		if (this.isFloating)
 			window.removeEventListener('resize', this, true);
@@ -1647,7 +1649,7 @@ TreeStyleTabBrowser.prototype = {
 						observer = this.tabbarDNDObserver;
 						canDrop = true;
 					}
-					else {
+					else { // for Firefox 3.5 or older
 						observer = this.panelDNDObserver;
 						canDrop = observer.canDrop(aEvent, this.getCurrentDragSession());
 					}
@@ -1655,6 +1657,17 @@ TreeStyleTabBrowser.prototype = {
 					// http://piro.sakura.ne.jp/latest/blosxom/mozilla/xul/2007-02-02_splitbrowser-dragdrop.htm
 					if (canDrop)
 						nsDragAndDrop[aEvent.type == 'dragover' ? 'dragOver' : 'drop' ](aEvent, observer);
+				}
+				return;
+
+			// drop on panelContainer
+			case 'drop':
+				let (session = this.getCurrentDragSession()) {
+					if (this.panelDNDObserver.canDrop(aEvent, session)) {
+						this.panelDNDObserver.onDrop(aEvent, null, session);
+						aEvent.preventDefault();
+						aEvent.stopPropagation();
+					}
 				}
 				return;
 
