@@ -193,97 +193,108 @@ var TreeStyleTabBookmarksService = {
 
 		if (!('PlacesUIUtils' in window)) return;
 
-		eval('PlacesUIUtils._openTabset = '+
-			PlacesUIUtils._openTabset.toSource().replace(
-				/(function[^\(]*\([^\)]+)(\))/,
-				'$1, aFolderTitle$2'
-			).replace(
-				'var urls = [];',
-				'$& var ids = [];'
-			).replace(
-				'urls.push(item.uri);',
-				'$& ids.push(item.id);'
-			).replace(
-				/(browserWindow\.(?:getBrowser\(\)|gBrowser)\.loadTabs\([^;]+\);)/,
-				<![CDATA[
-					if (
-						where.indexOf('tab') == 0 ||
-						aEvent.target.id == 'placesContext_openContainer:tabs' ||
-						aEvent.target.id == 'placesContext_openLinks:tabs' ||
-						aEvent.target == aEvent.target.parentNode._endOptOpenAllInTabs ||
-						aEvent.target.getAttribute('openInTabs') == 'true'
-						) {
-						let openGroupBookmarkBehavior = TreeStyleTabBookmarksService.openGroupBookmarkBehavior();
-						if (openGroupBookmarkBehavior & TreeStyleTabBookmarksService.kGROUP_BOOKMARK_SUBTREE) {
-							let treeStructure = openGroupBookmarkBehavior & TreeStyleTabBookmarksService.kGROUP_BOOKMARK_DONT_RESTORE_TREE_STRUCTURE ?
-										null :
-										TreeStyleTabBookmarksService.getTreeStructureFromItems(ids) ;
-							if (
-								treeStructure &&
-								openGroupBookmarkBehavior & TreeStyleTabBookmarksService.kGROUP_BOOKMARK_USE_DUMMY
-								) {
-								let parentCount = 0;
-								let childCount = 0;
-								treeStructure.forEach(function(aParent, aIndex) {
-									if (aParent == -1)
-										parentCount++;
-									else
-										childCount++;
-								});
+		if (!PlacesUIUtils.__treestyletab__done) {
+			eval('PlacesUIUtils._openTabset = '+
+				PlacesUIUtils._openTabset.toSource().replace(
+					/(function[^\(]*\([^\)]+)(\))/,
+					'$1, aFolderTitle$2'
+				).replace(
+					'var urls = [];',
+					'$& var ids = [];'
+				).replace(
+					'urls.push(item.uri);',
+					'$& ids.push(item.id);'
+				).replace(
+					/(browserWindow\.(?:getBrowser\(\)|gBrowser)\.loadTabs\([^;]+\);)/,
+					<![CDATA[
+						if (
+							where.indexOf('tab') == 0 ||
+							aEvent.target.id == 'placesContext_openContainer:tabs' ||
+							aEvent.target.id == 'placesContext_openLinks:tabs' ||
+							aEvent.target == aEvent.target.parentNode._endOptOpenAllInTabs ||
+							aEvent.target.getAttribute('openInTabs') == 'true'
+							) {
+							let sv = browserWindow.TreeStyleTabBookmarksService;
+							let openGroupBookmarkBehavior = sv.openGroupBookmarkBehavior();
+							if (openGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_SUBTREE) {
+								let treeStructure = openGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_DONT_RESTORE_TREE_STRUCTURE ?
+											null :
+											sv.getTreeStructureFromItems(ids) ;
 								if (
-									parentCount > 1 &&
-									(
-										openGroupBookmarkBehavior & TreeStyleTabBookmarksService.kGROUP_BOOKMARK_USE_DUMMY_FORCE ||
-										// when there is any orphan, then all of parents and orphans should be grouped under a dummy tab.
-										childCount < parentCount
-									)
+									treeStructure &&
+									openGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_USE_DUMMY
 									) {
-									ids.unshift(-1);
-									treeStructure = TreeStyleTabBookmarksService.getTreeStructureFromItems(ids, 0);
-									urls.unshift(TreeStyleTabBookmarksService.getGroupTabURI(aFolderTitle));
+									let parentCount = 0;
+									let childCount = 0;
+									treeStructure.forEach(function(aParent, aIndex) {
+										if (aParent == -1)
+											parentCount++;
+										else
+											childCount++;
+									});
+									if (
+										parentCount > 1 &&
+										(
+											openGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_USE_DUMMY_FORCE ||
+											// when there is any orphan, then all of parents and orphans should be grouped under a dummy tab.
+											childCount < parentCount
+										)
+										) {
+										ids.unshift(-1);
+										treeStructure = sv.getTreeStructureFromItems(ids, 0);
+										urls.unshift(sv.getGroupTabURI(aFolderTitle));
+									}
 								}
+								sv.readyToOpenNewTabGroup(null, treeStructure);
+								replaceCurrentTab = false;
 							}
-							TreeStyleTabBookmarksService.readyToOpenNewTabGroup(null, treeStructure);
-							replaceCurrentTab = false;
+							else {
+								replaceCurrentTab = openGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_REPLACE ? true : false ;
+							}
 						}
-						else {
-							replaceCurrentTab = openGroupBookmarkBehavior & TreeStyleTabBookmarksService.kGROUP_BOOKMARK_REPLACE ? true : false ;
+						$1
+						]]>
+				)
+			);
+
+			eval('PlacesUIUtils.openContainerNodeInTabs = '+
+				PlacesUIUtils.openContainerNodeInTabs.toSource().replace(
+					/(this\._openTabset\([^\)]+)(\))/,
+					<![CDATA[
+						let (w) {
+							w = '_getCurrentActiveWin' in this ? this._getCurrentActiveWin() : window ;
+							w.TreeStyleTabBookmarksService.getItemIdsForContainerNode(aNode).forEach(function(aId, aIndex) {
+								urlsToOpen[aIndex].id = aId;
+							});
 						}
-					}
-					$1
+						$1, aNode.title$2
 					]]>
-			)
-		);
+				)
+			);
 
-		eval('PlacesUIUtils.openContainerNodeInTabs = '+
-			PlacesUIUtils.openContainerNodeInTabs.toSource().replace(
-				/(this\._openTabset\([^\)]+)(\))/,
-				<![CDATA[
-					TreeStyleTabBookmarksService.getItemIdsForContainerNode(aNode).forEach(function(aId, aIndex) {
-						urlsToOpen[aIndex].id = aId;
-					});
-					$1, aNode.title$2
-				]]>
-			)
-		);
+			eval('PlacesUIUtils.openURINodesInTabs = '+
+				PlacesUIUtils.openURINodesInTabs.toSource().replace(
+					'{',
+					'{ var TSTBS = ("_getCurrentActiveWin" in this ? this._getCurrentActiveWin() : window ).TreeStyleTabBookmarksService;'
+				).replace(
+					'uri: aNodes[i].uri,',
+					'id: aNodes[i].itemId, $&'
+				).replace(
+					/(this\._openTabset\([^\)]+)(\))/,
+					<![CDATA[$1,
+						TSTBS.treeBundle
+							.getFormattedString(
+								PlacesUtils.nodeIsBookmark(aNodes[0]) ?
+									'openSelectedPlaces.bookmarks' :
+									'openSelectedPlaces.history',
+								[aNodes[0].title, aNodes.length]
+							)
+					$2]]>
+				)
+			);
 
-		eval('PlacesUIUtils.openURINodesInTabs = '+
-			PlacesUIUtils.openURINodesInTabs.toSource().replace(
-				'uri: aNodes[i].uri,',
-				'id: aNodes[i].itemId, $&'
-			).replace(
-				/(this\._openTabset\([^\)]+)(\))/,
-				<![CDATA[$1,
-					TreeStyleTabBookmarksService.treeBundle
-						.getFormattedString(
-							PlacesUtils.nodeIsBookmark(aNodes[0]) ?
-								'openSelectedPlaces.bookmarks' :
-								'openSelectedPlaces.history',
-							[aNodes[0].title, aNodes.length]
-						)
-				$2]]>
-			)
-		);
+			PlacesUIUtils.__treestyletab__done = true;
+		}
 
 		if ('PlacesCommandHook' in window && 'bookmarkCurrentPages' in PlacesCommandHook) {
 			// Bookmark All Tabs
