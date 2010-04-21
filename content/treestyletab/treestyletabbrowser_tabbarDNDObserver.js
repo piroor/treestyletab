@@ -37,7 +37,7 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 				aEvent.originalTarget,
 				XPathResult.BOOLEAN_TYPE
 			).booleanValue ||
-			(window.gToolbox && gToolbox.customizing)
+			sv.isToolbarCustomizing
 			)
 			return false;
 

@@ -103,6 +103,11 @@ var TreeStyleTabService = {
 					window.getComputedStyle(aElementOrStyle, null) ;
 		return Number(style.getPropertyValue(aProp).replace(/px$/, ''));
 	},
+ 
+	get isToolbarCustomizing() 
+	{
+		return window.gToolbox && gToolbox.customizing;
+	},
   
 /* Initializing */ 
 	
@@ -607,6 +612,10 @@ catch(e) {
 	{
 try{
 		var session = this.getCurrentDragSession();
+		// don't touch to drag & drop of customizable toolbar items
+		if (this.isToolbarCustomizing && !this.getTabFromChild(session.sourceNode))
+			return false;
+
 		window['piro.sakura.ne.jp'].autoScroll.processAutoScroll(aEvent);
 
 		var info = this.getDropAction(aEvent, session);
