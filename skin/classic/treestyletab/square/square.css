@@ -73,6 +73,7 @@
 	-moz-border-radius-topright : 0 !important;
 	-moz-border-radius-bottomleft : 0 !important;
 	-moz-border-radius-bottomright : 0 !important;
+	-moz-border-image: none !important;
 	-moz-box-align: stretch !important;
 }
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"][treestyletab-firsttab-border="true"]
