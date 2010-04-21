@@ -28,7 +28,9 @@ tabbrowser:not([treestyletab-tabbar-autohide="hidden"]) .treestyletab-tabbar-tog
 .tabbrowser-strip[treestyletab-tabbar-fixed="true"]+splitter,
 .tabbrowser-strip[treestyletab-print-preview="true"],
 .tabbrowser-strip[treestyletab-print-preview="true"]+splitter,
-#TabsToolbar[treestyletab-print-preview="true"] {
+#TabsToolbar[treestyletab-print-preview="true"],
+window[chromehidden~="toolbar"] .tabbrowser-strip[treestyletab-tabbar-placeholder="true"],
+window[chromehidden~="toolbar"] .tabbrowser-strip[treestyletab-tabbar-placeholder="true"]+splitter {
 	visibility: collapse;
 }
 

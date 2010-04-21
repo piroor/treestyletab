@@ -196,6 +196,7 @@ TreeStyleTabBrowser.prototype = {
 				placeHolder = document.createElement('hbox');
 				placeHolder.setAttribute('anonid', 'strip');
 				placeHolder.setAttribute('class', 'tabbrowser-strip');
+				placeHolder.setAttribute(this.kTABBAR_PLACEHOLDER, true);
 				b.mTabBox.insertBefore(placeHolder, toggler.nextSibling);
 			}
 			if (placeHolder != this.tabStrip)

@@ -111,6 +111,7 @@ var TreeStyleTabUtils = {
 	kCOUNTER_PAREN         : 'treestyletab-counter-paren',
 	kSPLITTER              : 'treestyletab-splitter',
 	kTABBAR_TOGGLER        : 'treestyletab-tabbar-toggler',
+	kTABBAR_PLACEHOLDER    : 'treestyletab-tabbar-placeholder',
  
 /* other constant values */ 
 	kFOCUS_ALL     : 0,
