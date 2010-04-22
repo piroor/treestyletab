@@ -942,7 +942,8 @@ TreeStyleTabBrowser.prototype = {
 
 			this.setTabbrowserAttribute(this.kMODE, 'vertical');
 
-			this.setTabStripAttribute('width', this.getTreePref('tabbar.width'));
+			let width = this.maxTabbarWidth(this.getTreePref('tabbar.width'), b);
+			this.setTabStripAttribute('width', width);
 			this.removeTabStripAttribute('height');
 			b.mPanelContainer.removeAttribute('height');
 
@@ -960,7 +961,7 @@ TreeStyleTabBrowser.prototype = {
 					/* in Firefox 3, the width of the rightside tab bar
 					   unexpectedly becomes 0 on the startup. so, we have
 					   to set the width again. */
-					aSelf.setTabStripAttribute('width', aSelf.getTreePref('tabbar.width'));
+					aSelf.setTabStripAttribute('width', width);
 					indicator.setAttribute('ordinal', 1);
 					aSelf.setTabStripAttribute('ordinal', 30);
 					aSplitter.setAttribute('ordinal', 20);
@@ -1149,7 +1150,7 @@ TreeStyleTabBrowser.prototype = {
 			}
 			else {
 				this.removeTabbrowserAttribute(this.kFIXED, b);
-				this.setTabStripAttribute('height', this.getTreePref('tabbar.height'));
+				this.setTabStripAttribute('height', this.maxTabbarHeight(this.getTreePref('tabbar.height'), b));
 				if (toggleTabsOnTop)
 					toggleTabsOnTop.setAttribute('disabled', true);
 			}

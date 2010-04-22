@@ -370,9 +370,9 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		if (aForceExpanded ||
 			this.expanded ||
 			this.mode !=  this.kMODE_SHRINK)
-			this.setTreePref('tabbar.width', aWidth);
+			this.setTreePref('tabbar.width', this.mOwner.maxTabbarWidth(aWidth));
 		else
-			this.setTreePref('tabbar.shrunkenWidth', aWidth);
+			this.setTreePref('tabbar.shrunkenWidth', this.mOwner.maxTabbarWidth(aWidth));
 	},
  
 	updateMenuItem : function TSTAutoHide_updateMenuItem(aNode) 
@@ -513,7 +513,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			default:
 			case this.kMODE_SHRINK:
 				if (pos == 'left' || pos == 'right')
-					sv.setTabStripAttribute('width', this.getTreePref('tabbar.width'));
+					sv.setTabStripAttribute('width', sv.maxTabbarWidth(this.getTreePref('tabbar.width')));
 				break;
 		}
 		sv.updateFloatingTabbar(true);

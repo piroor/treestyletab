@@ -108,6 +108,30 @@ var TreeStyleTabService = {
 	{
 		return window.gToolbox && gToolbox.customizing;
 	},
+ 
+	maxTabbarWidth : function TSTService_maxTabbarWidth(aWidth, aTabBrowser) 
+	{
+		aTabBrowser = aTabBrowser || this.browser;
+		return Math.min(
+				aWidth,
+				parseInt(Math.min(
+					window.innerWidth,
+					aTabBrowser.boxObject.width
+				) * 0.9)
+			);
+	},
+ 
+	maxTabbarHeight : function TSTService_maxTabbarHeight(aHeight, aTabBrowser) 
+	{
+		aTabBrowser = aTabBrowser || this.browser;
+		return Math.min(
+				aHeight,
+				parseInt(Math.min(
+					window.innerHeight,
+					aTabBrowser.boxObject.height
+				) * 0.9)
+			);
+	},
   
 /* Initializing */ 
 	
@@ -1443,13 +1467,13 @@ catch(e) {
 		window.setTimeout(function(aSelf) {
 			if (!b.treeStyleTab.clickedOnTabbarResizerGrippy) {
 				if (!b.treeStyleTab.isVertical) {
-					aSelf.setTreePref('tabbar.height', box.height);
+					aSelf.setTreePref('tabbar.height', aSelf.maxTabbarHeight(box.height, b));
 				}
 				else {
 					if (!b.treeStyleTab.autoHide.expanded)
-						aSelf.setTreePref('tabbar.shrunkenWidth', box.width);
+						aSelf.setTreePref('tabbar.shrunkenWidth', aSelf.maxTabbarWidth(box.width, b));
 					else
-						aSelf.setTreePref('tabbar.width', box.width);
+						aSelf.setTreePref('tabbar.width', aSelf.maxTabbarWidth(box.width, b));
 				}
 			}
 			b.treeStyleTab.updateFloatingTabbar();
@@ -1559,7 +1583,7 @@ catch(e) {
 		}, 250, this);
 	},
 	updateAeroPeekPreviewsTimer : null,
-	updateAeroPeekPreviewsInternal : function TSTService_updateAeroPeekPreviewsInternal() 
+	updateAeroPeekPreviewsInternal : function TSTService_updateAeroPeekPreviewsInternal()
 	{
 		this.AeroPeek.windows.some(function(aTabWindow) {
 			if (aTabWindow.win == window) {
