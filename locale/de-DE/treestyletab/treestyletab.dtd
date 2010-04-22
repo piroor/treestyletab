@@ -143,10 +143,10 @@
 <!ENTITY config.insertNewChildAt.first "Oben im Zweig einfügen">
 <!ENTITY config.insertNewChildAt.last "Unten im Zweig einfügen">
 
-<!ENTITY config.undoCloseTabSet.caption  "When a member of a tree is restored by &quot;Undo Close Tab&quot;">
-<!ENTITY config.undoCloseTabSet.ask      "Ask me always">
-<!ENTITY config.undoCloseTabSet.set      "Restore whole of the tree">
-<!ENTITY config.undoCloseTabSet.separate "Restore only one tab (Firefox default)">
+<!ENTITY config.undoCloseTabSet.caption  "Wenn ein Element eines Zweiges durch &quot;Tab wieder öffnen&quot; wiederhergestellt wird.">
+<!ENTITY config.undoCloseTabSet.ask      "Immer nachfragen">
+<!ENTITY config.undoCloseTabSet.set      "Den ganzen Zweig wieder herstellen">
+<!ENTITY config.undoCloseTabSet.separate "Nur das eine Tab wieder herstellen (Firefox Standard)">
 
 
 <!ENTITY config.tabs.advanced "Erweitert">
