@@ -112,25 +112,15 @@ var TreeStyleTabService = {
 	maxTabbarWidth : function TSTService_maxTabbarWidth(aWidth, aTabBrowser) 
 	{
 		aTabBrowser = aTabBrowser || this.browser;
-		return Math.min(
-				aWidth,
-				parseInt(Math.min(
-					Math.max(window.outerWidth, parseInt(document.documentElement.getAttribute('width'))),
-					aTabBrowser.boxObject.width
-				) * 0.9)
-			);
+		var max = Math.max(window.outerWidth, parseInt(document.documentElement.getAttribute('width') || 0));
+		return Math.min(aWidth, max * 0.7);
 	},
  
 	maxTabbarHeight : function TSTService_maxTabbarHeight(aHeight, aTabBrowser) 
 	{
 		aTabBrowser = aTabBrowser || this.browser;
-		return Math.min(
-				aHeight,
-				parseInt(Math.min(
-					Math.max(window.outerHeight, parseInt(document.documentElement.getAttribute('height'))),
-					aTabBrowser.boxObject.height
-				) * 0.9)
-			);
+		var max = Math.max(window.outerHeight, parseInt(document.documentElement.getAttribute('height') || 0));
+		return Math.min(aHeight, max * 0.7);
 	},
   
 /* Initializing */ 

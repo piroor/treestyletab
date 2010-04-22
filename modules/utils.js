@@ -1725,6 +1725,8 @@ var TreeStyleTabUtils = {
 		var shrunken = this.getTreePref('tabbar.shrunkenWidth');
 		if (expanded <= shrunken) {
 			this.tabbarWidthResetting = true;
+			var w = this.browserWindow;
+			if (w) expanded = Math.min(expanded, w.outerWidth);
 			if (aPrefName == 'extensions.treestyletab.tabbar.width')
 				this.setTreePref('tabbar.shrunkenWidth', parseInt(expanded / 1.5));
 			else
