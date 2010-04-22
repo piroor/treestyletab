@@ -1,7 +1,7 @@
-<!ENTITY config.title        "Tree Style Tab 设置">
+﻿<!ENTITY config.title        "Tree Style Tab 设置">
 
-<!ENTITY config.scale.min "低">
-<!ENTITY config.scale.max "高">
+<!ENTITY config.scale.min "最小">
+<!ENTITY config.scale.max "最大">
 
 
 <!ENTITY config.tabs.appearance "外观">
@@ -20,15 +20,15 @@
 <!ENTITY config.tabbar.hideAlltabsButton    "显示“列出所有标签”按钮">
 
 
-<!ENTITY config.tabs.style "Style">
+<!ENTITY config.tabs.style "样式">
 
 <!ENTITY config.tabbar.style.caption "标签栏外观">
-<!ENTITY config.tabbar.style.plain   "简洁"">
-<!ENTITY config.tabbar.style.flat    "Flat">
+<!ENTITY config.tabbar.style.plain   "简洁">
+<!ENTITY config.tabbar.style.flat    "平面">
 <!ENTITY config.tabbar.style.mixed   "混合">
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.metal   "金属">
-<!ENTITY config.tabbar.style.sidebar "Sidebar">
+<!ENTITY config.tabbar.style.sidebar "侧栏式">
 <!ENTITY config.tabbar.style.none    "默认（跟随主题）">
 
 <!ENTITY config.twisty.style.caption "树的折叠点外观">
@@ -142,10 +142,10 @@
 <!ENTITY config.insertNewChildAt.first "插入到子树顶部，成为首个子标签">
 <!ENTITY config.insertNewChildAt.last "添加到子树的最后">
 
-<!ENTITY config.undoCloseTabSet.caption  "When a member of a tree is restored by &quot;Undo Close Tab&quot;">
-<!ENTITY config.undoCloseTabSet.ask      "Ask me always">
-<!ENTITY config.undoCloseTabSet.set      "Restore whole of the tree">
-<!ENTITY config.undoCloseTabSet.separate "Restore only one tab (Firefox default)">
+<!ENTITY config.undoCloseTabSet.caption  "当已关闭的某标签树内的一个标签被恢复">
+<!ENTITY config.undoCloseTabSet.ask      "总是询问">
+<!ENTITY config.undoCloseTabSet.set      "恢复整个标签树">
+<!ENTITY config.undoCloseTabSet.separate "仅恢复该标签（Firefox 默认）">
 
 
 <!ENTITY config.tabs.advanced "高级">
