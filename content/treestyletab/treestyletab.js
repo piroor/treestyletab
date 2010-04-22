@@ -115,7 +115,7 @@ var TreeStyleTabService = {
 		return Math.min(
 				aWidth,
 				parseInt(Math.min(
-					window.innerWidth,
+					Math.max(window.outerWidth, parseInt(document.documentElement.getAttribute('width'))),
 					aTabBrowser.boxObject.width
 				) * 0.9)
 			);
@@ -127,7 +127,7 @@ var TreeStyleTabService = {
 		return Math.min(
 				aHeight,
 				parseInt(Math.min(
-					window.innerHeight,
+					Math.max(window.outerHeight, parseInt(document.documentElement.getAttribute('height'))),
 					aTabBrowser.boxObject.height
 				) * 0.9)
 			);
@@ -665,7 +665,7 @@ try{
 			info.target &&
 			!info.target.selected &&
 			(
-				('mDragTime' in observer && 'mDragOverDelay' in observer) || // Firefox 3.6 or older
+				('mDragTime' in observer && 'mDragOverDelay' in observer) || // Firefox 3.6
 				('_dragTime' in observer && '_dragOverDelay' in observer) // Firefox 3.7 or later
 			)
 			) {
