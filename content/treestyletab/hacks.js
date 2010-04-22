@@ -334,6 +334,29 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 			)
 		);
 
+		eval('window.TMP_contentAreaClick = '+
+			window.TMP_contentAreaClick.toSource().replace(
+				'if (openT)',
+				<![CDATA[if (TreeStyleTabService.checkReadyToOpenNewTab({
+						uri      : linkNode.href,
+						external : {
+							newTab : TreeStyleTabService.getTreePref('openOuterLinkInNewTab') || TreeStyleTabService.getTreePref('openAnyLinkInNewTab'),
+							forceChild : true
+						},
+						internal : {
+							newTab : TreeStyleTabService.getTreePref('openAnyLinkInNewTab')
+						}
+					})) {
+					event.stopPropagation();
+					event.preventDefault();
+					handleLinkClick(event, linkNode.href, linkNode);
+					return true;
+				} else $&]]>
+			)
+		);
+		if (/\(?function TMP_contentAreaClick\(/.test(window.contentAreaClick.toSource()))
+			window.contentAreaClick = window.TMP_contentAreaClick;
+
 		gBrowser.mTabContainer.removeEventListener('DOMNodeInserted', tabxTabAdded, true);
 		eval('window.tabxTabAdded = '+
 			window.tabxTabAdded.toSource().replace(
