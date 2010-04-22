@@ -852,7 +852,7 @@ var TreeStyleTabUtils = {
 				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
 		if (popup && 'TabContextMenu' in aTabBrowserChild.ownerDocument.defaultView)
-			return this.getTabBrowserFromChild(TabContextMenu.contextTab);
+			return this.getTabBrowserFromChild(aTabBrowserChild.ownerDocument.defaultView.TabContextMenu.contextTab);
 
 		var b = this.evaluateXPath(
 				'ancestor::xul:tabbrowser | '+
