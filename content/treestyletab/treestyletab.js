@@ -665,10 +665,11 @@ try{
 			if (effects == 'link') {
 				let now = Date.now();
 				if (!time) {
+					time = now;
 					if ('mDragTime' in observer)
-						observer.mDragTime = now;
+						observer.mDragTime = time;
 					else
-						observer._dragTime = now;
+						observer._dragTime = time;
 				}
 				if (now >= time + delay)
 					aTabBrowser.selectedTab = info.target;
