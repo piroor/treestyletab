@@ -189,6 +189,12 @@ TreeStyleTabService.overrideExtensionsPreInit = function TSTService_overrideExte
 				'var tabcount = ',
 				<![CDATA[
 					gBrowser.treeStyleTab.collapseExpandAllSubtree(false, true);
+					gBrowser.treeStyleTab.getTabsArray(gBrowser)
+						.slice(1)
+						.reverse()
+						.forEach(function(aTab, aIndex) {
+							gBrowser.removeTab(aTab);
+						});
 					TreeStyleTabService.restoringTree = true;
 				$&]]>
 			));
