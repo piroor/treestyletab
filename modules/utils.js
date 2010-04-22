@@ -143,6 +143,9 @@ var TreeStyleTabUtils = {
 
 	kINSERT_FISRT : 0,
 	kINSERT_LAST  : 1,
+
+	MAX_TABBAR_SIZE_RATIO        : 0.8,
+	DEFAULT_SHRUNKEN_WIDTH_RATIO : 0.67,
  
 /* base variables */ 
 	baseIndent : 12,
@@ -1723,14 +1726,27 @@ var TreeStyleTabUtils = {
 	{
 		var expanded = this.getTreePref('tabbar.width');
 		var shrunken = this.getTreePref('tabbar.shrunkenWidth');
-		if (expanded <= shrunken) {
+		var originalExpanded = expanded;
+		var originalShrunken = shrunken;
+		if (aPrefName == 'extensions.treestyletab.tabbar.shrunkenWidth') {
+			if (expanded <= shrunken)
+				expanded = parseInt(shrunken / this.DEFAULT_SHRUNKEN_WIDTH_RATIO)
+			let w = this.browserWindow;
+			if (w && expanded > w.gBrowser.boxObject.width) {
+				expanded = w.gBrowser.boxObject.width * this.MAX_TABBAR_SIZE_RATIO;
+				if (expanded <= shrunken)
+					shrunken = parseInt(expanded * this.DEFAULT_SHRUNKEN_WIDTH_RATIO)
+			}
+		}
+		else {
+			if (expanded <= shrunken)
+				shrunken = parseInt(expanded * this.DEFAULT_SHRUNKEN_WIDTH_RATIO);
+		}
+		if (expanded != originalExpanded ||
+			shrunken != originalShrunken) {
 			this.tabbarWidthResetting = true;
-			var w = this.browserWindow;
-			if (w) expanded = Math.min(expanded, w.outerWidth);
-			if (aPrefName == 'extensions.treestyletab.tabbar.width')
-				this.setTreePref('tabbar.shrunkenWidth', parseInt(expanded / 1.5));
-			else
-				this.setTreePref('tabbar.width', parseInt(shrunken * 1.5));
+			this.setTreePref('tabbar.width', expanded);
+			this.setTreePref('tabbar.shrunkenWidth', shrunken);
 			this.tabbarWidthResetting = false;
 		}
 	},
