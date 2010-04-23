@@ -964,15 +964,8 @@ catch(e) {
 			).replace(
 				/(event.ctrlKey|event.metaKey)/,
 				<![CDATA[
-					TreeStyleTabService.checkReadyToOpenNewTab({
-						uri      : href,
-						external : {
-							newTab : TreeStyleTabService.getTreePref('openOuterLinkInNewTab') || TreeStyleTabService.getTreePref('openAnyLinkInNewTab'),
-							forceChild : true
-						},
-						internal : {
-							newTab : TreeStyleTabService.getTreePref('openAnyLinkInNewTab')
-						},
+					TreeStyleTabService.checkReadyToOpenNewTabFromLink({
+						link     : (linkNode || { href : href }),
 						modifier : $1,
 						invert   : TreeStyleTabService.getTreePref('link.invertDefaultBehavior')
 					}) ?
@@ -1032,16 +1025,7 @@ catch(e) {
 							!TreeStyleTabService.getTreePref('compatibility.TMP') ||
 							!('TMP_contentAreaClick' in window)
 						) &&
-						TreeStyleTabService.checkReadyToOpenNewTab({
-							uri      : wrapper.href,
-							external : {
-								newTab : TreeStyleTabService.getTreePref('openOuterLinkInNewTab') || TreeStyleTabService.getTreePref('openAnyLinkInNewTab'),
-								forceChild : true
-							},
-							internal : {
-								newTab : TreeStyleTabService.getTreePref('openAnyLinkInNewTab')
-							}
-						})
+						TreeStyleTabService.checkReadyToOpenNewTabFromLink(wrapper)
 						) {
 						event.stopPropagation();
 						event.preventDefault();

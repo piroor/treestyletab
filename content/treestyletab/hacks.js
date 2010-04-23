@@ -343,16 +343,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 		eval('window.TMP_contentAreaClick = '+
 			window.TMP_contentAreaClick.toSource().replace(
 				'if (openT)',
-				<![CDATA[if (TreeStyleTabService.checkReadyToOpenNewTab({
-						uri      : linkNode.href,
-						external : {
-							newTab : TreeStyleTabService.getTreePref('openOuterLinkInNewTab') || TreeStyleTabService.getTreePref('openAnyLinkInNewTab'),
-							forceChild : true
-						},
-						internal : {
-							newTab : TreeStyleTabService.getTreePref('openAnyLinkInNewTab')
-						}
-					})) {
+				<![CDATA[if (TreeStyleTabService.checkReadyToOpenNewTabFromLink(linkNode)) {
 					event.stopPropagation();
 					event.preventDefault();
 					handleLinkClick(event, linkNode.href, linkNode);

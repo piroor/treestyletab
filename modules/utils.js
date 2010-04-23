@@ -1218,6 +1218,29 @@ var TreeStyleTabUtils = {
 		});
 	},
  
+	checkReadyToOpenNewTabFromLink : function TSTUtils_checkReadyToOpenNewTabFromLink(aLink) 
+	{
+		var options = aLink;
+		if (typeof aLink == 'string') {
+			options = {
+				link : { href : aLink }
+			};
+		}
+		else if (aLink instanceof Ci.nsIDOMElement) {
+			options = { link : aLink };
+		}
+		options.__prpto__ = {
+			external : {
+				newTab : this.getTreePref('openOuterLinkInNewTab') || this.getTreePref('openAnyLinkInNewTab'),
+				forceChild : true
+			},
+			internal : {
+				newTab : this.getTreePref('openAnyLinkInNewTab')
+			}
+		}
+		return this.checkReadyToOpenNewTab(options);
+	},
+ 
 	_getDomainFromURI : function TSTUtils__getDomainFromURI(aURI) 
 	{
 		if (!aURI) return null;
