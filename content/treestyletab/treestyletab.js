@@ -633,8 +633,6 @@ try{
 		window['piro.sakura.ne.jp'].autoScroll.processAutoScroll(aEvent);
 
 		var info = this.getDropAction(aEvent, session);
-		if (!(info.position & this.kDROP_ON))
-			return;
 
 		var setEffectAllowedFunc;
 		var observer = aTabBrowser;
@@ -654,6 +652,7 @@ try{
 		// auto-switch for staying on tabs (Firefox 3.0 or later)
 		if (
 			setEffectAllowedFunc &&
+			info.position == this.kDROP_ON &&
 			info.target &&
 			!info.target.selected &&
 			(
