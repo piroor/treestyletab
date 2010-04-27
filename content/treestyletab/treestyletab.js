@@ -633,6 +633,8 @@ try{
 		window['piro.sakura.ne.jp'].autoScroll.processAutoScroll(aEvent);
 
 		var info = this.getDropAction(aEvent, session);
+		if (!(info.position & this.kDROP_ON))
+			return;
 
 		var setEffectAllowedFunc;
 		var observer = aTabBrowser;
