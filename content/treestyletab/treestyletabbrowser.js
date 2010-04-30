@@ -217,6 +217,9 @@ TreeStyleTabBrowser.prototype = {
 		if (this.isFloating)
 			window.addEventListener('resize', this, true);
 
+		this.scrollBox.addEventListener('overflow', this, true);
+		this.scrollBox.addEventListener('underflow', this, true);
+
 		window.addEventListener('TreeStyleTabPrintPreviewEntered', this, false);
 		window.addEventListener('TreeStyleTabPrintPreviewExited', this, false);
 
@@ -1260,8 +1263,6 @@ TreeStyleTabBrowser.prototype = {
 		container.removeAttribute('overflow');
 
 		var scrollBox = this.scrollBox;
-		scrollBox.addEventListener('overflow', this, true);
-		scrollBox.addEventListener('underflow', this, true);
 		window.setTimeout(function() {
 			scrollBox = document.getAnonymousElementByAttribute(scrollBox, 'anonid', 'scrollbox');
 			if (scrollBox) scrollBox = document.getAnonymousNodes(scrollBox)[0];
