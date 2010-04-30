@@ -802,7 +802,9 @@ var TreeStyleTabUtils = {
 	getTabbarFromChild : function TSTUtils_getTabbarFromChild(aNode) 
 	{
 		return this.evaluateXPath(
-				'ancestor-or-self::*[contains(concat(" ", normalize-space(@class), " "), " tabbrowser-strip ") or (local-name()="tabs" and @tabbrowser)]',
+				'ancestor-or-self::*[contains(concat(" ", normalize-space(@class), " "), " tabbrowser-strip ")] | '+
+				'ancestor-or-self::xul:tabs[@tabbrowser] | ' +
+				'ancestor-or-self::xul:toolbar[@id="TabsToolbar"]/child::xul:tabs[@tabbrowser]',
 				aNode,
 				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
