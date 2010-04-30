@@ -861,11 +861,11 @@ catch(e) {
   
 	overrideGlobalFunctions : function TSTService_overrideGlobalFunctions() 
 	{
-//		window.__treestyletab__BrowserCustomizeToolbar = window.BrowserCustomizeToolbar;
-//		window.BrowserCustomizeToolbar = function() {
-//			TreeStyleTabService.destroyBar();
-//			window.__treestyletab__BrowserCustomizeToolbar.call(window);
-//		};
+		window.__treestyletab__BrowserCustomizeToolbar = window.BrowserCustomizeToolbar;
+		window.BrowserCustomizeToolbar = function() {
+			TreeStyleTabService.destroyToolbarItems();
+			window.__treestyletab__BrowserCustomizeToolbar.call(window);
+		};
 
 		let (toolbox) {
 			toolbox = document.getElementById('navigator-toolbox');
@@ -873,17 +873,17 @@ catch(e) {
 				toolbox.__treestyletab__customizeDone = toolbox.customizeDone;
 				toolbox.customizeDone = function(aChanged) {
 					this.__treestyletab__customizeDone(aChanged);
-					TreeStyleTabService.initBar();
+					TreeStyleTabService.initToolbarItems();
 				};
 			}
 			if ('BrowserToolboxCustomizeDone' in window) {
 				window.__treestyletab__BrowserToolboxCustomizeDone = window.BrowserToolboxCustomizeDone;
 				window.BrowserToolboxCustomizeDone = function(aChanged) {
 					window.__treestyletab__BrowserToolboxCustomizeDone.apply(window, arguments);
-					TreeStyleTabService.initBar();
+					TreeStyleTabService.initToolbarItems();
 				};
 			}
-			this.initBar();
+			this.initToolbarItems();
 			toolbox = null;
 		}
 
@@ -1159,7 +1159,7 @@ catch(e) {
 		return func ? func.toSource() : null ;
 	},
  
-	initBar : function TSTService_initBar() 
+	initToolbarItems : function TSTService_initToolbarItems() 
 	{
 		var bar = document.getElementById('urlbar');
 		if (!bar) return;
@@ -1177,6 +1177,42 @@ catch(e) {
 		}
 		bar    = null;
 		source = null;
+
+		// for Firefox 3.7 or later
+		this.updateAllTabsButton(gBrowser);
+	},
+ 
+	destroyToolbarItems : function TSTService_destroyToolbarItems() 
+	{
+		// Firefox 3.7 or later (restore original position)
+		var allTabsButton = document.getElementById('alltabs-button');
+		if (allTabsButton && allTabsButton.hasChildNodes())
+			allTabsButton.firstChild.setAttribute('position', 'after_end');
+	},
+ 
+	updateAllTabsButton : function TSTService_updateAllTabsButton(aTabBrowser) 
+	{
+		aTabBrowser = aTabBrowser || this.browser;
+		var allTabsButton = document.getElementById('alltabs-button') || // Firefox 3.7 or later
+				document.getAnonymousElementByAttribute(aTabBrowser.mTabContainer, 'class', 'tabs-alltabs-button') || // Firefox 3.6 or older
+				( // Tab Mix Plus
+					this.getTreePref('compatibility.TMP') &&
+					document.getAnonymousElementByAttribute(aTabBrowser.mTabContainer, 'anonid', 'alltabs-button')
+				);
+
+		if (allTabsButton && allTabsButton.hasChildNodes() && aTabBrowser.treeStyleTab)
+			allTabsButton.firstChild.setAttribute('position', aTabBrowser.treeStyleTab.isVertical ? 'before_start' : 'after_end' );
+	},
+ 
+	updateAllTabsPopup : function TSTService_updateAllTabsPopup(aEvent) 
+	{
+		if (!this.getTreePref('enableSubtreeIndent.allTabsPopup')) return;
+
+		var items = Array.slice(aEvent.originalTarget.childNodes);
+		var b = this.getTabBrowserFromChild(aEvent.originalTarget) || gBrowser;
+		this.getTabsArray(b).forEach(function(aTab, aIndex) {
+			items[aIndex].style.paddingLeft = aTab.getAttribute(this.kNEST)+'em';
+		}, this);
 	},
   
 	destroy : function TSTService_destroy() 
@@ -1247,6 +1283,8 @@ catch(e) {
 							aSelf.popupMenuShown = false;
 					}, 10, this, aEvent.originalTarget);
 				}
+				if ((aEvent.originalTarget.getAttribute('anonid') || aEvent.originalTarget.id) == 'alltabs-popup')
+					this.updateAllTabsPopup(aEvent);
 				return;
 
 			case 'popuphiding':

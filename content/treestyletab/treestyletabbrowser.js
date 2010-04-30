@@ -628,11 +628,6 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 
-		let (allTabPopup = document.getAnonymousElementByAttribute(b.mTabContainer, 'anonid', 'alltabs-popup')) {
-			if (allTabPopup)
-				allTabPopup.addEventListener('popupshowing', this, false);
-		}
-
 		/* To move up content area on the tab bar, switch tab.
 		   If we don't do it, a gray space appears on the content area
 		   by negative margin of it. */
@@ -877,11 +872,6 @@ TreeStyleTabBrowser.prototype = {
 		var scrollInnerBox = b.mTabContainer.mTabstrip._scrollbox ?
 				document.getAnonymousNodes(b.mTabContainer.mTabstrip._scrollbox)[0] :
 				scrollFrame; // Tab Mix Plus
-		var allTabsButton = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-alltabs-button') ||
-				( // Tab Mix Plus
-					this.getTreePref('compatibility.TMP') &&
-					document.getAnonymousElementByAttribute(b.mTabContainer, 'anonid', 'alltabs-button')
-				);
 
 		this.removeTabbrowserAttribute(this.kRESIZING, b);
 
@@ -905,9 +895,6 @@ TreeStyleTabBrowser.prototype = {
 				b.mTabContainer.orient =
 				b.mTabContainer.mTabstrip.orient =
 				b.mTabContainer.mTabstrip.parentNode.orient = 'vertical';
-			if (allTabsButton && allTabsButton.hasChildNodes()) {
-				allTabsButton.firstChild.setAttribute('position', 'before_start');
-			}
 			b.mTabContainer.setAttribute('align', 'stretch'); // for Mac OS X
 			if (scrollInnerBox)
 				scrollInnerBox.removeAttribute('flex');
@@ -982,9 +969,6 @@ TreeStyleTabBrowser.prototype = {
 				b.mTabContainer.orient =
 				b.mTabContainer.mTabstrip.orient =
 				b.mTabContainer.mTabstrip.parentNode.orient = 'horizontal';
-			if (allTabsButton && allTabsButton.hasChildNodes()) {
-				allTabsButton.firstChild.setAttribute('position', 'after_end');
-			}
 			b.mTabContainer.removeAttribute('align'); // for Mac OS X
 			if (scrollInnerBox)
 				scrollInnerBox.setAttribute('flex', 1);
@@ -1036,6 +1020,7 @@ TreeStyleTabBrowser.prototype = {
 		window.setTimeout(function(aSelf, aTabBrowser, aSplitter, aToggler) {
 			delayedPostProcess(aSelf, aTabBrowser, aSplitter, aToggler);
 			aSelf.updateTabbarOverflow();
+			aSelf.updateAllTabsButton(aTabBrowser);
 			delayedPostProcess = null;
 			aSelf.mTabBrowser.style.visibility = '';
 			aSelf.startRendering();
@@ -1051,7 +1036,6 @@ TreeStyleTabBrowser.prototype = {
 		toolboxContainer = null;
 		scrollInnerBox = null;
 		scrollInnerBox = null;
-		allTabsButton = null;
 	},
 	
 	_ensureNewSplitter : function TSTBrowser__ensureNewSplitter() 
@@ -1352,11 +1336,6 @@ TreeStyleTabBrowser.prototype = {
 		var tabContextMenu = b.tabContextMenu ||
 							document.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu');
 		tabContextMenu.removeEventListener('popupshowing', this, false);
-
-		var allTabPopup = document.getAnonymousElementByAttribute(b.mTabContainer, 'anonid', 'alltabs-popup');
-		if (allTabPopup) {
-			allTabPopup.removeEventListener('popupshowing', this, false);
-		}
 
 		if (this.tabbarCanvas) {
 			this.tabbarCanvas.parentNode.removeChild(this.tabbarCanvas);
@@ -2745,16 +2724,8 @@ TreeStyleTabBrowser.prototype = {
  
 	onPopupShowing : function TSTBrowser_onPopupShowing(aEvent) 
 	{
-		if (aEvent.target != aEvent.currentTarget) return;
-		switch (aEvent.target.getAttribute('anonid') || aEvent.target.id)
-		{
-			case 'tabContextMenu':
-				this.initTabContextMenu(aEvent);
-				break;
-			case 'alltabs-popup':
-				this.initAllTabsPopup(aEvent);
-				break;
-		}
+		if (aEvent.target == aEvent.currentTarget)
+			this.initTabContextMenu(aEvent);
 	},
 	
 	initTabContextMenu : function TSTBrowser_initTabContextMenu(aEvent) 
@@ -2873,17 +2844,6 @@ TreeStyleTabBrowser.prototype = {
 		}
 		else {
 			sep.setAttribute('hidden', true);
-		}
-	},
- 
-	initAllTabsPopup : function TSTBrowser_initAllTabsPopup(aEvent) 
-	{
-		if (!this.getTreePref('enableSubtreeIndent.allTabsPopup')) return;
-		var items = aEvent.target.childNodes;
-		var tabs = this.getTabsArray(this.mTabBrowser);
-		for (var i = 0, maxi = items.length; i < maxi; i++)
-		{
-			items[i].style.paddingLeft = tabs[i].getAttribute(this.kNEST)+'em';
 		}
 	},
   
