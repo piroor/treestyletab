@@ -39,9 +39,10 @@ window[chromehidden~="toolbar"] .tabbrowser-strip[treestyletab-tabbar-placeholde
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > .scrollbutton-down-stack,
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > .scrollbutton-down, /* Firefox 3 */
 .tabbrowser-tabs[treestyletab-hide-alltabs-button="true"] .tabs-alltabs-stack,
-.tabbrowser-tabs[treestyletab-hide-alltabs-button="true"] .tabbrowser-arrowscrollbox ~ stack, /* "all tabs" button in Firefox 3 and 3.5 */
-.tabbrowser-tabs[treestyletab-hide-alltabs-button="true"] .tabs-alltabs-button, /* Firefox 3.7 */
+.tabbrowser-tabs[treestyletab-hide-alltabs-button="true"] .tabbrowser-arrowscrollbox ~ stack, /* "all tabs" button in Firefox 3.0 / 3.5 */
+#TabsToolbar[treestyletab-hide-alltabs-button="true"] .tabs-alltabs-button, /* Firefox 3.7 or later */
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-closebutton-box,
+#TabsToolbar[treestyletab-mode="vertical"] .tabs-closebutton, /* Firefox 3.7 or later */
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tab-drop-indicator-bar {
 	visibility: collapse !important;
 }
@@ -78,12 +79,12 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-stack > *:first-child + * > hbox:
 	direction: ltr !important;
 }
 
-
 #TabsToolbar:not([treestyletab-tabbar-position="top"]),
 #TabsToolbar[treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
 	line-height: 0 !important;
 	position: fixed !important;
 	-moz-appearance: none !important;
+	-moz-binding: url(treestyletab.xml#tabs-toolbar);
 }
 #TabsToolbar:not([treestyletab-tabbar-position="top"]) .tabbrowser-tabs,
 #TabsToolbar[treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) .tabbrowser-tabs {
@@ -133,8 +134,10 @@ image.tab-icon {
 .tabbrowser-tabs .tabs-newbutton,
 .tabbrowser-tabs[treestyletab-mode="vertical"] .scrollbutton-up,
 .tabbrowser-tabs[treestyletab-mode="vertical"] .scrollbutton-down,
-.tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-alltabs-button,
-.tabbrowser-tabs[treestyletab-mode="vertical"] .close-button.tabs-closebutton {
+.tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-alltabs-button, /* Firefox 3.6 or older */
+.tabbrowser-tabs[treestyletab-mode="vertical"] .close-button.tabs-closebutton, /* Firefox 3.6 or older */
+#TabsToolbar[treestyletab-mode="vertical"] .tabs-alltabs-button, /* Firefox 3.7 or later */
+#TabsToolbar[treestyletab-mode="vertical"] > .close-button.tabs-closebutton /* Firefox 3.7 or later */ {
 	max-width: none !important;
 }
 

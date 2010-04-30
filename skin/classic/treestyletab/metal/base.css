@@ -170,6 +170,7 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
 
 /* buttons in the tab bar */
 
+/* Firefox 3.6 or older */
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabs-newtab-button,
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
@@ -185,7 +186,16 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabs-container > .tabs-closebutton:hover,
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  > .tabs-closebutton:hover {
+  > .tabs-closebutton:hover,
+/* Firefox 3.7 or later */
+#TabsToolbar[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  > toolbarbutton,
+#TabsToolbar[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  > toolbarbutton:hover,
+#TabsToolbar[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  > toolbarpaletteitem > toolbarbutton,
+#TabsToolbar[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  > toolbarpaletteitem > toolbarbutton:hover {
 	background: #b3b2b3 !important;
 	border-top: 1px solid #666666 !important;
 }
@@ -210,6 +220,7 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
 	-moz-border-radius: 0 6px 6px 0;
 }
 
+/* Firefox 3.6 or older */
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tabbar-position="left"]
   .tabs-newtab-button,
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tabbar-position="left"]
@@ -217,10 +228,16 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tabbar-position="left"]
   .tabs-container > .tabs-closebutton,
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tabbar-position="left"]
-  > .tabs-closebutton {
+  > .tabs-closebutton,
+/* Firefox 3.7 or later */
+#TabsToolbar[treestyletab-style="metal"][treestyletab-tabbar-position="left"]
+  > toolbarbutton,
+#TabsToolbar[treestyletab-style="metal"][treestyletab-tabbar-position="left"]
+  > toolbarpaletteitem > toolbarbutton {
 	border-right: 1px solid #666666 !important;
 }
 
+/* Firefox 3.6 or older */
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
   .tabs-newtab-button,
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
@@ -228,7 +245,12 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
   .tabs-container > .tabs-closebutton,
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
-  > .tabs-closebutton {
+  > .tabs-closebutton,
+/* Firefox 3.7 or later */
+#TabsToolbar[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
+  > toolbarbutton,
+#TabsToolbar[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
+  > toolbarpaletteitem > toolbarbutton {
 	border-left: 1px solid #666666 !important;
 }
 
@@ -239,19 +261,23 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
 /* buttons in the tab bar */
 
 :root[treestyletab-enable-compatibility-tmp="true"]
-  tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton,
+  tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabs-closebutton-topbox > .tabs-closebutton,
 :root[treestyletab-enable-compatibility-tmp="true"]
-  tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton:hover {
+  tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabs-closebutton-topbox > .tabs-closebutton:hover {
 	background: #b3b2b3 !important;
 	border-top: 1px solid #666666 !important;
 }
 
 :root[treestyletab-enable-compatibility-tmp="true"]
-  tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="left"] .tabs-closebutton-topbox > .tabs-closebutton {
+  tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="left"]
+  .tabs-closebutton-topbox > .tabs-closebutton {
 	border-right: 1px solid #666666 !important;
 }
 
 :root[treestyletab-enable-compatibility-tmp="true"]
-  tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"] .tabs-closebutton-topbox > .tabs-closebutton {
+  tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
+  .tabs-closebutton-topbox > .tabs-closebutton {
 	border-left: 1px solid #666666 !important;
 }

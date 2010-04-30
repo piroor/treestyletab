@@ -12,4 +12,17 @@
 		</content>
 	</binding>
 
+	<binding id="tabs-toolbar"
+		extends="chrome://global/content/bindings/toolbar.xml#toolbar">
+		<content><xul:hbox flex="1"
+		                   xbl:inherits="orient"
+		                   anonid="toolbar-innerbox"
+		                   class="tabs-toolbar-inner-box"><xbl:children/></xul:hbox></content>
+		<implementation>
+			<field name="tabsToolbarInnerBox" readonly="true">
+				document.getAnonymousElementByAttribute(this, 'anonid', 'toolbar-innerbox')
+			</field>
+		</implementation>
+	</binding>
+
 </bindings>

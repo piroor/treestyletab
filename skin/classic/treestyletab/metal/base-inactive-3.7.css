@@ -35,29 +35,17 @@
 /* buttons in the tab bar */
 
 :root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tabs-newtab-button,
+  #TabsToolbar[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  > toolbarbutton,
 :root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tabs-newtab-button:hover,
+  #TabsToolbar[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  > toolbarbutton:hover,
 :root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tabs-alltabs-button,
+  #TabsToolbar[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  > toolbarpaletteitem > toolbarbutton,
 :root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tabs-alltabs-button:hover,
-:root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tabs-container > .tabs-closebutton,
-:root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  > .tabs-closebutton,
-:root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tabs-container > .tabs-closebutton:hover,
-:root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  > .tabs-closebutton:hover {
+  #TabsToolbar[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  > toolbarpaletteitem > toolbarbutton:hover {
 	background: #e4e4e4 !important;
 	border-color: #666666 !important;
 }
@@ -80,9 +68,11 @@
 /* hacks for Tab Mix Plus */
 
 :root[treestyletab-enable-compatibility-tmp="true"]:-moz-window-inactive
-  tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton,
+  tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabs-closebutton-topbox > .tabs-closebutton,
 :root[treestyletab-enable-compatibility-tmp="true"]:-moz-window-inactive
-  tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton:hover {
+  tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabs-closebutton-topbox > .tabs-closebutton:hover {
 	background: #e4e4e4 !important;
 	border-color: #666666 !important;
 }

@@ -114,25 +114,6 @@ TreeStyleTabBrowser.prototype = {
 					document.getAnonymousElementByAttribute(aTab, 'class', 'tab-close-button');
 		return close;
 	},
- 
-	setTabStripAttribute : function TSTBrowser_setTabStripAttribute(aAttr, aValue) 
-	{
-		if (aValue) {
-			this.tabStrip.setAttribute(aAttr, aValue);
-			if (this._tabStripPlaceHolder)
-				this._tabStripPlaceHolder.setAttribute(aAttr, aValue);
-		}
-		else {
-			this.tabStrip.removeAttribute(aAttr);
-			if (this._tabStripPlaceHolder)
-				this._tabStripPlaceHolder.removeAttribute(aAttr);
-		}
-	},
- 
-	removeTabStripAttribute : function TSTBrowser_removeTabStripAttribute(aAttr) 
-	{
-		this.setTabStripAttribute(aAttr, null);
-	},
   
 /* status */ 
 	
@@ -1189,7 +1170,7 @@ TreeStyleTabBrowser.prototype = {
 	updateFloatingTabbarInternal : function TSTBrowser_updateFloatingTabbarInternal()
 	{
 		var strip = this.tabStrip;
-		var tabContainer = this.mTabBrowser.tabContainer;
+		var tabContainerBox = this.getTabContainerBox(this.mTabBrowser);
 		var positioned = false;
 		if (this.currentTabbarPosition != 'top' ||
 			this.mTabBrowser.getAttribute(this.kFIXED) != 'true') {
@@ -1200,13 +1181,13 @@ TreeStyleTabBrowser.prototype = {
 			strip.style.top = (box.screenY - root.screenY)+'px';
 			strip.style.left = (box.screenX - root.screenX)+'px';
 
-			strip.style.width = (tabContainer.width = box.width)+'px';
-			strip.style.height = (tabContainer.height = box.height)+'px';
+			strip.style.width = (tabContainerBox.width = box.width)+'px';
+			strip.style.height = (tabContainerBox.height = box.height)+'px';
 
-			tabContainer.collapsed = (this.splitter && this.splitter.getAttribute('state') == 'collapsed');
+			tabContainerBox.collapsed = (this.splitter && this.splitter.getAttribute('state') == 'collapsed');
 		}
 		else {
-			tabContainer.collapsed = false;
+			tabContainerBox.collapsed = false;
 			strip.style.top = '';
 			strip.style.left = '';
 			strip.style.width = '';
@@ -1249,9 +1230,9 @@ TreeStyleTabBrowser.prototype = {
 		if (!this.isVertical) {
 			this.clearTreePref('tabbar.height');
 			if (this.isFloating) {
-				let tabs = this.mTabBrowser.mTabContainer;
-				tabs.removeAttribute('height');
-				this._tabStripPlaceHolder.height = tabs.boxObject.height;
+				let tabContainerBox = this.getTabContainerBox(this.mTabBrowser);
+				tabContainerBox.removeAttribute('height');
+				this._tabStripPlaceHolder.height = tabContainerBox.boxObject.height;
 				this.updateFloatingTabbar();
 			}
 		}

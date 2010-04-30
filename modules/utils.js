@@ -702,6 +702,19 @@ var TreeStyleTabUtils = {
 		return this.getTabStrip(this.browser);
 	},
  
+	getTabContainerBox : function TSTUtils_getTabContainerBox(aTabBrowser) 
+	{
+		if (!(aTabBrowser instanceof Ci.nsIDOMElement))
+			return null;
+
+		var strip = this.getTabStrip(aTabBrowser);
+		return strip.tabsToolbarInnerBox || aTabBrowser.tabContainer;
+	},
+	get tabContainerBox()
+	{
+		return this.getTabContainerBox(this.browser);
+	},
+ 
 	setTabbrowserAttribute : function TSTUtils_setTabbrowserAttribute(aName, aValue, aTabBrowser) 
 	{
 		aTabBrowser = aTabBrowser || this.mTabBrowser || this.browser;
@@ -720,6 +733,31 @@ var TreeStyleTabUtils = {
 	removeTabbrowserAttribute : function TSTUtils_removeTabbrowserAttribute(aName, aTabBrowser) 
 	{
 		this.setTabbrowserAttribute(aName, null, aTabBrowser);
+	},
+ 
+	setTabStripAttribute : function TSTUtils_setTabStripAttribute(aAttr, aValue) 
+	{
+		var strip = this.tabStrip;
+		if (!strip) return;
+		if (aValue) {
+			strip.setAttribute(aAttr, aValue);
+			if (this._tabStripPlaceHolder)
+				this._tabStripPlaceHolder.setAttribute(aAttr, aValue);
+			if (strip.tabsToolbarInnerBox)
+				strip.tabsToolbarInnerBox.setAttribute(aAttr, aValue);
+		}
+		else {
+			strip.removeAttribute(aAttr);
+			if (this._tabStripPlaceHolder)
+				this._tabStripPlaceHolder.removeAttribute(aAttr);
+			if (strip.tabsToolbarInnerBox)
+				strip.tabsToolbarInnerBox.removeAttribute(aAttr);
+		}
+	},
+ 
+	removeTabStripAttribute : function TSTUtils_removeTabStripAttribute(aAttr) 
+	{
+		this.setTabStripAttribute(aAttr, null);
 	},
  
 	getTabFromChild : function TSTUtils_getTabFromChild(aTab) 
