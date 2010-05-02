@@ -330,15 +330,17 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 	// Tab Mix Plus
 	if (this.getTreePref('compatibility.TMP') &&
 		'TMupdateSettings' in window) {
-		eval('window.TMupdateSettings = '+
-			window.TMupdateSettings.toSource().replace(
-				/(\{aTab.removeAttribute\("tabxleft"\);\})(\})/,
-				<![CDATA[$1
-					gBrowser.treeStyleTab.initTabAttributes(aTab);
-					gBrowser.treeStyleTab.initTabContentsOrder(aTab);
-				$2]]>
-			)
-		);
+		if (window.TMupdateSettings.toSource().indexOf('treeStyleTab') < 0) {
+			eval('window.TMupdateSettings = '+
+				window.TMupdateSettings.toSource().replace(
+					/(\{aTab.removeAttribute\("tabxleft"\);\})(\})/,
+					<![CDATA[$1
+						gBrowser.treeStyleTab.initTabAttributes(aTab);
+						gBrowser.treeStyleTab.initTabContentsOrder(aTab);
+					$2]]>
+				)
+			);
+		}
 
 		eval('window.TMP_contentAreaClick = '+
 			window.TMP_contentAreaClick.toSource().replace(
