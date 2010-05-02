@@ -1740,7 +1740,6 @@ var TreeStyleTabUtils = {
 				break;
 
 			case 'browser.tabs.insertRelatedAfterCurrent':
-				value = false; // èÌÇ…falseÇ≈å≈íË
 			case 'browser.link.open_newwindow.restriction':
 			case 'browser.tabs.loadFolderAndReplace':
 			case 'extensions.stm.tabBarMultiRows': // Super Tab Mode
@@ -1751,15 +1750,20 @@ var TreeStyleTabUtils = {
 			case 'browser.link.open_newwindow.restriction.override':
 			case 'browser.tabs.loadFolderAndReplace.override':
 			case 'extensions.stm.tabBarMultiRows.override': // Super Tab Mode
-				if (aPrefName == 'browser.tabs.insertRelatedAfterCurrent.override') {
-					value = false; // èÌÇ…falseÇ≈å≈íË
+				if (this.getPref(aPrefName+'.force')) {
+					let defaultValue = this.getDefaultPref(aPrefName);
+					if (value != defaultValue) {
+						this.setPref(aPrefName, defaultValue);
+						return;
+					}
 				}
 				this.prefOverriding = true;
-				var target = aPrefName.replace('.override', '');
-				var originalValue = this.getPref(target);
-				if (originalValue !== null && originalValue != value)
-					this.setPref(target+'.backup', originalValue);
-				this.setPref(target, this.getPref(aPrefName));
+				let (target = aPrefName.replace('.override', '')) {
+					let originalValue = this.getPref(target);
+					if (originalValue !== null && originalValue != value)
+						this.setPref(target+'.backup', originalValue);
+					this.setPref(target, this.getPref(aPrefName));
+				}
 				this.prefOverriding = false;
 				break;
 

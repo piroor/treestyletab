@@ -122,6 +122,7 @@ pref("extensions.treestyletab.undoCloseTabSet.behavior", 3);
 pref("browser.link.open_newwindow.restriction.override", 0);
 pref("browser.tabs.loadFolderAndReplace.override", false);
 pref("browser.tabs.insertRelatedAfterCurrent.override", false);
+pref("browser.tabs.insertRelatedAfterCurrent.override.force", true);
 
 pref("extensions.multipletab.show.multipletab-selection-item-removeTabSubtree", true);
 pref("extensions.multipletab.show.multipletab-selection-item-createSubtree", true);
