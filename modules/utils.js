@@ -1273,7 +1273,7 @@ var TreeStyleTabUtils = {
 		else if (aLink instanceof Ci.nsIDOMElement) {
 			options = { link : aLink };
 		}
-		options.__prpto__ = {
+		options.__proto__ = {
 			external : {
 				newTab : this.getTreePref('openOuterLinkInNewTab') || this.getTreePref('openAnyLinkInNewTab'),
 				forceChild : true
@@ -1281,7 +1281,8 @@ var TreeStyleTabUtils = {
 			internal : {
 				newTab : this.getTreePref('openAnyLinkInNewTab')
 			}
-		}
+		};
+		options.uri = options.link.href;
 		return this.checkReadyToOpenNewTab(options);
 	},
  
