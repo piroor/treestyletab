@@ -570,6 +570,7 @@ TreeStyleTabBrowser.prototype = {
 		this.onPrefChange('extensions.treestyletab.showBorderForFirstTab');
 		this.onPrefChange('extensions.treestyletab.tabbar.invertTabContents');
 		this.onPrefChange('extensions.treestyletab.tabbar.invertClosebox');
+		this.onPrefChange('extensions.treestyletab.animation.enabled');
 
 		var tabContextMenu = b.tabContextMenu ||
 							document.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu');
@@ -1484,6 +1485,10 @@ TreeStyleTabBrowser.prototype = {
 			case 'extensions.treestyletab.tabbar.height':
 				this._horizontalTabMaxIndentBase = 0;
 				this.checkTabsIndentOverflow();
+				break;
+
+			case 'extensions.treestyletab.animation.enabled':
+				this.setTabbrowserAttribute(this.kANIMATION_ENABLED, value ? 'true' : null );
 				break;
 
 			default:
@@ -3664,18 +3669,20 @@ TreeStyleTabBrowser.prototype = {
 
 		var regexp = this.indentRulesRegExp;
 		var property = this.indentProp+'-'+aTarget;
+		var CSSTransitionEnabled = ('Transition' in aTab.style || 'MozTransition' in aTab.style);
 		if (
 			!this.animationEnabled ||
 			aJustNow ||
 			this.indentDuration < 1 ||
 			!aTarget ||
+			CSSTransitionEnabled ||
 			this.isCollapsed(aTab)
 			) {
 			aTab.setAttribute(
 				'style',
 				aTab.getAttribute('style')
 					.replace(regexp, '')+';'+
-					(aTarget ? property+':'+aIndent+'px !important;' : '' )
+					(aTarget || CSSTransitionEnabled ? property+':'+aIndent+'px !important;' : '' )
 			);
 			return;
 		}
@@ -3931,6 +3938,8 @@ TreeStyleTabBrowser.prototype = {
 		aTab.removeAttribute(this.kX_OFFSET);
 		aTab.removeAttribute(this.kY_OFFSET);
 
+		aTab.setAttribute(this.kCOLLAPSING_PHASE, aCollapsed ? this.kCOLLAPSING_PHASE_TO_BE_COLLAPSED : this.kCOLLAPSING_PHASE_TO_BE_EXPANDED );
+
 		if (
 			!this.animationEnabled ||
 			aJustNow ||
@@ -3944,7 +3953,6 @@ TreeStyleTabBrowser.prototype = {
 					.replace(this.collapseRulesRegExp, '')
 					.replace(this.kOPACITY_RULE_REGEXP, '')
 			);
-			aTab.removeAttribute(this.kCOLLAPSING);
 			if (aCollapsed)
 				aTab.setAttribute(this.kCOLLAPSED_DONE, true);
 			else
@@ -3988,14 +3996,25 @@ TreeStyleTabBrowser.prototype = {
 		var deltaOpacity = endOpacity - startOpacity;
 		var collapseProp = 'margin-'+this.collapseTarget;
 
-		aTab.setAttribute(this.kCOLLAPSING, true);
-		aTab.setAttribute(
-			'style',
-			aTab.getAttribute('style')
-				.replace(this.collapseRulesRegExp, '')+';'+
-				collapseProp+': -'+startMargin+'px !important;'+
-				'opacity: '+startOpacity+' !important;'
-		);
+		var CSSTransitionEnabled = ('Transition' in aTab.style || 'MozTransition' in aTab.style);
+		if (CSSTransitionEnabled) {
+			aTab.setAttribute(
+				'style',
+				aTab.getAttribute('style')
+					.replace(this.collapseRulesRegExp, '')+';'+
+					collapseProp+': -'+endMargin+'px !important;'+
+					'opacity: '+endOpacity+' !important;'
+			);
+		}
+		else {
+			aTab.setAttribute(
+				'style',
+				aTab.getAttribute('style')
+					.replace(this.collapseRulesRegExp, '')+';'+
+					collapseProp+': -'+startMargin+'px !important;'+
+					'opacity: '+startOpacity+' !important;'
+			);
+		}
 
 		if (!aCollapsed) aTab.removeAttribute(this.kCOLLAPSED_DONE);
 
@@ -4017,14 +4036,15 @@ TreeStyleTabBrowser.prototype = {
 			}
 			if (aTime >= aDuration || stopAnimation) {
 				delete aTab.__treestyletab__updateTabCollapsedTask;
-				aTab.removeAttribute(self.kCOLLAPSING);
 				if (aCollapsed) aTab.setAttribute(self.kCOLLAPSED_DONE, true);
-				aTab.setAttribute(
-					'style',
-					aTab.getAttribute('style')
-						.replace(self.collapseRulesRegExp, '')
-						.replace(self.kOPACITY_RULE_REGEXP, '')
-				);
+				if (!CSSTransitionEnabled) {
+					aTab.setAttribute(
+						'style',
+						aTab.getAttribute('style')
+							.replace(self.collapseRulesRegExp, '')
+							.replace(self.kOPACITY_RULE_REGEXP, '')
+					);
+				}
 				aTab.removeAttribute(offsetAttr);
 
 				maxMargin = null;
@@ -4043,16 +4063,18 @@ TreeStyleTabBrowser.prototype = {
 				return true;
 			}
 			else {
-				var power   = Math.sin(aTime / aDuration * radian);
-				var margin  = startMargin + (deltaMargin * power);
-				var opacity = startOpacity + (deltaOpacity  * power);
-				aTab.setAttribute(
-					'style',
-					aTab.getAttribute('style')
-						.replace(self.collapseRulesRegExp, '')+';'+
-						collapseProp+': -'+margin+'px !important;'+
-						'opacity: '+opacity+' !important;'
-				);
+				if (!CSSTransitionEnabled) {
+					let power   = Math.sin(aTime / aDuration * radian);
+					let margin  = startMargin + (deltaMargin * power);
+					let opacity = startOpacity + (deltaOpacity  * power);
+					aTab.setAttribute(
+						'style',
+						aTab.getAttribute('style')
+							.replace(self.collapseRulesRegExp, '')+';'+
+							collapseProp+': -'+margin+'px !important;'+
+							'opacity: '+opacity+' !important;'
+					);
+				}
 				aTab.setAttribute(offsetAttr, maxMargin);
 				return false;
 			}

@@ -69,7 +69,9 @@ var TreeStyleTabUtils = {
 	kSUBTREE_COLLAPSED  : 'treestyletab-subtree-collapsed',
 	kCOLLAPSED          : 'treestyletab-collapsed',
 	kCOLLAPSED_DONE     : 'treestyletab-collapsed-done',
-	kCOLLAPSING         : 'treestyletab-collapsing',
+	kCOLLAPSING_PHASE   : 'treestyletab-collapsing-phase',
+	kCOLLAPSING_PHASE_TO_BE_COLLAPSED : 'collapse',
+	kCOLLAPSING_PHASE_TO_BE_EXPANDED : 'expand',
 	kALLOW_COLLAPSE     : 'treestyletab-allow-subtree-collapse',
 
 	kX_OFFSET           : 'treestyletab-x-offset',
@@ -86,6 +88,7 @@ var TreeStyleTabUtils = {
 	kRESIZING           : 'treestyletab-tabbar-resizing',
 	kINDENTED           : 'treestyletab-tabs-indented',
 	kPRINT_PREVIEW      : 'treestyletab-print-preview',
+	kANIMATION_ENABLED  : 'treestyletab-animation-enabled',
 
 	kTAB_INVERTED          : 'treestyletab-tab-inverted',
 	kTAB_CONTENTS_INVERTED : 'treestyletab-tab-contents-inverted',
