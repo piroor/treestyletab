@@ -1739,17 +1739,21 @@ var TreeStyleTabUtils = {
 				this.updateTabWidthPrefs(aPrefName);
 				break;
 
+			case 'browser.tabs.insertRelatedAfterCurrent':
+				value = false; // èÌÇ…falseÇ≈å≈íË
 			case 'browser.link.open_newwindow.restriction':
 			case 'browser.tabs.loadFolderAndReplace':
-			case 'browser.tabs.insertRelatedAfterCurrent':
 			case 'extensions.stm.tabBarMultiRows': // Super Tab Mode
 				if (this.prefOverriding) return;
 				aPrefName += '.override';
 				this.setPref(aPrefName, value);
+			case 'browser.tabs.insertRelatedAfterCurrent.override':
 			case 'browser.link.open_newwindow.restriction.override':
 			case 'browser.tabs.loadFolderAndReplace.override':
-			case 'browser.tabs.insertRelatedAfterCurrent.override':
 			case 'extensions.stm.tabBarMultiRows.override': // Super Tab Mode
+				if (aPrefName == 'browser.tabs.insertRelatedAfterCurrent.override') {
+					value = false; // èÌÇ…falseÇ≈å≈íË
+				}
 				this.prefOverriding = true;
 				var target = aPrefName.replace('.override', '');
 				var originalValue = this.getPref(target);
