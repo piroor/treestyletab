@@ -12,7 +12,7 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/stopRendering.js
 */
 (function() {
-	const currentRevision = 4;
+	const currentRevision = 5;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -62,8 +62,17 @@
 				if (aPopup.state != 'open') return;
 				var w = aPopup.boxObject.width;
 				var h = aPopup.boxObject.height;
+				var hasWidth = aPopup.hasAttribute('width');
+				var hasHeight = aPopup.hasAttribute('height');
 				aPopup.sizeTo(w, h-1);
 				aPopup.sizeTo(w, h);
+				if (!hasWidth || !hasHeight)
+					window.setTimeout(function() {
+						if (!hasWidth)
+							aPopup.removeAttribute('width');
+						if (!hasHeight)
+							aPopup.removeAttribute('height');
+					}, 0);
 			}, this);
 		},
 
