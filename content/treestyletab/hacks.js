@@ -553,34 +553,6 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 			)
 		);
 
-		eval('TMP_Bookmark.openGroup = '+
-			TMP_Bookmark.openGroup.toSource().replace(
-				'{',
-				'$& var TSTOpenGroupBookmarkBehavior = TreeStyleTabService.openGroupBookmarkBehavior();'
-			).replace(
-				'index = prevTab._tPos + 1;',
-				<![CDATA[
-					index = gBrowser.treeStyleTab.getNextSiblingTab(gBrowser.treeStyleTab.getRootTab(prevTab));
-					if (tabToSelect == aTab) index = gBrowser.treeStyleTab.getNextSiblingTab(index);
-					index = index ? index._tPos : (prevTab._tPos + 1);
-				]]>
-			).replace(
-				/(prevTab = aTab;)/,
-				<![CDATA[
-					$1
-					if (tabToSelect == aTab && TSTOpenGroupBookmarkBehavior & TreeStyleTabService.kGROUP_BOOKMARK_SUBTREE) {
-						TreeStyleTabService.readyToOpenChildTab(tabToSelect, true, gBrowser.treeStyleTab.getNextSiblingTab(tabToSelect));
-					}
-				]]>
-			).replace(
-				/(browser.mTabContainer.nextTab)/,
-				<![CDATA[
-					if (TSTOpenGroupBookmarkBehavior & TreeStyleTabService.kGROUP_BOOKMARK_SUBTREE)
-						TreeStyleTabService.stopToOpenChildTab(tabToSelect);
-					$1]]>
-			)
-		);
-
 		'setMultibarAttribute getMultiRowAttribute tabxTabClosed'.split(' ').forEach(function(aFunc) {
 			if (aFunc in window)
 				eval('window.'+aFunc+' = '+

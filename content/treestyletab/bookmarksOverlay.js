@@ -187,6 +187,59 @@ var TreeStyleTabBookmarksService = {
 	},
  
 
+	applyTreeStructureToTabs : function TSTBMService_applyTreeStructureToTabs(aTabs, aTreeStructure)
+	{ // based on TreeStyleTabBrowser.prototype.onTabAdded()
+		var b = this.getTabBrowserFromChild(aTabs[0]);
+		if (!b) return;
+		var sv = b.treeStyleTab;
+
+		aTabs = aTabs.slice(0, aTreeStructure.length);
+		aTreeStructure = aTreeStructure.slice(0, aTabs.length);
+
+		var parentTab = null;
+		aTabs.forEach(function(aTab, aIndex) {
+			if (sv.isCollapsed(aTab)) sv.collapseExpandTab(aTab, false, true);
+			sv.partTab(aTab);
+
+			var pareintIndexInTree = aTreeStructure[aIndex];
+			if (pareintIndexInTree < 0) { // there is no parent, so this is a new parent!
+				parentTab = aTab.getAttribute(sv.kID);
+			}
+
+			var parent = sv.getTabById(parentTab);
+			if (parent) {
+				let tabs = [parent].concat(sv.getDescendantTabs(parent));
+				parent = pareintIndexInTree < tabs.length ? tabs[pareintIndexInTree] : parent ;
+			}
+			if (parent) {
+				sv.attachTabTo(aTab, parent, {
+					dontExpand : true,
+					dontMove   : true
+				});
+			}
+		}, sv);
+	},
+
+	getTabsInfo : function TSTBMService_getTabsInfo(aTabBrowser)
+	{
+		var tabs = this.getTabsArray(aTabBrowser);
+		return tabs.map(function(aTab) {
+				return aTab.getAttribute(this.kID)+'\n'+
+						aTab.getAttribute('busy')+'\n'+
+						aTab.linkedBrowser.currentURI.spec;
+			}, this);
+	},
+
+	getNewTabsFromPreviousTabsInfo : function TSTBMService_getNewTabsFromPreviousTabsInfo(aTabBrowser, aTabsInfo)
+	{
+		var tabs = this.getTabsArray(aTabBrowser);
+		var currentTabsInfo = this.getTabsInfo(aTabBrowser);
+		return tabs.filter(function(aTab, aIndex) {
+				return aTabsInfo.indexOf(currentTabsInfo[aIndex]) < 0;
+			});
+	},
+ 
+
 	init : function TSTBMService_init()
 	{
 		window.removeEventListener('load', this, false);
@@ -198,6 +251,9 @@ var TreeStyleTabBookmarksService = {
 				PlacesUIUtils._openTabset.toSource().replace(
 					/(function[^\(]*\([^\)]+)(\))/,
 					'$1, aFolderTitle$2'
+				).replace(
+					'{',
+					'{ var TSTTreeStructure = null, TSTPreviousTabs;'
 				).replace(
 					'var urls = [];',
 					'$& var ids = [];'
@@ -245,7 +301,16 @@ var TreeStyleTabBookmarksService = {
 										urls.unshift(sv.getGroupTabURI(aFolderTitle));
 									}
 								}
-								sv.readyToOpenNewTabGroup(null, treeStructure);
+
+								if (sv.getTreePref('compatibility.TMP') &&
+									'TMP_Places' in browserWindow &&
+									'openGroup' in browserWindow.TMP_Places) {
+									TSTTreeStructure = treeStructure;
+									TSTPreviousTabs = browserWindow.TreeStyleTabBookmarksService.getTabsInfo(browserWindow.gBrowser);
+								}
+								else {
+									sv.readyToOpenNewTabGroup(null, treeStructure);
+								}
 								replaceCurrentTab = false;
 							}
 							else {
@@ -254,6 +319,14 @@ var TreeStyleTabBookmarksService = {
 						}
 						$1
 						]]>
+				).replace(
+					/(\}\)?)$/,
+					<![CDATA[
+						if (TSTTreeStructure && TSTPreviousTabs) {
+							let tabs = browserWindow.TreeStyleTabBookmarksService.getNewTabsFromPreviousTabsInfo(browserWindow.gBrowser, TSTPreviousTabs)
+							browserWindow.TreeStyleTabBookmarksService.applyTreeStructureToTabs(tabs, TSTTreeStructure);
+						}
+					$1]]>
 				)
 			);
 
