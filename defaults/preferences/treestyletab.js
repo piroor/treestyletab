@@ -86,6 +86,7 @@ pref("extensions.treestyletab.dropLinksOnTab.behavior", 0);
 // 512  = do not restore tree structure
 pref("extensions.treestyletab.openGroupBookmark.behavior", 256);
 pref("extensions.treestyletab.useEffectiveTLD", true);
+pref("extensions.treestyletab.taskbarPreviews.hideCollapsedTabs", true);
 
 pref("extensions.treestyletab.autoCollapseExpandSubtreeOnSelect",      true);
 pref("extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove", true);

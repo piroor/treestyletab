@@ -1590,6 +1590,8 @@ catch(e) {
 	{
 		if (
 			this.updateAeroPeekPreviewsTimer ||
+			!this.getPref('browser.taskbar.previews.enable') ||
+			!this.getTreePref('taskbarPreviews.hideCollapsedTabs') ||
 			!('Win7Features' in window) ||
 			!window.Win7Features ||
 			!this.AeroPeek ||
@@ -1611,6 +1613,12 @@ catch(e) {
 	updateAeroPeekPreviewsTimer : null,
 	updateAeroPeekPreviewsInternal : function TSTService_updateAeroPeekPreviewsInternal()
 	{
+		if (
+			!this.getPref('browser.taskbar.previews.enable') ||
+			!this.getTreePref('taskbarPreviews.hideCollapsedTabs')
+			)
+			return;
+
 		this.AeroPeek.windows.some(function(aTabWindow) {
 			if (aTabWindow.win == window) {
 				aTabWindow.previews.forEach(function(aPreview) {
