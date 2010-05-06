@@ -151,9 +151,11 @@ var TreeStyleTabBookmarksService = {
 
 		/* The final step, this validates all of values.
 		   Smaller than -1 is invalid, so it becomes to -1. */
-		return treeStructure.map(function(aIndex) {
+		treeStructure = treeStructure.map(function(aIndex) {
 				return aIndex < -1 ? aDefaultParentID : aIndex ;
 			}, this);
+		Application.console.log(treeStructure);
+		return treeStructure;
 	},
  
 	// based on PlacesUtils.getURLsForContainerNode()

@@ -147,7 +147,11 @@ var TreeStyleTabBookmarksServiceEditable = {
 
 		var currentIndex = items.indexOf(aCurrentItem);
 		var selected = treeStructure[currentIndex];
-		if (selected > -1) selected = items[selected];
+		if (selected > -1) {
+			let offset = treeStructure.lastIndexOf(-1, currentIndex);
+			let subStructure = treeStructure.slice(offset);
+			selected = items[selected + offset];
+		}
 
 		var fragment = document.createDocumentFragment();
 		items.forEach(function(aId, aIndex) {
