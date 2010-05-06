@@ -3940,28 +3940,11 @@ TreeStyleTabBrowser.prototype = {
 
 		aTab.setAttribute(this.kCOLLAPSING_PHASE, aCollapsed ? this.kCOLLAPSING_PHASE_TO_BE_COLLAPSED : this.kCOLLAPSING_PHASE_TO_BE_EXPANDED );
 
-		if (
-			!this.animationEnabled ||
-			aJustNow ||
-			this.collapseDuration < 1 ||
-//			!this.isVertical ||
-			!this.canCollapseSubtree()
-			) {
-			aTab.setAttribute(
-				'style',
-				aTab.getAttribute('style')
-					.replace(this.collapseRulesRegExp, '')
-					.replace(this.kOPACITY_RULE_REGEXP, '')
-			);
-			if (aCollapsed)
-				aTab.setAttribute(this.kCOLLAPSED_DONE, true);
-			else
-				aTab.removeAttribute(this.kCOLLAPSED_DONE);
-			return;
-		}
+		var CSSTransitionEnabled = ('Transition' in aTab.style || 'MozTransition' in aTab.style);
 
 		var maxMargin;
 		var offsetAttr;
+		var collapseProp = 'margin-'+this.collapseTarget;
 		let (firstTab) {
 			firstTab = this.getFirstTab(this.mTabBrowser);
 			if (this.isVertical) {
@@ -3986,17 +3969,41 @@ TreeStyleTabBrowser.prototype = {
 			endOpacity   = 0;
 		}
 		else {
-			aTab.setAttribute(offsetAttr, maxMargin);
 			startMargin  = maxMargin;
 			endMargin    = 0;
 			startOpacity = 0;
 			endOpacity   = 1;
 		}
+
+		if (
+			!this.animationEnabled ||
+			aJustNow ||
+			this.collapseDuration < 1 ||
+//			!this.isVertical ||
+			!this.canCollapseSubtree()
+			) {
+			aTab.setAttribute(
+				'style',
+				aTab.getAttribute('style')
+					.replace(this.collapseRulesRegExp, '')
+					.replace(this.kOPACITY_RULE_REGEXP, '') +
+				(CSSTransitionEnabled ?
+					(
+						collapseProp+': -'+endMargin+'px !important;'+
+						'opacity: '+endOpacity+' !important;'
+					) :
+					'' )
+			);
+			if (aCollapsed)
+				aTab.setAttribute(this.kCOLLAPSED_DONE, true);
+			else
+				aTab.removeAttribute(this.kCOLLAPSED_DONE);
+			return;
+		}
+
 		var deltaMargin  = endMargin - startMargin;
 		var deltaOpacity = endOpacity - startOpacity;
-		var collapseProp = 'margin-'+this.collapseTarget;
 
-		var CSSTransitionEnabled = ('Transition' in aTab.style || 'MozTransition' in aTab.style);
 		if (CSSTransitionEnabled) {
 			aTab.setAttribute(
 				'style',
@@ -4016,7 +4023,10 @@ TreeStyleTabBrowser.prototype = {
 			);
 		}
 
-		if (!aCollapsed) aTab.removeAttribute(this.kCOLLAPSED_DONE);
+		if (!aCollapsed) {
+			aTab.setAttribute(offsetAttr, maxMargin);
+			aTab.removeAttribute(this.kCOLLAPSED_DONE);
+		}
 
 		var radian = 90 * Math.PI / 180;
 		var self   = this;
