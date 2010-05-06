@@ -3982,6 +3982,11 @@ TreeStyleTabBrowser.prototype = {
 //			!this.isVertical ||
 			!this.canCollapseSubtree()
 			) {
+			if (aCollapsed)
+				aTab.setAttribute(this.kCOLLAPSED_DONE, true);
+			else
+				aTab.removeAttribute(this.kCOLLAPSED_DONE);
+
 			aTab.setAttribute(
 				'style',
 				aTab.getAttribute('style')
@@ -3994,10 +3999,6 @@ TreeStyleTabBrowser.prototype = {
 					) :
 					'' )
 			);
-			if (aCollapsed)
-				aTab.setAttribute(this.kCOLLAPSED_DONE, true);
-			else
-				aTab.removeAttribute(this.kCOLLAPSED_DONE);
 			return;
 		}
 

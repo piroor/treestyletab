@@ -154,7 +154,7 @@ image.tab-icon {
 
 
 .tabbrowser-tabs[treestyletab-animation-enabled="true"][treestyletab-mode="vertical"]:not([treestyletab-tab-inverted="true"])
-  .tabbrowser-tab {
+  .tabbrowser-tab:not([treestyletab-collapsed-done="true"]) {
 	-moz-transition: margin-top 0.15s ease-out,
 	                 opacity 0.15s ease-out,
 	                 margin-left 0.2s ease-out;
@@ -164,7 +164,7 @@ image.tab-icon {
 }
 
 .tabbrowser-tabs[treestyletab-animation-enabled="true"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tabbrowser-tab {
+  .tabbrowser-tab:not([treestyletab-collapsed-done="true"]) {
 	-moz-transition: margin-top 0.15s ease-out,
 	                 opacity 0.15s ease-out,
 	                 margin-right 0.2s ease-out;
@@ -174,7 +174,7 @@ image.tab-icon {
 }
 
 .tabbrowser-tabs[treestyletab-animation-enabled="true"]:not([treestyletab-mode="vertical"]):not([treestyletab-tab-inverted="true"])
-  .tabbrowser-tab {
+  .tabbrowser-tab:not([treestyletab-collapsed-done="true"]) {
 	-moz-transition: margin-left 0.15s ease-out,
 	                 opacity 0.15s ease-out,
 	                 margin-top 0.2s ease-out;
@@ -184,7 +184,7 @@ image.tab-icon {
 }
 
 .tabbrowser-tabs[treestyletab-animation-enabled="true"]:not([treestyletab-mode="vertical"])[treestyletab-tab-inverted="true"]
-  .tabbrowser-tab {
+  .tabbrowser-tab:not([treestyletab-collapsed-done="true"]) {
 	-moz-transition: margin-left 0.15s ease-out,
 	                 opacity 0.15s ease-out,
 	                 margin-bottom 0.2s ease-out;
