@@ -29,7 +29,7 @@ var window = {};
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/prefs.test.js
 */
 (function() {
-	const currentRevision = 4;
+	const currentRevision = 6;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -54,9 +54,18 @@ var window = {};
 					.getService(Ci.nsIPrefService)
 					.getDefaultBranch(null),
 	 
-		getPref : function(aPrefstring, aBranch) 
+		getPref : function(aPrefstring, aInterface, aBranch) 
 		{
-			if (!aBranch) aBranch = this.Prefs;
+			if (!aInterface || aInterface instanceof Ci.nsIPrefBranch)
+				[aBranch, aInterface] = [aInterface, aBranch];
+
+			aBranch = aBranch || this.Prefs;
+
+			if (aInterface)
+				return (aBranch.getPrefType(aPrefstring) == aBranch.PREF_INVALID) ?
+						null :
+						aBranch.getComplexValue(aPrefstring, aInterface);
+
 			switch (aBranch.getPrefType(aPrefstring))
 			{
 				case aBranch.PREF_STRING:
@@ -74,14 +83,14 @@ var window = {};
 			}
 		},
 
-		getDefaultPref : function(aPrefstring)
+		getDefaultPref : function(aPrefstring, aInterface)
 		{
-			return this.getPref(aPrefstring, this.DefaultPrefs);
+			return this.getPref(aPrefstring, this.DefaultPrefs, aInterface);
 		},
 	 
 		setPref : function(aPrefstring, aNewValue, aBranch) 
 		{
-			if (!aBranch) aBranch = this.Prefs;
+			aBranch = aBranch || this.Prefs;
 			switch (typeof aNewValue)
 			{
 				case 'string':
@@ -104,6 +113,23 @@ var window = {};
 		{
 			if (this.Prefs.prefHasUserValue(aPrefstring))
 				this.Prefs.clearUserPref(aPrefstring);
+		},
+	 
+		getDescendant : function(aRoot, aBranch) 
+		{
+			aBranch = aBranch || this.Prefs;
+			return aBranch.getChildList(aRoot, {}).sort();
+		},
+	 
+		getChildren : function(aRoot, aBranch) 
+		{
+			return this.getDescendant(aRoot, aBranch)
+					.filter(function(aPrefstring) {
+						var name = aPrefstring.replace(aRoot, '');
+						if (name.charAt(0) == '.')
+							name = name.substring(1);
+						return name.indexOf('.') < 0;
+					});
 		},
 	 
 		addPrefListener : function(aObserver) 
