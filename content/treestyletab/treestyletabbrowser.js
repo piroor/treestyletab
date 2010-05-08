@@ -187,6 +187,9 @@ TreeStyleTabBrowser.prototype = {
 		let position = this.currentTabbarPosition;
 		this.fireTabbarPositionEvent('TreeStyleTabTabbarPositionChanging', 'top', position); /* PUBLIC API */
 
+		this.setTabbrowserAttribute(this.kFIXED+'-horizontal', this.getTreePref('tabbar.fixed.horizontal') ? 'true' : null, b);
+		this.setTabbrowserAttribute(this.kFIXED+'-vertical', this.getTreePref('tabbar.fixed.vertical') ? 'true' : null, b);
+
 		this.initTabbar(null, this.kTABBAR_TOP);
 
 		var strip = this.tabStrip;
@@ -1087,14 +1090,14 @@ TreeStyleTabBrowser.prototype = {
 		var toggleTabsOnTop = document.getElementById('cmd_ToggleTabsOnTop');
 		if (this.isVertical) {
 			orient = 'vertical';
-			this.setTabbrowserAttribute(this.kFIXED, this.getTreePref('tabbar.fixed.vertical') ? 'true' : null);
+			this.setTabbrowserAttribute(this.kFIXED, b.getAttribute(this.kFIXED+'-vertical') == 'true' ? 'true' : null , b);
 			if (toggleTabsOnTop)
 				toggleTabsOnTop.setAttribute('disabled', true);
 		}
 		else {
 			orient = 'horizontal';
-			if (this.getTreePref('tabbar.fixed.horizontal')) {
-				this.setTabbrowserAttribute(this.kFIXED, true);
+			if (b.getAttribute(this.kFIXED+'-horizontal') == 'true') {
+				this.setTabbrowserAttribute(this.kFIXED, true, b);
 				if (!this.isMultiRow()) {
 					this.removeTabStripAttribute('height');
 					b.mPanelContainer.removeAttribute('height');
@@ -1459,16 +1462,20 @@ TreeStyleTabBrowser.prototype = {
 				this.setTabbrowserAttribute(this.kFIRSTTAB_BORDER, value);
 				break;
 
+			case 'extensions.treestyletab.tabbar.fixed.horizontal':
+				if (window != this.topBrowserWindow) return;
+				this.setTabbrowserAttribute(this.kFIXED+'-horizontal', value ? 'true' : null, b);
 			case 'extensions.treestyletab.enableSubtreeIndent.horizontal':
 			case 'extensions.treestyletab.allowSubtreeCollapseExpand.horizontal':
-			case 'extensions.treestyletab.tabbar.fixed.horizontal':
 			case 'extensions.treestyletab.tabbar.hideAlltabsButton.horizontal':
 				if (!this.isVertical) this.updateTabbarState();
 				break;
 
+			case 'extensions.treestyletab.tabbar.fixed.vertical':
+				if (window != this.topBrowserWindow) return;
+				this.setTabbrowserAttribute(this.kFIXED+'-vertical', value ? 'true' : null, b);
 			case 'extensions.treestyletab.enableSubtreeIndent.vertical':
 			case 'extensions.treestyletab.allowSubtreeCollapseExpand.vertical':
-			case 'extensions.treestyletab.tabbar.fixed.vertical':
 			case 'extensions.treestyletab.tabbar.hideAlltabsButton.vertical':
 				if (this.isVertical) this.updateTabbarState();
 				break;
@@ -2827,16 +2834,16 @@ TreeStyleTabBrowser.prototype = {
 		let fixedPref;
 		let fixedLabel;
 		if (this.isVertical) {
-			fixedPref = 'tabbar.fixed.vertical';
+			fixedPref = b.getAttribute(this.kFIXED+'-vertical') == 'true';
 			fixedLabel = 'label-vertical';
 		}
 		else {
-			fixedPref = 'tabbar.fixed.horizontal';
+			fixedPref = b.getAttribute(this.kFIXED+'-horizontal') == 'true';
 			fixedLabel = 'label-horizontal';
 		}
 		let fixed = items[this.kMENUITEM_FIXED];
 		fixed.setAttribute('label', fixed.getAttribute(fixedLabel));
-		if (this.getTreePref(fixedPref))
+		if (fixedPref)
 			fixed.setAttribute('checked', true);
 		else
 			fixed.removeAttribute('checked');

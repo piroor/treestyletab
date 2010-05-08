@@ -1689,24 +1689,26 @@ catch(e) {
 		}
 	},
  
-	toggleAutoHide : function TSTService_toggleAutoHide() /* PUBLIC API, for backward compatibility */ 
+	toggleAutoHide : function TSTService_toggleAutoHide(aTabBrowser) /* PUBLIC API, for backward compatibility */ 
 	{
-		TreeStyleTabBrowserAutoHide.toggleMode();
+		TreeStyleTabBrowserAutoHide.toggleMode(aTabBrowser || this.browser);
 	},
  
-	toggleFixed : function TSTService_toggleFixed() /* PUBLIC API */ 
+	toggleFixed : function TSTService_toggleFixed(aTabBrowser) /* PUBLIC API */ 
 	{
-		var pos = this.currentTabbarPosition;
-		var isVertical = (pos == 'left' || pos == 'right');
+		var b = aTabBrowser || this.browser;
+		var orient = b.treeStyleTab.isVertical ? 'vertical' : 'horizontal' ;
 
-		var orient = isVertical ? 'vertical' : 'horizontal' ;
-		var pref = 'tabbar.fixed.'+orient;
-		this.setTreePref(pref, !this.getTreePref(pref));
+		var newFixed = b.getAttribute(this.kFIXED+'-'+orient) != 'true';
+		this.setTabbrowserAttribute(this.kFIXED+'-'+orient, newFixed ? 'true' : null, b);
+		this.setTreePref('tabbar.fixed.'+orient, newFixed);
+
+		b.treeStyleTab.updateTabbarState();
 
 		if (!this.getTreePref('tabbar.syncRelatedPrefsForDynamicPosition')) return;
 
 		if (!isVertical)
-			this.setTreePref('enableSubtreeIndent.horizontal', !this.getTreePref(pref));
+			this.setTreePref('enableSubtreeIndent.horizontal', !this.getTreePref('tabbar.fixed.'+orient));
 	},
  
 	removeTabSubtree : function TSTService_removeTabSubtree(aTabOrTabs, aOnlyChildren) 

@@ -132,7 +132,7 @@
 			accesskey="&context.toggleAutoHide.accesskey;"
 			type="checkbox"
 			autocheck="false"
-			oncommand="TreeStyleTabService.toggleAutoHide();"/>
+			oncommand="TreeStyleTabService.toggleAutoHide(TreeStyleTabService.getTabBrowserFromChild(this));"/>
 		<menuitem id="context-item-toggleFixed"
 			label="&context.toggleFixed.label;"
 			label-horizontal="&context.toggleFixed.label.horizontal;"
@@ -140,7 +140,7 @@
 			accesskey="&context.toggleFixed.accesskey;"
 			type="checkbox"
 			autocheck="false"
-			oncommand="TreeStyleTabService.toggleFixed();"/>
+			oncommand="TreeStyleTabService.toggleFixed(TreeStyleTabService.getTabBrowserFromChild(this));"/>
 
 	</menupopup>
 </popupset>
