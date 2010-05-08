@@ -52,6 +52,7 @@ stringBundle = stringBundle.window['piro.sakura.ne.jp'].stringBundle;
  
 var TreeStyleTabUtils = { 
 	tabsHash : null,
+	inWindowDestoructionProcess : false,
 	
 /* attributes */ 
 	kID                 : 'treestyletab-id',
@@ -1720,12 +1721,12 @@ var TreeStyleTabUtils = {
 	},
 	set currentTabbarPosition(aValue)
 	{
-		var position = String(aValue);
-		if (!position || !/^(top|bottom|left|right)$/i.test(position))
+		var position = String(aValue).toLowerCase();
+		if (!position || !/^(top|bottom|left|right)$/.test(position))
 			position = 'top';
 
-		position = position.toLowerCase();
-		this.setTreePref('tabbar.position', position);
+		if (position != this.getTreePref('tabbar.position'))
+			this.setTreePref('tabbar.position', position);
 
 		return aValue;
 	},

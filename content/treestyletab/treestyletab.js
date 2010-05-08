@@ -67,6 +67,11 @@ var TreeStyleTabService = {
 		return 'SplitBrowser' in window ? window.SplitBrowser.activeBrowser :
 			window.gBrowser ;
 	},
+ 
+	get shouldApplyNewPref() 
+	{
+		return window == this.topBrowserWindow && !this.utils.inWindowDestoructionProcess;
+	},
   
 /* backward compatibility */ 
 	getTempTreeStyleTab : function TSTService_getTempTreeStyleTab(aTabBrowser)
@@ -1236,27 +1241,37 @@ catch(e) {
   
 	destroy : function TSTService_destroy() 
 	{
-		window.removeEventListener('unload', this, false);
+		this.utils.inWindowDestoructionProcess = true;
+		try {
+			window.removeEventListener('unload', this, false);
 
-		window['piro.sakura.ne.jp'].animationManager.stop();
-		this.destroyTabBrowser(gBrowser);
+			window['piro.sakura.ne.jp'].animationManager.stop();
+			gBrowser.treeStyleTab.saveCurrentState();
+			this.destroyTabBrowser(gBrowser);
 
-		this.endListenKeyEventsFor(this.LISTEN_FOR_AUTOHIDE);
-		this.endListenKeyEventsFor(this.LISTEN_FOR_AUTOEXPAND_BY_FOCUSCHANGE);
+			this.endListenKeyEventsFor(this.LISTEN_FOR_AUTOHIDE);
+			this.endListenKeyEventsFor(this.LISTEN_FOR_AUTOEXPAND_BY_FOCUSCHANGE);
 
-		document.removeEventListener('popupshowing', this, false);
-		document.removeEventListener('popuphiding', this, false);
-		document.removeEventListener('TreeStyleTabCollapsedStateChange', this, false);
+			document.removeEventListener('popupshowing', this, false);
+			document.removeEventListener('popuphiding', this, false);
+			document.removeEventListener('TreeStyleTabCollapsedStateChange', this, false);
 
-		var appcontent = document.getElementById('appcontent');
-		appcontent.removeEventListener('SubBrowserAdded', this, false);
-		appcontent.removeEventListener('SubBrowserRemoveRequest', this, false);
+			var appcontent = document.getElementById('appcontent');
+			appcontent.removeEventListener('SubBrowserAdded', this, false);
+			appcontent.removeEventListener('SubBrowserRemoveRequest', this, false);
 
-		window.removeEventListener('UIOperationHistoryUndo:TabbarOperations', this, false);
-		window.removeEventListener('UIOperationHistoryRedo:TabbarOperations', this, false);
+			window.removeEventListener('UIOperationHistoryUndo:TabbarOperations', this, false);
+			window.removeEventListener('UIOperationHistoryRedo:TabbarOperations', this, false);
 
-		this.removePrefListener(this);
-		this.ObserverService.removeObserver(this, 'sessionstore-windows-restored');
+			this.removePrefListener(this);
+			this.ObserverService.removeObserver(this, 'sessionstore-windows-restored');
+		}
+		catch(e) {
+			throw e;
+		}
+		finally {
+			this.utils.inWindowDestoructionProcess = false;
+		}
 	},
 	
 	destroyTabBrowser : function TSTService_destroyTabBrowser(aTabBrowser) 
@@ -1273,20 +1288,16 @@ catch(e) {
 		switch (aEvent.type)
 		{
 			case 'DOMContentLoaded':
-				this.preInit();
-				return;
+				return this.preInit();
 
 			case 'load':
-				this.init();
-				return;
+				return this.init();
 
 			case 'unload':
-				this.destroy();
-				return;
+				return this.destroy();
 
 			case 'SSTabRestoring':
-				this.onTabRestored(aEvent);
-				return;
+				return this.onTabRestored(aEvent);
 
 			case 'popupshowing':
 				if (aEvent.originalTarget.boxObject &&
@@ -1322,21 +1333,17 @@ catch(e) {
 				return this.updateAeroPeekPreviews();
 
 			case 'keydown':
-				this.onKeyDown(aEvent);
-				return;
+				return this.onKeyDown(aEvent);
 
 			case 'keyup':
 			case 'keypress':
-				this.onKeyRelease(aEvent);
-				return;
+				return this.onKeyRelease(aEvent);
 
 			case 'SubBrowserAdded':
-				this.initTabBrowser(aEvent.originalTarget.browser);
-				return;
+				return this.initTabBrowser(aEvent.originalTarget.browser);
 
 			case 'SubBrowserRemoveRequest':
-				this.destroyTabBrowser(aEvent.originalTarget.browser);
-				return;
+				return this.destroyTabBrowser(aEvent.originalTarget.browser);
 
 			case 'UIOperationHistoryUndo:TabbarOperations':
 				switch (aEvent.entry.name)
@@ -1345,7 +1352,7 @@ catch(e) {
 						this.currentTabbarPosition = aEvent.entry.data.oldPosition;
 						return;
 				}
-				break;
+				return;
 
 			case 'UIOperationHistoryRedo:TabbarOperations':
 				switch (aEvent.entry.name)
@@ -1354,6 +1361,7 @@ catch(e) {
 						this.currentTabbarPosition = aEvent.entry.data.newPosition;
 						return;
 				}
+				return;
 
 			// Firefox 3.5 or later
 			case 'dragstart': return this.onTabDragStart(aEvent);

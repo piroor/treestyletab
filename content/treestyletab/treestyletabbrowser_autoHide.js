@@ -49,14 +49,12 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	getModeForNormal : function TSTAutoHide_getModeForNormal(aTabBrowser)
 	{
 		var b = aTabBrowser || this.mOwner.browser;
-		return b.getAttribute(this.kMODE+'-normal') ||
-				this.getTreePref('tabbar.autoHide.mode');
+		return parseInt(b.getAttribute(this.kMODE+'-normal') || this.getTreePref('tabbar.autoHide.mode'));
 	},
-	getModeForFullscreen : function TSTAutoHide_getModeForFullscreen(aTabBrowser)
+	getModeForFullScreen : function TSTAutoHide_getModeForFullScreen(aTabBrowser)
 	{
 		var b = aTabBrowser || this.mOwner.browser;
-		return b.getAttribute(this.kMODE+'-fullscreen') ||
-				this.getTreePref('tabbar.autoHide.mode.fullscreen');
+		return parseInt(b.getAttribute(this.kMODE+'-fullscreen') || this.getTreePref('tabbar.autoHide.mode.fullscreen'));
 	},
 
 	get state()
@@ -82,7 +80,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		// update internal property after the appearance of the tab bar is updated.
 		window.setTimeout(function(aSelf) {
 			aSelf.mode = (window.fullScreen && aSelf.getPref('browser.fullscreen.autohide')) ?
-					aSelf.getModeForFullscreen() :
+					aSelf.getModeForFullScreen() :
 					aSelf.getModeForNormal() ;
 			if (aSelf.mode != aSelf.kMODE_DISABLED)
 				aSelf.start();
@@ -205,7 +203,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		this.mode = this.getMode();
 		this.end();
 		this.mode = this.getPref('browser.fullscreen.autohide') ?
-				this.getModeForFullscreen() :
+				this.getModeForFullScreen() :
 				this.kMODE_DISABLED ;
 		if (this.mode != this.kMODE_DISABLED) {
 			this.start();
@@ -215,7 +213,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
  
 	endForFullScreen : function TSTAutoHide_endForFullScreen() 
 	{
-		this.mode = this.getModeForFullscreen();
+		this.mode = this.getModeForFullScreen();
 		this.end();
 		this.mode = this.getTreePref('tabbar.autoHide.mode');
 		this.mOwner.checkTabsIndentOverflow();
@@ -859,13 +857,13 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		switch (aPrefName)
 		{
 			case 'extensions.treestyletab.tabbar.autoHide.mode':
-				if (window != this.topBrowserWindow) return;
+				if (!this.shouldApplyNewPref) return;
 				this.mOwner.browser.setAttribute(this.kMODE+'-normal', value);
 				this.updateMode();
 				return;
 
 			case 'extensions.treestyletab.tabbar.autoHide.mode.fullscreen':
-				if (window != this.topBrowserWindow) return;
+				if (!this.shouldApplyNewPref) return;
 				this.mOwner.browser.setAttribute(this.kMODE+'-fullscreen', value);
 				this.updateMode();
 				return;
@@ -901,7 +899,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				if (!window.fullScreen) return;
 				this.end();
 				this.mode = value ?
-						this.getModeForFullscreen() :
+						this.getModeForFullScreen() :
 						this.kMODE_DISABLED ;
 				if (this.mode != this.kMODE_DISABLED)
 					this.start();
@@ -1237,6 +1235,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	{
 		this.end();
 		this.removePrefListener(this);
+
 		var b = this.mOwner.browser;
 		b.mTabContainer.removeEventListener('TabOpen', this, false);
 		b.mTabContainer.removeEventListener('TabClose', this, false);
@@ -1247,6 +1246,20 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		b.removeEventListener('TreeStyleTabFocusSwitchingKeyDown', this, false);
 		b.removeEventListener('TreeStyleTabFocusSwitchingStart', this, false);
 		b.removeEventListener('TreeStyleTabFocusSwitchingEnd', this, false);
+	},
+ 
+	saveCurrentState : function TSTAutoHide_saveCurrentState() 
+	{
+		var b = this.mOwner.browser;
+		var prefs = {
+				'tabbar.autoHide.mode' : this.getModeForNormal(b),
+				'tabbar.autoHide.mode.fullscreen' : this.getModeForFullScreen(b),
+			};
+		for (var i in prefs)
+		{
+			if (this.getTreePref(i) != prefs[i])
+				this.setTreePref(i, prefs[i]);
+		}
 	}
  
 }; 
