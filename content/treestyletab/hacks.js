@@ -208,7 +208,7 @@ TreeStyleTabService.overrideExtensionsPreInit = function TSTService_overrideExte
 			if (!(aFunc in window)) return;
 			eval('window.'+aFunc+' = '+window[aFunc].toSource().replace(
 				/FS_data.mTabs.(removeAttribute\("moz-collapsed"\)|setAttribute\("moz-collapsed", "true"\));/g,
-				'if (gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION) == "top") { $& }'
+				'if (gBrowser.treeStyleTab.currentTabbarPosition == "top") { $& }'
 			));
 		}, this);
 	}
@@ -879,7 +879,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 							if (!aEvent.shown) {
 								if (
 									autoHIDE.statBar &&
-									gBrowser.getAttribute(gBrowser.treeStyleTab.kTABBAR_POSITION) == 'bottom' &&
+									gBrowser.treeStyleTab.currentTabbarPosition == 'bottom' &&
 									!gBrowser.treeStyleTab.getPref('extensions.autohide.bars.statBar.always') &&
 									gBrowser.treeStyleTab.getPref('extensions.autohide.bars.statBar')
 									) {
@@ -890,7 +890,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 								TreeStyleTabService.getTabStrip(gBrowser).removeAttribute('ahHIDE');
 								if (
 									autoHIDE.statBar &&
-									aTabBrowser.getAttribute(gBrowser.treeStyleTab.kTABBAR_POSITION) == 'bottom' &&
+									aTabBrowser.treeStyleTab.currentTabbarPosition == 'bottom' &&
 									!aTabBrowser.treeStyleTab.getPref('extensions.autohide.bars.statBar.always') &&
 									aTabBrowser.treeStyleTab.getPref('extensions.autohide.bars.statBar')
 									) {
@@ -901,7 +901,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 
 						case 'fullscreen':
 							var treeStyleTab = gBrowser.treeStyleTab;
-							if (gBrowser.getAttribute(treeStyleTab.kTABBAR_POSITION) != 'top') {
+							if (gBrowser.treeStyleTab.currentTabbarPosition != 'top') {
 								if (window.fullScreen)
 									treeStyleTab.autoHide.endForFullScreen();
 								else

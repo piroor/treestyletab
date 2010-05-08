@@ -187,7 +187,7 @@ TreeStyleTabBrowser.prototype = {
 		let position = this.currentTabbarPosition;
 		this.fireTabbarPositionEvent('TreeStyleTabTabbarPositionChanging', 'top', position); /* PUBLIC API */
 
-		this.initTabbar(this.kTABBAR_TOP);
+		this.initTabbar(null, this.kTABBAR_TOP);
 
 		var strip = this.tabStrip;
 		b.mTabContainer.addEventListener('TabOpen',        this, true);
@@ -632,7 +632,7 @@ TreeStyleTabBrowser.prototype = {
 		/* To move up content area on the tab bar, switch tab.
 		   If we don't do it, a gray space appears on the content area
 		   by negative margin of it. */
-		if (b.getAttribute(this.kTABBAR_POSITION) == 'left' &&
+		if (this.currentTabbarPosition == 'left' &&
 			b.getAttribute(this.kSCROLLBAR_INVERTED) == 'true') {
 			b.removeTab(
 				b.selectedTab = b.addTab('about:blank')
@@ -689,7 +689,7 @@ TreeStyleTabBrowser.prototype = {
 	
 	initTabAttributes : function TSTBrowser_initTabAttributes(aTab) 
 	{
-		var pos = this.mTabBrowser.getAttribute(this.kTABBAR_POSITION);
+		var pos = this.currentTabbarPosition;
 		if (pos == 'left' || pos == 'right') {
 			aTab.setAttribute('align', 'stretch');
 			aTab.removeAttribute('maxwidth');
@@ -823,13 +823,13 @@ TreeStyleTabBrowser.prototype = {
 		}, 0, this);
 	},
   
-	initTabbar : function TSTBrowser_initTabbar(aOldPosition) 
+	initTabbar : function TSTBrowser_initTabbar(aNewPosition, aOldPosition) 
 	{
 		this.stopRendering();
 
 		var b = this.mTabBrowser;
 
-		var pos = this.getPositionFlag(this.currentTabbarPosition);
+		var pos = aNewPosition || this.getPositionFlag(this.currentTabbarPosition);
 		if (b.getAttribute('id') != 'content' &&
 			!this.getTreePref('tabbar.position.subbrowser.enabled')) {
 			pos = this.kTABBAR_TOP;
@@ -1408,9 +1408,10 @@ TreeStyleTabBrowser.prototype = {
 		switch (aPrefName)
 		{
 			case 'extensions.treestyletab.tabbar.position':
-				var oldPosition = b.getAttribute(this.kTABBAR_POSITION);
+				if (window != this.topBrowserWindow) return;
+				var oldPosition = this.currentTabbarPosition;
 				this.fireTabbarPositionEvent('TreeStyleTabTabbarPositionChanging', oldPosition, value); /* PUBLIC API */
-				this.initTabbar(this.getPositionFlag(oldPosition));
+				this.initTabbar(this.getPositionFlag(value), this.getPositionFlag(oldPosition));
 				tabs.forEach(function(aTab) {
 					this.initTabAttributes(aTab);
 				}, this);
@@ -1474,6 +1475,7 @@ TreeStyleTabBrowser.prototype = {
 
 			case 'extensions.treestyletab.tabbar.width':
 			case 'extensions.treestyletab.tabbar.shrunkenWidth':
+				if (window != this.topBrowserWindow) return;
 				if (!this.autoHide.isResizing && this.isVertical) {
 					this.removeTabStripAttribute('width');
 					this.setTabStripAttribute('width', this.autoHide.widthFromMode);
@@ -1483,6 +1485,7 @@ TreeStyleTabBrowser.prototype = {
 				break;
 
 			case 'extensions.treestyletab.tabbar.height':
+				if (window != this.topBrowserWindow) return;
 				this._horizontalTabMaxIndentBase = 0;
 				this.checkTabsIndentOverflow();
 				break;

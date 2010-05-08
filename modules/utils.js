@@ -317,7 +317,31 @@ var TreeStyleTabUtils = {
  
 	get browserWindow() 
 	{
+		return this.topBrowserWindow;
+	},
+	get topBrowserWindow()
+	{
 		return this.WindowMediator.getMostRecentWindow('navigator:browser');
+	},
+ 
+	get browserWindows() 
+	{
+		var windows = [];
+
+		var targets = this.WindowMediator.getZOrderDOMWindowEnumerator('navigator:browser', true);
+		// By the bug 156333, we cannot find windows by their Z order on Linux.
+		// https://bugzilla.mozilla.org/show_bug.cgi?id=156333
+		if (!targets.hasMoreElements())
+			targets = this.WindowMediator.getEnumerator('navigator:browser');
+
+		while (targets.hasMoreElements())
+		{
+			let target = targets.getNext()
+							.QueryInterface(Ci.nsIDOMWindowInternal);
+			windows.push(target);
+		}
+
+		return windows;
 	},
  
 	get browser() 

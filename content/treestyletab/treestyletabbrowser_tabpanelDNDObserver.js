@@ -19,7 +19,7 @@ TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
 		var sv = this.mOwner;
 		var position = this.getDropPosition(aEvent);
 		if (position != 'center' &&
-			position != sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION))
+			position != sv.currentTabbarPosition)
 			sv.setTabbrowserAttribute(sv.kDROP_POSITION, position);
 	},
  
@@ -28,7 +28,7 @@ TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
 		var sv = this.mOwner;
 		var position = this.getDropPosition(aEvent);
 		if (position != 'center' &&
-			position != sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION)) {
+			position != sv.currentTabbarPosition) {
 			if (sv.getTreePref('tabbar.fixed.autoCancelOnDrop') &&
 				(!aXferData || aXferData.data != sv.kTABBAR_MOVE_FORCE)) {
 				let orient = (position == 'left' || position == 'right') ? 'vertical' : 'horizontal' ;

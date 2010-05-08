@@ -81,7 +81,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 			case this.kMODE_HIDE:
 				let offset = this.width + this.splitterWidth;
-				if (sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION) == 'left') {
+				if (sv.currentTabbarPosition == 'left') {
 					offset -= this.togglerSize;
 				}
 				return offset;
@@ -103,7 +103,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	{
 		var sv = this.mOwner;
 		return (
-				sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION) == 'left' &&
+				sv.currentTabbarPosition == 'left' &&
 				this.mode != this.kMODE_DISABLED &&
 				this.expanded
 			) ? this.XOffset : 0 ;
@@ -112,7 +112,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	{
 		var sv = this.mOwner;
 		return (
-				sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION) == 'top' &&
+				sv.currentTabbarPosition == 'top' &&
 				this.mode != this.kMODE_DISABLED &&
 				this.expanded
 			) ? this.YOffset : 0 ;
@@ -238,7 +238,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 		var sv  = this.mOwner;
 		var b   = sv.mTabBrowser;
-		var pos = b.getAttribute(sv.kTABBAR_POSITION);
+		var pos = sv.currentTabbarPosition;
 		var box = b.mCurrentBrowser.boxObject;
 
 		var sensitiveArea = this.sensitiveArea;
@@ -441,7 +441,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 		var sv  = this.mOwner;
 		var b   = sv.mTabBrowser;
-		var pos = b.getAttribute(sv.kTABBAR_POSITION);
+		var pos = sv.currentTabbarPosition;
 
 		if (this.expanded) { // to be hidden or shrunken
 			this.onHiding();
@@ -484,7 +484,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	{
 		var sv  = this.mOwner;
 		var b   = sv.mTabBrowser;
-		var pos = b.getAttribute(sv.kTABBAR_POSITION);
+		var pos = sv.currentTabbarPosition;
 
 		switch (pos)
 		{
@@ -523,7 +523,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	{
 		var sv  = this.mOwner;
 		var b   = sv.mTabBrowser;
-		var pos = b.getAttribute(sv.kTABBAR_POSITION);
+		var pos = sv.currentTabbarPosition;
 
 		var box = (sv.tabStripPlaceHolder || sv.tabStrip).boxObject;
 
@@ -577,7 +577,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	redrawContentArea : function TSTAutoHide_redrawContentArea() 
 	{
 		var sv  = this.mOwner;
-		var pos = sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION);
+		var pos = sv.currentTabbarPosition;
 		try {
 			var v = sv.mTabBrowser.markupDocumentViewer;
 			if (this.shouldRedraw) {
@@ -632,7 +632,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		this.tabbarCanvas.style.width = (this.tabbarCanvas.width = 1)+'px';
 		this.tabbarCanvas.style.height = (this.tabbarCanvas.height = 1)+'px';
 
-		var pos = sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION);
+		var pos = sv.currentTabbarPosition;
 
 		var frame = sv.mTabBrowser.contentWindow;
 		var tabContainerBox = sv.mTabBrowser.mTabContainer.boxObject;
@@ -746,7 +746,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				sv.tabStrip :
 				document.getAnonymousElementByAttribute(sv.mTabBrowser, 'class', sv.kSPLITTER) ;
 
-		var pos = sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION);
+		var pos = sv.currentTabbarPosition;
 		var prop = pos == 'left' ? 'right' :
 				pos == 'right' ? 'left' :
 				pos == 'top' ? 'bottom' :
@@ -792,7 +792,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	{
 		var sv  = this.mOwner;
 		var b   = sv.mTabBrowser;
-		var pos = b.getAttribute(sv.kTABBAR_POSITION);
+		var pos = sv.currentTabbarPosition;
 		var style = this.kTRANSPARENT_STYLE[
 				Math.max(
 					this.kTRANSPARENT_NONE,
@@ -1068,7 +1068,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			return;
 		}
 		var sv = this.mOwner;
-		switch (sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION))
+		switch (sv.currentTabbarPosition)
 		{
 			case 'left':
 				sv.container.style.marginRight = '-'+this.XOffset+'px';

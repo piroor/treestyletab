@@ -9,7 +9,8 @@ var TreeStyleTabService = {
 	
 	get currentTabbarPosition() /* PUBLIC API */ 
 	{
-		return this.utils.currentTabbarPosition;
+		return this.browser.getAttribute(this.kTABBAR_POSITION) ||
+				this.utils.currentTabbarPosition;
 	},
 	set currentTabbarPosition(aValue)
 	{
@@ -59,6 +60,12 @@ var TreeStyleTabService = {
 	set useTMPSessionAPI(aValue)
 	{
 		return this.utils.useTMPSessionAPI = aValue;
+	},
+ 
+	get browser() 
+	{
+		return 'SplitBrowser' in window ? window.SplitBrowser.activeBrowser :
+			window.gBrowser ;
 	},
   
 /* backward compatibility */ 
@@ -698,7 +705,7 @@ try{
 		);
 		var indicator = aTabBrowser.mTabDropIndicatorBar || aTabBrowser.tabContainer._tabDropIndicator;
 		indicator.setAttribute('dragging', (info.position == this.kDROP_ON) ? 'false' : 'true' );
-		return (info.position == this.kDROP_ON || aTabBrowser.getAttribute(this.kTABBAR_POSITION) != 'top')
+		return (info.position == this.kDROP_ON || aTabBrowser.treeStyleTab.currentTabbarPosition != 'top')
 }
 catch(e) {
 	dump('TreeStyleTabService::onDragOver\n'+e+'\n');
@@ -1092,14 +1099,14 @@ catch(e) {
 		eval('FullScreen._animateUp = '+
 			FullScreen._animateUp.toSource().replace(
 				/(gBrowser\.mStrip\.boxObject\.height)/,
-				'((gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION) != "top") ? 0 : $1)'
+				'((gBrowser.treeStyleTab.currentTabbarPosition != "top") ? 0 : $1)'
 			)
 		);
 		eval('FullScreen.mouseoverToggle = '+
 			FullScreen.mouseoverToggle.toSource().replace(
 				// Firefox 3.7 or later
 				'allFSToolbars[i].setAttribute("moz-collapsed", !aShow);',
-				'if (allFSToolbars[i].id != "TabsToolbar" || gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION) == "top") { $& }'
+				'if (allFSToolbars[i].id != "TabsToolbar" || gBrowser.treeStyleTab.currentTabbarPosition == "top") { $& }'
 			).replace(
 				// Firefox 3.7 or later
 				'this._isChromeCollapsed = !aShow;',
@@ -1107,7 +1114,7 @@ catch(e) {
 			).replace(
 				// Firefox 3.6 or older
 				'gBrowser.mStrip.setAttribute("moz-collapsed", !aShow);',
-				'if (gBrowser.getAttribute(TreeStyleTabService.kTABBAR_POSITION) == "top") { $& }'
+				'if (gBrowser.treeStyleTab.currentTabbarPosition == "top") { $& }'
 			)
 		);
 		eval('FullScreen.toggle = '+
@@ -1115,7 +1122,7 @@ catch(e) {
 				'{',
 				<![CDATA[{
 					var treeStyleTab = gBrowser.treeStyleTab;
-					if (gBrowser.getAttribute(treeStyleTab.kTABBAR_POSITION) != 'top') {
+					if (treeStyleTab.currentTabbarPosition != 'top') {
 						if (window.fullScreen)
 							treeStyleTab.autoHide.endForFullScreen();
 						else

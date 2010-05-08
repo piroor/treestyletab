@@ -54,7 +54,7 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 		if (canDrag && !aEvent.shiftKey) {
 			let insensitiveArea = sv.getTreePref('tabbar.fixed.insensitiveArea');
 			let box = tabbar.boxObject;
-			switch (sv.mTabBrowser.getAttribute(sv.kTABBAR_POSITION))
+			switch (sv.currentTabbarPosition)
 			{
 				case 'right':
 					if (aEvent.screenX < box.screenX + insensitiveArea)
