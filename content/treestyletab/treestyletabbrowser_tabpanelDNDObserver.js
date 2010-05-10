@@ -17,10 +17,7 @@ TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
 	{
 		if (!this.canDrop(aEvent, aDragSession)) return;
 		var sv = this.mOwner;
-		var position = this.getDropPosition(aEvent);
-		if (position != 'center' &&
-			position != sv.currentTabbarPosition)
-			sv.setTabbrowserAttribute(sv.kDROP_POSITION, position);
+		sv.setTabbrowserAttribute(sv.kDROP_POSITION, this.getDropPosition(aEvent));
 	},
  
 	onDrop : function TSTTabpanelDND_onDrop(aEvent, aXferData, aDragSession) 

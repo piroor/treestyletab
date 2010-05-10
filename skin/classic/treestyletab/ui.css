@@ -97,20 +97,28 @@ tabbrowser[treestyletab-drop-position] {
 	-moz-border-bottom-colors: none !important;
 	-moz-border-left-colors: none !important;
 }
-.tabbrowser-strip[treestyletab-drop-position],
-#TabsToolbar[treestyletab-drop-position] {
+.tabbrowser-strip[treestyletab-drop-position="center"],
+.tabbrowser-strip[treestyletab-drop-position="top"]:not([treestyletab-tabbar-position="top"]),
+.tabbrowser-strip[treestyletab-drop-position="right"]:not([treestyletab-tabbar-position="right"]),
+.tabbrowser-strip[treestyletab-drop-position="bottom"]:not([treestyletab-tabbar-position="bottom"]),
+.tabbrowser-strip[treestyletab-drop-position="left"]:not([treestyletab-tabbar-position="left"]),
+#TabsToolbar[treestyletab-drop-position="center"],
+#TabsToolbar[treestyletab-drop-position="top"]:not([treestyletab-tabbar-position="top"]),
+#TabsToolbar[treestyletab-drop-position="right"]:not([treestyletab-tabbar-position="right"]),
+#TabsToolbar[treestyletab-drop-position="bottom"]:not([treestyletab-tabbar-position="bottom"]),
+#TabsToolbar[treestyletab-drop-position="left"]:not([treestyletab-tabbar-position="left"]) {
 	opacity: 0.5;
 }
-tabbrowser[treestyletab-drop-position="top"] {
+tabbrowser[treestyletab-drop-position="top"]:not([treestyletab-tabbar-position="top"]) {
 	border-top-color: -moz-dialogtext !important;
 }
-tabbrowser[treestyletab-drop-position="right"] {
+tabbrowser[treestyletab-drop-position="right"]:not([treestyletab-tabbar-position="right"]) {
 	border-right-color: -moz-dialogtext !important;
 }
-tabbrowser[treestyletab-drop-position="bottom"] {
+tabbrowser[treestyletab-drop-position="bottom"]:not([treestyletab-tabbar-position="bottom"]) {
 	border-bottom-color: -moz-dialogtext !important;
 }
-tabbrowser[treestyletab-drop-position="left"] {
+tabbrowser[treestyletab-drop-position="left"]:not([treestyletab-tabbar-position="left"]) {
 	border-left-color: -moz-dialogtext !important;
 }
 
