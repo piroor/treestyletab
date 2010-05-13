@@ -1639,7 +1639,7 @@ catch(e) {
 				aTabWindow.previews.forEach(function(aPreview) {
 					if (!aPreview) return;
 					var tab = aPreview.controller.wrappedJSObject.tab;
-					aPreview.visible = tab.getAttribute(this.kCOLLAPSED) != 'true';
+					aPreview.visible = !this.isCollapsed(tab);
 				}, this);
 				this.AeroPeek.checkPreviewCount();
 				return true;
