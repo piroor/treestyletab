@@ -95,7 +95,7 @@ tabbrowser[tabberwocky-hidenewtabbutton="true"]
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"][overflow="true"]
   .tabbrowser-arrowscrollbox
   .scrollbox-innerbox {
-	background: url("../metal/shadow-inactive-l.png") repeat-y top right !important;
+	-moz-box-shadow: inset -0.2em 0.2em 0.3em rgba(0, 0, 0, 0.15) !important;
 }
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]:not([overflow="true"])
@@ -103,7 +103,7 @@ tabbrowser[tabberwocky-hidenewtabbutton="true"]
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"][overflow="true"]
   .tabbrowser-arrowscrollbox
   .scrollbox-innerbox {
-	background: url("../metal/shadow-inactive-r.png") repeat-y top left !important;
+	-moz-box-shadow: inset 0.2em 0.2em 0.3em rgba(0, 0, 0, 0.15) !important;
 }
 
 
