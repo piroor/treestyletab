@@ -130,6 +130,13 @@ TreeStyleTabBrowser.prototype = {
 		return this._tabStripPlaceHolder;
 	},
  
+	get isFixed() 
+	{
+		var b = this.mTabBrowser;
+		if (!b) return false;
+		return b.getAttribute(this.kFIXED+'-'+(this.isVertical ? 'vertical' : 'horizontal')) == 'true';
+	},
+ 
 	isTabInViewport : function TSTBrowser_isTabInViewport(aTab) 
 	{
 		if (!aTab) return false;
@@ -1090,13 +1097,13 @@ TreeStyleTabBrowser.prototype = {
 		var toggleTabsOnTop = document.getElementById('cmd_ToggleTabsOnTop');
 		if (this.isVertical) {
 			orient = 'vertical';
-			this.setTabbrowserAttribute(this.kFIXED, b.getAttribute(this.kFIXED+'-vertical') == 'true' ? 'true' : null , b);
+			this.setTabbrowserAttribute(this.kFIXED, b.treeStyleTab.isFixed ? 'true' : null , b);
 			if (toggleTabsOnTop)
 				toggleTabsOnTop.setAttribute('disabled', true);
 		}
 		else {
 			orient = 'horizontal';
-			if (b.getAttribute(this.kFIXED+'-horizontal') == 'true') {
+			if (b.treeStyleTab.isFixed) {
 				this.setTabbrowserAttribute(this.kFIXED, true, b);
 				if (!this.isMultiRow()) {
 					this.removeTabStripAttribute('height');
@@ -1271,15 +1278,73 @@ TreeStyleTabBrowser.prototype = {
 		}, 100);
 	},
  
-	fireTabbarPositionEvent : function TSTBrowser_fireTabbarPositionEvent(aType, aOldPosition, aNewPosition) 
+	fireTabbarPositionEvent : function TSTBrowser_fireTabbarPositionEvent(aChanging, aOldPosition, aNewPosition) 
 	{
-		if (aOldPosition == aNewPosition) return;
+		if (aOldPosition == aNewPosition) return false;
 
+		/* PUBLIC API */
 		var event = document.createEvent('Events');
-		event.initEvent(aType, true, false);
+		event.initEvent(aChanging ? 'TreeStyleTabTabbarPositionChanging' : 'TreeStyleTabTabbarPositionChanged', true, false);
 		event.oldPosition = aOldPosition;
 		event.newPosition = aNewPosition;
 		this.mTabBrowser.dispatchEvent(event);
+
+		return true;
+	},
+ 
+	fireTabbarStateChangingEvent : function TSTBrowser_fireTabbarStateChangingEvent() 
+	{
+		var b = this.mTabBrowser;
+		var orient = this.isVertical ? 'vertical' : 'horizontal' ;
+		var oldState = {
+				fixed         : this.isFixed,
+				indented      : b.getAttribute(this.kINDENTED) == 'true',
+				canCollapse   : b.getAttribute(this.kALLOW_COLLAPSE) == 'true',
+				alltabsButton : b.getAttribute(this.kHIDE_ALLTABS) != 'true'
+			};
+		oldState.allTabsButton = oldState.alltabsButton;
+		var newState = {
+				fixed         : this.getTreePref('tabbar.fixed.'+orient),
+				indented      : this.getTreePref('enableSubtreeIndent.'+orient),
+				canCollapse   : this.getTreePref('allowSubtreeCollapseExpand.'+orient),
+				alltabsButton : !this.getTreePref('tabbar.hideAlltabsButton.'+orient)
+			};
+		newState.allTabsButton = newState.alltabsButton;
+
+		if (oldState.fixed == newState.fixed &&
+			oldState.indented == newState.indented &&
+			oldState.canCollapse == newState.canCollapse &&
+			oldState.alltabsButton == newState.alltabsButton)
+			return false;
+
+		/* PUBLIC API */
+		var event = document.createEvent('Events');
+		event.initEvent('TreeStyleTabTabbarStateChanging', true, false);
+		event.oldState = oldState;
+		event.newState = newState;
+		this.mTabBrowser.dispatchEvent(event);
+
+		return true;
+	},
+ 
+	fireTabbarStateChangedEvent : function TSTBrowser_fireTabbarStateChangedEvent() 
+	{
+		var b = this.mTabBrowser;
+		var state = {
+				fixed         : this.isFixed,
+				indented      : b.getAttribute(this.kINDENTED) == 'true',
+				canCollapse   : b.getAttribute(this.kALLOW_COLLAPSE) == 'true',
+				alltabsButton : b.getAttribute(this.kHIDE_ALLTABS) != 'true'
+			};
+		state.allTabsButton = state.alltabsButton;
+
+		/* PUBLIC API */
+		var event = document.createEvent('Events');
+		event.initEvent('TreeStyleTabTabbarStateChanged', true, false);
+		event.state = state;
+		this.mTabBrowser.dispatchEvent(event);
+
+		return true;
 	},
    
 	destroy : function TSTBrowser_destroy() 
@@ -1434,18 +1499,20 @@ TreeStyleTabBrowser.prototype = {
 			case 'extensions.treestyletab.tabbar.position':
 				if (!this.shouldApplyNewPref) return;
 				var oldPosition = this.currentTabbarPosition;
-				this.fireTabbarPositionEvent('TreeStyleTabTabbarPositionChanging', oldPosition, value); /* PUBLIC API */
-				this.initTabbar(this.getPositionFlag(value), this.getPositionFlag(oldPosition));
-				tabs.forEach(function(aTab) {
-					this.initTabAttributes(aTab);
-				}, this);
-				tabs.forEach(function(aTab) {
-					this.initTabContents(aTab);
-				}, this);
-				this.fireTabbarPositionEvent('TreeStyleTabTabbarPositionChanged', oldPosition, value); /* PUBLIC API */
-				window.setTimeout(function(aSelf) {
-					aSelf.checkTabsIndentOverflow();
-				}, 0, this);
+				if (oldPosition != value) {
+					this.fireTabbarPositionEvent(true, oldPosition, value);
+					this.initTabbar(this.getPositionFlag(value), this.getPositionFlag(oldPosition));
+					tabs.forEach(function(aTab) {
+						this.initTabAttributes(aTab);
+					}, this);
+					tabs.forEach(function(aTab) {
+						this.initTabContents(aTab);
+					}, this);
+					this.fireTabbarPositionEvent(false, oldPosition, value);
+					window.setTimeout(function(aSelf) {
+						aSelf.checkTabsIndentOverflow();
+					}, 0, this);
+				}
 				break;
 
 			case 'extensions.treestyletab.tabbar.invertTab':
@@ -1489,7 +1556,10 @@ TreeStyleTabBrowser.prototype = {
 			case 'extensions.treestyletab.enableSubtreeIndent.horizontal':
 			case 'extensions.treestyletab.allowSubtreeCollapseExpand.horizontal':
 			case 'extensions.treestyletab.tabbar.hideAlltabsButton.horizontal':
-				if (!this.isVertical) this.updateTabbarState();
+				if (!this.isVertical && this.fireTabbarStateChangingEvent()) {
+					this.updateTabbarState();
+					this.fireTabbarStateChangedEvent();
+				}
 				break;
 
 			case 'extensions.treestyletab.tabbar.fixed.vertical':
@@ -1498,7 +1568,10 @@ TreeStyleTabBrowser.prototype = {
 			case 'extensions.treestyletab.enableSubtreeIndent.vertical':
 			case 'extensions.treestyletab.allowSubtreeCollapseExpand.vertical':
 			case 'extensions.treestyletab.tabbar.hideAlltabsButton.vertical':
-				if (this.isVertical) this.updateTabbarState();
+				if (this.isVertical && this.fireTabbarStateChangingEvent()) {
+					this.updateTabbarState();
+					this.fireTabbarStateChangedEvent();
+				}
 				break;
 
 			case 'extensions.treestyletab.tabbar.width':

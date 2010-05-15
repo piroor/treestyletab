@@ -316,6 +316,8 @@ var TreeStyleTabService = {
 		document.addEventListener('popupshowing', this, false);
 		document.addEventListener('popuphiding', this, false);
 		document.addEventListener('TreeStyleTabCollapsedStateChange', this, false);
+		document.addEventListener('TreeStyleTabTabbarPositionChanged', this, false);
+		document.addEventListener('TreeStyleTabTabbarStateChanged', this, false);
 
 		var appcontent = document.getElementById('appcontent');
 		appcontent.addEventListener('SubBrowserAdded', this, false);
@@ -334,6 +336,7 @@ var TreeStyleTabService = {
 		this.overrideExtensionsOnInitAfter(); // hacks.js
 
 		this.processRestoredTabs();
+		this.updateTabsOnTop();
 
 		this.onPrefChange('extensions.treestyletab.tabbar.autoHide.mode');
 		this.onPrefChange('extensions.treestyletab.tabbar.style');
@@ -1255,6 +1258,8 @@ catch(e) {
 			document.removeEventListener('popupshowing', this, false);
 			document.removeEventListener('popuphiding', this, false);
 			document.removeEventListener('TreeStyleTabCollapsedStateChange', this, false);
+			document.removeEventListener('TreeStyleTabTabbarPositionChanged', this, false);
+			document.removeEventListener('TreeStyleTabTabbarStateChanged', this, false);
 
 			var appcontent = document.getElementById('appcontent');
 			appcontent.removeEventListener('SubBrowserAdded', this, false);
@@ -1331,6 +1336,10 @@ catch(e) {
 
 			case 'TreeStyleTabCollapsedStateChange':
 				return this.updateAeroPeekPreviews();
+
+			case 'TreeStyleTabTabbarPositionChanged':
+			case 'TreeStyleTabTabbarStateChanged':
+				return this.updateTabsOnTop();
 
 			case 'keydown':
 				return this.onKeyDown(aEvent);
@@ -1647,6 +1656,24 @@ catch(e) {
 			return false;
 		}, this);
 	},
+ 
+	updateTabsOnTop : function TSTService_updateTabsOnTop() 
+	{
+		if (!('TabsOnTop' in window) || !('enabled' in TabsOnTop))
+			return;
+
+		if (!('_tabsOnTopDefaultState' in this))
+			this._tabsOnTopDefaultState = TabsOnTop.enabled;
+
+		if (gBrowser.treeStyleTab.currentTabbarPosition != 'true' ||
+			!gBrowser.treeStyleTab.isFixed) {
+			TabsOnTop.enabled = false;
+		}
+		else if ('_tabsOnTopDefaultState' in this) {
+			TabsOnTop.enabled = this._tabsOnTopDefaultState;
+			delete this._tabsOnTopDefaultState;
+		}
+	},
   
 /* Tree Style Tabの初期化が行われる前に復元されたセッションについてツリー構造を復元 */ 
 	
@@ -1715,7 +1742,7 @@ catch(e) {
 
 		if (!this.getTreePref('tabbar.syncRelatedPrefsForDynamicPosition')) return;
 
-		if (!isVertical)
+		if (!b.treeStyleTab.isVertical)
 			this.setTreePref('enableSubtreeIndent.horizontal', !this.getTreePref('tabbar.fixed.'+orient));
 	},
  
