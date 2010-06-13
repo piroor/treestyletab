@@ -7,19 +7,24 @@ function TreeStyleTabBrowserTabbarDNDObserver(aOwner)
 
 TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 	
-	onDragStart : function TSTTabbarDND_onDragStart(aEvent, aTransferData, aDragAction) 
+	onDragStart : function TSTTabbarDND_onDragStart(aEvent) 
 	{
 		if (!this.canDragTabbar(aEvent))
 			return false;
 
 		var sv = this.mOwner;
-		aTransferData.data = new TransferData();
-		aTransferData.data.addDataForFlavour(
+		var dt = aEvent.dataTransfer;
+		dt.setData(
 			sv.kDRAG_TYPE_TABBAR,
 			aEvent.shiftKey ?
 				sv.kTABBAR_MOVE_FORCE :
 				sv.kTABBAR_MOVE_NORMAL
 		);
+		dt.setData(
+			sv.kDRAG_TYPE_TABBAR+'-node',
+			sv.getTabbarFromEvent(aEvent)
+		);
+		dt.effectAllowed = 'move';
 
 		this.readyToStartDrag();
 
@@ -108,8 +113,11 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 			this.SSS.unregisterSheet(sheet, this.SSS.AGENT_SHEET);
 	},
  
-	onDragEnter : function TSTTabbarDND_onDragEnter(aEvent, aDragSession) 
+	onDragEnter : function TSTTabbarDND_onDragEnter(aEvent) 
 	{
+		var dt = aEvent.dataTransfer;
+		if (!this.canDrop(aEvent)) return;
+
 		var sv = this.mOwner;
 		var tab = aEvent.target;
 		if (tab.localName != 'tab' ||
@@ -117,7 +125,10 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 			return;
 
 		window.clearTimeout(this.mAutoExpandTimer);
-		if (aEvent.target == aDragSession.sourceNode) return;
+
+		var sourceNode = dt.getData(sv.kDRAG_TYPE_TABBAR+'-node');
+		if (aEvent.target == sourceNode) return;
+
 		this.mAutoExpandTimer = window.setTimeout(
 			function(aTarget) {
 				let tab = sv.getTabById(aTarget);
@@ -140,27 +151,44 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 		tab = null;
 	},
  
-	onDragExit : function TSTTabbarDND_onDragExit(aEvent, aDragSession) 
+	onDragLeave : function TSTTabbarDND_onDragLeave(aEvent) 
 	{
+		var sv = this.mOwner;
+		var dt = aEvent.dataTransfer;
+		if (!dt.getData(sv.kDRAG_TYPE_TABBAR)) return;
+
 		window.clearTimeout(this.mAutoExpandTimer);
 		this.mAutoExpandTimer = null;
 	},
  
 	onDragEnd : function TSTTabbarDND_onDragEnd(aEvent) 
 	{
+		var sv = this.mOwner;
+		var dt = aEvent.dataTransfer;
+		if (!dt.getData(sv.kDRAG_TYPE_TABBAR)) return;
+
 		window.setTimeout(function(aSelf) {
 			aSelf.readyToEndDrag();
 			aSelf.mOwner.removeTabbrowserAttribute(aSelf.mOwner.kDROP_POSITION);
 		}, 10, this);
 		aEvent.stopPropagation();
+		aEvent.preventDefault();
 	},
  
-	onDragOver : function TSTTabbarDND_onDragOver(aEvent, aFlavour, aDragSession) 
+	onDragOver : function TSTTabbarDND_onDragOver(aEvent) 
 	{
+		var sv = this.mOwner;
+		var dt = aEvent.dataTransfer;
+		if (!dt.getData(sv.kDRAG_TYPE_TABBAR) || !this.canDrop(aEvent))
+			return;
+
+		dt.dropEffect = 'move';
+		aEvent.preventDefault();
 	},
  
-	onDrop : function TSTTabbarDND_onDrop(aEvent, aXferData, aDragSession) 
+	onDrop : function TSTTabbarDND_onDrop(aEvent) 
 	{
+		if (!this.canDrop(aEvent)) return;
 		var sv = this.mOwner;
 		if (!this.mAutoExpandedTabs.length) return;
 		if (sv.getTreePref('autoExpand.collapseFinally')) {
@@ -169,9 +197,11 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 			}, sv);
 		}
 		this.mAutoExpandedTabs = [];
+		aEvent.preventDefault();
+		aEvent.stopPropagation();
 	},
  
-	canDrop : function TSTTabbarDND_canDrop(aEvent, aDragSession) 
+	canDrop : function TSTTabbarDND_canDrop(aEvent) 
 	{
 		var sv = this.mOwner;
 		var tooltip = sv.tabStrip.firstChild;
@@ -180,7 +210,7 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 			tooltip.popupBoxObject.popupState != 'closed')
 			tooltip.hidePopup();
 
-		var dropAction = sv.getDropAction(aEvent, aDragSession);
+		var dropAction = sv.getDropAction(aEvent);
 		if ('dataTransfer' in aEvent) {
 			var dt = aEvent.dataTransfer;
 			if (dropAction.action & this.kACTION_NEWTAB) {
@@ -192,17 +222,6 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 			}
 		}
 		return dropAction.canDrop;
-	},
- 
-	getSupportedFlavours : function TSTTabbarDND_getSupportedFlavours() 
-	{
-		var flavourSet = new FlavourSet();
-		flavourSet.appendFlavour('application/x-moz-tabbrowser-tab');
-		flavourSet.appendFlavour('text/x-moz-url');
-		flavourSet.appendFlavour('text/unicode');
-		flavourSet.appendFlavour('text/plain');
-		flavourSet.appendFlavour('application/x-moz-file', 'nsIFile');
-		return flavourSet;
 	},
  
 	destroy : function TSTTabbarDND_destroy() 

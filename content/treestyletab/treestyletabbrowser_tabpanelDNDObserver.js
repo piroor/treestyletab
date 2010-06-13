@@ -5,41 +5,40 @@ function TreeStyleTabBrowserTabpanelDNDObserver(aOwner)
 
 TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
 	
-	onDragExit : function TSTTabpanelDND_onDragExit(aEvent, aDragSession) 
+	onDragLeave : function TSTTabpanelDND_onDragLeave(aEvent) 
 	{
-		if (!this.canDrop(aEvent, aDragSession)) return;
+		if (!this.canDrop(aEvent)) return;
 		var sv = this.mOwner;
 		if (sv.mTabBrowser.hasAttribute(sv.kDROP_POSITION))
 			sv.setTabbrowserAttribute(sv.kDROP_POSITION, sv.kDROP_POSITION_UNKNOWN);
 	},
  
-	onDragOver : function TSTTabpanelDND_onDragOver(aEvent, aFlavour, aDragSession) 
+	onDragOver : function TSTTabpanelDND_onDragOver(aEvent) 
 	{
-		if (!this.canDrop(aEvent, aDragSession)) return;
+		if (!this.canDrop(aEvent)) return;
+		aEvent.preventDefault();
 		var sv = this.mOwner;
 		sv.setTabbrowserAttribute(sv.kDROP_POSITION, this.getDropPosition(aEvent));
 	},
  
-	onDrop : function TSTTabpanelDND_onDrop(aEvent, aXferData, aDragSession) 
+	onDrop : function TSTTabpanelDND_onDrop(aEvent) 
 	{
+		if (!this.canDrop(aEvent)) return;
 		var sv = this.mOwner;
+		var dt = aEvent.dataTransfer;
 		var position = this.getDropPosition(aEvent);
 		if (position != 'center' &&
 			position != sv.currentTabbarPosition) {
 			if (sv.getTreePref('tabbar.fixed.autoCancelOnDrop') &&
-				(!aXferData || aXferData.data != sv.kTABBAR_MOVE_FORCE)) {
+				dt.getData(sv.kDRAG_TYPE_TABBAR) != sv.kTABBAR_MOVE_FORCE) {
 				let orient = (position == 'left' || position == 'right') ? 'vertical' : 'horizontal' ;
 				sv.setTreePref('tabbar.fixed.'+orient, false);
 			}
 			sv.currentTabbarPosition = position;
 		}
 
+		aEvent.preventDefault();
 		aEvent.stopPropagation();
-
-		sv           = null;
-		aEvent       = null;
-		aXferData    = null;
-		aDragSession = null;
 	},
  
 	getDropPosition : function TSTTabpanelDND_getDropPosition(aEvent) 
@@ -66,12 +65,13 @@ TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
 				'right' ;
 	},
  
-	canDrop : function TSTTabpanelDND_canDrop(aEvent, aDragSession) 
+	canDrop : function TSTTabpanelDND_canDrop(aEvent) 
 	{
+		var session = this.mOwner.getCurrentDragSession();
 		return (
-				aDragSession &&
-				aDragSession.isDataFlavorSupported(this.mOwner.kDRAG_TYPE_TABBAR) &&
-				aDragSession.sourceNode
+				session &&
+				session.isDataFlavorSupported(this.mOwner.kDRAG_TYPE_TABBAR) &&
+				session.sourceNode
 			) ? true : false ;
 	},
  
