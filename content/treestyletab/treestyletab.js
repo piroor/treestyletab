@@ -737,7 +737,8 @@ catch(e) {
 
 		sv.clearDropPosition();
 
-		var dropActionInfo = sv.getDropAction(aEvent, sv.getCurrentDragSession());
+		var session = sv.getCurrentDragSession();
+		var dropActionInfo = sv.getDropAction(aEvent, session);
 
 		var draggedTab;
 		if (dt.dropEffect != 'link') {
@@ -778,12 +779,13 @@ catch(e) {
 			aEvent.stopPropagation();
 
 			let url;
-			for (let i = 0; i < tabbar._supportedLinkDropTypes.length; i++) {
-				let dataType = tabbar._supportedLinkDropTypes[i];
+			let types = ['text/x-moz-url', 'text/uri-list', 'text/plain', 'application/x-moz-file'];
+			for (let i = 0; i < types.length; i++) {
+				let dataType = types[i];
 				let isURLList = dataType == 'text/uri-list';
 				let urlData = dt.mozGetDataAt(isURLList ? 'URL' : dataType , 0);
 				if (urlData) {
-					url = transferUtils.retrieveURLFromData(urlData, isURLList ? 'text/plain' : dataType);
+					url = this.retrieveURLFromData(urlData, isURLList ? 'text/plain' : dataType);
 					break;
 				}
 			}
@@ -791,7 +793,22 @@ catch(e) {
 			if (!url || !url.length || url.indexOf(' ', 0) != -1 || /^\s*(javascript|data):/.test(url))
 				return;
 
-			nsDragAndDrop.dragDropSecurityCheck(aEvent, sv.getCurrentDragSession(), url);
+			let (sourceDoc = session ? session.sourceDocument : null) {
+				if (sourceDoc &&
+					sourceDoc.documentURI.indexOf('chrome://') < 0) {
+					let sourceURI = sourceDoc.documentURI;
+					let nsIScriptSecurityManager = Components.interfaces.nsIScriptSecurityManager;
+					let secMan = Components.classes['@mozilla.org/scriptsecuritymanager;1']
+									.getService(nsIScriptSecurityManager);
+					try {
+						secMan.checkLoadURIStr(sourceDoc.documentURI, url, nsIScriptSecurityManager.STANDARD);
+					}
+					catch(e) {
+						aEvent.stopPropagation();
+						throw 'Drop of ' + url + ' denied.';
+					}
+				}
+			}
 
 			let bgLoad = this.getPref('browser.tabs.loadInBackground');
 			if (aEvent.shiftKey) bgLoad = !bgLoad;
@@ -824,6 +841,26 @@ catch(e) {
 				}
 			}
 		}
+	},
+	retrieveURLFromData: function TSTService_retrieveURLFromData(aData, aType)
+	{
+		switch (aType)
+		{
+			case 'text/unicode':
+			case 'text/plain':
+			case 'text/x-moz-text-internal':
+				return aData.replace(/^\s+|\s+$/g, '');
+
+			case 'text/x-moz-url':
+				return ((aData instanceof Components.interfaces.nsISupportsString) ? aData.toString() : aData)
+							.split('\n')[0];
+
+			case 'application/x-moz-file':
+				let fileHandler = this.IOService.getProtocolHandler('file')
+									.QueryInterface(Components.interfaces.nsIFileProtocolHandler);
+				return fileHandler.getURLSpecFromFile(aData);
+		}
+		return null;
 	},
  
 	onTabDragEnd : function TSTService_onTabDragEnd(aEvent) 
