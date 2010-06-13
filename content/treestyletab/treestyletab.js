@@ -778,17 +778,7 @@ catch(e) {
 		if (!draggedTab) {
 			aEvent.stopPropagation();
 
-			let url;
-			let types = ['text/x-moz-url', 'text/uri-list', 'text/plain', 'application/x-moz-file'];
-			for (let i = 0; i < types.length; i++) {
-				let dataType = types[i];
-				let isURLList = dataType == 'text/uri-list';
-				let urlData = dt.mozGetDataAt(isURLList ? 'URL' : dataType , 0);
-				if (urlData) {
-					url = this.retrieveURLFromData(urlData, isURLList ? 'text/plain' : dataType);
-					break;
-				}
-			}
+			let url = this.retrieveURLFromDataTransfer(dt);
 
 			if (!url || !url.length || url.indexOf(' ', 0) != -1 || /^\s*(javascript|data):/.test(url))
 				return;
@@ -842,7 +832,22 @@ catch(e) {
 			}
 		}
 	},
-	retrieveURLFromData: function TSTService_retrieveURLFromData(aData, aType)
+	retrieveURLFromDataTransfer : function TSTService_retrieveURLFromDataTransfer(aDataTransfer)
+	{
+		let url;
+		let types = ['text/x-moz-url', 'text/uri-list', 'text/plain', 'application/x-moz-file'];
+		for (let i = 0; i < types.length; i++) {
+			let dataType = types[i];
+			let isURLList = dataType == 'text/uri-list';
+			let urlData = aDataTransfer.mozGetDataAt(isURLList ? 'URL' : dataType , 0);
+			if (urlData) {
+				url = this.retrieveURLFromData(urlData, isURLList ? 'text/plain' : dataType);
+				break;
+			}
+		}
+		return url;
+	},
+	retrieveURLFromData : function TSTService_retrieveURLFromData(aData, aType)
 	{
 		switch (aType)
 		{
