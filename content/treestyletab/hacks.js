@@ -756,6 +756,17 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 		);
 	}
 
+	// Mouse Gestures Redox
+	// http://www.mousegestures.org/
+	if ('mgBuiltInFunctions' in window && 'mgLinkInTab' in mgBuiltInFunctions) {
+		eval('mgBuiltInFunctions.mgLinkInTab = '+
+			mgBuiltInFunctions.mgLinkInTab.toSource().replace(
+				'var tab',
+				'TreeStyleTabService.readyToOpenChildTab(gBrowser); $&'
+			)
+		);
+	}
+
 	// Greasemonkey
 	// https://addons.mozilla.org/firefox/addon/748
 	if ('GM_BrowserUI' in window && 'openInTab' in GM_BrowserUI) {
