@@ -1,7 +1,3 @@
-var EXPORTED_SYMBOLS = ['window'];
-Components.utils.import('resource://treestyletab-modules/namespace.jsm');
-var window = getNamespaceFor('piro.sakura.ne.jp');
-
 /*
  Tab Bar AutoScroll Library for Vertical and Horizontal Tab Bar
 
@@ -15,6 +11,16 @@ var window = getNamespaceFor('piro.sakura.ne.jp');
  original:
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/autoScroll.js
 */
+
+if ('window' in this && !window) { // work as a JS Code Module
+	var EXPORTED_SYMBOLS = ['window', 'autoScroll'];
+
+	let ns = {};
+	Components.utils.import('resource://treestyletab-modules/namespace.jsm', ns);
+
+	var window = ns.getNamespaceFor('piro.sakura.ne.jp');
+}
+
 (function() {
 	const currentRevision = 3;
 
@@ -164,3 +170,7 @@ var window = getNamespaceFor('piro.sakura.ne.jp');
 
 	};
 })();
+
+if (window != this) { // work as a JS Code Module
+	var autoScroll = window['piro.sakura.ne.jp'].autoScroll;
+}

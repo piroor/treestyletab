@@ -1,7 +1,3 @@
-var EXPORTED_SYMBOLS = ['window'];
-Components.utils.import('resource://treestyletab-modules/namespace.jsm');
-var window = getNamespaceFor('piro.sakura.ne.jp');
-
 /*
  string bundle utility
 
@@ -17,6 +13,16 @@ var window = getNamespaceFor('piro.sakura.ne.jp');
  original:
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/stringBundle.js
 */
+
+if ('window' in this && !window) { // work as a JS Code Module
+	var EXPORTED_SYMBOLS = ['window', 'stringBundle'];
+
+	let ns = {};
+	Components.utils.import('resource://treestyletab-modules/namespace.jsm', ns);
+
+	var window = ns.getNamespaceFor('piro.sakura.ne.jp');
+}
+
 (function() {
 	const currentRevision = 1;
 
@@ -74,3 +80,7 @@ var window = getNamespaceFor('piro.sakura.ne.jp');
 		}
 	};
 })();
+
+if (window != this) { // work as a JS Code Module
+	var stringBundle = window['piro.sakura.ne.jp'].stringBundle;
+}

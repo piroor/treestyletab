@@ -1,7 +1,3 @@
-var EXPORTED_SYMBOLS = ['window'];
-Components.utils.import('resource://treestyletab-modules/namespace.jsm');
-var window = getNamespaceFor('piro.sakura.ne.jp');
-
 /*
  Extensions Compatibility Library
 
@@ -19,6 +15,16 @@ var window = getNamespaceFor('piro.sakura.ne.jp');
  original:
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/extensions.js
 */
+
+if ('window' in this && !window) { // work as a JS Code Module
+	var EXPORTED_SYMBOLS = ['window', 'extensions'];
+
+	let ns = {};
+	Components.utils.import('resource://treestyletab-modules/namespace.jsm', ns);
+
+	var window = ns.getNamespaceFor('piro.sakura.ne.jp');
+}
+
 (function() {
 	const currentRevision = 6;
 
@@ -185,3 +191,7 @@ var window = getNamespaceFor('piro.sakura.ne.jp');
 		}
 	};
 })();
+
+if (window != this) { // work as a JS Code Module
+	var extensions = window['piro.sakura.ne.jp'].extensions;
+}
