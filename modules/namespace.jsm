@@ -23,16 +23,20 @@ const Ci = Components.interfaces;
 
 const currentRevision = 1;
 
-var hiddenWindow = Cc['@mozilla.org/appshell/appShellService;1']
-					.getService(Ci.nsIAppShellService)
-					.hiddenDOMWindow;
+const Application = '@mozilla.org/fuel/application;1' in Cc ?
+						Cc['@mozilla.org/fuel/application;1'].getService(Ci.fuelIApplication) :
+					'@mozilla.org/steel/application;1' in Cc ?
+						Cc['@mozilla.org/steel/application;1'].getService(Ci.steelIApplication) :
+						null ;
+if (!Application)
+	throw new Error('there is no backend for shared namespaces!');
 
-if (!('piro.sakura.ne.jp' in hiddenWindow))
-	hiddenWindow['piro.sakura.ne.jp'] = {};
+const storage = Application.storage;
 
-var namespaces = hiddenWindow['piro.sakura.ne.jp'].sharedNameSpaces || {};
-if (!('sharedNameSpaces' in hiddenWindow['piro.sakura.ne.jp']))
-	hiddenWindow['piro.sakura.ne.jp'].sharedNameSpaces = namespaces;
+if (!storage.has('sharednamespaces@piro.sakura.ne.jp'))
+	storage.set('sharednamespaces@piro.sakura.ne.jp', {});
+
+var namespaces = storage.get('sharednamespaces@piro.sakura.ne.jp', null);
 
 function getNamespaceFor(aName)
 {
