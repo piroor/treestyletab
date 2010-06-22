@@ -1,5 +1,6 @@
 var EXPORTED_SYMBOLS = ['window'];
-var window = {};
+Components.utils.import('resource://treestyletab-modules/namespace.jsm');
+var window = getNamespaceFor('piro.sakura.ne.jp');
 
 /*
  string bundle utility

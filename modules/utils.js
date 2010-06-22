@@ -38,17 +38,16 @@ var EXPORTED_SYMBOLS = ['TreeStyleTabUtils'];
 var Cc = Components.classes;
 var Ci = Components.interfaces;
  
-var prefs = {}; 
-Components.utils.import('resource://treestyletab-modules/prefs.js', prefs);
-prefs = prefs.window['piro.sakura.ne.jp'].prefs;
+Components.utils.import('resource://treestyletab-modules/prefs.js');
+Components.utils.import('resource://treestyletab-modules/boxObject.js');
+Components.utils.import('resource://treestyletab-modules/stringBundle.js');
 
-var boxObject = {};
-Components.utils.import('resource://treestyletab-modules/boxObject.js', boxObject);
-boxObject = boxObject.window['piro.sakura.ne.jp'].boxObject;
+Components.utils.import('resource://treestyletab-modules/namespace.jsm');
+var window = getNamespaceFor('piro.sakura.ne.jp');
 
-var stringBundle = {};
-Components.utils.import('resource://treestyletab-modules/stringBundle.js', stringBundle);
-stringBundle = stringBundle.window['piro.sakura.ne.jp'].stringBundle;
+var prefs = window['piro.sakura.ne.jp'].prefs;
+var boxObject = window['piro.sakura.ne.jp'].boxObject;
+var stringBundle = window['piro.sakura.ne.jp'].stringBundle;
  
 var TreeStyleTabUtils = { 
 	tabsHash : null,
