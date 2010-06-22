@@ -41,13 +41,12 @@ var Ci = Components.interfaces;
 Components.utils.import('resource://treestyletab-modules/prefs.js');
 Components.utils.import('resource://treestyletab-modules/boxObject.js');
 Components.utils.import('resource://treestyletab-modules/stringBundle.js');
+Components.utils.import('resource://treestyletab-modules/extensions.js');
+Components.utils.import('resource://treestyletab-modules/animationManager.js');
+Components.utils.import('resource://treestyletab-modules/autoScroll.js');
 
 Components.utils.import('resource://treestyletab-modules/namespace.jsm');
 var window = getNamespaceFor('piro.sakura.ne.jp');
-
-var prefs = window['piro.sakura.ne.jp'].prefs;
-var boxObject = window['piro.sakura.ne.jp'].boxObject;
-var stringBundle = window['piro.sakura.ne.jp'].stringBundle;
  
 var TreeStyleTabUtils = { 
 	tabsHash : null,
@@ -231,13 +230,17 @@ var TreeStyleTabUtils = {
 	_Comparator : null,
  
 	get treeBundle() { 
-		return stringBundle
+		return window['piro.sakura.ne.jp'].stringBundle
 				.get('chrome://treestyletab/locale/treestyletab.properties');
 	},
 	get tabbrowserBundle() {
-		return stringBundle
+		return window['piro.sakura.ne.jp'].stringBundle
 				.get('chrome://browser/locale/tabbrowser.properties');
 	},
+ 
+	get extensions() { return window['piro.sakura.ne.jp'].extensions; },
+	get animationManager() { return window['piro.sakura.ne.jp'].animationManager; },
+	get autoScroll() { return window['piro.sakura.ne.jp'].autoScroll; },
  
 	init : function TSTUtils_init() 
 	{
@@ -301,7 +304,7 @@ var TreeStyleTabUtils = {
 	
 	getBoxObjectFor : function TSTUtils_getBoxObjectFor(aNode) 
 	{
-		return boxObject.getBoxObjectFor(aNode);
+		return window['piro.sakura.ne.jp'].boxObject.getBoxObjectFor(aNode);
 	},
  
 	evalInSandbox : function TSTUtils_evalInSandbox(aCode, aOwner) 
@@ -1870,5 +1873,5 @@ var TreeStyleTabUtils = {
   
 }; 
  
-TreeStyleTabUtils.__proto__ = prefs; 
+TreeStyleTabUtils.__proto__ = window['piro.sakura.ne.jp'].prefs; 
   

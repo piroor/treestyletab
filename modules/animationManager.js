@@ -1,3 +1,10 @@
+var EXPORTED_SYMBOLS = ['window'];
+Components.utils.import('resource://treestyletab-modules/namespace.jsm');
+var window = getNamespaceFor('piro.sakura.ne.jp');
+
+if (!('setInterval' in window))
+	Components.utils.import('resource://treestyletab-modules/jstimer.jsm', window);
+
 /*
  Animation Task Manager
 

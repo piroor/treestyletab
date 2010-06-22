@@ -1,3 +1,7 @@
+var EXPORTED_SYMBOLS = ['window'];
+Components.utils.import('resource://treestyletab-modules/namespace.jsm');
+var window = getNamespaceFor('piro.sakura.ne.jp');
+
 /*
  Tab Bar AutoScroll Library for Vertical and Horizontal Tab Bar
 
@@ -6,13 +10,13 @@
                         .autoScroll
                         .processAutoScroll(mouseMoveOrDragOverEvent);
 
- lisence: The MIT License, Copyright (c) 2009 SHIMODA "Piro" Hiroshi
+ lisence: The MIT License, Copyright (c) 2009-2010 SHIMODA "Piro" Hiroshi
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/license.txt
  original:
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/autoScroll.js
 */
 (function() {
-	const currentRevision = 2;
+	const currentRevision = 3;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -23,8 +27,8 @@
 		return;
 	}
 
-	var Cc = Components.classes;
-	var Ci = Components.interfaces;
+	const Cc = Components.classes;
+	const Ci = Components.interfaces;
 
 	window['piro.sakura.ne.jp'].autoScroll = {
 		revision : currentRevision,
@@ -36,7 +40,7 @@
 					'ancestor-or-self::*[local-name()="tabbrowser"]',
 					target,
 					null,
-					XPathResult.FIRST_ORDERED_NODE_TYPE,
+					Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE,
 					null
 				).singleNodeValue;
 			if (!b) return false;
@@ -44,6 +48,8 @@
 			var tabs = b.mTabContainer;
 			if (tabs.getAttribute('overflow') != 'true')
 				return false;
+
+			var view = target.ownerDocument.defaultView;
 
 			var box        = this.getScrollBox(b);
 			var boxObject  = this.getScrollBoxObject(b);
@@ -53,7 +59,7 @@
 			var isMultirow = tabs.getAttribute('flowing') == 'multibar'; // Tab Mix Plus
 			var isVertical = (
 					isMultirow ||
-					((orientBox.getAttribute('orient') || window.getComputedStyle(orientBox, '').getPropertyValue('-moz-box-orient')) == 'vertical')
+					((orientBox.getAttribute('orient') || view.getComputedStyle(orientBox, '').getPropertyValue('-moz-box-orient')) == 'vertical')
 				);
 
 			var maxX = {}, maxY = {}, curX = {}, curY = {};
@@ -77,7 +83,7 @@
 			}
 			else {
 				pixels = box.scrollIncrement;
-				var ltr = window.getComputedStyle(tabs, null).direction == 'ltr';
+				var ltr = view.getComputedStyle(tabs, null).direction == 'ltr';
 				if (aEvent.screenX < boxObject.screenX + this.getUpButtonWidth(b)) {
 					if (curX.value == 0) return false;
 					pixels *= -1;
@@ -106,7 +112,7 @@
 
 		getScrollBox : function(aTabBrowser) 
 		{
-			return document.getAnonymousElementByAttribute(aTabBrowser.mTabContainer, 'class', 'tabs-frame') || // Tab Mix Plus
+			return aTabBrowser.ownerDocument.getAnonymousElementByAttribute(aTabBrowser.mTabContainer, 'class', 'tabs-frame') || // Tab Mix Plus
 					aTabBrowser.mTabContainer.mTabstrip;
 		},
 
@@ -121,15 +127,15 @@
 		{
 			var box = this.getScrollBox(aTabBrowser);
 			return box._scrollButtonUp ||
-				document.getAnonymousElementByAttribute(box, 'class', 'scrollbutton-up') ||
-				document.getAnonymousElementByAttribute(box.previousSibling, 'class', 'scrollbutton-up'); // Tab Mix Plus
+				aTabBrowser.ownerDocument.getAnonymousElementByAttribute(box, 'class', 'scrollbutton-up') ||
+				aTabBrowser.ownerDocument.getAnonymousElementByAttribute(box.previousSibling, 'class', 'scrollbutton-up'); // Tab Mix Plus
 		},
 		getDownButton : function(aTabBrowser)
 		{
 			var box = this.getScrollBox(aTabBrowser);
 			return box._scrollButtonDown ||
-				document.getAnonymousElementByAttribute(box, 'class', 'scrollbutton-down') ||
-				document.getAnonymousElementByAttribute(box.nextSibling, 'class', 'scrollbutton-up'); // Tab Mix Plus
+				aTabBrowser.ownerDocument.getAnonymousElementByAttribute(box, 'class', 'scrollbutton-down') ||
+				aTabBrowser.ownerDocument.getAnonymousElementByAttribute(box.nextSibling, 'class', 'scrollbutton-up'); // Tab Mix Plus
 		},
 
 		autoScrollArea : 20,

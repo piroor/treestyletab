@@ -6,6 +6,10 @@ var Prefs = Components
 		.classes['@mozilla.org/preferences;1']
 		.getService(Components.interfaces.nsIPrefBranch);
 
+Components.utils.import('resource://treestyletab-modules/animationManager.js', {});
+Components.utils.import('resource://treestyletab-modules/namespace.jsm');
+var animationManager = getNamespaceFor('piro.sakura.ne.jp')['piro.sakura.ne.jp'].animationManager;
+
 var gGroupBookmarkRadio,
 	gGroupBookmarkUnderParent,
 	gGroupBookmarkType,
@@ -103,7 +107,7 @@ function initAppearancePane()
 			}
 			return finished;
 		};
-		window['piro.sakura.ne.jp'].animationManager.addTask(task, 0, 0, 500);
+		animationManager.addTask(task, 0, 0, 500);
 	});
 }
 

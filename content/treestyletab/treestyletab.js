@@ -1291,7 +1291,6 @@ catch(e) {
 		try {
 			window.removeEventListener('unload', this, false);
 
-			window['piro.sakura.ne.jp'].animationManager.stop();
 			gBrowser.treeStyleTab.saveCurrentState();
 			this.destroyTabBrowser(gBrowser);
 

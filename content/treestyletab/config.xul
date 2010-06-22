@@ -783,7 +783,6 @@
 
 </prefpane>
 
-<script src="res/animationManager.js" type="application/javascript"/>
 <script src="config.js" type="application/javascript"/>
 
 </prefwindow>

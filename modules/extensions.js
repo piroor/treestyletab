@@ -1,3 +1,7 @@
+var EXPORTED_SYMBOLS = ['window'];
+Components.utils.import('resource://treestyletab-modules/namespace.jsm');
+var window = getNamespaceFor('piro.sakura.ne.jp');
+
 /*
  Extensions Compatibility Library
 
@@ -16,7 +20,7 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/extensions.js
 */
 (function() {
-	const currentRevision = 5;
+	const currentRevision = 6;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -32,7 +36,7 @@
 
 	// Firefox 3.7 or later
 	var AM = {};
-	if ('@mozilla.org/addons/integration;1' in Components.classes)
+	if ('@mozilla.org/addons/integration;1' in Cc)
 		Components.utils.import('resource://gre/modules/AddonManager.jsm', AM);
 
 	window['piro.sakura.ne.jp'].extensions = {
@@ -45,7 +49,7 @@
 			AM.AddonManager.getAddonByID(aId, function(aAddon) {
 				addon = aAddon;
 			});
-			var thread = Components.classes['@mozilla.org/thread-manager;1']
+			var thread = Cc['@mozilla.org/thread-manager;1']
 							.getService()
 							.mainThread;
 			while (addon === void(0)) {
@@ -131,7 +135,7 @@
 			return false;
 		},
 
-		goToOptions : function(aId)
+		goToOptions : function(aId, aOwnerWindow)
 		{
 			var uri = this.ExtensionManager ? this.getOptionsURI_EM(aId) : this.getOptionsURI_AM(aId) ;
 			if (!uri) return;
@@ -151,7 +155,7 @@
 			}
 			catch(e) {
 			}
-			window.openDialog(
+			(aOwnerWindow || window).openDialog(
 				uri,
 				'',
 				'chrome,titlebar,toolbar,centerscreen,' + (instantApply ? 'dialog=no' : 'modal' )

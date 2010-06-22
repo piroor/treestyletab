@@ -1349,6 +1349,8 @@ TreeStyleTabBrowser.prototype = {
    
 	destroy : function TSTBrowser_destroy() 
 	{
+		this.animationManager.removeTask(this.smoothScrollTask);
+
 		this.autoHide.destroy();
 		delete this._autoHide;
 
@@ -1356,6 +1358,8 @@ TreeStyleTabBrowser.prototype = {
 		delete b.tabContainer.treeStyleTab;
 
 		this.getTabsArray(b).forEach(function(aTab) {
+			this.stopTabIndentAnimation(aTab);
+			this.stopTabCollapseAnimation(aTab);
 			this.destroyTab(aTab);
 		}, this);
 
@@ -1640,7 +1644,7 @@ TreeStyleTabBrowser.prototype = {
 				aStyle = 'osx';
 			}
 			else if (
-				window['piro.sakura.ne.jp'].extensions.isAvailable('informationaltab@piro.sakura.ne.jp') &&
+				this.extensions.isAvailable('informationaltab@piro.sakura.ne.jp') &&
 				this.getPref('extensions.informationaltab.thumbnail.enabled') &&
 				this.getPref('extensions.informationaltab.thumbnail.position') < 100
 				) {
@@ -3809,14 +3813,14 @@ TreeStyleTabBrowser.prototype = {
 			}
 			return finished;
 		};
-		window['piro.sakura.ne.jp'].animationManager.addTask(
+		this.animationManager.addTask(
 			aTab.__treestyletab__updateTabIndentTask,
 			0, 0, this.indentDuration
 		);
 	},
 	stopTabIndentAnimation : function TSTBrowser_stopTabIndentAnimation(aTab)
 	{
-		window['piro.sakura.ne.jp'].animationManager.removeTask(
+		this.animationManager.removeTask(
 			aTab.__treestyletab__updateTabIndentTask
 		);
 	},
@@ -4183,7 +4187,7 @@ TreeStyleTabBrowser.prototype = {
 				return false;
 			}
 		};
-		window['piro.sakura.ne.jp'].animationManager.addTask(
+		this.animationManager.addTask(
 			aTab.__treestyletab__updateTabCollapsedTask,
 			0, 0, this.collapseDuration
 		);
@@ -4191,7 +4195,7 @@ TreeStyleTabBrowser.prototype = {
 	kOPACITY_RULE_REGEXP : /opacity\s*:[^;]+;?/,
 	stopTabCollapseAnimation : function TSTBrowser_stopTabCollapseAnimation(aTab)
 	{
-		window['piro.sakura.ne.jp'].animationManager.removeTask(
+		this.animationManager.removeTask(
 			aTab.__treestyletab__updateTabCollapsedTask
 		);
 	},
@@ -4296,7 +4300,7 @@ TreeStyleTabBrowser.prototype = {
 	smoothScrollTo : function TSTBrowser_smoothScrollTo(aEndX, aEndY) 
 	{
 		var b = this.mTabBrowser;
-		window['piro.sakura.ne.jp'].animationManager.removeTask(this.smoothScrollTask);
+		this.animationManager.removeTask(this.smoothScrollTask);
 
 		var scrollBoxObject = this.scrollBoxObject;
 		var x = {}, y = {};
@@ -4339,7 +4343,7 @@ TreeStyleTabBrowser.prototype = {
 			scrollBoxObject.scrollTo(newX, newY);
 			return false;
 		};
-		window['piro.sakura.ne.jp'].animationManager.addTask(
+		this.animationManager.addTask(
 			this.smoothScrollTask,
 			0, 0, this.smoothScrollDuration
 		);

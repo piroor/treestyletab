@@ -7,10 +7,7 @@
 <overlay id="treestyletab-overlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-<script src="res/autoScroll.js" type="application/javascript"/>
-<script src="res/animationManager.js" type="application/javascript"/>
 <script src="res/stopRendering.js" type="application/javascript"/>
-<script src="res/extensions.js" type="application/javascript"/>
 <script src="res/UninstallationListener.js" type="application/javascript"/>
 
 <script src="treestyletab.js" type="application/javascript"/>
