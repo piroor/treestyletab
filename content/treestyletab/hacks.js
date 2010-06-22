@@ -1176,4 +1176,51 @@ TreeStyleTabService.overrideExtensionsDelayed = function TSTService_overrideExte
 		);
 	}
 
+	// Firefox Sync (Weave)
+	// http://www.mozilla.com/en-US/firefox/sync/
+	if ('gFxWeaveGlue' in window) {
+		let ns = {};
+		Components.utils.import('resource://weave/service.js', ns);
+		let engine = ns.Weave.Engines.get('tabs');
+		let listener = {
+				handleEvent : function(aEvent)
+				{
+					switch (aEvent.type)
+					{
+						case 'TabOpen':
+							let tab = aEvent.originalTarget
+							let b = TreeStyleTabService.getTabBrowserFromChild(tab);
+							if (b.selectedTab.linkedBrowser.currentURI.spec != 'about:sync-tabs')
+								return;
+
+							let uri = tab.getAttribute('label');
+							if (engine.locallyOpenTabMatchesURL(uri))
+								return;
+
+							for (let [guid, client] in Iterator(engine.getAllClients()))
+							{
+								if (client.tabs.some(function({ urlHistory }) {
+										return urlHistory[0] == uri;
+									})) {
+									let parent = b.selectedTab;
+									window.setTimeout(function() {
+										if (tab.parentNode && !b.treeStyleTab.getParentTab(tab))
+											b.treeStyleTab.attachTabTo(tab, parent);
+									}, 0);
+									return;
+								}
+							}
+							return;
+
+						case 'unload':
+							window.removeEventListener('TabOpen', this, true);
+							window.removeEventListener('unload', this, false);
+							return;
+					}
+				}
+			};
+		window.addEventListener('TabOpen', listener, true);
+		window.addEventListener('unload', listener, false);
+	}
+
 };
