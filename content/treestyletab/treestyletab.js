@@ -645,7 +645,7 @@ try{
 		if (this.isToolbarCustomizing && !this.getTabFromChild(session.sourceNode))
 			return false;
 
-		window['piro.sakura.ne.jp'].autoScroll.processAutoScroll(aEvent);
+		this.autoScroll.processAutoScroll(aEvent);
 
 		var info = this.getDropAction(aEvent, session);
 
