@@ -24,13 +24,15 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/animationManager.js
 */
 
-if ('window' in this && !window) { // work as a JS Code Module
-	var EXPORTED_SYMBOLS = ['window', 'animationManager'];
+/* To work as a JS Code Module (*require namespace.jsm and jstimer.jsm)
+   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/namespace.jsm
+   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/jstimer.jsm */
+if (typeof window == 'undefined') {
+	this.EXPORTED_SYMBOLS = ['animationManager'];
 
 	let ns = {};
 	Components.utils.import('resource://treestyletab-modules/namespace.jsm', ns);
-
-	var window = ns.getNamespaceFor('piro.sakura.ne.jp');
+	/* var */ window = ns.getNamespaceFor('piro.sakura.ne.jp');
 	if (!('setInterval' in window))
 		Components.utils.import('resource://treestyletab-modules/jstimer.jsm', window);
 }
@@ -150,5 +152,5 @@ if ('window' in this && !window) { // work as a JS Code Module
 })();
 
 if (window != this) { // work as a JS Code Module
-	var animationManager = window['piro.sakura.ne.jp'].animationManager;
+	this.animationManager = window['piro.sakura.ne.jp'].animationManager;
 }

@@ -26,13 +26,14 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/prefs.test.js
 */
 
-if ('window' in this && !window) { // work as a JS Code Module
-	var EXPORTED_SYMBOLS = ['window', 'prefs'];
+/* To work as a JS Code Module (*require namespace.jsm)
+   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/namespace.jsm */
+if (typeof window == 'undefined') {
+	this.EXPORTED_SYMBOLS = ['prefs'];
 
 	let ns = {};
 	Components.utils.import('resource://treestyletab-modules/namespace.jsm', ns);
-
-	var window = ns.getNamespaceFor('piro.sakura.ne.jp');
+	/* var */ window = ns.getNamespaceFor('piro.sakura.ne.jp');
 }
 
 (function() {
@@ -163,6 +164,5 @@ if ('window' in this && !window) { // work as a JS Code Module
 	};
 })();
 
-if (window != this) { // work as a JS Code Module
-	var prefs = window['piro.sakura.ne.jp'].prefs;
+if (this.prefs = window['piro.sakura.ne.jp'].prefs;
 }
