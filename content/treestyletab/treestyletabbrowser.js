@@ -178,6 +178,8 @@ TreeStyleTabBrowser.prototype = {
 				toggler = document.createElement('spacer');
 				toggler.setAttribute('class', this.kTABBAR_TOGGLER);
 				b.mTabBox.insertBefore(toggler, b.mTabBox.firstChild);
+				if (b.mTabDropIndicatorBar == toggler)
+					b.mTabDropIndicatorBar = document.getAnonymousElementByAttribute(b, 'class', 'tab-drop-indicator-bar');
 			}
 			placeHolder = document.getAnonymousElementByAttribute(b, 'anonid', 'strip');
 			if (!placeHolder) {
