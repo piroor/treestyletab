@@ -164,5 +164,6 @@ if (typeof window == 'undefined') {
 	};
 })();
 
-if (this.prefs = window['piro.sakura.ne.jp'].prefs;
+if (window != this) { // work as a JS Code Module
+	this.prefs = window['piro.sakura.ne.jp'].prefs;
 }
