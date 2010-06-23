@@ -930,7 +930,7 @@ var TreeStyleTabUtils = {
 		var b = this.evaluateXPath(
 				'ancestor::xul:tabbrowser | '+
 				'ancestor::xul:tabs[@tabbrowser] |'+
-				'ancestor::xul:toolbar[@id="TabsToolbar"]',
+				'ancestor::xul:toolbar[@id="TabsToolbar"]/descendant::xul:tabs',
 				aTabBrowserChild,
 				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;

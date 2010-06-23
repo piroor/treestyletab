@@ -23,7 +23,7 @@ if (typeof window == 'undefined') {
 }
 
 (function() {
-	const currentRevision = 3;
+	const currentRevision = 4;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -43,13 +43,7 @@ if (typeof window == 'undefined') {
 		processAutoScroll : function(aEvent)
 		{
 			var target = aEvent.originalTarget;
-			var b = target.ownerDocument.evaluate(
-					'ancestor-or-self::*[local-name()="tabbrowser"]',
-					target,
-					null,
-					Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE,
-					null
-				).singleNodeValue;
+			var b = this.getTabBrowserFromChild(target);
 			if (!b) return false;
 
 			var tabs = b.mTabContainer;
@@ -115,6 +109,29 @@ if (typeof window == 'undefined') {
 					boxObject.scrollBy(pixels, 0);
 			}
 			return true;
+		},
+
+		getTabBrowserFromChild : function(aTabBrowserChild) 
+		{
+			if (aTabBrowserChild.localName == 'tabbrowser') // itself
+				return aTabBrowserChild;
+
+			if (aTabBrowserChild.tabbrowser) // tabs, Firefox 3.7 or later
+				return aTabBrowserChild.tabbrowser;
+
+			if (aTabBrowserChild.id == 'TabsToolbar') // tabs toolbar, Firefox 3.7 or later
+				return aTabBrowserChild.getElementsByTagName('tabs')[0].tabbrowser;
+
+			var b = aTabBrowserChild.ownerDocument.evaluate(
+					'ancestor::*[local-name()="tabbrowser"] | '+
+					'ancestor::*[local-name()="tabs" and @tabbrowser] |'+
+					'ancestor::*[local-name()="toolbar" and @id="TabsToolbar"]/descendant::*[local-name()="tabs"]',
+					aTabBrowserChild,
+					null,
+					Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE,
+					null
+				).singleNodeValue;
+			return (b && b.tabbrowser) || b;
 		},
 
 		getScrollBox : function(aTabBrowser) 
