@@ -87,8 +87,7 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-stack > *:first-child + * > hbox:
 	width: 24px !important;
 	height: 24px !important;
 }
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-	.tabbrowser-tab[pinned="true"] .tab-text {
+.tabbrowser-tab[pinned="true"] .tab-text {
 	visibility: collapse !important;
 }
 

@@ -166,12 +166,14 @@ TreeStyleTabBrowser.prototype = {
 		var maxRow = Math.ceil(count / maxCol);
 		var col    = 0;
 		var row    = 0;
+		tabbar.style.MozMarginStart = '';
 		tabbar.style.marginTop = (height * maxRow)+'px';
-		for (var i = 0, count; i < count; i++)
+		for (var i = 0; i < count; i++)
 		{
-			let tab = tabbar.childNodes[i];
-			tab.style.setProperty('margin-left', (width * col)+'px', 'important');
-			tab.style.setProperty('margin-top', (- height * (maxRow - row))+'px', 'important');
+			let style = tabbar.childNodes[i].style;
+			style.MozMarginStart = '';
+			style.setProperty('margin-left', (width * col)+'px', 'important');
+			style.setProperty('margin-top', (- height * (maxRow - row))+'px', 'important');
 			col++;
 			if (col >= maxCol) {
 				col = 0;
@@ -181,6 +183,29 @@ TreeStyleTabBrowser.prototype = {
 	},
 	PINNED_TAB_WIDTH : 24,
 	PINNED_TAB_HEIGHT : 24,
+ 
+	clearPinnedTabsAppearance : function TSTBrowser_clearPinnedTabsAppearance() 
+	{
+		var b = this.mTabBrowser;
+		var tabbar = b.tabContainer;
+		tabbar.style.MozMarginStart = '';
+		tabbar.style.marginTop = '';
+		for (var i = 0, count = b._numPinnedTabs; i < count; i++)
+		{
+			let style = tabbar.childNodes[i].style;
+			style.MozMarginStart = '';
+			style.marginLeft = '';
+			style.marginTop = '';
+		}
+	},
+ 
+	onUnpinTab : function TSTBrowser_onUnpinTab(aTab) 
+	{
+		if (!this.isVertical)
+			return;
+		aTab.style.marginLeft = '';
+		aTab.style.marginTop = '';
+	},
   
 /* initialize */ 
 	
@@ -416,10 +441,22 @@ TreeStyleTabBrowser.prototype = {
 							this.tabbrowser.treeStyleTab.positionVerticalPinnedTabs();
 						}
 						else {
+							this.tabbrowser.treeStyleTab.clearPinnedTabsAppearance();
 					]]>.toString()
 				).replace(
 					'this.mTabstrip.ensureElementIsVisible',
 					'} $&'
+				)
+			);
+		}
+
+		if (b.unpinTab) {
+			eval('b.unpinTab = '+
+				b.unpinTab.toSource().replace(
+					'this.tabContainer._positionPinnedTabs',
+					<![CDATA[
+						this.treeStyleTab.onUnpinTab(aTab);
+					$&]]>.toString()
 				)
 			);
 		}
