@@ -77,7 +77,7 @@
 	-moz-box-align: stretch !important;
 }
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"][treestyletab-firsttab-border="true"]
-  .tabbrowser-tab:not([selected="true"]):first-child {
+  .tabbrowser-tab:not([pinned="true"]):not([selected="true"]):first-child {
 	-moz-border-top-colors: ThreeDShadow transparent !important;
 }
 
