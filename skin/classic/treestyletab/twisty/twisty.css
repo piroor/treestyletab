@@ -1,6 +1,6 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
-.treestyle-tab:not([pinned="true"])
+.tabbrowser-tab:not([pinned="true"])
   .treestyletab-twisty-container {
 	margin: 0 3px 0 -3px;
 	-moz-box-pack: start;
@@ -9,31 +9,31 @@
 }
 
 .tabbrowser-tabs[treestyletab-tab-contents-inverted="true"]
-  .treestyle-tab:not([pinned="true"])
+  .tabbrowser-tab:not([pinned="true"])
   .treestyletab-twisty-container {
 	margin: 0 -3px 0 3px;
 }
 .tabbrowser-tabs[treestyletab-twisty-style^="modern"]
-  .treestyle-tab:not([pinned="true"])
+  .tabbrowser-tab:not([pinned="true"])
   .treestyletab-twisty-container,
 .tabbrowser-tabs[treestyletab-twisty-style^="osx"]
-  .treestyle-tab:not([pinned="true"])
+  .tabbrowser-tab:not([pinned="true"])
   .treestyletab-twisty-container {
 	position: relative;
 	margin: 0 14px 0 -14px;
 }
 .tabbrowser-tabs[treestyletab-twisty-style^="modern"][treestyletab-tab-contents-inverted="true"]
-  .treestyle-tab:not([pinned="true"])
+  .tabbrowser-tab:not([pinned="true"])
   .treestyletab-twisty-container,
 .tabbrowser-tabs[treestyletab-twisty-style^="osx"][treestyletab-tab-contents-inverted="true"]
-  .treestyle-tab:not([pinned="true"])
+  .tabbrowser-tab:not([pinned="true"])
   .treestyletab-twisty-container {
 	margin: 0 -14px 0 14px;
 }
 
 
 .tabbrowser-tabs[treestyletab-twisty-style="retro"][treestyletab-mode="horizontal"]
-  .treestyle-tab:not([pinned="true"])
+  .tabbrowser-tab:not([pinned="true"])
   .treestyletab-twisty-container {
 	position: relative;
 	margin: 0 16px 0 -16px;
