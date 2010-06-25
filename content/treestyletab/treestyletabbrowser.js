@@ -140,6 +140,7 @@ TreeStyleTabBrowser.prototype = {
 	isTabInViewport : function TSTBrowser_isTabInViewport(aTab) 
 	{
 		if (!aTab) return false;
+		if (aTab.pinned) return true;
 		var tabBox = aTab.boxObject;
 		var barBox = this.scrollBox.boxObject;
 		var xOffset = this.getXOffsetOfTab(aTab);
