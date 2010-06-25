@@ -2886,11 +2886,22 @@ TreeStyleTabBrowser.prototype = {
  
 	onMouseDown : function TSTBrowser_onMouseDown(aEvent) 
 	{
-		if (aEvent.button != 0 ||
-			!this.isEventFiredOnTwisty(aEvent))
-			return;
-
-		this.getTabFromEvent(aEvent).__treestyletab__preventSelect = true;
+		if (
+			aEvent.button == 0 &&
+			this.isEventFiredOnTwisty(aEvent)
+			) {
+			this.getTabFromEvent(aEvent).__treestyletab__preventSelect = true;
+		}
+		else if (
+			'TabsOnTop' in window &&
+			(
+				this.currentTabbarPosition != 'top' ||
+				!TabsOnTop.enabled
+			) &&
+			this.tabbarDNDObserver.canDragTabbar(aEvent)
+			) {
+			aEvent.stopPropagation();
+		}
 	},
  
 	onMouseUp : function TSTBrowser_onMouseUp(aEvent) 
