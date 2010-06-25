@@ -162,3 +162,84 @@
   .tab-image-right[selected="true"] {
 	-moz-border-image: url("tab-active-selected-r.png") 10 / 10px 10px 10px 0;
 }
+
+
+
+/* pinned tabs */
+
+.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned="true"] >
+  .tab-image-left,
+.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned="true"] >
+  .tab-image-right {
+	display: none !important;
+}
+
+.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned="true"] >
+  .tab-image-middle,
+.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned="true"]:hover >
+  .tab-image-middle,
+.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned="true"][selected] >
+  .tab-image-middle,
+.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned="true"][selected]:hover >
+  .tab-image-middle {
+	background: none !important;
+	-moz-border-image: none !important;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned="true"],
+.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned="true"]:hover,
+.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned="true"][selected="true"],
+.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned="true"][selected="true"]:hover {
+	background: none !important;
+	border: none !important;
+	padding: 0 !important;
+	-moz-border-radius: 0 !important;
+}
+
+.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned="true"] >
+  .tab-image-middle >
+  * {
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned="true"] >
+  .tab-image-middle,
+.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned="true"]:hover >
+  .tab-image-middle,
+.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned="true"][selected="true"] >
+  .tab-image-middle,
+.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned="true"][selected="true"]:hover >
+  .tab-image-middle {
+	background: #9d9d9d !important;
+	border: 1px solid #666666 !important;
+	margin: 1px 0 0 1px !important;
+	padding: 2px 0 !important;
+	-moz-border-radius: 4px !important;
+}
+
+.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned="true"][selected="true"] >
+  .tab-image-middle,
+.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned="true"][selected="true"]:hover >
+  .tab-image-middle {
+	background-color: #b3b2b3 !important;
+}

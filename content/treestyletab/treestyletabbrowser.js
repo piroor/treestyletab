@@ -154,6 +154,33 @@ TreeStyleTabBrowser.prototype = {
 	{
 		return false;
 	},
+ 
+	positionVerticalPinnedTabs : function TSTBrowser_positionVerticalPinnedTabs() 
+	{
+		var b = this.mTabBrowser;
+		var tabbar = b.tabContainer;
+		var count  = b._numPinnedTabs;
+		var width  = this.PINNED_TAB_WIDTH;
+		var height = this.PINNED_TAB_HEIGHT;
+		var maxCol = Math.floor(tabbar.boxObject.width / width);
+		var maxRow = Math.ceil(count / maxCol);
+		var col    = 0;
+		var row    = 0;
+		tabbar.style.marginTop = (height * maxRow)+'px';
+		for (var i = 0, count; i < count; i++)
+		{
+			let tab = tabbar.childNodes[i];
+			tab.style.setProperty('margin-left', (width * col)+'px', 'important');
+			tab.style.setProperty('margin-top', (- height * (maxRow - row))+'px', 'important');
+			col++;
+			if (col >= maxCol) {
+				col = 0;
+				row++;
+			}
+		}
+	},
+	PINNED_TAB_WIDTH : 24,
+	PINNED_TAB_HEIGHT : 24,
   
 /* initialize */ 
 	
@@ -379,6 +406,23 @@ TreeStyleTabBrowser.prototype = {
 				/\.width/g, '[treeStyleTab.sizeProp]'
 			)
 		);
+
+		if (b.mTabContainer._positionPinnedTabs) {
+			eval('b.mTabContainer._positionPinnedTabs = '+
+				b.mTabContainer._positionPinnedTabs.toSource().replace(
+					'{',
+					<![CDATA[{
+						if (this.tabbrowser.treeStyleTab.isVertical) {
+							this.tabbrowser.treeStyleTab.positionVerticalPinnedTabs();
+						}
+						else {
+					]]>.toString()
+				).replace(
+					'this.mTabstrip.ensureElementIsVisible',
+					'} $&'
+				)
+			);
+		}
 
 		TreeStyleTabService.updateTabDNDObserver(b);
 
@@ -1140,6 +1184,9 @@ TreeStyleTabBrowser.prototype = {
 		window.setTimeout(function(aSelf) {
 			aSelf.updateFloatingTabbar();
 			aSelf.startRendering();
+
+			if ('_positionPinnedTabs' in b.mTabContainer)
+				b.mTabContainer._positionPinnedTabs();
 		}, 0, this);
 
 		this.setTabbrowserAttribute(this.kINDENTED, this.getTreePref('enableSubtreeIndent.'+orient) ? 'true' : null);
@@ -1223,6 +1270,9 @@ TreeStyleTabBrowser.prototype = {
 //				}, 0, this);
 			}
 		}
+
+		if ('_positionPinnedTabs' in this.mTabBrowser.mTabContainer)
+			this.mTabBrowser.mTabContainer._positionPinnedTabs();
 	},
  
 	resetTabbarSize : function TSTBrowser_resetTabbarSize() 
@@ -3037,6 +3087,7 @@ TreeStyleTabBrowser.prototype = {
 		var tab        = aEvent.target;
 		var b          = this.mTabBrowser;
 		var tabs       = this.getTabsArray(b);
+		var firstTab   = this.getFirstNormalTab(b);
 		var lastTabIndex = tabs.length -1;
 		var isInverted = this.isVertical ? false : window.getComputedStyle(b.parentNode, null).direction == 'rtl';
 		var info       = {
@@ -3053,8 +3104,8 @@ TreeStyleTabBrowser.prototype = {
 		if (tab.localName != 'tab') {
 			var action = isTabMoveFromOtherWindow ? this.kACTION_STAY : (this.kACTION_MOVE | this.kACTION_PART) ;
 			if (isNewTabAction) action |= this.kACTION_NEWTAB;
-			if (aEvent[this.positionProp] < tabs[0].boxObject[this.positionProp]) {
-				info.target   = info.parent = info.insertBefore = tabs[0];
+			if (aEvent[this.positionProp] < firstTab.boxObject[this.positionProp]) {
+				info.target   = info.parent = info.insertBefore = firstTab;
 				info.position = isInverted ? this.kDROP_AFTER : this.kDROP_BEFORE ;
 				info.action   = action;
 				return info;
@@ -3116,7 +3167,7 @@ TreeStyleTabBrowser.prototype = {
 				var prevTab = this.getPreviousVisibleTab(tab);
 				if (!prevTab) {
 					info.action       = this.kACTION_MOVE | this.kACTION_PART;
-					info.insertBefore = tabs[0];
+					info.insertBefore = firstTab;
 				}
 				else {
 					var prevLevel   = Number(prevTab.getAttribute(this.kNEST));
@@ -3872,7 +3923,7 @@ TreeStyleTabBrowser.prototype = {
 		var oldIndent = this.indent;
 		var indent    = (oldIndent < 0 ? this.baseIndent : oldIndent ) * nest;
 		var maxIndentBase = Math.min(
-					this.getFirstTab(b).boxObject[this.invertedSizeProp],
+					this.getFirstNormalTab(b).boxObject[this.invertedSizeProp],
 					b.mTabContainer.boxObject[this.invertedSizeProp]
 				);
 		if (!this.isVertical) {
@@ -4045,7 +4096,7 @@ TreeStyleTabBrowser.prototype = {
 		var offsetAttr;
 		var collapseProp = 'margin-'+this.collapseTarget;
 		let (firstTab) {
-			firstTab = this.getFirstTab(this.mTabBrowser);
+			firstTab = this.getFirstNormalTab(this.mTabBrowser);
 			if (this.isVertical) {
 				maxMargin = firstTab.boxObject.height;
 				offsetAttr = this.kY_OFFSET;
@@ -4369,7 +4420,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		var targetTabBox = aTab.boxObject;
-		var baseTabBox = aTab.parentNode.firstChild.boxObject;
+		var baseTabBox = this.getFirstNormalTab(b).boxObject;
 
 		var xOffset = this.getXOffsetOfTab(aTab);
 		var yOffset = this.getYOffsetOfTab(aTab);
@@ -4408,7 +4459,7 @@ TreeStyleTabBrowser.prototype = {
 		var tabSize           = lastVisible.boxObject[this.sizeProp];
 
 		if (lastPosition - parentPosition + tabSize > containerSize - tabSize) { // out of screen
-			var endPos = parentPosition - this.getFirstTab(b).boxObject[this.positionProp] - tabSize * 0.5;
+			var endPos = parentPosition - this.getFirstNormalTab(b).boxObject[this.positionProp] - tabSize * 0.5;
 			var endX = this.isVertical ? 0 : endPos ;
 			var endY = this.isVertical ? endPos : 0 ;
 			this.scrollTo(endX, endY);

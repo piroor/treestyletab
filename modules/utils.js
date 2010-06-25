@@ -1021,6 +1021,12 @@ var TreeStyleTabUtils = {
 		return b.mTabContainer.firstChild;
 	},
  
+	getFirstNormalTab : function TSTUtils_getFirstNormalTab(aTabBrowserChild) 
+	{
+		var b = this.getTabBrowserFromChild(aTabBrowserChild);
+		return b.mTabContainer.childNodes[b._numPinnedTabs || 0];
+	},
+ 
 	getLastTab : function TSTUtils_getLastTab(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);

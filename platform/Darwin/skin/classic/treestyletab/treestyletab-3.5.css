@@ -2,6 +2,9 @@
 
 tabbrowser[treestyletab-style~="square"]:not([treestyletab-style="vertigo"])[treestyletab-mode="vertical"]
 	.tabbrowser-tab {
-	position: relative !important;
 	z-index: 1 !important;
+}
+tabbrowser[treestyletab-style~="square"]:not([treestyletab-style="vertigo"])[treestyletab-mode="vertical"]
+	.tabbrowser-tab:not([pinned="true"]) {
+	position: relative !important;
 }

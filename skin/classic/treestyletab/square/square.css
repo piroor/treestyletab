@@ -314,3 +314,7 @@
 	background-image: url("tab-bg-selected-hover.png") !important;
 }
 
+.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab[pinned="true"] {
+	-moz-border-right-colors: ThreeDShadow transparent !important;
+}
