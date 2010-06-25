@@ -199,10 +199,24 @@ TreeStyleTabBrowser.prototype = {
 		}
 	},
  
+	onPinTab : function TSTBrowser_onPinTab(aTab) 
+	{
+		var parentTab = this.getParentTab(aTab);
+		this.getChildTabs(aTab).reverse().forEach(
+			parentTab ?
+				function(aChildTab) {
+					this.attachTabTo(aChildTab, parentTab, {
+						dontExpand       : true,
+						dontMove         : true
+					});
+				} :
+				this.partTab,
+		this);
+		this.partTab(aTab);
+	},
+ 
 	onUnpinTab : function TSTBrowser_onUnpinTab(aTab) 
 	{
-		if (!this.isVertical)
-			return;
 		aTab.style.marginLeft = '';
 		aTab.style.marginTop = '';
 	},
@@ -446,6 +460,17 @@ TreeStyleTabBrowser.prototype = {
 				).replace(
 					'this.mTabstrip.ensureElementIsVisible',
 					'} $&'
+				)
+			);
+		}
+
+		if (b.pinTab) {
+			eval('b.pinTab = '+
+				b.pinTab.toSource().replace(
+					'this.moveTabTo(',
+					<![CDATA[
+						this.treeStyleTab.onPinTab(aTab);
+					$&]]>.toString()
 				)
 			);
 		}
@@ -3593,7 +3618,9 @@ TreeStyleTabBrowser.prototype = {
 			!aChild ||
 			!aParent ||
 			aChild == aParent ||
-			(currentParent = this.getParentTab(aChild)) == aParent
+			(currentParent = this.getParentTab(aChild)) == aParent ||
+			aChild.pinned ||
+			aParent.pinned
 			) {
 			this.fireAttachedEvent(aChild, aParent);
 			return;
