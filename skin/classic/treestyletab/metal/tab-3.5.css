@@ -169,15 +169,6 @@
 
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"] >
-  .tab-image-left,
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"] >
-  .tab-image-right {
-	display: none !important;
-}
-
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"] >
   .tab-image-middle,
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"]:hover >

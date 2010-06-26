@@ -92,3 +92,10 @@
   .tabbrowser-tab[pinned="true"] .tab-text {
 	visibility: collapse !important;
 }
+
+:root[tabFx2Compatible="7"]
+  .tabbrowser-tab[pinned="true"] > .tab-image-left,
+:root[tabFx2Compatible="7"]
+  .tabbrowser-tab[pinned="true"] > .tab-image-right {
+	display: none !important;
+}
