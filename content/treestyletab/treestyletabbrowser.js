@@ -1319,7 +1319,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 		else {
 			// hack to reset the height of the toolbox
-			var height = 0;
+			let height = 0;
 			Array.slice(toolbox.childNodes).forEach(function(aNode) {
 				if (aNode.nodeType == Node.ELEMENT_NODE && aNode != strip)
 					height += aNode.boxObject.height;
