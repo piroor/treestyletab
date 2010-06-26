@@ -203,17 +203,23 @@ TreeStyleTabBrowser.prototype = {
 	onPinTab : function TSTBrowser_onPinTab(aTab) 
 	{
 		var parentTab = this.getParentTab(aTab);
+
+		if (!parentTab)
+			this.collapseExpandSubtree(aTab, false);
+
 		this.getChildTabs(aTab).reverse().forEach(
 			parentTab ?
 				function(aChildTab) {
 					this.attachTabTo(aChildTab, parentTab, {
-						dontExpand       : true,
-						dontMove         : true
+						dontExpand : true,
+						dontMove   : true
 					});
 				} :
 				this.partTab,
 		this);
 		this.partTab(aTab);
+
+		this.collapseExpandTab(aTab, false);
 	},
  
 	onUnpinTab : function TSTBrowser_onUnpinTab(aTab) 
