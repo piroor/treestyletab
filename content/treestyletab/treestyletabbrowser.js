@@ -2903,6 +2903,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 		else if (
 			'TabsOnTop' in window &&
+			!this.getTabFromEvent(aEvent) &&
 			(
 				this.currentTabbarPosition != 'top' ||
 				!TabsOnTop.enabled
