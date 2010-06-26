@@ -3212,12 +3212,14 @@ TreeStyleTabBrowser.prototype = {
 			info.target = tab;
 		}
 
-		var boxPos  = tab.boxObject[this.positionProp];
-		var boxUnit = Math.round(tab.boxObject[this.sizeProp] / 3);
-		if (aEvent[this.positionProp] < boxPos + boxUnit) {
+		var positionProp = this.isVertical && tab.pinned ? this.invertedPositionProp : this.positionProp ;
+		var sizeProp = this.isVertical && tab.pinned ? this.invertedSizeProp : this.sizeProp ;
+		var boxPos  = tab.boxObject[positionProp];
+		var boxUnit = Math.round(tab.boxObject[sizeProp] / 3);
+		if (aEvent[positionProp] < boxPos + boxUnit) {
 			info.position = isInverted ? this.kDROP_AFTER : this.kDROP_BEFORE ;
 		}
-		else if (aEvent[this.positionProp] > boxPos + boxUnit + boxUnit) {
+		else if (aEvent[positionProp] > boxPos + boxUnit + boxUnit) {
 			info.position = isInverted ? this.kDROP_BEFORE : this.kDROP_AFTER ;
 		}
 		else {
