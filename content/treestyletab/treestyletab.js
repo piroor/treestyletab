@@ -699,11 +699,16 @@ try{
 			).singleNodeValue)
 			this.clearDropPosition();
 
-		if (setEffectAllowedFunc ?
+		if (
+			!info.canDrop ||
+			(setEffectAllowedFunc ?
 				(setEffectAllowedFunc(aEvent) == 'none') :
 				!aTabBrowser.canDrop(aEvent, session)
 			)
+			) {
+			aEvent.dataTransfer.effectAllowed = "none";
 			return true;
+		}
 
 		info.target.setAttribute(
 			this.kDROP_POSITION,
