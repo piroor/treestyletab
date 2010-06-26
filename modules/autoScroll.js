@@ -17,9 +17,16 @@
 if (typeof window == 'undefined') {
 	this.EXPORTED_SYMBOLS = ['autoScroll'];
 
-	let ns = {};
-	Components.utils.import('resource://treestyletab-modules/namespace.jsm', ns);
-	/* var */ window = ns.getNamespaceFor('piro.sakura.ne.jp');
+	// If namespace.jsm is available, export symbols to the shared namespace.
+	// See: http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/namespace.jsm
+	try {
+		let ns = {};
+		Components.utils.import('resource://treestyletab-modules/namespace.jsm', ns);
+		/* var */ window = ns.getNamespaceFor('piro.sakura.ne.jp');
+	}
+	catch(e) {
+		window = {};
+	}
 }
 
 (function() {

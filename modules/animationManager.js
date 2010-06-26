@@ -18,21 +18,27 @@
    // restart after doing something
    window['piro.sakura.ne.jp'].animationManager.start();
 
- lisence: The MIT License, Copyright (c) 2009 SHIMODA "Piro" Hiroshi
+ lisence: The MIT License, Copyright (c) 2009-2010 SHIMODA "Piro" Hiroshi
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/license.txt
  original:
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/animationManager.js
 */
 
-/* To work as a JS Code Module (*require namespace.jsm and jstimer.jsm)
-   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/namespace.jsm
+/* To work as a JS Code Module (*require jstimer.jsm)
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/jstimer.jsm */
 if (typeof window == 'undefined') {
 	this.EXPORTED_SYMBOLS = ['animationManager'];
 
+	// If namespace.jsm is available, export symbols to the shared namespace.
+	// See: http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/namespace.jsm
 	let ns = {};
-	Components.utils.import('resource://treestyletab-modules/namespace.jsm', ns);
-	/* var */ window = ns.getNamespaceFor('piro.sakura.ne.jp');
+	try {
+		Components.utils.import('resource://treestyletab-modules/namespace.jsm', ns);
+		/* var */ window = ns.getNamespaceFor('piro.sakura.ne.jp');
+	}
+	catch(e) {
+		window = {};
+	}
 	if (!('setInterval' in window))
 		Components.utils.import('resource://treestyletab-modules/jstimer.jsm', window);
 }
