@@ -3648,6 +3648,14 @@ TreeStyleTabBrowser.prototype = {
 			return;
 		}
 
+		currentParent = aParent;
+		do {
+			if (currentParent != aChild) continue;
+			// this.fireAttachedEvent(aChild, aParent);
+			return;
+		}
+		while (currentParent = this.getParentTab(currentParent));
+
 		shouldInheritIndent = (
 			!currentParent ||
 			(currentParent.getAttribute(this.kNEST) == aParent.getAttribute(this.kNEST))
