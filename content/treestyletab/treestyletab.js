@@ -877,6 +877,7 @@ catch(e) {
 	{
 		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
 		var tabbar = b.mTabContainer;
+		var strip = b.treeStyleTab.tabStrip;
 		var sv = b.treeStyleTab;
 		var dt = aEvent.dataTransfer;
 
@@ -905,8 +906,8 @@ catch(e) {
 			return;
 
 		// ignore drop near the tab bar
-		var box = tabbar.boxObject;
-		var ignoreArea = Math.max(16, parseInt(tabbar.firstChild.boxObject.height / 2));
+		var box = strip.boxObject;
+		var ignoreArea = Math.max(16, parseInt(this.getFirstNormalTab(b).boxObject.height / 2));
 		x = box.screenX - (sv.isVertical ? ignoreArea : 0 );
 		y = box.screenY - ignoreArea;
 		w = box.width + (sv.isVertical ? ignoreArea + ignoreArea : 0 );
