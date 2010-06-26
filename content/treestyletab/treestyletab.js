@@ -421,6 +421,9 @@ var TreeStyleTabService = {
 						'false' :
 						'dt.effectAllowed = "none"'
 					)
+				).replace(
+					'sourceNode.parentNode == this &&',
+					'$& TSTTabBrowser.treeStyleTab.getTabFromEvent(event) == sourceNode &&'
 				)
 			);
 		}
