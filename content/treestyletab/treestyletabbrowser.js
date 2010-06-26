@@ -1291,8 +1291,11 @@ TreeStyleTabBrowser.prototype = {
 			strip.style.top = (box.screenY - root.screenY)+'px';
 			strip.style.left = (box.screenX - root.screenX)+'px';
 
-			strip.style.width = (tabContainerBox.width = box.width)+'px';
-			strip.style.height = (tabContainerBox.height = box.height)+'px';
+			let width = parseInt(this._tabStripPlaceHolder.getAttribute('width') || box.width);
+			let height = parseInt(this._tabStripPlaceHolder.getAttribute('height') || box.height);
+
+			strip.style.width = (tabContainerBox.width = width)+'px';
+			strip.style.height = (tabContainerBox.height = height)+'px';
 
 			tabContainerBox.collapsed = (this.splitter && this.splitter.getAttribute('state') == 'collapsed');
 		}
