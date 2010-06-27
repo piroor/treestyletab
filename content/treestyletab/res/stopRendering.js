@@ -12,7 +12,7 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/stopRendering.js
 */
 (function() {
-	const currentRevision = 6;
+	const currentRevision = 7;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -34,6 +34,7 @@
 		revision : currentRevision,
 
 		_stopLevel : 0,
+		_listening : false,
 
 		get baswWindow()
 		{
@@ -51,6 +52,10 @@
 			}
 			else {
 				this.baswWindow.setPosition(window.top.innerWidth * 3, window.top.innerHeight * 3);
+				if (!this._listening) {
+					window.addEventListener('mousedown', this, true);
+					this._listening = true;
+				}
 			}
 			this._stopLevel++;
 		},
@@ -60,6 +65,11 @@
 			this._stopLevel--;
 			if (this._stopLevel > 0)
 				return;
+
+			if (this._listening) {
+				window.removeEventListener('mousedown', this, true);
+				this._listening = false;
+			}
 
 			this._stopLevel = 0;
 
@@ -122,6 +132,13 @@
 						if (index > -1)
 							this._popups.splice(index, 1);
 					}
+					return;
+
+				case 'mousedown':
+					this._stopLevel = 0;
+					this.hideCanvas();
+					aEvent.stopPropagation();
+					aEvent.preventDefault();
 					return;
 			}
 		},
@@ -236,12 +253,6 @@
 			this.shown = false;
 		},
 
-		onClick : function(aEvent)
-		{
-			this._stopLevel = 0;
-			this.hideCanvas();
-		},
-
 
 		get browsers()
 		{
@@ -291,7 +302,7 @@
 
 			var box = document.createElement('box');
 			box.setAttribute('id', 'fullScreenCanvas-box');
-			box.setAttribute('onclick', 'window["piro.sakura.ne.jp"].stopRendering.onClick(event);');
+			box.setAttribute('onmousedown', 'window["piro.sakura.ne.jp"].stopRendering.handleEvent(event);');
 			this.box = box;
 
 			box.appendChild(canvas);
