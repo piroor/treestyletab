@@ -1202,6 +1202,13 @@ catch(e) {
 				'TreeStyleTabService.onPrintPreviewExit(); $1'
 			));
 		}
+
+		if ('TabsOnTop' in window && TabsOnTop.syncCommand) {
+			eval('TabsOnTop.syncCommand = '+TabsOnTop.syncCommand.toSource().replace(
+				/(\}\)?)$/,
+				'gBrowser.treeStyleTab.onTabsOnTopSyncCommand(enabled); $&'
+			));
+		}
 	},
 	_splitFunctionNames : function TSTService__splitFunctionNames(aString)
 	{
@@ -1716,12 +1723,14 @@ catch(e) {
 		if (!('_tabsOnTopDefaultState' in this))
 			this._tabsOnTopDefaultState = TabsOnTop.enabled;
 
-		if (gBrowser.treeStyleTab.currentTabbarPosition != 'true' ||
+		if (gBrowser.treeStyleTab.currentTabbarPosition != 'top' ||
 			!gBrowser.treeStyleTab.isFixed) {
-			TabsOnTop.enabled = false;
+			if (TabsOnTop.enabled)
+				TabsOnTop.enabled = false;
 		}
 		else if ('_tabsOnTopDefaultState' in this) {
-			TabsOnTop.enabled = this._tabsOnTopDefaultState;
+			if (TabsOnTop.enabled!= this._tabsOnTopDefaultState)
+				TabsOnTop.enabled = this._tabsOnTopDefaultState;
 			delete this._tabsOnTopDefaultState;
 		}
 	},

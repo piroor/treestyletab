@@ -1212,13 +1212,13 @@ TreeStyleTabBrowser.prototype = {
 		var toggleTabsOnTop = document.getElementById('cmd_ToggleTabsOnTop');
 		if (this.isVertical) {
 			orient = 'vertical';
-			this.setTabbrowserAttribute(this.kFIXED, b.treeStyleTab.isFixed ? 'true' : null , b);
+			this.setTabbrowserAttribute(this.kFIXED, this.isFixed ? 'true' : null , b);
 			if (toggleTabsOnTop)
 				toggleTabsOnTop.setAttribute('disabled', true);
 		}
 		else {
 			orient = 'horizontal';
-			if (b.treeStyleTab.isFixed) {
+			if (this.isFixed) {
 				this.setTabbrowserAttribute(this.kFIXED, true, b);
 				if (!this.isMultiRow()) {
 					this.removeTabStripAttribute('height');
@@ -1235,20 +1235,21 @@ TreeStyleTabBrowser.prototype = {
 						}, 0);
 					}
 				}
-				if (toggleTabsOnTop) {
-					if (this.currentTabbarPosition == 'top')
-						toggleTabsOnTop.removeAttribute('disabled');
-					else
-						toggleTabsOnTop.setAttribute('disabled', true);
-				}
 			}
 			else {
 				this.removeTabbrowserAttribute(this.kFIXED, b);
 				this.setTabStripAttribute('height', this.maxTabbarHeight(this.getTreePref('tabbar.height'), b));
-				if (toggleTabsOnTop)
+			}
+			if (toggleTabsOnTop) {
+				if (this.currentTabbarPosition == 'top')
+					toggleTabsOnTop.removeAttribute('disabled');
+				else
 					toggleTabsOnTop.setAttribute('disabled', true);
 			}
 		}
+
+		if ('TabsOnTop' in window)
+			TabsOnTop.enabled = TabsOnTop.enabled && this.currentTabbarPosition == 'top' && this.isFixed;
 
 		window.setTimeout(function(aSelf) {
 			aSelf.updateFloatingTabbar();
@@ -1263,6 +1264,21 @@ TreeStyleTabBrowser.prototype = {
 		this.setTabbrowserAttribute(this.kHIDE_ALLTABS, this.getTreePref('tabbar.hideAlltabsButton.'+orient) ? 'true' : null);
 
 		this.updateAllTabsIndent();
+	},
+ 
+	onTabsOnTopSyncCommand : function TSTBrowser_onTabsOnTopSyncCommand(aEnabled) 
+	{
+		if (
+			!aEnabled ||
+			this.currentTabbarPosition != 'top' ||
+			this.isFixed
+			)
+			return;
+		window.setTimeout(function(aTabBrowser) {
+			TreeStyleTabService.toggleFixed(aTabBrowser);
+			if (TabsOnTop.enabled != aEnabled)
+				TabsOnTop.enabled = aEnabled;
+		}, 0, this.mTabBrowser);
 	},
  
 	updateFloatingTabbar : function TSTBrowser_updateFloatingTabbar(aJustNow) 
@@ -1321,7 +1337,7 @@ TreeStyleTabBrowser.prototype = {
 			return;
 
 		if (!positioned) {
-			toolbox.removeAttribute('height', height);
+			toolbox.removeAttribute('height');
 		}
 		else {
 			// hack to reset the height of the toolbox
