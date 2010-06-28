@@ -33,11 +33,13 @@ function setTimeout()
 	var args = Array.slice(arguments);
 	var callback = args.shift();
 	var timeout = args.shift();
+	if (typeof callback != 'string') {
+		let source = callback;
+		callback = function() { source.apply(getGlobal(), args); };
+		callback.source = source;
+	}
 	return (new Timer(
-		(typeof callback == 'string' ?
-			callback :
-			function() { callback.apply(getGlobal(), args); }
-		),
+		callback,
 		timeout,
 		Ci.nsITimer.TYPE_ONE_SHOT
 	)).id;
@@ -53,11 +55,13 @@ function setInterval()
 	var args = Array.slice(arguments);
 	var callback = args.shift();
 	var interval = args.shift();
+	if (typeof callback != 'string') {
+		let source = callback;
+		callback = function() { source.apply(getGlobal(), args); };
+		callback.source = source;
+	}
 	return (new Timer(
-		(typeof callback == 'string' ?
-			callback :
-			function() { callback.apply(getGlobal(), args); }
-		),
+		callback,
 		interval,
 		Ci.nsITimer.TYPE_REPEATING_SLACK
 	)).id;
@@ -88,6 +92,8 @@ Timer.prototype = {
 	cancel : function()
 	{
 		if (!this.timer) return;
+
+		this.timer.cancel();
 		delete this.timer;
 		delete this.callback;
 		this.finished = true;
