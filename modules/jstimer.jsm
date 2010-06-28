@@ -41,7 +41,8 @@ function setTimeout()
 	return (new Timer(
 		callback,
 		timeout,
-		Ci.nsITimer.TYPE_ONE_SHOT
+		Ci.nsITimer.TYPE_ONE_SHOT,
+		getOwnerWindowFromCaller(arguments.callee.caller)
 	)).id;
 }
 
@@ -63,7 +64,8 @@ function setInterval()
 	return (new Timer(
 		callback,
 		interval,
-		Ci.nsITimer.TYPE_REPEATING_SLACK
+		Ci.nsITimer.TYPE_REPEATING_SLACK,
+		getOwnerWindowFromCaller(arguments.callee.caller)
 	)).id;
 }
 
@@ -73,10 +75,11 @@ function clearInterval(aId)
 }
 
 
-function Timer(aCallback, aTime, aType) {
+function Timer(aCallback, aTime, aType, aOwner) {
 	this.finished = false;
 	this.callback = aCallback;
 	this.type = aType;
+	this.owner = aOwner;
 	this.init(aTime);
 
 	Timer.instances[this.id] = this;
@@ -103,6 +106,15 @@ Timer.prototype = {
 	observe : function(aSubject, aTopic, aData)
 	{
 		if (aTopic != 'timer-callback') return;
+
+		if (this.owner && this.owner.closed) {
+			dump('jstimer.jsm:'+
+				'  timer is stopped because the owner window was closed.\n'+
+				'  type: '+(this.type == Ci.nsITimer.TYPE_ONE_SHOT ? 'TYPE_ONE_SHOT' : 'TYPE_REPEATING_SLACK' )+'\n'+
+				'  callback: '+(this.callback.source || this.callback)+'\n');
+			this.cancel();
+			return;
+		}
 
 		if (typeof this.callback == 'function')
 			this.callback();
@@ -132,4 +144,16 @@ function evalInSandbox(aCode, aSandboxOwner)
 function getGlobal()
 {
 	return (function() { return this; })();
+}
+
+function getOwnerWindowFromCaller(aCaller)
+{
+	try {
+		var global = aCaller.valueOf.call(null);
+		if (global && global instanceof Ci.nsIDOMWindow)
+			return global;
+	}
+	catch(e) {
+	}
+	return null;
 }
