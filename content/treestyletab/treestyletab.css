@@ -88,7 +88,9 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-stack > *:first-child + * > hbox:
 	height: 24px !important;
 }
 
-#TabsToolbar {
+#TabsToolbar,
+#navigator-toolbox[tabsontop="true"] > #TabsToolbar,
+#navigator-toolbox:not([tabsontop="true"]) > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"] + #TabsToolbar:last-child {
 	-moz-binding: url(treestyletab.xml#tabs-toolbar);
 }
 #TabsToolbar:not([treestyletab-tabbar-position="top"]),

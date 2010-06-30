@@ -13,7 +13,7 @@
 	</binding>
 
 	<binding id="tabs-toolbar"
-		extends="chrome://global/content/bindings/toolbar.xml#toolbar">
+		extends="chrome://global/content/bindings/toolbar.xml#toolbar-drag">
 		<content><xul:hbox flex="1"
 		                   xbl:inherits="orient"
 		                   anonid="toolbar-innerbox"
