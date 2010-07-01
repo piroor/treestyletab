@@ -1180,7 +1180,12 @@ TreeStyleTabService.overrideExtensionsDelayed = function TSTService_overrideExte
 	// http://www.mozilla.com/en-US/firefox/sync/
 	if ('gFxWeaveGlue' in window) {
 		let ns = {};
-		Components.utils.import('resource://weave/service.js', ns);
+		try { // 1.4
+			Components.utils.import('resource://services-sync/service.js', ns);
+		}
+		catch(e) { // 1.3
+			Components.utils.import('resource://weave/service.js', ns);
+		}
 		let engine = ns.Weave.Engines.get('tabs');
 		let listener = {
 				handleEvent : function(aEvent)
