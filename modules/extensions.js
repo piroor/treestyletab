@@ -100,6 +100,12 @@ if (typeof window == 'undefined') {
 				};
 			if (typeof aOKCallback != 'function')
 				callbacks = aOKCallback;
+
+			if (!('ok' in callbacks) || typeof callbacks.ok != 'function')
+				callbacks.ok = function() {};
+			if (!('ng' in callbacks) || typeof callbacks.ng != 'function')
+				callbacks.ng = function() {};
+
 			return callbacks;
 		},
 
