@@ -285,15 +285,16 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.addEventListener('dblclick',  this, true);
 		b.mTabContainer.addEventListener('select', this, true);
 		b.mTabContainer.addEventListener('scroll', this, true);
-		strip.addEventListener('dragstart', this, false);
-		strip.addEventListener('dragenter', this, false);
-		strip.addEventListener('dragleave', this, false);
-		strip.addEventListener('dragend',   this, false);
-		strip.addEventListener('dragover',  this, false);
-		strip.addEventListener('drop',      this, false);
-		strip.addEventListener('mousedown', this, true);
-		strip.addEventListener('mouseup',   this, false);
-		strip.addEventListener('click',     this, true);
+		strip.addEventListener('dragstart',       this, false);
+		strip.addEventListener('dragenter',       this, false);
+		strip.addEventListener('dragleave',       this, false);
+		strip.addEventListener('dragend',         this, false);
+		strip.addEventListener('dragover',        this, false);
+		strip.addEventListener('drop',            this, false);
+		strip.addEventListener('MozMouseHittest', this, true); // to block default behaviors of the tab bar
+		strip.addEventListener('mousedown',       this, true);
+		strip.addEventListener('mouseup',         this, false);
+		strip.addEventListener('click',           this, true);
 		b.mPanelContainer.addEventListener('dragleave', this, false);
 		b.mPanelContainer.addEventListener('dragover',  this, false);
 		b.mPanelContainer.addEventListener('drop',      this, true);
@@ -1514,15 +1515,16 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.removeEventListener('dblclick',  this, true);
 		b.mTabContainer.removeEventListener('select', this, true);
 		b.mTabContainer.removeEventListener('scroll', this, true);
-		strip.removeEventListener('dragstart', this, false);
-		strip.removeEventListener('dragenter', this, false);
-		strip.removeEventListener('dragleave', this, false);
-		strip.removeEventListener('dragend',   this, false);
-		strip.removeEventListener('dragover',  this, false);
-		strip.removeEventListener('drop',      this, false);
-		strip.removeEventListener('mousedown', this, true);
-		strip.removeEventListener('mouseup',   this, false);
-		strip.removeEventListener('click',     this, true);
+		strip.removeEventListener('dragstart',       this, false);
+		strip.removeEventListener('dragenter',       this, false);
+		strip.removeEventListener('dragleave',       this, false);
+		strip.removeEventListener('dragend',         this, false);
+		strip.removeEventListener('dragover',        this, false);
+		strip.removeEventListener('drop',            this, false);
+		strip.removeEventListener('MozMouseHittest', this, true);
+		strip.removeEventListener('mousedown',       this, true);
+		strip.removeEventListener('mouseup',         this, false);
+		strip.removeEventListener('click',           this, true);
 		b.mPanelContainer.removeEventListener('dragleave', this, false);
 		b.mPanelContainer.removeEventListener('dragover',  this, false);
 		b.mPanelContainer.removeEventListener('drop',      this, true);
@@ -1826,6 +1828,9 @@ TreeStyleTabBrowser.prototype = {
 
 			case 'dblclick':
 				return this.onDblClick(aEvent);
+
+			case 'MozMouseHittest': // to block default behaviors of the tab bar
+				return this.onMozMouseHittest(aEvent);
 
 			case 'mousedown':
 				return this.onMouseDown(aEvent);
@@ -2909,6 +2914,22 @@ TreeStyleTabBrowser.prototype = {
 		}
 	},
  
+	onMozMouseHittest : function TSTBrowser_onMozMouseHittest(aEvent) 
+	{
+		// block default behaviors of the tab bar (dragging => window move, etc.)
+		if (
+			'TabsOnTop' in window &&
+			(
+				this.currentTabbarPosition != 'top' ||
+				!TabsOnTop.enabled ||
+				aEvent.shiftKey
+			) &&
+			this.tabbarDNDObserver.canDragTabbar(aEvent)
+			) {
+			aEvent.stopPropagation();
+		}
+	},
+ 
 	onMouseDown : function TSTBrowser_onMouseDown(aEvent) 
 	{
 		if (
@@ -2917,16 +2938,8 @@ TreeStyleTabBrowser.prototype = {
 			) {
 			this.getTabFromEvent(aEvent).__treestyletab__preventSelect = true;
 		}
-		else if (
-			'TabsOnTop' in window &&
-			!this.getTabFromEvent(aEvent) &&
-			(
-				this.currentTabbarPosition != 'top' ||
-				!TabsOnTop.enabled
-			) &&
-			this.tabbarDNDObserver.canDragTabbar(aEvent)
-			) {
-			aEvent.stopPropagation();
+		else {
+			this.onMozMouseHittest(aEvent);
 		}
 	},
  
