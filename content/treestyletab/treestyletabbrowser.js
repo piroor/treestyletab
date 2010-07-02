@@ -1796,7 +1796,7 @@ TreeStyleTabBrowser.prototype = {
 			this.getPref('extensions.informationaltab.thumbnail.position') < 100
 			) {
 			let self = this;
-			this.extensions.checkAvailable('informationaltab@piro.sakura.ne.jp', {
+			this.extensions.isAvailable('informationaltab@piro.sakura.ne.jp', {
 				ok : function() {
 					aStyle = 'retro';
 					self.setTabbrowserAttribute(self.kTWISTY_STYLE, aStyle);

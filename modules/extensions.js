@@ -92,7 +92,7 @@ if (typeof window == 'undefined') {
 			return addon;
 		},
 
-		_formatCallbacks : function()
+		_formatCallbacks : function(aOKCallback, aNGCallback)
 		{
 			var callbacks = {
 					ok : aOKCallback,
