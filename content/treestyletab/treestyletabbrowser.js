@@ -692,7 +692,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		this.onPrefChange('extensions.treestyletab.tabbar.style');
-		this.onPrefChange('extensions.treestyletab.twisty.style');
+		// this.onPrefChange('extensions.treestyletab.twisty.style');
 		this.onPrefChange('extensions.treestyletab.showBorderForFirstTab');
 		this.onPrefChange('extensions.treestyletab.tabbar.invertTabContents');
 		this.onPrefChange('extensions.treestyletab.tabbar.invertClosebox');
@@ -1781,21 +1781,33 @@ TreeStyleTabBrowser.prototype = {
 	},
 	setTwistyStyle : function TSTBrowser_setTwistyStyle(aStyle)
 	{
-		if (aStyle == 'auto') {
-			if (this.getTreePref('tabbar.style') == 'sidebar') {
-				aStyle = 'osx';
-			}
-			else if (
-				this.extensions.isAvailable('informationaltab@piro.sakura.ne.jp') &&
-				this.getPref('extensions.informationaltab.thumbnail.enabled') &&
-				this.getPref('extensions.informationaltab.thumbnail.position') < 100
-				) {
-				aStyle = 'retro';
-			}
-			else {
-				aStyle = 'modern-black';
-			}
+		if (aStyle != 'auto') {
+			this.setTabbrowserAttribute(this.kTWISTY_STYLE, aStyle);
+			return;
 		}
+
+		aStyle = 'modern-black';
+
+		if (this.getTreePref('tabbar.style') == 'sidebar') {
+			aStyle = 'osx';
+		}
+		else if (
+			this.getPref('extensions.informationaltab.thumbnail.enabled') &&
+			this.getPref('extensions.informationaltab.thumbnail.position') < 100
+			) {
+			let self = this;
+			this.extensions.checkAvailable('informationaltab@piro.sakura.ne.jp', {
+				ok : function() {
+					aStyle = 'retro';
+					self.setTabbrowserAttribute(self.kTWISTY_STYLE, aStyle);
+				},
+				ng : function() {
+					self.setTabbrowserAttribute(self.kTWISTY_STYLE, aStyle);
+				}
+			});
+			return;
+		}
+
 		this.setTabbrowserAttribute(this.kTWISTY_STYLE, aStyle);
 	},
   

@@ -2,13 +2,34 @@
  Extensions Compatibility Library
 
  Usage:
-   if (window['piro.sakura.ne.jp'].extensions.isAvailable('my.extension.id@example.com'))
-       window['piro.sakura.ne.jp'].extensions.goToOptions('my.extension.id@example.com');
-   // just same to:
-   // if (window['piro.sakura.ne.jp'].extensions.isInstalled('my.extension.id@example.com') &&
-   //     window['piro.sakura.ne.jp'].extensions.isEnabled('my.extension.id@example.com'))
-   //     window['piro.sakura.ne.jp'].extensions.goToOptions('my.extension.id@example.com');
-   var dir = window['piro.sakura.ne.jp'].extensions.getInstalledLocation('my.extension.id@example.com');
+   Asynchronus:
+     var extensions = window['piro.sakura.ne.jp'].extensions;
+     extensions.isAvailable('my.extension.id@example.com', {
+       ok : function() { extensions.goToOptions('my.extension.id@example.com'); },
+       ng : function() { alert('NOT INSTALLED'); }
+     });
+     // just same to:
+     // extensions.isInstalled('my.extension.id@example.com', {
+     //   ok : function() {
+     //     extensions.isEnabled('my.extension.id@example.com', {
+     //       ok : function() { extensions.goToOptions('my.extension.id@example.com'); }
+     //     });
+     //   }
+     // });
+     extensions.isInstalled('my.extension.id@example.com', {
+       ok : function(aDir) {
+         var dir = aDir; // nsILocalFile
+       }
+     });
+
+   Synchronus: (DEPRECATED)
+     if (extensions.isAvailable('my.extension.id@example.com'))
+         extensions.goToOptions('my.extension.id@example.com');
+     // just same to:
+     // if (extensions.isInstalled('my.extension.id@example.com') &&
+     //     extensions.isEnabled('my.extension.id@example.com'))
+     //     extensions.goToOptions('my.extension.id@example.com');
+     var dir = extensions.getInstalledLocation('my.extension.id@example.com'); // nsILocalFile
 
  lisence: The MIT License, Copyright (c) 2009-2010 SHIMODA "Piro" Hiroshi
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/license.txt
@@ -16,8 +37,7 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/extensions.js
 */
 
-/* To work as a JS Code Module (*require namespace.jsm)
-   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/namespace.jsm */
+/* To work as a JS Code Module */
 if (typeof window == 'undefined') {
 	this.EXPORTED_SYMBOLS = ['extensions'];
 
@@ -34,7 +54,7 @@ if (typeof window == 'undefined') {
 }
 
 (function() {
-	const currentRevision = 6;
+	const currentRevision = 7;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -57,7 +77,7 @@ if (typeof window == 'undefined') {
 		revision : currentRevision,
 
 		// Firefox 3.7 or later
-		getInstalledAddon : function(aId)
+		_getInstalledAddon : function(aId)
 		{
 			var addon;
 			AM.AddonManager.getAddonByID(aId, function(aAddon) {
@@ -72,58 +92,118 @@ if (typeof window == 'undefined') {
 			return addon;
 		},
 
+		_formatCallbacks : function()
+		{
+			var callbacks = {
+					ok : aOKCallback,
+					ng : aNGCallback
+				};
+			if (typeof aOKCallback != 'function')
+				callbacks = aOKCallback;
+			return callbacks;
+		},
+
 		// Firefox 3.6 or older
-		ExtensionManager : ('@mozilla.org/extensions/manager;1' in Cc) ?
+		_ExtensionManager : ('@mozilla.org/extensions/manager;1' in Cc) ?
 			Cc['@mozilla.org/extensions/manager;1']
 				.getService(Ci.nsIExtensionManager) :
 			null,
-		RDF : Cc['@mozilla.org/rdf/rdf-service;1']
+		_RDF : Cc['@mozilla.org/rdf/rdf-service;1']
 			.getService(Ci.nsIRDFService),
-		WindowMediator : Cc['@mozilla.org/appshell/window-mediator;1']
+		_WindowMediator : Cc['@mozilla.org/appshell/window-mediator;1']
 			.getService(Ci.nsIWindowMediator),
-		Prefs : Cc['@mozilla.org/preferences;1']
+		_Prefs : Cc['@mozilla.org/preferences;1']
 			.getService(Ci.nsIPrefBranch),
 
-		isAvailable : function(aId)
+
+		isAvailable : function(aId, aOKCallback, aNGCallback)
 		{
-			return this.ExtensionManager ? this.isAvailable_EM(aId) : this.isAvailable_AM(aId) ;
+			if (!aOKCallback)
+				return this._ExtensionManager ? this._isAvailable_EM(aId) : this._isAvailable_AM(aId) ;
+
+			var callbacks = this._formatCallbacks(aOKCallback, aNGCallback);
+			if (this._ExtensionManager) {
+				if (this._isAvailable_EM(aId))
+					callbacks.ok();
+				else
+					callbacks.ng();
+			}
+			else {
+				AM.AddonManager.getAddonByID(aId, function(aAddon) {
+					if (aAddon && aAddon.isActive)
+						callbacks.ok();
+					else
+						callbacks.ng();
+				});
+			}
 		},
-		isAvailable_EM : function(aId)
+		_isAvailable_EM : function(aId)
 		{
-			return (this.isInstalled_EM(aId) && this.isEnabled_EM(aId)) ? true : false ;
+			return (this._isInstalled_EM(aId) && this._isEnabled_EM(aId)) ? true : false ;
 		},
-		isAvailable_AM : function(aId)
+		_isAvailable_AM : function(aId)
 		{
-			var addon = this.getInstalledAddon(aId);
+			var addon = this._getInstalledAddon(aId);
 			if (!addon) return false;
 			return addon.isActive;
 		},
 
-		isInstalled : function(aId)
+
+		isInstalled : function(aId, aOKCallback, aNGCallback)
 		{
-			return this.ExtensionManager ? this.isInstalled_EM(aId) : this.isInstalled_AM(aId) ;
+			if (!aOKCallback)
+				return this._ExtensionManager ? this._isInstalled_EM(aId) : this._isInstalled_AM(aId) ;
+
+			var callbacks = this._formatCallbacks(aOKCallback, aNGCallback);
+			if (this._ExtensionManager) {
+				if (this._isInstalled_EM(aId))
+					callbacks.ok(this._getInstalledLocation_EM(aId));
+				else
+					callbacks.ng(null);
+			}
+			else {
+				AM.AddonManager.getAddonByID(aId, function(aAddon) {
+					if (aAddon)
+						callbacks.ok(null);
+					else
+						callbacks.ng(null);
+				});
+			}
 		},
-		isInstalled_EM : function(aId)
+		_isInstalled_EM : function(aId)
 		{
-			return this.ExtensionManager.getInstallLocation(aId) ? true : false ;
+			return this._ExtensionManager.getInstallLocation(aId) ? true : false ;
 		},
-		isInstalled_AM : function(aId)
+		_isInstalled_AM : function(aId)
 		{
-			return this.getInstalledAddon(aId) ? true : false ;
+			return this._getInstalledAddon(aId) ? true : false ;
 		},
 
-		isEnabled : function(aId)
+
+		isEnabled : function(aId, aOKCallback, aNGCallback)
 		{
-			return this.ExtensionManager ? this.isEnabled_EM(aId) : this.isEnabled_AM(aId) ;
+			if (!aOKCallback)
+				return this._ExtensionManager ? this._isEnabled_EM(aId) : this._isEnabled_AM(aId) ;
+
+			var callbacks = this._formatCallbacks(aOKCallback, aNGCallback);
+			if (this._ExtensionManager) {
+				if (this._isInstalled_EM(aId))
+					callbacks.ok();
+				else
+					callbacks.ng();
+			}
+			else {
+				this.isAvailable(aId, callbacks);
+			}
 		},
-		isEnabled_EM : function(aId)
+		_isEnabled_EM : function(aId)
 		{
-			var res  = this.RDF.GetResource('urn:mozilla:item:'+aId);
+			var res  = this._RDF.GetResource('urn:mozilla:item:'+aId);
 			var appDisabled = false;
 			try {
-				appDisabled = this.ExtensionManager.datasource.GetTarget(
+				appDisabled = this._ExtensionManager.datasource.GetTarget(
 						res,
-						this.RDF.GetResource('http://www.mozilla.org/2004/em-rdf#appDisabled'),
+						this._RDF.GetResource('http://www.mozilla.org/2004/em-rdf#appDisabled'),
 						true
 					).QueryInterface(Ci.nsIRDFLiteral)
 					.Value == 'true';
@@ -132,9 +212,9 @@ if (typeof window == 'undefined') {
 			}
 			var userDisabled = false;
 			try {
-				userDisabled = this.ExtensionManager.datasource.GetTarget(
+				userDisabled = this._ExtensionManager.datasource.GetTarget(
 						res,
-						this.RDF.GetResource('http://www.mozilla.org/2004/em-rdf#userDisabled'),
+						this._RDF.GetResource('http://www.mozilla.org/2004/em-rdf#userDisabled'),
 						true
 					).QueryInterface(Ci.nsIRDFLiteral)
 					.Value == 'true';
@@ -144,17 +224,101 @@ if (typeof window == 'undefined') {
 
 			return !appDisabled && !userDisabled;
 		},
-		isEnabled_AM : function(aId)
+		_isEnabled_AM : function(aId)
 		{
 			return false;
 		},
 
+
+		getInstalledLocation : function(aId, aCallback)
+		{
+			if (!aCallback)
+				return this._ExtensionManager ? this._getInstalledLocation_EM(aId) : this._getInstalledLocation_AM(aId) ;
+
+			if (this._ExtensionManager) {
+				aCallback(this._getInstalledLocation_EM(aId));
+			}
+			else {
+				AM.AddonManager.getAddonByID(aId, function(aAddon) {
+					var location = null;
+					if (aAddon && aAddon.isActive) {
+						location = aAddon.getResourceURI('/').QueryInterface(Ci.nsIFileURL).file.clone();
+					}
+					aCallback(location);
+				});
+			}
+		},
+		_getInstalledLocation_EM : function(aId)
+		{
+			var addon = this._ExtensionManager.getInstallLocation(aId);
+			if (!addon) return;
+			var dir = addon.location.clone();
+			dir.append(aId);
+			return dir;
+		},
+		_getInstalledLocation_AM : function(aId)
+		{
+			var addon = this._getInstalledAddon(aId);
+			if (!addon || !addon.isActive) return null;
+			return aAddon.getResourceURI('/').QueryInterface(Ci.nsIFileURL).file.clone();
+		},
+
+
 		goToOptions : function(aId, aOwnerWindow)
 		{
-			var uri = this.ExtensionManager ? this.getOptionsURI_EM(aId) : this.getOptionsURI_AM(aId) ;
-			if (!uri) return;
+			var self = this;
+			var callback = function(aURI) {
+					self.goToOptionsInternal(aURI, aOwnerWindow);
+				};
 
-			var windows = this.WindowMediator.getEnumerator(null);
+			if (this._ExtensionManager)
+				this._getOptionsURI_EM(aId, callback);
+			else
+				this._getOptionsURI_AM(aId, callback);
+		},
+		_getOptionsURI_EM : function(aId, aCallback)
+		{
+			var res  = this._RDF.GetResource('urn:mozilla:item:'+aId);
+			var uri = null;
+			try {
+				uri = this._ExtensionManager.datasource.GetTarget(
+						res,
+						this._RDF.GetResource('http://www.mozilla.org/2004/em-rdf#optionsURL'),
+						true
+					).QueryInterface(Ci.nsIRDFLiteral)
+					.Value;
+			}
+			catch(e) {
+			}
+			return aCallback ? aCallback(uri) : uri ;
+		},
+		_getOptionsURI_AM : function(aId, aCallback)
+		{
+			if (aCallback) {
+				AM.AddonManager.getAddonByID(aId, function(aAddon) {
+					aCallback(aAddon && aAddon.isActive ? aAddon.optionsURL : null );
+				});
+				return null;
+			}
+			else {
+				var addon = this._getInstalledAddon(aId);
+				return (addon && addon.isActive) ? addon.optionsURL : null ;
+			}
+		},
+
+		goToOptionsNow : function(aId, aOwnerWindow)
+		{
+			this.goToOptionsInternal(
+				(this._ExtensionManager ? this._getOptionsURI_EM(aId) : this._getOptionsURI_AM(aId) ),
+				aOwnerWindow
+			);
+		},
+
+		goToOptionsInternal : function(aURI, aOwnerWindow)
+		{
+			if (!aURI) return;
+
+			var windows = this._WindowMediator.getEnumerator(null);
 			while (windows.hasMoreElements())
 			{
 				let win = windows.getNext();
@@ -165,7 +329,7 @@ if (typeof window == 'undefined') {
 			}
 			var instantApply = false;
 			try {
-				instantApply = this.Prefs.getBoolPref('browser.preferences.instantApply');
+				instantApply = this._Prefs.getBoolPref('browser.preferences.instantApply');
 			}
 			catch(e) {
 			}
@@ -174,28 +338,6 @@ if (typeof window == 'undefined') {
 				'',
 				'chrome,titlebar,toolbar,centerscreen,' + (instantApply ? 'dialog=no' : 'modal' )
 			);
-		},
-		getOptionsURI_EM : function(aId)
-		{
-			var res  = this.RDF.GetResource('urn:mozilla:item:'+aId);
-			var uri;
-			try {
-				uri = this.ExtensionManager.datasource.GetTarget(
-						res,
-						this.RDF.GetResource('http://www.mozilla.org/2004/em-rdf#optionsURL'),
-						true
-					).QueryInterface(Ci.nsIRDFLiteral)
-					.Value;
-			}
-			catch(e) {
-			}
-			return uri;
-		},
-		getOptionsURI_AM : function(aId)
-		{
-			var addon = this.getInstalledAddon(aId);
-			if (!addon || !addon.isActive) return null;
-			return addon.optionsURL;
 		}
 	};
 })();

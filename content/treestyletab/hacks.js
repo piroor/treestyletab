@@ -693,11 +693,11 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 
 	// Focus Last Selected Tab 0.9.5.x
 	// http://www.gozer.org/mozilla/extensions/
-	if (this.extensions.isAvailable('focuslastselectedtab@gozer.org')) {
+	this.extensions.checkAvailable('focuslastselectedtab@gozer.org', { ok : function() {
 		TreeStyleTabService.registerTabFocusAllowance(function(aTabBrowser) {
 			return !aTabBrowser.selectedTab.hasAttribute('lastselected');
 		});
-	}
+	}});
 
 	// LastTab
 	// https://addons.mozilla.org/firefox/addon/112
@@ -1099,9 +1099,9 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 
 	// Remove New Tab Button
 	// https://addons.mozilla.org/firefox/addon/10535
-	if (this.extensions.isAvailable('remove-new-tab-button@forerunnerdesigns.com')) {
+	this.extensions.checkAvailable('remove-new-tab-button@forerunnerdesigns.com', { ok : function() {
 		document.documentElement.setAttribute(TreeStyleTabService.kHIDE_NEWTAB, true);
-	}
+	}});
 
 
 	window.setTimeout(function(aSelf) {
