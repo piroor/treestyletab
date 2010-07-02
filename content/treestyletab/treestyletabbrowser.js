@@ -1277,8 +1277,10 @@ TreeStyleTabBrowser.prototype = {
 			return;
 		window.setTimeout(function(aTabBrowser) {
 			TreeStyleTabService.toggleFixed(aTabBrowser);
-			if (TabsOnTop.enabled != aEnabled)
-				TabsOnTop.enabled = aEnabled;
+			window.setTimeout(function() {
+				if (TabsOnTop.enabled != aEnabled)
+					TabsOnTop.enabled = aEnabled;
+			}, 0);
 		}, 0, this.mTabBrowser);
 	},
  
