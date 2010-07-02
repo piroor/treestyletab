@@ -9,8 +9,11 @@ var TreeStyleTabService = {
 	
 	get currentTabbarPosition() /* PUBLIC API */ 
 	{
-		return this.browser.getAttribute(this.kTABBAR_POSITION) ||
-				this.utils.currentTabbarPosition;
+		return (
+			// Don't touch to the <tabbrowser/> element before it is initialized by XBL constructor.
+			(this.preInitialized && this.browser.getAttribute(this.kTABBAR_POSITION)) ||
+			this.utils.currentTabbarPosition
+		);
 	},
 	set currentTabbarPosition(aValue)
 	{
