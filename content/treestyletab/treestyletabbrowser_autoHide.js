@@ -465,6 +465,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		if (this.expanded) { // to be hidden or shrunken
 			this.onHiding();
 			this.showHideReason = aReason || this.kSHOWN_BY_UNKNOWN;
+			this.resetContentAreas();
 		}
 		else { // to be shown or expanded
 			this.onShowing();
@@ -635,6 +636,17 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		window.setTimeout(function(aSelf) {
 			aSelf.redrawContentArea();
 		}, 0, this);
+	},
+ 
+	resetContentAreas : function TSTAutoHide_resetContentAreas()
+	{
+		this.mOwner.getTabsArray(this.mOwner.browser).forEach(function(aTab) {
+			try {
+				aTab.linkedBrowser.markupDocumentViewer.move(0, 0);
+			}
+			catch(e) {
+			}
+		}, this);
 	},
  
 	get shouldRedraw() 
