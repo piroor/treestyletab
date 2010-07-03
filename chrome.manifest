@@ -41,3 +41,7 @@ override chrome://treestyletab/skin/sidebar/inactive.css	chrome://treestyletab/s
 override chrome://treestyletab/skin/config.css	chrome://treestyletab/skin/config-3.7.png	appversion>=3.7a1pre
 
 resource treestyletab-modules modules/
+
+component	{305122d0-5bdc-11de-8a39-0800200c9a66}	components/AboutGroup.js
+contract	@mozilla.org/network/protocol/about;1?what=treestyletab-group	{305122d0-5bdc-11de-8a39-0800200c9a66}
+category	profile-after-change	about:treestyletab-group handler,@mozilla.org/network/protocol/about;1?what=treestyletab-group

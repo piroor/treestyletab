@@ -36,6 +36,8 @@
 const IOService = Components.classes['@mozilla.org/network/io-service;1']
 					.getService(Components.interfaces.nsIIOService);
 
+Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
+
 function AboutGroup()
 {
 }
@@ -51,14 +53,6 @@ AboutGroup.prototype = {
 		return Components.ID('{305122d0-5bdc-11de-8a39-0800200c9a66}');
 	},
 
-	QueryInterface : function(aIID)
-	{
-		if (!aIID.equals(Components.interfaces.nsIAboutModule) &&
-			!aIID.equals(Components.interfaces.nsISupports))
-			throw Components.results.NS_ERROR_NO_INTERFACE;
-		return this;
-	},
-
 	newChannel : function(aURI)
 	{
 		return IOService.newChannel('chrome://treestyletab/content/group.xul', null, null);
@@ -67,73 +61,12 @@ AboutGroup.prototype = {
 	getURIFlags : function(aURI)
 	{
 		return 0;
-	}
+	},
+
+	QueryInterface : XPCOMUtils.generateQI([Components.interfaces.nsIAboutModule])
 };
 
-
-var gModule = { 
-	_firstTime: true,
-
-	registerSelf : function (aComponentManager, aFileSpec, aLocation, aType)
-	{
-		if (this._firstTime) {
-			this._firstTime = false;
-			throw Components.results.NS_ERROR_FACTORY_REGISTER_AGAIN;
-		}
-		aComponentManager = aComponentManager.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-		for (var key in this._objects) {
-			var obj = this._objects[key];
-			aComponentManager.registerFactoryLocation(obj.CID, obj.className, obj.contractID, aFileSpec, aLocation, aType);
-		}
-	},
-
-	unregisterSelf : function (aComponentManager, aFileSpec, aLocation)
-	{
-		aComponentManager = aComponentManager.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-		for (var key in this._objects) {
-			var obj = this._objects[key];
-			aComponentManager.unregisterFactoryLocation(obj.CID, aFileSpec);
-
-			categoryManager.deleteCategoryEntry('content-policy', obj.contractID, true);
-		}
-	},
-
-	getClassObject : function (aComponentManager, aCID, aIID)
-	{
-		if (!aIID.equals(Components.interfaces.nsIFactory))
-			throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
-
-		for (var key in this._objects) {
-			if (aCID.equals(this._objects[key].CID))
-				return this._objects[key].factory;
-		}
-
-		throw Components.results.NS_ERROR_NO_INTERFACE;
-	},
-
-	_objects : {
-		manager : {
-			CID        : AboutGroup.prototype.classID,
-			contractID : AboutGroup.prototype.contractID,
-			className  : AboutGroup.prototype.classDescription,
-			factory    : {
-				createInstance : function (aOuter, aIID)
-				{
-					if (aOuter != null)
-						throw Components.results.NS_ERROR_NO_AGGREGATION;
-					return (new AboutGroup()).QueryInterface(aIID);
-				}
-			}
-		}
-	},
-
-	canUnload : function (aComponentManager)
-	{
-		return true;
-	}
-};
-
-function NSGetModule(compMgr, fileSpec)
-{
-	return gModule;
-}
+if (XPCOMUtils.generateNSGetFactory)
+	var NSGetFactory = XPCOMUtils.generateNSGetFactory([AboutGroup]);
+else
+	var NSGetModule = XPCOMUtils.generateNSGetModule([AboutGroup]);
