@@ -254,7 +254,6 @@ var TreeStyleTabUtils = {
 						.indexOf('mac') > -1;
 
 		this.addPrefListener(this);
-		this.ObserverService.addObserver(this, 'private-browsing-change-granted', false);
 
 		this.onPrefChange('extensions.treestyletab.indent');
 		this.onPrefChange('extensions.treestyletab.clickOnIndentSpaces.enabled');
@@ -291,11 +290,6 @@ var TreeStyleTabUtils = {
 		{
 			case 'nsPref:changed':
 				this.onPrefChange(aData);
-				return;
-
-			case 'private-browsing-change-granted':
-				if (aData == 'enter')
-					this.ObserverService.notifyObservers(window, 'TreeStyleTab:collapseExpandAllSubtree', 'expand-now');
 				return;
 		}
 	},

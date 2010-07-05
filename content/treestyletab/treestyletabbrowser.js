@@ -767,6 +767,7 @@ TreeStyleTabBrowser.prototype = {
 
 		this.ObserverService.addObserver(this, 'TreeStyleTab:indentModified', false);
 		this.ObserverService.addObserver(this, 'TreeStyleTab:collapseExpandAllSubtree', false);
+		this.ObserverService.addObserver(this, 'private-browsing-change-granted', false);
 		this.ObserverService.addObserver(this, 'TreeStyleTab:changeTreeViewAvailability', false);
 		this.addPrefListener(this);
 
@@ -1561,6 +1562,7 @@ TreeStyleTabBrowser.prototype = {
 
 		this.ObserverService.removeObserver(this, 'TreeStyleTab:indentModified');
 		this.ObserverService.removeObserver(this, 'TreeStyleTab:collapseExpandAllSubtree');
+		this.ObserverService.removeObserver(this, 'private-browsing-change-granted');
 		this.ObserverService.removeObserver(this, 'TreeStyleTab:changeTreeViewAvailability');
 		this.removePrefListener(this);
 
@@ -1614,13 +1616,20 @@ TreeStyleTabBrowser.prototype = {
 				break;
 
 			case 'TreeStyleTab:collapseExpandAllSubtree':
-				if (aSubject == window) {
+				if (!aSubject || aSubject == window) {
 					aData = String(aData);
 					this.collapseExpandAllSubtree(
 						aData.indexOf('collapse') > -1,
 						aData.indexOf('now') > -1
 					);
 				}
+				break;
+
+			case 'private-browsing-change-granted':
+				this.collapseExpandAllSubtree(false, true);
+				window.setTimeout(function(aSelf) {
+					aSelf.updateFloatingTabbar();
+				}, 0, this);
 				break;
 
 			case 'TreeStyleTab:changeTreeViewAvailability':
