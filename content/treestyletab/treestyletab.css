@@ -79,6 +79,14 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-stack > *:first-child + * > hbox:
 	direction: ltr !important;
 }
 
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+	.tabbrowser-tab:not([pinned]),
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+	.tabbrowser-tab:not([fadein]) {
+	max-width: none !important;
+	min-width: 1px !important;
+}
+
 /* pinned tabs on Firefox 3.7 */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
 	.tabbrowser-tab[pinned="true"] {
