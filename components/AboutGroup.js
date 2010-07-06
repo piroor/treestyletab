@@ -43,15 +43,9 @@ function AboutGroup()
 }
 
 AboutGroup.prototype = {
-	get contractID() {
-		return '@mozilla.org/network/protocol/about;1?what=treestyletab-group';
-	},
-	get classDescription() {
-		return 'about:treestyletab-group handler';
-	},
-	get classID() {
-		return Components.ID('{305122d0-5bdc-11de-8a39-0800200c9a66}');
-	},
+	contractID : '@mozilla.org/network/protocol/about;1?what=treestyletab-group',
+	classDescription : 'about-treestyletab-group',
+	classID : Components.ID('{305122d0-5bdc-11de-8a39-0800200c9a66}'),
 
 	newChannel : function(aURI)
 	{
