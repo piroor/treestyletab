@@ -23,30 +23,48 @@ var EXPORTED_SYMBOLS = ['getNamespaceFor'];
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
-const currentRevision = 1;
+const currentRevision = 2;
 
-const Application = '@mozilla.org/fuel/application;1' in Cc ?
-						Cc['@mozilla.org/fuel/application;1'].getService(Ci.fuelIApplication) :
-					'@mozilla.org/steel/application;1' in Cc ?
-						Cc['@mozilla.org/steel/application;1'].getService(Ci.steelIApplication) :
-						null ;
-if (!Application)
-	throw new Error('there is no backend for shared namespaces!');
+const QUERY = 'namespace.jsm[piro.sakura.ne.jp]:GetExistingNamespace';
+const STORAGE_PROP = 'namespaces-storage';
 
-const storage = Application.storage;
+const ObserverService = Cc['@mozilla.org/observer-service;1']
+						.getService(Ci.nsIObserverService);
 
-if (!storage.has('sharednamespaces@piro.sakura.ne.jp'))
-	storage.set('sharednamespaces@piro.sakura.ne.jp', {});
+var bag = Cc['@mozilla.org/hash-property-bag;1']
+			.createInstance(Ci.nsIPropertyBag);
+ObserverService.notifyObservers(bag, QUERY, null);
 
-var namespaces = storage.get('sharednamespaces@piro.sakura.ne.jp', null);
+var storage;
+try {
+	storage = bag.getProperty(STORAGE_PROP);
+}
+catch(e) {
+	// This is the first provider of namespaces, so I create a new storage.
+	storage = {};
+}
+
+// Export the storage to other instances when they are loaded.
+ObserverService.addObserver(
+	{
+		observe : function(aSubject, aTopic, aData)
+		{
+			if (aTopic != QUERY) return;
+			aSubject.QueryInterface(Ci.nsIWritablePropertyBag)
+				.setProperty(STORAGE_PROP, storage);
+		}
+	},
+	QUERY,
+	false
+);
 
 function getNamespaceFor(aName)
 {
 	if (!aName)
 		throw new Error('you must specify the name of the namespace!');
 
-	if (!(aName in namespaces))
-		namespaces[aName] = {};
+	if (!(aName in storage))
+		storage[aName] = {};
 
-	return namespaces[aName];
+	return storage[aName];
 }
