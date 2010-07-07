@@ -33,10 +33,10 @@
  *
  * ***** END LICENSE BLOCK ******/
  
-var EXPORTED_SYMBOLS = ['TreeStyleTabUtils']; 
+const EXPORTED_SYMBOLS = ['TreeStyleTabUtils']; 
 
-var Cc = Components.classes;
-var Ci = Components.interfaces;
+const Cc = Components.classes;
+const Ci = Components.interfaces;
  
 Components.utils.import('resource://treestyletab-modules/prefs.js');
 Components.utils.import('resource://treestyletab-modules/boxObject.js');
