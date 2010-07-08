@@ -106,7 +106,10 @@ Timer.prototype = {
 	observe : function(aSubject, aTopic, aData)
 	{
 		if (aTopic != 'timer-callback') return;
-
+		this.notify(aSubject);
+	},
+	notify : function(aTimer)
+	{
 		if (this.owner && this.owner.closed) {
 			dump('jstimer.jsm:'+
 				'  timer is stopped because the owner window was closed.\n'+
