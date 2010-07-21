@@ -19,7 +19,7 @@
 window.addEventListener('DOMContentLoaded', function() {
 	window.removeEventListener('DOMContentLoaded', arguments.callee, true);
 
-	const currentRevision = 7;
+	const currentRevision = 8;
 
 	var b = document.getElementById('content');
 	if (!b || b.localName != 'tabbrowser') return;
@@ -37,6 +37,15 @@ window.addEventListener('DOMContentLoaded', function() {
 			return;
 		}
 	}
+
+	const Cc = Components.classes;
+	const Ci = Components.interfaces;
+
+	const XULAppInfo = Cc['@mozilla.org/xre/app-info;1']
+						.getService(Ci.nsIXULAppInfo)
+						.QueryInterface(Ci.nsIXULRuntime);
+	const Comparator = Cc['@mozilla.org/xpcom/version-comparator;1']
+						.getService(Ci.nsIVersionComparator);
 
 	var url = window.getComputedStyle(b.selectedTab, '').getPropertyValue('-moz-binding');
 	url = url.match(/url\((.+)\)/);
@@ -64,12 +73,14 @@ window.addEventListener('DOMContentLoaded', function() {
 		case 'chrome://browser/content/tabbrowser.xml#tabbrowser-tab': // built-in
 			root.setAttribute('tabFx2Compatible', currentRevision);
 			var flags = [];
-			if (navigator.platform.toLowerCase().indexOf('mac') > -1)
+			if (XULAppInfo.OS.toLowerCase().indexOf('darwin') > -1)
 				flags.push('mac');
-			if ('nsPIPlacesDatabase' in Components.interfaces)
+			if (Comparator.compare(XULAppInfo.version, '3.1') >= 0)
 				flags.push('png-throbber');
-			if (b.mTabProgressListener.toSource().indexOf('_startStalledTimer') > -1)
+			if (Comparator.compare(XULAppInfo.version, '3.7a1') >= 0)
 				flags.push('pie');
+			if (Comparator.compare(XULAppInfo.version, '4.0b1') >= 0)
+				flags.push('separate-tabContextMenu');
 			root.setAttribute('tabFx2Compatible-flags', flags.join(' '));
 			break;
 	}
