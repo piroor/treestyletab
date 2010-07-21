@@ -1324,6 +1324,8 @@ TreeStyleTabBrowser.prototype = {
 			strip.style.height = (tabContainerBox.height = height)+'px';
 
 			tabContainerBox.collapsed = (this.splitter && this.splitter.getAttribute('state') == 'collapsed');
+
+			this.mTabBrowser.tabContainer.setAttribute('context', this.mTabBrowser.tabContextMenu.id);
 		}
 		else {
 			tabContainerBox.collapsed = false;
@@ -1331,6 +1333,8 @@ TreeStyleTabBrowser.prototype = {
 			strip.style.left = '';
 			strip.style.width = '';
 			strip.style.height = '';
+
+			this.mTabBrowser.tabContainer.removeAttribute('context');
 		}
 
 		if (this.mTabBrowser != gBrowser)
