@@ -2009,9 +2009,9 @@ TreeStyleTabBrowser.prototype = {
 			this.multipleCount++;
 		}
 
-		if (this.animationEnabled) {
+		if (this.animationEnabled && !this.restoringTree) {
 			this.updateTabCollapsed(tab, true, true);
-			this.updateTabCollapsed(tab, false, this.restoringTree);
+			this.updateTabCollapsed(tab, false);
 		}
 
 		if (this.readiedToOpenDivertedTab) {
@@ -4346,14 +4346,12 @@ TreeStyleTabBrowser.prototype = {
 			if (aTime >= aDuration || stopAnimation) {
 				delete aTab.__treestyletab__updateTabCollapsedTask;
 				if (aCollapsed) aTab.setAttribute(self.kCOLLAPSED_DONE, true);
-				if (!CSSTransitionEnabled) {
-					aTab.setAttribute(
-						'style',
-						aTab.getAttribute('style')
-							.replace(self.collapseRulesRegExp, '')
-							.replace(self.kOPACITY_RULE_REGEXP, '')
-					);
-				}
+				aTab.setAttribute(
+					'style',
+					aTab.getAttribute('style')
+						.replace(self.collapseRulesRegExp, '')
+						.replace(self.kOPACITY_RULE_REGEXP, '')
+				);
 				aTab.removeAttribute(offsetAttr);
 
 				maxMargin = null;
