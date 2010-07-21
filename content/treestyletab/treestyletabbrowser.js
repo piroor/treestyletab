@@ -2013,9 +2013,9 @@ TreeStyleTabBrowser.prototype = {
 			this.multipleCount++;
 		}
 
-		if (this.animationEnabled && !this.restoringTree) {
+		if (this.animationEnabled) {
 			this.updateTabCollapsed(tab, true, true);
-			this.updateTabCollapsed(tab, false);
+			this.updateTabCollapsed(tab, false, this.restoringTree);
 		}
 
 		if (this.readiedToOpenDivertedTab) {
@@ -4297,7 +4297,7 @@ TreeStyleTabBrowser.prototype = {
 				(CSSTransitionEnabled ?
 					(
 						collapseProp+': -'+endMargin+'px !important;'+
-						'opacity: '+endOpacity+' !important;'
+						(endOpacity == 0 ? 'opacity: '+endOpacity+' !important;' : '' )
 					) :
 					'' )
 			);
