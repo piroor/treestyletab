@@ -2046,6 +2046,8 @@ TreeStyleTabBrowser.prototype = {
 			}, 0, this);
 		}
 
+		this.scrollToTab(tab, true);
+
 		return true;
 	},
 	_checkRestoringWindowTimerOnTabAdded : null,
@@ -4553,7 +4555,7 @@ TreeStyleTabBrowser.prototype = {
 	},
 	smoothScrollTask : null,
   
-	scrollToTab : function TSTBrowser_scrollToTab(aTab) 
+	scrollToTab : function TSTBrowser_scrollToTab(aTab, aOnlyWhenCurrentTabIsInViewport) 
 	{
 		if (!aTab || !aTab.parentNode || this.isTabInViewport(aTab))
 			return;
@@ -4582,6 +4584,13 @@ TreeStyleTabBrowser.prototype = {
 		var targetY = (aTab.boxObject.screenY + yOffset < scrollBoxObject.screenY) ?
 			(targetTabBox.screenY + yOffset - baseTabBox.screenY) - (targetTabBox.height * 0.5) :
 			(targetTabBox.screenY + yOffset - baseTabBox.screenY) - scrollBoxObject.height + (targetTabBox.height * 1.5) ;
+
+		if (aOnlyWhenCurrentTabIsInViewport && b.selectedTab != aTab) {
+			let box = b.selectedTab.boxObject;
+			if (targetTabBox.screenX - box.screenX + baseTabBox.width + xOffset > scrollBoxObject.width ||
+				targetTabBox.screenY - box.screenY + baseTabBox.height + yOffset > scrollBoxObject.height)
+				return;
+		}
 
 		this.scrollTo(targetX, targetY);
 	},
