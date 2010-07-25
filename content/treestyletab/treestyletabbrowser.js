@@ -2046,7 +2046,8 @@ TreeStyleTabBrowser.prototype = {
 			}, 0, this);
 		}
 
-		this.scrollToTab(tab, true);
+		if (this.scrollToNewTabMode > 0)
+			this.scrollToTab(tab, this.scrollToNewTabMode < 2);
 
 		return true;
 	},

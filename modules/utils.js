@@ -161,6 +161,8 @@ var TreeStyleTabUtils = {
 	collapseDuration : 150,
 
 	shouldExpandTwistyArea : true,
+
+	scrollToNewTabMode : false,
  
 	get SessionStore() { 
 		if (!this._SessionStore) {
@@ -263,6 +265,7 @@ var TreeStyleTabUtils = {
 		this.onPrefChange('extensions.stm.tabBarMultiRows.override'); // Super Tab Mode
 		this.onPrefChange('extensions.treestyletab.tabbar.scroll.smooth');
 		this.onPrefChange('extensions.treestyletab.tabbar.scroll.duration');
+		this.onPrefChange('extensions.treestyletab.tabbar.scrollToNewTab.mode');
 		this.onPrefChange('extensions.treestyletab.animation.enabled');
 		this.onPrefChange('extensions.treestyletab.animation.indent.duration');
 		this.onPrefChange('extensions.treestyletab.animation.collapse.duration');
@@ -1806,6 +1809,10 @@ var TreeStyleTabUtils = {
 				break;
 			case 'extensions.treestyletab.tabbar.scroll.duration':
 				this.smoothScrollDuration = value;
+				break;
+
+			case 'extensions.treestyletab.tabbar.scrollToNewTab.mode':
+				this.scrollToNewTabMode = value;
 				break;
 
 			case 'extensions.treestyletab.animation.enabled':

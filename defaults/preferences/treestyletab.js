@@ -15,6 +15,8 @@ pref("extensions.treestyletab.tabbar.hideAlltabsButton.horizontal", false);
 pref("extensions.treestyletab.tabbar.hideAlltabsButton.vertical",   true);
 pref("extensions.treestyletab.tabbar.scroll.smooth",   true);
 pref("extensions.treestyletab.tabbar.scroll.duration", 250);
+// 0 = no scroll, 1 = scroll to new tab only when the current tab will not scrolled out, 2 = scroll to new tab always
+pref("extensions.treestyletab.tabbar.scrollToNewTab.mode", 1);
 // flat, mixed, vertigo
 pref("extensions.treestyletab.tabbar.style",           "mixed");
 // 0 = disabled, 1 = hide, 2 = shrink
