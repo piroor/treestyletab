@@ -218,7 +218,7 @@ var TreeStyleTabUtils = {
 
 	get XULAppInfo() {
 		if (!this._XULAppInfo) {
-			this._XULAppInfo = Cc['@mozilla.org/xre/app-info;1'].getService(Ci.nsIXULAppInfo);
+			this._XULAppInfo = Cc['@mozilla.org/xre/app-info;1'].getService(Ci.nsIXULAppInfo).QueryInterface(Ci.nsIXULRuntime);
 		}
 		return this._XULAppInfo;
 	},
@@ -248,12 +248,7 @@ var TreeStyleTabUtils = {
 	{
 		if (this._initialized) return;
 
-		this.isMac = Cc['@mozilla.org/network/protocol;1?name=http']
-						.getService(Ci.nsIHttpProtocolHandler)
-						.QueryInterface(Ci.nsIProtocolHandler)
-						.platform
-						.toLowerCase()
-						.indexOf('mac') > -1;
+		this.isMac = this.XULAppInfo.OS.toLowerCase().indexOf('darwin') > -1;
 
 		this.addPrefListener(this);
 
