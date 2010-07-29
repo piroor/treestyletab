@@ -1337,6 +1337,8 @@ TreeStyleTabBrowser.prototype = {
 			this.mTabBrowser.tabContainer.removeAttribute('context');
 		}
 
+		this._tabStripPlaceHolder.collapsed = this.splitter.collapsed = (this.getPref('browser.tabs.autoHide') && this.getTabsArray(this.mTabBrowser).length == 1);
+
 		if (this.mTabBrowser != gBrowser)
 			return;
 
@@ -1607,7 +1609,8 @@ TreeStyleTabBrowser.prototype = {
 /* nsIObserver */ 
 	
 	domains : [ 
-		'extensions.treestyletab.'
+		'extensions.treestyletab.',
+		'browser.tabs.autoHide'
 	],
  
 	observe : function TSTBrowser_observe(aSubject, aTopic, aData) 
@@ -1755,6 +1758,9 @@ TreeStyleTabBrowser.prototype = {
 			case 'extensions.treestyletab.animation.enabled':
 				this.setTabbrowserAttribute(this.kANIMATION_ENABLED, value ? 'true' : null );
 				break;
+
+			case 'browser.tabs.autoHide':
+				return this.updateFloatingTabbar();
 
 			default:
 				break;
@@ -2049,6 +2055,9 @@ TreeStyleTabBrowser.prototype = {
 		if (this.scrollToNewTabMode > 0)
 			this.scrollToTab(tab, this.scrollToNewTabMode < 2);
 
+		if (this.getPref('browser.tabs.autoHide'))
+			this.updateFloatingTabbar();
+
 		return true;
 	},
 	_checkRestoringWindowTimerOnTabAdded : null,
@@ -2258,6 +2267,9 @@ TreeStyleTabBrowser.prototype = {
 		this.updateLastScrollPosition();
 
 		this.destroyTab(tab);
+
+		if (this.getPref('browser.tabs.autoHide'))
+			this.updateFloatingTabbar();
 
 		if (collapsed)
 			this.startRendering();
