@@ -1337,7 +1337,9 @@ TreeStyleTabBrowser.prototype = {
 			this.mTabBrowser.tabContainer.removeAttribute('context');
 		}
 
-		this._tabStripPlaceHolder.collapsed = this.splitter.collapsed = (this.getPref('browser.tabs.autoHide') && this.getTabsArray(this.mTabBrowser).length == 1);
+		this._tabStripPlaceHolder.collapsed =
+			this.splitter.collapsed =
+				(this.getPref('browser.tabs.autoHide') && this.getTabsArray(this.mTabBrowser).length == 1);
 
 		if (this.mTabBrowser != gBrowser)
 			return;
@@ -1760,7 +1762,9 @@ TreeStyleTabBrowser.prototype = {
 				break;
 
 			case 'browser.tabs.autoHide':
-				return this.updateFloatingTabbar();
+				if (this.getTabsArray(this.mTabBrowser).length == 1)
+					this.updateFloatingTabbar();
+				break;
 
 			default:
 				break;
