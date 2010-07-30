@@ -22,7 +22,7 @@
 
 <!ENTITY config.tabs.style "Style">
 
-<!ENTITY config.tabbar.style.caption "Habillage de la barre des onglets">
+<!ENTITY config.tabbar.style.caption "Habillage du panneau des onglets">
 <!ENTITY config.tabbar.style.plain   "Standard">
 <!ENTITY config.tabbar.style.flat    "Plat">
 <!ENTITY config.tabbar.style.mixed   "Mixte">
@@ -42,7 +42,7 @@
 
 <!ENTITY config.tabs.menu "Menu">
 
-<!ENTITY config.show.tabContextMenu.caption "Ajouter les éléments suivants au menu contextuel des onglets">
+<!ENTITY config.show.tabContextMenu.caption "Ajouter les articles suivants au menu contextuel des onglets">
 
 
 <!ENTITY config.tabs.tab "Nouveaux onglets">
@@ -126,7 +126,7 @@
 
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect "Lorsqu'un onglet devient actif, déplier son arborescence et replier les autres automatiquement">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "Exclure le changement d'activation par la fermeture de l'onglet actuel">
-<!ENTITY config.collapseExpandSubtree.dblclick "Double-cliquer sur un onglet pour relier/déplier l'arborescence">
+<!ENTITY config.collapseExpandSubtree.dblclick "Double-cliquer sur un onglet pour replier/déplier l'arborescence">
 <!ENTITY config.autoExpandSubtreeOnAppendChild "Déplier l'arborescence automatiquement lorsque des onglets y sont insérés">
 
 <!ENTITY config.closeParentBehavior.caption      "Lorsqu'un onglet parent est fermé">
@@ -171,7 +171,7 @@
 <!ENTITY context.reloadTabSubtree.accesskey     "r">
 <!ENTITY context.reloadDescendantTabs.label     "Recharger les enfants">
 <!ENTITY context.reloadDescendantTabs.accesskey "r">
-<!ENTITY context.removeTabSubtree.label         "Fermet cette arborescence">
+<!ENTITY context.removeTabSubtree.label         "Fermer cette arborescence">
 <!ENTITY context.removeTabSubtree.accesskey     "s">
 <!ENTITY context.removeDescendantTabs.label     "Fermer les enfants">
 <!ENTITY context.removeDescendantTabs.accesskey "d">
