@@ -416,9 +416,10 @@ var TreeStyleTabUtils = {
 	kGROUP_BOOKMARK_SUBTREE   : 1,
 	kGROUP_BOOKMARK_SEPARATE  : 2,
 	kGROUP_BOOKMARK_REPLACE   : 4,
-	kGROUP_BOOKMARK_USE_DUMMY : 256,
-	kGROUP_BOOKMARK_USE_DUMMY_FORCE : 1024,
+	kGROUP_BOOKMARK_USE_DUMMY                   : 256,
+	kGROUP_BOOKMARK_USE_DUMMY_FORCE             : 1024,
 	kGROUP_BOOKMARK_DONT_RESTORE_TREE_STRUCTURE : 512,
+	kGROUP_BOOKMARK_EXPAND_ALL_TREE             : 2048,
  
 	undoCloseTabSetBehavior : function TSTUtils_undoCloseTabSetBehavior(aCount, aSilent) 
 	{
@@ -1147,7 +1148,7 @@ var TreeStyleTabUtils = {
 		ownerBrowser.treeStyleTab.insertBefore            = refId;
 	},
  
-	readyToOpenNewTabGroup : function TSTUtils_readyToOpenNewTabGroup(aFrameOrTabBrowser, aTreeStructure) /* PUBLIC API */ 
+	readyToOpenNewTabGroup : function TSTUtils_readyToOpenNewTabGroup(aFrameOrTabBrowser, aTreeStructure, aExpandAllTree) /* PUBLIC API */ 
 	{
 		if (!this.getTreePref('autoAttachNewTabsAsChildren')) return;
 
@@ -1161,6 +1162,7 @@ var TreeStyleTabUtils = {
 		ownerBrowser.treeStyleTab.readiedToAttachMultiple    = true;
 		ownerBrowser.treeStyleTab.multipleCount              = 0;
 		ownerBrowser.treeStyleTab.treeStructure              = aTreeStructure;
+		ownerBrowser.treeStyleTab.shouldExpandAllTree        = aExpandAllTree ? true : false ;
 	},
  
 	stopToOpenChildTab : function TSTUtils_stopToOpenChildTab(aFrameOrTabBrowser) /* PUBLIC API */ 
@@ -1176,6 +1178,7 @@ var TreeStyleTabUtils = {
 		ownerBrowser.treeStyleTab.parentTab                  = null;
 		ownerBrowser.treeStyleTab.insertBefore               = null;
 		ownerBrowser.treeStyleTab.treeStructure              = null;
+		ownerBrowser.treeStyleTab.shouldExpandAllTree        = false;
 	},
  
 	checkToOpenChildTab : function TSTUtils_checkToOpenChildTab(aFrameOrTabBrowser) /* PUBLIC API */ 

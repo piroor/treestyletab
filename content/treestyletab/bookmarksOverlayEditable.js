@@ -1,4 +1,5 @@
 var TreeStyleTabBookmarksServiceEditable = {
+	__proto__ : TreeStyleTabBookmarksService,
 
 	instantApply : false,
 	canceled : false,
@@ -260,6 +261,5 @@ var TreeStyleTabBookmarksServiceEditable = {
 	}
 
 };
-TreeStyleTabBookmarksServiceEditable.__proto__ = TreeStyleTabBookmarksService;
 
 window.addEventListener('DOMContentLoaded', TreeStyleTabBookmarksServiceEditable, false);

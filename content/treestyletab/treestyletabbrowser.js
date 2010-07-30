@@ -4,6 +4,7 @@ function TreeStyleTabBrowser(aTabBrowser)
 }
  
 TreeStyleTabBrowser.prototype = { 
+	__proto__ : TreeStyleTabService,
 
 	kMENUITEM_RELOADSUBTREE            : 'context-item-reloadTabSubtree',
 	kMENUITEM_RELOADCHILDREN           : 'context-item-reloadDescendantTabs',
@@ -1986,7 +1987,9 @@ TreeStyleTabBrowser.prototype = {
 				parent = pareintIndexInTree < tabs.length ? tabs[pareintIndexInTree] : parent ;
 			}
 			if (parent) {
-				this.attachTabTo(tab, parent);
+				this.attachTabTo(tab, parent, {
+					dontExpand : this.shouldExpandAllTree
+				});
 			}
 
 			let refTab;
@@ -2014,6 +2017,9 @@ TreeStyleTabBrowser.prototype = {
 				b.moveTabTo(tab, newIndex);
 				this.internallyTabMovingCount--;
 			}
+
+			if (this.shouldExpandAllTree)
+				this.collapseExpandSubtree(parent, false);
 		}
 
 		if (!this.readiedToAttachMultiple) {
@@ -4714,6 +4720,4 @@ TreeStyleTabBrowser.prototype = {
 	cancelHideTabbarForFeedback : function TSTBrowser_cancelHideTabbarForFeedback() { this.autoHide.cancelHideForFeedback(); }
   
 }; 
-
-TreeStyleTabBrowser.prototype.__proto__ = TreeStyleTabService;
  

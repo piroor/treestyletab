@@ -4,6 +4,7 @@ function TreeStyleTabBrowserAutoHide(aOwner)
 	this.init();
 }
 TreeStyleTabBrowserAutoHide.prototype = {
+	__proto__ : TreeStyleTabService,
 	
 	kMODE : 'treestyletab-tabbar-autohide-mode', 
 	kMODE_DISABLED : 0,
@@ -1275,7 +1276,6 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	}
  
 }; 
-TreeStyleTabBrowserAutoHide.prototype.__proto__ = TreeStyleTabService;
   
 // class methods 
 	

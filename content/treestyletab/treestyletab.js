@@ -213,7 +213,7 @@ var TreeStyleTabService = {
 		);
 	},
  
-	kPREF_VERSION : 5,
+	kPREF_VERSION : 6,
 	migratePrefs : function TSTService_migratePrefs() 
 	{
 		// migrate old prefs
@@ -289,6 +289,11 @@ var TreeStyleTabService = {
 					this.setPref(aPref.replace('SubTree', 'Subtree'), value);
 					this.clearPref(aPref);
 				}, this);
+			case 5:
+				let (behavior = this.getTreePref('openGroupBookmark.behavior')) {
+					behavior = behavior | 2048;
+					this.setTreePref('openGroupBookmark.behavior', behavior);
+				}
 			default:
 				orientalPrefs.forEach(function(aPref) {
 					let value = this.getPref(aPref);

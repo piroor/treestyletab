@@ -82,11 +82,19 @@ pref("extensions.treestyletab.urlbar.loadSameDomainToNewTab.asChild", true);
 pref("extensions.treestyletab.urlbar.invertDefaultBehavior",       true);
 // 0 = always ask, 1 = load into the tab, 2 = open new child tab
 pref("extensions.treestyletab.dropLinksOnTab.behavior", 0);
-// 0 = always ask, 1 = tree, 2 = separate, 4 = replace
-// 256  = use dummy tab (for subtree)
-// 1024 = use dummy tab, only if there is any orphan
-// 512  = do not restore tree structure
-pref("extensions.treestyletab.openGroupBookmark.behavior", 256);
+// value = Basic | Structure | Collapse/expand
+//   Basic behavior:
+//     0 = always ask
+//     1 = tree
+//     2 = separate
+//     4 = replace
+//   Structure:
+//     256  = use dummy tab (for subtree)
+//     1024 = use dummy tab, only if there is any orphan
+//     512  = do not restore tree structure
+//   Collapse/expand:
+//     2048 = expand all tree
+pref("extensions.treestyletab.openGroupBookmark.behavior", 2304); /* 0 | 256 | 2048 */
 pref("extensions.treestyletab.useEffectiveTLD", true);
 pref("extensions.treestyletab.taskbarPreviews.hideCollapsedTabs", true);
 

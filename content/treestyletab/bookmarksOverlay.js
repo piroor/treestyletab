@@ -1,4 +1,5 @@
 var TreeStyleTabBookmarksService = {
+	__proto__ : TreeStyleTabService,
 
 	get BookmarksService() {
 		if (!this._BookmarksService) {
@@ -189,7 +190,7 @@ var TreeStyleTabBookmarksService = {
 	},
  
 
-	applyTreeStructureToTabs : function TSTBMService_applyTreeStructureToTabs(aTabs, aTreeStructure)
+	applyTreeStructureToTabs : function TSTBMService_applyTreeStructureToTabs(aTabs, aTreeStructure, aExpandAllTree)
 	{ // based on TreeStyleTabBrowser.prototype.onTabAdded()
 		var b = this.getTabBrowserFromChild(aTabs[0]);
 		if (!b) return;
@@ -218,6 +219,8 @@ var TreeStyleTabBookmarksService = {
 					dontExpand : true,
 					dontMove   : true
 				});
+				if (aExpandAllTree)
+					sv.collapseExpandSubtree(parent, false);
 			}
 		}, sv);
 	},
@@ -255,7 +258,7 @@ var TreeStyleTabBookmarksService = {
 					'$1, aFolderTitle$2'
 				).replace(
 					'{',
-					'{ var TSTTreeStructure = null, TSTPreviousTabs;'
+					'{ var TSTTreeStructure = null, TSTPreviousTabs, TSTOpenGroupBookmarkBehavior;'
 				).replace(
 					'var urls = [];',
 					'$& var ids = [];'
@@ -273,14 +276,14 @@ var TreeStyleTabBookmarksService = {
 							aEvent.target.getAttribute('openInTabs') == 'true'
 							) {
 							let sv = browserWindow.TreeStyleTabBookmarksService;
-							let openGroupBookmarkBehavior = sv.openGroupBookmarkBehavior();
-							if (openGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_SUBTREE) {
-								let treeStructure = openGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_DONT_RESTORE_TREE_STRUCTURE ?
+							TSTOpenGroupBookmarkBehavior = sv.openGroupBookmarkBehavior();
+							if (TSTOpenGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_SUBTREE) {
+								let treeStructure = TSTOpenGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_DONT_RESTORE_TREE_STRUCTURE ?
 											null :
 											sv.getTreeStructureFromItems(ids) ;
 								if (
 									treeStructure &&
-									openGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_USE_DUMMY
+									TSTOpenGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_USE_DUMMY
 									) {
 									let parentCount = 0;
 									let childCount = 0;
@@ -293,7 +296,7 @@ var TreeStyleTabBookmarksService = {
 									if (
 										parentCount > 1 &&
 										(
-											openGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_USE_DUMMY_FORCE ||
+											TSTOpenGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_USE_DUMMY_FORCE ||
 											// when there is any orphan, then all of parents and orphans should be grouped under a dummy tab.
 											childCount < parentCount
 										)
@@ -311,12 +314,12 @@ var TreeStyleTabBookmarksService = {
 									TSTPreviousTabs = browserWindow.TreeStyleTabBookmarksService.getTabsInfo(browserWindow.gBrowser);
 								}
 								else {
-									sv.readyToOpenNewTabGroup(null, treeStructure);
+									sv.readyToOpenNewTabGroup(null, treeStructure, TSTOpenGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_EXPAND_ALL_TREE);
 								}
 								replaceCurrentTab = false;
 							}
 							else {
-								replaceCurrentTab = openGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_REPLACE ? true : false ;
+								replaceCurrentTab = TSTOpenGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_REPLACE ? true : false ;
 							}
 						}
 						$1
@@ -326,7 +329,7 @@ var TreeStyleTabBookmarksService = {
 					<![CDATA[
 						if (TSTTreeStructure && TSTPreviousTabs) {
 							let tabs = browserWindow.TreeStyleTabBookmarksService.getNewTabsFromPreviousTabsInfo(browserWindow.gBrowser, TSTPreviousTabs)
-							browserWindow.TreeStyleTabBookmarksService.applyTreeStructureToTabs(tabs, TSTTreeStructure);
+							browserWindow.TreeStyleTabBookmarksService.applyTreeStructureToTabs(tabs, TSTTreeStructure, TSTOpenGroupBookmarkBehavior & browserWindow.TreeStyleTabBookmarksService.kGROUP_BOOKMARK_EXPAND_ALL_TREE);
 						}
 					$1]]>
 				)
@@ -428,6 +431,5 @@ var TreeStyleTabBookmarksService = {
 	}
 
 };
-TreeStyleTabBookmarksService.__proto__ = TreeStyleTabService;
 
 window.addEventListener('load', TreeStyleTabBookmarksService, false);
