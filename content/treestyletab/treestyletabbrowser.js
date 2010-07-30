@@ -692,7 +692,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		this.onPrefChange('extensions.treestyletab.tabbar.style');
-		// this.onPrefChange('extensions.treestyletab.twisty.style');
+		this.onPrefChange('extensions.treestyletab.twisty.style');
 		this.onPrefChange('extensions.treestyletab.showBorderForFirstTab');
 		this.onPrefChange('extensions.treestyletab.tabbar.invertTabContents');
 		this.onPrefChange('extensions.treestyletab.tabbar.invertClosebox');
