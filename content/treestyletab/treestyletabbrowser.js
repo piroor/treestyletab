@@ -4334,24 +4334,13 @@ TreeStyleTabBrowser.prototype = {
 		var deltaMargin  = endMargin - startMargin;
 		var deltaOpacity = endOpacity - startOpacity;
 
-		if (CSSTransitionEnabled) {
-			aTab.setAttribute(
-				'style',
-				aTab.getAttribute('style')
-					.replace(this.collapseRulesRegExp, '')+';'+
-					collapseProp+': -'+endMargin+'px !important;'+
-					'opacity: '+endOpacity+' !important;'
-			);
-		}
-		else {
-			aTab.setAttribute(
-				'style',
-				aTab.getAttribute('style')
-					.replace(this.collapseRulesRegExp, '')+';'+
-					collapseProp+': -'+startMargin+'px !important;'+
-					'opacity: '+startOpacity+' !important;'
-			);
-		}
+		aTab.setAttribute(
+			'style',
+			aTab.getAttribute('style')
+				.replace(this.collapseRulesRegExp, '')+';'+
+				collapseProp+': -'+startMargin+'px !important;'+
+				'opacity: '+startOpacity+' !important;'
+		);
 
 		if (!aCollapsed) {
 			aTab.setAttribute(offsetAttr, maxMargin);
@@ -4360,7 +4349,18 @@ TreeStyleTabBrowser.prototype = {
 
 		var radian = 90 * Math.PI / 180;
 		var self   = this;
+		var firstFrame = true;
 		aTab.__treestyletab__updateTabCollapsedTask = function(aTime, aBeginning, aChange, aDuration) {
+			if (firstFrame && CSSTransitionEnabled) {
+				aTab.setAttribute(
+					'style',
+					aTab.getAttribute('style')
+						.replace(this.collapseRulesRegExp, '')+';'+
+						collapseProp+': -'+endMargin+'px !important;'+
+						'opacity: '+endOpacity+' !important;'
+				);
+			}
+			firstFrame = false;
 			// If this is the last tab, negative scroll happens.
 			// Then, we shouldn't do animation.
 			var stopAnimation = false;
@@ -4377,12 +4377,14 @@ TreeStyleTabBrowser.prototype = {
 			if (aTime >= aDuration || stopAnimation) {
 				delete aTab.__treestyletab__updateTabCollapsedTask;
 				if (aCollapsed) aTab.setAttribute(self.kCOLLAPSED_DONE, true);
-				aTab.setAttribute(
-					'style',
-					aTab.getAttribute('style')
-						.replace(self.collapseRulesRegExp, '')
-						.replace(self.kOPACITY_RULE_REGEXP, '')
-				);
+				if (!CSSTransitionEnabled) {
+					aTab.setAttribute(
+						'style',
+						aTab.getAttribute('style')
+							.replace(self.collapseRulesRegExp, '')
+							.replace(self.kOPACITY_RULE_REGEXP, '')
+					);
+				}
 				aTab.removeAttribute(offsetAttr);
 
 				maxMargin = null;
