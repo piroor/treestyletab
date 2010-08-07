@@ -250,7 +250,7 @@ tabbrowser[treestyletab-style="sidebar"][treestyletab-mode="vertical"] .treestyl
   .tabs-container > .tabs-closebutton:hover,
 .tabbrowser-tabs[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
   > .tabs-closebutton:hover,
-/* Firefox 3.7 or later */
+/* Firefox 4.0 or later */
 #TabsToolbar[treestyletab-style="sidebar"][treestyletab-mode="vertical"]
   > toolbarbutton,
 #TabsToolbar[treestyletab-style="sidebar"][treestyletab-mode="vertical"]

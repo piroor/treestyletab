@@ -7,7 +7,7 @@
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-newtab-button,
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-alltabs-button,
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton,
-/* Firefox 3.7 or later */
+/* Firefox 4.0 or later */
 #TabsToolbar[treestyletab-mode="vertical"] > toolbarbutton,
 #TabsToolbar[treestyletab-mode="vertical"] > toolbarpaletteitem > toolbarbutton {
 	-moz-appearance: none !important;
@@ -16,7 +16,7 @@
 	-moz-border-right-colors: none !important;
 	-moz-border-bottom-colors: none !important;
 	-moz-border-left-colors: none !important;
-	-moz-border-radius: 0; /* Firefox 3.7 or later */
+	-moz-border-radius: 0; /* Firefox 4.0 or later */
 	border-top: 1px solid ThreeDShadow !important;
 	background: ThreeDFace !important;
 }
@@ -24,12 +24,12 @@
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-newtab-button:hover,
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-alltabs-button:hover,
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton:hover,
-/* Firefox 3.7 or later */
+/* Firefox 4.0 or later */
 #TabsToolbar[treestyletab-mode="vertical"] > toolbarbutton:hover {
 	background: ThreeDHighlight !important;
 }
 
-/* Support customizable tab bar on Firefox 3.7 or later */
+/* Support customizable tab bar on Firefox 4.0 or later */
 #TabsToolbar[treestyletab-mode="vertical"] > toolbarpaletteitem > toolbarbutton {
 	-moz-box-flex: 1;
 }
@@ -50,7 +50,7 @@
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-alltabs-box-animate,
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-alltabs-button,
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-container > .tabs-closebutton,
-/* Firefox 3.7 or later */
+/* Firefox 4.0 or later */
 #TabsToolbar[treestyletab-mode="vertical"] > toolbarbutton,
 #TabsToolbar[treestyletab-mode="vertical"] > toolbarpaletteitem > toolbarbutton {
 	background-image: none !important;

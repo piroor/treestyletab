@@ -497,7 +497,7 @@ TreeStyleTabBrowser.prototype = {
 
 		TreeStyleTabService.updateTabDNDObserver(b);
 
-		if (b.tabContainer && '_getDropIndex' in b.tabContainer) { // Firefox 3.7 or later
+		if (b.tabContainer && '_getDropIndex' in b.tabContainer) { // Firefox 4.0 or later
 			eval('b.tabContainer._getDropIndex = '+
 				b.tabContainer._getDropIndex.toSource().replace(
 					/\.screenX/g, '[this.treeStyleTab.positionProp]'
@@ -574,7 +574,7 @@ TreeStyleTabBrowser.prototype = {
 			)
 		);
 
-		if (b.tabContainer.tabbrowser == b && '_handleKeyEvent' in b) { // Firefox 3.7-
+		if (b.tabContainer.tabbrowser == b && '_handleKeyEvent' in b) { // Firefox 4.0-
 			eval('b._handleKeyEvent = '+
 				b._handleKeyEvent.toSource().replace(
 					'this.moveTabOver(aEvent);',
@@ -1288,7 +1288,7 @@ TreeStyleTabBrowser.prototype = {
  
 	updateFloatingTabbar : function TSTBrowser_updateFloatingTabbar(aJustNow) 
 	{
-		// this method is just for Firefox 3.7 or later
+		// this method is just for Firefox 4.0 or later
 		if (!this.isFloating) return;
 
 		if (aJustNow) {
@@ -1398,7 +1398,7 @@ TreeStyleTabBrowser.prototype = {
 	updateTabbarOverflow : function TSTBrowser_updateTabbarOverflow() 
 	{
 		var b = this.mTabBrowser;
-		b.mTabContainer.removeAttribute('overflow'); // Firefox 3.0.x / Firefox 3.7
+		b.mTabContainer.removeAttribute('overflow'); // Firefox 3.0.x / Firefox 4.0
 		var container = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-container');
 
 		if (!container) {

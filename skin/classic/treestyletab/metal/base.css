@@ -187,7 +187,7 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
   .tabs-container > .tabs-closebutton:hover,
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
   > .tabs-closebutton:hover,
-/* Firefox 3.7 or later */
+/* Firefox 4.0 or later */
 #TabsToolbar[treestyletab-style="metal"][treestyletab-mode="vertical"]
   > toolbarbutton,
 #TabsToolbar[treestyletab-style="metal"][treestyletab-mode="vertical"]
@@ -229,7 +229,7 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
   .tabs-container > .tabs-closebutton,
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tabbar-position="left"]
   > .tabs-closebutton,
-/* Firefox 3.7 or later */
+/* Firefox 4.0 or later */
 #TabsToolbar[treestyletab-style="metal"][treestyletab-tabbar-position="left"]
   > toolbarbutton,
 #TabsToolbar[treestyletab-style="metal"][treestyletab-tabbar-position="left"]
@@ -246,7 +246,7 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
   .tabs-container > .tabs-closebutton,
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
   > .tabs-closebutton,
-/* Firefox 3.7 or later */
+/* Firefox 4.0 or later */
 #TabsToolbar[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
   > toolbarbutton,
 #TabsToolbar[treestyletab-style="metal"][treestyletab-tabbar-position="right"]

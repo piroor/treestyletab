@@ -389,7 +389,7 @@ var TreeStyleTabService = {
 					gBrowser.mStrip // fallback to the default strip, for Tab Mix Plus;
 
 		if (aObserver.tabContainer &&
-			aObserver.tabContainer.tabbrowser == aObserver) { // Firefox 3.7 or later
+			aObserver.tabContainer.tabbrowser == aObserver) { // Firefox 4.0 or later
 			aObserver = aObserver.tabContainer;
 			strip.addEventListener('drop', this, true);
 			strip.addEventListener('dragend', this, true);
@@ -569,7 +569,7 @@ var TreeStyleTabService = {
 					gBrowser.mStrip // fallback to the default strip, for Tab Mix Plus;
 
 		if (aObserver.tabContainer &&
-			aObserver.tabContainer.tabbrowser == aObserver) { // Firefox 3.7 or later
+			aObserver.tabContainer.tabbrowser == aObserver) { // Firefox 4.0 or later
 			strip.removeEventListener('dragstart', this, true);
 			strip.removeEventListener('dragover', this, true);
 			strip.removeEventListener('dragleave', this, true);
@@ -683,7 +683,7 @@ try{
 			!info.target.selected &&
 			(
 				('mDragTime' in observer && 'mDragOverDelay' in observer) || // Firefox 3.6
-				('_dragTime' in observer && '_dragOverDelay' in observer) // Firefox 3.7 or later
+				('_dragTime' in observer && '_dragOverDelay' in observer) // Firefox 4.0 or later
 			)
 			) {
 			let time = observer.mDragTime || observer._dragTime || 0;
@@ -1172,11 +1172,11 @@ catch(e) {
 		);
 		eval('FullScreen.mouseoverToggle = '+
 			FullScreen.mouseoverToggle.toSource().replace(
-				// Firefox 3.7 or later
+				// Firefox 4.0 or later
 				'allFSToolbars[i].setAttribute("moz-collapsed", !aShow);',
 				'if (allFSToolbars[i].id != "TabsToolbar" || gBrowser.treeStyleTab.currentTabbarPosition == "top") { $& }'
 			).replace(
-				// Firefox 3.7 or later
+				// Firefox 4.0 or later
 				'this._isChromeCollapsed = !aShow;',
 				'gBrowser.treeStyleTab.updateFloatingTabbar(); $&'
 			).replace(
@@ -1260,13 +1260,13 @@ catch(e) {
 		bar    = null;
 		source = null;
 
-		// for Firefox 3.7 or later
+		// for Firefox 4.0 or later
 		this.updateAllTabsButton(gBrowser);
 	},
  
 	destroyToolbarItems : function TSTService_destroyToolbarItems() 
 	{
-		// Firefox 3.7 or later (restore original position)
+		// Firefox 4.0 or later (restore original position)
 		var allTabsButton = document.getElementById('alltabs-button');
 		if (allTabsButton && allTabsButton.hasChildNodes())
 			allTabsButton.firstChild.setAttribute('position', 'after_end');
@@ -1275,7 +1275,7 @@ catch(e) {
 	updateAllTabsButton : function TSTService_updateAllTabsButton(aTabBrowser) 
 	{
 		aTabBrowser = aTabBrowser || this.browser;
-		var allTabsButton = document.getElementById('alltabs-button') || // Firefox 3.7 or later
+		var allTabsButton = document.getElementById('alltabs-button') || // Firefox 4.0 or later
 				document.getAnonymousElementByAttribute(aTabBrowser.mTabContainer, 'class', 'tabs-alltabs-button') || // Firefox 3.6 or older
 				( // Tab Mix Plus
 					this.getTreePref('compatibility.TMP') &&
@@ -1442,7 +1442,7 @@ catch(e) {
 			case 'dragstart': return this.onTabDragStart(aEvent);
 			case 'dragover': return this.onTabDragOver(aEvent);
 			case 'dragleave': return this.onTabDragLeave(aEvent);
-			// Firefox 3.7 or later
+			// Firefox 4.0 or later
 			case 'drop': return this.onTabDrop(aEvent);
 			case 'dragend': return this.onTabDragEnd(aEvent);
 		}

@@ -906,13 +906,13 @@ var TreeStyleTabUtils = {
 		if (aTabBrowserChild.localName == 'tabbrowser') // itself
 			return aTabBrowserChild;
 
-		if (aTabBrowserChild.tabbrowser) // tabs, Firefox 3.7 or later
+		if (aTabBrowserChild.tabbrowser) // tabs, Firefox 4.0 or later
 			return aTabBrowserChild.tabbrowser;
 
-		if (aTabBrowserChild.id == 'TabsToolbar') // tabs toolbar, Firefox 3.7 or later
+		if (aTabBrowserChild.id == 'TabsToolbar') // tabs toolbar, Firefox 4.0 or later
 			return aTabBrowserChild.getElementsByTagName('tabs')[0].tabbrowser;
 
-		// tab context menu on Firefox 3.7
+		// tab context menu on Firefox 4.0
 		var popup = this.evaluateXPath(
 				'ancestor-or-self::xul:menupopup[@id="tabContextMenu"]',
 				aTabBrowserChild,
