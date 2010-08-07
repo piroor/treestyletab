@@ -2077,6 +2077,8 @@ TreeStyleTabBrowser.prototype = {
 		var tab = aEvent.originalTarget;
 		var b   = this.mTabBrowser;
 
+		tab.setAttribute(this.kREMOVED, true);
+
 		this.stopTabIndentAnimation(tab);
 		this.stopTabCollapseAnimation(tab);
 

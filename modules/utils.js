@@ -72,6 +72,7 @@ var TreeStyleTabUtils = {
 	kCOLLAPSING_PHASE_TO_BE_COLLAPSED : 'collapse',
 	kCOLLAPSING_PHASE_TO_BE_EXPANDED : 'expand',
 	kALLOW_COLLAPSE     : 'treestyletab-allow-subtree-collapse',
+	kREMOVED            : 'treestyletab-removed',
 
 	kX_OFFSET           : 'treestyletab-x-offset',
 	kY_OFFSET           : 'treestyletab-y-offset',
