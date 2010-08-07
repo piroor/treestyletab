@@ -174,8 +174,8 @@ image.tab-icon {
 
 .tabbrowser-tabs[treestyletab-animation-enabled="true"][treestyletab-mode="vertical"]
   .tabbrowser-tab[treestyletab-removed="true"] {
-	max-height: 0 !important;
-	min-height: 0 !important;
+	max-height: 1px !important;
+	min-height: 1px !important;
 	opacfity: 0 !important;
 }
 
