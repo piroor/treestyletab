@@ -7,8 +7,10 @@ var Prefs = Components
 		.getService(Components.interfaces.nsIPrefBranch);
 
 Components.utils.import('resource://treestyletab-modules/animationManager.js', {});
+Components.utils.import('resource://treestyletab-modules/prefs.js', {});
 Components.utils.import('resource://treestyletab-modules/namespace.jsm');
 var animationManager = getNamespaceFor('piro.sakura.ne.jp')['piro.sakura.ne.jp'].animationManager;
+var prefs = getNamespaceFor('piro.sakura.ne.jp')['piro.sakura.ne.jp'].prefs;
 
 var gGroupBookmarkRadio,
 	gGroupBookmarkUnderParent,
@@ -27,16 +29,23 @@ function ensureGroupBookmarkItems()
 	var bookmarkReplaceKey = 'browser.tabs.loadFolderAndReplace';
 	gGroupBookmarkReplacePref = document.getElementById(bookmarkReplaceKey);
 	try {
-		gGroupBookmarkReplacePref.value = Prefs.getBoolPref(bookmarkReplaceKey);
+		gGroupBookmarkReplacePref.value = prefs.getPref(bookmarkReplaceKey);
 	}
 	catch(e) {
-		Prefs.setBoolPref(bookmarkReplaceKey, gGroupBookmarkReplacePref.value != 'false');
+		prefs.setPref(bookmarkReplaceKey, gGroupBookmarkReplacePref.value != 'false');
 	}
 }
 
 function init()
 {
 	ensureGroupBookmarkItems();
+
+	var animation = document.getElementById('extensions.treestyletab.animation.enabled-check');
+	if (prefs.getPref('browser.tabs.animate') === false)
+		animation.setAttribute('disabled', true);
+	else
+		animation.removeAttribute('disabled');
+
 //	sizeToContent();
 }
 
@@ -160,10 +169,10 @@ function initTabPane()
 	var restrictionKey = 'browser.link.open_newwindow.restriction';
 	var restriction = document.getElementById(restrictionKey);
 	try {
-		restriction.value = Prefs.getIntPref(restrictionKey);
+		restriction.value = prefs.getPref(restrictionKey);
 	}
 	catch(e) {
-		Prefs.setIntPref(restrictionKey, parseInt(restriction.value));
+		prefs.setPref(restrictionKey, parseInt(restriction.value));
 	}
 
 	gLastStateIsVertical = document.getElementById('extensions.treestyletab.tabbar.position-radiogroup').value;
