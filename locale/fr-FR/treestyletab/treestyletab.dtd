@@ -167,9 +167,9 @@
 
 <!ENTITY selection.removeTabSubtree.label       "Fermer les arborescences sélectionnées">
 <!ENTITY selection.removeTabSubtree.accesskey   "s">
-<!ENTITY context.reloadTabSubtree.label         "Recharger cette arborescence">
+<!ENTITY context.reloadTabSubtree.label         "Actualiser cette arborescence">
 <!ENTITY context.reloadTabSubtree.accesskey     "r">
-<!ENTITY context.reloadDescendantTabs.label     "Recharger les enfants">
+<!ENTITY context.reloadDescendantTabs.label     "Actualiser les onglets enfants">
 <!ENTITY context.reloadDescendantTabs.accesskey "r">
 <!ENTITY context.removeTabSubtree.label         "Fermer cette arborescence">
 <!ENTITY context.removeTabSubtree.accesskey     "s">
