@@ -1613,7 +1613,8 @@ TreeStyleTabBrowser.prototype = {
 	
 	domains : [ 
 		'extensions.treestyletab.',
-		'browser.tabs.autoHide'
+		'browser.tabs.autoHide',
+		'browser.tabs.animate'
 	],
  
 	observe : function TSTBrowser_observe(aSubject, aTopic, aData) 
@@ -1758,8 +1759,14 @@ TreeStyleTabBrowser.prototype = {
 				this.checkTabsIndentOverflow();
 				break;
 
+			case 'browser.tabs.animate':
 			case 'extensions.treestyletab.animation.enabled':
-				this.setTabbrowserAttribute(this.kANIMATION_ENABLED, value ? 'true' : null );
+				this.setTabbrowserAttribute(this.kANIMATION_ENABLED,
+					(
+						this.getPref('extensions.treestyletab.animation.enabled') &&
+						(this.getPref('browser.tabs.animate') !== false)
+					) ? 'true' : null
+				);
 				break;
 
 			case 'browser.tabs.autoHide':
