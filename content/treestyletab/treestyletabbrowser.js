@@ -4031,25 +4031,42 @@ TreeStyleTabBrowser.prototype = {
 
 		var regexp = this.indentRulesRegExp;
 		var property = this.indentProp+'-'+aTarget;
-		var CSSTransitionEnabled = ('Transition' in aTab.style || 'MozTransition' in aTab.style);
 		if (
 			!this.animationEnabled ||
 			aJustNow ||
 			this.indentDuration < 1 ||
 			!aTarget ||
-			CSSTransitionEnabled ||
 			this.isCollapsed(aTab)
 			) {
 			aTab.setAttribute(
 				'style',
 				aTab.getAttribute('style')
 					.replace(regexp, '')+';'+
-					(aTarget || CSSTransitionEnabled ? property+':'+aIndent+'px !important;' : '' )
+					(aTarget ? property+':'+aIndent+'px !important;' : '' )
 			);
 			return;
 		}
 
 		var startIndent = this.getPropertyPixelValue(aTab, property);
+
+		var CSSTransitionEnabled = ('Transition' in aTab.style || 'MozTransition' in aTab.style);
+		if (CSSTransitionEnabled) {
+			aTab.__treestyletab__updateTabIndentTask = function(aTime, aBeginning, aChange, aDuration) {
+				aTab.setAttribute(
+					'style',
+					aTab.getAttribute('style')
+						.replace(regexp, '')+';'+
+						property+':'+aIndent+'px !important;'
+				);
+				return true;
+			};
+			this.animationManager.addTask(
+				aTab.__treestyletab__updateTabIndentTask,
+				0, 0, 1
+			);
+			return;
+		}
+
 		var delta       = aIndent - startIndent;
 		var radian      = 90 * Math.PI / 180;
 		var self        = this;
