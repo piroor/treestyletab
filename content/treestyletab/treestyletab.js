@@ -1253,8 +1253,8 @@ catch(e) {
 			source.indexOf('TreeStyleTabService') < 0
 			) {
 			eval('bar.handleCommand = '+source.replace(
-				'aTriggeringEvent && aTriggeringEvent.altKey',
-				'TreeStyleTabService.checkReadyToOpenNewTabOnLocationBar(url, $&)'
+				/(aTriggeringEvent && aTriggeringEvent\.altKey)/g,
+				'TreeStyleTabService.checkReadyToOpenNewTabOnLocationBar(url, $1)'
 			));
 		}
 		bar    = null;
