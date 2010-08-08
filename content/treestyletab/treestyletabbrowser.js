@@ -2815,6 +2815,13 @@ TreeStyleTabBrowser.prototype = {
  
 	onTabAnimationEnd : function TSTBrowser_onTabAnimationEnd(aEvent) 
 	{
+		/*
+			"transitionend" event isn't fired multiplly, so, Firefox's
+			default handler possibly fails to handle animation end
+			because it watches only "max-width" property.
+			For safety, I decided to clean up all of removing tabs
+			by any animation end.
+		*/
 		var tab = aEvent.target;
 		var b = this.browser;
 		if (
