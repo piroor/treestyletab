@@ -281,6 +281,7 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.addEventListener('TabMove',        this, true);
 		b.mTabContainer.addEventListener('SSTabRestoring', this, true);
 		b.mTabContainer.addEventListener('SSTabRestored',  this, true);
+		b.mTabContainer.addEventListener('transitionend',  this, true);
 		b.mTabContainer.addEventListener('mouseover', this, true);
 		b.mTabContainer.addEventListener('mouseout',  this, true);
 		b.mTabContainer.addEventListener('dblclick',  this, true);
@@ -1522,6 +1523,7 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.removeEventListener('TabMove',        this, true);
 		b.mTabContainer.removeEventListener('SSTabRestoring', this, true);
 		b.mTabContainer.removeEventListener('SSTabRestored',  this, true);
+		b.mTabContainer.removeEventListener('transitionend',  this, true);
 		b.mTabContainer.removeEventListener('mouseover', this, true);
 		b.mTabContainer.removeEventListener('mouseout',  this, true);
 		b.mTabContainer.removeEventListener('dblclick',  this, true);
@@ -1865,6 +1867,9 @@ TreeStyleTabBrowser.prototype = {
 			case 'SSTabRestored':
 				return this.onTabRestored(aEvent);
 
+			case 'transitionend':
+				return this.onTabAnimationEnd(aEvent);
+
 			case 'select':
 				return this.onTabSelect(aEvent);
 
@@ -2109,7 +2114,7 @@ TreeStyleTabBrowser.prototype = {
 				this.markAsClosedSet([tab].concat(tabs));
 
 				tabs.reverse().forEach(function(aTab) {
-					b.removeTab(aTab);
+					b.removeTab(aTab, { animate : true });
 				}, this);
 
 				// for last tab closing, we have to open new tab manually if running on Firefox 3.0.
@@ -2248,7 +2253,7 @@ TreeStyleTabBrowser.prototype = {
 			if (shouldCloseParentTab) {
 				window.setTimeout(function() {
 					if (parentTab.parentNode)
-						b.removeTab(parentTab);
+						b.removeTab(parentTab, { animate : true });
 					parentTab = null;
 					b = null;
 				}, 0);
@@ -2806,6 +2811,20 @@ TreeStyleTabBrowser.prototype = {
 		// update the status for the next restoring
 		if (!this.useTMPSessionAPI && TreeStyleTabService.restoringTree)
 			TreeStyleTabService.restoringTree = TreeStyleTabService.getRestoringTabsCount() > 0;
+	},
+ 
+	onTabAnimationEnd : function TSTBrowser_onTabAnimationEnd(aEvent) 
+	{
+		var tab = aEvent.target;
+		var b = this.browser;
+		if (
+			tab.localName == 'tab' &&
+			b && 
+			b._removingTabs &&
+			b._removingTabs.indexOf(tab) > -1 &&
+			b._endRemoveTab
+			)
+			b._endRemoveTab(tab);
 	},
  
 	onTabSelect : function TSTBrowser_onTabSelect(aEvent) 
@@ -3517,7 +3536,7 @@ TreeStyleTabBrowser.prototype = {
 
 		// close imported tabs from the source browser
 		oldTabs.forEach(function(aTab) {
-			sourceBrowser.removeTab(aTab);
+			sourceBrowser.removeTab(aTab, { animate : true });
 		});
 		if (shouldClose) this.closeOwner(sourceBrowser);
 
@@ -3904,7 +3923,7 @@ TreeStyleTabBrowser.prototype = {
 		if (this.isGroupTab(parentTab) && !this.hasChildTabs(parentTab)) {
 			window.setTimeout(function(aTabBrowser) {
 				if (parentTab.parentNode)
-					aTabBrowser.removeTab(parentTab);
+					aTabBrowser.removeTab(parentTab, { animate : true });
 				parentTab = null;
 			}, 0, this.getTabBrowserFromChild(parentTab));
 		}

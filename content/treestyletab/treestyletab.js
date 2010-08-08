@@ -1832,7 +1832,7 @@ catch(e) {
 			this.markAsClosedSet(aTabs);
 			for (var i = aTabs.length-1; i > -1; i--)
 			{
-				b.removeTab(aTabs[i]);
+				b.removeTab(aTabs[i], { animate : true });
 			}
 			this.startRendering();
 			this.fireTabSubtreeClosedEvent(b, aTabs[0], aTabs)
