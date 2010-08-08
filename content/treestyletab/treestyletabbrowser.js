@@ -4047,8 +4047,6 @@ TreeStyleTabBrowser.prototype = {
 			return;
 		}
 
-		var startIndent = this.getPropertyPixelValue(aTab, property);
-
 		var CSSTransitionEnabled = ('Transition' in aTab.style || 'MozTransition' in aTab.style);
 		if (CSSTransitionEnabled) {
 			aTab.__treestyletab__updateTabIndentTask = function(aTime, aBeginning, aChange, aDuration) {
@@ -4067,6 +4065,7 @@ TreeStyleTabBrowser.prototype = {
 			return;
 		}
 
+		var startIndent = this.getPropertyPixelValue(aTab, property);
 		var delta       = aIndent - startIndent;
 		var radian      = 90 * Math.PI / 180;
 		var self        = this;
