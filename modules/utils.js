@@ -1215,7 +1215,8 @@ var TreeStyleTabUtils = {
 */
 
 		var info = aInfo || { uri : '' };
-		if (/^javascript:/.test(info.uri)) return false;
+		if (/^(javascript|moz-action):/.test(info.uri))
+			return false;
 
 		var frame = this.getFrameFromTabBrowserElements(info.target);
 		if (!frame) return false;
