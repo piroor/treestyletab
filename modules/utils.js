@@ -1018,7 +1018,11 @@ var TreeStyleTabUtils = {
 	getFirstNormalTab : function TSTUtils_getFirstNormalTab(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
-		return b.mTabContainer.childNodes[b._numPinnedTabs || 0];
+		return this.evaluateXPath(
+			'descendant::xul:tab[not(@pinned="true") and not(@hidden="true")]',
+			b.mTabContainer,
+			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
+		).singleNodeValue;
 	},
  
 	getLastTab : function TSTUtils_getLastTab(aTabBrowserChild) 
@@ -1095,7 +1099,7 @@ var TreeStyleTabUtils = {
 			return this.getTabs(b);
 
 		var XPathResult = this.evaluateXPath(
-				'child::xul:tab[not(@'+this.kCOLLAPSED+'="true")]',
+				'child::xul:tab[not(@'+this.kCOLLAPSED+'="true") and not(@hidden="true")]',
 				b.mTabContainer
 			);
 		return XPathResult;
@@ -1694,7 +1698,8 @@ var TreeStyleTabUtils = {
 								'' ;
 
 		return this.evaluateXPath(
-			'sum((self::* | preceding-sibling::xul:tab'+extraCondition+')/attribute::'+this.kX_OFFSET+')',
+			'sum((self::* | preceding-sibling::xul:tab[not(@hidden="true")]'+extraCondition+')'+
+				'/attribute::'+this.kX_OFFSET+')',
 			aTab,
 			Ci.nsIDOMXPathResult.NUMBER_TYPE
 		).numberValue;
@@ -1706,7 +1711,8 @@ var TreeStyleTabUtils = {
 								'';
 
 		return this.evaluateXPath(
-			'sum((self::* | preceding-sibling::xul:tab'+extraCondition+')/attribute::'+this.kY_OFFSET+')',
+			'sum((self::* | preceding-sibling::xul:tab[not(@hidden="true")]'+extraCondition+')'+
+				'/attribute::'+this.kY_OFFSET+')',
 			aTab,
 			Ci.nsIDOMXPathResult.NUMBER_TYPE
 		).numberValue;
