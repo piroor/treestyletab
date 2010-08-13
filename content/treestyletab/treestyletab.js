@@ -192,6 +192,17 @@ var TreeStyleTabService = {
 			);
 		}
 
+		if ('TabView' in window && TabView._initFrame) {
+			eval('TabView._initFrame = '+
+				TabView._initFrame.toSource().replace(
+					/(iframe.addEventListener\()/,
+					<![CDATA[
+						iframe.addEventListener('load', TreeStyleTabService, true);
+					$1]]>
+				)
+			);
+		}
+
 		this.overrideExtensionsPreInit(); // hacks.js
 
 		this.registerTabFocusAllowance(this.defaultTabFocusAllowance);
@@ -1308,6 +1319,32 @@ catch(e) {
 			items[aIndex].style.paddingLeft = aTab.getAttribute(this.kNEST)+'em';
 		}, this);
 	},
+ 
+	initTabView : function() 
+	{
+		var iframe = document.getElementById('tab-view');
+		iframe.removeEventListener('load', this, true);
+
+		var frame = iframe.contentWindow;
+		if (
+			!frame.Item ||
+			!frame.Item.prototype ||
+			!frame.Item.prototype.setParent ||
+			frame.Item.prototype.__treestyletab__setParent
+			)
+			return;
+
+		frame.Item.prototype.__treestyletab__setParent = frame.Item.prototype.setParent;
+		frame.Item.prototype.setParent = function(aParent) {
+			var currentParent = this.parent;
+			var returnValue = this.__treestyletab__setParent.apply(this, arguments);
+			if (this.tab && currentParent != aParent) {
+				let b = frame.parent.TreeStyleTabService.getTabBrowserFromChild(this.tab);
+				b.treeStyleTab.partTab(this.tab);
+			}
+			return returnValue;
+		};
+	},
   
 	destroy : function TSTService_destroy() 
 	{
@@ -1362,7 +1399,11 @@ catch(e) {
 				return this.preInit();
 
 			case 'load':
-				return this.init();
+				if (aEvent.currentTarget == window || aEvent.currentTarget == document)
+					this.init();
+				else
+					this.initTabView();
+				return
 
 			case 'unload':
 				return this.destroy();
