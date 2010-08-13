@@ -2098,7 +2098,7 @@ TreeStyleTabBrowser.prototype = {
 
 		var subtreeCollapsed = this.isSubtreeCollapsed(tab);
 		if (
-			closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_CLOSE ||
+			closeParentBehavior == this.CHILDREN_CLOSE ||
 			subtreeCollapsed
 			) {
 			let tabs = this.getDescendantTabs(tab);
@@ -2155,62 +2155,23 @@ TreeStyleTabBrowser.prototype = {
 
 		if (firstChild) {
 			backupAttributes[this.kCHILDREN] = this.getTabValue(tab, this.kCHILDREN);
-			let children   = this.getChildTabs(tab);
-			children.forEach((
-				(closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_DETACH) ?
-					function(aTab) {
-						indentModifiedTabs.push(aTab);
-						this.partTab(aTab, {
-							dontUpdateIndent : true
-						});
-						this.moveTabSubtreeTo(aTab, this.getLastTab(b)._tPos);
-					} :
-				(parentTab ?
-					(
-						closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST &&
-						this.getChildTabs(parentTab).length > 1
-					) :
-					closeRootBehavior == this.CLOSE_ROOT_BEHAVIOR_PROMOTE_FIRST
-				) ?
-					function(aTab, aIndex) {
-						this.partTab(aTab, { dontUpdateIndent : true });
-						if (aIndex == 0) {
-							nextFocusedTab = aTab;
-							indentModifiedTabs.push(aTab);
-							if (parentTab) {
-								this.attachTabTo(aTab, parentTab, {
-									dontUpdateIndent : true,
-									dontExpand       : true,
-									dontMove         : true
-								});
-							}
-							this.collapseExpandSubtree(aTab, false);
-							this.deleteTabValue(aTab, this.kSUBTREE_COLLAPSED);
-						}
-						else {
-							this.attachTabTo(aTab, children[0], {
-								dontUpdateIndent : true,
-								dontExpand       : true,
-								dontMove         : true
-							});
-						}
-					} :
-				parentTab ?
-					function(aTab) {
-						indentModifiedTabs.push(aTab);
-						this.attachTabTo(aTab, parentTab, {
-							dontUpdateIndent : true,
-							dontExpand       : true,
-							dontMove         : true
-						});
-					} :
-					function(aTab) {
-						indentModifiedTabs.push(aTab);
-						this.partTab(aTab, { dontUpdateIndent : true });
-					}
-			), this);
-			if (closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_PROMOTE_ALL ||
-				closeParentBehavior == this.CLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST)
+			let children = this.getChildTabs(tab);
+			let behavior = parentTab ? closeParentBehavior : closeRootBehavior ;
+			if (behavior == this.CHILDREN_PROMOTE_FIRST &&
+				parentTab &&
+				this.getChildTabs(parentTab).length == 1)
+				behavior = this.CHILDREN_PROMOTE_ALL;
+			indentModifiedTabs = indentModifiedTabs.concat(
+					behavior == this.CHILDREN_PROMOTE_FIRST ?
+						[children[0]] :
+						children
+				);
+			this.partAllChildren(tab, {
+				behavior         : behavior,
+				dontUpdateIndent : true
+			});
+			if (behavior == this.CHILDREN_PROMOTE_ALL ||
+				behavior == this.CHILDREN_PROMOTE_FIRST)
 				nextFocusedTab = firstChild;
 		}
 
@@ -2293,12 +2254,11 @@ TreeStyleTabBrowser.prototype = {
 		if (collapsed)
 			this.startRendering();
 	},
-	CLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST : 3,
-	CLOSE_PARENT_BEHAVIOR_PROMOTE_ALL   : 0,
-	CLOSE_PARENT_BEHAVIOR_DETACH        : 1,
-	CLOSE_PARENT_BEHAVIOR_CLOSE         : 2,
-	CLOSE_ROOT_BEHAVIOR_PROMOTE_FIRST   : 3,
-	CLOSE_ROOT_BEHAVIOR_DETACH          : 1,
+	CHILDREN_PROMOTE_FIRST : 3,
+	CHILDREN_PROMOTE_ALL   : 0,
+	CHILDREN_DETACH        : 1,
+	CHILDREN_SIMPLY_DETACH : 4,
+	CHILDREN_CLOSE         : 2, // onTabRemoved only
 	getNextFocusedTab : function TSTBrowser_getNextFocusedTab(aTab)
 	{
 		return this.getNextSiblingTab(aTab) ||
@@ -2821,7 +2781,7 @@ TreeStyleTabBrowser.prototype = {
 		var b = this.browser;
 		if (
 			tab.localName == 'tab' &&
-			b && 
+			b &&
 			b._removingTabs &&
 			b._removingTabs.indexOf(tab) > -1 &&
 			b._endRemoveTab
@@ -3204,6 +3164,20 @@ TreeStyleTabBrowser.prototype = {
 	onTreeStyleTabPrintPreviewExited : function TSTBrowser_onTreeStyleTabPrintPreviewExited(aEvent) 
 	{
 		this.removeTabbrowserAttribute(this.kPRINT_PREVIEW);
+	},
+ 
+	onTabGroupModified : function TSTBrowser_onTabGroupModified(aTab) 
+	{
+		window.setTimeout(function(aSelf) {
+			if (aTab.hasAttribute(aSelf.kREMOVED))
+				return;
+			aSelf.partAllChildren(aTab, {
+				behavior : aSelf.getParentTab(aTab) ?
+					aSelf.getTreePref('closeParentBehavior') :
+					aSelf.getTreePref('closeRootBehavior')
+			});
+			aSelf.partTab(aTab);
+		}, 0, this);
 	},
   
 /* drag and drop */ 
@@ -3937,9 +3911,58 @@ TreeStyleTabBrowser.prototype = {
 	
 	partAllChildren : function TSTBrowser_partAllChildren(aTab, aInfo) 
 	{
-		this.getChildTabs(aTab).forEach(function(aTab) {
-			this.partTab(aTab, aInfo);
-		}, this);
+		aInfo = aInfo || {};
+		if (!('behavior' in aInfo))
+			aInfo.behavior = this.CHILDREN_SIMPLY_DETACH;
+		if (aInfo.behavior == this.CHILDREN_CLOSE)
+			aInfo.behavior = this.CHILDREN_PROMOTE_FIRST;
+
+		var dontUpdateIndent = aInfo.dontUpdateIndent;
+
+		var b = this.mTabBrowser;
+		var parentTab = this.getParentTab(aTab);
+		var children = this.getChildTabs(aTab);
+		children.forEach((
+			aInfo.behavior == this.CHILDREN_DETACH ?
+				function(aTab) {
+					this.partTab(aTab, aInfo);
+					this.moveTabSubtreeTo(aTab, this.getLastTab(b)._tPos);
+				} :
+			aInfo.behavior == this.CHILDREN_PROMOTE_FIRST ?
+				function(aTab, aIndex) {
+					this.partTab(aTab, aInfo);
+					if (aIndex == 0) {
+						if (parentTab) {
+							this.attachTabTo(aTab, parentTab, {
+								__proto__  : aInfo,
+								dontExpand : true,
+								dontMove   : true
+							});
+						}
+						this.collapseExpandSubtree(aTab, false);
+						this.deleteTabValue(aTab, this.kSUBTREE_COLLAPSED);
+					}
+					else {
+						this.attachTabTo(aTab, children[0], {
+							__proto__  : aInfo,
+							dontExpand : true,
+							dontMove   : true
+						});
+					}
+				} :
+			aInfo.behavior == this.CHILDREN_PROMOTE_ALL && parentTab ?
+				function(aTab) {
+					this.attachTabTo(aTab, parentTab, {
+						__proto__  : aInfo,
+						dontExpand : true,
+						dontMove   : true
+					});
+				} :
+			// aInfo.behavior == this.CHILDREN_SIMPLY_DETACH ?
+				function(aTab) {
+					this.partTab(aTab, aInfo);
+				}
+		), this);
 	},
   
 	updateTabsIndent : function TSTBrowser_updateTabsIndent(aTabs, aLevel, aJustNow) 

@@ -1336,13 +1336,12 @@ catch(e) {
 
 		frame.Item.prototype.__treestyletab__setParent = frame.Item.prototype.setParent;
 		frame.Item.prototype.setParent = function(aParent) {
-			var currentParent = this.parent;
-			var returnValue = this.__treestyletab__setParent.apply(this, arguments);
-			if (this.tab && currentParent != aParent) {
-				let b = frame.parent.TreeStyleTabService.getTabBrowserFromChild(this.tab);
-				b.treeStyleTab.partTab(this.tab);
-			}
-			return returnValue;
+			if (this.tab && this.parent && this.parent != aParent)
+				frame.parent.TreeStyleTabService
+					.getTabBrowserFromChild(this.tab)
+					.treeStyleTab
+					.onTabGroupModified(this.tab);
+			return this.__treestyletab__setParent.apply(this, arguments);
 		};
 	},
   
