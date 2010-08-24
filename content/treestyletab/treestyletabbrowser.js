@@ -4712,10 +4712,10 @@ TreeStyleTabBrowser.prototype = {
 	set tabbarHeight(aValue) { return this.autoHide.height = aValue; },
 	get splitterWidth() { return this.autoHide.splitterWidth; },
 
-	set autoHideShown() { return this.autoHide.expanded; },
+	get autoHideShown() { return this.autoHide.expanded; },
 	set autoHideShown(aValue) { return this.tabbarShown = aValue; },
-	set autoHideXOffset() { return this.autoHide.XOffset; },
-	set autoHideYOffset() { return this.autoHide.YOffset; },
+	get autoHideXOffset() { return this.autoHide.XOffset; },
+	get autoHideYOffset() { return this.autoHide.YOffset; },
 	get autoHideMode() { return this.autoHide.mode; },
 	set autoHideMode(aValue) { return this.autoHide.mode = aValue; },
 
