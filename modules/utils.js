@@ -268,7 +268,8 @@ var TreeStyleTabUtils = {
 		this.onPrefChange('extensions.treestyletab.twisty.expandSensitiveArea');
 
 		try {
-			this.updateAeroPeek();
+			if (this.XULAppInfo.OS.toLowerCase().indexOf('winnt') > -1)
+				this.updateAeroPeek();
 		}
 		catch(e) {
 			dump(e+'\n');
