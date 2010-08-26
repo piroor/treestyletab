@@ -4564,11 +4564,24 @@ TreeStyleTabBrowser.prototype = {
 		var deltaX = aEndX - startX;
 		var deltaY = aEndY - startY;
 
+		var arrowscrollbox = scrollBoxObject.element.parentNode;
+		if (
+			arrowscrollbox &&
+			(
+				arrowscrollbox.localName != 'arrowscrollbox' ||
+				!('_isScrolling' in arrowscrollbox)
+			)
+			)
+			arrowscrollbox = null;
+
 		var radian = 90 * Math.PI / 180;
 		var self = this;
 		this.smoothScrollTask = function(aTime, aBeginning, aChange, aDuration) {
 			var scrollBoxObject = self.scrollBoxObject;
-			if (aTime >= aDuration) {
+			if (
+				aTime >= aDuration ||
+				(arrowscrollbox && arrowscrollbox._isScrolling != 0) // cancel by manual scrolling
+				) {
 				scrollBoxObject.scrollTo(aEndX, aEndY);
 
 				b = null;
