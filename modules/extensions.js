@@ -8,14 +8,6 @@
        ok : function() { extensions.goToOptions('my.extension.id@example.com'); },
        ng : function() { alert('NOT INSTALLED'); }
      });
-     // just same to:
-     // extensions.isInstalled('my.extension.id@example.com', {
-     //   ok : function() {
-     //     extensions.isEnabled('my.extension.id@example.com', {
-     //       ok : function() { extensions.goToOptions('my.extension.id@example.com'); }
-     //     });
-     //   }
-     // });
      extensions.isInstalled('my.extension.id@example.com', {
        ok : function(aDir) {
          var dir = aDir; // nsILocalFile
@@ -25,16 +17,13 @@
    Synchronus: (DEPRECATED)
      if (extensions.isAvailable('my.extension.id@example.com'))
          extensions.goToOptions('my.extension.id@example.com');
-     // just same to:
-     // if (extensions.isInstalled('my.extension.id@example.com') &&
-     //     extensions.isEnabled('my.extension.id@example.com'))
-     //     extensions.goToOptions('my.extension.id@example.com');
      var dir = extensions.getInstalledLocation('my.extension.id@example.com'); // nsILocalFile
 
- lisence: The MIT License, Copyright (c) 2009-2010 SHIMODA "Piro" Hiroshi
+ license: The MIT License, Copyright (c) 2009-2010 SHIMODA "Piro" Hiroshi
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/license.txt
  original:
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/extensions.js
+   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/extensions.test.js
 */
 
 /* To work as a JS Code Module */
