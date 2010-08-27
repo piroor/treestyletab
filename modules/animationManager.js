@@ -26,7 +26,8 @@
 
 /* To work as a JS Code Module (*require jstimer.jsm)
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/jstimer.jsm */
-if (typeof window == 'undefined') {
+if (typeof window == 'undefined' ||
+	(window && typeof window.constructor == 'function')) {
 	this.EXPORTED_SYMBOLS = ['animationManager'];
 
 	// If namespace.jsm is available, export symbols to the shared namespace.

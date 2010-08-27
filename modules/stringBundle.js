@@ -15,7 +15,8 @@
 */
 
 /* To work as a JS Code Module */
-if (typeof window == 'undefined') {
+if (typeof window == 'undefined' ||
+	(window && typeof window.constructor == 'function')) {
 	this.EXPORTED_SYMBOLS = ['stringBundle'];
 
 	// If namespace.jsm is available, export symbols to the shared namespace.
