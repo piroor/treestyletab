@@ -3171,6 +3171,7 @@ TreeStyleTabBrowser.prototype = {
 		window.setTimeout(function(aSelf) {
 			if (aTab.hasAttribute(aSelf.kREMOVED))
 				return;
+			aSelf.collapseExpandTab(aTab, false, true);
 			aSelf.partAllChildren(aTab, {
 				behavior : aSelf.getParentTab(aTab) ?
 					aSelf.getTreePref('closeParentBehavior') :
