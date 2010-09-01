@@ -768,7 +768,7 @@ var TreeStyleTabUtils = {
 			strip.setAttribute(aAttr, aValue);
 			strip.ownerDocument.defaultView.setTimeout(function() {
 				strip.ownerDocument.documentElement.setAttribute(aAttr, aValue);
-			}, 0);
+			}, 10);
 			if (this._tabStripPlaceHolder)
 				this._tabStripPlaceHolder.setAttribute(aAttr, aValue);
 			if (strip.tabsToolbarInnerBox)
@@ -778,7 +778,7 @@ var TreeStyleTabUtils = {
 			strip.removeAttribute(aAttr);
 			strip.ownerDocument.defaultView.setTimeout(function() {
 				strip.ownerDocument.documentElement.removeAttribute(aAttr);
-			}, 0);
+			}, 10);
 			if (this._tabStripPlaceHolder)
 				this._tabStripPlaceHolder.removeAttribute(aAttr);
 			if (strip.tabsToolbarInnerBox)
