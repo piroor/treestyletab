@@ -1703,7 +1703,8 @@ TreeStyleTabBrowser.prototype = {
 				break;
 
 			case 'extensions.treestyletab.tabbar.style':
-				this.setTabbarStyle(value);
+			case 'extensions.treestyletab.tabbar.style.aero':
+				this.setTabbarStyle(this.getTreePref('tabbar.style'));
 				value = this.getTreePref('twisty.style');
 				if (value != 'auto')
 					break;
@@ -1792,10 +1793,6 @@ TreeStyleTabBrowser.prototype = {
 
 		if (aStyle) {
 			let additionalValues = [];
-			if (/-aero$/.test(aStyle)) {
-				additionalValues.push('aero');
-				aStyle = aStyle.replace('-aero', '')
-			}
 			if (/^(plain|flat|mixed|vertigo)$/.test(aStyle))
 				additionalValues.push('square');
 			if (/^(plain|flat|mixed)$/.test(aStyle))
@@ -1804,6 +1801,8 @@ TreeStyleTabBrowser.prototype = {
 				additionalValues.push('color');
 			if (/^(plain|mixed)$/.test(aStyle))
 				additionalValues.push('shadow');
+			if (this.getTreePref('tabbar.style.aero'))
+				additionalValues.push('aero');
 			if (additionalValues.length)
 				aStyle = additionalValues.join(' ')+' '+aStyle;
 
