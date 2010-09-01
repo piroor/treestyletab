@@ -4063,7 +4063,7 @@ TreeStyleTabBrowser.prototype = {
 			};
 			this.animationManager.addTask(
 				aTab.__treestyletab__updateTabIndentTask,
-				0, 0, 1
+				0, 0, 1, window
 			);
 			return;
 		}
@@ -4094,7 +4094,7 @@ TreeStyleTabBrowser.prototype = {
 		};
 		this.animationManager.addTask(
 			aTab.__treestyletab__updateTabIndentTask,
-			0, 0, this.indentDuration
+			0, 0, this.indentDuration, window
 		);
 	},
 	stopTabIndentAnimation : function TSTBrowser_stopTabIndentAnimation(aTab)
@@ -4444,7 +4444,7 @@ TreeStyleTabBrowser.prototype = {
 		};
 		this.animationManager.addTask(
 			aTab.__treestyletab__updateTabCollapsedTask,
-			0, 0, this.collapseDuration
+			0, 0, this.collapseDuration, window
 		);
 	},
 	kOPACITY_RULE_REGEXP : /opacity\s*:[^;]+;?/,
@@ -4613,7 +4613,7 @@ TreeStyleTabBrowser.prototype = {
 		};
 		this.animationManager.addTask(
 			this.smoothScrollTask,
-			0, 0, this.smoothScrollDuration
+			0, 0, this.smoothScrollDuration, window
 		);
 	},
 	smoothScrollTask : null,
