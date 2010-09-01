@@ -1178,7 +1178,10 @@ TreeStyleTabService.overrideExtensionsDelayed = function TSTService_overrideExte
 
 	// Firefox Sync (Weave)
 	// http://www.mozilla.com/en-US/firefox/sync/
-	if ('gFxWeaveGlue' in window) {
+	if (
+		'gFxWeaveGlue' in window || // addon
+		'gSyncUI' in window // Firefox 4 built-in
+		) {
 		let ns = {};
 		try { // 1.4
 			Components.utils.import('resource://services-sync/service.js', ns);
