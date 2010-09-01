@@ -766,6 +766,7 @@ var TreeStyleTabUtils = {
 		if (!strip) return;
 		if (aValue) {
 			strip.setAttribute(aAttr, aValue);
+			strip.ownerDocument.documentElement.setAttribute(aAttr, aValue);
 			if (this._tabStripPlaceHolder)
 				this._tabStripPlaceHolder.setAttribute(aAttr, aValue);
 			if (strip.tabsToolbarInnerBox)
@@ -773,6 +774,7 @@ var TreeStyleTabUtils = {
 		}
 		else {
 			strip.removeAttribute(aAttr);
+			strip.ownerDocument.documentElement.removeAttribute(aAttr);
 			if (this._tabStripPlaceHolder)
 				this._tabStripPlaceHolder.removeAttribute(aAttr);
 			if (strip.tabsToolbarInnerBox)

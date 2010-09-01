@@ -1777,21 +1777,25 @@ TreeStyleTabBrowser.prototype = {
 	},
 	setTabbarStyle : function TSTBrowser_setTabbarStyle(aStyle)
 	{
-		if (/^(default|plain|flat|mixed|vertigo|metal|sidebar)$/.test(aStyle))
+		if (/^(default|plain|flat|mixed|vertigo|metal|sidebar)(-aero)?$/.test(aStyle))
 			aStyle = aStyle.toLowerCase();
 
-		if (aStyle == 'default') { // old name (for compatibility)
-			this.setTreePref('tabbar.style', aStyle = 'plain');
+		if (aStyle.indexOf('default') == 0) { // old name (for compatibility)
+			this.setTreePref('tabbar.style', aStyle = aStyle.replace('default', 'plain'));
 		}
 		else if (// dropshadow is available only on Firefox 3.5 or later.
-			aStyle == 'mixed' &&
+			aStyle.indexOf('mixed') == 0 &&
 			this.Comparator.compare(this.XULAppInfo.version, '3.5') < 0
 			) {
-			this.setTreePref('tabbar.style', aStyle = 'flat');
+			this.setTreePref('tabbar.style', aStyle = aStyle.replace('mixed', 'flat'));
 		}
 
 		if (aStyle) {
 			let additionalValues = [];
+			if (/-aero$/.test(aStyle)) {
+				additionalValues.push('aero');
+				aStyle = aStyle.replace('-aero', '')
+			}
 			if (/^(plain|flat|mixed|vertigo)$/.test(aStyle))
 				additionalValues.push('square');
 			if (/^(plain|flat|mixed)$/.test(aStyle))

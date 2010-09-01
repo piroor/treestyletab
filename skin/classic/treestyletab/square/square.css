@@ -318,3 +318,15 @@
   .tabbrowser-tab[pinned="true"] {
 	-moz-border-right-colors: ThreeDShadow transparent !important;
 }
+
+
+/* aero glass */
+
+.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="aero"]:not([treestyletab-tabbar-position="top"]),
+.tabbrowser-strip[treestyletab-style~="square"][treestyletab-style~="aero"]:not([treestyletab-tabbar-position="top"]),
+tabbrowser[treestyletab-style~="square"][treestyletab-style~="aero"]:not([treestyletab-tabbar-position="top"]),
+:root[treestyletab-style~="square"][treestyletab-style~="aero"]:not([treestyletab-tabbar-position="top"]) #appcontent,
+:root[treestyletab-style~="square"][treestyletab-style~="aero"]:not([treestyletab-tabbar-position="top"]) #browser {
+	background: transparent !important;
+	-moz-appearance: none !important;
+}

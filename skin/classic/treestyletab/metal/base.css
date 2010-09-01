@@ -2,8 +2,8 @@
 
 /* tab bar */
 
-#TabsToolbar[treestyletab-style="metal"]:not([treestyletab-tabbar-position="top"]),
-#TabsToolbar[treestyletab-style="metal"][treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
+#TabsToolbar[treestyletab-style~="metal"]:not([treestyletab-tabbar-position="top"]),
+#TabsToolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
 	background: transparent !important;
 	border: 0 none !important;
 	margin: 0 !important;
@@ -12,124 +12,124 @@
 	-moz-box-shadow: none !important;
 }
 
-.tabbrowser-tabs[treestyletab-style="metal"]:not([treestyletab-tabbar-position="top"])
+.tabbrowser-tabs[treestyletab-style~="metal"]:not([treestyletab-tabbar-position="top"])
   .tabs-bottom,
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabs-left,
-.tabbrowser-tabs[treestyletab-style="metal"]:not([treestyletab-tabbar-position="top"])
+.tabbrowser-tabs[treestyletab-style~="metal"]:not([treestyletab-tabbar-position="top"])
   .tab-text-shadow /* Mac OS X */ {
 	display: none !important;
 }
 
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab:first-child,
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab:first-child:hover,
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab:first-child[selected="true"],
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab:first-child[selected="true"]:hover {
 	margin-top: 5px !important;
 }
 
-.tabbrowser-strip[treestyletab-style="metal"][treestyletab-mode="vertical"] {
+.tabbrowser-strip[treestyletab-style~="metal"][treestyletab-mode="vertical"] {
 	background: #797979 !important;
 	border: 1px solid #444444 !important;
 	border-width: 1px 0 0 !important;
 	padding: 0 !important;
 }
 
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"] {
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"] {
 	background: transparent !important;
 	margin: 0;
 	-moz-appearance: none !important;
 }
 
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([overflow="true"])
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]:not([overflow="true"])
   .tabbrowser-arrowscrollbox,
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"][overflow="true"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][overflow="true"]
   .tabbrowser-arrowscrollbox .scrollbox-innerbox {
 	background: url("shadow-active-l.png") repeat-y top right !important;
 }
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]:not([overflow="true"])
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]:not([overflow="true"])
   .tabbrowser-arrowscrollbox,
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"][overflow="true"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"][overflow="true"]
   .tabbrowser-arrowscrollbox .scrollbox-innerbox {
 	background: url("shadow-active-r.png") repeat-y top left !important;
 }
 
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabs-container,
-#TabsToolbar .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"] {
+#TabsToolbar .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"] {
 	padding: 0 !important;
 }
 
-tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
+tabbrowser[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .treestyletab-splitter {
 	background: #b3b2b3 !important;
 	border: 0 solid #666666 !important;
 	min-width: 5px;
 	-moz-appearance: none !important;
 }
-tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="left"]
+tabbrowser[treestyletab-style~="metal"][treestyletab-tabbar-position="left"]
   .treestyletab-splitter,
-.tabbrowser-strip[treestyletab-style="metal"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"],
-#TabsToolbar[treestyletab-style="metal"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"] {
+.tabbrowser-strip[treestyletab-style~="metal"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"],
+#TabsToolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"] {
 	border-right: 1px solid #666666 !important;
 }
-tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
+tabbrowser[treestyletab-style~="metal"][treestyletab-tabbar-position="right"]
   .treestyletab-splitter,
-.tabbrowser-strip[treestyletab-style="metal"][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"],
-#TabsToolbar[treestyletab-style="metal"][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"] {
+.tabbrowser-strip[treestyletab-style~="metal"][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"],
+#TabsToolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"] {
 	border-left: 1px solid #666666 !important;
 }
 
 
 /* tab contents */
 
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab .tab-icon {
 	margin: -10px -5px !important;
 	padding: 10px 5px !important;
 }
 
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab label {
 	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab:hover .tab-icon,
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab[selected="true"]:hover .tab-icon {
 	background: url("icon-bg.png") no-repeat right center !important;
 }
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tab-contents-inverted="true"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-tab-contents-inverted="true"]
   .tabbrowser-tab:hover .tab-icon,
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tab-contents-inverted="true"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-tab-contents-inverted="true"]
   .tabbrowser-tab[selected="true"]:hover .tab-icon {
 	background-position: left center !important;
 }
 
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab .tab-icon .tab-icon-image {
 	width: 16px !important;
 	height: 16px !important;
 	margin: 0 0 0 6px !important;
 }
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tab-contents-inverted="true"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-tab-contents-inverted="true"]
   .tabbrowser-tab .tab-icon .tab-icon-image {
 	margin: 0 6px 0 0 !important;
 }
 
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab .tab-text {
 	margin: 0 !important;
 	padding: 3px 4px 4px !important;
 	text-align: center !important;
 }
 
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab .tab-close-button {
 	z-index: 1 !important; /* for Linux */
 	margin: 0 !important;
@@ -140,28 +140,28 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
 
 /* twisty */
 
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-twisty-style][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-twisty-style][treestyletab-mode="vertical"]
   .treestyletab-twisty-container {
 	position: relative;
 	margin: 0 6px 0 -6px;
 }
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-twisty-style="retro"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-twisty-style="retro"][treestyletab-mode="vertical"]
   .treestyletab-twisty-container {
 	margin: 0;
 }
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-twisty-style="retro"]:not([treestyletab-tab-contents-inverted="true"])
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-twisty-style="retro"]:not([treestyletab-tab-contents-inverted="true"])
   .tabbrowser-tab .tab-icon {
 	margin-left: -6px !important;
 }
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-twisty-style][treestyletab-tab-contents-inverted="true"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-twisty-style][treestyletab-tab-contents-inverted="true"]
   .treestyletab-twisty-container {
 	margin: 0 -12px 0 12px;
 }
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-twisty-style="retro"][treestyletab-tab-contents-inverted="true"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-twisty-style="retro"][treestyletab-tab-contents-inverted="true"]
   .treestyletab-twisty-container {
 	margin: 0 -6px 0 6px;
 }
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-twisty-style="retro"][treestyletab-tab-contents-inverted="true"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-twisty-style="retro"][treestyletab-tab-contents-inverted="true"]
   .tabbrowser-tab .tab-icon {
 	margin-right: -6px !important;
 }
@@ -171,49 +171,49 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
 /* buttons in the tab bar */
 
 /* Firefox 3.6 or older */
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabs-newtab-button,
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabs-newtab-button:hover,
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabs-alltabs-button,
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabs-alltabs-button:hover,
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabs-container > .tabs-closebutton,
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   > .tabs-closebutton,
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabs-container > .tabs-closebutton:hover,
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   > .tabs-closebutton:hover,
 /* Firefox 4.0 or later */
-#TabsToolbar[treestyletab-style="metal"][treestyletab-mode="vertical"]
+#TabsToolbar[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   > toolbarbutton,
-#TabsToolbar[treestyletab-style="metal"][treestyletab-mode="vertical"]
+#TabsToolbar[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   > toolbarbutton:hover,
-#TabsToolbar[treestyletab-style="metal"][treestyletab-mode="vertical"]
+#TabsToolbar[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   > toolbarpaletteitem > toolbarbutton,
-#TabsToolbar[treestyletab-style="metal"][treestyletab-mode="vertical"]
+#TabsToolbar[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   > toolbarpaletteitem > toolbarbutton:hover {
 	background: #b3b2b3 !important;
 	border-top: 1px solid #666666 !important;
 }
 
 
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-arrowscrollbox .tabs-newtab-button {
 	margin-top: 1px !important;
 	height: 18px !important;
 	border: 1px solid #666666 !important;
 }
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]:not([treestyletab-tab-inverted="true"])
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]:not([treestyletab-tab-inverted="true"])
   .tabbrowser-arrowscrollbox .tabs-newtab-button {
 	background: #9a9a9a url("shadow-active-l.png") repeat-y top right !important;
 	margin-left: 6px !important;
 	-moz-border-radius: 6px 0 0 6px;
 }
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tabbrowser-arrowscrollbox .tabs-newtab-button {
 	background: #9a9a9a url("shadow-active-r.png") repeat-y top left !important;
 	margin-right: 6px !important;
@@ -221,35 +221,35 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
 }
 
 /* Firefox 3.6 or older */
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tabbar-position="left"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-tabbar-position="left"]
   .tabs-newtab-button,
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tabbar-position="left"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-tabbar-position="left"]
   .tabs-alltabs-button,
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tabbar-position="left"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-tabbar-position="left"]
   .tabs-container > .tabs-closebutton,
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tabbar-position="left"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-tabbar-position="left"]
   > .tabs-closebutton,
 /* Firefox 4.0 or later */
-#TabsToolbar[treestyletab-style="metal"][treestyletab-tabbar-position="left"]
+#TabsToolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="left"]
   > toolbarbutton,
-#TabsToolbar[treestyletab-style="metal"][treestyletab-tabbar-position="left"]
+#TabsToolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="left"]
   > toolbarpaletteitem > toolbarbutton {
 	border-right: 1px solid #666666 !important;
 }
 
 /* Firefox 3.6 or older */
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-tabbar-position="right"]
   .tabs-newtab-button,
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-tabbar-position="right"]
   .tabs-alltabs-button,
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-tabbar-position="right"]
   .tabs-container > .tabs-closebutton,
-.tabbrowser-tabs[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-tabbar-position="right"]
   > .tabs-closebutton,
 /* Firefox 4.0 or later */
-#TabsToolbar[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
+#TabsToolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="right"]
   > toolbarbutton,
-#TabsToolbar[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
+#TabsToolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="right"]
   > toolbarpaletteitem > toolbarbutton {
 	border-left: 1px solid #666666 !important;
 }
@@ -261,23 +261,23 @@ tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
 /* buttons in the tab bar */
 
 :root[treestyletab-enable-compatibility-tmp="true"]
-  tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  tabbrowser[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabs-closebutton-topbox > .tabs-closebutton,
 :root[treestyletab-enable-compatibility-tmp="true"]
-  tabbrowser[treestyletab-style="metal"][treestyletab-mode="vertical"]
+  tabbrowser[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabs-closebutton-topbox > .tabs-closebutton:hover {
 	background: #b3b2b3 !important;
 	border-top: 1px solid #666666 !important;
 }
 
 :root[treestyletab-enable-compatibility-tmp="true"]
-  tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="left"]
+  tabbrowser[treestyletab-style~="metal"][treestyletab-tabbar-position="left"]
   .tabs-closebutton-topbox > .tabs-closebutton {
 	border-right: 1px solid #666666 !important;
 }
 
 :root[treestyletab-enable-compatibility-tmp="true"]
-  tabbrowser[treestyletab-style="metal"][treestyletab-tabbar-position="right"]
+  tabbrowser[treestyletab-style~="metal"][treestyletab-tabbar-position="right"]
   .tabs-closebutton-topbox > .tabs-closebutton {
 	border-left: 1px solid #666666 !important;
 }
