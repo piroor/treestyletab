@@ -32,14 +32,14 @@ override chrome://treestyletab/skin/group/group-icon	chrome://treestyletab/skin/
 
 override chrome://treestyletab/skin/metal/tab.css	chrome://treestyletab/skin/metal/tab-3.5.css	appversion>=3.5
 override chrome://treestyletab/skin/metal/tab-inactive.css	chrome://treestyletab/skin/metal/tab-inactive-3.5.css
-override chrome://treestyletab/skin/metal/tab-inactive.css	chrome://treestyletab/skin/metal/tab-inactive-3.7.css	appversion>=3.7a4pre
+override chrome://treestyletab/skin/metal/tab-inactive.css	chrome://treestyletab/skin/metal/tab-inactive-4.css	appversion>=4.0b5pre
 override chrome://treestyletab/skin/metal/base-inactive.css	chrome://treestyletab/skin/metal/base-inactive-3.0.css
-override chrome://treestyletab/skin/metal/base-inactive.css	chrome://treestyletab/skin/metal/base-inactive-3.7.css	appversion>=3.7a4pre
+override chrome://treestyletab/skin/metal/base-inactive.css	chrome://treestyletab/skin/metal/base-inactive-4.css	appversion>=4.0b5pre
 
 override chrome://treestyletab/skin/sidebar/inactive.css	chrome://treestyletab/skin/sidebar/inactive-3.6.css
-override chrome://treestyletab/skin/sidebar/inactive.css	chrome://treestyletab/skin/sidebar/inactive-3.7.css	appversion>=3.7a4pre
+override chrome://treestyletab/skin/sidebar/inactive.css	chrome://treestyletab/skin/sidebar/inactive-4.css	appversion>=4.0b5pre
 
-override chrome://treestyletab/skin/config.css	chrome://treestyletab/skin/config-3.7.png	appversion>=3.7a1pre
+override chrome://treestyletab/skin/config.css	chrome://treestyletab/skin/config-4.png	appversion>=4.0b5pre
 
 resource treestyletab-modules modules/
 
