@@ -1103,6 +1103,26 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 		document.documentElement.setAttribute(TreeStyleTabService.kHIDE_NEWTAB, true);
 	}});
 
+	// IE Tab Plus
+	// https://addons.mozilla.org/firefox/addon/10909/
+	if ('IeTab' in window && IeTab.prototype) {
+		if (IeTab.prototype.switchTabEngine)
+			eval('IeTab.prototype.switchTabEngine = '+
+				IeTab.prototype.switchTabEngine.toSource().replace(
+					'var newTab = ',
+					'TreeStyleTabService.readyToOpenChildTab(); $&'
+				)
+			);
+
+		if (IeTab.prototype.addIeTab)
+			eval('IeTab.prototype.addIeTab = '+
+				IeTab.prototype.addIeTab.toSource().replace(
+					'var newTab = ',
+					'TreeStyleTabService.readyToOpenChildTab(); $&'
+				)
+			);
+	}
+
 
 	window.setTimeout(function(aSelf) {
 		aSelf.overrideExtensionsDelayed();
