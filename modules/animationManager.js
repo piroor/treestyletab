@@ -46,7 +46,7 @@ if (typeof window == 'undefined' ||
 }
 
 (function() {
-	const currentRevision = 6;
+	const currentRevision = 7;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -208,12 +208,14 @@ if (typeof window == 'undefined' ||
 				if (aEvent && aTask.window != aEvent.target.defaultView)
 					return true;
 				try {
-					return !aTask.task(
-						now - aTask.start,
-						aTask.beginning,
-						aTask.change,
-						aTask.duration
-					);
+					var time = Math.min(aTask.duration, now - aTask.start);
+					var finished = aTask.task(
+							time,
+							aTask.beginning,
+							aTask.change,
+							aTask.duration
+						);
+					return !finished && (time < aTask.duration);
 				}
 				catch(e) {
 				}
