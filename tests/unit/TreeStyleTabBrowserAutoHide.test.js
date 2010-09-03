@@ -18,16 +18,16 @@ function tearDown()
 
 function test_fireStateChangingEvent()
 {
-	var shown = Math.random() + Date.now() + 'expanded';
-	var state = Math.random() + Date.now() + 'expanded';
+	var expanded = Math.random() + Date.now() + 'expanded';
+	var state    = Math.random() + Date.now() + 'state';
 
 	owner.browser = new Mock('browser');
 	owner.browser.expect('dispatchEvent', TypeOf(Ci.nsIDOMEvent))
 				.then(function(aEvent) {
-					assert.equals(shown, aEvent.shown);
+					assert.equals(expanded, aEvent.shown);
 					assert.equals(state, aEvent.state);
 				});
-	Mock.expectGet(autoHide, 'expanded', shown);
+	Mock.expectGet(autoHide, 'expanded', expanded);
 	Mock.expectGet(autoHide, 'state', state);
 
 	autoHide.fireStateChangingEvent();
