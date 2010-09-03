@@ -11,13 +11,17 @@ function setUp()
 {
 	utils.include(autoHideFile);
 
-	owner = new Mock('owner mock');
-	Mock.expect(TreeStyleTabBrowserAutoHide.prototype, 'init', []);
+	utils.setUpTestWindow();
+
+	var w = utils.getTestWindow();
+	owner = { browser : w.gBrowser };
+	TreeStyleTabBrowserAutoHide.prototype.init = function() {};
 	autoHide = new TreeStyleTabBrowserAutoHide(owner);
 }
 
 function tearDown()
 {
+	utils.tearDownTestWindow();
 	owner = null;
 }
 
@@ -35,16 +39,18 @@ test_fireStateChangingEvent.parameters = {
 		shown : false
 	}
 };
-function test_fireStateChangingEvent(aParameter)
+test_fireStateChangingEvent.assertions = 2;
+function test_fireStateChangingEvent(aParamter)
 {
-	owner.browser = new Mock('browser');
-	owner.browser.expect('dispatchEvent', TypeOf(Ci.nsIDOMEvent))
-				.then(function(aEvent) {
-					assert.equals('TreeStyleTabAutoHideStateChanging', aEvent.type);
-					assert.strictlyEquals(aParameter.shown, aEvent.shown);
-					assert.equals(aParameter.state, aEvent.state);
-				});
-	Mock.expectGet(autoHide, 'state', aParameter.state).times(2);
+	var w = utils.getTestWindow();
+
+	w.gBrowser.setAttribute(TSTBAutoHide.prototype.kSTATE, aParamter.state);
+
+	w.addEventListener('TreeStyleTabAutoHideStateChanging', function(aEvent) {
+		w.removeEventListener('TreeStyleTabAutoHideStateChanging', arguments.callee, false);
+		assert.equals(aParamter.shown, aEvent.shown);
+		assert.equals(aParamter.state, aEvent.state);
+	}, false);
 
 	autoHide.fireStateChangingEvent();
 }

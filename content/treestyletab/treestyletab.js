@@ -2207,7 +2207,4 @@ catch(e) {
 	TreeStyleTabService.__proto__ = TreeStyleTabService.utils = namespace.TreeStyleTabUtils;
 	TreeStyleTabService.utils.init();
 })();
-window.addEventListener('DOMContentLoaded', TreeStyleTabService, true);
-window.addEventListener('load', TreeStyleTabService, false);
-TreeStyleTabService.ObserverService.addObserver(TreeStyleTabService, 'sessionstore-windows-restored', false);
  

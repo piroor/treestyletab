@@ -11,6 +11,11 @@
 <script src="res/UninstallationListener.js" type="application/javascript"/>
 
 <script src="treestyletab.js" type="application/javascript"/>
+<script type="application/javascript"><![CDATA[
+	window.addEventListener('DOMContentLoaded', TreeStyleTabService, true);
+	window.addEventListener('load', TreeStyleTabService, false);
+	TreeStyleTabService.ObserverService.addObserver(TreeStyleTabService, 'sessionstore-windows-restored', false);
+]]></script>
 <script src="treestyletabbrowser.js" type="application/javascript"/>
 <script src="treestyletabbrowser_autoHide.js" type="application/javascript"/>
 <script src="treestyletabbrowser_tabbarDNDObserver.js" type="application/javascript"/>
