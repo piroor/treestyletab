@@ -4582,10 +4582,7 @@ TreeStyleTabBrowser.prototype = {
 		var self = this;
 		this.smoothScrollTask = function(aTime, aBeginning, aChange, aDuration) {
 			var scrollBoxObject = self.scrollBoxObject;
-			if (
-				aTime >= aDuration ||
-				(arrowscrollbox && arrowscrollbox._isScrolling != 0) // cancel by manual scrolling
-				) {
+			if (aTime >= aDuration) {
 				scrollBoxObject.scrollTo(aEndX, aEndY);
 
 				b = null;
