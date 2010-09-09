@@ -53,7 +53,7 @@
   .tabbrowser-tab:not([treestyletab-drop-position="self"]) .tab-image-left,
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tabbrowser-tab[selected="true"]:not([treestyletab-drop-position="self"]) .tab-image-left {
-	width: 10px !important;
+	width: 5px !important;
 }
 
 
