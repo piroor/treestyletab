@@ -140,29 +140,36 @@ tabbrowser[treestyletab-style~="metal"][treestyletab-tabbar-position="right"]
 
 /* twisty */
 
+
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-twisty-style][treestyletab-mode="vertical"]
+  .tabbrowser-tab:not([pinned="true"])
   .treestyletab-twisty-container {
 	position: relative;
 	margin: 0 6px 0 -6px;
 }
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-twisty-style="retro"][treestyletab-mode="vertical"]
+  .tabbrowser-tab:not([pinned="true"])
   .treestyletab-twisty-container {
 	margin: 0;
 }
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-twisty-style="retro"]:not([treestyletab-tab-contents-inverted="true"])
-  .tabbrowser-tab .tab-icon {
+  .tabbrowser-tab:not([pinned="true"])
+  .tab-icon {
 	margin-left: -6px !important;
 }
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-twisty-style][treestyletab-tab-contents-inverted="true"]
+  .tabbrowser-tab:not([pinned="true"])
   .treestyletab-twisty-container {
 	margin: 0 -12px 0 12px;
 }
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-twisty-style="retro"][treestyletab-tab-contents-inverted="true"]
+  .tabbrowser-tab:not([pinned="true"])
   .treestyletab-twisty-container {
 	margin: 0 -6px 0 6px;
 }
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-twisty-style="retro"][treestyletab-tab-contents-inverted="true"]
-  .tabbrowser-tab .tab-icon {
+  .tabbrowser-tab:not([pinned="true"])
+  .tab-icon {
 	margin-right: -6px !important;
 }
 
