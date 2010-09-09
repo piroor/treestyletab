@@ -1142,7 +1142,7 @@ var TreeStyleTabUtils = {
 		var ownerBrowser = this.getTabBrowserFromFrame(frame);
 
 		var parentTab = this.getTabFromFrame(frame, ownerBrowser);
-		if (parentTab.getAttribute('pinned') == 'true')
+		if (parentTab.hasAttribute('pinned'))
 			return;
 
 		ownerBrowser.treeStyleTab.ensureTabInitialized(parentTab);
