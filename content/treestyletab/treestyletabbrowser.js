@@ -128,7 +128,7 @@ TreeStyleTabBrowser.prototype = {
 	isTabInViewport : function TSTBrowser_isTabInViewport(aTab) 
 	{
 		if (!aTab) return false;
-		if (aTab.hasAttribute('pinned'))
+		if (aTab.getAttribute('pinned') == 'true')
 			return true;
 		var tabBox = aTab.boxObject;
 		var barBox = this.scrollBox.boxObject;
@@ -164,8 +164,6 @@ TreeStyleTabBrowser.prototype = {
 			style.MozMarginStart = '';
 			style.setProperty('margin-left', (width * col)+'px', 'important');
 			style.setProperty('margin-top', (- height * (maxRow - row))+'px', 'important');
-			style.top = '';
-			style.left = '';
 			col++;
 			if (col >= maxCol) {
 				col = 0;
@@ -3314,8 +3312,8 @@ TreeStyleTabBrowser.prototype = {
 			info.target = tab;
 		}
 
-		var positionProp = this.isVertical && tab.hasAttribute('pinned') ? this.invertedPositionProp : this.positionProp ;
-		var sizeProp = this.isVertical && tab.hasAttribute('pinned') ? this.invertedSizeProp : this.sizeProp ;
+		var positionProp = this.isVertical && tab.getAttribute('pinned') == 'true' ? this.invertedPositionProp : this.positionProp ;
+		var sizeProp = this.isVertical && tab.getAttribute('pinned') == 'true' ? this.invertedSizeProp : this.sizeProp ;
 		var boxPos  = tab.boxObject[positionProp];
 		var boxUnit = Math.round(tab.boxObject[sizeProp] / 3);
 		if (aEvent[positionProp] < boxPos + boxUnit) {
@@ -3745,8 +3743,8 @@ TreeStyleTabBrowser.prototype = {
 			!aParent ||
 			aChild == aParent ||
 			(currentParent = this.getParentTab(aChild)) == aParent ||
-			aChild.hasAttribute('pinned') ||
-			aParent.hasAttribute('pinned')
+			aChild.getAttribute('pinned') == 'true' ||
+			aParent.getAttribute('pinned') == 'true'
 			) {
 			this.fireAttachedEvent(aChild, aParent);
 			return;
