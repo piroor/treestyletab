@@ -20,7 +20,7 @@
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tab-image-right {
-	-moz-border-image: url("tab-inactive-l.png") 10 / 10px 10px 10px 0;
+	-moz-border-image: url("tab-inactive-l.png") 10 5 10 10 / 10px 5px 10px 0;
 }
 
 
@@ -30,7 +30,7 @@
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-left {
-	-moz-border-image: url("tab-inactive-r.png") 10 / 10px 0 10px 10px;
+	-moz-border-image: url("tab-inactive-r.png") 10 10 10 5 / 10px 0 10px 5px;
 }
 
 :root:-moz-window-inactive
@@ -70,7 +70,7 @@
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tab-image-right[selected="true"] {
-	-moz-border-image: url("tab-inactive-selected-l.png") 10 / 10px 10px 10px 0;
+	-moz-border-image: url("tab-inactive-selected-l.png") 10 5 10 10 / 10px 5px 10px 0;
 }
 
 
@@ -80,7 +80,7 @@
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-left[selected="true"] {
-	-moz-border-image: url("tab-inactive-selected-r.png") 10 / 10px 0 10px 10px;
+	-moz-border-image: url("tab-inactive-selected-r.png") 10 10 10 5 / 10px 0 10px 5px;
 }
 
 :root:-moz-window-inactive
