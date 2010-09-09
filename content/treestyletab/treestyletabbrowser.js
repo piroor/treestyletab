@@ -2220,6 +2220,7 @@ TreeStyleTabBrowser.prototype = {
 			this._focusChangedByCurrentTabRemove = true;
 			if (
 				nextFocusedTab &&
+				!nextFocusedTab.hidden &&
 				this._tabFocusAllowance.every(function(aFunc) {
 					try {
 						return aFunc.call(this, b);
