@@ -145,13 +145,13 @@ TreeStyleTabBrowser.prototype = {
 		return false;
 	},
  
-	positionVerticalPinnedTabs : function TSTBrowser_positionVerticalPinnedTabs() 
+	positionVerticalPinnedTabs : function TSTBrowser_positionVerticalPinnedTabs(aWidth, aHeight) 
 	{
 		var b = this.mTabBrowser;
 		var tabbar = b.tabContainer;
 		var count  = b._numPinnedTabs;
-		var width  = this.PINNED_TAB_WIDTH;
-		var height = this.PINNED_TAB_HEIGHT;
+		var width  = aWidth || this.PINNED_TAB_DEFAULT_WIDTH;
+		var height = aHeight || this.PINNED_TAB_DEFAULT_HEIGHT;
 		var maxCol = Math.floor(tabbar.boxObject.width / width);
 		var maxRow = Math.ceil(count / maxCol);
 		var col    = 0;
@@ -171,8 +171,8 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 	},
-	PINNED_TAB_WIDTH : 24,
-	PINNED_TAB_HEIGHT : 24,
+	PINNED_TAB_DEFAULT_WIDTH : 24,
+	PINNED_TAB_DEFAULT_HEIGHT : 24,
  
 	clearPinnedTabsAppearance : function TSTBrowser_clearPinnedTabsAppearance() 
 	{
