@@ -92,8 +92,8 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-stack > *:first-child + * > hbox:
 	.tabbrowser-tab[pinned="true"] {
 	position: fixed !important;
 	z-index: 100;
-	width: 24px !important;
-	height: 24px !important;
+	width: 24px;
+	height: 24px;
 }
 
 #TabsToolbar,
