@@ -1733,6 +1733,16 @@ var TreeStyleTabUtils = {
 			aTab.linkedBrowser.currentURI.spec.indexOf('about:treestyletab-group') > -1
 		);
 	},
+ 
+	get pinnedTabsCount() 
+	{
+		return this.evaluateXPath(
+					'count(child::xul:tab[@pinned="true"])',
+					this.browser.mTabContainer,
+					Ci.nsIDOMXPathResult.NUMBER_TYPE
+				).numberValue;
+	},
+ 
   
 /* tabbar position */ 
 	

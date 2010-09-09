@@ -145,11 +145,14 @@ TreeStyleTabBrowser.prototype = {
 		return false;
 	},
  
-	positionVerticalPinnedTabs : function TSTBrowser_positionVerticalPinnedTabs(aWidth, aHeight) 
+	positionPinnedTabs : function TSTBrowser_positionPinnedTabs(aWidth, aHeight) 
 	{
+		if (!this.isVertical)
+			return;
+
 		var b = this.mTabBrowser;
 		var tabbar = b.tabContainer;
-		var count  = b._numPinnedTabs;
+		var count  = this.pinnedTabsCount;
 		var width  = aWidth || this.PINNED_TAB_DEFAULT_WIDTH;
 		var height = aHeight || this.PINNED_TAB_DEFAULT_HEIGHT;
 		var maxCol = Math.floor(tabbar.boxObject.width / width);
@@ -164,6 +167,7 @@ TreeStyleTabBrowser.prototype = {
 			style.MozMarginStart = '';
 			style.setProperty('margin-left', (width * col)+'px', 'important');
 			style.setProperty('margin-top', (- height * (maxRow - row))+'px', 'important');
+			style.top = style.right = style.bottom = style.left = '';
 			col++;
 			if (col >= maxCol) {
 				col = 0;
@@ -174,18 +178,15 @@ TreeStyleTabBrowser.prototype = {
 	PINNED_TAB_DEFAULT_WIDTH : 24,
 	PINNED_TAB_DEFAULT_HEIGHT : 24,
  
-	clearPinnedTabsAppearance : function TSTBrowser_clearPinnedTabsAppearance() 
+	resetPinnedTabs : function TSTBrowser_resetPinnedTabs() 
 	{
 		var b = this.mTabBrowser;
 		var tabbar = b.tabContainer;
-		tabbar.style.MozMarginStart = '';
-		tabbar.style.marginTop = '';
-		for (var i = 0, count = b._numPinnedTabs; i < count; i++)
+		tabbar.style.MozMarginStart = tabbar.style.marginTop = '';
+		for (var i = 0, count = this.pinnedTabsCount; i < count; i++)
 		{
 			let style = tabbar.childNodes[i].style;
-			style.MozMarginStart = '';
-			style.marginLeft = '';
-			style.marginTop = '';
+			style.MozMarginStart = style.marginLeft = style.marginTop = '';
 		}
 	},
  
@@ -451,10 +452,10 @@ TreeStyleTabBrowser.prototype = {
 					'{',
 					<![CDATA[{
 						if (this.tabbrowser.treeStyleTab.isVertical) {
-							this.tabbrowser.treeStyleTab.positionVerticalPinnedTabs();
+							this.tabbrowser.treeStyleTab.positionPinnedTabs();
 						}
 						else {
-							this.tabbrowser.treeStyleTab.clearPinnedTabsAppearance();
+							this.tabbrowser.treeStyleTab.resetPinnedTabs();
 					]]>.toString()
 				).replace(
 					'this.mTabstrip.ensureElementIsVisible',
