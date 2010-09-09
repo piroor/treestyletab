@@ -1142,10 +1142,7 @@ var TreeStyleTabUtils = {
 		var ownerBrowser = this.getTabBrowserFromFrame(frame);
 
 		var parentTab = this.getTabFromFrame(frame, ownerBrowser);
-		if (
-			parentTab.pinned || // Firefox 4.0
-			parentTab.getAttribute('pinned') == 'true' // Tab Utilities
-			)
+		if (parentTab.getAttribute('pinned') == 'true')
 			return;
 
 		ownerBrowser.treeStyleTab.ensureTabInitialized(parentTab);

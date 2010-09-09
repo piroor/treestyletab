@@ -128,7 +128,8 @@ TreeStyleTabBrowser.prototype = {
 	isTabInViewport : function TSTBrowser_isTabInViewport(aTab) 
 	{
 		if (!aTab) return false;
-		if (aTab.pinned) return true;
+		if (aTab.getAttribute('pinned') == 'true')
+			return true;
 		var tabBox = aTab.boxObject;
 		var barBox = this.scrollBox.boxObject;
 		var xOffset = this.getXOffsetOfTab(aTab);
@@ -269,6 +270,7 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.addEventListener('SSTabRestoring', this, true);
 		b.mTabContainer.addEventListener('SSTabRestored',  this, true);
 		b.mTabContainer.addEventListener('transitionend',  this, true);
+		b.mTabContainer.addEventListener('DOMAttrModified', this, true);
 		b.mTabContainer.addEventListener('mouseover', this, true);
 		b.mTabContainer.addEventListener('mouseout',  this, true);
 		b.mTabContainer.addEventListener('dblclick',  this, true);
@@ -457,28 +459,6 @@ TreeStyleTabBrowser.prototype = {
 				).replace(
 					'this.mTabstrip.ensureElementIsVisible',
 					'} $&'
-				)
-			);
-		}
-
-		if (b.pinTab) {
-			eval('b.pinTab = '+
-				b.pinTab.toSource().replace(
-					'this.moveTabTo(',
-					<![CDATA[
-						this.treeStyleTab.onPinTab(aTab);
-					$&]]>.toString()
-				)
-			);
-		}
-
-		if (b.unpinTab) {
-			eval('b.unpinTab = '+
-				b.unpinTab.toSource().replace(
-					'this.tabContainer._positionPinnedTabs',
-					<![CDATA[
-						this.treeStyleTab.onUnpinTab(aTab);
-					$&]]>.toString()
 				)
 			);
 		}
@@ -1519,6 +1499,7 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.removeEventListener('SSTabRestoring', this, true);
 		b.mTabContainer.removeEventListener('SSTabRestored',  this, true);
 		b.mTabContainer.removeEventListener('transitionend',  this, true);
+		b.mTabContainer.removeEventListener('DOMAttrModified', this, true);
 		b.mTabContainer.removeEventListener('mouseover', this, true);
 		b.mTabContainer.removeEventListener('mouseout',  this, true);
 		b.mTabContainer.removeEventListener('dblclick',  this, true);
@@ -1867,6 +1848,9 @@ TreeStyleTabBrowser.prototype = {
 
 			case 'transitionend':
 				return this.onTabAnimationEnd(aEvent);
+
+			case 'DOMAttrModified':
+				return this.onDOMAttrModified(aEvent);
 
 			case 'select':
 				return this.onTabSelect(aEvent);
@@ -2798,6 +2782,27 @@ TreeStyleTabBrowser.prototype = {
 			b._endRemoveTab(tab);
 	},
  
+	onDOMAttrModified : function TSTBrowser_onDOMAttrModified(aEvent) 
+	{
+		switch (aEvent.attrName)
+		{
+			case 'pinned':
+				let (tab = aEvent.originalTarget) {
+					if (tab.localName != 'tab')
+						return;
+
+					if (aEvent.newValue == 'true')
+						this.onPinTab(tab);
+					else
+						this.onUnpinTab(tab);
+				}
+				return;
+
+			default:
+				return;
+		}
+	},
+ 
 	onTabSelect : function TSTBrowser_onTabSelect(aEvent) 
 	{
 		var b   = this.mTabBrowser;
@@ -3307,8 +3312,8 @@ TreeStyleTabBrowser.prototype = {
 			info.target = tab;
 		}
 
-		var positionProp = this.isVertical && tab.pinned ? this.invertedPositionProp : this.positionProp ;
-		var sizeProp = this.isVertical && tab.pinned ? this.invertedSizeProp : this.sizeProp ;
+		var positionProp = this.isVertical && tab.getAttribute('pinned') == 'true' ? this.invertedPositionProp : this.positionProp ;
+		var sizeProp = this.isVertical && tab.getAttribute('pinned') == 'true' ? this.invertedSizeProp : this.sizeProp ;
 		var boxPos  = tab.boxObject[positionProp];
 		var boxUnit = Math.round(tab.boxObject[sizeProp] / 3);
 		if (aEvent[positionProp] < boxPos + boxUnit) {
@@ -3738,8 +3743,8 @@ TreeStyleTabBrowser.prototype = {
 			!aParent ||
 			aChild == aParent ||
 			(currentParent = this.getParentTab(aChild)) == aParent ||
-			aChild.pinned ||
-			aParent.pinned
+			aChild.getAttribute('pinned') == 'true' ||
+			aParent.getAttribute('pinned') == 'true'
 			) {
 			this.fireAttachedEvent(aChild, aParent);
 			return;
