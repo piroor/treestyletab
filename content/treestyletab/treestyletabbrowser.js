@@ -2530,8 +2530,14 @@ TreeStyleTabBrowser.prototype = {
 			   on restoring. Restoring the old ID (the next statement)
 			   breaks the children list of the temporary parent and causes
 			   many problems. So, to prevent these problems, I part the tab
-			   from the temporary parent manually. */
-			this.resetTab(tab, false);
+			   from the temporary parent manually.
+			   If the ID stored in the session equals to the value of the
+			   attribute stored in the element itself, then don't reset the
+			   tab, because the restoring session is got from the tab itself.
+			   ( like SS.setTabState(tab, SS.getTabState(tab)) )
+			 */
+			if (id != tab.getAttribute(this.kID))
+				this.resetTab(tab, false);
 		}
 		this.deleteTabValue(tab, this.kCLOSED_SET_ID);
 
