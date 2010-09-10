@@ -30,6 +30,8 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	kTRANSPARENT_FULL  : 2,
 	kTRANSPARENT_STYLE : ['none', 'part', 'full'],
  
+	emulatedTransparency : TreeStyleTabService.Comparator.compare(TreeStyleTabService.XULAppInfo.version, '4.0b5') < 0, 
+ 
 	get mode() /* PUBLIC API */ 
 	{
 		var mode = this.mOwner.browser.getAttribute(this.kMODE);
@@ -597,6 +599,9 @@ TreeStyleTabBrowserAutoHide.prototype = {
   
 	redrawContentArea : function TSTAutoHide_redrawContentArea() 
 	{
+		if (!this.emulatedTransparency)
+			return;
+
 		var sv  = this.mOwner;
 		var pos = sv.currentTabbarPosition;
 		try {
@@ -634,6 +639,9 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	},
 	redrawContentAreaWithDelay : function TSTAutoHide_redrawContentAreaWithDelay()
 	{
+		if (!this.emulatedTransparency)
+			return;
+
 		window.setTimeout(function(aSelf) {
 			aSelf.redrawContentArea();
 		}, 0, this);
@@ -641,6 +649,9 @@ TreeStyleTabBrowserAutoHide.prototype = {
  
 	resetContentAreas : function TSTAutoHide_resetContentAreas()
 	{
+		if (!this.emulatedTransparency)
+			return;
+
 		this.mOwner.getTabsArray(this.mOwner.browser).forEach(function(aTab) {
 			try {
 				aTab.linkedBrowser.markupDocumentViewer.move(0, 0);
@@ -652,11 +663,14 @@ TreeStyleTabBrowserAutoHide.prototype = {
  
 	get shouldRedraw() 
 	{
-		return this.enabled && this.expanded;
+		return this.emulatedTransparency && this.enabled && this.expanded;
 	},
  
 	drawBG : function TSTAutoHide_drawBG() 
 	{
+		if (!this.emulatedTransparency)
+			return;
+
 		var sv = this.mOwner;
 
 		if (!this.tabbarCanvas || this.isResizing) return;
@@ -811,7 +825,8 @@ TreeStyleTabBrowserAutoHide.prototype = {
   
 	clearBG : function TSTAutoHide_clearBG() 
 	{
-		if (!this.tabbarCanvas) return;
+		if (!this.emulatedTransparency || !this.tabbarCanvas)
+			return;
 
 		this.tabbarCanvas.style.display = 'none';
 		this.tabbarCanvas.style.margin = 0;
