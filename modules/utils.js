@@ -1881,8 +1881,8 @@ var TreeStyleTabUtils = {
 		if (expanded != originalExpanded ||
 			shrunken != originalShrunken) {
 			this.tabbarWidthResetting = true;
-			this.setTreePref('tabbar.width', expanded);
-			this.setTreePref('tabbar.shrunkenWidth', shrunken);
+			this.setTreePref('tabbar.width', Math.max(0, expanded));
+			this.setTreePref('tabbar.shrunkenWidth', Math.max(0, shrunken));
 			this.tabbarWidthResetting = false;
 		}
 	},

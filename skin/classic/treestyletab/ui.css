@@ -120,7 +120,12 @@ tabbrowser[treestyletab-drop-position] {
 #TabsToolbar[treestyletab-drop-position="top"]:not([treestyletab-tabbar-position="top"]),
 #TabsToolbar[treestyletab-drop-position="right"]:not([treestyletab-tabbar-position="right"]),
 #TabsToolbar[treestyletab-drop-position="bottom"]:not([treestyletab-tabbar-position="bottom"]),
-#TabsToolbar[treestyletab-drop-position="left"]:not([treestyletab-tabbar-position="left"]) {
+#TabsToolbar[treestyletab-drop-position="left"]:not([treestyletab-tabbar-position="left"]),
+#TabsToolbar[treestyletab-drop-position="center"] #treestyletab-tabbar-resizer-box,
+#TabsToolbar[treestyletab-drop-position="top"]:not([treestyletab-tabbar-position="top"]) #treestyletab-tabbar-resizer-box,
+#TabsToolbar[treestyletab-drop-position="right"]:not([treestyletab-tabbar-position="right"]) #treestyletab-tabbar-resizer-box,
+#TabsToolbar[treestyletab-drop-position="bottom"]:not([treestyletab-tabbar-position="bottom"]) #treestyletab-tabbar-resizer-box,
+#TabsToolbar[treestyletab-drop-position="left"]:not([treestyletab-tabbar-position="left"]) #treestyletab-tabbar-resizer-box {
 	opacity: 0.5;
 }
 tabbrowser[treestyletab-drop-position="top"]:not([treestyletab-tabbar-position="top"]) {

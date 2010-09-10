@@ -191,10 +191,13 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		this.clearBG();
 		this.updateTransparency();
 
-		sv.container.style.margin = 0;
+		if (!sv.isFloating)
+			sv.container.style.margin = 0;
 		sv.removeTabbrowserAttribute(this.kAUTOHIDE);
 		sv.removeTabbrowserAttribute(this.kSTATE);
 		sv.removeTabbrowserAttribute(this.kTRANSPARENT);
+
+		sv.setTabStripAttribute('width', this.widthFromMode);
 	},
  
 	// fullscreen 
@@ -540,7 +543,11 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		switch (this.mode)
 		{
 			case this.kMODE_DISABLED:
+				break;
+
 			case this.kMODE_HIDE:
+				if (sv.isFloating)
+					sv.updateFloatingTabbar(true);
 				break;
 
 			default:
@@ -548,7 +555,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				if (pos == 'left' || pos == 'right') {
 					let width = sv.maxTabbarWidth(this.getTreePref('tabbar.width'));
 					if (sv.isFloating) // Firefox 4.0-
-						sv.updateFloatingTabbar(width, 0, true);
+						sv.updateFloatingTabbar(true);
 					else // -Firefox 3.6
 						sv.setTabStripAttribute('width', width);
 				}
@@ -575,19 +582,23 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		switch (this.mode)
 		{
 			case this.kMODE_DISABLED:
+				sv.setTabbrowserAttribute(this.kAUTOHIDE, 'hidden');
+				sv.setTabbrowserAttribute(this.kSTATE, this.kSTATE_HIDDEN);
+				break;
+
 			case this.kMODE_HIDE:
 				sv.setTabbrowserAttribute(this.kAUTOHIDE, 'hidden');
 				sv.setTabbrowserAttribute(this.kSTATE, this.kSTATE_HIDDEN);
+				sv.updateFloatingTabbar(true);
 				break;
 
 			default:
 			case this.kMODE_SHRINK:
 				sv.setTabbrowserAttribute(this.kAUTOHIDE, 'show');
 				sv.setTabbrowserAttribute(this.kSTATE, this.kSTATE_SHRUNKEN);
-				if (pos == 'left' || pos == 'right') {
+				if (pos == 'left' || pos == 'right')
 					sv.setTabStripAttribute('width', this.getTreePref('tabbar.shrunkenWidth'));
-					sv.updateFloatingTabbar(0, 0, true);
-				}
+				sv.updateFloatingTabbar(true);
 				break;
 		}
 	},
@@ -871,6 +882,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		else {
 			sv.removeTabbrowserAttribute(this.kTRANSPARENT);
 		}
+		sv.updateFloatingTabbar();
 	},
   
 	// event handling 
@@ -1004,7 +1016,10 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				return;
 
 			case 'TreeStyleTabTabbarPositionChanged':
-				if (this.enabled) this.show();
+				if (this.enabled) {
+					this.hide();
+					this.show();
+				}
 				this.updateTransparency();
 				return;
 
@@ -1113,7 +1128,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			return true;
 
 		if (
-			!sv.popupMenuShown &&
+			!sv.isPopupShown() &&
 			(
 				!this.expanded ||
 				this.showHideReason & this.kKEEP_SHOWN_ON_MOUSEOVER
@@ -1125,7 +1140,9 @@ TreeStyleTabBrowserAutoHide.prototype = {
  
 	onResize : function TSTAutoHide_onResize(aEvent) 
 	{
+		var sv = this.mOwner;
 		if (
+			sv.isFloating ||
 			!aEvent.originalTarget ||
 			(
 				aEvent.originalTarget.ownerDocument != document &&
@@ -1135,7 +1152,6 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			) {
 			return;
 		}
-		var sv = this.mOwner;
 		switch (sv.currentTabbarPosition)
 		{
 			case 'left':

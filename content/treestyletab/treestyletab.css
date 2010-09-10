@@ -25,11 +25,12 @@
 .tabbrowser-strip[treestyletab-tabbar-autohide="hidden"]+splitter,
 tabbrowser:not([treestyletab-tabbar-autohide="hidden"]) .treestyletab-tabbar-toggler,
 #TabsToolbar[treestyletab-tabbar-autohide="hidden"] > *,
-#TabsToolbar:not([treestyletab-tabbar-autohide-state="expanded"]) #treestyletab-tabbar-resizer-box,
+#TabsToolbar #treestyletab-tabbar-resizer-box,
 #appcontent[ahFull="true"] .tabbrowser-strip[ahHIDE="true"]+splitter /* AutoHide */,
 .tabbrowser-strip[treestyletab-tabbar-fixed="true"]+splitter,
 .tabbrowser-strip[treestyletab-print-preview="true"],
 .tabbrowser-strip[treestyletab-print-preview="true"]+splitter,
+#TabsToolbar .treestyletab-splitter,
 #TabsToolbar[treestyletab-print-preview="true"],
 window[chromehidden~="toolbar"] .tabbrowser-strip[treestyletab-tabbar-placeholder="true"],
 window[chromehidden~="toolbar"] .tabbrowser-strip[treestyletab-tabbar-placeholder="true"]+splitter {
@@ -114,19 +115,31 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-stack > *:first-child + * > hbox:
 	overflow: hidden !important;
 }
 
-#TabsToolbar[treestyletab-tabbar-autohide-state="expanded"] > *,
-.tabs-toolbar-inner-box[treestyletab-tabbar-autohide-state="expanded"] > * {
+#TabsToolbar[treestyletab-mode="vertical"][treestyletab-tabbar-autohide][treestyletab-tabbar-autohide-state="expanded"]
+  > *,
+.tabs-toolbar-inner-box[treestyletab-tabbar-autohide][treestyletab-tabbar-autohide-state="expanded"]:not([treestyletab-tabbar-fixed="true"])
+  > * {
 	position: relative;
 	z-index: 2;
 }
-#TabsToolbar[treestyletab-tabbar-autohide-state="expanded"] #treestyletab-tabbar-resizer-box {
+#TabsToolbar[treestyletab-mode="vertical"][treestyletab-tabbar-autohide][treestyletab-tabbar-autohide-state="expanded"]
+  #treestyletab-tabbar-resizer-box {
 	position: absolute;
 	bottom: 0;
 	left: 0;
 	right: 0;
 	top: 0;
 	z-index: 1;
+	line-height: 0; /* to avoid an useless space above the splitter */
+	font-size: 0; /* to avoid an useless space above the splitter */
 }
+#TabsToolbar[treestyletab-mode="vertical"][treestyletab-tabbar-autohide][treestyletab-tabbar-autohide-state="expanded"]
+  #treestyletab-tabbar-resizer-box,
+#TabsToolbar[treestyletab-mode="vertical"][treestyletab-tabbar-autohide][treestyletab-tabbar-autohide-state="expanded"]:not([treestyletab-tabbar-fixed="true"])
+  .treestyletab-splitter {
+	visibility: visible;
+}
+
 
 
 

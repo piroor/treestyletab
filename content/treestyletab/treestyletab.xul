@@ -148,8 +148,14 @@
 </popupset>
 
 <toolbar id="TabsToolbar">
-	<hbox id="treestyletab-tabbar-resizer-box">
-	</hbox>
+	<box id="treestyletab-tabbar-resizer-box">
+		<splitter id="treestyletab-tabbar-resizer-splitter"
+			class="treestyletab-splitter"
+			onmousedown="TreeStyleTabService.onFloatingTabbarResizeStart(event);"
+			onmouseup="TreeStyleTabService.onFloatingTabbarResizeEnd(event);"
+			onmousemove="TreeStyleTabService.onFloatingTabbarResizing(event);"
+			dblclick="gBrowser.treeStyleTab.resetTabbarSize(); event.stopPropagation();"/>
+	</box>
 </toolbar>
 
 </overlay>

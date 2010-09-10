@@ -743,7 +743,7 @@ TreeStyleTabBrowser.prototype = {
 
 		this.autoHide;
 
-		this.fireTabbarPositionEvent('TreeStyleTabTabbarPositionChanged', 'top', position); /* PUBLIC API */
+		this.fireTabbarPositionEvent(false, 'top', position); /* PUBLIC API */
 
 		b = null;
 
@@ -1263,7 +1263,7 @@ TreeStyleTabBrowser.prototype = {
 		}, 0, this.mTabBrowser);
 	},
  
-	updateFloatingTabbar : function TSTBrowser_updateFloatingTabbar(aWidth, aHeight, aJustNow) 
+	updateFloatingTabbar : function TSTBrowser_updateFloatingTabbar(aJustNow) 
 	{
 		// this method is just for Firefox 4.0 or later
 		if (!this.isFloating) return;
@@ -1274,16 +1274,16 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		if (aJustNow) {
-			this.updateFloatingTabbarInternal(aWidth, aHeight);
+			this.updateFloatingTabbarInternal();
 		}
 		else {
 			this.updateFloatingTabbarTimer = window.setTimeout(function(aSelf) {
 				aSelf.updateFloatingTabbarTimer = null;
-				aSelf.updateFloatingTabbarInternal(aWidth, aHeight)
+				aSelf.updateFloatingTabbarInternal()
 			}, 0, this);
 		}
 	},
-	updateFloatingTabbarInternal : function TSTBrowser_updateFloatingTabbarInternal(aWidth, aHeight)
+	updateFloatingTabbarInternal : function TSTBrowser_updateFloatingTabbarInternal()
 	{
 		var strip = this.tabStrip;
 		var tabContainerBox = this.getTabContainerBox(this.mTabBrowser);
@@ -1298,8 +1298,8 @@ TreeStyleTabBrowser.prototype = {
 
 			let realWidth = parseInt(this._tabStripPlaceHolder.getAttribute('width') || box.width);
 			let realHeight = parseInt(this._tabStripPlaceHolder.getAttribute('height') || box.height);
-			let width = aWidth || realWidth;
-			let height = aHeight || realHeight;
+			let width = (this.autoHide.expanded && this.isVertical ? this.maxTabbarWidth(this.getTreePref('tabbar.width')) : 0 ) || realWidth;
+			let height = (this.autoHide.expanded && !this.isVertical ? this.maxTabbarHeight(this.getTreePref('tabbar.height')) : 0 ) || realHeight;
 			let xOffset = pos == 'right' ? width - realWidth : 0 ;
 			let yOffset = pos == 'bottom' ? height - realHeight : 0 ;
 
@@ -1309,11 +1309,12 @@ TreeStyleTabBrowser.prototype = {
 			strip.style.width = (tabContainerBox.width = width)+'px';
 			strip.style.height = (tabContainerBox.height = height)+'px';
 
-			let resizerStyle = this.floatingTabbarResizerBox.style;
-			resizerStyle.top    = pos == 'top' ? realHeight+'px' : '' ;
-			resizerStyle.right  = pos == 'right' ? realWidth+'px' : '' ;
-			resizerStyle.left   = pos == 'left' ? realWidth+'px' : '' ;
-			resizerStyle.bottom = pos == 'bottom' ? realHeight+'px' : '' ;
+			this.updateFloatingTabbarResizer({
+				width      : width,
+				realWidth  : realWidth,
+				height     : height,
+				realHeight : realHeight
+			});
 
 			tabContainerBox.collapsed = (this.splitter && this.splitter.getAttribute('state') == 'collapsed');
 
@@ -1366,9 +1367,52 @@ TreeStyleTabBrowser.prototype = {
 		if ('_positionPinnedTabs' in this.mTabBrowser.mTabContainer)
 			this.mTabBrowser.mTabContainer._positionPinnedTabs();
 	},
-	get floatingTabbarResizerBox()
+	updateFloatingTabbarResizer : function TSTBrowser_updateFloatingTabbarResizer(aSize)
 	{
-		return document.getElementById('treestyletab-tabbar-resizer-box');
+		var width      = aSize.width;
+		var realWidth  = aSize.realWidth;
+		var height     = aSize.height;
+		var realHeight = aSize.realHeight;
+		var pos        = this.currentTabbarPosition;
+		var vertical = this.isVertical;
+
+		var splitter = document.getElementById('treestyletab-tabbar-resizer-splitter');
+		var box = splitter.parentNode;
+
+		box.orient = splitter.orient = vertical ? 'horizontal' : 'vertical' ;
+		box.width = (width - realWidth) || width;
+		box.height = (height - realHeight) || height;
+
+		var boxStyle = box.style;
+		boxStyle.top    = pos == 'top' ? realHeight+'px' : '' ;
+		boxStyle.right  = pos == 'right' ? realWidth+'px' : '' ;
+		boxStyle.left   = pos == 'left' ? realWidth+'px' : '' ;
+		boxStyle.bottom = pos == 'bottom' ? realHeight+'px' : '' ;
+
+		if (vertical) {
+			splitter.removeAttribute('width');
+			splitter.setAttribute('height', height);
+		}
+		else {
+			splitter.setAttribute('width', width);
+			splitter.removeAttribute('height');
+		}
+
+		var splitterWidth = splitter.boxObject.width;
+		var splitterHeight = splitter.boxObject.height;
+		var splitterStyle = splitter.style;
+		splitterStyle.marginTop    = pos == 'bottom' ? (-splitterHeight)+'px' :
+									vertical ? '0' :
+									box.height+'px' ;
+		splitterStyle.marginRight  = pos == 'left' ? (-splitterWidth)+'px' :
+									!vertical ? '0' :
+									box.width+'px' ;
+		splitterStyle.marginLeft   = pos == 'right' ? (-splitterWidth)+'px' :
+									!vertical ? '0' :
+									box.width+'px' ;
+		splitterStyle.marginBottom = pos == 'top' ? (-splitterHeight)+'px' :
+									vertical ? '0' :
+									box.height+'px' ;
 	},
  
 	resetTabbarSize : function TSTBrowser_resetTabbarSize() 
