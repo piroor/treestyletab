@@ -24,6 +24,7 @@
 .tabbrowser-tabs[treestyletab-tabbar-autohide="hidden"],
 .tabbrowser-strip[treestyletab-tabbar-autohide="hidden"]+splitter,
 tabbrowser:not([treestyletab-tabbar-autohide="hidden"]) .treestyletab-tabbar-toggler,
+#TabsToolbar[treestyletab-tabbar-autohide="hidden"] > *,
 #appcontent[ahFull="true"] .tabbrowser-strip[ahHIDE="true"]+splitter /* AutoHide */,
 .tabbrowser-strip[treestyletab-tabbar-fixed="true"]+splitter,
 .tabbrowser-strip[treestyletab-print-preview="true"],
