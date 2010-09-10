@@ -65,6 +65,8 @@
 }
 
 tabbrowser[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .treestyletab-splitter,
+#TabsToolbar[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .treestyletab-splitter {
 	background: #b3b2b3 !important;
 	border: 0 solid #666666 !important;
@@ -73,11 +75,15 @@ tabbrowser[treestyletab-style~="metal"][treestyletab-mode="vertical"]
 }
 tabbrowser[treestyletab-style~="metal"][treestyletab-tabbar-position="left"]
   .treestyletab-splitter,
+#TabsToolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="left"]
+  .treestyletab-splitter,
 .tabbrowser-strip[treestyletab-style~="metal"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"],
 #TabsToolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"] {
 	border-right: 1px solid #666666 !important;
 }
 tabbrowser[treestyletab-style~="metal"][treestyletab-tabbar-position="right"]
+  .treestyletab-splitter,
+#TabsToolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="right"]
   .treestyletab-splitter,
 .tabbrowser-strip[treestyletab-style~="metal"][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"],
 #TabsToolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"] {

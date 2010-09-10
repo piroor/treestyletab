@@ -18,7 +18,11 @@
 
 /* Use the splitter to display the border of .tabbrowser-strip */
 #main-window:-moz-window-inactive
-tabbrowser[treestyletab-style~="sidebar"]:not([treestyletab-style~="aero"])[treestyletab-mode="vertical"] .treestyletab-splitter {
+  tabbrowser[treestyletab-style~="sidebar"]:not([treestyletab-style~="aero"])[treestyletab-mode="vertical"]
+  .treestyletab-splitter,
+#main-window:-moz-window-inactive
+  #TabsToolbar[treestyletab-style~="sidebar"]:not([treestyletab-style~="aero"])[treestyletab-mode="vertical"]
+  .treestyletab-splitter {
   background-color: #868686;
 }
 #main-window:-moz-window-inactive

@@ -29,7 +29,11 @@
 	background: url("shadow-inactive-r.png") repeat-y top left !important;
 }
 
-:root:-moz-window-inactive tabbrowser[treestyletab-style~="metal"]
+:root:-moz-window-inactive
+  tabbrowser[treestyletab-style~="metal"]
+  .treestyletab-splitter,
+:root:-moz-window-inactive
+  #TabsToolbar[treestyletab-style~="metal"]
   .treestyletab-splitter {
 	border-color: #666666 !important;
 	background: #e4e4e4 !important;

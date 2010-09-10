@@ -19,12 +19,14 @@
 .tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"] .tabs-bottom,
 .tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"] .tabs-left,
 .tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"] .tab-text-shadow,
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"] .treestyletab-splitter grippy {
+.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"] .treestyletab-splitter grippy,
+#TabsToolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"] .treestyletab-splitter grippy {
   display: none !important;
 }
 
 /* Use the splitter to display the border of .tabbrowser-strip */
-tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"] .treestyletab-splitter {
+tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"] .treestyletab-splitter,
+#TabsToolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"] .treestyletab-splitter {
   width: 1px !important;
   min-width: 1px !important;
   background-image: none;
