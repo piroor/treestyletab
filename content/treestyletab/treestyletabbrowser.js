@@ -1294,11 +1294,16 @@ TreeStyleTabBrowser.prototype = {
 
 			let box = this._tabStripPlaceHolder.boxObject;
 			let root = document.documentElement.boxObject;
-			strip.style.top = (box.screenY - root.screenY + root.y)+'px';
-			strip.style.left = (box.screenX - root.screenX + root.x)+'px';
 
-			let width = aWidth || parseInt(this._tabStripPlaceHolder.getAttribute('width') || box.width);
-			let height = aHeight || parseInt(this._tabStripPlaceHolder.getAttribute('height') || box.height);
+			let realWidth = parseInt(this._tabStripPlaceHolder.getAttribute('width') || box.width);
+			let realHeight = parseInt(this._tabStripPlaceHolder.getAttribute('height') || box.height);
+			let width = aWidth || realWidth;
+			let height = aHeight || realHeight;
+			let xOffset = this.currentTabbarPosition == 'right' ? width - realWidth : 0 ;
+			let yOffset = this.currentTabbarPosition == 'bottom' ? height - realHeight : 0 ;
+
+			strip.style.top = (box.screenY - root.screenY + root.y - yOffset)+'px';
+			strip.style.left = (box.screenX - root.screenX + root.x - xOffset)+'px';
 
 			strip.style.width = (tabContainerBox.width = width)+'px';
 			strip.style.height = (tabContainerBox.height = height)+'px';

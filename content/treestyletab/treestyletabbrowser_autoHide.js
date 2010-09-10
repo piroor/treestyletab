@@ -265,7 +265,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 		if (!this.emulatedTransparency && this.expanded) { // Firefox 4.0-
 			box = {
-				screenX : box.screenX + this.XOffset,
+				screenX : box.screenX + (pos == 'left' ? this.XOffset : 0 ),
 				screenY : box.screenY,
 				width   : box.width - this.XOffset,
 				height  : box.height
