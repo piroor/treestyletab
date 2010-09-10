@@ -176,3 +176,7 @@ tabbrowser[treestyletab-tabbar-position="right"] .treestyletab-tabbar-toggler {
 tabbrowser[treestyletab-tabbar-position="bottom"] .treestyletab-tabbar-toggler {
 	border-top: 1px solid ThreeDShadow;
 }
+
+#TabsToolbar[treestyletab-tabbar-transparent="part"] #treestyletab-tabbar-resizer-box {
+	background: rgba(0, 0, 0, 0.25);
+}

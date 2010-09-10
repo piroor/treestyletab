@@ -147,4 +147,9 @@
 	</menupopup>
 </popupset>
 
+<toolbar id="TabsToolbar">
+	<hbox id="treestyletab-tabbar-resizer-box">
+	</hbox>
+</toolbar>
+
 </overlay>

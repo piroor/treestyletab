@@ -1288,7 +1288,8 @@ TreeStyleTabBrowser.prototype = {
 		var strip = this.tabStrip;
 		var tabContainerBox = this.getTabContainerBox(this.mTabBrowser);
 		var positioned = false;
-		if (this.currentTabbarPosition != 'top' ||
+		var pos = this.currentTabbarPosition;
+		if (pos != 'top' ||
 			this.mTabBrowser.getAttribute(this.kFIXED) != 'true') {
 			positioned = true;
 
@@ -1299,14 +1300,20 @@ TreeStyleTabBrowser.prototype = {
 			let realHeight = parseInt(this._tabStripPlaceHolder.getAttribute('height') || box.height);
 			let width = aWidth || realWidth;
 			let height = aHeight || realHeight;
-			let xOffset = this.currentTabbarPosition == 'right' ? width - realWidth : 0 ;
-			let yOffset = this.currentTabbarPosition == 'bottom' ? height - realHeight : 0 ;
+			let xOffset = pos == 'right' ? width - realWidth : 0 ;
+			let yOffset = pos == 'bottom' ? height - realHeight : 0 ;
 
 			strip.style.top = (box.screenY - root.screenY + root.y - yOffset)+'px';
 			strip.style.left = (box.screenX - root.screenX + root.x - xOffset)+'px';
 
 			strip.style.width = (tabContainerBox.width = width)+'px';
 			strip.style.height = (tabContainerBox.height = height)+'px';
+
+			let resizerStyle = this.floatingTabbarResizerBox.style;
+			resizerStyle.top    = pos == 'top' ? realHeight+'px' : '' ;
+			resizerStyle.right  = pos == 'right' ? realWidth+'px' : '' ;
+			resizerStyle.left   = pos == 'left' ? realWidth+'px' : '' ;
+			resizerStyle.bottom = pos == 'bottom' ? realHeight+'px' : '' ;
 
 			tabContainerBox.collapsed = (this.splitter && this.splitter.getAttribute('state') == 'collapsed');
 
@@ -1358,6 +1365,10 @@ TreeStyleTabBrowser.prototype = {
 
 		if ('_positionPinnedTabs' in this.mTabBrowser.mTabContainer)
 			this.mTabBrowser.mTabContainer._positionPinnedTabs();
+	},
+	get floatingTabbarResizerBox()
+	{
+		return document.getElementById('treestyletab-tabbar-resizer-box');
 	},
  
 	resetTabbarSize : function TSTBrowser_resetTabbarSize() 

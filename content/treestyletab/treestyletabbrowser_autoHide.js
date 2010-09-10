@@ -30,8 +30,6 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	kTRANSPARENT_FULL  : 2,
 	kTRANSPARENT_STYLE : ['none', 'part', 'full'],
  
-	emulatedTransparency : TreeStyleTabService.Comparator.compare(TreeStyleTabService.XULAppInfo.version, '4.0b5') < 0, 
- 
 	get mode() /* PUBLIC API */ 
 	{
 		var mode = this.mOwner.browser.getAttribute(this.kMODE);
@@ -263,7 +261,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		var pos = sv.currentTabbarPosition;
 		var box = b.mCurrentBrowser.boxObject;
 
-		if (!this.emulatedTransparency && this.expanded) { // Firefox 4.0-
+		if (sv.isFloating && this.expanded) { // Firefox 4.0-
 			box = {
 				screenX : box.screenX + (pos == 'left' ? this.XOffset : 0 ),
 				screenY : box.screenY,
@@ -468,10 +466,10 @@ TreeStyleTabBrowserAutoHide.prototype = {
  
 	showHideInternal : function TSTAutoHide_showHideInternal(aReason) 
 	{
-		if (this.emulatedTransparency)
+		var sv = this.mOwner;
+		if (!sv.isFloating)
 			this.stopRendering();
 
-		var sv  = this.mOwner;
 		var b   = sv.browser;
 		var pos = sv.currentTabbarPosition;
 
@@ -497,7 +495,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		window.setTimeout(function(aSelf) {
 			aSelf.redrawContentArea();
 			aSelf.fireStateChangeEvent();
-			if (aSelf.emulatedTransparency)
+			if (!sv.isFloating)
 				aSelf.startRendering();
 		}, 0, this);
 	},
@@ -519,7 +517,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		var sv  = this.mOwner;
 		var b   = sv.browser;
 		var pos = sv.currentTabbarPosition;
-		if (this.emulatedTransparency) { // -Firefox 3.6
+		if (!sv.isFloating) { // -Firefox 3.6
 			switch (pos)
 			{
 				case 'left':
@@ -549,10 +547,10 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			case this.kMODE_SHRINK:
 				if (pos == 'left' || pos == 'right') {
 					let width = sv.maxTabbarWidth(this.getTreePref('tabbar.width'));
-					if (this.emulatedTransparency) // -Firefox 3.6
-						sv.setTabStripAttribute('width', width);
-					else // Firefox 4.0-
+					if (sv.isFloating) // Firefox 4.0-
 						sv.updateFloatingTabbar(width, 0, true);
+					else // -Firefox 3.6
+						sv.setTabStripAttribute('width', width);
 				}
 				break;
 		}
@@ -571,9 +569,8 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		var splitter = document.getAnonymousElementByAttribute(b, 'class', sv.kSPLITTER);
 		this.splitterWidth = (splitter ? splitter.boxObject.width : 0 );
 
-		if (this.emulatedTransparency) { // -Firefox 3.6
+		if (!sv.isFloating) // -Firefox 3.6
 			sv.container.style.margin = 0;
-		}
 
 		switch (this.mode)
 		{
@@ -619,10 +616,10 @@ TreeStyleTabBrowserAutoHide.prototype = {
   
 	redrawContentArea : function TSTAutoHide_redrawContentArea() 
 	{
-		if (!this.emulatedTransparency)
+		var sv = this.mOwner;
+		if (sv.isFloating)
 			return;
 
-		var sv  = this.mOwner;
 		var pos = sv.currentTabbarPosition;
 		try {
 			var v = sv.browser.markupDocumentViewer;
@@ -659,7 +656,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	},
 	redrawContentAreaWithDelay : function TSTAutoHide_redrawContentAreaWithDelay()
 	{
-		if (!this.emulatedTransparency)
+		if (this.mOwner.isFloating)
 			return;
 
 		window.setTimeout(function(aSelf) {
@@ -669,7 +666,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
  
 	resetContentAreas : function TSTAutoHide_resetContentAreas()
 	{
-		if (!this.emulatedTransparency)
+		if (this.mOwner.isFloating)
 			return;
 
 		this.mOwner.getTabsArray(this.mOwner.browser).forEach(function(aTab) {
@@ -683,17 +680,14 @@ TreeStyleTabBrowserAutoHide.prototype = {
  
 	get shouldRedraw() 
 	{
-		return this.emulatedTransparency && this.enabled && this.expanded;
+		return !this.mOwner.isFloating && this.enabled && this.expanded;
 	},
  
 	drawBG : function TSTAutoHide_drawBG() 
 	{
-		if (!this.emulatedTransparency)
-			return;
-
 		var sv = this.mOwner;
-
-		if (!this.tabbarCanvas || this.isResizing) return;
+		if (sv.isFloating || !this.tabbarCanvas || this.isResizing)
+			return;
 
 		this.tabbarCanvas.style.width = (this.tabbarCanvas.width = 1)+'px';
 		this.tabbarCanvas.style.height = (this.tabbarCanvas.height = 1)+'px';
@@ -845,7 +839,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
   
 	clearBG : function TSTAutoHide_clearBG() 
 	{
-		if (!this.emulatedTransparency || !this.tabbarCanvas)
+		if (this.mOwner.isFloating || !this.tabbarCanvas)
 			return;
 
 		this.tabbarCanvas.style.display = 'none';
