@@ -23,7 +23,9 @@
 .tabbrowser-strip[treestyletab-tabbar-autohide="hidden"],
 .tabbrowser-tabs[treestyletab-tabbar-autohide="hidden"],
 .tabbrowser-strip[treestyletab-tabbar-autohide="hidden"]+splitter,
-tabbrowser:not([treestyletab-tabbar-autohide="hidden"]) .treestyletab-tabbar-toggler,
+tabbrowser[treestyletab-tabbar-autohide-mode="1"][tabcontainer] .tabbrowser-strip[treestyletab-tabbar-placeholder="true"],
+tabbrowser[treestyletab-tabbar-autohide-mode="1"][tabcontainer] .tabbrowser-strip[treestyletab-tabbar-placeholder="true"]+splitter,
+.treestyletab-tabbar-toggler,
 #TabsToolbar[treestyletab-tabbar-autohide="hidden"] > *,
 #TabsToolbar #treestyletab-tabbar-resizer-box,
 #appcontent[ahFull="true"] .tabbrowser-strip[ahHIDE="true"]+splitter /* AutoHide */,
@@ -35,6 +37,11 @@ tabbrowser:not([treestyletab-tabbar-autohide="hidden"]) .treestyletab-tabbar-tog
 window[chromehidden~="toolbar"] .tabbrowser-strip[treestyletab-tabbar-placeholder="true"],
 window[chromehidden~="toolbar"] .tabbrowser-strip[treestyletab-tabbar-placeholder="true"]+splitter {
 	visibility: collapse;
+}
+
+tabbrowser[treestyletab-tabbar-autohide-mode="1"][tabcontainer] .treestyletab-tabbar-toggler,
+tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="hidden"] .treestyletab-tabbar-toggler {
+	visibility: visible;
 }
 
 

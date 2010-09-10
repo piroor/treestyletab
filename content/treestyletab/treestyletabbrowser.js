@@ -1370,9 +1370,9 @@ TreeStyleTabBrowser.prototype = {
 	updateFloatingTabbarResizer : function TSTBrowser_updateFloatingTabbarResizer(aSize)
 	{
 		var width      = aSize.width;
-		var realWidth  = aSize.realWidth;
+		var realWidth  = this.autoHide.mode == this.autoHide.kMODE_HIDE ? 0 : aSize.realWidth ;
 		var height     = aSize.height;
-		var realHeight = aSize.realHeight;
+		var realHeight = this.autoHide.mode == this.autoHide.kMODE_HIDE ? 0 : aSize.realHeight ;
 		var pos        = this.currentTabbarPosition;
 		var vertical = this.isVertical;
 
