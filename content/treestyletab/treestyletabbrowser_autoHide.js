@@ -1251,7 +1251,6 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 		this.mOwner.browser.setAttribute(this.kMODE+'-normal', this.getTreePref('tabbar.autoHide.mode'));
 		this.mOwner.browser.setAttribute(this.kMODE+'-fullscreen', this.getTreePref('tabbar.autoHide.mode.fullscreen'));
-
 		this.addPrefListener(this);
 		this.onPrefChange('extensions.treestyletab.tabbar.autoHide.area');
 		this.onPrefChange('extensions.treestyletab.tabbar.transparent.style');
@@ -1271,22 +1270,16 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		b.addEventListener('TreeStyleTabFocusSwitchingStart', this, false);
 		b.addEventListener('TreeStyleTabFocusSwitchingEnd', this, false);
 
-		var stack = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-stack');
-		if (stack || this.mOwner.isFloating) {
-			let canvas = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
-			canvas.setAttribute('style', 'display:none;width:1;height:1;');
-
-			if (stack)
+		if (!this.mOwner.isFloating) {
+			let stack = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-stack');
+			if (stack) {
+				let canvas = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
+				canvas.setAttribute('style', 'display:none;width:1;height:1;');
 				stack.firstChild.appendChild(canvas);
-			else
-				this.mOwner.tabStripPlaceHolder.appendChild(canvas);
-
-			this.tabbarCanvas = canvas;
-			this.clearBG();
+				this.tabbarCanvas = canvas;
+				this.clearBG();
+			}
 		}
-
-		b = null;
-		stack = null;
 	},
  
 	destroy : function TSTAutoHide_destroy() 

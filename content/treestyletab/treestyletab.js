@@ -1826,7 +1826,7 @@ catch(e) {
 			this.evaluateXPath(
 				'local-name() = "tooltip" or local-name() ="panel" or '+
 				'parent::*/ancestor-or-self::*[local-name()="popup" or local-name()="menupopup"]',
-				aEvent.originalTarget,
+				aPopup,
 				XPathResult.BOOLEAN_TYPE
 			).booleanValue)
 			return;
