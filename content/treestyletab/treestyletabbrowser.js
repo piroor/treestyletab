@@ -1263,25 +1263,27 @@ TreeStyleTabBrowser.prototype = {
 		}, 0, this.mTabBrowser);
 	},
  
-	updateFloatingTabbar : function TSTBrowser_updateFloatingTabbar(aJustNow) 
+	updateFloatingTabbar : function TSTBrowser_updateFloatingTabbar(aWidth, aHeight, aJustNow) 
 	{
 		// this method is just for Firefox 4.0 or later
 		if (!this.isFloating) return;
 
-		if (aJustNow) {
-			if (this.updateFloatingTabbarTimer)
-				window.clearTimeout(this.updateFloatingTabbarTimer);
+		if (this.updateFloatingTabbarTimer) {
+			window.clearTimeout(this.updateFloatingTabbarTimer);
 			this.updateFloatingTabbarTimer = null;
-			this.updateFloatingTabbarInternal();
+		}
+
+		if (aJustNow) {
+			this.updateFloatingTabbarInternal(aWidth, aHeight);
 		}
 		else {
 			this.updateFloatingTabbarTimer = window.setTimeout(function(aSelf) {
 				aSelf.updateFloatingTabbarTimer = null;
-				aSelf.updateFloatingTabbarInternal()
+				aSelf.updateFloatingTabbarInternal(aWidth, aHeight)
 			}, 0, this);
 		}
 	},
-	updateFloatingTabbarInternal : function TSTBrowser_updateFloatingTabbarInternal()
+	updateFloatingTabbarInternal : function TSTBrowser_updateFloatingTabbarInternal(aWidth, aHeight)
 	{
 		var strip = this.tabStrip;
 		var tabContainerBox = this.getTabContainerBox(this.mTabBrowser);
@@ -1295,8 +1297,8 @@ TreeStyleTabBrowser.prototype = {
 			strip.style.top = (box.screenY - root.screenY + root.y)+'px';
 			strip.style.left = (box.screenX - root.screenX + root.x)+'px';
 
-			let width = parseInt(this._tabStripPlaceHolder.getAttribute('width') || box.width);
-			let height = parseInt(this._tabStripPlaceHolder.getAttribute('height') || box.height);
+			let width = aWidth || parseInt(this._tabStripPlaceHolder.getAttribute('width') || box.width);
+			let height = aHeight || parseInt(this._tabStripPlaceHolder.getAttribute('height') || box.height);
 
 			strip.style.width = (tabContainerBox.width = width)+'px';
 			strip.style.height = (tabContainerBox.height = height)+'px';

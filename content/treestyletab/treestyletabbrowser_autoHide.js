@@ -263,6 +263,15 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		var pos = sv.currentTabbarPosition;
 		var box = b.mCurrentBrowser.boxObject;
 
+		if (!this.emulatedTransparency && this.expanded) { // Firefox 4.0-
+			box = {
+				screenX : box.screenX + this.XOffset,
+				screenY : box.screenY,
+				width   : box.width - this.XOffset,
+				height  : box.height
+			};
+		}
+
 		var sensitiveArea = this.sensitiveArea;
 		/* For resizing of shrunken tab bar and clicking closeboxes,
 		   we have to shrink sensitive area a little. */
@@ -459,7 +468,8 @@ TreeStyleTabBrowserAutoHide.prototype = {
  
 	showHideInternal : function TSTAutoHide_showHideInternal(aReason) 
 	{
-		this.stopRendering();
+		if (this.emulatedTransparency)
+			this.stopRendering();
 
 		var sv  = this.mOwner;
 		var b   = sv.browser;
@@ -487,7 +497,8 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		window.setTimeout(function(aSelf) {
 			aSelf.redrawContentArea();
 			aSelf.fireStateChangeEvent();
-			aSelf.startRendering();
+			if (aSelf.emulatedTransparency)
+				aSelf.startRendering();
 		}, 0, this);
 	},
 	
@@ -508,21 +519,22 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		var sv  = this.mOwner;
 		var b   = sv.browser;
 		var pos = sv.currentTabbarPosition;
-
-		switch (pos)
-		{
-			case 'left':
-				sv.container.style.marginRight = '-'+this.XOffset+'px';
-				break;
-			case 'right':
-				sv.container.style.marginLeft = '-'+this.XOffset+'px';
-				break;
-			case 'bottom':
-				sv.container.style.marginTop = '-'+this.YOffset+'px';
-				break;
-			default:
-				sv.container.style.marginBottom = '-'+this.YOffset+'px';
-				break;
+		if (this.emulatedTransparency) { // -Firefox 3.6
+			switch (pos)
+			{
+				case 'left':
+					sv.container.style.marginRight = '-'+this.XOffset+'px';
+					break;
+				case 'right':
+					sv.container.style.marginLeft = '-'+this.XOffset+'px';
+					break;
+				case 'bottom':
+					sv.container.style.marginTop = '-'+this.YOffset+'px';
+					break;
+				default:
+					sv.container.style.marginBottom = '-'+this.YOffset+'px';
+					break;
+			}
 		}
 
 		sv.setTabbrowserAttribute(this.kSTATE, this.kSTATE_EXPANDED);
@@ -535,11 +547,15 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 			default:
 			case this.kMODE_SHRINK:
-				if (pos == 'left' || pos == 'right')
-					sv.setTabStripAttribute('width', sv.maxTabbarWidth(this.getTreePref('tabbar.width')));
+				if (pos == 'left' || pos == 'right') {
+					let width = sv.maxTabbarWidth(this.getTreePref('tabbar.width'));
+					if (this.emulatedTransparency) // -Firefox 3.6
+						sv.setTabStripAttribute('width', width);
+					else // Firefox 4.0-
+						sv.updateFloatingTabbar(width, 0, true);
+				}
 				break;
 		}
-		sv.updateFloatingTabbar(true);
 	},
  
 	onHiding : function TSTAutoHide_onHiding() 
@@ -554,7 +570,11 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		this.width = box.width || this.width;
 		var splitter = document.getAnonymousElementByAttribute(b, 'class', sv.kSPLITTER);
 		this.splitterWidth = (splitter ? splitter.boxObject.width : 0 );
-		sv.container.style.margin = 0;
+
+		if (this.emulatedTransparency) { // -Firefox 3.6
+			sv.container.style.margin = 0;
+		}
+
 		switch (this.mode)
 		{
 			case this.kMODE_DISABLED:
@@ -569,7 +589,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				sv.setTabbrowserAttribute(this.kSTATE, this.kSTATE_SHRUNKEN);
 				if (pos == 'left' || pos == 'right') {
 					sv.setTabStripAttribute('width', this.getTreePref('tabbar.shrunkenWidth'));
-					sv.updateFloatingTabbar(true);
+					sv.updateFloatingTabbar(0, 0, true);
 				}
 				break;
 		}
