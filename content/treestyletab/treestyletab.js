@@ -1832,7 +1832,8 @@ catch(e) {
 			return;
 
 		window.setTimeout(function(aSelf) {
-			if (!aPopup.boxObject.width && !aPopup.boxObject.height)
+			if ((!aPopup.boxObject.width && !aPopup.boxObject.height) ||
+				aPopup.boxObject.popupState == 'closed')
 				return;
 
 			var id = aPopup.id;
@@ -1846,7 +1847,7 @@ catch(e) {
 	onPopupHidden : function TSTService_onPopupHidden(aPopup) 
 	{
 		var id = aPopup.id;
-		aPopup = document.getElementById(id) || aPopup;
+		aPopup = document.getElementById(id) ? id : aPopup ;
 		var index = TreeStyleTabService._shownPopups.indexOf(aPopup);
 		if (index > -1)
 			TreeStyleTabService._shownPopups.splice(index, 1);
@@ -1857,7 +1858,7 @@ catch(e) {
 		TreeStyleTabService._shownPopups = TreeStyleTabService._shownPopups.filter(function(aItem) {
 			if (typeof aItem == 'string')
 				aItem = document.getElementById(aItem);
-			return aItem && aItem.boxObject && aItem.boxObject.width && aItem.boxObject.height;
+			return aItem && aItem.boxObject && ((!aItem.boxObject.width && !aItem.boxObject.height) || aItem.boxObject.popupState == 'closed');
 		});
 		return TreeStyleTabService._shownPopups.length > 0;
 	},
