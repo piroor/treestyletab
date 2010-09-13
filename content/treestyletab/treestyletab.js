@@ -1612,11 +1612,7 @@ catch(e) {
    
 	onTabbarResizeStart : function TSTService_onTabbarResizeStart(aEvent) 
 	{
-		if (this.evaluateXPath(
-				'ancestor-or-self::xul:grippy',
-				aEvent.originalTarget,
-				XPathResult.BOOLEAN_TYPE
-			).booleanValue)
+		if (this.isEventFiredOnGrippy(aEvent))
 			return;
 
 		aEvent.stopPropagation();
@@ -1628,7 +1624,7 @@ catch(e) {
 		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
 		var box = aEvent.currentTarget.id == 'treestyletab-tabbar-resizer-splitter' ?
 					this.getTabStrip(b) :
-					b.mTabContainer ;
+					b.treeStyleTab.tabStripPlaceHolder || b.tabContainer ;
 		this.tabbarResizeStartWidth  = box.boxObject.width;
 		this.tabbarResizeStartHeight = box.boxObject.height;
 		this.tabbarResizeStartX = aEvent.screenX;

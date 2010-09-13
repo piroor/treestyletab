@@ -1285,6 +1285,7 @@ TreeStyleTabBrowser.prototype = {
 		var strip = this.tabStrip;
 		var tabContainerBox = this.getTabContainerBox(this.mTabBrowser);
 		var positioned = false;
+		var collapsed = !this.splitter.collapsed && this.splitter.getAttribute('state') == 'collapsed';
 		var pos = this.currentTabbarPosition;
 		if (pos != 'top' ||
 			this.mTabBrowser.getAttribute(this.kFIXED) != 'true') {
@@ -1333,9 +1334,11 @@ TreeStyleTabBrowser.prototype = {
 			this.mTabBrowser.tabContainer.removeAttribute('context');
 		}
 
-		this._tabStripPlaceHolder.collapsed =
-			this.splitter.collapsed =
-				(this.getPref('browser.tabs.autoHide') && this.getTabsArray(this.mTabBrowser).length == 1);
+		if (!collapsed) {
+			this._tabStripPlaceHolder.collapsed =
+				this.splitter.collapsed =
+					(this.getPref('browser.tabs.autoHide') && this.getTabsArray(this.mTabBrowser).length == 1);
+		}
 
 		if (this.mTabBrowser != gBrowser)
 			return;
