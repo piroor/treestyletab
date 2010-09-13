@@ -765,9 +765,10 @@ var TreeStyleTabUtils = {
 		if (!strip) return;
 		if (aValue) {
 			strip.setAttribute(aAttr, aValue);
-			strip.ownerDocument.defaultView.setTimeout(function() {
-				strip.ownerDocument.documentElement.setAttribute(aAttr, aValue);
-			}, 10);
+			strip.ownerDocument.defaultView.setTimeout(function(aSelf) {
+				// setting an attribute to a root element sometimes breaks others...
+				aSelf.safeSetAttribute(strip.ownerDocument.documentElement, aAttr, aValue);
+			}, 10, this);
 			if (this._tabStripPlaceHolder)
 				this._tabStripPlaceHolder.setAttribute(aAttr, aValue);
 			if (strip.tabsToolbarInnerBox)
@@ -775,9 +776,9 @@ var TreeStyleTabUtils = {
 		}
 		else {
 			strip.removeAttribute(aAttr);
-			strip.ownerDocument.defaultView.setTimeout(function() {
-				strip.ownerDocument.documentElement.removeAttribute(aAttr);
-			}, 10);
+			strip.ownerDocument.defaultView.setTimeout(function(aSelf) {
+				aSelf.safeSetAttribute(strip.ownerDocument.documentElement, aAttr);
+			}, 10, this);
 			if (this._tabStripPlaceHolder)
 				this._tabStripPlaceHolder.removeAttribute(aAttr);
 			if (strip.tabsToolbarInnerBox)
@@ -788,6 +789,36 @@ var TreeStyleTabUtils = {
 	removeTabStripAttribute : function TSTUtils_removeTabStripAttribute(aAttr) 
 	{
 		this.setTabStripAttribute(aAttr, null);
+	},
+ 
+	safeSetAttribute : function TSTUtils_safeSetAttribute(aElem, aAttr, aValue) 
+	{
+		var old = {};
+		Array.slice(aElem.attributes).forEach(function(aAttr) {
+			old[aAttr.name] = aAttr.value;
+		});
+
+		if (aValue)
+			aElem.setAttribute(aAttr, aValue);
+		else
+			aElem.removeAttribute(aAttr);
+
+		for (var i in old)
+		{
+			if (old[i] != aElem.getAttribute(i)) {
+				dump('TSTUtils_safeSetAttribute restores '+aElem+'.'+i+
+					', from '+aElem.getAttribute(i)+' to '+old[i]+'\n');
+				aElem.setAttribute(i, old[i]);
+			}
+		}
+		// verification
+		for (var i in old)
+		{
+			if (old[i] != aElem.getAttribute(i)) {
+				dump('TSTUtils_safeSetAttribute failed to restore '+aElem+'.'+i+
+					', from '+aElem.getAttribute(i)+' to '+old[i]+'\n');
+			}
+		}
 	},
  
 	getTabFromChild : function TSTUtils_getTabFromChild(aTab) 

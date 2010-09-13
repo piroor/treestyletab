@@ -12,7 +12,7 @@
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/stopRendering.js
 */
 (function() {
-	const currentRevision = 7;
+	const currentRevision = 8;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -146,7 +146,7 @@
 		init : function()
 		{
 			if (this.useCanvas) {
-				this.initCanvas();
+				window.addEventListener('DOMContentLoaded', this, true);
 			}
 			else {
 				this._popups = [];
@@ -160,6 +160,11 @@
 		destroy : function()
 		{
 			if (this.useCanvas) {
+				try {
+					window.removeEventListener('DOMContentLoaded', this, true);
+				}
+				catch(e) {
+				}
 				this.destroyCanvas();
 			}
 			else {
@@ -179,7 +184,7 @@
 								.getService(Ci.nsIXULAppInfo);
 			const comparator = Cc['@mozilla.org/xpcom/version-comparator;1']
 								.getService(Ci.nsIVersionComparator);
-			return comparator.compare(XULAppInfo.version, '3.6.9999') > 0;
+			return comparator.compare(XULAppInfo.version, '4.0b1') > 0;
 		})(),
 
 		DRAW_WINDOW_FLAGS : Ci.nsIDOMCanvasRenderingContext2D.DRAWWINDOW_DRAW_VIEW |
@@ -314,12 +319,26 @@
 
 		destroyCanvas : function()
 		{
+			if (!this.canvas)
+				return;
+
 			document.documentElement.removeChild(this.box);
 			document.removeChild(this.stylePI);
 			this.box = null;
 			this.canvas = null;
 			this.style = null;
 			this.stylePI = null;
+		},
+
+		handleEvent : function(aEvent)
+		{
+			switch (aEvent.type)
+			{
+				case 'DOMContentLoaded':
+					window.removeEventListener('DOMContentLoaded', this, true);
+					this.initCanvas();
+					return;
+			}
 		}
 	};
 
