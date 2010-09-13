@@ -799,7 +799,7 @@ var TreeStyleTabUtils = {
 		});
 
 		if (aValue) {
-			expected[aAttr] = aValue;
+			expected[aAttr] = String(aValue);
 			aElem.setAttribute(aAttr, aValue);
 		}
 		else {
