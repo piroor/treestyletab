@@ -32,6 +32,7 @@
 	margin: 0 !important;
 	padding: 0 !important;
 	-moz-box-shadow: none !important;
+	box-shadow: none !important;
 }
 
 .tabbrowser-strip[treestyletab-style~="square"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"]:not([treestyletab-tabbar-transparent="full"]),

@@ -6,11 +6,13 @@
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"]
   .tabbrowser-tab:not([pinned="true"]) {
 	-moz-box-shadow: -0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15) !important;
+	box-shadow: -0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15) !important;
 }
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tabbrowser-tab:not([pinned="true"]) {
 	-moz-box-shadow: 0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15) !important;
+	box-shadow: 0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15) !important;
 }
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"]
@@ -96,6 +98,7 @@ tabbrowser[tabberwocky-hidenewtabbutton="true"]
   .tabbrowser-arrowscrollbox
   .scrollbox-innerbox {
 	-moz-box-shadow: inset -0.2em 0.2em 0.3em rgba(0, 0, 0, 0.15) !important;
+	box-shadow: inset -0.2em 0.2em 0.3em rgba(0, 0, 0, 0.15) !important;
 }
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]:not([overflow="true"])
@@ -104,6 +107,7 @@ tabbrowser[tabberwocky-hidenewtabbutton="true"]
   .tabbrowser-arrowscrollbox
   .scrollbox-innerbox {
 	-moz-box-shadow: inset 0.2em 0.2em 0.3em rgba(0, 0, 0, 0.15) !important;
+	box-shadow: inset 0.2em 0.2em 0.3em rgba(0, 0, 0, 0.15) !important;
 }
 
 

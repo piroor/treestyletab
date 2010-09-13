@@ -228,6 +228,7 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"] .treesty
 	padding: 0 !important;
 	-moz-appearance: none !important;
 	-moz-box-shadow: none !important;
+	box-shadow: none !important;
 }
 
 .tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
