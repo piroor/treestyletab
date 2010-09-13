@@ -93,7 +93,6 @@ var TreeStyleTabUtils = {
 	kTAB_INVERTED          : 'treestyletab-tab-inverted',
 	kTAB_CONTENTS_INVERTED : 'treestyletab-tab-contents-inverted',
 	kCLOSEBOX_INVERTED     : 'treestyletab-closebox-inverted',
-	kSCROLLBAR_INVERTED    : 'treestyletab-scrollbar-inverted',
 
 	kTWISTY_HOVER       : 'treestyletab-twisty-hover',
 	kTWISTY_STYLE       : 'treestyletab-twisty-style',

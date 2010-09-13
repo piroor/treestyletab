@@ -107,6 +107,9 @@ TreeStyleTabBrowser.prototype = {
 	
 	get isVertical() 
 	{
+		if (!this.preInitialized)
+			return ['left', 'right'].indexOf(this.currentTabbarPosition) > -1;
+
 		var b = this.mTabBrowser;
 		if (!b) return false;
 		var box = this.scrollBox || b.mTabContainer ;
@@ -120,14 +123,19 @@ TreeStyleTabBrowser.prototype = {
  
 	get isFixed() 
 	{
+		var orient = this.isVertical ? 'vertical' : 'horizontal' ;
+		if (!this.preInitialized)
+			return this.getTreePref('tabbar.fixed.'+orient);
+
 		var b = this.mTabBrowser;
 		if (!b) return false;
-		return b.getAttribute(this.kFIXED+'-'+(this.isVertical ? 'vertical' : 'horizontal')) == 'true';
+		return b.getAttribute(this.kFIXED+'-'+orient) == 'true';
 	},
  
 	isTabInViewport : function TSTBrowser_isTabInViewport(aTab) 
 	{
-		if (!aTab) return false;
+		if (!this.preInitialized || !aTab)
+			return false;
 		if (aTab.getAttribute('pinned') == 'true')
 			return true;
 		var tabBox = aTab.boxObject;
@@ -722,16 +730,6 @@ TreeStyleTabBrowser.prototype = {
 					)
 				);
 			}
-		}
-
-		/* To move up content area on the tab bar, switch tab.
-		   If we don't do it, a gray space appears on the content area
-		   by negative margin of it. */
-		if (this.currentTabbarPosition == 'left' &&
-			b.getAttribute(this.kSCROLLBAR_INVERTED) == 'true') {
-			b.removeTab(
-				b.selectedTab = b.addTab('about:blank')
-			);
 		}
 
 		this.ObserverService.addObserver(this, 'TreeStyleTab:indentModified', false);

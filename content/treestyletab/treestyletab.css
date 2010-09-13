@@ -74,21 +74,6 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-stack > *:first-child + * > hbox:
 	-moz-box-flex: 1 !important;
 }
 
-.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted="true"] .tabbrowser-arrowscrollbox > scrollbox {
-	direction: rtl !important;
-	/* if there is scrollbar, closeboxes of tabs cannot be clicked because
-	   they are "under the rightside scrollbar" even if it is moved to
-	   leftside by the above rule. This seems a bug. Following rules move
-	   the "hidden rightside scrollbar" out of the box, then we can click
-	   closeboxes again. */
-	margin-right: -1em !important;
-	padding-right: 1em !important;
-}
-
-.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-scrollbar-inverted="true"] .tabbrowser-arrowscrollbox > scrollbox > .scrollbox-innerbox {
-	direction: ltr !important;
-}
-
 .tabbrowser-tabs[treestyletab-mode="vertical"]
 	.tabbrowser-tab:not([treestyletab-removed="true"]):not([pinned]),
 .tabbrowser-tabs[treestyletab-mode="vertical"]
