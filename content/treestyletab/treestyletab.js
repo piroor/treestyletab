@@ -1319,7 +1319,7 @@ catch(e) {
 		}, this);
 	},
  
-	initTabView : function() 
+	initTabView : function TSTService_initTabView() 
 	{
 		var iframe = document.getElementById('tab-view');
 		iframe.removeEventListener('load', this, true);
@@ -1630,7 +1630,7 @@ catch(e) {
 		this.tabbarResizeStartX = aEvent.screenX;
 		this.tabbarResizeStartY = aEvent.screenY;
 	},
-	onTabbarResizeEnd : function TSTService_onTabbarResizeEnd(aEvent) 
+	onTabbarResizeEnd : function TSTService_onTabbarResizeEnd(aEvent)
 	{
 		if (this.tabbarResizeStartWidth < 0)
 			return;
@@ -1648,7 +1648,7 @@ catch(e) {
 
 		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
 	},
-	onTabbarResizing : function TSTService_onTabbarResizing(aEvent) 
+	onTabbarResizing : function TSTService_onTabbarResizing(aEvent)
 	{
 		var target = aEvent.currentTarget;
 		var b = this.getTabBrowserFromChild(target);
