@@ -285,7 +285,6 @@ TreeStyleTabBrowser.prototype = {
 		strip.addEventListener('drop',            this, false);
 		strip.addEventListener('MozMouseHittest', this, true); // to block default behaviors of the tab bar
 		strip.addEventListener('mousedown',       this, true);
-		strip.addEventListener('mouseup',         this, false);
 		strip.addEventListener('click',           this, true);
 		b.mPanelContainer.addEventListener('dragleave', this, false);
 		b.mPanelContainer.addEventListener('dragover',  this, false);
@@ -1152,9 +1151,9 @@ TreeStyleTabBrowser.prototype = {
 		// behavior becomes broken by repositioning of the tab bar.
 		if (splitter) {
 			try {
-				splitter.removeEventListener('mouseup', this, false);
-				splitter.removeEventListener('click', this, false);
-				splitter.removeEventListener('dblclick', this, false);
+				splitter.removeEventListener('mousedown', TreeStyleTabService, false);
+				splitter.removeEventListener('mouseup', TreeStyleTabService, false);
+				splitter.removeEventListener('dblclick', TreeStyleTabService, false);
 			}
 			catch(e) {
 			}
@@ -1173,9 +1172,9 @@ TreeStyleTabBrowser.prototype = {
 			splitterClass += (splitterClass ? ' ' : '' ) + this.kSPLITTER;
 		splitter.setAttribute('class', splitterClass);
 
-		splitter.addEventListener('mouseup', this, false);
-		splitter.addEventListener('click', this, false);
-		splitter.addEventListener('dblclick', this, false);
+		splitter.addEventListener('mousedown', TreeStyleTabService, false);
+		splitter.addEventListener('mouseup', TreeStyleTabService, false);
+		splitter.addEventListener('dblclick', TreeStyleTabService, false);
 
 		var ref = this.mTabBrowser.mPanelContainer;
 		ref.parentNode.insertBefore(splitter, ref);
@@ -1298,8 +1297,14 @@ TreeStyleTabBrowser.prototype = {
 
 			let realWidth = parseInt(this._tabStripPlaceHolder.getAttribute('width') || box.width);
 			let realHeight = parseInt(this._tabStripPlaceHolder.getAttribute('height') || box.height);
-			let width = (this.autoHide.expanded && this.isVertical ? this.maxTabbarWidth(this.getTreePref('tabbar.width')) : 0 ) || realWidth;
-			let height = (this.autoHide.expanded && !this.isVertical ? this.maxTabbarHeight(this.getTreePref('tabbar.height')) : 0 ) || realHeight;
+			let width = (this.autoHide.expanded && this.isVertical ?
+							this.maxTabbarWidth(this.getTreePref('tabbar.width')) :
+							0
+						) || realWidth;
+			let height = (this.autoHide.expanded && !this.isVertical ?
+							this.maxTabbarHeight(this.getTreePref('tabbar.height')) :
+							0
+						) || realHeight;
 			let xOffset = pos == 'right' ? width - realWidth : 0 ;
 			let yOffset = pos == 'bottom' ? height - realHeight : 0 ;
 
@@ -1417,21 +1422,19 @@ TreeStyleTabBrowser.prototype = {
  
 	resetTabbarSize : function TSTBrowser_resetTabbarSize() 
 	{
-		if (!this.isVertical) {
+		if (this.isVertical) {
+			this.clearTreePref('tabbar.shrunkenWidth');
+			this.clearTreePref('tabbar.width');
+		}
+		else {
 			this.clearTreePref('tabbar.height');
 			if (this.isFloating) {
 				let tabContainerBox = this.getTabContainerBox(this.mTabBrowser);
 				tabContainerBox.removeAttribute('height');
 				this._tabStripPlaceHolder.height = tabContainerBox.boxObject.height;
-				this.updateFloatingTabbar();
 			}
 		}
-		else {
-			if (!this.autoHide.expanded)
-				this.clearTreePref('tabbar.shrunkenWidth');
-			else
-				this.clearTreePref('tabbar.width');
-		}
+		this.updateFloatingTabbar();
 	},
  
 	updateTabbarOverflow : function TSTBrowser_updateTabbarOverflow() 
@@ -1576,7 +1579,6 @@ TreeStyleTabBrowser.prototype = {
 		strip.removeEventListener('drop',            this, false);
 		strip.removeEventListener('MozMouseHittest', this, true);
 		strip.removeEventListener('mousedown',       this, true);
-		strip.removeEventListener('mouseup',         this, false);
 		strip.removeEventListener('click',           this, true);
 		b.mPanelContainer.removeEventListener('dragleave', this, false);
 		b.mPanelContainer.removeEventListener('dragover',  this, false);
@@ -1789,8 +1791,13 @@ TreeStyleTabBrowser.prototype = {
 				if (!this.shouldApplyNewPref) return;
 				if (!this.autoHide.isResizing && this.isVertical) {
 					this.removeTabStripAttribute('width');
-					this.setTabStripAttribute('width', this.autoHide.widthFromMode);
-					this.updateFloatingTabbar();
+					if (this.isFloating) {
+						this.setTabStripAttribute('width', this.autoHide.placeHolderWidthFromMode);
+						this.updateFloatingTabbar();
+					}
+					else {
+						this.setTabStripAttribute('width', this.autoHide.widthFromMode);
+					}
 				}
 				this.checkTabsIndentOverflow();
 				break;
@@ -1929,9 +1936,6 @@ TreeStyleTabBrowser.prototype = {
 
 			case 'mousedown':
 				return this.onMouseDown(aEvent);
-
-			case 'mouseup':
-				return this.onMouseUp(aEvent);
 
 			case 'scroll':
 				return this.onScroll(aEvent);
@@ -2954,7 +2958,8 @@ TreeStyleTabBrowser.prototype = {
 	{
 		if (
 			!this.shouldDetectClickOnIndentSpaces ||
-			this.isEventFiredOnClickable(aEvent)
+			this.isEventFiredOnClickable(aEvent) ||
+			this.getSplitterFromEvent(aEvent)
 			)
 			return null;
 
@@ -2982,13 +2987,8 @@ TreeStyleTabBrowser.prototype = {
 			return;
 
 		var tab = this.getTabFromEvent(aEvent);
-		var splitter = tab ? null : this.getSplitterFromEvent(aEvent) ;
-
 		if (tab) {
 			this.onTabClick(aEvent, tab);
-		}
-		else if (splitter) {
-			TreeStyleTabService.onTabbarResizerClick(aEvent);
 		}
 		else {
 			// click on indented space on the tab bar
@@ -2999,38 +2999,30 @@ TreeStyleTabBrowser.prototype = {
  
 	onDblClick : function TSTBrowser_onDblClick(aEvent) 
 	{
-		switch (aEvent.currentTarget.localName)
-		{
-			case 'splitter':
-				return this.resetTabbarSize();
-
-			default:
-				if (this.isVertical &&
-					/^(?:(?:arrow)?scrollbox|tabs)$/.test(aEvent.originalTarget.localName)) {
-					// re-send dblclick event from the inner-box of the scrollbox,
-					// because Firefox's event listener (to open new tabs) handles
-					// events only from the box.
-					let box = this.mTabBrowser.tabContainer.mTabstrip;
-					if (box && box._scrollbox) box = box._scrollbox;
-					if (box) box = document.getAnonymousNodes(box)[0];
-					if (box && box.localName == 'box') {
-						let event = document.createEvent('MouseEvents');
-						event.initMouseEvent('dblclick', true, true, window, aEvent.detail, aEvent.screenX, aEvent.screenY, aEvent.x, aEvent.y, aEvent.ctrlKey, aEvent.altKey, aEvent.shiftKey, aEvent.metaKey, aEvent.button, null);
-						box.dispatchEvent(event);
-					}
-					aEvent.preventDefault();
-					aEvent.stopPropagation();
-					return;
-				}
-				let tab = this.getTabFromEvent(aEvent);
-				if (tab &&
-					this.hasChildTabs(tab) &&
-					this.getTreePref('collapseExpandSubtree.dblclick')) {
-					this.collapseExpandSubtree(tab, tab.getAttribute(this.kSUBTREE_COLLAPSED) != 'true');
-					aEvent.preventDefault();
-					aEvent.stopPropagation();
-				}
-				return;
+		if (this.isVertical &&
+			/^(?:(?:arrow)?scrollbox|tabs)$/.test(aEvent.originalTarget.localName)) {
+			// re-send dblclick event from the inner-box of the scrollbox,
+			// because Firefox's event listener (to open new tabs) handles
+			// events only from the box.
+			let box = this.mTabBrowser.tabContainer.mTabstrip;
+			if (box && box._scrollbox) box = box._scrollbox;
+			if (box) box = document.getAnonymousNodes(box)[0];
+			if (box && box.localName == 'box') {
+				let event = document.createEvent('MouseEvents');
+				event.initMouseEvent('dblclick', true, true, window, aEvent.detail, aEvent.screenX, aEvent.screenY, aEvent.x, aEvent.y, aEvent.ctrlKey, aEvent.altKey, aEvent.shiftKey, aEvent.metaKey, aEvent.button, null);
+				box.dispatchEvent(event);
+			}
+			aEvent.preventDefault();
+			aEvent.stopPropagation();
+			return;
+		}
+		let tab = this.getTabFromEvent(aEvent);
+		if (tab &&
+			this.hasChildTabs(tab) &&
+			this.getTreePref('collapseExpandSubtree.dblclick')) {
+			this.collapseExpandSubtree(tab, tab.getAttribute(this.kSUBTREE_COLLAPSED) != 'true');
+			aEvent.preventDefault();
+			aEvent.stopPropagation();
 		}
 	},
  
@@ -3061,13 +3053,6 @@ TreeStyleTabBrowser.prototype = {
 		else {
 			this.onMozMouseHittest(aEvent);
 		}
-	},
- 
-	onMouseUp : function TSTBrowser_onMouseUp(aEvent) 
-	{
-		var splitter = this.getSplitterFromEvent(aEvent);
-		if (splitter)
-			TreeStyleTabService.onTabbarResized(aEvent);
 	},
  
 	onScroll : function TSTBrowser_onScroll(aEvent) 

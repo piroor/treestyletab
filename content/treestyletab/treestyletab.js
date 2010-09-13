@@ -128,14 +128,14 @@ var TreeStyleTabService = {
 	{
 		aTabBrowser = aTabBrowser || this.browser;
 		var max = Math.max(window.outerWidth, parseInt(document.documentElement.getAttribute('width') || 0));
-		return Math.min(aWidth, max * this.MAX_TABBAR_SIZE_RATIO);
+		return Math.max(0, Math.min(aWidth, max * this.MAX_TABBAR_SIZE_RATIO));
 	},
  
 	maxTabbarHeight : function TSTService_maxTabbarHeight(aHeight, aTabBrowser) 
 	{
 		aTabBrowser = aTabBrowser || this.browser;
 		var max = Math.max(window.outerHeight, parseInt(document.documentElement.getAttribute('height') || 0));
-		return Math.min(aHeight, max * this.MAX_TABBAR_SIZE_RATIO);
+		return Math.max(0, Math.min(aHeight, max * this.MAX_TABBAR_SIZE_RATIO));
 	},
   
 /* Initializing */ 
@@ -1432,6 +1432,18 @@ catch(e) {
 			case 'keypress':
 				return this.onKeyRelease(aEvent);
 
+			case 'mousedown':
+				return this.onTabbarResizeStart(aEvent);
+
+			case 'mouseup':
+				return this.onTabbarResizeEnd(aEvent);
+
+			case 'mousemove':
+				return this.onTabbarResizing(aEvent);
+
+			case 'dblclick':
+				return this.onTabbarReset(aEvent);
+
 			case 'SubBrowserAdded':
 				return this.initTabBrowser(aEvent.originalTarget.browser);
 
@@ -1594,93 +1606,94 @@ catch(e) {
 				this.getPref('browser.ctrlTab.previews');
 	},
    
-	onTabbarResized : function TSTService_onTabbarResized(aEvent) 
+	onTabbarResizeStart : function TSTService_onTabbarResizeStart(aEvent) 
 	{
-		var target = aEvent.currentTarget;
-		var b = this.getTabBrowserFromChild(target);
-		var strip = this.getTabStrip(b);
-		var box = (b.treeStyleTab.tabStripPlaceHolder || strip).boxObject;
-		window.setTimeout(function(aSelf) {
-			if (!b.treeStyleTab.clickedOnTabbarResizerGrippy) {
-				if (!b.treeStyleTab.isVertical) {
-					let height = aSelf.maxTabbarHeight(box.height, b);
-					aSelf.setTreePref('tabbar.height', height);
-				}
-				else {
-					let width = aSelf.maxTabbarWidth(box.width, b);
-					if (!b.treeStyleTab.autoHide.expanded)
-						aSelf.setTreePref('tabbar.shrunkenWidth', width);
-					else
-						aSelf.setTreePref('tabbar.width', width);
-				}
-			}
-			b.treeStyleTab.updateFloatingTabbar(true);
-			b.treeStyleTab.clickedOnTabbarResizerGrippy = false;
-		}, 10, this);
-	},
- 
-	onTabbarResizerClick : function TSTService_onTabbarResizerClick(aEvent) 
-	{
-		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
-		b.treeStyleTab.clickedOnTabbarResizerGrippy = this.evaluateXPath(
+		if (this.evaluateXPath(
 				'ancestor-or-self::xul:grippy',
 				aEvent.originalTarget,
 				XPathResult.BOOLEAN_TYPE
-			).booleanValue;
-	},
- 
-	onFloatingTabbarResizeStart : function TSTService_onFloatingTabbarResizeStart(aEvent) 
-	{
-		aEvent.stopPropagation();
-		aEvent.target.setCapture(true);
-		this.floatingTabbarResizeResizing = true;
-		var b = this.getTabBrowserFromChild(aEvent.target);
-		var strip = this.getTabStrip(b);
-		this.floatingTabbarResizeStartWidth  = strip.boxObject.width;
-		this.floatingTabbarResizeStartHeight = strip.boxObject.height;
-		this.floatingTabbarResizeStartX = aEvent.screenX;
-		this.floatingTabbarResizeStartY = aEvent.screenY;
-	},
-	onFloatingTabbarResizeEnd : function TSTService_onFloatingTabbarResizeEnd(aEvent)
-	{
-		aEvent.stopPropagation();
-		aEvent.target.releaseCapture();
-		this.floatingTabbarResizeResizing = false;
-		this.floatingTabbarResizeStartWidth  = -1;
-		this.floatingTabbarResizeStartHeight = -1;
-		this.floatingTabbarResizeStartX = -1;
-		this.floatingTabbarResizeStartY = -1;
-	},
-	onFloatingTabbarResizing : function TSTService_onFloatingTabbarResizing(aEvent)
-	{
-		if (!this.floatingTabbarResizeResizing)
+			).booleanValue)
 			return;
 
 		aEvent.stopPropagation();
-		var b = this.getTabBrowserFromChild(aEvent.target);
-		var width = this.floatingTabbarResizeStartWidth;
-		var height = this.floatingTabbarResizeStartHeight;
+		if ('setCapture' in aEvent.currentTarget)
+			aEvent.currentTarget.setCapture(true);
+
+		aEvent.currentTarget.addEventListener('mousemove', this, false);
+
+		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
+		var box = aEvent.currentTarget.id == 'treestyletab-tabbar-resizer-splitter' ?
+					this.getTabStrip(b) :
+					b.mTabContainer ;
+		this.tabbarResizeStartWidth  = box.boxObject.width;
+		this.tabbarResizeStartHeight = box.boxObject.height;
+		this.tabbarResizeStartX = aEvent.screenX;
+		this.tabbarResizeStartY = aEvent.screenY;
+	},
+	onTabbarResizeEnd : function TSTService_onTabbarResizeEnd(aEvent) 
+	{
+		if (this.tabbarResizeStartWidth < 0)
+			return;
+
+		aEvent.stopPropagation();
+		if ('releaseCapture' in aEvent.currentTarget)
+			aEvent.currentTarget.releaseCapture();
+
+		aEvent.currentTarget.removeEventListener('mousemove', this, false);
+
+		this.tabbarResizeStartWidth  = -1;
+		this.tabbarResizeStartHeight = -1;
+		this.tabbarResizeStartX = -1;
+		this.tabbarResizeStartY = -1;
+
+		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
+	},
+	onTabbarResizing : function TSTService_onTabbarResizing(aEvent) 
+	{
+		var target = aEvent.currentTarget;
+		var b = this.getTabBrowserFromChild(target);
+
+		var expanded = target.id == 'treestyletab-tabbar-resizer-splitter';
+		if (expanded)
+			aEvent.stopPropagation();
+
+		var width = this.tabbarResizeStartWidth;
+		var height = this.tabbarResizeStartHeight;
 		var pos = b.treeStyleTab.currentTabbarPosition;
 		if (b.treeStyleTab.isVertical) {
-			let delta = aEvent.screenX - this.floatingTabbarResizeStartX;
+			let delta = aEvent.screenX - this.tabbarResizeStartX;
 			width += (pos == 'left' ? delta : -delta );
-			this.setTreePref('tabbar.width', Math.max(0, width));
-			if (b.treeStyleTab.autoHide.mode == b.treeStyleTab.autoHide.kMODE_SHRINK &&
-				b.treeStyleTab._tabStripPlaceHolder)
-				b.treeStyleTab._tabStripPlaceHolder.setAttribute('width', this.getTreePref('tabbar.shrunkenWidth'));
+			width = this.maxTabbarWidth(width, b);
+			if (expanded || b.treeStyleTab.autoHide.expanded) {
+				this.setTreePref('tabbar.width', width);
+				if (b.treeStyleTab.autoHide.mode == b.treeStyleTab.autoHide.kMODE_SHRINK &&
+					b.treeStyleTab.tabStripPlaceHolder)
+					b.treeStyleTab.tabStripPlaceHolder.setAttribute('width', this.getTreePref('tabbar.shrunkenWidth'));
+			}
+			else {
+				this.setTreePref('tabbar.shrunkenWidth', width);
+			}
 		}
 		else {
-			let delta = aEvent.screenY - this.floatingTabbarResizeStartY;
+			let delta = aEvent.screenY - this.tabbarResizeStartY;
 			height += (pos == 'top' ? delta : -delta );
-			this.setTreePref('tabbar.height', Math.max(0, height));
+			this.setTreePref('tabbar.height', this.maxTabbarHeight(height, b));
 		}
 		b.treeStyleTab.updateFloatingTabbar(true);
 	},
-	floatingTabbarResizeResizing : false,
-	floatingTabbarResizeStartWidth  : -1,
-	floatingTabbarResizeStartHeight : -1,
-	floatingTabbarResizeStartX : -1,
-	floatingTabbarResizeStartY : -1,
+	tabbarResizeStartWidth  : -1,
+	tabbarResizeStartHeight : -1,
+	tabbarResizeStartX : -1,
+	tabbarResizeStartY : -1,
+ 
+	onTabbarReset : function TSTService_onTabbarReset(aEvent) 
+	{
+		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
+		if (b) {
+			b.treeStyleTab.resetTabbarSize();
+			aEvent.stopPropagation();
+		}
+	},
  
 	showHideSubtreeMenuItem : function TSTService_showHideSubtreeMenuItem(aMenuItem, aTabs) 
 	{

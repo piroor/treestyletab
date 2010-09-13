@@ -151,10 +151,9 @@
 	<box id="treestyletab-tabbar-resizer-box">
 		<splitter id="treestyletab-tabbar-resizer-splitter"
 			class="treestyletab-splitter"
-			onmousedown="TreeStyleTabService.onFloatingTabbarResizeStart(event);"
-			onmouseup="TreeStyleTabService.onFloatingTabbarResizeEnd(event);"
-			onmousemove="TreeStyleTabService.onFloatingTabbarResizing(event);"
-			dblclick="gBrowser.treeStyleTab.resetTabbarSize(); event.stopPropagation();"/>
+			onmousedown="TreeStyleTabService.handleEvent(event);"
+			onmouseup="TreeStyleTabService.handleEvent(event);"
+			ondblclick="TreeStyleTabService.handleEvent(event);"/>
 	</box>
 </toolbar>
 

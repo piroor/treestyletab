@@ -437,6 +437,12 @@ TreeStyleTabBrowserAutoHide.prototype = {
 					this.getTreePref('tabbar.shrunkenWidth') :
 					this.getTreePref('tabbar.width') ;
 	},
+	get placeHolderWidthFromMode() 
+	{
+		return (this.mode == this.kMODE_SHRINK) ?
+					this.getTreePref('tabbar.shrunkenWidth') :
+					this.getTreePref('tabbar.width') ;
+	},
   
 	get height() 
 	{
@@ -935,9 +941,15 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				this.sensitiveArea = value;
 				return;
 
-			case 'extensions.treestyletab.tabbar.transparent.style':
-				this.updateTransparency();
+			case 'extensions.treestyletab.tabbar.width':
+			case 'extensions.treestyletab.tabbar.shrunkenWidth':
+				window.setTimeout(function(aSelf) {
+					aSelf.onTabbarResized();
+				}, 0, this);
 				return;
+
+			case 'extensions.treestyletab.tabbar.transparent.style':
+				return this.updateTransparency();
 
 			case 'extensions.treestyletab.tabbar.togglerSize':
 				this.togglerSize = value;
@@ -1140,18 +1152,22 @@ TreeStyleTabBrowserAutoHide.prototype = {
  
 	onResize : function TSTAutoHide_onResize(aEvent) 
 	{
-		var sv = this.mOwner;
 		if (
-			sv.isFloating ||
-			!aEvent.originalTarget ||
+			aEvent.originalTarget &&
 			(
-				aEvent.originalTarget.ownerDocument != document &&
-				aEvent.originalTarget != window
-			) ||
-			!this.shouldRedraw
-			) {
+				aEvent.originalTarget.ownerDocument == document ||
+				aEvent.originalTarget == window
+			)
+			)
+			this.onTabbarResized();
+	},
+ 
+	onTabbarResized : function TSTAutoHide_onTabbarResized()
+	{
+		var sv = this.mOwner;
+		if (sv.isFloating || !this.shouldRedraw)
 			return;
-		}
+
 		switch (sv.currentTabbarPosition)
 		{
 			case 'left':
