@@ -793,30 +793,38 @@ var TreeStyleTabUtils = {
  
 	safeSetAttribute : function TSTUtils_safeSetAttribute(aElem, aAttr, aValue) 
 	{
-		var old = {};
+		var expected = {};
 		Array.slice(aElem.attributes).forEach(function(aAttr) {
-			old[aAttr.name] = aAttr.value;
+			expected[aAttr.name] = aAttr.value;
 		});
 
-		if (aValue)
+		if (aValue) {
+			expected[aAttr] = aValue;
 			aElem.setAttribute(aAttr, aValue);
-		else
+		}
+		else {
+			expected[aAttr] = '';
 			aElem.removeAttribute(aAttr);
+		}
 
-		for (var i in old)
+		for (let i in expected)
 		{
-			if (old[i] != aElem.getAttribute(i)) {
+			if (expected[i] != aElem.getAttribute(i)) {
 				dump('TSTUtils_safeSetAttribute restores '+aElem+'.'+i+
-					', from '+aElem.getAttribute(i)+' to '+old[i]+'\n');
-				aElem.setAttribute(i, old[i]);
+					', from '+aElem.getAttribute(i)+' to '+expected[i]+'\n');
+				if (expected[i])
+					aElem.setAttribute(i, expected[i]);
+				else
+					aElem.removeAttribute(i);
 			}
 		}
+
 		// verification
-		for (var i in old)
+		for (let i in expected)
 		{
-			if (old[i] != aElem.getAttribute(i)) {
-				dump('TSTUtils_safeSetAttribute failed to restore '+aElem+'.'+i+
-					', from '+aElem.getAttribute(i)+' to '+old[i]+'\n');
+			if (expected[i] != aElem.getAttribute(i)) {
+				dump(' => failed to change '+aElem+'.'+i+
+					', from '+aElem.getAttribute(i)+' to '+expected[i]+'\n');
 			}
 		}
 	},
