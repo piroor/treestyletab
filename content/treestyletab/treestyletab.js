@@ -146,24 +146,23 @@ var TreeStyleTabService = {
 		this.preInitialized = true;
 
 		window.removeEventListener('DOMContentLoaded', this, true);
-		if (!document.getElementById('content')) return;
+		if (location.href.indexOf('chrome://browser/content/browser.xul') != 0)
+			return;
 
 		window.addEventListener('SSTabRestoring', this, true);
 
-		if ('swapBrowsersAndCloseOther' in document.getElementById('content')) {
-			var source = window.BrowserStartup.toSource();
-			if (source.indexOf('!MultipleTabService.tearOffSelectedTabsFromRemote()') > -1) {
-				eval('window.BrowserStartup = '+source.replace(
-					'!MultipleTabService.tearOffSelectedTabsFromRemote()',
-					'!TreeStyleTabService.tearOffSubtreeFromRemote() && $&'
-				));
-			}
-			else {
-				eval('window.BrowserStartup = '+source.replace(
-					'gBrowser.swapBrowsersAndCloseOther(gBrowser.selectedTab, uriToLoad);',
-					'if (!TreeStyleTabService.tearOffSubtreeFromRemote()) { $& }'
-				));
-			}
+		var source = window.BrowserStartup.toSource();
+		if (source.indexOf('!MultipleTabService.tearOffSelectedTabsFromRemote()') > -1) {
+			eval('window.BrowserStartup = '+source.replace(
+				'!MultipleTabService.tearOffSelectedTabsFromRemote()',
+				'!TreeStyleTabService.tearOffSubtreeFromRemote() && $&'
+			));
+		}
+		else if (source.indexOf('gBrowser.swapBrowsersAndCloseOther') > -1) {
+			eval('window.BrowserStartup = '+source.replace(
+				'gBrowser.swapBrowsersAndCloseOther(gBrowser.selectedTab, uriToLoad);',
+				'if (!TreeStyleTabService.tearOffSubtreeFromRemote()) { $& }'
+			));
 		}
 
 		eval('nsBrowserAccess.prototype.openURI = '+
