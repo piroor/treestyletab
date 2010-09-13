@@ -1175,12 +1175,13 @@ var TreeStyleTabUtils = {
 		if (!this.getTreePref('autoAttachNewTabsAsChildren')) return;
 
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
-		if (!frame) return;
+		if (!frame)
+			return;
 
 		var ownerBrowser = this.getTabBrowserFromFrame(frame);
 
 		var parentTab = this.getTabFromFrame(frame, ownerBrowser);
-		if (parentTab.getAttribute('pinned') == 'true')
+		if (!parentTab || parentTab.getAttribute('pinned') == 'true')
 			return;
 
 		ownerBrowser.treeStyleTab.ensureTabInitialized(parentTab);
