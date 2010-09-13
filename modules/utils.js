@@ -852,6 +852,15 @@ var TreeStyleTabUtils = {
 			).singleNodeValue;
 	},
  
+	isEventFiredOnGrippy : function TSTUtils_isEventFiredOnGrippy(aEvent) 
+	{
+		return this.evaluateXPath(
+				'ancestor-or-self::xul:grippy',
+				aEvent.originalTarget,
+				Ci.nsIDOMXPathResult.BOOLEAN_TYPE
+			).booleanValue;
+	},
+ 
 	getTabFromFrame : function TSTUtils_getTabFromFrame(aFrame, aTabBrowser) 
 	{
 		var b = aTabBrowser || this.browser;
