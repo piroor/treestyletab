@@ -661,7 +661,7 @@ TreeStyleTabBrowser.prototype = {
 			'{ if (!this.treeStyleTab.warnAboutClosingTabSubtreeOf(this.selectedTab)) return;'
 		));
 
-		let (tabs = this.getTabsArray(b)) {
+		let (tabs = this.getAllTabsArray(b)) {
 			for each (let tab in tabs)
 			{
 				this.initTab(tab);
@@ -908,7 +908,7 @@ TreeStyleTabBrowser.prototype = {
 		if (!this.getTreePref('tabbar.invertTabContents')) return;
 		window.setTimeout(function(aSelf) {
 			var b = aSelf.mTabBrowser;
-			var tabs = aAll ? aSelf.getTabsArray(b) : [b.selectedTab] ;
+			var tabs = aAll ? aSelf.getAllTabsArray(b) : [b.selectedTab] ;
 			tabs.forEach(function(aTab) {
 				aSelf.initTabContentsOrder(aTab);
 			});
@@ -1105,7 +1105,7 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 
-		var tabs = this.getTabsArray(b);
+		var tabs = this.getAllTabsArray(b);
 		tabs.forEach(function(aTab) {
 			aTab.style.removeProperty(this.indentCSSProp);
 			aTab.style.removeProperty(this.collapseCSSProp);
@@ -1553,7 +1553,7 @@ TreeStyleTabBrowser.prototype = {
 		var b = this.mTabBrowser;
 		delete b.tabContainer.treeStyleTab;
 
-		this.getTabsArray(b).forEach(function(aTab) {
+		this.getAllTabsArray(b).forEach(function(aTab) {
 			this.stopTabIndentAnimation(aTab);
 			this.stopTabCollapseAnimation(aTab);
 			this.destroyTab(aTab);
@@ -1705,7 +1705,7 @@ TreeStyleTabBrowser.prototype = {
 		var b = this.mTabBrowser;
 		var value = this.getPref(aPrefName);
 		var tabContainer = b.mTabContainer;
-		var tabs  = this.getTabsArray(b);
+		var tabs  = this.getAllTabsArray(b);
 		switch (aPrefName)
 		{
 			case 'extensions.treestyletab.tabbar.position':
@@ -2386,7 +2386,7 @@ TreeStyleTabBrowser.prototype = {
 
 		var old = aEvent.detail;
 		if (old > tab._tPos) old--;
-		old = this.getTabsArray(b)[old];
+		old = this.getAllTabsArray(b)[old];
 
 		prev = this.getPreviousSiblingTab(old);
 		next = this.getNextSiblingTab(old);
@@ -2424,7 +2424,7 @@ TreeStyleTabBrowser.prototype = {
 		if (aOldPosition === void(0)) aOldPosition = aTab._tPos;
 
 		var pos = this.getChildIndex(aTab, parent);
-		var oldPos = this.getChildIndex(this.getTabsArray(this.mTabBrowser)[aOldPosition], parent);
+		var oldPos = this.getChildIndex(this.getAllTabsArray(this.mTabBrowser)[aOldPosition], parent);
 		var delta;
 		if (pos == oldPos) { // no move?
 			return;
@@ -3509,7 +3509,7 @@ TreeStyleTabBrowser.prototype = {
 		var newRoots = [];
 		var shouldClose = (
 				aInfo.action & this.kACTION_IMPORT &&
-				this.getTabsArray(sourceBrowser).length == draggedTabs.length
+				this.getAllTabsArray(sourceBrowser).length == draggedTabs.length
 			);
 		var oldTabs = [];
 		var newTabs = [];
@@ -3716,13 +3716,18 @@ TreeStyleTabBrowser.prototype = {
 		}
 	},
  
-	isDraggingAllTabs : function TSTBrowser_isDraggingAllTabs(aTab) 
+	isDraggingAllTabs : function TSTBrowser_isDraggingAllTabs(aTab, aTabs) 
 	{
 		var actionInfo = {
 				action : this.kACTIONS_FOR_DESTINATION | this.kACTION_IMPORT
 			};
 		var tabsInfo = this.getDraggedTabsInfoFromOneTab(actionInfo, aTab);
-		return tabsInfo.draggedTabs.length == this.getTabsArray(this.mTabBrowser).length;
+		return tabsInfo.draggedTabs.length == (aTabs || this.getAllTabsArray(this.mTabBrowser)).length;
+	},
+ 
+	isDraggingAllCurrentTabs : function TSTBrowser_isDraggingAllCurrentTabs(aTab) 
+	{
+		return this.isDraggingAllTabs(aTab, this.getTabsArray(this.mTabBrowser));
 	},
   
 /* commands */ 
@@ -3755,7 +3760,7 @@ TreeStyleTabBrowser.prototype = {
  
 	resetAllTabs : function TSTBrowser_resetAllTabs(aPartChildren) 
 	{
-		this.getTabsArray(this.mTabBrowser).forEach(function(aTab) {
+		this.getAllTabsArray(this.mTabBrowser).forEach(function(aTab) {
 			this.resetTab(aTab, aPartChildren);
 		}, this);
 	},
@@ -3775,7 +3780,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 		else {
 			this.removeTabbrowserAttribute(this.kALLOW_COLLAPSE);
-			this.getTabsArray(this.browser).forEach(function(aTab) {
+			this.getAllTabsArray(this.browser).forEach(function(aTab) {
 				this.updateTabIndent(aTab, 0, true);
 			}, this);
 		}

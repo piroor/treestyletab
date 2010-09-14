@@ -558,7 +558,7 @@ var TreeStyleTabService = {
 		if ('_onDragEnd' in aObserver) { // Firefox 3.5 - 3.6
 			eval('aObserver._onDragEnd = '+aObserver._onDragEnd.toSource().replace(
 				/([^\{\}\(\);]*this\.replaceTabWithWindow\()/,
-				'if (this.treeStyleTab.isDraggingAllTabs(draggedTab) || this.treeStyleTab.tabbarDNDObserver.canDragTabbar(arguments[0])) return; $1'
+				'if (this.treeStyleTab.isDraggingAllCurrentTabs(draggedTab) || this.treeStyleTab.tabbarDNDObserver.canDragTabbar(arguments[0])) return; $1'
 			).replace(
 				'{',
 				'{ var treeStyleTab = this.treeStyleTab;'
@@ -941,7 +941,7 @@ catch(e) {
 			return;
 
 		var draggedTab = dt.mozGetDataAt(TAB_DROP_TYPE, 0);
-		if (sv.isDraggingAllTabs(draggedTab) ||
+		if (sv.isDraggingAllCurrentTabs(draggedTab) ||
 			sv.tabbarDNDObserver.canDragTabbar(aEvent))
 			return;
 
@@ -2237,7 +2237,7 @@ catch(e) {
 	restoringTree : false,
 	getRestoringTabsCount : function TSTService_getRestoringTabsCount()
 	{
-		return this.getTabsArray(this.browser)
+		return this.getAllTabsArray(this.browser)
 				.filter(function(aTab) {
 					var owner = aTab.linkedBrowser;
 					var data = owner.__SS_data || // Firefox 3.6-

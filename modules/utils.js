@@ -836,7 +836,7 @@ var TreeStyleTabUtils = {
 			.QueryInterface(Ci.nsIInterfaceRequestor)
 			.getInterface(Ci.nsIWebNavigation)
 			.QueryInterface(Ci.nsIDocShell);
-		var tabs = this.getTabsArray(b);
+		var tabs = this.getAllTabsArray(b);
 		for each (var tab in tabs)
 		{
 			if (tab.linkedBrowser.docShell == docShell)
@@ -1016,6 +1016,23 @@ var TreeStyleTabUtils = {
 		).booleanValue;
 	},
  
+	/**
+	 * Returns all tabs in the current group as a XPathResult.
+	 * It includes tabs hidden by Tab Panorama.
+	 */
+	getAllTabs : function TSTUtils_getTabs(aTabBrowserChild) /* OBSOLETE */ 
+	{
+		var b = this.getTabBrowserFromChild(aTabBrowserChild);
+		return this.evaluateXPath(
+			'descendant::xul:tab',
+			b.mTabContainer
+		);
+	},
+ 
+	/**
+	 * Returns all tabs in the current group as a XPathResult.
+	 * It excludes tabs hidden by Tab Panorama.
+	 */
 	getTabs : function TSTUtils_getTabs(aTabBrowserChild) /* OBSOLETE */ 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
@@ -1025,12 +1042,29 @@ var TreeStyleTabUtils = {
 		);
 	},
  
+	/**
+	 * Returns all tabs in the current group as an array.
+	 * It includes tabs hidden by Tab Panorama.
+	 */
+	getAllTabsArray : function TSTUtils_getAllTabsArray(aTabBrowserChild) 
+	{
+		var b = this.getTabBrowserFromChild(aTabBrowserChild);
+		return Array.slice(b.mTabContainer.childNodes) ;
+	},
+ 
+	/**
+	 * Returns all tabs in the current group as an array.
+	 * It excludes tabs hidden by Tab Panorama.
+	 */
 	getTabsArray : function TSTUtils_getTabsArray(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
 		return b.visibleTabs || Array.slice(b.mTabContainer.childNodes) ;
 	},
  
+	/**
+	 * Returns the first tab in the current group.
+	 */
 	getFirstTab : function TSTUtils_getFirstTab(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
@@ -1038,6 +1072,9 @@ var TreeStyleTabUtils = {
 		return tabs ? tabs[0] : b.mTabContainer.firstChild;
 	},
  
+	/**
+	 * Returns the first visible, not collapsed, and not pinned tab.
+	 */
 	getFirstNormalTab : function TSTUtils_getFirstNormalTab(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
@@ -1048,6 +1085,9 @@ var TreeStyleTabUtils = {
 		).singleNodeValue;
 	},
  
+	/**
+	 * Returns the last tab in the current group.
+	 */
 	getLastTab : function TSTUtils_getLastTab(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
@@ -1055,6 +1095,9 @@ var TreeStyleTabUtils = {
 		return tabs ? tabs[tabs.length-1] : b.mTabContainer.lastChild ;
 	},
  
+	/**
+	 * Returns the next tab in the current group.
+	 */
 	getNextTab : function TSTUtils_getNextTab(aTab) 
 	{
 		if (!aTab) return null;
@@ -1069,6 +1112,9 @@ var TreeStyleTabUtils = {
 		return (tab && tab.localName == 'tab') ? tab : null ;
 	},
  
+	/**
+	 * Returns the previous tab in the current group.
+	 */
 	getPreviousTab : function TSTUtils_getPreviousTab(aTab) 
 	{
 		if (!aTab) return null;
@@ -1083,6 +1129,9 @@ var TreeStyleTabUtils = {
 		return (tab && tab.localName == 'tab') ? tab : null ;
 	},
  
+	/**
+	 * Returns the index of the specified tab, in the current group.
+	 */
 	getTabIndex : function TSTUtils_getTabIndex(aTab) 
 	{
 		if (!aTab) return -1;
@@ -1090,6 +1139,9 @@ var TreeStyleTabUtils = {
 		return this.getTabsArray(b).indexOf(aTab);
 	},
  
+	/**
+	 * Returns the next not collapsed tab in the current group.
+	 */
 	getNextVisibleTab : function TSTUtils_getNextVisibleTab(aTab) 
 	{
 		if (!aTab) return null;
@@ -1106,6 +1158,9 @@ var TreeStyleTabUtils = {
 		return (index < tabs.length-1) ? tabs[index+1] : null ;
 	},
  
+	/**
+	 * Returns the previous not collapsed tab in the current group.
+	 */
 	getPreviousVisibleTab : function TSTUtils_getPreviousVisibleTab(aTab) 
 	{
 		if (!aTab) return null;
@@ -1122,6 +1177,9 @@ var TreeStyleTabUtils = {
 		return (index > 0) ? tabs[index-1] : null ;
 	},
  
+	/**
+	 * Returns the last not collapsed tab in the current group.
+	 */
 	getLastVisibleTab : function TSTUtils_getLastVisibleTab(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
@@ -1130,6 +1188,9 @@ var TreeStyleTabUtils = {
 		return tabs.length ? tabs[tabs.length-1] : null ;
 	},
  
+	/**
+	 * Returns a XPathResult of not collapsed tabs in the current group.
+	 */
 	getVisibleTabs : function TSTUtils_getVisibleTabs(aTabBrowserChild) /* OBSOLETE */ 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
@@ -1143,6 +1204,9 @@ var TreeStyleTabUtils = {
 		return XPathResult;
 	},
  
+	/**
+	 * Returns an array of not collapsed tabs in the current group.
+	 */
 	getVisibleTabsArray : function TSTUtils_getVisibleTabsArray(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
@@ -1154,6 +1218,10 @@ var TreeStyleTabUtils = {
 				tabs ;
 	},
  
+	/**
+	 * Returns the index of the specified tab, in the array of not collapsed
+	 * tabs in the current group.
+	 */
 	getVisibleIndex : function TSTUtils_getVisibleIndex(aTab) 
 	{
 		if (!aTab) return -1;
@@ -1459,7 +1527,7 @@ var TreeStyleTabUtils = {
 		var b = this.getTabBrowserFromChild(aTab);
 		return (
 			this.shouldCloseTabSubtreeOf(aTab) &&
-			this.getDescendantTabs(aTab).length + 1 == this.getTabsArray(b).length
+			this.getDescendantTabs(aTab).length + 1 == this.getAllTabsArray(b).length
 		);
 	},
 	shouldCloseLastTabSubTreeOf : function() { return this.shouldCloseLastTabSubtreeOf.apply(this, arguments); }, // obsolete, for backward compatibility
