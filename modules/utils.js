@@ -763,12 +763,16 @@ var TreeStyleTabUtils = {
 	{
 		var strip = this.tabStrip;
 		if (!strip) return;
+		var isFeatureAttribute = aAttr.indexOf('treestyletab-') == 0;
 		if (aValue) {
 			strip.setAttribute(aAttr, aValue);
-			strip.ownerDocument.defaultView.setTimeout(function(aSelf) {
-				// setting an attribute to a root element sometimes breaks others...
-				aSelf.safeSetAttribute(strip.ownerDocument.documentElement, aAttr, aValue);
-			}, 10, this);
+			if (isFeatureAttribute) {
+				// Only attributes for TST's feature are applied to the root element.
+				// (width, height, and other general attributes have to be ignored!)
+				strip.ownerDocument.defaultView.setTimeout(function(aSelf) {
+					strip.ownerDocument.documentElement.setAttribute(aAttr, aValue);
+				}, 10, this);
+			}
 			if (this._tabStripPlaceHolder)
 				this._tabStripPlaceHolder.setAttribute(aAttr, aValue);
 			if (strip.tabsToolbarInnerBox)
@@ -776,9 +780,11 @@ var TreeStyleTabUtils = {
 		}
 		else {
 			strip.removeAttribute(aAttr);
-			strip.ownerDocument.defaultView.setTimeout(function(aSelf) {
-				aSelf.safeSetAttribute(strip.ownerDocument.documentElement, aAttr);
-			}, 10, this);
+			if (isFeatureAttribute) {
+				strip.ownerDocument.defaultView.setTimeout(function(aSelf) {
+					strip.ownerDocument.documentElement.removeAttribute(aAttr);
+				}, 10, this);
+			}
 			if (this._tabStripPlaceHolder)
 				this._tabStripPlaceHolder.removeAttribute(aAttr);
 			if (strip.tabsToolbarInnerBox)
@@ -789,44 +795,6 @@ var TreeStyleTabUtils = {
 	removeTabStripAttribute : function TSTUtils_removeTabStripAttribute(aAttr) 
 	{
 		this.setTabStripAttribute(aAttr, null);
-	},
- 
-	safeSetAttribute : function TSTUtils_safeSetAttribute(aElem, aAttr, aValue) 
-	{
-		var expected = {};
-		Array.slice(aElem.attributes).forEach(function(aAttr) {
-			expected[aAttr.name] = aAttr.value;
-		});
-
-		if (aValue) {
-			expected[aAttr] = String(aValue);
-			aElem.setAttribute(aAttr, aValue);
-		}
-		else {
-			expected[aAttr] = '';
-			aElem.removeAttribute(aAttr);
-		}
-
-		for (let i in expected)
-		{
-			if (expected[i] != aElem.getAttribute(i)) {
-				dump('TSTUtils_safeSetAttribute restores '+aElem+'.'+i+
-					', from '+aElem.getAttribute(i)+' to '+expected[i]+'\n');
-				if (expected[i])
-					aElem.setAttribute(i, expected[i]);
-				else
-					aElem.removeAttribute(i);
-			}
-		}
-
-		// verification
-		for (let i in expected)
-		{
-			if (expected[i] != aElem.getAttribute(i)) {
-				dump(' => failed to change '+aElem+'.'+i+
-					', from '+aElem.getAttribute(i)+' to '+expected[i]+'\n');
-			}
-		}
 	},
  
 	getTabFromChild : function TSTUtils_getTabFromChild(aTab) 
