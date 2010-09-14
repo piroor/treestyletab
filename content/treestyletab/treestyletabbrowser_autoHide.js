@@ -492,14 +492,10 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			this.onHiding();
 			this.showHideReason = aReason || this.kSHOWN_BY_UNKNOWN;
 			this.resetContentAreas();
-			//if ('releaseCapture' in b.mTabContainer)
-			//	b.mTabContainer.releaseCapture(true);
 		}
 		else { // to be shown or expanded
 			this.onShowing();
 			this.showHideReason = aReason || this.kSHOWN_BY_UNKNOWN;
-			//if ('setCapture' in b.mTabContainer && this.showHideReason & this.kSHOWN_BY_MOUSEMOVE)
-			//	b.mTabContainer.setCapture(true);
 		}
 
 		this.fireStateChangingEvent();
