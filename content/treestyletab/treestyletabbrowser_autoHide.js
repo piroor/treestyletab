@@ -230,18 +230,24 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	startListenMouseMove : function TSTAutoHide_startListenMouseMove() 
 	{
 		if (this.mouseMoveListening) return;
+
 		this.mOwner.browser.addEventListener('mousemove', this, true);
+
 		if (this.mOwner.isFloating)
 			this.mOwner.tabStrip.addEventListener('mousemove', this, true);
+
 		this.mouseMoveListening = true;
 	},
  
 	endListenMouseMove : function TSTAutoHide_endListenMouseMove() 
 	{
 		if (!this.mouseMoveListening) return;
+
 		this.mOwner.browser.removeEventListener('mousemove', this, true);
+
 		if (this.mOwner.isFloating)
 			this.mOwner.tabStrip.removeEventListener('mousemove', this, true);
+
 		this.mouseMoveListening = false;
 	},
  
@@ -486,10 +492,14 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			this.onHiding();
 			this.showHideReason = aReason || this.kSHOWN_BY_UNKNOWN;
 			this.resetContentAreas();
+			//if ('releaseCapture' in b.mTabContainer)
+			//	b.mTabContainer.releaseCapture(true);
 		}
 		else { // to be shown or expanded
 			this.onShowing();
 			this.showHideReason = aReason || this.kSHOWN_BY_UNKNOWN;
+			//if ('setCapture' in b.mTabContainer && this.showHideReason & this.kSHOWN_BY_MOUSEMOVE)
+			//	b.mTabContainer.setCapture(true);
 		}
 
 		this.fireStateChangingEvent();
