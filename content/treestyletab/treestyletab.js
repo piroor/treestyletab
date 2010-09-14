@@ -1306,16 +1306,17 @@ catch(e) {
 
 		var items = Array.slice(aEvent.originalTarget.childNodes);
 		var firstItemIndex = 0;
-		// ignore menu items inserted by Weave
-		if (items.some(function(aItem, aIndex) {
-				if ((aItem.getAttribute('anonid') || aItem.id) == 'sync-tabs-sep') {
-					firstItemIndex = aIndex + 1;
-					return true;
-				}
-				return false;
-			})) {
-			items = items.slice(firstItemIndex);
-		}
+		// ignore menu items inserted by Weave (Firefox Sync), Tab Utilities, and others.
+		items.forEach(function(aItem, aIndex) {
+			if (
+				aItem.getAttribute('anonid') ||
+				aItem.id ||
+				aItem.hidden ||
+				aItem.localName != 'menuitem'
+				)
+				firstItemIndex = aIndex + 1;
+		});
+		items = items.slice(firstItemIndex);
 
 		var b = this.getTabBrowserFromChild(aEvent.originalTarget) || gBrowser;
 		this.getTabsArray(b).forEach(function(aTab, aIndex) {
