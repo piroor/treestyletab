@@ -1020,7 +1020,7 @@ var TreeStyleTabUtils = {
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
 		return this.evaluateXPath(
-			'descendant::xul:tab',
+			'descendant::xul:tab[not(@hidden="true")]',
 			b.mTabContainer
 		);
 	},
@@ -1028,13 +1028,14 @@ var TreeStyleTabUtils = {
 	getTabsArray : function TSTUtils_getTabsArray(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
-		return Array.slice(b.mTabContainer.childNodes);
+		return b.visibleTabs || Array.slice(b.mTabContainer.childNodes) ;
 	},
  
 	getFirstTab : function TSTUtils_getFirstTab(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
-		return b.mTabContainer.firstChild;
+		var tabs = b.visibleTabs;
+		return tabs ? tabs[0] : b.mTabContainer.firstChild;
 	},
  
 	getFirstNormalTab : function TSTUtils_getFirstNormalTab(aTabBrowserChild) 
@@ -1050,12 +1051,20 @@ var TreeStyleTabUtils = {
 	getLastTab : function TSTUtils_getLastTab(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
-		return b.mTabContainer.lastChild;
+		var tabs = b.visibleTabs;
+		return tabs ? tabs[tabs.length-1] : b.mTabContainer.lastChild ;
 	},
  
 	getNextTab : function TSTUtils_getNextTab(aTab) 
 	{
 		if (!aTab) return null;
+		var b = this.getTabBrowserFromChild(aTab);
+		var tabs = b.visibleTabs;
+		if (tabs) {
+			let index = tabs.indexOf(aTab);
+			if (index > -1)
+				return tabs.length > index ? tabs[index+1] : null 
+		}
 		var tab = aTab.nextSibling;
 		return (tab && tab.localName == 'tab') ? tab : null ;
 	},
@@ -1063,6 +1072,13 @@ var TreeStyleTabUtils = {
 	getPreviousTab : function TSTUtils_getPreviousTab(aTab) 
 	{
 		if (!aTab) return null;
+		var b = this.getTabBrowserFromChild(aTab);
+		var tabs = b.visibleTabs;
+		if (tabs) {
+			let index = tabs.indexOf(aTab);
+			if (index > -1)
+				return 0 < index ? tabs[index-1] : null 
+		}
 		var tab = aTab.previousSibling;
 		return (tab && tab.localName == 'tab') ? tab : null ;
 	},
