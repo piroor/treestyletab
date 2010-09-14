@@ -1030,6 +1030,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			case 'TreeStyleTabTabbarPositionChanged':
 				if (this.enabled)
 					window.setTimeout(function(aSelf) {
+						aSelf.show();
 						aSelf.hide();
 					}, 0, this);
 				this.updateTransparency();
