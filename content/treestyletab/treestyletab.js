@@ -1515,7 +1515,13 @@ catch(e) {
  
 	onKeyDown : function TSTService_onKeyDown(aEvent) 
 	{
-		this.accelKeyPressed = this.isAccelKeyPressed(aEvent);
+		/**
+		 * On Mac OS X, default accel key is the Command key (metaKey), but
+		 * Cmd-Tab is used to switch applications by the OS itself. So Firefox
+		 * uses Ctrl-Tab to switch tabs on all platforms.
+		 */
+		// this.accelKeyPressed = this.isAccelKeyPressed(aEvent);
+		this.accelKeyPressed = aEvent.ctrlKey || aEvent.keyCode == Ci.nsIDOMKeyEvent.DOM_VK_CONTROL;
 
 		/* PUBLIC API */
 		var b = this.browser;
@@ -1535,7 +1541,8 @@ catch(e) {
 		var scrollDown,
 			scrollUp;
 
-		this.accelKeyPressed = this.isAccelKeyPressed(aEvent);
+		// this.accelKeyPressed = this.isAccelKeyPressed(aEvent);
+		this.accelKeyPressed = aEvent.ctrlKey || aEvent.keyCode == Ci.nsIDOMKeyEvent.DOM_VK_CONTROL;
 
 		var standBy = scrollDown = scrollUp = (!aEvent.altKey && this.accelKeyPressed);
 
