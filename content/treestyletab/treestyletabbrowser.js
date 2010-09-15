@@ -278,7 +278,6 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.addEventListener('TabMove',        this, true);
 		b.mTabContainer.addEventListener('SSTabRestoring', this, true);
 		b.mTabContainer.addEventListener('SSTabRestored',  this, true);
-		b.mTabContainer.addEventListener('transitionend',  this, true);
 		b.mTabContainer.addEventListener('DOMAttrModified', this, true);
 		b.mTabContainer.addEventListener('mouseover', this, true);
 		b.mTabContainer.addEventListener('mouseout',  this, true);
@@ -1565,7 +1564,6 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.removeEventListener('TabMove',        this, true);
 		b.mTabContainer.removeEventListener('SSTabRestoring', this, true);
 		b.mTabContainer.removeEventListener('SSTabRestored',  this, true);
-		b.mTabContainer.removeEventListener('transitionend',  this, true);
 		b.mTabContainer.removeEventListener('DOMAttrModified', this, true);
 		b.mTabContainer.removeEventListener('mouseover', this, true);
 		b.mTabContainer.removeEventListener('mouseout',  this, true);
@@ -1916,9 +1914,6 @@ TreeStyleTabBrowser.prototype = {
 
 			case 'SSTabRestored':
 				return this.onTabRestored(aEvent);
-
-			case 'transitionend':
-				return this.onTabAnimationEnd(aEvent);
 
 			case 'DOMAttrModified':
 				return this.onDOMAttrModified(aEvent);
@@ -2828,25 +2823,6 @@ TreeStyleTabBrowser.prototype = {
 		// update the status for the next restoring
 		if (!this.useTMPSessionAPI && TreeStyleTabService.restoringTree)
 			TreeStyleTabService.restoringTree = TreeStyleTabService.getRestoringTabsCount() > 0;
-	},
- 
-	onTabAnimationEnd : function TSTBrowser_onTabAnimationEnd(aEvent) 
-	{
-		/*
-			"transitionend" event isn't fired multiplly, so, Firefox's
-			default handler possibly fails to handle animation end
-			because it watches only "max-width" property.
-			For safety, I decided to clean up all of removing tabs
-			by any animation end.
-		*/
-		var tab = aEvent.target;
-		var b = this.browser;
-		if (tab.localName == 'tab' && b) {
-			if (tab.getAttribute('fadein') == 'true')
-				b.tabContainer._handleNewTab(tab);
-			else if (b._removingTabs.indexOf(tab) > -1)
-				b._endRemoveTab(tab);
-		}
 	},
  
 	onDOMAttrModified : function TSTBrowser_onDOMAttrModified(aEvent) 

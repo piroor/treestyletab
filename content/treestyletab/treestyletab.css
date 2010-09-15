@@ -74,12 +74,20 @@ tabbrowser[treestyletab-mode="vertical"] .tabs-stack > *:first-child + * > hbox:
 	-moz-box-flex: 1 !important;
 }
 
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-	.tabbrowser-tab:not([treestyletab-removed="true"]):not([pinned]),
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-	.tabbrowser-tab:not([treestyletab-removed="true"]):not([fadein]) {
-	max-width: none !important;
+/**
+ * Firefox 4.0 finishes opening and closing processes of tabs by its
+ * "transitionend" events about max-width property. I think this is very
+ * dirty and specific implementation but it won't fixed.
+ * (See: https://bugzilla.mozilla.org/show_bug.cgi?id=585417#c3 )
+ * So we have to define max-width for both states [fadein] (means "completely
+ * opened") and :not([fadein]) (means "in opening/removing process".
+ */
+.tabbrowser-tabs[treestyletab-mode="vertical"] .tabbrowser-tab:not([pinned]) {
+	max-width: 65000px !important;
 	min-width: 1px !important;
+}
+.tabbrowser-tabs[treestyletab-mode="vertical"] .tabbrowser-tab:not([pinned])[fadein] {
+	max-width: 65001px !important;
 }
 
 /* pinned tabs on Firefox 4.0 */
