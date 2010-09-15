@@ -2841,14 +2841,12 @@ TreeStyleTabBrowser.prototype = {
 		*/
 		var tab = aEvent.target;
 		var b = this.browser;
-		if (
-			tab.localName == 'tab' &&
-			b &&
-			b._removingTabs &&
-			b._removingTabs.indexOf(tab) > -1 &&
-			b._endRemoveTab
-			)
-			b._endRemoveTab(tab);
+		if (tab.localName == 'tab' && b) {
+			if (tab.getAttribute('fadein') == 'true')
+				b.tabContainer._handleNewTab(tab);
+			else if (b._removingTabs.indexOf(tab) > -1)
+				b._endRemoveTab(tab);
+		}
 	},
  
 	onDOMAttrModified : function TSTBrowser_onDOMAttrModified(aEvent) 
