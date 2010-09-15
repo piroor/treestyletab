@@ -810,20 +810,17 @@ TreeStyleTabBrowser.prototype = {
 	initTabContents : function TSTBrowser_initTabContents(aTab) 
 	{
 		var icon  = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-icon');
-		var label = this.getTabLabel(aTab);
-		var close = this.getTabClosebox(aTab);
-		var counter = document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER_CONTAINER);
-
-		if (!document.getAnonymousElementByAttribute(aTab, 'class', this.kTWISTY)) {
-			var twisty = document.createElement('image');
+		var twisty = document.getAnonymousElementByAttribute(aTab, 'class', this.kTWISTY);
+		if (icon && !twisty) {
+			twisty = document.createElement('image');
 			twisty.setAttribute('class', this.kTWISTY);
-			var container = document.createElement('hbox');
+			let container = document.createElement('hbox');
 			container.setAttribute('class', this.kTWISTY_CONTAINER);
 			container.appendChild(twisty);
 
 			icon.appendChild(container);
 
-			var marker = document.createElement('image');
+			let marker = document.createElement('image');
 			marker.setAttribute('class', this.kDROP_MARKER);
 			container = document.createElement('hbox');
 			container.setAttribute('class', this.kDROP_MARKER_CONTAINER);
@@ -832,26 +829,27 @@ TreeStyleTabBrowser.prototype = {
 			icon.appendChild(container);
 		}
 
-		if (!counter) {
-			var counter = document.createElement('hbox');
+		var label = this.getTabLabel(aTab);
+		var counter = document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER_CONTAINER);
+		if (label && label.parentNode != aTab && !counter) {
+			counter = document.createElement('hbox');
 			counter.setAttribute('class', this.kCOUNTER_CONTAINER);
 
-			counter.appendChild(document.createElement('label'));
-			counter.lastChild.setAttribute('class', this.kCOUNTER_PAREN);
-			counter.lastChild.setAttribute('value', '(');
+			let startParen = counter.appendChild(document.createElement('label'));
+			startParen.setAttribute('class', this.kCOUNTER_PAREN);
+			startParen.setAttribute('value', '(');
 
-			counter.appendChild(document.createElement('label'));
-			counter.lastChild.setAttribute('class', this.kCOUNTER);
-			counter.lastChild.setAttribute('value', '0');
+			let counterLabel = counter.appendChild(document.createElement('label'));
+			counterLabel.setAttribute('class', this.kCOUNTER);
+			counterLabel.setAttribute('value', '0');
 
-			counter.appendChild(document.createElement('label'));
-			counter.lastChild.setAttribute('class', this.kCOUNTER_PAREN);
-			counter.lastChild.setAttribute('value', ')');
+			let endParen = counter.appendChild(document.createElement('label'));
+			endParen.setAttribute('class', this.kCOUNTER_PAREN);
+			endParen.setAttribute('value', ')');
 
-			if (label) {
-				label.parentNode.insertBefore(counter, label.nextSibling);
-			}
+			label.parentNode.insertBefore(counter, label.nextSibling);
 		}
+
 		this.initTabContentsOrder(aTab);
 	},
  
@@ -859,7 +857,6 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var label = this.getTabLabel(aTab);
 		var close = this.getTabClosebox(aTab);
-		var counter = document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER_CONTAINER);
 		var inverted = this.mTabBrowser.getAttribute(this.kTAB_CONTENTS_INVERTED) == 'true';
 
 		var nodes = Array.slice(document.getAnonymousNodes(aTab));
@@ -891,9 +888,16 @@ TreeStyleTabBrowser.prototype = {
 
 		// rearrange contents in "tab-image-middle"
 		nodes = Array.slice(label.parentNode.childNodes);
-		nodes.splice(nodes.indexOf(counter), 1);
-		if (inverted) nodes.reverse();
-		nodes.splice(nodes.indexOf(label)+1, 0, counter);
+
+		if (inverted)
+			nodes.reverse();
+
+		var counter = document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER_CONTAINER);
+		if (counter) {
+			nodes.splice(nodes.indexOf(counter), 1);
+			nodes.splice(nodes.indexOf(label)+1, 0, counter);
+		}
+
 		count = nodes.length;
 		nodes.reverse().forEach(function(aNode, aIndex) {
 			if (aNode.getAttribute('class') == 'informationaltab-thumbnail-container')

@@ -415,6 +415,8 @@ TreeStyleTabBrowserAutoHide.prototype = {
  
 	updateMenuItem : function TSTAutoHide_updateMenuItem(aNode) 
 	{
+		if (!aNode) return;
+
 		if (this.mode != this.kMODE_DISABLED)
 			aNode.setAttribute('checked', true);
 		else
