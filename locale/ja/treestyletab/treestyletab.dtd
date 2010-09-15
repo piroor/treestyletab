@@ -108,10 +108,10 @@
 <!ENTITY config.autoHide.area.after.mode2 "ピクセルの範囲">
 <!ENTITY config.autoHide.delay.before "遅延：">
 <!ENTITY config.autoHide.delay.after "ミリ秒">
-<!ENTITY config.autoShow.accelKeyDown "Control(Command)キーを長押しした時">
+<!ENTITY config.autoShow.accelKeyDown "Controlキーを長押しした時">
 <!ENTITY config.autoShow.accelKeyDown.delay.before "">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "ミリ秒以上で反応">
-<!ENTITY config.autoShow.tabSwitch   "Control(Command)-Tabでタブを切り替える時">
+<!ENTITY config.autoShow.tabSwitch   "Control-Tabでタブを切り替える時">
 <!ENTITY config.autoShow.feedback    "新しいタブが開かれたりタブが閉じられたりした時">
 <!ENTITY config.autoShow.feedback.delay.before "">
 <!ENTITY config.autoShow.feedback.delay.after  "ミリ秒後に自動で隠す">
@@ -127,7 +127,7 @@
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect "タブを切り替えた時は、フォーカスされたタブのツリーを自動的に展開して、他のツリーを折り畳む">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "現在のタブを閉じてタブのフォーカスが切り替わった場合は何もしない">
 
-<!ENTITY config.focusMode "Control(Command)-Tabでタブを切り替える時、折りたたまれたタブにもフォーカスする">
+<!ENTITY config.focusMode "Control-Tabでタブを切り替える時、折りたたまれたタブにもフォーカスする">
 
 <!ENTITY config.collapseExpandSubtree.dblclick "タブのダブルクリックでツリーを開閉する">
 <!ENTITY config.autoExpandSubtreeOnAppendChild "折り畳まれたツリー内に子孫のタブが追加された時、ツリーを自動的に展開する">

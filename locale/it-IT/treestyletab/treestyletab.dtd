@@ -110,10 +110,10 @@
 <!ENTITY config.autoHide.area.after.mode2 "distanza dai bordi della barra delle schede (in pixel)">
 <!ENTITY config.autoHide.delay.before "Ritardo:">
 <!ENTITY config.autoHide.delay.after "msec.">
-<!ENTITY config.autoShow.accelKeyDown "Viene tenuto premuto il tasto Control (Command)">
+<!ENTITY config.autoShow.accelKeyDown "Viene tenuto premuto il tasto Control">
 <!ENTITY config.autoShow.accelKeyDown.delay.before "Visualizza dopo">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "msec.">
-<!ENTITY config.autoShow.tabSwitch   "Viene utilizzata la scorciatoia Control (Command)+Tab per passare da una scheda all&apos;altra">
+<!ENTITY config.autoShow.tabSwitch   "Viene utilizzata la scorciatoia Control+Tab per passare da una scheda all&apos;altra">
 <!ENTITY config.autoShow.feedback    "Viene aperta o chiusa una scheda">
 <!ENTITY config.autoShow.feedback.delay.before "Nascondi dopo">
 <!ENTITY config.autoShow.feedback.delay.after  "msec.">
@@ -140,7 +140,7 @@
 <!ENTITY config.closeRootBehavior.promoteFirst   "Promote the first child tab as the new parent, if the closed parent has no parent">
 <!--ENTITY config.attachChildrenToGrandParentOnRemoveTab "Elimina le sottoschede dall'albero alla chiusura della scheda principale"-->
 
-<!ENTITY config.focusMode "Attiva la scheda successiva/precedente, anche se è nascosta, con Control(Command)-Tab">
+<!ENTITY config.focusMode "Attiva la scheda successiva/precedente, anche se è nascosta, con Control-Tab">
 
 <!ENTITY config.insertNewChildAt.caption "Posizione di inserimento di nuove sottoschede">
 <!ENTITY config.insertNewChildAt.first "Inserisci all&apos;inizio del sottoalbero, come prima sottoscheda">

@@ -110,10 +110,10 @@
 <!ENTITY config.autoHide.area.after.mode2 "píxeles desde el borde de la barra de pestañas">
 <!ENTITY config.autoHide.delay.before "Retraso:">
 <!ENTITY config.autoHide.delay.after "mseg.">
-<!ENTITY config.autoShow.accelKeyDown "Mientras la tecla Control(Comando) es presionada por un instante">
+<!ENTITY config.autoShow.accelKeyDown "Mientras la tecla Control es presionada por un instante">
 <!ENTITY config.autoShow.accelKeyDown.delay.before "Mostrar después">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "mseg.">
-<!ENTITY config.autoShow.tabSwitch   "Control(Comando)-Tab para cambiar pestañas">
+<!ENTITY config.autoShow.tabSwitch   "Control-Tab para cambiar pestañas">
 <!ENTITY config.autoShow.feedback    "Nuevas pestañas son abiertas o algunas pestañas son cerradas">
 <!ENTITY config.autoShow.feedback.delay.before "Ocultar después">
 <!ENTITY config.autoShow.feedback.delay.after  "mseg.">
@@ -140,7 +140,7 @@
 <!ENTITY config.closeRootBehavior.promoteFirst   "Promote the first child tab as the new parent, if the closed parent has no parent">
 <!--ENTITY config.attachChildrenToGrandParentOnRemoveTab "Liberar las pestañas hijas del árbol cuando el árbol es cerrado"-->
 
-<!ENTITY config.focusMode "Seleccionar la próxima/anterior pestaña aunque no este visible, cuando se presiona Control(Comando)-Tab">
+<!ENTITY config.focusMode "Seleccionar la próxima/anterior pestaña aunque no este visible, cuando se presiona Control-Tab">
 
 <!ENTITY config.insertNewChildAt.caption "Posición de inserción de nuevas pestañas hijas">
 <!ENTITY config.insertNewChildAt.first "Insertar arriba del todo en el árbol">

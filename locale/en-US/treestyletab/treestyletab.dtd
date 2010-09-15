@@ -108,10 +108,10 @@
 <!ENTITY config.autoHide.area.after.mode2 "pixels from tab bar's edge">
 <!ENTITY config.autoHide.delay.before "Delay:">
 <!ENTITY config.autoHide.delay.after "msec.">
-<!ENTITY config.autoShow.accelKeyDown "Control(Command) key is pressed a while">
+<!ENTITY config.autoShow.accelKeyDown "Control key is pressed a while">
 <!ENTITY config.autoShow.accelKeyDown.delay.before "Show after">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "msec.">
-<!ENTITY config.autoShow.tabSwitch   "Control(Command)-Tab to switch tabs">
+<!ENTITY config.autoShow.tabSwitch   "Control-Tab to switch tabs">
 <!ENTITY config.autoShow.feedback    "New tabs are opened or some tabs are closed">
 <!ENTITY config.autoShow.feedback.delay.before "Hide after">
 <!ENTITY config.autoShow.feedback.delay.after  "msec.">
@@ -136,7 +136,7 @@
 <!ENTITY config.closeParentBehavior.detach       "Liberate child tabs from the tree">
 <!ENTITY config.closeRootBehavior.promoteFirst   "Promote the first child tab as the new parent, if the closed parent has no parent">
 
-<!ENTITY config.focusMode "Focus to the next/previous tab even if it is invisible, by Control(Command)-Tab">
+<!ENTITY config.focusMode "Focus to the next/previous tab even if it is invisible, by Control-Tab">
 
 <!ENTITY config.insertNewChildAt.caption "Insertion position of new child tabs">
 <!ENTITY config.insertNewChildAt.first "Insert to the top of the tree, as the first child">

@@ -110,10 +110,10 @@
 <!ENTITY config.autoHide.area.after.mode2 "像素(距分頁工具列內緣)">
 <!ENTITY config.autoHide.delay.before "延遲：">
 <!ENTITY config.autoHide.delay.after "毫秒">
-<!ENTITY config.autoShow.accelKeyDown "按下 Ctrl（Command）一段時間後">
+<!ENTITY config.autoShow.accelKeyDown "按下 Ctrl一段時間後">
 <!ENTITY config.autoShow.accelKeyDown.delay.before "">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "毫秒以上才顯示">
-<!ENTITY config.autoShow.tabSwitch   "用 Ctrl（Command）+Tab 切換分頁時">
+<!ENTITY config.autoShow.tabSwitch   "用 Ctrl+Tab 切換分頁時">
 <!ENTITY config.autoShow.feedback    "開新分頁或關閉分頁時">
 <!ENTITY config.autoShow.feedback.delay.before "">
 <!ENTITY config.autoShow.feedback.delay.after  "毫秒後就自動隱藏">
@@ -139,7 +139,7 @@
 <!ENTITY config.closeParentBehavior.detach  "從該樹釋放所屬子分頁">
 <!ENTITY config.closeRootBehavior.promoteFirst   "若親分頁上無親分頁，則提升第一子分頁成為親分頁">
 
-<!ENTITY config.focusMode "用 Ctrl（Command）+Tab 切換分頁時，即使是摺疊了的分頁也切換">
+<!ENTITY config.focusMode "用 Ctrl+Tab 切換分頁時，即使是摺疊了的分頁也切換">
 
 <!ENTITY config.insertNewChildAt.caption "開啟新子分頁的位置">
 <!ENTITY config.insertNewChildAt.first "插入到子樹的開端">

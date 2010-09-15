@@ -108,10 +108,10 @@
 <!ENTITY config.autoHide.area.after.mode2 "像素（距离标签栏边缘）">
 <!ENTITY config.autoHide.delay.before "延迟:">
 <!ENTITY config.autoHide.delay.after "毫秒">
-<!ENTITY config.autoShow.accelKeyDown "按下Ctrl（Command）键之后">
+<!ENTITY config.autoShow.accelKeyDown "按下Ctrl键之后">
 <!ENTITY config.autoShow.accelKeyDown.delay.before "等待">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "毫秒再显示">
-<!ENTITY config.autoShow.tabSwitch   "用Ctrl（Command）-Tab切换标签时">
+<!ENTITY config.autoShow.tabSwitch   "用Ctrl-Tab切换标签时">
 <!ENTITY config.autoShow.feedback    "新建或关闭标签之后">
 <!ENTITY config.autoShow.feedback.delay.before "等待">
 <!ENTITY config.autoShow.feedback.delay.after  "毫秒再自动隐藏">
@@ -136,7 +136,7 @@
 <!ENTITY config.closeParentBehavior.detach        "让子标签脱离树状关系">
 <!ENTITY config.closeRootBehavior.promoteFirst   "若父标签之上无父标签，则提升首个子标签为父标签">
 
-<!ENTITY config.focusMode "Ctrl（Command）-Tab 切换标签时可切换到折叠起来的标签上。">
+<!ENTITY config.focusMode "Ctrl-Tab 切换标签时可切换到折叠起来的标签上。">
 
 <!ENTITY config.insertNewChildAt.caption "新子标签的位置">
 <!ENTITY config.insertNewChildAt.first "插入到子树顶部，成为首个子标签">

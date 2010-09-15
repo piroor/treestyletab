@@ -105,7 +105,7 @@
 <!ENTITY config.autoHide.area.after.mode2 "pikseli od krawędzi paska kart">
 <!ENTITY config.autoHide.delay.before "Opóźnienie:">
 <!ENTITY config.autoHide.delay.after "ms">
-<!ENTITY config.autoShow.accelKeyDown "Naciśnięciu i przytrzymaniu klawisza [Ctrl(Command)]">
+<!ENTITY config.autoShow.accelKeyDown "Naciśnięciu i przytrzymaniu klawisza [Ctrl]">
 <!ENTITY config.autoShow.accelKeyDown.delay.before "Opóźnienie:">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "ms">
 <!ENTITY config.autoShow.tabSwitch   "Podczas przełączania kart za pomocą skrótu [Ctrl+Tab]">
@@ -133,7 +133,7 @@
 <!ENTITY config.closeParentBehavior.detach        "odłączaj karty potomne od drzewa">
 <!ENTITY config.closeRootBehavior.promoteFirst   "promuj pierwszą potomną, jeśli zamykana karta nie ma macierzystej">
 
-<!ENTITY config.focusMode "Skrót [Ctrl(Command)+Tab] uaktywnia następną/poprzednią kartę nawet jeśli jest niewidoczna">
+<!ENTITY config.focusMode "Skrót [Ctrl+Tab] uaktywnia następną/poprzednią kartę nawet jeśli jest niewidoczna">
 
 <!ENTITY config.insertNewChildAt.caption "Położenie wstawianych nowych potomnych kart">
 <!ENTITY config.insertNewChildAt.first "Wstawiaj jako pierwszą potomną na górze drzewa">

@@ -108,10 +108,10 @@
 <!ENTITY config.autoHide.area.after.mode2 "pixels du bord du panneau des onglets">
 <!ENTITY config.autoHide.delay.before "Délai :">
 <!ENTITY config.autoHide.delay.after "msec.">
-<!ENTITY config.autoShow.accelKeyDown "La touche Control(Command) est appuyée pendant un moment">
+<!ENTITY config.autoShow.accelKeyDown "La touche Control est appuyée pendant un moment">
 <!ENTITY config.autoShow.accelKeyDown.delay.before "Afficher après">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "msec.">
-<!ENTITY config.autoShow.tabSwitch   "Control(Command)-Tab pour passer à l'onglet suivant">
+<!ENTITY config.autoShow.tabSwitch   "Control-Tab pour passer à l'onglet suivant">
 <!ENTITY config.autoShow.feedback    "De nouveaux onglets sont ouverts ou d'autres sont fermés">
 <!ENTITY config.autoShow.feedback.delay.before "Masquer après">
 <!ENTITY config.autoShow.feedback.delay.after  "msec.">
@@ -136,7 +136,7 @@
 <!ENTITY config.closeParentBehavior.detach       "Sortir les onglets enfants de l'arborescence">
 <!ENTITY config.closeRootBehavior.promoteFirst   "Promouvoir le premier onglet enfant en nouveau parent, si le parent fermé n'a pas de parent">
 
-<!ENTITY config.focusMode "Activer l'onglet suivant/précédent même s'il n'est pas visible par Control(Command)-Tab">
+<!ENTITY config.focusMode "Activer l'onglet suivant/précédent même s'il n'est pas visible par Control-Tab">
 
 <!ENTITY config.insertNewChildAt.caption "Endroit d'insertion des nouveaux onglets enfants">
 <!ENTITY config.insertNewChildAt.first "Insérer au sommet de l'arborescence, en tant que premier enfant">
