@@ -29,34 +29,30 @@
 		extends="chrome://browser/content/tabbrowser.xml#tabbrowser-tab">
 		<content chromedir="&locale.dir;"
 			closetabtext="&closeTab.label;">
-			<xul:stack class="tab-stack" flex="1">
-				<xul:hbox class="tab-content" align="center">
-					<xul:hbox xbl:inherits="fadein,pinned,selected"
-						class="tab-image-left"/>
-					<xul:hbox xbl:inherits="fadein,pinned,selected"
-						flex="1"
-						align="center"
-						class="tab-image-middle">
-						<xul:stack class="tab-icon">
-							<xul:image xbl:inherits="validate,src=image,fadein,pinned,busy,stalled,progress,selected"
-								class="tab-icon-image"
-								role="presentation"/>
-							<xul:image class="tab-extra-status"/>
-						</xul:stack>
-						<xul:label xbl:inherits="value=label,crop,accesskey,fadein,pinned,selected"
-							flex="1"
-							class="tab-text tab-label"
-							role="presentation"/>
-					</xul:hbox>
-					<xul:toolbarbutton xbl:inherits="fadein,pinned,selected"
-						anonid="close-button"
-						tabindex="-1"
-						clickthrough="never"
-						class="tab-close-button"/>
-					<xul:hbox xbl:inherits="fadein,pinned,selected"
-						class="tab-image-right"/>
-				</xul:hbox>
-			</xul:stack>
+			<xul:hbox xbl:inherits="fadein,pinned,selected"
+				class="tab-image-left"/>
+			<xul:hbox xbl:inherits="fadein,pinned,selected"
+				flex="1"
+				align="center"
+				class="tab-image-middle">
+				<xul:stack class="tab-icon">
+					<xul:image xbl:inherits="validate,src=image,fadein,pinned,busy,stalled,progress,selected"
+						class="tab-icon-image"
+						role="presentation"/>
+					<xul:image class="tab-extra-status"/>
+				</xul:stack>
+				<xul:label xbl:inherits="value=label,crop,accesskey,fadein,pinned,selected"
+					flex="1"
+					class="tab-text"
+					role="presentation"/>
+			</xul:hbox>
+			<xul:toolbarbutton xbl:inherits="fadein,pinned,selected"
+				anonid="close-button"
+				tabindex="-1"
+				clickthrough="never"
+				class="tab-close-button"/>
+			<xul:hbox xbl:inherits="fadein,pinned,selected"
+				class="tab-image-right"/>
 		</content>
 	</binding>
 
