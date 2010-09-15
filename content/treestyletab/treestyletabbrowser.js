@@ -3031,16 +3031,11 @@ TreeStyleTabBrowser.prototype = {
 	{
 		// block default behaviors of the tab bar (dragging => window move, etc.)
 		if (
-			'TabsOnTop' in window &&
-			(
-				this.currentTabbarPosition != 'top' ||
-				!TabsOnTop.enabled ||
-				aEvent.shiftKey
-			) &&
+			this.currentTabbarPosition != 'top' ||
+			aEvent.shiftKey ||
 			this.tabbarDNDObserver.canDragTabbar(aEvent)
-			) {
+			)
 			aEvent.stopPropagation();
-		}
 	},
  
 	onMouseDown : function TSTBrowser_onMouseDown(aEvent) 
