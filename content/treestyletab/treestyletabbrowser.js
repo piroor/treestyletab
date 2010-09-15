@@ -89,7 +89,8 @@ TreeStyleTabBrowser.prototype = {
 						this.getTreePref('compatibility.TMP') &&
 						document.getAnonymousElementByAttribute(aTab, 'class', 'tab-text-container')
 					) ||
-					document.getAnonymousElementByAttribute(aTab, 'class', 'tab-text');
+					document.getAnonymousElementByAttribute(aTab, 'class', 'tab-text tab-label') || // Firefox 4.0-
+					document.getAnonymousElementByAttribute(aTab, 'class', 'tab-text'); // -Firefox 3.6
 		return label;
 	},
  
