@@ -3005,9 +3005,13 @@ TreeStyleTabBrowser.prototype = {
 	{
 		// block default behaviors of the tab bar (dragging => window move, etc.)
 		if (
-			this.currentTabbarPosition != 'top' ||
-			aEvent.shiftKey ||
-			this.tabbarDNDObserver.canDragTabbar(aEvent)
+			!this.getTabFromEvent(aEvent) &&
+			!this.isEventFiredOnClickable(aEvent) &&
+			(
+				this.currentTabbarPosition != 'top' ||
+				aEvent.shiftKey ||
+				this.tabbarDNDObserver.canDragTabbar(aEvent)
+			)
 			)
 			aEvent.stopPropagation();
 	},
