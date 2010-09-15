@@ -24,13 +24,13 @@
 	-moz-binding: url(tabFx2Compatible.xml#tabbrowser-tab-4) !important;
 }
 
-:root[tabFx2Compatible="9"]:not([tabFx2Compatible-flags~="png-throbber"])
+:root[tabFx2Compatible="9"]:not([tabFx2Compatible-flags~="png-throbber"]):not([tabFx2Compatible-flags~="pie"])
   .tab-icon-image[busy] {
 	list-style-image: url("chrome://global/skin/throbber/Throbber-small.gif") !important;
 	opacity: 0.6;
 }
 
-:root[tabFx2Compatible="9"][tabFx2Compatible-flags~="png-throbber"]
+:root[tabFx2Compatible="9"][tabFx2Compatible-flags~="png-throbber"]:not([tabFx2Compatible-flags~="pie"])
   .tab-icon-image[busy] {
 	list-style-image: url("chrome://global/skin/icons/loading_16.png") !important;
 }
@@ -43,16 +43,6 @@
 :root[tabFx2Compatible="9"][tabFx2Compatible-flags~="mac"]
   .tabbrowser-tab:not(:hover) .tab-icon-image:not([selected="true"]) {
 	opacity: 0.6;
-}
-
-:root[tabFx2Compatible="9"][tabFx2Compatible-flags~="pie"]
-  .tab-icon-image[busy] {
-	list-style-image: url("chrome://browser/skin/tabbrowser/progress.png") !important;
-	-moz-image-region: rect(0, 16px, 16px, 0);
-}
-:root[tabFx2Compatible="9"][tabFx2Compatible-flags~="pie"]
-  .tab-icon-image[busy][stalled] {
-	list-style-image: url("chrome://browser/skin/tabbrowser/progress-pulsing.png") !important;
 }
 
 :root[tabFx2Compatible="9"]
