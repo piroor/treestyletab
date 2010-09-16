@@ -497,7 +497,7 @@ var TreeStyleTabUtils = {
 	isEventFiredOnClickable : function TSTUtils_isEventFiredOnClickable(aEvent) 
 	{
 		return this.evaluateXPath(
-				'ancestor-or-self::*[contains(" button toolbarbutton scrollbar popup menupopup panel tooltip ", concat(" ", local-name(), " "))]',
+				'ancestor-or-self::*[contains(" button toolbarbutton scrollbar popup menupopup panel tooltip splitter ", concat(" ", local-name(), " "))]',
 				aEvent.originalTarget,
 				Ci.nsIDOMXPathResult.BOOLEAN_TYPE
 			).booleanValue;
