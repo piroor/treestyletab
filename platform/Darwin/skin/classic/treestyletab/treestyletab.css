@@ -19,7 +19,8 @@ tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="right"]:n
 /* Metal */
 
 .tabbrowser-tabs[treestyletab-style="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab .tab-close-button {
+  .tabbrowser-tab
+  .tab-close-button {
 	padding-left: 0 !important;
 	padding-right: 0 !important;
 }
