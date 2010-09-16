@@ -2548,7 +2548,24 @@ TreeStyleTabBrowser.prototype = {
 	updateTreeByTabVisibility : function TSTBrowser_updateTreeByTabVisibility(aChangedTabs)
 	{
 		aChangedTabs = aChangedTabs || [];
+		var tabs = this.getAllTabsArray(this.mTabBrowser);
 
+		aChangedTabs.forEach(function(aTab) {
+			this.collapseExpandTab(aTab, false, true);
+			if (aTab.hidden) {
+				this.partAllChildren(aTab, {
+					behavior : this.getParentTab(aTab) ?
+						this.getTreePref('closeParentBehavior') :
+						this.getTreePref('closeRootBehavior')
+				});
+				this.partTab(aTab);
+			}
+			else {
+				this.attachTabFromPosition(aTab, tabs.length-1);
+			}
+		}, this);
+
+/*
 		var tabs = this.getAllTabsArray(this.mTabBrowser);
 		tabs.reverse().forEach(function(aTab) {
 			var parent = this.getParentTab(aTab);
@@ -2568,6 +2585,7 @@ TreeStyleTabBrowser.prototype = {
 			if (!aTab.hidden && aChangedTabs.indexOf(aTab) > -1)
 				this.attachTabFromPosition(aTab, tabs.length-1);
 		}, this);
+*/
 	},
  
 	onTabRestoring : function TSTBrowser_onTabRestoring(aEvent) 
