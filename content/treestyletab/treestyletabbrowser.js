@@ -2547,47 +2547,41 @@ TreeStyleTabBrowser.prototype = {
 	tabVisibilityChangedTabs : [],
 	updateTreeByTabVisibility : function TSTBrowser_updateTreeByTabVisibility(aChangedTabs)
 	{
-		aChangedTabs = aChangedTabs || [];
-		var hiddenTabs = aChangedTabs.filter(function(aTab) { return aTab.hidden; });
-		var shownTabs = aChangedTabs.filter(function(aTab) { return !aTab.hidden; });
+		this.internallyTabMovingCount++;
 		var tabs = this.getAllTabsArray(this.mTabBrowser);
-
-		aChangedTabs.forEach(function(aTab) {
-			this.collapseExpandTab(aTab, false, true);
-			if (aTab.hidden) {
-				this.partAllChildren(aTab, {
-					behavior : this.getParentTab(aTab) ?
-						this.getTreePref('closeParentBehavior') :
-						this.getTreePref('closeRootBehavior')
-				});
-				this.partTab(aTab);
-			}
-			else {
-				this.attachTabFromPosition(aTab, tabs.length-1);
-			}
-		}, this);
-
-/*
-		var tabs = this.getAllTabsArray(this.mTabBrowser);
+		aChangedTabs = aChangedTabs || tabs;
 		tabs.reverse().forEach(function(aTab) {
 			var parent = this.getParentTab(aTab);
+			var attached = false;
 			if (parent && aTab.hidden != parent.hidden) {
-				this.collapseExpandTab(aTab, false, true);
-				let target = (
-						parent.hidden &&
-						aChangedTabs.indexOf(parent) > -1
-					) ? parent : aTab ;
-				this.partAllChildren(target, {
-					behavior : parent ?
-						this.getTreePref('closeParentBehavior') :
-						this.getTreePref('closeRootBehavior')
-				});
-				this.partTab(target);
+				var ancestor = parent;
+				var lastNextTab = null;
+				while (ancestor = this.getParentTab(ancestor))
+				{
+					if (ancestor.hidden == aTab.hidden) {
+						this.attachTabTo(aTab, ancestor, {
+							dontMove     : true,
+							insertBefore : lastNextTab
+						});
+						attached = true;
+						break;
+					}
+					lastNextTab = this.getNextSiblingTab(ancestor);
+				}
+				if (!attached) {
+					this.collapseExpandTab(aTab, false, true);
+					this.partTab(aTab);
+				}
 			}
-			if (!aTab.hidden && aChangedTabs.indexOf(aTab) > -1)
+			if (
+				!aTab.hidden &&
+				!attached &&
+				!parent &&
+				aChangedTabs.indexOf(aTab) > -1
+				)
 				this.attachTabFromPosition(aTab, tabs.length-1);
 		}, this);
-*/
+		this.internallyTabMovingCount--;
 	},
  
 	onTabRestoring : function TSTBrowser_onTabRestoring(aEvent) 
