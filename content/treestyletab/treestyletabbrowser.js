@@ -239,6 +239,8 @@ TreeStyleTabBrowser.prototype = {
 		this.tabsHash = {};
 		this.tabStripPlaceHolder = null;
 
+		this.tabVisibilityChangedTabs = [];
+
 		this.internallyTabMovingCount = 0;
 		this.subTreeMovingCount = 0;
 		this.subTreeChildrenMovingCount = 0;
@@ -277,6 +279,8 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.addEventListener('TabOpen',        this, true);
 		b.mTabContainer.addEventListener('TabClose',       this, true);
 		b.mTabContainer.addEventListener('TabMove',        this, true);
+		b.mTabContainer.addEventListener('TabShow',        this, true);
+		b.mTabContainer.addEventListener('TabHide',        this, true);
 		b.mTabContainer.addEventListener('SSTabRestoring', this, true);
 		b.mTabContainer.addEventListener('SSTabRestored',  this, true);
 		b.mTabContainer.addEventListener('TabPinned',      this, true);
@@ -1577,6 +1581,8 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.removeEventListener('TabOpen',        this, true);
 		b.mTabContainer.removeEventListener('TabClose',       this, true);
 		b.mTabContainer.removeEventListener('TabMove',        this, true);
+		b.mTabContainer.removeEventListener('TabShow',        this, true);
+		b.mTabContainer.removeEventListener('TabHide',        this, true);
 		b.mTabContainer.removeEventListener('SSTabRestoring', this, true);
 		b.mTabContainer.removeEventListener('SSTabRestored',  this, true);
 		b.mTabContainer.removeEventListener('TabPinned',      this, true);
@@ -1926,6 +1932,10 @@ TreeStyleTabBrowser.prototype = {
 
 			case 'TabMove':
 				return this.onTabMove(aEvent);
+
+			case 'TabShow':
+			case 'TabHide':
+				return this.onTabVisibilityChanged(aEvent);
 
 			case 'SSTabRestoring':
 				return this.onTabRestoring(aEvent);
@@ -2494,10 +2504,13 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		if (newParent != parent) {
-			if (newParent)
-				this.attachTabTo(aTab, newParent, { insertBefore : nextTab });
-			else
+			if (newParent) {
+				if (newParent.hidden == aTab.hidden)
+					this.attachTabTo(aTab, newParent, { insertBefore : nextTab });
+			}
+			else {
 				this.partTab(aTab);
+			}
 		}
 	},
  
@@ -2516,6 +2529,45 @@ TreeStyleTabBrowser.prototype = {
 		);
 	},
   
+	onTabVisibilityChanged : function TSTBrowser_onTabVisibilityChanged(aEvent) 
+	{
+		if (this.tabVisibilityChangedTimer) {
+			window.clearTimeout(this.tabVisibilityChangedTimer);
+			this.tabVisibilityChangedTimer = null;
+		}
+		this.tabVisibilityChangedTabs.push(aEvent.originalTarget);
+		this.tabVisibilityChangedTimer = window.setTimeout(function(aSelf) {
+			aSelf.tabVisibilityChangedTimer = null;
+			var tabs = aSelf.tabVisibilityChangedTabs;
+			aSelf.tabVisibilityChangedTabs = [];
+			aSelf.updateTreeByTabVisibility(tabs);
+		}, 0, this);
+	},
+	tabVisibilityChangedTimer : null,
+	tabVisibilityChangedTabs : [],
+	updateTreeByTabVisibility : function TSTBrowser_updateTreeByTabVisibility(aChangedTabs)
+	{
+		aChangedTabs = aChangedTabs || [];
+
+		var tabs = this.getAllTabsArray(this.mTabBrowser);
+		tabs.reverse().forEach(function(aTab) {
+			var parent = this.getParentTab(aTab);
+			if (parent && aTab.hidden != parent.hidden) {
+				this.collapseExpandTab(aTab, false, true);
+				let target = parent.hidden && aChangedTabs.indexOf(parent) > -1 ?
+								parent : aTab ;
+				this.partAllChildren(target, {
+					behavior : parent ?
+						this.getTreePref('closeParentBehavior') :
+						this.getTreePref('closeRootBehavior')
+				});
+				this.partTab(target);
+			}
+			if (!aTab.hidden && aChangedTabs.indexOf(aTab) > -1)
+				this.attachTabFromPosition(aTab, tabs.length-1);
+		}, this);
+	},
+ 
 	onTabRestoring : function TSTBrowser_onTabRestoring(aEvent) 
 	{
 		this.restoreStructure(aEvent.originalTarget);
@@ -3225,21 +3277,6 @@ TreeStyleTabBrowser.prototype = {
 	onTreeStyleTabPrintPreviewExited : function TSTBrowser_onTreeStyleTabPrintPreviewExited(aEvent) 
 	{
 		this.removeTabbrowserAttribute(this.kPRINT_PREVIEW);
-	},
- 
-	onTabGroupModified : function TSTBrowser_onTabGroupModified(aTab) 
-	{
-		window.setTimeout(function(aSelf) {
-			if (aTab.hasAttribute(aSelf.kREMOVED))
-				return;
-			aSelf.collapseExpandTab(aTab, false, true);
-			aSelf.partAllChildren(aTab, {
-				behavior : aSelf.getParentTab(aTab) ?
-					aSelf.getTreePref('closeParentBehavior') :
-					aSelf.getTreePref('closeRootBehavior')
-			});
-			aSelf.partTab(aTab);
-		}, 0, this);
 	},
   
 /* drag and drop */ 
