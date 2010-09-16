@@ -122,8 +122,8 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-alltabs-button, /* -Firefox 3.6 */
 .tabbrowser-tabs[treestyletab-mode="vertical"] .close-button.tabs-closebutton, /* -Firefox 3.6 */
-#TabsToolbar[treestyletab-mode="vertical"] .tabs-alltabs-button,
-#TabsToolbar[treestyletab-mode="vertical"] > .close-button.tabs-closebutton {
+#TabsToolbar[treestyletab-mode="vertical"] > toolbarbutton,
+#TabsToolbar[treestyletab-mode="vertical"] > toolbarpaletteitem > toolbarbutton {
 	max-width: none !important;
 }
 
@@ -273,9 +273,7 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 .tabbrowser-tabs[treestyletab-hide-alltabs-button="true"]
   .tabs-alltabs-stack,
 .tabbrowser-tabs[treestyletab-hide-alltabs-button="true"]
-  .tabbrowser-arrowscrollbox ~ stack, /* "all tabs" button in Firefox 3.0-3.5 */
-#TabsToolbar[treestyletab-hide-alltabs-button="true"]
-  .tabs-alltabs-button {
+  .tabbrowser-arrowscrollbox ~ stack /* "all tabs" button in Firefox 3.0-3.5 */ {
 	visibility: collapse !important;
 }
 

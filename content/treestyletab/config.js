@@ -72,6 +72,14 @@ function initAppearancePane()
 		sidebar.setAttribute('disabled', true);
 	}
 
+	var hideAllTabsButton = document.getElementById('hideAlltabsButton-box');
+	if (comparator.compare(XULAppInfo.version, '4.0b3') > 0) {
+		hideAllTabsButton.setAttribute('hidden', true);
+	}
+	else {
+		hideAllTabsButton.removeAttribute('hidden');
+	}
+
 	var boxes = [
 			document.getElementById('extensions.treestyletab.tabbar.style-arrowscrollbox'),
 			document.getElementById('extensions.treestyletab.twisty.style-arrowscrollbox')

@@ -1242,7 +1242,9 @@ TreeStyleTabBrowser.prototype = {
 
 		this.setTabbrowserAttribute(this.kINDENTED, this.getTreePref('enableSubtreeIndent.'+orient) ? 'true' : null);
 		this.setTabbrowserAttribute(this.kALLOW_COLLAPSE, this.getTreePref('allowSubtreeCollapseExpand.'+orient) ? 'true' : null);
-		this.setTabbrowserAttribute(this.kHIDE_ALLTABS, this.getTreePref('tabbar.hideAlltabsButton.'+orient) ? 'true' : null);
+
+		if (!this.isFloating)
+			this.setTabbrowserAttribute(this.kHIDE_ALLTABS, this.getTreePref('tabbar.hideAlltabsButton.'+orient) ? 'true' : null);
 
 		this.updateAllTabsIndent();
 	},
@@ -1498,17 +1500,21 @@ TreeStyleTabBrowser.prototype = {
 		var oldState = {
 				fixed         : this.isFixed,
 				indented      : b.getAttribute(this.kINDENTED) == 'true',
-				canCollapse   : b.getAttribute(this.kALLOW_COLLAPSE) == 'true',
-				alltabsButton : b.getAttribute(this.kHIDE_ALLTABS) != 'true'
+				canCollapse   : b.getAttribute(this.kALLOW_COLLAPSE) == 'true'
 			};
-		oldState.allTabsButton = oldState.alltabsButton;
+		if (!this.isFloating) {
+			oldState.alltabsButton = b.getAttribute(this.kHIDE_ALLTABS) != 'true';
+			oldState.allTabsButton = oldState.alltabsButton;
+		}
 		var newState = {
 				fixed         : this.getTreePref('tabbar.fixed.'+orient),
 				indented      : this.getTreePref('enableSubtreeIndent.'+orient),
-				canCollapse   : this.getTreePref('allowSubtreeCollapseExpand.'+orient),
-				alltabsButton : !this.getTreePref('tabbar.hideAlltabsButton.'+orient)
+				canCollapse   : this.getTreePref('allowSubtreeCollapseExpand.'+orient)
 			};
-		newState.allTabsButton = newState.alltabsButton;
+		if (!this.isFloating) {
+			newState.alltabsButton = !this.getTreePref('tabbar.hideAlltabsButton.'+orient);
+			newState.allTabsButton = newState.alltabsButton;
+		}
 
 		if (oldState.fixed == newState.fixed &&
 			oldState.indented == newState.indented &&
@@ -1532,10 +1538,12 @@ TreeStyleTabBrowser.prototype = {
 		var state = {
 				fixed         : this.isFixed,
 				indented      : b.getAttribute(this.kINDENTED) == 'true',
-				canCollapse   : b.getAttribute(this.kALLOW_COLLAPSE) == 'true',
-				alltabsButton : b.getAttribute(this.kHIDE_ALLTABS) != 'true'
+				canCollapse   : b.getAttribute(this.kALLOW_COLLAPSE) == 'true'
 			};
-		state.allTabsButton = state.alltabsButton;
+		if (!this.isFloating) {
+			state.alltabsButton = b.getAttribute(this.kHIDE_ALLTABS) != 'true';
+			state.allTabsButton = state.alltabsButton;
+		}
 
 		/* PUBLIC API */
 		var event = document.createEvent('Events');

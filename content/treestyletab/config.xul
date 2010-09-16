@@ -132,7 +132,7 @@
 				preference="extensions.treestyletab.enableSubtreeIndent.vertical"
 				label="&config.enableSubtreeIndent;"/>
 		</hbox>
-		<hbox align="center">
+		<hbox align="center" id="hideAlltabsButton-box">
 			<checkbox id="extensions.treestyletab.tabbar.hideAlltabsButton.horizontal-check"
 				preference="extensions.treestyletab.tabbar.hideAlltabsButton.horizontal"
 				label="&config.tabbar.hideAlltabsButton;"
