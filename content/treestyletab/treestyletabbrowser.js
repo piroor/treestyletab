@@ -2554,8 +2554,10 @@ TreeStyleTabBrowser.prototype = {
 			var parent = this.getParentTab(aTab);
 			if (parent && aTab.hidden != parent.hidden) {
 				this.collapseExpandTab(aTab, false, true);
-				let target = parent.hidden && aChangedTabs.indexOf(parent) > -1 ?
-								parent : aTab ;
+				let target = (
+						parent.hidden &&
+						aChangedTabs.indexOf(parent) > -1
+					) ? parent : aTab ;
 				this.partAllChildren(target, {
 					behavior : parent ?
 						this.getTreePref('closeParentBehavior') :
