@@ -2548,6 +2548,8 @@ TreeStyleTabBrowser.prototype = {
 	updateTreeByTabVisibility : function TSTBrowser_updateTreeByTabVisibility(aChangedTabs)
 	{
 		aChangedTabs = aChangedTabs || [];
+		var hiddenTabs = aChangedTabs.filter(function(aTab) { return aTab.hidden; });
+		var shownTabs = aChangedTabs.filter(function(aTab) { return !aTab.hidden; });
 		var tabs = this.getAllTabsArray(this.mTabBrowser);
 
 		aChangedTabs.forEach(function(aTab) {
