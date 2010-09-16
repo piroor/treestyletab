@@ -1286,10 +1286,15 @@ TreeStyleTabBrowser.prototype = {
 	},
 	updateFloatingTabbarInternal : function TSTBrowser_updateFloatingTabbarInternal()
 	{
+		if (this.splitter.collapsed || this.splitter.getAttribute('state') != 'collapsed') {
+			this._tabStripPlaceHolder.collapsed =
+				this.splitter.collapsed =
+					(this.getPref('browser.tabs.autoHide') && this.getTabsArray(this.mTabBrowser).length == 1);
+		}
+
 		var strip = this.tabStrip;
 		var tabContainerBox = this.getTabContainerBox(this.mTabBrowser);
 		var positioned = false;
-		var collapsed = !this.splitter.collapsed && this.splitter.getAttribute('state') == 'collapsed';
 		var pos = this.currentTabbarPosition;
 		if (pos != 'top' ||
 			this.mTabBrowser.getAttribute(this.kFIXED) != 'true') {
@@ -1336,12 +1341,6 @@ TreeStyleTabBrowser.prototype = {
 			strip.style.height = '';
 
 			this.mTabBrowser.tabContainer.removeAttribute('context');
-		}
-
-		if (!collapsed) {
-			this._tabStripPlaceHolder.collapsed =
-				this.splitter.collapsed =
-					(this.getPref('browser.tabs.autoHide') && this.getTabsArray(this.mTabBrowser).length == 1);
 		}
 
 		if (this.mTabBrowser != gBrowser)
