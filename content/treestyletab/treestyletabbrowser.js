@@ -279,7 +279,10 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.addEventListener('TabMove',        this, true);
 		b.mTabContainer.addEventListener('SSTabRestoring', this, true);
 		b.mTabContainer.addEventListener('SSTabRestored',  this, true);
-		b.mTabContainer.addEventListener('DOMAttrModified', this, true);
+		b.mTabContainer.addEventListener('TabPinned',      this, true);
+		b.mTabContainer.addEventListener('TabUnpinned',    this, true);
+		if (!this.isFloating)
+			b.mTabContainer.addEventListener('DOMAttrModified', this, true); // Tab Utilities
 		b.mTabContainer.addEventListener('mouseover', this, true);
 		b.mTabContainer.addEventListener('mouseout',  this, true);
 		b.mTabContainer.addEventListener('dblclick',  this, true);
@@ -1576,7 +1579,10 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.removeEventListener('TabMove',        this, true);
 		b.mTabContainer.removeEventListener('SSTabRestoring', this, true);
 		b.mTabContainer.removeEventListener('SSTabRestored',  this, true);
-		b.mTabContainer.removeEventListener('DOMAttrModified', this, true);
+		b.mTabContainer.removeEventListener('TabPinned',      this, true);
+		b.mTabContainer.removeEventListener('TabUnpinned',    this, true);
+		if (!this.isFloating)
+			b.mTabContainer.removeEventListener('DOMAttrModified', this, true); // Tab Utilites
 		b.mTabContainer.removeEventListener('mouseover', this, true);
 		b.mTabContainer.removeEventListener('mouseout',  this, true);
 		b.mTabContainer.removeEventListener('dblclick',  this, true);
@@ -1926,6 +1932,12 @@ TreeStyleTabBrowser.prototype = {
 
 			case 'SSTabRestored':
 				return this.onTabRestored(aEvent);
+
+			case 'TabPinned':
+				return this.onPinTab(aEvent.originalTarget);
+
+			case 'TabUnpinned':
+				return this.onUnpinTab(aEvent.originalTarget);
 
 			case 'DOMAttrModified':
 				return this.onDOMAttrModified(aEvent);
