@@ -103,29 +103,29 @@
 
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"] >
-  .tab-image-middle,
+  .tabbrowser-tab[pinned="true"]
+  > .tab-image-middle,
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"]:hover >
-  .tab-image-middle {
+  .tabbrowser-tab[pinned="true"]:hover
+  > .tab-image-middle {
 	background: #cecece !important;
 }
 
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"][selected="true"] >
-  .tab-image-middle,
+  .tabbrowser-tab[pinned="true"][selected="true"]
+  > .tab-image-middle,
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"][selected="true"]:hover >
-  .tab-image-middle {
+  .tabbrowser-tab[pinned="true"][selected="true"]:hover
+  > .tab-image-middle {
 	background: #e4e4e4 !important;
 }
 
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"] >
-  .tab-image-middle {
+  .tabbrowser-tab[pinned="true"]
+  > .tab-image-middle {
 	border-color: #9a9a9a !important;
 }

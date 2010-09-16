@@ -97,13 +97,17 @@
 }
 
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab > .tab-image-left,
+  .tabbrowser-tab
+  .tab-image-left,
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab > .tab-image-right,
+  .tabbrowser-tab
+  .tab-image-right,
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([selected="true"]) > .tab-image-left,
+  .tabbrowser-tab:not([selected="true"])
+  .tab-image-left,
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([selected="true"]) > .tab-image-right {
+  .tabbrowser-tab:not([selected="true"])
+  .tab-image-right {
 	height: auto;
 	margin: 0 !important;
 	padding: 0 !important;
@@ -113,22 +117,29 @@
 
 
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab > .tab-image-middle,
+  .tabbrowser-tab
+  .tab-image-middle,
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab > .tab-close-button,
+  .tabbrowser-tab
+  .tab-close-button,
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([selected="true"]):not(:hover) > .tab-image-middle,
+  .tabbrowser-tab:not([selected="true"]):not(:hover)
+  .tab-image-middle,
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([selected="true"]):not(:hover) > .tab-image-middle > .tab-close-button {
+  .tabbrowser-tab:not([selected="true"]):not(:hover)
+  .tab-image-middle
+  .tab-close-button {
 	height: auto;
 	margin: 0 !important;
 	padding: 0 !important;
 	background: transparent;
 }
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab[selected="true"] > .tab-image-middle,
+  .tabbrowser-tab[selected="true"]
+  .tab-image-middle,
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab[selected="true"] > .tab-close-button {
+  .tabbrowser-tab[selected="true"]
+  .tab-close-button {
 	background: transparent;
 }
 
@@ -148,7 +159,8 @@
 }
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
-  .tabbrowser-tab .tab-close-button {
+  .tabbrowser-tab
+  .tab-close-button {
 	margin-right: 0 !important;
 }
 

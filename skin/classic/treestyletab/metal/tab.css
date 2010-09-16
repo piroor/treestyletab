@@ -26,7 +26,8 @@
 }
 
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab .tab-close-button > * {
+  .tabbrowser-tab .tab-close-button
+  > * {
 	margin: 0 !important;
 }
 
@@ -46,107 +47,153 @@
 	-moz-border-left-colors: none !important;
 }
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]:not([treestyletab-tab-inverted="true"])
-  .tabbrowser-tab:not([treestyletab-drop-position="self"]) .tab-image-right,
+  .tabbrowser-tab:not([treestyletab-drop-position="self"])
+  .tab-image-right,
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]:not([treestyletab-tab-inverted="true"])
-  .tabbrowser-tab[selected="true"]:not([treestyletab-drop-position="self"]) .tab-image-right,
+  .tabbrowser-tab[selected="true"]:not([treestyletab-drop-position="self"])
+  .tab-image-right,
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tabbrowser-tab:not([treestyletab-drop-position="self"]) .tab-image-left,
+  .tabbrowser-tab:not([treestyletab-drop-position="self"])
+  .tab-image-left,
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tabbrowser-tab[selected="true"]:not([treestyletab-drop-position="self"]) .tab-image-left {
+  .tabbrowser-tab[selected="true"]:not([treestyletab-drop-position="self"])
+  .tab-image-left {
 	width: 5px !important;
 }
 
 
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab .tab-image-middle,
+  .tabbrowser-tab
+  .tab-image-middle,
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab:hover .tab-image-middle,
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab .tab-close-button,
+  .tabbrowser-tab
+  .tab-close-button,
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab:hover .tab-close-button {
+  .tabbrowser-tab:hover
+  .tab-close-button {
 	background: url("tab-active-middle.png") repeat-x top left !important;
 	margin: 0 !important;
 	-moz-appearance: none !important;
 }
 :root:not([active="true"]) .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab .tab-image-middle,
+  .tabbrowser-tab
+  .tab-image-middle,
 :root:not([active="true"]) .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab:hover .tab-image-middle,
+  .tabbrowser-tab:hover
+  .tab-image-middle,
 :root:not([active="true"]) .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab .tab-close-button,
+  .tabbrowser-tab
+  .tab-close-button,
 :root:not([active="true"]) .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab:hover .tab-close-button {
+  .tabbrowser-tab:hover
+  .tab-close-button {
 	background-image: url("tab-inactive-middle.png") !important;
 }
 
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab .tab-image-left,
+  .tabbrowser-tab
+  .tab-image-left,
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab:hover .tab-image-left {
+  .tabbrowser-tab:hover
+  .tab-image-left {
 	background: url("tab-active-l.png") no-repeat top left !important;
 	width: 10px !important;
 }
-:root:not([active="true"]) .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab .tab-image-left,
-:root:not([active="true"]) .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab:hover .tab-image-left {
+:root:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab
+  .tab-image-left,
+:root:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab:hover
+  .tab-image-left {
 	background-image: url("tab-inactive-l.png") !important;
 }
 
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab .tab-image-right,
+  .tabbrowser-tab
+  .tab-image-right,
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab:hover .tab-image-right {
+  .tabbrowser-tab:hover
+  .tab-image-right {
 	background: url("tab-active-l.png") no-repeat top right !important;
 	width: 8px !important;
 }
-:root:not([active="true"]) .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab .tab-image-right,
-:root:not([active="true"]) .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab:hover .tab-image-right {
+:root:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab
+  .tab-image-right,
+:root:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab:hover
+  .tab-image-right {
 	background-image: url("tab-inactive-l.png")  !important;
 }
 
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"] .tab-image-middle,
+  .tabbrowser-tab[selected="true"]
+  .tab-image-middle,
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"]:hover .tab-image-middle,
+  .tabbrowser-tab[selected="true"]:hover
+  .tab-image-middle,
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"] .tab-close-button,
+  .tabbrowser-tab[selected="true"]
+  .tab-close-button,
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"]:hover .tab-close-button,
+  .tabbrowser-tab[selected="true"]:hover
+  .tab-close-button,
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"] .tab-image-right,
+  .tabbrowser-tab[selected="true"]
+  .tab-image-right,
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"]:hover .tab-image-right {
+  .tabbrowser-tab[selected="true"]:hover
+  .tab-image-right {
 	background: url("tab-active-middle-selected.png") repeat-x top left !important;
 }
-:root:not([active="true"]) .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"] .tab-image-middle,
-:root:not([active="true"]) .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"]:hover .tab-image-middle,
-:root:not([active="true"]) .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"] .tab-close-button,
-:root:not([active="true"]) .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+:root:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[selected="true"]
+  .tab-image-middle,
+:root:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[selected="true"]:hover
+  .tab-image-middle,
+:root:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[selected="true"]
+  .tab-close-button,
+:root:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab[selected="true"]:hover .tab-close-button,
-:root:not([active="true"]) .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"] .tab-image-right,
-:root:not([active="true"]) .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"]:hover .tab-image-right {
+:root:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[selected="true"]
+  .tab-image-right,
+:root:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[selected="true"]:hover
+  .tab-image-right {
 	background-image: url("tab-inactive-middle-selected.png") !important;
 }
 
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"] .tab-image-left,
+  .tabbrowser-tab[selected="true"]
+  .tab-image-left,
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"]:hover .tab-image-left {
+  .tabbrowser-tab[selected="true"]:hover
+  .tab-image-left {
 	background: url("tab-active-selected-l.png") no-repeat top left !important;
 }
-:root:not([active="true"]) .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"] .tab-image-left,
-:root:not([active="true"]) .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"]:hover .tab-image-left {
+:root:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[selected="true"]
+  .tab-image-left,
+:root:not([active="true"])
+  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[selected="true"]:hover
+  .tab-image-left {
 	background-image: url("tab-inactive-selected-l.png") !important;
 }
 

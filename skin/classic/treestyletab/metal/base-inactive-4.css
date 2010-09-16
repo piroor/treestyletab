@@ -25,7 +25,8 @@
   .tabbrowser-arrowscrollbox,
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"][overflow="true"]
-  .tabbrowser-arrowscrollbox .scrollbox-innerbox {
+  .tabbrowser-arrowscrollbox
+  .scrollbox-innerbox {
 	background: url("shadow-inactive-r.png") repeat-y top left !important;
 }
 
@@ -50,23 +51,27 @@
   > toolbarbutton:hover,
 :root:-moz-window-inactive
   #TabsToolbar[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  > toolbarpaletteitem > toolbarbutton,
+  > toolbarpaletteitem
+  > toolbarbutton,
 :root:-moz-window-inactive
   #TabsToolbar[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  > toolbarpaletteitem > toolbarbutton:hover {
+  > toolbarpaletteitem
+  > toolbarbutton:hover {
 	background: #e4e4e4 !important;
 	border-color: #666666 !important;
 }
 
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]:not([treestyletab-tab-inverted="true"])
-  .tabbrowser-arrowscrollbox .tabs-newtab-button {
+  .tabbrowser-arrowscrollbox
+  .tabs-newtab-button {
 	background: #cecece url("shadow-inactive-l.png") repeat-y top right !important;
 	border-color: #9a9a9a !important;
 }
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tabbrowser-arrowscrollbox .tabs-newtab-button {
+  .tabbrowser-arrowscrollbox
+  .tabs-newtab-button {
 	background: #cecece url("shadow-inactive-r.png") repeat-y top left !important;
 	border-color: #9a9a9a !important;
 }
@@ -77,10 +82,12 @@
 
 :root[treestyletab-enable-compatibility-tmp="true"]:-moz-window-inactive
   tabbrowser[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabs-closebutton-topbox > .tabs-closebutton,
+  .tabs-closebutton-topbox
+  > .tabs-closebutton,
 :root[treestyletab-enable-compatibility-tmp="true"]:-moz-window-inactive
   tabbrowser[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabs-closebutton-topbox > .tabs-closebutton:hover {
+  .tabs-closebutton-topbox
+  > .tabs-closebutton:hover {
 	background: #e4e4e4 !important;
 	border-color: #666666 !important;
 }
