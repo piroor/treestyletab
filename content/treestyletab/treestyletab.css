@@ -145,12 +145,29 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
  * So we have to define max-width for both states [fadein] (means "completely
  * opened") and :not([fadein]) (means "in opening/removing process".
  */
-.tabbrowser-tabs[treestyletab-mode="vertical"] .tabbrowser-tab:not([pinned]) {
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab:not([pinned]):not([fadein]) {
 	max-width: 65000px !important;
+	opacity: 0.5 !important;
+}
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab:not([pinned])[fadein] {
+	max-width: 65250px !important;
 	min-width: 1px !important;
 }
-.tabbrowser-tabs[treestyletab-mode="vertical"] .tabbrowser-tab:not([pinned])[fadein] {
-	max-width: 65250px !important;
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-animation-enabled="true"]
+  .tabbrowser-tab:not([pinned]):not([fadein])[treestyletab-removed="true"] {
+	max-height: 1px !important;
+	min-height: 1px !important;
+	opacity: 0 !important;
+	/**
+	 * "transitionend" event will not fire if new transitions start before
+	 * old transitions are finished. When treestyletab-removed="true" is set
+	 * new transitions will start by these declarations, so, ghost tabs
+	 * possibly because "max-width" transition is canceled. To prevent ghost
+	 * tabs, we have to re-define new max-width to fire transitionend event.
+	 */
+	max-width: 64000px !important;
 }
 
 #TabsToolbar,
@@ -173,13 +190,6 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 }
 
 /* animation effects */
-
-.tabbrowser-tabs[treestyletab-animation-enabled="true"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[treestyletab-removed="true"] {
-	max-height: 1px !important;
-	min-height: 1px !important;
-	opacfity: 0 !important;
-}
 
 .tabbrowser-tabs[treestyletab-animation-enabled="true"][treestyletab-mode="vertical"]:not([treestyletab-tab-inverted="true"])
   .tabbrowser-tab:not([treestyletab-collapsed-done="true"]) {
