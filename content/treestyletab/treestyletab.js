@@ -121,7 +121,8 @@ var TreeStyleTabService = {
  
 	get isToolbarCustomizing() 
 	{
-		return window.gToolbox && gToolbox.customizing;
+		var toolbox = window.gToolbox || window.gNavToolbox;
+		return toolbox && toolbox.customizing;
 	},
  
 	maxTabbarWidth : function TSTService_maxTabbarWidth(aWidth, aTabBrowser) 
