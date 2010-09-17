@@ -161,11 +161,9 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 	min-height: 1px !important;
 	opacity: 0 !important;
 	/**
-	 * "transitionend" event will not fire if new transitions start before
-	 * old transitions are finished. When treestyletab-removed="true" is set
-	 * new transitions will start by these declarations, so, ghost tabs
-	 * possibly because "max-width" transition is canceled. To prevent ghost
-	 * tabs, we have to re-define new max-width to fire transitionend event.
+	 * Sometimes "transitionend" event for "max-width" doesn't fire so ghotst
+	 * tabs are left. To do cleanup process forcedly, we have to re-define new
+	 * max-width to fire transitionend event.
 	 */
 	max-width: 64000px !important;
 }
