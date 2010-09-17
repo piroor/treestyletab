@@ -285,7 +285,7 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.addEventListener('SSTabRestored',  this, true);
 		b.mTabContainer.addEventListener('TabPinned',      this, true);
 		b.mTabContainer.addEventListener('TabUnpinned',    this, true);
-		if (!this.isFloating)
+		if (!this.isFloating && 'tabutils' in window)
 			b.mTabContainer.addEventListener('DOMAttrModified', this, true); // Tab Utilities
 		b.mTabContainer.addEventListener('mouseover', this, true);
 		b.mTabContainer.addEventListener('mouseout',  this, true);
@@ -1587,7 +1587,7 @@ TreeStyleTabBrowser.prototype = {
 		b.mTabContainer.removeEventListener('SSTabRestored',  this, true);
 		b.mTabContainer.removeEventListener('TabPinned',      this, true);
 		b.mTabContainer.removeEventListener('TabUnpinned',    this, true);
-		if (!this.isFloating)
+		if (!this.isFloating && 'tabutils' in window)
 			b.mTabContainer.removeEventListener('DOMAttrModified', this, true); // Tab Utilites
 		b.mTabContainer.removeEventListener('mouseover', this, true);
 		b.mTabContainer.removeEventListener('mouseout',  this, true);
