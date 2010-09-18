@@ -158,7 +158,7 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 	max-width: 65250px !important;
 	min-width: 1px !important;
 }
-.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-animation-enabled="true"]
+#TabsToolbar[treestyletab-mode="vertical"][treestyletab-animation-enabled="true"]
   .tabbrowser-tab:not([pinned]):not([fadein])[treestyletab-removed="true"] {
 	max-height: 1px !important;
 	min-height: 1px !important;
