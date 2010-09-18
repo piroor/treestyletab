@@ -877,7 +877,7 @@ var TreeStyleTabUtils = {
 		return aA._tPos - aB._tPos;
 	},
   
-	gatherSubtreeMemberTabs : function TSTUtils_gatherSubtreeMemberTabs(aTabOrTabs) 
+	gatherSubtreeMemberTabs : function TSTUtils_gatherSubtreeMemberTabs(aTabOrTabs, aOnlyChildren) 
 	{
 		var tabs = aTabOrTabs;
 		if (!(tabs instanceof Array)) {
@@ -891,9 +891,7 @@ var TreeStyleTabUtils = {
 			descendant = descendant.concat(b.treeStyleTab.getDescendantTabs(tabs[i]));
 		}
 
-		tabs = this.cleanUpTabsArray(tabs.concat(descendant));
-
-		return tabs;
+		return this.cleanUpTabsArray(aOnlyChildren ? descendant : tabs.concat(descendant));
 	},
  
 	splitTabsToSubtrees : function TSTUtils_splitTabsToSubtrees(aTabs) /* PUBLIC API */ 
