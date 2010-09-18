@@ -1918,9 +1918,12 @@ catch(e) {
  
 	removeTabSubtree : function TSTService_removeTabSubtree(aTabOrTabs, aOnlyChildren) 
 	{
-		var tabs = this.gatherSubtreeMemberTabs(aTabOrTabs);
+		var tabs = this.gatherSubtreeMemberTabs(aTabOrTabs, aOnlyChildren);
 		if (!this.warnAboutClosingTabs(tabs.length))
 			return;
+
+		if (aOnlyChildren)
+			tabs = this.gatherSubtreeMemberTabs(aTabOrTabs);
 
 		this.splitTabsToSubtrees(tabs).forEach(function(aTabs) {
 			if (!this.fireTabSubtreeClosingEvent(aTabs[0], aTabs))
