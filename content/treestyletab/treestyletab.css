@@ -146,8 +146,11 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
  * opened") and :not([fadein]) (means "in opening/removing process".
  */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab:not([pinned]):not([fadein]) {
+  .tabbrowser-tab:not([pinned]) {
 	max-width: 65000px !important;
+}
+#TabsToolbar[treestyletab-mode="vertical"]
+  .tabbrowser-tab:not([pinned]):not([fadein]) {
 	opacity: 0.5 !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
