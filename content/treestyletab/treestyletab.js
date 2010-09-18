@@ -1113,6 +1113,13 @@ catch(e) {
 						return true;
 					}
 				]]>
+			).replace(
+				// for Tab Utilities, etc. Some addons insert openNewTabWith() to the function.
+				// (calls for the function is not included by Firefox default.)
+				/(openNewTabWith\()/g,
+				<![CDATA[
+					if (!TreeStyleTabService.checkToOpenChildTab(event.target.ownerDocument.defaultView)) TreeStyleTabService.readyToOpenChildTab(event.target.ownerDocument.defaultView);
+					$1]]>
 			));
 			source = null;
 		}, this);
