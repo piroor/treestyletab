@@ -4042,11 +4042,16 @@ TreeStyleTabBrowser.prototype = {
 		var b = this.mTabBrowser;
 		var parentTab = this.getParentTab(aTab);
 		var children = this.getChildTabs(aTab);
+		var insertBefore = null;
+		if (aInfo.behavior == this.CHILDREN_DETACH &&
+			!this.getTreePref('closeParentBehavior.moveDetachedTabsToBottom')) {
+			insertBefore = this.getNextSiblingTab(this.getRootTab(aTab));
+		}
 		children.forEach((
 			aInfo.behavior == this.CHILDREN_DETACH ?
 				function(aTab) {
 					this.partTab(aTab, aInfo);
-					this.moveTabSubtreeTo(aTab, this.getLastTab(b)._tPos);
+					this.moveTabSubtreeTo(aTab, insertBefore ? insertBefore._tPos - 1 : this.getLastTab(b)._tPos );
 				} :
 			aInfo.behavior == this.CHILDREN_PROMOTE_FIRST ?
 				function(aTab, aIndex) {

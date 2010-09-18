@@ -117,6 +117,7 @@ pref("extensions.treestyletab.focusMode", 1);
   2 = close all children too
 */
 pref("extensions.treestyletab.closeParentBehavior", 3);
+pref("extensions.treestyletab.closeParentBehavior.moveDetachedTabsToBottom", false);
 /*
   3 = promote only the first child tab as the root level
   1 = promote all children as new roots (=detach all children)
