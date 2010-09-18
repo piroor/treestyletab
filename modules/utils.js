@@ -1418,10 +1418,11 @@ var TreeStyleTabUtils = {
 		options.__proto__ = {
 			external : {
 				newTab : this.getTreePref('openOuterLinkInNewTab') || this.getTreePref('openAnyLinkInNewTab'),
-				forceChild : true
+				forceChild : this.getTreePref('openOuterLinkInNewTab.asChild')
 			},
 			internal : {
-				newTab : this.getTreePref('openAnyLinkInNewTab')
+				newTab : this.getTreePref('openAnyLinkInNewTab'),
+				forceChild : this.getTreePref('openAnyLinkInNewTab.asChild')
 			}
 		};
 		options.uri = options.link.href;
