@@ -1133,12 +1133,13 @@ catch(e) {
 			window.gotoHistoryIndex
 			window.BrowserForward
 			window.BrowserBack
+			window.BrowserReloadOrDuplicate
 		]]>).forEach(function(aFunc) {
 			let source = this._getFunctionSource(aFunc);
 			if (!source || !/^\(?function (gotoHistoryIndex|BrowserForward|BrowserBack)/.test(source))
 				return;
 			eval(aFunc+' = '+source.replace(
-				/(openUILinkIn\()/g,
+				/((?:openUILinkIn|duplicateTabIn)\()/g,
 				<![CDATA[
 					if (where == 'tab' || where == 'tabshifted')
 						TreeStyleTabService.readyToOpenChildTab();
