@@ -1826,7 +1826,7 @@ catch(e) {
 				return;
 
 			var id = aPopup.id;
-			var item = document.getElementById(id) ? id : aPopup ;
+			var item = id && document.getElementById(id) ? id : aPopup ;
 			var index = TreeStyleTabService._shownPopups.indexOf(item);
 			if (index < 0)
 				TreeStyleTabService._shownPopups.push(item);
@@ -1836,7 +1836,7 @@ catch(e) {
 	onPopupHidden : function TSTService_onPopupHidden(aPopup) 
 	{
 		var id = aPopup.id;
-		aPopup = document.getElementById(id) ? id : aPopup ;
+		aPopup = id && document.getElementById(id) ? id : aPopup ;
 		var index = TreeStyleTabService._shownPopups.indexOf(aPopup);
 		if (index > -1)
 			TreeStyleTabService._shownPopups.splice(index, 1);
@@ -1847,7 +1847,7 @@ catch(e) {
 		TreeStyleTabService._shownPopups = TreeStyleTabService._shownPopups.filter(function(aItem) {
 			if (typeof aItem == 'string')
 				aItem = document.getElementById(aItem);
-			return aItem && aItem.boxObject && ((!aItem.boxObject.width && !aItem.boxObject.height) || aItem.boxObject.popupState == 'closed');
+			return aItem && aItem.boxObject && ((aItem.boxObject.width || aItem.boxObject.height) && aItem.boxObject.popupState != 'closed');
 		});
 		return TreeStyleTabService._shownPopups.length > 0;
 	},
