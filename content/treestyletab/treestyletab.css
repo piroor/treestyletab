@@ -120,6 +120,18 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 	overflow-y: auto !important;
 }
 
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-arrowscrollbox
+  .scrollbox-innerbox {
+	-moz-box-flex: 1 !important;
+	-moz-box-pack: start !important;
+}
+
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab {
+	-moz-box-flex: 0 !important;
+}
+
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-alltabs-button, /* -Firefox 3.6 */
 .tabbrowser-tabs[treestyletab-mode="vertical"] .close-button.tabs-closebutton, /* -Firefox 3.6 */
 #TabsToolbar[treestyletab-mode="vertical"] > toolbarbutton,

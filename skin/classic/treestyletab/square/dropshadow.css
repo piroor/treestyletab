@@ -5,25 +5,26 @@
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"]
   .tabbrowser-tab:not([pinned="true"]) {
-	-moz-box-shadow: -0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15) !important;
-	box-shadow: -0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15) !important;
+	-moz-box-shadow: -0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15);
+	box-shadow: -0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15);
 }
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tabbrowser-tab:not([pinned="true"]) {
-	-moz-box-shadow: 0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15) !important;
-	box-shadow: 0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15) !important;
+	-moz-box-shadow: 0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15);
+	box-shadow: 0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15);
 }
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"]
   .tabs-container:not([overflow="true"])
   .tabbrowser-arrowscrollbox
-  .scrollbox-innerbox,
+  .tabs-newtab-button,
 #TabsToolbar
   .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"]:not([overflow="true"])
   .tabbrowser-arrowscrollbox
-  .scrollbox-innerbox {
-	background: url("newtab-shadow.png") repeat-x bottom !important;
+  .tabs-newtab-button {
+	-moz-box-shadow: 0 0.3em 0.2em rgba(0, 0, 0, 0.15);
+	box-shadow: 0 0.3em 0.2em rgba(0, 0, 0, 0.15);
 }
 
 /* hide new tab button by Tab Mix Plus
@@ -31,64 +32,55 @@
 .tabbrowser-tabs[newTabButton="false"][treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"]
   .tabs-container:not([overflow="true"])
   .tabbrowser-arrowscrollbox
-  .scrollbox-innerbox,
+  .tabs-newtab-button,
 #TabsToolbar
   .tabbrowser-tabs[newTabButton="false"][treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"]:not([overflow="true"])
   .tabbrowser-arrowscrollbox
-  .scrollbox-innerbox,
+  .tabs-newtab-button,
 /* hide new tab button by Tab Mix Lite
 	https://addons.mozilla.org/firefox/addon/12444 */
 .tabbrowser-tabs[newTabButton="none"][treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"]
   .tabs-container:not([overflow="true"])
   .tabbrowser-arrowscrollbox
-  .scrollbox-innerbox,
+  .tabs-newtab-button,
 #TabsToolbar
   .tabbrowser-tabs[newTabButton="none"][treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"]:not([overflow="true"])
   .tabbrowser-arrowscrollbox
-  .scrollbox-innerbox,
+  .tabs-newtab-button,
 /* hide new tab button by Tabberwocky
 	https://addons.mozilla.org/firefox/addon/14439 */
 tabbrowser[tabberwocky-hidenewtabbutton="true"]
   .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"]
   .tabs-container:not([overflow="true"])
   .tabbrowser-arrowscrollbox
-  .scrollbox-innerbox,
+  .tabs-newtab-button,
 #TabsToolbar[tabberwocky-hidenewtabbutton="true"] /* not implemented on 1.1, so this is just a random guess... */
   .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"]:not([overflow="true"])
   .tabbrowser-arrowscrollbox
-  .scrollbox-innerbox,
+  .tabs-newtab-button,
 /* hide new tab button by Tab Utilities
 	https://addons.mozilla.org/firefox/addon/59961 */
 .tabbrowser-tabs[newbutton="none"][treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"]
   .tabs-container:not([overflow="true"])
   .tabbrowser-arrowscrollbox
-  .scrollbox-innerbox,
+  .tabs-newtab-button,
 #TabsToolbar
   .tabbrowser-tabs[newbutton="none"][treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"]:not([overflow="true"])
   .tabbrowser-arrowscrollbox
-  .scrollbox-innerbox,
+  .tabs-newtab-button,
 /* hide new tab button by others */
 :root[treestyletab-hide-newtab-button="true"]
   .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"]
   .tabs-container:not([overflow="true"])
   .tabbrowser-arrowscrollbox
-  .scrollbox-innerbox,
+  .tabs-newtab-button,
 :root[treestyletab-hide-newtab-button="true"]
   #TabsToolbar
   .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"]:not([overflow="true"])
   .tabbrowser-arrowscrollbox
-  .scrollbox-innerbox {
-	background-image: none !important;
-}
-
-.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"]
-  .tabs-container:not([overflow="true"])
-  .tabbrowser-arrowscrollbox .tabs-newtab-button,
-#TabsToolbar
-  .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"]:not([overflow="true"])
-  .tabbrowser-arrowscrollbox
   .tabs-newtab-button {
-	margin-bottom: 5px !important;
+	-moz-box-shadow: none;
+	box-shadow: none;
 }
 
 

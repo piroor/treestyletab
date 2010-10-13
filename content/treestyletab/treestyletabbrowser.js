@@ -3077,23 +3077,6 @@ TreeStyleTabBrowser.prototype = {
  
 	onDblClick : function TSTBrowser_onDblClick(aEvent) 
 	{
-		if (this.isVertical &&
-			/^(?:(?:arrow)?scrollbox|tabs)$/.test(aEvent.originalTarget.localName)) {
-			// re-send dblclick event from the inner-box of the scrollbox,
-			// because Firefox's event listener (to open new tabs) handles
-			// events only from the box.
-			let box = this.mTabBrowser.tabContainer.mTabstrip;
-			if (box && box._scrollbox) box = box._scrollbox;
-			if (box) box = document.getAnonymousNodes(box)[0];
-			if (box && box.localName == 'box') {
-				let event = document.createEvent('MouseEvents');
-				event.initMouseEvent('dblclick', true, true, window, aEvent.detail, aEvent.screenX, aEvent.screenY, aEvent.x, aEvent.y, aEvent.ctrlKey, aEvent.altKey, aEvent.shiftKey, aEvent.metaKey, aEvent.button, null);
-				box.dispatchEvent(event);
-			}
-			aEvent.preventDefault();
-			aEvent.stopPropagation();
-			return;
-		}
 		let tab = this.getTabFromEvent(aEvent);
 		if (tab &&
 			this.hasChildTabs(tab) &&
