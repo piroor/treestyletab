@@ -2550,6 +2550,7 @@ TreeStyleTabBrowser.prototype = {
 		this.internallyTabMovingCount++;
 		var tabs = this.getAllTabsArray(this.mTabBrowser);
 		aChangedTabs = aChangedTabs || tabs;
+		var lastVisibleTab = this.getLastVisibleTab(this.mTabBrowser);
 		tabs.reverse().forEach(function(aTab) {
 			var parent = this.getParentTab(aTab);
 			var attached = false;
@@ -2573,6 +2574,7 @@ TreeStyleTabBrowser.prototype = {
 					this.partTab(aTab);
 				}
 			}
+
 			if (
 				!aTab.hidden &&
 				!attached &&
@@ -2580,6 +2582,15 @@ TreeStyleTabBrowser.prototype = {
 				aChangedTabs.indexOf(aTab) > -1
 				)
 				this.attachTabFromPosition(aTab, tabs.length-1);
+
+			// Hidden tabs have to be moved below visible tabs, because
+			// sometimes hidden tabs between visible tabs break tree
+			// structure.
+			if (aTab.hidden) {
+				let newPos = lastVisibleTab._tPos;
+				if (aTab.tPos < lastVisibleTab._tPos) newPos--;
+				this.mTabBrowser.moveTabTo(aTab, newPos);
+			}
 		}, this);
 		this.internallyTabMovingCount--;
 	},
