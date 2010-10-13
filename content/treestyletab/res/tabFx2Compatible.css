@@ -4,7 +4,7 @@
  Usage:
    <?xul-overlay href="tabFx2Compatible.xul"?>
 
- license: The MIT License, Copyright (c) 2009-2010 SHIMODA "Piro" Hiroshi
+ license: The MIT License, Copyright (c) 2009-2011 SHIMODA "Piro" Hiroshi
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/license.txt
  original:
    http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/tabFx2Compatible.xul
@@ -14,46 +14,46 @@
 
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
-:root[tabFx2Compatible="10"]
+:root[tabFx2Compatible="11"]
   .tabbrowser-tab {
 	-moz-binding: url(tabFx2Compatible.xml#tabbrowser-tab-3) !important;
 }
 
-:root[tabFx2Compatible="10"][tabFx2Compatible-flags~="separate-tabContextMenu"]
+:root[tabFx2Compatible="11"][tabFx2Compatible-flags~="separate-tabContextMenu"]
   .tabbrowser-tab {
 	-moz-binding: url(tabFx2Compatible.xml#tabbrowser-tab-4) !important;
 }
 
-:root[tabFx2Compatible="10"]:not([tabFx2Compatible-flags~="png-throbber"]):not([tabFx2Compatible-flags~="pie"])
+:root[tabFx2Compatible="11"]:not([tabFx2Compatible-flags~="png-throbber"])[tabFx2Compatible-flags~="fx3"]
   .tab-icon-image[busy] {
 	list-style-image: url("chrome://global/skin/throbber/Throbber-small.gif") !important;
 	opacity: 0.6;
 }
 
-:root[tabFx2Compatible="10"][tabFx2Compatible-flags~="png-throbber"]:not([tabFx2Compatible-flags~="pie"])
+:root[tabFx2Compatible="11"][tabFx2Compatible-flags~="png-throbber"][tabFx2Compatible-flags~="fx3"]
   .tab-icon-image[busy] {
 	list-style-image: url("chrome://global/skin/icons/loading_16.png") !important;
 }
 
-:root[tabFx2Compatible="10"][tabFx2Compatible-flags~="mac"][tabFx2Compatible-flags~="png-throbber"]
+:root[tabFx2Compatible="11"][tabFx2Compatible-flags~="mac"][tabFx2Compatible-flags~="png-throbber"]
   .tab-icon-image {
 	list-style-image: url("chrome://global/skin/tree/item.png");
 }
 
-:root[tabFx2Compatible="10"][tabFx2Compatible-flags~="mac"]
+:root[tabFx2Compatible="11"][tabFx2Compatible-flags~="mac"]
   .tabbrowser-tab:not(:hover) .tab-icon-image:not([selected="true"]) {
 	opacity: 0.6;
 }
 
-:root[tabFx2Compatible="10"]
+:root[tabFx2Compatible="11"]
   .tabbrowser-tab:focus > .tab-stack {
 	border: 1px dotted -moz-DialogText;
 }
 
 
-:root[tabFx2Compatible="10"]
+:root[tabFx2Compatible="11"]
   .tab-image-left[pinned="true"],
-:root[tabFx2Compatible="10"]
+:root[tabFx2Compatible="11"]
   .tab-image-right[pinned="true"] {
 	display: none !important;
 }

@@ -19,7 +19,7 @@
 window.addEventListener('DOMContentLoaded', function() {
 	window.removeEventListener('DOMContentLoaded', arguments.callee, true);
 
-	const currentRevision = 10;
+	const currentRevision = 11;
 
 	var b = document.getElementById('content');
 	if (!b || b.localName != 'tabbrowser') return;
@@ -77,10 +77,10 @@ window.addEventListener('DOMContentLoaded', function() {
 				flags.push('mac');
 			if (Comparator.compare(XULAppInfo.version, '3.1') >= 0)
 				flags.push('png-throbber');
-			if (Comparator.compare(XULAppInfo.version, '3.7a1') >= 0)
-				flags.push('pie');
 			if (Comparator.compare(XULAppInfo.version, '4.0b1') >= 0)
 				flags.push('separate-tabContextMenu');
+			else
+				flags.push('fx3');
 			root.setAttribute('tabFx2Compatible-flags', flags.join(' '));
 			break;
 	}
