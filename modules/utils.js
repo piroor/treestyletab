@@ -680,13 +680,12 @@ var TreeStyleTabUtils = {
 	// workaround for http://piro.sakura.ne.jp/latest/blosxom/mozilla/extension/treestyletab/2009-09-29_debug.htm
 	checkCachedSessionDataExpiration : function TSTUtils_checkCachedSessionDataExpiration(aTab) 
 	{
-		return;
 		var data = aTab.linkedBrowser.__SS_data || // Firefox 3.6-
 					aTab.linkedBrowser.parentNode.__SS_data; // -Frefox 3.5
 		if (data &&
 			data._tabStillLoading &&
 			aTab.getAttribute('busy') != 'true' &&
-			!aTab.linkedBrowser.__SS_restoring)
+			aTab.linkedBrowser.__SS_restoreState != 1)
 			data._tabStillLoading = false;
 	},
  
