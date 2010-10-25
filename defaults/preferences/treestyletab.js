@@ -147,4 +147,9 @@ pref("extensions.treestyletab.compatibility.TMP", true); // Tab Mix Plus
 pref("extensions.treestyletab.compatibility.STM.warnForNewTabPosition", true); // Super Tab Mode
 
 
+pref("extensions.treestyletab.platform.Darwin.tabbar.style", "metal");
+pref("extensions.treestyletab.platform.Darwin.indent.property.top", "margin-bottom");
+pref("extensions.treestyletab.platform.Linux.tabbar.style", "plain");
+
+
 pref("extensions.treestyletab.prefsVersion", 0);

@@ -248,7 +248,9 @@ var TreeStyleTabUtils = {
 	{
 		if (this._initialized) return;
 
-		this.isMac = this.XULAppInfo.OS.toLowerCase().indexOf('darwin') > -1;
+		this.isMac = this.XULAppInfo.OS == 'Darwin';
+
+		this.applyPlatformDefaultPrefs();
 
 		this.addPrefListener(this);
 
@@ -267,7 +269,7 @@ var TreeStyleTabUtils = {
 		this.onPrefChange('extensions.treestyletab.twisty.expandSensitiveArea');
 
 		try {
-			if (this.XULAppInfo.OS.toLowerCase().indexOf('winnt') > -1)
+			if (this.XULAppInfo.OS == 'WINNT')
 				this.updateAeroPeek();
 		}
 		catch(e) {
@@ -275,6 +277,13 @@ var TreeStyleTabUtils = {
 		}
 	},
 	_initialized : false,
+	applyPlatformDefaultPrefs : function TSTUtils_applyPlatformDefaultPrefs()
+	{
+		var OS = this.XULAppInfo.OS;
+		this.getDescendant('extensions.treestyletab.platform.'+OS).forEach(function(aKey) {
+			this.setDefaultPref(aKey.replace('platform.'+OS+'.', ''), this.getDefaultPref(aKey));
+		}, this);
+	},
 	
 	updateAeroPeek : function TSTUtils_updateAeroPeek() 
 	{
