@@ -1430,6 +1430,33 @@ var TreeStyleTabUtils = {
 		return this.checkReadyToOpenNewTab(options);
 	},
  
+	filterWhereToOpenLink : function TSTUtils_filterwhereToOpenLink(aWhere, aParams)
+	{
+		var inverted = false;
+		var divertedToTab = false;
+		var link = aParams.linkNode || aParams.event.originalTarget;
+		var isNewTab = this.isNewTabAction(aParams.event);
+		if (this.checkReadyToOpenNewTabFromLink({
+				link     : link,
+				modifier : isNewTab,
+				invert   : this.getTreePref('link.invertDefaultBehavior')
+			})) {
+			if (aWhere == 'current' && !isNewTab) {
+				divertedToTab = true;
+				aWhere = this.getPref('browser.tabs.loadInBackground') ? 'tabshifted' : 'tab' ;
+			}
+		}
+		else if (aWhere.indexOf('tab') > -1) {
+			aWhere = 'current';
+			inverted = true;
+		}
+		return {
+			where         : aWhere,
+			inverted      : inverted,
+			divertedToTab : divertedToTab
+		};
+	},
+ 
 	_getDomainFromURI : function TSTUtils__getDomainFromURI(aURI) 
 	{
 		if (!aURI) return null;

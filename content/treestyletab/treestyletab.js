@@ -257,6 +257,7 @@ var TreeStyleTabService = {
 				if (this.getTreePref('openGroupBookmarkAsTabSubTree') !== null) {
 					let behavior = 0;
 					if (this.getTreePref('openGroupBookmarkAsTabSubTree.underParent'))
+
 						behavior += this.kGROUP_BOOKMARK_USE_DUMMY;
 					if (!this.getTreePref('openGroupBookmarkBehavior.confirm')) {
 						behavior += (
@@ -1036,12 +1037,12 @@ catch(e) {
 			let source = this._getFunctionSource(aFunc);
 			if (!source || !/^\(?function handleLinkClick/.test(source))
 				return false;
-			eval(aFunc+' = '+source.replace(
+			eval(aFunc+' = '+source.replace( // for -Firefox 3.6
 				/(openNewTabWith\()/g,
 				<![CDATA[
 					if (!TreeStyleTabService.checkToOpenChildTab(event.target.ownerDocument.defaultView)) TreeStyleTabService.readyToOpenChildTab(event.target.ownerDocument.defaultView);
 					$1]]>
-			).replace(
+			).replace( // for -Firefox 3.6
 				/(event.ctrlKey|event.metaKey)/,
 				<![CDATA[
 					TreeStyleTabService.checkReadyToOpenNewTabFromLink({
@@ -1055,7 +1056,7 @@ catch(e) {
 						) :
 						(TreeStyleTabService.readyToOpenChildTab(), false)
 				]]>
-			).replace(
+			).replace( // for -Firefox 3.6
 				/* あらゆるリンクからタブを開く設定の時に、アクセルキーが押されていた場合は
 				   反転された動作（通常のリンク読み込み）を行う */
 				'return false;case 1:',
@@ -1082,10 +1083,37 @@ catch(e) {
 						return false;
 					case 1:
 				]]>
+			).replace( // for Firefox 4.0-
+				'where = whereToOpenLink(event);',
+				<![CDATA[$&
+					var TSTFilteringResult = TreeStyleTabService.filterWhereToOpenLink(where, { linkNode : linkNode, event : event });
+					where = TSTFilteringResult.where;
+					if (TSTFilteringResult.divertedToTab)
+						TreeStyleTabService.readyToOpenDivertedTab();
+				]]>.toString()
+			).replace( // for Firefox 4.0-
+				/(if \([^\)]*where == "current")/,
+				'$1 && !TSTFilteringResult.inverted'
+			).replace( // for Firefox 4.0-
+				/(fromContent\s*:\s*true\s*,)/,
+				'$1 event : event, linkNode : linkNode, '
 			));
 			source = null;
 			return true;
 		}, this);
+
+		// for Firefox 4.0-
+		if ('openLinkIn' in window) {
+			eval('window.openLinkIn = '+
+				window.openLinkIn.toSource().replace(
+					'browser.loadOneTab(',
+					<![CDATA[
+						if (!TreeStyleTabService.checkToOpenChildTab(params.linkNode.ownerDocument.defaultView))
+							TreeStyleTabService.readyToOpenChildTab(params.linkNode.ownerDocument.defaultView);
+						$&]]>.toString()
+				)
+			);
+		}
 
 		this._splitFunctionNames(<![CDATA[
 			window.permaTabs.utils.wrappedFunctions["window.contentAreaClick"]
@@ -1477,6 +1505,7 @@ catch(e) {
 		if (!this.keyEventListeningFlags && this.keyEventListening) {
 			window.removeEventListener('keydown',  this, true);
 			window.removeEventListener('keyup',    this, true);
+
 			window.removeEventListener('keypress', this, true);
 			this.keyEventListening = false;
 		}
