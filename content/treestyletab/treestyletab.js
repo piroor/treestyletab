@@ -1108,7 +1108,8 @@ catch(e) {
 				window.openLinkIn.toSource().replace(
 					'browser.loadOneTab(',
 					<![CDATA[
-						if (!TreeStyleTabService.checkToOpenChildTab(params.linkNode.ownerDocument.defaultView))
+						if (params.linkNode &&
+							!TreeStyleTabService.checkToOpenChildTab(params.linkNode.ownerDocument.defaultView))
 							TreeStyleTabService.readyToOpenChildTab(params.linkNode.ownerDocument.defaultView);
 						$&]]>.toString()
 				)
