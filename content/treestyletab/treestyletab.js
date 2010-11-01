@@ -1207,16 +1207,13 @@ catch(e) {
 		// Firefox 3 full screen
 		eval('FullScreen._animateUp = '+
 			FullScreen._animateUp.toSource().replace(
+				// Firefox 3.6 or older
 				/(gBrowser\.mStrip\.boxObject\.height)/,
 				'((gBrowser.treeStyleTab.currentTabbarPosition != "top") ? 0 : $1)'
 			)
 		);
 		eval('FullScreen.mouseoverToggle = '+
 			FullScreen.mouseoverToggle.toSource().replace(
-				// Firefox 4.0 or later
-				'allFSToolbars[i].setAttribute("moz-collapsed", !aShow);',
-				'if (allFSToolbars[i].id != "TabsToolbar" || gBrowser.treeStyleTab.currentTabbarPosition == "top") { $& }'
-			).replace(
 				// Firefox 4.0 or later
 				'this._isChromeCollapsed = !aShow;',
 				'gBrowser.treeStyleTab.updateFloatingTabbar(); $&'
