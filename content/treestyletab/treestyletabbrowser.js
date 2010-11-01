@@ -1303,11 +1303,9 @@ TreeStyleTabBrowser.prototype = {
 
 		var strip = this.tabStrip;
 		var tabContainerBox = this.getTabContainerBox(this.mTabBrowser);
-		var positioned = false;
 		var pos = this.currentTabbarPosition;
 		if (pos != 'top' ||
 			this.mTabBrowser.getAttribute(this.kFIXED) != 'true') {
-			positioned = true;
 
 			let box = this._tabStripPlaceHolder.boxObject;
 			let root = document.documentElement.boxObject;
@@ -1350,36 +1348,6 @@ TreeStyleTabBrowser.prototype = {
 			strip.style.height = '';
 
 			this.mTabBrowser.tabContainer.removeAttribute('context');
-		}
-
-		if (this.mTabBrowser != gBrowser)
-			return;
-
-		var toolbox = strip.parentNode;
-		if (toolbox.localName != 'toolbox')
-			return;
-
-		if (!positioned) {
-			toolbox.removeAttribute('height');
-		}
-		else {
-			// hack to reset the height of the toolbox
-			let height = 0;
-			Array.slice(toolbox.childNodes).forEach(function(aNode) {
-				if (aNode.nodeType == Node.ELEMENT_NODE && aNode != strip)
-					height += aNode.boxObject.height;
-			});
-			height += parseInt(window.getComputedStyle(toolbox, '').getPropertyValue('margin-top').replace('px', ''));
-			if (height != toolbox.boxObject.height) {
-//				this.stopRendering();
-				// "height" attribute of the toolbar prevents rendering of the toolbox with its correct height.
-				strip.removeAttribute('height');
-				toolbox.setAttribute('height', height);
-//				window.setTimeout(function(aSelf) {
-//					toolbox.removeAttribute('height');
-//					aSelf.startRendering();
-//				}, 0, this);
-			}
 		}
 
 		if ('_positionPinnedTabs' in this.mTabBrowser.mTabContainer)
