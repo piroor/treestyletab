@@ -437,7 +437,9 @@ var TreeStyleTabUtils = {
 	{
 		var behavior = this.undoCloseTabSetBehavior;
 		if (!(behavior & this.kUNDO_ASK))
-			return Deferred.next();
+			return Deferred.next(function() {
+				return behavior;
+			});
 
 		if (behavior & this.kUNDO_CLOSE_SET) behavior ^= this.kUNDO_CLOSE_SET;
 
@@ -461,10 +463,13 @@ var TreeStyleTabUtils = {
 				});
 			})
 			.next(function(aButtonIndex) {
-				if (aButtonIndex == 0)
+				if (aButtonIndex == 0) {
 					behavior |= self.kUNDO_CLOSE_SET;
-				if (checkbox.checked)
+				}
+				if (checkbox.checked) {
+					behavior ^= self.kUNDO_ASK;
 					self.setTreePref('undoCloseTabSet.behavior', behavior);
+				}
 				return behavior;
 			});
 	},

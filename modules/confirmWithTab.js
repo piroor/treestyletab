@@ -69,8 +69,9 @@ var confirmWithTab;
 				})
 			);
 
+		var checkbox;
 		if (aOptions.checkbox) {
-			let checkbox = notification.ownerDocument.createElement('checkbox');
+			checkbox = notification.ownerDocument.createElement('checkbox');
 			checkbox.setAttribute('label', aOptions.checkbox.label);
 			if (aOptions.checkbox.checked)
 				checkbox.setAttribute('checked', 'true');
@@ -80,11 +81,6 @@ var confirmWithTab;
 			container.appendChild(checkbox);
 
 			notification.appendChild(container);
-
-			deferred.next(function(aButtonIndex) {
-				aOptions.checkbox.checked = checkbox.checked;
-				return aButtonIndex;
-			});
 		}
 
 		var strip = b.tabContainer || b.mTabContainer;
@@ -107,7 +103,12 @@ var confirmWithTab;
 			});
 		notification.parentNode.addEventListener('DOMNodeRemoved', handleEvent, false);
 
-		return deferred;
+		return deferred
+				.next(function(aButtonIndex) {
+					if (aOptions.checkbox)
+						aOptions.checkbox.checked = checkbox.checked;
+					return aButtonIndex;
+				});
 	};
 
 	function getTabBrowserFromChild(aTabBrowserChild)
