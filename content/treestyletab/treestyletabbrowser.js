@@ -2148,6 +2148,9 @@ TreeStyleTabBrowser.prototype = {
 		if (collapsed)
 			this.stopRendering();
 
+		var backupAttributes = {};
+		backupAttributes[this.kCHILDREN] = this.getTabValue(tab, this.kCHILDREN);
+
 		var subtreeCollapsed = this.isSubtreeCollapsed(tab);
 		if (
 			closeParentBehavior == this.CHILDREN_CLOSE ||
@@ -2202,11 +2205,9 @@ TreeStyleTabBrowser.prototype = {
 				this.deleteTabValue(next, this.kINSERT_AFTER);
 		}
 
-		var backupAttributes = {};
 		var indentModifiedTabs = [];
 
 		if (firstChild) {
-			backupAttributes[this.kCHILDREN] = this.getTabValue(tab, this.kCHILDREN);
 			let children = this.getChildTabs(tab);
 			let behavior = parentTab ? closeParentBehavior : closeRootBehavior ;
 			if (behavior == this.CHILDREN_PROMOTE_FIRST &&
