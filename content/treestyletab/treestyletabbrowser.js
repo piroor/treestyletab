@@ -2859,12 +2859,17 @@ TreeStyleTabBrowser.prototype = {
 				indexes.length+1 < count &&
 				behavior & this.kUNDO_CLOSE_FULL_SET
 			) ||
-			!((behavior = this.undoCloseTabSetBehavior(indexes.length, false)) & this.kUNDO_CLOSE_SET) ||
-			(
-				'_confirmOpenInTabs' in PlacesUIUtils &&
-				PlacesUIUtils._confirmOpenInTabs &&
-				!PlacesUIUtils._confirmOpenInTabs(indexes.length)
+			!((behavior = this.undoCloseTabSetBehavior(indexes.length, false)) & this.kUNDO_CLOSE_SET)
 			)
+			return;
+
+		this.doRestoreClosedSet(aRestoredTab, indexes);
+	},
+	doRestoreClosedSet : function TSTBrowser_doRestoreClosedSet(aRestoredTab, aIndexes)
+		if (
+			'_confirmOpenInTabs' in PlacesUIUtils &&
+			PlacesUIUtils._confirmOpenInTabs &&
+			!PlacesUIUtils._confirmOpenInTabs(aIndexes.length)
 			)
 			return;
 
@@ -2874,7 +2879,7 @@ TreeStyleTabBrowser.prototype = {
 		TreeStyleTabService.restoringTree = true;
 
 		var offset = 0;
-		indexes.forEach(function(aIndex) {
+		aIndexes.forEach(function(aIndex) {
 			undoCloseTab(aIndex - (offset++));
 		});
 
