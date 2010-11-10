@@ -461,13 +461,10 @@ var TreeStyleTabUtils = {
 				});
 			})
 			.next(function(aButtonIndex) {
-				if (aButtonIndex == 0) {
+				if (aButtonIndex == 0)
 					behavior |= self.kUNDO_CLOSE_SET;
-				}
-				if (checkbox.checked) {
-					behavior |= self.kUNDO_ASK;
+				if (checkbox.checked)
 					self.setTreePref('undoCloseTabSet.behavior', behavior);
-				}
 				return behavior;
 			});
 	},
