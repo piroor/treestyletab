@@ -465,7 +465,7 @@ var TreeStyleTabUtils = {
 					behavior |= self.kUNDO_CLOSE_SET;
 				}
 				if (checkbox.checked) {
-					behavior ^= self.kUNDO_ASK;
+					behavior |= self.kUNDO_ASK;
 					self.setTreePref('undoCloseTabSet.behavior', behavior);
 				}
 				return behavior;
