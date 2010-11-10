@@ -2864,12 +2864,20 @@ TreeStyleTabBrowser.prototype = {
 			)
 			return;
 
-		var self = this;
-		this.askUndoCloseTabSetBehavior(aRestoredTab, indexes.length)
-			.next(function(aBehavior) {
-				if (aBehavior & self.kUNDO_CLOSE_SET)
-					self.doRestoreClosedSet(aRestoredTab, indexes);
-			});
+		if (behavior & this.kUNDO_ASK) {
+			let self = this;
+			aRestoredTab.addEventListener('SSTabRestored', function(aEvent) {
+				aRestoredTab.removeEventListener(aEvent.type, arguments.callee, false);
+				self.askUndoCloseTabSetBehavior(aRestoredTab, indexes.length)
+					.next(function(aBehavior) {
+						if (aBehavior & self.kUNDO_CLOSE_SET)
+							self.doRestoreClosedSet(aRestoredTab, indexes);
+					});
+			}, false);
+		}
+		else if (behavior & this.kUNDO_CLOSE_SET) {
+			this.doRestoreClosedSet(aRestoredTab, indexes);
+		}
 	},
 	doRestoreClosedSet : function TSTBrowser_doRestoreClosedSet(aRestoredTab, aIndexes)
 	{

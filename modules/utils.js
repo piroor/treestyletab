@@ -448,19 +448,16 @@ var TreeStyleTabUtils = {
 				label : this.treeBundle.getString('undoCloseTabSetBehavior.never'),
 				checked : false
 			};
-		return Deferred.wait(0.25)
-			.next(function() {
-				return confirmWithTab({
-					tab      : aRestoredTab,
-					label    : self.treeBundle.getFormattedString('undoCloseTabSetBehavior.label', [aCount]),
-					value    : 'treestyletab-undo-close-tree',
-					buttons  : [
-						self.treeBundle.getString('undoCloseTabSetBehavior.set'),
-						self.treeBundle.getString('undoCloseTabSetBehavior.separate')
-					],
-					checkbox : checkbox,
-					cancelEvents : ['TabClose', 'SSTabRestoring']
-				});
+		return confirmWithTab({
+				tab      : aRestoredTab,
+				label    : this.treeBundle.getFormattedString('undoCloseTabSetBehavior.label', [aCount]),
+				value    : 'treestyletab-undo-close-tree',
+				buttons  : [
+					this.treeBundle.getString('undoCloseTabSetBehavior.set'),
+					this.treeBundle.getString('undoCloseTabSetBehavior.separate')
+				],
+				checkbox : checkbox,
+				cancelEvents : ['TabClose', 'SSTabRestoring']
 			})
 			.next(function(aButtonIndex) {
 				if (aButtonIndex == 0) {
