@@ -2149,7 +2149,8 @@ TreeStyleTabBrowser.prototype = {
 			this.stopRendering();
 
 		var backupAttributes = {};
-		backupAttributes[this.kCHILDREN] = this.getTabValue(tab, this.kCHILDREN);
+		if (this.hasChildTabs(tab))
+			backupAttributes[this.kCHILDREN] = this.getTabValue(tab, this.kCHILDREN);
 
 		var subtreeCollapsed = this.isSubtreeCollapsed(tab);
 		if (
