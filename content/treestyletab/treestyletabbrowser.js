@@ -2832,7 +2832,7 @@ TreeStyleTabBrowser.prototype = {
  
 	restoreClosedSet : function TSTBrowser_restoreClosedSet(aId, aRestoredTab) 
 	{
-		var behavior = this.undoCloseTabSetBehavior(0, true);
+		var behavior = this.undoCloseTabSetBehavior;
 		if (
 			aRestoredTab.__treestyletab__restoredByUndoCloseTab ||
 			!this.browser.__treestyletab__readyToUndoCloseTab ||
@@ -2858,14 +2858,19 @@ TreeStyleTabBrowser.prototype = {
 			(
 				indexes.length+1 < count &&
 				behavior & this.kUNDO_CLOSE_FULL_SET
-			) ||
-			!((behavior = this.undoCloseTabSetBehavior(indexes.length, false)) & this.kUNDO_CLOSE_SET)
+			)
 			)
 			return;
 
-		this.doRestoreClosedSet(aRestoredTab, indexes);
+		var self = this;
+		this.askUndoCloseTabSetBehavior(aRestoredTab, indexes.length)
+			.next(function(aBehavior) {
+				if (aBehavior & self.kUNDO_CLOSE_SET)
+					self.doRestoreClosedSet(aRestoredTab, indexes);
+			});
 	},
 	doRestoreClosedSet : function TSTBrowser_doRestoreClosedSet(aRestoredTab, aIndexes)
+	{
 		if (
 			'_confirmOpenInTabs' in PlacesUIUtils &&
 			PlacesUIUtils._confirmOpenInTabs &&

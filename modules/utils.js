@@ -44,6 +44,8 @@ Components.utils.import('resource://treestyletab-modules/stringBundle.js');
 Components.utils.import('resource://treestyletab-modules/extensions.js');
 Components.utils.import('resource://treestyletab-modules/animationManager.js');
 Components.utils.import('resource://treestyletab-modules/autoScroll.js');
+Components.utils.import('resource://treestyletab-modules/jsdeferred.js');
+Components.utils.import('resource://treestyletab-modules/confirmWithTab.js');
 
 Components.utils.import('resource://treestyletab-modules/namespace.jsm');
 var window = getNamespaceFor('piro.sakura.ne.jp');
@@ -431,38 +433,47 @@ var TreeStyleTabUtils = {
 	kGROUP_BOOKMARK_DONT_RESTORE_TREE_STRUCTURE : 512,
 	kGROUP_BOOKMARK_EXPAND_ALL_TREE             : 2048,
  
-	undoCloseTabSetBehavior : function TSTUtils_undoCloseTabSetBehavior(aCount, aSilent) 
+	askUndoCloseTabSetBehavior : function TSTUtils_askUndoCloseTabSetBehavior(aRestoredTab, aCount) 
 	{
-		var behavior = this.getTreePref('undoCloseTabSet.behavior');
-		if (!(behavior & this.kUNDO_ASK) || aSilent)
-			return behavior;
+		var behavior = this.undoCloseTabSetBehavior;
+		if (!(behavior & this.kUNDO_ASK))
+			return Deferred.next();
 
-		var checked = { value : false };
-		var button = this.PromptService.confirmEx(this.browserWindow,
-				this.treeBundle.getString('undoCloseTabSetBehavior.title'),
-				this.treeBundle.getFormattedString('undoCloseTabSetBehavior.text', [aCount]),
-				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_0) +
-				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_1),
-				this.treeBundle.getString('undoCloseTabSetBehavior.set'),
-				this.treeBundle.getString('undoCloseTabSetBehavior.separate'),
-				null,
-				this.treeBundle.getString('undoCloseTabSetBehavior.never'),
-				checked
-			);
+		if (behavior & this.kUNDO_CLOSE_SET) behavior ^= this.kUNDO_CLOSE_SET;
 
-		if (button < 0) button = 1;
-		var behaviors = [
-				(behavior | this.kUNDO_CLOSE_SET),
-				(behavior & this.kUNDO_CLOSE_SET ? behavior ^ this.kUNDO_CLOSE_SET : behavior )
-			];
-		behavior = behaviors[button];
-
-		if (checked.value) {
-			behavior ^= this.kUNDO_ASK;
-			this.setTreePref('undoCloseTabSet.behavior', behavior);
-		}
-
-		return behavior;
+		var self = this;
+		var checkbox = {
+				label : this.treeBundle.getString('undoCloseTabSetBehavior.never'),
+				checked : false
+			};
+		return Deferred.wait(0.25)
+			.next(function() {
+				return confirmWithTab({
+					tab      : aRestoredTab,
+					label    : self.treeBundle.getFormattedString('undoCloseTabSetBehavior.label', [aCount]),
+					value    : 'treestyletab-undo-close-tree',
+					buttons  : [
+						self.treeBundle.getString('undoCloseTabSetBehavior.set'),
+						self.treeBundle.getString('undoCloseTabSetBehavior.separate')
+					],
+					checkbox : checkbox,
+					cancelEvents : ['TabClose', 'SSTabRestoring']
+				});
+			})
+			.next(function(aButtonIndex) {
+				if (aButtonIndex == 0) {
+					behavior |= self.kUNDO_CLOSE_SET;
+				}
+				if (checkbox.checked) {
+					behavior ^= self.kUNDO_ASK;
+					self.setTreePref('undoCloseTabSet.behavior', behavior);
+				}
+				return behavior;
+			});
+	},
+	get undoCloseTabSetBehavior()
+	{
+		return this.getTreePref('undoCloseTabSet.behavior');
 	},
 	kUNDO_ASK            : 1,
 	kUNDO_CLOSE_SET      : 2,
