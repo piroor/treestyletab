@@ -44,7 +44,6 @@ Components.utils.import('resource://treestyletab-modules/stringBundle.js');
 Components.utils.import('resource://treestyletab-modules/extensions.js');
 Components.utils.import('resource://treestyletab-modules/animationManager.js');
 Components.utils.import('resource://treestyletab-modules/autoScroll.js');
-Components.utils.import('resource://treestyletab-modules/jsdeferred.js');
 Components.utils.import('resource://treestyletab-modules/confirmWithTab.js');
 
 Components.utils.import('resource://treestyletab-modules/namespace.jsm');
@@ -436,17 +435,13 @@ var TreeStyleTabUtils = {
 	askUndoCloseTabSetBehavior : function TSTUtils_askUndoCloseTabSetBehavior(aRestoredTab, aCount) 
 	{
 		var behavior = this.undoCloseTabSetBehavior;
-		if (!(behavior & this.kUNDO_ASK))
-			return Deferred.next(function() {
-				return behavior;
-			});
-
 		if (behavior & this.kUNDO_CLOSE_SET) behavior ^= this.kUNDO_CLOSE_SET;
 
 		var self = this;
+		var neverAskState = (behavior & this.kUNDO_ASK) ? false : true ;
 		var checkbox = {
 				label : this.treeBundle.getString('undoCloseTabSetBehavior.never'),
-				checked : false
+				checked : neverAskState
 			};
 		return confirmWithTab({
 				tab      : aRestoredTab,
@@ -463,7 +458,7 @@ var TreeStyleTabUtils = {
 				if (aButtonIndex == 0) {
 					behavior |= self.kUNDO_CLOSE_SET;
 				}
-				if (checkbox.checked) {
+				if (checkbox.checked != neverAskState) {
 					behavior ^= self.kUNDO_ASK;
 					self.setTreePref('undoCloseTabSet.behavior', behavior);
 				}
