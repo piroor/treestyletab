@@ -1493,7 +1493,7 @@ var TreeStyleTabUtils = {
 
 		var str = aURI;
 		if (str instanceof Ci.nsIURI) str = aURI.spec;
-		return /^\w+:\/\/([^:\/]+)/.test(this.browserWindow.getShortcutOrURI(str)) ?
+		return /^\w+:(?:\/\/)?([^:\/]+)/.test(this.browserWindow.getShortcutOrURI(str)) ?
 				RegExp.$1 :
 				null ;
 	},
