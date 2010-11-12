@@ -155,7 +155,6 @@ var TreeStyleTabBookmarksService = {
 		treeStructure = treeStructure.map(function(aIndex) {
 				return aIndex < -1 ? aDefaultParentID : aIndex ;
 			}, this);
-		Application.console.log(treeStructure);
 		return treeStructure;
 	},
  
