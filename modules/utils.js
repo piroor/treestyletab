@@ -852,14 +852,11 @@ var TreeStyleTabUtils = {
 	getTabFromFrame : function TSTUtils_getTabFromFrame(aFrame, aTabBrowser) 
 	{
 		var b = aTabBrowser || this.browser;
-		var docShell = aFrame.top
-			.QueryInterface(Ci.nsIInterfaceRequestor)
-			.getInterface(Ci.nsIWebNavigation)
-			.QueryInterface(Ci.nsIDocShell);
+		var top = aFrame.top;
 		var tabs = this.getAllTabsArray(b);
 		for each (var tab in tabs)
 		{
-			if (tab.linkedBrowser.docShell == docShell)
+			if (tab.linkedBrowser.contentWindow == top)
 				return tab;
 		}
 		return null;
