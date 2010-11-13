@@ -27,6 +27,8 @@ if (typeof namespace == 'undefined') {
 	}
 }
 
+// This depends on JSDeferred.
+// See: https://github.com/cho45/jsdeferred
 if (typeof namespace.Deferred == 'undefined')
 	Components.utils.import('resource://treestyletab-modules/jsdeferred.js', namespace);
 
