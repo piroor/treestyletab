@@ -82,7 +82,7 @@ pref("extensions.treestyletab.urlbar.loadDifferentDomainToNewTab", true);
 pref("extensions.treestyletab.urlbar.loadDifferentDomainToNewTab.asChild", false);
 pref("extensions.treestyletab.urlbar.loadSameDomainToNewTab", true);
 pref("extensions.treestyletab.urlbar.loadSameDomainToNewTab.asChild", true);
-pref("extensions.treestyletab.urlbar.invertDefaultBehavior", true);
+pref("extensions.treestyletab.urlbar.invertDefaultBehavior", false);
 // 0 = always ask, 1 = load into the tab, 2 = open new child tab
 pref("extensions.treestyletab.dropLinksOnTab.behavior", 0);
 // value = Basic | Structure | Collapse/expand
