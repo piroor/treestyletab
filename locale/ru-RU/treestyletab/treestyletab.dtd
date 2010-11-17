@@ -47,21 +47,8 @@
 
 <!ENTITY config.tabs.tab "Новые вкладки">
 
-<!ENTITY config.tabs.link.tab     "Ссылки">
-<!ENTITY config.tabs.urlbar.tab   "Адресная строка ">
 <!ENTITY config.tabs.bookmark.tab "Закладки">
 <!ENTITY config.tabs.dragdrop.tab "Претаскивание во вкладки">
-<!ENTITY config.tabs.misc.tab     "Другие случаи">
-
-<!ENTITY config.link.caption "Автодействия для новых вкладок, открываемых из ссылок">
-<!ENTITY config.link.none    "Уровень 0. Отсутствует (в Firefox по умолчанию)">
-<!ENTITY config.link.outer   "Уровень 1. Открывать ссылки на другой сайт в новой вкладке">
-<!ENTITY config.link.any     "Уровень 2. Открывать все ссылки в новой вкладке">
-
-<!ENTITY config.open_newwindow.caption "Открытие высплывающих окон">
-<!ENTITY config.open_newwindow.window  "Открывать как окно">
-<!ENTITY config.open_newwindow.tab     "Открывать как вкладку (в Firefox по умочанию)">
-<!ENTITY config.open_newwindow.current "Всегда загружать в текущую вкладку">
 
 <!ENTITY config.openGroupBookmark.caption     "При операции  &quot;Открыть все в вкладках&quot; из папок закладок">
 <!ENTITY config.openGroupBookmark.ask         "Всегда спрашивать">
@@ -74,24 +61,10 @@
 <!ENTITY config.openGroupBookmark.replace     "Окрывать с заменой текущей вкладки">
 <!ENTITY config.openGroupBookmark.underParent "Создавать для вкладок 'титульную' родительскую вкладку">
 
-<!ENTITY config.urlbar.caption       "Автодействия для новых вкладок, открываемых из адресной строки">
-<!ENTITY config.urlbar.none          "Уровень 0. Отсутствует (в Firefox по умолчанию)">
-<!ENTITY config.urlbar.outer         "Уровень 1. Загружать в новой вкладке, если ведут на другой сайт">
-<!ENTITY config.urlbar.any           "Уровень 2. Загружать в новой вкладке всегда">
-<!ENTITY config.urlbar.asChild.caption "Группировка открываемых вкладок">
-<!ENTITY config.urlbar.asChild.none  "Уровень 0. Открывать как отдельные вкладки">
-<!ENTITY config.urlbar.asChild.inner "Уровень 1. Открывать как дочерние вкладки, если с того же сайта">
-<!ENTITY config.urlbar.asChild.any   "Уровень 2. Открывать как дочерние вкладки всегда">
-
 <!ENTITY config.dropLinksOnTab.caption "Действие при перетаскивании ссылок или URL-ов в имеющуюся вкладку">
 <!ENTITY config.dropLinksOnTab.ask     "Всегда спрашивать">
 <!ENTITY config.dropLinksOnTab.load    "Загрузить ссылку во вкладке (в Firefox по умолчанию)">
 <!ENTITY config.dropLinksOnTab.newTab  "Открыть ссылку в новой вкладке дочерней от текущей">
-
-<!ENTITY config.jsopen.caption "Открытие новых окон скриптами на страницах">
-<!ENTITY config.jsopen.default "Открывать как окно, когда используется специальная ширина, высота, и т.д. (в Firefox по умолчанию)">
-<!ENTITY config.jsopen.forcetab "Всегда открывать как вкладку вместо окна (рекомендуется)">
-<!ENTITY config.jsopen.current  "Загружать в текущую вкладку всегда">
 
 
 <!ENTITY config.tabs.autohide "Автоскрытие/показ панели">
@@ -152,10 +125,6 @@
 <!ENTITY config.animation.enabled "Использование эффектов анимации">
 
 <!ENTITY config.tooltip.includeChildren        "Показывать содержимое дерева в всплывающем окне вкладок">
-
-<!ENTITY config.useEffectiveTLD.caption  "Определать метод для &quot;одного и того же сайта&quot;">
-<!ENTITY config.useEffectiveTLD.enabled  "по домену (&quot;aaa.example.com&quot; и &quot;bbb.example.com&quot; как один и тот же сайт)">
-<!ENTITY config.useEffectiveTLD.disabled "по хосту (&quot;aaa.example.com&quot; и &quot;bbb.example.com&quot; как разные сайты)">
 
 
 

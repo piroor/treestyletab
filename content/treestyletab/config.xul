@@ -647,9 +647,6 @@
 		<preference id="extensions.treestyletab.tooltip.includeChildren"
 			name="extensions.treestyletab.tooltip.includeChildren"
 			type="bool"/>
-		<preference id="extensions.treestyletab.useEffectiveTLD"
-			name="extensions.treestyletab.useEffectiveTLD"
-			type="bool"/>
 	</preferences>
 
 	<checkbox id="extensions.treestyletab.animation.enabled-check"
@@ -658,16 +655,6 @@
 	<checkbox id="extensions.treestyletab.tooltip.includeChildren-check"
 		preference="extensions.treestyletab.tooltip.includeChildren"
 		label="&config.tooltip.includeChildren;"/>
-	<groupbox id="useEffectiveTLD">
-		<caption label="&config.useEffectiveTLD.caption;"/>
-		<radiogroup id="extensions.treestyletab.useEffectiveTLD-radiogroup"
-			preference="extensions.treestyletab.useEffectiveTLD"
-			orient="vertical">
-			<radio value="true" label="&config.useEffectiveTLD.enabled;"/>
-			<radio value="false" label="&config.useEffectiveTLD.disabled;"/>
-		</radiogroup>
-	</groupbox>
-
 </prefpane>
 
 <script src="config.js" type="application/javascript"/>

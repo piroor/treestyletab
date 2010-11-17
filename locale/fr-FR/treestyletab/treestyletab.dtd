@@ -47,21 +47,8 @@
 
 <!ENTITY config.tabs.tab "Nouveaux onglets">
 
-<!ENTITY config.tabs.link.tab     "Liens">
-<!ENTITY config.tabs.urlbar.tab   "Barre d'adresse">
 <!ENTITY config.tabs.bookmark.tab "Marque-pages">
 <!ENTITY config.tabs.dragdrop.tab "Glisser-déposer dans les onglets">
-<!ENTITY config.tabs.misc.tab     "Autres cas">
-
-<!ENTITY config.link.caption "Niveau automatique d'un nouvel onglet pour des liens">
-<!ENTITY config.link.none    "Lv.0 Aucun (défaut Firefox)">
-<!ENTITY config.link.outer   "Lv.1 Ouvrir les liens d'un site web différent dans un nouvel onglet">
-<!ENTITY config.link.any     "Lv.2 Ouvrir tous les liens dans un nouvel onglet">
-
-<!ENTITY config.open_newwindow.caption "Nouvelle fenêtre ouverte spontanément à partir d'un lien d'une page web">
-<!ENTITY config.open_newwindow.window  "Ouvrir en fenêtre">
-<!ENTITY config.open_newwindow.tab     "Ouvrir en onglet (défaut Firefox, recommandé)">
-<!ENTITY config.open_newwindow.current "Ouvrir systématiquement dans l'onglet actuel">
 
 <!ENTITY config.openGroupBookmark.caption     "Action pour &quot;Tout ouvrir dans des onglets&quot; pour les dossiers d'onglets">
 <!ENTITY config.openGroupBookmark.ask         "Toujours demander">
@@ -74,24 +61,10 @@
 <!ENTITY config.openGroupBookmark.replace     "Remplacer l'onglet actuel par les pages du dossier">
 <!ENTITY config.openGroupBookmark.underParent "Mettre les onglets sous un onglet fictif afin de les grouper">
 
-<!ENTITY config.urlbar.caption       "Niveau automatique d'un nouvel onglet pour la barre d'adresse">
-<!ENTITY config.urlbar.none          "Lv.0 Aucun (défaut Firefox)">
-<!ENTITY config.urlbar.outer         "Lv.1 Charger dans un nouvel onglet si c'est un site web différent">
-<!ENTITY config.urlbar.any           "Lv.2 Toujours charger dans un nouvel onglet">
-<!ENTITY config.urlbar.asChild.caption "Arborescence des nouveaux onglets">
-<!ENTITY config.urlbar.asChild.none  "Lv.0 Ouvrir dans un onglet séparé">
-<!ENTITY config.urlbar.asChild.inner "Lv.1 Ouvrir en onglet enfant si c'est le même site web">
-<!ENTITY config.urlbar.asChild.any   "Lv.2 Toujours ouvrir en onglet enfant">
-
 <!ENTITY config.dropLinksOnTab.caption "Action pour les glisser-déposer de liens, URL, marques-pages ou fichiers sur un onglet existant">
 <!ENTITY config.dropLinksOnTab.ask     "Toujours me demander">
 <!ENTITY config.dropLinksOnTab.load    "Charger le lien dans l'onglet (défaut Firefox)">
 <!ENTITY config.dropLinksOnTab.newTab  "Ouvrir le lien dans un onglet enfant de l'onglet">
-
-<!ENTITY config.jsopen.caption "Nouvelle fenêtre ouverte par le script d'une page">
-<!ENTITY config.jsopen.default "Ouvrir une nouvelle fenêtre si ses dimensions sont précisées (défaut Firefox)">
-<!ENTITY config.jsopen.forcetab "Ouvrir un nouvel onglet au lieu d'une fenêtre (Recommandé)">
-<!ENTITY config.jsopen.current  "Charger systématiquement dans l'onglet actuel">
 
 
 <!ENTITY config.tabs.autohide "Masquage automatique">
@@ -153,11 +126,6 @@
 <!ENTITY config.animation.enabled "Effets d'animation">
 
 <!ENTITY config.tooltip.includeChildren        "Afficher le contenu de l'arborescence dans les info-bulles des onglets">
-
-<!ENTITY config.useEffectiveTLD.caption  "Méthode de détection du &quot;même site web&quot;">
-<!ENTITY config.useEffectiveTLD.enabled  "par domaine (&quot;aaa.exemple.com&quot; et &quot;bbb.exemple.com&quot; sont du même site)">
-<!ENTITY config.useEffectiveTLD.disabled "par hôte (&quot;aaa.exemple.com&quot; et &quot;bbb.exemple.com&quot; sont des sites web différents)">
-
 
 
 

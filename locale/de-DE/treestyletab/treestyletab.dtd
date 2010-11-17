@@ -48,21 +48,8 @@
 
 <!ENTITY config.tabs.tab "Tabs Öffnen">
 
-<!ENTITY config.tabs.link.tab     "Links">
-<!ENTITY config.tabs.urlbar.tab   "Adresszeile">
 <!ENTITY config.tabs.bookmark.tab "Lesezeichen">
 <!ENTITY config.tabs.dragdrop.tab "Ziehen von Links auf Tabs">
-<!ENTITY config.tabs.misc.tab     "Sonstiges">
-
-<!ENTITY config.link.caption "Verfolgte Links">
-<!ENTITY config.link.none    "Lv.0 Immer im aktiven Tab laden (Firefox Standard)">
-<!ENTITY config.link.outer   "Lv.1 In einem neuen Tab öffnen, falls es eine andere Webseite ist">
-<!ENTITY config.link.any     "Lv.2 Immer in einem neuen Tab öffnen">
-
-<!ENTITY config.open_newwindow.caption "Links, die sich unerwartet in einem neuen Fenster öffnen">
-<!ENTITY config.open_newwindow.window  "Als Fenster öffnen">
-<!ENTITY config.open_newwindow.tab     "Als neues Tab öffnen (Firefox Standard)">
-<!ENTITY config.open_newwindow.current "Immer im aktiven Tab laden">
 
 <!ENTITY config.openGroupBookmark.caption     "Verhalten von &quot;Alle in Tabs öffnen&quot; für Seiten in einem Lesezeichenordner">
 <!ENTITY config.openGroupBookmark.ask         "Jedes Mal nachfragen">
@@ -75,25 +62,10 @@
 <!ENTITY config.openGroupBookmark.replace     "Aktuelles Tab durch die neuen Tabs ersetzen">
 <!ENTITY config.openGroupBookmark.underParent "Seiten zur Gruppierung einem Dummytab unterordnen">
 
-<!ENTITY config.urlbar.caption       "Eingegebene Adressen">
-<!ENTITY config.urlbar.none          "Lv.0 Immer im aktiven Tab laden (Firefox Standard)">
-<!ENTITY config.urlbar.outer         "Lv.1 In neuem Tab laden, falls es eine andere Webseite ist">
-<!ENTITY config.urlbar.any           "Lv.2 Immer in einem neuen Tab laden">
-<!ENTITY config.urlbar.asChild.caption "Anordnung des neuen Tabs">
-<!ENTITY config.urlbar.asChild.none  "Lv.0 Neues eigenes Tab auf oberster Ebene">
-<!ENTITY config.urlbar.asChild.inner "Lv.1 Neues untergeordnetes Tab, falls es die gleiche Webseite ist">
-<!ENTITY config.urlbar.asChild.any   "Lv.2 Immer als untergeordnetes Tab">
-
 <!ENTITY config.dropLinksOnTab.caption "Verhalten für das Drag &amp; Drop von URLs auf Tabs">
 <!ENTITY config.dropLinksOnTab.ask     "Jedes Mal nachfragen">
 <!ENTITY config.dropLinksOnTab.load    "Seite im Tab laden (Firefox Standard)">
 <!ENTITY config.dropLinksOnTab.newTab  "Seite in einem neuen untergeordneten Tab laden">
-
-<!ENTITY config.jsopen.caption "Fenster, die sich durch Skripte öffnen">
-<!ENTITY config.jsopen.default "Als Fenster öffnen, wenn das Skript eine bestimmte Fenstergröße vorgibt (Firefox Standard)">
-<!ENTITY config.jsopen.forcetab "Auf jeden Fall als Tab öffnen (Empfohlen)">
-<!ENTITY config.jsopen.current  "Immer im aktiven Tab laden">
-
 
 <!ENTITY config.tabs.autohide "Platz sparen">
 
@@ -154,11 +126,6 @@
 <!ENTITY config.animation.enabled "Animationseffekte aktivieren">
 
 <!ENTITY config.tooltip.includeChildren        "Titel der untergeordneten Tabs im Tooltip geschlossener Tabs anzeigen">
-
-<!ENTITY config.useEffectiveTLD.caption  "Erkennung der &quot;gleichen Webseite&quot;">
-<!ENTITY config.useEffectiveTLD.enabled  "Nur Domain berücksichtigen (&quot;a.example.com&quot; and &quot;b.example.com&quot; gehören zur gleichen Webseite)">
-<!ENTITY config.useEffectiveTLD.disabled "Host/Subdomain auch berücksichtigen (&quot;a.example.com&quot; and &quot;b.example.com&quot; zählen als unterschiedliche Webeiten)">
-
 
 
 

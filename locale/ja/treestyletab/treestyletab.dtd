@@ -47,21 +47,8 @@
 
 <!ENTITY config.tabs.tab "新しいタブ">
 
-<!ENTITY config.tabs.link.tab     "リンク">
-<!ENTITY config.tabs.urlbar.tab   "ロケーションバー">
 <!ENTITY config.tabs.bookmark.tab "ブックマーク">
 <!ENTITY config.tabs.dragdrop.tab "タブへのドラッグ＆ドロップ">
-<!ENTITY config.tabs.misc.tab     "その他">
-
-<!ENTITY config.link.caption "リンクから自動的にタブを開くレベル">
-<!ENTITY config.link.none    "Lv.0 なし（Firefox初期状態）">
-<!ENTITY config.link.outer   "Lv.1 異なるサイトへのリンクをタブで開く">
-<!ENTITY config.link.any     "Lv.2 すべてのリンクをタブで開く">
-
-<!ENTITY config.open_newwindow.caption "Webページのリンクから勝手に開かれたウィンドウの制御">
-<!ENTITY config.open_newwindow.window  "ウィンドウで開く">
-<!ENTITY config.open_newwindow.tab     "タブで開く（Firefox初期状態・推奨）">
-<!ENTITY config.open_newwindow.current "ウィンドウやタブを開かず、常に元のタブで読み込む">
 
 <!ENTITY config.openGroupBookmark.caption     "ブックマークフォルダの内容をタブで開く時">
 <!ENTITY config.openGroupBookmark.ask         "どうするか毎回尋ねる">
@@ -74,24 +61,10 @@
 <!ENTITY config.openGroupBookmark.replace     "現在のタブ1つだけをブックマークの内容で置き換える">
 <!ENTITY config.openGroupBookmark.underParent "グループ化用のダミーのタブを親にする">
 
-<!ENTITY config.urlbar.caption       "ロケーションバーから自動的にタブを開くレベル">
-<!ENTITY config.urlbar.none          "Lv.0 なし（Firefox初期状態）">
-<!ENTITY config.urlbar.outer         "Lv.1 異なるサイトを新しいタブで開く">
-<!ENTITY config.urlbar.any           "Lv.2 すべて新しいタブで開く">
-<!ENTITY config.urlbar.asChild.caption "開かれたタブのツリー化">
-<!ENTITY config.urlbar.asChild.none  "Lv.0 ツリーにしない">
-<!ENTITY config.urlbar.asChild.inner "Lv.1 同じサイトのタブを現在のタブの子として開く">
-<!ENTITY config.urlbar.asChild.any   "Lv.2 すべて現在のタブの子として開く">
-
 <!ENTITY config.dropLinksOnTab.caption "リンクやURL、ブックマーク、ファイルをタブにドラッグ＆ドロップした時">
 <!ENTITY config.dropLinksOnTab.ask     "どうするか毎回尋ねる">
 <!ENTITY config.dropLinksOnTab.load    "ドロップ先のタブの中に読み込む（Firefox初期状態）">
 <!ENTITY config.dropLinksOnTab.newTab  "ドロップ先のタブのツリーに新しいタブを開く">
-
-<!ENTITY config.jsopen.caption "Webページのスクリプトで開かれるウィンドウの制御">
-<!ENTITY config.jsopen.default "大きさや位置を指定されたウィンドウはウィンドウとして開く（Firefox初期状態）">
-<!ENTITY config.jsopen.forcetab "スクリプトで開かれるウィンドウはすべてタブで開く（推奨）">
-<!ENTITY config.jsopen.current  "ウィンドウやタブを開かず、常に元のタブで読み込む">
 
 
 <!ENTITY config.tabs.autohide "自動的に隠す">
@@ -154,10 +127,6 @@
 <!ENTITY config.animation.enabled "アニメーション効果を有効にする">
 
 <!ENTITY config.tooltip.includeChildren        "タブのツールチップにツリーの内容を表示する">
-
-<!ENTITY config.useEffectiveTLD.caption  "同じサイトかどうかの判別方法">
-<!ENTITY config.useEffectiveTLD.enabled  "ドメイン名で判別する（aaa.example.comとbbb.example.comを同じサイトと見なす）">
-<!ENTITY config.useEffectiveTLD.disabled "ホスト名で判別する（aaa.example.comとbbb.example.comを別のサイトと見なす）">
 
 
 

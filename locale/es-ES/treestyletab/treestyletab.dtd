@@ -48,21 +48,8 @@
 <!ENTITY config.tabs.tab "New Tabs">
 <!--ENTITY config.tabs.tab "Operaciones"-->
 
-<!ENTITY config.tabs.link.tab     "Links">
-<!ENTITY config.tabs.urlbar.tab   "Location Bar">
 <!ENTITY config.tabs.bookmark.tab "Bookmarks">
 <!ENTITY config.tabs.dragdrop.tab "Drag &amp; Drop to tabs">
-<!ENTITY config.tabs.misc.tab     "Other Cases">
-
-<!ENTITY config.link.caption "Automatic New Tab Level for Links">
-<!ENTITY config.link.none    "Lv.0 Nothing (Firefox default)">
-<!ENTITY config.link.outer   "Lv.1 Abrir enlaces a un diferente sitio en una nueva pestaña">
-<!ENTITY config.link.any     "Lv.2 Abrir cualquier enlace en una nueva pestaña">
-
-<!ENTITY config.open_newwindow.caption "Nuevas ventanas abiertas desde enlaces inesperadamente">
-<!ENTITY config.open_newwindow.window  "Abrir como una ventana">
-<!ENTITY config.open_newwindow.tab     "Abrir como pestaña (Predeterminado en Firefox)">
-<!ENTITY config.open_newwindow.current "Load into the Current Tab anyway">
 
 <!ENTITY config.openGroupBookmark.caption     "Behavior of &quot;Open All in Tabs&quot; for bookmark folders">
 <!--ENTITY config.openGroupBookmark.caption     "&quot;Abrir todos en pestañas&quot; desde carpetas de marcadores"-->
@@ -76,24 +63,10 @@
 <!ENTITY config.openGroupBookmark.replace     "Replace the current one tab with the pages in the folder">
 <!ENTITY config.openGroupBookmark.underParent "Put tabs under a dummy tab for grouping">
 
-<!ENTITY config.urlbar.caption       "Automatic New Tab Level for the Location Bar">
-<!ENTITY config.urlbar.none          "Lv.0 Nothing (Firefox default)">
-<!ENTITY config.urlbar.outer         "Lv.1 Cargar en una nueva pestaña si es un sitio diferente al actual">
-<!ENTITY config.urlbar.any           "Lv.2 Load into new tab always">
-<!ENTITY config.urlbar.asChild.caption "Structuring of opened tabs">
-<!ENTITY config.urlbar.asChild.none  "Lv.0 Open as separate tab">
-<!ENTITY config.urlbar.asChild.inner "Lv.1 Open as child tab if it is the same website">
-<!ENTITY config.urlbar.asChild.any   "Lv.2 Open as child tab always">
-
 <!ENTITY config.dropLinksOnTab.caption "Acción para arrastrar y soltar enlaces o URIs en pestañas existentes">
 <!ENTITY config.dropLinksOnTab.ask     "Ask me always">
 <!ENTITY config.dropLinksOnTab.load    "Cargar enlace dentro de una nueva pestaña (Predeterminado en Firefox)">
 <!ENTITY config.dropLinksOnTab.newTab  "Abrir enlace como hija de la pestaña actual">
-
-<!ENTITY config.jsopen.caption "Nuevas ventanas abiertas desde Scripts">
-<!ENTITY config.jsopen.default "Abrir como ventana cuando contienen un ancho o altura especial. (Predeterminado en Firefox)">
-<!ENTITY config.jsopen.forcetab "Abrir como pestañas en ves de ventanas (Recomendado)">
-<!ENTITY config.jsopen.current  "Load into the Current Tab anyway">
 
 
 <!ENTITY config.tabs.autohide "Auto ocultar">
@@ -158,9 +131,6 @@
 
 <!ENTITY config.tooltip.includeChildren        "Show tree contents in tooltips on tabs">
 
-<!ENTITY config.useEffectiveTLD.caption  "Detecting method for &quot;same website&quot;">
-<!ENTITY config.useEffectiveTLD.enabled  "by Domain (&quot;aaa.example.com&quot; and &quot;bbb.example.com&quot; are same websites)">
-<!ENTITY config.useEffectiveTLD.disabled "by Host (&quot;aaa.example.com&quot; and &quot;bbb.example.com&quot; are different websites)">
 
 
 
