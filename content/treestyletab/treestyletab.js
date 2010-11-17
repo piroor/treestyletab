@@ -359,7 +359,13 @@ var TreeStyleTabService = {
 	
 	initUninstallationListener : function TSTService_initUninstallationListener() 
 	{
-		var prefs = window['piro.sakura.ne.jp'].prefs;
+		var namespace = {};
+		Components.utils.import(
+			'resource://treestyletab-modules/prefs.js',
+			namespace
+		);
+		var prefs = namespace.prefs;
+		namespace = void(0);
 		var restorePrefs = function() {
 				if (!prefs) return;
 				[
@@ -1040,7 +1046,8 @@ catch(e) {
 			eval(aFunc+' = '+source.replace( // for -Firefox 3.6
 				/(openNewTabWith\()/g,
 				<![CDATA[
-					if (!TreeStyleTabService.checkToOpenChildTab(event.target.ownerDocument.defaultView)) TreeStyleTabService.readyToOpenChildTab(event.target.ownerDocument.defaultView);
+					if (!TreeStyleTabService.checkToOpenChildTab(event.target.ownerDocument.defaultView))
+						TreeStyleTabService.readyToOpenChildTab(event.target.ownerDocument.defaultView);
 					$1]]>
 			).replace( // for -Firefox 3.6
 				/(event.ctrlKey|event.metaKey)/,

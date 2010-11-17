@@ -1347,7 +1347,6 @@ var TreeStyleTabUtils = {
 		var internal = info.internal || {};
 
 		var b       = this.getTabBrowserFromFrame(frame);
-		var nextTab = b.treeStyleTab.getNextSiblingTab(currentTab);
 
 		var targetHost  = this._getDomainFromURI(info.uri);
 		var currentTab  = this.getTabFromFrame(frame);
@@ -1373,8 +1372,9 @@ var TreeStyleTabUtils = {
 			parent = ('forceChild' in internal && !internal.forceChild) ? null :
 					(parentHost == targetHost && !internal.forceChild) ? parentTab :
 					frame ;
+			let nextTab = b.treeStyleTab.getNextSiblingTab(currentTab);
 			insertBefore = parentHost == targetHost && !internal.forceChild &&
-					(this.getTreePref('insertNewChildAt') == this.kINSERT_FIRST ?
+					(this.getTreePref('insertNewChildAt') == 0 ?
 						nextTab :
 						(
 							b.treeStyleTab.getTabById(currentTab.__treestyletab__next) ||
