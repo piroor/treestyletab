@@ -288,24 +288,6 @@
 <prefpane id="prefpane-tab" label="&config.tabs.tab;"
 	onpaneload="initTabPane();">
 	<preferences>
-		<preference id="extensions.treestyletab.openOuterLinkInNewTab"
-			name="extensions.treestyletab.openOuterLinkInNewTab"
-			type="bool"/>
-		<preference id="extensions.treestyletab.openAnyLinkInNewTab"
-			name="extensions.treestyletab.openAnyLinkInNewTab"
-			type="bool"/>
-		<preference id="extensions.treestyletab.urlbar.loadDifferentDomainToNewTab"
-			name="extensions.treestyletab.urlbar.loadDifferentDomainToNewTab"
-			type="bool"/>
-		<preference id="extensions.treestyletab.urlbar.loadDifferentDomainToNewTab.asChild"
-			name="extensions.treestyletab.urlbar.loadDifferentDomainToNewTab.asChild"
-			type="bool"/>
-		<preference id="extensions.treestyletab.urlbar.loadSameDomainToNewTab"
-			name="extensions.treestyletab.urlbar.loadSameDomainToNewTab"
-			type="bool"/>
-		<preference id="extensions.treestyletab.urlbar.loadSameDomainToNewTab.asChild"
-			name="extensions.treestyletab.urlbar.loadSameDomainToNewTab.asChild"
-			type="bool"/>
 		<preference id="extensions.treestyletab.dropLinksOnTab.behavior"
 			name="extensions.treestyletab.dropLinksOnTab.behavior"
 			type="int"/>
@@ -315,15 +297,6 @@
 		<preference id="browser.tabs.loadFolderAndReplace"
 			name="browser.tabs.loadFolderAndReplace.override"
 			type="bool"/>
-		<preference id="browser.link.open_newwindow"
-			name="browser.link.open_newwindow"
-			type="int"/>
-		<preference id="browser.link.open_newwindow.restriction"
-			name="browser.link.open_newwindow.restriction.override"
-			type="int"/>
-		<preference id="extensions.treestyletab.preferences.newTab-tabbox.selectedIndex"
-			name="extensions.treestyletab.preferences.newTab-tabbox.selectedIndex"
-			type="int"/>
 	</preferences>
 
 	<vbox>
@@ -331,42 +304,10 @@
 	<tabbox id="newTab-tabbox"
 		orient="vertical">
 		<tabs>
-			<tab label="&config.tabs.link.tab;"/>
 			<tab label="&config.tabs.bookmark.tab;"/>
-			<tab label="&config.tabs.urlbar.tab;"/>
 			<tab label="&config.tabs.dragdrop.tab;"/>
-			<tab label="&config.tabs.misc.tab;"/>
 		</tabs>
 		<tabpanels>
-			<tabpanel orient="vertical">
-				<groupbox>
-					<caption label="&config.link.caption;"/>
-					<hbox align="stretch">
-						<scale id="openLinkInNewTab-scale"
-							orient="vertical"
-							min="0"
-							max="2"
-							style="height:4em;"
-							onchange="if (gOpenLinkInTabScale) gOpenLinkInTabScale.onChange();"/>
-						<vbox id="openLinkInNewTab-labels">
-							<label value="&config.link.none;" control="openLinkInNewTab-scale"/>
-							<spacer flex="1"/>
-							<label value="&config.link.outer;" control="openLinkInNewTab-scale"/>
-							<spacer flex="1"/>
-							<label value="&config.link.any;" control="openLinkInNewTab-scale"/>
-						</vbox>
-					</hbox>
-				</groupbox>
-				<groupbox>
-					<caption label="&config.open_newwindow.caption;"/>
-					<radiogroup id="browser.link.open_newwindow-radiogroup"
-						preference="browser.link.open_newwindow"
-						orient="vertical">
-						<radio value="2" label="&config.open_newwindow.window;"/>
-						<radio value="3" label="&config.open_newwindow.tab;"/>
-					</radiogroup>
-				</groupbox>
-			</tabpanel>
 			<tabpanel orient="vertical">
 				<groupbox>
 					<caption label="&config.openGroupBookmark.caption;"/>
@@ -421,49 +362,6 @@
 			</tabpanel>
 			<tabpanel orient="vertical">
 				<groupbox>
-					<caption label="&config.urlbar.caption;"/>
-					<hbox align="stretch">
-						<scale id="loadLocationBarToNewTab-scale"
-							orient="vertical"
-							min="0"
-							max="2"
-							style="height:4em;"
-							onchange="
-								if (gLoadLocationBarToNewTabScale) {
-									gLoadLocationBarToNewTabScale.onChange();
-									gLoadLocationBarToChildTabScale.disabled = gLoadLocationBarToNewTabScale.value == 0;
-								}
-							"/>
-						<vbox id="loadLocationBarToNewTab-labels">
-							<label value="&config.urlbar.none;" control="loadLocationBarToNewTab-scale"/>
-							<spacer flex="1"/>
-							<label value="&config.urlbar.outer;" control="loadLocationBarToNewTab-scale"/>
-							<spacer flex="1"/>
-							<label value="&config.urlbar.any;" control="loadLocationBarToNewTab-scale"/>
-						</vbox>
-					</hbox>
-					<groupbox>
-						<caption label="&config.urlbar.asChild.caption;" />
-						<hbox align="stretch">
-							<scale id="loadLocationBarToChildTab-scale"
-								orient="vertical"
-								min="0"
-								max="2"
-								style="height:4em;"
-								onchange="if (gLoadLocationBarToChildTabScale) gLoadLocationBarToChildTabScale.onChange();"/>
-							<vbox id="loadLocationBarToChildTab-labels">
-								<label value="&config.urlbar.asChild.none;" control="loadLocationBarToChildTab-scale"/>
-								<spacer flex="1"/>
-								<label value="&config.urlbar.asChild.inner;" control="loadLocationBarToChildTab-scale"/>
-								<spacer flex="1"/>
-								<label value="&config.urlbar.asChild.any;" control="loadLocationBarToChildTab-scale"/>
-							</vbox>
-						</hbox>
-					</groupbox>
-				</groupbox>
-			</tabpanel>
-			<tabpanel orient="vertical">
-				<groupbox>
 					<caption label="&config.dropLinksOnTab.caption;"/>
 					<hbox>
 						<checkbox id="dropLinksOnTab-check"
@@ -483,17 +381,6 @@
 						</radiogroup>
 						</vbox>
 					</deck>
-				</groupbox>
-			</tabpanel>
-			<tabpanel orient="vertical">
-				<groupbox>
-					<caption label="&config.jsopen.caption;"/>
-					<radiogroup id="browser.link.open_newwindow.restriction-radiogroup"
-						preference="browser.link.open_newwindow.restriction"
-						orient="vertical">
-						<radio value="2" label="&config.jsopen.default;"/>
-						<radio value="0" label="&config.jsopen.forcetab;"/>
-					</radiogroup>
 				</groupbox>
 			</tabpanel>
 		</tabpanels>

@@ -2093,12 +2093,6 @@ TreeStyleTabBrowser.prototype = {
 			this.updateTabCollapsed(tab, false, this.restoringTree);
 		}
 
-		if (this.readiedToOpenDivertedTab) {
-			if (!this.getPref('browser.tabs.loadDivertedInBackground'))
-				b.selectedTab = tab;
-			this.readiedToOpenDivertedTab = false;
-		}
-
 		var prev = this.getPreviousSiblingTab(tab);
 		if (prev) {
 			this.setTabValue(tab, this.kINSERT_AFTER, prev.getAttribute(this.kID));

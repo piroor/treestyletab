@@ -369,7 +369,6 @@ var TreeStyleTabService = {
 		var restorePrefs = function() {
 				if (!prefs) return;
 				[
-					'browser.link.open_newwindow.restriction',
 					'browser.tabs.loadFolderAndReplace',
 					'browser.tabs.insertRelatedAfterCurrent',
 					'extensions.stm.tabBarMultiRows' // Super Tab Mode
@@ -973,20 +972,6 @@ catch(e) {
 			toolbox = null;
 		}
 
-		this._splitFunctionNames(<![CDATA[
-			window.permaTabs.utils.wrappedFunctions["window.BrowserLoadURL"]
-			window.BrowserLoadURL
-		]]>).forEach(function(aFunc) {
-			let source = this._getFunctionSource(aFunc);
-			if (!source || !/^\(?function BrowserLoadURL/.test(source))
-				return;
-			eval(aFunc+' = '+source.replace(
-				'aTriggeringEvent && aTriggeringEvent.altKey',
-				'TreeStyleTabService.checkReadyToOpenNewTabOnLocationBar(url, $&)'
-			));
-			source = null;
-		}, this);
-
 
 		eval('nsContextMenu.prototype.openLinkInTab = '+
 			nsContextMenu.prototype.openLinkInTab.toSource().replace(
@@ -1063,44 +1048,6 @@ catch(e) {
 						) :
 						(TreeStyleTabService.readyToOpenChildTab(), false)
 				]]>
-			).replace( // for -Firefox 3.6
-				/* あらゆるリンクからタブを開く設定の時に、アクセルキーが押されていた場合は
-				   反転された動作（通常のリンク読み込み）を行う */
-				'return false;case 1:',
-				<![CDATA[
-						if (( // do nothing for Tab Mix Plus
-								!TreeStyleTabService.getTreePref('compatibility.TMP') ||
-								!('TMP_contentAreaClick' in window)
-							) &&
-							TreeStyleTabService.checkToOpenChildTab()) {
-							TreeStyleTabService.stopToOpenChildTab();
-							if (TreeStyleTabService.isAccelKeyPressed(event)) {
-								if (linkNode)
-									urlSecurityCheck(href,
-										'nodePrincipal' in linkNode.ownerDocument ?
-											linkNode.ownerDocument.nodePrincipal :
-											linkNode.ownerDocument.location.href
-									);
-								var postData = {};
-								href = getShortcutOrURI(href, postData);
-								if (!href) return false;
-								loadURI(href, null, postData.value, false);
-							}
-						}
-						return false;
-					case 1:
-				]]>
-			).replace( // for Firefox 4.0-
-				'where = whereToOpenLink(event);',
-				<![CDATA[$&
-					var TSTFilteringResult = TreeStyleTabService.filterWhereToOpenLink(where, { linkNode : linkNode, event : event });
-					where = TSTFilteringResult.where;
-					if (TSTFilteringResult.divertedToTab)
-						TreeStyleTabService.readyToOpenDivertedTab();
-				]]>.toString()
-			).replace( // for Firefox 4.0-
-				/(if \([^\)]*where == "current")/,
-				'$1 && !TSTFilteringResult.inverted'
 			).replace( // for Firefox 4.0-
 				/(fromContent\s*:\s*true\s*,)/,
 				'$1 event : event, linkNode : linkNode, '
@@ -1133,23 +1080,6 @@ catch(e) {
 			if (!source || !/^\(?function contentAreaClick/.test(source))
 				return;
 			eval(aFunc+' = '+source.replace(
-				/((openWebPanel\([^\;]+\);|PlacesUIUtils.showMinimalAddBookmarkUI\([^;]+\);)event.preventDefault\(\);return false;\})/,
-				<![CDATA[
-					$1
-					else if (
-						( // do nothing for Tab Mix Plus
-							!TreeStyleTabService.getTreePref('compatibility.TMP') ||
-							!('TMP_contentAreaClick' in window)
-						) &&
-						TreeStyleTabService.checkReadyToOpenNewTabFromLink(wrapper)
-						) {
-						event.stopPropagation();
-						event.preventDefault();
-						handleLinkClick(event, wrapper.href, linkNode);
-						return true;
-					}
-				]]>
-			).replace(
 				// for Tab Utilities, etc. Some addons insert openNewTabWith() to the function.
 				// (calls for the function is not included by Firefox default.)
 				/(openNewTabWith\()/g,
@@ -1288,23 +1218,6 @@ catch(e) {
  
 	initToolbarItems : function TSTService_initToolbarItems() 
 	{
-		var bar = document.getElementById('urlbar');
-		if (!bar) return;
-
-		var source;
-		if (
-			'handleCommand' in bar &&
-			(source = bar.handleCommand.toSource()) &&
-			source.indexOf('TreeStyleTabService') < 0
-			) {
-			eval('bar.handleCommand = '+source.replace(
-				/(aTriggeringEvent && aTriggeringEvent\.altKey)/g,
-				'TreeStyleTabService.checkReadyToOpenNewTabOnLocationBar(this.value, $1)'
-			));
-		}
-		bar    = null;
-		source = null;
-
 		// for Firefox 4.0 or later
 		this.updateAllTabsButton(gBrowser);
 	},

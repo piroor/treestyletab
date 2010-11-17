@@ -38,7 +38,7 @@ const EXPORTED_SYMBOLS = ['TreeStyleTabUtils'];
 const Cc = Components.classes;
 const Ci = Components.interfaces;
  
-Components.utils.import('resource://treestyletab-modules/prefs.js');
+Components.utils.import('resource://treestyletab-modules/prefs.js'); 
 Components.utils.import('resource://treestyletab-modules/boxObject.js');
 Components.utils.import('resource://treestyletab-modules/stringBundle.js');
 Components.utils.import('resource://treestyletab-modules/extensions.js');
@@ -197,17 +197,6 @@ var TreeStyleTabUtils = {
 	},
 	_WindowMediator : null,
 
-	get EffectiveTLD()
-	{
-		if (!('_EffectiveTLD' in this)) {
-			this._EffectiveTLD = 'nsIEffectiveTLDService' in Ci ?
-				Cc['@mozilla.org/network/effective-tld-service;1'].getService(Ci.nsIEffectiveTLDService) :
-				null ;
-		}
-		return this._EffectiveTLD;
-	},
-//	_EffectiveTLD : null,
-
 	get PromptService()
 	{
 		if (!this._PromptService) {
@@ -241,7 +230,7 @@ var TreeStyleTabUtils = {
 				.get('chrome://browser/locale/tabbrowser.properties');
 	},
  
-	get extensions() { return window['piro.sakura.ne.jp'].extensions; },
+	get extensions() { return window['piro.sakura.ne.jp'].extensions; }, 
 	get animationManager() { return window['piro.sakura.ne.jp'].animationManager; },
 	get autoScroll() { return window['piro.sakura.ne.jp'].autoScroll; },
  
@@ -257,7 +246,6 @@ var TreeStyleTabUtils = {
 
 		this.onPrefChange('extensions.treestyletab.indent');
 		this.onPrefChange('extensions.treestyletab.clickOnIndentSpaces.enabled');
-		this.onPrefChange('browser.link.open_newwindow.restriction.override');
 		this.onPrefChange('browser.tabs.loadFolderAndReplace.override');
 		this.onPrefChange('browser.tabs.insertRelatedAfterCurrent.override');
 		this.onPrefChange('extensions.stm.tabBarMultiRows.override'); // Super Tab Mode
@@ -1116,7 +1104,7 @@ var TreeStyleTabUtils = {
 		if (tabs) {
 			let index = tabs.indexOf(aTab);
 			if (index > -1)
-				return tabs.length > index ? tabs[index+1] : null 
+				return tabs.length > index ? tabs[index+1] : null
 		}
 		var tab = aTab.nextSibling;
 		return (tab && tab.localName == 'tab') ? tab : null ;
@@ -1133,7 +1121,7 @@ var TreeStyleTabUtils = {
 		if (tabs) {
 			let index = tabs.indexOf(aTab);
 			if (index > -1)
-				return 0 < index ? tabs[index-1] : null 
+				return 0 < index ? tabs[index-1] : null
 		}
 		var tab = aTab.previousSibling;
 		return (tab && tab.localName == 'tab') ? tab : null ;
@@ -1311,191 +1299,6 @@ var TreeStyleTabUtils = {
 
 		var ownerBrowser = this.getTabBrowserFromFrame(frame);
 		return ownerBrowser.treeStyleTab.readiedToAttachNewTab || ownerBrowser.treeStyleTab.readiedToAttachNewTabGroup ? true : false ;
-	},
- 
-	checkReadyToOpenNewTab : function TSTUtils_checkReadyToOpenNewTab(aInfo) 
-	{
-/*
-	挙動の説明
-
-	・現在のサイトと異なるサイトを読み込む場合にタブを開く時：
-	  →特に何もしない。新しく開くタブを子タブにする場合は別途
-	    readyToOpenChildTabを使う。
-
-	・現在のサイトと同じサイトのページを読み込む場合にタブを開く時：
-	  →親のタブは同じサイトか？
-	    No ：子タブを開く
-	    Yes：兄弟としてタブを開く。ただし、このタブからのタブはすべて
-	         現在のタブと次の兄弟タブとの間に開かれ、仮想サブツリーとなる。
-	         →現在のタブに「__treestyletab__next」プロパティが
-	           あるか？
-	           Yes：__treestyletab__nextで示されたタブの直前に
-	                新しい兄弟タブを挿入する。
-	           No ：現在のタブの次の兄弟タブのIDを__treestyletab__next
-	                プロパティに保持し、仮想の子タブを挿入する位置の
-	                基準とする。
-*/
-
-		var info = aInfo || { uri : '' };
-		if (/^(javascript|moz-action):/.test(info.uri))
-			return false;
-
-		var frame = this.getFrameFromTabBrowserElements(info.target);
-		if (!frame) return false;
-
-		var external = info.external || {};
-		var internal = info.internal || {};
-
-		var b       = this.getTabBrowserFromFrame(frame);
-
-		var targetHost  = this._getDomainFromURI(info.uri);
-		var currentTab  = this.getTabFromFrame(frame);
-		var currentURI  = frame.location.href;
-		var currentHost = this._getDomainFromURI(currentURI);
-		var parentTab   = b.treeStyleTab.getParentTab(currentTab);
-		var parentURI   = parentTab ? parentTab.linkedBrowser.currentURI : null ;
-		var parentHost  = this._getDomainFromURI(parentURI);
-
-		var openTab      = false;
-		var parent       = null;
-		var insertBefore = null;
-
-		if (info.modifier) openTab = true;
-
-		if (
-			internal.newTab &&
-			currentHost == targetHost &&
-			currentURI != 'about:blank' &&
-			currentURI.split('#')[0] != info.uri.split('#')[0]
-			) {
-			openTab = info.modifier && info.invert ? !openTab : true ;
-			parent = ('forceChild' in internal && !internal.forceChild) ? null :
-					(parentHost == targetHost && !internal.forceChild) ? parentTab :
-					frame ;
-			let nextTab = b.treeStyleTab.getNextSiblingTab(currentTab);
-			insertBefore = parentHost == targetHost && !internal.forceChild &&
-					(this.getTreePref('insertNewChildAt') == 0 ?
-						nextTab :
-						(
-							b.treeStyleTab.getTabById(currentTab.__treestyletab__next) ||
-							(nextTab ? (currentTab.__treestyletab__next = nextTab.getAttribute(this.kID), nextTab) : null )
-						)
-					);
-		}
-		else if (
-			external.newTab &&
-			currentHost != targetHost &&
-			currentURI != 'about:blank'
-			) {
-			openTab = info.modifier && info.invert ? !openTab : true ;
-			if (external.forceChild) {
-				parent = frame;
-			}
-		}
-
-		if (openTab && parent) {
-			this.readyToOpenChildTab(parent, false, insertBefore);
-		}
-		return openTab;
-	},
-	
-	checkReadyToOpenNewTabOnLocationBar : function TSTUtils_checkReadyToOpenNewTabOnLocationBar(aURI, aModifier) 
-	{
-		return this.checkReadyToOpenNewTab({
-			uri      : aURI,
-			external : {
-				newTab     : this.getTreePref('urlbar.loadDifferentDomainToNewTab'),
-				forceChild : this.getTreePref('urlbar.loadDifferentDomainToNewTab.asChild')
-			},
-			internal : {
-				newTab     : this.getTreePref('urlbar.loadSameDomainToNewTab'),
-				forceChild : this.getTreePref('urlbar.loadSameDomainToNewTab.asChild')
-			},
-			modifier : aModifier,
-			invert   : this.getTreePref('urlbar.invertDefaultBehavior')
-		});
-	},
- 
-	checkReadyToOpenNewTabFromLink : function TSTUtils_checkReadyToOpenNewTabFromLink(aLink) 
-	{
-		var options = aLink;
-		if (typeof aLink == 'string') {
-			options = {
-				link : { href : aLink }
-			};
-		}
-		else if (aLink instanceof Ci.nsIDOMElement) {
-			options = { link : aLink };
-		}
-		options.__proto__ = {
-			external : {
-				newTab : this.getTreePref('openOuterLinkInNewTab') || this.getTreePref('openAnyLinkInNewTab'),
-				forceChild : this.getTreePref('openOuterLinkInNewTab.asChild')
-			},
-			internal : {
-				newTab : this.getTreePref('openAnyLinkInNewTab'),
-				forceChild : this.getTreePref('openAnyLinkInNewTab.asChild')
-			}
-		};
-		options.uri = options.link.href;
-		return this.checkReadyToOpenNewTab(options);
-	},
- 
-	filterWhereToOpenLink : function TSTUtils_filterwhereToOpenLink(aWhere, aParams)
-	{
-		var inverted = false;
-		var divertedToTab = false;
-		var link = aParams.linkNode || aParams.event.originalTarget;
-		var isNewTab = this.isNewTabAction(aParams.event);
-		if (this.checkReadyToOpenNewTabFromLink({
-				link     : link,
-				modifier : isNewTab,
-				invert   : this.getTreePref('link.invertDefaultBehavior')
-			})) {
-			if (aWhere == 'current' && !isNewTab) {
-				divertedToTab = true;
-				aWhere = this.getPref('browser.tabs.loadInBackground') ? 'tabshifted' : 'tab' ;
-			}
-		}
-		else if (aWhere.indexOf('tab') > -1) {
-			aWhere = 'current';
-			inverted = true;
-		}
-		return {
-			where         : aWhere,
-			inverted      : inverted,
-			divertedToTab : divertedToTab
-		};
-	},
- 
-	_getDomainFromURI : function TSTUtils__getDomainFromURI(aURI) 
-	{
-		if (!aURI) return null;
-
-		if (this.getTreePref('useEffectiveTLD') && this.EffectiveTLD) {
-			try {
-				var uri = aURI;
-				if (!(uri instanceof Ci.nsIURI)) uri = this.makeURIFromSpec(uri);
-				var domain = this.EffectiveTLD.getBaseDomain(uri, 0);
-				if (domain) return domain;
-			}
-			catch(e) {
-			}
-		}
-
-		var str = aURI;
-		if (str instanceof Ci.nsIURI) str = aURI.spec;
-		return /^\w+:(?:\/\/)?([^:\/]+)/.test(this.browserWindow.getShortcutOrURI(str)) ?
-				RegExp.$1 :
-				null ;
-	},
-  
-	readyToOpenDivertedTab : function TSTUtils_readyToOpenDivertedTab(aFrameOrTabBrowser) 
-	{
-		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
-		if (!frame) return;
-		var ownerBrowser = this.getTabBrowserFromFrame(frame);
-		ownerBrowser.treeStyleTab.readiedToOpenDivertedTab = true;
 	},
   
 /* tree manipulations */ 
@@ -1880,7 +1683,6 @@ var TreeStyleTabUtils = {
 					Ci.nsIDOMXPathResult.NUMBER_TYPE
 				).numberValue;
 	},
- 
   
 /* tabbar position */ 
 	
@@ -1913,7 +1715,6 @@ var TreeStyleTabUtils = {
 	
 	domains : [ 
 		'extensions.treestyletab.',
-		'browser.link.open_newwindow.restriction',
 		'browser.tabs.loadFolderAndReplace',
 		'browser.tabs.insertRelatedAfterCurrent',
 		'extensions.stm.tabBarMultiRows' // Super Tab Mode
@@ -1935,14 +1736,12 @@ var TreeStyleTabUtils = {
 				break;
 
 			case 'browser.tabs.insertRelatedAfterCurrent':
-			case 'browser.link.open_newwindow.restriction':
 			case 'browser.tabs.loadFolderAndReplace':
 			case 'extensions.stm.tabBarMultiRows': // Super Tab Mode
 				if (this.prefOverriding) return;
 				aPrefName += '.override';
 				this.setPref(aPrefName, value);
 			case 'browser.tabs.insertRelatedAfterCurrent.override':
-			case 'browser.link.open_newwindow.restriction.override':
 			case 'browser.tabs.loadFolderAndReplace.override':
 			case 'extensions.stm.tabBarMultiRows.override': // Super Tab Mode
 				if (this.getPref(aPrefName+'.force')) {

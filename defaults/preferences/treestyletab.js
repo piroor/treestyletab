@@ -73,16 +73,6 @@ pref("extensions.treestyletab.show.context-item-toggleAutoHide", true);
 pref("extensions.treestyletab.show.context-item-toggleFixed", true);
 pref("extensions.treestyletab.show.context-item-bookmarkTabSubtree", true);
 
-pref("extensions.treestyletab.openOuterLinkInNewTab", false);
-pref("extensions.treestyletab.openOuterLinkInNewTab.asChild", true);
-pref("extensions.treestyletab.openAnyLinkInNewTab", false);
-pref("extensions.treestyletab.openAnyLinkInNewTab.asChild", false);
-pref("extensions.treestyletab.link.invertDefaultBehavior", true);
-pref("extensions.treestyletab.urlbar.loadDifferentDomainToNewTab", true);
-pref("extensions.treestyletab.urlbar.loadDifferentDomainToNewTab.asChild", false);
-pref("extensions.treestyletab.urlbar.loadSameDomainToNewTab", true);
-pref("extensions.treestyletab.urlbar.loadSameDomainToNewTab.asChild", true);
-pref("extensions.treestyletab.urlbar.invertDefaultBehavior", false);
 // 0 = always ask, 1 = load into the tab, 2 = open new child tab
 pref("extensions.treestyletab.dropLinksOnTab.behavior", 0);
 // value = Basic | Structure | Collapse/expand
@@ -98,7 +88,6 @@ pref("extensions.treestyletab.dropLinksOnTab.behavior", 0);
 //   Collapse/expand:
 //     2048 = expand all tree
 pref("extensions.treestyletab.openGroupBookmark.behavior", 2304); /* 0 | 256 | 2048 */
-pref("extensions.treestyletab.useEffectiveTLD", true);
 pref("extensions.treestyletab.taskbarPreviews.hideCollapsedTabs", true);
 
 pref("extensions.treestyletab.autoCollapseExpandSubtreeOnSelect",      true);
