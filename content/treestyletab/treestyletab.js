@@ -1034,20 +1034,6 @@ catch(e) {
 					if (!TreeStyleTabService.checkToOpenChildTab(event.target.ownerDocument.defaultView))
 						TreeStyleTabService.readyToOpenChildTab(event.target.ownerDocument.defaultView);
 					$1]]>
-			).replace( // for -Firefox 3.6
-				/(event.ctrlKey|event.metaKey)/,
-				<![CDATA[
-					TreeStyleTabService.checkReadyToOpenNewTabFromLink({
-						link     : (linkNode || { href : href }),
-						modifier : $1,
-						invert   : TreeStyleTabService.getTreePref('link.invertDefaultBehavior')
-					}) ?
-						(
-							(TreeStyleTabService.isNewTabAction(event) ? null : TreeStyleTabService.readyToOpenDivertedTab()),
-							true
-						) :
-						(TreeStyleTabService.readyToOpenChildTab(), false)
-				]]>
 			).replace( // for Firefox 4.0-
 				/(fromContent\s*:\s*true\s*,)/,
 				'$1 event : event, linkNode : linkNode, '
