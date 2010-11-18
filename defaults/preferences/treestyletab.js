@@ -18,7 +18,8 @@ pref("extensions.treestyletab.tabbar.scroll.duration", 250);
 // 0 = no scroll, 1 = scroll to new tab only when the current tab will not scrolled out, 2 = scroll to new tab always
 pref("extensions.treestyletab.tabbar.scrollToNewTab.mode", 1);
 // flat, mixed, vertigo
-pref("extensions.treestyletab.tabbar.style",      "mixed");
+// pref("extensions.treestyletab.tabbar.style",      "mixed");
+pref("extensions.treestyletab.platform.default.tabbar.style", "mixed");
 pref("extensions.treestyletab.tabbar.style.aero", false);
 // 0 = disabled, 1 = hide, 2 = shrink
 pref("extensions.treestyletab.tabbar.autoHide.mode",                   0);
@@ -56,6 +57,14 @@ pref("extensions.treestyletab.autoExpand.intelligently", true);
 pref("extensions.treestyletab.autoExpand.collapseFinally", false);
 pref("extensions.treestyletab.indent",          12);
 pref("extensions.treestyletab.indent.property", "margin");
+// pref("extensions.treestyletab.indent.property.top", "");
+// pref("extensions.treestyletab.indent.property.right", "");
+// pref("extensions.treestyletab.indent.property.bottom", "");
+// pref("extensions.treestyletab.indent.property.left", "");
+pref("extensions.treestyletab.platform.default.indent.property.top", "");
+pref("extensions.treestyletab.platform.default.indent.property.right", "");
+pref("extensions.treestyletab.platform.default.indent.property.bottom", "");
+pref("extensions.treestyletab.platform.default.indent.property.left", "");
 // 0 = first child, 1 = last child
 pref("extensions.treestyletab.insertNewChildAt", 1);
 pref("extensions.treestyletab.twisty.style", "auto"); // none, retro, modern-black, modern-white, auto

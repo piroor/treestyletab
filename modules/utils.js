@@ -269,8 +269,16 @@ var TreeStyleTabUtils = {
 	applyPlatformDefaultPrefs : function TSTUtils_applyPlatformDefaultPrefs()
 	{
 		var OS = this.XULAppInfo.OS;
+		var processed = {};
 		this.getDescendant('extensions.treestyletab.platform.'+OS).forEach(function(aKey) {
-			this.setDefaultPref(aKey.replace('platform.'+OS+'.', ''), this.getDefaultPref(aKey));
+			var key = aKey.replace('platform.'+OS+'.', '');
+			this.setDefaultPref(key, this.getPref(aKey));
+			processed[key] = true;
+		}, this);
+		this.getDescendant('extensions.treestyletab.platform.default').forEach(function(aKey) {
+			var key = aKey.replace('platform.default.', '');
+			if (!(key in processed))
+				this.setDefaultPref(key, this.getPref(aKey));
 		}, this);
 	},
 	
