@@ -30,6 +30,10 @@ TreeStyleTabBrowser.prototype = {
 	sizeProp             : 'height',
 	invertedPositionProp : 'screenX',
 	invertedSizeProp     : 'width',
+
+	enableSubtreeIndent        : true,
+	allowSubtreeCollapseExpand : true,
+	hideAlltabsButton          : true,
  
 	get browser() 
 	{
@@ -485,6 +489,7 @@ TreeStyleTabBrowser.prototype = {
 				b.tabContainer._getDropIndex.toSource().replace(
 					/\.screenX/g, '[this.treeStyleTab.positionProp]'
 				).replace(
+
 					/\.width/g, '[this.treeStyleTab.sizeProp]'
 				)
 			);
@@ -1247,11 +1252,16 @@ TreeStyleTabBrowser.prototype = {
 				b.mTabContainer._positionPinnedTabs();
 		}, 0, this);
 
-		this.setTabbrowserAttribute(this.kINDENTED, this.getTreePref('enableSubtreeIndent.'+orient) ? 'true' : null);
-		this.setTabbrowserAttribute(this.kALLOW_COLLAPSE, this.getTreePref('allowSubtreeCollapseExpand.'+orient) ? 'true' : null);
+		this.enableSubtreeIndent = this.getTreePref('enableSubtreeIndent.'+orient);
+		this.setTabbrowserAttribute(this.kINDENTED, this.enableSubtreeIndent ? 'true' : null);
 
-		if (!this.isFloating)
-			this.setTabbrowserAttribute(this.kHIDE_ALLTABS, this.getTreePref('tabbar.hideAlltabsButton.'+orient) ? 'true' : null);
+		this.allowSubtreeCollapseExpand = this.getTreePref('allowSubtreeCollapseExpand.'+orient) ;
+		this.setTabbrowserAttribute(this.kALLOW_COLLAPSE, this.allowSubtreeCollapseExpand ? 'true' : null);
+
+		if (!this.isFloating) {
+			this.hideAlltabsButton = this.getTreePref('tabbar.hideAlltabsButton.'+orient);
+			this.setTabbrowserAttribute(this.kHIDE_ALLTABS, this.hideAlltabsButton ? 'true' : null);
+		}
 
 		this.updateAllTabsIndent();
 	},
@@ -4121,6 +4131,9 @@ TreeStyleTabBrowser.prototype = {
 	updateTabIndent : function TSTBrowser_updateTabIndent(aTab, aIndent, aJustNow) 
 	{
 		this.stopTabIndentAnimation(aTab);
+
+		if (!this.enableSubtreeIndent)
+			aIndent = 0;
 
 		if (this.isMultiRow()) {
 			let colors = '-moz-border-'+this.indentTarget+'-colors:'+(function() {
