@@ -2739,6 +2739,7 @@ TreeStyleTabBrowser.prototype = {
 
 				if (parent.getAttribute(this.kCHILDREN_RESTORING))
 					this.correctChildTabsOrderWithDelay(parent);
+
 			}
 			else {
 				this.deleteTabValue(tab, this.kPARENT);
@@ -3809,8 +3810,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		this._treeViewEnabled = aValue ? true : false ;
 		if (this._treeViewEnabled) {
-			let orient = this.isVertical ? 'vertical' : 'horizontal' ;
-			if (this.getTreePref('allowSubtreeCollapseExpand.'+orient))
+			if (this.allowSubtreeCollapseExpand)
 				this.setTabbrowserAttribute(this.kALLOW_COLLAPSE, true);
 			this.updateTabsIndent(this.rootTabs, undefined, true);
 		}
