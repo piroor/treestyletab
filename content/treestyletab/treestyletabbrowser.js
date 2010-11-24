@@ -241,13 +241,19 @@ TreeStyleTabBrowser.prototype = {
 		aTab.style.marginTop = '';
 	},
  
-	updateTabsZIndex : function TSTBrowser_updateTabsZIndex() 
+	updateTabsZIndex : function TSTBrowser_updateTabsZIndex(aStacked) 
 	{
 		var tabs = this.getTabsArray(this.mTabBrowser);
 		var count = tabs.length;
-		tabs.forEach(function(aTab, aIndex) {
-			aTab.style.zIndex = count * 1000 - aIndex;
-		});
+		tabs.forEach(
+			aStacked ?
+				function(aTab, aIndex) {
+					aTab.style.zIndex = count * 1000 - aIndex;
+				} :
+				function(aTab, aIndex) {
+					aTab.style.zIndex = '';
+				}
+		);
 	},
   
 /* initialize */ 
@@ -1280,6 +1286,7 @@ TreeStyleTabBrowser.prototype = {
 		this.setTabbrowserAttribute(this.kALLOW_COLLAPSE, this.allowSubtreeCollapseExpand ? 'true' : null);
 
 		this.setTabbrowserAttribute(this.kALLOW_STACK, this.canStackTabs ? 'true' : null);
+		this.updateTabsZIndex(this.canStackTabs);
 
 		if (!this.isFloating) {
 			this.hideAlltabsButton = this.getTreePref('tabbar.hideAlltabsButton.'+orient);
@@ -2155,7 +2162,7 @@ TreeStyleTabBrowser.prototype = {
 			this.updateFloatingTabbar();
 
 		if (this.canStackTabs)
-			this.updateTabsZIndex();
+			this.updateTabsZIndex(true);
 
 		return true;
 	},
@@ -2337,7 +2344,7 @@ TreeStyleTabBrowser.prototype = {
 			this.updateFloatingTabbar();
 
 		if (this.canStackTabs)
-			this.updateTabsZIndex();
+			this.updateTabsZIndex(true);
 
 		if (collapsed)
 			this.startRendering();
@@ -2439,7 +2446,7 @@ TreeStyleTabBrowser.prototype = {
 			this.deleteTabValue(old, this.kINSERT_BEFORE);
 
 		if (this.canStackTabs)
-			this.updateTabsZIndex();
+			this.updateTabsZIndex(true);
 
 		if (
 			this.subTreeMovingCount ||
