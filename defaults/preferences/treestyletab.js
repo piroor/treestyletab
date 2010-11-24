@@ -50,6 +50,7 @@ pref("extensions.treestyletab.enableSubtreeIndent.vertical",   true);
 pref("extensions.treestyletab.enableSubtreeIndent.allTabsPopup", true);
 pref("extensions.treestyletab.allowSubtreeCollapseExpand.horizontal", false);
 pref("extensions.treestyletab.allowSubtreeCollapseExpand.vertical",   true);
+pref("extensions.treestyletab.stackCollapsedTabs", true);
 pref("extensions.treestyletab.showBorderForFirstTab",  false);
 pref("extensions.treestyletab.autoExpand.enabled",     true);
 pref("extensions.treestyletab.autoExpand.delay",       500);

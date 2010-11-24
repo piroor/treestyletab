@@ -40,6 +40,30 @@
 	visibility: collapse;
 }
 
+/* collapse/expand tree of tabs, horizontal stacked tabs */
+.tabbrowser-tabs[treestyletab-allow-subtree-collapse="true"][treestyletab-stack-collapsed-tabs="true"]
+  .tabbrowser-tab {
+	position: relative;
+}
+.tabbrowser-tabs[treestyletab-allow-subtree-collapse="true"][treestyletab-stack-collapsed-tabs="true"]
+  .tabbrowser-tab[treestyletab-collapsed="true"] {
+	visibility: visible;
+	max-width: 20px;
+	min-width: 20px;
+	width: 20px;
+	-moz-box-flex: 0;
+}
+.tabbrowser-tabs[treestyletab-allow-subtree-collapse="true"][treestyletab-stack-collapsed-tabs="true"]
+  .tabbrowser-tab[treestyletab-collapsed-done="true"] .tab-image-left > *,
+.tabbrowser-tabs[treestyletab-allow-subtree-collapse="true"][treestyletab-stack-collapsed-tabs="true"]
+  .tabbrowser-tab[treestyletab-collapsed-done="true"] .tab-image-middle > *,
+.tabbrowser-tabs[treestyletab-allow-subtree-collapse="true"][treestyletab-stack-collapsed-tabs="true"]
+  .tabbrowser-tab[treestyletab-collapsed-done="true"] .tab-image-right > *,
+.tabbrowser-tabs[treestyletab-allow-subtree-collapse="true"][treestyletab-stack-collapsed-tabs="true"]
+  .tabbrowser-tab[treestyletab-collapsed-done="true"] .tab-close-button {
+	visibility: collapse;
+}
+
 /* fixed tab bar */
 .tabbrowser-strip[treestyletab-tabbar-fixed="true"]+splitter {
 	visibility: collapse;
