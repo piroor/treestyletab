@@ -809,12 +809,14 @@ TreeStyleTabBrowser.prototype = {
 		}
 		else {
 			aTab.removeAttribute('align');
-			aTab.setAttribute('maxwidth', 250);
-			aTab.setAttribute('minwidth', this.mTabBrowser.mTabContainer.mTabMinWidth);
-			aTab.setAttribute('width', '0');
-			aTab.setAttribute('flex', 100);
-			aTab.maxWidth = 250;
-			aTab.minWidth = this.mTabBrowser.mTabContainer.mTabMinWidth;
+			if ('mTabMinWidth' in this.mTabBrowser.mTabContainer) { // Firefox 3.6 or older
+				aTab.setAttribute('maxwidth', 250);
+				aTab.setAttribute('minwidth', this.mTabBrowser.mTabContainer.mTabMinWidth);
+				aTab.setAttribute('width', '0');
+				aTab.maxWidth = 250;
+				aTab.minWidth = this.mTabBrowser.mTabContainer.mTabMinWidth;
+				aTab.setAttribute('flex', 100);
+			}
 			if (this.getTreePref('compatibility.TMP'))
 				aTab.removeAttribute('dir'); // Tab Mix Plus
 		}
