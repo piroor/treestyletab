@@ -258,6 +258,7 @@ var TreeStyleTabService = {
 					let behavior = 0;
 					if (this.getTreePref('openGroupBookmarkAsTabSubTree.underParent'))
 
+
 						behavior += this.kGROUP_BOOKMARK_USE_DUMMY;
 					if (!this.getTreePref('openGroupBookmarkBehavior.confirm')) {
 						behavior += (
@@ -762,6 +763,9 @@ catch(e) {
 		var dt = aEvent.dataTransfer;
 
 		sv.clearDropPosition();
+
+		if (tabbar._tabDropIndicator) // for Firefox 4 or later
+			tabbar._tabDropIndicator.collapsed = true;
 
 		var session = sv.getCurrentDragSession();
 		var dropActionInfo = sv.getDropAction(aEvent, session);
