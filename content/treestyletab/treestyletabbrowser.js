@@ -4522,9 +4522,9 @@ TreeStyleTabBrowser.prototype = {
 				aTab.removeAttribute(this.kCOLLAPSED_DONE);
 
 			if (CSSTransitionEnabled) {
-				aTab.style.setProperty(this.collapseCSSProp, '-'+endMargin+'px', 'important');
+				aTab.style.setProperty(this.collapseCSSProp, endMargin ? '-'+endMargin+'px' : '', 'important');
 				if (endOpacity == 0)
-					aTab.style.setProperty('opacity', endOpacity, 'important');
+					aTab.style.setProperty('opacity', endOpacity == 1 ? '' : endOpacity, 'important');
 				else
 					aTab.style.removeProperty('opacity');
 			}
@@ -4538,8 +4538,8 @@ TreeStyleTabBrowser.prototype = {
 		var deltaMargin  = endMargin - startMargin;
 		var deltaOpacity = endOpacity - startOpacity;
 
-		aTab.style.setProperty(this.collapseCSSProp, '-'+startMargin+'px', 'important');
-		aTab.style.setProperty('opacity', startOpacity, 'important');
+		aTab.style.setProperty(this.collapseCSSProp, startMargin ? '-'+startMargin+'px' : '', 'important');
+		aTab.style.setProperty('opacity', startOpacity == 1 ? '' : startOpacity, 'important');
 
 		if (!aCollapsed) {
 			aTab.setAttribute(offsetAttr, maxMargin);
@@ -4551,8 +4551,8 @@ TreeStyleTabBrowser.prototype = {
 		var firstFrame = true;
 		aTab.__treestyletab__updateTabCollapsedTask = function(aTime, aBeginning, aChange, aDuration) {
 			if (firstFrame && CSSTransitionEnabled) {
-				aTab.style.setProperty(self.collapseCSSProp, '-'+endMargin+'px', 'important');
-				aTab.style.setProperty('opacity', endOpacity, 'important');
+				aTab.style.setProperty(self.collapseCSSProp, endMargin ? '-'+endMargin+'px' : '', 'important');
+				aTab.style.setProperty('opacity', endOpacity == 1 ? '' : endOpacity, 'important');
 			}
 			firstFrame = false;
 			// If this is the last tab, negative scroll happens.
@@ -4596,8 +4596,8 @@ TreeStyleTabBrowser.prototype = {
 					let power   = Math.sin(aTime / aDuration * radian);
 					let margin  = startMargin + (deltaMargin * power);
 					let opacity = startOpacity + (deltaOpacity  * power);
-					aTab.style.setProperty(self.collapseCSSProp, '-'+margin+'px', 'important');
-					aTab.style.setProperty('opacity', opacity, 'important');
+					aTab.style.setProperty(self.collapseCSSProp, margin ? '-'+margin+'px' : '', 'important');
+					aTab.style.setProperty('opacity', opacity == 1 ? '' : opacity, 'important');
 				}
 				aTab.setAttribute(offsetAttr, maxMargin);
 				return false;
