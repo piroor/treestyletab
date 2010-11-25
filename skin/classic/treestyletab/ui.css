@@ -25,24 +25,6 @@
 	-moz-box-pack: center;
 }
 
-.tabbrowser-tabs[treestyletab-tabbar-position="top"]
-  .tabbrowser-tab[treestyletab-drop-position="self"]
-  .treestyletab-drop-marker {
-	list-style-image: url("dropmarker-down.png");
-}
-
-.tabbrowser-tabs[treestyletab-tabbar-position="top"]
-  .tabbrowser-tab[treestyletab-children][treestyletab-drop-position="self"]
-  .treestyletab-twisty,
-.tabbrowser-tabs[treestyletab-tabbar-position="top"]
-  .tabbrowser-tab[treestyletab-drop-position="self"]
-  .tab-icon-image,
-.tabbrowser-tabs[treestyletab-tabbar-position="top"]
-  .tabbrowser-tab[treestyletab-drop-position="self"]
-  .tab-extra-status {
-	visibility: hidden;
-}
-
 
 .tabbrowser-tabs[treestyletab-tabbar-position="bottom"]
   .tabbrowser-tab[treestyletab-drop-position="before"][selected="true"],
@@ -147,6 +129,58 @@
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"][treestyletab-drop-position="after"]:not([selected="true"]):hover {
 	-moz-border-right-colors: -moz-dialogtext -moz-dialogtext !important;
+}
+
+
+/* drop marker for horizontal tab bar */
+
+.tabbrowser-tabs[treestyletab-tabbar-position="top"]
+
+  .tabbrowser-tab[treestyletab-drop-position="self"]
+  .treestyletab-drop-marker {
+	list-style-image: url("dropmarker-down.png");
+}
+
+.tabbrowser-tabs[treestyletab-tabbar-position="top"]
+  .tabbrowser-tab[treestyletab-children][treestyletab-drop-position="self"]
+  .treestyletab-twisty,
+.tabbrowser-tabs[treestyletab-tabbar-position="top"]
+  .tabbrowser-tab[treestyletab-drop-position="self"]
+  .tab-icon-image,
+.tabbrowser-tabs[treestyletab-tabbar-position="top"]
+  .tabbrowser-tab[treestyletab-drop-position="self"]
+  .tab-extra-status {
+	visibility: hidden;
+}
+
+/* for Firefox 3.6 or older */
+.tabbrowser-tabs[treestyletab-tabbar-position="top"]
+  .tabbrowser-tab[treestyletab-drop-position="self"][selected="true"]
+  > .tab-image-middle,
+.tabbrowser-tabs[treestyletab-tabbar-position="top"]
+  .tabbrowser-tab[treestyletab-drop-position="self"][selected="true"]:hover
+  > .tab-image-middle,
+.tabbrowser-tabs[treestyletab-tabbar-position="top"]
+  .tabbrowser-tab[treestyletab-drop-position="self"]:not([selected="true"])
+  > .tab-image-middle,
+.tabbrowser-tabs[treestyletab-tabbar-position="top"]
+  .tabbrowser-tab[treestyletab-drop-position="self"]:not([selected="true"]):hover
+  > .tab-image-middle,
+/* for Firefox 4 or later */
+.tabbrowser-tabs[treestyletab-tabbar-position="top"]
+  .tabbrowser-tab[treestyletab-drop-position="self"][selected="true"]
+  .tab-content,
+.tabbrowser-tabs[treestyletab-tabbar-position="top"]
+  .tabbrowser-tab[treestyletab-drop-position="self"][selected="true"]:hover
+  .tab-content,
+.tabbrowser-tabs[treestyletab-tabbar-position="top"]
+  .tabbrowser-tab[treestyletab-drop-position="self"]:not([selected="true"])
+  .tab-content,
+.tabbrowser-tabs[treestyletab-tabbar-position="top"]
+  .tabbrowser-tab[treestyletab-drop-position="self"]:not([selected="true"]):hover
+  .tab-content {
+	-moz-outline: 2px -moz-dialogtext solid !important;
+	outline: 2px -moz-dialogtext solid !important;
 }
 
 
