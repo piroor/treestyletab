@@ -46,7 +46,7 @@
 	position: relative;
 }
 .tabbrowser-tabs[treestyletab-allow-subtree-collapse="true"][treestyletab-stack-collapsed-tabs="true"]
-  .tabbrowser-tab[treestyletab-collapsed="true"] {
+  .tabbrowser-tab[treestyletab-collapsed="true"][fadein] {
 	visibility: visible;
 	max-width: 20px;
 	min-width: 20px;
