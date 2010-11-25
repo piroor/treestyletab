@@ -52,6 +52,7 @@
 	min-width: 20px;
 	width: 20px;
 	-moz-box-flex: 0;
+	mask: url("res/tabEffects.svg#fadein-mask");
 }
 .tabbrowser-tabs[treestyletab-allow-subtree-collapse="true"][treestyletab-stack-collapsed-tabs="true"]
   .tabbrowser-tab[treestyletab-collapsed-done="true"] .tab-image-left > *,
