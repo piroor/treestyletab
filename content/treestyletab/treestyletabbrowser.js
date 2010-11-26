@@ -834,6 +834,8 @@ TreeStyleTabBrowser.prototype = {
 		}
 		else {
 			aTab.removeAttribute('align');
+			aTab.removeAttribute('maxwidth');
+			aTab.removeAttribute('minwidth');
 			if ('mTabMinWidth' in this.mTabBrowser.mTabContainer) { // Firefox 3.6 or older
 				aTab.setAttribute('maxwidth', 250);
 				aTab.setAttribute('minwidth', this.mTabBrowser.mTabContainer.mTabMinWidth);
