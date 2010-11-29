@@ -16,6 +16,11 @@
 <!ENTITY config.tabbar.invertTab            "Odwróć położenie etykiet kart">
 <!ENTITY config.tabbar.invertTabContents    "Odwróć położenie ikon na etykiecie karty">
 <!ENTITY config.enableSubtreeIndent         "Stosuj wcięcia">
+<!ENTITY config.maxTreeLevel.caption  "Visualization of nested trees">
+<!ENTITY config.maxTreeLevel.0        "Nothing (no indentation)">
+<!ENTITY config.maxTreeLevel.-1       "Indent tabs">
+<!ENTITY config.maxTreeLevel.1        "Indent tabs until">
+<!ENTITY config.maxTreeLevel.1.after  "level(s)">
 <!ENTITY config.allowSubtreeCollapseExpand  "Zezwalaj na zwijanie/rozwijanie drzewa kart">
 <!ENTITY config.tabbar.hideAlltabsButton    "Wyświetlaj przycisk „Pokaż wszystkie karty”">
 

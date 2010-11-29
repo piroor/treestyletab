@@ -15,6 +15,7 @@
 <!ENTITY config.tabbar.invertClosebox.right "Show closebox at rightside in each tab">
 <!ENTITY config.tabbar.invertTab            "Invert tab appearance">
 <!ENTITY config.tabbar.invertTabContents    "Invert tab contents">
+<!ENTITY config.enableSubtreeIndent   "Indent tabs">
 <!ENTITY config.maxTreeLevel.caption  "Visualization of nested trees">
 <!ENTITY config.maxTreeLevel.0        "Nothing (no indentation)">
 <!ENTITY config.maxTreeLevel.-1       "Indent tabs">

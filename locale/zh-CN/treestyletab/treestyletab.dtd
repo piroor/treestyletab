@@ -16,6 +16,11 @@
 <!ENTITY config.tabbar.invertTab            "反转标签外观">
 <!ENTITY config.tabbar.invertTabContents    "反转标签图标和文字位置">
 <!ENTITY config.enableSubtreeIndent         "缩进标签">
+<!ENTITY config.maxTreeLevel.caption  "Visualization of nested trees">
+<!ENTITY config.maxTreeLevel.0        "Nothing (no indentation)">
+<!ENTITY config.maxTreeLevel.-1       "Indent tabs">
+<!ENTITY config.maxTreeLevel.1        "Indent tabs until">
+<!ENTITY config.maxTreeLevel.1.after  "level(s)">
 <!ENTITY config.allowSubtreeCollapseExpand  "允许折叠/展开标签子树">
 <!ENTITY config.tabbar.hideAlltabsButton    "显示“列出所有标签”按钮">
 

@@ -16,6 +16,11 @@
 <!ENTITY config.tabbar.invertTab            "Tabs von rechts einrücken">
 <!ENTITY config.tabbar.invertTabContents    "Symbol und Text in den Tabs vertauschen">
 <!ENTITY config.enableSubtreeIndent         "Tabs einrücken">
+<!ENTITY config.maxTreeLevel.caption  "Visualization of nested trees">
+<!ENTITY config.maxTreeLevel.0        "Nothing (no indentation)">
+<!ENTITY config.maxTreeLevel.-1       "Indent tabs">
+<!ENTITY config.maxTreeLevel.1        "Indent tabs until">
+<!ENTITY config.maxTreeLevel.1.after  "level(s)">
 <!ENTITY config.allowSubtreeCollapseExpand  "Auf- und Einklappen von Zweigen erlauben">
 <!ENTITY config.tabbar.hideAlltabsButton    "Button zum Auflisten aller Tabs anzeigen">
 

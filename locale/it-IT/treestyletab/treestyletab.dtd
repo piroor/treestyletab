@@ -16,6 +16,11 @@
 <!ENTITY config.tabbar.invertTab            "Inverti la visualizzazione delle schede">
 <!ENTITY config.tabbar.invertTabContents    "Inverti la visualizzazione dei controlli di contrazione/espansione dei sottoalberi"> <!-- NUOVA -->
 <!ENTITY config.enableSubtreeIndent         "Indenta sottoschede">
+<!ENTITY config.maxTreeLevel.caption  "Visualization of nested trees">
+<!ENTITY config.maxTreeLevel.0        "Nothing (no indentation)">
+<!ENTITY config.maxTreeLevel.-1       "Indent tabs">
+<!ENTITY config.maxTreeLevel.1        "Indent tabs until">
+<!ENTITY config.maxTreeLevel.1.after  "level(s)">
 <!ENTITY config.allowSubtreeCollapseExpand  "Permetti di contrarre/espandere sottoalberi delle schede">
 <!ENTITY config.tabbar.hideAlltabsButton    "Visualizza la maniglia per elencare tutte le schede">
 
