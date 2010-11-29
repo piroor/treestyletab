@@ -89,6 +89,7 @@ var TreeStyleTabUtils = {
 	kFIXED              : 'treestyletab-tabbar-fixed',
 	kRESIZING           : 'treestyletab-tabbar-resizing',
 	kINDENTED           : 'treestyletab-tabs-indented',
+	kMAX_LEVEL          : 'treestyletab-max-tree-level',
 	kPRINT_PREVIEW      : 'treestyletab-print-preview',
 	kANIMATION_ENABLED  : 'treestyletab-animation-enabled',
 

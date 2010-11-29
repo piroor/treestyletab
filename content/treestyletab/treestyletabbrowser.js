@@ -1289,6 +1289,8 @@ TreeStyleTabBrowser.prototype = {
 		this.setTabbrowserAttribute(this.kALLOW_COLLAPSE, this.allowSubtreeCollapseExpand ? 'true' : null);
 
 		this.maxTreeLevel = this.getTreePref('maxTreeLevel.'+orient);
+		this.setTabbrowserAttribute(this.kMAX_LEVEL, this.maxTreeLevel || '0');
+
 		this.enableSubtreeIndent = this.maxTreeLevel != 0;
 		this.setTabbrowserAttribute(this.kINDENTED, this.enableSubtreeIndent ? 'true' : null);
 
