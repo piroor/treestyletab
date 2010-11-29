@@ -259,6 +259,7 @@ var TreeStyleTabService = {
 					if (this.getTreePref('openGroupBookmarkAsTabSubTree.underParent'))
 
 
+
 						behavior += this.kGROUP_BOOKMARK_USE_DUMMY;
 					if (!this.getTreePref('openGroupBookmarkBehavior.confirm')) {
 						behavior += (
@@ -1754,6 +1755,7 @@ catch(e) {
 				'parent::*/ancestor-or-self::*[local-name()="popup" or local-name()="menupopup"]',
 				aPopup,
 				XPathResult.BOOLEAN_TYPE
+
 			).booleanValue)
 			return;
 
@@ -1854,11 +1856,6 @@ catch(e) {
 		this.setTreePref('tabbar.fixed.'+orient, newFixed);
 
 		b.treeStyleTab.updateTabbarState();
-
-		if (!this.getTreePref('tabbar.syncRelatedPrefsForDynamicPosition')) return;
-
-		if (!b.treeStyleTab.isVertical)
-			this.setTreePref('enableSubtreeIndent.horizontal', !this.getTreePref('tabbar.fixed.'+orient));
 	},
  
 	removeTabSubtree : function TSTService_removeTabSubtree(aTabOrTabs, aOnlyChildren) 
