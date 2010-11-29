@@ -24,12 +24,12 @@
 		<preference id="extensions.treestyletab.tabbar.syncRelatedPrefsForDynamicPosition"
 			name="extensions.treestyletab.tabbar.syncRelatedPrefsForDynamicPosition"
 			type="bool"/>
-		<preference id="extensions.treestyletab.enableSubtreeIndent.horizontal"
-			name="extensions.treestyletab.enableSubtreeIndent.horizontal"
-			type="bool"/>
-		<preference id="extensions.treestyletab.enableSubtreeIndent.vertical"
-			name="extensions.treestyletab.enableSubtreeIndent.vertical"
-			type="bool"/>
+		<preference id="extensions.treestyletab.maxTreeLevel.horizontal"
+			name="extensions.treestyletab.maxTreeLevel.horizontal"
+			type="int"/>
+		<preference id="extensions.treestyletab.maxTreeLevel.vertical"
+			name="extensions.treestyletab.maxTreeLevel.vertical"
+			type="int"/>
 		<preference id="extensions.treestyletab.allowSubtreeCollapseExpand.horizontal"
 			name="extensions.treestyletab.allowSubtreeCollapseExpand.horizontal"
 			type="bool"/>
@@ -121,26 +121,68 @@
 			<checkbox id="extensions.treestyletab.allowSubtreeCollapseExpand.vertical-check"
 				preference="extensions.treestyletab.allowSubtreeCollapseExpand.vertical"
 				label="&config.allowSubtreeCollapseExpand;"/>
-			<checkbox id="extensions.treestyletab.enableSubtreeIndent.horizontal-check"
-				preference="extensions.treestyletab.enableSubtreeIndent.horizontal"
-				label="&config.enableSubtreeIndent;"
-				oncommand="
-					if (document.getElementById('extensions.treestyletab.tabbar.syncRelatedPrefsForDynamicPosition').value)
-						document.getElementById('extensions.treestyletab.tabbar.fixed.horizontal').value = !this.checked;
-				"/>
-			<checkbox id="extensions.treestyletab.enableSubtreeIndent.vertical-check"
-				preference="extensions.treestyletab.enableSubtreeIndent.vertical"
-				label="&config.enableSubtreeIndent;"/>
+			<hbox align="center" id="hideAlltabsButton-box">
+				<checkbox id="extensions.treestyletab.tabbar.hideAlltabsButton.horizontal-check"
+					preference="extensions.treestyletab.tabbar.hideAlltabsButton.horizontal"
+					label="&config.tabbar.hideAlltabsButton;"
+					collapsed="true"/>
+				<checkbox id="extensions.treestyletab.tabbar.hideAlltabsButton.vertical-check"
+					preference="extensions.treestyletab.tabbar.hideAlltabsButton.vertical"
+					label="&config.tabbar.hideAlltabsButton;"/>
+			</hbox>
 		</hbox>
-		<hbox align="center" id="hideAlltabsButton-box">
-			<checkbox id="extensions.treestyletab.tabbar.hideAlltabsButton.horizontal-check"
-				preference="extensions.treestyletab.tabbar.hideAlltabsButton.horizontal"
-				label="&config.tabbar.hideAlltabsButton;"
-				collapsed="true"/>
-			<checkbox id="extensions.treestyletab.tabbar.hideAlltabsButton.vertical-check"
-				preference="extensions.treestyletab.tabbar.hideAlltabsButton.vertical"
-				label="&config.tabbar.hideAlltabsButton;"/>
-		</hbox>
+		<groupbox id="maxTreeLevel-groupbox-vertical">
+			<caption label="&config.maxTreeLevel.caption;"/>
+			<radiogroup id="maxTreeLevel-radiogroup-vertical"
+				orient="vertical"
+				preference="extensions.treestyletab.maxTreeLevel.vertical"
+				onsynctopreference="return onSyncMaxTreeLevelUIToPref('maxTreeLevel-radiogroup-vertical');"
+				onsyncfrompreference="return onSyncMaxTreeLevelPrefToUI('maxTreeLevel-radiogroup-vertical');">
+				<radio value="0"  label="&config.maxTreeLevel.0;"
+					max-tree-level-radio="0"/>
+				<radio value="-1" label="&config.maxTreeLevel.-1;"
+					max-tree-level-radio="-1"/>
+				<hbox align="center">
+					<radio value="1" id="maxTreeLevel-radio1-vertical"
+						max-tree-level-radio="1"
+						label="&config.maxTreeLevel.1;"/>
+					<textbox id="maxTreeLevel-radio1-textbox-vertical"
+						max-tree-level-radio="1"
+						type="number"
+						min="1" increment="1" size="2"
+						oninput="document.getElementById(this.parentNode.parentNode.getAttribute('preference')).value = this.value;"/>
+					<label max-tree-level-radio="1"
+						control="maxTreeLevel-radio1-vertical"
+						value="&config.maxTreeLevel.1.after;"/>
+				</hbox>
+			</radiogroup>
+		</groupbox>
+		<groupbox id="maxTreeLevel-groupbox-horizontal" collapsed="true">
+			<caption label="&config.maxTreeLevel.caption;"/>
+			<radiogroup id="maxTreeLevel-radiogroup-horizontal"
+				orient="vertical"
+				preference="extensions.treestyletab.maxTreeLevel.horizontal"
+				onsynctopreference="return onSyncMaxTreeLevelUIToPref('maxTreeLevel-radiogroup-horizontal');"
+				onsyncfrompreference="return onSyncMaxTreeLevelPrefToUI('maxTreeLevel-radiogroup-horizontal');">
+				<radio value="0"  label="&config.maxTreeLevel.0;"
+					max-tree-level-radio="0"/>
+				<radio value="-1" label="&config.maxTreeLevel.-1;"
+					max-tree-level-radio="-1"/>
+				<hbox align="center">
+					<radio value="1" id="maxTreeLevel-radio1-horizontal"
+						max-tree-level-radio="1"
+						label="&config.maxTreeLevel.1;"/>
+					<textbox id="maxTreeLevel-radio1-textbox-horizontal"
+						max-tree-level-radio="1"
+						type="number"
+						min="1" increment="1" size="2"
+						oninput="document.getElementById(this.parentNode.parentNode.getAttribute('preference')).value = this.value;"/>
+					<label max-tree-level-radio="1"
+						control="maxTreeLevel-radio1-horizontal"
+						value="&config.maxTreeLevel.1.after;"/>
+				</hbox>
+			</radiogroup>
+		</groupbox>
 		</vbox>
 	</groupbox>
 
@@ -236,6 +278,9 @@
 		<preference id="extensions.treestyletab.show.context-item-bookmarkTabSubtree"
 			name="extensions.treestyletab.show.context-item-bookmarkTabSubtree"
 			type="bool"/>
+		<preference id="extensions.treestyletab.preferences.newTab-tabbox.selectedIndex"
+			name="extensions.treestyletab.preferences.newTab-tabbox.selectedIndex"
+			type="int"/>
 	</preferences>
 
 	<vbox>

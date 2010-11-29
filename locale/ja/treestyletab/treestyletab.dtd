@@ -15,7 +15,11 @@
 <!ENTITY config.tabbar.invertClosebox.right "タブのクローズボックスを右に表示">
 <!ENTITY config.tabbar.invertTab            "タブの表示を左右反転">
 <!ENTITY config.tabbar.invertTabContents    "タブの内容を左右反転">
-<!ENTITY config.enableSubtreeIndent         "タブをインデント表示する">
+<!ENTITY config.maxTreeLevel.caption  "ツリーの深さの表示">
+<!ENTITY config.maxTreeLevel.0        "何もしない（インデントなし）">
+<!ENTITY config.maxTreeLevel.-1       "タブをインデント表示する">
+<!ENTITY config.maxTreeLevel.1        "タブをインデント表示する（">
+<!ENTITY config.maxTreeLevel.1.after  "階層まで）">
 <!ENTITY config.allowSubtreeCollapseExpand  "ツリーを折りたためるようにする">
 <!ENTITY config.tabbar.hideAlltabsButton    "「タブの一覧を表示」ボタンを表示する">
 

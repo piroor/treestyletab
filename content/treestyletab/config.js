@@ -195,7 +195,7 @@ function onSyncGroupBookmarkPrefToUI()
 }
 
 
-function onChangeTabbarPosition(aOnChange)
+function onChangeTabbarPosition()
 {
 	var pos = document.getElementById('extensions.treestyletab.tabbar.position-radiogroup').value;
 	var invertTab = document.getElementById('extensions.treestyletab.tabbar.invertTab-check');
@@ -216,24 +216,24 @@ function onChangeTabbarPosition(aOnChange)
 	else
 		invertClosebox.setAttribute('collapsed', true);
 
-	var indentCheckH   = document.getElementById('extensions.treestyletab.enableSubtreeIndent.horizontal-check');
-	var indentCheckV   = document.getElementById('extensions.treestyletab.enableSubtreeIndent.vertical-check');
+	var maxTreeLevelH   = document.getElementById('maxTreeLevel-groupbox-horizontal');
+	var maxTreeLevelV   = document.getElementById('maxTreeLevel-groupbox-vertical');
 	var collapseCheckH = document.getElementById('extensions.treestyletab.allowSubtreeCollapseExpand.horizontal-check');
 	var collapseCheckV = document.getElementById('extensions.treestyletab.allowSubtreeCollapseExpand.vertical-check');
 	var hideAllTabsCheckH = document.getElementById('extensions.treestyletab.tabbar.hideAlltabsButton.horizontal-check');
 	var hideAllTabsCheckV = document.getElementById('extensions.treestyletab.tabbar.hideAlltabsButton.vertical-check');
 
 	if (pos == 'left' || pos == 'right') {
-		indentCheckH.setAttribute('collapsed', true);
-		indentCheckV.removeAttribute('collapsed');
+		maxTreeLevelH.setAttribute('collapsed', true);
+		maxTreeLevelV.removeAttribute('collapsed');
 		collapseCheckH.setAttribute('collapsed', true);
 		collapseCheckV.removeAttribute('collapsed');
 		hideAllTabsCheckH.setAttribute('collapsed', true);
 		hideAllTabsCheckV.removeAttribute('collapsed');
 	}       
 	else {
-		indentCheckH.removeAttribute('collapsed');
-		indentCheckV.setAttribute('collapsed', true);
+		maxTreeLevelH.removeAttribute('collapsed');
+		maxTreeLevelV.setAttribute('collapsed', true);
 		collapseCheckH.removeAttribute('collapsed');
 		collapseCheckV.setAttribute('collapsed', true);
 		hideAllTabsCheckH.removeAttribute('collapsed');
@@ -241,6 +241,52 @@ function onChangeTabbarPosition(aOnChange)
 	}
 
 	gTabbarPlacePositionInitialized = true;
+}
+
+function onSyncMaxTreeLevelUIToPref(aTarget)
+{
+	var isHorizontal = aTarget.indexOf('horizontal') != -1;
+	aTarget = document.getElementById(aTarget);
+	if (aTarget.sync)
+		return;
+	aTarget.sync = true;
+
+	var UIValue = parseInt(aTarget.value);
+	var prefValue = UIValue;
+	Array.slice(aTarget.getElementsByTagName('textbox')).forEach(function(aNode) {
+		if (aNode.getAttribute('max-tree-level-radio') == UIValue) {
+			aNode.removeAttribute('disabled');
+			prefValue = parseInt(aNode.value);
+		}
+		else
+			aNode.setAttribute('disabled', true);
+	});
+	aTarget.sync = false;
+	return prefValue;
+}
+
+function onSyncMaxTreeLevelPrefToUI(aTarget)
+{
+	var isHorizontal = aTarget.indexOf('horizontal') != -1;
+	aTarget = document.getElementById(aTarget);
+	if (aTarget.sync)
+		return;
+	aTarget.sync = true;
+
+	var pref = document.getElementById(aTarget.getAttribute('preference'));
+	var value = pref.value;
+
+	var UIValue = Math.max(-1, Math.min(1, value));
+	Array.slice(aTarget.getElementsByTagName('textbox')).forEach(function(aNode) {
+		if (aNode.getAttribute('max-tree-level-radio') == UIValue) {
+			aNode.removeAttribute('disabled');
+			aNode.value = value;
+		}
+		else
+			aNode.setAttribute('disabled', true);
+	});
+	aTarget.sync = false;
+	return UIValue;
 }
 
 
