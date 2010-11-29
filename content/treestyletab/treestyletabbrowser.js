@@ -1454,6 +1454,7 @@ TreeStyleTabBrowser.prototype = {
 	resetTabbarSize : function TSTBrowser_resetTabbarSize() 
 	{
 		if (this.isVertical) {
+
 			this.clearTreePref('tabbar.shrunkenWidth');
 			this.clearTreePref('tabbar.width');
 		}
@@ -1524,6 +1525,7 @@ TreeStyleTabBrowser.prototype = {
 		var orient = this.isVertical ? 'vertical' : 'horizontal' ;
 		var oldState = {
 				fixed         : this.isFixed,
+				maxTreeLevel  : this.maxTreeLevel,
 				indented      : this.maxTreeLevel != 0,
 				canCollapse   : b.getAttribute(this.kALLOW_COLLAPSE) == 'true'
 			};
@@ -1533,6 +1535,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 		var newState = {
 				fixed         : this.getTreePref('tabbar.fixed.'+orient),
+				maxTreeLevel  : this.getTreePref('maxTreeLevel.'+orient),
 				indented      : this.getTreePref('maxTreeLevel.'+orient) != 0,
 				canCollapse   : this.getTreePref('allowSubtreeCollapseExpand.'+orient)
 			};
@@ -1542,6 +1545,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		if (oldState.fixed == newState.fixed &&
+			oldState.maxTreeLevel == newState.maxTreeLevel &&
 			oldState.indented == newState.indented &&
 			oldState.canCollapse == newState.canCollapse &&
 			oldState.alltabsButton == newState.alltabsButton)
@@ -1562,6 +1566,7 @@ TreeStyleTabBrowser.prototype = {
 		var b = this.mTabBrowser;
 		var state = {
 				fixed         : this.isFixed,
+				maxTreeLevel  : this.maxTreeLevel,
 				indented      : this.maxTreeLevel != 0,
 				canCollapse   : b.getAttribute(this.kALLOW_COLLAPSE) == 'true'
 			};
@@ -4195,7 +4200,11 @@ TreeStyleTabBrowser.prototype = {
 			if (!aTab.parentNode) return; // ignore removed tabs
 			this.updateTabIndent(aTab, indent, aJustNow);
 			aTab.setAttribute(this.kNEST, aLevel);
-			if (this.maxTreeLevel < 0 || this.maxTreeLevel > aLevel) {
+			if (
+				!aLevel ||
+				this.maxTreeLevel < 0 ||
+				this.maxTreeLevel > aLevel
+				) {
 				aTab.setAttribute(this.kALLOW_COLLAPSE, true);
 				this.collapseExpandSubtree(aTab, this.isSubtreeCollapsed(aTab));
 			}
