@@ -3408,7 +3408,8 @@ TreeStyleTabBrowser.prototype = {
 				position     : null,
 				action       : null,
 				parent       : null,
-				insertBefore : null
+				insertBefore : null,
+				event        : aEvent
 			};
 
 		var isTabMoveFromOtherWindow = aSourceTab && aSourceTab.ownerDocument != document;
@@ -3619,7 +3620,7 @@ TreeStyleTabBrowser.prototype = {
 			var tab = aTab;
 			if (aInfo.action & this.kACTIONS_FOR_DESTINATION) {
 				var parent = parentTabsArray[aIndex];
-				if (tabsInfo.isSelectionMove)
+				if (tabsInfo.isMultipleMove && 'MultipleTabService' in sourceWindow)
 					sourceWindow.MultipleTabService.setSelection(aTab, false);
 				if (aInfo.action & this.kACTION_IMPORT &&
 					'swapBrowsersAndCloseOther' in targetBrowser) {
@@ -3637,7 +3638,7 @@ TreeStyleTabBrowser.prototype = {
 						oldTabs.push(aTab);
 				}
 				newTabs.push(tab);
-				if (tabsInfo.isSelectionMove)
+				if (tabsInfo.isMultipleMove && 'MultipleTabService' in window)
 					MultipleTabService.setSelection(tab, true);
 				if (!parent || draggedTabs.indexOf(parent) < 0)
 					newRoots.push(tab);
@@ -3688,10 +3689,10 @@ TreeStyleTabBrowser.prototype = {
 		aTab = this.getTabFromChild(aTab);
 		if (!aTab)
 			return {
-				draggedTab      : null,
-				draggedTabs     : [],
-				draggedRoots    : [],
-				isSelectionMove : false
+				draggedTab     : null,
+				draggedTabs    : [],
+				draggedRoots   : [],
+				isMultipleMove : false
 			};
 
 		var targetBrowser = this.mTabBrowser;
@@ -3703,15 +3704,26 @@ TreeStyleTabBrowser.prototype = {
 		var sourceWindow = aTab.ownerDocument.defaultView;
 		var sourceBrowser = this.getTabBrowserFromChild(aTab);
 
+		var dt = aInfo.event && aInfo.event.dataTransfer;
+		var isMultipleDragEvent = (
+					dt &&
+					dt.mozItemCount > 1 &&
+					Array.slice(dt.mozTypesAt(0)).indexOf(TAB_DROP_TYPE) > -1
+				);
 
-		var isSelectionMove = (
-				'MultipleTabService' in sourceWindow &&
-				sourceWindow.MultipleTabService.isSelected(aTab) &&
-				MultipleTabService.allowMoveMultipleTabs
+		var isMultipleMove = (
+				isMultipleDragEvent ||
+				(
+					'MultipleTabService' in sourceWindow &&
+					sourceWindow.MultipleTabService.isSelected(aTab) &&
+					MultipleTabService.allowMoveMultipleTabs
+				)
 			);
 
-		if (isSelectionMove) {
-			draggedTabs = sourceWindow.MultipleTabService.getSelectedTabs(sourceBrowser);
+		if (isMultipleMove) {
+			draggedTabs = isMultipleDragEvent ?
+							this.getTabsFromDragEvent(aInfo.event) :
+							sourceWindow.MultipleTabService.getSelectedTabs(sourceBrowser);
 			if (!(aInfo.action & this.kACTIONS_FOR_DESTINATION)) {
 				draggedRoots = [];
 				draggedTabs.forEach(function(aTab) {
@@ -3720,7 +3732,7 @@ TreeStyleTabBrowser.prototype = {
 					do {
 						current = parent;
 						parent = sourceBrowser.treeStyleTab.getParentTab(parent)
-						if (parent && sourceWindow.MultipleTabService.isSelected(parent)) continue;
+						if (parent && draggedTabs.indexOf(parent) > -1) continue;
 						draggedRoots.push(current);
 						return;
 					}
@@ -3733,11 +3745,22 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		return {
-			draggedTab      : aTab,
-			draggedTabs     : draggedTabs,
-			draggedRoots    : draggedRoots,
-			isSelectionMove : isSelectionMove
+			draggedTab     : aTab,
+			draggedTabs    : draggedTabs,
+			draggedRoots   : draggedRoots,
+			isMultipleMove : isMultipleMove
 		};
+	},
+ 
+	getTabsFromDragEvent : function TSTBrowser_getTabsFromDragEvent(aEvent) 
+	{
+		var tabs = [];
+		var dt = aEvent.dataTransfer;
+		for (let i = 0, maxi = dt.mozItemCount; i < maxi; i++)
+		{
+			tabs.push(dt.mozGetDataAt(TAB_DROP_TYPE, i));
+		}
+		return tabs;
 	},
  
 	attachTabsOnDrop : function TSTBrowser_attachTabsOnDrop(aTabs, aParent) 
