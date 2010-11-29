@@ -1285,11 +1285,12 @@ TreeStyleTabBrowser.prototype = {
 				b.mTabContainer._positionPinnedTabs();
 		}, 0, this);
 
-		this.enableSubtreeIndent = this.getTreePref('enableSubtreeIndent.'+orient);
-		this.setTabbrowserAttribute(this.kINDENTED, this.enableSubtreeIndent ? 'true' : null);
-
 		this.allowSubtreeCollapseExpand = this.getTreePref('allowSubtreeCollapseExpand.'+orient) ;
 		this.setTabbrowserAttribute(this.kALLOW_COLLAPSE, this.allowSubtreeCollapseExpand ? 'true' : null);
+
+		this.maxTreeLevel = this.getTreePref('maxTreeLevel.'+orient);
+		this.enableSubtreeIndent = this.maxTreeLevel != 0;
+		this.setTabbrowserAttribute(this.kINDENTED, this.enableSubtreeIndent ? 'true' : null);
 
 		this.setTabbrowserAttribute(this.kALLOW_STACK, this.canStackTabs ? 'true' : null);
 		this.updateTabsZIndex(this.canStackTabs);
@@ -1298,6 +1299,9 @@ TreeStyleTabBrowser.prototype = {
 			this.hideAlltabsButton = this.getTreePref('tabbar.hideAlltabsButton.'+orient);
 			this.setTabbrowserAttribute(this.kHIDE_ALLTABS, this.hideAlltabsButton ? 'true' : null);
 		}
+
+		if (this.maxTreeLevelPhisical)
+			this.promoteTooDeepLevelTabs();
 
 		this.updateAllTabsIndent();
 	},
@@ -1520,7 +1524,7 @@ TreeStyleTabBrowser.prototype = {
 		var orient = this.isVertical ? 'vertical' : 'horizontal' ;
 		var oldState = {
 				fixed         : this.isFixed,
-				indented      : b.getAttribute(this.kINDENTED) == 'true',
+				indented      : this.maxTreeLevel != 0,
 				canCollapse   : b.getAttribute(this.kALLOW_COLLAPSE) == 'true'
 			};
 		if (!this.isFloating) {
@@ -1529,7 +1533,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 		var newState = {
 				fixed         : this.getTreePref('tabbar.fixed.'+orient),
-				indented      : this.getTreePref('enableSubtreeIndent.'+orient),
+				indented      : this.getTreePref('maxTreeLevel.'+orient) != 0,
 				canCollapse   : this.getTreePref('allowSubtreeCollapseExpand.'+orient)
 			};
 		if (!this.isFloating) {
@@ -1558,7 +1562,7 @@ TreeStyleTabBrowser.prototype = {
 		var b = this.mTabBrowser;
 		var state = {
 				fixed         : this.isFixed,
-				indented      : b.getAttribute(this.kINDENTED) == 'true',
+				indented      : this.maxTreeLevel != 0,
 				canCollapse   : b.getAttribute(this.kALLOW_COLLAPSE) == 'true'
 			};
 		if (!this.isFloating) {
@@ -1802,7 +1806,7 @@ TreeStyleTabBrowser.prototype = {
 			case 'extensions.treestyletab.tabbar.fixed.horizontal':
 				if (!this.shouldApplyNewPref) return;
 				this.setTabbrowserAttribute(this.kFIXED+'-horizontal', value ? 'true' : null, b);
-			case 'extensions.treestyletab.enableSubtreeIndent.horizontal':
+			case 'extensions.treestyletab.maxTreeLevel.horizontal':
 			case 'extensions.treestyletab.allowSubtreeCollapseExpand.horizontal':
 			case 'extensions.treestyletab.tabbar.hideAlltabsButton.horizontal':
 				if (!this.isVertical && this.fireTabbarStateChangingEvent()) {
@@ -1814,7 +1818,7 @@ TreeStyleTabBrowser.prototype = {
 			case 'extensions.treestyletab.tabbar.fixed.vertical':
 				if (!this.shouldApplyNewPref) return;
 				this.setTabbrowserAttribute(this.kFIXED+'-vertical', value ? 'true' : null, b);
-			case 'extensions.treestyletab.enableSubtreeIndent.vertical':
+			case 'extensions.treestyletab.maxTreeLevel.vertical':
 			case 'extensions.treestyletab.allowSubtreeCollapseExpand.vertical':
 			case 'extensions.treestyletab.tabbar.hideAlltabsButton.vertical':
 				if (this.isVertical && this.fireTabbarStateChangingEvent()) {
@@ -1845,17 +1849,8 @@ TreeStyleTabBrowser.prototype = {
 				this.checkTabsIndentOverflow();
 				break;
 
-			case 'extensions.treestyletab.maxTreeLevel':
-				this.maxTreeLevel = value;
-				if (this.maxTreeLevelPhisical)
-					this.promoteTooDeepLevelTabs();
-				else
-					this.updateAllTabsIndent();
-				break;
-
 			case 'extensions.treestyletab.maxTreeLevel.phisical':
-				this.maxTreeLevelPhisical = value;
-				if (this.maxTreeLevelPhisical)
+				if (this.maxTreeLevelPhisical = value)
 					this.promoteTooDeepLevelTabs();
 				break;
 
