@@ -31,6 +31,9 @@ TreeStyleTabBrowser.prototype = {
 	invertedPositionProp : 'screenX',
 	invertedSizeProp     : 'width',
 
+	maxTreeLevel : -1,
+	maxTreeLevelPhisical : false,
+
 	enableSubtreeIndent        : true,
 	allowSubtreeCollapseExpand : true,
 	hideAlltabsButton          : true,
@@ -400,7 +403,7 @@ TreeStyleTabBrowser.prototype = {
 				<![CDATA[$&
 					var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;
 					treeStyleTab._focusChangedByShortcut = TreeStyleTabService.accelKeyPressed;
-					if (treeStyleTab.canCollapseSubtree() &&
+					if (treeStyleTab.canCollapseSubtree(this.selectedItem) &&
 						treeStyleTab.getTreePref('focusMode') == treeStyleTab.kFOCUS_VISIBLE) {
 						(function(aDir, aWrap, aSelf) {
 							var nextTab = (aDir < 0) ? treeStyleTab.getPreviousVisibleTab(aSelf.selectedItem) : treeStyleTab.getNextVisibleTab(aSelf.selectedItem) ;
@@ -705,6 +708,7 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 
+		this.onPrefChange('extensions.treestyletab.maxTreeLevel');
 		this.onPrefChange('extensions.treestyletab.tabbar.style');
 		this.onPrefChange('extensions.treestyletab.twisty.style');
 		this.onPrefChange('extensions.treestyletab.showBorderForFirstTab');
@@ -1839,6 +1843,20 @@ TreeStyleTabBrowser.prototype = {
 				if (!this.shouldApplyNewPref) return;
 				this._horizontalTabMaxIndentBase = 0;
 				this.checkTabsIndentOverflow();
+				break;
+
+			case 'extensions.treestyletab.maxTreeLevel':
+				this.maxTreeLevel = value;
+				if (this.maxTreeLevelPhisical)
+					this.promoteTooDeepLevelTabs();
+				else
+					this.updateAllTabsIndent();
+				break;
+
+			case 'extensions.treestyletab.maxTreeLevel.phisical':
+				this.maxTreeLevelPhisical = value;
+				if (this.maxTreeLevelPhisical)
+					this.promoteTooDeepLevelTabs();
 				break;
 
 			case 'browser.tabs.animate':
@@ -3051,7 +3069,7 @@ TreeStyleTabBrowser.prototype = {
 			return;
 
 		if (this.isEventFiredOnTwisty(aEvent)) {
-			if (this.hasChildTabs(aTab) && this.canCollapseSubtree()) {
+			if (this.hasChildTabs(aTab) && this.canCollapseSubtree(aTab)) {
 				this.collapseExpandSubtree(aTab, aTab.getAttribute(this.kSUBTREE_COLLAPSED) != 'true');
 				aEvent.preventDefault();
 				aEvent.stopPropagation();
@@ -3893,6 +3911,17 @@ TreeStyleTabBrowser.prototype = {
 	
 	attachTabTo : function TSTBrowser_attachTabTo(aChild, aParent, aInfo) /* PUBLIC API */ 
 	{
+		aInfo = aInfo || {};
+
+		if (aParent && this.maxTreeLevelPhisical && this.maxTreeLevel > -1) {
+			let level = parseInt(aParent.getAttribute(this.kNEST) || 0) + 1;
+			while (aParent && level > this.maxTreeLevel)
+			{
+				level--;
+				aParent = this.getParentTab(aParent);
+			}
+		}
+
 		var currentParent;
 		if (
 			!aChild ||
@@ -4012,6 +4041,8 @@ TreeStyleTabBrowser.prototype = {
 			this.updateTabsIndent([aChild], undefined, aInfo.dontAnimate);
 			this.checkTabsIndentOverflow();
 		}
+
+		this.promoteTooDeepLevelTabs(aChild);
 
 		this.fireAttachedEvent(aChild, aParent);
 	},
@@ -4157,7 +4188,7 @@ TreeStyleTabBrowser.prototype = {
 
 		var b = this.mTabBrowser;
 		var margin = this.indent < 0 ? this.baseIndent : this.indent ;
-		var indent = margin * aLevel;
+		var indent = (this.maxTreeLevel < 0 ? aLevel : Math.min(aLevel, this.maxTreeLevel) ) * margin;
 
 		var multirow = this.isMultiRow();
 		if (multirow) {
@@ -4169,6 +4200,14 @@ TreeStyleTabBrowser.prototype = {
 			if (!aTab.parentNode) return; // ignore removed tabs
 			this.updateTabIndent(aTab, indent, aJustNow);
 			aTab.setAttribute(this.kNEST, aLevel);
+			if (this.maxTreeLevel < 0 || this.maxTreeLevel > aLevel) {
+				aTab.setAttribute(this.kALLOW_COLLAPSE, true);
+				this.collapseExpandSubtree(aTab, this.isSubtreeCollapsed(aTab));
+			}
+			else {
+				this.collapseExpandSubtree(aTab, false);
+				aTab.removeAttribute(this.kALLOW_COLLAPSE);
+			}
 			this.updateTabsIndent(this.getChildTabs(aTab), aLevel+1, aJustNow);
 		}, this);
 	},
@@ -4320,7 +4359,10 @@ TreeStyleTabBrowser.prototype = {
 		var self = this;
 		tabs.sort(function(aA, aB) { return Number(aA.getAttribute(self.kNEST)) - Number(aB.getAttribute(self.kNEST)); });
 		var nest = tabs[tabs.length-1].getAttribute(this.kNEST);
-		if (!nest) return;
+		if (this.maxTreeLevel > -1)
+			nest = Math.min(nest, this.maxTreeLevel);
+		if (!nest)
+			return;
 
 		var oldIndent = this.indent;
 		var indent    = (oldIndent < 0 ? this.baseIndent : oldIndent ) * nest;
@@ -4361,6 +4403,32 @@ TreeStyleTabBrowser.prototype = {
 		var parent = this.getParentTab(aTab);
 		if (parent && !aDontUpdateAncestor)
 			this.updateTabsCount(parent);
+	},
+ 
+	promoteTooDeepLevelTabs : function TSTBrowser_promoteTooDeepLevelTabs(aParent)
+	{
+		if (this.maxTreeLevel < 0 || !this.maxTreeLevelPhisical)
+			return;
+
+		var tabs = aParent ? this.getDescendantTabs(aParent) : this.getAllTabsArray(this.mTabBrowser) ;
+		tabs.forEach(function(aTab) {
+			var level = parseInt(aTab.getAttribute(this.kNEST) || 0);
+			if (level <= this.maxTreeLevel)
+				return;
+
+			var parent = this.getParentTab(aTab);
+			var newParent = this.getParentTab(parent);
+			if (this.maxTreeLevel == 0 || !newParent) {
+				this.partTab(aTab);
+			}
+			else {
+				let nextSibling = this.getNextTab(aTab);
+				this.attachTabTo(aTab, newParent, {
+					dontMove     : true,
+					insertBefore : nextSibling
+				});
+			}
+		}, this);
 	},
   
 /* move */ 
@@ -4539,7 +4607,7 @@ TreeStyleTabBrowser.prototype = {
 			aJustNow ||
 			this.collapseDuration < 1 ||
 //			!this.isVertical ||
-			!this.canCollapseSubtree()
+			!this.canCollapseSubtree(this.getParentTab(aTab))
 			) {
 			if (aCollapsed)
 				aTab.setAttribute(this.kCOLLAPSED_DONE, true);
@@ -4646,7 +4714,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		if (!aTab ||
 			this.doingCollapseExpand ||
-			!this.canCollapseSubtree())
+			!this.canCollapseSubtree(aTab))
 			return;
 
 		var b = this.mTabBrowser;

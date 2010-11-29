@@ -56,6 +56,8 @@ pref("extensions.treestyletab.autoExpand.enabled",     true);
 pref("extensions.treestyletab.autoExpand.delay",       500);
 pref("extensions.treestyletab.autoExpand.intelligently", true);
 pref("extensions.treestyletab.autoExpand.collapseFinally", false);
+pref("extensions.treestyletab.maxTreeLevel", -1);
+pref("extensions.treestyletab.maxTreeLevel.phisical", false);
 pref("extensions.treestyletab.indent",          12);
 pref("extensions.treestyletab.indent.property", "margin");
 // pref("extensions.treestyletab.indent.property.top", "");

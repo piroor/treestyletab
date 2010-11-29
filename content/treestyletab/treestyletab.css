@@ -13,7 +13,7 @@
 	display: none;
 }
 .tabbrowser-tabs[treestyletab-allow-subtree-collapse="true"]
-  .tabbrowser-tab[treestyletab-children]
+  .tabbrowser-tab[treestyletab-children][treestyletab-allow-subtree-collapse="true"]
   .treestyletab-twisty {
 	display: -moz-box;
 }
@@ -23,7 +23,7 @@
 	display: none;
 }
 .tabbrowser-tabs[treestyletab-allow-subtree-collapse="true"]
-  .tabbrowser-tab[treestyletab-children][treestyletab-subtree-collapsed="true"]
+  .tabbrowser-tab[treestyletab-children][treestyletab-subtree-collapsed="true"][treestyletab-allow-subtree-collapse="true"]
   .treestyletab-counter-container {
 	display: -moz-box;
 }

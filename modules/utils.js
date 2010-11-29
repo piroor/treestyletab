@@ -1338,9 +1338,14 @@ var TreeStyleTabUtils = {
 			);
 	},
  
-	canCollapseSubtree : function TSTUtils_canCollapseSubtree(aTabBrowser) /* PUBLIC API */ 
+	canCollapseSubtree : function TSTUtils_canCollapseSubtree(aTabOrTabBrowser) /* PUBLIC API */ 
 	{
-		var b = this.getTabBrowserFromChild(aTabBrowser) || this.browser;
+		if (aTabOrTabBrowser &&
+			aTabOrTabBrowser.localName == 'tab' &&
+			aTabOrTabBrowser.getAttribute(this.kALLOW_COLLAPSE) != 'true')
+			return false;
+
+		var b = this.getTabBrowserFromChild(aTabOrTabBrowser) || this.browser;
 		return b.getAttribute(this.kALLOW_COLLAPSE) == 'true';
 	},
  
