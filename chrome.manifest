@@ -31,18 +31,17 @@ skin	treestyletab-platform	classic/1.0	jar:platform/WINNT/chrome/treestyletab.ja
 skin	treestyletab-platform	classic/1.0	jar:platform/Linux/chrome/treestyletab.jar!/skin/classic/treestyletab/	os=Linux
 skin	treestyletab-platform	classic/1.0	jar:platform/Darwin/chrome/treestyletab.jar!/skin/classic/treestyletab/	os=Darwin
 
-style chrome://browser/content/browser.xul chrome://treestyletab-platform/skin/treestyletab-3.5.css	os=Darwin appversion>=3.5
-override chrome://treestyletab-platform/skin/metal/treestyletab-inactive.css	chrome://treestyletab-platform/skin/metal/treestyletab-inactive-3.0.css	os=Darwin
+style chrome://browser/content/browser.xul chrome://treestyletab-platform/skin/treestyletab-3.5.css	os=Darwin
+override chrome://treestyletab-platform/skin/metal/treestyletab-inactive.css	chrome://treestyletab-platform/skin/metal/treestyletab-inactive-3.5.css	os=Darwin
 override chrome://treestyletab-platform/skin/metal/treestyletab-inactive.css	chrome://treestyletab-platform/skin/metal/treestyletab-inactive-4.css	os=Darwin appversion>=4.0b5pre
 
 
 override chrome://treestyletab/skin/group/group-icon	chrome://treestyletab/skin/group/group-fx3.png
 override chrome://treestyletab/skin/group/group-icon	chrome://treestyletab/skin/group/group-fx3-aero.png	os=WINNT osversion>=6
 
-override chrome://treestyletab/skin/metal/tab.css	chrome://treestyletab/skin/metal/tab-3.5.css	appversion>=3.5
 override chrome://treestyletab/skin/metal/tab-inactive.css	chrome://treestyletab/skin/metal/tab-inactive-3.5.css
 override chrome://treestyletab/skin/metal/tab-inactive.css	chrome://treestyletab/skin/metal/tab-inactive-4.css	appversion>=4.0b5pre
-override chrome://treestyletab/skin/metal/base-inactive.css	chrome://treestyletab/skin/metal/base-inactive-3.0.css
+override chrome://treestyletab/skin/metal/base-inactive.css	chrome://treestyletab/skin/metal/base-inactive-3.5.css
 override chrome://treestyletab/skin/metal/base-inactive.css	chrome://treestyletab/skin/metal/base-inactive-4.css	appversion>=4.0b5pre
 
 override chrome://treestyletab/skin/sidebar/inactive.css	chrome://treestyletab/skin/sidebar/inactive-3.6.css
