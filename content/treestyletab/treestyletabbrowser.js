@@ -350,6 +350,8 @@ TreeStyleTabBrowser.prototype = {
 		b.addEventListener('MultipleTabHandlerTabsClosing', this, false);
 
 
+		window['piro.sakura.ne.jp'].tabsDragUtils.initTabBrowser(b);
+
 
 		/* Closing collapsed last tree breaks selected tab.
 		   To solve this problem, I override the setter to
@@ -1640,6 +1642,8 @@ TreeStyleTabBrowser.prototype = {
 		window.removeEventListener('TreeStyleTabPrintPreviewExited', this, false);
 
 		b.removeEventListener('MultipleTabHandlerTabsClosing', this, false);
+
+		window['piro.sakura.ne.jp'].tabsDragUtils.destroyTabBrowser(b);
 
 		TreeStyleTabService.destroyTabDNDObserver(b);
 
@@ -3718,12 +3722,7 @@ TreeStyleTabBrowser.prototype = {
 		var sourceBrowser = this.getTabBrowserFromChild(aTab);
 
 		var dt = aInfo.event && aInfo.event.dataTransfer;
-		var isMultipleDragEvent = (
-					dt &&
-					dt.mozItemCount > 1 &&
-					Array.slice(dt.mozTypesAt(0)).indexOf(TAB_DROP_TYPE) > -1
-				);
-
+		var isMultipleDragEvent = window['piro.sakura.ne.jp'].tabsDragUtils.isTabsDragging(aInfo.event);
 		var isMultipleMove = (
 				isMultipleDragEvent ||
 				(
@@ -3735,7 +3734,7 @@ TreeStyleTabBrowser.prototype = {
 
 		if (isMultipleMove) {
 			draggedTabs = isMultipleDragEvent ?
-							this.getTabsFromDragEvent(aInfo.event) :
+							window['piro.sakura.ne.jp'].tabsDragUtils.getDraggedTabs(aInfo.event) :
 							sourceWindow.MultipleTabService.getSelectedTabs(sourceBrowser);
 			if (!(aInfo.action & this.kACTIONS_FOR_DESTINATION)) {
 				draggedRoots = [];
@@ -3763,17 +3762,6 @@ TreeStyleTabBrowser.prototype = {
 			draggedRoots   : draggedRoots,
 			isMultipleMove : isMultipleMove
 		};
-	},
- 
-	getTabsFromDragEvent : function TSTBrowser_getTabsFromDragEvent(aEvent) 
-	{
-		var tabs = [];
-		var dt = aEvent.dataTransfer;
-		for (let i = 0, maxi = dt.mozItemCount; i < maxi; i++)
-		{
-			tabs.push(dt.mozGetDataAt(TAB_DROP_TYPE, i));
-		}
-		return tabs.sort(this.sortTabsByOrder);
 	},
  
 	attachTabsOnDrop : function TSTBrowser_attachTabsOnDrop(aTabs, aParent) 

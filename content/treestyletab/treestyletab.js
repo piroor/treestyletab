@@ -265,6 +265,7 @@ var TreeStyleTabService = {
 
 
 
+
 						behavior += this.kGROUP_BOOKMARK_USE_DUMMY;
 					if (!this.getTreePref('openGroupBookmarkBehavior.confirm')) {
 						behavior += (
@@ -426,9 +427,6 @@ var TreeStyleTabService = {
 				).replace(
 					/\.width/g, '[TreeStyleTabService.getTabBrowserFromChild(TSTTabBrowser).treeStyleTab.sizeProp]'
 				).replace(
-					'dt.mozItemCount > 1',
-					'$& && !TreeStyleTabService.isTabsDragging(arguments[0])'
-				).replace(
 					/(return (?:true|dt.effectAllowed = "copyMove");)/,
 					<![CDATA[
 						if (!this.treeStyleTab.checkCanTabDrop(arguments[0], this)) {
@@ -480,6 +478,7 @@ var TreeStyleTabService = {
 				).replace(
 					'document.getBindingParent(aEvent.originalTarget).localName != "tab"',
 					'!TreeStyleTabService.getTabFromEvent(aEvent)'
+
 				).replace(
 					'var tab = aEvent.target;',
 					<![CDATA[$&
@@ -567,17 +566,6 @@ catch(e) {
 }
 	},
  
-	isTabsDragging : function TSTService_isTabsDragging(aEvent) 
-	{
-		var dt = aEvent.dataTransfer;
-		for (let i = 0, maxi = dt.mozItemCount; i < maxi; i++)
-		{
-			if (Array.slice(dt.mozTypesAt(i)).indexOf(TAB_DROP_TYPE) < 0)
-				return false;
-		}
-		return true;
-	},
- 
 	onTabDragStart : function TSTService_onTabDragStart(aEvent) 
 	{
 		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
@@ -589,51 +577,14 @@ catch(e) {
 			return;
 
 		var actionInfo = {
-				action : this.kACTIONS_FOR_SOURCE,
+				action : this.kACTIONS_FOR_DESTINATION | this.kACTION_MOVE,
 				event  : aEvent
 			};
 		var tabsInfo = b.treeStyleTab.getDraggedTabsInfoFromOneTab(actionInfo, tab);
+		if (tabsInfo.draggedTabs.length <= 1)
+			return;
 
-		var index = tabsInfo.draggedTabs.indexOf(tab);
-		if (index > -1) {
-			tabsInfo.draggedTabs.splice(index, 1);
-			tabsInfo.draggedTabs.unshift(tab);
-		}
-
-		if ('MultipleTabService' in window &&
-			'setUpTabsDragData' in MultipleTabService) {
-			MultipleTabService.setUpTabsDragData(aEvent, tabsInfo.draggedTabs);
-		}
-		else {
-			let dt = aEvent.dataTransfer;
-			tabsInfo.draggedTabs.forEach(function(aTab, aIndex) {
-				dt.mozSetDataAt(TAB_DROP_TYPE, aTab, aIndex);
-				dt.mozSetDataAt('text/x-moz-text-internal', this.getCurrentURIOfTab(aTab), aIndex);
-			}, this);
-		}
-	},
- 	getCurrentURIOfTab : function TSTService_getCurrentURIOfTab(aTab) 
-	{
-		if (aTab.getAttribute('ontap') == 'true') {
-			// If BarTap ( https://addons.mozilla.org/firefox/addon/67651 ) is installed,
-			// currentURI is possibly 'about:blank'. So, we have to get correct URI
-			// from the session histrory.
-			var b = aTab.linkedBrowser;
-			try {
-				var h = b.sessionHistory;
-				var entry = h.getEntryAtIndex(h.index, false);
-				return entry.URI;
-			}
-			catch(e) {
-			}
-		}
-		// Firefox 4.0-
-		if (aTab.linkedBrowser.__SS_needsRestore) {
-			let data = aTab.linkedBrowser.__SS_data;
-			let entry = data.entries[Math.max(data.index, data.entries.length-1)];
-			return this.makeURIFromSpec(entry.url);
-		}
-		return aTab.linkedBrowser.currentURI;
+		window['piro.sakura.ne.jp'].tabsDragUtils.startTabsDrag(aEvent, tabsInfo.draggedTabs);
 	},
 	
 	onTabbarDragStart : function TSTService_onTabbarDragStart(aEvent, aTabBrowser) 
