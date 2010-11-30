@@ -105,6 +105,20 @@ var TreeStyleTabUtils = {
 	kDROP_POSITION_UNKNOWN : 'unknown',
 	kTABBAR_MOVE_FORCE  : 'force',
 	kTABBAR_MOVE_NORMAL : 'normal',
+
+	kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN : 'TreeStyleTabFocusSwitchingKeyDown',
+	kEVENT_TYPE_TAB_FOCUS_SWITCHING_START    : 'TreeStyleTabFocusSwitchingStart',
+	kEVENT_TYPE_TAB_FOCUS_SWITCHING_END      : 'TreeStyleTabFocusSwitchingEnd',
+	kEVENT_TYPE_SUBTREE_CLOSING              : 'TreeStyleTabSubtreeClosing',
+	kEVENT_TYPE_SUBTREE_CLOSED               : 'TreeStyleTabSubtreeClosed',
+	kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED  : 'TreeStyleTabCollapsedStateChange',
+	kEVENT_TYPE_TABBAR_POSITION_CHANGING     : 'TreeStyleTabTabbarPositionChanging',
+	kEVENT_TYPE_TABBAR_POSITION_CHANGED      : 'TreeStyleTabTabbarPositionChanged',
+	kEVENT_TYPE_TABBAR_STATE_CHANGING        : 'TreeStyleTabTabbarStateChanging',
+	kEVENT_TYPE_TABBAR_STATE_CHANGED         : 'TreeStyleTabTabbarStateChanged',
+	kEVENT_TYPE_FOCUS_NEXT_TAB               : 'TreeStyleTabFocusNextTab',
+	kEVENT_TYPE_PRINT_PREVIEW_ENTERED        : 'TreeStyleTabPrintPreviewEntered',
+	kEVENT_TYPE_PRINT_PREVIEW_EXITED         : 'TreeStyleTabPrintPreviewExited',
  
 /* classes */ 
 	kTWISTY                : 'treestyletab-twisty',

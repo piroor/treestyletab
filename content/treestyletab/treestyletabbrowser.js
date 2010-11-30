@@ -300,30 +300,37 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		let position = this.currentTabbarPosition;
-		this.fireTabbarPositionEvent('TreeStyleTabTabbarPositionChanging', 'top', position); /* PUBLIC API */
+		this.fireTabbarPositionEvent(this.kEVENT_TYPE_TABBAR_POSITION_CHANGING, 'top', position); /* PUBLIC API */
 
 		this.setTabbrowserAttribute(this.kFIXED+'-horizontal', this.getTreePref('tabbar.fixed.horizontal') ? 'true' : null, b);
 		this.setTabbrowserAttribute(this.kFIXED+'-vertical', this.getTreePref('tabbar.fixed.vertical') ? 'true' : null, b);
 
 		this.initTabbar(null, this.kTABBAR_TOP);
 
-		var strip = this.tabStrip;
-		b.mTabContainer.addEventListener('TabOpen',        this, true);
-		b.mTabContainer.addEventListener('TabClose',       this, true);
-		b.mTabContainer.addEventListener('TabMove',        this, true);
-		b.mTabContainer.addEventListener('TabShow',        this, true);
-		b.mTabContainer.addEventListener('TabHide',        this, true);
-		b.mTabContainer.addEventListener('SSTabRestoring', this, true);
-		b.mTabContainer.addEventListener('SSTabRestored',  this, true);
-		b.mTabContainer.addEventListener('TabPinned',      this, true);
-		b.mTabContainer.addEventListener('TabUnpinned',    this, true);
+		var tabContainer = b.mTabContainer;
+		tabContainer.addEventListener('TabOpen',        this, true);
+		tabContainer.addEventListener('TabClose',       this, true);
+		tabContainer.addEventListener('TabMove',        this, true);
+		tabContainer.addEventListener('TabShow',        this, true);
+		tabContainer.addEventListener('TabHide',        this, true);
+		tabContainer.addEventListener('SSTabRestoring', this, true);
+		tabContainer.addEventListener('SSTabRestored',  this, true);
+		tabContainer.addEventListener('TabPinned',      this, true);
+		tabContainer.addEventListener('TabUnpinned',    this, true);
 		if (!this.isFloating && 'tabutils' in window)
-			b.mTabContainer.addEventListener('DOMAttrModified', this, true); // Tab Utilities
-		b.mTabContainer.addEventListener('mouseover', this, true);
-		b.mTabContainer.addEventListener('mouseout',  this, true);
-		b.mTabContainer.addEventListener('dblclick',  this, true);
-		b.mTabContainer.addEventListener('select', this, true);
-		b.mTabContainer.addEventListener('scroll', this, true);
+			tabContainer.addEventListener('DOMAttrModified', this, true); // Tab Utilities
+		tabContainer.addEventListener('mouseover', this, true);
+		tabContainer.addEventListener('mouseout',  this, true);
+		tabContainer.addEventListener('dblclick',  this, true);
+		tabContainer.addEventListener('select', this, true);
+		tabContainer.addEventListener('scroll', this, true);
+		tabContainer.addEventListener('dragleave', this, false);
+		tabContainer.addEventListener('dragover',  this, false);
+		tabContainer.addEventListener('drop',      this, true);
+		tabContainer.addEventListener('dragdrop',  this, false); // for Firefox 3.5 or older
+		tabContainer.addEventListener('MultipleTabHandler:StartTabsDrag', this, true);
+
+		var strip = this.tabStrip;
 		strip.addEventListener('dragstart',       this, false);
 		strip.addEventListener('dragenter',       this, false);
 		strip.addEventListener('dragleave',       this, false);
@@ -333,10 +340,6 @@ TreeStyleTabBrowser.prototype = {
 		strip.addEventListener('MozMouseHittest', this, true); // to block default behaviors of the tab bar
 		strip.addEventListener('mousedown',       this, true);
 		strip.addEventListener('click',           this, true);
-		b.mPanelContainer.addEventListener('dragleave', this, false);
-		b.mPanelContainer.addEventListener('dragover',  this, false);
-		b.mPanelContainer.addEventListener('drop',      this, true);
-		b.mPanelContainer.addEventListener('dragdrop',  this, false); // for Firefox 3.5 or older
 
 		if (this.isFloating)
 			window.addEventListener('resize', this, true);
@@ -344,8 +347,8 @@ TreeStyleTabBrowser.prototype = {
 		this.scrollBox.addEventListener('overflow', this, true);
 		this.scrollBox.addEventListener('underflow', this, true);
 
-		window.addEventListener('TreeStyleTabPrintPreviewEntered', this, false);
-		window.addEventListener('TreeStyleTabPrintPreviewExited', this, false);
+		window.addEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
+		window.addEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED,  this, false);
 
 		b.addEventListener('MultipleTabHandlerTabsClosing', this, false);
 
@@ -1516,7 +1519,7 @@ TreeStyleTabBrowser.prototype = {
 
 		/* PUBLIC API */
 		var event = document.createEvent('Events');
-		event.initEvent(aChanging ? 'TreeStyleTabTabbarPositionChanging' : 'TreeStyleTabTabbarPositionChanged', true, false);
+		event.initEvent(aChanging ? this.kEVENT_TYPE_TABBAR_POSITION_CHANGING : this.kEVENT_TYPE_TABBAR_POSITION_CHANGED, true, false);
 		event.oldPosition = aOldPosition;
 		event.newPosition = aNewPosition;
 		this.mTabBrowser.dispatchEvent(event);
@@ -1558,7 +1561,7 @@ TreeStyleTabBrowser.prototype = {
 
 		/* PUBLIC API */
 		var event = document.createEvent('Events');
-		event.initEvent('TreeStyleTabTabbarStateChanging', true, false);
+		event.initEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGING, true, false);
 		event.oldState = oldState;
 		event.newState = newState;
 		this.mTabBrowser.dispatchEvent(event);
@@ -1582,7 +1585,7 @@ TreeStyleTabBrowser.prototype = {
 
 		/* PUBLIC API */
 		var event = document.createEvent('Events');
-		event.initEvent('TreeStyleTabTabbarStateChanged', true, false);
+		event.initEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGED, true, false);
 		event.state = state;
 		this.mTabBrowser.dispatchEvent(event);
 
@@ -1605,23 +1608,30 @@ TreeStyleTabBrowser.prototype = {
 			this.destroyTab(aTab);
 		}, this);
 
-		var strip = this.tabStrip;
-		b.mTabContainer.removeEventListener('TabOpen',        this, true);
-		b.mTabContainer.removeEventListener('TabClose',       this, true);
-		b.mTabContainer.removeEventListener('TabMove',        this, true);
-		b.mTabContainer.removeEventListener('TabShow',        this, true);
-		b.mTabContainer.removeEventListener('TabHide',        this, true);
-		b.mTabContainer.removeEventListener('SSTabRestoring', this, true);
-		b.mTabContainer.removeEventListener('SSTabRestored',  this, true);
-		b.mTabContainer.removeEventListener('TabPinned',      this, true);
-		b.mTabContainer.removeEventListener('TabUnpinned',    this, true);
+		var tabContainer = b.mTabContainer;
+		tabContainer.removeEventListener('TabOpen',        this, true);
+		tabContainer.removeEventListener('TabClose',       this, true);
+		tabContainer.removeEventListener('TabMove',        this, true);
+		tabContainer.removeEventListener('TabShow',        this, true);
+		tabContainer.removeEventListener('TabHide',        this, true);
+		tabContainer.removeEventListener('SSTabRestoring', this, true);
+		tabContainer.removeEventListener('SSTabRestored',  this, true);
+		tabContainer.removeEventListener('TabPinned',      this, true);
+		tabContainer.removeEventListener('TabUnpinned',    this, true);
 		if (!this.isFloating && 'tabutils' in window)
 			b.mTabContainer.removeEventListener('DOMAttrModified', this, true); // Tab Utilites
-		b.mTabContainer.removeEventListener('mouseover', this, true);
-		b.mTabContainer.removeEventListener('mouseout',  this, true);
-		b.mTabContainer.removeEventListener('dblclick',  this, true);
-		b.mTabContainer.removeEventListener('select', this, true);
-		b.mTabContainer.removeEventListener('scroll', this, true);
+		tabContainer.removeEventListener('mouseover', this, true);
+		tabContainer.removeEventListener('mouseout',  this, true);
+		tabContainer.removeEventListener('dblclick',  this, true);
+		tabContainer.removeEventListener('select', this, true);
+		tabContainer.removeEventListener('scroll', this, true);
+		tabContainer.removeEventListener('dragleave', this, false);
+		tabContainer.removeEventListener('dragover',  this, false);
+		tabContainer.removeEventListener('drop',      this, true);
+		tabContainer.removeEventListener('dragdrop',  this, false); // for Firefox 3.5 or older
+		tabContainer.removeEventListener('MultipleTabHandler:StartTabsDrag', this, true);
+
+		var strip = this.tabStrip;
 		strip.removeEventListener('dragstart',       this, false);
 		strip.removeEventListener('dragenter',       this, false);
 		strip.removeEventListener('dragleave',       this, false);
@@ -1631,16 +1641,12 @@ TreeStyleTabBrowser.prototype = {
 		strip.removeEventListener('MozMouseHittest', this, true);
 		strip.removeEventListener('mousedown',       this, true);
 		strip.removeEventListener('click',           this, true);
-		b.mPanelContainer.removeEventListener('dragleave', this, false);
-		b.mPanelContainer.removeEventListener('dragover',  this, false);
-		b.mPanelContainer.removeEventListener('drop',      this, true);
-		b.mPanelContainer.removeEventListener('dragdrop',  this, false); // for Firefox 3.5 or older
 
 		if (this.isFloating)
 			window.removeEventListener('resize', this, true);
 
-		window.removeEventListener('TreeStyleTabPrintPreviewEntered', this, false);
-		window.removeEventListener('TreeStyleTabPrintPreviewExited', this, false);
+		window.removeEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
+		window.removeEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED,  this, false);
 
 		b.removeEventListener('MultipleTabHandlerTabsClosing', this, false);
 
@@ -2063,9 +2069,9 @@ TreeStyleTabBrowser.prototype = {
 				return this.onResize(aEvent);
 
 
-			case 'TreeStyleTabPrintPreviewEntered':
+			case this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED:
 				return this.onTreeStyleTabPrintPreviewEntered(aEvent);
-			case 'TreeStyleTabPrintPreviewExited':
+			case this.kEVENT_TYPE_PRINT_PREVIEW_EXITED:
 				return this.onTreeStyleTabPrintPreviewExited(aEvent);
 
 
@@ -2073,6 +2079,10 @@ TreeStyleTabBrowser.prototype = {
 				if (!this.onTabsRemoving(aEvent))
 					aEvent.preventDefault();
 				return;
+
+			// cancel tab dragging by Multiple Tab 
+			case 'MultipleTabHandler:StartTabsDrag':
+				return aEvent.preventDefault();
 		}
 	},
 	lastScrollX : -1,
@@ -4516,7 +4526,7 @@ TreeStyleTabBrowser.prototype = {
 
 		/* PUBLIC API */
 		var event = document.createEvent('Events');
-		event.initEvent('TreeStyleTabCollapsedStateChange', true, false);
+		event.initEvent(this.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, true, false);
 		event.collapsed = aCollapse;
 		aTab.dispatchEvent(event);
 

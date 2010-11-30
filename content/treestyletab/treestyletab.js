@@ -198,25 +198,10 @@ var TreeStyleTabService = {
 
 		this.overrideExtensionsPreInit(); // hacks.js
 
-		this.registerTabFocusAllowance(this.defaultTabFocusAllowance);
-
 		this.migratePrefs();
 	},
 	preInitialized : false,
 	
-	defaultTabFocusAllowance : function TSTService_defaultTabFocusAllowance(aBrowser) 
-	{
-		var tab = aBrowser.selectedTab;
-		return (
-			!this.getPref('browser.tabs.selectOwnerOnClose') ||
-			!tab.owner ||
-			(
-				aBrowser._removingTabs &&
-				aBrowser._removingTabs.indexOf(tab.owner) > -1
-			)
-		);
-	},
- 
 	kPREF_VERSION : 6,
 	migratePrefs : function TSTService_migratePrefs() 
 	{
@@ -257,16 +242,6 @@ var TreeStyleTabService = {
 				if (this.getTreePref('openGroupBookmarkAsTabSubTree') !== null) {
 					let behavior = 0;
 					if (this.getTreePref('openGroupBookmarkAsTabSubTree.underParent'))
-
-
-
-
-
-
-
-
-
-
 						behavior += this.kGROUP_BOOKMARK_USE_DUMMY;
 					if (!this.getTreePref('openGroupBookmarkBehavior.confirm')) {
 						behavior += (
@@ -337,9 +312,10 @@ var TreeStyleTabService = {
 		window.addEventListener('unload', this, false);
 		document.addEventListener('popupshowing', this, false);
 		document.addEventListener('popuphiding', this, true);
-		document.addEventListener('TreeStyleTabCollapsedStateChange', this, false);
-		document.addEventListener('TreeStyleTabTabbarPositionChanged', this, false);
-		document.addEventListener('TreeStyleTabTabbarStateChanged', this, false);
+		document.addEventListener(this.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, this, false);
+		document.addEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGED,     this, false);
+		document.addEventListener(this.kEVENT_TYPE_TABBAR_STATE_CHANGED,        this, false);
+		document.addEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB,              this, false);
 
 		var appcontent = document.getElementById('appcontent');
 		appcontent.addEventListener('SubBrowserAdded', this, false);
@@ -479,6 +455,7 @@ var TreeStyleTabService = {
 				).replace(
 					'document.getBindingParent(aEvent.originalTarget).localName != "tab"',
 					'!TreeStyleTabService.getTabFromEvent(aEvent)'
+
 
 				).replace(
 					'var tab = aEvent.target;',
@@ -1233,9 +1210,14 @@ catch(e) {
 
 			document.removeEventListener('popupshowing', this, false);
 			document.removeEventListener('popuphiding', this, true);
-			document.removeEventListener('TreeStyleTabCollapsedStateChange', this, false);
-			document.removeEventListener('TreeStyleTabTabbarPositionChanged', this, false);
-			document.removeEventListener('TreeStyleTabTabbarStateChanged', this, false);
+			document.removeEventListener(this.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, this, false);
+			document.removeEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGED,     this, false);
+			document.removeEventListener(this.kEVENT_TYPE_TABBAR_STATE_CHANGED,        this, false);
+			document.removeEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB,              this, false);
+
+			this._tabFocusAllowance.each(function(aListener) {
+				window.removeEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB, aListener, false);
+			}, this);
 
 			var appcontent = document.getElementById('appcontent');
 			appcontent.removeEventListener('SubBrowserAdded', this, false);
@@ -1289,12 +1271,15 @@ catch(e) {
 			case 'popuphiding':
 				return this.onPopupHidden(aEvent.originalTarget);
 
-			case 'TreeStyleTabCollapsedStateChange':
+			case this.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED:
 				return this.updateAeroPeekPreviews();
 
-			case 'TreeStyleTabTabbarPositionChanged':
-			case 'TreeStyleTabTabbarStateChanged':
+			case this.kEVENT_TYPE_TABBAR_POSITION_CHANGED:
+			case this.kEVENT_TYPE_TABBAR_STATE_CHANGED:
 				return this.updateTabsOnTop();
+
+			case this.kEVENT_TYPE_FOCUS_NEXT_TAB:
+				return this.onFocusNextTab(aEvent);
 
 			case 'keydown':
 				return this.onKeyDown(aEvent);
@@ -1393,7 +1378,7 @@ catch(e) {
 		/* PUBLIC API */
 		var b = this.browser;
 		var event = b.ownerDocument.createEvent('Events');
-		event.initEvent('TreeStyleTabFocusSwitchingKeyDown', true, false);
+		event.initEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN, true, false);
 		event.sourceEvent = aEvent;
 		b.dispatchEvent(event);
 	},
@@ -1436,7 +1421,7 @@ catch(e) {
 			) {
 			/* PUBLIC API */
 			let event = b.ownerDocument.createEvent('Events');
-			event.initEvent('TreeStyleTabFocusSwitchingStart', true, false);
+			event.initEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START, true, false);
 			event.scrollDown = scrollDown;
 			event.scrollUp = scrollUp;
 			event.standBy = standBy;
@@ -1451,7 +1436,7 @@ catch(e) {
 		/* PUBLIC API */
 		let (event) {
 			event = document.createEvent('Events');
-			event.initEvent('TreeStyleTabFocusSwitchingEnd', true, false);
+			event.initEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, true, false);
 			event.scrollDown = scrollDown;
 			event.scrollUp = scrollUp;
 			event.standBy = standBy;
@@ -1568,6 +1553,20 @@ catch(e) {
 			b.treeStyleTab.resetTabbarSize();
 			aEvent.stopPropagation();
 		}
+	},
+ 
+	onFocusNextTab : function TSTService_onFocusNextTab(aEvent)
+	{
+		var tab = aEvent.target.selectedTab;
+		if (
+			this.getPref('browser.tabs.selectOwnerOnClose') &&
+			tab.owner &&
+			(
+				!aEvent.target._removingTabs ||
+				aEvent.target._removingTabs.indexOf(tab.owner) < 0
+			)
+			)
+			aEvent.preventDefault();
 	},
  
 	showHideSubtreeMenuItem : function TSTService_showHideSubtreeMenuItem(aMenuItem, aTabs) 
@@ -1754,6 +1753,7 @@ catch(e) {
 	_shownPopups : [],
   
 /* Tree Style Tabの初期化が行われる前に復元されたセッションについてツリー構造を復元 */ 
+
 	
 	_restoringTabs : [], 
  
@@ -1852,7 +1852,7 @@ catch(e) {
 	{
 		/* PUBLIC API */
 		var event = aParentTab.ownerDocument.createEvent('Events');
-		event.initEvent('TreeStyleTabSubtreeClosing', true, true);
+		event.initEvent(this.kEVENT_TYPE_SUBTREE_CLOSING, true, true);
 		event.parent = aParentTab;
 		event.tabs = aClosedTabs;
 		return this.getTabBrowserFromChild(aParentTab).dispatchEvent(event);
@@ -1863,7 +1863,7 @@ catch(e) {
 		aClosedTabs = aClosedTabs.filter(function(aTab) { return !aTab.parentNode; });
 		/* PUBLIC API */
 		var event = aTabBrowser.ownerDocument.createEvent('Events');
-		event.initEvent('TreeStyleTabSubtreeClosed', true, false);
+		event.initEvent(this.kEVENT_TYPE_SUBTREE_CLOSED, true, false);
 		event.parent = aParentTab;
 		event.tabs = aClosedTabs;
 		aTabBrowser.dispatchEvent(event);
@@ -2040,7 +2040,15 @@ catch(e) {
  
 	registerTabFocusAllowance : function TSTService_registerTabFocusAllowance(aProcess) /* PUBLIC API */ 
 	{
-		this._tabFocusAllowance.push(aProcess);
+		var listener = {
+				process : aProcess,
+				handleEvent : function(aEvent) {
+					if (!this.process.call(aEvent.target.treeStyleTab, aEvent.target))
+						aEvent.preventDefault();
+				}
+			};
+		window.addEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB, listener, false);
+		this._tabFocusAllowance.push(listener);
 	},
 	_tabFocusAllowance : [],
  
@@ -2083,14 +2091,14 @@ catch(e) {
 	onPrintPreviewEnter : function TSTService_onPrintPreviewEnter() 
 	{
 		var event = document.createEvent('Events');
-		event.initEvent('TreeStyleTabPrintPreviewEntered', true, false);
+		event.initEvent(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, true, false);
 		document.documentElement.dispatchEvent(event);
 	},
  
 	onPrintPreviewExit : function TSTService_onPrintPreviewExit() 
 	{
 		var event = document.createEvent('Events');
-		event.initEvent('TreeStyleTabPrintPreviewExited', true, false);
+		event.initEvent(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED, true, false);
 		document.documentElement.dispatchEvent(event);
 	},
   

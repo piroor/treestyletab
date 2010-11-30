@@ -1028,14 +1028,14 @@ TreeStyleTabBrowserAutoHide.prototype = {
 					this.showForFeedback();
 				return;
 
-			case 'TreeStyleTabTabbarPositionChanging':
+			case this.kEVENT_TYPE_TABBAR_POSITION_CHANGING:
 				this.isResizing = false;
 				this.clearBG();
 				if (this.shouldRedraw)
 					this.hide();
 				return;
 
-			case 'TreeStyleTabTabbarPositionChanged':
+			case this.kEVENT_TYPE_TABBAR_POSITION_CHANGED:
 				if (this.enabled)
 					window.setTimeout(function(aSelf) {
 						aSelf.show();
@@ -1044,11 +1044,11 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				this.updateTransparency();
 				return;
 
-			case 'TreeStyleTabFocusSwitchingKeyDown':
+			case this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN:
 				this.onKeyDown(aEvent.sourceEvent);
 				return;
 
-			case 'TreeStyleTabFocusSwitchingStart':
+			case this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START:
 				this.cancelDelayedShowForShortcut();
 				if (this.enabled &&
 					this.getTreePref('tabbar.autoShow.tabSwitch') &&
@@ -1064,7 +1064,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 					this.show(this.kSHOWN_BY_SHORTCUT);
 				return;
 
-			case 'TreeStyleTabFocusSwitchingEnd':
+			case this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END:
 				this.cancelDelayedShowForShortcut();
 				if (this.enabled &&
 					this.showHideReason == this.kSHOWN_BY_SHORTCUT)
@@ -1289,11 +1289,11 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		b.mTabContainer.addEventListener('TabClose', this, false);
 		b.mTabContainer.addEventListener('TabMove', this, false);
 		b.mTabContainer.addEventListener('select', this, false);
-		b.addEventListener('TreeStyleTabTabbarPositionChanging', this, false);
-		b.addEventListener('TreeStyleTabTabbarPositionChanged', this, false);
-		b.addEventListener('TreeStyleTabFocusSwitchingKeyDown', this, false);
-		b.addEventListener('TreeStyleTabFocusSwitchingStart', this, false);
-		b.addEventListener('TreeStyleTabFocusSwitchingEnd', this, false);
+		b.addEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGING, this, false);
+		b.addEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGED, this, false);
+		b.addEventListener(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN, this, false);
+		b.addEventListener(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START, this, false);
+		b.addEventListener(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, this, false);
 
 		if (!this.mOwner.isFloating) {
 			let stack = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-stack');
@@ -1317,11 +1317,11 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		b.mTabContainer.removeEventListener('TabClose', this, false);
 		b.mTabContainer.removeEventListener('TabMove', this, false);
 		b.mTabContainer.removeEventListener('select', this, false);
-		b.removeEventListener('TreeStyleTabTabbarPositionChanging', this, false);
-		b.removeEventListener('TreeStyleTabTabbarPositionChanged', this, false);
-		b.removeEventListener('TreeStyleTabFocusSwitchingKeyDown', this, false);
-		b.removeEventListener('TreeStyleTabFocusSwitchingStart', this, false);
-		b.removeEventListener('TreeStyleTabFocusSwitchingEnd', this, false);
+		b.removeEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGING, this, false);
+		b.removeEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGED, this, false);
+		b.removeEventListener(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN, this, false);
+		b.removeEventListener(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START, this, false);
+		b.removeEventListener(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, this, false);
 	},
  
 	saveCurrentState : function TSTAutoHide_saveCurrentState() 
