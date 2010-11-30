@@ -15,6 +15,15 @@ tabbrowser[treestyletab-style~="square"][treestyletab-tabbar-position="right"]:n
 	-moz-border-left-colors: ThreeDShadow !important;
 }
 
+tabbrowser[treestyletab-style~="square"]:not([treestyletab-style="vertigo"])[treestyletab-mode="vertical"]
+  .tabbrowser-tab {
+	z-index: 1 !important;
+}
+tabbrowser[treestyletab-style~="square"]:not([treestyletab-style="vertigo"])[treestyletab-mode="vertical"]
+  .tabbrowser-tab:not([pinned="true"]) {
+	position: relative !important;
+}
+
 
 /* Metal */
 

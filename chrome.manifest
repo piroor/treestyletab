@@ -31,7 +31,6 @@ skin	treestyletab-platform	classic/1.0	jar:platform/WINNT/chrome/treestyletab.ja
 skin	treestyletab-platform	classic/1.0	jar:platform/Linux/chrome/treestyletab.jar!/skin/classic/treestyletab/	os=Linux
 skin	treestyletab-platform	classic/1.0	jar:platform/Darwin/chrome/treestyletab.jar!/skin/classic/treestyletab/	os=Darwin
 
-style chrome://browser/content/browser.xul chrome://treestyletab-platform/skin/treestyletab-3.5.css	os=Darwin
 override chrome://treestyletab-platform/skin/metal/treestyletab-inactive.css	chrome://treestyletab-platform/skin/metal/treestyletab-inactive-3.5.css	os=Darwin
 override chrome://treestyletab-platform/skin/metal/treestyletab-inactive.css	chrome://treestyletab-platform/skin/metal/treestyletab-inactive-4.css	os=Darwin appversion>=4.0b5pre
 
