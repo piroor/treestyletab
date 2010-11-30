@@ -426,16 +426,16 @@ var TreeStyleTabService = {
 				).replace(
 					/\.width/g, '[TreeStyleTabService.getTabBrowserFromChild(TSTTabBrowser).treeStyleTab.sizeProp]'
 				).replace(
+					'dt.mozItemCount > 1',
+					'$& && !TreeStyleTabService.isTabsDragging(arguments[0])'
+				).replace(
 					/(return (?:true|dt.effectAllowed = "copyMove");)/,
 					<![CDATA[
 						if (!this.treeStyleTab.checkCanTabDrop(arguments[0], this)) {
-							return TST_DRAGDROP_DISALLOW_RETRUN_VALUE;
+							return dt.effectAllowed = "none";
 						}
 						$1
 					]]>
-				).replace(
-					/TST_DRAGDROP_DISALLOW_RETRUN_VALUE/g,
-					'dt.effectAllowed = "none"'
 				).replace(
 					'sourceNode.parentNode == this &&',
 					'$& TSTTabBrowser.treeStyleTab.getTabFromEvent(event) == sourceNode &&'
@@ -451,9 +451,9 @@ var TreeStyleTabService = {
 						{
 							var TSTTabBrowser = this;
 							TSTTabBrowser.treeStyleTab.clearDropPosition();
-							var dropActionInfo = TSTTabBrowser.treeStyleTab.getDropAction(aEvent, TST_DRAGSESSION);
+							var dropActionInfo = TSTTabBrowser.treeStyleTab.getDropAction(aEvent, TSTTabBrowser.treeStyleTab.getCurrentDragSession());
 					]]>
-				).replace( // Firefox 3.5 or later
+				).replace(
 					/(if \((accelKeyPressed|isCopy|dropEffect == "copy")\) {)/,
 					<![CDATA[
 						if (TSTTabBrowser.treeStyleTab.performDrop(dropActionInfo, draggedTab))
@@ -500,9 +500,6 @@ var TreeStyleTabService = {
 							return;
 						}
 					]]>
-				).replace(
-					/TST_DRAGSESSION/g,
-					'TSTTabBrowser.treeStyleTab.getCurrentDragSession()'
 				)
 			);
 		}
@@ -568,6 +565,17 @@ catch(e) {
 		dump('TreeStyleTabService::canDrop\n'+e+'\n');
 		return false;
 }
+	},
+ 
+	isTabsDragging : function TSTService_isTabsDragging(aEvent) 
+	{
+		var dt = aEvent.dataTransfer;
+		for (let i = 0, maxi = dt.mozItemCount; i < maxi; i++)
+		{
+			if (Array.slice(dt.mozTypesAt(i)).indexOf(TAB_DROP_TYPE) < 0)
+				return false;
+		}
+		return true;
 	},
  
 	onTabDragStart : function TSTService_onTabDragStart(aEvent) 
