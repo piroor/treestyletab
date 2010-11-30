@@ -1474,7 +1474,7 @@ TreeStyleTabBrowser.prototype = {
 	updateTabbarOverflow : function TSTBrowser_updateTabbarOverflow() 
 	{
 		var b = this.mTabBrowser;
-		b.mTabContainer.removeAttribute('overflow'); // Firefox 3.0.x / Firefox 4.0
+		b.mTabContainer.removeAttribute('overflow'); // Firefox 4.0
 		var container = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-container');
 
 		if (!container) {
@@ -1497,11 +1497,11 @@ TreeStyleTabBrowser.prototype = {
 					scrollBox.boxObject.height > container.boxObject.height
 				)
 				) {
-				b.mTabContainer.setAttribute('overflow', true); // Firefox 3.0.x
+				b.mTabContainer.setAttribute('overflow', true); // Firefox 4.0
 				container.setAttribute('overflow', true);
 			}
 			else {
-				b.mTabContainer.removeAttribute('overflow'); // Firefox 3.0.x
+				b.mTabContainer.removeAttribute('overflow'); // Firefox 4.0
 				container.removeAttribute('overflow');
 			}
 		}, 100);
@@ -2226,14 +2226,6 @@ TreeStyleTabBrowser.prototype = {
 				tabs.reverse().forEach(function(aTab) {
 					b.removeTab(aTab, { animate : true });
 				}, this);
-
-				// for last tab closing, we have to open new tab manually if running on Firefox 3.0.
-				if (
-					!('_beginRemoveTab' in b) && !('_endRemoveTab' in b) && // Firefox 3.0.x
-					this.getTabsArray(b).length == 1 // last tab
-					) {
-					b.addTab('about:blank');
-				}
 
 				this.fireTabSubtreeClosedEvent(b, tab, tabs);
 
