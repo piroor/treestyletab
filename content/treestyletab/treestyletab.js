@@ -261,6 +261,7 @@ var TreeStyleTabService = {
 
 
 
+
 						behavior += this.kGROUP_BOOKMARK_USE_DUMMY;
 					if (!this.getTreePref('openGroupBookmarkBehavior.confirm')) {
 						behavior += (
@@ -636,7 +637,7 @@ try{
 			};
 		}
 
-		// auto-switch for staying on tabs (Firefox 3.0 or later)
+		// auto-switch for staying on tabs (Firefox 3.5 or later)
 		if (
 			setEffectAllowedFunc &&
 			info.position == this.kDROP_ON &&

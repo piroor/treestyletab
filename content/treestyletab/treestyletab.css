@@ -330,7 +330,7 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 .tabbrowser-tabs[treestyletab-hide-alltabs-button="true"]
   .tabs-alltabs-stack,
 .tabbrowser-tabs[treestyletab-hide-alltabs-button="true"]
-  .tabbrowser-arrowscrollbox ~ stack /* "all tabs" button in Firefox 3.0-3.5 */ {
+  .tabbrowser-arrowscrollbox ~ stack /* "all tabs" button in Firefox 3.5 */ {
 	visibility: collapse !important;
 }
 
@@ -388,10 +388,3 @@ image.tab-icon {
 	visibility: collapse;
 }
 
-/* Tab Utilities + Firefox 3.0 (not 3.5 and later!) */
-tabbrowser[treestyletab-mode="vertical"]
-  .tabs-stack
-  > *:first-child + *
-  > hbox:not(.tabs-apptabs-container) {
-	-moz-box-flex: 1 !important;
-}
