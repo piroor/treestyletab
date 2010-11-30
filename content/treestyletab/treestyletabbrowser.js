@@ -796,6 +796,7 @@ TreeStyleTabBrowser.prototype = {
 			var id = this.getTabValue(aTab, this.kID) || this.makeNewId();
 			aTab.setAttribute(this.kID, id);
 			aTab.setAttribute(this.kSUBTREE_COLLAPSED, true);
+			aTab.setAttribute(this.kALLOW_COLLAPSE, true);
 			window.setTimeout(function(aSelf) {
 				if (!aSelf.getTabValue(aTab, aSelf.kID)) {
 					aSelf.setTabValue(aTab, aSelf.kID, id);
