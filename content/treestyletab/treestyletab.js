@@ -262,6 +262,7 @@ var TreeStyleTabService = {
 
 
 
+
 						behavior += this.kGROUP_BOOKMARK_USE_DUMMY;
 					if (!this.getTreePref('openGroupBookmarkBehavior.confirm')) {
 						behavior += (
@@ -440,7 +441,7 @@ var TreeStyleTabService = {
 			);
 		}
 
-		if ('_onDrop' in aObserver) {
+		if ('_onDrop' in aObserver) { // Firefox 3.5 - 3.6
 			eval('aObserver._onDrop = '+
 				aObserver._onDrop.toSource().replace(
 					'{',
@@ -983,7 +984,7 @@ catch(e) {
 			let source = this._getFunctionSource(aFunc);
 			if (!source || !/^\(?function handleLinkClick/.test(source))
 				return false;
-			eval(aFunc+' = '+source.replace( // for -Firefox 3.6
+			eval(aFunc+' = '+source.replace( // for Firefox 3.5 - Firefox 3.6
 				/(openNewTabWith\()/g,
 				<![CDATA[
 					if (!TreeStyleTabService.checkToOpenChildTab(event.target.ownerDocument.defaultView))

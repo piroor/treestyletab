@@ -97,7 +97,7 @@ TreeStyleTabBrowser.prototype = {
 						document.getAnonymousElementByAttribute(aTab, 'class', 'tab-text-container')
 					) ||
 					document.getAnonymousElementByAttribute(aTab, 'class', 'tab-text tab-label') || // Firefox 4.0-
-					document.getAnonymousElementByAttribute(aTab, 'class', 'tab-text'); // -Firefox 3.6
+					document.getAnonymousElementByAttribute(aTab, 'class', 'tab-text'); // Firefox 3.5 - Firefox 3.6
 		return label;
 	},
  
@@ -3325,6 +3325,7 @@ TreeStyleTabBrowser.prototype = {
 			sep.setAttribute('hidden', true);
 		}
 	},
+
   
 	onTreeStyleTabPrintPreviewEntered : function TSTBrowser_onTreeStyleTabPrintPreviewEntered(aEvent) 
 	{
