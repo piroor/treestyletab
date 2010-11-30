@@ -266,6 +266,7 @@ var TreeStyleTabService = {
 
 
 
+
 						behavior += this.kGROUP_BOOKMARK_USE_DUMMY;
 					if (!this.getTreePref('openGroupBookmarkBehavior.confirm')) {
 						behavior += (
@@ -409,12 +410,12 @@ var TreeStyleTabService = {
 		if (aObserver.tabContainer &&
 			aObserver.tabContainer.tabbrowser == aObserver) { // Firefox 4.0 or later
 			aObserver = aObserver.tabContainer;
-			strip.addEventListener('drop', this, true);
+			strip.addEventListener('drop',    this, true);
 			strip.addEventListener('dragend', this, true);
 		}
 
 		strip.addEventListener('dragstart', this, true);
-		strip.addEventListener('dragover', this, true);
+		strip.addEventListener('dragover',  this, true);
 		strip.addEventListener('dragleave', this, true);
 
 		if ('_setEffectAllowedForDataTransfer' in aObserver) {
@@ -533,12 +534,11 @@ var TreeStyleTabService = {
 		if (aObserver.tabContainer &&
 			aObserver.tabContainer.tabbrowser == aObserver) { // Firefox 4.0 or later
 			strip.removeEventListener('dragstart', this, true);
-			strip.removeEventListener('dragover', this, true);
+			strip.removeEventListener('dragover',  this, true);
 			strip.removeEventListener('dragleave', this, true);
 		}
 
-		strip.removeEventListener('dragstart', this, true);
-		strip.removeEventListener('dragover', this, true);
+		strip.removeEventListener('dragover',  this, true);
 		strip.removeEventListener('dragleave', this, true);
 	},
 	
@@ -1341,10 +1341,10 @@ catch(e) {
 
 			// Firefox 3.5 or later
 			case 'dragstart': return this.onTabDragStart(aEvent);
-			case 'dragover': return this.onTabDragOver(aEvent);
+			case 'dragover':  return this.onTabDragOver(aEvent);
 			case 'dragleave': return this.onTabDragLeave(aEvent);
 			// Firefox 4.0 or later
-			case 'drop': return this.onTabDrop(aEvent);
+			case 'drop':    return this.onTabDrop(aEvent);
 			case 'dragend': return this.onTabDragEnd(aEvent);
 		}
 	},
