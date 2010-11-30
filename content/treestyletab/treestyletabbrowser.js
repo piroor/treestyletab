@@ -3773,7 +3773,7 @@ TreeStyleTabBrowser.prototype = {
 		{
 			tabs.push(dt.mozGetDataAt(TAB_DROP_TYPE, i));
 		}
-		return tabs;
+		return tabs.sort(this.sortTabsByOrder);
 	},
  
 	attachTabsOnDrop : function TSTBrowser_attachTabsOnDrop(aTabs, aParent) 
