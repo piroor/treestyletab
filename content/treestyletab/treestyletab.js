@@ -264,6 +264,7 @@ var TreeStyleTabService = {
 
 
 
+
 						behavior += this.kGROUP_BOOKMARK_USE_DUMMY;
 					if (!this.getTreePref('openGroupBookmarkBehavior.confirm')) {
 						behavior += (
@@ -573,7 +574,58 @@ catch(e) {
 	{
 		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
 		if (b.treeStyleTab.tabbarDNDObserver.canDragTabbar(aEvent))
-			b.treeStyleTab.onTabbarDragStart(aEvent, b);
+			return b.treeStyleTab.onTabbarDragStart(aEvent, b);
+
+		var tab = this.getTabFromEvent(aEvent);
+		if (!tab)
+			return;
+
+		var actionInfo = {
+				action : this.kACTIONS_FOR_SOURCE,
+				event  : aEvent
+			};
+		var tabsInfo = b.treeStyleTab.getDraggedTabsInfoFromOneTab(actionInfo, tab);
+
+		var index = tabsInfo.draggedTabs.indexOf(tab);
+		if (index > -1) {
+			tabsInfo.draggedTabs.splice(index, 1);
+			tabsInfo.draggedTabs.unshift(tab);
+		}
+
+		if ('MultipleTabService' in window &&
+			'setUpTabsDragData' in MultipleTabService) {
+			MultipleTabService.setUpTabsDragData(aEvent, tabsInfo.draggedTabs);
+		}
+		else {
+			let dt = aEvent.dataTransfer;
+			tabsInfo.draggedTabs.forEach(function(aTab, aIndex) {
+				dt.mozSetDataAt(TAB_DROP_TYPE, aTab, aIndex);
+				dt.mozSetDataAt('text/x-moz-text-internal', this.getCurrentURIOfTab(aTab), aIndex);
+			}, this);
+		}
+	},
+ 	getCurrentURIOfTab : function TSTService_getCurrentURIOfTab(aTab) 
+	{
+		if (aTab.getAttribute('ontap') == 'true') {
+			// If BarTap ( https://addons.mozilla.org/firefox/addon/67651 ) is installed,
+			// currentURI is possibly 'about:blank'. So, we have to get correct URI
+			// from the session histrory.
+			var b = aTab.linkedBrowser;
+			try {
+				var h = b.sessionHistory;
+				var entry = h.getEntryAtIndex(h.index, false);
+				return entry.URI;
+			}
+			catch(e) {
+			}
+		}
+		// Firefox 4.0-
+		if (aTab.linkedBrowser.__SS_needsRestore) {
+			let data = aTab.linkedBrowser.__SS_data;
+			let entry = data.entries[Math.max(data.index, data.entries.length-1)];
+			return this.makeURIFromSpec(entry.url);
+		}
+		return aTab.linkedBrowser.currentURI;
 	},
 	
 	onTabbarDragStart : function TSTService_onTabbarDragStart(aEvent, aTabBrowser) 
