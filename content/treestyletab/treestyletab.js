@@ -263,6 +263,7 @@ var TreeStyleTabService = {
 
 
 
+
 						behavior += this.kGROUP_BOOKMARK_USE_DUMMY;
 					if (!this.getTreePref('openGroupBookmarkBehavior.confirm')) {
 						behavior += (
@@ -500,10 +501,7 @@ var TreeStyleTabService = {
 					]]>
 				).replace(
 					/TST_DRAGSESSION/g,
-					(canDropFunctionName == 'canDrop' ?
-						'aDragSession' :
-						'TSTTabBrowser.treeStyleTab.getCurrentDragSession()'
-					)
+					'TSTTabBrowser.treeStyleTab.getCurrentDragSession()'
 				)
 			);
 		}
