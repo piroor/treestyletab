@@ -54,16 +54,6 @@ function initAppearancePane()
 {
 	onChangeTabbarPosition();
 
-	var mixed = document.getElementById('extensions.treestyletab.tabbar.style-mixed');
-	if (comparator.compare(XULAppInfo.version, '3.5') >= 0) {
-		mixed.removeAttribute('disabled');
-	}
-	else {
-		if (mixed.checked)
-			document.getElementById('extensions.treestyletab.tabbar.style-flat').checked = true;
-		mixed.setAttribute('disabled', true);
-	}
-
 	var sidebar = document.getElementById('extensions.treestyletab.tabbar.style-sidebar');
 	if (comparator.compare(XULAppInfo.version, '3.6') >= 0) {
 		sidebar.removeAttribute('disabled');
@@ -337,9 +327,6 @@ function initAutoHidePane()
 	gAutoHideModeToggle = document.getElementById('extensions.treestyletab.tabbar.autoHide.mode.toggle');
 	gTabbarTransparencyScale = document.getElementById('tabbarTransparency-scale');
 	gTabbarTransparencyLabels = document.getElementById('tabbarTransparency-labels');
-
-	// for Firefox 3.0.x
-	gTabbarTransparencyScale.value = document.getElementById('extensions.treestyletab.tabbar.transparent.style').value;
 
 	updateAutoHideModeLabel();
 	onTabbarTransparencyScaleChange();
