@@ -4602,9 +4602,9 @@ TreeStyleTabBrowser.prototype = {
 		if (
 			!this.animationEnabled ||
 			aJustNow ||
-			this.collapseDuration < 1 ||
+			this.collapseDuration < 1 // ||
 //			!this.isVertical ||
-			!this.canCollapseSubtree(this.getParentTab(aTab))
+//			!this.canCollapseSubtree(this.getParentTab(aTab))
 			) {
 			if (aCollapsed)
 				aTab.setAttribute(this.kCOLLAPSED_DONE, true);
