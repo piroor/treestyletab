@@ -4661,9 +4661,10 @@ TreeStyleTabBrowser.prototype = {
 			if (aTime >= aDuration || stopAnimation) {
 				delete aTab.__treestyletab__updateTabCollapsedTask;
 				if (aCollapsed) aTab.setAttribute(self.kCOLLAPSED_DONE, true);
-				if (!CSSTransitionEnabled)
+				if (!CSSTransitionEnabled) {
 					aTab.style.removeProperty(self.collapseCSSProp);
-				aTab.style.removeProperty('opacity');
+					aTab.style.removeProperty('opacity');
+				}
 				aTab.removeAttribute(offsetAttr);
 
 				maxMargin = null;
