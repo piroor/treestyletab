@@ -131,73 +131,40 @@
 					label="&config.tabbar.hideAlltabsButton;"/>
 			</hbox>
 		</hbox>
-		<vbox id="maxTreeLevel-checkboxes">
+		<hbox id="maxTreeLevel-horizontal"
+			align="center">
 			<checkbox id="maxTreeLevel-checkbox-horizontal"
 				preference="extensions.treestyletab.maxTreeLevel.horizontal"
 				label="&config.enableSubtreeIndent;"
 				onsynctopreference="return onSyncMaxTreeLevelUIToPref('maxTreeLevel-checkbox-horizontal');"
 				onsyncfrompreference="return onSyncMaxTreeLevelPrefToUI('maxTreeLevel-checkbox-horizontal');"/>
+			<label control="maxTreeLevel-textbox-horizontal"
+				value="&config.maxTreeLevel.before;"/>
+			<textbox id="maxTreeLevel-textbox-horizontal"
+				type="number"
+				min="1" increment="1" size="4"
+				value="999"
+				oninput="document.getElementById(this.previousSibling.previousSibling.getAttribute('preference')).value = this.value;"/>
+			<label control="maxTreeLevel-textbox-horizontal"
+				value="&config.maxTreeLevel.after;"/>
+		</hbox>
+		<hbox id="maxTreeLevel-vertical"
+			align="center">
 			<checkbox id="maxTreeLevel-checkbox-vertical"
 				preference="extensions.treestyletab.maxTreeLevel.vertical"
 				label="&config.enableSubtreeIndent;"
 				onsynctopreference="return onSyncMaxTreeLevelUIToPref('maxTreeLevel-checkbox-vertical');"
 				onsyncfrompreference="return onSyncMaxTreeLevelPrefToUI('maxTreeLevel-checkbox-vertical');"/>
-		</vbox>
-		<vbox id="maxTreeLevel-groupboxes"
-			collapsed="true">
-			<groupbox id="maxTreeLevel-groupbox-vertical">
-				<caption label="&config.maxTreeLevel.caption;"/>
-				<radiogroup id="maxTreeLevel-radiogroup-vertical"
-					orient="vertical"
-					preference="extensions.treestyletab.maxTreeLevel.vertical"
-					onsynctopreference="return onSyncMaxTreeLevelUIToPref('maxTreeLevel-radiogroup-vertical');"
-					onsyncfrompreference="return onSyncMaxTreeLevelPrefToUI('maxTreeLevel-radiogroup-vertical');">
-					<radio value="0"  label="&config.maxTreeLevel.0;"
-						max-tree-level-radio="0"/>
-					<radio value="-1" label="&config.maxTreeLevel.-1;"
-						max-tree-level-radio="-1"/>
-					<hbox align="center">
-						<radio value="1" id="maxTreeLevel-radio1-vertical"
-							max-tree-level-radio="1"
-							label="&config.maxTreeLevel.1;"/>
-						<textbox id="maxTreeLevel-radio1-textbox-vertical"
-							max-tree-level-radio="1"
-							type="number"
-							min="1" increment="1" size="2"
-							oninput="document.getElementById(this.parentNode.parentNode.getAttribute('preference')).value = this.value;"/>
-						<label max-tree-level-radio="1"
-							control="maxTreeLevel-radio1-vertical"
-							value="&config.maxTreeLevel.1.after;"/>
-					</hbox>
-				</radiogroup>
-			</groupbox>
-			<groupbox id="maxTreeLevel-groupbox-horizontal" collapsed="true">
-				<caption label="&config.maxTreeLevel.caption;"/>
-				<radiogroup id="maxTreeLevel-radiogroup-horizontal"
-					orient="vertical"
-					preference="extensions.treestyletab.maxTreeLevel.horizontal"
-					onsynctopreference="return onSyncMaxTreeLevelUIToPref('maxTreeLevel-radiogroup-horizontal');"
-					onsyncfrompreference="return onSyncMaxTreeLevelPrefToUI('maxTreeLevel-radiogroup-horizontal');">
-					<radio value="0"  label="&config.maxTreeLevel.0;"
-						max-tree-level-radio="0"/>
-					<radio value="-1" label="&config.maxTreeLevel.-1;"
-						max-tree-level-radio="-1"/>
-					<hbox align="center">
-						<radio value="1" id="maxTreeLevel-radio1-horizontal"
-							max-tree-level-radio="1"
-							label="&config.maxTreeLevel.1;"/>
-						<textbox id="maxTreeLevel-radio1-textbox-horizontal"
-							max-tree-level-radio="1"
-							type="number"
-							min="1" increment="1" size="2"
-							oninput="document.getElementById(this.parentNode.parentNode.getAttribute('preference')).value = this.value;"/>
-						<label max-tree-level-radio="1"
-							control="maxTreeLevel-radio1-horizontal"
-							value="&config.maxTreeLevel.1.after;"/>
-					</hbox>
-				</radiogroup>
-			</groupbox>
-		</vbox>
+			<label control="maxTreeLevel-textbox-vertical"
+				value="&config.maxTreeLevel.before;"/>
+			<textbox id="maxTreeLevel-textbox-vertical"
+				type="number"
+				min="1" increment="1" size="4"
+				value="999"
+				oninput="document.getElementById(this.previousSibling.previousSibling.getAttribute('preference')).value = this.value;"/>
+			<label control="maxTreeLevel-textbox-vertical"
+				value="&config.maxTreeLevel.after;"/>
+		</hbox>
 		</vbox>
 	</groupbox>
 

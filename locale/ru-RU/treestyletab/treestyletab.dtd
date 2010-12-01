@@ -16,11 +16,8 @@
 <!ENTITY config.tabbar.invertTab            "Инвертировать вид вкладок">
 <!ENTITY config.tabbar.invertTabContents    "Инвертировать содержимое вкладок">
 <!ENTITY config.enableSubtreeIndent         "Отступы вкладок">
-<!ENTITY config.maxTreeLevel.caption  "Visualization of nested trees">
-<!ENTITY config.maxTreeLevel.0        "Nothing (no indentation)">
-<!ENTITY config.maxTreeLevel.-1       "Indent tabs">
-<!ENTITY config.maxTreeLevel.1        "Indent tabs until">
-<!ENTITY config.maxTreeLevel.1.after  "level(s)">
+<!ENTITY config.maxTreeLevel.before "until">
+<!ENTITY config.maxTreeLevel.after  "level(s)">
 <!ENTITY config.allowSubtreeCollapseExpand  "Разрешить сворачивать/разворачивать поддеревья вкладок">
 <!ENTITY config.tabbar.hideAlltabsButton    "Показывать кнопку &quot;Список всех вкладок&quot;">
 

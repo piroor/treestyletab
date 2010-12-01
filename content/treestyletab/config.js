@@ -62,18 +62,6 @@ function initAppearancePane()
 		sidebar.setAttribute('disabled', true);
 	}
 
-	var maxTreeLevelCheckboxes = document.getElementById('maxTreeLevel-checkboxes');
-	var maxTreeLevelGroupboxes = document.getElementById('maxTreeLevel-groupboxes');
-	if (document.getElementById('extensions.treestyletab.maxTreeLevel.horizontal').value < 1 &&
-		document.getElementById('extensions.treestyletab.maxTreeLevel.vertical').value < 1) {
-		maxTreeLevelCheckboxes.removeAttribute('collapsed');
-		maxTreeLevelGroupboxes.setAttribute('collapsed', true);
-	}
-	else {
-		maxTreeLevelCheckboxes.setAttribute('collapsed', true);
-		maxTreeLevelGroupboxes.removeAttribute('collapsed');
-	}
-
 	var hideAllTabsButton = document.getElementById('hideAlltabsButton-box');
 	if (comparator.compare(XULAppInfo.version, '4.0b3') > 0) {
 		hideAllTabsButton.setAttribute('hidden', true);
@@ -218,10 +206,8 @@ function onChangeTabbarPosition()
 	else
 		invertClosebox.setAttribute('collapsed', true);
 
-	var maxTreeLevelH   = document.getElementById('maxTreeLevel-groupbox-horizontal');
-	var maxTreeLevelV   = document.getElementById('maxTreeLevel-groupbox-vertical');
-	var indentCheckH   = document.getElementById('maxTreeLevel-checkbox-horizontal');
-	var indentCheckV   = document.getElementById('maxTreeLevel-checkbox-vertical');
+	var maxTreeLevelH   = document.getElementById('maxTreeLevel-horizontal');
+	var maxTreeLevelV   = document.getElementById('maxTreeLevel-vertical');
 	var collapseCheckH = document.getElementById('extensions.treestyletab.allowSubtreeCollapseExpand.horizontal-check');
 	var collapseCheckV = document.getElementById('extensions.treestyletab.allowSubtreeCollapseExpand.vertical-check');
 	var hideAllTabsCheckH = document.getElementById('extensions.treestyletab.tabbar.hideAlltabsButton.horizontal-check');
@@ -230,8 +216,6 @@ function onChangeTabbarPosition()
 	if (pos == 'left' || pos == 'right') {
 		maxTreeLevelH.setAttribute('collapsed', true);
 		maxTreeLevelV.removeAttribute('collapsed');
-		indentCheckH.setAttribute('collapsed', true);
-		indentCheckV.removeAttribute('collapsed');
 		collapseCheckH.setAttribute('collapsed', true);
 		collapseCheckV.removeAttribute('collapsed');
 		hideAllTabsCheckH.setAttribute('collapsed', true);
@@ -240,8 +224,6 @@ function onChangeTabbarPosition()
 	else {
 		maxTreeLevelH.removeAttribute('collapsed');
 		maxTreeLevelV.setAttribute('collapsed', true);
-		indentCheckH.removeAttribute('collapsed');
-		indentCheckV.setAttribute('collapsed', true);
 		collapseCheckH.removeAttribute('collapsed');
 		collapseCheckV.setAttribute('collapsed', true);
 		hideAllTabsCheckH.removeAttribute('collapsed');
@@ -258,27 +240,9 @@ function onSyncMaxTreeLevelUIToPref(aTarget)
 		return;
 	aTarget.sync = true;
 
-	var prefValue;
-	switch (aTarget.localName)
-	{
-		case 'radiogroup':
-			let (UIValue = parseInt(aTarget.value)) {
-				prefValue = UIValue;
-				Array.slice(aTarget.getElementsByTagName('textbox')).forEach(function(aNode) {
-					if (aNode.getAttribute('max-tree-level-radio') == UIValue) {
-						aNode.removeAttribute('disabled');
-						prefValue = parseInt(aNode.value);
-					}
-					else
-						aNode.setAttribute('disabled', true);
-				});
-			}
-			break;
+	var textbox = aTarget.parentNode.getElementsByTagName('textbox')[0];
+	var prefValue = aTarget.checked ? textbox.value : 0 ;
 
-		case 'checkbox':
-			prefValue = aTarget.checked ? -1 : 0 ;
-			break;
-	}
 	aTarget.sync = false;
 	return prefValue;
 }
@@ -292,26 +256,23 @@ function onSyncMaxTreeLevelPrefToUI(aTarget)
 
 	var pref = document.getElementById(aTarget.getAttribute('preference'));
 	var value = pref.value;
-	var UIValue = value;
+	var UIValue = value != 0;
 
-	switch (aTarget.localName)
-	{
-		case 'radiogroup':
-			UIValue = Math.max(-1, Math.min(1, value));
-			Array.slice(aTarget.getElementsByTagName('textbox')).forEach(function(aNode) {
-				if (aNode.getAttribute('max-tree-level-radio') == UIValue) {
-					aNode.removeAttribute('disabled');
-					aNode.value = value;
-				}
-				else
-					aNode.setAttribute('disabled', true);
-			});
-			break;
+	var textbox = aTarget.parentNode.getElementsByTagName('textbox')[0];
 
-		case 'checkbox':
-			UIValue = value != 0;
-			break;
-	}
+	if (UIValue)
+		textbox.value = value;
+
+	[textbox, textbox.previousSibling, textbox.nextSibling].forEach(
+		UIValue ?
+			function(aNode) {
+				aNode.removeAttribute('disabled');
+			} :
+			function(aNode) {
+				aNode.setAttribute('disabled', true);
+			}
+	);
+
 	aTarget.sync = false;
 	return UIValue;
 }
