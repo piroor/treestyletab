@@ -1215,7 +1215,7 @@ catch(e) {
 			document.removeEventListener(this.kEVENT_TYPE_TABBAR_STATE_CHANGED,        this, false);
 			document.removeEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB,              this, false);
 
-			this._tabFocusAllowance.each(function(aListener) {
+			this._tabFocusAllowance.forEach(function(aListener) {
 				window.removeEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB, aListener, false);
 			}, this);
 
