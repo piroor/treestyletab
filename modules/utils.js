@@ -119,6 +119,10 @@ var TreeStyleTabUtils = {
 	kEVENT_TYPE_FOCUS_NEXT_TAB               : 'TreeStyleTabFocusNextTab',
 	kEVENT_TYPE_PRINT_PREVIEW_ENTERED        : 'TreeStyleTabPrintPreviewEntered',
 	kEVENT_TYPE_PRINT_PREVIEW_EXITED         : 'TreeStyleTabPrintPreviewExited',
+
+	kTOPIC_INDENT_MODIFIED              : 'TreeStyleTab:indentModified',
+	kTOPIC_COLLAPSE_EXPAND_ALL          : 'TreeStyleTab:collapseExpandAllSubtree',
+	kTOPIC_CHANGE_TREEVIEW_AVAILABILITY : 'TreeStyleTab:changeTreeViewAvailability',
  
 /* classes */ 
 	kTWISTY                : 'treestyletab-twisty',
@@ -1336,7 +1340,7 @@ var TreeStyleTabUtils = {
 		this._treeViewEnabled = aValue ? true : false ;
 		this.ObserverService.notifyObservers(
 			window,
-			'TreeStyleTab:changeTreeViewAvailability',
+			this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY,
 			this._treeViewEnabled
 		);
 		return aValue;
@@ -1756,7 +1760,7 @@ var TreeStyleTabUtils = {
 		{
 			case 'extensions.treestyletab.indent':
 				this.baseIndent = value;
-				this.ObserverService.notifyObservers(null, 'TreeStyleTab:indentModified', value);
+				this.ObserverService.notifyObservers(null, this.kTOPIC_INDENT_MODIFIED, value);
 				break;
 
 			case 'extensions.treestyletab.tabbar.width':

@@ -778,10 +778,10 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 
-		this.ObserverService.addObserver(this, 'TreeStyleTab:indentModified', false);
-		this.ObserverService.addObserver(this, 'TreeStyleTab:collapseExpandAllSubtree', false);
+		this.ObserverService.addObserver(this, this.kTOPIC_INDENT_MODIFIED, false);
+		this.ObserverService.addObserver(this, this.kTOPIC_COLLAPSE_EXPAND_ALL, false);
 		this.ObserverService.addObserver(this, 'private-browsing-change-granted', false);
-		this.ObserverService.addObserver(this, 'TreeStyleTab:changeTreeViewAvailability', false);
+		this.ObserverService.addObserver(this, this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY, false);
 		this.addPrefListener(this);
 
 		this.autoHide;
@@ -1671,10 +1671,10 @@ TreeStyleTabBrowser.prototype = {
 			this.tabbarCanvas = null;
 		}
 
-		this.ObserverService.removeObserver(this, 'TreeStyleTab:indentModified');
-		this.ObserverService.removeObserver(this, 'TreeStyleTab:collapseExpandAllSubtree');
+		this.ObserverService.removeObserver(this, this.kTOPIC_INDENT_MODIFIED);
+		this.ObserverService.removeObserver(this, this.kTOPIC_COLLAPSE_EXPAND_ALL);
 		this.ObserverService.removeObserver(this, 'private-browsing-change-granted');
-		this.ObserverService.removeObserver(this, 'TreeStyleTab:changeTreeViewAvailability');
+		this.ObserverService.removeObserver(this, this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY);
 		this.removePrefListener(this);
 
 		delete this.mTabBrowser;
@@ -1723,12 +1723,12 @@ TreeStyleTabBrowser.prototype = {
 	{
 		switch (aTopic)
 		{
-			case 'TreeStyleTab:indentModified':
+			case this.kTOPIC_INDENT_MODIFIED:
 				if (this.indent > -1)
 					this.updateAllTabsIndent();
 				break;
 
-			case 'TreeStyleTab:collapseExpandAllSubtree':
+			case this.kTOPIC_COLLAPSE_EXPAND_ALL:
 				if (!aSubject || aSubject == window) {
 					aData = String(aData);
 					this.collapseExpandAllSubtree(
@@ -1745,7 +1745,7 @@ TreeStyleTabBrowser.prototype = {
 				}, 0, this);
 				break;
 
-			case 'TreeStyleTab:changeTreeViewAvailability':
+			case this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY:
 				this.treeViewEnabled = (aData != 'false');
 				break;
 

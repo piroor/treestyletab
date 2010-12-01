@@ -1982,7 +1982,7 @@ catch(e) {
 	{
 		this.ObserverService.notifyObservers(
 			window,
-			'TreeStyleTab:collapseExpandAllSubtree',
+			this.kTOPIC_COLLAPSE_EXPAND_ALL,
 			(aCollapse ? 'collapse' : 'open' )
 		);
 	},
