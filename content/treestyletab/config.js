@@ -233,7 +233,7 @@ function onChangeTabbarPosition()
 	gTabbarPlacePositionInitialized = true;
 }
 
-function onSyncMaxTreeLevelUIToPref(aTarget)
+function onSyncMaxTreeLevelUIToPref(aTarget, aSetPrefValue)
 {
 	aTarget = document.getElementById(aTarget);
 	if (aTarget.sync)
@@ -242,6 +242,9 @@ function onSyncMaxTreeLevelUIToPref(aTarget)
 
 	var textbox = aTarget.parentNode.getElementsByTagName('textbox')[0];
 	var prefValue = aTarget.checked ? textbox.value : 0 ;
+
+	if (aSetPrefValue)
+		document.getElementById(aTarget.getAttribute('preference')).value = prefValue;
 
 	aTarget.sync = false;
 	return prefValue;
