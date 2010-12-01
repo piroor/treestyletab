@@ -3671,13 +3671,15 @@ TreeStyleTabBrowser.prototype = {
 		var targetBrowser = this.mTabBrowser;
 		var tabs = this.getTabsArray(targetBrowser);
 
-		var draggedTabs = [aTab];
-		var draggedRoots = [aTab];
-
 		var sourceWindow = aTab.ownerDocument.defaultView;
 		var sourceBrowser = this.getTabBrowserFromChild(aTab);
-		var draggedTabs = window['piro.sakura.ne.jp'].tabsDragUtils.getSelectedTabs(aInfo.event);
+
+		var draggedTabs = window['piro.sakura.ne.jp'].tabsDragUtils.getSelectedTabs(aInfo.event || sourceBrowser);
+		var draggedRoots = [aTab];
+		var isMultipleMove = false;
+
 		if (draggedTabs.length > 1) {
+			isMultipleMove = true;
 			if (!(aInfo.action & this.kACTIONS_FOR_DESTINATION)) {
 				draggedRoots = [];
 				draggedTabs.forEach(function(aTab) {
@@ -3695,7 +3697,7 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 		else if (aInfo.action & this.kACTIONS_FOR_DESTINATION) {
-			draggedTabs = draggedTabs.concat(sourceBrowser.treeStyleTab.getDescendantTabs(aTab));
+			draggedTabs = [aTab].concat(sourceBrowser.treeStyleTab.getDescendantTabs(aTab));
 		}
 
 		return {

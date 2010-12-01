@@ -148,7 +148,9 @@
 					'ancestor-or-self::*[local-name()="tabbrowser"] | '+
 					'ancestor-or-self::*[local-name()="tabs" and @tabbrowser]',
 					aTabBrowserChild,
-					XPathResult.FIRST_ORDERED_NODE_TYPE
+					null,
+					XPathResult.FIRST_ORDERED_NODE_TYPE,
+					null
 				).singleNodeValue;
 			return (b && b.tabbrowser) || b;
 		},
@@ -166,17 +168,17 @@
 			return true;
 		},
 
-		getSelectedTabs : function TDU_getSelectedTabs(aEvent)
+		getSelectedTabs : function TDU_getSelectedTabs(aEventOrTabBrowser)
 		{
-			var b = this.getTabBrowserFromChild(aEvent.target);
+			var event = aEventOrTabBrowser instanceof Components.interfaces.nsIDOMEvent ? aEventOrTabBrowser : null ;
+			var b = this.getTabBrowserFromChild(event ? event.target : aEventOrTabBrowser );
 			var w = b.ownerDocument.defaultView;
 
-			var isMultipleDragEvent = this.isTabsDragging(aEvent);
 			var selectedTabs;
 			var isMultipleDrag = (
 					(
-						isMultipleDragEvent &&
-						(selectedTabs = this.getDraggedTabs(aEvent)) &&
+						this.isTabsDragging(event) &&
+						(selectedTabs = this.getDraggedTabs(event)) &&
 						selectedTabs.length
 					) ||
 					( // Firefox 4.x (https://bugzilla.mozilla.org/show_bug.cgi?id=566510)
