@@ -119,6 +119,8 @@ var TreeStyleTabUtils = {
 	kEVENT_TYPE_FOCUS_NEXT_TAB               : 'TreeStyleTabFocusNextTab',
 	kEVENT_TYPE_PRINT_PREVIEW_ENTERED        : 'TreeStyleTabPrintPreviewEntered',
 	kEVENT_TYPE_PRINT_PREVIEW_EXITED         : 'TreeStyleTabPrintPreviewExited',
+	kEVENT_TYPE_AUTO_HIDE_STATE_CHANGING     : 'TreeStyleTabAutoHideStateChanging',
+	kEVENT_TYPE_AUTO_HIDE_STATE_CHANGE       : 'TreeStyleTabAutoHideStateChange',
 
 	kTOPIC_INDENT_MODIFIED              : 'TreeStyleTab:indentModified',
 	kTOPIC_COLLAPSE_EXPAND_ALL          : 'TreeStyleTab:collapseExpandAllSubtree',
