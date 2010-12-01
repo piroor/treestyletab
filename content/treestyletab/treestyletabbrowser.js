@@ -328,7 +328,7 @@ TreeStyleTabBrowser.prototype = {
 		tabContainer.addEventListener('dragover',  this, false);
 		tabContainer.addEventListener('drop',      this, true);
 		tabContainer.addEventListener('dragdrop',  this, false); // for Firefox 3.5 or older
-		tabContainer.addEventListener('MultipleTabHandler:StartTabsDrag', this, true);
+		tabContainer.addEventListener('MultipleTabHandler:TabsDragStart', this, true);
 
 		var strip = this.tabStrip;
 		strip.addEventListener('dragstart',       this, false);
@@ -1629,7 +1629,7 @@ TreeStyleTabBrowser.prototype = {
 		tabContainer.removeEventListener('dragover',  this, false);
 		tabContainer.removeEventListener('drop',      this, true);
 		tabContainer.removeEventListener('dragdrop',  this, false); // for Firefox 3.5 or older
-		tabContainer.removeEventListener('MultipleTabHandler:StartTabsDrag', this, true);
+		tabContainer.removeEventListener('MultipleTabHandler:TabsDragStart', this, true);
 
 		var strip = this.tabStrip;
 		strip.removeEventListener('dragstart',       this, false);
@@ -2081,7 +2081,7 @@ TreeStyleTabBrowser.prototype = {
 				return;
 
 			// cancel tab dragging by Multiple Tab 
-			case 'MultipleTabHandler:StartTabsDrag':
+			case 'MultipleTabHandler:TabsDragStart':
 				return aEvent.preventDefault();
 		}
 	},
@@ -3572,6 +3572,7 @@ TreeStyleTabBrowser.prototype = {
 		aDraggedTab = tabsInfo.draggedTab;
 		var draggedTabs = tabsInfo.draggedTabs;
 		var draggedRoots = tabsInfo.draggedRoots;
+
 
 		var targetBrowser = this.mTabBrowser;
 		var tabs = this.getTabsArray(targetBrowser);
