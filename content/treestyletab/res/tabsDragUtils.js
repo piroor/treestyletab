@@ -13,7 +13,7 @@
    http://github.com/piroor/fxaddonlibs/blob/master/tabsDragUtils.js
 */
 (function() {
-	const currentRevision = 2;
+	const currentRevision = 3;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -164,6 +164,42 @@
 					return false;
 			}
 			return true;
+		},
+
+		getSelectedTabs : function TDU_getSelectedTabs(aEvent)
+		{
+			var b = this.getTabBrowserFromChild(aEvent.target);
+			var w = b.ownerDocument.defaultView;
+
+			var isMultipleDragEvent = this.isTabsDragging(aEvent);
+			var selectedTabs;
+			var isMultipleDrag = (
+					(
+						isMultipleDragEvent &&
+						(selectedTabs = this.getDraggedTabs(aEvent)) &&
+						selectedTabs.length
+					) ||
+					( // Firefox 4.x (https://bugzilla.mozilla.org/show_bug.cgi?id=566510)
+						'visibleTabs' in b &&
+						(selectedTabs = b.visibleTabs.filter(function(aTab) {
+							return aTab.multiselected;
+						})) &&
+						selectedTabs.length
+					) ||
+					( // Tab Utilities
+						'selectedTabs' in b &&
+						(selectedTabs = b.selectedTabs) &&
+						selectedTabs.length
+					) ||
+					( // Multiple Tab Handler
+						'MultipleTabService' in w &&
+						w.MultipleTabService.isSelected(aTab) &&
+						MultipleTabService.allowMoveMultipleTabs &&
+						(selectedTabs = w.MultipleTabService.getSelectedTabs(b)) &&
+						selectedTabs.length
+					)
+				);
+			return isMultipleDrag ? selectedTabs : [] ;
 		},
 
 		getDraggedTabs : function TDU_getDraggedTabs(aEvent)

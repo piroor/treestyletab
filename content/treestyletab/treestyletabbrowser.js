@@ -3676,22 +3676,8 @@ TreeStyleTabBrowser.prototype = {
 
 		var sourceWindow = aTab.ownerDocument.defaultView;
 		var sourceBrowser = this.getTabBrowserFromChild(aTab);
-
-		var dt = aInfo.event && aInfo.event.dataTransfer;
-		var isMultipleDragEvent = window['piro.sakura.ne.jp'].tabsDragUtils.isTabsDragging(aInfo.event);
-		var isMultipleMove = (
-				isMultipleDragEvent ||
-				(
-					'MultipleTabService' in sourceWindow &&
-					sourceWindow.MultipleTabService.isSelected(aTab) &&
-					MultipleTabService.allowMoveMultipleTabs
-				)
-			);
-
-		if (isMultipleMove) {
-			draggedTabs = isMultipleDragEvent ?
-							window['piro.sakura.ne.jp'].tabsDragUtils.getDraggedTabs(aInfo.event) :
-							sourceWindow.MultipleTabService.getSelectedTabs(sourceBrowser);
+		var draggedTabs = window['piro.sakura.ne.jp'].tabsDragUtils.getSelectedTabs(aInfo.event);
+		if (draggedTabs.length > 1) {
 			if (!(aInfo.action & this.kACTIONS_FOR_DESTINATION)) {
 				draggedRoots = [];
 				draggedTabs.forEach(function(aTab) {
