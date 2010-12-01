@@ -1428,6 +1428,17 @@ var TreeStyleTabUtils = {
 		).singleNodeValue;
 	},
  
+	getAncestorTabs : function TSTUtils_getAncestorTabs(aTab) /* PUBLIC API */ 
+	{
+		var tabs = [];
+		var parentTab = aTab;
+		while (parentTab = this.getParentTab(parentTab))
+		{
+			tabs.push(parentTab);
+		}
+		return tabs;
+	},
+ 
 	getRootTab : function TSTUtils_getRootTab(aTab) /* PUBLIC API */ 
 	{
 		if (!aTab) return null;
