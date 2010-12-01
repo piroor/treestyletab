@@ -130,6 +130,8 @@ var TreeStyleTabUtils = {
 	kEVENT_TYPE_TABBAR_STATE_CHANGING        : 'TreeStyleTabTabbarStateChanging',
 	kEVENT_TYPE_TABBAR_STATE_CHANGED         : 'TreeStyleTabTabbarStateChanged',
 	kEVENT_TYPE_FOCUS_NEXT_TAB               : 'TreeStyleTabFocusNextTab',
+	kEVENT_TYPE_ATTACHED                     : 'TreeStyleTabAttached',
+	kEVENT_TYPE_DETACHED                     : 'TreeStyleTabParted',
 
 	kEVENT_TYPE_PRINT_PREVIEW_ENTERED        : 'TreeStyleTabPrintPreviewEntered',
 	kEVENT_TYPE_PRINT_PREVIEW_EXITED         : 'TreeStyleTabPrintPreviewExited',

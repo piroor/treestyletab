@@ -4045,7 +4045,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		/* PUBLIC API */
 		var event = document.createEvent('Events');
-		event.initEvent('TreeStyleTabAttached', true, false);
+		event.initEvent(this.kEVENT_TYPE_ATTACHED, true, false);
 		event.parentTab = aParent;
 		aChild.dispatchEvent(event);
 	},
@@ -4089,7 +4089,7 @@ TreeStyleTabBrowser.prototype = {
 
 		/* PUBLIC API */
 		var event = document.createEvent('Events');
-		event.initEvent('TreeStyleTabParted', true, false);
+		event.initEvent(this.kEVENT_TYPE_DETACHED, true, false);
 		event.parentTab = parentTab;
 		aChild.dispatchEvent(event);
 
