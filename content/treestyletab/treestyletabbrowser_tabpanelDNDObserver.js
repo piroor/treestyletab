@@ -75,13 +75,6 @@ TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
 			) ? true : false ;
 	},
  
-	getSupportedFlavours : function TSTTabpanelDND_getSupportedFlavours() 
-	{
-		var flavourSet = new FlavourSet();
-		flavourSet.appendFlavour(this.mOwner.kDRAG_TYPE_TABBAR);
-		return flavourSet;
-	},
- 
 	destroy : function TSTTabpanelDND_destroy() 
 	{
 		delete this.mOwner;

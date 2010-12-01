@@ -13,7 +13,7 @@
    http://github.com/piroor/fxaddonlibs/blob/master/tabsDragUtils.js
 */
 (function() {
-	const currentRevision = 1;
+	const currentRevision = 2;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -160,7 +160,7 @@
 				return false;
 			for (let i = 0, maxi = dt.mozItemCount; i < maxi; i++)
 			{
-				if (Array.slice(dt.mozTypesAt(i)).indexOf(TAB_DROP_TYPE) < 0)
+				if (!dt.mozTypesAt(i).contains(TAB_DROP_TYPE))
 					return false;
 			}
 			return true;
@@ -171,7 +171,7 @@
 			var dt = aEvent.dataTransfer;
 			var tabs = [];
 			if (dt.mozItemCount < 1 ||
-				Array.slice(dt.mozTypesAt(0)).indexOf(TAB_DROP_TYPE) < 0)
+				!dt.mozTypesAt(0).contains(TAB_DROP_TYPE))
 				return tabs;
 
 			for (let i = 0, maxi = dt.mozItemCount; i < maxi; i++)

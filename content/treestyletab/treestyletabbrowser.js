@@ -324,22 +324,22 @@ TreeStyleTabBrowser.prototype = {
 		tabContainer.addEventListener('dblclick',  this, true);
 		tabContainer.addEventListener('select', this, true);
 		tabContainer.addEventListener('scroll', this, true);
-		tabContainer.addEventListener('dragleave', this, false);
-		tabContainer.addEventListener('dragover',  this, false);
-		tabContainer.addEventListener('drop',      this, true);
-		tabContainer.addEventListener('dragdrop',  this, false); // for Firefox 3.5 or older
 		tabContainer.addEventListener('MultipleTabHandler:TabsDragStart', this, true);
 
 		var strip = this.tabStrip;
-		strip.addEventListener('dragstart',       this, false);
+		strip.addEventListener('dragstart',       this, true);
+		strip.addEventListener('dragover',        this, true);
 		strip.addEventListener('dragenter',       this, false);
 		strip.addEventListener('dragleave',       this, false);
 		strip.addEventListener('dragend',         this, false);
-		strip.addEventListener('dragover',        this, false);
-		strip.addEventListener('drop',            this, false);
+		strip.addEventListener('drop',            this, true);
 		strip.addEventListener('MozMouseHittest', this, true); // to block default behaviors of the tab bar
 		strip.addEventListener('mousedown',       this, true);
 		strip.addEventListener('click',           this, true);
+
+		b.mPanelContainer.addEventListener('dragover',  this, true);
+		b.mPanelContainer.addEventListener('dragleave', this, true);
+		b.mPanelContainer.addEventListener('drop',      this, true);
 
 		if (this.isFloating)
 			window.addEventListener('resize', this, true);
@@ -1625,22 +1625,22 @@ TreeStyleTabBrowser.prototype = {
 		tabContainer.removeEventListener('dblclick',  this, true);
 		tabContainer.removeEventListener('select', this, true);
 		tabContainer.removeEventListener('scroll', this, true);
-		tabContainer.removeEventListener('dragleave', this, false);
-		tabContainer.removeEventListener('dragover',  this, false);
-		tabContainer.removeEventListener('drop',      this, true);
-		tabContainer.removeEventListener('dragdrop',  this, false); // for Firefox 3.5 or older
 		tabContainer.removeEventListener('MultipleTabHandler:TabsDragStart', this, true);
 
 		var strip = this.tabStrip;
-		strip.removeEventListener('dragstart',       this, false);
+		strip.removeEventListener('dragstart',       this, true);
+		strip.removeEventListener('dragover',        this, true);
 		strip.removeEventListener('dragenter',       this, false);
 		strip.removeEventListener('dragleave',       this, false);
 		strip.removeEventListener('dragend',         this, false);
-		strip.removeEventListener('dragover',        this, false);
-		strip.removeEventListener('drop',            this, false);
+		strip.removeEventListener('drop',            this, true);
 		strip.removeEventListener('MozMouseHittest', this, true);
 		strip.removeEventListener('mousedown',       this, true);
 		strip.removeEventListener('click',           this, true);
+
+		b.mPanelContainer.removeEventListener('dragover',  this, true);
+		b.mPanelContainer.removeEventListener('dragleave', this, true);
+		b.mPanelContainer.removeEventListener('drop',      this, true);
 
 		if (this.isFloating)
 			window.removeEventListener('resize', this, true);
@@ -1651,8 +1651,6 @@ TreeStyleTabBrowser.prototype = {
 		b.removeEventListener('MultipleTabHandlerTabsClosing', this, false);
 
 		window['piro.sakura.ne.jp'].tabsDragUtils.destroyTabBrowser(b);
-
-		TreeStyleTabService.destroyTabDNDObserver(b);
 
 		this.tabbarDNDObserver.destroy();
 		delete this._tabbarDNDObserver;
@@ -2030,25 +2028,14 @@ TreeStyleTabBrowser.prototype = {
 				return this.tabbarDNDObserver.onDragEnd(aEvent);
 
 			case 'dragover':
-			case 'dragdrop':
+				return (aEvent.currentTarget == this.tabStrip ?
+							this.tabbarDNDObserver :
+							this.panelDNDObserver).onDragOver(aEvent);
+
 			case 'drop':
-				let (observer) {
-					if (aEvent.currentTarget == this.tabStrip) {
-						observer = this.tabbarDNDObserver;
-					}
-					else {
-						observer = this.panelDNDObserver;
-						if ('nsDragAndDrop' in window) {// for Firefox 3.5 or older
-							// don't use nsDragAndDrop if it can't be dropped!!
-							// http://piro.sakura.ne.jp/latest/blosxom/mozilla/xul/2007-02-02_splitbrowser-dragdrop.htm
-							if (observer.canDrop(aEvent))
-								nsDragAndDrop[aEvent.type == 'dragover' ? 'dragOver' : 'drop' ](aEvent, observer);
-							return;
-						}
-					}
-					observer[aEvent.type == 'dragover' ? 'onDragOver' : 'onDrop' ](aEvent);
-				}
-				return;
+				return (aEvent.currentTarget == this.tabStrip ?
+							this.tabbarDNDObserver :
+							this.panelDNDObserver).onDrop(aEvent);
 
 
 			case 'mouseover':
