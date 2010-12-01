@@ -1,8 +1,6 @@
 function TreeStyleTabBrowserTabbarDNDObserver(aOwner) 
 {
-	this.mOwner = aOwner;
-	this.mAutoExpandTimer = null;
-	this.mAutoExpandedTabs = [];
+	this.init(aOwner);
 }
 
 TreeStyleTabBrowserTabbarDNDObserver.prototype = {
@@ -138,6 +136,19 @@ catch(e) {
 }
 	},
   
+	handleEvent : function TSTTabbarDND_handleEvent(aEvent) 
+	{
+		switch (aEvent.type)
+		{
+			case 'dragstart': return this.onDragStart(aEvent);
+			case 'dragenter': return this.onDragEnter(aEvent);
+			case 'dragleave': return this.onDragLeave(aEvent);
+			case 'dragend':   return this.onDragEnd(aEvent);
+			case 'dragover':  return this.onDragOver(aEvent);
+			case 'drop':      return this.onDrop(aEvent);
+		}
+	},
+	
 	onDragStart : function TSTTabbarDND_onDragStart(aEvent) 
 	{
 		if (this.canDragTabbar(aEvent))
@@ -156,7 +167,7 @@ catch(e) {
 				event  : aEvent
 			};
 		var tabsInfo = sv.getDraggedTabsInfoFromOneTab(actionInfo, aTab);
-		if (tabsInfo.draggedTabs.length)
+		if (tabsInfo.draggedTabs.length > 1)
 			window['piro.sakura.ne.jp'].tabsDragUtils.startTabsDrag(aEvent, tabsInfo.draggedTabs);
 	},
  
@@ -552,9 +563,32 @@ catch(e) {
 		}
 		return null;
 	},
-   
+    
+	init : function TSTTabbarDND_init(aOwner) 
+	{
+		this.mOwner = aOwner;
+		this.mAutoExpandTimer = null;
+		this.mAutoExpandedTabs = [];
+
+		var strip = this.mOwner.tabStrip;
+		strip.addEventListener('dragstart', this, true);
+		strip.addEventListener('dragover',  this, true);
+		strip.addEventListener('dragenter', this, false);
+		strip.addEventListener('dragleave', this, false);
+		strip.addEventListener('dragend',   this, false);
+		strip.addEventListener('drop',      this, true);
+	},
+ 
 	destroy : function TSTTabbarDND_destroy() 
 	{
+		var strip = this.mOwner.tabStrip;
+		strip.removeEventListener('dragstart', this, true);
+		strip.removeEventListener('dragover',  this, true);
+		strip.removeEventListener('dragenter', this, false);
+		strip.removeEventListener('dragleave', this, false);
+		strip.removeEventListener('dragend',   this, false);
+		strip.removeEventListener('drop',      this, true);
+
 		delete this.mOwner;
 	}
  

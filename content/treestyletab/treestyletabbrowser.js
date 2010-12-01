@@ -327,19 +327,9 @@ TreeStyleTabBrowser.prototype = {
 		tabContainer.addEventListener('MultipleTabHandler:TabsDragStart', this, true);
 
 		var strip = this.tabStrip;
-		strip.addEventListener('dragstart',       this, true);
-		strip.addEventListener('dragover',        this, true);
-		strip.addEventListener('dragenter',       this, false);
-		strip.addEventListener('dragleave',       this, false);
-		strip.addEventListener('dragend',         this, false);
-		strip.addEventListener('drop',            this, true);
 		strip.addEventListener('MozMouseHittest', this, true); // to block default behaviors of the tab bar
 		strip.addEventListener('mousedown',       this, true);
 		strip.addEventListener('click',           this, true);
-
-		b.mPanelContainer.addEventListener('dragover',  this, true);
-		b.mPanelContainer.addEventListener('dragleave', this, true);
-		b.mPanelContainer.addEventListener('drop',      this, true);
 
 		if (this.isFloating)
 			window.addEventListener('resize', this, true);
@@ -352,6 +342,8 @@ TreeStyleTabBrowser.prototype = {
 
 		b.addEventListener('MultipleTabHandlerTabsClosing', this, false);
 
+		this.tabbarDNDObserver;
+		this.panelDNDObserver;
 
 		window['piro.sakura.ne.jp'].tabsDragUtils.initTabBrowser(b);
 
@@ -1599,6 +1591,11 @@ TreeStyleTabBrowser.prototype = {
 		this.autoHide.destroy();
 		delete this._autoHide;
 
+		this.tabbarDNDObserver.destroy();
+		delete this._tabbarDNDObserver;
+		this.panelDNDObserver.destroy();
+		delete this._panelDNDObserver;
+
 		var b = this.mTabBrowser;
 		delete b.tabContainer.treeStyleTab;
 
@@ -1628,19 +1625,9 @@ TreeStyleTabBrowser.prototype = {
 		tabContainer.removeEventListener('MultipleTabHandler:TabsDragStart', this, true);
 
 		var strip = this.tabStrip;
-		strip.removeEventListener('dragstart',       this, true);
-		strip.removeEventListener('dragover',        this, true);
-		strip.removeEventListener('dragenter',       this, false);
-		strip.removeEventListener('dragleave',       this, false);
-		strip.removeEventListener('dragend',         this, false);
-		strip.removeEventListener('drop',            this, true);
 		strip.removeEventListener('MozMouseHittest', this, true);
 		strip.removeEventListener('mousedown',       this, true);
 		strip.removeEventListener('click',           this, true);
-
-		b.mPanelContainer.removeEventListener('dragover',  this, true);
-		b.mPanelContainer.removeEventListener('dragleave', this, true);
-		b.mPanelContainer.removeEventListener('drop',      this, true);
 
 		if (this.isFloating)
 			window.removeEventListener('resize', this, true);
@@ -1651,11 +1638,6 @@ TreeStyleTabBrowser.prototype = {
 		b.removeEventListener('MultipleTabHandlerTabsClosing', this, false);
 
 		window['piro.sakura.ne.jp'].tabsDragUtils.destroyTabBrowser(b);
-
-		this.tabbarDNDObserver.destroy();
-		delete this._tabbarDNDObserver;
-		this.panelDNDObserver.destroy();
-		delete this._panelDNDObserver;
 
 		this.scrollBox.removeEventListener('overflow', this, true);
 		this.scrollBox.removeEventListener('underflow', this, true);
@@ -2011,31 +1993,6 @@ TreeStyleTabBrowser.prototype = {
 
 			case 'popupshowing':
 				return this.onPopupShowing(aEvent)
-
-
-			case 'dragstart':
-				return this.tabbarDNDObserver.onDragStart(aEvent);
-
-			case 'dragenter':
-				return this.tabbarDNDObserver.onDragEnter(aEvent);
-
-			case 'dragleave':
-				return (aEvent.currentTarget == this.tabStrip ?
-							this.tabbarDNDObserver :
-							this.panelDNDObserver).onDragLeave(aEvent);
-
-			case 'dragend':
-				return this.tabbarDNDObserver.onDragEnd(aEvent);
-
-			case 'dragover':
-				return (aEvent.currentTarget == this.tabStrip ?
-							this.tabbarDNDObserver :
-							this.panelDNDObserver).onDragOver(aEvent);
-
-			case 'drop':
-				return (aEvent.currentTarget == this.tabStrip ?
-							this.tabbarDNDObserver :
-							this.panelDNDObserver).onDrop(aEvent);
 
 
 			case 'mouseover':
