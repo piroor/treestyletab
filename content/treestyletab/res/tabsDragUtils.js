@@ -36,28 +36,9 @@
 
 		init : function TDU_init()
 		{
-			window.addEventListener('load', this._delayedInit, false);
-		},
-		_delayedInit : function TDU_delayedInit()
-		{
-			window.removeEventListener('load', arguments.callee, false);
-			// BarTap
-			// https://addons.mozilla.org/firefox/addon/67651
-			if ('BarTap' in window &&
-				'writeBarTap' in BarTap) {
-				eval('BarTap.writeBarTap = '+
-					BarTap.writeBarTap.toSource().replace(
-						'bartap = JSON.stringify',
-						'window["piro.sakura.ne.jp"].tabsDragUtils._backupArgumentURI(aURI, aBrowser); $&'
-					)
-				);
-			}
-			delete tabsDragUtils._delayedInit;
 		},
 		destroy : function TDU_destroy()
 		{
-			if (this._delayedInit)
-				window.removeEventListener('load', this._delayedInit, false);
 		},
 
 		initTabBrowser : function TDU_initTabBrowser(aTabBrowser)
@@ -202,25 +183,6 @@
  
 	 	getCurrentURIOfTab : function TDU_getCurrentURIOfTab(aTab) 
 		{
-			if (aTab.getAttribute('ontap') == 'true') {
-				// If BarTap ( https://addons.mozilla.org/firefox/addon/67651 ) is installed,
-				// currentURI is possibly 'about:blank'. So, we have to get correct URI
-				// from the attribute or the session histrory.
-				var b = aTab.linkedBrowser;
-				try {
-					if (b.hasAttribute(this.kARGUMENT_URI))
-						return b.getAttribute(this.kARGUMENT_URI);
-				}
-				catch(e) {
-				}
-				try {
-					var h = b.sessionHistory;
-					var entry = h.getEntryAtIndex(h.index, false);
-					return entry.URI.spec;
-				}
-				catch(e) {
-				}
-			}
 			// Firefox 4.0-
 			if (aTab.linkedBrowser.__SS_needsRestore) {
 				let data = aTab.linkedBrowser.__SS_data;
@@ -228,15 +190,7 @@
 				return entry.url;
 			}
 			return aTab.linkedBrowser.currentURI.spec;
-		},
-		_backupArgumentURI : function TDU_backupArgumentURI(aURI, aBrowser) 
-		{
-			if (aURI) {
-				var uri = (aURI instanceof Ci.nsIURI) ? aURI.spec : aURI ;
-				aBrowser.setAttribute(this.kARGUMENT_URI, uri);
-			}
-		},
-		kARGUMENT_URI : 'tabs-drag-utils-bartap-uri'
+		}
 	};
 
 	window['piro.sakura.ne.jp'].tabsDragUtils = tabsDragUtils;
