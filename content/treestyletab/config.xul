@@ -142,7 +142,7 @@
 				value="&config.maxTreeLevel.before;"/>
 			<textbox id="maxTreeLevel-textbox-horizontal"
 				type="number"
-				min="1" increment="1" size="4"
+				min="1" increment="1" style="width:4em;"
 				oninput="onSyncMaxTreeLevelUIToPref('maxTreeLevel-checkbox-horizontal', true);"
 				onchange="onSyncMaxTreeLevelUIToPref('maxTreeLevel-checkbox-horizontal', true);"/>
 			<label control="maxTreeLevel-textbox-horizontal"
@@ -159,7 +159,7 @@
 				value="&config.maxTreeLevel.before;"/>
 			<textbox id="maxTreeLevel-textbox-vertical"
 				type="number"
-				min="1" increment="1" size="4"
+				min="1" increment="1" style="width:4em;"
 				oninput="onSyncMaxTreeLevelUIToPref('maxTreeLevel-checkbox-vertical', true);"
 				onchange="onSyncMaxTreeLevelUIToPref('maxTreeLevel-checkbox-vertical', true);"/>
 			<label control="maxTreeLevel-textbox-vertical"
