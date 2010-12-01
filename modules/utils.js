@@ -105,26 +105,6 @@ var TreeStyleTabUtils = {
 	kDROP_POSITION_UNKNOWN : 'unknown',
 	kTABBAR_MOVE_FORCE  : 'force',
 	kTABBAR_MOVE_NORMAL : 'normal',
-
-	kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN : 'TreeStyleTabFocusSwitchingKeyDown',
-	kEVENT_TYPE_TAB_FOCUS_SWITCHING_START    : 'TreeStyleTabFocusSwitchingStart',
-	kEVENT_TYPE_TAB_FOCUS_SWITCHING_END      : 'TreeStyleTabFocusSwitchingEnd',
-	kEVENT_TYPE_SUBTREE_CLOSING              : 'TreeStyleTabSubtreeClosing',
-	kEVENT_TYPE_SUBTREE_CLOSED               : 'TreeStyleTabSubtreeClosed',
-	kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED  : 'TreeStyleTabCollapsedStateChange',
-	kEVENT_TYPE_TABBAR_POSITION_CHANGING     : 'TreeStyleTabTabbarPositionChanging',
-	kEVENT_TYPE_TABBAR_POSITION_CHANGED      : 'TreeStyleTabTabbarPositionChanged',
-	kEVENT_TYPE_TABBAR_STATE_CHANGING        : 'TreeStyleTabTabbarStateChanging',
-	kEVENT_TYPE_TABBAR_STATE_CHANGED         : 'TreeStyleTabTabbarStateChanged',
-	kEVENT_TYPE_FOCUS_NEXT_TAB               : 'TreeStyleTabFocusNextTab',
-	kEVENT_TYPE_PRINT_PREVIEW_ENTERED        : 'TreeStyleTabPrintPreviewEntered',
-	kEVENT_TYPE_PRINT_PREVIEW_EXITED         : 'TreeStyleTabPrintPreviewExited',
-	kEVENT_TYPE_AUTO_HIDE_STATE_CHANGING     : 'TreeStyleTabAutoHideStateChanging',
-	kEVENT_TYPE_AUTO_HIDE_STATE_CHANGE       : 'TreeStyleTabAutoHideStateChange',
-
-	kTOPIC_INDENT_MODIFIED              : 'TreeStyleTab:indentModified',
-	kTOPIC_COLLAPSE_EXPAND_ALL          : 'TreeStyleTab:collapseExpandAllSubtree',
-	kTOPIC_CHANGE_TREEVIEW_AVAILABILITY : 'TreeStyleTab:changeTreeViewAvailability',
  
 /* classes */ 
 	kTWISTY                : 'treestyletab-twisty',
@@ -137,6 +117,28 @@ var TreeStyleTabUtils = {
 	kSPLITTER              : 'treestyletab-splitter',
 	kTABBAR_TOGGLER        : 'treestyletab-tabbar-toggler',
 	kTABBAR_PLACEHOLDER    : 'treestyletab-tabbar-placeholder',
+ 
+/* event types, topics */
+	kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN : 'TreeStyleTabFocusSwitchingKeyDown',
+	kEVENT_TYPE_TAB_FOCUS_SWITCHING_START    : 'TreeStyleTabFocusSwitchingStart',
+	kEVENT_TYPE_TAB_FOCUS_SWITCHING_END      : 'TreeStyleTabFocusSwitchingEnd',
+	kEVENT_TYPE_SUBTREE_CLOSING              : 'TreeStyleTabSubtreeClosing',
+	kEVENT_TYPE_SUBTREE_CLOSED               : 'TreeStyleTabSubtreeClosed',
+	kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED  : 'TreeStyleTabCollapsedStateChange',
+	kEVENT_TYPE_TABBAR_POSITION_CHANGING     : 'TreeStyleTabTabbarPositionChanging',
+	kEVENT_TYPE_TABBAR_POSITION_CHANGED      : 'TreeStyleTabTabbarPositionChanged',
+	kEVENT_TYPE_TABBAR_STATE_CHANGING        : 'TreeStyleTabTabbarStateChanging',
+	kEVENT_TYPE_TABBAR_STATE_CHANGED         : 'TreeStyleTabTabbarStateChanged',
+	kEVENT_TYPE_FOCUS_NEXT_TAB               : 'TreeStyleTabFocusNextTab',
+
+	kEVENT_TYPE_PRINT_PREVIEW_ENTERED        : 'TreeStyleTabPrintPreviewEntered',
+	kEVENT_TYPE_PRINT_PREVIEW_EXITED         : 'TreeStyleTabPrintPreviewExited',
+	kEVENT_TYPE_AUTO_HIDE_STATE_CHANGING     : 'TreeStyleTabAutoHideStateChanging',
+	kEVENT_TYPE_AUTO_HIDE_STATE_CHANGE       : 'TreeStyleTabAutoHideStateChange',
+
+	kTOPIC_INDENT_MODIFIED              : 'TreeStyleTab:indentModified',
+	kTOPIC_COLLAPSE_EXPAND_ALL          : 'TreeStyleTab:collapseExpandAllSubtree',
+	kTOPIC_CHANGE_TREEVIEW_AVAILABILITY : 'TreeStyleTab:changeTreeViewAvailability',
  
 /* other constant values */ 
 	kFOCUS_ALL     : 0,
