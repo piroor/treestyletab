@@ -2038,6 +2038,7 @@ catch(e) {
 	},
 	_tabShouldBeExpandedAfterKeyReleased : null,
  
+	// For backward compatibility. You should use DOM event to block TST's focus handling.
 	registerTabFocusAllowance : function TSTService_registerTabFocusAllowance(aProcess) /* PUBLIC API */ 
 	{
 		var listener = {
