@@ -36,9 +36,40 @@
 
 		init : function TDU_init()
 		{
+			window.addEventListener('load', this._delayedInit, false);
+		},
+		_delayedInit : function TDU_delayedInit()
+		{
+			if (
+				'PlacesControllerDragHelper' in window &&
+				'onDrop' in PlacesControllerDragHelper &&
+				PlacesControllerDragHelper.onDrop.toSource().indexOf('tabsDragUtils.DOMDataTransferProxy') < 0
+				) {
+				eval('PlacesControllerDragHelper.onDrop = '+
+					PlacesControllerDragHelper.onDrop.toSource().replace(
+						// for Firefox 3.5 or later
+						'var doCopy =',
+						'var tabsDataTransferProxy = dt = new window["piro.sakura.ne.jp"].tabsDragUtils.DOMDataTransferProxy(dt, insertionPoint); $&'
+					).replace( // for Tree Style Tab (save tree structure to bookmarks)
+						'PlacesUIUtils.ptm.doTransaction(txn);',
+						<![CDATA[
+							if ('_tabs' in tabsDataTransferProxy &&
+								'TreeStyleTabBookmarksService' in window)
+								TreeStyleTabBookmarksService.beginAddBookmarksFromTabs(tabsDataTransferProxy._tabs);
+							$&
+							if ('_tabs' in tabsDataTransferProxy &&
+								'TreeStyleTabBookmarksService' in window)
+								TreeStyleTabBookmarksService.endAddBookmarksFromTabs();
+						]]>
+					)
+				);
+			}
+			delete tabsDragUtils._delayedInit;
 		},
 		destroy : function TDU_destroy()
 		{
+			if (this._delayedInit)
+				window.removeEventListener('load', this._delayedInit, false);
 		},
 
 		initTabBrowser : function TDU_initTabBrowser(aTabBrowser)
@@ -211,9 +242,9 @@
 			return isMultipleDrag ? selectedTabs : [] ;
 		},
 
-		getDraggedTabs : function TDU_getDraggedTabs(aEvent)
+		getDraggedTabs : function TDU_getDraggedTabs(aEventOrDataTransfer)
 		{
-			var dt = aEvent.dataTransfer;
+			var dt = aEventOrDataTransfer.dataTransfer || aEventOrDataTransfer;
 			var tabs = [];
 			if (dt.mozItemCount < 1 ||
 				!dt.mozTypesAt(0).contains(TAB_DROP_TYPE))
@@ -235,8 +266,131 @@
 				return entry.url;
 			}
 			return aTab.linkedBrowser.currentURI.spec;
+		},
+
+		// for drop on bookmarks tree
+		willBeInsertedBeforeExistingNode : function TDU_willBeInsertedBeforeExistingNode(aInsertionPoint) 
+		{
+			// drop on folder in the bookmarks menu
+			if (aInsertionPoint.dropNearItemId === void(0))
+				return false;
+
+			// drop on folder in the places organizer
+			if (aInsertionPoint._index < 0 && aInsertionPoint.dropNearItemId < 0)
+				return false;
+
+			return true;
 		}
 	};
+
+
+	function DOMDataTransferProxy(aDataTransfer, aInsertionPoint) 
+	{
+		// Don't proxy it because it is not a drag of tabs.
+		if (!aDataTransfer.mozTypesAt(0).contains(TAB_DROP_TYPE))
+			return aDataTransfer;
+
+		var tabs = tabsDragUtils.getDraggedTabs(aDataTransfer);
+
+		// Don't proxy it because there is no selection.
+		if (tabs.length < 2)
+			return aDataTransfer;
+
+		this._source = aDataTransfer;
+		this._tabs = tabs;
+
+		if (tabsDragUtils.willBeInsertedBeforeExistingNode(aInsertionPoint))
+			this._tabs.reverse();
+	}
+
+	DOMDataTransferProxy.prototype = {
+		
+		_apply : function DOMDTProxy__apply(aMethod, aArguments) 
+		{
+			return this._source[aMethod].apply(this._source, aArguments);
+		},
+	 
+		// nsIDOMDataTransfer 
+		get dropEffect() { return this._source.dropEffect; },
+		set dropEffect(aValue) { return this._source.dropEffect = aValue; },
+		get effectAllowed() { return this._source.effectAllowed; },
+		set effectAllowed(aValue) { return this._source.effectAllowed = aValue; },
+		get files() { return this._source.files; },
+		get types() { return this._source.types; },
+		clearData : function DOMDTProxy_clearData() { return this._apply('clearData', arguments); },
+		setData : function DOMDTProxy_setData() { return this._apply('setData', arguments); },
+		getData : function DOMDTProxy_getData() { return this._apply('getData', arguments); },
+		setDragImage : function DOMDTProxy_setDragImage() { return this._apply('setDragImage', arguments); },
+		addElement : function DOMDTProxy_addElement() { return this._apply('addElement', arguments); },
+	 
+		// nsIDOMNSDataTransfer 
+		get mozItemCount()
+		{
+			return this._tabs.length;
+		},
+
+		get mozCursor() { return this._source.mozCursor; },
+		set mozCursor(aValue) { return this._source.mozCursor = aValue; },
+
+		mozTypesAt : function DOMDTProxy_mozTypesAt()
+		{
+			// return this._apply('mozTypesAt', [0]);
+			// I return "text/x-moz-url" as a first type, to override behavior for "to-be-restored" tabs.
+			return new StringList(['text/x-moz-url', TAB_DROP_TYPE, 'text/x-moz-text-internal']);
+		},
+
+		mozClearDataAt : function DOMDTProxy_mozClearDataAt()
+		{
+			this._tabs = [];
+			return this._apply('mozClearDataAt', [0]);
+		},
+
+		mozSetDataAt : function DOMDTProxy_mozSetDataAt(aFormat, aData, aIndex)
+		{
+			this._tabs = [];
+			return this._apply('mozSetDataAt', [aFormat, aData, 0]);
+		},
+
+		mozGetDataAt : function DOMDTProxy_mozGetDataAt(aFormat, aIndex)
+		{
+			var tab = this._tabs[aIndex];
+			switch (aFormat)
+			{
+				case TAB_DROP_TYPE:
+					return tab;
+
+				case 'text/x-moz-url':
+					return (tabsDragUtils.getCurrentURIOfTab(tab) ||
+							'about:blank') + '\n' + tab.label;
+
+				case 'text/x-moz-text-internal':
+					return tabsDragUtils.getCurrentURIOfTab(tab) ||
+							'about:blank';
+			}
+
+			return this._apply('mozGetDataAt', [aFormat, 0]);
+		},
+
+		get mozUserCancelled() { return this._source.mozUserCancelled; }
+	};
+
+	function StringList(aTypes) 
+	{
+		return {
+			__proto__ : aTypes,
+			item : function(aIndex)
+			{
+				return this[aIndex];
+			},
+			contains : function(aType)
+			{
+				return this.indexOf(aType) > -1;
+			}
+		};
+	}
+
+	tabsDragUtils.DOMDataTransferProxy = DOMDataTransferProxy;
+	tabsDragUtils.StringList = StringList;
 
 	window['piro.sakura.ne.jp'].tabsDragUtils = tabsDragUtils;
 	tabsDragUtils.init();
