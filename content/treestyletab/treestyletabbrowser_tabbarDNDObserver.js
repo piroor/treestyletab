@@ -816,10 +816,7 @@ try{
 		var b  = sv.mTabBrowser;
 
 		var session = sv.currentDragSession;
-		if (
-			sv.isToolbarCustomizing ||
-			!sv.getTabFromChild(session.sourceNode)
-			)
+		if (sv.isToolbarCustomizing)
 			return false;
 
 		sv.autoScroll.processAutoScroll(aEvent);
@@ -853,7 +850,7 @@ try{
 						observer._dragTime = time;
 				}
 				if (now >= time + delay)
-					aTabBrowser.selectedTab = info.target;
+					b.selectedTab = info.target;
 			}
 		}
 
