@@ -1581,7 +1581,7 @@ var TreeStyleTabService = {
 		if (remoteService.hasChildTabs(remoteTab) ||
 			(remoteMultipleTabService && remoteMultipleTabService.isSelected(remoteTab))) {
 			var remoteBrowser = remoteService.getTabBrowserFromChild(remoteTab);
-			if (remoteBrowser.treeStyleTab.isDraggingAllTabs(remoteTab)) {
+			if (remoteBrowser.treeStyleTab.tabbarDNDObserver.isDraggingAllTabs(remoteTab)) {
 				window.close();
 			}
 			else {
@@ -1590,7 +1590,7 @@ var TreeStyleTabService = {
 					};
 				window.setTimeout(function() {
 					var blankTab = gBrowser.selectedTab;
-					gBrowser.treeStyleTab.performDrop(actionInfo, remoteTab);
+					gBrowser.treeStyleTab.tabbarDNDObserver.performDrop(actionInfo, remoteTab);
 					window.setTimeout(function() {
 						gBrowser.removeTab(blankTab);
 
