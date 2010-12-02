@@ -173,6 +173,7 @@
 			var event = aEventOrTabBrowser instanceof Components.interfaces.nsIDOMEvent ? aEventOrTabBrowser : null ;
 			var b = this.getTabBrowserFromChild(event ? event.target : aEventOrTabBrowser );
 			var w = b.ownerDocument.defaultView;
+			var tab = event && this.getTabFromEvent(event);
 
 			var selectedTabs;
 			var isMultipleDrag = (
@@ -194,8 +195,9 @@
 						selectedTabs.length
 					) ||
 					( // Multiple Tab Handler
+						tab &&
 						'MultipleTabService' in w &&
-						w.MultipleTabService.isSelected(aTab) &&
+						w.MultipleTabService.isSelected(tab) &&
 						MultipleTabService.allowMoveMultipleTabs &&
 						(selectedTabs = w.MultipleTabService.getSelectedTabs(b)) &&
 						selectedTabs.length
