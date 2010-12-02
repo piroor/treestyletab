@@ -31,7 +31,7 @@ TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
  
 	canDrop : function TSTTabpanelDND_canDrop(aEvent) 
 	{
-		var session = this.mOwner.getCurrentDragSession();
+		var session = this.mOwner.currentDragSession;
 		return (
 				session &&
 				session.isDataFlavorSupported(this.mOwner.kDRAG_TYPE_TABBAR) &&

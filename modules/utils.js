@@ -118,7 +118,7 @@ var TreeStyleTabUtils = {
 	kTABBAR_TOGGLER        : 'treestyletab-tabbar-toggler',
 	kTABBAR_PLACEHOLDER    : 'treestyletab-tabbar-placeholder',
  
-/* event types, topics */
+/* event types, topics */ 
 	kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN : 'TreeStyleTabFocusSwitchingKeyDown',
 	kEVENT_TYPE_TAB_FOCUS_SWITCHING_START    : 'TreeStyleTabFocusSwitchingStart',
 	kEVENT_TYPE_TAB_FOCUS_SWITCHING_END      : 'TreeStyleTabFocusSwitchingEnd',
@@ -378,6 +378,13 @@ var TreeStyleTabUtils = {
 		return !w ? null :
 			'SplitBrowser' in w ? w.SplitBrowser.activeBrowser :
 			w.gBrowser ;
+	},
+ 
+	get currentDragSession() 
+	{
+		return Cc['@mozilla.org/widget/dragservice;1']
+				.getService(Ci.nsIDragService)
+				.getCurrentSession();
 	},
  
 	dropLinksOnTabBehavior : function TSTUtils_dropLinksOnTabBehavior() 

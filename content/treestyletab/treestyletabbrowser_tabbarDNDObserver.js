@@ -115,7 +115,7 @@ try{
 		var sv = this.mOwner;
 		var b  = sv.mTabBrowser;
 
-		var session = sv.getCurrentDragSession();
+		var session = sv.currentDragSession;
 		var node = session.sourceNode;
 		var tab = sv.getTabFromChild(node);
 		if (!node ||
@@ -142,7 +142,7 @@ catch(e) {
 		var b  = sv.mTabBrowser;
 
 		if (!aDragSession)
-			aDragSession = sv.getCurrentDragSession();
+			aDragSession = sv.currentDragSession;
 
 		var tab = aDragSession ? sv.getTabFromChild(aDragSession.sourceNode) : null ;
 		sv.ensureTabInitialized(tab);
@@ -815,7 +815,7 @@ try{
 		var sv = this.mOwner;
 		var b  = sv.mTabBrowser;
 
-		var session = sv.getCurrentDragSession();
+		var session = sv.currentDragSession;
 		if (
 			sv.isToolbarCustomizing ||
 			!sv.getTabFromChild(session.sourceNode)
@@ -915,7 +915,7 @@ catch(e) {
 		if (tabbar._tabDropIndicator) // for Firefox 4 or later
 			tabbar._tabDropIndicator.collapsed = true;
 
-		var session = sv.getCurrentDragSession();
+		var session = sv.currentDragSession;
 		var dropActionInfo = this.getDropAction(aEvent, session);
 
 		var draggedTab;
