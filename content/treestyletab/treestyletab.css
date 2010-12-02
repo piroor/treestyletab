@@ -347,7 +347,9 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 .tabbrowser-strip[treestyletab-tabbar-fixed="true"]+splitter,
 .tabbrowser-strip[treestyletab-print-preview="true"],
 .tabbrowser-strip[treestyletab-print-preview="true"]+splitter,
-#TabsToolbar[treestyletab-print-preview="true"] {
+#TabsToolbar[treestyletab-print-preview="true"],
+tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-print-preview="true"]
+  .treestyletab-tabbar-toggler {
 	visibility: collapse;
 }
 
