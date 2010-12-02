@@ -13,7 +13,7 @@
    http://github.com/piroor/fxaddonlibs/blob/master/tabsDragUtils.js
 */
 (function() {
-	const currentRevision = 1;
+	const currentRevision = 3;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -148,7 +148,9 @@
 					'ancestor-or-self::*[local-name()="tabbrowser"] | '+
 					'ancestor-or-self::*[local-name()="tabs" and @tabbrowser]',
 					aTabBrowserChild,
-					XPathResult.FIRST_ORDERED_NODE_TYPE
+					null,
+					XPathResult.FIRST_ORDERED_NODE_TYPE,
+					null
 				).singleNodeValue;
 			return (b && b.tabbrowser) || b;
 		},
@@ -160,10 +162,46 @@
 				return false;
 			for (let i = 0, maxi = dt.mozItemCount; i < maxi; i++)
 			{
-				if (Array.slice(dt.mozTypesAt(i)).indexOf(TAB_DROP_TYPE) < 0)
+				if (!dt.mozTypesAt(i).contains(TAB_DROP_TYPE))
 					return false;
 			}
 			return true;
+		},
+
+		getSelectedTabs : function TDU_getSelectedTabs(aEventOrTabBrowser)
+		{
+			var event = aEventOrTabBrowser instanceof Components.interfaces.nsIDOMEvent ? aEventOrTabBrowser : null ;
+			var b = this.getTabBrowserFromChild(event ? event.target : aEventOrTabBrowser );
+			var w = b.ownerDocument.defaultView;
+
+			var selectedTabs;
+			var isMultipleDrag = (
+					(
+						this.isTabsDragging(event) &&
+						(selectedTabs = this.getDraggedTabs(event)) &&
+						selectedTabs.length
+					) ||
+					( // Firefox 4.x (https://bugzilla.mozilla.org/show_bug.cgi?id=566510)
+						'visibleTabs' in b &&
+						(selectedTabs = b.visibleTabs.filter(function(aTab) {
+							return aTab.multiselected;
+						})) &&
+						selectedTabs.length
+					) ||
+					( // Tab Utilities
+						'selectedTabs' in b &&
+						(selectedTabs = b.selectedTabs) &&
+						selectedTabs.length
+					) ||
+					( // Multiple Tab Handler
+						'MultipleTabService' in w &&
+						w.MultipleTabService.isSelected(aTab) &&
+						MultipleTabService.allowMoveMultipleTabs &&
+						(selectedTabs = w.MultipleTabService.getSelectedTabs(b)) &&
+						selectedTabs.length
+					)
+				);
+			return isMultipleDrag ? selectedTabs : [] ;
 		},
 
 		getDraggedTabs : function TDU_getDraggedTabs(aEvent)
@@ -171,7 +209,7 @@
 			var dt = aEvent.dataTransfer;
 			var tabs = [];
 			if (dt.mozItemCount < 1 ||
-				Array.slice(dt.mozTypesAt(0)).indexOf(TAB_DROP_TYPE) < 0)
+				!dt.mozTypesAt(0).contains(TAB_DROP_TYPE))
 				return tabs;
 
 			for (let i = 0, maxi = dt.mozItemCount; i < maxi; i++)

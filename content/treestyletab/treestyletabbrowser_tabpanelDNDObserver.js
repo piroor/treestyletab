@@ -1,9 +1,53 @@
 function TreeStyleTabBrowserTabpanelDNDObserver(aOwner) 
 {
-	this.mOwner = aOwner;
+	this.init(aOwner);
 }
 
 TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
+	
+	getDropPosition : function TSTTabpanelDND_getDropPosition(aEvent) 
+	{
+		var box = this.mOwner.mTabBrowser.boxObject;
+		var W = box.width;
+		var H = box.height;
+		var X = box.screenX;
+		var Y = box.screenY;
+		var x = aEvent.screenX - X;
+		var y = aEvent.screenY - Y;
+
+		if (x > (W * 0.33) &&
+			x < (W * 0.66) &&
+			y > (H * 0.33) &&
+			y < (H * 0.66))
+			return 'center';
+
+		var isTL = x <= W - (y * W / H);
+		var isBL = x <= y * W / H;
+		return (isTL && isBL) ? 'left' :
+				(isTL && !isBL) ? 'top' :
+				(!isTL && isBL) ? 'bottom' :
+				'right' ;
+	},
+ 
+	canDrop : function TSTTabpanelDND_canDrop(aEvent) 
+	{
+		var session = this.mOwner.currentDragSession;
+		return (
+				session &&
+				session.isDataFlavorSupported(this.mOwner.kDRAG_TYPE_TABBAR) &&
+				session.sourceNode
+			) ? true : false ;
+	},
+ 
+	handleEvent : function TSTTabpanelDND_handleEvent(aEvent) 
+	{
+		switch (aEvent.type)
+		{
+			case 'dragleave': return this.onDragLeave(aEvent);
+			case 'dragover':  return this.onDragOver(aEvent);
+			case 'drop':      return this.onDrop(aEvent);
+		}
+	},
 	
 	onDragLeave : function TSTTabpanelDND_onDragLeave(aEvent) 
 	{
@@ -40,50 +84,24 @@ TreeStyleTabBrowserTabpanelDNDObserver.prototype = {
 		aEvent.preventDefault();
 		aEvent.stopPropagation();
 	},
- 
-	getDropPosition : function TSTTabpanelDND_getDropPosition(aEvent) 
+  
+	init : function TSTTabpanelDND_init(aOwner) 
 	{
-		var box = this.mOwner.mTabBrowser.boxObject;
-		var W = box.width;
-		var H = box.height;
-		var X = box.screenX;
-		var Y = box.screenY;
-		var x = aEvent.screenX - X;
-		var y = aEvent.screenY - Y;
+		this.mOwner = aOwner;
 
-		if (x > (W * 0.33) &&
-			x < (W * 0.66) &&
-			y > (H * 0.33) &&
-			y < (H * 0.66))
-			return 'center';
-
-		var isTL = x <= W - (y * W / H);
-		var isBL = x <= y * W / H;
-		return (isTL && isBL) ? 'left' :
-				(isTL && !isBL) ? 'top' :
-				(!isTL && isBL) ? 'bottom' :
-				'right' ;
-	},
- 
-	canDrop : function TSTTabpanelDND_canDrop(aEvent) 
-	{
-		var session = this.mOwner.getCurrentDragSession();
-		return (
-				session &&
-				session.isDataFlavorSupported(this.mOwner.kDRAG_TYPE_TABBAR) &&
-				session.sourceNode
-			) ? true : false ;
-	},
- 
-	getSupportedFlavours : function TSTTabpanelDND_getSupportedFlavours() 
-	{
-		var flavourSet = new FlavourSet();
-		flavourSet.appendFlavour(this.mOwner.kDRAG_TYPE_TABBAR);
-		return flavourSet;
+		var b = this.mOwner.mTabBrowser;
+		b.mPanelContainer.addEventListener('dragover',  this, true);
+		b.mPanelContainer.addEventListener('dragleave', this, true);
+		b.mPanelContainer.addEventListener('drop',      this, true);
 	},
  
 	destroy : function TSTTabpanelDND_destroy() 
 	{
+		var b = this.mOwner.mTabBrowser;
+		b.mPanelContainer.removeEventListener('dragover',  this, true);
+		b.mPanelContainer.removeEventListener('dragleave', this, true);
+		b.mPanelContainer.removeEventListener('drop',      this, true);
+
 		delete this.mOwner;
 	}
  
