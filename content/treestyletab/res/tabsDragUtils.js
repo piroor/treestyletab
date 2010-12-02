@@ -13,7 +13,7 @@
    http://github.com/piroor/fxaddonlibs/blob/master/tabsDragUtils.js
 */
 (function() {
-	const currentRevision = 3;
+	const currentRevision = 4;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -229,9 +229,9 @@
 	 	getCurrentURIOfTab : function TDU_getCurrentURIOfTab(aTab) 
 		{
 			// Firefox 4.0-
-			if (aTab.linkedBrowser.__SS_needsRestore) {
+			if (aTab.linkedBrowser.__SS_restoreState == 1) {
 				let data = aTab.linkedBrowser.__SS_data;
-				let entry = data.entries[Math.max(data.index, data.entries.length-1)];
+				let entry = data.entries[Math.min(data.index, data.entries.length-1)];
 				return entry.url;
 			}
 			return aTab.linkedBrowser.currentURI.spec;
