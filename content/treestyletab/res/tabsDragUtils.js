@@ -79,7 +79,12 @@
 				dt.mozSetDataAt('text/x-moz-text-internal', this.getCurrentURIOfTab(aTab), aIndex);
 			}, this);
 
-			dt.mozCursor = 'default';
+			// On Firefox 3.6 or older versions on Windows, drag feedback
+			// image isn't shown if there are multiple drag data...
+			if (tabs.length <= 1 ||
+				'mozSourceNode' in dt ||
+				navigator.platform.toLowerCase().indexOf('win') < 0)
+				dt.mozCursor = 'default';
 
 			aEvent.stopPropagation();
 		},
