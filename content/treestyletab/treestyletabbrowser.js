@@ -2306,17 +2306,13 @@ TreeStyleTabBrowser.prototype = {
 			this._focusChangedByCurrentTabRemove = true;
 			if (
 				nextFocusedTab &&
-				!nextFocusedTab.hidden &&
-				this._tabFocusAllowance.every(function(aFunc) {
-					try {
-						return aFunc.call(this, b);
-					}
-					catch(e) {
-						return false;
-					}
-				}, this)
-				)
-				b.selectedTab = nextFocusedTab;
+				!nextFocusedTab.hidden
+				) {
+				let event = document.createEvent('Events');
+				event.initEvent(this.kEVENT_TYPE_FOCUS_NEXT_TAB, true, true);
+				if (tab.dispatchEvent(event))
+					b.selectedTab = nextFocusedTab;
+			}
 		}
 
 		this.updateLastScrollPosition();
