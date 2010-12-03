@@ -1746,7 +1746,7 @@ catch(e) {
 		TreeStyleTabService._shownPopups = TreeStyleTabService._shownPopups.filter(function(aItem) {
 			if (typeof aItem == 'string')
 				aItem = document.getElementById(aItem);
-			return aItem && aItem.boxObject && ((aItem.boxObject.width || aItem.boxObject.height) && aItem.boxObject.popupState != 'closed');
+			return aItem && aItem.boxObject && ((aItem.boxObject.width || aItem.boxObject.height) && aItem.state != 'closed');
 		});
 		return TreeStyleTabService._shownPopups.length > 0;
 	},
