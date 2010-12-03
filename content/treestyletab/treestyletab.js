@@ -636,8 +636,8 @@ var TreeStyleTabService = {
 				'{ TreeStyleTabService.onPrintPreviewEnter();'
 			));
 			eval('PrintUtils.exitPrintPreview = '+PrintUtils.exitPrintPreview.toSource().replace(
-				/(\}\)?)$/,
-				'TreeStyleTabService.onPrintPreviewExit(); $1'
+				'{',
+				'{ TreeStyleTabService.onPrintPreviewExit();'
 			));
 		}
 
