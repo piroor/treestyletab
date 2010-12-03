@@ -13,7 +13,7 @@
    http://github.com/piroor/fxaddonlibs/blob/master/tabsDragUtils.js
 */
 (function() {
-	const currentRevision = 1;
+	const currentRevision = 4;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -40,15 +40,27 @@
 		},
 		_delayedInit : function TDU_delayedInit()
 		{
-			window.removeEventListener('load', arguments.callee, false);
-			// BarTap
-			// https://addons.mozilla.org/firefox/addon/67651
-			if ('BarTap' in window &&
-				'writeBarTap' in BarTap) {
-				eval('BarTap.writeBarTap = '+
-					BarTap.writeBarTap.toSource().replace(
-						'bartap = JSON.stringify',
-						'window["piro.sakura.ne.jp"].tabsDragUtils._backupArgumentURI(aURI, aBrowser); $&'
+			if (
+				'PlacesControllerDragHelper' in window &&
+				'onDrop' in PlacesControllerDragHelper &&
+				PlacesControllerDragHelper.onDrop.toSource().indexOf('tabsDragUtils.DOMDataTransferProxy') < 0
+				) {
+				eval('PlacesControllerDragHelper.onDrop = '+
+					PlacesControllerDragHelper.onDrop.toSource().replace(
+						// for Firefox 3.5 or later
+						'var doCopy =',
+						'var tabsDataTransferProxy = dt = new window["piro.sakura.ne.jp"].tabsDragUtils.DOMDataTransferProxy(dt, insertionPoint); $&'
+					).replace( // for Tree Style Tab (save tree structure to bookmarks)
+						'PlacesUIUtils.ptm.doTransaction(txn);',
+						<![CDATA[
+							if ('_tabs' in tabsDataTransferProxy &&
+								'TreeStyleTabBookmarksService' in window)
+								TreeStyleTabBookmarksService.beginAddBookmarksFromTabs(tabsDataTransferProxy._tabs);
+							$&
+							if ('_tabs' in tabsDataTransferProxy &&
+								'TreeStyleTabBookmarksService' in window)
+								TreeStyleTabBookmarksService.endAddBookmarksFromTabs();
+						]]>
 					)
 				);
 			}
@@ -98,7 +110,12 @@
 				dt.mozSetDataAt('text/x-moz-text-internal', this.getCurrentURIOfTab(aTab), aIndex);
 			}, this);
 
-			dt.mozCursor = 'default';
+			// On Firefox 3.6 or older versions on Windows, drag feedback
+			// image isn't shown if there are multiple drag data...
+			if (tabs.length <= 1 ||
+				'mozSourceNode' in dt ||
+				navigator.platform.toLowerCase().indexOf('win') < 0)
+				dt.mozCursor = 'default';
 
 			aEvent.stopPropagation();
 		},
@@ -167,7 +184,9 @@
 					'ancestor-or-self::*[local-name()="tabbrowser"] | '+
 					'ancestor-or-self::*[local-name()="tabs" and @tabbrowser]',
 					aTabBrowserChild,
-					XPathResult.FIRST_ORDERED_NODE_TYPE
+					null,
+					XPathResult.FIRST_ORDERED_NODE_TYPE,
+					null
 				).singleNodeValue;
 			return (b && b.tabbrowser) || b;
 		},
@@ -179,18 +198,56 @@
 				return false;
 			for (let i = 0, maxi = dt.mozItemCount; i < maxi; i++)
 			{
-				if (Array.slice(dt.mozTypesAt(i)).indexOf(TAB_DROP_TYPE) < 0)
+				if (!dt.mozTypesAt(i).contains(TAB_DROP_TYPE))
 					return false;
 			}
 			return true;
 		},
 
-		getDraggedTabs : function TDU_getDraggedTabs(aEvent)
+		getSelectedTabs : function TDU_getSelectedTabs(aEventOrTabBrowser)
 		{
-			var dt = aEvent.dataTransfer;
+			var event = aEventOrTabBrowser instanceof Components.interfaces.nsIDOMEvent ? aEventOrTabBrowser : null ;
+			var b = this.getTabBrowserFromChild(event ? event.target : aEventOrTabBrowser );
+			var w = b.ownerDocument.defaultView;
+			var tab = event && this.getTabFromEvent(event);
+
+			var selectedTabs;
+			var isMultipleDrag = (
+					(
+						this.isTabsDragging(event) &&
+						(selectedTabs = this.getDraggedTabs(event)) &&
+						selectedTabs.length
+					) ||
+					( // Firefox 4.x (https://bugzilla.mozilla.org/show_bug.cgi?id=566510)
+						'visibleTabs' in b &&
+						(selectedTabs = b.visibleTabs.filter(function(aTab) {
+							return aTab.multiselected;
+						})) &&
+						selectedTabs.length
+					) ||
+					( // Tab Utilities
+						'selectedTabs' in b &&
+						(selectedTabs = b.selectedTabs) &&
+						selectedTabs.length
+					) ||
+					( // Multiple Tab Handler
+						tab &&
+						'MultipleTabService' in w &&
+						w.MultipleTabService.isSelected(tab) &&
+						MultipleTabService.allowMoveMultipleTabs &&
+						(selectedTabs = w.MultipleTabService.getSelectedTabs(b)) &&
+						selectedTabs.length
+					)
+				);
+			return isMultipleDrag ? selectedTabs : [] ;
+		},
+
+		getDraggedTabs : function TDU_getDraggedTabs(aEventOrDataTransfer)
+		{
+			var dt = aEventOrDataTransfer.dataTransfer || aEventOrDataTransfer;
 			var tabs = [];
 			if (dt.mozItemCount < 1 ||
-				Array.slice(dt.mozTypesAt(0)).indexOf(TAB_DROP_TYPE) < 0)
+				!dt.mozTypesAt(0).contains(TAB_DROP_TYPE))
 				return tabs;
 
 			for (let i = 0, maxi = dt.mozItemCount; i < maxi; i++)
@@ -202,42 +259,138 @@
  
 	 	getCurrentURIOfTab : function TDU_getCurrentURIOfTab(aTab) 
 		{
-			if (aTab.getAttribute('ontap') == 'true') {
-				// If BarTap ( https://addons.mozilla.org/firefox/addon/67651 ) is installed,
-				// currentURI is possibly 'about:blank'. So, we have to get correct URI
-				// from the attribute or the session histrory.
-				var b = aTab.linkedBrowser;
-				try {
-					if (b.hasAttribute(this.kARGUMENT_URI))
-						return b.getAttribute(this.kARGUMENT_URI);
-				}
-				catch(e) {
-				}
-				try {
-					var h = b.sessionHistory;
-					var entry = h.getEntryAtIndex(h.index, false);
-					return entry.URI.spec;
-				}
-				catch(e) {
-				}
-			}
 			// Firefox 4.0-
-			if (aTab.linkedBrowser.__SS_needsRestore) {
+			if (aTab.linkedBrowser.__SS_restoreState == 1) {
 				let data = aTab.linkedBrowser.__SS_data;
-				let entry = data.entries[Math.max(data.index, data.entries.length-1)];
+				let entry = data.entries[Math.min(data.index, data.entries.length-1)];
 				return entry.url;
 			}
 			return aTab.linkedBrowser.currentURI.spec;
 		},
-		_backupArgumentURI : function TDU_backupArgumentURI(aURI, aBrowser) 
+
+		// for drop on bookmarks tree
+		willBeInsertedBeforeExistingNode : function TDU_willBeInsertedBeforeExistingNode(aInsertionPoint) 
 		{
-			if (aURI) {
-				var uri = (aURI instanceof Ci.nsIURI) ? aURI.spec : aURI ;
-				aBrowser.setAttribute(this.kARGUMENT_URI, uri);
-			}
-		},
-		kARGUMENT_URI : 'tabs-drag-utils-bartap-uri'
+			// drop on folder in the bookmarks menu
+			if (aInsertionPoint.dropNearItemId === void(0))
+				return false;
+
+			// drop on folder in the places organizer
+			if (aInsertionPoint._index < 0 && aInsertionPoint.dropNearItemId < 0)
+				return false;
+
+			return true;
+		}
 	};
+
+
+	function DOMDataTransferProxy(aDataTransfer, aInsertionPoint) 
+	{
+		// Don't proxy it because it is not a drag of tabs.
+		if (!aDataTransfer.mozTypesAt(0).contains(TAB_DROP_TYPE))
+			return aDataTransfer;
+
+		var tabs = tabsDragUtils.getDraggedTabs(aDataTransfer);
+
+		// Don't proxy it because there is no selection.
+		if (tabs.length < 2)
+			return aDataTransfer;
+
+		this._source = aDataTransfer;
+		this._tabs = tabs;
+
+		if (tabsDragUtils.willBeInsertedBeforeExistingNode(aInsertionPoint))
+			this._tabs.reverse();
+	}
+
+	DOMDataTransferProxy.prototype = {
+		
+		_apply : function DOMDTProxy__apply(aMethod, aArguments) 
+		{
+			return this._source[aMethod].apply(this._source, aArguments);
+		},
+	 
+		// nsIDOMDataTransfer 
+		get dropEffect() { return this._source.dropEffect; },
+		set dropEffect(aValue) { return this._source.dropEffect = aValue; },
+		get effectAllowed() { return this._source.effectAllowed; },
+		set effectAllowed(aValue) { return this._source.effectAllowed = aValue; },
+		get files() { return this._source.files; },
+		get types() { return this._source.types; },
+		clearData : function DOMDTProxy_clearData() { return this._apply('clearData', arguments); },
+		setData : function DOMDTProxy_setData() { return this._apply('setData', arguments); },
+		getData : function DOMDTProxy_getData() { return this._apply('getData', arguments); },
+		setDragImage : function DOMDTProxy_setDragImage() { return this._apply('setDragImage', arguments); },
+		addElement : function DOMDTProxy_addElement() { return this._apply('addElement', arguments); },
+	 
+		// nsIDOMNSDataTransfer 
+		get mozItemCount()
+		{
+			return this._tabs.length;
+		},
+
+		get mozCursor() { return this._source.mozCursor; },
+		set mozCursor(aValue) { return this._source.mozCursor = aValue; },
+
+		mozTypesAt : function DOMDTProxy_mozTypesAt()
+		{
+			// return this._apply('mozTypesAt', [0]);
+			// I return "text/x-moz-url" as a first type, to override behavior for "to-be-restored" tabs.
+			return new StringList(['text/x-moz-url', TAB_DROP_TYPE, 'text/x-moz-text-internal']);
+		},
+
+		mozClearDataAt : function DOMDTProxy_mozClearDataAt()
+		{
+			this._tabs = [];
+			return this._apply('mozClearDataAt', [0]);
+		},
+
+		mozSetDataAt : function DOMDTProxy_mozSetDataAt(aFormat, aData, aIndex)
+		{
+			this._tabs = [];
+			return this._apply('mozSetDataAt', [aFormat, aData, 0]);
+		},
+
+		mozGetDataAt : function DOMDTProxy_mozGetDataAt(aFormat, aIndex)
+		{
+			var tab = this._tabs[aIndex];
+			switch (aFormat)
+			{
+				case TAB_DROP_TYPE:
+					return tab;
+
+				case 'text/x-moz-url':
+					return (tabsDragUtils.getCurrentURIOfTab(tab) ||
+							'about:blank') + '\n' + tab.label;
+
+				case 'text/x-moz-text-internal':
+					return tabsDragUtils.getCurrentURIOfTab(tab) ||
+							'about:blank';
+			}
+
+			return this._apply('mozGetDataAt', [aFormat, 0]);
+		},
+
+		get mozUserCancelled() { return this._source.mozUserCancelled; }
+	};
+
+	function StringList(aTypes) 
+	{
+		return {
+			__proto__ : aTypes,
+			item : function(aIndex)
+			{
+				return this[aIndex];
+			},
+			contains : function(aType)
+			{
+				return this.indexOf(aType) > -1;
+			}
+		};
+	}
+
+	tabsDragUtils.DOMDataTransferProxy = DOMDataTransferProxy;
+	tabsDragUtils.StringList = StringList;
 
 	window['piro.sakura.ne.jp'].tabsDragUtils = tabsDragUtils;
 	tabsDragUtils.init();

@@ -118,7 +118,7 @@ var TreeStyleTabUtils = {
 	kTABBAR_TOGGLER        : 'treestyletab-tabbar-toggler',
 	kTABBAR_PLACEHOLDER    : 'treestyletab-tabbar-placeholder',
  
-/* event types, topics */
+/* event types, topics */ 
 	kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN : 'TreeStyleTabFocusSwitchingKeyDown',
 	kEVENT_TYPE_TAB_FOCUS_SWITCHING_START    : 'TreeStyleTabFocusSwitchingStart',
 	kEVENT_TYPE_TAB_FOCUS_SWITCHING_END      : 'TreeStyleTabFocusSwitchingEnd',
@@ -130,6 +130,8 @@ var TreeStyleTabUtils = {
 	kEVENT_TYPE_TABBAR_STATE_CHANGING        : 'TreeStyleTabTabbarStateChanging',
 	kEVENT_TYPE_TABBAR_STATE_CHANGED         : 'TreeStyleTabTabbarStateChanged',
 	kEVENT_TYPE_FOCUS_NEXT_TAB               : 'TreeStyleTabFocusNextTab',
+	kEVENT_TYPE_ATTACHED                     : 'TreeStyleTabAttached',
+	kEVENT_TYPE_DETACHED                     : 'TreeStyleTabParted',
 
 	kEVENT_TYPE_PRINT_PREVIEW_ENTERED        : 'TreeStyleTabPrintPreviewEntered',
 	kEVENT_TYPE_PRINT_PREVIEW_EXITED         : 'TreeStyleTabPrintPreviewExited',
@@ -376,6 +378,13 @@ var TreeStyleTabUtils = {
 		return !w ? null :
 			'SplitBrowser' in w ? w.SplitBrowser.activeBrowser :
 			w.gBrowser ;
+	},
+ 
+	get currentDragSession() 
+	{
+		return Cc['@mozilla.org/widget/dragservice;1']
+				.getService(Ci.nsIDragService)
+				.getCurrentSession();
 	},
  
 	dropLinksOnTabBehavior : function TSTUtils_dropLinksOnTabBehavior() 
@@ -1424,6 +1433,17 @@ var TreeStyleTabUtils = {
 			aTab,
 			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 		).singleNodeValue;
+	},
+ 
+	getAncestorTabs : function TSTUtils_getAncestorTabs(aTab) /* PUBLIC API */ 
+	{
+		var tabs = [];
+		var parentTab = aTab;
+		while (parentTab = this.getParentTab(parentTab))
+		{
+			tabs.push(parentTab);
+		}
+		return tabs;
 	},
  
 	getRootTab : function TSTUtils_getRootTab(aTab) /* PUBLIC API */ 

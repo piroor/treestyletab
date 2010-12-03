@@ -152,6 +152,8 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			sv.tabStrip.addEventListener('mouseup', this, true);
 		}
 		window.addEventListener('resize', this, true);
+		window.addEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
+		window.addEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_EXITED, this, false);
 		sv.browser.addEventListener('load', this, true);
 		sv.browser.mPanelContainer.addEventListener('scroll', this, true);
 		if (this.shouldListenMouseMove)
@@ -182,6 +184,8 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			sv.tabStrip.removeEventListener('mouseup', this, true);
 		}
 		window.removeEventListener('resize', this, true);
+		window.removeEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
+		window.removeEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_EXITED, this, false);
 		sv.browser.removeEventListener('load', this, true);
 		sv.browser.mPanelContainer.removeEventListener('scroll', this, true);
 		this.endListenMouseMove();
@@ -1069,6 +1073,16 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				if (this.enabled &&
 					this.showHideReason == this.kSHOWN_BY_SHORTCUT)
 					this.hide();
+				return;
+
+			case this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED:
+				this.hide();
+				this.endListenMouseMove();
+				return;
+
+			case this.kEVENT_TYPE_PRINT_PREVIEW_EXITED:
+				if (this.enabled && this.shouldListenMouseMove)
+					this.startListenMouseMove();
 				return;
 		}
 	},

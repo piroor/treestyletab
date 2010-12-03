@@ -421,7 +421,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 		eval('TabDNDObserver.clearDragmark = '+
 			TabDNDObserver.clearDragmark.toSource().replace(
 				/(\})(\))?$/,
-				'gBrowser.treeStyleTab.clearDropPosition(); $1$2'
+				'gBrowser.treeStyleTab.tabbarDNDObserver.clearDropPosition(); $1$2'
 			)
 		);
 		if (TabDNDObserver.canDrop) {
@@ -471,17 +471,17 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 			TabDNDObserver.onDrop.toSource().replace(
 				'var TSTTabBrowser = this;',
 				'var TSTTabBrowser = gBrowser;'+
-				'if (!aDragSession) aDragSession = TSTTabBrowser.treeStyleTab.getCurrentDragSession();'
+				'if (!aDragSession) aDragSession = TSTTabBrowser.treeStyleTab.currentDragSession;'
 			).replace(
 				/(var newIndex =)/,
 				<![CDATA[
-					if (isTabReorder && TSTTabBrowser.treeStyleTab.performDrop(dropActionInfo, aDragSession.sourceNode))
+					if (isTabReorder && TSTTabBrowser.treeStyleTab.tabbarDNDObserver.performDrop(dropActionInfo, aDragSession.sourceNode))
 						return;
 				]]>
 			).replace(
 				/(aTab = gBrowser.addTab\(url\));/,
 				<![CDATA[
-					TSTTabBrowser.treeStyleTab.performDrop(dropActionInfo, $1);
+					TSTTabBrowser.treeStyleTab.tabbarDNDObserver.performDrop(dropActionInfo, $1);
 					return;
 				]]>
 			).replace(
@@ -493,7 +493,7 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 						dropActionInfo.position != TreeStyleTabService.kDROP_ON ||
 						(TreeStyleTabService.dropLinksOnTabBehavior() & TreeStyleTabService.kDROPLINK_NEWTAB)
 						) {
-						TSTTabBrowser.treeStyleTab.performDrop(dropActionInfo, TSTTabBrowser.loadOneTab(url, null, null, null, bgLoad, false));
+						TSTTabBrowser.treeStyleTab.tabbarDNDObserver.performDrop(dropActionInfo, TSTTabBrowser.loadOneTab(url, null, null, null, bgLoad, false));
 						return;
 					}
 				]]>

@@ -85,6 +85,16 @@ TreeStyleTabBrowser.prototype = {
 		return (this._tabStripPlaceHolder = value);
 	},
  
+	get tabbarDNDObserver() 
+	{
+		return this._tabbarDNDObserver || (this._tabbarDNDObserver = new TreeStyleTabBrowserTabbarDNDObserver(this));
+	},
+ 
+	get panelDNDObserver() 
+	{
+		return this._panelDNDObserver || (this._panelDNDObserver = new TreeStyleTabBrowserTabpanelDNDObserver(this));
+	},
+ 
 /* utils */ 
 	
 /* get tab contents */ 
@@ -324,19 +334,9 @@ TreeStyleTabBrowser.prototype = {
 		tabContainer.addEventListener('dblclick',  this, true);
 		tabContainer.addEventListener('select', this, true);
 		tabContainer.addEventListener('scroll', this, true);
-		tabContainer.addEventListener('dragleave', this, false);
-		tabContainer.addEventListener('dragover',  this, false);
-		tabContainer.addEventListener('drop',      this, true);
-		tabContainer.addEventListener('dragdrop',  this, false); // for Firefox 3.5 or older
 		tabContainer.addEventListener('MultipleTabHandler:TabsDragStart', this, true);
 
 		var strip = this.tabStrip;
-		strip.addEventListener('dragstart',       this, false);
-		strip.addEventListener('dragenter',       this, false);
-		strip.addEventListener('dragleave',       this, false);
-		strip.addEventListener('dragend',         this, false);
-		strip.addEventListener('dragover',        this, false);
-		strip.addEventListener('drop',            this, false);
 		strip.addEventListener('MozMouseHittest', this, true); // to block default behaviors of the tab bar
 		strip.addEventListener('mousedown',       this, true);
 		strip.addEventListener('click',           this, true);
@@ -352,6 +352,8 @@ TreeStyleTabBrowser.prototype = {
 
 		b.addEventListener('MultipleTabHandlerTabsClosing', this, false);
 
+		this.tabbarDNDObserver;
+		this.panelDNDObserver;
 
 		window['piro.sakura.ne.jp'].tabsDragUtils.initTabBrowser(b);
 
@@ -1599,6 +1601,11 @@ TreeStyleTabBrowser.prototype = {
 		this.autoHide.destroy();
 		delete this._autoHide;
 
+		this.tabbarDNDObserver.destroy();
+		delete this._tabbarDNDObserver;
+		this.panelDNDObserver.destroy();
+		delete this._panelDNDObserver;
+
 		var b = this.mTabBrowser;
 		delete b.tabContainer.treeStyleTab;
 
@@ -1625,19 +1632,9 @@ TreeStyleTabBrowser.prototype = {
 		tabContainer.removeEventListener('dblclick',  this, true);
 		tabContainer.removeEventListener('select', this, true);
 		tabContainer.removeEventListener('scroll', this, true);
-		tabContainer.removeEventListener('dragleave', this, false);
-		tabContainer.removeEventListener('dragover',  this, false);
-		tabContainer.removeEventListener('drop',      this, true);
-		tabContainer.removeEventListener('dragdrop',  this, false); // for Firefox 3.5 or older
 		tabContainer.removeEventListener('MultipleTabHandler:TabsDragStart', this, true);
 
 		var strip = this.tabStrip;
-		strip.removeEventListener('dragstart',       this, false);
-		strip.removeEventListener('dragenter',       this, false);
-		strip.removeEventListener('dragleave',       this, false);
-		strip.removeEventListener('dragend',         this, false);
-		strip.removeEventListener('dragover',        this, false);
-		strip.removeEventListener('drop',            this, false);
 		strip.removeEventListener('MozMouseHittest', this, true);
 		strip.removeEventListener('mousedown',       this, true);
 		strip.removeEventListener('click',           this, true);
@@ -1651,13 +1648,6 @@ TreeStyleTabBrowser.prototype = {
 		b.removeEventListener('MultipleTabHandlerTabsClosing', this, false);
 
 		window['piro.sakura.ne.jp'].tabsDragUtils.destroyTabBrowser(b);
-
-		TreeStyleTabService.destroyTabDNDObserver(b);
-
-		this.tabbarDNDObserver.destroy();
-		delete this._tabbarDNDObserver;
-		this.panelDNDObserver.destroy();
-		delete this._panelDNDObserver;
 
 		this.scrollBox.removeEventListener('overflow', this, true);
 		this.scrollBox.removeEventListener('underflow', this, true);
@@ -2015,42 +2005,6 @@ TreeStyleTabBrowser.prototype = {
 				return this.onPopupShowing(aEvent)
 
 
-			case 'dragstart':
-				return this.tabbarDNDObserver.onDragStart(aEvent);
-
-			case 'dragenter':
-				return this.tabbarDNDObserver.onDragEnter(aEvent);
-
-			case 'dragleave':
-				return (aEvent.currentTarget == this.tabStrip ?
-							this.tabbarDNDObserver :
-							this.panelDNDObserver).onDragLeave(aEvent);
-
-			case 'dragend':
-				return this.tabbarDNDObserver.onDragEnd(aEvent);
-
-			case 'dragover':
-			case 'dragdrop':
-			case 'drop':
-				let (observer) {
-					if (aEvent.currentTarget == this.tabStrip) {
-						observer = this.tabbarDNDObserver;
-					}
-					else {
-						observer = this.panelDNDObserver;
-						if ('nsDragAndDrop' in window) {// for Firefox 3.5 or older
-							// don't use nsDragAndDrop if it can't be dropped!!
-							// http://piro.sakura.ne.jp/latest/blosxom/mozilla/xul/2007-02-02_splitbrowser-dragdrop.htm
-							if (observer.canDrop(aEvent))
-								nsDragAndDrop[aEvent.type == 'dragover' ? 'dragOver' : 'drop' ](aEvent, observer);
-							return;
-						}
-					}
-					observer[aEvent.type == 'dragover' ? 'onDragOver' : 'onDrop' ](aEvent);
-				}
-				return;
-
-
 			case 'mouseover':
 				if (this.isEventFiredOnTwisty(aEvent))
 					aEvent.target.setAttribute(this.kTWISTY_HOVER, true);
@@ -2080,7 +2034,7 @@ TreeStyleTabBrowser.prototype = {
 					aEvent.preventDefault();
 				return;
 
-			// cancel tab dragging by Multiple Tab 
+			// cancel tab dragging by Multiple Tab
 			case 'MultipleTabHandler:TabsDragStart':
 				return aEvent.preventDefault();
 		}
@@ -3352,499 +3306,6 @@ TreeStyleTabBrowser.prototype = {
 		this.removeTabbrowserAttribute(this.kPRINT_PREVIEW);
 	},
   
-/* drag and drop */ 
-	
-	get tabbarDNDObserver() 
-	{
-		return this._tabbarDNDObserver || (this._tabbarDNDObserver = new TreeStyleTabBrowserTabbarDNDObserver(this));
-	},
- 
-	get panelDNDObserver() 
-	{
-		return this._panelDNDObserver || (this._panelDNDObserver = new TreeStyleTabBrowserTabpanelDNDObserver(this));
-	},
- 
-	getCurrentDragSession : function TSTBrowser_getCurrentDragSession() 
-	{
-		return Components
-				.classes['@mozilla.org/widget/dragservice;1']
-				.getService(Components.interfaces.nsIDragService)
-				.getCurrentSession();
-	},
- 
-	getDropAction : function TSTBrowser_getDropAction(aEvent, aDragSession) 
-	{
-		if (!aDragSession)
-			aDragSession = this.getCurrentDragSession();
-
-		var tab = aDragSession ? this.getTabFromChild(aDragSession.sourceNode) : null ;
-		this.ensureTabInitialized(tab);
-
-		var info = this.getDropActionInternal(aEvent, tab);
-		info.canDrop = true;
-		info.source = tab;
-		if (tab) {
-			var isCopy = this.isCopyAction(aEvent);
-			if (isCopy && 'duplicateTab' in this.mTabBrowser) {
-				info.action |= this.kACTION_DUPLICATE;
-			}
-			if (
-				!isCopy &&
-				this.getTabBrowserFromChild(tab) != this.mTabBrowser &&
-				(
-					('duplicateTab' in this.mTabBrowser) ||
-					('swapBrowsersAndCloseOther' in this.mTabBrowser)
-				)
-				) {
-				info.action |= this.kACTION_IMPORT;
-			}
-
-			if (info.action & this.kACTIONS_FOR_DESTINATION) {
-				if (info.action & this.kACTION_MOVE) info.action ^= this.kACTION_MOVE;
-				if (info.action & this.kACTION_STAY) info.action ^= this.kACTION_STAY;
-			}
-
-			if (info.action & this.kACTION_ATTACH) {
-				if (info.parent == tab) {
-					info.canDrop = false;
-				}
-				else {
-					var orig = tab;
-					tab  = info.target;
-					while (tab = this.getParentTab(tab))
-					{
-						if (tab != orig) continue;
-						info.canDrop = false;
-						break;
-					}
-				}
-			}
-		}
-		return info;
-	},
-	
-	getDropActionInternal : function TSTBrowser_getDropActionInternal(aEvent, aSourceTab) 
-	{
-		var tab        = aEvent.target;
-		var b          = this.mTabBrowser;
-		var tabs       = this.getTabsArray(b);
-		var firstTab   = this.getFirstNormalTab(b);
-		var lastTabIndex = tabs.length -1;
-		var isInverted = this.isVertical ? false : window.getComputedStyle(b.parentNode, null).direction == 'rtl';
-		var info       = {
-				target       : null,
-				position     : null,
-				action       : null,
-				parent       : null,
-				insertBefore : null,
-				event        : aEvent
-			};
-
-		var isTabMoveFromOtherWindow = aSourceTab && aSourceTab.ownerDocument != document;
-		var isNewTabAction = !aSourceTab || aSourceTab.ownerDocument != document;
-
-		if (tab.localName != 'tab') {
-			var action = isTabMoveFromOtherWindow ? this.kACTION_STAY : (this.kACTION_MOVE | this.kACTION_PART) ;
-			if (isNewTabAction) action |= this.kACTION_NEWTAB;
-			if (aEvent[this.positionProp] < firstTab.boxObject[this.positionProp]) {
-				info.target   = info.parent = info.insertBefore = firstTab;
-				info.position = isInverted ? this.kDROP_AFTER : this.kDROP_BEFORE ;
-				info.action   = action;
-				return info;
-			}
-			else if (aEvent[this.positionProp] > tabs[lastTabIndex].boxObject[this.positionProp] + tabs[lastTabIndex].boxObject[this.sizeProp]) {
-				info.target   = info.parent = tabs[lastTabIndex];
-				info.position = isInverted ? this.kDROP_BEFORE : this.kDROP_AFTER ;
-				info.action   = action;
-				return info;
-			}
-			else {
-				let index = b.getNewIndex ?
-								b.getNewIndex(aEvent) :
-								b.tabContainer._getDropIndex(aEvent) ;
-				info.target = tabs[Math.min(index, lastTabIndex)];
-			}
-		}
-		else {
-			this.ensureTabInitialized(tab);
-			info.target = tab;
-		}
-
-		var positionProp = this.isVertical && tab.getAttribute('pinned') == 'true' ? this.invertedPositionProp : this.positionProp ;
-		var sizeProp = this.isVertical && tab.getAttribute('pinned') == 'true' ? this.invertedSizeProp : this.sizeProp ;
-		var boxPos  = tab.boxObject[positionProp];
-		var boxUnit = Math.round(tab.boxObject[sizeProp] / 3);
-		if (aEvent[positionProp] < boxPos + boxUnit) {
-			info.position = isInverted ? this.kDROP_AFTER : this.kDROP_BEFORE ;
-		}
-		else if (aEvent[positionProp] > boxPos + boxUnit + boxUnit) {
-			info.position = isInverted ? this.kDROP_BEFORE : this.kDROP_AFTER ;
-		}
-		else {
-			info.position = this.kDROP_ON;
-		}
-
-		switch (info.position)
-		{
-			case this.kDROP_ON:
-				info.action       = this.kACTION_STAY | this.kACTION_ATTACH;
-				info.parent       = tab;
-				var visible = this.getNextVisibleTab(tab);
-				info.insertBefore = this.getTreePref('insertNewChildAt') == this.kINSERT_FISRT ?
-						(this.getFirstChildTab(tab) || visible) :
-						(this.getNextSiblingTab(tab) || this.getNextTab(this.getLastDescendantTab(tab)) || visible);
-				break;
-
-			case this.kDROP_BEFORE:
-/*
-	[TARGET  ] Å™part from parent, and move
-
-	  [      ]
-	[TARGET  ] Å™attach to the parent of the target, and move
-
-	[        ]
-	[TARGET  ] Å™attach to the parent of the target, and move
-
-	[        ]
-	  [TARGET] Å™attach to the parent of the target (previous tab), and move
-*/
-				var prevTab = this.getPreviousVisibleTab(tab);
-				if (!prevTab) {
-					info.action       = this.kACTION_MOVE | this.kACTION_PART;
-					info.insertBefore = firstTab;
-				}
-				else {
-					var prevLevel   = Number(prevTab.getAttribute(this.kNEST));
-					var targetNest = Number(tab.getAttribute(this.kNEST));
-					info.parent       = (prevLevel < targetNest) ? prevTab : this.getParentTab(tab) ;
-					info.action       = this.kACTION_MOVE | (info.parent ? this.kACTION_ATTACH : this.kACTION_PART );
-					info.insertBefore = tab;
-				}
-				break;
-
-			case this.kDROP_AFTER:
-/*
-	[TARGET  ] Å´if the target has a parent, attach to it and and move
-
-	  [TARGET] Å´attach to the parent of the target, and move
-	[        ]
-
-	[TARGET  ] Å´attach to the parent of the target, and move
-	[        ]
-
-	[TARGET  ] Å´attach to the target, and move
-	  [      ]
-*/
-				var nextTab = this.getNextVisibleTab(tab);
-				if (!nextTab) {
-					info.action = this.kACTION_MOVE | this.kACTION_ATTACH;
-					info.parent = this.getParentTab(tab);
-				}
-				else {
-					var targetNest = Number(tab.getAttribute(this.kNEST));
-					var nextLevel   = Number(nextTab.getAttribute(this.kNEST));
-					info.parent       = (targetNest < nextLevel) ? tab : this.getParentTab(tab) ;
-					info.action       = this.kACTION_MOVE | (info.parent ? this.kACTION_ATTACH : this.kACTION_PART );
-					info.insertBefore = nextTab;
-/*
-	[TARGET   ] Å´attach dragged tab to the parent of the target as its next sibling
-	  [DRAGGED]
-*/
-					if (aSourceTab == nextTab && this.getDescendantTabs(info.parent).length == 1) {
-						info.action = this.kACTION_MOVE | this.kACTION_ATTACH;
-						info.parent = this.getParentTab(tab);
-						info.insertBefore = this.getNextTab(nextTab);
-					}
-				}
-				break;
-		}
-
-		if (isNewTabAction) action |= this.kACTION_NEWTAB;
-
-		return info;
-	},
-  
-	performDrop : function TSTBrowser_performDrop(aInfo, aDraggedTab) 
-	{
-		var tabsInfo = this.getDraggedTabsInfoFromOneTab(aInfo, aDraggedTab);
-		if (!tabsInfo.draggedTab) return false;
-
-		aDraggedTab = tabsInfo.draggedTab;
-		var draggedTabs = tabsInfo.draggedTabs;
-		var draggedRoots = tabsInfo.draggedRoots;
-
-
-		var targetBrowser = this.mTabBrowser;
-		var tabs = this.getTabsArray(targetBrowser);
-
-		var sourceWindow = aDraggedTab.ownerDocument.defaultView;
-		var sourceBrowser = this.getTabBrowserFromChild(aDraggedTab);
-
-		var draggedWholeTree = [].concat(draggedRoots);
-		draggedRoots.forEach(function(aRoot) {
-			draggedWholeTree = draggedWholeTree.concat(this.getDescendantTabs(aRoot));
-		}, this);
-		while (aInfo.insertBefore && draggedWholeTree.indexOf(aInfo.insertBefore) > -1)
-		{
-			aInfo.insertBefore = this.getNextTab(aInfo.insertBefore);
-		}
-
-		if (aInfo.action & this.kACTIONS_FOR_SOURCE) {
-			if (aInfo.action & this.kACTION_PART) {
-				this.partTabsOnDrop(draggedRoots);
-			}
-			else if (aInfo.action & this.kACTION_ATTACH) {
-				this.attachTabsOnDrop(draggedRoots, aInfo.parent);
-			}
-			else {
-				return false;
-			}
-
-			if ( // if this move will cause no change...
-				sourceBrowser == targetBrowser &&
-				sourceBrowser.treeStyleTab.getNextVisibleTab(draggedTabs[draggedTabs.length-1]) == aInfo.insertBefore
-				) {
-				// then, do nothing
-				return true;
-			}
-		}
-
-
-		// prevent Multiple Tab Handler feature
-		targetBrowser.duplicatingSelectedTabs = true;
-		targetBrowser.movingSelectedTabs = true;
-
-
-		var newRoots = [];
-		var shouldClose = (
-				aInfo.action & this.kACTION_IMPORT &&
-				this.getAllTabsArray(sourceBrowser).length == draggedTabs.length
-			);
-		var oldTabs = [];
-		var newTabs = [];
-		var treeStructure = draggedTabs.map(function(aTab) {
-				var parent = sourceBrowser.treeStyleTab.getParentTab(aTab);
-				return parent ? draggedTabs.indexOf(parent) : -1 ;
-			});
-
-		var parentTabsArray = draggedTabs.map(function(aTab) {
-				return (aInfo.action & this.kACTIONS_FOR_DESTINATION) ?
-					sourceBrowser.treeStyleTab.getParentTab(aTab) : null ;
-			}, this);
-
-		// Firefox fails to "move" collapsed tabs. So, expand them first
-		// and collapse them after they are moved.
-		var collapseExpandState = [];
-		if (aInfo.action & this.kACTION_IMPORT &&
-			'swapBrowsersAndCloseOther' in targetBrowser) {
-			draggedWholeTree.forEach(function(aTab) {
-				collapseExpandState.push(this.getTabValue(aTab, this.kSUBTREE_COLLAPSED) == 'true');
-				this.collapseExpandSubtree(aTab, false, true);
-				this.collapseExpandTab(aTab, false, true);
-			}, this);
-		}
-
-		var lastTabIndex = tabs.length -1;
-		draggedTabs.forEach(function(aTab, aIndex) {
-			var tab = aTab;
-			if (aInfo.action & this.kACTIONS_FOR_DESTINATION) {
-				var parent = parentTabsArray[aIndex];
-				if (tabsInfo.isMultipleMove && 'MultipleTabService' in sourceWindow)
-					sourceWindow.MultipleTabService.setSelection(aTab, false);
-				if (aInfo.action & this.kACTION_IMPORT &&
-					'swapBrowsersAndCloseOther' in targetBrowser) {
-					tab = targetBrowser.addTab();
-					tab.linkedBrowser.stop();
-					tab.linkedBrowser.docShell;
-					targetBrowser.swapBrowsersAndCloseOther(tab, aTab);
-					targetBrowser.setTabTitle(tab);
-				}
-				else {
-					tab = targetBrowser.duplicateTab(aTab);
-					this.deleteTabValue(tab, this.kCHILDREN);
-					this.deleteTabValue(tab, this.kPARENT);
-					if (aInfo.action & this.kACTION_IMPORT)
-						oldTabs.push(aTab);
-				}
-				newTabs.push(tab);
-				if (tabsInfo.isMultipleMove && 'MultipleTabService' in window)
-					MultipleTabService.setSelection(tab, true);
-				if (!parent || draggedTabs.indexOf(parent) < 0)
-					newRoots.push(tab);
-				lastTabIndex++;
-			}
-
-			var newIndex = aInfo.insertBefore ? aInfo.insertBefore._tPos : lastTabIndex ;
-			if (aInfo.insertBefore && newIndex > tab._tPos) newIndex--;
-
-			this.internallyTabMovingCount++;
-			targetBrowser.moveTabTo(tab, newIndex);
-			this.collapseExpandTab(tab, false, true);
-			this.internallyTabMovingCount--;
-
-		}, this);
-
-		// close imported tabs from the source browser
-		oldTabs.forEach(function(aTab) {
-			sourceBrowser.removeTab(aTab, { animate : true });
-		});
-		if (shouldClose) this.closeOwner(sourceBrowser);
-
-		// restore tree structure for newly opened tabs
-		newTabs.forEach(function(aTab, aIndex) {
-			var index = treeStructure[aIndex];
-			if (index < 0) return;
-			targetBrowser.treeStyleTab.attachTabTo(aTab, newTabs[index]);
-		});
-		newTabs.reverse();
-		collapseExpandState.reverse();
-		collapseExpandState.forEach(function(aCollapsed, aIndex) {
-			this.collapseExpandSubtree(newTabs[aIndex], aCollapsed, true);
-		}, this);
-
-		if (aInfo.action & this.kACTIONS_FOR_DESTINATION &&
-			aInfo.action & this.kACTION_ATTACH)
-			this.attachTabsOnDrop(newRoots, aInfo.parent);
-
-		// Multiple Tab Handler
-		targetBrowser.movingSelectedTabs = false;
-		targetBrowser.duplicatingSelectedTabs = false;
-
-		return true;
-	},
-	
-	getDraggedTabsInfoFromOneTab : function TSTBrowser_getDraggedTabsInfoFromOneTab(aInfo, aTab) 
-	{
-		aTab = this.getTabFromChild(aTab);
-		if (!aTab)
-			return {
-				draggedTab     : null,
-				draggedTabs    : [],
-				draggedRoots   : [],
-				isMultipleMove : false
-			};
-
-		var targetBrowser = this.mTabBrowser;
-		var tabs = this.getTabsArray(targetBrowser);
-
-		var draggedTabs = [aTab];
-		var draggedRoots = [aTab];
-
-		var sourceWindow = aTab.ownerDocument.defaultView;
-		var sourceBrowser = this.getTabBrowserFromChild(aTab);
-
-		var dt = aInfo.event && aInfo.event.dataTransfer;
-		var isMultipleDragEvent = window['piro.sakura.ne.jp'].tabsDragUtils.isTabsDragging(aInfo.event);
-		var isMultipleMove = (
-				isMultipleDragEvent ||
-				(
-					'MultipleTabService' in sourceWindow &&
-					sourceWindow.MultipleTabService.isSelected(aTab) &&
-					MultipleTabService.allowMoveMultipleTabs
-				)
-			);
-
-		if (isMultipleMove) {
-			draggedTabs = isMultipleDragEvent ?
-							window['piro.sakura.ne.jp'].tabsDragUtils.getDraggedTabs(aInfo.event) :
-							sourceWindow.MultipleTabService.getSelectedTabs(sourceBrowser);
-			if (!(aInfo.action & this.kACTIONS_FOR_DESTINATION)) {
-				draggedRoots = [];
-				draggedTabs.forEach(function(aTab) {
-					var parent = aTab,
-						current;
-					do {
-						current = parent;
-						parent = sourceBrowser.treeStyleTab.getParentTab(parent)
-						if (parent && draggedTabs.indexOf(parent) > -1) continue;
-						draggedRoots.push(current);
-						return;
-					}
-					while (parent);
-				}, this);
-			}
-		}
-		else if (aInfo.action & this.kACTIONS_FOR_DESTINATION) {
-			draggedTabs = draggedTabs.concat(sourceBrowser.treeStyleTab.getDescendantTabs(aTab));
-		}
-
-		return {
-			draggedTab     : aTab,
-			draggedTabs    : draggedTabs,
-			draggedRoots   : draggedRoots,
-			isMultipleMove : isMultipleMove
-		};
-	},
- 
-	attachTabsOnDrop : function TSTBrowser_attachTabsOnDrop(aTabs, aParent) 
-	{
-		this.mTabBrowser.movingSelectedTabs = true; // Multiple Tab Handler
-		aTabs.forEach(function(aTab) {
-			if (!aTab.parentNode) return; // ignore removed tabs
-			if (aParent)
-				this.attachTabTo(aTab, aParent);
-			else
-				this.partTab(aTab);
-			this.collapseExpandTab(aTab, false);
-		}, this);
-		this.mTabBrowser.movingSelectedTabs = false; // Multiple Tab Handler
-	},
- 
-	partTabsOnDrop : function TSTBrowser_partTabsOnDrop(aTabs) 
-	{
-		this.mTabBrowser.movingSelectedTabs = true; // Multiple Tab Handler
-		aTabs.forEach(function(aTab) {
-			if (!aTab.parentNode) return; // ignore removed tabs
-			this.partTab(aTab);
-			this.collapseExpandTab(aTab, false);
-		}, this);
-		this.mTabBrowser.movingSelectedTabs = false; // Multiple Tab Handler
-	},
- 
-	closeOwner : function TSTBrowser_closeOwner(aTabOwner) 
-	{
-		var w = aTabOwner.ownerDocument.defaultView;
-		if (!w) return;
-		if ('SplitBrowser' in w) {
-			if ('getSubBrowserFromChild' in w.SplitBrowser) {
-				var subbrowser = w.SplitBrowser.getSubBrowserFromChild(aTabOwner);
-				if (subbrowser) {
-					subbrowser.close();
-					return;
-				}
-			}
-			if (w.SplitBrowser.browsers.length) return;
-		}
-		w.close();
-	},
-  
-	clearDropPosition : function TSTBrowser_clearDropPosition() 
-	{
-		var b = this.mTabBrowser;
-		var xpathResult = this.evaluateXPath(
-				'child::xul:tab[@'+this.kDROP_POSITION+']',
-				b.mTabContainer
-			);
-		for (var i = 0, maxi = xpathResult.snapshotLength; i < maxi; i++)
-		{
-			xpathResult.snapshotItem(i).removeAttribute(this.kDROP_POSITION);
-		}
-	},
- 
-	isDraggingAllTabs : function TSTBrowser_isDraggingAllTabs(aTab, aTabs) 
-	{
-		var actionInfo = {
-				action : this.kACTIONS_FOR_DESTINATION | this.kACTION_IMPORT
-			};
-		var tabsInfo = this.getDraggedTabsInfoFromOneTab(actionInfo, aTab);
-		return tabsInfo.draggedTabs.length == (aTabs || this.getAllTabsArray(this.mTabBrowser)).length;
-	},
- 
-	isDraggingAllCurrentTabs : function TSTBrowser_isDraggingAllCurrentTabs(aTab) 
-	{
-		return this.isDraggingAllTabs(aTab, this.getTabsArray(this.mTabBrowser));
-	},
-  
 /* commands */ 
 	
 /* reset */ 
@@ -4045,7 +3506,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		/* PUBLIC API */
 		var event = document.createEvent('Events');
-		event.initEvent('TreeStyleTabAttached', true, false);
+		event.initEvent(this.kEVENT_TYPE_ATTACHED, true, false);
 		event.parentTab = aParent;
 		aChild.dispatchEvent(event);
 	},
@@ -4089,7 +3550,7 @@ TreeStyleTabBrowser.prototype = {
 
 		/* PUBLIC API */
 		var event = document.createEvent('Events');
-		event.initEvent('TreeStyleTabParted', true, false);
+		event.initEvent(this.kEVENT_TYPE_DETACHED, true, false);
 		event.parentTab = parentTab;
 		aChild.dispatchEvent(event);
 
@@ -4171,15 +3632,8 @@ TreeStyleTabBrowser.prototype = {
 	{
 		if (!aTabs || !aTabs.length || !this._treeViewEnabled) return;
 
-		if (aLevel === void(0)) {
-			var parentTab = this.getParentTab(aTabs[0]);
-			var aLevel = 0;
-			while (parentTab)
-			{
-				aLevel++;
-				parentTab = this.getParentTab(parentTab);
-			}
-		}
+		if (aLevel === void(0))
+			aLevel = this.getAncestorTabs(aTabs[0]).length;
 
 		var b = this.mTabBrowser;
 		var margin = this.indent < 0 ? this.baseIndent : this.indent ;
@@ -4195,18 +3649,7 @@ TreeStyleTabBrowser.prototype = {
 			if (!aTab.parentNode) return; // ignore removed tabs
 			this.updateTabIndent(aTab, indent, aJustNow);
 			aTab.setAttribute(this.kNEST, aLevel);
-			if (
-				!aLevel ||
-				this.maxTreeLevel < 0 ||
-				this.maxTreeLevel > aLevel
-				) {
-				aTab.setAttribute(this.kALLOW_COLLAPSE, true);
-				this.collapseExpandSubtree(aTab, this.isSubtreeCollapsed(aTab));
-			}
-			else {
-				this.collapseExpandSubtree(aTab, false);
-				aTab.removeAttribute(this.kALLOW_COLLAPSE);
-			}
+			this.updateCanCollapseSubtree(aTab, aLevel);
 			this.updateTabsIndent(this.getChildTabs(aTab), aLevel+1, aJustNow);
 		}, this);
 	},
@@ -4393,6 +3836,22 @@ TreeStyleTabBrowser.prototype = {
 	},
 	_horizontalTabMaxIndentBase : 0,
  
+	updateCanCollapseSubtree : function TSTBrowser_updateCanCollapseSubtree(aTab, aLevel) 
+	{
+		if (
+			!aLevel ||
+			this.maxTreeLevel < 0 ||
+			this.maxTreeLevel > aLevel
+			) {
+			aTab.setAttribute(this.kALLOW_COLLAPSE, true);
+			this.collapseExpandSubtree(aTab, this.isSubtreeCollapsed(aTab));
+		}
+		else {
+			this.collapseExpandSubtree(aTab, false);
+			aTab.removeAttribute(this.kALLOW_COLLAPSE);
+		}
+	},
+ 
 	updateTabsCount : function TSTBrowser_updateTabsCount(aTab, aDontUpdateAncestor) 
 	{
 		var count = document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER);
@@ -4404,7 +3863,7 @@ TreeStyleTabBrowser.prototype = {
 			this.updateTabsCount(parent);
 	},
  
-	promoteTooDeepLevelTabs : function TSTBrowser_promoteTooDeepLevelTabs(aParent)
+	promoteTooDeepLevelTabs : function TSTBrowser_promoteTooDeepLevelTabs(aParent) 
 	{
 		if (this.maxTreeLevel < 0 || !this.maxTreeLevelPhisical)
 			return;
@@ -4604,9 +4063,9 @@ TreeStyleTabBrowser.prototype = {
 		if (
 			!this.animationEnabled ||
 			aJustNow ||
-			this.collapseDuration < 1 ||
+			this.collapseDuration < 1 // ||
 //			!this.isVertical ||
-			!this.canCollapseSubtree(this.getParentTab(aTab))
+//			!this.canCollapseSubtree(this.getParentTab(aTab))
 			) {
 			if (aCollapsed)
 				aTab.setAttribute(this.kCOLLAPSED_DONE, true);
@@ -4663,9 +4122,10 @@ TreeStyleTabBrowser.prototype = {
 			if (aTime >= aDuration || stopAnimation) {
 				delete aTab.__treestyletab__updateTabCollapsedTask;
 				if (aCollapsed) aTab.setAttribute(self.kCOLLAPSED_DONE, true);
-				if (!CSSTransitionEnabled)
+				if (!CSSTransitionEnabled) {
 					aTab.style.removeProperty(self.collapseCSSProp);
-				aTab.style.removeProperty('opacity');
+					aTab.style.removeProperty('opacity');
+				}
 				aTab.removeAttribute(offsetAttr);
 
 				maxMargin = null;

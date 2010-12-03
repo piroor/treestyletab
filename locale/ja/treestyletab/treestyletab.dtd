@@ -16,8 +16,8 @@
 <!ENTITY config.tabbar.invertTab            "タブの表示を左右反転">
 <!ENTITY config.tabbar.invertTabContents    "タブの内容を左右反転">
 <!ENTITY config.enableSubtreeIndent "ツリーをインデント表示する">
-<!ENTITY config.maxTreeLevel.before "最大で">
-<!ENTITY config.maxTreeLevel.after  "階層まで">
+<!ENTITY config.maxTreeLevel.before "（">
+<!ENTITY config.maxTreeLevel.after  "階層まで）">
 <!ENTITY config.allowSubtreeCollapseExpand  "ツリーを折りたためるようにする">
 <!ENTITY config.tabbar.hideAlltabsButton    "「タブの一覧を表示」ボタンを表示する">
 
