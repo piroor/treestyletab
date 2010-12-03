@@ -275,6 +275,8 @@ TreeStyleTabBrowser.prototype = {
 	{
 		this.stopRendering();
 
+		this.updateFloatingTabbarReason = 0;
+
 		var b = this.mTabBrowser;
 		b.tabContainer.treeStyleTab = this;
 
@@ -1286,7 +1288,7 @@ TreeStyleTabBrowser.prototype = {
 			TabsOnTop.enabled = TabsOnTop.enabled && this.currentTabbarPosition == 'top' && this.isFixed;
 
 		window.setTimeout(function(aSelf) {
-			aSelf.updateFloatingTabbar();
+			aSelf.updateFloatingTabbar(aSelf.kTABBAR_UPDATE_BY_APPEARANCE_CHANGE);
 			aSelf.startRendering();
 
 			if ('_positionPinnedTabs' in b.mTabContainer)
@@ -1333,7 +1335,7 @@ TreeStyleTabBrowser.prototype = {
 		}, 0, this.mTabBrowser);
 	},
  
-	updateFloatingTabbar : function TSTBrowser_updateFloatingTabbar(aJustNow) 
+	updateFloatingTabbar : function TSTBrowser_updateFloatingTabbar(aReason) 
 	{
 		// this method is just for Firefox 4.0 or later
 		if (!this.isFloating) return;
@@ -1343,18 +1345,24 @@ TreeStyleTabBrowser.prototype = {
 			this.updateFloatingTabbarTimer = null;
 		}
 
-		if (aJustNow) {
-			this.updateFloatingTabbarInternal();
+		this.updateFloatingTabbarReason |= aReason;
+
+		if (this.updateFloatingTabbarReason & this.kTABBAR_UPDATE_NOW) {
+			this.updateFloatingTabbarInternal(this.updateFloatingTabbarReason);
+			this.updateFloatingTabbarReason = 0;
 		}
 		else {
 			this.updateFloatingTabbarTimer = window.setTimeout(function(aSelf) {
 				aSelf.updateFloatingTabbarTimer = null;
-				aSelf.updateFloatingTabbarInternal()
+				aSelf.updateFloatingTabbarInternal(aSelf.updateFloatingTabbarReason)
+				aSelf.updateFloatingTabbarReason = 0;
 			}, 0, this);
 		}
 	},
-	updateFloatingTabbarInternal : function TSTBrowser_updateFloatingTabbarInternal()
+	updateFloatingTabbarInternal : function TSTBrowser_updateFloatingTabbarInternal(aReason)
 	{
+		aReason = aReason || this.kTABBAR_UPDATE_BY_UNKNOWN_REASON;
+
 		if (this.splitter.collapsed || this.splitter.getAttribute('state') != 'collapsed') {
 			this._tabStripPlaceHolder.collapsed =
 				this.splitter.collapsed =
@@ -1372,11 +1380,11 @@ TreeStyleTabBrowser.prototype = {
 
 			let realWidth = parseInt(this._tabStripPlaceHolder.getAttribute('width') || box.width);
 			let realHeight = parseInt(this._tabStripPlaceHolder.getAttribute('height') || box.height);
-			let width = (this.autoHide.expanded && this.isVertical ?
+			let width = (this.autoHide.expanded && this.isVertical && (aReason & this.kTABBAR_UPDATE_SYNC_TO_TABBAR) ?
 							this.maxTabbarWidth(this.getTreePref('tabbar.width')) :
 							0
 						) || realWidth;
-			let height = (this.autoHide.expanded && !this.isVertical ?
+			let height = (this.autoHide.expanded && !this.isVertical && (aReason & this.kTABBAR_UPDATE_SYNC_TO_TABBAR) ?
 							this.maxTabbarHeight(this.getTreePref('tabbar.height')) :
 							0
 						) || realHeight;
@@ -1464,7 +1472,6 @@ TreeStyleTabBrowser.prototype = {
 	resetTabbarSize : function TSTBrowser_resetTabbarSize() 
 	{
 		if (this.isVertical) {
-
 			this.clearTreePref('tabbar.shrunkenWidth');
 			this.clearTreePref('tabbar.width');
 		}
@@ -1476,7 +1483,7 @@ TreeStyleTabBrowser.prototype = {
 				this._tabStripPlaceHolder.height = tabContainerBox.boxObject.height;
 			}
 		}
-		this.updateFloatingTabbar();
+		this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_RESET);
 	},
  
 	updateTabbarOverflow : function TSTBrowser_updateTabbarOverflow() 
@@ -1731,7 +1738,7 @@ TreeStyleTabBrowser.prototype = {
 			case 'private-browsing-change-granted':
 				this.collapseExpandAllSubtree(false, true);
 				window.setTimeout(function(aSelf) {
-					aSelf.updateFloatingTabbar();
+					aSelf.updateFloatingTabbar(aSelf.kTABBAR_UPDATE_BY_PRIVATE_BROWSING);
 				}, 0, this);
 				break;
 
@@ -1842,7 +1849,7 @@ TreeStyleTabBrowser.prototype = {
 					this.removeTabStripAttribute('width');
 					if (this.isFloating) {
 						this.setTabStripAttribute('width', this.autoHide.placeHolderWidthFromMode);
-						this.updateFloatingTabbar();
+						this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_PREF_CHANGE);
 					}
 					else {
 						this.setTabStripAttribute('width', this.autoHide.widthFromMode);
@@ -1874,7 +1881,7 @@ TreeStyleTabBrowser.prototype = {
 
 			case 'browser.tabs.autoHide':
 				if (this.getTabsArray(this.mTabBrowser).length == 1)
-					this.updateFloatingTabbar();
+					this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_SHOWHIDE_TABBAR);
 				break;
 
 			default:
@@ -2150,7 +2157,7 @@ TreeStyleTabBrowser.prototype = {
 			this.scrollToTab(tab, this.scrollToNewTabMode < 2);
 
 		if (this.getPref('browser.tabs.autoHide'))
-			this.updateFloatingTabbar();
+			this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_SHOWHIDE_TABBAR);
 
 		if (this.canStackTabs)
 			this.updateTabsZIndex(true);
@@ -2320,7 +2327,7 @@ TreeStyleTabBrowser.prototype = {
 		this.destroyTab(tab);
 
 		if (this.getPref('browser.tabs.autoHide'))
-			this.updateFloatingTabbar();
+			this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_SHOWHIDE_TABBAR);
 
 		if (this.canStackTabs)
 			this.updateTabsZIndex(true);
@@ -3163,7 +3170,7 @@ TreeStyleTabBrowser.prototype = {
 			)
 			return;
 
-		this.updateFloatingTabbar();
+		this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
 	},
  
 	onPopupShowing : function TSTBrowser_onPopupShowing(aEvent) 

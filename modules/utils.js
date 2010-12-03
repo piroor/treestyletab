@@ -173,6 +173,20 @@ var TreeStyleTabUtils = {
 	kINSERT_FISRT : 0,
 	kINSERT_LAST  : 1,
 
+	kTABBAR_UPDATE_BY_UNKNOWN_REASON    : (1 << 0),
+	kTABBAR_UPDATE_BY_RESET             : (1 << 1),
+	kTABBAR_UPDATE_BY_PREF_CHANGE       : (1 << 2),
+	kTABBAR_UPDATE_BY_APPEARANCE_CHANGE : (1 << 3),
+	kTABBAR_UPDATE_BY_SHOWHIDE_TABBAR   : (1 << 4),
+	kTABBAR_UPDATE_BY_TABBAR_RESIZE     : (1 << 5),
+	kTABBAR_UPDATE_BY_WINDOW_RESIZE     : (1 << 6),
+	kTABBAR_UPDATE_BY_FULLSCREEN        : (1 << 7),
+	kTABBAR_UPDATE_BY_PRIVATE_BROWSING  : (1 << 8),
+	kTABBAR_UPDATE_BY_AUTOHIDE          : (1 << 9),
+	kTABBAR_UPDATE_NOW                 : (1 << 5) | (1 << 9),
+	kTABBAR_UPDATE_SYNC_TO_TABBAR      : (1 << 0) | (1 << 1) | (1 << 2) | (1 << 5) | (1 << 8) | (1 << 9),
+	kTABBAR_UPDATE_SYNC_TO_PLACEHOLDER : (1 << 3) | (1 << 4) | (1 << 6) | (1 << 7),
+
 	MAX_TABBAR_SIZE_RATIO        : 0.8,
 	DEFAULT_SHRUNKEN_WIDTH_RATIO : 0.67,
  

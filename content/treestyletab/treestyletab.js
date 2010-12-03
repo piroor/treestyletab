@@ -608,7 +608,7 @@ var TreeStyleTabService = {
 			FullScreen.mouseoverToggle.toSource().replace(
 				// Firefox 4.0 or later
 				'this._isChromeCollapsed = !aShow;',
-				'gBrowser.treeStyleTab.updateFloatingTabbar(); $&'
+				'gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_FULLSCREEN); $&'
 			).replace(
 				// Firefox 3.6 or older
 				'gBrowser.mStrip.setAttribute("moz-collapsed", !aShow);',
@@ -1058,7 +1058,7 @@ var TreeStyleTabService = {
 			height += (pos == 'top' ? delta : -delta );
 			this.setTreePref('tabbar.height', this.maxTabbarHeight(height, b));
 		}
-		b.treeStyleTab.updateFloatingTabbar(true);
+		b.treeStyleTab.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_TABBAR_RESIZE);
 	},
 	tabbarResizeStartWidth  : -1,
 	tabbarResizeStartHeight : -1,

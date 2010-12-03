@@ -565,7 +565,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 			case this.kMODE_HIDE:
 				if (sv.isFloating)
-					sv.updateFloatingTabbar(true);
+					sv.updateFloatingTabbar(sv.kTABBAR_UPDATE_BY_AUTOHIDE);
 				break;
 
 			default:
@@ -573,7 +573,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				if (pos == 'left' || pos == 'right') {
 					let width = sv.maxTabbarWidth(this.getTreePref('tabbar.width'));
 					if (sv.isFloating) // Firefox 4.0-
-						sv.updateFloatingTabbar(true);
+						sv.updateFloatingTabbar(sv.kTABBAR_UPDATE_BY_AUTOHIDE);
 					else // -Firefox 3.6
 						sv.setTabStripAttribute('width', width);
 				}
@@ -607,7 +607,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			case this.kMODE_HIDE:
 				sv.setTabbrowserAttribute(this.kAUTOHIDE, 'hidden');
 				sv.setTabbrowserAttribute(this.kSTATE, this.kSTATE_HIDDEN);
-				sv.updateFloatingTabbar(true);
+				sv.updateFloatingTabbar(sv.kTABBAR_UPDATE_BY_AUTOHIDE);
 				break;
 
 			default:
@@ -616,7 +616,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				sv.setTabbrowserAttribute(this.kSTATE, this.kSTATE_SHRUNKEN);
 				if (pos == 'left' || pos == 'right')
 					sv.setTabStripAttribute('width', this.getTreePref('tabbar.shrunkenWidth'));
-				sv.updateFloatingTabbar(true);
+				sv.updateFloatingTabbar(sv.kTABBAR_UPDATE_BY_AUTOHIDE);
 				break;
 		}
 	},
@@ -900,7 +900,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		else {
 			sv.removeTabbrowserAttribute(this.kTRANSPARENT);
 		}
-		sv.updateFloatingTabbar();
+		sv.updateFloatingTabbar(sv.kTABBAR_UPDATE_BY_APPEARANCE_CHANGE);
 	},
   
 	// event handling 
