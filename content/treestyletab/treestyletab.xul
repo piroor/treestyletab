@@ -18,7 +18,6 @@
 	TreeStyleTabService.ObserverService.addObserver(TreeStyleTabService, 'sessionstore-windows-restored', false);
 ]]></script>
 <script src="treestyletabbrowser.js" type="application/javascript"/>
-<script src="treestyletabbrowser_autoHide.js" type="application/javascript"/>
 
 <script src="preloadImages.js" type="application/javascript"/>
 
@@ -28,6 +27,9 @@
 <script src="hacks.js" type="application/javascript"/>
 
 <script type="application/javascript"><![CDATA[
+	// for backward compatibility
+	window.TreeStyleTabBrowserAutoHide = TreeStyleTabService.autoHideWindow;
+
 	// preload images
 	TreeStyleTabService.observe(
 		null,

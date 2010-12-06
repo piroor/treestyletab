@@ -1,10 +1,48 @@
-function TreeStyleTabBrowserAutoHide(aOwner) 
+/* ***** BEGIN LICENSE BLOCK ***** 
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is the Tree Style Tab.
+ *
+ * The Initial Developer of the Original Code is SHIMODA Hiroshi.
+ * Portions created by the Initial Developer are Copyright (C) 2010
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s): SHIMODA Hiroshi <piro@p.club.ne.jp>
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ******/
+ 
+const EXPORTED_SYMBOLS = ['AutoHideBrowser', 'AutoHideWindow'];
+
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+ 
+function AutoHideBrowser(aTabBrowser) 
 {
-	this.mOwner = aOwner;
-	this.init();
+	this.init(aTabBrowser);
 }
-TreeStyleTabBrowserAutoHide.prototype = {
-	__proto__ : TreeStyleTabService,
+AutoHideBrowser.prototype = {
 	
 	kMODE : 'treestyletab-tabbar-autohide-mode', 
 	kMODE_DISABLED : 0,
@@ -32,35 +70,35 @@ TreeStyleTabBrowserAutoHide.prototype = {
  
 	get mode() /* PUBLIC API */ 
 	{
-		var mode = this.mOwner.browser.getAttribute(this.kMODE);
+		var mode = this.browser.getAttribute(this.kMODE);
 		return mode ? parseInt(mode) : this.kMODE_DISABLED ;
 	},
 	set mode(aValue)
 	{
-		this.mOwner.browser.setAttribute(this.kMODE, aValue);
+		this.browser.setAttribute(this.kMODE, aValue);
 		return aValue;
 	},
 
-	getMode : function TSTAutoHide_getMode(aTabBrowser)
+	getMode : function AHB_getMode(aTabBrowser)
 	{
-		var b = aTabBrowser || this.mOwner.browser;
+		var b = aTabBrowser || this.browser;
 		var mode = b.getAttribute(this.kMODE);
 		return mode ? parseInt(mode) : this.kMODE_DISABLED ;
 	},
-	getModeForNormal : function TSTAutoHide_getModeForNormal(aTabBrowser)
+	getModeForNormal : function AHB_getModeForNormal(aTabBrowser)
 	{
-		var b = aTabBrowser || this.mOwner.browser;
-		return parseInt(b.getAttribute(this.kMODE+'-normal') || this.getTreePref('tabbar.autoHide.mode'));
+		var b = aTabBrowser || this.browser;
+		return parseInt(b.getAttribute(this.kMODE+'-normal') || this.treeStyleTab.getTreePref('tabbar.autoHide.mode'));
 	},
-	getModeForFullScreen : function TSTAutoHide_getModeForFullScreen(aTabBrowser)
+	getModeForFullScreen : function AHB_getModeForFullScreen(aTabBrowser)
 	{
-		var b = aTabBrowser || this.mOwner.browser;
-		return parseInt(b.getAttribute(this.kMODE+'-fullscreen') || this.getTreePref('tabbar.autoHide.mode.fullscreen'));
+		var b = aTabBrowser || this.browser;
+		return parseInt(b.getAttribute(this.kMODE+'-fullscreen') || this.treeStyleTab.getTreePref('tabbar.autoHide.mode.fullscreen'));
 	},
 
 	get state()
 	{
-		return this.mOwner.browser.getAttribute(this.kSTATE) || this.kSTATE_EXPANDED;
+		return this.browser.getAttribute(this.kSTATE) || this.kSTATE_EXPANDED;
 	},
 	get expanded()
 	{
@@ -75,12 +113,13 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		return this.state == this.kSTATE_HIDDEN;
 	},
 	
-	updateMode : function TSTAutoHide_updateMode() 
+	updateMode : function AHB_updateMode() 
 	{
 		this.end();
 		// update internal property after the appearance of the tab bar is updated.
-		window.setTimeout(function(aSelf) {
-			aSelf.mode = (window.fullScreen && aSelf.getPref('browser.fullscreen.autohide')) ?
+		var w = this.window;
+		w.setTimeout(function(aSelf) {
+			aSelf.mode = (w.fullScreen && aSelf.treeStyleTab.getPref('browser.fullscreen.autohide')) ?
 					aSelf.getModeForFullScreen() :
 					aSelf.getModeForNormal() ;
 			if (aSelf.mode != aSelf.kMODE_DISABLED)
@@ -93,7 +132,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
  
 	get XOffset() 
 	{
-		var sv = this.mOwner;
+		var sv = this.treeStyleTab;
 		switch (this.mode)
 		{
 			case this.kMODE_DISABLED:
@@ -108,8 +147,8 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 			default:
 			case this.kMODE_SHRINK:
-				return this.getTreePref('tabbar.width')
-						- this.getTreePref('tabbar.shrunkenWidth');
+				return sv.getTreePref('tabbar.width')
+						- sv.getTreePref('tabbar.shrunkenWidth');
 		}
 	},
 	get YOffset()
@@ -119,9 +158,9 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	extraXOffset : 0,
 	extraYOffset : 0,
  
-	get currentXOffset()
+	get currentXOffset() 
 	{
-		var sv = this.mOwner;
+		var sv = this.treeStyleTab;
 		return (
 				sv.currentTabbarPosition == 'left' &&
 				this.mode != this.kMODE_DISABLED &&
@@ -130,7 +169,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	},
 	get currentYOffset()
 	{
-		var sv = this.mOwner;
+		var sv = this.treeStyleTab;
 		return (
 				sv.currentTabbarPosition == 'top' &&
 				this.mode != this.kMODE_DISABLED &&
@@ -138,28 +177,30 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			) ? this.YOffset : 0 ;
 	},
  
-	start : function TSTAutoHide_start() 
+	start : function AHB_start() 
 	{
 		if (this.enabled) return;
 		this.enabled = true;
 
-		var sv = this.mOwner;
+		var sv = this.treeStyleTab;
+		var b  = this.browser;
+		var w  = this.window;
 
-		sv.browser.addEventListener('mousedown', this, true);
-		sv.browser.addEventListener('mouseup', this, true);
+		b.addEventListener('mousedown', this, true);
+		b.addEventListener('mouseup', this, true);
 		if (sv.isFloating) {
 			sv.tabStrip.addEventListener('mousedown', this, true);
 			sv.tabStrip.addEventListener('mouseup', this, true);
 		}
-		window.addEventListener('resize', this, true);
-		window.addEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
-		window.addEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_EXITED, this, false);
-		sv.browser.addEventListener('load', this, true);
-		sv.browser.mPanelContainer.addEventListener('scroll', this, true);
+		w.addEventListener('resize', this, true);
+		w.addEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
+		w.addEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_EXITED, this, false);
+		b.addEventListener('load', this, true);
+		b.mPanelContainer.addEventListener('scroll', this, true);
 		if (this.shouldListenMouseMove)
 			this.startListenMouseMove();
-		if (sv.browser == gBrowser && sv.shouldListenKeyEventsForAutoHide)
-			TreeStyleTabService.startListenKeyEventsFor(sv.LISTEN_FOR_AUTOHIDE);
+		if (b == w.gBrowser && sv.shouldListenKeyEventsForAutoHide)
+			w.TreeStyleTabService.startListenKeyEventsFor(sv.LISTEN_FOR_AUTOHIDE);
 
 		this.clearBG();
 		this.updateTransparency();
@@ -167,30 +208,32 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		this.showHideInternal();
 	},
  
-	end : function TSTAutoHide_end() 
+	end : function AHB_end() 
 	{
 		if (!this.enabled) return;
 		this.enabled = false;
 
-		var sv = this.mOwner;
+		var sv = this.treeStyleTab;
+		var b  = this.browser;
+		var w  = this.window;
 
 		if (!this.expanded)
 			this.showHideInternal();
 
-		sv.browser.removeEventListener('mousedown', this, true);
-		sv.browser.removeEventListener('mouseup', this, true);
+		b.removeEventListener('mousedown', this, true);
+		b.removeEventListener('mouseup', this, true);
 		if (sv.isFloating) {
 			sv.tabStrip.removeEventListener('mousedown', this, true);
 			sv.tabStrip.removeEventListener('mouseup', this, true);
 		}
-		window.removeEventListener('resize', this, true);
-		window.removeEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
-		window.removeEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_EXITED, this, false);
-		sv.browser.removeEventListener('load', this, true);
-		sv.browser.mPanelContainer.removeEventListener('scroll', this, true);
+		w.removeEventListener('resize', this, true);
+		w.removeEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
+		w.removeEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_EXITED, this, false);
+		b.removeEventListener('load', this, true);
+		b.mPanelContainer.removeEventListener('scroll', this, true);
 		this.endListenMouseMove();
-		if (sv.browser == gBrowser)
-			TreeStyleTabService.endListenKeyEventsFor(sv.LISTEN_FOR_AUTOHIDE);
+		if (b == w.gBrowser)
+			w.TreeStyleTabService.endListenKeyEventsFor(sv.LISTEN_FOR_AUTOHIDE);
 
 		this.clearBG();
 		this.updateTransparency();
@@ -206,71 +249,73 @@ TreeStyleTabBrowserAutoHide.prototype = {
  
 	// fullscreen 
 	
-	startForFullScreen : function TSTAutoHide_startForFullScreen() 
+	startForFullScreen : function AHB_startForFullScreen() 
 	{
 		this.mode = this.getMode();
 		this.end();
-		this.mode = this.getPref('browser.fullscreen.autohide') ?
+		this.mode = this.treeStyleTab.getPref('browser.fullscreen.autohide') ?
 				this.getModeForFullScreen() :
 				this.kMODE_DISABLED ;
 		if (this.mode != this.kMODE_DISABLED) {
 			this.start();
-			this.mOwner.removeTabbrowserAttribute('moz-collapsed');
+			this.treeStyleTab.removeTabbrowserAttribute('moz-collapsed');
 		}
 	},
  
-	endForFullScreen : function TSTAutoHide_endForFullScreen() 
+	endForFullScreen : function AHB_endForFullScreen() 
 	{
 		this.mode = this.getModeForFullScreen();
 		this.end();
-		this.mode = this.getTreePref('tabbar.autoHide.mode');
-		this.mOwner.checkTabsIndentOverflow();
+		this.mode = this.treeStyleTab.getTreePref('tabbar.autoHide.mode');
+		this.treeStyleTab.checkTabsIndentOverflow();
 		if (this.mode != this.kMODE_DISABLED)
 			this.start();
 	},
   
 	// mousemove 
 	
-	startListenMouseMove : function TSTAutoHide_startListenMouseMove() 
+	startListenMouseMove : function AHB_startListenMouseMove() 
 	{
 		if (this.mouseMoveListening) return;
 
-		this.mOwner.browser.addEventListener('mousemove', this, true);
+		this.browser.addEventListener('mousemove', this, true);
 
-		if (this.mOwner.isFloating)
-			this.mOwner.tabStrip.addEventListener('mousemove', this, true);
+		if (this.treeStyleTab.isFloating)
+			this.treeStyleTab.tabStrip.addEventListener('mousemove', this, true);
 
 		this.mouseMoveListening = true;
 	},
  
-	endListenMouseMove : function TSTAutoHide_endListenMouseMove() 
+	endListenMouseMove : function AHB_endListenMouseMove() 
 	{
 		if (!this.mouseMoveListening) return;
 
-		this.mOwner.browser.removeEventListener('mousemove', this, true);
+		this.browser.removeEventListener('mousemove', this, true);
 
-		if (this.mOwner.isFloating)
-			this.mOwner.tabStrip.removeEventListener('mousemove', this, true);
+		if (this.treeStyleTab.isFloating)
+			this.treeStyleTab.tabStrip.removeEventListener('mousemove', this, true);
 
 		this.mouseMoveListening = false;
 	},
  
 	get shouldListenMouseMove() 
 	{
-		return this.getTreePref('tabbar.autoShow.mousemove') ||
-				this.getTreePref('tabbar.autoShow.accelKeyDown') ||
-				this.getTreePref('tabbar.autoShow.tabSwitch') ||
-				this.getTreePref('tabbar.autoShow.feedback');
+		return this.treeStyleTab.getTreePref('tabbar.autoShow.mousemove') ||
+				this.treeStyleTab.getTreePref('tabbar.autoShow.accelKeyDown') ||
+				this.treeStyleTab.getTreePref('tabbar.autoShow.tabSwitch') ||
+				this.treeStyleTab.getTreePref('tabbar.autoShow.feedback');
 	},
  
-	showHideOnMousemove : function TSTAutoHide_showHideOnMousemove(aEvent) 
+	showHideOnMousemove : function AHB_showHideOnMousemove(aEvent) 
 	{
-		if ('gestureInProgress' in window && window.gestureInProgress) return;
+		var w = this.window;
+		if ('gestureInProgress' in w && w.gestureInProgress)
+			return;
 
 		this.cancelShowHideOnMousemove();
 
-		var sv  = this.mOwner;
-		var b   = sv.browser;
+		var sv  = this.treeStyleTab;
+		var b   = this.browser;
 		var pos = sv.currentTabbarPosition;
 		var box = b.mCurrentBrowser.boxObject;
 
@@ -288,7 +333,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		   we have to shrink sensitive area a little. */
 		if (this.shrunken) {
 			sensitiveArea = 0;
-			if (pos != 'right' || b.getAttribute(this.kTAB_INVERTED) == 'true')
+			if (pos != 'right' || b.getAttribute(sv.kTAB_INVERTED) == 'true')
 				sensitiveArea -= 20;
 		}
 
@@ -305,7 +350,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			if (
 				shouldKeepShown &&
 				this.showHideReason & this.kKEEP_SHOWN_ON_MOUSEOVER &&
-				this.getTreePref('tabbar.autoShow.keepShownOnMouseover')
+				sv.getTreePref('tabbar.autoShow.keepShownOnMouseover')
 				) {
 				this.showHideReason = this.kSHOWN_BY_MOUSEMOVE;
 				this.cancelDelayedShowForShortcut();
@@ -313,15 +358,15 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			}
 			else if (
 				!shouldKeepShown &&
-				this.getTreePref('tabbar.autoShow.mousemove')
+				sv.getTreePref('tabbar.autoShow.mousemove')
 				) {
-				this.showHideOnMousemoveTimer = window.setTimeout(
+				this.showHideOnMousemoveTimer = w.setTimeout(
 					function(aSelf) {
 						aSelf.cancelDelayedShowForShortcut();
 						if (aSelf.showHideReason == aSelf.kSHOWN_BY_MOUSEMOVE)
 							aSelf.hide(aSelf.kSHOWN_BY_MOUSEMOVE);
 					},
-					this.getTreePref('tabbar.autoHide.delay'),
+					sv.getTreePref('tabbar.autoHide.delay'),
 					this
 				);
 			}
@@ -335,13 +380,13 @@ TreeStyleTabBrowserAutoHide.prototype = {
 					(aEvent.screenY >= box.screenY + box.height - sensitiveArea) :
 					(aEvent.screenY <= box.screenY + sensitiveArea)
 			) {
-			this.showHideOnMousemoveTimer = window.setTimeout(
+			this.showHideOnMousemoveTimer = w.setTimeout(
 				function(aSelf) {
 					aSelf.cancelDelayedShowForShortcut();
 					aSelf.cancelHideForFeedback();
 					aSelf.show(aSelf.kSHOWN_BY_MOUSEMOVE);
 				},
-				this.getTreePref('tabbar.autoHide.delay'),
+				sv.getTreePref('tabbar.autoHide.delay'),
 				this
 			);
 		}
@@ -353,28 +398,29 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		shouldKeepShown = null;
 	},
  
-	cancelShowHideOnMousemove : function TSTAutoHide_cancelShowHideOnMousemove() 
+	cancelShowHideOnMousemove : function AHB_cancelShowHideOnMousemove() 
 	{
 		if (this.showHideOnMousemoveTimer) {
-			window.clearTimeout(this.showHideOnMousemoveTimer);
+			this.window.clearTimeout(this.showHideOnMousemoveTimer);
 			this.showHideOnMousemoveTimer = null;
 		}
 	},
   
 	// feedback 
 	
-	showForFeedback : function TSTAutoHide_showForFeedback() 
+	showForFeedback : function AHB_showForFeedback() 
 	{
 		if (!this.enabled ||
-			!this.getTreePref('tabbar.autoShow.feedback'))
+			!this.treeStyleTab.getTreePref('tabbar.autoShow.feedback'))
 			return;
 
+		var w = this.window;
 		if (this.delayedShowForFeedbackTimer) {
-			window.clearTimeout(this.delayedShowForFeedbackTimer);
+			w.clearTimeout(this.delayedShowForFeedbackTimer);
 			this.delayedShowForFeedbackTimer = null;
 		}
 		this.cancelHideForFeedback();
-		this.delayedShowForFeedbackTimer = window.setTimeout(
+		this.delayedShowForFeedbackTimer = w.setTimeout(
 			function(aSelf) {
 				aSelf.delayedShowForFeedbackTimer = null;
 				aSelf.delayedShowForFeedback();
@@ -384,40 +430,40 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		);
 	},
  
-	delayedShowForFeedback : function TSTAutoHide_delayedShowForFeedback() 
+	delayedShowForFeedback : function AHB_delayedShowForFeedback() 
 	{
 		this.show(this.kSHOWN_BY_FEEDBACK);
 		this.cancelHideForFeedback();
-		this.delayedHideTabbarForFeedbackTimer = window.setTimeout(
+		this.delayedHideTabbarForFeedbackTimer = this.window.setTimeout(
 			function(aSelf) {
 				aSelf.delayedHideTabbarForFeedbackTimer = null;
 				if (aSelf.showHideReason == aSelf.kSHOWN_BY_FEEDBACK)
 					aSelf.hide();
 			},
-			this.getTreePref('tabbar.autoShow.feedback.delay'),
+			this.treeStyleTab.getTreePref('tabbar.autoShow.feedback.delay'),
 			this
 		);
 	},
  
-	cancelHideForFeedback : function TSTAutoHide_cancelHideForFeedback() 
+	cancelHideForFeedback : function AHB_cancelHideForFeedback() 
 	{
 		if (this.delayedHideTabbarForFeedbackTimer) {
-			window.clearTimeout(this.delayedHideTabbarForFeedbackTimer);
+			this.window.clearTimeout(this.delayedHideTabbarForFeedbackTimer);
 			this.delayedHideTabbarForFeedbackTimer = null;
 		}
 	},
   
-	setWidth : function TSTAutoHide_setWidth(aWidth, aForceExpanded) 
+	setWidth : function AHB_setWidth(aWidth, aForceExpanded) 
 	{
 		if (aForceExpanded ||
 			this.expanded ||
 			this.mode !=  this.kMODE_SHRINK)
-			this.setTreePref('tabbar.width', this.mOwner.maxTabbarWidth(aWidth));
+			this.treeStyleTab.setTreePref('tabbar.width', this.treeStyleTab.maxTabbarWidth(aWidth));
 		else
-			this.setTreePref('tabbar.shrunkenWidth', this.mOwner.maxTabbarWidth(aWidth));
+			this.treeStyleTab.setTreePref('tabbar.shrunkenWidth', this.treeStyleTab.maxTabbarWidth(aWidth));
 	},
  
-	updateMenuItem : function TSTAutoHide_updateMenuItem(aNode) 
+	updateMenuItem : function AHB_updateMenuItem(aNode) 
 	{
 		if (!aNode) return;
 
@@ -432,7 +478,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	get width() 
 	{
 		if (this.expanded) {
-			this._width = this.mOwner.tabStrip.boxObject.width || this._width;
+			this._width = this.treeStyleTab.tabStrip.boxObject.width || this._width;
 		}
 		return this._width;
 	},
@@ -446,20 +492,20 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	get widthFromMode() 
 	{
 		return (this.shrunken) ?
-					this.getTreePref('tabbar.shrunkenWidth') :
-					this.getTreePref('tabbar.width') ;
+					this.treeStyleTab.getTreePref('tabbar.shrunkenWidth') :
+					this.treeStyleTab.getTreePref('tabbar.width') ;
 	},
-	get placeHolderWidthFromMode() 
+	get placeHolderWidthFromMode()
 	{
 		return (this.mode == this.kMODE_SHRINK) ?
-					this.getTreePref('tabbar.shrunkenWidth') :
-					this.getTreePref('tabbar.width') ;
+					this.treeStyleTab.getTreePref('tabbar.shrunkenWidth') :
+					this.treeStyleTab.getTreePref('tabbar.width') ;
 	},
   
 	get height() 
 	{
 		if (this.expanded) {
-			this._height = this.mOwner.tabStrip.boxObject.height;
+			this._height = this.treeStyleTab.tabStrip.boxObject.height;
 		}
 		return this._height;
 	},
@@ -473,7 +519,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	get splitterWidth() 
 	{
 		if (this.expanded) {
-			var splitter = document.getAnonymousElementByAttribute(this.mOwner.browser, 'class', this.kSPLITTER);
+			var splitter = this.document.getAnonymousElementByAttribute(this.browser, 'class', this.treeStyleTab.kSPLITTER);
 			this._splitterWidth = (splitter ? splitter.boxObject.width : 0 );
 		}
 		return this._splitterWidth;
@@ -485,13 +531,13 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	},
 	_splitterWidth : 0,
  
-	showHideInternal : function TSTAutoHide_showHideInternal(aReason) 
+	showHideInternal : function AHB_showHideInternal(aReason) 
 	{
-		var sv = this.mOwner;
+		var sv = this.treeStyleTab;
 		if (!sv.isFloating)
-			this.stopRendering();
+			sv.stopRendering();
 
-		var b   = sv.browser;
+		var b   = this.browser;
 		var pos = sv.currentTabbarPosition;
 
 		if (this.expanded) { // to be hidden or shrunken
@@ -513,7 +559,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		b.mTabContainer.adjustTabstrip();
 		sv.checkTabsIndentOverflow();
 
-		window.setTimeout(function(aSelf) {
+		this.window.setTimeout(function(aSelf) {
 			aSelf.redrawContentArea();
 			aSelf.fireStateChangeEvent();
 			if (!sv.isFloating)
@@ -521,22 +567,22 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		}, 0, this);
 	},
 	
-	show : function TSTAutoHide_show(aReason) /* PUBLIC API */ 
+	show : function AHB_show(aReason) /* PUBLIC API */ 
 	{
 		if (!this.expanded)
 			this.showHideInternal(aReason);
 	},
  
-	hide : function TSTAutoHide_hide(aReason) /* PUBLIC API */ 
+	hide : function AHB_hide(aReason) /* PUBLIC API */ 
 	{
 		if (this.expanded)
 			this.showHideInternal(aReason);
 	},
  
-	onShowing : function TSTAutoHide_onShowing() 
+	onShowing : function AHB_onShowing() 
 	{
-		var sv  = this.mOwner;
-		var b   = sv.browser;
+		var sv  = this.treeStyleTab;
+		var b   = this.browser;
 		var pos = sv.currentTabbarPosition;
 		if (!sv.isFloating) { // -Firefox 3.6
 			switch (pos)
@@ -571,7 +617,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			default:
 			case this.kMODE_SHRINK:
 				if (pos == 'left' || pos == 'right') {
-					let width = sv.maxTabbarWidth(this.getTreePref('tabbar.width'));
+					let width = sv.maxTabbarWidth(sv.getTreePref('tabbar.width'));
 					if (sv.isFloating) // Firefox 4.0-
 						sv.updateFloatingTabbar(sv.kTABBAR_UPDATE_BY_AUTOHIDE);
 					else // -Firefox 3.6
@@ -581,17 +627,17 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		}
 	},
  
-	onHiding : function TSTAutoHide_onHiding() 
+	onHiding : function AHB_onHiding() 
 	{
-		var sv  = this.mOwner;
-		var b   = sv.browser;
+		var sv  = this.treeStyleTab;
+		var b   = this.browser;
 		var pos = sv.currentTabbarPosition;
 
 		var box = (sv.tabStripPlaceHolder || sv.tabStrip).boxObject;
 
 		this.tabbarHeight = box.height;
 		this.width = box.width || this.width;
-		var splitter = document.getAnonymousElementByAttribute(b, 'class', sv.kSPLITTER);
+		var splitter = this.document.getAnonymousElementByAttribute(b, 'class', sv.kSPLITTER);
 		this.splitterWidth = (splitter ? splitter.boxObject.width : 0 );
 
 		if (!sv.isFloating) // -Firefox 3.6
@@ -615,43 +661,44 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				sv.setTabbrowserAttribute(this.kAUTOHIDE, 'show');
 				sv.setTabbrowserAttribute(this.kSTATE, this.kSTATE_SHRUNKEN);
 				if (pos == 'left' || pos == 'right')
-					sv.setTabStripAttribute('width', this.getTreePref('tabbar.shrunkenWidth'));
+					sv.setTabStripAttribute('width', sv.getTreePref('tabbar.shrunkenWidth'));
 				sv.updateFloatingTabbar(sv.kTABBAR_UPDATE_BY_AUTOHIDE);
 				break;
 		}
 	},
  
-	fireStateChangingEvent : function TSTAutoHide_fireStateChangingEvent() 
+	fireStateChangingEvent : function AHB_fireStateChangingEvent() 
 	{
 		/* PUBLIC API */
-		var event = document.createEvent('Events');
-		event.initEvent(this.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGING, true, false);
+		var event = this.document.createEvent('Events');
+		event.initEvent(this.treeStyleTab.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGING, true, false);
 		event.shown = this.expanded;
 		event.state = this.state;
-		this.mOwner.browser.dispatchEvent(event);
+		this.browser.dispatchEvent(event);
 	},
  
-	fireStateChangeEvent : function TSTAutoHide_fireStateChangeEvent() 
+	fireStateChangeEvent : function AHB_fireStateChangeEvent() 
 	{
 		/* PUBLIC API */
-		var event = document.createEvent('Events');
-		event.initEvent(this.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGE, true, false);
+		var event = this.document.createEvent('Events');
+		event.initEvent(this.treeStyleTab.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGE, true, false);
 		event.shown = this.expanded;
 		event.state = this.state;
 		event.xOffset = this.XOffset;
 		event.yOffset = this.YOffset;
-		this.mOwner.browser.dispatchEvent(event);
+		this.browser.dispatchEvent(event);
 	},
   
-	redrawContentArea : function TSTAutoHide_redrawContentArea() 
+	redrawContentArea : function AHB_redrawContentArea() 
 	{
-		var sv = this.mOwner;
+		var sv = this.treeStyleTab;
 		if (sv.isFloating)
 			return;
 
 		var pos = sv.currentTabbarPosition;
+		var w = this.window;
 		try {
-			var v = sv.browser.markupDocumentViewer;
+			var v = this.browser.markupDocumentViewer;
 			if (this.shouldRedraw) {
 				if (sv.browser.hasAttribute(this.kTRANSPARENT) &&
 					sv.browser.getAttribute(this.kTRANSPARENT) != this.kTRANSPARENT_STYLE[this.kTRANSPARENT_NONE])
@@ -659,7 +706,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				else
 					this.clearBG();
 
-				v.move(window.outerWidth, window.outerHeight);
+				v.move(w.outerWidth, w.outerHeight);
 				v.move(
 					(
 						pos == 'left' ? -this.XOffset :
@@ -675,7 +722,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			}
 			else {
 				this.clearBG();
-				v.move(window.outerWidth, window.outerHeight);
+				v.move(w.outerWidth, w.outerHeight);
 				v.move(-this.extraXOffset, -this.extraYOffset);
 			}
 		}
@@ -683,22 +730,22 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			dump(e);
 		}
 	},
-	redrawContentAreaWithDelay : function TSTAutoHide_redrawContentAreaWithDelay()
+	redrawContentAreaWithDelay : function AHB_redrawContentAreaWithDelay()
 	{
-		if (this.mOwner.isFloating)
+		if (this.treeStyleTab.isFloating)
 			return;
 
-		window.setTimeout(function(aSelf) {
+		this.window.setTimeout(function(aSelf) {
 			aSelf.redrawContentArea();
 		}, 0, this);
 	},
  
-	resetContentAreas : function TSTAutoHide_resetContentAreas()
+	resetContentAreas : function AHB_resetContentAreas() 
 	{
-		if (this.mOwner.isFloating)
+		if (this.treeStyleTab.isFloating)
 			return;
 
-		this.mOwner.getTabsArray(this.mOwner.browser).forEach(function(aTab) {
+		this.treeStyleTab.getTabsArray(this.browser).forEach(function(aTab) {
 			try {
 				aTab.linkedBrowser.markupDocumentViewer.move(0, 0);
 			}
@@ -709,23 +756,26 @@ TreeStyleTabBrowserAutoHide.prototype = {
  
 	get shouldRedraw() 
 	{
-		return !this.mOwner.isFloating && this.enabled && this.expanded;
+		return !this.treeStyleTab.isFloating && this.enabled && this.expanded;
 	},
  
-	drawBG : function TSTAutoHide_drawBG() 
+	drawBG : function AHB_drawBG() 
 	{
-		var sv = this.mOwner;
-		if (sv.isFloating || !this.tabbarCanvas || this.isResizing)
+		var sv = this.treeStyleTab;
+		var b  = this.browser;
+		var canvas = this.tabbarCanvas;
+		if (sv.isFloating || !canvas || this.isResizing)
 			return;
 
-		this.tabbarCanvas.style.width = (this.tabbarCanvas.width = 1)+'px';
-		this.tabbarCanvas.style.height = (this.tabbarCanvas.height = 1)+'px';
+
+		canvas.style.width = (canvas.width = 1)+'px';
+		canvas.style.height = (canvas.height = 1)+'px';
 
 		var pos = sv.currentTabbarPosition;
 
-		var frame = sv.browser.contentWindow;
-		var tabContainerBox = sv.browser.mTabContainer.boxObject;
-		var browserBox = sv.browser.mCurrentBrowser.boxObject;
+		var frame = b.contentWindow;
+		var tabContainerBox = b.mTabContainer.boxObject;
+		var browserBox = b.mCurrentBrowser.boxObject;
 		var contentBox = sv.getBoxObjectFor(frame.document.documentElement);
 
 		var zoom = this.getZoomForFrame(frame);
@@ -752,15 +802,15 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		var canvasXOffset = 0;
 		var canvasYOffset = 0;
 		if (pos == 'top' || pos == 'bottom')
-			canvasXOffset = tabContainerBox.screenX - sv.browser.boxObject.screenX;
+			canvasXOffset = tabContainerBox.screenX - b.boxObject.screenX;
 		else
-			canvasYOffset = tabContainerBox.screenY - sv.browser.boxObject.screenY;
+			canvasYOffset = tabContainerBox.screenY - b.boxObject.screenY;
 
-		for (let node = this.tabbarCanvas;
-		     node != sv.browser.mTabBox;
+		for (let node = canvas;
+		     node != b.mTabBox;
 		     node = node.parentNode)
 		{
-			let style = window.getComputedStyle(node, null);
+			let style = this.window.getComputedStyle(node, null);
 			'border-left-width,border-right-width,margin-left,margin-right,padding-left,padding-right'
 				.split(',').forEach(function(aProperty) {
 					let value = sv.getPropertyPixelValue(style, aProperty);
@@ -779,19 +829,19 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		w = Math.max(1, w);
 		h = Math.max(1, h);
 
-		this.tabbarCanvas.style.display = 'inline';
-		this.tabbarCanvas.style.margin = (yOffset)+'px 0 0 '+(xOffset)+'px';
-		this.tabbarCanvas.style.width = (this.tabbarCanvas.width = w)+'px';
-		this.tabbarCanvas.style.height = (this.tabbarCanvas.height = h)+'px';
+		canvas.style.display = 'inline';
+		canvas.style.margin = (yOffset)+'px 0 0 '+(xOffset)+'px';
+		canvas.style.width = (canvas.width = w)+'px';
+		canvas.style.height = (canvas.height = h)+'px';
 
 		w += this.extraXOffset;
 		h += this.extraYOffset;
 
-		var ctx = this.tabbarCanvas.getContext('2d');
+		var ctx = canvas.getContext('2d');
 		ctx.clearRect(0, 0, w, h);
 		ctx.save();
 		if (this.mode == this.kMODE_SHRINK) {
-			var offset = this.getTreePref('tabbar.shrunkenWidth') + this.splitterWidth;
+			var offset = sv.getTreePref('tabbar.shrunkenWidth') + this.splitterWidth;
 			if (pos == 'left')
 				ctx.translate(offset, 0);
 			else
@@ -814,8 +864,8 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			'-moz-field'
 		);
 		ctx.restore();
-		if (sv.browser.getAttribute(this.kTRANSPARENT) != this.kTRANSPARENT_STYLE[this.kTRANSPARENT_FULL]) {
-			var alpha = Number(this.getTreePref('tabbar.transparent.partialTransparency'));
+		if (b.getAttribute(this.kTRANSPARENT) != this.kTRANSPARENT_STYLE[this.kTRANSPARENT_FULL]) {
+			var alpha = Number(sv.getTreePref('tabbar.transparent.partialTransparency'));
 			if (isNaN(alpha)) alpha = 0.25;
 			ctx.globalAlpha = alpha;
 			ctx.fillStyle = 'black';
@@ -826,14 +876,16 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	
 	get splitterBorderColor() 
 	{
-		var sv = this.mOwner;
-		var borderNode = this.getTreePref(
+		var sv = this.treeStyleTab;
+		var b  = this.browser;
+		var w  = this.window;
+		var borderNode = sv.getTreePref(
 					sv.isVertical ?
 						'tabbar.fixed.vertical' :
 						'tabbar.fixed.horizontal'
 				) ?
 				sv.tabStrip :
-				document.getAnonymousElementByAttribute(sv.browser, 'class', sv.kSPLITTER) ;
+				this.document.getAnonymousElementByAttribute(b, 'class', sv.kSPLITTER) ;
 
 		var pos = sv.currentTabbarPosition;
 		var prop = pos == 'left' ? 'right' :
@@ -841,9 +893,9 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				pos == 'top' ? 'bottom' :
 				'top' ;
 
-		var borderColor = window.getComputedStyle(borderNode, null).getPropertyValue('-moz-border-'+prop+'-colors');
+		var borderColor = w.getComputedStyle(borderNode, null).getPropertyValue('-moz-border-'+prop+'-colors');
 		if (borderColor == 'none')
-			borderRight = window.getComputedStyle(borderNode, null).getPropertyValue('border-'+prop+'-color');
+			borderRight = w.getComputedStyle(borderNode, null).getPropertyValue('border-'+prop+'-color');
 
 		/rgba?\(([^,]+),([^,]+),([^,]+)(,.*)?\)/.test(borderColor);
 
@@ -854,41 +906,42 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			].join(',')+')';
 	},
  
-	getZoomForFrame : function TSTAutoHide_getZoomForFrame(aFrame) 
+	getZoomForFrame : function AHB_getZoomForFrame(aFrame) 
 	{
 		var zoom = aFrame
-				.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-				.getInterface(Components.interfaces.nsIWebNavigation)
-				.QueryInterface(Components.interfaces.nsIDocShell)
+				.QueryInterface(Ci.nsIInterfaceRequestor)
+				.getInterface(Ci.nsIWebNavigation)
+				.QueryInterface(Ci.nsIDocShell)
 				.contentViewer
-				.QueryInterface(Components.interfaces.nsIMarkupDocumentViewer)
+				.QueryInterface(Ci.nsIMarkupDocumentViewer)
 				.fullZoom;
 		return (zoom * 1000 % 1) ? zoom+0.025 : zoom ;
 	},
   
-	clearBG : function TSTAutoHide_clearBG() 
+	clearBG : function AHB_clearBG() 
 	{
-		if (this.mOwner.isFloating || !this.tabbarCanvas)
+		var canvas = this.tabbarCanvas;
+		if (this.treeStyleTab.isFloating || !canvas)
 			return;
 
-		this.tabbarCanvas.style.display = 'none';
-		this.tabbarCanvas.style.margin = 0;
+		canvas.style.display = 'none';
+		canvas.style.margin = 0;
 		// zero width (heigh) canvas becomes wrongly size!!
-		this.tabbarCanvas.style.width = this.tabbarCanvas.style.height = '1px';
-		this.tabbarCanvas.width = this.tabbarCanvas.height = 1;
+		canvas.style.width = canvas.style.height = '1px';
+		canvas.width = canvas.height = 1;
 	},
  
-	updateTransparency : function TSTAutoHide_updateTransparency() 
+	updateTransparency : function AHB_updateTransparency() 
 	{
-		var sv  = this.mOwner;
-		var b   = sv.browser;
+		var sv  = this.treeStyleTab;
+		var b   = this.browser;
 		var pos = sv.currentTabbarPosition;
 		var style = this.kTRANSPARENT_STYLE[
 				Math.max(
 					this.kTRANSPARENT_NONE,
 					Math.min(
 						this.kTRANSPARENT_FULL,
-						this.getTreePref('tabbar.transparent.style')
+						sv.getTreePref('tabbar.transparent.style')
 					)
 				)
 			];
@@ -905,7 +958,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
   
 	// event handling 
 	
-	observe : function TSTAutoHide_observe(aSubject, aTopic, aData) 
+	observe : function AHB_observe(aSubject, aTopic, aData) 
 	{
 		switch (aTopic)
 		{
@@ -923,20 +976,20 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		'browser.fullscreen.autohide'
 	],
  
-	onPrefChange : function TSTAutoHide_onPrefChange(aPrefName) 
+	onPrefChange : function AHB_onPrefChange(aPrefName) 
 	{
-		var value = this.getPref(aPrefName);
+		var value = this.treeStyleTab.getPref(aPrefName);
 		switch (aPrefName)
 		{
 			case 'extensions.treestyletab.tabbar.autoHide.mode':
-				if (!this.shouldApplyNewPref) return;
-				this.mOwner.browser.setAttribute(this.kMODE+'-normal', value);
+				if (!this.window.TreeStyleTabService.shouldApplyNewPref) return;
+				this.browser.setAttribute(this.kMODE+'-normal', value);
 				this.updateMode();
 				return;
 
 			case 'extensions.treestyletab.tabbar.autoHide.mode.fullscreen':
-				if (!this.shouldApplyNewPref) return;
-				this.mOwner.browser.setAttribute(this.kMODE+'-fullscreen', value);
+				if (!this.window.TreeStyleTabService.shouldApplyNewPref) return;
+				this.browser.setAttribute(this.kMODE+'-fullscreen', value);
 				this.updateMode();
 				return;
 
@@ -955,7 +1008,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 			case 'extensions.treestyletab.tabbar.width':
 			case 'extensions.treestyletab.tabbar.shrunkenWidth':
-				window.setTimeout(function(aSelf) {
+				this.window.setTimeout(function(aSelf) {
 					aSelf.onTabbarResized();
 				}, 0, this);
 				return;
@@ -965,7 +1018,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 
 			case 'extensions.treestyletab.tabbar.togglerSize':
 				this.togglerSize = value;
-				var toggler = document.getAnonymousElementByAttribute(this.mOwner.browser, 'class', this.kTABBAR_TOGGLER);
+				var toggler = this.document.getAnonymousElementByAttribute(this.browser, 'class', this.treeStyleTab.kTABBAR_TOGGLER);
 				toggler.style.minWidth = toggler.style.minHeight = value+'px';
 				if (this.togglerSize <= 0)
 					toggler.setAttribute('collapsed', true);
@@ -974,7 +1027,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				return;
 
 			case 'browser.fullscreen.autohide':
-				if (!window.fullScreen) return;
+				if (!this.window.fullScreen) return;
 				this.end();
 				this.mode = value ?
 						this.getModeForFullScreen() :
@@ -988,7 +1041,7 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		}
 	},
   
-	handleEvent : function TSTAutoHide_handleEvent(aEvent) 
+	handleEvent : function AHB_handleEvent(aEvent) 
 	{
 		switch (aEvent.type)
 		{
@@ -1021,41 +1074,41 @@ TreeStyleTabBrowserAutoHide.prototype = {
 				return;
 
 			case 'TabMove':
-				if (!this.mOwner.subTreeMovingCount && !this.mOwner.internallyTabMovingCount)
+				if (!this.treeStyleTab.subTreeMovingCount && !this.treeStyleTab.internallyTabMovingCount)
 					this.showForFeedback();
 				return;
 
 			case 'select':
 				if (this.shouldRedraw)
 					this.redrawContentArea();
-				if (!TreeStyleTabService.accelKeyPressed)
+				if (!this.window.TreeStyleTabService.accelKeyPressed)
 					this.showForFeedback();
 				return;
 
-			case this.kEVENT_TYPE_TABBAR_POSITION_CHANGING:
+			case this.treeStyleTab.kEVENT_TYPE_TABBAR_POSITION_CHANGING:
 				this.isResizing = false;
 				this.clearBG();
 				if (this.shouldRedraw)
 					this.hide();
 				return;
 
-			case this.kEVENT_TYPE_TABBAR_POSITION_CHANGED:
+			case this.treeStyleTab.kEVENT_TYPE_TABBAR_POSITION_CHANGED:
 				if (this.enabled)
-					window.setTimeout(function(aSelf) {
+					this.window.setTimeout(function(aSelf) {
 						aSelf.show();
 						aSelf.hide();
 					}, 0, this);
 				this.updateTransparency();
 				return;
 
-			case this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN:
+			case this.treeStyleTab.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN:
 				this.onKeyDown(aEvent.sourceEvent);
 				return;
 
-			case this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START:
+			case this.treeStyleTab.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START:
 				this.cancelDelayedShowForShortcut();
 				if (this.enabled &&
-					this.getTreePref('tabbar.autoShow.tabSwitch') &&
+					this.treeStyleTab.getTreePref('tabbar.autoShow.tabSwitch') &&
 					(
 						aEvent.scrollDown ||
 						aEvent.scrollUp ||
@@ -1068,34 +1121,35 @@ TreeStyleTabBrowserAutoHide.prototype = {
 					this.show(this.kSHOWN_BY_SHORTCUT);
 				return;
 
-			case this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END:
+			case this.treeStyleTab.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END:
 				this.cancelDelayedShowForShortcut();
 				if (this.enabled &&
 					this.showHideReason == this.kSHOWN_BY_SHORTCUT)
 					this.hide();
 				return;
 
-			case this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED:
+			case this.treeStyleTab.kEVENT_TYPE_PRINT_PREVIEW_ENTERED:
 				this.hide();
 				this.endListenMouseMove();
 				return;
 
-			case this.kEVENT_TYPE_PRINT_PREVIEW_EXITED:
+			case this.treeStyleTab.kEVENT_TYPE_PRINT_PREVIEW_EXITED:
 				if (this.enabled && this.shouldListenMouseMove)
 					this.startListenMouseMove();
 				return;
 		}
 	},
 	
-	onMouseDown : function TSTAutoHide_onMouseDown(aEvent) 
+	onMouseDown : function AHB_onMouseDown(aEvent) 
 	{
-		var sv = this.mOwner;
+		var sv = this.treeStyleTab;
+		var w = this.window;
 		if (
 			!this.isResizing &&
-			this.evaluateXPath(
-				'ancestor-or-self::*[@class="'+this.kSPLITTER+'"]',
+			sv.evaluateXPath(
+				'ancestor-or-self::*[@class="'+sv.kSPLITTER+'"]',
 				aEvent.originalTarget || aEvent.target,
-				XPathResult.BOOLEAN_TYPE
+				Ci.nsIDOMXPathResult.BOOLEAN_TYPE
 			).booleanValue
 			) {
 			this.isResizing = true;
@@ -1108,15 +1162,14 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			aEvent.preventDefault();
 			aEvent.stopPropagation();
 			var flags = 0;
-			const nsIDOMNSEvent = Components.interfaces.nsIDOMNSEvent;
+			const nsIDOMNSEvent = Ci.nsIDOMNSEvent;
 			if (aEvent.altKey) flags |= nsIDOMNSEvent.ALT_MASK;
 			if (aEvent.ctrlKey) flags |= nsIDOMNSEvent.CONTROL_MASK;
 			if (aEvent.shiftKey) flags |= nsIDOMNSEvent.SHIFT_MASK;
 			if (aEvent.metaKey) flags |= nsIDOMNSEvent.META_MASK;
-			window.setTimeout(function(aX, aY, aButton, aDetail) {
-				window
-					.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-					.getInterface(Components.interfaces.nsIDOMWindowUtils)
+			w.setTimeout(function(aX, aY, aButton, aDetail) {
+				w.QueryInterface(Ci.nsIInterfaceRequestor)
+					.getInterface(Ci.nsIDOMWindowUtils)
 					.sendMouseEvent('mousedown', aX, aY, aButton, aDetail, flags);
 				flags = null;
 			}, 0, aEvent.clientX, aEvent.clientY, aEvent.button, aEvent.detail);
@@ -1126,26 +1179,26 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			this.enabled &&
 			this.expanded &&
 			(
-				aEvent.originalTarget.ownerDocument != document ||
-				!this.getTabBrowserFromChild(aEvent.originalTarget)
+				aEvent.originalTarget.ownerDocument != this.document ||
+				!sv.getTabBrowserFromChild(aEvent.originalTarget)
 			)
 			)
 			this.hide();
 		this.lastMouseDownTarget = aEvent.originalTarget.localName;
 	},
  
-	onMouseUp : function TSTAutoHide_onMouseUp(aEvent) 
+	onMouseUp : function AHB_onMouseUp(aEvent) 
 	{
-		var sv = this.mOwner;
+		var sv = this.treeStyleTab;
 		if (aEvent.originalTarget &&
-			this.evaluateXPath(
-				'ancestor-or-self::*[@class="'+this.kSPLITTER+'"]',
+			sv.evaluateXPath(
+				'ancestor-or-self::*[@class="'+sv.kSPLITTER+'"]',
 				aEvent.originalTarget,
-				XPathResult.BOOLEAN_TYPE
+				Ci.nsIDOMXPathResult.BOOLEAN_TYPE
 			).booleanValue) {
 			this.isResizing = false;
 			sv.removeTabbrowserAttribute(sv.kRESIZING);
-			window.setTimeout(function(aSelf) {
+			this.window.setTimeout(function(aSelf) {
 				if (!aSelf.shouldRedraw) return;
 				aSelf.redrawContentArea();
 				aSelf.drawBG();
@@ -1155,9 +1208,9 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		this.lastMouseDownTarget = null;
 	},
  
-	handleMouseMove : function TSTAutoHide_handleMouseMove(aEvent) 
+	handleMouseMove : function AHB_handleMouseMove(aEvent) 
 	{
-		var sv = this.mOwner;
+		var sv = this.treeStyleTab;
 		if (this.isResizing &&
 			/^(scrollbar|thumb|slider|scrollbarbutton)$/i.test(this.lastMouseDownTarget))
 			return true;
@@ -1173,21 +1226,21 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		return true;
 	},
  
-	onResize : function TSTAutoHide_onResize(aEvent) 
+	onResize : function AHB_onResize(aEvent) 
 	{
 		if (
 			aEvent.originalTarget &&
 			(
-				aEvent.originalTarget.ownerDocument == document ||
-				aEvent.originalTarget == window
+				aEvent.originalTarget.ownerDocument == this.document ||
+				aEvent.originalTarget == this.window
 			)
 			)
 			this.onTabbarResized();
 	},
  
-	onTabbarResized : function TSTAutoHide_onTabbarResized()
+	onTabbarResized : function AHB_onTabbarResized() 
 	{
-		var sv = this.mOwner;
+		var sv = this.treeStyleTab;
 		if (sv.isFloating || !this.shouldRedraw)
 			return;
 
@@ -1209,17 +1262,17 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		this.redrawContentArea();
 	},
  
-	onScroll : function TSTAutoHide_onScroll(aEvent) 
+	onScroll : function AHB_onScroll(aEvent) 
 	{
 		var node = aEvent.originalTarget;
-		if ((node && node.ownerDocument == document) || !this.shouldRedraw) return;
+		if ((node && node.ownerDocument == this.document) || !this.shouldRedraw) return;
 
 		var tabbarBox, nodeBox;
 		if (
-			!(node instanceof Components.interfaces.nsIDOMElement) ||
+			!(node instanceof Ci.nsIDOMElement) ||
 			(
-				(tabbarBox = this.getBoxObjectFor(this.mOwner.browser.mTabContainer)) &&
-				(nodeBox = this.getBoxObjectFor(node)) &&
+				(tabbarBox = this.treeStyleTab.getBoxObjectFor(this.browser.mTabContainer)) &&
+				(nodeBox = this.treeStyleTab.getBoxObjectFor(node)) &&
 				tabbarBox.screenX <= nodeBox.screenX + nodeBox.width &&
 				tabbarBox.screenX + tabbarBox.width >= nodeBox.screenX &&
 				tabbarBox.screenY <= nodeBox.screenY + nodeBox.height &&
@@ -1229,10 +1282,11 @@ TreeStyleTabBrowserAutoHide.prototype = {
 			this.redrawContentArea();
 	},
  
-	onKeyDown : function TSTAutoHide_onKeyDown(aEvent) 
+	onKeyDown : function AHB_onKeyDown(aEvent) 
 	{
-		var sv = this.mOwner;
-		var b  = sv.browser;
+		var sv = this.treeStyleTab;
+		var b  = this.browser;
+		var w  = this.window;
 
 		if (this.delayedShowForShortcutDone)
 			this.cancelDelayedShowForShortcut();
@@ -1240,21 +1294,21 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		if (
 			sv.getTabsArray(b).length > 1 &&
 			!aEvent.altKey &&
-			TreeStyleTabService.accelKeyPressed
+			w.TreeStyleTabService.accelKeyPressed
 			) {
 			if (this.enabled &&
-				this.getTreePref('tabbar.autoShow.accelKeyDown') &&
+				sv.getTreePref('tabbar.autoShow.accelKeyDown') &&
 				!this.expanded &&
 				!this.delayedAutoShowTimer &&
 				!this.delayedShowForShortcutTimer) {
-				this.delayedShowForShortcutTimer = window.setTimeout(
+				this.delayedShowForShortcutTimer = w.setTimeout(
 					function(aSelf) {
 						aSelf.delayedShowForShortcutDone = true;
 						aSelf.show(aSelf.kSHOWN_BY_SHORTCUT);
 						sv = null;
 						b = null;
 					},
-					this.getTreePref('tabbar.autoShow.accelKeyDown.delay'),
+					sv.getTreePref('tabbar.autoShow.accelKeyDown.delay'),
 					this
 				);
 				this.delayedShowForShortcutDone = false;
@@ -1266,10 +1320,10 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		}
 	},
 	
-	cancelDelayedShowForShortcut : function TSTAutoHide_cancelDelayedShowForShortcut() 
+	cancelDelayedShowForShortcut : function AHB_cancelDelayedShowForShortcut() 
 	{
 		if (this.delayedShowForShortcutTimer) {
-			window.clearTimeout(this.delayedShowForShortcutTimer);
+			this.window.clearTimeout(this.delayedShowForShortcutTimer);
 			this.delayedShowForShortcutTimer = null;
 		}
 	},
@@ -1277,8 +1331,16 @@ TreeStyleTabBrowserAutoHide.prototype = {
 	delayedShowForShortcutTimer : null, 
 	delayedShowForShortcutDone : true,
     
-	init : function TSTAutoHide_init() 
+	init : function AHB_init(aTabBrowser) 
 	{
+		this.browser      = aTabBrowser;
+		this.document     = aTabBrowser.ownerDocument;
+		this.window       = this.document.defaultView;
+		this.treeStyleTab = aTabBrowser.treeStyleTab;
+
+		var sv = this.treeStyleTab;
+		var b  = this.browser;
+
 		this.enabled = false;
 		this.mouseMoveListening = false;
 		this.showHideReason = 0;
@@ -1288,31 +1350,30 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		this.showHideOnMousemoveTimer = null;
 		this.delayedShowForFeedbackTimer = null;
 
-		this.mOwner.browser.setAttribute(this.kMODE+'-normal', this.getTreePref('tabbar.autoHide.mode'));
-		this.mOwner.browser.setAttribute(this.kMODE+'-fullscreen', this.getTreePref('tabbar.autoHide.mode.fullscreen'));
-		this.addPrefListener(this);
+		b.setAttribute(this.kMODE+'-normal', sv.getTreePref('tabbar.autoHide.mode'));
+		b.setAttribute(this.kMODE+'-fullscreen', sv.getTreePref('tabbar.autoHide.mode.fullscreen'));
+		sv.addPrefListener(this);
 		this.onPrefChange('extensions.treestyletab.tabbar.autoHide.area');
 		this.onPrefChange('extensions.treestyletab.tabbar.transparent.style');
 		this.onPrefChange('extensions.treestyletab.tabbar.togglerSize');
-		window.setTimeout(function(aSelf) {
+		this.window.setTimeout(function(aSelf) {
 			aSelf.onPrefChange('extensions.treestyletab.tabbar.autoHide.mode');
 		}, 0, this);
 
-		var b = this.mOwner.browser;
 		b.mTabContainer.addEventListener('TabOpen', this, false);
 		b.mTabContainer.addEventListener('TabClose', this, false);
 		b.mTabContainer.addEventListener('TabMove', this, false);
 		b.mTabContainer.addEventListener('select', this, false);
-		b.addEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGING, this, false);
-		b.addEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGED, this, false);
-		b.addEventListener(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN, this, false);
-		b.addEventListener(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START, this, false);
-		b.addEventListener(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, this, false);
+		b.addEventListener(sv.kEVENT_TYPE_TABBAR_POSITION_CHANGING, this, false);
+		b.addEventListener(sv.kEVENT_TYPE_TABBAR_POSITION_CHANGED, this, false);
+		b.addEventListener(sv.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN, this, false);
+		b.addEventListener(sv.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START, this, false);
+		b.addEventListener(sv.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, this, false);
 
-		if (!this.mOwner.isFloating) {
-			let stack = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-stack');
+		if (!sv.isFloating) {
+			let stack = this.document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-stack');
 			if (stack) {
-				let canvas = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
+				let canvas = this.document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
 				canvas.setAttribute('style', 'display:none;width:1;height:1;');
 				stack.firstChild.appendChild(canvas);
 				this.tabbarCanvas = canvas;
@@ -1321,114 +1382,150 @@ TreeStyleTabBrowserAutoHide.prototype = {
 		}
 	},
  
-	destroy : function TSTAutoHide_destroy() 
+	destroy : function AHB_destroy() 
 	{
 		this.end();
-		this.removePrefListener(this);
+		this.treeStyleTab.removePrefListener(this);
 
-		var b = this.mOwner.browser;
+		var sv = this.treeStyleTab;
+		var b  = this.browser;
 		b.mTabContainer.removeEventListener('TabOpen', this, false);
 		b.mTabContainer.removeEventListener('TabClose', this, false);
 		b.mTabContainer.removeEventListener('TabMove', this, false);
 		b.mTabContainer.removeEventListener('select', this, false);
-		b.removeEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGING, this, false);
-		b.removeEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGED, this, false);
-		b.removeEventListener(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN, this, false);
-		b.removeEventListener(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START, this, false);
-		b.removeEventListener(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, this, false);
+		b.removeEventListener(sv.kEVENT_TYPE_TABBAR_POSITION_CHANGING, this, false);
+		b.removeEventListener(sv.kEVENT_TYPE_TABBAR_POSITION_CHANGED, this, false);
+		b.removeEventListener(sv.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN, this, false);
+		b.removeEventListener(sv.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START, this, false);
+		b.removeEventListener(sv.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, this, false);
+
+		delete this.treeStyleTab;
+		delete this.browser;
+		delete this.document;
+		delete this.window;
 	},
  
-	saveCurrentState : function TSTAutoHide_saveCurrentState() 
+	saveCurrentState : function AHB_saveCurrentState() 
 	{
-		var b = this.mOwner.browser;
+		var b = this.browser;
 		var prefs = {
 				'tabbar.autoHide.mode' : this.getModeForNormal(b),
 				'tabbar.autoHide.mode.fullscreen' : this.getModeForFullScreen(b),
 			};
 		for (var i in prefs)
 		{
-			if (this.getTreePref(i) != prefs[i])
-				this.setTreePref(i, prefs[i]);
+			if (this.treeStyleTab.getTreePref(i) != prefs[i])
+				this.treeStyleTab.setTreePref(i, prefs[i]);
 		}
 	}
  
 }; 
   
-// class methods 
+function AutoHideWindow(aWindow) 
+{
+	this.init(aWindow);
+}
+AutoHideWindow.prototype = {
 	
 // mode 
 	
-TreeStyleTabBrowserAutoHide.getMode = function TSTAutoHide_class_getMode(aTabBrowser) { 
-	var b = aTabBrowser || TreeStyleTabService.browser;
-	var mode = b.getAttribute(this.prototype.kMODE);
-	return mode ? parseInt(mode) : this.prototype.kMODE_DISABLED ;
-};
+	getMode : function AHW_getMode(aTabBrowser) 
+	{
+		var b = aTabBrowser || this.browser;
+		var mode = b.getAttribute(AutoHideBrowser.prototype.kMODE);
+		return mode ? parseInt(mode) : AutoHideBrowser.prototype.kMODE_DISABLED ;
+	},
  
-TreeStyleTabBrowserAutoHide.__defineGetter__('mode', function() { /* PUBLIC API */ 
-	var mode = this.getMode();
-	if (mode == this.prototype.kMODE_SHRINK &&
-		TreeStyleTabService.currentTabbarPosition != 'left' &&
-		TreeStyleTabService.currentTabbarPosition != 'right')
-		return this.prototype.kMODE_HIDE;
-	return mode;
-});
+	get mode() /* PUBLIC API */ 
+	{
+		var mode = this.getMode();
+		if (mode == AutoHideBrowser.prototype.kMODE_SHRINK &&
+			this.treeStyleTab.currentTabbarPosition != 'left' &&
+			this.treeStyleTab.currentTabbarPosition != 'right')
+			return AutoHideBrowser.prototype.kMODE_HIDE;
+		return mode;
+	},
  
-TreeStyleTabBrowserAutoHide.__defineSetter__('mode', function(aValue) { 
-	var b = aTabBrowser || TreeStyleTabService.browser;
-	b.setAttribute(this.prototype.kMODE, aValue);
-	return aValue;
-});
+	set mode(aValue) 
+	{
+		var b = aTabBrowser || this.browser;
+		b.setAttribute(AutoHideBrowser.prototype.kMODE, aValue);
+		return aValue;
+	},
   
-TreeStyleTabBrowserAutoHide.toggleMode = function TSTAutoHide_class_toggleMode(aTabBrowser) { /* PUBLIC API */ 
-	var b = aTabBrowser || TreeStyleTabService.browser;
+	toggleMode : function AHW_toggleMode(aTabBrowser) /* PUBLIC API */ 
+	{
+		var b = aTabBrowser || this.browser;
+		var w = this.window;
 
-	var key       = 'tabbar.autoHide.mode';
-	var toggleKey = 'tabbar.autoHide.mode.toggle';
-	if (window.fullScreen) {
-		key       += '.fullscreen';
-		toggleKey += '.fullscreen';
-	}
+		var key       = 'tabbar.autoHide.mode';
+		var toggleKey = 'tabbar.autoHide.mode.toggle';
+		if (w.fullScreen) {
+			key       += '.fullscreen';
+			toggleKey += '.fullscreen';
+		}
 
-	var mode = this.getMode(b) == this.prototype.kMODE_DISABLED ?
-			TreeStyleTabService.getTreePref(toggleKey) :
-			this.prototype.kMODE_DISABLED ;
+		var mode = this.getMode(b) == AutoHideBrowser.prototype.kMODE_DISABLED ?
+				this.treeStyleTab.getTreePref(toggleKey) :
+				AutoHideBrowser.prototype.kMODE_DISABLED ;
 
-	TreeStyleTabService.setTreePref(key, mode);
-	b.setAttribute(this.prototype.kMODE+'-'+(window.fullScreen ? 'fullscreen' : 'normal' ), mode);
-	b.treeStyleTab.autoHide.updateMode();
-};
+		this.treeStyleTab.setTreePref(key, mode);
+		b.setAttribute(AutoHideBrowser.prototype.kMODE+'-'+(w.fullScreen ? 'fullscreen' : 'normal' ), mode);
+		b.treeStyleTab.autoHide.updateMode();
+	},
  
 // for shortcuts 
 	
-TreeStyleTabBrowserAutoHide.updateKeyListeners = function TSTAutoHide_class_updateKeyListeners() { 
-	if (
-		this.getMode() &&
-		this.shouldListenKeyEvents
-		) {
-		TreeStyleTabService.startListenKeyEventsFor(TreeStyleTabService.LISTEN_FOR_AUTOHIDE);
-	}
-	else {
-		TreeStyleTabService.endListenKeyEventsFor(TreeStyleTabService.LISTEN_FOR_AUTOHIDE);
-	}
-	window.setTimeout(function() {
-		if (window.windowState != Components.interfaces.nsIDOMChromeWindow.STATE_NORMAL) return;
-		var count = 0;
-		var resizeTimer = window.setInterval(function(){
-			if (++count > 100 || window.innerHeight > 0) {
-				window.clearInterval(resizeTimer);
-				window.resizeBy(-1,-1);
-				window.resizeBy(1,1);
-			}
-		}, 250);
-	}, 0);
-};
+	updateKeyListeners : function AHW_updateKeyListeners() 
+	{
+		if (
+			this.getMode() &&
+			this.shouldListenKeyEvents
+			) {
+			this.treeStyleTab.startListenKeyEventsFor(this.treeStyleTab.LISTEN_FOR_AUTOHIDE);
+		}
+		else {
+			this.treeStyleTab.endListenKeyEventsFor(this.treeStyleTab.LISTEN_FOR_AUTOHIDE);
+		}
+		var w = this.window;
+		w.setTimeout(function() {
+			if (w.windowState != Ci.nsIDOMChromeWindow.STATE_NORMAL) return;
+			var count = 0;
+			var resizeTimer = w.setInterval(function(){
+				if (++count > 100 || w.innerHeight > 0) {
+					w.clearInterval(resizeTimer);
+					w.resizeBy(-1,-1);
+					w.resizeBy(1,1);
+				}
+			}, 250);
+		}, 0);
+	},
 	
-TreeStyleTabBrowserAutoHide.__defineGetter__('shouldListenKeyEvents', function() { 
-	return !TreeStyleTabService.ctrlTabPreviewsEnabled &&
-			(
-				TreeStyleTabService.getTreePref('tabbar.autoShow.accelKeyDown') ||
-				TreeStyleTabService.getTreePref('tabbar.autoShow.tabSwitch') ||
-				TreeStyleTabService.getTreePref('tabbar.autoShow.feedback')
-			);
-});
-    
+	get shouldListenKeyEvents() 
+	{
+		return !this.treeStyleTab.ctrlTabPreviewsEnabled &&
+				(
+					this.treeStyleTab.getTreePref('tabbar.autoShow.accelKeyDown') ||
+					this.treeStyleTab.getTreePref('tabbar.autoShow.tabSwitch') ||
+					this.treeStyleTab.getTreePref('tabbar.autoShow.feedback')
+				);
+	},
+   
+	init : function AHB_init(aWindow) 
+	{
+		this.window       = aWindow;
+		this.document     = aWindow.document;
+		this.treeStyleTab = aWindow.TreeStyleTabService;
+		this.browser      = this.treeStyleTab.browser;
+	},
+ 
+	destroy : function AHB_destroy() 
+	{
+		delete this.treeStyleTab;
+		delete this.browser;
+		delete this.document;
+		delete this.window;
+	}
+ 
+}; 
+  

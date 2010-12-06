@@ -38,9 +38,9 @@ const EXPORTED_SYMBOLS = ['TabpanelDNDObserver'];
 const Cc = Components.classes;
 const Ci = Components.interfaces;
  
-function TabpanelDNDObserver(aOwner) 
+function TabpanelDNDObserver(aTabBrowser) 
 {
-	this.init(aOwner);
+	this.init(aTabBrowser);
 }
 
 TabpanelDNDObserver.prototype = {
@@ -125,12 +125,12 @@ TabpanelDNDObserver.prototype = {
 		aEvent.stopPropagation();
 	},
   
-	init : function TabpanelDND_init(aOwner) 
+	init : function TabpanelDND_init(aTabBrowser) 
 	{
-		this.treeStyleTab = aOwner;
-		this.browser      = aOwner.browser;
-		this.document     = this.browser.ownerDocument;
+		this.browser      = aTabBrowser;
+		this.document     = aTabBrowser.ownerDocument;
 		this.window       = this.document.defaultView;
+		this.treeStyleTab = aTabBrowser.treeStyleTab;
 
 		var b = this.treeStyleTab.mTabBrowser;
 		b.mPanelContainer.addEventListener('dragover',  this, true);

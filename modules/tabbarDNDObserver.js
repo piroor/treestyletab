@@ -47,9 +47,9 @@ const SecMan = Cc['@mozilla.org/scriptsecuritymanager;1']
 const IOService = Cc['@mozilla.org/network/io-service;1']
 				.getService(Ci.nsIIOService);
  
-function TabbarDNDObserver(aOwner) 
+function TabbarDNDObserver(aTabBrowser) 
 {
-	this.init(aOwner);
+	this.init(aTabBrowser);
 }
 
 TabbarDNDObserver.prototype = {
@@ -1088,12 +1088,12 @@ catch(e) {
 		return null;
 	},
     
-	init : function TabbarDND_init(aOwner) 
+	init : function TabbarDND_init(aTabBrowser) 
 	{
-		this.treeStyleTab = aOwner;
-		this.browser      = aOwner.browser;
-		this.document     = this.browser.ownerDocument;
+		this.browser      = aTabBrowser;
+		this.document     = aTabBrowser.ownerDocument;
 		this.window       = this.document.defaultView;
+		this.treeStyleTab = aTabBrowser.treeStyleTab;
 
 		this.mAutoExpandTimer = null;
 		this.mAutoExpandedTabs = [];

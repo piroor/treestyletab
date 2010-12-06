@@ -1330,9 +1330,19 @@ var TreeStyleTabService = {
 		}
 	},
  
+	get autoHideWindow()
+	{
+		if (!this._autoHideWindow) {
+			let ns = {};
+			Components.utils.import('resource://treestyletab-modules/autoHide.js', ns);
+			this._autoHideWindow = new ns.AutoHideWindow(window);
+		}
+		return this._autoHideWindow;
+	},
+ 
 	toggleAutoHide : function TSTService_toggleAutoHide(aTabBrowser) /* PUBLIC API, for backward compatibility */ 
 	{
-		TreeStyleTabBrowserAutoHide.toggleMode(aTabBrowser || this.browser);
+		this.autoHideWindow.toggleMode(aTabBrowser || this.browser);
 	},
  
 	toggleFixed : function TSTService_toggleFixed(aTabBrowser) /* PUBLIC API */ 
@@ -1675,7 +1685,7 @@ var TreeStyleTabService = {
 			case 'extensions.treestyletab.tabbar.autoShow.accelKeyDown':
 			case 'extensions.treestyletab.tabbar.autoShow.tabSwitch':
 			case 'extensions.treestyletab.tabbar.autoShow.feedback':
-				TreeStyleTabBrowserAutoHide.updateKeyListeners();
+				this.autoHideWindow.updateKeyListeners(window);
 				break;
 
 			case 'extensions.treestyletab.tabbar.style':
@@ -1687,7 +1697,7 @@ var TreeStyleTabService = {
 				break;
 
 			case 'browser.ctrlTab.previews':
-				TreeStyleTabBrowserAutoHide.updateKeyListeners();
+				this.autoHideWindow.updateKeyListeners(window);
 			case 'extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut':
 			case 'extensions.treestyletab.autoCollapseExpandSubtreeOnSelect':
 				if (this.shouldListenKeyEventsForAutoExpandByFocusChange)

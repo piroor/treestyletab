@@ -90,7 +90,7 @@ TreeStyleTabBrowser.prototype = {
 		if (!this._tabbarDNDObserver) {
 			let ns = {};
 			Components.utils.import('resource://treestyletab-modules/tabbarDNDObserver.js', ns);
-			this._tabbarDNDObserver = new ns.TabbarDNDObserver(this);
+			this._tabbarDNDObserver = new ns.TabbarDNDObserver(this.mTabBrowser);
 		}
 		return this._tabbarDNDObserver;
 	},
@@ -100,7 +100,7 @@ TreeStyleTabBrowser.prototype = {
 		if (!this._panelDNDObserver) {
 			let ns = {};
 			Components.utils.import('resource://treestyletab-modules/tabpanelDNDObserver.js', ns);
-			this._panelDNDObserver = new ns.TabpanelDNDObserver(this);
+			this._panelDNDObserver = new ns.TabpanelDNDObserver(this.mTabBrowser);
 		}
 		return this._panelDNDObserver;
 	},
@@ -4434,7 +4434,12 @@ TreeStyleTabBrowser.prototype = {
 /* show/hide tab bar */ 
 	get autoHide()
 	{
-		return this._autoHide || (this._autoHide = new TreeStyleTabBrowserAutoHide(this));
+		if (!this._autoHide) {
+			let ns = {};
+			Components.utils.import('resource://treestyletab-modules/autoHide.js', ns);
+			this._autoHide = new ns.AutoHideBrowser(this.mTabBrowser);
+		}
+		return this._autoHide;
 	},
 
 	// for backward compatibility
