@@ -35,14 +35,14 @@ if (typeof window == 'undefined' ||
 	// See: http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/namespace.jsm
 	let ns = {};
 	try {
-		Components.utils.import('resource://treestyletab-modules/namespace.jsm', ns);
+		Components.utils.import('resource://treestyletab-modules/lib/namespace.jsm', ns);
 		/* var */ window = ns.getNamespaceFor('piro.sakura.ne.jp');
 	}
 	catch(e) {
 		window = {};
 	}
 	if (!('setInterval' in window))
-		Components.utils.import('resource://treestyletab-modules/jstimer.jsm', window);
+		Components.utils.import('resource://treestyletab-modules/lib/jstimer.jsm', window);
 }
 
 (function() {

@@ -19,8 +19,6 @@
 ]]></script>
 <script src="treestyletabbrowser.js" type="application/javascript"/>
 <script src="treestyletabbrowser_autoHide.js" type="application/javascript"/>
-<script src="treestyletabbrowser_tabbarDNDObserver.js" type="application/javascript"/>
-<script src="treestyletabbrowser_tabpanelDNDObserver.js" type="application/javascript"/>
 
 <script src="preloadImages.js" type="application/javascript"/>
 

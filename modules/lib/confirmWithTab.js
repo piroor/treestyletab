@@ -19,7 +19,7 @@ if (typeof namespace == 'undefined') {
 	// See: http://github.com/piroor/fxaddonlibs/blob/master/namespace.jsm
 	try {
 		let ns = {};
-		Components.utils.import('resource://treestyletab-modules/namespace.jsm', ns);
+		Components.utils.import('resource://treestyletab-modules/lib/namespace.jsm', ns);
 		namespace = ns.getNamespaceFor('piro.sakura.ne.jp');
 	}
 	catch(e) {
@@ -30,7 +30,7 @@ if (typeof namespace == 'undefined') {
 // This depends on JSDeferred.
 // See: https://github.com/cho45/jsdeferred
 if (typeof namespace.Deferred == 'undefined')
-	Components.utils.import('resource://treestyletab-modules/jsdeferred.js', namespace);
+	Components.utils.import('resource://treestyletab-modules/lib/jsdeferred.js', namespace);
 
 var confirmWithTab;
 (function() {

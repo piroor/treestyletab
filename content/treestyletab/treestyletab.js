@@ -346,7 +346,7 @@ var TreeStyleTabService = {
 	{
 		var namespace = {};
 		Components.utils.import(
-			'resource://treestyletab-modules/prefs.js',
+			'resource://treestyletab-modules/lib/prefs.js',
 			namespace
 		);
 		var prefs = namespace.prefs;

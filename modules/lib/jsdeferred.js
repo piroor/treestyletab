@@ -3,7 +3,7 @@ var window = {};
 var location = { protocol: 'resource:' };
 var document = { addEventListener : function() {} };
 
-Components.utils.import('resource://treestyletab-modules/jstimer.jsm', window);
+Components.utils.import('resource://treestyletab-modules/lib/jstimer.jsm', window);
 var setTimeout    = window.setTimeout;
 var clearTimeout  = window.clearTimeout;
 var setInterval   = window.setInterval;

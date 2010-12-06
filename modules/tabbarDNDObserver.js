@@ -1,45 +1,82 @@
-function TreeStyleTabBrowserTabbarDNDObserver(aOwner) 
+/* ***** BEGIN LICENSE BLOCK ***** 
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is the Tree Style Tab.
+ *
+ * The Initial Developer of the Original Code is SHIMODA Hiroshi.
+ * Portions created by the Initial Developer are Copyright (C) 2010
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s): SHIMODA Hiroshi <piro@p.club.ne.jp>
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ******/
+ 
+const EXPORTED_SYMBOLS = ['TabbarDNDObserver'];
+
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+
+const TAB_DROP_TYPE = 'application/x-moz-tabbrowser-tab';
+
+const SSS = Cc['@mozilla.org/content/style-sheet-service;1']
+				.getService(Ci.nsIStyleSheetService);
+const SecMan = Cc['@mozilla.org/scriptsecuritymanager;1']
+				.getService(Ci.nsIScriptSecurityManager);
+const IOService = Cc['@mozilla.org/network/io-service;1']
+				.getService(Ci.nsIIOService);
+ 
+function TabbarDNDObserver(aOwner) 
 {
 	this.init(aOwner);
 }
 
-TreeStyleTabBrowserTabbarDNDObserver.prototype = {
+TabbarDNDObserver.prototype = {
 	
-	get SSS() 
+	readyToStartTabbarDrag : function TabbarDND_readyToStartTabbarDrag() 
 	{
-		if (this._SSS === void(0)) {
-			if ('@mozilla.org/content/style-sheet-service;1' in Components.classes) {
-				this._SSS = Components.classes['@mozilla.org/content/style-sheet-service;1'].getService(Components.interfaces.nsIStyleSheetService);
-			}
-			if (!this._SSS)
-				this._SSS = null;
-		}
-		return this._SSS;
+		var sheet = this.treeStyleTab.makeURIFromSpec('chrome://treestyletab/content/hide-embed.css');
+		if (!SSS.sheetRegistered(sheet, SSS.AGENT_SHEET))
+			SSS.loadAndRegisterSheet(sheet, SSS.AGENT_SHEET);
 	},
  
-	readyToStartTabbarDrag : function TSTTabbarDND_readyToStartTabbarDrag() 
+	readyToEndTabbarDrag : function TabbarDND_readyToEndTabbarDrag() 
 	{
-		var sheet = this.mOwner.makeURIFromSpec('chrome://treestyletab/content/hide-embed.css');
-		if (!this.SSS.sheetRegistered(sheet, this.SSS.AGENT_SHEET))
-			this.SSS.loadAndRegisterSheet(sheet, this.SSS.AGENT_SHEET);
+		var sheet = this.treeStyleTab.makeURIFromSpec('chrome://treestyletab/content/hide-embed.css');
+		if (SSS.sheetRegistered(sheet, SSS.AGENT_SHEET))
+			SSS.unregisterSheet(sheet, SSS.AGENT_SHEET);
 	},
  
-	readyToEndTabbarDrag : function TSTTabbarDND_readyToEndTabbarDrag() 
+	canDragTabbar : function TabbarDND_canDragTabbar(aEvent) 
 	{
-		var sheet = this.mOwner.makeURIFromSpec('chrome://treestyletab/content/hide-embed.css');
-		if (this.SSS.sheetRegistered(sheet, this.SSS.AGENT_SHEET))
-			this.SSS.unregisterSheet(sheet, this.SSS.AGENT_SHEET);
-	},
- 
-	canDragTabbar : function TSTTabbarDND_canDragTabbar(aEvent) 
-	{
-		var sv = this.mOwner;
+		var sv = this.treeStyleTab;
 
 		if (
 			sv.evaluateXPath(
 				'ancestor-or-self::*[contains(" scrollbar popup menupopup panel tooltip ", concat(" ", local-name(), " "))]',
 				aEvent.originalTarget,
-				XPathResult.BOOLEAN_TYPE
+				Ci.nsIDOMXPathResult.BOOLEAN_TYPE
 			).booleanValue ||
 			sv.isToolbarCustomizing
 			)
@@ -51,7 +88,7 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 				(tab ? aEvent.shiftKey : tabbar ) &&
 				(
 					aEvent.shiftKey ||
-					sv.mTabBrowser.getAttribute(sv.kFIXED) != 'true'
+					sv.browser.getAttribute(sv.kFIXED) != 'true'
 				)
 			);
 
@@ -86,9 +123,9 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 		return canDrag;
 	},
  
-	canDrop : function TSTTabbarDND_canDrop(aEvent) 
+	canDrop : function TabbarDND_canDrop(aEvent) 
 	{
-		var sv = this.mOwner;
+		var sv = this.treeStyleTab;
 		var tooltip = sv.tabStrip.firstChild;
 		if (tooltip &&
 			tooltip.localName == 'tooltip' &&
@@ -109,11 +146,11 @@ TreeStyleTabBrowserTabbarDNDObserver.prototype = {
 		return dropAction.canDrop;
 	},
 	
-	canDropTab : function TSTTabbarDND_canDropTab(aEvent) 
+	canDropTab : function TabbarDND_canDropTab(aEvent) 
 	{
 try{
-		var sv = this.mOwner;
-		var b  = sv.mTabBrowser;
+		var sv = this.treeStyleTab;
+		var b  = this.browser;
 
 		var session = sv.currentDragSession;
 		var node = session.sourceNode;
@@ -131,15 +168,15 @@ try{
 		return info.canDrop;
 }
 catch(e) {
-		dump('TreeStyleTabService::canDrop\n'+e+'\n');
+		dump('TabbarDND::canDrop\n'+e+'\n');
 		return false;
 }
 	},
   
-	getDropAction : function TSTTabbarDND_getDropAction(aEvent, aDragSession) 
+	getDropAction : function TabbarDND_getDropAction(aEvent, aDragSession) 
 	{
-		var sv = this.mOwner;
-		var b  = sv.mTabBrowser;
+		var sv = this.treeStyleTab;
+		var b  = this.browser;
 
 		if (!aDragSession)
 			aDragSession = sv.currentDragSession;
@@ -190,16 +227,17 @@ catch(e) {
 		return info;
 	},
 	
-	getDropActionInternal : function TSTTabbarDND_getDropActionInternal(aEvent, aSourceTab) 
+	getDropActionInternal : function TabbarDND_getDropActionInternal(aEvent, aSourceTab) 
 	{
-		var sv = this.mOwner;
-		var b  = sv.mTabBrowser;
+		var sv = this.treeStyleTab;
+		var b  = this.browser;
+		var d  = this.document;
 
 		var tab        = aEvent.target;
 		var tabs       = sv.getTabsArray(b);
 		var firstTab   = sv.getFirstNormalTab(b);
 		var lastTabIndex = tabs.length -1;
-		var isInverted = sv.isVertical ? false : window.getComputedStyle(b.parentNode, null).direction == 'rtl';
+		var isInverted = sv.isVertical ? false : b.ownerDocument.defaultView.getComputedStyle(b.parentNode, null).direction == 'rtl';
 		var info       = {
 				target       : null,
 				position     : null,
@@ -209,8 +247,8 @@ catch(e) {
 				event        : aEvent
 			};
 
-		var isTabMoveFromOtherWindow = aSourceTab && aSourceTab.ownerDocument != document;
-		var isNewTabAction = !aSourceTab || aSourceTab.ownerDocument != document;
+		var isTabMoveFromOtherWindow = aSourceTab && aSourceTab.ownerDocument != d;
+		var isNewTabAction = !aSourceTab || aSourceTab.ownerDocument != d;
 
 		if (tab.localName != 'tab') {
 			var action = isTabMoveFromOtherWindow ? sv.kACTION_STAY : (sv.kACTION_MOVE | sv.kACTION_PART) ;
@@ -333,10 +371,11 @@ catch(e) {
 		return info;
 	},
   
-	performDrop : function TSTTabbarDND_performDrop(aInfo, aDraggedTab) 
+	performDrop : function TabbarDND_performDrop(aInfo, aDraggedTab) 
 	{
-		var sv = this.mOwner;
-		var b  = sv.mTabBrowser;
+		var sv = this.treeStyleTab;
+		var b  = this.browser;
+		var w  = this.window;
 
 		var tabsInfo = this.getDraggedTabsInfoFromOneTab(aInfo, aDraggedTab);
 		if (!tabsInfo.draggedTab) return false;
@@ -439,7 +478,7 @@ catch(e) {
 						oldTabs.push(aTab);
 				}
 				newTabs.push(tab);
-				if (tabsInfo.isMultipleMove && 'MultipleTabService' in window)
+				if (tabsInfo.isMultipleMove && 'MultipleTabService' in w)
 					MultipleTabService.setSelection(tab, true);
 				if (!parent || draggedTabs.indexOf(parent) < 0)
 					newRoots.push(tab);
@@ -486,10 +525,11 @@ catch(e) {
 		return true;
 	},
 	
-	getDraggedTabsInfoFromOneTab : function TSTTabbarDND_getDraggedTabsInfoFromOneTab(aInfo, aTab) 
+	getDraggedTabsInfoFromOneTab : function TabbarDND_getDraggedTabsInfoFromOneTab(aInfo, aTab) 
 	{
-		var sv = this.mOwner;
-		var b  = sv.mTabBrowser;
+		var sv = this.treeStyleTab;
+		var b  = this.browser;
+		var w  = this.window;
 
 		aTab = sv.getTabFromChild(aTab);
 		if (!aTab)
@@ -506,7 +546,7 @@ catch(e) {
 		var sourceWindow = aTab.ownerDocument.defaultView;
 		var sourceBrowser = sv.getTabBrowserFromChild(aTab);
 
-		var draggedTabs = window['piro.sakura.ne.jp'].tabsDragUtils.getSelectedTabs(aInfo.event || sourceBrowser);
+		var draggedTabs = w['piro.sakura.ne.jp'].tabsDragUtils.getSelectedTabs(aInfo.event || sourceBrowser);
 		var draggedRoots = [aTab];
 		var isMultipleMove = false;
 
@@ -540,10 +580,10 @@ catch(e) {
 		};
 	},
  
-	attachTabsOnDrop : function TSTTabbarDND_attachTabsOnDrop(aTabs, aParent) 
+	attachTabsOnDrop : function TabbarDND_attachTabsOnDrop(aTabs, aParent) 
 	{
-		var sv = this.mOwner;
-		var b  = sv.mTabBrowser;
+		var sv = this.treeStyleTab;
+		var b  = this.browser;
 
 		b.movingSelectedTabs = true; // Multiple Tab Handler
 		aTabs.forEach(function(aTab) {
@@ -557,10 +597,10 @@ catch(e) {
 		b.movingSelectedTabs = false; // Multiple Tab Handler
 	},
  
-	partTabsOnDrop : function TSTTabbarDND_partTabsOnDrop(aTabs) 
+	partTabsOnDrop : function TabbarDND_partTabsOnDrop(aTabs) 
 	{
-		var sv = this.mOwner;
-		var b  = sv.mTabBrowser;
+		var sv = this.treeStyleTab;
+		var b  = this.browser;
 
 		b.movingSelectedTabs = true; // Multiple Tab Handler
 		aTabs.forEach(function(aTab) {
@@ -571,7 +611,7 @@ catch(e) {
 		b.movingSelectedTabs = false; // Multiple Tab Handler
 	},
  
-	closeOwner : function TSTTabbarDND_closeOwner(aTabOwner) 
+	closeOwner : function TabbarDND_closeOwner(aTabOwner) 
 	{
 		var w = aTabOwner.ownerDocument.defaultView;
 		if (!w) return;
@@ -588,10 +628,10 @@ catch(e) {
 		w.close();
 	},
   
-	clearDropPosition : function TSTTabbarDND_clearDropPosition() 
+	clearDropPosition : function TabbarDND_clearDropPosition() 
 	{
-		var sv = this.mOwner;
-		var b  = sv.mTabBrowser;
+		var sv = this.treeStyleTab;
+		var b  = this.browser;
 		var xpathResult = sv.evaluateXPath(
 				'child::xul:tab[@'+sv.kDROP_POSITION+']',
 				b.mTabContainer
@@ -602,10 +642,10 @@ catch(e) {
 		}
 	},
  
-	isDraggingAllTabs : function TSTTabbarDND_isDraggingAllTabs(aTab, aTabs) 
+	isDraggingAllTabs : function TabbarDND_isDraggingAllTabs(aTab, aTabs) 
 	{
-		var sv = this.mOwner;
-		var b  = sv.mTabBrowser;
+		var sv = this.treeStyleTab;
+		var b  = this.browser;
 
 		var actionInfo = {
 				action : sv.kACTIONS_FOR_DESTINATION | sv.kACTION_IMPORT
@@ -614,12 +654,12 @@ catch(e) {
 		return tabsInfo.draggedTabs.length == (aTabs || sv.getAllTabsArray(b)).length;
 	},
  
-	isDraggingAllCurrentTabs : function TSTTabbarDND_isDraggingAllCurrentTabs(aTab) 
+	isDraggingAllCurrentTabs : function TabbarDND_isDraggingAllCurrentTabs(aTab) 
 	{
-		return this.isDraggingAllTabs(aTab, this.getTabsArray(this.mOwner.mTabBrowser));
+		return this.isDraggingAllTabs(aTab, this.getTabsArray(this.treeStyleTab.browser));
 	},
  
-	handleEvent : function TSTTabbarDND_handleEvent(aEvent) 
+	handleEvent : function TabbarDND_handleEvent(aEvent) 
 	{
 		switch (aEvent.type)
 		{
@@ -632,31 +672,32 @@ catch(e) {
 		}
 	},
 	
-	onDragStart : function TSTTabbarDND_onDragStart(aEvent) 
+	onDragStart : function TabbarDND_onDragStart(aEvent) 
 	{
 		if (this.canDragTabbar(aEvent))
 			return this.onTabbarDragStart(aEvent);
 
-		var tab = this.mOwner.getTabFromEvent(aEvent);
+		var tab = this.treeStyleTab.getTabFromEvent(aEvent);
 		if (tab)
 			return this.onTabDragStart(aEvent, tab);
 	},
 	
-	onTabDragStart : function TSTTabbarDND_onTabDragStart(aEvent, aTab) 
+	onTabDragStart : function TabbarDND_onTabDragStart(aEvent, aTab) 
 	{
-		var sv = this.mOwner;
+		var sv = this.treeStyleTab;
+		var w  = this.window;
 		var actionInfo = {
 				action : sv.kACTIONS_FOR_DESTINATION | sv.kACTION_MOVE,
 				event  : aEvent
 			};
 		var tabsInfo = this.getDraggedTabsInfoFromOneTab(actionInfo, aTab);
 		if (tabsInfo.draggedTabs.length > 1)
-			window['piro.sakura.ne.jp'].tabsDragUtils.startTabsDrag(aEvent, tabsInfo.draggedTabs);
+			w['piro.sakura.ne.jp'].tabsDragUtils.startTabsDrag(aEvent, tabsInfo.draggedTabs);
 	},
  
-	onTabbarDragStart : function TSTTabbarDND_onTabbarDragStart(aEvent) 
+	onTabbarDragStart : function TabbarDND_onTabbarDragStart(aEvent) 
 	{
-		var sv = this.mOwner;
+		var sv = this.treeStyleTab;
 		var dt = aEvent.dataTransfer;
 		dt.mozSetDataAt(
 			sv.kDRAG_TYPE_TABBAR,
@@ -666,7 +707,7 @@ catch(e) {
 			0
 		);
 		dt.mozCursor = 'move';
-//		var tabbar = sv.mTabBrowser.mTabContainer;
+//		var tabbar = sv.browser.mTabContainer;
 //		var box = tabbar.boxObject;
 //		dt.setDragImage(
 //			tabbar,
@@ -674,14 +715,15 @@ catch(e) {
 //			aEvent.screenY - box.screenY
 //		);
 		// no feedback image, because it's annoying...
-		dt.setDragImage(new Image(), 0, 0);
+		dt.setDragImage(new this.window.Image(), 0, 0);
 		aEvent.stopPropagation();
 		this.readyToStartTabbarDrag();
 	},
   
-	onDragEnter : function TSTTabbarDND_onDragEnter(aEvent) 
+	onDragEnter : function TabbarDND_onDragEnter(aEvent) 
 	{
-		var sv = this.mOwner;
+		var sv = this.treeStyleTab;
+		var w  = this.window;
 
 		var dt = aEvent.dataTransfer;
 		if (!this.canDrop(aEvent)) {
@@ -694,13 +736,13 @@ catch(e) {
 			!sv.getTreePref('autoExpand.enabled'))
 			return;
 
-		window.clearTimeout(this.mAutoExpandTimer);
+		w.clearTimeout(this.mAutoExpandTimer);
 
 		var sourceNode = dt.getData(sv.kDRAG_TYPE_TABBAR+'-node');
 		if (aEvent.target == sourceNode)
 			return;
 
-		this.mAutoExpandTimer = window.setTimeout(
+		this.mAutoExpandTimer = w.setTimeout(
 			function(aTarget) {
 				let tab = sv.getTabById(aTarget);
 				if (tab &&
@@ -722,22 +764,23 @@ catch(e) {
 		tab = null;
 	},
  
-	onDragLeave : function TSTTabbarDND_onDragLeave(aEvent) 
+	onDragLeave : function TabbarDND_onDragLeave(aEvent) 
 	{
-		var sv = this.mOwner;
-		var b  = sv.mTabBrowser;
+		var sv = this.treeStyleTab;
+		var b  = this.browser;
+		var w  = this.window;
 
 		var tabbarFromEvent = sv.getTabbarFromChild(aEvent.relatedTarget);
 		if (!tabbarFromEvent)
 			this.clearDropPosition();
 
-		window.clearTimeout(this.mAutoExpandTimer);
+		w.clearTimeout(this.mAutoExpandTimer);
 		this.mAutoExpandTimer = null;
 	},
  
-	onDragEnd : function TSTTabbarDND_onDragEnd(aEvent) 
+	onDragEnd : function TabbarDND_onDragEnd(aEvent) 
 	{
-		var sv = this.mOwner;
+		var sv = this.treeStyleTab;
 		var dt = aEvent.dataTransfer;
 		if (dt.getData(sv.kDRAG_TYPE_TABBAR))
 			this.onTabbarDragEnd(aEvent);
@@ -745,10 +788,12 @@ catch(e) {
 			this.onTabDragEnd(aEvent);
 	},
 	
-	onTabDragEnd : function TSTTabbarDND_onTabDragEnd(aEvent) 
+	onTabDragEnd : function TabbarDND_onTabDragEnd(aEvent) 
 	{
-		var sv = this.mOwner;
-		var b  = sv.mTabBrowser;
+		var sv = this.treeStyleTab;
+		var b  = this.browser;
+		var d  = this.document;
+		var w  = this.window;
 
 		var tabbar = b.mTabContainer;
 		var strip = sv.tabStrip;
@@ -767,10 +812,10 @@ catch(e) {
 		var x, y, w, h;
 
 		// ignore drop on the toolbox
-		x = window.screenX;
-		y = window.screenY;
-		w = window.outerWidth;
-		h = document.getElementById('navigator-toolbox').boxObject.height;
+		x = w.screenX;
+		y = w.screenY;
+		w = w.outerWidth;
+		h = d.getElementById('navigator-toolbox').boxObject.height;
 		if (eX > x && eX < x + w && eY > y && eY < y + h)
 			return;
 
@@ -791,17 +836,18 @@ catch(e) {
 		b.replaceTabWithWindow(draggedTab);
 	},
  
-	onTabbarDragEnd : function TSTTabbarDND_onTabbarDragEnd(aEvent) 
+	onTabbarDragEnd : function TabbarDND_onTabbarDragEnd(aEvent) 
 	{
-		window.setTimeout(function(aSelf) {
+		var w = this.window;
+		w.setTimeout(function(aSelf) {
 			aSelf.readyToEndTabbarDrag();
-			aSelf.mOwner.removeTabbrowserAttribute(aSelf.mOwner.kDROP_POSITION);
+			aSelf.treeStyleTab.removeTabbrowserAttribute(aSelf.treeStyleTab.kDROP_POSITION);
 		}, 10, this);
 		aEvent.stopPropagation();
 		aEvent.preventDefault();
 	},
   
-	onDragOver : function TSTTabbarDND_onDragOver(aEvent) 
+	onDragOver : function TabbarDND_onDragOver(aEvent) 
 	{
 		if (this.onTabDragOver(aEvent)) {
 			aEvent.stopPropagation();
@@ -809,11 +855,11 @@ catch(e) {
 		}
 	},
 	
-	onTabDragOver : function TSTTabbarDND_onTabDragOver(aEvent) 
+	onTabDragOver : function TabbarDND_onTabDragOver(aEvent) 
 	{
 try{
-		var sv = this.mOwner;
-		var b  = sv.mTabBrowser;
+		var sv = this.treeStyleTab;
+		var b  = this.browser;
 
 		var session = sv.currentDragSession;
 		if (sv.isToolbarCustomizing)
@@ -857,7 +903,7 @@ try{
 		if (!info.target || info.target != sv.evaluateXPath(
 				'child::xul:tab[@'+sv.kDROP_POSITION+']',
 				b.mTabContainer,
-				XPathResult.FIRST_ORDERED_NODE_TYPE
+				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue)
 			this.clearDropPosition();
 
@@ -880,15 +926,15 @@ try{
 		return (info.position == sv.kDROP_ON || sv.currentTabbarPosition != 'top')
 }
 catch(e) {
-	dump('TreeStyleTabService::onDragOver\n'+e+'\n');
+	dump('TabbarDND::onDragOver\n'+e+'\n');
 }
 	},
   
-	onDrop : function TSTTabbarDND_onDrop(aEvent) 
+	onDrop : function TabbarDND_onDrop(aEvent) 
 	{
 		this.onTabDrop(aEvent);
 
-		var sv = this.mOwner;
+		var sv = this.treeStyleTab;
 		if (this.mAutoExpandedTabs.length) {
 			if (sv.getTreePref('autoExpand.collapseFinally')) {
 				this.mAutoExpandedTabs.forEach(function(aTarget) {
@@ -901,8 +947,9 @@ catch(e) {
 	
 	onTabDrop : function TSTService_onTabDrop(aEvent) 
 	{
-		var sv = this.mOwner;
-		var b  = sv.mTabBrowser;
+		var sv = this.treeStyleTab;
+		var b  = this.browser;
+		var w  = this.window;
 
 		var tabbar = b.mTabContainer;
 		var dt = aEvent.dataTransfer;
@@ -939,7 +986,7 @@ catch(e) {
 			dropActionInfo.position == sv.kDROP_ON
 			) {
 			var beforeTabs = Array.slice(b.mTabContainer.childNodes);
-			window.setTimeout(function() {
+			w.setTimeout(function() {
 				var newTabs = Array.slice(b.mTabContainer.childNodes).filter(function(aTab) {
 						return beforeTabs.indexOf(aTab) < 0;
 					});
@@ -962,11 +1009,8 @@ catch(e) {
 				if (sourceDoc &&
 					sourceDoc.documentURI.indexOf('chrome://') < 0) {
 					let sourceURI = sourceDoc.documentURI;
-					let nsIScriptSecurityManager = Components.interfaces.nsIScriptSecurityManager;
-					let secMan = Components.classes['@mozilla.org/scriptsecuritymanager;1']
-									.getService(nsIScriptSecurityManager);
 					try {
-						secMan.checkLoadURIStr(sourceDoc.documentURI, url, nsIScriptSecurityManager.STANDARD);
+						SecMan.checkLoadURIStr(sourceDoc.documentURI, url, Ci.nsIScriptSecurityManager.STANDARD);
 					}
 					catch(e) {
 						aEvent.stopPropagation();
@@ -980,7 +1024,7 @@ catch(e) {
 
 			let tab = sv.getTabFromEvent(aEvent);
 			if (!tab || dt.dropEffect == 'copy') {
-				this.performDrop(dropActionInfo, b.loadOneTab(getShortcutOrURI(url), { inBackground: bgLoad }));
+				this.performDrop(dropActionInfo, b.loadOneTab(w.getShortcutOrURI(url), { inBackground: bgLoad }));
 			}
 			else {
 				let locked = (
@@ -994,10 +1038,10 @@ catch(e) {
 
 				try {
 					if (loadDroppedLinkToNewChildTab || locked) {
-						this.performDrop(dropActionInfo, b.loadOneTab(getShortcutOrURI(url), { inBackground: bgLoad }));
+						this.performDrop(dropActionInfo, b.loadOneTab(w.getShortcutOrURI(url), { inBackground: bgLoad }));
 					}
 					else {
-						tab.linkedBrowser.loadURI(getShortcutOrURI(url));
+						tab.linkedBrowser.loadURI(w.getShortcutOrURI(url));
 						if (!bgLoad)
 							b.selectedTab = tab;
 					}
@@ -1033,24 +1077,28 @@ catch(e) {
 				return aData.replace(/^\s+|\s+$/g, '');
 
 			case 'text/x-moz-url':
-				return ((aData instanceof Components.interfaces.nsISupportsString) ? aData.toString() : aData)
+				return ((aData instanceof Ci.nsISupportsString) ? aData.toString() : aData)
 							.split('\n')[0];
 
 			case 'application/x-moz-file':
-				let fileHandler = this.IOService.getProtocolHandler('file')
-									.QueryInterface(Components.interfaces.nsIFileProtocolHandler);
+				let fileHandler = IOService.getProtocolHandler('file')
+									.QueryInterface(Ci.nsIFileProtocolHandler);
 				return fileHandler.getURLSpecFromFile(aData);
 		}
 		return null;
 	},
     
-	init : function TSTTabbarDND_init(aOwner) 
+	init : function TabbarDND_init(aOwner) 
 	{
-		this.mOwner = aOwner;
+		this.treeStyleTab = aOwner;
+		this.browser      = aOwner.browser;
+		this.document     = this.browser.ownerDocument;
+		this.window       = this.document.defaultView;
+
 		this.mAutoExpandTimer = null;
 		this.mAutoExpandedTabs = [];
 
-		var strip = this.mOwner.tabStrip;
+		var strip = this.treeStyleTab.tabStrip;
 		strip.addEventListener('dragstart', this, true);
 		strip.addEventListener('dragover',  this, true);
 		strip.addEventListener('dragenter', this, false);
@@ -1059,9 +1107,9 @@ catch(e) {
 		strip.addEventListener('drop',      this, true);
 	},
  
-	destroy : function TSTTabbarDND_destroy() 
+	destroy : function TabbarDND_destroy() 
 	{
-		var strip = this.mOwner.tabStrip;
+		var strip = this.treeStyleTab.tabStrip;
 		strip.removeEventListener('dragstart', this, true);
 		strip.removeEventListener('dragover',  this, true);
 		strip.removeEventListener('dragenter', this, false);
@@ -1069,7 +1117,10 @@ catch(e) {
 		strip.removeEventListener('dragend',   this, false);
 		strip.removeEventListener('drop',      this, true);
 
-		delete this.mOwner;
+		delete this.treeStyleTab;
+		delete this.browser;
+		delete this.document;
+		delete this.window;
 	}
  
 }; 

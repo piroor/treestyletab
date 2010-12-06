@@ -87,12 +87,22 @@ TreeStyleTabBrowser.prototype = {
  
 	get tabbarDNDObserver() 
 	{
-		return this._tabbarDNDObserver || (this._tabbarDNDObserver = new TreeStyleTabBrowserTabbarDNDObserver(this));
+		if (!this._tabbarDNDObserver) {
+			let ns = {};
+			Components.utils.import('resource://treestyletab-modules/tabbarDNDObserver.js', ns);
+			this._tabbarDNDObserver = new ns.TabbarDNDObserver(this);
+		}
+		return this._tabbarDNDObserver;
 	},
  
 	get panelDNDObserver() 
 	{
-		return this._panelDNDObserver || (this._panelDNDObserver = new TreeStyleTabBrowserTabpanelDNDObserver(this));
+		if (!this._panelDNDObserver) {
+			let ns = {};
+			Components.utils.import('resource://treestyletab-modules/tabpanelDNDObserver.js', ns);
+			this._panelDNDObserver = new ns.TabpanelDNDObserver(this);
+		}
+		return this._panelDNDObserver;
 	},
  
 /* utils */ 

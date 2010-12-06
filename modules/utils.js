@@ -38,15 +38,15 @@ const EXPORTED_SYMBOLS = ['TreeStyleTabUtils'];
 const Cc = Components.classes;
 const Ci = Components.interfaces;
  
-Components.utils.import('resource://treestyletab-modules/prefs.js'); 
-Components.utils.import('resource://treestyletab-modules/boxObject.js');
-Components.utils.import('resource://treestyletab-modules/stringBundle.js');
-Components.utils.import('resource://treestyletab-modules/extensions.js');
-Components.utils.import('resource://treestyletab-modules/animationManager.js');
-Components.utils.import('resource://treestyletab-modules/autoScroll.js');
-Components.utils.import('resource://treestyletab-modules/confirmWithTab.js');
+Components.utils.import('resource://treestyletab-modules/lib/prefs.js'); 
+Components.utils.import('resource://treestyletab-modules/lib/boxObject.js');
+Components.utils.import('resource://treestyletab-modules/lib/stringBundle.js');
+Components.utils.import('resource://treestyletab-modules/lib/extensions.js');
+Components.utils.import('resource://treestyletab-modules/lib/animationManager.js');
+Components.utils.import('resource://treestyletab-modules/lib/autoScroll.js');
+Components.utils.import('resource://treestyletab-modules/lib/confirmWithTab.js');
 
-Components.utils.import('resource://treestyletab-modules/namespace.jsm');
+Components.utils.import('resource://treestyletab-modules/lib/namespace.jsm');
 var window = getNamespaceFor('piro.sakura.ne.jp');
  
 var TreeStyleTabUtils = { 
