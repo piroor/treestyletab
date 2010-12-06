@@ -30,6 +30,8 @@ TreeStyleTabBrowser.prototype = {
 	sizeProp             : 'height',
 	invertedPositionProp : 'screenX',
 	invertedSizeProp     : 'width',
+	startProp            : 'top',
+	endProp              : 'bottom',
 
 	maxTreeLevel : -1,
 	maxTreeLevelPhisical : false,
@@ -508,6 +510,10 @@ TreeStyleTabBrowser.prototype = {
 				/\.screenX/g, '[treeStyleTab.positionProp]'
 			).replace(
 				/\.width/g, '[treeStyleTab.sizeProp]'
+			).replace(
+				/\.left/g, '[treeStyleTab.startProp]'
+			).replace(
+				/\.right/g, '[treeStyleTab.endProp]'
 			)
 		);
 
@@ -1059,6 +1065,8 @@ TreeStyleTabBrowser.prototype = {
 			this.sizeProp             = 'height';
 			this.invertedPositionProp = 'screenX';
 			this.invertedSizeProp     = 'width';
+			this.startProp            = 'top';
+			this.endProp              = 'bottom';
 
 			b.mTabBox.orient = splitter.orient = 'horizontal';
 			strip.orient =
@@ -1133,6 +1141,8 @@ TreeStyleTabBrowser.prototype = {
 			this.sizeProp             = 'width';
 			this.invertedPositionProp = 'screenY';
 			this.invertedSizeProp     = 'height';
+			this.startProp            = 'left';
+			this.endProp              = 'right';
 
 			b.mTabBox.orient = splitter.orient = 'vertical';
 			strip.orient =
