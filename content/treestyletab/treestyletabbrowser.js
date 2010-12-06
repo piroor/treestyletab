@@ -835,6 +835,7 @@ TreeStyleTabBrowser.prototype = {
 	initTabAttributes : function TSTBrowser_initTabAttributes(aTab) 
 	{
 		var pos = this.currentTabbarPosition;
+		var tabContentBox = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-content');
 		if (pos == 'left' || pos == 'right') {
 			aTab.setAttribute('align', 'stretch');
 			aTab.removeAttribute('maxwidth');
@@ -843,6 +844,8 @@ TreeStyleTabBrowser.prototype = {
 			aTab.removeAttribute('flex');
 			aTab.maxWidth = 65000;
 			aTab.minWidth = 0;
+			if (tabContentBox)
+				tabContentBox.setAttribute('align', 'stretch');
 			if (this.getTreePref('compatibility.TMP'))
 				aTab.setAttribute('dir', 'ltr'); // Tab Mix Plus
 		}
@@ -858,6 +861,8 @@ TreeStyleTabBrowser.prototype = {
 				aTab.minWidth = this.mTabBrowser.mTabContainer.mTabMinWidth;
 				aTab.setAttribute('flex', 100);
 			}
+			if (tabContentBox)
+				tabContentBox.setAttribute('align', 'center');
 			if (this.getTreePref('compatibility.TMP'))
 				aTab.removeAttribute('dir'); // Tab Mix Plus
 		}
@@ -915,7 +920,8 @@ TreeStyleTabBrowser.prototype = {
 		var close = this.getTabClosebox(aTab);
 		var inverted = this.mTabBrowser.getAttribute(this.kTAB_CONTENTS_INVERTED) == 'true';
 
-		var nodes = Array.slice(document.getAnonymousNodes(aTab));
+		var nodesContainer = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-content') || aTab;
+		var nodes = Array.slice(document.getAnonymousNodes(nodesContainer) || nodesContainer.childNodes);
 
 		// reset order
 		nodes.forEach(function(aNode, aIndex) {
