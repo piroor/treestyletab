@@ -370,18 +370,6 @@ TreeStyleTabBrowser.prototype = {
 		window['piro.sakura.ne.jp'].tabsDragUtils.initTabBrowser(b);
 
 
-		eval('b.mTabContainer._selectNewTab = '+
-			b.mTabContainer._selectNewTab.toSource().replace(
-				'{',
-				<![CDATA[$&
-					if (arguments[0].__treestyletab__preventSelect) {
-						arguments[0].__treestyletab__preventSelect = false;
-						return;
-					}
-				]]>
-			)
-		);
-
 		eval('b.mTabContainer.adjustTabstrip = '+
 			b.mTabContainer.adjustTabstrip.toSource().replace(
 				/(\}\)?)$/,
@@ -3133,7 +3121,8 @@ TreeStyleTabBrowser.prototype = {
 			aEvent.button == 0 &&
 			this.isEventFiredOnTwisty(aEvent)
 			) {
-			this.getTabFromEvent(aEvent).__treestyletab__preventSelect = true;
+			// prevent to select the tab for clicking on twisty
+			aEvent.stopPropagation();
 		}
 		else {
 			this.onMozMouseHittest(aEvent);
