@@ -3015,6 +3015,8 @@ TreeStyleTabBrowser.prototype = {
 			) {
 			// prevent to select the tab for clicking on twisty
 			aEvent.stopPropagation();
+			// prevent to focus to the tab element itself
+			aEvent.preventDefault();
 		}
 		else {
 			this.onMozMouseHittest(aEvent);
