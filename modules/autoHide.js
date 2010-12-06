@@ -563,7 +563,7 @@ AutoHideBrowser.prototype = {
 			aSelf.redrawContentArea();
 			aSelf.fireStateChangeEvent();
 			if (!sv.isFloating)
-				aSelf.startRendering();
+				sv.startRendering();
 		}, 0, this);
 	},
 	
