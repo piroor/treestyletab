@@ -370,30 +370,6 @@ TreeStyleTabBrowser.prototype = {
 		window['piro.sakura.ne.jp'].tabsDragUtils.initTabBrowser(b);
 
 
-		/* Closing collapsed last tree breaks selected tab.
-		   To solve this problem, I override the setter to
-		   force to set a tab and forbid it becomes null. */
-		let (getter, setter) {
-			getter = b.__lookupGetter__('selectedTab');
-			setter = b.__lookupSetter__('selectedTab');
-			eval('setter = '+setter.toSource().replace(
-				'{',
-				<![CDATA[$&
-					if (!val) {
-						val = TreeStyleTabService.getLastTab(this);
-					}
-				]]>.toString()
-			));
-			/* We have to use both __defineSetter__ and __defineGetter__
-			   just in same time!! If we update only setter,
-			   getter will be vanished. */
-			b.__defineGetter__('selectedTab', getter);
-			b.__defineSetter__('selectedTab', setter);
-			getter = null;
-			setter = null;
-		}
-
-
 		eval('b.mTabContainer._selectNewTab = '+
 			b.mTabContainer._selectNewTab.toSource().replace(
 				'{',
