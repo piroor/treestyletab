@@ -835,7 +835,6 @@ TreeStyleTabBrowser.prototype = {
 	initTabAttributes : function TSTBrowser_initTabAttributes(aTab) 
 	{
 		var pos = this.currentTabbarPosition;
-		var tabContentBox = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-content');
 		if (pos == 'left' || pos == 'right') {
 			aTab.setAttribute('align', 'stretch');
 			aTab.removeAttribute('maxwidth');
@@ -844,8 +843,6 @@ TreeStyleTabBrowser.prototype = {
 			aTab.removeAttribute('flex');
 			aTab.maxWidth = 65000;
 			aTab.minWidth = 0;
-			if (tabContentBox)
-				tabContentBox.setAttribute('align', 'stretch');
 			if (this.getTreePref('compatibility.TMP'))
 				aTab.setAttribute('dir', 'ltr'); // Tab Mix Plus
 		}
@@ -910,6 +907,10 @@ TreeStyleTabBrowser.prototype = {
 
 			label.parentNode.insertBefore(counter, label.nextSibling);
 		}
+
+		var tabContentBox = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-content');
+		if (tabContentBox)
+			tabContentBox.setAttribute('align', this.isVertical ? 'stretch' : 'center' );
 
 		this.initTabContentsOrder(aTab);
 	},
