@@ -398,61 +398,6 @@ TreeStyleTabBrowser.prototype = {
 			)
 		);
 
-		eval('b.mTabContainer._handleTabSelect = '+
-			b.mTabContainer._handleTabSelect.toSource().replace(
-				'{',
-				<![CDATA[$&
-					if ((function(aTabs) {
-							var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(aTabs).treeStyleTab;
-							var tab = aTabs.selectedItem;
-							if (!treeStyleTab.isTabInViewport(tab)) {
-								treeStyleTab.scrollToTab(tab);
-								return true;
-							}
-							return false;
-						})(this)) {
-						return;
-					}
-				]]>
-			)
-		);
-
-/*
-		if ('ensureElementIsVisible' in b.mTabContainer.mTabstrip &&
-			'_smoothScrollByPixels' in b.mTabContainer.mTabstrip) {
-			eval('b.mTabContainer.mTabstrip.ensureElementIsVisible = '+
-				b.mTabContainer.mTabstrip.ensureElementIsVisible.toSource().replace(
-					'{',
-					<![CDATA[$&
-						var browser = TreeStyleTabService.getTabBrowserFromChild(this);
-						var startProp = browser.treeStyleTab.isVertical ? 'top' : 'left' ;
-						var endProp = browser.treeStyleTab.isVertical ? 'bottom' : 'right' ;
-					]]>
-				).replace(
-					/\.left/g, '[startProp]'
-				).replace(
-					/\.right/g, '[endProp]'
-				).replace(
-					'|| this.getAttribute("orient") == "vertical"', ''
-				)
-			);
-			eval('b.mTabContainer.mTabstrip._smoothScrollByPixels = '+
-				b.mTabContainer.mTabstrip._smoothScrollByPixels.toSource().replace(
-					'{',
-					<![CDATA[$&
-						var TST = TreeStyleTabService.getTabBrowserFromChild(this);
-					]]>
-				).replace(
-					'scrollBy(distance, 0)',
-					<![CDATA[scrollBy(
-						(TST.isVertical ? 0 : distance ),
-						(TST.isVertical ? distance : 0 )
-					)]]>
-				)
-			);
-		}
-*/
-
 		eval('b.mTabContainer._notifyBackgroundTab = '+
 			b.mTabContainer._notifyBackgroundTab.toSource().replace(
 				'{',
@@ -3014,6 +2959,11 @@ TreeStyleTabBrowser.prototype = {
 		this._focusChangedByShortcut = false;
 
 		this.updateInvertedTabContentsOrder();
+
+		if (!this.isTabInViewport(tab)) {
+			this.scrollToTab(tab);
+			aEvent.stopPropagation();
+		}
 	},
  
 	onTabClick : function TSTBrowser_onTabClick(aEvent, aTab) 
