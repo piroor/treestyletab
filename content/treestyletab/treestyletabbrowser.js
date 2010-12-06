@@ -705,10 +705,13 @@ TreeStyleTabBrowser.prototype = {
 
 		if ('_beginRemoveTab' in b) {
 			eval('b._beginRemoveTab = '+
-				b._beginRemoveTab.toSource().replace(
+				b._beginRemoveTab.toSource().replace( // Firefox 3.5-3.6
 					'if (l == 1) {',
 					'if (l == 1 || this.treeStyleTab.shouldCloseLastTabSubtreeOf(aTab)) {'
-				).replace(
+				).replace( // Firefox 4.0-
+					'if (this.tabs.length - this._removingTabs.length == 1) {',
+					'if (this.tabs.length - this._removingTabs.length == 1 || this.treeStyleTab.shouldCloseLastTabSubtreeOf(aTab)) {'
+				).replace( // Firefox 3.5-
 					'this._removingTabs.length == 0',
 					'(this.treeStyleTab.shouldCloseLastTabSubtreeOf(aTab) || $&)'
 				)
