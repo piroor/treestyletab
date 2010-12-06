@@ -868,8 +868,6 @@ TreeStyleTabBrowser.prototype = {
 				aTab.minWidth = this.mTabBrowser.mTabContainer.mTabMinWidth;
 				aTab.setAttribute('flex', 100);
 			}
-			if (tabContentBox)
-				tabContentBox.setAttribute('align', 'center');
 			if (this.getTreePref('compatibility.TMP'))
 				aTab.removeAttribute('dir'); // Tab Mix Plus
 		}
