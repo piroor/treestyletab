@@ -647,6 +647,15 @@ var TreeStyleTabService = {
 				'gBrowser.treeStyleTab.onTabsOnTopSyncCommand(enabled); $&'
 			));
 		}
+
+		if ('toggleSidebar' in window) {
+			eval('window.toggleSidebar = '+
+				window.toggleSidebar.toSource().replace(
+					'{',
+					'{ gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_WINDOW_RESIZE);'
+				)
+			);
+		}
 	},
 	_splitFunctionNames : function TSTService__splitFunctionNames(aString)
 	{
