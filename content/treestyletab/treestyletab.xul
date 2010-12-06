@@ -148,14 +148,4 @@
 	</menupopup>
 </popupset>
 
-<toolbar id="TabsToolbar">
-	<box id="treestyletab-tabbar-resizer-box">
-		<splitter id="treestyletab-tabbar-resizer-splitter"
-			class="treestyletab-splitter"
-			onmousedown="TreeStyleTabService.handleEvent(event);"
-			onmouseup="TreeStyleTabService.handleEvent(event);"
-			ondblclick="TreeStyleTabService.handleEvent(event);"/>
-	</box>
-</toolbar>
-
 </overlay>

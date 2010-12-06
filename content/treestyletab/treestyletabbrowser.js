@@ -1448,6 +1448,19 @@ TreeStyleTabBrowser.prototype = {
 		var vertical = this.isVertical;
 
 		var splitter = document.getElementById('treestyletab-tabbar-resizer-splitter');
+		if (!splitter) {
+			let box = document.createElement('box');
+			box.setAttribute('id', 'treestyletab-tabbar-resizer-box');
+			splitter = document.createElement('splitter');
+			splitter.setAttribute('id', 'treestyletab-tabbar-resizer-splitter');
+			splitter.setAttribute('class', this.kSPLITTER);
+			splitter.setAttribute('onmousedown', 'TreeStyleTabService.handleEvent(event);');
+			splitter.setAttribute('onmouseup', 'TreeStyleTabService.handleEvent(event);');
+			splitter.setAttribute('ondblclick', 'TreeStyleTabService.handleEvent(event);');
+			box.appendChild(splitter);
+			this.tabStrip.appendChild(box);
+		}
+
 		var box = splitter.parentNode;
 
 		box.orient = splitter.orient = vertical ? 'horizontal' : 'vertical' ;
