@@ -85,6 +85,12 @@ TreeStyleTabBrowser.prototype = {
 		return (this._tabStripPlaceHolder = value);
 	},
  
+	get tabTooltip() 
+	{
+		return document.getElementById('tabbrowser-tab-tooltip') || // Firefox 4.0-
+				this.evaluateXPath('descendant::xul:tooltip', b.mStrip, XPathResult.FIRST_ORDERED_NODE_TYPE).singleNodeValue; // -Firefox 3.6
+	},
+ 
 	get tabbarDNDObserver() 
 	{
 		if (!this._tabbarDNDObserver) {
@@ -357,6 +363,8 @@ TreeStyleTabBrowser.prototype = {
 		this.scrollBox.addEventListener('overflow', this, true);
 		this.scrollBox.addEventListener('underflow', this, true);
 
+		this.tabTooltip.addEventListener('popupshowing', this, true);
+
 		window.addEventListener('resize', this, true);
 		window.addEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
 		window.addEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED,  this, false);
@@ -527,18 +535,6 @@ TreeStyleTabBrowser.prototype = {
 						firstTabAdded :
 						TreeStyleTabService.getNextTab(firstTabAdded) ;
 				]]>
-			)
-		);
-
-		eval('b.createTooltip = '+
-			b.createTooltip.toSource().replace(
-				'if ("mOverCloseButton" in tn && tn.mOverCloseButton) {',
-				<![CDATA[
-					if (TreeStyleTabService.getTabBrowserFromChild(tn) &&
-						TreeStyleTabService.getTabBrowserFromChild(tn).treeStyleTab.handleTooltip(event, tn)) {
-						return true;
-					}
-					else $&]]>
 			)
 		);
 
@@ -1529,6 +1525,8 @@ TreeStyleTabBrowser.prototype = {
 
 		this.scrollBox.removeEventListener('overflow', this, true);
 		this.scrollBox.removeEventListener('underflow', this, true);
+
+		this.tabTooltip.removeEventListener('popupshowing', this, true);
 
 		var tabContextMenu = b.tabContextMenu ||
 							document.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu');
@@ -3067,10 +3065,64 @@ TreeStyleTabBrowser.prototype = {
  
 	onPopupShowing : function TSTBrowser_onPopupShowing(aEvent) 
 	{
-		if (aEvent.target == aEvent.currentTarget)
+		if (aEvent.target.localName == 'tooltip')
+			this.handleTooltip(aEvent);
+		else if (aEvent.target == aEvent.currentTarget)
 			this.initTabContextMenu(aEvent);
 	},
 	
+	handleTooltip : function TSTBrowser_handleTooltip(aEvent) 
+	{
+		var tab = document.tooltipNode;
+		if (tab.localName != 'tab')
+			return;
+
+		var label;
+		var collapsed = this.isSubtreeCollapsed(tab);
+
+		var base = parseInt(tab.getAttribute(this.kNEST) || 0);
+		var descendant = this.getDescendantTabs(tab);
+		var indentPart = '  ';
+		var tree = (this.getTreePref('tooltip.includeChildren') && descendant.length) ?
+					[tab].concat(descendant)
+						.map(function(aTab) {
+							let label = aTab.getAttribute('label');
+							let indent = '';
+							let nest = parseInt(aTab.getAttribute(this.kNEST) || 0) - base;
+							for (let i = 0; i < nest; i++)
+							{
+								indent += indentPart;
+							}
+							return this.treeBundle.getFormattedString('tooltip.item.label', [label, indent]);
+						}, this)
+						.join('\n') :
+					null ;
+
+		if ('mOverCloseButton' in tab && tab.mOverCloseButton) {
+			if (descendant.length &&
+				(collapsed || this.getTreePref('closeParentBehavior') == this.CLOSE_PARENT_BEHAVIOR_CLOSE)) {
+				label = this.treeBundle.getString('tooltip.closeTree');
+			}
+		}
+		else if (tab.getAttribute(this.kTWISTY_HOVER) == 'true') {
+			let key = collapsed ?
+						'tooltip.expandSubtree' :
+						'tooltip.collapseSubtree' ;
+			label = tree || tab.getAttribute('label');
+			label = label ?
+					this.treeBundle.getFormattedString(key+'.labeled', [label]) :
+					this.treeBundle.getString(key) ;
+		}
+		else if (collapsed) {
+			label = tree;
+		}
+
+		if (label) {
+			aEvent.target.setAttribute('label', label);
+			aEvent.stopPropagation();
+		}
+	},
+ 
 	initTabContextMenu : function TSTBrowser_initTabContextMenu(aEvent) 
 	{
 		var b = this.mTabBrowser;

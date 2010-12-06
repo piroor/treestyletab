@@ -1119,54 +1119,6 @@ var TreeStyleTabService = {
 	},
 	showHideSubTreeMenuItem : function() { return this.showHideSubtreeMenuItem.apply(this, arguments); }, // obsolete, for backward compatibility
  
-	handleTooltip : function TSTService_handleTooltip(aEvent, aTab) 
-	{
-		var label;
-		var collapsed = this.isSubtreeCollapsed(aTab);
-
-		var base = parseInt(aTab.getAttribute(this.kNEST) || 0);
-		var descendant = this.getDescendantTabs(aTab);
-		var indentPart = '  ';
-		var tree = (this.getTreePref('tooltip.includeChildren') && descendant.length) ?
-					[aTab].concat(descendant)
-						.map(function(aTab) {
-							let label = aTab.getAttribute('label');
-							let indent = '';
-							let nest = parseInt(aTab.getAttribute(this.kNEST) || 0) - base;
-							for (let i = 0; i < nest; i++)
-							{
-								indent += indentPart;
-							}
-							return this.treeBundle.getFormattedString('tooltip.item.label', [label, indent]);
-						}, this)
-						.join('\n') :
-					null ;
-
-		if ('mOverCloseButton' in aTab && aTab.mOverCloseButton) {
-			if (descendant.length &&
-				(collapsed || this.getTreePref('closeParentBehavior') == this.CLOSE_PARENT_BEHAVIOR_CLOSE)) {
-				label = this.treeBundle.getString('tooltip.closeTree');
-			}
-		}
-		else if (aTab.getAttribute(this.kTWISTY_HOVER) == 'true') {
-			let key = collapsed ?
-						'tooltip.expandSubtree' :
-						'tooltip.collapseSubtree' ;
-			label = tree || aTab.getAttribute('label');
-			label = label ?
-					this.treeBundle.getFormattedString(key+'.labeled', [label]) :
-					this.treeBundle.getString(key) ;
-		}
-		else if (collapsed) {
-			label = tree;
-		}
-
-		if (label)
-			aEvent.target.setAttribute('label', label);
-
-		return label;
-	},
- 
 	updateAeroPeekPreviews : function TSTService_updateAeroPeekPreviews() 
 	{
 		if (
