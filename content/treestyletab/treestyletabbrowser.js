@@ -1977,9 +1977,11 @@ TreeStyleTabBrowser.prototype = {
 				(refTab = this.getTabById(this.insertBefore))) {
 				newIndex = refTab._tPos;
 			}
-			else if (parent &&
+			else if (
+				parent &&
 				this.getTreePref('insertNewChildAt') == this.kINSERT_FISRT &&
-				this.multipleCount == 0) {
+				(this.multipleCount == 0 || this._addedCountInThisLoop == 0)
+				) {
 				/* 複数の子タブを一気に開く場合、最初に開いたタブだけを
 				   子タブの最初の位置に挿入し、続くタブは「最初の開いたタブ」と
 				   「元々最初の子だったタブ」との間に挿入していく */
@@ -1997,6 +1999,14 @@ TreeStyleTabBrowser.prototype = {
 
 			if (this.shouldExpandAllTree)
 				this.collapseExpandSubtree(parent, false);
+		}
+
+		this._addedCountInThisLoop++;
+		if (!this._addedCountClearTimer) {
+			this._addedCountClearTimer =window.setTimeout(function(aSelf) {
+				aSelf._addedCountInThisLoop = 0;
+				aSelf._addedCountClearTimer = null;
+			}, 0, this);
 		}
 
 		if (!this.readiedToAttachMultiple) {
@@ -2050,6 +2060,8 @@ TreeStyleTabBrowser.prototype = {
 
 		return true;
 	},
+	_addedCountInThisLoop : 0,
+	_addedCountClearTimer : null,
 	_checkRestoringWindowTimerOnTabAdded : null,
  
 	onTabRemoved : function TSTBrowser_onTabRemoved(aEvent) 

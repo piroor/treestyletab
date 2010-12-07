@@ -1309,7 +1309,7 @@ var TreeStyleTabUtils = {
 
 		ownerBrowser.treeStyleTab.readiedToAttachNewTab   = true;
 		ownerBrowser.treeStyleTab.readiedToAttachMultiple = aMultiple || false ;
-		ownerBrowser.treeStyleTab.multipleCount           = 0;
+		ownerBrowser.treeStyleTab.multipleCount           = aMultiple ? 0 : -1 ;
 		ownerBrowser.treeStyleTab.parentTab               = parentId;
 		ownerBrowser.treeStyleTab.insertBefore            = refId;
 	},
@@ -1340,7 +1340,7 @@ var TreeStyleTabUtils = {
 		ownerBrowser.treeStyleTab.readiedToAttachNewTab      = false;
 		ownerBrowser.treeStyleTab.readiedToAttachNewTabGroup = false;
 		ownerBrowser.treeStyleTab.readiedToAttachMultiple    = false;
-		ownerBrowser.treeStyleTab.multipleCount              = 0;
+		ownerBrowser.treeStyleTab.multipleCount              = -1;
 		ownerBrowser.treeStyleTab.parentTab                  = null;
 		ownerBrowser.treeStyleTab.insertBefore               = null;
 		ownerBrowser.treeStyleTab.treeStructure              = null;
