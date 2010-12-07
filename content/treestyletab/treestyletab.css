@@ -335,6 +335,10 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 }
 
 /* pinned tabs on Firefox 4.0 */
+.tabbrowser-tabs[treestyletab-mode="vertical"] {
+	-moz-margin-start: 0 !important;
+}
+
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"] {
 	position: fixed !important;
