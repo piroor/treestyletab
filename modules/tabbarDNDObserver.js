@@ -235,7 +235,7 @@ catch(e) {
 
 		var tab        = aEvent.target;
 		var tabs       = sv.getTabsArray(b);
-		var firstTab   = sv.getFirstNormalTab(b);
+		var firstTab   = sv.getFirstNormalTab(b) || tabs[0];
 		var lastTabIndex = tabs.length -1;
 		var isInverted = sv.isVertical ? false : b.ownerDocument.defaultView.getComputedStyle(b.parentNode, null).direction == 'rtl';
 		var info       = {
