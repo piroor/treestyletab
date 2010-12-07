@@ -445,7 +445,6 @@ TreeStyleTabBrowser.prototype = {
 				b.tabContainer._getDropIndex.toSource().replace(
 					/\.screenX/g, '[this.treeStyleTab.positionProp]'
 				).replace(
-
 					/\.width/g, '[this.treeStyleTab.sizeProp]'
 				)
 			);
