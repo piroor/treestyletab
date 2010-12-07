@@ -90,7 +90,7 @@ TreeStyleTabBrowser.prototype = {
 	get tabTooltip() 
 	{
 		return document.getElementById('tabbrowser-tab-tooltip') || // Firefox 4.0-
-				this.evaluateXPath('descendant::xul:tooltip', b.mStrip, XPathResult.FIRST_ORDERED_NODE_TYPE).singleNodeValue; // -Firefox 3.6
+				this.evaluateXPath('descendant::xul:tooltip', this.browser.mStrip, XPathResult.FIRST_ORDERED_NODE_TYPE).singleNodeValue; // -Firefox 3.6
 	},
  
 	get tabbarDNDObserver() 
