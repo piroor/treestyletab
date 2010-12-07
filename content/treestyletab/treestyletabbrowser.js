@@ -237,8 +237,12 @@ TreeStyleTabBrowser.prototype = {
 	},
 	positionPinnedTabsWithDelay : function TSTBrowser_positionPinnedTabsWithDelay()
 	{
-		window.setTimeout(function(aSelf) {
+		if (this.positionPinnedTabsWithDelayTimer)
+			return;
+
+		this.positionPinnedTabsWithDelay = window.setTimeout(function(aSelf) {
 			aSelf.positionPinnedTabs();
+			aSelf.positionPinnedTabsWithDelay = null;
 		}, 0, this);
 	},
 	PINNED_TAB_DEFAULT_WIDTH : 24,
