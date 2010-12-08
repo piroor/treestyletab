@@ -564,12 +564,7 @@ TreeStyleTabBrowser.prototype = {
 			'{ if (!this.treeStyleTab.warnAboutClosingTabSubtreeOf(this.selectedTab)) return;'
 		));
 
-		let (tabs = this.getAllTabsArray(b)) {
-			for each (let tab in tabs)
-			{
-				this.initTab(tab);
-			}
-		}
+		this.getAllTabsArray(b).forEach(this.initTab, this);
 
 		this.onPrefChange('extensions.treestyletab.maxTreeLevel');
 		this.onPrefChange('extensions.treestyletab.tabbar.style');
