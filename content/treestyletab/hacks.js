@@ -1196,6 +1196,16 @@ TreeStyleTabService.overrideExtensionsDelayed = function TSTService_overrideExte
 		);
 	}
 
+	// Domain Tab
+	if ('domaintab' in window && 'TMP_howToOpen' in domaintab) {
+		eval('domaintab.TMP_howToOpen = '+
+			domaintab.TMP_howToOpen.toSource().replace(
+				/(domaintab.DT_openNewTabWith\()/g,
+				'TreeStyleTabService.readyToOpenChildTab(); $1'
+			)
+		);
+	}
+
 	// Firefox Sync (Weave)
 	// http://www.mozilla.com/en-US/firefox/sync/
 	if (
