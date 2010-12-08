@@ -145,6 +145,8 @@
 <!ENTITY context.removeTabSubtree.accesskey     "s">
 <!ENTITY context.removeDescendantTabs.label     "このタブの子タブをすべて閉じる">
 <!ENTITY context.removeDescendantTabs.accesskey "d">
+<!ENTITY context.removeAllTabsBut.label         "このツリー以外の他のタブをすべて閉じる">
+<!ENTITY context.removeAllTabsBut.accesskey     "b">
 <!ENTITY context.collapseAllSubtree.label       "ツリーをすべてたたむ">
 <!ENTITY context.collapseAllSubtree.accesskey   "c">
 <!ENTITY context.expandAllSubtree.label         "ツリーをすべて展開する">

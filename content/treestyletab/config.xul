@@ -245,6 +245,9 @@
 		<preference id="extensions.treestyletab.show.context-item-removeDescendantTabs"
 			name="extensions.treestyletab.show.context-item-removeDescendantTabs"
 			type="bool"/>
+		<preference id="extensions.treestyletab.show.context-item-removeAllTabsButThisTree"
+			name="extensions.treestyletab.show.context-item-removeAllTabsButThisTree"
+			type="bool"/>
 		<preference id="extensions.treestyletab.show.context-item-collapseAllSubtree"
 			name="extensions.treestyletab.show.context-item-collapseAllSubtree"
 			type="bool"/>
@@ -282,8 +285,14 @@
 				preference="extensions.treestyletab.show.context-item-removeTabSubtree"
 				label="&context.removeTabSubtree.label;"/>
 			<checkbox id="extensions.treestyletab.show.context-item-removeDescendantTabs-check"
+
 				preference="extensions.treestyletab.show.context-item-removeDescendantTabs"
 				label="&context.removeDescendantTabs.label;"/>
+		</hbox>
+		<hbox align="center">
+			<checkbox id="extensions.treestyletab.show.context-item-removeAllTabsButThisTree-check"
+				preference="extensions.treestyletab.show.context-item-removeAllTabsButThisTree"
+				label="&context.removeAllTabsBut.label;"/>
 		</hbox>
 		<hbox align="center">
 			<checkbox id="extensions.treestyletab.show.context-item-collapseAllSubtree-check"

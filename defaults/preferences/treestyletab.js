@@ -77,6 +77,7 @@ pref("extensions.treestyletab.show.context-item-reloadTabSubtree", true);
 pref("extensions.treestyletab.show.context-item-reloadDescendantTabs", false);
 pref("extensions.treestyletab.show.context-item-removeTabSubtree", true);
 pref("extensions.treestyletab.show.context-item-removeDescendantTabs", false);
+pref("extensions.treestyletab.show.context-item-removeAllTabsButThisTree", false);
 pref("extensions.treestyletab.show.context-item-collapseAllSubtree", true);
 pref("extensions.treestyletab.show.context-item-expandAllSubtree", true);
 pref("extensions.treestyletab.show.context-item-toggleAutoHide", true);

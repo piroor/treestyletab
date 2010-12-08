@@ -147,6 +147,8 @@
 <!ENTITY context.removeTabSubtree.accesskey "s">
 <!ENTITY context.removeDescendantTabs.label     "關閉所有子分頁">
 <!ENTITY context.removeDescendantTabs.accesskey "d">
+<!ENTITY context.removeAllTabsBut.label         "Close Other Tabs except this Tree">
+<!ENTITY context.removeAllTabsBut.accesskey     "a">
 <!ENTITY context.collapseAllSubtree.label     "摺疊全部樹狀目錄">
 <!ENTITY context.collapseAllSubtree.accesskey "c">
 <!ENTITY context.expandAllSubtree.label     "展開全部樹狀目錄">

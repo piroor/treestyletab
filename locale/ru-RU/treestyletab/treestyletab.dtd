@@ -145,6 +145,8 @@
 <!ENTITY context.removeTabSubtree.accesskey "s">
 <!ENTITY context.removeDescendantTabs.label     "Закрыть дочерние вкладки">
 <!ENTITY context.removeDescendantTabs.accesskey "d">
+<!ENTITY context.removeAllTabsBut.label         "Close Other Tabs except this Tree">
+<!ENTITY context.removeAllTabsBut.accesskey     "a">
 <!ENTITY context.collapseAllSubtree.label     "Свернуть все деревья">
 <!ENTITY context.collapseAllSubtree.accesskey "c">
 <!ENTITY context.expandAllSubtree.label     "Раскрыть все деревья">

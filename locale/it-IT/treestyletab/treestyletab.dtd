@@ -149,6 +149,8 @@
 <!ENTITY context.removeTabSubtree.accesskey "u">
 <!ENTITY context.removeDescendantTabs.label     "Chiudi sottoschede">
 <!ENTITY context.removeDescendantTabs.accesskey "i">
+<!ENTITY context.removeAllTabsBut.label         "Close Other Tabs except this Tree">
+<!ENTITY context.removeAllTabsBut.accesskey     "a">
 <!ENTITY context.collapseAllSubtree.label     "Contrai tutti i sottoalberi">
 <!ENTITY context.collapseAllSubtree.accesskey "o">
 <!ENTITY context.expandAllSubtree.label     "Espandi tutti i sottoalberi">

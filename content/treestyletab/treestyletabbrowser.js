@@ -10,6 +10,7 @@ TreeStyleTabBrowser.prototype = {
 	kMENUITEM_RELOADCHILDREN           : 'context-item-reloadDescendantTabs',
 	kMENUITEM_REMOVESUBTREE            : 'context-item-removeTabSubtree',
 	kMENUITEM_REMOVECHILDREN           : 'context-item-removeDescendantTabs',
+	kMENUITEM_REMOVEALLTABSBUT         : 'context-item-removeAllTabsButThisTree',
 	kMENUITEM_COLLAPSEEXPAND_SEPARATOR : 'context-separator-collapseExpandAll',
 	kMENUITEM_COLLAPSE                 : 'context-item-collapseAllSubtree',
 	kMENUITEM_EXPAND                   : 'context-item-expandAllSubtree',
@@ -585,6 +586,7 @@ TreeStyleTabBrowser.prototype = {
 					aSelf.kMENUITEM_RELOADCHILDREN,
 					aSelf.kMENUITEM_REMOVESUBTREE,
 					aSelf.kMENUITEM_REMOVECHILDREN,
+					aSelf.kMENUITEM_REMOVEALLTABSBUT,
 					aSelf.kMENUITEM_COLLAPSEEXPAND_SEPARATOR,
 					aSelf.kMENUITEM_COLLAPSE,
 					aSelf.kMENUITEM_EXPAND,
@@ -3155,6 +3157,7 @@ TreeStyleTabBrowser.prototype = {
 			this.kMENUITEM_RELOADCHILDREN,
 			this.kMENUITEM_REMOVESUBTREE,
 			this.kMENUITEM_REMOVECHILDREN,
+			this.kMENUITEM_REMOVEALLTABSBUT,
 			this.kMENUITEM_COLLAPSE,
 			this.kMENUITEM_EXPAND,
 			this.kMENUITEM_AUTOHIDE,
@@ -3177,6 +3180,7 @@ TreeStyleTabBrowser.prototype = {
 				case this.kMENUITEM_RELOADCHILDREN:
 				case this.kMENUITEM_REMOVESUBTREE:
 				case this.kMENUITEM_REMOVECHILDREN:
+				case this.kMENUITEM_REMOVEALLTABSBUT:
 				case this.kMENUITEM_COLLAPSE:
 				case this.kMENUITEM_EXPAND:
 				case this.kMENUITEM_BOOKMARKSUBTREE:
@@ -3227,6 +3231,14 @@ TreeStyleTabBrowser.prototype = {
 		else {
 			sep.removeAttribute('hidden');
 		}
+
+		// close all tabs but this tree
+		let removeAllTabsBut = items[this.kMENUITEM_REMOVEALLTABSBUT];
+		let rootTabs = this.visibleRootTabs;
+		if (rootTabs.length == 1 && rootTabs[0] == b.mContextTab)
+			removeAllTabsBut.setAttribute('disabled', true);
+		else
+			removeAllTabsBut.removeAttribute('disabled');
 
 		// auto hide
 		let autohide = items[this.kMENUITEM_AUTOHIDE];

@@ -1384,6 +1384,18 @@ var TreeStyleTabUtils = {
 			);
 	},
  
+	get allRootTabs() /* PUBLIC API */ 
+	{
+		return this.rootTabs;
+	},
+ 
+	get visibleRootTabs() /* PUBLIC API */ 
+	{
+		return this.rootTabs.filter(function(aTab) {
+				return !aTab.hidden;
+			});
+	},
+ 
 	canCollapseSubtree : function TSTUtils_canCollapseSubtree(aTabOrTabBrowser) /* PUBLIC API */ 
 	{
 		if (aTabOrTabBrowser &&

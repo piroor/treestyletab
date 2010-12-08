@@ -1528,6 +1528,26 @@ var TreeStyleTabService = {
 	},
 	_tabShouldBeExpandedAfterKeyReleased : null,
  
+	removeAllTabsBut : function TSTService_removeAllTabsBut(aTab)
+	{
+		var keepTabs = [aTab].concat(this.getDescendantTabs(aTab));
+		var b = this.getTabBrowserFromChild(aTab);
+		var closeTabs = this.getTabsArray(b)
+					.filter(function(aTab) {
+						return keepTabs.indexOf(aTab) < 0;
+					});
+
+		if (!this.warnAboutClosingTabs(closeTabs.length))
+			return;
+
+		this.stopRendering();
+		this.markAsClosedSet(closeTabs);
+		closeTabs.reverse().forEach(function(aTab) {
+			b.removeTab(aTab);
+		});
+		this.startRendering();
+	},
+ 
 	// For backward compatibility. You should use DOM event to block TST's focus handling.
 	registerTabFocusAllowance : function TSTService_registerTabFocusAllowance(aProcess) /* PUBLIC API */ 
 	{

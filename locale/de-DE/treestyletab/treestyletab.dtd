@@ -145,6 +145,8 @@
 <!ENTITY context.removeTabSubtree.accesskey "s">
 <!ENTITY context.removeDescendantTabs.label     "Untergeordnete Tabs schließen">
 <!ENTITY context.removeDescendantTabs.accesskey "d">
+<!ENTITY context.removeAllTabsBut.label         "Close Other Tabs except this Tree">
+<!ENTITY context.removeAllTabsBut.accesskey     "a">
 <!ENTITY context.collapseAllSubtree.label     "Alle Zweige zuklappen">
 <!ENTITY context.collapseAllSubtree.accesskey "c">
 <!ENTITY context.expandAllSubtree.label     "Alle Zweige aufklappen">

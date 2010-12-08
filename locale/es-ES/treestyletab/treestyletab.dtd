@@ -151,6 +151,8 @@
 <!ENTITY context.removeTabSubtree.accesskey "s">
 <!ENTITY context.removeDescendantTabs.label     "Cerrar hija">
 <!ENTITY context.removeDescendantTabs.accesskey "d">
+<!ENTITY context.removeAllTabsBut.label         "Close Other Tabs except this Tree">
+<!ENTITY context.removeAllTabsBut.accesskey     "a">
 <!ENTITY context.collapseAllSubtree.label     "Colapsar todos los árboles">
 <!ENTITY context.collapseAllSubtree.accesskey "c">
 <!ENTITY context.expandAllSubtree.label     "Expandir todos los árboles">

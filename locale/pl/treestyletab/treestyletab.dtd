@@ -139,6 +139,8 @@
 <!ENTITY context.removeTabSubtree.accesskey "N">
 <!ENTITY context.removeDescendantTabs.label     "Zamknij potomne">
 <!ENTITY context.removeDescendantTabs.accesskey "O">
+<!ENTITY context.removeAllTabsBut.label         "Close Other Tabs except this Tree">
+<!ENTITY context.removeAllTabsBut.accesskey     "a">
 <!ENTITY context.collapseAllSubtree.label     "Zwiń wszystkie drzewa">
 <!ENTITY context.collapseAllSubtree.accesskey "T">
 <!ENTITY context.expandAllSubtree.label     "Rozwiń wszystkie drzewa">
