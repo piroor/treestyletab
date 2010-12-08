@@ -6,9 +6,9 @@ var Prefs = Components
 		.classes['@mozilla.org/preferences;1']
 		.getService(Components.interfaces.nsIPrefBranch);
 
-Components.utils.import('resource://treestyletab-modules/animationManager.js', {});
-Components.utils.import('resource://treestyletab-modules/prefs.js', {});
-Components.utils.import('resource://treestyletab-modules/namespace.jsm');
+Components.utils.import('resource://treestyletab-modules/lib/animationManager.js', {});
+Components.utils.import('resource://treestyletab-modules/lib/prefs.js', {});
+Components.utils.import('resource://treestyletab-modules/lib/namespace.jsm');
 var animationManager = getNamespaceFor('piro.sakura.ne.jp')['piro.sakura.ne.jp'].animationManager;
 var prefs = getNamespaceFor('piro.sakura.ne.jp')['piro.sakura.ne.jp'].prefs;
 
