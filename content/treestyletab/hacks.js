@@ -1196,7 +1196,7 @@ TreeStyleTabService.overrideExtensionsDelayed = function TSTService_overrideExte
 		);
 	}
 
-	// Domain Tab
+	// DomainTab
 	// https://addons.mozilla.org/firefox/addon/13906/
 	if ('domaintab' in window && 'TMP_howToOpen' in domaintab) {
 		eval('domaintab.TMP_howToOpen = '+
