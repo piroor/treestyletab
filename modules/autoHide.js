@@ -1426,6 +1426,10 @@ function AutoHideWindow(aWindow)
 	this.init(aWindow);
 }
 AutoHideWindow.prototype = {
+	get browser()
+	{
+		return this.treeStyleTab.browser;
+	},
 	
 // mode 
 	
@@ -1516,13 +1520,11 @@ AutoHideWindow.prototype = {
 		this.window       = aWindow;
 		this.document     = aWindow.document;
 		this.treeStyleTab = aWindow.TreeStyleTabService;
-		this.browser      = this.treeStyleTab.browser;
 	},
  
 	destroy : function AHB_destroy() 
 	{
 		delete this.treeStyleTab;
-		delete this.browser;
 		delete this.document;
 		delete this.window;
 	}

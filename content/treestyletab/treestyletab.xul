@@ -28,7 +28,7 @@
 
 <script type="application/javascript"><![CDATA[
 	// for backward compatibility
-	window.TreeStyleTabBrowserAutoHide = TreeStyleTabService.autoHideWindow;
+	var TreeStyleTabBrowserAutoHide = TreeStyleTabService.autoHideWindow;
 
 	// preload images
 	TreeStyleTabService.observe(
