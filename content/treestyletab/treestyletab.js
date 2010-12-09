@@ -157,9 +157,12 @@ var TreeStyleTabService = {
 			w = this.browser.contentWindow;
 
 		return (function(aWindow) {
-			if (aWindow.getSelection().toString() == aTerm)
+			if (!aWindow || !(aWindow instanceof Components.interfaces.nsIDOMWindow))
+				return false;
+			var selection = aWindow.getSelection();
+			if (selection && selection.toString() == aTerm)
 				return true;
-			return Array.slice(aWindow.frames).some(arguments.callee);
+			return aWindow.frames ? Array.slice(aWindow.frames).some(arguments.callee) : false ;
 		})(w);
 	},
 	kSEARCH_RESULT_DO_NOT_ATTACH      : 0,
