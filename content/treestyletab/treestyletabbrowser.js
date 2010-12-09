@@ -241,9 +241,9 @@ TreeStyleTabBrowser.prototype = {
 		if (this.positionPinnedTabsWithDelayTimer)
 			return;
 
-		this.positionPinnedTabsWithDelay = window.setTimeout(function(aSelf) {
+		this.positionPinnedTabsWithDelayTimer = window.setTimeout(function(aSelf) {
 			aSelf.positionPinnedTabs();
-			aSelf.positionPinnedTabsWithDelay = null;
+			aSelf.positionPinnedTabsWithDelayTimer = null;
 		}, 0, this);
 	},
 	PINNED_TAB_DEFAULT_WIDTH : 24,
@@ -2458,6 +2458,7 @@ TreeStyleTabBrowser.prototype = {
 			var attached = false;
 			if (parent && aTab.hidden != parent.hidden) {
 				var ancestor = parent;
+
 				var lastNextTab = null;
 				while (ancestor = this.getParentTab(ancestor))
 				{
