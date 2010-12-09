@@ -142,6 +142,16 @@ var TreeStyleTabService = {
 		var max = Math.max(windowHeight, rootHeight);
 		return Math.max(0, Math.min(aHeight, max * this.MAX_TABBAR_SIZE_RATIO));
 	},
+ 
+	isSelectedInCurrentTab : function TSTService_isSelectedInCurrentTab(aTerm) 
+	{
+		var w = document.commandDispatcher.focusedWindow;
+		return (
+			w &&
+			w.top == this.browser.contentWindow &&
+			w.getSelection().toString() == aTerm
+		);
+	},
   
 /* Initializing */ 
 	
@@ -682,6 +692,21 @@ var TreeStyleTabService = {
  
 	initToolbarItems : function TSTService_initToolbarItems() 
 	{
+		var searchbar = document.getElementById('searchbar');
+		if (searchbar &&
+			searchbar.doSearch &&
+			searchbar.doSearch.toSource().toSource().indexOf('TreeStyleTabService') < 0) {
+			eval('searchbar.doSearch = '+searchbar.doSearch.toSource().replace(
+				/(openUILinkIn\(.+?\);)/,
+				<![CDATA[
+					if (TreeStyleTabService.isSelectedInCurrentTab(arguments[0]))
+						TreeStyleTabService.readyToOpenChildTab();
+					$1
+					TreeStyleTabService.stopToOpenChildTab();
+				]]>.toString()
+			));
+		}
+
 		// for Firefox 4.0 or later
 		this.updateAllTabsButton(gBrowser);
 	},
@@ -1282,7 +1307,7 @@ var TreeStyleTabService = {
 		}
 	},
  
-	get autoHideWindow()
+	get autoHideWindow() 
 	{
 		if (!this._autoHideWindow) {
 			let ns = {};
@@ -1528,7 +1553,7 @@ var TreeStyleTabService = {
 	},
 	_tabShouldBeExpandedAfterKeyReleased : null,
  
-	removeAllTabsBut : function TSTService_removeAllTabsBut(aTab)
+	removeAllTabsBut : function TSTService_removeAllTabsBut(aTab) 
 	{
 		var keepTabs = [aTab].concat(this.getDescendantTabs(aTab));
 		var b = this.getTabBrowserFromChild(aTab);
