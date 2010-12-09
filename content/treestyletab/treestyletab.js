@@ -145,10 +145,11 @@ var TreeStyleTabService = {
  
 	shouldOpenSearchResultAsChild : function TSTService_shouldOpenSearchResultAsChild(aTerm) 
 	{
-		if (this.getTreePref('autoAttachSearchResultAsChildren.always'))
+		var mode = this.getTreePref('autoAttachSearchResultAsChildren');
+		if (mode == this.kSEARCH_RESULT_ATTACH_ALWAYS)
 			return true;
 
-		if (!aTerm)
+		if (!aTerm || mode == this.kSEARCH_RESULT_DO_NOT_ATTACH)
 			return false;
 
 		var w = document.commandDispatcher.focusedWindow;
@@ -161,6 +162,9 @@ var TreeStyleTabService = {
 			return Array.slice(aWindow.frames).some(arguments.callee);
 		})(w);
 	},
+	kSEARCH_RESULT_DO_NOT_ATTACH      : 0,
+	kSEARCH_RESULT_ATTACH_IF_SELECTED : 1,
+	kSEARCH_RESULT_ATTACH_ALWAYS      : 2,
   
 /* Initializing */ 
 	

@@ -108,7 +108,10 @@ pref("extensions.treestyletab.collapseExpandSubtree.dblclick",         false);
 pref("extensions.treestyletab.autoExpandSubtreeOnCollapsedChildFocused", true);
 pref("extensions.treestyletab.autoExpandSubtreeOnAppendChild",         true);
 pref("extensions.treestyletab.autoAttachNewTabsAsChildren", true);
-pref("extensions.treestyletab.autoAttachSearchResultAsChildren.always", false);
+// 0 = don't attach
+// 1 = attach if the search term equals to the selection in the current tab
+// 2 = always attach
+pref("extensions.treestyletab.autoAttachSearchResultAsChildren", 1);
 // 0 = default, 1 = only visible tabs
 pref("extensions.treestyletab.focusMode", 1);
 /*
