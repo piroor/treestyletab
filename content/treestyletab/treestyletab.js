@@ -145,6 +145,9 @@ var TreeStyleTabService = {
  
 	shouldOpenSearchResultAsChild : function TSTService_shouldOpenSearchResultAsChild(aTerm) 
 	{
+		if (this.getTreePref('autoAttachSearchResultAsChildren.always'))
+			return true;
+
 		if (!aTerm)
 			return false;
 

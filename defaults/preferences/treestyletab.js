@@ -108,6 +108,7 @@ pref("extensions.treestyletab.collapseExpandSubtree.dblclick",         false);
 pref("extensions.treestyletab.autoExpandSubtreeOnCollapsedChildFocused", true);
 pref("extensions.treestyletab.autoExpandSubtreeOnAppendChild",         true);
 pref("extensions.treestyletab.autoAttachNewTabsAsChildren", true);
+pref("extensions.treestyletab.autoAttachSearchResultAsChildren.always", false);
 // 0 = default, 1 = only visible tabs
 pref("extensions.treestyletab.focusMode", 1);
 /*
