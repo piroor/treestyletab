@@ -143,14 +143,20 @@ var TreeStyleTabService = {
 		return Math.max(0, Math.min(aHeight, max * this.MAX_TABBAR_SIZE_RATIO));
 	},
  
-	isSelectedInCurrentTab : function TSTService_isSelectedInCurrentTab(aTerm) 
+	shouldOpenSearchResultAsChild : function TSTService_shouldOpenSearchResultAsChild(aTerm) 
 	{
+		if (!aTerm)
+			return false;
+
 		var w = document.commandDispatcher.focusedWindow;
-		return (
-			w &&
-			w.top == this.browser.contentWindow &&
-			w.getSelection().toString() == aTerm
-		);
+		if (!w || w.top != this.browser.contentWindow)
+			w = this.browser.contentWindow;
+
+		return (function(aWindow) {
+			if (aWindow.getSelection().toString() == aTerm)
+				return true;
+			return Array.slice(aWindow.frames).some(arguments.callee);
+		})(w);
 	},
   
 /* Initializing */ 
@@ -699,7 +705,7 @@ var TreeStyleTabService = {
 			eval('searchbar.doSearch = '+searchbar.doSearch.toSource().replace(
 				/(openUILinkIn\(.+?\);)/,
 				<![CDATA[
-					if (TreeStyleTabService.isSelectedInCurrentTab(arguments[0]))
+					if (TreeStyleTabService.shouldOpenSearchResultAsChild(arguments[0]))
 						TreeStyleTabService.readyToOpenChildTab();
 					$1
 					TreeStyleTabService.stopToOpenChildTab();
