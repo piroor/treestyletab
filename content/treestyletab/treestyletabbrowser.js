@@ -334,6 +334,7 @@ TreeStyleTabBrowser.prototype = {
 			if (!toggler) {
 				toggler = document.createElement('spacer');
 				toggler.setAttribute('class', this.kTABBAR_TOGGLER);
+				toggler.setAttribute('layer', true); // https://bugzilla.mozilla.org/show_bug.cgi?id=590468
 				b.mTabBox.insertBefore(toggler, b.mTabBox.firstChild);
 				if (b.mTabDropIndicatorBar == toggler)
 					b.mTabDropIndicatorBar = document.getAnonymousElementByAttribute(b, 'class', 'tab-drop-indicator-bar');
@@ -343,6 +344,7 @@ TreeStyleTabBrowser.prototype = {
 				placeHolder = document.createElement('hbox');
 				placeHolder.setAttribute('anonid', 'strip');
 				placeHolder.setAttribute('class', 'tabbrowser-strip');
+				placeHolder.setAttribute('layer', true); // https://bugzilla.mozilla.org/show_bug.cgi?id=590468
 				placeHolder.setAttribute(this.kTABBAR_PLACEHOLDER, true);
 				b.mTabBox.insertBefore(placeHolder, toggler.nextSibling);
 			}
@@ -1085,6 +1087,7 @@ TreeStyleTabBrowser.prototype = {
 		else {
 			splitter = document.createElement('splitter');
 			splitter.setAttribute('state', 'open');
+			splitter.setAttribute('layer', true); // https://bugzilla.mozilla.org/show_bug.cgi?id=590468
 			splitter.appendChild(document.createElement('grippy'));
 		}
 
@@ -1235,6 +1238,7 @@ TreeStyleTabBrowser.prototype = {
 		var pos = this.currentTabbarPosition;
 		if (pos != 'top' ||
 			this.mTabBrowser.getAttribute(this.kFIXED) != 'true') {
+			strip.setAttribute('layer', true); // https://bugzilla.mozilla.org/show_bug.cgi?id=590468
 
 			let box = this._tabStripPlaceHolder.boxObject;
 			let root = document.documentElement.boxObject;
@@ -1275,6 +1279,8 @@ TreeStyleTabBrowser.prototype = {
 			strip.style.left = '';
 			strip.style.width = '';
 			strip.style.height = '';
+
+			strip.removeAttribute('layer'); // https://bugzilla.mozilla.org/show_bug.cgi?id=590468
 
 			this.mTabBrowser.tabContainer.removeAttribute('context');
 		}
