@@ -9,7 +9,7 @@
                    em:creator="SHIMODA Hiroshi"
                    em:description="Show tabs like a tree."
                    em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
-                   em:iconURL="chrome://treestyletab/content/res/icon32.png"
+                   em:iconURL="chrome://treestyletab/content/res/icon.png"
                    em:optionsURL="chrome://treestyletab/content/config.xul">
 
 
