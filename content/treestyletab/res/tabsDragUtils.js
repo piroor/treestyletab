@@ -13,7 +13,7 @@
    http://github.com/piroor/fxaddonlibs/blob/master/tabsDragUtils.js
 */
 (function() {
-	const currentRevision = 4;
+	const currentRevision = 5;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -40,6 +40,9 @@
 		},
 		_delayedInit : function TDU_delayedInit()
 		{
+			window.removeEventListener('load', arguments.callee, false);
+			delete tabsDragUtils._delayedInit;
+
 			if (
 				'PlacesControllerDragHelper' in window &&
 				'onDrop' in PlacesControllerDragHelper &&
@@ -64,7 +67,10 @@
 					)
 				);
 			}
-			delete tabsDragUtils._delayedInit;
+
+			// for Tab Mix Plus
+			if ('TabDNDObserver' in window)
+				tabsDragUtils.initTabDNDObserver(TabDNDObserver);
 		},
 		destroy : function TDU_destroy()
 		{
@@ -77,18 +83,23 @@
 			var tabDNDObserver = (aTabBrowser.tabContainer && aTabBrowser.tabContainer.tabbrowser == aTabBrowser) ?
 									aTabBrowser.tabContainer : // Firefox 4.0 or later
 									aTabBrowser ; // Firefox 3.5 - 3.6
-			if ('_setEffectAllowedForDataTransfer' in tabDNDObserver &&
-				tabDNDObserver._setEffectAllowedForDataTransfer.toSource().indexOf('tabDragUtils') < 0) {
-				eval('tabDNDObserver._setEffectAllowedForDataTransfer = '+
-					tabDNDObserver._setEffectAllowedForDataTransfer.toSource().replace(
+			this.initTabDNDObserver(tabDNDObserver);
+		},
+		destroyTabBrowser : function TDU_destroyTabBrowser(aTabBrowser)
+		{
+		},
+
+		initTabDNDObserver : function TDU_initTabDNDObserver(aObserver)
+		{
+			if ('_setEffectAllowedForDataTransfer' in aObserver &&
+				aObserver._setEffectAllowedForDataTransfer.toSource().indexOf('tabDragUtils') < 0) {
+				eval('aObserver._setEffectAllowedForDataTransfer = '+
+					aObserver._setEffectAllowedForDataTransfer.toSource().replace(
 						'dt.mozItemCount > 1',
 						'$& && !window["piro.sakura.ne.jp"].tabsDragUtils.isTabsDragging(arguments[0])'
 					)
 				);
 			}
-		},
-		destroyTabBrowser : function TDU_destroyTabBrowser(aTabBrowser)
-		{
 		},
 
 		startTabsDrag : function TDU_startTabsDrag(aEvent, aTabs)
