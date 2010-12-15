@@ -28,3 +28,10 @@
 	-moz-border-right-colors: none !important;
 }
 
+
+/* splitter for floating & autohide tab bar */
+#TabsToolbar .treestyletab-splitter {
+	width: 6px;
+	-moz-appearance: none;
+}
+
