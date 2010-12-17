@@ -38,6 +38,7 @@
 	border-top: 1px solid ThreeDShadow !important;
 }
 #TabsToolbar[treestyletab-mode="vertical"] > *:first-child,
+#TabsToolbar[treestyletab-mode="vertical"] > *:first-child[hidden="true"] + *:not(toolbarpaletteitem),
 #TabsToolbar[treestyletab-mode="vertical"] > .tabs-toolbar-inner-box {
 	-moz-border-top-colors: none !important;
 	border-top: 0 none !important;
