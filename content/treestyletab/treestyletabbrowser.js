@@ -1406,9 +1406,18 @@ TreeStyleTabBrowser.prototype = {
 	{
 		if (aOldPosition == aNewPosition) return false;
 
+		var type = aChanging ? this.kEVENT_TYPE_TABBAR_POSITION_CHANGING : this.kEVENT_TYPE_TABBAR_POSITION_CHANGED;
+
 		/* PUBLIC API */
 		var event = document.createEvent('Events');
-		event.initEvent(aChanging ? this.kEVENT_TYPE_TABBAR_POSITION_CHANGING : this.kEVENT_TYPE_TABBAR_POSITION_CHANGED, true, false);
+		event.initEvent(type, true, false);
+		event.oldPosition = aOldPosition;
+		event.newPosition = aNewPosition;
+		this.mTabBrowser.dispatchEvent(event);
+
+		// for backward compatibility
+		event = document.createEvent('Events');
+		event.initEvent(type.replace(/^nsDOM/, ''), true, false);
 		event.oldPosition = aOldPosition;
 		event.newPosition = aNewPosition;
 		this.mTabBrowser.dispatchEvent(event);
@@ -1455,6 +1464,13 @@ TreeStyleTabBrowser.prototype = {
 		event.newState = newState;
 		this.mTabBrowser.dispatchEvent(event);
 
+		// for backward compatibility
+		event = document.createEvent('Events');
+		event.initEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGING.replace(/^nsDOM/, ''), true, false);
+		event.oldState = oldState;
+		event.newState = newState;
+		this.mTabBrowser.dispatchEvent(event);
+
 		return true;
 	},
  
@@ -1475,6 +1491,12 @@ TreeStyleTabBrowser.prototype = {
 		/* PUBLIC API */
 		var event = document.createEvent('Events');
 		event.initEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGED, true, false);
+		event.state = state;
+		this.mTabBrowser.dispatchEvent(event);
+
+		// for backward compatibility
+		event = document.createEvent('Events');
+		event.initEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGED.replace(/^nsDOM/, ''), true, false);
 		event.state = state;
 		this.mTabBrowser.dispatchEvent(event);
 
@@ -2222,7 +2244,14 @@ TreeStyleTabBrowser.prototype = {
 				) {
 				let event = document.createEvent('Events');
 				event.initEvent(this.kEVENT_TYPE_FOCUS_NEXT_TAB, true, true);
-				if (tab.dispatchEvent(event))
+				let canFocus = tab.dispatchEvent(event);
+
+				// for backward compatibility
+				event = document.createEvent('Events');
+				event.initEvent(this.kEVENT_TYPE_FOCUS_NEXT_TAB.replace(/^nsDOM/, ''), true, true);
+				canFocus = canFocus && tab.dispatchEvent(event);
+
+				if (canFocus)
 					b.selectedTab = nextFocusedTab;
 			}
 		}
@@ -3501,6 +3530,12 @@ TreeStyleTabBrowser.prototype = {
 		event.initEvent(this.kEVENT_TYPE_ATTACHED, true, false);
 		event.parentTab = aParent;
 		aChild.dispatchEvent(event);
+
+		// for backward compatibility
+		event = document.createEvent('Events');
+		event.initEvent(this.kEVENT_TYPE_ATTACHED.replace(/^nsDOM/, ''), true, false);
+		event.parentTab = aParent;
+		aChild.dispatchEvent(event);
 	},
  
 	shouldTabAutoExpanded : function TSTBrowser_shouldTabAutoExpanded(aTab) 
@@ -3543,6 +3578,12 @@ TreeStyleTabBrowser.prototype = {
 		/* PUBLIC API */
 		var event = document.createEvent('Events');
 		event.initEvent(this.kEVENT_TYPE_DETACHED, true, false);
+		event.parentTab = parentTab;
+		aChild.dispatchEvent(event);
+
+		// for backward compatibility
+		event = document.createEvent('Events');
+		event.initEvent(this.kEVENT_TYPE_DETACHED.replpace(/^nsDOM/, ''), true, false);
 		event.parentTab = parentTab;
 		aChild.dispatchEvent(event);
 
@@ -3979,6 +4020,12 @@ TreeStyleTabBrowser.prototype = {
 		/* PUBLIC API */
 		var event = document.createEvent('Events');
 		event.initEvent(this.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, true, false);
+		event.collapsed = aCollapse;
+		aTab.dispatchEvent(event);
+
+		// for backward compatibility
+		event = document.createEvent('Events');
+		event.initEvent(this.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED.replace(/^nsDOM/, ''), true, false);
 		event.collapsed = aCollapse;
 		aTab.dispatchEvent(event);
 

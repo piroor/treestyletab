@@ -675,6 +675,13 @@ AutoHideBrowser.prototype = {
 		event.shown = this.expanded;
 		event.state = this.state;
 		this.browser.dispatchEvent(event);
+
+		// for backward compatibility
+		event = this.document.createEvent('Events');
+		event.initEvent(this.treeStyleTab.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGING.replace(/^nsDOM/, ''), true, false);
+		event.shown = this.expanded;
+		event.state = this.state;
+		this.browser.dispatchEvent(event);
 	},
  
 	fireStateChangeEvent : function AHB_fireStateChangeEvent() 
@@ -682,6 +689,15 @@ AutoHideBrowser.prototype = {
 		/* PUBLIC API */
 		var event = this.document.createEvent('Events');
 		event.initEvent(this.treeStyleTab.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGE, true, false);
+		event.shown = this.expanded;
+		event.state = this.state;
+		event.xOffset = this.XOffset;
+		event.yOffset = this.YOffset;
+		this.browser.dispatchEvent(event);
+
+		// for backward compatibility
+		event = this.document.createEvent('Events');
+		event.initEvent(this.treeStyleTab.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGE.replace(/^nsDOM/, ''), true, false);
 		event.shown = this.expanded;
 		event.state = this.state;
 		event.xOffset = this.XOffset;

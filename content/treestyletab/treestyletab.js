@@ -950,6 +950,12 @@ var TreeStyleTabService = {
 		event.initEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN, true, false);
 		event.sourceEvent = aEvent;
 		b.dispatchEvent(event);
+
+		// for backward compatibility
+		event = b.ownerDocument.createEvent('Events');
+		event.initEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN.replace(/^nsDOM/, ''), true, false);
+		event.sourceEvent = aEvent;
+		b.dispatchEvent(event);
 	},
 	accelKeyPressed : false,
  
@@ -997,6 +1003,17 @@ var TreeStyleTabService = {
 			event.onlyShiftKey = onlyShiftKey;
 			event.sourceEvent = aEvent;
 			b.dispatchEvent(event);
+
+			// for backward compatibility
+			event = b.ownerDocument.createEvent('Events');
+			event.initEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START.replace(/^nsDOM/, ''), true, false);
+			event.scrollDown = scrollDown;
+			event.scrollUp = scrollUp;
+			event.standBy = standBy;
+			event.onlyShiftKey = onlyShiftKey;
+			event.sourceEvent = aEvent;
+			b.dispatchEvent(event);
+
 			return;
 		}
 
@@ -1006,6 +1023,16 @@ var TreeStyleTabService = {
 		let (event) {
 			event = document.createEvent('Events');
 			event.initEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, true, false);
+			event.scrollDown = scrollDown;
+			event.scrollUp = scrollUp;
+			event.standBy = standBy;
+			event.onlyShiftKey = onlyShiftKey;
+			event.sourceEvent = aEvent;
+			b.dispatchEvent(event);
+
+			// for backward compatibility
+			event = document.createEvent('Events');
+			event.initEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END.replace(/^nsDOM/, ''), true, false);
 			event.scrollDown = scrollDown;
 			event.scrollUp = scrollUp;
 			event.standBy = standBy;
@@ -1386,15 +1413,32 @@ var TreeStyleTabService = {
 		event.initEvent(this.kEVENT_TYPE_SUBTREE_CLOSING, true, true);
 		event.parent = aParentTab;
 		event.tabs = aClosedTabs;
-		return this.getTabBrowserFromChild(aParentTab).dispatchEvent(event);
+		var canClose = this.getTabBrowserFromChild(aParentTab).dispatchEvent(event);
+
+		// for backward compatibility
+		event = aParentTab.ownerDocument.createEvent('Events');
+		event.initEvent(this.kEVENT_TYPE_SUBTREE_CLOSING.replace(/^nsDOM/, ''), true, true);
+		event.parent = aParentTab;
+		event.tabs = aClosedTabs;
+		canClose = canClose && this.getTabBrowserFromChild(aParentTab).dispatchEvent(event);
+
+		return canClose;
 	},
  
 	fireTabSubtreeClosedEvent : function TSTService_fireTabSubtreeClosedEvent(aTabBrowser, aParentTab, aClosedTabs) 
 	{
 		aClosedTabs = aClosedTabs.filter(function(aTab) { return !aTab.parentNode; });
+
 		/* PUBLIC API */
 		var event = aTabBrowser.ownerDocument.createEvent('Events');
 		event.initEvent(this.kEVENT_TYPE_SUBTREE_CLOSED, true, false);
+		event.parent = aParentTab;
+		event.tabs = aClosedTabs;
+		aTabBrowser.dispatchEvent(event);
+
+		// for backward compatibility
+		event = aTabBrowser.ownerDocument.createEvent('Events');
+		event.initEvent(this.kEVENT_TYPE_SUBTREE_CLOSED.replace(/^nsDOM/, ''), true, false);
 		event.parent = aParentTab;
 		event.tabs = aClosedTabs;
 		aTabBrowser.dispatchEvent(event);
@@ -1645,12 +1689,22 @@ var TreeStyleTabService = {
 		var event = document.createEvent('Events');
 		event.initEvent(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, true, false);
 		document.documentElement.dispatchEvent(event);
+
+		// for backward compatibility
+		event = aTabBrowser.ownerDocument.createEvent('Events');
+		event.initEvent(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED.replace(/^nsDOM/, ''), true, false);
+		document.documentElement.dispatchEvent(event);
 	},
  
 	onPrintPreviewExit : function TSTService_onPrintPreviewExit() 
 	{
 		var event = document.createEvent('Events');
 		event.initEvent(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED, true, false);
+		document.documentElement.dispatchEvent(event);
+
+		// for backward compatibility
+		event = aTabBrowser.ownerDocument.createEvent('Events');
+		event.initEvent(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED.replace(/^nsDOM/, ''), true, false);
 		document.documentElement.dispatchEvent(event);
 	},
   
