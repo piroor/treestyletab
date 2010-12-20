@@ -377,7 +377,7 @@ TreeStyleTabBrowser.prototype = {
 		tabContainer.addEventListener('dblclick',  this, true);
 		tabContainer.addEventListener('select', this, true);
 		tabContainer.addEventListener('scroll', this, true);
-		tabContainer.addEventListener('MultipleTabHandler:TabsDragStart', this, true);
+		tabContainer.addEventListener('nsDOMMultipleTabHandler:TabsDragStart', this, true);
 
 		var strip = this.tabStrip;
 		strip.addEventListener('MozMouseHittest', this, true); // to block default behaviors of the tab bar
@@ -393,7 +393,7 @@ TreeStyleTabBrowser.prototype = {
 		window.addEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
 		window.addEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED,  this, false);
 
-		b.addEventListener('MultipleTabHandlerTabsClosing', this, false);
+		b.addEventListener('nsDOMMultipleTabHandlerTabsClosing', this, false);
 
 		this.tabbarDNDObserver;
 		this.panelDNDObserver;
@@ -1541,7 +1541,7 @@ TreeStyleTabBrowser.prototype = {
 		tabContainer.removeEventListener('dblclick',  this, true);
 		tabContainer.removeEventListener('select', this, true);
 		tabContainer.removeEventListener('scroll', this, true);
-		tabContainer.removeEventListener('MultipleTabHandler:TabsDragStart', this, true);
+		tabContainer.removeEventListener('nsDOMMultipleTabHandler:TabsDragStart', this, true);
 
 		var strip = this.tabStrip;
 		strip.removeEventListener('MozMouseHittest', this, true);
@@ -1552,7 +1552,7 @@ TreeStyleTabBrowser.prototype = {
 		window.removeEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
 		window.removeEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED,  this, false);
 
-		b.removeEventListener('MultipleTabHandlerTabsClosing', this, false);
+		b.removeEventListener('nsDOMMultipleTabHandlerTabsClosing', this, false);
 
 		window['piro.sakura.ne.jp'].tabsDragUtils.destroyTabBrowser(b);
 
@@ -1945,13 +1945,13 @@ TreeStyleTabBrowser.prototype = {
 				return this.onTreeStyleTabPrintPreviewExited(aEvent);
 
 
-			case 'MultipleTabHandlerTabsClosing':
+			case 'nsDOMMultipleTabHandlerTabsClosing':
 				if (!this.onTabsRemoving(aEvent))
 					aEvent.preventDefault();
 				return;
 
 			// cancel tab dragging by Multiple Tab
-			case 'MultipleTabHandler:TabsDragStart':
+			case 'nsDOMMultipleTabHandler:TabsDragStart':
 				return aEvent.preventDefault();
 		}
 	},
