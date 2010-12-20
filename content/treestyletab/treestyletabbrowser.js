@@ -637,8 +637,9 @@ TreeStyleTabBrowser.prototype = {
 
 		this.ObserverService.addObserver(this, this.kTOPIC_INDENT_MODIFIED, false);
 		this.ObserverService.addObserver(this, this.kTOPIC_COLLAPSE_EXPAND_ALL, false);
-		this.ObserverService.addObserver(this, 'private-browsing-change-granted', false);
 		this.ObserverService.addObserver(this, this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY, false);
+		this.ObserverService.addObserver(this, 'private-browsing-change-granted', false);
+		this.ObserverService.addObserver(this, 'lightweight-theme-styling-update', false);
 		this.addPrefListener(this);
 
 		this.autoHide;
@@ -1549,8 +1550,9 @@ TreeStyleTabBrowser.prototype = {
 
 		this.ObserverService.removeObserver(this, this.kTOPIC_INDENT_MODIFIED);
 		this.ObserverService.removeObserver(this, this.kTOPIC_COLLAPSE_EXPAND_ALL);
-		this.ObserverService.removeObserver(this, 'private-browsing-change-granted');
 		this.ObserverService.removeObserver(this, this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY);
+		this.ObserverService.removeObserver(this, 'private-browsing-change-granted');
+		this.ObserverService.removeObserver(this, 'lightweight-theme-styling-update');
 		this.removePrefListener(this);
 
 		delete this.mTabBrowser;
@@ -1618,9 +1620,11 @@ TreeStyleTabBrowser.prototype = {
 
 			case 'private-browsing-change-granted':
 				this.collapseExpandAllSubtree(false, true);
-				window.setTimeout(function(aSelf) {
-					aSelf.updateFloatingTabbar(aSelf.kTABBAR_UPDATE_BY_PRIVATE_BROWSING);
-				}, 0, this);
+				this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_PRIVATE_BROWSING);
+				break;
+
+			case 'lightweight-theme-styling-update':
+				this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
 				break;
 
 			case this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY:
