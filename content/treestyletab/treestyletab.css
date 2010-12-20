@@ -209,10 +209,17 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 }
 
 #TabsToolbar,
-#navigator-toolbox[tabsontop="true"] > #TabsToolbar,
-#navigator-toolbox:not([tabsontop="true"])
-  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"] + #TabsToolbar:last-child {
+#navigator-toolbox[tabsontop="false"] > #TabsToolbar,
+#navigator-toolbox[tabsontop="false"] > #TabsToolbar:-moz-lwtheme {
 	-moz-binding: url(treestyletab.xml#tabs-toolbar);
+}
+#navigator-toolbox[tabsontop="true"] > #TabsToolbar,
+#navigator-toolbox[tabsontop="true"] > #TabsToolbar:-moz-lwtheme,
+#navigator-toolbox
+  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"] + #TabsToolbar[tabsontop="true"]:last-child,
+#navigator-toolbox
+  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"] + #TabsToolbar[tabsontop="false"]:last-child {
+	-moz-binding: url(treestyletab.xml#tabs-toolbar-drag);
 }
 #TabsToolbar:not([treestyletab-tabbar-position="top"]),
 #TabsToolbar[treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
