@@ -13,7 +13,7 @@
    http://github.com/piroor/fxaddonlibs/blob/master/tabsDragUtils.js
 */
 (function() {
-	const currentRevision = 5;
+	const currentRevision = 6;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -34,14 +34,18 @@
 	var tabsDragUtils = {
 		revision : currentRevision,
 
+		// "nsDOM" prefix is required!
+		// https://developer.mozilla.org/en/Creating_Custom_Events_That_Can_Pass_Data
+		EVENT_TYPE_TABS_DROP : 'nsDOMMultipleTabsDrop',
+
 		init : function TDU_init()
 		{
-			window.addEventListener('load', this._delayedInit, false);
+			window.addEventListener('load', this, false);
 		},
 		_delayedInit : function TDU_delayedInit()
 		{
-			window.removeEventListener('load', arguments.callee, false);
-			delete tabsDragUtils._delayedInit;
+			window.removeEventListener('load', this, false);
+			delete this._delayedInit;
 
 			if (
 				'PlacesControllerDragHelper' in window &&
@@ -70,12 +74,12 @@
 
 			// for Tab Mix Plus
 			if ('TabDNDObserver' in window)
-				tabsDragUtils.initTabDNDObserver(TabDNDObserver);
+				this.initTabDNDObserver(TabDNDObserver);
 		},
 		destroy : function TDU_destroy()
 		{
 			if (this._delayedInit)
-				window.removeEventListener('load', this._delayedInit, false);
+				window.removeEventListener('load', this, false);
 		},
 
 		initTabBrowser : function TDU_initTabBrowser(aTabBrowser)
@@ -291,6 +295,29 @@
 				return false;
 
 			return true;
+		},
+
+		handleEvent : function TDU_handleEvent(aEvent) 
+		{
+			switch (aEvent.type)
+			{
+				case 'load':
+					return this._delayedInit();
+			}
+		},
+
+		_fireTabsDropEvent : function TDU_fireTabsDropEvent(aTabs) 
+		{
+			var event = document.createEvent('Events');
+			event.initEvent(this.EVENT_TYPE_TABS_DROP, true, true);
+			event.tabs = aTabs;
+			return this._dropTarget.dispatchEvent(event);
+		},
+		get _dropTarget()
+		{
+			return ('PlacesControllerDragHelper' in window ?
+						PlacesControllerDragHelper.currentDropTarge :
+						null ) || document;
 		}
 	};
 
@@ -309,6 +336,9 @@
 
 		this._source = aDataTransfer;
 		this._tabs = tabs;
+
+		if (!tabsDragUtils._fireTabsDropEvent(tabs))
+			this._tabs = [tabs[0]];
 
 		if (tabsDragUtils.willBeInsertedBeforeExistingNode(aInsertionPoint))
 			this._tabs.reverse();
@@ -343,8 +373,11 @@
 		get mozCursor() { return this._source.mozCursor; },
 		set mozCursor(aValue) { return this._source.mozCursor = aValue; },
 
-		mozTypesAt : function DOMDTProxy_mozTypesAt()
+		mozTypesAt : function DOMDTProxy_mozTypesAt(aIndex)
 		{
+			if (aIndex >= this._tabs.length)
+				return new StringList([]);
+
 			// return this._apply('mozTypesAt', [0]);
 			// I return "text/x-moz-url" as a first type, to override behavior for "to-be-restored" tabs.
 			return new StringList(['text/x-moz-url', TAB_DROP_TYPE, 'text/x-moz-text-internal']);
@@ -364,6 +397,9 @@
 
 		mozGetDataAt : function DOMDTProxy_mozGetDataAt(aFormat, aIndex)
 		{
+			if (aIndex >= this._tabs.length)
+				return null;
+
 			var tab = this._tabs[aIndex];
 			switch (aFormat)
 			{

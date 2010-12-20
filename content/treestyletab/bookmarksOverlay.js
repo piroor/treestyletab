@@ -244,9 +244,16 @@ var TreeStyleTabBookmarksService = {
 	},
  
 
+	preInit : function TSTBMService_preInit()
+	{
+		window.addEventListener('load', this, false);
+		window.addEventListener(window['piro.sakura.ne.jp'].tabsDragUtils.EVENT_TYPE_TABS_DROP, this, false);
+	},
+
 	init : function TSTBMService_init()
 	{
 		window.removeEventListener('load', this, false);
+		window.addEventListener('unload', this, false);
 
 		if (!('PlacesUIUtils' in window)) return;
 
@@ -405,6 +412,12 @@ var TreeStyleTabBookmarksService = {
 		}
 	},
 
+	destroy : function TSTBMService_destroy()
+	{
+		window.removeEventListener('unload', this, false);
+		window.removeEventListener(window['piro.sakura.ne.jp'].tabsDragUtils.EVENT_TYPE_TABS_DROP, this, false);
+	},
+
 	// observer for nsINavBookmarksService 
 	onItemAdded : function TSTBMService_onItemAdded(aID, aFolderID, aPosition)
 	{
@@ -419,16 +432,33 @@ var TreeStyleTabBookmarksService = {
 	onBeginUpdateBatch : function TSTBMService_onBeginUpdateBatch() {},
 	onEndUpdateBatch : function TSTBMService_onEndUpdateBatch() {},
 
+
+	_onTabsDrop : function TSTBMService_onTabsDrop(aEvent)
+	{
+		var groups = this.splitTabsToSubtrees(aEvent.tabs || []);
+		if (groups.length == 1 &&
+			this.bookmarkDroppedTabsBehavior() != this.kBOOKMARK_DROPPED_TABS_ALL) {
+			aEvent.preventDefault();
+			aEvent.stopPropagation();
+		}
+	},
+
+
 	handleEvent : function TSTBMService_handleEvent(aEvent)
 	{
 		switch (aEvent.type)
 		{
 			case 'load':
-				this.init();
-				break;
+				return this.init();
+
+			case 'unload':
+				return this.destroy();
+
+			case window['piro.sakura.ne.jp'].tabsDragUtils.EVENT_TYPE_TABS_DROP:
+				return this._onTabsDrop(aEvent);
 		}
 	}
 
 };
 
-window.addEventListener('load', TreeStyleTabBookmarksService, false);
+TreeStyleTabBookmarksService.preInit();

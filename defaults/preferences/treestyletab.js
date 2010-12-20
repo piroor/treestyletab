@@ -99,6 +99,8 @@ pref("extensions.treestyletab.dropLinksOnTab.behavior", 0);
 //   Collapse/expand:
 //     2048 = expand all tree
 pref("extensions.treestyletab.openGroupBookmark.behavior", 2304); /* 0 | 256 | 2048 */
+// 0 = always ask, 1 = bookmark all, 2 = bookmark only the parent tab
+pref("extensions.treestyletab.bookmarkDroppedTabsBehavior.behavior", 0);
 pref("extensions.treestyletab.taskbarPreviews.hideCollapsedTabs", true);
 
 pref("extensions.treestyletab.autoCollapseExpandSubtreeOnSelect",      true);

@@ -475,6 +475,41 @@ var TreeStyleTabUtils = {
 	kGROUP_BOOKMARK_DONT_RESTORE_TREE_STRUCTURE : 512,
 	kGROUP_BOOKMARK_EXPAND_ALL_TREE             : 2048,
  
+	bookmarkDroppedTabsBehavior : function TSTUtils_bookmarkDroppedTabsBehavior() 
+	{
+		var behavior = this.getTreePref('bookmarkDroppedTabsBehavior.behavior');
+		if (behavior & this.kBOOKMARK_DROPPED_TABS_FIXED) return behavior;
+
+		var checked = { value : false };
+		var button = this.PromptService.confirmEx(this.browserWindow,
+				this.treeBundle.getString('bookmarkDroppedTabs.title'),
+				this.treeBundle.getString('bookmarkDroppedTabs.text'),
+				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_0) +
+				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_1),
+				this.treeBundle.getString('bookmarkDroppedTabs.bookmarkAll'),
+				this.treeBundle.getString('bookmarkDroppedTabs.bookmarkOnlyParent'),
+				null,
+				this.treeBundle.getString('bookmarkDroppedTabs.never'),
+				checked
+			);
+
+		if (button < 0) button = 1;
+		var behaviors = [
+				this.kBOOKMARK_DROPPED_TABS_ALL,
+				this.kBOOKMARK_DROPPED_TABS_ONLY_PARENT
+			];
+		behavior = behaviors[button];
+
+		if (checked.value)
+			this.setTreePref('bookmarkDroppedTabsBehavior.behavior', behavior);
+
+		return behavior;
+	},
+	kBOOKMARK_DROPPED_TABS_ASK         : 0,
+	kBOOKMARK_DROPPED_TABS_FIXED       : 1 + 2,
+	kBOOKMARK_DROPPED_TABS_ALL         : 1,
+	kBOOKMARK_DROPPED_TABS_ONLY_PARENT : 2,
+ 
 	askUndoCloseTabSetBehavior : function TSTUtils_askUndoCloseTabSetBehavior(aRestoredTab, aCount) 
 	{
 		var behavior = this.undoCloseTabSetBehavior;
