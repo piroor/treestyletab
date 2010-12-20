@@ -1691,7 +1691,7 @@ var TreeStyleTabService = {
 		document.documentElement.dispatchEvent(event);
 
 		// for backward compatibility
-		event = aTabBrowser.ownerDocument.createEvent('Events');
+		event = document.createEvent('Events');
 		event.initEvent(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED.replace(/^nsDOM/, ''), true, false);
 		document.documentElement.dispatchEvent(event);
 	},
@@ -1703,7 +1703,7 @@ var TreeStyleTabService = {
 		document.documentElement.dispatchEvent(event);
 
 		// for backward compatibility
-		event = aTabBrowser.ownerDocument.createEvent('Events');
+		event = document.createEvent('Events');
 		event.initEvent(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED.replace(/^nsDOM/, ''), true, false);
 		document.documentElement.dispatchEvent(event);
 	},
