@@ -3583,7 +3583,7 @@ TreeStyleTabBrowser.prototype = {
 
 		// for backward compatibility
 		event = document.createEvent('Events');
-		event.initEvent(this.kEVENT_TYPE_DETACHED.replpace(/^nsDOM/, ''), true, false);
+		event.initEvent(this.kEVENT_TYPE_DETACHED.replace(/^nsDOM/, ''), true, false);
 		event.parentTab = parentTab;
 		aChild.dispatchEvent(event);
 
