@@ -97,6 +97,12 @@
             .tab-background-end[selected="true"]) {
 	background: transparent !important;
 }
+.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
+  :-moz-any(.tab-background,
+            .tab-content) {
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+}
 
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
   .tab-icon-image {
