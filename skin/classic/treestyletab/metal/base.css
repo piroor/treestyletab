@@ -153,10 +153,18 @@ tabbrowser[treestyletab-style~="metal"][treestyletab-tabbar-position="right"]
   .tabbrowser-tab
   .tab-close-button {
 	z-index: 1 !important; /* for Linux */
-	margin: 0 !important;
+	margin-left: 0 !important;
+	margin-right: 0 !important;
 	/* padding: 3px 4px 4px !important; */
 	padding: 3px 0 4px !important;
 	text-align: center !important;
+}
+/* this is not required on Firefox 4 */
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab
+  > .tab-close-button {
+	margin-top: 0 !important;
+	margin-bottom: 0 !important;
 }
 
 
