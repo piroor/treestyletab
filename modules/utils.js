@@ -603,15 +603,27 @@ var TreeStyleTabUtils = {
 			!this.canCollapseSubtree(tab))
 			return false;
 
-		var expression = 'ancestor-or-self::*[@class="'+this.kTWISTY+'"]';
-		if (this.shouldExpandTwistyArea && !this._expandTwistyAreaBlockers.length)
-			expression += ' | ancestor-or-self::*[@class="tab-icon" and ancestor::xul:tabs[@'+this.kMODE+'="vertical"]]';
+		var twisty = tab.ownerDocument.getAnonymousElementByAttribute(tab, 'class', this.kTWISTY);
+		if (!twisty)
+			return false;
 
-		return this.evaluateXPath(
-				expression,
-				aEvent.originalTarget || aEvent.target,
-				Ci.nsIDOMXPathResult.BOOLEAN_TYPE
-			).booleanValue;
+		var box = twisty.boxObject;
+		var minX = box.screenX;
+		var minY = box.screenY;
+		var maxX = minX + box.width;
+		var maxY = minY + box.height;
+		if (this.shouldExpandTwistyArea && !this._expandTwistyAreaBlockers.length) {
+			let icon  = tab.ownerDocument.getAnonymousElementByAttribute(tab, 'class', 'tab-icon');
+			let box = icon.boxObject;
+			minX = Math.min(minX, box.screenX);
+			minY = Math.min(minY, box.screenY);
+			maxX = Math.max(maxX, box.screenX + box.width);
+			maxY = Math.max(maxY, box.screenY + box.height);
+		}
+
+		var x = aEvent.screenX;
+		var y = aEvent.screenY;
+		return (x >= minX && x <= maxX && y >= minY && y <= maxY);
 	},
 	
 	registerExpandTwistyAreaBlocker : function TSTUtils_registerExpandTwistyAreaBlocker(aBlocker) /* PUBLIC API */ 
