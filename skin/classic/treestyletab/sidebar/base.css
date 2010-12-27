@@ -246,7 +246,8 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
 /* changed from original SidebarStyleTab */
 
 #TabsToolbar[treestyletab-style~="sidebar"]:not([treestyletab-tabbar-position="top"]),
-#TabsToolbar[treestyletab-style~="sidebar"][treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
+#TabsToolbar[treestyletab-style~="sidebar"][treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]),
+.tabbrowser-tabs[treestyletab-style~="sidebar"]:not([treestyletab-tabbar-position="top"]) .arrowscrollbox-scrollbox {
 	background: transparent !important;
 	border: 0 none !important;
 	margin: 0 !important;
