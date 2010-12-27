@@ -3,8 +3,7 @@
 /* Default style */
 
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"]),
-#TabsToolbar[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"]),
-.tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"]) .arrowscrollbox-scrollbox {
+#TabsToolbar[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"]) {
 	background: transparent !important;
 	margin: 0 !important;
 	padding: 0 !important;

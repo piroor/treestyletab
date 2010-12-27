@@ -38,6 +38,10 @@
 	margin: 0 !important;
 	padding: 0 !important;
 }
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"]) .arrowscrollbox-scrollbox {
+	margin: 0 !important;
+	padding: 0 !important;
+}
 
 /* Support customizable tab bar on Firefox 4.0 or later */
 #TabsToolbar[treestyletab-mode="vertical"] > toolbarpaletteitem > toolbarbutton {
