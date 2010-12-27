@@ -338,6 +338,20 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
 	-moz-appearance: none !important;
 }
 
+/* for Mac OS X, Firefox 4 */
+.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+  :-moz-any(.tab-content:not([selected="true"]),
+            .tab-content[selected="true"]) {
+	border: 0 none !important;
+	background: transparent !important;
+}
+.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+  :-moz-any(.tab-background-start[selected="true"],
+            .tab-background-middle[selected="true"],
+            .tab-background-end[selected="true"]) {
+	background: transparent !important;
+}
+
 /* for Multiple Tab Handler */
 .tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
   .tabbrowser-tab:not(:hover):not([selected="true"])[multipletab-ready-to-close="true"]
