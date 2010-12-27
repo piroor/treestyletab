@@ -29,6 +29,16 @@
 	background: ThreeDHighlight !important;
 }
 
+/* for Mac OS X, Firefox 4 */
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabs-newtab-button
+  .toolbarbutton-icon {
+	-moz-border-image: none !important;
+	border: 0 none !important;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
 /* Support customizable tab bar on Firefox 4.0 or later */
 #TabsToolbar[treestyletab-mode="vertical"] > toolbarpaletteitem > toolbarbutton {
 	-moz-box-flex: 1;
