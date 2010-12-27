@@ -6,8 +6,8 @@
 #TabsToolbar[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"]),
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"]) .arrowscrollbox-scrollbox {
 	background: transparent !important;
-	margin: 0;
-	padding: 0;
+	margin: 0 !important;
+	padding: 0 !important;
 	-moz-appearance: none;
 }
 .tabbrowser-strip[treestyletab-style~="square"][treestyletab-style~="border"]:not([treestyletab-tabbar-position="top"]) {
