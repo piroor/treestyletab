@@ -21,12 +21,13 @@
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab .tab-background {
-	-moz-transition: background-image 0.25s ease-out !important;
-	transition: background-image 0.25s ease-out !important;
+	-moz-transition: background 0.25s ease-out !important;
+	transition: background 0.25s ease-out !important;
 }
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab .tab-background:not([selected="true"]) {
+	background-color: ThreeDFace !important;
 	background-image: -moz-linear-gradient(
 	                    top, 
 	                    rgba(0, 0, 0, 0.05) 1px,
@@ -36,6 +37,7 @@
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab .tab-background[selected="true"] {
+	background-color: #c1d2ee !important;
 	background-image: -moz-linear-gradient(
 	                    top,
 	                    rgba(4, 83, 227, 0.05) 1px,
@@ -48,19 +50,21 @@
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:hover .tab-background:not([selected="true"]) {
+	background-color: #e0e8f6 !important;
 	background-image: -moz-linear-gradient(
 	                    top,
 	                    rgba(213, 224, 245, 1) 1px,
-	                    rgba(213, 224, 245, 0.4) 120%
+	                    rgba(213, 224, 245, 0.4) 50%
 	                  ) !important;
 }
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:hover .tab-background[selected="true"] {
+	background-color: #d1e2fe !important;
 	background-image: -moz-linear-gradient(
 	                    top,
 	                    rgba(199, 219, 252, 1) 1px,
-	                    rgba(199, 219, 252, 0.4) 120%
+	                    rgba(199, 219, 252, 0.4) 50%
 	                  ) !important;
 }
 
