@@ -67,6 +67,7 @@
 	color: -moz-dialogtext;
 	background: ThreeDFace !important;
 	-moz-background-origin: border !important;
+	background-origin: border-box !important;
 	border-top: 2px solid !important;
 	-moz-border-top-colors: transparent transparent !important;
 	border-bottom: 2px solid !important;
