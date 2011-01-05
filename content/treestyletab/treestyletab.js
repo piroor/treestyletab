@@ -530,8 +530,8 @@ var TreeStyleTabService = {
 						TreeStyleTabService.readyToOpenChildTab(event.target.ownerDocument.defaultView);
 					$1]]>
 			).replace( // for Firefox 4.0-
-				/(fromContent\s*:\s*true\s*,)/,
-				'$1 event : event, linkNode : linkNode, '
+				/(charset\s*:\s*doc\.characterSet\s*)/,
+				'$1, event : event, linkNode : linkNode'
 			));
 			source = null;
 			return true;
