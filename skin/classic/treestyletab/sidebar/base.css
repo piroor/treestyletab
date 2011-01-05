@@ -352,6 +352,7 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
             .tab-background-middle[selected="true"],
             .tab-background-end[selected="true"]) {
 	background: transparent !important;
+	mask: none !important;
 }
 .tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
   :-moz-any(.tab-background,
