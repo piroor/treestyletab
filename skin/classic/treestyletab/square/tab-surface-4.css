@@ -21,8 +21,8 @@
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab .tab-background {
-	-moz-transition: background 0.25s ease-out !important;
-	transition: background 0.25s ease-out !important;
+	-moz-transition: background 0.5s ease-out !important;
+	transition: background 0.5s ease-out !important;
 }
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
