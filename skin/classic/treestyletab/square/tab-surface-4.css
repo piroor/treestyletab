@@ -51,7 +51,7 @@
 	background-image: -moz-linear-gradient(
 	                    top,
 	                    rgba(213, 224, 245, 1) 1px,
-	                    rgba(213, 224, 245, 0.4) 150%
+	                    rgba(213, 224, 245, 0.4) 120%
 	                  ) !important;
 }
 
@@ -60,7 +60,7 @@
 	background-image: -moz-linear-gradient(
 	                    top,
 	                    rgba(199, 219, 252, 1) 1px,
-	                    rgba(199, 219, 252, 0.4) 150%
+	                    rgba(199, 219, 252, 0.4) 120%
 	                  ) !important;
 }
 
