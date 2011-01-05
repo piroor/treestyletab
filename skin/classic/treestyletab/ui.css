@@ -179,7 +179,6 @@
 .tabbrowser-tabs[treestyletab-tabbar-position="top"]
   .tabbrowser-tab[treestyletab-drop-position="self"]:not([selected="true"]):hover
   .tab-content {
-	-moz-outline: 2px -moz-dialogtext solid !important;
 	outline: 2px -moz-dialogtext solid !important;
 }
 
