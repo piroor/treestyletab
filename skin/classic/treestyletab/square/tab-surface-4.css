@@ -20,25 +20,27 @@
 /* surface */
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab .tab-background {
+	-moz-transition: background-image 0.25s ease-out !important;
+	transition: background-image 0.25s ease-out !important;
+}
+
+.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab .tab-background:not([selected="true"]) {
 	background-image: -moz-linear-gradient(
 	                    top, 
-	                    rgba(0, 0, 0, 0.02) 1px,
+	                    rgba(0, 0, 0, 0.05) 1px,
 	                    rgba(0, 0, 0, 0) 50%
-      	              ) !important;
-	transition: background 0.25s ease-out !important;
-	-moz-transition: background 0.25s ease-out !important;
+	                  ) !important;
 }
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab .tab-background[selected="true"] {
 	background-image: -moz-linear-gradient(
 	                    top,
-	                    rgba(4, 83, 227, 0.04) 1px,
+	                    rgba(4, 83, 227, 0.05) 1px,
 	                    rgba(4, 83, 227, 0) 50%
-      	              ) !important;
-	transition: background 0.25s ease-out !important;
-	-moz-transition: background 0.25s ease-out !important;
+	                  ) !important;
 }
 
 
@@ -49,8 +51,8 @@
 	background-image: -moz-linear-gradient(
 	                    top,
 	                    rgba(213, 224, 245, 1) 1px,
-	                    rgba(213, 224, 245, 0.04) 150%
-      	              ) !important;
+	                    rgba(213, 224, 245, 0.4) 150%
+	                  ) !important;
 }
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
@@ -58,7 +60,7 @@
 	background-image: -moz-linear-gradient(
 	                    top,
 	                    rgba(199, 219, 252, 1) 1px,
-      	                rgba(199, 219, 252, 0.04) 150%
-      	              ) !important;
+	                    rgba(199, 219, 252, 0.4) 150%
+	                  ) !important;
 }
 
