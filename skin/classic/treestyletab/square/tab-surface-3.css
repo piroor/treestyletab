@@ -1,0 +1,41 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+/* padding */
+
+.tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab[selected="true"],
+.tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:not([selected="true"]) {
+	padding: 0 0.2em !important;
+}
+
+/* surface */
+
+.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab,
+.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:not([selected="true"]) {
+	background-image: url("tab-bg.png") !important;
+	background-repeat: repeat-x !important;
+	background-position: 1px 1px !important;
+}
+
+.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab[selected="true"] {
+	background-image: url("tab-bg-highlighted.png") !important;
+}
+
+/* hover */
+
+.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:not([selected="true"]):hover {
+	background-color: ThreeDFace !important;
+	background-image: url("tab-bg-hover.png") !important;
+}
+
+.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab[selected="true"]:hover {
+	background-color: #c1d2ee !important;
+	background-image: url("tab-bg-selected-hover.png") !important;
+}
+

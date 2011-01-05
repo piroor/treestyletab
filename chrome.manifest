@@ -38,6 +38,9 @@ override chrome://treestyletab-platform/skin/metal/treestyletab-inactive.css	chr
 override chrome://treestyletab/skin/group/group-icon	chrome://treestyletab/skin/group/group-fx3.png
 override chrome://treestyletab/skin/group/group-icon	chrome://treestyletab/skin/group/group-fx3-aero.png	os=WINNT osversion>=6
 
+override chrome://treestyletab/skin/square/tab-surface.css	chrome://treestyletab/skin/square/tab-surface-3.css
+override chrome://treestyletab/skin/square/tab-surface.css	chrome://treestyletab/skin/square/tab-surface-4.css	appversion>=4.0b5pre
+
 override chrome://treestyletab/skin/metal/tab.css	chrome://treestyletab/skin/metal/tab-3.5.css
 override chrome://treestyletab/skin/metal/tab.css	chrome://treestyletab/skin/metal/tab-4.css	appversion>=4.0b5pre
 override chrome://treestyletab/skin/metal/base-inactive.css	chrome://treestyletab/skin/metal/base-inactive-3.5.css
