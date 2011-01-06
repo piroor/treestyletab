@@ -514,6 +514,19 @@ var TreeStyleTabService = {
 			)
 		);
 
+		if ('BrowserSearch' in window &&
+			'loadSearch' in BrowserSearch) {
+			eval('BrowserSearch.loadSearch = '+
+				BrowserSearch.loadSearch.toSource().replace(
+					'if (useNewTab) {',
+					<![CDATA[$&
+						if (TreeStyleTabService.shouldOpenSearchResultAsChild(arguments[0]))
+							TreeStyleTabService.readyToOpenChildTab();
+					]]>
+				)
+			);
+		}
+
 		this._splitFunctionNames(<![CDATA[
 			window.duplicateTab.handleLinkClick
 			window.__treestyletab__highlander__origHandleLinkClick
