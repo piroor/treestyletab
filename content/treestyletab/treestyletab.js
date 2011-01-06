@@ -146,11 +146,12 @@ var TreeStyleTabService = {
 	shouldOpenSearchResultAsChild : function TSTService_shouldOpenSearchResultAsChild(aTerm) 
 	{
 		var mode = this.getTreePref('autoAttachSearchResultAsChildren');
-		if (mode == this.kSEARCH_RESULT_ATTACH_ALWAYS)
+		if (mode == this.kSEARCH_RESULT_ATTACH_ALWAYS) {
 			return true;
-
-		if (!aTerm || mode == this.kSEARCH_RESULT_DO_NOT_ATTACH)
+		}
+		else if (!aTerm || mode == this.kSEARCH_RESULT_DO_NOT_ATTACH) {
 			return false;
+		}
 
 		var w = document.commandDispatcher.focusedWindow;
 		if (!w || w.top != this.browser.contentWindow)
