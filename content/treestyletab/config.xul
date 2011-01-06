@@ -675,7 +675,8 @@
 
 </prefpane>
 
-<prefpane id="prefpane-advanced" label="&config.tabs.advanced;">
+<prefpane id="prefpane-advanced" label="&config.tabs.advanced;"
+	onpaneload="initAdvancedPane();">
 	<preferences>
 		<preference id="extensions.treestyletab.animation.enabled"
 			name="extensions.treestyletab.animation.enabled"
@@ -683,6 +684,9 @@
 		<preference id="extensions.treestyletab.tooltip.includeChildren"
 			name="extensions.treestyletab.tooltip.includeChildren"
 			type="bool"/>
+		<preference id="extensions.treestyletab.bookmarkDroppedTabs.behavior"
+			name="extensions.treestyletab.bookmarkDroppedTabs.behavior"
+			type="int"/>
 	</preferences>
 
 	<checkbox id="extensions.treestyletab.animation.enabled-check"
@@ -691,6 +695,28 @@
 	<checkbox id="extensions.treestyletab.tooltip.includeChildren-check"
 		preference="extensions.treestyletab.tooltip.includeChildren"
 		label="&config.tooltip.includeChildren;"/>
+
+	<groupbox>
+		<caption label="&config.bookmarkDroppedTabs.caption;"/>
+		<hbox>
+			<checkbox id="bookmarkDroppedTabs-check"
+				label="&config.bookmarkDroppedTabs.ask;"
+				oncommand="gBookmarkDroppedTabsRadioSet.onChange();"/>
+		</hbox>
+		<deck id="bookmarkDroppedTabs-deck">
+			<spacer flex="1"/>
+			<vbox>
+			<separator class="hr"/>
+			<radiogroup id="bookmarkDroppedTabs-radiogroup"
+				preference="extensions.treestyletab.bookmarkDroppedTabs.behavior"
+				orient="vertical">
+				<radio value="0" collapsed="true"/>
+				<radio value="1" label="&config.bookmarkDroppedTabs.all;"/>
+				<radio value="2" label="&config.bookmarkDroppedTabs.parent;"/>
+			</radiogroup>
+			</vbox>
+		</deck>
+	</groupbox>
 </prefpane>
 
 <script src="config.js" type="application/javascript"/>

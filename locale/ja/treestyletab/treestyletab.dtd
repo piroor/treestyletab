@@ -130,6 +130,11 @@
 
 <!ENTITY config.tooltip.includeChildren        "タブのツールチップにツリーの内容を表示する">
 
+<!ENTITY config.bookmarkDroppedTabs.caption "子タブを持つタブをブックマークツリーにドラッグ＆ドロップした時">
+<!ENTITY config.bookmarkDroppedTabs.ask     "どうするか毎回尋ねる">
+<!ENTITY config.bookmarkDroppedTabs.all     "ツリーに含まれるすべてのタブをブックマークする">
+<!ENTITY config.bookmarkDroppedTabs.parent  "ドラッグされたタブだけをブックマークする">
+
 
 
 <!ENTITY selection.removeTabSubtree.label       "すべてのツリーを閉じる">

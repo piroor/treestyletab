@@ -477,7 +477,7 @@ var TreeStyleTabUtils = {
  
 	bookmarkDroppedTabsBehavior : function TSTUtils_bookmarkDroppedTabsBehavior() 
 	{
-		var behavior = this.getTreePref('bookmarkDroppedTabsBehavior.behavior');
+		var behavior = this.getTreePref('bookmarkDroppedTabs.behavior');
 		if (behavior & this.kBOOKMARK_DROPPED_TABS_FIXED) return behavior;
 
 		var checked = { value : false };
@@ -501,7 +501,7 @@ var TreeStyleTabUtils = {
 		behavior = behaviors[button];
 
 		if (checked.value)
-			this.setTreePref('bookmarkDroppedTabsBehavior.behavior', behavior);
+			this.setTreePref('bookmarkDroppedTabs.behavior', behavior);
 
 		return behavior;
 	},

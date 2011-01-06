@@ -125,6 +125,11 @@
 
 <!ENTITY config.tooltip.includeChildren        "Wyświetlaj zawartość drzewa po umieszczeniu kursora nad jego folderem">
 
+<!ENTITY config.bookmarkDroppedTabs.caption "Action for drag and drop of a parent tab to the bookmarks tree">
+<!ENTITY config.bookmarkDroppedTabs.ask     "Ask me always">
+<!ENTITY config.bookmarkDroppedTabs.all     "Bookmark all tabs in the tree">
+<!ENTITY config.bookmarkDroppedTabs.parent  "Bookmark only the dragged one tab">
+
 
 <!ENTITY selection.createSubtree.label          "Zbierz do nowego drzewa">
 <!ENTITY selection.createSubtree.accesskey      "Z">

@@ -360,6 +360,20 @@ function updateCloseRootBehaviorCheck()
 }
 
 
+var gBookmarkDroppedTabsRadioSet;
+
+function initAdvancedPane()
+{
+	gBookmarkDroppedTabsRadioSet = new RadioSet(
+		'extensions.treestyletab.bookmarkDroppedTabs.behavior',
+		'bookmarkDroppedTabs-radiogroup',
+		'bookmarkDroppedTabs-check',
+		'bookmarkDroppedTabs-deck'
+	);
+}
+
+
+
 function RadioSet(aPref, aRadio, aCheck, aDeck, aAskFlag)
 {
 	this.pref  = document.getElementById(aPref);
