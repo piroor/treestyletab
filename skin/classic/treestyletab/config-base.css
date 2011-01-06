@@ -59,7 +59,7 @@ radio[pane="prefpane-advanced"][selected="true"] {
 }
 
 radio[pane="prefpane-tree"] {
-	list-style-image: url("chrome://treestyletab/content/res/icon32.png");
+	list-style-image: url("chrome://treestyletab/content/res/icon.png");
 }
 
 label.scale-label {
