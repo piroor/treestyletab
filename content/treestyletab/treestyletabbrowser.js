@@ -644,6 +644,8 @@ TreeStyleTabBrowser.prototype = {
 
 		this.autoHide;
 
+		this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_INITIALIZE);
+
 		this.fireTabbarPositionEvent(false, 'top', position); /* PUBLIC API */
 
 		b = null;
