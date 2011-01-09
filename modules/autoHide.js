@@ -1126,12 +1126,12 @@ AutoHideBrowser.prototype = {
 				if (this.enabled &&
 					this.treeStyleTab.getTreePref('tabbar.autoShow.tabSwitch') &&
 					(
-						aEvent.scrollDown ||
-						aEvent.scrollUp ||
+						aEvent.detail & this.treeStyleTab.kTAB_FOCUS_SWITCHING_SCROLL_DOWN ||
+						aEvent.detail & this.treeStyleTab.kTAB_FOCUS_SWITCHING_SCROLL_UP ||
 						( // when you release "shift" key
 							this.expanded &&
-							aEvent.standBy &&
-							aEvent.onlyShiftKey
+							aEvent.detail & this.treeStyleTab.kTAB_FOCUS_SWITCHING_STAND_BY &&
+							aEvent.detail & this.treeStyleTab.kTAB_FOCUS_SWITCHING_ONLY_SHIFT_KEY
 						)
 					))
 					this.show(this.kSHOWN_BY_SHORTCUT);
