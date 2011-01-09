@@ -306,6 +306,12 @@ AutoHideBrowser.prototype = {
 				this.treeStyleTab.getTreePref('tabbar.autoShow.feedback');
 	},
  
+	get shouldListenKeyEventsForAutoHide()
+	{
+		return this.treeStyleTab.getTreePref('tabbar.autoShow.accelKeyDown') ||
+				this.treeStyleTab.getTreePref('tabbar.autoShow.tabSwitch');
+	},
+ 
 	showHideOnMousemove : function AHB_showHideOnMousemove(aEvent) 
 	{
 		var w = this.window;
