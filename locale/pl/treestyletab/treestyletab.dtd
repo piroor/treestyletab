@@ -68,16 +68,15 @@
 
 <!ENTITY config.tabs.autohide "Ukrywanie">
 
+<!ENTITY config.autoHide.mode.normal.caption     "for Normal Window Mode">
+<!ENTITY config.autoHide.mode.fullscreen.caption "for Full Screen Mode">
 <!ENTITY config.autoHide.mode.0 "Zawsze wyświetlaj pasek kart">
 <!ENTITY config.autoHide.mode.1 "Ukrywaj pasek kart">
 <!ENTITY config.autoHide.mode.2 "Zmniejszaj pasek kart">
 <!ENTITY config.autoShow.caption "Automatycznie wyświetlaj pasek kart po:">
-<!ENTITY config.autoShow.mousemove "Umieszczeniu kursora myszy w pobliżu krawędzi okna">
+<!ENTITY config.autoShow.mousemove "Umieszczeniu kursora myszy w pobliżu krawędzi okna / paska kart">
 <!ENTITY config.autoHide.area.before "Strefa czułości:">
-<!ENTITY config.autoHide.area.after "pikseli od krawędzi okna">
-<!ENTITY config.autoShow.mousemove.mode2 "Umieszczeniu kursora myszy w pobliżu krawędzi paska kart">
-<!ENTITY config.autoHide.area.before.mode2 "Strefa czułości:">
-<!ENTITY config.autoHide.area.after.mode2 "pikseli od krawędzi paska kart">
+<!ENTITY config.autoHide.area.after "pikseli od krawędzi okna / paska kart">
 <!ENTITY config.autoHide.delay.before "Opóźnienie:">
 <!ENTITY config.autoHide.delay.after "ms">
 <!ENTITY config.autoShow.accelKeyDown "Naciśnięciu i przytrzymaniu klawisza [Ctrl]">

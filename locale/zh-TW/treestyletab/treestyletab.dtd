@@ -73,6 +73,8 @@
 
 <!ENTITY config.tabs.autohide "自動隱藏">
 
+<!ENTITY config.autoHide.mode.normal.caption     "for Normal Window Mode">
+<!ENTITY config.autoHide.mode.fullscreen.caption "for Full Screen Mode">
 <!ENTITY config.autoHide.mode.0 "永遠顯示分頁工具列">
 <!ENTITY config.autoHide.mode.1 "自動隱藏分頁工具列">
 <!ENTITY config.autoHide.mode.2 "自動縮小分頁工具列">
@@ -80,9 +82,11 @@
 <!ENTITY config.autoShow.mousemove "滑鼠指標指向視窗邊緣時">
 <!ENTITY config.autoHide.area.before "起反應的區域：距離視窗邊緣">
 <!ENTITY config.autoHide.area.after "個像素的範圍">
+<!--
 <!ENTITY config.autoShow.mousemove.mode2 "滑鼠指標指在分頁工具列邊緣">
 <!ENTITY config.autoHide.area.before.mode2 "感應區:">
 <!ENTITY config.autoHide.area.after.mode2 "像素(距分頁工具列內緣)">
+-->
 <!ENTITY config.autoHide.delay.before "延遲：">
 <!ENTITY config.autoHide.delay.after "毫秒">
 <!ENTITY config.autoShow.accelKeyDown "按下 Ctrl一段時間後">

@@ -446,8 +446,14 @@
 		<preference id="extensions.treestyletab.tabbar.autoHide.mode"
 			name="extensions.treestyletab.tabbar.autoHide.mode"
 			type="int"/>
+		<preference id="extensions.treestyletab.tabbar.autoHide.mode.fullscreen"
+			name="extensions.treestyletab.tabbar.autoHide.mode.fullscreen"
+			type="int"/>
 		<preference id="extensions.treestyletab.tabbar.autoHide.mode.toggle"
 			name="extensions.treestyletab.tabbar.autoHide.mode.toggle"
+			type="int"/>
+		<preference id="extensions.treestyletab.tabbar.autoHide.mode.toggle.fullscreen"
+			name="extensions.treestyletab.tabbar.autoHide.mode.toggle.fullscreen"
 			type="int"/>
 		<preference id="extensions.treestyletab.tabbar.autoShow.mousemove"
 			name="extensions.treestyletab.tabbar.autoShow.mousemove"
@@ -481,10 +487,22 @@
 	<vbox>
 
 		<groupbox orient="vertical">
+			<caption label="&config.autoHide.mode.normal.caption;"/>
 			<radiogroup orient="horizontal"
 				id="extensions.treestyletab.tabbar.autoHide.mode-radio"
 				preference="extensions.treestyletab.tabbar.autoHide.mode"
-				onselect="onChangeAutoHideMode()">
+				onselect="onChangeAutoHideMode(this, 'extensions.treestyletab.tabbar.autoHide.mode.toggle')">
+				<radio label="&config.autoHide.mode.0;" value="0"/>
+				<radio label="&config.autoHide.mode.2;" value="2"/>
+				<radio label="&config.autoHide.mode.1;" value="1"/>
+			</radiogroup>
+		</groupbox>
+		<groupbox orient="vertical">
+			<caption label="&config.autoHide.mode.fullscreen.caption;"/>
+			<radiogroup orient="horizontal"
+				id="extensions.treestyletab.tabbar.autoHide.mode.fullscreen-radio"
+				preference="extensions.treestyletab.tabbar.autoHide.mode.fullscreen"
+				onselect="onChangeAutoHideMode(this, 'extensions.treestyletab.tabbar.autoHide.mode.toggle.fullscreen')">
 				<radio label="&config.autoHide.mode.0;" value="0"/>
 				<radio label="&config.autoHide.mode.2;" value="2"/>
 				<radio label="&config.autoHide.mode.1;" value="1"/>
@@ -495,7 +513,7 @@
 			<caption label="&config.autoShow.caption;"/>
 			<checkbox id="extensions.treestyletab.tabbar.autoShow.mousemove-check"
 				preference="extensions.treestyletab.tabbar.autoShow.mousemove"
-				label="&config.autoShow.mousemove.mode2;"
+				label="&config.autoShow.mousemove;"
 				oncommand="syncEnabledState(this, this.checked);"
 				sync-enabled-state-targets="
 					extensions.treestyletab.tabbar.autoHide.area-before
@@ -508,25 +526,16 @@
 			<hbox align="center">
 				<spacer style="width:1em;"/>
 				<label id="extensions.treestyletab.tabbar.autoHide.area-before"
-					value="&config.autoHide.area.before.mode2;"
+					value="&config.autoHide.area.before;"
 					control="extensions.treestyletab.tabbar.autoHide.area-textbox"/>
 				<textbox id="extensions.treestyletab.tabbar.autoHide.area-textbox"
 					preference="extensions.treestyletab.tabbar.autoHide.area"
 					type="number"
 					min="0" increment="1" style="width:4em;"/>
 				<label id="extensions.treestyletab.tabbar.autoHide.area-after"
-					value="&config.autoHide.area.after.mode2;"
+					value="&config.autoHide.area.after;"
 					control="extensions.treestyletab.tabbar.autoHide.area-textbox"/>
 			</hbox>
-			<data target="extensions.treestyletab.tabbar.autoShow.mousemove-check"
-				label-mode1="&config.autoShow.mousemove;"
-				label-mode2="&config.autoShow.mousemove.mode2;"/>
-			<data target="extensions.treestyletab.tabbar.autoHide.area-before"
-				label-mode1="&config.autoHide.area.before;"
-				label-mode2="&config.autoHide.area.before.mode2;"/>
-			<data target="extensions.treestyletab.tabbar.autoHide.area-after"
-				label-mode1="&config.autoHide.area.after;"
-				label-mode2="&config.autoHide.area.after.mode2;"/>
 			<hbox align="center">
 				<spacer style="width:1em;"/>
 				<label id="extensions.treestyletab.tabbar.autoHide.delay-before"

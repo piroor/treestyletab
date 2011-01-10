@@ -296,18 +296,13 @@ function onSyncMaxTreeLevelPrefToUI(aTarget)
 }
 
 
-var gAutoHideModeRadio,
-	gAutoHideModeToggle,
-	gTabbarTransparencyScale,
+var gTabbarTransparencyScale,
 	gTabbarTransparencyLabels;
 function initAutoHidePane()
 {
-	gAutoHideModeRadio = document.getElementById('extensions.treestyletab.tabbar.autoHide.mode-radio');
-	gAutoHideModeToggle = document.getElementById('extensions.treestyletab.tabbar.autoHide.mode.toggle');
 	gTabbarTransparencyScale = document.getElementById('tabbarTransparency-scale');
 	gTabbarTransparencyLabels = document.getElementById('tabbarTransparency-labels');
 
-	updateAutoHideModeLabel();
 	onTabbarTransparencyScaleChange();
 
 	syncEnabledState('extensions.treestyletab.tabbar.autoShow.mousemove-check', 'this.checked');
@@ -315,29 +310,10 @@ function initAutoHidePane()
 	syncEnabledState('extensions.treestyletab.tabbar.autoShow.feedback-check', 'this.checked');
 }
 
-function onChangeAutoHideMode()
+function onChangeAutoHideMode(aRadioGroup, aTogglePref)
 {
-	if (!gAutoHideModeRadio) return;
-	var mode = gAutoHideModeRadio.value;
-	if (!mode) return;
-	if (gAutoHideModeRadio.value != 0) {
-		gAutoHideModeToggle.value = mode;
-		updateAutoHideModeLabel();
-	}
-}
-
-function updateAutoHideModeLabel()
-{
-	if (!gAutoHideModeRadio) return;
-	var mode = gAutoHideModeRadio.value;
-	var nodes = document.getElementsByAttribute('label-mode'+mode, '*');
-	if (nodes && nodes.length)
-		Array.slice(nodes).forEach(function(aNode) {
-			var label = aNode.getAttribute('label-mode'+mode);
-			var node = document.getElementById(aNode.getAttribute('target'));
-			var attr = node.localName == 'label' ? 'value' : 'label' ;
-			node.setAttribute(attr, label);
-		});
+	if (aRadioGroup.value != 0)
+		document.getElementById(aTogglePref).value = aRadioGroup.value;
 }
 
 function onTabbarTransparencyScaleChange()

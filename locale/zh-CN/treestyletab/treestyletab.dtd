@@ -71,6 +71,8 @@
 
 <!ENTITY config.tabs.autohide "自动隐藏">
 
+<!ENTITY config.autoHide.mode.normal.caption     "for Normal Window Mode">
+<!ENTITY config.autoHide.mode.fullscreen.caption "for Full Screen Mode">
 <!ENTITY config.autoHide.mode.0 "一直显示标签栏">
 <!ENTITY config.autoHide.mode.1 "自动隐藏标签栏">
 <!ENTITY config.autoHide.mode.2 "自动缩小标签栏">
@@ -78,9 +80,11 @@
 <!ENTITY config.autoShow.mousemove "鼠标指针在窗口边缘时">
 <!ENTITY config.autoHide.area.before "触发区域：">
 <!ENTITY config.autoHide.area.after "像素（距离窗口边缘）">
+<!--
 <!ENTITY config.autoShow.mousemove.mode2 "鼠标指针移到标签栏边缘">
 <!ENTITY config.autoHide.area.before.mode2 "触发区域：">
 <!ENTITY config.autoHide.area.after.mode2 "像素（距离标签栏边缘）">
+-->
 <!ENTITY config.autoHide.delay.before "延迟:">
 <!ENTITY config.autoHide.delay.after "毫秒">
 <!ENTITY config.autoShow.accelKeyDown "按下Ctrl键之后">

@@ -71,16 +71,15 @@
 
 <!ENTITY config.tabs.autohide "Masquage automatique">
 
+<!ENTITY config.autoHide.mode.normal.caption     "for Normal Window Mode">
+<!ENTITY config.autoHide.mode.fullscreen.caption "for Full Screen Mode">
 <!ENTITY config.autoHide.mode.0 "Toujours afficher le panneau des onglets">
 <!ENTITY config.autoHide.mode.1 "Masquer automatiquement le panneau des onglets">
 <!ENTITY config.autoHide.mode.2 "Rétrecir automatiquement le panneau des onglets">
 <!ENTITY config.autoShow.caption "Afficher le panneau des onglets lorsque">
-<!ENTITY config.autoShow.mousemove "La souris est proche du bord de la fenêtre">
+<!ENTITY config.autoShow.mousemove "La souris est proche du bord de la fenêtre / du panneau des onglets">
 <!ENTITY config.autoHide.area.before "Zone sensible :">
-<!ENTITY config.autoHide.area.after "pixels des bords de la fenêtre">
-<!ENTITY config.autoShow.mousemove.mode2 "La souris est proche du bord du panneau des onglets">
-<!ENTITY config.autoHide.area.before.mode2 "Zone sensible :">
-<!ENTITY config.autoHide.area.after.mode2 "pixels du bord du panneau des onglets">
+<!ENTITY config.autoHide.area.after "pixels des bords de la fenêtre / du panneau des onglets">
 <!ENTITY config.autoHide.delay.before "Délai :">
 <!ENTITY config.autoHide.delay.after "msec.">
 <!ENTITY config.autoShow.accelKeyDown "La touche Control est appuyée pendant un moment">

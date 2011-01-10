@@ -71,16 +71,15 @@
 
 <!ENTITY config.tabs.autohide "Автоскрытие/показ панели">
 
+<!ENTITY config.autoHide.mode.normal.caption     "for Normal Window Mode">
+<!ENTITY config.autoHide.mode.fullscreen.caption "for Full Screen Mode">
 <!ENTITY config.autoHide.mode.0 "Показывать панель вкладок всегда">
 <!ENTITY config.autoHide.mode.1 "Автоскрытие панели вкладок">
 <!ENTITY config.autoHide.mode.2 "Автосжатие панели вкладок">
 <!ENTITY config.autoShow.caption "Автоматически показывать панель вкладок при">
-<!ENTITY config.autoShow.mousemove "Перемещении мышки к краю окна">
+<!ENTITY config.autoShow.mousemove "Перемещении мышки к краю окна / панели вкладок">
 <!ENTITY config.autoHide.area.before "Область срабатывания:">
-<!ENTITY config.autoHide.area.after "пикселов от края окна">
-<!ENTITY config.autoShow.mousemove.mode2 "Перемещении мышки к краю панели вкладок">
-<!ENTITY config.autoHide.area.before.mode2 "Область срабатывания:">
-<!ENTITY config.autoHide.area.after.mode2 "пикселов от края панели вкладок">
+<!ENTITY config.autoHide.area.after "пикселов от края окна / панели вкладок">
 <!ENTITY config.autoHide.delay.before "Задержка:">
 <!ENTITY config.autoHide.delay.after "мсек.">
 <!ENTITY config.autoShow.accelKeyDown "Нажати и удержания кнопки Ctrl">

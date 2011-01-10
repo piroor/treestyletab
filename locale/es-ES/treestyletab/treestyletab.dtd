@@ -73,16 +73,15 @@
 
 <!ENTITY config.tabs.autohide "Auto ocultar">
 
+<!ENTITY config.autoHide.mode.normal.caption     "for Normal Window Mode">
+<!ENTITY config.autoHide.mode.fullscreen.caption "for Full Screen Mode">
 <!ENTITY config.autoHide.mode.0 "Mostrar la barra de pestañas siempre">
 <!ENTITY config.autoHide.mode.1 "Auto-ocultar la barra de pestañas">
 <!ENTITY config.autoHide.mode.2 "Auto Shrink tab bar">
 <!ENTITY config.autoShow.caption "Mostrar la barra de pestañas automáticamente cuando">
-<!ENTITY config.autoShow.mousemove "Al acercar el mouse a los bordes de la ventana">
+<!ENTITY config.autoShow.mousemove "Al acercar el mouse a los bordes de la ventana / barra de pestañas">
 <!ENTITY config.autoHide.area.before "Área sensible:">
-<!ENTITY config.autoHide.area.after "píxeles del borde de la ventana">
-<!ENTITY config.autoShow.mousemove.mode2 "Al acercar el mouse a los bordes de la barra de pestañas">
-<!ENTITY config.autoHide.area.before.mode2 "Área sensible:">
-<!ENTITY config.autoHide.area.after.mode2 "píxeles desde el borde de la barra de pestañas">
+<!ENTITY config.autoHide.area.after "píxeles del borde de la ventana / barra de pestañas">
 <!ENTITY config.autoHide.delay.before "Retraso:">
 <!ENTITY config.autoHide.delay.after "mseg.">
 <!ENTITY config.autoShow.accelKeyDown "Mientras la tecla Control es presionada por un instante">

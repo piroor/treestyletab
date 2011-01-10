@@ -71,16 +71,15 @@
 
 <!ENTITY config.tabs.autohide "Platz sparen">
 
+<!ENTITY config.autoHide.mode.normal.caption     "for Normal Window Mode">
+<!ENTITY config.autoHide.mode.fullscreen.caption "for Full Screen Mode">
 <!ENTITY config.autoHide.mode.0 "Tableiste immer voll anzeigen">
 <!ENTITY config.autoHide.mode.1 "Inaktive Tableiste verstecken">
 <!ENTITY config.autoHide.mode.2 "Inaktive Tableiste verkleinert anzeigen">
 <!ENTITY config.autoShow.caption      "Tableiste aktivieren">
 <!ENTITY config.autoShow.mousemove    "Wenn der Mauszeiger die Fensterecken berührt">
 <!ENTITY config.autoHide.area.before "Empfindlicher Bereich:">
-<!ENTITY config.autoHide.area.after "Pixel rund um die Fensterecken">
-<!ENTITY config.autoShow.mousemove.mode2 "Wenn der Mauszeiger die Fensterecken berührt">
-<!ENTITY config.autoHide.area.before.mode2 "Empfindlicher Bereich:">
-<!ENTITY config.autoHide.area.after.mode2 "Pixel rund um die Kante der Tableiste">
+<!ENTITY config.autoHide.area.after "Pixel rund um die Fensterecken / Kante der Tableiste">
 <!ENTITY config.autoHide.delay.before "Verzögerung:">
 <!ENTITY config.autoHide.delay.after "msec.">
 <!ENTITY config.autoShow.accelKeyDown "Wenn die Strg-Taste eine Zeit lang gedrückt wird">
