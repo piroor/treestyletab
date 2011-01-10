@@ -161,8 +161,6 @@ function initTabPane()
 		'openGroupBookmark-check',
 		'openGroupBookmark-deck'
 	);
-
-	setUpTabbox('newTab-tabbox');
 }
 
 function onSyncGroupBookmarkUIToPref()
@@ -419,18 +417,3 @@ RadioSet.prototype = {
 		return this.radio.value = aValue;
 	}
 };
-
-function setUpTabbox(aID)
-{
-	var tabbox = document.getElementById(aID);
-	var pref = document.getElementById('extensions.treestyletab.preferences.'+aID+'.selectedIndex')
-	if (pref.value !== null) tabbox.selectedIndex = pref.value;
-	tabbox.setAttribute('onselect', 'onTabboxTabSelected("'+aID+'");');
-}
-
-function onTabboxTabSelected(aID)
-{
-	var tabbox = document.getElementById(aID);
-	var pref = document.getElementById('extensions.treestyletab.preferences.'+aID+'.selectedIndex')
-	pref.valueFromPreferences = tabbox.selectedIndex;
-}

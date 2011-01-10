@@ -277,9 +277,6 @@
 		<preference id="extensions.treestyletab.show.context-item-bookmarkTabSubtree"
 			name="extensions.treestyletab.show.context-item-bookmarkTabSubtree"
 			type="bool"/>
-		<preference id="extensions.treestyletab.preferences.newTab-tabbox.selectedIndex"
-			name="extensions.treestyletab.preferences.newTab-tabbox.selectedIndex"
-			type="int"/>
 	</preferences>
 
 	<vbox>
@@ -349,94 +346,77 @@
 			type="bool"/>
 	</preferences>
 
-	<vbox>
-
-	<tabbox id="newTab-tabbox"
-		orient="vertical">
-		<tabs>
-			<tab label="&config.tabs.bookmark.tab;"/>
-			<tab label="&config.tabs.dragdrop.tab;"/>
-		</tabs>
-		<tabpanels>
-			<tabpanel orient="vertical">
-				<groupbox>
-					<caption label="&config.openGroupBookmark.caption;"/>
-					<hbox>
-						<checkbox id="openGroupBookmark-check"
-							label="&config.openGroupBookmark.ask;"
-							oncommand="
-								gGroupBookmarkRadioSet.onChange(true);
-								gGroupBookmarkRadioSet.pref.value = onSyncGroupBookmarkUIToPref();
-							"/>
-					</hbox>
-					<deck id="openGroupBookmark-deck">
-						<spacer flex="1"/>
-						<vbox>
-						<separator class="hr"/>
-						<radiogroup id="openGroupBookmark-radiogroup"
-							orient="vertical"
-							onsynctopreference="return onSyncGroupBookmarkUIToPref();"
-							onsyncfrompreference="return onSyncGroupBookmarkPrefToUI();"
-							preference="extensions.treestyletab.openGroupBookmark.behavior">
-							<radio value="0" collapsed="true"/>
-							<radio value="1" label="&config.openGroupBookmark.subtree;"/>
-							<hbox>
-								<spacer style="width:1em;"/>
-								<vbox>
-									<checkbox id="openGroupBookmark.underParent-check"
-										label="&config.openGroupBookmark.underParent;"
-										oncommand="gGroupBookmarkRadioSet.pref.value = onSyncGroupBookmarkUIToPref();"/>
-									<hbox align="center">
-										<label id="openGroupBookmark.subtreeType-before"
-											control="openGroupBookmark.subtreeType-menulist"
-											value="&config.openGroupBookmark.subtree.type.before;"/>
-										<menulist id="openGroupBookmark.subtreeType-menulist"
-											oncommand="gGroupBookmarkRadioSet.pref.value = onSyncGroupBookmarkUIToPref();">
-											<menupopup>
-												<menuitem label="&config.openGroupBookmark.subtree.type.restore;" value="false"/>
-												<menuitem label="&config.openGroupBookmark.subtree.type.flat;" value="true"/>
-											</menupopup>
-										</menulist>
-										<label id="openGroupBookmark.subtreeType-after"
-											control="openGroupBookmark.subtreeType-menulist"
-											value="&config.openGroupBookmark.subtree.type.after;"/>
-									</hbox>
-								</vbox>
-							</hbox>
-							<radio value="2" label="&config.openGroupBookmark.flat;"/>
-							<radio value="4" label="&config.openGroupBookmark.replace;"/>
-						</radiogroup>
-						</vbox>
-					</deck>
-				</groupbox>
-			</tabpanel>
-			<tabpanel orient="vertical">
-				<groupbox>
-					<caption label="&config.dropLinksOnTab.caption;"/>
-					<hbox>
-						<checkbox id="dropLinksOnTab-check"
-							label="&config.dropLinksOnTab.ask;"
-							oncommand="gDropLinksOnTabRadioSet.onChange();"/>
-					</hbox>
-					<deck id="dropLinksOnTab-deck">
-						<spacer flex="1"/>
-						<vbox>
-						<separator class="hr"/>
-						<radiogroup id="dropLinksOnTab-radiogroup"
-							preference="extensions.treestyletab.dropLinksOnTab.behavior"
-							orient="vertical">
-							<radio value="0" collapsed="true"/>
-							<radio value="1" label="&config.dropLinksOnTab.load;"/>
-							<radio value="2" label="&config.dropLinksOnTab.newTab;"/>
-						</radiogroup>
-						</vbox>
-					</deck>
-				</groupbox>
-			</tabpanel>
-		</tabpanels>
-	</tabbox>
-
-	</vbox>
+	<groupbox>
+		<caption label="&config.openGroupBookmark.caption;"/>
+		<hbox>
+			<checkbox id="openGroupBookmark-check"
+				label="&config.openGroupBookmark.ask;"
+				oncommand="
+					gGroupBookmarkRadioSet.onChange(true);
+					gGroupBookmarkRadioSet.pref.value = onSyncGroupBookmarkUIToPref();
+				"/>
+		</hbox>
+		<deck id="openGroupBookmark-deck">
+			<spacer flex="1"/>
+			<vbox>
+			<separator class="hr"/>
+			<radiogroup id="openGroupBookmark-radiogroup"
+				orient="vertical"
+				onsynctopreference="return onSyncGroupBookmarkUIToPref();"
+				onsyncfrompreference="return onSyncGroupBookmarkPrefToUI();"
+				preference="extensions.treestyletab.openGroupBookmark.behavior">
+				<radio value="0" collapsed="true"/>
+				<radio value="1" label="&config.openGroupBookmark.subtree;"/>
+				<hbox>
+					<spacer style="width:1em;"/>
+					<vbox>
+						<checkbox id="openGroupBookmark.underParent-check"
+							label="&config.openGroupBookmark.underParent;"
+							oncommand="gGroupBookmarkRadioSet.pref.value = onSyncGroupBookmarkUIToPref();"/>
+						<hbox align="center">
+							<label id="openGroupBookmark.subtreeType-before"
+								control="openGroupBookmark.subtreeType-menulist"
+								value="&config.openGroupBookmark.subtree.type.before;"/>
+							<menulist id="openGroupBookmark.subtreeType-menulist"
+								oncommand="gGroupBookmarkRadioSet.pref.value = onSyncGroupBookmarkUIToPref();">
+								<menupopup>
+									<menuitem label="&config.openGroupBookmark.subtree.type.restore;" value="false"/>
+									<menuitem label="&config.openGroupBookmark.subtree.type.flat;" value="true"/>
+								</menupopup>
+							</menulist>
+							<label id="openGroupBookmark.subtreeType-after"
+								control="openGroupBookmark.subtreeType-menulist"
+								value="&config.openGroupBookmark.subtree.type.after;"/>
+						</hbox>
+					</vbox>
+				</hbox>
+				<radio value="2" label="&config.openGroupBookmark.flat;"/>
+				<radio value="4" label="&config.openGroupBookmark.replace;"/>
+			</radiogroup>
+			</vbox>
+		</deck>
+	</groupbox>
+	<groupbox>
+		<caption label="&config.dropLinksOnTab.caption;"/>
+		<hbox>
+			<checkbox id="dropLinksOnTab-check"
+				label="&config.dropLinksOnTab.ask;"
+				oncommand="gDropLinksOnTabRadioSet.onChange();"/>
+		</hbox>
+		<deck id="dropLinksOnTab-deck">
+			<spacer flex="1"/>
+			<vbox>
+			<separator class="hr"/>
+			<radiogroup id="dropLinksOnTab-radiogroup"
+				preference="extensions.treestyletab.dropLinksOnTab.behavior"
+				orient="vertical">
+				<radio value="0" collapsed="true"/>
+				<radio value="1" label="&config.dropLinksOnTab.load;"/>
+				<radio value="2" label="&config.dropLinksOnTab.newTab;"/>
+			</radiogroup>
+			</vbox>
+		</deck>
+	</groupbox>
 
 </prefpane>
 
