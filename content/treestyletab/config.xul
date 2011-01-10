@@ -137,15 +137,22 @@
 				preference="extensions.treestyletab.maxTreeLevel.horizontal"
 				label="&config.enableSubtreeIndent;"
 				onsynctopreference="return onSyncMaxTreeLevelUIToPref('maxTreeLevel-checkbox-horizontal');"
-				onsyncfrompreference="return onSyncMaxTreeLevelPrefToUI('maxTreeLevel-checkbox-horizontal');"/>
-			<label control="maxTreeLevel-textbox-horizontal"
+				onsyncfrompreference="return onSyncMaxTreeLevelPrefToUI('maxTreeLevel-checkbox-horizontal');"
+				sync-enabled-state-targets="
+					maxTreeLevel-textbox-horizontal-before
+					maxTreeLevel-textbox-horizontal
+					maxTreeLevel-textbox-horizontal-after
+				"/>
+			<label id="maxTreeLevel-textbox-horizontal-before"
+				control="maxTreeLevel-textbox-horizontal"
 				value="&config.maxTreeLevel.before;"/>
 			<textbox id="maxTreeLevel-textbox-horizontal"
 				type="number"
 				min="1" increment="1" style="width:4em;"
 				oninput="onSyncMaxTreeLevelUIToPref('maxTreeLevel-checkbox-horizontal', true);"
 				onchange="onSyncMaxTreeLevelUIToPref('maxTreeLevel-checkbox-horizontal', true);"/>
-			<label control="maxTreeLevel-textbox-horizontal"
+			<label id="maxTreeLevel-textbox-horizontal-after"
+				control="maxTreeLevel-textbox-horizontal"
 				value="&config.maxTreeLevel.after;"/>
 		</hbox>
 		<hbox id="maxTreeLevel-vertical"
@@ -154,15 +161,22 @@
 				preference="extensions.treestyletab.maxTreeLevel.vertical"
 				label="&config.enableSubtreeIndent;"
 				onsynctopreference="return onSyncMaxTreeLevelUIToPref('maxTreeLevel-checkbox-vertical');"
-				onsyncfrompreference="return onSyncMaxTreeLevelPrefToUI('maxTreeLevel-checkbox-vertical');"/>
-			<label control="maxTreeLevel-textbox-vertical"
+				onsyncfrompreference="return onSyncMaxTreeLevelPrefToUI('maxTreeLevel-checkbox-vertical');"
+				sync-enabled-state-targets="
+					maxTreeLevel-textbox-vertical-before
+					maxTreeLevel-textbox-vertical
+					maxTreeLevel-textbox-vertical-after
+				"/>
+			<label id="maxTreeLevel-textbox-vertical-before"
+				control="maxTreeLevel-textbox-vertical"
 				value="&config.maxTreeLevel.before;"/>
 			<textbox id="maxTreeLevel-textbox-vertical"
 				type="number"
 				min="1" increment="1" style="width:4em;"
 				oninput="onSyncMaxTreeLevelUIToPref('maxTreeLevel-checkbox-vertical', true);"
 				onchange="onSyncMaxTreeLevelUIToPref('maxTreeLevel-checkbox-vertical', true);"/>
-			<label control="maxTreeLevel-textbox-vertical"
+			<label id="maxTreeLevel-textbox-vertical-after"
+				control="maxTreeLevel-textbox-vertical"
 				value="&config.maxTreeLevel.after;"/>
 		</hbox>
 		</vbox>
@@ -481,10 +495,19 @@
 			<caption label="&config.autoShow.caption;"/>
 			<checkbox id="extensions.treestyletab.tabbar.autoShow.mousemove-check"
 				preference="extensions.treestyletab.tabbar.autoShow.mousemove"
-				label="&config.autoShow.mousemove.mode2;"/>
+				label="&config.autoShow.mousemove.mode2;"
+				oncommand="syncEnabledState(this, this.checked);"
+				sync-enabled-state-targets="
+					extensions.treestyletab.tabbar.autoHide.area-before
+					extensions.treestyletab.tabbar.autoHide.area-textbox
+					extensions.treestyletab.tabbar.autoHide.area-after
+					extensions.treestyletab.tabbar.autoHide.delay-before
+					extensions.treestyletab.tabbar.autoHide.delay-textbox
+					extensions.treestyletab.tabbar.autoHide.delay-after
+				"/>
 			<hbox align="center">
 				<spacer style="width:1em;"/>
-				<label id="extensions.treestyletab.tabbar.autoHide.area-befre"
+				<label id="extensions.treestyletab.tabbar.autoHide.area-before"
 					value="&config.autoHide.area.before.mode2;"
 					control="extensions.treestyletab.tabbar.autoHide.area-textbox"/>
 				<textbox id="extensions.treestyletab.tabbar.autoHide.area-textbox"
@@ -498,7 +521,7 @@
 			<data target="extensions.treestyletab.tabbar.autoShow.mousemove-check"
 				label-mode1="&config.autoShow.mousemove;"
 				label-mode2="&config.autoShow.mousemove.mode2;"/>
-			<data target="extensions.treestyletab.tabbar.autoHide.area-befre"
+			<data target="extensions.treestyletab.tabbar.autoHide.area-before"
 				label-mode1="&config.autoHide.area.before;"
 				label-mode2="&config.autoHide.area.before.mode2;"/>
 			<data target="extensions.treestyletab.tabbar.autoHide.area-after"
@@ -506,27 +529,37 @@
 				label-mode2="&config.autoHide.area.after.mode2;"/>
 			<hbox align="center">
 				<spacer style="width:1em;"/>
-				<label value="&config.autoHide.delay.before;"
+				<label id="extensions.treestyletab.tabbar.autoHide.delay-before"
+					value="&config.autoHide.delay.before;"
 					control="extensions.treestyletab.tabbar.autoHide.delay-textbox"/>
 				<textbox id="extensions.treestyletab.tabbar.autoHide.delay-textbox"
 					preference="extensions.treestyletab.tabbar.autoHide.delay"
 					type="number"
 					min="0" increment="1" style="width:4em;"/>
-				<label value="&config.autoHide.delay.after;"
+				<label id="extensions.treestyletab.tabbar.autoHide.delay-after"
+					value="&config.autoHide.delay.after;"
 					control="extensions.treestyletab.tabbar.autoHide.delay-textbox"/>
 			</hbox>
 			<checkbox id="extensions.treestyletab.tabbar.autoShow.accelKeyDown-check"
 				preference="extensions.treestyletab.tabbar.autoShow.accelKeyDown"
-				label="&config.autoShow.accelKeyDown;"/>
+				label="&config.autoShow.accelKeyDown;"
+				oncommand="syncEnabledState(this, this.checked);"
+				sync-enabled-state-targets="
+					extensions.treestyletab.tabbar.autoShow.accelKeyDown.delay-before
+					extensions.treestyletab.tabbar.autoShow.accelKeyDown.delay-textbox
+					extensions.treestyletab.tabbar.autoShow.accelKeyDown.delay-after
+				"/>
 			<hbox align="center">
 				<spacer style="width:1em;"/>
-				<label value="&config.autoShow.accelKeyDown.delay.before;"
+				<label id="extensions.treestyletab.tabbar.autoShow.accelKeyDown.delay-before"
+					value="&config.autoShow.accelKeyDown.delay.before;"
 					control="extensions.treestyletab.tabbar.autoShow.accelKeyDown.delay-textbox"/>
 				<textbox id="extensions.treestyletab.tabbar.autoShow.accelKeyDown.delay-textbox"
 					preference="extensions.treestyletab.tabbar.autoShow.accelKeyDown.delay"
 					type="number"
 					min="0" increment="1" style="width:4em;"/>
-				<label value="&config.autoShow.accelKeyDown.delay.after;"
+				<label id="extensions.treestyletab.tabbar.autoShow.accelKeyDown.delay-after"
+					value="&config.autoShow.accelKeyDown.delay.after;"
 					control="extensions.treestyletab.tabbar.autoShow.accelKeyDown.delay-textbox"/>
 			</hbox>
 			<checkbox id="extensions.treestyletab.tabbar.autoShow.tabSwitch-check"
@@ -534,16 +567,24 @@
 				label="&config.autoShow.tabSwitch;"/>
 			<checkbox id="extensions.treestyletab.tabbar.autoShow.feedback-check"
 				preference="extensions.treestyletab.tabbar.autoShow.feedback"
-				label="&config.autoShow.feedback;"/>
+				label="&config.autoShow.feedback;"
+				oncommand="syncEnabledState(this, this.checked);"
+				sync-enabled-state-targets="
+					extensions.treestyletab.tabbar.autoShow.feedback.delay-before
+					extensions.treestyletab.tabbar.autoShow.feedback.delay-textbox
+					extensions.treestyletab.tabbar.autoShow.feedback.delay-after
+				"/>
 			<hbox align="center">
 				<spacer style="width:1em;"/>
-				<label value="&config.autoShow.feedback.delay.before;"
+				<label id="extensions.treestyletab.tabbar.autoShow.feedback.delay-before"
+					value="&config.autoShow.feedback.delay.before;"
 					control="extensions.treestyletab.tabbar.autoShow.feedback.delay-textbox"/>
 				<textbox id="extensions.treestyletab.tabbar.autoShow.feedback.delay-textbox"
 					preference="extensions.treestyletab.tabbar.autoShow.feedback.delay"
 					type="number"
 					min="0" increment="1" style="width:4em;"/>
-				<label value="&config.autoShow.feedback.delay.after;"
+				<label id="extensions.treestyletab.tabbar.autoShow.feedback.delay-after"
+					value="&config.autoShow.feedback.delay.after;"
 					control="extensions.treestyletab.tabbar.autoShow.feedback.delay-textbox"/>
 			</hbox>
 		</groupbox>
@@ -628,7 +669,8 @@
 		<radiogroup id="extensions.treestyletab.closeParentBehavior-radiogroup"
 			preference="extensions.treestyletab.closeParentBehavior"
 			orient="vertical"
-			oncommand="updateCloseRootBehaviorCheck();">
+			oncommand="syncEnabledState(this, this.value == 0);"
+			sync-enabled-state-targets="extensions.treestyletab.closeRootBehavior-check">
 			<radio value="2" label="&config.closeParentBehavior.close;"/>
 			<radio value="3" label="&config.closeParentBehavior.promoteFirst;"/>
 			<radio value="0" label="&config.closeParentBehavior.promoteAll;"/>

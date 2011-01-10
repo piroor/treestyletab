@@ -12,6 +12,29 @@ Components.utils.import('resource://treestyletab-modules/lib/namespace.jsm');
 var animationManager = getNamespaceFor('piro.sakura.ne.jp')['piro.sakura.ne.jp'].animationManager;
 var prefs = getNamespaceFor('piro.sakura.ne.jp')['piro.sakura.ne.jp'].prefs;
 
+
+function syncEnabledState(aElement, aEnabled)
+{
+	if (typeof aElement == 'string')
+		aElement = document.getElementById(aElement);
+	if (typeof aEnabled == 'string')
+		aEnabled = (new Function('return '+aEnabled)).call(aElement);
+
+	aElement.getAttribute('sync-enabled-state-targets')
+		.replace(/$\s+|\s+$/g, '')
+		.split(/\s+/)
+		.map(function(aId) {
+			if (!aId)
+				return;
+			var target = document.getElementById(aId);
+			if (aEnabled)
+				target.removeAttribute('disabled');
+			else
+				target.setAttribute('disabled', true);
+		});
+}
+
+
 var gGroupBookmarkRadio,
 	gGroupBookmarkUnderParent,
 	gGroupBookmarkType,
@@ -266,15 +289,7 @@ function onSyncMaxTreeLevelPrefToUI(aTarget)
 	if (UIValue)
 		textbox.value = value;
 
-	[textbox, textbox.previousSibling, textbox.nextSibling].forEach(
-		UIValue ?
-			function(aNode) {
-				aNode.removeAttribute('disabled');
-			} :
-			function(aNode) {
-				aNode.setAttribute('disabled', true);
-			}
-	);
+	syncEnabledState(aTarget, UIValue);
 
 	aTarget.sync = false;
 	return UIValue;
@@ -294,6 +309,10 @@ function initAutoHidePane()
 
 	updateAutoHideModeLabel();
 	onTabbarTransparencyScaleChange();
+
+	syncEnabledState('extensions.treestyletab.tabbar.autoShow.mousemove-check', 'this.checked');
+	syncEnabledState('extensions.treestyletab.tabbar.autoShow.accelKeyDown-check', 'this.checked');
+	syncEnabledState('extensions.treestyletab.tabbar.autoShow.feedback-check', 'this.checked');
 }
 
 function onChangeAutoHideMode()
@@ -331,7 +350,7 @@ var gUndoCloseTabSetRadioSet;
 
 function initTreePane()
 {
-	updateCloseRootBehaviorCheck();
+	syncEnabledState('extensions.treestyletab.closeParentBehavior-radiogroup', 'this.value == 0');
 
 	gUndoCloseTabSetRadioSet = new RadioSet(
 		'extensions.treestyletab.undoCloseTabSet.behavior',
@@ -347,16 +366,6 @@ function initTreePane()
 		focusMode.removeAttribute('collapsed');
 	else
 		focusMode.setAttribute('collapsed', true);
-}
-
-function updateCloseRootBehaviorCheck()
-{
-	var closeParentBehavior = document.getElementById('extensions.treestyletab.closeParentBehavior-radiogroup').value;
-	var closeRootBehavior = document.getElementById('extensions.treestyletab.closeRootBehavior-check');
-	if (closeParentBehavior == 0)
-		closeRootBehavior.removeAttribute('disabled');
-	else
-		closeRootBehavior.setAttribute('disabled', true);
 }
 
 
