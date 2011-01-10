@@ -1243,6 +1243,9 @@ TreeStyleTabBrowser.prototype = {
 			this.mTabBrowser.getAttribute(this.kFIXED) != 'true') {
 			strip.setAttribute('layer', true); // https://bugzilla.mozilla.org/show_bug.cgi?id=590468
 
+			if (this.autoHide.expanded && (aReason & this.kTABBAR_UPDATE_SYNC_TO_PLACEHOLDER))
+				this.autoHide.hide();
+
 			let box = this._tabStripPlaceHolder.boxObject;
 			let root = document.documentElement.boxObject;
 
