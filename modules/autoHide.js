@@ -300,10 +300,7 @@ AutoHideBrowser.prototype = {
  
 	get shouldListenMouseMove() 
 	{
-		return this.treeStyleTab.getTreePref('tabbar.autoShow.mousemove') ||
-				this.treeStyleTab.getTreePref('tabbar.autoShow.accelKeyDown') ||
-				this.treeStyleTab.getTreePref('tabbar.autoShow.tabSwitch') ||
-				this.treeStyleTab.getTreePref('tabbar.autoShow.feedback');
+		return this.treeStyleTab.getTreePref('tabbar.autoShow.mousemove');
 	},
  
 	get shouldListenKeyEventsForAutoHide()
