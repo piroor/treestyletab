@@ -1600,13 +1600,14 @@ TreeStyleTabBrowser.prototype = {
 		this.autoHide.saveCurrentState();
 
 		var b = this.mTabBrowser;
-		let box = (this.tabStripPlaceHolder || this.getTabStrip(b)).boxObject;
-		let prefs = {
+		var floatingBox = this.getTabStrip(b).boxObject;
+		var fixedBox = (this.tabStripPlaceHolder || this.getTabStrip(b)).boxObject;
+		var prefs = {
 				'tabbar.fixed.horizontal' : b.getAttribute(this.kFIXED+'-horizontal') == 'true',
 				'tabbar.fixed.vertical'   : b.getAttribute(this.kFIXED+'-vertical') == 'true',
-				'tabbar.width'            : this.isVertical && this.autoHide.expanded && box.width ? box.width : void(0),
-				'tabbar.shrunkenWidth'    : this.isVertical && !this.autoHide.expanded && box.width ? box.width : void(0),
-				'tabbar.height'           : !this.isVertical && this.autoHide.expanded && box.height ? box.height : void(0)
+				'tabbar.width'            : this.isVertical && this.autoHide.expanded && floatingBox.width ? floatingBox.width : void(0),
+				'tabbar.shrunkenWidth'    : this.isVertical && !this.autoHide.expanded && fixedBox.width ? fixedBox.width : void(0),
+				'tabbar.height'           : !this.isVertical && this.autoHide.expanded && floatingBox.height ? floatingBox.height : void(0)
 			};
 		for (var i in prefs)
 		{
