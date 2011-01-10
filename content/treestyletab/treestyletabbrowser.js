@@ -575,6 +575,7 @@ TreeStyleTabBrowser.prototype = {
 		this.onPrefChange('extensions.treestyletab.showBorderForFirstTab');
 		this.onPrefChange('extensions.treestyletab.tabbar.invertTabContents');
 		this.onPrefChange('extensions.treestyletab.tabbar.invertClosebox');
+		this.onPrefChange('extensions.treestyletab.tabbar.autoShow.mousemove');
 		this.onPrefChange('extensions.treestyletab.animation.enabled');
 
 		var tabContextMenu = b.tabContextMenu ||
@@ -1773,6 +1774,17 @@ TreeStyleTabBrowser.prototype = {
 				if (!this.shouldApplyNewPref) return;
 				this._horizontalTabMaxIndentBase = 0;
 				this.checkTabsIndentOverflow();
+				return;
+
+			case 'extensions.treestyletab.tabbar.autoShow.mousemove':
+				let (toggler = document.getAnonymousElementByAttribute(b, 'class', this.kTABBAR_TOGGLER)) {
+					if (toggler) {
+						if (value)
+							toggler.removeAttribute('hidden');
+						else
+							toggler.setAttribute('hidden', true);
+					}
+				}
 				return;
 
 			case 'extensions.treestyletab.maxTreeLevel.phisical':
