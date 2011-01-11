@@ -392,8 +392,6 @@ TreeStyleTabBrowser.prototype = {
 		window.addEventListener('resize', this, true);
 		window.addEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
 		window.addEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED,  this, false);
-		window.addEventListener('tabviewshown', this, true);
-		window.addEventListener('tabviewhidden', this, true);
 
 		b.addEventListener('nsDOMMultipleTabHandlerTabsClosing', this, false);
 
@@ -1549,8 +1547,6 @@ TreeStyleTabBrowser.prototype = {
 		window.removeEventListener('resize', this, true);
 		window.removeEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
 		window.removeEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED,  this, false);
-		window.removeEventListener('tabviewshown', this, true);
-		window.removeEventListener('tabviewhidden', this, true);
 
 		b.removeEventListener('nsDOMMultipleTabHandlerTabsClosing', this, false);
 
@@ -1956,11 +1952,6 @@ TreeStyleTabBrowser.prototype = {
 			case this.kEVENT_TYPE_PRINT_PREVIEW_EXITED:
 				return this.onTreeStyleTabPrintPreviewExited(aEvent);
 
-			case 'tabviewshown':
-				return this.onTabViewShown();
-			case 'tabviewhidden':
-				return this.onTabViewHidden();
-
 
 			case 'nsDOMMultipleTabHandlerTabsClosing':
 				if (!this.onTabsRemoving(aEvent))
@@ -2327,8 +2318,6 @@ TreeStyleTabBrowser.prototype = {
  
 	onTabMove : function TSTBrowser_onTabMove(aEvent) 
 	{
-		if (this._tabViewShown) this._tabViewTabMoveCount++;
-
 		var tab = aEvent.originalTarget;
 		var b   = this.mTabBrowser;
 
@@ -2403,6 +2392,7 @@ TreeStyleTabBrowser.prototype = {
 			return;
 
 		this.attachTabFromPosition(tab, aEvent.detail);
+		this.rearrangeTabViewItems(tab);
 	},
 	
 	attachTabFromPosition : function TSTBrowser_attachTabFromPosition(aTab, aOldPosition) 
@@ -2486,6 +2476,20 @@ TreeStyleTabBrowser.prototype = {
 				}, this)
 				.join('|')
 		);
+	},
+ 
+	rearrangeTabViewItems : function TSTBrowser_rearrangeTabViewItems(aTab) 
+	{
+		if (
+			!('TabView' in window) ||
+			!TabView.isVisible() ||
+			!aTab.tabItem ||
+			!aTab.tabItem.parent ||
+			!aTab.tabItem.parent.reorderTabItemsBasedOnTabOrder
+			)
+			return;
+
+		aTab.tabItem.parent.reorderTabItemsBasedOnTabOrder();
 	},
   
 	onTabVisibilityChanged : function TSTBrowser_onTabVisibilityChanged(aEvent) 
@@ -3347,38 +3351,6 @@ TreeStyleTabBrowser.prototype = {
 	{
 		this.removeTabbrowserAttribute(this.kPRINT_PREVIEW);
 	},
- 
-	onTabViewShown : function TSTBrowser_onTabViewShown(aEvent) 
-	{
-		this._tabViewShown = true;
-		this._tabViewTabMoveCount = 0;
-	},
- 
-	onTabViewHidden : function TSTBrowser_onTabViewHidden(aEvent) 
-	{
-		var count = this._tabViewTabMoveCount;
-
-		this._tabViewShown = false;
-		this._tabViewTabMoveCount = -1;
-
-		var w = TabView._window;
-		if (
-			!count ||
-			!w ||
-			!w.UI ||
-			!w.UI.setReorderTabItemsOnShow ||
-			!w.GroupItems ||
-			!w.GroupItems.groupItems ||
-			!w.GroupItems.groupItems.length
-			)
-			return;
-
-		w.GroupItems.groupItems.forEach(function(aGroupItem) {
-			w.UI.setReorderTabItemsOnShow(aGroupItem);
-		});
-	},
-	_tabViewShown : false,
-	_tabViewTabMoveCount : -1,
   
 /* commands */ 
 	
