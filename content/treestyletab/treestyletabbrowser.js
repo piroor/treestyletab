@@ -3368,7 +3368,8 @@ TreeStyleTabBrowser.prototype = {
 			!w.UI ||
 			!w.UI.setReorderTabItemsOnShow ||
 			!w.GroupItems ||
-			!w.GroupItems.getActiveGroupItem
+			!w.GroupItems.groupItems ||
+			!w.GroupItems.groupItems.length
 			)
 			return;
 
