@@ -2481,8 +2481,6 @@ TreeStyleTabBrowser.prototype = {
 	rearrangeTabViewItems : function TSTBrowser_rearrangeTabViewItems(aTab) 
 	{
 		if (
-			!('TabView' in window) ||
-			!TabView.isVisible() ||
 			!aTab.tabItem ||
 			!aTab.tabItem.parent ||
 			!aTab.tabItem.parent.reorderTabItemsBasedOnTabOrder
