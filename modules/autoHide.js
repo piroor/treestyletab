@@ -673,8 +673,11 @@ AutoHideBrowser.prototype = {
 	fireStateChangingEvent : function AHB_fireStateChangingEvent() 
 	{
 		/* PUBLIC API */
-		var event = this.document.createEvent('Events');
+		var event = this.document.createEvent('DataContainerEvents');
 		event.initEvent(this.treeStyleTab.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGING, true, false);
+		event.setData('shown', this.expanded);
+		event.setData('state', this.state);
+		// for backward compatibility
 		event.shown = this.expanded;
 		event.state = this.state;
 		this.browser.dispatchEvent(event);
@@ -690,8 +693,13 @@ AutoHideBrowser.prototype = {
 	fireStateChangeEvent : function AHB_fireStateChangeEvent() 
 	{
 		/* PUBLIC API */
-		var event = this.document.createEvent('Events');
+		var event = this.document.createEvent('DataContainerEvents');
 		event.initEvent(this.treeStyleTab.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGE, true, false);
+		event.setData('shown', this.expanded);
+		event.setData('state', this.state);
+		event.setData('xOffset', this.XOffset);
+		event.setData('yOffset', this.YOffset);
+		// for backward compatibility
 		event.shown = this.expanded;
 		event.state = this.state;
 		event.xOffset = this.XOffset;
@@ -1121,7 +1129,7 @@ AutoHideBrowser.prototype = {
 				return;
 
 			case this.treeStyleTab.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN:
-				this.onKeyDown(aEvent.sourceEvent);
+				this.onKeyDown(aEvent.getData('sourceEvent'));
 				return;
 
 			case this.treeStyleTab.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START:
@@ -1129,12 +1137,12 @@ AutoHideBrowser.prototype = {
 				if (this.enabled &&
 					this.treeStyleTab.getTreePref('tabbar.autoShow.tabSwitch') &&
 					(
-						aEvent.detail & this.treeStyleTab.kTAB_FOCUS_SWITCHING_SCROLL_DOWN ||
-						aEvent.detail & this.treeStyleTab.kTAB_FOCUS_SWITCHING_SCROLL_UP ||
+						aEvent.getData('scrollDown') ||
+						aEvent.getData('scrollUp') ||
 						( // when you release "shift" key
 							this.expanded &&
-							aEvent.detail & this.treeStyleTab.kTAB_FOCUS_SWITCHING_STAND_BY &&
-							aEvent.detail & this.treeStyleTab.kTAB_FOCUS_SWITCHING_ONLY_SHIFT_KEY
+							aEvent.getData('standBy') &&
+							aEvent.getData('onlyShiftKey')
 						)
 					))
 					this.show(this.kSHOWN_BY_SHORTCUT);

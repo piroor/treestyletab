@@ -1416,20 +1416,19 @@ TreeStyleTabBrowser.prototype = {
 
 		var type = aChanging ? this.kEVENT_TYPE_TABBAR_POSITION_CHANGING : this.kEVENT_TYPE_TABBAR_POSITION_CHANGED;
 
-		var flags = (this.getPositionFlag(aNewPosition) << this.kTABBAR_NEW_POSITION_OFFSET) |
-					(this.getPositionFlag(aOldPosition) << this.kTABBAR_OLD_POSITION_OFFSET);
-
 		/* PUBLIC API */
-		var event = document.createEvent('UIEvents');
-		event.initUIEvent(type, true, false, window, flags);
-		// for backkward compatibility
+		var event = document.createEvent('DataContainerEvents');
+		event.initEvent(type, true, false);
+		event.setData('oldPosition', aOldPosition);
+		event.setData('newPosition', aNewPosition);
+		// for backward compatibility
 		event.oldPosition = aOldPosition;
 		event.newPosition = aNewPosition;
 		this.mTabBrowser.dispatchEvent(event);
 
 		// for backward compatibility
-		event = document.createEvent('UIEvents');
-		event.initUIEvent(type.replace(/^nsDOM/, ''), true, false, window, flags);
+		event = document.createEvent('Events');
+		event.initEvent(type.replace(/^nsDOM/, ''), true, false);
 		event.oldPosition = aOldPosition;
 		event.newPosition = aNewPosition;
 		this.mTabBrowser.dispatchEvent(event);
@@ -1470,8 +1469,11 @@ TreeStyleTabBrowser.prototype = {
 			return false;
 
 		/* PUBLIC API */
-		var event = document.createEvent('Events');
+		var event = document.createEvent('DataContainerEvents');
 		event.initEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGING, true, false);
+		event.setData('oldState', oldState);
+		event.setData('newState', newState);
+		// for backward compatibility
 		event.oldState = oldState;
 		event.newState = newState;
 		this.mTabBrowser.dispatchEvent(event);
@@ -1501,8 +1503,10 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		/* PUBLIC API */
-		var event = document.createEvent('Events');
+		var event = document.createEvent('DataContainerEvents');
 		event.initEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGED, true, false);
+		event.setData('state', state);
+		// for backward compatibility
 		event.state = state;
 		this.mTabBrowser.dispatchEvent(event);
 
@@ -3551,8 +3555,10 @@ TreeStyleTabBrowser.prototype = {
 	fireAttachedEvent : function TSTBrowser_fireAttachedEvent(aChild, aParent)
 	{
 		/* PUBLIC API */
-		var event = document.createEvent('Events');
+		var event = document.createEvent('DataContainerEvents');
 		event.initEvent(this.kEVENT_TYPE_ATTACHED, true, false);
+		event.setData('parentTab', aParent);
+		// for backward compatibility
 		event.parentTab = aParent;
 		aChild.dispatchEvent(event);
 
@@ -3601,8 +3607,10 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		/* PUBLIC API */
-		var event = document.createEvent('Events');
+		var event = document.createEvent('DataContainerEvents');
 		event.initEvent(this.kEVENT_TYPE_DETACHED, true, false);
+		event.setData('parentTab', parentTab);
+		// for backward compatibility
 		event.parentTab = parentTab;
 		aChild.dispatchEvent(event);
 
@@ -4043,8 +4051,10 @@ TreeStyleTabBrowser.prototype = {
 		this.updateTabCollapsed(aTab, aCollapse, aJustNow);
 
 		/* PUBLIC API */
-		var event = document.createEvent('Events');
+		var event = document.createEvent('DataContainerEvents');
 		event.initEvent(this.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, true, false);
+		event.setData('collapsed', aCollapse);
+		// for backward compatibility
 		event.collapsed = aCollapse;
 		aTab.dispatchEvent(event);
 
