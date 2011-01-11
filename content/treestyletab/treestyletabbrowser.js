@@ -1415,23 +1415,15 @@ TreeStyleTabBrowser.prototype = {
 		if (aOldPosition == aNewPosition) return false;
 
 		var type = aChanging ? this.kEVENT_TYPE_TABBAR_POSITION_CHANGING : this.kEVENT_TYPE_TABBAR_POSITION_CHANGED;
+		var data = {
+				oldPosition : aOldPosition,
+				newPosition : aNewPosition
+			};
 
 		/* PUBLIC API */
-		var event = document.createEvent('DataContainerEvents');
-		event.initEvent(type, true, false);
-		event.setData('oldPosition', aOldPosition);
-		event.setData('newPosition', aNewPosition);
+		this.fireDataContainerEvent(type, this.mTabBrowser, true, false, data);
 		// for backward compatibility
-		event.oldPosition = aOldPosition;
-		event.newPosition = aNewPosition;
-		this.mTabBrowser.dispatchEvent(event);
-
-		// for backward compatibility
-		event = document.createEvent('Events');
-		event.initEvent(type.replace(/^nsDOM/, ''), true, false);
-		event.oldPosition = aOldPosition;
-		event.newPosition = aNewPosition;
-		this.mTabBrowser.dispatchEvent(event);
+		this.fireDataContainerEvent(type.replace(/^nsDOM/, ''), this.mTabBrowser, true, false, data);
 
 		return true;
 	},
@@ -1468,22 +1460,15 @@ TreeStyleTabBrowser.prototype = {
 			oldState.alltabsButton == newState.alltabsButton)
 			return false;
 
-		/* PUBLIC API */
-		var event = document.createEvent('DataContainerEvents');
-		event.initEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGING, true, false);
-		event.setData('oldState', oldState);
-		event.setData('newState', newState);
-		// for backward compatibility
-		event.oldState = oldState;
-		event.newState = newState;
-		this.mTabBrowser.dispatchEvent(event);
+		var data = {
+				oldState : oldState,
+				newState : newState
+			};
 
+		/* PUBLIC API */
+		this.fireDataContainerEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGING, this.mTabBrowser, true, false, data);
 		// for backward compatibility
-		event = document.createEvent('Events');
-		event.initEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGING.replace(/^nsDOM/, ''), true, false);
-		event.oldState = oldState;
-		event.newState = newState;
-		this.mTabBrowser.dispatchEvent(event);
+		this.fireDataContainerEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGING.replace(/^nsDOM/, ''), this.mTabBrowser, true, false, data);
 
 		return true;
 	},
@@ -1502,19 +1487,14 @@ TreeStyleTabBrowser.prototype = {
 			state.allTabsButton = state.alltabsButton;
 		}
 
-		/* PUBLIC API */
-		var event = document.createEvent('DataContainerEvents');
-		event.initEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGED, true, false);
-		event.setData('state', state);
-		// for backward compatibility
-		event.state = state;
-		this.mTabBrowser.dispatchEvent(event);
+		var data = {
+				state : state
+			};
 
+		/* PUBLIC API */
+		this.fireDataContainerEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGED, this.mTabBrowser, true, false, data);
 		// for backward compatibility
-		event = document.createEvent('Events');
-		event.initEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGED.replace(/^nsDOM/, ''), true, false);
-		event.state = state;
-		this.mTabBrowser.dispatchEvent(event);
+		this.fireDataContainerEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGED.replace(/^nsDOM/, ''), this.mTabBrowser, true, false, data);
 
 		return true;
 	},
@@ -3555,19 +3535,14 @@ TreeStyleTabBrowser.prototype = {
 	},
 	fireAttachedEvent : function TSTBrowser_fireAttachedEvent(aChild, aParent)
 	{
-		/* PUBLIC API */
-		var event = document.createEvent('DataContainerEvents');
-		event.initEvent(this.kEVENT_TYPE_ATTACHED, true, false);
-		event.setData('parentTab', aParent);
-		// for backward compatibility
-		event.parentTab = aParent;
-		aChild.dispatchEvent(event);
+		var data = {
+				parentTab : aParent
+			};
 
+		/* PUBLIC API */
+		this.fireDataContainerEvent(this.kEVENT_TYPE_ATTACHED, aChild, true, false, data);
 		// for backward compatibility
-		event = document.createEvent('Events');
-		event.initEvent(this.kEVENT_TYPE_ATTACHED.replace(/^nsDOM/, ''), true, false);
-		event.parentTab = aParent;
-		aChild.dispatchEvent(event);
+		this.fireDataContainerEvent(this.kEVENT_TYPE_ATTACHED.replace(/^nsDOM/, ''), aChild, true, false, data);
 	},
  
 	shouldTabAutoExpanded : function TSTBrowser_shouldTabAutoExpanded(aTab) 
@@ -3607,19 +3582,14 @@ TreeStyleTabBrowser.prototype = {
 			this.checkTabsIndentOverflow();
 		}
 
-		/* PUBLIC API */
-		var event = document.createEvent('DataContainerEvents');
-		event.initEvent(this.kEVENT_TYPE_DETACHED, true, false);
-		event.setData('parentTab', parentTab);
-		// for backward compatibility
-		event.parentTab = parentTab;
-		aChild.dispatchEvent(event);
+		var data = {
+				parentTab : parentTab
+			};
 
+		/* PUBLIC API */
+		this.fireDataContainerEvent(this.kEVENT_TYPE_DETACHED, aChild, true, false, data);
 		// for backward compatibility
-		event = document.createEvent('Events');
-		event.initEvent(this.kEVENT_TYPE_DETACHED.replace(/^nsDOM/, ''), true, false);
-		event.parentTab = parentTab;
-		aChild.dispatchEvent(event);
+		this.fireDataContainerEvent(this.kEVENT_TYPE_DETACHED.replace(/^nsDOM/, ''), aChild, true, false, data);
 
 		if (this.isGroupTab(parentTab) && !this.hasChildTabs(parentTab)) {
 			window.setTimeout(function(aTabBrowser) {
@@ -4051,19 +4021,14 @@ TreeStyleTabBrowser.prototype = {
 		this.setTabValue(aTab, this.kCOLLAPSED, aCollapse);
 		this.updateTabCollapsed(aTab, aCollapse, aJustNow);
 
-		/* PUBLIC API */
-		var event = document.createEvent('DataContainerEvents');
-		event.initEvent(this.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, true, false);
-		event.setData('collapsed', aCollapse);
-		// for backward compatibility
-		event.collapsed = aCollapse;
-		aTab.dispatchEvent(event);
+		var data = {
+				collapsed : aCollapse
+			};
 
+		/* PUBLIC API */
+		this.fireDataContainerEvent(this.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, aTab, true, false, data);
 		// for backward compatibility
-		event = document.createEvent('Events');
-		event.initEvent(this.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED.replace(/^nsDOM/, ''), true, false);
-		event.collapsed = aCollapse;
-		aTab.dispatchEvent(event);
+		this.fireDataContainerEvent(this.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED.replace(/^nsDOM/, ''), aTab, true, false, data);
 
 		var b = this.mTabBrowser;
 		var parent;

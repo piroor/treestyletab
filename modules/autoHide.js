@@ -672,48 +672,30 @@ AutoHideBrowser.prototype = {
  
 	fireStateChangingEvent : function AHB_fireStateChangingEvent() 
 	{
-		/* PUBLIC API */
-		var event = this.document.createEvent('DataContainerEvents');
-		event.initEvent(this.treeStyleTab.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGING, true, false);
-		event.setData('shown', this.expanded);
-		event.setData('state', this.state);
-		// for backward compatibility
-		event.shown = this.expanded;
-		event.state = this.state;
-		this.browser.dispatchEvent(event);
+		var data = {
+				shown : this.expanded,
+				state : this.state
+			};
 
+		/* PUBLIC API */
+		this.treeStyleTab.fireDataContainerEvent(this.treeStyleTab.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGING, this.browser, true, false, data);
 		// for backward compatibility
-		event = this.document.createEvent('Events');
-		event.initEvent(this.treeStyleTab.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGING.replace(/^nsDOM/, ''), true, false);
-		event.shown = this.expanded;
-		event.state = this.state;
-		this.browser.dispatchEvent(event);
+		this.treeStyleTab.fireDataContainerEvent(this.treeStyleTab.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGING.replace(/^nsDOM/, ''), this.browser, true, false, data);
 	},
  
 	fireStateChangeEvent : function AHB_fireStateChangeEvent() 
 	{
-		/* PUBLIC API */
-		var event = this.document.createEvent('DataContainerEvents');
-		event.initEvent(this.treeStyleTab.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGE, true, false);
-		event.setData('shown', this.expanded);
-		event.setData('state', this.state);
-		event.setData('xOffset', this.XOffset);
-		event.setData('yOffset', this.YOffset);
-		// for backward compatibility
-		event.shown = this.expanded;
-		event.state = this.state;
-		event.xOffset = this.XOffset;
-		event.yOffset = this.YOffset;
-		this.browser.dispatchEvent(event);
+		var data = {
+				shown   : this.expanded,
+				state   : this.state,
+				xOffset : this.XOffset,
+				yOffset : this.YOffset
+			};
 
+		/* PUBLIC API */
+		this.treeStyleTab.fireDataContainerEvent(this.treeStyleTab.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGE, this.browser, true, false, data);
 		// for backward compatibility
-		event = this.document.createEvent('Events');
-		event.initEvent(this.treeStyleTab.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGE.replace(/^nsDOM/, ''), true, false);
-		event.shown = this.expanded;
-		event.state = this.state;
-		event.xOffset = this.XOffset;
-		event.yOffset = this.YOffset;
-		this.browser.dispatchEvent(event);
+		this.treeStyleTab.fireDataContainerEvent(this.treeStyleTab.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGE.replace(/^nsDOM/, ''), this.browser, true, false, data);
 	},
   
 	redrawContentArea : function AHB_redrawContentArea() 

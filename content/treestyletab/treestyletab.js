@@ -958,20 +958,15 @@ var TreeStyleTabService = {
 		// this.accelKeyPressed = this.isAccelKeyPressed(aEvent);
 		this.accelKeyPressed = aEvent.ctrlKey || aEvent.keyCode == Ci.nsIDOMKeyEvent.DOM_VK_CONTROL;
 
-		/* PUBLIC API */
 		var b = this.browser;
-		var event = b.ownerDocument.createEvent('DataContainerEvents');
-		event.initEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN, true, false);
-		event.setData('sourceEvent', aEvent);
-		// for backward compatibility
-		event.sourceEvent = aEvent;
-		b.dispatchEvent(event);
+		var data = {
+				sourceEvent : aEvent
+			};
 
+		/* PUBLIC API */
+		this.fireDataContainerEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN, b, true, false, data);
 		// for backward compatibility
-		event = b.ownerDocument.createEvent('Events');
-		event.initEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN.replace(/^nsDOM/, ''), true, false);
-		event.sourceEvent = aEvent;
-		b.dispatchEvent(event);
+		this.fireDataContainerEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN.replace(/^nsDOM/, ''), b, true, false, data);
 	},
 	accelKeyPressed : false,
  
@@ -1003,6 +998,14 @@ var TreeStyleTabService = {
 
 		var onlyShiftKey = (!aEvent.shiftKey && aEvent.keyCode == 16 && (aEvent.type == 'keyup' || aEvent.charCode == 0));
 
+		var data = {
+				scrollDown   : scrollDown,
+				scrollUp     : scrollUp,
+				standBy      : standBy,
+				onlyShiftKey : onlyShiftKey,
+				sourceEvent  : aEvent
+			};
+
 		if (
 			scrollDown ||
 			scrollUp ||
@@ -1011,31 +1014,9 @@ var TreeStyleTabService = {
 			)
 			) {
 			/* PUBLIC API */
-			let event = b.ownerDocument.createEvent('DataContainerEvents');
-			event.initEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START, true, false);
-			event.setData('scrollDown', scrollDown);
-			event.setData('scrollUp', scrollUp);
-			event.setData('standBy', standBy);
-			event.setData('onlyShiftKey', onlyShiftKey);
-			event.setData('sourceEvent', aEvent);
+			this.fireDataContainerEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START, b, true, false, data);
 			// for backward compatibility
-			event.scrollDown = scrollDown;
-			event.scrollUp = scrollUp;
-			event.standBy = standBy;
-			event.onlyShiftKey = onlyShiftKey;
-			event.sourceEvent = aEvent;
-			b.dispatchEvent(event);
-
-			// for backward compatibility
-			event = b.ownerDocument.createEvent('Events');
-			event.initEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START.replace(/^nsDOM/, ''), true, false);
-			event.scrollDown = scrollDown;
-			event.scrollUp = scrollUp;
-			event.standBy = standBy;
-			event.onlyShiftKey = onlyShiftKey;
-			event.sourceEvent = aEvent;
-			b.dispatchEvent(event);
-
+			this.fireDataContainerEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START.replace(/^nsDOM/, ''), b, true, false, data);
 			return;
 		}
 
@@ -1043,30 +1024,9 @@ var TreeStyleTabService = {
 
 		/* PUBLIC API */
 		let (event) {
-			event = b.ownerDocument.createEvent('DataContainerEvents');
-			event.initEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, true, false);
-			event.setData('scrollDown', scrollDown);
-			event.setData('scrollUp', scrollUp);
-			event.setData('standBy', standBy);
-			event.setData('onlyShiftKey', onlyShiftKey);
-			event.setData('sourceEvent', aEvent);
+			this.fireDataContainerEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, b, true, false, data);
 			// for backward compatibility
-			event.scrollDown = scrollDown;
-			event.scrollUp = scrollUp;
-			event.standBy = standBy;
-			event.onlyShiftKey = onlyShiftKey;
-			event.sourceEvent = aEvent;
-			b.dispatchEvent(event);
-
-			// for backward compatibility
-			event = b.ownerDocument.createEvent('Events');
-			event.initEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END.replace(/^nsDOM/, ''), true, false);
-			event.scrollDown = scrollDown;
-			event.scrollUp = scrollUp;
-			event.standBy = standBy;
-			event.onlyShiftKey = onlyShiftKey;
-			event.sourceEvent = aEvent;
-			b.dispatchEvent(event);
+			this.fireDataContainerEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END.replace(/^nsDOM/, ''), b, true, false, data);
 		}
 
 		if (this._tabShouldBeExpandedAfterKeyReleased) {
@@ -1436,46 +1396,32 @@ var TreeStyleTabService = {
 	
 	fireTabSubtreeClosingEvent : function TSTService_fireTabSubtreeClosingEvent(aParentTab, aClosedTabs) 
 	{
-		/* PUBLIC API */
-		var event = aParentTab.ownerDocument.createEvent('DataContainerEvents');
-		event.initEvent(this.kEVENT_TYPE_SUBTREE_CLOSING, true, true);
-		event.setData('parent', aParentTab);
-		event.setData('tabs', aClosedTabs);
-		// for backward compatibility
-		event.parent = aParentTab;
-		event.tabs = aClosedTabs;
-		var canClose = this.getTabBrowserFromChild(aParentTab).dispatchEvent(event);
-
-		// for backward compatibility
-		event = aParentTab.ownerDocument.createEvent('Events');
-		event.initEvent(this.kEVENT_TYPE_SUBTREE_CLOSING.replace(/^nsDOM/, ''), true, true);
-		event.parent = aParentTab;
-		event.tabs = aClosedTabs;
-		canClose = canClose && this.getTabBrowserFromChild(aParentTab).dispatchEvent(event);
-
+		var b = this.getTabBrowserFromChild(aParentTab);
+		var data = {
+				parent : aParentTab,
+				tabs   : aClosedTabs
+			};
+		var canClose = (
+			/* PUBLIC API */
+			this.fireDataContainerEvent(this.kEVENT_TYPE_SUBTREE_CLOSING, b, true, true, data) &&
+			// for backward compatibility
+			this.fireDataContainerEvent(this.kEVENT_TYPE_SUBTREE_CLOSING.replace(/^nsDOM/, ''), b, true, true, data)
+		);
 		return canClose;
 	},
  
 	fireTabSubtreeClosedEvent : function TSTService_fireTabSubtreeClosedEvent(aTabBrowser, aParentTab, aClosedTabs) 
 	{
 		aClosedTabs = aClosedTabs.filter(function(aTab) { return !aTab.parentNode; });
+		var data = {
+				parent : aParentTab,
+				tabs   : aClosedTabs
+			};
 
 		/* PUBLIC API */
-		var event = aTabBrowser.ownerDocument.createEvent('DataContainerEvents');
-		event.initEvent(this.kEVENT_TYPE_SUBTREE_CLOSED, true, false);
-		event.setData('parent', aParentTab);
-		event.setData('tabs', aClosedTabs);
+		this.fireDataContainerEvent(this.kEVENT_TYPE_SUBTREE_CLOSED, aTabBrowser, true, false, data);
 		// for backward compatibility
-		event.parent = aParentTab;
-		event.tabs = aClosedTabs;
-		aTabBrowser.dispatchEvent(event);
-
-		// for backward compatibility
-		event = aTabBrowser.ownerDocument.createEvent('Events');
-		event.initEvent(this.kEVENT_TYPE_SUBTREE_CLOSED.replace(/^nsDOM/, ''), true, false);
-		event.parent = aParentTab;
-		event.tabs = aClosedTabs;
-		aTabBrowser.dispatchEvent(event);
+		this.fireDataContainerEvent(this.kEVENT_TYPE_SUBTREE_CLOSED.replace(/^nsDOM/, ''), aTabBrowser, true, false, data);
 	},
  
 	warnAboutClosingTabSubtreeOf : function TSTService_warnAboutClosingTabSubtreeOf(aTab) 

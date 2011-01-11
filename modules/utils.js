@@ -631,6 +631,44 @@ var TreeStyleTabUtils = {
 		return (x >= minX && x <= maxX && y >= minY && y <= maxY);
 	},
 	
+	// called with target(nsIDOMEventTarget), document(nsIDOMDocument), type(string) and data(object)
+	fireDataContainerEvent : function()
+	{
+		var target, document, type, data, canBubble, cancellable;
+		Array.slice(arguments).forEach(function(aArg) {
+			if (typeof aArg == 'boolean') {
+				if (canBubble === void(0))
+					canBubble = aArg;
+				else
+					cancellable = aArg;
+			}
+			else if (typeof aArg == 'string')
+				type = aArg;
+			else if (aArg instanceof Ci.nsIDOMDocument)
+				document = aArg;
+			else if (aArg instanceof Ci.nsIDOMEventTarget)
+				target = aArg;
+			else
+				data = aArg;
+		});
+		if (!target)
+			target = document;
+		if (!document)
+			document = target.ownerDocument || target;
+
+		var event = document.createEvent('DataContainerEvent');
+		event.initEvent(type, canBubble, cancellable);
+		for (var i in data)
+		{
+			if (!data.hasOwnProperty(i))
+				continue;
+			event.setData(i, data[i]);
+			event[i] = data[i]; // for backward compatibility
+		}
+
+		return target.dispatchEvent(event);
+	},
+ 
 	registerExpandTwistyAreaBlocker : function TSTUtils_registerExpandTwistyAreaBlocker(aBlocker) /* PUBLIC API */ 
 	{
 		if (this._expandTwistyAreaBlockers.indexOf(aBlocker) < 0)
