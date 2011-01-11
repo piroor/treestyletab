@@ -2313,9 +2313,10 @@ TreeStyleTabBrowser.prototype = {
  
 	onTabsRemoving : function TSTBrowser_onTabsRemoving(aEvent) 
 	{
-		var b = this.getTabBrowserFromChild(aEvent.tabs[0]);
+		var tabs = aEvent.tabs || aEvent.getData('tabs');
+		var b = this.getTabBrowserFromChild(tabs[0]);
 
-		var trees = this.splitTabsToSubtrees(aEvent.tabs);
+		var trees = this.splitTabsToSubtrees(tabs);
 		if (trees.some(function(aTabs) {
 				return aTabs.length > 1 &&
 						!this.fireTabSubtreeClosingEvent(aTabs[0], aTabs);
