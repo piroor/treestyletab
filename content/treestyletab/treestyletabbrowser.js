@@ -2327,6 +2327,8 @@ TreeStyleTabBrowser.prototype = {
  
 	onTabMove : function TSTBrowser_onTabMove(aEvent) 
 	{
+		if (this._tabViewShown) this._tabViewTabMoveCount++;
+
 		var tab = aEvent.originalTarget;
 		var b   = this.mTabBrowser;
 
@@ -2337,7 +2339,6 @@ TreeStyleTabBrowser.prototype = {
 		this.initTabContents(tab);
 
 		if (this.hasChildTabs(tab) && !this.subTreeMovingCount) {
-			if (this._tabViewShown) this._tabViewTreeMoveCount++;
 			this.moveTabSubtreeTo(tab, tab._tPos);
 		}
 
@@ -3350,15 +3351,15 @@ TreeStyleTabBrowser.prototype = {
 	onTabViewShown : function TSTBrowser_onTabViewShown(aEvent) 
 	{
 		this._tabViewShown = true;
-		this._tabViewTreeMoveCount = 0;
+		this._tabViewTabMoveCount = 0;
 	},
  
 	onTabViewHidden : function TSTBrowser_onTabViewHidden(aEvent) 
 	{
-		var count = this._tabViewTreeMoveCount;
+		var count = this._tabViewTabMoveCount;
 
 		this._tabViewShown = false;
-		this._tabViewTreeMoveCount = -1;
+		this._tabViewTabMoveCount = -1;
 
 		var w = TabView._window;
 		if (
@@ -3375,7 +3376,7 @@ TreeStyleTabBrowser.prototype = {
 		if (item) w.UI.setReorderTabItemsOnShow(item);
 	},
 	_tabViewShown : false,
-	_tabViewTreeMoveCount : -1,
+	_tabViewTabMoveCount : -1,
   
 /* commands */ 
 	
