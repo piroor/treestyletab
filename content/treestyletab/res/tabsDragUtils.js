@@ -7,13 +7,13 @@
    // in dragstart event listener
    window['piro.sakura.ne.jp'].tabsDragUtils.startTabsDrag(aEvent, aArrayOfTabs);
 
- license: The MIT License, Copyright (c) 2010 SHIMODA "Piro" Hiroshi
+ license: The MIT License, Copyright (c) 2010-2011 SHIMODA "Piro" Hiroshi
    http://github.com/piroor/fxaddonlibs/blob/master/license.txt
  original:
    http://github.com/piroor/fxaddonlibs/blob/master/tabsDragUtils.js
 */
 (function() {
-	const currentRevision = 6;
+	const currentRevision = 7;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -308,8 +308,10 @@
 
 		_fireTabsDropEvent : function TDU_fireTabsDropEvent(aTabs) 
 		{
-			var event = document.createEvent('Events');
+			var event = document.createEvent('DataContainerEvents');
 			event.initEvent(this.EVENT_TYPE_TABS_DROP, true, true);
+			event.setData('tabs', aTabs);
+			// for backward compatibility
 			event.tabs = aTabs;
 			return this._dropTarget.dispatchEvent(event);
 		},
