@@ -3372,8 +3372,9 @@ TreeStyleTabBrowser.prototype = {
 			)
 			return;
 
-		var item = w.GroupItems.getActiveGroupItem();
-		if (item) w.UI.setReorderTabItemsOnShow(item);
+		w.GroupItems.groupItems.forEach(function(aGroupItem) {
+			w.UI.setReorderTabItemsOnShow(aGroupItem);
+		});
 	},
 	_tabViewShown : false,
 	_tabViewTabMoveCount : -1,
