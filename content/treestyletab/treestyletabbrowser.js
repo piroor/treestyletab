@@ -392,6 +392,8 @@ TreeStyleTabBrowser.prototype = {
 		window.addEventListener('resize', this, true);
 		window.addEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
 		window.addEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED,  this, false);
+		window.addEventListener('tabviewshown', this, true);
+		window.addEventListener('tabviewhidden', this, true);
 
 		b.addEventListener('nsDOMMultipleTabHandlerTabsClosing', this, false);
 
@@ -1547,6 +1549,8 @@ TreeStyleTabBrowser.prototype = {
 		window.removeEventListener('resize', this, true);
 		window.removeEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
 		window.removeEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED,  this, false);
+		window.removeEventListener('tabviewshown', this, true);
+		window.removeEventListener('tabviewhidden', this, true);
 
 		b.removeEventListener('nsDOMMultipleTabHandlerTabsClosing', this, false);
 
@@ -1952,6 +1956,11 @@ TreeStyleTabBrowser.prototype = {
 			case this.kEVENT_TYPE_PRINT_PREVIEW_EXITED:
 				return this.onTreeStyleTabPrintPreviewExited(aEvent);
 
+			case 'tabviewshown':
+				return this.onTabViewShown();
+			case 'tabviewhidden':
+				return this.onTabViewHidden();
+
 
 			case 'nsDOMMultipleTabHandlerTabsClosing':
 				if (!this.onTabsRemoving(aEvent))
@@ -2328,6 +2337,7 @@ TreeStyleTabBrowser.prototype = {
 		this.initTabContents(tab);
 
 		if (this.hasChildTabs(tab) && !this.subTreeMovingCount) {
+			if (this._tabViewShown) this._tabViewTreeMoveCount++;
 			this.moveTabSubtreeTo(tab, tab._tPos);
 		}
 
@@ -3336,6 +3346,36 @@ TreeStyleTabBrowser.prototype = {
 	{
 		this.removeTabbrowserAttribute(this.kPRINT_PREVIEW);
 	},
+ 
+	onTabViewShown : function TSTBrowser_onTabViewShown(aEvent) 
+	{
+		this._tabViewShown = true;
+		this._tabViewTreeMoveCount = 0;
+	},
+ 
+	onTabViewHidden : function TSTBrowser_onTabViewHidden(aEvent) 
+	{
+		var count = this._tabViewTreeMoveCount;
+
+		this._tabViewShown = false;
+		this._tabViewTreeMoveCount = -1;
+
+		var w = TabView._window;
+		if (
+			!count ||
+			!w ||
+			!w.UI ||
+			!w.UI.setReorderTabItemsOnShow ||
+			!w.GroupItems ||
+			!w.GroupItems.getActiveGroupItem
+			)
+			return;
+
+		var item = w.GroupItems.getActiveGroupItem();
+		if (item) w.UI.setReorderTabItemsOnShow(item);
+	},
+	_tabViewShown : false,
+	_tabViewTreeMoveCount : -1,
   
 /* commands */ 
 	
