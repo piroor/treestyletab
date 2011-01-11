@@ -168,6 +168,8 @@ var TreeStyleTabUtils = {
 	kTABBAR_BOTTOM : 1 << 1,
 	kTABBAR_LEFT   : 1 << 2,
 	kTABBAR_RIGHT  : 1 << 3,
+	kTABBAR_NEW_POSITION_OFFSET : 0,
+	kTABBAR_OLD_POSITION_OFFSET : 4,
 
 	kTABBAR_HORIZONTAL : (1 << 0) | (1 << 1),
 	kTABBAR_VERTICAL   : (1 << 2) | (1 << 3),

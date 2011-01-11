@@ -1416,16 +1416,20 @@ TreeStyleTabBrowser.prototype = {
 
 		var type = aChanging ? this.kEVENT_TYPE_TABBAR_POSITION_CHANGING : this.kEVENT_TYPE_TABBAR_POSITION_CHANGED;
 
+		var flags = (this.getPositionFlag(aNewPosition) << this.kTABBAR_NEW_POSITION_OFFSET) |
+					(this.getPositionFlag(aOldPosition) << this.kTABBAR_OLD_POSITION_OFFSET);
+
 		/* PUBLIC API */
-		var event = document.createEvent('Events');
-		event.initEvent(type, true, false);
+		var event = document.createEvent('UIEvents');
+		event.initUIEvent(type, true, false, window, flags);
+		// for backkward compatibility
 		event.oldPosition = aOldPosition;
 		event.newPosition = aNewPosition;
 		this.mTabBrowser.dispatchEvent(event);
 
 		// for backward compatibility
-		event = document.createEvent('Events');
-		event.initEvent(type.replace(/^nsDOM/, ''), true, false);
+		event = document.createEvent('UIEvents');
+		event.initUIEvent(type.replace(/^nsDOM/, ''), true, false, window, flags);
 		event.oldPosition = aOldPosition;
 		event.newPosition = aNewPosition;
 		this.mTabBrowser.dispatchEvent(event);
@@ -3254,6 +3258,7 @@ TreeStyleTabBrowser.prototype = {
 		// collapse/expand all
 		sep = this.evaluateXPath(
 			'descendant::xul:menuseparator[starts-with(@id, "'+this.kMENUITEM_COLLAPSEEXPAND_SEPARATOR+'")]',
+
 			aEvent.currentTarget,
 			XPathResult.FIRST_ORDERED_NODE_TYPE
 		).singleNodeValue;
