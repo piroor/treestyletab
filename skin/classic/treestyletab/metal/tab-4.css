@@ -120,17 +120,17 @@
 /* pinned tabs */
 
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"]
-  > .tab-content,
+  .tabbrowser-tab[pinned="true"]:not(:hover)
+  .tab-content,
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"]:hover
-  > .tab-content,
+  .tab-content,
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"][selected]
-  > .tab-content,
+  .tabbrowser-tab[pinned="true"][selected]:not(:hover)
+  .tab-content,
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"][selected]:hover
-  > .tab-content {
+  .tab-content {
 	background: none !important;
 	-moz-border-image: none !important;
 	margin: 0 !important;
@@ -138,11 +138,11 @@
 }
 
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"],
+  .tabbrowser-tab[pinned="true"]:not(:hover),
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"]:hover,
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"][selected="true"],
+  .tabbrowser-tab[pinned="true"][selected="true"]:not(:hover),
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"][selected="true"]:hover {
 	background: none !important;
@@ -153,37 +153,37 @@
 
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"]
-  > .tab-content
-  > * {
+  .tab-content
+  * {
 	margin: 0 !important;
 	padding: 0 !important;
 }
 
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"]
-  > .tab-content,
+  .tabbrowser-tab[pinned="true"]:not(:hover)
+  .tab-content,
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"]:hover
-  > .tab-content,
+  .tab-content,
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"][selected="true"]
-  > .tab-content,
+  .tabbrowser-tab[pinned="true"][selected="true"]:not(:hover)
+  .tab-content,
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"][selected="true"]:hover
-  > .tab-content {
+  .tab-content {
 	background: #9d9d9d !important;
 	border: 1px solid #666666 !important;
 	margin: 1px 0 0 1px !important;
-	padding: 2px 0 !important;
+	padding: 2px 4px 2px 3px !important;
 	-moz-border-radius: 4px !important;
 }
 
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"][selected="true"]
-  > .tab-content,
+  .tabbrowser-tab[pinned="true"][selected="true"]:not(:hover)
+  .tab-content,
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"][selected="true"]:hover
-  > .tab-content {
+  .tab-content {
 	background-color: #b3b2b3 !important;
 }
 
@@ -226,28 +226,28 @@
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"]
-  > .tab-content,
+  .tab-content,
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"]:hover
-  > .tab-content {
+  .tab-content {
 	background: #cecece !important;
 }
 
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"][selected="true"]
-  > .tab-content,
+  .tab-content,
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"][selected="true"]:hover
-  > .tab-content {
+  .tab-content {
 	background: #e4e4e4 !important;
 }
 
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"]
-  > .tab-content {
+  .tab-content {
 	border-color: #9a9a9a !important;
 }
