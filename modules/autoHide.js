@@ -186,6 +186,8 @@ AutoHideBrowser.prototype = {
 		var b  = this.browser;
 		var w  = this.window;
 
+		sv.setTabbrowserAttribute(this.kSTATE, this.kSTATE_EXPANDED);
+
 		b.addEventListener('mousedown', this, true);
 		b.addEventListener('mouseup', this, true);
 		if (sv.isFloating) {
@@ -217,8 +219,7 @@ AutoHideBrowser.prototype = {
 		var b  = this.browser;
 		var w  = this.window;
 
-		if (!this.expanded)
-			this.showHideInternal();
+		this.show();
 
 		b.removeEventListener('mousedown', this, true);
 		b.removeEventListener('mouseup', this, true);
@@ -244,7 +245,11 @@ AutoHideBrowser.prototype = {
 		sv.removeTabbrowserAttribute(this.kSTATE);
 		sv.removeTabbrowserAttribute(this.kTRANSPARENT);
 
-		sv.setTabStripAttribute('width', this.widthFromMode);
+		if (sv.isVertical)
+			this.window.setTimeout(function(aSelf, aWidth) {
+				if (aSelf.expanded)
+					sv.setTabStripAttribute('width', aWidth);
+			}, 0, this, this.widthFromMode);
 	},
  
 	// fullscreen 
