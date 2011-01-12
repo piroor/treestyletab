@@ -10,9 +10,9 @@
 }
 
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab .tab-content[selected="true"],
+  .tabbrowser-tab:not([pinned]) .tab-content[selected="true"],
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab .tab-content:not([selected="true"]) {
+  .tabbrowser-tab:not([pinned]) .tab-content:not([selected="true"]) {
 	padding: 0 0.2em !important;
 }
 
