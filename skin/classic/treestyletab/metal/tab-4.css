@@ -171,6 +171,7 @@
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"][selected="true"]:hover
   .tab-content {
+	line-height: 1 !important;
 	background: #9d9d9d !important;
 	border: 1px solid #666666 !important;
 	margin: 1px 0 0 1px !important;

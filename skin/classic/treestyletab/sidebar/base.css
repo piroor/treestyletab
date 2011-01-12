@@ -69,7 +69,8 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
 }
 .tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"] {
-	padding: 2px 0 0 4px !important;
+	padding: 2px 2px 3px !important;
+	line-height: 1 !important;
 }
 
 .tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
