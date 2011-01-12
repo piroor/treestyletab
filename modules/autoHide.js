@@ -246,10 +246,7 @@ AutoHideBrowser.prototype = {
 		sv.removeTabbrowserAttribute(this.kTRANSPARENT);
 
 		if (sv.isVertical)
-			this.window.setTimeout(function(aSelf, aWidth) {
-				if (aSelf.expanded)
-					sv.setTabStripAttribute('width', aWidth);
-			}, 0, this, this.widthFromMode);
+			sv.setTabStripAttribute('width', this.widthFromMode);
 	},
  
 	// fullscreen 
