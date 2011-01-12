@@ -2478,6 +2478,7 @@ TreeStyleTabBrowser.prototype = {
 		);
 	},
  
+	// for TabView (Panorama aka Tab Candy)
 	rearrangeTabViewItems : function TSTBrowser_rearrangeTabViewItems(aTab) 
 	{
 		if (
@@ -2490,6 +2491,7 @@ TreeStyleTabBrowser.prototype = {
 		aTab.tabItem.parent.reorderTabItemsBasedOnTabOrder();
 	},
   
+	// for TabView (Panorama aka Tab Candy)
 	onTabVisibilityChanged : function TSTBrowser_onTabVisibilityChanged(aEvent) 
 	{
 		this.updateInvertedTabContentsOrder(aEvent.originalTarget);
