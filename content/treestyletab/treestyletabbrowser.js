@@ -221,7 +221,7 @@ TreeStyleTabBrowser.prototype = {
 		var col    = 0;
 		var row    = 0;
 		tabbar.style.MozMarginStart = '';
-		tabbar.style.marginTop = (height * maxRow)+'px';
+		tabbar.style.setProperty('margin-top', (height * maxRow)+'px', 'important');
 		for (var i = 0; i < count; i++)
 		{
 			let style = tabbar.childNodes[i].style;
