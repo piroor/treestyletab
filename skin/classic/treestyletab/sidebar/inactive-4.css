@@ -3,7 +3,7 @@
 /* Unset bottom border, instead let's have a border on the right-hand
    side, much like the sidebar does. */
 #main-window:-moz-window-inactive
-  .tabbrowser-strip[treestyletab-style~="sidebar"]:not([treestyletab-style~="aero"])[treestyletab-mode="vertical"],
+  .tabbrowser-strip:not([treestyletab-tabbar-placeholder="true"])[treestyletab-style~="sidebar"]:not([treestyletab-style~="aero"])[treestyletab-mode="vertical"],
 #main-window:-moz-window-inactive
   #TabsToolbar[treestyletab-style~="sidebar"]:not([treestyletab-style~="aero"])[treestyletab-mode="vertical"] {
 	border-top: 1px solid #868686;

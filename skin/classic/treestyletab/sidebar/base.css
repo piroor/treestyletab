@@ -2,7 +2,7 @@
 
 /* Unset bottom border, instead let's have a border on the right-hand
    side, much like the sidebar does. */
-.tabbrowser-strip[treestyletab-style~="sidebar"][treestyletab-mode="vertical"],
+.tabbrowser-strip:not([treestyletab-tabbar-placeholder="true"])[treestyletab-style~="sidebar"][treestyletab-mode="vertical"],
 #TabsToolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"] {
 	border-top: 1px solid #404040;
 	border-bottom: none !important;
