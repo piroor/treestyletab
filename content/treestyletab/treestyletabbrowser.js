@@ -204,7 +204,11 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var b = this.mTabBrowser;
 		var tabbar = b.tabContainer;
-		if (!tabbar || !tabbar._positionPinnedTabs)
+		if (
+			!tabbar ||
+			!tabbar._positionPinnedTabs ||
+			!tabbar.boxObject.width
+			)
 			return;
 
 		if (!this.isVertical) {
@@ -213,10 +217,13 @@ TreeStyleTabBrowser.prototype = {
 			return;
 		}
 
+		var maxWidth = this._tabStripPlaceHolder.boxObject.width ||
+						this.tabStrip.boxObject.width;
+
 		var count  = this.pinnedTabsCount;
 		var width  = aWidth || this.PINNED_TAB_DEFAULT_WIDTH;
 		var height = aHeight || this.PINNED_TAB_DEFAULT_HEIGHT;
-		var maxCol = Math.floor(this.tabStrip.boxObject.width / width);
+		var maxCol = Math.floor(maxWidth / width);
 		var maxRow = Math.ceil(count / maxCol);
 		var col    = 0;
 		var row    = 0;
