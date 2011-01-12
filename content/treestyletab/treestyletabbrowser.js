@@ -3733,6 +3733,9 @@ TreeStyleTabBrowser.prototype = {
 	{
 		this.stopTabIndentAnimation(aTab);
 
+		if (aTab.hasAttribute('pinned'))
+			return;
+
 		if (!this.enableSubtreeIndent)
 			aIndent = 0;
 
