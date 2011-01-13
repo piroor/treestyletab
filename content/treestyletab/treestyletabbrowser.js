@@ -380,7 +380,6 @@ TreeStyleTabBrowser.prototype = {
 		if (!this.isFloating && 'tabutils' in window)
 			tabContainer.addEventListener('DOMAttrModified', this, true); // Tab Utilities
 		tabContainer.addEventListener('mouseover', this, true);
-		tabContainer.addEventListener('mouseout',  this, true);
 		tabContainer.addEventListener('dblclick',  this, true);
 		tabContainer.addEventListener('select', this, true);
 		tabContainer.addEventListener('scroll', this, true);
@@ -1543,7 +1542,6 @@ TreeStyleTabBrowser.prototype = {
 		if (!this.isFloating && 'tabutils' in window)
 			b.mTabContainer.removeEventListener('DOMAttrModified', this, true); // Tab Utilites
 		tabContainer.removeEventListener('mouseover', this, true);
-		tabContainer.removeEventListener('mouseout',  this, true);
 		tabContainer.removeEventListener('dblclick',  this, true);
 		tabContainer.removeEventListener('select', this, true);
 		tabContainer.removeEventListener('scroll', this, true);
@@ -1938,15 +1936,17 @@ TreeStyleTabBrowser.prototype = {
 			case 'popupshowing':
 				return this.onPopupShowing(aEvent)
 
-
 			case 'mouseover':
-				if (this.isEventFiredOnTwisty(aEvent))
-					aEvent.target.setAttribute(this.kTWISTY_HOVER, true);
-				return;
-
-			case 'mouseout':
-				if (this.isEventFiredOnTwisty(aEvent))
-					aEvent.target.removeAttribute(this.kTWISTY_HOVER);
+				let (tab = aEvent.target) {
+					if (tab.__treestyletab__twistyHoverTimer)
+						window.clearTimeout(tab.__treestyletab__twistyHoverTimer);
+					if (this.isEventFiredOnTwisty(aEvent))
+						tab.__treestyletab__twistyHoverTimer = window.setTimeout(function(aSelf) {
+							tab.setAttribute(aSelf.kTWISTY_HOVER, true);
+						}, 0, this);
+					else
+						tab.removeAttribute(this.kTWISTY_HOVER);
+				}
 				return;
 
 			case 'overflow':
