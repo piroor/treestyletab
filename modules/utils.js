@@ -617,6 +617,10 @@ var TreeStyleTabUtils = {
 		var minY = box.screenY;
 		var maxX = minX + box.width;
 		var maxY = minY + box.height;
+		if (!box.width || !box.height) {
+			minX = maxX = tab.boxObject.screenX + tab.boxObject.width;
+			minY = maxY = tab.boxObject.screenY + tab.boxObject.height;
+		}
 		if (
 			(this.shouldExpandTwistyArea || !box.width || !box.height) &&
 			!this._expandTwistyAreaBlockers.length
