@@ -617,7 +617,10 @@ var TreeStyleTabUtils = {
 		var minY = box.screenY;
 		var maxX = minX + box.width;
 		var maxY = minY + box.height;
-		if (this.shouldExpandTwistyArea && !this._expandTwistyAreaBlockers.length) {
+		if (
+			(this.shouldExpandTwistyArea || !box.width || !box.height) &&
+			!this._expandTwistyAreaBlockers.length
+			) {
 			let icon  = tab.ownerDocument.getAnonymousElementByAttribute(tab, 'class', 'tab-icon');
 			let box = icon.boxObject;
 			minX = Math.min(minX, box.screenX);
