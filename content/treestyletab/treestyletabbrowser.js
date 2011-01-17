@@ -769,13 +769,13 @@ TreeStyleTabBrowser.prototype = {
 			label.parentNode.insertBefore(counter, label.nextSibling);
 		}
 
-		// This causes http://piro.sakura.ne.jp/cgi-bin/bbs.cgi?2820 ...
-		// If TMP is not installed, there is "image-middle" box between tab-icon and tab-content.
-		// The box has align="center" so the problem doesn't appear if TMP is not installed.
-		// TMP applies its custom binding and it doesn't have image-middle box...
 		var tabContentBox = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-content');
-		if (tabContentBox)
+		if (tabContentBox &&
+			(tabContentBox.firstChild.className || '').indexOf('tab-image-') > -1) {
+			// Set stretched only if the tabFx2Compatible.xml is applied.
+			// Tab Mix Plus overrides the binding so icons are wrongly stretched.
 			tabContentBox.setAttribute('align', this.isVertical ? 'stretch' : 'center' );
+		}
 
 		this.initTabContentsOrder(aTab);
 	},
@@ -2435,6 +2435,7 @@ TreeStyleTabBrowser.prototype = {
 		if (tabs.length) {
 			nextTab = this.getNextTab(tabs[tabs.length-1]);
 		}
+
 
 		var prevParent = this.getParentTab(prevTab);
 		var nextParent = this.getParentTab(nextTab);
