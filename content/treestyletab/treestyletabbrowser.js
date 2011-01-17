@@ -769,6 +769,10 @@ TreeStyleTabBrowser.prototype = {
 			label.parentNode.insertBefore(counter, label.nextSibling);
 		}
 
+		// This causes http://piro.sakura.ne.jp/cgi-bin/bbs.cgi?2820 ...
+		// If TMP is not installed, there is "image-middle" box between tab-icon and tab-content.
+		// The box has align="center" so the problem doesn't appear if TMP is not installed.
+		// TMP applies its custom binding and it doesn't have image-middle box...
 		var tabContentBox = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-content');
 		if (tabContentBox)
 			tabContentBox.setAttribute('align', this.isVertical ? 'stretch' : 'center' );
