@@ -942,8 +942,12 @@ try{
 			info.position == sv.kDROP_AFTER ? 'after' :
 			'self'
 		);
+
 		var indicator = b.mTabDropIndicatorBar || b.tabContainer._tabDropIndicator;
 		indicator.setAttribute('dragging', (info.position == sv.kDROP_ON) ? 'false' : 'true' );
+		if (sv.isVertical)
+			indicator.collapsed = true;
+
 		return (info.position == sv.kDROP_ON || sv.currentTabbarPosition != 'top')
 }
 catch(e) {
