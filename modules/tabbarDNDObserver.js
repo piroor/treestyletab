@@ -196,8 +196,7 @@ catch(e) {
 				!isCopy &&
 				sv.getTabBrowserFromChild(tab) != b &&
 				(
-					('duplicateTab' in b) ||
-					('swapBrowsersAndCloseOther' in b)
+					('duplicateTab' in b)
 				)
 				) {
 				info.action |= sv.kACTION_IMPORT;
@@ -446,8 +445,7 @@ catch(e) {
 		// Firefox fails to "move" collapsed tabs. So, expand them first
 		// and collapse them after they are moved.
 		var collapseExpandState = [];
-		if (aInfo.action & sv.kACTION_IMPORT &&
-			'swapBrowsersAndCloseOther' in targetBrowser) {
+		if (aInfo.action & sv.kACTION_IMPORT) {
 			draggedWholeTree.forEach(function(aTab) {
 				collapseExpandState.push(sv.getTabValue(aTab, sv.kSUBTREE_COLLAPSED) == 'true');
 				sv.collapseExpandSubtree(aTab, false, true);
@@ -462,8 +460,7 @@ catch(e) {
 				var parent = parentTabsArray[aIndex];
 				if (tabsInfo.isMultipleMove && 'MultipleTabService' in sourceWindow)
 					sourceWindow.MultipleTabService.setSelection(aTab, false);
-				if (aInfo.action & sv.kACTION_IMPORT &&
-					'swapBrowsersAndCloseOther' in targetBrowser) {
+				if (aInfo.action & sv.kACTION_IMPORT) {
 					tab = targetBrowser.addTab();
 					tab.linkedBrowser.stop();
 					tab.linkedBrowser.docShell;
