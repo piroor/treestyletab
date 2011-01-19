@@ -58,6 +58,7 @@ function enterEdit()
 	gEdit.value = gLabel.value;
 	gDeck.selectedIndex = 1;
 	gEdit.focus();
+	gEdit.select();
 }
 
 function exitEdit()
