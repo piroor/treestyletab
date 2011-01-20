@@ -1916,7 +1916,7 @@ TreeStyleTabBrowser.prototype = {
 			.forEach(function(aTab, aIndex) {
 				if (treeStructure.treeCollapsed &&
 					treeStructure.treeCollapsed.indexOf(aIndex) > -1)
-					aTab.setTabValue(aTab, this.kSUBTREE_COLLAPSED, true);
+					aTab.setAttribute(this.kSUBTREE_COLLAPSED, true);
 
 				if (treeStructure.collapsed &&
 					treeStructure.collapsed.indexOf(aIndex) > -1)
@@ -1939,7 +1939,7 @@ TreeStyleTabBrowser.prototype = {
 		this.saveTreeStructureWithDelayTimer = window.setTimeout(function(aSelf) {
 			aSelf.saveTreeStructureWithDelayTimer = null;
 			aSelf.saveTreeStructure();
-		}, 1000, this);
+		}, this.getPref('browser.sessionstore.interval'), this);
 	},
 	saveTreeStructureWithDelayTimer : null,
 	saveTreeStructure : function TSTBrowser_saveTreeStructure()
