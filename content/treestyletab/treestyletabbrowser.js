@@ -1896,7 +1896,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		if (
 			!window.__SS_tabsToRestore ||
-			this.getTreePref('restoreTreeOnStartup')
+			!this.getTreePref('restoreTreeOnStartup')
 			)
 			return;
 
