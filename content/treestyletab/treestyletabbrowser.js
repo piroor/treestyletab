@@ -1894,11 +1894,51 @@ TreeStyleTabBrowser.prototype = {
  
 	onWindowStateRestored : function TSTBrowser_onWindowStateRestored()
 	{
-		if (
-			!window.__SS_tabsToRestore ||
-			!this.getTreePref('restoreTreeOnStartup')
-			)
+		if (!window.__SS_tabsToRestore)
 			return;
+	},
+ 
+	saveTreeStructureWithDelay : function TSTBrowser_saveTreeStructureWithDelay()
+	{
+		if (this.restoringTree || this.saveTreeStructureWithDelayTimer)
+			return;
+
+		this.saveTreeStructureWithDelayTimer = window.setTimeout(function(aSelf) {
+			aSelf.saveTreeStructureWithDelayTimer = null;
+			aSelf.saveTreeStructure();
+		}, this.getPref('browser.sessionstore.interval'), this);
+	},
+	saveTreeStructureWithDelayTimer : null,
+	saveTreeStructure : function TSTBrowser_saveTreeStructure()
+	{
+		if (!this.getTreePref('restoreTreeOnStartup'))
+			return;
+
+		var treeStructures = JSON.parse(this.SessionStore.getWindowValue(window, this.kSTRUCTURE) || '{}');
+		var id = this.mTabBrowser.getAttribute('id');
+		var tabs = this.getAllTabsArray(this.mTabBrowser);
+		treeStructures[id] = {
+			tree : this.getTreeStructureFromTabs(tabs),
+			collapsed : tabs.filter(function(aTab) {
+								return this.isCollapsed(aTab);
+							}, this).map(function(aTab) {
+								return aTab._tPos;
+							}),
+			treeCollapsed : tabs.filter(function(aTab) {
+								return this.isSubtreeCollapsed(aTab);
+							}, this).map(function(aTab) {
+								return aTab._tPos;
+							})
+		};
+		this.SessionStore.setWindowValue(window, this.kSTRUCTURE, JSON.stringify(treeStructures))
+	},
+ 
+	restoreTreeStructure : function TSTBrowser_restoreTreeStructure()
+	{
+		if (!this.getTreePref('restoreTreeOnStartup'))
+			return;
+
+		this.restoreTreeStructure();
 
 		var treeStructures = JSON.parse(this.SessionStore.getWindowValue(window, this.kSTRUCTURE) || '{}');
 		var id = this.mTabBrowser.getAttribute('id');
@@ -1926,41 +1966,6 @@ TreeStyleTabBrowser.prototype = {
 				aTab.removeAttribute(this.kPARENT);
 				aTab.removeAttribute(this.kCHILDREN);
 			}, this);
-	},
- 
-	saveTreeStructureWithDelay : function TSTBrowser_saveTreeStructureWithDelay()
-	{
-		if (this.restoringTree)
-			return;
-
-		if (this.saveTreeStructureWithDelayTimer)
-			window.clearTimeout(this.saveTreeStructureWithDelayTimer);
-
-		this.saveTreeStructureWithDelayTimer = window.setTimeout(function(aSelf) {
-			aSelf.saveTreeStructureWithDelayTimer = null;
-			aSelf.saveTreeStructure();
-		}, this.getPref('browser.sessionstore.interval'), this);
-	},
-	saveTreeStructureWithDelayTimer : null,
-	saveTreeStructure : function TSTBrowser_saveTreeStructure()
-	{
-		var treeStructures = JSON.parse(this.SessionStore.getWindowValue(window, this.kSTRUCTURE) || '{}');
-		var id = this.mTabBrowser.getAttribute('id');
-		var tabs = this.getAllTabsArray(this.mTabBrowser);
-		treeStructures[id] = {
-			tree : this.getTreeStructureFromTabs(tabs),
-			collapsed : tabs.filter(function(aTab) {
-								return this.isCollapsed(aTab);
-							}, this).map(function(aTab) {
-								return aTab._tPos;
-							}),
-			treeCollapsed : tabs.filter(function(aTab) {
-								return this.isSubtreeCollapsed(aTab);
-							}, this).map(function(aTab) {
-								return aTab._tPos;
-							})
-		};
-		this.SessionStore.setWindowValue(window, this.kSTRUCTURE, JSON.stringify(treeStructures))
 	},
   
 /* DOM Event Handling */ 
