@@ -139,6 +139,8 @@ pref("extensions.treestyletab.createSubtree.underParent", true);
 */
 pref("extensions.treestyletab.undoCloseTabSet.behavior", 3);
 
+pref("extensions.treestyletab.restoreTreeOnStartup", false);
+
 
 pref("browser.link.open_newwindow.restriction.override", 0);
 pref("browser.tabs.loadFolderAndReplace.override", false);

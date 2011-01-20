@@ -98,7 +98,7 @@ var TreeStyleTabBookmarksService = {
  
 	getTreeStructureFromItems : function TSTBMService_getTreeStructureFromItems(aIDs, aDefaultParentID) 
 	{
-		/* this returns...
+		/* this returns a result same to getTreeStructureFromTabs().
 		  [A]     => -1 (parent is not in this tree)
 		    [B]   => 0 (parent is 1st item in this tree)
 		    [C]   => 0 (parent is 1st item in this tree)
@@ -137,25 +137,7 @@ var TreeStyleTabBookmarksService = {
 			});
 		treeStructure = treeStructure.reverse();
 
-		var offset = 0;
-		treeStructure = treeStructure
-			.map(function(aPosition, aIndex) {
-				return (aPosition == aIndex) ? -1 : aPosition ;
-			})
-			.map(function(aPosition, aIndex) {
-				if (aPosition == -1) {
-					offset = aIndex;
-					return aPosition;
-				}
-				return aPosition - offset;
-			});
-
-		/* The final step, this validates all of values.
-		   Smaller than -1 is invalid, so it becomes to -1. */
-		treeStructure = treeStructure.map(function(aIndex) {
-				return aIndex < -1 ? aDefaultParentID : aIndex ;
-			}, this);
-		return treeStructure;
+		return this.cleanUpTreeStructureArray(treeStructure, aDefaultParentID);
 	},
  
 	// based on PlacesUtils.getURLsForContainerNode()
@@ -186,42 +168,6 @@ var TreeStyleTabBookmarksService = {
 				root.parentResult.viewer = oldViewer;
 		}
 		return ids;
-	},
- 
-
-	applyTreeStructureToTabs : function TSTBMService_applyTreeStructureToTabs(aTabs, aTreeStructure, aExpandAllTree)
-	{ // based on TreeStyleTabBrowser.prototype.onTabAdded()
-		var b = this.getTabBrowserFromChild(aTabs[0]);
-		if (!b) return;
-		var sv = b.treeStyleTab;
-
-		aTabs = aTabs.slice(0, aTreeStructure.length);
-		aTreeStructure = aTreeStructure.slice(0, aTabs.length);
-
-		var parentTab = null;
-		aTabs.forEach(function(aTab, aIndex) {
-			if (sv.isCollapsed(aTab)) sv.collapseExpandTab(aTab, false, true);
-			sv.partTab(aTab);
-
-			var pareintIndexInTree = aTreeStructure[aIndex];
-			if (pareintIndexInTree < 0) { // there is no parent, so this is a new parent!
-				parentTab = aTab.getAttribute(sv.kID);
-			}
-
-			var parent = sv.getTabById(parentTab);
-			if (parent) {
-				let tabs = [parent].concat(sv.getDescendantTabs(parent));
-				parent = pareintIndexInTree < tabs.length ? tabs[pareintIndexInTree] : parent ;
-			}
-			if (parent) {
-				sv.attachTabTo(aTab, parent, {
-					dontExpand : true,
-					dontMove   : true
-				});
-				if (aExpandAllTree)
-					sv.collapseExpandSubtree(parent, false);
-			}
-		}, sv);
 	},
 
 	getTabsInfo : function TSTBMService_getTabsInfo(aTabBrowser)
@@ -335,7 +281,7 @@ var TreeStyleTabBookmarksService = {
 					<![CDATA[
 						if (TSTTreeStructure && TSTPreviousTabs) {
 							let tabs = browserWindow.TreeStyleTabBookmarksService.getNewTabsFromPreviousTabsInfo(browserWindow.gBrowser, TSTPreviousTabs)
-							browserWindow.TreeStyleTabBookmarksService.applyTreeStructureToTabs(tabs, TSTTreeStructure, TSTOpenGroupBookmarkBehavior & browserWindow.TreeStyleTabBookmarksService.kGROUP_BOOKMARK_EXPAND_ALL_TREE);
+							browserWindow.TreeStyleTabService.applyTreeStructureToTabs(tabs, TSTTreeStructure, TSTOpenGroupBookmarkBehavior & browserWindow.TreeStyleTabBookmarksService.kGROUP_BOOKMARK_EXPAND_ALL_TREE);
 						}
 					$1]]>
 				)

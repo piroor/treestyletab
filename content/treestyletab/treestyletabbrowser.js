@@ -645,6 +645,8 @@ TreeStyleTabBrowser.prototype = {
 		this.ObserverService.addObserver(this, this.kTOPIC_INDENT_MODIFIED, false);
 		this.ObserverService.addObserver(this, this.kTOPIC_COLLAPSE_EXPAND_ALL, false);
 		this.ObserverService.addObserver(this, this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY, false);
+//		this.ObserverService.addObserver(this, 'sessionstore-windows-restored', false);
+		this.ObserverService.addObserver(this, 'sessionstore-browser-state-restored', false);
 		this.ObserverService.addObserver(this, 'private-browsing-change-granted', false);
 		this.ObserverService.addObserver(this, 'lightweight-theme-styling-update', false);
 		this.addPrefListener(this);
@@ -1514,6 +1516,8 @@ TreeStyleTabBrowser.prototype = {
    
 	destroy : function TSTBrowser_destroy() 
 	{
+		this.saveTreeStructure();
+
 		this.animationManager.removeTask(this.smoothScrollTask);
 
 		this.autoHide.destroy();
@@ -1581,6 +1585,8 @@ TreeStyleTabBrowser.prototype = {
 		this.ObserverService.removeObserver(this, this.kTOPIC_INDENT_MODIFIED);
 		this.ObserverService.removeObserver(this, this.kTOPIC_COLLAPSE_EXPAND_ALL);
 		this.ObserverService.removeObserver(this, this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY);
+//		this.ObserverService.removeObserver(this, 'sessionstore-windows-restored');
+		this.ObserverService.removeObserver(this, 'sessionstore-browser-state-restored');
 		this.ObserverService.removeObserver(this, 'private-browsing-change-granted');
 		this.ObserverService.removeObserver(this, 'lightweight-theme-styling-update');
 		this.removePrefListener(this);
@@ -1637,7 +1643,7 @@ TreeStyleTabBrowser.prototype = {
 			case this.kTOPIC_INDENT_MODIFIED:
 				if (this.indent > -1)
 					this.updateAllTabsIndent();
-				break;
+				return;
 
 			case this.kTOPIC_COLLAPSE_EXPAND_ALL:
 				if (!aSubject || aSubject == window) {
@@ -1647,27 +1653,28 @@ TreeStyleTabBrowser.prototype = {
 						aData.indexOf('now') > -1
 					);
 				}
-				break;
+				return;
+
+//			case 'sessionstore-windows-restored':
+			case 'sessionstore-browser-state-restored':
+				return this.onWindowStateRestored();
 
 			case 'private-browsing-change-granted':
 				this.collapseExpandAllSubtree(false, true);
 				this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_PRIVATE_BROWSING);
-				break;
+				return;
 
 			case 'lightweight-theme-styling-update':
-				this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
-				break;
+				return this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
 
 			case this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY:
-				this.treeViewEnabled = (aData != 'false');
-				break;
+				return this.treeViewEnabled = (aData != 'false');
 
 			case 'nsPref:changed':
-				this.onPrefChange(aData);
-				break;
+				return this.onPrefChange(aData);
 
 			default:
-				break;
+				return;
 		}
 	},
  
@@ -1883,6 +1890,77 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		this.setTabbrowserAttribute(this.kTWISTY_STYLE, aStyle);
+	},
+ 
+	onWindowStateRestored : function TSTBrowser_onWindowStateRestored()
+	{
+		if (
+			!window.__SS_tabsToRestore ||
+			this.getTreePref('restoreTreeOnStartup')
+			)
+			return;
+
+		var treeStructures = JSON.parse(this.SessionStore.getWindowValue(window, this.kSTRUCTURE) || '{}');
+		var id = this.mTabBrowser.getAttribute('id');
+		var treeStructure = id in treeStructures ? treeStructures[id] : null ;
+		if (
+			!treeStructure ||
+			!treeStructure.tree ||
+			!treeStructure.tree.length
+			)
+			return;
+
+		this.applyTreeStructureToTabBrowser(this.mTabBrowser, treeStructure.tree);
+
+		this.getAllTabsArray(this.mTabBrowser)
+			.forEach(function(aTab, aIndex) {
+				if (treeStructure.treeCollapsed &&
+					treeStructure.treeCollapsed.indexOf(aIndex) > -1)
+					aTab.setTabValue(aTab, this.kSUBTREE_COLLAPSED, true);
+
+				if (treeStructure.collapsed &&
+					treeStructure.collapsed.indexOf(aIndex) > -1)
+					this.collapseExpandTab(aTab, true, true);
+
+				aTab.removeAttribute(this.kID);
+				aTab.removeAttribute(this.kPARENT);
+				aTab.removeAttribute(this.kCHILDREN);
+			}, this);
+	},
+ 
+	saveTreeStructureWithDelay : function TSTBrowser_saveTreeStructureWithDelay()
+	{
+		if (this.restoringTree)
+			return;
+
+		if (this.saveTreeStructureWithDelayTimer)
+			window.clearTimeout(this.saveTreeStructureWithDelayTimer);
+
+		this.saveTreeStructureWithDelayTimer = window.setTimeout(function(aSelf) {
+			aSelf.saveTreeStructureWithDelayTimer = null;
+			aSelf.saveTreeStructure();
+		}, 1000, this);
+	},
+	saveTreeStructureWithDelayTimer : null,
+	saveTreeStructure : function TSTBrowser_saveTreeStructure()
+	{
+		var treeStructures = JSON.parse(this.SessionStore.getWindowValue(window, this.kSTRUCTURE) || '{}');
+		var id = this.mTabBrowser.getAttribute('id');
+		var tabs = this.getAllTabsArray(this.mTabBrowser);
+		treeStructures[id] = {
+			tree : this.getTreeStructureFromTabs(tabs),
+			collapsed : tabs.filter(function(aTab) {
+								return this.isCollapsed(aTab);
+							}, this).map(function(aTab) {
+								return aTab._tPos;
+							}),
+			treeCollapsed : tabs.filter(function(aTab) {
+								return this.isSubtreeCollapsed(aTab);
+							}, this).map(function(aTab) {
+								return aTab._tPos;
+							})
+		};
+		this.SessionStore.setWindowValue(window, this.kSTRUCTURE, JSON.stringify(treeStructures))
 	},
   
 /* DOM Event Handling */ 
@@ -2439,6 +2517,7 @@ TreeStyleTabBrowser.prototype = {
 
 		var prevParent = this.getParentTab(prevTab);
 		var nextParent = this.getParentTab(nextTab);
+
 
 		var prevLevel  = prevTab ? Number(prevTab.getAttribute(this.kNEST)) : -1 ;
 		var nextLevel  = nextTab ? Number(nextTab.getAttribute(this.kNEST)) : -1 ;
@@ -3561,6 +3640,8 @@ TreeStyleTabBrowser.prototype = {
 
 		this.promoteTooDeepLevelTabs(aChild);
 
+		this.saveTreeStructureWithDelay();
+
 		this.fireAttachedEvent(aChild, aParent);
 	},
 	fireAttachedEvent : function TSTBrowser_fireAttachedEvent(aChild, aParent)
@@ -3611,6 +3692,8 @@ TreeStyleTabBrowser.prototype = {
 			this.updateTabsIndent([aChild], undefined, aInfo.dontAnimate);
 			this.checkTabsIndentOverflow();
 		}
+
+		this.saveTreeStructureWithDelay();
 
 		var data = {
 				parentTab : parentTab
@@ -4043,6 +4126,8 @@ TreeStyleTabBrowser.prototype = {
 
 		if (!aCollapse)
 			this.scrollToTabSubtree(aTab);
+
+		this.saveTreeStructureWithDelay();
 
 		this.doingCollapseExpand = false;
 	},

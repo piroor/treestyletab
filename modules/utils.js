@@ -62,6 +62,7 @@ var TreeStyleTabUtils = {
 	kINSERT_BEFORE      : 'treestyletab-insert-before',
 	kINSERT_AFTER       : 'treestyletab-insert-after',
 	kCLOSED_SET_ID      : 'treestyletab-closed-set-id',
+	kSTRUCTURE          : 'treestyletab-tree-structure',
 
 	kID_RESTORING       : 'treestyletab-id-restoring',
 	kCHILDREN_RESTORING : 'treestyletab-children-restoring',
@@ -1862,6 +1863,94 @@ var TreeStyleTabUtils = {
 					this.browser.mTabContainer,
 					Ci.nsIDOMXPathResult.NUMBER_TYPE
 				).numberValue;
+	},
+ 
+	getTreeStructureFromTabs : function TSTUtils_getTreeStructureFromTabs(aTabs)
+	{
+		/* this returns...
+		  [A]     => -1 (parent is not in this tree)
+		    [B]   => 0 (parent is 1st item in this tree)
+		    [C]   => 0 (parent is 1st item in this tree)
+		      [D] => 2 (parent is 2nd in this tree)
+		  [E]     => -1 (parent is not in this tree, and this creates another tree)
+		    [F]   => 0 (parent is 1st item in this another tree)
+		*/
+		return this.cleanUpTreeStructureArray(
+				aTabs.map(function(aTab, aIndex) {
+					let tab = this.getParentTab(aTab);
+					let index = tab ? aTabs.indexOf(tab) : -1 ;
+					return index >= aIndex ? -1 : index ;
+				}, this),
+				-1
+			);
+	},
+	cleanUpTreeStructureArray : function TSTUtils_cleanUpTreeStructureArray(aTreeStructure, aDefaultParent)
+	{
+		var offset = 0;
+		aTreeStructure = aTreeStructure
+			.map(function(aPosition, aIndex) {
+				return (aPosition == aIndex) ? -1 : aPosition ;
+			})
+			.map(function(aPosition, aIndex) {
+				if (aPosition == -1) {
+					offset = aIndex;
+					return aPosition;
+				}
+				return aPosition - offset;
+			});
+
+		/* The final step, this validates all of values.
+		   Smaller than -1 is invalid, so it becomes to -1. */
+		aTreeStructure = aTreeStructure.map(function(aIndex) {
+				return aIndex < -1 ? aDefaultParent : aIndex ;
+			}, this);
+		return aTreeStructure;
+	},
+ 
+	applyTreeStructureToTabs : function TSTUtils_applyTreeStructureToTabs(aTabs, aTreeStructure, aExpandAllTree)
+	{
+		var b = this.getTabBrowserFromChild(aTabs[0]);
+		if (!b) return;
+		var sv = b.treeStyleTab;
+
+		aTabs = aTabs.slice(0, aTreeStructure.length);
+		aTreeStructure = aTreeStructure.slice(0, aTabs.length);
+
+		var parentTab = null;
+		aTabs.forEach(function(aTab, aIndex) {
+			if (sv.isCollapsed(aTab)) sv.collapseExpandTab(aTab, false, true);
+			sv.partTab(aTab);
+
+			var pareintIndexInTree = aTreeStructure[aIndex];
+			if (pareintIndexInTree < 0) { // there is no parent, so this is a new parent!
+				parentTab = aTab.getAttribute(sv.kID);
+			}
+
+			var parent = sv.getTabById(parentTab);
+			if (parent) {
+				let tabs = [parent].concat(sv.getDescendantTabs(parent));
+				parent = pareintIndexInTree < tabs.length ? tabs[pareintIndexInTree] : parent ;
+			}
+			if (parent) {
+				sv.attachTabTo(aTab, parent, {
+					dontExpand : true,
+					dontMove   : true
+				});
+				if (aExpandAllTree)
+					sv.collapseExpandSubtree(parent, false);
+			}
+		}, sv);
+	},
+ 
+	getTreeStructureFromTabBrowser : function TSTUtils_getTreeStructureFromTabBrowser(aTabBrowser)
+	{
+		return this.getTreeStructureFromTabs(this.getAllTabsArray(aTabBrowser));
+	},
+ 
+	applyTreeStructureToTabBrowser : function TSTUtils_applyTreeStructureToTabBrowser(aTabBrowser, aTreeStructure, aExpandAllTree)
+	{
+		var tabs = this.getAllTabsArray(aTabBrowser);
+		return this.applyTreeStructureToTabs(tabs, aTreeStructure, aExpandAllTree);
 	},
   
 /* tabbar position */ 
