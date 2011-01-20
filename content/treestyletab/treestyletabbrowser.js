@@ -645,7 +645,7 @@ TreeStyleTabBrowser.prototype = {
 		this.ObserverService.addObserver(this, this.kTOPIC_INDENT_MODIFIED, false);
 		this.ObserverService.addObserver(this, this.kTOPIC_COLLAPSE_EXPAND_ALL, false);
 		this.ObserverService.addObserver(this, this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY, false);
-//		this.ObserverService.addObserver(this, 'sessionstore-windows-restored', false);
+		this.ObserverService.addObserver(this, 'sessionstore-windows-restored', false);
 		this.ObserverService.addObserver(this, 'sessionstore-browser-state-restored', false);
 		this.ObserverService.addObserver(this, 'private-browsing-change-granted', false);
 		this.ObserverService.addObserver(this, 'lightweight-theme-styling-update', false);
@@ -1585,7 +1585,7 @@ TreeStyleTabBrowser.prototype = {
 		this.ObserverService.removeObserver(this, this.kTOPIC_INDENT_MODIFIED);
 		this.ObserverService.removeObserver(this, this.kTOPIC_COLLAPSE_EXPAND_ALL);
 		this.ObserverService.removeObserver(this, this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY);
-//		this.ObserverService.removeObserver(this, 'sessionstore-windows-restored');
+		this.ObserverService.removeObserver(this, 'sessionstore-windows-restored');
 		this.ObserverService.removeObserver(this, 'sessionstore-browser-state-restored');
 		this.ObserverService.removeObserver(this, 'private-browsing-change-granted');
 		this.ObserverService.removeObserver(this, 'lightweight-theme-styling-update');
@@ -1655,7 +1655,7 @@ TreeStyleTabBrowser.prototype = {
 				}
 				return;
 
-//			case 'sessionstore-windows-restored':
+			case 'sessionstore-windows-restored':
 			case 'sessionstore-browser-state-restored':
 				return this.onWindowStateRestored();
 
