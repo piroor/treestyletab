@@ -197,19 +197,19 @@ tabbrowser[treestyletab-drop-position] {
 .tabbrowser-strip[treestyletab-drop-position="right"]:not([treestyletab-tabbar-position="right"]),
 .tabbrowser-strip[treestyletab-drop-position="bottom"]:not([treestyletab-tabbar-position="bottom"]),
 .tabbrowser-strip[treestyletab-drop-position="left"]:not([treestyletab-tabbar-position="left"]),
-#TabsToolbar[treestyletab-drop-position="center"],
-#TabsToolbar[treestyletab-drop-position="top"]:not([treestyletab-tabbar-position="top"]),
-#TabsToolbar[treestyletab-drop-position="right"]:not([treestyletab-tabbar-position="right"]),
-#TabsToolbar[treestyletab-drop-position="bottom"]:not([treestyletab-tabbar-position="bottom"]),
-#TabsToolbar[treestyletab-drop-position="left"]:not([treestyletab-tabbar-position="left"]),
-#TabsToolbar[treestyletab-drop-position="center"] #treestyletab-tabbar-resizer-box,
-#TabsToolbar[treestyletab-drop-position="top"]:not([treestyletab-tabbar-position="top"])
+.treestyletab-tabbar-toolbar[treestyletab-drop-position="center"],
+.treestyletab-tabbar-toolbar[treestyletab-drop-position="top"]:not([treestyletab-tabbar-position="top"]),
+.treestyletab-tabbar-toolbar[treestyletab-drop-position="right"]:not([treestyletab-tabbar-position="right"]),
+.treestyletab-tabbar-toolbar[treestyletab-drop-position="bottom"]:not([treestyletab-tabbar-position="bottom"]),
+.treestyletab-tabbar-toolbar[treestyletab-drop-position="left"]:not([treestyletab-tabbar-position="left"]),
+.treestyletab-tabbar-toolbar[treestyletab-drop-position="center"] #treestyletab-tabbar-resizer-box,
+.treestyletab-tabbar-toolbar[treestyletab-drop-position="top"]:not([treestyletab-tabbar-position="top"])
   #treestyletab-tabbar-resizer-box,
-#TabsToolbar[treestyletab-drop-position="right"]:not([treestyletab-tabbar-position="right"])
+.treestyletab-tabbar-toolbar[treestyletab-drop-position="right"]:not([treestyletab-tabbar-position="right"])
   #treestyletab-tabbar-resizer-box,
-#TabsToolbar[treestyletab-drop-position="bottom"]:not([treestyletab-tabbar-position="bottom"])
+.treestyletab-tabbar-toolbar[treestyletab-drop-position="bottom"]:not([treestyletab-tabbar-position="bottom"])
   #treestyletab-tabbar-resizer-box,
-#TabsToolbar[treestyletab-drop-position="left"]:not([treestyletab-tabbar-position="left"])
+.treestyletab-tabbar-toolbar[treestyletab-drop-position="left"]:not([treestyletab-tabbar-position="left"])
   #treestyletab-tabbar-resizer-box {
 	opacity: 0.5;
 }
@@ -279,7 +279,7 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
   .treestyletab-tabbar-toggler {
 	border-top: 1px solid ThreeDShadow;
 }
-#TabsToolbar[treestyletab-tabbar-transparent="part"]
+.treestyletab-tabbar-toolbar[treestyletab-tabbar-transparent="part"]
   #treestyletab-tabbar-resizer-box {
 	background: rgba(0, 0, 0, 0.25);
 }

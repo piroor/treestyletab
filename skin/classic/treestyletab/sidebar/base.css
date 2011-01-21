@@ -2,8 +2,8 @@
 
 /* Unset bottom border, instead let's have a border on the right-hand
    side, much like the sidebar does. */
-.tabbrowser-strip:not([treestyletab-tabbar-placeholder="true"])[treestyletab-style~="sidebar"][treestyletab-mode="vertical"],
-#TabsToolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"] {
+.tabbrowser-strip:not(.treestyletab-tabbar-placeholder)[treestyletab-style~="sidebar"][treestyletab-mode="vertical"],
+.treestyletab-tabbar-toolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"] {
 	border-top: 1px solid #404040;
 	border-bottom: none !important;
 }
@@ -24,7 +24,7 @@
   .tab-text-shadow,
 .tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
   .treestyletab-splitter grippy,
-#TabsToolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.treestyletab-tabbar-toolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
   .treestyletab-splitter grippy {
 	display: none !important;
 }
@@ -32,7 +32,7 @@
 /* Use the splitter to display the border of .tabbrowser-strip */
 tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
   .treestyletab-splitter,
-#TabsToolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.treestyletab-tabbar-toolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
   .treestyletab-splitter {
 	width: 1px !important;
 	min-width: 1px !important;
@@ -246,8 +246,8 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
 
 /* changed from original SidebarStyleTab */
 
-#TabsToolbar[treestyletab-style~="sidebar"]:not([treestyletab-tabbar-position="top"]),
-#TabsToolbar[treestyletab-style~="sidebar"][treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
+.treestyletab-tabbar-toolbar[treestyletab-style~="sidebar"]:not([treestyletab-tabbar-position="top"]),
+.treestyletab-tabbar-toolbar[treestyletab-style~="sidebar"][treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
 	background: transparent !important;
 	border: 0 none !important;
 	margin: 0 !important;
@@ -282,14 +282,14 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
 .tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
   > .tabs-closebutton:hover,
 /* Firefox 4.0 or later */
-#TabsToolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.treestyletab-tabbar-toolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
   > toolbarbutton,
-#TabsToolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.treestyletab-tabbar-toolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
   > toolbarbutton:hover,
-#TabsToolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.treestyletab-tabbar-toolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
   > toolbarpaletteitem
   > toolbarbutton,
-#TabsToolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.treestyletab-tabbar-toolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
   > toolbarpaletteitem
   > toolbarbutton:hover {
 	-moz-appearance: none !important;
@@ -297,7 +297,7 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
 	border: 0 none !important;
 }
 
-#TabsToolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.treestyletab-tabbar-toolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
   > * {
 	border: 0 none !important;
 }

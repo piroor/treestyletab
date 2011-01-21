@@ -19,7 +19,7 @@
   .tabs-container:not([overflow="true"])
   .tabbrowser-arrowscrollbox
   .tabs-newtab-button,
-#TabsToolbar
+.treestyletab-tabbar-toolbar
   .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"]:not([overflow="true"])
   .tabbrowser-arrowscrollbox
   .tabs-newtab-button {

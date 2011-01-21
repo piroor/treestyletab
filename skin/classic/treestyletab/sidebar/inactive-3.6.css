@@ -3,9 +3,7 @@
 /* Unset bottom border, instead let's have a border on the right-hand
    side, much like the sidebar does. */
 #main-window:not([active="true"])
-  .tabbrowser-strip[treestyletab-style~="sidebar"]:not([treestyletab-style~="aero"])[treestyletab-mode="vertical"],
-#main-window:not([active="true"])
-  #TabsToolbar[treestyletab-style~="sidebar"]:not([treestyletab-style~="aero"])[treestyletab-mode="vertical"] {
+  .tabbrowser-strip[treestyletab-style~="sidebar"]:not([treestyletab-style~="aero"])[treestyletab-mode="vertical"] {
 	border-top: 1px solid #868686;
 }
 

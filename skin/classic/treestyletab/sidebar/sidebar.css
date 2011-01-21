@@ -13,6 +13,6 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-style~="aero"]:not([trees
 	-moz-appearance: none !important;
 }
 .tabbrowser-strip[treestyletab-style~="sidebar"][treestyletab-style~="aero"][treestyletab-mode="vertical"],
-#TabsToolbar[treestyletab-style~="sidebar"][treestyletab-style~="aero"][treestyletab-mode="vertical"] {
+.treestyletab-tabbar-toolbar[treestyletab-style~="sidebar"][treestyletab-style~="aero"][treestyletab-mode="vertical"] {
 	border-top: none 0 !important;
 }

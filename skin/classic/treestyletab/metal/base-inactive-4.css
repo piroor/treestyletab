@@ -34,7 +34,7 @@
   tabbrowser[treestyletab-style~="metal"]
   .treestyletab-splitter,
 :root:-moz-window-inactive
-  #TabsToolbar[treestyletab-style~="metal"]
+  .treestyletab-tabbar-toolbar[treestyletab-style~="metal"]
   .treestyletab-splitter {
 	border-color: #666666 !important;
 	background: #e4e4e4 !important;
@@ -44,17 +44,17 @@
 /* buttons in the tab bar */
 
 :root:-moz-window-inactive
-  #TabsToolbar[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .treestyletab-tabbar-toolbar[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   > toolbarbutton,
 :root:-moz-window-inactive
-  #TabsToolbar[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .treestyletab-tabbar-toolbar[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   > toolbarbutton:hover,
 :root:-moz-window-inactive
-  #TabsToolbar[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .treestyletab-tabbar-toolbar[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   > toolbarpaletteitem
   > toolbarbutton,
 :root:-moz-window-inactive
-  #TabsToolbar[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .treestyletab-tabbar-toolbar[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   > toolbarpaletteitem
   > toolbarbutton:hover {
 	background: #e4e4e4 !important;

@@ -2,8 +2,8 @@
 
 /* tab bar */
 
-#TabsToolbar[treestyletab-style~="metal"]:not([treestyletab-tabbar-position="top"]),
-#TabsToolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
+.treestyletab-tabbar-toolbar[treestyletab-style~="metal"]:not([treestyletab-tabbar-position="top"]),
+.treestyletab-tabbar-toolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
 	background: transparent !important;
 	border: 0 none !important;
 	margin: 0 !important;
@@ -61,14 +61,14 @@
 
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabs-container,
-#TabsToolbar
+.treestyletab-tabbar-toolbar
   .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"] {
 	padding: 0 !important;
 }
 
 tabbrowser[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .treestyletab-splitter,
-#TabsToolbar[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.treestyletab-tabbar-toolbar[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .treestyletab-splitter {
 	background: #b3b2b3 !important;
 	border: 0 solid #666666 !important;
@@ -77,18 +77,18 @@ tabbrowser[treestyletab-style~="metal"][treestyletab-mode="vertical"]
 }
 tabbrowser[treestyletab-style~="metal"][treestyletab-tabbar-position="left"]
   .treestyletab-splitter,
-#TabsToolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="left"]
+.treestyletab-tabbar-toolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="left"]
   .treestyletab-splitter,
 .tabbrowser-strip[treestyletab-style~="metal"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"],
-#TabsToolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"] {
+.treestyletab-tabbar-toolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"] {
 	border-right: 1px solid #666666 !important;
 }
 tabbrowser[treestyletab-style~="metal"][treestyletab-tabbar-position="right"]
   .treestyletab-splitter,
-#TabsToolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="right"]
+.treestyletab-tabbar-toolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="right"]
   .treestyletab-splitter,
 .tabbrowser-strip[treestyletab-style~="metal"][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"],
-#TabsToolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"] {
+.treestyletab-tabbar-toolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"] {
 	border-left: 1px solid #666666 !important;
 }
 
@@ -226,14 +226,14 @@ tabbrowser[treestyletab-style~="metal"][treestyletab-tabbar-position="right"]
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   > .tabs-closebutton:hover,
 /* Firefox 4.0 or later */
-#TabsToolbar[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.treestyletab-tabbar-toolbar[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   > toolbarbutton,
-#TabsToolbar[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.treestyletab-tabbar-toolbar[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   > toolbarbutton:hover,
-#TabsToolbar[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.treestyletab-tabbar-toolbar[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   > toolbarpaletteitem
   > toolbarbutton,
-#TabsToolbar[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.treestyletab-tabbar-toolbar[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   > toolbarpaletteitem
   > toolbarbutton:hover {
 	background: #b3b2b3 !important;
@@ -273,9 +273,9 @@ tabbrowser[treestyletab-style~="metal"][treestyletab-tabbar-position="right"]
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-tabbar-position="left"]
   > .tabs-closebutton,
 /* Firefox 4.0 or later */
-#TabsToolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="left"]
+.treestyletab-tabbar-toolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="left"]
   > toolbarbutton,
-#TabsToolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="left"]
+.treestyletab-tabbar-toolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="left"]
   > toolbarpaletteitem
   > toolbarbutton {
 	border-right: 1px solid #666666 !important;
@@ -292,9 +292,9 @@ tabbrowser[treestyletab-style~="metal"][treestyletab-tabbar-position="right"]
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-tabbar-position="right"]
   > .tabs-closebutton,
 /* Firefox 4.0 or later */
-#TabsToolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="right"]
+.treestyletab-tabbar-toolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="right"]
   > toolbarbutton,
-#TabsToolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="right"]
+.treestyletab-tabbar-toolbar[treestyletab-style~="metal"][treestyletab-tabbar-position="right"]
   > toolbarpaletteitem
   > toolbarbutton {
 	border-left: 1px solid #666666 !important;

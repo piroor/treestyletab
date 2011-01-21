@@ -3,7 +3,7 @@
 /* Default style */
 
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"]),
-#TabsToolbar[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"]) {
+.treestyletab-tabbar-toolbar[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"]) {
 	background: transparent !important;
 	margin: 0 !important;
 	padding: 0 !important;
@@ -15,7 +15,7 @@
 }
 
 .tabbrowser-strip[treestyletab-style~="square"][treestyletab-mode="vertical"],
-#TabsToolbar[treestyletab-style~="square"][treestyletab-mode="vertical"],
+.treestyletab-tabbar-toolbar[treestyletab-style~="square"][treestyletab-mode="vertical"],
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"],
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
   .tabbrowser-arrowscrollbox,
@@ -27,8 +27,8 @@
 	padding-right: 0 !important;
 }
 
-#TabsToolbar[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"]),
-#TabsToolbar[treestyletab-style~="square"][treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
+.treestyletab-tabbar-toolbar[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"]),
+.treestyletab-tabbar-toolbar[treestyletab-style~="square"][treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
 	border: 0 none !important;
 	margin: 0 !important;
 	padding: 0 !important;
@@ -37,12 +37,12 @@
 }
 
 .tabbrowser-strip[treestyletab-style~="square"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"]:not([treestyletab-tabbar-transparent="full"]),
-#TabsToolbar[treestyletab-style~="square"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"]:not([treestyletab-tabbar-transparent="full"]) {
+.treestyletab-tabbar-toolbar[treestyletab-style~="square"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"]:not([treestyletab-tabbar-transparent="full"]) {
 	border-right: 1px solid ThreeDShadow !important;
 	-moz-border-right-colors: none !important;
 }
 .tabbrowser-strip[treestyletab-style~="square"][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"]:not([treestyletab-tabbar-transparent="full"]),
-#TabsToolbar[treestyletab-style~="square"][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"]:not([treestyletab-tabbar-transparent="full"]) {
+.treestyletab-tabbar-toolbar[treestyletab-style~="square"][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"]:not([treestyletab-tabbar-transparent="full"]) {
 	border-left: 1px solid ThreeDShadow !important;
 	-moz-border-left-colors: none !important;
 }
