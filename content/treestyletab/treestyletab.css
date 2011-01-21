@@ -102,7 +102,7 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 /* put resizer under tabs, and raise up tabs */
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"][treestyletab-tabbar-autohide][treestyletab-tabbar-autohide-state="expanded"]
   > *,
-.tabs-toolbar-inner-box[treestyletab-tabbar-autohide][treestyletab-tabbar-autohide-state="expanded"]:not([treestyletab-tabbar-fixed="true"])
+.treestyletab-toolbar-inner-box[treestyletab-tabbar-autohide][treestyletab-tabbar-autohide-state="expanded"]:not([treestyletab-tabbar-fixed="true"])
   > * {
 	position: relative;
 	z-index: 2;
@@ -208,18 +208,18 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 	max-width: 64000px !important;
 }
 
-.treestyletab-tabbar-toolbar,
-#navigator-toolbox[tabsontop="false"] > .treestyletab-tabbar-toolbar,
-#navigator-toolbox[tabsontop="false"] > .treestyletab-tabbar-toolbar:-moz-lwtheme {
-	-moz-binding: url(treestyletab.xml#tabs-toolbar);
+#TabsToolbar,
+#navigator-toolbox[tabsontop="false"] > #TabsToolbar,
+#navigator-toolbox[tabsontop="false"] > #TabsToolbar:-moz-lwtheme {
+	-moz-binding: url(treestyletab.xml#toolbar);
 }
-#navigator-toolbox[tabsontop="true"] > .treestyletab-tabbar-toolbar,
-#navigator-toolbox[tabsontop="true"] > .treestyletab-tabbar-toolbar:-moz-lwtheme,
+#navigator-toolbox[tabsontop="true"] > #TabsToolbar,
+#navigator-toolbox[tabsontop="true"] > #TabsToolbar:-moz-lwtheme,
 #navigator-toolbox
-  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"] + .treestyletab-tabbar-toolbar[tabsontop="true"]:last-child,
+  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"] + #TabsToolbar[tabsontop="true"]:last-child,
 #navigator-toolbox
-  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"] + .treestyletab-tabbar-toolbar[tabsontop="false"]:last-child {
-	-moz-binding: url(treestyletab.xml#tabs-toolbar-drag);
+  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"] + #TabsToolbar[tabsontop="false"]:last-child {
+	-moz-binding: url(treestyletab.xml#toolbar-drag);
 }
 .treestyletab-tabbar-toolbar:not([treestyletab-tabbar-position="top"]),
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {

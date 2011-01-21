@@ -45,6 +45,7 @@ Components.utils.import('resource://treestyletab-modules/lib/extensions.js');
 Components.utils.import('resource://treestyletab-modules/lib/animationManager.js');
 Components.utils.import('resource://treestyletab-modules/lib/autoScroll.js');
 Components.utils.import('resource://treestyletab-modules/lib/confirmWithTab.js');
+Components.utils.import('resource://treestyletab-modules/lib/jstimer.jsm');
 
 Components.utils.import('resource://treestyletab-modules/lib/namespace.jsm');
 var window = getNamespaceFor('piro.sakura.ne.jp');
@@ -131,6 +132,7 @@ var TreeStyleTabUtils = {
 	kEVENT_TYPE_SUBTREE_CLOSING              : 'nsDOMTreeStyleTabSubtreeClosing',
 	kEVENT_TYPE_SUBTREE_CLOSED               : 'nsDOMTreeStyleTabSubtreeClosed',
 	kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED  : 'nsDOMTreeStyleTabCollapsedStateChange',
+	kEVENT_TYPE_TABBAR_INITIALIZED           : 'nsDOMTreeStyleTabTabbarInitialized',
 	kEVENT_TYPE_TABBAR_POSITION_CHANGING     : 'nsDOMTreeStyleTabTabbarPositionChanging',
 	kEVENT_TYPE_TABBAR_POSITION_CHANGED      : 'nsDOMTreeStyleTabTabbarPositionChanged',
 	kEVENT_TYPE_TABBAR_STATE_CHANGING        : 'nsDOMTreeStyleTabTabbarStateChanging',
@@ -558,6 +560,68 @@ var TreeStyleTabUtils = {
 	kUNDO_CLOSE_SET      : 2,
 	kUNDO_CLOSE_FULL_SET : 256,
  
+	waitForDOMEvent : function TSTUtils_waitForDOMEvent() 
+	{
+		var type, target, delay, task;
+		Array.slice(arguments).forEach(function(aArg) {
+			switch(typeof aArg)
+			{
+				case 'string':
+					type = aArg;
+					break;
+
+				case 'number':
+					delay = aArg;
+					break;
+
+				case 'function':
+					task = aArg;
+					break;
+
+				default:
+					target = aArg;
+					break;
+			}
+		});
+
+		if (!target || !type) {
+			if (task) task();
+			return;
+		}
+
+		var done = false;
+		var listener = function(aEvent) {
+				setTimeout(function() {
+					done = true;
+				}, delay || 0);
+				target.removeEventListener(type, listener, false);
+			};
+
+		if (task)
+			setTimeout(function() {
+				try {
+					task();
+				}
+				catch(e) {
+					dump(e+'\n');
+					target.removeEventListener(type, listener, false);
+					done = true;
+				}
+			}, 0);
+
+		target.addEventListener(type, listener, false);
+
+		var thread = Components
+						.classes['@mozilla.org/thread-manager;1']
+						.getService()
+						.mainThread;
+		while (!done)
+		{
+			//dump('WAIT '+type+' '+Date.now()+'\n');
+			thread.processNextEvent(true);
+		}
+	},
+ 
 // event 
 	
 	isNewTabAction : function TSTUtils_isNewTabAction(aEvent) 
@@ -640,7 +704,7 @@ var TreeStyleTabUtils = {
 		return (x >= minX && x <= maxX && y >= minY && y <= maxY);
 	},
 	
-	// called with target(nsIDOMEventTarget), document(nsIDOMDocument), type(string) and data(object)
+	// called with target(nsIDOMEventTarget), document(nsIDOMDocument), type(string) and data(object) 
 	fireDataContainerEvent : function()
 	{
 		var target, document, type, data, canBubble, cancellable;
@@ -876,7 +940,11 @@ var TreeStyleTabUtils = {
 		var strip = aTabBrowser.mStrip;
 		return (strip && strip instanceof Ci.nsIDOMElement) ?
 				strip :
-				aTabBrowser.tabContainer.parentNode;
+				this.evaluateXPath(
+					aTabBrowser.tabContainer,
+					'ancestor::xul:toolbar[1]',
+					Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
+				).singleNodeValue || aTabBrowser.tabContainer.parentNode;
 	},
 	get tabStrip()
 	{
@@ -889,7 +957,7 @@ var TreeStyleTabUtils = {
 			return null;
 
 		var strip = this.getTabStrip(aTabBrowser);
-		return strip.tabsToolbarInnerBox || aTabBrowser.tabContainer;
+		return strip.treeStyleTabToolbarInnerBox || aTabBrowser.tabContainer;
 	},
 	get tabContainerBox()
 	{
@@ -932,8 +1000,8 @@ var TreeStyleTabUtils = {
 			}
 			if (this._tabStripPlaceHolder)
 				this._tabStripPlaceHolder.setAttribute(aAttr, aValue);
-			if (strip.tabsToolbarInnerBox)
-				strip.tabsToolbarInnerBox.setAttribute(aAttr, aValue);
+			if (strip.treeStyleTabToolbarInnerBox)
+				strip.treeStyleTabToolbarInnerBox.setAttribute(aAttr, aValue);
 		}
 		else {
 			strip.removeAttribute(aAttr);
@@ -944,8 +1012,8 @@ var TreeStyleTabUtils = {
 			}
 			if (this._tabStripPlaceHolder)
 				this._tabStripPlaceHolder.removeAttribute(aAttr);
-			if (strip.tabsToolbarInnerBox)
-				strip.tabsToolbarInnerBox.removeAttribute(aAttr);
+			if (strip.treeStyleTabToolbarInnerBox)
+				strip.treeStyleTabToolbarInnerBox.removeAttribute(aAttr);
 		}
 	},
  
@@ -1866,7 +1934,7 @@ var TreeStyleTabUtils = {
 				).numberValue;
 	},
  
-	getTreeStructureFromTabs : function TSTUtils_getTreeStructureFromTabs(aTabs)
+	getTreeStructureFromTabs : function TSTUtils_getTreeStructureFromTabs(aTabs) 
 	{
 		/* this returns...
 		  [A]     => -1 (parent is not in this tree)
@@ -1908,7 +1976,7 @@ var TreeStyleTabUtils = {
 		return aTreeStructure;
 	},
  
-	applyTreeStructureToTabs : function TSTUtils_applyTreeStructureToTabs(aTabs, aTreeStructure, aExpandAllTree)
+	applyTreeStructureToTabs : function TSTUtils_applyTreeStructureToTabs(aTabs, aTreeStructure, aExpandAllTree) 
 	{
 		var b = this.getTabBrowserFromChild(aTabs[0]);
 		if (!b) return;
@@ -1943,12 +2011,12 @@ var TreeStyleTabUtils = {
 		}, sv);
 	},
  
-	getTreeStructureFromTabBrowser : function TSTUtils_getTreeStructureFromTabBrowser(aTabBrowser)
+	getTreeStructureFromTabBrowser : function TSTUtils_getTreeStructureFromTabBrowser(aTabBrowser) 
 	{
 		return this.getTreeStructureFromTabs(this.getAllTabsArray(aTabBrowser));
 	},
  
-	applyTreeStructureToTabBrowser : function TSTUtils_applyTreeStructureToTabBrowser(aTabBrowser, aTreeStructure, aExpandAllTree)
+	applyTreeStructureToTabBrowser : function TSTUtils_applyTreeStructureToTabBrowser(aTabBrowser, aTreeStructure, aExpandAllTree) 
 	{
 		var tabs = this.getAllTabsArray(aTabBrowser);
 		return this.applyTreeStructureToTabs(tabs, aTreeStructure, aExpandAllTree);
