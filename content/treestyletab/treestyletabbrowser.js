@@ -856,6 +856,11 @@ TreeStyleTabBrowser.prototype = {
   
 	initTabbar : function TSTBrowser_initTabbar(aNewPosition, aOldPosition) 
 	{
+		if (aNewPosition && typeof aNewPosition == 'string')
+			aNewPosition = this.getPositionFlag(aNewPosition);
+		if (aOldPosition && typeof aOldPosition == 'string')
+			aOldPosition = this.getPositionFlag(aOldPosition);
+
 		this.stopRendering();
 
 		var b = this.mTabBrowser;
@@ -1691,7 +1696,7 @@ TreeStyleTabBrowser.prototype = {
 				var oldPosition = this.currentTabbarPosition;
 				if (oldPosition != value) {
 					this.fireTabbarPositionEvent(true, oldPosition, value);
-					this.initTabbar(this.getPositionFlag(value), this.getPositionFlag(oldPosition));
+					this.initTabbar(value, oldPosition);
 					tabs.forEach(function(aTab) {
 						this.initTabAttributes(aTab);
 					}, this);
