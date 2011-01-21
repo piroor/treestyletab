@@ -18,19 +18,19 @@
 /* vertical tree */
 
 .tabbrowser-strip[treestyletab-style~="square"][treestyletab-tabbar-position="left"]:not([treestyletab-tabbar-transparent="full"]),
-#TabsToolbar[treestyletab-style~="square"][treestyletab-tabbar-position="left"]:not([treestyletab-tabbar-transparent="full"]) {
+.treestyletab-tabbar-toolbar[treestyletab-style~="square"][treestyletab-tabbar-position="left"]:not([treestyletab-tabbar-transparent="full"]) {
 	border-right: 1px solid ThreeDShadow !important;
 	-moz-border-right-colors: none !important;
 }
 .tabbrowser-strip[treestyletab-style~="square"][treestyletab-tabbar-position="right"]:not([treestyletab-tabbar-transparent="full"]),
-#TabsToolbar[treestyletab-style~="square"][treestyletab-tabbar-position="right"]:not([treestyletab-tabbar-transparent="full"]) {
+.treestyletab-tabbar-toolbar[treestyletab-style~="square"][treestyletab-tabbar-position="right"]:not([treestyletab-tabbar-transparent="full"]) {
 	border-left: 1px solid ThreeDShadow !important;
 	-moz-border-right-colors: none !important;
 }
 
 
 /* splitter for floating & autohide tab bar */
-#TabsToolbar .treestyletab-splitter {
+.treestyletab-tabbar-toolbar .treestyletab-splitter {
 	width: 6px;
 	-moz-appearance: none;
 }

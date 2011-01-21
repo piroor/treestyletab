@@ -78,13 +78,13 @@
 .tabbrowser-strip[treestyletab-tabbar-autohide="hidden"]+splitter,
 .tabbrowser-strip[collapsed="true"] + splitter:not([state="collapsed"]),
 .treestyletab-tabbar-toggler,
-#TabsToolbar[treestyletab-tabbar-autohide="hidden"] > *,
-#TabsToolbar .treestyletab-splitter,
+.treestyletab-tabbar-toolbar[treestyletab-tabbar-autohide="hidden"] > *,
+.treestyletab-tabbar-toolbar .treestyletab-splitter,
 #treestyletab-tabbar-resizer-box,
 tabbrowser[treestyletab-tabbar-autohide-mode="1"][tabcontainer]
-  .tabbrowser-strip[treestyletab-tabbar-placeholder="true"],
+  .tabbrowser-strip.treestyletab-tabbar-placeholder,
 tabbrowser[treestyletab-tabbar-autohide-mode="1"][tabcontainer]
-  .tabbrowser-strip[treestyletab-tabbar-placeholder="true"]+splitter {
+  .tabbrowser-strip.treestyletab-tabbar-placeholder+splitter {
 	visibility: collapse;
 }
 
@@ -92,22 +92,22 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][tabcontainer]
   .treestyletab-tabbar-toggler,
 tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="hidden"]
   .treestyletab-tabbar-toggler,
-#TabsToolbar[treestyletab-mode="vertical"][treestyletab-tabbar-autohide][treestyletab-tabbar-autohide-state="expanded"]
+.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"][treestyletab-tabbar-autohide][treestyletab-tabbar-autohide-state="expanded"]
   #treestyletab-tabbar-resizer-box,
-#TabsToolbar[treestyletab-mode="vertical"][treestyletab-tabbar-autohide][treestyletab-tabbar-autohide-state="expanded"]:not([treestyletab-tabbar-fixed="true"])
+.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"][treestyletab-tabbar-autohide][treestyletab-tabbar-autohide-state="expanded"]:not([treestyletab-tabbar-fixed="true"])
   .treestyletab-splitter {
 	visibility: visible;
 }
 
 /* put resizer under tabs, and raise up tabs */
-#TabsToolbar[treestyletab-mode="vertical"][treestyletab-tabbar-autohide][treestyletab-tabbar-autohide-state="expanded"]
+.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"][treestyletab-tabbar-autohide][treestyletab-tabbar-autohide-state="expanded"]
   > *,
 .tabs-toolbar-inner-box[treestyletab-tabbar-autohide][treestyletab-tabbar-autohide-state="expanded"]:not([treestyletab-tabbar-fixed="true"])
   > * {
 	position: relative;
 	z-index: 2;
 }
-#TabsToolbar[treestyletab-mode="vertical"][treestyletab-tabbar-autohide][treestyletab-tabbar-autohide-state="expanded"]
+.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"][treestyletab-tabbar-autohide][treestyletab-tabbar-autohide-state="expanded"]
   #treestyletab-tabbar-resizer-box {
 	position: absolute;
 	bottom: 0;
@@ -159,8 +159,8 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-alltabs-button, /* -Firefox 3.6 */
 .tabbrowser-tabs[treestyletab-mode="vertical"] .close-button.tabs-closebutton, /* -Firefox 3.6 */
-#TabsToolbar[treestyletab-mode="vertical"] > toolbarbutton,
-#TabsToolbar[treestyletab-mode="vertical"] > toolbarpaletteitem > toolbarbutton {
+.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > toolbarbutton,
+.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > toolbarpaletteitem > toolbarbutton {
 	max-width: none !important;
 }
 
@@ -169,7 +169,7 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > .scrollbutton-down-stack,
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > .scrollbutton-down, /* Firefox 3 */
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-closebutton-box,
-#TabsToolbar[treestyletab-mode="vertical"] .tabs-closebutton,
+.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] .tabs-closebutton,
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tab-drop-indicator-bar {
 	visibility: collapse !important;
 }
@@ -186,7 +186,7 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
   .tabbrowser-tab:not([pinned]) {
 	max-width: 65000px !important;
 }
-#TabsToolbar[treestyletab-mode="vertical"]
+.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
   .tabbrowser-tab:not([pinned]):not([fadein]) {
 	opacity: 0.5 !important;
 }
@@ -195,7 +195,7 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 	max-width: 65250px !important;
 	min-width: 1px !important;
 }
-#TabsToolbar[treestyletab-mode="vertical"][treestyletab-animation-enabled="true"]
+.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"][treestyletab-animation-enabled="true"]
   .tabbrowser-tab:not([pinned]):not([fadein])[treestyletab-removed="true"] {
 	max-height: 1px !important;
 	min-height: 1px !important;
@@ -208,28 +208,28 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 	max-width: 64000px !important;
 }
 
-#TabsToolbar,
-#navigator-toolbox[tabsontop="false"] > #TabsToolbar,
-#navigator-toolbox[tabsontop="false"] > #TabsToolbar:-moz-lwtheme {
+.treestyletab-tabbar-toolbar,
+#navigator-toolbox[tabsontop="false"] > .treestyletab-tabbar-toolbar,
+#navigator-toolbox[tabsontop="false"] > .treestyletab-tabbar-toolbar:-moz-lwtheme {
 	-moz-binding: url(treestyletab.xml#tabs-toolbar);
 }
-#navigator-toolbox[tabsontop="true"] > #TabsToolbar,
-#navigator-toolbox[tabsontop="true"] > #TabsToolbar:-moz-lwtheme,
+#navigator-toolbox[tabsontop="true"] > .treestyletab-tabbar-toolbar,
+#navigator-toolbox[tabsontop="true"] > .treestyletab-tabbar-toolbar:-moz-lwtheme,
 #navigator-toolbox
-  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"] + #TabsToolbar[tabsontop="true"]:last-child,
+  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"] + .treestyletab-tabbar-toolbar[tabsontop="true"]:last-child,
 #navigator-toolbox
-  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"] + #TabsToolbar[tabsontop="false"]:last-child {
+  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"] + .treestyletab-tabbar-toolbar[tabsontop="false"]:last-child {
 	-moz-binding: url(treestyletab.xml#tabs-toolbar-drag);
 }
-#TabsToolbar:not([treestyletab-tabbar-position="top"]),
-#TabsToolbar[treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
+.treestyletab-tabbar-toolbar:not([treestyletab-tabbar-position="top"]),
+.treestyletab-tabbar-toolbar[treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
 	line-height: 0 !important; /* to avoid an useless space above the tab bar */
 	position: fixed !important;
 	-moz-appearance: none !important;
 }
-#TabsToolbar:not([treestyletab-tabbar-position="top"])
+.treestyletab-tabbar-toolbar:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tabs,
-#TabsToolbar[treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"])
+.treestyletab-tabbar-toolbar[treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"])
   .tabbrowser-tabs {
 	overflow: hidden !important;
 }
@@ -358,7 +358,7 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 .tabbrowser-strip[treestyletab-tabbar-fixed="true"]+splitter,
 .tabbrowser-strip[treestyletab-print-preview="true"],
 .tabbrowser-strip[treestyletab-print-preview="true"]+splitter,
-#TabsToolbar[treestyletab-print-preview="true"],
+.treestyletab-tabbar-toolbar[treestyletab-print-preview="true"],
 tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-print-preview="true"]
   .treestyletab-tabbar-toggler {
 	visibility: collapse;
@@ -366,9 +366,9 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-print-preview="tr
 
 /* stylized window (opened by window.open() with features) */
 window[chromehidden~="toolbar"]
-  .tabbrowser-strip[treestyletab-tabbar-placeholder="true"],
+  .tabbrowser-strip.treestyletab-tabbar-placeholder,
 window[chromehidden~="toolbar"]
-  .tabbrowser-strip[treestyletab-tabbar-placeholder="true"]+splitter {
+  .tabbrowser-strip.treestyletab-tabbar-placeholder+splitter {
 	visibility: collapse;
 }
 

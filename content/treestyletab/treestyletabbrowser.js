@@ -325,6 +325,8 @@ TreeStyleTabBrowser.prototype = {
 
 		var b = this.mTabBrowser;
 		b.tabContainer.treeStyleTab = this;
+		if (b.tabContainer.parentNode.localName == 'toolbar')
+			b.tabContainer.parentNode.classList.add(this.kTABBAR_TOOLBAR);
 
 		this.tabsHash = {};
 		this.tabStripPlaceHolder = null;
@@ -350,9 +352,8 @@ TreeStyleTabBrowser.prototype = {
 			if (!placeHolder) {
 				placeHolder = document.createElement('hbox');
 				placeHolder.setAttribute('anonid', 'strip');
-				placeHolder.setAttribute('class', 'tabbrowser-strip');
+				placeHolder.setAttribute('class', 'tabbrowser-strip '+this.kTABBAR_PLACEHOLDER);
 				placeHolder.setAttribute('layer', true); // https://bugzilla.mozilla.org/show_bug.cgi?id=590468
-				placeHolder.setAttribute(this.kTABBAR_PLACEHOLDER, true);
 				b.mTabBox.insertBefore(placeHolder, toggler.nextSibling);
 			}
 			if (placeHolder != this.tabStrip)

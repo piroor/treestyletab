@@ -6,10 +6,10 @@
                         .autoScroll
                         .processAutoScroll(mouseMoveOrDragOverEvent);
 
- license: The MIT License, Copyright (c) 2009-2010 SHIMODA "Piro" Hiroshi
-   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/license.txt
+ license: The MIT License, Copyright (c) 2009-2011 SHIMODA "Piro" Hiroshi
+   http://github.com/piroor/fxaddonlibs/blob/master/license.txt
  original:
-   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/autoScroll.js
+   http://github.com/piroor/fxaddonlibs/blob/master/autoScroll.js
 */
 
 /* To work as a JS Code Module */
@@ -18,7 +18,7 @@ if (typeof window == 'undefined' ||
 	this.EXPORTED_SYMBOLS = ['autoScroll'];
 
 	// If namespace.jsm is available, export symbols to the shared namespace.
-	// See: http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/namespace.jsm
+	// See: http://github.com/piroor/fxaddonlibs/blob/master/namespace.jsm
 	try {
 		let ns = {};
 		Components.utils.import('resource://treestyletab-modules/lib/namespace.jsm', ns);
@@ -30,7 +30,7 @@ if (typeof window == 'undefined' ||
 }
 
 (function() {
-	const currentRevision = 4;
+	const currentRevision = 5;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -123,16 +123,16 @@ if (typeof window == 'undefined' ||
 			if (aTabBrowserChild.localName == 'tabbrowser') // itself
 				return aTabBrowserChild;
 
-			if (aTabBrowserChild.tabbrowser) // tabs, Firefox 3.7 or later
+			if (aTabBrowserChild.tabbrowser) // tabs, Firefox 4.0 or later
 				return aTabBrowserChild.tabbrowser;
 
-			if (aTabBrowserChild.id == 'TabsToolbar') // tabs toolbar, Firefox 3.7 or later
+			if (aTabBrowserChild.localName == 'toolbar') // tabs toolbar, Firefox 4.0 or later
 				return aTabBrowserChild.getElementsByTagName('tabs')[0].tabbrowser;
 
 			var b = aTabBrowserChild.ownerDocument.evaluate(
 					'ancestor::*[local-name()="tabbrowser"] | '+
 					'ancestor::*[local-name()="tabs" and @tabbrowser] |'+
-					'ancestor::*[local-name()="toolbar" and @id="TabsToolbar"]/descendant::*[local-name()="tabs"]',
+					'ancestor::*[local-name()="toolbar"]/descendant::*[local-name()="tabs"]',
 					aTabBrowserChild,
 					null,
 					Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE,

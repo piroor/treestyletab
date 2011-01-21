@@ -13,7 +13,7 @@
    http://github.com/piroor/fxaddonlibs/blob/master/tabsDragUtils.js
 */
 (function() {
-	const currentRevision = 7;
+	const currentRevision = 8;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -192,7 +192,7 @@
 			if (aTabBrowserChild.tabbrowser) // tabs, Firefox 4.0 or later
 				return aTabBrowserChild.tabbrowser;
 
-			if (aTabBrowserChild.id == 'TabsToolbar') // tabs toolbar, Firefox 4.0 or later
+			if (aTabBrowserChild.localName == 'toolbar') // tabs toolbar, Firefox 4.0 or later
 				return aTabBrowserChild.getElementsByTagName('tabs')[0].tabbrowser;
 
 			var b = aTabBrowserChild.ownerDocument.evaluate(

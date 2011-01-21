@@ -4,7 +4,7 @@
  * @version      1
  *
  * @license
- *   The MIT License, Copyright (c) 2010 SHIMODA "Piro" Hiroshi
+ *   The MIT License, Copyright (c) 2010-2011 SHIMODA "Piro" Hiroshi
  *   http://github.com/piroor/fxaddonlibs/blob/master/license.txt
  * @url http://github.com/piroor/fxaddonlibs/blob/master/confirmWithTab.js
  * @url http://github.com/piroor/fxaddonlibs
@@ -34,7 +34,7 @@ if (typeof namespace.Deferred == 'undefined')
 
 var confirmWithTab;
 (function() {
-	const currentRevision = 1;
+	const currentRevision = 2;
 
 	var loadedRevision = 'confirmWithTab' in namespace ?
 			namespace.confirmWithTab.revision :
@@ -118,7 +118,7 @@ var confirmWithTab;
 		var b = aTabBrowserChild.ownerDocument.evaluate(
 				'ancestor::*[local-name()="tabbrowser"] | '+
 				'ancestor::*[local-name()="tabs"][@tabbrowser] |'+
-				'ancestor::*[local-name()="toolbar"][@id="TabsToolbar"]/descendant::*[local-name()="tabs"]',
+				'ancestor::*[local-name()="toolbar"]/descendant::*[local-name()="tabs"]',
 				aTabBrowserChild,
 				null,
 				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE,

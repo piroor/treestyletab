@@ -118,6 +118,7 @@ var TreeStyleTabUtils = {
 	kSPLITTER              : 'treestyletab-splitter',
 	kTABBAR_TOGGLER        : 'treestyletab-tabbar-toggler',
 	kTABBAR_PLACEHOLDER    : 'treestyletab-tabbar-placeholder',
+	kTABBAR_TOOLBAR        : 'treestyletab-tabbar-toolbar',
  
 /* event types, topics */ 
 	kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN : 'nsDOMTreeStyleTabFocusSwitchingKeyDown',
@@ -1003,7 +1004,7 @@ var TreeStyleTabUtils = {
 		return this.evaluateXPath(
 				'ancestor-or-self::*[contains(concat(" ", normalize-space(@class), " "), " tabbrowser-strip ")] | '+
 				'ancestor-or-self::xul:tabs[@tabbrowser] | ' +
-				'ancestor-or-self::xul:toolbar[@id="TabsToolbar"]/child::xul:tabs[@tabbrowser]',
+				'ancestor-or-self::xul:toolbar/child::xul:tabs[@tabbrowser]',
 				aNode,
 				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
@@ -1082,7 +1083,7 @@ var TreeStyleTabUtils = {
 		if (aTabBrowserChild.tabbrowser) // tabs, Firefox 4.0 or later
 			return aTabBrowserChild.tabbrowser;
 
-		if (aTabBrowserChild.id == 'TabsToolbar') // tabs toolbar, Firefox 4.0 or later
+		if (aTabBrowserChild.localName == 'toolbar') // tabs toolbar, Firefox 4.0 or later
 			return aTabBrowserChild.getElementsByTagName('tabs')[0].tabbrowser;
 
 		// tab context menu on Firefox 4.0
@@ -1097,7 +1098,7 @@ var TreeStyleTabUtils = {
 		var b = this.evaluateXPath(
 				'ancestor::xul:tabbrowser | '+
 				'ancestor::xul:tabs[@tabbrowser] |'+
-				'ancestor::xul:toolbar[@id="TabsToolbar"]/descendant::xul:tabs',
+				'ancestor::xul:toolbar/descendant::xul:tabs',
 				aTabBrowserChild,
 				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
