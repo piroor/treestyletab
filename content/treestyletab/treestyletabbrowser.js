@@ -1049,34 +1049,19 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var b = this.mTabBrowser;
 
-		eval('b.mTabContainer.advanceSelectedTab = '+
-			b.mTabContainer.advanceSelectedTab.toSource().replace(
-				'{',
-				<![CDATA[$&
-					var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;
-					treeStyleTab._focusChangedByShortcut = TreeStyleTabService.accelKeyPressed;
-					if (treeStyleTab.canCollapseSubtree(this.selectedItem) &&
-						treeStyleTab.getTreePref('focusMode') == treeStyleTab.kFOCUS_VISIBLE) {
-						(function(aDir, aWrap, aSelf) {
-							var nextTab = (aDir < 0) ? treeStyleTab.getPreviousVisibleTab(aSelf.selectedItem) : treeStyleTab.getNextVisibleTab(aSelf.selectedItem) ;
-							if (!nextTab && aWrap) {
-								nextTab = TreeStyleTabService.evaluateXPath(
-										'child::xul:tab[not(@'+TreeStyleTabService.kCOLLAPSED+'="true")]['+
-										(aDir < 0 ? 'last()' : '1' )+
-										']',
-										aSelf,
-										XPathResult.FIRST_ORDERED_NODE_TYPE
-									).singleNodeValue;
-							}
-							if (nextTab && nextTab != aSelf.selectedItem) {
-								aSelf._selectNewTab(nextTab, aDir, aWrap);
-							}
-						})(arguments[0], arguments[1], this);
-						return;
-					}
-				]]>
-			)
-		);
+		var source = b.mTabContainer.advanceSelectedTab.toSource();
+		if (source.indexOf('treeStyleTab.handleAdvanceSelectedTab') < 0) {
+			eval('b.mTabContainer.advanceSelectedTab = '+
+				source.replace(
+					'{',
+					<![CDATA[$&
+						var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;
+						if (treeStyleTab.handleAdvanceSelectedTab(arguments[0], arguments[1], this))
+							return;
+					]]>
+				)
+			);
+		}
 
 		eval('b.mTabContainer._notifyBackgroundTab = '+
 			b.mTabContainer._notifyBackgroundTab.toSource().replace(
@@ -1668,6 +1653,7 @@ TreeStyleTabBrowser.prototype = {
 		this.removeTabStripAttribute('width');
 		this.removeTabStripAttribute('height');
 		this.removeTabStripAttribute('ordinal');
+		this._endListenTabbarEvents();
 
 		this.mTabBrowser.mTabContainer.parentNode.classList.remove(this.kTABBAR_TOOLBAR);
 	},
@@ -3190,6 +3176,30 @@ TreeStyleTabBrowser.prototype = {
 			this.scrollToTab(tab);
 			aEvent.stopPropagation();
 		}
+	},
+ 
+	handleAdvanceSelectedTab : function TSTBrowser_handleAdvanceSelectedTab(aDir, aWrap, aTabbar) 
+	{
+		this._focusChangedByShortcut = TreeStyleTabService.accelKeyPressed;
+
+		if (!this.canCollapseSubtree(aTabbar.selectedItem) ||
+			this.getTreePref('focusMode') != this.kFOCUS_VISIBLE)
+			return false;
+
+		var nextTab = (aDir < 0) ? this.getPreviousVisibleTab(aTabbar.selectedItem) : this.getNextVisibleTab(aTabbar.selectedItem) ;
+		if (!nextTab && aWrap) {
+			nextTab = this.evaluateXPath(
+					'child::xul:tab[not(@'+this.kCOLLAPSED+'="true")]['+
+					(aDir < 0 ? 'last()' : '1' )+
+					']',
+					aTabbar,
+					XPathResult.FIRST_ORDERED_NODE_TYPE
+				).singleNodeValue;
+		}
+		if (nextTab && nextTab != aTabbar.selectedItem)
+			aTabbar._selectNewTab(nextTab, aDir, aWrap);
+
+		return true;
 	},
  
 	onTabClick : function TSTBrowser_onTabClick(aEvent, aTab) 
