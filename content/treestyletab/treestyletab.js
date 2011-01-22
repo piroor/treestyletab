@@ -4,25 +4,21 @@ var TreeStyleTabService = {
 
 	changeTabbarPosition : function TSTService_changeTabbarPosition(aNewPosition) /* PUBLIC API (obsolete, for backward compatibility) */
 	{
-		this.currentTabbarPosition = aNewPosition;
+		this.position = aNewPosition;
 	},
 	
-	get currentTabbarPosition() /* PUBLIC API */ 
+	get position() /* PUBLIC API */ 
 	{
-		return (
-			// Don't touch to the <tabbrowser/> element before it is initialized by XBL constructor.
-			(this.preInitialized && this.browser.getAttribute(this.kTABBAR_POSITION)) ||
-			this.utils.currentTabbarPosition
-		);
+		return this.browser.position;
 	},
-	set currentTabbarPosition(aValue)
+	set position(aValue)
 	{
 		if ('UndoTabService' in window && UndoTabService.isUndoable()) {
-			var current = this.utils.currentTabbarPosition;
+			var current = this.utils.position;
 			var self = this;
 			UndoTabService.doOperation(
 				function() {
-					self.utils.currentTabbarPosition = aValue;
+					self.utils.position = aValue;
 				},
 				{
 					label  : self.treeBundle.getString('undo_changeTabbarPosition_label'),
@@ -34,7 +30,18 @@ var TreeStyleTabService = {
 				}
 			);
 		}
-		return this.utils.currentTabbarPosition = aValue;
+		else {
+			this.utils.position = aValue;
+		}
+		return aValue;
+	},
+	get currentTabbarPosition() /* for backward compatibility */
+	{
+		return this.position;
+	},
+	set currentTabbarPosition(aValue)
+	{
+		return this.position = aValue;
 	},
  
 	undoChangeTabbarPosition : function TSTService_undoChangeTabbarPosition() /* PUBLIC API */ 
@@ -641,7 +648,7 @@ var TreeStyleTabService = {
 			FullScreen._animateUp.toSource().replace(
 				// Firefox 3.6 or older
 				/(gBrowser\.mStrip\.boxObject\.height)/,
-				'((gBrowser.treeStyleTab.currentTabbarPosition != "top") ? 0 : $1)'
+				'((gBrowser.treeStyleTab.position != "top") ? 0 : $1)'
 			)
 		);
 		eval('FullScreen.mouseoverToggle = '+
@@ -652,7 +659,7 @@ var TreeStyleTabService = {
 			).replace(
 				// Firefox 3.6 or older
 				'gBrowser.mStrip.setAttribute("moz-collapsed", !aShow);',
-				'if (gBrowser.treeStyleTab.currentTabbarPosition == "top") { $& }'
+				'if (gBrowser.treeStyleTab.position == "top") { $& }'
 			)
 		);
 		eval('FullScreen.toggle = '+
@@ -660,7 +667,7 @@ var TreeStyleTabService = {
 				'{',
 				<![CDATA[{
 					var treeStyleTab = gBrowser.treeStyleTab;
-					if (treeStyleTab.currentTabbarPosition != 'top') {
+					if (treeStyleTab.position != 'top') {
 						if (window.fullScreen)
 							treeStyleTab.autoHide.endForFullScreen();
 						else
@@ -901,7 +908,10 @@ var TreeStyleTabService = {
 				switch (aEvent.entry.name)
 				{
 					case 'treestyletab-changeTabbarPosition':
-						this.currentTabbarPosition = aEvent.entry.data.oldPosition;
+						this.position = aEvent.entry.data.oldPosition;
+						return;
+					case 'treestyletab-changeTabbarPosition-private':
+						aEvent.entry.data.target.treeStyleTab.position = aEvent.entry.data.oldPosition;
 						return;
 				}
 				return;
@@ -910,7 +920,10 @@ var TreeStyleTabService = {
 				switch (aEvent.entry.name)
 				{
 					case 'treestyletab-changeTabbarPosition':
-						this.currentTabbarPosition = aEvent.entry.data.newPosition;
+						this.position = aEvent.entry.data.newPosition;
+						return;
+					case 'treestyletab-changeTabbarPosition-private':
+						aEvent.entry.data.target.treeStyleTab.position = aEvent.entry.data.newPosition;
 						return;
 				}
 				return;
@@ -1103,7 +1116,7 @@ var TreeStyleTabService = {
 
 		var width = this.tabbarResizeStartWidth;
 		var height = this.tabbarResizeStartHeight;
-		var pos = b.treeStyleTab.currentTabbarPosition;
+		var pos = b.treeStyleTab.position;
 		if (b.treeStyleTab.isVertical) {
 			let delta = aEvent.screenX - this.tabbarResizeStartX;
 			width += (pos == 'left' ? delta : -delta );
@@ -1230,7 +1243,7 @@ var TreeStyleTabService = {
 		if (!('_tabsOnTopDefaultState' in this))
 			this._tabsOnTopDefaultState = TabsOnTop.enabled;
 
-		if (gBrowser.treeStyleTab.currentTabbarPosition != 'top' ||
+		if (gBrowser.treeStyleTab.position != 'top' ||
 			!gBrowser.treeStyleTab.fixed) {
 			if (TabsOnTop.enabled)
 				TabsOnTop.enabled = false;
@@ -1289,7 +1302,6 @@ var TreeStyleTabService = {
 	_shownPopups : [],
   
 /* Tree Style Tabの初期化が行われる前に復元されたセッションについてツリー構造を復元 */ 
-
 	
 	_restoringTabs : [], 
  
@@ -1740,7 +1752,7 @@ var TreeStyleTabService = {
 			case 'extensions.treestyletab.tabbar.position':
 				this.preLoadImagesForStyle([
 					this.getPref('extensions.treestyletab.tabbar.style'),
-					this.currentTabbarPosition
+					this.position
 				].join('-'));
 				break;
 

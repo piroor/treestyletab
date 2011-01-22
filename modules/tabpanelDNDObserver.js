@@ -112,13 +112,13 @@ TabpanelDNDObserver.prototype = {
 		var dt = aEvent.dataTransfer;
 		var position = this.getDropPosition(aEvent);
 		if (position != 'center' &&
-			position != sv.currentTabbarPosition) {
+			position != sv.position) {
 			if (sv.getTreePref('tabbar.fixed.autoCancelOnDrop') &&
 				dt.getData(sv.kDRAG_TYPE_TABBAR) != sv.kTABBAR_MOVE_FORCE) {
 				let orient = (position == 'left' || position == 'right') ? 'vertical' : 'horizontal' ;
 				sv.setTreePref('tabbar.fixed.'+orient, false);
 			}
-			sv.currentTabbarPosition = position;
+			sv.position = position;
 		}
 
 		aEvent.preventDefault();

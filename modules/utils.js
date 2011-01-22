@@ -2024,11 +2024,11 @@ var TreeStyleTabUtils = {
   
 /* tabbar position */ 
 	
-	get currentTabbarPosition() /* PUBLIC API */ 
+	get position() /* PUBLIC API */ 
 	{
 		return this.getTreePref('tabbar.position') || 'top';
 	},
-	set currentTabbarPosition(aValue)
+	set position(aValue)
 	{
 		var position = String(aValue).toLowerCase();
 		if (!position || !/^(top|bottom|left|right)$/.test(position))
@@ -2038,6 +2038,14 @@ var TreeStyleTabUtils = {
 			this.setTreePref('tabbar.position', position);
 
 		return aValue;
+	},
+	get currentTabbarPosition() /* for backward compatibility */
+	{
+		return this.position;
+	},
+	set currentTabbarPosition(aValue)
+	{
+		return this.position = aValue;
 	},
  
 	getPositionFlag : function TSTUtils_getPositionFlag(aPosition) 

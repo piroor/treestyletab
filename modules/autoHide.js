@@ -140,7 +140,7 @@ AutoHideBrowser.prototype = {
 
 			case this.kMODE_HIDE:
 				let offset = this.width + this.splitterWidth;
-				if (sv.currentTabbarPosition == 'left') {
+				if (sv.position == 'left') {
 					offset -= this.togglerSize;
 				}
 				return offset;
@@ -162,7 +162,7 @@ AutoHideBrowser.prototype = {
 	{
 		var sv = this.treeStyleTab;
 		return (
-				sv.currentTabbarPosition == 'left' &&
+				sv.position == 'left' &&
 				this.mode != this.kMODE_DISABLED &&
 				this.expanded
 			) ? this.XOffset : 0 ;
@@ -171,7 +171,7 @@ AutoHideBrowser.prototype = {
 	{
 		var sv = this.treeStyleTab;
 		return (
-				sv.currentTabbarPosition == 'top' &&
+				sv.position == 'top' &&
 				this.mode != this.kMODE_DISABLED &&
 				this.expanded
 			) ? this.YOffset : 0 ;
@@ -321,7 +321,7 @@ AutoHideBrowser.prototype = {
 
 		var sv  = this.treeStyleTab;
 		var b   = this.browser;
-		var pos = sv.currentTabbarPosition;
+		var pos = sv.position;
 		var box = b.mCurrentBrowser.boxObject;
 
 		if (sv.isFloating && this.expanded) { // Firefox 4.0-
@@ -543,7 +543,7 @@ AutoHideBrowser.prototype = {
 			sv.stopRendering();
 
 		var b   = this.browser;
-		var pos = sv.currentTabbarPosition;
+		var pos = sv.position;
 
 		if (this.expanded) { // to be hidden or shrunken
 			this.onHiding();
@@ -588,7 +588,7 @@ AutoHideBrowser.prototype = {
 	{
 		var sv  = this.treeStyleTab;
 		var b   = this.browser;
-		var pos = sv.currentTabbarPosition;
+		var pos = sv.position;
 		if (!sv.isFloating) { // -Firefox 3.6
 			switch (pos)
 			{
@@ -636,7 +636,7 @@ AutoHideBrowser.prototype = {
 	{
 		var sv  = this.treeStyleTab;
 		var b   = this.browser;
-		var pos = sv.currentTabbarPosition;
+		var pos = sv.position;
 
 		var box = (sv.tabStripPlaceHolder || sv.tabStrip).boxObject;
 
@@ -706,7 +706,7 @@ AutoHideBrowser.prototype = {
 		if (sv.isFloating)
 			return;
 
-		var pos = sv.currentTabbarPosition;
+		var pos = sv.position;
 		var w = this.window;
 		try {
 			var v = this.browser.markupDocumentViewer;
@@ -782,7 +782,7 @@ AutoHideBrowser.prototype = {
 		canvas.style.width = (canvas.width = 1)+'px';
 		canvas.style.height = (canvas.height = 1)+'px';
 
-		var pos = sv.currentTabbarPosition;
+		var pos = sv.position;
 
 		var frame = b.contentWindow;
 		var tabContainerBox = b.mTabContainer.boxObject;
@@ -898,7 +898,7 @@ AutoHideBrowser.prototype = {
 				sv.tabStrip :
 				this.document.getAnonymousElementByAttribute(b, 'class', sv.kSPLITTER) ;
 
-		var pos = sv.currentTabbarPosition;
+		var pos = sv.position;
 		var prop = pos == 'left' ? 'right' :
 				pos == 'right' ? 'left' :
 				pos == 'top' ? 'bottom' :
@@ -946,7 +946,7 @@ AutoHideBrowser.prototype = {
 	{
 		var sv  = this.treeStyleTab;
 		var b   = this.browser;
-		var pos = sv.currentTabbarPosition;
+		var pos = sv.position;
 		var style = this.kTRANSPARENT_STYLE[
 				Math.max(
 					this.kTRANSPARENT_NONE,
@@ -1255,7 +1255,7 @@ AutoHideBrowser.prototype = {
 		if (sv.isFloating || !this.shouldRedraw)
 			return;
 
-		switch (sv.currentTabbarPosition)
+		switch (sv.position)
 		{
 			case 'left':
 				sv.container.style.marginRight = '-'+this.XOffset+'px';
@@ -1455,8 +1455,8 @@ AutoHideWindow.prototype = {
 	{
 		var mode = this.getMode();
 		if (mode == AutoHideBrowser.prototype.kMODE_SHRINK &&
-			this.treeStyleTab.currentTabbarPosition != 'left' &&
-			this.treeStyleTab.currentTabbarPosition != 'right')
+			this.treeStyleTab.position != 'left' &&
+			this.treeStyleTab.position != 'right')
 			return AutoHideBrowser.prototype.kMODE_HIDE;
 		return mode;
 	},

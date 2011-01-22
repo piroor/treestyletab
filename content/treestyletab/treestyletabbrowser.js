@@ -141,13 +141,82 @@ TreeStyleTabBrowser.prototype = {
 		return aValue;
 	},
 	_hideAlltabsButton : true,
+ 
+	get position() /* PUBLIC API */
+	{
+		return (
+			// Don't touch to the <tabbrowser/> element before it is initialized by XBL constructor.
+			(this.preInitialized && this.browser.getAttribute(this.kTABBAR_POSITION)) ||
+			this.utils.position
+		);
+	},
+	set position(aValue)
+	{
+		var position = String(aValue).toLowerCase();
+		if (!position || !/^(top|bottom|left|right)$/.test(position))
+			position = 'top';
+
+		if (position == this.position)
+			return position;
+
+		if ('UndoTabService' in window && UndoTabService.isUndoable()) {
+			var current = this.position;
+			var self = this;
+			UndoTabService.doOperation(
+				function() {
+					self._changeTabbarPosition(position);
+				},
+				{
+					label  : self.treeBundle.getString('undo_changeTabbarPosition_label'),
+					name   : 'treestyletab-changeTabbarPosition-private',
+					data   : {
+						oldPosition : current,
+						newPosition : position,
+						target      : self.mTabBrowser.id
+					}
+				}
+			);
+		}
+		else {
+			this._changeTabbarPosition(position);
+		}
+		return position;
+	},
+	_changeTabbarPosition : function TSTBrowser_changeTabbarPosition(aNewPosition)
+	{
+		var oldPosition = this.position;
+		this.fireTabbarPositionEvent(true, oldPosition, aNewPosition);
+
+		this.initTabbar(aNewPosition, oldPosition);
+
+		var tabs = this.getAllTabsArray(this.mTabBrowser);
+		tabs.forEach(function(aTab) {
+			this.initTabAttributes(aTab);
+		}, this);
+		tabs.forEach(function(aTab) {
+			this.initTabContents(aTab);
+		}, this);
+
+		window.setTimeout(function(aSelf) {
+			aSelf.checkTabsIndentOverflow();
+			aSelf.fireTabbarPositionEvent(false, oldPosition, aNewPosition);
+		}, 0, this);
+	},
+	get currentTabbarPosition() /* for backward compatibility */
+	{
+		return this.position;
+	},
+	set currentTabbarPosition(aValue)
+	{
+		return this.position = aValue;
+	},
   
 /* status getters */ 
 	
 	get isVertical() 
 	{
 		if (!this.preInitialized)
-			return ['left', 'right'].indexOf(this.currentTabbarPosition) > -1;
+			return ['left', 'right'].indexOf(this.position) > -1;
 
 		var b = this.mTabBrowser;
 		if (!b) return false;
@@ -346,7 +415,7 @@ TreeStyleTabBrowser.prototype = {
 
 		this._initTabbrowserExtraContents();
 
-		let position = this.currentTabbarPosition;
+		let position = this.position;
 		this.fireTabbarPositionEvent(this.kEVENT_TYPE_TABBAR_POSITION_CHANGING, 'top', position); /* PUBLIC API */
 
 		this.setTabbrowserAttribute(this.kFIXED+'-horizontal', this.getTreePref('tabbar.fixed.horizontal') ? 'true' : null, b);
@@ -629,7 +698,7 @@ TreeStyleTabBrowser.prototype = {
 	
 	initTabAttributes : function TSTBrowser_initTabAttributes(aTab) 
 	{
-		var pos = this.currentTabbarPosition;
+		var pos = this.position;
 		if (pos == 'left' || pos == 'right') {
 			aTab.setAttribute('align', 'stretch');
 			aTab.removeAttribute('maxwidth');
@@ -798,7 +867,7 @@ TreeStyleTabBrowser.prototype = {
 
 		var b = this.mTabBrowser;
 
-		var pos = aNewPosition || this.getPositionFlag(this.currentTabbarPosition);
+		var pos = aNewPosition || this.getPositionFlag(this.position);
 		if (b.getAttribute('id') != 'content' &&
 			!this.getTreePref('tabbar.position.subbrowser.enabled')) {
 			pos = this.kTABBAR_TOP;
@@ -1197,7 +1266,7 @@ TreeStyleTabBrowser.prototype = {
 					b.mPanelContainer.removeAttribute('height');
 				}
 				// remove ordinal for "tabs on top" https://bugzilla.mozilla.org/show_bug.cgi?id=544815
-				if (this.isFloating && this.currentTabbarPosition == 'top') {
+				if (this.isFloating && this.position == 'top') {
 					this.removeTabStripAttribute('ordinal');
 					if ('TabsOnTop' in window) {
 						// workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=555987
@@ -1213,7 +1282,7 @@ TreeStyleTabBrowser.prototype = {
 				this.setTabStripAttribute('height', this.maxTabbarHeight(this.getTreePref('tabbar.height'), b));
 			}
 			if (toggleTabsOnTop) {
-				if (this.currentTabbarPosition == 'top')
+				if (this.position == 'top')
 					toggleTabsOnTop.removeAttribute('disabled');
 				else
 					toggleTabsOnTop.setAttribute('disabled', true);
@@ -1221,7 +1290,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		if ('TabsOnTop' in window)
-			TabsOnTop.enabled = TabsOnTop.enabled && this.currentTabbarPosition == 'top' && this.fixed;
+			TabsOnTop.enabled = TabsOnTop.enabled && this.position == 'top' && this.fixed;
 
 		window.setTimeout(function(aSelf) {
 			aSelf.updateFloatingTabbar(aSelf.kTABBAR_UPDATE_BY_APPEARANCE_CHANGE);
@@ -1352,7 +1421,7 @@ TreeStyleTabBrowser.prototype = {
 
 		var strip = this.tabStrip;
 		var tabContainerBox = this.getTabContainerBox(this.mTabBrowser);
-		var pos = this.currentTabbarPosition;
+		var pos = this.position;
 		if (pos != 'top' ||
 			this.mTabBrowser.getAttribute(this.kFIXED) != 'true') {
 			strip.setAttribute('layer', true); // https://bugzilla.mozilla.org/show_bug.cgi?id=590468
@@ -1419,7 +1488,7 @@ TreeStyleTabBrowser.prototype = {
 		var realWidth  = this.autoHide.mode == this.autoHide.kMODE_HIDE ? 0 : aSize.realWidth ;
 		var height     = aSize.height;
 		var realHeight = this.autoHide.mode == this.autoHide.kMODE_HIDE ? 0 : aSize.realHeight ;
-		var pos        = this.currentTabbarPosition;
+		var pos        = this.position;
 		var vertical = this.isVertical;
 
 		var splitter = document.getElementById('treestyletab-tabbar-resizer-splitter');
@@ -1512,6 +1581,14 @@ TreeStyleTabBrowser.prototype = {
  
 	syncReinitTabbar : function TSTBrowser_syncReinitTabbar() 
 	{
+/*
+		window.setTimeout(function(aSelf) {
+			aSelf._syncReinitTabbarInternal();
+		}, 0, this);
+	},
+	_syncReinitTabbarInternal : function TSTBrowser_syncReinitTabbarInternal() 
+	{
+*/
 		this.mTabBrowser.mTabContainer.parentNode.classList.add(this.kTABBAR_TOOLBAR);
 
 		if (this._lastTabbarPositionBeforeDestroyed) {
@@ -1631,24 +1708,25 @@ TreeStyleTabBrowser.prototype = {
  
 	syncDestroyTabbar : function TSTBrowser_syncDestroyTabbar() 
 	{
-		if (this.currentTabbarPosition != 'top') {
-			this._lastTabbarPositionBeforeDestroyed = this.currentTabbarPosition;
+		if (this.position != 'top') {
+			this._lastTabbarPositionBeforeDestroyed = this.position;
 			let self = this;
 			this.doAndWaitDOMEvent(
 				this.kEVENT_TYPE_TABBAR_POSITION_CHANGED,
 				window,
 				100,
-				function() { self.currentTabbarPosition = 'top'; }
+				function() {
+					self.position = 'top';
+				}
 			);
 		}
 
-		if (!this.fixed)
-			this.fixed = true;
+		if (!this.fixed) this.fixed = true;
 
-		this.updateFloatingTabbar(this.kTABBAR_UPDATE_NOW);
 		this.removeTabStripAttribute('width');
 		this.removeTabStripAttribute('height');
 		this.removeTabStripAttribute('ordinal');
+
 		this._endListenTabbarEvents();
 
 		this.tabbarDNDObserver.endListenEvents();
@@ -1675,7 +1753,7 @@ TreeStyleTabBrowser.prototype = {
 			if (prefs[i] !== void(0) && this.getTreePref(i) != prefs[i])
 				this.setTreePref(i, prefs[i]);
 		}
-		this.currentTabbarPosition = this.currentTabbarPosition;
+		this.position = this.position;
 	},
    
 /* nsIObserver */ 
@@ -1739,22 +1817,8 @@ TreeStyleTabBrowser.prototype = {
 		switch (aPrefName)
 		{
 			case 'extensions.treestyletab.tabbar.position':
-				if (!this.shouldApplyNewPref) return;
-				var oldPosition = this.currentTabbarPosition;
-				if (oldPosition != value) {
-					this.fireTabbarPositionEvent(true, oldPosition, value);
-					this.initTabbar(value, oldPosition);
-					tabs.forEach(function(aTab) {
-						this.initTabAttributes(aTab);
-					}, this);
-					tabs.forEach(function(aTab) {
-						this.initTabContents(aTab);
-					}, this);
-					window.setTimeout(function(aSelf) {
-						aSelf.checkTabsIndentOverflow();
-						aSelf.fireTabbarPositionEvent(false, oldPosition, value);
-					}, 0, this);
-				}
+				if (this.shouldApplyNewPref)
+					this.position = value;
 				return;
 
 			case 'extensions.treestyletab.tabbar.invertTab':
@@ -3294,7 +3358,7 @@ TreeStyleTabBrowser.prototype = {
 			!this.getTabFromEvent(aEvent) &&
 			!this.isEventFiredOnClickable(aEvent) &&
 			(
-				this.currentTabbarPosition != 'top' ||
+				this.position != 'top' ||
 				aEvent.shiftKey ||
 				this.tabbarDNDObserver.canDragTabbar(aEvent)
 			)
@@ -3550,13 +3614,12 @@ TreeStyleTabBrowser.prototype = {
 			sep.setAttribute('hidden', true);
 		}
 	},
-
   
 	onTabsOnTopSyncCommand : function TSTBrowser_onTabsOnTopSyncCommand(aEnabled) 
 	{
 		if (
 			!aEnabled ||
-			this.currentTabbarPosition != 'top' ||
+			this.position != 'top' ||
 			this.fixed
 			)
 			return;

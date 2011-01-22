@@ -95,7 +95,7 @@ TabbarDNDObserver.prototype = {
 		if (canDrag && !aEvent.shiftKey) {
 			let insensitiveArea = sv.getTreePref('tabbar.fixed.insensitiveArea');
 			let box = tabbar.boxObject;
-			switch (sv.currentTabbarPosition)
+			switch (sv.position)
 			{
 				case 'right':
 					if (aEvent.screenX < box.screenX + insensitiveArea)
@@ -945,7 +945,7 @@ try{
 		if (sv.isVertical)
 			indicator.collapsed = true;
 
-		return (info.position == sv.kDROP_ON || sv.currentTabbarPosition != 'top')
+		return (info.position == sv.kDROP_ON || sv.position != 'top')
 }
 catch(e) {
 	dump('TabbarDND::onDragOver\n'+e+'\n');
