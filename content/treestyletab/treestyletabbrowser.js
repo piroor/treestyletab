@@ -399,7 +399,6 @@ TreeStyleTabBrowser.prototype = {
 		window.addEventListener('resize', this, true);
 		window.addEventListener('beforecustomization', this, true);
 		window.addEventListener('aftercustomization', this, false);
-		window.addEventListener('customizationchange', this, false);
 		window.addEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
 		window.addEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED,  this, false);
 
@@ -1642,7 +1641,6 @@ TreeStyleTabBrowser.prototype = {
 		window.removeEventListener('resize', this, true);
 		window.removeEventListener('beforecustomization', this, true);
 		window.removeEventListener('aftercustomization', this, false);
-		window.removeEventListener('customizationchange', this, false);
 		window.removeEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
 		window.removeEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED,  this, false);
 
@@ -2122,14 +2120,11 @@ TreeStyleTabBrowser.prototype = {
 				return this.onResize(aEvent);
 
 
+			// toolbar customizing on Firefox 4 or later 
 			case 'beforecustomization':
-				return this.onToolbarCustomizeStart(aEvent);
-
+				return this.syncDestroyTabbar();
 			case 'aftercustomization':
-				return this.onToolbarCustomizeEnd(aEvent);
-
-			case 'customizationchange':
-				return this.onToolbarCustomizeChanging(aEvent);
+				return this.syncReinitTabbar();
 
 
 			case this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED:
@@ -3338,22 +3333,6 @@ TreeStyleTabBrowser.prototype = {
 			this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
 	},
  
-// toolbar customizing on Firefox 4 or later 
-	
-	onToolbarCustomizeStart : function TSTBrowser_onToolbarCustomizeStart(aEvent) 
-	{
-		this.syncDestroyTabbar();
-	},
- 
-	onToolbarCustomizeEnd : function TSTBrowser_onToolbarCustomizeEnd(aEvent) 
-	{
-		this.syncReinitTabbar();
-	},
- 
-	onToolbarCustomizeChanging : function TSTBrowser_onToolbarCustomizeChanging(aEvent) 
-	{
-	},
-  
 	onPopupShowing : function TSTBrowser_onPopupShowing(aEvent) 
 	{
 		if (aEvent.target.localName == 'tooltip')
