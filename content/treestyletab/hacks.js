@@ -1227,6 +1227,7 @@ TreeStyleTabService.overrideExtensionsDelayed = function TSTService_overrideExte
 							personalTitlebar.removeAttribute('height');
 							personalTitlebar.removeAttribute('width');
 							personalTitlebar.removeAttribute('ordinal');
+							personalTitlebar.removeAttribute('orient');
 							break;
 
 						case 'aftercustomization':

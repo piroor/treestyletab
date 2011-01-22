@@ -1726,6 +1726,7 @@ TreeStyleTabBrowser.prototype = {
 		this.removeTabStripAttribute('width');
 		this.removeTabStripAttribute('height');
 		this.removeTabStripAttribute('ordinal');
+		this.removeTabStripAttribute('orient');
 
 		this._endListenTabbarEvents();
 
