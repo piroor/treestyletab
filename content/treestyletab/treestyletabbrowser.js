@@ -151,6 +151,10 @@ TreeStyleTabBrowser.prototype = {
 
 		var b = this.mTabBrowser;
 		if (!b) return false;
+
+		if (b.hasAttribute(this.kMODE))
+			return b.getAttribute(this.kMODE) == 'vertical';
+
 		var box = this.scrollBox || b.mTabContainer ;
 		return (box.getAttribute('orient') || window.getComputedStyle(box, '').getPropertyValue('-moz-box-orient')) == 'vertical';
 	},
@@ -160,7 +164,7 @@ TreeStyleTabBrowser.prototype = {
 		return this._tabStripPlaceHolder;
 	},
  
-	get isFixed() 
+	get fixed() 
 	{
 		var orient = this.isVertical ? 'vertical' : 'horizontal' ;
 		if (!this.preInitialized)
@@ -169,6 +173,15 @@ TreeStyleTabBrowser.prototype = {
 		var b = this.mTabBrowser;
 		if (!b) return false;
 		return b.getAttribute(this.kFIXED+'-'+orient) == 'true';
+	},
+	set fixed(aValue)
+	{
+		this.setTabbrowserAttribute(this.kFIXED, aValue || null, this.mTabBrowser);
+		return aValue;
+	},
+	get isFixed() // for backward compatibility
+	{
+		return this.fixed;
 	},
  
 	get canStackTabs() 
@@ -1171,14 +1184,14 @@ TreeStyleTabBrowser.prototype = {
 		var toggleTabsOnTop = document.getElementById('cmd_ToggleTabsOnTop');
 		if (this.isVertical) {
 			orient = 'vertical';
-			this.setTabbrowserAttribute(this.kFIXED, this.isFixed ? 'true' : null , b);
+			this.fixed = this.fixed; // ensure set to the current orient
 			if (toggleTabsOnTop)
 				toggleTabsOnTop.setAttribute('disabled', true);
 		}
 		else {
 			orient = 'horizontal';
-			if (this.isFixed) {
-				this.setTabbrowserAttribute(this.kFIXED, true, b);
+			if (this.fixed) {
+				this.fixed = true; // ensure set to the current orient
 				if (!this.isMultiRow()) {
 					this.removeTabStripAttribute('height');
 					b.mPanelContainer.removeAttribute('height');
@@ -1196,7 +1209,7 @@ TreeStyleTabBrowser.prototype = {
 				}
 			}
 			else {
-				this.removeTabbrowserAttribute(this.kFIXED, b);
+				this.fixed = false; // ensure set to the current orient
 				this.setTabStripAttribute('height', this.maxTabbarHeight(this.getTreePref('tabbar.height'), b));
 			}
 			if (toggleTabsOnTop) {
@@ -1208,7 +1221,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		if ('TabsOnTop' in window)
-			TabsOnTop.enabled = TabsOnTop.enabled && this.currentTabbarPosition == 'top' && this.isFixed;
+			TabsOnTop.enabled = TabsOnTop.enabled && this.currentTabbarPosition == 'top' && this.fixed;
 
 		window.setTimeout(function(aSelf) {
 			aSelf.updateFloatingTabbar(aSelf.kTABBAR_UPDATE_BY_APPEARANCE_CHANGE);
@@ -1236,7 +1249,7 @@ TreeStyleTabBrowser.prototype = {
 		var b = this.mTabBrowser;
 		var orient = this.isVertical ? 'vertical' : 'horizontal' ;
 		var oldState = {
-				fixed         : this.isFixed,
+				fixed         : this.fixed,
 				maxTreeLevel  : this.maxTreeLevel,
 				indented      : this.maxTreeLevel != 0,
 				canCollapse   : b.getAttribute(this.kALLOW_COLLAPSE) == 'true'
@@ -1280,7 +1293,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var b = this.mTabBrowser;
 		var state = {
-				fixed         : this.isFixed,
+				fixed         : this.fixed,
 				maxTreeLevel  : this.maxTreeLevel,
 				indented      : this.maxTreeLevel != 0,
 				canCollapse   : b.getAttribute(this.kALLOW_COLLAPSE) == 'true'
@@ -1501,19 +1514,6 @@ TreeStyleTabBrowser.prototype = {
 	{
 		this.mTabBrowser.mTabContainer.parentNode.classList.add(this.kTABBAR_TOOLBAR);
 
-		if (!this._lastTabbarFixedBeforeDestroyed && this.isFixed) {
-			let self = this;
-			this.doAndWaitDOMEvent(
-				this.kEVENT_TYPE_TABBAR_STATE_CHANGED,
-				window,
-				100,
-				function() {
-					self.toggleFixed();
-					delete self._lastTabbarFixedBeforeDestroyed;
-				}
-			);
-		}
-
 		if (this._lastTabbarPositionBeforeDestroyed) {
 			let self = this;
 			this.doAndWaitDOMEvent(
@@ -1522,11 +1522,12 @@ TreeStyleTabBrowser.prototype = {
 				100,
 				function() {
 					self.initTabbar(self._lastTabbarPositionBeforeDestroyed, 'top');
-					delete self._lastTabbarPositionBeforeDestroyed;
 				}
 			);
-			this.updateFloatingTabbar(this.kTABBAR_UPDATE_NOW);
+			delete this._lastTabbarPositionBeforeDestroyed;
 		}
+
+		this.tabbarDNDObserver.startListenEvents();
 	},
   
 	destroy : function TSTBrowser_destroy() 
@@ -1641,22 +1642,16 @@ TreeStyleTabBrowser.prototype = {
 			);
 		}
 
-		if (!this.isFixed) {
-			this._lastTabbarFixedBeforeDestroyed = this.isFixed;
-			let self = this;
-			this.doAndWaitDOMEvent(
-				this.kEVENT_TYPE_TABBAR_STATE_CHANGED,
-				window,
-				100,
-				function() { self.toggleFixed(); }
-			);
-		}
+		if (!this.fixed)
+			this.fixed = true;
 
 		this.updateFloatingTabbar(this.kTABBAR_UPDATE_NOW);
 		this.removeTabStripAttribute('width');
 		this.removeTabStripAttribute('height');
 		this.removeTabStripAttribute('ordinal');
 		this._endListenTabbarEvents();
+
+		this.tabbarDNDObserver.endListenEvents();
 
 		this.mTabBrowser.mTabContainer.parentNode.classList.remove(this.kTABBAR_TOOLBAR);
 	},
@@ -3562,7 +3557,7 @@ TreeStyleTabBrowser.prototype = {
 		if (
 			!aEnabled ||
 			this.currentTabbarPosition != 'top' ||
-			this.isFixed
+			this.fixed
 			)
 			return;
 		window.setTimeout(function(aTabBrowser) {

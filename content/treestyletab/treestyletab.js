@@ -1231,7 +1231,7 @@ var TreeStyleTabService = {
 			this._tabsOnTopDefaultState = TabsOnTop.enabled;
 
 		if (gBrowser.treeStyleTab.currentTabbarPosition != 'top' ||
-			!gBrowser.treeStyleTab.isFixed) {
+			!gBrowser.treeStyleTab.fixed) {
 			if (TabsOnTop.enabled)
 				TabsOnTop.enabled = false;
 		}
@@ -1359,7 +1359,8 @@ var TreeStyleTabService = {
 		var orient = b.treeStyleTab.isVertical ? 'vertical' : 'horizontal' ;
 
 		var newFixed = b.getAttribute(this.kFIXED+'-'+orient) != 'true';
-		this.setTabbrowserAttribute(this.kFIXED+'-'+orient, newFixed ? 'true' : null, b);
+		this.setTabbrowserAttribute(this.kFIXED+'-'+orient, newFixed || null, this.mTabBrowser);
+		b.treeStyleTab.fixed = newFixed;
 		this.setTreePref('tabbar.fixed.'+orient, newFixed);
 
 		b.treeStyleTab.updateTabbarState();

@@ -33,7 +33,7 @@
  *
  * ***** END LICENSE BLOCK ******/
  
-const EXPORTED_SYMBOLS = ['TabbarDNDObserver'];
+const EXPORTED_SYMBOLS = ['TabbarDNDObserver']; 
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
@@ -1119,7 +1119,11 @@ catch(e) {
 
 		this.mAutoExpandTimer = null;
 		this.mAutoExpandedTabs = [];
-
+		this.startListenEvents();
+	},
+	
+	startListenEvents : function TabbarDND_startListenEvents() 
+	{
 		var strip = this.treeStyleTab.tabStrip;
 		strip.addEventListener('dragstart', this, true);
 		strip.addEventListener('dragover',  this, true);
@@ -1128,8 +1132,18 @@ catch(e) {
 		strip.addEventListener('dragend',   this, false);
 		strip.addEventListener('drop',      this, true);
 	},
- 
+  
 	destroy : function TabbarDND_destroy() 
+	{
+		this.endListenEvents();
+
+		delete this.treeStyleTab;
+		delete this.browser;
+		delete this.document;
+		delete this.window;
+	},
+	
+	endListenEvents : function TabbarDND_endListenEvents() 
 	{
 		var strip = this.treeStyleTab.tabStrip;
 		strip.removeEventListener('dragstart', this, true);
@@ -1138,12 +1152,7 @@ catch(e) {
 		strip.removeEventListener('dragleave', this, false);
 		strip.removeEventListener('dragend',   this, false);
 		strip.removeEventListener('drop',      this, true);
-
-		delete this.treeStyleTab;
-		delete this.browser;
-		delete this.document;
-		delete this.window;
 	}
- 
+  
 }; 
   
