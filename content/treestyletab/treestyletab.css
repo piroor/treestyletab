@@ -208,17 +208,17 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 	max-width: 64000px !important;
 }
 
-#TabsToolbar,
-#navigator-toolbox[tabsontop="false"] > #TabsToolbar,
-#navigator-toolbox[tabsontop="false"] > #TabsToolbar:-moz-lwtheme {
+.treestyletab-tabbar-toolbar,
+#navigator-toolbox[tabsontop="false"] > .treestyletab-tabbar-toolbar,
+#navigator-toolbox[tabsontop="false"] > .treestyletab-tabbar-toolbar:-moz-lwtheme {
 	-moz-binding: url(treestyletab.xml#toolbar);
 }
-#navigator-toolbox[tabsontop="true"] > #TabsToolbar,
-#navigator-toolbox[tabsontop="true"] > #TabsToolbar:-moz-lwtheme,
+#navigator-toolbox[tabsontop="true"] > .treestyletab-tabbar-toolbar,
+#navigator-toolbox[tabsontop="true"] > .treestyletab-tabbar-toolbar:-moz-lwtheme,
 #navigator-toolbox
-  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"] + #TabsToolbar[tabsontop="true"]:last-child,
+  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"] + .treestyletab-tabbar-toolbar[tabsontop="true"]:last-child,
 #navigator-toolbox
-  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"] + #TabsToolbar[tabsontop="false"]:last-child {
+  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"] + .treestyletab-tabbar-toolbar[tabsontop="false"]:last-child {
 	-moz-binding: url(treestyletab.xml#toolbar-drag);
 }
 .treestyletab-tabbar-toolbar:not([treestyletab-tabbar-position="top"]),
