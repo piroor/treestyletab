@@ -1066,7 +1066,7 @@ TreeStyleTabBrowser.prototype = {
 		source = b.mTabContainer._notifyBackgroundTab.toSource();
 		if (source.indexOf('TreeStyleTabService.getTabBrowserFromChild') < 0) {
 			eval('b.mTabContainer._notifyBackgroundTab = '+
-				source.toSource().replace(
+				source.replace(
 					'{',
 					'{ var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;'
 				).replace(
