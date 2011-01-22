@@ -142,6 +142,26 @@ TreeStyleTabBrowser.prototype = {
 	},
 	_hideAlltabsButton : true,
  
+	get fixed() 
+	{
+		var orient = this.isVertical ? 'vertical' : 'horizontal' ;
+		if (!this.preInitialized)
+			return this.getTreePref('tabbar.fixed.'+orient);
+
+		var b = this.mTabBrowser;
+		if (!b) return false;
+		return b.getAttribute(this.kFIXED+'-'+orient) == 'true';
+	},
+	set fixed(aValue)
+	{
+		this.setTabbrowserAttribute(this.kFIXED, aValue || null, this.mTabBrowser);
+		return aValue;
+	},
+	get isFixed() // for backward compatibility
+	{
+		return this.fixed;
+	},
+ 
 	get position() /* PUBLIC API */
 	{
 		return (
@@ -216,26 +236,6 @@ TreeStyleTabBrowser.prototype = {
 	get isFloating() 
 	{
 		return this._tabStripPlaceHolder;
-	},
- 
-	get fixed() 
-	{
-		var orient = this.isVertical ? 'vertical' : 'horizontal' ;
-		if (!this.preInitialized)
-			return this.getTreePref('tabbar.fixed.'+orient);
-
-		var b = this.mTabBrowser;
-		if (!b) return false;
-		return b.getAttribute(this.kFIXED+'-'+orient) == 'true';
-	},
-	set fixed(aValue)
-	{
-		this.setTabbrowserAttribute(this.kFIXED, aValue || null, this.mTabBrowser);
-		return aValue;
-	},
-	get isFixed() // for backward compatibility
-	{
-		return this.fixed;
 	},
  
 	get canStackTabs() 
@@ -1597,6 +1597,9 @@ TreeStyleTabBrowser.prototype = {
 
 		this.tabbarDNDObserver.startListenEvents();
 
+		this.treeViewEnabled = this._lastTreeViewEnabledBeforeDestroyed;
+		delete this._lastTreeViewEnabledBeforeDestroyed;
+
 		this.startRendering();
 	},
   
@@ -1716,7 +1719,11 @@ TreeStyleTabBrowser.prototype = {
 			);
 		}
 
-		if (!this.fixed) this.fixed = true;
+		this.maxTreeLevel = 0;
+		this.hideAlltabsButton = false;
+		this.fixed = true;
+		this._lastTreeViewEnabledBeforeDestroyed = this.treeViewEnabled;
+		this.treeViewEnabled = false;
 
 		var tabbar = this.mTabBrowser.tabContainer;
 		tabbar.removeAttribute('width');
@@ -3703,17 +3710,29 @@ TreeStyleTabBrowser.prototype = {
 	},
 	set treeViewEnabled(aValue)
 	{
-		this._treeViewEnabled = aValue ? true : false ;
+		this._treeViewEnabled = !!aValue;
 		if (this._treeViewEnabled) {
-			if (this.allowSubtreeCollapseExpand)
-				this.setTabbrowserAttribute(this.kALLOW_COLLAPSE, true);
+			if (this._lastAllowSubtreeCollapseExpand)
+				this.allowSubtreeCollapseExpand = true;
+			delete this._lastAllowSubtreeCollapseExpand;
+
+			this.getAllTabsArray(this.browser).forEach(function(aTab) {
+				if (aTab._TSTLastSubtreeCollapsed)
+					this.collapseExpandSubtree(aTab, true, true);
+				delete aTab._TSTLastSubtreeCollapsed;
+				this.updateTabIndent(aTab, 0, true);
+			}, this);
 			this.updateTabsIndent(this.rootTabs, undefined, true);
 		}
 		else {
-			this.removeTabbrowserAttribute(this.kALLOW_COLLAPSE);
 			this.getAllTabsArray(this.browser).forEach(function(aTab) {
 				this.updateTabIndent(aTab, 0, true);
+				aTab._TSTLastSubtreeCollapsed = this.isSubtreeCollapsed(aTab);
+				this.collapseExpandSubtree(aTab, false, true);
 			}, this);
+
+			this._lastAllowSubtreeCollapseExpand = this.allowSubtreeCollapseExpand;
+			this.allowSubtreeCollapseExpand = false;
 		}
 		return aValue;
 	},
@@ -4141,9 +4160,9 @@ TreeStyleTabBrowser.prototype = {
 			aNewTab.style.removeProperty(this.indentCSSProp);
 	},
  
-	updateAllTabsIndent : function TSTBrowser_updateAllTabsIndent() 
+	updateAllTabsIndent : function TSTBrowser_updateAllTabsIndent(aJustNow) 
 	{
-		this.updateTabsIndent(this.rootTabs, 0);
+		this.updateTabsIndent(this.rootTabs, 0, aJustNow);
 //		this.checkTabsIndentOverflow();
 	},
  
