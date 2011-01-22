@@ -234,6 +234,11 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 	overflow: hidden !important;
 }
 
+.treestyletab-tabbar-toolbar toolbaritem {
+	overflow: hidden;
+}
+
+
 /* animation effects */
 
 .tabbrowser-tabs[treestyletab-animation-enabled="true"][treestyletab-mode="vertical"]:not([treestyletab-tab-inverted="true"])
