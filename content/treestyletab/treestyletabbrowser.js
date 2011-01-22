@@ -321,44 +321,21 @@ TreeStyleTabBrowser.prototype = {
 	{
 		this.stopRendering();
 
-		this.updateFloatingTabbarReason = 0;
-
 		var b = this.mTabBrowser;
 		b.tabContainer.treeStyleTab = this;
+
 		if (b.tabContainer.parentNode.localName == 'toolbar')
 			b.tabContainer.parentNode.classList.add(this.kTABBAR_TOOLBAR);
 
 		this.tabsHash = {};
-		this.tabStripPlaceHolder = null;
-
 		this.tabVisibilityChangedTabs = [];
-
+		this._updateFloatingTabbarReason = 0;
 		this.internallyTabMovingCount = 0;
 		this.subTreeMovingCount = 0;
 		this.subTreeChildrenMovingCount = 0;
 		this._treeViewEnabled = true;
 
-		let (toggler, placeHolder) {
-			toggler = document.getAnonymousElementByAttribute(b, 'class', this.kTABBAR_TOGGLER);
-			if (!toggler) {
-				toggler = document.createElement('spacer');
-				toggler.setAttribute('class', this.kTABBAR_TOGGLER);
-				toggler.setAttribute('layer', true); // https://bugzilla.mozilla.org/show_bug.cgi?id=590468
-				b.mTabBox.insertBefore(toggler, b.mTabBox.firstChild);
-				if (b.mTabDropIndicatorBar == toggler)
-					b.mTabDropIndicatorBar = document.getAnonymousElementByAttribute(b, 'class', 'tab-drop-indicator-bar');
-			}
-			placeHolder = document.getAnonymousElementByAttribute(b, 'anonid', 'strip');
-			if (!placeHolder) {
-				placeHolder = document.createElement('hbox');
-				placeHolder.setAttribute('anonid', 'strip');
-				placeHolder.setAttribute('class', 'tabbrowser-strip '+this.kTABBAR_PLACEHOLDER);
-				placeHolder.setAttribute('layer', true); // https://bugzilla.mozilla.org/show_bug.cgi?id=590468
-				b.mTabBox.insertBefore(placeHolder, toggler.nextSibling);
-			}
-			if (placeHolder != this.tabStrip)
-				this.tabStripPlaceHolder = placeHolder;
-		}
+		this._initTabbrowserExtraContents();
 
 		let position = this.currentTabbarPosition;
 		this.fireTabbarPositionEvent(this.kEVENT_TYPE_TABBAR_POSITION_CHANGING, 'top', position); /* PUBLIC API */
@@ -368,34 +345,6 @@ TreeStyleTabBrowser.prototype = {
 
 		this.initTabbar(null, this.kTABBAR_TOP);
 
-		var tabContainer = b.mTabContainer;
-		tabContainer.addEventListener('TabOpen',        this, true);
-		tabContainer.addEventListener('TabClose',       this, true);
-		tabContainer.addEventListener('TabMove',        this, true);
-		tabContainer.addEventListener('TabShow',        this, true);
-		tabContainer.addEventListener('TabHide',        this, true);
-		tabContainer.addEventListener('SSTabRestoring', this, true);
-		tabContainer.addEventListener('SSTabRestored',  this, true);
-		tabContainer.addEventListener('TabPinned',      this, true);
-		tabContainer.addEventListener('TabUnpinned',    this, true);
-		if (!this.isFloating && 'tabutils' in window)
-			tabContainer.addEventListener('DOMAttrModified', this, true); // Tab Utilities
-		tabContainer.addEventListener('mouseover', this, true);
-		tabContainer.addEventListener('dblclick',  this, true);
-		tabContainer.addEventListener('select', this, true);
-		tabContainer.addEventListener('scroll', this, true);
-		tabContainer.addEventListener('nsDOMMultipleTabHandler:TabsDragStart', this, true);
-
-		var strip = this.tabStrip;
-		strip.addEventListener('MozMouseHittest', this, true); // to block default behaviors of the tab bar
-		strip.addEventListener('mousedown',       this, true);
-		strip.addEventListener('click',           this, true);
-
-		this.scrollBox.addEventListener('overflow', this, true);
-		this.scrollBox.addEventListener('underflow', this, true);
-
-		this.tabTooltip.addEventListener('popupshowing', this, true);
-
 		window.addEventListener('resize', this, true);
 		window.addEventListener('beforecustomization', this, true);
 		window.addEventListener('aftercustomization', this, false);
@@ -404,76 +353,71 @@ TreeStyleTabBrowser.prototype = {
 
 		b.addEventListener('nsDOMMultipleTabHandlerTabsClosing', this, false);
 
-		this.tabbarDNDObserver;
-		this.panelDNDObserver;
-
 		window['piro.sakura.ne.jp'].tabsDragUtils.initTabBrowser(b);
 
-
-		eval('b.mTabContainer.advanceSelectedTab = '+
-			b.mTabContainer.advanceSelectedTab.toSource().replace(
-				'{',
-				<![CDATA[$&
-					var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;
-					treeStyleTab._focusChangedByShortcut = TreeStyleTabService.accelKeyPressed;
-					if (treeStyleTab.canCollapseSubtree(this.selectedItem) &&
-						treeStyleTab.getTreePref('focusMode') == treeStyleTab.kFOCUS_VISIBLE) {
-						(function(aDir, aWrap, aSelf) {
-							var nextTab = (aDir < 0) ? treeStyleTab.getPreviousVisibleTab(aSelf.selectedItem) : treeStyleTab.getNextVisibleTab(aSelf.selectedItem) ;
-							if (!nextTab && aWrap) {
-								nextTab = TreeStyleTabService.evaluateXPath(
-										'child::xul:tab[not(@'+TreeStyleTabService.kCOLLAPSED+'="true")]['+
-										(aDir < 0 ? 'last()' : '1' )+
-										']',
-										aSelf,
-										XPathResult.FIRST_ORDERED_NODE_TYPE
-									).singleNodeValue;
-							}
-							if (nextTab && nextTab != aSelf.selectedItem) {
-								aSelf._selectNewTab(nextTab, aDir, aWrap);
-							}
-						})(arguments[0], arguments[1], this);
-						return;
-					}
-				]]>
-			)
-		);
-
-		eval('b.mTabContainer._notifyBackgroundTab = '+
-			b.mTabContainer._notifyBackgroundTab.toSource().replace(
-				'{',
-				'{ var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;'
-			).replace(
-				/\.screenX/g, '[treeStyleTab.positionProp]'
-			).replace(
-				/\.width/g, '[treeStyleTab.sizeProp]'
-			).replace(
-				/\.left/g, '[treeStyleTab.startProp]'
-			).replace(
-				/\.right/g, '[treeStyleTab.endProp]'
-			)
-		);
-
+		this._initTabbrowserMethods();
+		this._initTabbrowserContextMenu();
 		TreeStyleTabService.updateTabDNDObserver(b);
 
-		if (b.tabContainer && '_getDropIndex' in b.tabContainer) { // Firefox 4.0 or later
-			eval('b.tabContainer._getDropIndex = '+
-				b.tabContainer._getDropIndex.toSource().replace(
-					/\.screenX/g, '[this.treeStyleTab.positionProp]'
-				).replace(
-					/\.width/g, '[this.treeStyleTab.sizeProp]'
-				)
-			);
+		this.getAllTabsArray(b).forEach(this.initTab, this);
+
+		this.onPrefChange('extensions.treestyletab.maxTreeLevel');
+		this.onPrefChange('extensions.treestyletab.tabbar.style');
+		this.onPrefChange('extensions.treestyletab.twisty.style');
+		this.onPrefChange('extensions.treestyletab.showBorderForFirstTab');
+		this.onPrefChange('extensions.treestyletab.tabbar.invertTabContents');
+		this.onPrefChange('extensions.treestyletab.tabbar.invertClosebox');
+		this.onPrefChange('extensions.treestyletab.tabbar.autoShow.mousemove');
+		this.onPrefChange('extensions.treestyletab.animation.enabled');
+
+		this.ObserverService.addObserver(this, this.kTOPIC_INDENT_MODIFIED, false);
+		this.ObserverService.addObserver(this, this.kTOPIC_COLLAPSE_EXPAND_ALL, false);
+		this.ObserverService.addObserver(this, this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY, false);
+		this.ObserverService.addObserver(this, 'sessionstore-windows-restored', false);
+		this.ObserverService.addObserver(this, 'sessionstore-browser-state-restored', false);
+		this.ObserverService.addObserver(this, 'private-browsing-change-granted', false);
+		this.ObserverService.addObserver(this, 'lightweight-theme-styling-update', false);
+		this.addPrefListener(this);
+
+		this.tabbarDNDObserver;
+		this.panelDNDObserver;
+		this.autoHide;
+
+		this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_INITIALIZE);
+
+		this.fireTabbarPositionEvent(false, 'top', position); /* PUBLIC API */
+
+		this.startRendering();
+	},
+	
+	_initTabbrowserExtraContents : function TSTBrowser_initTabbrowserExtraContents() 
+	{
+		var b = this.mTabBrowser;
+
+		var toggler = document.getAnonymousElementByAttribute(b, 'class', this.kTABBAR_TOGGLER);
+		if (!toggler) {
+			toggler = document.createElement('spacer');
+			toggler.setAttribute('class', this.kTABBAR_TOGGLER);
+			toggler.setAttribute('layer', true); // https://bugzilla.mozilla.org/show_bug.cgi?id=590468
+			b.mTabBox.insertBefore(toggler, b.mTabBox.firstChild);
+			if (b.mTabDropIndicatorBar == toggler)
+				b.mTabDropIndicatorBar = document.getAnonymousElementByAttribute(b, 'class', 'tab-drop-indicator-bar');
 		}
-		else if ('getNewIndex' in b) { // Firefox 3.6 or older
-			eval('b.getNewIndex = '+
-				b.getNewIndex.toSource().replace(
-					/\.screenX/g, '[this.treeStyleTab.positionProp]'
-				).replace(
-					/\.width/g, '[this.treeStyleTab.sizeProp]'
-				)
-			);
+
+		var placeHolder = document.getAnonymousElementByAttribute(b, 'anonid', 'strip');
+		if (!placeHolder) {
+			placeHolder = document.createElement('hbox');
+			placeHolder.setAttribute('anonid', 'strip');
+			placeHolder.setAttribute('class', 'tabbrowser-strip '+this.kTABBAR_PLACEHOLDER);
+			placeHolder.setAttribute('layer', true); // https://bugzilla.mozilla.org/show_bug.cgi?id=590468
+			b.mTabBox.insertBefore(placeHolder, toggler.nextSibling);
 		}
+		this.tabStripPlaceHolder = (placeHolder != this.tabStrip) ? placeHolder : null ;
+	},
+ 
+	_initTabbrowserMethods : function TSTBrowser_initTabbrowserMethods() 
+	{
+		var b = this.mTabBrowser;
 
 		eval('b.moveTabForward = '+
 			b.moveTabForward.toSource().replace(
@@ -575,17 +519,11 @@ TreeStyleTabBrowser.prototype = {
 			'{',
 			'{ if (!this.treeStyleTab.warnAboutClosingTabSubtreeOf(this.selectedTab)) return;'
 		));
-
-		this.getAllTabsArray(b).forEach(this.initTab, this);
-
-		this.onPrefChange('extensions.treestyletab.maxTreeLevel');
-		this.onPrefChange('extensions.treestyletab.tabbar.style');
-		this.onPrefChange('extensions.treestyletab.twisty.style');
-		this.onPrefChange('extensions.treestyletab.showBorderForFirstTab');
-		this.onPrefChange('extensions.treestyletab.tabbar.invertTabContents');
-		this.onPrefChange('extensions.treestyletab.tabbar.invertClosebox');
-		this.onPrefChange('extensions.treestyletab.tabbar.autoShow.mousemove');
-		this.onPrefChange('extensions.treestyletab.animation.enabled');
+	},
+ 
+	_initTabbrowserContextMenu : function TSTBrowser_initTabbrowserContextMenu() 
+	{
+		var b = this.mTabBrowser;
 
 		var tabContextMenu = b.tabContextMenu ||
 							document.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu');
@@ -633,38 +571,18 @@ TreeStyleTabBrowser.prototype = {
 			}, 0, this, b, tabContextMenu);
 		}
 
-		let (removeTabItem = document.getAnonymousElementByAttribute(b, 'id', 'context_closeTab')) {
-			if (removeTabItem) {
-				removeTabItem.setAttribute(
-					'oncommand',
-					removeTabItem.getAttribute('oncommand').replace(
-						/(tabbrowser\.removeTab\(([^\)]+)\))/,
-						'if (tabbrowser.treeStyleTab.warnAboutClosingTabSubtreeOf($2)) $1'
-					)
-				);
-			}
+		var removeTabItem = document.getAnonymousElementByAttribute(b, 'id', 'context_closeTab');
+		if (removeTabItem) {
+			removeTabItem.setAttribute(
+				'oncommand',
+				removeTabItem.getAttribute('oncommand').replace(
+					/(tabbrowser\.removeTab\(([^\)]+)\))/,
+					'if (tabbrowser.treeStyleTab.warnAboutClosingTabSubtreeOf($2)) $1'
+				)
+			);
 		}
-
-		this.ObserverService.addObserver(this, this.kTOPIC_INDENT_MODIFIED, false);
-		this.ObserverService.addObserver(this, this.kTOPIC_COLLAPSE_EXPAND_ALL, false);
-		this.ObserverService.addObserver(this, this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY, false);
-		this.ObserverService.addObserver(this, 'sessionstore-windows-restored', false);
-		this.ObserverService.addObserver(this, 'sessionstore-browser-state-restored', false);
-		this.ObserverService.addObserver(this, 'private-browsing-change-granted', false);
-		this.ObserverService.addObserver(this, 'lightweight-theme-styling-update', false);
-		this.addPrefListener(this);
-
-		this.autoHide;
-
-		this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_INITIALIZE);
-
-		this.fireTabbarPositionEvent(false, 'top', position); /* PUBLIC API */
-
-		b = null;
-
-		this.startRendering();
 	},
-	
+ 
 	initTab : function TSTBrowser_initTab(aTab) 
 	{
 		if (!aTab.hasAttribute(this.kID)) {
@@ -863,6 +781,9 @@ TreeStyleTabBrowser.prototype = {
 			aNewPosition = this.getPositionFlag(aNewPosition);
 		if (aOldPosition && typeof aOldPosition == 'string')
 			aOldPosition = this.getPositionFlag(aOldPosition);
+
+		this._startListenTabbarEvents();
+		this._initTabbarMethods();
 
 		this.stopRendering();
 
@@ -1068,7 +989,7 @@ TreeStyleTabBrowser.prototype = {
 			this.updateTabCollapsed(aTab, aTab.getAttribute(this.kCOLLAPSED) == 'true', true);
 		}, this);
 
-		this.updateTabbarState();
+		this.updateTabbarState(false);
 		window.setTimeout(function(aSelf, aTabBrowser, aSplitter, aToggler) {
 			delayedPostProcess(aSelf, aTabBrowser, aSplitter, aToggler);
 			aSelf.updateTabbarOverflow();
@@ -1095,6 +1016,107 @@ TreeStyleTabBrowser.prototype = {
 		scrollInnerBox = null;
 	},
 	
+	_startListenTabbarEvents : function TSTBrowser_startListenTabbarEvents() 
+	{
+		var b = this.mTabBrowser;
+
+		var tabContainer = b.mTabContainer;
+		tabContainer.addEventListener('TabOpen',        this, true);
+		tabContainer.addEventListener('TabClose',       this, true);
+		tabContainer.addEventListener('TabMove',        this, true);
+		tabContainer.addEventListener('TabShow',        this, true);
+		tabContainer.addEventListener('TabHide',        this, true);
+		tabContainer.addEventListener('SSTabRestoring', this, true);
+		tabContainer.addEventListener('SSTabRestored',  this, true);
+		tabContainer.addEventListener('TabPinned',      this, true);
+		tabContainer.addEventListener('TabUnpinned',    this, true);
+		if (!this.isFloating && 'tabutils' in window)
+			tabContainer.addEventListener('DOMAttrModified', this, true); // Tab Utilities
+		tabContainer.addEventListener('mouseover', this, true);
+		tabContainer.addEventListener('dblclick',  this, true);
+		tabContainer.addEventListener('select', this, true);
+		tabContainer.addEventListener('scroll', this, true);
+		tabContainer.addEventListener('nsDOMMultipleTabHandler:TabsDragStart', this, true);
+
+		var strip = this.tabStrip;
+		strip.addEventListener('MozMouseHittest', this, true); // to block default behaviors of the tab bar
+		strip.addEventListener('mousedown',       this, true);
+		strip.addEventListener('click',           this, true);
+
+		this.scrollBox.addEventListener('overflow', this, true);
+		this.scrollBox.addEventListener('underflow', this, true);
+
+		this.tabTooltip.addEventListener('popupshowing', this, true);
+	},
+ 
+	_initTabbarMethods : function TSTBrowser_initTabbarMethods() 
+	{
+		var b = this.mTabBrowser;
+
+		eval('b.mTabContainer.advanceSelectedTab = '+
+			b.mTabContainer.advanceSelectedTab.toSource().replace(
+				'{',
+				<![CDATA[$&
+					var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;
+					treeStyleTab._focusChangedByShortcut = TreeStyleTabService.accelKeyPressed;
+					if (treeStyleTab.canCollapseSubtree(this.selectedItem) &&
+						treeStyleTab.getTreePref('focusMode') == treeStyleTab.kFOCUS_VISIBLE) {
+						(function(aDir, aWrap, aSelf) {
+							var nextTab = (aDir < 0) ? treeStyleTab.getPreviousVisibleTab(aSelf.selectedItem) : treeStyleTab.getNextVisibleTab(aSelf.selectedItem) ;
+							if (!nextTab && aWrap) {
+								nextTab = TreeStyleTabService.evaluateXPath(
+										'child::xul:tab[not(@'+TreeStyleTabService.kCOLLAPSED+'="true")]['+
+										(aDir < 0 ? 'last()' : '1' )+
+										']',
+										aSelf,
+										XPathResult.FIRST_ORDERED_NODE_TYPE
+									).singleNodeValue;
+							}
+							if (nextTab && nextTab != aSelf.selectedItem) {
+								aSelf._selectNewTab(nextTab, aDir, aWrap);
+							}
+						})(arguments[0], arguments[1], this);
+						return;
+					}
+				]]>
+			)
+		);
+
+		eval('b.mTabContainer._notifyBackgroundTab = '+
+			b.mTabContainer._notifyBackgroundTab.toSource().replace(
+				'{',
+				'{ var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;'
+			).replace(
+				/\.screenX/g, '[treeStyleTab.positionProp]'
+			).replace(
+				/\.width/g, '[treeStyleTab.sizeProp]'
+			).replace(
+				/\.left/g, '[treeStyleTab.startProp]'
+			).replace(
+				/\.right/g, '[treeStyleTab.endProp]'
+			)
+		);
+
+		if (b.tabContainer && '_getDropIndex' in b.tabContainer) { // Firefox 4.0 or later
+			eval('b.tabContainer._getDropIndex = '+
+				b.tabContainer._getDropIndex.toSource().replace(
+					/\.screenX/g, '[this.treeStyleTab.positionProp]'
+				).replace(
+					/\.width/g, '[this.treeStyleTab.sizeProp]'
+				)
+			);
+		}
+		else if ('getNewIndex' in b) { // Firefox 3.6 or older
+			eval('b.getNewIndex = '+
+				b.getNewIndex.toSource().replace(
+					/\.screenX/g, '[this.treeStyleTab.positionProp]'
+				).replace(
+					/\.width/g, '[this.treeStyleTab.sizeProp]'
+				)
+			);
+		}
+	},
+ 
 	_ensureNewSplitter : function TSTBrowser__ensureNewSplitter() 
 	{
 		var splitter = this.splitter;
@@ -1135,8 +1157,29 @@ TreeStyleTabBrowser.prototype = {
 		return splitter;
 	},
  
-	updateTabbarState : function TSTBrowser_updateTabbarState() 
+	fireTabbarPositionEvent : function TSTBrowser_fireTabbarPositionEvent(aChanging, aOldPosition, aNewPosition) 
 	{
+		if (aOldPosition == aNewPosition) return false;
+
+		var type = aChanging ? this.kEVENT_TYPE_TABBAR_POSITION_CHANGING : this.kEVENT_TYPE_TABBAR_POSITION_CHANGED;
+		var data = {
+				oldPosition : aOldPosition,
+				newPosition : aNewPosition
+			};
+
+		/* PUBLIC API */
+		this.fireDataContainerEvent(type, this.mTabBrowser, true, false, data);
+		// for backward compatibility
+		this.fireDataContainerEvent(type.replace(/^nsDOM/, ''), this.mTabBrowser, true, false, data);
+
+		return true;
+	},
+  
+	updateTabbarState : function TSTBrowser_updateTabbarState(aCancelable) 
+	{
+		if (!this._fireTabbarStateChangingEvent() && aCancelable)
+			return;
+
 		this.stopRendering();
 
 		var b = this.mTabBrowser;
@@ -1185,7 +1228,7 @@ TreeStyleTabBrowser.prototype = {
 
 		window.setTimeout(function(aSelf) {
 			aSelf.updateFloatingTabbar(aSelf.kTABBAR_UPDATE_BY_APPEARANCE_CHANGE);
-			aSelf.fireTabbarStateChangedEvent();
+			aSelf._fireTabbarStateChangedEvent();
 			aSelf.startRendering();
 		}, 0, this);
 
@@ -1211,49 +1254,104 @@ TreeStyleTabBrowser.prototype = {
 
 		this.updateAllTabsIndent();
 	},
- 
-	onTabsOnTopSyncCommand : function TSTBrowser_onTabsOnTopSyncCommand(aEnabled) 
+	
+	_fireTabbarStateChangingEvent : function TSTBrowser_fireTabbarStateChangingEvent() 
 	{
-		if (
-			!aEnabled ||
-			this.currentTabbarPosition != 'top' ||
-			this.isFixed
-			)
-			return;
-		window.setTimeout(function(aTabBrowser) {
-			TreeStyleTabService.toggleFixed(aTabBrowser);
-			window.setTimeout(function() {
-				if (TabsOnTop.enabled != aEnabled)
-					TabsOnTop.enabled = aEnabled;
-			}, 0);
-		}, 0, this.mTabBrowser);
+		var b = this.mTabBrowser;
+		var orient = this.isVertical ? 'vertical' : 'horizontal' ;
+		var oldState = {
+				fixed         : this.isFixed,
+				maxTreeLevel  : this.maxTreeLevel,
+				indented      : this.maxTreeLevel != 0,
+				canCollapse   : b.getAttribute(this.kALLOW_COLLAPSE) == 'true'
+			};
+		if (!this.isFloating) {
+			oldState.alltabsButton = b.getAttribute(this.kHIDE_ALLTABS) != 'true';
+			oldState.allTabsButton = oldState.alltabsButton;
+		}
+		var newState = {
+				fixed         : this.getTreePref('tabbar.fixed.'+orient),
+				maxTreeLevel  : this.getTreePref('maxTreeLevel.'+orient),
+				indented      : this.getTreePref('maxTreeLevel.'+orient) != 0,
+				canCollapse   : this.getTreePref('allowSubtreeCollapseExpand.'+orient)
+			};
+		if (!this.isFloating) {
+			newState.alltabsButton = !this.getTreePref('tabbar.hideAlltabsButton.'+orient);
+			newState.allTabsButton = newState.alltabsButton;
+		}
+
+		if (oldState.fixed == newState.fixed &&
+			oldState.maxTreeLevel == newState.maxTreeLevel &&
+			oldState.indented == newState.indented &&
+			oldState.canCollapse == newState.canCollapse &&
+			oldState.alltabsButton == newState.alltabsButton)
+			return false;
+
+		var data = {
+				oldState : oldState,
+				newState : newState
+			};
+
+		/* PUBLIC API */
+		this.fireDataContainerEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGING, this.mTabBrowser, true, false, data);
+		// for backward compatibility
+		this.fireDataContainerEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGING.replace(/^nsDOM/, ''), this.mTabBrowser, true, false, data);
+
+		return true;
 	},
  
+	_fireTabbarStateChangedEvent : function TSTBrowser_fireTabbarStateChangedEvent() 
+	{
+		var b = this.mTabBrowser;
+		var state = {
+				fixed         : this.isFixed,
+				maxTreeLevel  : this.maxTreeLevel,
+				indented      : this.maxTreeLevel != 0,
+				canCollapse   : b.getAttribute(this.kALLOW_COLLAPSE) == 'true'
+			};
+		if (!this.isFloating) {
+			state.alltabsButton = b.getAttribute(this.kHIDE_ALLTABS) != 'true';
+			state.allTabsButton = state.alltabsButton;
+		}
+
+		var data = {
+				state : state
+			};
+
+		/* PUBLIC API */
+		this.fireDataContainerEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGED, this.mTabBrowser, true, false, data);
+		// for backward compatibility
+		this.fireDataContainerEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGED.replace(/^nsDOM/, ''), this.mTabBrowser, true, false, data);
+
+		return true;
+	},
+  
 	updateFloatingTabbar : function TSTBrowser_updateFloatingTabbar(aReason) 
 	{
 		// this method is just for Firefox 4.0 or later
 		if (!this.isFloating) return;
 
-		if (this.updateFloatingTabbarTimer) {
-			window.clearTimeout(this.updateFloatingTabbarTimer);
-			this.updateFloatingTabbarTimer = null;
+		if (this._updateFloatingTabbarTimer) {
+			window.clearTimeout(this._updateFloatingTabbarTimer);
+			this._updateFloatingTabbarTimer = null;
 		}
 
-		this.updateFloatingTabbarReason |= aReason;
+		this._updateFloatingTabbarReason |= aReason;
 
-		if (this.updateFloatingTabbarReason & this.kTABBAR_UPDATE_NOW) {
-			this.updateFloatingTabbarInternal(this.updateFloatingTabbarReason);
-			this.updateFloatingTabbarReason = 0;
+		if (this._updateFloatingTabbarReason & this.kTABBAR_UPDATE_NOW) {
+			this._updateFloatingTabbarInternal(this.updateFloatingTabbarReason);
+			this._updateFloatingTabbarReason = 0;
 		}
 		else {
-			this.updateFloatingTabbarTimer = window.setTimeout(function(aSelf) {
-				aSelf.updateFloatingTabbarTimer = null;
-				aSelf.updateFloatingTabbarInternal(aSelf.updateFloatingTabbarReason)
-				aSelf.updateFloatingTabbarReason = 0;
+			this._updateFloatingTabbarTimer = window.setTimeout(function(aSelf) {
+				aSelf._updateFloatingTabbarTimer = null;
+				aSelf._updateFloatingTabbarInternal(aSelf._updateFloatingTabbarReason)
+				aSelf._updateFloatingTabbarReason = 0;
 			}, 0, this);
 		}
 	},
-	updateFloatingTabbarInternal : function TSTBrowser_updateFloatingTabbarInternal(aReason)
+	
+	_updateFloatingTabbarInternal : function TSTBrowser_updateFloatingTabbarInternal(aReason) 
 	{
 		aReason = aReason || this.kTABBAR_UPDATE_BY_UNKNOWN_REASON;
 
@@ -1300,7 +1398,7 @@ TreeStyleTabBrowser.prototype = {
 			strip.style.width = (tabContainerBox.width = width)+'px';
 			strip.style.height = (tabContainerBox.height = height)+'px';
 
-			this.updateFloatingTabbarResizer({
+			this._updateFloatingTabbarResizer({
 				width      : width,
 				realWidth  : realWidth,
 				height     : height,
@@ -1325,7 +1423,8 @@ TreeStyleTabBrowser.prototype = {
 
 		this.positionPinnedTabs();
 	},
-	updateFloatingTabbarResizer : function TSTBrowser_updateFloatingTabbarResizer(aSize)
+ 
+	_updateFloatingTabbarResizer : function TSTBrowser_updateFloatingTabbarResizer(aSize) 
 	{
 		var width      = aSize.width;
 		var realWidth  = this.autoHide.mode == this.autoHide.kMODE_HIDE ? 0 : aSize.realWidth ;
@@ -1385,24 +1484,7 @@ TreeStyleTabBrowser.prototype = {
 									vertical ? '0' :
 									box.height+'px' ;
 	},
- 
-	resetTabbarSize : function TSTBrowser_resetTabbarSize() 
-	{
-		if (this.isVertical) {
-			this.clearTreePref('tabbar.shrunkenWidth');
-			this.clearTreePref('tabbar.width');
-		}
-		else {
-			this.clearTreePref('tabbar.height');
-			if (this.isFloating) {
-				let tabContainerBox = this.getTabContainerBox(this.mTabBrowser);
-				tabContainerBox.removeAttribute('height');
-				this._tabStripPlaceHolder.height = tabContainerBox.boxObject.height;
-			}
-		}
-		this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_RESET);
-	},
- 
+  
 	updateTabbarOverflow : function TSTBrowser_updateTabbarOverflow() 
 	{
 		var b = this.mTabBrowser;
@@ -1437,127 +1519,6 @@ TreeStyleTabBrowser.prototype = {
 				container.removeAttribute('overflow');
 			}
 		}, 100);
-	},
- 
-	fireTabbarPositionEvent : function TSTBrowser_fireTabbarPositionEvent(aChanging, aOldPosition, aNewPosition) 
-	{
-		if (aOldPosition == aNewPosition) return false;
-
-		var type = aChanging ? this.kEVENT_TYPE_TABBAR_POSITION_CHANGING : this.kEVENT_TYPE_TABBAR_POSITION_CHANGED;
-		var data = {
-				oldPosition : aOldPosition,
-				newPosition : aNewPosition
-			};
-
-		/* PUBLIC API */
-		this.fireDataContainerEvent(type, this.mTabBrowser, true, false, data);
-		// for backward compatibility
-		this.fireDataContainerEvent(type.replace(/^nsDOM/, ''), this.mTabBrowser, true, false, data);
-
-		return true;
-	},
- 
-	fireTabbarStateChangingEvent : function TSTBrowser_fireTabbarStateChangingEvent() 
-	{
-		var b = this.mTabBrowser;
-		var orient = this.isVertical ? 'vertical' : 'horizontal' ;
-		var oldState = {
-				fixed         : this.isFixed,
-				maxTreeLevel  : this.maxTreeLevel,
-				indented      : this.maxTreeLevel != 0,
-				canCollapse   : b.getAttribute(this.kALLOW_COLLAPSE) == 'true'
-			};
-		if (!this.isFloating) {
-			oldState.alltabsButton = b.getAttribute(this.kHIDE_ALLTABS) != 'true';
-			oldState.allTabsButton = oldState.alltabsButton;
-		}
-		var newState = {
-				fixed         : this.getTreePref('tabbar.fixed.'+orient),
-				maxTreeLevel  : this.getTreePref('maxTreeLevel.'+orient),
-				indented      : this.getTreePref('maxTreeLevel.'+orient) != 0,
-				canCollapse   : this.getTreePref('allowSubtreeCollapseExpand.'+orient)
-			};
-		if (!this.isFloating) {
-			newState.alltabsButton = !this.getTreePref('tabbar.hideAlltabsButton.'+orient);
-			newState.allTabsButton = newState.alltabsButton;
-		}
-
-		if (oldState.fixed == newState.fixed &&
-			oldState.maxTreeLevel == newState.maxTreeLevel &&
-			oldState.indented == newState.indented &&
-			oldState.canCollapse == newState.canCollapse &&
-			oldState.alltabsButton == newState.alltabsButton)
-			return false;
-
-		var data = {
-				oldState : oldState,
-				newState : newState
-			};
-
-		/* PUBLIC API */
-		this.fireDataContainerEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGING, this.mTabBrowser, true, false, data);
-		// for backward compatibility
-		this.fireDataContainerEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGING.replace(/^nsDOM/, ''), this.mTabBrowser, true, false, data);
-
-		return true;
-	},
- 
-	fireTabbarStateChangedEvent : function TSTBrowser_fireTabbarStateChangedEvent() 
-	{
-		var b = this.mTabBrowser;
-		var state = {
-				fixed         : this.isFixed,
-				maxTreeLevel  : this.maxTreeLevel,
-				indented      : this.maxTreeLevel != 0,
-				canCollapse   : b.getAttribute(this.kALLOW_COLLAPSE) == 'true'
-			};
-		if (!this.isFloating) {
-			state.alltabsButton = b.getAttribute(this.kHIDE_ALLTABS) != 'true';
-			state.allTabsButton = state.alltabsButton;
-		}
-
-		var data = {
-				state : state
-			};
-
-		/* PUBLIC API */
-		this.fireDataContainerEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGED, this.mTabBrowser, true, false, data);
-		// for backward compatibility
-		this.fireDataContainerEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGED.replace(/^nsDOM/, ''), this.mTabBrowser, true, false, data);
-
-		return true;
-	},
-  
-	syncDestroyTabbar : function TSTBrowser_syncDestroyTabbar() 
-	{
-		if (this.currentTabbarPosition != 'top') {
-			this._lastTabbarPositionBeforeDestroyed = this.currentTabbarPosition;
-			let self = this;
-			this.doAndWaitDOMEvent(
-				this.kEVENT_TYPE_TABBAR_POSITION_CHANGED,
-				window,
-				100,
-				function() { self.currentTabbarPosition = 'top'; }
-			);
-		}
-
-		if (!this.isFixed) {
-			this._lastTabbarFixedBeforeDestroyed = this.isFixed;
-			let self = this;
-			this.doAndWaitDOMEvent(
-				this.kEVENT_TYPE_TABBAR_STATE_CHANGED,
-				window,
-				100,
-				function() { self.toggleFixed(); }
-			);
-		}
-
-		this.updateFloatingTabbar(this.kTABBAR_UPDATE_NOW);
-		this.removeTabStripAttribute('width');
-		this.removeTabStripAttribute('height');
-		this.removeTabStripAttribute('ordinal');
-
-		this.mTabBrowser.mTabContainer.parentNode.classList.remove(this.kTABBAR_TOOLBAR);
 	},
  
 	syncReinitTabbar : function TSTBrowser_syncReinitTabbar() 
@@ -1615,28 +1576,7 @@ TreeStyleTabBrowser.prototype = {
 			this.destroyTab(aTab);
 		}, this);
 
-		var tabContainer = b.mTabContainer;
-		tabContainer.removeEventListener('TabOpen',        this, true);
-		tabContainer.removeEventListener('TabClose',       this, true);
-		tabContainer.removeEventListener('TabMove',        this, true);
-		tabContainer.removeEventListener('TabShow',        this, true);
-		tabContainer.removeEventListener('TabHide',        this, true);
-		tabContainer.removeEventListener('SSTabRestoring', this, true);
-		tabContainer.removeEventListener('SSTabRestored',  this, true);
-		tabContainer.removeEventListener('TabPinned',      this, true);
-		tabContainer.removeEventListener('TabUnpinned',    this, true);
-		if (!this.isFloating && 'tabutils' in window)
-			b.mTabContainer.removeEventListener('DOMAttrModified', this, true); // Tab Utilites
-		tabContainer.removeEventListener('mouseover', this, true);
-		tabContainer.removeEventListener('dblclick',  this, true);
-		tabContainer.removeEventListener('select', this, true);
-		tabContainer.removeEventListener('scroll', this, true);
-		tabContainer.removeEventListener('nsDOMMultipleTabHandler:TabsDragStart', this, true);
-
-		var strip = this.tabStrip;
-		strip.removeEventListener('MozMouseHittest', this, true);
-		strip.removeEventListener('mousedown',       this, true);
-		strip.removeEventListener('click',           this, true);
+		this._endListenTabbarEvents();
 
 		window.removeEventListener('resize', this, true);
 		window.removeEventListener('beforecustomization', this, true);
@@ -1647,11 +1587,6 @@ TreeStyleTabBrowser.prototype = {
 		b.removeEventListener('nsDOMMultipleTabHandlerTabsClosing', this, false);
 
 		window['piro.sakura.ne.jp'].tabsDragUtils.destroyTabBrowser(b);
-
-		this.scrollBox.removeEventListener('overflow', this, true);
-		this.scrollBox.removeEventListener('underflow', this, true);
-
-		this.tabTooltip.removeEventListener('popupshowing', this, true);
 
 		var tabContextMenu = b.tabContextMenu ||
 							document.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu');
@@ -1682,6 +1617,71 @@ TreeStyleTabBrowser.prototype = {
 			delete this.tabsHash[id];
 
 		delete aTab.__treestyletab__linkedTabBrowser;
+	},
+ 
+	_endListenTabbarEvents : function TSTBrowser_endListenTabbarEvents() 
+	{
+		var b = this.mTabBrowser;
+
+		var tabContainer = b.mTabContainer;
+		tabContainer.removeEventListener('TabOpen',        this, true);
+		tabContainer.removeEventListener('TabClose',       this, true);
+		tabContainer.removeEventListener('TabMove',        this, true);
+		tabContainer.removeEventListener('TabShow',        this, true);
+		tabContainer.removeEventListener('TabHide',        this, true);
+		tabContainer.removeEventListener('SSTabRestoring', this, true);
+		tabContainer.removeEventListener('SSTabRestored',  this, true);
+		tabContainer.removeEventListener('TabPinned',      this, true);
+		tabContainer.removeEventListener('TabUnpinned',    this, true);
+		if (!this.isFloating && 'tabutils' in window)
+			b.mTabContainer.removeEventListener('DOMAttrModified', this, true); // Tab Utilites
+		tabContainer.removeEventListener('mouseover', this, true);
+		tabContainer.removeEventListener('dblclick',  this, true);
+		tabContainer.removeEventListener('select', this, true);
+		tabContainer.removeEventListener('scroll', this, true);
+		tabContainer.removeEventListener('nsDOMMultipleTabHandler:TabsDragStart', this, true);
+
+		var strip = this.tabStrip;
+		strip.removeEventListener('MozMouseHittest', this, true);
+		strip.removeEventListener('mousedown',       this, true);
+		strip.removeEventListener('click',           this, true);
+
+		this.scrollBox.removeEventListener('overflow', this, true);
+		this.scrollBox.removeEventListener('underflow', this, true);
+
+		this.tabTooltip.removeEventListener('popupshowing', this, true);
+	},
+ 
+	syncDestroyTabbar : function TSTBrowser_syncDestroyTabbar() 
+	{
+		if (this.currentTabbarPosition != 'top') {
+			this._lastTabbarPositionBeforeDestroyed = this.currentTabbarPosition;
+			let self = this;
+			this.doAndWaitDOMEvent(
+				this.kEVENT_TYPE_TABBAR_POSITION_CHANGED,
+				window,
+				100,
+				function() { self.currentTabbarPosition = 'top'; }
+			);
+		}
+
+		if (!this.isFixed) {
+			this._lastTabbarFixedBeforeDestroyed = this.isFixed;
+			let self = this;
+			this.doAndWaitDOMEvent(
+				this.kEVENT_TYPE_TABBAR_STATE_CHANGED,
+				window,
+				100,
+				function() { self.toggleFixed(); }
+			);
+		}
+
+		this.updateFloatingTabbar(this.kTABBAR_UPDATE_NOW);
+		this.removeTabStripAttribute('width');
+		this.removeTabStripAttribute('height');
+		this.removeTabStripAttribute('ordinal');
+
+		this.mTabBrowser.mTabContainer.parentNode.classList.remove(this.kTABBAR_TOOLBAR);
 	},
  
 	saveCurrentState : function TSTBrowser_saveCurrentState() 
@@ -1825,8 +1825,8 @@ TreeStyleTabBrowser.prototype = {
 			case 'extensions.treestyletab.maxTreeLevel.horizontal':
 			case 'extensions.treestyletab.allowSubtreeCollapseExpand.horizontal':
 			case 'extensions.treestyletab.tabbar.hideAlltabsButton.horizontal':
-				if (!this.isVertical && this.fireTabbarStateChangingEvent())
-					this.updateTabbarState();
+				if (!this.isVertical)
+					this.updateTabbarState(true);
 				return;
 
 			case 'extensions.treestyletab.tabbar.fixed.vertical':
@@ -1835,8 +1835,8 @@ TreeStyleTabBrowser.prototype = {
 			case 'extensions.treestyletab.maxTreeLevel.vertical':
 			case 'extensions.treestyletab.allowSubtreeCollapseExpand.vertical':
 			case 'extensions.treestyletab.tabbar.hideAlltabsButton.vertical':
-				if (this.isVertical && this.fireTabbarStateChangingEvent())
-					this.updateTabbarState();
+				if (this.isVertical)
+					this.updateTabbarState(true);
 				return;
 
 			case 'extensions.treestyletab.tabbar.width':
@@ -2120,7 +2120,7 @@ TreeStyleTabBrowser.prototype = {
 				return this.onResize(aEvent);
 
 
-			// toolbar customizing on Firefox 4 or later 
+			// toolbar customizing on Firefox 4 or later
 			case 'beforecustomization':
 				return this.syncDestroyTabbar();
 			case 'aftercustomization':
@@ -3524,6 +3524,23 @@ TreeStyleTabBrowser.prototype = {
 	},
 
   
+	onTabsOnTopSyncCommand : function TSTBrowser_onTabsOnTopSyncCommand(aEnabled) 
+	{
+		if (
+			!aEnabled ||
+			this.currentTabbarPosition != 'top' ||
+			this.isFixed
+			)
+			return;
+		window.setTimeout(function(aTabBrowser) {
+			TreeStyleTabService.toggleFixed(aTabBrowser);
+			window.setTimeout(function() {
+				if (TabsOnTop.enabled != aEnabled)
+					TabsOnTop.enabled = aEnabled;
+			}, 0);
+		}, 0, this.mTabBrowser);
+	},
+ 
 	onTreeStyleTabPrintPreviewEntered : function TSTBrowser_onTreeStyleTabPrintPreviewEntered(aEvent) 
 	{
 		this.setTabbrowserAttribute(this.kPRINT_PREVIEW, true);
@@ -3567,6 +3584,23 @@ TreeStyleTabBrowser.prototype = {
 		this.getAllTabsArray(this.mTabBrowser).forEach(function(aTab) {
 			this.resetTab(aTab, aPartChildren);
 		}, this);
+	},
+ 
+	resetTabbarSize : function TSTBrowser_resetTabbarSize() 
+	{
+		if (this.isVertical) {
+			this.clearTreePref('tabbar.shrunkenWidth');
+			this.clearTreePref('tabbar.width');
+		}
+		else {
+			this.clearTreePref('tabbar.height');
+			if (this.isFloating) {
+				let tabContainerBox = this.getTabContainerBox(this.mTabBrowser);
+				tabContainerBox.removeAttribute('height');
+				this._tabStripPlaceHolder.height = tabContainerBox.boxObject.height;
+			}
+		}
+		this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_RESET);
 	},
  
 	get treeViewEnabled() /* PUBLIC API */ 
