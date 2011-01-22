@@ -188,14 +188,7 @@ TreeStyleTabBrowser.prototype = {
 		this.fireTabbarPositionEvent(true, oldPosition, aNewPosition);
 
 		this.initTabbar(aNewPosition, oldPosition);
-
-		var tabs = this.getAllTabsArray(this.mTabBrowser);
-		tabs.forEach(function(aTab) {
-			this.initTabAttributes(aTab);
-		}, this);
-		tabs.forEach(function(aTab) {
-			this.initTabContents(aTab);
-		}, this);
+		this.reinitAllTabs();
 
 		window.setTimeout(function(aSelf) {
 			aSelf.checkTabsIndentOverflow();
@@ -1579,30 +1572,34 @@ TreeStyleTabBrowser.prototype = {
 		}, 100);
 	},
  
+	reinitAllTabs : function TSTBrowser_reinitAllTabs(aSouldUpdateCount) 
+	{
+		var tabs = this.getAllTabsArray(this.mTabBrowser);
+		tabs.forEach(function(aTab) {
+			this.initTabAttributes(aTab);
+			this.initTabContents(aTab);
+			if (aSouldUpdateCount)
+				this.updateTabsCount(aTab);
+		}, this);
+	},
+ 
 	syncReinitTabbar : function TSTBrowser_syncReinitTabbar() 
 	{
-/*
-		window.setTimeout(function(aSelf) {
-			aSelf._syncReinitTabbarInternal();
-		}, 0, this);
-	},
-	_syncReinitTabbarInternal : function TSTBrowser_syncReinitTabbarInternal() 
-	{
-*/
 		this.mTabBrowser.mTabContainer.parentNode.classList.add(this.kTABBAR_TOOLBAR);
 
-		if (this._lastTabbarPositionBeforeDestroyed) {
-			let self = this;
-			this.doAndWaitDOMEvent(
-				this.kEVENT_TYPE_TABBAR_INITIALIZED,
-				window,
-				100,
-				function() {
-					self.initTabbar(self._lastTabbarPositionBeforeDestroyed, 'top');
-				}
-			);
-			delete this._lastTabbarPositionBeforeDestroyed;
-		}
+		var position = this._lastTabbarPositionBeforeDestroyed || this.position;
+		delete this._lastTabbarPositionBeforeDestroyed;
+
+		var self = this;
+		this.doAndWaitDOMEvent(
+			this.kEVENT_TYPE_TABBAR_INITIALIZED,
+			window,
+			100,
+			function() {
+				self.initTabbar(position, 'top');
+			}
+		);
+		this.reinitAllTabs(true);
 
 		this.tabbarDNDObserver.startListenEvents();
 	},
@@ -1708,8 +1705,8 @@ TreeStyleTabBrowser.prototype = {
  
 	syncDestroyTabbar : function TSTBrowser_syncDestroyTabbar() 
 	{
+		this._lastTabbarPositionBeforeDestroyed = this.position;
 		if (this.position != 'top') {
-			this._lastTabbarPositionBeforeDestroyed = this.position;
 			let self = this;
 			this.doAndWaitDOMEvent(
 				this.kEVENT_TYPE_TABBAR_POSITION_CHANGED,
@@ -4224,9 +4221,11 @@ TreeStyleTabBrowser.prototype = {
 		if (count) {
 			count.setAttribute('value', this.getDescendantTabs(aTab).length);
 		}
-		var parent = this.getParentTab(aTab);
-		if (parent && !aDontUpdateAncestor)
-			this.updateTabsCount(parent);
+		if (!aDontUpdateAncestor) {
+			let parent = this.getParentTab(aTab);
+			if (parent)
+				this.updateTabsCount(parent);
+		}
 	},
  
 	promoteTooDeepLevelTabs : function TSTBrowser_promoteTooDeepLevelTabs(aParent) 
