@@ -35,14 +35,6 @@ var TreeStyleTabService = {
 		}
 		return aValue;
 	},
-	get currentTabbarPosition() /* for backward compatibility */
-	{
-		return this.position;
-	},
-	set currentTabbarPosition(aValue)
-	{
-		return this.position = aValue;
-	},
  
 	undoChangeTabbarPosition : function TSTService_undoChangeTabbarPosition() /* PUBLIC API */ 
 	{

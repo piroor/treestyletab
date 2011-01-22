@@ -195,14 +195,6 @@ TreeStyleTabBrowser.prototype = {
 			aSelf.fireTabbarPositionEvent(false, oldPosition, aNewPosition);
 		}, 0, this);
 	},
-	get currentTabbarPosition() /* for backward compatibility */
-	{
-		return this.position;
-	},
-	set currentTabbarPosition(aValue)
-	{
-		return this.position = aValue;
-	},
   
 /* status getters */ 
 	
