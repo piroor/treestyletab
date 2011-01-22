@@ -560,7 +560,7 @@ var TreeStyleTabUtils = {
 	kUNDO_CLOSE_SET      : 2,
 	kUNDO_CLOSE_FULL_SET : 256,
  
-	waitForDOMEvent : function TSTUtils_waitForDOMEvent() 
+	doAndWaitDOMEvent : function TSTUtils_doAndWaitDOMEvent() 
 	{
 		var type, target, delay, task;
 		Array.slice(arguments).forEach(function(aArg) {

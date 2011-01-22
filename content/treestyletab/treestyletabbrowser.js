@@ -1528,7 +1528,71 @@ TreeStyleTabBrowser.prototype = {
 
 		return true;
 	},
-   
+  
+	syncDestroyTabbar : function TSTBrowser_syncDestroyTabbar() 
+	{
+		if (this.currentTabbarPosition != 'top') {
+			this._lastTabbarPositionBeforeDestroyed = this.currentTabbarPosition;
+			let self = this;
+			this.doAndWaitDOMEvent(
+				this.kEVENT_TYPE_TABBAR_POSITION_CHANGED,
+				window,
+				100,
+				function() { self.currentTabbarPosition = 'top'; }
+			);
+		}
+
+		if (!this.isFixed) {
+			this._lastTabbarFixedBeforeDestroyed = this.isFixed;
+			let self = this;
+			this.doAndWaitDOMEvent(
+				this.kEVENT_TYPE_TABBAR_STATE_CHANGED,
+				window,
+				100,
+				function() { self.toggleFixed(); }
+			);
+		}
+
+		this.updateFloatingTabbar(this.kTABBAR_UPDATE_NOW);
+		this.removeTabStripAttribute('width');
+		this.removeTabStripAttribute('height');
+		this.removeTabStripAttribute('ordinal');
+
+		this.mTabBrowser.mTabContainer.parentNode.classList.remove(this.kTABBAR_TOOLBAR);
+	},
+ 
+	syncReinitTabbar : function TSTBrowser_syncReinitTabbar() 
+	{
+		this.mTabBrowser.mTabContainer.parentNode.classList.add(this.kTABBAR_TOOLBAR);
+
+		if (!this._lastTabbarFixedBeforeDestroyed && this.isFixed) {
+			let self = this;
+			this.doAndWaitDOMEvent(
+				this.kEVENT_TYPE_TABBAR_STATE_CHANGED,
+				window,
+				100,
+				function() {
+					self.toggleFixed();
+					delete self._lastTabbarFixedBeforeDestroyed;
+				}
+			);
+		}
+
+		if (this._lastTabbarPositionBeforeDestroyed) {
+			let self = this;
+			this.doAndWaitDOMEvent(
+				this.kEVENT_TYPE_TABBAR_INITIALIZED,
+				window,
+				100,
+				function() {
+					self.initTabbar(self._lastTabbarPositionBeforeDestroyed, 'top');
+					delete self._lastTabbarPositionBeforeDestroyed;
+				}
+			);
+			this.updateFloatingTabbar(this.kTABBAR_UPDATE_NOW);
+		}
+	},
+  
 	destroy : function TSTBrowser_destroy() 
 	{
 		this.saveTreeStructure();
@@ -3278,68 +3342,12 @@ TreeStyleTabBrowser.prototype = {
 	
 	onToolbarCustomizeStart : function TSTBrowser_onToolbarCustomizeStart(aEvent) 
 	{
-return;
-		if (this.currentTabbarPosition != 'top') {
-			this._lastTabbarPositionBeforeCustomizing = this.currentTabbarPosition;
-			let self = this;
-			this.waitForDOMEvent(
-				this.kEVENT_TYPE_TABBAR_POSITION_CHANGED,
-				window,
-				100,
-				function() { self.currentTabbarPosition = 'top'; }
-			);
-		}
-
-		if (!this.isFixed) {
-			this._lastTabbarFixedBeforeCustomizing = this.isFixed;
-			let self = this;
-			this.waitForDOMEvent(
-				this.kEVENT_TYPE_TABBAR_STATE_CHANGED,
-				window,
-				100,
-				function() { self.toggleFixed(); }
-			);
-		}
-
-		this.updateFloatingTabbar(this.kTABBAR_UPDATE_NOW);
-		this.removeTabStripAttribute('width');
-		this.removeTabStripAttribute('height');
-		this.removeTabStripAttribute('ordinal');
-
-		this.mTabBrowser.mTabContainer.parentNode.classList.remove(this.kTABBAR_TOOLBAR);
+		this.syncDestroyTabbar();
 	},
  
 	onToolbarCustomizeEnd : function TSTBrowser_onToolbarCustomizeEnd(aEvent) 
 	{
-return;
-		this.mTabBrowser.mTabContainer.parentNode.classList.add(this.kTABBAR_TOOLBAR);
-
-		if (!this._lastTabbarFixedBeforeCustomizing && this.isFixed) {
-			let self = this;
-			this.waitForDOMEvent(
-				this.kEVENT_TYPE_TABBAR_STATE_CHANGED,
-				window,
-				100,
-				function() {
-					self.toggleFixed();
-					delete self._lastTabbarFixedBeforeCustomizing;
-				}
-			);
-		}
-
-		if (this._lastTabbarPositionBeforeCustomizing) {
-			let self = this;
-			this.waitForDOMEvent(
-				this.kEVENT_TYPE_TABBAR_INITIALIZED,
-				window,
-				100,
-				function() {
-					self.initTabbar(self._lastTabbarPositionBeforeCustomizing, 'top');
-					delete self._lastTabbarPositionBeforeCustomizing;
-				}
-			);
-			this.updateFloatingTabbar(this.kTABBAR_UPDATE_NOW);
-		}
+		this.syncReinitTabbar();
 	},
  
 	onToolbarCustomizeChanging : function TSTBrowser_onToolbarCustomizeChanging(aEvent) 
