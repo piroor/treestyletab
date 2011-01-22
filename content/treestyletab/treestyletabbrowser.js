@@ -1063,20 +1063,23 @@ TreeStyleTabBrowser.prototype = {
 			);
 		}
 
-		eval('b.mTabContainer._notifyBackgroundTab = '+
-			b.mTabContainer._notifyBackgroundTab.toSource().replace(
-				'{',
-				'{ var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;'
-			).replace(
-				/\.screenX/g, '[treeStyleTab.positionProp]'
-			).replace(
-				/\.width/g, '[treeStyleTab.sizeProp]'
-			).replace(
-				/\.left/g, '[treeStyleTab.startProp]'
-			).replace(
-				/\.right/g, '[treeStyleTab.endProp]'
-			)
-		);
+		source = b.mTabContainer._notifyBackgroundTab.toSource();
+		if (source.indexOf('TreeStyleTabService.getTabBrowserFromChild') < 0) {
+			eval('b.mTabContainer._notifyBackgroundTab = '+
+				source.toSource().replace(
+					'{',
+					'{ var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;'
+				).replace(
+					/\.screenX/g, '[treeStyleTab.positionProp]'
+				).replace(
+					/\.width/g, '[treeStyleTab.sizeProp]'
+				).replace(
+					/\.left/g, '[treeStyleTab.startProp]'
+				).replace(
+					/\.right/g, '[treeStyleTab.endProp]'
+				)
+			);
+		}
 
 		if (b.tabContainer && '_getDropIndex' in b.tabContainer) { // Firefox 4.0 or later
 			eval('b.tabContainer._getDropIndex = '+
