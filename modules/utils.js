@@ -683,20 +683,23 @@ var TreeStyleTabUtils = {
 		var minY = box.screenY;
 		var maxX = minX + box.width;
 		var maxY = minY + box.height;
+		var icon  = tab.ownerDocument.getAnonymousElementByAttribute(tab, 'class', 'tab-icon');
+		var iconBox = icon.boxObject;
 		if (!box.width || !box.height) {
-			minX = maxX = tab.boxObject.screenX + tab.boxObject.width;
-			minY = maxY = tab.boxObject.screenY + tab.boxObject.height;
+			minX = iconBox.screenX;
+			minY = iconBox.screenY;
+			maxX = minX + iconBox.width;
+			maxY = minY + iconBox.height;
 		}
 		if (
-			(this.shouldExpandTwistyArea || !box.width || !box.height) &&
+			box.width && box.height &&
+			this.shouldExpandTwistyArea &&
 			!this._expandTwistyAreaBlockers.length
 			) {
-			let icon  = tab.ownerDocument.getAnonymousElementByAttribute(tab, 'class', 'tab-icon');
-			let box = icon.boxObject;
-			minX = Math.min(minX, box.screenX);
-			minY = Math.min(minY, box.screenY);
-			maxX = Math.max(maxX, box.screenX + box.width);
-			maxY = Math.max(maxY, box.screenY + box.height);
+			minX = Math.min(minX, iconBox.screenX);
+			minY = Math.min(minY, iconBox.screenY);
+			maxX = Math.max(maxX, iconBox.screenX + iconBox.width);
+			maxY = Math.max(maxY, iconBox.screenY + iconBox.height);
 		}
 
 		var x = aEvent.screenX;
