@@ -1210,33 +1210,57 @@ TreeStyleTabService.overrideExtensionsDelayed = function TSTService_overrideExte
 	// Personal Titlebar
 	// https://addons.mozilla.org/irefox/addon/personal-titlebar/
 	if (document.getElementById('personal-titlebar')) {
+		let titlebar = document.getElementById('titlebar');
+		let personalTitlebar = document.getElementById('personal-titlebar');
 		let listener = {
 				handleEvent : function(aEvent)
 				{
 					switch (aEvent.type)
 					{
 						case 'beforecustomization':
-							let (bar = document.getElementById('personal-titlebar')) {
-								bar.classList.remove(TreeStyleTabService.kTABBAR_TOOLBAR);
-								bar.style.top = '';
-								bar.style.left = '';
-								bar.style.width = '';
-								bar.style.height = '';
-								bar.removeAttribute('height');
-								bar.removeAttribute('width');
-								bar.removeAttribute('ordinal');
+							titlebar.removeEventListener('DOMAttrModified', this, true);
+							personalTitlebar.classList.remove(TreeStyleTabService.kTABBAR_TOOLBAR);
+							personalTitlebar.style.top = '';
+							personalTitlebar.style.left = '';
+							personalTitlebar.style.width = '';
+							personalTitlebar.style.height = '';
+							personalTitlebar.removeAttribute('height');
+							personalTitlebar.removeAttribute('width');
+							personalTitlebar.removeAttribute('ordinal');
+							break;
+
+						case 'aftercustomization':
+							titlebar.addEventListener('DOMAttrModified', this, true);
+							break;
+
+						case 'DOMAttrModified':
+							if (
+								aEvent.attrName == 'hidden' &&
+								gBrowser.tabContainer.parentNode.id == (aEvent.newValue == 'true' ? 'toolbar-menubar' : 'personal-titlebar' )
+								) {
+								TreeStyleTabService.stopRendering();
+								gBrowser.treeStyleTab.syncDestroyTabbar();
+								window.setTimeout(function() {
+									gBrowser.treeStyleTab.syncReinitTabbar();
+									TreeStyleTabService.startRendering();
+								}, 0);
 							}
 							break;
 
 						case 'unload':
+							titlebar.removeEventListener('DOMAttrModified', this, true);
 							window.removeEventListener('beforecustomization', this, false);
+							window.removeEventListener('aftercustomization', this, false);
 							window.removeEventListener('unload', this, false);
+							personalTitlebar = null;
 							break;
 					}
 				}
 			};
 		window.addEventListener('beforecustomization', listener, false);
+		window.addEventListener('aftercustomization', listener, false);
 		window.addEventListener('unload', listener, false);
+		titlebar.addEventListener('DOMAttrModified', listener, true);
 	}
 
 	// Firefox Sync (Weave)

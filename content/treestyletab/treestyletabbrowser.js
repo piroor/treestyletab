@@ -1577,6 +1577,8 @@ TreeStyleTabBrowser.prototype = {
  
 	syncReinitTabbar : function TSTBrowser_syncReinitTabbar() 
 	{
+		this.stopRendering();
+
 		this.mTabBrowser.mTabContainer.parentNode.classList.add(this.kTABBAR_TOOLBAR);
 
 		var position = this._lastTabbarPositionBeforeDestroyed || this.position;
@@ -1594,6 +1596,8 @@ TreeStyleTabBrowser.prototype = {
 		this.reinitAllTabs(true);
 
 		this.tabbarDNDObserver.startListenEvents();
+
+		this.startRendering();
 	},
   
 	destroy : function TSTBrowser_destroy() 
@@ -1697,6 +1701,8 @@ TreeStyleTabBrowser.prototype = {
  
 	syncDestroyTabbar : function TSTBrowser_syncDestroyTabbar() 
 	{
+		this.stopRendering();
+
 		this._lastTabbarPositionBeforeDestroyed = this.position;
 		if (this.position != 'top') {
 			let self = this;
@@ -1712,6 +1718,11 @@ TreeStyleTabBrowser.prototype = {
 
 		if (!this.fixed) this.fixed = true;
 
+		var tabbar = this.mTabBrowser.tabContainer;
+		tabbar.removeAttribute('width');
+		tabbar.removeAttribute('height');
+		tabbar.removeAttribute('ordinal');
+
 		this.removeTabStripAttribute('width');
 		this.removeTabStripAttribute('height');
 		this.removeTabStripAttribute('ordinal');
@@ -1721,6 +1732,8 @@ TreeStyleTabBrowser.prototype = {
 		this.tabbarDNDObserver.endListenEvents();
 
 		this.mTabBrowser.mTabContainer.parentNode.classList.remove(this.kTABBAR_TOOLBAR);
+
+		this.startRendering();
 	},
  
 	saveCurrentState : function TSTBrowser_saveCurrentState() 
