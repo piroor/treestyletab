@@ -271,7 +271,7 @@ var TreeStyleTabBookmarksService = {
 								replaceCurrentTab = false;
 							}
 							else {
-								replaceCurrentTab = TSTOpenGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_REPLACE ? true : false ;
+								replaceCurrentTab = !!(TSTOpenGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_REPLACE);
 							}
 						}
 						$1

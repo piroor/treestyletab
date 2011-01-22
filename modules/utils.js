@@ -470,7 +470,7 @@ var TreeStyleTabUtils = {
 
 		if (checked.value) {
 			this.setTreePref('openGroupBookmark.behavior', behavior);
-			this.setPref('browser.tabs.loadFolderAndReplace', behavior & this.kGROUP_BOOKMARK_REPLACE ? true : false );
+			this.setPref('browser.tabs.loadFolderAndReplace', !!(behavior & this.kGROUP_BOOKMARK_REPLACE));
 		}
 		return behavior;
 	},
@@ -525,7 +525,7 @@ var TreeStyleTabUtils = {
 		if (behavior & this.kUNDO_CLOSE_SET) behavior ^= this.kUNDO_CLOSE_SET;
 
 		var self = this;
-		var neverAskState = (behavior & this.kUNDO_ASK) ? false : true ;
+		var neverAskState = !(behavior & this.kUNDO_ASK);
 		var checkbox = {
 				label : this.treeBundle.getString('undoCloseTabSetBehavior.never'),
 				checked : neverAskState
@@ -1495,7 +1495,7 @@ var TreeStyleTabUtils = {
 		ownerBrowser.treeStyleTab.readiedToAttachMultiple    = true;
 		ownerBrowser.treeStyleTab.multipleCount              = 0;
 		ownerBrowser.treeStyleTab.treeStructure              = aTreeStructure;
-		ownerBrowser.treeStyleTab.shouldExpandAllTree        = aExpandAllTree ? true : false ;
+		ownerBrowser.treeStyleTab.shouldExpandAllTree        = !!aExpandAllTree;
 	},
  
 	stopToOpenChildTab : function TSTUtils_stopToOpenChildTab(aFrameOrTabBrowser) /* PUBLIC API */ 
@@ -1520,7 +1520,7 @@ var TreeStyleTabUtils = {
 		if (!frame) return false;
 
 		var ownerBrowser = this.getTabBrowserFromFrame(frame);
-		return ownerBrowser.treeStyleTab.readiedToAttachNewTab || ownerBrowser.treeStyleTab.readiedToAttachNewTabGroup ? true : false ;
+		return !!(ownerBrowser.treeStyleTab.readiedToAttachNewTab || ownerBrowser.treeStyleTab.readiedToAttachNewTabGroup);
 	},
   
 /* tree manipulations */ 
@@ -1531,7 +1531,7 @@ var TreeStyleTabUtils = {
 	},
 	set treeViewEnabled(aValue)
 	{
-		this._treeViewEnabled = aValue ? true : false ;
+		this._treeViewEnabled = !!aValue;
 		this.ObserverService.notifyObservers(
 			window,
 			this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY,

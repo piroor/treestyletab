@@ -200,8 +200,8 @@ function onSyncGroupBookmarkPrefToUI()
 					gGroupBookmarkBehaviorPref.value & 2 ? 2 :
 					gGroupBookmarkBehaviorPref.value & 4 ? 4 :
 					0;
-	gGroupBookmarkUnderParent.checked = gGroupBookmarkBehaviorPref.value & 256 ? true : false ;
-	gGroupBookmarkType.value = gGroupBookmarkBehaviorPref.value & 512 ? 'true' : 'false' ;
+	gGroupBookmarkUnderParent.checked = !!(gGroupBookmarkBehaviorPref.value & 256);
+	gGroupBookmarkType.value = gGroupBookmarkBehaviorPref.value & 512 ? 'true' : ' false' ;
 	return behavior;
 }
 

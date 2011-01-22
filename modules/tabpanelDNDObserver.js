@@ -72,11 +72,11 @@ TabpanelDNDObserver.prototype = {
 	canDrop : function TabpanelDND_canDrop(aEvent) 
 	{
 		var session = this.treeStyleTab.currentDragSession;
-		return (
+		return !!(
 				session &&
 				session.isDataFlavorSupported(this.treeStyleTab.kDRAG_TYPE_TABBAR) &&
 				session.sourceNode
-			) ? true : false ;
+			);
 	},
  
 	handleEvent : function TabpanelDND_handleEvent(aEvent) 

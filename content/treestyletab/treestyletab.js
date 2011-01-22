@@ -282,7 +282,7 @@ var TreeStyleTabService = {
 					this.clearTreePref('openGroupBookmarkBehavior.confirm');
 					this.clearTreePref('openGroupBookmarkAsTabSubTree');
 					this.clearTreePref('openGroupBookmarkAsTabSubTree.underParent');
-					this.setPref('browser.tabs.loadFolderAndReplace', behavior & this.kGROUP_BOOKMARK_REPLACE ? true : false );
+					this.setPref('browser.tabs.loadFolderAndReplace', !!(behavior & this.kGROUP_BOOKMARK_REPLACE));
 				}
 			case 4:
 				[
