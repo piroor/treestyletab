@@ -1207,6 +1207,38 @@ TreeStyleTabService.overrideExtensionsDelayed = function TSTService_overrideExte
 		);
 	}
 
+	// Personal Titlebar
+	// https://addons.mozilla.org/irefox/addon/personal-titlebar/
+	if (document.getElementById('personal-titlebar')) {
+		let listener = {
+				handleEvent : function(aEvent)
+				{
+					switch (aEvent.type)
+					{
+						case 'beforecustomization':
+							let (bar = document.getElementById('personal-titlebar')) {
+								bar.classList.remove(TreeStyleTabService.kTABBAR_TOOLBAR);
+								bar.style.top = '';
+								bar.style.left = '';
+								bar.style.width = '';
+								bar.style.height = '';
+								bar.removeAttribute('height');
+								bar.removeAttribute('width');
+								bar.removeAttribute('ordinal');
+							}
+							break;
+
+						case 'unload':
+							window.removeEventListener('beforecustomization', this, false);
+							window.removeEventListener('unload', this, false);
+							break;
+					}
+				}
+			};
+		window.addEventListener('beforecustomization', listener, false);
+		window.addEventListener('unload', listener, false);
+	}
+
 	// Firefox Sync (Weave)
 	// http://www.mozilla.com/en-US/firefox/sync/
 	if (
