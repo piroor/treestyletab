@@ -288,5 +288,5 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
 /* toolbar customization */
 
 .treestyletab-tabbar-toolbar-ready {
-	border: 2px solid red !important;
+	border: 2px solid -moz-fieldtext !important;
 }

@@ -1743,7 +1743,9 @@ TreeStyleTabBrowser.prototype = {
 
 		this.tabbarDNDObserver.endListenEvents();
 
-		this.updateCustomizedTabsToolbar();
+		window.setTimeout(function(aSelf) {
+			aSelf.updateCustomizedTabsToolbar();
+		}, 100, this);
 
 		this.startRendering();
 	},
@@ -1763,6 +1765,10 @@ TreeStyleTabBrowser.prototype = {
 
 		this.ownerToolbar.classList.remove(this.kTABBAR_TOOLBAR_READY);
 		this.ownerToolbar.classList.add(this.kTABBAR_TOOLBAR);
+		Array.slice(document.querySelectorAll('.'+this.kTABBAR_TOOLBAR_READY_POPUP))
+			.forEach(function(aPanel) {
+				this.safeRemovePopup(aPanel);
+			}, this);
 
 		var position = this._lastTabbarPositionBeforeDestroyed || this.position;
 		delete this._lastTabbarPositionBeforeDestroyed;
@@ -1789,10 +1795,42 @@ TreeStyleTabBrowser.prototype = {
 	updateCustomizedTabsToolbar : function TSTBrowser_updateCustomizedTabsToolbar() 
 	{
 		var oldToolbar = document.querySelector('.'+this.kTABBAR_TOOLBAR_READY);
-		if (oldToolbar)
+		if (oldToolbar) {
+			this.safeRemovePopup(document.getElementById(oldToolbar.id+'-'+this.kTABBAR_TOOLBAR_READY_POPUP));
 			oldToolbar.classList.remove(this.kTABBAR_TOOLBAR_READY);
+		}
 
-		this.ownerToolbar.classList.remove(this.kTABBAR_TOOLBAR_READY);
+		this.ownerToolbar.classList.add(this.kTABBAR_TOOLBAR_READY);
+
+		var id = this.ownerToolbar.id+'-'+this.kTABBAR_TOOLBAR_READY_POPUP;
+		var panel = document.getElementById(id);
+		if (!panel) {
+			panel = document.createElement('panel');
+			panel.setAttribute('id', id);
+			panel.setAttribute('class', this.kTABBAR_TOOLBAR_READY_POPUP);
+			panel.setAttribute('noautohide', true);
+			panel.appendChild(document.createElement('label'));
+			let position = this._lastTabbarPositionBeforeDestroyed || this.position;
+			let label = this.treeBundle.getString('toolbarCustomizing_tabbar_'+(position == 'left' || position == 'right' ? 'vertical' : 'horizontal' ));
+			panel.firstChild.setAttribute('value', label);
+			document.getElementById('mainPopupSet').appendChild(panel);
+		}
+		panel.openPopup(this.ownerToolbar, 'end_after', 0, 0, false, false);
+	},
+	safeRemovePopup : function TSTBrowser_safeRemovePopup(aPopup)
+	{
+		if (!aPopup)
+			return;
+		if (aPopup.state == 'open') {
+			aPopup.addEventListener('popuphidden', function(aEvent) {
+				aPopup.removeEventListener(aEvent.type, arguments.callee, false);
+				aPopup.parentNode.removeChild(aPopup);
+			}, false);
+			aPopup.hidePopup();
+		}
+		else {
+			aPopup.parentNode.removeChild(aPopup);
+		}
 	},
   
 /* nsIObserver */ 
