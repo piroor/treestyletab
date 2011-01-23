@@ -21,6 +21,8 @@
 <!ENTITY config.allowSubtreeCollapseExpand  "Zezwalaj na zwijanie/rozwijanie drzewa kart">
 <!ENTITY config.tabbar.hideAlltabsButton    "Wyświetlaj przycisk „Pokaż wszystkie karty”">
 
+<!ENTITY config.tabs.style "Style">
+
 <!ENTITY config.tabbar.style.caption "Wygląd paska kart">
 <!ENTITY config.tabbar.style.plain   "Prosty">
 <!ENTITY config.tabbar.style.flat    "Flat">
