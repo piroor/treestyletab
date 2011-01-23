@@ -54,16 +54,12 @@ TreeStyleTabBrowser.prototype = {
  
 	get scrollBox() 
 	{
-		if (!this._scrollBox) {
-			this._scrollBox = ( // Tab Mix Plus
-					this.getTreePref('compatibility.TMP') &&
-					document.getAnonymousElementByAttribute(this.mTabBrowser.mTabContainer, 'class', 'tabs-frame')
-				) ||
-				this.mTabBrowser.mTabContainer.mTabstrip;
-		}
-		return this._scrollBox;
+		return ( // Tab Mix Plus
+				this.getTreePref('compatibility.TMP') &&
+				document.getAnonymousElementByAttribute(this.mTabBrowser.mTabContainer, 'class', 'tabs-frame')
+			) ||
+			this.mTabBrowser.mTabContainer.mTabstrip;
 	},
-	_scrollBox : null,
 	get scrollBoxObject()
 	{
 		return (this.scrollBox.scrollBoxObject || this.scrollBox.boxObject)
@@ -1657,7 +1653,6 @@ TreeStyleTabBrowser.prototype = {
 		this.removePrefListener(this);
 
 		delete this.mTabBrowser;
-		delete this._scrollBox;
 	},
 	
 	destroyTab : function TSTBrowser_destroyTab(aTab) 
