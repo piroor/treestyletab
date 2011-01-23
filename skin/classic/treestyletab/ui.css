@@ -287,6 +287,12 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
 
 /* toolbar customization */
 
+.treestyletab-tabbar-toolbar-ready-popup {
+	max-width: 15em;
+	opacity: 0.85;
+	-moz-appearance: tooltip;
+}
+
 .treestyletab-tabbar-toolbar-ready {
 	border: 2px solid -moz-fieldtext !important;
 }

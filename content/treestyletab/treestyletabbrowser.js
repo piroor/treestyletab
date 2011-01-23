@@ -1794,28 +1794,34 @@ TreeStyleTabBrowser.prototype = {
  
 	updateCustomizedTabsToolbar : function TSTBrowser_updateCustomizedTabsToolbar() 
 	{
+		var newToolbar = this.ownerToolbar;
 		var oldToolbar = document.querySelector('.'+this.kTABBAR_TOOLBAR_READY);
-		if (oldToolbar) {
+		if (oldToolbar == newToolbar)
+			return;
+
+		if (oldToolbar && oldToolbar != newToolbar) {
 			this.safeRemovePopup(document.getElementById(oldToolbar.id+'-'+this.kTABBAR_TOOLBAR_READY_POPUP));
 			oldToolbar.classList.remove(this.kTABBAR_TOOLBAR_READY);
 		}
 
-		this.ownerToolbar.classList.add(this.kTABBAR_TOOLBAR_READY);
+		newToolbar.classList.add(this.kTABBAR_TOOLBAR_READY);
 
-		var id = this.ownerToolbar.id+'-'+this.kTABBAR_TOOLBAR_READY_POPUP;
+		var id = newToolbar.id+'-'+this.kTABBAR_TOOLBAR_READY_POPUP;
 		var panel = document.getElementById(id);
 		if (!panel) {
 			panel = document.createElement('panel');
 			panel.setAttribute('id', id);
 			panel.setAttribute('class', this.kTABBAR_TOOLBAR_READY_POPUP);
 			panel.setAttribute('noautohide', true);
+			panel.setAttribute('onmouseover', 'this.hidePopup()');
+			panel.setAttribute('ondragover', 'this.hidePopup()');
 			panel.appendChild(document.createElement('label'));
 			let position = this._lastTabbarPositionBeforeDestroyed || this.position;
 			let label = this.treeBundle.getString('toolbarCustomizing_tabbar_'+(position == 'left' || position == 'right' ? 'vertical' : 'horizontal' ));
-			panel.firstChild.setAttribute('value', label);
+			panel.firstChild.appendChild(document.createTextNode(label));
 			document.getElementById('mainPopupSet').appendChild(panel);
 		}
-		panel.openPopup(this.ownerToolbar, 'end_after', 0, 0, false, false);
+		panel.openPopup(newToolbar, 'end_after', 0, 0, false, false);
 	},
 	safeRemovePopup : function TSTBrowser_safeRemovePopup(aPopup)
 	{
