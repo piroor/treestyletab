@@ -1782,6 +1782,8 @@ TreeStyleTabBrowser.prototype = {
 		var oldToolbar = document.querySelector('.'+this.kTABBAR_TOOLBAR_READY);
 		if (oldToolbar)
 			oldToolbar.classList.remove(this.kTABBAR_TOOLBAR_READY);
+
+		this.ownerToolbar.classList.remove(this.kTABBAR_TOOLBAR_READY);
 	},
   
 /* nsIObserver */ 
