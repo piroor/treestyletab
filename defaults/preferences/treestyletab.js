@@ -11,8 +11,6 @@ pref("extensions.treestyletab.tabbar.multirow",        false);
 pref("extensions.treestyletab.tabbar.invertTab",       true);
 pref("extensions.treestyletab.tabbar.invertTabContents", false);
 pref("extensions.treestyletab.tabbar.invertClosebox",  false);
-pref("extensions.treestyletab.tabbar.hideAlltabsButton.horizontal", false);
-pref("extensions.treestyletab.tabbar.hideAlltabsButton.vertical",   true);
 pref("extensions.treestyletab.tabbar.scroll.smooth",   true);
 pref("extensions.treestyletab.tabbar.scroll.duration", 250);
 // 0 = no scroll, 1 = scroll to new tab only when the current tab will not scrolled out, 2 = scroll to new tab always

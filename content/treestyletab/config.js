@@ -85,6 +85,7 @@ function initAppearancePane()
 		sidebar.setAttribute('disabled', true);
 	}
 
+	/* regacy feature for Firefox 3.6 or olders */
 	var hideAllTabsButton = document.getElementById('hideAlltabsButton-box');
 	if (comparator.compare(XULAppInfo.version, '4.0b3') > 0) {
 		hideAllTabsButton.setAttribute('hidden', true);
