@@ -1737,15 +1737,24 @@ TreeStyleTabBrowser.prototype = {
 		this.removeTabStripAttribute('ordinal');
 		this.removeTabStripAttribute('orient');
 
+		this.destroyTabStrip(this.ownerToolbar);
+
 		this._endListenTabbarEvents();
 
 		this.tabbarDNDObserver.endListenEvents();
 
-		this.ownerToolbar.classList.remove(this.kTABBAR_TOOLBAR);
-
 		this.updateCustomizedTabsToolbar();
 
 		this.startRendering();
+	},
+	destroyTabStrip : function TSTBrowser_destroyTabStrip(aTabStrip)
+	{
+		aTabStrip.classList.remove(this.kTABBAR_TOOLBAR);
+		aTabStrip.style.top = aTabStrip.style.left = aTabStrip.style.width = aTabStrip.style.height = '';
+		aTabStrip.removeAttribute('height');
+		aTabStrip.removeAttribute('width');
+		aTabStrip.removeAttribute('ordinal');
+		aTabStrip.removeAttribute('orient');
 	},
  
 	syncReinitTabbar : function TSTBrowser_syncReinitTabbar() 

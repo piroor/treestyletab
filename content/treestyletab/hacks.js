@@ -1219,15 +1219,7 @@ TreeStyleTabService.overrideExtensionsDelayed = function TSTService_overrideExte
 					{
 						case 'beforecustomization':
 							titlebar.removeEventListener('DOMAttrModified', this, true);
-							personalTitlebar.classList.remove(TreeStyleTabService.kTABBAR_TOOLBAR);
-							personalTitlebar.style.top = '';
-							personalTitlebar.style.left = '';
-							personalTitlebar.style.width = '';
-							personalTitlebar.style.height = '';
-							personalTitlebar.removeAttribute('height');
-							personalTitlebar.removeAttribute('width');
-							personalTitlebar.removeAttribute('ordinal');
-							personalTitlebar.removeAttribute('orient');
+							gBrowser.treeStyleTab.destroyTabStrip(personalTitlebar);
 							break;
 
 						case 'aftercustomization':
