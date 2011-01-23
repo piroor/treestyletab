@@ -204,7 +204,7 @@ AutoHideBrowser.prototype = {
 		if (b == w.gBrowser && sv.shouldListenKeyEventsForAutoHide)
 			w.TreeStyleTabService.startListenKeyEventsFor(sv.LISTEN_FOR_AUTOHIDE);
 
-		this.clearBG();
+		this.clearBG(); /* regacy feature for Firefox 3.6 or olders */
 		this.updateTransparency();
 
 		this.showHideInternal();
@@ -236,7 +236,7 @@ AutoHideBrowser.prototype = {
 		if (b == w.gBrowser)
 			w.TreeStyleTabService.endListenKeyEventsFor(sv.LISTEN_FOR_AUTOHIDE);
 
-		this.clearBG();
+		this.clearBG(); /* regacy feature for Firefox 3.6 or olders */
 		this.updateTransparency();
 
 		if (!sv.isFloating)
@@ -548,7 +548,7 @@ AutoHideBrowser.prototype = {
 		if (this.expanded) { // to be hidden or shrunken
 			this.onHiding();
 			this.showHideReason = aReason || this.kSHOWN_BY_UNKNOWN;
-			this.resetContentAreas();
+			this.resetContentAreas(); /* regacy feature for Firefox 3.6 or olders */
 		}
 		else { // to be shown or expanded
 			this.onShowing();
@@ -559,13 +559,13 @@ AutoHideBrowser.prototype = {
 
 		if (this.expanded) {
 			sv.setTabbrowserAttribute(this.kAUTOHIDE, 'show');
-			this.redrawContentArea();
+			this.redrawContentArea(); /* regacy feature for Firefox 3.6 or olders */
 		}
 		b.mTabContainer.adjustTabstrip();
 		sv.checkTabsIndentOverflow();
 
 		this.window.setTimeout(function(aSelf) {
-			aSelf.redrawContentArea();
+			aSelf.redrawContentArea(); /* regacy feature for Firefox 3.6 or olders */
 			aSelf.fireStateChangeEvent();
 			if (!sv.isFloating)
 				sv.startRendering();
@@ -700,7 +700,7 @@ AutoHideBrowser.prototype = {
 		this.treeStyleTab.fireDataContainerEvent(this.treeStyleTab.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGE.replace(/^nsDOM/, ''), this.browser, true, false, data);
 	},
   
-	redrawContentArea : function AHB_redrawContentArea() 
+	redrawContentArea : function AHB_redrawContentArea() /* regacy feature for Firefox 3.6 or olders */ 
 	{
 		var sv = this.treeStyleTab;
 		if (sv.isFloating)
@@ -741,7 +741,7 @@ AutoHideBrowser.prototype = {
 			dump(e);
 		}
 	},
-	redrawContentAreaWithDelay : function AHB_redrawContentAreaWithDelay()
+	redrawContentAreaWithDelay : function AHB_redrawContentAreaWithDelay() /* regacy feature for Firefox 3.6 or olders */
 	{
 		if (this.treeStyleTab.isFloating)
 			return;
@@ -751,7 +751,7 @@ AutoHideBrowser.prototype = {
 		}, 0, this);
 	},
  
-	resetContentAreas : function AHB_resetContentAreas() 
+	resetContentAreas : function AHB_resetContentAreas() /* regacy feature for Firefox 3.6 or olders */ 
 	{
 		if (this.treeStyleTab.isFloating)
 			return;
@@ -765,12 +765,12 @@ AutoHideBrowser.prototype = {
 		}, this);
 	},
  
-	get shouldRedraw() 
+	get shouldRedraw() /* regacy feature for Firefox 3.6 or olders */ 
 	{
 		return !this.treeStyleTab.isFloating && this.enabled && this.expanded;
 	},
  
-	drawBG : function AHB_drawBG() 
+	drawBG : function AHB_drawBG() /* regacy feature for Firefox 3.6 or olders */ 
 	{
 		var sv = this.treeStyleTab;
 		var b  = this.browser;
@@ -885,7 +885,7 @@ AutoHideBrowser.prototype = {
 		ctx.restore();
 	},
 	
-	get splitterBorderColor() 
+	get splitterBorderColor() /* regacy feature for Firefox 3.6 or olders */ 
 	{
 		var sv = this.treeStyleTab;
 		var b  = this.browser;
@@ -917,7 +917,7 @@ AutoHideBrowser.prototype = {
 			].join(',')+')';
 	},
  
-	getZoomForFrame : function AHB_getZoomForFrame(aFrame) 
+	getZoomForFrame : function AHB_getZoomForFrame(aFrame) /* regacy feature for Firefox 3.6 or olders */ 
 	{
 		var zoom = aFrame
 				.QueryInterface(Ci.nsIInterfaceRequestor)
@@ -929,7 +929,7 @@ AutoHideBrowser.prototype = {
 		return (zoom * 1000 % 1) ? zoom+0.025 : zoom ;
 	},
   
-	clearBG : function AHB_clearBG() 
+	clearBG : function AHB_clearBG() /* regacy feature for Firefox 3.6 or olders */ 
 	{
 		var canvas = this.tabbarCanvas;
 		if (this.treeStyleTab.isFloating || !canvas)
@@ -1098,8 +1098,8 @@ AutoHideBrowser.prototype = {
 
 			case this.treeStyleTab.kEVENT_TYPE_TABBAR_POSITION_CHANGING:
 				this.isResizing = false;
-				this.clearBG();
-				if (this.shouldRedraw)
+				this.clearBG(); /* regacy feature for Firefox 3.6 or olders */
+				if (this.shouldRedraw) /* regacy feature for Firefox 3.6 or olders */
 					this.hide();
 				return;
 
@@ -1164,7 +1164,7 @@ AutoHideBrowser.prototype = {
 			).booleanValue
 			) {
 			this.isResizing = true;
-			this.clearBG();
+			this.clearBG(); /* regacy feature for Firefox 3.6 or olders */
 			sv.setTabbrowserAttribute(sv.kRESIZING, true);
 			/* canvasを非表示にしたのと同じタイミングでリサイズを行うと、
 			   まだ内部的にcanvasの大きさが残ったままなので、その大きさ以下に
@@ -1209,7 +1209,7 @@ AutoHideBrowser.prototype = {
 			).booleanValue) {
 			this.isResizing = false;
 			sv.removeTabbrowserAttribute(sv.kRESIZING);
-			this.window.setTimeout(function(aSelf) {
+			this.window.setTimeout(function(aSelf) { /* regacy feature for Firefox 3.6 or olders */
 				if (!aSelf.shouldRedraw) return;
 				aSelf.redrawContentArea();
 				aSelf.drawBG();
@@ -1237,7 +1237,7 @@ AutoHideBrowser.prototype = {
 		return true;
 	},
  
-	onResize : function AHB_onResize(aEvent) 
+	onResize : function AHB_onResize(aEvent) /* regacy feature for Firefox 3.6 or olders */ 
 	{
 		if (
 			aEvent.originalTarget &&
@@ -1249,7 +1249,7 @@ AutoHideBrowser.prototype = {
 			this.onTabbarResized();
 	},
  
-	onTabbarResized : function AHB_onTabbarResized() 
+	onTabbarResized : function AHB_onTabbarResized() /* regacy feature for Firefox 3.6 or olders */ 
 	{
 		var sv = this.treeStyleTab;
 		if (sv.isFloating || !this.shouldRedraw)
@@ -1381,7 +1381,7 @@ AutoHideBrowser.prototype = {
 		b.addEventListener(sv.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START, this, false);
 		b.addEventListener(sv.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, this, false);
 
-		if (!sv.isFloating) {
+		if (!sv.isFloating) { /* regacy feature for Firefox 3.6 or olders */
 			let stack = this.document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-stack');
 			if (stack) {
 				let canvas = this.document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
