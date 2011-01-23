@@ -283,3 +283,10 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
   #treestyletab-tabbar-resizer-box {
 	background: rgba(0, 0, 0, 0.25);
 }
+
+
+/* toolbar customization */
+
+.treestyletab-tabbar-toolbar-ready {
+	border: 2px solid red !important;
+}

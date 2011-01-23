@@ -120,6 +120,7 @@ var TreeStyleTabUtils = {
 	kTABBAR_TOGGLER        : 'treestyletab-tabbar-toggler',
 	kTABBAR_PLACEHOLDER    : 'treestyletab-tabbar-placeholder',
 	kTABBAR_TOOLBAR        : 'treestyletab-tabbar-toolbar',
+	kTABBAR_TOOLBAR_READY  : 'treestyletab-tabbar-toolbar-ready',
  
 /* event types, topics */ 
 	kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN : 'nsDOMTreeStyleTabFocusSwitchingKeyDown',
@@ -269,6 +270,11 @@ var TreeStyleTabUtils = {
 		return this._Comparator;
 	},
 	_Comparator : null,
+ 
+	get isGecko2() 
+	{
+		return this.Comparator.compare(this.XULAppInfo.version, '4.0b5') > 0;
+	},
  
 	get treeBundle() { 
 		return window['piro.sakura.ne.jp'].stringBundle

@@ -158,7 +158,7 @@ TreeStyleTabBrowser.prototype = {
 		return this.fixed;
 	},
  
-	get position() /* PUBLIC API */
+	get position() /* PUBLIC API */ 
 	{
 		return (
 			// Don't touch to the <tabbrowser/> element before it is initialized by XBL constructor.
@@ -234,10 +234,19 @@ TreeStyleTabBrowser.prototype = {
 		return this._tabStripPlaceHolder;
 	},
  
+	get ownerToolbar() 
+	{
+		return this.evaluateXPath(
+				'ancestor-or-self::xul:toolbar[1]',
+				this.mTabBrowser.tabContainer,
+				XPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue;
+	},
+ 
 	get canStackTabs() 
 	{
 		return (
-			this.isFloating &&
+			this.isGecko2 &&
 			!this.isVertical &&
 			this.canCollapseSubtree() &&
 			this.getTreePref('stackCollapsedTabs')
@@ -407,6 +416,7 @@ TreeStyleTabBrowser.prototype = {
 		window.addEventListener('resize', this, true);
 		window.addEventListener('beforecustomization', this, true);
 		window.addEventListener('aftercustomization', this, false);
+		window.addEventListener('customizationchange', this, false);
 		window.addEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
 		window.addEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED,  this, false);
 
@@ -1089,7 +1099,7 @@ TreeStyleTabBrowser.prototype = {
 		tabContainer.addEventListener('SSTabRestored',  this, true);
 		tabContainer.addEventListener('TabPinned',      this, true);
 		tabContainer.addEventListener('TabUnpinned',    this, true);
-		if (!this.isFloating && 'tabutils' in window)
+		if (!this.isGecko2 && 'tabutils' in window)
 			tabContainer.addEventListener('DOMAttrModified', this, true); // Tab Utilities
 		tabContainer.addEventListener('mouseover', this, true);
 		tabContainer.addEventListener('dblclick',  this, true);
@@ -1285,7 +1295,7 @@ TreeStyleTabBrowser.prototype = {
 		this.setTabbrowserAttribute(this.kALLOW_STACK, this.canStackTabs ? 'true' : null);
 		this.updateTabsZIndex(this.canStackTabs);
 
-		if (!this.isFloating) /* regacy feature for Firefox 3.6 or olders */
+		if (!this.ownerToolbar) /* regacy feature for Firefox 3.6 or olders */
 			this.hideAlltabsButton = this.getTreePref('tabbar.hideAlltabsButton.'+orient);
 
 		if (this.maxTreeLevelPhisical)
@@ -1304,7 +1314,7 @@ TreeStyleTabBrowser.prototype = {
 				indented      : this.maxTreeLevel != 0,
 				canCollapse   : b.getAttribute(this.kALLOW_COLLAPSE) == 'true'
 			};
-		if (!this.isFloating) {
+		if (!this.ownerToolbar) { /* regacy feature for Firefox 3.6 or olders */
 			oldState.alltabsButton = b.getAttribute(this.kHIDE_ALLTABS) != 'true';
 			oldState.allTabsButton = oldState.alltabsButton;
 		}
@@ -1314,7 +1324,7 @@ TreeStyleTabBrowser.prototype = {
 				indented      : this.getTreePref('maxTreeLevel.'+orient) != 0,
 				canCollapse   : this.getTreePref('allowSubtreeCollapseExpand.'+orient)
 			};
-		if (!this.isFloating) { /* regacy feature for Firefox 3.6 or olders */
+		if (!this.ownerToolbar) { /* regacy feature for Firefox 3.6 or olders */
 			newState.alltabsButton = !this.getTreePref('tabbar.hideAlltabsButton.'+orient);
 			newState.allTabsButton = newState.alltabsButton;
 		}
@@ -1348,7 +1358,7 @@ TreeStyleTabBrowser.prototype = {
 				indented      : this.maxTreeLevel != 0,
 				canCollapse   : b.getAttribute(this.kALLOW_COLLAPSE) == 'true'
 			};
-		if (!this.isFloating) {
+		if (!this.ownerToolbar) { /* regacy feature for Firefox 3.6 or olders */
 			state.alltabsButton = b.getAttribute(this.kHIDE_ALLTABS) != 'true';
 			state.allTabsButton = state.alltabsButton;
 		}
@@ -1531,7 +1541,7 @@ TreeStyleTabBrowser.prototype = {
 		var container = document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-container');
 
 		if (!container) {
-			if (this.isFloating)
+			if (this.ownerToolbar)
 				container = b.mTabContainer;
 			else
 				return;
@@ -1570,34 +1580,6 @@ TreeStyleTabBrowser.prototype = {
 				this.updateTabsCount(aTab);
 		}, this);
 	},
- 
-	syncReinitTabbar : function TSTBrowser_syncReinitTabbar() 
-	{
-		this.stopRendering();
-
-		this.mTabBrowser.mTabContainer.parentNode.classList.add(this.kTABBAR_TOOLBAR);
-
-		var position = this._lastTabbarPositionBeforeDestroyed || this.position;
-		delete this._lastTabbarPositionBeforeDestroyed;
-
-		var self = this;
-		this.doAndWaitDOMEvent(
-			this.kEVENT_TYPE_TABBAR_INITIALIZED,
-			window,
-			100,
-			function() {
-				self.initTabbar(position, 'top');
-			}
-		);
-		this.reinitAllTabs(true);
-
-		this.tabbarDNDObserver.startListenEvents();
-
-		this.treeViewEnabled = this._lastTreeViewEnabledBeforeDestroyed;
-		delete this._lastTreeViewEnabledBeforeDestroyed;
-
-		this.startRendering();
-	},
   
 	destroy : function TSTBrowser_destroy() 
 	{
@@ -1627,6 +1609,7 @@ TreeStyleTabBrowser.prototype = {
 		window.removeEventListener('resize', this, true);
 		window.removeEventListener('beforecustomization', this, true);
 		window.removeEventListener('aftercustomization', this, false);
+		window.removeEventListener('customizationchange', this, false);
 		window.removeEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
 		window.removeEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED,  this, false);
 
@@ -1678,7 +1661,7 @@ TreeStyleTabBrowser.prototype = {
 		tabContainer.removeEventListener('SSTabRestored',  this, true);
 		tabContainer.removeEventListener('TabPinned',      this, true);
 		tabContainer.removeEventListener('TabUnpinned',    this, true);
-		if (!this.isFloating && 'tabutils' in window)
+		if (!this.ownerToolbar && 'tabutils' in window)
 			b.mTabContainer.removeEventListener('DOMAttrModified', this, true); // Tab Utilites
 		tabContainer.removeEventListener('mouseover', this, true);
 		tabContainer.removeEventListener('dblclick',  this, true);
@@ -1697,6 +1680,30 @@ TreeStyleTabBrowser.prototype = {
 		this.tabTooltip.removeEventListener('popupshowing', this, true);
 	},
  
+	saveCurrentState : function TSTBrowser_saveCurrentState() 
+	{
+		this.autoHide.saveCurrentState();
+
+		var b = this.mTabBrowser;
+		var floatingBox = this.getTabStrip(b).boxObject;
+		var fixedBox = (this.tabStripPlaceHolder || this.getTabStrip(b)).boxObject;
+		var prefs = {
+				'tabbar.fixed.horizontal' : b.getAttribute(this.kFIXED+'-horizontal') == 'true',
+				'tabbar.fixed.vertical'   : b.getAttribute(this.kFIXED+'-vertical') == 'true',
+				'tabbar.width'            : this.isVertical && this.autoHide.expanded && floatingBox.width ? floatingBox.width : void(0),
+				'tabbar.shrunkenWidth'    : this.isVertical && !this.autoHide.expanded && fixedBox.width ? fixedBox.width : void(0),
+				'tabbar.height'           : !this.isVertical && this.autoHide.expanded && floatingBox.height ? floatingBox.height : void(0)
+			};
+		for (var i in prefs)
+		{
+			if (prefs[i] !== void(0) && this.getTreePref(i) != prefs[i])
+				this.setTreePref(i, prefs[i]);
+		}
+		this.position = this.position;
+	},
+   
+/* toolbar customization on Firefox 4 or later */ 
+	
 	syncDestroyTabbar : function TSTBrowser_syncDestroyTabbar() 
 	{
 		this.stopRendering();
@@ -1734,33 +1741,49 @@ TreeStyleTabBrowser.prototype = {
 
 		this.tabbarDNDObserver.endListenEvents();
 
-		this.mTabBrowser.mTabContainer.parentNode.classList.remove(this.kTABBAR_TOOLBAR);
+		this.ownerToolbar.classList.remove(this.kTABBAR_TOOLBAR);
+
+		this.updateCustomizedTabsToolbar();
 
 		this.startRendering();
 	},
  
-	saveCurrentState : function TSTBrowser_saveCurrentState() 
+	syncReinitTabbar : function TSTBrowser_syncReinitTabbar() 
 	{
-		this.autoHide.saveCurrentState();
+		this.stopRendering();
 
-		var b = this.mTabBrowser;
-		var floatingBox = this.getTabStrip(b).boxObject;
-		var fixedBox = (this.tabStripPlaceHolder || this.getTabStrip(b)).boxObject;
-		var prefs = {
-				'tabbar.fixed.horizontal' : b.getAttribute(this.kFIXED+'-horizontal') == 'true',
-				'tabbar.fixed.vertical'   : b.getAttribute(this.kFIXED+'-vertical') == 'true',
-				'tabbar.width'            : this.isVertical && this.autoHide.expanded && floatingBox.width ? floatingBox.width : void(0),
-				'tabbar.shrunkenWidth'    : this.isVertical && !this.autoHide.expanded && fixedBox.width ? fixedBox.width : void(0),
-				'tabbar.height'           : !this.isVertical && this.autoHide.expanded && floatingBox.height ? floatingBox.height : void(0)
-			};
-		for (var i in prefs)
-		{
-			if (prefs[i] !== void(0) && this.getTreePref(i) != prefs[i])
-				this.setTreePref(i, prefs[i]);
-		}
-		this.position = this.position;
+		this.ownerToolbar.classList.remove(this.kTABBAR_TOOLBAR_READY);
+		this.ownerToolbar.classList.add(this.kTABBAR_TOOLBAR);
+
+		var position = this._lastTabbarPositionBeforeDestroyed || this.position;
+		delete this._lastTabbarPositionBeforeDestroyed;
+
+		var self = this;
+		this.doAndWaitDOMEvent(
+			this.kEVENT_TYPE_TABBAR_INITIALIZED,
+			window,
+			100,
+			function() {
+				self.initTabbar(position, 'top');
+			}
+		);
+		this.reinitAllTabs(true);
+
+		this.tabbarDNDObserver.startListenEvents();
+
+		this.treeViewEnabled = this._lastTreeViewEnabledBeforeDestroyed;
+		delete this._lastTreeViewEnabledBeforeDestroyed;
+
+		this.startRendering();
 	},
-   
+ 
+	updateCustomizedTabsToolbar : function TSTBrowser_updateCustomizedTabsToolbar() 
+	{
+		var oldToolbar = document.querySelector('.'+this.kTABBAR_TOOLBAR_READY);
+		if (oldToolbar)
+			oldToolbar.classList.remove(this.kTABBAR_TOOLBAR_READY);
+	},
+  
 /* nsIObserver */ 
 	
 	domains : [ 
@@ -2166,6 +2189,8 @@ TreeStyleTabBrowser.prototype = {
 				return this.syncDestroyTabbar();
 			case 'aftercustomization':
 				return this.syncReinitTabbar();
+			case 'customizationchange':
+				return this.updateCustomizedTabsToolbar();
 
 
 			case this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED:
@@ -3426,8 +3451,7 @@ TreeStyleTabBrowser.prototype = {
 
 		this.mTabBrowser.mTabContainer.adjustTabstrip();
 		this.updateInvertedTabContentsOrder(true);
-		if (this.isFloating)
-			this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
+		this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
 	},
  
 	onPopupShowing : function TSTBrowser_onPopupShowing(aEvent) 
