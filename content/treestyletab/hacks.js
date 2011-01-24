@@ -222,6 +222,19 @@ TreeStyleTabService.overrideExtensionsPreInit = function TSTService_overrideExte
 	// DragNDrop Toolbars
 	// https://addons.mozilla.org/firefox/addon/dragndrop-toolbars/
 	if ('globDndtb' in window && globDndtb.setTheStuff && this.isGecko2) {
+		let reinitTabbar = function() {
+				TreeStyleTabService.stopRendering();
+				gBrowser.treeStyleTab.syncDestroyTabbar();
+				window.setTimeout(function() {
+					gBrowser.treeStyleTab.syncReinitTabbar();
+					TreeStyleTabService.startRendering();
+				}, 100);
+			};
+		globDndtb.__treestyletab__setOrder = globDndtb.setOrder;
+		globDndtb.setOrder = function() {
+			reinitTabbar();
+			return this.__treestyletab__setOrder.apply(this, arguments);
+		};
 		globDndtb.__treestyletab__setTheStuff = globDndtb.setTheStuff;
 		globDndtb.setTheStuff = function() {
 			var result = this.__treestyletab__setTheStuff.apply(this, arguments);
@@ -231,12 +244,7 @@ TreeStyleTabService.overrideExtensionsPreInit = function TSTService_overrideExte
 				this.dndObserver.__treestyletab__onDrop = this.dndObserver.onDrop;
 				this.dndObserver.onDrop = function(aEvent, aDropData, aSession) {
 					if (document.getElementById(aDropData.data) == gBrowser.treeStyleTab.tabStrip) {
-						TreeStyleTabService.stopRendering();
-						gBrowser.treeStyleTab.syncDestroyTabbar();
-						window.setTimeout(function() {
-							gBrowser.treeStyleTab.syncReinitTabbar();
-							TreeStyleTabService.startRendering();
-						}, 100);
+						reinitTabbar();
 					}
 					return this.__treestyletab__onDrop.apply(this, arguments);
 				};
