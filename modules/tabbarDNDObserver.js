@@ -445,7 +445,7 @@ catch(e) {
 		// Firefox fails to "move" collapsed tabs. So, expand them first
 		// and collapse them after they are moved.
 		var collapseExpandState = [];
-		if (aInfo.action & kACTION_MOVE || aInfo.action & sv.kACTION_IMPORT) {
+		if (aInfo.action & sv.kACTION_MOVE || aInfo.action & sv.kACTION_IMPORT) {
 			draggedWholeTree.forEach(function(aTab) {
 				collapseExpandState.push(sv.getTabValue(aTab, sv.kSUBTREE_COLLAPSED) == 'true');
 				sv.collapseExpandSubtree(aTab, false, true);
