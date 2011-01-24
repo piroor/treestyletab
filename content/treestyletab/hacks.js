@@ -218,6 +218,32 @@ TreeStyleTabService.overrideExtensionsPreInit = function TSTService_overrideExte
 	if ('tooManyTabs' in window) {
 		this.registerExpandTwistyAreaBlocker('tooManyTabs');
 	}
+
+	// DragNDrop Toolbars
+	// https://addons.mozilla.org/firefox/addon/dragndrop-toolbars/
+	if ('globDndtb' in window && globDndtb.setTheStuff && this.isGecko2) {
+		globDndtb.__treestyletab__setTheStuff = globDndtb.setTheStuff;
+		globDndtb.setTheStuff = function() {
+			var result = this.__treestyletab__setTheStuff.apply(this, arguments);
+			if (this.dndObserver &&
+				this.dndObserver.onDrop &&
+				!this.dndObserver.__treestyletab__onDrop) {
+				this.dndObserver.__treestyletab__onDrop = this.dndObserver.onDrop;
+				this.dndObserver.onDrop = function(aEvent, aDropData, aSession) {
+					if (document.getElementById(aDropData.data) == gBrowser.treeStyleTab.tabStrip) {
+						TreeStyleTabService.stopRendering();
+						gBrowser.treeStyleTab.syncDestroyTabbar();
+						window.setTimeout(function() {
+							gBrowser.treeStyleTab.syncReinitTabbar();
+							TreeStyleTabService.startRendering();
+						}, 100);
+					}
+					return this.__treestyletab__onDrop.apply(this, arguments);
+				};
+			}
+			return result;
+		};
+	}
 };
 
 TreeStyleTabService.overrideExtensionsOnInitBefore = function TSTService_overrideExtensionsOnInitBefore() {
