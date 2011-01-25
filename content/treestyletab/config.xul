@@ -334,6 +334,38 @@
 
 </prefpane>
 
+<prefpane id="prefpane-attach" label="&config.tabs.attach;">
+	<preferences>
+		<preference id="extensions.treestyletab.autoAttach.newTabCommand"
+			name="extensions.treestyletab.autoAttach.newTabCommand"
+			type="int"/>
+		<preference id="extensions.treestyletab.autoAttach.searchResult"
+			name="extensions.treestyletab.autoAttach.searchResult"
+			type="int"/>
+	</preferences>
+
+	<groupbox>
+		<caption label="&config.autoAttach.newTabCommand.caption;"/>
+		<radiogroup id="extensions.treestyletab.autoAttach.newTabCommand-radiogroup"
+			orient="vertical"
+			preference="extensions.treestyletab.autoAttach.newTabCommand">
+			<radio value="0" label="&config.autoAttach.newTabCommand.ignore;"/>
+			<radio value="1" label="&config.autoAttach.newTabCommand.current;"/>
+			<radio value="2" label="&config.autoAttach.newTabCommand.parent;"/>
+		</radiogroup>
+	</groupbox>
+	<groupbox>
+		<caption label="&config.autoAttach.searchResult.caption;"/>
+		<radiogroup id="extensions.treestyletab.autoAttach.searchResult-radiogroup"
+			orient="vertical"
+			preference="extensions.treestyletab.autoAttach.searchResult">
+			<radio value="0" label="&config.autoAttach.searchResult.ignore;"/>
+			<radio value="1" label="&config.autoAttach.searchResult.selected;"/>
+			<radio value="2" label="&config.autoAttach.searchResult.always;"/>
+		</radiogroup>
+	</groupbox>
+</prefpane>
+
 <prefpane id="prefpane-tab" label="&config.tabs.tab;"
 	onpaneload="initTabPane();">
 	<preferences>
@@ -418,6 +450,89 @@
 			</radiogroup>
 			</vbox>
 		</deck>
+	</groupbox>
+
+</prefpane>
+
+<prefpane id="prefpane-tree" label="&config.tabs.tree;"
+	onpaneload="initTreePane();">
+	<preferences>
+		<preference id="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect"
+			name="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect"
+			type="bool"/>
+		<preference id="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove"
+			name="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove"
+			type="bool"
+			inverted="true"/>
+		<preference id="extensions.treestyletab.collapseExpandSubtree.dblclick"
+			name="extensions.treestyletab.collapseExpandSubtree.dblclick"
+			type="bool"/>
+		<!--preference id="extensions.treestyletab.autoExpandSubtreeOnAppendChild"
+			name="extensions.treestyletab.autoExpandSubtreeOnAppendChild"
+			type="bool"/-->
+		<preference id="extensions.treestyletab.focusMode"
+			name="extensions.treestyletab.focusMode"
+			type="int"/>
+		<preference id="extensions.treestyletab.closeParentBehavior"
+			name="extensions.treestyletab.closeParentBehavior"
+			type="int"/>
+		<preference id="extensions.treestyletab.closeRootBehavior"
+			name="extensions.treestyletab.closeRootBehavior"
+			type="int"/>
+		<preference id="extensions.treestyletab.insertNewChildAt"
+			name="extensions.treestyletab.insertNewChildAt"
+			type="int"/>
+	</preferences>
+
+	<checkbox id="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect-check"
+		preference="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect"
+		label="&config.autoCollapseExpandSubtreeOnSelect;"/>
+	<hbox align="center">
+		<spacer style="width:1em;"/>
+		<checkbox id="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove-check"
+			label="&config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove;"
+			preference="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove"/>
+	</hbox>
+	<checkbox id="extensions.treestyletab.focusMode-check"
+		preference="extensions.treestyletab.focusMode"
+		label="&config.focusMode;"
+		onsyncfrompreference="return document.getElementById('extensions.treestyletab.focusMode').value == 0;"
+		onsynctopreference="return document.getElementById('extensions.treestyletab.focusMode-check').checked ? 0 : 1 ;"/>
+	<checkbox id="extensions.treestyletab.collapseExpandSubtree.dblclick-check"
+		preference="extensions.treestyletab.collapseExpandSubtree.dblclick"
+		label="&config.collapseExpandSubtree.dblclick;"/>
+	<!--checkbox id="extensions.treestyletab.autoExpandSubtreeOnAppendChild-check"
+		preference="extensions.treestyletab.autoExpandSubtreeOnAppendChild"
+		label="&config.autoExpandSubtreeOnAppendChild;"/-->
+	<groupbox>
+		<caption label="&config.closeParentBehavior.caption;"/>
+		<radiogroup id="extensions.treestyletab.closeParentBehavior-radiogroup"
+			preference="extensions.treestyletab.closeParentBehavior"
+			orient="vertical"
+			oncommand="syncEnabledState(this, this.value == 0);"
+			sync-enabled-state-targets="extensions.treestyletab.closeRootBehavior-check">
+			<radio value="2" label="&config.closeParentBehavior.close;"/>
+			<radio value="3" label="&config.closeParentBehavior.promoteFirst;"/>
+			<radio value="0" label="&config.closeParentBehavior.promoteAll;"/>
+			<hbox align="center">
+				<spacer style="width:1em;"/>
+				<checkbox id="extensions.treestyletab.closeRootBehavior-check"
+					label="&config.closeRootBehavior.promoteFirst;"
+					preference="extensions.treestyletab.closeRootBehavior"
+					onsyncfrompreference="return document.getElementById('extensions.treestyletab.closeRootBehavior').value == 3;"
+					onsynctopreference="return document.getElementById('extensions.treestyletab.closeRootBehavior-check').checked ? 3 : 1 ;"/>
+			</hbox>
+			<radio value="1" label="&config.closeParentBehavior.detach;"/>
+		</radiogroup>
+	</groupbox>
+	<groupbox>
+		<caption label="&config.insertNewChildAt.caption;"/>
+		<radiogroup id="extensions.treestyletab.insertNewChildAt-radiogroup"
+			preference="extensions.treestyletab.insertNewChildAt"
+			orient="horizontal">
+			<radio value="0" label="&config.insertNewChildAt.first;"/>
+			<radio value="1" label="&config.insertNewChildAt.last;"/>
+		</radiogroup>
 	</groupbox>
 
 </prefpane>
@@ -602,112 +717,6 @@
 
 </prefpane>
 
-<prefpane id="prefpane-tree" label="&config.tabs.tree;"
-	onpaneload="initTreePane();">
-	<preferences>
-		<preference id="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect"
-			name="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect"
-			type="bool"/>
-		<preference id="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove"
-			name="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove"
-			type="bool"
-			inverted="true"/>
-		<preference id="extensions.treestyletab.collapseExpandSubtree.dblclick"
-			name="extensions.treestyletab.collapseExpandSubtree.dblclick"
-			type="bool"/>
-		<!--preference id="extensions.treestyletab.autoExpandSubtreeOnAppendChild"
-			name="extensions.treestyletab.autoExpandSubtreeOnAppendChild"
-			type="bool"/-->
-		<preference id="extensions.treestyletab.focusMode"
-			name="extensions.treestyletab.focusMode"
-			type="int"/>
-		<preference id="extensions.treestyletab.closeParentBehavior"
-			name="extensions.treestyletab.closeParentBehavior"
-			type="int"/>
-		<preference id="extensions.treestyletab.closeRootBehavior"
-			name="extensions.treestyletab.closeRootBehavior"
-			type="int"/>
-		<preference id="extensions.treestyletab.insertNewChildAt"
-			name="extensions.treestyletab.insertNewChildAt"
-			type="int"/>
-		<preference id="extensions.treestyletab.undoCloseTabSet.behavior"
-			name="extensions.treestyletab.undoCloseTabSet.behavior"
-			type="int"/>
-	</preferences>
-
-	<checkbox id="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect-check"
-		preference="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect"
-		label="&config.autoCollapseExpandSubtreeOnSelect;"/>
-	<hbox align="center">
-		<spacer style="width:1em;"/>
-		<checkbox id="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove-check"
-			label="&config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove;"
-			preference="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove"/>
-	</hbox>
-	<checkbox id="extensions.treestyletab.focusMode-check"
-		preference="extensions.treestyletab.focusMode"
-		label="&config.focusMode;"
-		onsyncfrompreference="return document.getElementById('extensions.treestyletab.focusMode').value == 0;"
-		onsynctopreference="return document.getElementById('extensions.treestyletab.focusMode-check').checked ? 0 : 1 ;"/>
-	<checkbox id="extensions.treestyletab.collapseExpandSubtree.dblclick-check"
-		preference="extensions.treestyletab.collapseExpandSubtree.dblclick"
-		label="&config.collapseExpandSubtree.dblclick;"/>
-	<!--checkbox id="extensions.treestyletab.autoExpandSubtreeOnAppendChild-check"
-		preference="extensions.treestyletab.autoExpandSubtreeOnAppendChild"
-		label="&config.autoExpandSubtreeOnAppendChild;"/-->
-	<groupbox>
-		<caption label="&config.closeParentBehavior.caption;"/>
-		<radiogroup id="extensions.treestyletab.closeParentBehavior-radiogroup"
-			preference="extensions.treestyletab.closeParentBehavior"
-			orient="vertical"
-			oncommand="syncEnabledState(this, this.value == 0);"
-			sync-enabled-state-targets="extensions.treestyletab.closeRootBehavior-check">
-			<radio value="2" label="&config.closeParentBehavior.close;"/>
-			<radio value="3" label="&config.closeParentBehavior.promoteFirst;"/>
-			<radio value="0" label="&config.closeParentBehavior.promoteAll;"/>
-			<hbox align="center">
-				<spacer style="width:1em;"/>
-				<checkbox id="extensions.treestyletab.closeRootBehavior-check"
-					label="&config.closeRootBehavior.promoteFirst;"
-					preference="extensions.treestyletab.closeRootBehavior"
-					onsyncfrompreference="return document.getElementById('extensions.treestyletab.closeRootBehavior').value == 3;"
-					onsynctopreference="return document.getElementById('extensions.treestyletab.closeRootBehavior-check').checked ? 3 : 1 ;"/>
-			</hbox>
-			<radio value="1" label="&config.closeParentBehavior.detach;"/>
-		</radiogroup>
-	</groupbox>
-	<groupbox>
-		<caption label="&config.insertNewChildAt.caption;"/>
-		<radiogroup id="extensions.treestyletab.insertNewChildAt-radiogroup"
-			preference="extensions.treestyletab.insertNewChildAt"
-			orient="horizontal">
-			<radio value="0" label="&config.insertNewChildAt.first;"/>
-			<radio value="1" label="&config.insertNewChildAt.last;"/>
-		</radiogroup>
-	</groupbox>
-	<groupbox>
-		<caption label="&config.undoCloseTabSet.caption;"/>
-		<hbox>
-			<checkbox id="undoCloseTabSet-check"
-				label="&config.undoCloseTabSet.ask;"
-				oncommand="gUndoCloseTabSetRadioSet.onChange();"/>
-		</hbox>
-		<deck id="undoCloseTabSet-deck">
-			<spacer flex="1"/>
-			<vbox>
-			<separator class="hr"/>
-			<radiogroup id="undoCloseTabSet-radiogroup"
-				preference="extensions.treestyletab.undoCloseTabSet.behavior"
-				orient="horizontal">
-				<radio value="2" label="&config.undoCloseTabSet.set;"/>
-				<radio value="0" label="&config.undoCloseTabSet.separate;"/>
-			</radiogroup>
-			</vbox>
-		</deck>
-	</groupbox>
-
-</prefpane>
-
 <prefpane id="prefpane-advanced" label="&config.tabs.advanced;"
 	onpaneload="initAdvancedPane();">
 	<preferences>
@@ -719,6 +728,9 @@
 			type="bool"/>
 		<preference id="extensions.treestyletab.bookmarkDroppedTabs.behavior"
 			name="extensions.treestyletab.bookmarkDroppedTabs.behavior"
+			type="int"/>
+		<preference id="extensions.treestyletab.undoCloseTabSet.behavior"
+			name="extensions.treestyletab.undoCloseTabSet.behavior"
 			type="int"/>
 	</preferences>
 
@@ -746,6 +758,26 @@
 				<radio value="0" collapsed="true"/>
 				<radio value="1" label="&config.bookmarkDroppedTabs.all;"/>
 				<radio value="2" label="&config.bookmarkDroppedTabs.parent;"/>
+			</radiogroup>
+			</vbox>
+		</deck>
+	</groupbox>
+	<groupbox>
+		<caption label="&config.undoCloseTabSet.caption;"/>
+		<hbox>
+			<checkbox id="undoCloseTabSet-check"
+				label="&config.undoCloseTabSet.ask;"
+				oncommand="gUndoCloseTabSetRadioSet.onChange();"/>
+		</hbox>
+		<deck id="undoCloseTabSet-deck">
+			<spacer flex="1"/>
+			<vbox>
+			<separator class="hr"/>
+			<radiogroup id="undoCloseTabSet-radiogroup"
+				preference="extensions.treestyletab.undoCloseTabSet.behavior"
+				orient="horizontal">
+				<radio value="2" label="&config.undoCloseTabSet.set;"/>
+				<radio value="0" label="&config.undoCloseTabSet.separate;"/>
 			</radiogroup>
 			</vbox>
 		</deck>

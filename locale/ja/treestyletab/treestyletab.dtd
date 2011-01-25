@@ -47,6 +47,19 @@
 <!ENTITY config.show.tabContextMenu.caption "タブのコンテキストメニューに以下の項目を追加する">
 
 
+<!ENTITY config.tabs.attach "タブのツリー化">
+
+<!ENTITY config.autoAttach.newTabCommand.caption "新しい空のタブを開いた時">
+<!ENTITY config.autoAttach.newTabCommand.ignore  "独立したタブとして開く">
+<!ENTITY config.autoAttach.newTabCommand.current "現在のタブの子として開く">
+<!ENTITY config.autoAttach.newTabCommand.parent  "現在のタブと同階層に開く">
+
+<!ENTITY config.autoAttach.searchResult.caption  "検索結果がタブで開かれた時">
+<!ENTITY config.autoAttach.searchResult.ignore   "何もしない">
+<!ENTITY config.autoAttach.searchResult.selected "現在のページで選択されている語句を検索した時は子タブとして開く">
+<!ENTITY config.autoAttach.searchResult.always   "常に現在のタブの子として開く">
+
+
 <!ENTITY config.tabs.tab "新しいタブ">
 
 <!ENTITY config.tabs.bookmark.tab "ブックマーク">

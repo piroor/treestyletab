@@ -321,19 +321,9 @@ function onTabbarTransparencyScaleChange()
 }
 
 
-var gUndoCloseTabSetRadioSet;
-
 function initTreePane()
 {
 	syncEnabledState('extensions.treestyletab.closeParentBehavior-radiogroup', 'this.value == 0');
-
-	gUndoCloseTabSetRadioSet = new RadioSet(
-		'extensions.treestyletab.undoCloseTabSet.behavior',
-		'undoCloseTabSet-radiogroup',
-		'undoCloseTabSet-check',
-		'undoCloseTabSet-deck',
-		1
-	);
 
 	var focusMode = document.getElementById('extensions.treestyletab.focusMode-check');
 	var focusModePref = document.getElementById('extensions.treestyletab.focusMode');
@@ -344,7 +334,8 @@ function initTreePane()
 }
 
 
-var gBookmarkDroppedTabsRadioSet;
+var gBookmarkDroppedTabsRadioSet,
+	gUndoCloseTabSetRadioSet;
 
 function initAdvancedPane()
 {
@@ -353,6 +344,14 @@ function initAdvancedPane()
 		'bookmarkDroppedTabs-radiogroup',
 		'bookmarkDroppedTabs-check',
 		'bookmarkDroppedTabs-deck'
+	);
+
+	gUndoCloseTabSetRadioSet = new RadioSet(
+		'extensions.treestyletab.undoCloseTabSet.behavior',
+		'undoCloseTabSet-radiogroup',
+		'undoCloseTabSet-check',
+		'undoCloseTabSet-deck',
+		1
 	);
 }
 
