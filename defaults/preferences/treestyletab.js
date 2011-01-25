@@ -112,6 +112,10 @@ pref("extensions.treestyletab.autoAttachNewTabsAsChildren", true);
 // 1 = attach if the search term equals to the selection in the current tab
 // 2 = always attach
 pref("extensions.treestyletab.autoAttachSearchResultAsChildren", 1);
+// 0 = don't attach (open as an independent tab)
+// 1 = attach to the current tab (open as a child)
+// 2 = attach to the parent of the current tab (open as a sibling)
+pref("extensions.treestyletab.autoAttach.newTabCommand", 0);
 // 0 = default, 1 = only visible tabs
 pref("extensions.treestyletab.focusMode", 1);
 /*

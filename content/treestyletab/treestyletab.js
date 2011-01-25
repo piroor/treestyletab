@@ -208,6 +208,15 @@ var TreeStyleTabService = {
 			)
 		);
 
+		if ('BrowserOpenTab' in window) {
+			eval('window.BrowserOpenTab = '+
+				window.BrowserOpenTab.toSource().replace(
+					'gBrowser.loadOneTab(',
+					'gBrowser.treeStyleTab.onBeforeNewTabCommand(); $&'
+				)
+			);
+		}
+
 		if ('undoCloseTab' in window) {
 			eval('window.undoCloseTab = '+
 				window.undoCloseTab.toSource().replace(
@@ -1292,6 +1301,30 @@ var TreeStyleTabService = {
 		return TreeStyleTabService._shownPopups.length > 0;
 	},
 	_shownPopups : [],
+ 
+	onBeforeNewTabCommand : function TSTService_onBeforeNewTabCommand(aTabBrowser) 
+	{
+		var b = aTabBrowser || this.browser;
+		switch (this.getTreePref('autoAttach.newTabCommand'))
+		{
+			case this.kNEWTAB_COMMAND_DO_NOT_ATTACH:
+			default:
+				break;
+
+			case this.kNEWTAB_COMMAND_ATTACH_TO_CURRENT:
+				this.readyToOpenChildTab(b.selectedTab);
+				break;
+
+			case this.kNEWTAB_COMMAND_ATTACH_TO_PARENT:
+				let parentTab = this.getParentTab(b.selectedTab);
+				if (parentTab)
+					this.readyToOpenChildTab(parentTab);
+				break;
+		}
+	},
+	kNEWTAB_COMMAND_DO_NOT_ATTACH     : 0,
+	kNEWTAB_COMMAND_ATTACH_TO_CURRENT : 1,
+	kNEWTAB_COMMAND_ATTACH_TO_PARENT  : 2,
   
 /* Tree Style Tabの初期化が行われる前に復元されたセッションについてツリー構造を復元 */ 
 	
