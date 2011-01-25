@@ -107,11 +107,11 @@ pref("extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMoving
 pref("extensions.treestyletab.collapseExpandSubtree.dblclick",         false);
 pref("extensions.treestyletab.autoExpandSubtreeOnCollapsedChildFocused", true);
 pref("extensions.treestyletab.autoExpandSubtreeOnAppendChild",         true);
-pref("extensions.treestyletab.autoAttachNewTabsAsChildren", true);
+pref("extensions.treestyletab.autoAttach", true);
 // 0 = don't attach
 // 1 = attach if the search term equals to the selection in the current tab
 // 2 = always attach
-pref("extensions.treestyletab.autoAttachSearchResultAsChildren", 1);
+pref("extensions.treestyletab.autoAttach.searchResult", 1);
 // 0 = don't attach (open as an independent tab)
 // 1 = attach to the current tab (open as a child)
 // 2 = attach to the parent of the current tab (open as a sibling)

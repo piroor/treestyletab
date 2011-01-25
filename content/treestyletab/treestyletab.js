@@ -144,7 +144,7 @@ var TreeStyleTabService = {
  
 	shouldOpenSearchResultAsChild : function TSTService_shouldOpenSearchResultAsChild(aTerm) 
 	{
-		var mode = this.getTreePref('autoAttachSearchResultAsChildren');
+		var mode = this.getTreePref('autoAttach.searchResult');
 		if (mode == this.kSEARCH_RESULT_ATTACH_ALWAYS) {
 			return true;
 		}
@@ -237,7 +237,7 @@ var TreeStyleTabService = {
 	},
 	preInitialized : false,
 	
-	kPREF_VERSION : 6,
+	kPREF_VERSION : 7,
 	migratePrefs : function TSTService_migratePrefs() 
 	{
 		// migrate old prefs
@@ -317,6 +317,16 @@ var TreeStyleTabService = {
 				let (behavior = this.getTreePref('openGroupBookmark.behavior')) {
 					behavior = behavior | 2048;
 					this.setTreePref('openGroupBookmark.behavior', behavior);
+				}
+			case 6:
+				let (
+					general = this.getTreePref('autoAttachNewTabsAsChildren'),
+					search = this.getTreePref('autoAttachSearchResultAsChildren')
+					) {
+					if (general !== null)
+						this.setTreePref('autoAttach', general);
+					if (search !== null)
+						this.setTreePref('autoAttach.searchResult', search);
 				}
 			default:
 				orientalPrefs.forEach(function(aPref) {

@@ -1463,7 +1463,7 @@ var TreeStyleTabUtils = {
 	
 	readyToOpenChildTab : function TSTUtils_readyToOpenChildTab(aFrameOrTabBrowser, aMultiple, aInsertBefore) /* PUBLIC API */ 
 	{
-		if (!this.getTreePref('autoAttachNewTabsAsChildren')) return;
+		if (!this.getTreePref('autoAttach')) return;
 
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
 		if (!frame)
@@ -1493,7 +1493,7 @@ var TreeStyleTabUtils = {
  
 	readyToOpenNewTabGroup : function TSTUtils_readyToOpenNewTabGroup(aFrameOrTabBrowser, aTreeStructure, aExpandAllTree) /* PUBLIC API */ 
 	{
-		if (!this.getTreePref('autoAttachNewTabsAsChildren')) return;
+		if (!this.getTreePref('autoAttach')) return;
 
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
 		if (!frame) return;
