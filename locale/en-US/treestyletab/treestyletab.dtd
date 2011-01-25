@@ -46,20 +46,6 @@
 
 <!ENTITY config.show.tabContextMenu.caption "Add following items to the context menu on tabs">
 
-
-<!ENTITY config.tabs.attach "Attach">
-
-<!ENTITY config.autoAttach.newTabCommand.caption "When a new blank tab is opened manually">
-<!ENTITY config.autoAttach.newTabCommand.ignore  "Open as a root tab">
-<!ENTITY config.autoAttach.newTabCommand.current "Open as a child of the current tab">
-<!ENTITY config.autoAttach.newTabCommand.parent  "Open as a sibling of the current tab">
-
-<!ENTITY config.autoAttach.searchResult.caption  "When the search result is opened in a tab">
-<!ENTITY config.autoAttach.searchResult.ignore   "Do nothing">
-<!ENTITY config.autoAttach.searchResult.selected "Open as a child if the search term is selected in the current page">
-<!ENTITY config.autoAttach.searchResult.always   "Always open as a child">
-
-
 <!ENTITY config.tabs.tab "New Tabs">
 
 <!ENTITY config.openGroupBookmark.caption     "Behavior of &quot;Open All in Tabs&quot; for bookmark folders">
@@ -130,6 +116,20 @@
 <!ENTITY config.undoCloseTabSet.ask      "Ask me always">
 <!ENTITY config.undoCloseTabSet.set      "Restore whole of the tree">
 <!ENTITY config.undoCloseTabSet.separate "Restore only one tab (Firefox default)">
+
+
+<!ENTITY config.tabs.attach "Attach">
+
+<!ENTITY config.autoAttach.newTabCommand.caption "When a new blank tab is opened manually">
+<!ENTITY config.autoAttach.newTabCommand.ignore  "Open as a root tab">
+<!ENTITY config.autoAttach.newTabCommand.current "Open as a child of the current tab">
+<!ENTITY config.autoAttach.newTabCommand.parent  "Open as a sibling of the current tab">
+
+<!ENTITY config.autoAttach.searchResult.caption  "When the search result is opened in a tab">
+<!ENTITY config.autoAttach.searchResult.ignore   "Do nothing">
+<!ENTITY config.autoAttach.searchResult.selected "Open as a child if the search term is selected in the current page">
+<!ENTITY config.autoAttach.searchResult.always   "Always open as a child">
+
 
 
 <!ENTITY config.tabs.advanced "Advanced">
