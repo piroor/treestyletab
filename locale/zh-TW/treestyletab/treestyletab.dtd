@@ -50,8 +50,10 @@
 <!ENTITY config.tabs.tab "New Tabs">
 <!--ENTITY config.tabs.tab "分頁操作"-->
 
-<!ENTITY config.tabs.bookmark.tab "Bookmarks">
-<!ENTITY config.tabs.dragdrop.tab "Drag &amp; Drop to tabs">
+<!ENTITY config.autoAttach.newTabCommand.caption "When a new blank tab is opened manually">
+<!ENTITY config.autoAttach.newTabCommand.ignore  "Open as a root tab">
+<!ENTITY config.autoAttach.newTabCommand.current "Open as a child of the current tab">
+<!ENTITY config.autoAttach.newTabCommand.parent  "Open as a sibling of the current tab">
 
 <!ENTITY config.openGroupBookmark.caption     "按書籤資料夾的「全部開啟」時">
 <!--ENTITY config.openGroupBookmark.caption   "按書籤資料夾的「全部開啟」時"-->
@@ -65,10 +67,16 @@
 <!ENTITY config.openGroupBookmark.replace     "將目前瀏覽的分頁取代為書籤的內容">
 <!ENTITY config.openGroupBookmark.underParent "將各分頁開啟於一虛分頁之下以便分組">
 
+<!ENTITY config.dropLinksOnTab.caption "Dropped link, URL, bookmark or file to existing tab">
+<!ENTITY config.dropLinksOnTab.ask     "Always ask me how to load it">
+<!ENTITY config.dropLinksOnTab.load    "Load in the tab (Firefox default)">
+<!ENTITY config.dropLinksOnTab.newTab  "Open as a new child tab">
+<!--
 <!ENTITY config.dropLinksOnTab.caption "拖曳鏈結或 URL 到現有的分頁時">
 <!ENTITY config.dropLinksOnTab.ask     "每次都問我">
 <!ENTITY config.dropLinksOnTab.load    "在拖曳目的地分頁載入鏈結（Firefox 預設）">
 <!ENTITY config.dropLinksOnTab.newTab  "用拖曳目的地分頁之下的新子分頁開啟鏈結">
+-->
 
 
 <!ENTITY config.tabs.autohide "自動隱藏">
@@ -96,11 +104,6 @@
 <!ENTITY config.autoShow.feedback    "開新分頁或關閉分頁時">
 <!ENTITY config.autoShow.feedback.delay.before "">
 <!ENTITY config.autoShow.feedback.delay.after  "毫秒後就自動隱藏">
-
-<!ENTITY config.transparent.style.caption "分頁工具列的背景">
-<!ENTITY config.transparent.style.0 "不透明">
-<!ENTITY config.transparent.style.1 "半透明">
-<!ENTITY config.transparent.style.2 "完全透明">
 
 
 <!ENTITY config.tabs.tree "樹狀結構">

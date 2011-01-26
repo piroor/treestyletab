@@ -49,8 +49,10 @@
 
 <!ENTITY config.tabs.tab "Nouveaux onglets">
 
-<!ENTITY config.tabs.bookmark.tab "Marque-pages">
-<!ENTITY config.tabs.dragdrop.tab "Glisser-déposer dans les onglets">
+<!ENTITY config.autoAttach.newTabCommand.caption "When a new blank tab is opened manually">
+<!ENTITY config.autoAttach.newTabCommand.ignore  "Open as a root tab">
+<!ENTITY config.autoAttach.newTabCommand.current "Open as a child of the current tab">
+<!ENTITY config.autoAttach.newTabCommand.parent  "Open as a sibling of the current tab">
 
 <!ENTITY config.openGroupBookmark.caption     "Action pour &quot;Tout ouvrir dans des onglets&quot; pour les dossiers d'onglets">
 <!ENTITY config.openGroupBookmark.ask         "Toujours demander">
@@ -63,10 +65,16 @@
 <!ENTITY config.openGroupBookmark.replace     "Remplacer l'onglet actuel par les pages du dossier">
 <!ENTITY config.openGroupBookmark.underParent "Mettre les onglets sous un onglet fictif afin de les grouper">
 
+<!ENTITY config.dropLinksOnTab.caption "Dropped link, URL, bookmark or file to existing tab">
+<!ENTITY config.dropLinksOnTab.ask     "Always ask me how to load it">
+<!ENTITY config.dropLinksOnTab.load    "Load in the tab (Firefox default)">
+<!ENTITY config.dropLinksOnTab.newTab  "Open as a new child tab">
+<!--
 <!ENTITY config.dropLinksOnTab.caption "Action pour les glisser-déposer de liens, URL, marques-pages ou fichiers sur un onglet existant">
 <!ENTITY config.dropLinksOnTab.ask     "Toujours me demander">
 <!ENTITY config.dropLinksOnTab.load    "Charger le lien dans l'onglet (défaut Firefox)">
 <!ENTITY config.dropLinksOnTab.newTab  "Ouvrir le lien dans un onglet enfant de l'onglet">
+-->
 
 
 <!ENTITY config.tabs.autohide "Masquage automatique">
@@ -89,11 +97,6 @@
 <!ENTITY config.autoShow.feedback    "De nouveaux onglets sont ouverts ou d'autres sont fermés">
 <!ENTITY config.autoShow.feedback.delay.before "Masquer après">
 <!ENTITY config.autoShow.feedback.delay.after  "msec.">
-
-<!ENTITY config.transparent.style.caption "Transparence du fond du panneau des onglets">
-<!ENTITY config.transparent.style.0 "Aucune transparence">
-<!ENTITY config.transparent.style.1 "Semi-transparent">
-<!ENTITY config.transparent.style.2 "Transparent">
 
 
 <!ENTITY config.tabs.tree "Arborescence">

@@ -50,8 +50,10 @@
 
 <!ENTITY config.tabs.tab "Tabs Öffnen">
 
-<!ENTITY config.tabs.bookmark.tab "Lesezeichen">
-<!ENTITY config.tabs.dragdrop.tab "Ziehen von Links auf Tabs">
+<!ENTITY config.autoAttach.newTabCommand.caption "When a new blank tab is opened manually">
+<!ENTITY config.autoAttach.newTabCommand.ignore  "Open as a root tab">
+<!ENTITY config.autoAttach.newTabCommand.current "Open as a child of the current tab">
+<!ENTITY config.autoAttach.newTabCommand.parent  "Open as a sibling of the current tab">
 
 <!ENTITY config.openGroupBookmark.caption     "Verhalten von &quot;Alle in Tabs öffnen&quot; für Seiten in einem Lesezeichenordner">
 <!ENTITY config.openGroupBookmark.ask         "Jedes Mal nachfragen">
@@ -64,10 +66,16 @@
 <!ENTITY config.openGroupBookmark.replace     "Aktuelles Tab durch die neuen Tabs ersetzen">
 <!ENTITY config.openGroupBookmark.underParent "Seiten zur Gruppierung einem Dummytab unterordnen">
 
+<!ENTITY config.dropLinksOnTab.caption "Dropped link, URL, bookmark or file to existing tab">
+<!ENTITY config.dropLinksOnTab.ask     "Always ask me how to load it">
+<!ENTITY config.dropLinksOnTab.load    "Load in the tab (Firefox default)">
+<!ENTITY config.dropLinksOnTab.newTab  "Open as a new child tab">
+<!--
 <!ENTITY config.dropLinksOnTab.caption "Verhalten für das Drag &amp; Drop von URLs auf Tabs">
 <!ENTITY config.dropLinksOnTab.ask     "Jedes Mal nachfragen">
 <!ENTITY config.dropLinksOnTab.load    "Seite im Tab laden (Firefox Standard)">
 <!ENTITY config.dropLinksOnTab.newTab  "Seite in einem neuen untergeordneten Tab laden">
+-->
 
 <!ENTITY config.tabs.autohide "Platz sparen">
 
@@ -89,11 +97,6 @@
 <!ENTITY config.autoShow.feedback     "Wenn neue Tabs geöffnet oder alte geschlossen werden">
 <!ENTITY config.autoShow.feedback.delay.before "Nach">
 <!ENTITY config.autoShow.feedback.delay.after  "msec. wieder deaktivieren">
-
-<!ENTITY config.transparent.style.caption "Hintergrund der aktiven Tableiste">
-<!ENTITY config.transparent.style.0 "Gefüllt">
-<!ENTITY config.transparent.style.1 "Halb-transparent">
-<!ENTITY config.transparent.style.2 "Transparent">
 
 
 <!ENTITY config.tabs.tree "Verhalten">

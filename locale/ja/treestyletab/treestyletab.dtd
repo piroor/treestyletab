@@ -49,8 +49,10 @@
 
 <!ENTITY config.tabs.tab "新しいタブ">
 
-<!ENTITY config.tabs.bookmark.tab "ブックマーク">
-<!ENTITY config.tabs.dragdrop.tab "タブへのドラッグ＆ドロップ">
+<!ENTITY config.autoAttach.newTabCommand.caption "新しい空のタブを開いた時">
+<!ENTITY config.autoAttach.newTabCommand.ignore  "独立したタブとして開く">
+<!ENTITY config.autoAttach.newTabCommand.current "現在のタブの子として開く">
+<!ENTITY config.autoAttach.newTabCommand.parent  "現在のタブと同階層に開く">
 
 <!ENTITY config.openGroupBookmark.caption     "ブックマークフォルダの内容をタブで開く時">
 <!ENTITY config.openGroupBookmark.ask         "どうするか毎回尋ねる">
@@ -63,10 +65,10 @@
 <!ENTITY config.openGroupBookmark.replace     "現在のタブ1つだけをブックマークの内容で置き換える">
 <!ENTITY config.openGroupBookmark.underParent "グループ化用のダミーのタブを親にする">
 
-<!ENTITY config.dropLinksOnTab.caption "リンクやURL、ブックマーク、ファイルをタブにドラッグ＆ドロップした時">
-<!ENTITY config.dropLinksOnTab.ask     "どうするか毎回尋ねる">
-<!ENTITY config.dropLinksOnTab.load    "ドロップ先のタブの中に読み込む（Firefox初期状態）">
-<!ENTITY config.dropLinksOnTab.newTab  "ドロップ先のタブのツリーに新しいタブを開く">
+<!ENTITY config.dropLinksOnTab.caption "タブにドラッグ＆ドロップされたリンク、URL、ブックマーク、ファイルなど">
+<!ENTITY config.dropLinksOnTab.ask     "どのように開くか毎回尋ねる">
+<!ENTITY config.dropLinksOnTab.load    "そのタブに読み込む（Firefox初期状態）">
+<!ENTITY config.dropLinksOnTab.newTab  "新しい子タブで開く">
 
 
 <!ENTITY config.tabs.autohide "自動的に隠す">
@@ -116,19 +118,6 @@
 <!ENTITY config.undoCloseTabSet.ask      "どうするか毎回尋ねる">
 <!ENTITY config.undoCloseTabSet.set      "ツリー全体を開き直す">
 <!ENTITY config.undoCloseTabSet.separate "そのタブだけを開き直す（Firefox初期状態）">
-
-
-<!ENTITY config.tabs.attach "タブのツリー化">
-
-<!ENTITY config.autoAttach.newTabCommand.caption "新しい空のタブを開いた時">
-<!ENTITY config.autoAttach.newTabCommand.ignore  "独立したタブとして開く">
-<!ENTITY config.autoAttach.newTabCommand.current "現在のタブの子として開く">
-<!ENTITY config.autoAttach.newTabCommand.parent  "現在のタブと同階層に開く">
-
-<!ENTITY config.autoAttach.searchResult.caption  "検索結果がタブで開かれた時">
-<!ENTITY config.autoAttach.searchResult.ignore   "何もしない">
-<!ENTITY config.autoAttach.searchResult.selected "現在のページで選択されている語句を検索した時は子タブとして開く">
-<!ENTITY config.autoAttach.searchResult.always   "常に現在のタブの子として開く">
 
 
 <!ENTITY config.tabs.advanced "詳細">

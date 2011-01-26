@@ -50,8 +50,10 @@
 <!ENTITY config.tabs.tab "New Tabs">
 <!--ENTITY config.tabs.tab "Navigazione"-->
 
-<!ENTITY config.tabs.bookmark.tab "Bookmarks">
-<!ENTITY config.tabs.dragdrop.tab "Drag &amp; Drop to tabs">
+<!ENTITY config.autoAttach.newTabCommand.caption "When a new blank tab is opened manually">
+<!ENTITY config.autoAttach.newTabCommand.ignore  "Open as a root tab">
+<!ENTITY config.autoAttach.newTabCommand.current "Open as a child of the current tab">
+<!ENTITY config.autoAttach.newTabCommand.parent  "Open as a sibling of the current tab">
 
 <!ENTITY config.openGroupBookmark.caption     "Behavior of &quot;Open All in Tabs&quot; for bookmark folders">
 <!--ENTITY config.openGroupBookmark.caption     "La voce &quot;Apri tutti in schede&quot; nel menu Segnalibri"-->
@@ -65,10 +67,16 @@
 <!ENTITY config.openGroupBookmark.replace     "sostituisce la scheda in uso con i segnalibri contenuti nella cartella selezionata">
 <!ENTITY config.openGroupBookmark.underParent "Put tabs under a dummy tab for grouping">
 
+<!ENTITY config.dropLinksOnTab.caption "Dropped link, URL, bookmark or file to existing tab">
+<!ENTITY config.dropLinksOnTab.ask     "Always ask me how to load it">
+<!ENTITY config.dropLinksOnTab.load    "Load in the tab (Firefox default)">
+<!ENTITY config.dropLinksOnTab.newTab  "Open as a new child tab">
+<!--
 <!ENTITY config.dropLinksOnTab.caption "Il trascinamento di collegamenti o indirizzi su una scheda esistente">
 <!ENTITY config.dropLinksOnTab.ask     "Ask me always">
 <!ENTITY config.dropLinksOnTab.load    "carica il collegamento nella scheda (comportamento predefinito di Firefox)">
 <!ENTITY config.dropLinksOnTab.newTab  "apre il collegamento in una nuova sottoscheda">
+-->
 
 
 <!ENTITY config.tabs.autohide "Visualizzazione">
@@ -91,11 +99,6 @@
 <!ENTITY config.autoShow.feedback    "Viene aperta o chiusa una scheda">
 <!ENTITY config.autoShow.feedback.delay.before "Nascondi dopo">
 <!ENTITY config.autoShow.feedback.delay.after  "msec.">
-
-<!ENTITY config.transparent.style.caption "Sfondo della barra delle schede">
-<!ENTITY config.transparent.style.0 "Solido">
-<!ENTITY config.transparent.style.1 "Semitrasparente">
-<!ENTITY config.transparent.style.2 "Trasparente">
 
 
 <!ENTITY config.tabs.tree "Tree">

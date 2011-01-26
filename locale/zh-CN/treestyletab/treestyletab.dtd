@@ -49,8 +49,10 @@
 
 <!ENTITY config.tabs.tab "新标签">
 
-<!ENTITY config.tabs.bookmark.tab "从书签">
-<!ENTITY config.tabs.dragdrop.tab "拖放到标签">
+<!ENTITY config.autoAttach.newTabCommand.caption "When a new blank tab is opened manually">
+<!ENTITY config.autoAttach.newTabCommand.ignore  "Open as a root tab">
+<!ENTITY config.autoAttach.newTabCommand.current "Open as a child of the current tab">
+<!ENTITY config.autoAttach.newTabCommand.parent  "Open as a sibling of the current tab">
 
 <!ENTITY config.openGroupBookmark.caption     "如何“在标签页中打开书签组”？">
 <!ENTITY config.openGroupBookmark.ask         "总是询问">
@@ -63,10 +65,16 @@
 <!ENTITY config.openGroupBookmark.replace     "覆盖当前标签打开">
 <!ENTITY config.openGroupBookmark.underParent "将标签置于一伪标签下以便分组">
 
+<!ENTITY config.dropLinksOnTab.caption "Dropped link, URL, bookmark or file to existing tab">
+<!ENTITY config.dropLinksOnTab.ask     "Always ask me how to load it">
+<!ENTITY config.dropLinksOnTab.load    "Load in the tab (Firefox default)">
+<!ENTITY config.dropLinksOnTab.newTab  "Open as a new child tab">
+<!--
 <!ENTITY config.dropLinksOnTab.caption "如何打开拖拽到现有标签的链接或URL？">
 <!ENTITY config.dropLinksOnTab.ask     "总是询问">
 <!ENTITY config.dropLinksOnTab.load    "在该标签中打开（Firefox 默认）">
 <!ENTITY config.dropLinksOnTab.newTab  "在此标签下新建子标签打开">
+-->
 
 
 <!ENTITY config.tabs.autohide "自动隐藏">
@@ -94,11 +102,6 @@
 <!ENTITY config.autoShow.feedback    "新建或关闭标签之后">
 <!ENTITY config.autoShow.feedback.delay.before "等待">
 <!ENTITY config.autoShow.feedback.delay.after  "毫秒再自动隐藏">
-
-<!ENTITY config.transparent.style.caption "标签栏背景">
-<!ENTITY config.transparent.style.0 "不透明">
-<!ENTITY config.transparent.style.1 "半透明">
-<!ENTITY config.transparent.style.2 "完全透明">
 
 
 <!ENTITY config.tabs.tree "树状结构">

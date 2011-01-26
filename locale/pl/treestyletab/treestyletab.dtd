@@ -48,6 +48,11 @@
 
 <!ENTITY config.tabs.tab "Nowe karty">
 
+<!ENTITY config.autoAttach.newTabCommand.caption "When a new blank tab is opened manually">
+<!ENTITY config.autoAttach.newTabCommand.ignore  "Open as a root tab">
+<!ENTITY config.autoAttach.newTabCommand.current "Open as a child of the current tab">
+<!ENTITY config.autoAttach.newTabCommand.parent  "Open as a sibling of the current tab">
+
 <!ENTITY config.tabs.bookmark.tab "Zakładki">
 <!ENTITY config.tabs.dragdrop.tab "Przeciąganie/Upuszczanie">
 
@@ -62,10 +67,16 @@
 <!ENTITY config.openGroupBookmark.replace     "Zastępuj aktywną kartę stronami z folderu">
 <!ENTITY config.openGroupBookmark.underParent "Umieszczaj karty pod pustą kartą dla lepszego grupowania">
 
+<!ENTITY config.dropLinksOnTab.caption "Dropped link, URL, bookmark or file to existing tab">
+<!ENTITY config.dropLinksOnTab.ask     "Always ask me how to load it">
+<!ENTITY config.dropLinksOnTab.load    "Load in the tab (Firefox default)">
+<!ENTITY config.dropLinksOnTab.newTab  "Open as a new child tab">
+<!--
 <!ENTITY config.dropLinksOnTab.caption "Działanie po przeciągnięciu odnośników, URL-i, zakładek lub plików do istniejącej karty">
 <!ENTITY config.dropLinksOnTab.ask     "Zawsze pytaj">
 <!ENTITY config.dropLinksOnTab.load    "Otwieraj odnośnik w nowej karcie (domyślne działanie Firefoksa)">
 <!ENTITY config.dropLinksOnTab.newTab  "Otwieraj odnośnik w nowej, potomnej karcie">
+-->
 
 
 <!ENTITY config.tabs.autohide "Ukrywanie">
@@ -88,11 +99,6 @@
 <!ENTITY config.autoShow.feedback    "Podczas otwierania nowych/zamykania kart">
 <!ENTITY config.autoShow.feedback.delay.before "Ukrywaj po">
 <!ENTITY config.autoShow.feedback.delay.after  "ms">
-
-<!ENTITY config.transparent.style.caption "Przezroczystość tła paska kart">
-<!ENTITY config.transparent.style.0 "Nieprzezroczyste">
-<!ENTITY config.transparent.style.1 "Półprzezroczyste">
-<!ENTITY config.transparent.style.2 "Przezroczyste">
 
 
 <!ENTITY config.tabs.tree "Drzewo">
