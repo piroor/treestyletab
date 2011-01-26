@@ -85,7 +85,7 @@ var TreeStyleTabUtils = {
 	kMODE               : 'treestyletab-mode',
 
 	kHIDE_NEWTAB        : 'treestyletab-hide-newtab-button',
-	kHIDE_ALLTABS       : 'treestyletab-hide-alltabs-button', /* regacy feature for Firefox 3.6 or olders */
+	kHIDE_ALLTABS       : 'treestyletab-hide-alltabs-button', /* legacy feature for Firefox 3.6 or olders */
 	kSTYLE              : 'treestyletab-style',
 	kFIRSTTAB_BORDER    : 'treestyletab-firsttab-border',
 	kFIXED              : 'treestyletab-tabbar-fixed',
