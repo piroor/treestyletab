@@ -36,13 +36,13 @@
 	box-shadow: none !important;
 }
 
-.tabbrowser-strip[treestyletab-style~="square"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"]:not([treestyletab-tabbar-transparent="full"]),
-.treestyletab-tabbar-toolbar[treestyletab-style~="square"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"]:not([treestyletab-tabbar-transparent="full"]) {
+.tabbrowser-strip[treestyletab-style~="square"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"],
+.treestyletab-tabbar-toolbar[treestyletab-style~="square"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"] {
 	border-right: 1px solid ThreeDShadow !important;
 	-moz-border-right-colors: none !important;
 }
-.tabbrowser-strip[treestyletab-style~="square"][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"]:not([treestyletab-tabbar-transparent="full"]),
-.treestyletab-tabbar-toolbar[treestyletab-style~="square"][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"]:not([treestyletab-tabbar-transparent="full"]) {
+.tabbrowser-strip[treestyletab-style~="square"][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"],
+.treestyletab-tabbar-toolbar[treestyletab-style~="square"][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"] {
 	border-left: 1px solid ThreeDShadow !important;
 	-moz-border-left-colors: none !important;
 }

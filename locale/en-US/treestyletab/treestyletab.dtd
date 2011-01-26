@@ -86,11 +86,6 @@
 <!ENTITY config.autoShow.feedback.delay.before "Hide after">
 <!ENTITY config.autoShow.feedback.delay.after  "msec.">
 
-<!ENTITY config.transparent.style.caption "Background transparency of tab bar">
-<!ENTITY config.transparent.style.0 "Solid">
-<!ENTITY config.transparent.style.1 "Half-transparent">
-<!ENTITY config.transparent.style.2 "Transparent">
-
 
 <!ENTITY config.tabs.tree "Tree">
 

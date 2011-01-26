@@ -124,7 +124,7 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 	margin: 0;
 }
 
-.tabbrowser-tabs[treestyletab-tabbar-autohide][treestyletab-tabbar-transparent]
+.tabbrowser-tabs[treestyletab-tabbar-autohide]
   .tabs-stack
   > *:first-child
   > :not(html|canvas),

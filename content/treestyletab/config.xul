@@ -461,9 +461,6 @@
 		<preference id="extensions.treestyletab.tabbar.autoShow.feedback.delay"
 			name="extensions.treestyletab.tabbar.autoShow.feedback.delay"
 			type="int"/>
-		<preference id="extensions.treestyletab.tabbar.transparent.style"
-			name="extensions.treestyletab.tabbar.transparent.style"
-			type="int"/>
 	</preferences>
 
 	<vbox>
@@ -577,24 +574,6 @@
 				<label id="extensions.treestyletab.tabbar.autoShow.feedback.delay-after"
 					value="&config.autoShow.feedback.delay.after;"
 					control="extensions.treestyletab.tabbar.autoShow.feedback.delay-textbox"/>
-			</hbox>
-		</groupbox>
-		<groupbox orient="vertical">
-			<caption label="&config.transparent.style.caption;"/>
-			<hbox align="center">
-				<label class="scale-label" value="&config.scale.min;" control="tabbarTransparency-scale"/>
-				<scale id="tabbarTransparency-scale"
-					preference="extensions.treestyletab.tabbar.transparent.style"
-					orient="horizontal"
-					min="0"
-					max="2"
-					onchange="onTabbarTransparencyScaleChange()"/>
-				<label class="scale-label" value="&config.scale.max;" control="tabbarTransparency-scale"/>
-				<deck id="tabbarTransparency-labels">
-					<label value="&config.transparent.style.0;" control="tabbarTransparency-scale"/>
-					<label value="&config.transparent.style.1;" control="tabbarTransparency-scale"/>
-					<label value="&config.transparent.style.2;" control="tabbarTransparency-scale"/>
-				</deck>
 			</hbox>
 		</groupbox>
 

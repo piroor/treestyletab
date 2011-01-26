@@ -295,15 +295,8 @@ function onSyncMaxTreeLevelPrefToUI(aTarget)
 }
 
 
-var gTabbarTransparencyScale,
-	gTabbarTransparencyLabels;
 function initAutoHidePane()
 {
-	gTabbarTransparencyScale = document.getElementById('tabbarTransparency-scale');
-	gTabbarTransparencyLabels = document.getElementById('tabbarTransparency-labels');
-
-	onTabbarTransparencyScaleChange();
-
 	syncEnabledState('extensions.treestyletab.tabbar.autoShow.mousemove-check', 'this.checked');
 	syncEnabledState('extensions.treestyletab.tabbar.autoShow.accelKeyDown-check', 'this.checked');
 	syncEnabledState('extensions.treestyletab.tabbar.autoShow.feedback-check', 'this.checked');
@@ -313,11 +306,6 @@ function onChangeAutoHideMode(aRadioGroup, aTogglePref)
 {
 	if (aRadioGroup.value != 0)
 		document.getElementById(aTogglePref).value = aRadioGroup.value;
-}
-
-function onTabbarTransparencyScaleChange()
-{
-	gTabbarTransparencyLabels.selectedIndex = gTabbarTransparencyScale.value;
 }
 
 

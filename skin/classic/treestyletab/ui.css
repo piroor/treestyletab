@@ -245,21 +245,21 @@ tabbrowser[treestyletab-drop-position="left"]:not([treestyletab-tabbar-position=
 
 /* transaprent tab bar */
 
-.tabbrowser-tabs[treestyletab-tabbar-autohide][treestyletab-tabbar-transparent]
+.tabbrowser-tabs[treestyletab-tabbar-autohide]
   .tabbrowser-tab {
 	opacity: 0.85 !important;
 }
-.tabbrowser-tabs[treestyletab-tabbar-autohide][treestyletab-tabbar-transparent]:hover
+.tabbrowser-tabs[treestyletab-tabbar-autohide]:hover
   .tabbrowser-tab {
 	opacity: 0.9 !important;
 }
-.tabbrowser-tabs[treestyletab-tabbar-autohide][treestyletab-tabbar-transparent]:hover
+.tabbrowser-tabs[treestyletab-tabbar-autohide]:hover
   .tabbrowser-tab[selected="true"],
-.tabbrowser-tabs[treestyletab-tabbar-autohide][treestyletab-tabbar-transparent]:hover
+.tabbrowser-tabs[treestyletab-tabbar-autohide]:hover
   .tabbrowser-tab:hover {
 	opacity: 0.95 !important;
 }
-.tabbrowser-tabs[treestyletab-tabbar-autohide][treestyletab-tabbar-transparent]:hover
+.tabbrowser-tabs[treestyletab-tabbar-autohide]:hover
   .tabbrowser-tab[selected="true"]:hover {
 	opacity: 0.98 !important;
 }
@@ -279,7 +279,7 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
   .treestyletab-tabbar-toggler {
 	border-top: 1px solid ThreeDShadow;
 }
-.treestyletab-tabbar-toolbar[treestyletab-tabbar-transparent="part"]
+.treestyletab-tabbar-toolbar[treestyletab-tabbar-autohide]
   #treestyletab-tabbar-resizer-box {
 	background: rgba(0, 0, 0, 0.25);
 }

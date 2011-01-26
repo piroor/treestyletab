@@ -61,12 +61,6 @@ AutoHideBrowser.prototype = {
 	kSHOWN_BY_MOUSEMOVE : 1 << 1,
 	kSHOWN_BY_FEEDBACK  : 1 << 2,
 	kKEEP_SHOWN_ON_MOUSEOVER : (1 << 0) | (1 << 1) | (1 << 2),
-
-	kTRANSPARENT       : 'treestyletab-tabbar-transparent',
-	kTRANSPARENT_NONE  : 0,
-	kTRANSPARENT_PART  : 1,
-	kTRANSPARENT_FULL  : 2,
-	kTRANSPARENT_STYLE : ['none', 'part', 'full'],
  
 	get mode() /* PUBLIC API */ 
 	{
@@ -243,7 +237,6 @@ AutoHideBrowser.prototype = {
 			sv.container.style.margin = 0;
 		sv.removeTabbrowserAttribute(this.kAUTOHIDE);
 		sv.removeTabbrowserAttribute(this.kSTATE);
-		sv.removeTabbrowserAttribute(this.kTRANSPARENT);
 
 		if (sv.isVertical)
 			sv.setTabStripAttribute('width', this.widthFromMode);
@@ -711,11 +704,7 @@ AutoHideBrowser.prototype = {
 		try {
 			var v = this.browser.markupDocumentViewer;
 			if (this.shouldRedraw) {
-				if (sv.browser.hasAttribute(this.kTRANSPARENT) &&
-					sv.browser.getAttribute(this.kTRANSPARENT) != this.kTRANSPARENT_STYLE[this.kTRANSPARENT_NONE])
-					this.drawBG();
-				else
-					this.clearBG();
+				this.drawBG();
 
 				v.move(w.outerWidth, w.outerHeight);
 				v.move(
@@ -875,13 +864,11 @@ AutoHideBrowser.prototype = {
 			'-moz-field'
 		);
 		ctx.restore();
-		if (b.getAttribute(this.kTRANSPARENT) != this.kTRANSPARENT_STYLE[this.kTRANSPARENT_FULL]) {
-			var alpha = Number(sv.getTreePref('tabbar.transparent.partialTransparency'));
-			if (isNaN(alpha)) alpha = 0.25;
-			ctx.globalAlpha = alpha;
-			ctx.fillStyle = 'black';
-			ctx.fillRect(0, 0, w, h);
-		}
+		var alpha = Number(sv.getTreePref('tabbar.transparent.partialTransparency'));
+		if (isNaN(alpha)) alpha = 0.25;
+		ctx.globalAlpha = alpha;
+		ctx.fillStyle = 'black';
+		ctx.fillRect(0, 0, w, h);
 		ctx.restore();
 	},
 	
@@ -945,25 +932,6 @@ AutoHideBrowser.prototype = {
 	updateTransparency : function AHB_updateTransparency() 
 	{
 		var sv  = this.treeStyleTab;
-		var b   = this.browser;
-		var pos = sv.position;
-		var style = this.kTRANSPARENT_STYLE[
-				Math.max(
-					this.kTRANSPARENT_NONE,
-					Math.min(
-						this.kTRANSPARENT_FULL,
-						sv.getTreePref('tabbar.transparent.style')
-					)
-				)
-			];
-		if (pos != 'top' &&
-			this.mode != this.kMODE_DISABLED &&
-			style != this.kTRANSPARENT_STYLE[this.kTRANSPARENT_NONE]) {
-			sv.setTabbrowserAttribute(this.kTRANSPARENT, style);
-		}
-		else {
-			sv.removeTabbrowserAttribute(this.kTRANSPARENT);
-		}
 		sv.updateFloatingTabbar(sv.kTABBAR_UPDATE_BY_APPEARANCE_CHANGE);
 	},
   
@@ -1023,9 +991,6 @@ AutoHideBrowser.prototype = {
 					aSelf.onTabbarResized();
 				}, 0, this);
 				return;
-
-			case 'extensions.treestyletab.tabbar.transparent.style':
-				return this.updateTransparency();
 
 			case 'extensions.treestyletab.tabbar.togglerSize':
 				this.togglerSize = value;
@@ -1365,7 +1330,6 @@ AutoHideBrowser.prototype = {
 		b.setAttribute(this.kMODE+'-fullscreen', sv.getTreePref('tabbar.autoHide.mode.fullscreen'));
 		sv.addPrefListener(this);
 		this.onPrefChange('extensions.treestyletab.tabbar.autoHide.area');
-		this.onPrefChange('extensions.treestyletab.tabbar.transparent.style');
 		this.onPrefChange('extensions.treestyletab.tabbar.togglerSize');
 		this.window.setTimeout(function(aSelf) {
 			aSelf.onPrefChange('extensions.treestyletab.tabbar.autoHide.mode');
