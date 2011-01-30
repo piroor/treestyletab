@@ -1412,6 +1412,7 @@ TreeStyleTabBrowser.prototype = {
 
 		var strip = this.tabStrip;
 		var tabContainerBox = this.getTabContainerBox(this.mTabBrowser);
+		var statusPanel = document.getElementById('statusbar-display');
 		var pos = this.position;
 		if (pos != 'top' ||
 			this.mTabBrowser.getAttribute(this.kFIXED) != 'true') {
@@ -1456,6 +1457,12 @@ TreeStyleTabBrowser.prototype = {
 
 			tabContainerBox.collapsed = (this.splitter && this.splitter.getAttribute('state') == 'collapsed');
 
+			if (statusPanel) {
+				statusPanel.style.marginTop = (pos == 'bottom') ?
+					'-moz-calc(0px - ' + height + 'px - 3em)' :
+					'' ;
+			}
+
 			this.mTabBrowser.tabContainer.setAttribute('context', this.mTabBrowser.tabContextMenu.id);
 		}
 		else {
@@ -1464,6 +1471,10 @@ TreeStyleTabBrowser.prototype = {
 			strip.style.left = '';
 			strip.style.width = '';
 			strip.style.height = '';
+
+			if (statusPanel) {
+				statusPanel.style.marginTop = '';
+			}
 
 			strip.removeAttribute('layer'); // https://bugzilla.mozilla.org/show_bug.cgi?id=590468
 
