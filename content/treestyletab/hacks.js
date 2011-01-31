@@ -106,16 +106,20 @@ TreeStyleTabService.overrideExtensionsPreInit = function TSTService_overrideExte
 		document.documentElement.setAttribute('treestyletab-enable-compatibility-tmp', true);
 	}
 	// Tab Mix Plus, SessionStore API
-	if (this.getTreePref('compatibility.TMP') &&
-		'SessionData' in window &&
-		'getTabProperties' in SessionData &&
-		'setTabProperties' in SessionData) {
-		var prefix = this.kTMP_SESSION_DATA_PREFIX;
+	if (
+		this.getTreePref('compatibility.TMP') &&
+		('SessionData' in window || 'TabmixSessionData' in window) &&
+		('getTabProperties' in SessionData || 'getTabProperties' in TabmixSessionData) &&
+		('setTabProperties' in SessionData || 'setTabProperties' in TabmixSessionData)
+		) {
+		let prefix = this.kTMP_SESSION_DATA_PREFIX;
+		let sessionData = window.TabmixSessionData || window.SessionData;
+		let sessionManager = window.TabmixSessionManager || window.SessionManager;
 		SessionData.tabTSTProperties = this.extraProperties.map(function(aProperty) {
 			return prefix+aProperty;
 		});
-		eval('SessionData.getTabProperties = '+
-			SessionData.getTabProperties.toSource().replace(
+		eval('sessionData.getTabProperties = '+
+			sessionData.getTabProperties.toSource().replace(
 				'return tabProperties;',
 				<![CDATA[
 					this.tabTSTProperties.forEach(function(aProp) {
@@ -124,8 +128,8 @@ TreeStyleTabService.overrideExtensionsPreInit = function TSTService_overrideExte
 				$&]]>
 			)
 		);
-		eval('SessionData.setTabProperties = '+
-			SessionData.setTabProperties.toSource().replace(
+		eval('sessionData.setTabProperties = '+
+			sessionData.setTabProperties.toSource().replace(
 				'{',
 				<![CDATA[$&
 					var TSTProps = tabProperties.split('|');
@@ -140,8 +144,8 @@ TreeStyleTabService.overrideExtensionsPreInit = function TSTService_overrideExte
 				]]>
 			)
 		);
-		eval('SessionManager.loadOneTab = '+
-			SessionManager.loadOneTab.toSource().replace(
+		eval('sessionManager.loadOneTab = '+
+			sessionManager.loadOneTab.toSource().replace(
 				/(\}\))?$/,
 				<![CDATA[
 					if (gBrowser.treeStyleTab.useTMPSessionAPI)
@@ -149,7 +153,7 @@ TreeStyleTabService.overrideExtensionsPreInit = function TSTService_overrideExte
 				$1]]>
 			)
 		);
-		var source = tablib.init.toSource().split('gBrowser.restoreTab = ');
+		let source = tablib.init.toSource().split('gBrowser.restoreTab = ');
 		source[1] = source[1].replace(
 			'return newTab;',
 			<![CDATA[
@@ -158,8 +162,8 @@ TreeStyleTabService.overrideExtensionsPreInit = function TSTService_overrideExte
 			$&]]>
 		);
 		eval('tablib.init = '+source.join('gBrowser.restoreTab = '));
-		eval('SessionManager.loadOneWindow = '+
-			SessionManager.loadOneWindow.toSource().replace(
+		eval('sessionManager.loadOneWindow = '+
+			sessionManager.loadOneWindow.toSource().replace(
 				'gBrowser.tabsToLoad = ',
 				<![CDATA[
 					gBrowser.treeStyleTab.resetAllTabs(true, true);
