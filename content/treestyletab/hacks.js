@@ -266,11 +266,6 @@ TreeStyleTabService.overrideExtensionsOnInitBefore = function TSTService_overrid
 		TMP_LastTab.TabBar = gBrowser.mTabContainer;
 	}
 	if (this.getTreePref('compatibility.TMP') &&
-		'flst' in window) {
-		flst.tb = gBrowser;
-		flst.tabBox = flst.tb.mTabBox;
-	}
-	if (this.getTreePref('compatibility.TMP') &&
 		'isTabVisible' in gBrowser.mTabContainer &&
 		'ensureTabIsVisible' in gBrowser.mTabContainer) {
 		function replaceHorizontalProps(aString)
@@ -279,12 +274,16 @@ TreeStyleTabService.overrideExtensionsOnInitBefore = function TSTService_overrid
 					/boxObject\.x/g,
 					'boxObject[posProp]'
 				).replace(
+					/boxObject\.screenX/g,
+					'boxObject[screenPosProp]'
+				).replace(
 					/boxObject\.width/g,
 					'boxObject[sizeProp]'
 				).replace(
 					'{',
 					<![CDATA[$&
 						var posProp = gBrowser.treeStyleTab.isVertical ? 'y' : 'x' ;
+						var screenPosProp = gBrowser.treeStyleTab.isVertical ? 'screenY' : 'screenX' ;
 						var sizeProp = gBrowser.treeStyleTab.isVertical ? 'height' : 'width' ;
 					]]>
 				)
@@ -366,210 +365,24 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 
 
 	// Tab Mix Plus
-	if (this.getTreePref('compatibility.TMP') &&
-		'TMupdateSettings' in window) {
-		if (window.TMupdateSettings.toSource().indexOf('treeStyleTab') < 0) {
-			eval('window.TMupdateSettings = '+
-				window.TMupdateSettings.toSource().replace(
-					/(\{aTab.removeAttribute\("tabxleft"\);\})(\})/,
-					<![CDATA[$1
-						gBrowser.treeStyleTab.initTabAttributes(aTab);
-						gBrowser.treeStyleTab.initTabContentsOrder(aTab);
-					$2]]>
-				)
-			);
-		}
-
-		eval('window.TMP_contentAreaClick = '+
-			window.TMP_contentAreaClick.toSource().replace(
-				'if (openT)',
-				<![CDATA[if (TreeStyleTabService.checkReadyToOpenNewTabFromLink(linkNode)) {
-					event.stopPropagation();
-					event.preventDefault();
-					handleLinkClick(event, linkNode.href, linkNode);
-					return true;
-				} else $&]]>
-			)
-		);
-		if (/\(?function TMP_contentAreaClick\(/.test(window.contentAreaClick.toSource()))
-			window.contentAreaClick = window.TMP_contentAreaClick;
-
-		gBrowser.mTabContainer.removeEventListener('DOMNodeInserted', tabxTabAdded, true);
-		eval('window.tabxTabAdded = '+
-			window.tabxTabAdded.toSource().replace(
-				/(\})(\)?)$/,
-				<![CDATA[
-					gBrowser.treeStyleTab.initTabAttributes(aTab);
-					gBrowser.treeStyleTab.initTabContentsOrder(aTab);
-				$1$2]]>
-			)
-		);
-		gBrowser.mTabContainer.addEventListener('DOMNodeInserted', tabxTabAdded, true);
-
-		eval('window.TMP_TabDragGesture = '+
-			window.TMP_TabDragGesture.toSource().replace(
-				'{',
-				<![CDATA[$&
-					if (TreeStyleTabService.getPref('extensions.tabmix.tabBarMode', 1) != 2) {
-						nsDragAndDrop.startDrag(aEvent, (gBrowser.getAttribute(TreeStyleTabService.kMODE) == 'vertical' ? gBrowser : TabDNDObserver ));
-						aEvent.stopPropagation();
-						return;
-					}
-				]]>
-			)
-		);
-		eval('window.TMP_TabDragOver = '+
-			window.TMP_TabDragOver.toSource().replace(
-				'{',
-				<![CDATA[$&
-					if (TreeStyleTabService.getPref('extensions.tabmix.tabBarMode', 1) != 2) {
-						nsDragAndDrop.dragOver(aEvent, (gBrowser.getAttribute(TreeStyleTabService.kMODE) == 'vertical' ? gBrowser : TabDNDObserver ));
-						aEvent.stopPropagation();
-						return;
-					}
-				]]>
-			)
-		);
-		eval('window.TMP_TabDragDrop = '+
-			window.TMP_TabDragDrop.toSource().replace(
-				'{',
-				<![CDATA[$&
-					if (TreeStyleTabService.getPref('extensions.tabmix.tabBarMode', 1) != 2) {
-						nsDragAndDrop.drop(aEvent, (gBrowser.getAttribute(TreeStyleTabService.kMODE) == 'vertical' ? gBrowser : TabDNDObserver ));
-						aEvent.stopPropagation();
-						return;
-					}
-				]]>
-			)
-		);
-		eval('window.TMP_TabDragExit = '+
-			window.TMP_TabDragExit.toSource().replace(
-				'{',
-				<![CDATA[$&
-					if (TreeStyleTabService.getPref('extensions.tabmix.tabBarMode', 1) != 2) {
-						nsDragAndDrop.dragExit(aEvent, (gBrowser.getAttribute(TreeStyleTabService.kMODE) == 'vertical' ? gBrowser : TabDNDObserver ));
-						aEvent.stopPropagation();
-						return;
-					}
-				]]>
-			)
-		);
-
-		this.updateTabDNDObserver(TabDNDObserver);
-		eval('TabDNDObserver.clearDragmark = '+
-			TabDNDObserver.clearDragmark.toSource().replace(
+	if (
+		this.getTreePref('compatibility.TMP') &&
+		'TabmixTabbar' in window
+		) {
+		let DNDObserver = 'TMP_tabDNDObserver' in window ? TMP_tabDNDObserver : TabDNDObserver ;
+		this.updateTabDNDObserver(DNDObserver);
+		eval('DNDObserver.clearDragmark = '+
+			DNDObserver.clearDragmark.toSource().replace(
 				/(\})(\))?$/,
 				'gBrowser.treeStyleTab.tabbarDNDObserver.clearDropPosition(); $1$2'
 			)
 		);
-		if (TabDNDObserver.canDrop) {
-			eval('TabDNDObserver.canDrop = '+
-				TabDNDObserver.canDrop.toSource().replace(
-					'var TSTTabBrowser = this;',
-					'var TSTTabBrowser = gBrowser;'
-				).replace(
-					/\.screenY/g,
-					'[TreeStyleTabService.getTabBrowserFromChild(TSTTabBrowser).treeStyleTab.invertedPositionProp]'
-				).replace(
-					/\.height/g,
-					'[TreeStyleTabService.getTabBrowserFromChild(TSTTabBrowser).treeStyleTab.invertedSizeProp]'
-				)
-			);
-		}
-		if (TabDNDObserver._setEffectAllowedForDataTransfer) {
-			eval('TabDNDObserver._setEffectAllowedForDataTransfer = '+
-				TabDNDObserver._setEffectAllowedForDataTransfer.toSource().replace(
-					'var TSTTabBrowser = this;',
-					'var TSTTabBrowser = gBrowser;'
-				)
-			);
-		}
-		if (TabDNDObserver.onDragStart) {
-			eval('TabDNDObserver.onDragStart = '+
-				TabDNDObserver.onDragStart.toSource().replace(
-					'event.target.localName != "tab"',
-					<![CDATA[
-						gBrowser.treeStyleTab.tabbarDNDObserver.canDragTabbar(event) ||
-						$&
-					]]>
-				)
-			);
-		}
-		eval('TabDNDObserver.onDragOver = '+
-			TabDNDObserver.onDragOver.toSource().replace(
-				'var TSTTabBrowser = this;',
-				'var TSTTabBrowser = gBrowser;'
-			).replace(
-				/aEvent/g, 'event'
-			).replace(
-				/aDragSession/g, 'session'
-			)
-		);
-		eval('TabDNDObserver.onDrop = '+
-			TabDNDObserver.onDrop.toSource().replace(
-				'var TSTTabBrowser = this;',
-				'var TSTTabBrowser = gBrowser;'+
-				'if (!aDragSession) aDragSession = TSTTabBrowser.treeStyleTab.currentDragSession;'
-			).replace(
-				/(var newIndex =)/,
+		eval('DNDObserver.onDragStart = '+
+			DNDObserver.onDragStart.toSource().replace(
+				'event.target.localName != "tab"',
 				<![CDATA[
-					if (isTabReorder && TSTTabBrowser.treeStyleTab.tabbarDNDObserver.performDrop(dropActionInfo, aDragSession.sourceNode))
-						return;
-				]]>
-			).replace(
-				/(aTab = gBrowser.addTab\(url\));/,
-				<![CDATA[
-					TSTTabBrowser.treeStyleTab.tabbarDNDObserver.performDrop(dropActionInfo, $1);
-					return;
-				]]>
-			).replace(
-				/(aTab = event.target;)/,
-				<![CDATA[
-					$1
-					if (
-						aTab.getAttribute('locked') == 'true' ||
-						dropActionInfo.position != TreeStyleTabService.kDROP_ON ||
-						(TreeStyleTabService.dropLinksOnTabBehavior() & TreeStyleTabService.kDROPLINK_NEWTAB)
-						) {
-						TSTTabBrowser.treeStyleTab.tabbarDNDObserver.performDrop(dropActionInfo, TSTTabBrowser.loadOneTab(url, null, null, null, bgLoad, false));
-						return;
-					}
-				]]>
-			).replace(
-				/aEvent/g, 'event'
-			).replace(
-				/aDragSession/g, 'session'
-			)
-		);
-
-		eval('window.TM_BrowserHome = '+
-			window.TM_BrowserHome.toSource().replace(
-				/(var bgLoad = )/,
-				<![CDATA[
-					TreeStyleTabService.readyToOpenChildTab(firstTabAdded, true);
-					$1
-				]]>
-			).replace(
-				/(\})(\)?)$/,
-				<![CDATA[
-					TreeStyleTabService.stopToOpenChildTab(firstTabAdded);
-					$1$2
-				]]>
-			)
-		);
-
-		eval('window.TMP_openURL = '+
-			window.TMP_openURL.toSource().replace(
-				/(var firstTab = [^\(]+\([^\)]+\))/,
-				<![CDATA[
-					$1;
-					TreeStyleTabService.readyToOpenChildTab(firstTab, true);
-				]]>
-			).replace(
-				/(anyBrowser.mTabContainer.nextTab)/,
-				<![CDATA[
-					TreeStyleTabService.stopToOpenChildTab(firstTab);
-					$1
+					gBrowser.treeStyleTab.tabbarDNDObserver.canDragTabbar(event) ||
+					$&
 				]]>
 			)
 		);
@@ -581,66 +394,37 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 			)
 		);
 
-		eval('window.openMultipleLinks = '+
-			window.openMultipleLinks.toSource().replace(
-				/(if \(rangeCount > 0\) \{)/,
-				'$1 TreeStyleTabService.readyToOpenChildTab(focusedWindow, true);'
-			).replace(
-				/(return true;)/,
-				'if (rangeCount > 0) { TreeStyleTabService.stopToOpenChildTab(focusedWindow); }; $1'
-			)
-		);
-
-		'setMultibarAttribute getMultiRowAttribute tabxTabClosed'.split(' ').forEach(function(aFunc) {
-			if (aFunc in window)
-				eval('window.'+aFunc+' = '+
-					window[aFunc].toSource().replace(
-						/(tabBar.lastChild)/g,
-						'TreeStyleTabService.getLastVisibleTab($1)'
-					)
-				);
-		});
-
-		eval('window.getRowHeight = '+
-			window.getRowHeight.toSource().replace(
-				'var tabs = getBrowser().mTabContainer.childNodes;',
-				<![CDATA[
-					var tabs = TreeStyleTabService.getVisibleTabsArray(getBrowser().selectedTab);
-				]]>
-			).replace(
-				/tabs.item\(([^\)]+)\)/g,
-				'tabs[$1]'
-			)
-		);
-
 		let listener = {
 				handleEvent : function(aEvent)
 				{
 					switch (aEvent.type)
 					{
-						case 'TreeStyleTabCollapsedStateChange':
-							tabBarScrollStatus();
+						case TreeStyleTabService.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED:
+							TabmixTabbar.updateScrollStatus();
+							break;
+
+						case TreeStyleTabService.kEVENT_TYPE_FOCUS_NEXT_TAB:
+							let mode = TreeStyleTabService.getPref('extensions.tabmix.focusTab');
+							if (mode != 2 && mode != 5)
+								aEvent.preventDefault();
 							break;
 
 						case 'unload':
-							window.removeEventListener('TreeStyleTabCollapsedStateChange', this, false);
+							window.removeEventListener(TreeStyleTabService.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, this, false);
+							window.removeEventListener(TreeStyleTabService.kEVENT_TYPE_FOCUS_NEXT_TAB, this, false);
 							window.removeEventListener('unload', this, false);
 							break;
 					}
 				}
 			};
-		window.addEventListener('TreeStyleTabCollapsedStateChange', listener, false);
+		window.addEventListener(this.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, listener, false);
+		window.addEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB, listener, false);
 		window.addEventListener('unload', listener, false);
 
 		TreeStyleTabBrowser.prototype.isMultiRow = function()
 		{
-			return window.tabscroll == 2;
+			return TabmixTabbar.isMultiRow;
 		};
-
-		TreeStyleTabService.registerTabFocusAllowance(function(aTabBrowser) {
-			var mode = aTabBrowser.treeStyleTab.getPref('extensions.tabmix.focusTab');
-			return mode == 2 || mode == 5;
-		});
 
 		gBrowser.treeStyleTab.internallyTabMovingCount++; // until "TMmoveTabTo" method is overwritten
 	}
@@ -1172,7 +956,7 @@ TreeStyleTabService.overrideExtensionsDelayed = function TSTService_overrideExte
 
 	// Tab Mix Plus
 	if (this.getTreePref('compatibility.TMP') &&
-		'TMupdateSettings' in window) {
+		'TabmixTabbar' in window) {
 		// correct broken appearance of the first tab
 		var t = gBrowser.treeStyleTab.getFirstTab(gBrowser);
 		gBrowser.treeStyleTab.initTabAttributes(t);
@@ -1187,7 +971,7 @@ TreeStyleTabService.overrideExtensionsDelayed = function TSTService_overrideExte
 
 		eval('gBrowser.TMP_openTabNext = '+
 			gBrowser.TMP_openTabNext.toSource().replace(
-				'this.mCurrentTab._tPos + this.mTabContainer.nextTab',
+				'this.mCurrentTab._tPos + this.tabContainer.nextTab',
 				<![CDATA[
 					(function() {
 						var tabs = this.treeStyleTab.getDescendantTabs(this.mCurrentTab);
@@ -1206,7 +990,7 @@ TreeStyleTabService.overrideExtensionsDelayed = function TSTService_overrideExte
 			)
 		);
 
-		window.BrowserHome = window.TM_BrowserHome;
+		window.BrowserHome = window.TMP_BrowserHome;
 		window.BrowserOpenTab = window.TMP_BrowserOpenTab;
 
 		gBrowser.treeStyleTab.internallyTabMovingCount--;

@@ -437,7 +437,7 @@ var TreeStyleTabService = {
 			eval('aObserver._setEffectAllowedForDataTransfer = '+
 				aObserver._setEffectAllowedForDataTransfer.toSource().replace(
 					'{',
-					'{ var TSTTabBrowser = this;'
+					'{ var TSTTabBrowser = this instanceof Ci.nsIDOMElement ? this : gBrowser ;'
 				).replace(
 					/\.screenX/g, '[TreeStyleTabService.getTabBrowserFromChild(TSTTabBrowser).treeStyleTab.positionProp]'
 				).replace(
