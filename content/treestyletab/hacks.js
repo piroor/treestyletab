@@ -990,9 +990,6 @@ TreeStyleTabService.overrideExtensionsDelayed = function TSTService_overrideExte
 			)
 		);
 
-		window.BrowserHome = window.TMP_BrowserHome;
-		window.BrowserOpenTab = window.TMP_BrowserOpenTab;
-
 		gBrowser.treeStyleTab.internallyTabMovingCount--;
 	}
 
