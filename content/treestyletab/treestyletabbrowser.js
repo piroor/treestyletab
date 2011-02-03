@@ -2879,7 +2879,8 @@ TreeStyleTabBrowser.prototype = {
 	{
 		this.restoreStructure(aEvent.originalTarget);
 
-		if (this.mTabBrowser.currentURI.spec == 'about:sessionrestore') {
+		if (!aEvent.originalTarget.selected &&
+			this.mTabBrowser.currentURI.spec == 'about:sessionrestore') {
 			let frame = this.mTabBrowser.contentWindow;
 			frame = frame.wrappedJSObject || frame;
 			let tree = frame.document.getElementById('tabList');
