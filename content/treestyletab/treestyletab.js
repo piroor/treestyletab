@@ -366,6 +366,10 @@ var TreeStyleTabService = {
 		appcontent.addEventListener('SubBrowserAdded', this, false);
 		appcontent.addEventListener('SubBrowserRemoveRequest', this, false);
 
+		var statusPanel = document.getElementById('statusbar-display');
+		if (statusPanel)
+			statusPanel.addEventListener('DOMAttrModified', this, false);
+
 		window.addEventListener('UIOperationHistoryUndo:TabbarOperations', this, false);
 		window.addEventListener('UIOperationHistoryRedo:TabbarOperations', this, false);
 
@@ -804,6 +808,23 @@ var TreeStyleTabService = {
 			items[aIndex].style.paddingLeft = aTab.getAttribute(this.kNEST)+'em';
 		}, this);
 	},
+ 
+	updateStatusPanel : function TSTService_updateStatusPanel(aPanel) 
+	{
+		switch (this.position)
+		{
+			case 'left':
+				aPanel.setAttribute('mirror', true);
+				break;
+
+			case 'right':
+				aPanel.removeAttribute('mirror');
+				break;
+
+			default:
+				break;
+		}
+	},
   
 	destroy : function TSTService_destroy() 
 	{
@@ -831,6 +852,10 @@ var TreeStyleTabService = {
 			var appcontent = document.getElementById('appcontent');
 			appcontent.removeEventListener('SubBrowserAdded', this, false);
 			appcontent.removeEventListener('SubBrowserRemoveRequest', this, false);
+
+			var statusPanel = document.getElementById('statusbar-display');
+			if (statusPanel)
+				statusPanel.removeEventListener('DOMAttrModified', this, false);
 
 			window.removeEventListener('UIOperationHistoryUndo:TabbarOperations', this, false);
 			window.removeEventListener('UIOperationHistoryRedo:TabbarOperations', this, false);
@@ -879,6 +904,11 @@ var TreeStyleTabService = {
 
 			case 'popuphiding':
 				return this.onPopupHidden(aEvent.originalTarget);
+
+			case 'DOMAttrModified':
+				if (aEvent.attrName == 'label')
+					this.updateStatusPanel(aEvent.currentTarget);
+				return;
 
 			case this.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED:
 				return this.updateAeroPeekPreviews();
