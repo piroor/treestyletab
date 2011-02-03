@@ -2878,6 +2878,20 @@ TreeStyleTabBrowser.prototype = {
 	onTabRestoring : function TSTBrowser_onTabRestoring(aEvent) 
 	{
 		this.restoreStructure(aEvent.originalTarget);
+
+		if (this.mTabBrowser.currentURI.spec == 'about:sessionrestore') {
+			let frame = this.mTabBrowser.contentWindow;
+			frame = frame.wrappedJSObject || frame;
+			let tree = frame.document.getElementById('tabList');
+			let data = frame.gTreeData;
+			if (tree && data) {
+				let item = data[tree.currentIndex];
+				window.setTimeout(function(aSelf, aTab, aTitle, aParent) {
+					if (aTab.label== aTitle)
+						aSelf.attachTabTo(aTab, aParent);
+				}, 0, this, aEvent.originalTarget, item.label, this.mTabBrowser.selectedTab);
+			}
+		}
 	},
 	
 	restoreStructure : function TSTBrowser_restoreStructure(aTab) 
