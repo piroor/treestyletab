@@ -811,6 +811,9 @@ var TreeStyleTabService = {
  
 	updateStatusPanel : function TSTService_updateStatusPanel(aPanel) 
 	{
+		if (!this.getTreePref('autoRepositionStatusPanel'))
+			return;
+
 		switch (this.position)
 		{
 			case 'left':

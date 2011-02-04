@@ -141,6 +141,7 @@ pref("extensions.treestyletab.createSubtree.underParent", true);
 */
 pref("extensions.treestyletab.undoCloseTabSet.behavior", 3);
 
+pref("extensions.treestyletab.autoRepositionStatusPanel", true);
 pref("extensions.treestyletab.restoreTreeOnStartup", false);
 
 
