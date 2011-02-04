@@ -9,7 +9,9 @@ var TreeStyleTabService = {
 	
 	get position() /* PUBLIC API */ 
 	{
-		return this.browser.treeStyleTab.position;
+		return this.preInitialized && this.browser.treeStyleTab ?
+					this.browser.treeStyleTab.position :
+					this.utils.position ;
 	},
 	set position(aValue)
 	{
