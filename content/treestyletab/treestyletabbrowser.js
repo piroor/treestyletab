@@ -3207,11 +3207,7 @@ TreeStyleTabBrowser.prototype = {
 	},
 	doRestoreClosedSet : function TSTBrowser_doRestoreClosedSet(aRestoredTab, aIndexes)
 	{
-		if (
-			'_confirmOpenInTabs' in PlacesUIUtils &&
-			PlacesUIUtils._confirmOpenInTabs &&
-			!PlacesUIUtils._confirmOpenInTabs(aIndexes.length)
-			)
+		if (!PlacesUIUtils._confirmOpenInTabs(aIndexes.length))
 			return;
 
 		this._restoringClosedSet = true;
