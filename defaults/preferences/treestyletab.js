@@ -27,7 +27,6 @@ pref("extensions.treestyletab.tabbar.autoHide.mode.toggle.fullscreen", 1);
 pref("extensions.treestyletab.tabbar.autoHide.delay",      50);
 pref("extensions.treestyletab.tabbar.autoHide.area",       7);
 pref("extensions.treestyletab.tabbar.autoHide.expandArea", false);
-pref("extensions.treestyletab.tabbar.transparent.partialTransparency", "0.25");
 pref("extensions.treestyletab.tabbar.autoShow.mousemove", true);
 pref("extensions.treestyletab.tabbar.autoShow.accelKeyDown", true);
 pref("extensions.treestyletab.tabbar.autoShow.accelKeyDown.delay", 800);
