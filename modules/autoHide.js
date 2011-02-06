@@ -767,6 +767,10 @@ AutoHideBrowser.prototype = {
 		if (sv.isFloating || !canvas || this.isResizing)
 			return;
 
+		var alpha = Number(sv.getTreePref('tabbar.transparent.partialTransparency'));
+		if (isNaN(alpha)) alpha = 0.25;
+		if (alpha >= 1)
+			return;
 
 		canvas.style.width = (canvas.width = 1)+'px';
 		canvas.style.height = (canvas.height = 1)+'px';
@@ -864,8 +868,6 @@ AutoHideBrowser.prototype = {
 			'-moz-field'
 		);
 		ctx.restore();
-		var alpha = Number(sv.getTreePref('tabbar.transparent.partialTransparency'));
-		if (isNaN(alpha)) alpha = 0.25;
 		ctx.globalAlpha = alpha;
 		ctx.fillStyle = 'black';
 		ctx.fillRect(0, 0, w, h);
