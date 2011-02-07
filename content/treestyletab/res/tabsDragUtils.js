@@ -13,7 +13,7 @@
    http://github.com/piroor/fxaddonlibs/blob/master/tabsDragUtils.js
 */
 (function() {
-	const currentRevision = 9;
+	const currentRevision = 10;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -209,6 +209,8 @@
 
 		isTabsDragging : function TDU_isTabsDragging(aEvent) 
 		{
+			if (!aEvent)
+				return false;
 			var dt = aEvent.dataTransfer;
 			if (dt.mozItemCount < 1)
 				return false;
@@ -224,6 +226,9 @@
 		{
 			var event = aEventOrTabBrowser instanceof Components.interfaces.nsIDOMEvent ? aEventOrTabBrowser : null ;
 			var b = this.getTabBrowserFromChild(event ? event.target : aEventOrTabBrowser );
+			if (!b)
+				return [];
+
 			var w = b.ownerDocument.defaultView;
 			var tab = event && this.getTabFromEvent(event);
 

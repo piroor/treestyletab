@@ -476,7 +476,7 @@ catch(e) {
 				}
 				newTabs.push(tab);
 				if (tabsInfo.isMultipleMove && 'MultipleTabService' in w)
-					MultipleTabService.setSelection(tab, true);
+					w.MultipleTabService.setSelection(tab, true);
 				if (!parent || draggedTabs.indexOf(parent) < 0)
 					newRoots.push(tab);
 				lastTabIndex++;
@@ -529,7 +529,7 @@ catch(e) {
 		var w  = this.window;
 
 		aTab = sv.getTabFromChild(aTab);
-		if (!aTab)
+		if (!aTab || !aTab.parentNode)
 			return {
 				draggedTab     : null,
 				draggedTabs    : [],
@@ -653,7 +653,7 @@ catch(e) {
  
 	isDraggingAllCurrentTabs : function TabbarDND_isDraggingAllCurrentTabs(aTab) 
 	{
-		return this.isDraggingAllTabs(aTab, this.getTabsArray(this.treeStyleTab.browser));
+		return this.isDraggingAllTabs(aTab, this.treeStyleTab.getTabsArray(this.treeStyleTab.browser));
 	},
  
 	handleEvent : function TabbarDND_handleEvent(aEvent) 
