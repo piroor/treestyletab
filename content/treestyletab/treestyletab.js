@@ -1200,13 +1200,14 @@ var TreeStyleTabService = {
  
 	onFocusNextTab : function TSTService_onFocusNextTab(aEvent) 
 	{
-		var tab = aEvent.target.selectedTab;
+		var tab = aEvent.originalTarget;
+		var b = this.getTabBrowserFromChild(tab);
 		if (
 			this.getPref('browser.tabs.selectOwnerOnClose') &&
 			tab.owner &&
 			(
-				!aEvent.target._removingTabs ||
-				aEvent.target._removingTabs.indexOf(tab.owner) < 0
+				!b._removingTabs ||
+				b._removingTabs.indexOf(tab.owner) < 0
 			)
 			)
 			aEvent.preventDefault();
