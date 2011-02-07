@@ -1028,11 +1028,11 @@ catch(e) {
 				return;
 
 			let (sourceDoc = session ? session.sourceDocument : null) {
-				if (sourceDoc &&
-					sourceDoc.documentURI.indexOf('chrome://') < 0) {
-					let sourceURI = sourceDoc.documentURI;
+				let sourceURI = sourceDoc ? sourceDoc.documentURI : 'file:///' ;
+				let normalizedURI = sv.makeURIFromSpec(url);
+				if (normalizedURI && sourceURI.indexOf('chrome://') < 0) {
 					try {
-						SecMan.checkLoadURIStr(sourceDoc.documentURI, url, Ci.nsIScriptSecurityManager.STANDARD);
+						SecMan.checkLoadURIStr(sourceURI, normalizedURI.spec, Ci.nsIScriptSecurityManager.STANDARD);
 					}
 					catch(e) {
 						aEvent.stopPropagation();
