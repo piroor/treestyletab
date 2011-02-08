@@ -824,6 +824,7 @@ catch(e) {
 
 		// prevent handling of this event by the default handler
 		aEvent.stopPropagation();
+		aEvent.preventDefault();
 
 		var eX = aEvent.screenX;
 		var eY = aEvent.screenY;
@@ -1129,7 +1130,7 @@ catch(e) {
 		strip.addEventListener('dragover',  this, true);
 		strip.addEventListener('dragenter', this, false);
 		strip.addEventListener('dragleave', this, false);
-		strip.addEventListener('dragend',   this, false);
+		strip.addEventListener('dragend',   this, true);
 		strip.addEventListener('drop',      this, true);
 	},
   
@@ -1150,7 +1151,7 @@ catch(e) {
 		strip.removeEventListener('dragover',  this, true);
 		strip.removeEventListener('dragenter', this, false);
 		strip.removeEventListener('dragleave', this, false);
-		strip.removeEventListener('dragend',   this, false);
+		strip.removeEventListener('dragend',   this, true);
 		strip.removeEventListener('drop',      this, true);
 	}
   
