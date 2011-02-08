@@ -13,7 +13,7 @@
    http://github.com/piroor/fxaddonlibs/blob/master/tabsDragUtils.js
 */
 (function() {
-	const currentRevision = 10;
+	const currentRevision = 11;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -222,15 +222,18 @@
 			return true;
 		},
 
-		getSelectedTabs : function TDU_getSelectedTabs(aEventOrTabBrowser)
+		getSelectedTabs : function TDU_getSelectedTabs(aEventOrTabOrTabBrowser)
 		{
-			var event = aEventOrTabBrowser instanceof Components.interfaces.nsIDOMEvent ? aEventOrTabBrowser : null ;
-			var b = this.getTabBrowserFromChild(event ? event.target : aEventOrTabBrowser );
+			var event = aEventOrTabOrTabBrowser instanceof Components.interfaces.nsIDOMEvent ? aEventOrTabOrTabBrowser : null ;
+			var b = this.getTabBrowserFromChild(event ? event.target : aEventOrTabOrTabBrowser );
 			if (!b)
 				return [];
 
 			var w = b.ownerDocument.defaultView;
-			var tab = event && this.getTabFromEvent(event);
+			var tab = (aEventOrTabOrTabBrowser instanceof Components.interfaces.nsIDOMElement &&
+						aEventOrTabOrTabBrowser.localName == 'tab') ?
+						aEventOrTabOrTabBrowser :
+						(event && this.getTabFromEvent(event)) ;
 
 			var selectedTabs;
 			var isMultipleDrag = (
@@ -255,7 +258,7 @@
 						tab &&
 						'MultipleTabService' in w &&
 						w.MultipleTabService.isSelected(tab) &&
-						MultipleTabService.allowMoveMultipleTabs &&
+						w.MultipleTabService.allowMoveMultipleTabs &&
 						(selectedTabs = w.MultipleTabService.getSelectedTabs(b)) &&
 						selectedTabs.length
 					)

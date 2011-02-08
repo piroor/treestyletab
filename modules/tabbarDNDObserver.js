@@ -543,7 +543,7 @@ catch(e) {
 		var sourceWindow = aTab.ownerDocument.defaultView;
 		var sourceBrowser = sv.getTabBrowserFromChild(aTab);
 
-		var draggedTabs = w['piro.sakura.ne.jp'].tabsDragUtils.getSelectedTabs(aInfo.event || sourceBrowser);
+		var draggedTabs = w['piro.sakura.ne.jp'].tabsDragUtils.getSelectedTabs(aInfo.event || aTab || sourceBrowser);
 		var draggedRoots = [aTab];
 		var isMultipleMove = false;
 
