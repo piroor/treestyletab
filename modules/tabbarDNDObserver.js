@@ -529,7 +529,7 @@ catch(e) {
 		var w  = this.window;
 
 		aTab = sv.getTabFromChild(aTab);
-		if (!aTab || !aTab.parentNode)
+		if (!aTab || !aTab.parentNode) // ignore removed tabs!
 			return {
 				draggedTab     : null,
 				draggedTabs    : [],
