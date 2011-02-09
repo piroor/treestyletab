@@ -1,7 +1,7 @@
 /**
  * @fileOverview Tab Related Confirimation Library for Firefox 3.5 or later
  * @author       SHIMODA "Piro" Hiroshi
- * @version      1
+ * @version      3
  *
  * @license
  *   The MIT License, Copyright (c) 2010-2011 SHIMODA "Piro" Hiroshi
@@ -34,7 +34,7 @@ if (typeof namespace.Deferred == 'undefined')
 
 var confirmWithTab;
 (function() {
-	const currentRevision = 2;
+	const currentRevision = 3;
 
 	var loadedRevision = 'confirmWithTab' in namespace ?
 			namespace.confirmWithTab.revision :
@@ -62,11 +62,15 @@ var confirmWithTab;
 					box.PRIORITY_INFO_MEDIUM
 				),
 				aOptions.buttons.map(function(aLabel, aIndex) {
+					var accessKey = aLabel.charAt(0);
+					if (!/[0-9a-z]/i.test(accessKey))
+						accessKey = aIndex+1;
 					return {
 						label : aLabel,
 						callback : function() {
 							deferred.call(aIndex);
-						}
+						},
+						accessKey : accessKey
 					};
 				})
 			);
