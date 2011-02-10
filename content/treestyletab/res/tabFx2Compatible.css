@@ -4,56 +4,61 @@
  Usage:
    <?xul-overlay href="tabFx2Compatible.xul"?>
 
- license: The MIT License, Copyright (c) 2009-2012 SHIMODA "Piro" Hiroshi
-   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/license.txt
+ license: The MIT License, Copyright (c) 2009-2011 SHIMODA "Piro" Hiroshi
+   http://github.com/piroor/fxaddonlibs/blob/master/license.txt
  original:
-   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/tabFx2Compatible.xul
-   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/tabFx2Compatible.xml
-   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/tabFx2Compatible.css
+   http://github.com/piroor/fxaddonlibs/blob/master/tabFx2Compatible.xul
+   http://github.com/piroor/fxaddonlibs/blob/master/tabFx2Compatible.xml
+   http://github.com/piroor/fxaddonlibs/blob/master/tabFx2Compatible.css
 */
 
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
-:root[tabFx2Compatible="12"]
+:root[tabFx2Compatible="13"]
   .tabbrowser-tab {
 	-moz-binding: url(tabFx2Compatible.xml#tabbrowser-tab-3) !important;
 }
 
-:root[tabFx2Compatible="12"][tabFx2Compatible-flags~="separate-tabContextMenu"]
+:root[tabFx2Compatible="13"][tabFx2Compatible-flags~="separate-tabContextMenu"]
   .tabbrowser-tab {
 	-moz-binding: url(tabFx2Compatible.xml#tabbrowser-tab-4) !important;
 }
 
-:root[tabFx2Compatible="12"]:not([tabFx2Compatible-flags~="png-throbber"])[tabFx2Compatible-flags~="fx3"]
+:root[tabFx2Compatible="13"]:not([tabFx2Compatible-flags~="png-throbber"])[tabFx2Compatible-flags~="fx3"]
   .tab-icon-image[busy] {
 	list-style-image: url("chrome://global/skin/throbber/Throbber-small.gif") !important;
 	opacity: 0.6;
 }
 
-:root[tabFx2Compatible="12"][tabFx2Compatible-flags~="png-throbber"][tabFx2Compatible-flags~="fx3"]
+:root[tabFx2Compatible="13"][tabFx2Compatible-flags~="png-throbber"][tabFx2Compatible-flags~="fx3"]
   .tab-icon-image[busy] {
 	list-style-image: url("chrome://global/skin/icons/loading_16.png") !important;
 }
 
-:root[tabFx2Compatible="12"][tabFx2Compatible-flags~="mac"][tabFx2Compatible-flags~="png-throbber"]
+:root[tabFx2Compatible="13"][tabFx2Compatible-flags~="mac"][tabFx2Compatible-flags~="png-throbber"]
   .tab-icon-image {
 	list-style-image: url("chrome://global/skin/tree/item.png");
 }
 
-:root[tabFx2Compatible="12"][tabFx2Compatible-flags~="mac"]
+:root[tabFx2Compatible="13"][tabFx2Compatible-flags~="mac"]
   .tabbrowser-tab:not(:hover) .tab-icon-image:not([selected="true"]) {
 	opacity: 0.6;
 }
 
-:root[tabFx2Compatible="12"]
-  .tabbrowser-tab:focus > .tab-stack {
-	border: 1px dotted -moz-DialogText;
+:root[tabFx2Compatible="13"]
+  .tabbrowser-tab:focus > .tab-image-middle {
+	outline: 1px dotted;
+}
+/* we must split declarations for old Gecko */
+:root[tabFx2Compatible="13"]
+  .tabbrowser-tab:-moz-focusring > .tab-stack {
+	outline: 1px dotted;
 }
 
 
-:root[tabFx2Compatible="12"]
+:root[tabFx2Compatible="13"]
   .tab-image-left[pinned="true"],
-:root[tabFx2Compatible="12"]
+:root[tabFx2Compatible="13"]
   .tab-image-right[pinned="true"] {
 	display: none !important;
 }
