@@ -53,6 +53,8 @@ var confirmWithTab;
 		var tab = aOptions.tab;
 		var b = getTabBrowserFromChild(tab);
 		var box = b.getNotificationBox(tab.linkedBrowser);
+		var accessKeys = [];
+		var numericAccessKey = 0;
 		var notification = box.appendNotification(
 				aOptions.label,
 				aOptions.value,
@@ -62,15 +64,46 @@ var confirmWithTab;
 					box.PRIORITY_INFO_MEDIUM
 				),
 				aOptions.buttons.map(function(aLabel, aIndex) {
-					var accessKey = aLabel.charAt(0);
-					if (!/[0-9a-z]/i.test(accessKey))
-						accessKey = aIndex+1;
+					var match = aLabel.match(/\s*\(&([0-9a-z])\)/i);
+					if (match) {
+						accessKey = match[1];
+						aLabel = aLabel.replace(match[0], '');
+					}
+					else {
+						let accessKey;
+						let lastUniqueKey;
+						let sanitizedLabel = [];
+						for (let i = 0, maxi = aLabel.length; i < maxi; i++)
+						{
+							let possibleAccessKey = aLabel.charAt(i);
+							if (possibleAccessKey == '&' && i < maxi-1) {
+								possibleAccessKey = aLabel.charAt(i+1);
+								if (possibleAccessKey != '&') {
+									accessKey = possibleAccessKey;
+								}
+								i++;
+							}
+							else if (accessKeys.indexOf(possibleAccessKey) < 0) {
+								lastUniqueKey = possibleAccessKey;
+							}
+							sanitizedLabel.push(possibleAccessKey);
+						}
+						if (!accessKey)
+							accessKey = lastUniqueKey;
+						if (!accessKey || !/[0-9a-z]/i.test(accessKey))
+							accessKey = ++numericAccessKey;
+
+						aLabel = sanitizedLabel.join('');
+					}
+
+					accessKeys.push(accessKey);
+
 					return {
-						label : aLabel,
-						callback : function() {
+						label     : aLabel,
+						accessKey : accessKey,
+						callback  : function() {
 							deferred.call(aIndex);
-						},
-						accessKey : accessKey
+						}
 					};
 				})
 			);
