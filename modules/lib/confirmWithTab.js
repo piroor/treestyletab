@@ -1,7 +1,7 @@
 /**
  * @fileOverview Tab Related Confirimation Library for Firefox 3.5 or later
  * @author       SHIMODA "Piro" Hiroshi
- * @version      1
+ * @version      3
  *
  * @license
  *   The MIT License, Copyright (c) 2010-2011 SHIMODA "Piro" Hiroshi
@@ -34,7 +34,7 @@ if (typeof namespace.Deferred == 'undefined')
 
 var confirmWithTab;
 (function() {
-	const currentRevision = 2;
+	const currentRevision = 3;
 
 	var loadedRevision = 'confirmWithTab' in namespace ?
 			namespace.confirmWithTab.revision :
@@ -53,6 +53,8 @@ var confirmWithTab;
 		var tab = aOptions.tab;
 		var b = getTabBrowserFromChild(tab);
 		var box = b.getNotificationBox(tab.linkedBrowser);
+		var accessKeys = [];
+		var numericAccessKey = 0;
 		var notification = box.appendNotification(
 				aOptions.label,
 				aOptions.value,
@@ -62,9 +64,44 @@ var confirmWithTab;
 					box.PRIORITY_INFO_MEDIUM
 				),
 				aOptions.buttons.map(function(aLabel, aIndex) {
+					var match = aLabel.match(/\s*\(&([0-9a-z])\)/i);
+					if (match) {
+						accessKey = match[1];
+						aLabel = aLabel.replace(match[0], '');
+					}
+					else {
+						let accessKey;
+						let lastUniqueKey;
+						let sanitizedLabel = [];
+						for (let i = 0, maxi = aLabel.length; i < maxi; i++)
+						{
+							let possibleAccessKey = aLabel.charAt(i);
+							if (possibleAccessKey == '&' && i < maxi-1) {
+								possibleAccessKey = aLabel.charAt(i+1);
+								if (possibleAccessKey != '&') {
+									accessKey = possibleAccessKey;
+								}
+								i++;
+							}
+							else if (accessKeys.indexOf(possibleAccessKey) < 0) {
+								lastUniqueKey = possibleAccessKey;
+							}
+							sanitizedLabel.push(possibleAccessKey);
+						}
+						if (!accessKey)
+							accessKey = lastUniqueKey;
+						if (!accessKey || !/[0-9a-z]/i.test(accessKey))
+							accessKey = ++numericAccessKey;
+
+						aLabel = sanitizedLabel.join('');
+					}
+
+					accessKeys.push(accessKey);
+
 					return {
-						label : aLabel,
-						callback : function() {
+						label     : aLabel,
+						accessKey : accessKey,
+						callback  : function() {
 							deferred.call(aIndex);
 						}
 					};

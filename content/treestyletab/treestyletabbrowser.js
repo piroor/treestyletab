@@ -2557,7 +2557,6 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		if (b.selectedTab == tab) {
-			this._focusChangedByCurrentTabRemove = true;
 			if (
 				nextFocusedTab &&
 				!nextFocusedTab.hidden
@@ -2571,8 +2570,10 @@ TreeStyleTabBrowser.prototype = {
 				event.initEvent(this.kEVENT_TYPE_FOCUS_NEXT_TAB.replace(/^nsDOM/, ''), true, true);
 				canFocus = canFocus && tab.dispatchEvent(event);
 
-				if (canFocus)
+				if (canFocus) {
+					this._focusChangedByCurrentTabRemove = true;
 					b.selectedTab = nextFocusedTab;
+				}
 			}
 		}
 
@@ -3207,11 +3208,7 @@ TreeStyleTabBrowser.prototype = {
 	},
 	doRestoreClosedSet : function TSTBrowser_doRestoreClosedSet(aRestoredTab, aIndexes)
 	{
-		if (
-			'_confirmOpenInTabs' in PlacesUIUtils &&
-			PlacesUIUtils._confirmOpenInTabs &&
-			!PlacesUIUtils._confirmOpenInTabs(aIndexes.length)
-			)
+		if (!PlacesUIUtils._confirmOpenInTabs(aIndexes.length))
 			return;
 
 		this._restoringClosedSet = true;

@@ -476,7 +476,7 @@ catch(e) {
 				}
 				newTabs.push(tab);
 				if (tabsInfo.isMultipleMove && 'MultipleTabService' in w)
-					MultipleTabService.setSelection(tab, true);
+					w.MultipleTabService.setSelection(tab, true);
 				if (!parent || draggedTabs.indexOf(parent) < 0)
 					newRoots.push(tab);
 				lastTabIndex++;
@@ -529,7 +529,7 @@ catch(e) {
 		var w  = this.window;
 
 		aTab = sv.getTabFromChild(aTab);
-		if (!aTab)
+		if (!aTab || !aTab.parentNode) // ignore removed tabs!
 			return {
 				draggedTab     : null,
 				draggedTabs    : [],
@@ -543,7 +543,7 @@ catch(e) {
 		var sourceWindow = aTab.ownerDocument.defaultView;
 		var sourceBrowser = sv.getTabBrowserFromChild(aTab);
 
-		var draggedTabs = w['piro.sakura.ne.jp'].tabsDragUtils.getSelectedTabs(aInfo.event || sourceBrowser);
+		var draggedTabs = w['piro.sakura.ne.jp'].tabsDragUtils.getSelectedTabs(aInfo.event || aTab || sourceBrowser);
 		var draggedRoots = [aTab];
 		var isMultipleMove = false;
 
@@ -653,7 +653,7 @@ catch(e) {
  
 	isDraggingAllCurrentTabs : function TabbarDND_isDraggingAllCurrentTabs(aTab) 
 	{
-		return this.isDraggingAllTabs(aTab, this.getTabsArray(this.treeStyleTab.browser));
+		return this.isDraggingAllTabs(aTab, this.treeStyleTab.getTabsArray(this.treeStyleTab.browser));
 	},
  
 	handleEvent : function TabbarDND_handleEvent(aEvent) 
@@ -824,6 +824,7 @@ catch(e) {
 
 		// prevent handling of this event by the default handler
 		aEvent.stopPropagation();
+		aEvent.preventDefault();
 
 		var eX = aEvent.screenX;
 		var eY = aEvent.screenY;
@@ -1028,11 +1029,11 @@ catch(e) {
 				return;
 
 			let (sourceDoc = session ? session.sourceDocument : null) {
-				if (sourceDoc &&
-					sourceDoc.documentURI.indexOf('chrome://') < 0) {
-					let sourceURI = sourceDoc.documentURI;
+				let sourceURI = sourceDoc ? sourceDoc.documentURI : 'file:///' ;
+				let normalizedURI = sv.makeURIFromSpec(url);
+				if (normalizedURI && sourceURI.indexOf('chrome://') < 0) {
 					try {
-						SecMan.checkLoadURIStr(sourceDoc.documentURI, url, Ci.nsIScriptSecurityManager.STANDARD);
+						SecMan.checkLoadURIStr(sourceURI, normalizedURI.spec, Ci.nsIScriptSecurityManager.STANDARD);
 					}
 					catch(e) {
 						aEvent.stopPropagation();
@@ -1129,7 +1130,7 @@ catch(e) {
 		strip.addEventListener('dragover',  this, true);
 		strip.addEventListener('dragenter', this, false);
 		strip.addEventListener('dragleave', this, false);
-		strip.addEventListener('dragend',   this, false);
+		strip.addEventListener('dragend',   this, true);
 		strip.addEventListener('drop',      this, true);
 	},
   
@@ -1150,7 +1151,7 @@ catch(e) {
 		strip.removeEventListener('dragover',  this, true);
 		strip.removeEventListener('dragenter', this, false);
 		strip.removeEventListener('dragleave', this, false);
-		strip.removeEventListener('dragend',   this, false);
+		strip.removeEventListener('dragend',   this, true);
 		strip.removeEventListener('drop',      this, true);
 	}
   
