@@ -16,8 +16,8 @@
 <!ENTITY config.tabbar.invertTab            "反转标签外观">
 <!ENTITY config.tabbar.invertTabContents    "反转标签图标和文字位置">
 <!ENTITY config.enableSubtreeIndent         "缩进标签">
-<!ENTITY config.maxTreeLevel.before "until">
-<!ENTITY config.maxTreeLevel.after  "level(s)">
+<!ENTITY config.maxTreeLevel.before "最多">
+<!ENTITY config.maxTreeLevel.after  "层">
 <!ENTITY config.allowSubtreeCollapseExpand  "允许折叠/展开标签子树">
 <!ENTITY config.tabbar.hideAlltabsButton    "显示“列出所有标签”按钮">
 
@@ -46,13 +46,12 @@
 
 <!ENTITY config.show.tabContextMenu.caption "在标签的右键菜单中添加以下项目">
 
-
 <!ENTITY config.tabs.tab "新标签">
 
-<!ENTITY config.autoAttach.newTabCommand.caption "When a new blank tab is opened manually">
-<!ENTITY config.autoAttach.newTabCommand.ignore  "Open as a root tab">
-<!ENTITY config.autoAttach.newTabCommand.current "Open as a child of the current tab">
-<!ENTITY config.autoAttach.newTabCommand.parent  "Open as a sibling of the current tab">
+<!ENTITY config.autoAttach.newTabCommand.caption "如何处理手动新建的空白页？">
+<!ENTITY config.autoAttach.newTabCommand.ignore  "在最顶层次打开">
+<!ENTITY config.autoAttach.newTabCommand.current "作为当前标签的子标签打开">
+<!ENTITY config.autoAttach.newTabCommand.parent  "作为当前标签的同级标签打开">
 
 <!ENTITY config.openGroupBookmark.caption     "如何“在标签页中打开书签组”？">
 <!ENTITY config.openGroupBookmark.ask         "总是询问">
@@ -65,22 +64,16 @@
 <!ENTITY config.openGroupBookmark.replace     "覆盖当前标签打开">
 <!ENTITY config.openGroupBookmark.underParent "将标签置于一伪标签下以便分组">
 
-<!ENTITY config.dropLinksOnTab.caption "Dropped link, URL, bookmark or file to existing tab">
-<!ENTITY config.dropLinksOnTab.ask     "Always ask me how to load it">
-<!ENTITY config.dropLinksOnTab.load    "Load in the tab (Firefox default)">
-<!ENTITY config.dropLinksOnTab.newTab  "Open as a new child tab">
-<!--
-<!ENTITY config.dropLinksOnTab.caption "如何打开拖拽到现有标签的链接或URL？">
+<!ENTITY config.dropLinksOnTab.caption "如何打开拖拽到现有标签的链接、网址、书签或文件？">
 <!ENTITY config.dropLinksOnTab.ask     "总是询问">
 <!ENTITY config.dropLinksOnTab.load    "在该标签中打开（Firefox 默认）">
 <!ENTITY config.dropLinksOnTab.newTab  "在此标签下新建子标签打开">
--->
 
 
 <!ENTITY config.tabs.autohide "自动隐藏">
 
-<!ENTITY config.autoHide.mode.normal.caption     "for Normal Window Mode">
-<!ENTITY config.autoHide.mode.fullscreen.caption "for Full Screen Mode">
+<!ENTITY config.autoHide.mode.normal.caption     "窗口模式下">
+<!ENTITY config.autoHide.mode.fullscreen.caption "全屏模式下">
 <!ENTITY config.autoHide.mode.0 "一直显示标签栏">
 <!ENTITY config.autoHide.mode.1 "自动隐藏标签栏">
 <!ENTITY config.autoHide.mode.2 "自动缩小标签栏">
@@ -88,11 +81,6 @@
 <!ENTITY config.autoShow.mousemove "鼠标指针在窗口边缘时">
 <!ENTITY config.autoHide.area.before "触发区域：">
 <!ENTITY config.autoHide.area.after "像素（距离窗口边缘）">
-<!--
-<!ENTITY config.autoShow.mousemove.mode2 "鼠标指针移到标签栏边缘">
-<!ENTITY config.autoHide.area.before.mode2 "触发区域：">
-<!ENTITY config.autoHide.area.after.mode2 "像素（距离标签栏边缘）">
--->
 <!ENTITY config.autoHide.delay.before "延迟:">
 <!ENTITY config.autoHide.delay.after "毫秒">
 <!ENTITY config.autoShow.accelKeyDown "按下Ctrl键之后">
@@ -111,14 +99,14 @@
 <!ENTITY config.collapseExpandSubtree.dblclick "通过双击折叠/展开标签的子树">
 <!ENTITY config.autoExpandSubtreeOnAppendChild "当标签被插入子树时，自动展开子树">
 
-<!ENTITY config.closeParentBehavior.caption       "关闭父标签时">
-<!ENTITY config.closeParentBehavior.close         "同时关闭子标签">
+<!ENTITY config.closeParentBehavior.caption      "关闭父标签时">
+<!ENTITY config.closeParentBehavior.close        "同时关闭子标签">
 <!ENTITY config.closeParentBehavior.promoteFirst "提升首个子标签为父标签">
 <!ENTITY config.closeParentBehavior.promoteAll   "提升所有子标签到父标签的级别">
-<!ENTITY config.closeParentBehavior.detach        "让子标签脱离树状关系">
+<!ENTITY config.closeParentBehavior.detach       "让子标签脱离树状关系">
 <!ENTITY config.closeRootBehavior.promoteFirst   "若父标签之上无父标签，则提升首个子标签为父标签">
 
-<!ENTITY config.focusMode "Ctrl-Tab 切换标签时可切换到折叠起来的标签上。">
+<!ENTITY config.focusMode "通过“Ctrl-Tab”切换标签时可切换到折叠起来的标签上。">
 
 <!ENTITY config.insertNewChildAt.caption "新子标签的位置">
 <!ENTITY config.insertNewChildAt.first "插入到子树顶部，成为首个子标签">
@@ -130,16 +118,17 @@
 <!ENTITY config.undoCloseTabSet.separate "仅恢复该标签（Firefox 默认）">
 
 
+
 <!ENTITY config.tabs.advanced "高级">
 
 <!ENTITY config.animation.enabled "使用动画效果">
 
 <!ENTITY config.tooltip.includeChildren        "在树节点按钮的工具提示中显示树的分支内容">
 
-<!ENTITY config.bookmarkDroppedTabs.caption "Action for drag and drop of a parent tab to the bookmarks tree">
-<!ENTITY config.bookmarkDroppedTabs.ask     "Ask me always">
-<!ENTITY config.bookmarkDroppedTabs.all     "Bookmark all tabs in the tree">
-<!ENTITY config.bookmarkDroppedTabs.parent  "Bookmark only the dragged one tab">
+<!ENTITY config.bookmarkDroppedTabs.caption "怎么响应拖放一夫标签到书签树中的动作？">
+<!ENTITY config.bookmarkDroppedTabs.ask     "总是询问">
+<!ENTITY config.bookmarkDroppedTabs.all     "将该树中的所有标签加入书签">
+<!ENTITY config.bookmarkDroppedTabs.parent  "仅将这一标签加入书签">
 
 
 
@@ -157,7 +146,7 @@
 <!ENTITY context.removeTabSubtree.accesskey     "s">
 <!ENTITY context.removeDescendantTabs.label     "关闭子标签">
 <!ENTITY context.removeDescendantTabs.accesskey "d">
-<!ENTITY context.removeAllTabsBut.label         "Close Other Tabs except this Tree">
+<!ENTITY context.removeAllTabsBut.label         "关闭除此树外其他标签">
 <!ENTITY context.removeAllTabsBut.accesskey     "a">
 <!ENTITY context.collapseAllSubtree.label       "折叠所有树">
 <!ENTITY context.collapseAllSubtree.accesskey   "c">
