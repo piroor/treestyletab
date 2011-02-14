@@ -208,18 +208,34 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 	max-width: 64000px !important;
 }
 
-.treestyletab-tabbar-toolbar,
+@media all and (-moz-windows-compositor) {
+	#navigator-toolbox[tabsontop="true"] > .treestyletab-tabbar-toolbar,
+	#navigator-toolbox[tabsontop="true"] > .treestyletab-tabbar-toolbar:-moz-lwtheme,
+	#navigator-toolbox
+	  > #nav-bar + #customToolbars
+	  + #PersonalToolbar[collapsed="true"]
+	  + .treestyletab-tabbar-toolbar[tabsontop="true"]:last-child,
+	#navigator-toolbox
+	  > #nav-bar + #customToolbars
+	  + #PersonalToolbar[collapsed="true"]
+	  + .treestyletab-tabbar-toolbar[tabsontop="true"]:not(:last-child),
+	#navigator-toolbox
+	  > #nav-bar + #customToolbars
+	  + #PersonalToolbar[collapsed="true"]
+	  + .treestyletab-tabbar-toolbar[tabsontop="false"]:last-child,
+	#navigator-toolbox
+	  > #nav-bar + #customToolbars
+	  + #PersonalToolbar[collapsed="true"]
+	  + .treestyletab-tabbar-toolbar[tabsontop="false"]:not(:last-child) {
+		-moz-binding: url(treestyletab.xml#toolbar-drag);
+	}
+}
+.treestyletab-tabbar-toolbar {
+	-moz-binding: url(treestyletab.xml#toolbar-drag);
+}
 #navigator-toolbox[tabsontop="false"] > .treestyletab-tabbar-toolbar,
 #navigator-toolbox[tabsontop="false"] > .treestyletab-tabbar-toolbar:-moz-lwtheme {
 	-moz-binding: url(treestyletab.xml#toolbar);
-}
-#navigator-toolbox[tabsontop="true"] > .treestyletab-tabbar-toolbar,
-#navigator-toolbox[tabsontop="true"] > .treestyletab-tabbar-toolbar:-moz-lwtheme,
-#navigator-toolbox
-  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"] + .treestyletab-tabbar-toolbar[tabsontop="true"]:last-child,
-#navigator-toolbox
-  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"] + .treestyletab-tabbar-toolbar[tabsontop="false"]:last-child {
-	-moz-binding: url(treestyletab.xml#toolbar-drag);
 }
 .treestyletab-tabbar-toolbar:not([treestyletab-tabbar-position="top"]),
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
