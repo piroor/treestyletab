@@ -40,8 +40,7 @@
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab
-  :-moz-any(.tab-background[selected="true"]:not([pinned]),
-            .tab-background[selected="true"][pinned]:not([titlechanged])) {
+  .tab-background[selected="true"] {
 	background-color: #c1d2ee !important;
 	background-image: -moz-linear-gradient(
 	                    top,
@@ -67,8 +66,7 @@
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:hover
-  :-moz-any(.tab-background[selected="true"]:not([pinned]),
-            .tab-background[selected="true"][pinned]:not([titlechanged])) {
+  .tab-background[selected="true"] {
 	background-color: #d1e2fe !important;
 	background-image: -moz-linear-gradient(
 	                    top,
