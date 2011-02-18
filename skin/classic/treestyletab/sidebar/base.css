@@ -50,7 +50,6 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
 .tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
   .tabbrowser-tab {
 	-moz-appearance: none !important;
-	background: transparent !important;
 	-moz-border-top-colors: none !important;
 	-moz-border-bottom-colors: none !important;
 	-moz-border-right-colors: none !important;
@@ -68,7 +67,12 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
 	border-top: 1px solid transparent !important;
 }
 .tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"] {
+  :-moz-any(.tabbrowser-tab:not([pinned]),
+            .tabbrowser-tab[pinned]:not([titlechanged])) {
+	background: transparent !important;
+}
+.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned] {
 	padding: 2px 2px 3px !important;
 	line-height: 1 !important;
 }
@@ -76,6 +80,9 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
 .tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
   .tabbrowser-tab[selected="true"] {
 	border-top: 1px solid #94A1C0 !important;
+}
+.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[selected="true"] {
 	background: -moz-linear-gradient(top, #A0B0CF, #7386AB) repeat-x !important;
 }
 
@@ -340,14 +347,16 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
 
 /* for Mac OS X, Firefox 4 */
 .tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
-  :-moz-any(.tab-content:not([selected="true"]),
+  :-moz-any(.tab-content:not([selected="true"]):not([pinned]),
+            .tab-content:not([selected="true"])[pinned]:not([titlechanged]),
             .tab-content[selected="true"]) {
 	border: 0 none !important;
 	background: transparent !important;
 }
 .tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
   :-moz-any(.tab-background-start:not([selected="true"]),
-            .tab-background-middle:not([selected="true"]),
+            .tab-background-middle:not([selected="true"]):not([pinned]),
+            .tab-background-middle:not([selected="true"])[pinned]:not([titlechanged]),
             .tab-background-end:not([selected="true"]),
             .tab-background-start[selected="true"],
             .tab-background-middle[selected="true"],
