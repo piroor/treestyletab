@@ -8,7 +8,6 @@
   .tabbrowser-tab[selected="true"],
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   .tabbrowser-tab[selected="true"]:hover {
-	background: none transparent !important;
 	border: 2px solid transparent !important;
 	color: black !important;
 	height: auto !important;
@@ -26,20 +25,38 @@
 	-moz-border-left-colors: transparent transparent !important;
 	-moz-border-radius: 0 !important;
 }
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  :-moz-any(.tabbrowser-tab:not([pinned]),
+            .tabbrowser-tab[pinned]:not([titlechanged])),
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  :-moz-any(.tabbrowser-tab:not([pinned]),
+            .tabbrowser-tab[pinned]:not([titlechanged])):hover,
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  :-moz-any(.tabbrowser-tab[selected="true"]:not([pinned]),
+            .tabbrowser-tab[selected="true"][pinned]:not([titlechanged])),
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  :-moz-any(.tabbrowser-tab[selected="true"]:not([pinned]),
+            .tabbrowser-tab[selected="true"][pinned]:not([titlechanged])):hover {
+	background: none transparent !important;
+}
 
 /* for Mac OS X, Firefox 4 */
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  :-moz-any(.tab-content:not([selected="true"]),
-            .tab-content[selected="true"]) {
+  :-moz-any(.tab-content:not([pinned]):not([selected="true"]),
+            .tab-content[pinned]:not([titlechanged]):not([selected="true"]),
+            .tab-content:not([pinned])[selected="true"],
+            .tab-content[pinned]:not([titlechanged])[selected="true"]) {
 	border: 0 none !important;
 	background: transparent !important;
 }
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
   :-moz-any(.tab-background-start:not([selected="true"]),
-            .tab-background-middle:not([selected="true"]),
+            .tab-background-middle:not([selected="true"]):not([pinned]),
+            .tab-background-middle:not([selected="true"])[pinned]:not([titlechanged]),
             .tab-background-end:not([selected="true"]),
             .tab-background-start[selected="true"],
-            .tab-background-middle[selected="true"],
+            .tab-background-middle[selected="true"]:not([pinned]),
+            .tab-background-middle[selected="true"][pinned]:not([titlechanged]),
             .tab-background-end[selected="true"]) {
 	background: transparent !important;
 	mask: none !important;
@@ -120,71 +137,106 @@
 /* pinned tabs */
 
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"]:not(:hover)
-  .tab-content,
+  .tabbrowser-tab:not(:hover)
+  .tab-content[pinned],
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"]:hover
-  .tab-content,
+  .tabbrowser-tab:hover
+  .tab-content[pinned],
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"][selected]:not(:hover)
-  .tab-content,
+  .tabbrowser-tab[selected]:not(:hover)
+  .tab-content[pinned],
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"][selected]:hover
-  .tab-content {
-	background: none !important;
+  .tabbrowser-tab[selected]:hover
+  .tab-content[pinned] {
 	-moz-border-image: none !important;
 	margin: 0 !important;
 	padding: 0 !important;
 }
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab:not(:hover)
+  .tab-content[pinned]:not([titlechanged]),
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab:hover
+  .tab-content[pinned]:not([titlechanged]),
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab:not(:hover)
+  .tab-content[pinned][selected]:not([titlechanged]),
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab:hover
+  .tab-content[pinned][selected]:not([titlechanged]) {
+	background: none !important;
+}
 
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"]:not(:hover),
+  .tabbrowser-tab[pinned]:not(:hover),
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"]:hover,
+  .tabbrowser-tab[pinned]:hover,
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"][selected="true"]:not(:hover),
+  .tabbrowser-tab[pinned][selected="true"]:not(:hover),
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"][selected="true"]:hover {
-	background: none !important;
+  .tabbrowser-tab[pinned][selected="true"]:hover {
 	border: none !important;
 	padding: 0 !important;
 	-moz-border-radius: 0 !important;
 }
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned]:not([titlechanged]):not(:hover),
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned]:not([titlechanged]):hover,
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned][selected="true"]:not([titlechanged]):not(:hover),
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned][selected="true"]:not([titlechanged]):hover {
+	background: none !important;
+}
 
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"]
-  .tab-content
+  .tabbrowser-tab
+  .tab-content[pinned]
   * {
 	margin: 0 !important;
 	padding: 0 !important;
 }
 
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"]:not(:hover)
-  .tab-content,
+  .tabbrowser-tab:not(:hover)
+  .tab-content[pinned],
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"]:hover
-  .tab-content,
+  .tabbrowser-tab:hover
+  .tab-content[pinned],
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"][selected="true"]:not(:hover)
-  .tab-content,
+  .tabbrowser-tab:not(:hover)
+  .tab-content[pinned][selected="true"],
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"][selected="true"]:hover
-  .tab-content {
+  .tabbrowser-tab:hover
+  .tab-content[pinned][selected="true"] {
 	line-height: 1 !important;
-	background: #9d9d9d !important;
 	border: 1px solid #666666 !important;
 	margin: 1px 0 0 1px !important;
 	padding: 2px 4px 2px 3px !important;
 	-moz-border-radius: 4px !important;
 }
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab:not(:hover)
+  .tab-content[pinned]:not([titlechanged]),
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab:hover
+  .tab-content[pinned]:not([titlechanged]),
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[selected="true"]:not(:hover)
+  .tab-content[pinned]:not([titlechanged]),
+.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[selected="true"]:hover
+  .tab-content[pinned]:not([titlechanged]) {
+	background: #9d9d9d !important;
+}
 
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"][selected="true"]:not(:hover)
-  .tab-content,
+  .tabbrowser-tab[selected="true"]:not(:hover)
+  .tab-content[pinned]:not([titlechanged]),
 .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"][selected="true"]:hover
-  .tab-content {
+  .tabbrowser-tab[selected="true"]:hover
+  .tab-content[pinned]:not([titlechanged]) {
 	background-color: #b3b2b3 !important;
 }
 
@@ -226,29 +278,29 @@
 
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"]
-  .tab-content,
+  .tabbrowser-tab
+  .tab-content[pinned]:not([titlechanged]),
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"]:hover
-  .tab-content {
+  .tabbrowser-tab:hover
+  .tab-content[pinned]:not([titlechanged]) {
 	background: #cecece !important;
 }
 
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"][selected="true"]
-  .tab-content,
+  .tabbrowser-tab
+  .tab-content[pinned][selected="true"]:not([titlechanged]),
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"][selected="true"]:hover
-  .tab-content {
+  .tabbrowser-tab:hover
+  .tab-content[pinned][selected="true"]:not([titlechanged]) {
 	background: #e4e4e4 !important;
 }
 
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"]
-  .tab-content {
+  .tabbrowser-tab
+  .tab-content[pinned] {
 	border-color: #9a9a9a !important;
 }
