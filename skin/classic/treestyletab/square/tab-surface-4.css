@@ -20,13 +20,16 @@
 /* surface */
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab .tab-background {
+  .tabbrowser-tab
+  .tab-background {
 	-moz-transition: background 0.5s ease-out !important;
 	transition: background 0.5s ease-out !important;
 }
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([titlechanged]) .tab-background:not([selected="true"]) {
+  .tabbrowser-tab
+  :-moz-any(.tab-background:not([selected="true"]):not([pinned]),
+            .tab-background:not([selected="true"])[pinned]:not([titlechanged])) {
 	background-color: ThreeDFace !important;
 	background-image: -moz-linear-gradient(
 	                    top, 
@@ -36,7 +39,9 @@
 }
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([titlechanged]) .tab-background[selected="true"] {
+  .tabbrowser-tab
+  :-moz-any(.tab-background[selected="true"]:not([pinned]),
+            .tab-background[selected="true"][pinned]:not([titlechanged])) {
 	background-color: #c1d2ee !important;
 	background-image: -moz-linear-gradient(
 	                    top,
@@ -49,7 +54,9 @@
 /* hover */
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([titlechanged]):hover .tab-background:not([selected="true"]) {
+  .tabbrowser-tab:hover
+  :-moz-any(.tab-background:not([selected="true"]):not([pinned]),
+            .tab-background:not([selected="true"])[pinned]:not([titlechanged]))  {
 	background-color: #e0e8f6 !important;
 	background-image: -moz-linear-gradient(
 	                    top,
@@ -59,7 +66,9 @@
 }
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([titlechanged]):hover .tab-background[selected="true"] {
+  .tabbrowser-tab:hover
+  :-moz-any(.tab-background[selected="true"]:not([pinned]),
+            .tab-background[selected="true"][pinned]:not([titlechanged])) {
 	background-color: #d1e2fe !important;
 	background-image: -moz-linear-gradient(
 	                    top,
