@@ -67,6 +67,7 @@
 	color: -moz-dialogtext;
 	-moz-background-origin: border !important;
 	background-origin: border-box !important;
+	background-position: 0 0 !important;
 	border-top: 2px solid !important;
 	-moz-border-top-colors: transparent transparent !important;
 	border-bottom: 2px solid !important;
@@ -99,6 +100,15 @@
 }
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
   :-moz-any(.tab-background-start:not([selected="true"]),
+            .tab-background-middle:not([selected="true"]),
+            .tab-background-end:not([selected="true"]),
+            .tab-background-start[selected="true"],
+            .tab-background-middle[selected="true"],
+            .tab-background-end[selected="true"]) {
+	mask: none !important;
+}
+.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
+  :-moz-any(.tab-background-start:not([selected="true"]),
             .tab-background-middle:not([selected="true"]):not([pinned]),
             .tab-background-middle:not([selected="true"])[pinned]:not([titlechanged]),
             .tab-background-end:not([selected="true"]),
@@ -106,7 +116,6 @@
             .tab-background-middle[selected="true"],
             .tab-background-end[selected="true"]) {
 	background: transparent !important;
-	mask: none !important;
 }
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
   :-moz-any(.tab-background,

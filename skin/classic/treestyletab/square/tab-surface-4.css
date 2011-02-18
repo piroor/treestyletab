@@ -10,9 +10,11 @@
 }
 
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([pinned]) .tab-content[selected="true"],
+  .tabbrowser-tab
+  .tab-content[selected="true"]:not([pinned]),
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([pinned]) .tab-content:not([selected="true"]) {
+  .tabbrowser-tab
+  .tab-content:not([selected="true"]):not([pinned]) {
 	padding: 0 0.2em !important;
 }
 
@@ -28,8 +30,8 @@
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab
-  :-moz-any(.tab-background:not([selected="true"]):not([pinned]),
-            .tab-background:not([selected="true"])[pinned]:not([titlechanged])) {
+  :-moz-any(.tab-background:not([pinned]),
+            .tab-background:not([titlechanged])[pinned]) {
 	background-color: ThreeDFace !important;
 	background-image: -moz-linear-gradient(
 	                    top, 
@@ -37,6 +39,7 @@
 	                    rgba(0, 0, 0, 0) 50%
 	                  ) !important;
 }
+
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab
@@ -54,8 +57,8 @@
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:hover
-  :-moz-any(.tab-background:not([selected="true"]):not([pinned]),
-            .tab-background:not([selected="true"])[pinned]:not([titlechanged]))  {
+  :-moz-any(.tab-background:not([pinned]),
+            .tab-background[pinned]:not([titlechanged])) {
 	background-color: #e0e8f6 !important;
 	background-image: -moz-linear-gradient(
 	                    top,
