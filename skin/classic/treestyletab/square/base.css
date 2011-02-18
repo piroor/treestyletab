@@ -65,7 +65,6 @@
 	margin: 0 !important;
 	/*padding: 0 0.2em !important;*/
 	color: -moz-dialogtext;
-	background: ThreeDFace !important;
 	-moz-background-origin: border !important;
 	background-origin: border-box !important;
 	border-top: 2px solid !important;
@@ -78,6 +77,12 @@
 	-moz-border-radius-bottomright : 0 !important;
 	-moz-border-image: none !important;
 	-moz-box-align: stretch !important;
+}
+.tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:not([titlechanged]),
+.tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:not([titlechanged]):not([selected="true"]) {
+	background: ThreeDFace !important;
 }
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"][treestyletab-firsttab-border="true"]
   .tabbrowser-tab:not([pinned="true"]):not([selected="true"]):first-child {
@@ -93,10 +98,10 @@
 }
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
   :-moz-any(.tab-background-start:not([selected="true"]),
-            .tab-background-middle:not([selected="true"]),
+            .tab-background-middle:not([selected="true"]):not([titlechanged]),
             .tab-background-end:not([selected="true"]),
             .tab-background-start[selected="true"],
-            .tab-background-middle[selected="true"],
+            .tab-background-middle[selected="true"]:not([titlechanged]),
             .tab-background-end[selected="true"]) {
 	background: transparent !important;
 	mask: none !important;
@@ -117,9 +122,12 @@
   .tabbrowser-tab[selected="true"] {
 	margin: 0 !important;
 	padding: 0 0.2em !important;
-	background-color: ThreeDHighlight !important;
 	-moz-border-top-colors: ThreeDHighlight transparent !important;
 	-moz-border-bottom-colors: ThreeDShadow transparent !important;
+}
+.tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab[selected="true"]:not([titlechanged]) {
+	background-color: ThreeDHighlight !important;
 }
 
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
@@ -216,27 +224,39 @@
 
 .tabbrowser-tabs[treestyletab-style~="vertigo"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:not([selected="true"]) {
-	background: transparent !important;
 	-moz-border-top-colors: transparent transparent !important;
 	-moz-border-bottom-colors: transparent transparent !important;
 }
 .tabbrowser-tabs[treestyletab-style~="vertigo"]:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:not([selected="true"]):not([titlechanged]) {
+	background: transparent !important;
+}
+.tabbrowser-tabs[treestyletab-style~="vertigo"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:not([selected="true"]):hover {
-	background-color: #e0e8f6 !important;
 	-moz-border-top-colors: #e0e8f6 #e0e8f6 !important;
 	-moz-border-bottom-colors: #e0e8f6 #e0e8f6 !important;
 }
 .tabbrowser-tabs[treestyletab-style~="vertigo"]:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:not([selected="true"]):not([titlechanged]):hover {
+	background-color: #e0e8f6 !important;
+}
+.tabbrowser-tabs[treestyletab-style~="vertigo"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab[selected="true"] {
-	background-color: #c1d2ee !important;
 	-moz-border-top-colors: #c1d2ee #c1d2ee !important;
 	-moz-border-bottom-colors: #c1d2ee #c1d2ee !important;
 }
 .tabbrowser-tabs[treestyletab-style~="vertigo"]:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab[selected="true"]:not([titlechanged]) {
+	background-color: #c1d2ee !important;
+}
+.tabbrowser-tabs[treestyletab-style~="vertigo"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab[selected="true"]:hover {
-	background-color: #d1e2fe !important;
 	-moz-border-top-colors: #d1e2fe #d1e2fe !important;
 	-moz-border-bottom-colors: #d1e2fe #d1e2fe !important;
+}
+.tabbrowser-tabs[treestyletab-style~="vertigo"]:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab[selected="true"]:not([titlechanged]):hover {
+	background-color: #d1e2fe !important;
 }
 
 .tabbrowser-tabs[treestyletab-style~="vertigo"]:not([treestyletab-tabbar-position="top"])
@@ -279,9 +299,12 @@
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:not([selected="true"]):hover {
-	background-color: #e0e8f6 !important;
 	-moz-border-top-colors: #e0e8f6 transparent !important;
 	-moz-border-left-colors: #e0e8f6 transparent !important;
+}
+.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:not([selected="true"]):not([titlechanged]):hover {
+	background-color: #e0e8f6 !important;
 }
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"][treestyletab-mode="vertical"][treestyletab-firsttab-border="true"]
   .tabbrowser-tab:first-child:not([selected="true"]):hover {
@@ -294,9 +317,12 @@
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab[selected="true"] {
-	background-color: #c1d2ee !important;
 	-moz-border-top-colors: #c1d2ee transparent !important;
 	-moz-border-left-colors: #c1d2ee transparent !important;
+}
+.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab[selected="true"]:not([titlechanged]) {
+	background-color: #c1d2ee !important;
 }
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"][treestyletab-mode="vertical"][treestyletab-firsttab-border="true"]
   .tabbrowser-tab:first-child[selected="true"] {
@@ -309,9 +335,12 @@
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab[selected="true"]:hover {
-	background-color: #d1e2fe !important;
 	-moz-border-top-colors: #d1e2fe transparent !important;
 	-moz-border-left-colors: #d1e2fe transparent !important;
+}
+.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab[selected="true"]:not([titlechanged]):hover {
+	background-color: #d1e2fe !important;
 }
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"][treestyletab-mode="vertical"][treestyletab-firsttab-border="true"]
   .tabbrowser-tab:first-child[selected="true"]:hover {

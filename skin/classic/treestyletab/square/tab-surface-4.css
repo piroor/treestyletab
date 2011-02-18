@@ -26,7 +26,7 @@
 }
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab .tab-background:not([selected="true"]) {
+  .tabbrowser-tab:not([titlechanged]) .tab-background:not([selected="true"]) {
 	background-color: ThreeDFace !important;
 	background-image: -moz-linear-gradient(
 	                    top, 
@@ -36,7 +36,7 @@
 }
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab .tab-background[selected="true"] {
+  .tabbrowser-tab:not([titlechanged]) .tab-background[selected="true"] {
 	background-color: #c1d2ee !important;
 	background-image: -moz-linear-gradient(
 	                    top,
@@ -49,7 +49,7 @@
 /* hover */
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:hover .tab-background:not([selected="true"]) {
+  .tabbrowser-tab:not([titlechanged]):hover .tab-background:not([selected="true"]) {
 	background-color: #e0e8f6 !important;
 	background-image: -moz-linear-gradient(
 	                    top,
@@ -59,7 +59,7 @@
 }
 
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:hover .tab-background[selected="true"] {
+  .tabbrowser-tab:not([titlechanged]):hover .tab-background[selected="true"] {
 	background-color: #d1e2fe !important;
 	background-image: -moz-linear-gradient(
 	                    top,
