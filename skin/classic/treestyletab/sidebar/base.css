@@ -355,20 +355,39 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
 }
 .tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
   :-moz-any(.tab-background-start:not([selected="true"]),
-            .tab-background-middle:not([selected="true"]):not([pinned]),
-            .tab-background-middle:not([selected="true"])[pinned]:not([titlechanged]),
+            .tab-background-middle:not([selected="true"]),
             .tab-background-end:not([selected="true"]),
             .tab-background-start[selected="true"],
             .tab-background-middle[selected="true"],
             .tab-background-end[selected="true"]) {
-	background: transparent !important;
 	mask: none !important;
 }
 .tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
-  :-moz-any(.tab-background,
-            .tab-content) {
+  :-moz-any(.tab-background-start:not([selected="true"]):not([pinned]),
+            .tab-background-start:not([selected="true"])[pinned]:not([titlechanged]),
+            .tab-background-middle:not([selected="true"]):not([pinned]),
+            .tab-background-middle:not([selected="true"])[pinned]:not([titlechanged]),
+            .tab-background-end:not([selected="true"]):not([pinned]),
+            .tab-background-end:not([selected="true"])[pinned]:not([titlechanged]),
+            .tab-background-start[selected="true"],
+            .tab-background-middle[selected="true"],
+            .tab-background-end[selected="true"]) {
+	background: transparent !important;
+}
+.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+  .tab-background {
+	margin: 0 !important;
+}
+.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+  .tab-content {
 	margin-left: 0 !important;
 	margin-right: 0 !important;
+	-moz-border-image: none !important;
+}
+.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+  .tabbrowser-tab:not([treestyletab-drop-position])
+  .tab-content {
+	border: 0 none !important;
 }
 
 /* for Multiple Tab Handler */

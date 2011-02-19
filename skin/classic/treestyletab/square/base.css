@@ -83,7 +83,11 @@
   :-moz-any(.tabbrowser-tab:not([pinned]),
             .tabbrowser-tab[pinned]:not([titlechanged]),
             .tabbrowser-tab:not([pinned]):not([selected="true"]),
-            .tabbrowser-tab[pinned]:not([titlechanged]):not([selected="true"])) {
+            .tabbrowser-tab[pinned]:not([titlechanged]):not([selected="true"])),
+:root[tabFx2Compatible-flags~="mac"]
+  .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
+  :-moz-any(.tabbrowser-tab[pinned],
+            .tabbrowser-tab[pinned][titlechanged]) {
 	background: ThreeDFace !important;
 }
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"][treestyletab-firsttab-border="true"]
@@ -108,18 +112,23 @@
 	mask: none !important;
 }
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
-  :-moz-any(.tab-background-start:not([selected="true"]),
+  :-moz-any(.tab-background-start:not([selected="true"]):not([pinned]),
+            .tab-background-start:not([selected="true"])[pinned]:not([titlechanged]),
             .tab-background-middle:not([selected="true"]):not([pinned]),
             .tab-background-middle:not([selected="true"])[pinned]:not([titlechanged]),
-            .tab-background-end:not([selected="true"]),
+            .tab-background-end:not([selected="true"]):not([pinned]),
+            .tab-background-end:not([selected="true"])[pinned]:not([titlechanged]),
             .tab-background-start[selected="true"],
             .tab-background-middle[selected="true"],
             .tab-background-end[selected="true"]) {
 	background: transparent !important;
 }
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
-  :-moz-any(.tab-background,
-            .tab-content) {
+  .tab-background {
+	margin: 0 !important;
+}
+.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
+  .tab-content {
 	margin-left: 0 !important;
 	margin-right: 0 !important;
 }
