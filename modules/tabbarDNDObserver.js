@@ -658,6 +658,10 @@ catch(e) {
  
 	handleEvent : function TabbarDND_handleEvent(aEvent) 
 	{
+		// ignore drag and drop while toolbar customization (for Firefox 3.6)
+		if (this.treeStyleTab.isToolbarCustomizing)
+			return;
+
 		switch (aEvent.type)
 		{
 			case 'dragstart': return this.onDragStart(aEvent);
