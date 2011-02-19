@@ -1080,7 +1080,8 @@ TreeStyleTabService.overrideExtensionsDelayed = function TSTService_overrideExte
 	let (menu = document.getElementById('tt-toolbar-properties')) {
 		if (menu) {
 			let tabbarToolboxes = ['tt-toolbox-tabright', 'tt-toolbox-tableft']
-									.map(document.getElementById, document);
+									.map(document.getElementById, document)
+									.filter(function(aToolbox) { return aToolbox; });
 			let listener = {
 					handleEvent : function(aEvent)
 					{
