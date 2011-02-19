@@ -112,16 +112,19 @@
 	mask: none !important;
 }
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
-  :-moz-any(.tab-background-start:not([selected="true"]):not([pinned]),
-            .tab-background-start:not([selected="true"])[pinned]:not([titlechanged]),
+  :-moz-any(.tab-background-start:not([selected="true"]),
             .tab-background-middle:not([selected="true"]):not([pinned]),
             .tab-background-middle:not([selected="true"])[pinned]:not([titlechanged]),
-            .tab-background-end:not([selected="true"]):not([pinned]),
-            .tab-background-end:not([selected="true"])[pinned]:not([titlechanged]),
+            .tab-background-end:not([selected="true"]),
             .tab-background-start[selected="true"],
             .tab-background-middle[selected="true"],
             .tab-background-end[selected="true"]) {
 	background: transparent !important;
+}
+.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
+  :-moz-any(.tab-background-start[pinned][titlechanged],
+            .tab-background-end[pinned][titlechanged]) {
+	visibility: collapse !important;
 }
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-mode="vertical"]
   .tab-background {
