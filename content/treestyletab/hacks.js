@@ -1075,6 +1075,30 @@ TreeStyleTabService.overrideExtensionsDelayed = function TSTService_overrideExte
 		titlebar.addEventListener('DOMAttrModified', listener, true);
 	}
 
+	// TotalToolbar
+	// http://totaltoolbar.mozdev.org/
+	let (menu = document.getElementById('tt-toolbar-properties')) {
+		let listener = {
+				handleEvent : function(aEvent)
+				{
+					switch (aEvent.type)
+					{
+						case 'command':
+							gBrowser.treeStyleTab.updateFloatingTabbar(TreeStyleTabService.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
+							break;
+
+						case 'unload':
+							menu.removeEventListener('command', this, true);
+							window.removeEventListener('unload', this, false);
+							menu = null;
+							break;
+					}
+				}
+			};
+		menu.addEventListener('command', listener, false);
+		window.addEventListener('unload', listener, false);
+	}
+
 	// Firefox Sync (Weave)
 	// http://www.mozilla.com/en-US/firefox/sync/
 	if (
