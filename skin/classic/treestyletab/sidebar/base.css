@@ -67,8 +67,9 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
 	border-top: 1px solid transparent !important;
 }
 .tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
-  :-moz-any(.tabbrowser-tab:not([pinned]),
-            .tabbrowser-tab[pinned]:not([titlechanged])) {
+  .tabbrowser-tab:not([pinned]),
+.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned]:not([titlechanged]) {
 	background: transparent !important;
 }
 .tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]

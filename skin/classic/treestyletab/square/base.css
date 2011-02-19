@@ -80,9 +80,13 @@
 	-moz-box-align: stretch !important;
 }
 .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
-  :-moz-any(.tabbrowser-tab:not([pinned]),
-            .tabbrowser-tab[pinned]:not([titlechanged]),
-            .tabbrowser-tab:not([pinned]):not([selected="true"]),
+  .tabbrowser-tab:not([pinned]),
+.tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:not([pinned]):not([selected="true"]) {
+	background: ThreeDFace !important;
+}
+.tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
+  :-moz-any(.tabbrowser-tab[pinned]:not([titlechanged]),
             .tabbrowser-tab[pinned]:not([titlechanged]):not([selected="true"])),
 :root[tabFx2Compatible-flags~="mac"]
   .tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
@@ -251,8 +255,9 @@
 	-moz-border-bottom-colors: transparent transparent !important;
 }
 .tabbrowser-tabs[treestyletab-style~="vertigo"]:not([treestyletab-tabbar-position="top"])
-  :-moz-any(.tabbrowser-tab:not([selected="true"]):not([pinned]),
-            .tabbrowser-tab:not([selected="true"])[pinned]:not([titlechanged])) {
+  .tabbrowser-tab:not([selected="true"]):not([pinned]),
+.tabbrowser-tabs[treestyletab-style~="vertigo"]:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:not([selected="true"])[pinned]:not([titlechanged])) {
 	background: transparent !important;
 }
 .tabbrowser-tabs[treestyletab-style~="vertigo"]:not([treestyletab-tabbar-position="top"])
@@ -261,8 +266,9 @@
 	-moz-border-bottom-colors: #e0e8f6 #e0e8f6 !important;
 }
 .tabbrowser-tabs[treestyletab-style~="vertigo"]:not([treestyletab-tabbar-position="top"])
-  :-moz-any(.tabbrowser-tab:not([selected="true"]):not([pinned]),
-            .tabbrowser-tab:not([selected="true"])[pinned]:not([titlechanged])):hover {
+  .tabbrowser-tab:not([selected="true"]):not([pinned]):hover,
+.tabbrowser-tabs[treestyletab-style~="vertigo"]:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:not([selected="true"])[pinned]:not([titlechanged]):hover {
 	background-color: #e0e8f6 !important;
 }
 .tabbrowser-tabs[treestyletab-style~="vertigo"]:not([treestyletab-tabbar-position="top"])
@@ -328,8 +334,9 @@
 	-moz-border-left-colors: #e0e8f6 transparent !important;
 }
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
-  :-moz-any(.tabbrowser-tab:not([selected="true"]):not([pinned]),
-            .tabbrowser-tab:not([selected="true"])[pinned]:not([titlechanged])):hover {
+  .tabbrowser-tab:not([selected="true"]):not([pinned]):hover,
+.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:not([selected="true"])[pinned]:not([titlechanged]):hover {
 	background-color: #e0e8f6 !important;
 }
 .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"][treestyletab-mode="vertical"][treestyletab-firsttab-border="true"]
