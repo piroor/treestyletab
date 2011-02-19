@@ -765,7 +765,7 @@ var TreeStyleTabService = {
 		this.updateAllTabsButton(gBrowser);
 
 		var event = document.createEvent('Events');
-		event.initEvent(this.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION_ENTERED, true, false);
+		event.initEvent(this.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION, true, false);
 		document.documentElement.dispatchEvent(event);
 	},
  
@@ -777,7 +777,7 @@ var TreeStyleTabService = {
 			allTabsButton.firstChild.setAttribute('position', 'after_end');
 
 		var event = document.createEvent('Events');
-		event.initEvent(this.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION_EXITED, true, false);
+		event.initEvent(this.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION, true, false);
 		document.documentElement.dispatchEvent(event);
 	},
  

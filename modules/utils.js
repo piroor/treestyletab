@@ -147,8 +147,8 @@ var TreeStyleTabUtils = {
 	kEVENT_TYPE_PRINT_PREVIEW_EXITED         : 'nsDOMTreeStyleTabPrintPreviewExited',
 	kEVENT_TYPE_AUTO_HIDE_STATE_CHANGING     : 'nsDOMTreeStyleTabAutoHideStateChanging',
 	kEVENT_TYPE_AUTO_HIDE_STATE_CHANGE       : 'nsDOMTreeStyleTabAutoHideStateChange',
-	kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION_ENTERED : 'nsDOMTreeStyleTabBeforeToolbarCustomization',
-	kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION_EXITED   : 'nsDOMTreeStyleTabAfterToolbarCustomization',
+	kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION : 'nsDOMTreeStyleTabBeforeToolbarCustomization',
+	kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION  : 'nsDOMTreeStyleTabAfterToolbarCustomization',
 
 	kTOPIC_INDENT_MODIFIED              : 'TreeStyleTab:indentModified',
 	kTOPIC_COLLAPSE_EXPAND_ALL          : 'TreeStyleTab:collapseExpandAllSubtree',

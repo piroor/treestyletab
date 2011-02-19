@@ -1092,13 +1092,13 @@ TreeStyleTabService.overrideExtensionsDelayed = function TSTService_overrideExte
 								gBrowser.treeStyleTab.updateFloatingTabbar(sv.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
 								break;
 
-							case sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION_EXITED:
+							case sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION:
 								tabbarToolboxes.forEach(function(aToolbox) {
 									aToolbox.removeAttribute('collapsed');
 								});
 								break;
 
-							case sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION_EXITED:
+							case sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION:
 								tabbarToolboxes.forEach(function(aToolbox) {
 									if (!aToolbox.firstChild.hasChildNodes())
 										aToolbox.setAttribute('collapsed', true);
@@ -1107,8 +1107,8 @@ TreeStyleTabService.overrideExtensionsDelayed = function TSTService_overrideExte
 
 							case 'unload':
 								menu.removeEventListener('command', this, true);
-								window.removeEventListener(sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION_EXITED, listener, false);
-								window.removeEventListener(sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION_EXITED, listener, false);
+								window.removeEventListener(sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION, listener, false);
+								window.removeEventListener(sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION, listener, false);
 								window.removeEventListener('unload', this, false);
 								menu = null;
 								break;
@@ -1116,8 +1116,8 @@ TreeStyleTabService.overrideExtensionsDelayed = function TSTService_overrideExte
 					}
 				};
 			menu.addEventListener('command', listener, false);
-			window.addEventListener(this.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION_EXITED, listener, false);
-			window.addEventListener(this.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION_EXITED, listener, false);
+			window.addEventListener(this.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION, listener, false);
+			window.addEventListener(this.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION, listener, false);
 			window.addEventListener('unload', listener, false);
 			tabbarToolboxes.forEach(function(aToolbox) {
 				if (!aToolbox.firstChild.hasChildNodes())
