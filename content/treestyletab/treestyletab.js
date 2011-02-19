@@ -763,6 +763,10 @@ var TreeStyleTabService = {
 
 		// for Firefox 4.0 or later
 		this.updateAllTabsButton(gBrowser);
+
+		var event = document.createEvent('Events');
+		event.initEvent(this.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION_ENTERED, true, false);
+		document.documentElement.dispatchEvent(event);
 	},
  
 	destroyToolbarItems : function TSTService_destroyToolbarItems() 
@@ -771,6 +775,10 @@ var TreeStyleTabService = {
 		var allTabsButton = document.getElementById('alltabs-button');
 		if (allTabsButton && allTabsButton.hasChildNodes())
 			allTabsButton.firstChild.setAttribute('position', 'after_end');
+
+		var event = document.createEvent('Events');
+		event.initEvent(this.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION_EXITED, true, false);
+		document.documentElement.dispatchEvent(event);
 	},
  
 	updateAllTabsButton : function TSTService_updateAllTabsButton(aTabBrowser) 

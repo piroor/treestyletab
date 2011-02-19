@@ -1078,25 +1078,51 @@ TreeStyleTabService.overrideExtensionsDelayed = function TSTService_overrideExte
 	// TotalToolbar
 	// http://totaltoolbar.mozdev.org/
 	let (menu = document.getElementById('tt-toolbar-properties')) {
-		let listener = {
-				handleEvent : function(aEvent)
-				{
-					switch (aEvent.type)
+		if (menu) {
+			let tabbarToolboxes = ['tt-toolbox-tabright', 'tt-toolbox-tableft']
+									.map(document.getElementById, document);
+			let listener = {
+					handleEvent : function(aEvent)
 					{
-						case 'command':
-							gBrowser.treeStyleTab.updateFloatingTabbar(TreeStyleTabService.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
-							break;
+						var sv = TreeStyleTabService;
+						switch (aEvent.type)
+						{
+							case 'command':
+								gBrowser.treeStyleTab.updateFloatingTabbar(sv.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
+								break;
 
-						case 'unload':
-							menu.removeEventListener('command', this, true);
-							window.removeEventListener('unload', this, false);
-							menu = null;
-							break;
+							case sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION_EXITED:
+								tabbarToolboxes.forEach(function(aToolbox) {
+									aToolbox.removeAttribute('collapsed');
+								});
+								break;
+
+							case sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION_EXITED:
+								tabbarToolboxes.forEach(function(aToolbox) {
+									if (!aToolbox.firstChild.hasChildNodes())
+										aToolbox.setAttribute('collapsed', true);
+								});
+								break;
+
+							case 'unload':
+								menu.removeEventListener('command', this, true);
+								window.removeEventListener(sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION_EXITED, listener, false);
+								window.removeEventListener(sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION_EXITED, listener, false);
+								window.removeEventListener('unload', this, false);
+								menu = null;
+								break;
+						}
 					}
-				}
-			};
-		menu.addEventListener('command', listener, false);
-		window.addEventListener('unload', listener, false);
+				};
+			menu.addEventListener('command', listener, false);
+			window.addEventListener(this.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION_EXITED, listener, false);
+			window.addEventListener(this.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION_EXITED, listener, false);
+			window.addEventListener('unload', listener, false);
+			tabbarToolboxes.forEach(function(aToolbox) {
+				if (!aToolbox.firstChild.hasChildNodes())
+					aToolbox.setAttribute('collapsed', true);
+			});
+		}
 	}
 
 	// Firefox Sync (Weave)
