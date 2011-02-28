@@ -16,8 +16,8 @@
 <!ENTITY config.tabbar.invertTab            "Tabs von rechts einrücken">
 <!ENTITY config.tabbar.invertTabContents    "Symbol und Text in den Tabs vertauschen">
 <!ENTITY config.enableSubtreeIndent         "Tabs einrücken">
-<!ENTITY config.maxTreeLevel.before "until">
-<!ENTITY config.maxTreeLevel.after  "level(s)">
+<!ENTITY config.maxTreeLevel.before "bis">
+<!ENTITY config.maxTreeLevel.after  "Level">
 <!ENTITY config.allowSubtreeCollapseExpand  "Auf- und Einklappen von Zweigen erlauben">
 <!ENTITY config.tabbar.hideAlltabsButton    "Button zum Auflisten aller Tabs anzeigen">
 
@@ -50,10 +50,10 @@
 
 <!ENTITY config.tabs.tab "Tabs Öffnen">
 
-<!ENTITY config.autoAttach.newTabCommand.caption "When a new blank tab is opened manually">
-<!ENTITY config.autoAttach.newTabCommand.ignore  "Open as a root tab">
-<!ENTITY config.autoAttach.newTabCommand.current "Open as a child of the current tab">
-<!ENTITY config.autoAttach.newTabCommand.parent  "Open as a sibling of the current tab">
+<!ENTITY config.autoAttach.newTabCommand.caption "Neuen Tab öffnen">
+<!ENTITY config.autoAttach.newTabCommand.ignore  "Auf oberster Ebene">
+<!ENTITY config.autoAttach.newTabCommand.current "Dem aktuellen Tab unterordnen">
+<!ENTITY config.autoAttach.newTabCommand.parent  "Auf Ebene des aktuellen Tabs öffnen">
 
 <!ENTITY config.openGroupBookmark.caption     "Verhalten von &quot;Alle in Tabs öffnen&quot; für Seiten in einem Lesezeichenordner">
 <!ENTITY config.openGroupBookmark.ask         "Jedes Mal nachfragen">
@@ -66,21 +66,15 @@
 <!ENTITY config.openGroupBookmark.replace     "Aktuelles Tab durch die neuen Tabs ersetzen">
 <!ENTITY config.openGroupBookmark.underParent "Seiten zur Gruppierung einem Dummytab unterordnen">
 
-<!ENTITY config.dropLinksOnTab.caption "Dropped link, URL, bookmark or file to existing tab">
-<!ENTITY config.dropLinksOnTab.ask     "Always ask me how to load it">
-<!ENTITY config.dropLinksOnTab.load    "Load in the tab (Firefox default)">
-<!ENTITY config.dropLinksOnTab.newTab  "Open as a new child tab">
-<!--
-<!ENTITY config.dropLinksOnTab.caption "Verhalten für das Drag &amp; Drop von URLs auf Tabs">
-<!ENTITY config.dropLinksOnTab.ask     "Jedes Mal nachfragen">
-<!ENTITY config.dropLinksOnTab.load    "Seite im Tab laden (Firefox Standard)">
+<!ENTITY config.dropLinksOnTab.caption "Verhalten für Drag &amp; Drop auf Tabs">
+<!ENTITY config.dropLinksOnTab.ask     "Immer nachfragen">
+<!ENTITY config.dropLinksOnTab.load    "Seite im Tab laden (Firefox default)">
 <!ENTITY config.dropLinksOnTab.newTab  "Seite in einem neuen untergeordneten Tab laden">
--->
 
 <!ENTITY config.tabs.autohide "Platz sparen">
 
-<!ENTITY config.autoHide.mode.normal.caption     "for Normal Window Mode">
-<!ENTITY config.autoHide.mode.fullscreen.caption "for Full Screen Mode">
+<!ENTITY config.autoHide.mode.normal.caption     "Bei normaler Fenstergröße">
+<!ENTITY config.autoHide.mode.fullscreen.caption "Im Vollbildmodus">
 <!ENTITY config.autoHide.mode.0 "Tableiste immer voll anzeigen">
 <!ENTITY config.autoHide.mode.1 "Inaktive Tableiste verstecken">
 <!ENTITY config.autoHide.mode.2 "Inaktive Tableiste verkleinert anzeigen">
@@ -131,10 +125,10 @@
 
 <!ENTITY config.tooltip.includeChildren        "Titel der untergeordneten Tabs im Tooltip geschlossener Tabs anzeigen">
 
-<!ENTITY config.bookmarkDroppedTabs.caption "Action for drag and drop of a parent tab to the bookmarks tree">
-<!ENTITY config.bookmarkDroppedTabs.ask     "Ask me always">
-<!ENTITY config.bookmarkDroppedTabs.all     "Bookmark all tabs in the tree">
-<!ENTITY config.bookmarkDroppedTabs.parent  "Bookmark only the dragged one tab">
+<!ENTITY config.bookmarkDroppedTabs.caption "Verhalten für Drag &amp; Drop von Tab-Zweigen auf das Lesezeichenverzeichnis">
+<!ENTITY config.bookmarkDroppedTabs.ask     "Immer nachfragen">
+<!ENTITY config.bookmarkDroppedTabs.all     "Alle Tabs im Zweig als Lesezeichen speichern">
+<!ENTITY config.bookmarkDroppedTabs.parent  "Nur das gezogene Tab als Lesezeichen speichern">
 
 
 
@@ -152,7 +146,7 @@
 <!ENTITY context.removeTabSubtree.accesskey "s">
 <!ENTITY context.removeDescendantTabs.label     "Untergeordnete Tabs schließen">
 <!ENTITY context.removeDescendantTabs.accesskey "d">
-<!ENTITY context.removeAllTabsBut.label         "Close Other Tabs except this Tree">
+<!ENTITY context.removeAllTabsBut.label         "Andere Zweige schließen">
 <!ENTITY context.removeAllTabsBut.accesskey     "a">
 <!ENTITY context.collapseAllSubtree.label     "Alle Zweige zuklappen">
 <!ENTITY context.collapseAllSubtree.accesskey "c">
