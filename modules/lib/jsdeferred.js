@@ -1,20 +1,17 @@
 // Usage:: Components.utils.import('..../jsdeferred.jscodemodule.js');
 // JSDeferred 0.3.4 Copyright (c) 2007 cho45 ( www.lowreal.net )
 // See http://github.com/cho45/jsdeferred
-var EXPORTED_SYMBOLS = ['Deferred'];
-var window = {};
-var location = { protocol: 'resource:' };
-var document = { addEventListener : function() {} };
+var EXPORTED_SYMBOLS = ["Deferred"];
 
-function setTimeout(aCallback, aDelay) {
-	var timer = Components.classes['@mozilla.org/timer;1']
+function setTimeout (f, i) {
+	let timer = Components.classes["@mozilla.org/timer;1"]
 					.createInstance(Components.interfaces.nsITimer);
-	timer.initWithCallback(aCallback, aDelay, timer.TYPE_ONE_SHOT);
+	timer.initWithCallback(f, i, timer.TYPE_ONE_SHOT);
 	return timer;
 }
 
-function clearTimeout(aTimer) {
-	aTimer.cancel();
+function clearTimeout (timer) {
+	timer.cancel();
 }
 
 
@@ -373,4 +370,4 @@ Deferred.define = function (obj, list) {
 	return Deferred;
 };
 
-this.Deferred = Deferred;// End of JSDeferred
+this.Deferred = Deferred;
