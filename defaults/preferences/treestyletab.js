@@ -102,6 +102,8 @@ pref("extensions.treestyletab.autoCollapseExpandSubtreeOnSelect",      true);
 pref("extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove", true);
 pref("extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut", false);
 pref("extensions.treestyletab.collapseExpandSubtree.dblclick",         false);
+// -1 = restore last state, 0 = always collapse, 1 = always expand
+pref("extensions.treestyletab.collapseExpandSubtree.sessionRestore", -1);
 pref("extensions.treestyletab.autoExpandSubtreeOnCollapsedChildFocused", true);
 pref("extensions.treestyletab.autoExpandSubtreeOnAppendChild",         true);
 pref("extensions.treestyletab.autoAttach", true);

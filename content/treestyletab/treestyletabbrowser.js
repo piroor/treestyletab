@@ -2896,6 +2896,9 @@ TreeStyleTabBrowser.prototype = {
 		}
 	},
 	
+	RESTORED_TREE_COLLAPSED_STATE_LAST_STATE : -1,
+	RESTORED_TREE_COLLAPSED_STATE_COLLAPSED  : 0,
+	RESTORED_TREE_COLLAPSED_STATE_EXPANDED   : 1,
 	restoreStructure : function TSTBrowser_restoreStructure(aTab) 
 	{
 		/*
@@ -2994,7 +2997,15 @@ TreeStyleTabBrowser.prototype = {
 		if (closeSetId)
 			this.restoreClosedSet(closeSetId, tab);
 
-		var isSubtreeCollapsed = restoringMultipleTabs && (this.getTabValue(tab, this.kSUBTREE_COLLAPSED) == 'true');
+		var shouldCollapse = this.getTreePref('collapseExpandSubtree.sessionRestore');
+		var isSubtreeCollapsed = (
+				restoringMultipleTabs &&
+				(
+					shouldCollapse == this.RESTORED_TREE_COLLAPSED_STATE_LAST_STATE ?
+						(this.getTabValue(tab, this.kSUBTREE_COLLAPSED) == 'true') :
+						shouldCollapse == this.RESTORED_TREE_COLLAPSED_STATE_COLLAPSED
+				)
+			);
 		this.setTabValue(tab, this.kSUBTREE_COLLAPSED, isSubtreeCollapsed);
 
 		var tabs = [];
