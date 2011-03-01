@@ -1,5 +1,5 @@
 /**
- * @fileOverview Tab Related Confirimation Library for Firefox 3.5 or later
+ * @fileOverview Tab Related Confirmation Library for Firefox 3.5 or later
  * @author       SHIMODA "Piro" Hiroshi
  * @version      4
  * Basic usage:
