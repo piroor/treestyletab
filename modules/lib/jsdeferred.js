@@ -1,5 +1,5 @@
 // Usage:: Components.utils.import('..../jsdeferred.jscodemodule.js');
-// JSDeferred 0.3.4 Copyright (c) 2007 cho45 ( www.lowreal.net )
+// JSDeferred 0.4.0 Copyright (c) 2007 cho45 ( www.lowreal.net )
 // See http://github.com/cho45/jsdeferred
 var EXPORTED_SYMBOLS = ["Deferred"];
 
@@ -19,6 +19,9 @@ function Deferred () { return (this instanceof Deferred) ? this.init() : new Def
 Deferred.ok = function (x) { return x };
 Deferred.ng = function (x) { throw  x };
 Deferred.prototype = {
+	
+	_id : 0xe38286e381ae,
+
 	
 	init : function () {
 		this._next    = null;
@@ -62,13 +65,16 @@ Deferred.prototype = {
 			value = e;
 			if (Deferred.onerror) Deferred.onerror(e);
 		}
-		if (value instanceof Deferred) {
+		if (Deferred.isDeferred(value)) {
 			value._next = this._next;
 		} else {
 			if (this._next) this._next._fire(next, value);
 		}
 		return this;
 	}
+};
+Deferred.isDeferred = function (obj) {
+	return !!(obj && obj._id == Deferred.prototype._id);
 };
 
 Deferred.next_default = function (fun) {
@@ -252,7 +258,7 @@ Deferred.loop = function (n, fun) {
 				}
 				o.prev = ret;
 				ret = fun.call(this, i, o);
-				if (ret instanceof Deferred) {
+				if (Deferred.isDeferred(ret)) {
 					return ret.next(function (r) {
 						ret = r;
 						return Deferred.call(_loop, i + step);
