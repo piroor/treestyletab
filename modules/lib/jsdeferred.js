@@ -397,7 +397,7 @@ Deferred.postie_for_message_manager = function (manager) {
 	var cb  = {};
 	var mm  = [];
 
-	var postieId = parseInt(Math.random() * 65000) + Date.now();
+	var postieId = Date.now() + ':' + parseInt(Math.random() * 65000);
 
 	var messageListener = function (message) {
 			message = message.json;
