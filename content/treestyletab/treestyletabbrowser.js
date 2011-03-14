@@ -3440,6 +3440,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		if (
 			!this.shouldDetectClickOnIndentSpaces ||
+			!this.getAncestorTabbarFromEvent(aEvent) ||
 			this.isEventFiredOnClickable(aEvent) ||
 			this.getSplitterFromEvent(aEvent)
 			)

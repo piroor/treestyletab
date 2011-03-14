@@ -1089,10 +1089,23 @@ var TreeStyleTabUtils = {
 				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
 	},
+	getAncestorTabbarFromChild : function TSTUtils_getAncestorTabbarFromChild(aNode) 
+	{
+		return this.evaluateXPath(
+				'ancestor-or-self::*[contains(concat(" ", normalize-space(@class), " "), " tabbrowser-strip ")] | '+
+				'ancestor-or-self::xul:tabs[@tabbrowser]',
+				aNode,
+				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue;
+	},
  
 	getTabbarFromEvent : function TSTUtils_getTabbarFromEvent(aEvent) 
 	{
 		return this.getTabbarFromChild(aEvent.originalTarget || aEvent.target);
+	},
+	getAncestorTabbarFromEvent : function TSTUtils_getAncestorTabbarFromEvent(aEvent) 
+	{
+		return this.getAncestorTabbarFromChild(aEvent.originalTarget || aEvent.target);
 	},
  
 	cleanUpTabsArray : function TSTUtils_cleanUpTabsArray(aTabs) 
