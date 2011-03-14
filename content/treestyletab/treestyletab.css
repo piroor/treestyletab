@@ -153,7 +153,15 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab {
+  .tabbrowser-tab,
+toolbar.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
+  > toolbarbutton,
+toolbar.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
+  > .treestyletab-toolbar-inner-box > toolbarbutton,
+toolbar.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
+  > toolbaritem,
+toolbar.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
+  > .treestyletab-toolbar-inner-box > toolbaritem {
 	-moz-box-flex: 0 !important;
 }
 

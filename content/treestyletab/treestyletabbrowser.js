@@ -950,6 +950,15 @@ TreeStyleTabBrowser.prototype = {
 			this.removeTabStripAttribute('height');
 			b.mPanelContainer.removeAttribute('height');
 
+			if (strip.localName == 'toolbar') {
+				Array.forEach(strip.childNodes, function(aNode) {
+					if (aNode.localName == 'tabs')
+						return;
+					aNode.setAttribute('treestyletab-backup-flex', aNode.getAttribute('flex'));
+					aNode.removeAttribute('flex');
+				}, this);
+			}
+
 			if (pos == this.kTABBAR_RIGHT) {
 				this.setTabbrowserAttribute(this.kTABBAR_POSITION, 'right');
 				if (this.getTreePref('tabbar.invertTab')) {
@@ -1019,6 +1028,18 @@ TreeStyleTabBrowser.prototype = {
 
 			this.setTabbrowserAttribute(this.kMODE, this.getTreePref('tabbar.multirow') ? 'multirow' : 'horizontal');
 			this.removeTabbrowserAttribute(this.kTAB_INVERTED);
+
+			if (strip.localName == 'toolbar') {
+				Array.forEach(strip.childNodes, function(aNode) {
+					if (aNode.localName == 'tabs')
+						return;
+					var flex = aNode.hasAttribute('treestyletab-backup-flex');
+					if (!flex)
+						return;
+					aNode.setAttribute('flex', flex);
+					aNode.removeAttribute('treestyletab-backup-flex');
+				}, this);
+			}
 
 			if (pos == this.kTABBAR_BOTTOM) {
 				this.setTabbrowserAttribute(this.kTABBAR_POSITION, 'bottom');
