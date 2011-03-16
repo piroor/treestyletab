@@ -1769,7 +1769,9 @@ TreeStyleTabBrowser.prototype = {
 		this.removeTabStripAttribute('ordinal');
 		this.removeTabStripAttribute('orient');
 
-		this.destroyTabStrip(this.ownerToolbar);
+		var toolbar = this.ownerToolbar;
+		this.destroyTabStrip(toolbar);
+		toolbar.classList.add(this.kTABBAR_TOOLBAR_READY);
 
 		this._endListenTabbarEvents();
 
@@ -1795,8 +1797,8 @@ TreeStyleTabBrowser.prototype = {
 	{
 		this.stopRendering();
 
-		this.ownerToolbar.classList.remove(this.kTABBAR_TOOLBAR_READY);
 		this.ownerToolbar.classList.add(this.kTABBAR_TOOLBAR);
+		this.ownerToolbar.classList.remove(this.kTABBAR_TOOLBAR_READY);
 		Array.slice(document.querySelectorAll('.'+this.kTABBAR_TOOLBAR_READY_POPUP))
 			.forEach(function(aPanel) {
 				this.safeRemovePopup(aPanel);
@@ -1827,6 +1829,8 @@ TreeStyleTabBrowser.prototype = {
 	updateCustomizedTabsToolbar : function TSTBrowser_updateCustomizedTabsToolbar() 
 	{
 		var newToolbar = this.ownerToolbar;
+		newToolbar.classList.add(this.kTABBAR_TOOLBAR_READY);
+
 		var oldToolbar = document.querySelector('.'+this.kTABBAR_TOOLBAR_READY);
 		if (oldToolbar == newToolbar)
 			return;
@@ -1835,8 +1839,6 @@ TreeStyleTabBrowser.prototype = {
 			this.safeRemovePopup(document.getElementById(oldToolbar.id+'-'+this.kTABBAR_TOOLBAR_READY_POPUP));
 			oldToolbar.classList.remove(this.kTABBAR_TOOLBAR_READY);
 		}
-
-		newToolbar.classList.add(this.kTABBAR_TOOLBAR_READY);
 
 		var id = newToolbar.id+'-'+this.kTABBAR_TOOLBAR_READY_POPUP;
 		var panel = document.getElementById(id);

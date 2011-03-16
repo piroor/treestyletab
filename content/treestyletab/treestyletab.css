@@ -217,32 +217,34 @@ toolbar.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
 }
 
 @media all and (-moz-windows-compositor) {
-	#navigator-toolbox[tabsontop="true"] > .treestyletab-tabbar-toolbar,
-	#navigator-toolbox[tabsontop="true"] > .treestyletab-tabbar-toolbar:-moz-lwtheme,
+	#navigator-toolbox[tabsontop="true"]
+	  > :-moz-any(.treestyletab-tabbar-toolbar,
+	              .treestyletab-tabbar-toolbar:-moz-lwtheme,
+	              .treestyletab-tabbar-toolbar-ready,
+	              .treestyletab-tabbar-toolbar-ready:-moz-lwtheme),
 	#navigator-toolbox
 	  > #nav-bar + #customToolbars
 	  + #PersonalToolbar[collapsed="true"]
-	  + .treestyletab-tabbar-toolbar[tabsontop="true"]:last-child,
-	#navigator-toolbox
-	  > #nav-bar + #customToolbars
-	  + #PersonalToolbar[collapsed="true"]
-	  + .treestyletab-tabbar-toolbar[tabsontop="true"]:not(:last-child),
-	#navigator-toolbox
-	  > #nav-bar + #customToolbars
-	  + #PersonalToolbar[collapsed="true"]
-	  + .treestyletab-tabbar-toolbar[tabsontop="false"]:last-child,
-	#navigator-toolbox
-	  > #nav-bar + #customToolbars
-	  + #PersonalToolbar[collapsed="true"]
-	  + .treestyletab-tabbar-toolbar[tabsontop="false"]:not(:last-child) {
+	  + :-moz-any(.treestyletab-tabbar-toolbar[tabsontop="true"]:last-child,
+	              .treestyletab-tabbar-toolbar[tabsontop="true"]:not(:last-child),
+	              .treestyletab-tabbar-toolbar[tabsontop="false"]:last-child,
+	              .treestyletab-tabbar-toolbar[tabsontop="false"]:not(:last-child),
+	              .treestyletab-tabbar-toolbar-ready[tabsontop="true"]:last-child,
+	              .treestyletab-tabbar-toolbar-ready[tabsontop="true"]:not(:last-child),
+	              .treestyletab-tabbar-toolbar-ready[tabsontop="false"]:last-child,
+	              .treestyletab-tabbar-toolbar-ready[tabsontop="false"]:not(:last-child)) {
 		-moz-binding: url(treestyletab.xml#toolbar-drag);
 	}
 }
-.treestyletab-tabbar-toolbar {
+.treestyletab-tabbar-toolbar,
+.treestyletab-tabbar-toolbar-ready {
 	-moz-binding: url(treestyletab.xml#toolbar-drag);
 }
-#navigator-toolbox[tabsontop="false"] > .treestyletab-tabbar-toolbar,
-#navigator-toolbox[tabsontop="false"] > .treestyletab-tabbar-toolbar:-moz-lwtheme {
+#navigator-toolbox[tabsontop="false"]
+  > :-moz-any(.treestyletab-tabbar-toolbar,
+              .treestyletab-tabbar-toolbar-ready,
+              .treestyletab-tabbar-toolbar:-moz-lwtheme,
+              .treestyletab-tabbar-toolbar-ready:-moz-lwtheme) {
 	-moz-binding: url(treestyletab.xml#toolbar);
 }
 .treestyletab-tabbar-toolbar:not([treestyletab-tabbar-position="top"]),
