@@ -204,6 +204,15 @@ var TreeStyleTabBookmarksService = {
 		if (!('PlacesUIUtils' in window)) return;
 
 		if (!PlacesUIUtils.__treestyletab__done) {
+			var ns;
+			try { // Firefox 4 or later
+				ns = Components.utils.import('resource://gre/modules/PlacesUIUtils.jsm', {});
+			}
+			catch(e) { // Firefox 3.6 or older
+				ns = window;
+			}
+			with (ns) {
+
 			eval('PlacesUIUtils._openTabset = '+
 				PlacesUIUtils._openTabset.toSource().replace(
 					/(function[^\(]*\([^\)]+)(\))/,
@@ -239,12 +248,12 @@ var TreeStyleTabBookmarksService = {
 									) {
 									let parentCount = 0;
 									let childCount = 0;
-									treeStructure.forEach(function(aParent, aIndex) {
-										if (aParent == -1)
+									for (let i in treeStructure) {
+										if (treeStructure[i] == -1)
 											parentCount++;
 										else
 											childCount++;
-									});
+									}
 									if (
 										parentCount > 1 &&
 										(
@@ -291,11 +300,15 @@ var TreeStyleTabBookmarksService = {
 				PlacesUIUtils.openContainerNodeInTabs.toSource().replace(
 					/(this\._openTabset\([^\)]+)(\))/,
 					<![CDATA[
-						let (w) {
-							w = '_getCurrentActiveWin' in this ? this._getCurrentActiveWin() : window ;
-							w.TreeStyleTabBookmarksService.getItemIdsForContainerNode(aNode).forEach(function(aId, aIndex) {
-								urlsToOpen[aIndex].id = aId;
-							});
+						let (w = '_getTopBrowserWin' in this ?
+									this._getTopBrowserWin() :
+								'_getCurrentActiveWin' in this ?
+									this._getCurrentActiveWin() :
+									window) {
+							let nodes = w.TreeStyleTabBookmarksService.getItemIdsForContainerNode(aNode);
+							for (let i in nodes) {
+								urlsToOpen[i].id = nodes[i];
+							}
 						}
 						$1, aNode.title$2
 					]]>
@@ -305,7 +318,16 @@ var TreeStyleTabBookmarksService = {
 			eval('PlacesUIUtils.openURINodesInTabs = '+
 				PlacesUIUtils.openURINodesInTabs.toSource().replace(
 					'{',
-					'{ var TSTBS = ("_getCurrentActiveWin" in this ? this._getCurrentActiveWin() : window ).TreeStyleTabBookmarksService;'
+					<![CDATA[{
+						var TSTBS;
+						let (w = '_getTopBrowserWin' in this ?
+									this._getTopBrowserWin() :
+								'_getCurrentActiveWin' in this ?
+									this._getCurrentActiveWin() :
+									window) {
+							TSTBS = w.TreeStyleTabBookmarksService;
+						}
+					]]>.toString()
 				).replace(
 					'uri: aNodes[i].uri,',
 					'id: aNodes[i].itemId, $&'
@@ -324,6 +346,8 @@ var TreeStyleTabBookmarksService = {
 			);
 
 			PlacesUIUtils.__treestyletab__done = true;
+
+			} // end of with
 		}
 
 		if ('PlacesCommandHook' in window && 'bookmarkCurrentPages' in PlacesCommandHook) {
@@ -335,7 +359,7 @@ var TreeStyleTabBookmarksService = {
 						TreeStyleTabBookmarksService.beginAddBookmarksFromTabs((function() {
 							var tabs = [];
 							var seen = {};
-							Array.slice(getBrowser().mTabContainer.childNodes).forEach(function(aTab) {
+							Array.forEach(getBrowser().mTabContainer.childNodes, function(aTab) {
 								let uri = aTab.linkedBrowser.currentURI.spec;
 								if (uri in seen) return;
 								seen[uri] = true;
