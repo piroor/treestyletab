@@ -200,6 +200,12 @@ var TreeStyleTabUtils = {
 	kTABBAR_UPDATE_SYNC_TO_TABBAR      : (1 << 0) | (1 << 1) | (1 << 2) | (1 << 5) | (1 << 8) | (1 << 9),
 	kTABBAR_UPDATE_SYNC_TO_PLACEHOLDER : (1 << 3) | (1 << 4) | (1 << 6) | (1 << 7) | (1 << 10),
 
+	kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD        : 3,
+	kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN       : 0,
+	kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN        : 1,
+	kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN : 4,
+	kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN         : 2, // onTabRemoved only
+
 	MAX_TABBAR_SIZE_RATIO        : 0.8,
 	DEFAULT_SHRUNKEN_WIDTH_RATIO : 0.67,
  
@@ -1620,7 +1626,7 @@ var TreeStyleTabUtils = {
 		return (
 			this.hasChildTabs(aTab) &&
 			(
-				this.getTreePref('closeParentBehavior') == this.CLOSE_PARENT_BEHAVIOR_CLOSE ||
+				this.getTreePref('closeParentBehavior') == this.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN ||
 				this.isSubtreeCollapsed(aTab)
 			)
 		);

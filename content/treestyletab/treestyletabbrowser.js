@@ -2467,7 +2467,7 @@ TreeStyleTabBrowser.prototype = {
 
 		var subtreeCollapsed = this.isSubtreeCollapsed(tab);
 		if (
-			closeParentBehavior == this.CHILDREN_CLOSE ||
+			closeParentBehavior == this.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN ||
 			subtreeCollapsed
 			) {
 			let tabs = this.getDescendantTabs(tab);
@@ -2516,12 +2516,12 @@ TreeStyleTabBrowser.prototype = {
 		if (firstChild) {
 			let children = this.getChildTabs(tab);
 			let behavior = parentTab ? closeParentBehavior : closeRootBehavior ;
-			if (behavior == this.CHILDREN_PROMOTE_FIRST &&
+			if (behavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD &&
 				parentTab &&
 				this.getChildTabs(parentTab).length == 1)
-				behavior = this.CHILDREN_PROMOTE_ALL;
+				behavior = this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
 			indentModifiedTabs = indentModifiedTabs.concat(
-					behavior == this.CHILDREN_PROMOTE_FIRST ?
+					behavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD ?
 						[children[0]] :
 						children
 				);
@@ -2529,8 +2529,8 @@ TreeStyleTabBrowser.prototype = {
 				behavior         : behavior,
 				dontUpdateIndent : true
 			});
-			if (behavior == this.CHILDREN_PROMOTE_ALL ||
-				behavior == this.CHILDREN_PROMOTE_FIRST)
+			if (behavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN ||
+				behavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD)
 				nextFocusedTab = firstChild;
 		}
 
@@ -2624,11 +2624,6 @@ TreeStyleTabBrowser.prototype = {
 		if (collapsed)
 			this.startRendering();
 	},
-	CHILDREN_PROMOTE_FIRST : 3,
-	CHILDREN_PROMOTE_ALL   : 0,
-	CHILDREN_DETACH        : 1,
-	CHILDREN_SIMPLY_DETACH : 4,
-	CHILDREN_CLOSE         : 2, // onTabRemoved only
 	getNextFocusedTab : function TSTBrowser_getNextFocusedTab(aTab)
 	{
 		return this.getNextSiblingTab(aTab) ||
@@ -3612,7 +3607,7 @@ TreeStyleTabBrowser.prototype = {
 
 		if ('mOverCloseButton' in tab && tab.mOverCloseButton) {
 			if (descendant.length &&
-				(collapsed || this.getTreePref('closeParentBehavior') == this.CLOSE_PARENT_BEHAVIOR_CLOSE)) {
+				(collapsed || this.getTreePref('closeParentBehavior') == this.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)) {
 				label = this.treeBundle.getString('tooltip.closeTree');
 			}
 		}
@@ -4096,9 +4091,9 @@ TreeStyleTabBrowser.prototype = {
 	{
 		aInfo = aInfo || {};
 		if (!('behavior' in aInfo))
-			aInfo.behavior = this.CHILDREN_SIMPLY_DETACH;
-		if (aInfo.behavior == this.CHILDREN_CLOSE)
-			aInfo.behavior = this.CHILDREN_PROMOTE_FIRST;
+			aInfo.behavior = this.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN;
+		if (aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
+			aInfo.behavior = this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
 
 		var dontUpdateIndent = aInfo.dontUpdateIndent;
 
@@ -4106,17 +4101,17 @@ TreeStyleTabBrowser.prototype = {
 		var parentTab = this.getParentTab(aTab);
 		var children = this.getChildTabs(aTab);
 		var insertBefore = null;
-		if (aInfo.behavior == this.CHILDREN_DETACH &&
+		if (aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN &&
 			!this.getTreePref('closeParentBehavior.moveDetachedTabsToBottom')) {
 			insertBefore = this.getNextSiblingTab(this.getRootTab(aTab));
 		}
 		children.forEach((
-			aInfo.behavior == this.CHILDREN_DETACH ?
+			aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN ?
 				function(aTab) {
 					this.partTab(aTab, aInfo);
 					this.moveTabSubtreeTo(aTab, insertBefore ? insertBefore._tPos - 1 : this.getLastTab(b)._tPos );
 				} :
-			aInfo.behavior == this.CHILDREN_PROMOTE_FIRST ?
+			aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD ?
 				function(aTab, aIndex) {
 					this.partTab(aTab, aInfo);
 					if (aIndex == 0) {
@@ -4138,7 +4133,7 @@ TreeStyleTabBrowser.prototype = {
 						});
 					}
 				} :
-			aInfo.behavior == this.CHILDREN_PROMOTE_ALL && parentTab ?
+			aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN && parentTab ?
 				function(aTab) {
 					this.attachTabTo(aTab, parentTab, {
 						__proto__  : aInfo,
@@ -4146,7 +4141,7 @@ TreeStyleTabBrowser.prototype = {
 						dontMove   : true
 					});
 				} :
-			// aInfo.behavior == this.CHILDREN_SIMPLY_DETACH ?
+			// aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN ?
 				function(aTab) {
 					this.partTab(aTab, aInfo);
 				}
