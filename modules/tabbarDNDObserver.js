@@ -276,14 +276,22 @@ catch(e) {
 			info.target = tab;
 		}
 
-		var positionProp = sv.isVertical && tab.getAttribute('pinned') == 'true' ? sv.invertedPositionProp : sv.positionProp ;
-		var sizeProp = sv.isVertical && tab.getAttribute('pinned') == 'true' ? sv.invertedSizeProp : sv.sizeProp ;
+		/**
+		 * Basically, tabs should have three areas for dropping of items:
+		 * [start][center][end], but, pinned tabs couldn't have its tree.
+		 * So, if a tab is dragged and the target tab is pinned, then, we
+		 * have to ignore the [center] area.
+		 */
+		var pinned = tab.getAttribute('pinned') == 'true';
+		var dropAreasCount = (aSourceTab && pinned) ? 2 : 3 ;
+		var positionProp = sv.isVertical && pinned ? sv.invertedPositionProp : sv.positionProp ;
+		var sizeProp = sv.isVertical && pinned ? sv.invertedSizeProp : sv.sizeProp ;
 		var boxPos  = tab.boxObject[positionProp];
-		var boxUnit = Math.round(tab.boxObject[sizeProp] / 3);
+		var boxUnit = Math.round(tab.boxObject[sizeProp] / dropAreasCount);
 		if (aEvent[positionProp] < boxPos + boxUnit) {
 			info.position = isInverted ? sv.kDROP_AFTER : sv.kDROP_BEFORE ;
 		}
-		else if (aEvent[positionProp] > boxPos + boxUnit + boxUnit) {
+		else if (dropAreasCount == 2 || aEvent[positionProp] > boxPos + boxUnit + boxUnit) {
 			info.position = isInverted ? sv.kDROP_BEFORE : sv.kDROP_AFTER ;
 		}
 		else {
@@ -293,9 +301,9 @@ catch(e) {
 		switch (info.position)
 		{
 			case sv.kDROP_ON:
+				var visible = sv.getNextVisibleTab(tab);
 				info.action       = sv.kACTION_STAY | sv.kACTION_ATTACH;
 				info.parent       = tab;
-				var visible = sv.getNextVisibleTab(tab);
 				info.insertBefore = sv.getTreePref('insertNewChildAt') == sv.kINSERT_FISRT ?
 						(sv.getFirstChildTab(tab) || visible) :
 						(sv.getNextSiblingTab(tab) || sv.getNextTab(sv.getLastDescendantTab(tab)) || visible);
