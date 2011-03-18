@@ -45,6 +45,7 @@ Components.utils.import('resource://treestyletab-modules/lib/extensions.js');
 Components.utils.import('resource://treestyletab-modules/lib/animationManager.js');
 Components.utils.import('resource://treestyletab-modules/lib/autoScroll.js');
 Components.utils.import('resource://treestyletab-modules/lib/confirmWithTab.js');
+Components.utils.import('resource://treestyletab-modules/lib/jsdeferred.js');
 Components.utils.import('resource://treestyletab-modules/lib/jstimer.jsm');
 
 Components.utils.import('resource://treestyletab-modules/lib/namespace.jsm');
@@ -297,6 +298,7 @@ var TreeStyleTabUtils = {
 	get extensions() { return window['piro.sakura.ne.jp'].extensions; }, 
 	get animationManager() { return window['piro.sakura.ne.jp'].animationManager; },
 	get autoScroll() { return window['piro.sakura.ne.jp'].autoScroll; },
+	Deferred : Deferred,
  
 	init : function TSTUtils_init() 
 	{
@@ -613,7 +615,7 @@ var TreeStyleTabUtils = {
 			};
 
 		if (task)
-			setTimeout(function() {
+			Deferred.next(function() {
 				try {
 					task();
 				}
@@ -622,7 +624,7 @@ var TreeStyleTabUtils = {
 					target.removeEventListener(type, listener, false);
 					done = true;
 				}
-			}, 0);
+			});
 
 		target.addEventListener(type, listener, false);
 
