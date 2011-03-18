@@ -379,10 +379,11 @@ toolbar.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"] {
-	position: fixed !important;
-	z-index: 100;
-	width: 24px;
 	height: 24px;
+	line-height: 0;
+	position: fixed !important;
+	width: 24px;
+	z-index: 100;
 }
 
 /* print preview */

@@ -23,3 +23,10 @@
   tabbrowser[treestyletab-mode="vertical"] tabs[flowing] > * .tabs-frame {
 	-moz-box-flex: 1 !important;
 }
+
+.tabbrowser-tab[pinned] > .tab-image-left,
+.tabbrowser-tab[pinned] > .tab-drag-indicator-left,
+.tabbrowser-tab[pinned] > .tab-drag-indicator-right,
+.tabbrowser-tab[pinned] > .tab-image-right {
+	display: none;
+}
