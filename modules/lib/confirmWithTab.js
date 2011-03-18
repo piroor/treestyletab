@@ -94,107 +94,114 @@ var confirmWithTab;
 					});
 		}
 
-		aOptions.cancelEvents = (aOptions.cancelEvents || [])
-									.concat(['TabClose'])
-									.sort()
-									.join('\n')
-									.replace(/^(.+)$\n(\1\n)+/gm, '$1\n')
-									.split('\n');
+		var buttonClicked = false;
+		namespace.Deferred.next(function() {
+			aOptions.cancelEvents = (aOptions.cancelEvents || [])
+										.concat(['TabClose'])
+										.sort()
+										.join('\n')
+										.replace(/^(.+)$\n(\1\n)+/gm, '$1\n')
+										.split('\n');
 
-		var tab = aOptions.tab;
-		var b = getTabBrowserFromChild(tab);
-		var box = b.getNotificationBox(tab.linkedBrowser);
-		var accessKeys = [];
-		var numericAccessKey = 0;
-		var notification = box.appendNotification(
-				aOptions.label,
-				aOptions.value || 'confirmWithTab-'+encodeURIComponent(aOptions.label),
-				aOptions.image || null,
-				(aOptions.priority ?
-					(typeof aOptions.priority == 'number' ? aOptions.priority : box[aOptions.priority] ) :
-					box.PRIORITY_INFO_MEDIUM
-				),
-				aOptions.buttons.map(function(aLabel, aIndex) {
-					var accessKey;
-					var match = aLabel.match(/\s*\(&([0-9a-z])\)/i);
-					if (match) {
-						accessKey = match[1];
-						aLabel = aLabel.replace(match[0], '');
-					}
-					else {
-						let lastUniqueKey;
-						let sanitizedLabel = [];
-						for (let i = 0, maxi = aLabel.length; i < maxi; i++)
-						{
-							let possibleAccessKey = aLabel.charAt(i);
-							if (possibleAccessKey == '&' && i < maxi-1) {
-								possibleAccessKey = aLabel.charAt(i+1);
-								if (possibleAccessKey != '&') {
-									accessKey = possibleAccessKey;
+			var tab = aOptions.tab;
+			var b = getTabBrowserFromChild(tab);
+			var box = b.getNotificationBox(tab.linkedBrowser);
+			var accessKeys = [];
+			var numericAccessKey = 0;
+			var notification = box.appendNotification(
+					aOptions.label,
+					aOptions.value || 'confirmWithTab-'+encodeURIComponent(aOptions.label),
+					aOptions.image || null,
+					(aOptions.priority ?
+						(typeof aOptions.priority == 'number' ? aOptions.priority : box[aOptions.priority] ) :
+						box.PRIORITY_INFO_MEDIUM
+					),
+					aOptions.buttons.map(function(aLabel, aIndex) {
+						var accessKey;
+						var match = aLabel.match(/\s*\(&([0-9a-z])\)/i);
+						if (match) {
+							accessKey = match[1];
+							aLabel = aLabel.replace(match[0], '');
+						}
+						else {
+							let lastUniqueKey;
+							let sanitizedLabel = [];
+							for (let i = 0, maxi = aLabel.length; i < maxi; i++)
+							{
+								let possibleAccessKey = aLabel.charAt(i);
+								if (possibleAccessKey == '&' && i < maxi-1) {
+									possibleAccessKey = aLabel.charAt(i+1);
+									if (possibleAccessKey != '&') {
+										accessKey = possibleAccessKey;
+									}
+									i++;
 								}
-								i++;
+								else if (!lastUniqueKey &&
+										accessKeys.indexOf(possibleAccessKey) < 0) {
+									lastUniqueKey = possibleAccessKey;
+								}
+								sanitizedLabel.push(possibleAccessKey);
 							}
-							else if (accessKeys.indexOf(possibleAccessKey) < 0) {
-								lastUniqueKey = possibleAccessKey;
+							if (!accessKey)
+								accessKey = lastUniqueKey;
+							if (!accessKey || !/[0-9a-z]/i.test(accessKey))
+								accessKey = ++numericAccessKey;
+
+							aLabel = sanitizedLabel.join('');
+						}
+
+						accessKeys.push(accessKey);
+
+						return {
+							label     : aLabel,
+							accessKey : accessKey,
+							callback  : function() {
+								buttonClicked = true;
+								deferred.call(aIndex);
 							}
-							sanitizedLabel.push(possibleAccessKey);
-						}
-						if (!accessKey)
-							accessKey = lastUniqueKey;
-						if (!accessKey || !/[0-9a-z]/i.test(accessKey))
-							accessKey = ++numericAccessKey;
+						};
+					})
+				);
 
-						aLabel = sanitizedLabel.join('');
-					}
+			var checkbox;
+			if (aOptions.checkbox) {
+				checkbox = notification.ownerDocument.createElement('checkbox');
+				checkbox.setAttribute('label', aOptions.checkbox.label);
+				if (aOptions.checkbox.checked)
+					checkbox.setAttribute('checked', 'true');
 
-					accessKeys.push(accessKey);
+				let container = notification.ownerDocument.createElement('hbox');
+				container.setAttribute('align', 'center');
+				container.appendChild(checkbox);
 
-					return {
-						label     : aLabel,
-						accessKey : accessKey,
-						callback  : function() {
-							deferred.call(aIndex);
-						}
-					};
-				})
-			);
+				notification.appendChild(container);
+			}
 
-		var checkbox;
-		if (aOptions.checkbox) {
-			checkbox = notification.ownerDocument.createElement('checkbox');
-			checkbox.setAttribute('label', aOptions.checkbox.label);
-			if (aOptions.checkbox.checked)
-				checkbox.setAttribute('checked', 'true');
-
-			let container = notification.ownerDocument.createElement('hbox');
-			container.setAttribute('align', 'center');
-			container.appendChild(checkbox);
-
-			notification.appendChild(container);
-		}
-
-		var strip = b.tabContainer || b.mTabContainer;
-		var handleEvent = function handleEvent(aEvent) {
-				if (aEvent.type == 'DOMNodeRemoved' && aEvent.target != notification)
-					return;
-				if (aOptions.cancelEvents)
-					aOptions.cancelEvents.forEach(function(aEventType) {
-						strip.removeEventListener(aEventType, handleEvent, false);
-					});
-				if (notification.parentNode)
-					notification.parentNode.removeEventListener('DOMNodeRemoved', handleEvent, false);
-				if (aEvent.type != 'DOMNodeRemoved')
-					notification.close();
-				deferred.fail(aEvent);
-			};
-		if (aOptions.cancelEvents)
-			aOptions.cancelEvents.forEach(function(aEventType) {
-				strip.addEventListener(aEventType, handleEvent, false);
-			});
-		notification.parentNode.addEventListener('DOMNodeRemoved', handleEvent, false);
+			var strip = b.tabContainer || b.mTabContainer;
+			var handleEvent = function handleEvent(aEvent) {
+					if (aEvent.type == 'DOMNodeRemoved' && aEvent.target != notification)
+						return;
+					if (aOptions.cancelEvents)
+						aOptions.cancelEvents.forEach(function(aEventType) {
+							strip.removeEventListener(aEventType, handleEvent, false);
+						});
+					if (notification.parentNode)
+						notification.parentNode.removeEventListener('DOMNodeRemoved', handleEvent, false);
+					if (aEvent.type != 'DOMNodeRemoved')
+						notification.close();
+					if (!buttonClicked)
+						deferred.fail(aEvent);
+				};
+			if (aOptions.cancelEvents)
+				aOptions.cancelEvents.forEach(function(aEventType) {
+					strip.addEventListener(aEventType, handleEvent, false);
+				});
+			notification.parentNode.addEventListener('DOMNodeRemoved', handleEvent, false);
+		});
 
 		return deferred
 				.next(function(aButtonIndex) {
+					buttonClicked = true;
 					if (aOptions.checkbox)
 						aOptions.checkbox.checked = checkbox.checked;
 					return aButtonIndex;
