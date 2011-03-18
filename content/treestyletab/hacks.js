@@ -108,73 +108,73 @@ TreeStyleTabService.overrideExtensionsPreInit = function TSTService_overrideExte
 	// Tab Mix Plus, SessionStore API
 	if (
 		this.getTreePref('compatibility.TMP') &&
-		('SessionData' in window || 'TabmixSessionData' in window) &&
-		('getTabProperties' in SessionData || 'getTabProperties' in TabmixSessionData) &&
-		('setTabProperties' in SessionData || 'setTabProperties' in TabmixSessionData)
+		('TabmixSessionData' in window || 'SessionData' in window)
 		) {
-		let prefix = this.kTMP_SESSION_DATA_PREFIX;
 		let sessionData = window.TabmixSessionData || window.SessionData;
-		let sessionManager = window.TabmixSessionManager || window.SessionManager;
-		SessionData.tabTSTProperties = this.extraProperties.map(function(aProperty) {
-			return prefix+aProperty;
-		});
-		eval('sessionData.getTabProperties = '+
-			sessionData.getTabProperties.toSource().replace(
-				'return tabProperties;',
+		if ('getTabProperties' in sessionData && 'setTabProperties' in sessionData) {
+			let prefix = this.kTMP_SESSION_DATA_PREFIX;
+			let sessionManager = window.TabmixSessionManager || window.SessionManager;
+			SessionData.tabTSTProperties = this.extraProperties.map(function(aProperty) {
+				return prefix+aProperty;
+			});
+			eval('sessionData.getTabProperties = '+
+				sessionData.getTabProperties.toSource().replace(
+					'return tabProperties;',
+					<![CDATA[
+						this.tabTSTProperties.forEach(function(aProp) {
+							tabProperties += '|' + aProp + '=' + encodeURIComponent(aTab.getAttribute(aProp));
+						});
+					$&]]>
+				)
+			);
+			eval('sessionData.setTabProperties = '+
+				sessionData.setTabProperties.toSource().replace(
+					'{',
+					<![CDATA[$&
+						var TSTProps = tabProperties.split('|');
+						tabProperties = TSTProps.shift();
+						TSTProps.forEach(function(aSet) {
+							var index = aSet.indexOf('=');
+							var name = aSet.substring(0, index);
+							var value = decodeURIComponent(aSet.substring(index+1));
+							if (name && value)
+								aTab.setAttribute(name, value);
+						});
+					]]>
+				)
+			);
+			eval('sessionManager.loadOneTab = '+
+				sessionManager.loadOneTab.toSource().replace(
+					/(\}\))?$/,
+					<![CDATA[
+						if (gBrowser.treeStyleTab.useTMPSessionAPI)
+							gBrowser.treeStyleTab.restoreStructure(aTab);
+					$1]]>
+				)
+			);
+			let source = tablib.init.toSource().split('gBrowser.restoreTab = ');
+			source[1] = source[1].replace(
+				'return newTab;',
 				<![CDATA[
-					this.tabTSTProperties.forEach(function(aProp) {
-						tabProperties += '|' + aProp + '=' + encodeURIComponent(aTab.getAttribute(aProp));
-					});
+					if (this.treeStyleTab.useTMPSessionAPI)
+						this.treeStyleTab.restoreStructure(newTab);
 				$&]]>
-			)
-		);
-		eval('sessionData.setTabProperties = '+
-			sessionData.setTabProperties.toSource().replace(
-				'{',
-				<![CDATA[$&
-					var TSTProps = tabProperties.split('|');
-					tabProperties = TSTProps.shift();
-					TSTProps.forEach(function(aSet) {
-						var index = aSet.indexOf('=');
-						var name = aSet.substring(0, index);
-						var value = decodeURIComponent(aSet.substring(index+1));
-						if (name && value)
-							aTab.setAttribute(name, value);
-					});
-				]]>
-			)
-		);
-		eval('sessionManager.loadOneTab = '+
-			sessionManager.loadOneTab.toSource().replace(
-				/(\}\))?$/,
-				<![CDATA[
-					if (gBrowser.treeStyleTab.useTMPSessionAPI)
-						gBrowser.treeStyleTab.restoreStructure(aTab);
-				$1]]>
-			)
-		);
-		let source = tablib.init.toSource().split('gBrowser.restoreTab = ');
-		source[1] = source[1].replace(
-			'return newTab;',
-			<![CDATA[
-				if (this.treeStyleTab.useTMPSessionAPI)
-					this.treeStyleTab.restoreStructure(newTab);
-			$&]]>
-		);
-		eval('tablib.init = '+source.join('gBrowser.restoreTab = '));
-		eval('sessionManager.loadOneWindow = '+
-			sessionManager.loadOneWindow.toSource().replace(
-				'gBrowser.tabsToLoad = ',
-				<![CDATA[
-					gBrowser.treeStyleTab.resetAllTabs(true, true);
-					TreeStyleTabService.restoringTree = true;
-				$&]]>
-			).replace(
-				/(\}\))?$/,
-				'TreeStyleTabService.restoringTree = false; $1'
-			)
-		);
-		this.useTMPSessionAPI = true;
+			);
+			eval('tablib.init = '+source.join('gBrowser.restoreTab = '));
+			eval('sessionManager.loadOneWindow = '+
+				sessionManager.loadOneWindow.toSource().replace(
+					'gBrowser.tabsToLoad = ',
+					<![CDATA[
+						gBrowser.treeStyleTab.resetAllTabs(true, true);
+						TreeStyleTabService.restoringTree = true;
+					$&]]>
+				).replace(
+					/(\}\))?$/,
+					'TreeStyleTabService.restoringTree = false; $1'
+				)
+			);
+			this.useTMPSessionAPI = true;
+		}
 	}
 
 	// Session Manager
