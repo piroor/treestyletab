@@ -13,7 +13,7 @@
    http://github.com/piroor/fxaddonlibs/blob/master/tabsDragUtils.js
 */
 (function() {
-	const currentRevision = 11;
+	const currentRevision = 12;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -72,10 +72,10 @@
 				);
 			}
 
-			if ('TabDNDObserver' in window)	// for old Tab Mix Plus
-				this.initTabDNDObserver(TabDNDObserver);
 			if ('TMP_tabDNDObserver' in window) // for Tab Mix Plus
 				this.initTabDNDObserver(TMP_tabDNDObserver);
+			else if ('TabDNDObserver' in window)	// for old Tab Mix Plus
+				this.initTabDNDObserver(TabDNDObserver);
 		},
 		destroy : function TDU_destroy()
 		{
