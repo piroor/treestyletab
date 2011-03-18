@@ -35,7 +35,7 @@
 	background-color: ThreeDFace !important;
 	background-image: -moz-linear-gradient(
 	                    top, 
-	                    rgba(0, 0, 0, 0.02) 1px,
+	                    rgba(0, 0, 0, 0.02) 0,
 	                    rgba(0, 0, 0, 0) 50%
 	                  ) !important;
 }
@@ -47,7 +47,7 @@
 	background-color: #c1d2ee !important;
 	background-image: -moz-linear-gradient(
 	                    top,
-	                    rgba(4, 83, 227, 0.04) 1px,
+	                    rgba(4, 83, 227, 0.04) 0,
 	                    rgba(4, 83, 227, 0) 50%
 	                  ) !important;
 }
@@ -62,7 +62,7 @@
 	background-color: #e0e8f6 !important;
 	background-image: -moz-linear-gradient(
 	                    top,
-	                    rgba(213, 224, 245, 1) 1px,
+	                    rgba(213, 224, 245, 1) 0,
 	                    rgba(213, 224, 245, 0.4) 50%
 	                  ) !important;
 }
@@ -73,7 +73,7 @@
 	background-color: #d1e2fe !important;
 	background-image: -moz-linear-gradient(
 	                    top,
-	                    rgba(199, 219, 252, 1) 1px,
+	                    rgba(199, 219, 252, 1) 0,
 	                    rgba(199, 219, 252, 0.4) 50%
 	                  ) !important;
 }
