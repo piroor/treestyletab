@@ -954,7 +954,8 @@ TreeStyleTabBrowser.prototype = {
 				Array.forEach(strip.childNodes, function(aNode) {
 					if (aNode.localName == 'tabs')
 						return;
-					aNode.setAttribute('treestyletab-backup-flex', aNode.getAttribute('flex'));
+					if (aNode.hasAttribute('flex'))
+						aNode.setAttribute('treestyletab-backup-flex', aNode.getAttribute('flex'));
 					aNode.removeAttribute('flex');
 				}, this);
 			}
