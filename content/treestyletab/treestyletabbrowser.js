@@ -62,8 +62,10 @@ TreeStyleTabBrowser.prototype = {
 	},
 	get scrollBoxObject()
 	{
-		return (this.scrollBox.scrollBoxObject || this.scrollBox.boxObject)
-				.QueryInterface(Components.interfaces.nsIScrollBoxObject); // Tab Mix Plus (ensure scrollbox-ed)
+		var node = this.scrollBox;
+		if (node._scrollbox) node = node._scrollbox;
+		return (node.scrollBoxObject || node.boxObject)
+				.QueryInterface(Components.interfaces.nsIScrollBoxObject); // for Tab Mix Plus (ensure scrollbox-ed)
 	},
  
 	get splitter() 
@@ -329,7 +331,7 @@ TreeStyleTabBrowser.prototype = {
 		var row    = 0;
 		tabbar.style.MozMarginStart = '';
 		tabbar.style.setProperty('margin-top', (height * maxRow)+'px', 'important');
-		for (var i = 0; i < count; i++)
+		for (let i = 0; i < count; i++)
 		{
 			let style = tabbar.childNodes[i].style;
 			style.MozMarginStart = '';
@@ -349,7 +351,10 @@ TreeStyleTabBrowser.prototype = {
 			return;
 
 		this.positionPinnedTabsWithDelayTimer = window.setTimeout(function(aSelf) {
-			aSelf.positionPinnedTabs();
+			aSelf.Deferred.next(function() {
+				// do with delay again, after Firefox's reposition was completely finished.
+				aSelf.positionPinnedTabs();
+			});
 			aSelf.positionPinnedTabsWithDelayTimer = null;
 		}, 0, this);
 	},
@@ -3304,7 +3309,7 @@ TreeStyleTabBrowser.prototype = {
 		this.partTab(aTab);
 
 		this.collapseExpandTab(aTab, false);
-		if (this.isVertical) this.positionPinnedTabs();
+		if (this.isVertical) this.positionPinnedTabsWithDelay();
 	},
  
 	onUnpinTab : function TSTBrowser_onUnpinTab(aTab) 
@@ -3313,7 +3318,7 @@ TreeStyleTabBrowser.prototype = {
 		aTab.style.marginTop = '';
 
 		this.updateInvertedTabContentsOrder(aTab);
-		if (this.isVertical) this.positionPinnedTabs();
+		if (this.isVertical) this.positionPinnedTabsWithDelay();
 	},
  
 	onDOMAttrModified : function TSTBrowser_onDOMAttrModified(aEvent) 
