@@ -758,7 +758,15 @@ TreeStyleTabBrowser.prototype = {
 			endParen.setAttribute('class', this.kCOUNTER_PAREN);
 			endParen.setAttribute('value', ')');
 
-			label.parentNode.insertBefore(counter, label.nextSibling);
+			/** XXX
+			 *  Insertion before an anonymous element breaks its "xbl:inherits".
+			 * For example, "xbl:inherits" of the closebox in a tab (Tab Mix Plus
+			 * defines it) doesn't work. So, I don't use insertBefore().
+			 * Instead, the counter will be rearranged by "ordinal" attribute
+			 * given by initTabContentsOrder().
+			 */
+			// label.parentNode.insertBefore(counter, label.nextSibling);
+			label.parentNode.appendChild(counter);
 		}
 
 		var tabContentBox = document.getAnonymousElementByAttribute(aTab, 'class', 'tab-content');
