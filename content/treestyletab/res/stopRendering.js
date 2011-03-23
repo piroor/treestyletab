@@ -12,7 +12,7 @@
    http://github.com/piroor/fxaddonlibs/blob/master/stopRendering.js
 */
 (function() {
-	const currentRevision = 9;
+	const currentRevision = 10;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -283,27 +283,25 @@
 			canvas.setAttribute('style', 'width:0;height:0;');
 			this.canvas = canvas;
 
-			var style = document.createElementNS('http://www.w3.org/1999/xhtml', 'style');
-			style.setAttribute('id', this.BASE_ID+'-style');
-			style.setAttribute('type', 'text/css');
-			style.appendChild(document.createTextNode([
-				':root[fullScreenCanvas-state="shown"] > *:not(#%BASE_ID%-box) {',
-				'	visibility: hidden !important;',
-				'}',
-				'#%BASE_ID%-style {',
-				'	display: none;',
-				'}',
-				'#%BASE_ID%-box {',
-				'	position: fixed;',
-				'	z-index: 65000;',
-				'	top: 0;',
-				'	left: 0;',
-				'	visibility: collapse;',
-				'}',
-				':root[fullScreenCanvas-state="shown"] > #%BASE_ID%-box {',
-				'	visibility: visible;',
-				'}'
-			].join('\n').replace(/%BASE_ID%/g, this.BASE_ID.replace(/\./g, '\\.'))));
+			var style = document.createProcessingInstruction('xml-stylesheet',
+					'type="text/css" href="data:text/css,'+encodeURIComponent(
+					[
+						':root[fullScreenCanvas-state="shown"] > *:not(#%BASE_ID%-box) {',
+						'	visibility: hidden !important;',
+						'}',
+						'#%BASE_ID%-box {',
+						'	position: fixed;',
+						'	z-index: 65000;',
+						'	top: 0;',
+						'	left: 0;',
+						'	visibility: collapse;',
+						'}',
+						':root[fullScreenCanvas-state="shown"] > #%BASE_ID%-box {',
+						'	visibility: visible;',
+						'}'
+					].join('\n').replace(/%BASE_ID%/g, this.BASE_ID.replace(/\./g, '\\.'))
+					)+'"'
+				);
 			this.style = style;
 
 			var box = document.createElement('box');
@@ -312,7 +310,7 @@
 			this.box = box;
 
 			box.appendChild(canvas);
-			box.appendChild(style);
+			document.insertBefore(style, document.documentElement);
 			document.documentElement.appendChild(box);
 		},
 
@@ -324,6 +322,7 @@
 			document.documentElement.removeChild(this.box);
 			this.box = null;
 			this.canvas = null;
+			document.removeChild(this.style);
 			this.style = null;
 		}
 	};
