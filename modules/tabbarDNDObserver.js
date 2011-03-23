@@ -223,6 +223,16 @@ catch(e) {
 				}
 			}
 		}
+
+		if (
+			info.target &&
+			(
+				info.target.hidden ||
+				sv.isCollapsed(info.target)
+			)
+			)
+			info.canDrop = false;
+
 		return info;
 	},
 	
@@ -767,29 +777,32 @@ catch(e) {
 			return;
 
 		w.clearTimeout(this.mAutoExpandTimer);
+		w.clearTimeout(this.mAutoExpandTimerNext);
 
 		var sourceNode = dt.getData(sv.kDRAG_TYPE_TABBAR+'-node');
 		if (aEvent.target == sourceNode)
 			return;
 
-		this.mAutoExpandTimer = w.setTimeout(
-			function(aTarget) {
-				let tab = sv.getTabById(aTarget);
-				if (tab &&
-					sv.shouldTabAutoExpanded(tab) &&
-					tab.getAttribute(sv.kDROP_POSITION) == 'self') {
-					if (sv.getTreePref('autoExpand.intelligently')) {
-						sv.collapseExpandTreesIntelligentlyFor(tab);
+		this.mAutoExpandTimerNext = w.setTimeout(function(aSelf, aTarget) {
+			aSelf.mAutoExpandTimerNext = null;
+			aSelf.mAutoExpandTimer = w.setTimeout(
+				function() {
+					let tab = sv.getTabById(aTarget);
+					if (tab &&
+						sv.shouldTabAutoExpanded(tab) &&
+						tab.getAttribute(sv.kDROP_POSITION) == 'self') {
+						if (sv.getTreePref('autoExpand.intelligently')) {
+							sv.collapseExpandTreesIntelligentlyFor(tab);
+						}
+						else {
+							this.mAutoExpandedTabs.push(aTarget);
+							sv.collapseExpandSubtree(tab, false);
+						}
 					}
-					else {
-						this.mAutoExpandedTabs.push(aTarget);
-						sv.collapseExpandSubtree(tab, false);
-					}
-				}
-			},
-			sv.getTreePref('autoExpand.delay'),
-			tab.getAttribute(sv.kID)
-		);
+				},
+				sv.getTreePref('autoExpand.delay')
+			);
+		}, 0, this, tab.getAttribute(sv.kID));
 
 		tab = null;
 	},
@@ -1131,6 +1144,7 @@ catch(e) {
 		this.treeStyleTab = aTabBrowser.treeStyleTab;
 
 		this.mAutoExpandTimer = null;
+		this.mAutoExpandTimerNext = null;
 		this.mAutoExpandedTabs = [];
 		this.startListenEvents();
 	},
