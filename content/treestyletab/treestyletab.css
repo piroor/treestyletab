@@ -218,13 +218,12 @@ toolbar.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
 
 @media all and (-moz-windows-compositor) {
 	#navigator-toolbox[tabsontop="true"]
-	  > :-moz-any(.treestyletab-tabbar-toolbar,
-	              .treestyletab-tabbar-toolbar:-moz-lwtheme,
-	              .treestyletab-tabbar-toolbar-ready,
-	              .treestyletab-tabbar-toolbar-ready:-moz-lwtheme),
+	  > :-moz-any(.treestyletab-tabbar-toolbar:not(#toolbar-menubar),
+	              .treestyletab-tabbar-toolbar:not(#toolbar-menubar):-moz-lwtheme,
+	              .treestyletab-tabbar-toolbar-ready:not(#toolbar-menubar),
+	              .treestyletab-tabbar-toolbar-ready:not(#toolbar-menubar):-moz-lwtheme),
 	#navigator-toolbox
-	  > #nav-bar + #customToolbars
-	  + #PersonalToolbar[collapsed="true"]
+	  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"]
 	  + :-moz-any(.treestyletab-tabbar-toolbar[tabsontop="true"]:last-child,
 	              .treestyletab-tabbar-toolbar[tabsontop="true"]:not(:last-child),
 	              .treestyletab-tabbar-toolbar[tabsontop="false"]:last-child,
@@ -232,7 +231,25 @@ toolbar.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
 	              .treestyletab-tabbar-toolbar-ready[tabsontop="true"]:last-child,
 	              .treestyletab-tabbar-toolbar-ready[tabsontop="true"]:not(:last-child),
 	              .treestyletab-tabbar-toolbar-ready[tabsontop="false"]:last-child,
-	              .treestyletab-tabbar-toolbar-ready[tabsontop="false"]:not(:last-child)) {
+	              .treestyletab-tabbar-toolbar-ready[tabsontop="false"]:not(:last-child)),
+	#navigator-toolbox
+	  > :-moz-any(.treestyletab-tabbar-toolbar:not(#toolbar-menubar):-moz-lwtheme,
+	              .treestyletab-tabbar-toolbar-ready:not(#toolbar-menubar):-moz-lwtheme),
+	/* Don't use :-moz-any() selector to override styles defined by the theme.
+	   The default theme uses #TabsToolbar selector nad it is stronger than
+	   :-moz-any() even if it includes #TabsToolbar in its subqueries. */
+	#navigator-toolbox
+	  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"]
+	  + #TabsToolbar[tabsontop="true"]:last-child,
+	#navigator-toolbox
+	  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"]
+	  + #TabsToolbar[tabsontop="true"]:not(:last-child),
+	#navigator-toolbox
+	  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"]
+	  + #TabsToolbar[tabsontop="false"]:last-child,
+	#navigator-toolbox
+	  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"]
+	  + #TabsToolbar[tabsontop="false"]:not(:last-child) {
 		-moz-binding: url(treestyletab.xml#toolbar-drag);
 	}
 }
