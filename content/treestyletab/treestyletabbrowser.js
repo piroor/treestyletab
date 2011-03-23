@@ -2900,16 +2900,23 @@ TreeStyleTabBrowser.prototype = {
 				!attached &&
 				!parent &&
 				aChangedTabs.indexOf(aTab) > -1
-				)
-				this.attachTabFromPosition(aTab, tabs.length-1);
+				) {
+				let prev = this.getPreviousTab(aTab);
+				let next = this.getNextTab(aTab);
+				if (
+					(prev && aChangedTabs.indexOf(prev) < 0 && !prev.hidden) ||
+					(next && aChangedTabs.indexOf(next) < 0 && !next.hidden)
+					)
+					this.attachTabFromPosition(aTab, tabs.length-1);
+			}
 
 			// Hidden tabs have to be moved below visible tabs, because
 			// sometimes hidden tabs between visible tabs break tree
 			// structure.
 			if (aTab.hidden) {
 				let newPos = lastVisibleTab._tPos;
-				if (aTab.tPos < lastVisibleTab._tPos) newPos--;
-				this.mTabBrowser.moveTabTo(aTab, newPos);
+				if (aTab._tPos < lastVisibleTab._tPos)
+					this.mTabBrowser.moveTabTo(aTab, newPos);
 			}
 		}, this);
 		this.internallyTabMovingCount--;
