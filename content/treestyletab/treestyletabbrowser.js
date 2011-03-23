@@ -2867,9 +2867,13 @@ TreeStyleTabBrowser.prototype = {
 	updateTreeByTabVisibility : function TSTBrowser_updateTreeByTabVisibility(aChangedTabs)
 	{
 		this.internallyTabMovingCount++;
+
 		var tabs = this.getAllTabsArray(this.mTabBrowser);
 		aChangedTabs = aChangedTabs || tabs;
-		var lastVisibleTab = this.getLastVisibleTab(this.mTabBrowser);
+
+		var lastVisibleTab = this.mTabBrowser.visibleTabs;
+		lastVisibleTab = lastVisibleTab[lastVisibleTab.length-1];
+
 		tabs.reverse().forEach(function(aTab) {
 			var parent = this.getParentTab(aTab);
 			var attached = false;
