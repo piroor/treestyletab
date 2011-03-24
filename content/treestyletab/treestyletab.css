@@ -172,6 +172,22 @@ toolbar.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
 	max-width: none !important;
 }
 
+
+/* leftside vertical tab bar (for Firefox 4 or later) */
+
+tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"]
+  > .tabbrowser-arrowscrollbox
+  > .arrowscrollbox-scrollbox {
+	direction: rtl;
+}
+tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"]
+  > .tabbrowser-arrowscrollbox
+  > .arrowscrollbox-scrollbox
+  > .scrollbox-innerbox {
+	direction: ltr;
+}
+
+
 /* hide horizontal tab bar UI for vertical tab bar */
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > .scrollbutton-up,
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > .scrollbutton-down-stack,
