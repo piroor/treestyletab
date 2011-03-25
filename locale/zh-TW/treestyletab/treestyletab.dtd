@@ -15,6 +15,7 @@
 <!ENTITY config.tabbar.invertClosebox.right "於各分頁右端顯示關閉鈕">
 <!ENTITY config.tabbar.invertTab            "頁籤外側互調">
 <!ENTITY config.tabbar.invertTabContents    "頁籤內側互調">
+<!ENTITY config.tabbar.narrowScrollbar      "Narrow scrollbar">
 <!ENTITY config.enableSubtreeIndent         "縮進分頁">
 <!ENTITY config.maxTreeLevel.before "until">
 <!ENTITY config.maxTreeLevel.after  "level(s)">

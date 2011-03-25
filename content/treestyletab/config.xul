@@ -49,6 +49,9 @@
 		<preference id="extensions.treestyletab.tabbar.invertClosebox"
 			name="extensions.treestyletab.tabbar.invertClosebox"
 			type="bool"/>
+		<preference id="extensions.treestyletab.tabbar.narrowScrollbar"
+			name="extensions.treestyletab.tabbar.narrowScrollbar"
+			type="bool"/>
 		<preference id="extensions.treestyletab.tabbar.invertTab"
 			name="extensions.treestyletab.tabbar.invertTab"
 			type="bool"/>
@@ -115,6 +118,9 @@
 				label="&config.tabbar.invertClosebox.left;"
 				label-left="&config.tabbar.invertClosebox.left;"
 				label-right="&config.tabbar.invertClosebox.right;"/>
+			<checkbox id="extensions.treestyletab.tabbar.narrowScrollbar-check"
+				preference="extensions.treestyletab.tabbar.narrowScrollbar"
+				label="&config.tabbar.narrowScrollbar;"/>
 		</hbox>
 		<hbox align="center">
 			<checkbox id="extensions.treestyletab.allowSubtreeCollapseExpand.horizontal-check"

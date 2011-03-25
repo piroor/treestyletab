@@ -15,6 +15,7 @@
 <!ENTITY config.tabbar.invertClosebox.right "Schließen-Button in jedem Tab rechts anzeigen">
 <!ENTITY config.tabbar.invertTab            "Tabs von rechts einrücken">
 <!ENTITY config.tabbar.invertTabContents    "Symbol und Text in den Tabs vertauschen">
+<!ENTITY config.tabbar.narrowScrollbar      "Narrow scrollbar">
 <!ENTITY config.enableSubtreeIndent         "Tabs einrücken">
 <!ENTITY config.maxTreeLevel.before "bis">
 <!ENTITY config.maxTreeLevel.after  "Level">

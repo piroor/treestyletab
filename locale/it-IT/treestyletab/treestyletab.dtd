@@ -15,6 +15,7 @@
 <!ENTITY config.tabbar.invertClosebox.right "Visualizza il pulsante di chiusura alla destra di ogni scheda"> <!-- NUOVA -->
 <!ENTITY config.tabbar.invertTab            "Inverti la visualizzazione delle schede">
 <!ENTITY config.tabbar.invertTabContents    "Inverti la visualizzazione dei controlli di contrazione/espansione dei sottoalberi"> <!-- NUOVA -->
+<!ENTITY config.tabbar.narrowScrollbar      "Narrow scrollbar">
 <!ENTITY config.enableSubtreeIndent         "Indenta sottoschede">
 <!ENTITY config.maxTreeLevel.before "until">
 <!ENTITY config.maxTreeLevel.after  "level(s)">

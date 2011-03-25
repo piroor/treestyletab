@@ -15,6 +15,7 @@
 <!ENTITY config.tabbar.invertClosebox.right "Visa stängknapp på höger sida i varje flik">
 <!ENTITY config.tabbar.invertTab            "Invertera flikutseende">
 <!ENTITY config.tabbar.invertTabContents    "Invertera flikinnehåll">
+<!ENTITY config.tabbar.narrowScrollbar      "Narrow scrollbar">
 <!ENTITY config.enableSubtreeIndent "Gör indrag av flikar">
 <!ENTITY config.maxTreeLevel.before "t.o.m. den">
 <!ENTITY config.maxTreeLevel.after  "nivån">

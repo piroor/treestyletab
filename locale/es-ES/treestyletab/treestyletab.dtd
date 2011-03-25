@@ -15,6 +15,7 @@
 <!ENTITY config.tabbar.invertClosebox.right "Mostrar la caja de cierre del lado derecho en cada pestaña">
 <!ENTITY config.tabbar.invertTab            "Invertir apariencia de la pestaña">
 <!ENTITY config.tabbar.invertTabContents    "Invertir contenido de la pestaña">
+<!ENTITY config.tabbar.narrowScrollbar      "Narrow scrollbar">
 <!ENTITY config.enableSubtreeIndent         "Añadir margen a las pestañas">
 <!ENTITY config.maxTreeLevel.before "hasta">
 <!ENTITY config.maxTreeLevel.after  "nivel(es)">
