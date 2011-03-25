@@ -387,7 +387,6 @@ var TreeStyleTabUtils = {
 				  > scrollbox
 				  > scrollbar[orient="vertical"] {
 					font-size: %SIZE%;
-					overflow: hidden;
 				}
 
 				tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]
