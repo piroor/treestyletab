@@ -442,6 +442,7 @@ TreeStyleTabBrowser.prototype = {
 		this.onPrefChange('extensions.treestyletab.tabbar.invertTabContents');
 		this.onPrefChange('extensions.treestyletab.tabbar.invertClosebox');
 		this.onPrefChange('extensions.treestyletab.tabbar.autoShow.mousemove');
+		this.onPrefChange('extensions.treestyletab.tabbar.narrowScrollbar');
 		this.onPrefChange('extensions.treestyletab.animation.enabled');
 
 		this.ObserverService.addObserver(this, this.kTOPIC_INDENT_MODIFIED, false);
@@ -2038,6 +2039,9 @@ TreeStyleTabBrowser.prototype = {
 					}
 				}
 				return;
+
+			case 'extensions.treestyletab.tabbar.narrowScrollbar':
+				return this.setTabbrowserAttribute(this.kNARROW_SCROLLBAR, value);
 
 			case 'extensions.treestyletab.maxTreeLevel.phisical':
 				if (this.maxTreeLevelPhisical = value)

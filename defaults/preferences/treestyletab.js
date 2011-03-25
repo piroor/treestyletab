@@ -15,6 +15,8 @@ pref("extensions.treestyletab.tabbar.scroll.smooth",   true);
 pref("extensions.treestyletab.tabbar.scroll.duration", 250);
 // 0 = no scroll, 1 = scroll to new tab only when the current tab will not scrolled out, 2 = scroll to new tab always
 pref("extensions.treestyletab.tabbar.scrollToNewTab.mode", 1);
+pref("extensions.treestyletab.tabbar.narrowScrollbar", true);
+pref("extensions.treestyletab.tabbar.narrowScrollbar.size", "0.8em");
 // flat, mixed, vertigo
 // pref("extensions.treestyletab.tabbar.style",      "mixed");
 pref("extensions.treestyletab.platform.default.tabbar.style", "mixed");

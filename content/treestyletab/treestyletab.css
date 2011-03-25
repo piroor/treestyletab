@@ -282,6 +282,19 @@ toolbar.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
 }
 
 
+tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"]
+  > .tabbrowser-arrowscrollbox
+  > .arrowscrollbox-scrollbox {
+	direction: rtl;
+}
+tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"]
+  > .tabbrowser-arrowscrollbox
+  > .arrowscrollbox-scrollbox
+  > .scrollbox-innerbox {
+	direction: ltr;
+}
+
+
 /* animation effects */
 
 .tabbrowser-tabs[treestyletab-animation-enabled="true"][treestyletab-mode="vertical"]:not([treestyletab-tab-inverted="true"])
