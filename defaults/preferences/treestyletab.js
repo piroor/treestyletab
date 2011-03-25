@@ -17,7 +17,7 @@ pref("extensions.treestyletab.tabbar.scroll.duration", 250);
 pref("extensions.treestyletab.tabbar.scrollToNewTab.mode", 1);
 pref("extensions.treestyletab.tabbar.invertScrollbar", true);
 pref("extensions.treestyletab.tabbar.narrowScrollbar", true);
-pref("extensions.treestyletab.tabbar.narrowScrollbar.size", "0.8em");
+pref("extensions.treestyletab.tabbar.narrowScrollbar.size", "10px");
 // flat, mixed, vertigo
 // pref("extensions.treestyletab.tabbar.style",      "mixed");
 pref("extensions.treestyletab.platform.default.tabbar.style", "mixed");
