@@ -175,14 +175,14 @@ toolbar.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
 
 /* leftside vertical tab bar (for Firefox 4 or later) */
 
-tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"]
-  > .tabbrowser-arrowscrollbox
-  > .arrowscrollbox-scrollbox {
+tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-scrollbar="true"]
+  .tabbrowser-arrowscrollbox
+  > scrollbox {
 	direction: rtl;
 }
-tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"]
-  > .tabbrowser-arrowscrollbox
-  > .arrowscrollbox-scrollbox
+tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-scrollbar="true"]
+  .tabbrowser-arrowscrollbox
+  > scrollbox
   > .scrollbox-innerbox {
 	direction: ltr;
 }
@@ -297,18 +297,6 @@ tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"]
 	overflow: hidden;
 }
 
-
-tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-scrollbar="true"]
-  .tabbrowser-arrowscrollbox
-  > scrollbox {
-	direction: rtl;
-}
-tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-scrollbar="true"]
-  .tabbrowser-arrowscrollbox
-  > scrollbox
-  > .scrollbox-innerbox {
-	direction: ltr;
-}
 
 
 /* animation effects */
