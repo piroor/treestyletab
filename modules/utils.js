@@ -95,6 +95,8 @@ var TreeStyleTabUtils = {
 	kMAX_LEVEL          : 'treestyletab-max-tree-level',
 	kPRINT_PREVIEW      : 'treestyletab-print-preview',
 	kANIMATION_ENABLED  : 'treestyletab-animation-enabled',
+	kINVERT_SCROLLBAR   : 'treestyletab-invert-scrollbar',
+	kNARROW_SCROLLBAR   : 'treestyletab-narrow-scrollbar',
 
 	kTAB_INVERTED          : 'treestyletab-tab-inverted',
 	kTAB_CONTENTS_INVERTED : 'treestyletab-tab-contents-inverted',
@@ -318,6 +320,7 @@ var TreeStyleTabUtils = {
 		this.onPrefChange('extensions.treestyletab.tabbar.scroll.smooth');
 		this.onPrefChange('extensions.treestyletab.tabbar.scroll.duration');
 		this.onPrefChange('extensions.treestyletab.tabbar.scrollToNewTab.mode');
+		this.onPrefChange('extensions.treestyletab.tabbar.narrowScrollbar.size');
 		this.onPrefChange('extensions.treestyletab.animation.enabled');
 		this.onPrefChange('extensions.treestyletab.animation.indent.duration');
 		this.onPrefChange('extensions.treestyletab.animation.collapse.duration');
@@ -354,6 +357,57 @@ var TreeStyleTabUtils = {
 		Components.utils.import('resource://gre/modules/WindowsPreviewPerTab.jsm', ns);
 		this.AeroPeek = ns.AeroPeek;
 	},
+ 
+	updateNarrowScrollbarStyle : function TSTUtils_updateNarrowScrollbarStyle() 
+	{
+		const SSS = Cc['@mozilla.org/content/style-sheet-service;1']
+					.getService(Ci.nsIStyleSheetService);
+
+		if (this.lastAgentSheet &&
+			SSS.sheetRegistered(this.lastAgentSheet, SSS.AGENT_SHEET))
+			SSS.unregisterSheet(this.lastAgentSheet, SSS.AGENT_SHEET);
+
+		const style = 'data:text/css,'+encodeURIComponent(
+			<![CDATA[
+				@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+				tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]
+				  .tabbrowser-arrowscrollbox
+				  > scrollbox
+				  > scrollbar[orient="vertical"],
+				tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]
+				  .tabbrowser-arrowscrollbox
+				  > scrollbox
+				  > scrollbar[orient="vertical"] * {
+					max-width: %SIZE%;
+					min-width: %SIZE%;
+				}
+
+				tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]
+				  .tabbrowser-arrowscrollbox
+				  > scrollbox
+				  > scrollbar[orient="vertical"] {
+					font-size: %SIZE%;
+				}
+
+				tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]
+				  .tabbrowser-arrowscrollbox
+				  > scrollbox
+				  > scrollbar[orient="vertical"] * {
+					padding-left: 0;
+					padding-right: 0;
+					margin-left: 0;
+					margin-right: 0;
+				}
+			]]>.toString()
+				.replace(/%MODE%/g, this.kMODE)
+				.replace(/%NARROW%/g, this.kNARROW_SCROLLBAR)
+				.replace(/%SIZE%/g, this.getTreePref('tabbar.narrowScrollbar.size'))
+			);
+		this.lastAgentSheet = this.makeURIFromSpec(style);
+		SSS.loadAndRegisterSheet(this.lastAgentSheet, SSS.AGENT_SHEET);
+	},
+	lastAgentSheet : null,
   
 	observe : function TSTUtils_observe(aSubject, aTopic, aData) 
 	{
@@ -2107,12 +2161,11 @@ var TreeStyleTabUtils = {
 			case 'extensions.treestyletab.indent':
 				this.baseIndent = value;
 				this.ObserverService.notifyObservers(null, this.kTOPIC_INDENT_MODIFIED, value);
-				break;
+				return;
 
 			case 'extensions.treestyletab.tabbar.width':
 			case 'extensions.treestyletab.tabbar.shrunkenWidth':
-				this.updateTabWidthPrefs(aPrefName);
-				break;
+				return this.updateTabWidthPrefs(aPrefName);
 
 			case 'browser.tabs.insertRelatedAfterCurrent':
 			case 'browser.tabs.loadFolderAndReplace':
@@ -2138,39 +2191,34 @@ var TreeStyleTabUtils = {
 					this.setPref(target, this.getPref(aPrefName));
 				}
 				this.prefOverriding = false;
-				break;
+				return;
 
 			case 'extensions.treestyletab.clickOnIndentSpaces.enabled':
-				this.shouldDetectClickOnIndentSpaces = this.getPref(aPrefName);
-				break;
+				return this.shouldDetectClickOnIndentSpaces = this.getPref(aPrefName);
 
 			case 'extensions.treestyletab.tabbar.scroll.smooth':
-				this.smoothScrollEnabled = value;
-				break;
+				return this.smoothScrollEnabled = value;
 			case 'extensions.treestyletab.tabbar.scroll.duration':
-				this.smoothScrollDuration = value;
-				break;
+				return this.smoothScrollDuration = value;
 
 			case 'extensions.treestyletab.tabbar.scrollToNewTab.mode':
-				this.scrollToNewTabMode = value;
-				break;
+				return this.scrollToNewTabMode = value;
+
+			case 'extensions.treestyletab.tabbar.narrowScrollbar.size':
+				return this.updateNarrowScrollbarStyle();
 
 			case 'extensions.treestyletab.animation.enabled':
-				this.animationEnabled = value;
-				break;
+				return this.animationEnabled = value;
 			case 'extensions.treestyletab.animation.indent.duration':
-				this.indentDuration = value;
-				break;
+				return this.indentDuration = value;
 			case 'extensions.treestyletab.animation.collapse.duration':
-				this.collapseDuration = value;
-				break;
+				return this.collapseDuration = value;
 
 			case 'extensions.treestyletab.twisty.expandSensitiveArea':
-				this.shouldExpandTwistyArea = value;
-				break;
+				return this.shouldExpandTwistyArea = value;
 
 			default:
-				break;
+				return;
 		}
 	},
 	

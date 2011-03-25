@@ -15,6 +15,7 @@
 <!ENTITY config.tabbar.invertClosebox.right "Ikona zamknięcia po prawej stronie karty">
 <!ENTITY config.tabbar.invertTab            "Odwróć położenie etykiet kart">
 <!ENTITY config.tabbar.invertTabContents    "Odwróć położenie ikon na etykiecie karty">
+<!ENTITY config.tabbar.narrowScrollbar      "Narrow scrollbar">
 <!ENTITY config.enableSubtreeIndent         "Stosuj wcięcia">
 <!ENTITY config.maxTreeLevel.before "until">
 <!ENTITY config.maxTreeLevel.after  "level(s)">

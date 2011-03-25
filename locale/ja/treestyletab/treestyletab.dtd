@@ -15,6 +15,7 @@
 <!ENTITY config.tabbar.invertClosebox.right "タブのクローズボックスを右に表示">
 <!ENTITY config.tabbar.invertTab            "タブの表示を左右反転">
 <!ENTITY config.tabbar.invertTabContents    "タブの内容を左右反転">
+<!ENTITY config.tabbar.narrowScrollbar      "スクロールバーの幅を細くする">
 <!ENTITY config.enableSubtreeIndent "ツリーをインデント表示する">
 <!ENTITY config.maxTreeLevel.before "（">
 <!ENTITY config.maxTreeLevel.after  "階層まで）">

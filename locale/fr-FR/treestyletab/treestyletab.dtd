@@ -15,6 +15,7 @@
 <!ENTITY config.tabbar.invertClosebox.right "Case de fermeture sur le côté droit de chaque onglet">
 <!ENTITY config.tabbar.invertTab            "Inverser l'apparence des onglets">
 <!ENTITY config.tabbar.invertTabContents    "Inverser le contenu des onglets">
+<!ENTITY config.tabbar.narrowScrollbar      "Narrow scrollbar">
 <!ENTITY config.enableSubtreeIndent         "Indenter les onglets">
 <!ENTITY config.maxTreeLevel.before "until">
 <!ENTITY config.maxTreeLevel.after  "level(s)">

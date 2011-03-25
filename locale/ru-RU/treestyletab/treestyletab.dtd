@@ -15,6 +15,7 @@
 <!ENTITY config.tabbar.invertClosebox.right "Показывать кнопку закрытия с правой стороны каждой вкладки">
 <!ENTITY config.tabbar.invertTab            "Инвертировать вид вкладок">
 <!ENTITY config.tabbar.invertTabContents    "Инвертировать содержимое вкладок">
+<!ENTITY config.tabbar.narrowScrollbar      "Narrow scrollbar">
 <!ENTITY config.enableSubtreeIndent         "Отступы вкладок">
 <!ENTITY config.maxTreeLevel.before "until">
 <!ENTITY config.maxTreeLevel.after  "level(s)">

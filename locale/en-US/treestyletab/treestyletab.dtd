@@ -15,6 +15,7 @@
 <!ENTITY config.tabbar.invertClosebox.right "Show closebox at rightside in each tab">
 <!ENTITY config.tabbar.invertTab            "Invert tab appearance">
 <!ENTITY config.tabbar.invertTabContents    "Invert tab contents">
+<!ENTITY config.tabbar.narrowScrollbar      "Narrow scrollbar">
 <!ENTITY config.enableSubtreeIndent "Indent tabs">
 <!ENTITY config.maxTreeLevel.before "until">
 <!ENTITY config.maxTreeLevel.after  "level(s)">
