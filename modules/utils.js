@@ -371,27 +371,28 @@ var TreeStyleTabUtils = {
 				@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
 				tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]
-				  > .tabbrowser-arrowscrollbox
-				  > .arrowscrollbox-scrollbox
+				  .tabbrowser-arrowscrollbox
+				  > scrollbox
 				  > scrollbar[orient="vertical"],
 				tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]
-				  > .tabbrowser-arrowscrollbox
-				  > .arrowscrollbox-scrollbox
+				  .tabbrowser-arrowscrollbox
+				  > scrollbox
 				  > scrollbar[orient="vertical"] * {
 					max-width: %SIZE%;
 					min-width: %SIZE%;
 				}
 
 				tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]
-				  > .tabbrowser-arrowscrollbox
-				  > .arrowscrollbox-scrollbox
+				  .tabbrowser-arrowscrollbox
+				  > scrollbox
 				  > scrollbar[orient="vertical"] {
 					font-size: %SIZE%;
+					overflow: hidden;
 				}
 
 				tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]
-				  > .tabbrowser-arrowscrollbox
-				  > .arrowscrollbox-scrollbox
+				  .tabbrowser-arrowscrollbox
+				  > scrollbox
 				  > scrollbar[orient="vertical"] * {
 					padding-left: 0;
 					padding-right: 0;

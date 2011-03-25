@@ -283,13 +283,13 @@ toolbar.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
 
 
 tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"]
-  > .tabbrowser-arrowscrollbox
-  > .arrowscrollbox-scrollbox {
+  .tabbrowser-arrowscrollbox
+  > scrollbox {
 	direction: rtl;
 }
 tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"]
-  > .tabbrowser-arrowscrollbox
-  > .arrowscrollbox-scrollbox
+  .tabbrowser-arrowscrollbox
+  > scrollbox
   > .scrollbox-innerbox {
 	direction: ltr;
 }
