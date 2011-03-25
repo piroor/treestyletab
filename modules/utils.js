@@ -95,6 +95,7 @@ var TreeStyleTabUtils = {
 	kMAX_LEVEL          : 'treestyletab-max-tree-level',
 	kPRINT_PREVIEW      : 'treestyletab-print-preview',
 	kANIMATION_ENABLED  : 'treestyletab-animation-enabled',
+	kINVERT_SCROLLBAR   : 'treestyletab-invert-scrollbar',
 	kNARROW_SCROLLBAR   : 'treestyletab-narrow-scrollbar',
 
 	kTAB_INVERTED          : 'treestyletab-tab-inverted',
