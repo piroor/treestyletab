@@ -1663,7 +1663,8 @@ var TreeStyleTabUtils = {
  
 	isCollapsed : function TSTUtils_isCollapsed(aTab) /* PUBLIC API */ 
 	{
-		if (!aTab || !this.canCollapseSubtree(aTab))
+		if (!aTab ||
+			!this.canCollapseSubtree(this.getRootTab(aTab)))
 			return false;
 
 		return aTab.getAttribute(this.kCOLLAPSED) == 'true';
