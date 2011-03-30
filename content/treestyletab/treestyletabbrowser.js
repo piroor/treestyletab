@@ -4345,6 +4345,11 @@ TreeStyleTabBrowser.prototype = {
 	checkTabsIndentOverflowTimer : null,
 	checkTabsIndentOverflowCallback : function TSTBrowser_checkTabsIndentOverflowCallback()
 	{
+		if (!this.getTreePref('indent.autoShrink')) {
+			this.indent = -1;
+			return;
+		}
+
 		var b    = this.mTabBrowser;
 		var tabs = this.getArrayFromXPathResult(this.evaluateXPath(
 				'child::xul:tab[@'+this.kNEST+' and not(@'+this.kNEST+'="0" or @'+this.kNEST+'="")]',
@@ -4374,7 +4379,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 		var maxIndent = maxIndentBase * (this.isVertical ? 0.33 : 0.5 );
 
-		var indentUnit = Math.max(Math.floor(maxIndent / nest), 1);
+		var indentUnit = Math.max(Math.floor(maxIndent / nest), this.getTreePref('indent.min'));
 		if (indent > maxIndent) {
 			this.indent = indentUnit;
 		}
