@@ -152,7 +152,7 @@
     <em:localized>
       <RDF:Description em:locale="da-DK"
                        em:name="Tree Style Tab"
-                       em:description="Viser faner som et mappetræer."
+                       em:description="Viser faner som mappetræer."
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
                        em:creator="Hiroshi Shimoda">
           <em:contributor>Zusukar (auto minimering)</em:contributor>
