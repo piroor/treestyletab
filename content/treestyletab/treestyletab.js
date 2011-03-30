@@ -1710,7 +1710,9 @@ var TreeStyleTabService = {
 		var listener = {
 				process : aProcess,
 				handleEvent : function(aEvent) {
-					if (!this.process.call(aEvent.target.treeStyleTab, aEvent.target))
+					var tab = aEvent.originalTarget;
+					var b = tab.__treestyletab__linkedTabBrowser;
+					if (!this.process.call(b.treeStyleTab, b))
 						aEvent.preventDefault();
 				}
 			};
