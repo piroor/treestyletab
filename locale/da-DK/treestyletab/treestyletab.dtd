@@ -1,0 +1,166 @@
+﻿<!ENTITY config.title        "Tree Style Tab indstillinger">
+
+<!ENTITY config.scale.min "min">
+<!ENTITY config.scale.max "maks">
+
+
+<!ENTITY config.tabs.appearance "Visning">
+
+<!ENTITY config.tabbar.position.caption "Fanebjælkens placering">
+<!ENTITY config.tabbar.position.left    "Venstre">
+<!ENTITY config.tabbar.position.right   "Højre">
+<!ENTITY config.tabbar.position.top     "Øverst (Firefox standard)">
+<!ENTITY config.tabbar.position.bottom  "Nederst">
+<!ENTITY config.tabbar.invertClosebox.left  "Vis &quot;Luk&quot; til venstre i fanen">
+<!ENTITY config.tabbar.invertClosebox.right "Vis &quot;Luk&quot; til højre i fanen">
+<!ENTITY config.tabbar.invertTab            "Spejlvend visning">
+<!ENTITY config.tabbar.invertTabContents    "Spejlvend indhold">
+<!ENTITY config.tabbar.narrowScrollbar      "Narrow scrollbar">
+<!ENTITY config.enableSubtreeIndent "Indryk faner">
+<!ENTITY config.maxTreeLevel.before "op til">
+<!ENTITY config.maxTreeLevel.after  "niveauer">
+<!ENTITY config.allowSubtreeCollapseExpand  "Tillad sammenfold/udvid fanetræ">
+<!ENTITY config.tabbar.hideAlltabsButton    "Vis &quot;Se alle faner&quot; knappen">
+
+
+<!ENTITY config.tabs.style "Udseende">
+
+<!ENTITY config.tabbar.style.caption "Fanebjælken udseende">
+<!ENTITY config.tabbar.style.plain   "Almen">
+<!ENTITY config.tabbar.style.flat    "Flad">
+<!ENTITY config.tabbar.style.mixed   "Mikset">
+<!ENTITY config.tabbar.style.vertigo "Vertigo">
+<!ENTITY config.tabbar.style.metal   "Metal">
+<!ENTITY config.tabbar.style.sidebar "Sidebar">
+<!ENTITY config.tabbar.style.none    "Standard (bestemt af tema)">
+
+<!ENTITY config.twisty.style.caption "Træets stil">
+<!ENTITY config.twisty.style.auto    "Auto">
+<!ENTITY config.twisty.style.none    "Ingen">
+<!ENTITY config.twisty.style.retro   "Retro">
+<!ENTITY config.twisty.style.modern.black "Moderne sort">
+<!ENTITY config.twisty.style.modern.white "Moderne hvid">
+<!ENTITY config.twisty.style.osx     "OS X">
+
+
+<!ENTITY config.tabs.menu "Menu">
+
+<!ENTITY config.show.tabContextMenu.caption "Vis følgende emner i faners kontekstmenu">
+
+<!ENTITY config.tabs.tab "Nye faner">
+
+<!ENTITY config.autoAttach.newTabCommand.caption "Ved manuel åbning af ny tom fane">
+<!ENTITY config.autoAttach.newTabCommand.ignore  "Åben som hovedfane">
+<!ENTITY config.autoAttach.newTabCommand.current "Åben som underfane til den aktive fane">
+<!ENTITY config.autoAttach.newTabCommand.parent  "Åben som søsken til den aktive fane">
+
+<!ENTITY config.openGroupBookmark.caption     "Handling ved &quot;Åben alle i faner&quot; for bogmærkemapper">
+<!ENTITY config.openGroupBookmark.ask         "Spørg altid">
+<!ENTITY config.openGroupBookmark.subtree     "Åben som træ (anbefalet)">
+<!ENTITY config.openGroupBookmark.subtree.type.before  "">
+<!ENTITY config.openGroupBookmark.subtree.type.restore "Gendan">
+<!ENTITY config.openGroupBookmark.subtree.type.flat    "Ignorer">
+<!ENTITY config.openGroupBookmark.subtree.type.after   "Faners træstruktur gemt i bogmærker">
+<!ENTITY config.openGroupBookmark.flat        "Åben som faner (Firefox standard)">
+<!ENTITY config.openGroupBookmark.replace     "Erstat aktuel fane med siderne i mappen">
+<!ENTITY config.openGroupBookmark.underParent "Arranger faner under ny gruppefane">
+
+<!ENTITY config.dropLinksOnTab.caption "Droppet link, URL, bogmærke eller fil til eksisterende fane">
+<!ENTITY config.dropLinksOnTab.ask     "Spørg altid">
+<!ENTITY config.dropLinksOnTab.load    "Åben i fanen (Firefox standard)">
+<!ENTITY config.dropLinksOnTab.newTab  "Åben som underfane">
+
+
+<!ENTITY config.tabs.autohide "Autoskjul">
+
+<!ENTITY config.autoHide.mode.normal.caption     "Fanebjælke i normalt vindue">
+<!ENTITY config.autoHide.mode.fullscreen.caption "Fanebjælke i fuld skærm">
+<!ENTITY config.autoHide.mode.0 "Vis altid">
+<!ENTITY config.autoHide.mode.1 "Skjul automatisk">
+<!ENTITY config.autoHide.mode.2 "Minimer automatisk">
+<!ENTITY config.autoShow.caption "Vis automatisk når">
+<!ENTITY config.autoShow.mousemove "Når markøren nærmer sig vindueskanten eller fanebjælken">
+<!ENTITY config.autoHide.area.before "Følsomhed:">
+<!ENTITY config.autoHide.area.after "pixel fra vindueskant eller fanebjælke">
+<!ENTITY config.autoHide.delay.before "Forsinkelse:">
+<!ENTITY config.autoHide.delay.after "msec.">
+<!ENTITY config.autoShow.accelKeyDown "Ved tryk på Ctrl tasten">
+<!ENTITY config.autoShow.accelKeyDown.delay.before "Vis efter">
+<!ENTITY config.autoShow.accelKeyDown.delay.after  "msec.">
+<!ENTITY config.autoShow.tabSwitch   "Ctrl-Tab skifter faner">
+<!ENTITY config.autoShow.feedback    "Ved åbning eller lukning af faner">
+<!ENTITY config.autoShow.feedback.delay.before "Skjul efter">
+<!ENTITY config.autoShow.feedback.delay.after  "msec.">
+
+
+<!ENTITY config.tabs.tree "Træet">
+
+<!ENTITY config.autoCollapseExpandSubtreeOnSelect "Udvid tilhørende træ når en fane vælges, og sammenfold automatisk de andre">
+<!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "Ekskluder fokusflytning forårsaget af af aktuel fanes lukning">
+<!ENTITY config.collapseExpandSubtree.dblclick "Dobbeltklik på en fane for at sammenfolde/udvide træ">
+<!ENTITY config.autoExpandSubtreeOnAppendChild "Udvid automatisk et træ når faner indsættes i dette">
+
+<!ENTITY config.closeParentBehavior.caption      "Når en hovedfane lukkes">
+<!ENTITY config.closeParentBehavior.close        "Luk også underfaner">
+<!ENTITY config.closeParentBehavior.promoteFirst "Gør første underfane til hovedfane">
+<!ENTITY config.closeParentBehavior.promoteAll   "Gør alle underfaner til hovedfaner">
+<!ENTITY config.closeParentBehavior.detach       "Frigør underfaner fra træet">
+<!ENTITY config.closeRootBehavior.promoteFirst   "Gør den første underfane til hovedfane, hvis den lukkede fane er den første">
+
+<!ENTITY config.focusMode "Flyt fokus til næste/forrige fane, selv om den ikke er synlig, med Ctrl-Tab">
+
+<!ENTITY config.insertNewChildAt.caption "Placering af nye underfaner">
+<!ENTITY config.insertNewChildAt.first "Indsæt øverst som første underfane">
+<!ENTITY config.insertNewChildAt.last "Indsæt i træets bund">
+
+<!ENTITY config.undoCloseTabSet.caption  "Når en del af et træ gendannes med &quot;Fortryd lukning...&quot;">
+<!ENTITY config.undoCloseTabSet.ask      "Spørg altid">
+<!ENTITY config.undoCloseTabSet.set      "Gendan hele træet">
+<!ENTITY config.undoCloseTabSet.separate "Gendan en fane (Firefox Standard)">
+
+
+
+<!ENTITY config.tabs.advanced "Avanceret">
+
+<!ENTITY config.animation.enabled "Aktiver animationseffekt">
+
+<!ENTITY config.tooltip.includeChildren        "Vis indhold i værktøjstips">
+
+<!ENTITY config.bookmarkDroppedTabs.caption "Handling for træk af en hovedfane til bogmærker">
+<!ENTITY config.bookmarkDroppedTabs.ask     "Spørg altid">
+<!ENTITY config.bookmarkDroppedTabs.all     "Bogmærk alle træets faner">
+<!ENTITY config.bookmarkDroppedTabs.parent  "Bogmærk kun hovedfanen">
+
+
+
+
+
+<!ENTITY selection.createSubtree.label          "Saml i nyt træ">
+<!ENTITY selection.createSubtree.accesskey      "g">
+
+<!ENTITY selection.removeTabSubtree.label       "Luk valgte træer">
+<!ENTITY selection.removeTabSubtree.accesskey   "s">
+<!ENTITY context.reloadTabSubtree.label         "Genindlæs træ">
+<!ENTITY context.reloadTabSubtree.accesskey     "r">
+<!ENTITY context.reloadDescendantTabs.label     "Genindlæs underfaner">
+<!ENTITY context.reloadDescendantTabs.accesskey "r">
+<!ENTITY context.removeTabSubtree.label         "Luk træ">
+<!ENTITY context.removeTabSubtree.accesskey     "s">
+<!ENTITY context.removeDescendantTabs.label     "Luk underfaner">
+<!ENTITY context.removeDescendantTabs.accesskey "d">
+<!ENTITY context.removeAllTabsBut.label         "Luk alle faner pånær dette træ">
+<!ENTITY context.removeAllTabsBut.accesskey     "a">
+<!ENTITY context.collapseAllSubtree.label       "Sammenfold alle">
+<!ENTITY context.collapseAllSubtree.accesskey   "c">
+<!ENTITY context.expandAllSubtree.label         "Udvid alle">
+<!ENTITY context.expandAllSubtree.accesskey     "e">
+<!ENTITY context.toggleAutoHide.label           "Autoskjul fanebjælke">
+<!ENTITY context.toggleAutoHide.accesskey       "h">
+<!ENTITY context.toggleFixed.label              "Lås fanebjælkens placering/højde">
+<!ENTITY context.toggleFixed.label.horizontal   "Lås fanebjælkens placering/højde">
+<!ENTITY context.toggleFixed.label.vertical     "Lås fanebjælkens placering/bredde">
+<!ENTITY context.toggleFixed.accesskey          "f">
+<!ENTITY context.bookmarkTabSubtree.label       "Bogmærk træ...">
+<!ENTITY context.bookmarkTabSubtree.accesskey   "t">
+
+<!ENTITY group.default "Ny gruppe">
