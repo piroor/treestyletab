@@ -967,7 +967,7 @@ try{
 		);
 
 		var indicator = b.mTabDropIndicatorBar || b.tabContainer._tabDropIndicator;
-		indicator.setAttribute('dragging', (info.position == sv.kDROP_ON) ? 'false' : 'true' );
+		indicator.setAttribute('dragging', (info.position == sv.kDROP_ON || sv.isVertical) ? 'false' : 'true' );
 		if (sv.isVertical)
 			indicator.collapsed = true;
 
