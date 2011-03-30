@@ -155,9 +155,9 @@
                        em:description="Viser faner som et mappetræer."
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
                        em:creator="Hiroshi Shimoda">
-          <em:contributor>Zusukar (krymp automatiskt-läget)</em:contributor>
+          <em:contributor>Zusukar (auto minimering)</em:contributor>
           <em:contributor>Alice0775 (kompatibilitetsproblem)</em:contributor>
-          <em:contributor>Philipp von Weitershausen (sidopanelens utseende)</em:contributor>
+		  <em:contributor>Philipp von Weitershausen (sidebjælkens stil)</em:contributor>
           <em:translator>Regmos (da-DK)</em:translator>
       </RDF:Description>
     </em:localized>

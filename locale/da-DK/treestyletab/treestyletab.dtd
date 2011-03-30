@@ -15,7 +15,7 @@
 <!ENTITY config.tabbar.invertClosebox.right "Vis &quot;Luk&quot; til højre i fanen">
 <!ENTITY config.tabbar.invertTab            "Spejlvend visning">
 <!ENTITY config.tabbar.invertTabContents    "Spejlvend indhold">
-<!ENTITY config.tabbar.narrowScrollbar      "Narrow scrollbar">
+<!ENTITY config.tabbar.narrowScrollbar      "Lille rullebjælke">
 <!ENTITY config.enableSubtreeIndent "Indryk faner">
 <!ENTITY config.maxTreeLevel.before "op til">
 <!ENTITY config.maxTreeLevel.after  "niveauer">
