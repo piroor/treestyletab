@@ -13,7 +13,7 @@
    http://github.com/piroor/fxaddonlibs/blob/master/tabsDragUtils.js
 */
 (function() {
-	const currentRevision = 12;
+	const currentRevision = 13;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -198,7 +198,8 @@
 
 			var b = aTabBrowserChild.ownerDocument.evaluate(
 					'ancestor-or-self::*[local-name()="tabbrowser"] | '+
-					'ancestor-or-self::*[local-name()="tabs" and @tabbrowser]',
+					'ancestor-or-self::*[local-name()="tabs" and @tabbrowser] |'+
+					'ancestor::*[local-name()="toolbar"]/descendant::*[local-name()="tabs" and @tabbrowser]',
 					aTabBrowserChild,
 					null,
 					XPathResult.FIRST_ORDERED_NODE_TYPE,
