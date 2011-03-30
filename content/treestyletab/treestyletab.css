@@ -193,7 +193,6 @@ tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-sc
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > .scrollbutton-down-stack,
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > .scrollbutton-down, /* Firefox 3 */
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-closebutton-box,
-.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] .tabs-closebutton,
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tab-drop-indicator-bar {
 	visibility: collapse !important;
 }
