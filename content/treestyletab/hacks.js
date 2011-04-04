@@ -256,6 +256,37 @@ TreeStyleTabService.overrideExtensionsPreInit = function TSTService_overrideExte
 			return result;
 		};
 	}
+
+	// Optimoz Tweaks
+	// http://optimoz.mozdev.org/tweaks/
+	// https://addons.mozilla.org/firefox/addon/optimoz-tweaks-ja-version/
+	if ('mtSidebarStartup' in window &&
+		'mtSidebarShutdown' in window &&
+		'mtPreventHiding' in window &&
+		this.isGecko2 &&
+		this.getTreePref('compatibility.OptimozTweaks')) {
+		eval('window.mtSidebarStartup = '+window.mtSidebarStartup.toSource().replace(
+			'{',
+			<![CDATA[{
+				document.getElementById('TabsToolbar')
+					.addEventListener('mousemove', mtMouseMoveListener, false);
+			]]>.toString()
+		));
+		eval('window.mtSidebarShutdown = '+window.mtSidebarShutdown.toSource().replace(
+			'{',
+			<![CDATA[{
+				document.getElementById('TabsToolbar')
+					.removeEventListener('mousemove', mtMouseMoveListener, false);
+			]]>.toString()
+		));
+		eval('window.mtPreventHiding = '+window.mtPreventHiding.toSource().replace(
+			'{',
+			<![CDATA[{
+				if (TreeStyleTabService.getTabbarFromEvent(arguments[0]))
+					return;
+			]]>.toString()
+		));
+	}
 };
 
 TreeStyleTabService.overrideExtensionsOnInitBefore = function TSTService_overrideExtensionsOnInitBefore() {
