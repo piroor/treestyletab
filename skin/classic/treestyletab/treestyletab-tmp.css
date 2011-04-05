@@ -1,7 +1,7 @@
 /* hacks for Tab Mix Plus */
 
 :root[treestyletab-enable-compatibility-tmp="true"]
-  tabbrowser[treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton {
+  .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton {
 	-moz-appearance: none !important;
 	border: 0 none !important;
 	-moz-border-top-colors: none !important;
@@ -13,12 +13,12 @@
 }
 
 :root[treestyletab-enable-compatibility-tmp="true"]
-  tabbrowser[treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton:hover {
+  .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton:hover {
 	background: ThreeDHighlight !important;
 }
 
 :root[treestyletab-enable-compatibility-tmp="true"]
-  tabbrowser[treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton {
+  .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton {
 	background-image: none !important;
 	margin: 0 !important;
 	padding: 0 2px !important;
@@ -28,7 +28,7 @@
 }
 
 :root[treestyletab-enable-compatibility-tmp="true"]
-  tabbrowser[treestyletab-mode="vertical"] .tabs-newtab-topbox > .tabs-newtab-button {
+  .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-newtab-topbox > .tabs-newtab-button {
 	-moz-box-flex: 1;
 	-moz-box-align: center;
 	-moz-box-pack: center;
@@ -36,6 +36,11 @@
 }
 
 :root[treestyletab-enable-compatibility-tmp="true"]
-  tabbrowser[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox[type="tabmix"] {
+  .tabbrowser-tabs[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox[type="tabmix"] {
 	visibility: collapse !important;
+}
+
+:root[treestyletab-enable-compatibility-tmp="true"]
+  .tabbrowser-tabs[treestyletab-mode="vertical"] .tab-progress {
+	margin-top: -2px;
 }
