@@ -435,6 +435,17 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 			)
 		);
 
+		if ('TabmixContext' in window &&
+			typeof TabmixContext.openMultipleLinks == 'function') {
+			eval('TabmixContext.openMultipleLinks = '+
+				TabmixContext.openMultipleLinks.toSource().replace(
+					/(TMP_loadTabs\([^\)]+\);)/g,
+					'TreeStyleTabService.readyToOpenChildTab(gBrowser, true); $1 TreeStyleTabService.stopToOpenChildTab(gBrowser);'
+				)
+			);
+		}
+
+
 		let listener = {
 				handleEvent : function(aEvent)
 				{
