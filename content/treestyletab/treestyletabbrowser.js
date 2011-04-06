@@ -4594,6 +4594,7 @@ TreeStyleTabBrowser.prototype = {
 				aTab.setAttribute(this.kCOLLAPSED_DONE, true);
 			else
 				aTab.removeAttribute(this.kCOLLAPSED_DONE);
+			aTab.removeAttribute(this.kCOLLAPSING_PHASE);
 
 			if (CSSTransitionEnabled) {
 				aTab.style.setProperty(this.collapseCSSProp, endMargin ? '-'+endMargin+'px' : '', 'important');
@@ -4650,6 +4651,7 @@ TreeStyleTabBrowser.prototype = {
 					aTab.style.removeProperty('opacity');
 				}
 				aTab.removeAttribute(offsetAttr);
+				aTab.removeAttribute(self.kCOLLAPSING_PHASE);
 
 				maxMargin = null;
 				offsetAttr = null;
@@ -4789,7 +4791,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 	},
 	
-	smoothScrollTo : function TSTBrowser_smoothScrollTo(aEndX, aEndY) 
+	smoothScrollTo : function TSTBrowser_smoothScrollTo(aEndX, aEndY, aDuration) 
 	{
 		var b = this.mTabBrowser;
 		this.animationManager.removeTask(this.smoothScrollTask);
@@ -4819,14 +4821,35 @@ TreeStyleTabBrowser.prototype = {
 			if (aTime >= aDuration) {
 				scrollBoxObject.scrollTo(aEndX, aEndY);
 
+				/** When there is any expanding tab, we have to retry to scroll.
+				 *  if the scroll box was expanded.
+				 */
+				let oldSize = self._getMaxScrollSize(scrollBoxObject);
+				window.setTimeout(function() {
+					let newSize = self._getMaxScrollSize(scrollBoxObject);
+					let lastTab = self.getLastVisibleTab(self.mTabBrowser);
+					if (
+						// scroll size can be expanded by expanding tabs.
+						oldSize[0] < newSize[0] || oldSize[1] < newSize[1] ||
+						// there are still animating tabs
+						self.getXOffsetOfTab(lastTab) || self.getYOffsetOfTab(lastTab) ||
+						self.evaluateXPath(
+							'child::xul:tab[@'+self.kCOLLAPSING_PHASE+'="'+self.kCOLLAPSING_PHASE_TO_BE_EXPANDED+'"]',
+							self.mTabBrowser.mTabContainer,
+							XPathResult.BOOLEAN_TYPE
+						).booleanValue
+						)
+						self.smoothScrollTo(aEndX, aEndY, parseInt(aDuration * 0.5));
+					self = null;
+					scrollBoxObject = null;
+				}, 0);
+
 				b = null;
-				scrollBoxObject = null;
 				x = null;
 				y = null;
 				startX = null;
 				startY = null;
 				radian = null;
-				self = null;
 
 				return true;
 			}
@@ -4834,21 +4857,22 @@ TreeStyleTabBrowser.prototype = {
 			var power = Math.sin(aTime / aDuration * radian);
 			var newX = startX + parseInt(deltaX * power);
 			var newY = startY + parseInt(deltaY * power);
-
-			var x = {}, y = {};
-			scrollBoxObject.getPosition(x, y);
-
-			var w = {}, h = {};
-			scrollBoxObject.getScrolledSize(w, h);
-			var maxX = Math.max(0, w.value - scrollBoxObject.width);
-			var maxY = Math.max(0, h.value - scrollBoxObject.height);
 			scrollBoxObject.scrollTo(newX, newY);
 			return false;
 		};
 		this.animationManager.addTask(
 			this.smoothScrollTask,
-			0, 0, this.smoothScrollDuration, window
+			0, 0, this.smoothScrollDuration || aDuration, window
 		);
+	},
+	_getMaxScrollSize : function(aScrollBoxObject) {
+		var x = {}, y = {};
+		aScrollBoxObject.getPosition(x, y);
+		var w = {}, h = {};
+		aScrollBoxObject.getScrolledSize(w, h);
+		var maxX = Math.max(0, w.value - aScrollBoxObject.width);
+		var maxY = Math.max(0, h.value - aScrollBoxObject.height);
+		return [maxX, maxY];
 	},
 	smoothScrollTask : null,
   
