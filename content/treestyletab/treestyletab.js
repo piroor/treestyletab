@@ -71,11 +71,6 @@ var TreeStyleTabService = {
 		return 'SplitBrowser' in window ? window.SplitBrowser.activeBrowser :
 			window.gBrowser ;
 	},
- 
-	get shouldApplyNewPref() 
-	{
-		return window == this.topBrowserWindow && !this.utils.inWindowDestoructionProcess;
-	},
   
 /* backward compatibility */ 
 	getTempTreeStyleTab : function TSTService_getTempTreeStyleTab(aTabBrowser)
@@ -1174,19 +1169,25 @@ var TreeStyleTabService = {
 			width += (pos == 'left' ? delta : -delta );
 			width = this.maxTabbarWidth(width, b);
 			if (expanded || b.treeStyleTab.autoHide.expanded) {
-				this.setTreePref('tabbar.width', width);
+				this.setPrefForActiveWindow(function() {
+					this.setTreePref('tabbar.width', width);
+				});
 				if (b.treeStyleTab.autoHide.mode == b.treeStyleTab.autoHide.kMODE_SHRINK &&
 					b.treeStyleTab.tabStripPlaceHolder)
 					b.treeStyleTab.tabStripPlaceHolder.setAttribute('width', this.getTreePref('tabbar.shrunkenWidth'));
 			}
 			else {
-				this.setTreePref('tabbar.shrunkenWidth', width);
+				this.setPrefForActiveWindow(function() {
+					this.setTreePref('tabbar.shrunkenWidth', width);
+				});
 			}
 		}
 		else {
 			let delta = aEvent.screenY - this.tabbarResizeStartY;
 			height += (pos == 'top' ? delta : -delta );
-			this.setTreePref('tabbar.height', this.maxTabbarHeight(height, b));
+			this.setPrefForActiveWindow(function() {
+				this.setTreePref('tabbar.height', this.maxTabbarHeight(height, b));
+			});
 		}
 		b.treeStyleTab.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_TABBAR_RESIZE);
 	},
@@ -1447,8 +1448,10 @@ var TreeStyleTabService = {
 
 		var newFixed = b.getAttribute(this.kFIXED+'-'+orient) != 'true';
 		this.setTabbrowserAttribute(this.kFIXED+'-'+orient, newFixed || null, this.mTabBrowser);
-		b.treeStyleTab.fixed = newFixed;
-		this.setTreePref('tabbar.fixed.'+orient, newFixed);
+		this.setPrefForActiveWindow(function() {
+			b.treeStyleTab.fixed = newFixed;
+			this.setTreePref('tabbar.fixed.'+orient, newFixed);
+		});
 
 		b.treeStyleTab.updateTabbarState();
 	},

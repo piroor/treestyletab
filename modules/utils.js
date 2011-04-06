@@ -474,6 +474,11 @@ var TreeStyleTabUtils = {
 			w.gBrowser ;
 	},
  
+	get window()
+	{
+		return this.browser.ownerDocument.defaultView;
+	},
+ 
 	get currentDragSession() 
 	{
 		return Cc['@mozilla.org/widget/dragservice;1']
@@ -2267,6 +2272,26 @@ var TreeStyleTabUtils = {
 	clearTreePref : function TSTUtils_clearTreePref(aPrefstring) 
 	{
 		return this.clearPref('extensions.treestyletab.'+aPrefstring);
+	},
+ 	
+	get shouldApplyNewPref() 
+	{
+		return (
+					!this.applyOnlyForActiveWindow ||
+					this.window == this.topBrowserWindow
+				) &&
+				!this.inWindowDestoructionProcess;
+	},
+ 
+	applyOnlyForActiveWindow : false,
+	setPrefForActiveWindow : function(aTask) {
+		TreeStyleTabUtils.applyOnlyForActiveWindow = true;
+		try {
+			aTask.call(this);
+		}
+		finally {
+			TreeStyleTabUtils.applyOnlyForActiveWindow = false;
+		}
 	}
   
 }; 

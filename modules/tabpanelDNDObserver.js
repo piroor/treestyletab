@@ -122,7 +122,10 @@ TabpanelDNDObserver.prototype = {
 				let orient = (position == 'left' || position == 'right') ? 'vertical' : 'horizontal' ;
 				sv.setTreePref('tabbar.fixed.'+orient, false);
 			}
-			sv.utils.position = position;
+			sv.setPrefForActiveWindow(function() {
+				sv.utils.position = position;
+				sv.position = position;
+			});
 		}
 
 		aEvent.preventDefault();
