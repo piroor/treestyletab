@@ -1222,7 +1222,10 @@ TreeStyleTabBrowser.prototype = {
 						'{',
 						<![CDATA[{
 							var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;
-							if (treeStyleTab && arguments[1])
+							if (
+								treeStyleTab &&
+								(arguments.length == 1 || arguments[1])
+								)
 								return treeStyleTab.scrollToTab(arguments[0]);
 						]]>.toString()
 					)
