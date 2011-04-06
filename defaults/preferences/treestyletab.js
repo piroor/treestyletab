@@ -1,28 +1,87 @@
 pref("extensions.treestyletab.animation.enabled",           true);
+/**
+ * Duration of animations.
+ * DO NOT CHANGE THE PREFS ON FIREFOX 4 OR LATER, because actual duration of
+ * animations are defined in CSS. (CSS Transitions)
+ * These prefs are used by the JavaScript implementation.
+ */
 pref("extensions.treestyletab.animation.indent.duration",   200);
 pref("extensions.treestyletab.animation.collapse.duration", 150);
 
+/**
+ * Size of resizable tab bar. They are completely ignored if "Tabs on Top"
+ * is activated on Firefox 4 or later.
+ */
 pref("extensions.treestyletab.tabbar.width",           200);
 pref("extensions.treestyletab.tabbar.height",          32);
 pref("extensions.treestyletab.tabbar.shrunkenWidth",   80);
+/**
+ * Position of the tab bar, possible values are:
+ *  "top", "right", "bottom" or "left".
+ */
 pref("extensions.treestyletab.tabbar.position",        "left");
-pref("extensions.treestyletab.tabbar.position.subbrowser.enabled", false);
+/**
+ * Compatibility for multirow horizontal tab bar (provided by Tab Mix Plus or
+ * other addons). If true, tab bar can be multirow. Otherwise, multirow tab bar
+ * will be disabled by TST.
+ */
 pref("extensions.treestyletab.tabbar.multirow",        false);
+/**
+ * They invert appearance of tabs for the rightside vertical tab bar.
+ * "invertTab" inverts appearance of tree. Tabs will be indented from right.
+ * "invertTabContents" inverts the order of elements in each tab.
+ * "invertClosebox" moves only the closebox in each tab to leftmost position.
+ */
 pref("extensions.treestyletab.tabbar.invertTab",       true);
 pref("extensions.treestyletab.tabbar.invertTabContents", false);
 pref("extensions.treestyletab.tabbar.invertClosebox",  false);
+/**
+ * Smooth-scroll effect for the tab bar. You can change the duration.
+ */
 pref("extensions.treestyletab.tabbar.scroll.smooth",   true);
 pref("extensions.treestyletab.tabbar.scroll.duration", 250);
-// 0 = no scroll, 1 = scroll to new tab only when the current tab will not scrolled out, 2 = scroll to new tab always
+/**
+ * Policy for the auto-scrolling to new tabs opened on a position out of the
+ * viewport of the tab bbar.
+ *  0 = No scroll.
+ *  1 = Scroll to the tab only when the current tab will not scrolled out.
+ *  2 = Scroll to new tab always.
+ */
 pref("extensions.treestyletab.tabbar.scrollToNewTab.mode", 1);
+/**
+ * Scrollbar in the leftside vertical tab bar should be shown leftmost position
+ * instead of between tabs and the content area. This option works only for
+ * Firefox 4 or later.
+ */
 pref("extensions.treestyletab.tabbar.invertScrollbar", true);
+/**
+ * Scrollbar in vertical tab bar can be shown with narrow width.
+ * This option works only for vertical tab bar.
+ */
 pref("extensions.treestyletab.tabbar.narrowScrollbar", true);
 pref("extensions.treestyletab.tabbar.narrowScrollbar.size", "10px");
-// flat, mixed, vertigo
+/**
+ * The skin of the tab bar. Available styles are:
+ *  "default", "flat", "mixed", "vertigo", "metal" and "sidebar".
+ * To change the default style for each platform, use "platform.default.tabbar.style"
+ * instead of "tabbar.style" for the default preference. Users can set
+ * the selected skin directly via "tabbar.style".
+ */
 // pref("extensions.treestyletab.tabbar.style",      "mixed");
 pref("extensions.treestyletab.platform.default.tabbar.style", "mixed");
+pref("extensions.treestyletab.platform.Darwin.tabbar.style", "metal");
+pref("extensions.treestyletab.platform.Linux.tabbar.style", "plain");
+/**
+ * Background of the vertical tab bar can be cleared. On Windows + Aero Glass,
+ * Aero Glass will be applied for the vertical tab bar, if you set this to "true".
+ */
 pref("extensions.treestyletab.tabbar.style.aero", false);
-// 0 = disabled, 1 = hide, 2 = shrink
+/**
+ * AutoHide style for the vertical tab bar.
+ *  0 = Disabled. No autohide.
+ *  1 = Hide the tab bar completely.
+ *  2 = Shrink the tab bar to the width "tabbar.shrunkenWidth".
+ */
 pref("extensions.treestyletab.tabbar.autoHide.mode",                   0);
 pref("extensions.treestyletab.tabbar.autoHide.mode.fullscreen",        1);
 pref("extensions.treestyletab.tabbar.autoHide.mode.toggle",            2);
@@ -199,9 +258,7 @@ pref("extensions.treestyletab.compatibility.TotalToolbar", true);
 pref("extensions.treestyletab.compatibility.FirefoxSync", true);
 
 
-pref("extensions.treestyletab.platform.Darwin.tabbar.style", "metal");
 pref("extensions.treestyletab.platform.Darwin.indent.property.top", "margin-bottom");
-pref("extensions.treestyletab.platform.Linux.tabbar.style", "plain");
 
 
 pref("extensions.treestyletab.prefsVersion", 0);

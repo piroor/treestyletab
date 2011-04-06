@@ -2927,21 +2927,25 @@ TreeStyleTabBrowser.prototype = {
 	{
 		this.restoreStructure(aEvent.originalTarget);
 
-		/** Updating of the counter which is used to know how many tabs were
-		 *  restored in a time.
+		/**
+		 * Updating of the counter which is used to know how many tabs were
+		 * restored in a time.
 		 */
 		TreeStyleTabService.restoringCount++;
-		/** By nsSessionStore.js, the next "SSTabRestoring" event will be fined
-		 *  with "window.setTimeout()" following this "SSTabRestoring" event.
-		 *  So, we have to do "setTimeout()" twice.
+		/**
+		 * By nsSessionStore.js, the next "SSTabRestoring" event will be fined
+		 * with "window.setTimeout()" following this "SSTabRestoring" event.
+		 * So, we have to do "setTimeout()" twice.
 		 */
 		window.setTimeout(function() {
-			/** On this timing, the next "SSTabRestoring" is not fired yet.
-			 *  We only register the countdown task for the next event loop.
+			/**
+			 * On this timing, the next "SSTabRestoring" is not fired yet.
+			 * We only register the countdown task for the next event loop.
 			 */
 			TreeStyleTabService.Deferred.next(function() {
-				/** On this timing, the next "SSTabRestoring" was fired.
-				 *  Now we can decrement the counter.
+				/**
+				 * On this timing, the next "SSTabRestoring" was fired.
+				 * Now we can decrement the counter.
 				 */
 				TreeStyleTabService.restoringCount--;
 			});
@@ -4821,8 +4825,9 @@ TreeStyleTabBrowser.prototype = {
 			if (aTime >= aDuration) {
 				scrollBoxObject.scrollTo(aEndX, aEndY);
 
-				/** When there is any expanding tab, we have to retry to scroll.
-				 *  if the scroll box was expanded.
+				/**
+				 * When there is any expanding tab, we have to retry to scroll.
+				 * if the scroll box was expanded.
 				 */
 				let oldSize = self._getMaxScrollSize(scrollBoxObject);
 				window.setTimeout(function() {
