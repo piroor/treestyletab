@@ -232,7 +232,7 @@ tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-sc
 	max-width: 64000px !important;
 }
 
-@media all and (-moz-windows-compositor) {
+@media all and (-moz-windows-compositor) { /* for winstripe */
 	#navigator-toolbox[tabsontop="true"]
 	  > :-moz-any(.treestyletab-tabbar-toolbar:not(#toolbar-menubar),
 	              .treestyletab-tabbar-toolbar:not(#toolbar-menubar):-moz-lwtheme,
@@ -269,8 +269,23 @@ tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-sc
 		-moz-binding: url(treestyletab.xml#toolbar-drag);
 	}
 }
+@media not all and (-moz-windows-compositor) { /* for winstripe */
+	#TabsToolbar[tabsontop=true]:not(:-moz-lwtheme):-moz-system-metric(windows-default-theme),
+	#navigator-toolbox[tabsontop=false]
+	  > toolbar.treestyletab-tabbar-toolbar:not(#toolbar-menubar):not(:-moz-lwtheme):-moz-system-metric(windows-default-theme),
+	#navigator-toolbox[tabsontop=false]
+	  > toolbar.treestyletab-tabbar-toolbar-ready:not(#toolbar-menubar):not(:-moz-lwtheme):-moz-system-metric(windows-default-theme) {
+		-moz-binding: url(treestyletab.xml#toolbar-drag);
+	}
+}
 .treestyletab-tabbar-toolbar,
-.treestyletab-tabbar-toolbar-ready {
+.treestyletab-tabbar-toolbar-ready,
+/* for gnomestripe */
+#TabsToolbar.treestyletab-tabbar-toolbar[tabsontop="true"]:not(:-moz-lwtheme):-moz-system-metric(menubar-drag),
+#TabsToolbar.treestyletab-tabbar-toolbar-ready[tabsontop="true"]:not(:-moz-lwtheme):-moz-system-metric(menubar-drag),
+/* for pinstripe */
+toolbar.treestyletab-tabbar-toolbar:not([nowindowdrag="true"]),
+toolbar.treestyletab-tabbar-toolbar-ready:not([nowindowdrag="true"]) {
 	-moz-binding: url(treestyletab.xml#toolbar-drag);
 }
 #navigator-toolbox[tabsontop="false"]
