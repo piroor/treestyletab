@@ -86,7 +86,7 @@ TreeStyleTabBrowser.prototype = {
 	get tabTooltip() 
 	{
 		return document.getElementById('tabbrowser-tab-tooltip') || // Firefox 4.0-
-				this.evaluateXPath('descendant::xul:tooltip', this.browser.mStrip, XPathResult.FIRST_ORDERED_NODE_TYPE).singleNodeValue; // -Firefox 3.6
+				this.evaluateXPath('descendant::xul:tooltip', this.browser.mStrip, Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE).singleNodeValue; // -Firefox 3.6
 	},
   
 /* properties */ 
@@ -241,7 +241,7 @@ TreeStyleTabBrowser.prototype = {
 		return this.evaluateXPath(
 				'ancestor-or-self::xul:toolbar[1]',
 				this.mTabBrowser.tabContainer,
-				XPathResult.FIRST_ORDERED_NODE_TYPE
+				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
 	},
  
@@ -3388,7 +3388,7 @@ TreeStyleTabBrowser.prototype = {
 					(aDir < 0 ? 'last()' : '1' )+
 					']',
 					aTabbar,
-					XPathResult.FIRST_ORDERED_NODE_TYPE
+					Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 				).singleNodeValue;
 		}
 		if (nextTab && nextTab != aTabbar.selectedItem)
@@ -3638,7 +3638,7 @@ TreeStyleTabBrowser.prototype = {
 			let item = this.evaluateXPath(
 				'descendant::xul:*[starts-with(@id, "'+aID+'")]',
 				aEvent.currentTarget,
-				XPathResult.FIRST_ORDERED_NODE_TYPE
+				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
 			items[aID] = item;
 			if (this.getTreePref('show.'+aID))
@@ -3667,7 +3667,7 @@ TreeStyleTabBrowser.prototype = {
 			'descendant::xul:menuseparator[starts-with(@id, "'+this.kMENUITEM_COLLAPSEEXPAND_SEPARATOR+'")]',
 
 			aEvent.currentTarget,
-			XPathResult.FIRST_ORDERED_NODE_TYPE
+			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 		).singleNodeValue;
 		let collapseItem = items[this.kMENUITEM_COLLAPSE];
 		let expanndItem = items[this.kMENUITEM_EXPAND];
@@ -3737,7 +3737,7 @@ TreeStyleTabBrowser.prototype = {
 		sep = this.evaluateXPath(
 			'descendant::xul:menuseparator[starts-with(@id, "'+this.kMENUITEM_AUTOHIDE_SEPARATOR+'")]',
 			aEvent.currentTarget,
-			XPathResult.FIRST_ORDERED_NODE_TYPE
+			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 		).singleNodeValue;
 		if (autohide.getAttribute('hidden') != 'true' ||
 			fixed.getAttribute('hidden') != 'true') {
@@ -4836,7 +4836,7 @@ TreeStyleTabBrowser.prototype = {
 						self.evaluateXPath(
 							'child::xul:tab[@'+self.kCOLLAPSING_PHASE+'="'+self.kCOLLAPSING_PHASE_TO_BE_EXPANDED+'"]',
 							self.mTabBrowser.mTabContainer,
-							XPathResult.BOOLEAN_TYPE
+							Ci.nsIDOMXPathResult.BOOLEAN_TYPE
 						).booleanValue
 						)
 						self.smoothScrollTo(aEndX, aEndY, parseInt(aDuration * 0.5));

@@ -1315,9 +1315,7 @@ var TreeStyleTabService = {
 				'local-name() = "tooltip" or local-name() ="panel" or '+
 				'parent::*/ancestor-or-self::*[local-name()="popup" or local-name()="menupopup"]',
 				aPopup,
-				XPathResult.BOOLEAN_TYPE
-
-
+				Ci.nsIDOMXPathResult.BOOLEAN_TYPE
 			).booleanValue)
 			return;
 
