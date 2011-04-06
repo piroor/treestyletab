@@ -78,6 +78,7 @@
 .tabbrowser-strip[treestyletab-tabbar-autohide="hidden"]+splitter,
 .tabbrowser-strip[collapsed="true"] + splitter:not([state="collapsed"]),
 .treestyletab-tabbar-toggler,
+.treestyletab-tabbar-toolbar[treestyletab-tabbar-autohide="hidden"],
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-autohide="hidden"] > *,
 .treestyletab-tabbar-toolbar .treestyletab-splitter,
 #treestyletab-tabbar-resizer-box,
