@@ -1,3 +1,6 @@
+/**
+ * Activates animation effects for collapse/expand, indent/unindent.
+ */
 pref("extensions.treestyletab.animation.enabled",           true);
 /**
  * Duration of animations.
@@ -15,6 +18,7 @@ pref("extensions.treestyletab.animation.collapse.duration", 150);
 pref("extensions.treestyletab.tabbar.width",           200);
 pref("extensions.treestyletab.tabbar.height",          32);
 pref("extensions.treestyletab.tabbar.shrunkenWidth",   80);
+
 /**
  * Position of the tab bar, possible values are:
  *  "top", "right", "bottom" or "left".
@@ -26,6 +30,7 @@ pref("extensions.treestyletab.tabbar.position",        "left");
  * will be disabled by TST.
  */
 pref("extensions.treestyletab.tabbar.multirow",        false);
+
 /**
  * They invert appearance of tabs for the rightside vertical tab bar.
  * "invertTab" inverts appearance of tree. Tabs will be indented from right.
@@ -35,11 +40,13 @@ pref("extensions.treestyletab.tabbar.multirow",        false);
 pref("extensions.treestyletab.tabbar.invertTab",       true);
 pref("extensions.treestyletab.tabbar.invertTabContents", false);
 pref("extensions.treestyletab.tabbar.invertClosebox",  false);
+
 /**
  * Smooth-scroll effect for the tab bar. You can change the duration.
  */
 pref("extensions.treestyletab.tabbar.scroll.smooth",   true);
 pref("extensions.treestyletab.tabbar.scroll.duration", 250);
+
 /**
  * Policy for the auto-scrolling to new tabs opened on a position out of the
  * viewport of the tab bbar.
@@ -54,12 +61,14 @@ pref("extensions.treestyletab.tabbar.scrollToNewTab.mode", 1);
  * Firefox 4 or later.
  */
 pref("extensions.treestyletab.tabbar.invertScrollbar", true);
+
 /**
  * Scrollbar in vertical tab bar can be shown with narrow width.
  * This option works only for vertical tab bar.
  */
 pref("extensions.treestyletab.tabbar.narrowScrollbar", true);
 pref("extensions.treestyletab.tabbar.narrowScrollbar.size", "10px");
+
 /**
  * The skin of the tab bar. Available styles are:
  *  "default", "flat", "mixed", "vertigo", "metal" and "sidebar".
@@ -76,6 +85,7 @@ pref("extensions.treestyletab.platform.Linux.tabbar.style", "plain");
  * Aero Glass will be applied for the vertical tab bar, if you set this to "true".
  */
 pref("extensions.treestyletab.tabbar.style.aero", false);
+
 /**
  * AutoHide style for the vertical tab bar.
  *  0 = Disabled. No autohide.
@@ -83,33 +93,125 @@ pref("extensions.treestyletab.tabbar.style.aero", false);
  *  2 = Shrink the tab bar to the width "tabbar.shrunkenWidth".
  */
 pref("extensions.treestyletab.tabbar.autoHide.mode",                   0);
+/**
+ * AutoHide style for the vertical tab bar in the full screen mode (started by
+ * F11 key). Possible values are same to "tabbar.autoHide.mode".
+ */
 pref("extensions.treestyletab.tabbar.autoHide.mode.fullscreen",        1);
+/**
+ * "Auto Hide" checkbox item in the context menu on the tab bar can be toggled
+ * "checked" v.s. "unchecked". These prefs are used for "checked" in each mode.
+ *  Possible values are same to "tabbar.autoHide.mode".
+ */
 pref("extensions.treestyletab.tabbar.autoHide.mode.toggle",            2);
 pref("extensions.treestyletab.tabbar.autoHide.mode.toggle.fullscreen", 1);
+/**
+ * Triggers for the "Auto Hide" feature. They can be controlled via the
+ * configuration dialog.
+ */
 pref("extensions.treestyletab.tabbar.autoHide.delay",      50);
 pref("extensions.treestyletab.tabbar.autoHide.area",       7);
-pref("extensions.treestyletab.tabbar.autoHide.expandArea", false);
 pref("extensions.treestyletab.tabbar.autoShow.mousemove", true);
 pref("extensions.treestyletab.tabbar.autoShow.accelKeyDown", true);
 pref("extensions.treestyletab.tabbar.autoShow.accelKeyDown.delay", 800);
 pref("extensions.treestyletab.tabbar.autoShow.tabSwitch", true);
 pref("extensions.treestyletab.tabbar.autoShow.feedback", false);
 pref("extensions.treestyletab.tabbar.autoShow.feedback.delay", 3000);
+/**
+ * When the tab bar is automatically shown by keyboard shortcuts or other
+ * reasons, the tab bar will be hidden again automatically. If you set
+ * this pref to "true", TST cancels to hide the tab bar if the cursor is on the
+ * expanded tab bar, even if it is shown by other triggers not mousemove.
+ */
 pref("extensions.treestyletab.tabbar.autoShow.keepShownOnMouseover", true);
+/**
+ * Size of the placeholder for "hidden tab bar".
+ * When "tabbar.autoHide.mode"==1, the tab bar will be hidden completely.
+ * Then, if the contents area is completely covered by a plugin process
+ * (PDF, Flash, etc.), the tab bar never become visible by mousemove events.
+ * To avoid this problem, TST provides a thin placeholder for such cases.
+ * You can expand or shrink the splaceholder via this pref.
+ */
 pref("extensions.treestyletab.tabbar.togglerSize", 5);
-pref("extensions.treestyletab.tabbar.fixed.autoCancelOnDrop", true);
-pref("extensions.treestyletab.tabbar.fixed.insensitiveArea", 14);
+
+/**
+ * The "fixed" state of the tab bar. Fixed tab bar cannot be resized by
+ * dragging of the splitter, and cannot be moved by drag and drop on the bar.
+ * "Tabs on Top" can be activated for "top"-"fixed" tab bar.
+ */
 pref("extensions.treestyletab.tabbar.fixed.horizontal", true);
 pref("extensions.treestyletab.tabbar.fixed.vertical", false);
+/**
+ * The size of the "undraggable" area of the tab bar.
+ * You can change the position of the tab bar by drag and drop of the tab bar
+ * itself, however, you also can do dragging action on the splitter.
+ * As the result, you will unexpectedly start to drag the tab bar even when
+ * you wish to drag the splitter to resize the tab bar.
+ * To avoid this problem, TST ignores dragstart events fired near the splitter
+ * based on this pref.
+ */
+pref("extensions.treestyletab.tabbar.fixed.insensitiveArea", 14);
+
+/**
+ * You can change the position of the tab bar by drag and drop with Shift key,
+ * even if the tab bar is "fixed" by "tabbar.fixed.*". If this pref is "true",
+ * after you drop the tab bar on another position, the "fixed" state is cleared
+ * automatically. Otherwise the tab bar will be "fixed" again on the new place.
+ */
+pref("extensions.treestyletab.tabbar.fixed.autoCancelOnDrop", true);
+
+/**
+ * Activates indentation in the "List All Tabs" popup.
+ */
 pref("extensions.treestyletab.enableSubtreeIndent.allTabsPopup", true);
+
+/**
+ * These prefs activate "collaable tree" feature for horizontal and
+ * vertical tab bar.
+ */
 pref("extensions.treestyletab.allowSubtreeCollapseExpand.horizontal", false);
 pref("extensions.treestyletab.allowSubtreeCollapseExpand.vertical",   true);
+
+/**
+ * Activates "stacked tabs" in the horizontal tab bar.
+ * It is very hard to know how many tabs are collapsed in a horizontal tab bar.
+ * If "stacked tabs" is activated, collapsed tabs will be shown as a tab behind
+ * the top-level parent tab. In this mode, you can click to select a collapsed
+ * tab.
+ */
 pref("extensions.treestyletab.stackCollapsedTabs", true);
+
+/**
+ * Activates the border-topfor the first tab. With some theme, the tab bar is
+ * possibly shown without border-top. If this pref is "true", special CSS rules
+ * for border-top of the first tab will be applied.
+ */
 pref("extensions.treestyletab.showBorderForFirstTab",  false);
+
+/**
+ * Activates "auto-expand/collapse of tabs while dragging".
+ * When you're dragging something, a collapsed tree will be expanded
+ * automatically by staying on the tree for a while.
+ * If "autoExpand.delay" is 500, then the collapsed tree will be expanded by
+ * staying 0.5sec on the tree.
+ */
 pref("extensions.treestyletab.autoExpand.enabled",     true);
 pref("extensions.treestyletab.autoExpand.delay",       500);
+/**
+ * If you set this pref to "true", TST automatically collapses all other trees
+ * if a collapsed tree is expanded by staying dragging on the tree. So, as the
+ * result, there will be only one expanded tree while dragging.
+ * If this is "false", collapsed tree will be expanded without collapsing of
+ * other tree. So, they will be many "temporally expanded" tree.
+ */
 pref("extensions.treestyletab.autoExpand.intelligently", true);
+/**
+ * If you set this pref to "true", TST automatically collapses tree which are
+ * expanded by staying dragging on the tree after the dragging is finished.
+ * Otherwise, expanded tree will stay expanded.
+ */
 pref("extensions.treestyletab.autoExpand.collapseFinally", false);
+
 pref("extensions.treestyletab.maxTreeLevel.horizontal", 0);
 pref("extensions.treestyletab.maxTreeLevel.vertical",   999);
 pref("extensions.treestyletab.maxTreeLevel.phisical", false);
