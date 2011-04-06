@@ -1139,18 +1139,23 @@ var TreeStyleTabService = {
 		if (this.tabbarResizeStartWidth < 0)
 			return;
 
-		aEvent.stopPropagation();
-		if ('releaseCapture' in aEvent.currentTarget)
-			aEvent.currentTarget.releaseCapture();
+		var target = aEvent.currentTarget;
+		var b = this.getTabBrowserFromChild(target);
 
-		aEvent.currentTarget.removeEventListener('mousemove', this, false);
+		aEvent.stopPropagation();
+		if ('releaseCapture' in target)
+			target.releaseCapture();
+
+		target.removeEventListener('mousemove', this, false);
 
 		this.tabbarResizeStartWidth  = -1;
 		this.tabbarResizeStartHeight = -1;
 		this.tabbarResizeStartX = -1;
 		this.tabbarResizeStartY = -1;
 
-		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
+		this.Deferred.next(function() {
+			b.treeStyleTab.fixTooNarrowTabbar();
+		});
 	},
 	onTabbarResizing : function TSTService_onTabbarResizing(aEvent)
 	{

@@ -202,6 +202,8 @@ AutoHideBrowser.prototype = {
 		this.updateTransparency();
 
 		this.showHideInternal();
+
+		b.treeStyleTab.fixTooNarrowTabbar();
 	},
  
 	end : function AHB_end() 

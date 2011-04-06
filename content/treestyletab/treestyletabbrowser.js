@@ -387,6 +387,39 @@ TreeStyleTabBrowser.prototype = {
 				}
 		);
 	},
+ 
+	fixTooNarrowTabbar : function TSTBrowser_fixTooNarrowTabbar()
+	{
+		if (!this.isFloating) return;
+		/**
+		 * The tab bar can become smaller than the actual size of the
+		 * floating tab bar, and then, we cannot resize tab bar by
+		 * dragging anymore. To avoid this problem, we have to enlarge
+		 * the tab bar larger than the floating tab bar.
+		 */
+		if (this.isVertical) {
+			let key = this.autoHide.expanded ?
+						'tabbar.width' : 'tabbar.shrunkenWidth' ;
+			let width = this.getTreePref(key);
+			let minWidth = this.scrollBox.boxObject.width
+			if (minWidth > width) {
+				this.setPrefForActiveWindow(function() {
+					this.setTreePref(key, minWidth);
+					this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_PREF_CHANGE);
+				});
+			}
+		}
+		else {
+			let height = this.getTreePref('tabbar.height');
+			let minHeight = this.scrollBox.boxObject.height
+			if (minHeight > height) {
+				this.setPrefForActiveWindow(function() {
+					this.setTreePref('tabbar.height', minHeight);
+					this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_PREF_CHANGE);
+				});
+			}
+		}
+	},
   
 /* initialize */ 
 	
@@ -460,6 +493,7 @@ TreeStyleTabBrowser.prototype = {
 		this.autoHide;
 
 		this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_INITIALIZE);
+		this.fixTooNarrowTabbar();
 
 		this.fireTabbarPositionEvent(false, 'top', position); /* PUBLIC API */
 
