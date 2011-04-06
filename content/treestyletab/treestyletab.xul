@@ -15,7 +15,6 @@
 <script type="application/javascript"><![CDATA[
 	window.addEventListener('DOMContentLoaded', TreeStyleTabService, true);
 	window.addEventListener('load', TreeStyleTabService, false);
-	TreeStyleTabService.ObserverService.addObserver(TreeStyleTabService, 'sessionstore-windows-restored', false);
 ]]></script>
 <script src="treestyletabbrowser.js" type="application/javascript"/>
 

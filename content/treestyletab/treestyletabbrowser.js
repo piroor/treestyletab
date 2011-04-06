@@ -2433,16 +2433,6 @@ TreeStyleTabBrowser.prototype = {
 			this.setTabValue(next, this.kINSERT_AFTER, tab.getAttribute(this.kID));
 		}
 
-		if (!TreeStyleTabService.restoringTree &&
-			!this.useTMPSessionAPI &&
-			!this._checkRestoringWindowTimerOnTabAdded) {
-			this._checkRestoringWindowTimerOnTabAdded = window.setTimeout(function(aSelf) {
-				aSelf._checkRestoringWindowTimerOnTabAdded = null;
-				if (aSelf.getRestoringTabsCount() > 1)
-					TreeStyleTabService.restoringTree = true;
-			}, 0, this);
-		}
-
 		if (this.scrollToNewTabMode > 0)
 			this.scrollToTab(tab, this.scrollToNewTabMode < 2);
 
@@ -2937,6 +2927,26 @@ TreeStyleTabBrowser.prototype = {
 	{
 		this.restoreStructure(aEvent.originalTarget);
 
+		/** Updating of the counter which is used to know how many tabs were
+		 *  restored in a time.
+		 */
+		TreeStyleTabService.restoringCount++;
+		/** By nsSessionStore.js, the next "SSTabRestoring" event will be fined
+		 *  with "window.setTimeout()" following this "SSTabRestoring" event.
+		 *  So, we have to do "setTimeout()" twice.
+		 */
+		window.setTimeout(function() {
+			/** On this timing, the next "SSTabRestoring" is not fired yet.
+			 *  We only register the countdown task for the next event loop.
+			 */
+			TreeStyleTabService.Deferred.next(function() {
+				/** On this timing, the next "SSTabRestoring" was fired.
+				 *  Now we can decrement the counter.
+				 */
+				TreeStyleTabService.restoringCount--;
+			});
+		}, 0);
+
 		if (!aEvent.originalTarget.selected &&
 			this.mTabBrowser.currentURI.spec == 'about:sessionrestore') {
 			let frame = this.mTabBrowser.contentWindow;
@@ -2958,55 +2968,6 @@ TreeStyleTabBrowser.prototype = {
 	RESTORED_TREE_COLLAPSED_STATE_EXPANDED   : 1,
 	restoreStructure : function TSTBrowser_restoreStructure(aTab) 
 	{
-		/*
-			ウィンドウの復元では以下の順に処理が走る。
-
-				nsSessionStore::restoreWindow()
-				nsSessionStore::restoreHistoryPrecursor()
-				<タブの復元開始>
-				nsSessionStore::restoreHistory() // 現在のタブの復元
-				(SSTabRestoring DOMEvent fired)
-				(sessionstore-windows-restored nsIObserver notification)
-				nsSessionStore::restoreHistory() // 0番目のタブの復元
-				(SSTabRestoring DOMEvent fired)
-				...
-				nsSessionStore::restoreHistory() // 最後のタブの復元
-				(SSTabRestoring DOMEvent fired)
-				<タブの復元終了>
-				nsSessionStore::restoreDocument_proxy() // 最初のタブの復元完了
-				(SSTabRestored DOMEvent fired)
-				...
-				nsSessionStore::restoreDocument_proxy() // 最後のタブの復元完了
-				(SSTabRestored DOMEvent fired)
-				<タブの復元完了>
-
-			この時、nsSessionStore::restoreHistoryPrecursor() 内で
-			nsSessionStore::restoreHistory() が呼ばれるより前に、
-			これから復元するすべてのタブについて
-			tab.linkedBrowser.__SS_data._tabStillLoading (Firefox 3.6-)
-			または
-			tab.linkedBrowser.parentNode.__SS_data._tabStillLoading (-Firefox 3.5)
-			がtrueにセットされる。
-			そのタブの読み込みが完了した時、
-			tab.linkedBrowser.__SS_data (Firefox 3.6-)
-			または
-			tab.linkedBrowser.parentNode.__SS_data (-Firefox 3.5)
-			はdeleteされる。
-
-			以上のことから、sessionstore-windows-restored が通知された段階で
-			_tabStillLoadingがtrueであるタブがウィンドウ内に2個以上存在して
-			いれば、それは、そのウィンドウが復元中であることを示す証拠となる。
-			よって、restoringTree を true に設定する。
-
-			restoringTree が true である場合は、SSTabRestored が発行される度に
-			_tabStillLoadingがtrueであるタブの数を確認し、数が1以下であれば
-			restoringTree を false にする。
-
-			restoringTree は、次の sessionstore-windows-restored が通知される
-			までは true になることはない。そのため、手動で連続してタブを複数
-			復元したとしても、それがウィンドウ復元中のタブの復元と誤認される
-			心配はない。
-		*/
 		var restoringMultipleTabs = TreeStyleTabService.restoringTree;
 
 		var tab = aTab;
@@ -3301,10 +3262,6 @@ TreeStyleTabBrowser.prototype = {
 	onTabRestored : function TSTBrowser_onTabRestored(aEvent) 
 	{
 		delete aEvent.originalTarget.__treestyletab__restoredByUndoCloseTab;
-
-		// update the status for the next restoring
-		if (!this.useTMPSessionAPI && TreeStyleTabService.restoringTree)
-			TreeStyleTabService.restoringTree = TreeStyleTabService.getRestoringTabsCount() > 0;
 	},
  
 	onPinTab : function TSTBrowser_onPinTab(aTab) 

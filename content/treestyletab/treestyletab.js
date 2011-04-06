@@ -874,7 +874,6 @@ var TreeStyleTabService = {
 			window.removeEventListener('UIOperationHistoryRedo:TabbarOperations', this, false);
 
 			this.removePrefListener(this);
-			this.ObserverService.removeObserver(this, 'sessionstore-windows-restored');
 		}
 		catch(e) {
 			throw e;
@@ -1788,28 +1787,12 @@ var TreeStyleTabService = {
 			case 'nsPref:changed':
 				this.onPrefChange(aData);
 				return;
-
-			case 'sessionstore-windows-restored':
-				if (!this.useTMPSessionAPI)
-					this.restoringTree = this.getRestoringTabsCount() > 1;
-				return;
 		}
 	},
-	restoringTree : false,
-	getRestoringTabsCount : function TSTService_getRestoringTabsCount()
-	{
-		return this.getAllTabsArray(this.browser)
-				.filter(function(aTab) {
-					var owner = aTab.linkedBrowser;
-					var data = owner.__SS_data || // Firefox 3.6-
-								owner.parentNode.__SS_data; // -Firefox 3.5
-					return (
-						data &&
-						data._tabStillLoading &&
-						!aTab.hasAttribute('ontap') // if BarTab is installed, to-be-restored tab possibly has the value unexpectedly.
-						);
-				}).length;
+	get restoringTree() {
+		return this.restoringCount > 0;
 	},
+	restoringCount : 0,
  
 /* Pref Listener */ 
 	
