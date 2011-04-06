@@ -1209,6 +1209,26 @@ TreeStyleTabBrowser.prototype = {
 				)
 			);
 		}
+
+		/**
+		 * The default implementation fails to scroll to tab if it is expanding.
+		 * So we have to inject codes to override its effect.
+		 */
+		let (scrollbox = this.scrollBox) {
+			let source = scrollbox.ensureElementIsVisible.toSource();
+			if (source.indexOf('treeStyleTab') < 0) {
+				eval('scrollbox.ensureElementIsVisible = '+
+					source.replace(
+						'{',
+						<![CDATA[{
+							var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;
+							if (treeStyleTab && arguments[1])
+								return treeStyleTab.scrollToTab(arguments[0]);
+						]]>.toString()
+					)
+				);
+			}
+		}
 	},
  
 	_ensureNewSplitter : function TSTBrowser__ensureNewSplitter() 
