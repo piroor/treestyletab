@@ -75,7 +75,8 @@ TabpanelDNDObserver.prototype = {
 		return !!(
 				session &&
 				session.isDataFlavorSupported(this.treeStyleTab.kDRAG_TYPE_TABBAR) &&
-				session.sourceNode
+				session.sourceNode &&
+				session.sourceNode.ownerDocument == this.document
 			);
 	},
  
