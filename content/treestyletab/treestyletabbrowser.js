@@ -3385,8 +3385,8 @@ TreeStyleTabBrowser.prototype = {
  
 	onUnpinTab : function TSTBrowser_onUnpinTab(aTab) 
 	{
-		aTab.style.marginLeft = '';
-		aTab.style.marginTop = '';
+		var style = aTab.style;
+		style.marginLeft = style.marginRight = style.marginTop = '';
 
 		this.updateInvertedTabContentsOrder(aTab);
 		if (this.isVertical) this.positionPinnedTabsWithDelay();
