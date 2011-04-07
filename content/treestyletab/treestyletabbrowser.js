@@ -329,13 +329,28 @@ TreeStyleTabBrowser.prototype = {
 		var maxRow = Math.ceil(count / maxCol);
 		var col    = 0;
 		var row    = 0;
+		var inverted = b.getAttribute(this.kINVERT_SCROLLBAR) == 'true';
+		var remainder = maxWidth - (maxCol * width);
 		tabbar.style.MozMarginStart = '';
 		tabbar.style.setProperty('margin-top', (height * maxRow)+'px', 'important');
 		for (let i = 0; i < count; i++)
 		{
 			let style = tabbar.childNodes[i].style;
 			style.MozMarginStart = '';
-			style.setProperty('margin-left', (width * col)+'px', 'important');
+			if (inverted) {
+				/**
+				 * In a box with "direction: rtr", we have to position tabs
+				 * by margin-right, because the basic position becomes
+				 * "top-right" instead of "top-left".
+				 */
+				let margin = (width * (maxCol - col - 1)) + remainder;
+				style.setProperty('margin-right', margin+'px', 'important');
+				style.marginLeft = '';
+			}
+			else {
+				style.setProperty('margin-left', (width * col)+'px', 'important');
+				style.marginRight = '';
+			}
 			style.setProperty('margin-top', (- height * (maxRow - row))+'px', 'important');
 			style.top = style.right = style.bottom = style.left = '';
 			col++;
@@ -369,7 +384,7 @@ TreeStyleTabBrowser.prototype = {
 		for (var i = 0, count = this.pinnedTabsCount; i < count; i++)
 		{
 			let style = tabbar.childNodes[i].style;
-			style.MozMarginStart = style.marginLeft = style.marginTop = '';
+			style.MozMarginStart = style.marginLeft = style.marginRight = style.marginTop = '';
 		}
 	},
  
@@ -2116,7 +2131,10 @@ TreeStyleTabBrowser.prototype = {
 				return;
 
 			case 'extensions.treestyletab.tabbar.invertScrollbar':
-				return this.setTabbrowserAttribute(this.kINVERT_SCROLLBAR, value);
+				this.setTabbrowserAttribute(this.kINVERT_SCROLLBAR, value);
+				this.positionPinnedTabs();
+				return;
+
 			case 'extensions.treestyletab.tabbar.narrowScrollbar':
 				return this.setTabbrowserAttribute(this.kNARROW_SCROLLBAR, value);
 
