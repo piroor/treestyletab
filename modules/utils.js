@@ -591,7 +591,7 @@ var TreeStyleTabUtils = {
 		return behavior;
 	},
 	kBOOKMARK_DROPPED_TABS_ASK         : 0,
-	kBOOKMARK_DROPPED_TABS_FIXED       : 1 + 2,
+	kBOOKMARK_DROPPED_TABS_FIXED       : 1 | 2,
 	kBOOKMARK_DROPPED_TABS_ALL         : 1,
 	kBOOKMARK_DROPPED_TABS_ONLY_PARENT : 2,
  

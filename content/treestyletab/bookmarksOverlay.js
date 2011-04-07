@@ -406,8 +406,15 @@ var TreeStyleTabBookmarksService = {
 	_onTabsDrop : function TSTBMService_onTabsDrop(aEvent)
 	{
 		var groups = this.splitTabsToSubtrees(aEvent.tabs || []);
-		if (groups.length == 1 &&
-			this.bookmarkDroppedTabsBehavior() != this.kBOOKMARK_DROPPED_TABS_ALL) {
+		if (
+			groups.length == 1 &&
+			(
+				this.bookmarkDroppedTabsBehavior() != this.kBOOKMARK_DROPPED_TABS_ALL ||
+				Array.some(aEvent.tabs, function(aTab) {
+					return aTab.getAttribute('multiselected') == 'true';
+				})
+			)
+			) {
 			aEvent.preventDefault();
 			aEvent.stopPropagation();
 		}
