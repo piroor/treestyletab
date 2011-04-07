@@ -321,68 +321,199 @@ pref("extensions.treestyletab.show.context-item-toggleAutoHide", true);
 pref("extensions.treestyletab.show.context-item-toggleFixed", true);
 pref("extensions.treestyletab.show.context-item-bookmarkTabSubtree", true);
 
-// 0 = always ask, 1 = load into the tab, 2 = open new child tab
+/**
+ * How to treat a dropped link on a tab.
+ *  0 = Always ask how to open the link.
+ *  1 = Load the link into the tab.
+ *  2 = Open the link as a new child tab of the tab.
+ */
 pref("extensions.treestyletab.dropLinksOnTab.behavior", 0);
-// value = Basic | Structure | Collapse/expand
-//   Basic behavior:
-//     0 = always ask
-//     1 = tree
-//     2 = separate
-//     4 = replace
-//   Structure:
-//     256  = use dummy tab (for subtree)
-//     1024 = use dummy tab, only if there is any orphan
-//     512  = do not restore tree structure
-//   Collapse/expand:
-//     2048 = expand all tree
+/**
+ * How to treat new tabs opened from a bookmark group.
+ * The value is an union of following flags:
+ *  Basic flags:
+ *   0 = Always ask how to open tabs.
+ *   1 = Open tabs as a new tree.
+ *   2 = Open tabs as a normal tabs (not tree).
+ *   4 = Replace all existing tabs.
+ *  Structure flags:
+ *   256  = Restore tree structure based on information stored in the Places DB,
+ *          and use a dummy tab as the parent, only if there is any orphan.
+ *          (When a bookmark has no tree information, it will be opened as an
+ *          orphan tab - top-level and with no child.)
+ *   1024 = Restore tree structure based on information stored in the Places DB,
+ *          and use a dummy tab as the parent always.
+ *   512  = Ignore tree structure stored in the Places DB.
+ *  State flags:
+ *   2048        = Expand all tree.
+ *   (otherwise) = Collapse all tree.
+ *
+ * Examples:
+ *  1 | 256 | 2048 = Open as a new tree, restore tree structure, and expand.
+ *  1 | 512        = Open as a new tree, as a flat group.
+ */
 pref("extensions.treestyletab.openGroupBookmark.behavior", 2304); /* 0 | 256 | 2048 */
-// 0 = always ask, 1 = bookmark all, 2 = bookmark only the parent tab
+/**
+ * How to treat tabs dropped to the Bookmarks menu or Bookmarks toolbar.
+ *  0 = Always ask how bookmark the tree.
+ *  1 = Bookmark all tabs in the tree of the dragged tab.
+ *  2 = Bookmark only the parent tab you dragged.
+ */
 pref("extensions.treestyletab.bookmarkDroppedTabs.behavior", 0);
+
+/**
+ * On Windows, "AeroPeak" can show all of tabs from the task bar. If this is
+ * "true", only visible tabs will be shown in the AeroPeak list. Otherwise
+ * you'll see all of tabs including collapsed ones.
+ */
 pref("extensions.treestyletab.taskbarPreviews.hideCollapsedTabs", true);
 
+/**
+ * If this is "true", TST expands the focused tree when it is collapsed, and
+ * collapses all other trees automatically. This doesn't affect for cases from
+ * twisties in tabs.
+ * If this is "false" trees never be expanded/collapsed automatically, so
+ * you'll have to click twisties in tabs always to collapse/expand them.
+ */
 pref("extensions.treestyletab.autoCollapseExpandSubtreeOnSelect",      true);
+/**
+ * When you close a tab and Firefox focuses to the nearest tab, the focus
+ * changing possibly causes collapsing/expanding of trees. If you set this
+ * to "false", TST ignores focus changings caused by removing of the current
+ * tab.
+ */
 pref("extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove", true);
+/**
+ * When you press Ctrl-Tab/Shift-Ctrl-Tab, Firefox advances focus of tabs.
+ * If this is "true", TST doesn't collapse/expand trees while you are switching
+ * tab focus by those keyboard shortcuts. And then, after you release the Ctrl
+ * key, TST will expand the tree if the newly selected tab have its collapsed
+ * tree.
+ * If this is "false", TST dynamiclaly collapses/expands focused tree even if
+ * you are browsing tabs by those shortcuts.
+ */
 pref("extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut", false);
+/**
+ * If this is "true", TST expands/collapses tree by double-clicking on tabs.
+ * Otherwise TST simply ignores such actions.
+ */
 pref("extensions.treestyletab.collapseExpandSubtree.dblclick",         false);
-// -1 = restore last state, 0 = always collapse, 1 = always expand
+/**
+ * Collapsed state of restored tree.
+ *  -1 = Restore the last state.
+ *  0  = Collapse all restored tree.
+ *  1  = Expand all restored tree.
+ */
 pref("extensions.treestyletab.collapseExpandSubtree.sessionRestore", -1);
+/**
+ * When a collapsed tab is focused, if this is "true", TST expands the tree
+ * automatically. If this is "false", TST prevents to focus to a collapsed tab,
+ * and re-focuses to the parent tab automatically.
+ */
 pref("extensions.treestyletab.autoExpandSubtreeOnCollapsedChildFocused", true);
+/**
+ * When a tab is newly attached to an existing collapsed tree, if this is
+ * "true", TST expands the tree automatically. Otherwise TST simply attaches
+ * the tab into the collapsed tree.
+ */
 pref("extensions.treestyletab.autoExpandSubtreeOnAppendChild",         true);
+
+/**
+ * This controlls readyToOpenChildTab() and other APIs to open new child tabs.
+ * If this is "true", new tabs opened after the API readyToOpenChildTab() is
+ * called, they become children of the specified parent tab or the current tab.
+ * If this is "false", tabs are not attached automatically, so you have to
+ * manage tree of tabs by your hand. "true" IS STRONGLY RECOMMENDED.
+ */
 pref("extensions.treestyletab.autoAttach", true);
-// 0 = don't attach
-// 1 = attach if the search term equals to the selection in the current tab
-// 2 = always attach
+/**
+ * How to treat new tabs from the Web search bar.
+ *  0 = Do nothing for new tabs for search results.
+ *  1 = Open the search result tab as a child of the current tab, only if the
+ *      search term equals to the selection in the current tab.
+ *      In other words, if you do select => copy => search, then the result
+ *      will be grouped to the current tab automatically.
+ *  2 = Open any search result tab as a child of the current tab.
+ * NOTE: This pref doesn't open new tabs from the Web search bar. You have to
+ *       use Alt-Enter, middle click, or "browser.search.openintab" to open
+ *       the search result as a new tab.
+ */
 pref("extensions.treestyletab.autoAttach.searchResult", 1);
-// 0 = don't attach (open as an independent tab)
-// 1 = attach to the current tab (open as a child)
-// 2 = attach to the parent of the current tab (open as a sibling)
+/**
+ * How to treat new tabs from Ctrl-T.
+ *  0 = Open as an independent tab.
+ *  1 = Open as a child tab of the current tab.
+ *  2 = Open as a sibling tab of the current tab.
+ */
 pref("extensions.treestyletab.autoAttach.newTabCommand", 0);
-// 0 = default, 1 = only visible tabs
+
+/**
+ * Focus targets for Ctrl-Tab/Ctrl-Shift-Tab.
+ *  0 = Focus to both visible and collapsed tabs. (If a collapsed tab is
+ *      focused, the tree will be expanded by another pref "autoExpandSubtreeOnCollapsedChildFocused".
+ *  1 = Focus to visible tabs. Collapsed tabs will be skipped. (But if the tree 
+ *      is expanded by "autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut",
+ *      visible tabs in the tree can be focused.)
+ */
 pref("extensions.treestyletab.focusMode", 1);
-/*
-  3 = promote only the first child tab as the parent level
-  0 = promote all children as the parent level
-  1 = detach all children
-  2 = close all children too
-*/
+
+/**
+ * How to treat children of a closed parent tab.
+ *  3 = Promote the first child tab to the new parent.
+ *  0 = Promote all children to the parent level.
+ *  1 = Detach all children from the tree.
+ *  2 = Close all children too.
+ */
 pref("extensions.treestyletab.closeParentBehavior", 3);
+/**
+ * How to treat detached tabs by "closeParentBehavior" == 1. If this is "true",
+ * detached tabs are moved to the bottom of the tab bar. If "false", tabs are
+ * moved to the position next to the tree. For example:
+ *  +[A]
+ *   +[A-1]
+ *    +[A-1-1]
+ *   +[A-2]
+ *    +[A-2-1]
+ *    +[A-2-2]
+ *  +[B]
+ * When the tab [A-1] is closed, [A-1-1] is moved to the position next to [B]
+ * if this is "true". Otherwise the new position is between [A-2-2] and [B].
+ */
 pref("extensions.treestyletab.closeParentBehavior.moveDetachedTabsToBottom", false);
-/*
-  3 = promote only the first child tab as the root level
-  1 = promote all children as new roots (=detach all children)
-  Note: this affects only when closeParentBehavior == 0
-*/
+/**
+ * How to treat children of a closed root tab (which has no parent).
+ *  3 = Promote the first child tab to the new root.
+ *  1 = Detach all children from the tree. Children become new root tabs.
+ * NOTE: This affects only when "closeParentBehavior" == 0.
+ */
 pref("extensions.treestyletab.closeRootBehavior", 3);
-pref("extensions.treestyletab.createSubtree.underParent", true);
-/*
-  0   = do nothing.
-  1   = always ask.
-  2   = reopen all tabs of the tree if a member of tree is reopened.
-  256 = don't reopen tree if some tabs are overflowed and lost from the history.
-*/
+
+/**
+ * How to treat restored tab by "Undo Close Tab", if the tab was a member of
+ * a closed tree.
+ *  1   = Always ask how to treat it.
+ *  0   = Don't restore other tabs.
+ *  2   = Restore all other tabs of the closed tree, even if some tabs cannot
+ *        be restored. (because out of "undo close tabs" history, etc.)
+ *  256 = Restore all other tabs of the closed tree, only if all of members
+ *        of the tree is in the "undo close tabs" history.
+ */
 pref("extensions.treestyletab.undoCloseTabSet.behavior", 3);
 
-pref("extensions.treestyletab.autoRepositionStatusPanel", true);
+/**
+ * On Firefox 4 or later, status panel possibly covers the tab bar. If "true",
+ * TST repositions (and resizes) the status panel automatically.
+ * For compatibility, you can set this to "false". Then TST doesn't controll
+ * the status panel.
+ */
+pref("extensions.treestyletab.repositionStatusPanel", true);
+
+/**
+ * EXPERIMENTAL, DON'T SET THIS "true" !!
+ * If this is "true", TST restores tree structure before SSTabRestoring events
+ * are fired. Otherwise TST restores tree structure based by SSTabRestoring
+ * events.
+ */
 pref("extensions.treestyletab.restoreTreeOnStartup", false);
 
 /**
@@ -395,10 +526,16 @@ pref("browser.tabs.insertRelatedAfterCurrent.override", false);
 pref("browser.tabs.insertRelatedAfterCurrent.override.force", true);
 
 /**
- * 
+ * Extra commands for selected tabs (Multiple Tab Handler)
  */
 pref("extensions.multipletab.show.multipletab-selection-item-removeTabSubtree", true);
 pref("extensions.multipletab.show.multipletab-selection-item-createSubtree", true);
+/**
+ * How to create a new tree from selected tabs. If "true", a new dummy tab is
+ * automatically opened and selected tabs become children of the tab. Otherwise
+ * the first selected tab becomes the parent.
+ */
+pref("extensions.treestyletab.createSubtree.underParent", true);
 
 /**
  * Compatibility hack flags for other addons. They can be disabled by each

@@ -1505,8 +1505,10 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		var strip = this.tabStrip;
+		var stripStyle = strip.style;
 		var tabContainerBox = this.getTabContainerBox(this.mTabBrowser);
 		var statusPanel = document.getElementById('statusbar-display');
+		var statusPanelStyle = statusPanel ? statusPanel.style : null ;
 		var pos = this.position;
 		if (pos != 'top' ||
 			this.mTabBrowser.getAttribute(this.kFIXED) != 'true') {
@@ -1536,11 +1538,11 @@ TreeStyleTabBrowser.prototype = {
 			let xOffset = pos == 'right' ? width - realWidth : 0 ;
 			let yOffset = pos == 'bottom' ? height - realHeight : 0 ;
 
-			strip.style.top = (box.screenY - root.screenY + root.y - yOffset)+'px';
-			strip.style.left = (box.screenX - root.screenX + root.x - xOffset)+'px';
+			stripStyle.top = (box.screenY - root.screenY + root.y - yOffset)+'px';
+			stripStyle.left = (box.screenX - root.screenX + root.x - xOffset)+'px';
 
-			strip.style.width = (tabContainerBox.width = width)+'px';
-			strip.style.height = (tabContainerBox.height = height)+'px';
+			stripStyle.width = (tabContainerBox.width = width)+'px';
+			stripStyle.height = (tabContainerBox.height = height)+'px';
 
 			this._updateFloatingTabbarResizer({
 				width      : width,
@@ -1551,23 +1553,38 @@ TreeStyleTabBrowser.prototype = {
 
 			tabContainerBox.collapsed = (this.splitter && this.splitter.getAttribute('state') == 'collapsed');
 
-			if (statusPanel) {
-				statusPanel.style.marginTop = (pos == 'bottom') ?
+			if (statusPanel && this.getTreePref('repositionStatusPanel')) {
+				statusPanelStyle.marginTop = (pos == 'bottom') ?
 					'-moz-calc(0px - ' + height + 'px - 3em)' :
 					'' ;
+				statusPanelStyle.marginLeft = (pos == 'left') ?
+					width+'px' :
+					'' ;
+				statusPanelStyle.marginRight = (pos == 'right') ?
+					width+'px' :
+					'' ;
+				statusPanelStyle.maxWidth = this.isVertical ?
+					parseInt(this.mTabBrowser.mPanelContainer.boxObject.width / 2)+'px' :
+					'' ;
+				statusPanel.__treestyletab__repositioned = true;
 			}
 
 			this.mTabBrowser.tabContainer.setAttribute('context', this.mTabBrowser.tabContextMenu.id);
 		}
 		else {
 			tabContainerBox.collapsed = false;
-			strip.style.top = '';
-			strip.style.left = '';
-			strip.style.width = '';
-			strip.style.height = '';
+			stripStyle.top = stripStyle.left = stripStyle.width = stripStyle.height = '';
 
-			if (statusPanel) {
-				statusPanel.style.marginTop = '';
+			if (
+				statusPanel &&
+				(
+					this.getTreePref('repositionStatusPanel') ||
+					statusPanel.__treestyletab__repositioned
+				)
+				) {
+				statusPanelStyle.marginTop = statusPanelStyle.marginLeft =
+					statusPanelStyle.marginRight = statusPanelStyle.maxWidth = '';
+				statusPanel.__treestyletab__repositioned = false;
 			}
 
 			strip.removeAttribute('layer'); // https://bugzilla.mozilla.org/show_bug.cgi?id=590468
