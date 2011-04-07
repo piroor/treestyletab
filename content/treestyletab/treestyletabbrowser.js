@@ -3372,7 +3372,13 @@ TreeStyleTabBrowser.prototype = {
 				function(aChildTab) {
 					this.attachTabTo(aChildTab, parentTab, {
 						dontExpand : true,
-						dontMove   : true
+						/**
+						 * Children of the newly pinned tab are possibly
+						 * moved to the top of the tab bar, by TabMove event
+						 * from the newly pinned tab. So, we have to
+						 * reposition unexpectedly moved children.
+						 */
+						dontMove   : aChildTab._tPos > parentTab._tPos
 					});
 				} :
 				this.partTab,
@@ -4045,6 +4051,11 @@ TreeStyleTabBrowser.prototype = {
 			let descendant = this.getDescendantTabs(aParent);
 			if (descendant.length) {
 				let lastDescendant = descendant[descendant.length-1];
+				/**
+				 * The last descendant tab can be temporarilly moved
+				 * upper than the root parent tab, in some cases.
+				 * (the parent tab is pinned, etc.)
+				 */
 				if (!refTab || lastDescendant._tPos > refTab._tPos)
 					refTab = lastDescendant;
 			}
