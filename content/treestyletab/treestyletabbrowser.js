@@ -4043,7 +4043,11 @@ TreeStyleTabBrowser.prototype = {
 			}
 			let refTab = aParent;
 			let descendant = this.getDescendantTabs(aParent);
-			if (descendant.length) refTab = descendant[descendant.length-1];
+			if (descendant.length) {
+				let lastDescendant = descendant[descendant.length-1];
+				if (!refTab || lastDescendant._tPos > refTab._tPos)
+					refTab = lastDescendant;
+			}
 			newIndex = refTab._tPos+1;
 		}
 
