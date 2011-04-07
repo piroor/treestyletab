@@ -212,28 +212,104 @@ pref("extensions.treestyletab.autoExpand.intelligently", true);
  */
 pref("extensions.treestyletab.autoExpand.collapseFinally", false);
 
+/**
+ * Maximum level of tree nestings, for horizontal and vertical tab bar.
+ * -1 (or any negative value) means "infinity".
+ */
 pref("extensions.treestyletab.maxTreeLevel.horizontal", 0);
 pref("extensions.treestyletab.maxTreeLevel.vertical",   999);
+/**
+ * When there are too deep tree, TST disables indentation (and collapsing)
+ * for tabs deeper than "maxTreeLevel.horizontal/vertical", but it is just
+ * cosmetic. TST never re-attach such tabs actually. So, if you enlarge
+ * maxTreeLevel prefs enough to show all levels, then TST re-activates
+ * indentations for those tabs.
+ * This pref can override the behavior described above. If you set this to
+ * "true", TST actually re-attach "too deep" tabs to upper level automatically.
+ * So, even if you enlarge "maxTreeLevel" prefs, you won't see tabs with new
+ * indentation.
+ */
 pref("extensions.treestyletab.maxTreeLevel.phisical", false);
+
+/**
+ * Indentation size for one tree level, in pixels. 
+ * Tabs will have flexible indent from "indent.min" to "indent". TST
+ * dynamically changes indent of tabs, to avoid hidden tabs caused by too large
+ * indent.
+ * If you set "indent.autoShrink" to "false", TST doesn't change indent of tabs
+ * automatically. On the mode, indent of tabs are always fixed.
+ */
 pref("extensions.treestyletab.indent",          12);
 pref("extensions.treestyletab.indent.min",      3);
-pref("extensions.treestyletab.indent.property", "margin");
 pref("extensions.treestyletab.indent.autoShrink", true);
-// pref("extensions.treestyletab.indent.property.top", "");
-// pref("extensions.treestyletab.indent.property.right", "");
-// pref("extensions.treestyletab.indent.property.bottom", "");
-// pref("extensions.treestyletab.indent.property.left", "");
+/**
+ * CSS property to apply indent of tabs. By default TST uses "margin", so, for
+ * example, tabs in the leftside tab bar are indented via "margin-left".
+ * However, in some theme "margin-*" won't work. You can change the CSS
+ * property via these prefs.
+ */
+pref("extensions.treestyletab.indent.property", "margin");
+/**
+ * To change the default style for each platform, use "platform.default.indent.property.*"
+ * instead of "indent.property.*" for the default preference.
+ * "indent.property.*" is used as a cache of the default pref which is detected
+ * from "platform.default.indent.property.*" prefs.
+ *   // pref("extensions.treestyletab.indent.property.top", "");
+ *   // pref("extensions.treestyletab.indent.property.right", "");
+ *   // pref("extensions.treestyletab.indent.property.bottom", "");
+ *   // pref("extensions.treestyletab.indent.property.left", "");
+ */
 pref("extensions.treestyletab.platform.default.indent.property.top", "");
 pref("extensions.treestyletab.platform.default.indent.property.right", "");
 pref("extensions.treestyletab.platform.default.indent.property.bottom", "");
 pref("extensions.treestyletab.platform.default.indent.property.left", "");
-// 0 = first child, 1 = last child
+/**
+ * On Mac OS X, tabs in the top tab bar are shown like in the bottom tab bar.
+ */
+pref("extensions.treestyletab.platform.Darwin.indent.property.top", "margin-bottom");
+
+/**
+ * The default insertion position for new children. This pref is used for cases
+ * when TST cannot detect the best position of the new child automatically.
+ * (dropping a tab onto an existing tab, new child tab from link, etc.)
+ *  0 = Insert as the first child.
+ *  1 = Insert as the last child.
+ */
 pref("extensions.treestyletab.insertNewChildAt", 1);
-pref("extensions.treestyletab.twisty.style", "auto"); // none, retro, modern-black, modern-white, auto
+
+/**
+ * Appearance of twisty in tabs. Possible values:
+ *  "none", "retro", "modern-black", "modern-white", and "auto".
+ */
+pref("extensions.treestyletab.twisty.style", "auto");
+/**
+ * Because twisties in tabs are small, it is possibly hard to be clicked.
+ * If this pref is "true", TST handles events from favicons just same as
+ * ones from twisties.
+ * In other words, if you wish that clickings on favicons are ignored by TST,
+ * set this to "false".
+ */
 pref("extensions.treestyletab.twisty.expandSensitiveArea", true);
+
+/**
+ * When a tab is indented, your click on the indent will be ignored by TST
+ * because the place you clicked is just a margin, not a tab. However, rows
+ * in tree widgets can be selected by same action (clicking on the indent).
+ * If this is "true", TST handles click events on indents of tabs just same
+ * as ones on tabs.
+ */
 pref("extensions.treestyletab.clickOnIndentSpaces.enabled", true);
+
+/**
+ * If this is "true", TST shows all titles of tabs in the tree by the tooltip
+ * for collapsed tree. If this is "false", or the tree is not collapsed,
+ * tooltip will say only the title of the single tab.
+ */
 pref("extensions.treestyletab.tooltip.includeChildren",  true);
 
+/**
+ * Visibility of extra menu items for the context menu on tabs, inserted by TST.
+ */
 pref("extensions.treestyletab.show.context-item-reloadTabSubtree", true);
 pref("extensions.treestyletab.show.context-item-reloadDescendantTabs", false);
 pref("extensions.treestyletab.show.context-item-removeTabSubtree", true);
@@ -309,17 +385,27 @@ pref("extensions.treestyletab.undoCloseTabSet.behavior", 3);
 pref("extensions.treestyletab.autoRepositionStatusPanel", true);
 pref("extensions.treestyletab.restoreTreeOnStartup", false);
 
-
+/**
+ * TST overrides some internal prefs of Firefox itself, because they can
+ * conflict with TST features. They will be rolled back when TST is uninstalled.
+ */
 pref("browser.link.open_newwindow.restriction.override", 0);
 pref("browser.tabs.loadFolderAndReplace.override", false);
 pref("browser.tabs.insertRelatedAfterCurrent.override", false);
 pref("browser.tabs.insertRelatedAfterCurrent.override.force", true);
 
+/**
+ * 
+ */
 pref("extensions.multipletab.show.multipletab-selection-item-removeTabSubtree", true);
 pref("extensions.multipletab.show.multipletab-selection-item-createSubtree", true);
 
-
-// compatibility hack flags, can be disabled by each addon
+/**
+ * Compatibility hack flags for other addons. They can be disabled by each
+ * addon, when the addon become working with TST without dirty hacks.
+ * In other words, add-on authros can disable TST's dirty hack if it is
+ * obsolete.
+ */
 pref("extensions.treestyletab.compatibility.Highlander", true);
 pref("extensions.treestyletab.compatibility.PermaTabs", true);
 pref("extensions.treestyletab.compatibility.TMP", true); // Tab Mix Plus
@@ -359,8 +445,10 @@ pref("extensions.treestyletab.compatibility.PersonalTitlebar", true);
 pref("extensions.treestyletab.compatibility.TotalToolbar", true);
 pref("extensions.treestyletab.compatibility.FirefoxSync", true);
 
-
-pref("extensions.treestyletab.platform.Darwin.indent.property.top", "margin-bottom");
-
-
+/**
+ * The internal version of TST preferences. Don't change this by hand, because
+ * this is managed by JavaScript codes. When  some prefs are renamed, they will
+ * be migrated automatically.
+ */
 pref("extensions.treestyletab.prefsVersion", 0);
+
