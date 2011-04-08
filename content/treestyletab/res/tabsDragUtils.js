@@ -13,7 +13,7 @@
    http://github.com/piroor/fxaddonlibs/blob/master/tabsDragUtils.js
 */
 (function() {
-	const currentRevision = 13;
+	const currentRevision = 14;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -246,7 +246,7 @@
 					( // Firefox 4.x (https://bugzilla.mozilla.org/show_bug.cgi?id=566510)
 						'visibleTabs' in b &&
 						(selectedTabs = b.visibleTabs.filter(function(aTab) {
-							return aTab.multiselected;
+							return aTab.getAttribute('multiselected') == 'true';
 						})) &&
 						selectedTabs.length
 					) ||
