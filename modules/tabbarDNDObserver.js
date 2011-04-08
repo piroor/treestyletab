@@ -420,10 +420,8 @@ catch(e) {
 		var selectedTabs = draggedTabs.filter(function(aTab) {
 				return aTab.getAttribute('multiselected') == 'true';
 			});
-		var keepTreeStructure = true;
 		if (draggedWholeTree.length != selectedTabs.length &&
 			selectedTabs.length) {
-			keepTreeStructure = false;
 			draggedTabs = draggedRoots = selectedTabs;
 			if (aInfo.action & sv.kACTIONS_FOR_SOURCE)
 				Array.forEach(selectedTabs, function(aTab) {
@@ -544,13 +542,11 @@ catch(e) {
 			this.closeOwner(sourceBrowser);
 
 		// restore tree structure for newly opened tabs
-		if (keepTreeStructure) {
-			newTabs.forEach(function(aTab, aIndex) {
-				var index = treeStructure[aIndex];
-				if (index < 0) return;
-				sv.attachTabTo(aTab, newTabs[index]);
-			}, sv);
-		}
+		newTabs.forEach(function(aTab, aIndex) {
+			var index = treeStructure[aIndex];
+			if (index < 0) return;
+			sv.attachTabTo(aTab, newTabs[index]);
+		}, sv);
 		newTabs.reverse();
 		collapseExpandState.reverse();
 		collapseExpandState.forEach(function(aCollapsed, aIndex) {
