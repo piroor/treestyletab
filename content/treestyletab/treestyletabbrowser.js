@@ -1265,7 +1265,10 @@ TreeStyleTabBrowser.prototype = {
 		 */
 		let (scrollbox = this.scrollBox) {
 			let source = scrollbox.ensureElementIsVisible.toSource();
-			if (source.indexOf('treeStyleTab') < 0) {
+			if (
+				source.indexOf('treeStyleTab') < 0 && // not updated yet
+				source.indexOf('ensureTabIsVisible') < 0 // not replaced by Tab Mix Plus
+				) {
 				eval('scrollbox.ensureElementIsVisible = '+
 					source.replace(
 						'{',
