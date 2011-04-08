@@ -511,7 +511,7 @@ pref("extensions.treestyletab.repositionStatusPanel", true);
 /**
  * EXPERIMENTAL, DON'T SET THIS "true" !!
  * If this is "true", TST restores tree structure before SSTabRestoring events
- * are fired. Otherwise TST restores tree structure based by SSTabRestoring
+ * are fired. Otherwise TST restores tree structure based on SSTabRestoring
  * events.
  */
 pref("extensions.treestyletab.restoreTreeOnStartup", false);
