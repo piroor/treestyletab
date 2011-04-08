@@ -329,7 +329,7 @@ TreeStyleTabBrowser.prototype = {
 		var maxRow = Math.ceil(count / maxCol);
 		var col    = 0;
 		var row    = 0;
-		var inverted = b.getAttribute(this.kINVERT_SCROLLBAR) == 'true';
+		var inverted = this.position == 'left' && b.getAttribute(this.kINVERT_SCROLLBAR) == 'true';
 		var remainder = maxWidth - (maxCol * width);
 		tabbar.style.MozMarginStart = '';
 		tabbar.style.setProperty('margin-top', (height * maxRow)+'px', 'important');
