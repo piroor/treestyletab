@@ -2556,8 +2556,7 @@ TreeStyleTabBrowser.prototype = {
 		this.stopTabIndentAnimation(tab);
 		this.stopTabCollapseAnimation(tab);
 
-		var closeParentBehavior = this.getTreePref('closeParentBehavior');
-		var closeRootBehavior = this.getTreePref('closeRootBehavior');
+		var closeParentBehavior = this.getCloseParentBehaviorForTab(tab);
 
 		var collapsed = this.isCollapsed(tab);
 		if (collapsed)
@@ -2617,22 +2616,17 @@ TreeStyleTabBrowser.prototype = {
 
 		if (firstChild) {
 			let children = this.getChildTabs(tab);
-			let behavior = parentTab ? closeParentBehavior : closeRootBehavior ;
-			if (behavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD &&
-				parentTab &&
-				this.getChildTabs(parentTab).length == 1)
-				behavior = this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
 			indentModifiedTabs = indentModifiedTabs.concat(
-					behavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD ?
+					closeParentBehavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD ?
 						[children[0]] :
 						children
 				);
 			this.partAllChildren(tab, {
-				behavior         : behavior,
+				behavior         : closeParentBehavior,
 				dontUpdateIndent : true
 			});
-			if (behavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN ||
-				behavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD)
+			if (closeParentBehavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN ||
+				closeParentBehavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD)
 				nextFocusedTab = firstChild;
 		}
 
@@ -4249,6 +4243,25 @@ TreeStyleTabBrowser.prototype = {
 					this.partTab(aTab, aInfo);
 				}
 		), this);
+	},
+ 
+	getCloseParentBehaviorForTab : function TSTBrowser_getCloseParentBehaviorForTab(aTab, aDefaultBehavior)
+	{
+		var closeParentBehavior = this.getTreePref('closeParentBehavior');
+		var closeRootBehavior = this.getTreePref('closeRootBehavior');
+
+		var parentTab = this.getParentTab(aTab);
+		var behavior = aDefaultBehavior ?
+							aDefaultBehavior :
+						parentTab ?
+							closeParentBehavior :
+							closeRootBehavior ;
+		if (behavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD &&
+			parentTab &&
+			this.getChildTabs(parentTab).length == 1)
+			behavior = this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
+
+		return behavior;
 	},
   
 	updateTabsIndent : function TSTBrowser_updateTabsIndent(aTabs, aLevel, aJustNow) 

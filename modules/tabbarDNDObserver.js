@@ -410,8 +410,34 @@ catch(e) {
 
 		var draggedWholeTree = [].concat(draggedRoots);
 		draggedRoots.forEach(function(aRoot) {
-			draggedWholeTree = draggedWholeTree.concat(sv.getDescendantTabs(aRoot));
+			sv.getDescendantTabs(aRoot)
+				.forEach(function(aTab) {
+					if (draggedWholeTree.indexOf(aTab) < 0)
+						draggedWholeTree.push(aTab);
+				});
 		}, this);
+
+		var selectedTabs = draggedTabs.filter(function(aTab) {
+				return aTab.getAttribute('multiselected') == 'true';
+			});
+		var keepTreeStructure = true;
+		if (draggedWholeTree.length != selectedTabs.length &&
+			selectedTabs.length) {
+			keepTreeStructure = false;
+			draggedTabs = draggedRoots = selectedTabs;
+			if (aInfo.action & sv.kACTIONS_FOR_SOURCE)
+				Array.forEach(selectedTabs, function(aTab) {
+					if (selectedTabs.indexOf(sv.getParentTab(aTab)) > -1)
+						return;
+					sv.partAllChildren(aTab, {
+						behavior : sv.getCloseParentBehaviorForTab(
+							aTab,
+							sv.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+						)
+					});
+				});
+		}
+
 		while (aInfo.insertBefore && draggedWholeTree.indexOf(aInfo.insertBefore) > -1)
 		{
 			aInfo.insertBefore = sv.getNextTab(aInfo.insertBefore);
@@ -518,11 +544,13 @@ catch(e) {
 			this.closeOwner(sourceBrowser);
 
 		// restore tree structure for newly opened tabs
-		newTabs.forEach(function(aTab, aIndex) {
-			var index = treeStructure[aIndex];
-			if (index < 0) return;
-			sv.attachTabTo(aTab, newTabs[index]);
-		}, sv);
+		if (keepTreeStructure) {
+			newTabs.forEach(function(aTab, aIndex) {
+				var index = treeStructure[aIndex];
+				if (index < 0) return;
+				sv.attachTabTo(aTab, newTabs[index]);
+			}, sv);
+		}
 		newTabs.reverse();
 		collapseExpandState.reverse();
 		collapseExpandState.forEach(function(aCollapsed, aIndex) {
@@ -576,7 +604,8 @@ catch(e) {
 						current = parent;
 						parent = sourceBrowser.treeStyleTab.getParentTab(parent)
 						if (parent && draggedTabs.indexOf(parent) > -1) continue;
-						draggedRoots.push(current);
+						if (draggedRoots.indexOf(current) < 0)
+							draggedRoots.push(current);
 						return;
 					}
 					while (parent);
