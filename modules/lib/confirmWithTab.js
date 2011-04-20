@@ -72,7 +72,7 @@ if (typeof namespace.Deferred == 'undefined')
 
 var confirmWithTab;
 (function() {
-	const currentRevision = 5;
+	const currentRevision = 6;
 
 	var loadedRevision = 'confirmWithTab' in namespace ?
 			namespace.confirmWithTab.revision :
@@ -95,6 +95,7 @@ var confirmWithTab;
 		}
 
 		var buttonClicked = false;
+		var checkbox;
 		namespace.Deferred.next(function() {
 			aOptions.cancelEvents = (aOptions.cancelEvents || [])
 										.concat(['TabClose'])
@@ -163,7 +164,6 @@ var confirmWithTab;
 					})
 				);
 
-			var checkbox;
 			if (aOptions.checkbox) {
 				checkbox = notification.ownerDocument.createElement('checkbox');
 				checkbox.setAttribute('label', aOptions.checkbox.label);
