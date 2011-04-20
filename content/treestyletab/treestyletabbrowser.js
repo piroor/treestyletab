@@ -1553,11 +1553,13 @@ TreeStyleTabBrowser.prototype = {
 							this.maxTabbarHeight(this.getTreePref('tabbar.height')) :
 							0
 						) || realHeight;
-			let xOffset = pos == 'right' ? width - realWidth : 0 ;
 			let yOffset = pos == 'bottom' ? height - realHeight : 0 ;
 
 			stripStyle.top = (box.screenY - root.screenY + root.y - yOffset)+'px';
-			stripStyle.left = (box.screenX - root.screenX + root.x - xOffset)+'px';
+			stripStyle.left = pos == 'right' ? '' :
+							(box.screenX - root.screenX + root.x)+'px';
+			stripStyle.right = pos != 'right' ? '' :
+							((box.screenX + box.width) - (root.screenX + root.width))+'px';
 
 			stripStyle.width = (tabContainerBox.width = width)+'px';
 			stripStyle.height = (tabContainerBox.height = height)+'px';
@@ -1591,7 +1593,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 		else {
 			tabContainerBox.collapsed = false;
-			stripStyle.top = stripStyle.left = stripStyle.width = stripStyle.height = '';
+			stripStyle.top = stripStyle.left = stripStyle.right = stripStyle.width = stripStyle.height = '';
 
 			if (
 				statusPanel &&
