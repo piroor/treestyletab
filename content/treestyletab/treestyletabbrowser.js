@@ -1566,7 +1566,7 @@ TreeStyleTabBrowser.prototype = {
 			stripStyle.left = pos == 'right' ? '' :
 							(box.screenX - root.screenX + root.x)+'px';
 			stripStyle.right = pos != 'right' ? '' :
-							((box.screenX + box.width) - (root.screenX + root.width))+'px';
+							((root.screenX + root.width) - (box.screenX + box.width))+'px';
 
 			stripStyle.width = (tabContainerBox.width = width)+'px';
 			stripStyle.height = (tabContainerBox.height = height)+'px';
