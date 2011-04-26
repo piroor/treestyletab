@@ -319,8 +319,10 @@ TreeStyleTabBrowser.prototype = {
 			return;
 		}
 
-		var maxWidth = this._tabStripPlaceHolder.boxObject.width ||
-						this.tabStrip.boxObject.width;
+		var tabbarPlaceHolderWidth = this._tabStripPlaceHolder.boxObject.width;
+		var tabbarWidth = this.tabStrip.boxObject.width;
+
+		var maxWidth = tabbarPlaceHolderWidth || tabbarWidth;
 
 		var count  = this.pinnedTabsCount;
 		var width  = aWidth || this.PINNED_TAB_DEFAULT_WIDTH;
@@ -329,8 +331,13 @@ TreeStyleTabBrowser.prototype = {
 		var maxRow = Math.ceil(count / maxCol);
 		var col    = 0;
 		var row    = 0;
+
 		var inverted = this.position == 'left' && b.getAttribute(this.kINVERT_SCROLLBAR) == 'true';
 		var remainder = maxWidth - (maxCol * width);
+		var shrunkenOffset = (inverted || this.position == 'right') ?
+								tabbarWidth - tabbarPlaceHolderWidth :
+								0 ;
+
 		tabbar.style.MozMarginStart = '';
 		tabbar.style.setProperty('margin-top', (height * maxRow)+'px', 'important');
 		for (let i = 0; i < count; i++)
@@ -343,12 +350,12 @@ TreeStyleTabBrowser.prototype = {
 				 * by margin-right, because the basic position becomes
 				 * "top-right" instead of "top-left".
 				 */
-				let margin = (width * (maxCol - col - 1)) + remainder;
+				let margin = (width * (maxCol - col - 1)) + remainder + shrunkenOffset;
 				style.setProperty('margin-right', margin+'px', 'important');
 				style.marginLeft = '';
 			}
 			else {
-				style.setProperty('margin-left', (width * col)+'px', 'important');
+				style.setProperty('margin-left', ((width * col) + shrunkenOffset)+'px', 'important');
 				style.marginRight = '';
 			}
 			style.setProperty('margin-top', (- height * (maxRow - row))+'px', 'important');
