@@ -405,7 +405,7 @@ var TreeStyleTabBookmarksService = {
 
 	_onTabsDrop : function TSTBMService_onTabsDrop(aEvent)
 	{
-		var tabs = aEvent.tabs || aEvent.getData('tabs') || [];
+		var tabs = aEvent.getData('tabs') || [];
 		var groups = this.splitTabsToSubtrees(tabs);
 		if (
 			groups.length == 1 &&
