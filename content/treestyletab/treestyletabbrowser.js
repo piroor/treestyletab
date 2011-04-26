@@ -4265,9 +4265,9 @@ TreeStyleTabBrowser.prototype = {
 		var parentTab = this.getParentTab(aTab);
 		var behavior = aDefaultBehavior ?
 							aDefaultBehavior :
-						parentTab ?
-							closeParentBehavior :
-							closeRootBehavior ;
+						(!parentTab && closeParentBehavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN) ?
+							closeRootBehavior :
+							closeParentBehavior ;
 		if (behavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD &&
 			parentTab &&
 			this.getChildTabs(parentTab).length == 1)
