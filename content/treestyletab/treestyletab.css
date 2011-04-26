@@ -285,7 +285,10 @@ tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-sc
 #TabsToolbar.treestyletab-tabbar-toolbar-ready[tabsontop="true"]:not(:-moz-lwtheme):-moz-system-metric(menubar-drag),
 /* for pinstripe */
 toolbar.treestyletab-tabbar-toolbar:not([nowindowdrag="true"]),
-toolbar.treestyletab-tabbar-toolbar-ready:not([nowindowdrag="true"]) {
+toolbar.treestyletab-tabbar-toolbar-ready:not([nowindowdrag="true"]),
+/* Hide Caption Titlebar Plus (Smart)
+   https://addons.mozilla.org/firefox/addon/hide-caption-titlebar-plus-sma/ */
+#main-window[dz_adv_scroll_via_tabbar="true"]  #TabsToolbar {
 	-moz-binding: url(treestyletab.xml#toolbar-drag);
 }
 #navigator-toolbox[tabsontop="false"]

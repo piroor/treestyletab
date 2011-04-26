@@ -295,6 +295,21 @@ TreeStyleTabService.overrideExtensionsPreInit = function TSTService_overrideExte
 			]]>.toString()
 		));
 	}
+
+	/**
+	 * Hide Caption Titlebar Plus (Smart)
+	 * https://addons.mozilla.org/firefox/addon/hide-caption-titlebar-plus-sma/
+	 */
+	if ('HideCaption' in window &&
+		'do_alter' in HideCaption) {
+		eval('HideCaption.do_alter = '+HideCaption.do_alter.toSource().replace(
+			'if (!theSettings) {',
+			<![CDATA[
+				if (!theSettings ||
+					gBrowser.treeStyleTab.isVertical) {
+			]]>
+		));
+	}
 };
 
 TreeStyleTabService.overrideExtensionsOnInitBefore = function TSTService_overrideExtensionsOnInitBefore() {
