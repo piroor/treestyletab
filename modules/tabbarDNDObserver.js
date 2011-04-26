@@ -735,27 +735,13 @@ catch(e) {
 				event  : aEvent
 			};
 		var tabsInfo = this.getDraggedTabsInfoFromOneTab(actionInfo, aTab);
-		if (tabsInfo.draggedTabs.length <= 1)
-			return;
-
-/*
 		if (
-			'MultipleTabService' in w &&
-			'isSelected' in w.MultipleTabService &&
-			'getSelectedTabs' in w.MultipleTabService &&
-			'clearSelection' in w.MultipleTabService &&
-			'setSelection' in w.MultipleTabService &&
-			(
-				!w.MultipleTabService.isSelected(aTab) ||
-				w.MultipleTabService.getSelectedTabs(sv.browser) == [aTab]
+			tabsInfo.draggedTabs.length <= 1 ||
+			Array.some(tabsInfo.draggedTabs, function(aTab) {
+				return aTab.getAttribute('multiselected') == 'true';
+			})
 			)
-			) {
-			w.MultipleTabService.clearSelection(sv.browser);
-			tabsInfo.draggedTabs.forEach(function(aTab) {
-				w.MultipleTabService.setSelection(aTab, true);
-			});
-		}
-*/
+			return;
 
 		w['piro.sakura.ne.jp'].tabsDragUtils.startTabsDrag(aEvent, tabsInfo.draggedTabs);
 	},

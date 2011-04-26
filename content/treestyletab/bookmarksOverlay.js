@@ -405,15 +405,14 @@ var TreeStyleTabBookmarksService = {
 
 	_onTabsDrop : function TSTBMService_onTabsDrop(aEvent)
 	{
-		var groups = this.splitTabsToSubtrees(aEvent.tabs || []);
+		var tabs = aEvent.tabs || aEvent.getData('tabs') || [];
+		var groups = this.splitTabsToSubtrees(tabs);
 		if (
 			groups.length == 1 &&
-			(
-				this.bookmarkDroppedTabsBehavior() != this.kBOOKMARK_DROPPED_TABS_ALL ||
-				Array.some(aEvent.tabs, function(aTab) {
-					return aTab.getAttribute('multiselected') == 'true';
-				})
-			)
+			this.bookmarkDroppedTabsBehavior() != this.kBOOKMARK_DROPPED_TABS_ALL &&
+			!Array.some(tabs, function(aTab) {
+				return aTab.getAttribute('multiselected') == 'true';
+			})
 			) {
 			aEvent.preventDefault();
 			aEvent.stopPropagation();
