@@ -1662,7 +1662,7 @@ var TreeStyleTabService = {
 		var b = this.getTabBrowserFromChild(aTab);
 		var closeTabs = this.getTabsArray(b)
 					.filter(function(aTab) {
-						return keepTabs.indexOf(aTab) < 0;
+						return keepTabs.indexOf(aTab) < 0 && !aTab.hasAttribute('pinned');
 					});
 
 		if (!this.warnAboutClosingTabs(closeTabs.length))
