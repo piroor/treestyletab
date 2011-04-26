@@ -1084,6 +1084,9 @@ var TreeStyleTabService = {
    
 	onTabbarResizeStart : function TSTService_onTabbarResizeStart(aEvent) 
 	{
+		if (aEvent.button != 0)
+			return;
+
 		if (!this.isEventFiredOnGrippy(aEvent))
 			aEvent.stopPropagation();
 
