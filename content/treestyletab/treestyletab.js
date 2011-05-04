@@ -1351,16 +1351,10 @@ var TreeStyleTabService = {
 			case this.kNEWTAB_COMMAND_OPEN_AS_ORPHAN:
 			default:
 				break;
-
 			case this.kNEWTAB_COMMAND_OPEN_AS_CHILD:
-				this.readyToOpenChildTab(b.selectedTab);
-				break;
-
+				return this.readyToOpenChildTab(b.selectedTab);
 			case this.kNEWTAB_COMMAND_OPEN_AS_SIBLING:
-				let parentTab = this.getParentTab(b.selectedTab);
-				if (parentTab)
-					this.readyToOpenChildTab(parentTab);
-				break;
+				return this.readyToOpenNextSiblingTab(b.selectedTab);
 		}
 	},
 	kNEWTAB_COMMAND_OPEN_AS_ORPHAN  : 0,
@@ -1375,17 +1369,11 @@ var TreeStyleTabService = {
 		{
 			case this.kDUPLICATE_COMMAND_OPEN_AS_ORPHAN:
 			default:
-				break;
-
+				return;
 			case this.kDUPLICATE_COMMAND_OPEN_AS_CHILD:
-				this.readyToOpenChildTab(tab);
-				break;
-
+				return this.readyToOpenChildTab(tab);
 			case this.kDUPLICATE_COMMAND_OPEN_AS_SIBLING:
-				let parentTab = this.getParentTab(tab);
-				if (parentTab)
-					this.readyToOpenChildTab(parentTab, false, this.getNextTab(tab));
-				break;
+				return this.readyToOpenNextSiblingTab(tab);
 		}
 	},
 	kDUPLICATE_COMMAND_OPEN_AS_ORPHAN  : 0,
