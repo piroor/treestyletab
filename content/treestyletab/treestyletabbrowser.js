@@ -1586,12 +1586,8 @@ TreeStyleTabBrowser.prototype = {
 				statusPanelStyle.marginTop = (pos == 'bottom') ?
 					'-moz-calc(0px - ' + (offsetParentBox.height - contentBox.height) + 'px - 3em)' :
 					'' ;
-				statusPanelStyle.marginLeft = (pos == 'left') ?
-					(contentBox.screenX - offsetParentBox.screenX)+'px' :
-					'' ;
-				statusPanelStyle.marginRight = (pos == 'right') ?
-					((offsetParentBox.screenX + offsetParentBox.width) - (contentBox.screenX + contentBox.width))+'px' :
-					'' ;
+				statusPanelStyle.marginLeft = (contentBox.screenX - offsetParentBox.screenX)+'px';
+				statusPanelStyle.marginRight = ((offsetParentBox.screenX + offsetParentBox.width) - (contentBox.screenX + contentBox.width))+'px';
 				statusPanelStyle.maxWidth = this.isVertical ?
 					parseInt(contentBox.width / 2)+'px' :
 					'' ;
