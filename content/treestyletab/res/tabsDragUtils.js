@@ -13,7 +13,7 @@
    http://github.com/piroor/fxaddonlibs/blob/master/tabsDragUtils.js
 */
 (function() {
-	const currentRevision = 14;
+	const currentRevision = 15;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -238,11 +238,6 @@
 
 			var selectedTabs;
 			var isMultipleDrag = (
-					(
-						this.isTabsDragging(event) &&
-						(selectedTabs = this.getDraggedTabs(event)) &&
-						selectedTabs.length
-					) ||
 					( // Firefox 4.x (https://bugzilla.mozilla.org/show_bug.cgi?id=566510)
 						'visibleTabs' in b &&
 						(selectedTabs = b.visibleTabs.filter(function(aTab) {
@@ -261,6 +256,11 @@
 						w.MultipleTabService.isSelected(tab) &&
 						w.MultipleTabService.allowMoveMultipleTabs &&
 						(selectedTabs = w.MultipleTabService.getSelectedTabs(b)) &&
+						selectedTabs.length
+					) ||
+					( // based on HTML5 drag events
+						this.isTabsDragging(event) &&
+						(selectedTabs = this.getDraggedTabs(event)) &&
 						selectedTabs.length
 					)
 				);
