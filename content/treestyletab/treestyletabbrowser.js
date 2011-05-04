@@ -1399,8 +1399,12 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 
-		if ('TabsOnTop' in window)
+		if ('TabsOnTop' in window) {
+			let tabsWasOnTop = TabsOnTop.enabled;
 			TabsOnTop.enabled = TabsOnTop.enabled && this.position == 'top' && this.fixed;
+			if (tabsWasOnTop && !TabsOnTop.enabled)
+				this.setTreePref('tabsOnTopShouldBeRestored', true);
+		}
 
 		window.setTimeout(function(aSelf) {
 			aSelf.updateFloatingTabbar(aSelf.kTABBAR_UPDATE_BY_APPEARANCE_CHANGE);

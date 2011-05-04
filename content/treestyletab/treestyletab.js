@@ -394,6 +394,16 @@ var TreeStyleTabService = {
 		var prefs = namespace.prefs;
 		namespace = void(0);
 		var restorePrefs = function() {
+				if (prefs.getPref('extensions.treestyletab.tabsOnTopShouldBeRestored')) {
+					prefs.clearPref('extensions.treestyletab.tabsOnTopShouldBeRestored');
+					try {
+						gBrowser.treeStyleTab.position = 'top';
+					}
+					catch(e) {
+					}
+					TabsOnTop.enabled = true;
+				}
+
 				if (!prefs) return;
 				[
 					'browser.tabs.loadFolderAndReplace',
@@ -1289,13 +1299,16 @@ var TreeStyleTabService = {
 
 		if (gBrowser.treeStyleTab.position != 'top' ||
 			!gBrowser.treeStyleTab.fixed) {
-			if (TabsOnTop.enabled)
+			if (TabsOnTop.enabled) {
 				TabsOnTop.enabled = false;
+				this.setTreePref('tabsOnTopShouldBeRestored', true);
+			}
 		}
 		else if ('_tabsOnTopDefaultState' in this) {
 			if (TabsOnTop.enabled!= this._tabsOnTopDefaultState)
 				TabsOnTop.enabled = this._tabsOnTopDefaultState;
 			delete this._tabsOnTopDefaultState;
+			this.setTreePref('tabsOnTopShouldBeRestored', false);
 		}
 	},
  

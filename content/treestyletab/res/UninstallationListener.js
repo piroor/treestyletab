@@ -8,13 +8,13 @@
      ondisabled : function() { ... }
    });
 
- license: The MIT License, Copyright (c) 2009 SHIMODA "Piro" Hiroshi
-   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/license.txt
+ license: The MIT License, Copyright (c) 2009-2011 SHIMODA "Piro" Hiroshi
+   http://github.com/piroor/fxaddonlibs/blob/master/license.txt
  original:
-   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/UninstallationListener.js
+   http://github.com/piroor/fxaddonlibs/blob/master/UninstallationListener.js
 */
 (function() {
-	const currentRevision = 1;
+	const currentRevision = 2;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -31,12 +31,22 @@
 	const ObserverService = Cc['@mozilla.org/observer-service;1']
 							.getService(Ci.nsIObserverService);
 
+	var AddonManager;
+	try {
+		let ns = {};
+		Components.utils.import('resource://gre/modules/AddonManager.jsm', ns);
+		AddonManager = ns.AddonManager;
+	}
+	catch(e) {
+	}
+
 	window['piro.sakura.ne.jp'].UninstallationListener = function(aArguments) {
 		this.init(aArguments);
 	};
 	window['piro.sakura.ne.jp'].UninstallationListener.prototype = {
 		revision : currentRevision,
 
+		// for Firefox 3.6 or older
 		observe : function(aSubject, aTopic, aData)
 		{
 			switch (aTopic)
@@ -65,7 +75,7 @@
 					}
 					return;
 
-				case 'quit-application':
+				case 'quit-application-granted':
 					this.destroy();
 					return;
 			}
@@ -74,6 +84,44 @@
 		{
 			return (aSubject instanceof Ci.nsIUpdateItem) && (aSubject.id == this.id);
 		},
+
+		// for Firefox 4 or later
+		onEnabling : function(aAddon, aRestartRequired) {},
+		onEnabled : function(aAddon) {},
+		onDisabling : function(aAddon, aRestartRequired) {
+			if (aAddon.id == this.id) {
+				this.toBeDisabled = true;
+			}
+		},
+		onDisabled : function(aAddon)
+		{
+			if (aAddon.id == this.id) {
+				if (this.ondisabled) this.ondisabled();
+				delete this.ondisabled;
+			}
+		},
+		onInstalling : function(aAddon, aRestartRequired) {},
+		onInstalled : function(aAddon) {},
+		onUninstalling : function(aAddon, aRestartRequired) {
+			if (aAddon.id == this.id) {
+				this.toBeUninstalled = true;
+			}
+		},
+		onUninstalled : function(aAddon)
+		{
+			if (aAddon.id == this.id) {
+				if (this.onuninstalled) this.onuninstalled();
+				delete this.onuninstalled;
+			}
+		},
+		onOperationCancelled : function(aAddon)
+		{
+			if (aAddon.id == this.id) {
+				this.toBeDisabled = false;
+				this.toBeUninstalled = false;
+			}
+		},
+		onPropertyChanged : function(aAddon, aProperties) {},
 
 		init : function(aArguments)
 		{
@@ -88,8 +136,13 @@
 				this.ondisabled = aArguments.ondisabled;
 			}
 
-			ObserverService.addObserver(this, 'em-action-requested', false);
-			ObserverService.addObserver(this, 'quit-application', false);
+			if (AddonManager) { // Firefox 4 or later
+				AddonManager.addAddonListener(this);
+			}
+			else {
+				ObserverService.addObserver(this, 'em-action-requested', false);
+			}
+			ObserverService.addObserver(this, 'quit-application-granted', false);
 		},
 
 		destroy : function()
@@ -102,8 +155,13 @@
 				this.ondisabled();
 			delete this.ondisabled;
 
-			ObserverService.removeObserver(this, 'em-action-requested');
-			ObserverService.removeObserver(this, 'quit-application');
+			if (AddonManager) { // Firefox 4 or later
+				AddonManager.removeAddonListener(this);
+			}
+			else {
+				ObserverService.removeObserver(this, 'em-action-requested');
+			}
+			ObserverService.removeObserver(this, 'quit-application-granted');
 		}
 	};
 })();

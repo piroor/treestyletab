@@ -531,6 +531,7 @@ pref("browser.link.open_newwindow.restriction.override", 0);
 pref("browser.tabs.loadFolderAndReplace.override", false);
 pref("browser.tabs.insertRelatedAfterCurrent.override", false);
 pref("browser.tabs.insertRelatedAfterCurrent.override.force", true);
+pref("extensions.treestyletab.tabsOnTopShouldBeRestored", false);
 
 /**
  * Extra commands for selected tabs (Multiple Tab Handler)
