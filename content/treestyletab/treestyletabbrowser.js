@@ -3080,7 +3080,12 @@ TreeStyleTabBrowser.prototype = {
 		tab.setAttribute(this.kID_RESTORING, id);
 		if (this.isTabDuplicated(tab)) {
 			mayBeDuplicated = true;
-			id = this.redirectId(id);
+			/**
+			 * If the tab has its ID as the attribute, then we should use it
+			 * instead of redirected ID, because the tab has been possibly
+			 * attached to another tab.
+			 */
+			id = tab.getAttribute(this.kID) || this.redirectId(id);
 		}
 		tab.removeAttribute(this.kID_RESTORING);
 
@@ -3096,15 +3101,17 @@ TreeStyleTabBrowser.prototype = {
 		var closeSetId = null;
 		if (!mayBeDuplicated) {
 			closeSetId = this.getTabValue(tab, this.kCLOSED_SET_ID);
-			/* If it has a parent, it is wrongly attacched by tab moving
-			   on restoring. Restoring the old ID (the next statement)
-			   breaks the children list of the temporary parent and causes
-			   many problems. So, to prevent these problems, I part the tab
-			   from the temporary parent manually.
-			   If the ID stored in the session equals to the value of the
-			   attribute stored in the element itself, then don't reset the
-			   tab, because the restoring session is got from the tab itself.
-			   ( like SS.setTabState(tab, SS.getTabState(tab)) )
+			/**
+			 * If the tab is not a duplicated but it has a parent, then,
+			 * it is wrongly attacched by tab moving on restoring.
+			 * Restoring the old ID (the next statement) breaks the children
+			 * list of the temporary parent and causes many problems.
+			 * So, to prevent these problems, I part the tab from the temporary
+			 * parent manually.
+			 * If the ID stored in the session equals to the value of the
+			 * attribute stored in the element itself, then don't reset the
+			 * tab, because the restoring session is got from the tab itself.
+			 * ( like SS.setTabState(tab, SS.getTabState(tab)) )
 			 */
 			if (id != tab.getAttribute(this.kID))
 				this.resetTab(tab, false);
