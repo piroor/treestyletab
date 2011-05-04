@@ -3070,37 +3070,61 @@ TreeStyleTabBrowser.prototype = {
 	RESTORED_TREE_COLLAPSED_STATE_EXPANDED   : 1,
 	restoreStructure : function TSTBrowser_restoreStructure(aTab) 
 	{
-		var restoringMultipleTabs = TreeStyleTabService.restoringTree;
+		var [id, mayBeDuplicated] = this._restoreTabId(aTab);
 
-		var tab = aTab;
-		var b   = this.mTabBrowser;
-		var id  = this.getTabValue(tab, this.kID);
+		var children = this.getTabValue(aTab, this.kCHILDREN);
+		if (!mayBeDuplicated || aTab.hasAttribute(this.kCHILDREN)) {
+			// for safety
+			this.partAllChildren(aTab, {
+				dontUpdateIndent : true,
+				dontAnimate      : TreeStyleTabService.restoringTree
+			});
+		}
+
+		var closeSetId = this._restoreCloseSetId(aTab, mayBeDuplicated);
+
+		this.setTabValue(aTab, this.kID, id);
+		this.tabsHash[id] = aTab;
+
+		if (closeSetId)
+			this.restoreClosedSet(closeSetId, aTab);
+
+		var isSubtreeCollapsed = this._restoreSubtreeCollapsedState(aTab);
+
+		var childTabs = this._restoreChildTabsRelation(aTab, children, mayBeDuplicated);
+
+		this._restoreTabPositionAndIndent(aTab, childTabs, mayBeDuplicated);
+
+		if (isSubtreeCollapsed)
+			this.collapseExpandSubtree(aTab, isSubtreeCollapsed);
+
+		if (mayBeDuplicated)
+			this.clearRedirectionTable();
+	},
+	_restoreTabId : function TSTBrowser_restoreTabId(aTab)
+	{
+		var id = this.getTabValue(aTab, this.kID);
 		var mayBeDuplicated = false;
 
-		tab.setAttribute(this.kID_RESTORING, id);
-		if (this.isTabDuplicated(tab)) {
+		aTab.setAttribute(this.kID_RESTORING, id);
+		if (this.isTabDuplicated(aTab)) {
 			mayBeDuplicated = true;
 			/**
 			 * If the tab has its ID as the attribute, then we should use it
 			 * instead of redirected ID, because the tab has been possibly
 			 * attached to another tab.
 			 */
-			id = tab.getAttribute(this.kID) || this.redirectId(id);
+			id = aTab.getAttribute(this.kID) || this.redirectId(id);
 		}
-		tab.removeAttribute(this.kID_RESTORING);
+		aTab.removeAttribute(this.kID_RESTORING);
 
-		var children = this.getTabValue(tab, this.kCHILDREN);
-		if (!mayBeDuplicated || tab.hasAttribute(this.kCHILDREN)) {
-			// for safety
-			this.partAllChildren(tab, {
-				dontUpdateIndent : true,
-				dontAnimate      : restoringMultipleTabs
-			});
-		}
-
+		return [id, mayBeDuplicated];
+	},
+	_restoreCloseSetId : function TSTBrowser_restoreCloseSetId(aTab, aMayBeDuplicated)
+	{
 		var closeSetId = null;
-		if (!mayBeDuplicated) {
-			closeSetId = this.getTabValue(tab, this.kCLOSED_SET_ID);
+		if (!aMayBeDuplicated) {
+			closeSetId = this.getTabValue(aTab, this.kCLOSED_SET_ID);
 			/**
 			 * If the tab is not a duplicated but it has a parent, then,
 			 * it is wrongly attacched by tab moving on restoring.
@@ -3113,124 +3137,150 @@ TreeStyleTabBrowser.prototype = {
 			 * tab, because the restoring session is got from the tab itself.
 			 * ( like SS.setTabState(tab, SS.getTabState(tab)) )
 			 */
-			if (id != tab.getAttribute(this.kID))
-				this.resetTab(tab, false);
+			if (this.getTabValue(aTab, this.kID) != aTab.getAttribute(this.kID))
+				this.resetTab(aTab, false);
 		}
-		this.deleteTabValue(tab, this.kCLOSED_SET_ID);
-
-		this.setTabValue(tab, this.kID, id);
-		this.tabsHash[id] = tab;
-
-		if (closeSetId)
-			this.restoreClosedSet(closeSetId, tab);
-
+		this.deleteTabValue(aTab, this.kCLOSED_SET_ID);
+		return closeSetId;
+	},
+	_restoreSubtreeCollapsedState : function TSTBrowser_restoreSubtreeCollapsedState(aTab)
+	{
 		var shouldCollapse = this.getTreePref('collapseExpandSubtree.sessionRestore');
 		var isSubtreeCollapsed = (
-				restoringMultipleTabs &&
+				TreeStyleTabService.restoringTree &&
 				(
 					shouldCollapse == this.RESTORED_TREE_COLLAPSED_STATE_LAST_STATE ?
-						(this.getTabValue(tab, this.kSUBTREE_COLLAPSED) == 'true') :
+						(this.getTabValue(aTab, this.kSUBTREE_COLLAPSED) == 'true') :
 						shouldCollapse == this.RESTORED_TREE_COLLAPSED_STATE_COLLAPSED
 				)
 			);
-		this.setTabValue(tab, this.kSUBTREE_COLLAPSED, isSubtreeCollapsed);
+		this.setTabValue(aTab, this.kSUBTREE_COLLAPSED, isSubtreeCollapsed);
+		return isSubtreeCollapsed;
+	},
+	_restoreChildTabsRelation : function TSTBrowser_restoreChildTabsRelation(aTab, aChildrenList, aMayBeDuplicated)
+	{
+		var childTabs = [];
+		if (!aChildrenList)
+			return childTabs;
 
-		var tabs = [];
-		if (children) {
-			tab.removeAttribute(this.kCHILDREN);
-			children = children.split('|');
-			if (mayBeDuplicated)
-				children = children.map(function(aChild) {
-					return this.redirectId(aChild);
-				}, this);
-			children.forEach(function(aTab) {
-				if (aTab && (aTab = this.getTabById(aTab))) {
-					this.attachTabTo(aTab, tab, {
-						dontExpand       : restoringMultipleTabs,
-						dontUpdateIndent : true,
-						dontAnimate      : restoringMultipleTabs
-					});
-					tabs.push(aTab);
-				}
+		aTab.removeAttribute(this.kCHILDREN);
+
+		aChildrenList = aChildrenList.split('|');
+		if (aMayBeDuplicated)
+			aChildrenList = aChildrenList.map(function(aChild) {
+				return this.redirectId(aChild);
 			}, this);
-			children = children.join('|');
-			if (tab.getAttribute(this.kCHILDREN) == children)
-				tab.removeAttribute(this.kCHILDREN_RESTORING);
-			else
-				tab.setAttribute(this.kCHILDREN_RESTORING, children);
+
+		var restoringMultipleTabs = TreeStyleTabService.restoringTree;
+		aChildrenList.forEach(function(aChildTab) {
+			if (aChildTab && (aChildTab = this.getTabById(aChildTab))) {
+				this.attachTabTo(aChildTab, aTab, {
+					dontExpand       : restoringMultipleTabs,
+					dontUpdateIndent : true,
+					dontAnimate      : restoringMultipleTabs
+				});
+				childTabs.push(aChildTab);
+			}
+		}, this);
+		aChildrenList = aChildrenList.join('|');
+		if (aTab.getAttribute(this.kCHILDREN) == aChildrenList)
+			aTab.removeAttribute(this.kCHILDREN_RESTORING);
+		else
+			aTab.setAttribute(this.kCHILDREN_RESTORING, aChildrenList);
+
+		return childTabs;
+	},
+	_restoreTabPositionAndIndent : function TSTBrowser_restoreTabPositionAndIndent(aTab, aChildTabs, aMayBeDuplicated)
+	{
+		var restoringMultipleTabs = TreeStyleTabService.restoringTree;
+		var position = this._prepareInsertionPosition(aTab, aMayBeDuplicated);
+		var parent = position.parent;
+		if (parent) {
+			aTab.removeAttribute(this.kPARENT);
+			parent = this.getTabById(parent);
+			if (parent) {
+				this.attachTabTo(aTab, parent, {
+					dontExpand       : restoringMultipleTabs,
+					insertBefore     : position.next,
+					dontUpdateIndent : true,
+					dontAnimate      : restoringMultipleTabs
+				});
+				this.updateTabsIndent([aTab], undefined, restoringMultipleTabs);
+				this.checkTabsIndentOverflow();
+
+				if (parent.getAttribute(this.kCHILDREN_RESTORING))
+					this.correctChildTabsOrderWithDelay(parent);
+			}
+			else {
+				this.deleteTabValue(aTab, this.kPARENT);
+			}
+		}
+		else {
+			if (aChildTabs.length) {
+				this.updateTabsIndent(aChildTabs, undefined, restoringMultipleTabs);
+				this.checkTabsIndentOverflow();
+			}
+			this._restoreTabPosition(aTab, position.next);
+		}
+	},
+	_prepareInsertionPosition : function TSTBrowser_prepareInsertionPosition(aTab, aMayBeDuplicated)
+	{
+		var next = this.getTabValue(aTab, this.kINSERT_BEFORE);
+		if (next && aMayBeDuplicated) next = this.redirectId(next);
+		next = this.getTabById(next);
+
+		if (!next) {
+			let prev = this.getTabValue(aTab, this.kINSERT_AFTER);
+			if (prev && aMayBeDuplicated) prev = this.redirectId(prev);
+			prev = this.getTabById(prev);
+			next = this.getNextSiblingTab(prev);
 		}
 
-		var nextTab = this.getTabValue(tab, this.kINSERT_BEFORE);
-		if (nextTab && mayBeDuplicated) nextTab = this.redirectId(nextTab);
-		nextTab = this.getTabById(nextTab);
-
-		if (!nextTab) {
-			let prevTab = this.getTabValue(tab, this.kINSERT_AFTER);
-			if (prevTab && mayBeDuplicated) prevTab = this.redirectId(prevTab);
-			prevTab = this.getTabById(prevTab);
-			nextTab = this.getNextSiblingTab(prevTab);
-		}
-
-		var ancestors = (this.getTabValue(tab, this.kANCESTOR) || this.getTabValue(tab, this.kPARENT)).split('|');
+		var ancestors = (this.getTabValue(aTab, this.kANCESTOR) || this.getTabValue(aTab, this.kPARENT)).split('|');
 		var parent = null;
-		for (var i in ancestors)
+		for (let i in ancestors)
 		{
-			if (mayBeDuplicated) ancestors[i] = this.redirectId(ancestors[i]);
+			if (aMayBeDuplicated) ancestors[i] = this.redirectId(ancestors[i]);
 			parent = this.getTabById(ancestors[i]);
 			if (parent) {
 				parent = ancestors[i];
 				break;
 			}
 		}
-		this.deleteTabValue(tab, this.kANCESTOR);
+		this.deleteTabValue(aTab, this.kANCESTOR);
 
-		if (parent) {
-			tab.removeAttribute(this.kPARENT);
-			parent = this.getTabById(parent);
-			if (parent) {
-				this.attachTabTo(tab, parent, {
-					dontExpand       : restoringMultipleTabs,
-					insertBefore     : nextTab,
-					dontUpdateIndent : true,
-					dontAnimate      : restoringMultipleTabs
-				});
-				this.updateTabsIndent([tab], undefined, restoringMultipleTabs);
-				this.checkTabsIndentOverflow();
-
-				if (parent.getAttribute(this.kCHILDREN_RESTORING))
-					this.correctChildTabsOrderWithDelay(parent);
-
-			}
-			else {
-				this.deleteTabValue(tab, this.kPARENT);
-			}
-		}
-		else if (children) {
-			this.updateTabsIndent(tabs, undefined, restoringMultipleTabs);
-			this.checkTabsIndentOverflow();
-		}
-
+		/**
+		 * If the tab is a duplicated and the tab has already been
+		 * attached, then reuse current status based on attributes.
+		 * (Note, if the tab is not a duplicated tab, all attributes
+		 * have been cleared.)
+		 */
 		if (!parent) {
-			if (!nextTab) nextTab = this.getNextTab(tab);
-			let parentOfNext = this.getParentTab(nextTab);
-			let newPos = -1;
-			if (parentOfNext) {
-				let descendants = this.getDescendantTabs(parentOfNext);
-				newPos = descendants[descendants.length-1]._tPos;
-			}
-			else if (nextTab) {
-				newPos = nextTab._tPos;
-				if (newPos > tab._tPos) newPos--;
-			}
-			if (newPos > -1)
-				b.moveTabTo(tab, newPos);
+			parent = aTab.getAttribute(this.kPARENT);
+			if (parent && !next)
+				next = this.getNextSiblingTab(aTab);
 		}
 
-		if (isSubtreeCollapsed)
-			this.collapseExpandSubtree(tab, isSubtreeCollapsed, restoringMultipleTabs);
-
-		if (mayBeDuplicated)
-			this.clearRedirectionTable();
+		return {
+			parent : parent,
+			next   : next
+		};
+	},
+	_restoreTabPosition : function TSTBrowser_restoreTabPosition(aTab, aNextTab)
+	{
+		if (!aNextTab) aNextTab = this.getNextTab(aTab);
+		var parentOfNext = this.getParentTab(aNextTab);
+		var newPos = -1;
+		if (parentOfNext) {
+			let descendants = this.getDescendantTabs(parentOfNext);
+			newPos = descendants[descendants.length-1]._tPos;
+		}
+		else if (aNextTab) {
+			newPos = aNextTab._tPos;
+			if (newPos > aTab._tPos) newPos--;
+		}
+		if (newPos > -1)
+			this.mTabBrowser.moveTabTo(aTab, newPos);
 	},
  
 	correctChildTabsOrderWithDelay : function TSTBrowser_correctChildTabsOrderWithDelay(aTab) 
