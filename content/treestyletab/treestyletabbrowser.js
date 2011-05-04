@@ -1583,11 +1583,13 @@ TreeStyleTabBrowser.prototype = {
 			if (statusPanel && this.getTreePref('repositionStatusPanel')) {
 				let offsetParentBox = this.utils.findOffsetParent(statusPanel).boxObject;
 				let contentBox = this.mTabBrowser.mPanelContainer.boxObject;
+				let chromeMargins = (document.documentElement.getAttribute('chromemargin') || '0,0,0,0').split(',');
+				chromeMargins = chromeMargins.map(function(aMargin) { return parseInt(aMargin); });
 				statusPanelStyle.marginTop = (pos == 'bottom') ?
-					'-moz-calc(0px - ' + (offsetParentBox.height - contentBox.height) + 'px - 3em)' :
+					'-moz-calc(0px - ' + (offsetParentBox.height - contentBox.height + chromeMargins[2]) + 'px - 3em)' :
 					'' ;
-				statusPanelStyle.marginLeft = (contentBox.screenX - offsetParentBox.screenX)+'px';
-				statusPanelStyle.marginRight = ((offsetParentBox.screenX + offsetParentBox.width) - (contentBox.screenX + contentBox.width))+'px';
+				statusPanelStyle.marginLeft = (contentBox.screenX - offsetParentBox.screenX + chromeMargins[3])+'px';
+				statusPanelStyle.marginRight = ((offsetParentBox.screenX + offsetParentBox.width) - (contentBox.screenX + contentBox.width) + chromeMargins[1])+'px';
 				statusPanelStyle.maxWidth = this.isVertical ?
 					parseInt(contentBox.width / 2)+'px' :
 					'' ;
