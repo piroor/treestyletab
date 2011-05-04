@@ -609,7 +609,6 @@ var TreeStyleTabService = {
 			window.gotoHistoryIndex
 			window.BrowserForward
 			window.BrowserBack
-			window.BrowserReloadOrDuplicate
 		]]>).forEach(function(aFunc) {
 			let source = this._getFunctionSource(aFunc);
 			if (!source || !/^\(?function (gotoHistoryIndex|BrowserForward|BrowserBack)/.test(source))
@@ -620,6 +619,22 @@ var TreeStyleTabService = {
 					if (where == 'tab' || where == 'tabshifted')
 						TreeStyleTabService.readyToOpenChildTab();
 					$1]]>
+			));
+			source = null;
+		}, this);
+
+		this._splitFunctionNames(<![CDATA[
+			window.BrowserReloadOrDuplicate
+		]]>).forEach(function(aFunc) {
+			let source = this._getFunctionSource(aFunc);
+			if (!source || !/^\(?function (BrowserReloadOrDuplicate)/.test(source))
+				return;
+			eval(aFunc+' = '+source.replace(
+				'duplicateTabIn(',
+				<![CDATA[
+					if (where == 'tab' || where == 'tabshifted')
+						TreeStyleTabService.onBeforeTabDuplicate(null);
+					$&]]>
 			));
 			source = null;
 		}, this);
@@ -1333,24 +1348,49 @@ var TreeStyleTabService = {
 		var b = aTabBrowser || this.browser;
 		switch (this.getTreePref('autoAttach.newTabCommand'))
 		{
-			case this.kNEWTAB_COMMAND_DO_NOT_ATTACH:
+			case this.kNEWTAB_COMMAND_OPEN_AS_ORPHAN:
 			default:
 				break;
 
-			case this.kNEWTAB_COMMAND_ATTACH_TO_CURRENT:
+			case this.kNEWTAB_COMMAND_OPEN_AS_CHILD:
 				this.readyToOpenChildTab(b.selectedTab);
 				break;
 
-			case this.kNEWTAB_COMMAND_ATTACH_TO_PARENT:
+			case this.kNEWTAB_COMMAND_OPEN_AS_SIBLING:
 				let parentTab = this.getParentTab(b.selectedTab);
 				if (parentTab)
 					this.readyToOpenChildTab(parentTab);
 				break;
 		}
 	},
-	kNEWTAB_COMMAND_DO_NOT_ATTACH     : 0,
-	kNEWTAB_COMMAND_ATTACH_TO_CURRENT : 1,
-	kNEWTAB_COMMAND_ATTACH_TO_PARENT  : 2,
+	kNEWTAB_COMMAND_OPEN_AS_ORPHAN  : 0,
+	kNEWTAB_COMMAND_OPEN_AS_CHILD   : 1,
+	kNEWTAB_COMMAND_OPEN_AS_SIBLING : 2,
+ 
+	onBeforeTabDuplicate : function TSTService_onBeforeTabDuplicate(aTab) 
+	{
+		var b = this.getTabBrowserFromChild(aTab) || this.browser;
+		var tab = aTab || b.selectedTab;
+		switch (this.getTreePref('autoAttach.duplicateTabCommand'))
+		{
+			case this.kDUPLICATE_COMMAND_OPEN_AS_ORPHAN:
+			default:
+				break;
+
+			case this.kDUPLICATE_COMMAND_OPEN_AS_CHILD:
+				this.readyToOpenChildTab(tab);
+				break;
+
+			case this.kDUPLICATE_COMMAND_OPEN_AS_SIBLING:
+				let parentTab = this.getParentTab(tab);
+				if (parentTab)
+					this.readyToOpenChildTab(parentTab, false, this.getNextTab(tab));
+				break;
+		}
+	},
+	kDUPLICATE_COMMAND_OPEN_AS_ORPHAN  : 0,
+	kDUPLICATE_COMMAND_OPEN_AS_CHILD   : 1,
+	kDUPLICATE_COMMAND_OPEN_AS_SIBLING : 2,
   
 /* Tree Style Tabの初期化が行われる前に復元されたセッションについてツリー構造を復元 */ 
 	

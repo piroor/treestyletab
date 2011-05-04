@@ -446,6 +446,13 @@ pref("extensions.treestyletab.autoAttach.searchResult", 1);
  *  2 = Open as a sibling tab of the current tab.
  */
 pref("extensions.treestyletab.autoAttach.newTabCommand", 0);
+/**
+ * How to treat duplicated tabs.
+ *  0 = Open as an independent tab.
+ *  1 = Open as a child tab of the source tab.
+ *  2 = Open as a sibling tab of the source tab.
+ */
+pref("extensions.treestyletab.autoAttach.duplicateTabCommand", 2);
 
 /**
  * Focus targets for Ctrl-Tab/Ctrl-Shift-Tab.
