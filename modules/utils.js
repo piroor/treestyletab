@@ -1588,6 +1588,40 @@ var TreeStyleTabUtils = {
 		ownerBrowser.treeStyleTab.insertBefore            = refId;
 	},
  
+	readyToOpenNextSiblingTab : function TSTUtils_readyToOpenNextSiblingTab(aFrameOrTabBrowser) /* PUBLIC API */ 
+	{
+		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
+		if (!frame)
+			return;
+
+		var ownerBrowser = this.getTabBrowserFromFrame(frame);
+
+		var tab = this.getTabFromFrame(frame, ownerBrowser);
+		if (!tab || tab.getAttribute('pinned') == 'true')
+			return;
+
+		var parentTab = this.getParentTab(tab);
+		var nextTab = this.getNextSiblingTab(tab);
+		if (parentTab) {
+			/**
+			 * If the base tab has a parent, open the new tab as a child of
+			 * the parent tab.
+			 */
+			this.readyToOpenChildTab(parentTab, false, nextTab);
+		}
+		else {
+			/**
+			 * Otherwise, open the tab as a new root tab. If there is no
+			 * tab next to the base tab (in other words, if the tab is the
+			 * last tab), then do nothing.
+			 */
+			if (!nextTab) return;
+			ownerBrowser.treeStyleTab.readiedToAttachNewTab = true;
+			ownerBrowser.treeStyleTab.parentTab             = null;
+			ownerBrowser.treeStyleTab.insertBefore          = nextTab.getAttribute(this.kID);
+		}
+	},
+ 
 	readyToOpenNewTabGroup : function TSTUtils_readyToOpenNewTabGroup(aFrameOrTabBrowser, aTreeStructure, aExpandAllTree) /* PUBLIC API */ 
 	{
 		if (!this.getTreePref('autoAttach')) return;
