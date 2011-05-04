@@ -474,7 +474,7 @@ var TreeStyleTabUtils = {
 			w.gBrowser ;
 	},
  
-	get window()
+	get window() 
 	{
 		return this.browser.ownerDocument.defaultView;
 	},
@@ -696,6 +696,21 @@ var TreeStyleTabUtils = {
 			//dump('WAIT '+type+' '+Date.now()+'\n');
 			thread.processNextEvent(true);
 		}
+	},
+ 
+	findOffsetParent : function TSTUtils_findOffsetParent(aNode) 
+	{
+		var parent = aNode.parentNode;
+		var doc = aNode.ownerDocument || aNode;
+		var view = doc.defaultView;
+		while (parent && parent instanceof Ci.nsIDOMElement)
+		{
+			let position = view.getComputedStyle(parent, null).getPropertyValue('position');
+			if (position != 'static')
+				return parent;
+			parent = parent.parentNode;
+		}
+		return doc.documentElement;
 	},
  
 // event 
@@ -1156,7 +1171,7 @@ var TreeStyleTabUtils = {
 				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
 	},
-	getAncestorTabbarFromChild : function TSTUtils_getAncestorTabbarFromChild(aNode) 
+	getAncestorTabbarFromChild : function TSTUtils_getAncestorTabbarFromChild(aNode)
 	{
 		return this.evaluateXPath(
 				'ancestor-or-self::*[contains(concat(" ", normalize-space(@class), " "), " tabbrowser-strip ")] | '+
@@ -1170,7 +1185,7 @@ var TreeStyleTabUtils = {
 	{
 		return this.getTabbarFromChild(aEvent.originalTarget || aEvent.target);
 	},
-	getAncestorTabbarFromEvent : function TSTUtils_getAncestorTabbarFromEvent(aEvent) 
+	getAncestorTabbarFromEvent : function TSTUtils_getAncestorTabbarFromEvent(aEvent)
 	{
 		return this.getAncestorTabbarFromChild(aEvent.originalTarget || aEvent.target);
 	},
@@ -2271,7 +2286,7 @@ var TreeStyleTabUtils = {
 	{
 		return this.clearPref('extensions.treestyletab.'+aPrefstring);
 	},
- 	
+ 
 	get shouldApplyNewPref() 
 	{
 		return (
@@ -2281,7 +2296,7 @@ var TreeStyleTabUtils = {
 				!this.inWindowDestoructionProcess;
 	},
  
-	applyOnlyForActiveWindow : false,
+	applyOnlyForActiveWindow : false, 
 	setPrefForActiveWindow : function(aTask) {
 		TreeStyleTabUtils.applyOnlyForActiveWindow = true;
 		try {

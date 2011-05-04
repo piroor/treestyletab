@@ -1581,16 +1581,16 @@ TreeStyleTabBrowser.prototype = {
 			tabContainerBox.collapsed = (this.splitter && this.splitter.getAttribute('state') == 'collapsed');
 
 			if (statusPanel && this.getTreePref('repositionStatusPanel')) {
-				let baseBox = statusPanel.parentNode.boxObject;
+				let offsetParentBox = this.utils.findOffsetParent(statusPanel).boxObject;
 				let contentBox = this.mTabBrowser.mPanelContainer.boxObject;
 				statusPanelStyle.marginTop = (pos == 'bottom') ?
-					'-moz-calc(0px - ' + (baseBox.height - contentBox.height) + 'px - 3em)' :
+					'-moz-calc(0px - ' + (offsetParentBox.height - contentBox.height) + 'px - 3em)' :
 					'' ;
 				statusPanelStyle.marginLeft = (pos == 'left') ?
-					(contentBox.screenX - baseBox.screenX)+'px' :
+					(contentBox.screenX - offsetParentBox.screenX)+'px' :
 					'' ;
 				statusPanelStyle.marginRight = (pos == 'right') ?
-					((baseBox.screenX + baseBox.width) - (contentBox.screenX + contentBox.width))+'px' :
+					((offsetParentBox.screenX + offsetParentBox.width) - (contentBox.screenX + contentBox.width))+'px' :
 					'' ;
 				statusPanelStyle.maxWidth = this.isVertical ?
 					parseInt(contentBox.width / 2)+'px' :
