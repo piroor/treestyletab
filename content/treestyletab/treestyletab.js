@@ -640,7 +640,7 @@ var TreeStyleTabService = {
 			if (!source || !/^\(?function (BrowserReloadOrDuplicate)/.test(source))
 				return;
 			eval(aFunc+' = '+source.replace(
-				'duplicateTabIn(',
+				/((?:openUILinkIn|duplicateTabIn)\()/g,
 				<![CDATA[
 					if (where == 'tab' || where == 'tabshifted')
 						TreeStyleTabService.onBeforeTabDuplicate(null);
