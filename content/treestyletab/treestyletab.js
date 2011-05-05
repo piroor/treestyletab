@@ -1367,12 +1367,19 @@ var TreeStyleTabService = {
 			case this.kNEWTAB_COMMAND_OPEN_AS_CHILD:
 				return this.readyToOpenChildTab(b.selectedTab);
 			case this.kNEWTAB_COMMAND_OPEN_AS_SIBLING:
+				let (parentTab = this.getParentTab(b.selectedTab)) {
+					if (parentTab)
+						this.readyToOpenChildTab(parentTab);
+				}
+				return;
+			case this.kNEWTAB_COMMAND_OPEN_AS_NEXT_SIBLING:
 				return this.readyToOpenNextSiblingTab(b.selectedTab);
 		}
 	},
-	kNEWTAB_COMMAND_OPEN_AS_ORPHAN  : 0,
-	kNEWTAB_COMMAND_OPEN_AS_CHILD   : 1,
-	kNEWTAB_COMMAND_OPEN_AS_SIBLING : 2,
+	kNEWTAB_COMMAND_OPEN_AS_ORPHAN       : 0,
+	kNEWTAB_COMMAND_OPEN_AS_CHILD        : 1,
+	kNEWTAB_COMMAND_OPEN_AS_SIBLING      : 2,
+	kNEWTAB_COMMAND_OPEN_AS_NEXT_SIBLING : 3,
  
 	onBeforeTabDuplicate : function TSTService_onBeforeTabDuplicate(aTab) 
 	{
@@ -1386,12 +1393,19 @@ var TreeStyleTabService = {
 			case this.kDUPLICATE_COMMAND_OPEN_AS_CHILD:
 				return this.readyToOpenChildTab(tab);
 			case this.kDUPLICATE_COMMAND_OPEN_AS_SIBLING:
+				let (parentTab = this.getParentTab(tab)) {
+					if (parentTab)
+						this.readyToOpenChildTab(parentTab);
+				}
+				return;
+			case this.kDUPLICATE_COMMAND_OPEN_AS_NEXT_SIBLING:
 				return this.readyToOpenNextSiblingTab(tab);
 		}
 	},
-	kDUPLICATE_COMMAND_OPEN_AS_ORPHAN  : 0,
-	kDUPLICATE_COMMAND_OPEN_AS_CHILD   : 1,
-	kDUPLICATE_COMMAND_OPEN_AS_SIBLING : 2,
+	kDUPLICATE_COMMAND_OPEN_AS_ORPHAN       : 0,
+	kDUPLICATE_COMMAND_OPEN_AS_CHILD        : 1,
+	kDUPLICATE_COMMAND_OPEN_AS_SIBLING      : 2,
+	kDUPLICATE_COMMAND_OPEN_AS_NEXT_SIBLING : 3,
   
 /* Tree Style Tabの初期化が行われる前に復元されたセッションについてツリー構造を復元 */ 
 	
