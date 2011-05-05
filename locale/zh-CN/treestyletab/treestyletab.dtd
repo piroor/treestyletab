@@ -49,10 +49,17 @@
 
 <!ENTITY config.tabs.tab "新标签">
 
-<!ENTITY config.autoAttach.newTabCommand.caption "如何处理手动新建的空白页？">
-<!ENTITY config.autoAttach.newTabCommand.ignore  "在最顶层次打开">
-<!ENTITY config.autoAttach.newTabCommand.current "作为当前标签的子标签打开">
-<!ENTITY config.autoAttach.newTabCommand.parent  "作为当前标签的同级标签打开">
+<!ENTITY config.autoAttach.newTabCommand.caption     "如何处理手动新建的空白页？:">
+<!ENTITY config.autoAttach.newTabCommand.independent "在最顶层次打开">
+<!ENTITY config.autoAttach.newTabCommand.child       "作为当前标签的子标签打开">
+<!ENTITY config.autoAttach.newTabCommand.sibling     "作为当前标签的同级标签打开">
+<!ENTITY config.autoAttach.newTabCommand.nextSibling "Open as the next sibling of the current tab">
+
+<!ENTITY config.autoAttach.duplicateTabCommand.caption     "When a tab is duplicated by middle click on the &quot;Reload&quot; button:">
+<!ENTITY config.autoAttach.duplicateTabCommand.independent "在最顶层次打开">
+<!ENTITY config.autoAttach.duplicateTabCommand.child       "作为当前标签的子标签打开">
+<!ENTITY config.autoAttach.duplicateTabCommand.sibling     "作为当前标签的同级标签打开">
+<!ENTITY config.autoAttach.duplicateTabCommand.nextSibling "Open as the next sibling of the source tab">
 
 <!ENTITY config.openGroupBookmark.caption     "如何“在标签页中打开书签组”？">
 <!ENTITY config.openGroupBookmark.ask         "总是询问">

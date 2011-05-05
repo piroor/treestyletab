@@ -49,10 +49,17 @@
 
 <!ENTITY config.tabs.tab "Nowe karty">
 
-<!ENTITY config.autoAttach.newTabCommand.caption "When a new blank tab is opened manually">
-<!ENTITY config.autoAttach.newTabCommand.ignore  "Open as a root tab">
-<!ENTITY config.autoAttach.newTabCommand.current "Open as a child of the current tab">
-<!ENTITY config.autoAttach.newTabCommand.parent  "Open as a sibling of the current tab">
+<!ENTITY config.autoAttach.newTabCommand.caption     "When a new blank tab is opened manually:">
+<!ENTITY config.autoAttach.newTabCommand.independent "Open as an independent tab">
+<!ENTITY config.autoAttach.newTabCommand.child       "Open as a child of the current tab">
+<!ENTITY config.autoAttach.newTabCommand.sibling     "Open as a sibling of the current tab">
+<!ENTITY config.autoAttach.newTabCommand.nextSibling "Open as the next sibling of the current tab">
+
+<!ENTITY config.autoAttach.duplicateTabCommand.caption     "When a tab is duplicated by middle click on the &quot;Reload&quot; button:">
+<!ENTITY config.autoAttach.duplicateTabCommand.independent "Open as an independent tab">
+<!ENTITY config.autoAttach.duplicateTabCommand.child       "Open as a child of the source tab">
+<!ENTITY config.autoAttach.duplicateTabCommand.sibling     "Open as a sibling of the source tab">
+<!ENTITY config.autoAttach.duplicateTabCommand.nextSibling "Open as the next sibling of the source tab">
 
 <!ENTITY config.tabs.bookmark.tab "Zakładki">
 <!ENTITY config.tabs.dragdrop.tab "Przeciąganie/Upuszczanie">

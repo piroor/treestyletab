@@ -49,10 +49,17 @@
 
 <!ENTITY config.tabs.tab "Nye faner">
 
-<!ENTITY config.autoAttach.newTabCommand.caption "Ved manuel åbning af ny tom fane">
-<!ENTITY config.autoAttach.newTabCommand.ignore  "Åben som hovedfane">
-<!ENTITY config.autoAttach.newTabCommand.current "Åben som underfane til den aktive fane">
-<!ENTITY config.autoAttach.newTabCommand.parent  "Åben som søsken til den aktive fane">
+<!ENTITY config.autoAttach.newTabCommand.caption     "Ved manuel åbning af ny tom fane:">
+<!ENTITY config.autoAttach.newTabCommand.independent "Åben som hovedfane">
+<!ENTITY config.autoAttach.newTabCommand.child       "Åben som underfane til den aktive fane">
+<!ENTITY config.autoAttach.newTabCommand.sibling     "Åben som søsken til den aktive fane">
+<!ENTITY config.autoAttach.newTabCommand.nextSibling "Open as the next sibling of the current tab">
+
+<!ENTITY config.autoAttach.duplicateTabCommand.caption     "When a tab is duplicated by middle click on the &quot;Reload&quot; button:">
+<!ENTITY config.autoAttach.duplicateTabCommand.independent "Åben som hovedfane">
+<!ENTITY config.autoAttach.duplicateTabCommand.child       "Åben som underfane til den aktive fane">
+<!ENTITY config.autoAttach.duplicateTabCommand.sibling     "Åben som søsken til den aktive fane">
+<!ENTITY config.autoAttach.duplicateTabCommand.nextSibling "Open as the next sibling of the source tab">
 
 <!ENTITY config.openGroupBookmark.caption     "Handling ved &quot;Åben alle i faner&quot; for bogmærkemapper">
 <!ENTITY config.openGroupBookmark.ask         "Spørg altid">

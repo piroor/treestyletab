@@ -49,10 +49,17 @@
 
 <!ENTITY config.tabs.tab "Nya flikar">
 
-<!ENTITY config.autoAttach.newTabCommand.caption "När en ny tom flik öppnas manuellt">
-<!ENTITY config.autoAttach.newTabCommand.ignore  "Öppna som en rotflik">
-<!ENTITY config.autoAttach.newTabCommand.current "Öppna som underordnad till den aktuella fliken">
-<!ENTITY config.autoAttach.newTabCommand.parent  "Öppna på samma nivå som den aktuella fliken">
+<!ENTITY config.autoAttach.newTabCommand.caption     "När en ny tom flik öppnas manuellt:">
+<!ENTITY config.autoAttach.newTabCommand.independent "Öppna som en rotflik">
+<!ENTITY config.autoAttach.newTabCommand.child       "Öppna som underordnad till den aktuella fliken">
+<!ENTITY config.autoAttach.newTabCommand.sibling     "Öppna på samma nivå som den aktuella fliken">
+<!ENTITY config.autoAttach.newTabCommand.nextSibling "Open as the next sibling of the current tab">
+
+<!ENTITY config.autoAttach.duplicateTabCommand.caption     "When a tab is duplicated by middle click on the &quot;Reload&quot; button:">
+<!ENTITY config.autoAttach.duplicateTabCommand.independent "Öppna som en rotflik">
+<!ENTITY config.autoAttach.duplicateTabCommand.child       "Öppna som underordnad till den aktuella fliken">
+<!ENTITY config.autoAttach.duplicateTabCommand.sibling     "Öppna på samma nivå som den aktuella fliken">
+<!ENTITY config.autoAttach.duplicateTabCommand.nextSibling "Open as the next sibling of the source tab">
 
 <!ENTITY config.openGroupBookmark.caption     "Beteende för &quot;Öppna alla i flikar&quot; för bokmärkesmappar">
 <!ENTITY config.openGroupBookmark.ask         "Fråga mig alltid hur bokmärken skall öppnas">

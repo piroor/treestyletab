@@ -51,10 +51,17 @@
 
 <!ENTITY config.tabs.tab "Tabs Öffnen">
 
-<!ENTITY config.autoAttach.newTabCommand.caption "Neuen Tab öffnen">
-<!ENTITY config.autoAttach.newTabCommand.ignore  "Auf oberster Ebene">
-<!ENTITY config.autoAttach.newTabCommand.current "Dem aktuellen Tab unterordnen">
-<!ENTITY config.autoAttach.newTabCommand.parent  "Auf Ebene des aktuellen Tabs öffnen">
+<!ENTITY config.autoAttach.newTabCommand.caption     "Neuen Tab öffnen:">
+<!ENTITY config.autoAttach.newTabCommand.independent "Auf oberster Ebene">
+<!ENTITY config.autoAttach.newTabCommand.child       "Dem aktuellen Tab unterordnen">
+<!ENTITY config.autoAttach.newTabCommand.sibling     "Auf Ebene des aktuellen Tabs öffnen">
+<!ENTITY config.autoAttach.newTabCommand.nextSibling "Open as the next sibling of the current tab">
+
+<!ENTITY config.autoAttach.duplicateTabCommand.caption     "When a tab is duplicated by middle click on the &quot;Reload&quot; button:">
+<!ENTITY config.autoAttach.duplicateTabCommand.independent "Auf oberster Ebene">
+<!ENTITY config.autoAttach.duplicateTabCommand.child       "Dem aktuellen Tab unterordnen">
+<!ENTITY config.autoAttach.duplicateTabCommand.sibling     "Auf Ebene des aktuellen Tabs öffnen">
+<!ENTITY config.autoAttach.duplicateTabCommand.nextSibling "Open as the next sibling of the source tab">
 
 <!ENTITY config.openGroupBookmark.caption     "Verhalten von &quot;Alle in Tabs öffnen&quot; für Seiten in einem Lesezeichenordner">
 <!ENTITY config.openGroupBookmark.ask         "Jedes Mal nachfragen">

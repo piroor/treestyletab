@@ -50,10 +50,17 @@
 
 <!ENTITY config.tabs.tab "新しいタブ">
 
-<!ENTITY config.autoAttach.newTabCommand.caption "新しい空のタブを開いた時">
-<!ENTITY config.autoAttach.newTabCommand.ignore  "独立したタブとして開く">
-<!ENTITY config.autoAttach.newTabCommand.current "現在のタブの子として開く">
-<!ENTITY config.autoAttach.newTabCommand.parent  "現在のタブと同階層に開く">
+<!ENTITY config.autoAttach.newTabCommand.caption     "新しい空のタブを開いた時：">
+<!ENTITY config.autoAttach.newTabCommand.independent "独立したタブとして開く">
+<!ENTITY config.autoAttach.newTabCommand.child       "現在のタブの子として開く">
+<!ENTITY config.autoAttach.newTabCommand.sibling     "現在のタブと同階層に開く">
+<!ENTITY config.autoAttach.newTabCommand.nextSibling "現在のタブと同階層で隣に開く">
+
+<!ENTITY config.autoAttach.duplicateTabCommand.caption     "「再読み込み」ボタンを中クリックしてタブを複製する時：">
+<!ENTITY config.autoAttach.duplicateTabCommand.independent "独立したタブとして開く">
+<!ENTITY config.autoAttach.duplicateTabCommand.child       "元のタブの子として開く">
+<!ENTITY config.autoAttach.duplicateTabCommand.sibling     "元のタブと同階層に開く">
+<!ENTITY config.autoAttach.duplicateTabCommand.nextSibling "元のタブと同階層で隣に開く">
 
 <!ENTITY config.openGroupBookmark.caption     "ブックマークフォルダの内容をタブで開く時">
 <!ENTITY config.openGroupBookmark.ask         "どうするか毎回尋ねる">

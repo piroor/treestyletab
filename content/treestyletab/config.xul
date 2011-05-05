@@ -346,6 +346,9 @@
 		<preference id="extensions.treestyletab.autoAttach.newTabCommand"
 			name="extensions.treestyletab.autoAttach.newTabCommand"
 			type="int"/>
+		<preference id="extensions.treestyletab.autoAttach.duplicateTabCommand"
+			name="extensions.treestyletab.autoAttach.duplicateTabCommand"
+			type="int"/>
 		<preference id="extensions.treestyletab.openGroupBookmark.behavior"
 			name="extensions.treestyletab.openGroupBookmark.behavior"
 			type="int"/>
@@ -357,16 +360,38 @@
 			type="int"/>
 	</preferences>
 
-	<groupbox>
-		<caption label="&config.autoAttach.newTabCommand.caption;"/>
-		<radiogroup id="extensions.treestyletab.autoAttach.newTabCommand-radiogroup"
-			orient="vertical"
-			preference="extensions.treestyletab.autoAttach.newTabCommand">
-			<radio value="0" label="&config.autoAttach.newTabCommand.ignore;"/>
-			<radio value="1" label="&config.autoAttach.newTabCommand.current;"/>
-			<radio value="2" label="&config.autoAttach.newTabCommand.parent;"/>
-		</radiogroup>
-	</groupbox>
+	<vbox>
+		<label value="&config.autoAttach.newTabCommand.caption;"
+			control="extensions.treestyletab.autoAttach.newTabCommand-menulist"/>
+		<hbox>
+			<spacer style="width:2em;"/>
+			<menulist id="extensions.treestyletab.autoAttach.newTabCommand-menulist"
+				preference="extensions.treestyletab.autoAttach.newTabCommand">
+				<menupopup>
+					<menuitem value="0" label="&config.autoAttach.newTabCommand.independent;"/>
+					<menuitem value="1" label="&config.autoAttach.newTabCommand.child;"/>
+					<menuitem value="2" label="&config.autoAttach.newTabCommand.sibling;"/>
+					<menuitem value="3" label="&config.autoAttach.newTabCommand.nextSibling;"/>
+				</menupopup>
+			</menulist>
+		</hbox>
+	</vbox>
+	<vbox>
+		<label value="&config.autoAttach.duplicateTabCommand.caption;"
+			control="extensions.treestyletab.autoAttach.duplicateTabCommand-menulist"/>
+		<hbox>
+			<spacer style="width:2em;"/>
+			<menulist id="extensions.treestyletab.autoAttach.duplicateTabCommand-menulist"
+				preference="extensions.treestyletab.autoAttach.duplicateTabCommand">
+				<menupopup>
+					<menuitem value="0" label="&config.autoAttach.duplicateTabCommand.independent;"/>
+					<menuitem value="1" label="&config.autoAttach.duplicateTabCommand.child;"/>
+					<menuitem value="2" label="&config.autoAttach.duplicateTabCommand.sibling;"/>
+					<menuitem value="3" label="&config.autoAttach.duplicateTabCommand.nextSibling;"/>
+				</menupopup>
+			</menulist>
+		</hbox>
+	</vbox>
 	<groupbox>
 		<caption label="&config.openGroupBookmark.caption;"/>
 		<hbox>
