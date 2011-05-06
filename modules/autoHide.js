@@ -331,11 +331,7 @@ AutoHideBrowser.prototype = {
 		var sensitiveArea = this.sensitiveArea;
 		/* For resizing of shrunken tab bar and clicking closeboxes,
 		   we have to shrink sensitive area a little. */
-		if (this.shrunken) {
-			sensitiveArea = 0;
-			if (pos != 'right' || b.getAttribute(sv.kTAB_INVERTED) == 'true')
-				sensitiveArea -= 20;
-		}
+		if (this.shrunken) sensitiveArea -= 20;
 
 		var shouldKeepShown = (
 				pos == 'left' ?
