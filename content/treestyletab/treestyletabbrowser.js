@@ -1602,7 +1602,7 @@ TreeStyleTabBrowser.prototype = {
 				realHeight : realHeight
 			});
 
-			tabContainerBox.collapsed = (this.splitter && this.splitter.getAttribute('state') == 'collapsed');
+			strip.collapsed = tabContainerBox.collapsed = (this.splitter && this.splitter.getAttribute('state') == 'collapsed');
 
 			if (statusPanel && this.getTreePref('repositionStatusPanel')) {
 				let offsetParentBox = this.utils.findOffsetParent(statusPanel).boxObject;
@@ -1623,7 +1623,7 @@ TreeStyleTabBrowser.prototype = {
 			this.mTabBrowser.tabContainer.setAttribute('context', this.mTabBrowser.tabContextMenu.id);
 		}
 		else {
-			tabContainerBox.collapsed = false;
+			strip.collapsed = tabContainerBox.collapsed = false;
 			stripStyle.top = stripStyle.left = stripStyle.right = stripStyle.width = stripStyle.height = '';
 
 			if (
