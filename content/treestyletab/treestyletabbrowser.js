@@ -302,7 +302,7 @@ TreeStyleTabBrowser.prototype = {
 		return false;
 	},
  
-	positionPinnedTabs : function TSTBrowser_positionPinnedTabs(aWidth, aHeight) 
+	positionPinnedTabs : function TSTBrowser_positionPinnedTabs(aWidth, aHeight, aJustNow) 
 	{
 		var b = this.mTabBrowser;
 		var tabbar = b.tabContainer;
@@ -344,6 +344,11 @@ TreeStyleTabBrowser.prototype = {
 		{
 			let style = tabbar.childNodes[i].style;
 			style.MozMarginStart = '';
+
+			let transitionStyleBackup = style.transition || style.MozTransition || '';
+			if (aJustNow)
+				style.MozTransition = style.transition = 'none';
+
 			if (inverted) {
 				/**
 				 * In a box with "direction: rtr", we have to position tabs
@@ -358,8 +363,15 @@ TreeStyleTabBrowser.prototype = {
 				style.setProperty('margin-left', ((width * col) + shrunkenOffset)+'px', 'important');
 				style.marginRight = '';
 			}
+
 			style.setProperty('margin-top', (- height * (maxRow - row))+'px', 'important');
 			style.top = style.right = style.bottom = style.left = '';
+
+			if (aJustNow)
+				this.Deferred.next(function() { // "transition" must be cleared after the reflow.
+					style.MozTransition = style.transition = transitionStyleBackup;
+				});
+
 			col++;
 			if (col >= maxCol) {
 				col = 0;
@@ -1511,7 +1523,7 @@ TreeStyleTabBrowser.prototype = {
 		this._updateFloatingTabbarReason |= aReason;
 
 		if (this._updateFloatingTabbarReason & this.kTABBAR_UPDATE_NOW) {
-			this._updateFloatingTabbarInternal(this.updateFloatingTabbarReason);
+			this._updateFloatingTabbarInternal(this._updateFloatingTabbarReason);
 			this._updateFloatingTabbarReason = 0;
 		}
 		else {
@@ -1623,7 +1635,7 @@ TreeStyleTabBrowser.prototype = {
 			this.mTabBrowser.tabContainer.removeAttribute('context');
 		}
 
-		this.positionPinnedTabs();
+		this.positionPinnedTabs(null, null, aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE);
 	},
  
 	_updateFloatingTabbarResizer : function TSTBrowser_updateFloatingTabbarResizer(aSize) 
