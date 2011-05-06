@@ -232,12 +232,13 @@ tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-sc
 	max-width: 64000px !important;
 }
 
+/* override toolbar binding */
+/**
+ * Don't use :-moz-any() selector to override styles defined by the theme.
+ * Normal selectors in default theme is stronger than :-moz-any() even if
+ * it includes #TabsToolbar in its subqueries.
+ */
 @media all and (-moz-windows-compositor) { /* for winstripe */
-	/**
-	 * Don't use :-moz-any() selector to override styles defined by the theme.
-	 * Normal selectors in default theme is stronger than :-moz-any() even if
-	 * it includes #TabsToolbar in its subqueries.
-	 */
 	#navigator-toolbox[tabsontop="true"]
 	  > .treestyletab-tabbar-toolbar:not(#toolbar-menubar),
 	#navigator-toolbox[tabsontop="true"]
@@ -315,12 +316,16 @@ toolbar.treestyletab-tabbar-toolbar-ready:not([nowindowdrag="true"]),
 	-moz-binding: url(treestyletab.xml#toolbar-drag);
 }
 #navigator-toolbox[tabsontop="false"]
-  > :-moz-any(.treestyletab-tabbar-toolbar,
-              .treestyletab-tabbar-toolbar-ready,
-              .treestyletab-tabbar-toolbar:-moz-lwtheme,
-              .treestyletab-tabbar-toolbar-ready:-moz-lwtheme) {
+  > .treestyletab-tabbar-toolbar,
+#navigator-toolbox[tabsontop="false"]
+  > .treestyletab-tabbar-toolbar-ready,
+#navigator-toolbox[tabsontop="false"]
+  > .treestyletab-tabbar-toolbar:-moz-lwtheme,
+#navigator-toolbox[tabsontop="false"]
+  > .treestyletab-tabbar-toolbar-ready:-moz-lwtheme {
 	-moz-binding: url(treestyletab.xml#toolbar);
 }
+
 .treestyletab-tabbar-toolbar:not([treestyletab-tabbar-position="top"]),
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
 	line-height: 0 !important; /* to avoid an useless space above the tab bar */

@@ -2056,7 +2056,7 @@ TreeStyleTabBrowser.prototype = {
 				return;
 
 			case 'lightweight-theme-styling-update':
-				return this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
+				return this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_APPEARANCE_CHANGE);
 
 			case this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY:
 				return this.treeViewEnabled = (aData != 'false');
