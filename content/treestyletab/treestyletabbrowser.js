@@ -3514,9 +3514,19 @@ TreeStyleTabBrowser.prototype = {
 		var b   = this.mTabBrowser;
 		var tab = b.selectedTab
 
-		/* <tabbrowser>.previewTab() focuses to the tab internally,
-		   so we should ignore this event if it is fired from previewTab(). */
-		if (b._previewMode)
+		if (
+			/**
+			 * <tabbrowser>.previewTab() focuses to the tab internally,
+			 * so we should ignore this event if it is fired from previewTab().
+			 */
+			b._previewMode ||
+			/**
+			 * Ignore selected tabs which is being closed. For example,
+			 * when a collapsed tree is closed, Firefox unexpectedly gives
+			 * focus to a collapsed child in the tree.
+			 */
+			(b._removingTabs && b._removingTabs.indexOf(tab) > -1)
+			)
 			return;
 
 		if (this.isCollapsed(tab)) {
@@ -4971,15 +4981,15 @@ TreeStyleTabBrowser.prototype = {
 	collapseExpandTreesIntelligentlyWithDelayFor : function TSTBrowser_collapseExpandTreesIntelligentlyWithDelayFor(aTab)
 	{
 		if (this.doingCollapseExpand) return;
-		if (this.cETIWDFTimer)
-			window.clearTimeout(this.cETIWDFTimer);
-		this.cETIWDFTimer = window.setTimeout(function(aSelf) {
-			window.clearTimeout(aSelf.cETIWDFTimer);
-			aSelf.cETIWDFTimer = null;
+		if (this._cETIWDFTimer)
+			window.clearTimeout(this._cETIWDFTimer);
+		this._cETIWDFTimer = window.setTimeout(function(aSelf) {
+			window.clearTimeout(aSelf._cETIWDFTimer);
+			aSelf._cETIWDFTimer = null;
 			aSelf.collapseExpandTreesIntelligentlyFor(aTab);
 		}, 0, this);
 	},
-	cETIWDFTimer : null,
+	_cETIWDFTimer : null,
  
 	collapseExpandAllSubtree : function TSTBrowser_collapseExpandAllSubtree(aCollapse, aJustNow) 
 	{
