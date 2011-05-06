@@ -334,7 +334,7 @@ TreeStyleTabBrowser.prototype = {
 
 		var inverted = this.position == 'left' && b.getAttribute(this.kINVERT_SCROLLBAR) == 'true';
 		var remainder = maxWidth - (maxCol * width);
-		var shrunkenOffset = (inverted || this.position == 'right') ?
+		var shrunkenOffset = ((inverted || this.position == 'right') && tabbarPlaceHolderWidth) ?
 								tabbarWidth - tabbarPlaceHolderWidth :
 								0 ;
 
@@ -381,15 +381,23 @@ TreeStyleTabBrowser.prototype = {
 	},
 	positionPinnedTabsWithDelay : function TSTBrowser_positionPinnedTabsWithDelay()
 	{
-		if (this.positionPinnedTabsWithDelayTimer)
+		if (this._positionPinnedTabsWithDelayTimer)
 			return;
 
-		this.positionPinnedTabsWithDelayTimer = window.setTimeout(function(aSelf) {
+		var args = Array.slice(arguments);
+		var lastArgs = this._positionPinnedTabsWithDelayTimerArgs || [null, null, false];
+		lastArgs[0] = lastArgs[0] || args[0];
+		lastArgs[1] = lastArgs[1] || args[1];
+		lastArgs[2] = lastArgs[2] || args[2];
+		this._positionPinnedTabsWithDelayTimerArgs = lastArgs;
+
+		this._positionPinnedTabsWithDelayTimer = window.setTimeout(function(aSelf) {
 			aSelf.Deferred.next(function() {
 				// do with delay again, after Firefox's reposition was completely finished.
-				aSelf.positionPinnedTabs();
+				aSelf.positionPinnedTabs.apply(aSelf, aSelf._positionPinnedTabsWithDelayTimerArgs);
 			});
-			aSelf.positionPinnedTabsWithDelayTimer = null;
+			aSelf._positionPinnedTabsWithDelayTimer = null;
+			aSelf._positionPinnedTabsWithDelayTimerArgs = null;
 		}, 0, this);
 	},
 	PINNED_TAB_DEFAULT_WIDTH : 24,
@@ -1635,7 +1643,10 @@ TreeStyleTabBrowser.prototype = {
 			this.mTabBrowser.tabContainer.removeAttribute('context');
 		}
 
-		this.positionPinnedTabs(null, null, aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE);
+		if (tabContainerBox.boxObject.width)
+			this.positionPinnedTabs(null, null, aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE);
+		else
+			this.positionPinnedTabsWithDelay(null, null, aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE);
 	},
  
 	_updateFloatingTabbarResizer : function TSTBrowser_updateFloatingTabbarResizer(aSize) 
