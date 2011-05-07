@@ -469,7 +469,9 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-print-preview="tr
 window[chromehidden~="toolbar"]
   .tabbrowser-strip.treestyletab-tabbar-placeholder,
 window[chromehidden~="toolbar"]
-  .tabbrowser-strip.treestyletab-tabbar-placeholder+splitter {
+  .tabbrowser-strip.treestyletab-tabbar-placeholder+splitter,
+window[chromehidden~="toolbar"]
+  .treestyletab-tabbar-toolbar {
 	visibility: collapse;
 }
 
