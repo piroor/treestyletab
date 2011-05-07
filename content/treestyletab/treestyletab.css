@@ -173,6 +173,11 @@ toolbar.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
 	max-width: none !important;
 }
 
+/* workaround for https://github.com/piroor/treestyletab/issues/100 */
+.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] .textbox-input-box {
+	-moz-box-align: stretch;
+}
+
 
 /* leftside vertical tab bar (for Firefox 4 or later) */
 
