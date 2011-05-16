@@ -2990,23 +2990,33 @@ TreeStyleTabBrowser.prototype = {
 	{
 		this.internallyTabMovingCount++;
 
-		var tabs = this.getAllTabsArray(this.mTabBrowser);
-		aChangedTabs = aChangedTabs || tabs;
+		var allTabs = this.getAllTabsArray(this.mTabBrowser);
+		var normalTabs = allTabs.filter(function(aTab) {
+							return !aTab.hasAttribute('pinned');
+						});
+		aChangedTabs = aChangedTabs || normalTabs;
 
-		var lastVisibleTab = this.mTabBrowser.visibleTabs;
-		lastVisibleTab = lastVisibleTab[lastVisibleTab.length-1];
+		var shownTabs = aChangedTabs.filter(function(aTab) {
+							return !aTab.hidden;
+						});
 
-		tabs.reverse().forEach(function(aTab) {
-			var parent = this.getParentTab(aTab);
-			var attached = false;
-			if (parent && aTab.hidden != parent.hidden) {
-				var ancestor = parent;
+		var movingTabToAnotherGroup = !shownTabs.length;
+		var switchingGroup = !movingTabToAnotherGroup;
 
-				var lastNextTab = null;
+		var lastIndex = allTabs.length - 1;
+		var lastMovedTab;
+		normalTabs = normalTabs.slice(0).reverse();
+		for each (let tab in normalTabs)
+		{
+			let parent = this.getParentTab(tab);
+			let attached = false;
+			if (parent && (tab.hidden != parent.hidden)) {
+				let ancestor = parent;
+				let lastNextTab = null;
 				while (ancestor = this.getParentTab(ancestor))
 				{
-					if (ancestor.hidden == aTab.hidden) {
-						this.attachTabTo(aTab, ancestor, {
+					if (ancestor.hidden == tab.hidden) {
+						this.attachTabTo(tab, ancestor, {
 							dontMove     : true,
 							insertBefore : lastNextTab
 						});
@@ -3016,35 +3026,35 @@ TreeStyleTabBrowser.prototype = {
 					lastNextTab = this.getNextSiblingTab(ancestor);
 				}
 				if (!attached) {
-					this.collapseExpandTab(aTab, false, true);
-					this.partTab(aTab);
+					this.collapseExpandTab(tab, false, true);
+					this.partTab(tab);
 				}
 			}
 
+			if (aChangedTabs.indexOf(tab) < 0)
+				continue;
+
 			if (
-				!aTab.hidden &&
+				switchingGroup &&
+				!tab.hidden &&
 				!attached &&
-				!parent &&
-				aChangedTabs.indexOf(aTab) > -1
+				!parent
 				) {
-				let prev = this.getPreviousTab(aTab);
-				let next = this.getNextTab(aTab);
+				let prev = this.getPreviousTab(tab);
+				let next = this.getNextTab(tab);
 				if (
 					(prev && aChangedTabs.indexOf(prev) < 0 && !prev.hidden) ||
 					(next && aChangedTabs.indexOf(next) < 0 && !next.hidden)
 					)
-					this.attachTabFromPosition(aTab, tabs.length-1);
+					this.attachTabFromPosition(tab, lastIndex);
 			}
 
-			// Hidden tabs have to be moved below visible tabs, because
-			// sometimes hidden tabs between visible tabs break tree
-			// structure.
-			if (aTab.hidden) {
-				let newPos = lastVisibleTab._tPos;
-				if (aTab._tPos < lastVisibleTab._tPos)
-					this.mTabBrowser.moveTabTo(aTab, newPos);
+			if (movingTabToAnotherGroup && tab.hidden) {
+				let index = lastMovedTab ? lastMovedTab._tPos - 1 : lastIndex ;
+				this.mTabBrowser.moveTabTo(tab, index);
+				lastMovedTab = tab;
 			}
-		}, this);
+		}
 		this.internallyTabMovingCount--;
 	},
  
