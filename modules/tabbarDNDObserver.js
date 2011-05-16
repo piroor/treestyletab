@@ -224,11 +224,15 @@ catch(e) {
 			}
 		}
 
+		var isInverted = sv.isVertical ? false : b.ownerDocument.defaultView.getComputedStyle(b.parentNode, null).direction == 'rtl';
 		if (
 			info.target &&
 			(
 				info.target.hidden ||
-				sv.isCollapsed(info.target)
+				(
+					sv.isCollapsed(info.target) &&
+					info.position != (isInverted ? sv.kDROP_BEFORE : sv.kDROP_AFTER )
+				)
 			)
 			)
 			info.canDrop = false;
@@ -245,7 +249,7 @@ catch(e) {
 		var tab        = aEvent.target;
 		var tabs       = sv.getTabsArray(b);
 		var firstTab   = sv.getFirstNormalTab(b) || tabs[0];
-		var lastTabIndex = tabs.length -1;
+		var lastTabIndex = tabs.length - 1;
 		var isInverted = sv.isVertical ? false : b.ownerDocument.defaultView.getComputedStyle(b.parentNode, null).direction == 'rtl';
 		var info       = {
 				target       : null,
@@ -260,7 +264,7 @@ catch(e) {
 		var isNewTabAction = !aSourceTab || aSourceTab.ownerDocument != d;
 
 		if (tab.localName != 'tab') {
-			var action = isTabMoveFromOtherWindow ? sv.kACTION_STAY : (sv.kACTION_MOVE | sv.kACTION_PART) ;
+			let action = isTabMoveFromOtherWindow ? sv.kACTION_STAY : (sv.kACTION_MOVE | sv.kACTION_PART) ;
 			if (isNewTabAction) action |= sv.kACTION_NEWTAB;
 			if (aEvent[sv.positionProp] < firstTab.boxObject[sv.positionProp]) {
 				info.target   = info.parent = info.insertBefore = firstTab;
@@ -495,7 +499,7 @@ catch(e) {
 			}, sv);
 		}
 
-		var lastTabIndex = tabs.length -1;
+		var lastTabIndex = tabs[tabs.length -1]._tPos;
 		draggedTabs.forEach(function(aTab, aIndex) {
 			var tab = aTab;
 			if (aInfo.action & sv.kACTIONS_FOR_DESTINATION) {
@@ -970,7 +974,14 @@ try{
 			return true;
 		}
 
-		info.target.setAttribute(
+		let indicatorTab = info.target;
+		if (sv.isCollapsed(info.target)) {
+			let tab = indicatorTab;
+			while ((tab = sv.getPreviousTab(tab)) && sv.isCollapsed(tab)) {}
+			if (tab) indicatorTab = tab;
+		}
+
+		indicatorTab.setAttribute(
 			sv.kDROP_POSITION,
 			info.position == sv.kDROP_BEFORE ? 'before' :
 			info.position == sv.kDROP_AFTER ? 'after' :
