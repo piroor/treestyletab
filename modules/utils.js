@@ -1084,7 +1084,12 @@ var TreeStyleTabUtils = {
 		if (!strip) return;
 		var isFeatureAttribute = aAttr.indexOf('treestyletab-') == 0;
 		if (aValue) {
-			strip.setAttribute(aAttr, aValue);
+			if (this._tabStripPlaceHolder)
+				this._tabStripPlaceHolder.setAttribute(aAttr, aValue);
+			if (!this._tabStripPlaceHolder || aAttr != 'ordinal')
+				strip.setAttribute(aAttr, aValue);
+			if (strip.treeStyleTabToolbarInnerBox)
+				strip.treeStyleTabToolbarInnerBox.setAttribute(aAttr, aValue);
 			if (isFeatureAttribute) {
 				// Only attributes for TST's feature are applied to the root element.
 				// (width, height, and other general attributes have to be ignored!)
@@ -1092,22 +1097,19 @@ var TreeStyleTabUtils = {
 					strip.ownerDocument.documentElement.setAttribute(aAttr, aValue);
 				}, 10, this);
 			}
-			if (this._tabStripPlaceHolder)
-				this._tabStripPlaceHolder.setAttribute(aAttr, aValue);
-			if (strip.treeStyleTabToolbarInnerBox)
-				strip.treeStyleTabToolbarInnerBox.setAttribute(aAttr, aValue);
 		}
 		else {
-			strip.removeAttribute(aAttr);
+			if (this._tabStripPlaceHolder)
+				this._tabStripPlaceHolder.removeAttribute(aAttr);
+			if (!this._tabStripPlaceHolder || aAttr != 'ordinal')
+				strip.removeAttribute(aAttr);
+			if (strip.treeStyleTabToolbarInnerBox)
+				strip.treeStyleTabToolbarInnerBox.removeAttribute(aAttr);
 			if (isFeatureAttribute) {
 				strip.ownerDocument.defaultView.setTimeout(function(aSelf) {
 					strip.ownerDocument.documentElement.removeAttribute(aAttr);
 				}, 10, this);
 			}
-			if (this._tabStripPlaceHolder)
-				this._tabStripPlaceHolder.removeAttribute(aAttr);
-			if (strip.treeStyleTabToolbarInnerBox)
-				strip.treeStyleTabToolbarInnerBox.removeAttribute(aAttr);
 		}
 	},
  
