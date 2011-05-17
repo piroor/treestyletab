@@ -413,13 +413,15 @@ catch(e) {
 		var sourceBrowser = sv.getTabBrowserFromChild(aDraggedTab);
 
 		var draggedWholeTree = [].concat(draggedRoots);
-		draggedRoots.forEach(function(aRoot) {
-			sv.getDescendantTabs(aRoot)
-				.forEach(function(aTab) {
-					if (draggedWholeTree.indexOf(aTab) < 0)
-						draggedWholeTree.push(aTab);
-				});
-		}, this);
+		for each (let root in draggedRoots)
+		{
+			let tabs = sv.getDescendantTabs(root);
+			for each (let tab in tabs)
+			{
+				if (draggedWholeTree.indexOf(tab) < 0)
+					draggedWholeTree.push(tab);
+			}
+		}
 
 		var selectedTabs = draggedTabs.filter(function(aTab) {
 				return aTab.getAttribute('multiselected') == 'true';
@@ -427,17 +429,19 @@ catch(e) {
 		if (draggedWholeTree.length != selectedTabs.length &&
 			selectedTabs.length) {
 			draggedTabs = draggedRoots = selectedTabs;
-			if (aInfo.action & sv.kACTIONS_FOR_SOURCE)
-				Array.forEach(selectedTabs, function(aTab) {
-					if (selectedTabs.indexOf(sv.getParentTab(aTab)) > -1)
-						return;
-					sv.partAllChildren(aTab, {
+			if (aInfo.action & sv.kACTIONS_FOR_SOURCE) {
+				for each (let tab in Array.slice(selectedTabs))
+				{
+					if (selectedTabs.indexOf(sv.getParentTab(tab)) > -1)
+						continue;
+					sv.partAllChildren(tab, {
 						behavior : sv.getCloseParentBehaviorForTab(
-							aTab,
+							tab,
 							sv.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
 						)
 					});
-				});
+				}
+			}
 		}
 
 		while (aInfo.insertBefore && draggedWholeTree.indexOf(aInfo.insertBefore) > -1)
@@ -492,18 +496,20 @@ catch(e) {
 		// and collapse them after they are moved.
 		var collapseExpandState = [];
 		if (aInfo.action & sv.kACTION_MOVE || aInfo.action & sv.kACTION_IMPORT) {
-			draggedWholeTree.forEach(function(aTab) {
-				collapseExpandState.push(sv.getTabValue(aTab, sv.kSUBTREE_COLLAPSED) == 'true');
-				sv.collapseExpandSubtree(aTab, false, true);
-				sv.collapseExpandTab(aTab, false, true);
-			}, sv);
+			for each (let tab in draggedWholeTree)
+			{
+				collapseExpandState.push(sv.getTabValue(tab, sv.kSUBTREE_COLLAPSED) == 'true');
+				sv.collapseExpandSubtree(tab, false, true);
+				sv.collapseExpandTab(tab, false, true);
+			}
 		}
 
 		var lastTabIndex = tabs[tabs.length -1]._tPos;
-		draggedTabs.forEach(function(aTab, aIndex) {
-			var tab = aTab;
+		for (let i in draggedTabs)
+		{
+			let tab = draggedTabs[i];
 			if (aInfo.action & sv.kACTIONS_FOR_DESTINATION) {
-				var parent = parentTabsArray[aIndex];
+				let parent = parentTabsArray[i];
 				if (tabsInfo.isMultipleMove && 'MultipleTabService' in sourceWindow)
 					sourceWindow.MultipleTabService.setSelection(aTab, false);
 				if (aInfo.action & sv.kACTION_IMPORT) {
@@ -528,34 +534,40 @@ catch(e) {
 				lastTabIndex++;
 			}
 
-			var newIndex = aInfo.insertBefore ? aInfo.insertBefore._tPos : lastTabIndex ;
+			let newIndex = aInfo.insertBefore ? aInfo.insertBefore._tPos : lastTabIndex ;
 			if (aInfo.insertBefore && newIndex > tab._tPos) newIndex--;
 
 			sv.internallyTabMovingCount++;
 			targetBrowser.moveTabTo(tab, newIndex);
 			sv.collapseExpandTab(tab, false, true);
 			sv.internallyTabMovingCount--;
-
-		}, this);
+		}
 
 		// close imported tabs from the source browser
-		oldTabs.forEach(function(aTab) {
+		for each (let tab in oldTabs)
+		{
 			sourceBrowser.removeTab(aTab, { animate : true });
-		});
+		}
 		if (shouldClose)
 			this.closeOwner(sourceBrowser);
 
 		// restore tree structure for newly opened tabs
-		newTabs.forEach(function(aTab, aIndex) {
-			var index = treeStructure[aIndex];
-			if (index < 0) return;
-			sv.attachTabTo(aTab, newTabs[index]);
-		}, sv);
-		newTabs.reverse();
-		collapseExpandState.reverse();
-		collapseExpandState.forEach(function(aCollapsed, aIndex) {
-			sv.collapseExpandSubtree(newTabs[aIndex], aCollapsed, true);
-		}, sv);
+		for (let i in newTabs)
+		{
+			let index = treeStructure[i];
+			if (index < 0) continue;
+			sv.attachTabTo(newTabs[i], newTabs[index]);
+		};
+
+		if (newTabs.length || aInfo.action & sv.kACTION_MOVE || aInfo.action & sv.kACTION_IMPORT) {
+			for (let i = collapseExpandState.length - 1; i > -1; i--)
+			{
+				let collapsed = collapseExpandState[i];
+				sv.collapseExpandSubtree(draggedWholeTree[i], collapsed, true);
+				if (newTabs.length)
+					sv.collapseExpandSubtree(newTabs[i], collapsed, true);
+			}
+		}
 
 		if (aInfo.action & sv.kACTIONS_FOR_DESTINATION &&
 			aInfo.action & sv.kACTION_ATTACH)
