@@ -1554,6 +1554,10 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		var strip = this.tabStrip;
+		var collapsed = (
+				(strip.collapsed) ||
+				(this.splitter && this.splitter.getAttribute('state') == 'collapsed')
+			);
 		var stripStyle = strip.style;
 		var tabContainerBox = this.getTabContainerBox(this.mTabBrowser);
 		var statusPanel = document.getElementById('statusbar-display');
@@ -1602,7 +1606,7 @@ TreeStyleTabBrowser.prototype = {
 				realHeight : realHeight
 			});
 
-			strip.collapsed = tabContainerBox.collapsed = (this.splitter && this.splitter.getAttribute('state') == 'collapsed');
+			strip.collapsed = tabContainerBox.collapsed = collapsed;
 
 			if (statusPanel && this.getTreePref('repositionStatusPanel')) {
 				let offsetParentBox = this.utils.findOffsetParent(statusPanel).boxObject;
@@ -1623,7 +1627,7 @@ TreeStyleTabBrowser.prototype = {
 			this.mTabBrowser.tabContainer.setAttribute('context', this.mTabBrowser.tabContextMenu.id);
 		}
 		else {
-			strip.collapsed = tabContainerBox.collapsed = false;
+			strip.collapsed = tabContainerBox.collapsed = collapsed;
 			stripStyle.top = stripStyle.left = stripStyle.right = stripStyle.width = stripStyle.height = '';
 
 			if (
