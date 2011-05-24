@@ -777,7 +777,8 @@ var TreeStyleTabService = {
 			));
 		}
 
-		var goButton = document.getElementById('urlbar-go-button');
+		var goButton = document.getElementById('urlbar-go-button') || // Firefox 4 or later
+						document.getElementById('go-button'); // Firefox 3.6
 		if (goButton)
 			goButton.parentNode.addEventListener('click', this, true);
 
@@ -791,7 +792,8 @@ var TreeStyleTabService = {
  
 	destroyToolbarItems : function TSTService_destroyToolbarItems() 
 	{
-		var goButton = document.getElementById('urlbar-go-button');
+		var goButton = document.getElementById('urlbar-go-button') || // Firefox 4 or later
+						document.getElementById('go-button'); // Firefox 3.6
 		if (goButton)
 			goButton.parentNode.removeEventListener('click', this, true);
 
@@ -1421,7 +1423,7 @@ var TreeStyleTabService = {
 	onGoButtonClick : function TSTService_onGoButtonClick(aEvent) 
 	{
 		if (
-			aEvent.target.id != 'urlbar-go-button' ||
+			(aEvent.target.id != 'urlbar-go-button' && aEvent.target.id != 'go-button') ||
 			(aEvent.button != 1 && (aEvent.button != 0 || !this.isAccelKeyPressed(aEvent)))
 			)
 			return;
