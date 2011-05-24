@@ -1066,7 +1066,8 @@ TreeStyleTabBrowser.prototype = {
 					   unexpectedly becomes 0 on the startup. so, we have
 					   to set the width again. */
 					aSelf.setTabStripAttribute('width', width);
-					indicator.setAttribute('ordinal', 1);
+					if (!aSelf.isFloating)
+						indicator.setAttribute('ordinal', 1);
 					aSelf.setTabStripAttribute('ordinal', 30);
 					aSplitter.setAttribute('ordinal', 20);
 					aToggler.setAttribute('ordinal', 40);
@@ -1079,7 +1080,8 @@ TreeStyleTabBrowser.prototype = {
 				this.removeTabbrowserAttribute(this.kTAB_INVERTED);
 				this.indentTarget = 'left';
 				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
-					indicator.setAttribute('ordinal', 1);
+					if (!aSelf.isFloating)
+						indicator.setAttribute('ordinal', 1);
 					aSelf.setTabStripAttribute('ordinal', 10);
 					aSplitter.setAttribute('ordinal', 20);
 					aToggler.setAttribute('ordinal', 5);
@@ -1137,7 +1139,8 @@ TreeStyleTabBrowser.prototype = {
 				this.setTabbrowserAttribute(this.kTABBAR_POSITION, 'bottom');
 				this.indentTarget = 'bottom';
 				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
-					indicator.setAttribute('ordinal', 1);
+					if (!aSelf.isFloating)
+						indicator.setAttribute('ordinal', 1);
 					aSelf.setTabStripAttribute('ordinal', 30);
 					aSplitter.setAttribute('ordinal', 20);
 					aToggler.setAttribute('ordinal', 40);
@@ -1148,7 +1151,8 @@ TreeStyleTabBrowser.prototype = {
 				this.setTabbrowserAttribute(this.kTABBAR_POSITION, 'top');
 				this.indentTarget = 'top';
 				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
-					indicator.setAttribute('ordinal', 1);
+					if (!aSelf.isFloating)
+						indicator.setAttribute('ordinal', 1);
 					aSelf.setTabStripAttribute('ordinal', 10);
 					aSplitter.setAttribute('ordinal', 20);
 					aToggler.setAttribute('ordinal', 5);
