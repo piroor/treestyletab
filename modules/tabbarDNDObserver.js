@@ -601,7 +601,7 @@ catch(e) {
 		var sourceWindow = aTab.ownerDocument.defaultView;
 		var sourceBrowser = sv.getTabBrowserFromChild(aTab);
 
-		var draggedTabs = w['piro.sakura.ne.jp'].tabsDragUtils.getSelectedTabs(aInfo.event || aTab || sourceBrowser);
+		var draggedTabs = w['piro.sakura.ne.jp'].tabsDragUtils.getSelectedTabs(aTab || sourceBrowser || aInfo.event);
 		var draggedRoots = [aTab];
 		var isMultipleMove = false;
 
@@ -796,6 +796,7 @@ catch(e) {
 		if (!this.canDrop(aEvent)) {
 			dt.effectAllowed = dt.dropEffect = 'none';
 			return;
+
 		}
 
 		var tab = aEvent.target;
