@@ -777,6 +777,10 @@ var TreeStyleTabService = {
 			));
 		}
 
+		var goButton = document.getElementById('urlbar-go-button');
+		if (goButton)
+			goButton.parentNode.addEventListener('click', this, true);
+
 		// for Firefox 4.0 or later
 		this.updateAllTabsButton(gBrowser);
 
@@ -787,6 +791,10 @@ var TreeStyleTabService = {
  
 	destroyToolbarItems : function TSTService_destroyToolbarItems() 
 	{
+		var goButton = document.getElementById('urlbar-go-button');
+		if (goButton)
+			goButton.parentNode.removeEventListener('click', this, true);
+
 		// Firefox 4.0 or later (restore original position)
 		var allTabsButton = document.getElementById('alltabs-button');
 		if (allTabsButton && allTabsButton.hasChildNodes())
@@ -937,6 +945,9 @@ var TreeStyleTabService = {
 
 			case 'dblclick':
 				return this.onTabbarReset(aEvent);
+
+			case 'click':
+				return this.onGoButtonClick(aEvent);
 
 			case 'SubBrowserAdded':
 				return this.initTabBrowser(aEvent.originalTarget.browser);
@@ -1406,6 +1417,22 @@ var TreeStyleTabService = {
 	kDUPLICATE_COMMAND_OPEN_AS_CHILD        : 1,
 	kDUPLICATE_COMMAND_OPEN_AS_SIBLING      : 2,
 	kDUPLICATE_COMMAND_OPEN_AS_NEXT_SIBLING : 3,
+ 
+	onGoButtonClick : function TSTService_onGoButtonClick(aEvent) 
+	{
+		if (
+			aEvent.target.id != 'urlbar-go-button' ||
+			(aEvent.button != 1 && (aEvent.button != 0 || !this.isAccelKeyPressed(aEvent)))
+			)
+			return;
+
+		var tab = this.browser.selectedTab;
+		var self = this;
+		this.readyToOpenChildTab(tab);
+		this.Deferred.next(function() { // clear with delay, because this action can be ignored by othere reasons.
+			self.stopToOpenChildTab(tab);
+		});
+	},
   
 /* Tree Style Tabの初期化が行われる前に復元されたセッションについてツリー構造を復元 */ 
 	
