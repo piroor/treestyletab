@@ -1576,17 +1576,17 @@ TreeStyleTabBrowser.prototype = {
 	{
 		aReason = aReason || this.kTABBAR_UPDATE_BY_UNKNOWN_REASON;
 
-		if (this.splitter.collapsed || this.splitter.getAttribute('state') != 'collapsed') {
+		var splitter = this.splitter;
+		if (splitter.collapsed || splitter.getAttribute('state') != 'collapsed') {
 			this._tabStripPlaceHolder.collapsed =
-				this.splitter.collapsed =
+				splitter.collapsed =
 					(this.getPref('browser.tabs.autoHide') && this.getTabsArray(this.mTabBrowser).length == 1);
 		}
 
 		var strip = this.tabStrip;
-		var collapsed = (
-				(strip.collapsed) ||
-				(this.splitter && this.splitter.getAttribute('state') == 'collapsed')
-			);
+		var collapsed = splitter.collapsed ?
+							strip.collapsed :
+							splitter.getAttribute('state') == 'collapsed' ;
 		var stripStyle = strip.style;
 		var tabContainerBox = this.getTabContainerBox(this.mTabBrowser);
 		var statusPanel = document.getElementById('statusbar-display');
