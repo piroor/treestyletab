@@ -427,8 +427,8 @@ pref("extensions.treestyletab.autoExpandSubtreeOnAppendChild",         true);
  */
 pref("extensions.treestyletab.autoAttach", true);
 /**
- * How to treat new tabs from the Web search bar.
- *  0 = Do nothing for new tabs for search results.
+ * How to treat new tabs for search results from the Web search bar.
+ *  0 = Open as an independent tab.
  *  1 = Open the search result tab as a child of the current tab, only if the
  *      search term equals to the selection in the current tab.
  *      In other words, if you do select => copy => search, then the result
@@ -449,12 +449,14 @@ pref("extensions.treestyletab.autoAttach.searchResult", 1);
 pref("extensions.treestyletab.autoAttach.newTabCommand", 0);
 /**
  * How to treat duplicated tabs.
- *  0 = Open as an independent tab.
- *  1 = Open as a child tab of the source tab.
- *  2 = Open as a sibling tab of the source tab.
- *  3 = Open as a next sibling tab of the source tab.
+ *  Options are same to extensions.treestyletab.autoAttach.newTabCommand.
  */
 pref("extensions.treestyletab.autoAttach.duplicateTabCommand", 3);
+/**
+ * How to treat new tabs from middle click (or Ctrl-click) on "Go" button.
+ *  Options are same to extensions.treestyletab.autoAttach.newTabCommand.
+ */
+pref("extensions.treestyletab.autoAttach.goButton", 0);
 
 /**
  * Focus targets for Ctrl-Tab/Ctrl-Shift-Tab.

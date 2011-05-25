@@ -1369,56 +1369,52 @@ var TreeStyleTabService = {
 	},
 	_shownPopups : [],
  
+	kNEWTAB_DO_NOTHING           : -1,
+	kNEWTAB_OPEN_AS_ORPHAN       : 0,
+	kNEWTAB_OPEN_AS_CHILD        : 1,
+	kNEWTAB_OPEN_AS_SIBLING      : 2,
+	kNEWTAB_OPEN_AS_NEXT_SIBLING : 3,
+	_handleNewTabCommand : function TSTService_handleNewTabCommand(aBaseTab, aBehavior) 
+	{
+		switch (aBehavior)
+		{
+			case this.kNEWTAB_OPEN_AS_ORPHAN:
+			case this.kNEWTAB_DO_NOTHING:
+			default:
+				return;
+			case this.kNEWTAB_OPEN_AS_CHILD:
+				this.readyToOpenChildTab(aBaseTab);
+				break;
+			case this.kNEWTAB_OPEN_AS_SIBLING:
+				let (parentTab = this.getParentTab(aBaseTab)) {
+					if (parentTab)
+						this.readyToOpenChildTab(parentTab);
+					else
+						return;
+				}
+				break;
+			case this.kNEWTAB_OPEN_AS_NEXT_SIBLING:
+				this.readyToOpenNextSiblingTab(aBaseTab);
+				break;
+		}
+		var self = this;
+		this.Deferred.next(function() {
+			// clear with delay, because this action can be ignored by othere reasons.
+			self.stopToOpenChildTab(aBaseTab);
+		});
+	},
+ 
 	onBeforeNewTabCommand : function TSTService_onBeforeNewTabCommand(aTabBrowser) 
 	{
 		var b = aTabBrowser || this.browser;
-		switch (this.getTreePref('autoAttach.newTabCommand'))
-		{
-			case this.kNEWTAB_COMMAND_OPEN_AS_ORPHAN:
-			default:
-				break;
-			case this.kNEWTAB_COMMAND_OPEN_AS_CHILD:
-				return this.readyToOpenChildTab(b.selectedTab);
-			case this.kNEWTAB_COMMAND_OPEN_AS_SIBLING:
-				let (parentTab = this.getParentTab(b.selectedTab)) {
-					if (parentTab)
-						this.readyToOpenChildTab(parentTab);
-				}
-				return;
-			case this.kNEWTAB_COMMAND_OPEN_AS_NEXT_SIBLING:
-				return this.readyToOpenNextSiblingTab(b.selectedTab);
-		}
+		this._handleNewTabCommand(b.selectedTab, this.getTreePref('autoAttach.newTabCommand'));
 	},
-	kNEWTAB_COMMAND_OPEN_AS_ORPHAN       : 0,
-	kNEWTAB_COMMAND_OPEN_AS_CHILD        : 1,
-	kNEWTAB_COMMAND_OPEN_AS_SIBLING      : 2,
-	kNEWTAB_COMMAND_OPEN_AS_NEXT_SIBLING : 3,
  
 	onBeforeTabDuplicate : function TSTService_onBeforeTabDuplicate(aTab) 
 	{
 		var b = this.getTabBrowserFromChild(aTab) || this.browser;
-		var tab = aTab || b.selectedTab;
-		switch (this.getTreePref('autoAttach.duplicateTabCommand'))
-		{
-			case this.kDUPLICATE_COMMAND_OPEN_AS_ORPHAN:
-			default:
-				return;
-			case this.kDUPLICATE_COMMAND_OPEN_AS_CHILD:
-				return this.readyToOpenChildTab(tab);
-			case this.kDUPLICATE_COMMAND_OPEN_AS_SIBLING:
-				let (parentTab = this.getParentTab(tab)) {
-					if (parentTab)
-						this.readyToOpenChildTab(parentTab);
-				}
-				return;
-			case this.kDUPLICATE_COMMAND_OPEN_AS_NEXT_SIBLING:
-				return this.readyToOpenNextSiblingTab(tab);
-		}
+		this._handleNewTabCommand(aTab || b.selectedTab, this.getTreePref('autoAttach.duplicateTabCommand'));
 	},
-	kDUPLICATE_COMMAND_OPEN_AS_ORPHAN       : 0,
-	kDUPLICATE_COMMAND_OPEN_AS_CHILD        : 1,
-	kDUPLICATE_COMMAND_OPEN_AS_SIBLING      : 2,
-	kDUPLICATE_COMMAND_OPEN_AS_NEXT_SIBLING : 3,
  
 	onGoButtonClick : function TSTService_onGoButtonClick(aEvent) 
 	{
@@ -1428,12 +1424,7 @@ var TreeStyleTabService = {
 			)
 			return;
 
-		var tab = this.browser.selectedTab;
-		var self = this;
-		this.readyToOpenChildTab(tab);
-		this.Deferred.next(function() { // clear with delay, because this action can be ignored by othere reasons.
-			self.stopToOpenChildTab(tab);
-		});
+		this._handleNewTabCommand(this.browser.selectedTab, this.getTreePref('autoAttach.goButton'));
 	},
   
 /* Tree Style Tabの初期化が行われる前に復元されたセッションについてツリー構造を復元 */ 
