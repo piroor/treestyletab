@@ -1562,17 +1562,17 @@ var TreeStyleTabUtils = {
 	
 	readyToOpenChildTab : function TSTUtils_readyToOpenChildTab(aFrameOrTabBrowser, aMultiple, aInsertBefore) /* PUBLIC API */ 
 	{
-		if (!this.getTreePref('autoAttach')) return;
+		if (!this.getTreePref('autoAttach')) return false;
 
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
 		if (!frame)
-			return;
+			return false;
 
 		var ownerBrowser = this.getTabBrowserFromFrame(frame);
 
 		var parentTab = this.getTabFromFrame(frame, ownerBrowser);
 		if (!parentTab || parentTab.getAttribute('pinned') == 'true')
-			return;
+			return false;
 
 		ownerBrowser.treeStyleTab.ensureTabInitialized(parentTab);
 		var parentId = parentTab.getAttribute(this.kID);
@@ -1588,19 +1588,37 @@ var TreeStyleTabUtils = {
 		ownerBrowser.treeStyleTab.multipleCount           = aMultiple ? 0 : -1 ;
 		ownerBrowser.treeStyleTab.parentTab               = parentId;
 		ownerBrowser.treeStyleTab.insertBefore            = refId;
+
+		return true;
+	},
+	/**
+	 * Extended version. If you don't know whether a new tab will be actually
+	 * opened or not (by the command called after TST's API), then use this.
+	 * This version automatically cancels the "ready" state with delay.
+	 */
+	readyToOpenChildTabNow : function TSTUtils_readyToOpenChildTabNow(aFrameOrTabBrowser) /* PUBLIC API */
+	{
+		if (this.readyToOpenChildTab.apply(this, arguments)) {
+			let self = this;
+			this.Deferred.next(function() {
+				self.stopToOpenChildTab(aFrameOrTabBrowser);
+			});
+			return true;
+		}
+		return false;
 	},
  
 	readyToOpenNextSiblingTab : function TSTUtils_readyToOpenNextSiblingTab(aFrameOrTabBrowser) /* PUBLIC API */ 
 	{
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
 		if (!frame)
-			return;
+			return false;
 
 		var ownerBrowser = this.getTabBrowserFromFrame(frame);
 
 		var tab = this.getTabFromFrame(frame, ownerBrowser);
 		if (!tab || tab.getAttribute('pinned') == 'true')
-			return;
+			return false;
 
 		var parentTab = this.getParentTab(tab);
 		var nextTab = this.getNextSiblingTab(tab);
@@ -1609,7 +1627,7 @@ var TreeStyleTabUtils = {
 			 * If the base tab has a parent, open the new tab as a child of
 			 * the parent tab.
 			 */
-			this.readyToOpenChildTab(parentTab, false, nextTab);
+			return this.readyToOpenChildTab(parentTab, false, nextTab);
 		}
 		else {
 			/**
@@ -1621,15 +1639,32 @@ var TreeStyleTabUtils = {
 			ownerBrowser.treeStyleTab.readiedToAttachNewTab = true;
 			ownerBrowser.treeStyleTab.parentTab             = null;
 			ownerBrowser.treeStyleTab.insertBefore          = nextTab.getAttribute(this.kID);
+			return true;
 		}
+	},
+	/**
+	 * Extended version. If you don't know whether a new tab will be actually
+	 * opened or not (by the command called after TST's API), then use this.
+	 * This version automatically cancels the "ready" state with delay.
+	 */
+	readyToOpenNextSiblingTabNow : function TSTUtils_readyToOpenNextSiblingTabNow(aFrameOrTabBrowser) /* PUBLIC API */
+	{
+		if (this.readyToOpenNextSiblingTab.apply(this, arguments)) {
+			let self = this;
+			this.Deferred.next(function() {
+				self.stopToOpenChildTab(aFrameOrTabBrowser);
+			});
+			return true;
+		}
+		return false;
 	},
  
 	readyToOpenNewTabGroup : function TSTUtils_readyToOpenNewTabGroup(aFrameOrTabBrowser, aTreeStructure, aExpandAllTree) /* PUBLIC API */ 
 	{
-		if (!this.getTreePref('autoAttach')) return;
+		if (!this.getTreePref('autoAttach')) return false;
 
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
-		if (!frame) return;
+		if (!frame) return false;
 
 		this.stopToOpenChildTab(frame);
 
@@ -1639,12 +1674,30 @@ var TreeStyleTabUtils = {
 		ownerBrowser.treeStyleTab.multipleCount              = 0;
 		ownerBrowser.treeStyleTab.treeStructure              = aTreeStructure;
 		ownerBrowser.treeStyleTab.shouldExpandAllTree        = !!aExpandAllTree;
+
+		return true;
+	},
+	/**
+	 * Extended version. If you don't know whether new tabs will be actually
+	 * opened or not (by the command called after TST's API), then use this.
+	 * This version automatically cancels the "ready" state with delay.
+	 */
+	readyToOpenNewTabGroupNow : function TSTUtils_readyToOpenNewTabGroupNow(aFrameOrTabBrowser) /* PUBLIC API */
+	{
+		if (this.readyToOpenNewTabGroup.apply(this, arguments)) {
+			let self = this;
+			this.Deferred.next(function() {
+				self.stopToOpenChildTab(aFrameOrTabBrowser);
+			});
+			return true;
+		}
+		return false;
 	},
  
 	stopToOpenChildTab : function TSTUtils_stopToOpenChildTab(aFrameOrTabBrowser) /* PUBLIC API */ 
 	{
 		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
-		if (!frame) return;
+		if (!frame) return false;
 
 		var ownerBrowser = this.getTabBrowserFromFrame(frame);
 		ownerBrowser.treeStyleTab.readiedToAttachNewTab      = false;
@@ -1655,6 +1708,8 @@ var TreeStyleTabUtils = {
 		ownerBrowser.treeStyleTab.insertBefore               = null;
 		ownerBrowser.treeStyleTab.treeStructure              = null;
 		ownerBrowser.treeStyleTab.shouldExpandAllTree        = false;
+
+		return true;
 	},
  
 	checkToOpenChildTab : function TSTUtils_checkToOpenChildTab(aFrameOrTabBrowser) /* PUBLIC API */ 

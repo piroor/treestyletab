@@ -1074,13 +1074,8 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 								+']',
 								aEvent.originalTarget,
 								Ci.nsIDOMXPathResult.BOOLEAN_TYPE
-							).booleanValue) {
-							sv.readyToOpenChildTab(gBrowser.selectedTab);
-							sv.Deferred.next(function() {
-								// clear with delay, because this action can be ignored by othere reasons.
-								sv.stopToOpenChildTab(gBrowser.selectedTab);
-							});
-						}
+							).booleanValue)
+							sv.readyToOpenChildTabNow(gBrowser.selectedTab);
 						return;
 				}
 			};

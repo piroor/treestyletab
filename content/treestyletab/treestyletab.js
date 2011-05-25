@@ -1399,25 +1399,20 @@ var TreeStyleTabService = {
 			default:
 				return;
 			case this.kNEWTAB_OPEN_AS_CHILD:
-				this.readyToOpenChildTab(aBaseTab);
+				this.readyToOpenChildTabNow(aBaseTab);
 				break;
 			case this.kNEWTAB_OPEN_AS_SIBLING:
 				let (parentTab = this.getParentTab(aBaseTab)) {
 					if (parentTab)
-						this.readyToOpenChildTab(parentTab);
+						this.readyToOpenChildTabNow(parentTab);
 					else
 						return;
 				}
 				break;
 			case this.kNEWTAB_OPEN_AS_NEXT_SIBLING:
-				this.readyToOpenNextSiblingTab(aBaseTab);
+				this.readyToOpenNextSiblingTabNow(aBaseTab);
 				break;
 		}
-		var self = this;
-		this.Deferred.next(function() {
-			// clear with delay, because this action can be ignored by othere reasons.
-			self.stopToOpenChildTab(aBaseTab);
-		});
 	},
  
 	onBeforeNewTabCommand : function TSTService_onBeforeNewTabCommand(aTabBrowser) 
