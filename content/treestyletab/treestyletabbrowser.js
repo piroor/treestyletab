@@ -430,7 +430,7 @@ TreeStyleTabBrowser.prototype = {
 		);
 	},
  
-	fixTooNarrowTabbar : function TSTBrowser_fixTooNarrowTabbar()
+	fixTooNarrowTabbar : function TSTBrowser_fixTooNarrowTabbar() 
 	{
 		if (!this.isFloating) return;
 		/**
@@ -530,9 +530,21 @@ TreeStyleTabBrowser.prototype = {
 		this.ObserverService.addObserver(this, 'lightweight-theme-styling-update', false);
 		this.addPrefListener(this);
 
-		this.tabbarDNDObserver;
-		this.panelDNDObserver;
-		this.autoHide;
+		// Don't init these ovservers on this point to avoid needless initializations.
+		//   this.tabbarDNDObserver;
+		//   this.panelDNDObserver;
+		this._readyToInitDNDObservers();
+
+		// Init autohide service only if it have to be activated.
+		if (window.fullScreen ?
+				(
+					window.fullScreen &&
+					this.getPref('browser.fullscreen.autohide') &&
+					this.getTreePref('tabbar.autoHide.mode.fullscreen')
+				) :
+				this.getTreePref('tabbar.autoHide.mode')
+			)
+			this.autoHide;
 
 		this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_INITIALIZE);
 		this.fixTooNarrowTabbar();
@@ -735,6 +747,26 @@ TreeStyleTabBrowser.prototype = {
 		}
 	},
  
+	_readyToInitDNDObservers : function TSTBrowser_readyToInitDNDObservers() 
+	{
+		this._DNDObserversInitialized = false;
+		window.addEventListener('mouseover', this, true);
+		window.addEventListener('dragover', this, true);
+	},
+	
+	_initDNDObservers : function TSTBrowser_initDNDObservers() 
+	{
+		if (this._DNDObserversInitialized)
+			return;
+
+		this.tabbarDNDObserver;
+		this.panelDNDObserver;
+
+		window.addEventListener('mouseover', this, true);
+		window.addEventListener('dragover', this, true);
+		this._DNDObserversInitialized = true;
+	},
+  
 	initTab : function TSTBrowser_initTab(aTab) 
 	{
 		if (!aTab.hasAttribute(this.kID)) {
@@ -1774,6 +1806,7 @@ TreeStyleTabBrowser.prototype = {
 		this.autoHide.destroy();
 		delete this._autoHide;
 
+		this._initDNDObservers(); // ensure initialized
 		this.tabbarDNDObserver.destroy();
 		delete this._tabbarDNDObserver;
 		this.panelDNDObserver.destroy();
@@ -2209,6 +2242,10 @@ TreeStyleTabBrowser.prototype = {
 					this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_SHOWHIDE_TABBAR);
 				return;
 
+			case 'extensions.treestyletab.tabbar.autoHide.mode':
+			case 'extensions.treestyletab.tabbar.autoHide.mode.fullscreen':
+				return this.autoHide; // ensure initialized
+
 			default:
 				return;
 		}
@@ -2413,6 +2450,7 @@ TreeStyleTabBrowser.prototype = {
 				return this.onPopupShowing(aEvent)
 
 			case 'mouseover':
+				this._initDNDObservers();
 				let (tab = aEvent.target) {
 					if (tab.__treestyletab__twistyHoverTimer)
 						window.clearTimeout(tab.__treestyletab__twistyHoverTimer);
@@ -2424,6 +2462,9 @@ TreeStyleTabBrowser.prototype = {
 						tab.removeAttribute(this.kTWISTY_HOVER);
 				}
 				return;
+
+			case 'dragover':
+				return this._initDNDObservers();
 
 			case 'overflow':
 			case 'underflow':
@@ -4369,7 +4410,7 @@ TreeStyleTabBrowser.prototype = {
 		), this);
 	},
  
-	getCloseParentBehaviorForTab : function TSTBrowser_getCloseParentBehaviorForTab(aTab, aDefaultBehavior)
+	getCloseParentBehaviorForTab : function TSTBrowser_getCloseParentBehaviorForTab(aTab, aDefaultBehavior) 
 	{
 		var closeParentBehavior = this.getTreePref('closeParentBehavior');
 		var closeRootBehavior = this.getTreePref('closeRootBehavior');
