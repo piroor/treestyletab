@@ -50,17 +50,33 @@
 
 <!ENTITY config.tabs.tab "新しいタブ">
 
-<!ENTITY config.autoAttach.newTabCommand.caption     "新しい空のタブを開いた時：">
-<!ENTITY config.autoAttach.newTabCommand.independent "独立したタブとして開く">
-<!ENTITY config.autoAttach.newTabCommand.child       "現在のタブの子として開く">
-<!ENTITY config.autoAttach.newTabCommand.sibling     "現在のタブと同階層に開く">
-<!ENTITY config.autoAttach.newTabCommand.nextSibling "現在のタブと同階層で隣に開く">
+<!ENTITY config.autoAttach.newTabCommand.label_before "新しい空のタブを">
+<!ENTITY config.autoAttach.newTabCommand.independent "独立したタブとして">
+<!ENTITY config.autoAttach.newTabCommand.child       "現在のタブの子として">
+<!ENTITY config.autoAttach.newTabCommand.sibling     "現在のタブと同階層に">
+<!ENTITY config.autoAttach.newTabCommand.nextSibling "現在のタブと同階層で隣に">
+<!ENTITY config.autoAttach.newTabCommand.label_after "開く">
 
-<!ENTITY config.autoAttach.duplicateTabCommand.caption     "「再読み込み」ボタンを中クリックしてタブを複製する時：">
-<!ENTITY config.autoAttach.duplicateTabCommand.independent "独立したタブとして開く">
-<!ENTITY config.autoAttach.duplicateTabCommand.child       "元のタブの子として開く">
-<!ENTITY config.autoAttach.duplicateTabCommand.sibling     "元のタブと同階層に開く">
-<!ENTITY config.autoAttach.duplicateTabCommand.nextSibling "元のタブと同階層で隣に開く">
+<!ENTITY config.autoAttach.newTabButton.label_before "「新しいタブ」ボタンを中クリックした時、新しい空のタブを">
+<!ENTITY config.autoAttach.newTabButton.independent "独立したタブとして">
+<!ENTITY config.autoAttach.newTabButton.child       "現在のタブの子として">
+<!ENTITY config.autoAttach.newTabButton.sibling     "現在のタブと同階層に">
+<!ENTITY config.autoAttach.newTabButton.nextSibling "現在のタブと同階層で隣に">
+<!ENTITY config.autoAttach.newTabButton.label_after "開く">
+
+<!ENTITY config.autoAttach.duplicateTabCommand.label_before "「再読み込み」ボタンを中クリックした時、複製されたタブを">
+<!ENTITY config.autoAttach.duplicateTabCommand.independent "独立したタブとして">
+<!ENTITY config.autoAttach.duplicateTabCommand.child       "元のタブの子として">
+<!ENTITY config.autoAttach.duplicateTabCommand.sibling     "元のタブと同階層に">
+<!ENTITY config.autoAttach.duplicateTabCommand.nextSibling "元のタブと同階層で隣に">
+<!ENTITY config.autoAttach.duplicateTabCommand.label_after "開く">
+
+<!ENTITY config.autoAttach.goButton.label_before "「移動」ボタンを中クリックした時、新しいタブを">
+<!ENTITY config.autoAttach.goButton.independent "独立したタブとして">
+<!ENTITY config.autoAttach.goButton.child       "現在のタブの子として">
+<!ENTITY config.autoAttach.goButton.sibling     "現在のタブと同階層に">
+<!ENTITY config.autoAttach.goButton.nextSibling "現在のタブと同階層で隣に">
+<!ENTITY config.autoAttach.goButton.label_after "開く">
 
 <!ENTITY config.openGroupBookmark.caption     "ブックマークフォルダの内容をタブで開く時">
 <!ENTITY config.openGroupBookmark.ask         "どうするか毎回尋ねる">

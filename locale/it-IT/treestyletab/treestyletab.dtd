@@ -51,17 +51,33 @@
 <!ENTITY config.tabs.tab "New Tabs">
 <!--ENTITY config.tabs.tab "Navigazione"-->
 
-<!ENTITY config.autoAttach.newTabCommand.caption     "When a new blank tab is opened manually:">
-<!ENTITY config.autoAttach.newTabCommand.independent "Open as an independent tab">
-<!ENTITY config.autoAttach.newTabCommand.child       "Open as a child of the current tab">
-<!ENTITY config.autoAttach.newTabCommand.sibling     "Open as a sibling of the current tab">
-<!ENTITY config.autoAttach.newTabCommand.nextSibling "Open as the next sibling of the current tab">
+<!ENTITY config.autoAttach.newTabCommand.label_before "Open new blank tab as">
+<!ENTITY config.autoAttach.newTabCommand.independent "an independent tab">
+<!ENTITY config.autoAttach.newTabCommand.child       "a child of the current tab">
+<!ENTITY config.autoAttach.newTabCommand.sibling     "a sibling of the current tab">
+<!ENTITY config.autoAttach.newTabCommand.nextSibling "the next sibling of the current tab">
+<!ENTITY config.autoAttach.newTabCommand.label_after "">
 
-<!ENTITY config.autoAttach.duplicateTabCommand.caption     "When a tab is duplicated by middle click on the &quot;Reload&quot; button:">
-<!ENTITY config.autoAttach.duplicateTabCommand.independent "Open as an independent tab">
-<!ENTITY config.autoAttach.duplicateTabCommand.child       "Open as a child of the source tab">
-<!ENTITY config.autoAttach.duplicateTabCommand.sibling     "Open as a sibling of the source tab">
-<!ENTITY config.autoAttach.duplicateTabCommand.nextSibling "Open as the next sibling of the source tab">
+<!ENTITY config.autoAttach.newTabButton.label_before "For middle click on the &quot;New Tab&quot; button, open new blank tab as">
+<!ENTITY config.autoAttach.newTabButton.independent "an independent tab">
+<!ENTITY config.autoAttach.newTabButton.child       "a child of the current tab">
+<!ENTITY config.autoAttach.newTabButton.sibling     "a sibling of the current tab">
+<!ENTITY config.autoAttach.newTabButton.nextSibling "the next sibling of the current tab">
+<!ENTITY config.autoAttach.newTabButton.label_after "">
+
+<!ENTITY config.autoAttach.duplicateTabCommand.label_before "For middle click on the &quot;Reload&quot; button, duplicate the tab as">
+<!ENTITY config.autoAttach.duplicateTabCommand.independent "an independent tab">
+<!ENTITY config.autoAttach.duplicateTabCommand.child       "a child of the source tab">
+<!ENTITY config.autoAttach.duplicateTabCommand.sibling     "a sibling of the source tab">
+<!ENTITY config.autoAttach.duplicateTabCommand.nextSibling "the next sibling of the source tab">
+<!ENTITY config.autoAttach.duplicateTabCommand.label_after "">
+
+<!ENTITY config.autoAttach.goButton.label_before "For middle click on the &quot;Go&quot; button, open new tab as">
+<!ENTITY config.autoAttach.goButton.independent "an independent tab">
+<!ENTITY config.autoAttach.goButton.child       "a child of the current tab">
+<!ENTITY config.autoAttach.goButton.sibling     "a sibling of the current tab">
+<!ENTITY config.autoAttach.goButton.nextSibling "the next sibling of the current tab">
+<!ENTITY config.autoAttach.goButton.label_after "">
 
 <!ENTITY config.openGroupBookmark.caption     "Behavior of &quot;Open All in Tabs&quot; for bookmark folders">
 <!--ENTITY config.openGroupBookmark.caption     "La voce &quot;Apri tutti in schede&quot; nel menu Segnalibri"-->

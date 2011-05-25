@@ -49,6 +49,7 @@
 
 <!ENTITY config.tabs.tab "Nya flikar">
 
+<!--
 <!ENTITY config.autoAttach.newTabCommand.caption     "När en ny tom flik öppnas manuellt:">
 <!ENTITY config.autoAttach.newTabCommand.independent "Öppna som en rotflik">
 <!ENTITY config.autoAttach.newTabCommand.child       "Öppna som underordnad till den aktuella fliken">
@@ -60,6 +61,34 @@
 <!ENTITY config.autoAttach.duplicateTabCommand.child       "Öppna som underordnad till den aktuella fliken">
 <!ENTITY config.autoAttach.duplicateTabCommand.sibling     "Öppna på samma nivå som den aktuella fliken">
 <!ENTITY config.autoAttach.duplicateTabCommand.nextSibling "Open as the next sibling of the source tab">
+-->
+<!ENTITY config.autoAttach.newTabCommand.label_before "Open new blank tab as">
+<!ENTITY config.autoAttach.newTabCommand.independent "an independent tab">
+<!ENTITY config.autoAttach.newTabCommand.child       "a child of the current tab">
+<!ENTITY config.autoAttach.newTabCommand.sibling     "a sibling of the current tab">
+<!ENTITY config.autoAttach.newTabCommand.nextSibling "the next sibling of the current tab">
+<!ENTITY config.autoAttach.newTabCommand.label_after "">
+
+<!ENTITY config.autoAttach.newTabButton.label_before "For middle click on the &quot;New Tab&quot; button, open new blank tab as">
+<!ENTITY config.autoAttach.newTabButton.independent "an independent tab">
+<!ENTITY config.autoAttach.newTabButton.child       "a child of the current tab">
+<!ENTITY config.autoAttach.newTabButton.sibling     "a sibling of the current tab">
+<!ENTITY config.autoAttach.newTabButton.nextSibling "the next sibling of the current tab">
+<!ENTITY config.autoAttach.newTabButton.label_after "">
+
+<!ENTITY config.autoAttach.duplicateTabCommand.label_before "For middle click on the &quot;Reload&quot; button, duplicate the tab as">
+<!ENTITY config.autoAttach.duplicateTabCommand.independent "an independent tab">
+<!ENTITY config.autoAttach.duplicateTabCommand.child       "a child of the source tab">
+<!ENTITY config.autoAttach.duplicateTabCommand.sibling     "a sibling of the source tab">
+<!ENTITY config.autoAttach.duplicateTabCommand.nextSibling "the next sibling of the source tab">
+<!ENTITY config.autoAttach.duplicateTabCommand.label_after "">
+
+<!ENTITY config.autoAttach.goButton.label_before "For middle click on the &quot;Go&quot; button, open new tab as">
+<!ENTITY config.autoAttach.goButton.independent "an independent tab">
+<!ENTITY config.autoAttach.goButton.child       "a child of the current tab">
+<!ENTITY config.autoAttach.goButton.sibling     "a sibling of the current tab">
+<!ENTITY config.autoAttach.goButton.nextSibling "the next sibling of the current tab">
+<!ENTITY config.autoAttach.goButton.label_after "">
 
 <!ENTITY config.openGroupBookmark.caption     "Beteende för &quot;Öppna alla i flikar&quot; för bokmärkesmappar">
 <!ENTITY config.openGroupBookmark.ask         "Fråga mig alltid hur bokmärken skall öppnas">

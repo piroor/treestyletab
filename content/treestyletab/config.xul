@@ -346,8 +346,14 @@
 		<preference id="extensions.treestyletab.autoAttach.newTabCommand"
 			name="extensions.treestyletab.autoAttach.newTabCommand"
 			type="int"/>
+		<preference id="extensions.treestyletab.autoAttach.newTabButton"
+			name="extensions.treestyletab.autoAttach.newTabButton"
+			type="int"/>
 		<preference id="extensions.treestyletab.autoAttach.duplicateTabCommand"
 			name="extensions.treestyletab.autoAttach.duplicateTabCommand"
+			type="int"/>
+		<preference id="extensions.treestyletab.autoAttach.goButton"
+			name="extensions.treestyletab.autoAttach.goButton"
 			type="int"/>
 		<preference id="extensions.treestyletab.openGroupBookmark.behavior"
 			name="extensions.treestyletab.openGroupBookmark.behavior"
@@ -360,38 +366,66 @@
 			type="int"/>
 	</preferences>
 
-	<vbox>
-		<label value="&config.autoAttach.newTabCommand.caption;"
+	<hbox align="center">
+		<label value="&config.autoAttach.newTabCommand.label_before;"
 			control="extensions.treestyletab.autoAttach.newTabCommand-menulist"/>
-		<hbox>
-			<spacer style="width:2em;"/>
-			<menulist id="extensions.treestyletab.autoAttach.newTabCommand-menulist"
-				preference="extensions.treestyletab.autoAttach.newTabCommand">
-				<menupopup>
-					<menuitem value="0" label="&config.autoAttach.newTabCommand.independent;"/>
-					<menuitem value="1" label="&config.autoAttach.newTabCommand.child;"/>
-					<menuitem value="2" label="&config.autoAttach.newTabCommand.sibling;"/>
-					<menuitem value="3" label="&config.autoAttach.newTabCommand.nextSibling;"/>
-				</menupopup>
-			</menulist>
-		</hbox>
-	</vbox>
-	<vbox>
-		<label value="&config.autoAttach.duplicateTabCommand.caption;"
+		<menulist id="extensions.treestyletab.autoAttach.newTabCommand-menulist"
+			preference="extensions.treestyletab.autoAttach.newTabCommand">
+			<menupopup>
+				<menuitem value="0" label="&config.autoAttach.newTabCommand.independent;"/>
+				<menuitem value="1" label="&config.autoAttach.newTabCommand.child;"/>
+				<menuitem value="2" label="&config.autoAttach.newTabCommand.sibling;"/>
+				<menuitem value="3" label="&config.autoAttach.newTabCommand.nextSibling;"/>
+			</menupopup>
+		</menulist>
+		<label value="&config.autoAttach.newTabCommand.label_after;"
+			control="extensions.treestyletab.autoAttach.newTabCommand-menulist"/>
+	</hbox>
+	<hbox align="center">
+		<label value="&config.autoAttach.newTabButton.label_before;"
+			control="extensions.treestyletab.autoAttach.newTabButton-menulist"/>
+		<menulist id="extensions.treestyletab.autoAttach.newTabButton-menulist"
+			preference="extensions.treestyletab.autoAttach.newTabButton">
+			<menupopup>
+				<menuitem value="0" label="&config.autoAttach.newTabButton.independent;"/>
+				<menuitem value="1" label="&config.autoAttach.newTabButton.child;"/>
+				<menuitem value="2" label="&config.autoAttach.newTabButton.sibling;"/>
+				<menuitem value="3" label="&config.autoAttach.newTabButton.nextSibling;"/>
+			</menupopup>
+		</menulist>
+		<label value="&config.autoAttach.newTabButton.label_after;"
+			control="extensions.treestyletab.autoAttach.newTabButton-menulist"/>
+	</hbox>
+	<hbox align="center">
+		<label value="&config.autoAttach.duplicateTabCommand.label_before;"
 			control="extensions.treestyletab.autoAttach.duplicateTabCommand-menulist"/>
-		<hbox>
-			<spacer style="width:2em;"/>
-			<menulist id="extensions.treestyletab.autoAttach.duplicateTabCommand-menulist"
-				preference="extensions.treestyletab.autoAttach.duplicateTabCommand">
-				<menupopup>
-					<menuitem value="0" label="&config.autoAttach.duplicateTabCommand.independent;"/>
-					<menuitem value="1" label="&config.autoAttach.duplicateTabCommand.child;"/>
-					<menuitem value="2" label="&config.autoAttach.duplicateTabCommand.sibling;"/>
-					<menuitem value="3" label="&config.autoAttach.duplicateTabCommand.nextSibling;"/>
-				</menupopup>
-			</menulist>
-		</hbox>
-	</vbox>
+		<menulist id="extensions.treestyletab.autoAttach.duplicateTabCommand-menulist"
+			preference="extensions.treestyletab.autoAttach.duplicateTabCommand">
+			<menupopup>
+				<menuitem value="0" label="&config.autoAttach.duplicateTabCommand.independent;"/>
+				<menuitem value="1" label="&config.autoAttach.duplicateTabCommand.child;"/>
+				<menuitem value="2" label="&config.autoAttach.duplicateTabCommand.sibling;"/>
+				<menuitem value="3" label="&config.autoAttach.duplicateTabCommand.nextSibling;"/>
+			</menupopup>
+		</menulist>
+		<label value="&config.autoAttach.duplicateTabCommand.label_after;"
+			control="extensions.treestyletab.autoAttach.duplicateTabCommand-menulist"/>
+	</hbox>
+	<hbox align="center">
+		<label value="&config.autoAttach.goButton.label_before;"
+			control="extensions.treestyletab.autoAttach.goButton-menulist"/>
+		<menulist id="extensions.treestyletab.autoAttach.goButton-menulist"
+			preference="extensions.treestyletab.autoAttach.goButton">
+			<menupopup>
+				<menuitem value="0" label="&config.autoAttach.goButton.independent;"/>
+				<menuitem value="1" label="&config.autoAttach.goButton.child;"/>
+				<menuitem value="2" label="&config.autoAttach.goButton.sibling;"/>
+				<menuitem value="3" label="&config.autoAttach.goButton.nextSibling;"/>
+			</menupopup>
+		</menulist>
+		<label value="&config.autoAttach.goButton.label_after;"
+			control="extensions.treestyletab.autoAttach.goButton-menulist"/>
+	</hbox>
 	<groupbox>
 		<caption label="&config.openGroupBookmark.caption;"/>
 		<hbox>
