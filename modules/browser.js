@@ -3038,7 +3038,7 @@ TreeStyleTabBrowser.prototype = {
 			// for safety
 			this.partAllChildren(aTab, {
 				dontUpdateIndent : true,
-				dontAnimate      : TreeStyleTabService.restoringTree
+				dontAnimate      : this.windowService.restoringTree
 			});
 		}
 
