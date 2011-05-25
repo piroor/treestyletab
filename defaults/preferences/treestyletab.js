@@ -453,7 +453,7 @@ pref("extensions.treestyletab.autoAttach.newTabCommand", 0);
  * NOTE: This pref affects only on Firefox 4 or later. Firefox 3.6 doesn't open
  *       new blank tabs by middle click on the "New Tab" button.
  */
-pref("extensions.treestyletab.autoAttach.newTabButton", 0);
+pref("extensions.treestyletab.autoAttach.newTabButton", 1);
 /**
  * How to treat duplicated tabs.
  *  Options are same to extensions.treestyletab.autoAttach.newTabCommand.
@@ -463,7 +463,7 @@ pref("extensions.treestyletab.autoAttach.duplicateTabCommand", 3);
  * How to treat new tabs from middle click (or Ctrl-click) on the "Go" button.
  *  Options are same to extensions.treestyletab.autoAttach.newTabCommand.
  */
-pref("extensions.treestyletab.autoAttach.goButton", 0);
+pref("extensions.treestyletab.autoAttach.goButton", 1);
 
 /**
  * Focus targets for Ctrl-Tab/Ctrl-Shift-Tab.
