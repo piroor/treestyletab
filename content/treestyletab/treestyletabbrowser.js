@@ -536,14 +536,7 @@ TreeStyleTabBrowser.prototype = {
 		this._readyToInitDNDObservers();
 
 		// Init autohide service only if it have to be activated.
-		if (window.fullScreen ?
-				(
-					window.fullScreen &&
-					this.getPref('browser.fullscreen.autohide') &&
-					this.getTreePref('tabbar.autoHide.mode.fullscreen')
-				) :
-				this.getTreePref('tabbar.autoHide.mode')
-			)
+		if (this.isAutoHide)
 			this.autoHide;
 
 		this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_INITIALIZE);

@@ -165,6 +165,17 @@ var TreeStyleTabService = {
 	kSEARCH_RESULT_DO_NOT_ATTACH      : 0,
 	kSEARCH_RESULT_ATTACH_IF_SELECTED : 1,
 	kSEARCH_RESULT_ATTACH_ALWAYS      : 2,
+ 
+	get isAutoHide() 
+	{
+		return window.fullScreen ?
+				(
+					window.fullScreen &&
+					this.getPref('browser.fullscreen.autohide') &&
+					this.getTreePref('tabbar.autoHide.mode.fullscreen')
+				) :
+				this.getTreePref('tabbar.autoHide.mode');
+	},
   
 /* Initializing */ 
 	
@@ -378,7 +389,9 @@ var TreeStyleTabService = {
 		this.processRestoredTabs();
 		this.updateTabsOnTop();
 
-		this.onPrefChange('extensions.treestyletab.tabbar.autoHide.mode');
+		// Init autohide service only if it have to be activated.
+		if (this.isAutoHide)
+			this.onPrefChange('extensions.treestyletab.tabbar.autoHide.mode');
 		this.onPrefChange('extensions.treestyletab.tabbar.style');
 		this.onPrefChange('extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut');
 	},
