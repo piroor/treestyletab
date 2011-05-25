@@ -133,8 +133,9 @@ TreeStyleTabWindow.prototype = {
  
 	get browser() 
 	{
-		return 'SplitBrowser' in this.window ? this.window.SplitBrowser.activeBrowser :
-			this.window.gBrowser ;
+		var w = this.window;
+		return 'SplitBrowser' in w ? w.SplitBrowser.activeBrowser :
+			w.gBrowser ;
 	},
   
 /* backward compatibility */ 
@@ -187,7 +188,8 @@ TreeStyleTabWindow.prototype = {
  
 	get isToolbarCustomizing() 
 	{
-		var toolbox = this.window.gToolbox || this.window.gNavToolbox;
+		var w = this.window;
+		var toolbox = w.gToolbox || w.gNavToolbox;
 		return toolbox && toolbox.customizing;
 	},
  
@@ -253,13 +255,14 @@ TreeStyleTabWindow.prototype = {
 		if (this.preInitialized) return;
 		this.preInitialized = true;
 
-		this.window.removeEventListener('DOMContentLoaded', this, true);
-		if (this.window.location.href.indexOf('chrome://browser/content/browser.xul') != 0)
+		var w = this.window;
+		w.removeEventListener('DOMContentLoaded', this, true);
+		if (w.location.href.indexOf('chrome://browser/content/browser.xul') != 0)
 			return;
 
-		this.window.addEventListener('SSTabRestoring', this, true);
+		w.addEventListener('SSTabRestoring', this, true);
 
-		this.window.TreeStyleTabWindowHelper.preInit();
+		w.TreeStyleTabWindowHelper.preInit();
 
 		this.migratePrefs();
 	},
@@ -371,8 +374,9 @@ TreeStyleTabWindow.prototype = {
   
 	init : function TSTWindow_init() 
 	{
-		this.window.removeEventListener('load', this, false);
-		this.window.addEventListener('unload', this, false);
+		var w = this.window;
+		w.removeEventListener('load', this, false);
+		w.addEventListener('unload', this, false);
 
 		if (!this.browser) return;
 
@@ -382,27 +386,28 @@ TreeStyleTabWindow.prototype = {
 		if (!this.preInitialized) {
 			this.preInit();
 		}
-		this.window.removeEventListener('SSTabRestoring', this, true);
+		w.removeEventListener('SSTabRestoring', this, true);
 
-		this.document.addEventListener('popupshowing', this, false);
-		this.document.addEventListener('popuphiding', this, true);
-		this.document.addEventListener(this.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, this, false);
-		this.document.addEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGED,     this, false);
-		this.document.addEventListener(this.kEVENT_TYPE_TABBAR_STATE_CHANGED,        this, false);
-		this.document.addEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB,              this, false);
+		var d = this.document;
+		d.addEventListener('popupshowing', this, false);
+		d.addEventListener('popuphiding', this, true);
+		d.addEventListener(this.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, this, false);
+		d.addEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGED,     this, false);
+		d.addEventListener(this.kEVENT_TYPE_TABBAR_STATE_CHANGED,        this, false);
+		d.addEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB,              this, false);
 
-		var appcontent = this.document.getElementById('appcontent');
+		var appcontent = d.getElementById('appcontent');
 		appcontent.addEventListener('SubBrowserAdded', this, false);
 		appcontent.addEventListener('SubBrowserRemoveRequest', this, false);
 
-		this.window.addEventListener('UIOperationHistoryUndo:TabbarOperations', this, false);
-		this.window.addEventListener('UIOperationHistoryRedo:TabbarOperations', this, false);
+		w.addEventListener('UIOperationHistoryUndo:TabbarOperations', this, false);
+		w.addEventListener('UIOperationHistoryRedo:TabbarOperations', this, false);
 
 		this.addPrefListener(this);
 
 		this.initUninstallationListener();
 
-		this.window.TreeStyleTabWindowHelper.init();
+		w.TreeStyleTabWindowHelper.init();
 		this.initTabBrowser(this.browser);
 
 		this.processRestoredTabs();
@@ -469,12 +474,13 @@ TreeStyleTabWindow.prototype = {
  
 	updateAllTabsButton : function TSTWindow_updateAllTabsButton(aTabBrowser) 
 	{
+		var d = this.document;
 		aTabBrowser = aTabBrowser || this.browser;
-		var allTabsButton = this.document.getElementById('alltabs-button') || // Firefox 4.0 or later
-				this.document.getAnonymousElementByAttribute(aTabBrowser.mTabContainer, 'class', 'tabs-alltabs-button') || // Firefox 3.6 or older
+		var allTabsButton = d.getElementById('alltabs-button') || // Firefox 4.0 or later
+				d.getAnonymousElementByAttribute(aTabBrowser.mTabContainer, 'class', 'tabs-alltabs-button') || // Firefox 3.6 or older
 				( // Tab Mix Plus
 					this.getTreePref('compatibility.TMP') &&
-					this.document.getAnonymousElementByAttribute(aTabBrowser.mTabContainer, 'anonid', 'alltabs-button')
+					d.getAnonymousElementByAttribute(aTabBrowser.mTabContainer, 'anonid', 'alltabs-button')
 				);
 
 		if (allTabsButton && allTabsButton.hasChildNodes() && aTabBrowser.treeStyleTab)
@@ -510,7 +516,8 @@ TreeStyleTabWindow.prototype = {
 		if (this.browser) {
 			this.utils.inWindowDestoructionProcess = true;
 			try {
-				this.window.removeEventListener('unload', this, false);
+				let w = this.window;
+				w.removeEventListener('unload', this, false);
 
 				this.browser.treeStyleTab.saveCurrentState();
 				this.destroyTabBrowser(this.browser);
@@ -518,23 +525,24 @@ TreeStyleTabWindow.prototype = {
 				this.endListenKeyEventsFor(this.LISTEN_FOR_AUTOHIDE);
 				this.endListenKeyEventsFor(this.LISTEN_FOR_AUTOEXPAND_BY_FOCUSCHANGE);
 
-				this.document.removeEventListener('popupshowing', this, false);
-				this.document.removeEventListener('popuphiding', this, true);
-				this.document.removeEventListener(this.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, this, false);
-				this.document.removeEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGED,     this, false);
-				this.document.removeEventListener(this.kEVENT_TYPE_TABBAR_STATE_CHANGED,        this, false);
-				this.document.removeEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB,              this, false);
+				let d = this.document;
+				d.removeEventListener('popupshowing', this, false);
+				d.removeEventListener('popuphiding', this, true);
+				d.removeEventListener(this.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, this, false);
+				d.removeEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGED,     this, false);
+				d.removeEventListener(this.kEVENT_TYPE_TABBAR_STATE_CHANGED,        this, false);
+				d.removeEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB,              this, false);
 
 				this._tabFocusAllowance.forEach(function(aListener) {
-					this.window.removeEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB, aListener, false);
+					w.removeEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB, aListener, false);
 				}, this);
 
-				var appcontent = this.document.getElementById('appcontent');
+				var appcontent = d.getElementById('appcontent');
 				appcontent.removeEventListener('SubBrowserAdded', this, false);
 				appcontent.removeEventListener('SubBrowserRemoveRequest', this, false);
 
-				this.window.removeEventListener('UIOperationHistoryUndo:TabbarOperations', this, false);
-				this.window.removeEventListener('UIOperationHistoryRedo:TabbarOperations', this, false);
+				w.removeEventListener('UIOperationHistoryUndo:TabbarOperations', this, false);
+				w.removeEventListener('UIOperationHistoryRedo:TabbarOperations', this, false);
 
 				this.removePrefListener(this);
 			}
@@ -546,7 +554,7 @@ TreeStyleTabWindow.prototype = {
 			}
 		}
 
-		delete this.window.TreeStyleTabService;
+		delete w.TreeStyleTabService;
 		delete this.window;
 		delete this.document;
 	},
@@ -659,9 +667,10 @@ TreeStyleTabWindow.prototype = {
 	{
 		if (this.keyEventListeningFlags & aReason) return;
 		if (!this.keyEventListening) {
-			this.window.addEventListener('keydown',  this, true);
-			this.window.addEventListener('keyup',    this, true);
-			this.window.addEventListener('keypress', this, true);
+			let w = this.window;
+			w.addEventListener('keydown',  this, true);
+			w.addEventListener('keyup',    this, true);
+			w.addEventListener('keypress', this, true);
 			this.keyEventListening = true;
 		}
 		this.keyEventListeningFlags |= aReason;
@@ -672,10 +681,10 @@ TreeStyleTabWindow.prototype = {
 		if (!(this.keyEventListeningFlags & aReason)) return;
 		this.keyEventListeningFlags ^= aReason;
 		if (!this.keyEventListeningFlags && this.keyEventListening) {
-			this.window.removeEventListener('keydown',  this, true);
-			this.window.removeEventListener('keyup',    this, true);
-
-			this.window.removeEventListener('keypress', this, true);
+			let w = this.window;
+			w.removeEventListener('keydown',  this, true);
+			w.removeEventListener('keyup',    this, true);
+			w.removeEventListener('keypress', this, true);
 			this.keyEventListening = false;
 		}
 	},
@@ -923,18 +932,19 @@ TreeStyleTabWindow.prototype = {
  
 	updateAeroPeekPreviews : function TSTWindow_updateAeroPeekPreviews() 
 	{
+		var w = this.window;
 		if (
 			this.updateAeroPeekPreviewsTimer ||
 			!this.getPref('browser.taskbar.previews.enable') ||
 			!this.getTreePref('taskbarPreviews.hideCollapsedTabs') ||
-			!('Win7Features' in this.window) ||
-			!this.window.Win7Features ||
+			!('Win7Features' in w) ||
+			!w.Win7Features ||
 			!this.AeroPeek ||
 			!this.AeroPeek.windows
 			)
 			return;
 
-		this.updateAeroPeekPreviewsTimer = this.window.setTimeout(function(aSelf) {
+		this.updateAeroPeekPreviewsTimer = w.setTimeout(function(aSelf) {
 			aSelf.updateAeroPeekPreviewsTimer = null;
 			try {
 				aSelf.updateAeroPeekPreviewsInternal();
@@ -970,10 +980,11 @@ TreeStyleTabWindow.prototype = {
  
 	updateTabsOnTop : function TSTWindow_updateTabsOnTop() 
 	{
-		if (!('TabsOnTop' in this.window) || !('enabled' in this.window.TabsOnTop))
+		var w = this.window;
+		if (!('TabsOnTop' in w) || !('enabled' in w.TabsOnTop))
 			return;
 
-		var TabsOnTop = this.window.TabsOnTop;
+		var TabsOnTop = w.TabsOnTop;
 		if (!('_tabsOnTopDefaultState' in this))
 			this._tabsOnTopDefaultState = TabsOnTop.enabled;
 
@@ -1125,20 +1136,21 @@ TreeStyleTabWindow.prototype = {
  
 	setContentWidth : function TSTWindow_setContentWidth(aWidth, aKeepWindowSize) /* PUBLIC API */ 
 	{
+		var w = this.window;
 		var treeStyleTab = this.browser.treeStyleTab;
 		var strip = treeStyleTab.tabStrip;
 		var tabbarWidth = treeStyleTab.splitterWidth + (treeStyleTab.isVertical ? strip.boxObject.width : 0 );
 		var contentWidth = this.browser.boxObject.width - tabbarWidth;
 		if (aKeepWindowSize ||
-			this.window.fullScreen ||
-			this.window.windowState != Ci.nsIDOMChromeWindow.STATE_NORMAL) {
+			w.fullScreen ||
+			w.windowState != Ci.nsIDOMChromeWindow.STATE_NORMAL) {
 			this.setTabbarWidth(Math.max(10, this.browser.boxObject.width - aWidth));
 		}
-		else if (tabbarWidth + aWidth <= this.window.screen.availWidth) {
-			this.window.resizeBy(aWidth - contentWidth, 0);
+		else if (tabbarWidth + aWidth <= w.screen.availWidth) {
+			w.resizeBy(aWidth - contentWidth, 0);
 		}
 		else {
-			this.window.resizeBy(this.window.screen.availWidth - this.window.outerWidth, 0);
+			w.resizeBy(w.screen.availWidth - w.outerWidth, 0);
 			this.setTabbarWidth(this.browser.boxObject.width - aWidth);
 		}
 	},
@@ -1250,8 +1262,9 @@ TreeStyleTabWindow.prototype = {
 			)
 			return true;
 		var checked = { value:true };
-		this.window.focus();
-		var shouldClose = this.PromptService.confirmEx(this.window,
+		var w = this.window;
+		w.focus();
+		var shouldClose = this.PromptService.confirmEx(w,
 				this.tabbrowserBundle.getString('tabs.closeWarningTitle'),
 				this.tabbrowserBundle.getFormattedString('tabs.closeWarningMultipleTabs', [aTabsCount]),
 				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_0) +
@@ -1441,7 +1454,8 @@ TreeStyleTabWindow.prototype = {
  
 	tearOffSubtreeFromRemote : function TSTWindow_tearOffSubtreeFromRemote() 
 	{
-		var remoteTab = this.window.arguments[0];
+		var w = this.window;
+		var remoteTab = w.arguments[0];
 		var remoteWindow  = remoteTab.ownerDocument.defaultView;
 		var remoteService = remoteWindow.TreeStyleTabService;
 		var remoteMultipleTabService = remoteWindow.MultipleTabService;
@@ -1449,7 +1463,7 @@ TreeStyleTabWindow.prototype = {
 			(remoteMultipleTabService && remoteMultipleTabService.isSelected(remoteTab))) {
 			let remoteBrowser = remoteService.getTabBrowserFromChild(remoteTab);
 			if (remoteBrowser.treeStyleTab.tabbarDNDObserver.isDraggingAllTabs(remoteTab)) {
-				this.window.close();
+				w.close();
 			}
 			else {
 				let actionInfo = {
@@ -1480,26 +1494,28 @@ TreeStyleTabWindow.prototype = {
  
 	onPrintPreviewEnter : function TSTWindow_onPrintPreviewEnter() 
 	{
-		var event = this.document.createEvent('Events');
+		var d = this.document;
+		var event = d.createEvent('Events');
 		event.initEvent(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, true, false);
-		this.document.documentElement.dispatchEvent(event);
+		d.documentElement.dispatchEvent(event);
 
 		// for backward compatibility
-		event = this.document.createEvent('Events');
+		event = d.createEvent('Events');
 		event.initEvent(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED.replace(/^nsDOM/, ''), true, false);
-		this.document.documentElement.dispatchEvent(event);
+		d.documentElement.dispatchEvent(event);
 	},
  
 	onPrintPreviewExit : function TSTWindow_onPrintPreviewExit() 
 	{
-		var event = this.document.createEvent('Events');
+		var d = this.document;
+		var event = d.createEvent('Events');
 		event.initEvent(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED, true, false);
-		this.document.documentElement.dispatchEvent(event);
+		d.documentElement.dispatchEvent(event);
 
 		// for backward compatibility
-		event = this.document.createEvent('Events');
+		event = d.createEvent('Events');
 		event.initEvent(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED.replace(/^nsDOM/, ''), true, false);
-		this.document.documentElement.dispatchEvent(event);
+		d.documentElement.dispatchEvent(event);
 	},
   
 	observe : function TSTWindow_observe(aSubject, aTopic, aData) 
