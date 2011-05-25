@@ -1441,7 +1441,7 @@ var TreeStyleTabService = {
 				Ci.nsIDOMXPathResult.BOOLEAN_TYPE
 			).booleanValue)
 			this._handleNewTabCommand(this.browser.selectedTab, this.getTreePref('autoAttach.newTabButton'));
-		else if (aEvent.target.id == 'urlbar-go-button' && aEvent.target.id == 'go-button')
+		else if (aEvent.target.id == 'urlbar-go-button' || aEvent.target.id == 'go-button')
 			this._handleNewTabCommand(this.browser.selectedTab, this.getTreePref('autoAttach.goButton'));
 	},
  
