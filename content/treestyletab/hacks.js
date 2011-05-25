@@ -1041,6 +1041,57 @@ TreeStyleTabService.overrideExtensionsOnInitAfter = function TSTService_override
 			);
 	}
 
+	// Locationbar2
+	// https://addons.mozilla.org/firefox/addon/locationbar²/
+	if ('lb2_alternateStyles' in window &&
+		this.getTreePref('compatibility.Locationbar2')) {
+		let sv = this;
+		let listening = false;
+		let listener = function(aEvent) {
+				switch (aEvent.type)
+				{
+					case 'unload':
+						window.removeEventListener('unload', listener, false);
+						window.removeEventListener(sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION, listener, false);
+						window.removeEventListener(sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION, listener, false);
+					case sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION:
+						if (gURLBar && listening)
+							gURLBar.removeEventListener('click', listener, true);
+						listening = false;
+						return;
+
+					case sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION:
+						if (gURLBar && !listening) {
+							gURLBar.addEventListener('click', listener, true);
+							listening = true;
+						}
+						return;
+
+					case 'click':
+						if (sv.evaluateXPath(
+								'ancestor-or-self::*['
+									+'contains(concat(" ", normalize-space(@class), " "), " textbox-presentation-segment ")'
+								+']',
+								aEvent.originalTarget,
+								Ci.nsIDOMXPathResult.BOOLEAN_TYPE
+							).booleanValue) {
+							sv.readyToOpenChildTab(gBrowser.selectedTab);
+							sv.Deferred.next(function() {
+								// clear with delay, because this action can be ignored by othere reasons.
+								sv.stopToOpenChildTab(gBrowser.selectedTab);
+							});
+						}
+						return;
+				}
+			};
+		window.addEventListener('unload', listener, false);
+		window.addEventListener(this.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION, listener, false);
+		window.addEventListener(this.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION, listener, false);
+		if (gURLBar && !listening) {
+			gURLBar.addEventListener('click', listener, true);
+			listening = true;
+		}
+	}
 
 	window.setTimeout(function(aSelf) {
 		aSelf.overrideExtensionsDelayed();
