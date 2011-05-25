@@ -1433,7 +1433,7 @@ var TreeStyleTabService = {
 			return;
 
 		if (this.evaluateXPath(
-				'ancestor::*['
+				'ancestor-or-self::*['
 					+'@id="new-tab-button" or '
 					+'contains(concat(" ", normalize-space(@class), " "), " tabs-newtab-button ")'
 				+']',
