@@ -13,7 +13,7 @@
    http://github.com/piroor/fxaddonlibs/blob/master/tabsDragUtils.js
 */
 (function() {
-	const currentRevision = 15;
+	const currentRevision = 16;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -264,7 +264,9 @@
 						selectedTabs.length
 					)
 				);
-			return isMultipleDrag ? selectedTabs : [] ;
+			return isMultipleDrag ? selectedTabs :
+					tab ? [tab] :
+					[] ;
 		},
 
 		getDraggedTabs : function TDU_getDraggedTabs(aEventOrDataTransfer)
