@@ -782,6 +782,14 @@ var TreeStyleTabService = {
 		if (goButton)
 			goButton.parentNode.addEventListener('click', this, true);
 
+		var tabbar = this.getTabStrip(this.browser);
+		tabbar.addEventListener('click', this, true);
+
+		var newTabButton = document.getElementById('new-tab-button'); // Firefox 4 or later
+		if (newTabButton &&
+			!(tabbar.compareDocumentPosition(newTabButton) & Ci.nsIDOM3Node.DOCUMENT_POSITION_CONTAINED_BY))
+			newTabButton.parentNode.addEventListener('click', this, true);
+
 		// for Firefox 4.0 or later
 		this.updateAllTabsButton(gBrowser);
 
@@ -796,6 +804,14 @@ var TreeStyleTabService = {
 						document.getElementById('go-button'); // Firefox 3.6
 		if (goButton)
 			goButton.parentNode.removeEventListener('click', this, true);
+
+		var tabbar = this.getTabStrip(this.browser);
+		tabbar.removeEventListener('click', this, true);
+
+		var newTabButton = document.getElementById('new-tab-button'); // Firefox 4 or later
+		if (newTabButton &&
+			!(tabbar.compareDocumentPosition(newTabButton) & Ci.nsIDOM3Node.DOCUMENT_POSITION_CONTAINED_BY))
+			newTabButton.parentNode.removeEventListener('click', this, true);
 
 		// Firefox 4.0 or later (restore original position)
 		var allTabsButton = document.getElementById('alltabs-button');
@@ -949,7 +965,7 @@ var TreeStyleTabService = {
 				return this.onTabbarReset(aEvent);
 
 			case 'click':
-				return this.onGoButtonClick(aEvent);
+				return this.handleNewTabActionOnButton(aEvent);
 
 			case 'SubBrowserAdded':
 				return this.initTabBrowser(aEvent.originalTarget.browser);
@@ -1410,21 +1426,29 @@ var TreeStyleTabService = {
 		this._handleNewTabCommand(b.selectedTab, this.getTreePref('autoAttach.newTabCommand'));
 	},
  
+	handleNewTabActionOnButton : function TSTService_handleNewTabActionOnButton(aEvent) 
+	{
+		// ignore non new-tab commands (middle click, Ctrl-click)
+		if (aEvent.button != 1 && (aEvent.button != 0 || !this.isAccelKeyPressed(aEvent)))
+			return;
+
+		if (this.evaluateXPath(
+				'ancestor::*['
+					+'@id="new-tab-button" or '
+					+'contains(concat(" ", normalize-space(@class), " "), " tabs-newtab-button ")'
+				+']',
+				aEvent.originalTarget,
+				Ci.nsIDOMXPathResult.BOOLEAN_TYPE
+			).booleanValue)
+			this._handleNewTabCommand(this.browser.selectedTab, this.getTreePref('autoAttach.newTabButton'));
+		else if (aEvent.target.id == 'urlbar-go-button' && aEvent.target.id == 'go-button')
+			this._handleNewTabCommand(this.browser.selectedTab, this.getTreePref('autoAttach.goButton'));
+	},
+ 
 	onBeforeTabDuplicate : function TSTService_onBeforeTabDuplicate(aTab) 
 	{
 		var b = this.getTabBrowserFromChild(aTab) || this.browser;
 		this._handleNewTabCommand(aTab || b.selectedTab, this.getTreePref('autoAttach.duplicateTabCommand'));
-	},
- 
-	onGoButtonClick : function TSTService_onGoButtonClick(aEvent) 
-	{
-		if (
-			(aEvent.target.id != 'urlbar-go-button' && aEvent.target.id != 'go-button') ||
-			(aEvent.button != 1 && (aEvent.button != 0 || !this.isAccelKeyPressed(aEvent)))
-			)
-			return;
-
-		this._handleNewTabCommand(this.browser.selectedTab, this.getTreePref('autoAttach.goButton'));
 	},
   
 /* Tree Style Tabの初期化が行われる前に復元されたセッションについてツリー構造を復元 */ 

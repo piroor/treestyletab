@@ -448,12 +448,17 @@ pref("extensions.treestyletab.autoAttach.searchResult", 1);
  */
 pref("extensions.treestyletab.autoAttach.newTabCommand", 0);
 /**
+ * How to treat new tabs from middle click (or Ctrl-click) on the "New Tab" button.
+ *  Options are same to extensions.treestyletab.autoAttach.newTabCommand.
+ */
+pref("extensions.treestyletab.autoAttach.newTabButton", 0);
+/**
  * How to treat duplicated tabs.
  *  Options are same to extensions.treestyletab.autoAttach.newTabCommand.
  */
 pref("extensions.treestyletab.autoAttach.duplicateTabCommand", 3);
 /**
- * How to treat new tabs from middle click (or Ctrl-click) on "Go" button.
+ * How to treat new tabs from middle click (or Ctrl-click) on the "Go" button.
  *  Options are same to extensions.treestyletab.autoAttach.newTabCommand.
  */
 pref("extensions.treestyletab.autoAttach.goButton", 0);
