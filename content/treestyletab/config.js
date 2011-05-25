@@ -162,6 +162,12 @@ function initTabPane()
 		'openGroupBookmark-check',
 		'openGroupBookmark-deck'
 	);
+
+	var newTabPref = document.getElementById('extensions.treestyletab.autoAttach.newTabButton-box');
+	if (comparator.compare(XULAppInfo.version, '4.0') >= 0)
+		newTabPref.removeAttribute('hidden');
+	else
+		newTabPref.setAttribute('hidden', true);
 }
 
 function onSyncGroupBookmarkUIToPref()

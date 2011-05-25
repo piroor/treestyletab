@@ -381,7 +381,7 @@
 		<label value="&config.autoAttach.newTabCommand.label_after;"
 			control="extensions.treestyletab.autoAttach.newTabCommand-menulist"/>
 	</hbox>
-	<hbox align="center">
+	<hbox align="center" id="extensions.treestyletab.autoAttach.newTabButton-box">
 		<label value="&config.autoAttach.newTabButton.label_before;"
 			control="extensions.treestyletab.autoAttach.newTabButton-menulist"/>
 		<menulist id="extensions.treestyletab.autoAttach.newTabButton-menulist"

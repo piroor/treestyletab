@@ -785,7 +785,7 @@ var TreeStyleTabService = {
 		var tabbar = this.getTabStrip(this.browser);
 		tabbar.addEventListener('click', this, true);
 
-		var newTabButton = document.getElementById('new-tab-button'); // Firefox 4 or later
+		var newTabButton = document.getElementById('new-tab-button');
 		if (newTabButton &&
 			!(tabbar.compareDocumentPosition(newTabButton) & Ci.nsIDOM3Node.DOCUMENT_POSITION_CONTAINED_BY))
 			newTabButton.parentNode.addEventListener('click', this, true);
@@ -808,7 +808,7 @@ var TreeStyleTabService = {
 		var tabbar = this.getTabStrip(this.browser);
 		tabbar.removeEventListener('click', this, true);
 
-		var newTabButton = document.getElementById('new-tab-button'); // Firefox 4 or later
+		var newTabButton = document.getElementById('new-tab-button');
 		if (newTabButton &&
 			!(tabbar.compareDocumentPosition(newTabButton) & Ci.nsIDOM3Node.DOCUMENT_POSITION_CONTAINED_BY))
 			newTabButton.parentNode.removeEventListener('click', this, true);
