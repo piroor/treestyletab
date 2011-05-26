@@ -313,7 +313,7 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 	}
 };
 
-TreeStyleTabWindowHelper.overrideExtensionsOnInitBefore = function TSTWH_overrideExtensionsOnInitBefore() {
+TreeStyleTabWindowHelper.overrideExtensionsBeforeBrowserInit = function TSTWH_overrideExtensionsBeforeBrowserInit() {
 	var sv = this.service;
 
 	// Tab Mix Plus
@@ -396,6 +396,10 @@ TreeStyleTabWindowHelper.overrideExtensionsOnInitBefore = function TSTWH_overrid
 			);
 		}
 	}
+};
+
+TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_overrideExtensionsAfterBrowserInit() {
+	var sv = this.service;
 
 	// Selection Links
 	// https://addons.mozilla.org/firefox/addon/8644

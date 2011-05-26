@@ -59,10 +59,15 @@ var TreeStyleTabWindowHelper = {
 		this.overrideExtensionsPreInit(); // hacks.js
 	},
  
-	init : function TSTWH_init() 
+	onBeforeBrowserInit : function TSTWH_onBeforeBrowserInit() 
 	{
-		this.overrideExtensionsOnInitBefore(); // hacks.js
+		this.overrideExtensionsBeforeBrowserInit(); // hacks.js
 		this.overrideGlobalFunctions();
+	},
+ 
+	onAfterBrowserInit : function TSTWH_onAfterBrowserInit() 
+	{
+		this.overrideExtensionsAfterBrowserInit(); // hacks.js
 	},
 	
 	updateTabDNDObserver : function TSTWH_updateTabDNDObserver(aObserver) 

@@ -407,8 +407,9 @@ TreeStyleTabWindow.prototype = {
 
 		this.initUninstallationListener();
 
-		w.TreeStyleTabWindowHelper.init();
+		w.TreeStyleTabWindowHelper.onBeforeBrowserInit();
 		this.initTabBrowser(this.browser);
+		w.TreeStyleTabWindowHelper.onAfterBrowserInit();
 
 		this.processRestoredTabs();
 		this.updateTabsOnTop();
