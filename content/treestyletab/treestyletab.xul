@@ -13,9 +13,11 @@
 
 <script type="application/javascript"><![CDATA[
 
-Components.utils.import('resource://treestyletab-modules/window.js');
-Components.utils.import('resource://treestyletab-modules/browser.js');
-new TreeStyleTabWindow(window);
+(function() {
+	var ns = {};
+	Components.utils.import('resource://treestyletab-modules/window.js', ns);
+	new ns.TreeStyleTabWindow(window);
+})();
 
 ]]></script>
 

@@ -38,20 +38,46 @@ const EXPORTED_SYMBOLS = ['TreeStyleTabUtils'];
 const Cc = Components.classes;
 const Ci = Components.interfaces;
  
-Components.utils.import('resource://treestyletab-modules/lib/prefs.js'); 
-Components.utils.import('resource://treestyletab-modules/lib/boxObject.js');
-Components.utils.import('resource://treestyletab-modules/lib/stringBundle.js');
-Components.utils.import('resource://treestyletab-modules/lib/extensions.js');
-Components.utils.import('resource://treestyletab-modules/lib/animationManager.js');
-Components.utils.import('resource://treestyletab-modules/lib/autoScroll.js');
-Components.utils.import('resource://treestyletab-modules/lib/confirmWithTab.js');
-Components.utils.import('resource://treestyletab-modules/lib/jsdeferred.js');
-Components.utils.import('resource://treestyletab-modules/lib/jstimer.jsm');
+Components.utils.import('resource://gre/modules/XPCOMUtils.jsm'); 
 
+Components.utils.import('resource://treestyletab-modules/lib/prefs.js');
+Components.utils.import('resource://treestyletab-modules/lib/jsdeferred.js');
 Components.utils.import('resource://treestyletab-modules/lib/namespace.jsm');
 var window = getNamespaceFor('piro.sakura.ne.jp');
+
+XPCOMUtils.defineLazyGetter(this, 'jstimer', function() {
+	var jstimer = {};
+	Components.utils.import('resource://treestyletab-modules/lib/jstimer.jsm', jstimer);
+	return jstimer;
+});
+XPCOMUtils.defineLazyGetter(this, 'boxObject', function() {
+	Components.utils.import('resource://treestyletab-modules/lib/boxObject.js', {});
+	return window['piro.sakura.ne.jp'].boxObject;
+});
+XPCOMUtils.defineLazyGetter(this, 'stringBundle', function() {
+	Components.utils.import('resource://treestyletab-modules/lib/stringBundle.js', {});
+	return window['piro.sakura.ne.jp'].stringBundle;
+});
+XPCOMUtils.defineLazyGetter(this, 'extensions', function() {
+	Components.utils.import('resource://treestyletab-modules/lib/extensions.js', {});
+	return window['piro.sakura.ne.jp'].extensions;
+});
+XPCOMUtils.defineLazyGetter(this, 'animationManager', function() {
+	Components.utils.import('resource://treestyletab-modules/lib/animationManager.js', {});
+	return window['piro.sakura.ne.jp'].animationManager;
+});
+XPCOMUtils.defineLazyGetter(this, 'autoScroll', function() {
+	Components.utils.import('resource://treestyletab-modules/lib/autoScroll.js', {});
+	return window['piro.sakura.ne.jp'].autoScroll;
+});
+XPCOMUtils.defineLazyGetter(this, 'confirmWithTab', function() {
+	var ns = {};
+	Components.utils.import('resource://treestyletab-modules/lib/confirmWithTab.js', ns);
+	return ns.confirmWithTab;
+});
  
 var TreeStyleTabUtils = { 
+	__proto__ : window['piro.sakura.ne.jp'].prefs,
 	tabsHash : null,
 	inWindowDestoructionProcess : false,
 	
@@ -289,17 +315,15 @@ var TreeStyleTabUtils = {
 	},
  
 	get treeBundle() { 
-		return window['piro.sakura.ne.jp'].stringBundle
-				.get('chrome://treestyletab/locale/treestyletab.properties');
+		return stringBundle.get('chrome://treestyletab/locale/treestyletab.properties');
 	},
 	get tabbrowserBundle() {
-		return window['piro.sakura.ne.jp'].stringBundle
-				.get('chrome://browser/locale/tabbrowser.properties');
+		return stringBundle.get('chrome://browser/locale/tabbrowser.properties');
 	},
  
-	get extensions() { return window['piro.sakura.ne.jp'].extensions; }, 
-	get animationManager() { return window['piro.sakura.ne.jp'].animationManager; },
-	get autoScroll() { return window['piro.sakura.ne.jp'].autoScroll; },
+	get extensions() { return extensions; }, 
+	get animationManager() { return animationManager; },
+	get autoScroll() { return autoScroll; },
 	Deferred : Deferred,
  
 	init : function TSTUtils_init() 
@@ -423,7 +447,7 @@ var TreeStyleTabUtils = {
 	
 	getBoxObjectFor : function TSTUtils_getBoxObjectFor(aNode) 
 	{
-		return window['piro.sakura.ne.jp'].boxObject.getBoxObjectFor(aNode);
+		return boxObject.getBoxObjectFor(aNode);
 	},
  
 	evalInSandbox : function TSTUtils_evalInSandbox(aCode, aOwner) 
@@ -667,7 +691,7 @@ var TreeStyleTabUtils = {
 
 		var done = false;
 		var listener = function(aEvent) {
-				setTimeout(function() {
+				jstimer.setTimeout(function() {
 					done = true;
 				}, delay || 0);
 				target.removeEventListener(type, listener, false);
@@ -1228,6 +1252,7 @@ var TreeStyleTabUtils = {
 	splitTabsToSubtrees : function TSTUtils_splitTabsToSubtrees(aTabs) /* PUBLIC API */ 
 	{
 		var groups = [];
+
 		var group = [];
 		this.cleanUpTabsArray(aTabs)
 			.forEach(function(aTab) {
@@ -2400,5 +2425,5 @@ var TreeStyleTabUtils = {
   
 }; 
  
-TreeStyleTabUtils.__proto__ = window['piro.sakura.ne.jp'].prefs; 
+TreeStyleTabUtils.init(); 
   

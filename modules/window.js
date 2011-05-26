@@ -38,10 +38,19 @@ const EXPORTED_SYMBOLS = ['TreeStyleTabWindow'];
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
-Components.utils.import('resource://treestyletab-modules/utils.js');
-TreeStyleTabUtils.init();
+Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 
-Components.utils.import('resource://treestyletab-modules/imagePreloader.js');
+Components.utils.import('resource://treestyletab-modules/utils.js');
+XPCOMUtils.defineLazyGetter(this, 'TreeStyleTabBrowser', function() {
+	var ns = {};
+	Components.utils.import('resource://treestyletab-modules/browser.js', ns);
+	return ns.TreeStyleTabBrowser;
+});
+XPCOMUtils.defineLazyGetter(this, 'TreeStyleTabImagePreloader', function() {
+	var ns = {};
+	Components.utils.import('resource://treestyletab-modules/imagePreloader.js', ns);
+	return ns.TreeStyleTabImagePreloader;
+});
  
 function TreeStyleTabWindow(aWindow) 
 {
@@ -55,6 +64,12 @@ function TreeStyleTabWindow(aWindow)
 	aWindow.addEventListener('DOMContentLoaded', this, true);
 	aWindow.addEventListener('load', this, false);
 	aWindow.TreeStyleTabService = this;
+
+	XPCOMUtils.defineLazyGetter(aWindow, 'TreeStyleTabBrowser', function() {
+		var ns = {};
+		Components.utils.import('resource://treestyletab-modules/browser.js', ns);
+		return ns.TreeStyleTabBrowser;
+	});
 }
 
 TreeStyleTabWindow.prototype = {
