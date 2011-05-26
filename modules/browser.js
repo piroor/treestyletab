@@ -974,7 +974,7 @@ TreeStyleTabBrowser.prototype = {
 			scrollFrame = d.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-frame') ||
 							d.getAnonymousElementByAttribute(b.mTabContainer, 'anonid', 'scroll-tabs-frame');
 			newTabBox = d.getAnonymousElementByAttribute(b.mTabContainer, 'id', 'tabs-newbutton-box');
-			let newTabButton = document.getElementById('new-tab-button');
+			let newTabButton = d.getElementById('new-tab-button');
 			if (newTabButton && newTabButton.parentNode == b.tabContainer._container)
 				newTabBox = newTabButton;
 			tabBarMode = this.getPref('extensions.tabmix.tabBarMode');
