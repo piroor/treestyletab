@@ -56,18 +56,18 @@ var TreeStyleTabWindowHelper = {
 			);
 		}
 
-		this.overrideExtensionsPreInit(); // hacks.js
+		this.overrideExtensionsPreInit(); // windowHelperHacks.js
 	},
  
 	onBeforeBrowserInit : function TSTWH_onBeforeBrowserInit() 
 	{
-		this.overrideExtensionsBeforeBrowserInit(); // hacks.js
+		this.overrideExtensionsBeforeBrowserInit(); // windowHelperHacks.js
 		this.overrideGlobalFunctions();
 	},
  
 	onAfterBrowserInit : function TSTWH_onAfterBrowserInit() 
 	{
-		this.overrideExtensionsAfterBrowserInit(); // hacks.js
+		this.overrideExtensionsAfterBrowserInit(); // windowHelperHacks.js
 	},
 	
 	updateTabDNDObserver : function TSTWH_updateTabDNDObserver(aObserver) 
