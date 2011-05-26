@@ -653,6 +653,22 @@ var TreeStyleTabWindowHelper = {
 				);
 			}
 		}
+
+		let (popup = document.getElementById('alltabs-popup')) {
+			if (popup && '_updateTabsVisibilityStatus' in popup) {
+				eval('popup._updateTabsVisibilityStatus = '+
+					popup._updateTabsVisibilityStatus.toSource().replace(
+						'{',
+						'{ var treeStyleTab = gBrowser.treeStyleTab;'
+					).replace(
+						/\.screenX/g, '[treeStyleTab.positionProp]'
+					).replace(
+						/\.width/g, '[treeStyleTab.sizeProp]'
+					)
+				);
+			}
+		}
+	
 	}
  
 }; 
