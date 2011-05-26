@@ -387,7 +387,7 @@ catch(e) {
 				break;
 		}
 
-		if (isNewTabAction) action |= sv.kACTION_NEWTAB;
+		if (isNewTabAction) info.action |= sv.kACTION_NEWTAB;
 
 		return info;
 	},
@@ -796,6 +796,7 @@ catch(e) {
 		if (!this.canDrop(aEvent)) {
 			dt.effectAllowed = dt.dropEffect = 'none';
 			return;
+
 
 		}
 
