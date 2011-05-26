@@ -37,16 +37,75 @@ const EXPORTED_SYMBOLS = ['TreeStyleTabThemeManager'];
 
 Components.utils.import('resource://treestyletab-modules/utils.js');
 
-var TreeStyleTabThemeManager = {
-	preLoadImagesForStyle : function(aStyle)
+function TreeStyleTabThemeManager(aWindow)
+{
+	this.window = aWindow;
+	this._preLoadImagesForStyleDone = [];
+	this._preLoadImagesForStyleDoneImages = [];
+}
+TreeStyleTabThemeManager.prototype = {
+	destroy : function()
 	{
+		delete this.window;
+	},
+
+	set : function(aStyle, aPosition)
+	{
+		if (this._lastStyles)
+			this._lastStyles.forEach(function(aStyle) {
+				aStyle.parentNode.removeChild(aStyle);
+			});
+		this._lastStyles = null;
+
+		var styles = [];
+		switch (aStyle)
+		{
+			case 'default':
+			default:
+
+			case 'flat':
+			case 'mixed':
+				styles.push('chrome://treestyletab/skin/square/square.css');
+				styles.push('chrome://treestyletab/skin/square/dropshadow.css');
+				break;
+
+			case 'vertigo':
+				styles.push('chrome://treestyletab/skin/square/square.css');
+				break;
+
+			case 'metal':
+				styles.push('chrome://treestyletab/skin/metal/metal.css');
+				break;
+
+			case 'sidebar':
+				styles.push('chrome://treestyletab/skin/sidebar/sidebar.css');
+				break;
+		}
+
+		if (styles.length) {
+			this._lastStyles = styles.map(function(aStyle) {
+				var d = this.window.document;
+				var pi = d.createProcessingInstruction(
+							'xml-stylesheet',
+							'type="text/css" href="'+aStyle+'"'
+						);
+				d.insertBefore(pi, d.documentElement);
+				return pi;
+			}, this);
+			this.preloadImages(aStyle, aPosition);
+		}
+	},
+
+	preloadImages : function(aStyle, aPosition)
+	{
+		var key = aStyle+'-'+aPosition;
 		if (!aStyle ||
-			this._preLoadImagesForStyleDone.indexOf(aStyle) > -1)
+			this._preLoadImagesForStyleDone.indexOf(key) > -1)
 			return;
-		this._preLoadImagesForStyleDone.push(aStyle);
+		this._preLoadImagesForStyleDone.push(key);
 
 		var images = aStyle in this._preLoadImages ?
-				this._preLoadImages[aStyle] :
+				this._preLoadImages[key] :
 				null ;
 		if (!images) return;
 
@@ -54,12 +113,11 @@ var TreeStyleTabThemeManager = {
 			if (this._preLoadImagesForStyleDoneImages.indexOf(aImage) > -1)
 				return;
 
-			(new Image()).src = aImage;
+			(new this.window.Image()).src = aImage;
 			this._preLoadImagesForStyleDoneImages.push(aImage);
 		}, this);
 	},
-	_preLoadImagesForStyleDone : [],
-	_preLoadImagesForStyleDoneImages : [],
+
 	_preLoadImages : {
 		'metal-left' : [
 			'chrome://treestyletab/skin/metal/tab-active-l.png',

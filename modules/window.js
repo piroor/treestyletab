@@ -46,11 +46,6 @@ XPCOMUtils.defineLazyGetter(this, 'TreeStyleTabBrowser', function() {
 	Components.utils.import('resource://treestyletab-modules/browser.js', ns);
 	return ns.TreeStyleTabBrowser;
 });
-XPCOMUtils.defineLazyGetter(this, 'TreeStyleTabThemeManager', function() {
-	var ns = {};
-	Components.utils.import('resource://treestyletab-modules/themeManager.js', ns);
-	return ns.TreeStyleTabThemeManager;
-});
  
 function TreeStyleTabWindow(aWindow) 
 {
@@ -262,6 +257,26 @@ TreeStyleTabWindow.prototype = {
 				) :
 				this.getTreePref('tabbar.autoHide.mode');
 	},
+ 
+	get autoHideWindow() 
+	{
+		if (!this._autoHideWindow) {
+			let ns = {};
+			Components.utils.import('resource://treestyletab-modules/autoHide.js', ns);
+			this._autoHideWindow = new ns.AutoHideWindow(this.window);
+		}
+		return this._autoHideWindow;
+	},
+ 
+	get themeManager() 
+	{
+		if (!this._themeManager) {
+			let ns = {};
+			Components.utils.import('resource://treestyletab-modules/themeManager.js', ns);
+			this._themeManager = new ns.TreeStyleTabThemeManager(this.window);
+		}
+		return this._themeManager;
+	},
   
 /* Initializing */ 
 	
@@ -280,6 +295,9 @@ TreeStyleTabWindow.prototype = {
 		w.TreeStyleTabWindowHelper.preInit();
 
 		this.migratePrefs();
+
+		// initialize theme
+		this.onPrefChange('extensions.treestyletab.tabbar.style');
 	},
 	preInitialized : false,
 	
@@ -393,7 +411,11 @@ TreeStyleTabWindow.prototype = {
 		w.removeEventListener('load', this, false);
 		w.addEventListener('unload', this, false);
 
-		if (!this.browser) return;
+		if (
+			w.location.href.indexOf('chrome://browser/content/browser.xul') != 0 ||
+			!this.browser
+			)
+			return;
 
 		if (this.initialized) return;
 		this.initialized = true;
@@ -432,7 +454,6 @@ TreeStyleTabWindow.prototype = {
 		// Init autohide service only if it have to be activated.
 		if (this.isAutoHide)
 			this.onPrefChange('extensions.treestyletab.tabbar.autoHide.mode');
-		this.onPrefChange('extensions.treestyletab.tabbar.style');
 		this.onPrefChange('extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut');
 	},
 	initialized : false,
@@ -534,6 +555,12 @@ TreeStyleTabWindow.prototype = {
 			try {
 				let w = this.window;
 				w.removeEventListener('unload', this, false);
+
+				this.autoHideWindow.destroy();
+				delete this._autoHideWindow;
+
+				this.themeManager.destroy();
+				delete this._themeManager;
 
 				this.browser.treeStyleTab.saveCurrentState();
 				this.destroyTabBrowser(this.browser);
@@ -1171,16 +1198,6 @@ TreeStyleTabWindow.prototype = {
 		}
 	},
  
-	get autoHideWindow() 
-	{
-		if (!this._autoHideWindow) {
-			let ns = {};
-			Components.utils.import('resource://treestyletab-modules/autoHide.js', ns);
-			this._autoHideWindow = new ns.AutoHideWindow(this.window);
-		}
-		return this._autoHideWindow;
-	},
- 
 	toggleAutoHide : function TSTWindow_toggleAutoHide(aTabBrowser) /* PUBLIC API, for backward compatibility */ 
 	{
 		this.autoHideWindow.toggleMode(aTabBrowser || this.browser);
@@ -1570,10 +1587,7 @@ TreeStyleTabWindow.prototype = {
 
 			case 'extensions.treestyletab.tabbar.style':
 			case 'extensions.treestyletab.tabbar.position':
-				TreeStyleTabThemeManager.preLoadImagesForStyle([
-					this.getPref('extensions.treestyletab.tabbar.style'),
-					this.position
-				].join('-'));
+				this.themeManager.set(this.getPref('extensions.treestyletab.tabbar.style'), this.position);
 				break;
 
 			case 'browser.ctrlTab.previews':
