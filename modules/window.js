@@ -46,10 +46,10 @@ XPCOMUtils.defineLazyGetter(this, 'TreeStyleTabBrowser', function() {
 	Components.utils.import('resource://treestyletab-modules/browser.js', ns);
 	return ns.TreeStyleTabBrowser;
 });
-XPCOMUtils.defineLazyGetter(this, 'TreeStyleTabImagePreloader', function() {
+XPCOMUtils.defineLazyGetter(this, 'TreeStyleTabThemeManager', function() {
 	var ns = {};
-	Components.utils.import('resource://treestyletab-modules/imagePreloader.js', ns);
-	return ns.TreeStyleTabImagePreloader;
+	Components.utils.import('resource://treestyletab-modules/themeManager.js', ns);
+	return ns.TreeStyleTabThemeManager;
 });
  
 function TreeStyleTabWindow(aWindow) 
@@ -1570,7 +1570,7 @@ TreeStyleTabWindow.prototype = {
 
 			case 'extensions.treestyletab.tabbar.style':
 			case 'extensions.treestyletab.tabbar.position':
-				TreeStyleTabImagePreloader.preLoadImagesForStyle([
+				TreeStyleTabThemeManager.preLoadImagesForStyle([
 					this.getPref('extensions.treestyletab.tabbar.style'),
 					this.position
 				].join('-'));

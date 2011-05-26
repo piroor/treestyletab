@@ -33,11 +33,11 @@
  *
  * ***** END LICENSE BLOCK ******/
  
-const EXPORTED_SYMBOLS = ['TreeStyleTabImagePreloader']; 
+const EXPORTED_SYMBOLS = ['TreeStyleTabThemeManager']; 
 
 Components.utils.import('resource://treestyletab-modules/utils.js');
 
-var TreeStyleTabImagePreloader = {
+var TreeStyleTabThemeManager = {
 	preLoadImagesForStyle : function(aStyle)
 	{
 		if (!aStyle ||
