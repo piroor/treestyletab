@@ -974,6 +974,9 @@ TreeStyleTabBrowser.prototype = {
 			scrollFrame = d.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-frame') ||
 							d.getAnonymousElementByAttribute(b.mTabContainer, 'anonid', 'scroll-tabs-frame');
 			newTabBox = d.getAnonymousElementByAttribute(b.mTabContainer, 'id', 'tabs-newbutton-box');
+			let newTabButton = document.getElementById('new-tab-button');
+			if (newTabButton && newTabButton.parentNode == b.tabContainer._container)
+				newTabBox = newTabButton;
 			tabBarMode = this.getPref('extensions.tabmix.tabBarMode');
 		}
 
@@ -1017,7 +1020,8 @@ TreeStyleTabBrowser.prototype = {
 				d.getAnonymousNodes(scrollFrame)[0].removeAttribute('flex');
 				scrollFrame.parentNode.orient =
 					scrollFrame.orient = 'vertical';
-				newTabBox.orient = 'horizontal';
+				if (newTabBox)
+					newTabBox.orient = 'horizontal';
 				if (tabBarMode == 2)
 					this.setPref('extensions.tabmix.tabBarMode', 1);
 			}
@@ -1105,7 +1109,8 @@ TreeStyleTabBrowser.prototype = {
 				d.getAnonymousNodes(scrollFrame)[0].setAttribute('flex', 1);
 				scrollFrame.parentNode.orient =
 					scrollFrame.orient = 'horizontal';
-				newTabBox.orient = 'vertical';
+				if (newTabBox)
+					newTabBox.orient = 'vertical';
 			}
 
 			if (toolboxContainer)
