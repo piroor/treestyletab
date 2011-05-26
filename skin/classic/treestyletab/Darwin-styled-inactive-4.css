@@ -1,0 +1,44 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+/* horizontal tree */
+
+#main-window:-moz-window-inactive
+  .tabbrowser-tabs[treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+  .tabbrowser-tab:not([selected="true"])
+  .tab-image-middle,
+#main-window:-moz-window-inactive
+  .tabbrowser-tabs[treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+  .tabbrowser-tab:not([selected="true"])
+  .tab-close-button,
+#main-window:-moz-window-inactive
+  .tabbrowser-tabs[treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+  .tabbrowser-tab[selected="true"]
+  .tab-close-button,
+#main-window:-moz-window-inactive
+  .tabbrowser-tabs[treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+  .tabbrowser-tab[selected="true"]
+  .tab-close-button {
+	background-position: left bottom;
+	background-repeat: repeat-x;
+}
+
+#main-window:-moz-window-inactive
+  .tabbrowser-tabs[treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+  .tabbrowser-tab:not([selected="true"])
+  .tab-image-right,
+#main-window:-moz-window-inactive
+  .tabbrowser-tabs[treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+  .tabbrowser-tab:not([selected="true"])
+  .tab-image-right,
+#main-window:-moz-window-inactive
+  .tabbrowser-tabs[treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+  .tabbrowser-tab[selected="true"]
+  .tab-image-right,
+#main-window:-moz-window-inactive
+  .tabbrowser-tabs[treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
+  .tabbrowser-tab[selected="true"]
+  .tab-image-right {
+	background-position: left bottom;
+	background-repeat: no-repeat;
+}
+

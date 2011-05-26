@@ -1,34 +1,15 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
-/* padding */
-
-.tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab[selected="true"],
-.tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([selected="true"]) {
-	padding: 0 !important;
-}
-
-.tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab
-  .tab-content[selected="true"]:not([pinned]),
-.tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab
-  .tab-content:not([selected="true"]):not([pinned]) {
-	padding: 0 0.2em !important;
-}
-
-
 /* surface */
 
-.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab
   .tab-background {
 	-moz-transition: background 0.5s ease-out !important;
 	transition: background 0.5s ease-out !important;
 }
 
-.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab
   :-moz-any(.tab-background:not([pinned]),
             .tab-background:not([titlechanged])[pinned]) {
@@ -41,7 +22,7 @@
 }
 
 
-.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab
   .tab-background[selected="true"] {
 	background-color: #c1d2ee !important;
@@ -55,7 +36,7 @@
 
 /* hover */
 
-.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:hover
   :-moz-any(.tab-background:not([pinned]),
             .tab-background[pinned]:not([titlechanged])) {
@@ -67,7 +48,7 @@
 	                  ) !important;
 }
 
-.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:hover
   .tab-background[selected="true"] {
 	background-color: #d1e2fe !important;

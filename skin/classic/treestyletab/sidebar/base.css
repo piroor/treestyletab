@@ -2,52 +2,52 @@
 
 /* Unset bottom border, instead let's have a border on the right-hand
    side, much like the sidebar does. */
-.tabbrowser-strip:not(.treestyletab-tabbar-placeholder)[treestyletab-style~="sidebar"][treestyletab-mode="vertical"],
-.treestyletab-tabbar-toolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"] {
+.tabbrowser-strip:not(.treestyletab-tabbar-placeholder)[treestyletab-mode="vertical"],
+.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] {
 	border-top: 1px solid #404040;
 	border-bottom: none !important;
 }
 
 /* Background colour for the tree sidebar (light blue when window is
    active, grey otherwise) */
-.tabbrowser-strip[treestyletab-style~="sidebar"][treestyletab-mode="vertical"] {
+.tabbrowser-strip[treestyletab-mode="vertical"] {
 	background: transparent !important;
 	background-color: #d4dde5 !important;
 }
 
 /* Don't display unnecessary clutter */
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabs-bottom,
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabs-left,
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-text-shadow,
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .treestyletab-splitter grippy,
-.treestyletab-tabbar-toolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
   .treestyletab-splitter grippy {
 	display: none !important;
 }
 
 /* Use the splitter to display the border of .tabbrowser-strip */
-tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+tabbrowser[treestyletab-mode="vertical"]
   .treestyletab-splitter,
-.treestyletab-tabbar-toolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
   .treestyletab-splitter {
 	width: 1px !important;
 	min-width: 1px !important;
 	background-image: none;
 	background-color: #404040;
 }
-.tabbrowser-strip[treestyletab-style~="sidebar"][treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"] {
+.tabbrowser-strip[treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"] {
 	border-right: 1px solid #404040;
 }
-.tabbrowser-strip[treestyletab-style~="sidebar"][treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"] {
+.tabbrowser-strip[treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"] {
 	border-left: 1px solid #404040;
 }
 
 /* Style tabs themselves.  Get rid of most of the initial XUL styling */
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab {
 	-moz-appearance: none !important;
 	-moz-border-top-colors: none !important;
@@ -66,55 +66,55 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
 	border: none;
 	border-top: 1px solid transparent !important;
 }
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:not([pinned]),
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned]:not([titlechanged]) {
 	background: transparent !important;
 }
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   :-moz-any(.tabbrowser-tab[pinned],
             .tab-background[pinned]) {
 	padding: 0 !important;
 	line-height: 1 !important;
 }
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned]
   .tab-stack {
 	max-height: 24px !important;
 }
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-content[pinned] {
 	padding: 2px 2px 3px !important;
 }
 
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[selected="true"] {
 	border-top: 1px solid #94A1C0 !important;
 }
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[selected="true"] {
 	background: -moz-linear-gradient(top, #A0B0CF, #7386AB) repeat-x !important;
 }
 
 /* Keep the close button at a safe distance from the tab label. */
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-close-button {
 	margin-left: 3px;
 }
 
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-close-button
   image {
 	list-style-image: url("closetab.png");
 	opacity: 0.27;  /* turn black into #b9b9b9 */
 }
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-close-button:active
   image {
 	opacity: 0.46;  /* turn black into #8a8a8a */
 }
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[selected="true"]
   .tab-close-button
   image {
@@ -123,13 +123,13 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
 }
 
 /* Always display the favicon at 100% opacity */
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:not(:hover):not([selected="true"])
   .tab-icon-image {
 	opacity: 1.0 !important;
 }
 
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:not(:hover):not([selected="true"])
   .tab-close-button {
 	display: none !important;
@@ -137,7 +137,7 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
 
 /* Tab label is without special decoration except when selected: then
    the text is white and bold. */
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-text {
 	font-size: 11px;
 	font-weight: normal !important;
@@ -145,7 +145,7 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
 	text-shadow: none !important;
 	margin-bottom: 1px;
 }
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[selected="true"] .tab-text {
 	font-weight: bold !important;
 	color: #ffffff !important;
@@ -154,24 +154,24 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
 
 
 /* Make the tab counter look like the bubbles in Mail.app et.al. */
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .treestyletab-counter-container {
 	padding: 0 6px !important;
 	background-color: #91a0c0 !important;
 	-moz-border-radius: 8px !important;
 }
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .treestyletab-counter {
 	color: #ffffff !important;
 	font-weight: bold !important;
 	text-shadow: none !important;
 }
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[selected="true"]
   .treestyletab-counter-container {
 	background-color: #ffffff !important;
 }
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[selected="true"]
   .treestyletab-counter {
 	color: #91a0c0 !important;
@@ -184,13 +184,13 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
 /* Drag'n'drop styling:
    First we need to disable the standard settings from TreeStyleTab.
    Its initial CSS rules are quite explicit. :( */
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[treestyletab-drop-position="self"][selected="true"],
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[treestyletab-drop-position="self"][selected="true"]:hover,
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[treestyletab-drop-position="self"]:not([selected="true"]),
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[treestyletab-drop-position="self"]:not([selected="true"]):hover {
 	-moz-border-top-colors: none !important;
 	-moz-border-bottom-colors: none !important;
@@ -199,7 +199,7 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
 }
 
 /* Round blue rectangle around tabs that are dropping targets. */
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[treestyletab-drop-position="self"]:not([selected="true"]) {
 	border: 2px solid #577bf3 !important; /* not OSX's colour but Firefox's */
 	background: #d0def5 !important;
@@ -207,25 +207,25 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
 }
 
 /* White-blue-white separator for drop indicator. */
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[treestyletab-drop-position="before"][selected="true"],
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[treestyletab-drop-position="before"][selected="true"]:hover,
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[treestyletab-drop-position="before"]:not([selected="true"]),
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[treestyletab-drop-position="before"]:not([selected="true"]):hover {
 	border-top: 4px solid red !important;
 	-moz-border-top-colors: #ffffff #577bf3 #577bf3 #ffffff !important;
 }
 
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[treestyletab-drop-position="after"][selected="true"],
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[treestyletab-drop-position="after"][selected="true"]:hover,
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[treestyletab-drop-position="after"]:not([selected="true"]),
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[treestyletab-drop-position="after"]:not([selected="true"]):hover {
 	border-bottom: 4px solid #577bf3 !important;
 	-moz-border-bottom-colors: #ffffff #577bf3 #577bf3 #ffffff !important;
@@ -233,28 +233,28 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
 
 /* Let's hack in the little round end of the drop indicator using the
    drop marker image. */
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[treestyletab-drop-position="before"]
   .treestyletab-drop-marker,
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[treestyletab-drop-position="after"]
   .treestyletab-drop-marker {
 	list-style-image: url("dropmarker.png");
 }
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[treestyletab-drop-position="before"]
   .treestyletab-drop-marker-container {
 	margin: -11px 22px 11px -22px;
 }
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[treestyletab-drop-position="after"]
   .treestyletab-drop-marker-container {
 	margin: 12px 22px -12px -22px;
 }
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"][treestyletab-allow-subtree-collapse="true"]
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-allow-subtree-collapse="true"]
   .tabbrowser-tab[treestyletab-drop-position="before"]
   .treestyletab-drop-marker-container,
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"][treestyletab-allow-subtree-collapse="true"]
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-allow-subtree-collapse="true"]
   .tabbrowser-tab[treestyletab-drop-position="after"]
   .treestyletab-drop-marker-container {
 	margin-left: -30px;
@@ -264,8 +264,8 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
 
 /* changed from original SidebarStyleTab */
 
-.treestyletab-tabbar-toolbar[treestyletab-style~="sidebar"]:not([treestyletab-tabbar-position="top"]),
-.treestyletab-tabbar-toolbar[treestyletab-style~="sidebar"][treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
+.treestyletab-tabbar-toolbar:not([treestyletab-tabbar-position="top"]),
+.treestyletab-tabbar-toolbar[treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
 	background: transparent !important;
 	border: 0 none !important;
 	margin: 0 !important;
@@ -275,39 +275,39 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
 	box-shadow: none !important;
 }
 
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .treestyletab-counter-paren {
 	display: none !important;
 }
 
 /* Firefox 3.6 or older */
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
-  .tabs-newtab-button,
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabs-newtab-button:not(:hover),
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabs-newtab-button:hover,
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
-  .tabs-alltabs-button,
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabs-alltabs-button:not(:hover),
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabs-alltabs-button:hover,
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabs-container
-  > .tabs-closebutton,
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
-  > .tabs-closebutton,
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+  > .tabs-closebutton:not(:hover),
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  > .tabs-closebutton:not(:hover),
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabs-container
   > .tabs-closebutton:hover,
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   > .tabs-closebutton:hover,
 /* Firefox 4.0 or later */
-.treestyletab-tabbar-toolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
-  > toolbarbutton,
-.treestyletab-tabbar-toolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
+  > toolbarbutton:not(:hover),
+.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
   > toolbarbutton:hover,
-.treestyletab-tabbar-toolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
   > toolbarpaletteitem
-  > toolbarbutton,
-.treestyletab-tabbar-toolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+  > toolbarbutton:not(:hover),
+.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
   > toolbarpaletteitem
   > toolbarbutton:hover {
 	-moz-appearance: none !important;
@@ -315,13 +315,13 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
 	border: 0 none !important;
 }
 
-.treestyletab-tabbar-toolbar[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
   > * {
 	border: 0 none !important;
 }
 
 /* for rightside tab bar: "display:none" breaks the order of tab contents. */
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:not(:hover):not([selected="true"])
   .tab-close-button {
 	display: -moz-box !important;
@@ -329,42 +329,42 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
 }
 
 /* for Windows (Winstrip/Strata) */
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-close-button
   image,
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-close-button:active
   image,
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-close-button:hover
   image,
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[selected="true"]
   .tab-close-button
   image {
 	-moz-image-region: auto !important;
 }
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"] {
+.tabbrowser-tabs[treestyletab-mode="vertical"] {
 	background: transparent !important;
 	margin: 0;
 	-moz-appearance: none !important;
 }
 
 /* for Linux (Gnomestrip) */
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-close-button {
 	-moz-appearance: none !important;
 }
 
 /* for Mac OS X, Firefox 4 */
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   :-moz-any(.tab-content:not([selected="true"]):not([pinned]),
             .tab-content:not([selected="true"])[pinned]:not([titlechanged]),
             .tab-content[selected="true"]) {
 	border: 0 none !important;
 	background: transparent !important;
 }
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   :-moz-any(.tab-background-start:not([selected="true"]),
             .tab-background-middle:not([selected="true"]),
             .tab-background-end:not([selected="true"]),
@@ -373,7 +373,7 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
             .tab-background-end[selected="true"]) {
 	mask: none !important;
 }
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   :-moz-any(.tab-background-start:not([selected="true"]),
             .tab-background-middle:not([selected="true"]):not([pinned]),
             .tab-background-middle:not([selected="true"])[pinned]:not([titlechanged]),
@@ -383,29 +383,29 @@ tabbrowser[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
             .tab-background-end[selected="true"]) {
 	background: transparent !important;
 }
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   :-moz-any(.tab-background-start[pinned][titlechanged],
             .tab-background-end[pinned][titlechanged]) {
 	visibility: collapse !important;
 }
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-background {
 	margin: 0 !important;
 }
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-content {
 	margin-left: 0 !important;
 	margin-right: 0 !important;
 	-moz-border-image: none !important;
 }
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:not([treestyletab-drop-position])
   .tab-content {
 	border: 0 none !important;
 }
 
 /* for Multiple Tab Handler */
-.tabbrowser-tabs[treestyletab-style~="sidebar"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:not(:hover):not([selected="true"])[multipletab-ready-to-close="true"]
   .tab-close-button {
 	visibility: visible !important;

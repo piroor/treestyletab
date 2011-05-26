@@ -57,6 +57,8 @@ TreeStyleTabThemeManager.prototype = {
 			});
 		this._lastStyles = null;
 
+		const BASE = 'chrome://treestyletab/skin/';
+
 		var styles = [];
 		switch (aStyle)
 		{
@@ -64,21 +66,42 @@ TreeStyleTabThemeManager.prototype = {
 			default:
 
 			case 'flat':
+				styles.push(BASE+'square/base.css');
+				styles.push(BASE+'square/dropshadow.css');
+				styles.push(BASE+'platform-styled.css');
+				styles.push(BASE+'square/platform.css');
+				break;
+
 			case 'mixed':
-				styles.push('chrome://treestyletab/skin/square/square.css');
-				styles.push('chrome://treestyletab/skin/square/dropshadow.css');
+				styles.push(BASE+'square/base.css');
+				styles.push(BASE+'square/mixed.css');
+				styles.push(BASE+'square/tab-surface.css');
+				styles.push(BASE+'square/dropshadow.css');
+				styles.push(BASE+'platform-styled.css');
+				styles.push(BASE+'square/platform.css');
 				break;
 
 			case 'vertigo':
-				styles.push('chrome://treestyletab/skin/square/square.css');
+				styles.push(BASE+'skin/square/square.css');
+				styles.push(BASE+'skin/square/vertigo.css');
+				styles.push(BASE+'platform-styled.css');
+				styles.push(BASE+'square/platform.css');
 				break;
 
 			case 'metal':
-				styles.push('chrome://treestyletab/skin/metal/metal.css');
+				styles.push(BASE+'metal/base.css');
+				styles.push(BASE+'metal/base-inactive.css');
+				styles.push(BASE+'metal/tab.css');
+				styles.push(BASE+'metal/aero.css');
+				styles.push(BASE+'platform-styled.css');
+				styles.push(BASE+'metal/platform.css');
 				break;
 
 			case 'sidebar':
-				styles.push('chrome://treestyletab/skin/sidebar/sidebar.css');
+				styles.push(BASE+'sidebar/base.css');
+				styles.push(BASE+'sidebar/inactive.css');
+				styles.push(BASE+'sidebar/aero.css');
+				styles.push(BASE+'platform-styled.css');
 				break;
 		}
 

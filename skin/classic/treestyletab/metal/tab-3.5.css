@@ -1,12 +1,12 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab,
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:hover,
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[selected="true"],
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[selected="true"]:hover {
 	background: none transparent !important;
 	border: 2px solid transparent !important;
@@ -27,13 +27,13 @@
 	-moz-border-radius: 0 !important;
 }
 
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-image-left,
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-image-middle,
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-close-button,
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-image-right {
 	border: 10px solid transparent;
 	margin: 0 !important;
@@ -41,35 +41,35 @@
 	-moz-appearance: none !important;
 }
 
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-image-middle > .tab-icon {
 	margin-top: -16px !important;
 	margin-bottom: -14px !important;
 }
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-image-middle > .tab-text,
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-image-middle > *,
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-close-button > * {
 	margin-top: -10px !important;
 	margin-bottom: -10px !important;
 }
 
 
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]:not([treestyletab-tab-inverted="true"])
+.tabbrowser-tabs[treestyletab-mode="vertical"]:not([treestyletab-tab-inverted="true"])
   .tabbrowser-tab:not([treestyletab-drop-position="self"]) {
 	border-right: 0 none !important;
 	-moz-border-right-colors: none !important;
 }
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tabbrowser-tab:not([treestyletab-drop-position="self"]) {
 	border-left: 0 none !important;
 	-moz-border-left-colors: none !important;
 }
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]:not([treestyletab-tab-inverted="true"])
+.tabbrowser-tabs[treestyletab-mode="vertical"]:not([treestyletab-tab-inverted="true"])
   .tabbrowser-tab:not([treestyletab-drop-position="self"]) .tab-image-right,
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tabbrowser-tab:not([treestyletab-drop-position="self"]) .tab-image-left {
 	padding-right: 2px !important;
 }
@@ -78,22 +78,22 @@
 
 /* background, left */
 
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-image-left {
 	border-right-width: 0;
 	-moz-border-image: url("tab-active-l.png") 10 / 10px 0 10px 10px;
 }
 
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-image-middle,
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-close-button {
 	border-left-width: 0;
 	border-right-width: 0;
 	-moz-border-image: url("tab-active-l.png") 10 / 10px 0 10px 0;
 }
 
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-image-right {
 	border-left-width: 0;
 	-moz-border-image: url("tab-active-l.png") 10 5 10 10 / 10px 5px 10px 0;
@@ -103,19 +103,19 @@
 
 /* background, right */
 
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-left {
 	-moz-border-image: url("tab-active-r.png") 10 10 10 5 / 10px 0 10px 5px;
 }
 
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-middle,
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-close-button {
 	-moz-border-image: url("tab-active-r.png") 10 / 10px 0 10px 0;
 }
 
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-right {
 	-moz-border-image: url("tab-active-r.png") 10 / 10px 10px 10px 0;
 }
@@ -123,19 +123,19 @@
 
 /* foreground, left */
 
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-image-left[selected="true"] {
 	-moz-border-image: url("tab-active-selected-l.png") 10 / 10px 0 10px 10px;
 }
 
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-image-middle[selected="true"],
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   [selected="true"] .tab-close-button {
 	-moz-border-image: url("tab-active-selected-l.png") 10 / 10px 0 10px 0;
 }
 
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-image-right[selected="true"] {
 	-moz-border-image: url("tab-active-selected-l.png") 10 5 10 10 / 10px 5px 10px 0;
 }
@@ -144,19 +144,19 @@
 
 /* foreground, right */
 
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-left[selected="true"] {
 	-moz-border-image: url("tab-active-selected-r.png") 10 10 10 5 / 10px 0 10px 5px;
 }
 
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-middle[selected="true"],
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   [selected="true"] .tab-close-button {
 	-moz-border-image: url("tab-active-selected-r.png") 10 / 10px 0 10px 0;
 }
 
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-right[selected="true"] {
 	-moz-border-image: url("tab-active-selected-r.png") 10 / 10px 10px 10px 0;
 }
@@ -165,16 +165,16 @@
 
 /* pinned tabs */
 
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"]
   > .tab-image-middle,
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"]:hover
   > .tab-image-middle,
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"][selected]
   > .tab-image-middle,
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"][selected]:hover
   > .tab-image-middle {
 	background: none !important;
@@ -183,13 +183,13 @@
 	padding: 0 !important;
 }
 
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"],
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"]:hover,
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"][selected="true"],
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"][selected="true"]:hover {
 	background: none !important;
 	border: none !important;
@@ -197,7 +197,7 @@
 	-moz-border-radius: 0 !important;
 }
 
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"]
   > .tab-image-middle
   > * {
@@ -205,16 +205,16 @@
 	padding: 0 !important;
 }
 
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"]
   > .tab-image-middle,
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"]:hover
   > .tab-image-middle,
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"][selected="true"]
   > .tab-image-middle,
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"][selected="true"]:hover
   > .tab-image-middle {
 	background: #9d9d9d !important;
@@ -224,10 +224,10 @@
 	-moz-border-radius: 4px !important;
 }
 
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"][selected="true"]
   > .tab-image-middle,
-.tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"][selected="true"]:hover
   > .tab-image-middle {
 	background-color: #b3b2b3 !important;
@@ -241,22 +241,22 @@
 /* background, left */
 
 :root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-image-left {
 	-moz-border-image: url("tab-inactive-l.png") 10 / 10px 0 10px 10px;
 }
 
 :root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-image-middle,
 :root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-close-button {
 	-moz-border-image: url("tab-inactive-l.png") 10 / 10px 0 10px 0;
 }
 
 :root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-image-right {
 	-moz-border-image: url("tab-inactive-l.png") 10 5 10 10 / 10px 5px 10px 0;
 }
@@ -266,22 +266,22 @@
 /* background, right */
 
 :root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+  .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-left {
 	-moz-border-image: url("tab-inactive-r.png") 10 10 10 5 / 10px 0 10px 5px;
 }
 
 :root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+  .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-middle,
 :root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+  .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-close-button {
 	-moz-border-image: url("tab-inactive-r.png") 10 / 10px 0 10px 0;
 }
 
 :root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+  .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-right {
 	-moz-border-image: url("tab-inactive-r.png") 10 / 10px 10px 10px 0;
 }
@@ -291,22 +291,22 @@
 /* foreground, left */
 
 :root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-image-left[selected="true"] {
 	-moz-border-image: url("tab-inactive-selected-l.png") 10 / 10px 0 10px 10px;
 }
 
 :root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-image-middle[selected="true"],
 :root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tabs[treestyletab-mode="vertical"]
   [selected="true"] .tab-close-button {
 	-moz-border-image: url("tab-inactive-selected-l.png") 10 / 10px 0 10px 0;
 }
 
 :root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"]
+  .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-image-right[selected="true"] {
 	-moz-border-image: url("tab-inactive-selected-l.png") 10 5 10 10 / 10px 5px 10px 0;
 }
@@ -316,22 +316,22 @@
 /* foreground, right */
 
 :root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+  .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-left[selected="true"] {
 	-moz-border-image: url("tab-inactive-selected-r.png") 10 10 10 5 / 10px 0 10px 5px;
 }
 
 :root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+  .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-middle[selected="true"],
 :root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+  .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   [selected="true"] .tab-close-button {
 	-moz-border-image: url("tab-inactive-selected-r.png") 10 / 10px 0 10px 0;
 }
 
 :root:not([active="true"])
-  .tabbrowser-tabs[treestyletab-style~="metal"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+  .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-image-right[selected="true"] {
 	-moz-border-image: url("tab-inactive-selected-r.png") 10 / 10px 10px 10px 0;
 }

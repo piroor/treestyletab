@@ -1,0 +1,75 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"]) {
+	background: transparent !important;
+}
+
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:not([selected="true"]) {
+	-moz-border-top-colors: transparent transparent !important;
+	-moz-border-bottom-colors: transparent transparent !important;
+}
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:not([selected="true"]):not([pinned]),
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:not([selected="true"])[pinned]:not([titlechanged])) {
+	background: transparent !important;
+}
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:not([selected="true"]):hover {
+	-moz-border-top-colors: #e0e8f6 #e0e8f6 !important;
+	-moz-border-bottom-colors: #e0e8f6 #e0e8f6 !important;
+}
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:not([selected="true"]):not([pinned]):hover,
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:not([selected="true"])[pinned]:not([titlechanged]):hover {
+	background-color: #e0e8f6 !important;
+}
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab[selected="true"] {
+	-moz-border-top-colors: #c1d2ee #c1d2ee !important;
+	-moz-border-bottom-colors: #c1d2ee #c1d2ee !important;
+}
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab[selected="true"] {
+	background-color: #c1d2ee !important;
+}
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab[selected="true"]:hover {
+	-moz-border-top-colors: #d1e2fe #d1e2fe !important;
+	-moz-border-bottom-colors: #d1e2fe #d1e2fe !important;
+}
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab[selected="true"]:hover {
+	background-color: #d1e2fe !important;
+}
+
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:not([selected="true"]),
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+  .tabbrowser-tab:not([selected="true"]) {
+	-moz-border-left-colors: transparent transparent !important;
+	-moz-border-right-colors: transparent transparent !important;
+}
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:not([selected="true"]):hover,
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+  .tabbrowser-tab:not([selected="true"]):hover {
+	-moz-border-left-colors: #e0e8f6 #e0e8f6 !important;
+	-moz-border-right-colors: #e0e8f6 #e0e8f6 !important;
+}
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab[selected="true"],
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+  .tabbrowser-tab[selected="true"] {
+	-moz-border-left-colors: #c1d2ee #c1d2ee !important;
+	-moz-border-right-colors: #c1d2ee #c1d2ee !important;
+}
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab[selected="true"]:hover,
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+  .tabbrowser-tab[selected="true"]:hover {
+	-moz-border-left-colors: #d1e2fe #d1e2fe !important;
+	-moz-border-right-colors: #d1e2fe #d1e2fe !important;
+}

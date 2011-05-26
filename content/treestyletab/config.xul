@@ -2,7 +2,7 @@
 <?xml-stylesheet href="chrome://global/skin/"?>
 <?xml-stylesheet href="config.css" type="text/css"?>
 <?xml-stylesheet href="chrome://treestyletab/skin/config.css" type="text/css"?>
-<?xml-stylesheet href="chrome://treestyletab-platform/skin/config.css" type="text/css"?>
+<?xml-stylesheet href="chrome://treestyletab/skin/platform-config.css" type="text/css"?>
 <!DOCTYPE prefwindow [
 <!ENTITY % mainDTD SYSTEM "chrome://treestyletab/locale/treestyletab.dtd">
 %mainDTD;

@@ -1,0 +1,10 @@
+/* aero glass */
+
+.tabbrowser-tabs[treestyletab-style~="aero"]:not([treestyletab-tabbar-position="top"]),
+.tabbrowser-strip[treestyletab-style~="aero"]:not([treestyletab-tabbar-position="top"]),
+tabbrowser[treestyletab-style~="aero"]:not([treestyletab-tabbar-position="top"]),
+:root[treestyletab-style~="aero"]:not([treestyletab-tabbar-position="top"]) #appcontent,
+:root[treestyletab-style~="aero"]:not([treestyletab-tabbar-position="top"]) #browser {
+	background: transparent !important;
+	-moz-appearance: none !important;
+}

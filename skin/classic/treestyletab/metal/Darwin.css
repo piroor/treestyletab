@@ -1,0 +1,14 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+/* Metal */
+
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab
+  .tab-close-button {
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+
+.tabbrowser-strip[treestyletab-mode="vertical"] {
+	border-bottom: 0 none !important;
+}

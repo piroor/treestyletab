@@ -1,0 +1,14 @@
+/* aero glass */
+
+.tabbrowser-tabs[treestyletab-style~="aero"]:not([treestyletab-tabbar-position="top"]),
+.tabbrowser-strip[treestyletab-style~="aero"]:not([treestyletab-tabbar-position="top"]),
+tabbrowser[treestyletab-style~="aero"]:not([treestyletab-tabbar-position="top"]),
+:root[treestyletab-style~="aero"]:not([treestyletab-tabbar-position="top"]) #appcontent,
+:root[treestyletab-style~="aero"]:not([treestyletab-tabbar-position="top"]) #browser {
+	background: transparent !important;
+	-moz-appearance: none !important;
+}
+.tabbrowser-strip[treestyletab-style~="aero"][treestyletab-mode="vertical"],
+.treestyletab-tabbar-toolbar[treestyletab-style~="aero"][treestyletab-mode="vertical"] {
+	border-top: none 0 !important;
+}

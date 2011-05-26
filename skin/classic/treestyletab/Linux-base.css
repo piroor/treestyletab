@@ -1,0 +1,8 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+/* splitter for floating & autohide tab bar */
+.treestyletab-tabbar-toolbar .treestyletab-splitter {
+	width: 6px;
+	-moz-appearance: none;
+}
+

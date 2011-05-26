@@ -1,0 +1,25 @@
+@import url("platform-inactive.css");
+
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+/* Square */
+
+tabbrowser[treestyletab-tabbar-position="left"]:not([treestyletab-tabbar-fixed="true"])
+  .treestyletab-splitter {
+	border-right: 1px solid ThreeDShadow !important;
+	-moz-border-right-colors: ThreeDShadow !important;
+}
+tabbrowser[treestyletab-tabbar-position="right"]:not([treestyletab-tabbar-fixed="true"])
+  .treestyletab-splitter {
+	border-left: 1px solid ThreeDShadow !important;
+	-moz-border-left-colors: ThreeDShadow !important;
+}
+
+tabbrowser:not([treestyletab-style="vertigo"])[treestyletab-mode="vertical"]
+  .tabbrowser-tab {
+	z-index: 1 !important;
+}
+tabbrowser:not([treestyletab-style="vertigo"])[treestyletab-mode="vertical"]
+  .tabbrowser-tab:not([pinned="true"]) {
+	position: relative !important;
+}

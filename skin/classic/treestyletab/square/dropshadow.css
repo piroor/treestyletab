@@ -3,24 +3,24 @@
 
 /* drop-shadow of vertival tabs */
 
-.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:not([pinned="true"]) {
 	-moz-box-shadow: -0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15);
 	box-shadow: -0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15);
 }
 
-.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tabbrowser-tab:not([pinned="true"]) {
 	-moz-box-shadow: 0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15);
 	box-shadow: 0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15);
 }
 
-.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabs-container:not([overflow="true"])
   .tabbrowser-arrowscrollbox
   .tabs-newtab-button,
 .treestyletab-tabbar-toolbar
-  .tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"]:not([overflow="true"])
+  .tabbrowser-tabs[treestyletab-mode="vertical"]:not([overflow="true"])
   .tabbrowser-arrowscrollbox
   .tabs-newtab-button {
 	-moz-box-shadow: 0 0.3em 0.2em rgba(0, 0, 0, 0.15);
@@ -28,18 +28,18 @@
 }
 
 
-.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"]:not([overflow="true"])
+.tabbrowser-tabs[treestyletab-mode="vertical"]:not([overflow="true"])
   .tabbrowser-arrowscrollbox,
-.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"][overflow="true"]
+.tabbrowser-tabs[treestyletab-mode="vertical"][overflow="true"]
   .tabbrowser-arrowscrollbox
   .scrollbox-innerbox {
 	-moz-box-shadow: inset -0.2em 0.2em 0.3em rgba(0, 0, 0, 0.15) !important;
 	box-shadow: inset -0.2em 0.2em 0.3em rgba(0, 0, 0, 0.15) !important;
 }
 
-.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]:not([overflow="true"])
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]:not([overflow="true"])
   .tabbrowser-arrowscrollbox,
-.tabbrowser-tabs[treestyletab-style~="square"][treestyletab-style~="shadow"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"][overflow="true"]
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"][overflow="true"]
   .tabbrowser-arrowscrollbox
   .scrollbox-innerbox {
 	-moz-box-shadow: inset 0.2em 0.2em 0.3em rgba(0, 0, 0, 0.15) !important;
@@ -49,9 +49,9 @@
 
 /* Transparent tabs are shown above solid tabs.
    We have to set z-index to show all tabs in the same layer. */
-.tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-style="vertigo"])[treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab,
-.tabbrowser-tabs[treestyletab-style~="square"]:not([treestyletab-style="vertigo"])[treestyletab-mode="vertical"]
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-arrowscrollbox
   .tabs-newtab-button {
 	position: relative;

@@ -1,0 +1,42 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+/* Square */
+
+#main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab
+  .tab-image-middle,
+#main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab
+  .tab-close-button,
+#main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[selected="true"]
+  .tab-image-middle,
+#main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[selected="true"]
+  .tab-close-button,
+#main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-tabbar-position="bottom"]
+  .tabbrowser-tab
+  .tab-image-middle,
+#main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-tabbar-position="bottom"]
+  .tabbrowser-tab
+  .tab-close-button,
+#main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-tabbar-position="bottom"]
+  .tabbrowser-tab[selected="true"]
+  .tab-image-middle,
+#main-window:not([active="true"])
+  .tabbrowser-tabs[treestyletab-tabbar-position="bottom"]
+  .tabbrowser-tab[selected="true"]
+  .tab-close-button {
+	height: auto;
+	margin: 0 !important;
+	padding: 0 !important;
+	background: transparent;
+	width: 0;
+}
