@@ -266,13 +266,13 @@ catch(e) {
 		if (tab.localName != 'tab') {
 			let action = isTabMoveFromOtherWindow ? sv.kACTION_STAY : (sv.kACTION_MOVE | sv.kACTION_PART) ;
 			if (isNewTabAction) action |= sv.kACTION_NEWTAB;
-			if (aEvent[sv.positionProp] < firstTab.boxObject[sv.positionProp]) {
+			if (aEvent[sv.screenPositionProp] < firstTab.boxObject[sv.screenPositionProp]) {
 				info.target   = info.parent = info.insertBefore = firstTab;
 				info.position = isInverted ? sv.kDROP_AFTER : sv.kDROP_BEFORE ;
 				info.action   = action;
 				return info;
 			}
-			else if (aEvent[sv.positionProp] > tabs[lastTabIndex].boxObject[sv.positionProp] + tabs[lastTabIndex].boxObject[sv.sizeProp]) {
+			else if (aEvent[sv.screenPositionProp] > tabs[lastTabIndex].boxObject[sv.screenPositionProp] + tabs[lastTabIndex].boxObject[sv.sizeProp]) {
 				info.target   = info.parent = tabs[lastTabIndex];
 				info.position = isInverted ? sv.kDROP_BEFORE : sv.kDROP_AFTER ;
 				info.action   = action;
@@ -298,14 +298,14 @@ catch(e) {
 		 */
 		var pinned = tab.getAttribute('pinned') == 'true';
 		var dropAreasCount = (aSourceTab && pinned) ? 2 : 3 ;
-		var positionProp = sv.isVertical && pinned ? sv.invertedPositionProp : sv.positionProp ;
+		var screenPositionProp = sv.isVertical && pinned ? sv.invertedScreenPositionProp : sv.screenPositionProp ;
 		var sizeProp = sv.isVertical && pinned ? sv.invertedSizeProp : sv.sizeProp ;
-		var boxPos  = tab.boxObject[positionProp];
+		var boxPos  = tab.boxObject[screenPositionProp];
 		var boxUnit = Math.round(tab.boxObject[sizeProp] / dropAreasCount);
-		if (aEvent[positionProp] < boxPos + boxUnit) {
+		if (aEvent[screenPositionProp] < boxPos + boxUnit) {
 			info.position = isInverted ? sv.kDROP_AFTER : sv.kDROP_BEFORE ;
 		}
-		else if (dropAreasCount == 2 || aEvent[positionProp] > boxPos + boxUnit + boxUnit) {
+		else if (dropAreasCount == 2 || aEvent[screenPositionProp] > boxPos + boxUnit + boxUnit) {
 			info.position = isInverted ? sv.kDROP_BEFORE : sv.kDROP_AFTER ;
 		}
 		else {

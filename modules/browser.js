@@ -74,18 +74,18 @@ TreeStyleTabBrowser.prototype = {
  
 	mTabBrowser : null, 
 
-	indent               : -1,
-	indentProp           : 'margin',
-	indentTarget         : 'left',
-	indentCSSProp        : 'margin-left',
-	collapseTarget       : 'top',
-	collapseCSSProp      : 'margin-top',
-	positionProp         : 'screenY',
-	sizeProp             : 'height',
-	invertedPositionProp : 'screenX',
-	invertedSizeProp     : 'width',
-	startProp            : 'top',
-	endProp              : 'bottom',
+	indent                     : -1,
+	indentProp                 : 'margin',
+	indentTarget               : 'left',
+	indentCSSProp              : 'margin-left',
+	collapseTarget             : 'top',
+	collapseCSSProp            : 'margin-top',
+	screenPositionProp         : 'screenY',
+	sizeProp                   : 'height',
+	invertedScreenPositionProp : 'screenX',
+	invertedSizeProp           : 'width',
+	startProp                  : 'top',
+	endProp                    : 'bottom',
 
 	maxTreeLevelPhisical : false,
  
@@ -1002,13 +1002,13 @@ TreeStyleTabBrowser.prototype = {
 
 		if (pos & this.kTABBAR_VERTICAL) {
 
-			this.collapseTarget       = 'top';
-			this.positionProp         = 'screenY';
-			this.sizeProp             = 'height';
-			this.invertedPositionProp = 'screenX';
-			this.invertedSizeProp     = 'width';
-			this.startProp            = 'top';
-			this.endProp              = 'bottom';
+			this.collapseTarget             = 'top';
+			this.screenPositionProp         = 'screenY';
+			this.sizeProp                   = 'height';
+			this.invertedScreenPositionProp = 'screenX';
+			this.invertedSizeProp           = 'width';
+			this.startProp                  = 'top';
+			this.endProp                    = 'bottom';
 
 			b.mTabBox.orient = splitter.orient = 'horizontal';
 			strip.orient =
@@ -1091,13 +1091,13 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 		else {
-			this.collapseTarget       = 'left';
-			this.positionProp         = 'screenX';
-			this.sizeProp             = 'width';
-			this.invertedPositionProp = 'screenY';
-			this.invertedSizeProp     = 'height';
-			this.startProp            = 'left';
-			this.endProp              = 'right';
+			this.collapseTarget             = 'left';
+			this.screenPositionProp         = 'screenX';
+			this.sizeProp                   = 'width';
+			this.invertedScreenPositionProp = 'screenY';
+			this.invertedSizeProp           = 'height';
+			this.startProp                  = 'left';
+			this.endProp                    = 'right';
 
 			b.mTabBox.orient = splitter.orient = 'vertical';
 			strip.orient =
@@ -3608,11 +3608,11 @@ TreeStyleTabBrowser.prototype = {
 			return null;
 
 		var tab = null;
-		var clickedPoint = aEvent[this.positionProp];
+		var clickedPoint = aEvent[this.screenPositionProp];
 		this.getTabsArray(this.mTabBrowser).some(function(aTab) {
 			var box = aTab.boxObject;
-			if (box[this.positionProp] > clickedPoint ||
-				box[this.positionProp] + box[this.sizeProp] < clickedPoint) {
+			if (box[this.screenPositionProp] > clickedPoint ||
+				box[this.screenPositionProp] + box[this.sizeProp] < clickedPoint) {
 				return false;
 			}
 			tab = aTab;
@@ -5140,14 +5140,14 @@ TreeStyleTabBrowser.prototype = {
 			return;
 		}
 
-		var containerPosition = this.tabStrip.boxObject[this.positionProp];
+		var containerPosition = this.tabStrip.boxObject[this.screenPositionProp];
 		var containerSize     = this.tabStrip.boxObject[this.sizeProp];
-		var parentPosition    = aTab.boxObject[this.positionProp];
-		var lastPosition      = lastVisible.boxObject[this.positionProp];
+		var parentPosition    = aTab.boxObject[this.screenPositionProp];
+		var lastPosition      = lastVisible.boxObject[this.screenPositionProp];
 		var tabSize           = lastVisible.boxObject[this.sizeProp];
 
 		if (lastPosition - parentPosition + tabSize > containerSize - tabSize) { // out of screen
-			var endPos = parentPosition - this.getFirstNormalTab(b).boxObject[this.positionProp] - tabSize * 0.5;
+			var endPos = parentPosition - this.getFirstNormalTab(b).boxObject[this.screenPositionProp] - tabSize * 0.5;
 			var endX = this.isVertical ? 0 : endPos ;
 			var endY = this.isVertical ? endPos : 0 ;
 			this.scrollTo(endX, endY);

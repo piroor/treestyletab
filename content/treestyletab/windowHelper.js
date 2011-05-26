@@ -90,7 +90,7 @@ var TreeStyleTabWindowHelper = {
 					'{',
 					'{ var TSTTabBrowser = this instanceof Ci.nsIDOMElement ? (this.tabbrowser || this) : gBrowser ;'
 				).replace(
-					/\.screenX/g, '[TSTTabBrowser.treeStyleTab.positionProp]'
+					/\.screenX/g, '[TSTTabBrowser.treeStyleTab.screenPositionProp]'
 				).replace(
 					/\.width/g, '[TSTTabBrowser.treeStyleTab.sizeProp]'
 				).replace(
@@ -596,15 +596,21 @@ var TreeStyleTabWindowHelper = {
 			eval('b.mTabContainer._notifyBackgroundTab = '+
 				source.replace(
 					'{',
-					'{ var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;'
+					<![CDATA[{
+						var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;
+						if (treeStyleTab.scrollToNewTabMode == 0) return;
+					]]>.toString()
 				).replace(
-					/\.screenX/g, '[treeStyleTab.positionProp]'
+					/\.screenX/g, '[treeStyleTab.screenPositionProp]'
 				).replace(
 					/\.width/g, '[treeStyleTab.sizeProp]'
 				).replace(
 					/\.left/g, '[treeStyleTab.startProp]'
 				).replace(
 					/\.right/g, '[treeStyleTab.endProp]'
+				).replace(
+					'!selected ||',
+					'$& treeStyleTab.scrollToNewTabMode == 1 && '
 				)
 			);
 		}
@@ -612,7 +618,7 @@ var TreeStyleTabWindowHelper = {
 		if (b.tabContainer && '_getDropIndex' in b.tabContainer) { // Firefox 4.0 or later
 			eval('b.tabContainer._getDropIndex = '+
 				b.tabContainer._getDropIndex.toSource().replace(
-					/\.screenX/g, '[this.treeStyleTab.positionProp]'
+					/\.screenX/g, '[this.treeStyleTab.screenPositionProp]'
 				).replace(
 					/\.width/g, '[this.treeStyleTab.sizeProp]'
 				)
@@ -621,7 +627,7 @@ var TreeStyleTabWindowHelper = {
 		else if ('getNewIndex' in b) { // Firefox 3.6 or older
 			eval('b.getNewIndex = '+
 				b.getNewIndex.toSource().replace(
-					/\.screenX/g, '[this.treeStyleTab.positionProp]'
+					/\.screenX/g, '[this.treeStyleTab.screenPositionProp]'
 				).replace(
 					/\.width/g, '[this.treeStyleTab.sizeProp]'
 				)
@@ -661,7 +667,7 @@ var TreeStyleTabWindowHelper = {
 						'{',
 						'{ var treeStyleTab = gBrowser.treeStyleTab;'
 					).replace(
-						/\.screenX/g, '[treeStyleTab.positionProp]'
+						/\.screenX/g, '[treeStyleTab.screenPositionProp]'
 					).replace(
 						/\.width/g, '[treeStyleTab.sizeProp]'
 					)
