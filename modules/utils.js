@@ -232,9 +232,10 @@ var TreeStyleTabUtils = {
 	kTABBAR_UPDATE_BY_PRIVATE_BROWSING  : (1 << 8),
 	kTABBAR_UPDATE_BY_AUTOHIDE          : (1 << 9),
 	kTABBAR_UPDATE_BY_INITIALIZE        : (1 << 10),
+	kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR    : (1 << 11),
 	kTABBAR_UPDATE_NOW                 : (1 << 5) | (1 << 6) | (1 << 9) | (1 << 10),
 	kTABBAR_UPDATE_SYNC_TO_TABBAR      : (1 << 0) | (1 << 1) | (1 << 2) | (1 << 5) | (1 << 8) | (1 << 9),
-	kTABBAR_UPDATE_SYNC_TO_PLACEHOLDER : (1 << 3) | (1 << 4) | (1 << 6) | (1 << 7) | (1 << 10),
+	kTABBAR_UPDATE_SYNC_TO_PLACEHOLDER : (1 << 3) | (1 << 4) | (1 << 6) | (1 << 7) | (1 << 10) | (1 << 11),
 
 	kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD        : 3,
 	kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN       : 0,

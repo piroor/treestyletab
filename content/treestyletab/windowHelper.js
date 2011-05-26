@@ -376,7 +376,7 @@ var TreeStyleTabWindowHelper = {
 			eval('window.toggleSidebar = '+
 				window.toggleSidebar.toSource().replace(
 					'{',
-					'{ gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_WINDOW_RESIZE);'
+					'{ gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR);'
 				)
 			);
 		}
