@@ -556,10 +556,10 @@ TreeStyleTabWindow.prototype = {
   
 	destroy : function TSTWindow_destroy() 
 	{
+		var w = this.window;
 		if (this.browser) {
 			this.utils.inWindowDestoructionProcess = true;
 			try {
-				let w = this.window;
 				w.removeEventListener('unload', this, false);
 
 				this.autoHideWindow.destroy();
