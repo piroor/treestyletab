@@ -5214,6 +5214,15 @@ TreeStyleTabBrowser.prototype = {
 		return this._panelDNDObserver;
 	},
   
+/* proxying for window service */ 
+	_callWindowServiceMethod : function TSTBrowser_callWindowServiceMethod(aName, aArgs)
+	{
+		return this.windowService[aName].apply(this.windowService, aArgs);
+	},
+	isPopupShown : function TSTBrowser_isPopupShown() { return this._callWindowServiceMethod('isPopupShown', arguments); },
+	updateTabsOnTop : function TSTBrowser_updateTabsOnTop() { return this._callWindowServiceMethod('updateTabsOnTop', arguments); },
+	registerTabFocusAllowance : function TSTBrowser_registerTabFocusAllowance() { return this._callWindowServiceMethod('registerTabFocusAllowance', arguments); },
+ 
 /* show/hide tab bar */ 
 	get autoHide()
 	{
