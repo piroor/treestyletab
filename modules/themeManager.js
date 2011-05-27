@@ -35,6 +35,8 @@
  
 const EXPORTED_SYMBOLS = ['TreeStyleTabThemeManager']; 
 
+const BASE = 'chrome://treestyletab/skin/';
+
 Components.utils.import('resource://treestyletab-modules/utils.js');
 
 function TreeStyleTabThemeManager(aWindow)
@@ -57,13 +59,12 @@ TreeStyleTabThemeManager.prototype = {
 			});
 		this._lastStyles = null;
 
-		const BASE = 'chrome://treestyletab/skin/';
-
 		var styles = [];
 		switch (aStyle)
 		{
 			case 'default':
 			default:
+				break;
 
 			case 'flat':
 				styles.push(BASE+'square/base.css');
@@ -127,7 +128,7 @@ TreeStyleTabThemeManager.prototype = {
 			return;
 		this._preLoadImagesForStyleDone.push(key);
 
-		var images = aStyle in this._preLoadImages ?
+		var images = key in this._preLoadImages ?
 				this._preLoadImages[key] :
 				null ;
 		if (!images) return;
@@ -143,36 +144,36 @@ TreeStyleTabThemeManager.prototype = {
 
 	_preLoadImages : {
 		'metal-left' : [
-			'chrome://treestyletab/skin/metal/tab-active-l.png',
-			'chrome://treestyletab/skin/metal/tab-inactive-l.png',
-			'chrome://treestyletab/skin/metal/tab-active-selected-l.png',
-			'chrome://treestyletab/skin/metal/tab-inactive-selected-l.png',
-			'chrome://treestyletab/skin/metal/shadow-active-l.png',
-			'chrome://treestyletab/skin/metal/shadow-inactive-l.png'
+			BASE+'metal/tab-active-l.png',
+			BASE+'metal/tab-inactive-l.png',
+			BASE+'metal/tab-active-selected-l.png',
+			BASE+'metal/tab-inactive-selected-l.png',
+			BASE+'metal/shadow-active-l.png',
+			BASE+'metal/shadow-inactive-l.png'
 		].concat(
 			TreeStyleTabUtils.Comparator.compare(TreeStyleTabUtils.XULAppInfo.version, '3.5') >= 0 ?
 				[
-					'chrome://treestyletab/skin/metal/tab-active-middle.png',
-					'chrome://treestyletab/skin/metal/tab-active-middle-selected.png',
-					'chrome://treestyletab/skin/metal/tab-inactive-middle.png',
-					'chrome://treestyletab/skin/metal/tab-inactive-middle-selected.png'
+					BASE+'metal/tab-active-middle.png',
+					BASE+'metal/tab-active-middle-selected.png',
+					BASE+'metal/tab-inactive-middle.png',
+					BASE+'metal/tab-inactive-middle-selected.png'
 				] :
 				[]
 		),
 		'metal-right' : [
-			'chrome://treestyletab/skin/metal/tab-active-r.png',
-			'chrome://treestyletab/skin/metal/tab-inactive-r.png',
-			'chrome://treestyletab/skin/metal/tab-active-selected-r.png',
-			'chrome://treestyletab/skin/metal/tab-inactive-selected-r.png',
-			'chrome://treestyletab/skin/metal/shadow-active-r.png',
-			'chrome://treestyletab/skin/metal/shadow-inactive-r.png'
+			BASE+'metal/tab-active-r.png',
+			BASE+'metal/tab-inactive-r.png',
+			BASE+'metal/tab-active-selected-r.png',
+			BASE+'metal/tab-inactive-selected-r.png',
+			BASE+'metal/shadow-active-r.png',
+			BASE+'metal/shadow-inactive-r.png'
 		].concat(
 			TreeStyleTabUtils.Comparator.compare(TreeStyleTabUtils.XULAppInfo.version, '3.5') >= 0 ?
 				[
-					'chrome://treestyletab/skin/metal/tab-active-middle.png',
-					'chrome://treestyletab/skin/metal/tab-active-middle-selected.png',
-					'chrome://treestyletab/skin/metal/tab-inactive-middle.png',
-					'chrome://treestyletab/skin/metal/tab-inactive-middle-selected.png'
+					BASE+'metal/tab-active-middle.png',
+					BASE+'metal/tab-active-middle-selected.png',
+					BASE+'metal/tab-inactive-middle.png',
+					BASE+'metal/tab-inactive-middle-selected.png'
 				] :
 				[]
 		)
