@@ -62,29 +62,26 @@ TreeStyleTabThemeManager.prototype = {
 		var styles = [];
 		switch (aStyle)
 		{
-			case 'default':
 			default:
 				break;
 
+			case 'plain':
 			case 'flat':
-				styles.push(BASE+'square/base.css');
-				styles.push(BASE+'square/dropshadow.css');
-				styles.push(BASE+'platform-styled.css');
-				styles.push(BASE+'square/platform.css');
-				break;
-
 			case 'mixed':
 				styles.push(BASE+'square/base.css');
-				styles.push(BASE+'square/mixed.css');
-				styles.push(BASE+'square/tab-surface.css');
-				styles.push(BASE+'square/dropshadow.css');
+				if (aStyle != 'plain') {
+					styles.push(BASE+'square/mixed.css');
+					styles.push(BASE+'square/tab-surface.css');
+				}
+				if (aStyle != 'flat')
+					styles.push(BASE+'square/dropshadow.css');
 				styles.push(BASE+'platform-styled.css');
 				styles.push(BASE+'square/platform.css');
 				break;
 
 			case 'vertigo':
-				styles.push(BASE+'skin/square/square.css');
-				styles.push(BASE+'skin/square/vertigo.css');
+				styles.push(BASE+'square/base.css');
+				styles.push(BASE+'square/vertigo.css');
 				styles.push(BASE+'platform-styled.css');
 				styles.push(BASE+'square/platform.css');
 				break;
