@@ -1,0 +1,76 @@
+content	treestyletab	content/treestyletab/
+
+overlay	chrome://browser/content/browser.xul	chrome://treestyletab/content/treestyletab.xul
+
+overlay	chrome://browser/content/bookmarks/bookmarksPanel.xul	chrome://treestyletab/content/bookmarksOverlay.xul
+overlay	chrome://browser/content/history/history-panel.xul	chrome://treestyletab/content/bookmarksOverlay.xul
+overlay	chrome://browser/content/places/places.xul	chrome://treestyletab/content/bookmarksOverlay.xul
+overlay	chrome://browser/content/places/places.xul	chrome://treestyletab/content/bookmarksOverlayEditable.xul
+overlay	chrome://browser/content/places/bookmarkProperties.xul	chrome://treestyletab/content/bookmarksOverlay.xul
+overlay	chrome://browser/content/places/bookmarkProperties.xul	chrome://treestyletab/content/bookmarksOverlayEditable.xul
+
+overlay	chrome://multipletab/content/config.xul	chrome://treestyletab/content/multipletabConfigOverlay.xul
+
+overlay	chrome://browser/content/browser.xul	chrome://treestyletab/content/res/bookmarkMultipleTabs.xul
+overlay	chrome://browser/content/places/bookmarkProperties2.xul	chrome://treestyletab/content/res/bookmarkMultipleTabs_bookmarkPropertiesOverlay.xul
+
+locale	treestyletab	en-US	locale/en-US/treestyletab/
+locale	treestyletab	ja	locale/ja/treestyletab/
+locale	treestyletab	it-IT	locale/it-IT/treestyletab/
+locale	treestyletab	zh-CN	locale/zh-CN/treestyletab/
+locale	treestyletab	es-ES	locale/es-ES/treestyletab/
+locale	treestyletab	de-DE	locale/de-DE/treestyletab/
+locale	treestyletab	zh-TW	locale/zh-TW/treestyletab/
+locale	treestyletab	ru-RU	locale/ru-RU/treestyletab/
+locale	treestyletab	pl	locale/pl/treestyletab/
+locale	treestyletab	fr-FR	locale/fr-FR/treestyletab/
+locale	treestyletab	sv-SE	locale/sv-SE/treestyletab/
+locale	treestyletab	da-DK	locale/da-DK/treestyletab/
+
+skin	treestyletab	classic/1.0	skin/classic/treestyletab/
+
+override chrome://treestyletab/skin/group/group-icon	chrome://treestyletab/skin/group/group-fx3.png
+override chrome://treestyletab/skin/group/group-icon	chrome://treestyletab/skin/group/group-fx3-aero.png	os=WINNT osversion>=6
+
+override chrome://treestyletab/skin/square/tab-surface.css	chrome://treestyletab/skin/square/tab-surface-3.css
+override chrome://treestyletab/skin/square/tab-surface.css	chrome://treestyletab/skin/square/tab-surface-4.css	appversion>=4.0b5pre
+
+override chrome://treestyletab/skin/metal/tab.css	chrome://treestyletab/skin/metal/tab-3.5.css
+override chrome://treestyletab/skin/metal/tab.css	chrome://treestyletab/skin/metal/tab-4.css	appversion>=4.0b5pre
+override chrome://treestyletab/skin/metal/base-inactive.css	chrome://treestyletab/skin/metal/base-inactive-3.5.css
+override chrome://treestyletab/skin/metal/base-inactive.css	chrome://treestyletab/skin/metal/base-inactive-4.css	appversion>=4.0b5pre
+
+override chrome://treestyletab/skin/sidebar/inactive.css	chrome://treestyletab/skin/sidebar/inactive-3.6.css
+override chrome://treestyletab/skin/sidebar/inactive.css	chrome://treestyletab/skin/sidebar/inactive-4.css	appversion>=4.0b5pre
+
+override chrome://treestyletab/skin/config.css	chrome://treestyletab/skin/config-4.css	appversion>=4.0b5pre
+
+
+override chrome://treestyletab/skin/platform-base.css	chrome://treestyletab/skin/dummy.css	os=Darwin
+override chrome://treestyletab/skin/platform-base.css	chrome://treestyletab/skin/Linux-base.css	os=Linux
+override chrome://treestyletab/skin/platform-base.css	chrome://treestyletab/skin/dummy.css	os=WINNT
+override chrome://treestyletab/skin/platform-styled.css	chrome://treestyletab/skin/Darwin-styled.css	os=Darwin
+override chrome://treestyletab/skin/platform-styled.css	chrome://treestyletab/skin/dummy.css	os=Linux
+override chrome://treestyletab/skin/platform-styled.css	chrome://treestyletab/skin/WINNT-styled.css	os=WINNT
+override chrome://treestyletab/skin/platform-styled-inactive.css	chrome://treestyletab/skin/Darwin-styled-inactive-3.5.css	os=Darwin
+override chrome://treestyletab/skin/platform-styled-inactive.css	chrome://treestyletab/skin/Darwin-styled-inactive-4.css	os=Darwin appversion>=4.0b5pre
+
+override chrome://treestyletab/skin/square/platform.css	chrome://treestyletab/skin/square/Darwin.css	os=Darwin
+override chrome://treestyletab/skin/square/platform.css	chrome://treestyletab/skin/square/Linux.css	os=Linux
+override chrome://treestyletab/skin/square/platform.css	chrome://treestyletab/skin/dummy.css	os=WINNT
+override chrome://treestyletab/skin/square/platform-inactive.css	chrome://treestyletab/skin/square/Darwin-inactive-3.5.css	os=Darwin
+override chrome://treestyletab/skin/square/platform-inactive.css	chrome://treestyletab/skin/square/Darwin-inactive-4.css	os=Darwin appversion>=4.0b5pre
+
+override chrome://treestyletab/skin/metal/platform.css	chrome://treestyletab/skin/metal/Darwin.css	os=Darwin
+override chrome://treestyletab/skin/metal/platform.css	chrome://treestyletab/skin/dummy.css	os=WINNT
+override chrome://treestyletab/skin/metal/platform.css	chrome://treestyletab/skin/dummy.css	os=Linux
+
+override chrome://treestyletab/skin/platform-config.css	chrome://treestyletab/skin/dummy.css	os=Darwin
+override chrome://treestyletab/skin/platform-config.css	chrome://treestyletab/skin/Linux-config.css	os=Linux
+override chrome://treestyletab/skin/platform-config.css	chrome://treestyletab/skin/dummy.css	os=WINNT
+
+
+resource treestyletab-modules modules/
+
+component	{305122d0-5bdc-11de-8a39-0800200c9a66}	components/AboutGroup.js
+contract	@mozilla.org/network/protocol/about;1?what=treestyletab-group	{305122d0-5bdc-11de-8a39-0800200c9a66}

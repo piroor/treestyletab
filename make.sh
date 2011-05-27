@@ -1,6 +1,7 @@
 #!/bin/sh
 
 cp buildscript/makexpi.sh ./
-./makexpi.sh -n treestyletab -v 0
+cp jar-chrome.manifest chrome.manifest
+./makexpi.sh -n treestyletab
 rm ./makexpi.sh
 
