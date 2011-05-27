@@ -533,6 +533,7 @@ TreeStyleTabBrowser.prototype = {
 		this.stopRendering();
 
 		var w = this.window;
+		var d = this.document;
 		var b = this.mTabBrowser;
 		b.tabContainer.treeStyleTab = this;
 
@@ -554,6 +555,31 @@ TreeStyleTabBrowser.prototype = {
 
 		this.setTabbrowserAttribute(this.kFIXED+'-horizontal', this.getTreePref('tabbar.fixed.horizontal') ? 'true' : null, b);
 		this.setTabbrowserAttribute(this.kFIXED+'-vertical', this.getTreePref('tabbar.fixed.vertical') ? 'true' : null, b);
+
+		/**
+		 * <tabbrowser> has its custom background color for itself, but it
+		 * prevents to make transparent background of the vertical tab bar.
+		 * So, I re-define the background image of content area for
+		 * <notificationbox>es via dynamically generated stylesheet.
+		 * See:
+		 *   https://bugzilla.mozilla.org/show_bug.cgi?id=558585
+		 *   http://hg.mozilla.org/mozilla-central/rev/e90bdd97d168
+		 */
+		if (b.style.backgroundColor && this.isFloating) {
+			let color = b.style.backgroundColor;
+			let pi = d.createProcessingInstruction(
+					'xml-stylesheet',
+					'type="text/css" href="data:text/css,'+encodeURIComponent(
+					<![CDATA[
+						.tabbrowser-tabbox > tabpanels > notificationbox {
+							background-color: %COLOR%;
+						}
+					]]>.toString().replace(/%COLOR%/, color)
+					)+'"'
+				);
+			d.insertBefore(pi, d.documentElement);
+			b.style.backgroundColor = '';
+		}
 
 		this.initTabbar(null, this.kTABBAR_TOP);
 
