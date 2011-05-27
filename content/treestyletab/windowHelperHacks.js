@@ -372,13 +372,13 @@ TreeStyleTabWindowHelper.overrideExtensionsBeforeBrowserInit = function TSTWH_ov
 
 						case 'unload':
 							window.removeEventListener('TreeStyleTabTabbarPositionChanged', this, false);
-							window.removeEventListener('unload', this, false);
+							window.removeEventListener('unload', this, true);
 							break;
 					}
 				}
 			};
 		window.addEventListener('TreeStyleTabTabbarPositionChanged', listener, false);
-		window.addEventListener('unload', listener, false);
+		window.addEventListener('unload', listener, true);
 
 		if ('openSelectedLinks' in tabberwocky) {
 			eval('tabberwocky.openSelectedLinks = '+
@@ -477,14 +477,14 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 						case 'unload':
 							window.removeEventListener(TreeStyleTabService.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, this, false);
 							window.removeEventListener(TreeStyleTabService.kEVENT_TYPE_FOCUS_NEXT_TAB, this, false);
-							window.removeEventListener('unload', this, false);
+							window.removeEventListener('unload', this, true);
 							break;
 					}
 				}
 			};
 		window.addEventListener(sv.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, listener, false);
 		window.addEventListener(sv.kEVENT_TYPE_FOCUS_NEXT_TAB, listener, false);
-		window.addEventListener('unload', listener, false);
+		window.addEventListener('unload', listener, true);
 
 		gBrowser.treeStyleTab.internallyTabMovingCount++; // until "TMmoveTabTo" method is overwritten
 	}
@@ -558,14 +558,14 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 						case 'unload':
 							window.removeEventListener('TreeStyleTabAttached', this, false);
 							window.removeEventListener('TreeStyleTabParted', this, false);
-							window.removeEventListener('unload', this, false);
+							window.removeEventListener('unload', this, true);
 							break;
 					}
 				}
 			};
 		window.addEventListener('TreeStyleTabAttached', listener, false);
 		window.addEventListener('TreeStyleTabParted', listener, false);
-		window.addEventListener('unload', listener, false);
+		window.addEventListener('unload', listener, true);
 	}
 
 	// FLST (Focus Last Selected Tab)
@@ -826,7 +826,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 						case 'unload':
 							var t = aEvent.currentTarget;
 							t.removeEventListener('TreeStyleTabAutoHideStateChanging', this, false);
-							t.removeEventListener('unload', this, false);
+							t.removeEventListener('unload', this, true);
 							t.removeEventListener('fullscreen', this, false);
 							break;
 					}
@@ -834,7 +834,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 			};
 		window.addEventListener('TreeStyleTabAutoHideStateChanging', autoHideEventListener, false);
 		window.addEventListener('fullscreen', autoHideEventListener, false);
-		window.addEventListener('unload', autoHideEventListener, false);
+		window.addEventListener('unload', autoHideEventListener, true);
 
 		if ('MoveContent' in autoHIDE) {
 			eval('autoHIDE.MoveContent = '+autoHIDE.MoveContent.toSource().replace(
@@ -962,9 +962,9 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		observer.observe(null, null, 'extensions.stm.newTabBtnPos');
 		TreeStyleTabService.addPrefListener(observer);
 		window.addEventListener('unload', function() {
-			window.removeEventListener('unload', arguments.callee, false);
+			window.removeEventListener('unload', arguments.callee, true);
 			TreeStyleTabService.removePrefListener(observer);
-		}, false);
+		}, true);
 
 		let warnPref = 'extensions.treestyletab.compatibility.STM.warnForNewTabPosition';
 		if (
@@ -1043,7 +1043,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 				switch (aEvent.type)
 				{
 					case 'unload':
-						window.removeEventListener('unload', listener, false);
+						window.removeEventListener('unload', listener, true);
 						window.removeEventListener(sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION, listener, false);
 						window.removeEventListener(sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION, listener, false);
 					case sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION:
@@ -1071,7 +1071,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 						return;
 				}
 			};
-		window.addEventListener('unload', listener, false);
+		window.addEventListener('unload', listener, true);
 		window.addEventListener(sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION, listener, false);
 		window.addEventListener(sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION, listener, false);
 		if (gURLBar && !listening) {
@@ -1202,7 +1202,7 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 							titlebar.removeEventListener('DOMAttrModified', this, true);
 							window.removeEventListener('beforecustomization', this, false);
 							window.removeEventListener('aftercustomization', this, false);
-							window.removeEventListener('unload', this, false);
+							window.removeEventListener('unload', this, true);
 							personalTitlebar = null;
 							break;
 					}
@@ -1210,7 +1210,7 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 			};
 		window.addEventListener('beforecustomization', listener, false);
 		window.addEventListener('aftercustomization', listener, false);
-		window.addEventListener('unload', listener, false);
+		window.addEventListener('unload', listener, true);
 		titlebar.addEventListener('DOMAttrModified', listener, true);
 	}
 
@@ -1249,7 +1249,7 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 								menu.removeEventListener('command', this, true);
 								window.removeEventListener(sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION, listener, false);
 								window.removeEventListener(sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION, listener, false);
-								window.removeEventListener('unload', this, false);
+								window.removeEventListener('unload', this, true);
 								menu = null;
 								break;
 						}
@@ -1258,7 +1258,7 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 			menu.addEventListener('command', listener, false);
 			window.addEventListener(sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION, listener, false);
 			window.addEventListener(sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION, listener, false);
-			window.addEventListener('unload', listener, false);
+			window.addEventListener('unload', listener, true);
 			tabbarToolboxes.forEach(function(aToolbox) {
 				if (!aToolbox.firstChild.hasChildNodes())
 					aToolbox.setAttribute('collapsed', true);
@@ -1315,13 +1315,13 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 
 						case 'unload':
 							window.removeEventListener('TabOpen', this, true);
-							window.removeEventListener('unload', this, false);
+							window.removeEventListener('unload', this, true);
 							return;
 					}
 				}
 			};
 		window.addEventListener('TabOpen', listener, true);
-		window.addEventListener('unload', listener, false);
+		window.addEventListener('unload', listener, true);
 	}
 
 };
