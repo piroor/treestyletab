@@ -559,7 +559,7 @@ TreeStyleTabBrowser.prototype = {
 		/**
 		 * <tabbrowser> has its custom background color for itself, but it
 		 * prevents to make transparent background of the vertical tab bar.
-		 * So, I re-define the background image of content area for
+		 * So, I re-define the background color of content area for
 		 * <notificationbox>es via dynamically generated stylesheet.
 		 * See:
 		 *   https://bugzilla.mozilla.org/show_bug.cgi?id=558585
