@@ -511,20 +511,22 @@ catch(e) {
 			if (aInfo.action & sv.kACTIONS_FOR_DESTINATION) {
 				let parent = parentTabsArray[i];
 				if (tabsInfo.isMultipleMove && 'MultipleTabService' in sourceWindow)
-					sourceWindow.MultipleTabService.setSelection(aTab, false);
+					sourceWindow.MultipleTabService.setSelection(tab, false);
 				if (aInfo.action & sv.kACTION_IMPORT) {
-					tab = targetBrowser.addTab();
-					tab.linkedBrowser.stop();
-					tab.linkedBrowser.docShell;
-					targetBrowser.swapBrowsersAndCloseOther(tab, aTab);
-					targetBrowser.setTabTitle(tab);
+					let newTab = targetBrowser.addTab();
+					newTab.linkedBrowser.stop();
+					newTab.linkedBrowser.docShell;
+					targetBrowser.swapBrowsersAndCloseOther(newTab, tab);
+					targetBrowser.setTabTitle(newTab);
+					tab = newTab;
 				}
 				else {
-					tab = targetBrowser.duplicateTab(aTab);
-					sv.deleteTabValue(tab, sv.kCHILDREN);
-					sv.deleteTabValue(tab, sv.kPARENT);
+					newTab = targetBrowser.duplicateTab(tab);
+					sv.deleteTabValue(newTab, sv.kCHILDREN);
+					sv.deleteTabValue(newTab, sv.kPARENT);
 					if (aInfo.action & sv.kACTION_IMPORT)
-						oldTabs.push(aTab);
+						oldTabs.push(tab);
+					tab = newTab;
 				}
 				newTabs.push(tab);
 				if (tabsInfo.isMultipleMove && 'MultipleTabService' in w)
@@ -546,7 +548,7 @@ catch(e) {
 		// close imported tabs from the source browser
 		for each (let tab in oldTabs)
 		{
-			sourceBrowser.removeTab(aTab, { animate : true });
+			sourceBrowser.removeTab(tab, { animate : true });
 		}
 		if (shouldClose)
 			this.closeOwner(sourceBrowser);
