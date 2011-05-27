@@ -124,7 +124,7 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 				sessionData.getTabProperties.toSource().replace(
 					'return tabProperties;',
 					<![CDATA[
-						TreeStyleTabWindowHelper.tabTSTProperties.forEach(function(aProp) {
+						this.tabTSTProperties.forEach(function(aProp) {
 							tabProperties += '|' + aProp + '=' + encodeURIComponent(aTab.getAttribute(aProp));
 						});
 					$&]]>
