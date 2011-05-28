@@ -840,15 +840,9 @@ catch(e) {
  
 	onDragLeave : function TabbarDND_onDragLeave(aEvent) 
 	{
-		var sv = this.treeStyleTab;
-		var b  = this.browser;
-		var w  = this.window;
+		this.clearDropPosition();
 
-		var tabbarFromEvent = sv.getTabbarFromChild(aEvent.relatedTarget);
-		if (!tabbarFromEvent)
-			this.clearDropPosition();
-
-		w.clearTimeout(this.mAutoExpandTimer);
+		this.window.clearTimeout(this.mAutoExpandTimer);
 		this.mAutoExpandTimer = null;
 	},
  
@@ -975,12 +969,7 @@ try{
 			}
 		}
 
-		if (!info.target || info.target != sv.evaluateXPath(
-				'child::xul:tab[@'+sv.kDROP_POSITION+']',
-				b.mTabContainer,
-				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue)
-			this.clearDropPosition();
+		this.clearDropPosition();
 
 		if (
 			!info.canDrop ||
