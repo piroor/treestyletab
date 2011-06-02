@@ -756,7 +756,7 @@ catch(e) {
 		if (
 			tabsInfo.draggedTabs.length <= 1 ||
 			Array.some(tabsInfo.draggedTabs, function(aTab) {
-				return aTab.getAttribute('multiselected') == 'true';
+				return aTab.getAttribute('multiselected') == 'true'; // if multiselected, it should be handled by other addons (like Multiple Tab Handler)
 			})
 			)
 			return;

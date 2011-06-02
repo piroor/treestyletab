@@ -1248,7 +1248,6 @@ TreeStyleTabBrowser.prototype = {
 		tabContainer.addEventListener('dblclick',  this, true);
 		tabContainer.addEventListener('select', this, true);
 		tabContainer.addEventListener('scroll', this, true);
-		tabContainer.addEventListener('nsDOMMultipleTabHandler:TabsDragStart', this, true);
 
 		var strip = this.tabStrip;
 		strip.addEventListener('MozMouseHittest', this, true); // to block default behaviors of the tab bar
@@ -1813,7 +1812,6 @@ TreeStyleTabBrowser.prototype = {
 		tabContainer.removeEventListener('dblclick',  this, true);
 		tabContainer.removeEventListener('select', this, true);
 		tabContainer.removeEventListener('scroll', this, true);
-		tabContainer.removeEventListener('nsDOMMultipleTabHandler:TabsDragStart', this, true);
 
 		var strip = this.tabStrip;
 		strip.removeEventListener('MozMouseHittest', this, true);
@@ -2431,10 +2429,6 @@ TreeStyleTabBrowser.prototype = {
 				if (!this.onTabsRemoving(aEvent))
 					aEvent.preventDefault();
 				return;
-
-			// cancel tab dragging by Multiple Tab
-			case 'nsDOMMultipleTabHandler:TabsDragStart':
-				return aEvent.preventDefault();
 		}
 	},
 	lastScrollX : -1,
