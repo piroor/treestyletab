@@ -502,3 +502,8 @@ image.tab-icon {
 	visibility: collapse;
 }
 
+/* ColorfulTabs */
+:root:not([treestyletab-tabbar-position="top"]) #ctStack,
+:root:not([treestyletab-tabbar-fixed="true"]) #ctStack {
+	display: none;
+}

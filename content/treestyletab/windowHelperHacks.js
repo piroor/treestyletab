@@ -532,7 +532,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 
 	// Colorful Tabs
 	// https://addons.mozilla.org/firefox/addon/1368
-	if ('clrtabsInit' in window &&
+	if ('colorfulTabs' in window &&
 		sv.getTreePref('compatibility.ColorfulTabs')) {
 		let listener = {
 				handleEvent : function(aEvent)
@@ -544,11 +544,11 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 							var child = aEvent.originalTarget;
 							var parent = aEvent.parentTab;
 							if (child && parent) {
-								setColor(child, TreeStyleTabService.SessionStore.getTabValue(parent, 'tabClr'));
+								colorfulTabs.setColor(child, TreeStyleTabService.SessionStore.getTabValue(parent, 'tabClr'));
 							}
 							else if (child) {
-								TreeStyleTabService.SessionStore.setTabValue(child, 'tabClr', '')
-								calcTabClr({
+								TreeStyleTabService.SessionStore.setTabValue(child, 'tabClr', '');
+								colorfulTabs.calcTabClr({
 									target : child,
 									originalTarget : child,
 								});
@@ -563,6 +563,12 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 					}
 				}
 			};
+		eval('colorfulTabs.show_ctStack = '+
+			colorfulTabs.show_ctStack.toSource().replace(
+				'.setProperty("display", "-moz-stack", "important")',
+				'.display = ""'
+			)
+		);
 		document.addEventListener('TreeStyleTabAttached', listener, false);
 		document.addEventListener('TreeStyleTabParted', listener, false);
 		document.addEventListener('unload', listener, false);
