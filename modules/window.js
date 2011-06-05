@@ -1091,7 +1091,7 @@ TreeStyleTabWindow.prototype = {
 			if (typeof aItem == 'string')
 				aItem = this.document.getElementById(aItem);
 			return aItem && aItem.boxObject && ((aItem.boxObject.width || aItem.boxObject.height) && aItem.state != 'closed');
-		});
+		}, this);
 		return this._shownPopups.length > 0;
 	},
  
