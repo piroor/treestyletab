@@ -798,8 +798,6 @@ catch(e) {
 		if (!this.canDrop(aEvent)) {
 			dt.effectAllowed = dt.dropEffect = 'none';
 			return;
-
-
 		}
 
 		var tab = aEvent.target;

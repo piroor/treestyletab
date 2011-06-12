@@ -184,6 +184,8 @@ AutoHideBrowser.prototype = {
 
 		b.addEventListener('mousedown', this, true);
 		b.addEventListener('mouseup', this, true);
+		b.addEventListener('dragover', this, true);
+		b.addEventListener('dragleave', this, true);
 		if (sv.isFloating) {
 			sv.tabStrip.addEventListener('mousedown', this, true);
 			sv.tabStrip.addEventListener('mouseup', this, true);
@@ -219,6 +221,8 @@ AutoHideBrowser.prototype = {
 
 		b.removeEventListener('mousedown', this, true);
 		b.removeEventListener('mouseup', this, true);
+		b.removeEventListener('dragover', this, true);
+		b.removeEventListener('dragleave', this, true);
 		if (sv.isFloating) {
 			sv.tabStrip.removeEventListener('mousedown', this, true);
 			sv.tabStrip.removeEventListener('mouseup', this, true);
@@ -1022,22 +1026,18 @@ AutoHideBrowser.prototype = {
 		switch (aEvent.type)
 		{
 			case 'mousedown':
-				this.onMouseDown(aEvent);
-				return;
+				return this.onMouseDown(aEvent);
 
 			case 'mouseup':
-				this.onMouseUp(aEvent);
-				return;
+				return this.onMouseUp(aEvent);
 
 			case 'mousemove':
 				if (this.handleMouseMove(aEvent)) return;
 			case 'resize':
-				this.onResize(aEvent);
-				return;
+				return this.onResize(aEvent);
 
 			case 'scroll':
-				this.onScroll(aEvent);
-				return;
+				return this.onScroll(aEvent);
 
 			case 'load':
 				if (this.shouldRedraw)
@@ -1046,8 +1046,7 @@ AutoHideBrowser.prototype = {
 
 			case 'TabOpen':
 			case 'TabClose':
-				this.showForFeedback();
-				return;
+				return this.showForFeedback();
 
 			case 'TabMove':
 				if (!this.treeStyleTab.subTreeMovingCount && !this.treeStyleTab.internallyTabMovingCount)
@@ -1060,6 +1059,12 @@ AutoHideBrowser.prototype = {
 				if (!this.window.TreeStyleTabService.accelKeyPressed)
 					this.showForFeedback();
 				return;
+
+			case 'dragover':
+				return this.onDragOver(aEvent);
+
+			case 'dragleave':
+				return this.onDragLeave(aEvent);
 
 			case this.treeStyleTab.kEVENT_TYPE_TABBAR_POSITION_CHANGING:
 				this.isResizing = false;
@@ -1078,8 +1083,7 @@ AutoHideBrowser.prototype = {
 				return;
 
 			case this.treeStyleTab.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN:
-				this.onKeyDown(aEvent.getData('sourceEvent'));
-				return;
+				return this.onKeyDown(aEvent.getData('sourceEvent'));
 
 			case this.treeStyleTab.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START:
 				this.cancelDelayedShowForShortcut();
@@ -1256,6 +1260,37 @@ AutoHideBrowser.prototype = {
 			)
 			)
 			this.redrawContentArea();
+	},
+ 
+	onDragOver : function AHB_onDragOver(aEvent) 
+	{
+		if (this.expanded)
+			return;
+
+		var draggedTabs = this.window['piro.sakura.ne.jp'].tabsDragUtils.getSelectedTabs(aEvent);
+		if (draggedTabs.length ||
+			this.treeStyleTab.tabbarDNDObserver.retrieveURLFromDataTransfer(aEvent.dataTransfer)) {
+			this.show(this.kSHOWN_BY_MOUSEMOVE);
+
+			if (this._autoHideOnDragLeaveTimer) {
+				this.window.clearTimeout(this._autoHideOnDragLeaveTimer);
+				delete this._autoHideOnDragLeaveTimer;
+			}
+		}
+	},
+ 
+	onDragLeave : function AHB_onDragLeave(aEvent) 
+	{
+		if (!this.expanded)
+			return;
+
+		if (this._autoHideOnDragLeaveTimer)
+			this.window.clearTimeout(this._autoHideOnDragLeaveTimer);
+
+		this._autoHideOnDragLeaveTimer = this.window.setTimeout(function(aSelf) {
+			delete aSelf._autoHideOnDragLeaveTimer;
+			aSelf.hide(aSelf.kSHOWN_BY_MOUSEMOVE);
+		}, 100, this);
 	},
  
 	onKeyDown : function AHB_onKeyDown(aEvent) 
