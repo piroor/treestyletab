@@ -5216,6 +5216,8 @@ TreeStyleTabBrowser.prototype = {
 	isPopupShown : function TSTBrowser_isPopupShown() { return this._callWindowServiceMethod('isPopupShown', arguments); },
 	updateTabsOnTop : function TSTBrowser_updateTabsOnTop() { return this._callWindowServiceMethod('updateTabsOnTop', arguments); },
 	registerTabFocusAllowance : function TSTBrowser_registerTabFocusAllowance() { return this._callWindowServiceMethod('registerTabFocusAllowance', arguments); },
+	isPopupShown : function TSTBrowser_isPopupShown() { return this._callWindowServiceMethod('isPopupShown', arguments); },
+	toggleAutoHide : function TSTBrowser_toggleAutoHide() { return this._callWindowServiceMethod('toggleAutoHide', arguments); },
  
 /* show/hide tab bar */ 
 	get autoHide()
