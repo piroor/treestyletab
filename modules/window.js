@@ -414,7 +414,15 @@ TreeStyleTabWindow.prototype = {
 // rap('window/init start');
 		var w = this.window;
 		w.removeEventListener('load', this, false);
-		w.addEventListener('unload', this, false);
+
+		/**
+		 * We should register event handler with delay, to do destruction
+		 * process later than other addons.
+		 */
+		var self = this;
+		this.Deferred.next(function() {
+			w.addEventListener('unload', self, false);
+		});
 
 		if (
 			w.location.href.indexOf('chrome://browser/content/browser.xul') != 0 ||
