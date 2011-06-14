@@ -1268,8 +1268,10 @@ AutoHideBrowser.prototype = {
 			return;
 
 		var draggedTabs = this.window['piro.sakura.ne.jp'].tabsDragUtils.getSelectedTabs(aEvent);
-		if (draggedTabs.length ||
-			this.treeStyleTab.tabbarDNDObserver.retrieveURLFromDataTransfer(aEvent.dataTransfer)) {
+		if (
+			draggedTabs.length ||
+			this.treeStyleTab.tabbarDNDObserver.retrieveURLsFromDataTransfer(aEvent.dataTransfer).length
+			) {
 			this.show(this.kSHOWN_BY_MOUSEMOVE);
 
 			if (this._autoHideOnDragLeaveTimer) {
