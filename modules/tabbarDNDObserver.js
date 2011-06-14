@@ -1128,7 +1128,7 @@ catch(e) {
 	
 	retrieveURLsFromDataTransfer : function TSTService_retrieveURLsFromDataTransfer(aDataTransfer) 
 	{
-		var urls;
+		var urls = [];
 		var types = [
 				'text/uri-list',
 				'text/x-moz-text-internal',
