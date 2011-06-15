@@ -2081,21 +2081,11 @@ var TreeStyleTabUtils = {
  
 	collectRootTabs : function TSTUtils_collectRootTabs(aTabs) /* PUBLIC API */ 
 	{
-		var roots = [];
-		aTabs.forEach(function(aTab) {
-			var parent = aTab,
-				current;
-			do {
-				current = parent;
-				parent = this.getParentTab(parent)
-				if (parent && aTabs.indexOf(parent) > -1) continue;
-				if (aTabs.indexOf(current) < 0)
-					aTabs.push(current);
-				return;
-			}
-			while (parent);
+		aTabs = Array.slice(aTabs);
+		return aTabs.filter(function(aTab) {
+			var parent = this.getParentTab(aTab);
+			return !parent || aTabs.indexOf(parent) < 0;
 		}, this);
-		return roots;
 	},
  
 	getChildIndex : function TSTUtils_getChildIndex(aTab, aParent) /* PUBLIC API */ 
@@ -2187,6 +2177,18 @@ var TreeStyleTabUtils = {
 				).numberValue;
 	},
  
+	forceExpandTabs : function TSTUtils_forceExpandTabs(aTabs)
+	{
+		var collapsedStates = aTabs.map(function(aTab) {
+				return this.getTabValue(aTab, this.kSUBTREE_COLLAPSED) == 'true';
+			}, this);
+		aTabs.forEach(function(aTab) {
+			this.collapseExpandSubtree(aTab, false, true);
+			this.collapseExpandTab(aTab, false, true);
+		}, this);
+		return collapsedStates;
+	},
+ 
 	getTreeStructureFromTabs : function TSTUtils_getTreeStructureFromTabs(aTabs) 
 	{
 		/* this returns...
@@ -2229,7 +2231,7 @@ var TreeStyleTabUtils = {
 		return aTreeStructure;
 	},
  
-	applyTreeStructureToTabs : function TSTUtils_applyTreeStructureToTabs(aTabs, aTreeStructure, aExpandAllTree) 
+	applyTreeStructureToTabs : function TSTUtils_applyTreeStructureToTabs(aTabs, aTreeStructure, aExpandStates) 
 	{
 		var b = this.getTabBrowserFromChild(aTabs[0]);
 		if (!b) return;
@@ -2238,30 +2240,40 @@ var TreeStyleTabUtils = {
 		aTabs = aTabs.slice(0, aTreeStructure.length);
 		aTreeStructure = aTreeStructure.slice(0, aTabs.length);
 
+		aExpandStates = (aExpandStates && typeof aExpandStates == 'object') ?
+							aExpandStates :
+							aTabs.map(function(aTab) {
+								return !!aExpandStates;
+							});
+		aExpandStates = aExpandStates.slice(0, aTabs.length);
+		while (aExpandStates.length < aTabs.length) aExpandStates.push(-1);
+
 		var parentTab = null;
 		aTabs.forEach(function(aTab, aIndex) {
 			if (sv.isCollapsed(aTab)) sv.collapseExpandTab(aTab, false, true);
 			sv.partTab(aTab);
 
-			var pareintIndexInTree = aTreeStructure[aIndex];
-			if (pareintIndexInTree < 0) { // there is no parent, so this is a new parent!
+			var parentIndexInTree = aTreeStructure[aIndex];
+			if (parentIndexInTree < 0) // there is no parent, so this is a new parent!
 				parentTab = aTab.getAttribute(sv.kID);
-			}
 
 			var parent = sv.getTabById(parentTab);
 			if (parent) {
 				let tabs = [parent].concat(sv.getDescendantTabs(parent));
-				parent = pareintIndexInTree < tabs.length ? tabs[pareintIndexInTree] : parent ;
+				parent = parentIndexInTree < tabs.length ? tabs[parentIndexInTree] : parent ;
 			}
 			if (parent) {
 				sv.attachTabTo(aTab, parent, {
 					dontExpand : true,
 					dontMove   : true
 				});
-				if (aExpandAllTree)
-					sv.collapseExpandSubtree(parent, false);
 			}
-		}, sv);
+		});
+
+		for (let i = aTabs.length-1; i > -1; i--)
+		{
+			sv.collapseExpandSubtree(aTabs[i], !aExpandStates[i], true);
+		}
 	},
  
 	getTreeStructureFromTabBrowser : function TSTUtils_getTreeStructureFromTabBrowser(aTabBrowser) 

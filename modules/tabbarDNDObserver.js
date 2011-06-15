@@ -401,21 +401,22 @@ catch(e) {
 		var tabsInfo = this.getDraggedTabsInfoFromOneTab(aInfo, aDraggedTab);
 		if (!tabsInfo.draggedTab) return false;
 
+		var sourceWindow = aDraggedTab.ownerDocument.defaultView;
+		var sourceBrowser = sourceWindow.TreeStyleTabService.getTabBrowserFromChild(aDraggedTab);
+		var sourceService = sourceBrowser.treeStyleTab;
+
 		aDraggedTab = tabsInfo.draggedTab;
 		var draggedTabs = tabsInfo.draggedTabs;
-		var draggedRoots = sv.collectRootTabs(tabsInfo.draggedTabs);
+		var draggedRoots = sourceService.collectRootTabs(tabsInfo.draggedTabs);
 
 
 		var targetBrowser = b;
-		var tabs = sv.getTabsArray(targetBrowser);
-
-		var sourceWindow = aDraggedTab.ownerDocument.defaultView;
-		var sourceBrowser = sv.getTabBrowserFromChild(aDraggedTab);
+		var tabs = sourceService.getTabsArray(targetBrowser);
 
 		var draggedWholeTree = [].concat(draggedRoots);
 		for each (let root in draggedRoots)
 		{
-			let tabs = sv.getDescendantTabs(root);
+			let tabs = sourceService.getDescendantTabs(root);
 			for each (let tab in tabs)
 			{
 				if (draggedWholeTree.indexOf(tab) < 0)
@@ -429,19 +430,8 @@ catch(e) {
 		if (draggedWholeTree.length != selectedTabs.length &&
 			selectedTabs.length) {
 			draggedTabs = draggedRoots = selectedTabs;
-			if (aInfo.action & sv.kACTIONS_FOR_SOURCE) {
-				for each (let tab in Array.slice(selectedTabs))
-				{
-					if (selectedTabs.indexOf(sv.getParentTab(tab)) > -1)
-						continue;
-					sv.partAllChildren(tab, {
-						behavior : sv.getCloseParentBehaviorForTab(
-							tab,
-							sv.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
-						)
-					});
-				}
-			}
+			if (aInfo.action & sv.kACTIONS_FOR_SOURCE)
+				sourceService.partTabs(selectedTabs);
 		}
 
 		while (aInfo.insertBefore && draggedWholeTree.indexOf(aInfo.insertBefore) > -1)
@@ -462,7 +452,7 @@ catch(e) {
 
 			if ( // if this move will cause no change...
 				sourceBrowser == targetBrowser &&
-				sourceBrowser.treeStyleTab.getNextVisibleTab(draggedTabs[draggedTabs.length-1]) == aInfo.insertBefore
+				sourceService.getNextVisibleTab(draggedTabs[draggedTabs.length-1]) == aInfo.insertBefore
 				) {
 				// then, do nothing
 				return true;
@@ -475,105 +465,74 @@ catch(e) {
 		targetBrowser.movingSelectedTabs = true;
 
 
-		var newRoots = [];
 		var shouldClose = (
 				aInfo.action & sv.kACTION_IMPORT &&
-				sv.getAllTabsArray(sourceBrowser).length == draggedTabs.length
+				sourceService.getAllTabsArray(sourceBrowser).length == draggedTabs.length
 			);
-		var oldTabs = [];
 		var newTabs = [];
-		var treeStructure = draggedTabs.map(function(aTab) {
-				var parent = sourceBrowser.treeStyleTab.getParentTab(aTab);
-				return parent ? draggedTabs.indexOf(parent) : -1 ;
-			});
-
-		var parentTabsArray = draggedTabs.map(function(aTab) {
-				return (aInfo.action & sv.kACTIONS_FOR_DESTINATION) ?
-					sourceBrowser.treeStyleTab.getParentTab(aTab) : null ;
-			}, this);
+		var treeStructure = sourceService.getTreeStructureFromTabs(draggedTabs);
 
 		// Firefox fails to "move" collapsed tabs. So, expand them first
 		// and collapse them after they are moved.
-		var collapseExpandState = [];
-		if (aInfo.action & sv.kACTION_MOVE || aInfo.action & sv.kACTION_IMPORT) {
-			for each (let tab in draggedWholeTree)
-			{
-				collapseExpandState.push(sv.getTabValue(tab, sv.kSUBTREE_COLLAPSED) == 'true');
-				sv.collapseExpandSubtree(tab, false, true);
-				sv.collapseExpandTab(tab, false, true);
-			}
-		}
+		var collapsedStates = (
+				aInfo.action & sv.kACTION_MOVE ||
+				aInfo.action & sv.kACTION_IMPORT ||
+				aInfo.action & sv.kACTION_DUPLICATE
+			) ?
+				sourceService.forceExpandTabs(draggedWholeTree) :
+				[] ;
 
 		var lastTabIndex = tabs[tabs.length -1]._tPos;
 		for (let i in draggedTabs)
 		{
 			let tab = draggedTabs[i];
+			let TST = sourceService;
 			if (aInfo.action & sv.kACTIONS_FOR_DESTINATION) {
-				let parent = parentTabsArray[i];
 				if (tabsInfo.isMultipleMove && 'MultipleTabService' in sourceWindow)
 					sourceWindow.MultipleTabService.setSelection(tab, false);
-				if (aInfo.action & sv.kACTION_IMPORT) {
-					let newTab = targetBrowser.addTab();
-					newTab.linkedBrowser.stop();
-					newTab.linkedBrowser.docShell;
-					targetBrowser.swapBrowsersAndCloseOther(newTab, tab);
-					targetBrowser.setTabTitle(newTab);
-					tab = newTab;
-				}
-				else {
-					newTab = targetBrowser.duplicateTab(tab);
-					sv.deleteTabValue(newTab, sv.kCHILDREN);
-					sv.deleteTabValue(newTab, sv.kPARENT);
-					if (aInfo.action & sv.kACTION_IMPORT)
-						oldTabs.push(tab);
-					tab = newTab;
-				}
+				tab = (aInfo.action & sv.kACTION_IMPORT) ?
+						sv.importTab(tab) :
+						sv.duplicateTabAsOrphan(tab) ;
 				newTabs.push(tab);
 				if (tabsInfo.isMultipleMove && 'MultipleTabService' in w)
 					w.MultipleTabService.setSelection(tab, true);
-				if (!parent || draggedTabs.indexOf(parent) < 0)
-					newRoots.push(tab);
 				lastTabIndex++;
+				TST = sv;
 			}
 
 			let newIndex = aInfo.insertBefore ? aInfo.insertBefore._tPos : lastTabIndex ;
 			if (aInfo.insertBefore && newIndex > tab._tPos) newIndex--;
 
-			sv.internallyTabMovingCount++;
+			TST.internallyTabMovingCount++;
 			targetBrowser.moveTabTo(tab, newIndex);
-			sv.collapseExpandTab(tab, false, true);
-			sv.internallyTabMovingCount--;
+			TST.collapseExpandTab(tab, false, true);
+			TST.internallyTabMovingCount--;
 		}
 
-		// close imported tabs from the source browser
-		for each (let tab in oldTabs)
-		{
-			sourceBrowser.removeTab(tab, { animate : true });
-		}
 		if (shouldClose)
 			this.closeOwner(sourceBrowser);
 
-		// restore tree structure for newly opened tabs
-		for (let i in newTabs)
-		{
-			let index = treeStructure[i];
-			if (index < 0) continue;
-			sv.attachTabTo(newTabs[i], newTabs[index]);
-		};
+		if (newTabs.length)
+			sv.applyTreeStructureToTabs(
+				newTabs,
+				treeStructure,
+				collapsedStates.map(function(aCollapsed) {
+					return !aCollapsed
+				})
+			);
 
-		if (newTabs.length || aInfo.action & sv.kACTION_MOVE || aInfo.action & sv.kACTION_IMPORT) {
-			for (let i = collapseExpandState.length - 1; i > -1; i--)
-			{
-				let collapsed = collapseExpandState[i];
-				sv.collapseExpandSubtree(draggedWholeTree[i], collapsed, true);
-				if (newTabs.length)
-					sv.collapseExpandSubtree(newTabs[i], collapsed, true);
-			}
+		for (let i = collapsedStates.length - 1; i > -1; i--)
+		{
+			sourceService.collapseExpandSubtree(draggedWholeTree[i], collapsedStates[i], true);
 		}
 
-		if (aInfo.action & sv.kACTIONS_FOR_DESTINATION &&
-			aInfo.action & sv.kACTION_ATTACH)
-			this.attachTabsOnDrop(newRoots, aInfo.parent);
+		if (newTabs.length && aInfo.action & sv.kACTION_ATTACH)
+			this.attachTabsOnDrop(
+				newTabs.filter(function(aTab, aIndex) {
+					return treeStructure[aIndex] == -1;
+				}),
+				aInfo.parent
+			);
 
 		// Multiple Tab Handler
 		targetBrowser.movingSelectedTabs = false;
@@ -585,10 +544,11 @@ catch(e) {
 	getDraggedTabsInfoFromOneTab : function TabbarDND_getDraggedTabsInfoFromOneTab(aInfo, aTab) 
 	{
 		var sv = this.treeStyleTab;
-		var b  = this.browser;
-		var w  = this.window;
+		var sourceWindow = aTab.ownerDocument.defaultView;
+		var sourceBrowser = sourceWindow.TreeStyleTabService.getTabBrowserFromChild(aTab);
+		var sourceService = sourceBrowser.treeStyleTab;
 
-		aTab = sv.getTabFromChild(aTab);
+		aTab = sourceService.getTabFromChild(aTab);
 		if (!aTab || !aTab.parentNode) // ignore removed tabs!
 			return {
 				draggedTab     : null,
@@ -596,20 +556,14 @@ catch(e) {
 				isMultipleMove : false
 			};
 
-		var targetBrowser = b;
-		var tabs = sv.getTabsArray(targetBrowser);
-
-		var sourceWindow = aTab.ownerDocument.defaultView;
-		var sourceBrowser = sv.getTabBrowserFromChild(aTab);
-
-		var draggedTabs = w['piro.sakura.ne.jp'].tabsDragUtils.getSelectedTabs(aTab || sourceBrowser || aInfo.event);
+		var draggedTabs = sourceWindow['piro.sakura.ne.jp'].tabsDragUtils.getSelectedTabs(aTab || sourceBrowser || aInfo.event);
 		var isMultipleMove = false;
 
 		if (draggedTabs.length > 1) {
 			isMultipleMove = true;
 		}
 		else if (aInfo.action & sv.kACTIONS_FOR_DESTINATION) {
-			draggedTabs = [aTab].concat(sourceBrowser.treeStyleTab.getDescendantTabs(aTab));
+			draggedTabs = [aTab].concat(sourceService.getDescendantTabs(aTab));
 		}
 
 		return {
@@ -621,8 +575,8 @@ catch(e) {
  
 	attachTabsOnDrop : function TabbarDND_attachTabsOnDrop(aTabs, aParent) 
 	{
-		var sv = this.treeStyleTab;
-		var b  = this.browser;
+		var b  = aTabs[0].ownerDocument.defaultView.TreeStyleTabService.getTabBrowserFromChild(aTabs[0]);
+		var sv = b.treeStyleTab;
 
 		b.movingSelectedTabs = true; // Multiple Tab Handler
 		aTabs.forEach(function(aTab) {
@@ -638,8 +592,8 @@ catch(e) {
  
 	partTabsOnDrop : function TabbarDND_partTabsOnDrop(aTabs) 
 	{
-		var sv = this.treeStyleTab;
-		var b  = this.browser;
+		var b  = aTabs[0].ownerDocument.defaultView.TreeStyleTabService.getTabBrowserFromChild(aTabs[0]);
+		var sv = b.treeStyleTab;
 
 		b.movingSelectedTabs = true; // Multiple Tab Handler
 		aTabs.forEach(function(aTab) {

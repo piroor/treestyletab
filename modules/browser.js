@@ -4339,6 +4339,22 @@ TreeStyleTabBrowser.prototype = {
 		), this);
 	},
  
+	partTabs : function TSTBrowser_partTabs(aTabs)
+	{
+		var aTabs = Array.slice(aTabs);
+		for each (let tab in aTabs)
+		{
+			if (aTabs.indexOf(this.getParentTab(tab)) > -1)
+				continue;
+			this.partAllChildren(tab, {
+				behavior : this.getCloseParentBehaviorForTab(
+					tab,
+					this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+				)
+			});
+		}
+	},
+ 
 	getCloseParentBehaviorForTab : function TSTBrowser_getCloseParentBehaviorForTab(aTab, aDefaultBehavior) 
 	{
 		var closeParentBehavior = this.getTreePref('closeParentBehavior');
@@ -4691,6 +4707,24 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 		return false;
+	},
+ 
+	importTab : function TSTBrowser_importTab(aTab)
+	{
+		var newTab = this.mTabBrowser.addTab();
+		newTab.linkedBrowser.stop();
+		newTab.linkedBrowser.docShell;
+		this.mTabBrowser.swapBrowsersAndCloseOther(newTab, aTab);
+		this.mTabBrowser.setTabTitle(newTab);
+		return newTab;
+	},
+ 
+	duplicateTabAsOrphan : function TSTBrowser_duplicateTabAsOrphan(aTab)
+	{
+		var newTab = this.mTabBrowser.duplicateTab(aTab);
+		this.deleteTabValue(newTab, this.kCHILDREN);
+		this.deleteTabValue(newTab, this.kPARENT);
+		return newTab;
 	},
   
 /* collapse/expand */ 
