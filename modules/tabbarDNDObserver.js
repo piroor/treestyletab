@@ -411,7 +411,7 @@ catch(e) {
 
 
 		var targetBrowser = b;
-		var tabs = sourceService.getTabsArray(targetBrowser);
+		var tabs = sv.getTabsArray(targetBrowser);
 
 		var draggedWholeTree = [].concat(draggedRoots);
 		for each (let root in draggedRoots)
@@ -459,72 +459,12 @@ catch(e) {
 			}
 		}
 
-
-		// prevent Multiple Tab Handler feature
-		targetBrowser.duplicatingSelectedTabs = true;
-		targetBrowser.movingSelectedTabs = true;
-
-
-		var shouldClose = (
-				aInfo.action & sv.kACTION_IMPORT &&
-				sourceService.getAllTabsArray(sourceBrowser).length == draggedTabs.length
-			);
-		var newTabs = [];
 		var treeStructure = sourceService.getTreeStructureFromTabs(draggedTabs);
 
-		// Firefox fails to "move" collapsed tabs. So, expand them first
-		// and collapse them after they are moved.
-		var collapsedStates = (
-				aInfo.action & sv.kACTION_MOVE ||
-				aInfo.action & sv.kACTION_IMPORT ||
-				aInfo.action & sv.kACTION_DUPLICATE
-			) ?
-				sourceService.forceExpandTabs(draggedWholeTree) :
-				[] ;
-
-		var lastTabIndex = tabs[tabs.length -1]._tPos;
-		for (let i in draggedTabs)
-		{
-			let tab = draggedTabs[i];
-			let TST = sourceService;
-			if (aInfo.action & sv.kACTIONS_FOR_DESTINATION) {
-				if (tabsInfo.isMultipleMove && 'MultipleTabService' in sourceWindow)
-					sourceWindow.MultipleTabService.setSelection(tab, false);
-				tab = (aInfo.action & sv.kACTION_IMPORT) ?
-						sv.importTab(tab) :
-						sv.duplicateTabAsOrphan(tab) ;
-				newTabs.push(tab);
-				if (tabsInfo.isMultipleMove && 'MultipleTabService' in w)
-					w.MultipleTabService.setSelection(tab, true);
-				lastTabIndex++;
-				TST = sv;
-			}
-
-			let newIndex = aInfo.insertBefore ? aInfo.insertBefore._tPos : lastTabIndex ;
-			if (aInfo.insertBefore && newIndex > tab._tPos) newIndex--;
-
-			TST.internallyTabMovingCount++;
-			targetBrowser.moveTabTo(tab, newIndex);
-			TST.collapseExpandTab(tab, false, true);
-			TST.internallyTabMovingCount--;
-		}
-
-		if (shouldClose)
-			this.closeOwner(sourceBrowser);
-
-		if (newTabs.length)
-			sv.applyTreeStructureToTabs(
-				newTabs,
-				treeStructure,
-				collapsedStates.map(function(aCollapsed) {
-					return !aCollapsed
-				})
-			);
-
-		for (let i = collapsedStates.length - 1; i > -1; i--)
-		{
-			sourceService.collapseExpandSubtree(draggedWholeTree[i], collapsedStates[i], true);
-		}
+		var newTabs = sv.importTabs(draggedTabs, {
+				duplicate    : aInfo.action & sv.kACTION_DUPLICATE,
+				insertBefore : aInfo.insertBefore
+			});
 
 		if (newTabs.length && aInfo.action & sv.kACTION_ATTACH)
 			this.attachTabsOnDrop(
@@ -533,10 +473,6 @@ catch(e) {
 				}),
 				aInfo.parent
 			);
-
-		// Multiple Tab Handler
-		targetBrowser.movingSelectedTabs = false;
-		targetBrowser.duplicatingSelectedTabs = false;
 
 		return true;
 	},
@@ -602,23 +538,6 @@ catch(e) {
 			sv.collapseExpandTab(aTab, false);
 		}, sv);
 		b.movingSelectedTabs = false; // Multiple Tab Handler
-	},
- 
-	closeOwner : function TabbarDND_closeOwner(aTabOwner) 
-	{
-		var w = aTabOwner.ownerDocument.defaultView;
-		if (!w) return;
-		if ('SplitBrowser' in w) {
-			if ('getSubBrowserFromChild' in w.SplitBrowser) {
-				var subbrowser = w.SplitBrowser.getSubBrowserFromChild(aTabOwner);
-				if (subbrowser) {
-					subbrowser.close();
-					return;
-				}
-			}
-			if (w.SplitBrowser.browsers.length) return;
-		}
-		w.close();
 	},
   
 	clearDropPosition : function TabbarDND_clearDropPosition() 

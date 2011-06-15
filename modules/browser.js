@@ -4709,6 +4709,111 @@ TreeStyleTabBrowser.prototype = {
 		return false;
 	},
  
+	/**
+	 * Imports tabs from another window with their tree structure.
+	 * aOptions is an optional hash which can have two properties:
+	 *   * duplicate (boolean)
+	 *   * insertBefore (nsIDOMElement)
+	 */
+	importTabs : function TSTBrowser_importTabs(aTabs, aOptions) /* PUBLIC API */ 
+	{
+		return this.moveTabs(aTabs, aOptions);
+	},
+	moveTabs : function TSTBrowser_importTabs(aTabs, aOptions) /* PUBLIC API */
+	{
+		aOptions = aOptions || {};
+
+		var targetBrowser = this.mTabBrowser;
+		var sourceWindow  = aTabs[0].ownerDocument.defaultView;
+		var sourceBrowser = sourceWindow.TreeStyleTabService.getTabBrowserFromChild(aTabs[0]);
+		var sourceService = sourceBrowser.treeStyleTab;
+
+		// prevent Multiple Tab Handler feature
+		targetBrowser.duplicatingSelectedTabs = true;
+		targetBrowser.movingSelectedTabs = true;
+
+		var shouldClose = (
+				!aOptions.duplicate &&
+				sourceService.getAllTabsArray(sourceBrowser).length == aTabs.length
+			);
+		var newTabs = [];
+		var treeStructure = sourceService.getTreeStructureFromTabs(aTabs);
+
+		// Firefox fails to "move" collapsed tabs. So, expand them first
+		// and collapse them after they are moved.
+		var collapsedStates = sourceService.forceExpandTabs(aTabs);;
+
+		var shouldResetSelection = (
+				aTabs.every(function(aTab) {
+					return aTab.getAttribute('multiselected') == 'true';
+				}) &&
+				(sourceService != this || aOptions.duplicate)
+			);
+
+		var tabs = this.getTabsArray(targetBrowser);
+		var lastTabIndex = tabs[tabs.length -1]._tPos;
+		for (let i in aTabs)
+		{
+			let tab = aTabs[i];
+
+			if (shouldResetSelection) {
+				if ('MultipleTabService' in sourceWindow)
+					sourceWindow.MultipleTabService.setSelection(tab, false);
+				else
+					tab.removeAttribute('multiselected');
+			}
+
+			if (aOptions.duplicate) {
+				tab = this.duplicateTabAsOrphan(tab);
+				newTabs.push(tab);
+			}
+			else if (sourceService != this) {
+				tab = this.importTab(tab);
+				newTabs.push(tab);
+			}
+
+			if (shouldResetSelection) {
+				if ('MultipleTabService' in sourceWindow)
+					sourceWindow.MultipleTabService.setSelection(tab, true);
+				else
+					tab.setAttribute('multiselected', true);
+			}
+
+			lastTabIndex++;
+
+			let newIndex = aOptions.insertBefore ? aOptions.insertBefore._tPos : lastTabIndex ;
+			if (aOptions.insertBefore && newIndex > tab._tPos) newIndex--;
+
+			this.internallyTabMovingCount++;
+			targetBrowser.moveTabTo(tab, newIndex);
+			this.collapseExpandTab(tab, false, true);
+			this.internallyTabMovingCount--;
+		}
+
+		if (shouldClose)
+			sourceService.closeOwner(sourceBrowser);
+
+		if (newTabs.length)
+			this.applyTreeStructureToTabs(
+				newTabs,
+				treeStructure,
+				collapsedStates.map(function(aCollapsed) {
+					return !aCollapsed
+				})
+			);
+
+		for (let i = collapsedStates.length - 1; i > -1; i--)
+		{
+			sourceService.collapseExpandSubtree(aTabs[i], collapsedStates[i], true);
+		}
+
+		// Multiple Tab Handler
+		targetBrowser.movingSelectedTabs = false;
+		targetBrowser.duplicatingSelectedTabs = false;
+
+		return newTabs;
+	},
+ 
 	importTab : function TSTBrowser_importTab(aTab)
 	{
 		var newTab = this.mTabBrowser.addTab();
@@ -4725,6 +4830,23 @@ TreeStyleTabBrowser.prototype = {
 		this.deleteTabValue(newTab, this.kCHILDREN);
 		this.deleteTabValue(newTab, this.kPARENT);
 		return newTab;
+	},
+ 
+	closeOwner : function TSTBrowser_closeOwner(aTabOwner) 
+	{
+		var w = aTabOwner.ownerDocument.defaultView;
+		if (!w) return;
+		if ('SplitBrowser' in w) {
+			if ('getSubBrowserFromChild' in w.SplitBrowser) {
+				var subbrowser = w.SplitBrowser.getSubBrowserFromChild(aTabOwner);
+				if (subbrowser) {
+					subbrowser.close();
+					return;
+				}
+			}
+			if (w.SplitBrowser.browsers.length) return;
+		}
+		w.close();
 	},
   
 /* collapse/expand */ 
