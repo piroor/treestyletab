@@ -2079,6 +2079,25 @@ var TreeStyleTabUtils = {
 		).singleNodeValue;
 	},
  
+	collectRootTabs : function TSTUtils_collectRootTabs(aTabs) /* PUBLIC API */ 
+	{
+		var roots = [];
+		aTabs.forEach(function(aTab) {
+			var parent = aTab,
+				current;
+			do {
+				current = parent;
+				parent = this.getParentTab(parent)
+				if (parent && aTabs.indexOf(parent) > -1) continue;
+				if (aTabs.indexOf(current) < 0)
+					aTabs.push(current);
+				return;
+			}
+			while (parent);
+		}, this);
+		return roots;
+	},
+ 
 	getChildIndex : function TSTUtils_getChildIndex(aTab, aParent) /* PUBLIC API */ 
 	{
 		if (this.tabsHash) { // XPath-less implementation

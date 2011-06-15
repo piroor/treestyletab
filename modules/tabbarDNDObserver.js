@@ -403,7 +403,7 @@ catch(e) {
 
 		aDraggedTab = tabsInfo.draggedTab;
 		var draggedTabs = tabsInfo.draggedTabs;
-		var draggedRoots = tabsInfo.draggedRoots;
+		var draggedRoots = sv.collectRootTabs(tabsInfo.draggedTabs);
 
 
 		var targetBrowser = b;
@@ -593,7 +593,6 @@ catch(e) {
 			return {
 				draggedTab     : null,
 				draggedTabs    : [],
-				draggedRoots   : [],
 				isMultipleMove : false
 			};
 
@@ -604,27 +603,10 @@ catch(e) {
 		var sourceBrowser = sv.getTabBrowserFromChild(aTab);
 
 		var draggedTabs = w['piro.sakura.ne.jp'].tabsDragUtils.getSelectedTabs(aTab || sourceBrowser || aInfo.event);
-		var draggedRoots = [aTab];
 		var isMultipleMove = false;
 
 		if (draggedTabs.length > 1) {
 			isMultipleMove = true;
-			if (!(aInfo.action & sv.kACTIONS_FOR_DESTINATION)) {
-				draggedRoots = [];
-				draggedTabs.forEach(function(aTab) {
-					var parent = aTab,
-						current;
-					do {
-						current = parent;
-						parent = sourceBrowser.treeStyleTab.getParentTab(parent)
-						if (parent && draggedTabs.indexOf(parent) > -1) continue;
-						if (draggedRoots.indexOf(current) < 0)
-							draggedRoots.push(current);
-						return;
-					}
-					while (parent);
-				}, this);
-			}
 		}
 		else if (aInfo.action & sv.kACTIONS_FOR_DESTINATION) {
 			draggedTabs = [aTab].concat(sourceBrowser.treeStyleTab.getDescendantTabs(aTab));
@@ -633,7 +615,6 @@ catch(e) {
 		return {
 			draggedTab     : aTab,
 			draggedTabs    : draggedTabs,
-			draggedRoots   : draggedRoots,
 			isMultipleMove : isMultipleMove
 		};
 	},
