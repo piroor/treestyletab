@@ -414,6 +414,7 @@ TreeStyleTabWindow.prototype = {
 // rap('window/init start');
 		var w = this.window;
 		w.removeEventListener('load', this, false);
+
 		w.addEventListener('unload', this, false);
 
 		if (

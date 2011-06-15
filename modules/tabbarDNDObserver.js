@@ -1054,7 +1054,8 @@ catch(e) {
 		if (!draggedTab) {
 			aEvent.stopPropagation();
 
-			let url = this.retrieveURLFromDataTransfer(dt);
+			let urls = this.retrieveURLFromDataTransfer(dt);
+			let url = urls.length ? urls[0] : '' ;
 
 			if (!url || !url.length || url.indexOf(' ', 0) != -1 || /^\s*(javascript|data):/.test(url))
 				return;
@@ -1106,40 +1107,55 @@ catch(e) {
 		}
 	},
 	
-	retrieveURLFromDataTransfer : function TSTService_retrieveURLFromDataTransfer(aDataTransfer) 
+	retrieveURLsFromDataTransfer : function TSTService_retrieveURLsFromDataTransfer(aDataTransfer) 
 	{
-		let url;
-		let types = ['text/x-moz-url', 'text/uri-list', 'text/plain', 'application/x-moz-file'];
+		var urls = [];
+		var types = [
+				'text/uri-list',
+				'text/x-moz-text-internal',
+				'text/x-moz-url',
+				'text/plain',
+				'application/x-moz-file'
+			];
 		for (let i = 0; i < types.length; i++) {
 			let dataType = types[i];
-			let isURLList = dataType == 'text/uri-list';
-			let urlData = aDataTransfer.mozGetDataAt(isURLList ? 'URL' : dataType , 0);
-			if (urlData) {
-				url = this.retrieveURLFromData(urlData, isURLList ? 'text/plain' : dataType);
-				break;
+			for (let i = 0, maxi = aDataTransfer.mozItemCount; i < maxi; i++)
+			{
+				let urlData = aDataTransfer.mozGetDataAt(dataType, i);
+				if (urlData) {
+					urls = urls.concat(this.retrieveURLsFromData(urlData, dataType));
+				}
 			}
+			if (urls.length)
+				break;
 		}
-		return url;
+		return urls;
 	},
-	retrieveURLFromData : function TSTService_retrieveURLFromData(aData, aType)
+	retrieveURLsFromData : function TSTService_retrieveURLsFromData(aData, aType)
 	{
 		switch (aType)
 		{
+			case 'text/uri-list':
+				return aData.replace(/\r/g, '\n')
+							.replace(/^\#.+$/gim, '')
+							.replace(/\n\n+/g, '\n')
+							.split('\n');
+
 			case 'text/unicode':
 			case 'text/plain':
 			case 'text/x-moz-text-internal':
-				return aData.replace(/^\s+|\s+$/g, '');
+				return [aData.replace(/^\s+|\s+$/g, '')];
 
 			case 'text/x-moz-url':
-				return ((aData instanceof Ci.nsISupportsString) ? aData.toString() : aData)
-							.split('\n')[0];
+				return [((aData instanceof Ci.nsISupportsString) ? aData.toString() : aData)
+							.split('\n')[0]];
 
 			case 'application/x-moz-file':
 				let fileHandler = IOService.getProtocolHandler('file')
 									.QueryInterface(Ci.nsIFileProtocolHandler);
-				return fileHandler.getURLSpecFromFile(aData);
+				return [fileHandler.getURLSpecFromFile(aData)];
 		}
-		return null;
+		return [];
 	},
     
 	init : function TabbarDND_init(aTabBrowser) 
