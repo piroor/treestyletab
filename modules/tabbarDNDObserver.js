@@ -927,7 +927,7 @@ catch(e) {
 		if (!draggedTab) {
 			aEvent.stopPropagation();
 
-			let urls = this.retrieveURLFromDataTransfer(dt);
+			let urls = this.retrieveURLsFromDataTransfer(dt);
 			let url = urls.length ? urls[0] : '' ;
 
 			if (!url || !url.length || url.indexOf(' ', 0) != -1 || /^\s*(javascript|data):/.test(url))
