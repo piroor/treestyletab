@@ -1804,7 +1804,7 @@ var TreeStyleTabUtils = {
 			return false;
 
 		var b = this.getTabBrowserFromChild(aTabOrTabBrowser) || this.browser;
-		return b.getAttribute(this.kALLOW_COLLAPSE) == 'true';
+		return b && b.getAttribute(this.kALLOW_COLLAPSE) == 'true';
 	},
  
 	isCollapsed : function TSTUtils_isCollapsed(aTab) /* PUBLIC API */ 
@@ -1840,6 +1840,7 @@ var TreeStyleTabUtils = {
 	{
 		var b = this.getTabBrowserFromChild(aTab);
 		return (
+			b &&
 			this.shouldCloseTabSubtreeOf(aTab) &&
 			this.getDescendantTabs(aTab).length + 1 == this.getAllTabsArray(b).length
 		);
