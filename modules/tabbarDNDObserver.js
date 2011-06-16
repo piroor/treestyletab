@@ -461,7 +461,7 @@ catch(e) {
 
 		var treeStructure = sourceService.getTreeStructureFromTabs(draggedTabs);
 
-		var newTabs = sv.importTabs(draggedTabs, {
+		var newTabs = sv.moveTabsInternal(draggedTabs, {
 				duplicate    : aInfo.action & sv.kACTION_DUPLICATE,
 				insertBefore : aInfo.insertBefore
 			});
