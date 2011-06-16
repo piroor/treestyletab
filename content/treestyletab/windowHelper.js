@@ -430,8 +430,9 @@ var TreeStyleTabWindowHelper = {
 		tabbar.addEventListener('click', this.service, true);
 
 		var newTabButton = document.getElementById('new-tab-button');
+		const nsIDOMNode = Ci.nsIDOM3Node || Ci.nsIDOMNode; // on Firefox 7, nsIDOM3Node was merged to nsIDOMNode.
 		if (newTabButton &&
-			!(tabbar.compareDocumentPosition(newTabButton) & Ci.nsIDOM3Node.DOCUMENT_POSITION_CONTAINED_BY))
+			!(tabbar.compareDocumentPosition(newTabButton) & nsIDOMNode.DOCUMENT_POSITION_CONTAINED_BY))
 			newTabButton.parentNode.addEventListener('click', this.service, true);
 
 		// for Firefox 4.0 or later
@@ -453,8 +454,9 @@ var TreeStyleTabWindowHelper = {
 		tabbar.removeEventListener('click', this.service, true);
 
 		var newTabButton = document.getElementById('new-tab-button');
+		const nsIDOMNode = Ci.nsIDOM3Node || Ci.nsIDOMNode; // on Firefox 7, nsIDOM3Node was merged to nsIDOMNode.
 		if (newTabButton &&
-			!(tabbar.compareDocumentPosition(newTabButton) & Ci.nsIDOM3Node.DOCUMENT_POSITION_CONTAINED_BY))
+			!(tabbar.compareDocumentPosition(newTabButton) & Ci.nsIDOMNode.DOCUMENT_POSITION_CONTAINED_BY))
 			newTabButton.parentNode.removeEventListener('click', this.service, true);
 
 		// Firefox 4.0 or later (restore original position)
