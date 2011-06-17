@@ -4715,11 +4715,19 @@ TreeStyleTabBrowser.prototype = {
 	 *   * duplicate (boolean)
 	 *   * insertBefore (nsIDOMElement)
 	 */
-	importTabs : function TSTBrowser_importTabs(aTabs, aOptions) /* PUBLIC API */ 
+	importTabs : function TSTBrowser_importTabs(aTabs, aInsertBefore) /* PUBLIC API */ 
 	{
-		return this.moveTabs(aTabs, aOptions);
+		return this.moveTabsInternal(aTabs, { insertBefore : aInsertBefore });
 	},
-	moveTabs : function TSTBrowser_importTabs(aTabs, aOptions) /* PUBLIC API */
+	duplicateTabs : function TSTBrowser_duplicateTabs(aTabs, aInsertBefore) /* PUBLIC API */ 
+	{
+		return this.moveTabsInternal(aTabs, { insertBefore : aInsertBefore, duplicate : true });
+	},
+	moveTabs : function TSTBrowser_importTabs(aTabs, aInsertBefore) /* PUBLIC API */
+	{
+		return this.moveTabsInternal(aTabs, { insertBefore : aInsertBefore });
+	},
+	moveTabsInternal : function TSTBrowser_moveTabsInternal(aTabs, aOptions)
 	{
 		aOptions = aOptions || {};
 
