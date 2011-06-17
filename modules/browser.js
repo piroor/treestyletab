@@ -3832,6 +3832,7 @@ TreeStyleTabBrowser.prototype = {
 				aEvent.currentTarget,
 				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
+			if (!item) return;
 			items[aID] = item;
 			if (this.getTreePref('show.'+aID))
 				item.removeAttribute('hidden');
@@ -3857,56 +3858,66 @@ TreeStyleTabBrowser.prototype = {
 		// collapse/expand all
 		sep = this.evaluateXPath(
 			'descendant::xul:menuseparator[starts-with(@id, "'+this.kMENUITEM_COLLAPSEEXPAND_SEPARATOR+'")]',
-
 			aEvent.currentTarget,
 			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 		).singleNodeValue;
 		let collapseItem = items[this.kMENUITEM_COLLAPSE];
-		let expanndItem = items[this.kMENUITEM_EXPAND];
+		let expandItem = items[this.kMENUITEM_EXPAND];
 		if (this.canCollapseSubtree(b) &&
 			this.evaluateXPath(
 				'child::xul:tab[@'+this.kCHILDREN+']',
 				b.mTabContainer
 			).snapshotLength) {
-			if (this.evaluateXPath(
-					'child::xul:tab[@'+this.kCHILDREN+' and not(@'+this.kSUBTREE_COLLAPSED+'="true")]',
-					b.mTabContainer
-				).snapshotLength)
-				collapseItem.removeAttribute('disabled');
-			else
-				collapseItem.setAttribute('disabled', true);
+			if (collapseItem) {
+				if (this.evaluateXPath(
+						'child::xul:tab[@'+this.kCHILDREN+' and not(@'+this.kSUBTREE_COLLAPSED+'="true")]',
+						b.mTabContainer
+					).snapshotLength)
+					collapseItem.removeAttribute('disabled');
+				else
+					collapseItem.setAttribute('disabled', true);
+			}
 
-			if (this.evaluateXPath(
-					'child::xul:tab[@'+this.kCHILDREN+' and @'+this.kSUBTREE_COLLAPSED+'="true"]',
-					b.mTabContainer
-				).snapshotLength)
-				expanndItem.removeAttribute('disabled');
-			else
-				expanndItem.setAttribute('disabled', true);
+			if (expandItem) {
+				if (this.evaluateXPath(
+						'child::xul:tab[@'+this.kCHILDREN+' and @'+this.kSUBTREE_COLLAPSED+'="true"]',
+						b.mTabContainer
+					).snapshotLength)
+					expandItem.removeAttribute('disabled');
+				else
+					expandItem.setAttribute('disabled', true);
+			}
 		}
 		else {
-			collapseItem.setAttribute('hidden', true);
-			expanndItem.setAttribute('hidden', true);
+			if (collapseItem) collapseItem.setAttribute('hidden', true);
+			if (expandItem) expandItem.setAttribute('hidden', true);
 		}
-		if (collapseItem.getAttribute('hidden') == 'true' &&
-			expanndItem.getAttribute('hidden') == 'true') {
-			sep.setAttribute('hidden', true);
-		}
-		else {
-			sep.removeAttribute('hidden');
+		if (sep) {
+			if (
+				(!collapseItem || collapseItem.getAttribute('hidden') == 'true') &&
+				(!expandItem || expandItem.getAttribute('hidden') == 'true')
+				) {
+				sep.setAttribute('hidden', true);
+			}
+			else {
+				sep.removeAttribute('hidden');
+			}
 		}
 
 		// close all tabs but this tree
 		let removeAllTabsBut = items[this.kMENUITEM_REMOVEALLTABSBUT];
-		let rootTabs = this.visibleRootTabs;
-		if (rootTabs.length == 1 && rootTabs[0] == b.mContextTab)
-			removeAllTabsBut.setAttribute('disabled', true);
-		else
-			removeAllTabsBut.removeAttribute('disabled');
+		if (remoteAllTabsBug) {
+			let rootTabs = this.visibleRootTabs;
+			if (rootTabs.length == 1 && rootTabs[0] == b.mContextTab)
+				removeAllTabsBut.setAttribute('disabled', true);
+			else
+				removeAllTabsBut.removeAttribute('disabled');
+		}
 
 		// auto hide
 		let autohide = items[this.kMENUITEM_AUTOHIDE];
-		this.autoHide.updateMenuItem(autohide);
+		if (autohide)
+			this.autoHide.updateMenuItem(autohide);
 
 		// fix
 		let fixedPref;
@@ -3920,23 +3931,29 @@ TreeStyleTabBrowser.prototype = {
 			fixedLabel = 'label-horizontal';
 		}
 		let fixed = items[this.kMENUITEM_FIXED];
-		fixed.setAttribute('label', fixed.getAttribute(fixedLabel));
-		if (fixedPref)
-			fixed.setAttribute('checked', true);
-		else
-			fixed.removeAttribute('checked');
+		if (fixed) {
+			fixed.setAttribute('label', fixed.getAttribute(fixedLabel));
+			if (fixedPref)
+				fixed.setAttribute('checked', true);
+			else
+				fixed.removeAttribute('checked');
+		}
 
 		sep = this.evaluateXPath(
 			'descendant::xul:menuseparator[starts-with(@id, "'+this.kMENUITEM_AUTOHIDE_SEPARATOR+'")]',
 			aEvent.currentTarget,
 			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 		).singleNodeValue;
-		if (autohide.getAttribute('hidden') != 'true' ||
-			fixed.getAttribute('hidden') != 'true') {
-			sep.removeAttribute('hidden');
-		}
-		else {
-			sep.setAttribute('hidden', true);
+		if (sep) {
+			if (
+				(autohide && autohide.getAttribute('hidden') != 'true') ||
+				(fixed && fixed.getAttribute('hidden') != 'true')
+				) {
+				sep.removeAttribute('hidden');
+			}
+			else {
+				sep.setAttribute('hidden', true);
+			}
 		}
 	},
   
