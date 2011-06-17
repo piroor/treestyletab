@@ -578,6 +578,7 @@ pref("extensions.treestyletab.compatibility.GoogleToolbar.Sidewiki", true);
 pref("extensions.treestyletab.compatibility.Greasemonkey", true);
 pref("extensions.treestyletab.compatibility.Highlander", true);
 pref("extensions.treestyletab.compatibility.IETabPlus", true);
+pref("extensions.treestyletab.compatibility.InstaClick", true);
 pref("extensions.treestyletab.compatibility.LastTab", true);
 pref("extensions.treestyletab.compatibility.Linky", true);
 pref("extensions.treestyletab.compatibility.Locationbar2", true);

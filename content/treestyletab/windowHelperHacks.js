@@ -1085,6 +1085,19 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		}
 	}
 
+	// InstaClick
+	// https://addons.mozilla.org/firefox/addon/instaclick/
+	if ('instaclick' in window &&
+		'contentAreaClick2' in window.instaclick &&
+		sv.getTreePref('compatibility.InstaClick')) {
+		eval('instaclick.contentAreaClick2 = '+
+			instaclick.contentAreaClick2.toSource().replace(
+				'gBrowser.loadOneTab(',
+				'TreeStyleTabService.readyToOpenChildTab(); $&'
+			)
+		);
+	}
+
 	window.setTimeout(function(aSelf) {
 		aSelf.overrideExtensionsDelayed();
 	}, 0, this);
