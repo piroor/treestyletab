@@ -3906,7 +3906,7 @@ TreeStyleTabBrowser.prototype = {
 
 		// close all tabs but this tree
 		let removeAllTabsBut = items[this.kMENUITEM_REMOVEALLTABSBUT];
-		if (remoteAllTabsBug) {
+		if (removeAllTabsBut) {
 			let rootTabs = this.visibleRootTabs;
 			if (rootTabs.length == 1 && rootTabs[0] == b.mContextTab)
 				removeAllTabsBut.setAttribute('disabled', true);
