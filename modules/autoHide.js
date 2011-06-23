@@ -1505,9 +1505,13 @@ AutoHideWindow.prototype = {
 		}
 		var w = this.window;
 		w.setTimeout(function() {
-			if (w.windowState != Ci.nsIDOMChromeWindow.STATE_NORMAL) return;
+			if (w.windowState != Ci.nsIDOMChromeWindow.STATE_NORMAL)
+				return;
 			var count = 0;
 			var resizeTimer = w.setInterval(function(){
+				if (w.windowState != Ci.nsIDOMChromeWindow.STATE_NORMAL)
+					return w.clearInterval(resizeTimer);
+
 				if (++count > 100 || w.innerHeight > 0) {
 					w.clearInterval(resizeTimer);
 					w.resizeBy(-1,-1);
