@@ -1098,6 +1098,19 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		);
 	}
 
+	// Duplicate This Tab
+	// https://addons.mozilla.org/firefox/addon/duplicate-this-tab/
+	if ('duplicatethistab' in window &&
+		'openLinkWithHistory' in window.duplicatethistab &&
+		sv.getTreePref('compatibility.DuplicateThisTab')) {
+		eval('duplicatethistab.openLinkWithHistory = '+
+			duplicatethistab.openLinkWithHistory.toSource().replace(
+				'var newTab = ',
+				'TreeStyleTabService.readyToOpenChildTab(); $&'
+			)
+		);
+	}
+
 	window.setTimeout(function(aSelf) {
 		aSelf.overrideExtensionsDelayed();
 	}, 0, this);
