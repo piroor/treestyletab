@@ -2773,22 +2773,24 @@ TreeStyleTabBrowser.prototype = {
 
 		var parent = this.getParentTab(aTab);
 
-		this.window.setTimeout(function(aSelf) {
-			var siblings = parent && parent.parentNode ? aSelf.getChildTabs(parent) : aSelf.visibleRootTabs ;
-			siblings = siblings.filter(function(aSiblingTab) {
-					return aSiblingTab != aTab;
-				});
-			var groupTabs = siblings.filter(function(aSiblingTab) {
-					return aSelf.isGroupTab(aSiblingTab);
-				});
+		var siblings = parent && parent.parentNode ? this.getChildTabs(parent) : this.visibleRootTabs ;
+		siblings = siblings.filter(function(aSiblingTab) {
+				return aSiblingTab != aTab;
+			});
+		var groupTabs = siblings.filter(function(aSiblingTab) {
+				return this.isGroupTab(aSiblingTab);
+			}, this);
 
-			if (
+		var groupTab = (
 				groupTabs.length == 1 &&
 				siblings.length == 1 &&
-				aSelf.hasChildTabs(groupTabs[0])
-				)
-				aSelf.getTabBrowserFromChild(groupTabs[0]).removeTab(groupTabs[0], { animate : true });
-		}, 0, this);
+				this.hasChildTabs(groupTabs[0])
+				) ? groupTabs[0] : null ;
+
+		if (groupTab)
+			this.window.setTimeout(function(aSelf, aGroupTab) {
+				aSelf.getTabBrowserFromChild(aGroupTab).removeTab(aGroupTab, { animate : true });
+			}, 0, this, groupTab);
 	},
 	getNextFocusedTab : function TSTBrowser_getNextFocusedTab(aTab)
 	{
