@@ -4359,8 +4359,6 @@ TreeStyleTabBrowser.prototype = {
 		if (aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
 			aInfo.behavior = this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
 
-		var dontUpdateIndent = aInfo.dontUpdateIndent;
-
 		var b = this.mTabBrowser;
 		var parentTab = this.getParentTab(aTab);
 		var children = this.getChildTabs(aTab);
@@ -4372,7 +4370,7 @@ TreeStyleTabBrowser.prototype = {
 			}).length == children.length
 			) {
 			aInfo.behavior = this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
-			dontUpdateIndent = aInfo.dontUpdateIndent = false;
+			aInfo.dontUpdateIndent = false;
 		}
 
 		var insertBefore = null;
