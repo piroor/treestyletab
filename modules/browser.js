@@ -2469,9 +2469,18 @@ TreeStyleTabBrowser.prototype = {
 				parent = pareintIndexInTree < tabs.length ? tabs[pareintIndexInTree] : parent ;
 			}
 			if (parent) {
+				let lastRelatedTab = b._lastRelatedTab;
 				this.attachTabTo(tab, parent, {
 					dontExpand : this.shouldExpandAllTree
 				});
+				/**
+				 * gBrowser.addTab() resets gBrowser._lastRelatedTab.owner
+				 * when a new background tab is opened from links in the current
+				 * tab, but it will fail with TST because moveTab() clears
+				 * gBrowser._lastRelatedTab.
+				 * So, we have to restore gBrowser._lastRelatedTab manually.
+				 */
+				b._lastRelatedTab = lastRelatedTab;
 			}
 
 			let refTab;
@@ -2498,7 +2507,16 @@ TreeStyleTabBrowser.prototype = {
 			if (newIndex > -1) {
 				if (newIndex > tab._tPos) newIndex--;
 				this.internallyTabMovingCount++;
+				let lastRelatedTab = b._lastRelatedTab;
 				b.moveTabTo(tab, newIndex);
+				/**
+				 * gBrowser.addTab() resets gBrowser._lastRelatedTab.owner
+				 * when a new background tab is opened from links in the current
+				 * tab, but it will fail with TST because moveTab() clears
+				 * gBrowser._lastRelatedTab.
+				 * So, we have to restore gBrowser._lastRelatedTab manually.
+				 */
+				b._lastRelatedTab = lastRelatedTab;
 				this.internallyTabMovingCount--;
 			}
 
