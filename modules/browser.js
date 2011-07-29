@@ -4364,6 +4364,17 @@ TreeStyleTabBrowser.prototype = {
 		var b = this.mTabBrowser;
 		var parentTab = this.getParentTab(aTab);
 		var children = this.getChildTabs(aTab);
+
+		if (
+			this.isGroupTab(aTab) &&
+			this.getTabsArray(b).filter(function(aTab) {
+				return !b._removingTabs || b._removingTabs.indexOf(aTab) < 0;
+			}).length == children.length
+			) {
+			aInfo.behavior = this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
+			dontUpdateIndent = aInfo.dontUpdateIndent = false;
+		}
+
 		var insertBefore = null;
 		if (aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN &&
 			!this.getTreePref('closeParentBehavior.moveDetachedTabsToBottom')) {
