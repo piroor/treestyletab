@@ -557,6 +557,13 @@ pref("extensions.multipletab.show.multipletab-selection-item-createSubtree", tru
 pref("extensions.treestyletab.createSubtree.underParent", true);
 
 /**
+ * Size of pinned tabs in the vertical tab bar.
+ * "width" can accept a special value "-1" which means "expand to the width of the tab bar".
+ */
+pref("extensions.treestyletab.pinnedTab.width", 24);
+pref("extensions.treestyletab.pinnedTab.height", 24);
+
+/**
  * Compatibility hack flags for other addons. They can be disabled by each
  * addon, when the addon become working with TST without dirty hacks.
  * In other words, add-on authros can disable TST's dirty hack if it is

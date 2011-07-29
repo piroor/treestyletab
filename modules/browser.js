@@ -387,12 +387,18 @@ TreeStyleTabBrowser.prototype = {
 		var maxWidth = tabbarPlaceHolderWidth || tabbarWidth;
 
 		var count  = this.pinnedTabsCount;
-		var width  = aWidth || this.PINNED_TAB_DEFAULT_WIDTH;
-		var height = aHeight || this.PINNED_TAB_DEFAULT_HEIGHT;
+		var width  = Math.min(maxWidth, aWidth || this.window.TreeStyleTabService.pinnedTabWidth);
+		if (width < 0)
+			width = maxWidth;
+		else
+			width = Math.max(this.MIN_PINNED_TAB_WIDTH, width);
+		var height = Math.max(this.MIN_PINNED_TAB_HEIGHT, aHeight || this.window.TreeStyleTabService.pinnedTabHeight);
 		var maxCol = Math.floor(maxWidth / width);
 		var maxRow = Math.ceil(count / maxCol);
 		var col    = 0;
 		var row    = 0;
+
+		var faviconized = width <= this.MIN_PINNED_TAB_WIDTH;
 
 		var inverted = this.position == 'left' && b.getAttribute(this.kINVERT_SCROLLBAR) == 'true';
 		var remainder = maxWidth - (maxCol * width);
@@ -400,17 +406,28 @@ TreeStyleTabBrowser.prototype = {
 								tabbarWidth - tabbarPlaceHolderWidth :
 								0 ;
 
+		var removeFaviconizedClassPattern = new RegExp('\\s+'+this.kFAVICONIZED, 'g');
+
 		tabbar.style.MozMarginStart = '';
 		tabbar.style.setProperty('margin-top', (height * maxRow)+'px', 'important');
 		for (let i = 0; i < count; i++)
 		{
-			let style = tabbar.childNodes[i].style;
+			let item = tabbar.childNodes[i];
+
+			let style = item.style;
 			style.MozMarginStart = '';
 
 			let transitionStyleBackup = style.transition || style.MozTransition || '';
 			if (aJustNow)
 				style.MozTransition = style.transition = 'none';
 
+			let className = item.className.replace(removeFaviconizedClassPattern, '');
+			if (faviconized)
+				className += ' '+this.kFAVICONIZED;
+			if (className != item.className)
+				item.className = className;
+
+			style.width = width+'px';
 			if (inverted) {
 				/**
 				 * In a box with "direction: rtr", we have to position tabs
@@ -462,8 +479,6 @@ TreeStyleTabBrowser.prototype = {
 			aSelf._positionPinnedTabsWithDelayTimerArgs = null;
 		}, 0, this);
 	},
-	PINNED_TAB_DEFAULT_WIDTH : 24,
-	PINNED_TAB_DEFAULT_HEIGHT : 24,
  
 	resetPinnedTabs : function TSTBrowser_resetPinnedTabs() 
 	{
@@ -473,7 +488,7 @@ TreeStyleTabBrowser.prototype = {
 		for (var i = 0, count = this.pinnedTabsCount; i < count; i++)
 		{
 			let style = tabbar.childNodes[i].style;
-			style.MozMarginStart = style.marginLeft = style.marginRight = style.marginTop = '';
+			style.width = style.MozMarginStart = style.marginLeft = style.marginRight = style.marginTop = '';
 		}
 	},
  
@@ -2174,6 +2189,10 @@ TreeStyleTabBrowser.prototype = {
 			case 'extensions.treestyletab.tabbar.autoHide.mode':
 			case 'extensions.treestyletab.tabbar.autoHide.mode.fullscreen':
 				return this.autoHide; // ensure initialized
+
+			case 'extensions.treestyletab.pinnedTab.width':
+			case 'extensions.treestyletab.pinnedTab.height':
+				return this.positionPinnedTabsWithDelay();
 
 			default:
 				return;

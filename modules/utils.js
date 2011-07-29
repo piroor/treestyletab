@@ -130,6 +130,7 @@ var TreeStyleTabUtils = {
 	kANIMATION_ENABLED  : 'treestyletab-animation-enabled',
 	kINVERT_SCROLLBAR   : 'treestyletab-invert-scrollbar',
 	kNARROW_SCROLLBAR   : 'treestyletab-narrow-scrollbar',
+	kFAVICONIZED        : 'treestyletab-faviconized',
 
 	kTAB_INVERTED          : 'treestyletab-tab-inverted',
 	kTAB_CONTENTS_INVERTED : 'treestyletab-tab-contents-inverted',

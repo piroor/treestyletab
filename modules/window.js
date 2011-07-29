@@ -460,7 +460,9 @@ TreeStyleTabWindow.prototype = {
 		// Init autohide service only if it have to be activated.
 		if (this.isAutoHide)
 			this.onPrefChange('extensions.treestyletab.tabbar.autoHide.mode');
+
 		this.onPrefChange('extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut');
+		this.onPrefChange('extensions.treestyletab.pinnedTab.width');
 // rap('window/init end');
 	},
 	initialized : false,
@@ -1557,6 +1559,31 @@ TreeStyleTabWindow.prototype = {
 		event.initEvent(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED.replace(/^nsDOM/, ''), true, false);
 		d.documentElement.dispatchEvent(event);
 	},
+ 
+	updatePinnedTabsSize : function TSTWindow_updatePinnedTabsSize()
+	{
+		if (this.pinnedTabsSizeStyle) {
+			this.pinnedTabsSizeStyle.parentNode.removeChild(this.pinnedTabsSizeStyle);
+			this.pinnedTabsSizeStyle = null;
+		}
+
+		var style = ['.tabbrowser-tabs[treestyletab-mode="vertical"] .tabbrowser-tab[pinned="true"] {'];
+		style.push('height: '+Math.max(this.MIN_PINNED_TAB_HEIGHT, this.pinnedTabHeight)+'px;');
+		style.push('}');
+
+		var d = this.document;
+		var pi = d.createProcessingInstruction(
+					'xml-stylesheet',
+					'type="text/css" href="data:text/css,'+encodeURIComponent(style.join(''))+'"'
+				);
+		d.insertBefore(pi, d.documentElement);
+		this.pinnedTabsSizeStyle = pi;
+	},
+	MIN_PINNED_TAB_WIDTH : 24,
+	MIN_PINNED_TAB_HEIGHT : 24,
+	pinnedTabWidth : 24,
+	pinnedTabHeight : 24,
+	pinnedTabsSizeStyle : null,
   
 	observe : function TSTWindow_observe(aSubject, aTopic, aData) 
 	{
@@ -1606,6 +1633,16 @@ TreeStyleTabWindow.prototype = {
 				else
 					this.endListenKeyEventsFor(this.LISTEN_FOR_AUTOEXPAND_BY_FOCUSCHANGE);
 				break;
+
+			case 'extensions.treestyletab.pinnedTab.width':
+				this.pinnedTabWidth = value;
+				this.updatePinnedTabsSize();
+				return;
+
+			case 'extensions.treestyletab.pinnedTab.height':
+				this.pinnedTabHeight = value;
+				this.updatePinnedTabsSize();
+				return;
 
 			default:
 				break;

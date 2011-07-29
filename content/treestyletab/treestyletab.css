@@ -446,11 +446,17 @@ toolbar.treestyletab-tabbar-toolbar-ready:not([nowindowdrag="true"]),
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"] {
-	height: 24px;
+	/* height: 24px; */
 	line-height: 0;
 	position: fixed !important;
-	width: 24px;
+	/* width: 24px; */
 	z-index: 100;
+}
+
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned="true"]:not(.treestyletab-faviconized)
+  .tab-label[pinned] {
+	width: auto;
 }
 
 /* print preview */
