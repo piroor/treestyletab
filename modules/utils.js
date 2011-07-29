@@ -1978,6 +1978,16 @@ var TreeStyleTabUtils = {
 		).singleNodeValue;
 	},
  
+	getSiblingTabs : function TSTUtils_getSiblingTabs(aTab) /* PUBLIC API */
+	{
+		var parent = this.getParentTab(aTab);
+
+		var siblings = parent && parent.parentNode ? this.getChildTabs(parent) : this.visibleRootTabs ;
+		return siblings.filter(function(aSiblingTab) {
+			return aSiblingTab != aTab;
+		});
+	},
+ 
 	getChildTabs : function TSTUtils_getChildTabs(aTab, aAllTabsArray) /* PUBLIC API */ 
 	{
 		var tabs = [];

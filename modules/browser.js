@@ -2606,8 +2606,6 @@ TreeStyleTabBrowser.prototype = {
 		if (collapsed)
 			this.stopRendering();
 
-		this.closeNeedlessGroupTabSibling(tab);
-
 		var backupAttributes = {};
 		if (this.hasChildTabs(tab))
 			backupAttributes[this.kCHILDREN] = this.getTabValue(tab, this.kCHILDREN);
@@ -2634,6 +2632,9 @@ TreeStyleTabBrowser.prototype = {
 					this.startRendering();
 			}
 		}
+
+		var toBeClosedSibling = !this.hasChildTabs(tab) ?
+								this._reserveCloseNeedlessGroupTabSibling(tab) : null ;
 
 		var firstChild     = this.getFirstChildTab(tab);
 		var parentTab      = this.getParentTab(tab);
@@ -2730,6 +2731,8 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		if (b.selectedTab == tab) {
+			if (nextFocusedTab && nextFocusedTab == toBeClosedSibling)
+				nextFocusedTab = this.getFirstChildTab(nextFocusedTab);
 			if (
 				nextFocusedTab &&
 				!nextFocusedTab.hidden
@@ -2766,31 +2769,30 @@ TreeStyleTabBrowser.prototype = {
 		if (collapsed)
 			this.startRendering();
 	},
-	closeNeedlessGroupTabSibling : function TSTBrowser_closeNeedlessGroupTabSibling(aTab)
+	_reserveCloseNeedlessGroupTabSibling : function TSTBrowser_reserveCloseNeedlessGroupTabSibling(aTab)
 	{
 		if (!aTab)
-			return;
+			return null;
 
 		var parent = this.getParentTab(aTab);
-
-		var siblings = parent && parent.parentNode ? this.getChildTabs(parent) : this.visibleRootTabs ;
-		siblings = siblings.filter(function(aSiblingTab) {
-				return aSiblingTab != aTab;
-			});
-		var groupTabs = siblings.filter(function(aSiblingTab) {
-				return this.isGroupTab(aSiblingTab);
+		var siblings = this.getSiblingTabs(aTab);
+		var groupTabs = siblings.filter(function(aTab) {
+				return this.isGroupTab(aTab);
 			}, this);
-
 		var groupTab = (
 				groupTabs.length == 1 &&
 				siblings.length == 1 &&
 				this.hasChildTabs(groupTabs[0])
 				) ? groupTabs[0] : null ;
 
-		if (groupTab)
+		if (groupTab) {
 			this.window.setTimeout(function(aSelf, aGroupTab) {
 				aSelf.getTabBrowserFromChild(aGroupTab).removeTab(aGroupTab, { animate : true });
 			}, 0, this, groupTab);
+			return groupTab;
+		}
+
+		return null;
 	},
 	getNextFocusedTab : function TSTBrowser_getNextFocusedTab(aTab)
 	{
