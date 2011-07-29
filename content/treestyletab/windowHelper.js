@@ -198,6 +198,7 @@ var TreeStyleTabWindowHelper = {
 
 		this._splitFunctionNames(<![CDATA[
 			window.duplicateTab.handleLinkClick
+			window.duplicatethistab.handleLinkClick
 			window.__treestyletab__highlander__origHandleLinkClick
 			window.__splitbrowser__handleLinkClick
 			window.__ctxextensions__handleLinkClick
@@ -258,6 +259,9 @@ var TreeStyleTabWindowHelper = {
 			window.duplicateTab.gotoHistoryIndex
 			window.duplicateTab.BrowserBack
 			window.duplicateTab.BrowserForward
+			window.duplicatethistab.gotoHistoryIndex
+			window.duplicatethistab.BrowserBack
+			window.duplicatethistab.BrowserForward
 			window.__rewindforward__BrowserForward
 			window.__rewindforward__BrowserBack
 			window.gotoHistoryIndex
