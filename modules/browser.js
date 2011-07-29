@@ -2606,6 +2606,8 @@ TreeStyleTabBrowser.prototype = {
 		if (collapsed)
 			this.stopRendering();
 
+		this.closeNeedlessGroupTabSibling(tab);
+
 		var backupAttributes = {};
 		if (this.hasChildTabs(tab))
 			backupAttributes[this.kCHILDREN] = this.getTabValue(tab, this.kCHILDREN);
@@ -2763,6 +2765,28 @@ TreeStyleTabBrowser.prototype = {
 
 		if (collapsed)
 			this.startRendering();
+	},
+	closeNeedlessGroupTabSibling : function TSTBrowser_closeNeedlessGroupTabSibling(aTab)
+	{
+		if (!aTab)
+			return;
+
+		var parent = this.getParentTab(aTab);
+
+		var siblings = parent && parent.parentNode ? this.getChildTabs(parent) : this.visibleRootTabs ;
+		siblings = siblings.filter(function(aSiblingTab) {
+				return aSiblingTab != aTab;
+			});
+		var groupTabs = siblings.filter(function(aSiblingTab) {
+				return this.isGroupTab(aSiblingTab);
+			}, this);
+
+		if (
+			groupTabs.length == 1 &&
+			siblings.length == 1 &&
+			this.hasChildTabs(groupTabs[0])
+			)
+			this.getTabBrowserFromChild(groupTabs[0]).removeTab(groupTabs[0], { animate : true });
 	},
 	getNextFocusedTab : function TSTBrowser_getNextFocusedTab(aTab)
 	{
