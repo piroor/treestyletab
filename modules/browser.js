@@ -2457,6 +2457,7 @@ TreeStyleTabBrowser.prototype = {
 
 		var hasStructure = this.treeStructure && this.treeStructure.length;
 		var pareintIndexInTree = hasStructure ? this.treeStructure.shift() : 0 ;
+		var lastRelatedTab = b._lastRelatedTab;
 
 		if (this.readiedToAttachNewTab) {
 			if (pareintIndexInTree < 0) { // there is no parent, so this is a new parent!
@@ -2469,18 +2470,9 @@ TreeStyleTabBrowser.prototype = {
 				parent = pareintIndexInTree < tabs.length ? tabs[pareintIndexInTree] : parent ;
 			}
 			if (parent) {
-				let lastRelatedTab = b._lastRelatedTab;
 				this.attachTabTo(tab, parent, {
 					dontExpand : this.shouldExpandAllTree
 				});
-				/**
-				 * gBrowser.addTab() resets gBrowser._lastRelatedTab.owner
-				 * when a new background tab is opened from links in the current
-				 * tab, but it will fail with TST because moveTab() clears
-				 * gBrowser._lastRelatedTab.
-				 * So, we have to restore gBrowser._lastRelatedTab manually.
-				 */
-				b._lastRelatedTab = lastRelatedTab;
 			}
 
 			let refTab;
@@ -2507,16 +2499,7 @@ TreeStyleTabBrowser.prototype = {
 			if (newIndex > -1) {
 				if (newIndex > tab._tPos) newIndex--;
 				this.internallyTabMovingCount++;
-				let lastRelatedTab = b._lastRelatedTab;
 				b.moveTabTo(tab, newIndex);
-				/**
-				 * gBrowser.addTab() resets gBrowser._lastRelatedTab.owner
-				 * when a new background tab is opened from links in the current
-				 * tab, but it will fail with TST because moveTab() clears
-				 * gBrowser._lastRelatedTab.
-				 * So, we have to restore gBrowser._lastRelatedTab manually.
-				 */
-				b._lastRelatedTab = lastRelatedTab;
 				this.internallyTabMovingCount--;
 			}
 
@@ -2570,6 +2553,16 @@ TreeStyleTabBrowser.prototype = {
 		var tabs = this.getTabsArray(b);
 		if (tabs.length == 2)
 			this.updateInvertedTabContentsOrder(tabs);
+
+		/**
+		 * gBrowser.adthis._changeTabbarPosition(position);
+		 dTab() resets gBrowser._lastRelatedTab.owner
+		 * when a new background tab is opened from the current tab,
+		 * but it will fail with TST because gBrowser.moveTab() (called
+		 * by TST) clears gBrowser._lastRelatedTab.
+		 * So, we have to restore gBrowser._lastRelatedTab manually.
+		 */
+		b._lastRelatedTab = lastRelatedTab;
 
 		return true;
 	},
