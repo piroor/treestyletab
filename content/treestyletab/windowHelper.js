@@ -187,14 +187,14 @@ var TreeStyleTabWindowHelper = {
 			'loadSearch' in BrowserSearch) {
 			eval('BrowserSearch.loadSearch = '+
 				BrowserSearch.loadSearch.toSource().replace(
-					// for old Firefox 3.6 or olders
+					// for old Firefox 4 and olders
 					'if (useNewTab) {',
 					<![CDATA[$&
 						if (TreeStyleTabService.shouldOpenSearchResultAsChild(arguments[0]))
 							TreeStyleTabService.readyToOpenChildTab();
 					]]>
 				).replace(
-					// for old Firefox 4 or later
+					// for Firefox 5 and later
 					'openLinkIn(',
 					<![CDATA[
 						if (useNewTab && TreeStyleTabService.shouldOpenSearchResultAsChild(arguments[0]))
