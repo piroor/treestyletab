@@ -706,15 +706,25 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// https://addons.mozilla.org/firefox/addon/4336
 	// Snap Links Plus
 	// http://snaplinks.mozdev.org/
-	if ('executeAction' in window &&
-		'openTabs' in window &&
-		sv.getTreePref('compatibility.SnapLinks')) {
-		eval('window.openTabs = '+
-			window.openTabs.toSource().replace(
-				/((sContent|gBrowser|getBrowser\(\))\.addTab)/,
-				'TreeStyleTabService.readyToOpenChildTab($2); $1'
-			)
-		);
+	if (sv.getTreePref('compatibility.SnapLinks')) {
+		if ('executeAction' in window &&
+			'openTabs' in window) {
+			eval('window.openTabs = '+
+				window.openTabs.toSource().replace(
+					/((sContent|gBrowser|getBrowser\(\))\.addTab)/,
+					'TreeStyleTabService.readyToOpenChildTab($2); $1'
+				)
+			);
+		}
+		if ('SnapLinks' in window &&
+			'OpenTabs' in SnapLinks) {
+			eval('SnapLinks.OpenTabs = '+
+				SnapLinks.OpenTabs.toSource().replace(
+					/((sContent|gBrowser|getBrowser\(\))\.addTab)/,
+					'TreeStyleTabService.readyToOpenChildTab($2); $1'
+				)
+			);
+		}
 	}
 
 	// Mouseless Browsing
