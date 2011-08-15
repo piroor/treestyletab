@@ -14,51 +14,62 @@
 
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
-:root[tabFx2Compatible="13"]
+:root[tabFx2Compatible="14"]
   .tabbrowser-tab {
 	-moz-binding: url(tabFx2Compatible.xml#tabbrowser-tab-3) !important;
 }
 
-:root[tabFx2Compatible="13"][tabFx2Compatible-flags~="separate-tabContextMenu"]
+:root[tabFx2Compatible="14"][tabFx2Compatible-flags~="separate-tabContextMenu"]
   .tabbrowser-tab {
 	-moz-binding: url(tabFx2Compatible.xml#tabbrowser-tab-4) !important;
 }
 
-:root[tabFx2Compatible="13"]:not([tabFx2Compatible-flags~="png-throbber"])[tabFx2Compatible-flags~="fx3"]
+:root[tabFx2Compatible="14"]:not([tabFx2Compatible-flags~="png-throbber"])[tabFx2Compatible-flags~="fx3"]
   .tab-icon-image[busy] {
 	list-style-image: url("chrome://global/skin/throbber/Throbber-small.gif") !important;
 	opacity: 0.6;
 }
 
-:root[tabFx2Compatible="13"][tabFx2Compatible-flags~="png-throbber"][tabFx2Compatible-flags~="fx3"]
+:root[tabFx2Compatible="14"][tabFx2Compatible-flags~="png-throbber"][tabFx2Compatible-flags~="fx3"]
   .tab-icon-image[busy] {
 	list-style-image: url("chrome://global/skin/icons/loading_16.png") !important;
 }
 
-:root[tabFx2Compatible="13"][tabFx2Compatible-flags~="mac"][tabFx2Compatible-flags~="png-throbber"]
+:root[tabFx2Compatible="14"][tabFx2Compatible-flags~="mac"][tabFx2Compatible-flags~="png-throbber"]
   .tab-icon-image {
 	list-style-image: url("chrome://global/skin/tree/item.png");
 }
 
-:root[tabFx2Compatible="13"][tabFx2Compatible-flags~="mac"]
+:root[tabFx2Compatible="14"][tabFx2Compatible-flags~="mac"]
   .tabbrowser-tab:not(:hover) .tab-icon-image:not([selected="true"]) {
 	opacity: 0.6;
 }
 
-:root[tabFx2Compatible="13"]
+:root[tabFx2Compatible="14"]
   .tabbrowser-tab:focus > .tab-image-middle {
 	outline: 1px dotted;
 }
 /* we must split declarations for old Gecko */
-:root[tabFx2Compatible="13"]
+:root[tabFx2Compatible="14"]
   .tabbrowser-tab:-moz-focusring > .tab-stack {
 	outline: 1px dotted;
 }
 
 
-:root[tabFx2Compatible="13"]
+:root[tabFx2Compatible="14"]
   .tab-image-left[pinned="true"],
-:root[tabFx2Compatible="13"]
+:root[tabFx2Compatible="14"]
   .tab-image-right[pinned="true"] {
 	display: none !important;
 }
+
+/* Tab Utilities */
+:root[tabFx2Compatible="14"]
+  .tabbrowser-tabs[highlightLocked][highlightSelected][highlightUnread]
+  > .tabbrowser-tab .tab-icon > .tab-icon-image ~ *,
+:root[tabFx2Compatible="14"]
+  .tabbrowser-tabs[highlightlocked][highlightselected][highlightunread]
+  > .tabbrowser-tab .tab-icon > .tab-icon-image ~ * {
+	background: none !important;
+}
+

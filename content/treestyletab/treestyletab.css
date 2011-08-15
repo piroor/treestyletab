@@ -514,11 +514,3 @@ image.tab-icon {
 	display: none;
 }
 
-/* Tab Utilities */
-.tabbrowser-tabs[highlightLocked][highlightSelected][highlightUnread]
-  > .tabbrowser-tab .tab-icon > .tab-icon-image ~ *,
-.tabbrowser-tabs[highlightlocked][highlightselected][highlightunread]
-  > .tabbrowser-tab .tab-icon > .tab-icon-image ~ * {
-	background: none !important;
-}
-
