@@ -667,15 +667,29 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 
 	// Greasemonkey
 	// https://addons.mozilla.org/firefox/addon/748
-	if ('GM_BrowserUI' in window &&
-		'openInTab' in GM_BrowserUI &&
-		sv.getTreePref('compatibility.Greasemonkey')) {
-		eval('GM_BrowserUI.openInTab = '+
-			GM_BrowserUI.openInTab.toSource().replace(
-				/(if\s*\(this\.isMyWindow\([^\)]+\)\)\s*\{\s*)(this\.tabBrowser)/,
-				'$1 TreeStyleTabService.readyToOpenChildTab($2); $2'
-			)
-		);
+	if (sv.getTreePref('compatibility.Greasemonkey')) {
+		if ('GM_BrowserUI' in window && 'openInTab' in GM_BrowserUI) {
+			eval('GM_BrowserUI.openInTab = '+
+				GM_BrowserUI.openInTab.toSource().replace(
+					/(if\s*\(this\.isMyWindow\([^\)]+\)\)\s*\{\s*)(this\.tabBrowser)/,
+					'$1 TreeStyleTabService.readyToOpenChildTab($2); $2'
+				)
+			);
+		}
+		else if ('@greasemonkey.mozdev.org/greasemonkey-service;1' in Components.classes) {
+			let service = Components.classes['@greasemonkey.mozdev.org/greasemonkey-service;1'].getService().wrappedJSObject;
+			if (service) {
+				let _openInTab = service.__proto__._openInTab;
+				if (_openInTab.toSource().indexOf('TreeStyleTabService') < 0) {
+					service.__proto__._openInTab = function() {
+						let contentWindow = arguments[0];
+						let chromeWindow = arguments[1];
+						chromeWindow.TreeStyleTabService.readyToOpenChildTabNow(contentWindow);
+						return _openInTab.apply(this, arguments);
+					};
+				}
+			}
+		}
 	}
 
 	// SBM Counter
