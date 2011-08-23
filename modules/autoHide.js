@@ -312,11 +312,61 @@ AutoHideBrowser.prototype = {
  
 	showHideOnMousemove : function AHB_showHideOnMousemove(aEvent) 
 	{
-		var w = this.window;
-		if ('gestureInProgress' in w && w.gestureInProgress)
+		var position = this.getMousePosition(aEvent);
+		if (position == this.MOUSE_POSITION_UNKNOWN)
 			return;
 
 		this.cancelShowHideOnMousemove();
+
+		var sv = this.treeStyleTab;
+		var b  = this.browser;
+		var w  = this.window;
+
+		var shouldShow = position & this.MOUSE_POSITION_SENSITIVE;
+		if (this.expanded) {
+			if (
+				shouldShow &&
+				this.showHideReason & this.kKEEP_SHOWN_ON_MOUSEOVER &&
+				sv.getTreePref('tabbar.autoShow.keepShownOnMouseover')
+				) {
+				this.showHideReason = this.kSHOWN_BY_MOUSEMOVE;
+				this.cancelDelayedShowForShortcut();
+				this.cancelHideForFeedback();
+			}
+			else if (
+				!shouldShow &&
+				sv.getTreePref('tabbar.autoShow.mousemove')
+				) {
+				this.showHideOnMousemoveTimer = w.setTimeout(
+					function(aSelf) {
+						aSelf.cancelDelayedShowForShortcut();
+						if (aSelf.showHideReason == aSelf.kSHOWN_BY_MOUSEMOVE)
+							aSelf.hide(aSelf.kSHOWN_BY_MOUSEMOVE);
+					},
+					sv.getTreePref('tabbar.autoHide.delay'),
+					this
+				);
+			}
+		}
+		else if (shouldShow) {
+			this.showHideOnMousemoveTimer = w.setTimeout(
+				function(aSelf) {
+					aSelf.cancelDelayedShowForShortcut();
+					aSelf.cancelHideForFeedback();
+					aSelf.show(aSelf.kSHOWN_BY_MOUSEMOVE);
+				},
+				sv.getTreePref('tabbar.autoHide.delay'),
+				this
+			);
+		}
+
+		b = null;
+	},
+	getMousePosition : function AHB_getMousePosition(aEvent) 
+	{
+		var w = this.window;
+		if ('gestureInProgress' in w && w.gestureInProgress)
+			return this.MOUSE_POSITION_UNKNOWN;
 
 		var sv  = this.treeStyleTab;
 		var b   = this.browser;
@@ -334,69 +384,39 @@ AutoHideBrowser.prototype = {
 
 		var sensitiveArea = this.sensitiveArea;
 		/* For resizing of shrunken tab bar and clicking closeboxes,
+
 		   we have to shrink sensitive area a little. */
 		if (this.shrunken) sensitiveArea -= 20;
 
-		var shouldKeepShown = (
-				pos == 'left' ?
-					(aEvent.screenX <= box.screenX + sensitiveArea) :
-				pos == 'right' ?
-					(aEvent.screenX >= box.screenX + box.width - sensitiveArea) :
-				pos == 'bottom' ?
-					(aEvent.screenY >= box.screenY + box.height - sensitiveArea) :
-					(aEvent.screenY <= box.screenY + sensitiveArea)
-			);
-		if (this.expanded) {
-			if (
-				shouldKeepShown &&
-				this.showHideReason & this.kKEEP_SHOWN_ON_MOUSEOVER &&
-				sv.getTreePref('tabbar.autoShow.keepShownOnMouseover')
-				) {
-				this.showHideReason = this.kSHOWN_BY_MOUSEMOVE;
-				this.cancelDelayedShowForShortcut();
-				this.cancelHideForFeedback();
-			}
-			else if (
-				!shouldKeepShown &&
-				sv.getTreePref('tabbar.autoShow.mousemove')
-				) {
-				this.showHideOnMousemoveTimer = w.setTimeout(
-					function(aSelf) {
-						aSelf.cancelDelayedShowForShortcut();
-						if (aSelf.showHideReason == aSelf.kSHOWN_BY_MOUSEMOVE)
-							aSelf.hide(aSelf.kSHOWN_BY_MOUSEMOVE);
-					},
-					sv.getTreePref('tabbar.autoHide.delay'),
-					this
-				);
-			}
-		}
-		else if (
-				pos == 'left' ?
-					(aEvent.screenX <= box.screenX + sensitiveArea) :
-				pos == 'right' ?
-					(aEvent.screenX >= box.screenX + box.width - sensitiveArea) :
-				pos == 'bottom' ?
-					(aEvent.screenY >= box.screenY + box.height - sensitiveArea) :
-					(aEvent.screenY <= box.screenY + sensitiveArea)
-			) {
-			this.showHideOnMousemoveTimer = w.setTimeout(
-				function(aSelf) {
-					aSelf.cancelDelayedShowForShortcut();
-					aSelf.cancelHideForFeedback();
-					aSelf.show(aSelf.kSHOWN_BY_MOUSEMOVE);
-				},
-				sv.getTreePref('tabbar.autoHide.delay'),
-				this
-			);
-		}
+		if (
+			pos == 'left' ?
+				(aEvent.screenX <= box.screenX) :
+			pos == 'right' ?
+				(aEvent.screenX >= box.screenX + box.width) :
+			pos == 'bottom' ?
+				(aEvent.screenY >= box.screenY + box.height) :
+				(aEvent.screenY <= box.screenY)
+			)
+			return this.MOUSE_POSITION_INSIDE;
 
-		b = null;
-		pos = null
-		box = null;
-		sensitiveArea = null;
-		shouldKeepShown = null;
+		if (
+			pos == 'left' ?
+				(aEvent.screenX <= box.screenX + sensitiveArea) :
+			pos == 'right' ?
+				(aEvent.screenX >= box.screenX + box.width - sensitiveArea) :
+			pos == 'bottom' ?
+				(aEvent.screenY >= box.screenY + box.height - sensitiveArea) :
+				(aEvent.screenY <= box.screenY + sensitiveArea)
+			)
+			return this.MOUSE_POSITION_NEAR;
+
+		return this.MOUSE_POSITION_OUTSIDE;
 	},
+	MOUSE_POSITION_UNKNOWN : 0,
+	MOUSE_POSITION_OUTSIDE : (1 << 0),
+	MOUSE_POSITION_INSIDE  : (1 << 1),
+	MOUSE_POSITION_NEAR    : (1 << 2),
+	MOUSE_POSITION_SENSITIVE : (1 << 1) | (1 << 2),
  
 	cancelShowHideOnMousemove : function AHB_cancelShowHideOnMousemove() 
 	{
@@ -1267,6 +1287,10 @@ AutoHideBrowser.prototype = {
 		if (this.expanded)
 			return;
 
+		var position = this.getMousePosition(aEvent);
+		if (!(position & this.MOUSE_POSITION_SENSITIVE))
+			return;
+
 		var draggedTabs = this.window['piro.sakura.ne.jp'].tabsDragUtils.getSelectedTabs(aEvent);
 		if (
 			draggedTabs.length ||
@@ -1288,6 +1312,10 @@ AutoHideBrowser.prototype = {
 
 		if (this._autoHideOnDragLeaveTimer)
 			this.window.clearTimeout(this._autoHideOnDragLeaveTimer);
+
+		var position = this.getMousePosition(aEvent);
+		if (position & this.MOUSE_POSITION_SENSITIVE)
+			return;
 
 		this._autoHideOnDragLeaveTimer = this.window.setTimeout(function(aSelf) {
 			delete aSelf._autoHideOnDragLeaveTimer;
