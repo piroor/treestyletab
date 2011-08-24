@@ -277,10 +277,14 @@ var TreeStyleTabBookmarksService = {
 								else {
 									sv.readyToOpenNewTabGroup(null, treeStructure, TSTOpenGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_EXPAND_ALL_TREE);
 								}
-								replaceCurrentTab = false;
+								// replaceCurrentTab works only on Firefox 7 or earlier
+								// See: https://bugzilla.mozilla.org/show_bug.cgi?id=440093
+								if (typeof replaceCurrentTab !== 'undefined')
+									replaceCurrentTab = false;
 							}
 							else {
-								replaceCurrentTab = !!(TSTOpenGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_REPLACE);
+								if (typeof replaceCurrentTab !== 'undefined')
+									replaceCurrentTab = !!(TSTOpenGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_REPLACE);
 							}
 						}
 						$1

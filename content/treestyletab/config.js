@@ -168,6 +168,16 @@ function initTabPane()
 		newTabPref.removeAttribute('hidden');
 	else
 		newTabPref.setAttribute('hidden', true);
+
+	var bookmarkGroupReplacePref = document.getElementById('openGroupBookmark.replace');
+	if (comparator.compare(XULAppInfo.version, '7.0') > 0) {
+		if (bookmarkGroupReplacePref.selected)
+			document.getElementById('openGroupBookmark.subtree').selected = true;
+		bookmarkGroupReplacePref.setAttribute('hidden', true);
+	}
+	else {
+		bookmarkGroupReplacePref.removeAttribute('hidden');
+	}
 }
 
 function onSyncGroupBookmarkUIToPref()

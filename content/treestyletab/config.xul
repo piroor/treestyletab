@@ -446,7 +446,7 @@
 				onsyncfrompreference="return onSyncGroupBookmarkPrefToUI();"
 				preference="extensions.treestyletab.openGroupBookmark.behavior">
 				<radio value="0" collapsed="true"/>
-				<radio value="1" label="&config.openGroupBookmark.subtree;"/>
+				<radio id="openGroupBookmark.subtree" value="1" label="&config.openGroupBookmark.subtree;"/>
 				<hbox>
 					<spacer style="width:1em;"/>
 					<vbox>
@@ -471,7 +471,8 @@
 					</vbox>
 				</hbox>
 				<radio value="2" label="&config.openGroupBookmark.flat;"/>
-				<radio value="4" label="&config.openGroupBookmark.replace;"/>
+				<radio id="openGroupBookmark.replace"
+					value="4" label="&config.openGroupBookmark.replace;"/>
 			</radiogroup>
 			</vbox>
 		</deck>
