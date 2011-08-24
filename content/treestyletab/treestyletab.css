@@ -99,14 +99,14 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 }
 
 /* put resizer under tabs, and raise up tabs */
-.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"][treestyletab-tabbar-autohide][treestyletab-tabbar-autohide-state="expanded"]
+.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"][treestyletab-tabbar-autohide]
   > *,
-.treestyletab-toolbar-inner-box[treestyletab-tabbar-autohide][treestyletab-tabbar-autohide-state="expanded"]:not([treestyletab-tabbar-fixed="true"])
+.treestyletab-toolbar-inner-box[treestyletab-tabbar-autohide]:not([treestyletab-tabbar-fixed="true"])
   > * {
 	position: relative;
 	z-index: 2;
 }
-.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"][treestyletab-tabbar-autohide][treestyletab-tabbar-autohide-state="expanded"]
+.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"][treestyletab-tabbar-autohide]
   #treestyletab-tabbar-resizer-box {
 	position: absolute;
 	bottom: 0;
