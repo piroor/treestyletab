@@ -2453,6 +2453,26 @@ TreeStyleTabBrowser.prototype = {
 	lastScrollX : -1,
 	lastScrollY : -1,
 	
+	restoreLastScrollPosition : function TSTBrowser_restoreLastScrollPosition()
+	{
+		if (this.lastScrollX < 0 || this.lastScrollY < 0) return;
+		var lastX = this.lastScrollX;
+		var lastY = this.lastScrollY;
+		this.clearLastScrollPosition();
+		if (!this.smoothScrollTask &&
+			!this.scrollBox._smoothScrollTimer) { // don't restore scroll position if another scroll is already running.
+			let x = {}, y = {};
+			let scrollBoxObject = this.scrollBoxObject;
+			scrollBoxObject.getPosition(x, y);
+			if (x.value != lastX || y.value != lastY)
+				scrollBoxObject.scrollTo(lastX, lastY);
+		}
+	},
+	clearLastScrollPosition : function TSTBrowser_clearLastScrollPosition()
+	{
+		this.lastScrollX = -1;
+		this.lastScrollY = -1;
+	},
 	updateLastScrollPosition : function TSTBrowser_updateLastScrollPosition() 
 	{
 		if (!this.isVertical) return;
@@ -3768,22 +3788,6 @@ TreeStyleTabBrowser.prototype = {
 	{
 		// restore scroll position when a tab is closed.
 		this.restoreLastScrollPosition();
-	},
-	restoreLastScrollPosition : function TSTBrowser_restoreLastScrollPosition()
-	{
-		if (this.lastScrollX < 0 || this.lastScrollY < 0) return;
-		var lastX = this.lastScrollX;
-		var lastY = this.lastScrollY;
-		this.lastScrollX = -1;
-		this.lastScrollY = -1;
-		if (!this.smoothScrollTask &&
-			!this.scrollBox._smoothScrollTimer) { // don't restore scroll position if another scroll is already running.
-			let x = {}, y = {};
-			let scrollBoxObject = this.scrollBoxObject;
-			scrollBoxObject.getPosition(x, y);
-			if (x.value != lastX || y.value != lastY)
-				scrollBoxObject.scrollTo(lastX, lastY);
-		}
 	},
  
 	onTabbarOverflow : function TSTBrowser_onTabbarOverflow(aEvent) 
