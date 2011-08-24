@@ -3766,18 +3766,24 @@ TreeStyleTabBrowser.prototype = {
  
 	onScroll : function TSTBrowser_onScroll(aEvent) 
 	{
-		if (this.lastScrollX < 0 || this.lastScrollY < 0) return;
 		// restore scroll position when a tab is closed.
+		this.restoreLastScrollPosition();
+	},
+	restoreLastScrollPosition : function TSTBrowser_restoreLastScrollPosition()
+	{
+		if (this.lastScrollX < 0 || this.lastScrollY < 0) return;
+		var lastX = this.lastScrollX;
+		var lastY = this.lastScrollY;
+		this.lastScrollX = -1;
+		this.lastScrollY = -1;
 		if (!this.smoothScrollTask &&
 			!this.scrollBox._smoothScrollTimer) { // don't restore scroll position if another scroll is already running.
 			let x = {}, y = {};
 			let scrollBoxObject = this.scrollBoxObject;
 			scrollBoxObject.getPosition(x, y);
-			if (x.value != this.lastScrollX || y.value != this.lastScrollY)
-				scrollBoxObject.scrollTo(this.lastScrollX, this.lastScrollY);
+			if (x.value != lastX || y.value != lastY)
+				scrollBoxObject.scrollTo(lastX, lastY);
 		}
-		this.lastScrollX = -1;
-		this.lastScrollY = -1;
 	},
  
 	onTabbarOverflow : function TSTBrowser_onTabbarOverflow(aEvent) 
