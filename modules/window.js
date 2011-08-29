@@ -225,6 +225,8 @@ TreeStyleTabWindow.prototype = {
  
 	shouldOpenSearchResultAsChild : function TSTWindow_shouldOpenSearchResultAsChild(aTerm) 
 	{
+		aTerm = aTerm.replace(/^\s+|\s+$/g, '');
+
 		var mode = this.getTreePref('autoAttach.searchResult');
 		if (mode == this.kSEARCH_RESULT_ATTACH_ALWAYS) {
 			return true;
@@ -241,7 +243,7 @@ TreeStyleTabWindow.prototype = {
 			if (!aWindow || !(aWindow instanceof Ci.nsIDOMWindow))
 				return false;
 			var selection = aWindow.getSelection();
-			if (selection && selection.toString() == aTerm)
+			if (selection && selection.toString().replace(/^\s+|\s+$/g, '') == aTerm)
 				return true;
 			return aWindow.frames ? Array.slice(aWindow.frames).some(arguments.callee) : false ;
 		})(w);
