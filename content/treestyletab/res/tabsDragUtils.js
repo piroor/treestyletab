@@ -13,7 +13,7 @@
    http://github.com/piroor/fxaddonlibs/blob/master/tabsDragUtils.js
 */
 (function() {
-	const currentRevision = 16;
+	const currentRevision = 17;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -30,6 +30,7 @@
 
 	const Cc = Components.classes;
 	const Ci = Components.interfaces;
+	const TAB_DROP_TYPE = 'application/x-moz-tabbrowser-tab';
 
 	var tabsDragUtils = {
 		revision : currentRevision,
