@@ -1,6 +1,10 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
-.tabbrowser-tab:not([pinned="true"])
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab:not([pinned="true"])
+  .treestyletab-twisty-container,
+.tabbrowser-tabs[treestyletab-mode="horizontal"][treestyletab-allow-subtree-collapse="true"]
+  .tabbrowser-tab[treestyletab-allow-subtree-collapse="true"][treestyletab-children]:not([pinned="true"])
   .treestyletab-twisty-container {
 	margin: 0 3px 0 -3px;
 	-moz-box-pack: start;
@@ -8,62 +12,83 @@
 	-moz-box-flex: 1;
 }
 
-.tabbrowser-tabs[treestyletab-tab-contents-inverted="true"]
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-contents-inverted="true"]
   .tabbrowser-tab:not([pinned="true"])
+  .treestyletab-twisty-container,
+.tabbrowser-tabs[treestyletab-mode="horizontal"][treestyletab-allow-subtree-collapse="true"][treestyletab-tab-contents-inverted="true"]
+  .tabbrowser-tab[treestyletab-allow-subtree-collapse="true"][treestyletab-children]:not([pinned="true"])
   .treestyletab-twisty-container {
 	margin: 0 -3px 0 3px;
 }
-.tabbrowser-tabs[treestyletab-twisty-style^="modern"]
+.tabbrowser-tabs[treestyletab-twisty-style^="modern"][treestyletab-mode="vertical"]
   .tabbrowser-tab:not([pinned="true"])
   .treestyletab-twisty-container,
-.tabbrowser-tabs[treestyletab-twisty-style^="osx"]
+.tabbrowser-tabs[treestyletab-twisty-style^="osx"][treestyletab-mode="vertical"]
   .tabbrowser-tab:not([pinned="true"])
+  .treestyletab-twisty-container,
+.tabbrowser-tabs[treestyletab-twisty-style^="modern"][treestyletab-mode="horizontal"][treestyletab-allow-subtree-collapse="true"]
+  .tabbrowser-tab[treestyletab-allow-subtree-collapse="true"][treestyletab-children]:not([pinned="true"])
+  .treestyletab-twisty-container,
+.tabbrowser-tabs[treestyletab-twisty-style^="osx"][treestyletab-mode="horizontal"][treestyletab-allow-subtree-collapse="true"]
+  .tabbrowser-tab[treestyletab-allow-subtree-collapse="true"][treestyletab-children]:not([pinned="true"])
   .treestyletab-twisty-container {
 	position: relative;
 	margin: 0 14px 0 -14px;
 }
-.tabbrowser-tabs[treestyletab-twisty-style^="modern"][treestyletab-tab-contents-inverted="true"]
+.tabbrowser-tabs[treestyletab-twisty-style^="modern"][treestyletab-mode="vertical"][treestyletab-tab-contents-inverted="true"]
   .tabbrowser-tab:not([pinned="true"])
   .treestyletab-twisty-container,
-.tabbrowser-tabs[treestyletab-twisty-style^="osx"][treestyletab-tab-contents-inverted="true"]
+.tabbrowser-tabs[treestyletab-twisty-style^="osx"][treestyletab-mode="vertical"][treestyletab-tab-contents-inverted="true"]
   .tabbrowser-tab:not([pinned="true"])
+  .treestyletab-twisty-container,
+.tabbrowser-tabs[treestyletab-twisty-style^="modern"][treestyletab-mode="horizontal"][treestyletab-allow-subtree-collapse="true"][treestyletab-tab-contents-inverted="true"]
+  .tabbrowser-tab[treestyletab-allow-subtree-collapse="true"][treestyletab-children]:not([pinned="true"])
+  .treestyletab-twisty-container,
+.tabbrowser-tabs[treestyletab-twisty-style^="osx"][treestyletab-mode="horizontal"][treestyletab-allow-subtree-collapse="true"][treestyletab-tab-contents-inverted="true"]
+  .tabbrowser-tab[treestyletab-allow-subtree-collapse="true"][treestyletab-children]:not([pinned="true"])
   .treestyletab-twisty-container {
 	margin: 0 -14px 0 14px;
 }
 
 
-.tabbrowser-tabs[treestyletab-twisty-style="retro"][treestyletab-mode="horizontal"]
-  .tabbrowser-tab:not([pinned="true"])
+.tabbrowser-tabs[treestyletab-twisty-style="retro"][treestyletab-mode="horizontal"][treestyletab-allow-subtree-collapse="true"]
+  .tabbrowser-tab[treestyletab-allow-subtree-collapse="true"][treestyletab-children]:not([pinned="true"])
   .treestyletab-twisty-container {
 	position: relative;
 	margin: 0 16px 0 -16px;
 }
 
 .tabbrowser-tabs[treestyletab-twisty-style="retro"][treestyletab-mode="horizontal"][treestyletab-allow-subtree-collapse="true"]
-  .tabbrowser-tab[treestyletab-children]:not([pinned="true"])
+  .tabbrowser-tab[treestyletab-allow-subtree-collapse="true"][treestyletab-children]:not([pinned="true"])
   .tab-icon {
 	margin-left: 16px;
 }
-.tabbrowser-tabs[treestyletab-twisty-style^="modern"][treestyletab-allow-subtree-collapse="true"][treestyletab-mode="horizontal"]
-  .tabbrowser-tab:not([pinned="true"])
+.tabbrowser-tabs[treestyletab-twisty-style^="modern"][treestyletab-mode="horizontal"][treestyletab-allow-subtree-collapse="true"]
+  .tabbrowser-tab[treestyletab-allow-subtree-collapse="true"][treestyletab-children]:not([pinned="true"])
   .tab-icon,
-.tabbrowser-tabs[treestyletab-twisty-style^="osx"][treestyletab-allow-subtree-collapse="true"][treestyletab-mode="horizontal"]
-  .tabbrowser-tab:not([pinned="true"])
+.tabbrowser-tabs[treestyletab-twisty-style^="osx"][treestyletab-mode="horizontal"][treestyletab-allow-subtree-collapse="true"]
+  .tabbrowser-tab[treestyletab-allow-subtree-collapse="true"][treestyletab-children]:not([pinned="true"])
   .tab-icon {
 	margin-left: 12px;
 }
-.tabbrowser-tabs[treestyletab-twisty-style^="modern"][treestyletab-allow-subtree-collapse="true"]:not([treestyletab-tab-contents-inverted="true"])
+.tabbrowser-tabs[treestyletab-twisty-style^="modern"][treestyletab-mode="vertical"][treestyletab-allow-subtree-collapse="true"]:not([treestyletab-tab-contents-inverted="true"])
   .tabbrowser-tab:not([pinned="true"])
   .tab-icon,
-.tabbrowser-tabs[treestyletab-twisty-style^="osx"][treestyletab-allow-subtree-collapse="true"]:not([treestyletab-tab-contents-inverted="true"])
+.tabbrowser-tabs[treestyletab-twisty-style^="osx"][treestyletab-mode="vertical"][treestyletab-allow-subtree-collapse="true"]:not([treestyletab-tab-contents-inverted="true"])
   .tabbrowser-tab:not([pinned="true"])
+  .tab-icon,
+.tabbrowser-tabs[treestyletab-twisty-style^="modern"][treestyletab-mode="horizontal"][treestyletab-allow-subtree-collapse="true"]
+  .tabbrowser-tab[treestyletab-allow-subtree-collapse="true"][treestyletab-children]:not([pinned="true"])
+  .tab-icon,
+.tabbrowser-tabs[treestyletab-twisty-style^="osx"][treestyletab-mode="horizontal"][treestyletab-allow-subtree-collapse="true"]
+  .tabbrowser-tab[treestyletab-allow-subtree-collapse="true"][treestyletab-children]:not([pinned="true"])
   .tab-icon {
 	margin-left: 9px;
 }
-.tabbrowser-tabs[treestyletab-twisty-style^="modern"][treestyletab-allow-subtree-collapse="true"][treestyletab-tab-contents-inverted="true"]
+.tabbrowser-tabs[treestyletab-twisty-style^="modern"][treestyletab-mode="vertical"][treestyletab-allow-subtree-collapse="true"][treestyletab-tab-contents-inverted="true"]
   .tabbrowser-tab:not([pinned="true"])
   .tab-icon,
-.tabbrowser-tabs[treestyletab-twisty-style^="osx"][treestyletab-allow-subtree-collapse="true"][treestyletab-tab-contents-inverted="true"]
+.tabbrowser-tabs[treestyletab-twisty-style^="osx"][treestyletab-mode="vertical"][treestyletab-allow-subtree-collapse="true"][treestyletab-tab-contents-inverted="true"]
   .tabbrowser-tab:not([pinned="true"])
   .tab-icon {
 	margin-right: 9px;
