@@ -3524,6 +3524,11 @@ TreeStyleTabBrowser.prototype = {
 			this.collapseExpandSubtree(aTab, false);
 		}
 		else {
+			/**
+			 * This logic should work for any pinned tabs, but, now we have
+			 * no way to know previous positions of children correctly when
+			 * the pinned tab has no parent...
+			 */
 			let b = this.browser;
 			this.internallyTabMovingCount++;
 			this.getChildTabs(aTab).reverse().forEach(function(aChildTab) {
