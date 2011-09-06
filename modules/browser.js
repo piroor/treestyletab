@@ -3520,25 +3520,31 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var parentTab = this.getParentTab(aTab);
 
-		if (!parentTab)
+		if (!parentTab) {
 			this.collapseExpandSubtree(aTab, false);
+		}
+		else {
+			let b = this.browser;
+			this.internallyTabMovingCount++;
+			this.getChildTabs(aTab).reverse().forEach(function(aChildTab) {
+				/**
+				 * Children of the newly pinned tab are possibly
+				 * moved to the top of the tab bar, by TabMove event
+				 * from the newly pinned tab. So, we have to
+				 * reposition unexpectedly moved children.
+				 */
+				if (aChildTab._tPos < parentTab._tPos)
+					b.moveTabTo(aChildTab, parentTab._tPos);
+			}, this);
+			this.internallyTabMovingCount--;
+		}
 
-		this.getChildTabs(aTab).reverse().forEach(
-			parentTab ?
-				function(aChildTab) {
-					this.attachTabTo(aChildTab, parentTab, {
-						dontExpand : true,
-						/**
-						 * Children of the newly pinned tab are possibly
-						 * moved to the top of the tab bar, by TabMove event
-						 * from the newly pinned tab. So, we have to
-						 * reposition unexpectedly moved children.
-						 */
-						dontMove   : aChildTab._tPos > parentTab._tPos
-					});
-				} :
-				this.partTab,
-		this);
+		this.partAllChildren(aTab, {
+			behavior : this.getCloseParentBehaviorForTab(
+				aTab,
+				this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+			)
+		});
 		this.partTab(aTab);
 
 		this.collapseExpandTab(aTab, false);
