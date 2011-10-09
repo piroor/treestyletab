@@ -14,6 +14,11 @@
 	background: transparent !important;
 	background-color: #d4dde5 !important;
 }
+/* autohide */
+.treestyletab-tabbar-toolbar[treestyletab-tabbar-autohide][treestyletab-mode="vertical"]
+  #treestyletab-tabbar-resizer-box {
+	background: rgba(212, 221, 229, 0.75);
+}
 
 /* Don't display unnecessary clutter */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
@@ -403,6 +408,7 @@ tabbrowser[treestyletab-mode="vertical"]
   .tab-content {
 	border: 0 none !important;
 }
+
 
 /* for Multiple Tab Handler */
 .tabbrowser-tabs[treestyletab-mode="vertical"]

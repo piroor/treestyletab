@@ -15,6 +15,12 @@
   .tabbrowser-strip:not([treestyletab-style~="aero"])[treestyletab-mode="vertical"] {
 	background-color: #e8e8e8 !important;
 }
+/* autohide */
+#main-window:-moz-window-inactive
+  .treestyletab-tabbar-toolbar[treestyletab-tabbar-autohide]:not([treestyletab-style~="aero"])[treestyletab-mode="vertical"]
+  #treestyletab-tabbar-resizer-box {
+	background: rgba(232, 232, 232, 0.75);
+}
 
 /* Use the splitter to display the border of .tabbrowser-strip */
 #main-window:-moz-window-inactive
