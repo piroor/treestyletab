@@ -91,7 +91,7 @@
     <em:localized>
       <RDF:Description em:locale="zh-TW"
                        em:name="Tree Style Tab"
-                       em:description="以樹狀目錄形式顯示分頁"
+                       em:description="樹狀分頁顯示。"
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
                        em:creator="SHIMODA Hiroshi">
           <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
@@ -99,6 +99,7 @@
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
           <em:translator>HkYtrewq (zh-TW locale)</em:translator>
           <em:translator>Tsprajna (zh-TW locale)</em:translator>
+          <em:translator>bootleq (zh-TW locale)</em:translator>
       </RDF:Description>
     </em:localized>
     <em:localized>
