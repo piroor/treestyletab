@@ -400,9 +400,16 @@ TreeStyleTabBrowser.prototype = {
 
 		var faviconized = width <= this.MIN_PINNED_TAB_WIDTH;
 
-		var inverted = this.position == 'left' && b.getAttribute(this.kINVERT_SCROLLBAR) == 'true';
+		/**
+		 * Hacks for Firefox 9 or olders.
+		 * In a box with "direction: rtr", we have to position tabs
+		 * by margin-right, because the basic position becomes
+		 * "top-right" instead of "top-left".
+		 */
+		var needToFixOrigin = !this.isGecko10OrLater;
+		var needToInvertDirection = needToFixOrigin && this.position == 'left' && b.getAttribute(this.kINVERT_SCROLLBAR) == 'true';
 		var remainder = maxWidth - (maxCol * width);
-		var shrunkenOffset = ((inverted || this.position == 'right') && tabbarPlaceHolderWidth) ?
+		var shrunkenOffset = ((needToInvertDirection || this.position == 'right') && tabbarPlaceHolderWidth) ?
 								tabbarWidth - tabbarPlaceHolderWidth :
 								0 ;
 
@@ -428,23 +435,30 @@ TreeStyleTabBrowser.prototype = {
 				item.className = className;
 
 			style.width = width+'px';
-			if (inverted) {
-				/**
-				 * In a box with "direction: rtr", we have to position tabs
-				 * by margin-right, because the basic position becomes
-				 * "top-right" instead of "top-left".
-				 */
+			if (needToInvertDirection) {
 				let margin = (width * (maxCol - col - 1)) + remainder + shrunkenOffset;
 				style.setProperty('margin-right', margin+'px', 'important');
-				style.marginLeft = '';
+				style.marginLeft = style.left = style.right = '';
 			}
 			else {
 				style.setProperty('margin-left', ((width * col) + shrunkenOffset)+'px', 'important');
+				if (needToFixOrigin) {
+					/**
+					 * Hack for Firefox 9 or olders. In "rtl" box, the origin
+					 * is wrongly set to the edge of the root element. So, we
+					 * must not set specific left/right.
+					 */
+					style.left = style.right = '';
+				}
+				else {
+					style.left = '0';
+					style.right = 'auto';
+				}
 				style.marginRight = '';
 			}
 
 			style.setProperty('margin-top', (- height * (maxRow - row))+'px', 'important');
-			style.top = style.right = style.bottom = style.left = '';
+			style.top = style.bottom = '';
 
 			if (aJustNow)
 				this.Deferred.next(function() { // "transition" must be cleared after the reflow.
@@ -488,7 +502,8 @@ TreeStyleTabBrowser.prototype = {
 		for (var i = 0, count = this.pinnedTabsCount; i < count; i++)
 		{
 			let style = tabbar.childNodes[i].style;
-			style.width = style.MozMarginStart = style.marginLeft = style.marginRight = style.marginTop = '';
+			style.width = style.left = style.right =
+				style.MozMarginStart = style.marginLeft = style.marginRight = style.marginTop = '';
 		}
 	},
  

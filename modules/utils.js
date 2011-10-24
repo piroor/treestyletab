@@ -318,9 +318,18 @@ var TreeStyleTabUtils = {
 	},
 	_Comparator : null,
  
-	get isGecko2() 
+	get isGecko10OrLater() 
+	{
+		return this.Comparator.compare(this.XULAppInfo.version, '10.0a') > 0;
+	},
+ 
+	get isGecko2OrLater() 
 	{
 		return this.Comparator.compare(this.XULAppInfo.version, '4.0b5') > 0;
+	},
+	get isGecko2() // for backward compatibility
+	{
+		return this.isGecko2OrLater
 	},
  
 	get treeBundle() { 
