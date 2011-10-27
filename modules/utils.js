@@ -376,6 +376,13 @@ var TreeStyleTabUtils = {
 		catch(e) {
 			dump(e+'\n');
 		}
+
+		try {
+			this.overrideExtensions();
+		}
+		catch(e) {
+			dump(e+'\n');
+		}
 // rap('utils/init end');
 	},
 	_initialized : false,
@@ -400,6 +407,10 @@ var TreeStyleTabUtils = {
 		var ns = {};
 		Components.utils.import('resource://gre/modules/WindowsPreviewPerTab.jsm', ns);
 		this.AeroPeek = ns.AeroPeek;
+	},
+ 
+	overrideExtensions : function TSTUtils_overrideExtensions() 
+	{
 	},
  
 	updateNarrowScrollbarStyle : function TSTUtils_updateNarrowScrollbarStyle() 
