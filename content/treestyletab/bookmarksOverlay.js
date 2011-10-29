@@ -229,64 +229,11 @@ var TreeStyleTabBookmarksService = {
 				).replace(
 					/(browserWindow\.(?:getBrowser\(\)|gBrowser)\.loadTabs\([^;]+\);)/,
 					<![CDATA[
-						if (
-							where.indexOf('tab') == 0 ||
-							aEvent.target.id == 'placesContext_openContainer:tabs' ||
-							aEvent.target.id == 'placesContext_openLinks:tabs' ||
-							aEvent.target == aEvent.target.parentNode._endOptOpenAllInTabs ||
-							aEvent.target.getAttribute('openInTabs') == 'true'
-							) {
-							let sv = browserWindow.TreeStyleTabBookmarksService;
-							TSTOpenGroupBookmarkBehavior = sv.openGroupBookmarkBehavior();
-							if (TSTOpenGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_SUBTREE) {
-								let treeStructure = TSTOpenGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_DONT_RESTORE_TREE_STRUCTURE ?
-											null :
-											sv.getTreeStructureFromItems(ids) ;
-								if (
-									treeStructure &&
-									TSTOpenGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_USE_DUMMY
-									) {
-									let parentCount = 0;
-									let childCount = 0;
-									for (let i in treeStructure) {
-										if (treeStructure[i] == -1)
-											parentCount++;
-										else
-											childCount++;
-									}
-									if (
-										parentCount > 1 &&
-										(
-											TSTOpenGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_USE_DUMMY_FORCE ||
-											// when there is any orphan, then all of parents and orphans should be grouped under a dummy tab.
-											childCount < parentCount
-										)
-										) {
-										ids.unshift(-1);
-										treeStructure = sv.getTreeStructureFromItems(ids, 0);
-										urls.unshift(sv.getGroupTabURI(aFolderTitle));
-									}
-								}
-
-								if (sv.getTreePref('compatibility.TMP') &&
-									'TMP_Places' in browserWindow &&
-									'openGroup' in browserWindow.TMP_Places) {
-									TSTTreeStructure = treeStructure;
-									TSTPreviousTabs = browserWindow.TreeStyleTabBookmarksService.getTabsInfo(browserWindow.gBrowser);
-								}
-								else {
-									sv.readyToOpenNewTabGroup(null, treeStructure, TSTOpenGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_EXPAND_ALL_TREE);
-								}
-								// replaceCurrentTab works only on Firefox 7 or earlier
-								// See: https://bugzilla.mozilla.org/show_bug.cgi?id=440093
-								if (typeof replaceCurrentTab !== 'undefined')
-									replaceCurrentTab = false;
-							}
-							else {
-								if (typeof replaceCurrentTab !== 'undefined')
-									replaceCurrentTab = !!(TSTOpenGroupBookmarkBehavior & sv.kGROUP_BOOKMARK_REPLACE);
-							}
-						}
+						var TSTResult = browserWindow.TreeStyleTabBookmarksService.handleTabsOpenProcess(where, aEvent, browserWindow, ids, urls, replaceCurrentTab, aFolderTitle);
+						TSTTreeStructure = TSTResult.treeStructure;
+						TSTPreviousTabs = TSTResult.previousTabs;
+						TSTOpenGroupBookmarkBehavior = TSTResult.behavior;
+						replaceCurrentTab = TSTResult.replaceCurrentTab;
 						$1
 						]]>
 				).replace(
@@ -385,6 +332,77 @@ var TreeStyleTabBookmarksService = {
 			);
 		}
 	},
+	handleTabsOpenProcess : function TSTBMService_handleTabsOpenProcess(aWhere, aEvent, aBrowserWindow, aIDs, aURLs, aReplaceCurrentTab, aFolderTitle)
+	{
+		var result = {
+				behavior          : undefined,
+				treeStructure     : undefined,
+				previousTabs      : undefined,
+				replaceCurrentTab : undefined
+			};
+		if (
+			aWhere.indexOf('tab') != 0 &&
+			aEvent.target.id != 'placesContext_openContainer:tabs' &&
+			aEvent.target.id != 'placesContext_openLinks:tabs' &&
+			aEvent.target != aEvent.target.parentNode._endOptOpenAllInTabs &&
+			aEvent.target.getAttribute('openInTabs') != 'true'
+			)
+			return result;
+
+		var sv = aBrowserWindow.TreeStyleTabBookmarksService;
+		result.behavior = sv.openGroupBookmarkBehavior();
+		if (result.behavior & sv.kGROUP_BOOKMARK_SUBTREE) {
+			let treeStructure = result.behavior & sv.kGROUP_BOOKMARK_DONT_RESTORE_TREE_STRUCTURE ?
+						null :
+						sv.getTreeStructureFromItems(aIDs) ;
+			if (
+				treeStructure &&
+				result.behavior & sv.kGROUP_BOOKMARK_USE_DUMMY
+				) {
+				let parentCount = 0;
+				let childCount = 0;
+				for (let i in treeStructure) {
+					if (treeStructure[i] == -1)
+						parentCount++;
+					else
+						childCount++;
+				}
+				if (
+					parentCount > 1 &&
+					(
+						result.behavior & sv.kGROUP_BOOKMARK_USE_DUMMY_FORCE ||
+						// when there is any orphan, then all of parents and orphans should be grouped under a dummy tab.
+						childCount < parentCount
+					)
+					) {
+					aIDs.unshift(-1);
+					treeStructure = sv.getTreeStructureFromItems(aIDs, 0);
+					aURLs.unshift(sv.getGroupTabURI(aFolderTitle));
+				}
+			}
+
+			if (sv.getTreePref('compatibility.TMP') &&
+				'TMP_Places' in aBrowserWindow &&
+				'openGroup' in aBrowserWindow.TMP_Places) {
+				result.treeStructure = treeStructure;
+				result.previousTabs = aBrowserWindow.TreeStyleTabBookmarksService.getTabsInfo(aBrowserWindow.gBrowser);
+			}
+			else {
+				sv.readyToOpenNewTabGroup(null, treeStructure, result.behavior & sv.kGROUP_BOOKMARK_EXPAND_ALL_TREE);
+			}
+			// replaceCurrentTab works only on Firefox 7 or earlier
+			// See: https://bugzilla.mozilla.org/show_bug.cgi?id=440093
+			if (typeof aReplaceCurrentTab !== 'undefined')
+				result.replaceCurrentTab = false;
+		}
+		else {
+			if (typeof aReplaceCurrentTab !== 'undefined')
+				result.replaceCurrentTab = !!(result.behavior & sv.kGROUP_BOOKMARK_REPLACE);
+		}
+		return result;
+	},
+
+
 
 	destroy : function TSTBMService_destroy()
 	{
