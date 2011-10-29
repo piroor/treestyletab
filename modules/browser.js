@@ -2875,6 +2875,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var tab = aEvent.originalTarget;
 		var b   = this.mTabBrowser;
+		tab.__treestyletab__previousPosition = aEvent.detail;
 
 		// When the tab was moved before TabOpen event is fired, we have to update manually.
 		var newlyOpened = !this.isTabInitialized(tab) && this.onTabAdded(null, tab);
@@ -3577,24 +3578,34 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var parentTab = this.getParentTab(aTab);
 
+		/**
+		 * Children of the newly pinned tab are possibly
+		 * moved to the top of the tab bar, by TabMove event
+		 * from the newly pinned tab. So, we have to
+		 * reposition unexpectedly moved children.
+		 */
 		if (!parentTab) {
-			this.collapseExpandSubtree(aTab, false);
+			/**
+			 * Universal but dangerous logic. "__treestyletab__previousPosition"
+			 * can be broken by multiple movings.
+			 */
+			let b = this.browser;
+			this.internallyTabMovingCount++;
+			this.getDescendantTabs(aTab).reverse().forEach(function(aChildTab) {
+				if (aChildTab.__treestyletab__previousPosition > aChildTab._tPos)
+					b.moveTabTo(aChildTab, aChildTab.__treestyletab__previousPosition);
+			}, this);
+			this.internallyTabMovingCount--;
 		}
 		else {
 			/**
-			 * This logic should work for any pinned tabs, but, now we have
-			 * no way to know previous positions of children correctly when
-			 * the pinned tab has no parent...
+			 * Safer logic. This cannot be available for "root" tabs because
+			 * their children (already moved) have no way to know the anchor
+			 * position (the next sibling of the pinned tab itself).
 			 */
 			let b = this.browser;
 			this.internallyTabMovingCount++;
 			this.getChildTabs(aTab).reverse().forEach(function(aChildTab) {
-				/**
-				 * Children of the newly pinned tab are possibly
-				 * moved to the top of the tab bar, by TabMove event
-				 * from the newly pinned tab. So, we have to
-				 * reposition unexpectedly moved children.
-				 */
 				if (aChildTab._tPos < parentTab._tPos)
 					b.moveTabTo(aChildTab, parentTab._tPos);
 			}, this);
