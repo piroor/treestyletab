@@ -539,12 +539,18 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 				{
 					switch (aEvent.type)
 					{
+						case 'TabOpen':
 						case 'TreeStyleTabAttached':
 						case 'TreeStyleTabParted':
 							var child = aEvent.originalTarget;
 							var parent = aEvent.parentTab;
 							if (child && parent) {
-								colorfulTabs.setColor(child, TreeStyleTabService.SessionStore.getTabValue(parent, 'tabClr'));
+								let color = TreeStyleTabService.SessionStore.getTabValue(parent, 'tabClr');
+								if (/^\d+,\d+,\d+$/.test(color))
+									color = 'rgb('+color+')';
+								window.setTimeout(function() {
+									colorfulTabs.setColor(child, color);
+								}, 0);
 							}
 							else if (child) {
 								TreeStyleTabService.SessionStore.setTabValue(child, 'tabClr', '');
@@ -556,6 +562,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 							break;
 
 						case 'unload':
+							document.removeEventListener('TabOpen', this, false);
 							document.removeEventListener('TreeStyleTabAttached', this, false);
 							document.removeEventListener('TreeStyleTabParted', this, false);
 							document.removeEventListener('unload', this, false);
@@ -569,6 +576,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 				'.display = ""'
 			)
 		);
+		document.addEventListener('TabOpen', listener, false);
 		document.addEventListener('TreeStyleTabAttached', listener, false);
 		document.addEventListener('TreeStyleTabParted', listener, false);
 		document.addEventListener('unload', listener, false);
