@@ -4140,7 +4140,11 @@ TreeStyleTabBrowser.prototype = {
 	},
 	set treeViewEnabled(aValue)
 	{
-		this._treeViewEnabled = !!aValue;
+		var newValue = !!aValue;
+		if (newValue == this._treeViewEnabled)
+			return aValue;
+
+		this._treeViewEnabled = newValue;
 		if (this._treeViewEnabled) {
 			if (this._lastAllowSubtreeCollapseExpand)
 				this.allowSubtreeCollapseExpand = true;
