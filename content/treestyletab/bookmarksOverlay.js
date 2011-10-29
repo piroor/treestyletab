@@ -211,90 +211,109 @@ var TreeStyleTabBookmarksService = {
 			catch(e) { // Firefox 3.6 or older
 				ns = window;
 			}
+			var sv = this;
 			with (ns) {
 
-			eval('PlacesUIUtils._openTabset = '+
-				PlacesUIUtils._openTabset.toSource().replace(
-					/(function[^\(]*\([^\)]+)(\))/,
-					'$1, aFolderTitle$2'
-				).replace(
-					'{',
-					'{ var TSTTreeStructure = null, TSTPreviousTabs, TSTOpenGroupBookmarkBehavior;'
-				).replace(
-					'var urls = [];',
-					'$& var ids = [];'
-				).replace(
-					'urls.push(item.uri);',
-					'$& ids.push(item.id);'
-				).replace(
-					/(browserWindow\.(?:getBrowser\(\)|gBrowser)\.loadTabs\([^;]+\);)/,
-					<![CDATA[
-						var TSTResult = browserWindow.TreeStyleTabBookmarksService.handleTabsOpenProcess(where, aEvent, browserWindow, ids, urls, replaceCurrentTab, aFolderTitle);
-						TSTTreeStructure = TSTResult.treeStructure;
-						TSTPreviousTabs = TSTResult.previousTabs;
-						TSTOpenGroupBookmarkBehavior = TSTResult.behavior;
-						replaceCurrentTab = TSTResult.replaceCurrentTab;
-						$1
-						]]>
-				).replace(
-					/(\}\)?)$/,
-					<![CDATA[
-						if (TSTTreeStructure && TSTPreviousTabs) {
-							let tabs = browserWindow.TreeStyleTabBookmarksService.getNewTabsFromPreviousTabsInfo(browserWindow.gBrowser, TSTPreviousTabs)
-							browserWindow.TreeStyleTabService.applyTreeStructureToTabs(tabs, TSTTreeStructure, TSTOpenGroupBookmarkBehavior & browserWindow.TreeStyleTabBookmarksService.kGROUP_BOOKMARK_EXPAND_ALL_TREE);
-						}
-					$1]]>
-				)
-			);
-
-			eval('PlacesUIUtils.openContainerNodeInTabs = '+
-				PlacesUIUtils.openContainerNodeInTabs.toSource().replace(
-					/(this\._openTabset\([^\)]+)(\))/,
-					<![CDATA[
-						let (w = '_getTopBrowserWin' in this ?
-									this._getTopBrowserWin() :
-								'_getCurrentActiveWin' in this ?
-									this._getCurrentActiveWin() :
-									window) {
-							let nodes = w.TreeStyleTabBookmarksService.getItemIdsForContainerNode(aNode);
-							for (let i in nodes) {
-								urlsToOpen[i].id = nodes[i];
+			let (method = (sv.getTreePref('compatibility.TabUtilities') && PlacesUIUtils.TU__openTabset) ?
+							'TU__openTabset' :
+							'_openTabset') {
+				eval('PlacesUIUtils.'+method+' = '+
+					PlacesUIUtils[method].toSource().replace(
+						/(function[^\(]*\([^\)]+)(\))/,
+						'$1, aFolderTitle$2'
+					).replace(
+						'{',
+						'{ var TSTTreeStructure = null, TSTPreviousTabs, TSTOpenGroupBookmarkBehavior;'
+					).replace(
+						'var urls = [];',
+						'$& var ids = [];'
+					).replace(
+						'urls.push(item.uri);',
+						'$& ids.push(item.id);'
+					).replace(
+						/(browserWindow\.(?:getBrowser\(\)|gBrowser)\.loadTabs\([^;]+\);)/,
+						<![CDATA[
+							var TSTResult = browserWindow.TreeStyleTabBookmarksService.handleTabsOpenProcess(where, aEvent, browserWindow, ids, urls, replaceCurrentTab, aFolderTitle);
+							TSTTreeStructure = TSTResult.treeStructure;
+							TSTPreviousTabs = TSTResult.previousTabs;
+							TSTOpenGroupBookmarkBehavior = TSTResult.behavior;
+							replaceCurrentTab = TSTResult.replaceCurrentTab;
+							$1
+							]]>
+					).replace(
+						/(\}\)?)$/,
+						<![CDATA[
+							if (TSTTreeStructure && TSTPreviousTabs) {
+								let tabs = browserWindow.TreeStyleTabBookmarksService.getNewTabsFromPreviousTabsInfo(browserWindow.gBrowser, TSTPreviousTabs)
+								browserWindow.TreeStyleTabService.applyTreeStructureToTabs(tabs, TSTTreeStructure, TSTOpenGroupBookmarkBehavior & browserWindow.TreeStyleTabBookmarksService.kGROUP_BOOKMARK_EXPAND_ALL_TREE);
 							}
-						}
-						$1, aNode.title$2
-					]]>
-				)
-			);
+						$1]]>
+					)
+				);
+				if (sv.getTreePref('compatibility.TabUtilities') && method.indexOf('TU_') > -1)
+					window[method] = PlacesUIUtils[method];
+			}
 
-			eval('PlacesUIUtils.openURINodesInTabs = '+
-				PlacesUIUtils.openURINodesInTabs.toSource().replace(
-					'{',
-					<![CDATA[{
-						var TSTBS;
-						let (w = '_getTopBrowserWin' in this ?
-									this._getTopBrowserWin() :
-								'_getCurrentActiveWin' in this ?
-									this._getCurrentActiveWin() :
-									window) {
-							TSTBS = w.TreeStyleTabBookmarksService;
-						}
-					]]>.toString()
-				).replace(
-					'uri: aNodes[i].uri,',
-					'id: aNodes[i].itemId, $&'
-				).replace(
-					/(this\._openTabset\([^\)]+)(\))/,
-					<![CDATA[$1,
-						TSTBS.treeBundle
-							.getFormattedString(
-								PlacesUtils.nodeIsBookmark(aNodes[0]) ?
-									'openSelectedPlaces.bookmarks' :
-									'openSelectedPlaces.history',
-								[aNodes[0].title, aNodes.length]
-							)
-					$2]]>
-				)
-			);
+			let (method = (sv.getTreePref('compatibility.TabUtilities') && PlacesUIUtils.TU_openContainerNodeInTabs) ?
+							'TU_openContainerNodeInTabs' :
+							'openContainerNodeInTabs') {
+				eval('PlacesUIUtils.'+method+' = '+
+					PlacesUIUtils[method].toSource().replace(
+						/(this\._openTabset\([^\)]+)(\))/,
+						<![CDATA[
+							let (w = '_getTopBrowserWin' in this ?
+										this._getTopBrowserWin() :
+									'_getCurrentActiveWin' in this ?
+										this._getCurrentActiveWin() :
+										window) {
+								let nodes = w.TreeStyleTabBookmarksService.getItemIdsForContainerNode(aNode);
+								for (let i in nodes) {
+									urlsToOpen[i].id = nodes[i];
+								}
+							}
+							$1, aNode.title$2
+						]]>
+					)
+				);
+				if (sv.getTreePref('compatibility.TabUtilities') && method.indexOf('TU_') > -1)
+					window[method] = PlacesUIUtils[method];
+			}
+
+			let (method = (sv.getTreePref('compatibility.TabUtilities') && PlacesUIUtils.TU_openURINodesInTabs) ?
+							'TU_openURINodesInTabs' :
+							'openURINodesInTabs') {
+				eval('PlacesUIUtils.'+method+' = '+
+					PlacesUIUtils[method].toSource().replace(
+						'{',
+						<![CDATA[{
+							var TSTBS;
+							let (w = '_getTopBrowserWin' in this ?
+										this._getTopBrowserWin() :
+									'_getCurrentActiveWin' in this ?
+										this._getCurrentActiveWin() :
+										window) {
+								TSTBS = w.TreeStyleTabBookmarksService;
+							}
+						]]>.toString()
+					).replace(
+						'uri: aNodes[i].uri,',
+						'id: aNodes[i].itemId, $&'
+					).replace(
+						/(this\._openTabset\([^\)]+)(\))/,
+						<![CDATA[$1,
+							TSTBS.treeBundle
+								.getFormattedString(
+									PlacesUtils.nodeIsBookmark(aNodes[0]) ?
+										'openSelectedPlaces.bookmarks' :
+										'openSelectedPlaces.history',
+									[aNodes[0].title, aNodes.length]
+								)
+						$2]]>
+					)
+				);
+				if (sv.getTreePref('compatibility.TabUtilities') && method.indexOf('TU_') > -1)
+					window[method] = PlacesUIUtils[method];
+			}
 
 			PlacesUIUtils.__treestyletab__done = true;
 
