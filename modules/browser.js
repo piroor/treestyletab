@@ -619,6 +619,7 @@ TreeStyleTabBrowser.prototype = {
 		w.addEventListener('customizationchange', this, false);
 		w.addEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
 		w.addEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED,  this, false);
+		w.addEventListener('tabviewhidden', this, true);
 
 		b.addEventListener('nsDOMMultipleTabHandlerTabsClosing', this, false);
 
@@ -1783,6 +1784,7 @@ TreeStyleTabBrowser.prototype = {
 		w.removeEventListener('customizationchange', this, false);
 		w.removeEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
 		w.removeEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED,  this, false);
+		w.removeEventListener('tabviewhidden', this, true);
 
 		b.removeEventListener('nsDOMMultipleTabHandlerTabsClosing', this, false);
 
@@ -2452,6 +2454,13 @@ TreeStyleTabBrowser.prototype = {
 			case 'customizationchange':
 				return this.updateCustomizedTabsToolbar();
 
+			case 'tabviewhidden':
+				this.tabViewHiding = true;
+				this._addedCountClearTimer = this.window.setTimeout(function(aSelf) {
+					aSelf.tabViewHiding = false;
+				}, 0, this);
+				return;
+
 
 			case this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED:
 				return this.onTreeStyleTabPrintPreviewEntered(aEvent);
@@ -2467,6 +2476,7 @@ TreeStyleTabBrowser.prototype = {
 	},
 	lastScrollX : -1,
 	lastScrollY : -1,
+	tabViewHiding : false,
 	
 	restoreLastScrollPosition : function TSTBrowser_restoreLastScrollPosition()
 	{
@@ -3041,19 +3051,25 @@ TreeStyleTabBrowser.prototype = {
 	// for TabView (Panorama aka Tab Candy)
 	onTabVisibilityChanged : function TSTBrowser_onTabVisibilityChanged(aEvent) 
 	{
-		this.updateInvertedTabContentsOrder(aEvent.originalTarget);
+		var tab = aEvent.originalTarget;
+		if (this.tabViewHiding) {
+			this.updateInvertedTabContentsOrder(aEvent.originalTarget);
 
-		if (this.tabVisibilityChangedTimer) {
-			this.window.clearTimeout(this.tabVisibilityChangedTimer);
-			this.tabVisibilityChangedTimer = null;
+			if (this.tabVisibilityChangedTimer) {
+				this.window.clearTimeout(this.tabVisibilityChangedTimer);
+				this.tabVisibilityChangedTimer = null;
+			}
+			this.tabVisibilityChangedTabs.push(tab);
+			this.tabVisibilityChangedTimer = this.window.setTimeout(function(aSelf) {
+				aSelf.tabVisibilityChangedTimer = null;
+				var tabs = aSelf.tabVisibilityChangedTabs;
+				aSelf.tabVisibilityChangedTabs = [];
+				aSelf.updateTreeByTabVisibility(tabs);
+			}, 0, this);
 		}
-		this.tabVisibilityChangedTabs.push(aEvent.originalTarget);
-		this.tabVisibilityChangedTimer = this.window.setTimeout(function(aSelf) {
-			aSelf.tabVisibilityChangedTimer = null;
-			var tabs = aSelf.tabVisibilityChangedTabs;
-			aSelf.tabVisibilityChangedTabs = [];
-			aSelf.updateTreeByTabVisibility(tabs);
-		}, 0, this);
+		else if (aEvent.type == 'TabHide') {
+			this.subtreeFollowParentAcrossTabGroups(tab);
+		}
 	},
 	tabVisibilityChangedTimer : null,
 	updateTreeByTabVisibility : function TSTBrowser_updateTreeByTabVisibility(aChangedTabs)
@@ -3126,6 +3142,32 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 		this.internallyTabMovingCount--;
+	},
+	tabViewTreeIsMoving : false,
+	subtreeFollowParentAcrossTabGroups : function TSTBrowser_subtreeFollowParentAcrossTabGroups(aParent)
+	{
+		if (this.tabViewTreeIsMoving) return;
+		let item = aParent._tabViewTabItem;
+		if (!item) return;
+		let group = item.parent;
+		if (!group) return;
+
+		this.tabViewTreeIsMoving = true;
+		this.internallyTabMovingCount++;
+		let w = this.window;
+		let b = this.mTabBrowser;
+		let lastCount = this.getAllTabs(b).snapshotLength - 1;
+		w.setTimeout(function(aSelf) {
+			aSelf.partTab(aParent);
+			b.moveTabTo(aParent, lastCount);
+			let descendantTabs = aSelf.getDescendantTabs(aParent);
+			descendantTabs.forEach(function(aTab) {
+				w.TabView.moveTabTo(aTab, group.id);
+				b.moveTabTo(aTab, lastCount);
+			});
+			aSelf.internallyTabMovingCount--;
+			aSelf.tabViewTreeIsMoving = false;
+		}, 0, this);
 	},
  
 	onTabRestoring : function TSTBrowser_onTabRestoring(aEvent) 
