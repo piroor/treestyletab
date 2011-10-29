@@ -2550,7 +2550,7 @@ TreeStyleTabBrowser.prototype = {
 			else if (
 				parent &&
 				this.getTreePref('insertNewChildAt') == this.kINSERT_FISRT &&
-				(this.multipleCount == 0 || this._addedCountInThisLoop == 0)
+				(this.multipleCount <= 0 || this._addedCountInThisLoop <= 0)
 				) {
 				/* 複数の子タブを一気に開く場合、最初に開いたタブだけを
 				   子タブの最初の位置に挿入し、続くタブは「最初の開いたタブ」と
