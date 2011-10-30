@@ -399,6 +399,7 @@ TreeStyleTabBrowser.prototype = {
 		var row    = 0;
 
 		var faviconized = width <= this.MIN_PINNED_TAB_WIDTH;
+		var baseX = this.tabStrip.boxObject.screenX - this.document.documentElement.boxObject.screenX;
 
 		/**
 		 * Hacks for Firefox 9 or olders.
@@ -406,8 +407,7 @@ TreeStyleTabBrowser.prototype = {
 		 * by margin-right, because the basic position becomes
 		 * "top-right" instead of "top-left".
 		 */
-		var needToFixOrigin = !this.isGecko10OrLater;
-		var needToInvertDirection = needToFixOrigin && this.position == 'left' && b.getAttribute(this.kINVERT_SCROLLBAR) == 'true';
+		var needToInvertDirection = !this.isGecko10OrLater && this.position == 'left' && b.getAttribute(this.kINVERT_SCROLLBAR) == 'true';
 		var remainder = maxWidth - (maxCol * width);
 		var shrunkenOffset = ((needToInvertDirection || this.position == 'right') && tabbarPlaceHolderWidth) ?
 								tabbarWidth - tabbarPlaceHolderWidth :
@@ -442,18 +442,8 @@ TreeStyleTabBrowser.prototype = {
 			}
 			else {
 				style.setProperty('margin-left', ((width * col) + shrunkenOffset)+'px', 'important');
-				if (needToFixOrigin) {
-					/**
-					 * Hack for Firefox 9 or olders. In "rtl" box, the origin
-					 * is wrongly set to the edge of the root element. So, we
-					 * must not set specific left/right.
-					 */
-					style.left = style.right = '';
-				}
-				else {
-					style.left = '0';
-					style.right = 'auto';
-				}
+				style.left = baseX+'px';
+				style.right = 'auto';
 				style.marginRight = '';
 			}
 
