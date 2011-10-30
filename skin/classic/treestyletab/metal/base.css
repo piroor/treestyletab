@@ -128,7 +128,11 @@ tabbrowser[treestyletab-tabbar-position="right"]
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab
   .tab-icon
-  .tab-icon-image {
+  .tab-icon-image,
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab
+  .tab-icon
+  .tab-throbber {
 	width: 16px !important;
 	height: 16px !important;
 	margin: 0 0 0 6px !important;
@@ -136,7 +140,11 @@ tabbrowser[treestyletab-tabbar-position="right"]
 .tabbrowser-tabs[treestyletab-tab-contents-inverted="true"]
   .tabbrowser-tab
   .tab-icon
-  .tab-icon-image {
+  .tab-icon-image,
+.tabbrowser-tabs[treestyletab-tab-contents-inverted="true"]
+  .tabbrowser-tab
+  .tab-icon
+  .tab-throbber {
 	margin: 0 6px 0 0 !important;
 }
 

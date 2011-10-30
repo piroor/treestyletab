@@ -198,6 +198,15 @@
   .tab-icon-image,
 .tabbrowser-tabs[treestyletab-tabbar-position="top"]
   .tabbrowser-tab[treestyletab-drop-position="self"]
+  .tab-throbber,
+.tabbrowser-tabs:not([treestyletab-style])
+  .tabbrowser-tab[treestyletab-drop-position="before"]
+  .tab-throbber,
+.tabbrowser-tabs:not([treestyletab-style])
+  .tabbrowser-tab[treestyletab-drop-position="after"]
+  .tab-throbber,
+.tabbrowser-tabs[treestyletab-tabbar-position="top"]
+  .tabbrowser-tab[treestyletab-drop-position="self"]
   .tab-extra-status,
 .tabbrowser-tabs:not([treestyletab-style])
   .tabbrowser-tab[treestyletab-drop-position="before"]

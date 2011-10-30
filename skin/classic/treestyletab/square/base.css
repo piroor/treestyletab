@@ -141,7 +141,9 @@
 }
 
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tab-icon-image {
+  .tab-icon-image,
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tab-throbber {
 	margin-left: 0;
 }
 
