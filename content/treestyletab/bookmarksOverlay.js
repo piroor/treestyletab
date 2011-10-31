@@ -233,11 +233,12 @@ var TreeStyleTabBookmarksService = {
 					).replace(
 						/(browserWindow\.(?:getBrowser\(\)|gBrowser)\.loadTabs\([^;]+\);)/,
 						<![CDATA[
-							var TSTResult = browserWindow.TreeStyleTabBookmarksService.handleTabsOpenProcess(where, aEvent, browserWindow, ids, urls, replaceCurrentTab, aFolderTitle);
+							var TSTResult = browserWindow.TreeStyleTabBookmarksService.handleTabsOpenProcess(where, aEvent, browserWindow, ids, urls, typeof replaceCurrentTab == 'undefined' ? undefined : replaceCurrentTab, aFolderTitle);
 							TSTTreeStructure = TSTResult.treeStructure;
 							TSTPreviousTabs = TSTResult.previousTabs;
 							TSTOpenGroupBookmarkBehavior = TSTResult.behavior;
-							replaceCurrentTab = TSTResult.replaceCurrentTab;
+							if (typeof replaceCurrentTab != 'undefined')
+								replaceCurrentTab = TSTResult.replaceCurrentTab;
 							$1
 							]]>
 					).replace(
