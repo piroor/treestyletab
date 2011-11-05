@@ -160,7 +160,7 @@ try{
 			tab.parentNode != b.mTabContainer)
 			return true;
 
-		tab = sv.getTabFromEvent(aEvent);
+		tab = sv.getTabFromEvent(aEvent) || sv.getTabFromTabbarEvent(aEvent);
 		if (sv.isCollapsed(tab))
 			return false;
 
@@ -246,7 +246,7 @@ catch(e) {
 		var b  = this.browser;
 		var d  = this.document;
 
-		var tab        = aEvent.target;
+		var tab        = sv.getTabFromEvent(aEvent) || sv.getTabFromTabbarEvent(aEvent) || aEvent.target;
 		var tabs       = sv.getTabsArray(b);
 		var firstTab   = sv.getFirstNormalTab(b) || tabs[0];
 		var lastTabIndex = tabs.length - 1;
