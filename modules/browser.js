@@ -4778,7 +4778,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var count = this.document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER);
 		if (count) {
-			count.setAttribute('value', this.getDescendantTabs(aTab).length);
+			count.setAttribute('value', this.getDescendantTabs(aTab).length + 1);
 		}
 		if (!aDontUpdateAncestor) {
 			let parent = this.getParentTab(aTab);
