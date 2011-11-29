@@ -610,6 +610,7 @@ TreeStyleTabBrowser.prototype = {
 		w.addEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
 		w.addEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED,  this, false);
 		w.addEventListener('tabviewhidden', this, true);
+		w.addEventListener(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, this, false);
 
 		b.addEventListener('nsDOMMultipleTabHandlerTabsClosing', this, false);
 
@@ -1775,6 +1776,7 @@ TreeStyleTabBrowser.prototype = {
 		w.removeEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
 		w.removeEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED,  this, false);
 		w.removeEventListener('tabviewhidden', this, true);
+		w.removeEventListener(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, this, false);
 
 		b.removeEventListener('nsDOMMultipleTabHandlerTabsClosing', this, false);
 
@@ -2456,6 +2458,10 @@ TreeStyleTabBrowser.prototype = {
 				return this.onTreeStyleTabPrintPreviewEntered(aEvent);
 			case this.kEVENT_TYPE_PRINT_PREVIEW_EXITED:
 				return this.onTreeStyleTabPrintPreviewExited(aEvent);
+
+
+			case this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END:
+				return this.cancelDelayedExpandOnTabSelect();
 
 
 			case 'nsDOMMultipleTabHandlerTabsClosing':
@@ -3649,6 +3655,8 @@ TreeStyleTabBrowser.prototype = {
 		var b   = this.mTabBrowser;
 		var tab = b.selectedTab
 
+		this.cancelDelayedExpandOnTabSelect();
+
 		if (
 			/**
 			 * <tabbrowser>.previewTab() focuses to the tab internally,
@@ -3686,16 +3694,23 @@ TreeStyleTabBrowser.prototype = {
 				) {
 			if (!this.hasChildTabs(tab) || !this.isSubtreeCollapsed(tab))
 				tab = null;
-
 			if (
 				this._focusChangedByShortcut &&
-				this.accelKeyPressed &&
+				this.windowService.accelKeyPressed &&
 				!this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut')
 				) {
 				this.windowService.expandTreeAfterKeyReleased(tab);
 			}
 			else {
-				this.collapseExpandTreesIntelligentlyWithDelayFor(tab);
+				let delay = this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut.delay');
+				if (delay > 0) {
+					this._autoExpandOnTabSelectTimer = this.window.setTimeout(function(aSelf) {
+						aSelf.collapseExpandTreesIntelligentlyWithDelayFor(tab);
+					}, delay, this);
+				}
+				else {
+					this.collapseExpandTreesIntelligentlyWithDelayFor(tab);
+				}
 			}
 		}
 
@@ -3707,6 +3722,12 @@ TreeStyleTabBrowser.prototype = {
 		if (!this.isTabInViewport(tab)) {
 			this.scrollToTab(tab);
 			aEvent.stopPropagation();
+		}
+	},
+	cancelDelayedExpandOnTabSelect : function TSTBrowser_cancelDelayedExpandOnTabSelect() {
+		if (this._autoExpandOnTabSelectTimer) {
+			this.window.clearTimeout(this._autoExpandOnTabSelectTimer);
+			this._autoExpandOnTabSelectTimer = null;
 		}
 	},
  

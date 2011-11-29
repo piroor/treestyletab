@@ -385,14 +385,17 @@ pref("extensions.treestyletab.autoCollapseExpandSubtreeOnSelect",      true);
 pref("extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove", true);
 /**
  * When you press Ctrl-Tab/Shift-Ctrl-Tab, Firefox advances focus of tabs.
- * If this is "true", TST doesn't collapse/expand trees while you are switching
+ * If this is "true", TST collapses/expands focused tree after a delay specified
+ * by another preference "autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut.delay".
+ * (If the delay is "0", TST dynamiclaly collapses/expands focused tree even if
+ * you are browsing tabs by those shortcuts.)
+ * If this is "false", TST doesn't collapse/expand trees while you are switching
  * tab focus by those keyboard shortcuts. And then, after you release the Ctrl
  * key, TST will expand the tree if the newly selected tab have its collapsed
  * tree.
- * If this is "false", TST dynamiclaly collapses/expands focused tree even if
- * you are browsing tabs by those shortcuts.
  */
-pref("extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut", false);
+pref("extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut", true);
+pref("extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut.delay", 800);
 /**
  * If this is "true", TST expands/collapses tree by double-clicking on tabs.
  * Otherwise TST simply ignores such actions.
