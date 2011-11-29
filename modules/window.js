@@ -465,6 +465,7 @@ TreeStyleTabWindow.prototype = {
 
 		this.onPrefChange('extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut');
 		this.onPrefChange('extensions.treestyletab.pinnedTab.width');
+		this.onPrefChange('extensions.treestyletab.pinnedTab.height');
 // rap('window/init end');
 	},
 	initialized : false,
@@ -1581,8 +1582,8 @@ TreeStyleTabWindow.prototype = {
 		d.insertBefore(pi, d.documentElement);
 		this.pinnedTabsSizeStyle = pi;
 	},
-	MIN_PINNED_TAB_WIDTH : 24,
-	MIN_PINNED_TAB_HEIGHT : 24,
+	MIN_PINNED_TAB_WIDTH : 16,
+	MIN_PINNED_TAB_HEIGHT : 16,
 	pinnedTabWidth : 24,
 	pinnedTabHeight : 24,
 	pinnedTabsSizeStyle : null,
