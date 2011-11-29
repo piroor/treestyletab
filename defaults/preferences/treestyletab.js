@@ -306,7 +306,7 @@ pref("extensions.treestyletab.clickOnIndentSpaces.enabled", true);
  * 1 = show all titles of tabs in the tree only for collapsed tree
  * 2 = show all titles of tabs in the tree always
  */
-pref("extensions.treestyletab.tooltip.mode", 1);
+pref("extensions.treestyletab.tooltip.mode", 2);
 /**
  * Maximum count of tabs in a tooltip. Tabs over this limit are
  * not shown in the tooltip.
@@ -316,7 +316,7 @@ pref("extensions.treestyletab.tooltip.maxCount", 10);
  * After this delay, TST shows "full tooltip" to show whole tree.
  * Negative value means "do not show full tooltip".
  */
-pref("extensions.treestyletab.tooltip.fullTooltipDelay", 1500);
+pref("extensions.treestyletab.tooltip.fullTooltipDelay", 2000);
 
 /**
  * Visibility of extra menu items for the context menu on tabs, inserted by TST.
