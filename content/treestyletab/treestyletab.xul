@@ -153,6 +153,10 @@
 			oncommand="TreeStyleTabService.toggleFixed(TreeStyleTabService.getTabBrowserFromChild(this));"/>
 
 	</menupopup>
+	<tooltip id="treestyletab-full-tree-tooltip"
+		onclick="this.hidePopup();">
+		<arrowscrollbox flex="1" orient="vertical"/>
+	</tooltip>
 </popupset>
 
 </overlay>

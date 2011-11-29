@@ -312,6 +312,11 @@ pref("extensions.treestyletab.tooltip.mode", 1);
  * not shown in the tooltip.
  */
 pref("extensions.treestyletab.tooltip.maxCount", 10);
+/**
+ * After this delay, TST shows "full tooltip" to show whole tree.
+ * Negative value means "do not show full tooltip".
+ */
+pref("extensions.treestyletab.tooltip.fullTooltipDelay", 1500);
 
 /**
  * Visibility of extra menu items for the context menu on tabs, inserted by TST.
