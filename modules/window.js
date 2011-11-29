@@ -840,8 +840,10 @@ TreeStyleTabWindow.prototype = {
 	get shouldListenKeyEventsForAutoExpandByFocusChange() 
 	{
 		return !this.ctrlTabPreviewsEnabled &&
-				!this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut') &&
-				this.getTreePref('autoCollapseExpandSubtreeOnSelect');
+				(
+					this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut') ||
+					this.getTreePref('autoCollapseExpandSubtreeOnSelect')
+				);
 	},
  
 	get ctrlTabPreviewsEnabled() 

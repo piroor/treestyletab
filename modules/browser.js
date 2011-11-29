@@ -3694,24 +3694,26 @@ TreeStyleTabBrowser.prototype = {
 				) {
 			if (!this.hasChildTabs(tab) || !this.isSubtreeCollapsed(tab))
 				tab = null;
-			if (
-				this._focusChangedByShortcut &&
-				this.windowService.accelKeyPressed &&
-				!this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut')
-				) {
-				this.windowService.expandTreeAfterKeyReleased(tab);
-			}
-			else {
-				let delay = this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut.delay');
-				if (delay > 0) {
-					this._autoExpandOnTabSelectTimer = this.window.setTimeout(function(aSelf) {
-						if (tab && tab.parentNode)
-							aSelf.collapseExpandTreesIntelligentlyWithDelayFor(tab);
-					}, delay, this);
+
+			if (this._focusChangedByShortcut && this.windowService.accelKeyPressed) {
+				if (!this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut')) {
+					this.windowService.expandTreeAfterKeyReleased(tab);
 				}
 				else {
-					this.collapseExpandTreesIntelligentlyWithDelayFor(tab);
+					let delay = this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut.delay');
+					if (delay > 0) {
+						this._autoExpandOnTabSelectTimer = this.window.setTimeout(function(aSelf) {
+							if (tab && tab.parentNode)
+								aSelf.collapseExpandTreesIntelligentlyWithDelayFor(tab);
+						}, delay, this);
+					}
+					else {
+						this.collapseExpandTreesIntelligentlyWithDelayFor(tab);
+					}
 				}
+			}
+			else {
+				this.collapseExpandTreesIntelligentlyWithDelayFor(tab);
 			}
 		}
 
