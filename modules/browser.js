@@ -3705,7 +3705,8 @@ TreeStyleTabBrowser.prototype = {
 				let delay = this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut.delay');
 				if (delay > 0) {
 					this._autoExpandOnTabSelectTimer = this.window.setTimeout(function(aSelf) {
-						aSelf.collapseExpandTreesIntelligentlyWithDelayFor(tab);
+						if (tab && tab.parentNode)
+							aSelf.collapseExpandTreesIntelligentlyWithDelayFor(tab);
 					}, delay, this);
 				}
 				else {
@@ -3920,39 +3921,49 @@ TreeStyleTabBrowser.prototype = {
 	
 	handleTooltip : function TSTBrowser_handleTooltip(aEvent) 
 	{
-		var tab = this.document.tooltipNode;
-		if (tab.localName != 'tab')
+		var tab = this.getTabFromChild(this.document.tooltipNode);
+		if (!tab || tab.localName != 'tab')
 			return;
 
 		var label;
 		var collapsed = this.isSubtreeCollapsed(tab);
+		var mode = this.getTreePref('tooltip.mode');
+		var showTree = collapsed || mode == this.kTOOLTIP_MODE_ALWAYS;
 
 		var base = parseInt(tab.getAttribute(this.kNEST) || 0);
 		var descendant = this.getDescendantTabs(tab);
 		var indentPart = '  ';
-		var tree = (this.getTreePref('tooltip.includeChildren') && descendant.length) ?
-					[tab].concat(descendant)
-						.map(function(aTab) {
-							let label = aTab.getAttribute('label');
-							let indent = '';
-							let nest = parseInt(aTab.getAttribute(this.kNEST) || 0) - base;
-							for (let i = 0; i < nest; i++)
-							{
-								indent += indentPart;
-							}
-							return this.treeBundle.getFormattedString('tooltip.item.label', [label, indent]);
-						}, this)
-						.join('\n') :
-					null ;
+		var tree = null;
+		if (mode > this.kTOOLTIP_MODE_DEFAULT &&
+			descendant.length) {
+			let tabs = [tab].concat(descendant);
+			let tabsToBeListed = tabs.slice(0, Math.max(1, this.getTreePref('tooltip.maxCount')));
+			tree = tabsToBeListed
+					.map(function(aTab) {
+						let label = aTab.getAttribute('label');
+						let indent = '';
+						let nest = parseInt(aTab.getAttribute(this.kNEST) || 0) - base;
+						for (let i = 0; i < nest; i++)
+						{
+							indent += indentPart;
+						}
+						return this.treeBundle.getFormattedString('tooltip.item.label', [label, indent]);
+					}, this)
+					.join('\n');
+			if (tabs.length != tabsToBeListed.length)
+				tree += '\n'+indentPart+this.treeBundle.getFormattedString('tooltip.more', [tabs.length-tabsToBeListed.length]);
+		}
 
 		if ('mOverCloseButton' in tab && tab.mOverCloseButton) {
 			if (descendant.length &&
 				(collapsed || this.getTreePref('closeParentBehavior') == this.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)) {
-				label = this.treeBundle.getString('tooltip.closeTree');
+				label = showTree ?
+						this.treeBundle.getFormattedString('tooltip.closeTree.labeled', [tree]) :
+						this.treeBundle.getString('tooltip.closeTree') ;
 			}
 		}
 		else if (tab.getAttribute(this.kTWISTY_HOVER) == 'true') {
-			let key = collapsed ?
+			let key = showTree ?
 						'tooltip.expandSubtree' :
 						'tooltip.collapseSubtree' ;
 			label = tree || tab.getAttribute('label');
@@ -3960,7 +3971,7 @@ TreeStyleTabBrowser.prototype = {
 					this.treeBundle.getFormattedString(key+'.labeled', [label]) :
 					this.treeBundle.getString(key) ;
 		}
-		else if (collapsed) {
+		else if (showTree) {
 			label = tree;
 		}
 
@@ -3969,6 +3980,9 @@ TreeStyleTabBrowser.prototype = {
 			aEvent.stopPropagation();
 		}
 	},
+	kTOOLTIP_MODE_DEFAULT   : 0,
+	kTOOLTIP_MODE_COLLAPSED : 1,
+	kTOOLTIP_MODE_ALWAYS    : 2,
  
 	initTabContextMenu : function TSTBrowser_initTabContextMenu(aEvent) 
 	{

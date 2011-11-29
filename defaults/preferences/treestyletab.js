@@ -301,11 +301,17 @@ pref("extensions.treestyletab.twisty.expandSensitiveArea", true);
 pref("extensions.treestyletab.clickOnIndentSpaces.enabled", true);
 
 /**
- * If this is "true", TST shows all titles of tabs in the tree by the tooltip
- * for collapsed tree. If this is "false", or the tree is not collapsed,
- * tooltip will say only the title of the single tab.
+ * Contents of the tooltip on tabs.
+ * 0 = Firefox default (show the title of the one tab)
+ * 1 = show all titles of tabs in the tree only for collapsed tree
+ * 2 = show all titles of tabs in the tree always
  */
-pref("extensions.treestyletab.tooltip.includeChildren",  true);
+pref("extensions.treestyletab.tooltip.mode", 1);
+/**
+ * Maximum count of tabs in a tooltip. Tabs over this limit are
+ * not shown in the tooltip.
+ */
+pref("extensions.treestyletab.tooltip.maxCount", 10);
 
 /**
  * Visibility of extra menu items for the context menu on tabs, inserted by TST.
