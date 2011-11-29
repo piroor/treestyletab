@@ -572,10 +572,10 @@ pref("extensions.treestyletab.createSubtree.underParent", true);
 
 /**
  * Size of pinned tabs in the vertical tab bar.
- * "width" can accept a special value "-1" which means "expand to the width of the tab bar".
+ * If true, they will be faviconized. Otherwise, they expand to the width
+ * of the tab bar.
  */
-pref("extensions.treestyletab.pinnedTab.width", 24);
-pref("extensions.treestyletab.pinnedTab.height", 24);
+pref("extensions.treestyletab.pinnedTab.faviconized", true);
 
 /**
  * Compatibility hack flags for other addons. They can be disabled by each

@@ -382,18 +382,16 @@ TreeStyleTabBrowser.prototype = {
 
 		var maxWidth = tabbarPlaceHolderWidth || tabbarWidth;
 
-		var width  = Math.min(maxWidth, aWidth || this.window.TreeStyleTabService.pinnedTabWidth);
-		if (width < 0)
-			width = maxWidth;
-		else
-			width = Math.max(this.MIN_PINNED_TAB_WIDTH, width);
-		var height = Math.max(this.MIN_PINNED_TAB_HEIGHT, aHeight || this.window.TreeStyleTabService.pinnedTabHeight);
+		var faviconized = this.getTreePref('pinnedTab.faviconized');
+		var faviconizedSize = tabbar.childNodes[0].boxObject.height;
+
+		var width  = faviconized ? faviconizedSize : maxWidth ;
+		var height = faviconizedSize;
 		var maxCol = Math.floor(maxWidth / width);
 		var maxRow = Math.ceil(count / maxCol);
 		var col    = 0;
 		var row    = 0;
 
-		var faviconized = width <= this.MIN_PINNED_TAB_WIDTH;
 		var baseX = this.tabStrip.boxObject.screenX - this.document.documentElement.boxObject.screenX;
 
 		/**
@@ -429,7 +427,7 @@ TreeStyleTabBrowser.prototype = {
 			if (className != item.className)
 				item.className = className;
 
-			style.width = width+'px';
+			style.maxWidth = style.width = width+'px';
 			if (needToInvertDirection) {
 				let margin = (width * (maxCol - col - 1)) + remainder + shrunkenOffset;
 				style.setProperty('margin-right', margin+'px', 'important');
@@ -487,7 +485,7 @@ TreeStyleTabBrowser.prototype = {
 		for (var i = 0, count = this.pinnedTabsCount; i < count; i++)
 		{
 			let style = tabbar.childNodes[i].style;
-			style.width = style.left = style.right =
+			style.maxWidth = style.width = style.left = style.right =
 				style.MozMarginStart = style.marginLeft = style.marginRight = style.marginTop = '';
 		}
 	},
@@ -2195,8 +2193,7 @@ TreeStyleTabBrowser.prototype = {
 			case 'extensions.treestyletab.tabbar.autoHide.mode.fullscreen':
 				return this.autoHide; // ensure initialized
 
-			case 'extensions.treestyletab.pinnedTab.width':
-			case 'extensions.treestyletab.pinnedTab.height':
+			case 'extensions.treestyletab.pinnedTab.faviconized':
 				return this.positionPinnedTabsWithDelay();
 
 			default:

@@ -360,3 +360,12 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
 .treestyletab-tabbar-toolbar-ready {
 	border: 2px solid -moz-fieldtext !important;
 }
+
+
+
+/* pinned tabs */
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned="true"] {
+	height: 24px;
+	max-height: 24px;
+}
