@@ -79,16 +79,23 @@ FullTooltipManager.prototype = {
 
 		this.tabTooltip.addEventListener('popupshowing', this, true);
 		this.tabTooltip.addEventListener('popuphiding', this, true);
+
 		this.tabFullTooltip.addEventListener('click', this, true);
-		this.tabFullTooltip.addEventListener('popuphiding', this, true);
+		this.tabFullTooltip.addEventListener('popupshown', this, true);
+		this.tabFullTooltip.addEventListener('popuphidden', this, true);
 	},
 
 	destroy : function FTM_destroy()
 	{
+		this.cancel();
+		this.stopListenTooltipEvents();
+
 		this.tabTooltip.removeEventListener('popupshowing', this, true);
 		this.tabTooltip.removeEventListener('popuphiding', this, true);
+
 		this.tabFullTooltip.removeEventListener('click', this, true);
-		this.tabFullTooltip.removeEventListener('popuphiding', this, true);
+		this.tabFullTooltip.removeEventListener('popupshown', this, true);
+		this.tabFullTooltip.removeEventListener('popuphidden', this, true);
 
 		delete this.owner;
 	},
@@ -101,16 +108,44 @@ FullTooltipManager.prototype = {
 				return this.onClick(aEvent);
 
 			case 'popupshowing':
-				return this.onPopupShowing(aEvent);
+				return this.onDefaultTooltipShowing(aEvent);
 
 			case 'popuphiding':
-				return this.onPopupHiding(aEvent);
+				return this.onDefaultTooltipHiding(aEvent);
+
+			case 'popupshown':
+				return this.onShown(aEvent);
+
+			case 'popuphidden':
+				return this.onHidden(aEvent);
+
+			case 'mousemove':
+				return this.onTooltipMouseMove(aEvent);
+
+			case 'mouseover':
+				return this.cancelDelayedHide();
+
+			default:
+				return this.onTooltipEvent(aEvent);
 		}
+	},
+
+	getFullTooltipFromEvent : function FTM_getFullTooltipFromEvent(aEvent)
+	{
+		return this.evaluateXPath(
+				'ancestor-or-self::xul:tooltip[@id="'+this.tabFullTooltip.id+'"]',
+				aEvent.target,
+				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue;
 	},
 
 	onClick : function FTM_onClick(aEvent)
 	{
-		var label = this.evaluateXPath('ancestor-or-self::xul:label[@class="text-link"][1]', aEvent.target, Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE).singleNodeValue;
+		var label = this.evaluateXPath(
+				'ancestor-or-self::xul:label[@class="text-link"][1]',
+				aEvent.target,
+				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue;
 		if (label) {
 			let id = label.getAttribute(this.kID);
 			let tab = this.getTabById(id, this.owner.browser);
@@ -121,18 +156,66 @@ FullTooltipManager.prototype = {
 		this.tabFullTooltip.hidePopup();
 	},
 
-	onPopupShowing : function FTM_onPopupShowing(aEvent) 
+	onDefaultTooltipShowing : function FTM_onDefaultTooltipShowing(aEvent) 
 	{
 		this.cancel();
 		this.handleDefaultTooltip(aEvent);
 	},
 
-	onPopupHiding : function FTM_onPopupHiding(aEvent)
+	onDefaultTooltipHiding : function FTM_onDefaultTooltipHiding(aEvent)
 	{
-		if (aEvent.target == this.tabTooltip)
-			this.cancel();
-		else if (aEvent.target == this.tabFullTooltip)
-			this.clear();
+		this.cancel();
+	},
+
+	onShown : function FTM_onShown(aEvent) 
+	{
+		this.startListenTooltipEvents();
+	},
+
+	onHidden : function FTM_onHidden(aEvent) 
+	{
+		this.stopListenTooltipEvents();
+		this.clear();
+	},
+
+	onTooltipMouseMove : function FTM_onTooltipMouseMove(aEvent)
+	{
+		if (!this.getFullTooltipFromEvent(aEvent))
+			this.hideWithDelay();
+	},
+
+	onTooltipEvent : function FTM_onTooltipEvent(aEvent)
+	{
+		if (!this.getFullTooltipFromEvent(aEvent))
+			this.hide();
+	},
+
+	startListenTooltipEvents : function FTM_startListenTooltipEvents()
+	{
+		if (this.listening)
+			return;
+		this.window.addEventListener('DOMMouseScroll', this, true);
+		this.window.addEventListener('keydown', this, true);
+		this.window.addEventListener('mousedown', this, true);
+		this.window.addEventListener('mouseup', this, true);
+		this.window.addEventListener('dragstart', this, true);
+		this.window.addEventListener('mousemove', this, true);
+		this.tabFullTooltip.addEventListener('mouseover', this, true);
+		this.listening = true;
+	},
+
+	stopListenTooltipEvents : function FTM_stopListenTooltipEvents()
+	{
+		if (!this.listening)
+			return;
+		this.window.removeEventListener('DOMMouseScroll', this, true);
+		this.window.removeEventListener('keydown', this, true);
+		this.window.removeEventListener('mousedown', this, true);
+		this.window.removeEventListener('mouseup', this, true);
+		this.window.removeEventListener('dragstart', this, true);
+		this.window.removeEventListener('mousemove', this, true);
+		this.tabFullTooltip.removeEventListener('mouseover', this, true);
+		this.listening = false;
 	},
 
 
@@ -226,7 +309,7 @@ FullTooltipManager.prototype = {
 			aSelf.fill(aTab, aExtraLabels);
 
 			// open as a context menu popup to reposition it automatically
-			tooltip.openPopupAtScreen(x, y, false);
+			tooltip.openPopupAtScreen(x, y, true);
 		}, Math.max(delay, 0), this);
 	},
 
@@ -236,8 +319,32 @@ FullTooltipManager.prototype = {
 			this.window.clearTimeout(this._fullTooltipTimer);
 			this._fullTooltipTimer = null;
 		}
+		this.hide();
+	},
+
+	hide : function FTM_hide()
+	{
+		this.cancelDelayedHide();
 		this.tabFullTooltip.hidePopup();
 	},
+
+
+	hideWithDelay : function FTM_hideWithDelay()
+	{
+		this.cancelDelayedHide();
+		this._delayedHideTimer = this.window.setTimeout(function(aSelf) {
+			aSelf.hide();
+		}, 500, this);
+	},
+
+	cancelDelayedHide : function FTM_cancelDelayedHide()
+	{
+		if (this._delayedHideTimer) {
+			this.window.clearTimeout(this._delayedHideTimer);
+			this._delayedHideTimer = null;
+		}
+	},
+
 
 	fill : function FTM_fill(aTab, aExtraLabels)
 	{
