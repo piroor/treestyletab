@@ -370,7 +370,8 @@ TreeStyleTabBrowser.prototype = {
 			)
 			return;
 
-		if (!this.isVertical) {
+		var count = this.pinnedTabsCount;
+		if (!this.isVertical || !count) {
 			this.resetPinnedTabs();
 			b.mTabContainer._positionPinnedTabs();
 			return;
@@ -381,7 +382,6 @@ TreeStyleTabBrowser.prototype = {
 
 		var maxWidth = tabbarPlaceHolderWidth || tabbarWidth;
 
-		var count  = this.pinnedTabsCount;
 		var width  = Math.min(maxWidth, aWidth || this.window.TreeStyleTabService.pinnedTabWidth);
 		if (width < 0)
 			width = maxWidth;
