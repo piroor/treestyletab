@@ -145,7 +145,6 @@ FullTooltipManager.prototype = {
 		var label;
 		var collapsed = this.isSubtreeCollapsed(tab);
 		var mode = this.getTreePref('tooltip.mode');
-		var showTree = collapsed || mode == this.kTOOLTIP_MODE_ALWAYS;
 
 		var base = parseInt(tab.getAttribute(this.kNEST) || 0);
 		var descendant = this.getDescendantTabs(tab);
@@ -177,23 +176,23 @@ FullTooltipManager.prototype = {
 			if (descendant.length &&
 				(collapsed || this.getTreePref('closeParentBehavior') == this.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)) {
 				label = tree || tab.getAttribute('label');
-				label = showTree ?
+				label = label ?
 						this.treeBundle.getFormattedString('tooltip.closeTree.labeled', [label]) :
 						this.treeBundle.getString('tooltip.closeTree') ;
-				if (showTree)
-					fullTooltipExtraLabel = this.treeBundle.getFormattedString('tooltip.closeTree.labeled', ['%TREE%']).split(/\s*%TREE%\s*/);
+				fullTooltipExtraLabel = this.treeBundle.getFormattedString('tooltip.closeTree.labeled', ['%TREE%']).split(/\s*%TREE%\s*/);
 			}
 		}
 		else if (tab.getAttribute(this.kTWISTY_HOVER) == 'true') {
-			let key = showTree ?
+			let key = collapsed ?
 						'tooltip.expandSubtree' :
 						'tooltip.collapseSubtree' ;
 			label = tree || tab.getAttribute('label');
 			label = label ?
 					this.treeBundle.getFormattedString(key+'.labeled', [label]) :
 					this.treeBundle.getString(key) ;
+			fullTooltipExtraLabel = this.treeBundle.getFormattedString(key+'.labeled', ['%TREE%']).split(/\s*%TREE%\s*/);
 		}
-		else if (showTree) {
+		else if (collapsed || mode == this.kTOOLTIP_MODE_ALWAYS) {
 			label = tree;
 		}
 
@@ -216,6 +215,8 @@ FullTooltipManager.prototype = {
 			return;
 
 		this._fullTooltipTimer = this.window.setTimeout(function(aSelf) {
+			var x = aBaseTooltip.boxObject.screenX;
+			var y = aBaseTooltip.boxObject.screenY;
 			aBaseTooltip.hidePopup();
 
 			var tooltip = aSelf.tabFullTooltip;
@@ -225,7 +226,7 @@ FullTooltipManager.prototype = {
 			aSelf.fill(aTab, aExtraLabels);
 
 			// open as a context menu popup to reposition it automatically
-			tooltip.openPopup(aBaseTooltip, 'overlap', 0, 0, true, false);
+			tooltip.openPopupAtScreen(x, y, false);
 		}, Math.max(delay, 0), this);
 	},
 
@@ -249,9 +250,12 @@ FullTooltipManager.prototype = {
 			if (typeof aExtraLabels == 'string')
 				aExtraLabels = [aExtraLabels];
 			aExtraLabels.forEach(function(aLabel) {
+				aLabel = aLabel.replace(/^\s+|\s+$/g, '');
+				if (!aLabel)
+					return;
 				root.appendChild(this.document.createElement('description'))
 					.appendChild(this.document.createTextNode(aLabel));
-			});
+			}, this);
 		}
 
 		root.insertBefore(tree, root.firstChild && root.firstChild.nextSibling);
