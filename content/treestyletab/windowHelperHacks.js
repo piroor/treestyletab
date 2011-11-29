@@ -117,7 +117,7 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 		if ('getTabProperties' in sessionData && 'setTabProperties' in sessionData) {
 			let prefix = sv.kTMP_SESSION_DATA_PREFIX;
 			let sessionManager = window.TabmixSessionManager || window.SessionManager;
-			SessionData.tabTSTProperties = this.extraProperties.map(function(aProperty) {
+			sessionData.tabTSTProperties = this.extraProperties.map(function(aProperty) {
 				return prefix+aProperty;
 			});
 			eval('sessionData.getTabProperties = '+
