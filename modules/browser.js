@@ -42,6 +42,7 @@ const Ci = Components.interfaces;
 // rap();
 
 Components.utils.import('resource://treestyletab-modules/window.js');
+Components.utils.import('resource://treestyletab-modules/fullTooltip.js');
  
 function TreeStyleTabBrowser(aWindowService, aTabBrowser) 
 {
@@ -135,12 +136,6 @@ TreeStyleTabBrowser.prototype = {
 	set tabStripPlaceHolder(value)
 	{
 		return (this._tabStripPlaceHolder = value);
-	},
- 
-	get tabTooltip() 
-	{
-		return this.document.getElementById('tabbrowser-tab-tooltip') || // Firefox 4.0-
-				this.evaluateXPath('descendant::xul:tooltip', this.mTabBrowser.mStrip, Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE).singleNodeValue; // -Firefox 3.6
 	},
   
 /* properties */ 
@@ -1279,7 +1274,7 @@ TreeStyleTabBrowser.prototype = {
 		this.scrollBox.addEventListener('overflow', this, true);
 		this.scrollBox.addEventListener('underflow', this, true);
 
-		this.tabTooltip.addEventListener('popupshowing', this, true);
+		this.fullTooltipManager = new FullTooltipManager(this);
 	},
  
 	_ensureNewSplitter : function TSTBrowser__ensureNewSplitter() 
@@ -1845,7 +1840,8 @@ TreeStyleTabBrowser.prototype = {
 		this.scrollBox.removeEventListener('overflow', this, true);
 		this.scrollBox.removeEventListener('underflow', this, true);
 
-		this.tabTooltip.removeEventListener('popupshowing', this, true);
+		this.fullTooltipManager.destroy();
+		delete this.fullTooltipManager;
 	},
  
 	saveCurrentState : function TSTBrowser_saveCurrentState() 
@@ -2404,7 +2400,10 @@ TreeStyleTabBrowser.prototype = {
 				return this.onScroll(aEvent);
 
 			case 'popupshowing':
-				return this.onPopupShowing(aEvent)
+				return this.onPopupShowing(aEvent);
+
+			case 'popuphiding':
+				return this.onPopupHiding(aEvent);
 
 			case 'mouseover':
 				this._initDNDObservers();
@@ -3915,178 +3914,10 @@ TreeStyleTabBrowser.prototype = {
  
 	onPopupShowing : function TSTBrowser_onPopupShowing(aEvent) 
 	{
-		if (aEvent.target.localName == 'tooltip')
-			this.handleTooltip(aEvent);
-		else if (aEvent.target == aEvent.currentTarget)
+		if (aEvent.target == aEvent.currentTarget)
 			this.initTabContextMenu(aEvent);
 	},
 	
-	handleTooltip : function TSTBrowser_handleTooltip(aEvent) 
-	{
-		this.cancelFullTooltip();
-
-		var tab = this.getTabFromChild(this.document.tooltipNode);
-		if (!tab || tab.localName != 'tab')
-			return;
-
-		var label;
-		var collapsed = this.isSubtreeCollapsed(tab);
-		var mode = this.getTreePref('tooltip.mode');
-		var showTree = collapsed || mode == this.kTOOLTIP_MODE_ALWAYS;
-
-		var base = parseInt(tab.getAttribute(this.kNEST) || 0);
-		var descendant = this.getDescendantTabs(tab);
-		var indentPart = '  ';
-		var tree = null;
-		var fullTooltipExtraLabel = '';
-		if (mode > this.kTOOLTIP_MODE_DEFAULT &&
-			descendant.length) {
-			let tabs = [tab].concat(descendant);
-			let tabsToBeListed = tabs.slice(0, Math.max(1, this.getTreePref('tooltip.maxCount')));
-			tree = tabsToBeListed
-					.map(function(aTab) {
-						let label = aTab.getAttribute('label');
-						let indent = '';
-						let nest = parseInt(aTab.getAttribute(this.kNEST) || 0) - base;
-						for (let i = 0; i < nest; i++)
-						{
-							indent += indentPart;
-						}
-						return this.treeBundle.getFormattedString('tooltip.item.label', [label, indent]);
-					}, this)
-					.join('\n');
-			if (tabs.length != tabsToBeListed.length) {
-				tree += '\n'+indentPart+this.treeBundle.getFormattedString('tooltip.more', [tabs.length-tabsToBeListed.length]);
-			}
-		}
-
-		if ('mOverCloseButton' in tab && tab.mOverCloseButton) {
-			if (descendant.length &&
-				(collapsed || this.getTreePref('closeParentBehavior') == this.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)) {
-				label = tree || tab.getAttribute('label');
-				label = showTree ?
-						this.treeBundle.getFormattedString('tooltip.closeTree.labeled', [label]) :
-						this.treeBundle.getString('tooltip.closeTree') ;
-				if (showTree)
-					fullTooltipExtraLabel = this.treeBundle.getFormattedString('tooltip.closeTree.labeled', ['%TREE%']).split(/\s*%TREE%\s*/);
-			}
-		}
-		else if (tab.getAttribute(this.kTWISTY_HOVER) == 'true') {
-			let key = showTree ?
-						'tooltip.expandSubtree' :
-						'tooltip.collapseSubtree' ;
-			label = tree || tab.getAttribute('label');
-			label = label ?
-					this.treeBundle.getFormattedString(key+'.labeled', [label]) :
-					this.treeBundle.getString(key) ;
-		}
-		else if (showTree) {
-			label = tree;
-		}
-
-		if (label) {
-			aEvent.target.setAttribute('label', label);
-			aEvent.stopPropagation();
-
-			this.showFullTooltip(aEvent.target, tab, fullTooltipExtraLabel);
-		}
-	},
-	kTOOLTIP_MODE_DEFAULT   : 0,
-	kTOOLTIP_MODE_COLLAPSED : 1,
-	kTOOLTIP_MODE_ALWAYS    : 2,
- 
-	showFullTooltip : function TSTBrowser_showFullTooltip(aBaseTooltip, aTab, aExtraLabels) 
-	{
-		this.cancelFullTooltip();
-
-		var delay = this.getTreePref('tooltip.fullTooltipDelay');
-		if (delay < 0)
-			return;
-
-		var doc = this.document;
-		var tooltip = doc.getElementById('treestyletab-full-tree-tooltip');
-		tooltip.style.maxWidth = this.window.screen.availWidth+'px';
-		tooltip.style.maxHeight = this.window.screen.availHeight+'px';
-
-		var range = doc.createRange();
-		range.selectNodeContents(tooltip.firstChild);
-		range.deleteContents();
-		range.insertNode(this.createFullTooltipContents(aTab, aExtraLabels));
-
-		this._fullTooltipTimer = this.window.setTimeout(function() {
-			aBaseTooltip.hidePopup();
-			// open as a context menu popup to reposition it automatically
-			tooltip.openPopup(aBaseTooltip, 'overlap', 0, 0, true, false);
-		}, Math.max(delay, 0));
-
-		var self = this;
-		aBaseTooltip.addEventListener('popuphiding', function() {
-			aBaseTooltip.removeEventListener('popuphiding', arguments.callee, true);
-			self.cancelFullTooltip();
-		}, true);
-	},
-	cancelFullTooltip : function TSTBrowser_destroyFullTooltip()
-	{
-		if (this._fullTooltipTimer) {
-			this.window.clearTimeout(this._fullTooltipTimer);
-			this._fullTooltipTimer = null;
-		}
-		this.document.getElementById('treestyletab-full-tree-tooltip').hidePopup();
-	},
-	createFullTooltipContents : function TSTBrowser_createFullTooltipContents(aTab, aExtraLabels)
-	{
-		var doc = this.document;
-
-		const XHTMLNS = 'http://www.w3.org/1999/xhtml';
-		var tree = (function(aTab) {
-				var item = doc.createElement('hbox');
-				item.setAttribute('align', 'center');
-				var favicon = item.appendChild(doc.createElement('image'));
-				favicon.setAttribute('src', aTab.getAttribute('image') || 'chrome://mozapps/skin/places/defaultFavicon.png');
-				favicon.setAttribute('style', 'max-width:16px;max-height:16px;');
-				var label = item.appendChild(doc.createElement('label'));
-				label.setAttribute('value', aTab.label);
-				label.setAttribute('tooltiptext', aTab.label);
-				label.setAttribute('crop', 'end');
-				label.setAttribute('class', 'text-link');
-				label.addEventListener('click', function(aEvent) {
-					doc.defaultView.gBrowser.selectedTab = aTab; // aTab.selected = true;
-				}, true);
-				var children = this.getChildTabs(aTab);
-				if (children.length) {
-					let items = children.map(arguments.callee, this);
-					let childrenBox = doc.createElement('vbox');
-					items.forEach(function(aChild) {
-						childrenBox.appendChild(aChild);
-					});
-					childrenBox.setAttribute('align', 'stretch');
-					childrenBox.setAttribute('style', 'margin-left:1.5em');
-					let container = doc.createElement('vbox');
-					container.appendChild(item);
-					container.appendChild(childrenBox);
-					return container;
-				}
-				else {
-					return item;
-				}
-			}).call(this, aTab);
-
-		var root = doc.createDocumentFragment();
-
-		if (aExtraLabels) {
-			if (typeof aExtraLabels == 'string')
-				aExtraLabels = [aExtraLabels];
-			aExtraLabels.forEach(function(aLabel) {
-				root.appendChild(doc.createElement('description'))
-					.appendChild(doc.createTextNode(aLabel));
-			});
-		}
-
-		root.insertBefore(tree, root.firstChild && root.firstChild.nextSibling);
-
-		return root;
-	},
- 
 	initTabContextMenu : function TSTBrowser_initTabContextMenu(aEvent) 
 	{
 		var b = this.mTabBrowser;
@@ -4646,7 +4477,7 @@ TreeStyleTabBrowser.prototype = {
 		), this);
 	},
  
-	partTabs : function TSTBrowser_partTabs(aTabs)
+	partTabs : function TSTBrowser_partTabs(aTabs) 
 	{
 		var aTabs = Array.slice(aTabs);
 		for each (let tab in aTabs)
@@ -5026,7 +4857,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		return this.moveTabsInternal(aTabs, { insertBefore : aInsertBefore });
 	},
-	duplicateTabs : function TSTBrowser_duplicateTabs(aTabs, aInsertBefore) /* PUBLIC API */ 
+	duplicateTabs : function TSTBrowser_duplicateTabs(aTabs, aInsertBefore) /* PUBLIC API */
 	{
 		return this.moveTabsInternal(aTabs, { insertBefore : aInsertBefore, duplicate : true });
 	},
@@ -5129,7 +4960,7 @@ TreeStyleTabBrowser.prototype = {
 		return newTabs;
 	},
  
-	importTab : function TSTBrowser_importTab(aTab)
+	importTab : function TSTBrowser_importTab(aTab) 
 	{
 		var newTab = this.mTabBrowser.addTab();
 		newTab.linkedBrowser.stop();
@@ -5139,7 +4970,7 @@ TreeStyleTabBrowser.prototype = {
 		return newTab;
 	},
  
-	duplicateTabAsOrphan : function TSTBrowser_duplicateTabAsOrphan(aTab)
+	duplicateTabAsOrphan : function TSTBrowser_duplicateTabAsOrphan(aTab) 
 	{
 		var newTab = this.mTabBrowser.duplicateTab(aTab);
 		this.deleteTabValue(newTab, this.kCHILDREN);

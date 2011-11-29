@@ -153,13 +153,7 @@
 			oncommand="TreeStyleTabService.toggleFixed(TreeStyleTabService.getTabBrowserFromChild(this));"/>
 
 	</menupopup>
-	<tooltip id="treestyletab-full-tree-tooltip"
-		onclick="this.hidePopup();"
-		onpopuphiding="
-			var range = document.createRange();
-			range.selectNodeContents(this.firstChild);
-			range.deleteContents();
-		">
+	<tooltip id="treestyletab-full-tree-tooltip">
 		<arrowscrollbox flex="1" orient="vertical"/>
 	</tooltip>
 </popupset>
