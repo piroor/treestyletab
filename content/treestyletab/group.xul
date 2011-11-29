@@ -5,6 +5,12 @@
 	onclick="onClick(event)"
 	ondblclick="onDblClick(event)"
 	title="&group.default;">
+<commandset>
+	<command id="cmd_enterEdit" oncommand="enterEdit()"/>
+</commandset>
+<keyset>
+	<key keycode="VK_F2" command="cmd_enterEdit"/>
+</keyset>
 <stack flex="1">
 	<box class="background-image-container">
 		<image class="icon background-image"/>
@@ -55,6 +61,8 @@ if (location.href.indexOf('?') > -1 && title) {
 
 function enterEdit()
 {
+	if (gDeck.selectedIndex == 1) return;
+
 	gEdit.value = gLabel.value;
 	gDeck.selectedIndex = 1;
 	gEdit.focus();
