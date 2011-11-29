@@ -154,7 +154,12 @@
 
 	</menupopup>
 	<tooltip id="treestyletab-full-tree-tooltip"
-		onclick="this.hidePopup();">
+		onclick="this.hidePopup();"
+		onpopuphiding="
+			var range = document.createRange();
+			range.selectNodeContents(this.firstChild);
+			range.deleteContents();
+		">
 		<arrowscrollbox flex="1" orient="vertical"/>
 	</tooltip>
 </popupset>
