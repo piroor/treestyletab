@@ -51,6 +51,10 @@ FullTooltipManager.prototype = {
 	kTOOLTIP_MODE_COLLAPSED : 1,
 	kTOOLTIP_MODE_ALWAYS    : 2,
 
+	kFAVICON      : 'treestyletab-full-tree-tooltip-favicon',
+	kTREEROW      : 'treestyletab-full-tree-tooltip-treerow',
+	kTREECHILDREN : 'treestyletab-full-tree-tooltip-treechildren',
+
 	get window()
 	{
 		return this.owner.window;
@@ -173,10 +177,36 @@ FullTooltipManager.prototype = {
 	onShown : function FTM_onShown(aEvent) 
 	{
 		this.startListenTooltipEvents();
+
+		var tooltip = this.tabFullTooltip;
+		tooltip.setAttribute('popup-shown', true);
+
+		var screen = this.window.screen;
+
+		var w = {},
+			h = {};
+		var box = tooltip.boxObject;
+		var scrollBoxObject = tooltip.firstChild.scrollBoxObject;
+		scrollBoxObject.getScrolledSize(w, h);
+		var currentW = box.width - scrollBoxObject.width + w.value;
+		var currentH = box.height - scrollBoxObject.height + h.value;
+		var currentX = box.screenX;
+		var currentY = box.screenY;
+
+		var style = tooltip.style;
+
+		style.maxWidth = screen.availWidth+'px';
+		style.maxHeight = screen.availHeight+'px';
+
+		if (currentX + currentW >= screen.availWidth)
+			style.marginLeft = Math.max(0, screen.availWidth - currentW)+'px';
+		if (currentY + currentH >= screen.availHeight)
+			style.marginTop = Math.max(0, screen.availHeight - currentH)+'px';
 	},
 
 	onHidden : function FTM_onHidden(aEvent) 
 	{
+		this.tabFullTooltip.removeAttribute('popup-shown');
 		this.stopListenTooltipEvents();
 		this.clear();
 	},
@@ -305,18 +335,23 @@ FullTooltipManager.prototype = {
 			return;
 
 		this._fullTooltipTimer = this.window.setTimeout(function(aSelf) {
-			var x = aBaseTooltip.boxObject.screenX;
-			var y = aBaseTooltip.boxObject.screenY;
+			var box = aBaseTooltip.boxObject;
+			var x = box.screenX;
+			var y = box.screenY;
+			var w = box.width;
+			var h = box.height;
 			aBaseTooltip.hidePopup();
-
-			var tooltip = aSelf.tabFullTooltip;
-			tooltip.style.maxWidth = aSelf.window.screen.availWidth+'px';
-			tooltip.style.maxHeight = aSelf.window.screen.availHeight+'px';
 
 			aSelf.fill(aTab, aExtraLabels);
 
-			// open as a context menu popup to reposition it automatically
-			tooltip.openPopupAtScreen(x, y, true);
+			var tooltip = aSelf.tabFullTooltip;
+			let (style = tooltip.style) {
+				style.marginLeft = x+'px';
+				style.marginTop = y+'px';
+				style.maxWidth = w+'px';
+				style.maxHeight = h+'px';
+			}
+			tooltip.openPopupAtScreen(0, 0, false);
 		}, Math.max(delay, 0), this);
 	},
 
@@ -391,16 +426,18 @@ FullTooltipManager.prototype = {
 	createTabItem : function FTM_createTabItem(aTab)
 	{
 		var item = this.document.createElement('hbox');
-		item.setAttribute('align', 'center');
+		item.setAttribute('class', this.kTREEROW);
 
 		var favicon = item.appendChild(this.document.createElement('image'));
 		favicon.setAttribute('src', aTab.getAttribute('image') || 'chrome://mozapps/skin/places/defaultFavicon.png');
-		favicon.setAttribute('style', 'max-width:16px;max-height:16px;');
+		favicon.setAttribute('class', this.kFAVICON);
 
 		var label = item.appendChild(this.document.createElement('label'));
 		label.setAttribute('value', aTab.label);
-		label.setAttribute('tooltiptext', aTab.label+'\n'+aTab.linkedBrowser.currentURI.spec);
-		label.setAttribute('crop', 'end');
+		var tooltip = aTab.label;
+		var uri = aTab.linkedBrowser.currentURI.spec;
+		if (uri != 'about:blank') tooltip += '\n' + uri;
+		label.setAttribute('tooltiptext', tooltip);
 		label.setAttribute('class', 'text-link');
 		label.setAttribute(this.kID, this.getTabValue(aTab, this.kID));
 
@@ -426,8 +463,7 @@ FullTooltipManager.prototype = {
 		children.forEach(function(aChild) {
 			container.appendChild(this.createTabItem(aChild));
 		}, this);
-		container.setAttribute('align', 'stretch');
-		container.setAttribute('style', 'margin-left:1.5em');
+		container.setAttribute('class', this.kTREECHILDREN);
 		return container;
 	}
 };

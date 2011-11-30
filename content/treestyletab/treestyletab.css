@@ -480,6 +480,48 @@ window[chromehidden~="toolbar"]
 }
 
 
+/* full tooltip */
+
+#treestyletab-full-tree-tooltip[popup-shown="true"] {
+	-moz-transition: margin-left 0.2s ease-out,
+	                 margin-top 0.2s ease-out,
+	                 max-height 0.2s ease-out,
+	                 max-width 0.2s ease-out;
+	transition: margin-left 0.2s ease-out,
+	            margin-top 0.2s ease-out,
+	            max-height 0.2s ease-out,
+	            max-width 0.2s ease-out;
+}
+
+#treestyletab-full-tree-tooltip > arrowscrollbox {
+	opacity: 0;
+}
+
+#treestyletab-full-tree-tooltip[popup-shown="true"] > arrowscrollbox {
+	-moz-transition: opacity 0.2s ease-out;
+	transition: opacity 0.2s ease-out;
+	opacity: 1;
+}
+
+#treestyletab-full-tree-tooltip .treestyletab-full-tree-tooltip-favicon {
+	max-width: 16px;
+	max-height: 16px;
+}
+
+#treestyletab-full-tree-tooltip .treestyletab-full-tree-tooltip-treerow {
+	-moz-box-align: center;
+}
+
+#treestyletab-full-tree-tooltip .treestyletab-full-tree-tooltip-treerow .text-link {
+	-moz-box-crop: end;
+}
+
+#treestyletab-full-tree-tooltip .treestyletab-full-tree-tooltip-treechildren {
+	margin-left: 1.5em;
+	-moz-box-align: stretch;
+}
+
+
 /* addon compatibility */
 
 /* some themes */
