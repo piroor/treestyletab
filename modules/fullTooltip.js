@@ -125,6 +125,9 @@ FullTooltipManager.prototype = {
 			case 'mouseover':
 				return this.cancelDelayedHide();
 
+			case 'mouseout':
+				return this.hideWithDelay();
+
 			default:
 				return this.onTooltipEvent(aEvent);
 		}
@@ -180,7 +183,9 @@ FullTooltipManager.prototype = {
 
 	onTooltipMouseMove : function FTM_onTooltipMouseMove(aEvent)
 	{
-		if (!this.getFullTooltipFromEvent(aEvent))
+		if (this.getFullTooltipFromEvent(aEvent))
+			this.cancelDelayedHide();
+		else
 			this.hideWithDelay();
 	},
 
@@ -200,7 +205,8 @@ FullTooltipManager.prototype = {
 		this.window.addEventListener('mouseup', this, true);
 		this.window.addEventListener('dragstart', this, true);
 		this.window.addEventListener('mousemove', this, true);
-		this.tabFullTooltip.addEventListener('mouseover', this, true);
+		this.tabFullTooltip.addEventListener('mouseover', this, false);
+		this.tabFullTooltip.addEventListener('mouseout', this, false);
 		this.listening = true;
 	},
 
@@ -214,7 +220,8 @@ FullTooltipManager.prototype = {
 		this.window.removeEventListener('mouseup', this, true);
 		this.window.removeEventListener('dragstart', this, true);
 		this.window.removeEventListener('mousemove', this, true);
-		this.tabFullTooltip.removeEventListener('mouseover', this, true);
+		this.tabFullTooltip.removeEventListener('mouseover', this, false);
+		this.tabFullTooltip.removeEventListener('mouseout', this, false);
 		this.listening = false;
 	},
 
@@ -392,7 +399,7 @@ FullTooltipManager.prototype = {
 
 		var label = item.appendChild(this.document.createElement('label'));
 		label.setAttribute('value', aTab.label);
-		label.setAttribute('tooltiptext', aTab.label);
+		label.setAttribute('tooltiptext', aTab.label+'\n'+aTab.linkedBrowser.currentURI.spec);
 		label.setAttribute('crop', 'end');
 		label.setAttribute('class', 'text-link');
 		label.setAttribute(this.kID, this.getTabValue(aTab, this.kID));
