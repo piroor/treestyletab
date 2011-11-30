@@ -384,33 +384,34 @@ AutoHideBrowser.prototype = {
 
 		var sensitiveArea = this.sensitiveArea;
 		/* For resizing of shrunken tab bar and clicking closeboxes,
-
 		   we have to shrink sensitive area a little. */
-		if (this.shrunken) sensitiveArea -= 20;
+		if (this.shrunken) sensitiveArea = -24;
 
 		if (
 			pos == 'left' ?
-				(aEvent.screenX <= box.screenX) :
+				(aEvent.screenX > box.screenX + sensitiveArea) :
 			pos == 'right' ?
-				(aEvent.screenX >= box.screenX + box.width) :
+				(aEvent.screenX < box.screenX + box.width - sensitiveArea) :
 			pos == 'bottom' ?
-				(aEvent.screenY >= box.screenY + box.height) :
-				(aEvent.screenY <= box.screenY)
-			)
+				(aEvent.screenY < box.screenY + box.height - sensitiveArea) :
+				(aEvent.screenY > box.screenY + sensitiveArea)
+			) {
+			return this.MOUSE_POSITION_OUTSIDE;
+		}
+
+		if (
+			pos == 'left' ?
+				(aEvent.screenX <= box.screenX - sensitiveArea) :
+			pos == 'right' ?
+				(aEvent.screenX >= box.screenX + box.width + sensitiveArea) :
+			pos == 'bottom' ?
+				(aEvent.screenY >= box.screenY + box.height + sensitiveArea) :
+				(aEvent.screenY <= box.screenY - sensitiveArea)
+			) {
 			return this.MOUSE_POSITION_INSIDE;
+		}
 
-		if (
-			pos == 'left' ?
-				(aEvent.screenX <= box.screenX + sensitiveArea) :
-			pos == 'right' ?
-				(aEvent.screenX >= box.screenX + box.width - sensitiveArea) :
-			pos == 'bottom' ?
-				(aEvent.screenY >= box.screenY + box.height - sensitiveArea) :
-				(aEvent.screenY <= box.screenY + sensitiveArea)
-			)
-			return this.MOUSE_POSITION_NEAR;
-
-		return this.MOUSE_POSITION_OUTSIDE;
+		return this.MOUSE_POSITION_NEAR;
 	},
 	MOUSE_POSITION_UNKNOWN : 0,
 	MOUSE_POSITION_OUTSIDE : (1 << 0),
