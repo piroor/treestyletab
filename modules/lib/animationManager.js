@@ -129,15 +129,24 @@ if (typeof window == 'undefined' ||
 			}
 			if (this._windows.length) { // Firefox 4-
 				this._windows.forEach(function(aWindow) {
-					if (this._listeningWindows.indexOf(aWindow) < 0) {
-						aWindow.addEventListener('MozBeforePaint', this, false);
-						this._listeningWindows.push(aWindow);
-						this._listeningWindowSafetyTimers.push(window.setTimeout(function(aSelf) {
-							aSelf.handleEvent(aWindow);
+					var index = this._animatingWindows.indexOf(aWindow);
+					var callback;
+					if (index < 0) {
+						let self = this;
+						callback = function() {
+							self.processAnimationFrame(aWindow);
+						};
+						this._animatingWindowCallbacks.push(callback);
+						this._animatingWindows.push(aWindow);
+
+						this._animatingWindowSafetyTimers.push(window.setTimeout(function(aSelf) {
+							aSelf.processAnimationFrame(aWindow);
 						}, 1000, this));
 					}
-					// I don't know why, but Firefox 11 requires the callback anyway!!
-					aWindow.mozRequestAnimationFrame(function() {});
+					else {
+						callback = this._animatingWindowCallbacks[index];
+					}
+					aWindow.mozRequestAnimationFrame(callback);
 				}, this);
 			}
 		},
@@ -148,13 +157,13 @@ if (typeof window == 'undefined' ||
 				window.clearInterval(this.timer);
 				this.timer = null;
 			}
-			if (this._listeningWindows.length) { // Firefox 4-
-				this._listeningWindows.forEach(function(aWindow, aIndex) {
-					aWindow.removeEventListener('MozBeforePaint', this, false);
-					window.clearTimeout(this._listeningWindowSafetyTimers[aIndex]);
+			if (this._animatingWindows.length) { // Firefox 4-
+				this._animatingWindows.forEach(function(aWindow, aIndex) {
+					window.clearTimeout(this._animatingWindowSafetyTimers[aIndex]);
 				}, this);
-				this._listeningWindows = [];
-				this._listeningWindowSafetyTimers = [];
+				this._animatingWindows = [];
+				this._animatingWindowSafetyTimers = [];
+				this._animatingWindowCallbacks = [];
 			}
 		},
 
@@ -171,8 +180,9 @@ if (typeof window == 'undefined' ||
 
 		// Firefox 4 animation frame API
 		_windows : windows,
-		_listeningWindows : [],
-		_listeningWindowSafetyTimers : [],
+		_animatingWindows : [],
+		_animatingWindowSafetyTimers : [],
+		_animatingWindowCallbacks : [],
 
 		_isAnimationFrameAvailable : function(aWindow)
 		{
@@ -186,47 +196,43 @@ if (typeof window == 'undefined' ||
 						return aTask.window && this._windows.indexOf(aTask.window) > -1;
 					}, this))
 					return true;
-				let index = this._listeningWindows.indexOf(aWindow);
+				let index = this._animatingWindows.indexOf(aWindow);
 				if (index > -1) {
-					let timer = this._listeningWindowSafetyTimers[index];
+					let timer = this._animatingWindowSafetyTimers[index];
 					if (timer)
 						window.clearTimeout(timer);
-					this._listeningWindows.splice(index, 1);
-					this._listeningWindowSafetyTimers.splice(index, 1);
-					aWindow.removeEventListener('MozBeforePaint', this, false);
+					this._animatingWindows.splice(index, 1);
+					this._animatingWindowSafetyTimers.splice(index, 1);
+					this._animatingWindowCallbacks.splice(index, 1);
 				}
 				return false;
 			}, this);
 		},
 
-		handleEvent : function(aEvent)
+		processAnimationFrame : function(aWindow)
 		{
-			var w = aEvent && aEvent instanceof Ci.nsIDOMEvent ? aEvent.target.defaultView : aEvent ;
-			var index = this._listeningWindows.indexOf(w);
+			var index = this._animatingWindows.indexOf(aWindow);
 			if (index > -1) {
-				let timer = this._listeningWindowSafetyTimers[index];
+				let timer = this._animatingWindowSafetyTimers[index];
 				if (timer) window.clearTimeout(timer);
-				this._listeningWindowSafetyTimers[index] = null;
-				aEvent = null;
+				this._animatingWindowSafetyTimers[index] = null;
 			}
-			this.onAnimation(this, aEvent);
+			this.onAnimation(this, aWindow);
 			this._cleanUpWindows();
-			if (index > -1) {
-				// I don't know why, but Firefox 11 requires the callback anyway!!
-				w.mozRequestAnimationFrame(function() {});
-			}
+			if (index > -1 && this._animatingWindowCallbacks[index])
+				aWindow.mozRequestAnimationFrame(this._animatingWindowCallbacks[index]);
 		},
 
-		onAnimation : function(aSelf, aEvent) 
+		onAnimation : function(aSelf, aWindow) 
 		{
 			// task should return true if it finishes.
-			var now = aEvent ? aEvent.timeStamp : (new Date()).getTime() ;
+			var now = (new Date()).getTime() ;
 			var tasks = aSelf.tasks;
 			aSelf.tasks = [null];
 			tasks = tasks.filter(function(aTask) {
 				if (!aTask)
 					return false;
-				if (aEvent && aTask.window != aEvent.target.defaultView)
+				if (aWindow && aTask.window != aWindow)
 					return true;
 				try {
 					var time = Math.min(aTask.duration, now - aTask.start);
