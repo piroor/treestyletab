@@ -393,7 +393,9 @@ FullTooltipManager.prototype = {
 		this.clear();
 
 		var tree = this.createTabItem(aTab);
-		var root = this.document.createDocumentFragment();
+		var root = this.document.createElement('arrowscrollbox');
+		root.setAttribute('orient', 'vertical');
+		root.setAttribute('flex', 1);
 
 		if (aExtraLabels) {
 			if (typeof aExtraLabels == 'string')
@@ -409,16 +411,13 @@ FullTooltipManager.prototype = {
 
 		root.insertBefore(tree, root.firstChild && root.firstChild.nextSibling);
 
-		var range = this.document.createRange();
-		range.selectNodeContents(this.tabFullTooltip.firstChild);
-		range.insertNode(root);
-		range.detach();
+		this.tabFullTooltip.appendChild(root);
 	},
 
 	clear : function FTM_clear()
 	{
 		var range = this.document.createRange();
-		range.selectNodeContents(this.tabFullTooltip.firstChild);
+		range.selectNodeContents(this.tabFullTooltip);
 		range.deleteContents();
 		range.detach();
 	},

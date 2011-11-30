@@ -153,9 +153,7 @@
 			oncommand="TreeStyleTabService.toggleFixed(TreeStyleTabService.getTabBrowserFromChild(this));"/>
 
 	</menupopup>
-	<tooltip id="treestyletab-full-tree-tooltip">
-		<arrowscrollbox flex="1" orient="vertical"/>
-	</tooltip>
+	<tooltip id="treestyletab-full-tree-tooltip"/>
 </popupset>
 
 </overlay>
