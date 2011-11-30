@@ -197,6 +197,8 @@ FullTooltipManager.prototype = {
 
 		style.maxWidth = screen.availWidth+'px';
 		style.maxHeight = screen.availHeight+'px';
+		style.minWidth = 0;
+		style.minHeight = 0;
 
 		if (currentX + currentW >= screen.availWidth)
 			style.marginLeft = Math.max(0, screen.availWidth - currentW)+'px';
@@ -348,8 +350,8 @@ FullTooltipManager.prototype = {
 			let (style = tooltip.style) {
 				style.marginLeft = x+'px';
 				style.marginTop = y+'px';
-				style.maxWidth = w+'px';
-				style.maxHeight = h+'px';
+				style.maxWidth = style.minWidth = w+'px';
+				style.maxHeight = style.minHeight = h+'px';
 			}
 			tooltip.openPopupAtScreen(0, 0, false);
 		}, Math.max(delay, 0), this);
