@@ -42,7 +42,6 @@ const Ci = Components.interfaces;
 // rap();
 
 Components.utils.import('resource://treestyletab-modules/window.js');
-Components.utils.import('resource://treestyletab-modules/fullTooltip.js');
  
 function TreeStyleTabBrowser(aWindowService, aTabBrowser) 
 {
@@ -743,6 +742,16 @@ TreeStyleTabBrowser.prototype = {
 		}
 	},
  
+	_initTooltipManager : function TSTBrowser_initTooltipManager() 
+	{
+		if (this.tooltipManager)
+			return;
+
+		var ns = {};
+		Components.utils.import('resource://treestyletab-modules/fullTooltip.js', ns);
+		this.tooltipManager = new ns.FullTooltipManager(this);
+	},
+ 
 	_readyToInitDNDObservers : function TSTBrowser_readyToInitDNDObservers() 
 	{
 		var w = this.window;
@@ -1042,7 +1051,6 @@ TreeStyleTabBrowser.prototype = {
 		var delayedPostProcess;
 
 		if (pos & this.kTABBAR_VERTICAL) {
-
 			this.collapseTarget             = 'top';
 			this.screenPositionProp         = 'screenY';
 			this.sizeProp                   = 'height';
@@ -1271,8 +1279,6 @@ TreeStyleTabBrowser.prototype = {
 
 		this.scrollBox.addEventListener('overflow', this, true);
 		this.scrollBox.addEventListener('underflow', this, true);
-
-		this.fullTooltipManager = new FullTooltipManager(this);
 	},
  
 	_ensureNewSplitter : function TSTBrowser__ensureNewSplitter() 
@@ -1749,6 +1755,11 @@ TreeStyleTabBrowser.prototype = {
 		this.panelDNDObserver.destroy();
 		delete this._panelDNDObserver;
 
+		if (this.tooltipManager) {
+			this.tooltipManager.destroy();
+			delete this.tooltipManager;
+		}
+
 		var w = this.window;
 		var d = this.document;
 		var b = this.mTabBrowser;
@@ -1837,9 +1848,6 @@ TreeStyleTabBrowser.prototype = {
 
 		this.scrollBox.removeEventListener('overflow', this, true);
 		this.scrollBox.removeEventListener('underflow', this, true);
-
-		this.fullTooltipManager.destroy();
-		delete this.fullTooltipManager;
 	},
  
 	saveCurrentState : function TSTBrowser_saveCurrentState() 
@@ -2403,6 +2411,7 @@ TreeStyleTabBrowser.prototype = {
 				return this.onPopupHiding(aEvent);
 
 			case 'mouseover':
+				this._initTooltipManager();
 				this._initDNDObservers();
 				let (tab = aEvent.target) {
 					if (tab.__treestyletab__twistyHoverTimer)
@@ -2417,7 +2426,9 @@ TreeStyleTabBrowser.prototype = {
 				return;
 
 			case 'dragover':
-				return this._initDNDObservers();
+				this._initTooltipManager();
+				this._initDNDObservers();
+				return;
 
 			case 'overflow':
 			case 'underflow':
