@@ -64,7 +64,7 @@ FullTooltipManager.prototype = {
 	get tabTooltip() 
 	{
 		return this.document.getElementById('tabbrowser-tab-tooltip') || // Firefox 4.0-
-				this.evaluateXPath('descendant::xul:tooltip', this.mTabBrowser.mStrip, Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE).singleNodeValue; // -Firefox 3.6
+				this.evaluateXPath('descendant::xul:tooltip', this.owner.browser.mStrip, Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE).singleNodeValue; // -Firefox 3.6
 	},
  
 	get tabFullTooltip() 
