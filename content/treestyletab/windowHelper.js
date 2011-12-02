@@ -598,7 +598,7 @@ var TreeStyleTabWindowHelper = {
 					'{',
 					<![CDATA[$&
 						var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;
-						if (treeStyleTab.handleAdvanceSelectedTab(arguments[0], arguments[1], this))
+						if (treeStyleTab.handleAdvanceSelectedTab(arguments[0], arguments[1]))
 							return;
 					]]>
 				)

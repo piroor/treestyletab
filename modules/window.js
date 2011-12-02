@@ -752,6 +752,27 @@ TreeStyleTabWindow.prototype = {
 		// this.accelKeyPressed = this.isAccelKeyPressed(aEvent);
 		this.accelKeyPressed = aEvent.ctrlKey || aEvent.keyCode == Ci.nsIDOMKeyEvent.DOM_VK_CONTROL;
 
+		var left  = aEvent.keyCode == Ci.nsIDOMKeyEvent.DOM_VK_LEFT;
+		var right = aEvent.keyCode == Ci.nsIDOMKeyEvent.DOM_VK_RIGHT;
+		var up    = aEvent.keyCode == Ci.nsIDOMKeyEvent.DOM_VK_UP;
+		var down  = aEvent.keyCode == Ci.nsIDOMKeyEvent.DOM_VK_DOWN;
+		if (
+			this.FocusManager &&
+			this.FocusManager.focusedElement == this.browser.selectedTab &&
+			(up || down || left || right)
+			)
+			this.arrowKeyEventOnTab = {
+				keyCode  : aEvent.keyCode,
+				left     : left,
+				right    : right,
+				up       : up,
+				down     : down,
+				altKey   : aEvent.altKey,
+				ctrlKey  : aEvent.ctrlKey,
+				metaKey  : aEvent.metaKey,
+				shiftKey : aEvent.shiftKey
+			};
+
 		var b = this.browser;
 		var data = {
 				sourceEvent : aEvent
@@ -763,6 +784,7 @@ TreeStyleTabWindow.prototype = {
 		this.fireDataContainerEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN.replace(/^nsDOM/, ''), b, true, false, data);
 	},
 	accelKeyPressed : false,
+	arrowKeyEventOnTab : null,
  
 	onKeyRelease : function TSTWindow_onKeyRelease(aEvent) 
 	{
@@ -775,6 +797,9 @@ TreeStyleTabWindow.prototype = {
 
 		// this.accelKeyPressed = this.isAccelKeyPressed(aEvent);
 		this.accelKeyPressed = aEvent.ctrlKey || aEvent.keyCode == Ci.nsIDOMKeyEvent.DOM_VK_CONTROL;
+		this.window.setTimeout(function(aSelf) {
+			aSelf.arrowKeyEventOnTab = null;
+		}, 10, this);
 
 		var standBy = scrollDown = scrollUp = (!aEvent.altKey && this.accelKeyPressed);
 

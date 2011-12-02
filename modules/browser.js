@@ -3702,25 +3702,30 @@ TreeStyleTabBrowser.prototype = {
 			if (!this.hasChildTabs(tab) || !this.isSubtreeCollapsed(tab))
 				tab = null;
 
-			if (this._focusChangedByShortcut && this.windowService.accelKeyPressed) {
-				if (!this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut')) {
-					this.windowService.expandTreeAfterKeyReleased(tab);
-				}
-				else {
-					let delay = this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut.delay');
-					if (delay > 0) {
-						this._autoExpandOnTabSelectTimer = this.window.setTimeout(function(aSelf) {
-							if (tab && tab.parentNode)
-								aSelf.collapseExpandTreesIntelligentlyWithDelayFor(tab);
-						}, delay, this);
+			let event = this.windowService.arrowKeyEventOnTab;
+			let byArrowKey = event && event.advanceFocus;
+			let byShortcut = this._focusChangedByShortcut && this.windowService.accelKeyPressed;
+			if (!byArrowKey) {
+				if (byShortcut) {
+					if (!this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut')) {
+						this.windowService.expandTreeAfterKeyReleased(tab);
 					}
 					else {
-						this.collapseExpandTreesIntelligentlyWithDelayFor(tab);
+						let delay = this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut.delay');
+						if (delay > 0) {
+							this._autoExpandOnTabSelectTimer = this.window.setTimeout(function(aSelf) {
+								if (tab && tab.parentNode)
+									aSelf.collapseExpandTreesIntelligentlyWithDelayFor(tab);
+							}, delay, this);
+						}
+						else {
+							this.collapseExpandTreesIntelligentlyWithDelayFor(tab);
+						}
 					}
 				}
-			}
-			else {
-				this.collapseExpandTreesIntelligentlyWithDelayFor(tab);
+				else {
+					this.collapseExpandTreesIntelligentlyWithDelayFor(tab);
+				}
 			}
 		}
 
@@ -3741,26 +3746,109 @@ TreeStyleTabBrowser.prototype = {
 		}
 	},
  
-	handleAdvanceSelectedTab : function TSTBrowser_handleAdvanceSelectedTab(aDir, aWrap, aTabbar) 
+	handleAdvanceSelectedTab : function TSTBrowser_handleAdvanceSelectedTab(aDir, aWrap) 
 	{
 		this._focusChangedByShortcut = this.windowService.accelKeyPressed;
 
-		if (!this.canCollapseSubtree(aTabbar.selectedItem) ||
+		if (!this.canCollapseSubtree(this.mTabBrowser.selectedTab) ||
 			this.getTreePref('focusMode') != this.kFOCUS_VISIBLE)
 			return false;
 
-		var nextTab = (aDir < 0) ? this.getPreviousVisibleTab(aTabbar.selectedItem) : this.getNextVisibleTab(aTabbar.selectedItem) ;
+		if (this.processArrowKeyOnFocusAdvanced())
+			return true;
+
+		return this.advanceSelectedTab(aDir, aWrap);
+	},
+ 
+	processArrowKeyOnFocusAdvanced : function TSTBrowser_processArrowKeyOnFocusAdvanced()
+	{
+		var event = this.windowService.arrowKeyEventOnTab;
+		if (!event)
+			return false;
+
+		if (
+			event.altKey ||
+			event.ctrlKey ||
+			event.metaKey ||
+			event.shiftKey ||
+			(this.isVertical ? (event.up || event.down) : (event.left || event.right))
+			) {
+			event.advanceFocus = true;
+			return false;
+		}
+
+		var collapse, expand;
+		switch (this.position)
+		{
+			case 'top':
+				collapse = event.up;
+				expand = event.down;
+				break;
+
+			case 'bottom':
+				collapse = event.down;
+				expand = event.up;
+				break;
+
+			case 'left':
+				collapse = event.left;
+				expand = event.right;
+				break;
+
+			case 'right':
+				if (this.getTreePref('tabbar.invertTab')) {
+					collapse = event.right;
+					expand = event.left;
+				}
+				else {
+					collapse = event.left;
+					expand = event.right;
+				}
+				break;
+		}
+
+		var tab = this.mTabBrowser.selectedTab;
+
+		var collapsed = this.isSubtreeCollapsed(tab);
+		if (this.hasChildTabs(tab) && (collapsed ? expand : collapse )) {
+			event.collapse = collapse;
+			event.expand = expand;
+			this.collapseExpandSubtree(tab, !collapsed);
+			return true;
+		}
+
+		var nextSelected;
+		if (expand)
+			nextSelected = this.getFirstChildTab(tab);
+		else if (collapse)
+			nextSelected = this.getParentTab(tab);
+
+		if (nextSelected) {
+			event.advanceFocus = true;
+			this.mTabBrowser.selectedTab = nextSelected;
+			return true;
+		}
+
+		return true;
+	},
+ 
+	advanceSelectedTab : function TSTBrowser_advanceSelectedTab(aDir, aWrap)
+	{
+		var tab = this.mTabBrowser.selectedTab;
+		var tabbar = this.mTabBrowser.mTabContainer;
+
+		var nextTab = (aDir < 0) ? this.getPreviousVisibleTab(tab) : this.getNextVisibleTab(tab) ;
 		if (!nextTab && aWrap) {
 			nextTab = this.evaluateXPath(
 					'child::xul:tab[not(@'+this.kCOLLAPSED+'="true")]['+
 					(aDir < 0 ? 'last()' : '1' )+
 					']',
-					aTabbar,
+					tabbar,
 					Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 				).singleNodeValue;
 		}
-		if (nextTab && nextTab != aTabbar.selectedItem)
-			aTabbar._selectNewTab(nextTab, aDir, aWrap);
+		if (nextTab && nextTab != tab)
+			tabbar._selectNewTab(nextTab, aDir, aWrap);
 
 		return true;
 	},

@@ -303,6 +303,20 @@ var TreeStyleTabUtils = {
 	},
 	_PromptService : null,
 
+	get FocusManager()
+	{
+		if (this._FocusManager === undefined) {
+			try {
+				this._FocusManager = Cc['@mozilla.org/focus-manager;1'].getService(Ci.nsIFocusManager);
+			}
+			catch(e) { // Firefox 3.6
+				this._FocusManager = null;
+			}
+		}
+		return this._FocusManager;
+	},
+	// _FocusManager : null,
+
 	get XULAppInfo() {
 		if (!this._XULAppInfo) {
 			this._XULAppInfo = Cc['@mozilla.org/xre/app-info;1'].getService(Ci.nsIXULAppInfo).QueryInterface(Ci.nsIXULRuntime);
