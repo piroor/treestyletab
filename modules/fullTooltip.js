@@ -205,9 +205,9 @@ FullTooltipManager.prototype = {
 		style.maxHeight = screenHeight.value+'px';
 		style.minWidth = 0;
 		style.minHeight = 0;
-		if (currentX + currentW >= screenWidth.value)
+		if (currentX + currentW + screenLeft.value >= screenWidth.value)
 			style.marginLeft = (Math.max(screenLeft.value, screenWidth.value - currentW) - this.window.screenX)+'px';
-		if (currentY + currentH >= screenHeight.value)
+		if (currentY + currentH + screenTop.value >= screenHeight.value)
 			style.marginTop = (Math.max(screenTop.value, screenHeight.value - currentH) - this.window.screenY)+'px';
 	},
 
