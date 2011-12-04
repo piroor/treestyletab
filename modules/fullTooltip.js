@@ -181,8 +181,6 @@ FullTooltipManager.prototype = {
 		var tooltip = this.tabFullTooltip;
 		tooltip.setAttribute('popup-shown', true);
 
-		var screen = this.window.screen;
-
 		var w = {},
 			h = {};
 		var box = tooltip.boxObject;
@@ -193,17 +191,24 @@ FullTooltipManager.prototype = {
 		var currentX = box.screenX;
 		var currentY = box.screenY;
 
-		var style = tooltip.style;
+		var currentScreen = Cc['@mozilla.org/gfx/screenmanager;1']
+							.getService(Ci.nsIScreenManager)
+							.screenForRect(box.screenX, box.screenY, box.width, box.height);
+		var screenLeft   = {},
+			screenTop    = {},
+			screenWidth  = {},
+			screenHeight = {};
+		currentScreen.GetRect(screenLeft, screenTop, screenWidth, screenHeight);
 
-		style.maxWidth = screen.availWidth+'px';
-		style.maxHeight = screen.availHeight+'px';
+		var style = tooltip.style;
+		style.maxWidth = screenWidth.value+'px';
+		style.maxHeight = screenHeight.value+'px';
 		style.minWidth = 0;
 		style.minHeight = 0;
-
-		if (currentX + currentW >= screen.availWidth)
-			style.marginLeft = Math.max(0, screen.availWidth - currentW)+'px';
-		if (currentY + currentH >= screen.availHeight)
-			style.marginTop = Math.max(0, screen.availHeight - currentH)+'px';
+		if (currentX + currentW >= screenWidth.value)
+			style.marginLeft = (Math.max(screenLeft.value, screenWidth.value - currentW) - this.window.screenX)+'px';
+		if (currentY + currentH >= screenHeight.value)
+			style.marginTop = (Math.max(screenTop.value, screenHeight.value - currentH) - this.window.screenY)+'px';
 	},
 
 	onHidden : function FTM_onHidden(aEvent) 
@@ -338,8 +343,8 @@ FullTooltipManager.prototype = {
 
 		this._fullTooltipTimer = this.window.setTimeout(function(aSelf) {
 			var box = aBaseTooltip.boxObject;
-			var x = box.screenX;
-			var y = box.screenY;
+			var x = box.screenX - this.window.screenX;
+			var y = box.screenY - this.window.screenY;
 			var w = box.width;
 			var h = box.height;
 			aBaseTooltip.hidePopup();
@@ -353,7 +358,7 @@ FullTooltipManager.prototype = {
 				style.maxWidth = style.minWidth = w+'px';
 				style.maxHeight = style.minHeight = h+'px';
 			}
-			tooltip.openPopupAtScreen(0, 0, false);
+			tooltip.openPopupAtScreen(this.window.screenX, this.window.screenY, false);
 		}, Math.max(delay, 0), this);
 	},
 
