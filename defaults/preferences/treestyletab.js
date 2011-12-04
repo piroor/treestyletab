@@ -106,6 +106,15 @@ pref("extensions.treestyletab.tabbar.autoHide.mode.fullscreen",        1);
 pref("extensions.treestyletab.tabbar.autoHide.mode.toggle",            2);
 pref("extensions.treestyletab.tabbar.autoHide.mode.toggle.fullscreen", 1);
 /**
+ * When the tab bar is shown, content area must receive mousemove events
+ * to hide the tab bar. However, rectangle drawn by plugins (like <embed>)
+ * doesn't fire mousemove event even if mouse pointer moves on it. If this
+ * preference is "true", TST showns transparent screen on the content area
+ * to receive mousemove events anyway. If the screen is annoying for you,
+ * (actually it prevents click events on the content area)
+ */
+pref("extensions.treestyletab.tabbar.autoHide.contentAreaScreen.enabled", true);
+/**
  * Triggers for the "Auto Hide" feature. They can be controlled via the
  * configuration dialog.
  */

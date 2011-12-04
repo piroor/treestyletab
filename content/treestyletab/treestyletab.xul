@@ -154,6 +154,8 @@
 
 	</menupopup>
 	<tooltip id="treestyletab-full-tree-tooltip"/>
+	<panel id="treestyletab-autohide-content-area-screen"
+		onclick="this.hidePopup();"/>
 </popupset>
 
 </overlay>

@@ -123,6 +123,7 @@ AutoHideBrowser.prototype = {
   
 	togglerSize : 0, 
 	sensitiveArea : 7,
+	contentAreaScreenEnabled : true,
  
 	get XOffset() 
 	{
@@ -134,8 +135,16 @@ AutoHideBrowser.prototype = {
 
 			case this.kMODE_HIDE:
 				let offset = this.width + this.splitterWidth;
+				let resizer = this.resizer;
 				if (sv.position == 'left') {
+					offset += this.togglerSize;
+					if (resizer)
+						offset += resizer.boxObject.width;
+				}
+				else if (sv.position == 'right') {
 					offset -= this.togglerSize;
+					if (resizer)
+						offset -= resizer.boxObject.width;
 				}
 				return offset;
 
@@ -171,6 +180,15 @@ AutoHideBrowser.prototype = {
 			) ? this.YOffset : 0 ;
 	},
  
+	get screen()
+	{
+		return this.document.getElementById('treestyletab-autohide-content-area-screen');
+	},
+	get resizer()
+	{
+		return this.document.getElementById('treestyletab-tabbar-resizer-splitter');
+	},
+ 
 	start : function AHB_start() 
 	{
 		if (this.enabled) return;
@@ -179,6 +197,8 @@ AutoHideBrowser.prototype = {
 		var sv = this.treeStyleTab;
 		var b  = this.browser;
 		var w  = this.window;
+
+		this.screen.hidePopup();
 
 		sv.setTabbrowserAttribute(this.kSTATE, this.kSTATE_EXPANDED);
 
@@ -218,6 +238,8 @@ AutoHideBrowser.prototype = {
 		var w  = this.window;
 
 		this.show();
+
+		this.screen.hidePopup();
 
 		b.removeEventListener('mousedown', this, true);
 		b.removeEventListener('mouseup', this, true);
@@ -280,6 +302,7 @@ AutoHideBrowser.prototype = {
 		if (this.mouseMoveListening) return;
 
 		this.browser.addEventListener('mousemove', this, true);
+		this.screen.addEventListener('mousemove', this, true);
 
 		if (this.treeStyleTab.isFloating)
 			this.treeStyleTab.tabStrip.addEventListener('mousemove', this, true);
@@ -292,6 +315,7 @@ AutoHideBrowser.prototype = {
 		if (!this.mouseMoveListening) return;
 
 		this.browser.removeEventListener('mousemove', this, true);
+		this.screen.removeEventListener('mousemove', this, true);
 
 		if (this.treeStyleTab.isFloating)
 			this.treeStyleTab.tabStrip.removeEventListener('mousemove', this, true);
@@ -317,6 +341,7 @@ AutoHideBrowser.prototype = {
 			return;
 
 		this.cancelShowHideOnMousemove();
+		this.showHideContentsAreaScreen();
 
 		var sv = this.treeStyleTab;
 		var b  = this.browser;
@@ -371,16 +396,7 @@ AutoHideBrowser.prototype = {
 		var sv  = this.treeStyleTab;
 		var b   = this.browser;
 		var pos = sv.position;
-		var box = b.mCurrentBrowser.boxObject;
-
-		if (sv.isFloating && this.expanded) { // Firefox 4.0-
-			box = {
-				screenX : box.screenX + (pos == 'left' ? this.XOffset : 0 ),
-				screenY : box.screenY,
-				width   : box.width - this.XOffset,
-				height  : box.height
-			};
-		}
+		var box = this.getContentsAreaBox();
 
 		var sensitiveArea = this.sensitiveArea;
 		/* For resizing of shrunken tab bar and clicking closeboxes,
@@ -412,6 +428,21 @@ AutoHideBrowser.prototype = {
 		}
 
 		return this.MOUSE_POSITION_NEAR;
+	},
+	getContentsAreaBox : function AHB_getContentsAreaBox()
+	{
+		var sv  = this.treeStyleTab;
+		var b   = this.browser;
+		var box = b.mCurrentBrowser.boxObject;
+		if (sv.isFloating && this.expanded) { // Firefox 4.0-
+			box = {
+				screenX : box.screenX + (sv.position == 'left' ? this.XOffset : 0 ),
+				screenY : box.screenY,
+				width   : box.width - this.XOffset,
+				height  : box.height
+			};
+		}
+		return box;
 	},
 	MOUSE_POSITION_UNKNOWN : 0,
 	MOUSE_POSITION_OUTSIDE : (1 << 0),
@@ -585,7 +616,30 @@ AutoHideBrowser.prototype = {
 			aSelf.fireStateChangeEvent();
 			if (!sv.isFloating)
 				sv.startRendering();
+
+			aSelf.showHideContentsAreaScreen();
 		}, 0, this);
+	},
+	showHideContentsAreaScreen : function AHB_showHideContentsAreaScreen()
+	{
+		if (this.expanded && this.contentAreaScreenEnabled) {
+			let box = this.getContentsAreaBox();
+			let style = this.screen.style;
+			let width = Math.min(box.width, this.window.screen.availWidth - box.screenX);
+			let height = Math.min(box.height, this.window.screen.availHeight - box.screenY);
+			style.width = width+'px';
+			style.height = height+'px';
+			if (this.screen.state == 'open')
+				this.screen.moveTo(box.screenX, box.screenY);
+			else
+				this.screen.openPopupAtScreen(box.screenX, box.screenY, false);
+			this.screen.setAttribute('popup-shown', true);
+		}
+		else {
+			this.screen.removeAttribute('popup-shown');
+			if (this.screen.state != 'close')
+				this.screen.hidePopup();
+		}
 	},
 	
 	show : function AHB_show(aReason) /* PUBLIC API */ 
@@ -1027,6 +1081,9 @@ AutoHideBrowser.prototype = {
 					toggler.removeAttribute('collapsed');
 				return;
 
+			case 'extensions.treestyletab.tabbar.autoHide.contentAreaScreen.enabled':
+				return this.contentAreaScreenEnabled = value;
+
 			case 'browser.fullscreen.autohide':
 				if (!this.window.fullScreen) return;
 				this.end();
@@ -1397,6 +1454,7 @@ AutoHideBrowser.prototype = {
 		sv.addPrefListener(this);
 		this.onPrefChange('extensions.treestyletab.tabbar.autoHide.area');
 		this.onPrefChange('extensions.treestyletab.tabbar.togglerSize');
+		this.onPrefChange('extensions.treestyletab.tabbar.autoHide.contentAreaScreen.enabled');
 		this.window.setTimeout(function(aSelf) {
 			aSelf.onPrefChange('extensions.treestyletab.tabbar.autoHide.mode');
 		}, 0, this);
