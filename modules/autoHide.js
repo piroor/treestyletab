@@ -334,13 +334,13 @@ AutoHideBrowser.prototype = {
 				this.treeStyleTab.getTreePref('tabbar.autoShow.tabSwitch');
 	},
  
-	showHideOnMousemove : function AHB_showHideOnMousemove(aEvent) 
+	showHideOnMouseMove : function AHB_showHideOnMouseMove(aEvent) 
 	{
 		var position = this.getMousePosition(aEvent);
 		if (position == this.MOUSE_POSITION_UNKNOWN)
 			return;
 
-		this.cancelShowHideOnMousemove();
+		this.cancelShowHideOnMouseMove();
 		this.showHideContentsAreaScreen();
 
 		var sv = this.treeStyleTab;
@@ -362,7 +362,7 @@ AutoHideBrowser.prototype = {
 				!shouldShow &&
 				sv.getTreePref('tabbar.autoShow.mousemove')
 				) {
-				this.showHideOnMousemoveTimer = w.setTimeout(
+				this.showHideOnMouseMoveTimer = w.setTimeout(
 					function(aSelf) {
 						aSelf.cancelDelayedShowForShortcut();
 						if (aSelf.showHideReason == aSelf.kSHOWN_BY_MOUSEMOVE)
@@ -374,7 +374,7 @@ AutoHideBrowser.prototype = {
 			}
 		}
 		else if (shouldShow) {
-			this.showHideOnMousemoveTimer = w.setTimeout(
+			this.showHideOnMouseMoveTimer = w.setTimeout(
 				function(aSelf) {
 					aSelf.cancelDelayedShowForShortcut();
 					aSelf.cancelHideForFeedback();
@@ -400,8 +400,15 @@ AutoHideBrowser.prototype = {
 
 		var sensitiveArea = this.sensitiveArea;
 		/* For resizing of shrunken tab bar and clicking closeboxes,
-		   we have to shrink sensitive area a little. */
-		if (this.shrunken) sensitiveArea = -24;
+		   we have to shrink sensitive area. */
+		if (this.shrunken) {
+			if (this.widthFromMode > 24)
+				sensitiveArea = -24;
+			else if (this.resizer)
+				sensitiveArea = -this.resizer.boxObject.width;
+			else
+				sensitiveArea = 0;
+		}
 
 		if (
 			pos == 'left' ?
@@ -450,11 +457,11 @@ AutoHideBrowser.prototype = {
 	MOUSE_POSITION_NEAR    : (1 << 2),
 	MOUSE_POSITION_SENSITIVE : (1 << 1) | (1 << 2),
  
-	cancelShowHideOnMousemove : function AHB_cancelShowHideOnMousemove() 
+	cancelShowHideOnMouseMove : function AHB_cancelShowHideOnMouseMove() 
 	{
-		if (this.showHideOnMousemoveTimer) {
-			this.window.clearTimeout(this.showHideOnMousemoveTimer);
-			this.showHideOnMousemoveTimer = null;
+		if (this.showHideOnMouseMoveTimer) {
+			this.window.clearTimeout(this.showHideOnMouseMoveTimer);
+			this.showHideOnMouseMoveTimer = null;
 		}
 	},
   
@@ -1232,7 +1239,7 @@ AutoHideBrowser.prototype = {
 				flags = null;
 			}, 0, aEvent.clientX, aEvent.clientY, aEvent.button, aEvent.detail);
 		}
-		this.cancelShowHideOnMousemove();
+		this.cancelShowHideOnMouseMove();
 		if (
 			this.enabled &&
 			this.expanded &&
@@ -1262,7 +1269,7 @@ AutoHideBrowser.prototype = {
 				aSelf.drawBG();
 			}, 0, this);
 		}
-		this.cancelShowHideOnMousemove();
+		this.cancelShowHideOnMouseMove();
 		this.lastMouseDownTarget = null;
 	},
  
@@ -1280,7 +1287,7 @@ AutoHideBrowser.prototype = {
 				this.showHideReason & this.kKEEP_SHOWN_ON_MOUSEOVER
 			)
 			)
-			this.showHideOnMousemove(aEvent);
+			this.showHideOnMouseMove(aEvent);
 		return true;
 	},
  
@@ -1446,7 +1453,7 @@ AutoHideBrowser.prototype = {
 		this.lastMouseDownTarget = null;
 		this.isResizing = false;
 
-		this.showHideOnMousemoveTimer = null;
+		this.showHideOnMouseMoveTimer = null;
 		this.delayedShowForFeedbackTimer = null;
 
 		b.setAttribute(this.kMODE+'-normal', sv.getTreePref('tabbar.autoHide.mode'));
