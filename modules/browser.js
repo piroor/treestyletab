@@ -2313,20 +2313,15 @@ TreeStyleTabBrowser.prototype = {
 		var id = this.mTabBrowser.getAttribute('id');
 		var tabs = this.getAllTabsArray(this.mTabBrowser);
 		treeStructures[id] = {
-			id : tabs.map(function(aTab) {
-					return this.getTabValue(aTab, this.kID);
-				}, this),
 			tree : this.getTreeStructureFromTabs(tabs),
-			collapsed : tabs.filter(function(aTab) {
-								return this.isCollapsed(aTab);
-							}, this).map(function(aTab) {
-								return aTab._tPos;
-							}),
-			treeCollapsed : tabs.filter(function(aTab) {
-								return this.isSubtreeCollapsed(aTab);
-							}, this).map(function(aTab) {
-								return aTab._tPos;
-							})
+			state : tabs.map(function(aTab) {
+				var state = { id : this.getTabValue(aTab, this.kID) };
+				if (this.isCollapsed(aTab))
+					state.collapsed = true;
+				if (this.isSubtreeCollapsed(aTab))
+					state.subTreeCollapsed = true;
+				return state;
+			}, this)
 		};
 		this.SessionStore.setWindowValue(this.window, this.kSTRUCTURE, JSON.stringify(treeStructures))
 	},
@@ -2341,17 +2336,22 @@ TreeStyleTabBrowser.prototype = {
 		var treeStructure = id in treeStructures ? treeStructures[id] : null ;
 		if (
 			!treeStructure ||
-			!treeStructure.id ||
-			!treeStructure.id.length ||
+			!treeStructure.state ||
+			!treeStructure.state.length ||
 			!treeStructure.tree ||
 			!treeStructure.tree.length
 			)
 			return;
 
 		var tabs = this.getAllTabsArray(this.mTabBrowser);
-		if (tabs.map(function(aTab) {
+
+		var actualTabs = tabs.map(function(aTab) {
 				return this.getTabValue(aTab, this.kID);
-			}, this).join('\n') != treeStructure.id.join('\n'))
+			}, this).join('\n');
+		var expectedTabs = treeStructure.state.map(function(aState) {
+				return aState.id;
+			}).join('\n');
+		if (actualTabs != expectedTabs)
 			return;
 
 		var relations = tabs.map(function(aTab) {
@@ -2374,17 +2374,16 @@ TreeStyleTabBrowser.prototype = {
 
 			this.tabsHash[relation.id] = aTab;
 
-			if (treeStructure.treeCollapsed)
-				this.setTabValue(aTab, this.kSUBTREE_COLLAPSED, treeStructure.treeCollapsed.indexOf(aIndex) > -1);
-
-			if (treeStructure.collapsed)
-				this.collapseExpandTab(aTab, treeStructure.collapsed.indexOf(aIndex) > -1, true);
+			var state = treeStructure.state[aIndex];
+			this.setTabValue(aTab, this.kSUBTREE_COLLAPSED, state.subTreeCollapsed || null);
+			this.collapseExpandTab(aTab, state.collapsed || false);
 
 			this.setTabValue(aTab, this.kID, relation.id);
 			this.setTabValue(aTab, this.kPARENT, relation.parent);
 			this.setTabValue(aTab, this.kCHILDREN, relation.children);
 			this.setTabValue(aTab, this.kINSERT_BEFORE, relation.insertBefore);
 			this.setTabValue(aTab, this.kINSERT_AFTER, relation.insertAfter);
+
 			aTab.__treestyletab__structureRestored = true;
 		}, this);
 
