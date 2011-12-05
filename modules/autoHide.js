@@ -629,7 +629,11 @@ AutoHideBrowser.prototype = {
 	},
 	showHideContentsAreaScreen : function AHB_showHideContentsAreaScreen()
 	{
-		if (this.expanded && this.contentAreaScreenEnabled) {
+		if (
+			this.expanded &&
+			this.contentAreaScreenEnabled &&
+			this.FocusManager.activeWindow.top == this.window
+			) {
 			let box = this.getContentsAreaBox();
 			let style = this.screen.style;
 			let width = Math.min(box.width, this.window.screen.availWidth - box.screenX);
