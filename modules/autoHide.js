@@ -632,7 +632,8 @@ AutoHideBrowser.prototype = {
 		if (
 			this.expanded &&
 			this.contentAreaScreenEnabled &&
-			this.FocusManager.activeWindow.top == this.window
+			this.treeStyleTab.FocusManager.activeWindow &&
+			this.treeStyleTab.FocusManager.activeWindow.top == this.window
 			) {
 			let box = this.getContentsAreaBox();
 			let style = this.screen.style;
