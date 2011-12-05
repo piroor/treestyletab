@@ -1037,6 +1037,7 @@ var TreeStyleTabUtils = {
 		try {
 			this.checkCachedSessionDataExpiration(aTab);
 			this.SessionStore.setTabValue(aTab, aKey, aValue);
+			this.SessionStore.persistTabAttribute(aKey);
 		}
 		catch(e) {
 		}
