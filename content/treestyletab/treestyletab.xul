@@ -7,8 +7,7 @@
 <?xml-stylesheet href="chrome://treestyletab/skin/twisty/twisty.css" type="text/css"?>
 <?xml-stylesheet href="chrome://treestyletab/skin/ui.css" type="text/css"?>
 <?xml-stylesheet href="chrome://treestyletab/skin/tmp.css" type="text/css"?><!-- hacks for Tab Mix Plus -->
-<?xml-stylesheet href="chrome://treestyletab-platform/skin/base.css" type="text/css"?>
-<?xml-stylesheet href="chrome://treestyletab-platform/skin/platform-base.css" type="text/css"?>
+<?xml-stylesheet href="chrome://treestyletab/skin/platform-base.css" type="text/css"?>
 
 <?xul-overlay href="res/tabFx2Compatible.xul"?>
 
