@@ -2345,7 +2345,8 @@ TreeStyleTabBrowser.prototype = {
 			!treeStructure.state ||
 			!treeStructure.state.length ||
 			!treeStructure.tree ||
-			!treeStructure.tree.length
+			!treeStructure.tree.length ||
+			treeStructure.state.length != treeStructure.tree.length
 			)
 			return;
 
@@ -2353,12 +2354,20 @@ TreeStyleTabBrowser.prototype = {
 
 		var actualTabs = tabs.map(function(aTab) {
 				return this.getTabValue(aTab, this.kID);
-			}, this).join('\n');
-		var expectedTabs = treeStructure.state.map(function(aState) {
+			}, this).join('\n')+'\n';
+		var restoringTabs = treeStructure.state.map(function(aState) {
 				return aState.id;
-			}).join('\n');
-		if (actualTabs != expectedTabs)
+			}).join('\n')+'\n';
+		if (actualTabs.indexOf(restoringTabs) < 0)
 			return;
+
+		var preTabs = actualTabs
+						.split(restoringTabs)[0]
+						.replace(/\n$/, '')
+						.split('\n')
+						.filter(function(aId) { return aId; })
+						.length;
+		tabs = tabs.slice(preTabs, preTabs + treeStructure.tree.length-1);
 
 		var relations = tabs.map(function(aTab) {
 				return {
@@ -2369,7 +2378,7 @@ TreeStyleTabBrowser.prototype = {
 					insertAfter  : this.getTabValue(aTab, this.kINSERT_AFTER)
 				};
 			}, this);
-		this.applyTreeStructureToTabBrowser(this.mTabBrowser, treeStructure.tree);
+		this.applyTreeStructureToTabs(tabs, treeStructure.tree);
 
 		this.updateAllTabsIndent(true);
 
