@@ -136,7 +136,11 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 
 
 #treestyletab-autohide-content-area-screen {
-	background: transparent;
+	/**
+	 * don't make this completely transparent, because
+	 * mousemove event never fire on 100% transparent panel!!
+	 */
+	background: rgba(0, 0, 0, 0.01);
 	border: 0 none;
 	line-height: 0;
 	margin: 0;
@@ -146,16 +150,6 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 	-moz-border-left-colors: none;
 	-moz-border-right-colors: none;
 	-moz-border-top-colors: none;
-}
-
-#treestyletab-autohide-content-area-screen[popup-shown="true"] {
-	/**
-	 * don't make this completely transparent, because
-	 * mousemove event never fire on 100% transparent panel!!
-	 */
-	background: rgba(0, 0, 0, 0.01);
-	-moz-transition: background-color 0.2s ease-out;
-	transition: background-color 0.2s ease-out;
 }
 
 
