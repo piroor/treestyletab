@@ -6,3 +6,18 @@
 	-moz-appearance: none;
 }
 
+#treestyletab-autohide-content-area-screen {
+	background: transparent;
+}
+/**
+ * We have to set both left and right borders to make the "window"
+ * not rectangle, because rectangle "window"s have dropshadows on Linux.
+ */
+:root[treestyletab-tabbar-position="left"]
+  #treestyletab-autohide-content-area-screen {
+	border-right: 1px solid ThreeDShadow;
+}
+:root[treestyletab-tabbar-position="right"]
+  #treestyletab-autohide-content-area-screen {
+	border-left: 1px solid ThreeDShadow;
+}

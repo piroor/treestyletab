@@ -137,11 +137,10 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 
 #treestyletab-autohide-content-area-screen {
 	/**
-	 * don't make this completely transparent, because
-	 * mousemove event never fire on 100% transparent panel!!
+	 * Don't make this panel completely transparent, because
+	 * mousemove event never fire on 100% transparent panel.
 	 */
 	background: rgba(0, 0, 0, 0.01);
-	border: 0 none;
 	line-height: 0;
 	margin: 0;
 	padding: 0;
@@ -151,7 +150,6 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 	-moz-border-right-colors: none;
 	-moz-border-top-colors: none;
 }
-
 
 
 /* vertical tab bar */
