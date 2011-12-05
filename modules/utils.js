@@ -1757,6 +1757,7 @@ var TreeStyleTabUtils = {
 	 */
 	readyToOpenNewTabGroupNow : function TSTUtils_readyToOpenNewTabGroupNow(aFrameOrTabBrowser) /* PUBLIC API */
 	{
+
 		if (this.readyToOpenNewTabGroup.apply(this, arguments)) {
 			let self = this;
 			this.Deferred.next(function() {
@@ -1953,7 +1954,8 @@ var TreeStyleTabUtils = {
 
 			let children = parentTab.getAttribute(this.kCHILDREN);
 			if (children) {
-				let list = ('|'+children).split('|'+aTab.getAttribute(this.kID))[1].split('|');
+				let list = ('|'+children).split('|'+aTab.getAttribute(this.kID));
+				list = list.length > 1 ? list[1].split('|') : [] ;
 				for (let i = 0, maxi = list.length; i < maxi; i++)
 				{
 					let firstChild = this.getTabById(list[i], aTab);
