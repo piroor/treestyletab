@@ -2288,9 +2288,28 @@ TreeStyleTabBrowser.prototype = {
 
 		if (!this.windowStateRestored) {
 			if (this.getTreePref('restoreTreeOnStartup'))
-				this.restoreTreeStructure();
+				this.restoreTreeStructure(this.windowService.storedTreeStructure);
 			this.windowStateRestored = true;
 		}
+	},
+ 
+	getTreeStructure : function TSTBrowser_getTreeStructure(aBaseStructure) 
+	{
+		aBaseStructure = aBaseStructure || {};
+		var id = this.mTabBrowser.getAttribute('id');
+		var tabs = this.getAllTabsArray(this.mTabBrowser);
+		aBaseStructure[id] = {
+			tree : this.getTreeStructureFromTabs(tabs),
+			state : tabs.map(function(aTab) {
+				var state = { id : this.getTabValue(aTab, this.kID) };
+				if (this.isCollapsed(aTab))
+					state.collapsed = true;
+				if (this.isSubtreeCollapsed(aTab))
+					state.subTreeCollapsed = true;
+				return state;
+			}, this)
+		};
+		return aBaseStructure;
 	},
  
 	saveTreeStructureWithDelay : function TSTBrowser_saveTreeStructureWithDelay() 
@@ -2309,31 +2328,18 @@ TreeStyleTabBrowser.prototype = {
 		if (!this.getTreePref('restoreTreeOnStartup'))
 			return;
 
-		var treeStructures = JSON.parse(this.SessionStore.getWindowValue(this.window, this.kSTRUCTURE) || '{}');
-		var id = this.mTabBrowser.getAttribute('id');
-		var tabs = this.getAllTabsArray(this.mTabBrowser);
-		treeStructures[id] = {
-			tree : this.getTreeStructureFromTabs(tabs),
-			state : tabs.map(function(aTab) {
-				var state = { id : this.getTabValue(aTab, this.kID) };
-				if (this.isCollapsed(aTab))
-					state.collapsed = true;
-				if (this.isSubtreeCollapsed(aTab))
-					state.subTreeCollapsed = true;
-				return state;
-			}, this)
-		};
+		var treeStructures = this.windowService.storedTreeStructure;
+		treeStructures = this.getTreeStructure(treeStructures);
 		this.SessionStore.setWindowValue(this.window, this.kSTRUCTURE, JSON.stringify(treeStructures))
 	},
  
-	restoreTreeStructure : function TSTBrowser_restoreTreeStructure() 
+	restoreTreeStructure : function TSTBrowser_restoreTreeStructure(aStructures) 
 	{
-		if (!this.getTreePref('restoreTreeOnStartup'))
+		if (!aStructures)
 			return;
 
-		var treeStructures = JSON.parse(this.SessionStore.getWindowValue(this.window, this.kSTRUCTURE) || '{}');
 		var id = this.mTabBrowser.getAttribute('id');
-		var treeStructure = id in treeStructures ? treeStructures[id] : null ;
+		var treeStructure = id in aStructures ? aStructures[id] : null ;
 		if (
 			!treeStructure ||
 			!treeStructure.state ||
