@@ -633,7 +633,8 @@ AutoHideBrowser.prototype = {
 			this.expanded &&
 			this.contentAreaScreenEnabled &&
 			this.treeStyleTab.FocusManager.activeWindow &&
-			this.treeStyleTab.FocusManager.activeWindow.top == this.window
+			this.treeStyleTab.FocusManager.activeWindow.top == this.window &&
+			this.findPluginArea(this.browser.contentWindow)
 			) {
 			let box = this.getContentsAreaBox();
 			let style = this.screen.style;
@@ -652,6 +653,11 @@ AutoHideBrowser.prototype = {
 			if (this.screen.state != 'close')
 				this.screen.hidePopup();
 		}
+	},
+	findPluginArea : function AHB_findPluginArea(aFrame)
+	{
+		return aFrame.document.querySelector('embed, object') ||
+				Array.some(aFrame.frames, arguments.callee);
 	},
 	
 	show : function AHB_show(aReason) /* PUBLIC API */ 
