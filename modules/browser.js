@@ -648,16 +648,6 @@ TreeStyleTabBrowser.prototype = {
 
 		this.fireTabbarPositionEvent(false, 'top', position); /* PUBLIC API */
 
-		if (this.getTreePref('restoreTreeOnStartup'))
-			this.window.setTimeout(function(aSelf) {
-				try {
-					aSelf.restoreTreeStructure();
-				}
-				catch(e) {
-					dump(e+'\n'+e.stack+'\n');
-				}
-			}, 0, this);
-
 		this.startRendering();
 // rap('browser/init end');
 	},
@@ -808,7 +798,8 @@ TreeStyleTabBrowser.prototype = {
 		this.initTabAttributes(aTab);
 		this.initTabContents(aTab);
 
-		this.setTabValue(aTab, this.kNEST, 0);
+		if (!aTab.hasAttribute(this.kNEST))
+			this.setTabValue(aTab, this.kNEST, 0);
 	},
 	isTabInitialized : function TSTBrowser_isTabInitialized(aTab)
 	{
@@ -2294,6 +2285,12 @@ TreeStyleTabBrowser.prototype = {
 	{
 		if (!this.window.__SS_tabsToRestore)
 			return;
+
+		if (!this.windowStateRestored) {
+			if (this.getTreePref('restoreTreeOnStartup'))
+				this.restoreTreeStructure();
+			this.windowStateRestored = true;
+		}
 	},
  
 	saveTreeStructureWithDelay : function TSTBrowser_saveTreeStructureWithDelay() 
@@ -2316,6 +2313,9 @@ TreeStyleTabBrowser.prototype = {
 		var id = this.mTabBrowser.getAttribute('id');
 		var tabs = this.getAllTabsArray(this.mTabBrowser);
 		treeStructures[id] = {
+			id : tabs.map(function(aTab) {
+					return this.getTabValue(aTab, this.kID);
+				}, this),
 			tree : this.getTreeStructureFromTabs(tabs),
 			collapsed : tabs.filter(function(aTab) {
 								return this.isCollapsed(aTab);
@@ -2341,32 +2341,54 @@ TreeStyleTabBrowser.prototype = {
 		var treeStructure = id in treeStructures ? treeStructures[id] : null ;
 		if (
 			!treeStructure ||
+			!treeStructure.id ||
+			!treeStructure.id.length ||
 			!treeStructure.tree ||
 			!treeStructure.tree.length
 			)
 			return;
 
+		var tabs = this.getAllTabsArray(this.mTabBrowser);
+		if (tabs.map(function(aTab) {
+				return this.getTabValue(aTab, this.kID);
+			}, this).join('\n') != treeStructure.id.join('\n'))
+			return;
+
+		var relations = tabs.map(function(aTab) {
+				return {
+					id           : this.getTabValue(aTab, this.kID),
+					parent       : this.getTabValue(aTab, this.kPARENT),
+					children     : this.getTabValue(aTab, this.kCHILDREN),
+					insertBefore : this.getTabValue(aTab, this.kINSERT_BEFORE),
+					insertAfter  : this.getTabValue(aTab, this.kINSERT_AFTER)
+				};
+			}, this);
 		this.applyTreeStructureToTabBrowser(this.mTabBrowser, treeStructure.tree);
 
-		this.updateAllTabsIndent();
+		this.updateAllTabsIndent(true);
 
-		this.getAllTabsArray(this.mTabBrowser)
-			.forEach(function(aTab, aIndex) {
-				this.tabsHash[this.getTabValue(aTab, this.kID)] = aTab;
+		tabs.forEach(function(aTab, aIndex) {
+			var relation = relations[aIndex];
+			if (!relation.id)
+				return;
 
-				if (treeStructure.treeCollapsed &&
-					treeStructure.treeCollapsed.indexOf(aIndex) > -1)
-					aTab.setAttribute(this.kSUBTREE_COLLAPSED, true);
+			this.tabsHash[relation.id] = aTab;
 
-				if (treeStructure.collapsed &&
-					treeStructure.collapsed.indexOf(aIndex) > -1)
-					this.collapseExpandTab(aTab, true, true);
+			if (treeStructure.treeCollapsed)
+				this.setTabValue(aTab, this.kSUBTREE_COLLAPSED, treeStructure.treeCollapsed.indexOf(aIndex) > -1);
 
-				// clear temporary relations
-				aTab.removeAttribute(this.kID);
-				aTab.removeAttribute(this.kPARENT);
-				aTab.removeAttribute(this.kCHILDREN);
-			}, this);
+			if (treeStructure.collapsed)
+				this.collapseExpandTab(aTab, treeStructure.collapsed.indexOf(aIndex) > -1, true);
+
+			this.setTabValue(aTab, this.kID, relation.id);
+			this.setTabValue(aTab, this.kPARENT, relation.parent);
+			this.setTabValue(aTab, this.kCHILDREN, relation.children);
+			this.setTabValue(aTab, this.kINSERT_BEFORE, relation.insertBefore);
+			this.setTabValue(aTab, this.kINSERT_AFTER, relation.insertAfter);
+			aTab.__treestyletab__structureRestored = true;
+		}, this);
+
+		this.updateAllTabsCount();
 	},
   
 /* DOM Event Handling */ 
@@ -2998,10 +3020,8 @@ TreeStyleTabBrowser.prototype = {
 			nextTab = this.getNextTab(tabs[tabs.length-1]);
 		}
 
-
 		var prevParent = this.getParentTab(prevTab);
 		var nextParent = this.getParentTab(nextTab);
-
 
 		var prevLevel  = prevTab ? Number(this.getTabValue(prevTab, this.kNEST)) : -1 ;
 		var nextLevel  = nextTab ? Number(this.getTabValue(nextTab, this.kNEST)) : -1 ;
@@ -3243,10 +3263,16 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var [id, mayBeDuplicated] = this._restoreTabId(aTab);
 
+		var structureRestored = aTab.__treestyletab__structureRestored;
+		delete aTab.__treestyletab__structureRestored;
+
 		var children = this.getTabValue(aTab, this.kCHILDREN);
 		if (
-			!mayBeDuplicated ||
-			aTab.getAttribute(this.kCHILDREN) != children
+			!structureRestored &&
+			(
+				!mayBeDuplicated ||
+				aTab.getAttribute(this.kCHILDREN) != children
+			)
 			) {
 			// for safety
 			this.partAllChildren(aTab, {
@@ -3255,22 +3281,38 @@ TreeStyleTabBrowser.prototype = {
 			});
 		}
 
-		var closeSetId = this._restoreCloseSetId(aTab, mayBeDuplicated);
+		var closeSetId = !structureRestored && this._restoreCloseSetId(aTab, mayBeDuplicated);
 
 		this.setTabValue(aTab, this.kID, id);
 		this.tabsHash[id] = aTab;
 
-		if (closeSetId)
-			this.restoreClosedSet(closeSetId, aTab);
+		if (structureRestored) {
+			[
+				this.kNEST,
+				this.kPARENT,
+				this.kCHILDREN,
+				this.kINSERT_BEFORE,
+				this.kINSERT_AFTER,
+				this.kSUBTREE_COLLAPSED,
+				this.kCOLLAPSED,
+				this.kCOLLAPSED_DONE
+			].forEach(function(aKey) {
+				this.setTabValue(aTab, aKey, this.getTabValue(aTab, aKey));
+			}, this);
+		}
+		else {
+			if (closeSetId)
+				this.restoreClosedSet(closeSetId, aTab);
 
-		var isSubtreeCollapsed = this._restoreSubtreeCollapsedState(aTab);
+			let isSubtreeCollapsed = this._restoreSubtreeCollapsedState(aTab);
 
-		var childTabs = this._restoreChildTabsRelation(aTab, children, mayBeDuplicated);
+			let childTabs = this._restoreChildTabsRelation(aTab, children, mayBeDuplicated);
 
-		this._restoreTabPositionAndIndent(aTab, childTabs, mayBeDuplicated);
+			this._restoreTabPositionAndIndent(aTab, childTabs, mayBeDuplicated);
 
-		if (isSubtreeCollapsed)
-			this.collapseExpandSubtree(aTab, isSubtreeCollapsed);
+			if (isSubtreeCollapsed)
+				this.collapseExpandSubtree(aTab, isSubtreeCollapsed);
+		}
 
 		if (mayBeDuplicated)
 			this.clearRedirectionTable();
