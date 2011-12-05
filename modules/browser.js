@@ -2348,6 +2348,8 @@ TreeStyleTabBrowser.prototype = {
 
 		this.applyTreeStructureToTabBrowser(this.mTabBrowser, treeStructure.tree);
 
+		this.updateAllTabsIndent();
+
 		this.getAllTabsArray(this.mTabBrowser)
 			.forEach(function(aTab, aIndex) {
 				this.tabsHash[this.getTabValue(aTab, this.kID)] = aTab;
@@ -2365,7 +2367,6 @@ TreeStyleTabBrowser.prototype = {
 				aTab.removeAttribute(this.kPARENT);
 				aTab.removeAttribute(this.kCHILDREN);
 			}, this);
-		this.updateAllTabsIndent();
 	},
   
 /* DOM Event Handling */ 
@@ -4869,6 +4870,13 @@ TreeStyleTabBrowser.prototype = {
 			if (parent)
 				this.updateTabsCount(parent);
 		}
+	},
+ 
+	updateAllTabsCount : function TSTBrowser_updateAllTabsCount() 
+	{
+		this.rootTabs.forEach(function(aTab) {
+			this.updateTabsCount(aTab, this);
+		}, this);
 	},
  
 	promoteTooDeepLevelTabs : function TSTBrowser_promoteTooDeepLevelTabs(aParent) 
