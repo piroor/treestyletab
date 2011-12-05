@@ -648,6 +648,16 @@ TreeStyleTabBrowser.prototype = {
 
 		this.fireTabbarPositionEvent(false, 'top', position); /* PUBLIC API */
 
+		if (this.getTreePref('restoreTreeOnStartup'))
+			this.window.setTimeout(function(aSelf) {
+				try {
+					aSelf.restoreTreeStructure();
+				}
+				catch(e) {
+					dump(e+'\n'+e.stack+'\n');
+				}
+			}, 0, this);
+
 		this.startRendering();
 // rap('browser/init end');
 	},
@@ -798,7 +808,7 @@ TreeStyleTabBrowser.prototype = {
 		this.initTabAttributes(aTab);
 		this.initTabContents(aTab);
 
-		aTab.setAttribute(this.kNEST, 0);
+		this.setTabValue(aTab, this.kNEST, 0);
 	},
 	isTabInitialized : function TSTBrowser_isTabInitialized(aTab)
 	{
@@ -2204,6 +2214,10 @@ TreeStyleTabBrowser.prototype = {
 			case 'extensions.treestyletab.pinnedTab.faviconized':
 				return this.positionPinnedTabsWithDelay();
 
+			case 'extensions.treestyletab.restoreTreeOnStartup':
+				if (value) this.saveTreeStructureWithDelay();
+				return;
+
 			default:
 				return;
 		}
@@ -2322,8 +2336,6 @@ TreeStyleTabBrowser.prototype = {
 		if (!this.getTreePref('restoreTreeOnStartup'))
 			return;
 
-		this.restoreTreeStructure();
-
 		var treeStructures = JSON.parse(this.SessionStore.getWindowValue(this.window, this.kSTRUCTURE) || '{}');
 		var id = this.mTabBrowser.getAttribute('id');
 		var treeStructure = id in treeStructures ? treeStructures[id] : null ;
@@ -2338,6 +2350,8 @@ TreeStyleTabBrowser.prototype = {
 
 		this.getAllTabsArray(this.mTabBrowser)
 			.forEach(function(aTab, aIndex) {
+				this.tabsHash[this.getTabValue(aTab, this.kID)] = aTab;
+
 				if (treeStructure.treeCollapsed &&
 					treeStructure.treeCollapsed.indexOf(aIndex) > -1)
 					aTab.setAttribute(this.kSUBTREE_COLLAPSED, true);
@@ -2346,10 +2360,12 @@ TreeStyleTabBrowser.prototype = {
 					treeStructure.collapsed.indexOf(aIndex) > -1)
 					this.collapseExpandTab(aTab, true, true);
 
+				// clear temporary relations
 				aTab.removeAttribute(this.kID);
 				aTab.removeAttribute(this.kPARENT);
 				aTab.removeAttribute(this.kCHILDREN);
 			}, this);
+		this.updateAllTabsIndent();
 	},
   
 /* DOM Event Handling */ 
@@ -2986,8 +3002,8 @@ TreeStyleTabBrowser.prototype = {
 		var nextParent = this.getParentTab(nextTab);
 
 
-		var prevLevel  = prevTab ? Number(prevTab.getAttribute(this.kNEST)) : -1 ;
-		var nextLevel  = nextTab ? Number(nextTab.getAttribute(this.kNEST)) : -1 ;
+		var prevLevel  = prevTab ? Number(this.getTabValue(prevTab, this.kNEST)) : -1 ;
+		var nextLevel  = nextTab ? Number(this.getTabValue(nextTab, this.kNEST)) : -1 ;
 
 		var newParent;
 
@@ -3227,7 +3243,10 @@ TreeStyleTabBrowser.prototype = {
 		var [id, mayBeDuplicated] = this._restoreTabId(aTab);
 
 		var children = this.getTabValue(aTab, this.kCHILDREN);
-		if (!mayBeDuplicated || aTab.hasAttribute(this.kCHILDREN)) {
+		if (
+			!mayBeDuplicated ||
+			aTab.getAttribute(this.kCHILDREN) != children
+			) {
 			// for safety
 			this.partAllChildren(aTab, {
 				dontUpdateIndent : true,
@@ -4287,7 +4306,7 @@ TreeStyleTabBrowser.prototype = {
 		aInfo = aInfo || {};
 
 		if (aParent && this.maxTreeLevelPhisical && this.maxTreeLevel > -1) {
-			let level = parseInt(aParent.getAttribute(this.kNEST) || 0) + 1;
+			let level = parseInt(this.getTabValue(aParent, this.kNEST) || 0) + 1;
 			while (aParent && level > this.maxTreeLevel)
 			{
 				level--;
@@ -4318,7 +4337,7 @@ TreeStyleTabBrowser.prototype = {
 
 		shouldInheritIndent = (
 			!currentParent ||
-			(currentParent.getAttribute(this.kNEST) == aParent.getAttribute(this.kNEST))
+			(this.getTabValue(currentParent, this.kNEST) == this.getTabValue(aParent, this.kNEST))
 		);
 
 		this.ensureTabInitialized(aChild);
@@ -4628,7 +4647,7 @@ TreeStyleTabBrowser.prototype = {
 		Array.slice(aTabs).forEach(function(aTab) {
 			if (!aTab.parentNode) return; // ignore removed tabs
 			this.updateTabIndent(aTab, indent, aJustNow);
-			aTab.setAttribute(this.kNEST, aLevel);
+			this.setTabValue(aTab, this.kNEST, aLevel);
 			this.updateCanCollapseSubtree(aTab, aLevel);
 			this.updateTabsIndent(this.getChildTabs(aTab), aLevel+1, aJustNow);
 		}, this);
@@ -4786,8 +4805,8 @@ TreeStyleTabBrowser.prototype = {
 		if (!tabs.length) return;
 
 		var self = this;
-		tabs.sort(function(aA, aB) { return Number(aA.getAttribute(self.kNEST)) - Number(aB.getAttribute(self.kNEST)); });
-		var nest = tabs[tabs.length-1].getAttribute(this.kNEST);
+		tabs.sort(function(aA, aB) { return Number(self.getTabValue(aA, self.kNEST)) - Number(self.getTabValue(aB, self.kNEST)); });
+		var nest = this.getTabValue(tabs[tabs.length-1], this.kNEST);
 		if (this.maxTreeLevel > -1)
 			nest = Math.min(nest, this.maxTreeLevel);
 		if (!nest)
@@ -4859,7 +4878,7 @@ TreeStyleTabBrowser.prototype = {
 
 		var tabs = aParent ? this.getDescendantTabs(aParent) : this.getAllTabsArray(this.mTabBrowser) ;
 		tabs.forEach(function(aTab) {
-			var level = parseInt(aTab.getAttribute(this.kNEST) || 0);
+			var level = parseInt(this.getTabValue(aTab, this.kNEST) || 0);
 			if (level <= this.maxTreeLevel)
 				return;
 
@@ -5210,9 +5229,9 @@ TreeStyleTabBrowser.prototype = {
 //			!this.canCollapseSubtree(this.getParentTab(aTab))
 			) {
 			if (aCollapsed)
-				aTab.setAttribute(this.kCOLLAPSED_DONE, true);
+				this.setTabValue(aTab, this.kCOLLAPSED_DONE, true);
 			else
-				aTab.removeAttribute(this.kCOLLAPSED_DONE);
+				this.deleteTabValue(aTab, this.kCOLLAPSED_DONE);
 			aTab.removeAttribute(this.kCOLLAPSING_PHASE);
 
 			if (CSSTransitionEnabled) {
@@ -5237,7 +5256,7 @@ TreeStyleTabBrowser.prototype = {
 
 		if (!aCollapsed) {
 			aTab.setAttribute(offsetAttr, maxMargin);
-			aTab.removeAttribute(this.kCOLLAPSED_DONE);
+			this.deleteTabValue(aTab, this.kCOLLAPSED_DONE);
 		}
 
 		var radian = 90 * Math.PI / 180;
@@ -5264,7 +5283,7 @@ TreeStyleTabBrowser.prototype = {
 			}
 			if (aTime >= aDuration || stopAnimation) {
 				delete aTab.__treestyletab__updateTabCollapsedTask;
-				if (aCollapsed) aTab.setAttribute(self.kCOLLAPSED_DONE, true);
+				if (aCollapsed) self.setTabValue(aTab, self.kCOLLAPSED_DONE, true);
 				if (!CSSTransitionEnabled) {
 					aTab.style.removeProperty(self.collapseCSSProp);
 					aTab.style.removeProperty('opacity');

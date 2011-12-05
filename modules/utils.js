@@ -1037,6 +1037,7 @@ var TreeStyleTabUtils = {
 		try {
 			this.checkCachedSessionDataExpiration(aTab);
 			this.SessionStore.setTabValue(aTab, aKey, aValue);
+			this.SessionStore.persistTabAttribute(aKey);
 		}
 		catch(e) {
 		}
@@ -1267,7 +1268,7 @@ var TreeStyleTabUtils = {
 	{
 		var newTabs = [];
 		aTabs.forEach(function(aTab) {
-			if (!aTab.parentNode) return; // ignore removed tabs
+			if (!aTab || !aTab.parentNode) return; // ignore removed tabs
 			if (newTabs.indexOf(aTab) < 0) newTabs.push(aTab);
 		});
 		newTabs.sort(this.sortTabsByOrder);
