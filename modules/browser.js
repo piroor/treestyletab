@@ -2352,6 +2352,7 @@ TreeStyleTabBrowser.prototype = {
 
 		var tabs = this.getAllTabsArray(this.mTabBrowser);
 
+		// on Firefox 3.6, we cannot get tab values before SSTabRestoring...
 		var actualTabs = tabs.map(function(aTab) {
 				return this.getTabValue(aTab, this.kID);
 			}, this).join('\n')+'\n';
