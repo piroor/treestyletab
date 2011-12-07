@@ -3361,7 +3361,7 @@ TreeStyleTabBrowser.prototype = {
 			 * it is wrongly attacched by tab moving on restoring.
 			 * Restoring the old ID (the next statement) breaks the children
 			 * list of the temporary parent and causes many problems.
-			 * So, to prevent these problems, I part the tab from the temporary
+			 * So, to prevent these problems, I detach the tab from the temporary
 			 * parent manually.
 			 * If the ID stored in the session equals to the value of the
 			 * attribute stored in the element itself, then don't reset the
@@ -4357,7 +4357,7 @@ TreeStyleTabBrowser.prototype = {
 	},
 //	_treeViewEnabled : true,
   
-/* attach/part */ 
+/* attach/detach */ 
 	
 	attachTabTo : function TSTBrowser_attachTabTo(aChild, aParent, aInfo) /* PUBLIC API */ 
 	{

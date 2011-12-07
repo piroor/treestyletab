@@ -325,7 +325,7 @@ catch(e) {
 
 			case sv.kDROP_BEFORE:
 /*
-	[TARGET  ] ªpart from parent, and move
+	[TARGET  ] ªdetach from parent, and move
 
 	  [      ]
 	[TARGET  ] ªattach to the parent of the target, and move
