@@ -2288,13 +2288,13 @@ TreeStyleTabBrowser.prototype = {
 	restoreTreeStructure : function TSTBrowser_restoreTreeStructure() 
 	{
 		var tabs = this.getAllTabsArray(this.mTabBrowser);
-		tabs.reverse().forEach(function(aTab) {
+		tabs.reverse().filter(function(aTab) {
 			var id = this.getTabValue(aTab, this.kID);
 			if (
 				!id || // tabs opened by externals applications
 				aTab.hidden // tabs in background groups
 				)
-				return;
+				return false;
 
 			var alreadyRestored = id == aTab.getAttribute(this.kID);
 
@@ -2321,9 +2321,9 @@ TreeStyleTabBrowser.prototype = {
 
 			if (!alreadyRestored)
 				aTab.__treestyletab__structureRestored = true;
-		}, this);
 
-		tabs.forEach(this.updateInsertionPositionInfo, this);
+			return true
+		}, this).forEach(this.updateInsertionPositionInfo, this);
 	},
   
 /* DOM Event Handling */ 
