@@ -2304,14 +2304,17 @@ TreeStyleTabBrowser.prototype = {
 			var subTreeCollapsed = this.getTabValue(aTab, this.kSUBTREE_COLLAPSED) == 'true';
 			var children = this.getTabValue(aTab, this.kCHILDREN);
 			if (children) {
+				subTreeCollapsed = this._restoreSubtreeCollapsedState(aTab, subTreeCollapsed);
 				children.split('|').forEach(function(aChild) {
 					aChild = this.getTabById(aChild);
-					if (aChild)
+					if (aChild) {
 						this.attachTabTo(aChild, aTab, {
 							forceExpand  : true, // to prevent to collapse the selected tab
 							dontAnimate  : true,
 							insertBefore : this.getTabById(this.getTabValue(aChild, this.kINSERT_BEFORE))
 						});
+						this.collapseExpandTab(aChild, subTreeCollapsed, true);
+					}
 				}, this);
 				this.collapseExpandSubtree(aTab, subTreeCollapsed, true);
 			}
@@ -3315,14 +3318,18 @@ TreeStyleTabBrowser.prototype = {
 		this.deleteTabValue(aTab, this.kCLOSED_SET_ID);
 		return closeSetId;
 	},
-	_restoreSubtreeCollapsedState : function TSTBrowser_restoreSubtreeCollapsedState(aTab)
+	_restoreSubtreeCollapsedState : function TSTBrowser_restoreSubtreeCollapsedState(aTab, aCollapsed)
 	{
 		var shouldCollapse = this.getTreePref('collapseExpandSubtree.sessionRestore');
+
+		if (aCollapsed === void(0))
+			aCollapsed = this.getTabValue(aTab, this.kSUBTREE_COLLAPSED) == 'true';
+
 		var isSubtreeCollapsed = (
 				this.windowService.restoringTree &&
 				(
 					shouldCollapse == this.RESTORED_TREE_COLLAPSED_STATE_LAST_STATE ?
-						(this.getTabValue(aTab, this.kSUBTREE_COLLAPSED) == 'true') :
+						aCollapsed :
 						shouldCollapse == this.RESTORED_TREE_COLLAPSED_STATE_COLLAPSED
 				)
 			);
