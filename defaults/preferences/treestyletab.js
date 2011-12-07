@@ -550,12 +550,11 @@ pref("extensions.treestyletab.undoCloseTabSet.behavior", 3);
 pref("extensions.treestyletab.repositionStatusPanel", true);
 
 /**
- * EXPERIMENTAL, DON'T SET THIS "true" !!
  * If this is "true", TST restores tree structure before SSTabRestoring events
  * are fired. Otherwise TST restores tree structure based on SSTabRestoring
  * events.
  */
-pref("extensions.treestyletab.restoreTreeOnStartup", false);
+pref("extensions.treestyletab.restoreTreeOnStartup", true);
 
 /**
  * TST overrides some internal prefs of Firefox itself, because they can
