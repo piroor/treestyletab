@@ -2290,8 +2290,13 @@ TreeStyleTabBrowser.prototype = {
 		var tabs = this.getAllTabsArray(this.mTabBrowser);
 		tabs.reverse().forEach(function(aTab) {
 			var id = this.getTabValue(aTab, this.kID);
-			if (!id)
+			if (
+				!id || // tabs opened by externals applications
+				aTab.hidden // tabs in background groups
+				)
 				return;
+
+			var alreadyRestored = id == aTab.getAttribute(this.kID);
 
 			aTab.setAttribute(this.kID, id);
 			this.tabsHash[id] = aTab;
@@ -2304,16 +2309,17 @@ TreeStyleTabBrowser.prototype = {
 					if (aChild)
 						this.attachTabTo(aChild, aTab, {
 							forceExpand : true, // to prevent to collapse the selected tab
-							dontAnimate : true
+							dontAnimate : true,
+							dontMove    : true
 						});
 				}, this);
-
 				this.collapseExpandSubtree(aTab, subTreeCollapsed, true);
 			}
 
 			this.updateInsertionPositionInfo(aTab);
 
-			aTab.__treestyletab__structureRestored = true;
+			if (!alreadyRestored)
+				aTab.__treestyletab__structureRestored = true;
 		}, this);
 	},
   
@@ -3205,7 +3211,7 @@ TreeStyleTabBrowser.prototype = {
 				aTab.getAttribute(this.kCHILDREN) != children
 			)
 			) {
-			// for safety
+			// failsafe
 			this.detachAllChildren(aTab, {
 				dontUpdateIndent : true,
 				dontAnimate      : this.windowService.restoringTree
@@ -3217,7 +3223,40 @@ TreeStyleTabBrowser.prototype = {
 		this.setTabValue(aTab, this.kID, id);
 		this.tabsHash[id] = aTab;
 
-		if (!structureRestored) {
+		if (structureRestored) {
+			/**
+			 * By some reasons (ex. persistTabAttribute()), actual state of
+			 * the tab (attributes) can be lost on SSTabRestoring.
+			 * For failsafe, we must override actual attributes by stored
+			 * values.
+			 */
+			[
+				this.kPARENT,
+				this.kINSERT_BEFORE,
+				this.kINSERT_AFTER
+			].forEach(function(aKey) {
+				var tab = this.getTabValue(aTab, aKey);
+				if (this.getTabById(tab))
+					this.setTabValue(aTab, aKey, tab);
+			}, this);
+
+			let children = this.getTabValue(aTab, this.kCHILDREN);
+			if (children.split('|').every(function(aChild) {
+					return this.getTabById(aChild);
+				}, this))
+				this.setTabValue(aTab, this.kCHILDREN, children);
+
+			[
+				this.kSUBTREE_COLLAPSED,
+				this.kCOLLAPSED,
+				this.kCOLLAPSED_DONE
+			].forEach(function(aKey) {
+				var storedValue = this.getTabValue(aTab, aKey);
+				if (storedValue)
+					this.setTabValue(aTab, aKey, storedValue);
+			}, this);
+		}
+		else {
 			if (closeSetId)
 				this.restoreClosedSet(closeSetId, aTab);
 
