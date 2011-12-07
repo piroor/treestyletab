@@ -4773,7 +4773,7 @@ TreeStyleTabBrowser.prototype = {
 		if (!tabs.length) return;
 
 		var self = this;
-		tabs.sort(function(aA, aB) { return Number(aA.getAttribute(self.kNEST)) - Number(aB.setAttribute(self.kNEST)); });
+		tabs.sort(function(aA, aB) { return Number(aA.getAttribute(self.kNEST)) - Number(aB.getAttribute(self.kNEST)); });
 		var nest = tabs[tabs.length-1].getAttribute(this.kNEST);
 		if (this.maxTreeLevel > -1)
 			nest = Math.min(nest, this.maxTreeLevel);
