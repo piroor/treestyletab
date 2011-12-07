@@ -2293,25 +2293,24 @@ TreeStyleTabBrowser.prototype = {
 			if (!id)
 				return;
 
-			this.setTabValue(aTab, this.kID, id);
+			aTab.setAttribute(this.kID, id);
 			this.tabsHash[id] = aTab;
 
-			var collapsed = this.getTabValue(aTab, this.kCOLLAPSED) == 'true';
 			var subTreeCollapsed = this.getTabValue(aTab, this.kSUBTREE_COLLAPSED) == 'true';
 			var children = this.getTabValue(aTab, this.kCHILDREN);
-			if (!children)
-				return;
+			if (children) {
+				children.split('|').forEach(function(aChild) {
+					aChild = this.getTabById(aChild);
+					if (aChild)
+						this.attachTabTo(aChild, aTab, {
+							forceExpand : true, // to prevent to collapse the selected tab
+							dontAnimate : true
+						});
+				}, this);
 
-			children.split('|').forEach(function(aChild) {
-				aChild = this.getTabById(aChild);
-				if (aChild)
-					this.attachTabTo(aChild, aTab, {
-						forceExpand : true // to prevent to collapse the selected tab
-					});
-			}, this);
+				this.collapseExpandSubtree(aTab, subTreeCollapsed, true);
+			}
 
-			this.collapseExpandSubtree(aTab, subTreeCollapsed, true);
-			this.collapseExpandTab(aTab, collapsed, true);
 			this.updateInsertionPositionInfo(aTab);
 
 			aTab.__treestyletab__structureRestored = true;
@@ -4174,9 +4173,9 @@ TreeStyleTabBrowser.prototype = {
 	
 /* reset */ 
 	
-	resetTab : function TSTBrowser_resetTab(aTab, aPartChildren) 
+	resetTab : function TSTBrowser_resetTab(aTab, aDetachAllChildren) 
 	{
-		if (aPartChildren)
+		if (aDetachAllChildren)
 			this.detachAllChildren(aTab, {
 				dontUpdateIndent : true,
 				dontAnimate      : true
@@ -4198,10 +4197,10 @@ TreeStyleTabBrowser.prototype = {
 		this.updateTabsIndent([aTab], undefined, true);
 	},
  
-	resetAllTabs : function TSTBrowser_resetAllTabs(aPartChildren) 
+	resetAllTabs : function TSTBrowser_resetAllTabs(aDetachAllChildren) 
 	{
 		this.getAllTabsArray(this.mTabBrowser).forEach(function(aTab) {
-			this.resetTab(aTab, aPartChildren);
+			this.resetTab(aTab, aDetachAllChildren);
 		}, this);
 	},
  
