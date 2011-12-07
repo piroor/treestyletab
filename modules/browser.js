@@ -2770,7 +2770,7 @@ TreeStyleTabBrowser.prototype = {
 						[children[0]] :
 						children
 				);
-			this.partAllChildren(tab, {
+			this.detachAllChildren(tab, {
 				behavior         : closeParentBehavior,
 				dontUpdateIndent : true
 			});
@@ -2808,7 +2808,7 @@ TreeStyleTabBrowser.prototype = {
 			if (shouldCloseParentTab && nextFocusedTab == parentTab)
 				nextFocusedTab = this.getNextFocusedTab(parentTab);
 
-			this.partTab(tab, { dontUpdateIndent : true });
+			this.detachTab(tab, { dontUpdateIndent : true });
 
 			if (shouldCloseParentTab) {
 				this.Deferred.next(function() {
@@ -3071,7 +3071,7 @@ TreeStyleTabBrowser.prototype = {
 					this.attachTabTo(aTab, newParent, { insertBefore : nextTab });
 			}
 			else {
-				this.partTab(aTab);
+				this.detachTab(aTab);
 			}
 		}
 	},
@@ -3169,7 +3169,7 @@ TreeStyleTabBrowser.prototype = {
 				}
 				if (!attached) {
 					this.collapseExpandTab(tab, false, true);
-					this.partTab(tab);
+					this.detachTab(tab);
 				}
 			}
 
@@ -3214,7 +3214,7 @@ TreeStyleTabBrowser.prototype = {
 		let b = this.mTabBrowser;
 		let lastCount = this.getAllTabs(b).snapshotLength - 1;
 		w.setTimeout(function(aSelf) {
-			aSelf.partTab(aParent);
+			aSelf.detachTab(aParent);
 			b.moveTabTo(aParent, lastCount);
 			let descendantTabs = aSelf.getDescendantTabs(aParent);
 			descendantTabs.forEach(function(aTab) {
@@ -3290,7 +3290,7 @@ TreeStyleTabBrowser.prototype = {
 			)
 			) {
 			// for safety
-			this.partAllChildren(aTab, {
+			this.detachAllChildren(aTab, {
 				dontUpdateIndent : true,
 				dontAnimate      : this.windowService.restoringTree
 			});
@@ -3692,13 +3692,13 @@ TreeStyleTabBrowser.prototype = {
 			this.internallyTabMovingCount--;
 		}
 
-		this.partAllChildren(aTab, {
+		this.detachAllChildren(aTab, {
 			behavior : this.getCloseParentBehaviorForTab(
 				aTab,
 				this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
 			)
 		});
-		this.partTab(aTab);
+		this.detachTab(aTab);
 
 		this.collapseExpandTab(aTab, false);
 		if (this.isVertical) this.positionPinnedTabsWithDelay();
@@ -4274,12 +4274,12 @@ TreeStyleTabBrowser.prototype = {
 	resetTab : function TSTBrowser_resetTab(aTab, aPartChildren) 
 	{
 		if (aPartChildren)
-			this.partAllChildren(aTab, {
+			this.detachAllChildren(aTab, {
 				dontUpdateIndent : true,
 				dontAnimate      : true
 			});
 
-		this.partTab(aTab, {
+		this.detachTab(aTab, {
 			dontUpdateIndent : true,
 			dontAnimate      : true
 		});
@@ -4405,7 +4405,7 @@ TreeStyleTabBrowser.prototype = {
 
 		var id = aChild.getAttribute(this.kID);
 
-		this.partTab(aChild, {
+		this.detachTab(aChild, {
 			dontUpdateIndent : true
 		});
 
@@ -4525,7 +4525,7 @@ TreeStyleTabBrowser.prototype = {
 				this.isSubtreeCollapsed(aTab);
 	},
   
-	partTab : function TSTBrowser_partTab(aChild, aInfo) /* PUBLIC API */ 
+	detachTab : function TSTBrowser_detachTab(aChild, aInfo) /* PUBLIC API */ 
 	{
 		if (!aChild) return;
 		if (!aInfo) aInfo = {};
@@ -4575,12 +4575,12 @@ TreeStyleTabBrowser.prototype = {
 			}, 0, this.getTabBrowserFromChild(parentTab));
 		}
 	},
-	detachTab : function TSTBrowser_detachTab(aChild, aInfo) // alias (unstable API!)
+	partTab : function TSTBrowser_partTab(aChild, aInfo) /* PUBLIC API, for backward compatibility */
 	{
-		return this.partTab(aChild, aInfo);
+		return this.detachTab(aChild, aInfo);
 	},
 	
-	partAllChildren : function TSTBrowser_partAllChildren(aTab, aInfo) 
+	detachAllChildren : function TSTBrowser_detachAllChildren(aTab, aInfo) 
 	{
 		aInfo = aInfo || {};
 		if (!('behavior' in aInfo))
@@ -4610,12 +4610,12 @@ TreeStyleTabBrowser.prototype = {
 		children.forEach((
 			aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN ?
 				function(aTab) {
-					this.partTab(aTab, aInfo);
+					this.detachTab(aTab, aInfo);
 					this.moveTabSubtreeTo(aTab, insertBefore ? insertBefore._tPos - 1 : this.getLastTab(b)._tPos );
 				} :
 			aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD ?
 				function(aTab, aIndex) {
-					this.partTab(aTab, aInfo);
+					this.detachTab(aTab, aInfo);
 					if (aIndex == 0) {
 						if (parentTab) {
 							this.attachTabTo(aTab, parentTab, {
@@ -4645,25 +4645,33 @@ TreeStyleTabBrowser.prototype = {
 				} :
 			// aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN ?
 				function(aTab) {
-					this.partTab(aTab, aInfo);
+					this.detachTab(aTab, aInfo);
 				}
 		), this);
 	},
+	partAllChildren : function TSTBrowser_partAllChildren(aTab, aInfo) /* for backward compatibility */
+	{
+		return this.detachAllChildren(aTab, aInfo);
+	},
  
-	partTabs : function TSTBrowser_partTabs(aTabs) 
+	detachTabs : function TSTBrowser_detachTabs(aTabs) 
 	{
 		var aTabs = Array.slice(aTabs);
 		for each (let tab in aTabs)
 		{
 			if (aTabs.indexOf(this.getParentTab(tab)) > -1)
 				continue;
-			this.partAllChildren(tab, {
+			this.detachAllChildren(tab, {
 				behavior : this.getCloseParentBehaviorForTab(
 					tab,
 					this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
 				)
 			});
 		}
+	},
+	partTabs : function TSTBrowser_partTabs(aTabs) /* for backward compatibility */
+	{
+		return this.detachTabs(aTabs);
 	},
  
 	getCloseParentBehaviorForTab : function TSTBrowser_getCloseParentBehaviorForTab(aTab, aDefaultBehavior) 
@@ -4950,7 +4958,7 @@ TreeStyleTabBrowser.prototype = {
 			var parent = this.getParentTab(aTab);
 			var newParent = this.getParentTab(parent);
 			if (this.maxTreeLevel == 0 || !newParent) {
-				this.partTab(aTab);
+				this.detachTab(aTab);
 			}
 			else {
 				let nextSibling = this.getNextTab(aTab);
@@ -5011,7 +5019,7 @@ TreeStyleTabBrowser.prototype = {
 			}
 			else {
 				let nextTab = this.getNextSiblingTab(parentTab);
-				this.partTab(b.mCurrentTab);
+				this.detachTab(b.mCurrentTab);
 				this.internallyTabMovingCount++;
 				if (nextTab) {
 					b.moveTabTo(b.mCurrentTab, nextTab._tPos - 1);

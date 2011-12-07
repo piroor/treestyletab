@@ -431,7 +431,7 @@ catch(e) {
 			selectedTabs.length) {
 			draggedTabs = draggedRoots = selectedTabs;
 			if (aInfo.action & sv.kACTIONS_FOR_SOURCE)
-				sourceService.partTabs(selectedTabs);
+				sourceService.detachTabs(selectedTabs);
 		}
 
 		while (aInfo.insertBefore && draggedWholeTree.indexOf(aInfo.insertBefore) > -1)
@@ -441,7 +441,7 @@ catch(e) {
 
 		if (aInfo.action & sv.kACTIONS_FOR_SOURCE) {
 			if (aInfo.action & sv.kACTION_PART) {
-				this.partTabsOnDrop(draggedRoots);
+				this.detachTabsOnDrop(draggedRoots);
 			}
 			else if (aInfo.action & sv.kACTION_ATTACH) {
 				this.attachTabsOnDrop(draggedRoots, aInfo.parent);
@@ -520,13 +520,13 @@ catch(e) {
 			if (aParent)
 				sv.attachTabTo(aTab, aParent);
 			else
-				sv.partTab(aTab);
+				sv.detachTab(aTab);
 			sv.collapseExpandTab(aTab, false);
 		}, sv);
 		b.movingSelectedTabs = false; // Multiple Tab Handler
 	},
  
-	partTabsOnDrop : function TabbarDND_partTabsOnDrop(aTabs) 
+	detachTabsOnDrop : function TabbarDND_detachTabsOnDrop(aTabs) 
 	{
 		var b  = aTabs[0].ownerDocument.defaultView.TreeStyleTabService.getTabBrowserFromChild(aTabs[0]);
 		var sv = b.treeStyleTab;
@@ -534,7 +534,7 @@ catch(e) {
 		b.movingSelectedTabs = true; // Multiple Tab Handler
 		aTabs.forEach(function(aTab) {
 			if (!aTab.parentNode) return; // ignore removed tabs
-			sv.partTab(aTab);
+			sv.detachTab(aTab);
 			sv.collapseExpandTab(aTab, false);
 		}, sv);
 		b.movingSelectedTabs = false; // Multiple Tab Handler

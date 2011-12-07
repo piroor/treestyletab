@@ -1456,7 +1456,7 @@ TreeStyleTabWindow.prototype = {
 			});
 		}
 		else {
-			sv.partTab(aTab);
+			sv.detachTab(aTab);
 			let index = nextSibling ? nextSibling._tPos : b.mTabContainer.childNodes.length ;
 			if (index > aTab._tPos) index--;
 			b.moveTabTo(aTab, index);

@@ -2301,7 +2301,7 @@ var TreeStyleTabUtils = {
 		var parentTab = null;
 		aTabs.forEach(function(aTab, aIndex) {
 			if (sv.isCollapsed(aTab)) sv.collapseExpandTab(aTab, false, true);
-			sv.partTab(aTab);
+			sv.detachTab(aTab);
 
 			var parentIndexInTree = aTreeStructure[aIndex];
 			if (parentIndexInTree < 0) // there is no parent, so this is a new parent!

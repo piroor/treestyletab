@@ -20,7 +20,7 @@ sv.collapseExpandAllSubtree(collapse)
 sv.changeTabbarPosition()
 sv.currentTabbarPosition
 
-sv.partAllChildren()
+sv.detachAllChildren()
 sv.resetTab()
 sv.resetAllTabs()
 
