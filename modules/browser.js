@@ -799,7 +799,7 @@ TreeStyleTabBrowser.prototype = {
 		this.initTabContents(aTab);
 
 		if (!aTab.hasAttribute(this.kNEST))
-			this.setTabValue(aTab, this.kNEST, 0);
+			aTab.setAttribute(this.kNEST, 0);
 	},
 	isTabInitialized : function TSTBrowser_isTabInitialized(aTab)
 	{
@@ -2368,7 +2368,7 @@ TreeStyleTabBrowser.prototype = {
 						.split('\n')
 						.filter(function(aId) { return aId; })
 						.length;
-		tabs = tabs.slice(preTabs, preTabs + treeStructure.tree.length-1);
+		tabs = tabs.slice(preTabs, preTabs + treeStructure.tree.length);
 
 		var relations = tabs.map(function(aTab) {
 				return {
@@ -2379,9 +2379,8 @@ TreeStyleTabBrowser.prototype = {
 					insertAfter  : this.getTabValue(aTab, this.kINSERT_AFTER)
 				};
 			}, this);
-		this.applyTreeStructureToTabs(tabs, treeStructure.tree);
 
-		this.updateAllTabsIndent(true);
+		this.applyTreeStructureToTabs(tabs, treeStructure.tree, true);
 
 		tabs.forEach(function(aTab, aIndex) {
 			var relation = relations[aIndex];
@@ -2392,7 +2391,7 @@ TreeStyleTabBrowser.prototype = {
 
 			var state = treeStructure.state[aIndex];
 			this.setTabValue(aTab, this.kSUBTREE_COLLAPSED, state.subTreeCollapsed || null);
-			this.collapseExpandTab(aTab, state.collapsed || false);
+			this.collapseExpandTab(aTab, state.collapsed || false, true);
 
 			this.setTabValue(aTab, this.kID, relation.id);
 			this.setTabValue(aTab, this.kPARENT, relation.parent);
@@ -2402,8 +2401,6 @@ TreeStyleTabBrowser.prototype = {
 
 			aTab.__treestyletab__structureRestored = true;
 		}, this);
-
-		this.updateAllTabsCount();
 	},
   
 /* DOM Event Handling */ 
@@ -2685,6 +2682,8 @@ TreeStyleTabBrowser.prototype = {
 		 */
 		b._lastRelatedTab = lastRelatedTab;
 
+		this.saveTreeStructureWithDelay();
+
 		return true;
 	},
 	_addedCountInThisLoop : 0,
@@ -2870,6 +2869,8 @@ TreeStyleTabBrowser.prototype = {
 
 		if (collapsed)
 			this.startRendering();
+
+		this.saveTreeStructureWithDelay();
 	},
 	_reserveCloseNeedlessGroupTabSibling : function TSTBrowser_reserveCloseNeedlessGroupTabSibling(aTab)
 	{
@@ -2995,6 +2996,8 @@ TreeStyleTabBrowser.prototype = {
 		if (this.canStackTabs)
 			this.updateTabsZIndex(true);
 
+		this.saveTreeStructureWithDelay();
+
 		if (
 			this.subTreeMovingCount ||
 			this.internallyTabMovingCount ||
@@ -3038,8 +3041,8 @@ TreeStyleTabBrowser.prototype = {
 		var prevParent = this.getParentTab(prevTab);
 		var nextParent = this.getParentTab(nextTab);
 
-		var prevLevel  = prevTab ? Number(this.getTabValue(prevTab, this.kNEST)) : -1 ;
-		var nextLevel  = nextTab ? Number(this.getTabValue(nextTab, this.kNEST)) : -1 ;
+		var prevLevel  = prevTab ? Number(prevTab.getAttribute(this.kNEST)) : -1 ;
+		var nextLevel  = nextTab ? Number(nextTab.getAttribute(this.kNEST)) : -1 ;
 
 		var newParent;
 
@@ -3303,7 +3306,6 @@ TreeStyleTabBrowser.prototype = {
 
 		if (structureRestored) {
 			[
-				this.kNEST,
 				this.kPARENT,
 				this.kCHILDREN,
 				this.kINSERT_BEFORE,
@@ -4364,7 +4366,7 @@ TreeStyleTabBrowser.prototype = {
 		aInfo = aInfo || {};
 
 		if (aParent && this.maxTreeLevelPhisical && this.maxTreeLevel > -1) {
-			let level = parseInt(this.getTabValue(aParent, this.kNEST) || 0) + 1;
+			let level = parseInt(aParent.getAttribute(this.kNEST) || 0) + 1;
 			while (aParent && level > this.maxTreeLevel)
 			{
 				level--;
@@ -4395,7 +4397,7 @@ TreeStyleTabBrowser.prototype = {
 
 		shouldInheritIndent = (
 			!currentParent ||
-			(this.getTabValue(currentParent, this.kNEST) == this.getTabValue(aParent, this.kNEST))
+			(currentParent.getAttribute(this.kNEST) == aParent.getAttribute(this.kNEST))
 		);
 
 		this.ensureTabInitialized(aChild);
@@ -4464,7 +4466,10 @@ TreeStyleTabBrowser.prototype = {
 			this.moveTabSubtreeTo(aChild, newIndex);
 		}
 
-		if (!aInfo.dontExpand) {
+		if (aInfo.forceExpand) {
+			this.collapseExpandSubtree(aParent, false, aInfo.dontAnimate);
+		}
+		else if (!aInfo.dontExpand) {
 			if (this.getTreePref('autoCollapseExpandSubtreeOnSelect')) {
 				if (this.shouldTabAutoExpanded(aParent))
 					this.collapseExpandTreesIntelligentlyFor(aParent);
@@ -4713,7 +4718,7 @@ TreeStyleTabBrowser.prototype = {
 		Array.slice(aTabs).forEach(function(aTab) {
 			if (!aTab.parentNode) return; // ignore removed tabs
 			this.updateTabIndent(aTab, indent, aJustNow);
-			this.setTabValue(aTab, this.kNEST, aLevel);
+			aTab.setAttribute(this.kNEST, aLevel);
 			this.updateCanCollapseSubtree(aTab, aLevel);
 			this.updateTabsIndent(this.getChildTabs(aTab), aLevel+1, aJustNow);
 		}, this);
@@ -4871,8 +4876,8 @@ TreeStyleTabBrowser.prototype = {
 		if (!tabs.length) return;
 
 		var self = this;
-		tabs.sort(function(aA, aB) { return Number(self.getTabValue(aA, self.kNEST)) - Number(self.getTabValue(aB, self.kNEST)); });
-		var nest = this.getTabValue(tabs[tabs.length-1], this.kNEST);
+		tabs.sort(function(aA, aB) { return Number(aA.getAttribute(self.kNEST)) - Number(aB.setAttribute(self.kNEST)); });
+		var nest = tabs[tabs.length-1].getAttribute(this.kNEST);
 		if (this.maxTreeLevel > -1)
 			nest = Math.min(nest, this.maxTreeLevel);
 		if (!nest)
@@ -4951,7 +4956,7 @@ TreeStyleTabBrowser.prototype = {
 
 		var tabs = aParent ? this.getDescendantTabs(aParent) : this.getAllTabsArray(this.mTabBrowser) ;
 		tabs.forEach(function(aTab) {
-			var level = parseInt(this.getTabValue(aTab, this.kNEST) || 0);
+			var level = parseInt(aTab.getAttribute(this.kNEST) || 0);
 			if (level <= this.maxTreeLevel)
 				return;
 

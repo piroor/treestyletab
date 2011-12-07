@@ -2314,15 +2314,15 @@ var TreeStyleTabUtils = {
 			}
 			if (parent) {
 				sv.attachTabTo(aTab, parent, {
-					dontExpand : true,
-					dontMove   : true
+					forceExpand : true,
+					dontMove    : true
 				});
 			}
 		});
 
 		for (let i = aTabs.length-1; i > -1; i--)
 		{
-			sv.collapseExpandSubtree(aTabs[i], !aExpandStates[i], true);
+			sv.collapseExpandSubtree(aTabs[i], !sv.hasChildTabs(aTabs[i]) || !aExpandStates[i], true);
 		}
 	},
  
