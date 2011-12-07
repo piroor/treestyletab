@@ -77,11 +77,6 @@ TreeStyleTabWindow.prototype = {
 	window : null, 
 	document : null,
  
-	get storedTreeStructure()
-	{
-		return JSON.parse(this.SessionStore.getWindowValue(this.window, this.kSTRUCTURE) || '{}');
-	},
- 
 /* API */ 
 	
 	changeTabbarPosition : function TSTWindow_changeTabbarPosition(aNewPosition) /* PUBLIC API (obsolete, for backward compatibility) */ 
