@@ -2308,19 +2308,19 @@ TreeStyleTabBrowser.prototype = {
 					aChild = this.getTabById(aChild);
 					if (aChild)
 						this.attachTabTo(aChild, aTab, {
-							forceExpand : true, // to prevent to collapse the selected tab
-							dontAnimate : true,
-							dontMove    : true
+							forceExpand  : true, // to prevent to collapse the selected tab
+							dontAnimate  : true,
+							insertBefore : this.getTabById(this.getTabValue(aChild, this.kINSERT_BEFORE))
 						});
 				}, this);
 				this.collapseExpandSubtree(aTab, subTreeCollapsed, true);
 			}
 
-			this.updateInsertionPositionInfo(aTab);
-
 			if (!alreadyRestored)
 				aTab.__treestyletab__structureRestored = true;
 		}, this);
+
+		tabs.forEach(this.updateInsertionPositionInfo, this);
 	},
   
 /* DOM Event Handling */ 
