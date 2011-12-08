@@ -3589,6 +3589,7 @@ TreeStyleTabBrowser.prototype = {
 		}, this);
 
 		this.window.setTimeout(function(aSelf, aNextFocused) {
+			aSelf.windowService.restoringTree = false;
 			aSelf.mTabBrowser.selectedTab = aNextFocused;
 		}, 0, this, aRestoredTab || aSelf.mTabBrowser.selectedTab);
 
