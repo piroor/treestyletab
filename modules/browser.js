@@ -3585,8 +3585,8 @@ TreeStyleTabBrowser.prototype = {
 
 		var offset = 0;
 		aIndexes.forEach(function(aIndex) {
-			undoCloseTab(aIndex - (offset++));
-		});
+			this.window.undoCloseTab(aIndex - (offset++));
+		}, this);
 
 		this.window.setTimeout(function(aSelf, aNextFocused) {
 			aSelf.mTabBrowser.selectedTab = aNextFocused;

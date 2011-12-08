@@ -1598,8 +1598,12 @@ TreeStyleTabWindow.prototype = {
 		}
 	},
 	get restoringTree() {
-		return this.restoringCount || this.window.__SS_tabsToRestore;
+		return this._restoringTree || this.restoringCount || this.window.__SS_tabsToRestore;
 	},
+	set restoringTree(aValue) {
+		return this._restoringTree = !!aValue;
+	},
+	_restoringTree : false,
  
 /* Pref Listener */ 
 	
