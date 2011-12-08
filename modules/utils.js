@@ -684,6 +684,7 @@ var TreeStyleTabUtils = {
 					this.treeBundle.getString('undoCloseTabSetBehavior.set'),
 					this.treeBundle.getString('undoCloseTabSetBehavior.separate')
 				],
+				persistence : -1, // don't hide automatically by page loadings
 				checkbox : checkbox,
 				cancelEvents : ['TabClose', 'SSTabRestoring']
 			})

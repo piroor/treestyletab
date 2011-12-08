@@ -3221,7 +3221,7 @@ TreeStyleTabBrowser.prototype = {
 			});
 		}
 
-		var closeSetId = !structureRestored && this._restoreCloseSetId(aTab, mayBeDuplicated);
+		var closeSetId = !structureRestored && this._getCloseSetId(aTab, mayBeDuplicated);
 
 		this.setTabValue(aTab, this.kID, id);
 		this.tabsHash[id] = aTab;
@@ -3295,7 +3295,7 @@ TreeStyleTabBrowser.prototype = {
 
 		return [id, mayBeDuplicated];
 	},
-	_restoreCloseSetId : function TSTBrowser_restoreCloseSetId(aTab, aMayBeDuplicated)
+	_getCloseSetId : function TSTBrowser_getCloseSetId(aTab, aMayBeDuplicated)
 	{
 		var closeSetId = null;
 		if (!aMayBeDuplicated) {
@@ -3560,7 +3560,7 @@ TreeStyleTabBrowser.prototype = {
 
 		if (behavior & this.kUNDO_ASK) {
 			let self = this;
-			aRestoredTab.addEventListener('SSTabRestored', function(aEvent) {
+			aRestoredTab.addEventListener('SSTabRestoring', function(aEvent) {
 				aRestoredTab.removeEventListener(aEvent.type, arguments.callee, false);
 				self.askUndoCloseTabSetBehavior(aRestoredTab, indexes.length)
 					.next(function(aBehavior) {

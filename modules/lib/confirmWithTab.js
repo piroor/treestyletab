@@ -1,7 +1,7 @@
 /**
  * @fileOverview Tab Related Confirmation Library for Firefox 3.5 or later
  * @author       SHIMODA "Piro" Hiroshi
- * @version      5
+ * @version      7
  * Basic usage:
  *
  * @example
@@ -72,7 +72,7 @@ if (typeof namespace.Deferred == 'undefined')
 
 var confirmWithTab;
 (function() {
-	const currentRevision = 6;
+	const currentRevision = 7;
 
 	var loadedRevision = 'confirmWithTab' in namespace ?
 			namespace.confirmWithTab.revision :
@@ -176,6 +176,9 @@ var confirmWithTab;
 
 				notification.appendChild(container);
 			}
+
+			if (aOptions.persistence)
+				notification.persistence = aOptions.persistence;
 
 			var strip = b.tabContainer || b.mTabContainer;
 			var handleEvent = function handleEvent(aEvent) {
