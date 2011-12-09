@@ -134,7 +134,9 @@ function getOwnerTabBrowser()
 function getOwnerTab(aWindow)
 {
 	var gBrowser = getOwnerTabBrowser();
-	return gBrowser && gBrowser.treeStyleTab.getTabFromFrame(aWindow || window);
+	return gBrowser &&
+			gBrowser.treeStyleTab &&
+			gBrowser.treeStyleTab.getTabFromFrame(aWindow || window);
 }
 
 function getTabById(aId)
