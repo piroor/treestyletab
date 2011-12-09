@@ -155,24 +155,20 @@ function onItemClick(aEvent)
 	if (!tab)
 		return;
 
-	var button = aEvent.getData('button');
-	var altKey = aEvent.getData('altKey');
-	var ctrlKey = aEvent.getData('ctrlKey');
-	var metaKey = aEvent.getData('metaKey');
-	var shiftKey = aEvent.getData('shiftKey');
+	var event = aEvent.getData('sourceEvent');
 	var isMiddleClick = (
 			(
-				button == 1 &&
-				!altKey &&
-				!ctrlKey &&
-				!metaKey &&
-				!shiftKey
+				event.button == 1 &&
+				!event.altKey &&
+				!event.ctrlKey &&
+				!event.metaKey &&
+				!event.shiftKey
 			) ||
 			(
-				button == 0 &&
-				!altKey &&
-				(ctrlKey || metaKey) &&
-				!shiftKey
+				event.button == 0 &&
+				!event.altKey &&
+				(event.ctrlKey || event.metaKey) &&
+				!event.shiftKey
 			)
 		);
 

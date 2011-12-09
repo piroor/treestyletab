@@ -82,7 +82,7 @@ FullTooltipManager.prototype = {
 		this.tabTooltip.addEventListener('popuphiding', this, true);
 
 		this.tabFullTooltip.addEventListener('click', this, false);
-		this.tabFullTooltip.addEventListener(PseudoTreeBuilder.kTAB_LINK_CLICK, this, false);
+		this.tabFullTooltip.addEventListener(PseudoTreeBuilder.kTAB_LINK_CLICK, this, true);
 		this.tabFullTooltip.addEventListener('popupshown', this, true);
 		this.tabFullTooltip.addEventListener('popuphidden', this, true);
 	},
@@ -96,7 +96,7 @@ FullTooltipManager.prototype = {
 		this.tabTooltip.removeEventListener('popuphiding', this, true);
 
 		this.tabFullTooltip.removeEventListener('click', this, false);
-		this.tabFullTooltip.removeEventListener(PseudoTreeBuilder.kTAB_LINK_CLICK, this, false);
+		this.tabFullTooltip.removeEventListener(PseudoTreeBuilder.kTAB_LINK_CLICK, this, true);
 		this.tabFullTooltip.removeEventListener('popupshown', this, true);
 		this.tabFullTooltip.removeEventListener('popuphidden', this, true);
 
@@ -158,8 +158,29 @@ FullTooltipManager.prototype = {
 		var id = aEvent.getData('id');
 		if (id) {
 			let tab = this.getTabById(id, this.owner.browser);
-			if (tab)
-				this.owner.browser.selectedTab = tab;
+			if (tab) {
+				let event = aEvent.getData('sourceEvent');
+				let isMiddleClick = (
+						(
+							event.button == 1 &&
+							!event.altKey &&
+							!event.ctrlKey &&
+							!event.metaKey &&
+							!event.shiftKey
+						) ||
+						(
+							event.button == 0 &&
+							!event.altKey &&
+							(event.ctrlKey || event.metaKey) &&
+							!event.shiftKey
+						)
+					);
+
+				if (isMiddleClick)
+					this.owner.browser.removeTab(tab);
+				else if (button != 2)
+					this.owner.browser.selectedTab = tab;
+			}
 		}
 		this.tabFullTooltip.hidePopup();
 	},

@@ -77,11 +77,7 @@ var PseudoTreeBuilder = {
 				var customEvent = doc.createEvent('DataContainerEvent');
 				customEvent.initEvent(%EVENT_TYPE%, true, true);
 				customEvent.setData('id', label.getAttribute('tab-id'));
-				customEvent.setData('button', event.button);
-				customEvent.setData('altKey', event.altKey);
-				customEvent.setData('ctrlKey', event.ctrlKey);
-				customEvent.setData('metaKey', event.metaKey);
-				customEvent.setData('shiftKey', event.shiftKey);
+				customEvent.setData('sourceEvent', event);
 				event.target.dispatchEvent(customEvent);
 			}
 		]]>.toString().replace('%EVENT_TYPE%', this.kTAB_LINK_CLICK.quote()));
