@@ -58,8 +58,11 @@ var PseudoTreeBuilder = {
 
 		var tree = this.createTabItem(aTab);
 
-		tree.querySelector("."+this.kTREEROW)
-			.className += " "+this.kROOTITEM;
+		var row = tree.querySelector("."+this.kTREEROW);
+		if (!row)
+			return;
+
+		row.className += " "+this.kROOTITEM;
 
 		tree.setAttribute('onclick', <![CDATA[
 			var doc = event.target.ownerDocument;
@@ -74,6 +77,11 @@ var PseudoTreeBuilder = {
 				var customEvent = doc.createEvent('DataContainerEvent');
 				customEvent.initEvent(%EVENT_TYPE%, true, true);
 				customEvent.setData('id', label.getAttribute('tab-id'));
+				customEvent.setData('button', event.button);
+				customEvent.setData('altKey', event.altKey);
+				customEvent.setData('ctrlKey', event.ctrlKey);
+				customEvent.setData('metaKey', event.metaKey);
+				customEvent.setData('shiftKey', event.shiftKey);
 				event.target.dispatchEvent(customEvent);
 			}
 		]]>.toString().replace('%EVENT_TYPE%', this.kTAB_LINK_CLICK.quote()));

@@ -147,14 +147,47 @@ function getTabById(aId)
 
 function onItemClick(aEvent)
 {
+	var gBrowser = getOwnerTabBrowser();
+	if (!gBrowser)
+		return;
+
 	var tab = getTabById(aEvent.getData('id'));
-	if (tab)
+	if (!tab)
+		return;
+
+	var button = aEvent.getData('button');
+	var altKey = aEvent.getData('altKey');
+	var ctrlKey = aEvent.getData('ctrlKey');
+	var metaKey = aEvent.getData('metaKey');
+	var shiftKey = aEvent.getData('shiftKey');
+	var isMiddleClick = (
+			(
+				button == 1 &&
+				!altKey &&
+				!ctrlKey &&
+				!metaKey &&
+				!shiftKey
+			) ||
+			(
+				button == 0 &&
+				!altKey &&
+				(ctrlKey || metaKey) &&
+				!shiftKey
+			)
+		);
+
+	if (isMiddleClick)
+		gBrowser.removeTab(tab);
+	else if (button != 2)
 		gBrowser.selectedTab = tab;
 }
 
 
 function updateTree()
 {
+	if (window.closed)
+		return;
+
 	var tree = document.getElementById('tree');
 
 	var range = document.createRange();
@@ -162,13 +195,18 @@ function updateTree()
 	range.deleteContents();
 	range.detach();
 
-	tree.appendChild(PseudoTreeBuilder.build(getOwnerTab()));
+	var contents = PseudoTreeBuilder.build(getOwnerTab());
+	if (contents)
+		tree.appendChild(contents);
 }
 
 function checkUpdateTreeNow()
 {
 	if (getOwnerTab().selected)
-		window.setTimeout(onTabSelect, 0);
+		window.setTimeout(function() {
+			if (!window.closed)
+				onTabSelect();
+		}, 0);
 }
 
 var gShouldUpdate = false;
