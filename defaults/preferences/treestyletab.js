@@ -68,6 +68,13 @@ pref("extensions.treestyletab.tabbar.invertScrollbar", true);
  */
 pref("extensions.treestyletab.tabbar.narrowScrollbar", true);
 pref("extensions.treestyletab.tabbar.narrowScrollbar.size", "10px");
+
+/**
+ * On some environments (ex. GNOME3 on Linux), "narrow scrollbar" cannot get
+ * narrow width because system appearance possibly expand the size of scrollbar
+ * elements. To prevent this issue, we have to override "-moz-appeearance" defined
+ * by Firefox's default theme.
+ */
 // pref("extensions.treestyletab.tabbar.narrowScrollbar.overrideSystemAppearance", false);
 pref("extensions.treestyletab.platform.default.tabbar.narrowScrollbar.overrideSystemAppearance", false);
 pref("extensions.treestyletab.platform.Linux.tabbar.narrowScrollbar.overrideSystemAppearance", true);
