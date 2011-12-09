@@ -519,24 +519,6 @@ window[chromehidden~="toolbar"]
 	opacity: 1;
 }
 
-#treestyletab-full-tree-tooltip .treestyletab-full-tree-tooltip-favicon {
-	max-width: 16px;
-	max-height: 16px;
-}
-
-#treestyletab-full-tree-tooltip .treestyletab-full-tree-tooltip-treerow {
-	-moz-box-align: center;
-}
-
-#treestyletab-full-tree-tooltip .treestyletab-full-tree-tooltip-treerow .text-link {
-	-moz-box-crop: end;
-}
-
-#treestyletab-full-tree-tooltip .treestyletab-full-tree-tooltip-treechildren {
-	margin-left: 1.5em;
-	-moz-box-align: stretch;
-}
-
 
 /* addon compatibility */
 

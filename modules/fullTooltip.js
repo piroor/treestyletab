@@ -39,6 +39,7 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 
 Components.utils.import('resource://treestyletab-modules/utils.js');
+Components.utils.import('resource://treestyletab-modules/pseudoTreeBuilder.js');
 
 function FullTooltipManager(aOwner)
 {
@@ -50,10 +51,6 @@ FullTooltipManager.prototype = {
 	kTOOLTIP_MODE_DEFAULT   : 0,
 	kTOOLTIP_MODE_COLLAPSED : 1,
 	kTOOLTIP_MODE_ALWAYS    : 2,
-
-	kFAVICON      : 'treestyletab-full-tree-tooltip-favicon',
-	kTREEROW      : 'treestyletab-full-tree-tooltip-treerow',
-	kTREECHILDREN : 'treestyletab-full-tree-tooltip-treechildren',
 
 	get window()
 	{
@@ -84,7 +81,8 @@ FullTooltipManager.prototype = {
 		this.tabTooltip.addEventListener('popupshowing', this, true);
 		this.tabTooltip.addEventListener('popuphiding', this, true);
 
-		this.tabFullTooltip.addEventListener('click', this, true);
+		this.tabFullTooltip.addEventListener('click', this, false);
+		this.tabFullTooltip.addEventListener(PseudoTreeBuilder.kTAB_LINK_CLICK, this, false);
 		this.tabFullTooltip.addEventListener('popupshown', this, true);
 		this.tabFullTooltip.addEventListener('popuphidden', this, true);
 	},
@@ -97,7 +95,8 @@ FullTooltipManager.prototype = {
 		this.tabTooltip.removeEventListener('popupshowing', this, true);
 		this.tabTooltip.removeEventListener('popuphiding', this, true);
 
-		this.tabFullTooltip.removeEventListener('click', this, true);
+		this.tabFullTooltip.removeEventListener('click', this, false);
+		this.tabFullTooltip.removeEventListener(PseudoTreeBuilder.kTAB_LINK_CLICK, this, false);
 		this.tabFullTooltip.removeEventListener('popupshown', this, true);
 		this.tabFullTooltip.removeEventListener('popuphidden', this, true);
 
@@ -110,6 +109,9 @@ FullTooltipManager.prototype = {
 		{
 			case 'click':
 				return this.onClick(aEvent);
+
+			case PseudoTreeBuilder.kTAB_LINK_CLICK:
+				return this.onItemClick(aEvent);
 
 			case 'popupshowing':
 				return this.onDefaultTooltipShowing(aEvent);
@@ -148,18 +150,17 @@ FullTooltipManager.prototype = {
 
 	onClick : function FTM_onClick(aEvent)
 	{
-		var label = this.evaluateXPath(
-				'ancestor-or-self::xul:label[@class="text-link"][1]',
-				aEvent.target,
-				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue;
-		if (label) {
-			let id = label.getAttribute(this.kID);
+		this.tabFullTooltip.hidePopup();
+	},
+
+	onItemClick : function FTM_onItemClick(aEvent)
+	{
+		var id = aEvent.getData('id');
+		if (id) {
 			let tab = this.getTabById(id, this.owner.browser);
 			if (tab)
 				this.owner.browser.selectedTab = tab;
 		}
-
 		this.tabFullTooltip.hidePopup();
 	},
 
@@ -399,7 +400,7 @@ FullTooltipManager.prototype = {
 	{
 		this.clear();
 
-		var tree = this.createTabItem(aTab);
+		var tree = PseudoTreeBuilder.build(aTab);
 		var root = this.document.createElement('arrowscrollbox');
 		root.setAttribute('orient', 'vertical');
 		root.setAttribute('flex', 1);
@@ -427,49 +428,5 @@ FullTooltipManager.prototype = {
 		range.selectNodeContents(this.tabFullTooltip);
 		range.deleteContents();
 		range.detach();
-	},
-
-	createTabItem : function FTM_createTabItem(aTab)
-	{
-		var item = this.document.createElement('hbox');
-		item.setAttribute('class', this.kTREEROW);
-
-		var favicon = item.appendChild(this.document.createElement('image'));
-		favicon.setAttribute('src', aTab.getAttribute('image') || 'chrome://mozapps/skin/places/defaultFavicon.png');
-		favicon.setAttribute('class', this.kFAVICON);
-
-		var label = item.appendChild(this.document.createElement('label'));
-		label.setAttribute('value', aTab.label);
-		var tooltip = aTab.label;
-		var uri = aTab.linkedBrowser.currentURI.spec;
-		if (uri != 'about:blank') tooltip += '\n' + uri;
-		label.setAttribute('tooltiptext', tooltip);
-		label.setAttribute('class', 'text-link');
-		label.setAttribute(this.kID, this.getTabValue(aTab, this.kID));
-
-		var children = this.createTabChildren(aTab);
-		if (children) {
-			let container = this.document.createElement('vbox');
-			container.appendChild(item);
-			container.appendChild(children);
-			return container;
-		}
-		else {
-			return item;
-		}
-	},
-
-	createTabChildren : function FTM_createTabChildren(aTab)
-	{
-		var children = this.getChildTabs(aTab);
-		if (!children.length)
-			return null;
-
-		var container = this.document.createElement('vbox');
-		children.forEach(function(aChild) {
-			container.appendChild(this.createTabItem(aChild));
-		}, this);
-		container.setAttribute('class', this.kTREECHILDREN);
-		return container;
 	}
 };

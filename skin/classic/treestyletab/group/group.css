@@ -57,3 +57,15 @@
 	bottom: 0;
 	left: auto;
 }
+
+
+#tree {
+	margin-top: 1em;
+	max-height: 80%;
+	overflow: auto;
+	-moz-box-flex: 1;
+}
+
+.treestyletab-pseudo-tree-root-item {
+	display: none;
+}

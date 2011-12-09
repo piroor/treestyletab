@@ -1,5 +1,6 @@
 <?xml-stylesheet type="text/css" href="chrome://global/skin/"?>
 <?xml-stylesheet type="text/css" href="chrome://treestyletab/skin/group/group.css"?>
+<?xml-stylesheet type="text/css" href="chrome://treestyletab/skin/pseudo-tree.css"?>
 <!DOCTYPE page SYSTEM "chrome://treestyletab/locale/treestyletab.dtd">
 <page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	onclick="onClick(event)"
@@ -33,11 +34,18 @@
 					value="&group.default;"/>
 			</hbox>
 		</deck>
+		<vbox id="tree"
+			flex="1"/>
 	</vbox>
 </stack>
 <link xmlns="http://www.w3.org/1999/xhtml" rel="icon"
 	href="chrome://treestyletab/skin/group/group-icon"/>
 <script type="application/javascript"><![CDATA[
+
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+
+Components.utils.import('resource://treestyletab-modules/pseudoTreeBuilder.js');
 
 var gIcon = document.getElementById('icon');
 var gLabel = document.getElementById('label');
@@ -112,5 +120,56 @@ function onKeyPress(aEvent)
 		exitEdit();
 }
 
+function getOwnerTabBrowser()
+{
+	var ownerWindow = window
+					.QueryInterface(Ci.nsIInterfaceRequestor)
+					.getInterface(Ci.nsIWebNavigation)
+					.QueryInterface(Ci.nsIDocShell)
+					.QueryInterface(Ci.nsIDocShellTreeItem)
+					.parent;
+	if (ownerWindow) {
+		ownerWindow = ownerWindow
+						.QueryInterface(Ci.nsIWebNavigation)
+						.document
+						.defaultView;
+		return ownerWindow.gBrowser;
+	}
+	return null;
+}
+
+function onItemClick(aEvent)
+{
+	var id = aEvent.getData('id');
+	var gBrowser = getOwnerTabBrowser();
+	if (id && gBrowser) {
+		let tab = gBrowser.treeStyleTab.getTabById(id);
+		if (tab)
+			gBrowser.selectedTab = tab;
+	}
+}
+
+var treeInitialized = false;
+
+window.addEventListener('load', function(aEvent) {
+	window.removeEventListener(aEvent.type, arguments.callee, false);
+
+	var gBrowser = getOwnerTabBrowser();
+	if (gBrowser) {
+		let tab = gBrowser.treeStyleTab.getTabFromFrame(window);
+		let tree = document.getElementById('tree');
+		tree.appendChild(PseudoTreeBuilder.build(tab));
+		tree.addEventListener(PseudoTreeBuilder.kTAB_LINK_CLICK, onItemClick, false);
+		treeInitialized = true;
+	}
+}, false);
+
+window.addEventListener('unload', function(aEvent) {
+	window.removeEventListener(aEvent.type, arguments.callee, false);
+	if (!treeInitialized)
+		return;
+
+	document.getElementById('tree').removeEventListener(PseudoTreeBuilder.kTAB_LINK_CLICK, onItemClick, false);
+}, false);
 ]]></script>
 </page>
