@@ -68,6 +68,9 @@ pref("extensions.treestyletab.tabbar.invertScrollbar", true);
  */
 pref("extensions.treestyletab.tabbar.narrowScrollbar", true);
 pref("extensions.treestyletab.tabbar.narrowScrollbar.size", "10px");
+// pref("extensions.treestyletab.tabbar.narrowScrollbar.overrideSystemAppearance", false);
+pref("extensions.treestyletab.platform.default.tabbar.narrowScrollbar.overrideSystemAppearance", false);
+pref("extensions.treestyletab.platform.Linux.tabbar.narrowScrollbar.overrideSystemAppearance", true);
 
 /**
  * The skin of the tab bar. Available styles are:

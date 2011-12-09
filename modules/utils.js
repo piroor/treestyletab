@@ -467,7 +467,12 @@ var TreeStyleTabUtils = {
 					margin-left: 0;
 					margin-right: 0;
 				}
+
+				%FORCE_NARROW_SCROLLBAR%
 			]]>.toString()
+				.replace(/%FORCE_NARROW_SCROLLBAR%/g,
+					this.getTreePref('tabbar.narrowScrollbar.overrideSystemAppearance') ?
+						this.kOVERRIDE_SYSTEM_SCROLLBAR_APPEARANCE : '' )
 				.replace(/%MODE%/g, this.kMODE)
 				.replace(/%NARROW%/g, this.kNARROW_SCROLLBAR)
 				.replace(/%SIZE%/g, this.getTreePref('tabbar.narrowScrollbar.size'))
@@ -475,6 +480,16 @@ var TreeStyleTabUtils = {
 		this.lastAgentSheet = this.makeURIFromSpec(style);
 		SSS.loadAndRegisterSheet(this.lastAgentSheet, SSS.AGENT_SHEET);
 	},
+	kOVERRIDE_SYSTEM_SCROLLBAR_APPEARANCE : <![CDATA[
+		tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]
+		  .tabbrowser-arrowscrollbox
+		  > scrollbox
+		  > scrollbar[orient="vertical"] {
+			-moz-appearance: none;
+			background: ThreeDFace;
+			border: 1px solid ThreeDShadow;
+		}
+	]]>.toString(),
 	lastAgentSheet : null,
   
 	observe : function TSTUtils_observe(aSubject, aTopic, aData) 
