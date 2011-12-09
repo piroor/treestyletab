@@ -1,8 +1,10 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
 .treestyletab-pseudo-tree-favicon {
+	height: 16px;
 	max-width: 16px;
 	max-height: 16px;
+	width: 16px;
 }
 
 .treestyletab-pseudo-tree-row {

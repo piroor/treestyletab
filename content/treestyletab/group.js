@@ -36,6 +36,7 @@
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
+Components.utils.import('resource://treestyletab-modules/utils.js');
 Components.utils.import('resource://treestyletab-modules/pseudoTreeBuilder.js');
 
 var gIcon = document.getElementById('icon');
@@ -111,6 +112,7 @@ function onKeyPress(aEvent)
 		exitEdit();
 }
 
+
 function getOwnerTabBrowser()
 {
 	var ownerWindow = window
@@ -129,37 +131,147 @@ function getOwnerTabBrowser()
 	return null;
 }
 
-function onItemClick(aEvent)
+function getOwnerTab(aWindow)
 {
-	var id = aEvent.getData('id');
 	var gBrowser = getOwnerTabBrowser();
-	if (id && gBrowser) {
-		let tab = gBrowser.treeStyleTab.getTabById(id);
-		if (tab)
-			gBrowser.selectedTab = tab;
-	}
+	return gBrowser && gBrowser.treeStyleTab.getTabFromFrame(aWindow || window);
 }
 
-var treeInitialized = false;
+function getTabById(aId)
+{
+	var gBrowser = getOwnerTabBrowser();
+	if (aId && gBrowser)
+		return gBrowser.treeStyleTab.getTabById(aId);
+	return null;
+}
+
+function onItemClick(aEvent)
+{
+	var tab = getTabById(aEvent.getData('id'));
+	if (tab)
+		gBrowser.selectedTab = tab;
+}
+
+
+function updateTree()
+{
+	var tree = document.getElementById('tree');
+
+	var range = document.createRange();
+	range.selectNodeContents(tree);
+	range.deleteContents();
+	range.detach();
+
+	tree.appendChild(PseudoTreeBuilder.build(getOwnerTab()));
+}
+
+function checkUpdateTreeNow()
+{
+	if (getOwnerTab().selected)
+		window.setTimeout(onTabSelect, 0);
+}
+
+var gShouldUpdate = false;
+function onTabSelect(aEvent)
+{
+	if (gShouldUpdate)
+		updateTree();
+
+	gShouldUpdate = false;
+}
+
+function onUnload(aEvent)
+{
+	destroy();
+}
+
+function onTabAttached(aEvent)
+{
+	var tab = aEvent.getData('parentTab');
+	var id = tab.getAttribute(TreeStyleTabUtils.kID);
+	if (tab == getOwnerTab() ||
+		document.getElementsByAttribute('tab-id', id).length)
+		gShouldUpdate = true;
+
+	checkUpdateTreeNow();
+}
+
+function onTabDetached(aEvent)
+{
+	var tab = aEvent.originalTarget;
+	var id = tab.getAttribute(TreeStyleTabUtils.kID);
+	if (document.getElementsByAttribute('tab-id', id).length)
+		gShouldUpdate = true;
+
+	checkUpdateTreeNow();
+}
+
+function onDocumentModified(aEvent)
+{
+	var tab = getOwnerTab(aEvent.target.defaultView.top);
+	if (tab) {
+		let id = tab.getAttribute(TreeStyleTabUtils.kID);
+		if (document.getElementsByAttribute('tab-id', id).length)
+			gShouldUpdate = true;
+	}
+
+	checkUpdateTreeNow();
+}
+
+function startListenTab(aTab)
+{
+	aTab.addEventListener('TabSelect', onTabSelect, false);
+	aTab.addEventListener('TabClose', onUnload, false);
+	window.addEventListener('unload', onUnload, false);
+	aTab.parentNode.addEventListener('TabMove', onTabAttached, false);
+	aTab.parentNode.addEventListener(TreeStyleTabUtils.kEVENT_TYPE_ATTACHED, onTabAttached, false);
+	aTab.parentNode.addEventListener(TreeStyleTabUtils.kEVENT_TYPE_DETACHED, onTabDetached, false);
+
+	var tabbrowser = getOwnerTabBrowser();
+	tabbrowser.addEventListener('load', onDocumentModified, true);
+	tabbrowser.addEventListener('DOMTitleChanged', onDocumentModified, true);
+}
+
+function endListenTab(aTab)
+{
+	aTab.removeEventListener('TabSelect', onTabSelect, false);
+	aTab.removeEventListener('TabClose', onUnload, false);
+	window.removeEventListener('unload', onUnload, false);
+	aTab.parentNode.removeEventListener('TabMove', onTabAttached, false);
+	aTab.parentNode.removeEventListener(TreeStyleTabUtils.kEVENT_TYPE_ATTACHED, onTabAttached, false);
+	aTab.parentNode.removeEventListener(TreeStyleTabUtils.kEVENT_TYPE_DETACHED, onTabDetached, false);
+
+	var tabbrowser = getOwnerTabBrowser();
+	tabbrowser.removeEventListener('load', onDocumentModified, true);
+	tabbrowser.removeEventListener('DOMTitleChanged', onDocumentModified, true);
+}
+
+
+var gInitialized = false;
+
+function init()
+{
+	var tab = getOwnerTab();
+
+	updateTree();
+
+	startListenTab(tab);
+	document.getElementById('tree').addEventListener(PseudoTreeBuilder.kTAB_LINK_CLICK, onItemClick, false);
+
+	gInitialized = true;
+}
+
+function destroy()
+{
+	var tab = getOwnerTab();
+	if (!gInitialized || !tab)
+		return;
+
+	endListenTab(tab);
+	document.getElementById('tree').removeEventListener(PseudoTreeBuilder.kTAB_LINK_CLICK, onItemClick, false);
+}
 
 window.addEventListener('load', function(aEvent) {
 	window.removeEventListener(aEvent.type, arguments.callee, false);
-
-	var gBrowser = getOwnerTabBrowser();
-	if (gBrowser) {
-		let tab = gBrowser.treeStyleTab.getTabFromFrame(window);
-		let tree = document.getElementById('tree');
-		tree.appendChild(PseudoTreeBuilder.build(tab));
-		tree.addEventListener(PseudoTreeBuilder.kTAB_LINK_CLICK, onItemClick, false);
-		treeInitialized = true;
-	}
+	init();
 }, false);
-
-window.addEventListener('unload', function(aEvent) {
-	window.removeEventListener(aEvent.type, arguments.callee, false);
-	if (!treeInitialized)
-		return;
-
-	document.getElementById('tree').removeEventListener(PseudoTreeBuilder.kTAB_LINK_CLICK, onItemClick, false);
-}, false);
-
