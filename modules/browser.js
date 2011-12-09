@@ -2333,10 +2333,10 @@ TreeStyleTabBrowser.prototype = {
 		switch (aEvent.type)
 		{
 			case 'TabOpen':
-				return this.onTabAdded(aEvent);
+				return this.onTabOpen(aEvent);
 
 			case 'TabClose':
-				return this.onTabRemoved(aEvent);
+				return this.onTabClose(aEvent);
 
 			case 'TabMove':
 				return this.onTabMove(aEvent);
@@ -2352,10 +2352,10 @@ TreeStyleTabBrowser.prototype = {
 				return this.onTabRestored(aEvent);
 
 			case 'TabPinned':
-				return this.onPinTab(aEvent.originalTarget);
+				return this.onTabPinned(aEvent.originalTarget);
 
 			case 'TabUnpinned':
-				return this.onUnpinTab(aEvent.originalTarget);
+				return this.onTabUnpinned(aEvent.originalTarget);
 
 			case 'DOMAttrModified':
 				return this.onDOMAttrModified(aEvent);
@@ -2446,7 +2446,7 @@ TreeStyleTabBrowser.prototype = {
 
 
 			case 'nsDOMMultipleTabHandlerTabsClosing':
-				if (!this.onTabsRemoving(aEvent))
+				if (!this.onTabsClosing(aEvent))
 					aEvent.preventDefault();
 				return;
 		}
@@ -2486,7 +2486,7 @@ TreeStyleTabBrowser.prototype = {
 		this.lastScrollY = y.value;
 	},
   
-	onTabAdded : function TSTBrowser_onTabAdded(aEvent, aTab) 
+	onTabOpen : function TSTBrowser_onTabOpen(aEvent, aTab) 
 	{
 		var tab = aTab || aEvent.originalTarget;
 		var b   = this.mTabBrowser;
@@ -2616,7 +2616,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 	},
  
-	onTabRemoved : function TSTBrowser_onTabRemoved(aEvent) 
+	onTabClose : function TSTBrowser_onTabClose(aEvent) 
 	{
 		var tab = aEvent.originalTarget;
 		var d   = this.document;
@@ -2827,7 +2827,7 @@ TreeStyleTabBrowser.prototype = {
 				this.getPreviousVisibleTab(aTab);
 	},
  
-	onTabsRemoving : function TSTBrowser_onTabsRemoving(aEvent) 
+	onTabsClosing : function TSTBrowser_onTabsClosing(aEvent) 
 	{
 		var tabs = aEvent.tabs || aEvent.getData('tabs');
 		var b = this.getTabBrowserFromChild(tabs[0]);
@@ -2860,7 +2860,7 @@ TreeStyleTabBrowser.prototype = {
 		tab.__treestyletab__previousPosition = aEvent.detail;
 
 		// When the tab was moved before TabOpen event is fired, we have to update manually.
-		var newlyOpened = !this.isTabInitialized(tab) && this.onTabAdded(null, tab);
+		var newlyOpened = !this.isTabInitialized(tab) && this.onTabOpen(null, tab);
 
 		// twisty vanished after the tab is moved!!
 		this.initTabContents(tab);
@@ -3603,7 +3603,7 @@ TreeStyleTabBrowser.prototype = {
 		delete aEvent.originalTarget.__treestyletab__restoredByUndoCloseTab;
 	},
  
-	onPinTab : function TSTBrowser_onPinTab(aTab) 
+	onTabPinned : function TSTBrowser_onTabPinned(aTab) 
 	{
 		var parentTab = this.getParentTab(aTab);
 
@@ -3653,7 +3653,7 @@ TreeStyleTabBrowser.prototype = {
 		if (this.isVertical) this.positionPinnedTabsWithDelay();
 	},
  
-	onUnpinTab : function TSTBrowser_onUnpinTab(aTab) 
+	onTabUnpinned : function TSTBrowser_onTabUnpinned(aTab) 
 	{
 		var style = aTab.style;
 		style.marginLeft = style.marginRight = style.marginTop = '';
@@ -3672,9 +3672,9 @@ TreeStyleTabBrowser.prototype = {
 						return;
 
 					if (aEvent.newValue == 'true')
-						this.onPinTab(tab);
+						this.onTabPinned(tab);
 					else
-						this.onUnpinTab(tab);
+						this.onTabUnpinned(tab);
 				}
 				return;
 
