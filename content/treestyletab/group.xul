@@ -40,7 +40,5 @@
 </stack>
 <link xmlns="http://www.w3.org/1999/xhtml" rel="icon"
 	href="chrome://treestyletab/skin/group/group-icon"/>
-<script type="application/javascript"><![CDATA[
-
-]]></script>
+<script type="application/javascript" src="chrome://treestyletab/content/group.js"/>
 </page>
