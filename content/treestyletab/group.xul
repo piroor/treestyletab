@@ -3,11 +3,9 @@
 <?xml-stylesheet type="text/css" href="chrome://treestyletab/skin/pseudo-tree.css"?>
 <!DOCTYPE page SYSTEM "chrome://treestyletab/locale/treestyletab.dtd">
 <page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-	onclick="onClick(event)"
-	ondblclick="onDblClick(event)"
 	title="&group.default;">
 <commandset>
-	<command id="cmd_enterEdit" oncommand="enterEdit()"/>
+	<command id="cmd_enterEdit" oncommand="gGroupTab.enterEdit()"/>
 </commandset>
 <keyset>
 	<key keycode="VK_F2" command="cmd_enterEdit"/>
@@ -30,7 +28,6 @@
 				<image class="icon"/>
 				<textbox id="editor"
 					flex="1"
-					onkeypress="onKeyPress(event)"
 					value="&group.default;"/>
 			</hbox>
 		</deck>
@@ -40,5 +37,10 @@
 </stack>
 <link xmlns="http://www.w3.org/1999/xhtml" rel="icon"
 	href="chrome://treestyletab/skin/group/group-icon"/>
-<script type="application/javascript" src="chrome://treestyletab/content/group.js"/>
+<script type="application/javascript"><![CDATA[
+
+Components.utils.import('resource://treestyletab-modules/groupTab.js');
+new GroupTab(window);
+
+]]></script>
 </page>

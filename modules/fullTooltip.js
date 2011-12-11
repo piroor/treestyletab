@@ -160,23 +160,8 @@ FullTooltipManager.prototype = {
 			let tab = this.getTabById(id, this.owner.browser);
 			if (tab) {
 				let event = aEvent.getData('sourceEvent');
-				let isMiddleClick = (
-						(
-							event.button == 1 &&
-							!event.altKey &&
-							!event.ctrlKey &&
-							!event.metaKey &&
-							!event.shiftKey
-						) ||
-						(
-							event.button == 0 &&
-							!event.altKey &&
-							(event.ctrlKey || event.metaKey) &&
-							!event.shiftKey
-						)
-					);
-
-				if (isMiddleClick)
+				if (event.button == 1 ||
+					(event.button == 0 && this.isAccelKeyPressed(event)))
 					this.owner.browser.removeTab(tab);
 				else if (event.button != 2)
 					this.owner.browser.selectedTab = tab;
