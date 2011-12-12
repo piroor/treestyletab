@@ -2428,9 +2428,14 @@ TreeStyleTabBrowser.prototype = {
 				return this.updateCustomizedTabsToolbar();
 
 			case 'tabviewhidden':
+				// step 1, now we are exitting from Panorama mode.
 				this.tabViewHiding = true;
-				this._addedCountClearTimer = this.window.setTimeout(function(aSelf) {
-					aSelf.tabViewHiding = false;
+				this.window.setTimeout(function(aSelf) {
+					// step 2, this is better time to handle TabShown and TabHidden events.
+					this.window.setTimeout(function(aSelf) {
+						// step 3, we are now in the normal mode.
+						aSelf.tabViewHiding = false;
+					}, 0, aSelf);
 				}, 0, this);
 				return;
 
@@ -3034,25 +3039,60 @@ TreeStyleTabBrowser.prototype = {
 	// for TabView (Panorama aka Tab Candy)
 	onTabVisibilityChanged : function TSTBrowser_onTabVisibilityChanged(aEvent) 
 	{
-		var tab = aEvent.originalTarget;
-		if (this.tabViewHiding) {
-			this.updateInvertedTabContentsOrder(aEvent.originalTarget);
+		/**
+		 * Note: On this timing, we cannot know that which is the reason of this
+		 * event, by exitting from Panorama or the "Move to Group" command in the
+		 * context menu on tabs. So, we have to do operations with a delay to use
+		 * "tabViewHiding" flag which is initialized in the next event loop.
+		 */
 
-			if (this.tabVisibilityChangedTimer) {
-				this.window.clearTimeout(this.tabVisibilityChangedTimer);
-				this.tabVisibilityChangedTimer = null;
-			}
-			this.tabVisibilityChangedTabs.push(tab);
-			this.tabVisibilityChangedTimer = this.window.setTimeout(function(aSelf) {
-				aSelf.tabVisibilityChangedTimer = null;
-				var tabs = aSelf.tabVisibilityChangedTabs;
+		var tab = aEvent.originalTarget;
+		this.updateInvertedTabContentsOrder(tab);
+		this.tabVisibilityChangedTabs.push({
+			tab  : tab,
+			type : aEvent.type
+		});
+
+		if (this.tabVisibilityChangedTimer) {
+			this.window.clearTimeout(this.tabVisibilityChangedTimer);
+			this.tabVisibilityChangedTimer = null;
+		}
+
+		this.tabVisibilityChangedTimer = this.window.setTimeout(function(aSelf) {
+			aSelf.tabVisibilityChangedTimer = null;
+
+			var tabs = aSelf.tabVisibilityChangedTabs;
+			if (!tabs.length)
+				return;
+
+			if (aSelf.tabViewHiding) {
+				// We should clear it first, because updateTreeByTabVisibility() never change visibility of tabs.
 				aSelf.tabVisibilityChangedTabs = [];
-				aSelf.updateTreeByTabVisibility(tabs);
-			}, 0, this);
-		}
-		else if (aEvent.type == 'TabHide') {
-			this.subtreeFollowParentAcrossTabGroups(tab);
-		}
+				aSelf.updateTreeByTabVisibility(tabs.map(function(aChanged) { return aChanged.tab; }));
+			}
+			else {
+				// For tabs moved by "Move to Group" command in the context menu on tabs
+				var processedTabs = {};
+				/**
+				 * subtreeFollowParentAcrossTabGroups() can change visibility of child tabs, so,
+				 * we must not clear tabVisibilityChangedTabs here, and we have to use
+				 * simple "for" loop instead of Array.prototype.forEach.
+				 */
+				for (let i = 0; i < aSelf.tabVisibilityChangedTabs.length; i++)
+				{
+					let changed = aSelf.tabVisibilityChangedTabs[i];
+					let tab = changed.tab;
+					if (aSelf.getAncestorTabs(tab).some(function(aTab) {
+							return processedTabs[aTab.getAttribute(aSelf.kID)];
+						}))
+						continue;
+					aSelf.subtreeFollowParentAcrossTabGroups(tab);
+					processedTabs[tab.getAttribute(aSelf.kID)] = true;
+				}
+				// now we can clear it!
+				aSelf.tabVisibilityChangedTabs = [];
+			}
+		}, 0, this);
 	},
 	tabVisibilityChangedTimer : null,
 	updateTreeByTabVisibility : function TSTBrowser_updateTreeByTabVisibility(aChangedTabs)
@@ -3130,27 +3170,28 @@ TreeStyleTabBrowser.prototype = {
 	subtreeFollowParentAcrossTabGroups : function TSTBrowser_subtreeFollowParentAcrossTabGroups(aParent)
 	{
 		if (this.tabViewTreeIsMoving) return;
-		let item = aParent._tabViewTabItem;
+
+		var item = aParent._tabViewTabItem;
 		if (!item) return;
-		let group = item.parent;
+
+		var group = item.parent;
 		if (!group) return;
 
 		this.tabViewTreeIsMoving = true;
 		this.internallyTabMovingCount++;
-		let w = this.window;
-		let b = this.mTabBrowser;
-		let lastCount = this.getAllTabs(b).snapshotLength - 1;
-		w.setTimeout(function(aSelf) {
-			aSelf.detachTab(aParent);
-			b.moveTabTo(aParent, lastCount);
-			let descendantTabs = aSelf.getDescendantTabs(aParent);
-			descendantTabs.forEach(function(aTab) {
-				w.TabView.moveTabTo(aTab, group.id);
-				b.moveTabTo(aTab, lastCount);
-			});
-			aSelf.internallyTabMovingCount--;
-			aSelf.tabViewTreeIsMoving = false;
-		}, 0, this);
+		var w = this.window;
+		var b = this.mTabBrowser;
+		var lastCount = this.getAllTabs(b).snapshotLength - 1;
+
+		this.detachTab(aParent);
+		b.moveTabTo(aParent, lastCount);
+		var descendantTabs = this.getDescendantTabs(aParent);
+		descendantTabs.forEach(function(aTab) {
+			w.TabView.moveTabTo(aTab, group.id);
+			b.moveTabTo(aTab, lastCount);
+		});
+		this.internallyTabMovingCount--;
+		this.tabViewTreeIsMoving = false;
 	},
  
 	onTabRestoring : function TSTBrowser_onTabRestoring(aEvent) 
