@@ -2278,21 +2278,25 @@ TreeStyleTabBrowser.prototype = {
 	onWindowStateRestored : function TSTBrowser_onWindowStateRestored() 
 	{
 		if (this.window.__SS_tabsToRestore) {
-			if (!this.windowStateRestored &&
-				this.getTreePref('restoreTreeOnStartup'))
-				this.restoreTreeStructure();
+			if (!this.windowStateRestored)
+				this.fastRestoreTreeStructure();
 		}
 		this.windowStateRestored = true;
 	},
  
-	restoreTreeStructure : function TSTBrowser_restoreTreeStructure() 
+	fastRestoreTreeStructure : function TSTBrowser_fastRestoreTreeStructure() 
 	{
+		var level = this.getTreePref('fastRestoreTree.level');
+		if (level <= this.kFAST_RESTORE_NONE)
+			return;
+
+		var restoreOnlyCurrentGroup = level < this.kFAST_RESTORE_ALL;
 		var tabs = this.getAllTabsArray(this.mTabBrowser);
 		tabs.reverse().filter(function(aTab) {
 			var id = this.getTabValue(aTab, this.kID);
 			if (
 				!id || // tabs opened by externals applications
-				aTab.hidden // tabs in background groups
+				(restoreOnlyCurrentGroup && aTab.hidden) // tabs in background groups
 				)
 				return false;
 
