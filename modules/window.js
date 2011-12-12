@@ -554,7 +554,7 @@ TreeStyleTabWindow.prototype = {
 
 		var b = this.getTabBrowserFromChild(aEvent.originalTarget) || this.browser;
 		this.getTabsArray(b).forEach(function(aTab, aIndex) {
-			items[aIndex].style.paddingLeft = aTab.getAttribute(this.kNEST)+'em';
+			items[aIndex].style.marginLeft = aTab.getAttribute(this.kNEST)+'em';
 		}, this);
 	},
   
