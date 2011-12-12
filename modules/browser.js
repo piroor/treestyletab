@@ -2277,12 +2277,9 @@ TreeStyleTabBrowser.prototype = {
  
 	onWindowStateRestored : function TSTBrowser_onWindowStateRestored() 
 	{
-		if (this.window.__SS_tabsToRestore && this.window.__SS_tabsToRestore > 1)
-			this.fastRestoreTreeStructure();
-	},
- 
-	fastRestoreTreeStructure : function TSTBrowser_fastRestoreTreeStructure() 
-	{
+		if (!this.window.__SS_tabsToRestore || this.window.__SS_tabsToRestore <= 1)
+			return;
+
 		var level = this.getTreePref('fastRestoreTree.level');
 		if (level <= this.kFAST_RESTORE_NONE)
 			return;
@@ -2592,8 +2589,7 @@ TreeStyleTabBrowser.prototype = {
 			this.updateInvertedTabContentsOrder(tabs);
 
 		/**
-		 * gBrowser.adthis._changeTabbarPosition(position);
-		 dTab() resets gBrowser._lastRelatedTab.owner
+		 * gBrowser.addTab() resets gBrowser._lastRelatedTab.owner
 		 * when a new background tab is opened from the current tab,
 		 * but it will fail with TST because gBrowser.moveTab() (called
 		 * by TST) clears gBrowser._lastRelatedTab.
