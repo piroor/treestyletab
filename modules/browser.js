@@ -5373,7 +5373,7 @@ TreeStyleTabBrowser.prototype = {
 		expandedParentTabs = expandedParentTabs.join('|');
 
 		var xpathResult = this.evaluateXPath(
-				'child::xul:tab[@'+this.kCHILDREN+' and not(@'+this.kCOLLAPSED+'="true") and not(@'+this.kSUBTREE_COLLAPSED+'="true") and @'+this.kID+' and not(contains("'+expandedParentTabs+'", @'+this.kID+'))]',
+				'child::xul:tab[@'+this.kCHILDREN+' and not(@'+this.kCOLLAPSED+'="true") and not(@'+this.kSUBTREE_COLLAPSED+'="true") and @'+this.kID+' and not(contains("'+expandedParentTabs+'", @'+this.kID+')) and not(@hidden="true")]',
 				b.mTabContainer
 			);
 		var collapseTab;
