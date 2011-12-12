@@ -560,15 +560,6 @@ pref("extensions.treestyletab.undoCloseTabSet.behavior", 3);
 pref("extensions.treestyletab.repositionStatusPanel", true);
 
 /**
- * "Fast restore" of tree structure on the startup. Recommended value is "1".
- *  0 = Restore all trees based on SSTabRestoring.
- *  1 = Restore trees in the current group (Panorama) before SSTabRestoring.
- *      Others (tabs in background groups) are restored based on SSTabRestoring.
- *  2 = Restore all trees including background groups before SSTabRestoring.
- */
-pref("extensions.treestyletab.fastRestoreTree.level", 1);
-
-/**
  * TST overrides some internal prefs of Firefox itself, because they can
  * conflict with TST features. They will be rolled back when TST is uninstalled.
  */

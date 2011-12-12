@@ -243,10 +243,6 @@ var TreeStyleTabUtils = {
 	kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN : 4,
 	kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN         : 2, // onTabRemoved only
 
-	kFAST_RESTORE_NONE          : 0,
-	kFAST_RESTORE_CURRENT_GROUP : 1,
-	kFAST_RESTORE_ALL           : 2,
-
 	MAX_TABBAR_SIZE_RATIO        : 0.8,
 	DEFAULT_SHRUNKEN_WIDTH_RATIO : 0.67,
  
@@ -1908,27 +1904,53 @@ var TreeStyleTabUtils = {
 	{
 		if (!aTab) return null;
 
+		var parent;
 		if (this.tabsHash) { // XPath-less implementation
-			let parent = this.getTabById(aTab.getAttribute(this.kPARENT));
-			return (parent && parent != aTab) ? parent : null ;
+			parent = this.getTabById(aTab.getAttribute(this.kPARENT));
 		}
-
-		return this.evaluateXPath(
-			'preceding-sibling::xul:tab[@'+this.kID+'="'+aTab.getAttribute(this.kPARENT)+'"][1]',
-			aTab,
-			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
-		).singleNodeValue;
+		else {
+			parent =  this.evaluateXPath(
+				'preceding-sibling::xul:tab[@'+this.kID+'="'+aTab.getAttribute(this.kPARENT)+'"][1]',
+				aTab,
+				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue;
+		}
+		return (parent && parent != aTab) ? parent : null ;
 	},
  
 	getAncestorTabs : function TSTUtils_getAncestorTabs(aTab) /* PUBLIC API */ 
 	{
-		var tabs = [];
+		var tabs = [aTab];
 		var parentTab = aTab;
 		while (parentTab = this.getParentTab(parentTab))
 		{
+			if (tabs.indexOf(parentTab) > -1) {
+				let message = 'recursive tree detected!\n'+
+					tabs.concat([parentTab])
+					.reverse().map(function(aTab) {
+						return '  '+aTab._tPos+' : '+
+								aTab.label+'\n     '+
+								aTab.getAttribute(this.kID);
+					}, this).join('\n');
+				dump(message+'\n');
+				break;
+			}
+
+			if (aTab._tPos < parentTab._tPos) {
+				let message = 'broken tree detected!\n'+
+					tabs.concat([parentTab])
+					.reverse().map(function(aTab) {
+						return '  '+aTab._tPos+' : '+
+								aTab.label+'\n     '+
+								aTab.getAttribute(this.kID);
+					}, this).join('\n');
+				dump(message+'\n');
+			}
+
 			tabs.push(parentTab);
+			aTab = parentTab;
 		}
-		return tabs;
+		return tabs.slice(1);
 	},
  
 	getRootTab : function TSTUtils_getRootTab(aTab) /* PUBLIC API */ 
@@ -1936,13 +1958,8 @@ var TreeStyleTabUtils = {
 		if (!aTab) return null;
 
 		if (this.tabsHash) { // XPath-less implementation
-			let parent = aTab;
-			let root   = aTab;
-			while (parent = this.getParentTab(parent))
-			{
-				root = parent;
-			}
-			return root;
+			let ancestors = this.getAncestorTabs(aTab);
+			return ancestors.length ? ancestors[ancestors.length-1] : aTab ;
 		}
 
 		return this.evaluateXPath(
@@ -2162,15 +2179,11 @@ var TreeStyleTabUtils = {
 		if (this.tabsHash) { // XPath-less implementation
 			let parent = this.getParentTab(aTab);
 			if (!aParent || !parent || aParent != parent) {
-				parent = aTab;
-				while (parent && parent != aParent)
-				{
-					aTab = parent;
-					parent = this.getParentTab(parent);
-				}
-				if (parent != aParent)
+				let ancestors = this.getAncestorTabs(aTab);
+				let index = ancestors.indexOf(aParent);
+				if (index < 1)
 					return -1;
-				aParent = parent;
+				aTab = ancestors[index-1];
 			}
 
 			if (aParent) {

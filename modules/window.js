@@ -1199,7 +1199,7 @@ TreeStyleTabWindow.prototype = {
 		this._restoringTabs.forEach(function(aTab) {
 			try {
 				var b = this.getTabBrowserFromChild(aTab);
-				if (b) b.treeStyleTab.restoreStructure(aTab, true);
+				if (b) b.treeStyleTab.handleRestoredTab(aTab);
 			}
 			catch(e) {
 			}
