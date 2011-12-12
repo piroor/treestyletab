@@ -2277,11 +2277,8 @@ TreeStyleTabBrowser.prototype = {
  
 	onWindowStateRestored : function TSTBrowser_onWindowStateRestored() 
 	{
-		if (this.window.__SS_tabsToRestore) {
-			if (!this.windowStateRestored)
-				this.fastRestoreTreeStructure();
-		}
-		this.windowStateRestored = true;
+		if (this.window.__SS_tabsToRestore && this.window.__SS_tabsToRestore > 1)
+			this.fastRestoreTreeStructure();
 	},
  
 	fastRestoreTreeStructure : function TSTBrowser_fastRestoreTreeStructure() 
