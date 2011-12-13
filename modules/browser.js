@@ -603,6 +603,7 @@ TreeStyleTabBrowser.prototype = {
 		w.addEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED,  this, false);
 		w.addEventListener('tabviewhidden', this, true);
 		w.addEventListener(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, this, false);
+		w.addEventListener('SSWindowStateBusy', this, false);
 
 		b.addEventListener('nsDOMMultipleTabHandlerTabsClosing', this, false);
 
@@ -1784,6 +1785,7 @@ TreeStyleTabBrowser.prototype = {
 		w.removeEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED,  this, false);
 		w.removeEventListener('tabviewhidden', this, true);
 		w.removeEventListener(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, this, false);
+		w.removeEventListener('SSWindowStateBusy', this, false);
 
 		b.removeEventListener('nsDOMMultipleTabHandlerTabsClosing', this, false);
 
@@ -2045,9 +2047,11 @@ TreeStyleTabBrowser.prototype = {
 				}
 				return;
 
+/*
 			case 'sessionstore-windows-restored':
 			case 'sessionstore-browser-state-restored':
 				return this.onWindowStateRestored();
+*/
 
 			case 'private-browsing-change-granted':
 				this.collapseExpandAllSubtree(false, true);
@@ -2286,29 +2290,28 @@ TreeStyleTabBrowser.prototype = {
 
 		var tabs = this.getAllTabsArray(this.mTabBrowser);
 		tabs = tabs.filter(function(aTab) {
-			var id = this.getTabValue(aTab, this.kID);
+			if (aTab.__treestyletab__structureRestored) // onWindowStateRestored can be called twice
+				return false;
+
 			if (
-				!id || // tabs opened by externals applications
+				!aTab.getAttribute(this.kID) || // tabs opened by externals applications
 				!aTab.linkedBrowser.__SS_restoreState
 				)
 				return false;
 
 			var currentId = aTab.getAttribute(this.kID);
-			var restored = id == currentId;
-			if (!restored) {
-				delete this.tabsHash[id];
-				aTab.setAttribute(this.kID, id);
-				this.tabsHash[id] = aTab;
-			}
+			if (this.tabsHash[currentId] == aTab)
+				delete this.tabsHash[currentId];
+
+			this.resetTabState(aTab);
+
+			var [id, duplicated] = this._restoreTabId(aTab);
+
+			this.setTabValue(aTab, this.kID, id);
+			this.tabsHash[id] = aTab;
 
 			aTab.__treestyletab__structureRestored = true;
-
-			aTab.removeAttribute(this.kPARENT);
-			aTab.removeAttribute(this.kCHILDREN);
-			aTab.removeAttribute(this.kSUBTREE_COLLAPSED);
-			aTab.removeAttribute(this.kCOLLAPSED);
-			aTab.removeAttribute(this.kNEST);
-			this.updateTabCollapsed(aTab, false, true);
+			aTab.__treestyletab__duplicated = duplicated;
 
 			return true;
 		}, this);
@@ -2321,24 +2324,25 @@ TreeStyleTabBrowser.prototype = {
 	},
 	restoreOneTab : function TSTBrowser_restoreOneTab(aTab)
 	{
+		let duplicated = aTab.__treestyletab__duplicated;
 		let subTreeCollapsed = this.getTabValue(aTab, this.kSUBTREE_COLLAPSED) == 'true';
 		let children = this.getTabValue(aTab, this.kCHILDREN);
 		this.deleteTabValue(aTab, this.kCHILDREN);
 		if (children) {
 			subTreeCollapsed = this._restoreSubtreeCollapsedState(aTab, subTreeCollapsed);
-			children.split('|').forEach(function(aChild) {
-				aChild = this.getTabById(aChild);
-				if (aChild) {
-					this.attachTabTo(aChild, aTab, {
-						forceExpand  : true, // to prevent to collapse the selected tab
-						dontAnimate  : true,
-						insertBefore : this.getTabById(this.getTabValue(aChild, this.kINSERT_BEFORE))
-					});
-					this.collapseExpandTab(aChild, subTreeCollapsed, true);
-				}
-			}, this);
+			let self = this;
+			this._restoreChildTabsRelation(aTab, children, duplicated, function(aChild) {
+				let refId = self.getTabValue(aChild, self.kINSERT_BEFORE);
+				if (refId && duplicated) refId = self.redirectId(refId);
+				return {
+					forceExpand  : true, // to prevent to collapse the selected tab
+					dontAnimate  : true,
+					insertBefore : self.getTabById(refId)
+				};
+			});
 			this.collapseExpandSubtree(aTab, subTreeCollapsed, true);
 		}
+		delete aTab.__treestyletab__duplicated;
 		return true
 	},
   
@@ -2464,6 +2468,15 @@ TreeStyleTabBrowser.prototype = {
 
 			case this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END:
 				return this.cancelDelayedExpandOnTabSelect();
+
+
+			case 'SSWindowStateBusy':
+				let (self = this) {
+					this.Deferred.next(function() {
+						self.onWindowStateRestored();
+					});
+				}
+				return;
 
 
 			case 'nsDOMMultipleTabHandlerTabsClosing':
@@ -3329,7 +3342,13 @@ TreeStyleTabBrowser.prototype = {
 
 			let isSubtreeCollapsed = this._restoreSubtreeCollapsedState(aTab);
 
-			let childTabs = this._restoreChildTabsRelation(aTab, children, mayBeDuplicated);
+			let restoringMultipleTabs = this.windowService.restoringTree;
+			let options = {
+					dontExpand       : restoringMultipleTabs,
+					dontUpdateIndent : true,
+					dontAnimate      : restoringMultipleTabs
+				};
+			let childTabs = this._restoreChildTabsRelation(aTab, children, mayBeDuplicated, options);
 
 			this._restoreTabPositionAndIndent(aTab, childTabs, mayBeDuplicated);
 
@@ -3400,7 +3419,7 @@ TreeStyleTabBrowser.prototype = {
 		this.setTabValue(aTab, this.kSUBTREE_COLLAPSED, isSubtreeCollapsed);
 		return isSubtreeCollapsed;
 	},
-	_restoreChildTabsRelation : function TSTBrowser_restoreChildTabsRelation(aTab, aChildrenList, aMayBeDuplicated)
+	_restoreChildTabsRelation : function TSTBrowser_restoreChildTabsRelation(aTab, aChildrenList, aMayBeDuplicated, aOptions)
 	{
 		var childTabs = [];
 		if (!aChildrenList)
@@ -3414,14 +3433,12 @@ TreeStyleTabBrowser.prototype = {
 				return this.redirectId(aChild);
 			}, this);
 
-		var restoringMultipleTabs = this.windowService.restoringTree;
 		aChildrenList.forEach(function(aChildTab) {
 			if (aChildTab && (aChildTab = this.getTabById(aChildTab))) {
-				this.attachTabTo(aChildTab, aTab, {
-					dontExpand       : restoringMultipleTabs,
-					dontUpdateIndent : true,
-					dontAnimate      : restoringMultipleTabs
-				});
+				let options = aOptions;
+				if (options && typeof options == 'function')
+					options = options(aChildTab);
+				this.attachTabTo(aChildTab, aTab, options);
 				childTabs.push(aChildTab);
 			}
 		}, this);
@@ -4297,15 +4314,19 @@ TreeStyleTabBrowser.prototype = {
 			dontAnimate      : true
 		});
 
-		/* reset attributes before restoring */
+		this.resetTabState(aTab);
+		this.updateTabsIndent([aTab], undefined, true);
+	},
+ 
+	resetTabState : function TSTBrowser_resetTabState(aTab)
+	{
 		aTab.removeAttribute(this.kID);
 		aTab.removeAttribute(this.kPARENT);
 		aTab.removeAttribute(this.kCHILDREN);
 		aTab.removeAttribute(this.kSUBTREE_COLLAPSED);
 		aTab.removeAttribute(this.kCOLLAPSED);
-		aTab.removeAttribute(this.kCOLLAPSED_DONE);
 		aTab.removeAttribute(this.kNEST);
-		this.updateTabsIndent([aTab], undefined, true);
+		this.updateTabCollapsed(aTab, false, true);
 	},
  
 	resetAllTabs : function TSTBrowser_resetAllTabs(aDetachAllChildren) 
