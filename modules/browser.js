@@ -2328,6 +2328,7 @@ TreeStyleTabBrowser.prototype = {
 
 		this.updateAllTabsIndent(true);
 
+		// restore tree from bottom safely
 		tabs.reverse()
 			.filter(this.restoreOneTab, this)
 			.forEach(this.updateInsertionPositionInfo, this);
@@ -2335,13 +2336,20 @@ TreeStyleTabBrowser.prototype = {
 	restoreOneTab : function TSTBrowser_restoreOneTab(aTab)
 	{
 		let duplicated = aTab.__treestyletab__duplicated;
-		let subTreeCollapsed = this.getTabValue(aTab, this.kSUBTREE_COLLAPSED) == 'true';
+
 		let children = this.getTabValue(aTab, this.kCHILDREN);
-		this.deleteTabValue(aTab, this.kCHILDREN);
 		if (children) {
+			this.deleteTabValue(aTab, this.kCHILDREN);
+			let subTreeCollapsed = this.getTabValue(aTab, this.kSUBTREE_COLLAPSED) == 'true';
 			subTreeCollapsed = this._restoreSubtreeCollapsedState(aTab, subTreeCollapsed);
 			let self = this;
 			this._restoreChildTabsRelation(aTab, children, duplicated, function(aChild) {
+				/**
+				 * When the child has the reference to the parent tab, attachTabTo()
+				 * does nothing. To ensure they are correctly related, we have to
+				 * clear the relation here.
+				 */
+				self.deleteTabValue(aChild, self.kPARENT);
 				let refId = self.getTabValue(aChild, self.kINSERT_BEFORE);
 				if (refId && duplicated) refId = self.redirectId(refId);
 				return {
@@ -2352,6 +2360,7 @@ TreeStyleTabBrowser.prototype = {
 			});
 			this.collapseExpandSubtree(aTab, subTreeCollapsed, true);
 		}
+
 		delete aTab.__treestyletab__duplicated;
 		return true
 	},
@@ -3335,7 +3344,7 @@ TreeStyleTabBrowser.prototype = {
 			let children = this.getTabValue(aTab, this.kCHILDREN);
 			children = children.split('|').filter(function(aChild) {
 				let tab = this.getTabById(aChild);
-				return ancestors.indexOf(tab) < 0;
+				return tab && ancestors.indexOf(tab) < 0;
 			}, this);
 			this.setTabValue(aTab, this.kCHILDREN, children.join('|'));
 
@@ -4328,8 +4337,10 @@ TreeStyleTabBrowser.prototype = {
 	resetTabState : function TSTBrowser_resetTabState(aTab)
 	{
 		aTab.removeAttribute(this.kID);
+		aTab.removeAttribute(this.kID_RESTORING);
 		aTab.removeAttribute(this.kPARENT);
 		aTab.removeAttribute(this.kCHILDREN);
+		aTab.removeAttribute(this.kCHILDREN_RESTORING);
 		aTab.removeAttribute(this.kSUBTREE_COLLAPSED);
 		aTab.removeAttribute(this.kCOLLAPSED);
 		aTab.removeAttribute(this.kNEST);
