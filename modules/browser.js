@@ -88,6 +88,8 @@ TreeStyleTabBrowser.prototype = {
 	endProp                    : 'bottom',
 
 	maxTreeLevelPhisical : false,
+
+	needRestoreTree : true,
  
 /* elements */ 
 	
@@ -2047,11 +2049,9 @@ TreeStyleTabBrowser.prototype = {
 				}
 				return;
 
-/*
 			case 'sessionstore-windows-restored':
 			case 'sessionstore-browser-state-restored':
 				return this.onWindowStateRestored();
-*/
 
 			case 'private-browsing-change-granted':
 				this.collapseExpandAllSubtree(false, true);
@@ -2285,6 +2285,16 @@ TreeStyleTabBrowser.prototype = {
  
 	onWindowStateRestored : function TSTBrowser_onWindowStateRestored() 
 	{
+		this.restoreTree(true);
+	},
+ 
+	restoreTree : function TSTBrowser_restoreTree(aForceRestore)
+	{
+		if (!this.needRestoreTree && !aForceRestore)
+			return;
+
+		this.needRestoreTree = false;
+
 		if (!this.window.__SS_tabsToRestore || this.window.__SS_tabsToRestore <= 1)
 			return;
 
@@ -2471,12 +2481,7 @@ TreeStyleTabBrowser.prototype = {
 
 
 			case 'SSWindowStateBusy':
-				let (self = this) {
-					this.Deferred.next(function() {
-						self.onWindowStateRestored();
-					});
-				}
-				return;
+				return this.needRestoreTree = true;
 
 
 			case 'nsDOMMultipleTabHandlerTabsClosing':
@@ -3224,6 +3229,8 @@ TreeStyleTabBrowser.prototype = {
  
 	onTabRestoring : function TSTBrowser_onTabRestoring(aEvent) 
 	{
+		this.restoreTree();
+
 		this.handleRestoredTab(aEvent.originalTarget);
 
 		/**
