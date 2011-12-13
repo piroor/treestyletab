@@ -2300,16 +2300,14 @@ TreeStyleTabBrowser.prototype = {
 
 		var tabs = this.getAllTabsArray(this.mTabBrowser);
 		tabs = tabs.filter(function(aTab) {
-			if (aTab.__treestyletab__structureRestored) // onWindowStateRestored can be called twice
-				return false;
-
+			var currentId = aTab.getAttribute(this.kID);
 			if (
-				!aTab.getAttribute(this.kID) || // tabs opened by externals applications
-				!aTab.linkedBrowser.__SS_restoreState
+				!currentId || // tabs opened by externals applications
+				!aTab.linkedBrowser.__SS_restoreState ||
+				aTab.__treestyletab__structureRestored
 				)
 				return false;
 
-			var currentId = aTab.getAttribute(this.kID);
 			if (this.tabsHash[currentId] == aTab)
 				delete this.tabsHash[currentId];
 
