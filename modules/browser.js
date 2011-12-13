@@ -334,6 +334,36 @@ TreeStyleTabBrowser.prototype = {
 		return close;
 	},
   
+	getTabFromTabbarEvent : function TSTBrowser_getTabFromTabbarEvent(aEvent) 
+	{
+		if (
+			!this.shouldDetectClickOnIndentSpaces ||
+			!this.getAncestorTabbarFromEvent(aEvent) ||
+			this.isEventFiredOnClickable(aEvent) ||
+			this.getSplitterFromEvent(aEvent)
+			)
+			return null;
+
+		var tab = null;
+		var clickedPoint = aEvent[this.screenPositionProp];
+		this.getTabsArray(this.mTabBrowser).some(function(aTab) {
+			var box = aTab.boxObject;
+			if (box[this.screenPositionProp] > clickedPoint ||
+				box[this.screenPositionProp] + box[this.sizeProp] < clickedPoint) {
+				return false;
+			}
+			tab = aTab;
+			return true;
+		}, this);
+		return tab;
+	},
+ 
+	getNextFocusedTab : function TSTBrowser_getNextFocusedTab(aTab) 
+	{
+		return this.getNextSiblingTab(aTab) ||
+				this.getPreviousVisibleTab(aTab);
+	},
+ 
 	isTabInViewport : function TSTBrowser_isTabInViewport(aTab) 
 	{
 		if (!this.windowService.preInitialized || !aTab)
@@ -834,16 +864,18 @@ TreeStyleTabBrowser.prototype = {
 		if (!aTab.hasAttribute(this.kNEST))
 			aTab.setAttribute(this.kNEST, 0);
 	},
-	isTabInitialized : function TSTBrowser_isTabInitialized(aTab)
+	
+	isTabInitialized : function TSTBrowser_isTabInitialized(aTab) 
 	{
 		return aTab.getAttribute(this.kID);
 	},
-	ensureTabInitialized : function TSTBrowser_ensureTabInitialized(aTab)
+ 
+	ensureTabInitialized : function TSTBrowser_ensureTabInitialized(aTab) 
 	{
 		if (!aTab || this.isTabInitialized(aTab)) return;
 		this.initTab(aTab);
 	},
-	
+ 
 	initTabAttributes : function TSTBrowser_initTabAttributes(aTab) 
 	{
 		var pos = this.position;
@@ -2313,80 +2345,6 @@ TreeStyleTabBrowser.prototype = {
 	{
 		this.restoreTree(true);
 	},
- 
-	restoreTree : function TSTBrowser_restoreTree(aForceRestore)
-	{
-		if (!this.needRestoreTree && !aForceRestore)
-			return;
-
-		this.needRestoreTree = false;
-
-		if (!this.window.__SS_tabsToRestore || this.window.__SS_tabsToRestore <= 1)
-			return;
-
-		var tabs = this.getAllTabsArray(this.mTabBrowser);
-		tabs = tabs.filter(function(aTab) {
-			if (
-				!aTab.linkedBrowser.__SS_restoreState ||
-				!aTab.linkedBrowser.__treestyletab__toBeRestored
-				)
-				return false;
-
-			var currentId = aTab.getAttribute(this.kID);
-			if (this.tabsHash[currentId] == aTab)
-				delete this.tabsHash[currentId];
-
-			this.resetTabState(aTab);
-
-			var [id, duplicated] = this._restoreTabId(aTab);
-
-			this.setTabValue(aTab, this.kID, id);
-			this.tabsHash[id] = aTab;
-
-			aTab.__treestyletab__structureRestored = true;
-			aTab.__treestyletab__duplicated = duplicated;
-
-			return true;
-		}, this);
-
-		this.updateAllTabsIndent(true);
-
-		// restore tree from bottom safely
-		tabs.reverse()
-			.filter(this.restoreOneTab, this)
-			.forEach(this.updateInsertionPositionInfo, this);
-	},
-	restoreOneTab : function TSTBrowser_restoreOneTab(aTab)
-	{
-		let duplicated = aTab.__treestyletab__duplicated;
-
-		let children = this.getTabValue(aTab, this.kCHILDREN);
-		if (children) {
-			this.deleteTabValue(aTab, this.kCHILDREN);
-			let subTreeCollapsed = this.getTabValue(aTab, this.kSUBTREE_COLLAPSED) == 'true';
-			subTreeCollapsed = this._restoreSubtreeCollapsedState(aTab, subTreeCollapsed);
-			let self = this;
-			this._restoreChildTabsRelation(aTab, children, duplicated, function(aChild) {
-				/**
-				 * When the child has the reference to the parent tab, attachTabTo()
-				 * does nothing. To ensure they are correctly related, we have to
-				 * clear the relation here.
-				 */
-				self.deleteTabValue(aChild, self.kPARENT);
-				let refId = self.getTabValue(aChild, self.kINSERT_BEFORE);
-				if (refId && duplicated) refId = self.redirectId(refId);
-				return {
-					forceExpand  : true, // to prevent to collapse the selected tab
-					dontAnimate  : true,
-					insertBefore : self.getTabById(refId)
-				};
-			});
-			this.collapseExpandSubtree(aTab, subTreeCollapsed, true);
-		}
-
-		delete aTab.__treestyletab__duplicated;
-		return true
-	},
   
 /* DOM Event Handling */ 
 	
@@ -2526,7 +2484,7 @@ TreeStyleTabBrowser.prototype = {
 	lastScrollY : -1,
 	tabViewHiding : false,
 	
-	restoreLastScrollPosition : function TSTBrowser_restoreLastScrollPosition()
+	restoreLastScrollPosition : function TSTBrowser_restoreLastScrollPosition() 
 	{
 		if (this.lastScrollX < 0 || this.lastScrollY < 0) return;
 		var lastX = this.lastScrollX;
@@ -2541,11 +2499,13 @@ TreeStyleTabBrowser.prototype = {
 				scrollBoxObject.scrollTo(lastX, lastY);
 		}
 	},
-	clearLastScrollPosition : function TSTBrowser_clearLastScrollPosition()
+ 
+	clearLastScrollPosition : function TSTBrowser_clearLastScrollPosition() 
 	{
 		this.lastScrollX = -1;
 		this.lastScrollY = -1;
 	},
+ 
 	updateLastScrollPosition : function TSTBrowser_updateLastScrollPosition() 
 	{
 		if (!this.isVertical) return;
@@ -2670,8 +2630,8 @@ TreeStyleTabBrowser.prototype = {
 	_addedCountInThisLoop : 0,
 	_addedCountClearTimer : null,
 	_checkRestoringWindowTimerOnTabAdded : null,
- 
-	updateInsertionPositionInfo : function TSTBrowser_updateInsertionPositionInfo(aTab)
+	
+	updateInsertionPositionInfo : function TSTBrowser_updateInsertionPositionInfo(aTab) 
 	{
 		var prev = this.getPreviousSiblingTab(aTab);
 		if (prev) {
@@ -2685,7 +2645,7 @@ TreeStyleTabBrowser.prototype = {
 			this.setTabValue(next, this.kINSERT_AFTER, aTab.getAttribute(this.kID));
 		}
 	},
- 
+  
 	onTabClose : function TSTBrowser_onTabClose(aEvent) 
 	{
 		var tab = aEvent.originalTarget;
@@ -2868,7 +2828,8 @@ TreeStyleTabBrowser.prototype = {
 		if (collapsed)
 			this.startRendering();
 	},
-	_reserveCloseNeedlessGroupTabSibling : function TSTBrowser_reserveCloseNeedlessGroupTabSibling(aTab)
+	
+	_reserveCloseNeedlessGroupTabSibling : function TSTBrowser_reserveCloseNeedlessGroupTabSibling(aTab) 
 	{
 		if (!aTab)
 			return null;
@@ -2893,12 +2854,7 @@ TreeStyleTabBrowser.prototype = {
 
 		return null;
 	},
-	getNextFocusedTab : function TSTBrowser_getNextFocusedTab(aTab)
-	{
-		return this.getNextSiblingTab(aTab) ||
-				this.getPreviousVisibleTab(aTab);
-	},
- 
+  
 	onTabsClosing : function TSTBrowser_onTabsClosing(aEvent) 
 	{
 		var tabs = aEvent.tabs || aEvent.getData('tabs');
@@ -3160,7 +3116,8 @@ TreeStyleTabBrowser.prototype = {
 		}, 0, this);
 	},
 	tabVisibilityChangedTimer : null,
-	updateTreeByTabVisibility : function TSTBrowser_updateTreeByTabVisibility(aChangedTabs)
+	
+	updateTreeByTabVisibility : function TSTBrowser_updateTreeByTabVisibility(aChangedTabs) 
 	{
 		this.internallyTabMovingCount++;
 
@@ -3231,8 +3188,8 @@ TreeStyleTabBrowser.prototype = {
 		}
 		this.internallyTabMovingCount--;
 	},
-	tabViewTreeIsMoving : false,
-	subtreeFollowParentAcrossTabGroups : function TSTBrowser_subtreeFollowParentAcrossTabGroups(aParent)
+ 
+	subtreeFollowParentAcrossTabGroups : function TSTBrowser_subtreeFollowParentAcrossTabGroups(aParent) 
 	{
 		if (this.tabViewTreeIsMoving) return;
 
@@ -3258,7 +3215,8 @@ TreeStyleTabBrowser.prototype = {
 		this.internallyTabMovingCount--;
 		this.tabViewTreeIsMoving = false;
 	},
- 
+	tabViewTreeIsMoving : false,
+  
 	onTabRestoring : function TSTBrowser_onTabRestoring(aEvent) 
 	{
 		this.restoreTree();
@@ -3400,7 +3358,8 @@ TreeStyleTabBrowser.prototype = {
 		if (mayBeDuplicated)
 			this.clearRedirectionTable();
 	},
-	_restoreTabId : function TSTBrowser_restoreTabId(aTab)
+	
+	_restoreTabId : function TSTBrowser_restoreTabId(aTab) 
 	{
 		var id = this.getTabValue(aTab, this.kID);
 		var mayBeDuplicated = false;
@@ -3419,7 +3378,8 @@ TreeStyleTabBrowser.prototype = {
 
 		return [id, mayBeDuplicated];
 	},
-	_getCloseSetId : function TSTBrowser_getCloseSetId(aTab, aMayBeDuplicated)
+ 
+	_getCloseSetId : function TSTBrowser_getCloseSetId(aTab, aMayBeDuplicated) 
 	{
 		var closeSetId = null;
 		if (!aMayBeDuplicated) {
@@ -3442,7 +3402,8 @@ TreeStyleTabBrowser.prototype = {
 		this.deleteTabValue(aTab, this.kCLOSED_SET_ID);
 		return closeSetId;
 	},
-	_restoreSubtreeCollapsedState : function TSTBrowser_restoreSubtreeCollapsedState(aTab, aCollapsed)
+ 
+	_restoreSubtreeCollapsedState : function TSTBrowser_restoreSubtreeCollapsedState(aTab, aCollapsed) 
 	{
 		var shouldCollapse = this.getTreePref('collapseExpandSubtree.sessionRestore');
 
@@ -3460,7 +3421,8 @@ TreeStyleTabBrowser.prototype = {
 		this.setTabValue(aTab, this.kSUBTREE_COLLAPSED, isSubtreeCollapsed);
 		return isSubtreeCollapsed;
 	},
-	_restoreChildTabsRelation : function TSTBrowser_restoreChildTabsRelation(aTab, aChildrenList, aMayBeDuplicated, aOptions)
+ 
+	_restoreChildTabsRelation : function TSTBrowser_restoreChildTabsRelation(aTab, aChildrenList, aMayBeDuplicated, aOptions) 
 	{
 		var childTabs = [];
 		if (!aChildrenList)
@@ -3491,7 +3453,8 @@ TreeStyleTabBrowser.prototype = {
 
 		return childTabs;
 	},
-	_restoreTabPositionAndIndent : function TSTBrowser_restoreTabPositionAndIndent(aTab, aChildTabs, aMayBeDuplicated)
+ 
+	_restoreTabPositionAndIndent : function TSTBrowser_restoreTabPositionAndIndent(aTab, aChildTabs, aMayBeDuplicated) 
 	{
 		var restoringMultipleTabs = this.windowService.restoringTree;
 		var position = this._prepareInsertionPosition(aTab, aMayBeDuplicated);
@@ -3524,7 +3487,8 @@ TreeStyleTabBrowser.prototype = {
 			this._restoreTabPosition(aTab, position.next);
 		}
 	},
-	_prepareInsertionPosition : function TSTBrowser_prepareInsertionPosition(aTab, aMayBeDuplicated)
+	
+	_prepareInsertionPosition : function TSTBrowser_prepareInsertionPosition(aTab, aMayBeDuplicated) 
 	{
 		var next = this.getTabValue(aTab, this.kINSERT_BEFORE);
 		if (next && aMayBeDuplicated) next = this.redirectId(next);
@@ -3567,7 +3531,8 @@ TreeStyleTabBrowser.prototype = {
 			next   : next
 		};
 	},
-	_restoreTabPosition : function TSTBrowser_restoreTabPosition(aTab, aNextTab)
+  
+	_restoreTabPosition : function TSTBrowser_restoreTabPosition(aTab, aNextTab) 
 	{
 		if (!aNextTab) aNextTab = this.getNextTab(aTab);
 		var parentOfNext = this.getParentTab(aNextTab);
@@ -3583,7 +3548,7 @@ TreeStyleTabBrowser.prototype = {
 		if (newPos > -1)
 			this.mTabBrowser.moveTabTo(aTab, newPos);
 	},
- 
+  
 	correctChildTabsOrderWithDelay : function TSTBrowser_correctChildTabsOrderWithDelay(aTab) 
 	{
 		if (aTab.correctChildTabsOrderWithDelayTimer)
@@ -3695,7 +3660,8 @@ TreeStyleTabBrowser.prototype = {
 			this.doRestoreClosedSet(aRestoredTab, indexes);
 		}
 	},
-	doRestoreClosedSet : function TSTBrowser_doRestoreClosedSet(aRestoredTab, aIndexes)
+	
+	doRestoreClosedSet : function TSTBrowser_doRestoreClosedSet(aRestoredTab, aIndexes) 
 	{
 		if (!this.window.PlacesUIUtils._confirmOpenInTabs(aIndexes.length))
 			return;
@@ -3719,7 +3685,7 @@ TreeStyleTabBrowser.prototype = {
 		this._restoringClosedSet = false;
 	},
 	_restoringClosedSet : false,
-  
+   
 	onTabRestored : function TSTBrowser_onTabRestored(aEvent) 
 	{
 		delete aEvent.originalTarget.__treestyletab__restoredByUndoCloseTab;
@@ -3893,7 +3859,7 @@ TreeStyleTabBrowser.prototype = {
 			this._autoExpandOnTabSelectTimer = null;
 		}
 	},
- 
+	
 	handleAdvanceSelectedTab : function TSTBrowser_handleAdvanceSelectedTab(aDir, aWrap) 
 	{
 		this._focusChangedByShortcut = this.windowService.accelKeyPressed;
@@ -3907,8 +3873,8 @@ TreeStyleTabBrowser.prototype = {
 
 		return this.advanceSelectedTab(aDir, aWrap);
 	},
- 
-	processArrowKeyOnFocusAdvanced : function TSTBrowser_processArrowKeyOnFocusAdvanced()
+	
+	processArrowKeyOnFocusAdvanced : function TSTBrowser_processArrowKeyOnFocusAdvanced() 
 	{
 		var event = this.windowService.arrowKeyEventOnTab;
 		if (!event)
@@ -3980,7 +3946,7 @@ TreeStyleTabBrowser.prototype = {
 		return true;
 	},
  
-	advanceSelectedTab : function TSTBrowser_advanceSelectedTab(aDir, aWrap)
+	advanceSelectedTab : function TSTBrowser_advanceSelectedTab(aDir, aWrap) 
 	{
 		var tab = this.mTabBrowser.selectedTab;
 		var tabbar = this.mTabBrowser.mTabContainer;
@@ -4000,7 +3966,7 @@ TreeStyleTabBrowser.prototype = {
 
 		return true;
 	},
- 
+   
 	onTabClick : function TSTBrowser_onTabClick(aEvent, aTab) 
 	{
 		aTab = aTab || this.getTabFromEvent(aEvent);
@@ -4032,29 +3998,6 @@ TreeStyleTabBrowser.prototype = {
 			}
 			return;
 		}
-	},
-	getTabFromTabbarEvent : function TSTBrowser_getTabFromTabbarEvent(aEvent)
-	{
-		if (
-			!this.shouldDetectClickOnIndentSpaces ||
-			!this.getAncestorTabbarFromEvent(aEvent) ||
-			this.isEventFiredOnClickable(aEvent) ||
-			this.getSplitterFromEvent(aEvent)
-			)
-			return null;
-
-		var tab = null;
-		var clickedPoint = aEvent[this.screenPositionProp];
-		this.getTabsArray(this.mTabBrowser).some(function(aTab) {
-			var box = aTab.boxObject;
-			if (box[this.screenPositionProp] > clickedPoint ||
-				box[this.screenPositionProp] + box[this.sizeProp] < clickedPoint) {
-				return false;
-			}
-			tab = aTab;
-			return true;
-		}, this);
-		return tab;
 	},
  
 	onClick : function TSTBrowser_onClick(aEvent) 
@@ -4358,8 +4301,8 @@ TreeStyleTabBrowser.prototype = {
 		this.resetTabState(aTab);
 		this.updateTabsIndent([aTab], undefined, true);
 	},
- 
-	resetTabState : function TSTBrowser_resetTabState(aTab)
+	
+	resetTabState : function TSTBrowser_resetTabState(aTab) 
 	{
 		aTab.removeAttribute(this.kID);
 		aTab.removeAttribute(this.kID_RESTORING);
@@ -4371,7 +4314,7 @@ TreeStyleTabBrowser.prototype = {
 		aTab.removeAttribute(this.kNEST);
 		this.updateTabCollapsed(aTab, false, true);
 	},
- 
+  
 	resetAllTabs : function TSTBrowser_resetAllTabs(aDetachAllChildren) 
 	{
 		this.getAllTabsArray(this.mTabBrowser).forEach(function(aTab) {
@@ -5747,7 +5690,81 @@ TreeStyleTabBrowser.prototype = {
 			this.scrollToTab(lastVisible);
 		}
 	},
-   
+  
+	restoreTree : function TSTBrowser_restoreTree(aForceRestore) 
+	{
+		if (!this.needRestoreTree && !aForceRestore)
+			return;
+
+		this.needRestoreTree = false;
+
+		if (!this.window.__SS_tabsToRestore || this.window.__SS_tabsToRestore <= 1)
+			return;
+
+		var tabs = this.getAllTabsArray(this.mTabBrowser);
+		tabs = tabs.filter(function(aTab) {
+			if (
+				!aTab.linkedBrowser.__SS_restoreState ||
+				!aTab.linkedBrowser.__treestyletab__toBeRestored
+				)
+				return false;
+
+			var currentId = aTab.getAttribute(this.kID);
+			if (this.tabsHash[currentId] == aTab)
+				delete this.tabsHash[currentId];
+
+			this.resetTabState(aTab);
+
+			var [id, duplicated] = this._restoreTabId(aTab);
+
+			this.setTabValue(aTab, this.kID, id);
+			this.tabsHash[id] = aTab;
+
+			aTab.__treestyletab__structureRestored = true;
+			aTab.__treestyletab__duplicated = duplicated;
+
+			return true;
+		}, this);
+
+		this.updateAllTabsIndent(true);
+
+		// restore tree from bottom safely
+		tabs.reverse()
+			.filter(this.restoreOneTab, this)
+			.forEach(this.updateInsertionPositionInfo, this);
+	},
+	restoreOneTab : function TSTBrowser_restoreOneTab(aTab)
+	{
+		let duplicated = aTab.__treestyletab__duplicated;
+
+		let children = this.getTabValue(aTab, this.kCHILDREN);
+		if (children) {
+			this.deleteTabValue(aTab, this.kCHILDREN);
+			let subTreeCollapsed = this.getTabValue(aTab, this.kSUBTREE_COLLAPSED) == 'true';
+			subTreeCollapsed = this._restoreSubtreeCollapsedState(aTab, subTreeCollapsed);
+			let self = this;
+			this._restoreChildTabsRelation(aTab, children, duplicated, function(aChild) {
+				/**
+				 * When the child has the reference to the parent tab, attachTabTo()
+				 * does nothing. To ensure they are correctly related, we have to
+				 * clear the relation here.
+				 */
+				self.deleteTabValue(aChild, self.kPARENT);
+				let refId = self.getTabValue(aChild, self.kINSERT_BEFORE);
+				if (refId && duplicated) refId = self.redirectId(refId);
+				return {
+					forceExpand  : true, // to prevent to collapse the selected tab
+					dontAnimate  : true,
+					insertBefore : self.getTabById(refId)
+				};
+			});
+			this.collapseExpandSubtree(aTab, subTreeCollapsed, true);
+		}
+
+		delete aTab.__treestyletab__duplicated;
+		return true
+	},
+  
 /* sub modules */ 
 	
 	get tabbarDNDObserver() 
