@@ -802,6 +802,34 @@ TreeStyleTabBrowser.prototype = {
 
 		aTab.__treestyletab__linkedTabBrowser = this.mTabBrowser;
 
+		/**
+		 * XXX dity hack!!! there is no way to know when the tab is readied to be restored...
+		 */
+		aTab.__treestyletab__restored = true;
+		var b = aTab.linkedBrowser;
+		if (!b.__treestyletab__stop) {
+			b.__treestyletab__stop = b.stop;
+			b.stop = function TSTBrowser_stopHook() {
+				try {
+					var stack = Components.stack;
+					while (stack)
+					{
+						if (stack.name == 'sss_restoreHistoryPrecursor') {
+							let b = this.ownerDocument.defaultView.TreeStyleTabService.getTabBrowserFromChild(this);
+							let tab = b.treeStyleTab.getTabFromFrame(this.contentWindow);
+							tab.__treestyletab__restored = false;
+							break;
+						}
+						stack = stack.caller;
+					}
+				}
+				catch(e) {
+					dump(e+'\n');
+				}
+				return this.__treestyletab__stop.apply(this, arguments);
+			};
+		}
+
 		this.initTabAttributes(aTab);
 		this.initTabContents(aTab);
 
@@ -2304,7 +2332,8 @@ TreeStyleTabBrowser.prototype = {
 			if (
 				!currentId || // tabs opened by externals applications
 				!aTab.linkedBrowser.__SS_restoreState ||
-				aTab.__treestyletab__structureRestored
+				aTab.__treestyletab__structureRestored ||
+				aTab.__treestyletab__restored
 				)
 				return false;
 
@@ -3290,6 +3319,7 @@ TreeStyleTabBrowser.prototype = {
 
 		var structureRestored = aTab.__treestyletab__structureRestored;
 		delete aTab.__treestyletab__structureRestored;
+		aTab.__treestyletab__restored = true;
 
 		var children = this.getTabValue(aTab, this.kCHILDREN);
 		if (
