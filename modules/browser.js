@@ -822,7 +822,7 @@ TreeStyleTabBrowser.prototype = {
 					}
 				}
 				catch(e) {
-					dump(e+'\n');
+					dump(e+'\n'+e.stack+'\n');
 				}
 				return this.__treestyletab__stop.apply(this, arguments);
 			};
