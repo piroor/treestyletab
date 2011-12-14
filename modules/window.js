@@ -205,10 +205,20 @@ TreeStyleTabWindow.prototype = {
 		return toolbox && toolbox.customizing;
 	},
  
+	get isMaximized()
+	{
+		return (
+			this.window.fullScreen ||
+			this.window.windowState == this.window.STATE_MAXIMIZED ||
+			this.document.documentElement.getAttribute('sizemode') == 'maximized'
+		);
+	},
+ 
 	maxTabbarWidth : function TSTWindow_maxTabbarWidth(aWidth, aTabBrowser) 
 	{
 		aTabBrowser = aTabBrowser || this.browser;
-		var windowWidth = this.window.outerWidth;
+		var safePadding = 20; // for window border, etc.
+		var windowWidth = this.isMaximized ? this.window.screen.availWidth - safePadding : this.window.outerWidth ;
 		var rootWidth = parseInt(this.document.documentElement.getAttribute('width') || 0);
 		var max = Math.max(windowWidth, rootWidth);
 		return Math.max(0, Math.min(aWidth, max * this.MAX_TABBAR_SIZE_RATIO));
@@ -217,7 +227,8 @@ TreeStyleTabWindow.prototype = {
 	maxTabbarHeight : function TSTWindow_maxTabbarHeight(aHeight, aTabBrowser) 
 	{
 		aTabBrowser = aTabBrowser || this.browser;
-		var windowHeight = this.window.outerHeight;
+		var safePadding = 20; // for window border, etc.
+		var windowHeight = this.isMaximized ? this.window.screen.availHeight - safePadding : this.window.outerHeight ;
 		var rootHeight = parseInt(this.document.documentElement.getAttribute('height') || 0);
 		var max = Math.max(windowHeight, rootHeight);
 		return Math.max(0, Math.min(aHeight, max * this.MAX_TABBAR_SIZE_RATIO));
