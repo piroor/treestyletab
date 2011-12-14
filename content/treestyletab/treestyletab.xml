@@ -5,7 +5,7 @@
 	xmlns:xbl="http://www.mozilla.org/xbl">
 
 	<binding id="tab-icon"
-		extends="xul:stack">
+		display="xul:stack">
 		<content>
 			<xul:image xbl:inherits="validate,src" class="tab-icon-image"/>
 			<xbl:children/>
