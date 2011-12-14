@@ -815,7 +815,7 @@ TreeStyleTabBrowser.prototype = {
 			let self = this;
 			this.Deferred.next(function() {
 				// changed by someone!
-				if (self.getAttribute(self.kID) != id)
+				if (aTab.getAttribute(self.kID) != id)
 					return;
 
 				if (!self.getTabValue(aTab, self.kID)) {
