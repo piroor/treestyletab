@@ -207,10 +207,12 @@ TreeStyleTabWindow.prototype = {
  
 	get maximized()
 	{
+		var sizemode = this.document.documentElement.getAttribute('sizemode');
 		return (
 			this.window.fullScreen ||
 			this.window.windowState == this.window.STATE_MAXIMIZED ||
-			this.document.documentElement.getAttribute('sizemode') == 'maximized'
+			sizemode == 'maximized' ||
+			sizemode == 'fullscreen'
 		);
 	},
  
