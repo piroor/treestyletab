@@ -560,6 +560,16 @@ pref("extensions.treestyletab.undoCloseTabSet.behavior", 3);
 pref("extensions.treestyletab.repositionStatusPanel", true);
 
 /**
+ * On Firefox 8 or later, TST can restore tree before SSTabRestoring events.
+ * SSTabRestoring based restore can break tree for duplicated tabs via the
+ * SessionStore service, so, "2" is recommended.
+ *  0 = Restore tree on SSTabRestoring
+ *  1 = Restore tree of visible tabs before SSTabRestoring
+ *  2 = Restore all tree before SSTabRestoring
+ */
+pref("extensions.treestyletab.restoreTree.level", 2);
+
+/**
  * TST overrides some internal prefs of Firefox itself, because they can
  * conflict with TST features. They will be rolled back when TST is uninstalled.
  */

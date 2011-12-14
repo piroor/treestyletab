@@ -89,7 +89,7 @@ TreeStyleTabBrowser.prototype = {
 
 	maxTreeLevelPhisical : false,
 
-	needRestoreTree : true,
+	needRestoreTree : false,
  
 /* elements */ 
 	
@@ -661,8 +661,6 @@ TreeStyleTabBrowser.prototype = {
 		this.ObserverService.addObserver(this, this.kTOPIC_INDENT_MODIFIED, false);
 		this.ObserverService.addObserver(this, this.kTOPIC_COLLAPSE_EXPAND_ALL, false);
 		this.ObserverService.addObserver(this, this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY, false);
-		this.ObserverService.addObserver(this, 'sessionstore-windows-restored', false);
-		this.ObserverService.addObserver(this, 'sessionstore-browser-state-restored', false);
 		this.ObserverService.addObserver(this, 'private-browsing-change-granted', false);
 		this.ObserverService.addObserver(this, 'lightweight-theme-styling-update', false);
 		this.addPrefListener(this);
@@ -1863,8 +1861,6 @@ TreeStyleTabBrowser.prototype = {
 		this.ObserverService.removeObserver(this, this.kTOPIC_INDENT_MODIFIED);
 		this.ObserverService.removeObserver(this, this.kTOPIC_COLLAPSE_EXPAND_ALL);
 		this.ObserverService.removeObserver(this, this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY);
-		this.ObserverService.removeObserver(this, 'sessionstore-windows-restored');
-		this.ObserverService.removeObserver(this, 'sessionstore-browser-state-restored');
 		this.ObserverService.removeObserver(this, 'private-browsing-change-granted');
 		this.ObserverService.removeObserver(this, 'lightweight-theme-styling-update');
 		this.removePrefListener(this);
@@ -2107,10 +2103,6 @@ TreeStyleTabBrowser.prototype = {
 				}
 				return;
 
-			case 'sessionstore-windows-restored':
-			case 'sessionstore-browser-state-restored':
-				return this.onWindowStateRestored();
-
 			case 'private-browsing-change-granted':
 				this.collapseExpandAllSubtree(false, true);
 				this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_PRIVATE_BROWSING);
@@ -2339,11 +2331,6 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		this.setTabbrowserAttribute(this.kTWISTY_STYLE, aStyle);
-	},
- 
-	onWindowStateRestored : function TSTBrowser_onWindowStateRestored() 
-	{
-		this.restoreTree(true);
 	},
   
 /* DOM Event Handling */ 
@@ -3086,6 +3073,15 @@ TreeStyleTabBrowser.prototype = {
 			if (!tabs.length)
 				return;
 
+			// restore tree from bottom safely
+			tabs.filter(function(aChanged) {
+					return aChanged.type == 'TabShow' &&
+							aChanged.tab.__treestyletab__restoreState == aSelf.RESTORE_STATE_READY_TO_RESTORE;
+				})
+				.reverse()
+				.filter(aSelf.restoreOneTab, aSelf)
+				.forEach(aSelf.updateInsertionPositionInfo, aSelf);
+
 			if (aSelf.tabViewHiding) {
 				// We should clear it first, because updateTreeByTabVisibility() never change visibility of tabs.
 				aSelf.tabVisibilityChangedTabs = [];
@@ -3267,12 +3263,15 @@ TreeStyleTabBrowser.prototype = {
 	RESTORED_TREE_COLLAPSED_STATE_LAST_STATE : -1,
 	RESTORED_TREE_COLLAPSED_STATE_COLLAPSED  : 0,
 	RESTORED_TREE_COLLAPSED_STATE_EXPANDED   : 1,
+	RESTORE_STATE_INITIAL             : 0,
+	RESTORE_STATE_READY_TO_RESTORE    : 1,
+	RESTORE_STATE_STRUCTURE_RESTORED  : 2,
 	handleRestoredTab : function TSTBrowser_handleRestoredTab(aTab) 
 	{
 		var [id, mayBeDuplicated] = this._restoreTabId(aTab);
 
-		var structureRestored = aTab.__treestyletab__structureRestored;
-		delete aTab.__treestyletab__structureRestored;
+		var structureRestored = aTab.__treestyletab__restoreState == this.RESTORE_STATE_STRUCTURE_RESTORED;
+		delete aTab.__treestyletab__restoreState;
 
 		aTab.linkedBrowser.__treestyletab__toBeRestored = false;
 
@@ -3361,10 +3360,11 @@ TreeStyleTabBrowser.prototype = {
 	
 	_restoreTabId : function TSTBrowser_restoreTabId(aTab) 
 	{
-		var id = this.getTabValue(aTab, this.kID);
+		var currentId  = aTab.getAttribute(this.kID);
+		var restoredId = this.getTabValue(aTab, this.kID);
 		var mayBeDuplicated = false;
 
-		aTab.setAttribute(this.kID_RESTORING, id);
+		aTab.setAttribute(this.kID_RESTORING, restoredId);
 		if (this.isTabDuplicated(aTab)) {
 			mayBeDuplicated = true;
 			/**
@@ -3372,11 +3372,11 @@ TreeStyleTabBrowser.prototype = {
 			 * instead of redirected ID, because the tab has been possibly
 			 * attached to another tab.
 			 */
-			id = aTab.getAttribute(this.kID) || this.redirectId(id);
+			restoredId = currentId || this.redirectId(restoredId);
 		}
 		aTab.removeAttribute(this.kID_RESTORING);
 
-		return [id, mayBeDuplicated];
+		return [restoredId || currentId, mayBeDuplicated];
 	},
  
 	_getCloseSetId : function TSTBrowser_getCloseSetId(aTab, aMayBeDuplicated) 
@@ -5691,16 +5691,22 @@ TreeStyleTabBrowser.prototype = {
 		}
 	},
   
-	restoreTree : function TSTBrowser_restoreTree(aForceRestore) 
+	restoreTree : function TSTBrowser_restoreTree() 
 	{
-		if (!this.needRestoreTree && !aForceRestore)
+		if (!this.needRestoreTree)
 			return;
 
 		this.needRestoreTree = false;
 
-		if (!this.window.__SS_tabsToRestore || this.window.__SS_tabsToRestore <= 1)
+		var level = this.getTreePref('restoreTree.level');
+		if (
+			level <= this.kRESTORE_TREE_LEVEL_NONE ||
+			!this.window.__SS_tabsToRestore ||
+			this.window.__SS_tabsToRestore <= 1
+			)
 			return;
 
+		var onlyVisible = level <= this.kRESTORE_TREE_ONLY_VISIBLE;
 		var tabs = this.getAllTabsArray(this.mTabBrowser);
 		tabs = tabs.filter(function(aTab) {
 			if (
@@ -5715,15 +5721,16 @@ TreeStyleTabBrowser.prototype = {
 
 			this.resetTabState(aTab);
 
+			aTab.setAttribute(this.kID, currentId); // to fallback to it
 			var [id, duplicated] = this._restoreTabId(aTab);
 
 			this.setTabValue(aTab, this.kID, id);
 			this.tabsHash[id] = aTab;
 
-			aTab.__treestyletab__structureRestored = true;
+			aTab.__treestyletab__restoreState = this.RESTORE_STATE_READY_TO_RESTORE;
 			aTab.__treestyletab__duplicated = duplicated;
 
-			return true;
+			return !onlyVisible || !aTab.hidden;
 		}, this);
 
 		this.updateAllTabsIndent(true);
@@ -5735,6 +5742,9 @@ TreeStyleTabBrowser.prototype = {
 	},
 	restoreOneTab : function TSTBrowser_restoreOneTab(aTab)
 	{
+		if (aTab.__treestyletab__restoreState != this.RESTORE_STATE_READY_TO_RESTORE)
+			return false;
+
 		let duplicated = aTab.__treestyletab__duplicated;
 
 		let children = this.getTabValue(aTab, this.kCHILDREN);
@@ -5762,6 +5772,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		delete aTab.__treestyletab__duplicated;
+		aTab.__treestyletab__restoreState = this.RESTORE_STATE_STRUCTURE_RESTORED;
 		return true
 	},
   
