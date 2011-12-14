@@ -3078,9 +3078,17 @@ TreeStyleTabBrowser.prototype = {
 					return aChanged.type == 'TabShow' &&
 							aChanged.tab.__treestyletab__restoreState == aSelf.RESTORE_STATE_READY_TO_RESTORE;
 				})
-				.reverse()
+				.map(function(aChanged) {
+					return aChanged.tab;
+				})
+				.sort(function(aA, aB) {
+					return aB._tPos - aA._tPos;
+				})
 				.filter(aSelf.restoreOneTab, aSelf)
-				.forEach(aSelf.updateInsertionPositionInfo, aSelf);
+				.forEach(function(aTab) {
+					aSelf.updateInsertionPositionInfo(aTab);
+					delete aTab.__treestyletab__restoreState;
+				}, aSelf);
 
 			if (aSelf.tabViewHiding) {
 				// We should clear it first, because updateTreeByTabVisibility() never change visibility of tabs.
@@ -3217,7 +3225,10 @@ TreeStyleTabBrowser.prototype = {
 	{
 		this.restoreTree();
 
-		this.handleRestoredTab(aEvent.originalTarget);
+		var tab = aEvent.originalTarget;
+
+		tab.linkedBrowser.__treestyletab__toBeRestored = false;
+		this.handleRestoredTab(tab);
 
 		/**
 		 * Updating of the counter which is used to know how many tabs were
@@ -3244,7 +3255,7 @@ TreeStyleTabBrowser.prototype = {
 			});
 		}, 0);
 
-		if (!aEvent.originalTarget.selected &&
+		if (!tab.selected &&
 			this.mTabBrowser.currentURI.spec == 'about:sessionrestore') {
 			let frame = this.mTabBrowser.contentWindow;
 			frame = frame.wrappedJSObject || frame;
@@ -3255,7 +3266,7 @@ TreeStyleTabBrowser.prototype = {
 				this.window.setTimeout(function(aSelf, aTab, aTitle, aParent) {
 					if (aTab.label== aTitle)
 						aSelf.attachTabTo(aTab, aParent);
-				}, 0, this, aEvent.originalTarget, item.label, this.mTabBrowser.selectedTab);
+				}, 0, this, tab, item.label, this.mTabBrowser.selectedTab);
 			}
 		}
 	},
@@ -3268,13 +3279,15 @@ TreeStyleTabBrowser.prototype = {
 	RESTORE_STATE_STRUCTURE_RESTORED  : 2,
 	handleRestoredTab : function TSTBrowser_handleRestoredTab(aTab) 
 	{
+		if (aTab.__treestyletab__restoreState == this.RESTORE_STATE_READY_TO_RESTORE) {
+			// this is a hidden tab in the background group, and
+			// have to be restored by restoreOneTab() on "TabShown" event.
+			this.deleteTabValue(aTab, this.kCLOSED_SET_ID);
+			return;
+		}
+
 		var [id, mayBeDuplicated] = this._restoreTabId(aTab);
-
 		var structureRestored = aTab.__treestyletab__restoreState == this.RESTORE_STATE_STRUCTURE_RESTORED;
-		delete aTab.__treestyletab__restoreState;
-
-		aTab.linkedBrowser.__treestyletab__toBeRestored = false;
-
 		var children = this.getTabValue(aTab, this.kCHILDREN);
 		if (
 			!structureRestored &&
@@ -3300,39 +3313,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		if (structureRestored) {
-			/**
-			 * By some reasons (ex. persistTabAttribute()), actual state of
-			 * the tab (attributes) can be lost on SSTabRestoring.
-			 * For failsafe, we must override actual attributes by stored
-			 * values.
-			 */
-			[
-				this.kINSERT_BEFORE,
-				this.kINSERT_AFTER
-			].forEach(function(aKey) {
-				var tab = this.getTabValue(aTab, aKey);
-				if (this.getTabById(tab))
-					this.setTabValue(aTab, aKey, tab);
-			}, this);
-
-			let parentId = this.getTabValue(aTab, this.kPARENT);
-			let parentTab = this.getTabById(parentId);
-			if (parentTab && parentTab._tPos < aTab._tPos)
-				this.setTabValue(aTab, this.kPARENT, parentId);
-			else
-				this.deleteTabValue(aTab, this.kPARENT);
-
-			let ancestors = [aTab].concat(this.getAncestorTabs(aTab));
-			let children = this.getTabValue(aTab, this.kCHILDREN);
-			children = children.split('|').filter(function(aChild) {
-				let tab = this.getTabById(aChild);
-				return tab && ancestors.indexOf(tab) < 0;
-			}, this);
-			this.setTabValue(aTab, this.kCHILDREN, children.join('|'));
-
-			let subtreeCollapsed = this.getTabValue(aTab, this.kSUBTREE_COLLAPSED);
-			if (subtreeCollapsed != aTab.getAttribute(this.kSUBTREE_COLLAPSED))
-				this.collapseExpandSubtree(aTab, subtreeCollapsed == 'true', true);
+			this._fixMissingAttributesFromSessionData(aTab);
 		}
 		else {
 			if (closeSetId)
@@ -3356,6 +3337,8 @@ TreeStyleTabBrowser.prototype = {
 
 		if (mayBeDuplicated)
 			this.clearRedirectionTable();
+
+		delete aTab.__treestyletab__restoreState;
 	},
 	
 	_restoreTabId : function TSTBrowser_restoreTabId(aTab) 
@@ -3401,6 +3384,43 @@ TreeStyleTabBrowser.prototype = {
 		}
 		this.deleteTabValue(aTab, this.kCLOSED_SET_ID);
 		return closeSetId;
+	},
+ 
+	_fixMissingAttributesFromSessionData : function TSTBrowser_fixMissingAttributesFromSessionData(aTab)
+	{
+		/**
+		 * By some reasons (ex. persistTabAttribute()), actual state of
+		 * the tab (attributes) can be lost on SSTabRestoring.
+		 * For failsafe, we must override actual attributes by stored
+		 * values.
+		 */
+		[
+			this.kINSERT_BEFORE,
+			this.kINSERT_AFTER
+		].forEach(function(aKey) {
+			var tab = this.getTabValue(aTab, aKey);
+			if (this.getTabById(tab))
+				this.setTabValue(aTab, aKey, tab);
+		}, this);
+
+		let parentId = this.getTabValue(aTab, this.kPARENT);
+		let parentTab = this.getTabById(parentId);
+		if (parentTab && parentTab._tPos < aTab._tPos)
+			this.setTabValue(aTab, this.kPARENT, parentId);
+		else
+			this.deleteTabValue(aTab, this.kPARENT);
+
+		let ancestors = [aTab].concat(this.getAncestorTabs(aTab));
+		let children = this.getTabValue(aTab, this.kCHILDREN);
+		children = children.split('|').filter(function(aChild) {
+			let tab = this.getTabById(aChild);
+			return tab && ancestors.indexOf(tab) < 0;
+		}, this);
+		this.setTabValue(aTab, this.kCHILDREN, children.join('|'));
+
+		let subtreeCollapsed = this.getTabValue(aTab, this.kSUBTREE_COLLAPSED);
+		if (subtreeCollapsed != aTab.getAttribute(this.kSUBTREE_COLLAPSED))
+			this.collapseExpandSubtree(aTab, subtreeCollapsed == 'true', true);
 	},
  
 	_restoreSubtreeCollapsedState : function TSTBrowser_restoreSubtreeCollapsedState(aTab, aCollapsed) 
