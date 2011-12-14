@@ -5713,7 +5713,7 @@ TreeStyleTabBrowser.prototype = {
   
 	restoreTree : function TSTBrowser_restoreTree() 
 	{
-		if (!this.needRestoreTree)
+		if (!this.needRestoreTree || this.useTMPSessionAPI)
 			return;
 
 		this.needRestoreTree = false;
