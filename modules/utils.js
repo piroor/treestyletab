@@ -1110,7 +1110,15 @@ var TreeStyleTabUtils = {
 		}, this);
 	},
  
-	useTMPSessionAPI : false, 
+	_useTMPSessionAPI : false, 
+	get useTMPSessionAPI()
+	{
+		return this._useTMPSessionAPI && this.getPref('extensions.tabmix.sessions.manager');
+	},
+	set useTMPSessionAPI(aValue)
+	{
+		return this._useTMPSessionAPI = !!aValue;
+	},
  
 	kTMP_SESSION_DATA_PREFIX : 'tmp-session-data-', 
   

@@ -3639,7 +3639,7 @@ TreeStyleTabBrowser.prototype = {
 		if (
 			aRestoredTab.__treestyletab__restoredByUndoCloseTab ||
 			!this.browser.__treestyletab__readyToUndoCloseTab ||
-			this.windowService.useTMPSessionAPI ||
+			this.useTMPSessionAPI ||
 			this._restoringClosedSet ||
 			!(behavior & this.kUNDO_CLOSE_SET || behavior & this.kUNDO_ASK)
 			)
