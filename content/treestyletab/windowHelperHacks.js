@@ -71,7 +71,7 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 										window.setTimeout(arguments.callee, 100);
 									return;
 								}
-								b.treeStyleTab.restoreStructure(tab);
+								b.treeStyleTab.handleRestoredTab(tab);
 							}, 0);
 						}).call(this, tab, id)
 					$1]]>
@@ -151,7 +151,7 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 					/(\}\))?$/,
 					<![CDATA[
 						if (gBrowser.treeStyleTab.useTMPSessionAPI)
-							gBrowser.treeStyleTab.restoreStructure(aTab);
+							gBrowser.treeStyleTab.handleRestoredTab(aTab);
 					$1]]>
 				)
 			);
@@ -160,7 +160,7 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 				'return newTab;',
 				<![CDATA[
 					if (this.treeStyleTab.useTMPSessionAPI)
-						this.treeStyleTab.restoreStructure(newTab);
+						this.treeStyleTab.handleRestoredTab(newTab);
 				$&]]>
 			);
 			eval('tablib.init = '+source.join('gBrowser.restoreTab = '));
