@@ -2180,43 +2180,38 @@ var TreeStyleTabUtils = {
  
 	getChildIndex : function TSTUtils_getChildIndex(aTab, aParent) /* PUBLIC API */ 
 	{
-		if (this.tabsHash) { // XPath-less implementation
-			let parent = this.getParentTab(aTab);
-			if (!aParent || !parent || aParent != parent) {
-				let ancestors = this.getAncestorTabs(aTab);
-				let index = ancestors.indexOf(aParent);
-				if (index < 1)
-					return -1;
-				aTab = ancestors[index-1];
+		var parent = this.getParentTab(aTab);
+		if (!aParent || !parent || aParent != parent) {
+			let tabs = [aTab].concat(this.getAncestorTabs(aTab));
+			parent = aTab;
+			for (let i = 0, maxi = tabs.length; i < maxi && parent != aParent; i++)
+			{
+				aTab = parent;
+				parent = i < maxi ? tabs[i+1] : null ;
 			}
-
-			if (aParent) {
-				let children = aParent.getAttribute(this.kCHILDREN);
-				let list = children.split('|');
-				let id = aTab.getAttribute(this.kID);
-				for (let i = 0, maxi = list.length; i < maxi; i++)
-				{
-					if (list[i] == id) return i;
-				}
+			if (parent != aParent)
 				return -1;
-			}
-			else {
-				let tabs = this.rootTabs;
-				for (let i = 0, maxi = tabs.length; i < maxi; i++)
-				{
-					if (tabs[i] == aTab) return i;
-				}
+			aParent = parent;
+		}
+
+		if (aParent) {
+			let children = aParent.getAttribute(this.kCHILDREN);
+			let list = children.split('|');
+			let id = aTab.getAttribute(this.kID);
+			for (let i = 0, maxi = list.length; i < maxi; i++)
+			{
+				if (list[i] == id) return i;
 			}
 			return -1;
 		}
-
-		var parent = aTab.getAttribute(this.kPARENT);
-		if (!parent) return -1;
-		return this.evaluateXPath(
-			'count(preceding-sibling::xul:tab[@'+this.kPARENT+' and @'+this.kPARENT+'="'+parent+'"])',
-			aTab,
-			Ci.nsIDOMXPathResult.NUMBER_TYPE
-		).numberValue;
+		else {
+			let tabs = this.rootTabs;
+			for (let i = 0, maxi = tabs.length; i < maxi; i++)
+			{
+				if (tabs[i] == aTab) return i;
+			}
+		}
+		return -1;
 	},
  
 	getXOffsetOfTab : function TSTUtils_getXOffsetOfTab(aTab) 
