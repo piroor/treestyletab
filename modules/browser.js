@@ -5718,6 +5718,9 @@ TreeStyleTabBrowser.prototype = {
 
 		this.needRestoreTree = false;
 
+		if (this.useTMPSessionAPI && this.getPref('extensions.tabmix.sessions.manager'))
+			return;
+
 		var level = this.getTreePref('restoreTree.level');
 		if (
 			level <= this.kRESTORE_TREE_LEVEL_NONE ||
