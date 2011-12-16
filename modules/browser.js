@@ -800,8 +800,8 @@ TreeStyleTabBrowser.prototype = {
 		this.panelDNDObserver;
 
 		var w = this.window;
-		w.addEventListener('mouseover', this, true);
-		w.addEventListener('dragover', this, true);
+		w.removeEventListener('mouseover', this, true);
+		w.removeEventListener('dragover', this, true);
 		this._DNDObserversInitialized = true;
 	},
   
@@ -2392,8 +2392,10 @@ TreeStyleTabBrowser.prototype = {
 				return this.onPopupHiding(aEvent);
 
 			case 'mouseover':
-				this._initTooltipManager();
-				this._initDNDObservers();
+				if (!this.tooltipManager)
+					this._initTooltipManager();
+				if (!this._DNDObserversInitialized)
+					this._initDNDObservers();
 				let (tab = aEvent.target) {
 					if (tab.__treestyletab__twistyHoverTimer)
 						this.window.clearTimeout(tab.__treestyletab__twistyHoverTimer);
@@ -2407,8 +2409,10 @@ TreeStyleTabBrowser.prototype = {
 				return;
 
 			case 'dragover':
-				this._initTooltipManager();
-				this._initDNDObservers();
+				if (!this.tooltipManager)
+					this._initTooltipManager();
+				if (!this._DNDObserversInitialized)
+					this._initDNDObservers();
 				return;
 
 			case 'overflow':
