@@ -1358,7 +1358,8 @@ AutoHideBrowser.prototype = {
 			(
 				!this.expanded ||
 				this.showHideReason & this.kKEEP_SHOWN_ON_MOUSEOVER
-			)
+			) &&
+			!this.lastMouseDownTarget
 			)
 			this.showHideOnMouseMove(aEvent);
 		return true;
