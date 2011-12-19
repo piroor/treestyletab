@@ -14,10 +14,9 @@
  * not rectangle, because rectangle "window"s have dropshadows on Linux.
  */
 :root[treestyletab-tabbar-position="left"]
-  #treestyletab-autohide-content-area-screen {
-	border-right: 1px solid ThreeDShadow;
-}
+  #treestyletab-autohide-content-area-screen,
 :root[treestyletab-tabbar-position="right"]
-  #treestyletab-autohide-content-area-screen {
+  #treestyletab-autohide-content-area-screen  {
+	border-right: 1px solid ThreeDShadow;
 	border-left: 1px solid ThreeDShadow;
 }
