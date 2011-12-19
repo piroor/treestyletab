@@ -333,6 +333,11 @@ TreeStyleTabBrowser.prototype = {
 					d.getAnonymousElementByAttribute(aTab, 'class', 'tab-close-button');
 		return close;
 	},
+ 
+	getTabTwisty : function TSTBrowser_getTabTwisty(aTab) 
+	{
+		return this.document.getAnonymousElementByAttribute(aTab, 'class', this.kTWISTY);
+	},
   
 	getTabFromTabbarEvent : function TSTBrowser_getTabFromTabbarEvent(aEvent) 
 	{

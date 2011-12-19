@@ -479,7 +479,8 @@ AutoHideBrowser.prototype = {
 		var closebox;
 		if (this.closeButtonsMode != this.CLOSE_BUTTONS_DISABLED &&
 			this.closeButtonsMode != this.CLOSE_BUTTONS_ON_TABBAR &&
-			(closebox = sv.getTabClosebox(tab).boxObject) &&
+			(closebox = sv.getTabClosebox(tab)) &&
+			(closebox = closebox.boxObject) &&
 			closebox.width && closebox.height) {
 			let padding = Math.min(
 					closebox[position] - tabbox[position],
@@ -487,6 +488,20 @@ AutoHideBrowser.prototype = {
 				);
 			if (closebox[position] - padding <= coordinate &&
 				closebox[position] + closebox[size] + padding >= coordinate)
+				return true;
+		}
+
+		var twisty;
+		if (sv.canCollapseSubtree(tab) &&
+			(twisty = sv.getTabTwisty(tab)) &&
+			(twisty = twisty.boxObject) &&
+			twisty.width && twisty.height) {
+			let padding = Math.min(
+					twisty[position] - tabbox[position],
+					(tabbox[position] + tabbox[size]) - (twisty[position] + twisty[size])
+				);
+			if (twisty[position] - padding <= coordinate &&
+				twisty[position] + twisty[size] + padding >= coordinate)
 				return true;
 		}
 
