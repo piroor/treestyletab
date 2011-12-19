@@ -599,6 +599,13 @@ TreeStyleTabBrowser.prototype = {
 		this.subTreeChildrenMovingCount = 0;
 		this._treeViewEnabled = true;
 
+		/**
+		 * On secondary (and later) window, SSWindowStateBusy event can be fired
+		 * before DOMContentLoad, on "domwindowopened".
+		 */
+		this.needRestoreTree = w.__treestyletab__WindowStateBusy || false;
+		delete w.__treestyletab__WindowStateBusy;
+
 		this._initTabbrowserExtraContents();
 
 		let position = this.position;
