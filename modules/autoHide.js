@@ -124,6 +124,12 @@ AutoHideBrowser.prototype = {
 	togglerSize : 0, 
 	sensitiveArea : 7,
 	contentAreaScreenEnabled : true,
+
+	closeButtonsMode : -1,
+	CLOSE_BUTTONS_ONLY_ON_CURRENT_TAB : 0,
+	CLOSE_BUTTONS_ON_ALL_TABS         : 1,
+	CLOSE_BUTTONS_DISABLED            : 2,
+	CLOSE_BUTTONS_ON_TABBAR           : 3,
  
 	get XOffset() 
 	{
@@ -399,11 +405,13 @@ AutoHideBrowser.prototype = {
 		var box = this.getContentsAreaBox();
 
 		var sensitiveArea = this.sensitiveArea;
-		/* For resizing of shrunken tab bar and clicking closeboxes,
-		   we have to shrink sensitive area. */
 		if (this.shrunken) {
-			if (this.widthFromMode > 24)
+			if (this.widthFromMode > 24 &&
+				this.isNearTabCloseBox(aEvent)) {
+				/* For resizing of shrunken tab bar and clicking closeboxes,
+				   we have to shrink sensitive area. */
 				sensitiveArea = -24;
+			}
 			else if (this.resizer)
 				sensitiveArea = -this.resizer.boxObject.width;
 			else
@@ -456,6 +464,36 @@ AutoHideBrowser.prototype = {
 	MOUSE_POSITION_INSIDE  : (1 << 1),
 	MOUSE_POSITION_NEAR    : (1 << 2),
 	MOUSE_POSITION_SENSITIVE : (1 << 1) | (1 << 2),
+	isNearTabCloseBox : function AHB_isNearTabCloseBox(aEvent)
+	{
+		return true;
+
+		if (this.closeButtonsMode == this.CLOSE_BUTTONS_DISABLED ||
+			this.closeButtonsMode == this.CLOSE_BUTTONS_ON_TABBAR)
+			return false;
+
+		var sv = this.treeStyleTab;
+		var tab = sv.getTabFromCoordinate(aEvent[sv.screenPositionProp]);
+		if (!tab)
+			return false;
+
+		var closebox = sv.getTabClosebox(tab).boxObject;
+		if (!closebox.width && !closebox.height)
+			return false;
+
+		var position = sv.invertedScreenPositionProp;
+		var size = sv.invertedSizeProp;
+		var coordinate = aEvent[sv.invertedScreenPositionProp];
+		var tabbox = tab.boxObject;
+		var padding = Math.min(
+				closebox[position] - tabbox[position],
+				(tabbox[position] + tabbox[size]) - (closebox[position] + closebox[size])
+			);
+		return (
+			closebox[position] - padding <= coordinate &&
+			closebox[position] + closebox[size] + padding >= coordinate
+		);
+	},
  
 	cancelShowHideOnMouseMove : function AHB_cancelShowHideOnMouseMove() 
 	{
@@ -1049,7 +1087,8 @@ AutoHideBrowser.prototype = {
 	
 	domains : [ 
 		'extensions.treestyletab.',
-		'browser.fullscreen.autohide'
+		'browser.fullscreen.autohide',
+		'browser.tabs.closeButtons'
 	],
  
 	onPrefChange : function AHB_onPrefChange(aPrefName) 
@@ -1111,6 +1150,9 @@ AutoHideBrowser.prototype = {
 				if (this.mode != this.kMODE_DISABLED)
 					this.start();
 				return;
+
+			case 'browser.tabs.closeButtons':
+				return this.closeButtonsMode = value;
 
 			default:
 				return;
@@ -1470,6 +1512,7 @@ AutoHideBrowser.prototype = {
 		b.setAttribute(this.kMODE+'-normal', sv.getTreePref('tabbar.autoHide.mode'));
 		b.setAttribute(this.kMODE+'-fullscreen', sv.getTreePref('tabbar.autoHide.mode.fullscreen'));
 		sv.addPrefListener(this);
+		this.onPrefChange('browser.tabs.closeButtons');
 		this.onPrefChange('extensions.treestyletab.tabbar.autoHide.area');
 		this.onPrefChange('extensions.treestyletab.tabbar.togglerSize');
 		this.onPrefChange('extensions.treestyletab.tabbar.autoHide.contentAreaScreen.enabled');

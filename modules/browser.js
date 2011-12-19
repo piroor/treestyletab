@@ -343,13 +343,15 @@ TreeStyleTabBrowser.prototype = {
 			this.getSplitterFromEvent(aEvent)
 			)
 			return null;
-
+		return this.getTabFromCoordinate(aEvent[this.screenPositionProp]);
+	},
+	getTabFromCoordinate : function TSTBrowser_getTabFromCoordinate(aCoordinate) 
+	{
 		var tab = null;
-		var clickedPoint = aEvent[this.screenPositionProp];
 		this.getTabsArray(this.mTabBrowser).some(function(aTab) {
 			var box = aTab.boxObject;
-			if (box[this.screenPositionProp] > clickedPoint ||
-				box[this.screenPositionProp] + box[this.sizeProp] < clickedPoint) {
+			if (box[this.screenPositionProp] > aCoordinate ||
+				box[this.screenPositionProp] + box[this.sizeProp] < aCoordinate) {
 				return false;
 			}
 			tab = aTab;
