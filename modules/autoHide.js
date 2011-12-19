@@ -406,11 +406,12 @@ AutoHideBrowser.prototype = {
 
 		var sensitiveArea = this.sensitiveArea;
 		if (this.shrunken) {
+			let clickable;
 			if (this.widthFromMode > 24 &&
-				this.isNearClickable(aEvent)) {
+				(clickable = this.getNearestClickableBox(aEvent))) {
 				/* For resizing of shrunken tab bar and clicking closeboxes,
 				   we have to shrink sensitive area. */
-				sensitiveArea = -24;
+				sensitiveArea = -(clickable.width + clickable.padding);
 			}
 			else if (this.resizer)
 				sensitiveArea = -this.resizer.boxObject.width;
@@ -464,12 +465,12 @@ AutoHideBrowser.prototype = {
 	MOUSE_POSITION_INSIDE  : (1 << 1),
 	MOUSE_POSITION_NEAR    : (1 << 2),
 	MOUSE_POSITION_SENSITIVE : (1 << 1) | (1 << 2),
-	isNearClickable : function AHB_isNearClickable(aEvent)
+	getNearestClickableBox : function AHB_getNearestClickableBox(aEvent)
 	{
 		var sv = this.treeStyleTab;
 		var tab = sv.getTabFromCoordinate(aEvent[sv.screenPositionProp]);
 		if (!tab)
-			return false;
+			return null;
 
 		var position = sv.invertedScreenPositionProp;
 		var size = sv.invertedSizeProp;
@@ -488,7 +489,10 @@ AutoHideBrowser.prototype = {
 				);
 			if (closebox[position] - padding <= coordinate &&
 				closebox[position] + closebox[size] + padding >= coordinate)
-				return true;
+				return {
+					padding   : padding,
+					__proto__ : closebox
+				};
 		}
 
 		var twisty;
@@ -502,10 +506,13 @@ AutoHideBrowser.prototype = {
 				);
 			if (twisty[position] - padding <= coordinate &&
 				twisty[position] + twisty[size] + padding >= coordinate)
-				return true;
+				return {
+					padding   : padding,
+					__proto__ : twisty
+				};
 		}
 
-		return false;
+		return null;
 	},
  
 	cancelShowHideOnMouseMove : function AHB_cancelShowHideOnMouseMove() 
