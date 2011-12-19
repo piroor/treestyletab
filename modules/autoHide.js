@@ -407,7 +407,7 @@ AutoHideBrowser.prototype = {
 		var sensitiveArea = this.sensitiveArea;
 		if (this.shrunken) {
 			if (this.widthFromMode > 24 &&
-				this.isNearTabCloseBox(aEvent)) {
+				this.isNearClickable(aEvent)) {
 				/* For resizing of shrunken tab bar and clicking closeboxes,
 				   we have to shrink sensitive area. */
 				sensitiveArea = -24;
@@ -464,35 +464,33 @@ AutoHideBrowser.prototype = {
 	MOUSE_POSITION_INSIDE  : (1 << 1),
 	MOUSE_POSITION_NEAR    : (1 << 2),
 	MOUSE_POSITION_SENSITIVE : (1 << 1) | (1 << 2),
-	isNearTabCloseBox : function AHB_isNearTabCloseBox(aEvent)
+	isNearClickable : function AHB_isNearClickable(aEvent)
 	{
-		return true;
-
-		if (this.closeButtonsMode == this.CLOSE_BUTTONS_DISABLED ||
-			this.closeButtonsMode == this.CLOSE_BUTTONS_ON_TABBAR)
-			return false;
-
 		var sv = this.treeStyleTab;
 		var tab = sv.getTabFromCoordinate(aEvent[sv.screenPositionProp]);
 		if (!tab)
-			return false;
-
-		var closebox = sv.getTabClosebox(tab).boxObject;
-		if (!closebox.width && !closebox.height)
 			return false;
 
 		var position = sv.invertedScreenPositionProp;
 		var size = sv.invertedSizeProp;
 		var coordinate = aEvent[sv.invertedScreenPositionProp];
 		var tabbox = tab.boxObject;
-		var padding = Math.min(
-				closebox[position] - tabbox[position],
-				(tabbox[position] + tabbox[size]) - (closebox[position] + closebox[size])
-			);
-		return (
-			closebox[position] - padding <= coordinate &&
-			closebox[position] + closebox[size] + padding >= coordinate
-		);
+
+		var closebox;
+		if (this.closeButtonsMode != this.CLOSE_BUTTONS_DISABLED &&
+			this.closeButtonsMode != this.CLOSE_BUTTONS_ON_TABBAR &&
+			(closebox = sv.getTabClosebox(tab).boxObject) &&
+			closebox.width && closebox.height) {
+			let padding = Math.min(
+					closebox[position] - tabbox[position],
+					(tabbox[position] + tabbox[size]) - (closebox[position] + closebox[size])
+				);
+			if (closebox[position] - padding <= coordinate &&
+				closebox[position] + closebox[size] + padding >= coordinate)
+				return true;
+		}
+
+		return false;
 	},
  
 	cancelShowHideOnMouseMove : function AHB_cancelShowHideOnMouseMove() 
