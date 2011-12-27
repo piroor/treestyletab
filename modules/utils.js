@@ -102,6 +102,7 @@ var TreeStyleTabUtils = {
 	kCHILDREN_RESTORING : 'treestyletab-children-restoring',
 
 	kSUBTREE_COLLAPSED  : 'treestyletab-subtree-collapsed',
+	kSUBTREE_EXPANDED_MANUALLY : 'treestyletab-subtree-expanded-manually',
 	kCOLLAPSED          : 'treestyletab-collapsed',
 	kCOLLAPSED_DONE     : 'treestyletab-collapsed-done',
 	kCOLLAPSING_PHASE   : 'treestyletab-collapsing-phase',
