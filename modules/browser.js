@@ -647,7 +647,7 @@ TreeStyleTabBrowser.prototype = {
 		w.addEventListener('customizationchange', this, false);
 		w.addEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
 		w.addEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED,  this, false);
-		w.addEventListener('tabviewhidden', this, true);
+		w.addEventListener('tabviewframeinitialized', this, false);
 		w.addEventListener(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, this, false);
 		w.addEventListener('SSWindowStateBusy', this, false);
 
@@ -1855,7 +1855,7 @@ TreeStyleTabBrowser.prototype = {
 		w.removeEventListener('customizationchange', this, false);
 		w.removeEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
 		w.removeEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED,  this, false);
-		w.removeEventListener('tabviewhidden', this, true);
+		w.removeEventListener('tabviewframeinitialized', this, false);
 		w.removeEventListener(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, this, false);
 		w.removeEventListener('SSWindowStateBusy', this, false);
 
@@ -2452,17 +2452,8 @@ TreeStyleTabBrowser.prototype = {
 			case 'customizationchange':
 				return this.updateCustomizedTabsToolbar();
 
-			case 'tabviewhidden':
-				// step 1, now we are exitting from Panorama mode.
-				this.tabViewHiding = true;
-				this.window.setTimeout(function(aSelf) {
-					// step 2, this is better time to handle TabShown and TabHidden events.
-					this.window.setTimeout(function(aSelf) {
-						// step 3, we are now in the normal mode.
-						aSelf.tabViewHiding = false;
-					}, 0, aSelf);
-				}, 0, this);
-				return;
+			case 'tabviewframeinitialized':
+				return this.lastTabViewGroup = this.getTabViewGroupId();
 
 
 			case this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED:
@@ -2487,7 +2478,6 @@ TreeStyleTabBrowser.prototype = {
 	},
 	lastScrollX : -1,
 	lastScrollY : -1,
-	tabViewHiding : false,
 	
 	restoreLastScrollPosition : function TSTBrowser_restoreLastScrollPosition() 
 	{
@@ -3068,8 +3058,8 @@ TreeStyleTabBrowser.prototype = {
 		/**
 		 * Note: On this timing, we cannot know that which is the reason of this
 		 * event, by exitting from Panorama or the "Move to Group" command in the
-		 * context menu on tabs. So, we have to do operations with a delay to use
-		 * "tabViewHiding" flag which is initialized in the next event loop.
+		 * context menu on tabs. So, we have to do operations with a delay to compare
+		 * last and current group which is updated in the next event loop.
 		 */
 
 		var tab = aEvent.originalTarget;
@@ -3108,7 +3098,8 @@ TreeStyleTabBrowser.prototype = {
 					delete aTab.__treestyletab__restoreState;
 				}, aSelf);
 
-			if (aSelf.tabViewHiding) {
+			var currentGroupId = aSelf.getTabViewGroupId();
+			if (aSelf.lastTabViewGroup && currentGroupId != aSelf.lastTabViewGroup) {
 				// We should clear it first, because updateTreeByTabVisibility() never change visibility of tabs.
 				aSelf.tabVisibilityChangedTabs = [];
 				aSelf.updateTreeByTabVisibility(tabs.map(function(aChanged) { return aChanged.tab; }));
@@ -3135,9 +3126,11 @@ TreeStyleTabBrowser.prototype = {
 				// now we can clear it!
 				aSelf.tabVisibilityChangedTabs = [];
 			}
+			aSelf.lastTabViewGroup = currentGroupId;
 		}, 0, this);
 	},
 	tabVisibilityChangedTimer : null,
+	lastTabViewGroup : null,
 	
 	updateTreeByTabVisibility : function TSTBrowser_updateTreeByTabVisibility(aChangedTabs) 
 	{
@@ -3215,11 +3208,8 @@ TreeStyleTabBrowser.prototype = {
 	{
 		if (this.tabViewTreeIsMoving) return;
 
-		var item = aParent._tabViewTabItem;
-		if (!item) return;
-
-		var group = item.parent;
-		if (!group) return;
+		var id = this.getTabViewGroupId(aParent);
+		if (!id) return;
 
 		this.tabViewTreeIsMoving = true;
 		this.internallyTabMovingCount++;
@@ -3231,13 +3221,25 @@ TreeStyleTabBrowser.prototype = {
 		b.moveTabTo(aParent, lastCount);
 		var descendantTabs = this.getDescendantTabs(aParent);
 		descendantTabs.forEach(function(aTab) {
-			w.TabView.moveTabTo(aTab, group.id);
+			w.TabView.moveTabTo(aTab, id);
 			b.moveTabTo(aTab, lastCount);
 		});
 		this.internallyTabMovingCount--;
 		this.tabViewTreeIsMoving = false;
 	},
 	tabViewTreeIsMoving : false,
+ 
+	getTabViewGroupId : function TSTBrowser_getTabViewGroupId(aTab) 
+	{
+		var tab = aTab || this.mTabBrowser.selectedTab;
+		var item = tab._tabViewTabItem;
+		if (!item) return null;
+
+		var group = item.parent;
+		if (!group) return null;
+
+		return group.id;
+	},
   
 	onTabRestoring : function TSTBrowser_onTabRestoring(aEvent) 
 	{
