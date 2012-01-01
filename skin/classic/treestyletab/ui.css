@@ -369,3 +369,14 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
 	height: 24px;
 	max-height: 24px;
 }
+
+/* disable highlighting of pinned tabs whici is not faviconized */
+
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned][titlechanged]:not([selected="true"]):not(.treestyletab-faviconized) {
+	background-image: none;
+}
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned][titlechanged]:not([selected="true"]):not(.treestyletab-faviconized):hover {
+	background-image: none;
+}

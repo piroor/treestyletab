@@ -7,7 +7,9 @@
   .tabbrowser-tab:not([pinned]):not([selected="true"]),
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   :-moz-any(.tabbrowser-tab[pinned]:not([titlechanged]),
-            .tabbrowser-tab[pinned]:not([titlechanged]):not([selected="true"])),
+            .tabbrowser-tab[pinned]:not([titlechanged]):not([selected="true"]),
+            .tabbrowser-tab[pinned][titlechanged]:not(.treestyletab-faviconized),
+            .tabbrowser-tab[pinned][titlechanged]:not(.treestyletab-faviconized):not([selected="true"])),
 :root[tabFx2Compatible-flags~="mac"]
   .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   :-moz-any(.tabbrowser-tab[pinned],
