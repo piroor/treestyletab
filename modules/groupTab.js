@@ -167,7 +167,7 @@ GroupTab.prototype = {
 		this.document.documentElement.setAttribute('title', value);
 
 		if (value != old)
-			this.location.replace(location.href.split('?')[0]+'?'+encodeURIComponent(value));
+			this.location.replace(this.location.href.split('?')[0]+'?'+encodeURIComponent(value));
 
 		this.editor.blur();
 		this.deck.selectedIndex = 0;
