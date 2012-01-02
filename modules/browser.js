@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is SHIMODA Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011
+ * Portions created by the Initial Developer are Copyright (C) 2011-2012
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): SHIMODA Hiroshi <piro.outsider.reflex@gmail.com>
@@ -5764,12 +5764,16 @@ TreeStyleTabBrowser.prototype = {
 		var onlyVisible = level <= this.kRESTORE_TREE_ONLY_VISIBLE;
 		var tabs = this.getAllTabsArray(this.mTabBrowser);
 		tabs = tabs.filter(function(aTab) {
-			if (
-				!aTab.linkedBrowser.__SS_restoreState ||
-				!aTab.linkedBrowser.__treestyletab__toBeRestored
-				)
-				return false;
+			return (
+				aTab.linkedBrowser.__SS_restoreState &&
+				aTab.linkedBrowser.__treestyletab__toBeRestored &&
+				(!onlyVisible || !aTab.hidden)
+			);
+		});
+		if (tabs.length <= 1)
+			return;
 
+		tabs.forEach(function(aTab) {
 			var currentId = aTab.getAttribute(this.kID);
 			if (this.tabsHash[currentId] == aTab)
 				delete this.tabsHash[currentId];
@@ -5784,8 +5788,6 @@ TreeStyleTabBrowser.prototype = {
 
 			aTab.__treestyletab__restoreState = this.RESTORE_STATE_READY_TO_RESTORE;
 			aTab.__treestyletab__duplicated = duplicated;
-
-			return !onlyVisible || !aTab.hidden;
 		}, this);
 
 		this.updateAllTabsIndent(true);
