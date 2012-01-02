@@ -1495,7 +1495,8 @@ AutoHideBrowser.prototype = {
 			}
 		}
 		else {
-			if (this.enabled)
+			if (this.enabled &&
+				this.showHideReason == this.kSHOWN_BY_SHORTCUT)
 				this.hide();
 		}
 	},
