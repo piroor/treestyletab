@@ -2591,7 +2591,7 @@ TreeStyleTabBrowser.prototype = {
 
 		if (this.animationEnabled) {
 			this.updateTabCollapsed(tab, true, true);
-			this.updateTabCollapsed(tab, false, this.restoringTree);
+			this.updateTabCollapsed(tab, false, this.windowService.restoringTree);
 		}
 
 		this.updateInsertionPositionInfo(tab);
