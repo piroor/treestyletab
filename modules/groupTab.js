@@ -132,7 +132,7 @@ GroupTab.prototype = {
 	},
 
 
-	trim : function GT_ttim(aString)
+	trim : function GT_trim(aString)
 	{
 		return aString.replace(/^\s+|\s+$/g, '');
 	},
