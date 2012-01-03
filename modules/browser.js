@@ -3326,11 +3326,11 @@ TreeStyleTabBrowser.prototype = {
 		var closeSetId = !structureRestored && this._getCloseSetId(aTab, mayBeDuplicated);
 
 		var currentId = aTab.getAttribute(this.kID);
-		if (id != currentId) {
+		if (id != currentId && currentId)
 			delete this.tabsHash[currentId];
-			this.setTabValue(aTab, this.kID, id);
-			this.tabsHash[id] = aTab;
-		}
+
+		this.setTabValue(aTab, this.kID, id);
+		this.tabsHash[id] = aTab;
 
 		if (structureRestored) {
 			this._fixMissingAttributesFromSessionData(aTab);
