@@ -3336,8 +3336,6 @@ TreeStyleTabBrowser.prototype = {
 			this._fixMissingAttributesFromSessionData(aTab);
 		}
 		else {
-			if (closeSetId)
-				this.restoreClosedSet(closeSetId, aTab);
 
 			let isSubtreeCollapsed = this._restoreSubtreeCollapsedState(aTab);
 
@@ -3350,6 +3348,9 @@ TreeStyleTabBrowser.prototype = {
 			let childTabs = this._restoreChildTabsRelation(aTab, children, mayBeDuplicated, options);
 
 			this._restoreTabPositionAndIndent(aTab, childTabs, mayBeDuplicated);
+
+			if (closeSetId)
+				this.restoreClosedSet(closeSetId, aTab);
 
 			if (isSubtreeCollapsed)
 				this.collapseExpandSubtree(aTab, isSubtreeCollapsed);
