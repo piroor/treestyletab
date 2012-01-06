@@ -842,7 +842,16 @@ var TreeStyleTabUtils = {
 	isEventFiredOnClickable : function TSTUtils_isEventFiredOnClickable(aEvent) 
 	{
 		return this.evaluateXPath(
-				'ancestor-or-self::*[contains(" button toolbarbutton scrollbar popup menupopup panel tooltip splitter textbox ", concat(" ", local-name(), " "))]',
+				'ancestor-or-self::*[contains(" button toolbarbutton scrollbar nativescrollbar popup menupopup panel tooltip splitter textbox ", concat(" ", local-name(), " "))]',
+				aEvent.originalTarget,
+				Ci.nsIDOMXPathResult.BOOLEAN_TYPE
+			).booleanValue;
+	},
+ 
+	isEventFiredOnScrollbar : function TSTUtils_isEventFiredOnScrollbar(aEvent) 
+	{
+		return this.evaluateXPath(
+				'ancestor-or-self::*[local-name()="scrollbar" or local-name()="nativescrollbar"]',
 				aEvent.originalTarget,
 				Ci.nsIDOMXPathResult.BOOLEAN_TYPE
 			).booleanValue;

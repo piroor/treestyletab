@@ -1354,6 +1354,7 @@ TreeStyleTabBrowser.prototype = {
 		strip.addEventListener('MozMouseHittest', this, true); // to block default behaviors of the tab bar
 		strip.addEventListener('mousedown',       this, true);
 		strip.addEventListener('click',           this, true);
+		strip.addEventListener('DOMMouseScroll',  this, true);
 
 		this.scrollBox.addEventListener('overflow', this, true);
 		this.scrollBox.addEventListener('underflow', this, true);
@@ -1920,6 +1921,7 @@ TreeStyleTabBrowser.prototype = {
 		strip.removeEventListener('MozMouseHittest', this, true);
 		strip.removeEventListener('mousedown',       this, true);
 		strip.removeEventListener('click',           this, true);
+		strip.removeEventListener('DOMMouseScroll',  this, true);
 
 		this.scrollBox.removeEventListener('overflow', this, true);
 		this.scrollBox.removeEventListener('underflow', this, true);
@@ -2395,6 +2397,9 @@ TreeStyleTabBrowser.prototype = {
 
 			case 'mousedown':
 				return this.onMouseDown(aEvent);
+
+			case 'DOMMouseScroll':
+				return this.onDOMMouseScroll(aEvent);
 
 			case 'scroll':
 				return this.onScroll(aEvent);
@@ -4090,6 +4095,9 @@ TreeStyleTabBrowser.prototype = {
  
 	onMouseDown : function TSTBrowser_onMouseDown(aEvent) 
 	{
+		if (this.smoothScrollTask && this.isEventFiredOnScrollbar(aEvent))
+			this.animationManager.removeTask(this.smoothScrollTask);
+
 		if (
 			aEvent.button == 0 &&
 			this.isEventFiredOnTwisty(aEvent)
@@ -4102,6 +4110,12 @@ TreeStyleTabBrowser.prototype = {
 		else {
 			this.onMozMouseHittest(aEvent);
 		}
+	},
+ 
+	onDOMMouseScroll : function TSTBrowser_onDOMMouseScroll(aEvent) 
+	{
+		if (this.smoothScrollTask)
+			this.animationManager.removeTask(this.smoothScrollTask);
 	},
  
 	onScroll : function TSTBrowser_onScroll(aEvent) 
