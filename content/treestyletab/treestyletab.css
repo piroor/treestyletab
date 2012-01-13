@@ -203,7 +203,7 @@ tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-sc
 
 /* hide horizontal tab bar UI for vertical tab bar */
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > .scrollbutton-up,
-.tabbrowser-tabs[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > .scrollbutton-down-stack,
+.tabbrowser-tabs[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > .scrollbutton-down,
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-closebutton-box,
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tab-drop-indicator-bar {
 	visibility: collapse !important;

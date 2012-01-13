@@ -344,6 +344,10 @@ tabbrowser[treestyletab-mode="vertical"]
 	display: none !important;
 }
 
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabs-newtab-button:not(:hover),
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabs-newtab-button:hover,
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
   > toolbarbutton:not(:hover),
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]

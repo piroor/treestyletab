@@ -204,13 +204,6 @@ tabbrowser[treestyletab-tabbar-position="right"]
 	padding: 3px 0 4px !important;
 	text-align: center !important;
 }
-/* this is not required on Firefox 4 */
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab
-  > .tab-close-button {
-	margin-top: 0 !important;
-	margin-bottom: 0 !important;
-}
 
 
 /* twisty */
@@ -252,6 +245,10 @@ tabbrowser[treestyletab-tabbar-position="right"]
 
 /* buttons in the tab bar */
 
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabs-newtab-button,
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabs-newtab-button:hover,
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
   > toolbarbutton,
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
@@ -289,6 +286,8 @@ tabbrowser[treestyletab-tabbar-position="right"]
 	-moz-border-radius: 0 6px 6px 0;
 }
 
+.tabbrowser-tabs[treestyletab-tabbar-position="left"]
+  .tabs-newtab-button,
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-position="left"]
   > toolbarbutton,
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-position="left"]
@@ -297,6 +296,8 @@ tabbrowser[treestyletab-tabbar-position="right"]
 	border-right: 1px solid #666666 !important;
 }
 
+.tabbrowser-tabs[treestyletab-tabbar-position="right"]
+  .tabs-newtab-button,
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-position="right"]
   > toolbarbutton,
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-position="right"]

@@ -3,6 +3,7 @@
 
 /* buttons in the tab bar */
 
+.tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-newtab-button,
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > toolbarbutton,
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > toolbarpaletteitem > toolbarbutton {
 	-moz-appearance: none !important;
@@ -15,6 +16,7 @@
 	border-top: 1px solid ThreeDShadow !important;
 	background: ThreeDFace !important;
 }
+.tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-newtab-button:hover,
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > toolbarbutton:hover {
 	background: ThreeDHighlight !important;
 }
@@ -49,6 +51,7 @@
 }
 
 
+.tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-newtab-button,
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > toolbarbutton,
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > toolbarpaletteitem > toolbarbutton {
 	background-image: none !important;
