@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is SHIMODA Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2011
+ * Portions created by the Initial Developer are Copyright (C) 2010-2012
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): SHIMODA Hiroshi <piro.outsider.reflex@gmail.com>
@@ -212,21 +212,15 @@ AutoHideBrowser.prototype = {
 		b.addEventListener('mouseup', this, true);
 		b.addEventListener('dragover', this, true);
 		b.addEventListener('dragleave', this, true);
-		if (sv.isFloating) {
-			sv.tabStrip.addEventListener('mousedown', this, true);
-			sv.tabStrip.addEventListener('mouseup', this, true);
-		}
-		w.addEventListener('resize', this, true);
+		sv.tabStrip.addEventListener('mousedown', this, true);
+		sv.tabStrip.addEventListener('mouseup', this, true);
 		w.addEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
 		w.addEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_EXITED, this, false);
-		b.addEventListener('load', this, true);
-		b.mPanelContainer.addEventListener('scroll', this, true);
 		if (this.shouldListenMouseMove)
 			this.startListenMouseMove();
 		if (b == w.gBrowser && sv.shouldListenKeyEventsForAutoHide)
 			w.TreeStyleTabService.startListenKeyEventsFor(sv.LISTEN_FOR_AUTOHIDE);
 
-		this.clearBG(); /* legacy feature for Firefox 3.6 or olders */
 		this.updateTransparency();
 
 		this.showHideInternal();
@@ -251,20 +245,14 @@ AutoHideBrowser.prototype = {
 		b.removeEventListener('mouseup', this, true);
 		b.removeEventListener('dragover', this, true);
 		b.removeEventListener('dragleave', this, true);
-		if (sv.isFloating) {
-			sv.tabStrip.removeEventListener('mousedown', this, true);
-			sv.tabStrip.removeEventListener('mouseup', this, true);
-		}
-		w.removeEventListener('resize', this, true);
+		sv.tabStrip.removeEventListener('mousedown', this, true);
+		sv.tabStrip.removeEventListener('mouseup', this, true);
 		w.removeEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
 		w.removeEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_EXITED, this, false);
-		b.removeEventListener('load', this, true);
-		b.mPanelContainer.removeEventListener('scroll', this, true);
 		this.endListenMouseMove();
 		if (b == w.gBrowser)
 			w.TreeStyleTabService.endListenKeyEventsFor(sv.LISTEN_FOR_AUTOHIDE);
 
-		this.clearBG(); /* legacy feature for Firefox 3.6 or olders */
 		this.updateTransparency();
 
 		if (!sv.isFloating)
@@ -450,14 +438,12 @@ AutoHideBrowser.prototype = {
 		var sv  = this.treeStyleTab;
 		var b   = this.browser;
 		var box = b.mCurrentBrowser.boxObject;
-		if (sv.isFloating && this.expanded) { // Firefox 4.0-
-			box = {
-				screenX : box.screenX + (sv.position == 'left' ? this.XOffset : 0 ),
-				screenY : box.screenY,
-				width   : box.width - this.XOffset,
-				height  : box.height
-			};
-		}
+		box = {
+			screenX : box.screenX + (sv.position == 'left' ? this.XOffset : 0 ),
+			screenY : box.screenY,
+			width   : box.width - this.XOffset,
+			height  : box.height
+		};
 		return box;
 	},
 	MOUSE_POSITION_UNKNOWN : 0,
@@ -650,17 +636,13 @@ AutoHideBrowser.prototype = {
  
 	showHideInternal : function AHB_showHideInternal(aReason) 
 	{
-		var sv = this.treeStyleTab;
-		if (!sv.isFloating)
-			sv.stopRendering();
-
+		var sv  = this.treeStyleTab;
 		var b   = this.browser;
 		var pos = sv.position;
 
 		if (this.expanded) { // to be hidden or shrunken
 			this.onHiding();
 			this.showHideReason = aReason || this.kSHOWN_BY_UNKNOWN;
-			this.resetContentAreas(); /* legacy feature for Firefox 3.6 or olders */
 		}
 		else { // to be shown or expanded
 			this.onShowing();
@@ -669,19 +651,13 @@ AutoHideBrowser.prototype = {
 
 		this.fireStateChangingEvent();
 
-		if (this.expanded) {
+		if (this.expanded)
 			sv.setTabbrowserAttribute(this.kAUTOHIDE, 'show');
-			this.redrawContentArea(); /* legacy feature for Firefox 3.6 or olders */
-		}
 		b.mTabContainer.adjustTabstrip();
 		sv.checkTabsIndentOverflow();
 
 		this.window.setTimeout(function(aSelf) {
-			aSelf.redrawContentArea(); /* legacy feature for Firefox 3.6 or olders */
 			aSelf.fireStateChangeEvent();
-			if (!sv.isFloating)
-				sv.startRendering();
-
 			aSelf.showHideContentsAreaScreen();
 		}, 0, this);
 	},
@@ -735,23 +711,6 @@ AutoHideBrowser.prototype = {
 		var sv  = this.treeStyleTab;
 		var b   = this.browser;
 		var pos = sv.position;
-		if (!sv.isFloating) { // -Firefox 3.6
-			switch (pos)
-			{
-				case 'left':
-					sv.container.style.marginRight = '-'+this.XOffset+'px';
-					break;
-				case 'right':
-					sv.container.style.marginLeft = '-'+this.XOffset+'px';
-					break;
-				case 'bottom':
-					sv.container.style.marginTop = '-'+this.YOffset+'px';
-					break;
-				default:
-					sv.container.style.marginBottom = '-'+this.YOffset+'px';
-					break;
-			}
-		}
 
 		sv.setTabbrowserAttribute(this.kSTATE, this.kSTATE_EXPANDED);
 
@@ -761,18 +720,14 @@ AutoHideBrowser.prototype = {
 				break;
 
 			case this.kMODE_HIDE:
-				if (sv.isFloating)
-					sv.updateFloatingTabbar(sv.kTABBAR_UPDATE_BY_AUTOHIDE);
+				sv.updateFloatingTabbar(sv.kTABBAR_UPDATE_BY_AUTOHIDE);
 				break;
 
 			default:
 			case this.kMODE_SHRINK:
 				if (pos == 'left' || pos == 'right') {
 					let width = sv.maxTabbarWidth(sv.getTreePref('tabbar.width'));
-					if (sv.isFloating) // Firefox 4.0-
-						sv.updateFloatingTabbar(sv.kTABBAR_UPDATE_BY_AUTOHIDE);
-					else // -Firefox 3.6
-						sv.setTabStripAttribute('width', width);
+					sv.updateFloatingTabbar(sv.kTABBAR_UPDATE_BY_AUTOHIDE);
 				}
 				break;
 		}
@@ -790,9 +745,6 @@ AutoHideBrowser.prototype = {
 		this.width = box.width || this.width;
 		var splitter = this.document.getAnonymousElementByAttribute(b, 'class', sv.kSPLITTER);
 		this.splitterWidth = (splitter ? splitter.boxObject.width : 0 );
-
-		if (!sv.isFloating) // -Firefox 3.6
-			sv.container.style.margin = 0;
 
 		switch (this.mode)
 		{
@@ -846,244 +798,9 @@ AutoHideBrowser.prototype = {
 		this.treeStyleTab.fireDataContainerEvent(this.treeStyleTab.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGE.replace(/^nsDOM/, ''), this.browser, true, false, data);
 	},
   
-	redrawContentArea : function AHB_redrawContentArea() /* legacy feature for Firefox 3.6 or olders */ 
-	{
-		var sv = this.treeStyleTab;
-		if (sv.isFloating)
-			return;
-
-		var pos = sv.position;
-		var w = this.window;
-		try {
-			var v = this.browser.markupDocumentViewer;
-			if (this.shouldRedraw) {
-				this.drawBG();
-
-				v.move(w.outerWidth, w.outerHeight);
-				v.move(
-					(
-						pos == 'left' ? -this.XOffset :
-						pos == 'right' ? this.XOffset :
-						0
-					) - this.extraXOffset,
-					(
-						pos == 'top' ? -this.YOffset :
-						pos == 'bottom' ? this.YOffset :
-						0
-					) - this.extraYOffset
-				);
-			}
-			else {
-				this.clearBG();
-				v.move(w.outerWidth, w.outerHeight);
-				v.move(-this.extraXOffset, -this.extraYOffset);
-			}
-		}
-		catch(e) {
-			dump(e);
-		}
-	},
-	redrawContentAreaWithDelay : function AHB_redrawContentAreaWithDelay() /* legacy feature for Firefox 3.6 or olders */
-	{
-		if (this.treeStyleTab.isFloating)
-			return;
-
-		this.window.setTimeout(function(aSelf) {
-			aSelf.redrawContentArea();
-		}, 0, this);
-	},
- 
-	resetContentAreas : function AHB_resetContentAreas() /* legacy feature for Firefox 3.6 or olders */ 
-	{
-		if (this.treeStyleTab.isFloating)
-			return;
-
-		this.treeStyleTab.getTabsArray(this.browser).forEach(function(aTab) {
-			try {
-				aTab.linkedBrowser.markupDocumentViewer.move(0, 0);
-			}
-			catch(e) {
-			}
-		}, this);
-	},
- 
-	get shouldRedraw() /* legacy feature for Firefox 3.6 or olders */ 
-	{
-		return !this.treeStyleTab.isFloating && this.enabled && this.expanded;
-	},
- 
-	drawBG : function AHB_drawBG() /* legacy feature for Firefox 3.6 or olders */ 
-	{
-		var sv = this.treeStyleTab;
-		var b  = this.browser;
-		var canvas = this.tabbarCanvas;
-		if (sv.isFloating || !canvas || this.isResizing)
-			return;
-
-		var alpha = Number(sv.getTreePref('tabbar.transparent.partialTransparency'));
-		if (isNaN(alpha)) alpha = 0.25;
-		if (alpha >= 1)
-			return;
-
-		canvas.style.width = (canvas.width = 1)+'px';
-		canvas.style.height = (canvas.height = 1)+'px';
-
-		var pos = sv.position;
-
-		var frame = b.contentWindow;
-		var tabContainerBox = b.mTabContainer.boxObject;
-		var browserBox = b.mCurrentBrowser.boxObject;
-		var contentBox = sv.getBoxObjectFor(frame.document.documentElement);
-
-		var zoom = this.getZoomForFrame(frame);
-
-		var x = (pos == 'right') ? browserBox.width - this.XOffset : 0 ;
-		var y = (pos == 'bottom') ? browserBox.height - this.YOffset : 0 ;
-		if (pos == 'left' && this.mode == this.kMODE_HIDE)
-			x -= this.togglerSize;
-		x += this.extraXOffset;
-		y += this.extraYOffset;
-
-		var xOffset = (zoom == 1 && (pos == 'top' || pos == 'bottom')) ?
-				Math.max(0, contentBox.screenX + frame.scrollX - browserBox.screenX) :
-				0 ;
-		var yOffset = (zoom == 1 && (pos == 'left' || pos == 'right')) ?
-				Math.max(0, contentBox.screenY + frame.scrollY - browserBox.screenY) :
-				0 ;
-
-		var w = tabContainerBox.width - xOffset;
-		var h = tabContainerBox.height - yOffset;
-		w -= this.extraXOffset;
-		h -= this.extraYOffset;
-
-		var canvasXOffset = 0;
-		var canvasYOffset = 0;
-		if (pos == 'top' || pos == 'bottom')
-			canvasXOffset = tabContainerBox.screenX - b.boxObject.screenX;
-		else
-			canvasYOffset = tabContainerBox.screenY - b.boxObject.screenY;
-
-		for (let node = canvas;
-		     node != b.mTabBox;
-		     node = node.parentNode)
-		{
-			let style = this.window.getComputedStyle(node, null);
-			'border-left-width,border-right-width,margin-left,margin-right,padding-left,padding-right'
-				.split(',').forEach(function(aProperty) {
-					let value = sv.getPropertyPixelValue(style, aProperty);
-					w -= value;
-					if (aProperty.indexOf('left') < -1) x += value;
-				}, this);
-			'border-top-width,border-bottom-width,margin-top,margin-bottom,padding-left,padding-right'
-				.split(',').forEach(function(aProperty) {
-					let value = sv.getPropertyPixelValue(style, aProperty);
-					h -= value;
-					if (aProperty.indexOf('top') < -1) y += value;
-				}, this);
-		}
-
-		// zero width (heigh) canvas becomes wrongly size!!
-		w = Math.max(1, w);
-		h = Math.max(1, h);
-
-		canvas.style.display = 'inline';
-		canvas.style.margin = (yOffset)+'px 0 0 '+(xOffset)+'px';
-		canvas.style.width = (canvas.width = w)+'px';
-		canvas.style.height = (canvas.height = h)+'px';
-
-		w += this.extraXOffset;
-		h += this.extraYOffset;
-
-		var ctx = canvas.getContext('2d');
-		ctx.clearRect(0, 0, w, h);
-		ctx.save();
-		if (this.mode == this.kMODE_SHRINK) {
-			var offset = sv.getTreePref('tabbar.shrunkenWidth') + this.splitterWidth;
-			if (pos == 'left')
-				ctx.translate(offset, 0);
-			else
-				x += this.splitterWidth;
-			w -= offset;
-		}
-		ctx.globalAlpha = 1;
-		if (pos == 'left' || pos == 'right') {
-			ctx.fillStyle = this.splitterBorderColor;
-			ctx.fillRect((pos == 'left' ? -1 : w+1 ), 0, 1, h);
-		}
-		ctx.save();
-		ctx.scale(zoom, zoom);
-		ctx.drawWindow(
-			frame,
-			(x / zoom)+frame.scrollX+canvasXOffset,
-			(y / zoom)+frame.scrollY+canvasYOffset,
-			w / zoom,
-			h / zoom,
-			'-moz-field'
-		);
-		ctx.restore();
-		ctx.globalAlpha = alpha;
-		ctx.fillStyle = 'black';
-		ctx.fillRect(0, 0, w, h);
-		ctx.restore();
-	},
 	
-	get splitterBorderColor() /* legacy feature for Firefox 3.6 or olders */ 
-	{
-		var sv = this.treeStyleTab;
-		var b  = this.browser;
-		var w  = this.window;
-		var borderNode = sv.getTreePref(
-					sv.isVertical ?
-						'tabbar.fixed.vertical' :
-						'tabbar.fixed.horizontal'
-				) ?
-				sv.tabStrip :
-				this.document.getAnonymousElementByAttribute(b, 'class', sv.kSPLITTER) ;
-
-		var pos = sv.position;
-		var prop = pos == 'left' ? 'right' :
-				pos == 'right' ? 'left' :
-				pos == 'top' ? 'bottom' :
-				'top' ;
-
-		var borderColor = w.getComputedStyle(borderNode, null).getPropertyValue('-moz-border-'+prop+'-colors');
-		if (borderColor == 'none')
-			borderRight = w.getComputedStyle(borderNode, null).getPropertyValue('border-'+prop+'-color');
-
-		/rgba?\(([^,]+),([^,]+),([^,]+)(,.*)?\)/.test(borderColor);
-
-		return 'rgb('+[
-				parseInt(parseInt(RegExp.$1) * 0.8),
-				parseInt(parseInt(RegExp.$2) * 0.8),
-				parseInt(parseInt(RegExp.$3) * 0.8)
-			].join(',')+')';
-	},
  
-	getZoomForFrame : function AHB_getZoomForFrame(aFrame) /* legacy feature for Firefox 3.6 or olders */ 
-	{
-		var zoom = aFrame
-				.QueryInterface(Ci.nsIInterfaceRequestor)
-				.getInterface(Ci.nsIWebNavigation)
-				.QueryInterface(Ci.nsIDocShell)
-				.contentViewer
-				.QueryInterface(Ci.nsIMarkupDocumentViewer)
-				.fullZoom;
-		return (zoom * 1000 % 1) ? zoom+0.025 : zoom ;
-	},
   
-	clearBG : function AHB_clearBG() /* legacy feature for Firefox 3.6 or olders */ 
-	{
-		var canvas = this.tabbarCanvas;
-		if (this.treeStyleTab.isFloating || !canvas)
-			return;
-
-		canvas.style.display = 'none';
-		canvas.style.margin = 0;
-		// zero width (heigh) canvas becomes wrongly size!!
-		canvas.style.width = canvas.style.height = '1px';
-		canvas.width = canvas.height = 1;
-	},
- 
 	updateTransparency : function AHB_updateTransparency() 
 	{
 		var sv  = this.treeStyleTab;
@@ -1141,13 +858,6 @@ AutoHideBrowser.prototype = {
 				this.sensitiveArea = value;
 				return;
 
-			case 'extensions.treestyletab.tabbar.width':
-			case 'extensions.treestyletab.tabbar.shrunkenWidth':
-				this.window.setTimeout(function(aSelf) {
-					aSelf.onTabbarResized();
-				}, 0, this);
-				return;
-
 			case 'extensions.treestyletab.tabbar.togglerSize':
 				this.togglerSize = value;
 				var toggler = this.document.getAnonymousElementByAttribute(this.browser, 'class', this.treeStyleTab.kTABBAR_TOGGLER);
@@ -1190,17 +900,7 @@ AutoHideBrowser.prototype = {
 				return this.onMouseUp(aEvent);
 
 			case 'mousemove':
-				if (this.handleMouseMove(aEvent)) return;
-			case 'resize':
-				return this.onResize(aEvent);
-
-			case 'scroll':
-				return this.onScroll(aEvent);
-
-			case 'load':
-				if (this.shouldRedraw)
-					this.redrawContentArea();
-				return;
+				return this.handleMouseMove(aEvent);
 
 			case 'TabOpen':
 			case 'TabClose':
@@ -1212,8 +912,6 @@ AutoHideBrowser.prototype = {
 				return;
 
 			case 'select':
-				if (this.shouldRedraw)
-					this.redrawContentArea();
 				if (!this.window.TreeStyleTabService.accelKeyPressed)
 					this.showForFeedback();
 				return;
@@ -1226,9 +924,6 @@ AutoHideBrowser.prototype = {
 
 			case this.treeStyleTab.kEVENT_TYPE_TABBAR_POSITION_CHANGING:
 				this.isResizing = false;
-				this.clearBG(); /* legacy feature for Firefox 3.6 or olders */
-				if (this.shouldRedraw) /* legacy feature for Firefox 3.6 or olders */
-					this.hide();
 				return;
 
 			case this.treeStyleTab.kEVENT_TYPE_TABBAR_POSITION_CHANGED:
@@ -1291,26 +986,7 @@ AutoHideBrowser.prototype = {
 			).booleanValue
 			) {
 			this.isResizing = true;
-			this.clearBG(); /* legacy feature for Firefox 3.6 or olders */
 			sv.setTabbrowserAttribute(sv.kRESIZING, true);
-			/* canvasを非表示にしたのと同じタイミングでリサイズを行うと、
-			   まだ内部的にcanvasの大きさが残ったままなので、その大きさ以下に
-			   タブバーの幅を縮められなくなる。手動でイベントを再送してやると
-			   この問題を防ぐことができる。 */
-			aEvent.preventDefault();
-			aEvent.stopPropagation();
-			var flags = 0;
-			const nsIDOMNSEvent = Ci.nsIDOMNSEvent;
-			if (aEvent.altKey) flags |= nsIDOMNSEvent.ALT_MASK;
-			if (aEvent.ctrlKey) flags |= nsIDOMNSEvent.CONTROL_MASK;
-			if (aEvent.shiftKey) flags |= nsIDOMNSEvent.SHIFT_MASK;
-			if (aEvent.metaKey) flags |= nsIDOMNSEvent.META_MASK;
-			w.setTimeout(function(aX, aY, aButton, aDetail) {
-				w.QueryInterface(Ci.nsIInterfaceRequestor)
-					.getInterface(Ci.nsIDOMWindowUtils)
-					.sendMouseEvent('mousedown', aX, aY, aButton, aDetail, flags);
-				flags = null;
-			}, 0, aEvent.clientX, aEvent.clientY, aEvent.button, aEvent.detail);
 		}
 		this.cancelShowHideOnMouseMove();
 		if (
@@ -1336,11 +1012,6 @@ AutoHideBrowser.prototype = {
 			).booleanValue) {
 			this.isResizing = false;
 			sv.removeTabbrowserAttribute(sv.kRESIZING);
-			this.window.setTimeout(function(aSelf) { /* legacy feature for Firefox 3.6 or olders */
-				if (!aSelf.shouldRedraw) return;
-				aSelf.redrawContentArea();
-				aSelf.drawBG();
-			}, 0, this);
 		}
 		this.cancelShowHideOnMouseMove();
 		this.lastMouseDownTarget = null;
@@ -1363,62 +1034,6 @@ AutoHideBrowser.prototype = {
 			)
 			this.showHideOnMouseMove(aEvent);
 		return true;
-	},
- 
-	onResize : function AHB_onResize(aEvent) /* legacy feature for Firefox 3.6 or olders */ 
-	{
-		if (
-			aEvent.originalTarget &&
-			(
-				aEvent.originalTarget.ownerDocument == this.document ||
-				aEvent.originalTarget == this.window
-			)
-			)
-			this.onTabbarResized();
-	},
- 
-	onTabbarResized : function AHB_onTabbarResized() /* legacy feature for Firefox 3.6 or olders */ 
-	{
-		var sv = this.treeStyleTab;
-		if (sv.isFloating || !this.shouldRedraw)
-			return;
-
-		switch (sv.position)
-		{
-			case 'left':
-				sv.container.style.marginRight = '-'+this.XOffset+'px';
-				break;
-			case 'right':
-				sv.container.style.marginLeft = '-'+this.XOffset+'px';
-				break;
-			case 'bottom':
-				sv.container.style.marginTop = '-'+this.YOffset+'px';
-				break;
-			default:
-				sv.container.style.marginBottom = '-'+this.YOffset+'px';
-				break;
-		}
-		this.redrawContentArea();
-	},
- 
-	onScroll : function AHB_onScroll(aEvent) 
-	{
-		var node = aEvent.originalTarget;
-		if ((node && node.ownerDocument == this.document) || !this.shouldRedraw) return;
-
-		var tabbarBox, nodeBox;
-		if (
-			!(node instanceof Ci.nsIDOMElement) ||
-			(
-				(tabbarBox = this.treeStyleTab.getBoxObjectFor(this.browser.mTabContainer)) &&
-				(nodeBox = this.treeStyleTab.getBoxObjectFor(node)) &&
-				tabbarBox.screenX <= nodeBox.screenX + nodeBox.width &&
-				tabbarBox.screenX + tabbarBox.width >= nodeBox.screenX &&
-				tabbarBox.screenY <= nodeBox.screenY + nodeBox.height &&
-				tabbarBox.screenY + tabbarBox.height >= nodeBox.screenY
-			)
-			)
-			this.redrawContentArea();
 	},
  
 	onDragOver : function AHB_onDragOver(aEvent) 
@@ -1551,17 +1166,6 @@ AutoHideBrowser.prototype = {
 		b.addEventListener(sv.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN, this, false);
 		b.addEventListener(sv.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START, this, false);
 		b.addEventListener(sv.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, this, false);
-
-		if (!sv.isFloating) { /* legacy feature for Firefox 3.6 or olders */
-			let stack = this.document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-stack');
-			if (stack) {
-				let canvas = this.document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
-				canvas.setAttribute('style', 'display:none;width:1;height:1;');
-				stack.firstChild.appendChild(canvas);
-				this.tabbarCanvas = canvas;
-				this.clearBG();
-			}
-		}
 	},
  
 	destroy : function AHB_destroy() 
