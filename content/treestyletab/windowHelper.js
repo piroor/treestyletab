@@ -430,7 +430,6 @@ var TreeStyleTabWindowHelper = {
 			!(tabbar.compareDocumentPosition(newTabButton) & nsIDOMNode.DOCUMENT_POSITION_CONTAINED_BY))
 			newTabButton.parentNode.addEventListener('click', this.service, true);
 
-		// for Firefox 4.0 or later
 		this.service.updateAllTabsButton(gBrowser);
 
 		var event = document.createEvent('Events');
@@ -453,7 +452,6 @@ var TreeStyleTabWindowHelper = {
 			!(tabbar.compareDocumentPosition(newTabButton) & Ci.nsIDOMNode.DOCUMENT_POSITION_CONTAINED_BY))
 			newTabButton.parentNode.removeEventListener('click', this.service, true);
 
-		// Firefox 4.0 or later (restore original position)
 		var allTabsButton = document.getElementById('alltabs-button');
 		if (allTabsButton && allTabsButton.hasChildNodes())
 			allTabsButton.firstChild.setAttribute('position', 'after_end');
