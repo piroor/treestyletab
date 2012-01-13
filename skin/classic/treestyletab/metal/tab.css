@@ -85,13 +85,6 @@
 	-moz-appearance: none !important;
 }
 
-/*
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tab-icon {
-	margin-top: -16px !important;
-	margin-bottom: -14px !important;
-}
-*/
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-content > * {
 	position: relative !important;
@@ -123,24 +116,34 @@
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-content {
 	-moz-border-image: url("tab-active-l.png") 10 5 10 10 / 10px 5px 10px 10px !important;
+	/**
+	 * For Firefox 11 and olders, "fill" is not available in "-moz-border-image".
+	 * However, on Firefox 12, we must put "fill" to fill the background.
+	 * So, now we write "-moz-border-image-slice" with "fill" after "-moz-boder-image"
+	 * because "-slice" works only on Firefox 12.
+	 */
+	-moz-border-image-slice: 10 5 10 10 fill !important;
 }
 
 /* background, right */
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-content {
 	-moz-border-image: url("tab-active-r.png") 10 10 10 5 / 10px 10px 10px 5px !important;
+	-moz-border-image-slice: 10 10 10 5 fill !important;
 }
 
 /* foreground, left */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-content[selected="true"] {
 	-moz-border-image: url("tab-active-selected-l.png") 10 5 10 10 / 10px 5px 10px 10px !important;
+	-moz-border-image-slice: 10 5 10 10 fill !important;
 }
 
 /* foreground, right */
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-content[selected="true"] {
 	-moz-border-image: url("tab-active-selected-r.png") 10 10 10 5 / 10px 10px 10px 5px !important;
+	-moz-border-image-slice: 10 10 10 5 fill !important;
 }
 
 
@@ -260,6 +263,7 @@
   .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-content {
 	-moz-border-image: url("tab-inactive-l.png") 10 5 10 10 / 10px 5px 10px 10px !important;
+	-moz-border-image-slice: 10 5 10 10 fill !important;
 }
 
 /* background, right */
@@ -267,6 +271,7 @@
   .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-content {
 	-moz-border-image: url("tab-inactive-r.png") 10 10 10 5 / 10px 10px 10px 5px !important;
+	-moz-border-image-slice: 10 10 10 5 fill !important;
 }
 
 /* foreground, left */
@@ -274,6 +279,7 @@
   .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-content[selected="true"] {
 	-moz-border-image: url("tab-inactive-selected-l.png") 10 5 10 10 / 10px 5px 10px 10px !important;
+	-moz-border-image-slice: 10 5 10 10 fill !important;
 }
 
 /* foreground, right */
@@ -281,6 +287,7 @@
   .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-content[selected="true"] {
 	-moz-border-image: url("tab-inactive-selected-r.png") 10 10 10 5 / 10px 10px 10px 5px !important;
+	-moz-border-image-slice: 10 10 10 5 fill !important;
 }
 
 
