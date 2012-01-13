@@ -2502,8 +2502,7 @@ TreeStyleTabBrowser.prototype = {
  
 	clearLastScrollPosition : function TSTBrowser_clearLastScrollPosition() 
 	{
-		this.lastScrollX = -1;
-		this.lastScrollY = -1;
+		this.lastScrollX = this.lastScrollY = -1;
 	},
  
 	updateLastScrollPosition : function TSTBrowser_updateLastScrollPosition() 
@@ -2515,6 +2514,31 @@ TreeStyleTabBrowser.prototype = {
 		scrollBoxObject.getPosition(x, y);
 		this.lastScrollX = x.value;
 		this.lastScrollY = y.value;
+	},
+ 
+	cancelPerformingAutoScroll : function TSTBrowser_cancelPerformingAutoScroll() 
+	{
+		if (this.smoothScrollTask) {
+			this.animationManager.removeTask(this.smoothScrollTask);
+			this.smoothScrollTask = null;
+		}
+		this.clearLastScrollPosition();
+
+		if (this.cancelingPerformingAutoScroll) return;
+
+		this.cancelingPerformingAutoScroll = true;
+		var self = this;
+		this.Deferred.wait(0.1).next(function() {
+			self.cancelingPerformingAutoScroll = false;
+		});
+	},
+ 
+	shouldCancelEnsureElementIsVisible : function TSTBRowser_shouldCancelEnsureElementIsVisible() 
+	{
+		return (
+			this.cancelingPerformingAutoScroll &&
+			(new Error()).stack.indexOf('onxblDOMMouseScroll') < 0
+		);
 	},
   
 	onTabOpen : function TSTBrowser_onTabOpen(aEvent, aTab) 
@@ -4095,8 +4119,8 @@ TreeStyleTabBrowser.prototype = {
  
 	onMouseDown : function TSTBrowser_onMouseDown(aEvent) 
 	{
-		if (this.smoothScrollTask && this.isEventFiredOnScrollbar(aEvent))
-			this.animationManager.removeTask(this.smoothScrollTask);
+		if (this.isEventFiredOnScrollbar(aEvent))
+			this.cancelPerformingAutoScroll();
 
 		if (
 			aEvent.button == 0 &&
@@ -4114,8 +4138,7 @@ TreeStyleTabBrowser.prototype = {
  
 	onDOMMouseScroll : function TSTBrowser_onDOMMouseScroll(aEvent) 
 	{
-		if (this.smoothScrollTask)
-			this.animationManager.removeTask(this.smoothScrollTask);
+		this.cancelPerformingAutoScroll();
 	},
  
 	onScroll : function TSTBrowser_onScroll(aEvent) 
@@ -4145,7 +4168,8 @@ TreeStyleTabBrowser.prototype = {
 	{
 		if (
 			!aEvent.originalTarget ||
-			!(aEvent.originalTarget instanceof Ci.nsIDOMWindow)
+			!(aEvent.originalTarget instanceof Ci.nsIDOMWindow) ||
+			aEvent.originalTarget.top != this.mTabBrowser.contentWindow
 			)
 			return;
 
@@ -5572,16 +5596,14 @@ TreeStyleTabBrowser.prototype = {
 	
 	scrollTo : function TSTBrowser_scrollTo(aEndX, aEndY) 
 	{
-		// Prevent to restore scroll position for "TabClose".
-		// We override it.
-		this.lastScrollX = -1;
-		this.lastScrollY = -1;
+		if (this.cancelingPerformingAutoScroll) return;
 
 		if (this.animationEnabled || this.smoothScrollEnabled) {
 			this.smoothScrollTo(aEndX, aEndY);
 		}
 		else {
 			try {
+				this.cancelPerformingAutoScroll();
 				this.scrollBoxObject.scrollTo(aEndX, aEndY);
 			}
 			catch(e) {
@@ -5591,9 +5613,9 @@ TreeStyleTabBrowser.prototype = {
 	
 	smoothScrollTo : function TSTBrowser_smoothScrollTo(aEndX, aEndY, aDuration) 
 	{
-		var b = this.mTabBrowser;
-		this.animationManager.removeTask(this.smoothScrollTask);
+		this.cancelPerformingAutoScroll();
 
+		var b = this.mTabBrowser;
 		var scrollBoxObject = this.scrollBoxObject;
 		var x = {}, y = {};
 		scrollBoxObject.getPosition(x, y);
@@ -5616,32 +5638,34 @@ TreeStyleTabBrowser.prototype = {
 		var self = this;
 		this.smoothScrollTask = function(aTime, aBeginning, aChange, aDuration) {
 			var scrollBoxObject = self.scrollBoxObject;
-			if (aTime >= aDuration) {
-				scrollBoxObject.scrollTo(aEndX, aEndY);
+			if (aTime >= aDuration || this.cancelingPerformingAutoScroll) {
+				if (!this.cancelingPerformingAutoScroll) {
+					scrollBoxObject.scrollTo(aEndX, aEndY);
 
-				/**
-				 * When there is any expanding tab, we have to retry to scroll.
-				 * if the scroll box was expanded.
-				 */
-				let oldSize = self._getMaxScrollSize(scrollBoxObject);
-				self.Deferred.next(function() {
-					let newSize = self._getMaxScrollSize(scrollBoxObject);
-					let lastTab = self.getLastVisibleTab(self.mTabBrowser);
-					if (
-						// scroll size can be expanded by expanding tabs.
-						oldSize[0] < newSize[0] || oldSize[1] < newSize[1] ||
-						// there are still animating tabs
-						self.getXOffsetOfTab(lastTab) || self.getYOffsetOfTab(lastTab) ||
-						self.evaluateXPath(
-							'child::xul:tab[@'+self.kCOLLAPSING_PHASE+'="'+self.kCOLLAPSING_PHASE_TO_BE_EXPANDED+'"]',
-							self.mTabBrowser.mTabContainer,
-							Ci.nsIDOMXPathResult.BOOLEAN_TYPE
-						).booleanValue
-						)
-						self.smoothScrollTo(aEndX, aEndY, parseInt(aDuration * 0.5));
-					self = null;
-					scrollBoxObject = null;
-				});
+					/**
+					 * When there is any expanding tab, we have to retry to scroll.
+					 * if the scroll box was expanded.
+					 */
+					let oldSize = self._getMaxScrollSize(scrollBoxObject);
+					self.Deferred.next(function() {
+						let newSize = self._getMaxScrollSize(scrollBoxObject);
+						let lastTab = self.getLastVisibleTab(self.mTabBrowser);
+						if (
+							// scroll size can be expanded by expanding tabs.
+							oldSize[0] < newSize[0] || oldSize[1] < newSize[1] ||
+							// there are still animating tabs
+							self.getXOffsetOfTab(lastTab) || self.getYOffsetOfTab(lastTab) ||
+							self.evaluateXPath(
+								'child::xul:tab[@'+self.kCOLLAPSING_PHASE+'="'+self.kCOLLAPSING_PHASE_TO_BE_EXPANDED+'"]',
+								self.mTabBrowser.mTabContainer,
+								Ci.nsIDOMXPathResult.BOOLEAN_TYPE
+							).booleanValue
+							)
+							self.smoothScrollTo(aEndX, aEndY, parseInt(aDuration * 0.5));
+						self = null;
+						scrollBoxObject = null;
+					});
+				}
 
 				b = null;
 				x = null;

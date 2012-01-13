@@ -612,7 +612,9 @@ var TreeStyleTabWindowHelper = {
 					'{',
 					<![CDATA[{
 						var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;
-						if (treeStyleTab.scrollToNewTabMode == 0) return;
+						if (treeStyleTab.scrollToNewTabMode == 0 ||
+							treeStyleTab.shouldCancelEnsureElementIsVisible())
+							return;
 					]]>.toString()
 				).replace(
 					/\.screenX/g, '[treeStyleTab.screenPositionProp]'
@@ -663,6 +665,8 @@ var TreeStyleTabWindowHelper = {
 						'{',
 						<![CDATA[{
 							var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;
+							if (treeStyleTab && treeStyleTab.shouldCancelEnsureElementIsVisible())
+								return;
 							if (
 								treeStyleTab &&
 								(arguments.length == 1 || arguments[1])
