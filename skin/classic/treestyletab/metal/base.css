@@ -135,13 +135,6 @@ tabbrowser[treestyletab-tabbar-position="right"]
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab
-  .tab-icon {
-	margin: -10px -5px !important;
-	padding: 10px 5px !important;
-}
-
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab
   label {
 	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
 }
@@ -208,7 +201,6 @@ tabbrowser[treestyletab-tabbar-position="right"]
 
 /* twisty */
 
-
 .tabbrowser-tabs[treestyletab-twisty-style][treestyletab-mode="vertical"]
   .tabbrowser-tab:not([pinned="true"])
   .treestyletab-twisty-container {
@@ -223,7 +215,7 @@ tabbrowser[treestyletab-tabbar-position="right"]
 .tabbrowser-tabs[treestyletab-twisty-style="retro"]:not([treestyletab-tab-contents-inverted="true"])
   .tabbrowser-tab:not([pinned="true"])
   .tab-icon {
-	margin-left: -6px !important;
+	margin-left: 6px !important;
 }
 .tabbrowser-tabs[treestyletab-twisty-style][treestyletab-tab-contents-inverted="true"]
   .tabbrowser-tab:not([pinned="true"])
@@ -238,7 +230,7 @@ tabbrowser[treestyletab-tabbar-position="right"]
 .tabbrowser-tabs[treestyletab-twisty-style="retro"][treestyletab-tab-contents-inverted="true"]
   .tabbrowser-tab:not([pinned="true"])
   .tab-icon {
-	margin-right: -6px !important;
+	margin-right: 6px !important;
 }
 
 

@@ -2,6 +2,32 @@
 
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
+/* favicon */
+
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab
+  .tab-icon {
+	margin: -10px -5px !important;
+	padding: 10px 5px !important;
+}
+
+
+/* twisty */
+
+.tabbrowser-tabs[treestyletab-twisty-style="retro"]:not([treestyletab-tab-contents-inverted="true"])
+  .tabbrowser-tab:not([pinned="true"])
+  .tab-icon {
+	margin-left: -6px !important;
+}
+.tabbrowser-tabs[treestyletab-twisty-style="retro"][treestyletab-tab-contents-inverted="true"]
+  .tabbrowser-tab:not([pinned="true"])
+  .tab-icon {
+	margin-right: -6px !important;
+}
+
+
+/* background images */
+
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-content > * {
 	position: relative !important;
