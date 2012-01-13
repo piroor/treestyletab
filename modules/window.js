@@ -40,8 +40,6 @@ const Ci = Components.interfaces;
 
 Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 
-// Components.utils.import('resource://treestyletab-modules/rap.js');
-// rap();
 Components.utils.import('resource://treestyletab-modules/utils.js');
 XPCOMUtils.defineLazyGetter(this, 'TreeStyleTabBrowser', function() {
 	var ns = {};
@@ -299,7 +297,6 @@ TreeStyleTabWindow.prototype = {
 	
 	preInit : function TSTWindow_preInit() 
 	{
-// rap('window/preInit start');
 		if (this.preInitialized) return;
 		this.preInitialized = true;
 
@@ -316,7 +313,6 @@ TreeStyleTabWindow.prototype = {
 
 		// initialize theme
 		this.onPrefChange('extensions.treestyletab.tabbar.style');
-// rap('window/preInit end');
 	},
 	preInitialized : false,
 	
@@ -422,7 +418,6 @@ TreeStyleTabWindow.prototype = {
   
 	init : function TSTWindow_init() 
 	{
-// rap('window/init start');
 		var w = this.window;
 		w.removeEventListener('load', this, false);
 
@@ -473,7 +468,6 @@ TreeStyleTabWindow.prototype = {
 			this.onPrefChange('extensions.treestyletab.tabbar.autoHide.mode');
 
 		this.onPrefChange('extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut');
-// rap('window/init end');
 	},
 	initialized : false,
 	
@@ -1655,5 +1649,4 @@ TreeStyleTabWindow.prototype = {
 	}
   
 }; 
-// rap('end of definition of window');
   

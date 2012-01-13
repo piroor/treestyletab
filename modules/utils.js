@@ -40,8 +40,6 @@ const Ci = Components.interfaces;
  
 Components.utils.import('resource://gre/modules/XPCOMUtils.jsm'); 
 
-// Components.utils.import('resource://treestyletab-modules/rap.js');
-// rap();
 Components.utils.import('resource://treestyletab-modules/lib/prefs.js');
 Components.utils.import('resource://treestyletab-modules/lib/namespace.jsm');
 var window = getNamespaceFor('piro.sakura.ne.jp');
@@ -81,7 +79,6 @@ XPCOMUtils.defineLazyGetter(this, 'confirmWithTab', function() {
 	Components.utils.import('resource://treestyletab-modules/lib/confirmWithTab.js', ns);
 	return ns.confirmWithTab;
 });
-// rap('end of definition of lazy getters');
  
 var TreeStyleTabUtils = { 
 	__proto__ : window['piro.sakura.ne.jp'].prefs,
@@ -349,7 +346,6 @@ var TreeStyleTabUtils = {
  
 	init : function TSTUtils_init() 
 	{
-// rap('utils/init start');
 		if (this._initialized) return;
 
 		this.isMac = this.XULAppInfo.OS == 'Darwin';
@@ -386,7 +382,6 @@ var TreeStyleTabUtils = {
 		catch(e) {
 			dump(e+'\n');
 		}
-// rap('utils/init end');
 	},
 	_initialized : false,
 	applyPlatformDefaultPrefs : function TSTUtils_applyPlatformDefaultPrefs()
@@ -2541,7 +2536,5 @@ var TreeStyleTabUtils = {
   
 }; 
  
-// rap('end of definition of utils');
 TreeStyleTabUtils.init(); 
-// rap('end of initialization of utils');
   

@@ -38,9 +38,6 @@ const EXPORTED_SYMBOLS = ['TreeStyleTabBrowser'];
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
-// Components.utils.import('resource://treestyletab-modules/rap.js');
-// rap();
-
 Components.utils.import('resource://treestyletab-modules/window.js');
  
 function TreeStyleTabBrowser(aWindowService, aTabBrowser) 
@@ -565,7 +562,6 @@ TreeStyleTabBrowser.prototype = {
 	
 	init : function TSTBrowser_init() 
 	{
-// rap('browser/init start');
 		this.stopRendering();
 
 		var w = this.window;
@@ -679,7 +675,6 @@ TreeStyleTabBrowser.prototype = {
 		this.fireTabbarPositionEvent(false, 'top', position); /* PUBLIC API */
 
 		this.startRendering();
-// rap('browser/init end');
 	},
 	
 	_initTabbrowserExtraContents : function TSTBrowser_initTabbrowserExtraContents() 
@@ -5899,5 +5894,4 @@ TreeStyleTabBrowser.prototype = {
 	cancelHideTabbarForFeedback : function TSTBrowser_cancelHideTabbarForFeedback() { this.autoHide.cancelHideForFeedback(); }
   
 }; 
-// rap('end of definition of browser');
  
