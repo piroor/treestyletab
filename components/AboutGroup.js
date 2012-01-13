@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is SHIMODA Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2009
+ * Portions created by the Initial Developer are Copyright (C) 2009-2012
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): SHIMODA Hiroshi <piro.outsider.reflex@gmail.com>
@@ -60,7 +60,4 @@ AboutGroup.prototype = {
 	QueryInterface : XPCOMUtils.generateQI([Components.interfaces.nsIAboutModule])
 };
 
-if (XPCOMUtils.generateNSGetFactory)
-	var NSGetFactory = XPCOMUtils.generateNSGetFactory([AboutGroup]);
-else
-	var NSGetModule = XPCOMUtils.generateNSGetModule([AboutGroup]);
+var NSGetFactory = XPCOMUtils.generateNSGetFactory([AboutGroup]);
