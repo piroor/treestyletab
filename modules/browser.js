@@ -301,8 +301,7 @@ TreeStyleTabBrowser.prototype = {
 		return (
 			this.isGecko2 &&
 			!this.isVertical &&
-			this.canCollapseSubtree() &&
-			this.getTreePref('stackCollapsedTabs')
+			this.canCollapseSubtree()
 		);
 	},
   
