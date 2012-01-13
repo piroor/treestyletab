@@ -244,6 +244,9 @@ var TreeStyleTabUtils = {
 	kRESTORE_TREE_ONLY_VISIBLE : 1,
 	kRESTORE_TREE_ALL          : 2,
 
+	kCOUNTER_ROLE_ALL_TABS       : 1,
+	kCOUNTER_ROLE_CONTAINED_TABS : 2,
+
 	MAX_TABBAR_SIZE_RATIO        : 0.8,
 	DEFAULT_SHRUNKEN_WIDTH_RATIO : 0.67,
  
@@ -261,6 +264,9 @@ var TreeStyleTabUtils = {
 	shouldExpandTwistyArea : true,
 
 	scrollToNewTabMode : false,
+
+	counterRoleHorizontal : -1,
+	counterRoleVertical : -1,
  
 	get SessionStore() { 
 		if (!this._SessionStore) {
@@ -367,6 +373,8 @@ var TreeStyleTabUtils = {
 		this.onPrefChange('extensions.treestyletab.animation.indent.duration');
 		this.onPrefChange('extensions.treestyletab.animation.collapse.duration');
 		this.onPrefChange('extensions.treestyletab.twisty.expandSensitiveArea');
+		this.onPrefChange('extensions.treestyletab.counter.role.horizontal');
+		this.onPrefChange('extensions.treestyletab.counter.role.vertical');
 
 		try {
 			if (this.XULAppInfo.OS == 'WINNT')
@@ -2464,6 +2472,12 @@ var TreeStyleTabUtils = {
 
 			case 'extensions.treestyletab.twisty.expandSensitiveArea':
 				return this.shouldExpandTwistyArea = value;
+
+			case 'extensions.treestyletab.counter.role.horizontal':
+				return this.counterRoleHorizontal = value;
+
+			case 'extensions.treestyletab.counter.role.vertical':
+				return this.counterRoleVertical = value;
 
 			default:
 				return;

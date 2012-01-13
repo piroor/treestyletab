@@ -282,6 +282,11 @@ TreeStyleTabBrowser.prototype = {
 	{
 		return !this.isVertical && this.canCollapseSubtree();
 	},
+ 
+	get counterRole() 
+	{
+		return this.isVertical ? this.counterRoleVertical : this.counterRoleHorizontal ;
+	},
   
 /* utils */ 
 	
@@ -1266,6 +1271,7 @@ TreeStyleTabBrowser.prototype = {
 			delayedPostProcess(self, b, splitter, toggler);
 			self.updateTabbarOverflow();
 			self.updateAllTabsButton(b);
+			self.updateAllTabsCount();
 			delayedPostProcess = null;
 			self.mTabBrowser.style.visibility = '';
 
@@ -2201,6 +2207,19 @@ TreeStyleTabBrowser.prototype = {
 
 			case 'extensions.treestyletab.pinnedTab.faviconized':
 				return this.positionPinnedTabsWithDelay();
+
+			case 'extensions.treestyletab.counter.role.horizontal':
+				if (!this.isVertical) {
+					let self = this;
+					this.Deferred.next(function() { self.updateAllTabsCount(); });
+				}
+				return;
+			case 'extensions.treestyletab.counter.role.vertical':
+				if (this.isVertical) {
+					let self = this;
+					this.Deferred.next(function() { self.updateAllTabsCount(); });
+				}
+				return;
 
 			default:
 				return;
@@ -4922,7 +4941,10 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var count = this.document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER);
 		if (count) {
-			count.setAttribute('value', this.getDescendantTabs(aTab).length + 1);
+			let value = this.getDescendantTabs(aTab).length;
+			if (this.counterRole == this.kCOUNTER_ROLE_ALL_TABS)
+				value += 1;
+			count.setAttribute('value', value);
 		}
 		if (!aDontUpdateAncestor) {
 			let parent = this.getParentTab(aTab);

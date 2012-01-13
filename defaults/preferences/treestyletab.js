@@ -198,6 +198,14 @@ pref("extensions.treestyletab.allowSubtreeCollapseExpand.vertical",   true);
 pref("extensions.treestyletab.showBorderForFirstTab",  false);
 
 /**
+ * The role of the "counter" in each tab.
+ *  1 = Indicate number of all tabs in the tree (including the parent tab itself)
+ *  2 = Indicate number of contained tabs in the collapsed tree (imitating file managers)
+ */
+pref("extensions.treestyletab.counter.role.horizontal", 1);
+pref("extensions.treestyletab.counter.role.vertical", 2);
+
+/**
  * Activates "auto-expand/collapse of tabs while dragging".
  * When you're dragging something, a collapsed tree will be expanded
  * automatically by staying on the tree for a while.
