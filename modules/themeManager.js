@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is SHIMODA Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011
+ * Portions created by the Initial Developer are Copyright (C) 2011-2012
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): SHIMODA Hiroshi <piro.outsider.reflex@gmail.com>
@@ -88,7 +88,6 @@ TreeStyleTabThemeManager.prototype = {
 
 			case 'metal':
 				styles.push(BASE+'metal/base.css');
-				styles.push(BASE+'metal/base-inactive.css');
 				styles.push(BASE+'metal/tab.css');
 				styles.push(BASE+'metal/aero.css');
 				styles.push(BASE+'platform-styled.css');
@@ -97,7 +96,6 @@ TreeStyleTabThemeManager.prototype = {
 
 			case 'sidebar':
 				styles.push(BASE+'sidebar/base.css');
-				styles.push(BASE+'sidebar/inactive.css');
 				styles.push(BASE+'sidebar/aero.css');
 				styles.push(BASE+'platform-styled.css');
 				break;
