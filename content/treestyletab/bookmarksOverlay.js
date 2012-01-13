@@ -204,13 +204,7 @@ var TreeStyleTabBookmarksService = {
 		if (!('PlacesUIUtils' in window)) return;
 
 		if (!PlacesUIUtils.__treestyletab__done) {
-			var ns;
-			try { // Firefox 4 or later
-				ns = Components.utils.import('resource://gre/modules/PlacesUIUtils.jsm', {});
-			}
-			catch(e) { // Firefox 3.6 or older
-				ns = window;
-			}
+			var ns = Components.utils.import('resource://gre/modules/PlacesUIUtils.jsm', {});
 			var sv = this;
 			with (ns) {
 

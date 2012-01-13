@@ -85,15 +85,6 @@ function initAppearancePane()
 		sidebar.setAttribute('disabled', true);
 	}
 
-	/* legacy feature for Firefox 3.6 or olders */
-	var hideAllTabsButton = document.getElementById('hideAlltabsButton-box');
-	if (comparator.compare(XULAppInfo.version, '4.0b3') > 0) {
-		hideAllTabsButton.setAttribute('hidden', true);
-	}
-	else {
-		hideAllTabsButton.removeAttribute('hidden');
-	}
-
 	var boxes = [
 			document.getElementById('extensions.treestyletab.tabbar.style-arrowscrollbox'),
 			document.getElementById('extensions.treestyletab.twisty.style-arrowscrollbox')
@@ -248,24 +239,18 @@ function onChangeTabbarPosition()
 	var maxTreeLevelV   = document.getElementById('maxTreeLevel-vertical');
 	var collapseCheckH = document.getElementById('extensions.treestyletab.allowSubtreeCollapseExpand.horizontal-check');
 	var collapseCheckV = document.getElementById('extensions.treestyletab.allowSubtreeCollapseExpand.vertical-check');
-	var hideAllTabsCheckH = document.getElementById('extensions.treestyletab.tabbar.hideAlltabsButton.horizontal-check');
-	var hideAllTabsCheckV = document.getElementById('extensions.treestyletab.tabbar.hideAlltabsButton.vertical-check');
 
 	if (pos == 'left' || pos == 'right') {
 		maxTreeLevelH.setAttribute('collapsed', true);
 		maxTreeLevelV.removeAttribute('collapsed');
 		collapseCheckH.setAttribute('collapsed', true);
 		collapseCheckV.removeAttribute('collapsed');
-		hideAllTabsCheckH.setAttribute('collapsed', true);
-		hideAllTabsCheckV.removeAttribute('collapsed');
 	}       
 	else {
 		maxTreeLevelH.removeAttribute('collapsed');
 		maxTreeLevelV.setAttribute('collapsed', true);
 		collapseCheckH.removeAttribute('collapsed');
 		collapseCheckV.setAttribute('collapsed', true);
-		hideAllTabsCheckH.removeAttribute('collapsed');
-		hideAllTabsCheckV.setAttribute('collapsed', true);
 	}
 
 	gTabbarPlacePositionInitialized = true;

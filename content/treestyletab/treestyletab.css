@@ -118,11 +118,6 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 	font-size: 0 !important; /* to avoid an useless space above the splitter */
 }
 
-/* Firefox 3.0-3.6 (not for 4.0 or later) */
-#appcontent {
-	margin: 0;
-}
-
 .tabbrowser-tabs[treestyletab-tabbar-autohide]
   .tabs-stack
   > *:first-child
@@ -180,8 +175,6 @@ toolbar.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
 	-moz-box-flex: 0 !important;
 }
 
-.tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-alltabs-button, /* -Firefox 3.6 */
-.tabbrowser-tabs[treestyletab-mode="vertical"] .close-button.tabs-closebutton, /* -Firefox 3.6 */
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > toolbarbutton,
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > toolbarpaletteitem > toolbarbutton {
 	max-width: none !important;
@@ -211,7 +204,6 @@ tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-sc
 /* hide horizontal tab bar UI for vertical tab bar */
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > .scrollbutton-up,
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > .scrollbutton-down-stack,
-.tabbrowser-tabs[treestyletab-mode="vertical"] .tabbrowser-arrowscrollbox > .scrollbutton-down, /* Firefox 3 */
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-closebutton-box,
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tab-drop-indicator-bar {
 	visibility: collapse !important;
@@ -449,9 +441,7 @@ toolbar.treestyletab-tabbar-toolbar-ready:not([nowindowdrag="true"]),
 
 /* hide all tabs button (by user's preference) */
 .tabbrowser-tabs[treestyletab-hide-alltabs-button="true"]
-  .tabs-alltabs-stack,
-.tabbrowser-tabs[treestyletab-hide-alltabs-button="true"]
-  .tabbrowser-arrowscrollbox ~ stack /* "all tabs" button in Firefox 3.5 */ {
+  .tabs-alltabs-stack {
 	visibility: collapse !important;
 }
 

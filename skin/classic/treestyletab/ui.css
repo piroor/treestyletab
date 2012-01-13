@@ -217,20 +217,6 @@
 	visibility: hidden;
 }
 
-/* for Firefox 3.6 or older */
-.tabbrowser-tabs[treestyletab-tabbar-position="top"]
-  .tabbrowser-tab[treestyletab-drop-position="self"][selected="true"]
-  > .tab-image-middle,
-.tabbrowser-tabs[treestyletab-tabbar-position="top"]
-  .tabbrowser-tab[treestyletab-drop-position="self"][selected="true"]:hover
-  > .tab-image-middle,
-.tabbrowser-tabs[treestyletab-tabbar-position="top"]
-  .tabbrowser-tab[treestyletab-drop-position="self"]:not([selected="true"])
-  > .tab-image-middle,
-.tabbrowser-tabs[treestyletab-tabbar-position="top"]
-  .tabbrowser-tab[treestyletab-drop-position="self"]:not([selected="true"]):hover
-  > .tab-image-middle,
-/* for Firefox 4 or later */
 .tabbrowser-tabs[treestyletab-tabbar-position="top"]
   .tabbrowser-tab[treestyletab-drop-position="self"][selected="true"]
   .tab-content,

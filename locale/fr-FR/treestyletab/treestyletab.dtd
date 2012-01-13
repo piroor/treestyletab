@@ -20,7 +20,6 @@
 <!ENTITY config.maxTreeLevel.before "until">
 <!ENTITY config.maxTreeLevel.after  "level(s)">
 <!ENTITY config.allowSubtreeCollapseExpand  "Autoriser le repliage/dépliage des arborescences d'onglets">
-<!ENTITY config.tabbar.hideAlltabsButton    "Afficher le bouton &quot;Lister tous les onglets&quot;">
 
 
 <!ENTITY config.tabs.style "Style">

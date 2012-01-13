@@ -1,9 +1,0 @@
-@import url("chrome://treestyletab/skin/config-base.css");
-
-radio[pane] {
-	list-style-image: url("resource:///chrome/browser/skin/classic/browser/preferences/Options.png");
-}
-
-radio[pane="prefpane-tree"] {
-	list-style-image: url("chrome://treestyletab/content/res/icon.png");
-}

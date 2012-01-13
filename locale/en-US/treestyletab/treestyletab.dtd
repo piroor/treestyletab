@@ -20,7 +20,6 @@
 <!ENTITY config.maxTreeLevel.before "until">
 <!ENTITY config.maxTreeLevel.after  "level(s)">
 <!ENTITY config.allowSubtreeCollapseExpand  "Allow to collapse/expand tree of tabs">
-<!ENTITY config.tabbar.hideAlltabsButton    "Show &quot;List all tabs&quot; button">
 
 
 <!ENTITY config.tabs.style "Style">

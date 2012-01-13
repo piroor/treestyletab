@@ -20,7 +20,6 @@
 <!ENTITY config.maxTreeLevel.before "op til">
 <!ENTITY config.maxTreeLevel.after "niveauer">
 <!ENTITY config.allowSubtreeCollapseExpand "Tillad sammenfold/udvid fanetræ">
-<!ENTITY config.tabbar.hideAlltabsButton "Vis &quot;Se alle faner&quot; knappen">
 
 
 <!ENTITY config.tabs.style "Udseende">

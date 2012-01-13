@@ -20,7 +20,6 @@
 <!ENTITY config.maxTreeLevel.before "bis">
 <!ENTITY config.maxTreeLevel.after  "Level">
 <!ENTITY config.allowSubtreeCollapseExpand  "Auf- und Einklappen von Zweigen erlauben">
-<!ENTITY config.tabbar.hideAlltabsButton    "Button zum Auflisten aller Tabs anzeigen">
 
 
 <!ENTITY config.tabs.style "Style">

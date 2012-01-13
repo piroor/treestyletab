@@ -233,7 +233,6 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 	// https://addons.mozilla.org/firefox/addon/dragndrop-toolbars/
 	if ('globDndtb' in window &&
 		globDndtb.setTheStuff &&
-		sv.isGecko2 &&
 		sv.getTreePref('compatibility.DragNDropToolbars')) {
 		let reinitTabbar = function() {
 				TreeStyleTabService.stopRendering();
@@ -272,7 +271,6 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 	if ('mtSidebarStartup' in window &&
 		'mtSidebarShutdown' in window &&
 		'mtPreventHiding' in window &&
-		sv.isGecko2 &&
 		sv.getTreePref('compatibility.OptimozTweaks')) {
 		eval('window.mtSidebarStartup = '+window.mtSidebarStartup.toSource().replace(
 			'{',

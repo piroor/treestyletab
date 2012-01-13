@@ -36,16 +36,6 @@
 		<preference id="extensions.treestyletab.allowSubtreeCollapseExpand.vertical"
 			name="extensions.treestyletab.allowSubtreeCollapseExpand.vertical"
 			type="bool"/>
-		<!-- legacy feature for Firefox 3.6 or olders -->
-		<preference id="extensions.treestyletab.tabbar.hideAlltabsButton.horizontal"
-			name="extensions.treestyletab.tabbar.hideAlltabsButton.horizontal"
-			type="bool"
-			inverted="true"/>
-		<!-- legacy feature for Firefox 3.6 or olders -->
-		<preference id="extensions.treestyletab.tabbar.hideAlltabsButton.vertical"
-			name="extensions.treestyletab.tabbar.hideAlltabsButton.vertical"
-			type="bool"
-			inverted="true"/>
 		<preference id="extensions.treestyletab.tabbar.invertClosebox"
 			name="extensions.treestyletab.tabbar.invertClosebox"
 			type="bool"/>
@@ -129,15 +119,6 @@
 			<checkbox id="extensions.treestyletab.allowSubtreeCollapseExpand.vertical-check"
 				preference="extensions.treestyletab.allowSubtreeCollapseExpand.vertical"
 				label="&config.allowSubtreeCollapseExpand;"/>
-			<hbox align="center" id="hideAlltabsButton-box"><!-- legacy feature for Firefox 3.6 or olders -->
-				<checkbox id="extensions.treestyletab.tabbar.hideAlltabsButton.horizontal-check"
-					preference="extensions.treestyletab.tabbar.hideAlltabsButton.horizontal"
-					label="&config.tabbar.hideAlltabsButton;"
-					collapsed="true"/>
-				<checkbox id="extensions.treestyletab.tabbar.hideAlltabsButton.vertical-check"
-					preference="extensions.treestyletab.tabbar.hideAlltabsButton.vertical"
-					label="&config.tabbar.hideAlltabsButton;"/>
-			</hbox>
 		</hbox>
 		<hbox id="maxTreeLevel-horizontal"
 			align="center">

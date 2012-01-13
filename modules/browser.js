@@ -178,18 +178,6 @@ TreeStyleTabBrowser.prototype = {
 	},
 	_allowSubtreeCollapseExpand : true,
  
-	get hideAlltabsButton() /* legacy feature for Firefox 3.6 or olders */ 
-	{
-		return this._hideAlltabsButton;
-	},
-	set hideAlltabsButton(aValue)
-	{
-		this._hideAlltabsButton = aValue;
-		this.setTabbrowserAttribute(this.kHIDE_ALLTABS, this._hideAlltabsButton ? 'true' : null);
-		return aValue;
-	},
-	_hideAlltabsButton : true,
- 
 	get fixed() 
 	{
 		var orient = this.isVertical ? 'vertical' : 'horizontal' ;
@@ -299,7 +287,6 @@ TreeStyleTabBrowser.prototype = {
 	get canStackTabs() 
 	{
 		return (
-			this.isGecko2 &&
 			!this.isVertical &&
 			this.canCollapseSubtree()
 		);
@@ -317,8 +304,7 @@ TreeStyleTabBrowser.prototype = {
 						this.getTreePref('compatibility.TMP') &&
 						d.getAnonymousElementByAttribute(aTab, 'class', 'tab-text-container')
 					) ||
-					d.getAnonymousElementByAttribute(aTab, 'class', 'tab-text tab-label') || // Firefox 4.0-
-					d.getAnonymousElementByAttribute(aTab, 'class', 'tab-text'); // Firefox 3.5 - Firefox 3.6
+					d.getAnonymousElementByAttribute(aTab, 'class', 'tab-text tab-label');
 		return label;
 	},
  
@@ -905,14 +891,6 @@ TreeStyleTabBrowser.prototype = {
 			aTab.removeAttribute('align');
 			aTab.removeAttribute('maxwidth');
 			aTab.removeAttribute('minwidth');
-			if (!this.isGecko2) { // Firefox 3.6 or older
-				aTab.setAttribute('maxwidth', 250);
-				aTab.setAttribute('minwidth', this.mTabBrowser.mTabContainer.mTabMinWidth);
-				aTab.setAttribute('width', '0');
-				aTab.maxWidth = 250;
-				aTab.minWidth = this.mTabBrowser.mTabContainer.mTabMinWidth;
-				aTab.setAttribute('flex', 100);
-			}
 			if (this.getTreePref('compatibility.TMP'))
 				aTab.removeAttribute('dir'); // Tab Mix Plus
 		}
@@ -1342,8 +1320,6 @@ TreeStyleTabBrowser.prototype = {
 		tabContainer.addEventListener('SSTabRestored',  this, true);
 		tabContainer.addEventListener('TabPinned',      this, true);
 		tabContainer.addEventListener('TabUnpinned',    this, true);
-		if (!this.isGecko2 && 'tabutils' in this.window)
-			tabContainer.addEventListener('DOMAttrModified', this, true); // Tab Utilities
 		tabContainer.addEventListener('mouseover', this, true);
 		tabContainer.addEventListener('dblclick',  this, true);
 		tabContainer.addEventListener('select', this, true);
@@ -1489,9 +1465,6 @@ TreeStyleTabBrowser.prototype = {
 		this.setTabbrowserAttribute(this.kALLOW_STACK, this.canStackTabs ? 'true' : null);
 		this.updateTabsZIndex(this.canStackTabs);
 
-		if (!this.ownerToolbar) /* legacy feature for Firefox 3.6 or olders */
-			this.hideAlltabsButton = this.getTreePref('tabbar.hideAlltabsButton.'+orient);
-
 		if (this.maxTreeLevelPhisical)
 			this.promoteTooDeepLevelTabs();
 
@@ -1508,26 +1481,17 @@ TreeStyleTabBrowser.prototype = {
 				indented      : this.maxTreeLevel != 0,
 				canCollapse   : b.getAttribute(this.kALLOW_COLLAPSE) == 'true'
 			};
-		if (!this.ownerToolbar) { /* legacy feature for Firefox 3.6 or olders */
-			oldState.alltabsButton = b.getAttribute(this.kHIDE_ALLTABS) != 'true';
-			oldState.allTabsButton = oldState.alltabsButton;
-		}
 		var newState = {
 				fixed         : this.getTreePref('tabbar.fixed.'+orient),
 				maxTreeLevel  : this.getTreePref('maxTreeLevel.'+orient),
 				indented      : this.getTreePref('maxTreeLevel.'+orient) != 0,
 				canCollapse   : this.getTreePref('allowSubtreeCollapseExpand.'+orient)
 			};
-		if (!this.ownerToolbar) { /* legacy feature for Firefox 3.6 or olders */
-			newState.alltabsButton = !this.getTreePref('tabbar.hideAlltabsButton.'+orient);
-			newState.allTabsButton = newState.alltabsButton;
-		}
 
 		if (oldState.fixed == newState.fixed &&
 			oldState.maxTreeLevel == newState.maxTreeLevel &&
 			oldState.indented == newState.indented &&
-			oldState.canCollapse == newState.canCollapse &&
-			oldState.alltabsButton == newState.alltabsButton)
+			oldState.canCollapse == newState.canCollapse)
 			return false;
 
 		var data = {
@@ -1552,10 +1516,6 @@ TreeStyleTabBrowser.prototype = {
 				indented      : this.maxTreeLevel != 0,
 				canCollapse   : b.getAttribute(this.kALLOW_COLLAPSE) == 'true'
 			};
-		if (!this.ownerToolbar) { /* legacy feature for Firefox 3.6 or olders */
-			state.alltabsButton = b.getAttribute(this.kHIDE_ALLTABS) != 'true';
-			state.allTabsButton = state.alltabsButton;
-		}
 
 		var data = {
 				state : state
@@ -1909,8 +1869,6 @@ TreeStyleTabBrowser.prototype = {
 		tabContainer.removeEventListener('SSTabRestored',  this, true);
 		tabContainer.removeEventListener('TabPinned',      this, true);
 		tabContainer.removeEventListener('TabUnpinned',    this, true);
-		if (!this.ownerToolbar && 'tabutils' in this.window)
-			b.mTabContainer.removeEventListener('DOMAttrModified', this, true); // Tab Utilites
 		tabContainer.removeEventListener('mouseover', this, true);
 		tabContainer.removeEventListener('dblclick',  this, true);
 		tabContainer.removeEventListener('select', this, true);
@@ -1968,7 +1926,6 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		this.maxTreeLevel = 0;
-		this.hideAlltabsButton = false; /* legacy feature for Firefox 3.6 or olders */
 		this.fixed = true;
 		this._lastTreeViewEnabledBeforeDestroyed = this.treeViewEnabled;
 		this.treeViewEnabled = false;
@@ -2189,7 +2146,6 @@ TreeStyleTabBrowser.prototype = {
 				this.setTabbrowserAttribute(this.kFIXED+'-horizontal', value ? 'true' : null, b);
 			case 'extensions.treestyletab.maxTreeLevel.horizontal':
 			case 'extensions.treestyletab.allowSubtreeCollapseExpand.horizontal':
-			case 'extensions.treestyletab.tabbar.hideAlltabsButton.horizontal': /* legacy feature for Firefox 3.6 or olders */
 				if (!this.isVertical)
 					this.updateTabbarState(true);
 				return;
@@ -2199,7 +2155,6 @@ TreeStyleTabBrowser.prototype = {
 				this.setTabbrowserAttribute(this.kFIXED+'-vertical', value ? 'true' : null, b);
 			case 'extensions.treestyletab.maxTreeLevel.vertical':
 			case 'extensions.treestyletab.allowSubtreeCollapseExpand.vertical':
-			case 'extensions.treestyletab.tabbar.hideAlltabsButton.vertical': /* legacy feature for Firefox 3.6 or olders */
 				if (this.isVertical)
 					this.updateTabbarState(true);
 				return;
@@ -2288,12 +2243,6 @@ TreeStyleTabBrowser.prototype = {
 		if (aStyle.indexOf('default') == 0) { // old name (for compatibility)
 			this.setTreePref('tabbar.style', aStyle = aStyle.replace('default', 'plain'));
 		}
-		else if (// dropshadow is available only on Firefox 3.5 or later.
-			aStyle.indexOf('mixed') == 0 &&
-			this.Comparator.compare(this.XULAppInfo.version, '3.5') < 0
-			) {
-			this.setTreePref('tabbar.style', aStyle = aStyle.replace('mixed', 'flat'));
-		}
 
 		if (aStyle) {
 			let additionalValues = [];
@@ -2378,9 +2327,6 @@ TreeStyleTabBrowser.prototype = {
 
 			case 'TabUnpinned':
 				return this.onTabUnpinned(aEvent.originalTarget);
-
-			case 'DOMAttrModified':
-				return this.onDOMAttrModified(aEvent);
 
 			case 'select':
 				return this.onTabSelect(aEvent);
@@ -3817,27 +3763,6 @@ TreeStyleTabBrowser.prototype = {
 
 		this.updateInvertedTabContentsOrder(aTab);
 		if (this.isVertical) this.positionPinnedTabsWithDelay();
-	},
- 
-	onDOMAttrModified : function TSTBrowser_onDOMAttrModified(aEvent) 
-	{
-		switch (aEvent.attrName)
-		{
-			case 'pinned':
-				let (tab = aEvent.originalTarget) {
-					if (tab.localName != 'tab')
-						return;
-
-					if (aEvent.newValue == 'true')
-						this.onTabPinned(tab);
-					else
-						this.onTabUnpinned(tab);
-				}
-				return;
-
-			default:
-				return;
-		}
 	},
  
 	onTabSelect : function TSTBrowser_onTabSelect(aEvent) 

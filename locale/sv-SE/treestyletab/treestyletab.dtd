@@ -20,7 +20,6 @@
 <!ENTITY config.maxTreeLevel.before "t.o.m. den">
 <!ENTITY config.maxTreeLevel.after  "nivån">
 <!ENTITY config.allowSubtreeCollapseExpand  "Tillåt att flikträd kan minimeras/expanderas">
-<!ENTITY config.tabbar.hideAlltabsButton    "Visa knappen &quot;Visa upp alla flikar&quot;">
 
 
 <!ENTITY config.tabs.style "Format">

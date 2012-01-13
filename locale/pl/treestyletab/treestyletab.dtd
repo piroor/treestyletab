@@ -20,7 +20,6 @@
 <!ENTITY config.maxTreeLevel.before "until">
 <!ENTITY config.maxTreeLevel.after  "level(s)">
 <!ENTITY config.allowSubtreeCollapseExpand  "Zezwalaj na zwijanie/rozwijanie drzewa kart">
-<!ENTITY config.tabbar.hideAlltabsButton    "Wyświetlaj przycisk „Pokaż wszystkie karty”">
 
 <!ENTITY config.tabs.style "Style">
 

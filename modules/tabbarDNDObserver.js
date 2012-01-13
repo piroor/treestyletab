@@ -573,7 +573,7 @@ catch(e) {
  
 	handleEvent : function TabbarDND_handleEvent(aEvent) 
 	{
-		// ignore drag and drop while toolbar customization (for Firefox 3.6)
+		// ignore drag and drop while toolbar customization
 		if (this.treeStyleTab.isToolbarCustomizing)
 			return;
 
@@ -794,15 +794,12 @@ try{
 		if (b.tabContainer && b.tabContainer._setEffectAllowedForDataTransfer) // for Firefox 4.0
 			observer = b.tabContainer;
 
-		// auto-switch for staying on tabs (Firefox 3.5 or later)
+		// auto-switch for staying on tabs
 		if (
 			info.position == sv.kDROP_ON &&
 			info.target &&
 			!info.target.selected &&
-			(
-				('mDragTime' in observer && 'mDragOverDelay' in observer) || // Firefox 3.6
-				('_dragTime' in observer && '_dragOverDelay' in observer) // Firefox 4.0 or later
-			)
+			'_dragTime' in observer && '_dragOverDelay' in observer
 			) {
 			let time = observer.mDragTime || observer._dragTime || 0;
 			let delay = observer.mDragOverDelay || observer._dragOverDelay || 0;

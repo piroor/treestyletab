@@ -333,10 +333,6 @@ TreeStyleTabWindow.prototype = {
 					'extensions.treestyletab.enableSubtreeIndent',
 					'extensions.treestyletab.allowSubtreeCollapseExpand'
 				]);
-			case 1:
-				orientalPrefs = orientalPrefs.concat([
-					'extensions.treestyletab.tabbar.hideAlltabsButton'
-				]);
 			case 2:
 				if (this.getTreePref('urlbar.loadSameDomainToNewChildTab') !== null) {
 					let value = this.getTreePref('urlbar.loadSameDomainToNewChildTab');
@@ -536,8 +532,7 @@ TreeStyleTabWindow.prototype = {
 	{
 		var d = this.document;
 		aTabBrowser = aTabBrowser || this.browser;
-		var allTabsButton = d.getElementById('alltabs-button') || // Firefox 4.0 or later
-				d.getAnonymousElementByAttribute(aTabBrowser.mTabContainer, 'class', 'tabs-alltabs-button') || // Firefox 3.6 or older
+		var allTabsButton = d.getElementById('alltabs-button') ||
 				( // Tab Mix Plus
 					this.getTreePref('compatibility.TMP') &&
 					d.getAnonymousElementByAttribute(aTabBrowser.mTabContainer, 'anonid', 'alltabs-button')

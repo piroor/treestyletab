@@ -474,8 +474,6 @@ pref("extensions.treestyletab.autoAttach.newTabCommand", 0);
 /**
  * How to treat new tabs from middle click (or Ctrl-click) on the "New Tab" button.
  *  Options are same to extensions.treestyletab.autoAttach.newTabCommand.
- * NOTE: This pref affects only on Firefox 4 or later. Firefox 3.6 doesn't open
- *       new blank tabs by middle click on the "New Tab" button.
  */
 pref("extensions.treestyletab.autoAttach.newTabButton", 1);
 /**

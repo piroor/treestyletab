@@ -119,7 +119,6 @@ var TreeStyleTabUtils = {
 	kMODE               : 'treestyletab-mode',
 
 	kHIDE_NEWTAB        : 'treestyletab-hide-newtab-button',
-	kHIDE_ALLTABS       : 'treestyletab-hide-alltabs-button', /* legacy feature for Firefox 3.6 or olders */
 	kSTYLE              : 'treestyletab-style',
 	kFIRSTTAB_BORDER    : 'treestyletab-firsttab-border',
 	kFIXED              : 'treestyletab-tabbar-fixed',
@@ -309,17 +308,12 @@ var TreeStyleTabUtils = {
 
 	get FocusManager()
 	{
-		if (this._FocusManager === undefined) {
-			try {
-				this._FocusManager = Cc['@mozilla.org/focus-manager;1'].getService(Ci.nsIFocusManager);
-			}
-			catch(e) { // Firefox 3.6
-				this._FocusManager = null;
-			}
+		if (!this._FocusManager) {
+			this._FocusManager = Cc['@mozilla.org/focus-manager;1'].getService(Ci.nsIFocusManager);
 		}
 		return this._FocusManager;
 	},
-	// _FocusManager : null,
+	 _FocusManager : null,
 
 	get XULAppInfo() {
 		if (!this._XULAppInfo) {
@@ -339,15 +333,6 @@ var TreeStyleTabUtils = {
 	get isGecko10OrLater() 
 	{
 		return this.Comparator.compare(this.XULAppInfo.version, '10.0a') > 0;
-	},
- 
-	get isGecko2OrLater() 
-	{
-		return this.Comparator.compare(this.XULAppInfo.version, '4.0b5') > 0;
-	},
-	get isGecko2() // for backward compatibility
-	{
-		return this.isGecko2OrLater
 	},
  
 	get treeBundle() { 
@@ -1094,8 +1079,7 @@ var TreeStyleTabUtils = {
 	// workaround for http://piro.sakura.ne.jp/latest/blosxom/mozilla/extension/treestyletab/2009-09-29_debug.htm
 	checkCachedSessionDataExpiration : function TSTUtils_checkCachedSessionDataExpiration(aTab) 
 	{
-		var data = aTab.linkedBrowser.__SS_data || // Firefox 3.6-
-					aTab.linkedBrowser.parentNode.__SS_data; // -Frefox 3.5
+		var data = aTab.linkedBrowser.__SS_data;
 		if (data &&
 			data._tabStillLoading &&
 			aTab.getAttribute('busy') != 'true' &&

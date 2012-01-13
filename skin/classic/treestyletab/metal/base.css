@@ -214,26 +214,6 @@ tabbrowser[treestyletab-tabbar-position="right"]
 
 /* buttons in the tab bar */
 
-/* Firefox 3.6 or older */
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabs-newtab-button,
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabs-newtab-button:hover,
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabs-alltabs-button,
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabs-alltabs-button:hover,
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabs-container
-  > .tabs-closebutton,
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  > .tabs-closebutton,
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabs-container
-  > .tabs-closebutton:hover,
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  > .tabs-closebutton:hover,
-/* Firefox 4.0 or later */
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
   > toolbarbutton,
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
@@ -271,16 +251,6 @@ tabbrowser[treestyletab-tabbar-position="right"]
 	-moz-border-radius: 0 6px 6px 0;
 }
 
-/* Firefox 3.6 or older */
-.tabbrowser-tabs[treestyletab-tabbar-position="left"]
-  .tabs-newtab-button,
-.tabbrowser-tabs[treestyletab-tabbar-position="left"]
-  .tabs-alltabs-button,
-.tabbrowser-tabs[treestyletab-tabbar-position="left"]
-  .tabs-container > .tabs-closebutton,
-.tabbrowser-tabs[treestyletab-tabbar-position="left"]
-  > .tabs-closebutton,
-/* Firefox 4.0 or later */
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-position="left"]
   > toolbarbutton,
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-position="left"]
@@ -289,17 +259,6 @@ tabbrowser[treestyletab-tabbar-position="right"]
 	border-right: 1px solid #666666 !important;
 }
 
-/* Firefox 3.6 or older */
-.tabbrowser-tabs[treestyletab-tabbar-position="right"]
-  .tabs-newtab-button,
-.tabbrowser-tabs[treestyletab-tabbar-position="right"]
-  .tabs-alltabs-button,
-.tabbrowser-tabs[treestyletab-tabbar-position="right"]
-  .tabs-container
-  > .tabs-closebutton,
-.tabbrowser-tabs[treestyletab-tabbar-position="right"]
-  > .tabs-closebutton,
-/* Firefox 4.0 or later */
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-position="right"]
   > toolbarbutton,
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-position="right"]

@@ -20,7 +20,6 @@
 <!ENTITY config.maxTreeLevel.before "（">
 <!ENTITY config.maxTreeLevel.after  "階層まで）">
 <!ENTITY config.allowSubtreeCollapseExpand  "ツリーを折りたためるようにする">
-<!ENTITY config.tabbar.hideAlltabsButton    "「タブの一覧を表示」ボタンを表示する">
 
 
 <!ENTITY config.tabs.style "スタイル">

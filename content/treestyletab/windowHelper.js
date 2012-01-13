@@ -78,11 +78,9 @@ var TreeStyleTabWindowHelper = {
 		// Firefox 4.0 or later
 		if (
 			aObserver.tabContainer &&
-			aObserver.tabContainer.tabbrowser == aObserver &&
-			this.service.isGecko2 // tabbar.tabbrowser can be defined by addons like Tab Mix Plus.
-			) {
+			aObserver.tabContainer.tabbrowser == aObserver
+			)
 			aObserver = aObserver.tabContainer;
-		}
 
 		if ('_setEffectAllowedForDataTransfer' in aObserver) {
 			eval('aObserver._setEffectAllowedForDataTransfer = '+
@@ -215,13 +213,7 @@ var TreeStyleTabWindowHelper = {
 			let source = this._getFunctionSource(aFunc);
 			if (!source || !/^\(?function handleLinkClick/.test(source))
 				return false;
-			eval(aFunc+' = '+source.replace( // for Firefox 3.5 - Firefox 3.6
-				/(openNewTabWith\()/g,
-				<![CDATA[
-					if (!TreeStyleTabService.checkToOpenChildTab(event.target.ownerDocument.defaultView))
-						TreeStyleTabService.readyToOpenChildTab(event.target.ownerDocument.defaultView);
-					$1]]>
-			).replace( // for Firefox 4.0-
+			eval(aFunc+' = '+source.replace(
 				/(charset\s*:\s*doc\.characterSet\s*)/,
 				'$1, event : event, linkNode : linkNode'
 			));
@@ -229,7 +221,6 @@ var TreeStyleTabWindowHelper = {
 			return true;
 		}, this);
 
-		// for Firefox 4.0-
 		if ('openLinkIn' in window) {
 			eval('window.openLinkIn = '+
 				window.openLinkIn.toSource().replace(
@@ -332,23 +323,10 @@ var TreeStyleTabWindowHelper = {
 			)
 		);
 
-		// Firefox 3 full screen
-		eval('FullScreen._animateUp = '+
-			FullScreen._animateUp.toSource().replace(
-				// Firefox 3.6 or older
-				/(gBrowser\.mStrip\.boxObject\.height)/,
-				'((gBrowser.treeStyleTab.position != "top") ? 0 : $1)'
-			)
-		);
 		eval('FullScreen.mouseoverToggle = '+
 			FullScreen.mouseoverToggle.toSource().replace(
-				// Firefox 4.0 or later
 				'this._isChromeCollapsed = !aShow;',
 				'gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_FULLSCREEN); $&'
-			).replace(
-				// Firefox 3.6 or older
-				'gBrowser.mStrip.setAttribute("moz-collapsed", !aShow);',
-				'if (gBrowser.treeStyleTab.position == "top") { $& }'
 			)
 		);
 		eval('FullScreen.toggle = '+
@@ -439,8 +417,7 @@ var TreeStyleTabWindowHelper = {
 			));
 		}
 
-		var goButton = document.getElementById('urlbar-go-button') || // Firefox 4 or later
-						document.getElementById('go-button'); // Firefox 3.6
+		var goButton = document.getElementById('urlbar-go-button');
 		if (goButton)
 			goButton.parentNode.addEventListener('click', this.service, true);
 
@@ -463,8 +440,7 @@ var TreeStyleTabWindowHelper = {
  
 	destroyToolbarItems : function TSTWH_destroyToolbarItems() 
 	{
-		var goButton = document.getElementById('urlbar-go-button') || // Firefox 4 or later
-						document.getElementById('go-button'); // Firefox 3.6
+		var goButton = document.getElementById('urlbar-go-button');
 		if (goButton)
 			goButton.parentNode.removeEventListener('click', this, true);
 
@@ -574,13 +550,10 @@ var TreeStyleTabWindowHelper = {
 
 		if ('_beginRemoveTab' in b) {
 			eval('b._beginRemoveTab = '+
-				b._beginRemoveTab.toSource().replace( // Firefox 3.5-3.6
-					'if (l == 1) {',
-					'if (l == 1 || this.treeStyleTab.shouldCloseLastTabSubtreeOf(aTab)) {'
-				).replace( // Firefox 4.0-
+				b._beginRemoveTab.toSource().replace(
 					'if (this.tabs.length - this._removingTabs.length == 1) {',
 					'if (this.tabs.length - this._removingTabs.length == 1 || this.treeStyleTab.shouldCloseLastTabSubtreeOf(aTab)) {'
-				).replace( // Firefox 3.5-
+				).replace(
 					'this._removingTabs.length == 0',
 					'(this.treeStyleTab.shouldCloseLastTabSubtreeOf(aTab) || $&)'
 				)
@@ -637,18 +610,9 @@ var TreeStyleTabWindowHelper = {
 			);
 		}
 
-		if (b.tabContainer && '_getDropIndex' in b.tabContainer) { // Firefox 4.0 or later
+		if (b.tabContainer && '_getDropIndex' in b.tabContainer) {
 			eval('b.tabContainer._getDropIndex = '+
 				b.tabContainer._getDropIndex.toSource().replace(
-					/\.screenX/g, '[this.treeStyleTab.screenPositionProp]'
-				).replace(
-					/\.width/g, '[this.treeStyleTab.sizeProp]'
-				)
-			);
-		}
-		else if ('getNewIndex' in b) { // Firefox 3.6 or older
-			eval('b.getNewIndex = '+
-				b.getNewIndex.toSource().replace(
 					/\.screenX/g, '[this.treeStyleTab.screenPositionProp]'
 				).replace(
 					/\.width/g, '[this.treeStyleTab.sizeProp]'

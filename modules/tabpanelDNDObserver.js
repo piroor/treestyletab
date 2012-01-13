@@ -82,7 +82,7 @@ TabpanelDNDObserver.prototype = {
  
 	handleEvent : function TabpanelDND_handleEvent(aEvent) 
 	{
-		// ignore drag and drop while toolbar customization (for Firefox 3.6)
+		// ignore drag and drop while toolbar customization
 		if (this.treeStyleTab.isToolbarCustomizing)
 			return;
 

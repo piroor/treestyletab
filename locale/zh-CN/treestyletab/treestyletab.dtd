@@ -20,7 +20,6 @@
 <!ENTITY config.maxTreeLevel.before "最多">
 <!ENTITY config.maxTreeLevel.after  "层">
 <!ENTITY config.allowSubtreeCollapseExpand  "允许折叠/展开标签子树">
-<!ENTITY config.tabbar.hideAlltabsButton    "显示“列出所有标签”按钮">
 
 
 <!ENTITY config.tabs.style "样式">
