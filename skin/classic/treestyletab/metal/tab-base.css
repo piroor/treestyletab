@@ -85,13 +85,6 @@
 	-moz-appearance: none !important;
 }
 
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tab-content > * {
-	position: relative !important;
-	margin-top: -10px !important;
-	margin-bottom: -10px !important;
-}
-
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]:not([treestyletab-tab-inverted="true"])
   .tabbrowser-tab:not([treestyletab-drop-position="self"]) {

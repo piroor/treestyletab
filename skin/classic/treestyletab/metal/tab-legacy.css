@@ -1,0 +1,10 @@
+@import url("tab-base.css");
+
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tab-content > * {
+	position: relative !important;
+	margin-top: -10px !important;
+	margin-bottom: -10px !important;
+}
