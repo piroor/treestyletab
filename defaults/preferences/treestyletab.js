@@ -4,7 +4,7 @@
 pref("extensions.treestyletab.animation.enabled",           true);
 /**
  * Duration of animations.
- * DO NOT CHANGE THE PREFS ON FIREFOX 4 OR LATER, because actual duration of
+ * DO NOT CHANGE THE PREFS, because actual duration of
  * animations are defined in CSS. (CSS Transitions)
  * These prefs are used by the JavaScript implementation.
  */
@@ -13,7 +13,7 @@ pref("extensions.treestyletab.animation.collapse.duration", 150);
 
 /**
  * Size of resizable tab bar. They are completely ignored if "Tabs on Top"
- * is activated on Firefox 4 or later.
+ * is activated.
  */
 pref("extensions.treestyletab.tabbar.width",           200);
 pref("extensions.treestyletab.tabbar.height",          32);
@@ -57,8 +57,7 @@ pref("extensions.treestyletab.tabbar.scroll.duration", 250);
 pref("extensions.treestyletab.tabbar.scrollToNewTab.mode", 1);
 /**
  * Scrollbar in the leftside vertical tab bar should be shown leftmost position
- * instead of between tabs and the content area. This option works only for
- * Firefox 4 or later.
+ * instead of between tabs and the content area.
  */
 pref("extensions.treestyletab.tabbar.invertScrollbar", true);
 
@@ -541,7 +540,7 @@ pref("extensions.treestyletab.closeRootBehavior", 3);
 pref("extensions.treestyletab.undoCloseTabSet.behavior", 3);
 
 /**
- * On Firefox 4 or later, status panel possibly covers the tab bar. If "true",
+ * Status panel possibly covers the tab bar. If "true",
  * TST repositions (and resizes) the status panel automatically.
  * For compatibility, you can set this to "false". Then TST doesn't controll
  * the status panel.

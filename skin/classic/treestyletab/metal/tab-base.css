@@ -38,7 +38,7 @@
 	background: none transparent !important;
 }
 
-/* for Mac OS X, Firefox 4 */
+/* for Mac OS X */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   :-moz-any(.tab-content:not([pinned]):not([selected="true"]),
             .tab-content[pinned]:not([titlechanged]):not([selected="true"]),

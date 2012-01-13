@@ -791,7 +791,7 @@ try{
 		var info = this.getDropAction(aEvent, session);
 
 		var observer = b;
-		if (b.tabContainer && b.tabContainer._setEffectAllowedForDataTransfer) // for Firefox 4.0
+		if (b.tabContainer && b.tabContainer._setEffectAllowedForDataTransfer)
 			observer = b.tabContainer;
 
 		// auto-switch for staying on tabs
@@ -880,7 +880,7 @@ catch(e) {
 
 		this.clearDropPosition();
 
-		if (tabbar._tabDropIndicator) // for Firefox 4 or later
+		if (tabbar._tabDropIndicator)
 			tabbar._tabDropIndicator.collapsed = true;
 
 		var session = sv.currentDragSession;

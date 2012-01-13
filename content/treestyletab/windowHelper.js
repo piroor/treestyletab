@@ -75,7 +75,6 @@ var TreeStyleTabWindowHelper = {
 		var strip = this.service.getTabStrip(aObserver) ||
 					gBrowser.mStrip // fallback to the default strip, for Tab Mix Plus;
 
-		// Firefox 4.0 or later
 		if (
 			aObserver.tabContainer &&
 			aObserver.tabContainer.tabbrowser == aObserver

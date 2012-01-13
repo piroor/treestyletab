@@ -147,7 +147,7 @@ var TreeStyleTabBookmarksService = {
 		if (!aNode || !PlacesUtils.nodeIsContainer(aNode)) return ids;
 
 		var root = aNode;
-		if ('getContainerNodeWithOptions' in PlacesUtils) { // Firefox 3.5 or later
+		if ('getContainerNodeWithOptions' in PlacesUtils) {
 			root = PlacesUtils.getContainerNodeWithOptions(root, false, true);
 		}
 		var oldViewer = root.parentResult.viewer;

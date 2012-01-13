@@ -12,7 +12,7 @@
 	-moz-border-right-colors: none !important;
 	-moz-border-bottom-colors: none !important;
 	-moz-border-left-colors: none !important;
-	-moz-border-radius: 0; /* Firefox 4.0 or later */
+	-moz-border-radius: 0;
 	border-top: 1px solid ThreeDShadow !important;
 	background: ThreeDFace !important;
 }
@@ -21,7 +21,7 @@
 	background: ThreeDHighlight !important;
 }
 
-/* for Mac OS X, Firefox 4 */
+/* for Mac OS X */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabs-newtab-button
   .toolbarbutton-icon {
@@ -35,7 +35,7 @@
 	padding: 0 !important;
 }
 
-/* Support customizable tab bar on Firefox 4.0 or later */
+/* Support customizable tab bar */
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > toolbarpaletteitem > toolbarbutton {
 	-moz-box-flex: 1;
 }

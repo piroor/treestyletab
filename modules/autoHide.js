@@ -255,8 +255,6 @@ AutoHideBrowser.prototype = {
 
 		this.updateTransparency();
 
-		if (!sv.isFloating)
-			sv.container.style.margin = 0;
 		sv.removeTabbrowserAttribute(this.kAUTOHIDE);
 		sv.removeTabbrowserAttribute(this.kSTATE);
 
@@ -297,9 +295,7 @@ AutoHideBrowser.prototype = {
 
 		this.browser.addEventListener('mousemove', this, true);
 		this.screen.addEventListener('mousemove', this, true);
-
-		if (this.treeStyleTab.isFloating)
-			this.treeStyleTab.tabStrip.addEventListener('mousemove', this, true);
+		this.treeStyleTab.tabStrip.addEventListener('mousemove', this, true);
 
 		this.mouseMoveListening = true;
 	},
@@ -310,9 +306,7 @@ AutoHideBrowser.prototype = {
 
 		this.browser.removeEventListener('mousemove', this, true);
 		this.screen.removeEventListener('mousemove', this, true);
-
-		if (this.treeStyleTab.isFloating)
-			this.treeStyleTab.tabStrip.removeEventListener('mousemove', this, true);
+		this.treeStyleTab.tabStrip.removeEventListener('mousemove', this, true);
 
 		this.mouseMoveListening = false;
 	},

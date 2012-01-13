@@ -267,10 +267,7 @@ TreeStyleTabBrowser.prototype = {
 		return (box.getAttribute('orient') || this.window.getComputedStyle(box, '').getPropertyValue('-moz-box-orient')) == 'vertical';
 	},
  
-	get isFloating() 
-	{
-		return this._tabStripPlaceHolder;
-	},
+	isFloating : true, // for backward compatibility (but this should be removed)
  
 	get ownerToolbar() 
 	{
@@ -283,10 +280,7 @@ TreeStyleTabBrowser.prototype = {
  
 	get canStackTabs() 
 	{
-		return (
-			!this.isVertical &&
-			this.canCollapseSubtree()
-		);
+		return !this.isVertical && this.canCollapseSubtree();
 	},
   
 /* utils */ 
@@ -527,7 +521,6 @@ TreeStyleTabBrowser.prototype = {
  
 	fixTooNarrowTabbar : function TSTBrowser_fixTooNarrowTabbar() 
 	{
-		if (!this.isFloating) return;
 		/**
 		 * The tab bar can become smaller than the actual size of the
 		 * floating tab bar, and then, we cannot resize tab bar by
@@ -604,7 +597,7 @@ TreeStyleTabBrowser.prototype = {
 		 *   https://bugzilla.mozilla.org/show_bug.cgi?id=558585
 		 *   http://hg.mozilla.org/mozilla-central/rev/e90bdd97d168
 		 */
-		if (b.style.backgroundColor && this.isFloating) {
+		if (b.style.backgroundColor) {
 			let color = b.style.backgroundColor;
 			let pi = d.createProcessingInstruction(
 					'xml-stylesheet',
@@ -1071,7 +1064,6 @@ TreeStyleTabBrowser.prototype = {
 		var placeHolder = this.tabStripPlaceHolder || strip;
 		var splitter = this._ensureNewSplitter();
 		var toggler = d.getAnonymousElementByAttribute(b, 'class', this.kTABBAR_TOGGLER);
-		var indicator = b.mTabDropIndicatorBar || b.tabContainer._tabDropIndicator;
 
 		// Tab Mix Plus
 		var scrollFrame, newTabBox, tabBarMode;
@@ -1165,8 +1157,6 @@ TreeStyleTabBrowser.prototype = {
 					   unexpectedly becomes 0 on the startup. so, we have
 					   to set the width again. */
 					aSelf.setTabStripAttribute('width', width);
-					if (!aSelf.isFloating)
-						indicator.setAttribute('ordinal', 1);
 					aSelf.setTabStripAttribute('ordinal', 30);
 					aSplitter.setAttribute('ordinal', 20);
 					aToggler.setAttribute('ordinal', 40);
@@ -1179,8 +1169,6 @@ TreeStyleTabBrowser.prototype = {
 				this.removeTabbrowserAttribute(this.kTAB_INVERTED);
 				this.indentTarget = 'left';
 				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
-					if (!aSelf.isFloating)
-						indicator.setAttribute('ordinal', 1);
 					aSelf.setTabStripAttribute('ordinal', 10);
 					aSplitter.setAttribute('ordinal', 20);
 					aToggler.setAttribute('ordinal', 5);
@@ -1239,8 +1227,6 @@ TreeStyleTabBrowser.prototype = {
 				this.setTabbrowserAttribute(this.kTABBAR_POSITION, 'bottom');
 				this.indentTarget = 'bottom';
 				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
-					if (!aSelf.isFloating)
-						indicator.setAttribute('ordinal', 1);
 					aSelf.setTabStripAttribute('ordinal', 30);
 					aSplitter.setAttribute('ordinal', 20);
 					aToggler.setAttribute('ordinal', 40);
@@ -1251,8 +1237,6 @@ TreeStyleTabBrowser.prototype = {
 				this.setTabbrowserAttribute(this.kTABBAR_POSITION, 'top');
 				this.indentTarget = 'top';
 				delayedPostProcess = function(aSelf, aTabBrowser, aSplitter, aToggler) {
-					if (!aSelf.isFloating)
-						indicator.setAttribute('ordinal', 1);
 					aSelf.setTabStripAttribute('ordinal', 10);
 					aSplitter.setAttribute('ordinal', 20);
 					aToggler.setAttribute('ordinal', 5);
@@ -1417,7 +1401,7 @@ TreeStyleTabBrowser.prototype = {
 					b.mPanelContainer.removeAttribute('height');
 				}
 				// remove ordinal for "tabs on top" https://bugzilla.mozilla.org/show_bug.cgi?id=544815
-				if (this.isFloating && this.position == 'top') {
+				if (this.position == 'top') {
 					this.removeTabStripAttribute('ordinal');
 					if (TabsOnTop) {
 						// workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=555987
@@ -1526,9 +1510,6 @@ TreeStyleTabBrowser.prototype = {
   
 	updateFloatingTabbar : function TSTBrowser_updateFloatingTabbar(aReason) 
 	{
-		// this method is just for Firefox 4.0 or later
-		if (!this.isFloating) return;
-
 		var w = this.window;
 		if (this._updateFloatingTabbarTimer) {
 			w.clearTimeout(this._updateFloatingTabbarTimer);
@@ -1729,7 +1710,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var d = this.document;
 		var b = this.mTabBrowser;
-		b.mTabContainer.removeAttribute('overflow'); // Firefox 4.0
+		b.mTabContainer.removeAttribute('overflow');
 		var container = d.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-container');
 
 		if (!container) {
@@ -1752,11 +1733,11 @@ TreeStyleTabBrowser.prototype = {
 					scrollBox.boxObject.height > container.boxObject.height
 				)
 				) {
-				b.mTabContainer.setAttribute('overflow', true); // Firefox 4.0
+				b.mTabContainer.setAttribute('overflow', true);
 				container.setAttribute('overflow', true);
 			}
 			else {
-				b.mTabContainer.removeAttribute('overflow'); // Firefox 4.0
+				b.mTabContainer.removeAttribute('overflow');
 				container.removeAttribute('overflow');
 			}
 		}, 100);
@@ -1901,7 +1882,7 @@ TreeStyleTabBrowser.prototype = {
 		this.position = this.position;
 	},
    
-/* toolbar customization on Firefox 4 or later */ 
+/* toolbar customization */ 
 	
 	syncDestroyTabbar : function TSTBrowser_syncDestroyTabbar() 
 	{
@@ -2159,13 +2140,8 @@ TreeStyleTabBrowser.prototype = {
 				if (!this.shouldApplyNewPref) return;
 				if (!this.autoHide.isResizing && this.isVertical) {
 					this.removeTabStripAttribute('width');
-					if (this.isFloating) {
-						this.setTabStripAttribute('width', this.autoHide.placeHolderWidthFromMode);
-						this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_PREF_CHANGE);
-					}
-					else {
-						this.setTabStripAttribute('width', this.autoHide.widthFromMode);
-					}
+					this.setTabStripAttribute('width', this.autoHide.placeHolderWidthFromMode);
+					this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_PREF_CHANGE);
 				}
 				this.checkTabsIndentOverflow();
 				return;
@@ -2382,7 +2358,7 @@ TreeStyleTabBrowser.prototype = {
 				return this.onResize(aEvent);
 
 
-			// toolbar customizing on Firefox 4 or later
+			// toolbar customizing
 			case 'beforecustomization':
 				this.toolbarCustomizing = true;
 				return this.syncDestroyTabbar();
@@ -4329,11 +4305,9 @@ TreeStyleTabBrowser.prototype = {
 		}
 		else {
 			this.clearTreePref('tabbar.height');
-			if (this.isFloating) {
-				let tabContainerBox = this.getTabContainerBox(this.mTabBrowser);
-				tabContainerBox.removeAttribute('height');
-				this._tabStripPlaceHolder.height = tabContainerBox.boxObject.height;
-			}
+			let tabContainerBox = this.getTabContainerBox(this.mTabBrowser);
+			tabContainerBox.removeAttribute('height');
+			this._tabStripPlaceHolder.height = tabContainerBox.boxObject.height;
 		}
 		this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_RESET);
 	},

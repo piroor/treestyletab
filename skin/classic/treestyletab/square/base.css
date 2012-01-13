@@ -101,7 +101,7 @@
 	-moz-border-top-colors: ThreeDShadow transparent !important;
 }
 
-/* for Mac OS X, Firefox 4 */
+/* for Mac OS X */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   :-moz-any(.tab-content:not([selected="true"]),
             .tab-content[selected="true"]) {
