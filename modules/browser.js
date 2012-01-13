@@ -2524,12 +2524,12 @@ TreeStyleTabBrowser.prototype = {
 		}
 		this.clearLastScrollPosition();
 
-		if (this.cancelingPerformingAutoScroll) return;
+		if (this.cancelingPerformingAutoScroll)
+			this.cancelingPerformingAutoScroll.cancel();
 
-		this.cancelingPerformingAutoScroll = true;
 		var self = this;
-		this.Deferred.wait(0.1).next(function() {
-			self.cancelingPerformingAutoScroll = false;
+		this.cancelingPerformingAutoScroll = this.Deferred.wait(0.3).next(function() {
+			self.cancelingPerformingAutoScroll = null;
 		});
 	},
  
