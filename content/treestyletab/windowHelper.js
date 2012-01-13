@@ -377,7 +377,13 @@ var TreeStyleTabWindowHelper = {
 			));
 		}
 
-		if ('TabsOnTop' in window && TabsOnTop.syncCommand) {
+		if ('TabsOnTop' in window && TabsOnTop.syncUI) { // Firefox 12 or later
+			eval('TabsOnTop.syncUI = '+TabsOnTop.syncUI.toSource().replace(
+				/(\}\)?)$/,
+				'gBrowser.treeStyleTab.onTabsOnTopSyncCommand(enabled); $&'
+			));
+		}
+		if ('TabsOnTop' in window && TabsOnTop.syncCommand) { // Firefox 4-11
 			eval('TabsOnTop.syncCommand = '+TabsOnTop.syncCommand.toSource().replace(
 				/(\}\)?)$/,
 				'gBrowser.treeStyleTab.onTabsOnTopSyncCommand(enabled); $&'
