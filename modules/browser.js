@@ -1264,6 +1264,13 @@ TreeStyleTabBrowser.prototype = {
 			this.updateTabCollapsed(aTab, aTab.getAttribute(this.kCOLLAPSED) == 'true', true);
 		}, this);
 
+		// for updateTabbarOverflow(), we should reset the "overflow" now.
+		b.mTabContainer.removeAttribute('overflow');
+		let (container = this.document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-container')) {
+			if (container)
+				container.removeAttribute('overflow');
+		}
+
 		this.updateTabbarState(false);
 
 		var self = this;
@@ -1717,36 +1724,30 @@ TreeStyleTabBrowser.prototype = {
 		var d = this.document;
 		var b = this.mTabBrowser;
 		b.mTabContainer.removeAttribute('overflow');
-		var container = d.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-container');
+		var container = d.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-container') || b.mTabContainer;
 
-		if (!container) {
-			if (this.ownerToolbar)
-				container = b.mTabContainer;
-			else
-				return;
-		}
-
-		container.removeAttribute('overflow');
+		if (container != b.mTabContainer)
+			container.removeAttribute('overflow');
 
 		var scrollBox = this.scrollBox;
-		this.window.setTimeout(function() {
-			scrollBox = d.getAnonymousElementByAttribute(scrollBox, 'anonid', 'scrollbox');
-			if (scrollBox) scrollBox = d.getAnonymousNodes(scrollBox)[0];
-			if (
-				scrollBox &&
-				(
-					scrollBox.boxObject.width > container.boxObject.width ||
-					scrollBox.boxObject.height > container.boxObject.height
-				)
-				) {
-				b.mTabContainer.setAttribute('overflow', true);
+		scrollBox = d.getAnonymousElementByAttribute(scrollBox, 'anonid', 'scrollbox');
+		if (scrollBox) scrollBox = d.getAnonymousNodes(scrollBox)[0];
+		if (
+			scrollBox &&
+			(
+				scrollBox.boxObject.width > container.boxObject.width ||
+				scrollBox.boxObject.height > container.boxObject.height
+			)
+			) {
+			b.mTabContainer.setAttribute('overflow', true);
+			if (container != b.mTabContainer)
 				container.setAttribute('overflow', true);
-			}
-			else {
-				b.mTabContainer.removeAttribute('overflow');
+		}
+		else {
+			b.mTabContainer.removeAttribute('overflow');
+			if (container != b.mTabContainer)
 				container.removeAttribute('overflow');
-			}
-		}, 100);
+		}
 	},
  
 	reinitAllTabs : function TSTBrowser_reinitAllTabs(aSouldUpdateCount) 
@@ -4068,13 +4069,22 @@ TreeStyleTabBrowser.prototype = {
 		if (horizontal) return;
 		aEvent.stopPropagation();
 		this.positionPinnedTabsWithDelay();
-		if (aEvent.detail == 1) return;
-		if (aEvent.type == 'overflow') {
-			tabs.setAttribute('overflow', 'true');
-			this.scrollBoxObject.ensureElementIsVisible(tabs.selectedItem);
+		if (aEvent.detail == 1) {
+			/**
+			 * By horizontal overflow/underflow, Firefox can wrongly
+			 * removes "overflow" attribute for vertical tab bar.
+			 * We have to override the result.
+			 */
+			this.updateTabbarOverflow();
 		}
 		else {
-			tabs.removeAttribute('overflow');
+			if (aEvent.type == 'overflow') {
+				tabs.setAttribute('overflow', 'true');
+				this.scrollBoxObject.ensureElementIsVisible(tabs.selectedItem);
+			}
+			else {
+				tabs.removeAttribute('overflow');
+			}
 		}
 	},
  
