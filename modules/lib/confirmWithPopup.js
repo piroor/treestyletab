@@ -138,10 +138,15 @@ var confirmWithPopup;
 	confirmWithPopup = function confirmWithPopup(aOptions) 
 	{
 		var deferred = new namespace.Deferred();
+
+		// we should accept single button type popup
+		if (!aOptions.buttons && aOptions.button)
+			aOptions.buttons = [aOptions.button];
+
 		if (!aOptions.buttons) {
 			return deferred
 					.next(function() {
-						throw new Error('confirmWithPopup requires one or more buttons!');
+						throw new Error('confirmWithPopup requires any button!');
 					});
 		}
 
