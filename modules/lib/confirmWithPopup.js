@@ -1,7 +1,7 @@
 /**
  * @fileOverview Popup Notification (Door Hanger) Based Confirmation Library for Firefox 4.0 or later
  * @author       SHIMODA "Piro" Hiroshi
- * @version      1
+ * @version      2
  * Basic usage:
  *
  * @example
@@ -15,8 +15,13 @@
  *     image   : 'chrome://....png',                  // the icon (optional)
  *     buttons : ['Yes', 'Yes forever', 'No forever], // button labels
  *     options : {
- *       // persistence, timeout, persistWhileVisible, dismissed,
- *       // eventCallback, neverShow
+ *       // persistence (integer)
+ *       // timeout (integer)
+ *       // persistWhileVisible (boolean)
+ *       // dismissed (boolean)
+ *       // eventCallback (function)
+ *       // neverShow (boolean)
+ *       // popupIconURL (string) : will be used instead of "image" option.
  *     }
  *   })
  *   .next(function(aButtonIndex) {
@@ -39,7 +44,7 @@
  *   });
  *
  * @license
- *   The MIT License, Copyright (c) 2011 SHIMODA "Piro" Hiroshi
+ *   The MIT License, Copyright (c) 2011-2012 SHIMODA "Piro" Hiroshi
  *   http://github.com/piroor/fxaddonlibs/blob/master/license.txt
  * @url http://github.com/piroor/fxaddonlibs/blob/master/confirmWithPopup.js
  * @url http://github.com/piroor/fxaddonlibs
@@ -77,7 +82,7 @@ catch(e) {
 
 var confirmWithPopup;
 (function() {
-	const currentRevision = 1;
+	const currentRevision = 2;
 
 	var loadedRevision = 'confirmWithPopup' in namespace ?
 			namespace.confirmWithPopup.revision :
@@ -104,6 +109,7 @@ var confirmWithPopup;
 		return deferred;
 	}
 
+	// We have to use a custom stylesheet to show the anchor element.
 	function addStyleSheet(aDocument, aOptions) {
 		var uri = 'data:text/css,'+encodeURIComponent(
 				'.popup-notification-icon[popupid="'+aOptions.id+'"] {'+
@@ -210,7 +216,8 @@ var confirmWithPopup;
 
 			if (aOptions.image)
 				style = addStyleSheet(doc, {
-					image  : aOptions.image,
+					image  : (aOptions.options && aOptions.options.popupIconURL) ||
+								aOptions.popupIconURL || aOptions.image,
 					id     : id,
 					width  : imageWidth,
 					height : imageHeight,
