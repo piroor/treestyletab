@@ -191,6 +191,15 @@ pref("extensions.treestyletab.allowSubtreeCollapseExpand.horizontal", false);
 pref("extensions.treestyletab.allowSubtreeCollapseExpand.vertical",   true);
 
 /**
+ * Activates "stacked tabs" in the horizontal tab bar.
+ * It is very hard to know how many tabs are collapsed in a horizontal tab bar.
+ * If "stacked tabs" is activated, collapsed tabs will be shown as a tab behind
+ * the top-level parent tab. In this mode, you can click to select a collapsed
+ * tab.
+ */
+pref("extensions.treestyletab.stackCollapsedTabs", true);
+
+/**
  * Activates the border-topfor the first tab. With some theme, the tab bar is
  * possibly shown without border-top. If this pref is "true", special CSS rules
  * for border-top of the first tab will be applied.

@@ -280,7 +280,11 @@ TreeStyleTabBrowser.prototype = {
  
 	get canStackTabs() 
 	{
-		return !this.isVertical && this.canCollapseSubtree();
+		return (
+			!this.isVertical &&
+			this.canCollapseSubtree() &&
+			this.getTreePref('stackCollapsedTabs')
+		);
 	},
  
 	get counterRole() 
