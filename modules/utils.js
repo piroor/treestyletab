@@ -74,10 +74,10 @@ XPCOMUtils.defineLazyGetter(this, 'autoScroll', function() {
 	Components.utils.import('resource://treestyletab-modules/lib/autoScroll.js', {});
 	return window['piro.sakura.ne.jp'].autoScroll;
 });
-XPCOMUtils.defineLazyGetter(this, 'confirmWithTab', function() {
+XPCOMUtils.defineLazyGetter(this, 'confirmWithPopup', function() {
 	var ns = {};
-	Components.utils.import('resource://treestyletab-modules/lib/confirmWithTab.js', ns);
-	return ns.confirmWithTab;
+	Components.utils.import('resource://treestyletab-modules/lib/confirmWithPopup.js', ns);
+	return ns.confirmWithPopup;
 });
  
 var TreeStyleTabUtils = { 
@@ -679,28 +679,22 @@ var TreeStyleTabUtils = {
 		if (behavior & this.kUNDO_CLOSE_SET) behavior ^= this.kUNDO_CLOSE_SET;
 
 		var self = this;
-		var neverAskState = !(behavior & this.kUNDO_ASK);
-		var checkbox = {
-				label : this.treeBundle.getString('undoCloseTabSetBehavior.never'),
-				checked : neverAskState
-			};
-		return confirmWithTab({
-				tab      : aRestoredTab,
+		return confirmWithPopup({
+				browser  : aRestoredTab.linkedBrowser,
 				label    : this.treeBundle.getFormattedString('undoCloseTabSetBehavior.label', [aCount]),
 				value    : 'treestyletab-undo-close-tree',
+				image    : 'chrome://treestyletab/content/res/icon.png',
 				buttons  : [
-					this.treeBundle.getString('undoCloseTabSetBehavior.set'),
-					this.treeBundle.getString('undoCloseTabSetBehavior.separate')
-				],
-				persistence : -1, // don't hide automatically by page loadings
-				checkbox : checkbox,
-				cancelEvents : ['TabClose', 'SSTabRestoring']
+					this.treeBundle.getString('undoCloseTabSetBehavior.restoreOnce'),
+					this.treeBundle.getString('undoCloseTabSetBehavior.restoreForever'),
+					this.treeBundle.getString('undoCloseTabSetBehavior.ignoreForever')
+				]
 			})
 			.next(function(aButtonIndex) {
-				if (aButtonIndex == 0) {
+				if (aButtonIndex < 2) {
 					behavior |= self.kUNDO_CLOSE_SET;
 				}
-				if (checkbox.checked != neverAskState) {
+				if (aButtonIndex > 0) {
 					behavior ^= self.kUNDO_ASK;
 					self.setTreePref('undoCloseTabSet.behavior', behavior);
 				}
@@ -1498,6 +1492,7 @@ var TreeStyleTabUtils = {
 		return this.evaluateXPath(
 			'descendant::xul:tab[not(@pinned="true") and not(@hidden="true")]',
 			b.mTabContainer,
+
 			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 		).singleNodeValue;
 	},
