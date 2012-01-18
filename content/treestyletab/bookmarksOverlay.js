@@ -34,26 +34,32 @@ var TreeStyleTabBookmarksService = {
 		this._observing = false;
 
 		this.BookmarksService.removeObserver(this);
-
-		// this is adding bookmark folder from tabs, so ignroe the first item!
-		if (
-			this._addingBookmarks.length == this._addingBookmarkTreeStructure.length+1 &&
-			this.BookmarksService.getItemType(this._addingBookmarks[0].id) == this.BookmarksService.TYPE_FOLDER
-			)
-			this._addingBookmarks.shift();
-
-		if (this._addingBookmarks.length == this._addingBookmarkTreeStructure.length) {
-			this._addingBookmarks.forEach(function(aItem, aIndex) {
-				let index = this._addingBookmarkTreeStructure[aIndex];
-				PlacesUtils.setAnnotationsForItem(aItem.id, [{
-					name    : this.kPARENT,
-					value   : (index > -1 ? this._addingBookmarks[index].id : -1 ),
-					expires : PlacesUtils.annotations.EXPIRE_NEVER
-				}]);
-			}, this);
-		}
+		this.handleNewBookmarksFromTabs(this._addingBookmarks, this._addingBookmarkTreeStructure);
 		this._addingBookmarks = [];
 		this._addingBookmarkTreeStructure = [];
+	},
+ 
+	handleNewBookmarksFromTabs : function TSTBMService_handleNewBookmarksFromTabs(aBookarmks, aTreeStructure) 
+	{
+		// this is adding bookmark folder from tabs, so ignroe the first item!
+		if (
+			aBookarmks.length == aTreeStructure.length+1 &&
+			this.BookmarksService.getItemType(aBookarmks[0].id) == this.BookmarksService.TYPE_FOLDER
+			) {
+			aBookarmks.shift();
+		}
+		else if (aBookarmks.length != aTreeStructure.length) {
+			return;
+		}
+
+		aBookarmks.forEach(function(aItem, aIndex) {
+			let index = aTreeStructure[aIndex];
+			PlacesUtils.setAnnotationsForItem(aItem.id, [{
+				name    : this.kPARENT,
+				value   : (index > -1 ? aBookarmks[index].id : -1 ),
+				expires : PlacesUtils.annotations.EXPIRE_NEVER
+			}]);
+		}, this);
 	},
  
 	bookmarkTabSubtree : function TSTBMService_bookmarkTabSubtree(aTabOrTabs) 
