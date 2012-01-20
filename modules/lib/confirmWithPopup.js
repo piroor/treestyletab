@@ -123,8 +123,8 @@ var confirmWithPopup;
 				(aOptions.image ?
 					'.popup-notification-icon[popupid="'+aOptions.id+'"] {'+
 					'	list-style-image: url("'+aOptions.image+'");'+
-					(aOptions.width ? 'width: '+aOptions.width+'px;' : '' )+
-					(aOptions.height ? 'height: '+aOptions.height+'px;' : '' )+
+					(aOptions.imageWidth ? 'width: '+aOptions.imageWidth+'px;' : '' )+
+					(aOptions.imageHeight ? 'height: '+aOptions.imageHeight+'px;' : '' )+
 					'}' :
 					''
 				)+
