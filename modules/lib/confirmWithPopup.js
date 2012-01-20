@@ -74,8 +74,12 @@ if (typeof namespace == 'undefined') {
 
 // This can be extended by JSDeferred.
 // See: https://github.com/cho45/jsdeferred
-if (typeof namespace.Deferred == 'undefined')
-	Components.utils.import('resource://treestyletab-modules/lib/jsdeferred.js', namespace);
+try {
+	if (typeof namespace.Deferred == 'undefined')
+		Components.utils.import('resource://treestyletab-modules/lib/jsdeferred.js', namespace);
+}
+catch(e) {
+}
 
 var available = false;
 try {
