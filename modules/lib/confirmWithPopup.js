@@ -200,9 +200,11 @@ var confirmWithPopup;
 		var doc = options.browser.ownerDocument;
 		var style;
 		var done = false;
-		var postProcess = function(aButtonIndex) {
-				if (doc && style) doc.removeChild(style);
-				return aButtonIndex;
+		var postProcess = function() {
+				if (doc && style) {
+					doc.removeChild(style);
+					style = null;
+				}
 			};
 		var showPopup = function() {
 			var accessKeys = [];
@@ -248,7 +250,12 @@ var confirmWithPopup;
 						accessKey : accessKey,
 						callback  : function() {
 							done = true;
-							deferred.call(aIndex);
+							try {
+								deferred.call(aIndex);
+							}
+							finally {
+								postProcess();
+							}
 						}
 					};
 				});
@@ -293,11 +300,16 @@ var confirmWithPopup;
 							{
 								__proto__     : nativeOptions,
 								eventCallback : function(aEventType) {
-									if (done) return;
-									if (aEventType == 'removed' || aEventType == 'dismissed')
-										deferred.fail(aEventType);
-									if (options.eventCallback)
-										options.eventCallback.call(aOptions.options || aOptions, aEventType);
+									try {
+										if (!done && (aEventType == 'removed' || aEventType == 'dismissed'))
+											deferred.fail(aEventType);
+										if (options.eventCallback)
+											options.eventCallback.call(aOptions.options || aOptions, aEventType);
+									}
+									finally {
+										if (aEventType == 'removed')
+											postProcess();
+									}
 								}
 							}
 						);
@@ -333,12 +345,26 @@ var confirmWithPopup;
 		}
 
 		if (namespace.Deferred) {
-			return deferred.next(postProcess);
+			return deferred;
 		}
 		else {
 			let originalCall = deferred.call;
 			deferred.call = function(aButtonIndex) {
-				originalCall(postProcess(aButtonIndex));
+				try {
+					originalCall(aButtonIndex);
+				}
+				finally {
+					postProcess();
+				}
+			};
+			let originalFail = deferred.fail;
+			deferred.fail = function(aError) {
+				try {
+					originalFail(aError);
+				}
+				finally {
+					postProcess();
+				}
 			};
 		}
 	};
