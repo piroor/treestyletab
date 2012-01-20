@@ -688,7 +688,8 @@ var TreeStyleTabUtils = {
 					this.treeBundle.getString('undoCloseTabSetBehavior.restoreOnce'),
 					this.treeBundle.getString('undoCloseTabSetBehavior.restoreForever'),
 					this.treeBundle.getString('undoCloseTabSetBehavior.ignoreForever')
-				]
+				],
+				persistence : -1 // don't hide even if the tab is restored after the panel is shown.
 			})
 			.next(function(aButtonIndex) {
 				if (aButtonIndex < 2) {
