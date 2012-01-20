@@ -1,47 +1,52 @@
 /**
  * @fileOverview Popup Notification (Door Hanger) Based Confirmation Library for Firefox 4.0 or later
  * @author       SHIMODA "Piro" Hiroshi
- * @version      2
+ * @version      3
  * Basic usage:
  *
  * @example
- *   Components.utils.import('resource://my-modules/confirmWithPopup.js');
+ *   Usage:
+ *     Components.utils.import('resource://my-modules/confirmWithPopup.js');
  *
- *   confirmWithPopup({
- *     browser : gBrowser.selectedBrowser,            // the related browser
- *     label   : 'Ara you ready?',                    // the message
- *     value   : 'treestyletab-undo-close-tree',      // the internal key (optional)
- *     anchor  : '....',                              // the ID of the anchor element (optional)
- *     image   : 'chrome://....png',                  // the icon (optional)
- *     buttons : ['Yes', 'Yes forever', 'No forever], // button labels
- *     options : {
- *       // persistence (integer)
- *       // timeout (integer)
- *       // persistWhileVisible (boolean)
- *       // dismissed (boolean)
- *       // eventCallback (function)
- *       // neverShow (boolean)
- *       // popupIconURL (string) : will be used instead of "image" option.
- *     }
- *   })
- *   .next(function(aButtonIndex) {
- *     // the next callback receives the index of the clicked button.
- *     switch (aButtonIndex) {
- *       case 0: // Yes
- *         ...
- *         break;
- *       case 1: // Yes forever
- *         ...
- *         break;
- *       case 2: // No forever
- *         ...
- *         break;
- *     }
- *     ...
- *   })
- *   .error(function(aError) {
- *     ...
- *   });
+ *     confirmWithPopup({
+ *       browser : gBrowser.selectedBrowser,            // the related browser
+ *       label   : 'Ara you ready?',                    // the message
+ *       value   : 'treestyletab-undo-close-tree',      // the internal key (optional)
+ *       anchor  : '....',                              // the ID of the anchor element (optional)
+ *       image   : 'chrome://....png',                  // the icon (optional)
+ *       buttons : ['Yes', 'Yes forever', 'No forever], // button labels
+ *       // Native options for PopupNotifications.show() :
+ *       //   persistence (integer)
+ *       //   timeout (integer)
+ *       //   persistWhileVisible (boolean)
+ *       //   dismissed (boolean)
+ *       //   eventCallback (function)
+ *       //   neverShow (boolean)
+ *       //   popupIconURL (string) : will be used instead of "image" option.
+ *     });
+ *
+ *  JSDeferred style:
+ *    confirmWithPopup(...)
+ *     .next(function(aButtonIndex) {
+ *       // the next callback receives the index of the clicked button.
+ *       switch (aButtonIndex) {
+ *         case 0: return YesAction();
+ *         case 1: return YesForeverAction();
+ *         case 2: return NoForeverAction();
+ *       }
+ *     })
+ *     .error(function(aError) {
+ *       // dismissed or removed (not called if any button is chosen)
+ *       ...
+ *     });
+ *
+ *  without JSDeferred:
+ *    confirmWithPopup({ ...,
+ *      // Yes, Yes Forever, or No Forever
+ *      callback : function(aButtonIndex) { ... },
+ *      // dismissed or removed (not called if any button is chosen)
+ *      onerror  : function(aError) { ... }
+ *    });
  *
  * @license
  *   The MIT License, Copyright (c) 2011-2012 SHIMODA "Piro" Hiroshi
@@ -67,7 +72,7 @@ if (typeof namespace == 'undefined') {
 	}
 }
 
-// This depends on JSDeferred.
+// This can be extended by JSDeferred.
 // See: https://github.com/cho45/jsdeferred
 if (typeof namespace.Deferred == 'undefined')
 	Components.utils.import('resource://treestyletab-modules/lib/jsdeferred.js', namespace);
@@ -82,7 +87,7 @@ catch(e) {
 
 var confirmWithPopup;
 (function() {
-	const currentRevision = 2;
+	const currentRevision = 3;
 
 	var loadedRevision = 'confirmWithPopup' in namespace ?
 			namespace.confirmWithPopup.revision :
@@ -95,28 +100,30 @@ var confirmWithPopup;
 	if (!available)
 		return confirmWithPopup = undefined;
 
-	const DEFAULT_ANCHOR_ICON = 'default-notification-icon';
+	const Cc = Components.classes;
+	const Ci = Components.interfaces;
 
-	function waitImageLoad(aImage, aURI) {
-		var deferred = new namespace.Deferred();
-		aImage.src = aURI;
-		aImage.onload = function() {
-			deferred.call(aImage);
-		};
-		aImage.onerror = function() {
-			deferred.call(null);
-		};
-		return deferred;
+	const DEFAULT_ANCHOR_ICON = 'default-notification-icon';
+	const NATIVE_OPTIONS = 'persistence,timeout,persistWhileVisible,dismissed,eventCallback,neverShow,popupIconURL'.split(',');
+	const OPTIONS = 'browser,tab,label,value,anchor,image,imageWidth,imageHeight,button,buttons,callback,onerror'.split(',');
+
+	function next(aCallback) {
+		Cc['@mozilla.org/timer;1']
+			.createInstance(Ci.nsITimer)
+			.init(aCallback, 0, Ci.nsITimer.TYPE_ONE_SHOT);
 	}
 
 	// We have to use a custom stylesheet to show the anchor element.
 	function addStyleSheet(aDocument, aOptions) {
 		var uri = 'data:text/css,'+encodeURIComponent(
-				'.popup-notification-icon[popupid="'+aOptions.id+'"] {'+
-				'	list-style-image: url("'+aOptions.image+'");'+
-				(aOptions.width ? 'width: '+aOptions.width+'px;' : '' )+
-				(aOptions.height ? 'height: '+aOptions.height+'px;' : '' )+
-				'}'+
+				(aOptions.image ?
+					'.popup-notification-icon[popupid="'+aOptions.id+'"] {'+
+					'	list-style-image: url("'+aOptions.image+'");'+
+					(aOptions.width ? 'width: '+aOptions.width+'px;' : '' )+
+					(aOptions.height ? 'height: '+aOptions.height+'px;' : '' )+
+					'}' :
+					''
+				)+
 				'#notification-popup-box[anchorid="'+aOptions.anchor+'"] > #'+aOptions.anchor+' {'+
 				'	display: -moz-box;'+
 				'}'
@@ -135,40 +142,72 @@ var confirmWithPopup;
 		return style;
 	}
 
-	confirmWithPopup = function confirmWithPopup(aOptions) 
-	{
-		var deferred = new namespace.Deferred();
+	function normalizeOptions(aOptions) {
+		var options = collectNativeOptions(aOptions);
+		OPTIONS.forEach(function(aOption) {
+			options[aOption] = aOptions[aOption] ;
+		});
+
+		options.image = options.popupIconURL || options.image ;
 
 		// we should accept single button type popup
-		if (!aOptions.buttons && aOptions.button)
-			aOptions.buttons = [aOptions.button];
+		if (!options.buttons && options.button)
+			options.buttons = [options.button];
 
-		if (!aOptions.buttons) {
+		if (!options.browser && options.tab)
+			options.browser = options.tab.linkedBrowser;
+
+		if (!options.anchor)
+			options.anchor = DEFAULT_ANCHOR_ICON;
+
+		return options;
+	}
+
+	function collectNativeOptions(aOptions) {
+		var options = {};
+		NATIVE_OPTIONS.forEach(function(aOption) {
+			options[aOption] = aOptions.option && aOptions.option[aOption] || aOptions[aOption] ;
+		});
+		return options;
+	}
+
+	confirmWithPopup = function confirmWithPopup(aOptions) 
+	{
+		var options = normalizeOptions(aOptions);
+		var nativeOptions = collectNativeOptions(options);
+
+		var deferred = namespace.Deferred ?
+						new namespace.Deferred() :
+						{ // fake deferred
+							next : next,
+							call : function(aValue) { options.callback && options.callback.call(aOptions, aValue); },
+							fail : function(aError) { options.onerror && options.onerror.call(aOptions, aError); }
+						};
+
+		if (!options.buttons) {
 			return deferred
 					.next(function() {
 						throw new Error('confirmWithPopup requires any button!');
 					});
 		}
 
-		var browser = aOptions.browser ?
-						aOptions.browser :
-					aOptions.tab ?
-						aOptions.tab.linkedBrowser :
-						null ;
-		if (!browser)
+		if (!options.browser)
 			return deferred
 					.next(function() {
 						throw new Error('confirmWithPopup requires a <xul:browser/>!');
 					});
 
-		var doc = browser.ownerDocument;
+		var doc = options.browser.ownerDocument;
 		var style;
-		var imageWidth = aOptions.imageWidth;
-		var imageHeight = aOptions.imageHeight;
+		var done = false;
+		var postProcess = function(aButtonIndex) {
+				if (doc && style) doc.removeChild(style);
+				return aButtonIndex;
+			};
 		var showPopup = function() {
 			var accessKeys = [];
 			var numericAccessKey = 0;
-			var buttons = aOptions.buttons.map(function(aLabel, aIndex) {
+			var buttons = options.buttons.map(function(aLabel, aIndex) {
 					var accessKey;
 					var match = aLabel.match(/\s*\(&([0-9a-z])\)/i);
 					if (match) {
@@ -208,6 +247,7 @@ var confirmWithPopup;
 						label     : aLabel,
 						accessKey : accessKey,
 						callback  : function() {
+							done = true;
 							deferred.call(aIndex);
 						}
 					};
@@ -216,18 +256,9 @@ var confirmWithPopup;
 			var primaryAction = buttons[0];
 			var secondaryActions = buttons.length > 1 ? buttons.slice(1) : null ;
 
-			var id = aOptions.value || 'confirmWithPopup-'+encodeURIComponent(aOptions.label);
-			var anchor = aOptions.anchor || DEFAULT_ANCHOR_ICON;
+			options.id = options.value || 'confirmWithPopup-'+encodeURIComponent(options.label);
 
-			if (aOptions.image)
-				style = addStyleSheet(doc, {
-					image  : (aOptions.options && aOptions.options.popupIconURL) ||
-								aOptions.popupIconURL || aOptions.image,
-					id     : id,
-					width  : imageWidth,
-					height : imageHeight,
-					anchor : anchor
-				});
+			style = addStyleSheet(doc, options);
 
 			try {
 				/**
@@ -236,41 +267,45 @@ var confirmWithPopup;
 				 *          by PopupNotifications.show().
 				 */
 				doc.defaultView.PopupNotifications.show(
-					browser,
-					id,
-					aOptions.label,
-					anchor,
+					options.browser,
+					options.id,
+					options.label,
+					options.anchor,
 					primaryAction,
 					secondaryActions,
 					{
-						__proto__ : aOptions.options,
+						__proto__ : nativeOptions,
 						dismissed : true
 					}
 				);
-				if (!aOptions.options || !aOptions.options.dismissed) {
+				if (!options.dismissed) {
 					/**
 					 * 2nd try: Show the popup.
 					 */
-					namespace.Deferred.next(function() {
+					let secondTry = function() {
 						doc.defaultView.PopupNotifications.show(
-							browser,
-							id,
-							aOptions.label,
-							anchor,
+							options.browser,
+							options.id,
+							options.label,
+							options.anchor,
 							primaryAction,
 							secondaryActions,
 							{
-								__proto__     : aOptions.options,
+								__proto__     : nativeOptions,
 								eventCallback : function(aEventType) {
-									if (aEventType == 'dismissed')
+									if (done) return;
+									if (aEventType == 'removed' || aEventType == 'dismissed')
 										deferred.fail(aEventType);
-									if (aOptions.options && 
-										aOptions.options.eventCallback)
-										aOptions.options.eventCallback(aEventType);
+									if (options.eventCallback)
+										options.eventCallback.call(aOptions.options || aOptions, aEventType);
 								}
 							}
 						);
-					});
+					};
+					if (namespace.Deferred)
+						namespace.Deferred.next(secondTry);
+					else
+						next(secondTry);
 				}
 			}
 			catch(e) {
@@ -278,23 +313,34 @@ var confirmWithPopup;
 			}
 		};
 
-		if (aOptions.image && (!imageWidth || !imageHeight)) {
-			waitImageLoad(new doc.defaultView.Image(), aOptions.image)
-				.next(function(aImage) {
-					imageWidth = aImage.width;
-					imageHeight = aImage.height;
-				})
-				.next(showPopup);
+		if (options.image && (!options.imageWidth || !options.imageHeight)) {
+			let loader = new doc.defaultView.Image();
+			loader.src = options.image;
+			loader.onload = function() {
+				options.imageWidth = loader.width;
+				options.imageHeight = loader.height;
+				showPopup();
+			};
+			loader.onerror = function() {
+				showPopup();
+			};
 		}
-		else {
+		else if (namespace.Deferred) {
 			namespace.Deferred.next(showPopup);
 		}
+		else {
+			next(showPopup);
+		}
 
-		return deferred
-				.next(function(aButtonIndex) {
-					if (doc && style) doc.removeChild(style);
-					return aButtonIndex;
-				});
+		if (namespace.Deferred) {
+			return deferred.next(postProcess);
+		}
+		else {
+			let originalCall = deferred.call;
+			deferred.call = function(aButtonIndex) {
+				originalCall(postProcess(aButtonIndex));
+			};
+		}
 	};
 
 	namespace.confirmWithPopup = confirmWithPopup;
