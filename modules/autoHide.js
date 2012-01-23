@@ -825,6 +825,10 @@ AutoHideBrowser.prototype = {
  
 	onPrefChange : function AHB_onPrefChange(aPrefName) 
 	{
+		// ignore after destruction
+		if (!this.window || !this.window.TreeStyleTabService)
+			return;
+
 		var value = this.treeStyleTab.getPref(aPrefName);
 		switch (aPrefName)
 		{
@@ -1264,6 +1268,10 @@ AutoHideWindow.prototype = {
 	
 	updateKeyListeners : function AHW_updateKeyListeners() 
 	{
+		// ignore after destruction
+		if (!this.window || !this.window.TreeStyleTabService)
+			return;
+
 		if (
 			this.getMode() &&
 			this.shouldListenKeyEvents

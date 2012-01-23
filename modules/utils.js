@@ -787,6 +787,17 @@ var TreeStyleTabUtils = {
 		return doc.documentElement;
 	},
  
+	assertBeforeDestruction : function TSTUtils_assertBeforeDestruction(aNotDestructed) 
+	{
+		if (aNotDestructed)
+			return;
+
+		var message = 'ERROR: accessed after destruction!';
+		var error = new Error(message);
+		dump(message+'\n'+error.stack+'\n');
+		throw error;
+	},
+ 
 // event 
 	
 	isNewTabAction : function TSTUtils_isNewTabAction(aEvent) 
@@ -1435,6 +1446,7 @@ var TreeStyleTabUtils = {
 	getAllTabs : function TSTUtils_getTabs(aTabBrowserChild) /* OBSOLETE */ 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
+		this.assertBeforeDestruction(b && b.mTabContainer);
 		return this.evaluateXPath(
 			'descendant::xul:tab',
 			b.mTabContainer
@@ -1448,6 +1460,7 @@ var TreeStyleTabUtils = {
 	getTabs : function TSTUtils_getTabs(aTabBrowserChild) /* OBSOLETE */ 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
+		this.assertBeforeDestruction(b && b.mTabContainer);
 		return this.evaluateXPath(
 			'descendant::xul:tab[not(@hidden="true")]',
 			b.mTabContainer
@@ -1461,6 +1474,7 @@ var TreeStyleTabUtils = {
 	getAllTabsArray : function TSTUtils_getAllTabsArray(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
+		this.assertBeforeDestruction(b && b.mTabContainer);
 		return Array.slice(b.mTabContainer.childNodes) ;
 	},
  
@@ -1471,6 +1485,7 @@ var TreeStyleTabUtils = {
 	getTabsArray : function TSTUtils_getTabsArray(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
+		this.assertBeforeDestruction(b && b.mTabContainer);
 		return b.visibleTabs || Array.slice(b.mTabContainer.childNodes) ;
 	},
  
@@ -1480,6 +1495,7 @@ var TreeStyleTabUtils = {
 	getFirstTab : function TSTUtils_getFirstTab(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
+		this.assertBeforeDestruction(b && b.mTabContainer);
 		var tabs = b.visibleTabs;
 		return tabs ? tabs[0] : b.mTabContainer.firstChild;
 	},
@@ -1490,6 +1506,7 @@ var TreeStyleTabUtils = {
 	getFirstNormalTab : function TSTUtils_getFirstNormalTab(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
+		this.assertBeforeDestruction(b && b.mTabContainer);
 		return this.evaluateXPath(
 			'descendant::xul:tab[not(@pinned="true") and not(@hidden="true")]',
 			b.mTabContainer,
@@ -1504,6 +1521,7 @@ var TreeStyleTabUtils = {
 	getLastTab : function TSTUtils_getLastTab(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild);
+		this.assertBeforeDestruction(b && b.mTabContainer);
 		var tabs = b.visibleTabs;
 		return tabs ? tabs[tabs.length-1] : b.mTabContainer.lastChild ;
 	},
@@ -1515,6 +1533,7 @@ var TreeStyleTabUtils = {
 	{
 		if (!aTab) return null;
 		var b = this.getTabBrowserFromChild(aTab);
+		this.assertBeforeDestruction(b && b.mTabContainer);
 		var tabs = b.visibleTabs;
 		if (tabs) {
 			let index = tabs.indexOf(aTab);
@@ -1532,6 +1551,7 @@ var TreeStyleTabUtils = {
 	{
 		if (!aTab) return null;
 		var b = this.getTabBrowserFromChild(aTab);
+		this.assertBeforeDestruction(b && b.mTabContainer);
 		var tabs = b.visibleTabs;
 		if (tabs) {
 			let index = tabs.indexOf(aTab);
@@ -2047,7 +2067,7 @@ var TreeStyleTabUtils = {
 		).singleNodeValue;
 	},
  
-	getSiblingTabs : function TSTUtils_getSiblingTabs(aTab) /* PUBLIC API */
+	getSiblingTabs : function TSTUtils_getSiblingTabs(aTab) /* PUBLIC API */ 
 	{
 		var parent = this.getParentTab(aTab);
 
@@ -2251,7 +2271,7 @@ var TreeStyleTabUtils = {
 				).numberValue;
 	},
  
-	forceExpandTabs : function TSTUtils_forceExpandTabs(aTabs)
+	forceExpandTabs : function TSTUtils_forceExpandTabs(aTabs) 
 	{
 		var collapsedStates = aTabs.map(function(aTab) {
 				return this.getTabValue(aTab, this.kSUBTREE_COLLAPSED) == 'true';

@@ -2083,6 +2083,10 @@ TreeStyleTabBrowser.prototype = {
  
 	onPrefChange : function TSTBrowser_onPrefChange(aPrefName) 
 	{
+		// ignore after destruction
+		if (!this.window || !this.window.TreeStyleTabService)
+			return;
+
 		var b = this.mTabBrowser;
 		var value = this.getPref(aPrefName);
 		var tabContainer = b.mTabContainer;
