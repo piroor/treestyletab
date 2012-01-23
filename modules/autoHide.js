@@ -432,10 +432,11 @@ AutoHideBrowser.prototype = {
 		var sv  = this.treeStyleTab;
 		var b   = this.browser;
 		var box = b.mCurrentBrowser.boxObject;
+		var xoffset = this.shrunken ? 0 : this.XOffset ;
 		box = {
-			screenX : box.screenX + (sv.position == 'left' ? this.XOffset : 0 ),
+			screenX : box.screenX + (sv.position == 'left' ? xoffset : 0 ),
 			screenY : box.screenY,
-			width   : box.width - this.XOffset,
+			width   : box.width - xoffset,
 			height  : box.height
 		};
 		return box;
@@ -1019,6 +1020,7 @@ AutoHideBrowser.prototype = {
 			return true;
 
 		if (
+			!aEvent.shiftKey &&
 			!sv.isPopupShown() &&
 			(
 				!this.expanded ||
