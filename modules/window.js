@@ -144,7 +144,7 @@ TreeStyleTabWindow.prototype = {
 	get browser() 
 	{
 		var w = this.window;
-		this.ensureBeforeDestruction(w);
+		this.assertBeforeDestruction(w);
 		return 'SplitBrowser' in w ? w.SplitBrowser.activeBrowser :
 			w.gBrowser ;
 	},
