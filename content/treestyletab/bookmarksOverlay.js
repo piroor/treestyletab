@@ -65,7 +65,7 @@ var TreeStyleTabBookmarksService = {
 	bookmarkTabSubtree : function TSTBMService_bookmarkTabSubtree(aTabOrTabs) 
 	{
 		var tabs = aTabOrTabs;
-		if (!(tabs instanceof Array)) {
+		if (!Array.isArray(tabs)) {
 			tabs = [aTabOrTabs];
 		}
 
