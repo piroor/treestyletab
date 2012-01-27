@@ -2568,9 +2568,8 @@ TreeStyleTabBrowser.prototype = {
 			this.updateTabCollapsed(tab, false, this.windowService.restoringTree, function() {
 				/**
 				 * When the system is too slow, the animation can start after
-				 * smooth scrolling is finished. However, the smooth scrolling
-				 * should be started together with the start of the animation
-				 * effect.
+				 * smooth scrolling is finished. The smooth scrolling should be
+				 * started together with the start of the animation effect.
 				 */
 				self.scrollToNewTab(tab);
 			});
