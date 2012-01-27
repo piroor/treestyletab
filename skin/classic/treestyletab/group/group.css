@@ -60,6 +60,7 @@
 
 
 #tree {
+	height: 80%;
 	margin-top: 1em;
 	max-height: 80%;
 	overflow: auto;
