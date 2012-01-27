@@ -2564,13 +2564,16 @@ TreeStyleTabBrowser.prototype = {
 
 		if (this.animationEnabled) {
 			this.updateTabCollapsed(tab, true, true);
-			this.updateTabCollapsed(tab, false, this.windowService.restoringTree);
+			let self = this;
+			this.updateTabCollapsed(tab, false, this.windowService.restoringTree, function() {
+				self.scrollToNewTab(tab);
+			});
+		}
+		else {
+			this.scrollToNewTab(tab);
 		}
 
 		this.updateInsertionPositionInfo(tab);
-
-		if (this.scrollToNewTabMode > 0)
-			this.scrollToTab(tab, this.scrollToNewTabMode < 2);
 
 		if (this.getPref('browser.tabs.autoHide'))
 			this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_SHOWHIDE_TABBAR);
@@ -2599,6 +2602,12 @@ TreeStyleTabBrowser.prototype = {
 	_addedCountClearTimer : null,
 	_checkRestoringWindowTimerOnTabAdded : null,
 	
+	scrollToNewTab : function TSTBrowser_scrollToNewTab(aTab) 
+	{
+		if (this.scrollToNewTabMode > 0)
+			this.scrollToTab(aTab, this.scrollToNewTabMode < 2);
+	},
+ 
 	updateInsertionPositionInfo : function TSTBrowser_updateInsertionPositionInfo(aTab) 
 	{
 		var prev = this.getPreviousSiblingTab(aTab);
@@ -5283,7 +5292,7 @@ TreeStyleTabBrowser.prototype = {
 			}, this);
 		}
 	},
-	updateTabCollapsed : function TSTBrowser_updateTabCollapsed(aTab, aCollapsed, aJustNow)
+	updateTabCollapsed : function TSTBrowser_updateTabCollapsed(aTab, aCollapsed, aJustNow, aCallbackToRunOnStartAnimation)
 	{
 		this.stopTabCollapseAnimation(aTab);
 
@@ -5358,6 +5367,9 @@ TreeStyleTabBrowser.prototype = {
 				aTab.style.removeProperty(this.collapseCSSProp);
 				aTab.style.removeProperty('opacity');
 			}
+
+			if (aCallbackToRunOnStartAnimation)
+				aCallbackToRunOnStartAnimation();
 			return;
 		}
 
@@ -5376,9 +5388,13 @@ TreeStyleTabBrowser.prototype = {
 		var self   = this;
 		var firstFrame = true;
 		aTab.__treestyletab__updateTabCollapsedTask = function(aTime, aBeginning, aChange, aDuration) {
-			if (firstFrame && CSSTransitionEnabled) {
-				aTab.style.setProperty(self.collapseCSSProp, endMargin ? '-'+endMargin+'px' : '', 'important');
-				aTab.style.setProperty('opacity', endOpacity == 1 ? '' : endOpacity, 'important');
+			if (firstFrame) {
+				if (aCallbackToRunOnStartAnimation)
+					aCallbackToRunOnStartAnimation();
+				if (CSSTransitionEnabled) {
+					aTab.style.setProperty(self.collapseCSSProp, endMargin ? '-'+endMargin+'px' : '', 'important');
+					aTab.style.setProperty('opacity', endOpacity == 1 ? '' : endOpacity, 'important');
+				}
 			}
 			firstFrame = false;
 			// If this is the last tab, negative scroll happens.
