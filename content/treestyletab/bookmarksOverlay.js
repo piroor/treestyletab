@@ -70,7 +70,6 @@ var TreeStyleTabBookmarksService = {
 				this.BookmarksService.removeItem(aItem.id);
 				aItem.id = folderId;
 				aItem.isFolder = true;
-				aBookarmks[aIndex] = aItem;
 			}
 
 			let index = aTreeStructure[aIndex];
