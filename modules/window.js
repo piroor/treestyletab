@@ -1601,7 +1601,16 @@ TreeStyleTabWindow.prototype = {
 		}
 	},
 	get restoringTree() {
-		return this._restoringTree || this.restoringCount || this.window.__SS_tabsToRestore;
+		if (this._restoringTree || !!this.restoringCount)
+			return true;
+
+		var count = 0;
+		this.browser.visibleTabs.some(function(aTab) {
+			if (aTab.linkedBrowser.__treestyletab__toBeRestored)
+				count++;
+			return count > 1;
+		});
+		return count > 1;
 	},
 	set restoringTree(aValue) {
 		return this._restoringTree = !!aValue;
