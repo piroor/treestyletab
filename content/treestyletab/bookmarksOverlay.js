@@ -17,13 +17,13 @@ var TreeStyleTabBookmarksService = {
 		if (this._observing) return;
 		this._observing = true;
 
+		aTabs = this.cleanUpTabsArray(aTabs);
+
 		this._addingBookmarks = [];
-		this._addingBookmarkTreeStructure = this
-				.cleanUpTabsArray(aTabs)
-				.map(function(aTab) {
-					var parent = this.getParentTab(aTab);
-					return aTabs.indexOf(parent);
-				}, this);
+		this._addingBookmarkTreeStructure = aTabs.map(function(aTab) {
+			var parent = this.getParentTab(aTab);
+			return aTabs.indexOf(parent);
+		}, this);
 
 		this.BookmarksService.addObserver(this, false);
 	},
@@ -52,13 +52,39 @@ var TreeStyleTabBookmarksService = {
 			return;
 		}
 
+		aBookarmks.forEach(function(aItem) {
+			aItem.position = this.BookmarksService.getItemIndex(aItem.id);
+		},this);
+		aBookarmks.sort(function(aA, aB) {
+			return aA.position - aB.position;
+		});
+
 		aBookarmks.forEach(function(aItem, aIndex) {
+			if (this.BookmarksService.getItemType(aItem.id) != this.BookmarksService.TYPE_BOOKMARK)
+				return;
+
+			let uri = this.BookmarksService.getBookmarkURI(aItem.id);
+			if (/^about:treestyletab-group\b/.test(uri.spec)) {
+				let title = this.BookmarksService.getItemTitle(aItem.id);
+				let folderId = this.BookmarksService.createFolder(aItem.parent, title, aItem.position);
+				this.BookmarksService.removeItem(aItem.id);
+				aItem.id = folderId;
+				aItem.isFolder = true;
+				aBookarmks[aIndex] = aItem;
+			}
+
 			let index = aTreeStructure[aIndex];
-			PlacesUtils.setAnnotationsForItem(aItem.id, [{
-				name    : this.kPARENT,
-				value   : (index > -1 ? aBookarmks[index].id : -1 ),
-				expires : PlacesUtils.annotations.EXPIRE_NEVER
-			}]);
+			let parent = index > -1 ? aBookarmks[index] : null ;
+			if (parent && parent.isFolder) {
+				this.BookmarksService.moveItem(aItem.id, parent.id, -1);
+			}
+			else {
+				PlacesUtils.setAnnotationsForItem(aItem.id, [{
+					name    : this.kPARENT,
+					value   : parent ? parent.id : -1,
+					expires : PlacesUtils.annotations.EXPIRE_NEVER
+				}]);
+			}
 		}, this);
 	},
  
@@ -434,7 +460,8 @@ var TreeStyleTabBookmarksService = {
 	onItemAdded : function TSTBMService_onItemAdded(aID, aFolderID, aPosition)
 	{
 		this._addingBookmarks.push({
-			id  : aID
+			id     : aID,
+			parent : aFolderID
 		});
 	},
 	onItemRemoved : function TSTBMService_onItemRemoved(aID, aFolderID, aPosition) {},
