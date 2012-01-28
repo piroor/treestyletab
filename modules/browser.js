@@ -3807,7 +3807,7 @@ TreeStyleTabBrowser.prototype = {
 				{
 					this.collapseExpandSubtree(parentTab, false);
 				}
-				this.collapseExpandTreesIntelligentlyWithDelayFor(tab);
+				this.collapseExpandTreesIntelligentlyForNewActiveTab(tab);
 			}
 			else {
 				b.selectedTab = this.getRootTab(tab);
@@ -3836,16 +3836,16 @@ TreeStyleTabBrowser.prototype = {
 						if (delay > 0) {
 							this._autoExpandOnTabSelectTimer = this.window.setTimeout(function(aSelf) {
 								if (tab && tab.parentNode)
-									aSelf.collapseExpandTreesIntelligentlyWithDelayFor(tab);
+									aSelf.collapseExpandTreesIntelligentlyForNewActiveTab(tab);
 							}, delay, this);
 						}
 						else {
-							this.collapseExpandTreesIntelligentlyWithDelayFor(tab);
+							this.collapseExpandTreesIntelligentlyForNewActiveTab(tab);
 						}
 					}
 				}
 				else {
-					this.collapseExpandTreesIntelligentlyWithDelayFor(tab);
+					this.collapseExpandTreesIntelligentlyForNewActiveTab(tab);
 				}
 			}
 		}
@@ -5244,14 +5244,21 @@ TreeStyleTabBrowser.prototype = {
 
 		this.setTabValue(aTab, this.kSUBTREE_COLLAPSED, aCollapse);
 
-		this.getChildTabs(aTab).forEach(function(aTab) {
-			this.collapseExpandTab(aTab, aCollapse, aJustNow);
+		var expandedTabs = this.getChildTabs(aTab);
+		var lastExpandedTabIndex = expandedTabs.length - 1;
+		expandedTabs.forEach(function(aTab, aIndex) {
+			if (!aCollapse && !aJustNow && aIndex == lastExpandedTabIndex) {
+				let self = this;
+				this.collapseExpandTab(aTab, aCollapse, aJustNow, function() {
+					self.scrollToTabSubtree(aTab);
+				});
+			}
+			else
+				this.collapseExpandTab(aTab, aCollapse, aJustNow);
 		}, this);
 
 		if (aCollapse)
 			this.deleteTabValue(aTab, this.kSUBTREE_EXPANDED_MANUALLY);
-		else
-			this.scrollToTabSubtree(aTab);
 
 		this.doingCollapseExpand = false;
 	},
@@ -5262,12 +5269,12 @@ TreeStyleTabBrowser.prototype = {
 			this.setTabValue(aTab, this.kSUBTREE_EXPANDED_MANUALLY, true);
 	},
  
-	collapseExpandTab : function TSTBrowser_collapseExpandTab(aTab, aCollapse, aJustNow) 
+	collapseExpandTab : function TSTBrowser_collapseExpandTab(aTab, aCollapse, aJustNow, aCallbackToRunOnStartAnimation) 
 	{
 		if (!aTab || !this.getParentTab(aTab)) return;
 
 		this.setTabValue(aTab, this.kCOLLAPSED, aCollapse);
-		this.updateTabCollapsed(aTab, aCollapse, aJustNow);
+		this.updateTabCollapsed(aTab, aCollapse, aJustNow, aCallbackToRunOnStartAnimation);
 
 		var data = {
 				collapsed : aCollapse
@@ -5394,6 +5401,7 @@ TreeStyleTabBrowser.prototype = {
 		var firstFrame = true;
 		aTab.__treestyletab__updateTabCollapsedTask = function(aTime, aBeginning, aChange, aDuration) {
 			if (firstFrame) {
+				// The callback must be started before offsetAttr is changed!
 				if (aCallbackToRunOnStartAnimation)
 					aCallbackToRunOnStartAnimation();
 				if (CSSTransitionEnabled) {
@@ -5515,18 +5523,22 @@ TreeStyleTabBrowser.prototype = {
 
 		this.collapseExpandSubtree(aTab, false, aJustNow);
 	},
-	collapseExpandTreesIntelligentlyWithDelayFor : function TSTBrowser_collapseExpandTreesIntelligentlyWithDelayFor(aTab)
+	collapseExpandTreesIntelligentlyForNewActiveTab : function TSTBrowser_collapseExpandTreesIntelligentlyForNewActiveTab(aTab)
 	{
 		if (this.doingCollapseExpand) return;
-		if (this._cETIWDFTimer)
-			this.window.clearTimeout(this._cETIWDFTimer);
-		this._cETIWDFTimer = this.window.setTimeout(function(aSelf) {
-			aSelf.window.clearTimeout(aSelf._cETIWDFTimer);
-			aSelf._cETIWDFTimer = null;
+		if (this._cETIFNATTimer)
+			this.window.clearTimeout(this._cETIFNATTimer);
+		/**
+		 * First, we wait until all event listeners for the TabSelect
+		 * event were processed.
+		 */
+		this._cETIFNATTimer = this.window.setTimeout(function(aSelf) {
+			aSelf.window.clearTimeout(aSelf._cETIFNATTimer);
+			aSelf._cETIFNATTimer = null;
 			aSelf.collapseExpandTreesIntelligentlyFor(aTab);
 		}, 0, this);
 	},
-	_cETIWDFTimer : null,
+	_cETIFNATTimer : null,
  
 	collapseExpandAllSubtree : function TSTBrowser_collapseExpandAllSubtree(aCollapse, aJustNow) 
 	{
