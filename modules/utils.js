@@ -2253,6 +2253,20 @@ var TreeStyleTabUtils = {
 			Ci.nsIDOMXPathResult.NUMBER_TYPE
 		).numberValue;
 	},
+	getFutureBoxObject : function TSTUtils_getFutureBoxObject(aTab)
+	{
+		var tabBox = aTab.boxObject;
+		var xOffset = this.getXOffsetOfTab(aTab);
+		var yOffset = this.getYOffsetOfTab(aTab);
+		return {
+			width     : tabBox.width,
+			height    : tabBox.height,
+			x         : tabBox.x + xOffset,
+			y         : tabBox.y + yOffset,
+			screenX   : tabBox.screenX + xOffset,
+			screenY   : tabBox.screenY + yOffset
+		};
+	},
  
 	isGroupTab : function TSTUtils_isGroupTab(aTab, aLazyCheck) 
 	{

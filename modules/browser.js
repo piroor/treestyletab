@@ -362,14 +362,14 @@ TreeStyleTabBrowser.prototype = {
 			return false;
 		if (aTab.getAttribute('pinned') == 'true')
 			return true;
-		var tabBox = aTab.boxObject;
+		var tabBox = this.getFutureBoxObject(aTab);
 		var barBox = this.scrollBox.boxObject;
-		var xOffset = this.getXOffsetOfTab(aTab);
-		var yOffset = this.getYOffsetOfTab(aTab);
-		return (tabBox.screenX + xOffset >= barBox.screenX &&
-			tabBox.screenX + xOffset + tabBox.width <= barBox.screenX + barBox.width &&
-			tabBox.screenY + yOffset >= barBox.screenY &&
-			tabBox.screenY + yOffset + tabBox.height <= barBox.screenY + barBox.height);
+		return (
+			tabBox.screenX >= barBox.screenX &&
+			tabBox.screenX + tabBox.width <= barBox.screenX + barBox.width &&
+			tabBox.screenY >= barBox.screenY &&
+			tabBox.screenY + tabBox.height <= barBox.screenY + barBox.height
+		);
 	},
  
 	isMultiRow : function TSTBrowser_isMultiRow() 
@@ -5246,15 +5246,15 @@ TreeStyleTabBrowser.prototype = {
 
 		var expandedTabs = this.getChildTabs(aTab);
 		var lastExpandedTabIndex = expandedTabs.length - 1;
-		expandedTabs.forEach(function(aTab, aIndex) {
+		expandedTabs.forEach(function(aChildTab, aIndex) {
 			if (!aCollapse && !aJustNow && aIndex == lastExpandedTabIndex) {
 				let self = this;
-				this.collapseExpandTab(aTab, aCollapse, aJustNow, function() {
+				this.collapseExpandTab(aChildTab, aCollapse, aJustNow, function() {
 					self.scrollToTabSubtree(aTab);
 				});
 			}
 			else
-				this.collapseExpandTab(aTab, aCollapse, aJustNow);
+				this.collapseExpandTab(aChildTab, aCollapse, aJustNow);
 		}, this);
 
 		if (aCollapse)
@@ -5682,24 +5682,21 @@ TreeStyleTabBrowser.prototype = {
 			return;
 		}
 
-		var targetTabBox = aTab.boxObject;
+		var targetTabBox = this.getFutureBoxObject(aTab);
 		var baseTabBox = this.getFirstNormalTab(b).boxObject;
 
-		var xOffset = this.getXOffsetOfTab(aTab);
-		var yOffset = this.getYOffsetOfTab(aTab);
+		var targetX = (targetTabBox.screenX < scrollBoxObject.screenX) ?
+			(targetTabBox.screenX - baseTabBox.screenX) - (targetTabBox.width * 0.5) :
+			(targetTabBox.screenX - baseTabBox.screenX) - scrollBoxObject.width + (targetTabBox.width * 1.5) ;
 
-		var targetX = (aTab.boxObject.screenX + xOffset < scrollBoxObject.screenX) ?
-			(targetTabBox.screenX + xOffset - baseTabBox.screenX) - (targetTabBox.width * 0.5) :
-			(targetTabBox.screenX + xOffset - baseTabBox.screenX) - scrollBoxObject.width + (targetTabBox.width * 1.5) ;
-
-		var targetY = (aTab.boxObject.screenY + yOffset < scrollBoxObject.screenY) ?
-			(targetTabBox.screenY + yOffset - baseTabBox.screenY) - (targetTabBox.height * 0.5) :
-			(targetTabBox.screenY + yOffset - baseTabBox.screenY) - scrollBoxObject.height + (targetTabBox.height * 1.5) ;
+		var targetY = (targetTabBox.screenY < scrollBoxObject.screenY) ?
+			(targetTabBox.screenY - baseTabBox.screenY) - (targetTabBox.height * 0.5) :
+			(targetTabBox.screenY - baseTabBox.screenY) - scrollBoxObject.height + (targetTabBox.height * 1.5) ;
 
 		if (aOnlyWhenCurrentTabIsInViewport && b.selectedTab != aTab) {
 			let box = b.selectedTab.boxObject;
-			if (targetTabBox.screenX - box.screenX + baseTabBox.width + xOffset > scrollBoxObject.width ||
-				targetTabBox.screenY - box.screenY + baseTabBox.height + yOffset > scrollBoxObject.height)
+			if (targetTabBox.screenX - box.screenX + baseTabBox.width > scrollBoxObject.width ||
+				targetTabBox.screenY - box.screenY + baseTabBox.height > scrollBoxObject.height)
 				return;
 		}
 
@@ -5710,23 +5707,32 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var b          = this.mTabBrowser;
 		var descendant = this.getDescendantTabs(aTab);
-		var lastVisible = aTab;
-		for (var i = descendant.length-1; i > -1; i--)
-		{
-			if (this.isCollapsed(descendant[i])) continue;
-			lastVisible = descendant[i];
-			break;
-		}
-
-		if (this.isTabInViewport(aTab) && this.isTabInViewport(lastVisible)) {
-			return;
-		}
+		var parentTabBox = aTab.boxObject;
 
 		var containerPosition = this.tabStrip.boxObject[this.screenPositionProp];
 		var containerSize     = this.tabStrip.boxObject[this.sizeProp];
-		var parentPosition    = aTab.boxObject[this.screenPositionProp];
-		var lastPosition      = lastVisible.boxObject[this.screenPositionProp];
-		var tabSize           = lastVisible.boxObject[this.sizeProp];
+		var parentPosition    = parentTabBox[this.screenPositionProp];
+
+		var lastVisible = aTab;
+		for (let i = descendant.length-1; i > -1; i--)
+		{
+			let tab = descendant[i];
+			if (this.isCollapsed(tab))
+				continue;
+
+			let box = this.getFutureBoxObject(tab);
+			if (box[this.screenPositionProp] + box[this.sizeProp] - parentPosition > containerSize)
+				continue;
+
+			lastVisible = tab;
+			break;
+		}
+
+		if (this.isTabInViewport(aTab) && this.isTabInViewport(lastVisible))
+			return;
+
+		var lastPosition = lastVisible.boxObject[this.screenPositionProp];
+		var tabSize      = lastVisible.boxObject[this.sizeProp];
 
 		if (lastPosition - parentPosition + tabSize > containerSize - tabSize) { // out of screen
 			var endPos = parentPosition - this.getFirstNormalTab(b).boxObject[this.screenPositionProp] - tabSize * 0.5;
