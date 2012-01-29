@@ -366,3 +366,36 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
   .tabbrowser-tab[pinned][titlechanged]:not([selected="true"]):not(.treestyletab-faviconized):hover {
 	background-image: none;
 }
+
+
+/* notification of newly opened tabs in background */
+
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-arrowscrollbox
+  > .scrollbutton-down[treestyletab-notifybgtab-phase] {
+	background: -moz-linear-gradient(-90deg, rgba(255,255,255,0), Highlight);
+	border: 0 none;
+	height: 2em;
+	margin-top: -2em;
+	visibility: visible;
+	opacity: 0;
+	pointer-events: none;
+	-moz-box-shadow: none;
+	     box-shadow: none;
+	-moz-transition: 1s opacity ease-out;
+	     transition: 1s opacity ease-out;
+	-moz-user-focus: ignore;
+}
+
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-arrowscrollbox
+  > .scrollbutton-down[treestyletab-notifybgtab-phase="notifying"] {
+	opacity: 1;
+}
+
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-arrowscrollbox
+  > .scrollbutton-down > * {
+	display: none;
+}
+

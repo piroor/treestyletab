@@ -603,6 +603,9 @@ var TreeStyleTabWindowHelper = {
 				).replace(
 					'!selected ||',
 					'$& treeStyleTab.scrollToNewTabMode == 1 && '
+				).replace(
+					/(\}\)?)$/,
+					'treeStyleTab.notifyBackgroundTab(); $1'
 				)
 			);
 		}

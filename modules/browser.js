@@ -267,7 +267,7 @@ TreeStyleTabBrowser.prototype = {
 		return (box.getAttribute('orient') || this.window.getComputedStyle(box, '').getPropertyValue('-moz-box-orient')) == 'vertical';
 	},
  
-	isFloating : true, // for backward compatibility (but this should be removed)
+	isFloating : true, // for backward compatibility (but this should be removed) 
  
 	get ownerToolbar() 
 	{
@@ -335,7 +335,7 @@ TreeStyleTabBrowser.prototype = {
 			return null;
 		return this.getTabFromCoordinate(aEvent[this.screenPositionProp]);
 	},
-	getTabFromCoordinate : function TSTBrowser_getTabFromCoordinate(aCoordinate) 
+	getTabFromCoordinate : function TSTBrowser_getTabFromCoordinate(aCoordinate)
 	{
 		var tab = null;
 		this.getTabsArray(this.mTabBrowser).some(function(aTab) {
@@ -3394,7 +3394,7 @@ TreeStyleTabBrowser.prototype = {
 		return closeSetId;
 	},
  
-	_fixMissingAttributesFromSessionData : function TSTBrowser_fixMissingAttributesFromSessionData(aTab)
+	_fixMissingAttributesFromSessionData : function TSTBrowser_fixMissingAttributesFromSessionData(aTab) 
 	{
 		/**
 		 * By some reasons (ex. persistTabAttribute()), actual state of
@@ -5754,6 +5754,35 @@ TreeStyleTabBrowser.prototype = {
 		}
 	},
   
+	notifyBackgroundTab : function TSTBrowser_notifyBackgroundTab() 
+	{
+		var animateElement = this.mTabBrowser.mTabContainer._animateElement;
+		var attrName = this.kBG_NOTIFY_PHASE;
+		if (!animateElement)
+			return;
+
+		if (this.lastNotifyBackgroundTabAnimation)
+			this.lastNotifyBackgroundTabAnimation.cancel();
+
+		if (!animateElement.hasAttribute(attrName))
+			animateElement.setAttribute(attrName, 'ready');
+
+		var self = this;
+		this.lastNotifyBackgroundTabAnimation = this.Deferred
+			.next(function() {
+				animateElement.setAttribute(attrName, 'notifying');
+			})
+			.wait(0.15)
+			.next(function() {
+				animateElement.setAttribute(attrName, 'finish');
+			})
+			.wait(1)
+			.next(function() {
+				animateElement.removeAttribute(attrName);
+				self.lastNotifyBackgroundTabAnimation = null;
+			});
+	},
+ 
 	restoreTree : function TSTBrowser_restoreTree() 
 	{
 		if (!this.needRestoreTree || this.useTMPSessionAPI)
