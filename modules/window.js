@@ -148,6 +148,11 @@ TreeStyleTabWindow.prototype = {
 		return 'SplitBrowser' in w ? w.SplitBrowser.activeBrowser :
 			w.gBrowser ;
 	},
+ 
+	get isPopupWindow() 
+	{
+		return this.document && this.document.documentElement.getAttribute('chromehidden') != '';
+	},
   
 /* backward compatibility */ 
 	getTempTreeStyleTab : function TSTWindow_getTempTreeStyleTab(aTabBrowser)
@@ -1064,7 +1069,7 @@ TreeStyleTabWindow.prototype = {
 	updateTabsOnTop : function TSTWindow_updateTabsOnTop() 
 	{
 		var w = this.window;
-		if (!('TabsOnTop' in w) || !('enabled' in w.TabsOnTop))
+		if (this.isPopupWindow || !('TabsOnTop' in w) || !('enabled' in w.TabsOnTop))
 			return;
 
 		var TabsOnTop = w.TabsOnTop;

@@ -1420,7 +1420,7 @@ TreeStyleTabBrowser.prototype = {
 				// remove ordinal for "tabs on top" https://bugzilla.mozilla.org/show_bug.cgi?id=544815
 				if (this.position == 'top') {
 					this.removeTabStripAttribute('ordinal');
-					if (TabsOnTop) {
+					if (TabsOnTop && !this.windowService.isPopupWindow) {
 						// workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=555987
 						TabsOnTop.enabled = !TabsOnTop.enabled;
 						this.Deferred.next(function() {
@@ -1441,7 +1441,7 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 
-		if (TabsOnTop) {
+		if (TabsOnTop && !this.windowService.isPopupWindow) {
 			let tabsWasOnTop = TabsOnTop.enabled;
 			TabsOnTop.enabled = TabsOnTop.enabled && this.position == 'top' && this.fixed;
 			if (tabsWasOnTop && !TabsOnTop.enabled)
@@ -4285,7 +4285,8 @@ TreeStyleTabBrowser.prototype = {
 		if (
 			!aEnabled ||
 			this.position != 'top' ||
-			this.fixed
+			this.fixed ||
+			!this.windowService.isPopupWindow
 			)
 			return;
 		var self = this;
