@@ -4114,14 +4114,17 @@ TreeStyleTabBrowser.prototype = {
 	{
 		if (
 			!aEvent.originalTarget ||
-			!(aEvent.originalTarget instanceof Ci.nsIDOMWindow) ||
-			aEvent.originalTarget.top != this.mTabBrowser.contentWindow
+			!(aEvent.originalTarget instanceof Ci.nsIDOMWindow)
 			)
 			return;
 
-		this.mTabBrowser.mTabContainer.adjustTabstrip();
-		this.updateInvertedTabContentsOrder(true);
-		this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
+		var resizedTopFrame = aEvent.originalTarget.top;
+		if (resizedTopFrame == this.mTabBrowser.contentWindow ||
+			resizedTopFrame == this.window) {
+			this.mTabBrowser.mTabContainer.adjustTabstrip();
+			this.updateInvertedTabContentsOrder(true);
+			this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
+		}
 	},
  
 	onPopupShowing : function TSTBrowser_onPopupShowing(aEvent) 
