@@ -88,6 +88,7 @@ var PseudoTreeBuilder = {
 	createTabItem : function TB_createTabItem(aTab)
 	{
 		var doc = aTab.ownerDocument;
+		var w = doc.defaultView;
 
 		var item = doc.createElement('hbox');
 		item.setAttribute('class', this.kTREEROW);
@@ -100,7 +101,7 @@ var PseudoTreeBuilder = {
 		label.setAttribute('value', aTab.label);
 		var tooltip = aTab.label;
 		var uri = aTab.linkedBrowser.currentURI.spec;
-		if (uri != 'about:blank') tooltip += '\n' + uri;
+		if (w.isBlankPageURL ? !w.isBlankPageURL(uri) : (uri != 'about:blank')) tooltip += '\n' + uri;
 		label.setAttribute('tooltiptext', tooltip);
 		label.setAttribute('class', 'text-link '+this.kTREEITEM);
 		label.setAttribute('tab-id', this.getTabValue(aTab, this.kID));
