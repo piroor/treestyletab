@@ -6,7 +6,7 @@
                         .autoScroll
                         .processAutoScroll(mouseMoveOrDragOverEvent);
 
- license: The MIT License, Copyright (c) 2009-2011 SHIMODA "Piro" Hiroshi
+ license: The MIT License, Copyright (c) 2009-2012 SHIMODA "Piro" Hiroshi
    http://github.com/piroor/fxaddonlibs/blob/master/license.txt
  original:
    http://github.com/piroor/fxaddonlibs/blob/master/autoScroll.js
@@ -30,7 +30,7 @@ if (typeof window == 'undefined' ||
 }
 
 (function() {
-	const currentRevision = 5;
+	const currentRevision = 6;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -74,9 +74,24 @@ if (typeof window == 'undefined' ||
 			boxObject.getScrolledSize(maxX, maxY);
 			boxObject.getPosition(curX, curY);
 
+			var firstTab;
+			if (b.visibleTabs) {
+				let pinnedTabsCount = b.ownerDocument.evaluate(
+						'count(child::*[local-name()="tab" and @pinned="true"])',
+						tabs,
+						null,
+						Ci.nsIDOMXPathResult.NUMBER_TYPE,
+						null
+					).numberValue;
+				firstTab = b.visibleTabs[b.visibleTabs.length > pinnedTabsCount ? pinnedTabsCount : 0 ];
+			}
+			else {
+				firstTab = tabs.childNodes[0];
+			}
+
 			var pixels;
 			if (isVertical) {
-				pixels = tabs.childNodes[0].boxObject.height * 0.5;
+				pixels = firstTab.boxObject.height * 0.5;
 				if (isMultirow) pixels *= 0.5;
 				if (aEvent.screenY < boxObject.screenY + this.getUpButtonHeight(b)) {
 					if (curY.value == 0) return false;
@@ -98,7 +113,6 @@ if (typeof window == 'undefined' ||
 				}
 				else if (aEvent.screenX > boxObject.screenX + boxObject.width - this.getDownButtonWidth(b)) {
 					if (innerBoxObject.width + curX.value == maxX.value) return false;
-					return false;
 				}
 				else {
 					return false;
