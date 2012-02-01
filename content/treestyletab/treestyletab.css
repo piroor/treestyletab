@@ -44,6 +44,14 @@
 	position: relative;
 }
 .tabbrowser-tabs[treestyletab-allow-subtree-collapse="true"][treestyletab-stack-collapsed-tabs="true"]
+  .tabbrowser-tab[treestyletab-collapsed="true"][fadein],
+/**
+ * Tab Mix Plus dynamically inserts a CSS rule like
+ * "#tabbrowser-tabs > .tabbrowser-tab { ... }" and it unexpectedly
+ * expands width of "collapsed" tabs. So, to apply our rule prior than
+ * TMP's one, I put the "#tabbrowser-tabs" version also.
+ */
+#tabbrowser-tabs[treestyletab-allow-subtree-collapse="true"][treestyletab-stack-collapsed-tabs="true"]
   .tabbrowser-tab[treestyletab-collapsed="true"][fadein] {
 	visibility: visible;
 	max-width: 20px;
