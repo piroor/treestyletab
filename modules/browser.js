@@ -958,6 +958,8 @@ TreeStyleTabBrowser.prototype = {
 
 		// reset order at first!
 		nodes.forEach(function(aNode, aIndex) {
+			if (aNode.getAttribute('class') == 'informationaltab-thumbnail-container')
+				return;
 			aNode.setAttribute('ordinal', aIndex);
 		}, this);
 
