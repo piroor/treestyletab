@@ -25,15 +25,7 @@ tabbrowser:not([treestyletab-style="vertigo"])[treestyletab-mode="vertical"]
 #main-window:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab
-  .tab-image-middle,
-#main-window:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab
   .tab-close-button,
-#main-window:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"]
-  .tab-image-middle,
 #main-window:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[selected="true"]
@@ -41,15 +33,7 @@ tabbrowser:not([treestyletab-style="vertigo"])[treestyletab-mode="vertical"]
 #main-window:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-tabbar-position="bottom"]
   .tabbrowser-tab
-  .tab-image-middle,
-#main-window:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-tabbar-position="bottom"]
-  .tabbrowser-tab
   .tab-close-button,
-#main-window:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-tabbar-position="bottom"]
-  .tabbrowser-tab[selected="true"]
-  .tab-image-middle,
 #main-window:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-tabbar-position="bottom"]
   .tabbrowser-tab[selected="true"]

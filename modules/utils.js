@@ -144,9 +144,7 @@ var TreeStyleTabUtils = {
  
 /* classes */ 
 	kTWISTY                     : 'treestyletab-twisty',
-	kTWISTY_CONTAINER           : 'treestyletab-twisty-container',
 	kDROP_MARKER                : 'treestyletab-drop-marker',
-	kDROP_MARKER_CONTAINER      : 'treestyletab-drop-marker-container',
 	kCOUNTER                    : 'treestyletab-counter',
 	kCOUNTER_CONTAINER          : 'treestyletab-counter-container',
 	kCOUNTER_PAREN              : 'treestyletab-counter-paren',
@@ -869,23 +867,30 @@ var TreeStyleTabUtils = {
 		var minY = box.screenY;
 		var maxX = minX + box.width;
 		var maxY = minY + box.height;
-		var icon  = tab.ownerDocument.getAnonymousElementByAttribute(tab, 'class', 'tab-icon');
+
+		var icon  = tab.ownerDocument.getAnonymousElementByAttribute(tab, 'class', 'tab-icon-image');
 		var iconBox = icon.boxObject;
+		var throbber  = tab.ownerDocument.getAnonymousElementByAttribute(tab, 'class', 'tab-throbber');
+		var throbberBox = throbber.boxObject;
+		var extraMinX = Math.min(throbberBox.screenX, iconBox.screenX);
+		var extraMinY = Math.min(throbberBox.screenY, iconBox.screenY);
+		var extraMaxX = Math.max(throbberBox.screenX + throbberBox.width, iconBox.screenX + iconBox.width);
+		var extraMaxY = Math.max(throbberBox.screenY + throbberBox.height, iconBox.screenY + iconBox.height);
+
 		if (!box.width || !box.height) {
-			minX = iconBox.screenX;
-			minY = iconBox.screenY;
-			maxX = minX + iconBox.width;
-			maxY = minY + iconBox.height;
+			minX = extraMinX;
+			minY = extraMinY;
+			maxX = extraMaxX;
+			maxY = extraMaxY;
 		}
-		if (
-			box.width && box.height &&
+		else if (
 			this.shouldExpandTwistyArea &&
 			!this._expandTwistyAreaBlockers.length
 			) {
-			minX = Math.min(minX, iconBox.screenX);
-			minY = Math.min(minY, iconBox.screenY);
-			maxX = Math.max(maxX, iconBox.screenX + iconBox.width);
-			maxY = Math.max(maxY, iconBox.screenY + iconBox.height);
+			minX = Math.min(minX, extraMinX);
+			minY = Math.min(minY, extraMinY);
+			maxX = Math.max(maxX, extraMaxX);
+			maxY = Math.max(maxY, extraMaxY);
 		}
 
 		var x = aEvent.screenX;
