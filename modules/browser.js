@@ -893,33 +893,25 @@ TreeStyleTabBrowser.prototype = {
 		}
 	},
  
-	initTabContents : function TSTBrowser_initTabContents(aTab) 
+	initTabContents : function TSTBrowser_initTabContents(aTab, aForce) 
 	{
 		var d = this.document;
 
-		var icon  = d.getAnonymousElementByAttribute(aTab, 'class', 'tab-icon');
+		var throbber  = d.getAnonymousElementByAttribute(aTab, 'class', 'tab-throbber');
 		var twisty = d.getAnonymousElementByAttribute(aTab, 'class', this.kTWISTY);
-		if (icon && !twisty) {
-			twisty = d.createElement('image');
-			twisty.setAttribute('class', this.kTWISTY);
-			let container = d.createElement('hbox');
-			container.setAttribute('class', this.kTWISTY_CONTAINER);
-			container.appendChild(twisty);
-
-			icon.appendChild(container);
-
+		if (throbber  && !twisty) {
 			let marker = d.createElement('image');
 			marker.setAttribute('class', this.kDROP_MARKER);
-			container = d.createElement('hbox');
-			container.setAttribute('class', this.kDROP_MARKER_CONTAINER);
-			container.appendChild(marker);
+			throbber.parentNode.appendChild(marker);
 
-			icon.appendChild(container);
+			twisty = d.createElement('image');
+			twisty.setAttribute('class', this.kTWISTY);
+			throbber.parentNode.appendChild(twisty);
 		}
 
 		var label = this.getTabLabel(aTab);
 		var counter = d.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER_CONTAINER);
-		if (label && label.parentNode != aTab && !counter) {
+		if (label && !counter) {
 			counter = d.createElement('hbox');
 			counter.setAttribute('class', this.kCOUNTER_CONTAINER);
 
@@ -946,76 +938,82 @@ TreeStyleTabBrowser.prototype = {
 			label.parentNode.appendChild(counter);
 		}
 
-		var tabContentBox = d.getAnonymousElementByAttribute(aTab, 'class', 'tab-content');
-		if (tabContentBox &&
-			(tabContentBox.firstChild.className || '').indexOf('tab-image-') > -1) {
-			// Set stretched only if the tabFx2Compatible.xml is applied.
-			// Tab Mix Plus overrides the binding so icons are wrongly stretched.
-			tabContentBox.setAttribute('align', this.isVertical ? 'stretch' : 'center' );
-		}
-
-		this.initTabContentsOrder(aTab);
+		this.initTabContentsOrder(aTab, aForce);
 	},
  
-	initTabContentsOrder : function TSTBrowser_initTabContentsOrder(aTab) 
+	initTabContentsOrder : function TSTBrowser_initTabContentsOrder(aTab, aForce) 
 	{
 		var d = this.document;
 
-		var label = this.getTabLabel(aTab);
-		var close = this.getTabClosebox(aTab);
-		var inverted = this.mTabBrowser.getAttribute(this.kTAB_CONTENTS_INVERTED) == 'true';
+		var label     = this.getTabLabel(aTab);
+		var close     = this.getTabClosebox(aTab);
+		var throbber  = d.getAnonymousElementByAttribute(aTab, 'class', 'tab-throbber');
+
+		var twisty    = d.getAnonymousElementByAttribute(aTab, 'class', this.kTWISTY);
+		var marker    = d.getAnonymousElementByAttribute(aTab, 'class', this.kDROP_MARKER);
+		var counter   = d.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER_CONTAINER);
 
 		var nodesContainer = d.getAnonymousElementByAttribute(aTab, 'class', 'tab-content') || aTab;
 		var nodes = Array.slice(d.getAnonymousNodes(nodesContainer) || nodesContainer.childNodes);
 
-		// reset order
+		// reset order at first!
 		nodes.forEach(function(aNode, aIndex) {
+			if (aNode.getAttribute('class') == 'informationaltab-thumbnail-container')
+				return;
 			aNode.setAttribute('ordinal', aIndex);
 		}, this);
 
-		// rearrange top-level contents
+		// after that, rearrange contents
 		nodes.splice(nodes.indexOf(close), 1);
-		if (inverted) {
-			if (this.mTabBrowser.getAttribute(this.kCLOSEBOX_INVERTED) == 'true')
-				nodes.splice(nodes.indexOf(label.parentNode)+1, 0, close);
-			else
-				nodes.splice(nodes.indexOf(label.parentNode), 0, close);
-		}
-		else {
-			if (this.mTabBrowser.getAttribute(this.kCLOSEBOX_INVERTED) == 'true')
-				nodes.splice(nodes.indexOf(label.parentNode), 0, close);
-			else
-				nodes.splice(nodes.indexOf(label.parentNode)+1, 0, close);
-		}
-		var count = nodes.length;
-		Array.slice(nodes).reverse()
-			.forEach(function(aNode, aIndex) {
-				aNode.setAttribute('ordinal', (count - aIndex + 1) * 100);
-			}, this);
+		if (this.mTabBrowser.getAttribute(this.kCLOSEBOX_INVERTED) == 'true')
+			nodes.splice(nodes.indexOf(label), 0, close);
+		else
+			nodes.splice(nodes.indexOf(label)+1, 0, close);
 
-		// rearrange contents in "tab-image-middle"
-		nodes = Array.slice(label.parentNode.childNodes);
+		if (marker) {
+			nodes.splice(nodes.indexOf(marker), 1);
+			nodes.splice(nodes.indexOf(throbber), 0, marker);
+		}
+		if (twisty) {
+			nodes.splice(nodes.indexOf(twisty), 1);
+			nodes.splice(nodes.indexOf(throbber), 0, twisty);
+		}
 
-		if (inverted)
+		if (this.mTabBrowser.getAttribute(this.kTAB_CONTENTS_INVERTED) == 'true')
 			nodes.reverse();
 
-		var counter = d.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER_CONTAINER);
-		if (counter) {
+		if (counter) { // counter must rightside of the label!
 			nodes.splice(nodes.indexOf(counter), 1);
 			nodes.splice(nodes.indexOf(label)+1, 0, counter);
 		}
 
-		count = nodes.length;
-		nodes.reverse().forEach(function(aNode, aIndex) {
-			if (aNode.getAttribute('class') == 'informationaltab-thumbnail-container')
-				return;
-			aNode.setAttribute('ordinal', (count - aIndex + 1) * 100);
-		}, this);
+		var count = nodes.length;
+		nodes.reverse()
+			.forEach(function(aNode, aIndex) {
+				if (aNode.getAttribute('class') == 'informationaltab-thumbnail-container')
+					return;
+				aNode.setAttribute('ordinal', (count - aIndex + 1) * 100);
+			});
+
+		if (aForce) {
+			/**
+			 * After the order of contents are changed dynamically,
+			 * Gecko doesn't re-render them in the new order.
+			 * Changing of "display" or "position" can fix this problem.
+			 */
+			nodes.forEach(function(aNode) {
+				aNode.style.position = 'fixed';
+			});
+			this.Deferred.wait(0.1).next(function() {
+				nodes.forEach(function(aNode) {
+					aNode.style.position = '';
+				});
+			});
+		}
 	},
  
 	updateInvertedTabContentsOrder : function TSTBrowser_updateInvertedTabContentsOrder(aTarget) 
 	{
-		if (!this.getTreePref('tabbar.invertTabContents')) return;
 		var self = this;
 		this.Deferred.next(function() {
 			var b = self.mTabBrowser;
@@ -2109,14 +2107,14 @@ TreeStyleTabBrowser.prototype = {
 			case 'extensions.treestyletab.tabbar.invertTabContents':
 				this.setTabbrowserAttribute(this.kTAB_CONTENTS_INVERTED, value);
 				tabs.forEach(function(aTab) {
-					this.initTabContents(aTab);
+					this.initTabContents(aTab, true);
 				}, this);
 				return;
 
 			case 'extensions.treestyletab.tabbar.invertClosebox':
 				this.setTabbrowserAttribute(this.kCLOSEBOX_INVERTED, value);
 				tabs.forEach(function(aTab) {
-					this.initTabContents(aTab);
+					this.initTabContents(aTab, true);
 				}, this);
 				return;
 

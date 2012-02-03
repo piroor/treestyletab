@@ -161,47 +161,15 @@
 	background-color: ThreeDHighlight !important;
 }
 
-.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab
-  .tab-image-left,
-.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab
-  .tab-image-right,
-.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([selected="true"])
-  .tab-image-left,
-.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([selected="true"])
-  .tab-image-right {
-	height: auto;
-	margin: 0 !important;
-	padding: 0 !important;
-	background: transparent;
-	width: 0;
-}
-
 
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab
-  .tab-image-middle,
-.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab
-  .tab-close-button,
-.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([selected="true"]):not(:hover)
-  .tab-image-middle,
-.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([selected="true"]):not(:hover)
-  .tab-image-middle
   .tab-close-button {
 	height: auto;
 	margin: 0 !important;
 	padding: 0 !important;
 	background: transparent;
 }
-.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab[selected="true"]
-  .tab-image-middle,
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab[selected="true"]
   .tab-close-button {
