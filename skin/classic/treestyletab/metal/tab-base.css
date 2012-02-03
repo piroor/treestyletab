@@ -76,12 +76,12 @@
   .tab-content {
 	border: 10px solid transparent;
 	margin: 0 !important;
-	padding: 3px 5px 3px 10px;
+	padding: 2px 5px 2px 10px;
 	-moz-appearance: none !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tab-content {
-	padding: 3px 10px 3px 5px;
+	padding: 2px 10px 2px 5px;
 }
 
 
