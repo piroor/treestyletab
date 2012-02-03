@@ -144,7 +144,6 @@ var TreeStyleTabUtils = {
  
 /* classes */ 
 	kTWISTY                     : 'treestyletab-twisty',
-	kDROP_MARKER                : 'treestyletab-drop-marker',
 	kCOUNTER                    : 'treestyletab-counter',
 	kCOUNTER_CONTAINER          : 'treestyletab-counter-container',
 	kCOUNTER_PAREN              : 'treestyletab-counter-paren',

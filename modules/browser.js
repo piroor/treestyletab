@@ -893,17 +893,13 @@ TreeStyleTabBrowser.prototype = {
 		}
 	},
  
-	initTabContents : function TSTBrowser_initTabContents(aTab, aForce) 
+	initTabContents : function TSTBrowser_initTabContents(aTab) 
 	{
 		var d = this.document;
 
 		var throbber  = d.getAnonymousElementByAttribute(aTab, 'class', 'tab-throbber');
 		var twisty = d.getAnonymousElementByAttribute(aTab, 'class', this.kTWISTY);
 		if (throbber  && !twisty) {
-			let marker = d.createElement('image');
-			marker.setAttribute('class', this.kDROP_MARKER);
-			throbber.parentNode.appendChild(marker);
-
 			twisty = d.createElement('image');
 			twisty.setAttribute('class', this.kTWISTY);
 			throbber.parentNode.appendChild(twisty);
@@ -938,7 +934,7 @@ TreeStyleTabBrowser.prototype = {
 			label.parentNode.appendChild(counter);
 		}
 
-		this.initTabContentsOrder(aTab, aForce);
+		this.initTabContentsOrder(aTab, true);
 	},
  
 	initTabContentsOrder : function TSTBrowser_initTabContentsOrder(aTab, aForce) 
@@ -950,7 +946,6 @@ TreeStyleTabBrowser.prototype = {
 		var throbber  = d.getAnonymousElementByAttribute(aTab, 'class', 'tab-throbber');
 
 		var twisty    = d.getAnonymousElementByAttribute(aTab, 'class', this.kTWISTY);
-		var marker    = d.getAnonymousElementByAttribute(aTab, 'class', this.kDROP_MARKER);
 		var counter   = d.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER_CONTAINER);
 
 		var nodesContainer = d.getAnonymousElementByAttribute(aTab, 'class', 'tab-content') || aTab;
@@ -970,10 +965,6 @@ TreeStyleTabBrowser.prototype = {
 		else
 			nodes.splice(nodes.indexOf(label)+1, 0, close);
 
-		if (marker) {
-			nodes.splice(nodes.indexOf(marker), 1);
-			nodes.splice(nodes.indexOf(throbber), 0, marker);
-		}
 		if (twisty) {
 			nodes.splice(nodes.indexOf(twisty), 1);
 			nodes.splice(nodes.indexOf(throbber), 0, twisty);
@@ -2107,14 +2098,14 @@ TreeStyleTabBrowser.prototype = {
 			case 'extensions.treestyletab.tabbar.invertTabContents':
 				this.setTabbrowserAttribute(this.kTAB_CONTENTS_INVERTED, value);
 				tabs.forEach(function(aTab) {
-					this.initTabContents(aTab, true);
+					this.initTabContents(aTab);
 				}, this);
 				return;
 
 			case 'extensions.treestyletab.tabbar.invertClosebox':
 				this.setTabbrowserAttribute(this.kCLOSEBOX_INVERTED, value);
 				tabs.forEach(function(aTab) {
-					this.initTabContents(aTab, true);
+					this.initTabContents(aTab);
 				}, this);
 				return;
 

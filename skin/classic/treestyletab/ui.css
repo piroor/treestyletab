@@ -18,12 +18,6 @@
 
 /* drop markers */
 
-.treestyletab-drop-marker-container {
-	-moz-box-align: center;
-	-moz-box-pack: center;
-}
-
-
 .tabbrowser-tabs[treestyletab-tabbar-position="bottom"]
   .tabbrowser-tab[treestyletab-drop-position="before"][selected="true"],
 .tabbrowser-tabs[treestyletab-tabbar-position="bottom"]
@@ -149,73 +143,7 @@
 }
 
 
-/* drop marker by icon (for horizontal tab bar or the default theme) */
-
-.tabbrowser-tabs[treestyletab-tabbar-position="top"]
-  .tabbrowser-tab[treestyletab-drop-position="self"]
-  .treestyletab-drop-marker,
-.tabbrowser-tabs[treestyletab-mode="vertical"]:not([treestyletab-style])
-  .tabbrowser-tab[treestyletab-drop-position="after"]
-  .treestyletab-drop-marker {
-	list-style-image: url("dropmarker-down.png");
-}
-
-.tabbrowser-tabs[treestyletab-mode="vertical"]:not([treestyletab-style])
-  .tabbrowser-tab[treestyletab-drop-position="before"]
-  .treestyletab-drop-marker {
-	list-style-image: url("dropmarker-up.png");
-}
-
-.tabbrowser-tabs[treestyletab-mode="horizontal"]:not([treestyletab-style])
-  .tabbrowser-tab[treestyletab-drop-position="before"]
-  .treestyletab-drop-marker {
-	list-style-image: url("dropmarker-left.png");
-}
-
-.tabbrowser-tabs[treestyletab-mode="horizontal"]:not([treestyletab-style])
-  .tabbrowser-tab[treestyletab-drop-position="after"]
-  .treestyletab-drop-marker {
-	list-style-image: url("dropmarker-right.png");
-}
-
-.tabbrowser-tabs[treestyletab-tabbar-position="top"]
-  .tabbrowser-tab[treestyletab-children][treestyletab-drop-position="self"]
-  .treestyletab-twisty,
-.tabbrowser-tabs:not([treestyletab-style])
-  .tabbrowser-tab[treestyletab-children][treestyletab-drop-position="before"]
-  .treestyletab-twisty,
-.tabbrowser-tabs:not([treestyletab-style])
-  .tabbrowser-tab[treestyletab-children][treestyletab-drop-position="after"]
-  .treestyletab-twisty,
-.tabbrowser-tabs[treestyletab-tabbar-position="top"]
-  .tabbrowser-tab[treestyletab-drop-position="self"]
-  .tab-icon-image,
-.tabbrowser-tabs:not([treestyletab-style])
-  .tabbrowser-tab[treestyletab-drop-position="before"]
-  .tab-icon-image,
-.tabbrowser-tabs:not([treestyletab-style])
-  .tabbrowser-tab[treestyletab-drop-position="after"]
-  .tab-icon-image,
-.tabbrowser-tabs[treestyletab-tabbar-position="top"]
-  .tabbrowser-tab[treestyletab-drop-position="self"]
-  .tab-throbber,
-.tabbrowser-tabs:not([treestyletab-style])
-  .tabbrowser-tab[treestyletab-drop-position="before"]
-  .tab-throbber,
-.tabbrowser-tabs:not([treestyletab-style])
-  .tabbrowser-tab[treestyletab-drop-position="after"]
-  .tab-throbber,
-.tabbrowser-tabs[treestyletab-tabbar-position="top"]
-  .tabbrowser-tab[treestyletab-drop-position="self"]
-  .tab-extra-status,
-.tabbrowser-tabs:not([treestyletab-style])
-  .tabbrowser-tab[treestyletab-drop-position="before"]
-  .tab-extra-status,
-.tabbrowser-tabs:not([treestyletab-style])
-  .tabbrowser-tab[treestyletab-drop-position="after"]
-  .tab-extra-status {
-	visibility: hidden;
-}
+/* drop marker for horizontal tab bar or the default theme */
 
 .tabbrowser-tabs[treestyletab-tabbar-position="top"]
   .tabbrowser-tab[treestyletab-drop-position="self"][selected="true"]

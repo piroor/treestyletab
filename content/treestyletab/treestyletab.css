@@ -30,12 +30,6 @@
 	display: -moz-box;
 }
 
-/* drop marker */
-.tabbrowser-tab:not([treestyletab-drop-position])
-  .treestyletab-drop-marker {
-	display: none;
-}
-
 /* collapse/expand tree of tabs */
 .tabbrowser-tabs[treestyletab-allow-subtree-collapse="true"]
   .tabbrowser-tab[treestyletab-collapsed-done="true"] {
