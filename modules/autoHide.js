@@ -432,7 +432,7 @@ AutoHideBrowser.prototype = {
 		var sv  = this.treeStyleTab;
 		var b   = this.browser;
 		var box = b.mCurrentBrowser.boxObject;
-		var xoffset = this.shrunken ? 0 : this.XOffset ;
+		var xoffset = (this.shrunken || this.hidden) ? 0 : this.XOffset ;
 		box = {
 			screenX : box.screenX + (sv.position == 'left' ? xoffset : 0 ),
 			screenY : box.screenY,
