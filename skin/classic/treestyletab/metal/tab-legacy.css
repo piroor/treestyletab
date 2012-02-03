@@ -5,8 +5,13 @@
 /* background images */
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tab-content > * {
+  .tab-content {
 	position: relative !important;
-	margin-top: -10px !important;
-	margin-bottom: -10px !important;
+	margin: -10px -5px -10px -10px !important;
+}
+
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+  .tab-content {
+	margin-left: -5px !important;
+	margin-right: -10px !important;
 }
