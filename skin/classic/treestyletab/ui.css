@@ -292,7 +292,7 @@ tabbrowser[treestyletab-drop-position="left"]:not([treestyletab-tabbar-position=
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tab-content {
+  .tab-stack {
 	max-height: 999999px; /* by favicons, this box can be shrunken to 16px height. */
 }
 
