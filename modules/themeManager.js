@@ -95,7 +95,7 @@ TreeStyleTabThemeManager.prototype = {
 				break;
 
 			case 'sidebar':
-				styles.push(BASE+'sidebar/base.css');
+				styles.push(BASE+'sidebar/sidebar.css');
 				styles.push(BASE+'sidebar/aero.css');
 				styles.push(BASE+'platform-styled.css');
 				break;

@@ -97,7 +97,7 @@ tabbrowser[treestyletab-mode="vertical"]
 	-moz-border-radius-bottomright : 0 !important;
 	-moz-box-align: stretch !important;
 	margin: 0 !important;
-	padding: 0 3px 2px 10px !important;
+	padding: 1px 3px 2px 10px !important;
 	height: 21px !important;     /* height including border! */
 	text-align: left !important;
 	border: none;
@@ -263,65 +263,37 @@ tabbrowser[treestyletab-mode="vertical"]
 }
 
 /* Round blue rectangle around tabs that are dropping targets. */
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[treestyletab-drop-position="self"]:not([selected="true"]) {
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-style]
+  .tabbrowser-tab:not([pinned="true"])[treestyletab-drop-position="self"]:not([selected="true"]) {
 	border: 2px solid #577bf3 !important; /* not OSX's colour but Firefox's */
 	background: #d0def5 !important;
 	-moz-border-radius: 8px !important;
+	padding: 0 1px 0 8px !important;
 }
 
 /* White-blue-white separator for drop indicator. */
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[treestyletab-drop-position="before"][selected="true"],
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[treestyletab-drop-position="before"][selected="true"]:hover,
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[treestyletab-drop-position="before"]:not([selected="true"]),
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[treestyletab-drop-position="before"]:not([selected="true"]):hover {
-	border-top: 4px solid red !important;
-	-moz-border-top-colors: #ffffff #577bf3 #577bf3 #ffffff !important;
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-style]
+  .tabbrowser-tab:not([pinned="true"])[treestyletab-drop-position="before"][selected="true"],
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-style]
+  .tabbrowser-tab:not([pinned="true"])[treestyletab-drop-position="before"][selected="true"]:hover,
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-style]
+  .tabbrowser-tab:not([pinned="true"])[treestyletab-drop-position="before"]:not([selected="true"]),
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-style]
+  .tabbrowser-tab:not([pinned="true"])[treestyletab-drop-position="before"]:not([selected="true"]):hover {
+	-moz-border-image: url("dropmarker.png") 12 0 0 11 fill / 12px 0 0 11px !important;
+	-moz-border-image-outset: 6px 0 0 0 !important;
 }
 
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[treestyletab-drop-position="after"][selected="true"],
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[treestyletab-drop-position="after"][selected="true"]:hover,
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[treestyletab-drop-position="after"]:not([selected="true"]),
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[treestyletab-drop-position="after"]:not([selected="true"]):hover {
-	border-bottom: 4px solid #577bf3 !important;
-	-moz-border-bottom-colors: #ffffff #577bf3 #577bf3 #ffffff !important;
-}
-
-/* Let's hack in the little round end of the drop indicator using the
-   drop marker image. */
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[treestyletab-drop-position="before"]
-  .treestyletab-drop-marker,
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[treestyletab-drop-position="after"]
-  .treestyletab-drop-marker {
-	list-style-image: url("dropmarker.png");
-}
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[treestyletab-drop-position="before"]
-  .treestyletab-drop-marker-container {
-	margin: -11px 22px 11px -22px;
-}
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[treestyletab-drop-position="after"]
-  .treestyletab-drop-marker-container {
-	margin: 12px 22px -12px -22px;
-}
-.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-allow-subtree-collapse="true"]
-  .tabbrowser-tab[treestyletab-drop-position="before"]
-  .treestyletab-drop-marker-container,
-.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-allow-subtree-collapse="true"]
-  .tabbrowser-tab[treestyletab-drop-position="after"]
-  .treestyletab-drop-marker-container {
-	margin-left: -30px;
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-style]
+  .tabbrowser-tab:not([pinned="true"])[treestyletab-drop-position="after"][selected="true"],
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-style]
+  .tabbrowser-tab:not([pinned="true"])[treestyletab-drop-position="after"][selected="true"]:hover,
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-style]
+  .tabbrowser-tab:not([pinned="true"])[treestyletab-drop-position="after"]:not([selected="true"]),
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-style]
+  .tabbrowser-tab:not([pinned="true"])[treestyletab-drop-position="after"]:not([selected="true"]):hover {
+	-moz-border-image: url("dropmarker.png") 0 0 12 11 fill / 0 0 12px 11px !important;
+	-moz-border-image-outset: 0 0 6px 0 !important;
 }
 
 
