@@ -414,10 +414,10 @@ catch(e) {
 		var tabs = sv.getTabsArray(targetBrowser);
 
 		var draggedWholeTree = [].concat(draggedRoots);
-		for each (let root in draggedRoots)
+		for (let [, root] in Iterator(draggedRoots))
 		{
 			let tabs = sourceService.getDescendantTabs(root);
-			for each (let tab in tabs)
+			for (let [, tab] in Iterator(tabs))
 			{
 				if (draggedWholeTree.indexOf(tab) < 0)
 					draggedWholeTree.push(tab);
@@ -515,14 +515,15 @@ catch(e) {
 		var sv = b.treeStyleTab;
 
 		b.movingSelectedTabs = true; // Multiple Tab Handler
-		aTabs.forEach(function(aTab) {
-			if (!aTab.parentNode) return; // ignore removed tabs
+		for (let [, tab] in Iterator(aTabs))
+		{
+			if (!tab.parentNode) continue; // ignore removed tabs
 			if (aParent)
-				sv.attachTabTo(aTab, aParent);
+				sv.attachTabTo(tab, aParent);
 			else
-				sv.detachTab(aTab);
-			sv.collapseExpandTab(aTab, false);
-		}, sv);
+				sv.detachTab(tab);
+			sv.collapseExpandTab(tab, false);
+		}
 		b.movingSelectedTabs = false; // Multiple Tab Handler
 	},
  
@@ -532,11 +533,12 @@ catch(e) {
 		var sv = b.treeStyleTab;
 
 		b.movingSelectedTabs = true; // Multiple Tab Handler
-		aTabs.forEach(function(aTab) {
-			if (!aTab.parentNode) return; // ignore removed tabs
-			sv.detachTab(aTab);
-			sv.collapseExpandTab(aTab, false);
-		}, sv);
+		for (let [, tab] in Iterator(aTabs))
+		{
+			if (!tab.parentNode) continue; // ignore removed tabs
+			sv.detachTab(tab);
+			sv.collapseExpandTab(tab, false);
+		}
 		b.movingSelectedTabs = false; // Multiple Tab Handler
 	},
   
@@ -861,9 +863,10 @@ catch(e) {
 		var sv = this.treeStyleTab;
 		if (this.mAutoExpandedTabs.length) {
 			if (sv.getTreePref('autoExpand.collapseFinally')) {
-				this.mAutoExpandedTabs.forEach(function(aTarget) {
-					this.collapseExpandSubtree(this.getTabById(aTarget), true, true);
-				}, sv);
+				for (let [, target] in Iterator(this.mAutoExpandedTabs))
+				{
+					sv.collapseExpandSubtree(sv.getTabById(target), true, true);
+				}
 			}
 			this.mAutoExpandedTabs = [];
 		}

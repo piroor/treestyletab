@@ -52,41 +52,43 @@ var TreeStyleTabBookmarksService = {
 			return;
 		}
 
-		aBookarmks.forEach(function(aItem) {
-			aItem.position = this.BookmarksService.getItemIndex(aItem.id);
-		},this);
+		for (let [, item] in Iterator(aBookarmks))
+		{
+			item.position = this.BookmarksService.getItemIndex(item.id);
+		}
 		aBookarmks.sort(function(aA, aB) {
 			return aA.position - aB.position;
 		});
 
-		aBookarmks.forEach(function(aItem, aIndex) {
-			if (this.BookmarksService.getItemType(aItem.id) != this.BookmarksService.TYPE_BOOKMARK)
-				return;
+		for (let [i, item] in Iterator(aBookarmks))
+		{
+			if (this.BookmarksService.getItemType(item.id) != this.BookmarksService.TYPE_BOOKMARK)
+				continue;
 
-			let uri = this.BookmarksService.getBookmarkURI(aItem.id);
+			let uri = this.BookmarksService.getBookmarkURI(item.id);
 			if (/^about:treestyletab-group\b/.test(uri.spec)) {
-				let title = this.BookmarksService.getItemTitle(aItem.id);
-				let folderId = this.BookmarksService.createFolder(aItem.parent, title, aItem.position);
-				this.BookmarksService.removeItem(aItem.id);
-				aItem.id = folderId;
-				aItem.isFolder = true;
+				let title = this.BookmarksService.getItemTitle(item.id);
+				let folderId = this.BookmarksService.createFolder(item.parent, title, item.position);
+				this.BookmarksService.removeItem(item.id);
+				item.id = folderId;
+				item.isFolder = true;
 			}
 
-			let index = aTreeStructure[aIndex];
+			let index = aTreeStructure[i];
 			let parent = index > -1 ? aBookarmks[index] : null ;
 			if (parent && (parent.folder || parent).isFolder) {
 				let folder = parent.folder || parent;
-				this.BookmarksService.moveItem(aItem.id, folder.id, -1);
-				aItem.folder = folder;
+				this.BookmarksService.moveItem(item.id, folder.id, -1);
+				item.folder = folder;
 			}
 			if (parent && !parent.isFolder) {
-				PlacesUtils.setAnnotationsForItem(aItem.id, [{
+				PlacesUtils.setAnnotationsForItem(item.id, [{
 					name    : this.kPARENT,
 					value   : parent ? parent.id : -1,
 					expires : PlacesUtils.annotations.EXPIRE_NEVER
 				}]);
 			}
-		}, this);
+		}
 	},
  
 	bookmarkTabSubtree : function TSTBMService_bookmarkTabSubtree(aTabOrTabs) 
@@ -102,10 +104,11 @@ var TreeStyleTabBookmarksService = {
 
 		var b = this.getTabBrowserFromChild(tabs[0]);
 		var bookmarkedTabs = [];
-		tabs.forEach(function(aTab, aIndex) {
-			if (!this.isGroupTab(aTab, aIndex == 0)) bookmarkedTabs.push(aTab);
-			bookmarkedTabs = bookmarkedTabs.concat(b.treeStyleTab.getDescendantTabs(aTab));
-		}, this);
+		for (let [i, tab] in Iterator(tabs))
+		{
+			if (!this.isGroupTab(tab, i == 0)) bookmarkedTabs.push(tab);
+			bookmarkedTabs = bookmarkedTabs.concat(b.treeStyleTab.getDescendantTabs(tab));
+		}
 
 		this.beginAddBookmarksFromTabs(bookmarkedTabs);
 		try {
@@ -357,12 +360,13 @@ var TreeStyleTabBookmarksService = {
 						TreeStyleTabBookmarksService.beginAddBookmarksFromTabs((function() {
 							var tabs = [];
 							var seen = {};
-							Array.forEach(getBrowser().mTabContainer.childNodes, function(aTab) {
-								let uri = aTab.linkedBrowser.currentURI.spec;
-								if (uri in seen) return;
+							for (let [, tab] in Iterator(getBrowser().mTabContainer.childNodes))
+							{
+								let uri = tab.linkedBrowser.currentURI.spec;
+								if (uri in seen) continue;
 								seen[uri] = true;
-								tabs.push(aTab);
-							});
+								tabs.push(tab);
+							}
 							return tabs;
 						})());
 						try {

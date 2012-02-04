@@ -394,16 +394,18 @@ var TreeStyleTabUtils = {
 	{
 		var OS = this.XULAppInfo.OS;
 		var processed = {};
-		this.getDescendant('extensions.treestyletab.platform.'+OS).forEach(function(aKey) {
-			var key = aKey.replace('platform.'+OS+'.', '');
-			this.setDefaultPref(key, this.getPref(aKey));
+		for (let [, originalKey] in Iterator(this.getDescendant('extensions.treestyletab.platform.'+OS)))
+		{
+			let key = originalKey.replace('platform.'+OS+'.', '');
+			this.setDefaultPref(key, this.getPref(originalKey));
 			processed[key] = true;
-		}, this);
-		this.getDescendant('extensions.treestyletab.platform.default').forEach(function(aKey) {
-			var key = aKey.replace('platform.default.', '');
+		}
+		for (let [, originalKey] in Iterator(this.getDescendant('extensions.treestyletab.platform.default')))
+		{
+			let key = originalKey.replace('platform.default.', '');
 			if (!(key in processed))
-				this.setDefaultPref(key, this.getPref(aKey));
-		}, this);
+				this.setDefaultPref(key, this.getPref(originalKey));
+		}
 	},
 	
 	updateAeroPeek : function TSTUtils_updateAeroPeek() 
@@ -711,26 +713,27 @@ var TreeStyleTabUtils = {
 	doAndWaitDOMEvent : function TSTUtils_doAndWaitDOMEvent() 
 	{
 		var type, target, delay, task;
-		Array.slice(arguments).forEach(function(aArg) {
-			switch(typeof aArg)
+		for (let [, arg] in Iterator(arguments))
+		{
+			switch(typeof arg)
 			{
 				case 'string':
-					type = aArg;
-					break;
+					type = arg;
+					continue;
 
 				case 'number':
-					delay = aArg;
-					break;
+					delay = arg;
+					continue;
 
 				case 'function':
-					task = aArg;
-					break;
+					task = arg;
+					continue;
 
 				default:
-					target = aArg;
-					break;
+					target = arg;
+					continue;
 			}
-		});
+		}
 
 		if (!target || !type) {
 			if (task) task();
@@ -862,61 +865,86 @@ var TreeStyleTabUtils = {
 			return false;
 
 		var box = twisty.boxObject;
-		var minX = box.screenX;
-		var minY = box.screenY;
-		var maxX = minX + box.width;
-		var maxY = minY + box.height;
-
-		var icon  = tab.ownerDocument.getAnonymousElementByAttribute(tab, 'class', 'tab-icon-image');
-		var iconBox = icon.boxObject;
-		var throbber  = tab.ownerDocument.getAnonymousElementByAttribute(tab, 'class', 'tab-throbber');
-		var throbberBox = throbber.boxObject;
-		var extraMinX = Math.min(throbberBox.screenX, iconBox.screenX);
-		var extraMinY = Math.min(throbberBox.screenY, iconBox.screenY);
-		var extraMaxX = Math.max(throbberBox.screenX + throbberBox.width, iconBox.screenX + iconBox.width);
-		var extraMaxY = Math.max(throbberBox.screenY + throbberBox.height, iconBox.screenY + iconBox.height);
-
+		var left = box.screenX;
+		var top = box.screenY;
+		var right = left + box.width;
+		var bottom = top + box.height;
+		var favicon = this.getFaviconRect(tab);
 		if (!box.width || !box.height) {
-			minX = extraMinX;
-			minY = extraMinY;
-			maxX = extraMaxX;
-			maxY = extraMaxY;
+			left = favicon.left;
+			top = favicon.top;
+			right = favicon.right;
+			bottom = favicon.bottom;
 		}
 		else if (
 			this.shouldExpandTwistyArea &&
 			!this._expandTwistyAreaBlockers.length
 			) {
-			minX = Math.min(minX, extraMinX);
-			minY = Math.min(minY, extraMinY);
-			maxX = Math.max(maxX, extraMaxX);
-			maxY = Math.max(maxY, extraMaxY);
+			left = Math.min(left, favicon.left);
+			top = Math.min(top, favicon.top);
+			right = Math.max(right, favicon.right);
+			bottom = Math.max(bottom, favicon.bottom);
 		}
 
 		var x = aEvent.screenX;
 		var y = aEvent.screenY;
-		return (x >= minX && x <= maxX && y >= minY && y <= maxY);
+		return (x >= left && x <= right && y >= top && y <= bottom);
+	},
+	getFaviconRect : function TSTUtils_getFaviconRect(aTab)
+	{
+		var icon  = aTab.ownerDocument.getAnonymousElementByAttribute(aTab, 'class', 'tab-icon-image');
+		var iconBox = icon.boxObject;
+		var iconRect = {
+				left   : iconBox.screenX,
+				top    : iconBox.screenY,
+				right  : iconBox.screenX + iconBox.width,
+				bottom : iconBox.screenY + iconBox.height
+			};
+
+		var throbber  = aTab.ownerDocument.getAnonymousElementByAttribute(aTab, 'class', 'tab-throbber');
+		var throbberBox = throbber.boxObject;
+		var throbberRect = {
+				left   : throbberBox.screenX,
+				top    : throbberBox.screenY,
+				right  : throbberBox.screenX + throbberBox.width,
+				bottom : throbberBox.screenY + throbberBox.height
+			};
+
+		if (!iconBox.width && !iconBox.height)
+			return throbberRect;
+
+		if (!throbberBox.width && !throbberBox.height)
+			return iconRect;
+
+		return {
+			left   : Math.min(throbberRect.left, iconRect.left),
+			right  : Math.max(throbberRect.right, iconRect.right),
+			top    : Math.min(throbberRect.top, iconRect.top),
+			bottom : Math.max(throbberRect.bottom, iconRect.bottom)
+		};
 	},
 	
 	// called with target(nsIDOMEventTarget), document(nsIDOMDocument), type(string) and data(object) 
-	fireDataContainerEvent : function()
+	fireDataContainerEvent : function TSTUtils_fireDataContainerEvent()
 	{
 		var target, document, type, data, canBubble, cancellable;
-		Array.slice(arguments).forEach(function(aArg) {
-			if (typeof aArg == 'boolean') {
+		for (let [, arg] in Iterator(arguments))
+		{
+			if (typeof arg == 'boolean') {
 				if (canBubble === void(0))
-					canBubble = aArg;
+					canBubble = arg;
 				else
-					cancellable = aArg;
+					cancellable = arg;
 			}
-			else if (typeof aArg == 'string')
-				type = aArg;
-			else if (aArg instanceof Ci.nsIDOMDocument)
-				document = aArg;
-			else if (aArg instanceof Ci.nsIDOMEventTarget)
-				target = aArg;
+			else if (typeof arg == 'string')
+				type = arg;
+			else if (arg instanceof Ci.nsIDOMDocument)
+				document = arg;
+			else if (arg instanceof Ci.nsIDOMEventTarget)
+				target = arg;
 			else
-				data = aArg;
-		});
+				data = arg;
+		}
 		if (!target)
 			target = document;
 		if (!document)
@@ -924,7 +952,7 @@ var TreeStyleTabUtils = {
 
 		var event = document.createEvent('DataContainerEvent');
 		event.initEvent(type, canBubble, cancellable);
-		for (var i in data)
+		for (let i in data)
 		{
 			if (!data.hasOwnProperty(i))
 				continue;
@@ -1105,17 +1133,19 @@ var TreeStyleTabUtils = {
 	{
 		if (!aTabs || aTabs.length <= 1) return;
 		var id = this.makeNewClosedSetId() + '::' + aTabs.length;
-		aTabs.forEach(function(aTab) {
-			this.setTabValue(aTab, this.kCLOSED_SET_ID, id);
-		}, this);
+		for (let [, tab] in Iterator(aTabs))
+		{
+			this.setTabValue(tab, this.kCLOSED_SET_ID, id);
+		}
 	},
  
 	unmarkAsClosedSet : function TSTUtils_unmarkAsClosedSet(aTabs) /* PUBLIC API */ 
 	{
 		if (!aTabs || !aTabs.length) return;
-		aTabs.forEach(function(aTab) {
-			this.deleteTabValue(aTab, this.kCLOSED_SET_ID);
-		}, this);
+		for (let [, tab] in Iterator(aTabs))
+		{
+			this.deleteTabValue(tab, this.kCLOSED_SET_ID);
+		}
 	},
  
 	useTMPSessionAPI : false, 
@@ -1253,7 +1283,7 @@ var TreeStyleTabUtils = {
 		var b = aTabBrowser || this.browser;
 		var top = aFrame.top;
 		var tabs = this.getAllTabsArray(b);
-		for each (var tab in tabs)
+		for (let [, tab] in Iterator(tabs))
 		{
 			if (tab.linkedBrowser.contentWindow == top)
 				return tab;
@@ -1293,10 +1323,11 @@ var TreeStyleTabUtils = {
 	cleanUpTabsArray : function TSTUtils_cleanUpTabsArray(aTabs) 
 	{
 		var newTabs = [];
-		aTabs.forEach(function(aTab) {
-			if (!aTab || !aTab.parentNode) return; // ignore removed tabs
-			if (newTabs.indexOf(aTab) < 0) newTabs.push(aTab);
-		});
+		for (let [, tab] in Iterator(aTabs))
+		{
+			if (!tab || !tab.parentNode) continue; // ignore removed tabs
+			if (newTabs.indexOf(tab) < 0) newTabs.push(tab);
+		}
 		newTabs.sort(this.sortTabsByOrder);
 		return newTabs;
 	},
@@ -1328,17 +1359,17 @@ var TreeStyleTabUtils = {
 		var groups = [];
 
 		var group = [];
-		this.cleanUpTabsArray(aTabs)
-			.forEach(function(aTab) {
-				var parent = this.getParentTab(aTab);
-				if (!parent || group.indexOf(parent) < 0) {
-					if (group.length) groups.push(group);
-					group = [aTab];
-				}
-				else {
-					group.push(aTab);
-				}
-			}, this);
+		for (let [, tab] in Iterator(this.cleanUpTabsArray(aTabs)))
+		{
+			let parent = this.getParentTab(tab);
+			if (!parent || group.indexOf(parent) < 0) {
+				if (group.length) groups.push(group);
+				group = [tab];
+			}
+			else {
+				group.push(tab);
+			}
+		}
 		if (group.length) groups.push(group);
 		return groups;
 	},
@@ -2295,10 +2326,11 @@ var TreeStyleTabUtils = {
 		var collapsedStates = aTabs.map(function(aTab) {
 				return this.getTabValue(aTab, this.kSUBTREE_COLLAPSED) == 'true';
 			}, this);
-		aTabs.forEach(function(aTab) {
-			this.collapseExpandSubtree(aTab, false, true);
-			this.collapseExpandTab(aTab, false, true);
-		}, this);
+		for (let [, tab] in Iterator(aTabs))
+		{
+			this.collapseExpandSubtree(tab, false, true);
+			this.collapseExpandTab(tab, false, true);
+		}
 		return collapsedStates;
 	},
  
@@ -2362,26 +2394,27 @@ var TreeStyleTabUtils = {
 		while (aExpandStates.length < aTabs.length) aExpandStates.push(-1);
 
 		var parentTab = null;
-		aTabs.forEach(function(aTab, aIndex) {
-			if (sv.isCollapsed(aTab)) sv.collapseExpandTab(aTab, false, true);
-			sv.detachTab(aTab);
+		for (let [i, tab] in Iterator(aTabs))
+		{
+			if (sv.isCollapsed(tab)) sv.collapseExpandTab(tab, false, true);
+			sv.detachTab(tab);
 
-			var parentIndexInTree = aTreeStructure[aIndex];
+			let parentIndexInTree = aTreeStructure[i];
 			if (parentIndexInTree < 0) // there is no parent, so this is a new parent!
-				parentTab = aTab.getAttribute(sv.kID);
+				parentTab = tab.getAttribute(sv.kID);
 
-			var parent = sv.getTabById(parentTab);
+			let parent = sv.getTabById(parentTab);
 			if (parent) {
 				let tabs = [parent].concat(sv.getDescendantTabs(parent));
 				parent = parentIndexInTree < tabs.length ? tabs[parentIndexInTree] : parent ;
 			}
 			if (parent) {
-				sv.attachTabTo(aTab, parent, {
+				sv.attachTabTo(tab, parent, {
 					forceExpand : true,
 					dontMove    : true
 				});
 			}
-		});
+		}
 
 		for (let i = aTabs.length-1; i > -1; i--)
 		{

@@ -201,24 +201,24 @@ var TreeStyleTabWindowHelper = {
 			);
 		}
 
-		this._splitFunctionNames(<![CDATA[
-			window.duplicateTab.handleLinkClick
-			window.duplicatethistab.handleLinkClick
-			window.__treestyletab__highlander__origHandleLinkClick
-			window.__splitbrowser__handleLinkClick
-			window.__ctxextensions__handleLinkClick
-			window.handleLinkClick
-		]]>).some(function(aFunc) {
-			let source = this._getFunctionSource(aFunc);
+		for (let [, func] in Iterator(this._splitFunctionNames(<![CDATA[
+				window.duplicateTab.handleLinkClick
+				window.duplicatethistab.handleLinkClick
+				window.__treestyletab__highlander__origHandleLinkClick
+				window.__splitbrowser__handleLinkClick
+				window.__ctxextensions__handleLinkClick
+				window.handleLinkClick
+			]]>)))
+		{
+			let source = this._getFunctionSource(func);
 			if (!source || !/^\(?function handleLinkClick/.test(source))
-				return false;
-			eval(aFunc+' = '+source.replace(
+				continue;
+			eval(func+' = '+source.replace(
 				/(charset\s*:\s*doc\.characterSet\s*)/,
 				'$1, event : event, linkNode : linkNode'
 			));
-			source = null;
-			return true;
-		}, this);
+			break;
+		}
 
 		if ('openLinkIn' in window) {
 			eval('window.openLinkIn = '+
@@ -233,16 +233,17 @@ var TreeStyleTabWindowHelper = {
 			);
 		}
 
-		this._splitFunctionNames(<![CDATA[
-			window.permaTabs.utils.wrappedFunctions["window.contentAreaClick"]
-			window.__contentAreaClick
-			window.__ctxextensions__contentAreaClick
-			window.contentAreaClick
-		]]>).forEach(function(aFunc) {
-			let source = this._getFunctionSource(aFunc);
+		for (let [, func] in Iterator(this._splitFunctionNames(<![CDATA[
+				window.permaTabs.utils.wrappedFunctions["window.contentAreaClick"]
+				window.__contentAreaClick
+				window.__ctxextensions__contentAreaClick
+				window.contentAreaClick
+			]]>)))
+		{
+			let source = this._getFunctionSource(func);
 			if (!source || !/^\(?function contentAreaClick/.test(source))
-				return;
-			eval(aFunc+' = '+source.replace(
+				continue;
+			eval(func+' = '+source.replace(
 				// for Tab Utilities, etc. Some addons insert openNewTabWith() to the function.
 				// (calls for the function is not included by Firefox default.)
 				/(openNewTabWith\()/g,
@@ -250,67 +251,66 @@ var TreeStyleTabWindowHelper = {
 					if (!TreeStyleTabService.checkToOpenChildTab(event.target.ownerDocument.defaultView)) TreeStyleTabService.readyToOpenChildTab(event.target.ownerDocument.defaultView);
 					$1]]>
 			));
-			source = null;
-		}, this);
+		}
 
-		this._splitFunctionNames(<![CDATA[
-			window.duplicateTab.gotoHistoryIndex
-			window.duplicateTab.BrowserBack
-			window.duplicateTab.BrowserForward
-			window.duplicatethistab.gotoHistoryIndex
-			window.duplicatethistab.BrowserBack
-			window.duplicatethistab.BrowserForward
-			window.__rewindforward__BrowserForward
-			window.__rewindforward__BrowserBack
-			window.gotoHistoryIndex
-			window.BrowserForward
-			window.BrowserBack
-		]]>).forEach(function(aFunc) {
-			let source = this._getFunctionSource(aFunc);
+		for (let [, func] in Iterator(this._splitFunctionNames(<![CDATA[
+				window.duplicateTab.gotoHistoryIndex
+				window.duplicateTab.BrowserBack
+				window.duplicateTab.BrowserForward
+				window.duplicatethistab.gotoHistoryIndex
+				window.duplicatethistab.BrowserBack
+				window.duplicatethistab.BrowserForward
+				window.__rewindforward__BrowserForward
+				window.__rewindforward__BrowserBack
+				window.gotoHistoryIndex
+				window.BrowserForward
+				window.BrowserBack
+			]]>)))
+		{
+			let source = this._getFunctionSource(func);
 			if (!source || !/^\(?function (gotoHistoryIndex|BrowserForward|BrowserBack)/.test(source))
-				return;
-			eval(aFunc+' = '+source.replace(
+				continue;
+			eval(func+' = '+source.replace(
 				/((?:openUILinkIn|duplicateTabIn)\()/g,
 				<![CDATA[
 					if (where == 'tab' || where == 'tabshifted')
 						TreeStyleTabService.readyToOpenChildTab();
 					$1]]>
 			));
-			source = null;
-		}, this);
+		}
 
-		this._splitFunctionNames(<![CDATA[
-			window.BrowserReloadOrDuplicate
-		]]>).forEach(function(aFunc) {
-			let source = this._getFunctionSource(aFunc);
+		for (let [, func] in Iterator(this._splitFunctionNames(<![CDATA[
+				window.BrowserReloadOrDuplicate
+			]]>)))
+		{
+			let source = this._getFunctionSource(func);
 			if (!source || !/^\(?function (BrowserReloadOrDuplicate)/.test(source))
-				return;
-			eval(aFunc+' = '+source.replace(
+				continue;
+			eval(func+' = '+source.replace(
 				/((?:openUILinkIn|duplicateTabIn)\()/g,
 				<![CDATA[
 					if (where == 'tab' || where == 'tabshifted')
 						TreeStyleTabService.onBeforeTabDuplicate(null);
 					$&]]>
 			));
-			source = null;
-		}, this);
+		}
 
-		this._splitFunctionNames(<![CDATA[
-			permaTabs.utils.wrappedFunctions["window.BrowserHomeClick"]
-			window.BrowserHomeClick
-			window.BrowserGoHome
-		]]>).forEach(function(aFunc) {
-			let source = this._getFunctionSource(aFunc);
+		for (let [, func] in Iterator(this._splitFunctionNames(<![CDATA[
+				permaTabs.utils.wrappedFunctions["window.BrowserHomeClick"]
+				window.BrowserHomeClick
+				window.BrowserGoHome
+			]]>)))
+		{
+			let source = this._getFunctionSource(func);
 			if (!source || !/^\(?function (BrowserHomeClick|BrowserGoHome)/.test(source))
-				return;
-			eval(aFunc+' = '+source.replace(
+				continue;
+			eval(func+' = '+source.replace(
 				'gBrowser.loadTabs(',
 				<![CDATA[
 					TreeStyleTabService.readyToOpenNewTabGroup(gBrowser);
 					$&]]>
 			));
-			source = null;
-		}, this);
+		}
 
 		eval('FeedHandler.loadFeed = '+
 			FeedHandler.loadFeed.toSource().replace(

@@ -89,15 +89,14 @@ function initAppearancePane()
 			document.getElementById('extensions.treestyletab.tabbar.style-arrowscrollbox'),
 			document.getElementById('extensions.treestyletab.twisty.style-arrowscrollbox')
 		];
-	Array.slice(boxes[0].childNodes).concat(Array.slice(boxes[1].childNodes))
-	.forEach(function(aItem) {
-		var start       = 0;
-		var delta       = 200;
-		var radian      = 90 * Math.PI / 180;
+	Array.slice(boxes[0].childNodes).concat(Array.slice(boxes[1].childNodes)).forEach(function(aItem) {
+		let start       = 0;
+		let delta       = 200;
+		let radian      = 90 * Math.PI / 180;
 		aItem.style.overflow = 'hidden';
 		aItem.width = 0;
 		aItem.style.maxWidth = 0;
-		var task = function(aTime, aBeginning, aChange, aDuration) {
+		let task = function(aTime, aBeginning, aChange, aDuration) {
 			var width;
 			if (aTime >= aDuration) {
 				width = start + delta;
@@ -186,17 +185,18 @@ function onSyncGroupBookmarkUIToPref()
 	if (gGroupBookmarkUnderParent.checked) behavior |= 256;
 	if (gGroupBookmarkType.value == 'true') behavior |= 512;
 
-	[
-		gGroupBookmarkUnderParent,
-		gGroupBookmarkType,
-		gGroupBookmarkType.previousSibling,
-		gGroupBookmarkType.nextSibling
-	].forEach(function(aNode) {
+	for (let [, node] in Iterator([
+			gGroupBookmarkUnderParent,
+			gGroupBookmarkType,
+			gGroupBookmarkType.previousSibling,
+			gGroupBookmarkType.nextSibling
+		]))
+	{
 		if (behavior & 1)
-			aNode.removeAttribute('disabled');
+			node.removeAttribute('disabled');
 		else
-			aNode.setAttribute('disabled', true);
-	});
+			node.setAttribute('disabled', true);
+	}
 
 	return behavior;
 }

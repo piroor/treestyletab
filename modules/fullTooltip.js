@@ -413,13 +413,14 @@ FullTooltipManager.prototype = {
 		if (aExtraLabels) {
 			if (typeof aExtraLabels == 'string')
 				aExtraLabels = [aExtraLabels];
-			aExtraLabels.forEach(function(aLabel) {
-				aLabel = aLabel.replace(/^\s+|\s+$/g, '');
-				if (!aLabel)
-					return;
+			for (let [, label] in Iterator(aExtraLabels))
+			{
+				label = label.replace(/^\s+|\s+$/g, '');
+				if (!label)
+					continue;
 				root.appendChild(this.document.createElement('description'))
-					.appendChild(this.document.createTextNode(aLabel));
-			}, this);
+					.appendChild(this.document.createTextNode(label));
+			}
 		}
 
 		root.insertBefore(tree, root.firstChild && root.firstChild.nextSibling);

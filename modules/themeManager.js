@@ -53,10 +53,12 @@ TreeStyleTabThemeManager.prototype = {
 
 	set : function(aStyle, aPosition)
 	{
-		if (this._lastStyles)
-			this._lastStyles.forEach(function(aStyle) {
-				aStyle.parentNode.removeChild(aStyle);
-			});
+		if (this._lastStyles) {
+			for (let [, style] in Iterator(this._lastStyles))
+			{
+				style.parentNode.removeChild(style);
+			}
+		}
 		this._lastStyles = null;
 
 		var styles = [];
@@ -128,13 +130,14 @@ TreeStyleTabThemeManager.prototype = {
 				null ;
 		if (!images) return;
 
-		images.forEach(function(aImage) {
-			if (this._preLoadImagesForStyleDoneImages.indexOf(aImage) > -1)
-				return;
+		for (let [, image] in Iterator(images))
+		{
+			if (this._preLoadImagesForStyleDoneImages.indexOf(image) > -1)
+				continue;
 
-			(new this.window.Image()).src = aImage;
-			this._preLoadImagesForStyleDoneImages.push(aImage);
-		}, this);
+			(new this.window.Image()).src = image;
+			this._preLoadImagesForStyleDoneImages.push(image);
+		}
 	},
 
 	_preLoadImages : {

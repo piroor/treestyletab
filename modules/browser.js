@@ -523,15 +523,13 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var tabs = this.getTabsArray(this.mTabBrowser);
 		var count = tabs.length;
-		tabs.forEach(
-			aStacked ?
-				function(aTab, aIndex) {
-					aTab.style.zIndex = count * 1000 - aIndex;
-				} :
-				function(aTab, aIndex) {
-					aTab.style.zIndex = '';
-				}
-		);
+		for (let [i, tab] in Iterator(tabs))
+		{
+			if (aStacked)
+				tab.style.zIndex = count * 1000 - index;
+			else
+				tab.style.zIndex = '';
+		}
 	},
  
 	fixTooNarrowTabbar : function TSTBrowser_fixTooNarrowTabbar() 
@@ -723,21 +721,22 @@ TreeStyleTabBrowser.prototype = {
 		if (!('MultipleTabService' in w)) {
 			w.setTimeout(function(aSelf, aTabBrowser, aPopup) {
 				let suffix = '-tabbrowser-'+(aTabBrowser.id || 'instance-'+parseInt(Math.random() * 65000));
-				[
-					aSelf.kMENUITEM_RELOADSUBTREE,
-					aSelf.kMENUITEM_RELOADCHILDREN,
-					aSelf.kMENUITEM_REMOVESUBTREE,
-					aSelf.kMENUITEM_REMOVECHILDREN,
-					aSelf.kMENUITEM_REMOVEALLTABSBUT,
-					aSelf.kMENUITEM_COLLAPSEEXPAND_SEPARATOR,
-					aSelf.kMENUITEM_COLLAPSE,
-					aSelf.kMENUITEM_EXPAND,
-					aSelf.kMENUITEM_AUTOHIDE_SEPARATOR,
-					aSelf.kMENUITEM_AUTOHIDE,
-					aSelf.kMENUITEM_FIXED,
-					aSelf.kMENUITEM_BOOKMARKSUBTREE
-				].forEach(function(aID) {
-					let item = d.getElementById(aID).cloneNode(true);
+				for (let [, id] in Iterator([
+						aSelf.kMENUITEM_RELOADSUBTREE,
+						aSelf.kMENUITEM_RELOADCHILDREN,
+						aSelf.kMENUITEM_REMOVESUBTREE,
+						aSelf.kMENUITEM_REMOVECHILDREN,
+						aSelf.kMENUITEM_REMOVEALLTABSBUT,
+						aSelf.kMENUITEM_COLLAPSEEXPAND_SEPARATOR,
+						aSelf.kMENUITEM_COLLAPSE,
+						aSelf.kMENUITEM_EXPAND,
+						aSelf.kMENUITEM_AUTOHIDE_SEPARATOR,
+						aSelf.kMENUITEM_AUTOHIDE,
+						aSelf.kMENUITEM_FIXED,
+						aSelf.kMENUITEM_BOOKMARKSUBTREE
+					]))
+				{
+					let item = d.getElementById(id).cloneNode(true);
 					item.setAttribute('id', item.getAttribute('id')+suffix);
 
 					let refNode = void(0);
@@ -758,7 +757,7 @@ TreeStyleTabBrowser.prototype = {
 						}
 					}
 					aPopup.insertBefore(item, refNode || null);
-				});
+				}
 				tabContextMenu = null;
 			}, 0, this, b, tabContextMenu);
 		}
@@ -974,16 +973,15 @@ TreeStyleTabBrowser.prototype = {
 		namedNodes.counterAnchor = namedNodes.label;
 
 		var foundContainers = [];
-		var containers = [
+		for (let [, container] in Iterator([
 				namedNodes.twistyAnchor.parentNode,
 				namedNodes.label.parentNode,
 				namedNodes.counter.parentNode,
 				namedNodes.closeAnchor.parentNode
-			];
-		for (let [, container] in Iterator(containers))
+			]))
 		{
 			if (foundContainers.indexOf(container) > -1)
-				return;
+				continue;
 			this.initTabContentsOrderInternal(container, namedNodes, aForce);
 			foundContainers.push(container);
 		}
@@ -1070,9 +1068,10 @@ TreeStyleTabBrowser.prototype = {
 					(typeof aTarget == 'object' && 'length' in aTarget) ?
 						Array.slice(aTarget) :
 						self.getAllTabsArray(b);
-			tabs.forEach(function(aTab) {
-				this.initTabContentsOrder(aTab);
-			}, self);
+			for (let [, tab] in Iterator(tabs))
+			{
+				this.initTabContentsOrder(tab);
+			}
 		});
 	},
   
@@ -1186,13 +1185,14 @@ TreeStyleTabBrowser.prototype = {
 			b.mPanelContainer.removeAttribute('height');
 
 			if (strip.localName == 'toolbar') {
-				Array.forEach(strip.childNodes, function(aNode) {
-					if (aNode.localName == 'tabs')
-						return;
-					if (aNode.hasAttribute('flex'))
-						aNode.setAttribute('treestyletab-backup-flex', aNode.getAttribute('flex'));
-					aNode.removeAttribute('flex');
-				}, this);
+				for (let [, node] in Iterator(strip.childNodes))
+				{
+					if (node.localName == 'tabs')
+						continue;
+					if (node.hasAttribute('flex'))
+						node.setAttribute('treestyletab-backup-flex', node.getAttribute('flex'));
+					node.removeAttribute('flex');
+				}
 			}
 
 			if (pos == this.kTABBAR_RIGHT) {
@@ -1265,15 +1265,16 @@ TreeStyleTabBrowser.prototype = {
 			this.removeTabbrowserAttribute(this.kTAB_INVERTED);
 
 			if (strip.localName == 'toolbar') {
-				Array.forEach(strip.childNodes, function(aNode) {
-					if (aNode.localName == 'tabs')
-						return;
-					var flex = aNode.hasAttribute('treestyletab-backup-flex');
+				for (let [, node] in Iterator(strip.childNodes))
+				{
+					if (node.localName == 'tabs')
+						continue;
+					let flex = node.hasAttribute('treestyletab-backup-flex');
 					if (!flex)
-						return;
-					aNode.setAttribute('flex', flex);
-					aNode.removeAttribute('treestyletab-backup-flex');
-				}, this);
+						continue;
+					node.setAttribute('flex', flex);
+					node.removeAttribute('treestyletab-backup-flex');
+				}
 			}
 
 			if (pos == this.kTABBAR_BOTTOM) {
@@ -1299,18 +1300,20 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		var tabs = this.getAllTabsArray(b);
-		tabs.forEach(function(aTab) {
-			aTab.style.removeProperty(this.indentCSSProp);
-			aTab.style.removeProperty(this.collapseCSSProp);
-		}, this);
+		for (let [, tab] in Iterator(tabs))
+		{
+			tab.style.removeProperty(this.indentCSSProp);
+			tab.style.removeProperty(this.collapseCSSProp);
+		}
 
 		this.indentProp = this.getTreePref('indent.property');
 		this.indentCSSProp = this.indentProp+'-'+this.indentTarget;
 		this.collapseCSSProp = 'margin-'+this.collapseTarget;
 
-		tabs.forEach(function(aTab) {
-			this.updateTabCollapsed(aTab, aTab.getAttribute(this.kCOLLAPSED) == 'true', true);
-		}, this);
+		for (let [i, tab] in Iterator(tabs))
+		{
+			this.updateTabCollapsed(tab, tab.getAttribute(this.kCOLLAPSED) == 'true', true);
+		}
 
 		// for updateTabbarOverflow(), we should reset the "overflow" now.
 		b.mTabContainer.removeAttribute('overflow');
@@ -1800,13 +1803,13 @@ TreeStyleTabBrowser.prototype = {
  
 	reinitAllTabs : function TSTBrowser_reinitAllTabs(aSouldUpdateCount) 
 	{
-		var tabs = this.getAllTabsArray(this.mTabBrowser);
-		tabs.forEach(function(aTab) {
-			this.initTabAttributes(aTab);
-			this.initTabContents(aTab);
+		for (let [, tab] in Iterator(this.getAllTabsArray(this.mTabBrowser)))
+		{
+			this.initTabAttributes(tab);
+			this.initTabContents(tab);
 			if (aSouldUpdateCount)
-				this.updateTabsCount(aTab);
-		}, this);
+				this.updateTabsCount(tab);
+		}
 	},
   
 	destroy : function TSTBrowser_destroy() 
@@ -1832,11 +1835,12 @@ TreeStyleTabBrowser.prototype = {
 		var b = this.mTabBrowser;
 		delete b.tabContainer.treeStyleTab;
 
-		this.getAllTabsArray(b).forEach(function(aTab) {
-			this.stopTabIndentAnimation(aTab);
-			this.stopTabCollapseAnimation(aTab);
-			this.destroyTab(aTab);
-		}, this);
+		for (let [, tab] in Iterator(this.getAllTabsArray(b)))
+		{
+			this.stopTabIndentAnimation(tab);
+			this.stopTabCollapseAnimation(tab);
+			this.destroyTab(tab);
+		}
 
 		this._endListenTabbarEvents();
 
@@ -2002,9 +2006,7 @@ TreeStyleTabBrowser.prototype = {
 		this.ownerToolbar.classList.add(this.kTABBAR_TOOLBAR);
 		this.ownerToolbar.classList.remove(this.kTABBAR_TOOLBAR_READY);
 		Array.slice(this.document.querySelectorAll('.'+this.kTABBAR_TOOLBAR_READY_POPUP))
-			.forEach(function(aPanel) {
-				this.safeRemovePopup(aPanel);
-			}, this);
+			.forEach(this.safeRemovePopup, this);
 
 		var position = this._lastTabbarPositionBeforeDestroyed || this.position;
 		delete this._lastTabbarPositionBeforeDestroyed;
@@ -2146,22 +2148,25 @@ TreeStyleTabBrowser.prototype = {
 			case 'extensions.treestyletab.tabbar.multirow':
 				this.initTabbar();
 				this.updateAllTabsIndent();
-				tabs.forEach(function(aTab) {
-					this.initTabContents(aTab);
-				}, this);
+				for (let [, tab] in Iterator(tabs))
+				{
+					this.initTabContents(tab);
+				}
 				return;
 			case 'extensions.treestyletab.tabbar.invertTabContents':
 				this.setTabbrowserAttribute(this.kTAB_CONTENTS_INVERTED, value);
-				tabs.forEach(function(aTab) {
-					this.initTabContents(aTab);
-				}, this);
+				for (let [, tab] in Iterator(tabs))
+				{
+					this.initTabContents(tab);
+				}
 				return;
 
 			case 'extensions.treestyletab.tabbar.invertClosebox':
 				this.setTabbrowserAttribute(this.kCLOSEBOX_INVERTED, value);
-				tabs.forEach(function(aTab) {
-					this.initTabContents(aTab);
-				}, this);
+				for (let [, tab] in Iterator(tabs))
+				{
+					this.initTabContents(tab);
+				}
 				return;
 
 			case 'extensions.treestyletab.tabbar.style':
@@ -2707,9 +2712,10 @@ TreeStyleTabBrowser.prototype = {
 
 				this.markAsClosedSet([tab].concat(tabs));
 
-				tabs.reverse().forEach(function(aTab) {
-					b.removeTab(aTab, { animate : true });
-				}, this);
+				for (let [, tab] in Iterator(tabs.reverse()))
+				{
+					b.removeTab(tab, { animate : true });
+				}
 
 				this.fireTabSubtreeClosedEvent(b, tab, tabs);
 
@@ -2862,9 +2868,7 @@ TreeStyleTabBrowser.prototype = {
 
 		var parent = this.getParentTab(aTab);
 		var siblings = this.getSiblingTabs(aTab);
-		var groupTabs = siblings.filter(function(aTab) {
-				return this.isGroupTab(aTab);
-			}, this);
+		var groupTabs = siblings.filter(this.isGroupTab, this);
 		var groupTab = (
 				groupTabs.length == 1 &&
 				siblings.length == 1 &&
@@ -2893,15 +2897,14 @@ TreeStyleTabBrowser.prototype = {
 			}, this))
 			return false;
 
-		trees.forEach(function(aTabs) {
-			this.markAsClosedSet(aTabs);
-		}, this);
+		trees.forEach(this.markAsClosedSet, this);
 
 		var self = this;
 		this.Deferred.next(function() {
-			trees.forEach(function(aTabs) {
-				self.fireTabSubtreeClosedEvent(b, aTabs[0], aTabs);
-			});
+			for (let [, tabs] in Iterator(trees))
+			{
+				self.fireTabSubtreeClosedEvent(b, tabs[0], tabs);
+			}
 		});
 
 		return true;
@@ -3113,7 +3116,7 @@ TreeStyleTabBrowser.prototype = {
 				return;
 
 			// restore tree from bottom safely
-			tabs.filter(function(aChanged) {
+			var restoreTabs = tabs.filter(function(aChanged) {
 					return aChanged.type == 'TabShow' &&
 							aChanged.tab.__treestyletab__restoreState == aSelf.RESTORE_STATE_READY_TO_RESTORE;
 				})
@@ -3123,11 +3126,12 @@ TreeStyleTabBrowser.prototype = {
 				.sort(function(aA, aB) {
 					return aB._tPos - aA._tPos;
 				})
-				.filter(aSelf.restoreOneTab, aSelf)
-				.forEach(function(aTab) {
-					aSelf.updateInsertionPositionInfo(aTab);
-					delete aTab.__treestyletab__restoreState;
-				}, aSelf);
+				.filter(aSelf.restoreOneTab, aSelf);
+			for (let [, tab] in Iterator(restoreTabs))
+			{
+				aSelf.updateInsertionPositionInfo(tab);
+				delete tab.__treestyletab__restoreState;
+			}
 
 			var currentGroupId = aSelf.getTabViewGroupId();
 			if (aSelf.lastTabViewGroup && currentGroupId != aSelf.lastTabViewGroup) {
@@ -3183,7 +3187,7 @@ TreeStyleTabBrowser.prototype = {
 		var lastIndex = allTabs.length - 1;
 		var lastMovedTab;
 		normalTabs = normalTabs.slice(0).reverse();
-		for each (let tab in normalTabs)
+		for (let [, tab] in Iterator(normalTabs))
 		{
 			let parent = this.getParentTab(tab);
 			let attached = false;
@@ -3251,10 +3255,11 @@ TreeStyleTabBrowser.prototype = {
 		this.detachTab(aParent);
 		b.moveTabTo(aParent, lastCount);
 		var descendantTabs = this.getDescendantTabs(aParent);
-		descendantTabs.forEach(function(aTab) {
-			w.TabView.moveTabTo(aTab, id);
-			b.moveTabTo(aTab, lastCount);
-		});
+		for (let [, tab] in Iterator(descendantTabs))
+		{
+			w.TabView.moveTabTo(tab, id);
+			b.moveTabTo(tab, lastCount);
+		}
 		this.internallyTabMovingCount--;
 		this.tabViewTreeIsMoving = false;
 	},
@@ -3446,14 +3451,15 @@ TreeStyleTabBrowser.prototype = {
 		 * For failsafe, we must override actual attributes by stored
 		 * values.
 		 */
-		[
-			this.kINSERT_BEFORE,
-			this.kINSERT_AFTER
-		].forEach(function(aKey) {
-			var tab = this.getTabValue(aTab, aKey);
+		for (let [, key] in Iterator([
+				this.kINSERT_BEFORE,
+				this.kINSERT_AFTER
+			]))
+		{
+			let tab = this.getTabValue(aTab, key);
 			if (this.getTabById(tab))
 				this.setTabValue(aTab, aKey, tab);
-		}, this);
+		}
 
 		let parentId = this.getTabValue(aTab, this.kPARENT);
 		let parentTab = this.getTabById(parentId);
@@ -3508,15 +3514,16 @@ TreeStyleTabBrowser.prototype = {
 				return this.redirectId(aChild);
 			}, this);
 
-		aChildrenList.forEach(function(aChildTab) {
-			if (aChildTab && (aChildTab = this.getTabById(aChildTab))) {
+		for (let [, childTab] in Iterator(aChildrenList))
+		{
+			if (childTab && (childTab = this.getTabById(childTab))) {
 				let options = aOptions;
 				if (options && typeof options == 'function')
-					options = options(aChildTab);
-				this.attachTabTo(aChildTab, aTab, options);
-				childTabs.push(aChildTab);
+					options = options(childTab);
+				this.attachTabTo(childTab, aTab, options);
+				childTabs.push(childTab);
 			}
-		}, this);
+		}
 		aChildrenList = aChildrenList.join('|');
 		if (aTab.getAttribute(this.kCHILDREN) == aChildrenList)
 			aTab.removeAttribute(this.kCHILDREN_RESTORING);
@@ -3639,23 +3646,24 @@ TreeStyleTabBrowser.prototype = {
 		var children = aTab.getAttribute(this.kCHILDREN);
 		if (restoringChildren != children) {
 			var restoringChildrenIDs = restoringChildren.split('|');
-			restoringChildrenIDs.reverse().forEach(function(aChild, aIndex) {
-				aChild = this.getTabById(aChild);
-				if (!aChild) return;
+			for (let [i, child] in Iterator(restoringChildrenIDs.reverse()))
+			{
+				child = this.getTabById(child);
+				if (!child) continue;
 
-				let nextTab = aIndex > 0 ?
-							this.getTabById(restoringChildrenIDs[aIndex-1]) :
+				let nextTab = i > 0 ?
+							this.getTabById(restoringChildrenIDs[i-1]) :
 							this.getNextSiblingTab(aTab) ;
-				if (nextTab == this.getNextSiblingTab(aChild)) return;
+				if (nextTab == this.getNextSiblingTab(child)) continue;
 
 				let newPos = -1;
 				if (nextTab) {
 					newPos = nextTab._tPos;
-					if (newPos > aChild._tPos) newPos--;
+					if (newPos > child._tPos) newPos--;
 				}
 				if (newPos > -1)
-					this.moveTabSubtreeTo(aChild, newPos);
-			}, this);
+					this.moveTabSubtreeTo(child, newPos);
+			}
 			children = aTab.getAttribute(this.kCHILDREN);
 		}
 
@@ -3697,14 +3705,14 @@ TreeStyleTabBrowser.prototype = {
 			)
 			return;
 
-		var items = this.evalInSandbox('('+this.SessionStore.getClosedTabData(this.window)+')');
 		var indexes = [];
-		items.forEach(function(aItem, aIndex) {
-			if (aItem.state.extData &&
-				aItem.state.extData[this.kCLOSED_SET_ID] &&
-				aItem.state.extData[this.kCLOSED_SET_ID] == aId)
-				indexes.push(aIndex);
-		}, this);
+		for (let [i, item] in Iterator(this.evalInSandbox('('+this.SessionStore.getClosedTabData(this.window)+')')))
+		{
+			if (item.state.extData &&
+				item.state.extData[this.kCLOSED_SET_ID] &&
+				item.state.extData[this.kCLOSED_SET_ID] == aId)
+				indexes.push(i);
+		}
 
 		var count = parseInt(aId.split('::')[1]);
 
@@ -3744,9 +3752,10 @@ TreeStyleTabBrowser.prototype = {
 		this.windowService.restoringTree = true;
 
 		var offset = 0;
-		aIndexes.forEach(function(aIndex) {
-			this.window.undoCloseTab(aIndex - (offset++));
-		}, this);
+		for (let [, index] in Iterator(aIndexes))
+		{
+			this.window.undoCloseTab(index - (offset++));
+		}
 
 		this.window.setTimeout(function(aSelf, aNextFocused) {
 			aSelf.windowService.restoringTree = false;
@@ -3780,10 +3789,11 @@ TreeStyleTabBrowser.prototype = {
 			 */
 			let b = this.browser;
 			this.internallyTabMovingCount++;
-			this.getDescendantTabs(aTab).reverse().forEach(function(aChildTab) {
-				if (aChildTab.__treestyletab__previousPosition > aChildTab._tPos)
-					b.moveTabTo(aChildTab, aChildTab.__treestyletab__previousPosition);
-			}, this);
+			for (let [, childTab] in Iterator(this.getDescendantTabs(aTab).reverse()))
+			{
+				if (childTab.__treestyletab__previousPosition > childTab._tPos)
+					b.moveTabTo(childTab, childTab.__treestyletab__previousPosition);
+			}
 			this.internallyTabMovingCount--;
 		}
 		else {
@@ -3794,10 +3804,11 @@ TreeStyleTabBrowser.prototype = {
 			 */
 			let b = this.browser;
 			this.internallyTabMovingCount++;
-			this.getChildTabs(aTab).reverse().forEach(function(aChildTab) {
-				if (aChildTab._tPos < parentTab._tPos)
-					b.moveTabTo(aChildTab, parentTab._tPos);
-			}, this);
+			for (let [, childTab] in Iterator(this.getChildTabs(aTab).reverse()))
+			{
+				if (childTab._tPos < parentTab._tPos)
+					b.moveTabTo(childTab, parentTab._tPos);
+			}
 			this.internallyTabMovingCount--;
 		}
 
@@ -4182,30 +4193,31 @@ TreeStyleTabBrowser.prototype = {
 		var b = this.mTabBrowser;
 		var sep, items = {};
 
-		[
-			this.kMENUITEM_RELOADSUBTREE,
-			this.kMENUITEM_RELOADCHILDREN,
-			this.kMENUITEM_REMOVESUBTREE,
-			this.kMENUITEM_REMOVECHILDREN,
-			this.kMENUITEM_REMOVEALLTABSBUT,
-			this.kMENUITEM_COLLAPSE,
-			this.kMENUITEM_EXPAND,
-			this.kMENUITEM_AUTOHIDE,
-			this.kMENUITEM_FIXED,
-			this.kMENUITEM_BOOKMARKSUBTREE
-		].forEach(function(aID) {
+		for (let [, id] in Iterator([
+				this.kMENUITEM_RELOADSUBTREE,
+				this.kMENUITEM_RELOADCHILDREN,
+				this.kMENUITEM_REMOVESUBTREE,
+				this.kMENUITEM_REMOVECHILDREN,
+				this.kMENUITEM_REMOVEALLTABSBUT,
+				this.kMENUITEM_COLLAPSE,
+				this.kMENUITEM_EXPAND,
+				this.kMENUITEM_AUTOHIDE,
+				this.kMENUITEM_FIXED,
+				this.kMENUITEM_BOOKMARKSUBTREE
+			]))
+		{
 			let item = this.evaluateXPath(
-				'descendant::xul:*[starts-with(@id, "'+aID+'")]',
+				'descendant::xul:*[starts-with(@id, "'+id+'")]',
 				aEvent.currentTarget,
 				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
-			if (!item) return;
-			items[aID] = item;
-			if (this.getTreePref('show.'+aID))
+			if (!item) continue;
+			items[id] = item;
+			if (this.getTreePref('show.'+id))
 				item.removeAttribute('hidden');
 			else
 				item.setAttribute('hidden', true);
-			switch (aID)
+			switch (id)
 			{
 				case this.kMENUITEM_RELOADSUBTREE:
 				case this.kMENUITEM_RELOADCHILDREN:
@@ -4216,11 +4228,11 @@ TreeStyleTabBrowser.prototype = {
 				case this.kMENUITEM_EXPAND:
 				case this.kMENUITEM_BOOKMARKSUBTREE:
 					this.showHideSubtreeMenuItem(item, [b.mContextTab]);
-					break;
+					continue;
 				default:
-					break;
+					continue;
 			}
-		}, this);
+		}
 
 		// collapse/expand all
 		sep = this.evaluateXPath(
@@ -4391,9 +4403,10 @@ TreeStyleTabBrowser.prototype = {
   
 	resetAllTabs : function TSTBrowser_resetAllTabs(aDetachAllChildren) 
 	{
-		this.getAllTabsArray(this.mTabBrowser).forEach(function(aTab) {
-			this.resetTab(aTab, aDetachAllChildren);
-		}, this);
+		for (let [, tab] in Iterator(this.getAllTabsArray(this.mTabBrowser)))
+		{
+			this.resetTab(tab, aDetachAllChildren);
+		}
 	},
  
 	resetTabbarSize : function TSTBrowser_resetTabbarSize() 
@@ -4427,24 +4440,26 @@ TreeStyleTabBrowser.prototype = {
 				this.allowSubtreeCollapseExpand = true;
 			delete this._lastAllowSubtreeCollapseExpand;
 
-			this.getAllTabsArray(this.browser).forEach(function(aTab) {
-				if (aTab._TSTLastSubtreeCollapsed)
-					this.collapseExpandSubtree(aTab, true, true);
-				if (aTab._TSTLastSubtreeExpandedManually)
-					this.setTabValue(aTab, this.kSUBTREE_EXPANDED_MANUALLY, true);
-				delete aTab._TSTLastSubtreeCollapsed;
-				delete aTab._TSTLastSubtreeExpandedManually;
-				this.updateTabIndent(aTab, 0, true);
-			}, this);
+			for (let [, tab] in Iterator(this.getAllTabsArray(this.browser)))
+			{
+				if (tab._TSTLastSubtreeCollapsed)
+					this.collapseExpandSubtree(tab, true, true);
+				if (tab._TSTLastSubtreeExpandedManually)
+					this.setTabValue(tab, this.kSUBTREE_EXPANDED_MANUALLY, true);
+				delete tab._TSTLastSubtreeCollapsed;
+				delete tab._TSTLastSubtreeExpandedManually;
+				this.updateTabIndent(tab, 0, true);
+			}
 			this.updateTabsIndent(this.rootTabs, undefined, true);
 		}
 		else {
-			this.getAllTabsArray(this.browser).forEach(function(aTab) {
-				this.updateTabIndent(aTab, 0, true);
-				aTab._TSTLastSubtreeCollapsed = this.isSubtreeCollapsed(aTab);
-				aTab._TSTLastSubtreeExpandedManually = this.getTabValue(aTab, this.kSUBTREE_EXPANDED_MANUALLY) == 'true';
-				this.collapseExpandSubtree(aTab, false, true);
-			}, this);
+			for (let [, tab] in Iterator(this.getAllTabsArray(this.browser)))
+			{
+				this.updateTabIndent(tab, 0, true);
+				tab._TSTLastSubtreeCollapsed = this.isSubtreeCollapsed(tab);
+				tab._TSTLastSubtreeExpandedManually = this.getTabValue(tab, this.kSUBTREE_EXPANDED_MANUALLY) == 'true';
+				this.collapseExpandSubtree(tab, false, true);
+			}
 
 			this._lastAllowSubtreeCollapseExpand = this.allowSubtreeCollapseExpand;
 			this.allowSubtreeCollapseExpand = false;
@@ -4700,47 +4715,44 @@ TreeStyleTabBrowser.prototype = {
 			!this.getTreePref('closeParentBehavior.moveDetachedTabsToBottom')) {
 			insertBefore = this.getNextSiblingTab(this.getRootTab(aTab));
 		}
-		children.forEach((
-			aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN ?
-				function(aTab) {
-					this.detachTab(aTab, aInfo);
-					this.moveTabSubtreeTo(aTab, insertBefore ? insertBefore._tPos - 1 : this.getLastTab(b)._tPos );
-				} :
-			aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD ?
-				function(aTab, aIndex) {
-					this.detachTab(aTab, aInfo);
-					if (aIndex == 0) {
-						if (parentTab) {
-							this.attachTabTo(aTab, parentTab, {
-								__proto__  : aInfo,
-								dontExpand : true,
-								dontMove   : true
-							});
-						}
-						this.collapseExpandSubtree(aTab, false);
-						this.deleteTabValue(aTab, this.kSUBTREE_COLLAPSED);
-					}
-					else {
-						this.attachTabTo(aTab, children[0], {
+		for (let [i, tab] in Iterator(children))
+		{
+			if (aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN) {
+				this.detachTab(tab, aInfo);
+				this.moveTabSubtreeTo(tab, insertBefore ? insertBefore._tPos - 1 : this.getLastTab(b)._tPos );
+			}
+			else if (aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD) {
+				this.detachTab(tab, aInfo);
+				if (i == 0) {
+					if (parentTab) {
+						this.attachTabTo(tab, parentTab, {
 							__proto__  : aInfo,
 							dontExpand : true,
 							dontMove   : true
 						});
 					}
-				} :
-			aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN && parentTab ?
-				function(aTab) {
-					this.attachTabTo(aTab, parentTab, {
+					this.collapseExpandSubtree(tab, false);
+					this.deleteTabValue(tab, this.kSUBTREE_COLLAPSED);
+				}
+				else {
+					this.attachTabTo(tab, children[0], {
 						__proto__  : aInfo,
 						dontExpand : true,
 						dontMove   : true
 					});
-				} :
-			// aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN ?
-				function(aTab) {
-					this.detachTab(aTab, aInfo);
 				}
-		), this);
+			}
+			else if (aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN && parentTab) {
+				this.attachTabTo(tab, parentTab, {
+					__proto__  : aInfo,
+					dontExpand : true,
+					dontMove   : true
+				});
+			}
+			else { // aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
+				this.detachTab(tab, aInfo);
+			}
+		}
 	},
 	partAllChildren : function TSTBrowser_partAllChildren(aTab, aInfo) /* for backward compatibility */
 	{
@@ -4749,8 +4761,7 @@ TreeStyleTabBrowser.prototype = {
  
 	detachTabs : function TSTBrowser_detachTabs(aTabs) 
 	{
-		var aTabs = Array.slice(aTabs);
-		for each (let tab in aTabs)
+		for (let [, tab] in Iterator(aTabs))
 		{
 			if (aTabs.indexOf(this.getParentTab(tab)) > -1)
 				continue;
@@ -4803,13 +4814,14 @@ TreeStyleTabBrowser.prototype = {
 			indent = Math.min(aLevel * 3, maxIndent);
 		}
 
-		Array.slice(aTabs).forEach(function(aTab) {
-			if (!aTab.parentNode) return; // ignore removed tabs
-			this.updateTabIndent(aTab, indent, aJustNow);
-			aTab.setAttribute(this.kNEST, aLevel);
-			this.updateCanCollapseSubtree(aTab, aLevel);
-			this.updateTabsIndent(this.getChildTabs(aTab), aLevel+1, aJustNow);
-		}, this);
+		for (let [, tab] in Iterator(aTabs))
+		{
+			if (!tab.parentNode) continue; // ignore removed tabs
+			this.updateTabIndent(tab, indent, aJustNow);
+			tab.setAttribute(this.kNEST, aLevel);
+			this.updateCanCollapseSubtree(tab, aLevel);
+			this.updateTabsIndent(this.getChildTabs(tab), aLevel+1, aJustNow);
+		}
 	},
 	updateTabsIndentWithDelay : function TSTBrowser_updateTabsIndentWithDelay(aTabs)
 	{
@@ -4819,9 +4831,10 @@ TreeStyleTabBrowser.prototype = {
 		this.updateTabsIndentWithDelayTabs = this.updateTabsIndentWithDelayTabs.concat(aTabs);
 		this.updateTabsIndentWithDelayTimer = this.window.setTimeout(function(aSelf) {
 			var tabs = [];
-			aSelf.updateTabsIndentWithDelayTabs.forEach(function(aTab) {
-				if (tabs.indexOf(aTab) < 0 && aTab.parentNode) tabs.push(aTab);
-			});
+			for (let [, tab] in Iterator(aSelf.updateTabsIndentWithDelayTabs))
+			{
+				if (tabs.indexOf(tab) < 0 && tab.parentNode) tabs.push(tab);
+			}
 			aSelf.updateTabsIndentWithDelayTabs = [];
 			aSelf.updateTabsIndent(tabs);
 			aSelf.window.clearTimeout(aSelf.updateTabsIndentWithDelayTimer);
@@ -4851,15 +4864,16 @@ TreeStyleTabBrowser.prototype = {
 				retVal.push('ThreeDShadow');
 				return retVal.length == 1 ? 'none' : retVal.join(' ') ;
 			})()+' !important;';
-			Array.slice(this.document.getAnonymousNodes(aTab)).forEach(function(aBox) {
-				if (aBox.nodeType != Node.ELEMENT_NODE) return;
-				aBox.setAttribute(
+			for (let [, box] in Iterator(this.document.getAnonymousNodes(aTab)))
+			{
+				if (box.nodeType != Node.ELEMENT_NODE) continue;
+				box.setAttribute(
 					'style',
-					aBox.getAttribute('style').replace(/(-moz-)?border-(top|bottom)(-[^:]*)?.*:[^;]+;?/g, '') +
+					box.getAttribute('style')
+						.replace(/(-moz-)?border-(top|bottom)(-[^:]*)?.*:[^;]+;?/g, '') +
 					'; border-'+this.indentTarget+': solid transparent '+aIndent+'px !important;'+colors
 				);
-			}, this);
-
+			}
 			return;
 		}
 
@@ -5035,9 +5049,10 @@ TreeStyleTabBrowser.prototype = {
  
 	updateAllTabsCount : function TSTBrowser_updateAllTabsCount() 
 	{
-		this.rootTabs.forEach(function(aTab) {
-			this.updateTabsCount(aTab, this);
-		}, this);
+		for (let [, tab] in Iterator(this.rootTabs))
+		{
+			this.updateTabsCount(tab, this);
+		}
 	},
  
 	promoteTooDeepLevelTabs : function TSTBrowser_promoteTooDeepLevelTabs(aParent) 
@@ -5045,25 +5060,25 @@ TreeStyleTabBrowser.prototype = {
 		if (this.maxTreeLevel < 0 || !this.maxTreeLevelPhisical)
 			return;
 
-		var tabs = aParent ? this.getDescendantTabs(aParent) : this.getAllTabsArray(this.mTabBrowser) ;
-		tabs.forEach(function(aTab) {
-			var level = parseInt(aTab.getAttribute(this.kNEST) || 0);
+		for (let [, tab] in Iterator(aParent ? this.getDescendantTabs(aParent) : this.getAllTabsArray(this.mTabBrowser) ))
+		{
+			let level = parseInt(tab.getAttribute(this.kNEST) || 0);
 			if (level <= this.maxTreeLevel)
-				return;
+				continue;
 
-			var parent = this.getParentTab(aTab);
-			var newParent = this.getParentTab(parent);
+			let parent = this.getParentTab(tab);
+			let newParent = this.getParentTab(parent);
 			if (this.maxTreeLevel == 0 || !newParent) {
 				this.detachTab(aTab);
 			}
 			else {
-				let nextSibling = this.getNextTab(aTab);
-				this.attachTabTo(aTab, newParent, {
+				let nextSibling = this.getNextTab(tab);
+				this.attachTabTo(tab, newParent, {
 					dontMove     : true,
 					insertBefore : nextSibling
 				});
 			}
-		}, this);
+		}
 	},
   
 /* move */ 
@@ -5081,9 +5096,10 @@ TreeStyleTabBrowser.prototype = {
 
 		this.subTreeChildrenMovingCount++;
 		this.internallyTabMovingCount++;
-		this.getDescendantTabs(aTab).forEach(function(aDescendantTab, aIndex) {
-			b.moveTabTo(aDescendantTab, aTab._tPos + aIndex + (aTab._tPos < aDescendantTab._tPos ? 1 : 0 ));
-		}, this);
+		for (let [i, descendantTab] in Iterator(this.getDescendantTabs(aTab)))
+		{
+			b.moveTabTo(descendantTab, aTab._tPos + i + (aTab._tPos < descendantTab._tPos ? 1 : 0 ));
+		}
 		this.internallyTabMovingCount--;
 		this.subTreeChildrenMovingCount--;
 
@@ -5294,16 +5310,17 @@ TreeStyleTabBrowser.prototype = {
 
 		var expandedTabs = this.getChildTabs(aTab);
 		var lastExpandedTabIndex = expandedTabs.length - 1;
-		expandedTabs.forEach(function(aChildTab, aIndex) {
-			if (!aCollapse && !aJustNow && aIndex == lastExpandedTabIndex) {
+		for (let [i, childTab] in Iterator(expandedTabs))
+		{
+			if (!aCollapse && !aJustNow && i == lastExpandedTabIndex) {
 				let self = this;
-				this.collapseExpandTab(aChildTab, aCollapse, aJustNow, function() {
+				this.collapseExpandTab(childTab, aCollapse, aJustNow, function() {
 					self.scrollToTabSubtree(aTab);
 				});
 			}
 			else
-				this.collapseExpandTab(aChildTab, aCollapse, aJustNow);
-		}, this);
+				this.collapseExpandTab(childTab, aCollapse, aJustNow);
+		}
 
 		if (aCollapse)
 			this.deleteTabValue(aTab, this.kSUBTREE_EXPANDED_MANUALLY);
@@ -5347,9 +5364,10 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		if (!this.isSubtreeCollapsed(aTab)) {
-			this.getChildTabs(aTab).forEach(function(aTab) {
-				this.collapseExpandTab(aTab, aCollapse, aJustNow);
-			}, this);
+			for (let [, tab] in Iterator(this.getChildTabs(aTab)))
+			{
+				this.collapseExpandTab(tab, aCollapse, aJustNow);
+			}
 		}
 	},
 	updateTabCollapsed : function TSTBrowser_updateTabCollapsed(aTab, aCollapsed, aJustNow, aCallbackToRunOnStartAnimation)
@@ -5861,22 +5879,23 @@ TreeStyleTabBrowser.prototype = {
 		if (tabs.length <= 1)
 			return;
 
-		tabs.forEach(function(aTab) {
-			var currentId = aTab.getAttribute(this.kID);
-			if (this.tabsHash[currentId] == aTab)
+		for (let [, tab] in Iterator(tabs))
+		{
+			let currentId = tab.getAttribute(this.kID);
+			if (this.tabsHash[currentId] == tab)
 				delete this.tabsHash[currentId];
 
-			this.resetTabState(aTab);
+			this.resetTabState(tab);
 
-			aTab.setAttribute(this.kID, currentId); // to fallback to it
-			var [id, duplicated] = this._restoreTabId(aTab);
+			tab.setAttribute(this.kID, currentId); // to fallback to it
+			let [id, duplicated] = this._restoreTabId(tab);
 
-			this.setTabValue(aTab, this.kID, id);
-			this.tabsHash[id] = aTab;
+			this.setTabValue(tab, this.kID, id);
+			this.tabsHash[id] = tab;
 
-			aTab.__treestyletab__restoreState = this.RESTORE_STATE_READY_TO_RESTORE;
-			aTab.__treestyletab__duplicated = duplicated;
-		}, this);
+			tab.__treestyletab__restoreState = this.RESTORE_STATE_READY_TO_RESTORE;
+			tab.__treestyletab__duplicated = duplicated;
+		}
 
 		this.updateAllTabsIndent(true);
 

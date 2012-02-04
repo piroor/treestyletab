@@ -375,25 +375,26 @@ TreeStyleTabWindow.prototype = {
 					this.setPref('browser.tabs.loadFolderAndReplace', !!(behavior & this.kGROUP_BOOKMARK_REPLACE));
 				}
 			case 4:
-				[
-					'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect',
-					'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove',
-					'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut',
-					'extensions.treestyletab.autoExpandSubTreeOnAppendChild',
-					'extensions.treestyletab.autoExpandSubTreeOnCollapsedChildFocused',
-					'extensions.treestyletab.collapseExpandSubTree.dblclick',
-					'extensions.treestyletab.createSubTree.underParent',
-					'extensions.treestyletab.show.context-item-reloadTabSubTree',
-					'extensions.treestyletab.show.context-item-removeTabSubTree',
-					'extensions.treestyletab.show.context-item-bookmarkTabSubTree',
-					'extensions.multipletab.show.multipletab-selection-item-removeTabSubTree',
-					'extensions.multipletab.show.multipletab-selection-item-createSubTree'
-				].forEach(function(aPref) {
-					var value = this.getPref(aPref);
-					if (value === null) return;
-					this.setPref(aPref.replace('SubTree', 'Subtree'), value);
-					this.clearPref(aPref);
-				}, this);
+				for (let [, pref] in Iterator([
+						'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect',
+						'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove',
+						'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut',
+						'extensions.treestyletab.autoExpandSubTreeOnAppendChild',
+						'extensions.treestyletab.autoExpandSubTreeOnCollapsedChildFocused',
+						'extensions.treestyletab.collapseExpandSubTree.dblclick',
+						'extensions.treestyletab.createSubTree.underParent',
+						'extensions.treestyletab.show.context-item-reloadTabSubTree',
+						'extensions.treestyletab.show.context-item-removeTabSubTree',
+						'extensions.treestyletab.show.context-item-bookmarkTabSubTree',
+						'extensions.multipletab.show.multipletab-selection-item-removeTabSubTree',
+						'extensions.multipletab.show.multipletab-selection-item-createSubTree'
+					]))
+				{
+					let value = this.getPref(pref);
+					if (value === null) continue;
+					this.setPref(pref.replace('SubTree', 'Subtree'), value);
+					this.clearPref(pref);
+				}
 			case 5:
 				let (behavior = this.getTreePref('openGroupBookmark.behavior')) {
 					behavior = behavior | 2048;
@@ -410,13 +411,14 @@ TreeStyleTabWindow.prototype = {
 						this.setTreePref('autoAttach.searchResult', search);
 				}
 			default:
-				orientalPrefs.forEach(function(aPref) {
-					let value = this.getPref(aPref);
-					if (value === null) return;
-					this.setPref(aPref+'.horizontal', value);
-					this.setPref(aPref+'.vertical', value);
-					this.clearPref(aPref);
-				}, this);
+				for (let [, pref] in Iterator(orientalPrefs))
+				{
+					let value = this.getPref(pref);
+					if (value === null) continue;
+					this.setPref(pref+'.horizontal', value);
+					this.setPref(pref+'.vertical', value);
+					this.clearPref(pref);
+				}
 				break;
 		}
 		this.setTreePref('prefsVersion', this.kPREF_VERSION);
@@ -499,16 +501,17 @@ TreeStyleTabWindow.prototype = {
 				}
 
 				if (!prefs) return;
-				[
-					'browser.tabs.loadFolderAndReplace',
-					'browser.tabs.insertRelatedAfterCurrent',
-					'extensions.stm.tabBarMultiRows' // Super Tab Mode
-				].forEach(function(aPref) {
-					var backup = prefs.getPref(aPref+'.backup');
-					if (backup === null) return;
-					prefs.setPref(aPref+'.override', backup); // we have to set to ".override" pref, to avoid unexpectedly reset by the preference listener.
-					prefs.clearPref(aPref+'.backup');
-				});
+				for (let [, pref] in Iterator([
+						'browser.tabs.loadFolderAndReplace',
+						'browser.tabs.insertRelatedAfterCurrent',
+						'extensions.stm.tabBarMultiRows' // Super Tab Mode
+					]))
+				{
+					let backup = prefs.getPref(pref+'.backup');
+					if (backup === null) continue;
+					prefs.setPref(pref+'.override', backup); // we have to set to ".override" pref, to avoid unexpectedly reset by the preference listener.
+					prefs.clearPref(pref+'.backup');
+				}
 			};
 		new this.window['piro.sakura.ne.jp'].UninstallationListener({
 			id : 'treestyletab@piro.sakura.ne.jp',
@@ -549,21 +552,23 @@ TreeStyleTabWindow.prototype = {
 		var items = Array.slice(aEvent.originalTarget.childNodes);
 		var firstItemIndex = 0;
 		// ignore menu items inserted by Weave (Firefox Sync), Tab Utilities, and others.
-		items.forEach(function(aItem, aIndex) {
+		for (let [i, item] in Iterator(items))
+		{
 			if (
-				aItem.getAttribute('anonid') ||
-				aItem.id ||
-				aItem.hidden ||
-				aItem.localName != 'menuitem'
+				item.getAttribute('anonid') ||
+				item.id ||
+				item.hidden ||
+				item.localName != 'menuitem'
 				)
-				firstItemIndex = aIndex + 1;
-		});
+				firstItemIndex = i + 1;
+		}
 		items = items.slice(firstItemIndex);
 
 		var b = this.getTabBrowserFromChild(aEvent.originalTarget) || this.browser;
-		this.getTabsArray(b).forEach(function(aTab, aIndex) {
-			items[aIndex].style.marginLeft = aTab.getAttribute(this.kNEST)+'em';
-		}, this);
+		for (let [i, tab] in Iterator(this.getTabsArray(b)))
+		{
+			items[i].style.marginLeft = tab.getAttribute(this.kNEST)+'em';
+		}
 	},
   
 	destroy : function TSTWindow_destroy() 
@@ -594,9 +599,10 @@ TreeStyleTabWindow.prototype = {
 				d.removeEventListener(this.kEVENT_TYPE_TABBAR_STATE_CHANGED,        this, false);
 				d.removeEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB,              this, false);
 
-				this._tabFocusAllowance.forEach(function(aListener) {
-					w.removeEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB, aListener, false);
-				}, this);
+				for (let [, listener] in Iterator(this._tabFocusAllowance))
+				{
+					w.removeEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB, listener, false);
+				}
 
 				var appcontent = d.getElementById('appcontent');
 				appcontent.removeEventListener('SubBrowserAdded', this, false);
@@ -1054,11 +1060,12 @@ TreeStyleTabWindow.prototype = {
 
 		this.AeroPeek.windows.some(function(aTabWindow) {
 			if (aTabWindow.win == this.window) {
-				aTabWindow.previews.forEach(function(aPreview) {
-					if (!aPreview) return;
-					var tab = aPreview.controller.wrappedJSObject.tab;
-					aPreview.visible = !this.isCollapsed(tab);
-				}, this);
+				for (let [, preview] in Iterator(aTabWindow.previews))
+				{
+					if (!preview) continue;
+					let tab = preview.controller.wrappedJSObject.tab;
+					preview.visible = !this.isCollapsed(tab);
+				}
 				this.AeroPeek.checkPreviewCount();
 				return true;
 			}
@@ -1204,14 +1211,15 @@ TreeStyleTabWindow.prototype = {
  
 	processRestoredTabs : function TSTWindow_processRestoredTabs() 
 	{
-		this._restoringTabs.forEach(function(aTab) {
+		for (let [, tab] in Iterator(this._restoringTabs))
+		{
 			try {
-				var b = this.getTabBrowserFromChild(aTab);
+				let b = this.getTabBrowserFromChild(aTab);
 				if (b) b.treeStyleTab.handleRestoredTab(aTab);
 			}
 			catch(e) {
 			}
-		}, this);
+		}
 		this._restoringTabs = [];
 	},
   
@@ -1272,23 +1280,24 @@ TreeStyleTabWindow.prototype = {
 		if (aOnlyChildren)
 			tabs = this.gatherSubtreeMemberTabs(aTabOrTabs);
 
-		this.splitTabsToSubtrees(tabs).forEach(function(aTabs) {
-			if (!this.fireTabSubtreeClosingEvent(aTabs[0], aTabs))
-				return;
-			var b = this.getTabBrowserFromChild(aTabs[0]);
+		for (let [, subtreeTabs] in Iterator(this.splitTabsToSubtrees(tabs)))
+		{
+			if (!this.fireTabSubtreeClosingEvent(subtreeTabs[0], subtreeTabs))
+				continue;
+			let b = this.getTabBrowserFromChild(subtreeTabs[0]);
 			if (aOnlyChildren)
-				aTabs = aTabs.slice(1);
-			if (!aTabs.length)
-				return;
+				subtreeTabs = subtreeTabs.slice(1);
+			if (!subtreeTabs.length)
+				continue;
 			this.stopRendering();
-			this.markAsClosedSet(aTabs);
-			for (let i = aTabs.length-1; i > -1; i--)
+			this.markAsClosedSet(subtreeTabs);
+			for (let i = subtreeTabs.length-1; i > -1; i--)
 			{
-				b.removeTab(aTabs[i], { animate : true });
+				b.removeTab(subtreeTabs[i], { animate : true });
 			}
 			this.startRendering();
-			this.fireTabSubtreeClosedEvent(b, aTabs[0], aTabs)
-		}, this);
+			this.fireTabSubtreeClosedEvent(b, subtreeTabs[0], subtreeTabs)
+		}
 	},
 	removeTabSubTree : function() { return this.removeTabSubtree.apply(this, arguments); }, // obsolete, for backward compatibility
 	
@@ -1388,10 +1397,11 @@ TreeStyleTabWindow.prototype = {
 					aTabs.shift() ;
 		var self = this;
 		this.Deferred.next(function(self) {
-			aTabs.forEach(function(aTab) {
-				b.treeStyleTab.attachTabTo(aTab, root);
-				b.treeStyleTab.collapseExpandTab(aTab, false);
-			}, self);
+			for (let [, tab] in Iterator(aTabs))
+			{
+				b.treeStyleTab.attachTabTo(tab, root);
+				b.treeStyleTab.collapseExpandTab(tab, false);
+			}
 			if (parent) {
 				b.treeStyleTab.attachTabTo(root, parent, {
 					insertBefore : next
@@ -1425,11 +1435,12 @@ TreeStyleTabWindow.prototype = {
 		var roots = [];
 		if (!aTabs || !aTabs.length) return roots;
 		aTabs = this.cleanUpTabsArray(aTabs);
-		aTabs.forEach(function(aTab) {
-			var parent = this.getParentTab(aTab);
-			if (parent && aTabs.indexOf(parent) > -1) return;
-			roots.push(aTab);
-		}, this);
+		for (let [, tab] in Iterator(aTabs))
+		{
+			let parent = this.getParentTab(tab);
+			if (parent && aTabs.indexOf(parent) > -1) continue;
+			roots.push(tab);
+		}
 		return roots;
 	},
   
@@ -1507,9 +1518,10 @@ TreeStyleTabWindow.prototype = {
 
 		this.stopRendering();
 		this.markAsClosedSet(closeTabs);
-		closeTabs.reverse().forEach(function(aTab) {
-			b.removeTab(aTab);
-		});
+		for (let [, tab] in Iterator(closeTabs.reverse()))
+		{
+			b.removeTab(tab);
+		}
 		this.startRendering();
 	},
  

@@ -86,16 +86,17 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 						(function() {
 							var tabsInfo = {};
 							var TST = TreeStyleTabService;
-							Array.slice(getBrowser().mTabContainer.childNodes)
-								.forEach(function(aTab) {
-									var index = this.getPermaTabLocalIndex(aTab);
-									if (index < 0) return;
-									var info = {};
-									TST.extraProperties.forEach(function(aProperty) {
-										info[aProperty] = TST.getTabValue(aTab, aProperty);
-									});
-									tabsInfo[this.permaTabs[index].id] = info;
-								}, this);
+							for (let [, tab] in Iterator(getBrowser().mTabContainer.childNodes))
+							{
+								let index = this.getPermaTabLocalIndex(tab);
+								if (index < 0) continue;
+								let info = {};
+								for (let [, property] in Iterator(TST.extraProperties))
+								{
+									info[property] = TST.getTabValue(tab, property);
+								}
+								tabsInfo[this.permaTabs[index].id] = info;
+							}
 							TST.setTreePref('permaTabsInfo', tabsInfo.toSource());
 						}).call(this);
 					]]>
@@ -124,9 +125,10 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 				sessionData.getTabProperties.toSource().replace(
 					'return tabProperties;',
 					<![CDATA[
-						this.tabTSTProperties.forEach(function(aProp) {
-							tabProperties += '|' + aProp + '=' + encodeURIComponent(aTab.getAttribute(aProp));
-						});
+						for (let [, property] in Iterator(this.tabTSTProperties))
+						{
+							tabProperties += '|' + property + '=' + encodeURIComponent(aTab.getAttribute(property));
+						}
 					$&]]>
 				)
 			);
@@ -136,13 +138,14 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 					<![CDATA[$&
 						var TSTProps = tabProperties.split('|');
 						tabProperties = TSTProps.shift();
-						TSTProps.forEach(function(aSet) {
-							var index = aSet.indexOf('=');
-							var name = aSet.substring(0, index);
-							var value = decodeURIComponent(aSet.substring(index+1));
+						for (let [, property] in Iterator(TSTProps))
+						{
+							let index = property.indexOf('=');
+							let name = property.substring(0, index);
+							let value = decodeURIComponent(property.substring(index+1));
 							if (name && value)
 								aTab.setAttribute(name, value);
-						});
+						}
 					]]>
 				)
 			);
@@ -197,12 +200,10 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 				'var tabcount = ',
 				<![CDATA[
 					gBrowser.treeStyleTab.collapseExpandAllSubtree(false, true);
-					gBrowser.treeStyleTab.getTabsArray(gBrowser)
-						.slice(1)
-						.reverse()
-						.forEach(function(aTab, aIndex) {
-							gBrowser.removeTab(aTab);
-						});
+					for (let [, tab] in Iterator(gBrowser.treeStyleTab.getTabsArray(gBrowser).slice(1).reverse()))
+					{
+						gBrowser.removeTab(tab);
+					}
 					TreeStyleTabService.restoringTree = true;
 				$&]]>
 			));
@@ -213,13 +214,14 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 	// https://addons.mozilla.org/firefox/addon/4650
 	if ('FS_onFullerScreen' in window &&
 		sv.getTreePref('compatibility.FullerScreen')) {
-		'CheckIfFullScreen,FS_onFullerScreen,FS_onMouseMove'.split(',').forEach(function(aFunc) {
-			if (!(aFunc in window)) return;
-			eval('window.'+aFunc+' = '+window[aFunc].toSource().replace(
+		for (let [, func] in Iterator('CheckIfFullScreen,FS_onFullerScreen,FS_onMouseMove'.split(',')))
+		{
+			if (!(func in window)) continue;
+			eval('window.'+func+' = '+window[func].toSource().replace(
 				/FS_data.mTabs.(removeAttribute\("moz-collapsed"\)|setAttribute\("moz-collapsed", "true"\));/g,
 				'if (gBrowser.treeStyleTab.currentTabbarPosition == "top") { $& }'
 			));
-		}, this);
+		}
 	}
 
 	// TooManyTabs
@@ -815,19 +817,19 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	if ('LinkyContext' in window &&
 		'prototype' in LinkyContext &&
 		sv.getTreePref('compatibility.Linky')) {
-		'doSelected,doSelectedText,doImages,doAll,doAllPics,doValidateAll,doValidateSelected'
-			.split(',').forEach(function(aMethod) {
-				if (!(aMethod in LinkyContext.prototype)) return;
-				eval('LinkyContext.prototype.'+aMethod+' = '+
-					LinkyContext.prototype[aMethod].toSource().replace(
-						'{',
-						'{ TreeStyleTabService.readyToOpenChildTab(null, true);'
-					).replace(
-						/(\}\)?)$/,
-						'TreeStyleTabService.stopToOpenChildTab(); $1'
-					)
-				);
-			});
+		for (let [, method] in Iterator('doSelected,doSelectedText,doImages,doAll,doAllPics,doValidateAll,doValidateSelected'.split(',')))
+		{
+			if (!(method in LinkyContext.prototype)) continue;
+			eval('LinkyContext.prototype.'+method+' = '+
+				LinkyContext.prototype[method].toSource().replace(
+					'{',
+					'{ TreeStyleTabService.readyToOpenChildTab(null, true);'
+				).replace(
+					/(\}\)?)$/,
+					'TreeStyleTabService.stopToOpenChildTab(); $1'
+				)
+			);
+		}
 	}
 
 	// QuickDrag
@@ -1322,16 +1324,18 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 								break;
 
 							case sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION:
-								tabbarToolboxes.forEach(function(aToolbox) {
-									aToolbox.removeAttribute('collapsed');
-								});
+								for (let [, toolbox] in Iterator(tabbarToolboxes))
+								{
+									toolbox.removeAttribute('collapsed');
+								}
 								break;
 
 							case sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION:
-								tabbarToolboxes.forEach(function(aToolbox) {
-									if (!aToolbox.firstChild.hasChildNodes())
-										aToolbox.setAttribute('collapsed', true);
-								});
+								for (let [, toolbox] in Iterator(tabbarToolboxes))
+								{
+									if (!toolbox.firstChild.hasChildNodes())
+										toolbox.setAttribute('collapsed', true);
+								}
 								break;
 
 							case 'unload':
@@ -1348,10 +1352,11 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 			document.addEventListener(sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION, listener, false);
 			document.addEventListener(sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION, listener, false);
 			document.addEventListener('unload', listener, false);
-			tabbarToolboxes.forEach(function(aToolbox) {
-				if (!aToolbox.firstChild.hasChildNodes())
-					aToolbox.setAttribute('collapsed', true);
-			});
+			for (let [, toolbox] in Iterator(tabbarToolboxes))
+			{
+				if (!toolbox.firstChild.hasChildNodes())
+					toolbox.setAttribute('collapsed', true);
+			}
 		}
 	}
 
