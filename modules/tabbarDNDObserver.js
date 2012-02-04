@@ -760,6 +760,9 @@ catch(e) {
 		if (this.isDraggingAllCurrentTabs(draggedTab))
 			return;
 
+		if (aEvent.ctrlKey || aEvent.metaKey)
+			draggedTab.__treestyletab__toBeDuplicated = true;
+
 		b.replaceTabWithWindow(draggedTab);
 	},
  

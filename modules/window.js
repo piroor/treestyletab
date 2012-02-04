@@ -1574,8 +1574,9 @@ TreeStyleTabWindow.prototype = {
 			}
 			else {
 				let actionInfo = {
-						action : this.kACTIONS_FOR_DESTINATION | this.kACTION_IMPORT
+						action : remoteTab.__treestyletab__toBeDuplicated ? this.kACTION_DUPLICATE : this.kACTION_IMPORT
 					};
+
 				let b = this.browser;
 				let blankTab;
 				this.Deferred
@@ -1591,6 +1592,9 @@ TreeStyleTabWindow.prototype = {
 						remoteWindow = null
 						remoteService = null;
 						remoteMultipleTabService = null;
+					})
+					.error(function(e) {
+						Application.console.log(e+'\n'+e.stack)
 					});
 			}
 			return true;
