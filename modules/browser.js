@@ -291,6 +291,11 @@ TreeStyleTabBrowser.prototype = {
 	{
 		return this.isVertical ? this.counterRoleVertical : this.counterRoleHorizontal ;
 	},
+ 
+	get isDestroying()
+	{
+		return !this.mTabBrowser || !this.mTabBrowser.mTabContainer;
+	},
   
 /* utils */ 
 	
@@ -4939,6 +4944,7 @@ TreeStyleTabBrowser.prototype = {
 		var CSSTransitionEnabled = ('Transition' in aTab.style || 'MozTransition' in aTab.style);
 		if (CSSTransitionEnabled) {
 			aTab.__treestyletab__updateTabIndentTask = function(aTime, aBeginning, aChange, aDuration) {
+				if (self.isDestroying) return true;
 				aTab.style.setProperty(self.indentCSSProp, aIndent+'px', 'important');
 				return true;
 			};
@@ -4953,6 +4959,7 @@ TreeStyleTabBrowser.prototype = {
 		var delta       = aIndent - startIndent;
 		var radian      = 90 * Math.PI / 180;
 		aTab.__treestyletab__updateTabIndentTask = function(aTime, aBeginning, aChange, aDuration) {
+			if (self.isDestroying) return true;
 			var indent, finished;
 			if (aTime >= aDuration) {
 				delete aTab.__treestyletab__updateTabIndentTask;
@@ -5521,6 +5528,7 @@ TreeStyleTabBrowser.prototype = {
 		var self   = this;
 		var firstFrame = true;
 		aTab.__treestyletab__updateTabCollapsedTask = function(aTime, aBeginning, aChange, aDuration) {
+			if (self.isDestroying) return true;
 			if (firstFrame) {
 				// The callback must be started before offsetAttr is changed!
 				if (aCallbackToRunOnStartAnimation)
@@ -5724,6 +5732,7 @@ TreeStyleTabBrowser.prototype = {
 		var radian = 90 * Math.PI / 180;
 		var self = this;
 		this.smoothScrollTask = function(aTime, aBeginning, aChange, aDuration) {
+			if (self.isDestroying) return true;
 			var scrollBoxObject = self.scrollBoxObject;
 			if (aTime >= aDuration || this.cancelingPerformingAutoScroll) {
 				if (!this.cancelingPerformingAutoScroll) {
