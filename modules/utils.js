@@ -952,12 +952,10 @@ var TreeStyleTabUtils = {
 
 		var event = document.createEvent('DataContainerEvent');
 		event.initEvent(type, canBubble, cancellable);
-		for (let i in data)
+		for (let [property, value] in Iterator(data))
 		{
-			if (!data.hasOwnProperty(i))
-				continue;
-			event.setData(i, data[i]);
-			event[i] = data[i]; // for backward compatibility
+			event.setData(property, value);
+			event[property] = value; // for backward compatibility
 		}
 
 		return target.dispatchEvent(event);
