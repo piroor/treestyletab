@@ -972,20 +972,6 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		namedNodes.counterAnchor = namedNodes.label;
-		if (namedNodes.counterAnchor.parentNode != namedNodes.counter.parentNode) {
-			let containerFinder = d.createRange();
-			containerFinder.selectNode(namedNodes.counterAnchor);
-			containerFinder.setEndAfter(namedNodes.counter);
-			let container = containerFinder.getCommonAncestor();
-			while (namedNodes.counterAnchor.parentNode != container)
-			{
-				namedNodes.counterAnchor = namedNodes.counterAnchor.parentNode;
-			}
-			while (namedNodes.counter.parentNode != container)
-			{
-				namedNodes.counter = namedNodes.counter.parentNode;
-			}
-		}
 
 		var foundContainers = [];
 		var containers = [
@@ -1004,6 +990,9 @@ TreeStyleTabBrowser.prototype = {
 	},
 	initTabContentsOrderInternal : function TSTBrowser_initTabContentsOrderInternal(aContainer, aNamedNodes, aForce) 
 	{
+		if (this.window.getComputedStyle(aContainer, '').getPropertyValue('-moz-box-orient') == 'vertical')
+			return;
+
 		var nodes = Array.slice(this.document.getAnonymousNodes(aContainer) || aContainer.childNodes);
 
 		// reset order at first!
