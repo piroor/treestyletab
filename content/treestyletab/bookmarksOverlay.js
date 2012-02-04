@@ -52,16 +52,18 @@ var TreeStyleTabBookmarksService = {
 			return;
 		}
 
-		for (let [, item] in Iterator(aBookarmks))
+		for (let i = 0, maxi = aBookarmks.length; i < maxi; i++)
 		{
+			let item = aBookarmks[i];
 			item.position = this.BookmarksService.getItemIndex(item.id);
 		}
 		aBookarmks.sort(function(aA, aB) {
 			return aA.position - aB.position;
 		});
 
-		for (let [i, item] in Iterator(aBookarmks))
+		for (let i = 0, maxi = aBookarmks.length; i < maxi; i++)
 		{
+			let item = aBookarmks[i];
 			if (this.BookmarksService.getItemType(item.id) != this.BookmarksService.TYPE_BOOKMARK)
 				continue;
 
@@ -104,8 +106,9 @@ var TreeStyleTabBookmarksService = {
 
 		var b = this.getTabBrowserFromChild(tabs[0]);
 		var bookmarkedTabs = [];
-		for (let [i, tab] in Iterator(tabs))
+		for (let i = 0, maxi = tabs.length; i < maxi; i++)
 		{
+			let tab = tabs[i];
 			if (!this.isGroupTab(tab, i == 0)) bookmarkedTabs.push(tab);
 			bookmarkedTabs = bookmarkedTabs.concat(b.treeStyleTab.getDescendantTabs(tab));
 		}
@@ -360,8 +363,10 @@ var TreeStyleTabBookmarksService = {
 						TreeStyleTabBookmarksService.beginAddBookmarksFromTabs((function() {
 							var tabs = [];
 							var seen = {};
-							for (let [, tab] in Iterator(getBrowser().mTabContainer.childNodes))
+							var allTabs = getBrowser().mTabContainer.childNodes;
+							for (let i = 0, maxi = allTabs.length; i < maxi; i++)
 							{
+								let tab = allTabs[i];
 								let uri = tab.linkedBrowser.currentURI.spec;
 								if (uri in seen) continue;
 								seen[uri] = true;

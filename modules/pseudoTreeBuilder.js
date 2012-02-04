@@ -127,9 +127,9 @@ var PseudoTreeBuilder = {
 			return null;
 
 		var container = doc.createElement('vbox');
-		for (let [, child] in Iterator(children))
+		for (let i = 0, maxi = children.length; i < maxi; i++)
 		{
-			container.appendChild(this.createTabItem(child));
+			container.appendChild(this.createTabItem(children[i]));
 		}
 		container.setAttribute('class', this.kTREECHILDREN);
 		return container;

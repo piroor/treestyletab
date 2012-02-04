@@ -413,8 +413,9 @@ FullTooltipManager.prototype = {
 		if (aExtraLabels) {
 			if (typeof aExtraLabels == 'string')
 				aExtraLabels = [aExtraLabels];
-			for (let [, label] in Iterator(aExtraLabels))
+			for (let i = 0, maxi = aExtraLabels.length; i < maxi; i++)
 			{
+				let label = aExtraLabels[i];
 				label = label.replace(/^\s+|\s+$/g, '');
 				if (!label)
 					continue;

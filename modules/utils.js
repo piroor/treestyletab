@@ -394,14 +394,18 @@ var TreeStyleTabUtils = {
 	{
 		var OS = this.XULAppInfo.OS;
 		var processed = {};
-		for (let [, originalKey] in Iterator(this.getDescendant('extensions.treestyletab.platform.'+OS)))
+		var originalKeys = this.getDescendant('extensions.treestyletab.platform.'+OS);
+		for (let i = 0, maxi = originalKeys.length; i < maxi; i++)
 		{
+			let originalKey = originalKeys[i];
 			let key = originalKey.replace('platform.'+OS+'.', '');
 			this.setDefaultPref(key, this.getPref(originalKey));
 			processed[key] = true;
 		}
-		for (let [, originalKey] in Iterator(this.getDescendant('extensions.treestyletab.platform.default')))
+		originalKeys = this.getDescendant('extensions.treestyletab.platform.default');
+		for (let i = 0, maxi = originalKeys.length; i < maxi; i++)
 		{
+			let originalKey = originalKeys[i];
 			let key = originalKey.replace('platform.default.', '');
 			if (!(key in processed))
 				this.setDefaultPref(key, this.getPref(originalKey));
@@ -713,8 +717,9 @@ var TreeStyleTabUtils = {
 	doAndWaitDOMEvent : function TSTUtils_doAndWaitDOMEvent() 
 	{
 		var type, target, delay, task;
-		for (let [, arg] in Iterator(arguments))
+		for (let i = 0, maxi = arguments.length; i < maxi; i++)
 		{
+			let arg = arguments[i];
 			switch(typeof arg)
 			{
 				case 'string':
@@ -928,8 +933,9 @@ var TreeStyleTabUtils = {
 	fireDataContainerEvent : function TSTUtils_fireDataContainerEvent()
 	{
 		var target, document, type, data, canBubble, cancellable;
-		for (let [, arg] in Iterator(arguments))
+		for (let i = 0, maxi = arguments.length; i < maxi; i++)
 		{
+			let arg = arguments[i];
 			if (typeof arg == 'boolean') {
 				if (canBubble === void(0))
 					canBubble = arg;
@@ -952,8 +958,11 @@ var TreeStyleTabUtils = {
 
 		var event = document.createEvent('DataContainerEvent');
 		event.initEvent(type, canBubble, cancellable);
-		for (let [property, value] in Iterator(data))
+		var properties = Object.keys(data);
+		for (let i = 0, maxi = properties.length; i < maxi; i++)
 		{
+			let property = properties[i];
+			let value = data[property];
 			event.setData(property, value);
 			event[property] = value; // for backward compatibility
 		}
@@ -1131,18 +1140,18 @@ var TreeStyleTabUtils = {
 	{
 		if (!aTabs || aTabs.length <= 1) return;
 		var id = this.makeNewClosedSetId() + '::' + aTabs.length;
-		for (let [, tab] in Iterator(aTabs))
+		for (let i = 0, maxi = aTabs.length; i < maxi; i++)
 		{
-			this.setTabValue(tab, this.kCLOSED_SET_ID, id);
+			this.setTabValue(aTabs[i], this.kCLOSED_SET_ID, id);
 		}
 	},
  
 	unmarkAsClosedSet : function TSTUtils_unmarkAsClosedSet(aTabs) /* PUBLIC API */ 
 	{
 		if (!aTabs || !aTabs.length) return;
-		for (let [, tab] in Iterator(aTabs))
+		for (let i = 0, maxi = aTabs.length; i < maxi; i++)
 		{
-			this.deleteTabValue(tab, this.kCLOSED_SET_ID);
+			this.deleteTabValue(aTabs[i], this.kCLOSED_SET_ID);
 		}
 	},
  
@@ -1281,8 +1290,9 @@ var TreeStyleTabUtils = {
 		var b = aTabBrowser || this.browser;
 		var top = aFrame.top;
 		var tabs = this.getAllTabsArray(b);
-		for (let [, tab] in Iterator(tabs))
+		for (let i = 0, maxi = tabs.length; i < maxi; i++)
 		{
+			let tab = tabs[i];
 			if (tab.linkedBrowser.contentWindow == top)
 				return tab;
 		}
@@ -1321,8 +1331,9 @@ var TreeStyleTabUtils = {
 	cleanUpTabsArray : function TSTUtils_cleanUpTabsArray(aTabs) 
 	{
 		var newTabs = [];
-		for (let [, tab] in Iterator(aTabs))
+		for (let i = 0, maxi = aTabs.length; i < maxi; i++)
 		{
+			let tab = aTabs[i];
 			if (!tab || !tab.parentNode) continue; // ignore removed tabs
 			if (newTabs.indexOf(tab) < 0) newTabs.push(tab);
 		}
@@ -1357,8 +1368,10 @@ var TreeStyleTabUtils = {
 		var groups = [];
 
 		var group = [];
-		for (let [, tab] in Iterator(this.cleanUpTabsArray(aTabs)))
+		aTabs = this.cleanUpTabsArray(aTabs);
+		for (let i = 0, maxi = aTabs.length; i < maxi; i++)
 		{
+			let tab = aTabs[i];
 			let parent = this.getParentTab(tab);
 			if (!parent || group.indexOf(parent) < 0) {
 				if (group.length) groups.push(group);
@@ -2324,8 +2337,9 @@ var TreeStyleTabUtils = {
 		var collapsedStates = aTabs.map(function(aTab) {
 				return this.getTabValue(aTab, this.kSUBTREE_COLLAPSED) == 'true';
 			}, this);
-		for (let [, tab] in Iterator(aTabs))
+		for (let i = 0, maxi = aTabs.length; i < maxi; i++)
 		{
+			let tab = aTabs[i];
 			this.collapseExpandSubtree(tab, false, true);
 			this.collapseExpandTab(tab, false, true);
 		}
@@ -2392,8 +2406,9 @@ var TreeStyleTabUtils = {
 		while (aExpandStates.length < aTabs.length) aExpandStates.push(-1);
 
 		var parentTab = null;
-		for (let [i, tab] in Iterator(aTabs))
+		for (let i = 0, maxi = aTabs.length; i < maxi; i++)
 		{
+			let tab = aTabs[i];
 			if (sv.isCollapsed(tab)) sv.collapseExpandTab(tab, false, true);
 			sv.detachTab(tab);
 

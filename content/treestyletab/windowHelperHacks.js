@@ -86,13 +86,16 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 						(function() {
 							var tabsInfo = {};
 							var TST = TreeStyleTabService;
-							for (let [, tab] in Iterator(getBrowser().mTabContainer.childNodes))
+							var allTabs = getBrowser().mTabContainer.childNodes;
+							for (let i = 0, maxi = allTabs.length; i < maxi; i++)
 							{
+								let tab = allTabs[i];
 								let index = this.getPermaTabLocalIndex(tab);
 								if (index < 0) continue;
 								let info = {};
-								for (let [, property] in Iterator(TST.extraProperties))
+								for (let i = 0, maxi = TST.extraProperties.length; i < maxi; i++)
 								{
+									let property = TST.extraProperties[i];
 									info[property] = TST.getTabValue(tab, property);
 								}
 								tabsInfo[this.permaTabs[index].id] = info;
@@ -125,8 +128,9 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 				sessionData.getTabProperties.toSource().replace(
 					'return tabProperties;',
 					<![CDATA[
-						for (let [, property] in Iterator(this.tabTSTProperties))
+						for (let i = 0, maxi = this.tabTSTProperties.length; i < maxi; i++)
 						{
+							let tabProperties = this.tabTSTProperties[i];
 							tabProperties += '|' + property + '=' + encodeURIComponent(aTab.getAttribute(property));
 						}
 					$&]]>
@@ -138,8 +142,9 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 					<![CDATA[$&
 						var TSTProps = tabProperties.split('|');
 						tabProperties = TSTProps.shift();
-						for (let [, property] in Iterator(TSTProps))
+						for (let i = 0, maxi = TSTProps.length; i < maxi; i++)
 						{
+							let property = TSTProps[i];
 							let index = property.indexOf('=');
 							let name = property.substring(0, index);
 							let value = decodeURIComponent(property.substring(index+1));
@@ -200,9 +205,12 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 				'var tabcount = ',
 				<![CDATA[
 					gBrowser.treeStyleTab.collapseExpandAllSubtree(false, true);
-					for (let [, tab] in Iterator(gBrowser.treeStyleTab.getTabsArray(gBrowser).slice(1).reverse()))
-					{
-						gBrowser.removeTab(tab);
+					let (tabs = gBrowser.treeStyleTab.getTabsArray(gBrowser).slice(1).reverse()) {
+						for (let i = 0, maxi = tabs.length; i < maxi; i++)
+						{
+							let tab = tabs[i];
+							gBrowser.removeTab(tab);
+						}
 					}
 					TreeStyleTabService.restoringTree = true;
 				$&]]>
@@ -214,13 +222,16 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 	// https://addons.mozilla.org/firefox/addon/4650
 	if ('FS_onFullerScreen' in window &&
 		sv.getTreePref('compatibility.FullerScreen')) {
-		for (let [, func] in Iterator('CheckIfFullScreen,FS_onFullerScreen,FS_onMouseMove'.split(',')))
-		{
-			if (!(func in window)) continue;
-			eval('window.'+func+' = '+window[func].toSource().replace(
-				/FS_data.mTabs.(removeAttribute\("moz-collapsed"\)|setAttribute\("moz-collapsed", "true"\));/g,
-				'if (gBrowser.treeStyleTab.currentTabbarPosition == "top") { $& }'
-			));
+		let (functions = 'CheckIfFullScreen,FS_onFullerScreen,FS_onMouseMove'.split(',')) {
+			for (let i = 0, maxi = functions.length; i < maxi; i++)
+			{
+				let func = functions[i];
+				if (!(func in window)) continue;
+				eval('window.'+func+' = '+window[func].toSource().replace(
+					/FS_data.mTabs.(removeAttribute\("moz-collapsed"\)|setAttribute\("moz-collapsed", "true"\));/g,
+					'if (gBrowser.treeStyleTab.currentTabbarPosition == "top") { $& }'
+				));
+			}
 		}
 	}
 
@@ -817,18 +828,21 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	if ('LinkyContext' in window &&
 		'prototype' in LinkyContext &&
 		sv.getTreePref('compatibility.Linky')) {
-		for (let [, method] in Iterator('doSelected,doSelectedText,doImages,doAll,doAllPics,doValidateAll,doValidateSelected'.split(',')))
-		{
-			if (!(method in LinkyContext.prototype)) continue;
-			eval('LinkyContext.prototype.'+method+' = '+
-				LinkyContext.prototype[method].toSource().replace(
-					'{',
-					'{ TreeStyleTabService.readyToOpenChildTab(null, true);'
-				).replace(
-					/(\}\)?)$/,
-					'TreeStyleTabService.stopToOpenChildTab(); $1'
-				)
-			);
+		let (methods = 'doSelected,doSelectedText,doImages,doAll,doAllPics,doValidateAll,doValidateSelected'.split(',')) {
+			for (let i = 0, maxi = methods.length; i < maxi; i++)
+			{
+				let method = methods[i];
+				if (!(method in LinkyContext.prototype)) continue;
+				eval('LinkyContext.prototype.'+method+' = '+
+					LinkyContext.prototype[method].toSource().replace(
+						'{',
+						'{ TreeStyleTabService.readyToOpenChildTab(null, true);'
+					).replace(
+						/(\}\)?)$/,
+						'TreeStyleTabService.stopToOpenChildTab(); $1'
+					)
+				);
+			}
 		}
 	}
 
@@ -1324,15 +1338,16 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 								break;
 
 							case sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION:
-								for (let [, toolbox] in Iterator(tabbarToolboxes))
+								for (let i = 0, maxi = tabbarToolboxes.length; i < maxi; i++)
 								{
-									toolbox.removeAttribute('collapsed');
+									tabbarToolboxes[i].removeAttribute('collapsed');
 								}
 								break;
 
 							case sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION:
-								for (let [, toolbox] in Iterator(tabbarToolboxes))
+								for (let i = 0, maxi = tabbarToolboxes.length; i < maxi; i++)
 								{
+									let toolbox = tabbarToolboxes[i];
 									if (!toolbox.firstChild.hasChildNodes())
 										toolbox.setAttribute('collapsed', true);
 								}
@@ -1352,8 +1367,9 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 			document.addEventListener(sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION, listener, false);
 			document.addEventListener(sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION, listener, false);
 			document.addEventListener('unload', listener, false);
-			for (let [, toolbox] in Iterator(tabbarToolboxes))
+			for (let i = 0, maxi = tabbarToolboxes.length; i < maxi; i++)
 			{
+				let toolbox = tabbarToolboxes[i];
 				if (!toolbox.firstChild.hasChildNodes())
 					toolbox.setAttribute('collapsed', true);
 			}

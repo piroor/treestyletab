@@ -185,13 +185,15 @@ function onSyncGroupBookmarkUIToPref()
 	if (gGroupBookmarkUnderParent.checked) behavior |= 256;
 	if (gGroupBookmarkType.value == 'true') behavior |= 512;
 
-	for (let [, node] in Iterator([
+	var nodes = [
 			gGroupBookmarkUnderParent,
 			gGroupBookmarkType,
 			gGroupBookmarkType.previousSibling,
 			gGroupBookmarkType.nextSibling
-		]))
+		];
+	for (let i = 0, maxi = nodes.length; i < maxi; i++)
 	{
+		let node = nodes[i];
 		if (behavior & 1)
 			node.removeAttribute('disabled');
 		else

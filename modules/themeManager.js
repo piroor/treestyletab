@@ -54,8 +54,9 @@ TreeStyleTabThemeManager.prototype = {
 	set : function(aStyle, aPosition)
 	{
 		if (this._lastStyles) {
-			for (let [, style] in Iterator(this._lastStyles))
+			for (let i = 0, maxi = this._lastStyles.length; i < maxi; i++)
 			{
+				let style = this._lastStyles[i];
 				style.parentNode.removeChild(style);
 			}
 		}
@@ -130,8 +131,9 @@ TreeStyleTabThemeManager.prototype = {
 				null ;
 		if (!images) return;
 
-		for (let [, image] in Iterator(images))
+		for (let i = 0, maxi = images.length; i < maxi; i++)
 		{
+			let image = images[i];
 			if (this._preLoadImagesForStyleDoneImages.indexOf(image) > -1)
 				continue;
 

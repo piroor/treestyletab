@@ -523,8 +523,9 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var tabs = this.getTabsArray(this.mTabBrowser);
 		var count = tabs.length;
-		for (let [i, tab] in Iterator(tabs))
+		for (let i = 0; i < count; i++)
 		{
+			let tab = tabs[i];
 			if (aStacked)
 				tab.style.zIndex = count * 1000 - index;
 			else
@@ -721,7 +722,7 @@ TreeStyleTabBrowser.prototype = {
 		if (!('MultipleTabService' in w)) {
 			w.setTimeout(function(aSelf, aTabBrowser, aPopup) {
 				let suffix = '-tabbrowser-'+(aTabBrowser.id || 'instance-'+parseInt(Math.random() * 65000));
-				for (let [, id] in Iterator([
+				let ids = [
 						aSelf.kMENUITEM_RELOADSUBTREE,
 						aSelf.kMENUITEM_RELOADCHILDREN,
 						aSelf.kMENUITEM_REMOVESUBTREE,
@@ -734,8 +735,10 @@ TreeStyleTabBrowser.prototype = {
 						aSelf.kMENUITEM_AUTOHIDE,
 						aSelf.kMENUITEM_FIXED,
 						aSelf.kMENUITEM_BOOKMARKSUBTREE
-					]))
+					];
+				for (let i = 0, maxi = ids.length; i < maxi; i++)
 				{
+					let id = ids[i];
 					let item = d.getElementById(id).cloneNode(true);
 					item.setAttribute('id', item.getAttribute('id')+suffix);
 
@@ -973,13 +976,15 @@ TreeStyleTabBrowser.prototype = {
 		namedNodes.counterAnchor = namedNodes.label;
 
 		var foundContainers = [];
-		for (let [, container] in Iterator([
+		var containers = [
 				namedNodes.twistyAnchor.parentNode,
 				namedNodes.label.parentNode,
 				namedNodes.counter.parentNode,
 				namedNodes.closeAnchor.parentNode
-			]))
+			];
+		for (let i = 0, maxi = containers.length; i < maxi; i++)
 		{
+			let container = containers[i];
 			if (foundContainers.indexOf(container) > -1)
 				continue;
 			this.initTabContentsOrderInternal(container, namedNodes, aForce);
@@ -994,8 +999,9 @@ TreeStyleTabBrowser.prototype = {
 		var nodes = Array.slice(this.document.getAnonymousNodes(aContainer) || aContainer.childNodes);
 
 		// reset order at first!
-		for (let [i, node] in Iterator(nodes))
+		for (let i = 0, maxi = nodes.length; i < maxi; i++)
 		{
+			let node = nodes[i];
 			if (node.getAttribute('class') == 'informationaltab-thumbnail-container')
 				continue;
 			node.setAttribute('ordinal', i);
@@ -1030,8 +1036,9 @@ TreeStyleTabBrowser.prototype = {
 
 		var count = nodes.length;
 		nodes.reverse();
-		for (let [i, node] in Iterator(nodes))
+		for (let i = 0, maxi = nodes.length; i < maxi; i++)
 		{
+			let node = nodes[i];
 			if (node.getAttribute('class') == 'informationaltab-thumbnail-container')
 				continue;
 			node.setAttribute('ordinal', (count - i + 1) * 100);
@@ -1043,14 +1050,16 @@ TreeStyleTabBrowser.prototype = {
 			 * Gecko doesn't re-render them in the new order.
 			 * Changing of "display" or "position" can fix this problem.
 			 */
-			for (let [, node] in Iterator(nodes))
+			for (let i = 0, maxi = nodes.length; i < maxi; i++)
 			{
+				let node = nodes[i];
 				node.style.visibility = 'hidden'; // we should hide temporary state!
 				node.style.position = 'fixed';
 			}
 			this.Deferred.wait(0.1).next(function() {
-				for (let [, node] in Iterator(nodes))
+				for (let i = 0, maxi = nodes.length; i < maxi; i++)
 				{
+					let node = nodes[i];
 					node.style.position = '';
 					node.style.visibility = '';
 				}
@@ -1070,9 +1079,9 @@ TreeStyleTabBrowser.prototype = {
 					(typeof aTarget == 'object' && 'length' in aTarget) ?
 						Array.slice(aTarget) :
 						self.getAllTabsArray(b);
-			for (let [, tab] in Iterator(tabs))
+			for (let i = 0, maxi = tabs.length; i < maxi; i++)
 			{
-				this.initTabContentsOrder(tab);
+				this.initTabContentsOrder(tabs[i]);
 			}
 		});
 	},
@@ -1187,8 +1196,10 @@ TreeStyleTabBrowser.prototype = {
 			b.mPanelContainer.removeAttribute('height');
 
 			if (strip.localName == 'toolbar') {
-				for (let [, node] in Iterator(strip.childNodes))
+				let nodes = strip.childNodes;
+				for (let i = 0, maxi = nodes.length; i < maxi; i++)
 				{
+					let node = nodes[i];
 					if (node.localName == 'tabs')
 						continue;
 					if (node.hasAttribute('flex'))
@@ -1267,8 +1278,10 @@ TreeStyleTabBrowser.prototype = {
 			this.removeTabbrowserAttribute(this.kTAB_INVERTED);
 
 			if (strip.localName == 'toolbar') {
-				for (let [, node] in Iterator(strip.childNodes))
+				let nodes = strip.childNodes;
+				for (let i = 0, maxi = nodes.length; i < maxi; i++)
 				{
+					let node = nodes[i];
 					if (node.localName == 'tabs')
 						continue;
 					let flex = node.hasAttribute('treestyletab-backup-flex');
@@ -1302,8 +1315,9 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		var tabs = this.getAllTabsArray(b);
-		for (let [, tab] in Iterator(tabs))
+		for (let i = 0, maxi = tabs.length; i < maxi; i++)
 		{
+			let tab = tabs[i];
 			tab.style.removeProperty(this.indentCSSProp);
 			tab.style.removeProperty(this.collapseCSSProp);
 		}
@@ -1312,8 +1326,9 @@ TreeStyleTabBrowser.prototype = {
 		this.indentCSSProp = this.indentProp+'-'+this.indentTarget;
 		this.collapseCSSProp = 'margin-'+this.collapseTarget;
 
-		for (let [i, tab] in Iterator(tabs))
+		for (let i = 0, maxi = tabs.length; i < maxi; i++)
 		{
+			let tab = tabs[i];
 			this.updateTabCollapsed(tab, tab.getAttribute(this.kCOLLAPSED) == 'true', true);
 		}
 
@@ -1805,8 +1820,10 @@ TreeStyleTabBrowser.prototype = {
  
 	reinitAllTabs : function TSTBrowser_reinitAllTabs(aSouldUpdateCount) 
 	{
-		for (let [, tab] in Iterator(this.getAllTabsArray(this.mTabBrowser)))
+		var tabs = this.getAllTabsArray(this.mTabBrowser);
+		for (let i = 0, maxi = tabs.length; i < maxi; i++)
 		{
+			let tab = tabs[i];
 			this.initTabAttributes(tab);
 			this.initTabContents(tab);
 			if (aSouldUpdateCount)
@@ -1837,8 +1854,10 @@ TreeStyleTabBrowser.prototype = {
 		var b = this.mTabBrowser;
 		delete b.tabContainer.treeStyleTab;
 
-		for (let [, tab] in Iterator(this.getAllTabsArray(b)))
+		var tabs = this.getAllTabsArray(b);
+		for (let i = 0, maxi = tabs.length; i < maxi; i++)
 		{
+			let tab = tabs[i];
 			this.stopTabIndentAnimation(tab);
 			this.stopTabCollapseAnimation(tab);
 			this.destroyTab(tab);
@@ -2150,24 +2169,24 @@ TreeStyleTabBrowser.prototype = {
 			case 'extensions.treestyletab.tabbar.multirow':
 				this.initTabbar();
 				this.updateAllTabsIndent();
-				for (let [, tab] in Iterator(tabs))
+				for (let i = 0, maxi = tabs.length; i < maxi; i++)
 				{
-					this.initTabContents(tab);
+					this.initTabContents(tabs[i]);
 				}
 				return;
 			case 'extensions.treestyletab.tabbar.invertTabContents':
 				this.setTabbrowserAttribute(this.kTAB_CONTENTS_INVERTED, value);
-				for (let [, tab] in Iterator(tabs))
+				for (let i = 0, maxi = tabs.length; i < maxi; i++)
 				{
-					this.initTabContents(tab);
+					this.initTabContents(tabs[i]);
 				}
 				return;
 
 			case 'extensions.treestyletab.tabbar.invertClosebox':
 				this.setTabbrowserAttribute(this.kCLOSEBOX_INVERTED, value);
-				for (let [, tab] in Iterator(tabs))
+				for (let i = 0, maxi = tabs.length; i < maxi; i++)
 				{
-					this.initTabContents(tab);
+					this.initTabContents(tabs[i]);
 				}
 				return;
 
@@ -2714,9 +2733,10 @@ TreeStyleTabBrowser.prototype = {
 
 				this.markAsClosedSet([tab].concat(tabs));
 
-				for (let [, tab] in Iterator(tabs.reverse()))
+				tabs.reverse();
+				for (let i = 0, maxi = tabs.length; i < maxi; i++)
 				{
-					b.removeTab(tab, { animate : true });
+					b.removeTab(tabs[i], { animate : true });
 				}
 
 				this.fireTabSubtreeClosedEvent(b, tab, tabs);
@@ -2903,8 +2923,9 @@ TreeStyleTabBrowser.prototype = {
 
 		var self = this;
 		this.Deferred.next(function() {
-			for (let [, tabs] in Iterator(trees))
+			for (let i = 0, maxi = trees.length; i < maxi; i++)
 			{
+				let tabs = trees[i];
 				self.fireTabSubtreeClosedEvent(b, tabs[0], tabs);
 			}
 		});
@@ -3129,8 +3150,9 @@ TreeStyleTabBrowser.prototype = {
 					return aB._tPos - aA._tPos;
 				})
 				.filter(aSelf.restoreOneTab, aSelf);
-			for (let [, tab] in Iterator(restoreTabs))
+			for (let i = 0, maxi = restoreTabs.length; i < maxi; i++)
 			{
+				let tab = restoreTabs[i];
 				aSelf.updateInsertionPositionInfo(tab);
 				delete tab.__treestyletab__restoreState;
 			}
@@ -3189,8 +3211,9 @@ TreeStyleTabBrowser.prototype = {
 		var lastIndex = allTabs.length - 1;
 		var lastMovedTab;
 		normalTabs = normalTabs.slice(0).reverse();
-		for (let [, tab] in Iterator(normalTabs))
+		for (let i = 0, maxi = normalTabs.length; i < maxi; i++)
 		{
+			let tab = normalTabs[i];
 			let parent = this.getParentTab(tab);
 			let attached = false;
 			if (parent && (tab.hidden != parent.hidden)) {
@@ -3257,8 +3280,9 @@ TreeStyleTabBrowser.prototype = {
 		this.detachTab(aParent);
 		b.moveTabTo(aParent, lastCount);
 		var descendantTabs = this.getDescendantTabs(aParent);
-		for (let [, tab] in Iterator(descendantTabs))
+		for (let i = 0, maxi = descendantTabs.length; i < maxi; i++)
 		{
+			let tab = descendantTabs[i];
 			w.TabView.moveTabTo(tab, id);
 			b.moveTabTo(tab, lastCount);
 		}
@@ -3453,14 +3477,16 @@ TreeStyleTabBrowser.prototype = {
 		 * For failsafe, we must override actual attributes by stored
 		 * values.
 		 */
-		for (let [, key] in Iterator([
+		var keys = [
 				this.kINSERT_BEFORE,
 				this.kINSERT_AFTER
-			]))
+			];
+		for (let i = 0, maxi = keys.length; i < maxi; i++)
 		{
+			let key = keys[i];
 			let tab = this.getTabValue(aTab, key);
 			if (this.getTabById(tab))
-				this.setTabValue(aTab, aKey, tab);
+				this.setTabValue(aTab, key, tab);
 		}
 
 		let parentId = this.getTabValue(aTab, this.kPARENT);
@@ -3516,8 +3542,9 @@ TreeStyleTabBrowser.prototype = {
 				return this.redirectId(aChild);
 			}, this);
 
-		for (let [, childTab] in Iterator(aChildrenList))
+		for (let i = 0, maxi = aChildrenList.length; i < maxi; i++)
 		{
+			let childTab = aChildrenList[i];
 			if (childTab && (childTab = this.getTabById(childTab))) {
 				let options = aOptions;
 				if (options && typeof options == 'function')
@@ -3647,10 +3674,10 @@ TreeStyleTabBrowser.prototype = {
 
 		var children = aTab.getAttribute(this.kCHILDREN);
 		if (restoringChildren != children) {
-			var restoringChildrenIDs = restoringChildren.split('|');
-			for (let [i, child] in Iterator(restoringChildrenIDs.reverse()))
+			var restoringChildrenIDs = restoringChildren.split('|').reverse();
+			for (let i = 0, maxi = restoringChildrenIDs.length; i < maxi; i++)
 			{
-				child = this.getTabById(child);
+				let child = this.getTabById(restoringChildrenIDs[i]);
 				if (!child) continue;
 
 				let nextTab = i > 0 ?
@@ -3708,8 +3735,10 @@ TreeStyleTabBrowser.prototype = {
 			return;
 
 		var indexes = [];
-		for (let [i, item] in Iterator(this.evalInSandbox('('+this.SessionStore.getClosedTabData(this.window)+')')))
+		var items = this.evalInSandbox('('+this.SessionStore.getClosedTabData(this.window)+')');
+		for (let i = 0, maxi = items.length; i < maxi; i++)
 		{
+			let item = items[i];
 			if (item.state.extData &&
 				item.state.extData[this.kCLOSED_SET_ID] &&
 				item.state.extData[this.kCLOSED_SET_ID] == aId)
@@ -3754,9 +3783,9 @@ TreeStyleTabBrowser.prototype = {
 		this.windowService.restoringTree = true;
 
 		var offset = 0;
-		for (let [, index] in Iterator(aIndexes))
+		for (let i = 0, maxi = aIndexes.length; i < maxi; i++)
 		{
-			this.window.undoCloseTab(index - (offset++));
+			this.window.undoCloseTab(aIndexes[i] - (offset++));
 		}
 
 		this.window.setTimeout(function(aSelf, aNextFocused) {
@@ -3791,8 +3820,10 @@ TreeStyleTabBrowser.prototype = {
 			 */
 			let b = this.browser;
 			this.internallyTabMovingCount++;
-			for (let [, childTab] in Iterator(this.getDescendantTabs(aTab).reverse()))
+			let children = this.getDescendantTabs(aTab).reverse();
+			for (let i = 0, maxi = children.length; i < maxi; i++)
 			{
+				let childTab = children[i];
 				if (childTab.__treestyletab__previousPosition > childTab._tPos)
 					b.moveTabTo(childTab, childTab.__treestyletab__previousPosition);
 			}
@@ -3806,8 +3837,10 @@ TreeStyleTabBrowser.prototype = {
 			 */
 			let b = this.browser;
 			this.internallyTabMovingCount++;
-			for (let [, childTab] in Iterator(this.getChildTabs(aTab).reverse()))
+			let children = this.getChildTabs(aTab).reverse();
+			for (let i = 0, maxi = children.length; i < maxi; i++)
 			{
+				let childTab = children[i];
 				if (childTab._tPos < parentTab._tPos)
 					b.moveTabTo(childTab, parentTab._tPos);
 			}
@@ -4195,7 +4228,7 @@ TreeStyleTabBrowser.prototype = {
 		var b = this.mTabBrowser;
 		var sep, items = {};
 
-		for (let [, id] in Iterator([
+		var ids = [
 				this.kMENUITEM_RELOADSUBTREE,
 				this.kMENUITEM_RELOADCHILDREN,
 				this.kMENUITEM_REMOVESUBTREE,
@@ -4206,8 +4239,10 @@ TreeStyleTabBrowser.prototype = {
 				this.kMENUITEM_AUTOHIDE,
 				this.kMENUITEM_FIXED,
 				this.kMENUITEM_BOOKMARKSUBTREE
-			]))
+			];
+		for (let i = 0, maxi = ids.length; i < maxi; i++)
 		{
+			let id = ids[i];
 			let item = this.evaluateXPath(
 				'descendant::xul:*[starts-with(@id, "'+id+'")]',
 				aEvent.currentTarget,
@@ -4405,9 +4440,10 @@ TreeStyleTabBrowser.prototype = {
   
 	resetAllTabs : function TSTBrowser_resetAllTabs(aDetachAllChildren) 
 	{
-		for (let [, tab] in Iterator(this.getAllTabsArray(this.mTabBrowser)))
+		var tabs = this.getAllTabsArray(this.mTabBrowser);
+		for (let i = 0, maxi = tabs.length; i < maxi; i++)
 		{
-			this.resetTab(tab, aDetachAllChildren);
+			this.resetTab(tabs[i], aDetachAllChildren);
 		}
 	},
  
@@ -4442,8 +4478,10 @@ TreeStyleTabBrowser.prototype = {
 				this.allowSubtreeCollapseExpand = true;
 			delete this._lastAllowSubtreeCollapseExpand;
 
-			for (let [, tab] in Iterator(this.getAllTabsArray(this.browser)))
+			let tabs = this.getAllTabsArray(this.browser);
+			for (let i = 0, maxi = tabs.length; i < maxi; i++)
 			{
+				let tab = tabs[i];
 				if (tab._TSTLastSubtreeCollapsed)
 					this.collapseExpandSubtree(tab, true, true);
 				if (tab._TSTLastSubtreeExpandedManually)
@@ -4455,8 +4493,10 @@ TreeStyleTabBrowser.prototype = {
 			this.updateTabsIndent(this.rootTabs, undefined, true);
 		}
 		else {
-			for (let [, tab] in Iterator(this.getAllTabsArray(this.browser)))
+			let tabs = this.getAllTabsArray(this.browser);
+			for (let i = 0, maxi = tabs.length; i < maxi; i++)
 			{
+				let tab = tabs[i];
 				this.updateTabIndent(tab, 0, true);
 				tab._TSTLastSubtreeCollapsed = this.isSubtreeCollapsed(tab);
 				tab._TSTLastSubtreeExpandedManually = this.getTabValue(tab, this.kSUBTREE_EXPANDED_MANUALLY) == 'true';
@@ -4717,8 +4757,9 @@ TreeStyleTabBrowser.prototype = {
 			!this.getTreePref('closeParentBehavior.moveDetachedTabsToBottom')) {
 			insertBefore = this.getNextSiblingTab(this.getRootTab(aTab));
 		}
-		for (let [i, tab] in Iterator(children))
+		for (let i = 0, maxi = children.length; i < maxi; i++)
 		{
+			let tab = children[i];
 			if (aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN) {
 				this.detachTab(tab, aInfo);
 				this.moveTabSubtreeTo(tab, insertBefore ? insertBefore._tPos - 1 : this.getLastTab(b)._tPos );
@@ -4763,8 +4804,9 @@ TreeStyleTabBrowser.prototype = {
  
 	detachTabs : function TSTBrowser_detachTabs(aTabs) 
 	{
-		for (let [, tab] in Iterator(aTabs))
+		for (let i = 0, maxi = aTabs.length; i < maxi; i++)
 		{
+			let tab = aTabs[i];
 			if (aTabs.indexOf(this.getParentTab(tab)) > -1)
 				continue;
 			this.detachAllChildren(tab, {
@@ -4816,8 +4858,9 @@ TreeStyleTabBrowser.prototype = {
 			indent = Math.min(aLevel * 3, maxIndent);
 		}
 
-		for (let [, tab] in Iterator(aTabs))
+		for (let i = 0, maxi = aTabs.length; i < maxi; i++)
 		{
+			let tab = aTabs[i];
 			if (!tab.parentNode) continue; // ignore removed tabs
 			this.updateTabIndent(tab, indent, aJustNow);
 			tab.setAttribute(this.kNEST, aLevel);
@@ -4833,8 +4876,9 @@ TreeStyleTabBrowser.prototype = {
 		this.updateTabsIndentWithDelayTabs = this.updateTabsIndentWithDelayTabs.concat(aTabs);
 		this.updateTabsIndentWithDelayTimer = this.window.setTimeout(function(aSelf) {
 			var tabs = [];
-			for (let [, tab] in Iterator(aSelf.updateTabsIndentWithDelayTabs))
+			for (let i = 0, maxi = aSelf.updateTabsIndentWithDelayTabs.length; i < maxi; i++)
 			{
+				let tab = aSelf.updateTabsIndentWithDelayTabs[i];
 				if (tabs.indexOf(tab) < 0 && tab.parentNode) tabs.push(tab);
 			}
 			aSelf.updateTabsIndentWithDelayTabs = [];
@@ -4866,8 +4910,10 @@ TreeStyleTabBrowser.prototype = {
 				retVal.push('ThreeDShadow');
 				return retVal.length == 1 ? 'none' : retVal.join(' ') ;
 			})()+' !important;';
-			for (let [, box] in Iterator(this.document.getAnonymousNodes(aTab)))
+			let boxes = this.document.getAnonymousNodes(aTab);
+			for (let i = 0, box = boxes.length; i < maxi; i++)
 			{
+				let box = boxes[i];
 				if (box.nodeType != Node.ELEMENT_NODE) continue;
 				box.setAttribute(
 					'style',
@@ -5051,8 +5097,10 @@ TreeStyleTabBrowser.prototype = {
  
 	updateAllTabsCount : function TSTBrowser_updateAllTabsCount() 
 	{
-		for (let [, tab] in Iterator(this.rootTabs))
+		var tabs = this.rootTabs;
+		for (let i = 0, maxi = tabs.length; i < maxi; i++)
 		{
+			let tab = tabs[i];
 			this.updateTabsCount(tab, this);
 		}
 	},
@@ -5062,7 +5110,8 @@ TreeStyleTabBrowser.prototype = {
 		if (this.maxTreeLevel < 0 || !this.maxTreeLevelPhisical)
 			return;
 
-		for (let [, tab] in Iterator(aParent ? this.getDescendantTabs(aParent) : this.getAllTabsArray(this.mTabBrowser) ))
+		var tabs = aParent ? this.getDescendantTabs(aParent) : this.getAllTabsArray(this.mTabBrowser) ;
+		for (let i = 0, maxi = tabs.length; i < maxi; i++)
 		{
 			let level = parseInt(tab.getAttribute(this.kNEST) || 0);
 			if (level <= this.maxTreeLevel)
@@ -5098,8 +5147,10 @@ TreeStyleTabBrowser.prototype = {
 
 		this.subTreeChildrenMovingCount++;
 		this.internallyTabMovingCount++;
-		for (let [i, descendantTab] in Iterator(this.getDescendantTabs(aTab)))
+		var descendantTabs = this.getDescendantTabs(aTab);
+		for (let i = 0, maxi = descendantTabs.length; i < maxi; i++)
 		{
+			let descendantTab = descendantTabs[i];
 			b.moveTabTo(descendantTab, aTab._tPos + i + (aTab._tPos < descendantTab._tPos ? 1 : 0 ));
 		}
 		this.internallyTabMovingCount--;
@@ -5312,8 +5363,9 @@ TreeStyleTabBrowser.prototype = {
 
 		var expandedTabs = this.getChildTabs(aTab);
 		var lastExpandedTabIndex = expandedTabs.length - 1;
-		for (let [i, childTab] in Iterator(expandedTabs))
+		for (let i = 0, maxi = expandedTabs.length; i < maxi; i++)
 		{
+			let childTab = expandedTabs[i];
 			if (!aCollapse && !aJustNow && i == lastExpandedTabIndex) {
 				let self = this;
 				this.collapseExpandTab(childTab, aCollapse, aJustNow, function() {
@@ -5366,9 +5418,10 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		if (!this.isSubtreeCollapsed(aTab)) {
-			for (let [, tab] in Iterator(this.getChildTabs(aTab)))
+			let tabs = this.getChildTabs(aTab);
+			for (let i = 0, maxi = tabs.length; i < maxi; i++)
 			{
-				this.collapseExpandTab(tab, aCollapse, aJustNow);
+				this.collapseExpandTab(tabs[i], aCollapse, aJustNow);
 			}
 		}
 	},
@@ -5881,8 +5934,9 @@ TreeStyleTabBrowser.prototype = {
 		if (tabs.length <= 1)
 			return;
 
-		for (let [, tab] in Iterator(tabs))
+		for (let i = 0, maxi = tabs.length; i < maxi; i++)
 		{
+			let tab = tabs[i];
 			let currentId = tab.getAttribute(this.kID);
 			if (this.tabsHash[currentId] == tab)
 				delete this.tabsHash[currentId];

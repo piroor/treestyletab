@@ -414,11 +414,13 @@ catch(e) {
 		var tabs = sv.getTabsArray(targetBrowser);
 
 		var draggedWholeTree = [].concat(draggedRoots);
-		for (let [, root] in Iterator(draggedRoots))
+		for (let i = 0, maxi = draggedRoots.length; i < maxi; i++)
 		{
+			let root = draggedRoots[i];
 			let tabs = sourceService.getDescendantTabs(root);
-			for (let [, tab] in Iterator(tabs))
+			for (let i = 0, maxi = tabs.length; i < maxi; i++)
 			{
+				let tab = tabs[i];
 				if (draggedWholeTree.indexOf(tab) < 0)
 					draggedWholeTree.push(tab);
 			}
@@ -515,8 +517,9 @@ catch(e) {
 		var sv = b.treeStyleTab;
 
 		b.movingSelectedTabs = true; // Multiple Tab Handler
-		for (let [, tab] in Iterator(aTabs))
+		for (let i = 0, maxi = aTabs.length; i < maxi; i++)
 		{
+			let tab = aTabs[i];
 			if (!tab.parentNode) continue; // ignore removed tabs
 			if (aParent)
 				sv.attachTabTo(tab, aParent);
@@ -533,8 +536,9 @@ catch(e) {
 		var sv = b.treeStyleTab;
 
 		b.movingSelectedTabs = true; // Multiple Tab Handler
-		for (let [, tab] in Iterator(aTabs))
+		for (let i = 0, maxi = aTabs.length; i < maxi; i++)
 		{
+			let tab = aTabs[i];
 			if (!tab.parentNode) continue; // ignore removed tabs
 			sv.detachTab(tab);
 			sv.collapseExpandTab(tab, false);
@@ -863,9 +867,9 @@ catch(e) {
 		var sv = this.treeStyleTab;
 		if (this.mAutoExpandedTabs.length) {
 			if (sv.getTreePref('autoExpand.collapseFinally')) {
-				for (let [, target] in Iterator(this.mAutoExpandedTabs))
+				for (let i = 0, maxi = this.mAutoExpandedTabs.length; i < maxi; i++)
 				{
-					sv.collapseExpandSubtree(sv.getTabById(target), true, true);
+					sv.collapseExpandSubtree(sv.getTabById(this.mAutoExpandedTabs[i]), true, true);
 				}
 			}
 			this.mAutoExpandedTabs = [];
