@@ -323,6 +323,12 @@ TreeStyleTabBrowser.prototype = {
 	{
 		return this.document.getAnonymousElementByAttribute(aTab, 'class', this.kTWISTY);
 	},
+ 
+	getTabTwistyAnchorNode : function TSTBrowser_getTabTwistyAnchorNode(aTab) 
+	{
+		return this.document.getAnonymousElementByAttribute(aTab, 'class', 'tab-icon') || // Tab Mix Plus
+			this.document.getAnonymousElementByAttribute(aTab, 'class', 'tab-throbber');
+	},
   
 	getTabFromTabbarEvent : function TSTBrowser_getTabFromTabbarEvent(aEvent) 
 	{
@@ -897,12 +903,12 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var d = this.document;
 
-		var throbber  = d.getAnonymousElementByAttribute(aTab, 'class', 'tab-throbber');
-		var twisty = d.getAnonymousElementByAttribute(aTab, 'class', this.kTWISTY);
-		if (throbber  && !twisty) {
+		var twisty = this.getTabTwisty(aTab);
+		var anchor = this.getTabTwistyAnchorNode(aTab);
+		if (anchor  && !twisty) {
 			twisty = d.createElement('image');
 			twisty.setAttribute('class', this.kTWISTY);
-			throbber.parentNode.appendChild(twisty);
+			anchor.parentNode.appendChild(twisty);
 		}
 
 		var label = this.getTabLabel(aTab);
@@ -941,50 +947,108 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var d = this.document;
 
-		var label     = this.getTabLabel(aTab);
-		var close     = this.getTabClosebox(aTab);
-		var throbber  = d.getAnonymousElementByAttribute(aTab, 'class', 'tab-throbber');
+		var namedNodes = {
+				label        : this.getTabLabel(aTab),
+				close        : this.getTabClosebox(aTab),
+				twistyAnchor : this.getTabTwistyAnchorNode(aTab),
+				twisty       : this.getTabTwisty(aTab),
+				counter      : d.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER_CONTAINER)
+			};
 
-		var twisty    = d.getAnonymousElementByAttribute(aTab, 'class', this.kTWISTY);
-		var counter   = d.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER_CONTAINER);
+		namedNodes.closeAnchor = namedNodes.label;
+		if (namedNodes.closeAnchor.parentNode != namedNodes.close.parentNode) {
+			let containerFinder = d.createRange();
+			containerFinder.selectNode(namedNodes.closeAnchor);
+			containerFinder.setEndAfter(namedNodes.close);
+			let container = containerFinder.getCommonAncestor();
+			while (namedNodes.closeAnchor.parentNode != container)
+			{
+				namedNodes.closeAnchor = namedNodes.closeAnchor.parentNode;
+			}
+			while (namedNodes.close.parentNode != container)
+			{
+				namedNodes.close = namedNodes.close.parentNode;
+			}
+		}
 
-		var nodesContainer = d.getAnonymousElementByAttribute(aTab, 'class', 'tab-content') || aTab;
-		var nodes = Array.slice(d.getAnonymousNodes(nodesContainer) || nodesContainer.childNodes);
+		namedNodes.counterAnchor = namedNodes.label;
+		if (namedNodes.counterAnchor.parentNode != namedNodes.counter.parentNode) {
+			let containerFinder = d.createRange();
+			containerFinder.selectNode(namedNodes.counterAnchor);
+			containerFinder.setEndAfter(namedNodes.counter);
+			let container = containerFinder.getCommonAncestor();
+			while (namedNodes.counterAnchor.parentNode != container)
+			{
+				namedNodes.counterAnchor = namedNodes.counterAnchor.parentNode;
+			}
+			while (namedNodes.counter.parentNode != container)
+			{
+				namedNodes.counter = namedNodes.counter.parentNode;
+			}
+		}
+
+		var foundContainers = [];
+		var containers = [
+				namedNodes.twistyAnchor.parentNode,
+				namedNodes.label.parentNode,
+				namedNodes.counter.parentNode,
+				namedNodes.closeAnchor.parentNode
+			];
+		for (let [, container] in Iterator(containers))
+		{
+			if (foundContainers.indexOf(container) > -1)
+				return;
+			this.initTabContentsOrderInternal(container, namedNodes, aForce);
+			foundContainers.push(container);
+		}
+	},
+	initTabContentsOrderInternal : function TSTBrowser_initTabContentsOrderInternal(aContainer, aNamedNodes, aForce) 
+	{
+		var nodes = Array.slice(this.document.getAnonymousNodes(aContainer) || aContainer.childNodes);
 
 		// reset order at first!
-		nodes.forEach(function(aNode, aIndex) {
-			if (aNode.getAttribute('class') == 'informationaltab-thumbnail-container')
-				return;
-			aNode.setAttribute('ordinal', aIndex);
-		}, this);
+		for (let [i, node] in Iterator(nodes))
+		{
+			if (node.getAttribute('class') == 'informationaltab-thumbnail-container')
+				continue;
+			node.setAttribute('ordinal', i);
+		}
 
 		// after that, rearrange contents
-		nodes.splice(nodes.indexOf(close), 1);
-		if (this.mTabBrowser.getAttribute(this.kCLOSEBOX_INVERTED) == 'true')
-			nodes.splice(nodes.indexOf(label), 0, close);
-		else
-			nodes.splice(nodes.indexOf(label)+1, 0, close);
 
-		if (twisty) {
-			nodes.splice(nodes.indexOf(twisty), 1);
-			nodes.splice(nodes.indexOf(throbber), 0, twisty);
+		var index = nodes.indexOf(aNamedNodes.close);
+		if (index > -1) {
+			nodes.splice(index, 1);
+			if (this.mTabBrowser.getAttribute(this.kCLOSEBOX_INVERTED) == 'true')
+				nodes.splice(nodes.indexOf(aNamedNodes.closeAnchor), 0, aNamedNodes.close);
+			else
+				nodes.splice(nodes.indexOf(aNamedNodes.closeAnchor)+1, 0, aNamedNodes.close);
+		}
+
+		index = nodes.indexOf(aNamedNodes.twisty);
+		if (index > -1) {
+			nodes.splice(index, 1);
+			nodes.splice(nodes.indexOf(aNamedNodes.twistyAnchor), 0, aNamedNodes.twisty);
 		}
 
 		if (this.mTabBrowser.getAttribute(this.kTAB_CONTENTS_INVERTED) == 'true')
 			nodes.reverse();
 
-		if (counter) { // counter must rightside of the label!
-			nodes.splice(nodes.indexOf(counter), 1);
-			nodes.splice(nodes.indexOf(label)+1, 0, counter);
+		// counter must rightside of the label!
+		index = nodes.indexOf(aNamedNodes.counter);
+		if (index > -1) {
+			nodes.splice(index, 1);
+			nodes.splice(nodes.indexOf(aNamedNodes.counterAnchor)+1, 0, aNamedNodes.counter);
 		}
 
 		var count = nodes.length;
-		nodes.reverse()
-			.forEach(function(aNode, aIndex) {
-				if (aNode.getAttribute('class') == 'informationaltab-thumbnail-container')
-					return;
-				aNode.setAttribute('ordinal', (count - aIndex + 1) * 100);
-			});
+		nodes.reverse();
+		for (let [i, node] in Iterator(nodes))
+		{
+			if (node.getAttribute('class') == 'informationaltab-thumbnail-container')
+				continue;
+			node.setAttribute('ordinal', (count - i + 1) * 100);
+		}
 
 		if (aForce) {
 			/**
@@ -992,13 +1056,15 @@ TreeStyleTabBrowser.prototype = {
 			 * Gecko doesn't re-render them in the new order.
 			 * Changing of "display" or "position" can fix this problem.
 			 */
-			nodes.forEach(function(aNode) {
-				aNode.style.position = 'fixed';
-			});
+			for (let [, node] in Iterator(nodes))
+			{
+				node.style.position = 'fixed';
+			}
 			this.Deferred.wait(0.1).next(function() {
-				nodes.forEach(function(aNode) {
-					aNode.style.position = '';
-				});
+				for (let [, node] in Iterator(nodes))
+				{
+					node.style.position = '';
+				}
 			});
 		}
 	},
