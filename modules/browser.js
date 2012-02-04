@@ -1045,12 +1045,14 @@ TreeStyleTabBrowser.prototype = {
 			 */
 			for (let [, node] in Iterator(nodes))
 			{
+				node.style.visibility = 'hidden'; // we should hide temporary state!
 				node.style.position = 'fixed';
 			}
 			this.Deferred.wait(0.1).next(function() {
 				for (let [, node] in Iterator(nodes))
 				{
 					node.style.position = '';
+					node.style.visibility = '';
 				}
 			});
 		}
