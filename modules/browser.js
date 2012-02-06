@@ -247,7 +247,7 @@ TreeStyleTabBrowser.prototype = {
 		this.Deferred.next(function() {
 			self.checkTabsIndentOverflow();
 			self.fireTabbarPositionEvent(false, oldPosition, aNewPosition);
-		});
+		}).error(this.defaultDeferredErrorHandler);
 	},
   
 /* status getters */ 
@@ -480,7 +480,7 @@ TreeStyleTabBrowser.prototype = {
 			if (aJustNow)
 				this.Deferred.next(function() { // "transition" must be cleared after the reflow.
 					style.MozTransition = style.transition = transitionStyleBackup;
-				});
+				}).error(this.defaultDeferredErrorHandler);
 
 			col++;
 			if (col >= maxCol) {
@@ -505,7 +505,7 @@ TreeStyleTabBrowser.prototype = {
 			aSelf.Deferred.next(function() {
 				// do with delay again, after Firefox's reposition was completely finished.
 				aSelf.positionPinnedTabs.apply(aSelf, aSelf._positionPinnedTabsWithDelayTimerArgs);
-			});
+			}).error(aSelf.defaultDeferredErrorHandler);
 			aSelf._positionPinnedTabsWithDelayTimer = null;
 			aSelf._positionPinnedTabsWithDelayTimerArgs = null;
 		}, 0, this);
@@ -832,7 +832,7 @@ TreeStyleTabBrowser.prototype = {
 					if (!(id in self.tabsHash))
 						self.tabsHash[id] = aTab;
 				}
-			});
+			}).error(this.defaultDeferredErrorHandler);
 			if (!(id in this.tabsHash))
 				this.tabsHash[id] = aTab;
 		}
@@ -1068,7 +1068,7 @@ TreeStyleTabBrowser.prototype = {
 					node.style.position = '';
 					node.style.visibility = '';
 				}
-			});
+			}).error(this.defaultDeferredErrorHandler);
 		}
 	},
  
@@ -1088,7 +1088,7 @@ TreeStyleTabBrowser.prototype = {
 			{
 				this.initTabContentsOrder(tabs[i]);
 			}
-		});
+		}).error(this.defaultDeferredErrorHandler);
 	},
   
 	initTabbar : function TSTBrowser_initTabbar(aNewPosition, aOldPosition) 
@@ -1360,7 +1360,7 @@ TreeStyleTabBrowser.prototype = {
 			self.mTabBrowser.dispatchEvent(event);
 
 			self.startRendering();
-		});
+		}).error(this.defaultDeferredErrorHandler);
 
 		pos = null;
 		scrollFrame = null;
@@ -1494,7 +1494,7 @@ TreeStyleTabBrowser.prototype = {
 						TabsOnTop.enabled = !TabsOnTop.enabled;
 						this.Deferred.next(function() {
 							TabsOnTop.enabled = !TabsOnTop.enabled;
-						});
+						}).error(this.defaultDeferredErrorHandler);
 					}
 				}
 			}
@@ -1522,7 +1522,7 @@ TreeStyleTabBrowser.prototype = {
 			self.updateFloatingTabbar(self.kTABBAR_UPDATE_BY_APPEARANCE_CHANGE);
 			self._fireTabbarStateChangedEvent();
 			self.startRendering();
-		});
+		}).error(this.defaultDeferredErrorHandler);
 
 		this.allowSubtreeCollapseExpand = this.getTreePref('allowSubtreeCollapseExpand.'+orient) ;
 		this.maxTreeLevel = this.getTreePref('maxTreeLevel.'+orient);
@@ -2295,13 +2295,17 @@ TreeStyleTabBrowser.prototype = {
 			case 'extensions.treestyletab.counter.role.horizontal':
 				if (!this.isVertical) {
 					let self = this;
-					this.Deferred.next(function() { self.updateAllTabsCount(); });
+					this.Deferred
+						.next(function() { self.updateAllTabsCount(); })
+						.error(this.defaultDeferredErrorHandler);
 				}
 				return;
 			case 'extensions.treestyletab.counter.role.vertical':
 				if (this.isVertical) {
 					let self = this;
-					this.Deferred.next(function() { self.updateAllTabsCount(); });
+					this.Deferred
+						.next(function() { self.updateAllTabsCount(); })
+						.error(this.defaultDeferredErrorHandler);
 				}
 				return;
 
@@ -2549,7 +2553,7 @@ TreeStyleTabBrowser.prototype = {
 		var self = this;
 		this.cancelingPerformingAutoScroll = this.Deferred.wait(0.3).next(function() {
 			self.cancelingPerformingAutoScroll = null;
-		});
+		}).error(this.defaultDeferredErrorHandler);
 	},
  
 	shouldCancelEnsureElementIsVisible : function TSTBRowser_shouldCancelEnsureElementIsVisible() 
@@ -2832,7 +2836,7 @@ TreeStyleTabBrowser.prototype = {
 						b.removeTab(parentTab, { animate : true });
 					parentTab = null;
 					b = null;
-				});
+				}).error(this.defaultDeferredErrorHandler);
 			}
 		}
 		else if (!nextFocusedTab) {
@@ -2933,7 +2937,7 @@ TreeStyleTabBrowser.prototype = {
 				let tabs = trees[i];
 				self.fireTabSubtreeClosedEvent(b, tabs[0], tabs);
 			}
-		});
+		}).error(this.defaultDeferredErrorHandler);
 
 		return true;
 	},
@@ -3339,7 +3343,7 @@ TreeStyleTabBrowser.prototype = {
 				 * Now we can decrement the counter.
 				 */
 				self.windowService.restoringCount--;
-			});
+			}).error(self.defaultDeferredErrorHandler);
 		}, 0);
 
 		if (!tab.selected &&
@@ -4395,7 +4399,8 @@ TreeStyleTabBrowser.prototype = {
 			.next(function() {
 				if (self.window.TabsOnTop.enabled != aEnabled)
 					self.window.TabsOnTop.enabled = aEnabled;
-			});
+			})
+			.error(this.defaultDeferredErrorHandler);
 	},
  
 	onTreeStyleTabPrintPreviewEntered : function TSTBrowser_onTreeStyleTabPrintPreviewEntered(aEvent) 
@@ -5760,7 +5765,7 @@ TreeStyleTabBrowser.prototype = {
 							self.smoothScrollTo(aEndX, aEndY, parseInt(aDuration * 0.5));
 						self = null;
 						scrollBoxObject = null;
-					});
+					}).error(self.defaultDeferredErrorHandler);
 				}
 
 				b = null;
@@ -5910,7 +5915,8 @@ TreeStyleTabBrowser.prototype = {
 			.next(function() {
 				animateElement.removeAttribute(attrName);
 				self.lastNotifyBackgroundTabAnimation = null;
-			});
+			})
+			.error(this.defaultDeferredErrorHandler);
 	},
  
 	restoreTree : function TSTBrowser_restoreTree() 

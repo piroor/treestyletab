@@ -941,7 +941,7 @@ TreeStyleTabWindow.prototype = {
 
 		this.Deferred.next(function() {
 			b.treeStyleTab.fixTooNarrowTabbar();
-		});
+		}).error(this.defaultDeferredErrorHandler);
 	},
 	onTabbarResizing : function TSTWindow_onTabbarResizing(aEvent)
 	{
@@ -1425,7 +1425,7 @@ TreeStyleTabWindow.prototype = {
 			else if (next) {
 				b.treeStyleTab.moveTabSubtreeTo(root, next._tPos);
 			}
-		});
+		}).error(this.defaultDeferredErrorHandler);
 	},
 	createSubTree : function() { return this.createSubtree.apply(this, arguments); }, // obsolete, for backward compatibility
 	
@@ -1593,9 +1593,7 @@ TreeStyleTabWindow.prototype = {
 						remoteService = null;
 						remoteMultipleTabService = null;
 					})
-					.error(function(e) {
-						Application.console.log(e+'\n'+e.stack)
-					});
+					.error(this.defaultDeferredErrorHandler);
 			}
 			return true;
 		}

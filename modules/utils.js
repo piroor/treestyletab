@@ -763,7 +763,7 @@ var TreeStyleTabUtils = {
 					target.removeEventListener(type, listener, false);
 					done = true;
 				}
-			});
+			}).error(this.defaultDeferredErrorHandler);
 
 		target.addEventListener(type, listener, false);
 
@@ -802,6 +802,14 @@ var TreeStyleTabUtils = {
 		var error = new Error(message);
 		dump(message+'\n'+error.stack+'\n');
 		throw error;
+	},
+ 
+	defaultDeferredErrorHandler : function TSTUtils_defaultDeferredErrorHandler(aError) 
+	{
+		if (aError.stack)
+			Components.utils.reportError(aError.message+'\n'+aError.stack);
+		else
+			Components.utils.reportError(aError);
 	},
  
 // event 
@@ -1753,7 +1761,7 @@ var TreeStyleTabUtils = {
 			let self = this;
 			this.Deferred.next(function() {
 				self.stopToOpenChildTab(aFrameOrTabBrowser);
-			});
+			}).error(this.defaultDeferredErrorHandler);
 			return true;
 		}
 		return false;
@@ -1804,7 +1812,7 @@ var TreeStyleTabUtils = {
 			let self = this;
 			this.Deferred.next(function() {
 				self.stopToOpenChildTab(aFrameOrTabBrowser);
-			});
+			}).error(this.defaultDeferredErrorHandler);
 			return true;
 		}
 		return false;
@@ -1840,7 +1848,7 @@ var TreeStyleTabUtils = {
 			let self = this;
 			this.Deferred.next(function() {
 				self.stopToOpenChildTab(aFrameOrTabBrowser);
-			});
+			}).error(this.defaultDeferredErrorHandler);
 			return true;
 		}
 		return false;
