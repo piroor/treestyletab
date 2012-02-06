@@ -1086,7 +1086,7 @@ TreeStyleTabBrowser.prototype = {
 						self.getAllTabsArray(b);
 			for (let i = 0, maxi = tabs.length; i < maxi; i++)
 			{
-				this.initTabContentsOrder(tabs[i]);
+				self.initTabContentsOrder(tabs[i]);
 			}
 		}).error(this.defaultDeferredErrorHandler);
 	},
