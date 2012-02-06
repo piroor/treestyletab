@@ -27,8 +27,19 @@ var TreeStyleTabBookmarksServiceEditable = {
 		return document.getElementById('treestyletab-parent-blank-item');
 	},
 
+	get isCreatingMultipleBookmarksInFolder()
+	{
+		return (
+			window.arguments.length &&
+			window.arguments[0] &&
+			window.arguments[0].type == 'folder'
+		);
+	},
+
 	init : function TSTBMEditable_init()
 	{
+		if (this.isCreatingMultipleBookmarksInFolder) return;
+
 		// main browser window
 		if ('StarUI' in window) {
 			if ('_doShowEditBookmarkPanel' in StarUI) {
@@ -69,7 +80,12 @@ var TreeStyleTabBookmarksServiceEditable = {
 
 	initEditUI : function TSTBMEditable_initEditUI()
 	{
-		if (this.editUIInitialized || !('gEditItemOverlay' in window)) return;
+		if (
+			this.editUIInitialized ||
+			!('gEditItemOverlay' in window) ||
+			this.isCreatingMultipleBookmarksInFolder
+			)
+			return;
 
 		var container = document.getElementById('editBookmarkPanelGrid');
 		if (!container) return;

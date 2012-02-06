@@ -12,6 +12,7 @@ overlay	chrome://browser/content/places/bookmarkProperties.xul	chrome://treestyl
 overlay	chrome://multipletab/content/config.xul	chrome://treestyletab/content/multipletabConfigOverlay.xul
 
 overlay	chrome://browser/content/browser.xul	chrome://treestyletab/content/res/bookmarkMultipleTabs.xul
+overlay	chrome://browser/content/places/bookmarkProperties.xul	chrome://treestyletab/content/res/bookmarkMultipleTabs_bookmarkPropertiesOverlay.xul
 overlay	chrome://browser/content/places/bookmarkProperties2.xul	chrome://treestyletab/content/res/bookmarkMultipleTabs_bookmarkPropertiesOverlay.xul
 
 locale	treestyletab	en-US	jar:chrome/treestyletab.jar!/locale/en-US/treestyletab/
