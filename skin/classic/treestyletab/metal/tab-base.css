@@ -120,14 +120,14 @@
 
 /* foreground, left */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tab-stack[selected="true"] {
+  .tabbrowser-tab[selected="true"] .tab-stack {
 	-moz-border-image: url("tab-active-selected-l.png") 10 5 10 10 / 10px 5px 10px 10px !important;
 	-moz-border-image-slice: 10 5 10 10 fill !important;
 }
 
 /* foreground, right */
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tab-stack[selected="true"] {
+  .tabbrowser-tab[selected="true"] .tab-stack {
 	-moz-border-image: url("tab-active-selected-r.png") 10 10 10 5 / 10px 10px 10px 5px !important;
 	-moz-border-image-slice: 10 10 10 5 fill !important;
 }
@@ -263,7 +263,7 @@
 /* foreground, left */
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tab-stack[selected="true"] {
+  .tabbrowser-tab[selected="true"] .tab-stack{
 	-moz-border-image: url("tab-inactive-selected-l.png") 10 5 10 10 / 10px 5px 10px 10px !important;
 	-moz-border-image-slice: 10 5 10 10 fill !important;
 }
@@ -271,7 +271,7 @@
 /* foreground, right */
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tab-stack[selected="true"] {
+  .tabbrowser-tab[selected="true"] .tab-stack{
 	-moz-border-image: url("tab-inactive-selected-r.png") 10 10 10 5 / 10px 10px 10px 5px !important;
 	-moz-border-image-slice: 10 10 10 5 fill !important;
 }
