@@ -22,7 +22,7 @@ locale	treestyletab	zh-CN	jar:chrome/treestyletab.jar!/locale/zh-CN/treestyletab
 locale	treestyletab	es-ES	jar:chrome/treestyletab.jar!/locale/es-ES/treestyletab/
 locale	treestyletab	de-DE	jar:chrome/treestyletab.jar!/locale/de-DE/treestyletab/
 locale	treestyletab	zh-TW	jar:chrome/treestyletab.jar!/locale/zh-TW/treestyletab/
-locale	treestyletab	ru-RU	jar:chrome/treestyletab.jar!/locale/ru-RU/treestyletab/
+locale	treestyletab	ru	jar:chrome/treestyletab.jar!/locale/ru/treestyletab/
 locale	treestyletab	pl	jar:chrome/treestyletab.jar!/locale/pl/treestyletab/
 locale	treestyletab	fr-FR	jar:chrome/treestyletab.jar!/locale/fr-FR/treestyletab/
 locale	treestyletab	sv-SE	jar:chrome/treestyletab.jar!/locale/sv-SE/treestyletab/
