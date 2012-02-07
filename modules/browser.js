@@ -1055,10 +1055,15 @@ TreeStyleTabBrowser.prototype = {
 			 * Gecko doesn't re-render them in the new order.
 			 * Changing of "display" or "position" can fix this problem.
 			 */
+			let shouldHideTemporaryState = (
+					'TabmixTabbar' in this.window || // Tab Mix Plus
+					'InformationalTabService' in this.window // Informational Tab
+				);
 			for (let i = 0, maxi = nodes.length; i < maxi; i++)
 			{
 				let node = nodes[i];
-				node.style.visibility = 'hidden'; // we should hide temporary state!
+				if (shouldHideTemporaryState)
+					node.style.visibility = 'hidden';
 				node.style.position = 'fixed';
 			}
 			this.Deferred.wait(0.1).next(function() {
@@ -1066,7 +1071,8 @@ TreeStyleTabBrowser.prototype = {
 				{
 					let node = nodes[i];
 					node.style.position = '';
-					node.style.visibility = '';
+					if (shouldHideTemporaryState)
+						node.style.visibility = '';
 				}
 			}).error(this.defaultDeferredErrorHandler);
 		}
