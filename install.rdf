@@ -103,7 +103,7 @@
       </RDF:Description>
     </em:localized>
     <em:localized>
-      <RDF:Description em:locale="ru-RU"
+      <RDF:Description em:locale="ru"
                        em:name="Tree Style Tab (Древовидный стиль вкладок)"
                        em:description="Отображение вкладок в виде дерева"
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
@@ -111,7 +111,8 @@
           <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
-          <em:translator>L'Autour (ru-RU locale)</em:translator>
+          <em:translator>L'Autour (ru locale)</em:translator>
+          <em:translator>Infocatcher (ru locale)</em:translator>
       </RDF:Description>
     </em:localized>
     <em:localized>

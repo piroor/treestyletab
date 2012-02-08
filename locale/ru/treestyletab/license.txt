@@ -14,10 +14,11 @@ License.
 The Original Code is the Tree Style Tab.
 
 The Initial Developer of the Original Code is L'Autour.
-Portions created by the Initial Developer are Copyright (C) 2008
+Portions created by the Initial Developer are Copyright (C) 2008-2012
 the Initial Developer. All Rights Reserved.
 
 Contributor(s): L'Autour <LAutour@yandex.ru>
+                Infocatcher
 
 Alternatively, the contents of these files may be used under the terms of
 either the GNU General Public License Version 2 or later (the "GPL"), or
