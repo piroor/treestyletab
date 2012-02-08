@@ -532,7 +532,7 @@ TreeStyleTabBrowser.prototype = {
 		{
 			let tab = tabs[i];
 			if (aStacked)
-				tab.style.zIndex = count * 1000 - index;
+				tab.style.zIndex = count * 1000 - i;
 			else
 				tab.style.zIndex = '';
 		}
