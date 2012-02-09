@@ -3906,7 +3906,8 @@ TreeStyleTabBrowser.prototype = {
 				{
 					this.collapseExpandSubtree(parentTab, false);
 				}
-				this.collapseExpandTreesIntelligentlyForNewActiveTab(tab);
+				if (this.getTreePref('autoCollapseExpandSubtreeOnSelect'))
+					this.collapseExpandTreesIntelligentlyForNewActiveTab(tab);
 			}
 			else {
 				b.selectedTab = this.getRootTab(tab);
