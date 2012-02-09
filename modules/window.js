@@ -322,7 +322,7 @@ TreeStyleTabWindow.prototype = {
 	},
 	preInitialized : false,
 	
-	kPREF_VERSION : 7,
+	kPREF_VERSION : 8,
 	migratePrefs : function TSTWindow_migratePrefs() 
 	{
 		// migrate old prefs
@@ -412,6 +412,18 @@ TreeStyleTabWindow.prototype = {
 						this.setTreePref('autoAttach', general);
 					if (search !== null)
 						this.setTreePref('autoAttach.searchResult', search);
+				}
+			case 7:
+				let (
+					enabled = this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut'),
+					delay = this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut.delay')
+					) {
+					if (enabled !== null) {
+						this.setTreePref('autoExpandSubtreeOnSelect.whileFocusMovingByShortcut', enabled);
+						this.setTreePref('autoExpandSubtreeOnSelect.whileFocusMovingByShortcut.collapseOthers', enabled);
+					}
+					if (delay !== null)
+						this.setTreePref('autoExpandSubtreeOnSelect.whileFocusMovingByShortcut.delay', delay);
 				}
 			default:
 				for (let i = 0, maxi = orientalPrefs.length; i < maxi; i++)
@@ -887,7 +899,7 @@ TreeStyleTabWindow.prototype = {
 	{
 		return !this.ctrlTabPreviewsEnabled &&
 				(
-					this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut') ||
+					this.getTreePref('autoExpandSubtreeOnSelect.whileFocusMovingByShortcut') ||
 					this.getTreePref('autoCollapseExpandSubtreeOnSelect')
 				);
 	},
