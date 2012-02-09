@@ -509,7 +509,7 @@ pref("extensions.treestyletab.autoAttach.goButton", 1);
  *  0 = Focus to both visible and collapsed tabs. (If a collapsed tab is
  *      focused, the tree will be expanded by another pref "autoExpandSubtreeOnCollapsedChildFocused".
  *  1 = Focus to visible tabs. Collapsed tabs will be skipped. (But if the tree 
- *      is expanded by "autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut",
+ *      is expanded by "autoExpandSubtreeOnSelect.whileFocusMovingByShortcut",
  *      visible tabs in the tree can be focused.)
  */
 pref("extensions.treestyletab.focusMode", 1);
