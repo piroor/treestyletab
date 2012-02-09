@@ -209,7 +209,7 @@ TreeStyleTabWindow.prototype = {
 		return toolbox && toolbox.customizing;
 	},
  
-	get maximized()
+	get maximized() 
 	{
 		var sizemode = this.document.documentElement.getAttribute('sizemode');
 		return (
@@ -315,131 +315,11 @@ TreeStyleTabWindow.prototype = {
 
 		w.TreeStyleTabWindowHelper.preInit();
 
-		this.migratePrefs();
-
 		// initialize theme
 		this.onPrefChange('extensions.treestyletab.tabbar.style');
 	},
 	preInitialized : false,
-	
-	kPREF_VERSION : 8,
-	migratePrefs : function TSTWindow_migratePrefs() 
-	{
-		// migrate old prefs
-		var orientalPrefs = [];
-		switch (this.getTreePref('prefsVersion'))
-		{
-			case 0:
-				orientalPrefs = orientalPrefs.concat([
-					'extensions.treestyletab.tabbar.fixed',
-					'extensions.treestyletab.enableSubtreeIndent',
-					'extensions.treestyletab.allowSubtreeCollapseExpand'
-				]);
-			case 2:
-				if (this.getTreePref('urlbar.loadSameDomainToNewChildTab') !== null) {
-					let value = this.getTreePref('urlbar.loadSameDomainToNewChildTab');
-					this.setTreePref('urlbar.loadSameDomainToNewTab', value);
-					this.setTreePref('urlbar.loadSameDomainToNewTab.asChild', value);
-					if (value) this.setTreePref('urlbar.loadDifferentDomainToNewTab', value);
-					this.clearTreePref('urlbar.loadSameDomainToNewChildTab');
-				}
-			case 3:
-				if (this.getTreePref('loadDroppedLinkToNewChildTab') !== null) {
-					this.setTreePref('dropLinksOnTab.behavior',
-						this.getTreePref('loadDroppedLinkToNewChildTab.confirm') ?
-							this.kDROPLINK_ASK :
-						this.getTreePref('loadDroppedLinkToNewChildTab') ?
-							this.kDROPLINK_NEWTAB :
-							this.kDROPLINK_LOAD
-					);
-					this.clearTreePref('loadDroppedLinkToNewChildTab.confirm');
-					this.clearTreePref('loadDroppedLinkToNewChildTab');
-				}
-				if (this.getTreePref('openGroupBookmarkAsTabSubTree') !== null) {
-					let behavior = 0;
-					if (this.getTreePref('openGroupBookmarkAsTabSubTree.underParent'))
-						behavior += this.kGROUP_BOOKMARK_USE_DUMMY;
-					if (!this.getTreePref('openGroupBookmarkBehavior.confirm')) {
-						behavior += (
-							this.getTreePref('openGroupBookmarkAsTabSubTree') ?
-								this.kGROUP_BOOKMARK_SUBTREE :
-							this.getTreePref('browser.tabs.loadFolderAndReplace') ?
-								this.kGROUP_BOOKMARK_REPLACE :
-								this.kGROUP_BOOKMARK_SEPARATE
-						);
-					}
-					this.setTreePref('openGroupBookmark.behavior', behavior);
-					this.clearTreePref('openGroupBookmarkBehavior.confirm');
-					this.clearTreePref('openGroupBookmarkAsTabSubTree');
-					this.clearTreePref('openGroupBookmarkAsTabSubTree.underParent');
-					this.setPref('browser.tabs.loadFolderAndReplace', !!(behavior & this.kGROUP_BOOKMARK_REPLACE));
-				}
-			case 4:
-				let (prefs = [
-						'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect',
-						'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove',
-						'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut',
-						'extensions.treestyletab.autoExpandSubTreeOnAppendChild',
-						'extensions.treestyletab.autoExpandSubTreeOnCollapsedChildFocused',
-						'extensions.treestyletab.collapseExpandSubTree.dblclick',
-						'extensions.treestyletab.createSubTree.underParent',
-						'extensions.treestyletab.show.context-item-reloadTabSubTree',
-						'extensions.treestyletab.show.context-item-removeTabSubTree',
-						'extensions.treestyletab.show.context-item-bookmarkTabSubTree',
-						'extensions.multipletab.show.multipletab-selection-item-removeTabSubTree',
-						'extensions.multipletab.show.multipletab-selection-item-createSubTree'
-					]) {
-					for (let i = 0, maxi = pref.length; i < maxi; i++)
-					{
-						let pref = prefs[i];
-						let value = this.getPref(pref);
-						if (value === null) continue;
-						this.setPref(pref.replace('SubTree', 'Subtree'), value);
-						this.clearPref(pref);
-					}
-				}
-			case 5:
-				let (behavior = this.getTreePref('openGroupBookmark.behavior')) {
-					behavior = behavior | 2048;
-					this.setTreePref('openGroupBookmark.behavior', behavior);
-				}
-			case 6:
-				let (
-					general = this.getTreePref('autoAttachNewTabsAsChildren'),
-					search = this.getTreePref('autoAttachSearchResultAsChildren')
-					) {
-					if (general !== null)
-						this.setTreePref('autoAttach', general);
-					if (search !== null)
-						this.setTreePref('autoAttach.searchResult', search);
-				}
-			case 7:
-				let (
-					enabled = this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut'),
-					delay = this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut.delay')
-					) {
-					if (enabled !== null) {
-						this.setTreePref('autoExpandSubtreeOnSelect.whileFocusMovingByShortcut', enabled);
-						this.setTreePref('autoExpandSubtreeOnSelect.whileFocusMovingByShortcut.collapseOthers', enabled);
-					}
-					if (delay !== null)
-						this.setTreePref('autoExpandSubtreeOnSelect.whileFocusMovingByShortcut.delay', delay);
-				}
-			default:
-				for (let i = 0, maxi = orientalPrefs.length; i < maxi; i++)
-				{
-					let pref = orientalPrefs[i];
-					let value = this.getPref(pref);
-					if (value === null) continue;
-					this.setPref(pref+'.horizontal', value);
-					this.setPref(pref+'.vertical', value);
-					this.clearPref(pref);
-				}
-				break;
-		}
-		this.setTreePref('prefsVersion', this.kPREF_VERSION);
-	},
-  
+ 
 	init : function TSTWindow_init() 
 	{
 		var w = this.window;
