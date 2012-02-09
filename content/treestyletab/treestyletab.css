@@ -10,7 +10,7 @@
   .treestyletab-twisty {
 	visibility: hidden;
 }
-.tabbrowser-tabs[treestyletab-allow-subtree-collapse="true"]
+.tabbrowser-tabs[treestyletab-allow-subtree-collapse="true"]:not([treestyletab-twisty-style="none"])
   .tabbrowser-tab[treestyletab-children][treestyletab-allow-subtree-collapse="true"]
   .treestyletab-twisty {
 	visibility: visible;
