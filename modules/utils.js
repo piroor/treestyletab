@@ -425,6 +425,7 @@ var TreeStyleTabUtils = {
 					'extensions.treestyletab.enableSubtreeIndent',
 					'extensions.treestyletab.allowSubtreeCollapseExpand'
 				]);
+			case 1:
 			case 2:
 				if (this.getTreePref('urlbar.loadSameDomainToNewChildTab') !== null) {
 					let value = this.getTreePref('urlbar.loadSameDomainToNewChildTab');
