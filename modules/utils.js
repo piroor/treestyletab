@@ -479,7 +479,7 @@ var TreeStyleTabUtils = {
 						'extensions.multipletab.show.multipletab-selection-item-removeTabSubTree',
 						'extensions.multipletab.show.multipletab-selection-item-createSubTree'
 					]) {
-					for (let i = 0, maxi = pref.length; i < maxi; i++)
+					for (let i = 0, maxi = prefs.length; i < maxi; i++)
 					{
 						let pref = prefs[i];
 						let value = this.getPref(pref);
