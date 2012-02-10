@@ -130,7 +130,7 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 					<![CDATA[
 						for (let i = 0, maxi = this.tabTSTProperties.length; i < maxi; i++)
 						{
-							let tabProperties = this.tabTSTProperties[i];
+							let property = this.tabTSTProperties[i];
 							tabProperties += '|' + property + '=' + encodeURIComponent(aTab.getAttribute(property));
 						}
 					$&]]>

@@ -532,7 +532,7 @@ TreeStyleTabBrowser.prototype = {
 		{
 			let tab = tabs[i];
 			if (aStacked)
-				tab.style.zIndex = count * 1000 - index;
+				tab.style.zIndex = count * 1000 - i;
 			else
 				tab.style.zIndex = '';
 		}
@@ -3905,6 +3905,11 @@ TreeStyleTabBrowser.prototype = {
 			)
 			return;
 
+		var shouldCollapseExpandNow = this.getTreePref('autoCollapseExpandSubtreeOnSelect');
+		var newActiveTabOptions = {
+				canCollapseTree : shouldCollapseExpandNow,
+				canExpandTree   : shouldCollapseExpandNow
+			};
 		if (this.isCollapsed(tab)) {
 			if (this.getTreePref('autoExpandSubtreeOnCollapsedChildFocused')) {
 				let parentTab = tab;
@@ -3912,46 +3917,60 @@ TreeStyleTabBrowser.prototype = {
 				{
 					this.collapseExpandSubtree(parentTab, false);
 				}
-				this.collapseExpandTreesIntelligentlyForNewActiveTab(tab);
+				this.handleNewActiveTab(tab, newActiveTabOptions);
 			}
 			else {
 				b.selectedTab = this.getRootTab(tab);
 			}
 		}
 		else if (
-				this.getTreePref('autoCollapseExpandSubtreeOnSelect') &&
 				(
-					!this._focusChangedByCurrentTabRemove ||
-					this.getTreePref('autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove')
+					/**
+					 * Focus movings by arrow keys should not be handled on TabSelect,
+					 * because they are already handled by handleAdvanceSelectedTab().
+					 */
+					this.windowService.arrowKeyEventOnTab &&
+					this.windowService.arrowKeyEventOnTab.advanceFocus
+				) ||
+				(
+					/**
+					 * Focus movings by closing of the old current tab should be handled
+					 * only when it is activated by user preference expressly.
+					 */
+					this._focusChangedByCurrentTabRemove &&
+					!this.getTreePref('autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove')
 				)
+			) {
+			// do nothing!
+		}
+		else if (this.hasChildTabs(tab) && this.isSubtreeCollapsed(tab)) {
+			if (
+				this._focusChangedByShortcut &&
+				this.windowService.accelKeyPressed
 				) {
-			if (!this.hasChildTabs(tab) || !this.isSubtreeCollapsed(tab))
-				tab = null;
-
-			let event = this.windowService.arrowKeyEventOnTab;
-			let byArrowKey = event && event.advanceFocus;
-			let byShortcut = this._focusChangedByShortcut && this.windowService.accelKeyPressed;
-			if (!byArrowKey) {
-				if (byShortcut) {
-					if (!this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut')) {
-						this.windowService.expandTreeAfterKeyReleased(tab);
+				if (this.getTreePref('autoExpandSubtreeOnSelect.whileFocusMovingByShortcut')) {
+					newActiveTabOptions.canExpandTree = true;
+					newActiveTabOptions.canCollapseTree = (
+						newActiveTabOptions.canCollapseTree &&
+						this.getTreePref('autoExpandSubtreeOnSelect.whileFocusMovingByShortcut.collapseOthers')
+					);
+					let delay = this.getTreePref('autoExpandSubtreeOnSelect.whileFocusMovingByShortcut.delay');
+					if (delay > 0) {
+						this._autoExpandOnTabSelectTimer = this.window.setTimeout(function(aSelf) {
+							if (tab && tab.parentNode)
+								aSelf.handleNewActiveTab(tab, newActiveTabOptions);
+						}, delay, this);
 					}
 					else {
-						let delay = this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut.delay');
-						if (delay > 0) {
-							this._autoExpandOnTabSelectTimer = this.window.setTimeout(function(aSelf) {
-								if (tab && tab.parentNode)
-									aSelf.collapseExpandTreesIntelligentlyForNewActiveTab(tab);
-							}, delay, this);
-						}
-						else {
-							this.collapseExpandTreesIntelligentlyForNewActiveTab(tab);
-						}
+						this.handleNewActiveTab(tab, newActiveTabOptions);
 					}
 				}
-				else {
-					this.collapseExpandTreesIntelligentlyForNewActiveTab(tab);
+				else if (newActiveTabOptions.canExpandTree) {
+					this.windowService.expandTreeAfterKeyReleased(tab);
 				}
+			}
+			else {
+				this.handleNewActiveTab(tab, newActiveTabOptions);
 			}
 		}
 
@@ -3971,6 +3990,32 @@ TreeStyleTabBrowser.prototype = {
 			this._autoExpandOnTabSelectTimer = null;
 		}
 	},
+	handleNewActiveTab : function TSTBrowser_handleNewActiveTab(aTab, aOptions)
+	{
+		if (this.doingCollapseExpand || !aTab) return;
+
+		aOptions = aOptions || {};
+
+		if (this._handleNewActiveTabTimer)
+			this.window.clearTimeout(this._handleNewActiveTabTimer);
+
+		/**
+		 * First, we wait until all event listeners for the TabSelect
+		 * event were processed.
+		 */
+		this._handleNewActiveTabTimer = this.window.setTimeout(function(aSelf) {
+			aSelf.window.clearTimeout(aSelf._handleNewActiveTabTimer);
+			aSelf._handleNewActiveTabTimer = null;
+
+			if (aOptions.canExpandTree) {
+				if (aOptions.canCollapseTree)
+					aSelf.collapseExpandTreesIntelligentlyFor(aTab);
+				else
+					aSelf.collapseExpandSubtree(aTab, false);
+			}
+		}, 0, this);
+	},
+	_handleNewActiveTabTimer : null,
 	
 	handleAdvanceSelectedTab : function TSTBrowser_handleAdvanceSelectedTab(aDir, aWrap) 
 	{
@@ -5663,22 +5708,6 @@ TreeStyleTabBrowser.prototype = {
 
 		this.collapseExpandSubtree(aTab, false, aJustNow);
 	},
-	collapseExpandTreesIntelligentlyForNewActiveTab : function TSTBrowser_collapseExpandTreesIntelligentlyForNewActiveTab(aTab)
-	{
-		if (this.doingCollapseExpand) return;
-		if (this._cETIFNATTimer)
-			this.window.clearTimeout(this._cETIFNATTimer);
-		/**
-		 * First, we wait until all event listeners for the TabSelect
-		 * event were processed.
-		 */
-		this._cETIFNATTimer = this.window.setTimeout(function(aSelf) {
-			aSelf.window.clearTimeout(aSelf._cETIFNATTimer);
-			aSelf._cETIFNATTimer = null;
-			aSelf.collapseExpandTreesIntelligentlyFor(aTab);
-		}, 0, this);
-	},
-	_cETIFNATTimer : null,
  
 	collapseExpandAllSubtree : function TSTBrowser_collapseExpandAllSubtree(aCollapse, aJustNow) 
 	{

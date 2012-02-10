@@ -10,7 +10,7 @@
   .treestyletab-twisty {
 	visibility: hidden;
 }
-.tabbrowser-tabs[treestyletab-allow-subtree-collapse="true"]
+.tabbrowser-tabs[treestyletab-allow-subtree-collapse="true"]:not([treestyletab-twisty-style="none"])
   .tabbrowser-tab[treestyletab-children][treestyletab-allow-subtree-collapse="true"]
   .treestyletab-twisty {
 	visibility: visible;
@@ -59,9 +59,7 @@
 	mask: url("res/tabEffects.svg#fadein-mask");
 }
 .tabbrowser-tabs[treestyletab-allow-subtree-collapse="true"][treestyletab-stack-collapsed-tabs="true"]
-  .tabbrowser-tab[treestyletab-collapsed-done="true"] .tab-image-middle > *,
-.tabbrowser-tabs[treestyletab-allow-subtree-collapse="true"][treestyletab-stack-collapsed-tabs="true"]
-  .tabbrowser-tab[treestyletab-collapsed-done="true"] .tab-close-button {
+  .tabbrowser-tab[treestyletab-collapsed-done="true"] .tab-content > * {
 	visibility: collapse;
 }
 

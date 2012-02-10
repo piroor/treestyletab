@@ -320,7 +320,7 @@ catch(e) {
 				info.parent       = tab;
 				info.insertBefore = sv.getTreePref('insertNewChildAt') == sv.kINSERT_FISRT ?
 						(sv.getFirstChildTab(tab) || visible) :
-						(sv.getNextSiblingTab(tab) || sv.getNextTab(sv.getLastDescendantTab(tab)) || visible);
+						(sv.getNextSiblingTab(tab) || sv.getNextTab(sv.getLastDescendantTab(tab)));
 				break;
 
 			case sv.kDROP_BEFORE:
