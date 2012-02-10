@@ -4,17 +4,22 @@
 
 /* twisty in tabs */
 .treestyletab-twisty,
-.tabbrowser-tabs[treestyletab-twisty-style="none"]
-  .treestyletab-twisty,
 .tabbrowser-tabs:not([treestyletab-allow-subtree-collapse="true"])
   .treestyletab-twisty {
 	visibility: hidden;
 }
-.tabbrowser-tabs[treestyletab-allow-subtree-collapse="true"]:not([treestyletab-twisty-style="none"])
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-allow-subtree-collapse="true"]:not([treestyletab-twisty-style="none"])
+  .tabbrowser-tab[treestyletab-children][treestyletab-allow-subtree-collapse="true"]
+  .treestyletab-twisty,
+.tabbrowser-tabs[treestyletab-mode="horizontal"][treestyletab-allow-subtree-collapse="true"]:not([treestyletab-twisty-style="none"])
   .tabbrowser-tab[treestyletab-children][treestyletab-allow-subtree-collapse="true"]
   .treestyletab-twisty {
 	visibility: visible;
 }
+.tabbrowser-tabs[treestyletab-twisty-style="none"]
+  .treestyletab-twisty,
+.tabbrowser-tabs[treestyletab-mode="horizontal"]
+  .treestyletab-twisty,
 .tabbrowser-tab[pinned="true"]
   .treestyletab-twisty {
 	visibility: collapse;
@@ -420,9 +425,9 @@ toolbar.treestyletab-tabbar-toolbar-ready:not([nowindowdrag="true"]),
 /* separating of groups */
 
 /* horizontal tab bar */
-.tabbrowser-tabs:not([treestyletab-mode="vertical"])
+.tabbrowser-tabs[treestyletab-mode="horizontal"]
   .tabbrowser-tab:not([treestyletab-nest="0"]) + .tabbrowser-tab[treestyletab-nest="0"],
-.tabbrowser-tabs:not([treestyletab-mode="vertical"])
+.tabbrowser-tabs[treestyletab-mode="horizontal"]
   .tabbrowser-tab[treestyletab-nest="0"] + .tabbrowser-tab[treestyletab-nest="0"][treestyletab-children] {
 	margin-left: 0.8em !important;
 }
