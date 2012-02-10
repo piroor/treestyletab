@@ -47,12 +47,6 @@
 }
 
 
-.tabbrowser-tabs[treestyletab-twisty-style="retro"][treestyletab-mode="horizontal"][treestyletab-allow-subtree-collapse="true"]
-  .tabbrowser-tab[treestyletab-allow-subtree-collapse="true"][treestyletab-children]:not([pinned="true"])
-  .treestyletab-twisty {
-	margin: 0 -16px 0 0;
-}
-
 .treestyletab-twisty {
 	list-style-image: url("twisty-retro.png");
 	-moz-image-region: rect(0, 32px, 16px, 16px);
