@@ -37,7 +37,7 @@
 <!ENTITY config.twisty.style.auto    "Авто">
 <!ENTITY config.twisty.style.none    "Нет">
 <!ENTITY config.twisty.style.retro   "Ретро">
-<!ENTITY config.twisty.style.modern.black "Черный новый">
+<!ENTITY config.twisty.style.modern.black "Чёрный новый">
 <!ENTITY config.twisty.style.modern.white "Белый новый">
 <!ENTITY config.twisty.style.osx     "OS X">
 
@@ -100,7 +100,7 @@
 -->
 
 
-<!ENTITY config.tabs.autohide "Автоскрытие/показ панели">
+<!ENTITY config.tabs.autohide "Автоскрытие">
 
 <!ENTITY config.autoHide.mode.normal.caption     "В нормальном режиме">
 <!ENTITY config.autoHide.mode.fullscreen.caption "В полноэкранном режиме">
