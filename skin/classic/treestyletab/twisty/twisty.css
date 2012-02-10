@@ -97,13 +97,13 @@
   .treestyletab-twisty {
 	-moz-image-region: rect(0, 16px, 16px, 0);
 }
-tabbrowser:not([treestyletab-twisty-style="osx"])
+.tabbrowser-tabs:not([treestyletab-twisty-style="osx"])
   .tabbrowser-tab[treestyletab-twisty-hover="true"] .treestyletab-twisty,
 .tabbrowser-tabs[treestyletab-twisty-style="osx"]
   .tabbrowser-tab[selected="true"] .treestyletab-twisty {
 	-moz-image-region: rect(16px, 32px, 32px, 16px);
 }
-tabbrowser:not([treestyletab-twisty-style="osx"])
+.tabbrowser-tabs:not([treestyletab-twisty-style="osx"])
   .tabbrowser-tab[treestyletab-subtree-collapsed="true"][treestyletab-twisty-hover="true"] .treestyletab-twisty,
 .tabbrowser-tabs[treestyletab-twisty-style="osx"]
   .tabbrowser-tab[treestyletab-subtree-collapsed="true"][selected="true"] .treestyletab-twisty {
