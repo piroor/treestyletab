@@ -34,10 +34,10 @@
 	margin: 0 -5px 0 -2px;
 }
 
-.tabbrowser-tabs[treestyletab-twisty-style^="modern"]:not([treestyletab-style])[treestyletab-allow-subtree-collapse="true"]
+.tabbrowser-tabs:not([treestyletab-style])[treestyletab-allow-subtree-collapse="true"]
   .tabbrowser-tab[treestyletab-allow-subtree-collapse="true"][treestyletab-children]:not([pinned="true"])
   .treestyletab-twisty,
-.tabbrowser-tabs[treestyletab-twisty-style^="modern"][treestyletab-tabbar-position="top"][treestyletab-allow-subtree-collapse="true"]
+.tabbrowser-tabs[treestyletab-tabbar-position="top"][treestyletab-allow-subtree-collapse="true"]
   .tabbrowser-tab[treestyletab-allow-subtree-collapse="true"][treestyletab-children]:not([pinned="true"])
   .treestyletab-twisty {
 	margin: 0 -3px 0 -2px;
@@ -50,10 +50,10 @@
   .treestyletab-twisty {
 	margin: 0 -5px 0 1px;
 }
-.tabbrowser-tabs[treestyletab-twisty-style^="modern"]:not([treestyletab-style])[treestyletab-allow-subtree-collapse="true"][treestyletab-tab-contents-inverted="true"]
+.tabbrowser-tabs:not([treestyletab-style])[treestyletab-allow-subtree-collapse="true"][treestyletab-tab-contents-inverted="true"]
   .tabbrowser-tab[treestyletab-allow-subtree-collapse="true"][treestyletab-children]:not([pinned="true"])
   .treestyletab-twisty,
-.tabbrowser-tabs[treestyletab-twisty-style^="modern"][treestyletab-tabbar-position="top"][treestyletab-allow-subtree-collapse="true"][treestyletab-tab-contents-inverted="true"]
+.tabbrowser-tabs[treestyletab-tabbar-position="top"][treestyletab-allow-subtree-collapse="true"][treestyletab-tab-contents-inverted="true"]
   .tabbrowser-tab[treestyletab-allow-subtree-collapse="true"][treestyletab-children]:not([pinned="true"])
   .treestyletab-twisty {
 	margin: 0 -2px 0 -3px;
