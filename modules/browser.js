@@ -1532,10 +1532,14 @@ TreeStyleTabBrowser.prototype = {
 		}).error(this.defaultDeferredErrorHandler);
 
 		var allowToCollapse = this.getTreePref('allowSubtreeCollapseExpand.'+orient);
-		if (this.allowSubtreeCollapseExpand && !allowToCollapse)
+		var canCollapseStateChanged = this.allowSubtreeCollapseExpand != allowToCollapse;
+
+		if (!allowToCollapse && canCollapseStateChanged)
+			this.collapseExpandAllSubtree(false, false);
+		this.allowSubtreeCollapseExpand = allowToCollapse;
+		if (allowToCollapse && canCollapseStateChanged)
 			this.collapseExpandAllSubtree(false, false);
 
-		this.allowSubtreeCollapseExpand = allowToCollapse;
 		this.maxTreeLevel = this.getTreePref('maxTreeLevel.'+orient);
 
 		this.setTabbrowserAttribute(this.kALLOW_STACK, this.canStackTabs ? 'true' : null);
