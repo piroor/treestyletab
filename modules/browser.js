@@ -5516,6 +5516,9 @@ TreeStyleTabBrowser.prototype = {
 		aTab.removeAttribute(this.kX_OFFSET);
 		aTab.removeAttribute(this.kY_OFFSET);
 
+		if (!this.canCollapseSubtree(this.getParentTab(aTab)))
+			aCollapsed = false;
+
 		aTab.setAttribute(this.kCOLLAPSING_PHASE, aCollapsed ? this.kCOLLAPSING_PHASE_TO_BE_COLLAPSED : this.kCOLLAPSING_PHASE_TO_BE_EXPANDED );
 
 		var CSSTransitionEnabled = ('Transition' in aTab.style || 'MozTransition' in aTab.style);
