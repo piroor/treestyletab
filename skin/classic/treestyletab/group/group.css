@@ -1,6 +1,7 @@
 :root {
-	background: -moz-dialog;
+	appearance: window;
 	-moz-appearance: window;
+	background: -moz-dialog;
 	margin: 0;
 	padding: 0;
 }
@@ -64,6 +65,7 @@
 	margin-top: 1em;
 	max-height: 80%;
 	overflow: auto;
+	box-flex: 1;
 	-moz-box-flex: 1;
 }
 

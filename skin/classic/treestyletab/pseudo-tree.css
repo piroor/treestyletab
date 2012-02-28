@@ -8,15 +8,18 @@
 }
 
 .treestyletab-pseudo-tree-row {
+	box-align: center;
 	-moz-box-align: center;
 }
 
 .treestyletab-pseudo-tree-row label.text-link {
+	box-crop: end;
 	-moz-box-crop: end;
 }
 
 .treestyletab-pseudo-tree-children {
 	margin-left: 1.5em;
+	box-align: stretch;
 	-moz-box-align: stretch;
 }
 

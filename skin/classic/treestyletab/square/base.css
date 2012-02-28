@@ -4,14 +4,16 @@
 
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"]),
 .treestyletab-tabbar-toolbar:not([treestyletab-tabbar-position="top"]) {
+	appearance: none;
+	-moz-appearance: none;
 	background: transparent !important;
 	margin: 0 !important;
 	padding: 0 !important;
-	-moz-appearance: none;
 }
 .tabbrowser-strip[treestyletab-style~="border"]:not([treestyletab-tabbar-position="top"]) {
-	background: darkgray !important;
+	appearance: none;
 	-moz-appearance: none;
+	background: darkgray !important;
 }
 
 .tabbrowser-strip[treestyletab-mode="vertical"],
@@ -32,8 +34,8 @@
 	border: 0 none !important;
 	margin: 0 !important;
 	padding: 0 !important;
-	-moz-box-shadow: none !important;
 	box-shadow: none !important;
+	-moz-box-shadow: none !important;
 }
 
 .tabbrowser-strip[treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"],
@@ -60,6 +62,7 @@
   .tabbrowser-tab,
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:not([selected="true"]) {
+	appearance: none !important;
 	-moz-appearance: none !important;
 	min-height: 2em;
 	margin: 0 !important;
@@ -72,11 +75,10 @@
 	-moz-border-top-colors: transparent transparent !important;
 	border-bottom: 2px solid !important;
 	-moz-border-bottom-colors: ThreeDShadow transparent !important;
-	-moz-border-radius-topleft : 0 !important;
-	-moz-border-radius-topright : 0 !important;
-	-moz-border-radius-bottomleft : 0 !important;
-	-moz-border-radius-bottomright : 0 !important;
+	border-radius: 0 !important;
+	-moz-border-radius: 0 !important;
 	-moz-border-image: none !important;
+	box-align: stretch !important;
 	-moz-box-align: stretch !important;
 }
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
@@ -210,8 +212,9 @@
 /* Mac OS X */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab {
-	text-align: start !important; 
+	box-pack: start !important;
 	-moz-box-pack: start !important;
+	text-align: start !important; 
 }
 
 
@@ -241,6 +244,7 @@
 tabbrowser[treestyletab-style~="aero"]:not([treestyletab-tabbar-position="top"]),
 :root[treestyletab-style~="aero"]:not([treestyletab-tabbar-position="top"]) #appcontent,
 :root[treestyletab-style~="aero"]:not([treestyletab-tabbar-position="top"]) #browser {
-	background: transparent !important;
+	appearance: none !important;
 	-moz-appearance: none !important;
+	background: transparent !important;
 }

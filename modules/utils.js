@@ -601,6 +601,7 @@ var TreeStyleTabUtils = {
 		  .tabbrowser-arrowscrollbox
 		  > scrollbox
 		  > scrollbar[orient="vertical"] {
+			appearance: none;
 			-moz-appearance: none;
 			background: ThreeDFace;
 			border: 1px solid ThreeDShadow;

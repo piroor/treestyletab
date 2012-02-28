@@ -21,6 +21,7 @@
 
 :root[treestyletab-enable-compatibility-tmp="true"]
   tabbrowser[treestyletab-mode="vertical"] tabs[flowing] > * .tabs-frame {
+	box-flex: 1 !important;
 	-moz-box-flex: 1 !important;
 }
 

@@ -12,8 +12,11 @@
 	max-width: 16px;
 	min-height: 16px;
 	min-width: 16px;
+	box-pack: start;
 	-moz-box-pack: start;
+	box-align: center;
 	-moz-box-align: center;
+	box-flex: 1;
 	-moz-box-flex: 1;
 }
 

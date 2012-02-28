@@ -5,14 +5,14 @@
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:not([pinned="true"]) {
-	-moz-box-shadow: -0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15);
 	box-shadow: -0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15);
+	-moz-box-shadow: -0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15);
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tabbrowser-tab:not([pinned="true"]) {
-	-moz-box-shadow: 0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15);
 	box-shadow: 0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15);
+	-moz-box-shadow: 0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15);
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
@@ -23,8 +23,8 @@
   .tabbrowser-tabs[treestyletab-mode="vertical"]:not([overflow="true"])
   .tabbrowser-arrowscrollbox
   .tabs-newtab-button {
-	-moz-box-shadow: 0 0.3em 0.2em rgba(0, 0, 0, 0.15);
 	box-shadow: 0 0.3em 0.2em rgba(0, 0, 0, 0.15);
+	-moz-box-shadow: 0 0.3em 0.2em rgba(0, 0, 0, 0.15);
 }
 
 
@@ -33,8 +33,8 @@
 .tabbrowser-tabs[treestyletab-mode="vertical"][overflow="true"]
   .tabbrowser-arrowscrollbox
   .scrollbox-innerbox {
-	-moz-box-shadow: inset -0.2em 0.2em 0.3em rgba(0, 0, 0, 0.15) !important;
 	box-shadow: inset -0.2em 0.2em 0.3em rgba(0, 0, 0, 0.15) !important;
+	-moz-box-shadow: inset -0.2em 0.2em 0.3em rgba(0, 0, 0, 0.15) !important;
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]:not([overflow="true"])
@@ -42,8 +42,8 @@
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"][overflow="true"]
   .tabbrowser-arrowscrollbox
   .scrollbox-innerbox {
-	-moz-box-shadow: inset 0.2em 0.2em 0.3em rgba(0, 0, 0, 0.15) !important;
 	box-shadow: inset 0.2em 0.2em 0.3em rgba(0, 0, 0, 0.15) !important;
+	-moz-box-shadow: inset 0.2em 0.2em 0.3em rgba(0, 0, 0, 0.15) !important;
 }
 
 

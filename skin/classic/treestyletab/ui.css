@@ -3,7 +3,9 @@
 /* tree UI */
 
 .treestyletab-counter-container {
+	box-align: center;
 	-moz-box-align: center;
+	box-pack: end;
 	-moz-box-pack: end;
 }
 
@@ -163,6 +165,7 @@
 
 
 tabbrowser[treestyletab-drop-position] {
+	appearance: none !important;
 	-moz-appearance: none !important;
 	border: 2px solid transparent !important;
 	-moz-border-top-colors: none !important;
@@ -269,9 +272,10 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
 /* toolbar customization */
 
 .treestyletab-tabbar-toolbar-ready-popup {
+	appearance: tooltip;
+	-moz-appearance: tooltip;
 	max-width: 15em;
 	opacity: 0.85;
-	-moz-appearance: tooltip;
 }
 
 .treestyletab-tabbar-toolbar-ready {
@@ -306,15 +310,16 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
   > .scrollbutton-down[treestyletab-notifybgtab-phase] {
 	background: -moz-linear-gradient(-90deg, rgba(255,255,255,0), Highlight);
 	border: 0 none;
+	box-shadow: none;
+	-moz-box-shadow: none;
 	height: 2em;
 	margin-top: -2em;
 	visibility: visible;
 	opacity: 0;
 	pointer-events: none;
-	-moz-box-shadow: none;
-	     box-shadow: none;
-	-moz-transition: 1s opacity ease-out;
-	     transition: 1s opacity ease-out;
+	transition: 1s opacity ease-out;
+	transition: 1s opacity ease-out;
+	user-focus: ignore;
 	-moz-user-focus: ignore;
 }
 

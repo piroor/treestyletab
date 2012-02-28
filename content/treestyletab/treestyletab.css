@@ -60,6 +60,7 @@
 	max-width: 20px;
 	min-width: 20px;
 	width: 20px;
+	box-flex: 0;
 	-moz-box-flex: 0;
 	mask: url("res/tabEffects.svg#fadein-mask");
 }
@@ -136,6 +137,8 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 
 
 #treestyletab-autohide-content-area-screen {
+	appearance: none;
+	-moz-appearance: none;
 	/**
 	 * Don't make this panel completely transparent, because
 	 * mousemove event never fire on 100% transparent panel.
@@ -144,7 +147,6 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 	line-height: 0;
 	margin: 0;
 	padding: 0;
-	-moz-appearance: none;
 	-moz-border-bottom-colors: none;
 	-moz-border-left-colors: none;
 	-moz-border-right-colors: none;
@@ -163,7 +165,9 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-arrowscrollbox
   .scrollbox-innerbox {
+	box-flex: 1 !important;
 	-moz-box-flex: 1 !important;
+	box-pack: start !important;
 	-moz-box-pack: start !important;
 }
 
@@ -177,6 +181,7 @@ toolbar.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
   > toolbaritem,
 toolbar.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
   > .treestyletab-toolbar-inner-box > toolbaritem {
+	box-flex: 0 !important;
 	-moz-box-flex: 0 !important;
 }
 
@@ -187,6 +192,7 @@ toolbar.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
 
 /* workaround for https://github.com/piroor/treestyletab/issues/100 */
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] .textbox-input-box {
+	box-align: stretch;
 	-moz-box-align: stretch;
 }
 
@@ -344,9 +350,10 @@ toolbar.treestyletab-tabbar-toolbar-ready:not([nowindowdrag="true"]),
 
 .treestyletab-tabbar-toolbar:not([treestyletab-tabbar-position="top"]),
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
+	appearance: none !important;
+	-moz-appearance: none !important;
 	line-height: 0 !important; /* to avoid an useless space above the tab bar */
 	position: fixed !important;
-	-moz-appearance: none !important;
 }
 .treestyletab-tabbar-toolbar:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tabs,

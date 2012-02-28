@@ -4,13 +4,14 @@
 
 .treestyletab-tabbar-toolbar:not([treestyletab-tabbar-position="top"]),
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
+	appearance: none !important;
+	-moz-appearance: none !important;
 	background: transparent !important;
 	border: 0 none !important;
+	box-shadow: none !important;
+	-moz-box-shadow: none !important;
 	margin: 0 !important;
 	padding: 0 !important;
-	-moz-appearance: none !important;
-	-moz-box-shadow: none !important;
-	box-shadow: none !important;
 }
 
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
@@ -41,9 +42,10 @@
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"] {
+	appearance: none !important;
+	-moz-appearance: none !important;
 	background: transparent !important;
 	margin: 0;
-	-moz-appearance: none !important;
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]:not([overflow="true"])
@@ -70,10 +72,11 @@ tabbrowser[treestyletab-mode="vertical"]
   .treestyletab-splitter,
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
   .treestyletab-splitter {
+	appearance: none !important;
+	-moz-appearance: none !important;
 	background: #b3b2b3 !important;
 	border: 0 solid #666666 !important;
 	min-width: 5px;
-	-moz-appearance: none !important;
 }
 tabbrowser[treestyletab-tabbar-position="left"]
   .treestyletab-splitter,
@@ -268,6 +271,7 @@ tabbrowser[treestyletab-tabbar-position="right"]
   .tabs-newtab-button {
 	background: #9a9a9a url("shadow-active-l.png") repeat-y top right !important;
 	margin-left: 6px !important;
+	border-radius: 6px 0 0 6px;
 	-moz-border-radius: 6px 0 0 6px;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]

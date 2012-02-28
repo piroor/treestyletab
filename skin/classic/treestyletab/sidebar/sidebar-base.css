@@ -86,22 +86,22 @@ tabbrowser[treestyletab-mode="vertical"]
 /* Style tabs themselves.  Get rid of most of the initial XUL styling */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab {
+	appearance: none !important;
 	-moz-appearance: none !important;
+	border: none;
+	border-radius: 0 !important;
+	-moz-border-radius: 0 !important;
+	border-top: 1px solid transparent !important;
+	box-align: stretch !important;
+	-moz-box-align: stretch !important;
+	height: 21px !important;     /* height including border! */
+	margin: 0 !important;
+	padding: 1px 3px 2px 10px !important;
+	text-align: left !important;
 	-moz-border-top-colors: none !important;
 	-moz-border-bottom-colors: none !important;
 	-moz-border-right-colors: none !important;
 	-moz-border-left-colors: none !important;
-	-moz-border-radius-topleft : 0 !important;
-	-moz-border-radius-topright : 0 !important;
-	-moz-border-radius-bottomleft : 0 !important;
-	-moz-border-radius-bottomright : 0 !important;
-	-moz-box-align: stretch !important;
-	margin: 0 !important;
-	padding: 1px 3px 2px 10px !important;
-	height: 21px !important;     /* height including border! */
-	text-align: left !important;
-	border: none;
-	border-top: 1px solid transparent !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:not([pinned]),
@@ -203,9 +203,10 @@ tabbrowser[treestyletab-mode="vertical"]
 /* Make the tab counter look like the bubbles in Mail.app et.al. */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .treestyletab-counter-container {
-	padding: 0 6px !important;
 	background-color: #91a0c0 !important;
+	border-radius: 8px !important;
 	-moz-border-radius: 8px !important;
+	padding: 0 6px !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .treestyletab-counter {
@@ -265,8 +266,9 @@ tabbrowser[treestyletab-mode="vertical"]
 /* Round blue rectangle around tabs that are dropping targets. */
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-style]
   .tabbrowser-tab:not([pinned="true"])[treestyletab-drop-position="self"]:not([selected="true"]) {
-	border: 2px solid #577bf3 !important; /* not OSX's colour but Firefox's */
 	background: #d0def5 !important;
+	border: 2px solid #577bf3 !important; /* not OSX's colour but Firefox's */
+	border-radius: 8px !important;
 	-moz-border-radius: 8px !important;
 	padding: 0 1px 0 8px !important;
 }
@@ -302,13 +304,14 @@ tabbrowser[treestyletab-mode="vertical"]
 
 .treestyletab-tabbar-toolbar:not([treestyletab-tabbar-position="top"]),
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
+	appearance: none !important;
+	-moz-appearance: none !important;
 	background: transparent !important;
 	border: 0 none !important;
+	box-shadow: none !important;
+	-moz-box-shadow: none !important;
 	margin: 0 !important;
 	padding: 0 !important;
-	-moz-appearance: none !important;
-	-moz-box-shadow: none !important;
-	box-shadow: none !important;
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
@@ -330,6 +333,7 @@ tabbrowser[treestyletab-mode="vertical"]
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
   > toolbarpaletteitem
   > toolbarbutton:hover {
+	appearance: none !important;
 	-moz-appearance: none !important;
 	background: transparent !important;
 	border: 0 none !important;
@@ -365,14 +369,16 @@ tabbrowser[treestyletab-mode="vertical"]
 	-moz-image-region: auto !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"] {
+	appearance: none !important;
+	-moz-appearance: none !important;
 	background: transparent !important;
 	margin: 0;
-	-moz-appearance: none !important;
 }
 
 /* for Linux (Gnomestrip) */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-close-button {
+	appearance: none !important;
 	-moz-appearance: none !important;
 }
 

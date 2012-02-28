@@ -7,9 +7,10 @@
   .tabbrowser-tab:not([selected="true"]),
 .tabbrowser-tabs[treestyletab-tabbar-position="top"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab[selected="true"] {
-	padding-top: 0;
-	padding-bottom: 0;
-	margin-bottom: 0;
-	height: 1.5em;
+	border-radius: 0 0 0 0;
 	-moz-border-radius: 0 0 0 0;
+	height: 1.5em;
+	margin-bottom: 0;
+	padding-bottom: 0;
+	padding-top: 0;
 }

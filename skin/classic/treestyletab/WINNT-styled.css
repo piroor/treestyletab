@@ -8,11 +8,12 @@
   .tabbrowser-tab:hover:not([selected="true"]),
 .tabbrowser-tabs[treestyletab-tabbar-position="top"][treestyletab-tabs-indented="true"]
   .tabbrowser-tab:hover[selected="true"] {
-	padding-top: 0;
-	padding-bottom: 0;
-	margin-bottom: 3px;
-	height: auto;
+	border-radius: 0 0 0 0;
 	-moz-border-radius: 0 0 0 0;
 	border-top-width: 1px;
+	height: auto;
+	margin-bottom: 3px;
+	padding-bottom: 0;
+	padding-top: 0;
 }
 
