@@ -1532,13 +1532,9 @@ TreeStyleTabBrowser.prototype = {
 		}).error(this.defaultDeferredErrorHandler);
 
 		var allowToCollapse = this.getTreePref('allowSubtreeCollapseExpand.'+orient);
-		var canCollapseStateChanged = this.allowSubtreeCollapseExpand != allowToCollapse;
-
-		if (!allowToCollapse && canCollapseStateChanged)
+		if (this.allowSubtreeCollapseExpand != allowToCollapse)
 			this.collapseExpandAllSubtree(false, false);
 		this.allowSubtreeCollapseExpand = allowToCollapse;
-		if (allowToCollapse && canCollapseStateChanged)
-			this.collapseExpandAllSubtree(false, false);
 
 		this.maxTreeLevel = this.getTreePref('maxTreeLevel.'+orient);
 
