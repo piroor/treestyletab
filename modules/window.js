@@ -1056,7 +1056,7 @@ TreeStyleTabWindow.prototype = {
 			case this.kNEWTAB_OPEN_AS_ORPHAN:
 			case this.kNEWTAB_DO_NOTHING:
 			default:
-				return;
+				break;
 			case this.kNEWTAB_OPEN_AS_CHILD:
 				this.readyToOpenChildTabNow(aBaseTab);
 				break;
@@ -1064,8 +1064,6 @@ TreeStyleTabWindow.prototype = {
 				let (parentTab = this.getParentTab(aBaseTab)) {
 					if (parentTab)
 						this.readyToOpenChildTabNow(parentTab);
-					else
-						return;
 				}
 				break;
 			case this.kNEWTAB_OPEN_AS_NEXT_SIBLING:
@@ -1076,6 +1074,10 @@ TreeStyleTabWindow.prototype = {
  
 	onBeforeNewTabCommand : function TSTWindow_onBeforeNewTabCommand(aTabBrowser) 
 	{
+		var self = this.windowService || this;
+		if (self._clickEventOnNewTabButtonHandled)
+			return;
+
 		var b = aTabBrowser || this.browser;
 		this._handleNewTabCommand(b.selectedTab, this.getTreePref('autoAttach.newTabCommand'));
 	},
@@ -1086,18 +1088,20 @@ TreeStyleTabWindow.prototype = {
 		if (aEvent.button != 1 && (aEvent.button != 0 || !this.isAccelKeyPressed(aEvent)))
 			return;
 
-		if (this.evaluateXPath(
-				'ancestor-or-self::*['
-					+'@id="new-tab-button" or '
-					+'contains(concat(" ", normalize-space(@class), " "), " tabs-newtab-button ")'
-				+']',
-				aEvent.originalTarget,
-				Ci.nsIDOMXPathResult.BOOLEAN_TYPE
-			).booleanValue)
+		var newTabButton = this.getNewTabButtonFromEvent(aEvent);
+		if (newTabButton) {
 			this._handleNewTabCommand(this.browser.selectedTab, this.getTreePref('autoAttach.newTabButton'));
-		else if (aEvent.target.id == 'urlbar-go-button' || aEvent.target.id == 'go-button')
+			let self = this.windowService || this;
+			self._clickEventOnNewTabButtonHandled = true;
+			this.Deferred.next(function() {
+				self._clickEventOnNewTabButtonHandled = false;
+			});
+		}
+		else if (aEvent.target.id == 'urlbar-go-button' || aEvent.target.id == 'go-button') {
 			this._handleNewTabCommand(this.browser.selectedTab, this.getTreePref('autoAttach.goButton'));
+		}
 	},
+	_clickEventOnNewTabButtonHandled : false,
  
 	onBeforeTabDuplicate : function TSTWindow_onBeforeTabDuplicate(aTab) 
 	{

@@ -1395,6 +1395,18 @@ var TreeStyleTabUtils = {
 		return this.getTabFromChild(aEvent.originalTarget || aEvent.target);
 	},
  
+	getNewTabButtonFromEvent : function TSTUtils_getNewTabButtonFromEvent(aEvent) 
+	{
+		return this.evaluateXPath(
+				'ancestor-or-self::*['
+					+'@id="new-tab-button" or '
+					+'contains(concat(" ", normalize-space(@class), " "), " tabs-newtab-button ")'
+				+'][1]',
+				aEvent.originalTarget,
+				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue;
+	},
+ 
 	getSplitterFromEvent : function TSTUtils_getSplitterFromEvent(aEvent) 
 	{
 		return this.evaluateXPath(
