@@ -378,10 +378,10 @@ catch(e) {
 	[TARGET   ] Å´attach dragged tab to the parent of the target as its next sibling
 	  [DRAGGED]
 */
-					if (aSourceTab == nextTab && sv.getDescendantTabs(info.parent).length == 1) {
+					if (aSourceTab == nextTab) {
 						info.action = sv.kACTION_MOVE | sv.kACTION_ATTACH;
 						info.parent = sv.getParentTab(tab);
-						info.insertBefore = sv.getNextTab(nextTab);
+						info.insertBefore = sv.getNextSiblingTab(tab);
 					}
 				}
 				break;
