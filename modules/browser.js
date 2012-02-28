@@ -1392,6 +1392,7 @@ TreeStyleTabBrowser.prototype = {
 		tabContainer.addEventListener('TabPinned',      this, true);
 		tabContainer.addEventListener('TabUnpinned',    this, true);
 		tabContainer.addEventListener('mouseover', this, true);
+		tabContainer.addEventListener('mouseout', this, true);
 		tabContainer.addEventListener('dblclick',  this, true);
 		tabContainer.addEventListener('select', this, true);
 		tabContainer.addEventListener('scroll', this, true);
@@ -1937,6 +1938,7 @@ TreeStyleTabBrowser.prototype = {
 		tabContainer.removeEventListener('TabPinned',      this, true);
 		tabContainer.removeEventListener('TabUnpinned',    this, true);
 		tabContainer.removeEventListener('mouseover', this, true);
+		tabContainer.removeEventListener('mouseout', this, true);
 		tabContainer.removeEventListener('dblclick',  this, true);
 		tabContainer.removeEventListener('select', this, true);
 		tabContainer.removeEventListener('scroll', this, true);
@@ -2447,12 +2449,23 @@ TreeStyleTabBrowser.prototype = {
 				let (tab = aEvent.target) {
 					if (tab.__treestyletab__twistyHoverTimer)
 						this.window.clearTimeout(tab.__treestyletab__twistyHoverTimer);
-					if (this.isEventFiredOnTwisty(aEvent))
+					if (this.isEventFiredOnTwisty(aEvent)) {
+						tab.setAttribute(this.kTWISTY_HOVER, true);
 						tab.__treestyletab__twistyHoverTimer = this.window.setTimeout(function(aSelf) {
 							tab.setAttribute(aSelf.kTWISTY_HOVER, true);
+							delete tab.__treestyletab__twistyHoverTimer;
 						}, 0, this);
-					else
-						tab.removeAttribute(this.kTWISTY_HOVER);
+					}
+				}
+				return;
+
+			case 'mouseout':
+				let (tab = aEvent.target) {
+					if (tab.__treestyletab__twistyHoverTimer) {
+						this.window.clearTimeout(tab.__treestyletab__twistyHoverTimer);
+						delete tab.__treestyletab__twistyHoverTimer;
+					}
+					tab.removeAttribute(this.kTWISTY_HOVER);
 				}
 				return;
 
