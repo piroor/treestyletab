@@ -113,7 +113,7 @@
 <!ENTITY config.autoHide.area.after "пикселов от края окна или панели вкладок">
 <!ENTITY config.autoHide.delay.before "Задержка:">
 <!ENTITY config.autoHide.delay.after "мсек.">
-<!ENTITY config.autoShow.accelKeyDown "Нажатии и удержания кнопки Ctrl">
+<!ENTITY config.autoShow.accelKeyDown "При удерживании клавиши Ctrl">
 <!ENTITY config.autoShow.accelKeyDown.delay.before "Показывать после">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "мсек.">
 <!ENTITY config.autoShow.tabSwitch   "Переключении вкладок через Ctrl+Tab">
