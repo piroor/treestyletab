@@ -103,6 +103,7 @@
 
 /* background, left */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab:not([pinned])
   .tab-stack {
 	-moz-border-image: url("tab-active-l.png") 10 5 10 10 / 10px 5px 10px 10px !important;
 	/**
@@ -116,6 +117,7 @@
 
 /* background, right */
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+  .tabbrowser-tab:not([pinned])
   .tab-stack {
 	-moz-border-image: url("tab-active-r.png") 10 10 10 5 / 10px 10px 10px 5px !important;
 	-moz-border-image-slice: 10 10 10 5 fill !important;
@@ -123,14 +125,16 @@
 
 /* foreground, left */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"] .tab-stack {
+  .tabbrowser-tab[selected="true"]:not([pinned])
+  .tab-stack {
 	-moz-border-image: url("tab-active-selected-l.png") 10 5 10 10 / 10px 5px 10px 10px !important;
 	-moz-border-image-slice: 10 5 10 10 fill !important;
 }
 
 /* foreground, right */
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tabbrowser-tab[selected="true"] .tab-stack {
+  .tabbrowser-tab[selected="true"]:not([pinned])
+  .tab-stack {
 	-moz-border-image: url("tab-active-selected-r.png") 10 10 10 5 / 10px 10px 10px 5px !important;
 	-moz-border-image-slice: 10 10 10 5 fill !important;
 }
@@ -252,6 +256,7 @@
 /* background, left */
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab:not([pinned])
   .tab-stack {
 	-moz-border-image: url("tab-inactive-l.png") 10 5 10 10 / 10px 5px 10px 10px !important;
 	-moz-border-image-slice: 10 5 10 10 fill !important;
@@ -260,6 +265,7 @@
 /* background, right */
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
+  .tabbrowser-tab:not([pinned])
   .tab-stack {
 	-moz-border-image: url("tab-inactive-r.png") 10 10 10 5 / 10px 10px 10px 5px !important;
 	-moz-border-image-slice: 10 10 10 5 fill !important;
@@ -268,7 +274,8 @@
 /* foreground, left */
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"] .tab-stack{
+  .tabbrowser-tab[selected="true"]:not([pinned])
+  .tab-stack{
 	-moz-border-image: url("tab-inactive-selected-l.png") 10 5 10 10 / 10px 5px 10px 10px !important;
 	-moz-border-image-slice: 10 5 10 10 fill !important;
 }
@@ -276,7 +283,8 @@
 /* foreground, right */
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tabbrowser-tab[selected="true"] .tab-stack{
+  .tabbrowser-tab[selected="true"]:not([pinned])
+  .tab-stack{
 	-moz-border-image: url("tab-inactive-selected-r.png") 10 10 10 5 / 10px 10px 10px 5px !important;
 	-moz-border-image-slice: 10 10 10 5 fill !important;
 }
