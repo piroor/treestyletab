@@ -1498,15 +1498,22 @@ TreeStyleTabBrowser.prototype = {
 				// remove ordinal for "tabs on top" https://bugzilla.mozilla.org/show_bug.cgi?id=544815
 				if (this.position == 'top') {
 					this.removeTabStripAttribute('ordinal');
-					// Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=555987
-					// This should be done when the value of the "ordinal" attribute
-					// is modified dynamically. So, we don' have to do it before
-					// the browser window is completely initialized.
 					if (TabsOnTop && !this.windowService.isPopupWindow &&
 						this.windowService.initialized) {
-						TabsOnTop.enabled = !TabsOnTop.enabled;
+						let currentState = TabsOnTop.enabled;
+						let originalState = this.getTreePref('tabsOnTop.originalState');
+						if (originalState !== null &&
+							currentState != originalState &&
+							this.windowService.tabsOnTopChangingByUI &&
+							!this.windowService.changingTabsOnTop)
+							this.setTreePref('tabsOnTop.originalState', currentState);
+						// Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=555987
+						// This should be done when the value of the "ordinal" attribute
+						// is modified dynamically. So, we don' have to do it before
+						// the browser window is completely initialized.
+						TabsOnTop.enabled = !currentState;
 						this.Deferred.next(function() {
-							TabsOnTop.enabled = !TabsOnTop.enabled;
+							TabsOnTop.enabled = currentState;
 						}).error(this.defaultDeferredErrorHandler);
 					}
 				}
@@ -1525,10 +1532,7 @@ TreeStyleTabBrowser.prototype = {
 
 		if (TabsOnTop && !this.windowService.isPopupWindow) {
 			let updateTabsOnTop = function() {
-					let tabsWasOnTop = TabsOnTop.enabled;
-					TabsOnTop.enabled = TabsOnTop.enabled && self.position == 'top' && self.fixed;
-					if (tabsWasOnTop && !TabsOnTop.enabled)
-						self.setTreePref('tabsOnTopShouldBeRestored', true);
+					self.windowService.updateTabsOnTop();
 				};
 			// TabsOnTop.enabled is always "false" before the browser window is
 			// completely initialized. So, we have to check it with delay only
@@ -4467,24 +4471,27 @@ TreeStyleTabBrowser.prototype = {
 	onTabsOnTopSyncCommand : function TSTBrowser_onTabsOnTopSyncCommand(aEnabled) 
 	{
 		if (
+			this.windowService.tabsOnTopChangingByUI ||
 			!aEnabled ||
 			this.position != 'top' ||
 			this.fixed ||
-			!this.windowService.isPopupWindow
+			this.windowService.isPopupWindow
 			)
 			return;
+		this.windowService.tabsOnTopChangingByUI = true;
 		var self = this;
 		this.Deferred
 			.next(function() {
 				self.windowService.toggleFixed(self.mTabBrowser);
 			})
 			.next(function() {
-				if (self.window.TabsOnTop.enabled != aEnabled) {
-dump('onTabsOnTopSyncCommand, set to '+aEnabled+'\n');
+				if (self.window.TabsOnTop.enabled != aEnabled)
 					self.window.TabsOnTop.enabled = aEnabled;
-				}
 			})
-			.error(this.defaultDeferredErrorHandler);
+			.error(this.defaultDeferredErrorHandler)
+			.next(function() {
+				self.windowService.tabsOnTopChangingByUI = false;
+			});
 	},
  
 	onTreeStyleTabPrintPreviewEntered : function TSTBrowser_onTreeStyleTabPrintPreviewEntered(aEvent) 

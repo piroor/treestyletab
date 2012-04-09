@@ -387,8 +387,8 @@ TreeStyleTabWindow.prototype = {
 		namespace = void(0);
 		var self = this;
 		var restorePrefs = function() {
-				if (prefs.getPref('extensions.treestyletab.tabsOnTopShouldBeRestored')) {
-					prefs.clearPref('extensions.treestyletab.tabsOnTopShouldBeRestored');
+				if (prefs.getPref('extensions.treestyletab.tabsOnTop.originalState')) {
+					prefs.clearPref('extensions.treestyletab.tabsOnTop.originalState');
 					try {
 						self.browser.treeStyleTab.position = 'top';
 					}
@@ -980,25 +980,40 @@ TreeStyleTabWindow.prototype = {
 	updateTabsOnTop : function TSTWindow_updateTabsOnTop() 
 	{
 		var w = this.window;
-		if (this.isPopupWindow || !('TabsOnTop' in w) || !('enabled' in w.TabsOnTop))
+		if (
+			this.isPopupWindow ||
+			this.tabsOnTopChangingByUI ||
+			this.tabsOnTopChangingByTST ||
+			!('TabsOnTop' in w) ||
+			!('enabled' in w.TabsOnTop)
+			)
 			return;
 
-		var TabsOnTop = w.TabsOnTop;
-		if (!('_tabsOnTopDefaultState' in this))
-			this._tabsOnTopDefaultState = TabsOnTop.enabled;
+		this.tabsOnTopChangingByTST = true;
 
-		if (this.browser.treeStyleTab.position != 'top' ||
-			!this.browser.treeStyleTab.fixed) {
-			if (TabsOnTop.enabled) {
-				TabsOnTop.enabled = false;
-				this.setTreePref('tabsOnTopShouldBeRestored', true);
+		try {
+			var TabsOnTop = w.TabsOnTop;
+			var originalState = this.getTreePref('tabsOnTop.originalState');
+			if (originalState === null) {
+				let current = this.getDefaultPref('browser.tabs.onTop') === null ?
+								TabsOnTop.enabled :
+								this.getPref('browser.tabs.onTop') ;
+				this.setTreePref('tabsOnTop.originalState', originalState = current);
+			}
+
+			if (this.browser.treeStyleTab.position != 'top' ||
+				!this.browser.treeStyleTab.fixed) {
+				if (TabsOnTop.enabled)
+					TabsOnTop.enabled = false;
+			}
+			else {
+				if (TabsOnTop.enabled != originalState)
+					TabsOnTop.enabled = originalState;
+				this.clearTreePref('tabsOnTop.originalState');
 			}
 		}
-		else if ('_tabsOnTopDefaultState' in this) {
-			if (TabsOnTop.enabled!= this._tabsOnTopDefaultState)
-				TabsOnTop.enabled = this._tabsOnTopDefaultState;
-			delete this._tabsOnTopDefaultState;
-			this.setTreePref('tabsOnTopShouldBeRestored', false);
+		finally {
+			this.tabsOnTopChangingByTST = false;
 		}
 	},
  
