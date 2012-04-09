@@ -305,11 +305,12 @@ FullTooltipManager.prototype = {
 			}
 		}
 
+		var shouldShowTree = mode != this.kTOOLTIP_MODE_DEFAULT && (collapsed || mode == this.kTOOLTIP_MODE_ALWAYS);
 		if ('mOverCloseButton' in tab && tab.mOverCloseButton) {
 			if (descendant.length &&
 				(collapsed || this.getTreePref('closeParentBehavior') == this.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)) {
 				label = tree || tab.getAttribute('label');
-				label = label ?
+				label = label && shouldShowTree ?
 						this.treeBundle.getFormattedString('tooltip.closeTree.labeled', [label]) :
 						this.treeBundle.getString('tooltip.closeTree') ;
 				fullTooltipExtraLabel = this.treeBundle.getFormattedString('tooltip.closeTree.labeled', ['%TREE%']).split(/\s*%TREE%\s*/);
@@ -320,12 +321,12 @@ FullTooltipManager.prototype = {
 						'tooltip.expandSubtree' :
 						'tooltip.collapseSubtree' ;
 			label = tree || tab.getAttribute('label');
-			label = label ?
+			label = label && shouldShowTree ?
 					this.treeBundle.getFormattedString(key+'.labeled', [label]) :
 					this.treeBundle.getString(key) ;
 			fullTooltipExtraLabel = this.treeBundle.getFormattedString(key+'.labeled', ['%TREE%']).split(/\s*%TREE%\s*/);
 		}
-		else if (collapsed || mode == this.kTOOLTIP_MODE_ALWAYS) {
+		else if (shouldShowTree) {
 			label = tree;
 		}
 
@@ -335,7 +336,8 @@ FullTooltipManager.prototype = {
 		aEvent.target.setAttribute('label', label);
 		aEvent.stopPropagation();
 
-		this.setup(aEvent.target, tab, fullTooltipExtraLabel);
+		if (shouldShowTree)
+			this.setup(aEvent.target, tab, fullTooltipExtraLabel);
 	},
 
 
