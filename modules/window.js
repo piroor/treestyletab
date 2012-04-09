@@ -334,7 +334,6 @@ TreeStyleTabWindow.prototype = {
 			return;
 
 		if (this.initialized) return;
-		this.initialized = true;
 
 		if (!this.preInitialized) {
 			this.preInit();
@@ -372,6 +371,8 @@ TreeStyleTabWindow.prototype = {
 			this.onPrefChange('extensions.treestyletab.tabbar.autoHide.mode');
 
 		this.onPrefChange('extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut');
+
+		this.initialized = true;
 	},
 	initialized : false,
 	

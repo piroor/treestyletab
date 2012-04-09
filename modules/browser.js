@@ -1473,6 +1473,8 @@ TreeStyleTabBrowser.prototype = {
 
 		this.stopRendering();
 
+		var self = this;
+
 		var w = this.window;
 		var d = this.document;
 		var b = this.mTabBrowser;
@@ -1496,8 +1498,12 @@ TreeStyleTabBrowser.prototype = {
 				// remove ordinal for "tabs on top" https://bugzilla.mozilla.org/show_bug.cgi?id=544815
 				if (this.position == 'top') {
 					this.removeTabStripAttribute('ordinal');
-					if (TabsOnTop && !this.windowService.isPopupWindow) {
-						// workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=555987
+					// Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=555987
+					// This should be done when the value of the "ordinal" attribute
+					// is modified dynamically. So, we don' have to do it before
+					// the browser window is completely initialized.
+					if (TabsOnTop && !this.windowService.isPopupWindow &&
+						this.windowService.initialized) {
 						TabsOnTop.enabled = !TabsOnTop.enabled;
 						this.Deferred.next(function() {
 							TabsOnTop.enabled = !TabsOnTop.enabled;
@@ -1518,13 +1524,21 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		if (TabsOnTop && !this.windowService.isPopupWindow) {
-			let tabsWasOnTop = TabsOnTop.enabled;
-			TabsOnTop.enabled = TabsOnTop.enabled && this.position == 'top' && this.fixed;
-			if (tabsWasOnTop && !TabsOnTop.enabled)
-				this.setTreePref('tabsOnTopShouldBeRestored', true);
+			let updateTabsOnTop = function() {
+					let tabsWasOnTop = TabsOnTop.enabled;
+					TabsOnTop.enabled = TabsOnTop.enabled && self.position == 'top' && self.fixed;
+					if (tabsWasOnTop && !TabsOnTop.enabled)
+						self.setTreePref('tabsOnTopShouldBeRestored', true);
+				};
+			// TabsOnTop.enabled is always "false" before the browser window is
+			// completely initialized. So, we have to check it with delay only
+			// on the Startup.
+			if (this.initialized)
+				updateTabsOnTop();
+			else
+				this.Deferred.next(updateTabsOnTop);
 		}
 
-		var self = this;
 		this.Deferred.next(function() {
 			self.updateFloatingTabbar(self.kTABBAR_UPDATE_BY_APPEARANCE_CHANGE);
 			self._fireTabbarStateChangedEvent();
@@ -4465,8 +4479,10 @@ TreeStyleTabBrowser.prototype = {
 				self.windowService.toggleFixed(self.mTabBrowser);
 			})
 			.next(function() {
-				if (self.window.TabsOnTop.enabled != aEnabled)
+				if (self.window.TabsOnTop.enabled != aEnabled) {
+dump('onTabsOnTopSyncCommand, set to '+aEnabled+'\n');
 					self.window.TabsOnTop.enabled = aEnabled;
+				}
 			})
 			.error(this.defaultDeferredErrorHandler);
 	},
