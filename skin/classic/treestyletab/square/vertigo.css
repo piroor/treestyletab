@@ -90,6 +90,6 @@
 /* autohide */
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-autohide][treestyletab-mode="vertical"]
   #treestyletab-tabbar-resizer-box {
-	background: Window;
+	background: ThreeDFace;
 	opacity: 0.75;
 }
