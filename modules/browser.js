@@ -1724,7 +1724,7 @@ TreeStyleTabBrowser.prototype = {
 				statusPanelStyle.marginLeft = (contentBox.screenX - offsetParentBox.screenX + chromeMargins[3])+'px';
 				statusPanelStyle.marginRight = ((offsetParentBox.screenX + offsetParentBox.width) - (contentBox.screenX + contentBox.width) + chromeMargins[1])+'px';
 				statusPanelStyle.maxWidth = this.isVertical ?
-					parseInt(contentBox.width / 2)+'px' :
+					(contentBox.width-5)+'px' : // emulate the margin defined on https://bugzilla.mozilla.org/show_bug.cgi?id=632634
 					'' ;
 				statusPanel.__treestyletab__repositioned = true;
 			}
