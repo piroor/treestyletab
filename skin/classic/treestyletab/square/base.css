@@ -85,7 +85,7 @@
   .tabbrowser-tab:not([pinned]),
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:not([pinned]):not([selected="true"]) {
-	background: ThreeDFace repeat-x !important;
+	background: Window repeat-x !important;
 }
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   :-moz-any(.tabbrowser-tab[pinned]:not([titlechanged]),
@@ -96,7 +96,7 @@
   .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   :-moz-any(.tabbrowser-tab[pinned],
             .tabbrowser-tab[pinned][titlechanged]) {
-	background: ThreeDFace repeat-x !important;
+	background: Window repeat-x !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-firsttab-border="true"]
   .tabbrowser-tab:not([pinned="true"]):not([selected="true"]):first-child {

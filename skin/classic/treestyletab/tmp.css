@@ -10,7 +10,7 @@
 	-moz-border-bottom-colors: none !important;
 	-moz-border-left-colors: none !important;
 	border-top: 1px solid ThreeDShadow !important;
-	background: ThreeDFace !important;
+	background: Window !important;
 }
 
 :root[treestyletab-enable-compatibility-tmp="true"]
