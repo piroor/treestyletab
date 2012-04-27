@@ -16,7 +16,7 @@
 	border-radius: 0;
 	-moz-border-radius: 0;
 	border-top: 1px solid ThreeDShadow !important;
-	background: ThreeDFace !important;
+	background: -moz-dialog !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-newtab-button:hover,
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > toolbarbutton:hover {
