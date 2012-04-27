@@ -601,7 +601,7 @@ TreeStyleTabBrowser.prototype = {
 
 		this._initTabbrowserExtraContents();
 
-		let position = this.position;
+		var position = this.position;
 		this.fireTabbarPositionEvent(this.kEVENT_TYPE_TABBAR_POSITION_CHANGING, 'top', position); /* PUBLIC API */
 
 		this.setTabbrowserAttribute(this.kFIXED+'-horizontal', this.getTreePref('tabbar.fixed.horizontal') ? 'true' : null, b);
@@ -687,6 +687,20 @@ TreeStyleTabBrowser.prototype = {
 		this.fireTabbarPositionEvent(false, 'top', position); /* PUBLIC API */
 
 		this.startRendering();
+
+		var self = this;
+		this.Deferred.next(function() {
+			// On Firefox 12 and later, this command is always enabled
+			// and the TabsOnTop can be enabled by <tabbrowser>.updateVisibility().
+			// So we have to reset TabsOnTop state on the startup.
+			var toggleTabsOnTop = d.getElementById('cmd_ToggleTabsOnTop');
+			var TabsOnTop = 'TabsOnTop' in w ? w.TabsOnTop : null ;
+			if (TabsOnTop && TabsOnTop.syncUI && toggleTabsOnTop && self.isVertical) {
+				toggleTabsOnTop.setAttribute('disabled', true);
+				if (TabsOnTop.enabled && TabsOnTop.toggle)
+					TabsOnTop.toggle();
+			}
+		});
 	},
 	
 	_initTabbrowserExtraContents : function TSTBrowser_initTabbrowserExtraContents() 
