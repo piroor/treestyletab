@@ -35,6 +35,8 @@
  
 const EXPORTED_SYMBOLS = ['TabbarDNDObserver']; 
 
+const DEBUG = false;
+
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
@@ -242,6 +244,7 @@ catch(e) {
 	
 	getDropActionInternal : function TabbarDND_getDropActionInternal(aEvent, aSourceTab) 
 	{
+		if (DEBUG) dump('getDropActionInternal: start\n');
 		var sv = this.treeStyleTab;
 		var b  = this.browser;
 		var d  = this.document;
@@ -264,15 +267,18 @@ catch(e) {
 		var isNewTabAction = !aSourceTab || aSourceTab.ownerDocument != d;
 
 		if (tab.localName != 'tab') {
+			if (DEBUG) dump('  not on a tab\n');
 			let action = isTabMoveFromOtherWindow ? sv.kACTION_STAY : (sv.kACTION_MOVE | sv.kACTION_PART) ;
 			if (isNewTabAction) action |= sv.kACTION_NEWTAB;
 			if (aEvent[sv.screenPositionProp] < firstTab.boxObject[sv.screenPositionProp]) {
+				if (DEBUG) dump('  above the first tab\n');
 				info.target   = info.parent = info.insertBefore = firstTab;
 				info.position = isInverted ? sv.kDROP_AFTER : sv.kDROP_BEFORE ;
 				info.action   = action;
 				return info;
 			}
 			else if (aEvent[sv.screenPositionProp] > tabs[lastTabIndex].boxObject[sv.screenPositionProp] + tabs[lastTabIndex].boxObject[sv.sizeProp]) {
+				if (DEBUG) dump('  below the last tab\n');
 				info.target   = info.parent = tabs[lastTabIndex];
 				info.position = isInverted ? sv.kDROP_BEFORE : sv.kDROP_AFTER ;
 				info.action   = action;
@@ -282,10 +288,13 @@ catch(e) {
 				let index = b.getNewIndex ?
 								b.getNewIndex(aEvent) :
 								b.tabContainer._getDropIndex(aEvent) ;
+				if (DEBUG) dump('  on the tab '+index+'\n');
 				info.target = tabs[Math.min(index, lastTabIndex)];
+				if (DEBUG) dump('  info.target = '+info.target._tPos+'\n');
 			}
 		}
 		else {
+			if (DEBUG) dump('  on the tab '+tab._tPos+'\n');
 			sv.ensureTabInitialized(tab);
 			info.target = tab;
 		}
@@ -315,15 +324,18 @@ catch(e) {
 		switch (info.position)
 		{
 			case sv.kDROP_ON:
+				if (DEBUG) dump('  position = on the tab\n');
 				var visible = sv.getNextVisibleTab(tab);
 				info.action       = sv.kACTION_STAY | sv.kACTION_ATTACH;
 				info.parent       = tab;
 				info.insertBefore = sv.getTreePref('insertNewChildAt') == sv.kINSERT_FISRT ?
 						(sv.getFirstChildTab(tab) || visible) :
-						(sv.getNextSiblingTab(tab) || sv.getNextTab(sv.getLastDescendantTab(tab)));
+						(sv.getNextSiblingTab(tab) || sv.getNextTab(sv.getLastDescendantTab(tab) || tab));
+				if (DEBUG && info.insertBefore) dump('  insertBefore = '+info.insertBefore._tPos+'\n');
 				break;
 
 			case sv.kDROP_BEFORE:
+				if (DEBUG) dump('  position = before the tab\n');
 /*
 	[TARGET  ] Å™detach from parent, and move
 
@@ -348,9 +360,11 @@ catch(e) {
 					info.action       = sv.kACTION_MOVE | (info.parent ? sv.kACTION_ATTACH : sv.kACTION_PART );
 					info.insertBefore = tab;
 				}
+				if (DEBUG && info.insertBefore) dump('  insertBefore = '+info.insertBefore._tPos+'\n');
 				break;
 
 			case sv.kDROP_AFTER:
+				if (DEBUG) dump('  position = after the tab\n');
 /*
 	[TARGET  ] Å´if the target has a parent, attach to it and and move
 
@@ -384,6 +398,7 @@ catch(e) {
 						info.insertBefore = sv.getNextSiblingTab(tab);
 					}
 				}
+				if (DEBUG && info.insertBefore) dump('  insertBefore = '+info.insertBefore._tPos+'\n');
 				break;
 		}
 
