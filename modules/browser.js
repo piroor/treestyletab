@@ -421,7 +421,7 @@ TreeStyleTabBrowser.prototype = {
 
 		var width  = faviconized ? faviconizedSize : maxWidth ;
 		var height = faviconizedSize;
-		var maxCol = Math.floor(maxWidth / width);
+		var maxCol = Math.max(1, Math.floor(maxWidth / width));
 		var maxRow = Math.ceil(count / maxCol);
 		var col    = 0;
 		var row    = 0;
