@@ -556,3 +556,7 @@ image.tab-icon {
 	display: none;
 }
 
+/* Hide Caption Titlebar Plus */
+:root[treestyletab-tabbar-position="top"] #menubar-items[dz_home_mainmenu_floating="true"] {
+	z-index: 650000;
+}
