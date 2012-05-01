@@ -104,9 +104,9 @@ tabbrowser[treestyletab-mode="vertical"]
 	-moz-border-left-colors: none !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab:not([pinned]),
+  .tabbrowser-tab:not([pinned]):not([selected="true"]),
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned]:not([titlechanged]) {
+  .tabbrowser-tab[pinned]:not([titlechanged]):not([selected="true"]) {
 	background: transparent !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
