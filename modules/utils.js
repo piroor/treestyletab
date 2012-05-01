@@ -540,6 +540,20 @@ var TreeStyleTabUtils = {
  
 	overrideExtensions : function TSTUtils_overrideExtensions() 
 	{
+		// Scriptish
+		// https://addons.mozilla.org/firefox/addon/scriptish/
+		if (this.getTreePref('compatibility.Scriptish')) {
+			try {
+				let tabModule = Components.utils.import('resource://scriptish/utils/Scriptish_openInTab.js', {});
+				let Scriptish_openInTab = tabModule.Scriptish_openInTab;
+				tabModule.Scriptish_openInTab = function(aURL, aLoadInBackground, aReuse, aChromeWin) {
+					aChromeWin.TreeStyleTabService.readyToOpenChildTabNow(aChromeWin.gBrowser);
+					return Scriptish_openInTab.apply(this, arguments);
+				};
+			}
+			catch(e) {
+			}
+		}
 	},
  
 	updateNarrowScrollbarStyle : function TSTUtils_updateNarrowScrollbarStyle() 
