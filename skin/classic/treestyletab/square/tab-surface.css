@@ -13,7 +13,7 @@
   .tabbrowser-tab
   :-moz-any(.tab-background:not([pinned]),
             .tab-background:not([titlechanged])[pinned]) {
-	background-color: ThreeDFace !important;
+	background-color: -moz-dialog !important;
 	background-image: -moz-linear-gradient(
 	                    top, 
 	                    rgba(0, 0, 0, 0.02) 0,
