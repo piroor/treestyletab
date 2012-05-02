@@ -470,10 +470,7 @@ AutoHideBrowser.prototype = {
 				);
 			if (closebox[position] - padding <= coordinate &&
 				closebox[position] + closebox[size] + padding >= coordinate)
-				return {
-					padding   : padding,
-					__proto__ : closebox
-				};
+				return this.cloneBoxObject(closebox, { padding : padding });
 		}
 
 		var twisty;
@@ -487,13 +484,23 @@ AutoHideBrowser.prototype = {
 				);
 			if (twisty[position] - padding <= coordinate &&
 				twisty[position] + twisty[size] + padding >= coordinate)
-				return {
-					padding   : padding,
-					__proto__ : twisty
-				};
+				return this.cloneBoxObject(twisty, { padding : padding });
 		}
 
 		return null;
+	},
+	cloneBoxObject : function AHB_cloneBoxObject(aBoxObject, aOverride)
+	{
+		var box = {};
+		for (let i in aBoxObject)
+		{
+			if (typeof aBoxObject[i] != 'function')
+				box[i] = aBoxObject[i];
+		}
+		Object.keys(aOverride).forEach(function(aKey) {
+			box[aKey] = aOverride[aKey];
+		});
+		return box;
 	},
  
 	cancelShowHideOnMouseMove : function AHB_cancelShowHideOnMouseMove() 
