@@ -5,7 +5,7 @@
   <RDF:Description RDF:about="urn:mozilla:install-manifest"
                    em:id="treestyletab@piro.sakura.ne.jp"
                    em:name="Tree Style Tab"
-                   em:version="0.14.2012021101"
+                   em:version="0.14.2012050301"
                    em:creator="SHIMODA Hiroshi"
                    em:description="Show tabs like a tree."
                    em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
@@ -167,8 +167,8 @@
 
     <em:targetApplication>
       <RDF:Description em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
-                       em:minVersion="4.0"
-                       em:maxVersion="13.0a1" />
+                       em:minVersion="10.0"
+                       em:maxVersion="15.0a1" />
     </em:targetApplication>
   </RDF:Description>
 </RDF:RDF>
