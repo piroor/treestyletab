@@ -36,8 +36,10 @@ var TreeStyleTabWindowHelper = {
 		if ('BrowserOpenTab' in window) {
 			eval('window.BrowserOpenTab = '+
 				window.BrowserOpenTab.toSource().replace(
-					'gBrowser.loadOneTab(',
-					'gBrowser.treeStyleTab.onBeforeNewTabCommand(); $&'
+					// loadOneTab => Firefox 10 or olders
+					// openUILinkIn => Firefox 11 or later
+					/(gBrowser\.loadOneTab\(|openUILinkIn\(.+\,\s*"tab"\))/,
+					'gBrowser.treeStyleTab.onBeforeNewTabCommand(); $1'
 				)
 			);
 		}
