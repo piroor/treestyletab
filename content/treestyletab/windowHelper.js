@@ -7,15 +7,24 @@ var TreeStyleTabWindowHelper = {
  
 	preInit : function TSTWH_preInit() 
 	{
-		var source = window.BrowserStartup.toSource();
+		var source;
+		var target;
+		if ('gBrowserInit' in window && 'onLoad' in gBrowserInit) { // Firefox 16 and later (after https://bugzilla.mozilla.org/show_bug.cgi?id=731926 )
+			source = gBrowserInit.onLoad.toSource();
+			target = 'gBrowserInit.onLoad';
+		}
+		else if ('BrowserStartup' in window) { // legacy code for Firefox 15 and older
+			source = window.BrowserStartup.toSource();
+			target = 'gBrowserInit.onLoad';
+		}
 		if (source.indexOf('!MultipleTabService.tearOffSelectedTabsFromRemote()') > -1) {
-			eval('window.BrowserStartup = '+source.replace(
+			eval(target+' = '+source.replace(
 				'!MultipleTabService.tearOffSelectedTabsFromRemote()',
 				'!TreeStyleTabService.tearOffSubtreeFromRemote() && $&'
 			));
 		}
 		else if (source.indexOf('gBrowser.swapBrowsersAndCloseOther') > -1) {
-			eval('window.BrowserStartup = '+source.replace(
+			eval(target+' = '+source.replace(
 				'gBrowser.swapBrowsersAndCloseOther(gBrowser.selectedTab, uriToLoad);',
 				'if (!TreeStyleTabService.tearOffSubtreeFromRemote()) { $& }'
 			));
