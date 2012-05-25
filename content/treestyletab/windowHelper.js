@@ -15,7 +15,7 @@ var TreeStyleTabWindowHelper = {
 		}
 		else if ('BrowserStartup' in window) { // legacy code for Firefox 15 and older
 			source = window.BrowserStartup.toSource();
-			target = 'gBrowserInit.onLoad';
+			target = 'BrowserStartup';
 		}
 		if (source.indexOf('!MultipleTabService.tearOffSelectedTabsFromRemote()') > -1) {
 			eval(target+' = '+source.replace(
