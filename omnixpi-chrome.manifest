@@ -48,7 +48,7 @@ override chrome://treestyletab/skin/metal/platform.css	chrome://treestyletab/ski
 override chrome://treestyletab/skin/metal/platform.css	chrome://treestyletab/skin/dummy.css	os=WINNT
 override chrome://treestyletab/skin/metal/platform.css	chrome://treestyletab/skin/dummy.css	os=Linux
 override chrome://treestyletab/skin/metal/tab.css	chrome://treestyletab/skin/metal/tab-legacy.css
-override chrome://treestyletab/skin/metal/tab.css	chrome://treestyletab/skin/metal/tab-base.css	appversion>=13.0a1
+override chrome://treestyletab/skin/metal/tab.css	chrome://treestyletab/skin/metal/tab-base.css	appversion>=14.0a1
 
 override chrome://treestyletab/skin/sidebar/sidebar.css	chrome://treestyletab/skin/sidebar/sidebar-legacy.css
 override chrome://treestyletab/skin/sidebar/sidebar.css	chrome://treestyletab/skin/sidebar/sidebar-base.css	appversion>=12.0a1
