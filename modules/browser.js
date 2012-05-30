@@ -4057,7 +4057,8 @@ TreeStyleTabBrowser.prototype = {
 			aSelf._handleNewActiveTabTimer = null;
 
 			if (aOptions.canExpandTree) {
-				if (aOptions.canCollapseTree)
+				if (aOptions.canCollapseTree &&
+					aSelf.getTreePref('autoExpand.intelligently'))
 					aSelf.collapseExpandTreesIntelligentlyFor(aTab);
 				else
 					aSelf.collapseExpandSubtree(aTab, false);
