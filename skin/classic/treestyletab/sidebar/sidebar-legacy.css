@@ -35,6 +35,7 @@
   .tab-stack {
 	position: relative !important;
 	-moz-border-image: url("dropmarker.png") 12 0 0 11 / 12px 0 0 11px !important;
+	border-image: url("dropmarker.png") 12 0 0 11 fill / 12px 0 0 11px !important;
 	margin-top: -7px !important;
 	margin-left: -11px !important;
 }
@@ -69,6 +70,7 @@
   .tab-stack {
 	position: relative !important;
 	-moz-border-image: url("dropmarker.png") 0 0 12 11 / 0 0 12px 11px !important;
+	border-image: url("dropmarker.png") 0 0 12 11 fill / 0 0 12px 11px !important;
 	margin-bottom: -7px !important;
 	margin-left: -11px !important;
 }

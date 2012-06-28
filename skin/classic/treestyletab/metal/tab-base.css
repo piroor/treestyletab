@@ -113,6 +113,7 @@
 	 * because "-slice" works only on Firefox 12.
 	 */
 	-moz-border-image-slice: 10 5 10 10 fill !important;
+	border-image: url("tab-active-l.png") 10 5 10 10 fill / 10px 5px 10px 10px !important;
 }
 
 /* background, right */
@@ -121,6 +122,7 @@
   .tab-stack {
 	-moz-border-image: url("tab-active-r.png") 10 10 10 5 / 10px 10px 10px 5px !important;
 	-moz-border-image-slice: 10 10 10 5 fill !important;
+	border-image: url("tab-active-r.png") 10 10 10 5 fill / 10px 10px 10px 5px !important;
 }
 
 /* foreground, left */
@@ -129,6 +131,7 @@
   .tab-stack {
 	-moz-border-image: url("tab-active-selected-l.png") 10 5 10 10 / 10px 5px 10px 10px !important;
 	-moz-border-image-slice: 10 5 10 10 fill !important;
+	border-image: url("tab-active-selected-l.png") 10 5 10 10 fill / 10px 5px 10px 10px !important;
 }
 
 /* foreground, right */
@@ -137,6 +140,7 @@
   .tab-stack {
 	-moz-border-image: url("tab-active-selected-r.png") 10 10 10 5 / 10px 10px 10px 5px !important;
 	-moz-border-image-slice: 10 10 10 5 fill !important;
+	border-image: url("tab-active-selected-r.png") 10 10 10 5 fill / 10px 10px 10px 5px !important;
 }
 
 
@@ -155,6 +159,7 @@
   .tabbrowser-tab[selected]:hover
   .tab-content[pinned] {
 	-moz-border-image: none !important;
+	border-image: none !important;
 	margin: 0 !important;
 	padding: 0 !important;
 }
@@ -260,6 +265,7 @@
   .tab-stack {
 	-moz-border-image: url("tab-inactive-l.png") 10 5 10 10 / 10px 5px 10px 10px !important;
 	-moz-border-image-slice: 10 5 10 10 fill !important;
+	border-image: url("tab-inactive-l.png") 10 5 10 10 fill / 10px 5px 10px 10px !important;
 }
 
 /* background, right */
@@ -269,6 +275,7 @@
   .tab-stack {
 	-moz-border-image: url("tab-inactive-r.png") 10 10 10 5 / 10px 10px 10px 5px !important;
 	-moz-border-image-slice: 10 10 10 5 fill !important;
+	border-image: url("tab-inactive-r.png") 10 10 10 5 fill / 10px 10px 10px 5px !important;
 }
 
 /* foreground, left */
@@ -278,6 +285,7 @@
   .tab-stack{
 	-moz-border-image: url("tab-inactive-selected-l.png") 10 5 10 10 / 10px 5px 10px 10px !important;
 	-moz-border-image-slice: 10 5 10 10 fill !important;
+	border-image: url("tab-inactive-selected-l.png") 10 5 10 10 fill / 10px 5px 10px 10px !important;
 }
 
 /* foreground, right */
@@ -287,6 +295,7 @@
   .tab-stack{
 	-moz-border-image: url("tab-inactive-selected-r.png") 10 10 10 5 / 10px 10px 10px 5px !important;
 	-moz-border-image-slice: 10 10 10 5 fill !important;
+	border-image: url("tab-inactive-selected-r.png") 10 10 10 5 fill / 10px 10px 10px 5px !important;
 }
 
 

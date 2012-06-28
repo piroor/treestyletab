@@ -78,6 +78,7 @@
 	border-radius: 0 !important;
 	-moz-border-radius: 0 !important;
 	-moz-border-image: none !important;
+	border-image: none !important;
 	box-align: stretch !important;
 	-moz-box-align: stretch !important;
 }

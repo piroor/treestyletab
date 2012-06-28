@@ -289,6 +289,8 @@ tabbrowser[treestyletab-mode="vertical"]
   .tabbrowser-tab:not([pinned="true"])[treestyletab-drop-position="before"]:not([selected="true"]):hover {
 	-moz-border-image: url("dropmarker.png") 12 0 0 11 fill / 12px 0 0 11px !important;
 	-moz-border-image-outset: 6px 0 0 0 !important;
+	border-image: url("dropmarker.png") 12 0 0 11 fill / 12px 0 0 11px !important;
+	border-image-outset: 6px 0 0 0 !important;
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-style]
@@ -301,6 +303,8 @@ tabbrowser[treestyletab-mode="vertical"]
   .tabbrowser-tab:not([pinned="true"])[treestyletab-drop-position="after"]:not([selected="true"]):hover {
 	-moz-border-image: url("dropmarker.png") 0 0 12 11 fill / 0 0 12px 11px !important;
 	-moz-border-image-outset: 0 0 6px 0 !important;
+	border-image: url("dropmarker.png") 0 0 12 11 fill / 0 0 12px 11px !important;
+	border-image-outset: 0 0 6px 0 !important;
 }
 
 
@@ -428,6 +432,7 @@ tabbrowser[treestyletab-mode="vertical"]
 	margin-left: 0 !important;
 	margin-right: 0 !important;
 	-moz-border-image: none !important;
+	border-image: none !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:not([treestyletab-drop-position])
