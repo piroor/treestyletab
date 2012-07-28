@@ -7,13 +7,13 @@
    // in dragstart event listener
    window['piro.sakura.ne.jp'].tabsDragUtils.startTabsDrag(aEvent, aArrayOfTabs);
 
- license: The MIT License, Copyright (c) 2010-2011 SHIMODA "Piro" Hiroshi
+ license: The MIT License, Copyright (c) 2010-2012 YUKI "Piro" Hiroshi
    http://github.com/piroor/fxaddonlibs/blob/master/license.txt
  original:
    http://github.com/piroor/fxaddonlibs/blob/master/tabsDragUtils.js
 */
 (function() {
-	const currentRevision = 17;
+	const currentRevision = 18;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -59,7 +59,7 @@
 						'var doCopy =',
 						'var tabsDataTransferProxy = dt = new window["piro.sakura.ne.jp"].tabsDragUtils.DOMDataTransferProxy(dt, insertionPoint); $&'
 					).replace( // for Tree Style Tab (save tree structure to bookmarks)
-						'PlacesUIUtils.ptm.doTransaction(txn);',
+						/(PlacesUIUtils\.ptm|PlacesUtils\.transactionManager)\.doTransaction\(txn\);/,
 						<![CDATA[
 							if ('_tabs' in tabsDataTransferProxy &&
 								'TreeStyleTabBookmarksService' in window)
