@@ -2017,6 +2017,10 @@ TreeStyleTabBrowser.prototype = {
 	{
 		this.stopRendering();
 
+		this._lastTreeViewEnabledBeforeDestroyed = this.treeViewEnabled;
+		this.treeViewEnabled = false;
+		this.maxTreeLevel = 0;
+
 		this._lastTabbarPositionBeforeDestroyed = this.position;
 		if (this.position != 'top') {
 			let self = this;
@@ -2030,10 +2034,7 @@ TreeStyleTabBrowser.prototype = {
 			);
 		}
 
-		this.maxTreeLevel = 0;
 		this.fixed = true;
-		this._lastTreeViewEnabledBeforeDestroyed = this.treeViewEnabled;
-		this.treeViewEnabled = false;
 
 		var tabbar = this.mTabBrowser.tabContainer;
 		tabbar.removeAttribute('width');
