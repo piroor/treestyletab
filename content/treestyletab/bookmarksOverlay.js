@@ -397,6 +397,7 @@ var TreeStyleTabBookmarksService = {
 				replaceCurrentTab : undefined
 			};
 		if (
+			aEvent.type != 'drop' &&
 			aWhere.indexOf('tab') != 0 &&
 			aEvent.target.id != 'placesContext_openContainer:tabs' &&
 			aEvent.target.id != 'placesContext_openLinks:tabs' &&

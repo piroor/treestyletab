@@ -945,58 +945,84 @@ catch(e) {
 			return;
 		}
 
-		// dropping of urls
-		if (!draggedTab) {
-			aEvent.stopPropagation();
+		if (!draggedTab)
+			this.handleLinksOrBookmarks(aEvent, dropActionInfo);
+	},
+	handleLinksOrBookmarks : function TabbarDND_handleLinksOrBookmarks(aEvent, aDropActionInfo)
+	{
+		aEvent.stopPropagation();
 
-			let urls = this.retrieveURLsFromDataTransfer(dt);
-			let url = urls.length ? urls[0] : '' ;
+		var uris = this.retrieveURLsFromDataTransfer(aEvent.dataTransfer);
+		uris.forEach(function(aURI) {
+			if (aURI.indexOf(this.BOOKMARK_FOLDER) != 0)
+				this.securityCheck(aURI);
+		}, this);
 
-			if (!url || !url.length || url.indexOf(' ', 0) != -1 || /^\s*(javascript|data):/.test(url))
-				return;
+		var sv = this.treeStyleTab;
+		var b  = this.browser;
+		var w  = this.window;
 
-			let (sourceDoc = session ? session.sourceDocument : null) {
-				let sourceURI = sourceDoc ? sourceDoc.documentURI : 'file:///' ;
-				let normalizedURI = sv.makeURIFromSpec(url);
-				if (normalizedURI && sourceURI.indexOf('chrome://') < 0) {
-					try {
-						SecMan.checkLoadURIStr(sourceURI, normalizedURI.spec, Ci.nsIScriptSecurityManager.STANDARD);
-					}
-					catch(e) {
-						aEvent.stopPropagation();
-						throw 'Drop of ' + url + ' denied.';
-					}
+		let bgLoad = sv.getPref('browser.tabs.loadInBackground');
+		if (aEvent.shiftKey) bgLoad = !bgLoad;
+
+		let tab = sv.getTabFromEvent(aEvent);
+		if (
+			!tab ||
+			aEvent.dataTransfer.dropEffect == 'copy' ||
+			uris.length > 1 ||
+			uris[0].indexOf(this.BOOKMARK_FOLDER) == 0
+			) {
+			uris.reverse().forEach(function(aURI) {
+				if (aURI.indexOf(this.BOOKMARK_FOLDER) == 0) {
+					// TODO: opened tabs must be moved to the drop position!!
+					let data = aURI.replace(this.BOOKMARK_FOLDER, '');
+					data = JSON.parse(data);
+					this.window.PlacesUIUtils._openTabset(data.children, { type : 'drop' }, this.window, data.title);
+				}
+				else {
+					aURI = w.getShortcutOrURI(aURI);
+					this.performDrop(aDropActionInfo, b.loadOneTab(aURI, { inBackground: bgLoad }));
+				}
+			}, this);
+		}
+		else {
+			let locked = (
+					tab.getAttribute('locked') == 'true' || // Tab Mix Plus and others
+					tab.getAttribute('isPageLocked') == 'true' // Super Tab Mode
+				);
+			let loadDroppedLinkToNewChildTab = aDropActionInfo.position != sv.kDROP_ON || locked;
+			if (!loadDroppedLinkToNewChildTab &&
+				aDropActionInfo.position == sv.kDROP_ON)
+				loadDroppedLinkToNewChildTab = sv.dropLinksOnTabBehavior() == sv.kDROPLINK_NEWTAB;
+
+			try {
+				let uri = w.getShortcutOrURI(uris[0]);
+				if (loadDroppedLinkToNewChildTab || locked) {
+					this.performDrop(aDropActionInfo, b.loadOneTab(uri, { inBackground: bgLoad }));
+				}
+				else {
+					tab.linkedBrowser.loadURI(uri);
+					if (!bgLoad)
+						b.selectedTab = tab;
 				}
 			}
-
-			let bgLoad = sv.getPref('browser.tabs.loadInBackground');
-			if (aEvent.shiftKey) bgLoad = !bgLoad;
-
-			let tab = sv.getTabFromEvent(aEvent);
-			if (!tab || dt.dropEffect == 'copy') {
-				this.performDrop(dropActionInfo, b.loadOneTab(w.getShortcutOrURI(url), { inBackground: bgLoad }));
+			catch(e) {
 			}
-			else {
-				let locked = (
-						tab.getAttribute('locked') == 'true' || // Tab Mix Plus and others
-						tab.getAttribute('isPageLocked') == 'true' // Super Tab Mode
-					);
-				let loadDroppedLinkToNewChildTab = dropActionInfo.position != sv.kDROP_ON || locked;
-				if (!loadDroppedLinkToNewChildTab &&
-					dropActionInfo.position == sv.kDROP_ON)
-					loadDroppedLinkToNewChildTab = sv.dropLinksOnTabBehavior() == sv.kDROPLINK_NEWTAB;
-
+		}
+	},
+	securityCheck : function TabbarDND_securityCheck(aURI)
+	{
+		let session = this.treeStyleTab.currentDragSession;
+		let (sourceDoc = session ? session.sourceDocument : null) {
+			let sourceURI = sourceDoc ? sourceDoc.documentURI : 'file:///' ;
+			let normalizedURI = this.treeStyleTab.makeURIFromSpec(aURI);
+			if (normalizedURI && sourceURI.indexOf('chrome://') < 0) {
 				try {
-					if (loadDroppedLinkToNewChildTab || locked) {
-						this.performDrop(dropActionInfo, b.loadOneTab(w.getShortcutOrURI(url), { inBackground: bgLoad }));
-					}
-					else {
-						tab.linkedBrowser.loadURI(w.getShortcutOrURI(url));
-						if (!bgLoad)
-							b.selectedTab = tab;
-					}
+					SecMan.checkLoadURIStr(sourceURI, normalizedURI.spec, Ci.nsIScriptSecurityManager.STANDARD);
 				}
 				catch(e) {
+					aEvent.stopPropagation();
+					throw 'Drop of ' + aURI + ' denied.';
 				}
 			}
 		}
@@ -1025,14 +1051,28 @@ catch(e) {
 			if (urls.length)
 				break;
 		}
-		return urls;
+		return urls.filter(function(aURI) {
+				return aURI &&
+						aURI.length &&
+						aURI.indexOf(this.BOOKMARK_FOLDER) == 0 ||
+						(
+							aURI.indexOf(' ', 0) == -1 &&
+							!/^\s*(javascript|data):/.test(aURI)
+						);
+			}, this);
 	},
+	BOOKMARK_FOLDER: 'x-moz-place:',
 	retrieveURLsFromData : function TSTService_retrieveURLsFromData(aData, aType)
 	{
 		switch (aType)
 		{
 			case 'text/x-moz-place':
-				return this.retrieveURLsFromPlaceData(JSON.parse(aData));
+				let (uri = JSON.parse(aData).uri) {
+					if (uri)
+						return uri;
+					else
+						return this.BOOKMARK_FOLDER+aData;
+				}
 
 			case 'text/uri-list':
 				return aData.replace(/\r/g, '\n')
@@ -1055,17 +1095,6 @@ catch(e) {
 				return [fileHandler.getURLSpecFromFile(aData)];
 		}
 		return [];
-	},
-	retrieveURLsFromPlaceData : function TabbarDND_retrieveURLsFromPlaceData(aData)
-	{
-		var uris = [];
-		if (aData.uri)
-			uris.push(aData.uri);
-		if (aData.children)
-			aData.children.forEach(function(aChild) {
-				uris = uris.concat(this.retrieveURLsFromPlaceData(aChild));
-			}, this);
-		return uris;
 	},
     
 	init : function TabbarDND_init(aTabBrowser) 
