@@ -1006,6 +1006,7 @@ catch(e) {
 	{
 		var urls = [];
 		var types = [
+				'text/x-moz-place',
 				'text/uri-list',
 				'text/x-moz-text-internal',
 				'text/x-moz-url',
@@ -1030,6 +1031,9 @@ catch(e) {
 	{
 		switch (aType)
 		{
+			case 'text/x-moz-place':
+				return this.retrieveURLsFromPlaceData(JSON.parse(aData));
+
 			case 'text/uri-list':
 				return aData.replace(/\r/g, '\n')
 							.replace(/^\#.+$/gim, '')
@@ -1051,6 +1055,17 @@ catch(e) {
 				return [fileHandler.getURLSpecFromFile(aData)];
 		}
 		return [];
+	},
+	retrieveURLsFromPlaceData : function TabbarDND_retrieveURLsFromPlaceData(aData)
+	{
+		var uris = [];
+		if (aData.uri)
+			uris.push(aData.uri);
+		if (aData.children)
+			aData.children.forEach(function(aChild) {
+				uris = uris.concat(this.retrieveURLsFromPlaceData(aChild));
+			}, this);
+		return uris;
 	},
     
 	init : function TabbarDND_init(aTabBrowser) 
