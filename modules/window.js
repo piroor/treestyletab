@@ -74,6 +74,10 @@ TreeStyleTabWindow.prototype = {
  
 	window : null, 
 	document : null,
+	get MutationObserver()
+	{
+		return this.window.MutationObserver || this.window.MozMutationObserver;
+	},
  
 /* API */ 
 	
@@ -147,6 +151,11 @@ TreeStyleTabWindow.prototype = {
 		this.assertBeforeDestruction(w);
 		return 'SplitBrowser' in w ? w.SplitBrowser.activeBrowser :
 			w.gBrowser ;
+	},
+ 
+	get browserBottomBox()
+	{
+		return this.document.getElementById('browser-bottombox');
 	},
  
 	get isPopupWindow() 
@@ -348,6 +357,12 @@ TreeStyleTabWindow.prototype = {
 		d.addEventListener(this.kEVENT_TYPE_TABBAR_STATE_CHANGED,        this, false);
 		d.addEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB,              this, false);
 
+		if (this.MutationObserver) {
+			this.browserBottomBoxObserver = new this.MutationObserver(this);
+			this.browserBottomBoxObserver.observe(this.browserBottomBox, { childList : true });
+			this.initBrowserBottomBoxChildListeners();
+		}
+
 		var appcontent = d.getElementById('appcontent');
 		appcontent.addEventListener('SubBrowserAdded', this, false);
 		appcontent.addEventListener('SubBrowserRemoveRequest', this, false);
@@ -472,6 +487,18 @@ TreeStyleTabWindow.prototype = {
 			items[i].style.marginLeft = tabs[i].getAttribute(this.kNEST)+'em';
 		}
 	},
+ 
+	initBrowserBottomBoxChildListeners : function TSTWindow_initBrowserBottomBoxChildListeners() 
+	{
+		Array.forEach(this.browserBottomBox.childNodes, function(aChild) {
+			var observer = aChild.__treestyletab__attributeObserver;
+			if (!observer) {
+				observer = new this.MutationObserver(this);
+				observer.observe(aChild, { attributes : true });
+				aChild.__treestyletab__attributeObserver = observer;
+			}
+		}, this)
+	},
   
 	destroy : function TSTWindow_destroy() 
 	{
@@ -500,6 +527,12 @@ TreeStyleTabWindow.prototype = {
 				d.removeEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGED,     this, false);
 				d.removeEventListener(this.kEVENT_TYPE_TABBAR_STATE_CHANGED,        this, false);
 				d.removeEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB,              this, false);
+
+				if (this.browserBottomBoxObserver) {
+					this.destroyBrowserBottomBoxChildListeners();
+					this.browserBottomBoxObserver.disconnect();
+					delete this.browserBottomBoxObserver;
+				}
 
 				for (let i = 0, maxi = this._tabFocusAllowance.length; i < maxi; i++)
 				{
@@ -533,6 +566,17 @@ TreeStyleTabWindow.prototype = {
 		if (aTabBrowser.localName != 'tabbrowser') return;
 		aTabBrowser.treeStyleTab.destroy();
 		delete aTabBrowser.treeStyleTab;
+	},
+ 
+	destroyBrowserBottomBoxChildListeners : function TSTWindow_destroyBrowserBottomBoxChildListeners() 
+	{
+		Array.forEach(this.browserBottomBox.childNodes, function(aChild) {
+			var observer = aChild.__treestyletab__attributeObserver;
+			if (observer) {
+				observer.disconnect();
+				delete aChild.__treestyletab__attributeObserver;
+			}
+		}, this)
 	},
    
 /* Event Handling */ 
@@ -1145,6 +1189,25 @@ TreeStyleTabWindow.prototype = {
 			}
 		}
 		this._restoringTabs = [];
+	},
+ 
+	handleMutations : function TSTWindow_handleMutations(aMutations, aObserver) 
+	{
+		aMutations.forEach(function(aMutation) {
+			switch (aMutation.type)
+			{
+				case 'childList':
+					this.destroyBrowserBottomBoxChildListeners();
+					this.initBrowserBottomBoxChildListeners();
+					break;
+
+				case 'attributes':
+					if (aMutation.attributeName == 'hidden' ||
+						aMutation.attributeName == 'collapsed')
+						this.browser.treeStyleTab.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
+					break;
+			}
+		}, this);
 	},
   
 /* Commands */ 
