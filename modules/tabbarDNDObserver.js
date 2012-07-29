@@ -496,6 +496,9 @@ catch(e) {
 	
 	getDraggedTabsInfoFromOneTab : function TabbarDND_getDraggedTabsInfoFromOneTab(aInfo, aTab) 
 	{
+		if (aInfo.draggedTabsInfo)
+			return aInfo.draggedTabsInfo;
+
 		var sv = this.treeStyleTab;
 		var sourceWindow = aTab.ownerDocument.defaultView;
 		var sourceBrowser = sourceWindow.TreeStyleTabService.getTabBrowserFromChild(aTab);
@@ -961,6 +964,7 @@ catch(e) {
 		var sv = this.treeStyleTab;
 		var b  = this.browser;
 		var w  = this.window;
+		var self = this;
 
 		let bgLoad = sv.getPref('browser.tabs.loadInBackground');
 		if (aEvent.shiftKey) bgLoad = !bgLoad;
@@ -974,10 +978,17 @@ catch(e) {
 			) {
 			uris.reverse().forEach(function(aURI) {
 				if (aURI.indexOf(this.BOOKMARK_FOLDER) == 0) {
-					// TODO: opened tabs must be moved to the drop position!!
-					let data = aURI.replace(this.BOOKMARK_FOLDER, '');
-					data = JSON.parse(data);
-					this.window.PlacesUIUtils._openTabset(data.children, { type : 'drop' }, this.window, data.title);
+					let newTabs = sv.getNewTabsWithOperation(function() {
+									var data = aURI.replace(self.BOOKMARK_FOLDER, '');
+									data = JSON.parse(data);
+									w.PlacesUIUtils._openTabset(data.children, { type : 'drop' }, w, data.title);
+								}, b);
+					aDropActionInfo.draggedTabsInfo = {
+						draggedTabs : newTabs,
+						draggedTab : newTabs[0],
+						isMultipleMove : newTabs.length > 1
+					};
+					this.performDrop(aDropActionInfo, newTabs[0]);
 				}
 				else {
 					aURI = w.getShortcutOrURI(aURI);

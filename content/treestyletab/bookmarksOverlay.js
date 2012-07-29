@@ -209,25 +209,6 @@ var TreeStyleTabBookmarksService = {
 		return ids;
 	},
 
-	getTabsInfo : function TSTBMService_getTabsInfo(aTabBrowser)
-	{
-		var tabs = this.getTabsArray(aTabBrowser);
-		return tabs.map(function(aTab) {
-				return aTab.getAttribute(this.kID)+'\n'+
-						aTab.getAttribute('busy')+'\n'+
-						aTab.linkedBrowser.currentURI.spec;
-			}, this);
-	},
-
-	getNewTabsFromPreviousTabsInfo : function TSTBMService_getNewTabsFromPreviousTabsInfo(aTabBrowser, aTabsInfo)
-	{
-		var tabs = this.getTabsArray(aTabBrowser);
-		var currentTabsInfo = this.getTabsInfo(aTabBrowser);
-		return tabs.filter(function(aTab, aIndex) {
-				return aTabsInfo.indexOf(currentTabsInfo[aIndex]) < 0;
-			});
-	},
- 
 
 	preInit : function TSTBMService_preInit()
 	{
@@ -278,7 +259,7 @@ var TreeStyleTabBookmarksService = {
 						/(\}\)?)$/,
 						<![CDATA[
 							if (TSTTreeStructure && TSTPreviousTabs) {
-								let tabs = browserWindow.TreeStyleTabBookmarksService.getNewTabsFromPreviousTabsInfo(browserWindow.gBrowser, TSTPreviousTabs)
+								let tabs = browserWindow.TreeStyleTabService.getNewTabsFromPreviousTabsInfo(browserWindow.gBrowser, TSTPreviousTabs)
 								browserWindow.TreeStyleTabService.applyTreeStructureToTabs(tabs, TSTTreeStructure, TSTOpenGroupBookmarkBehavior & browserWindow.TreeStyleTabBookmarksService.kGROUP_BOOKMARK_EXPAND_ALL_TREE);
 							}
 						$1]]>
@@ -442,7 +423,7 @@ var TreeStyleTabBookmarksService = {
 				'TMP_Places' in aBrowserWindow &&
 				'openGroup' in aBrowserWindow.TMP_Places) {
 				result.treeStructure = treeStructure;
-				result.previousTabs = aBrowserWindow.TreeStyleTabBookmarksService.getTabsInfo(aBrowserWindow.gBrowser);
+				result.previousTabs = aBrowserWindow.TreeStyleTabService.getTabsInfo(aBrowserWindow.gBrowser);
 			}
 			else {
 				sv.readyToOpenNewTabGroup(null, treeStructure, result.behavior & sv.kGROUP_BOOKMARK_EXPAND_ALL_TREE);

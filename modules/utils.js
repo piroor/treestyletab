@@ -1862,6 +1862,37 @@ var TreeStyleTabUtils = {
 		var b = this.getTabBrowserFromChild(aTab);
 		return this.getVisibleTabsArray(b).indexOf(aTab);
 	},
+ 
+	/**
+	 * Returns tabs which are newly opened in the given operation.
+	 */
+	getNewTabsWithOperation : function TSTUtils_getNewTabsWithOperation(aOperation, aTabBrowser)
+	{
+		var previousTabs = this.getTabsInfo(aTabBrowser);
+		aOperation.call(this);
+		return this.getNewTabsFromPreviousTabsInfo(aTabBrowser, previousTabs);
+	},
+ 
+	/**
+	 * Returns tabs which are newly opened. This requires the "previous state".
+	 */
+	getNewTabsFromPreviousTabsInfo : function TSTUtils_getNewTabsFromPreviousTabsInfo(aTabBrowser, aTabsInfo) 
+	{
+		var tabs = this.getTabsArray(aTabBrowser);
+		var currentTabsInfo = this.getTabsInfo(aTabBrowser);
+		return tabs.filter(function(aTab, aIndex) {
+				return aTabsInfo.indexOf(currentTabsInfo[aIndex]) < 0;
+			});
+	},
+	getTabsInfo : function TSTUtils_getTabsInfo(aTabBrowser)
+	{
+		var tabs = this.getTabsArray(aTabBrowser);
+		return tabs.map(function(aTab) {
+				return aTab.getAttribute(this.kID)+'\n'+
+						aTab.getAttribute('busy')+'\n'+
+						aTab.linkedBrowser.currentURI.spec;
+			}, this);
+	},
   
 /* notify "ready to open child tab(s)" */ 
 	
