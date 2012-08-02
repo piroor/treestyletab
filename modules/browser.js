@@ -3872,6 +3872,8 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var parentTab = this.getParentTab(aTab);
 
+		this.collapseExpandSubtree(aTab, false);
+
 		/**
 		 * Children of the newly pinned tab are possibly
 		 * moved to the top of the tab bar, by TabMove event
