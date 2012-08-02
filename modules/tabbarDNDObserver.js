@@ -350,8 +350,15 @@ catch(e) {
 */
 				var prevTab = sv.getPreviousVisibleTab(tab);
 				if (!prevTab) {
-					info.action       = sv.kACTION_MOVE | sv.kACTION_PART;
-					info.insertBefore = firstTab;
+					// allow to drop pinned tab to beside of another pinned tab
+					if (aSourceTab && aSourceTab.getAttribute('pinned') == 'true') {
+						info.action       = sv.kACTION_MOVE;
+						info.insertBefore = tab;
+					}
+					else {
+						info.action       = sv.kACTION_MOVE | sv.kACTION_PART;
+						info.insertBefore = firstTab;
+					}
 				}
 				else {
 					var prevLevel   = Number(prevTab.getAttribute(sv.kNEST));
