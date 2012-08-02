@@ -5611,15 +5611,24 @@ TreeStyleTabBrowser.prototype = {
 				aTab.removeAttribute(this.kCOLLAPSED_DONE);
 			aTab.removeAttribute(this.kCOLLAPSING_PHASE);
 
+			// Pinned tabs are positioned by "margin-top", so
+			// we must not reset the property for pinned tabs.
+			// (However, we still must update "opacity".)
+			let pinned = aTab.getAttribute('pinned') == 'true';
+			let canExpand = !pinned || this.collapseCSSProp != 'margin-top';
+
 			if (CSSTransitionEnabled) {
-				aTab.style.setProperty(this.collapseCSSProp, endMargin ? '-'+endMargin+'px' : '', 'important');
+				if (canExpand)
+					aTab.style.setProperty(this.collapseCSSProp, endMargin ? '-'+endMargin+'px' : '', 'important');
+
 				if (endOpacity == 0)
 					aTab.style.setProperty('opacity', endOpacity == 1 ? '' : endOpacity, 'important');
 				else
 					aTab.style.removeProperty('opacity');
 			}
 			else {
-				aTab.style.removeProperty(this.collapseCSSProp);
+				if (canExpand)
+					aTab.style.removeProperty(this.collapseCSSProp);
 				aTab.style.removeProperty('opacity');
 			}
 
