@@ -79,7 +79,7 @@ var TreeStyleTabBookmarksService = {
 			let index = aTreeStructure[i];
 			let parent = index > -1 ? aBookarmks[index] : null ;
 			if (parent && (parent.folder || parent).isFolder) {
-				let folder = parent.folder || parent;
+				let folder = parent.isFolder ? parent : parent.folder ;
 				this.BookmarksService.moveItem(item.id, folder.id, -1);
 				item.folder = folder;
 			}
