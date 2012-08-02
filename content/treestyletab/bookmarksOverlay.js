@@ -243,7 +243,10 @@ var TreeStyleTabBookmarksService = {
 						'$& var ids = [];'
 					).replace(
 						'urls.push(item.uri);',
-						'$& ids.push(item.id);'
+						'if (item.uri) { $& ids.push(item.id); }'
+					).replace(
+						'this.markPageAsTyped(item.uri);',
+						'if (item.uri) { $& }'
 					).replace(
 						/(browserWindow\.(?:getBrowser\(\)|gBrowser)\.loadTabs\([^;]+\);)/,
 						<![CDATA[
