@@ -311,6 +311,7 @@ var TreeStyleTabBookmarksService = {
 										this._getCurrentActiveWin() :
 										window) {
 								TSTBS = w.TreeStyleTabBookmarksService;
+								PlacesUtils = w.PlacesUtils;
 							}
 						]]>.toString()
 					).replace(
