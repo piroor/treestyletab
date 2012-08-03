@@ -402,7 +402,7 @@ catch(e) {
 					if (aSourceTab == nextTab) {
 						info.action = sv.kACTION_MOVE | sv.kACTION_ATTACH;
 						info.parent = sv.getParentTab(tab);
-						info.insertBefore = sv.getNextSiblingTab(tab);
+						info.insertBefore = sv.getNextSiblingTab(tab) || sv.getNextTab(nextTab);
 					}
 				}
 				if (DEBUG && info.insertBefore) dump('  insertBefore = '+info.insertBefore._tPos+'\n');
