@@ -55,7 +55,6 @@ function TreeStyleTabBrowser(aWindowService, aTabBrowser)
 	this.updateTabsIndentWithDelayTabs = [];
 	this.deferredTasks = {};
 
-	this.tabsHash = {};
 	this.tabVisibilityChangedTabs = [];
 	this._updateFloatingTabbarReason = 0;
 	this.internallyTabMovingCount = 0;
@@ -603,6 +602,8 @@ TreeStyleTabBrowser.prototype = {
 		var d = this.document;
 		var b = this.mTabBrowser;
 		b.tabContainer.treeStyleTab = this;
+
+		this.tabsHash = {};
 
 		if (b.tabContainer.parentNode.localName == 'toolbar')
 			b.tabContainer.parentNode.classList.add(this.kTABBAR_TOOLBAR);
