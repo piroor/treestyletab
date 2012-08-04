@@ -878,6 +878,12 @@ TreeStyleTabBrowser.prototype = {
 			if (!(id in this.tabsHash))
 				this.tabsHash[id] = aTab;
 		}
+		else {
+			// if the tab is restored from session, it can be not-cached.
+			let id = aTab.getAttribute(this.kID);
+			if (!(id in this.tabsHash))
+				this.tabsHash[id] = aTab;
+		}
 
 		aTab.__treestyletab__linkedTabBrowser = this.mTabBrowser;
 
@@ -3534,8 +3540,9 @@ TreeStyleTabBrowser.prototype = {
 
 		var closeSetId = !structureRestored && this._getCloseSetId(aTab, mayBeDuplicated);
 
+		// remove temporary cache
 		var currentId = aTab.getAttribute(this.kID);
-		if (id != currentId && currentId)
+		if (id != currentId && currentId && currentId in this.tabsHash)
 			delete this.tabsHash[currentId];
 
 		this.setTabValue(aTab, this.kID, id);
