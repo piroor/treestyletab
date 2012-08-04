@@ -42,6 +42,8 @@ Components.utils.import('resource://treestyletab-modules/window.js');
  
 function TreeStyleTabBrowser(aWindowService, aTabBrowser) 
 {
+	this.id = Date.now() + '-' + parseInt(Math.random() * 65000);
+
 	this.windowService = aWindowService;
 	this.window = aWindowService.window;
 	this.document = aWindowService.document;
@@ -51,6 +53,15 @@ function TreeStyleTabBrowser(aWindowService, aTabBrowser)
 
 	this.tabVisibilityChangedTabs = [];
 	this.updateTabsIndentWithDelayTabs = [];
+	this.deferredTasks = {};
+
+	this.tabsHash = {};
+	this.tabVisibilityChangedTabs = [];
+	this._updateFloatingTabbarReason = 0;
+	this.internallyTabMovingCount = 0;
+	this.subTreeMovingCount = 0;
+	this.subTreeChildrenMovingCount = 0;
+	this._treeViewEnabled = true;
 }
  
 TreeStyleTabBrowser.prototype = { 
@@ -586,8 +597,6 @@ TreeStyleTabBrowser.prototype = {
 	
 	init : function TSTBrowser_init() 
 	{
-		this.id = Date.now() + '-' + parseInt(Math.random() * 65000);
-
 		this.stopRendering();
 
 		var w = this.window;
@@ -597,16 +606,6 @@ TreeStyleTabBrowser.prototype = {
 
 		if (b.tabContainer.parentNode.localName == 'toolbar')
 			b.tabContainer.parentNode.classList.add(this.kTABBAR_TOOLBAR);
-
-		this.deferredTasks = {};
-
-		this.tabsHash = {};
-		this.tabVisibilityChangedTabs = [];
-		this._updateFloatingTabbarReason = 0;
-		this.internallyTabMovingCount = 0;
-		this.subTreeMovingCount = 0;
-		this.subTreeChildrenMovingCount = 0;
-		this._treeViewEnabled = true;
 
 		/**
 		 * On secondary (and later) window, SSWindowStateBusy event can be fired
