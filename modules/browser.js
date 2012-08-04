@@ -5949,8 +5949,8 @@ TreeStyleTabBrowser.prototype = {
 		this.smoothScrollTask = function(aTime, aBeginning, aChange, aDuration) {
 			if (self.isDestroying) return true;
 			var scrollBoxObject = self.scrollBoxObject;
-			if (aTime >= aDuration || this.deferredTasks['cancelPerformingAutoScroll']) {
-				if (!this.deferredTasks['cancelPerformingAutoScroll']) {
+			if (aTime >= aDuration || self.deferredTasks['cancelPerformingAutoScroll']) {
+				if (!self.deferredTasks['cancelPerformingAutoScroll']) {
 					scrollBoxObject.scrollTo(aEndX, aEndY);
 
 					/**
@@ -5976,7 +5976,7 @@ TreeStyleTabBrowser.prototype = {
 							self.smoothScrollTo(aEndX, aEndY, parseInt(aDuration * 0.5));
 						self = null;
 						scrollBoxObject = null;
-					})).error(this.defaultDeferredErrorHandler).next(function() {
+					})).error(self.defaultDeferredErrorHandler).next(function() {
 						delete self.deferredTasks[key];
 					});
 				}
