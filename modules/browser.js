@@ -2939,14 +2939,12 @@ TreeStyleTabBrowser.prototype = {
 				}
 			}
 
-			let ancestors = [],
-				ancestor = parentTab;
-			do {
-				ancestors.push(ancestor.getAttribute(this.kID));
-				if (!next && (next = this.getNextSiblingTab(ancestor)))
+			let ancestors = this.getAncestorTabs(tab);
+			ancestors = ancestors.map(function(aAncestor) {
+				if (!next && (next = this.getNextSiblingTab(aAncestor)))
 					backupAttributes[this.kINSERT_BEFORE] = next.getAttribute(this.kID);
-			}
-			while (ancestor = this.getParentTab(ancestor));
+				return aAncestor.getAttribute(this.kID);
+			}, this);
 			backupAttributes[this.kANCESTOR] = ancestors.join('|');
 
 			let shouldCloseParentTab = (
@@ -3364,20 +3362,19 @@ TreeStyleTabBrowser.prototype = {
 			let parent = this.getParentTab(tab);
 			let attached = false;
 			if (parent && (tab.hidden != parent.hidden)) {
-				let ancestor = parent;
 				let lastNextTab = null;
-				while (ancestor = this.getParentTab(ancestor))
-				{
-					if (ancestor.hidden == tab.hidden) {
-						this.attachTabTo(tab, ancestor, {
+				this.getAncestorTabs(tab).some(function(aAncestor) {
+					if (aAncestor.hidden == tab.hidden) {
+						this.attachTabTo(tab, aAncestor, {
 							dontMove     : true,
 							insertBefore : lastNextTab
 						});
 						attached = true;
-						break;
+						return true;
 					}
-					lastNextTab = this.getNextSiblingTab(ancestor);
-				}
+					lastNextTab = this.getNextSiblingTab(aAncestor);
+					return false;
+				}, this);
 				if (!attached) {
 					this.collapseExpandTab(tab, false, true);
 					this.detachTab(tab);
@@ -4051,11 +4048,9 @@ TreeStyleTabBrowser.prototype = {
 			};
 		if (this.isCollapsed(tab)) {
 			if (this.getTreePref('autoExpandSubtreeOnCollapsedChildFocused')) {
-				let parentTab = tab;
-				while (parentTab = this.getParentTab(parentTab))
-				{
-					this.collapseExpandSubtree(parentTab, false);
-				}
+				this.getAncestorTabs(tab).forEach(function(aAncestor) {
+					this.collapseExpandSubtree(aAncestor, false);
+				}, this);
 				this.handleNewActiveTab(tab, newActiveTabOptions);
 			}
 			else {
@@ -4730,13 +4725,18 @@ TreeStyleTabBrowser.prototype = {
 		if (!aChild.parentNode || (aParent && !aParent.parentNode)) return; // do nothing for closed tab!
 
 		aInfo = aInfo || {};
+		var newAncestors = [];
 
-		if (aParent && this.maxTreeLevelPhisical && this.maxTreeLevel > -1) {
-			let level = parseInt(aParent.getAttribute(this.kNEST) || 0) + 1;
-			while (aParent && level > this.maxTreeLevel)
-			{
-				level--;
-				aParent = this.getParentTab(aParent);
+		if (aParent) {
+			newAncestors = [aParent].concat(this.getAncestorTabs(aParent));
+			if (this.maxTreeLevelPhisical && this.maxTreeLevel > -1) {
+				let level = parseInt(aParent.getAttribute(this.kNEST) || 0) + 1;
+				newAncestors.some(function(aAncestor) {
+					if (level <= this.maxTreeLevel)
+						return true;
+					level--;
+					return false;
+				}, this);
 			}
 		}
 
@@ -4837,21 +4837,17 @@ TreeStyleTabBrowser.prototype = {
 			if (this.getTreePref('autoCollapseExpandSubtreeOnSelect')) {
 				if (this.shouldTabAutoExpanded(aParent))
 					this.collapseExpandTreesIntelligentlyFor(aParent);
-				let p = aParent;
-				do {
-					if (this.shouldTabAutoExpanded(p))
-						this.collapseExpandSubtree(p, false, aInfo.dontAnimate);
-				}
-				while (p = this.getParentTab(p));
+				newAncestors.forEach(function(aAncestor) {
+					if (this.shouldTabAutoExpanded(aAncestor))
+						this.collapseExpandSubtree(aAncestor, false, aInfo.dontAnimate);
+				}, this);
 			}
 			else if (this.shouldTabAutoExpanded(aParent)) {
 				if (this.getTreePref('autoExpandSubtreeOnAppendChild')) {
-					let p = aParent;
-					do {
-						if (this.shouldTabAutoExpanded(p))
-							this.collapseExpandSubtree(p, false, aInfo.dontAnimate);
-					}
-					while (p = this.getParentTab(p));
+					newAncestors.forEach(function(aAncestor) {
+						if (this.shouldTabAutoExpanded(aAncestor))
+							this.collapseExpandSubtree(aAncestor, false, aInfo.dontAnimate);
+					}, this);
 				}
 				else
 					this.collapseExpandTab(aChild, true, aInfo.dontAnimate);
@@ -5639,12 +5635,12 @@ TreeStyleTabBrowser.prototype = {
 		var parent;
 		if (aCollapse && aTab == b.selectedTab && (parent = this.getParentTab(aTab))) {
 			var newSelection = parent;
-			while (this.isCollapsed(parent))
-			{
-				parent = this.getParentTab(parent);
-				if (!parent) break;
-				newSelection = parent;
-			}
+			this.getAncestorTabs(aTab).some(function(aAncestor) {
+				if (!this.isCollapsed(aAncestor))
+					return true;
+				newSelection = aAncestor;
+				return false;
+			}, this);
 			b.selectedTab = newSelection;
 		}
 
@@ -5853,18 +5849,14 @@ TreeStyleTabBrowser.prototype = {
 
 		var b = this.mTabBrowser;
 		var sameParentTab = this.getParentTab(aTab);
-		var expandedParentTabs = [
-				aTab.getAttribute(this.kID)
-			];
-		var parentTab = aTab;
-		while (parentTab = this.getParentTab(parentTab))
-		{
-			expandedParentTabs.push(parentTab.getAttribute(this.kID));
-		}
-		expandedParentTabs = expandedParentTabs.join('|');
+		var expandedAncestors = [aTab].concat(this.getAncestorTabs(aTab))
+				.map(function(aAncestor) {
+					return aAncestor.getAttribute(this.kID);
+				}, this)
+				.join('|');
 
 		var xpathResult = this.evaluateXPath(
-				'child::xul:tab[@'+this.kCHILDREN+' and not(@'+this.kCOLLAPSED+'="true") and not(@'+this.kSUBTREE_COLLAPSED+'="true") and @'+this.kID+' and not(contains("'+expandedParentTabs+'", @'+this.kID+')) and not(@hidden="true")]',
+				'child::xul:tab[@'+this.kCHILDREN+' and not(@'+this.kCOLLAPSED+'="true") and not(@'+this.kSUBTREE_COLLAPSED+'="true") and @'+this.kID+' and not(contains("'+expandedAncestors+'", @'+this.kID+')) and not(@hidden="true")]',
 				b.mTabContainer
 			);
 		for (var i = 0, maxi = xpathResult.snapshotLength; i < maxi; i++)
@@ -5876,13 +5868,12 @@ TreeStyleTabBrowser.prototype = {
 			if (parentTab) {
 				dontCollapse = true;
 				if (!this.isSubtreeCollapsed(parentTab)) {
-					do {
-						if (expandedParentTabs.indexOf(parentTab.getAttribute(this.kID)) < 0)
-							continue;
+					this.getAncestorTabs(collapseTab).some(function(aAncestor) {
+						if (expandedAncestors.indexOf(aAncestor.getAttribute(this.kID)) < 0)
+							return false;
 						dontCollapse = false;
-						break;
-					}
-					while (parentTab = this.getParentTab(parentTab));
+						return true;
+					}, this);
 				}
 			}
 
