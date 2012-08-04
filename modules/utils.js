@@ -2154,12 +2154,17 @@ var TreeStyleTabUtils = {
 		if (!aTab) return null;
 
 		var parent;
+		var id = aTab.getAttribute(this.kPARENT);
 		if (this.tabsHash) { // XPath-less implementation
-			parent = this.getTabById(aTab.getAttribute(this.kPARENT));
+			parent = this.getTabById(id);
+			if (parent && !parent.parentNode && this.tabsHash) {
+				delete this.tabsHash[id];
+				parent = null;
+			}
 		}
 		else {
 			parent =  this.evaluateXPath(
-				'preceding-sibling::xul:tab[@'+this.kID+'="'+aTab.getAttribute(this.kPARENT)+'"][1]',
+				'preceding-sibling::xul:tab[@'+this.kID+'="'+id+'"][1]',
 				aTab,
 				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue;
