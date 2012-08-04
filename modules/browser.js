@@ -5154,8 +5154,9 @@ TreeStyleTabBrowser.prototype = {
 		var CSSTransitionEnabled = ('Transition' in aTab.style || 'MozTransition' in aTab.style);
 		if (CSSTransitionEnabled) {
 			aTab.__treestyletab__updateTabIndentTask = function(aTime, aBeginning, aChange, aDuration) {
-				if (self.isDestroying) return true;
-				aTab.style.setProperty(self.indentCSSProp, aIndent+'px', 'important');
+				delete aTab.__treestyletab__updateTabIndentTask;
+				if (!self.isDestroying)
+					aTab.style.setProperty(self.indentCSSProp, aIndent+'px', 'important');
 				return true;
 			};
 			this.animationManager.addTask(
@@ -5198,10 +5199,10 @@ TreeStyleTabBrowser.prototype = {
 	stopTabIndentAnimation : function TSTBrowser_stopTabIndentAnimation(aTab)
 	{
 		if (!aTab.parentNode) return; // do nothing for closed tab!
-
 		this.animationManager.removeTask(
 			aTab.__treestyletab__updateTabIndentTask
 		);
+		delete aTab.__treestyletab__updateTabIndentTask;
 	},
  
 	inheritTabIndent : function TSTBrowser_inheritTabIndent(aNewTab, aExistingTab) 
