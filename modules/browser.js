@@ -237,6 +237,9 @@ TreeStyleTabBrowser.prototype = {
 	},
 	_changeTabbarPosition : function TSTBrowser_changeTabbarPosition(aNewPosition)
 	{
+		if (this.deferredTasks['_changeTabbarPosition'])
+			this.deferredTasks['_changeTabbarPosition'].cancel();
+
 		var oldPosition = this.position;
 		this.fireTabbarPositionEvent(true, oldPosition, aNewPosition);
 
@@ -244,10 +247,12 @@ TreeStyleTabBrowser.prototype = {
 		this.reinitAllTabs();
 
 		var self = this;
-		this.Deferred.next(function() {
+		(this.deferredTasks['_changeTabbarPosition'] = this.Deferred.next(function() {
 			self.checkTabsIndentOverflow();
 			self.fireTabbarPositionEvent(false, oldPosition, aNewPosition);
-		}).error(this.defaultDeferredErrorHandler);
+		})).error(this.defaultDeferredErrorHandler).next(function() {
+			delete self.deferredTasks['_changeTabbarPosition'];
+		});
 	},
   
 /* status getters */ 
@@ -477,10 +482,14 @@ TreeStyleTabBrowser.prototype = {
 			style.setProperty('margin-top', (- height * (maxRow - row))+'px', 'important');
 			style.top = style.bottom = '';
 
-			if (aJustNow)
-				this.Deferred.next(function() { // "transition" must be cleared after the reflow.
+			if (aJustNow) {
+				let key = 'positionPinnedTabs_tab_'+parseInt(Math.random() * 65000);
+				(this.deferredTasks[key] = this.Deferred.next(function() { // "transition" must be cleared after the reflow.
 					style.MozTransition = style.transition = transitionStyleBackup;
-				}).error(this.defaultDeferredErrorHandler);
+				})).error(this.defaultDeferredErrorHandler).next(function() {
+					delete self.deferredTasks[key];
+				});
+			}
 
 			col++;
 			if (col >= maxCol) {
@@ -491,24 +500,27 @@ TreeStyleTabBrowser.prototype = {
 	},
 	positionPinnedTabsWithDelay : function TSTBrowser_positionPinnedTabsWithDelay()
 	{
-		if (this._positionPinnedTabsWithDelayTimer)
+		if (this.deferredTasks['positionPinnedTabsWithDelay'])
 			return;
 
 		var args = Array.slice(arguments);
-		var lastArgs = this._positionPinnedTabsWithDelayTimerArgs || [null, null, false];
+		var lastArgs = this.deferredTasks['positionPinnedTabsWithDelay'] ?
+						this.deferredTasks['positionPinnedTabsWithDelay'].__treestyletab__args :
+						[null, null, false] ;
 		lastArgs[0] = lastArgs[0] || args[0];
 		lastArgs[1] = lastArgs[1] || args[1];
 		lastArgs[2] = lastArgs[2] || args[2];
-		this._positionPinnedTabsWithDelayTimerArgs = lastArgs;
 
-		this._positionPinnedTabsWithDelayTimer = this.window.setTimeout(function(aSelf) {
-			aSelf.Deferred.next(function() {
+		var self = this;
+		(this.deferredTasks['positionPinnedTabsWithDelay'] = this.Deferred.wait(0).next(function() {
+			return self.Deferred.next(function() {
 				// do with delay again, after Firefox's reposition was completely finished.
-				aSelf.positionPinnedTabs.apply(aSelf, aSelf._positionPinnedTabsWithDelayTimerArgs);
-			}).error(aSelf.defaultDeferredErrorHandler);
-			aSelf._positionPinnedTabsWithDelayTimer = null;
-			aSelf._positionPinnedTabsWithDelayTimerArgs = null;
-		}, 0, this);
+				self.positionPinnedTabs.apply(self, lastArgs);
+			});
+		})).error(this.defaultDeferredErrorHandler).next(function() {
+			delete self.deferredTasks['positionPinnedTabsWithDelay'];
+		});
+		this.deferredTasks['positionPinnedTabsWithDelay'].__treestyletab__args = lastArgs;
 	},
  
 	resetPinnedTabs : function TSTBrowser_resetPinnedTabs() 
@@ -574,6 +586,8 @@ TreeStyleTabBrowser.prototype = {
 	
 	init : function TSTBrowser_init() 
 	{
+		this.id = Date.now() + '-' + parseInt(Math.random() * 65000);
+
 		this.stopRendering();
 
 		var w = this.window;
@@ -583,6 +597,8 @@ TreeStyleTabBrowser.prototype = {
 
 		if (b.tabContainer.parentNode.localName == 'toolbar')
 			b.tabContainer.parentNode.classList.add(this.kTABBAR_TOOLBAR);
+
+		this.deferredTasks = {};
 
 		this.tabsHash = {};
 		this.tabVisibilityChangedTabs = [];
@@ -688,8 +704,11 @@ TreeStyleTabBrowser.prototype = {
 
 		this.startRendering();
 
+		if (this.deferredTasks['init'])
+			this.deferredTasks['init'].cancel();
+
 		var self = this;
-		this.Deferred.next(function() {
+		(this.deferredTasks['init'] = this.Deferred.next(function() {
 			// On Firefox 12 and later, this command is always enabled
 			// and the TabsOnTop can be enabled by <tabbrowser>.updateVisibility().
 			// So we have to reset TabsOnTop state on the startup.
@@ -700,6 +719,8 @@ TreeStyleTabBrowser.prototype = {
 				if (TabsOnTop.enabled && TabsOnTop.toggle)
 					TabsOnTop.toggle();
 			}
+		})).error(this.defaultDeferredErrorHandler).next(function() {
+			delete self.deferredTasks['init'];
 		});
 	},
 	
@@ -830,13 +851,18 @@ TreeStyleTabBrowser.prototype = {
   
 	initTab : function TSTBrowser_initTab(aTab) 
 	{
+		if (!aTab.parentNode) return; // do nothing for closed tab!
+
 		if (!aTab.hasAttribute(this.kID)) {
 			let id = this.getTabValue(aTab, this.kID) || this.makeNewId();
 			aTab.setAttribute(this.kID, id);
 			aTab.setAttribute(this.kSUBTREE_COLLAPSED, true);
 			aTab.setAttribute(this.kALLOW_COLLAPSE, true);
 			let self = this;
-			this.Deferred.next(function() {
+			let key = 'initTab_'+id;
+			if (this.deferredTasks[key])
+				this.deferredTasks[key].cancel();
+			(this.deferredTasks[key] = this.Deferred.next(function() {
 				// changed by someone!
 				if (aTab.getAttribute(self.kID) != id)
 					return;
@@ -846,7 +872,9 @@ TreeStyleTabBrowser.prototype = {
 					if (!(id in self.tabsHash))
 						self.tabsHash[id] = aTab;
 				}
-			}).error(this.defaultDeferredErrorHandler);
+			})).error(this.defaultDeferredErrorHandler).next(function() {
+				delete self.deferredTasks[key];
+			});
 			if (!(id in this.tabsHash))
 				this.tabsHash[id] = aTab;
 		}
@@ -899,6 +927,8 @@ TreeStyleTabBrowser.prototype = {
  
 	initTabAttributes : function TSTBrowser_initTabAttributes(aTab) 
 	{
+		if (!aTab.parentNode) return; // do nothing for closed tab!
+
 		var pos = this.position;
 		if (pos == 'left' || pos == 'right') {
 			aTab.setAttribute('align', 'stretch');
@@ -922,6 +952,8 @@ TreeStyleTabBrowser.prototype = {
  
 	initTabContents : function TSTBrowser_initTabContents(aTab) 
 	{
+		if (!aTab.parentNode) return; // do nothing for closed tab!
+
 		var d = this.document;
 
 		var twisty = this.getTabTwisty(aTab);
@@ -966,6 +998,8 @@ TreeStyleTabBrowser.prototype = {
  
 	initTabContentsOrder : function TSTBrowser_initTabContentsOrder(aTab, aForce) 
 	{
+		if (!aTab.parentNode) return; // do nothing for closed tab!
+
 		var d = this.document;
 
 		var namedNodes = {
@@ -1080,7 +1114,8 @@ TreeStyleTabBrowser.prototype = {
 					node.style.visibility = 'hidden';
 				node.style.position = 'fixed';
 			}
-			this.Deferred.wait(0.1).next(function() {
+			let key = 'initTabContentsOrderInternal_'+parseInt(Math.random() * 65000);
+			(this.deferredTasks[key] = this.Deferred.wait(0.1).next(function() {
 				for (let i = 0, maxi = nodes.length; i < maxi; i++)
 				{
 					let node = nodes[i];
@@ -1088,14 +1123,17 @@ TreeStyleTabBrowser.prototype = {
 					if (shouldHideTemporaryState)
 						node.style.visibility = '';
 				}
-			}).error(this.defaultDeferredErrorHandler);
+			})).error(this.defaultDeferredErrorHandler).next(function() {
+				delete self.deferredTasks[key];
+			});
 		}
 	},
  
 	updateInvertedTabContentsOrder : function TSTBrowser_updateInvertedTabContentsOrder(aTarget) 
 	{
 		var self = this;
-		this.Deferred.next(function() {
+		let key = 'updateInvertedTabContentsOrder_'+parseInt(Math.random() * 65000);
+		(this.deferredTasks[key] = this.Deferred.next(function() {
 			var b = self.mTabBrowser;
 			var tabs = !aTarget ?
 						[b.selectedTab] :
@@ -1108,7 +1146,9 @@ TreeStyleTabBrowser.prototype = {
 			{
 				self.initTabContentsOrder(tabs[i]);
 			}
-		}).error(this.defaultDeferredErrorHandler);
+		})).error(this.defaultDeferredErrorHandler).next(function() {
+			delete self.deferredTasks[key];
+		});
 	},
   
 	initTabbar : function TSTBrowser_initTabbar(aNewPosition, aOldPosition) 
@@ -1366,8 +1406,11 @@ TreeStyleTabBrowser.prototype = {
 
 		this.updateTabbarState(false);
 
+		if (this.deferredTasks['initTabbar'])
+			this.deferredTasks['initTabbar'].cancel();
+
 		var self = this;
-		this.Deferred.next(function() {
+		(this.deferredTasks['initTabbar'] = this.Deferred.next(function() {
 			delayedPostProcess(self, b, splitter, toggler);
 			self.updateTabbarOverflow();
 			self.updateAllTabsButton(b);
@@ -1380,7 +1423,9 @@ TreeStyleTabBrowser.prototype = {
 			self.mTabBrowser.dispatchEvent(event);
 
 			self.startRendering();
-		}).error(this.defaultDeferredErrorHandler);
+		})).error(this.defaultDeferredErrorHandler).next(function() {
+			delete self.deferredTasks['initTabbar'];
+		});
 
 		pos = null;
 		scrollFrame = null;
@@ -1526,9 +1571,13 @@ TreeStyleTabBrowser.prototype = {
 						// is modified dynamically. So, we don' have to do it before
 						// the browser window is completely initialized.
 						TabsOnTop.enabled = !currentState;
-						this.Deferred.next(function() {
+						if (this.deferredTasks['updateTabbarState_TabsOnTop'])
+							this.deferredTasks['updateTabbarState_TabsOnTop'].cancel();
+						(this.deferredTasks['updateTabbarState_TabsOnTop'] = this.Deferred.next(function() {
 							TabsOnTop.enabled = currentState;
-						}).error(this.defaultDeferredErrorHandler);
+						})).error(this.defaultDeferredErrorHandler).next(function() {
+							delete self.deferredTasks['updateTabbarState_TabsOnTop'];
+						});
 					}
 				}
 			}
@@ -1557,11 +1606,15 @@ TreeStyleTabBrowser.prototype = {
 				this.Deferred.next(updateTabsOnTop);
 		}
 
-		this.Deferred.next(function() {
+		if (this.deferredTasks['updateTabbarState'])
+			this.deferredTasks['updateTabbarState'].cancel();
+		(this.deferredTasks['updateTabbarState'] = this.Deferred.next(function() {
 			self.updateFloatingTabbar(self.kTABBAR_UPDATE_BY_APPEARANCE_CHANGE);
 			self._fireTabbarStateChangedEvent();
 			self.startRendering();
-		}).error(this.defaultDeferredErrorHandler);
+		})).error(this.defaultDeferredErrorHandler).next(function() {
+			delete self.deferredTasks['updateTabbarState'];
+		});
 
 		var allowToCollapse = this.getTreePref('allowSubtreeCollapseExpand.'+orient);
 		if (this.allowSubtreeCollapseExpand != allowToCollapse)
@@ -1882,6 +1935,13 @@ TreeStyleTabBrowser.prototype = {
 	destroy : function TSTBrowser_destroy() 
 	{
 		this.animationManager.removeTask(this.smoothScrollTask);
+
+		Object.keys(this.deferredTasks).forEach(function(key) {
+			if (this.deferredTasks[key].cancel) {
+				this.deferredTasks[key].cancel();
+				delete this.deferredTasks[key];
+			}
+		}, this);
 
 		this.autoHide.destroy();
 		delete this._autoHide;
@@ -2340,17 +2400,25 @@ TreeStyleTabBrowser.prototype = {
 			case 'extensions.treestyletab.counter.role.horizontal':
 				if (!this.isVertical) {
 					let self = this;
-					this.Deferred
-						.next(function() { self.updateAllTabsCount(); })
-						.error(this.defaultDeferredErrorHandler);
+					if (this.deferredTasks[aPrefName])
+						this.deferredTasks[aPrefName].cancel();
+					(this.deferredTasks[aPrefName] = this.Deferred
+						.next(function() { self.updateAllTabsCount(); }))
+						.error(this.defaultDeferredErrorHandler).next(function() {
+							delete self.deferredTasks[aPrefName];
+						});
 				}
 				return;
 			case 'extensions.treestyletab.counter.role.vertical':
 				if (this.isVertical) {
 					let self = this;
-					this.Deferred
-						.next(function() { self.updateAllTabsCount(); })
-						.error(this.defaultDeferredErrorHandler);
+					if (this.deferredTasks[aPrefName])
+						this.deferredTasks[aPrefName].cancel();
+					(this.deferredTasks[aPrefName] = this.Deferred
+						.next(function() { self.updateAllTabsCount(); }))
+						.error(this.defaultDeferredErrorHandler).next(function() {
+							delete self.deferredTasks[aPrefName];
+						});
 				}
 				return;
 
@@ -2603,19 +2671,19 @@ TreeStyleTabBrowser.prototype = {
 		}
 		this.clearLastScrollPosition();
 
-		if (this.cancelingPerformingAutoScroll)
-			this.cancelingPerformingAutoScroll.cancel();
+		if (this.deferredTasks['cancelPerformingAutoScroll'])
+			this.deferredTasks['cancelPerformingAutoScroll'].cancel();
 
 		var self = this;
-		this.cancelingPerformingAutoScroll = this.Deferred.wait(0.3).next(function() {
-			self.cancelingPerformingAutoScroll = null;
-		}).error(this.defaultDeferredErrorHandler);
+		(this.deferredTasks['cancelPerformingAutoScroll'] = this.Deferred.wait(0.3).next(function() {
+			delete self.deferredTasks['cancelPerformingAutoScroll'];
+		})).error(this.defaultDeferredErrorHandler);
 	},
  
 	shouldCancelEnsureElementIsVisible : function TSTBRowser_shouldCancelEnsureElementIsVisible() 
 	{
 		return (
-			this.cancelingPerformingAutoScroll &&
+			this.deferredTasks['cancelPerformingAutoScroll'] &&
 			(new Error()).stack.indexOf('onxblDOMMouseScroll') < 0
 		);
 	},
@@ -2744,12 +2812,16 @@ TreeStyleTabBrowser.prototype = {
 	
 	scrollToNewTab : function TSTBrowser_scrollToNewTab(aTab) 
 	{
+		if (!aTab.parentNode) return; // do nothing for closed tab!
+
 		if (this.scrollToNewTabMode > 0)
 			this.scrollToTab(aTab, this.scrollToNewTabMode < 2);
 	},
  
 	updateInsertionPositionInfo : function TSTBrowser_updateInsertionPositionInfo(aTab) 
 	{
+		if (!aTab.parentNode) return; // do nothing for closed tab!
+
 		var prev = this.getPreviousSiblingTab(aTab);
 		if (prev) {
 			this.setTabValue(aTab, this.kINSERT_AFTER, prev.getAttribute(this.kID));
@@ -2887,12 +2959,16 @@ TreeStyleTabBrowser.prototype = {
 			this.detachTab(tab, { dontUpdateIndent : true });
 
 			if (shouldCloseParentTab) {
-				this.Deferred.next(function() {
+				let key = 'onTabClose_'+parseInt(Math.random() * 65000);
+				let self = this;
+				(this.deferredTasks[key] = this.Deferred.next(function() {
 					if (parentTab.parentNode)
 						b.removeTab(parentTab, { animate : true });
 					parentTab = null;
 					b = null;
-				}).error(this.defaultDeferredErrorHandler);
+				})).error(this.defaultDeferredErrorHandler).next(function() {
+					delete self.deferredTasks[key];
+				});
 			}
 		}
 		else if (!nextFocusedTab) {
@@ -2950,7 +3026,7 @@ TreeStyleTabBrowser.prototype = {
 	
 	_reserveCloseNeedlessGroupTabSibling : function TSTBrowser_reserveCloseNeedlessGroupTabSibling(aTab) 
 	{
-		if (!aTab)
+		if (!aTab || !aTab.parentNode)
 			return null;
 
 		var parent = this.getParentTab(aTab);
@@ -2987,13 +3063,16 @@ TreeStyleTabBrowser.prototype = {
 		trees.forEach(this.markAsClosedSet, this);
 
 		var self = this;
-		this.Deferred.next(function() {
+		let key = 'onTabClosing_'+parseInt(Math.random() * 65000);
+		(this.deferredTasks[key] = this.Deferred.next(function() {
 			for (let i = 0, maxi = trees.length; i < maxi; i++)
 			{
 				let tabs = trees[i];
 				self.fireTabSubtreeClosedEvent(b, tabs[0], tabs);
 			}
-		}).error(this.defaultDeferredErrorHandler);
+		})).error(this.defaultDeferredErrorHandler).next(function() {
+			delete self.deferredTasks[key];
+		});
 
 		return true;
 	},
@@ -3148,6 +3227,8 @@ TreeStyleTabBrowser.prototype = {
  
 	updateChildrenArray : function TSTBrowser_updateChildrenArray(aTab) 
 	{
+		if (!aTab.parentNode) return; // do nothing for closed tab!
+
 		var children = this.getChildTabs(aTab);
 		children.sort(this.sortTabsByOrder);
 		this.setTabValue(
@@ -3165,6 +3246,7 @@ TreeStyleTabBrowser.prototype = {
 	rearrangeTabViewItems : function TSTBrowser_rearrangeTabViewItems(aTab) 
 	{
 		if (
+			!aTab.parentNode || // do nothing for closed tab!
 			!aTab.tabItem ||
 			!aTab.tabItem.parent ||
 			!aTab.tabItem.parent.reorderTabItemsBasedOnTabOrder
@@ -3393,13 +3475,16 @@ TreeStyleTabBrowser.prototype = {
 			 * On this timing, the next "SSTabRestoring" is not fired yet.
 			 * We only register the countdown task for the next event loop.
 			 */
-			self.windowService.Deferred.next(function() {
+			let key = 'onTabRestoring_'+parseInt(Math.random() * 65000);
+			(self.deferredTasks[key] = self.windowService.Deferred.next(function() {
 				/**
 				 * On this timing, the next "SSTabRestoring" was fired.
 				 * Now we can decrement the counter.
 				 */
 				self.windowService.restoringCount--;
-			}).error(self.defaultDeferredErrorHandler);
+			})).error(self.defaultDeferredErrorHandler).next(function() {
+				delete self.deferredTasks[key];
+			});
 		}, 0);
 
 		if (!tab.selected &&
@@ -3734,6 +3819,8 @@ TreeStyleTabBrowser.prototype = {
  
 	correctChildTabsOrder : function TSTBrowser_correctChildTabsOrder(aTab) 
 	{
+		if (!aTab.parentNode) return; // do nothing for closed tab!
+
 		var restoringChildren = aTab.getAttribute(this.kCHILDREN_RESTORING);
 		if (!restoringChildren) return;
 
@@ -4044,7 +4131,7 @@ TreeStyleTabBrowser.prototype = {
 	},
 	handleNewActiveTab : function TSTBrowser_handleNewActiveTab(aTab, aOptions)
 	{
-		if (this.doingCollapseExpand || !aTab) return;
+		if (this.doingCollapseExpand || !aTab || !aTab.parentNode) return;
 
 		aOptions = aOptions || {};
 
@@ -4498,10 +4585,12 @@ TreeStyleTabBrowser.prototype = {
 			return;
 		this.windowService.tabsOnTopChangingByUI = true;
 		var self = this;
-		this.Deferred
+		if (this.deferredTasks['onTabsOnTopSyncCommand'])
+			this.deferredTasks['onTabsOnTopSyncCommand'].cancel();
+		(this.deferredTasks['onTabsOnTopSyncCommand'] = this.Deferred
 			.next(function() {
 				self.windowService.toggleFixed(self.mTabBrowser);
-			})
+			}))
 			.next(function() {
 				if (self.window.TabsOnTop.enabled != aEnabled)
 					self.window.TabsOnTop.enabled = aEnabled;
@@ -4509,6 +4598,7 @@ TreeStyleTabBrowser.prototype = {
 			.error(this.defaultDeferredErrorHandler)
 			.next(function() {
 				self.windowService.tabsOnTopChangingByUI = false;
+				delete self.deferredTasks['onTabsOnTopSyncCommand'];
 			});
 	},
  
@@ -4528,6 +4618,8 @@ TreeStyleTabBrowser.prototype = {
 	
 	resetTab : function TSTBrowser_resetTab(aTab, aDetachAllChildren) 
 	{
+		if (!aTab.parentNode) return; // do nothing for closed tab!
+
 		if (aDetachAllChildren)
 			this.detachAllChildren(aTab, {
 				dontUpdateIndent : true,
@@ -4545,6 +4637,8 @@ TreeStyleTabBrowser.prototype = {
 	
 	resetTabState : function TSTBrowser_resetTabState(aTab) 
 	{
+		if (!aTab.parentNode) return; // do nothing for closed tab!
+
 		aTab.removeAttribute(this.kID);
 		aTab.removeAttribute(this.kID_RESTORING);
 		aTab.removeAttribute(this.kPARENT);
@@ -4633,6 +4727,8 @@ TreeStyleTabBrowser.prototype = {
 	
 	attachTabTo : function TSTBrowser_attachTabTo(aChild, aParent, aInfo) /* PUBLIC API */ 
 	{
+		if (!aChild.parentNode || (aParent && !aParent.parentNode)) return; // do nothing for closed tab!
+
 		aInfo = aInfo || {};
 
 		if (aParent && this.maxTreeLevelPhisical && this.maxTreeLevel > -1) {
@@ -4798,7 +4894,7 @@ TreeStyleTabBrowser.prototype = {
   
 	detachTab : function TSTBrowser_detachTab(aChild, aInfo) /* PUBLIC API */ 
 	{
-		if (!aChild) return;
+		if (!aChild || !aChild.parentNode) return;
 		if (!aInfo) aInfo = {};
 
 		var parentTab = this.getParentTab(aChild);
@@ -4851,6 +4947,8 @@ TreeStyleTabBrowser.prototype = {
 	
 	detachAllChildren : function TSTBrowser_detachAllChildren(aTab, aInfo) 
 	{
+		if (!aTab.parentNode) return; // do nothing for closed tab!
+
 		aInfo = aInfo || {};
 		if (!('behavior' in aInfo))
 			aInfo.behavior = this.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN;
@@ -5011,6 +5109,8 @@ TreeStyleTabBrowser.prototype = {
  
 	updateTabIndent : function TSTBrowser_updateTabIndent(aTab, aIndent, aJustNow) 
 	{
+		if (!aTab.parentNode) return; // do nothing for closed tab!
+
 		this.stopTabIndentAnimation(aTab);
 
 		if (aTab.hasAttribute('pinned'))
@@ -5101,6 +5201,8 @@ TreeStyleTabBrowser.prototype = {
 	},
 	stopTabIndentAnimation : function TSTBrowser_stopTabIndentAnimation(aTab)
 	{
+		if (!aTab.parentNode) return; // do nothing for closed tab!
+
 		this.animationManager.removeTask(
 			aTab.__treestyletab__updateTabIndentTask
 		);
@@ -5186,6 +5288,8 @@ TreeStyleTabBrowser.prototype = {
  
 	updateCanCollapseSubtree : function TSTBrowser_updateCanCollapseSubtree(aTab, aLevel) 
 	{
+		if (!aTab.parentNode) return; // do nothing for closed tab!
+
 		if (
 			!aLevel ||
 			this.maxTreeLevel < 0 ||
@@ -5202,6 +5306,8 @@ TreeStyleTabBrowser.prototype = {
  
 	updateTabsCount : function TSTBrowser_updateTabsCount(aTab, aDontUpdateAncestor) 
 	{
+		if (!aTab.parentNode) return; // do nothing for closed tab!
+
 		var count = this.document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER);
 		if (count) {
 			let value = this.getDescendantTabs(aTab).length;
@@ -5257,7 +5363,7 @@ TreeStyleTabBrowser.prototype = {
 	
 	moveTabSubtreeTo : function TSTBrowser_moveTabSubtreeTo(aTab, aIndex) 
 	{
-		if (!aTab) return;
+		if (!aTab || !aTab.parentNode) return;
 
 		var b = this.mTabBrowser;
 		this.subTreeMovingCount++;
@@ -5436,6 +5542,8 @@ TreeStyleTabBrowser.prototype = {
  
 	importTab : function TSTBrowser_importTab(aTab) 
 	{
+		if (!aTab.parentNode) return null; // do nothing for closed tab!
+
 		var newTab = this.mTabBrowser.addTab();
 		newTab.linkedBrowser.stop();
 		newTab.linkedBrowser.docShell;
@@ -5446,6 +5554,8 @@ TreeStyleTabBrowser.prototype = {
  
 	duplicateTabAsOrphan : function TSTBrowser_duplicateTabAsOrphan(aTab) 
 	{
+		if (!aTab.parentNode) return null; // do nothing for closed tab!
+
 		var newTab = this.mTabBrowser.duplicateTab(aTab);
 		this.deleteTabValue(newTab, this.kCHILDREN);
 		this.deleteTabValue(newTab, this.kPARENT);
@@ -5473,7 +5583,7 @@ TreeStyleTabBrowser.prototype = {
 	
 	collapseExpandSubtree : function TSTBrowser_collapseExpandSubtree(aTab, aCollapse, aJustNow) /* PUBLIC API */ 
 	{
-		if (!aTab) return;
+		if (!aTab || !aTab.parentNode) return;
 
 		if (this.isSubtreeCollapsed(aTab) == aCollapse) return;
 
@@ -5511,7 +5621,7 @@ TreeStyleTabBrowser.prototype = {
  
 	collapseExpandTab : function TSTBrowser_collapseExpandTab(aTab, aCollapse, aJustNow, aCallbackToRunOnStartAnimation) 
 	{
-		if (!aTab || !this.getParentTab(aTab)) return;
+		if (!aTab || !aTab.parentNode || !this.getParentTab(aTab)) return;
 
 		this.setTabValue(aTab, this.kCOLLAPSED, aCollapse);
 		this.updateTabCollapsed(aTab, aCollapse, aJustNow, aCallbackToRunOnStartAnimation);
@@ -5548,6 +5658,8 @@ TreeStyleTabBrowser.prototype = {
 	},
 	updateTabCollapsed : function TSTBrowser_updateTabCollapsed(aTab, aCollapsed, aJustNow, aCallbackToRunOnStartAnimation)
 	{
+		if (!aTab.parentNode) return; // do nothing for closed tab!
+
 		this.stopTabCollapseAnimation(aTab);
 
 		aTab.removeAttribute(this.kX_OFFSET);
@@ -5724,6 +5836,8 @@ TreeStyleTabBrowser.prototype = {
 	kSTACKED_TAB_MARGIN : 15,
 	stopTabCollapseAnimation : function TSTBrowser_stopTabCollapseAnimation(aTab)
 	{
+		if (!aTab.parentNode) return; // do nothing for closed tab!
+
 		this.animationManager.removeTask(
 			aTab.__treestyletab__updateTabCollapsedTask
 		);
@@ -5732,6 +5846,7 @@ TreeStyleTabBrowser.prototype = {
 	collapseExpandTreesIntelligentlyFor : function TSTBrowser_collapseExpandTreesIntelligentlyFor(aTab, aJustNow) 
 	{
 		if (!aTab ||
+			!aTab.parentNode ||
 			this.doingCollapseExpand ||
 			!this.canCollapseSubtree(aTab))
 			return;
@@ -5801,7 +5916,7 @@ TreeStyleTabBrowser.prototype = {
 	
 	scrollTo : function TSTBrowser_scrollTo(aEndX, aEndY) 
 	{
-		if (this.cancelingPerformingAutoScroll) return;
+		if (this.deferredTasks['cancelPerformingAutoScroll']) return;
 
 		if (this.animationEnabled || this.smoothScrollEnabled) {
 			this.smoothScrollTo(aEndX, aEndY);
@@ -5844,8 +5959,8 @@ TreeStyleTabBrowser.prototype = {
 		this.smoothScrollTask = function(aTime, aBeginning, aChange, aDuration) {
 			if (self.isDestroying) return true;
 			var scrollBoxObject = self.scrollBoxObject;
-			if (aTime >= aDuration || this.cancelingPerformingAutoScroll) {
-				if (!this.cancelingPerformingAutoScroll) {
+			if (aTime >= aDuration || this.deferredTasks['cancelPerformingAutoScroll']) {
+				if (!this.deferredTasks['cancelPerformingAutoScroll']) {
 					scrollBoxObject.scrollTo(aEndX, aEndY);
 
 					/**
@@ -5853,7 +5968,8 @@ TreeStyleTabBrowser.prototype = {
 					 * if the scroll box was expanded.
 					 */
 					let oldSize = self._getMaxScrollSize(scrollBoxObject);
-					self.Deferred.next(function() {
+					let key = 'smoothScrollTo_'+parseInt(Math.random() * 65000);
+					(self.deferredTasks[key] = self.Deferred.next(function() {
 						let newSize = self._getMaxScrollSize(scrollBoxObject);
 						let lastTab = self.getLastVisibleTab(self.mTabBrowser);
 						if (
@@ -5870,7 +5986,9 @@ TreeStyleTabBrowser.prototype = {
 							self.smoothScrollTo(aEndX, aEndY, parseInt(aDuration * 0.5));
 						self = null;
 						scrollBoxObject = null;
-					}).error(self.defaultDeferredErrorHandler);
+					})).error(this.defaultDeferredErrorHandler).next(function() {
+						delete self.deferredTasks[key];
+					});
 				}
 
 				b = null;
@@ -5945,6 +6063,8 @@ TreeStyleTabBrowser.prototype = {
  
 	scrollToTabSubtree : function TSTBrowser_scrollToTabSubtree(aTab) 
 	{
+		if (!aTab.parentNode) return; // do nothing for closed tab!
+
 		var b          = this.mTabBrowser;
 		var descendant = this.getDescendantTabs(aTab);
 		var parentTabBox = aTab.boxObject;
@@ -6001,17 +6121,17 @@ TreeStyleTabBrowser.prototype = {
 		if (!animateElement)
 			return;
 
-		if (this.lastNotifyBackgroundTabAnimation)
-			this.lastNotifyBackgroundTabAnimation.cancel();
+		if (this.deferredTasks['notifyBackgroundTab'])
+			this.deferredTasks['notifyBackgroundTab'].cancel();
 
 		if (!animateElement.hasAttribute(attrName))
 			animateElement.setAttribute(attrName, 'ready');
 
 		var self = this;
-		this.lastNotifyBackgroundTabAnimation = this.Deferred
+		(this.deferredTasks['notifyBackgroundTab'] = this.Deferred
 			.next(function() {
 				animateElement.setAttribute(attrName, 'notifying');
-			})
+			}))
 			.wait(0.15)
 			.next(function() {
 				animateElement.setAttribute(attrName, 'finish');
@@ -6019,9 +6139,10 @@ TreeStyleTabBrowser.prototype = {
 			.wait(1)
 			.next(function() {
 				animateElement.removeAttribute(attrName);
-				self.lastNotifyBackgroundTabAnimation = null;
 			})
-			.error(this.defaultDeferredErrorHandler);
+			.error(this.defaultDeferredErrorHandler).next(function() {
+				delete self.deferredTasks['notifyBackgroundTab'];
+			});
 	},
  
 	restoreTree : function TSTBrowser_restoreTree() 
