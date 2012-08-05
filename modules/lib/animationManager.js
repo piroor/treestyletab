@@ -46,7 +46,7 @@ if (typeof window == 'undefined' ||
 }
 
 (function() {
-	const currentRevision = 10;
+	const currentRevision = 11;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -97,20 +97,18 @@ if (typeof window == 'undefined' ||
 		{
 			if (!aTask) return;
 			var task;
-			for (var i in this.tasks)
-			{
-				task = this.tasks[i];
-				if (task.task != aTask) continue;
-				delete task.task;
-				delete task.start;
-				delete task.beginning;
-				delete task.change;
-				delete task.duration;
-				delete task.window;
-				this.tasks.splice(i, 1);
+			this.tasks = this.tasks.filter(function(aRegisteredTask) {
+				if (!aRegisteredTask) return false;
+				if (aRegisteredTask.task != aTask) return true;
+				delete aRegisteredTask.task;
+				delete aRegisteredTask.start;
+				delete aRegisteredTask.beginning;
+				delete aRegisteredTask.change;
+				delete aRegisteredTask.duration;
+				delete aRegisteredTask.window;
 				this._cleanUpWindows();
-				break;
-			}
+				return false;
+			}, this);
 			if (!this.tasks.length)
 				this.stop();
 		},
