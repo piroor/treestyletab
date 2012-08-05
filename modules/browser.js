@@ -888,9 +888,10 @@ TreeStyleTabBrowser.prototype = {
 		aTab.__treestyletab__linkedTabBrowser = this.mTabBrowser;
 
 		/**
-		 * XXX dity hack!!! there is no way to know when the tab is readied to be restored...
+		 * XXX dirty hack!!! there is no way to know when the tab is readied to be restored...
 		 */
-		aTab.linkedBrowser.__treestyletab__toBeRestored = false;
+		if (!aTab.linkedBrowser.__treestyletab__toBeRestored)
+			aTab.linkedBrowser.__treestyletab__toBeRestored = !!aTab.linkedBrowser.__SS_restoreState;
 		var b = aTab.linkedBrowser;
 		if (!b.__treestyletab__stop) {
 			b.__treestyletab__stop = b.stop;
@@ -899,7 +900,8 @@ TreeStyleTabBrowser.prototype = {
 					var stack = Components.stack;
 					while (stack)
 					{
-						if (stack.name == 'sss_restoreHistoryPrecursor') {
+						if (stack.name == 'sss_restoreHistoryPrecursor' ||
+							stack.name == 'ssi_restoreHistoryPrecursor') {
 							this.__treestyletab__toBeRestored = true;
 							break;
 						}
@@ -6155,6 +6157,9 @@ TreeStyleTabBrowser.prototype = {
 			return;
 
 		var level = this.getTreePref('restoreTree.level');
+		dump('TSTBrowser::restoreTree\n');
+		dump('  level = '+level+'\n');
+		dump('  tabsToRestore = '+this.window.__SS_tabsToRestore+'\n');
 		if (
 			level <= this.kRESTORE_TREE_LEVEL_NONE ||
 			!this.window.__SS_tabsToRestore ||
@@ -6171,6 +6176,7 @@ TreeStyleTabBrowser.prototype = {
 				(!onlyVisible || !aTab.hidden)
 			);
 		});
+		dump('  restoring member tabs = '+tabs.length+'\n');
 		if (tabs.length <= 1)
 			return;
 
