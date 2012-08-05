@@ -2671,7 +2671,7 @@ TreeStyleTabBrowser.prototype = {
 		this.lastScrollY = y.value;
 	},
  
-	cancelPerformingAutoScroll : function TSTBrowser_cancelPerformingAutoScroll() 
+	cancelPerformingAutoScroll : function TSTBrowser_cancelPerformingAutoScroll(aOnlyCancel) 
 	{
 		if (this.smoothScrollTask) {
 			this.animationManager.removeTask(this.smoothScrollTask);
@@ -2679,13 +2679,19 @@ TreeStyleTabBrowser.prototype = {
 		}
 		this.clearLastScrollPosition();
 
-		if (this.deferredTasks['cancelPerformingAutoScroll'])
+		if (this.deferredTasks['cancelPerformingAutoScroll']) {
 			this.deferredTasks['cancelPerformingAutoScroll'].cancel();
+			delete this.deferredTasks['cancelPerformingAutoScroll'];
+		}
+
+		if (aOnlyCancel)
+			return;
 
 		var self = this;
-		(this.deferredTasks['cancelPerformingAutoScroll'] = this.Deferred.wait(0.3).next(function() {
+		(this.deferredTasks['cancelPerformingAutoScroll'] = this.Deferred.wait(0.3))
+		.next(function() {
 			delete self.deferredTasks['cancelPerformingAutoScroll'];
-		})).error(this.defaultDeferredErrorHandler);
+		}).error(this.defaultDeferredErrorHandler);
 	},
  
 	shouldCancelEnsureElementIsVisible : function TSTBRowser_shouldCancelEnsureElementIsVisible() 
@@ -5934,7 +5940,7 @@ TreeStyleTabBrowser.prototype = {
 	
 	smoothScrollTo : function TSTBrowser_smoothScrollTo(aEndX, aEndY, aDuration) 
 	{
-		this.cancelPerformingAutoScroll();
+		this.cancelPerformingAutoScroll(true);
 
 		var b = this.mTabBrowser;
 		var scrollBoxObject = this.scrollBoxObject;
