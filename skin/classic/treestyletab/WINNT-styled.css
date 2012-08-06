@@ -17,3 +17,8 @@
 	padding-top: 0;
 }
 
+/* bottom border of the "Tabs on Bottom" toolbox */
+:root[treestyletab-mode="vertical"]:not([disablechrome])
+  #navigator-toolbox[tabsontop="false"]::after {
+	visibility: visible;
+}

@@ -21,3 +21,9 @@
 	border-right: 1px solid ThreeDShadow;
 	border-left: 1px solid ThreeDShadow;
 }
+
+/* bottom border of the "Tabs on Bottom" toolbox */
+#main-window[treestyletab-mode="vertical"]:not([disablechrome])
+  #navigator-toolbox:not([tabsontop="true"]) {
+	border-bottom: 1px solid ThreeDShadow;
+}
