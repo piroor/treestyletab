@@ -6,7 +6,6 @@
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-content {
-	position: relative !important;
 	margin: -10px -5px -10px -10px !important;
 }
 
