@@ -2329,6 +2329,16 @@ var TreeStyleTabUtils = {
 		{
 			let tab = this.getTabById(list[i], aTab);
 			if (!tab || tab == aTab) continue;
+			if (tabs.indexOf(tab) > -1) {
+				let message = 'broken (possible recursive) tree detected!\n'+
+					tabs.map(function(aTab) {
+						return '  '+aTab._tPos+' : '+
+								aTab.label+'\n     '+
+								aTab.getAttribute(this.kID);
+					}, this).join('\n');
+				dump(message+'\n');
+				continue;
+			}
 			tabs.push(tab);
 			if (aAllTabsArray)
 				this.getChildTabs(tab, tabs);
