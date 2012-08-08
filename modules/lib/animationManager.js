@@ -46,7 +46,7 @@ if (typeof window == 'undefined' ||
 }
 
 (function() {
-	const currentRevision = 11;
+	const currentRevision = 12;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -97,7 +97,9 @@ if (typeof window == 'undefined' ||
 		{
 			if (!aTask) return;
 			var task;
-			this.tasks = this.tasks.filter(function(aRegisteredTask) {
+			var tasks = this.tasks;
+			this.tasks = [null];
+			tasks = tasks.filter(function(aRegisteredTask) {
 				if (!aRegisteredTask) return false;
 				if (aRegisteredTask.task != aTask) return true;
 				delete aRegisteredTask.task;
@@ -109,6 +111,7 @@ if (typeof window == 'undefined' ||
 				this._cleanUpWindows();
 				return false;
 			}, this);
+			this.tasks = this.tasks.slice(1).concat(tasks);
 			if (!this.tasks.length)
 				this.stop();
 		},
@@ -117,7 +120,7 @@ if (typeof window == 'undefined' ||
 		{
 			this.stop();
 			if (this.tasks.some(function(aTask) {
-					return !aTask.window;
+					return aTask && !aTask.window;
 				})) {
 				this.timer = window.setInterval(
 					this.onAnimation,
@@ -191,7 +194,7 @@ if (typeof window == 'undefined' ||
 		{
 			this._windows = this._windows.filter(function(aWindow) {
 				if (this.tasks.some(function(aTask) {
-						return aTask.window && this._windows.indexOf(aTask.window) > -1;
+						return aTask && aTask.window && this._windows.indexOf(aTask.window) > -1;
 					}, this))
 					return true;
 				let index = this._animatingWindows.indexOf(aWindow);
@@ -228,11 +231,11 @@ if (typeof window == 'undefined' ||
 			var tasks = aSelf.tasks;
 			aSelf.tasks = [null];
 			tasks = tasks.filter(function(aTask) {
-				if (!aTask)
-					return false;
-				if (aWindow && aTask.window != aWindow)
-					return true;
 				try {
+					if (!aTask)
+						return false;
+					if (aWindow && aTask.window != aWindow)
+						return true;
 					var time = Math.min(aTask.duration, now - aTask.start);
 					var finished = aTask.task(
 							time,
