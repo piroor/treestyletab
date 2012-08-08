@@ -5652,9 +5652,10 @@ TreeStyleTabBrowser.prototype = {
 		if (aCollapse && aTab == b.selectedTab && (parent = this.getParentTab(aTab))) {
 			var newSelection = parent;
 			this.getAncestorTabs(aTab).some(function(aAncestor) {
-				if (!this.isCollapsed(aAncestor))
+				if (!this.isCollapsed(aAncestor)) {
+					newSelection = aAncestor;
 					return true;
-				newSelection = aAncestor;
+				}
 				return false;
 			}, this);
 			b.selectedTab = newSelection;
