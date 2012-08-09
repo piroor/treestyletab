@@ -46,7 +46,7 @@ if (typeof window == 'undefined' ||
 }
 
 (function() {
-	const currentRevision = 12;
+	const currentRevision = 13;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -96,22 +96,22 @@ if (typeof window == 'undefined' ||
 		removeTask : function(aTask) 
 		{
 			if (!aTask) return;
-			var task;
-			var tasks = this.tasks;
-			this.tasks = [null];
-			tasks = tasks.filter(function(aRegisteredTask) {
-				if (!aRegisteredTask) return false;
-				if (aRegisteredTask.task != aTask) return true;
-				delete aRegisteredTask.task;
-				delete aRegisteredTask.start;
-				delete aRegisteredTask.beginning;
-				delete aRegisteredTask.change;
-				delete aRegisteredTask.duration;
-				delete aRegisteredTask.window;
-				this._cleanUpWindows();
-				return false;
-			}, this);
-			this.tasks = this.tasks.slice(1).concat(tasks);
+			for (let i = this.tasks.length - 1; i > -1; i--)
+			{
+				let registeredTask = this.tasks[i];
+				if (registeredTask) {
+					if (registeredTask.task != aTask)
+						continue;
+					delete registeredTask.task;
+					delete registeredTask.start;
+					delete registeredTask.beginning;
+					delete registeredTask.change;
+					delete registeredTask.duration;
+					delete registeredTask.window;
+				}
+				this.tasks.splice(i, 1);
+			}
+			this._cleanUpWindows();
 			if (!this.tasks.length)
 				this.stop();
 		},
@@ -228,29 +228,29 @@ if (typeof window == 'undefined' ||
 		{
 			// task should return true if it finishes.
 			var now = (new Date()).getTime() ;
-			var tasks = aSelf.tasks;
-			aSelf.tasks = [null];
-			tasks = tasks.filter(function(aTask) {
+			for (let i = aSelf.tasks.length - 1; i > -1; i--)
+			{
+				let task = aSelf.tasks[i];
 				try {
-					if (!aTask)
-						return false;
-					if (aWindow && aTask.window != aWindow)
-						return true;
-					var time = Math.min(aTask.duration, now - aTask.start);
-					var finished = aTask.task(
-							time,
-							aTask.beginning,
-							aTask.change,
-							aTask.duration
-						);
-					return !finished && (time < aTask.duration);
+					if (task) {
+						if (aWindow && task.window != aWindow)
+							continue;
+						let time = Math.min(task.duration, now - task.start);
+						let finished = task.task(
+								time,
+								task.beginning,
+								task.change,
+								task.duration
+							);
+						if (!finished && (time < task.duration))
+							continue;
+					}
 				}
 				catch(e) {
 					dump(e+'\n'+e.stack+'\n');
 				}
-				return false;
-			});
-			aSelf.tasks = aSelf.tasks.slice(1).concat(tasks);
+				aSelf.tasks.splice(i, 1);
+			}
 			if (!aSelf.tasks.length)
 				aSelf.stop();
 		}
