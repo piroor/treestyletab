@@ -38,7 +38,8 @@ const EXPORTED_SYMBOLS = ['TreeStyleTabUtils'];
 const Cc = Components.classes;
 const Ci = Components.interfaces;
  
-Components.utils.import('resource://gre/modules/XPCOMUtils.jsm'); 
+Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
+Components.utils.import('resource://gre/modules/Services.jsm');
 
 Components.utils.import('resource://treestyletab-modules/lib/prefs.js');
 Components.utils.import('resource://treestyletab-modules/lib/namespace.jsm');
@@ -276,7 +277,7 @@ var TreeStyleTabUtils = {
 
 	get ObserverService() {
 		if (!this._ObserverService) {
-			this._ObserverService = Cc['@mozilla.org/observer-service;1'].getService(Ci.nsIObserverService);
+			this._ObserverService = Services.obs;
 		}
 		return this._ObserverService;
 	},
@@ -284,7 +285,7 @@ var TreeStyleTabUtils = {
 
 	get IOService() {
 		if (!this._IOService) {
-			this._IOService = Cc['@mozilla.org/network/io-service;1'].getService(Ci.nsIIOService);
+			this._IOService = Services.io;
 		}
 		return this._IOService;
 	},
@@ -292,7 +293,7 @@ var TreeStyleTabUtils = {
 
 	get WindowMediator() {
 		if (!this._WindowMediator) {
-			this._WindowMediator = Cc['@mozilla.org/appshell/window-mediator;1'].getService(Ci.nsIWindowMediator);
+			this._WindowMediator = Services.wm;
 		}
 		return this._WindowMediator;
 	},
@@ -301,7 +302,7 @@ var TreeStyleTabUtils = {
 	get PromptService()
 	{
 		if (!this._PromptService) {
-			this._PromptService = Cc['@mozilla.org/embedcomp/prompt-service;1'].getService(Ci.nsIPromptService);
+			this._PromptService = Services.prompt;
 		}
 		return this._PromptService;
 	},
@@ -318,14 +319,14 @@ var TreeStyleTabUtils = {
 
 	get XULAppInfo() {
 		if (!this._XULAppInfo) {
-			this._XULAppInfo = Cc['@mozilla.org/xre/app-info;1'].getService(Ci.nsIXULAppInfo).QueryInterface(Ci.nsIXULRuntime);
+			this._XULAppInfo = Services.appinfo;
 		}
 		return this._XULAppInfo;
 	},
 	_XULAppInfo : null,
 	get Comparator() {
 		if (!this._Comparator) {
-			this._Comparator = Cc['@mozilla.org/xpcom/version-comparator;1'].getService(Ci.nsIVersionComparator);
+			this._Comparator = Services.vc;
 		}
 		return this._Comparator;
 	},
