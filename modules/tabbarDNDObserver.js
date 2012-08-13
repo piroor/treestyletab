@@ -40,14 +40,15 @@ const DEBUG = false;
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
+Components.utils.import('resource://gre/modules/Services.jsm');
+
 const TAB_DROP_TYPE = 'application/x-moz-tabbrowser-tab';
 
 const SSS = Cc['@mozilla.org/content/style-sheet-service;1']
 				.getService(Ci.nsIStyleSheetService);
 const SecMan = Cc['@mozilla.org/scriptsecuritymanager;1']
 				.getService(Ci.nsIScriptSecurityManager);
-const IOService = Cc['@mozilla.org/network/io-service;1']
-				.getService(Ci.nsIIOService);
+const IOService = Services.io;
  
 function TabbarDNDObserver(aTabBrowser) 
 {
