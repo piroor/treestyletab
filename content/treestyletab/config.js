@@ -1,10 +1,8 @@
-const XULAppInfo = Components.classes['@mozilla.org/xre/app-info;1']
-		.getService(Components.interfaces.nsIXULAppInfo);
-const comparator = Components.classes['@mozilla.org/xpcom/version-comparator;1']
-					.getService(Components.interfaces.nsIVersionComparator);
-var Prefs = Components
-		.classes['@mozilla.org/preferences;1']
-		.getService(Components.interfaces.nsIPrefBranch);
+Components.utils.import('resource://gre/modules/Services.jsm');
+
+const XULAppInfo = Services.appinfo;
+const comparator = Services.vc;
+var Prefs = Services.prefs;
 
 Components.utils.import('resource://treestyletab-modules/lib/animationManager.js', {});
 Components.utils.import('resource://treestyletab-modules/lib/prefs.js', {});
