@@ -2024,6 +2024,11 @@ TreeStyleTabBrowser.prototype = {
 		if (id in this.tabsHash)
 			delete this.tabsHash[id];
 
+		if (aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave) {
+			aTab.removeEventListener('mouseleave', aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave, false);
+			delete aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave;
+		}
+
 		delete aTab.__treestyletab__linkedTabBrowser;
 	},
  
@@ -5647,16 +5652,20 @@ TreeStyleTabBrowser.prototype = {
 		if (this.getTreePref('indent.autoShrink') &&
 			this.getTreePref('indent.autoShrink.onlyForVisible')) {
 			this.cancelCheckTabsIndentOverflow();
-			var self = this;
-			aTab.addEventListener('mouseleave', function TSTBrowserTabMouseLeaveListener(aEvent) {
-				var x = aEvent.clientX;
-				var y = aEvent.clientY;
-				var rect = aTab.getBoundingClientRect();
-				if (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom)
-					return;
-				aTab.removeEventListener(aEvent.type, TSTBrowserTabMouseLeaveListener, false);
-				self.checkTabsIndentOverflow();
-			}, false);
+			if (!aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave) {
+				var self = this;
+				aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave = function(aEvent) {
+					var x = aEvent.clientX;
+					var y = aEvent.clientY;
+					var rect = aTab.getBoundingClientRect();
+					if (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom)
+						return;
+					aTab.removeEventListener(aEvent.type, aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave, false);
+					delete aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave;
+					self.checkTabsIndentOverflow();
+				};
+				aTab.addEventListener('mouseleave', aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave, false);
+			}
 		}
 	},
  
