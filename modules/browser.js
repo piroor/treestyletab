@@ -3345,6 +3345,7 @@ TreeStyleTabBrowser.prototype = {
 				aSelf.tabVisibilityChangedTabs = [];
 			}
 			aSelf.lastTabViewGroup = currentGroupId;
+			aSelf.checkTabsIndentOverflow();
 		}, 0, this);
 	},
 	tabVisibilityChangedTimer : null,
