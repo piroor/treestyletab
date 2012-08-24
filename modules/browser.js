@@ -5236,15 +5236,20 @@ TreeStyleTabBrowser.prototype = {
 //		this.checkTabsIndentOverflow();
 	},
  
-	checkTabsIndentOverflow : function TSTBrowser_checkTabsIndentOverflow() 
+	checkTabsIndentOverflow : function TSTBrowser_checkTabsIndentOverflow(aDelay) 
+	{
+		this.cancelCheckTabsIndentOverflow();
+		this.checkTabsIndentOverflowTimer = this.window.setTimeout(function(aSelf) {
+			aSelf.checkTabsIndentOverflowTimer = null;
+			aSelf.checkTabsIndentOverflowCallback();
+		}, aDelay || 100, this);
+	},
+	cancelCheckTabsIndentOverflow : function TSTBrowser_cancelCheckTabsIndentOverflow()
 	{
 		if (this.checkTabsIndentOverflowTimer) {
 			this.window.clearTimeout(this.checkTabsIndentOverflowTimer);
 			this.checkTabsIndentOverflowTimer = null;
 		}
-		this.checkTabsIndentOverflowTimer = this.window.setTimeout(function(aSelf) {
-			aSelf.checkTabsIndentOverflowCallback();
-		}, 100, this);
 	},
 	checkTabsIndentOverflowTimer : null,
 	checkTabsIndentOverflowCallback : function TSTBrowser_checkTabsIndentOverflowCallback()
@@ -5638,6 +5643,21 @@ TreeStyleTabBrowser.prototype = {
 		this.collapseExpandSubtree(aTab, aCollapse, aJustNow);
 		if (!aCollapse)
 			this.setTabValue(aTab, this.kSUBTREE_EXPANDED_MANUALLY, true);
+
+		if (this.getTreePref('indent.autoShrink') &&
+			this.getTreePref('indent.autoShrink.onlyForVisible')) {
+			this.cancelCheckTabsIndentOverflow();
+			var self = this;
+			aTab.addEventListener('mouseleave', function TSTBrowserTabMouseLeaveListener(aEvent) {
+				var x = aEvent.clientX;
+				var y = aEvent.clientY;
+				var rect = aTab.getBoundingClientRect();
+				if (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom)
+					return;
+				aTab.removeEventListener(aEvent.type, TSTBrowserTabMouseLeaveListener, false);
+				self.checkTabsIndentOverflow();
+			}, false);
+		}
 	},
  
 	collapseExpandTab : function TSTBrowser_collapseExpandTab(aTab, aCollapse, aJustNow, aCallbackToRunOnStartAnimation) 
