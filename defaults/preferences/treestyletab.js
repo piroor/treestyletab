@@ -264,10 +264,13 @@ pref("extensions.treestyletab.maxTreeLevel.phisical", false);
  * indent.
  * If you set "indent.autoShrink" to "false", TST doesn't change indent of tabs
  * automatically. On the mode, indent of tabs are always fixed.
+ * If you set "autoShrink.onlyForVisible" to "false", TST keeps indent size
+ * shrunken even if "too deeply nested" tabs are invisible.
  */
 pref("extensions.treestyletab.indent",          12);
 pref("extensions.treestyletab.indent.min",      3);
 pref("extensions.treestyletab.indent.autoShrink", true);
+pref("extensions.treestyletab.indent.autoShrink.onlyForVisible", true);
 /**
  * CSS property to apply indent of tabs. By default TST uses "margin", so, for
  * example, tabs in the leftside tab bar are indented via "margin-left".

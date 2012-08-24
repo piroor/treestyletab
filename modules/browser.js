@@ -5255,7 +5255,11 @@ TreeStyleTabBrowser.prototype = {
 
 		var b    = this.mTabBrowser;
 		var tabs = this.getArrayFromXPathResult(this.evaluateXPath(
-				'child::xul:tab[@'+this.kNEST+' and not(@'+this.kNEST+'="0" or @'+this.kNEST+'="")]',
+				'child::xul:tab['+
+					'@'+this.kNEST+' and not(@'+this.kNEST+'="0" or @'+this.kNEST+'="") and '+
+					'not(@'+this.kCOLLAPSED+'="true") and '+
+					'not(@hidden="true") and '+
+					'not(@collapsed="true")]',
 				b.mTabContainer
 			));
 		if (!tabs.length) return;
@@ -5621,6 +5625,10 @@ TreeStyleTabBrowser.prototype = {
 
 		if (aCollapse)
 			this.deleteTabValue(aTab, this.kSUBTREE_EXPANDED_MANUALLY);
+
+		if (this.getTreePref('indent.autoShrink') &&
+			this.getTreePref('indent.autoShrink.onlyForVisible'))
+			this.checkTabsIndentOverflow();
 
 		this.doingCollapseExpand = false;
 	},
