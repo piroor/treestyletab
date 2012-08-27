@@ -872,7 +872,7 @@ try{
 		let dropPos = info.position == sv.kDROP_BEFORE ? 'before' :
 			info.position == sv.kDROP_AFTER ? 'after' :
 			'self';
-		if(indicatorTab.getAttribute(sv.kDROP_POSITION) != dropPos) {
+		if (indicatorTab.getAttribute(sv.kDROP_POSITION) != dropPos) {
 			this.clearDropPosition();
 			indicatorTab.setAttribute(sv.kDROP_POSITION, dropPos);
 		}
