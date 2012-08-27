@@ -338,16 +338,16 @@ catch(e) {
 			case sv.kDROP_BEFORE:
 				if (DEBUG) dump('  position = before the tab\n');
 /*
-	[TARGET  ] Å™detach from parent, and move
+	[TARGET  ] detach from parent, and move
 
 	  [      ]
-	[TARGET  ] Å™attach to the parent of the target, and move
+	[TARGET  ] attach to the parent of the target, and move
 
 	[        ]
-	[TARGET  ] Å™attach to the parent of the target, and move
+	[TARGET  ] attach to the parent of the target, and move
 
 	[        ]
-	  [TARGET] Å™attach to the parent of the target (previous tab), and move
+	  [TARGET] attach to the parent of the target (previous tab), and move
 */
 				var prevTab = sv.getPreviousVisibleTab(tab);
 				if (!prevTab) {
@@ -374,15 +374,15 @@ catch(e) {
 			case sv.kDROP_AFTER:
 				if (DEBUG) dump('  position = after the tab\n');
 /*
-	[TARGET  ] Å´if the target has a parent, attach to it and and move
+	[TARGET  ] if the target has a parent, attach to it and and move
 
-	  [TARGET] Å´attach to the parent of the target, and move
+	  [TARGET] attach to the parent of the target, and move
 	[        ]
 
-	[TARGET  ] Å´attach to the parent of the target, and move
+	[TARGET  ] attach to the parent of the target, and move
 	[        ]
 
-	[TARGET  ] Å´attach to the target, and move
+	[TARGET  ] attach to the target, and move
 	  [      ]
 */
 				var nextTab = sv.getNextVisibleTab(tab);
@@ -397,7 +397,7 @@ catch(e) {
 					info.action       = sv.kACTION_MOVE | (info.parent ? sv.kACTION_ATTACH : sv.kACTION_PART );
 					info.insertBefore = nextTab;
 /*
-	[TARGET   ] Å´attach dragged tab to the parent of the target as its next sibling
+	[TARGET   ] attach dragged tab to the parent of the target as its next sibling
 	  [DRAGGED]
 */
 					if (aSourceTab == nextTab) {
@@ -853,12 +853,11 @@ try{
 			}
 		}
 
-		this.clearDropPosition();
-
 		if (
 			!info.canDrop ||
 			observer._setEffectAllowedForDataTransfer(aEvent) == 'none'
 			) {
+			this.clearDropPosition();
 			aEvent.dataTransfer.effectAllowed = "none";
 			return true;
 		}
@@ -870,12 +869,13 @@ try{
 			if (tab) indicatorTab = tab;
 		}
 
-		indicatorTab.setAttribute(
-			sv.kDROP_POSITION,
-			info.position == sv.kDROP_BEFORE ? 'before' :
+		let dropPos = info.position == sv.kDROP_BEFORE ? 'before' :
 			info.position == sv.kDROP_AFTER ? 'after' :
-			'self'
-		);
+			'self';
+		if(indicatorTab.getAttribute(sv.kDROP_POSITION) != dropPos) {
+			this.clearDropPosition();
+			indicatorTab.setAttribute(sv.kDROP_POSITION, dropPos);
+		}
 
 		var indicator = b.mTabDropIndicatorBar || b.tabContainer._tabDropIndicator;
 		indicator.setAttribute('dragging', (info.position == sv.kDROP_ON || sv.isVertical) ? 'false' : 'true' );
