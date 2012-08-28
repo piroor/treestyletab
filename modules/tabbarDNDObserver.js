@@ -1,4 +1,4 @@
-ï»¿/* ***** BEGIN LICENSE BLOCK ***** 
+/* ***** BEGIN LICENSE BLOCK ***** 
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
  * The contents of this file are subject to the Mozilla Public License Version
@@ -338,16 +338,16 @@ catch(e) {
 			case sv.kDROP_BEFORE:
 				if (DEBUG) dump('  position = before the tab\n');
 /*
-	[TARGET  ] â†‘detach from parent, and move
+	[TARGET  ] ↑detach from parent, and move
 
 	  [      ]
-	[TARGET  ] â†‘attach to the parent of the target, and move
+	[TARGET  ] ↑attach to the parent of the target, and move
 
 	[        ]
-	[TARGET  ] â†‘attach to the parent of the target, and move
+	[TARGET  ] ↑attach to the parent of the target, and move
 
 	[        ]
-	  [TARGET] â†‘attach to the parent of the target (previous tab), and move
+	  [TARGET] ↑attach to the parent of the target (previous tab), and move
 */
 				var prevTab = sv.getPreviousVisibleTab(tab);
 				if (!prevTab) {
@@ -374,15 +374,15 @@ catch(e) {
 			case sv.kDROP_AFTER:
 				if (DEBUG) dump('  position = after the tab\n');
 /*
-	[TARGET  ] â†“if the target has a parent, attach to it and and move
+	[TARGET  ] ↓if the target has a parent, attach to it and and move
 
-	  [TARGET] â†“attach to the parent of the target, and move
+	  [TARGET] ↓attach to the parent of the target, and move
 	[        ]
 
-	[TARGET  ] â†“attach to the parent of the target, and move
+	[TARGET  ] ↓attach to the parent of the target, and move
 	[        ]
 
-	[TARGET  ] â†“attach to the target, and move
+	[TARGET  ] ↓attach to the target, and move
 	  [      ]
 */
 				var nextTab = sv.getNextVisibleTab(tab);
@@ -397,7 +397,7 @@ catch(e) {
 					info.action       = sv.kACTION_MOVE | (info.parent ? sv.kACTION_ATTACH : sv.kACTION_PART );
 					info.insertBefore = nextTab;
 /*
-	[TARGET   ] â†“attach dragged tab to the parent of the target as its next sibling
+	[TARGET   ] ↓attach dragged tab to the parent of the target as its next sibling
 	  [DRAGGED]
 */
 					if (aSourceTab == nextTab) {
