@@ -4679,11 +4679,11 @@ TreeStyleTabBrowser.prototype = {
 	resetTabbarSize : function TSTBrowser_resetTabbarSize() 
 	{
 		if (this.isVertical) {
-			this.clearTreePref('tabbar.shrunkenWidth');
-			this.clearTreePref('tabbar.width');
+			this.setTreePref('tabbar.shrunkenWidth', this.getTreePref('tabbar.shrunkenWidth.default'));
+			this.setTreePref('tabbar.width', this.getTreePref('tabbar.width.default'));
 		}
 		else {
-			this.clearTreePref('tabbar.height');
+			this.setTreePref('tabbar.height', this.getTreePref('tabbar.height.default'));
 			let tabContainerBox = this.getTabContainerBox(this.mTabBrowser);
 			tabContainerBox.removeAttribute('height');
 			this._tabStripPlaceHolder.height = tabContainerBox.boxObject.height;
