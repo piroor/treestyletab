@@ -13,11 +13,15 @@ pref("extensions.treestyletab.animation.collapse.duration", 150);
 
 /**
  * Size of resizable tab bar. They are completely ignored if "Tabs on Top"
- * is activated.
+ * is activated. *.default preferences are user configurable defaults for
+ * "reset tab bar size" feature
  */
-pref("extensions.treestyletab.tabbar.width",           200);
-pref("extensions.treestyletab.tabbar.height",          32);
-pref("extensions.treestyletab.tabbar.shrunkenWidth",   80);
+pref("extensions.treestyletab.tabbar.width",                 200);
+pref("extensions.treestyletab.tabbar.width.default",         200);
+pref("extensions.treestyletab.tabbar.height",                32);
+pref("extensions.treestyletab.tabbar.height.default",        32);
+pref("extensions.treestyletab.tabbar.shrunkenWidth",         80);
+pref("extensions.treestyletab.tabbar.shrunkenWidth.default", 80);
 
 /**
  * Position of the tab bar, possible values are:

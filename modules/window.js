@@ -926,6 +926,8 @@ TreeStyleTabWindow.prototype = {
  
 	onTabbarReset : function TSTWindow_onTabbarReset(aEvent) 
 	{
+		if (aEvent.button != 0)
+			return;
 		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
 		if (b) {
 			b.treeStyleTab.resetTabbarSize();
@@ -1169,7 +1171,7 @@ TreeStyleTabWindow.prototype = {
 		this._handleNewTabCommand(aTab || b.selectedTab, this.getTreePref('autoAttach.duplicateTabCommand'));
 	},
   
-/* Tree Style Tab‚Ì‰Šú‰»‚ªs‚í‚ê‚é‘O‚É•œŒ³‚³‚ê‚½ƒZƒbƒVƒ‡ƒ“‚É‚Â‚¢‚ÄƒcƒŠ[\‘¢‚ğ•œŒ³ */ 
+/* Tree Style Tabã®åˆæœŸåŒ–ãŒè¡Œã‚ã‚Œã‚‹å‰ã«å¾©å…ƒã•ã‚ŒãŸã‚»ãƒƒã‚·ãƒ§ãƒ³ã«ã¤ã„ã¦ãƒ„ãƒªãƒ¼ãƒ»\é€ ã‚’å¾©å…ƒ */ 
 	
 	onTabRestored : function TSTWindow_onTabRestored(aEvent) 
 	{
