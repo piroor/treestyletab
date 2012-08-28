@@ -2750,9 +2750,9 @@ TreeStyleTabBrowser.prototype = {
 				this.getTreePref('insertNewChildAt') == this.kINSERT_FISRT &&
 				(this.multipleCount <= 0 || this._addedCountInThisLoop <= 0)
 				) {
-				/* �����̎q�^�u����C�ɊJ���ꍇ�A�ŏ��ɊJ�����^�u������
-				   �q�^�u�̍ŏ��̈ʒu�ɑ}�����A�����^�u�́u�ŏ��̊J�����^�u�v��
-				   �u���X�ŏ��̎q�������^�u�v�Ƃ̊Ԃɑ}�����Ă��� */
+				/* 複数の子タブを一気に開く場合、最初に開いたタブだけを
+				   子タブの最初の位置に挿入し、続くタブは「最初の開いたタブ」と
+				   「元々最初の子だったタブ」との間に挿入していく */
 				newIndex = parent._tPos + 1;
 				if (refTab = this.getFirstChildTab(parent))
 					this.insertBefore = refTab.getAttribute(this.kID);
