@@ -926,6 +926,8 @@ TreeStyleTabWindow.prototype = {
  
 	onTabbarReset : function TSTWindow_onTabbarReset(aEvent) 
 	{
+		if (aEvent.button != 0)
+			return;
 		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
 		if (b) {
 			b.treeStyleTab.resetTabbarSize();
