@@ -572,24 +572,21 @@ catch(e) {
 		b.movingSelectedTabs = false; // Multiple Tab Handler
 	},
   
-	clearDropPosition : function TabbarDND_clearDropPosition() 
+	clearDropPosition : function TabbarDND_clearDropPosition(aOnFinish) 
 	{
 		var sv = this.treeStyleTab;
 		var b  = this.browser;
-		var xpathResult = sv.evaluateXPath(
-				'child::xul:tab[@'+sv.kDROP_POSITION+']',
-				b.mTabContainer
-			);
-		for (var i = 0, maxi = xpathResult.snapshotLength; i < maxi; i++)
-		{
-			xpathResult.snapshotItem(i).removeAttribute(sv.kDROP_POSITION);
-		}
 
-		// clear drop position preview on Firefox 17 and later
-		this.tabbrowser.visibleTabs.forEach(function(aTab) {
-			aTab.style.transform = '';
+		b.visibleTabs.forEach(function(aTab) {
+			if (aTab.hasAttribute(sv.kDROP_POSITION))
+				aTab.removeAttribute(sv.kDROP_POSITION)
+
+			// clear drop position preview on Firefox 17 and later
+			if (aOnFinish) aTab.style.transform = '';
 		});
-		this.browser.mTabContainer.removeAttribute('movingtab')
+
+		if (aOnFinish)
+			this.browser.mTabContainer.removeAttribute('movingtab')
 	},
  
 	isDraggingAllTabs : function TabbarDND_isDraggingAllTabs(aTab, aTabs) 
@@ -757,7 +754,7 @@ catch(e) {
 		var strip = sv.tabStrip;
 		var dt = aEvent.dataTransfer;
 
-		this.clearDropPosition();
+		this.clearDropPosition(true);
 
 		if (dt.mozUserCancelled || dt.dropEffect != 'none')
 			return;
@@ -876,15 +873,17 @@ try{
 			if (tab) indicatorTab = tab;
 		}
 
-		let dropPos = info.position == sv.kDROP_BEFORE ? 'before' :
-			info.position == sv.kDROP_AFTER ? 'after' :
-			'self';
-		if (indicatorTab.getAttribute(sv.kDROP_POSITION) != dropPos) {
+		let dropPosition = info.position == sv.kDROP_BEFORE ? 'before' :
+							info.position == sv.kDROP_AFTER ? 'after' :
+							'self';
+		if (indicatorTab.getAttribute(sv.kDROP_POSITION) != dropPosition) {
 			this.clearDropPosition();
-			indicatorTab.setAttribute(sv.kDROP_POSITION, dropPos);
+			indicatorTab.setAttribute(sv.kDROP_POSITION, dropPosition);
 			if ('_animateTabMove' in tabbar) { // Firefox 17 and later
-				tabbar.setAttribute('movingtab', 'true');
-				tabbar._animateTabMove(aEvent);
+				if (!tabbar.hasAttribute('movingtab'))
+					tabbar.setAttribute('movingtab', 'true');
+				if (dropPosition != 'self')
+					tabbar._animateTabMove(aEvent);
 			}
 		}
 
@@ -926,7 +925,7 @@ catch(e) {
 		var tabbar = b.mTabContainer;
 		var dt = aEvent.dataTransfer;
 
-		this.clearDropPosition();
+		this.clearDropPosition(true);
 
 		if (tabbar._tabDropIndicator)
 			tabbar._tabDropIndicator.collapsed = true;
