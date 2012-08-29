@@ -876,12 +876,17 @@ try{
 		let dropPosition = info.position == sv.kDROP_BEFORE ? 'before' :
 							info.position == sv.kDROP_AFTER ? 'after' :
 							'self';
-		if (indicatorTab.getAttribute(sv.kDROP_POSITION) != dropPosition) {
+		let draggedTab = aEvent.dataTransfer && aEvent.dataTransfer.mozGetDataAt(TAB_DROP_TYPE, 0);
+		if (indicatorTab != draggedTab &&
+			indicatorTab.getAttribute(sv.kDROP_POSITION) != dropPosition) {
 			this.clearDropPosition();
 			indicatorTab.setAttribute(sv.kDROP_POSITION, dropPosition);
 			// Firefox 17 and later
-			if ('_animateTabMove' in tabbar &&
-				draggedTab.ownerDocument == b.ownerDocument) {
+			if (
+				'_animateTabMove' in tabbar &&
+				draggedTab &&
+				draggedTab.ownerDocument == b.ownerDocument
+				) {
 				if (!tabbar.hasAttribute('movingtab'))
 					tabbar.setAttribute('movingtab', 'true');
 				if (dropPosition != 'self')
