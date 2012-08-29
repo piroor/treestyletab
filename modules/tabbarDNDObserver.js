@@ -966,7 +966,7 @@ catch(e) {
 		var uris = this.retrieveURLsFromDataTransfer(aEvent.dataTransfer);
 		uris.forEach(function(aURI) {
 			if (aURI.indexOf(this.BOOKMARK_FOLDER) != 0)
-				this.securityCheck(aURI);
+				this.securityCheck(aURI, aEvent);
 		}, this);
 
 		var sv = this.treeStyleTab;
@@ -1029,7 +1029,7 @@ catch(e) {
 			}
 		}
 	},
-	securityCheck : function TabbarDND_securityCheck(aURI)
+	securityCheck : function TabbarDND_securityCheck(aURI, aEvent)
 	{
 		let session = this.treeStyleTab.currentDragSession;
 		let (sourceDoc = session ? session.sourceDocument : null) {
