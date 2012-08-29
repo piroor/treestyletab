@@ -88,6 +88,8 @@ TreeStyleTabBrowser.prototype = {
 	collapseTarget             : 'top',
 	collapseCSSProp            : 'margin-top',
 	screenPositionProp         : 'screenY',
+	offsetProp                 : 'offsetY',
+	translateFunction          : 'translateY',
 	sizeProp                   : 'height',
 	invertedScreenPositionProp : 'screenX',
 	invertedSizeProp           : 'width',
@@ -1231,6 +1233,8 @@ TreeStyleTabBrowser.prototype = {
 		if (pos & this.kTABBAR_VERTICAL) {
 			this.collapseTarget             = 'top';
 			this.screenPositionProp         = 'screenY';
+			this.offsetProp                 = 'offsetY';
+			this.translateFunction          = 'translateY';
 			this.sizeProp                   = 'height';
 			this.invertedScreenPositionProp = 'screenX';
 			this.invertedSizeProp           = 'width';
@@ -1319,6 +1323,8 @@ TreeStyleTabBrowser.prototype = {
 		else {
 			this.collapseTarget             = 'left';
 			this.screenPositionProp         = 'screenX';
+			this.offsetProp                 = 'offsetX';
+			this.translateFunction          = 'translateX';
 			this.sizeProp                   = 'width';
 			this.invertedScreenPositionProp = 'screenY';
 			this.invertedSizeProp           = 'height';

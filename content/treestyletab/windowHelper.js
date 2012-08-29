@@ -96,22 +96,46 @@ var TreeStyleTabWindowHelper = {
 			eval('aObserver._setEffectAllowedForDataTransfer = '+
 				aObserver._setEffectAllowedForDataTransfer.toSource().replace(
 					'{',
-					'{ var TSTTabBrowser = this instanceof Ci.nsIDOMElement ? (this.tabbrowser || this) : gBrowser ;'
+					'{ var TSTTabBrowser = this instanceof Ci.nsIDOMElement ? (this.tabbrowser || this) : gBrowser ; var TST = TSTTabBrowser.treeStyleTab;'
 				).replace(
-					/\.screenX/g, '[TSTTabBrowser.treeStyleTab.screenPositionProp]'
+					/\.screenX/g, '[TST.screenPositionProp]'
 				).replace(
-					/\.width/g, '[TSTTabBrowser.treeStyleTab.sizeProp]'
+					/\.width/g, '[TST.sizeProp]'
 				).replace(
 					/(return (?:true|dt.effectAllowed = "copyMove");)/,
 					<![CDATA[
-						if (!TSTTabBrowser.treeStyleTab.tabbarDNDObserver.canDropTab(arguments[0])) {
+						if (!TST.tabbarDNDObserver.canDropTab(arguments[0])) {
 							return dt.effectAllowed = "none";
 						}
 						$1
 					]]>
 				).replace(
 					'sourceNode.parentNode == this &&',
-					'$& TSTTabBrowser.treeStyleTab.getTabFromEvent(event) == sourceNode &&'
+					'$& TST.getTabFromEvent(event) == sourceNode &&'
+				)
+			);
+		}
+
+		if ('_animateTabMove' in aObserver) { // Firefox 17 and later
+			eval('aObserver._animateTabMove = '+
+				aObserver._animateTabMove.toSource().replace(
+					'{',
+					'{ var TSTTabBrowser = this instanceof Ci.nsIDOMElement ? (this.tabbrowser || this) : gBrowser ; var TST = TSTTabBrowser.treeStyleTab;'
+				).replace(
+					/\.screenX/g, '[TST.screenPositionProp]'
+				).replace(
+					// the object doesn't have "screenY", so we have to calculate it from its offset.
+					/draggedTab\._dragData\[TST\.screenPositionProp\]/g,
+					'(draggedTab._dragData[TST.offsetProp] + window[TST.screenPositionProp])'
+				).replace(
+					/\.width/g, '[TST.sizeProp]'
+				).replace(
+					/(['"])translateX\(/g, '$1$1 + TST.translateFunction + $1('
+				).replace(
+					/tabWidth \/ 2/, 'tabWidth \/ 3'
+				).replace(
+					/(if \(screenX > tabCenter)(\))/,
+					'$1 + (tabWidth / 3)$2'
 				)
 			);
 		}

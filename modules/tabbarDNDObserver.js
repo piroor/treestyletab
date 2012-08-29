@@ -584,6 +584,12 @@ catch(e) {
 		{
 			xpathResult.snapshotItem(i).removeAttribute(sv.kDROP_POSITION);
 		}
+
+		// clear drop position preview on Firefox 17 and later
+		this.tabbrowser.visibleTabs.forEach(function(aTab) {
+			aTab.style.transform = '';
+		});
+		this.browser.mTabContainer.removeAttribute('movingtab')
 	},
  
 	isDraggingAllTabs : function TabbarDND_isDraggingAllTabs(aTab, aTabs) 
@@ -816,6 +822,7 @@ catch(e) {
 try{
 		var sv = this.treeStyleTab;
 		var b  = this.browser;
+		var tabbar = b.mTabContainer;
 
 		var session = sv.currentDragSession;
 		if (sv.isToolbarCustomizing)
@@ -857,8 +864,8 @@ try{
 			!info.canDrop ||
 			observer._setEffectAllowedForDataTransfer(aEvent) == 'none'
 			) {
-			this.clearDropPosition();
 			aEvent.dataTransfer.effectAllowed = "none";
+			this.clearDropPosition();
 			return true;
 		}
 
@@ -870,13 +877,15 @@ try{
 		}
 
 		let dropPos = info.position == sv.kDROP_BEFORE ? 'before' :
-
-
 			info.position == sv.kDROP_AFTER ? 'after' :
 			'self';
 		if (indicatorTab.getAttribute(sv.kDROP_POSITION) != dropPos) {
 			this.clearDropPosition();
 			indicatorTab.setAttribute(sv.kDROP_POSITION, dropPos);
+			if ('_animateTabMove' in tabbar) { // Firefox 17 and later
+				tabbar.setAttribute('movingtab', 'true');
+				tabbar._animateTabMove(aEvent);
+			}
 		}
 
 
