@@ -713,7 +713,8 @@ catch(e) {
 							sv.collapseExpandTreesIntelligentlyFor(tab);
 						}
 						else {
-							aSelf.mAutoExpandedTabs.push(aTarget);
+							if (aSelf.mAutoExpandedTabs.indexOf(aTarget) < 0)
+								aSelf.mAutoExpandedTabs.push(aTarget);
 							sv.collapseExpandSubtree(tab, false);
 						}
 					}
@@ -755,6 +756,7 @@ catch(e) {
 		var dt = aEvent.dataTransfer;
 
 		this.clearDropPosition(true);
+		this.collapseAutoExpandedTabs();
 
 		if (dt.mozUserCancelled || dt.dropEffect != 'none')
 			return;
@@ -910,7 +912,10 @@ catch(e) {
 	onDrop : function TabbarDND_onDrop(aEvent) 
 	{
 		this.onTabDrop(aEvent);
-
+		this.collapseAutoExpandedTabs();
+	},
+	collapseAutoExpandedTabs : function TabbarDND_collapseAutoExpandedTabs()
+	{
 		var sv = this.treeStyleTab;
 		if (this.mAutoExpandedTabs.length) {
 			if (sv.getTreePref('autoExpand.collapseFinally')) {
