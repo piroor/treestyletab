@@ -879,7 +879,9 @@ try{
 		if (indicatorTab.getAttribute(sv.kDROP_POSITION) != dropPosition) {
 			this.clearDropPosition();
 			indicatorTab.setAttribute(sv.kDROP_POSITION, dropPosition);
-			if ('_animateTabMove' in tabbar) { // Firefox 17 and later
+			// Firefox 17 and later
+			if ('_animateTabMove' in tabbar &&
+				draggedTab.ownerDocument == b.ownerDocument) {
 				if (!tabbar.hasAttribute('movingtab'))
 					tabbar.setAttribute('movingtab', 'true');
 				if (dropPosition != 'self')
@@ -926,7 +928,6 @@ catch(e) {
 		var dt = aEvent.dataTransfer;
 
 		this.clearDropPosition(true);
-
 		if (tabbar._tabDropIndicator)
 			tabbar._tabDropIndicator.collapsed = true;
 
@@ -942,6 +943,10 @@ catch(e) {
 			}
 		}
 
+		var sourceBrowser = sv.getTabBrowserFromChild(draggedTab);
+		if (draggedTab && sourceBrowser != b)
+			sourceBrowser.treeStyleTab.tabbarDNDObserver.clearDropPosition(true);
+
 		if (draggedTab && this.performDrop(dropActionInfo, draggedTab)) {
 			aEvent.stopPropagation();
 			return;
@@ -952,7 +957,7 @@ catch(e) {
 			draggedTab &&
 			(
 				dt.dropEffect == 'copy' ||
-				sv.getTabBrowserFromChild(draggedTab) != b
+				sourceBrowser != b
 			) &&
 			dropActionInfo.position == sv.kDROP_ON
 			) {
