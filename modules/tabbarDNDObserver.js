@@ -713,7 +713,7 @@ catch(e) {
 							sv.collapseExpandTreesIntelligentlyFor(tab);
 						}
 						else {
-							this.mAutoExpandedTabs.push(aTarget);
+							aSelf.mAutoExpandedTabs.push(aTarget);
 							sv.collapseExpandSubtree(tab, false);
 						}
 					}
