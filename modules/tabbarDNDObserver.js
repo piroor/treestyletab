@@ -1038,6 +1038,8 @@ catch(e) {
 		if (!session) //TODO: use some fake nodePrincipal?
 			throw 'Drop of ' + aURI + ' denied: no drag session.';
 		let sourceDoc = session.sourceDocument;
+		if (!sourceDoc) // The drag originated outside the application
+			return;
 		let sourceURI = sourceDoc.documentURI;
 		let normalizedURI = this.treeStyleTab.makeURIFromSpec(aURI);
 		if (normalizedURI && sourceURI.substr(0, 9) != 'chrome://') {
