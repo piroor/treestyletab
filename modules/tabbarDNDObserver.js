@@ -788,6 +788,7 @@ catch(e) {
 			return;
 
 		var draggedTab = dt.mozGetDataAt(TAB_DROP_TYPE, 0);
+		draggedTab.style.opacity = '';
 		if (this.isDraggingAllCurrentTabs(draggedTab))
 			return;
 
@@ -891,8 +892,12 @@ try{
 				) {
 				if (!tabbar.hasAttribute('movingtab'))
 					tabbar.setAttribute('movingtab', 'true');
-				if (dropPosition != 'self')
+				if (dropPosition == 'self') {
+					draggedTab.style.opacity = 0.5; // to prevent the dragged tab hides the drop target itself
+				} else {
+					draggedTab.style.opacity = '';
 					tabbar._animateTabMove(aEvent);
+				}
 			}
 		}
 
@@ -951,6 +956,7 @@ catch(e) {
 				aEvent.stopPropagation();
 				return;
 			}
+			draggedTab.style.opacity = '';
 		}
 
 		var sourceBrowser = sv.getTabBrowserFromChild(draggedTab);
