@@ -701,7 +701,8 @@ catch(e) {
 		if (aEvent.target == sourceNode)
 			return;
 
-		this.mAutoExpandTimerNext = w.setTimeout(function(aSelf, aTarget) {
+		var draggedTab = dt.mozGetDataAt(TAB_DROP_TYPE, 0);
+		this.mAutoExpandTimerNext = w.setTimeout(function(aSelf, aTarget, aDragged) {
 			aSelf.mAutoExpandTimerNext = null;
 			aSelf.mAutoExpandTimer = w.setTimeout(
 				function() {
@@ -709,21 +710,30 @@ catch(e) {
 					if (tab &&
 						sv.shouldTabAutoExpanded(tab) &&
 						tab.getAttribute(sv.kDROP_POSITION) == 'self') {
+						let draggedTab = sv.getTabById(aDragged);
 						if (sv.getTreePref('autoExpand.intelligently')) {
 							sv.collapseExpandTreesIntelligentlyFor(tab);
+							aSelf.updateDragData(draggedTab);
 						}
 						else {
 							if (aSelf.mAutoExpandedTabs.indexOf(aTarget) < 0)
 								aSelf.mAutoExpandedTabs.push(aTarget);
 							sv.collapseExpandSubtree(tab, false);
+							aSelf.updateDragData(draggedTab);
 						}
 					}
 				},
 				sv.getTreePref('autoExpand.delay')
 			);
-		}, 0, this, tab.getAttribute(sv.kID));
+		}, 0, this, tab.getAttribute(sv.kID), draggedTab.getAttribute(sv.kID));
 
 		tab = null;
+	},
+	updateDragData : function TabbarDND_updateDragData(aTab)
+	{
+		if (!aTab || !aTab._dragData) return;
+		var sv = this.treeStyleTab;
+		aTab._dragData[sv.offsetProp] += sv.getYOffsetOfTab(aTab);
 	},
  
 	onDragLeave : function TabbarDND_onDragLeave(aEvent) 
