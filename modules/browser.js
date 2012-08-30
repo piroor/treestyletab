@@ -5308,7 +5308,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 		var maxIndent = maxIndentBase * (isVertical ? 0.33 : 0.5 );
 
-		var indentMin = this.getTreePref(isVertical ? 'indent.min' : 'indent.min.horizontal');
+		var indentMin = this.getTreePref(isVertical ? 'indent.min.vertical' : 'indent.min.horizontal');
 		var indentUnit = Math.max(Math.floor(maxIndent / nest), indentMin);
 		if (indent > maxIndent) {
 			this.indent = indentUnit;

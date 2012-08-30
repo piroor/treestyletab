@@ -271,9 +271,9 @@ pref("extensions.treestyletab.maxTreeLevel.phisical", false);
  * If you set "autoShrink.onlyForVisible" to "false", TST keeps indent size
  * shrunken even if "too deeply nested" tabs are invisible.
  */
-pref("extensions.treestyletab.indent",                12);
+pref("extensions.treestyletab.indent.vertical",       12);
 pref("extensions.treestyletab.indent.horizontal",     4);
-pref("extensions.treestyletab.indent.min",            3);
+pref("extensions.treestyletab.indent.min.vertical",   3);
 pref("extensions.treestyletab.indent.min.horizontal", 1);
 pref("extensions.treestyletab.indent.autoShrink", true);
 pref("extensions.treestyletab.indent.autoShrink.onlyForVisible", true);

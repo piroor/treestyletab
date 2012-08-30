@@ -361,7 +361,7 @@ var TreeStyleTabUtils = {
 
 		this.addPrefListener(this);
 
-		this.onPrefChange('extensions.treestyletab.indent');
+		this.onPrefChange('extensions.treestyletab.indent.vertical');
 		this.onPrefChange('extensions.treestyletab.indent.horizontal');
 		this.onPrefChange('extensions.treestyletab.clickOnIndentSpaces.enabled');
 		this.onPrefChange('browser.tabs.loadFolderAndReplace.override');
@@ -415,7 +415,7 @@ var TreeStyleTabUtils = {
 				this.setDefaultPref(key, this.getPref(originalKey));
 		}
 	},
-	kPREF_VERSION : 8,
+	kPREF_VERSION : 9,
 	migratePrefs : function TSTUtils_migratePrefs() 
 	{
 		// migrate old prefs
@@ -519,6 +519,11 @@ var TreeStyleTabUtils = {
 					if (delay !== null)
 						this.setTreePref('autoExpandSubtreeOnSelect.whileFocusMovingByShortcut.delay', delay);
 				}
+			case 8:
+				orientalPrefs = orientalPrefs.concat([
+					'extensions.treestyletab.indent',
+					'extensions.treestyletab.indent.min'
+				]);
 			default:
 				for (let i = 0, maxi = orientalPrefs.length; i < maxi; i++)
 				{
@@ -2698,7 +2703,7 @@ var TreeStyleTabUtils = {
 		var value = this.getPref(aPrefName);
 		switch (aPrefName)
 		{
-			case 'extensions.treestyletab.indent':
+			case 'extensions.treestyletab.indent.vertical':
 				this.baseIndentVertical = value;
 				this.ObserverService.notifyObservers(null, this.kTOPIC_INDENT_MODIFIED, value);
 				return;
