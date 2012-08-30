@@ -163,6 +163,10 @@ TreeStyleTabBrowser.prototype = {
 	},
 	_maxTreeLevel : -1,
  
+	get baseIndent() {
+		return this.isVertical ? this.baseIndentVertical : this.baseIndentHorizontal;
+	},
+ 
 	get enableSubtreeIndent() 
 	{
 		return this._enableSubtreeIndent;
@@ -5295,15 +5299,17 @@ TreeStyleTabBrowser.prototype = {
 					this.getFirstNormalTab(b).boxObject[this.invertedSizeProp],
 					b.mTabContainer.boxObject[this.invertedSizeProp]
 				);
-		if (!this.isVertical) {
+		var isVertical = this.isVertical;
+		if (!isVertical) {
 			if (this._horizontalTabMaxIndentBase)
 				maxIndentBase = this._horizontalTabMaxIndentBase;
 			else
 				this._horizontalTabMaxIndentBase = maxIndentBase;
 		}
-		var maxIndent = maxIndentBase * (this.isVertical ? 0.33 : 0.5 );
+		var maxIndent = maxIndentBase * (isVertical ? 0.33 : 0.5 );
 
-		var indentUnit = Math.max(Math.floor(maxIndent / nest), this.getTreePref('indent.min'));
+		var indentMin = this.getTreePref(isVertical ? 'indent.min' : 'indent.min.horizontal');
+		var indentUnit = Math.max(Math.floor(maxIndent / nest), indentMin);
 		if (indent > maxIndent) {
 			this.indent = indentUnit;
 		}

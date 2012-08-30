@@ -250,7 +250,8 @@ var TreeStyleTabUtils = {
 	DEFAULT_SHRUNKEN_WIDTH_RATIO : 0.67,
  
 /* base variables */ 
-	baseIndent : 12,
+	baseIndentVertical   : 12,
+	baseIndentHorizontal : 4,
 	shouldDetectClickOnIndentSpaces : true,
 
 	smoothScrollEnabled  : true,
@@ -361,6 +362,7 @@ var TreeStyleTabUtils = {
 		this.addPrefListener(this);
 
 		this.onPrefChange('extensions.treestyletab.indent');
+		this.onPrefChange('extensions.treestyletab.indent.horizontal');
 		this.onPrefChange('extensions.treestyletab.clickOnIndentSpaces.enabled');
 		this.onPrefChange('browser.tabs.loadFolderAndReplace.override');
 		this.onPrefChange('browser.tabs.insertRelatedAfterCurrent.override');
@@ -2697,7 +2699,11 @@ var TreeStyleTabUtils = {
 		switch (aPrefName)
 		{
 			case 'extensions.treestyletab.indent':
-				this.baseIndent = value;
+				this.baseIndentVertical = value;
+				this.ObserverService.notifyObservers(null, this.kTOPIC_INDENT_MODIFIED, value);
+				return;
+			case 'extensions.treestyletab.indent.horizontal':
+				this.baseIndentHorizontal = value;
 				this.ObserverService.notifyObservers(null, this.kTOPIC_INDENT_MODIFIED, value);
 				return;
 
