@@ -636,6 +636,8 @@ TreeStyleTabWindow.prototype = {
 				return this.onTabbarReset(aEvent);
 
 			case 'click':
+				if (aEvent.currentTarget.localName == 'splitter')
+					return this.onSplitterClick(aEvent);
 				return this.handleNewTabActionOnButton(aEvent);
 
 			case 'SubBrowserAdded':
@@ -923,6 +925,27 @@ TreeStyleTabWindow.prototype = {
 	tabbarResizeStartHeight : -1,
 	tabbarResizeStartX : -1,
 	tabbarResizeStartY : -1,
+ 
+	onSplitterClick : function TSTWindow_onSplitterClick(aEvent) 
+	{
+		if (
+			aEvent.button == 1 ||
+			aEvent.button == 0 && (aEvent.ctrlKey || aEvent.shiftKey || aEvent.altKey || aEvent.metaKey)
+			) {
+			let b = this.getTabBrowserFromChild(aEvent.target) || this.browser;
+			let orient = b.treeStyleTab.isVertical ? 'vertical' : 'horizontal';
+			let action = this.getTreePref('splitter.middleClickAction.' + orient);
+			if (action == 1) {
+				let grippy = aEvent.currentTarget.getElementsByTagName("grippy");
+				if (grippy.length)
+					grippy[0].click();
+			}
+			else if (action == 2) {
+				this.autoHideWindow.toggleMode();
+			}
+			aEvent.preventDefault();
+		}
+	},
  
 	onTabbarReset : function TSTWindow_onTabbarReset(aEvent) 
 	{
