@@ -1495,6 +1495,7 @@ TreeStyleTabBrowser.prototype = {
 			try {
 				splitter.removeEventListener('mousedown', this.windowService, false);
 				splitter.removeEventListener('mouseup', this.windowService, false);
+				splitter.removeEventListener('click', this.windowService, false);
 				splitter.removeEventListener('dblclick', this.windowService, false);
 			}
 			catch(e) {
@@ -1517,6 +1518,7 @@ TreeStyleTabBrowser.prototype = {
 
 		splitter.addEventListener('mousedown', this.windowService, false);
 		splitter.addEventListener('mouseup', this.windowService, false);
+		splitter.addEventListener('click', this.windowService, false);
 		splitter.addEventListener('dblclick', this.windowService, false);
 
 		var ref = this.mTabBrowser.mPanelContainer;
@@ -1863,6 +1865,7 @@ TreeStyleTabBrowser.prototype = {
 			splitter.setAttribute('class', this.kSPLITTER);
 			splitter.setAttribute('onmousedown', 'TreeStyleTabService.handleEvent(event);');
 			splitter.setAttribute('onmouseup', 'TreeStyleTabService.handleEvent(event);');
+			splitter.setAttribute('onclick', 'TreeStyleTabService.onSplitterClick(event);');
 			splitter.setAttribute('ondblclick', 'TreeStyleTabService.handleEvent(event);');
 			box.appendChild(splitter);
 			this.tabStrip.appendChild(box);
