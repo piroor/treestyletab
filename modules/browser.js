@@ -4188,7 +4188,7 @@ TreeStyleTabBrowser.prototype = {
 		this._focusChangedByShortcut = this.windowService.accelKeyPressed;
 
 		if (!this.canCollapseSubtree(this.mTabBrowser.selectedTab) ||
-			this.getTreePref('focusMode') != this.kFOCUS_VISIBLE)
+			this.getTreePref('focusMode') != this.kFOCUS_VISIBLE && !this.collapseExpand.collapse)
 			return false;
 
 		if (this.processArrowKeyOnFocusAdvanced())
@@ -4197,21 +4197,13 @@ TreeStyleTabBrowser.prototype = {
 		return this.advanceSelectedTab(aDir, aWrap);
 	},
 	
-	processArrowKeyOnFocusAdvanced : function TSTBrowser_processArrowKeyOnFocusAdvanced() 
-	{
+	get collapseExpand() {
 		var event = this.windowService.arrowKeyEventOnTab;
-		if (!event)
-			return false;
-
-		if (
-			event.altKey ||
-			event.ctrlKey ||
-			event.metaKey ||
-			event.shiftKey ||
-			(this.isVertical ? (event.up || event.down) : (event.left || event.right))
-			) {
-			event.advanceFocus = true;
-			return false;
+		if (!event) {
+			return {
+				collapse : false,
+				expand   : false
+			};
 		}
 
 		var collapse, expand;
@@ -4243,6 +4235,30 @@ TreeStyleTabBrowser.prototype = {
 				}
 				break;
 		}
+		return {
+			collapse : collapse,
+			expand   : expand
+		};
+	},
+	
+	processArrowKeyOnFocusAdvanced : function TSTBrowser_processArrowKeyOnFocusAdvanced() 
+	{
+		var event = this.windowService.arrowKeyEventOnTab;
+		if (!event)
+			return false;
+
+		if (
+			event.altKey ||
+			event.ctrlKey ||
+			event.metaKey ||
+			event.shiftKey ||
+			(this.isVertical ? (event.up || event.down) : (event.left || event.right))
+			) {
+			event.advanceFocus = true;
+			return false;
+		}
+
+		var {collapse, expand} = this.collapseExpand;
 
 		var tab = this.mTabBrowser.selectedTab;
 
@@ -4266,7 +4282,7 @@ TreeStyleTabBrowser.prototype = {
 			return true;
 		}
 
-		return true;
+		return false; // Allow advanceSelectedTab()
 	},
  
 	advanceSelectedTab : function TSTBrowser_advanceSelectedTab(aDir, aWrap) 
