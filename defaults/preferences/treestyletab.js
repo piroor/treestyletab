@@ -615,6 +615,15 @@ pref("extensions.treestyletab.createSubtree.underParent", true);
 pref("extensions.treestyletab.pinnedTab.faviconized", true);
 
 /**
+ * Action for middle-click (or left-click with any modifier) on tab bar splitter:
+ *  0 = Do nothing
+ *  1 = Collapse/expand tab bar
+ *  2 = Toggle AutoHide
+ */
+pref("extensions.treestyletab.splitter.middleClickAction.horizontal", 1);
+pref("extensions.treestyletab.splitter.middleClickAction.vertical", 2);
+
+/**
  * Compatibility hack flags for other addons. They can be disabled by each
  * addon, when the addon become working with TST without dirty hacks.
  * In other words, add-on authros can disable TST's dirty hack if it is
