@@ -1040,7 +1040,12 @@ catch(e) {
 			aEvent.stopPropagation();
 			throw 'Drop of ' + aURI + ' denied: no drag session.';
 		}
-		let normalizedURI = this.treeStyleTab.makeURIFromSpec(aURI);
+		let normalizedURI;
+		try {
+			normalizedURI = this.treeStyleTab.makeURIFromSpec(aURI);
+		}
+		catch(e) {
+		}
 		if (!normalizedURI)
 			return;
 		let sourceDoc = session.sourceDocument;
