@@ -1034,22 +1034,24 @@ catch(e) {
 	},
 	securityCheck : function TabbarDND_securityCheck(aURI, aEvent)
 	{
+		// See dragDropSecurityCheck() in chrome://global/content/nsDragAndDrop.js
 		let session = this.treeStyleTab.currentDragSession;
-		if (!session) //TODO: use some fake nodePrincipal?
+		if (!session) { //TODO: use some fake nodePrincipal?
+			aEvent.stopPropagation();
 			throw 'Drop of ' + aURI + ' denied: no drag session.';
-		let sourceDoc = session.sourceDocument;
-		if (!sourceDoc) // The drag originated outside the application
-			return;
-		let sourceURI = sourceDoc.documentURI;
+		}
 		let normalizedURI = this.treeStyleTab.makeURIFromSpec(aURI);
-		if (normalizedURI && sourceURI.substr(0, 9) != 'chrome://') {
-			try {
-				SecMan.checkLoadURIStrWithPrincipal(sourceDoc.nodePrincipal, normalizedURI.spec, Ci.nsIScriptSecurityManager.STANDARD);
-			}
-			catch(e) {
-				aEvent.stopPropagation();
-				throw 'Drop of ' + aURI + ' denied.';
-			}
+		if (!normalizedURI)
+			return;
+		let sourceDoc = session.sourceDocument;
+		let principal = sourceDoc ? sourceDoc.nodePrincipal
+			: SecMan.getSimpleCodebasePrincipal(this.treeStyleTab.IOService.newURI("file:///", null, null));
+		try {
+			SecMan.checkLoadURIStrWithPrincipal(principal, normalizedURI.spec, Ci.nsIScriptSecurityManager.STANDARD);
+		}
+		catch(e) {
+			aEvent.stopPropagation();
+			throw 'Drop of ' + aURI + ' denied.';
 		}
 	},
 	
