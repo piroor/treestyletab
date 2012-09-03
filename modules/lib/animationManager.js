@@ -46,7 +46,7 @@ if (typeof window == 'undefined' ||
 }
 
 (function() {
-	const currentRevision = 13;
+	const currentRevision = 14;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -82,7 +82,7 @@ if (typeof window == 'undefined' ||
 
 			this.tasks.push({
 				task      : aTask,
-				start     : aRelatedWindow ? aRelatedWindow.mozAnimationStartTime : (new Date()).getTime(),
+				start     : aRelatedWindow ? aRelatedWindow.mozAnimationStartTime : Date.now(),
 				beginning : aBeginningValue,
 				change    : aTotalChange,
 				duration  : aDuration,
@@ -227,7 +227,7 @@ if (typeof window == 'undefined' ||
 		onAnimation : function(aSelf, aWindow) 
 		{
 			// task should return true if it finishes.
-			var now = (new Date()).getTime() ;
+			var now = Date.now();
 			for (let i = aSelf.tasks.length - 1; i > -1; i--)
 			{
 				let task = aSelf.tasks[i];
