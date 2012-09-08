@@ -335,8 +335,7 @@ var TreeStyleTabWindowHelper = {
 				eval(func+' = '+source.replace(
 					/((?:openUILinkIn|duplicateTabIn)\()/g,
 					<![CDATA[
-						if (where == 'tab' || where == 'tabshifted')
-							TreeStyleTabService.onBeforeTabDuplicate(null);
+						(where == 'tab' || where == 'tabshifted') && TreeStyleTabService.onBeforeTabDuplicate(null),
 						$&]]>
 				));
 			}
