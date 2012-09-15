@@ -4628,6 +4628,16 @@ TreeStyleTabBrowser.prototype = {
 			});
 	},
  
+	onBeforeFullScreenToggle : function TSTBrowser_onBeforeFullScreenToggle() 
+	{
+		if (this.position != 'top') {
+			if (this.window.fullScreen)
+				this.autoHide.endForFullScreen();
+			else
+				this.autoHide.startForFullScreen();
+		}
+	},
+ 
 	onTreeStyleTabPrintPreviewEntered : function TSTBrowser_onTreeStyleTabPrintPreviewEntered(aEvent) 
 	{
 		this.setTabbrowserAttribute(this.kPRINT_PREVIEW, true);

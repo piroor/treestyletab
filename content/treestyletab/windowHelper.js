@@ -33,12 +33,7 @@ var TreeStyleTabWindowHelper = {
 		eval('nsBrowserAccess.prototype.openURI = '+
 			nsBrowserAccess.prototype.openURI.toSource().replace(
 				/(switch\s*\(aWhere\))/,
-				<![CDATA[
-					if (aOpener &&
-						aWhere == Components.interfaces.nsIBrowserDOMWindow.OPEN_NEWTAB) {
-						TreeStyleTabService.readyToOpenChildTab(aOpener);
-					}
-					$1]]>
+				'TreeStyleTabService.onBeforeBrowserAccessOpenURI(aOpener, aWhere); $1'
 			)
 		);
 
@@ -190,28 +185,19 @@ var TreeStyleTabWindowHelper = {
 		eval('nsContextMenu.prototype.'+viewImageMethod+' = '+
 			nsContextMenu.prototype[viewImageMethod].toSource().replace(
 				'openUILink(',
-				<![CDATA[
-					if (String(whereToOpenLink(e, false, true)).indexOf('tab') == 0)
-						TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);
-					$&]]>
+				'TreeStyleTabService.onBeforeViewMedia(e, this.target.ownerDocument.defaultView); $&'
 			)
 		);
 		eval('nsContextMenu.prototype.viewBGImage = '+
 			nsContextMenu.prototype.viewBGImage.toSource().replace(
 				'openUILink(',
-				<![CDATA[
-					if (String(whereToOpenLink(e, false, true)).indexOf('tab') == 0)
-						TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);
-					$&]]>
+				'TreeStyleTabService.onBeforeViewMedia(e, this.target.ownerDocument.defaultView); $&'
 			)
 		);
 		eval('nsContextMenu.prototype.addDictionaries = '+
 			nsContextMenu.prototype.addDictionaries.toSource().replace(
 				'openUILinkIn(',
-				<![CDATA[
-					if (where.indexOf('tab') == 0)
-						TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);
-					$&]]>
+				'TreeStyleTabService.onBeforeOpenLink(aWhere, this.target.ownerDocument.defaultView); $&'
 			)
 		);
 
@@ -219,19 +205,8 @@ var TreeStyleTabWindowHelper = {
 			'loadSearch' in BrowserSearch) {
 			eval('BrowserSearch.loadSearch = '+
 				BrowserSearch.loadSearch.toSource().replace(
-					// for old Firefox 4 and olders
-					'if (useNewTab) {',
-					<![CDATA[$&
-						if (TreeStyleTabService.shouldOpenSearchResultAsChild(arguments[0]))
-							TreeStyleTabService.readyToOpenChildTab();
-					]]>
-				).replace(
-					// for Firefox 5 and later
 					'openLinkIn(',
-					<![CDATA[
-						if (useNewTab && TreeStyleTabService.shouldOpenSearchResultAsChild(arguments[0]))
-							TreeStyleTabService.readyToOpenChildTab();
-					$&]]>
+					'TreeStyleTabService.onBeforeBrowserSearch(arguments[0], useNewTab); $&'
 				)
 			);
 		}
@@ -262,11 +237,7 @@ var TreeStyleTabWindowHelper = {
 			eval('window.openLinkIn = '+
 				window.openLinkIn.toSource().replace(
 					'browser.loadOneTab(',
-					<![CDATA[
-						if (params.linkNode &&
-							!TreeStyleTabService.checkToOpenChildTab(params.linkNode.ownerDocument.defaultView))
-							TreeStyleTabService.readyToOpenChildTab(params.linkNode.ownerDocument.defaultView);
-						$&]]>.toString()
+					'TreeStyleTabService.onBeforeOpenLinkWithParams(params); $&'
 				)
 			);
 		}
@@ -287,9 +258,7 @@ var TreeStyleTabWindowHelper = {
 					// for Tab Utilities, etc. Some addons insert openNewTabWith() to the function.
 					// (calls for the function is not included by Firefox default.)
 					/(openNewTabWith\()/g,
-					<![CDATA[
-						if (!TreeStyleTabService.checkToOpenChildTab(event.target.ownerDocument.defaultView)) TreeStyleTabService.readyToOpenChildTab(event.target.ownerDocument.defaultView);
-						$1]]>
+					'TreeStyleTabService.onBeforeOpenNewTabByThirdParty(event.target.ownerDocument.defaultView); $1'
 				));
 			}
 		}
@@ -315,10 +284,7 @@ var TreeStyleTabWindowHelper = {
 					continue;
 				eval(func+' = '+source.replace(
 					/((?:openUILinkIn|duplicateTabIn)\()/g,
-					<![CDATA[
-						if (where == 'tab' || where == 'tabshifted')
-							TreeStyleTabService.readyToOpenChildTab();
-						$1]]>
+					'TreeStyleTabService.onBeforeOpenLink(where); $1'
 				));
 			}
 		}
@@ -334,10 +300,7 @@ var TreeStyleTabWindowHelper = {
 					continue;
 				eval(func+' = '+source.replace(
 					/((?:openUILinkIn|duplicateTabIn)\()/g,
-					<![CDATA[
-						if (where == 'tab' || where == 'tabshifted')
-							TreeStyleTabService.onBeforeTabDuplicate(null);
-						$&]]>
+					'TreeStyleTabService.onBeforeTabReloadOrDuplicate(where); $&'
 				));
 			}
 		}
@@ -355,9 +318,7 @@ var TreeStyleTabWindowHelper = {
 					continue;
 				eval(func+' = '+source.replace(
 					'gBrowser.loadTabs(',
-					<![CDATA[
-						TreeStyleTabService.readyToOpenNewTabGroup(gBrowser);
-						$&]]>
+					'TreeStyleTabService.readyToOpenNewTabGroup(gBrowser); $&'
 				));
 			}
 		}
@@ -365,10 +326,7 @@ var TreeStyleTabWindowHelper = {
 		eval('FeedHandler.loadFeed = '+
 			FeedHandler.loadFeed.toSource().replace(
 				'openUILink(',
-				<![CDATA[
-					if (String(whereToOpenLink(event, false, true)).indexOf('tab') == 0)
-						TreeStyleTabService.readyToOpenChildTab(gBrowser);
-					$&]]>
+				'TreeStyleTabService.onBeforeViewMedia(event, gBrowser); $&'
 			)
 		);
 
@@ -381,15 +339,7 @@ var TreeStyleTabWindowHelper = {
 		eval('FullScreen.toggle = '+
 			FullScreen.toggle.toSource().replace(
 				'{',
-				<![CDATA[{
-					var treeStyleTab = gBrowser.treeStyleTab;
-					if (treeStyleTab.position != 'top') {
-						if (window.fullScreen)
-							treeStyleTab.autoHide.endForFullScreen();
-						else
-							treeStyleTab.autoHide.startForFullScreen();
-					}
-				]]>
+				'{ gBrowser.treeStyleTab.onBeforeFullScreenToggle(); '
 			)
 		);
 
@@ -458,8 +408,7 @@ var TreeStyleTabWindowHelper = {
 			eval('searchbar.doSearch = '+searchbar.doSearch.toSource().replace(
 				/(openUILinkIn\(.+?\);)/,
 				<![CDATA[
-					if (TreeStyleTabService.shouldOpenSearchResultAsChild(arguments[0]))
-						TreeStyleTabService.readyToOpenChildTab();
+					TreeStyleTabService.onBeforeBrowserSearch(arguments[0]);
 					$1
 					TreeStyleTabService.stopToOpenChildTab();
 				]]>.toString()

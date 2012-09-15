@@ -1170,6 +1170,50 @@ TreeStyleTabWindow.prototype = {
 		var b = this.getTabBrowserFromChild(aTab) || this.browser;
 		this._handleNewTabCommand(aTab || b.selectedTab, this.getTreePref('autoAttach.duplicateTabCommand'));
 	},
+ 
+	onBeforeTabReloadOrDuplicate : function TSTWindow_onBeforeTabReloadOrDuplicate(aWhere) 
+	{
+		if (aWhere == 'tab' || aWhere == 'tabshifted')
+			this.onBeforeTabDuplicate(null);
+	},
+ 
+	onBeforeOpenLink : function TSTWindow_onBeforeOpenLink(aWhere, aOwner) 
+	{
+		if (aWhere == 'tab' || aWhere == 'tabshifted')
+			this.readyToOpenChildTab(aOwner);
+	},
+ 
+	onBeforeOpenLinkWithParams : function TSTWindow_onBeforeOpenLinkWithParams(aParams) 
+	{
+		if (aParams.linkNode &&
+			!this.checkToOpenChildTab(aParams.linkNode.ownerDocument.defaultView))
+			this.readyToOpenChildTab(aParams.linkNode.ownerDocument.defaultView);
+	},
+ 
+	onBeforeOpenNewTabByThirdParty : function TSTWindow_onBeforeOpenNewTabByThirdParty(aOwner) 
+	{
+		if (!this.checkToOpenChildTab(aOwner))
+			this.readyToOpenChildTab(aOwner);
+	},
+ 
+	onBeforeBrowserAccessOpenURI : function TSTWindow_onBeforeBrowserAccessOpenURI(aOpener, aWhere) 
+	{
+		if (aOpener && aWhere == Ci.nsIBrowserDOMWindow.OPEN_NEWTAB)
+			this.readyToOpenChildTab(aOpener);
+	},
+ 
+	onBeforeViewMedia : function TSTWindow_onBeforeViewMedia(aEvent, aOwner) 
+	{
+		if (String(this.window.whereToOpenLink(aEvent, false, true)).indexOf('tab') == 0)
+			this.readyToOpenChildTab(aOwner);
+	},
+ 
+	onBeforeBrowserSearch : function TSTWindow_onBeforeBrowserSearch(aTerm, aForceNewTab) 
+	{
+		if ((argumeuts.length == 1 || aForceNewTab) &&
+			this.shouldOpenSearchResultAsChild(aTerm))
+			this.readyToOpenChildTab();
+	},
   
 /* Tree Style Tabの初期化が行われる前に復元されたセッションについてツリー構造を復元 */ 
 	
