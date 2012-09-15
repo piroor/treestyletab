@@ -263,46 +263,13 @@ var TreeStyleTabWindowHelper = {
 			}
 		}
 
-		let (functions = this._splitFunctionNames(<![CDATA[
-				window.duplicateTab.gotoHistoryIndex
-				window.duplicateTab.BrowserBack
-				window.duplicateTab.BrowserForward
-				window.duplicatethistab.gotoHistoryIndex
-				window.duplicatethistab.BrowserBack
-				window.duplicatethistab.BrowserForward
-				window.__rewindforward__BrowserForward
-				window.__rewindforward__BrowserBack
-				window.gotoHistoryIndex
-				window.BrowserForward
-				window.BrowserBack
-			]]>)) {
-			for (let i = 0, maxi = functions.length; i < maxi; i++)
-			{
-				let func = functions[i];
-				let source = this._getFunctionSource(func);
-				if (!source || !/^\(?function (gotoHistoryIndex|BrowserForward|BrowserBack)/.test(source))
-					continue;
-				eval(func+' = '+source.replace(
-					/((?:openUILinkIn|duplicateTabIn)\()/g,
-					'TreeStyleTabService.onBeforeOpenLink(where); $1'
-				));
-			}
-		}
-
-		let (functions = this._splitFunctionNames(<![CDATA[
-				window.BrowserReloadOrDuplicate
-			]]>)) {
-			for (let i = 0, maxi = functions.length; i < maxi; i++)
-			{
-				let func = functions[i];
-				let source = this._getFunctionSource(func);
-				if (!source || !/^\(?function (BrowserReloadOrDuplicate)/.test(source))
-					continue;
-				eval(func+' = '+source.replace(
-					/((?:openUILinkIn|duplicateTabIn)\([^\)]+\))/g,
-					'(TreeStyleTabService.onBeforeTabReloadOrDuplicate(where), $&)'
-				));
-			}
+		if (window.duplicateTabIn) {
+			eval('window.duplicateTabIn = '+
+				window.duplicateTabIn.toSource().replace(
+					'{',
+					'{ gBrowser.treeStyleTab.onBeforeTabDuplicate(aTab, where); '
+				)
+			);
 		}
 
 		let (functions = this._splitFunctionNames(<![CDATA[

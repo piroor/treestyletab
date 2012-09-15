@@ -1165,16 +1165,13 @@ TreeStyleTabWindow.prototype = {
 	},
 	_clickEventOnNewTabButtonHandled : false,
  
-	onBeforeTabDuplicate : function TSTWindow_onBeforeTabDuplicate(aTab) 
+	onBeforeTabDuplicate : function TSTWindow_onBeforeTabDuplicate(aTab, aWhere) 
 	{
+		if (aWhere && aWhere.indexOf('tab') != 0)
+			return;
+
 		var b = this.getTabBrowserFromChild(aTab) || this.browser;
 		this._handleNewTabCommand(aTab || b.selectedTab, this.getTreePref('autoAttach.duplicateTabCommand'));
-	},
- 
-	onBeforeTabReloadOrDuplicate : function TSTWindow_onBeforeTabReloadOrDuplicate(aWhere) 
-	{
-		if (aWhere == 'tab' || aWhere == 'tabshifted')
-			this.onBeforeTabDuplicate(null);
 	},
  
 	onBeforeOpenLink : function TSTWindow_onBeforeOpenLink(aWhere, aOwner) 
