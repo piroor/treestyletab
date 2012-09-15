@@ -299,8 +299,8 @@ var TreeStyleTabWindowHelper = {
 				if (!source || !/^\(?function (BrowserReloadOrDuplicate)/.test(source))
 					continue;
 				eval(func+' = '+source.replace(
-					/((?:openUILinkIn|duplicateTabIn)\()/g,
-					'TreeStyleTabService.onBeforeTabReloadOrDuplicate(where); $&'
+					/((?:openUILinkIn|duplicateTabIn)\([^\)]+\))/g,
+					'(TreeStyleTabService.onBeforeTabReloadOrDuplicate(where), $&)'
 				));
 			}
 		}
