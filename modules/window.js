@@ -1207,7 +1207,7 @@ TreeStyleTabWindow.prototype = {
  
 	onBeforeBrowserSearch : function TSTWindow_onBeforeBrowserSearch(aTerm, aForceNewTab) 
 	{
-		if ((argumeuts.length == 1 || aForceNewTab) &&
+		if ((arguments.length == 1 || aForceNewTab) &&
 			this.shouldOpenSearchResultAsChild(aTerm))
 			this.readyToOpenChildTab();
 	},
