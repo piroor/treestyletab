@@ -38,6 +38,10 @@ const EXPORTED_SYMBOLS = ['TreeStyleTabBrowser'];
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
+Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
+
+XPCOMUtils.defineLazyModuleGetter(this, "Services", "resource://gre/modules/Services.jsm");
+
 Components.utils.import('resource://treestyletab-modules/window.js');
  
 function TreeStyleTabBrowser(aWindowService, aTabBrowser) 
@@ -687,11 +691,11 @@ TreeStyleTabBrowser.prototype = {
 		this.onPrefChange('extensions.treestyletab.tabbar.narrowScrollbar');
 		this.onPrefChange('extensions.treestyletab.animation.enabled');
 
-		this.ObserverService.addObserver(this, this.kTOPIC_INDENT_MODIFIED, false);
-		this.ObserverService.addObserver(this, this.kTOPIC_COLLAPSE_EXPAND_ALL, false);
-		this.ObserverService.addObserver(this, this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY, false);
-		this.ObserverService.addObserver(this, 'private-browsing-change-granted', false);
-		this.ObserverService.addObserver(this, 'lightweight-theme-styling-update', false);
+		Services.obs.addObserver(this, this.kTOPIC_INDENT_MODIFIED, false);
+		Services.obs.addObserver(this, this.kTOPIC_COLLAPSE_EXPAND_ALL, false);
+		Services.obs.addObserver(this, this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY, false);
+		Services.obs.addObserver(this, 'private-browsing-change-granted', false);
+		Services.obs.addObserver(this, 'lightweight-theme-styling-update', false);
 		this.addPrefListener(this);
 
 		// Don't init these ovservers on this point to avoid needless initializations.
@@ -2014,11 +2018,11 @@ TreeStyleTabBrowser.prototype = {
 			this.tabbarCanvas = null;
 		}
 
-		this.ObserverService.removeObserver(this, this.kTOPIC_INDENT_MODIFIED);
-		this.ObserverService.removeObserver(this, this.kTOPIC_COLLAPSE_EXPAND_ALL);
-		this.ObserverService.removeObserver(this, this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY);
-		this.ObserverService.removeObserver(this, 'private-browsing-change-granted');
-		this.ObserverService.removeObserver(this, 'lightweight-theme-styling-update');
+		Services.obs.removeObserver(this, this.kTOPIC_INDENT_MODIFIED);
+		Services.obs.removeObserver(this, this.kTOPIC_COLLAPSE_EXPAND_ALL);
+		Services.obs.removeObserver(this, this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY);
+		Services.obs.removeObserver(this, 'private-browsing-change-granted');
+		Services.obs.removeObserver(this, 'lightweight-theme-styling-update');
 		this.removePrefListener(this);
 
 		delete this.windowService;

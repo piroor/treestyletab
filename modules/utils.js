@@ -276,14 +276,6 @@ var TreeStyleTabUtils = {
 	},
 	_SessionStore : null,
 
-	get ObserverService() {
-		if (!this._ObserverService) {
-			this._ObserverService = Services.obs;
-		}
-		return this._ObserverService;
-	},
-	_ObserverService : null,
-
 	get IOService() {
 		if (!this._IOService) {
 			this._IOService = Services.io;
@@ -2075,7 +2067,7 @@ var TreeStyleTabUtils = {
 	set treeViewEnabled(aValue)
 	{
 		this._treeViewEnabled = !!aValue;
-		this.ObserverService.notifyObservers(
+		Services.obs.notifyObservers(
 			window,
 			this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY,
 			this._treeViewEnabled
@@ -2705,11 +2697,11 @@ var TreeStyleTabUtils = {
 		{
 			case 'extensions.treestyletab.indent.vertical':
 				this.baseIndentVertical = value;
-				this.ObserverService.notifyObservers(null, this.kTOPIC_INDENT_MODIFIED, value);
+				Services.obs.notifyObservers(null, this.kTOPIC_INDENT_MODIFIED, value);
 				return;
 			case 'extensions.treestyletab.indent.horizontal':
 				this.baseIndentHorizontal = value;
-				this.ObserverService.notifyObservers(null, this.kTOPIC_INDENT_MODIFIED, value);
+				Services.obs.notifyObservers(null, this.kTOPIC_INDENT_MODIFIED, value);
 				return;
 
 			case 'extensions.treestyletab.tabbar.width':
