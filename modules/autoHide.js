@@ -42,6 +42,16 @@ Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 XPCOMUtils.defineLazyModuleGetter(this, 'Services', 'resource://gre/modules/Services.jsm');
 XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabUtils', 'resource://treestyletab-modules/utils.js');
 
+XPCOMUtils.defineLazyGetter(this, 'window', function() {
+	var ns = {};
+	Components.utils.import('resource://treestyletab-modules/lib/namespace.jsm', ns);
+	var window = ns.getNamespaceFor('piro.sakura.ne.jp');
+	return window;
+});
+XPCOMUtils.defineLazyGetter(this, 'prefs', function() {
+	Components.utils.import('resource://treestyletab-modules/lib/prefs.js');
+	return window['piro.sakura.ne.jp'].prefs;
+});
 
 function AutoHideBrowser(aTabBrowser) 
 {
@@ -840,7 +850,7 @@ AutoHideBrowser.prototype = {
 		if (!this.window || !this.window.TreeStyleTabService)
 			return;
 
-		var value = this.treeStyleTab.getPref(aPrefName);//TreeStyleTabUtils.__proto__.getPref()
+		var value = prefs.getPref(aPrefName);
 		switch (aPrefName)
 		{
 			case 'extensions.treestyletab.tabbar.autoHide.mode':
@@ -1159,7 +1169,7 @@ AutoHideBrowser.prototype = {
 
 		b.setAttribute(this.kMODE+'-normal', TreeStyleTabUtils.getTreePref('tabbar.autoHide.mode'));
 		b.setAttribute(this.kMODE+'-fullscreen', TreeStyleTabUtils.getTreePref('tabbar.autoHide.mode.fullscreen'));
-		sv.addPrefListener(this);// TreeStyleTabUtils.__proto__.addPrefListener
+		prefs.addPrefListener(this);
 		this.onPrefChange('browser.tabs.closeButtons');
 		this.onPrefChange('extensions.treestyletab.tabbar.autoHide.area');
 		this.onPrefChange('extensions.treestyletab.tabbar.togglerSize');
@@ -1182,7 +1192,7 @@ AutoHideBrowser.prototype = {
 	destroy : function AHB_destroy() 
 	{
 		this.end();
-		this.treeStyleTab.removePrefListener(this);//TreeStyleTabUtils.__proto__.removePrefListener()
+		prefs.removePrefListener(this);
 
 		var sv = this.treeStyleTab;
 		var b  = this.browser;
