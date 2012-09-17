@@ -76,13 +76,8 @@ function initAppearancePane()
 	onChangeTabbarPosition();
 
 	var sidebar = document.getElementById('extensions.treestyletab.tabbar.style-sidebar');
-	if (comparator.compare(XULAppInfo.version, '3.6') >= 0) {
-		sidebar.removeAttribute('disabled');
-	}
-	else {
-		sidebar.setAttribute('disabled', true);
-	}
-
+	sidebar.removeAttribute('disabled');
+	
 	var boxes = [
 			document.getElementById('extensions.treestyletab.tabbar.style-arrowscrollbox'),
 			document.getElementById('extensions.treestyletab.twisty.style-arrowscrollbox')
@@ -152,20 +147,13 @@ function initTabPane()
 	);
 
 	var newTabPref = document.getElementById('extensions.treestyletab.autoAttach.newTabButton-box');
-	if (comparator.compare(XULAppInfo.version, '4.0') >= 0)
-		newTabPref.removeAttribute('hidden');
-	else
-		newTabPref.setAttribute('hidden', true);
+	newTabPref.removeAttribute('hidden');
 
 	var bookmarkGroupReplacePref = document.getElementById('openGroupBookmark.replace');
-	if (comparator.compare(XULAppInfo.version, '7.0') > 0) {
-		if (bookmarkGroupReplacePref.selected)
-			document.getElementById('openGroupBookmark.subtree').selected = true;
-		bookmarkGroupReplacePref.setAttribute('hidden', true);
+	if (bookmarkGroupReplacePref.selected) {
+		document.getElementById('openGroupBookmark.subtree').selected = true;
 	}
-	else {
-		bookmarkGroupReplacePref.removeAttribute('hidden');
-	}
+	bookmarkGroupReplacePref.setAttribute('hidden', true);
 }
 
 function onSyncGroupBookmarkUIToPref()
