@@ -38,7 +38,9 @@ const EXPORTED_SYMBOLS = ['PseudoTreeBuilder'];
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
-Components.utils.import('resource://treestyletab-modules/utils.js');
+Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
+
+XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabUtils', 'resource://treestyletab-modules/utils.js');
 
 var PseudoTreeBuilder = {
 
