@@ -33,10 +33,8 @@
  *
  * ***** END LICENSE BLOCK ******/
 
-const IOService = Components.classes['@mozilla.org/network/io-service;1']
-					.getService(Components.interfaces.nsIIOService);
-
 Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
+Components.utils.import('resource://gre/modules/Services.jsm');
 
 function AboutGroup()
 {
@@ -49,7 +47,7 @@ AboutGroup.prototype = {
 
 	newChannel : function(aURI)
 	{
-		return IOService.newChannel('chrome://treestyletab/content/group.xul', null, null);
+		return Services.io.newChannel('chrome://treestyletab/content/group.xul', null, null);
 	},
 
 	getURIFlags : function(aURI)
