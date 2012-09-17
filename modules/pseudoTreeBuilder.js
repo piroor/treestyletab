@@ -41,7 +41,6 @@ const Ci = Components.interfaces;
 Components.utils.import('resource://treestyletab-modules/utils.js');
 
 var PseudoTreeBuilder = {
-	__proto__ : TreeStyleTabUtils,
 
 	kFAVICON      : 'treestyletab-pseudo-tree-favicon',
 	kROOTITEM     : 'treestyletab-pseudo-tree-root-item',
@@ -104,7 +103,7 @@ var PseudoTreeBuilder = {
 		if (w.isBlankPageURL ? !w.isBlankPageURL(uri) : (uri != 'about:blank')) tooltip += '\n' + uri;
 		label.setAttribute('tooltiptext', tooltip);
 		label.setAttribute('class', 'text-link '+this.kTREEITEM);
-		label.setAttribute('tab-id', this.getTabValue(aTab, this.kID));
+		label.setAttribute('tab-id', TreeStyleTabUtils.getTabValue(aTab, TreeStyleTabUtils.kID));
 
 		var children = this.createTabChildren(aTab);
 		if (children) {
@@ -122,7 +121,7 @@ var PseudoTreeBuilder = {
 	{
 		var doc = aTab.ownerDocument;
 
-		var children = this.getChildTabs(aTab);
+		var children = TreeStyleTabUtils.getChildTabs(aTab);
 		if (!children.length)
 			return null;
 
