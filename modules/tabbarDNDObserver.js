@@ -48,8 +48,7 @@ const SSS = Cc['@mozilla.org/content/style-sheet-service;1']
 				.getService(Ci.nsIStyleSheetService);
 const SecMan = Cc['@mozilla.org/scriptsecuritymanager;1']
 				.getService(Ci.nsIScriptSecurityManager);
-const IOService = Services.io;
- 
+
 function TabbarDNDObserver(aTabBrowser) 
 {
 	this.init(aTabBrowser);
@@ -1151,7 +1150,7 @@ catch(e) {
 							.split('\n')[0]];
 
 			case 'application/x-moz-file':
-				let fileHandler = IOService.getProtocolHandler('file')
+				let fileHandler = Services.io.getProtocolHandler('file')
 									.QueryInterface(Ci.nsIFileProtocolHandler);
 				return [fileHandler.getURLSpecFromFile(aData)];
 		}
