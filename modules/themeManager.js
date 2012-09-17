@@ -151,14 +151,12 @@ TreeStyleTabThemeManager.prototype = {
 			BASE+'metal/shadow-active-l.png',
 			BASE+'metal/shadow-inactive-l.png'
 		].concat(
-			TreeStyleTabUtils.Comparator.compare(TreeStyleTabUtils.XULAppInfo.version, '3.5') >= 0 ?
-				[
-					BASE+'metal/tab-active-middle.png',
-					BASE+'metal/tab-active-middle-selected.png',
-					BASE+'metal/tab-inactive-middle.png',
-					BASE+'metal/tab-inactive-middle-selected.png'
-				] :
-				[]
+			[
+				BASE+'metal/tab-active-middle.png',
+				BASE+'metal/tab-active-middle-selected.png',
+				BASE+'metal/tab-inactive-middle.png',
+				BASE+'metal/tab-inactive-middle-selected.png'
+			]
 		),
 		'metal-right' : [
 			BASE+'metal/tab-active-r.png',
@@ -168,14 +166,12 @@ TreeStyleTabThemeManager.prototype = {
 			BASE+'metal/shadow-active-r.png',
 			BASE+'metal/shadow-inactive-r.png'
 		].concat(
-			TreeStyleTabUtils.Comparator.compare(TreeStyleTabUtils.XULAppInfo.version, '3.5') >= 0 ?
-				[
-					BASE+'metal/tab-active-middle.png',
-					BASE+'metal/tab-active-middle-selected.png',
-					BASE+'metal/tab-inactive-middle.png',
-					BASE+'metal/tab-inactive-middle-selected.png'
-				] :
-				[]
+			[
+				BASE+'metal/tab-active-middle.png',
+				BASE+'metal/tab-active-middle-selected.png',
+				BASE+'metal/tab-inactive-middle.png',
+				BASE+'metal/tab-inactive-middle-selected.png'
+			]
 		)
 	}
 };
