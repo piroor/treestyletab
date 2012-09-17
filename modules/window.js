@@ -40,6 +40,8 @@ const Ci = Components.interfaces;
 
 Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 
+XPCOMUtils.defineLazyModuleGetter(this, "Services", "resource://gre/modules/Services.jsm");
+
 Components.utils.import('resource://treestyletab-modules/utils.js');
 XPCOMUtils.defineLazyGetter(this, 'TreeStyleTabBrowser', function() {
 	var ns = {};
@@ -1480,7 +1482,7 @@ TreeStyleTabWindow.prototype = {
   
 	collapseExpandAllSubtree : function TSTWindow_collapseExpandAllSubtree(aCollapse) 
 	{
-		this.ObserverService.notifyObservers(
+		Services.obs.notifyObservers(
 			this.window,
 			this.kTOPIC_COLLAPSE_EXPAND_ALL,
 			(aCollapse ? 'collapse' : 'open' )
