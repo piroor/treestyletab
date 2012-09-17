@@ -276,14 +276,6 @@ var TreeStyleTabUtils = {
 	},
 	_SessionStore : null,
 
-	get IOService() {
-		if (!this._IOService) {
-			this._IOService = Services.io;
-		}
-		return this._IOService;
-	},
-	_IOService : null,
-
 	get WindowMediator() {
 		if (!this._WindowMediator) {
 			this._WindowMediator = Services.wm;
@@ -1141,13 +1133,13 @@ var TreeStyleTabUtils = {
 		var newURI;
 		aURI = aURI || '';
 		if (aURI && String(aURI).indexOf('file:') == 0) {
-			var fileHandler = this.IOService.getProtocolHandler('file').QueryInterface(Ci.nsIFileProtocolHandler);
+			var fileHandler = Services.io.getProtocolHandler('file').QueryInterface(Ci.nsIFileProtocolHandler);
 			var tempLocalFile = fileHandler.getFileFromURLSpec(aURI);
-			newURI = this.IOService.newFileURI(tempLocalFile);
+			newURI = Services.io.newFileURI(tempLocalFile);
 		}
 		else {
 			if (!/^\w+\:/.test(aURI)) aURI = 'http://'+aURI;
-			newURI = this.IOService.newURI(aURI, null, null);
+			newURI = Services.io.newURI(aURI, null, null);
 		}
 		return newURI;
 	},
