@@ -303,17 +303,9 @@ var TreeStyleTabUtils = {
 	},
 	 _FocusManager : null,
 
-	get Comparator() {
-		if (!this._Comparator) {
-			this._Comparator = Services.vc;
-		}
-		return this._Comparator;
-	},
-	_Comparator : null,
- 
 	get isGecko10OrLater() 
 	{
-		return this.Comparator.compare(Services.appinfo.version, '10.0a') > 0;
+		return Services.vc.compare(Services.appinfo.version, '10.0a') > 0;
 	},
  
 	get treeBundle() { 
