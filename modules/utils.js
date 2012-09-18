@@ -302,13 +302,6 @@ var TreeStyleTabUtils = {
 	},
 	 _FocusManager : null,
 
-	get XULAppInfo() {
-		if (!this._XULAppInfo) {
-			this._XULAppInfo = Services.appinfo;
-		}
-		return this._XULAppInfo;
-	},
-	_XULAppInfo : null,
 	get Comparator() {
 		if (!this._Comparator) {
 			this._Comparator = Services.vc;
@@ -319,7 +312,7 @@ var TreeStyleTabUtils = {
  
 	get isGecko10OrLater() 
 	{
-		return this.Comparator.compare(this.XULAppInfo.version, '10.0a') > 0;
+		return this.Comparator.compare(Services.appinfo.version, '10.0a') > 0;
 	},
  
 	get treeBundle() { 
@@ -338,7 +331,7 @@ var TreeStyleTabUtils = {
 	{
 		if (this._initialized) return;
 
-		this.isMac = this.XULAppInfo.OS == 'Darwin';
+		this.isMac = Services.appinfo.OS == 'Darwin';
 
 		this.applyPlatformDefaultPrefs();
 		this.migratePrefs();
@@ -363,7 +356,7 @@ var TreeStyleTabUtils = {
 		this.onPrefChange('extensions.treestyletab.counter.role.vertical');
 
 		try {
-			if (this.XULAppInfo.OS == 'WINNT')
+			if (Services.appinfo.OS == 'WINNT')
 				this.updateAeroPeek();
 		}
 		catch(e) {
@@ -380,7 +373,7 @@ var TreeStyleTabUtils = {
 	_initialized : false,
 	applyPlatformDefaultPrefs : function TSTUtils_applyPlatformDefaultPrefs()
 	{
-		var OS = this.XULAppInfo.OS;
+		var OS = Services.appinfo.OS;
 		var processed = {};
 		var originalKeys = this.getDescendant('extensions.treestyletab.platform.'+OS);
 		for (let i = 0, maxi = originalKeys.length; i < maxi; i++)
