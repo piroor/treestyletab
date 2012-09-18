@@ -277,15 +277,6 @@ var TreeStyleTabUtils = {
 	},
 	_SessionStore : null,
 
-	get PromptService()
-	{
-		if (!this._PromptService) {
-			this._PromptService = Services.prompt;
-		}
-		return this._PromptService;
-	},
-	_PromptService : null,
-
 	get FocusManager()
 	{
 		if (!this._FocusManager) {
@@ -678,11 +669,11 @@ var TreeStyleTabUtils = {
 		if (behavior & this.kDROPLINK_FIXED) return behavior;
 
 		var checked = { value : false };
-		var newChildTab = this.PromptService.confirmEx(this.browserWindow,
+		var newChildTab = Services.prompt.confirmEx(this.browserWindow,
 				this.treeBundle.getString('dropLinkOnTab.title'),
 				this.treeBundle.getString('dropLinkOnTab.text'),
-				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_0) +
-				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_1),
+				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_0) +
+				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_1),
 				this.treeBundle.getString('dropLinkOnTab.openNewChildTab'),
 				this.treeBundle.getString('dropLinkOnTab.loadInTheTab'),
 				null,
@@ -709,12 +700,12 @@ var TreeStyleTabUtils = {
 		var dummyTabFlag = behavior & this.kGROUP_BOOKMARK_USE_DUMMY;
 
 		var checked = { value : false };
-		var button = this.PromptService.confirmEx(this.browserWindow,
+		var button = Services.prompt.confirmEx(this.browserWindow,
 				this.treeBundle.getString('openGroupBookmarkBehavior.title'),
 				this.treeBundle.getString('openGroupBookmarkBehavior.text'),
-				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_0) +
-				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_1) +
-				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_2),
+				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_0) +
+				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_1) +
+				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_2),
 				this.treeBundle.getString('openGroupBookmarkBehavior.subTree'),
 				this.treeBundle.getString('openGroupBookmarkBehavior.separate'),
 				this.treeBundle.getString('openGroupBookmarkBehavior.replace'),
@@ -752,11 +743,11 @@ var TreeStyleTabUtils = {
 		if (behavior & this.kBOOKMARK_DROPPED_TABS_FIXED) return behavior;
 
 		var checked = { value : false };
-		var button = this.PromptService.confirmEx(this.browserWindow,
+		var button = Services.prompt.confirmEx(this.browserWindow,
 				this.treeBundle.getString('bookmarkDroppedTabs.title'),
 				this.treeBundle.getString('bookmarkDroppedTabs.text'),
-				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_0) +
-				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_1),
+				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_0) +
+				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_1),
 				this.treeBundle.getString('bookmarkDroppedTabs.bookmarkAll'),
 				this.treeBundle.getString('bookmarkDroppedTabs.bookmarkOnlyParent'),
 				null,
