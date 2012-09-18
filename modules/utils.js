@@ -277,14 +277,6 @@ var TreeStyleTabUtils = {
 	},
 	_SessionStore : null,
 
-	get WindowMediator() {
-		if (!this._WindowMediator) {
-			this._WindowMediator = Services.wm;
-		}
-		return this._WindowMediator;
-	},
-	_WindowMediator : null,
-
 	get PromptService()
 	{
 		if (!this._PromptService) {
@@ -635,18 +627,18 @@ var TreeStyleTabUtils = {
 	},
 	get topBrowserWindow()
 	{
-		return this.WindowMediator.getMostRecentWindow('navigator:browser');
+		return Services.wm.getMostRecentWindow('navigator:browser');
 	},
  
 	get browserWindows() 
 	{
 		var windows = [];
 
-		var targets = this.WindowMediator.getZOrderDOMWindowEnumerator('navigator:browser', true);
+		var targets = Services.wm.getZOrderDOMWindowEnumerator('navigator:browser', true);
 		// By the bug 156333, we cannot find windows by their Z order on Linux.
 		// https://bugzilla.mozilla.org/show_bug.cgi?id=156333
 		if (!targets.hasMoreElements())
-			targets = this.WindowMediator.getEnumerator('navigator:browser');
+			targets = Services.wm.getEnumerator('navigator:browser');
 
 		while (targets.hasMoreElements())
 		{
