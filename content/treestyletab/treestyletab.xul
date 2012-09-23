@@ -65,7 +65,7 @@
 				event.stopPropagation();
 				this.parentNode.hidePopup();
 			}"
-			multipletab-insertafter="tabContextMenu.querySelector(&quot;*[id^='context_reloadTab']&quot)"/>
+			multipletab-insertafter="tabContextMenu.querySelector(&quot;*[id^='context_reloadTab']&quot;)"/>
 		<menuitem id="context-item-reloadDescendantTabs"
 			label="&context.reloadDescendantTabs.label;"
 			accesskey="&context.reloadDescendantTabs.accesskey;"
@@ -75,7 +75,7 @@
 				event.stopPropagation();
 				this.parentNode.hidePopup();
 			}"
-			multipletab-insertafter="tabContextMenu.querySelector(&quot;*[id^='context-item-reloadTabSubtree']&quot)"/>
+			multipletab-insertafter="tabContextMenu.querySelector(&quot;*[id^='context-item-reloadTabSubtree']&quot;)"/>
 
 		<menuitem id="context-item-removeTabSubtree"
 			label="&context.removeTabSubtree.label;"
@@ -98,12 +98,12 @@
 				event.stopPropagation();
 				this.parentNode.hidePopup();
 			}"
-			multipletab-insertafter="tabContextMenu.querySelector(&quot;*[id^='context-item-removeTabSubtree']&quot)"/>
+			multipletab-insertafter="tabContextMenu.querySelector(&quot;*[id^='context-item-removeTabSubtree']&quot;)"/>
 		<menuitem id="context-item-removeAllTabsButThisTree"
 			label="&context.removeAllTabsBut.label;"
 			accesskey="&context.removeAllTabsBut.accesskey;"
 			oncommand="TreeStyleTabService.removeAllTabsBut(TreeStyleTabService.getTabBrowserFromChild(this).mContextTab);"
-			multipletab-insertafter="tabContextMenu.querySelector(&quot;*[id^='context_closeOtherTabs']&quot)"/>
+			multipletab-insertafter="tabContextMenu.querySelector(&quot;*[id^='context_closeOtherTabs']&quot;)"/>
 
 		<menuitem id="context-item-bookmarkTabSubtree"
 			label="&context.bookmarkTabSubtree.label;"
