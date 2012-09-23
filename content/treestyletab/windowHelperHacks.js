@@ -205,7 +205,7 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 				'var tabcount = ',
 				<![CDATA[
 					gBrowser.treeStyleTab.collapseExpandAllSubtree(false, true);
-					let (tabs = gBrowser.treeStyleTab.getTabsArray(gBrowser).slice(1).reverse()) {
+					let (tabs = gBrowser.treeStyleTab.getTabs(gBrowser).slice(1).reverse()) {
 						for (let i = 0, maxi = tabs.length; i < maxi; i++)
 						{
 							let tab = tabs[i];

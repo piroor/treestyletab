@@ -483,7 +483,7 @@ TreeStyleTabWindow.prototype = {
 		items = items.slice(firstItemIndex);
 
 		var b = this.getTabBrowserFromChild(aEvent.originalTarget) || this.browser;
-		var tabs = this.getTabsArray(b);
+		var tabs = this.getTabs(b);
 		for (let i = 0, maxi = tabs.length; i < maxi; i++)
 		{
 			items[i].style.marginLeft = tabs[i].getAttribute(this.kNEST)+'em';
@@ -1548,8 +1548,7 @@ TreeStyleTabWindow.prototype = {
 	{
 		var keepTabs = [aTab].concat(this.getDescendantTabs(aTab));
 		var b = this.getTabBrowserFromChild(aTab);
-		var closeTabs = this.getTabsArray(b)
-					.filter(function(aTab) {
+		var closeTabs = this.getTabs(b).filter(function(aTab) {
 						return keepTabs.indexOf(aTab) < 0 && !aTab.hasAttribute('pinned');
 					});
 

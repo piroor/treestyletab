@@ -250,7 +250,7 @@ catch(e) {
 		var d  = this.document;
 
 		var tab        = sv.getTabFromEvent(aEvent) || sv.getTabFromTabbarEvent(aEvent) || aEvent.target;
-		var tabs       = sv.getTabsArray(b);
+		var tabs       = sv.getTabs(b);
 		var firstTab   = sv.getFirstNormalTab(b) || tabs[0];
 		var lastTabIndex = tabs.length - 1;
 		var isInverted = sv.isVertical ? false : b.ownerDocument.defaultView.getComputedStyle(b.parentNode, null).direction == 'rtl';
@@ -433,7 +433,7 @@ catch(e) {
 
 
 		var targetBrowser = b;
-		var tabs = sv.getTabsArray(targetBrowser);
+		var tabs = sv.getTabs(targetBrowser);
 
 		var draggedWholeTree = [].concat(draggedRoots);
 		for (let i = 0, maxi = draggedRoots.length; i < maxi; i++)
@@ -597,12 +597,12 @@ catch(e) {
 				action : sv.kACTIONS_FOR_DESTINATION | sv.kACTION_IMPORT
 			};
 		var tabsInfo = this.getDraggedTabsInfoFromOneTab(actionInfo, aTab);
-		return tabsInfo.draggedTabs.length == (aTabs || sv.getAllTabsArray(b)).length;
+		return tabsInfo.draggedTabs.length == (aTabs || sv.getAllTabs(b)).length;
 	},
  
 	isDraggingAllCurrentTabs : function TabbarDND_isDraggingAllCurrentTabs(aTab) 
 	{
-		return this.isDraggingAllTabs(aTab, this.treeStyleTab.getTabsArray(this.treeStyleTab.browser));
+		return this.isDraggingAllTabs(aTab, this.treeStyleTab.getTabs(this.treeStyleTab.browser));
 	},
  
 	handleEvent : function TabbarDND_handleEvent(aEvent) 

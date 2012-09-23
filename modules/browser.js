@@ -374,7 +374,7 @@ TreeStyleTabBrowser.prototype = {
 	getTabFromCoordinate : function TSTBrowser_getTabFromCoordinate(aCoordinate)
 	{
 		var tab = null;
-		this.getTabsArray(this.mTabBrowser).some(function(aTab) {
+		this.getTabs(this.mTabBrowser).some(function(aTab) {
 			var box = aTab.boxObject;
 			if (box[this.screenPositionProp] > aCoordinate ||
 				box[this.screenPositionProp] + box[this.sizeProp] < aCoordinate) {
@@ -558,7 +558,7 @@ TreeStyleTabBrowser.prototype = {
  
 	updateTabsZIndex : function TSTBrowser_updateTabsZIndex(aStacked) 
 	{
-		var tabs = this.getTabsArray(this.mTabBrowser);
+		var tabs = this.getTabs(this.mTabBrowser);
 		var count = tabs.length;
 		for (let i = 0; i < count; i++)
 		{
@@ -678,7 +678,7 @@ TreeStyleTabBrowser.prototype = {
 		this._initTabbrowserContextMenu();
 		w.TreeStyleTabWindowHelper.updateTabDNDObserver(b);
 
-		this.getAllTabsArray(b).forEach(this.initTab, this);
+		this.getAllTabs(b).forEach(this.initTab, this);
 
 		this.onPrefChange('extensions.treestyletab.maxTreeLevel');
 		this.onPrefChange('extensions.treestyletab.tabbar.style');
@@ -1159,7 +1159,7 @@ TreeStyleTabBrowser.prototype = {
 						[aTarget] :
 					(typeof aTarget == 'object' && 'length' in aTarget) ?
 						Array.slice(aTarget) :
-						self.getAllTabsArray(b);
+						self.getAllTabs(b);
 			for (let i = 0, maxi = tabs.length; i < maxi; i++)
 			{
 				self.initTabContentsOrder(tabs[i]);
@@ -1401,7 +1401,7 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 
-		var tabs = this.getAllTabsArray(b);
+		var tabs = this.getAllTabs(b);
 		for (let i = 0, maxi = tabs.length; i < maxi; i++)
 		{
 			let tab = tabs[i];
@@ -1745,7 +1745,7 @@ TreeStyleTabBrowser.prototype = {
 		if (splitter.collapsed || splitter.getAttribute('state') != 'collapsed') {
 			this._tabStripPlaceHolder.collapsed =
 				splitter.collapsed =
-					(this.getPref('browser.tabs.autoHide') && this.getTabsArray(this.mTabBrowser).length == 1);
+					(this.getPref('browser.tabs.autoHide') && this.getTabs(this.mTabBrowser).length == 1);
 		}
 
 		var strip = this.tabStrip;
@@ -1943,7 +1943,7 @@ TreeStyleTabBrowser.prototype = {
  
 	reinitAllTabs : function TSTBrowser_reinitAllTabs(aSouldUpdateCount) 
 	{
-		var tabs = this.getAllTabsArray(this.mTabBrowser);
+		var tabs = this.getAllTabs(this.mTabBrowser);
 		for (let i = 0, maxi = tabs.length; i < maxi; i++)
 		{
 			let tab = tabs[i];
@@ -1984,7 +1984,7 @@ TreeStyleTabBrowser.prototype = {
 		var b = this.mTabBrowser;
 		delete b.tabContainer.treeStyleTab;
 
-		var tabs = this.getAllTabsArray(b);
+		var tabs = this.getAllTabs(b);
 		for (let i = 0, maxi = tabs.length; i < maxi; i++)
 		{
 			let tab = tabs[i];
@@ -2294,7 +2294,7 @@ TreeStyleTabBrowser.prototype = {
 		var b = this.mTabBrowser;
 		var value = this.getPref(aPrefName);
 		var tabContainer = b.mTabContainer;
-		var tabs  = this.getAllTabsArray(b);
+		var tabs  = this.getAllTabs(b);
 		switch (aPrefName)
 		{
 			case 'extensions.treestyletab.tabbar.position':
@@ -2413,7 +2413,7 @@ TreeStyleTabBrowser.prototype = {
 				return this.updateInvertedTabContentsOrder(true);
 
 			case 'browser.tabs.autoHide':
-				if (this.getTabsArray(this.mTabBrowser).length == 1)
+				if (this.getTabs(this.mTabBrowser).length == 1)
 					this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_SHOWHIDE_TABBAR);
 				return;
 
@@ -2824,7 +2824,7 @@ TreeStyleTabBrowser.prototype = {
 
 		// if there is only one tab and new another tab is opened,
 		// closebox appearance is possibly changed.
-		var tabs = this.getTabsArray(b);
+		var tabs = this.getTabs(b);
 		if (tabs.length == 2)
 			this.updateInvertedTabContentsOrder(tabs);
 
@@ -3150,7 +3150,7 @@ TreeStyleTabBrowser.prototype = {
 
 		var old = aEvent.detail;
 		if (old > tab._tPos) old--;
-		var tabs = this.getAllTabsArray(b);
+		var tabs = this.getAllTabs(b);
 		old = tabs[old];
 
 		prev = this.getPreviousSiblingTab(old);
@@ -3195,7 +3195,7 @@ TreeStyleTabBrowser.prototype = {
 		if (aOldPosition === void(0)) aOldPosition = aTab._tPos;
 
 		var pos = this.getChildIndex(aTab, parent);
-		var oldPos = this.getChildIndex(this.getAllTabsArray(this.mTabBrowser)[aOldPosition], parent);
+		var oldPos = this.getChildIndex(this.getAllTabs(this.mTabBrowser)[aOldPosition], parent);
 		var delta;
 		if (pos == oldPos) { // no move?
 			return;
@@ -3374,7 +3374,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		this.internallyTabMovingCount++;
 
-		var allTabs = this.getAllTabsArray(this.mTabBrowser);
+		var allTabs = this.getAllTabs(this.mTabBrowser);
 		var normalTabs = allTabs.filter(function(aTab) {
 							return !aTab.hasAttribute('pinned');
 						});
@@ -3453,7 +3453,7 @@ TreeStyleTabBrowser.prototype = {
 		this.internallyTabMovingCount++;
 		var w = this.window;
 		var b = this.mTabBrowser;
-		var lastCount = this.getAllTabs(b).snapshotLength - 1;
+		var lastCount = this.getAllTabs(b).length - 1;
 
 		this.detachTab(aParent);
 		b.moveTabTo(aParent, lastCount);
@@ -4693,7 +4693,7 @@ TreeStyleTabBrowser.prototype = {
   
 	resetAllTabs : function TSTBrowser_resetAllTabs(aDetachAllChildren) 
 	{
-		var tabs = this.getAllTabsArray(this.mTabBrowser);
+		var tabs = this.getAllTabs(this.mTabBrowser);
 		for (let i = 0, maxi = tabs.length; i < maxi; i++)
 		{
 			this.resetTab(tabs[i], aDetachAllChildren);
@@ -4731,7 +4731,7 @@ TreeStyleTabBrowser.prototype = {
 				this.allowSubtreeCollapseExpand = true;
 			delete this._lastAllowSubtreeCollapseExpand;
 
-			let tabs = this.getAllTabsArray(this.browser);
+			let tabs = this.getAllTabs(this.browser);
 			for (let i = 0, maxi = tabs.length; i < maxi; i++)
 			{
 				let tab = tabs[i];
@@ -4746,7 +4746,7 @@ TreeStyleTabBrowser.prototype = {
 			this.updateTabsIndent(this.rootTabs, undefined, true);
 		}
 		else {
-			let tabs = this.getAllTabsArray(this.browser);
+			let tabs = this.getAllTabs(this.browser);
 			for (let i = 0, maxi = tabs.length; i < maxi; i++)
 			{
 				let tab = tabs[i];
@@ -5002,7 +5002,7 @@ TreeStyleTabBrowser.prototype = {
 
 		if (
 			this.isGroupTab(aTab) &&
-			this.getTabsArray(b).filter(function(aTab) {
+			this.getTabs(b).filter(function(aTab) {
 				return !b._removingTabs || b._removingTabs.indexOf(aTab) < 0;
 			}).length == children.length
 			) {
@@ -5390,7 +5390,7 @@ TreeStyleTabBrowser.prototype = {
 		if (this.maxTreeLevel < 0 || !this.maxTreeLevelPhisical)
 			return;
 
-		var tabs = aParent ? this.getDescendantTabs(aParent) : this.getAllTabsArray(this.mTabBrowser) ;
+		var tabs = aParent ? this.getDescendantTabs(aParent) : this.getAllTabs(this.mTabBrowser) ;
 		for (let i = 0, maxi = tabs.length; i < maxi; i++)
 		{
 			let level = parseInt(tab.getAttribute(this.kNEST) || 0);
@@ -5513,7 +5513,7 @@ TreeStyleTabBrowser.prototype = {
 
 		var shouldClose = (
 				!aOptions.duplicate &&
-				sourceService.getAllTabsArray(sourceBrowser).length == aTabs.length
+				sourceService.getAllTabs(sourceBrowser).length == aTabs.length
 			);
 		var newTabs = [];
 		var treeStructure = sourceService.getTreeStructureFromTabs(aTabs);
@@ -5529,7 +5529,7 @@ TreeStyleTabBrowser.prototype = {
 				(sourceService != this || aOptions.duplicate)
 			);
 
-		var tabs = this.getTabsArray(targetBrowser);
+		var tabs = this.getTabs(targetBrowser);
 		var lastTabIndex = tabs[tabs.length -1]._tPos;
 		for (let i in aTabs)
 		{
@@ -6239,7 +6239,7 @@ TreeStyleTabBrowser.prototype = {
 			return;
 
 		var onlyVisible = level <= this.kRESTORE_TREE_ONLY_VISIBLE;
-		var tabs = this.getAllTabsArray(this.mTabBrowser);
+		var tabs = this.getAllTabs(this.mTabBrowser);
 		tabs = tabs.filter(function(aTab) {
 			return (
 				aTab.linkedBrowser.__SS_restoreState &&

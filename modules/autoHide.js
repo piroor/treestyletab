@@ -1094,7 +1094,7 @@ AutoHideBrowser.prototype = {
 			this.cancelDelayedShowForShortcut();
 
 		if (
-			sv.getTabsArray(b).length > 1 &&
+			sv.getTabs(b).length > 1 &&
 			!aEvent.altKey &&
 			w.TreeStyleTabService.accelKeyPressed
 			) {

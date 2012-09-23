@@ -120,18 +120,15 @@ function test_tabID()
 function test_getTabs()
 {
 	var result = sv.getTabs(gBrowser);
-	assert.isTrue(result instanceof XPathResult);
-	assert.equals(4, result.snapshotLength);
+	assert.equals(4, result.length);
 
 	var gotTabs = [];
-	for (var i = 0, maxi = result.snapshotLength; i < maxi; i++)
+	for (var i = 0, maxi = result.length; i < maxi; i++)
 	{
-		gotTabs.push(result.snapshotItem(i));
+		gotTabs.push(result[i]);
 	}
 	assert.equals(4, gotTabs.length);
 	assert.equals(tabs, gotTabs);
-
-	assert.equals(gotTabs, sv.getTabsArray(gBrowser));
 
 	assert.equals(tabs[0], sv.getFirstTab(gBrowser));
 	assert.equals(tabs[3], sv.getLastTab(gBrowser));
@@ -235,13 +232,12 @@ function test_getVisibleTabs()
 	gBrowser.setAttribute(sv.kALLOW_COLLAPSE, true);
 
 	var visibleResult = sv.getVisibleTabs(tabs[0]);
-	assert.implementsInterface(Ci.nsIDOMXPathResult, visibleResult);
-	assert.equals(2, visibleResult.snapshotLength);
+	assert.equals(2, visibleResult.length);
 
 	var visibleTabs = [];
-	for (let i = 0, maxi = visibleResult.snapshotLength; i < maxi; i++)
+	for (let i = 0, maxi = visibleResult.length; i < maxi; i++)
 	{
-		visibleTabs.push(visibleResult.snapshotItem(i));
+		visibleTabs.push(visibleResult[i]);
 	}
 	assert.equals(2, visibleTabs.length);
 	assert.equals([tabs[0], tabs[2]], visibleTabs);
@@ -249,8 +245,7 @@ function test_getVisibleTabs()
 	gBrowser.removeAttribute(sv.kALLOW_COLLAPSE);
 
 	visibleResult = sv.getVisibleTabs(tabs[0]);
-	assert.implementsInterface(Ci.nsIDOMXPathResult, visibleResult);
-	assert.equals(4, visibleResult.snapshotLength);
+	assert.equals(4, visibleResult.length);
 }
 
 function test_getVisibleTabsArray()

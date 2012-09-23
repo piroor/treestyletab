@@ -1428,7 +1428,7 @@ var TreeStyleTabUtils = {
 	{
 		var b = aTabBrowser || this.browser;
 		var top = aFrame.top;
-		var tabs = this.getAllTabsArray(b);
+		var tabs = this.getAllTabs(b);
 		for (let i = 0, maxi = tabs.length; i < maxi; i++)
 		{
 			let tab = tabs[i];
@@ -1606,11 +1606,7 @@ var TreeStyleTabUtils = {
 		if (this.tabsHash) // XPath-less implementation
 			return this.tabsHash[aId] || null;
 
-		return this.evaluateXPath(
-			'descendant::xul:tab[@'+this.kID+' = "'+aId+'"]',
-			b.mTabContainer,
-			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
-		).singleNodeValue;
+		return b.mTabContainer.querySelector('tab['+this.kID+'="'+aId+'"]');
 	},
  
 	isTabDuplicated : function TSTUtils_isTabDuplicated(aTab) 
@@ -1626,53 +1622,35 @@ var TreeStyleTabUtils = {
 	},
  
 	/**
-	 * Returns all tabs in the current group as a XPathResult.
-	 * It includes tabs hidden by Tab Panorama.
-	 */
-	getAllTabs : function TSTUtils_getTabs(aTabBrowserChild) /* OBSOLETE */ 
-	{
-		var b = this.getTabBrowserFromChild(aTabBrowserChild || this.browser);
-		this.assertBeforeDestruction(b && b.mTabContainer);
-		return this.evaluateXPath(
-			'descendant::xul:tab',
-			b.mTabContainer
-		);
-	},
- 
-	/**
-	 * Returns all tabs in the current group as a XPathResult.
-	 * It excludes tabs hidden by Tab Panorama.
-	 */
-	getTabs : function TSTUtils_getTabs(aTabBrowserChild) /* OBSOLETE */ 
-	{
-		var b = this.getTabBrowserFromChild(aTabBrowserChild || this.browser);
-		this.assertBeforeDestruction(b && b.mTabContainer);
-		return this.evaluateXPath(
-			'descendant::xul:tab[not(@hidden="true")]',
-			b.mTabContainer
-		);
-	},
- 
-	/**
 	 * Returns all tabs in the current group as an array.
 	 * It includes tabs hidden by Tab Panorama.
 	 */
-	getAllTabsArray : function TSTUtils_getAllTabsArray(aTabBrowserChild) 
+	getAllTabs : function TSTUtils_getTabs(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild || this.browser);
 		this.assertBeforeDestruction(b && b.mTabContainer);
-		return Array.slice(b.mTabContainer.childNodes) ;
+		return Array.slice(b.mTabContainer.querySelectorAll('tab'));
 	},
  
 	/**
 	 * Returns all tabs in the current group as an array.
 	 * It excludes tabs hidden by Tab Panorama.
 	 */
-	getTabsArray : function TSTUtils_getTabsArray(aTabBrowserChild) 
+	getTabs : function TSTUtils_getTabs(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild || this.browser);
 		this.assertBeforeDestruction(b && b.mTabContainer);
-		return b.visibleTabs || Array.slice(b.mTabContainer.childNodes) ;
+		return Array.slice(b.mTabContainer.querySelectorAll('tab:not([hidden="true"])'));
+	},
+ 
+	getAllTabsArray : function TSTUtils_getAllTabsArray(aTabBrowserChild) /* for backward compatibility */ 
+	{
+		return this.getAllTabs(aTabBrowserChild);
+	},
+ 
+	getTabsArray : function TSTUtils_getTabsArray(aTabBrowserChild) /* for backward compatibility */ 
+	{
+		return this.getTabs(aTabBrowserChild);
 	},
  
 	/**
@@ -1696,7 +1674,6 @@ var TreeStyleTabUtils = {
 		return this.evaluateXPath(
 			'descendant::xul:tab[not(@pinned="true") and not(@hidden="true")]',
 			b.mTabContainer,
-
 			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 		).singleNodeValue;
 	},
@@ -1755,7 +1732,7 @@ var TreeStyleTabUtils = {
 	{
 		if (!aTab) return -1;
 		var b = this.getTabBrowserFromChild(aTab);
-		return this.getTabsArray(b).indexOf(aTab);
+		return this.getTabs(b).indexOf(aTab);
 	},
  
 	/**
@@ -1769,7 +1746,7 @@ var TreeStyleTabUtils = {
 		if (!this.canCollapseSubtree(b))
 			return this.getNextTab(aTab);
 
-		var tabs = this.getVisibleTabsArray(b);
+		var tabs = this.getVisibleTabs(b);
 		if (tabs.indexOf(aTab) < 0) tabs.push(aTab);
 		tabs.sort(this.sortTabsByOrder);
 
@@ -1788,7 +1765,7 @@ var TreeStyleTabUtils = {
 		if (!this.canCollapseSubtree(b))
 			return this.getPreviousTab(aTab);
 
-		var tabs = this.getVisibleTabsArray(b);
+		var tabs = this.getVisibleTabs(b);
 		if (tabs.indexOf(aTab) < 0) tabs.push(aTab);
 		tabs.sort(this.sortTabsByOrder);
 
@@ -1803,7 +1780,7 @@ var TreeStyleTabUtils = {
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild || this.browser);
 		if (!b) return null;
-		var tabs = this.getVisibleTabsArray(b);
+		var tabs = this.getVisibleTabs(b);
 		return tabs.length ? tabs[tabs.length-1] : null ;
 	},
  
@@ -1815,26 +1792,12 @@ var TreeStyleTabUtils = {
 		var b = this.getTabBrowserFromChild(aTabBrowserChild || this.browser);
 		if (!this.canCollapseSubtree(b))
 			return this.getTabs(b);
-
-		var XPathResult = this.evaluateXPath(
-				'child::xul:tab[not(@'+this.kCOLLAPSED+'="true") and not(@hidden="true")]',
-				b.mTabContainer
-			);
-		return XPathResult;
+		return Array.slice(b.mTabContainer.querySelectorAll('tab:not(['+this.kCOLLAPSED+'="true"]):not([hidden="true"])'));
 	},
  
-	/**
-	 * Returns an array of not collapsed tabs in the current group.
-	 */
-	getVisibleTabsArray : function TSTUtils_getVisibleTabsArray(aTabBrowserChild) 
+	getVisibleTabsArray : function TSTUtils_getVisibleTabsArray(aTabBrowserChild) /* for backward compatibility */ 
 	{
-		var b = this.getTabBrowserFromChild(aTabBrowserChild || this.browser);
-		var tabs = this.getTabsArray(b);
-		return this.canCollapseSubtree(b) ?
-				tabs.filter(function(aTab) {
-					return aTab.getAttribute(this.kCOLLAPSED) != 'true';
-				}, this) :
-				tabs ;
+		return this.getVisibleTabs(aTabBrowserChild);
 	},
  
 	/**
@@ -1845,7 +1808,7 @@ var TreeStyleTabUtils = {
 	{
 		if (!aTab) return -1;
 		var b = this.getTabBrowserFromChild(aTab);
-		return this.getVisibleTabsArray(b).indexOf(aTab);
+		return this.getVisibleTabs(b).indexOf(aTab);
 	},
  
 	/**
@@ -1863,7 +1826,7 @@ var TreeStyleTabUtils = {
 	 */
 	getNewTabsFromPreviousTabsInfo : function TSTUtils_getNewTabsFromPreviousTabsInfo(aTabBrowser, aTabsInfo) 
 	{
-		var tabs = this.getTabsArray(aTabBrowser);
+		var tabs = this.getTabs(aTabBrowser);
 		var currentTabsInfo = this.getTabsInfo(aTabBrowser);
 		return tabs.filter(function(aTab, aIndex) {
 				return aTabsInfo.indexOf(currentTabsInfo[aIndex]) < 0;
@@ -1871,7 +1834,7 @@ var TreeStyleTabUtils = {
 	},
 	getTabsInfo : function TSTUtils_getTabsInfo(aTabBrowser)
 	{
-		var tabs = this.getTabsArray(aTabBrowser);
+		var tabs = this.getTabs(aTabBrowser);
 		return tabs.map(function(aTab) {
 				return aTab.getAttribute(this.kID)+'\n'+
 						aTab.getAttribute('busy')+'\n'+
@@ -2129,7 +2092,7 @@ var TreeStyleTabUtils = {
 		return (
 			b &&
 			this.shouldCloseTabSubtreeOf(aTab) &&
-			this.getDescendantTabs(aTab).length + 1 == this.getAllTabsArray(b).length
+			this.getDescendantTabs(aTab).length + 1 == this.getAllTabs(b).length
 		);
 	},
 	shouldCloseLastTabSubTreeOf : function() { return this.shouldCloseLastTabSubtreeOf.apply(this, arguments); }, // obsolete, for backward compatibility
@@ -2622,12 +2585,12 @@ var TreeStyleTabUtils = {
  
 	getTreeStructureFromTabBrowser : function TSTUtils_getTreeStructureFromTabBrowser(aTabBrowser) 
 	{
-		return this.getTreeStructureFromTabs(this.getAllTabsArray(aTabBrowser));
+		return this.getTreeStructureFromTabs(this.getAllTabs(aTabBrowser));
 	},
  
 	applyTreeStructureToTabBrowser : function TSTUtils_applyTreeStructureToTabBrowser(aTabBrowser, aTreeStructure, aExpandAllTree) 
 	{
-		var tabs = this.getAllTabsArray(aTabBrowser);
+		var tabs = this.getAllTabs(aTabBrowser);
 		return this.applyTreeStructureToTabs(tabs, aTreeStructure, aExpandAllTree);
 	},
   
