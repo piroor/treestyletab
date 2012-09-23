@@ -5267,8 +5267,7 @@ TreeStyleTabBrowser.prototype = {
 				'tab['+this.kNEST+']:not(['+this.kNEST+'="0"]):not(['+this.kNEST+'=""])'+
 					':not(['+this.kCOLLAPSED+'="true"])'+
 					':not([hidden="true"])'+
-					':not([collapsed="true"])',
-				
+					':not([collapsed="true"])'
 			));
 		if (!tabs.length) return;
 
