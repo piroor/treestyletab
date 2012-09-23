@@ -866,6 +866,7 @@ TreeStyleTabBrowser.prototype = {
 		if (!aTab.hasAttribute(this.kID)) {
 			let id = this.getTabValue(aTab, this.kID) || this.makeNewId();
 			aTab.setAttribute(this.kID, id);
+			aTab.setAttribute(this.kID_NEW, id);
 			aTab.setAttribute(this.kSUBTREE_COLLAPSED, true);
 			aTab.setAttribute(this.kALLOW_COLLAPSE, true);
 			let self = this;
@@ -877,6 +878,7 @@ TreeStyleTabBrowser.prototype = {
 				if (aTab.getAttribute(self.kID) != id)
 					return;
 
+				aTab.removeAttribute(this.kID_NEW);
 				if (!self.getTabValue(aTab, self.kID)) {
 					self.setTabValue(aTab, self.kID, id);
 					if (!(id in self.tabsHash))
@@ -3608,7 +3610,9 @@ TreeStyleTabBrowser.prototype = {
 	
 	_restoreTabId : function TSTBrowser_restoreTabId(aTab) 
 	{
-		var currentId  = aTab.getAttribute(this.kID);
+		// kID can be overridden by nsSessionStore. kID_NEW is for failsafe.
+		var currentId  = aTab.getAttribute(this.kID_NEW) || aTab.getAttribute(this.kID);
+		aTab.removeAttribute(this.kID_NEW);
 		var restoredId = this.getTabValue(aTab, this.kID);
 		var mayBeDuplicated = false;
 

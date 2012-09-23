@@ -96,6 +96,7 @@ var TreeStyleTabUtils = {
 	kINSERT_AFTER       : 'treestyletab-insert-after',
 	kCLOSED_SET_ID      : 'treestyletab-closed-set-id',
 
+	kID_NEW             : 'treestyletab-id-new',
 	kID_RESTORING       : 'treestyletab-id-restoring',
 	kCHILDREN_RESTORING : 'treestyletab-children-restoring',
 
