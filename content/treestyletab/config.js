@@ -62,10 +62,13 @@ function init()
 	ensureGroupBookmarkItems();
 
 	var animation = document.getElementById('extensions.treestyletab.animation.enabled-check');
-	if (prefs.getPref('browser.tabs.animate') === false)
+	if (prefs.getPref('browser.tabs.animate') === false) {
 		animation.setAttribute('disabled', true);
-	else
+		animation.removeAttribute('checked');
+	}
+	else {
 		animation.removeAttribute('disabled');
+	}
 
 //	sizeToContent();
 }
