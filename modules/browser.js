@@ -4280,13 +4280,8 @@ TreeStyleTabBrowser.prototype = {
 
 		var nextTab = (aDir < 0) ? this.getPreviousVisibleTab(tab) : this.getNextVisibleTab(tab) ;
 		if (!nextTab && aWrap) {
-			nextTab = this.evaluateXPath(
-					'child::xul:tab[not(@'+this.kCOLLAPSED+'="true")]['+
-					(aDir < 0 ? 'last()' : '1' )+
-					']',
-					tabbar,
-					Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
-				).singleNodeValue;
+			let tabs = tabbar.querySelectorAll('tab:not(['+this.kCOLLAPSED+'="true"])');
+			nextTab = tabs[aDir < 0 ? tabs.length-1 : 0 ];
 		}
 		if (nextTab && nextTab != tab)
 			tabbar._selectNewTab(nextTab, aDir, aWrap);
@@ -4473,11 +4468,7 @@ TreeStyleTabBrowser.prototype = {
 		for (let i = 0, maxi = ids.length; i < maxi; i++)
 		{
 			let id = ids[i];
-			let item = this.evaluateXPath(
-				'descendant::xul:*[starts-with(@id, "'+id+'")]',
-				aEvent.currentTarget,
-				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue;
+			let item = aEvent.currentTarget.querySelector('*[id^="'+id+'"]');
 			if (!item) continue;
 			items[id] = item;
 			if (this.getTreePref('show.'+id))
@@ -4502,33 +4493,20 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		// collapse/expand all
-		sep = this.evaluateXPath(
-			'descendant::xul:menuseparator[starts-with(@id, "'+this.kMENUITEM_COLLAPSEEXPAND_SEPARATOR+'")]',
-			aEvent.currentTarget,
-			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
-		).singleNodeValue;
+		sep = aEvent.currentTarget.querySelector('menuseparator[id^="'+this.kMENUITEM_COLLAPSEEXPAND_SEPARATOR+'"]');
 		let collapseItem = items[this.kMENUITEM_COLLAPSE];
 		let expandItem = items[this.kMENUITEM_EXPAND];
 		if (this.canCollapseSubtree(b) &&
-			this.evaluateXPath(
-				'child::xul:tab[@'+this.kCHILDREN+']',
-				b.mTabContainer
-			).snapshotLength) {
+			b.mTabContainer.querySelector('tab['+this.kCHILDREN+']')) {
 			if (collapseItem) {
-				if (this.evaluateXPath(
-						'child::xul:tab[@'+this.kCHILDREN+' and not(@'+this.kSUBTREE_COLLAPSED+'="true")]',
-						b.mTabContainer
-					).snapshotLength)
+				if (b.mTabContainer.querySelector('tab['+this.kCHILDREN+']:not(['+this.kSUBTREE_COLLAPSED+'="true"])'))
 					collapseItem.removeAttribute('disabled');
 				else
 					collapseItem.setAttribute('disabled', true);
 			}
 
 			if (expandItem) {
-				if (this.evaluateXPath(
-						'child::xul:tab[@'+this.kCHILDREN+' and @'+this.kSUBTREE_COLLAPSED+'="true"]',
-						b.mTabContainer
-					).snapshotLength)
+				if (b.mTabContainer.querySelector('tab['+this.kCHILDREN+']['+this.kSUBTREE_COLLAPSED+'="true"]'))
 					expandItem.removeAttribute('disabled');
 				else
 					expandItem.setAttribute('disabled', true);
@@ -4585,11 +4563,7 @@ TreeStyleTabBrowser.prototype = {
 				fixed.removeAttribute('checked');
 		}
 
-		sep = this.evaluateXPath(
-			'descendant::xul:menuseparator[starts-with(@id, "'+this.kMENUITEM_AUTOHIDE_SEPARATOR+'")]',
-			aEvent.currentTarget,
-			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
-		).singleNodeValue;
+		sep = aEvent.currentTarget.querySelector('menuseparator[id^="'+this.kMENUITEM_AUTOHIDE_SEPARATOR+'"]');
 		if (sep) {
 			if (
 				(autohide && autohide.getAttribute('hidden') != 'true') ||
@@ -5289,13 +5263,12 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		var b    = this.mTabBrowser;
-		var tabs = this.getArrayFromXPathResult(this.evaluateXPath(
-				'child::xul:tab['+
-					'@'+this.kNEST+' and not(@'+this.kNEST+'="0" or @'+this.kNEST+'="") and '+
-					'not(@'+this.kCOLLAPSED+'="true") and '+
-					'not(@hidden="true") and '+
-					'not(@collapsed="true")]',
-				b.mTabContainer
+		var tabs = Array.slice(b.mTabContainer.querySelectorAll(
+				'tab['+this.kNEST+']:not(['+this.kNEST+'="0"]):not(['+this.kNEST+'=""])'+
+					':not(['+this.kCOLLAPSED+'="true"])'+
+					':not([hidden="true"])'+
+					':not([collapsed="true"])',
+				
 			));
 		if (!tabs.length) return;
 
@@ -5968,19 +5941,17 @@ TreeStyleTabBrowser.prototype = {
  
 	collapseExpandAllSubtree : function TSTBrowser_collapseExpandAllSubtree(aCollapse, aJustNow) 
 	{
-		var xpathResult = this.evaluateXPath(
-				'child::xul:tab[@'+this.kID+' and @'+this.kCHILDREN+
+		var tabs = this.mTabBrowser.mTabContainer.querySelectorAll(
+				'tab['+this.kID+']['+this.kCHILDREN+']'+
 				(
 					aCollapse ?
-						' and not(@'+this.kSUBTREE_COLLAPSED+'="true")' :
-						' and @'+this.kSUBTREE_COLLAPSED+'="true"'
-				)+
-				']',
-				this.mTabBrowser.mTabContainer
+						':not(['+this.kSUBTREE_COLLAPSED+'="true"])' :
+						'['+this.kSUBTREE_COLLAPSED+'="true"]'
+				),
 			);
-		for (var i = 0, maxi = xpathResult.snapshotLength; i < maxi; i++)
+		for (var i = 0, maxi = tabs.length; i < maxi; i++)
 		{
-			this.collapseExpandSubtree(xpathResult.snapshotItem(i), aCollapse, aJustNow);
+			this.collapseExpandSubtree(tabs[i], aCollapse, aJustNow);
 		}
 	},
   
@@ -6049,11 +6020,7 @@ TreeStyleTabBrowser.prototype = {
 							oldSize[0] < newSize[0] || oldSize[1] < newSize[1] ||
 							// there are still animating tabs
 							self.getXOffsetOfTab(lastTab) || self.getYOffsetOfTab(lastTab) ||
-							self.evaluateXPath(
-								'child::xul:tab[@'+self.kCOLLAPSING_PHASE+'="'+self.kCOLLAPSING_PHASE_TO_BE_EXPANDED+'"]',
-								self.mTabBrowser.mTabContainer,
-								Ci.nsIDOMXPathResult.BOOLEAN_TYPE
-							).booleanValue
+							self.mTabBrowser.mTabContainer.querySelector('tab['+self.kCOLLAPSING_PHASE+'="'+self.kCOLLAPSING_PHASE_TO_BE_EXPANDED+'"]')
 							)
 							self.smoothScrollTo(aEndX, aEndY, parseInt(aDuration * 0.5));
 						self = null;
