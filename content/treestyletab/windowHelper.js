@@ -267,7 +267,7 @@ var TreeStyleTabWindowHelper = {
 			eval('window.duplicateTabIn = '+
 				window.duplicateTabIn.toSource().replace(
 					'{',
-					'{ gBrowser.treeStyleTab.onBeforeTabDuplicate(aTab, where); '
+					'{ gBrowser.treeStyleTab.onBeforeTabDuplicate(aTab, where, delta); '
 				)
 			);
 		}

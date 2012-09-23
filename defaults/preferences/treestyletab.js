@@ -508,6 +508,16 @@ pref("extensions.treestyletab.autoAttach.newTabButton", 1);
  */
 pref("extensions.treestyletab.autoAttach.duplicateTabCommand", 3);
 /**
+ * How to treat duplicated tabs from "back" button.
+ *  Options are same to extensions.treestyletab.autoAttach.newTabCommand.
+ */
+pref("extensions.treestyletab.autoAttach.duplicateTabCommand.back", 1);
+/**
+ * How to treat duplicated tabs from "forward" button.
+ *  Options are same to extensions.treestyletab.autoAttach.newTabCommand.
+ */
+pref("extensions.treestyletab.autoAttach.duplicateTabCommand.forward", 1);
+/**
  * How to treat new tabs from middle click (or Ctrl-click) on the "Go" button.
  *  Options are same to extensions.treestyletab.autoAttach.newTabCommand.
  */
