@@ -5946,7 +5946,7 @@ TreeStyleTabBrowser.prototype = {
 					aCollapse ?
 						':not(['+this.kSUBTREE_COLLAPSED+'="true"])' :
 						'['+this.kSUBTREE_COLLAPSED+'="true"]'
-				),
+				)
 			);
 		for (var i = 0, maxi = tabs.length; i < maxi; i++)
 		{
