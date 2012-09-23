@@ -1614,11 +1614,8 @@ var TreeStyleTabUtils = {
 		if (!aTab) return false;
 		var id = this.getTabValue(aTab, this.kID);
 		var b = this.getTabBrowserFromChild(aTab) || this.browser;
-		return this.evaluateXPath(
-			'count(descendant::xul:tab[@'+this.kID+' = "'+id+'" or @'+this.kID_RESTORING+' = "'+id+'"]) > 1',
-			b.mTabContainer,
-			Ci.nsIDOMXPathResult.BOOLEAN_TYPE
-		).booleanValue;
+		var tabs = b.mTabContainer.querySelectorAll('tab['+this.kID+'="'+id+'"], tab['+this.kID_RESTORING+'="'+id+'"]');
+		return tabs.length > 1;
 	},
  
 	/**
@@ -1671,11 +1668,7 @@ var TreeStyleTabUtils = {
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild || this.browser);
 		this.assertBeforeDestruction(b && b.mTabContainer);
-		return this.evaluateXPath(
-			'descendant::xul:tab[not(@pinned="true") and not(@hidden="true")]',
-			b.mTabContainer,
-			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
-		).singleNodeValue;
+		return b.mTabContainer.querySelector('tab:not([pinned="true"]):not([hidden="true"])');
 	},
  
 	/**
@@ -2026,12 +2019,7 @@ var TreeStyleTabUtils = {
  
 	get rootTabs() /* PUBLIC API */ 
 	{
-		return this.getArrayFromXPathResult(
-				this.evaluateXPath(
-					'child::xul:tab[not(@'+this.kNEST+') or @'+this.kNEST+'="0" or @'+this.kNEST+'=""]',
-					this.browser.mTabContainer
-				)
-			);
+		return Array.slice(this.browser.mTabContainer.querySelectorAll('tab:not(['+this.kNEST+']), tab['+this.kNEST+'=""], tabs['+this.kNEST+'="0"]'));
 	},
  
 	get allRootTabs() /* PUBLIC API */ 
@@ -2473,11 +2461,7 @@ var TreeStyleTabUtils = {
  
 	get pinnedTabsCount() 
 	{
-		return this.evaluateXPath(
-					'count(child::xul:tab[@pinned="true"])',
-					this.browser.mTabContainer,
-					Ci.nsIDOMXPathResult.NUMBER_TYPE
-				).numberValue;
+		return this.browser.mTabContainer.querySelectorAll('tab[pinned="true"]').length;
 	},
  
 	forceExpandTabs : function TSTUtils_forceExpandTabs(aTabs) 
