@@ -1298,8 +1298,8 @@ var TreeStyleTabUtils = {
 		return (strip && strip instanceof Ci.nsIDOMElement) ?
 				strip :
 				this.evaluateXPath(
-					aTabBrowser.tabContainer,
 					'ancestor::xul:toolbar[1]',
+					aTabBrowser.tabContainer,
 					Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 				).singleNodeValue || aTabBrowser.tabContainer.parentNode;
 	},
