@@ -1069,8 +1069,7 @@ TreeStyleTabWindow.prototype = {
 	{
 		if (!aPopup.boxObject ||
 			this.evaluateXPath(
-				'local-name() = "tooltip" or local-name() ="panel" or '+
-				'parent::*/ancestor-or-self::*[local-name()="popup" or local-name()="menupopup"]',
+				'parent::*/ancestor-or-self::*[local-name()="tooltip" or local-name()="panel" or local-name()="popup" or local-name()="menupopup"]',
 				aPopup,
 				Ci.nsIDOMXPathResult.BOOLEAN_TYPE
 			).booleanValue)
