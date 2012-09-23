@@ -2020,7 +2020,7 @@ var TreeStyleTabUtils = {
  
 	get rootTabs() /* PUBLIC API */ 
 	{
-		return Array.slice(this.browser.mTabContainer.querySelectorAll('tab:not(['+this.kNEST+']), tab['+this.kNEST+'=""], tabs['+this.kNEST+'="0"]'));
+		return Array.slice(this.browser.mTabContainer.querySelectorAll('tab:not(['+this.kNEST+']), tab['+this.kNEST+'=""], tab['+this.kNEST+'="0"]'));
 	},
  
 	get allRootTabs() /* PUBLIC API */ 
