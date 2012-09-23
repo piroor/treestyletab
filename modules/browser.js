@@ -2037,7 +2037,8 @@ TreeStyleTabBrowser.prototype = {
 	destroyTab : function TSTBrowser_destroyTab(aTab) 
 	{
 		var id = aTab.getAttribute(this.kID);
-		if (id in this.tabsHash)
+		if (id in this.tabsHash &&
+			aTab == this.tabsHash[id])
 			delete this.tabsHash[id];
 
 		if (aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave) {
@@ -3572,7 +3573,10 @@ TreeStyleTabBrowser.prototype = {
 
 		// remove temporary cache
 		var currentId = aTab.getAttribute(this.kID);
-		if (id != currentId && currentId && currentId in this.tabsHash)
+		if (id != currentId &&
+			currentId &&
+			currentId in this.tabsHash &&
+			this.tabsHash[currentId] == aTab)
 			delete this.tabsHash[currentId];
 
 		this.setTabValue(aTab, this.kID, id);
@@ -3582,7 +3586,6 @@ TreeStyleTabBrowser.prototype = {
 			this._fixMissingAttributesFromSessionData(aTab);
 		}
 		else {
-
 			let isSubtreeCollapsed = this._restoreSubtreeCollapsedState(aTab);
 
 			let restoringMultipleTabs = this.windowService.restoringTree;
