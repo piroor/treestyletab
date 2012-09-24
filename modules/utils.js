@@ -277,23 +277,6 @@ var TreeStyleTabUtils = {
 	},
 	_SessionStore : null,
 
-	get WindowMediator() {
-		if (!this._WindowMediator) {
-			this._WindowMediator = Services.wm;
-		}
-		return this._WindowMediator;
-	},
-	_WindowMediator : null,
-
-	get PromptService()
-	{
-		if (!this._PromptService) {
-			this._PromptService = Services.prompt;
-		}
-		return this._PromptService;
-	},
-	_PromptService : null,
-
 	get FocusManager()
 	{
 		if (!this._FocusManager) {
@@ -303,17 +286,9 @@ var TreeStyleTabUtils = {
 	},
 	 _FocusManager : null,
 
-	get Comparator() {
-		if (!this._Comparator) {
-			this._Comparator = Services.vc;
-		}
-		return this._Comparator;
-	},
-	_Comparator : null,
- 
 	get isGecko10OrLater() 
 	{
-		return this.Comparator.compare(Services.appinfo.version, '10.0a') > 0;
+		return Services.vc.compare(Services.appinfo.version, '10.0a') > 0;
 	},
  
 	get treeBundle() { 
@@ -643,18 +618,18 @@ var TreeStyleTabUtils = {
 	},
 	get topBrowserWindow()
 	{
-		return this.WindowMediator.getMostRecentWindow('navigator:browser');
+		return Services.wm.getMostRecentWindow('navigator:browser');
 	},
  
 	get browserWindows() 
 	{
 		var windows = [];
 
-		var targets = this.WindowMediator.getZOrderDOMWindowEnumerator('navigator:browser', true);
+		var targets = Services.wm.getZOrderDOMWindowEnumerator('navigator:browser', true);
 		// By the bug 156333, we cannot find windows by their Z order on Linux.
 		// https://bugzilla.mozilla.org/show_bug.cgi?id=156333
 		if (!targets.hasMoreElements())
-			targets = this.WindowMediator.getEnumerator('navigator:browser');
+			targets = Services.wm.getEnumerator('navigator:browser');
 
 		while (targets.hasMoreElements())
 		{
@@ -694,11 +669,11 @@ var TreeStyleTabUtils = {
 		if (behavior & this.kDROPLINK_FIXED) return behavior;
 
 		var checked = { value : false };
-		var newChildTab = this.PromptService.confirmEx(this.browserWindow,
+		var newChildTab = Services.prompt.confirmEx(this.browserWindow,
 				this.treeBundle.getString('dropLinkOnTab.title'),
 				this.treeBundle.getString('dropLinkOnTab.text'),
-				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_0) +
-				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_1),
+				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_0) +
+				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_1),
 				this.treeBundle.getString('dropLinkOnTab.openNewChildTab'),
 				this.treeBundle.getString('dropLinkOnTab.loadInTheTab'),
 				null,
@@ -725,12 +700,12 @@ var TreeStyleTabUtils = {
 		var dummyTabFlag = behavior & this.kGROUP_BOOKMARK_USE_DUMMY;
 
 		var checked = { value : false };
-		var button = this.PromptService.confirmEx(this.browserWindow,
+		var button = Services.prompt.confirmEx(this.browserWindow,
 				this.treeBundle.getString('openGroupBookmarkBehavior.title'),
 				this.treeBundle.getString('openGroupBookmarkBehavior.text'),
-				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_0) +
-				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_1) +
-				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_2),
+				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_0) +
+				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_1) +
+				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_2),
 				this.treeBundle.getString('openGroupBookmarkBehavior.subTree'),
 				this.treeBundle.getString('openGroupBookmarkBehavior.separate'),
 				this.treeBundle.getString('openGroupBookmarkBehavior.replace'),
@@ -768,11 +743,11 @@ var TreeStyleTabUtils = {
 		if (behavior & this.kBOOKMARK_DROPPED_TABS_FIXED) return behavior;
 
 		var checked = { value : false };
-		var button = this.PromptService.confirmEx(this.browserWindow,
+		var button = Services.prompt.confirmEx(this.browserWindow,
 				this.treeBundle.getString('bookmarkDroppedTabs.title'),
 				this.treeBundle.getString('bookmarkDroppedTabs.text'),
-				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_0) +
-				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_1),
+				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_0) +
+				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_1),
 				this.treeBundle.getString('bookmarkDroppedTabs.bookmarkAll'),
 				this.treeBundle.getString('bookmarkDroppedTabs.bookmarkOnlyParent'),
 				null,

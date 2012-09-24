@@ -1388,11 +1388,11 @@ TreeStyleTabWindow.prototype = {
 		var checked = { value:true };
 		var w = this.window;
 		w.focus();
-		var shouldClose = this.PromptService.confirmEx(w,
+		var shouldClose = Services.prompt.confirmEx(w,
 				this.tabbrowserBundle.getString('tabs.closeWarningTitle'),
 				this.tabbrowserBundle.getFormattedString('tabs.closeWarningMultipleTabs', [aTabsCount]),
-				(this.PromptService.BUTTON_TITLE_IS_STRING * this.PromptService.BUTTON_POS_0) +
-				(this.PromptService.BUTTON_TITLE_CANCEL * this.PromptService.BUTTON_POS_1),
+				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_0) +
+				(Services.prompt.BUTTON_TITLE_CANCEL * Services.prompt.BUTTON_POS_1),
 				this.tabbrowserBundle.getString('tabs.closeButtonMultiple'),
 				null, null,
 				this.tabbrowserBundle.getString('tabs.closeWarningPromptMe'),
