@@ -1,3 +1,5 @@
+Components.utils.import('resource://gre/modules/Services.jsm');
+
 TreeStyleTabWindowHelper.extraProperties = [
 	TreeStyleTabService.kID,
 	TreeStyleTabService.kCOLLAPSED,
@@ -1051,12 +1053,12 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 			sv.getPref('extensions.stm.newTabPosition') != 0
 			) {
 			let checked = { value : false };
-			if (sv.PromptService.confirmEx(
+			if (Services.prompt.confirmEx(
 					null,
 					sv.treeBundle.getString('compatibility_STM_warning_title'),
 					sv.treeBundle.getString('compatibility_STM_warning_text'),
-					(sv.PromptService.BUTTON_TITLE_IS_STRING * sv.PromptService.BUTTON_POS_0) +
-					(sv.PromptService.BUTTON_TITLE_IS_STRING * sv.PromptService.BUTTON_POS_1),
+					(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_0) +
+					(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_1),
 					sv.treeBundle.getString('compatibility_STM_warning_use_TST'),
 					sv.treeBundle.getString('compatibility_STM_warning_use_STM'),
 					null,
