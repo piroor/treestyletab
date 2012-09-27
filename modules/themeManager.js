@@ -37,7 +37,7 @@ const EXPORTED_SYMBOLS = ['TreeStyleTabThemeManager'];
 
 const BASE = 'chrome://treestyletab/skin/';
 
-Components.utils.import('resource://treestyletab-modules/utils.js');
+Components.utils.import('resource://treestyletab-modules/base.js');
 
 function TreeStyleTabThemeManager(aWindow)
 {
