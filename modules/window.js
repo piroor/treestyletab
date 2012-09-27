@@ -71,8 +71,8 @@ function TreeStyleTabWindow(aWindow)
 
 TreeStyleTabWindow.prototype = {
 	
-	utils : TreeStyleTabUtils, 
-	__proto__ : TreeStyleTabUtils,
+	utils : TreeStyleTabBase, 
+	__proto__ : TreeStyleTabBase,
  
 	window : null, 
 	document : null,

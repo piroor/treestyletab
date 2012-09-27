@@ -40,7 +40,7 @@ const Ci = Components.interfaces;
 
 Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 
-XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabUtils', 'resource://treestyletab-modules/utils.js');
+XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabBase', 'resource://treestyletab-modules/utils.js');
 
 var PseudoTreeBuilder = {
 
@@ -105,7 +105,7 @@ var PseudoTreeBuilder = {
 		if (w.isBlankPageURL ? !w.isBlankPageURL(uri) : (uri != 'about:blank')) tooltip += '\n' + uri;
 		label.setAttribute('tooltiptext', tooltip);
 		label.setAttribute('class', 'text-link '+this.kTREEITEM);
-		label.setAttribute('tab-id', TreeStyleTabUtils.getTabValue(aTab, TreeStyleTabUtils.kID));
+		label.setAttribute('tab-id', TreeStyleTabBase.getTabValue(aTab, TreeStyleTabBase.kID));
 
 		var children = this.createTabChildren(aTab);
 		if (children) {
@@ -123,7 +123,7 @@ var PseudoTreeBuilder = {
 	{
 		var doc = aTab.ownerDocument;
 
-		var children = TreeStyleTabUtils.getChildTabs(aTab);
+		var children = TreeStyleTabBase.getChildTabs(aTab);
 		if (!children.length)
 			return null;
 

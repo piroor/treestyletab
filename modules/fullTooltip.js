@@ -46,7 +46,7 @@ function FullTooltipManager(aOwner)
 	this.init(aOwner);
 }
 FullTooltipManager.prototype = {
-	__proto__ : TreeStyleTabUtils,
+	__proto__ : TreeStyleTabBase,
 
 	kTOOLTIP_MODE_DEFAULT   : 0,
 	kTOOLTIP_MODE_COLLAPSED : 1,

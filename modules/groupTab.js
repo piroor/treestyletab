@@ -48,7 +48,7 @@ function GroupTab(aWindow)
 }
 
 GroupTab.prototype = {
-	__proto__ : TreeStyleTabUtils,
+	__proto__ : TreeStyleTabBase,
 
 	initialized : false,
 	shouldUpdate : false,
