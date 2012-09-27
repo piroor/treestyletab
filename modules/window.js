@@ -42,7 +42,7 @@ Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 
 XPCOMUtils.defineLazyModuleGetter(this, "Services", "resource://gre/modules/Services.jsm");
 
-Components.utils.import('resource://treestyletab-modules/utils.js');
+Components.utils.import('resource://treestyletab-modules/base.js');
 XPCOMUtils.defineLazyGetter(this, 'TreeStyleTabBrowser', function() {
 	var ns = {};
 	Components.utils.import('resource://treestyletab-modules/browser.js', ns);
@@ -71,8 +71,8 @@ function TreeStyleTabWindow(aWindow)
 
 TreeStyleTabWindow.prototype = {
 	
-	utils : TreeStyleTabUtils, 
-	__proto__ : TreeStyleTabUtils,
+	utils : TreeStyleTabBase, 
+	__proto__ : TreeStyleTabBase,
  
 	window : null, 
 	document : null,

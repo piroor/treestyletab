@@ -33,7 +33,7 @@
  *
  * ***** END LICENSE BLOCK ******/
  
-const EXPORTED_SYMBOLS = ['TreeStyleTabUtils']; 
+const EXPORTED_SYMBOLS = ['TreeStyleTabBase']; 
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
@@ -81,7 +81,7 @@ XPCOMUtils.defineLazyGetter(this, 'confirmWithPopup', function() {
 	return ns.confirmWithPopup;
 });
  
-var TreeStyleTabUtils = { 
+var TreeStyleTabBase = { 
 	__proto__ : window['piro.sakura.ne.jp'].prefs,
 	tabsHash : null,
 	inWindowDestoructionProcess : false,
@@ -2732,16 +2732,16 @@ var TreeStyleTabUtils = {
  
 	applyOnlyForActiveWindow : false, 
 	setPrefForActiveWindow : function(aTask) {
-		TreeStyleTabUtils.applyOnlyForActiveWindow = true;
+		TreeStyleTabBase.applyOnlyForActiveWindow = true;
 		try {
 			aTask.call(this);
 		}
 		finally {
-			TreeStyleTabUtils.applyOnlyForActiveWindow = false;
+			TreeStyleTabBase.applyOnlyForActiveWindow = false;
 		}
 	}
   
 }; 
  
-TreeStyleTabUtils.init(); 
+TreeStyleTabBase.init(); 
   
