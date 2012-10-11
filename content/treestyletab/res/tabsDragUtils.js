@@ -121,6 +121,9 @@
 					).replace( // support vertical tab bar
 						/(['"])translateX\(/g,
 						'$1$1 + translator + $1('
+					).replace( // support vertical tab bar
+						/\.scrollX/g,
+						'[scroll]'
 					).replace(
 						/(let draggedTab = [^;]+;)/,
 						'$1\n' +
@@ -145,19 +148,14 @@
 						'  $&\n' +
 						'}, this);'
 					).replace(
-						'let tabScreenX = ',
-						'var firstTabScreenX;\n' +
-						'var firstTranslateX;\n' +
-						'draggedTabs.forEach(function(draggedTab) {\n' +
-						'  let pinned = draggedTab.pinned;\n' +
-						'  $&'
+						'let tabWidth = ',
+						'tabs = tabs.filter(function(tab) { return draggedTabs.indexOf(tab) < 0 });\n' +
+						'$&'
 					).replace(
 						'let tabCenter = ',
-						'  if (firstTabScreenX === undefined) firstTabScreenX = tabScreenX;\n' +
-						'  if (firstTranslateX === undefined) firstTranslateX = translateX;\n' +
+						'draggedTabs.slice(1).forEach(function(tab) {\n' +
+						'  tab.style.transform = draggedTab.style.transform;\n' +
 						'}, this);\n' +
-						'let tabScreenX = firstTabScreenX;\n' +
-						'let translateX = firstTranslateX;\n' +
 						'$&'
 					).replace(
 						/(let tabCenter = [^;]+)\/ 2;/,
@@ -166,7 +164,7 @@
 						'let lastTabCenter = tabScreenX + translateX + tabsWidth - tabWidth / units;'
 					).replace(
 						'tabs[mid] == draggedTab',
-						'/* $& */ draggedTabs.indexOf(tabs[mid]) > -1'
+						'/* $& */ false'
 					).replace(
 						'(screenX > tabCenter)',
 						'/* $& */ (screenX > lastTabCenter + (aAcceptDropOnSelf ? tabWidth / units : 0 ))'
@@ -188,6 +186,7 @@
 						'  var isVertical = window["piro.sakura.ne.jp"].tabsDragUtils.isVertical(this);\n' +
 						'  var position = isVertical ? "screenY" : "screenX" ;\n' +
 						'  var size = isVertical ? "height" : "width" ;\n' +
+						'  var scroll = isVertical ? "scrollY" : "scrollX" ;\n' +
 						'  var translator = isVertical ? "translateY" : "translateX" ;\n' +
 						'  aAcceptDropOnSelf = aAcceptDropOnSelf || ("TreeStyleTabService" in window);\n' +
 						'  var units = aAcceptDropOnSelf ? 3 : 2 ;'
@@ -242,6 +241,7 @@
 //                                            pinned ? numPinned : undefined);
 //           if (rtl)
 //             tabs.reverse();
+// tabs = tabs.filter(function(tab) { return draggedTabs.indexOf(tab) < 0 });
 //           let tabWidth = draggedTab.getBoundingClientRect()[size]/*.width*/;
 // 
 //           // Move the dragged tab based on the mouse position.
@@ -249,15 +249,10 @@
 //           let leftTab = tabs[0];
 //           let rightTab = tabs[tabs.length - 1];
 // 
-// var firstTabScreenX;
-// var firstTranslateX;
-// draggedTabs.forEach(function(draggedTab) {
-// let pinned = draggedTab.pinned;
-// 
 //           let tabScreenX = draggedTab.boxObject[position]/*.screenX*/;
 //           let translateX = screenX - draggedTab._dragData[position]/*.screenX*/;
 //           if (!pinned)
-//             translateX += this.mTabstrip.scrollPosition - draggedTab._dragData.scrollX;
+//             translateX += this.mTabstrip.scrollPosition - draggedTab._dragData[scroll]/*.scrollX*/;
 //           let leftBound = leftTab.boxObject[position]/*.screenX*/ - tabScreenX;
 //           let rightBound = (rightTab.boxObject[position]/*.screenX*/ + rightTab.boxObject[size]/*.width*/) -
 //                            (tabScreenX + tabWidth);
@@ -271,12 +266,10 @@
 //           //   tab's position when dropped.
 //           // * We're doing a binary search in order to reduce the amount of
 //           //   tabs we need to check.
-// if (firstTabScreenX === undefined) firstTabScreenX = tabScreenX;
-// if (firstTranslateX === undefined) firstTranslateX = translateX;
-// }, this);
 // 
-// let tabScreenX = firstTabScreenX;
-// let translateX = firstTranslateX;
+// draggedTabs.slice(1).forEach(function(tab) {
+//   tab.style.transform = draggedTab.style.transform;
+// }, this);
 //           let tabCenter = tabScreenX + translateX + tabWidth / units/*2*/;
 // let firstTabCenter = tabCenter;
 // let lastTabCenter = tabScreenX + translateX + tabsWidth - tabWidth / units;
@@ -288,7 +281,7 @@
 //           while (low <= high) {
 //             let mid = Math.floor((low + high) / 2);
 // //            if (tabs[mid] == draggedTab &&
-//               if (draggedTabs.indexOf(tabs[mid]) > -1 &&
+//               if (false &&
 //                 ++mid > high)
 //               break;
 //             let boxObject = tabs[mid].boxObject;
@@ -397,8 +390,16 @@
 		createDragFeedbackImage : function TDU_createDragFeedbackImage(aTabs)
 		{
 			var previews = aTabs.map(function(aTab) {
-					return tabPreviews.capture(aTab, false);
-				}, this);
+					try {
+						return tabPreviews.capture(aTab, false);
+					}
+					catch(e) {
+						return null;
+					}
+				}, this)
+				.filter(function(aPreview) {
+					return aPreview;
+				});
 			var offset = 16;
 
 			var canvas = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
