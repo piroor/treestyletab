@@ -133,7 +133,8 @@
 						'if (!("animLastScreenX" in draggedTab._dragData))',
 						'let tabsWidth = 0;\n' +
 						'draggedTabs.forEach(function(draggedTab) {\n' +
-						'  tabsWidth += draggedTab.boxObject.width;\n' +
+						'  tabsWidth += draggedTab.boxObject[size];\n' +
+						'  window["piro.sakura.ne.jp"].tabsDragUtils.fixDragData(draggedTab._dragData);\n' +
 						'  $&'
 					).replace(
 						'draggedTab._dragData.animLastScreenX = draggedTab._dragData[position];',
@@ -220,6 +221,7 @@
 // let tabsWidth = 0;
 // draggedTabs.forEach(function(draggedTab) {
 // tabsWidth += draggedTab.boxObject[size]/*.width*/;
+// window['piro.sakura.ne.jp'].tabsDragUtils.fixDragData(draggedTab._dragData);
 //           if (!("animLastScreenX" in draggedTab._dragData))
 //             draggedTab._dragData.animLastScreenX = draggedTab._dragData[position]/*.screenX*/;
 // }, this);
@@ -250,7 +252,7 @@
 //           let rightTab = tabs[tabs.length - 1];
 // 
 //           let tabScreenX = draggedTab.boxObject[position]/*.screenX*/;
-//           let translateX = screenX - draggedTab._dragData[position]/*.screenX*/;
+//           let translateX = screenX - draggedTab._dragData[offset]/*.offsetX*/;
 //           if (!pinned)
 //             translateX += this.mTabstrip.scrollPosition - draggedTab._dragData[scroll]/*.scrollX*/;
 //           let leftBound = leftTab.boxObject[position]/*.screenX*/ - tabScreenX;
@@ -326,6 +328,13 @@
 // }
 			}
 		},
+		fixDragData : function TDU_fixDragData(aData)
+		{
+			if (!('screenY' in aData))
+				aData.screenY = aData.offsetY + window.screenY;
+			if (!('scrollY' in aData))
+				aData.scrollY = aData.scrollX;
+		},
 
 		startTabsDrag : function TDU_startTabsDrag(aEvent, aTabs)
 		{
@@ -377,7 +386,7 @@
 		isVertical : function TDS_isVertical(aElement)
 		{
 			let style = window.getComputedStyle(aElement, null);
-			return (style.MozOrient || style.orient) == 'vertical';
+			return (aElement.orient || style.MozOrient || style.orient) == 'vertical';
 		},
 		getClientX : function TDS_getClientX(aElement)
 		{
