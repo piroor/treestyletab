@@ -893,19 +893,12 @@ try{
 			indicatorTab.getAttribute(sv.kDROP_POSITION) != dropPosition) {
 			this.clearDropPosition();
 			indicatorTab.setAttribute(sv.kDROP_POSITION, dropPosition);
-			// Firefox 17 and later
-			if (
-				'_animateTabMove' in tabbar &&
-				draggedTab &&
-				draggedTab.ownerDocument == b.ownerDocument
-				) {
-				if (!tabbar.hasAttribute('movingtab'))
-					tabbar.setAttribute('movingtab', 'true');
+			if (b.ownerDocument.defaultView['piro.sakura.ne.jp'].tabsDragUtils
+					.processTabsDragging(aEvent, dropPosition == 'self')) { // Firefox 17 and later
 				if (dropPosition == 'self') {
 					draggedTab.style.opacity = 0.5; // to prevent the dragged tab hides the drop target itself
 				} else {
 					draggedTab.style.opacity = '';
-					tabbar._animateTabMove(aEvent);
 				}
 			}
 		}

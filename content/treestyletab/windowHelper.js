@@ -110,30 +110,6 @@ var TreeStyleTabWindowHelper = {
 				)
 			);
 		}
-
-		if ('_animateTabMove' in aObserver) { // Firefox 17 and later
-			eval('aObserver._animateTabMove = '+
-				aObserver._animateTabMove.toSource().replace(
-					'{',
-					'{ var TSTTabBrowser = this instanceof Ci.nsIDOMElement ? (this.tabbrowser || this) : gBrowser ; var TST = TSTTabBrowser.treeStyleTab;'
-				).replace(
-					/\.screenX/g, '[TST.screenPositionProp]'
-				).replace(
-					// the object doesn't have "screenY", so we have to calculate it from its offset.
-					/draggedTab\._dragData\[TST\.screenPositionProp\]/g,
-					'(draggedTab._dragData[TST.offsetProp] + window[TST.screenPositionProp])'
-				).replace(
-					/\.width/g, '[TST.sizeProp]'
-				).replace(
-					/(['"])translateX\(/g, '$1$1 + TST.translateFunction + $1('
-				).replace(
-					/tabWidth \/ 2/, 'tabWidth \/ 3'
-				).replace(
-					/(if \(screenX > tabCenter)(\))/,
-					'$1 + (tabWidth / 3)$2'
-				)
-			);
-		}
 	},
  
 	overrideGlobalFunctions : function TSTWH_overrideGlobalFunctions() 

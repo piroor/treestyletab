@@ -7,13 +7,15 @@
    // in dragstart event listener
    window['piro.sakura.ne.jp'].tabsDragUtils.startTabsDrag(aEvent, aArrayOfTabs);
 
- license: The MIT License, Copyright (c) 2010-2012 YUKI "Piro" Hiroshi
-   http://github.com/piroor/fxaddonlibs/blob/master/license.txt
+ This Source Code Form is subject to the terms of the Mozilla Public
+ License, v. 2.0. If a copy of the MPL was not distributed with this
+ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
  original:
    http://github.com/piroor/fxaddonlibs/blob/master/tabsDragUtils.js
 */
 (function() {
-	const currentRevision = 19;
+	const currentRevision = 20;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -106,6 +108,230 @@
 					)
 				);
 			}
+
+			if ('_animateTabMove' in aObserver &&
+				aObserver._animateTabMove.toSource().indexOf('tabDragUtils') < 0) {
+				eval('aObserver._animateTabMove = '+
+					aObserver._animateTabMove.toSource().replace( // support vertical tab bar
+						/\.screenX/g,
+						'[position]'
+					).replace( // support vertical tab bar
+						/\.width/g,
+						'[size]'
+					).replace( // support vertical tab bar
+						/(['"])translateX\(/g,
+						'$1$1 + translator + $1('
+					).replace(
+						/(let draggedTab = [^;]+;)/,
+						'$1\n' +
+						'let draggedTabs = window["piro.sakura.ne.jp"].tabsDragUtils.getDraggedTabs(event);\n' +
+						'draggedTab = draggedTabs[0];'
+					).replace(
+						'if (!("animLastScreenX" in draggedTab._dragData))',
+						'let tabsWidth = 0;\n' +
+						'draggedTabs.forEach(function(draggedTab) {\n' +
+						'  tabsWidth += draggedTab.boxObject.width;\n' +
+						'  $&'
+					).replace(
+						'draggedTab._dragData.animLastScreenX = draggedTab._dragData[position];',
+						'  $&\n' +
+						'}, this);'
+					).replace(
+						'let draggingRight = ',
+						'draggedTabs.forEach(function(draggedTab) {\n' +
+						'  $&'
+					).replace(
+						'draggedTab._dragData.animLastScreenX = screenX;',
+						'  $&\n' +
+						'}, this);'
+					).replace(
+						'let tabScreenX = ',
+						'var firstTabScreenX;\n' +
+						'var firstTranslateX;\n' +
+						'draggedTabs.forEach(function(draggedTab) {\n' +
+						'  let pinned = draggedTab.pinned;\n' +
+						'  $&'
+					).replace(
+						'let tabCenter = ',
+						'  if (firstTabScreenX === undefined) firstTabScreenX = tabScreenX;\n' +
+						'  if (firstTranslateX === undefined) firstTranslateX = translateX;\n' +
+						'}, this);\n' +
+						'let tabScreenX = firstTabScreenX;\n' +
+						'let translateX = firstTranslateX;\n' +
+						'$&'
+					).replace(
+						/(let tabCenter = [^;]+)\/ 2;/,
+						'$1 / units/*2*/;\n' + // support drop on self
+						'let firstTabCenter = tabCenter;\n' +
+						'let lastTabCenter = tabScreenX + translateX + tabsWidth - tabWidth / units;'
+					).replace(
+						'tabs[mid] == draggedTab',
+						'/* $& */ draggedTabs.indexOf(tabs[mid]) > -1'
+					).replace(
+						'(screenX > tabCenter)',
+						'/* $& */ (screenX > lastTabCenter + (aAcceptDropOnSelf ? tabWidth / units : 0 ))'
+					).replace(
+						'(screenX + boxObject[size] < tabCenter)',
+						'/* $& */ (screenX + boxObject[size] < firstTabCenter)'
+					).replace(
+						'-tabWidth : tabWidth',
+						'/* $& */ -tabsWidth : tabsWidth'
+					).replace(
+						'tabWidth : -tabWidth',
+						'/* $& */ tabsWidth : -tabsWidth'
+					).replace( // add a new argument
+						')',
+						', aAcceptDropOnSelf)'
+					).replace( // insert initialization processes
+						'{',
+						'{\n' +
+						'  var isVertical = window["piro.sakura.ne.jp"].tabsDragUtils.isVertical(this);\n' +
+						'  var position = isVertical ? "screenY" : "screenX" ;\n' +
+						'  var size = isVertical ? "height" : "width" ;\n' +
+						'  var translator = isVertical ? "translateY" : "translateX" ;\n' +
+						'  aAcceptDropOnSelf = aAcceptDropOnSelf || ("TreeStyleTabService" in window);\n' +
+						'  var units = aAcceptDropOnSelf ? 3 : 2 ;'
+					)
+				);
+
+/**
+ * Full version
+ *  base version: Firefox 17 beta
+ *  revision    : http://hg.mozilla.org/releases/mozilla-beta/rev/20e73f5b19c3
+ *  date        : 2012-10-09
+ *  source      : http://mxr.mozilla.org/mozilla-central/source/browser/base/content/tabbrowser.xml
+ */
+// function _animateTabMove(event, aAcceptDropOnSelf) {
+// var isVertical = window['piro.sakura.ne.jp'].tabsDragUtils.isVertical(this);
+// var position = isVertical ? 'screenY' : 'screenX' ;
+// var size = isVertical ? 'height' : 'width' ;
+// var translator = isVertical ? "translateY" : "translateX" ;
+// aAcceptDropOnSelf = aAcceptDropOnSelf || ("TreeStyleTabService" in window);
+// var units = aAcceptDropOnSelf ? 3 : 2 ;
+// 
+//           let draggedTab = event.dataTransfer.mozGetDataAt(TAB_DROP_TYPE, 0);
+// var draggedTabs = window['piro.sakura.ne.jp'].tabsDragUtils.getDraggedTabs(event);
+// draggedTab = draggedTabs[0];
+// 
+//           if (this.getAttribute("movingtab") != "true") {
+//             this.setAttribute("movingtab", "true");
+//             this.selectedItem = draggedTab;
+//           }
+// 
+// let tabsWidth = 0;
+// draggedTabs.forEach(function(draggedTab) {
+// tabsWidth += draggedTab.boxObject[size]/*.width*/;
+//           if (!("animLastScreenX" in draggedTab._dragData))
+//             draggedTab._dragData.animLastScreenX = draggedTab._dragData[position]/*.screenX*/;
+// }, this);
+// 
+//           let screenX = event[position]/*.screenX*/;
+//           if (screenX == draggedTab._dragData.animLastScreenX)
+//             return;
+// 
+// draggedTabs.forEach(function(draggedTab) {
+//           let draggingRight = screenX > draggedTab._dragData.animLastScreenX;
+//           draggedTab._dragData.animLastScreenX = screenX;
+// }, this);
+// 
+//           let rtl = (window.getComputedStyle(this).direction == "rtl");
+//           let pinned = draggedTab.pinned;
+//           let numPinned = this.tabbrowser._numPinnedTabs;
+//           let tabs = this.tabbrowser.visibleTabs
+//                                     .slice(pinned ? 0 : numPinned,
+//                                            pinned ? numPinned : undefined);
+//           if (rtl)
+//             tabs.reverse();
+//           let tabWidth = draggedTab.getBoundingClientRect()[size]/*.width*/;
+// 
+//           // Move the dragged tab based on the mouse position.
+// 
+//           let leftTab = tabs[0];
+//           let rightTab = tabs[tabs.length - 1];
+// 
+// var firstTabScreenX;
+// var firstTranslateX;
+// draggedTabs.forEach(function(draggedTab) {
+// let pinned = draggedTab.pinned;
+// 
+//           let tabScreenX = draggedTab.boxObject[position]/*.screenX*/;
+//           let translateX = screenX - draggedTab._dragData[position]/*.screenX*/;
+//           if (!pinned)
+//             translateX += this.mTabstrip.scrollPosition - draggedTab._dragData.scrollX;
+//           let leftBound = leftTab.boxObject[position]/*.screenX*/ - tabScreenX;
+//           let rightBound = (rightTab.boxObject[position]/*.screenX*/ + rightTab.boxObject[size]/*.width*/) -
+//                            (tabScreenX + tabWidth);
+//           translateX = Math.max(translateX, leftBound);
+//           translateX = Math.min(translateX, rightBound);
+//           draggedTab.style.transform = "translateX(" + translateX + "px)";
+// 
+//           // Determine what tab we're dragging over.
+//           // * Point of reference is the center of the dragged tab. If that
+//           //   point touches a background tab, the dragged tab would take that
+//           //   tab's position when dropped.
+//           // * We're doing a binary search in order to reduce the amount of
+//           //   tabs we need to check.
+// if (firstTabScreenX === undefined) firstTabScreenX = tabScreenX;
+// if (firstTranslateX === undefined) firstTranslateX = translateX;
+// }, this);
+// 
+// let tabScreenX = firstTabScreenX;
+// let translateX = firstTranslateX;
+//           let tabCenter = tabScreenX + translateX + tabWidth / units/*2*/;
+// let firstTabCenter = tabCenter;
+// let lastTabCenter = tabScreenX + translateX + tabsWidth - tabWidth / units;
+//           let newIndex = -1;
+//           let oldIndex = "animDropIndex" in draggedTab._dragData ?
+//                          draggedTab._dragData.animDropIndex : draggedTab._tPos;
+//           let low = 0;
+//           let high = tabs.length - 1;
+//           while (low <= high) {
+//             let mid = Math.floor((low + high) / 2);
+// //            if (tabs[mid] == draggedTab &&
+//               if (draggedTabs.indexOf(tabs[mid]) > -1 &&
+//                 ++mid > high)
+//               break;
+//             let boxObject = tabs[mid].boxObject;
+//             let screenX = boxObject[position]/*.screenX*/ + getTabShift(tabs[mid], oldIndex);
+// //            if (screenX > tabCenter) {
+//             if (screenX > lastTabCenter + (aAcceptDropOnSelf ? tabWidth / units : 0 )) {
+//               high = mid - 1;
+// //            } else if (screenX + boxObject.width < tabCenter) {
+//             } else if (screenX + boxObject[size]/*.width*/ < firstTabCenter) {
+//               low = mid + 1;
+//             } else {
+//               newIndex = tabs[mid]._tPos;
+//               break;
+//             }
+//           }
+//           if (newIndex >= oldIndex)
+//             newIndex++;
+//           if (newIndex < 0 || newIndex == oldIndex)
+//             return;
+//           draggedTab._dragData.animDropIndex = newIndex;
+// 
+//           // Shift background tabs to leave a gap where the dragged tab
+//           // would currently be dropped.
+// 
+//           for (let tab of tabs) {
+//             if (tab != draggedTab) {
+//               let shift = getTabShift(tab, newIndex);
+//               tab.style.transform = shift ? "" + translator + "(" + shift + "px)" : "";
+//             }
+//           }
+// 
+//           function getTabShift(tab, dropIndex) {
+//             if (tab._tPos < draggedTab._tPos && tab._tPos >= dropIndex)
+// //              return rtl ? -tabWidth : tabWidth;
+//               return rtl ? -tabsWidth : tabsWidth;
+//             if (tab._tPos > draggedTab._tPos && tab._tPos < dropIndex)
+// //              return rtl ? tabWidth : -tabWidth;
+//               return rtl ? tabsWidth : -tabsWidth;
+//             return 0;
+//           }
+//         
+// }
+			}
 		},
 
 		startTabsDrag : function TDU_startTabsDrag(aEvent, aTabs)
@@ -134,7 +360,39 @@
 				navigator.platform.toLowerCase().indexOf('win') < 0)
 				dt.mozCursor = 'default';
 
+			if (this.shouldAnimateDragggedTabs(aEvent)) {
+				let tabbar = this.getTabbarFromEvent(aEvent);
+				let tabbarOffsetX = this.getClientX(tabbar.children[0].pinned ? tabbar.children[0] : tabbar );
+				let tabbarOffsetY = this.getClientY(tabbar.children[0].pinned ? tabbar.children[0] : tabbar );
+				let isVertical = this.isVertical(tabbar.mTabstrip);
+				tabs.forEach(function(aTab) {
+					var tabOffsetX = this.getClientX(aTab) - tabbarOffsetX;
+					var tabOffsetY = this.getClientY(aTab) - tabbarOffsetY;
+					aTab._dragData = {
+						offsetX: aEvent.screenX - window.screenX - tabOffsetX,
+						offsetY: aEvent.screenY - window.screenY - tabOffsetY,
+						scrollX: isVertical ? 0 : tabbar.mTabstrip.scrollPosition ,
+						scrollY: isVertical ? tabbar.mTabstrip.scrollPosition : 0 ,
+						screenX: aEvent.screenX,
+						screenY: aEvent.screenY
+					};
+				}, this);
+			}
+
 			aEvent.stopPropagation();
+		},
+		isVertical : function TDS_isVertical(aElement)
+		{
+			let style = window.getComputedStyle(aElement, null);
+			return (style.MozOrient || style.orient) == 'vertical';
+		},
+		getClientX : function TDS_getClientX(aElement)
+		{
+			return aElement.getBoundingClientRect().left;
+		},
+		getClientY : function TDS_getClientY(aElement)
+		{
+			return aElement.getBoundingClientRect().top;
 		},
 		createDragFeedbackImage : function TDU_createDragFeedbackImage(aTabs)
 		{
@@ -183,6 +441,16 @@
 			}
 			return null;
 		},
+		getTabbarFromEvent : function TDU_getTabbarFromEvent(aEvent) 
+		{
+			return (aEvent.originalTarget || aEvent.target).ownerDocument.evaluate(
+					'ancestor-or-self::*[local-name()="tabs"]',
+					aEvent.originalTarget || aEvent.target,
+					null,
+					XPathResult.FIRST_ORDERED_NODE_TYPE,
+					null
+				).singleNodeValue;
+		},
 		getTabBrowserFromChild : function TDU_getTabBrowserFromChild(aTabBrowserChild) 
 		{
 			if (!aTabBrowserChild)
@@ -207,6 +475,29 @@
 					null
 				).singleNodeValue;
 			return (b && b.tabbrowser) || b;
+		},
+		shouldAnimateDragggedTabs: function TDU_shouldAnimateDragggedTabs(aEvent)
+		{
+			var tabbar = this.getTabbarFromEvent(aEvent);
+			return tabbar && '_animateTabMove' in tabbar;
+		},
+
+		processTabsDragging: function TDU_processTabsDragging(aEvent, aWillDropOnSelf)
+		{
+			// Firefox 17 and later
+			if (this.shouldAnimateDraggedTabs(aEvent)) {
+				let tabbar = this.getTabbarFromEvent(aEvent);
+				let draggedTab = aEvent.dataTransfer && aEvent.dataTransfer.mozGetDataAt(TAB_DROP_TYPE, 0);
+				if (!draggedTab || draggedTab.ownerDocument != tabbar.ownerDocument) return false;
+
+				if (!tabbar.hasAttribute('movingtab'))
+					tabbar.setAttribute('movingtab', 'true');
+				if (!aWillDropOnSelf) {
+					tabbar._animateTabMove(aEvent);
+				}
+				return true;
+			}
+			return false;
 		},
 
 		isTabsDragging : function TDU_isTabsDragging(aEvent) 
