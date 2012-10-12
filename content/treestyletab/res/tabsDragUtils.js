@@ -15,7 +15,7 @@
    http://github.com/piroor/fxaddonlibs/blob/master/tabsDragUtils.js
 */
 (function() {
-	const currentRevision = 20;
+	const currentRevision = 21;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -159,17 +159,17 @@
 					).replace(
 						/(let tabCenter = [^;]+)\/ 2;/,
 						'$1 / units/*2*/;\n' + // support drop on self
-						'let firstTabCenter = tabCenter;\n' +
-						'let lastTabCenter = tabScreenX + translateX + tabsWidth - tabWidth / units;'
+						'let tabLeftCenter = tabCenter;\n' +
+						'let tabRightCenter = tabScreenX + translateX + tabsWidth - tabWidth / units;'
 					).replace(
 						'tabs[mid] == draggedTab',
 						'/* $& */ false'
 					).replace(
 						'(screenX > tabCenter)',
-						'/* $& */ (screenX > lastTabCenter + (aAcceptDropOnSelf ? tabWidth / units : 0 ))'
+						'/* $& */ (screenX > tabRightCenter)'
 					).replace(
 						'(screenX + boxObject[size] < tabCenter)',
-						'/* $& */ (screenX + boxObject[size] < firstTabCenter)'
+						'/* $& */ (screenX + boxObject[size] < tabLeftCenter)'
 					).replace(
 						'-tabWidth : tabWidth',
 						'/* $& */ -tabsWidth : tabsWidth'
@@ -271,8 +271,8 @@
 //   tab.style.transform = draggedTab.style.transform;
 // }, this);
 //           let tabCenter = tabScreenX + translateX + tabWidth / units/*2*/;
-// let firstTabCenter = tabCenter;
-// let lastTabCenter = tabScreenX + translateX + tabsWidth - tabWidth / units;
+// let tabLeftCenter = tabCenter;
+// let tabRightCenter = tabScreenX + translateX + tabsWidth - tabWidth / units;
 //           let newIndex = -1;
 //           let oldIndex = "animDropIndex" in draggedTab._dragData ?
 //                          draggedTab._dragData.animDropIndex : draggedTab._tPos;
@@ -287,10 +287,10 @@
 //             let boxObject = tabs[mid].boxObject;
 //             let screenX = boxObject[position]/*.screenX*/ + getTabShift(tabs[mid], oldIndex);
 // //            if (screenX > tabCenter) {
-//             if (screenX > lastTabCenter + (aAcceptDropOnSelf ? tabWidth / units : 0 )) {
+//             if (screenX > tabRightCenter) {
 //               high = mid - 1;
 // //            } else if (screenX + boxObject.width < tabCenter) {
-//             } else if (screenX + boxObject[size]/*.width*/ < firstTabCenter) {
+//             } else if (screenX + boxObject[size]/*.width*/ < tabLeftCenter) {
 //               low = mid + 1;
 //             } else {
 //               newIndex = tabs[mid]._tPos;
@@ -360,7 +360,7 @@
 				navigator.platform.toLowerCase().indexOf('win') < 0)
 				dt.mozCursor = 'default';
 
-			if (this.shouldAnimateDragggedTabs(aEvent)) {
+			if (this.canAnimateDraggedTabs(aEvent)) {
 				let tabbar = this.getTabbarFromEvent(aEvent);
 				let tabbarOffsetX = this.getClientX(tabbar.children[0].pinned ? tabbar.children[0] : tabbar );
 				let tabbarOffsetY = this.getClientY(tabbar.children[0].pinned ? tabbar.children[0] : tabbar );
@@ -484,25 +484,23 @@
 				).singleNodeValue;
 			return (b && b.tabbrowser) || b;
 		},
-		shouldAnimateDragggedTabs: function TDU_shouldAnimateDragggedTabs(aEvent)
+		canAnimateDraggedTabs: function TDU_canAnimateDraggedTabs(aEvent)
 		{
 			var tabbar = this.getTabbarFromEvent(aEvent);
 			return tabbar && '_animateTabMove' in tabbar;
 		},
 
-		processTabsDragging: function TDU_processTabsDragging(aEvent, aWillDropOnSelf)
+		processTabsDragging: function TDU_processTabsDragging(aEvent, aCanDropOnSelf)
 		{
 			// Firefox 17 and later
-			if (this.shouldAnimateDraggedTabs(aEvent)) {
+			if (this.canAnimateDraggedTabs(aEvent)) {
 				let tabbar = this.getTabbarFromEvent(aEvent);
 				let draggedTab = aEvent.dataTransfer && aEvent.dataTransfer.mozGetDataAt(TAB_DROP_TYPE, 0);
 				if (!draggedTab || draggedTab.ownerDocument != tabbar.ownerDocument) return false;
 
 				if (!tabbar.hasAttribute('movingtab'))
 					tabbar.setAttribute('movingtab', 'true');
-				if (!aWillDropOnSelf) {
-					tabbar._animateTabMove(aEvent);
-				}
+				tabbar._animateTabMove(aEvent, aCanDropOnSelf);
 				return true;
 			}
 			return false;

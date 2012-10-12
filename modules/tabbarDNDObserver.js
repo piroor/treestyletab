@@ -270,14 +270,14 @@ catch(e) {
 			if (DEBUG) dump('  not on a tab\n');
 			let action = isTabMoveFromOtherWindow ? sv.kACTION_STAY : (sv.kACTION_MOVE | sv.kACTION_PART) ;
 			if (isNewTabAction) action |= sv.kACTION_NEWTAB;
-			if (aEvent[sv.screenPositionProp] < firstTab.boxObject[sv.screenPositionProp]) {
+			if (aEvent[sv.screenPositionProp] < sv.getTabActualScreenPosition(firstTab)) {
 				if (DEBUG) dump('  above the first tab\n');
 				info.target   = info.parent = info.insertBefore = firstTab;
 				info.position = isInverted ? sv.kDROP_AFTER : sv.kDROP_BEFORE ;
 				info.action   = action;
 				return info;
 			}
-			else if (aEvent[sv.screenPositionProp] > tabs[lastTabIndex].boxObject[sv.screenPositionProp] + tabs[lastTabIndex].boxObject[sv.sizeProp]) {
+			else if (aEvent[sv.screenPositionProp] > sv.getTabActualScreenPosition(tabs[lastTabIndex]) + tabs[lastTabIndex].boxObject[sv.sizeProp]) {
 				if (DEBUG) dump('  below the last tab\n');
 				info.target   = info.parent = tabs[lastTabIndex];
 				info.position = isInverted ? sv.kDROP_BEFORE : sv.kDROP_AFTER ;
@@ -309,7 +309,7 @@ catch(e) {
 		var dropAreasCount = (aSourceTab && pinned) ? 2 : 3 ;
 		var screenPositionProp = sv.isVertical && pinned ? sv.invertedScreenPositionProp : sv.screenPositionProp ;
 		var sizeProp = sv.isVertical && pinned ? sv.invertedSizeProp : sv.sizeProp ;
-		var boxPos  = tab.boxObject[screenPositionProp];
+		var boxPos  = sv.getTabActualScreenPosition(tab);
 		var boxUnit = Math.round(tab.boxObject[sizeProp] / dropAreasCount);
 		if (aEvent[screenPositionProp] < boxPos + boxUnit) {
 			info.position = isInverted ? sv.kDROP_AFTER : sv.kDROP_BEFORE ;
@@ -839,6 +839,15 @@ try{
 
 		sv.autoScroll.processAutoScroll(aEvent);
 
+		var dragOverTab = sv.getTabFromEvent(aEvent) || sv.getTabFromTabbarEvent(aEvent) || aEvent.target;
+		b.ownerDocument.defaultView['piro.sakura.ne.jp'].tabsDragUtils
+			.processTabsDragging(aEvent, !dragOverTab || !dragOverTab.pinned);
+
+		/**
+		 * We must calculate drop action after tabsDragUtils.processTabsDragging(),
+		 * because the drop position depends on tabs' actual
+		 * positions (which can be changed by animation effects.)
+		 */
 		var info = this.getDropAction(aEvent, session);
 
 		var observer = b;
@@ -894,7 +903,7 @@ try{
 			this.clearDropPosition();
 			indicatorTab.setAttribute(sv.kDROP_POSITION, dropPosition);
 			if (b.ownerDocument.defaultView['piro.sakura.ne.jp'].tabsDragUtils
-					.processTabsDragging(aEvent, dropPosition == 'self')) { // Firefox 17 and later
+					.canAnimateDraggedTabs(aEvent)) { // Firefox 17 and later
 				if (dropPosition == 'self') {
 					draggedTab.style.opacity = 0.5; // to prevent the dragged tab hides the drop target itself
 				} else {
@@ -944,12 +953,17 @@ catch(e) {
 		var tabbar = b.mTabContainer;
 		var dt = aEvent.dataTransfer;
 
+		/**
+		 * We must calculate drop action before clearing "dragging"
+		 * state, because the drop position depends on tabs' actual
+		 * positions (they are applied only while tab dragging.)
+		 */
+		var session = sv.currentDragSession;
+		var dropActionInfo = this.getDropAction(aEvent, session);
+
 		this.clearDropPosition(true);
 		if (tabbar._tabDropIndicator)
 			tabbar._tabDropIndicator.collapsed = true;
-
-		var session = sv.currentDragSession;
-		var dropActionInfo = this.getDropAction(aEvent, session);
 
 		var draggedTab;
 		if (dt.dropEffect != 'link') {

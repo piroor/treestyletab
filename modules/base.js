@@ -2423,6 +2423,35 @@ var TreeStyleTabBase = {
 			screenY   : tabBox.screenY + yOffset
 		};
 	},
+	getTabActualScreenPosition : function TSTUtils_getTabActualScreenPosition(aTab)
+	{
+		return aTab.parentNode.orient == 'vertical' ?
+				this.getTabActualScreenY(aTab) :
+				this.getTabActualScreenX(aTab) ;
+	},
+	MATRIX_PATTERN : /matrix\((-?\d+),\s*(-?\d+),\s*(-?\d+),\s*(-?\d+),\s*(-?\d+),\s*(-?\d+)\)/,
+	getTabActualScreenX : function TSTUtils_getTabActualScreenX(aTab)
+	{
+		var x = aTab.boxObject.screenX;
+
+		var w = aTab.ownerDocument.defaultView;
+		var transform = w.getComputedStyle(aTab, null).transform;
+		var offset = transform.match(this.MATRIX_PATTERN);
+		offset = offset ? parseFloat(offset[5]) : 0 ;
+
+		return x + offset;
+	},
+	getTabActualScreenY : function TSTUtils_getTabActualScreenY(aTab)
+	{
+		var y = aTab.boxObject.screenY;
+
+		var w = aTab.ownerDocument.defaultView;
+		var transform = w.getComputedStyle(aTab, null).transform;
+		var offset = transform.match(this.MATRIX_PATTERN);
+		offset = offset ? parseFloat(offset[6]) : 0 ;
+
+		return y + offset;
+	},
  
 	isGroupTab : function TSTUtils_isGroupTab(aTab, aLazyCheck) 
 	{
