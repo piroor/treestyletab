@@ -606,7 +606,13 @@ catch(e) {
 				aTab.removeAttribute(sv.kDROP_POSITION)
 
 			// clear drop position preview on Firefox 17 and later
-			if (aOnFinish) aTab.style.transform = '';
+			if (aOnFinish) {
+				aTab.style.transform = '';
+				if (aTab.__treestyletab__opacityBeforeDragged) {
+					aTab.style.opacity = aTab.__treestyletab__opacityBeforeDragged;
+					delete aTab.__treestyletab__opacityBeforeDragged;
+				}
+			}
 		});
 
 		if (aOnFinish)
@@ -827,10 +833,6 @@ catch(e) {
 		if (eX > x && eX < x + w && eY > y && eY < y + h)
 			return;
 
-		this.window['piro.sakura.ne.jp'].tabsDragUtils.getDraggedTabs(dt).forEach(function(aTab) {
-			aTab.style.opacity = '';
-		});
-
 		var draggedTab = dt.mozGetDataAt(TAB_DROP_TYPE, 0);
 		if (this.isDraggingAllCurrentTabs(draggedTab))
 			return;
@@ -940,6 +942,8 @@ try{
 					.canAnimateDraggedTabs(aEvent)) { // Firefox 17 and later
 				let newOpacity = dropPosition == 'self' ? 0.5 : '' ; // to prevent the dragged tab hides the drop target itself
 				this.window['piro.sakura.ne.jp'].tabsDragUtils.getDraggedTabs(aEvent).forEach(function(aTab) {
+					if (!('__treestyletab__opacityBeforeDragged' in aTab))
+						aTab.__treestyletab__opacityBeforeDragged = aTab.style.opacity || '';
 					aTab.style.opacity = newOpacity;
 				});
 			}
@@ -1003,9 +1007,6 @@ catch(e) {
 			aEvent.stopPropagation();
 			return;
 		}
-		this.window['piro.sakura.ne.jp'].tabsDragUtils.getDraggedTabs(dt).forEach(function(aTab) {
-			aTab.style.opacity = '';
-		});
 
 		var sourceBrowser = sv.getTabBrowserFromChild(draggedTab);
 		if (draggedTab && sourceBrowser != b)
