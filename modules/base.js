@@ -2436,7 +2436,7 @@ var TreeStyleTabBase = {
 
 		var w = aTab.ownerDocument.defaultView;
 		var transform = w.getComputedStyle(aTab, null).transform;
-		var offset = transform.match(this.MATRIX_PATTERN);
+		var offset = transform && transform.match(this.MATRIX_PATTERN);
 		offset = offset ? parseFloat(offset[5]) : 0 ;
 
 		return x + offset;
@@ -2447,7 +2447,7 @@ var TreeStyleTabBase = {
 
 		var w = aTab.ownerDocument.defaultView;
 		var transform = w.getComputedStyle(aTab, null).transform;
-		var offset = transform.match(this.MATRIX_PATTERN);
+		var offset = transform && transform.match(this.MATRIX_PATTERN);
 		offset = offset ? parseFloat(offset[6]) : 0 ;
 
 		return y + offset;
