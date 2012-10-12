@@ -827,8 +827,11 @@ catch(e) {
 		if (eX > x && eX < x + w && eY > y && eY < y + h)
 			return;
 
+		this.window['piro.sakura.ne.jp'].tabsDragUtils.getDraggedTabs(dt).forEach(function(aTab) {
+			aTab.style.opacity = '';
+		});
+
 		var draggedTab = dt.mozGetDataAt(TAB_DROP_TYPE, 0);
-		draggedTab.style.opacity = '';
 		if (this.isDraggingAllCurrentTabs(draggedTab))
 			return;
 
@@ -935,11 +938,10 @@ try{
 			indicatorTab.setAttribute(sv.kDROP_POSITION, dropPosition);
 			if (b.ownerDocument.defaultView['piro.sakura.ne.jp'].tabsDragUtils
 					.canAnimateDraggedTabs(aEvent)) { // Firefox 17 and later
-				if (dropPosition == 'self') {
-					draggedTab.style.opacity = 0.5; // to prevent the dragged tab hides the drop target itself
-				} else {
-					draggedTab.style.opacity = '';
-				}
+				let newOpacity = dropPosition == 'self' ? 0.5 : '' ; // to prevent the dragged tab hides the drop target itself
+				this.window['piro.sakura.ne.jp'].tabsDragUtils.getDraggedTabs(aEvent).forEach(function(aTab) {
+					aTab.style.opacity = newOpacity;
+				});
 			}
 		}
 
@@ -1001,8 +1003,9 @@ catch(e) {
 			aEvent.stopPropagation();
 			return;
 		}
-		if (draggedTab)
-			draggedTab.style.opacity = '';
+		this.window['piro.sakura.ne.jp'].tabsDragUtils.getDraggedTabs(dt).forEach(function(aTab) {
+			aTab.style.opacity = '';
+		});
 
 		var sourceBrowser = sv.getTabBrowserFromChild(draggedTab);
 		if (draggedTab && sourceBrowser != b)
