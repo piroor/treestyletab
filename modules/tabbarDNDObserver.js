@@ -757,7 +757,13 @@ catch(e) {
 	{
 		if (!aTab || !aTab._dragData) return;
 		var sv = this.treeStyleTab;
-		aTab._dragData[sv.offsetProp] += sv.getYOffsetOfTab(aTab);
+		var data = aTab._dragData;
+		var offsetX = sv.getXOffsetOfTab(aTab);
+		var offsetY = sv.getYOffsetOfTab(aTab);
+		if ('offsetX' in data) data.offsetX += offsetX;
+		if ('screenX' in data) data.screenX += offsetX;
+		if ('offsetY' in data) data.offsetY += offsetY;
+		if ('screenY' in data) data.screenY += offsetY;
 	},
  
 	onDragLeave : function TabbarDND_onDragLeave(aEvent) 
