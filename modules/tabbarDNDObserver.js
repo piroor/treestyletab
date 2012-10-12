@@ -336,10 +336,15 @@ catch(e) {
 		var sizeProp = sv.isVertical && pinned ? sv.invertedSizeProp : sv.sizeProp ;
 		var boxPos  = sv.getTabActualScreenPosition(tab);
 		var boxUnit = Math.round(tab.boxObject[sizeProp] / dropAreasCount);
-		if (aEvent[screenPositionProp] < boxPos + boxUnit) {
+		var eventPosition = aEvent[screenPositionProp];
+//		if (this.window['piro.sakura.ne.jp'].tabsDragUtils
+//				.canAnimateDraggedTabs(aEvent)) {
+//			eventPosition = Math.round(sv.getTabActualScreenPosition(draggedTab) + (tab.boxObject[sizeProp] / 2))
+//		}
+		if (eventPosition < boxPos + boxUnit) {
 			info.position = isInverted ? sv.kDROP_AFTER : sv.kDROP_BEFORE ;
 		}
-		else if (dropAreasCount == 2 || aEvent[screenPositionProp] > boxPos + boxUnit + boxUnit) {
+		else if (dropAreasCount == 2 || eventPosition > boxPos + boxUnit + boxUnit) {
 			info.position = isInverted ? sv.kDROP_BEFORE : sv.kDROP_AFTER ;
 		}
 		else {
@@ -608,7 +613,7 @@ catch(e) {
 			// clear drop position preview on Firefox 17 and later
 			if (aOnFinish) {
 				aTab.style.transform = '';
-				if (aTab.__treestyletab__opacityBeforeDragged) {
+				if ('__treestyletab__opacityBeforeDragged' in aTab) {
 					aTab.style.opacity = aTab.__treestyletab__opacityBeforeDragged;
 					delete aTab.__treestyletab__opacityBeforeDragged;
 				}
