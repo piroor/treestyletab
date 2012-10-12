@@ -1414,7 +1414,7 @@ var TreeStyleTabBase = {
 	getTabbarFromChild : function TSTUtils_getTabbarFromChild(aNode) 
 	{
 		return this.evaluateXPath(
-				'ancestor-or-self::*[contains(concat(" ", normalize-space(@class), " "), " tabbrowser-strip ")] | '+
+				'ancestor-or-self::*[contains(concat(" ", normalize-space(@class), " "), " tabbrowser-strip ")] | ' +
 				'ancestor-or-self::xul:tabs[@tabbrowser] | ' +
 				'ancestor-or-self::xul:toolbar/child::xul:tabs[@tabbrowser]',
 				aNode,
@@ -1424,7 +1424,7 @@ var TreeStyleTabBase = {
 	getAncestorTabbarFromChild : function TSTUtils_getAncestorTabbarFromChild(aNode)
 	{
 		return this.evaluateXPath(
-				'ancestor-or-self::*[contains(concat(" ", normalize-space(@class), " "), " tabbrowser-strip ")] | '+
+				'ancestor-or-self::*[contains(concat(" ", normalize-space(@class), " "), " tabbrowser-strip ")] | ' +
 				'ancestor-or-self::xul:tabs[@tabbrowser]',
 				aNode,
 				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE

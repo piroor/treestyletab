@@ -52,9 +52,9 @@ var TreeStyleTabWindowHelper = {
 			eval('window.undoCloseTab = '+
 				window.undoCloseTab.toSource().replace(
 					/(\btab\s*=\s*[^\.]+\.undoCloseTab\([^;]+\);)/,
-					'gBrowser.__treestyletab__readyToUndoCloseTab = true;' +
-					'$1' +
-					'tab.__treestyletab__restoredByUndoCloseTab = true;' +
+					'gBrowser.__treestyletab__readyToUndoCloseTab = true;\n' +
+					'$1\n' +
+					'tab.__treestyletab__restoredByUndoCloseTab = true;\n' +
 					'delete gBrowser.__treestyletab__readyToUndoCloseTab;'
 				)
 			);
@@ -96,9 +96,9 @@ var TreeStyleTabWindowHelper = {
 					/\.width/g, '[TST.sizeProp]'
 				).replace(
 					/(return (?:true|dt.effectAllowed = "copyMove");)/,
-					'if (!TST.tabbarDNDObserver.canDropTab(arguments[0])) {' +
-					'  return dt.effectAllowed = "none";' +
-					'}' +
+					'if (!TST.tabbarDNDObserver.canDropTab(arguments[0])) {\n' +
+					'  return dt.effectAllowed = "none";\n' +
+					'}\n' +
 					'$1'
 				).replace(
 					'sourceNode.parentNode == this &&',
@@ -140,14 +140,14 @@ var TreeStyleTabWindowHelper = {
 		eval('nsContextMenu.prototype.openLinkInTab = '+
 			nsContextMenu.prototype.openLinkInTab.toSource().replace(
 				'{',
-				'{' +
+				'{\n' +
 				'  TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);'
 			)
 		);
 		eval('nsContextMenu.prototype.openFrameInTab = '+
 			nsContextMenu.prototype.openFrameInTab.toSource().replace(
 				'{',
-				'{' +
+				'{\n' +
 				'  TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);'
 			)
 		);
@@ -344,8 +344,8 @@ var TreeStyleTabWindowHelper = {
 			searchbar.doSearch.toSource().toSource().indexOf('TreeStyleTabService') < 0) {
 			eval('searchbar.doSearch = '+searchbar.doSearch.toSource().replace(
 				/(openUILinkIn\(.+?\);)/,
-				'TreeStyleTabService.onBeforeBrowserSearch(arguments[0]);' +
-				'$1' +
+				'TreeStyleTabService.onBeforeBrowserSearch(arguments[0]);\n' +
+				'$1\n' +
 				'TreeStyleTabService.stopToOpenChildTab();'
 			));
 		}
@@ -408,22 +408,22 @@ var TreeStyleTabWindowHelper = {
 				'tabPos + 1', 'nextTab._tPos'
 			).replace(
 				'this.moveTabTo(',
-				'var descendant = this.treeStyleTab.getDescendantTabs(nextTab);' +
-				'if (descendant.length) {' +
-				'  nextTab = descendant[descendant.length-1];' +
-				'}' +
+				'var descendant = this.treeStyleTab.getDescendantTabs(nextTab);\n' +
+				'if (descendant.length) {\n' +
+				'  nextTab = descendant[descendant.length-1];\n' +
+				'}\n' +
 				'$&'
 			).replace(
 				'this.moveTabToStart();',
-				'this.treeStyleTab.internallyTabMovingCount++;' +
-				'var parentTab = this.treeStyleTab.getParentTab(this.mCurrentTab);' +
-				'if (parentTab) {' +
-				'  this.moveTabTo(this.mCurrentTab, this.treeStyleTab.getFirstChildTab(parentTab)._tPos);' +
-				'  this.mCurrentTab.focus();' +
-				'}' +
-				'else {' +
-				'  $&' +
-				'}' +
+				'this.treeStyleTab.internallyTabMovingCount++;\n' +
+				'var parentTab = this.treeStyleTab.getParentTab(this.mCurrentTab);\n' +
+				'if (parentTab) {\n' +
+				'  this.moveTabTo(this.mCurrentTab, this.treeStyleTab.getFirstChildTab(parentTab)._tPos);\n' +
+				'  this.mCurrentTab.focus();\n' +
+				'}\n' +
+				'else {\n' +
+				'  $&\n' +
+				'}\n' +
 				'this.treeStyleTab.internallyTabMovingCount--;'
 			)
 		);
@@ -438,15 +438,15 @@ var TreeStyleTabWindowHelper = {
 				'tabPos - 1', 'prevTab._tPos'
 			).replace(
 				'this.moveTabToEnd();',
-				'this.treeStyleTab.internallyTabMovingCount++;' +
-				'var parentTab = this.treeStyleTab.getParentTab(this.mCurrentTab);' +
-				'if (parentTab) {' +
-				'  this.moveTabTo(this.mCurrentTab, this.treeStyleTab.getLastChildTab(parentTab)._tPos);' +
-				'  this.mCurrentTab.focus();' +
-				'}' +
-				'else {' +
-				'  $&' +
-				'}' +
+				'this.treeStyleTab.internallyTabMovingCount++;\n' +
+				'var parentTab = this.treeStyleTab.getParentTab(this.mCurrentTab);\n' +
+				'if (parentTab) {\n' +
+				'  this.moveTabTo(this.mCurrentTab, this.treeStyleTab.getLastChildTab(parentTab)._tPos);\n' +
+				'  this.mCurrentTab.focus();\n' +
+				'}\n' +
+				'else {\n' +
+				'  $&\n' +
+				'}\n' +
 				'this.treeStyleTab.internallyTabMovingCount--;'
 			)
 		);
@@ -454,18 +454,18 @@ var TreeStyleTabWindowHelper = {
 		eval('b.loadTabs = '+
 			b.loadTabs.toSource().replace(
 				'var tabNum = ',
-				'if (this.treeStyleTab.readiedToAttachNewTabGroup)' +
-				'  TreeStyleTabService.readyToOpenChildTab(firstTabAdded || this.selectedTab, true);' +
+				'if (this.treeStyleTab.readiedToAttachNewTabGroup)\n' +
+				'  TreeStyleTabService.readyToOpenChildTab(firstTabAdded || this.selectedTab, true);\n' +
 				'$&'
 			).replace(
 				'if (!aLoadInBackground)',
-				'if (TreeStyleTabService.checkToOpenChildTab(this))' +
-				'  TreeStyleTabService.stopToOpenChildTab(this);' +
+				'if (TreeStyleTabService.checkToOpenChildTab(this))\n' +
+				'  TreeStyleTabService.stopToOpenChildTab(this);\n' +
 				'$&'
 			).replace(
 				'this.selectedTab = firstTabAdded;',
-				'this.selectedTab = aURIs[0].indexOf("about:treestyletab-group") < 0 ? ' +
-				'  firstTabAdded :' +
+				'this.selectedTab = aURIs[0].indexOf("about:treestyletab-group") < 0 ? \n' +
+				'  firstTabAdded :\n' +
 				'  TreeStyleTabService.getNextTab(firstTabAdded) ;'
 			)
 		);
@@ -497,9 +497,9 @@ var TreeStyleTabWindowHelper = {
 			eval('b.mTabContainer.advanceSelectedTab = '+
 				source.replace(
 					'{',
-					'{' +
-					'  var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;' +
-					'  if (treeStyleTab.handleAdvanceSelectedTab(arguments[0], arguments[1]))' +
+					'{\n' +
+					'  var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;\n' +
+					'  if (treeStyleTab.handleAdvanceSelectedTab(arguments[0], arguments[1]))\n' +
 					'    return;'
 				)
 			);
@@ -510,10 +510,10 @@ var TreeStyleTabWindowHelper = {
 			eval('b.mTabContainer._notifyBackgroundTab = '+
 				source.replace(
 					'{',
-					'{' +
-					'  var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;' +
-					'  if (treeStyleTab.scrollToNewTabMode == 0 ||' +
-					'      treeStyleTab.shouldCancelEnsureElementIsVisible())' +
+					'{\n' +
+					'  var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;\n' +
+					'  if (treeStyleTab.scrollToNewTabMode == 0 ||\n' +
+					'      treeStyleTab.shouldCancelEnsureElementIsVisible())\n' +
 					'    return;'
 				).replace(
 					/\.screenX/g, '[treeStyleTab.screenPositionProp]'
@@ -556,14 +556,14 @@ var TreeStyleTabWindowHelper = {
 				eval('scrollbox.ensureElementIsVisible = '+
 					source.replace(
 						'{',
-						'{' +
-						'  var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;' +
-						'  if (treeStyleTab && treeStyleTab.shouldCancelEnsureElementIsVisible())' +
-						'    return;' +
-						'  if (' +
-						'      treeStyleTab &&' +
-						'      (arguments.length == 1 || arguments[1])' +
-						'    )' +
+						'{\n' +
+						'  var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;\n' +
+						'  if (treeStyleTab && treeStyleTab.shouldCancelEnsureElementIsVisible())\n' +
+						'    return;\n' +
+						'  if (\n' +
+						'      treeStyleTab &&\n' +
+						'      (arguments.length == 1 || arguments[1])\n' +
+						'    )\n' +
 						'    return treeStyleTab.scrollToTab(arguments[0]);'
 					)
 				);

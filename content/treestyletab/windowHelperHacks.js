@@ -45,36 +45,36 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 			eval('permaTabs.showPermaTab = '+
 				permaTabs.showPermaTab.toSource().replace(
 					/(\}\)?)$/,
-					'(function(tab, id) {' +
-					'  if (this.ssWillRestore) return;' +
-					'  var TST = TreeStyleTabService;' +
-					'  if (this.TSTRestoredPermaTabsInfo === void(0)) {' +
-					'    try {' +
-					'      eval("this.TSTRestoredPermaTabsInfo = "+(TST.getTreePref("permaTabsInfo") || "null"));' +
-					'    }' +
-					'    catch(e) {' +
-					'    }' +
-					'  }' +
-					'  if (!this.TSTRestoredPermaTabsInfo) return;' +
+					'(function(tab, id) {\n' +
+					'  if (this.ssWillRestore) return;\n' +
+					'  var TST = TreeStyleTabService;\n' +
+					'  if (this.TSTRestoredPermaTabsInfo === void(0)) {\n' +
+					'    try {\n' +
+					'      eval("this.TSTRestoredPermaTabsInfo = "+(TST.getTreePref("permaTabsInfo") || "null"));\n' +
+					'    }\n' +
+					'    catch(e) {\n' +
+					'    }\n' +
+					'  }\n' +
+					'  if (!this.TSTRestoredPermaTabsInfo) return;\n' +
 
-					'  var info = this.TSTRestoredPermaTabsInfo[id];' +
-					'  if (!info) return;' +
+					'  var info = this.TSTRestoredPermaTabsInfo[id];\n' +
+					'  if (!info) return;\n' +
 
-					'  for (var i in info)' +
-					'  {' +
-					'    TST.SessionStore.setTabValue(tab, i, info[i]);' +
-					'  }' +
-					'  var count = 0;' +
-					'  window.setTimeout(function() {' +
-					'    var b = TST.getTabBrowserFromChild(tab);' +
-					'    if (!b.treeStyleTab) {' +
-					'      if (++count < 50)' +
-					'        window.setTimeout(arguments.callee, 100);' +
-					'      return;' +
-					'    }' +
-					'    b.treeStyleTab.handleRestoredTab(tab);' +
-					'  }, 0);' +
-					'}).call(this, tab, id)' +
+					'  for (var i in info)\n' +
+					'  {\n' +
+					'    TST.SessionStore.setTabValue(tab, i, info[i]);\n' +
+					'  }\n' +
+					'  var count = 0;\n' +
+					'  window.setTimeout(function() {\n' +
+					'    var b = TST.getTabBrowserFromChild(tab);\n' +
+					'    if (!b.treeStyleTab) {\n' +
+					'      if (++count < 50)\n' +
+					'        window.setTimeout(arguments.callee, 100);\n' +
+					'      return;\n' +
+					'    }\n' +
+					'    b.treeStyleTab.handleRestoredTab(tab);\n' +
+					'  }, 0);\n' +
+					'}).call(this, tab, id)\n' +
 					'$1'
 				)
 			);
@@ -83,25 +83,25 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 			eval('permaTabs.savePermaTabs = '+
 				permaTabs.savePermaTabs.toSource().replace(
 					'{',
-					'{' +
-					'(function() {' +
-					'  var tabsInfo = {};' +
-					'  var TST = TreeStyleTabService;' +
-					'  var allTabs = getBrowser().mTabContainer.childNodes;' +
-					'  for (let i = 0, maxi = allTabs.length; i < maxi; i++)' +
-					'  {' +
-					'    let tab = allTabs[i];' +
-					'    let index = this.getPermaTabLocalIndex(tab);' +
-					'    if (index < 0) continue;' +
-					'    let info = {};' +
-					'    for (let i = 0, maxi = TST.extraProperties.length; i < maxi; i++)' +
-					'    {' +
-					'      let property = TST.extraProperties[i];' +
-					'      info[property] = TST.getTabValue(tab, property);' +
-					'    }' +
-					'    tabsInfo[this.permaTabs[index].id] = info;' +
-					'  }' +
-					'  TST.setTreePref("permaTabsInfo", tabsInfo.toSource());' +
+					'{\n' +
+					'(function() {\n' +
+					'  var tabsInfo = {};\n' +
+					'  var TST = TreeStyleTabService;\n' +
+					'  var allTabs = getBrowser().mTabContainer.childNodes;\n' +
+					'  for (let i = 0, maxi = allTabs.length; i < maxi; i++)\n' +
+					'  {\n' +
+					'    let tab = allTabs[i];\n' +
+					'    let index = this.getPermaTabLocalIndex(tab);\n' +
+					'    if (index < 0) continue;\n' +
+					'    let info = {};\n' +
+					'    for (let i = 0, maxi = TST.extraProperties.length; i < maxi; i++)\n' +
+					'    {\n' +
+					'      let property = TST.extraProperties[i];\n' +
+					'      info[property] = TST.getTabValue(tab, property);\n' +
+					'    }\n' +
+					'    tabsInfo[this.permaTabs[index].id] = info;\n' +
+					'  }\n' +
+					'  TST.setTreePref("permaTabsInfo", tabsInfo.toSource());\n' +
 					'}).call(this);'
 				)
 			);
@@ -127,52 +127,52 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 			eval('sessionData.getTabProperties = '+
 				sessionData.getTabProperties.toSource().replace(
 					'return tabProperties;',
-					'  for (let i = 0, maxi = this.tabTSTProperties.length; i < maxi; i++)' +
-					'  {' +
-					'    let property = this.tabTSTProperties[i];' +
-					'    tabProperties += "|" + property + "=" + encodeURIComponent(aTab.getAttribute(property));' +
-					'  }' +
+					'  for (let i = 0, maxi = this.tabTSTProperties.length; i < maxi; i++)\n' +
+					'  {\n' +
+					'    let property = this.tabTSTProperties[i];\n' +
+					'    tabProperties += "|" + property + "=" + encodeURIComponent(aTab.getAttribute(property));\n' +
+					'  }\n' +
 					'$&'
 				)
 			);
 			eval('sessionData.setTabProperties = '+
 				sessionData.setTabProperties.toSource().replace(
 					'{',
-					'$&' +
-					'  var TSTProps = tabProperties.split("|");' +
-					'  tabProperties = TSTProps.shift();' +
-					'  for (let i = 0, maxi = TSTProps.length; i < maxi; i++)' +
-					'  {' +
-					'    let property = TSTProps[i];' +
-					'    let index = property.indexOf("=");' +
-					'    let name = property.substring(0, index);' +
-					'    let value = decodeURIComponent(property.substring(index+1));' +
-					'    if (name && value)' +
-					'      aTab.setAttribute(name, value);' +
+					'$&\n' +
+					'  var TSTProps = tabProperties.split("|");\n' +
+					'  tabProperties = TSTProps.shift();\n' +
+					'  for (let i = 0, maxi = TSTProps.length; i < maxi; i++)\n' +
+					'  {\n' +
+					'    let property = TSTProps[i];\n' +
+					'    let index = property.indexOf("=");\n' +
+					'    let name = property.substring(0, index);\n' +
+					'    let value = decodeURIComponent(property.substring(index+1));\n' +
+					'    if (name && value)\n' +
+					'      aTab.setAttribute(name, value);\n' +
 					'  }'
 				)
 			);
 			eval('sessionManager.loadOneTab = '+
 				sessionManager.loadOneTab.toSource().replace(
 					/(\}\))?$/,
-					'  if (gBrowser.treeStyleTab.useTMPSessionAPI)' +
-					'    gBrowser.treeStyleTab.handleRestoredTab(aTab);' +
+					'  if (gBrowser.treeStyleTab.useTMPSessionAPI)\n' +
+					'    gBrowser.treeStyleTab.handleRestoredTab(aTab);\n' +
 					'$1'
 				)
 			);
 			let source = tablib.init.toSource().split('gBrowser.restoreTab = ');
 			source[1] = source[1].replace(
 				'return newTab;',
-				'  if (this.treeStyleTab.useTMPSessionAPI)' +
-				'    this.treeStyleTab.handleRestoredTab(newTab);' +
+				'  if (this.treeStyleTab.useTMPSessionAPI)\n' +
+				'    this.treeStyleTab.handleRestoredTab(newTab);\n' +
 				'$&'
 			);
 			eval('tablib.init = '+source.join('gBrowser.restoreTab = '));
 			eval('sessionManager.loadOneWindow = '+
 				sessionManager.loadOneWindow.toSource().replace(
 					'gBrowser.tabsToLoad = ',
-					'  gBrowser.treeStyleTab.resetAllTabs(true, true);' +
-					'  TreeStyleTabService.restoringTree = true;' +
+					'  gBrowser.treeStyleTab.resetAllTabs(true, true);\n' +
+					'  TreeStyleTabService.restoringTree = true;\n' +
 					'$&'
 				).replace(
 					/(\}\))?$/,
@@ -198,15 +198,15 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 		if ('load' in gSessionManager) {
 			eval('gSessionManager.load = '+gSessionManager.load.toSource().replace(
 				'var tabcount = ',
-				'  gBrowser.treeStyleTab.collapseExpandAllSubtree(false, true);' +
-				'  let (tabs = gBrowser.treeStyleTab.getTabs(gBrowser).slice(1).reverse()) {' +
-				'    for (let i = 0, maxi = tabs.length; i < maxi; i++)' +
-				'    {' +
-				'      let tab = tabs[i];' +
-				'      gBrowser.removeTab(tab);' +
-				'    }' +
-				'  }' +
-				'  TreeStyleTabService.restoringTree = true;' +
+				'  gBrowser.treeStyleTab.collapseExpandAllSubtree(false, true);\n' +
+				'  let (tabs = gBrowser.treeStyleTab.getTabs(gBrowser).slice(1).reverse()) {\n' +
+				'    for (let i = 0, maxi = tabs.length; i < maxi; i++)\n' +
+				'    {\n' +
+				'      let tab = tabs[i];\n' +
+				'      gBrowser.removeTab(tab);\n' +
+				'    }\n' +
+				'  }\n' +
+				'  TreeStyleTabService.restoringTree = true;\n' +
 				'$&'
 			));
 		}
@@ -281,20 +281,20 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 		sv.getTreePref('compatibility.OptimozTweaks')) {
 		eval('window.mtSidebarStartup = '+window.mtSidebarStartup.toSource().replace(
 			'{',
-			'{' +
-			'  document.getElementById("TabsToolbar")' +
+			'{\n' +
+			'  document.getElementById("TabsToolbar")\n' +
 			'    .addEventListener("mousemove", mtMouseMoveListener, false);'
 		));
 		eval('window.mtSidebarShutdown = '+window.mtSidebarShutdown.toSource().replace(
 			'{',
-			'{' +
-			'  document.getElementById("TabsToolbar")' +
+			'{\n' +
+			'  document.getElementById("TabsToolbar")\n' +
 			'    .removeEventListener("mousemove", mtMouseMoveListener, false);'
 		));
 		eval('window.mtPreventHiding = '+window.mtPreventHiding.toSource().replace(
 			'{',
-			'{' +
-			'  if (TreeStyleTabService.getTabbarFromEvent(arguments[0]))' +
+			'{\n' +
+			'  if (TreeStyleTabService.getTabbarFromEvent(arguments[0]))\n' +
 			'    return;'
 		));
 	}
@@ -307,7 +307,7 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 		'do_alter' in HideCaption) {
 		eval('HideCaption.do_alter = '+HideCaption.do_alter.toSource().replace(
 			'if (!theSettings) {',
-			'  if (!theSettings ||' +
+			'  if (!theSettings ||\n' +
 			'    gBrowser.treeStyleTab.isVertical) {'
 		));
 	}
@@ -337,9 +337,9 @@ TreeStyleTabWindowHelper.overrideExtensionsBeforeBrowserInit = function TSTWH_ov
 					'boxObject[sizeProp]'
 				).replace(
 					'{',
-					'{' +
-					'  var posProp = gBrowser.treeStyleTab.isVertical ? "y" : "x" ;' +
-					'  var screenPosProp = gBrowser.treeStyleTab.isVertical ? "screenY" : "screenX" ;' +
+					'{\n' +
+					'  var posProp = gBrowser.treeStyleTab.isVertical ? "y" : "x" ;\n' +
+					'  var screenPosProp = gBrowser.treeStyleTab.isVertical ? "screenY" : "screenX" ;\n' +
 					'  var sizeProp = gBrowser.treeStyleTab.isVertical ? "height" : "width" ;'
 				)
 		}
@@ -383,11 +383,11 @@ TreeStyleTabWindowHelper.overrideExtensionsBeforeBrowserInit = function TSTWH_ov
 			eval('tabberwocky.openSelectedLinks = '+
 				tabberwocky.openSelectedLinks.toSource().replace(
 					'links.forEach(',
-					'  TreeStyleTabService.readyToOpenChildTab(aFrame, true)' +
+					'  TreeStyleTabService.readyToOpenChildTab(aFrame, true)\n' +
 					'$&'
 				).replace(
 					/(\}\)?)$/,
-					'  TreeStyleTabService.stopToOpenChildTab(aFrame)' +
+					'  TreeStyleTabService.stopToOpenChildTab(aFrame)\n' +
 					'$1'
 				)
 			);
@@ -406,8 +406,8 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		eval('selectionlinks.parseSelection = '+
 			selectionlinks.parseSelection.toSource().replace(
 				/((?:[^\s:;]+.selectedTab\s*=\s*)?([^\s:;]+).addTab\()/g,
-				'  if ($2.treeStyleTab)' +
-				'    $2.treeStyleTab.readyToOpenChildTab(focusedWindow);' +
+				'  if ($2.treeStyleTab)\n' +
+				'    $2.treeStyleTab.readyToOpenChildTab(focusedWindow);\n' +
 				'$1'
 			)
 		);
@@ -430,7 +430,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		eval('DNDObserver.onDragStart = '+
 			DNDObserver.onDragStart.toSource().replace(
 				'event.target.localName != "tab"',
-				'  gBrowser.treeStyleTab.tabbarDNDObserver.canDragTabbar(event) ||' +
+				'  gBrowser.treeStyleTab.tabbarDNDObserver.canDragTabbar(event) ||\n' +
 				'  $&'
 			)
 		);
@@ -491,9 +491,9 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		eval('superDrag.onDrop = '+
 			superDrag.onDrop.toSource().replace(
 				/(var newTab = getBrowser\(\).addTab\([^\)]+\);)/g,
-				'  if (aDragSession.sourceNode &&' +
-				'    aDragSession.sourceNode.ownerDocument.defaultView.top == getBrowser().contentWindow)' +
-				'    TreeStyleTabService.readyToOpenChildTab(getBrowser());' +
+				'  if (aDragSession.sourceNode &&\n' +
+				'    aDragSession.sourceNode.ownerDocument.defaultView.top == getBrowser().contentWindow)\n' +
+				'    TreeStyleTabService.readyToOpenChildTab(getBrowser());\n' +
 				'  $1'
 			)
 		);
@@ -506,15 +506,15 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		eval('ddg_ges.Open = '+
 			ddg_ges.Open.toSource().replace(
 				'if (mode[1] == "h" || mode[1] == "f") {',
-				'$&' +
-				'  if ("sourceNode" in aData) // only for dragging from the content tarea.' +
+				'$&\n' +
+				'  if ("sourceNode" in aData) // only for dragging from the content tarea.\n' +
 				'    TreeStyleTabService.readyToOpenChildTab(getBrowser());'
 			)
 		);
 		eval('ddg_ges.Search = '+
 			ddg_ges.Search.toSource().replace(
 				'if (mode[1] == "h" || mode[1] == "f") {',
-				'$&' +
+				'$&\n' +
 				'    TreeStyleTabService.readyToOpenChildTab(getBrowser());'
 			)
 		);
@@ -607,38 +607,38 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		eval('FireGestures.onExtraGesture = '+
 			FireGestures.onExtraGesture.toSource().replace(
 				'case "keypress-stop":',
-				'$&' +
+				'$&\n' +
 				'  TreeStyleTabService.readyToOpenChildTab(gBrowser, true);'
 			).replace(
 				'break;case "gesture-timeout":',
-				'  TreeStyleTabService.stopToOpenChildTab(gBrowser);' +
+				'  TreeStyleTabService.stopToOpenChildTab(gBrowser);\n' +
 				'$&'
 			)
 		);
 		eval('FireGestures._performAction = '+
 			FireGestures._performAction.toSource().replace(
 				'gBrowser.loadOneTab(',
-				'  TreeStyleTabService.readyToOpenChildTab(gBrowser);' +
+				'  TreeStyleTabService.readyToOpenChildTab(gBrowser);\n' +
 				'$&'
 			)
 		);
 		eval('FireGestures.openURLsInSelection = '+
 			FireGestures.openURLsInSelection.toSource().replace(
 				'var tab =',
-				'  if (!TreeStyleTabService.checkToOpenChildTab(gBrowser))' +
-				'    TreeStyleTabService.readyToOpenChildTab(gBrowser, true);' +
+				'  if (!TreeStyleTabService.checkToOpenChildTab(gBrowser))\n' +
+				'    TreeStyleTabService.readyToOpenChildTab(gBrowser, true);\n' +
 				'$&'
 			).replace(
 				'if (!flag)',
-				'  if (TreeStyleTabService.checkToOpenChildTab(gBrowser))' +
-				'    TreeStyleTabService.stopToOpenChildTab(gBrowser);' +
+				'  if (TreeStyleTabService.checkToOpenChildTab(gBrowser))\n' +
+				'    TreeStyleTabService.stopToOpenChildTab(gBrowser);\n' +
 				'$&'
 			)
 		);
 		eval('FireGestures.handleEvent = '+
 			FireGestures.handleEvent.toSource().replace(
 				'gBrowser.loadOneTab(',
-				'  TreeStyleTabService.readyToOpenChildTab(gBrowser);' +
+				'  TreeStyleTabService.readyToOpenChildTab(gBrowser);\n' +
 				'$&'
 			)
 		);
@@ -891,27 +891,27 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		if ('MoveContent' in autoHIDE) {
 			eval('autoHIDE.MoveContent = '+autoHIDE.MoveContent.toSource().replace(
 				/(;)([^;]*\.setPosition\(0, -\s*ah\.delta\);)/,
-				'$1' +
-				'  if (autoHIDE.winUtil)' +
-				'    autoHIDE.winUtil.setRedraw(false, false);' +
-				'  $2' +
-				'  gBrowser.treeStyleTab.autoHide.extraYOffset = ah.delta;' +
-				'  window.setTimeout(function() {' +
-				'    gBrowser.treeStyleTab.autoHide.redrawContentArea();' +
-				'    if (autoHIDE.winUtil)' +
-				'      autoHIDE.winUtil.setRedraw(true, false);' +
+				'$1\n' +
+				'  if (autoHIDE.winUtil)\n' +
+				'    autoHIDE.winUtil.setRedraw(false, false);\n' +
+				'  $2\n' +
+				'  gBrowser.treeStyleTab.autoHide.extraYOffset = ah.delta;\n' +
+				'  window.setTimeout(function() {\n' +
+				'    gBrowser.treeStyleTab.autoHide.redrawContentArea();\n' +
+				'    if (autoHIDE.winUtil)\n' +
+				'      autoHIDE.winUtil.setRedraw(true, false);\n' +
 				'  }, 0);'
 			).replace(
 				/(;)([^;]*\.setPosition\(0, 0\);)/,
-				'$1' +
-				'  if (autoHIDE.winUtil)' +
-				'    autoHIDE.winUtil.setRedraw(false, false);' +
-				'  $2' +
-				'  gBrowser.treeStyleTab.autoHide.extraYOffset = 0;' +
-				'  window.setTimeout(function() {' +
-				'    gBrowser.treeStyleTab.autoHide.redrawContentArea();' +
-				'    if (autoHIDE.winUtil)' +
-				'      autoHIDE.winUtil.setRedraw(true, false);' +
+				'$1\n' +
+				'  if (autoHIDE.winUtil)\n' +
+				'    autoHIDE.winUtil.setRedraw(false, false);\n' +
+				'  $2\n' +
+				'  gBrowser.treeStyleTab.autoHide.extraYOffset = 0;\n' +
+				'  window.setTimeout(function() {\n' +
+				'    gBrowser.treeStyleTab.autoHide.redrawContentArea();\n' +
+				'    if (autoHIDE.winUtil)\n' +
+				'      autoHIDE.winUtil.setRedraw(true, false);\n' +
 				'  }, 0);'
 			));
 		}
@@ -929,18 +929,18 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		if (func.indexOf('treeStyleTab') < 0) {
 			eval('sidewikiWindowHandler.barsContainer_.geometry_.__proto__.getWindowSizeForDrawers = '+func.replace(
 				'return {',
-				'  if ("treeStyleTab" in this.topLevelDocument_.getElementById("content")) {' +
-				'    let b = this.topLevelDocument_.getElementById("content");' +
-				'    let box = b.mPanelContainer.boxObject;' +
-				'    return {' +
-				'      height       : box.height,' +
-				'      width        : box.width,' +
-				'      top          : box.y,' +
-				'      left         : box.x,' +
-				'      right        : this.topLevelWindow_.innerWidth - box.x - box.width,' +
-				'      tabBoxHeight : 0' +
-				'    };' +
-				'  }' +
+				'  if ("treeStyleTab" in this.topLevelDocument_.getElementById("content")) {\n' +
+				'    let b = this.topLevelDocument_.getElementById("content");\n' +
+				'    let box = b.mPanelContainer.boxObject;\n' +
+				'    return {\n' +
+				'      height       : box.height,\n' +
+				'      width        : box.width,\n' +
+				'      top          : box.y,\n' +
+				'      left         : box.x,\n' +
+				'      right        : this.topLevelWindow_.innerWidth - box.x - box.width,\n' +
+				'      tabBoxHeight : 0\n' +
+				'    };\n' +
+				'  }\n' +
 				'$&'
 			));
 		}
@@ -963,9 +963,9 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 					'[maxSizeProp]'
 				).replace(
 					'{',
-					'{' +
-					'  var scrollProp = gBrowser.treeStyleTab.isVertical ? "scrollHeight" : "scrollWidth" ;' +
-					'  var sizeProp = gBrowser.treeStyleTab.isVertical ? "height" : "width" ;' +
+					'{\n' +
+					'  var scrollProp = gBrowser.treeStyleTab.isVertical ? "scrollHeight" : "scrollWidth" ;\n' +
+					'  var sizeProp = gBrowser.treeStyleTab.isVertical ? "height" : "width" ;\n' +
 					'  var maxSizeProp = gBrowser.treeStyleTab.isVertical ? "maxHeight" : "maxWidth" ;'
 				)
 		}
@@ -1181,18 +1181,18 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 		eval('gBrowser.TMP_openTabNext = '+
 			gBrowser.TMP_openTabNext.toSource().replace(
 				'this.mCurrentTab._tPos + this.tabContainer.nextTab',
-				'  (function() {' +
-				'    var tabs = this.treeStyleTab.getDescendantTabs(this.mCurrentTab);' +
-				'    if (tabs.length) {' +
-				'      var index = this.treeStyleTab.getPref("extensions.tabmix.openTabNextInverse") ?' +
-				'            tabs[tabs.length - 1]._tPos :' +
-				'            this.mCurrentTab._tPos ;' +
-				'      if (index < aTab._tPos) index++;' +
-				'      return index;' +
-				'    }' +
-				'    else {' +
-				'      return ($&);' +
-				'    }' +
+				'  (function() {\n' +
+				'    var tabs = this.treeStyleTab.getDescendantTabs(this.mCurrentTab);\n' +
+				'    if (tabs.length) {\n' +
+				'      var index = this.treeStyleTab.getPref("extensions.tabmix.openTabNextInverse") ?\n' +
+				'            tabs[tabs.length - 1]._tPos :\n' +
+				'            this.mCurrentTab._tPos ;\n' +
+				'      if (index < aTab._tPos) index++;\n' +
+				'      return index;\n' +
+				'    }\n' +
+				'    else {\n' +
+				'      return ($&);\n' +
+				'    }\n' +
 				'  }).call(this)'
 			)
 		);
@@ -1209,13 +1209,13 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 		eval('MultiLinks_Wrapper.LinksManager.OpenInNewTabs = '+
 			MultiLinks_Wrapper.LinksManager.OpenInNewTabs.toSource().replace(
 				'{',
-				'{' +
-				'  if (!TreeStyleTabService.checkToOpenChildTab(getBrowser()))' +
+				'{\n' +
+				'  if (!TreeStyleTabService.checkToOpenChildTab(getBrowser()))\n' +
 				'    TreeStyleTabService.readyToOpenChildTab(getBrowser(), true);'
 			).replace(
 				/(\}\)?)$/,
-				'  if (TreeStyleTabService.checkToOpenChildTab(getBrowser()))' +
-				'    TreeStyleTabService.stopToOpenChildTab(getBrowser());' +
+				'  if (TreeStyleTabService.checkToOpenChildTab(getBrowser()))\n' +
+				'    TreeStyleTabService.stopToOpenChildTab(getBrowser());\n' +
 				'$1'
 			)
 		);

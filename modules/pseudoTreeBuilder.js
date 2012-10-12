@@ -66,20 +66,20 @@ var PseudoTreeBuilder = {
 		row.className += " "+this.kROOTITEM;
 
 		tree.setAttribute('onclick', 
-			('var doc = event.target.ownerDocument;' +
-			'var label = doc.evaluate(' +
-			'    "ancestor-or-self::*[local-name()=\'label\' and contains(@class, \'text-link\')][1]",' +
-			'    event.target,' +
-			'    null,' +
-			'    Components.interfaces.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE,' +
-			'    null' +
-			'  ).singleNodeValue;' +
-			'if (label) {' +
-			'  var customEvent = doc.createEvent("DataContainerEvent");' +
-			'  customEvent.initEvent(%EVENT_TYPE%, true, true);' +
-			'  customEvent.setData("id", label.getAttribute("tab-id"));' +
-			'  customEvent.setData("sourceEvent", event);' +
-			'  event.target.dispatchEvent(customEvent);' +
+			('var doc = event.target.ownerDocument;\n' +
+			'var label = doc.evaluate(\n' +
+			'    "ancestor-or-self::*[local-name()=\'label\' and contains(@class, \'text-link\')][1]",\n' +
+			'    event.target,\n' +
+			'    null,\n' +
+			'    Components.interfaces.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE,\n' +
+			'    null\n' +
+			'  ).singleNodeValue;\n' +
+			'if (label) {\n' +
+			'  var customEvent = doc.createEvent("DataContainerEvent");\n' +
+			'  customEvent.initEvent(%EVENT_TYPE%, true, true);\n' +
+			'  customEvent.setData("id", label.getAttribute("tab-id"));\n' +
+			'  customEvent.setData("sourceEvent", event);\n' +
+			'  event.target.dispatchEvent(customEvent);\n' +
 			'}').replace('%EVENT_TYPE%', this.kTAB_LINK_CLICK.quote()));
 
 		return tree;
