@@ -98,7 +98,7 @@
 		initTabDNDObserver : function TDU_initTabDNDObserver(aObserver)
 		{
 			if ('_setEffectAllowedForDataTransfer' in aObserver &&
-				aObserver._setEffectAllowedForDataTransfer.toSource().indexOf('tabDragUtils') < 0) {
+				aObserver._setEffectAllowedForDataTransfer.toSource().indexOf('tabsDragUtils') < 0) {
 				eval('aObserver._setEffectAllowedForDataTransfer = '+
 					aObserver._setEffectAllowedForDataTransfer.toSource().replace(
 						'dt.mozItemCount > 1',
@@ -108,7 +108,7 @@
 			}
 
 			if ('_animateTabMove' in aObserver &&
-				aObserver._animateTabMove.toSource().indexOf('tabDragUtils') < 0) {
+				aObserver._animateTabMove.toSource().indexOf('tabsDragUtils') < 0) {
 				eval('aObserver._animateTabMove = '+
 					aObserver._animateTabMove.toSource().replace( // support vertical tab bar
 						/\.screenX/g,

@@ -101,7 +101,7 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 					'    }' +
 					'    tabsInfo[this.permaTabs[index].id] = info;' +
 					'  }' +
-					'  TST.setTreePref('permaTabsInfo', tabsInfo.toSource());' +
+					'  TST.setTreePref("permaTabsInfo", tabsInfo.toSource());' +
 					'}).call(this);'
 				)
 			);
