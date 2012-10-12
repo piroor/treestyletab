@@ -1132,8 +1132,9 @@ catch(e) {
 		if (!normalizedURI)
 			return;
 		let sourceDoc = session.sourceDocument;
-		let principal = sourceDoc ? sourceDoc.nodePrincipal
-			: SecMan.getSimpleCodebasePrincipal(this.treeStyleTab.IOService.newURI("file:///", null, null));
+		let principal = sourceDoc ?
+				sourceDoc.nodePrincipal :
+				SecMan.getSimpleCodebasePrincipal(Services.io.newURI('file:///', null, null)) ;
 		try {
 			SecMan.checkLoadURIStrWithPrincipal(principal, normalizedURI.spec, Ci.nsIScriptSecurityManager.STANDARD);
 		}
