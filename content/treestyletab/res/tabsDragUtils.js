@@ -147,9 +147,10 @@
 						'  $&\n' +
 						'}, this);'
 					).replace(
-						'let tabWidth = ',
+						/(let tabWidth = [^;]+;)/,
 						'tabs = tabs.filter(function(tab) { return draggedTabs.indexOf(tab) < 0 });\n' +
-						'$&'
+						'$1\n' +
+						'let tabCenterOffset = aCanDropOnSelf ? (tabWidth / 2) : 0 ;'
 					).replace(
 						'let tabCenter = ',
 						'draggedTabs.slice(1).forEach(function(tab) {\n' +
@@ -157,19 +158,19 @@
 						'}, this);\n' +
 						'$&'
 					).replace(
-						/(let tabCenter = [^;]+)\/ 2;/,
-						'$1 / units/*2*/;\n' + // support drop on self
+						/(let tabCenter = )([^;]+)\/ 2;/,
+						'$1Math.round($2 / units/*2*/);\n' + // support drop on self
 						'let tabLeftCenter = tabCenter;\n' +
-						'let tabRightCenter = tabScreenX + translateX + tabsWidth - tabWidth / units;'
+						'let tabRightCenter = Math.round(tabScreenX + translateX + tabsWidth - tabWidth / units);'
 					).replace(
 						'tabs[mid] == draggedTab',
 						'/* $& */ false'
 					).replace(
 						'(screenX > tabCenter)',
-						'/* $& */ (screenX > tabRightCenter)'
+						'/* $& */ (screenX + tabCenterOffset > tabRightCenter)'
 					).replace(
 						'(screenX + boxObject[size] < tabCenter)',
-						'/* $& */ (screenX + boxObject[size] < tabLeftCenter)'
+						'/* $& */ (screenX + boxObject[size] - tabCenterOffset < tabLeftCenter)'
 					).replace(
 						'-tabWidth : tabWidth',
 						'/* $& */ -tabsWidth : tabsWidth'
@@ -178,7 +179,7 @@
 						'/* $& */ tabsWidth : -tabsWidth'
 					).replace( // add a new argument
 						')',
-						', aAcceptDropOnSelf)'
+						', aCanDropOnSelf)'
 					).replace( // insert initialization processes
 						'{',
 						'{\n' +
@@ -187,8 +188,8 @@
 						'  var size = isVertical ? "height" : "width" ;\n' +
 						'  var scroll = isVertical ? "scrollY" : "scrollX" ;\n' +
 						'  var translator = isVertical ? "translateY" : "translateX" ;\n' +
-						'  aAcceptDropOnSelf = aAcceptDropOnSelf || ("TreeStyleTabService" in window);\n' +
-						'  var units = aAcceptDropOnSelf ? 3 : 2 ;'
+						'  aCanDropOnSelf = aCanDropOnSelf || ("TreeStyleTabService" in window);\n' +
+						'  var units = aCanDropOnSelf ? 3 : 2 ;'
 					)
 				);
 
@@ -199,13 +200,13 @@
  *  date        : 2012-10-09
  *  source      : http://mxr.mozilla.org/mozilla-central/source/browser/base/content/tabbrowser.xml
  */
-// function _animateTabMove(event, aAcceptDropOnSelf) {
+// function _animateTabMove(event, aCanDropOnSelf) {
 // var isVertical = window['piro.sakura.ne.jp'].tabsDragUtils.isVertical(this);
 // var position = isVertical ? 'screenY' : 'screenX' ;
 // var size = isVertical ? 'height' : 'width' ;
 // var translator = isVertical ? "translateY" : "translateX" ;
-// aAcceptDropOnSelf = aAcceptDropOnSelf || ("TreeStyleTabService" in window);
-// var units = aAcceptDropOnSelf ? 3 : 2 ;
+// aCanDropOnSelf = aCanDropOnSelf || ("TreeStyleTabService" in window);
+// var units = aCanDropOnSelf ? 3 : 2 ;
 // 
 //           let draggedTab = event.dataTransfer.mozGetDataAt(TAB_DROP_TYPE, 0);
 // var draggedTabs = window['piro.sakura.ne.jp'].tabsDragUtils.getDraggedTabs(event);
@@ -243,6 +244,7 @@
 //             tabs.reverse();
 // tabs = tabs.filter(function(tab) { return draggedTabs.indexOf(tab) < 0 });
 //           let tabWidth = draggedTab.getBoundingClientRect()[size]/*.width*/;
+// let tabCenterOffset = aCanDropOnSelf ? (tabWidth / 2) : 0 ;
 // 
 //           // Move the dragged tab based on the mouse position.
 // 
@@ -270,9 +272,9 @@
 // draggedTabs.slice(1).forEach(function(tab) {
 //   tab.style.transform = draggedTab.style.transform;
 // }, this);
-//           let tabCenter = tabScreenX + translateX + tabWidth / units/*2*/;
+//           let tabCenter = Math.round(tabScreenX + translateX + tabWidth / units/*2*/);
 // let tabLeftCenter = tabCenter;
-// let tabRightCenter = tabScreenX + translateX + tabsWidth - tabWidth / units;
+// let tabRightCenter = Math.round(tabScreenX + translateX + tabsWidth - tabWidth / units);
 //           let newIndex = -1;
 //           let oldIndex = "animDropIndex" in draggedTab._dragData ?
 //                          draggedTab._dragData.animDropIndex : draggedTab._tPos;
@@ -287,10 +289,10 @@
 //             let boxObject = tabs[mid].boxObject;
 //             let screenX = boxObject[position]/*.screenX*/ + getTabShift(tabs[mid], oldIndex);
 // //            if (screenX > tabCenter) {
-//             if (screenX > tabRightCenter) {
+//             if (screenX + tabCenterOffset > tabRightCenter) {
 //               high = mid - 1;
 // //            } else if (screenX + boxObject.width < tabCenter) {
-//             } else if (screenX + boxObject[size]/*.width*/ < tabLeftCenter) {
+//             } else if (screenX + boxObject[size]/*.width*/ - tabCenterOffset < tabLeftCenter) {
 //               low = mid + 1;
 //             } else {
 //               newIndex = tabs[mid]._tPos;
