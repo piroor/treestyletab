@@ -527,40 +527,38 @@ var TreeStyleTabBase = {
 			SSS.unregisterSheet(this.lastAgentSheet, SSS.AGENT_SHEET);
 
 		const style = 'data:text/css,'+encodeURIComponent(
-			<![CDATA[
-				@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+			('@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");' +
 
-				tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]
-				  .tabbrowser-arrowscrollbox
-				  > scrollbox
-				  > scrollbar[orient="vertical"],
-				tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]
-				  .tabbrowser-arrowscrollbox
-				  > scrollbox
-				  > scrollbar[orient="vertical"] * {
-					max-width: %SIZE%;
-					min-width: %SIZE%;
-				}
+			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
+			'  .tabbrowser-arrowscrollbox' +
+			'  > scrollbox' +
+			'  > scrollbar[orient="vertical"],' +
+			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
+			'  .tabbrowser-arrowscrollbox' +
+			'  > scrollbox' +
+			'  > scrollbar[orient="vertical"] * {' +
+			'  max-width: %SIZE%;' +
+			'  min-width: %SIZE%;' +
+			'}' +
 
-				tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]
-				  .tabbrowser-arrowscrollbox
-				  > scrollbox
-				  > scrollbar[orient="vertical"] {
-					font-size: %SIZE%;
-				}
+			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
+			'  .tabbrowser-arrowscrollbox' +
+			'  > scrollbox' +
+			'  > scrollbar[orient="vertical"] {' +
+			'  font-size: %SIZE%;' +
+			'}' +
 
-				tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]
-				  .tabbrowser-arrowscrollbox
-				  > scrollbox
-				  > scrollbar[orient="vertical"] * {
-					padding-left: 0;
-					padding-right: 0;
-					margin-left: 0;
-					margin-right: 0;
-				}
+			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
+			'  .tabbrowser-arrowscrollbox' +
+			'  > scrollbox' +
+			'  > scrollbar[orient="vertical"] * {' +
+			'  padding-left: 0;' +
+			'  padding-right: 0;' +
+			'  margin-left: 0;' +
+			'  margin-right: 0;' +
+			'}' +
 
-				%FORCE_NARROW_SCROLLBAR%
-			]]>.toString()
+			'%FORCE_NARROW_SCROLLBAR%')
 				.replace(/%FORCE_NARROW_SCROLLBAR%/g,
 					this.getTreePref('tabbar.narrowScrollbar.overrideSystemAppearance') ?
 						this.kOVERRIDE_SYSTEM_SCROLLBAR_APPEARANCE : '' )
@@ -571,17 +569,16 @@ var TreeStyleTabBase = {
 		this.lastAgentSheet = this.makeURIFromSpec(style);
 		SSS.loadAndRegisterSheet(this.lastAgentSheet, SSS.AGENT_SHEET);
 	},
-	kOVERRIDE_SYSTEM_SCROLLBAR_APPEARANCE : <![CDATA[
-		tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]
-		  .tabbrowser-arrowscrollbox
-		  > scrollbox
-		  > scrollbar[orient="vertical"] {
-			appearance: none;
-			-moz-appearance: none;
-			background: ThreeDFace;
-			border: 1px solid ThreeDShadow;
-		}
-	]]>.toString(),
+	kOVERRIDE_SYSTEM_SCROLLBAR_APPEARANCE :
+		'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
+		'  .tabbrowser-arrowscrollbox' +
+		'  > scrollbox' +
+		'  > scrollbar[orient="vertical"] {' +
+		'  appearance: none;' +
+		'  -moz-appearance: none;' +
+		'  background: ThreeDFace;' +
+		'  border: 1px solid ThreeDShadow;' +
+		'}',
 	lastAgentSheet : null,
   
 	observe : function TSTUtils_observe(aSubject, aTopic, aData) 

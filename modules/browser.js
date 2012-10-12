@@ -647,11 +647,9 @@ TreeStyleTabBrowser.prototype = {
 			let pi = d.createProcessingInstruction(
 					'xml-stylesheet',
 					'type="text/css" href="data:text/css,'+encodeURIComponent(
-					<![CDATA[
-						.tabbrowser-tabbox > tabpanels > notificationbox {
-							background-color: %COLOR%;
-						}
-					]]>.toString().replace(/%COLOR%/, color)
+					('.tabbrowser-tabbox > tabpanels > notificationbox {' +
+					'  background-color: %COLOR%;' +
+					'}').replace(/%COLOR%/, color)
 					)+'"'
 				);
 			d.insertBefore(pi, d.documentElement);

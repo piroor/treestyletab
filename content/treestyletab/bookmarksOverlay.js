@@ -249,23 +249,20 @@ var TreeStyleTabBookmarksService = {
 						'if (item.uri) { $& }'
 					).replace(
 						/(browserWindow\.(?:getBrowser\(\)|gBrowser)\.loadTabs\([^;]+\);)/,
-						<![CDATA[
-							var TSTResult = browserWindow.TreeStyleTabBookmarksService.handleTabsOpenProcess(where, aEvent, browserWindow, ids, urls, typeof replaceCurrentTab == 'undefined' ? undefined : replaceCurrentTab, aFolderTitle);
-							TSTTreeStructure = TSTResult.treeStructure;
-							TSTPreviousTabs = TSTResult.previousTabs;
-							TSTOpenGroupBookmarkBehavior = TSTResult.behavior;
-							if (typeof replaceCurrentTab != 'undefined')
-								replaceCurrentTab = TSTResult.replaceCurrentTab;
-							$1
-							]]>
+						'var TSTResult = browserWindow.TreeStyleTabBookmarksService.handleTabsOpenProcess(where, aEvent, browserWindow, ids, urls, typeof replaceCurrentTab == "undefined" ? undefined : replaceCurrentTab, aFolderTitle);' +
+						'TSTTreeStructure = TSTResult.treeStructure;' +
+						'TSTPreviousTabs = TSTResult.previousTabs;' +
+						'TSTOpenGroupBookmarkBehavior = TSTResult.behavior;' +
+						'if (typeof replaceCurrentTab != "undefined")' +
+						'  replaceCurrentTab = TSTResult.replaceCurrentTab;' +
+						'$1'
 					).replace(
 						/(\}\)?)$/,
-						<![CDATA[
-							if (TSTTreeStructure && TSTPreviousTabs) {
-								let tabs = browserWindow.TreeStyleTabService.getNewTabsFromPreviousTabsInfo(browserWindow.gBrowser, TSTPreviousTabs)
-								browserWindow.TreeStyleTabService.applyTreeStructureToTabs(tabs, TSTTreeStructure, TSTOpenGroupBookmarkBehavior & browserWindow.TreeStyleTabBookmarksService.kGROUP_BOOKMARK_EXPAND_ALL_TREE);
-							}
-						$1]]>
+						'  if (TSTTreeStructure && TSTPreviousTabs) {' +
+						'    let tabs = browserWindow.TreeStyleTabService.getNewTabsFromPreviousTabsInfo(browserWindow.gBrowser, TSTPreviousTabs)' +
+						'    browserWindow.TreeStyleTabService.applyTreeStructureToTabs(tabs, TSTTreeStructure, TSTOpenGroupBookmarkBehavior & browserWindow.TreeStyleTabBookmarksService.kGROUP_BOOKMARK_EXPAND_ALL_TREE);' +
+						'  }' +
+						'$1'
 					)
 				);
 				if (sv.getTreePref('compatibility.TabUtilities') && method.indexOf('TU_') > -1)
@@ -278,19 +275,17 @@ var TreeStyleTabBookmarksService = {
 				eval('PlacesUIUtils.'+method+' = '+
 					PlacesUIUtils[method].toSource().replace(
 						/(this\._openTabset\([^\)]+)(\))/,
-						<![CDATA[
-							let (w = '_getTopBrowserWin' in this ?
-										this._getTopBrowserWin() :
-									'_getCurrentActiveWin' in this ?
-										this._getCurrentActiveWin() :
-										window) {
-								let nodes = w.TreeStyleTabBookmarksService.getItemIdsForContainerNode(aNode);
-								for (let i in nodes) {
-									urlsToOpen[i].id = nodes[i];
-								}
-							}
-							$1, aNode.title$2
-						]]>
+						'let (w = "_getTopBrowserWin" in this ?' +
+						'      this._getTopBrowserWin() :' +
+						'    "_getCurrentActiveWin" in this ?' +
+						'      this._getCurrentActiveWin() :' +
+						'      window) {' +
+						'  let nodes = w.TreeStyleTabBookmarksService.getItemIdsForContainerNode(aNode);' +
+						'  for (let i in nodes) {' +
+						'    urlsToOpen[i].id = nodes[i];' +
+						'  }' +
+						'}' +
+						'$1, aNode.title$2'
 					)
 				);
 				if (sv.getTreePref('compatibility.TabUtilities') && method.indexOf('TU_') > -1)
@@ -303,31 +298,30 @@ var TreeStyleTabBookmarksService = {
 				eval('PlacesUIUtils.'+method+' = '+
 					PlacesUIUtils[method].toSource().replace(
 						'{',
-						<![CDATA[{
-							var TSTBS;
-							let (w = '_getTopBrowserWin' in this ?
-										this._getTopBrowserWin() :
-									'_getCurrentActiveWin' in this ?
-										this._getCurrentActiveWin() :
-										window) {
-								TSTBS = w.TreeStyleTabBookmarksService;
-								PlacesUtils = w.PlacesUtils;
-							}
-						]]>.toString()
+						'{' +
+						'  var TSTBS;' +
+						'  let (w = "_getTopBrowserWin" in this ?' +
+						'        this._getTopBrowserWin() :' +
+						'      "_getCurrentActiveWin" in this ?' +
+						'        this._getCurrentActiveWin() :' +
+						'        window) {' +
+						'    TSTBS = w.TreeStyleTabBookmarksService;' +
+						'    PlacesUtils = w.PlacesUtils;' +
+						'  }'
 					).replace(
 						'uri: aNodes[i].uri,',
 						'id: aNodes[i].itemId, $&'
 					).replace(
 						/(this\._openTabset\([^\)]+)(\))/,
-						<![CDATA[$1,
-							TSTBS.treeBundle
-								.getFormattedString(
-									PlacesUtils.nodeIsBookmark(aNodes[0]) ?
-										'openSelectedPlaces.bookmarks' :
-										'openSelectedPlaces.history',
-									[aNodes[0].title, aNodes.length]
-								)
-						$2]]>
+						'$1,' +
+						'  TSTBS.treeBundle' +
+						'    .getFormattedString(' +
+						'      PlacesUtils.nodeIsBookmark(aNodes[0]) ?' +
+						'        "openSelectedPlaces.bookmarks" :' +
+						'        "openSelectedPlaces.history",' +
+						'      [aNodes[0].title, aNodes.length]' +
+						'    )' +
+						'$2'
 					)
 				);
 				if (sv.getTreePref('compatibility.TabUtilities') && method.indexOf('TU_') > -1)
@@ -344,31 +338,29 @@ var TreeStyleTabBookmarksService = {
 			eval('PlacesCommandHook.bookmarkCurrentPages = '+
 				PlacesCommandHook.bookmarkCurrentPages.toSource().replace(
 					'{',
-					<![CDATA[$&
-						TreeStyleTabBookmarksService.beginAddBookmarksFromTabs((function() {
-							var tabs = [];
-							var seen = {};
-							var allTabs = getBrowser().mTabContainer.childNodes;
-							for (let i = 0, maxi = allTabs.length; i < maxi; i++)
-							{
-								let tab = allTabs[i];
-								let uri = tab.linkedBrowser.currentURI.spec;
-								if (uri in seen) continue;
-								seen[uri] = true;
-								tabs.push(tab);
-							}
-							return tabs;
-						})());
-						try {
-					]]>
+					'{' +
+					'  TreeStyleTabBookmarksService.beginAddBookmarksFromTabs((function() {' +
+					'    var tabs = [];' +
+					'    var seen = {};' +
+					'    var allTabs = getBrowser().mTabContainer.childNodes;' +
+					'    for (let i = 0, maxi = allTabs.length; i < maxi; i++)' +
+					'    {' +
+					'      let tab = allTabs[i];' +
+					'      let uri = tab.linkedBrowser.currentURI.spec;' +
+					'      if (uri in seen) continue;' +
+					'      seen[uri] = true;' +
+					'      tabs.push(tab);' +
+					'    }' +
+					'    return tabs;' +
+					'  })());' +
+					'  try {'
 				).replace(
 					/(\}\)?)$/,
-					<![CDATA[
-						}
-						catch(e) {
-						}
-						TreeStyleTabBookmarksService.endAddBookmarksFromTabs();
-					$1]]>
+					'  }' +
+					'  catch(e) {' +
+					'  }' +
+					'  TreeStyleTabBookmarksService.endAddBookmarksFromTabs();' +
+					'$1'
 				)
 			);
 		}

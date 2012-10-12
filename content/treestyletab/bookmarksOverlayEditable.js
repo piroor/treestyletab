@@ -94,21 +94,20 @@ var TreeStyleTabBookmarksServiceEditable = {
 		var range = document.createRange();
 		range.selectNodeContents(container);
 		range.collapse(false);
-		range.insertNode(range.createContextualFragment(<![CDATA[
-			<row align="center" id="treestyletab-parent-row">
-				<label id="treestyletab-parent-label"
-					control="treestyletab-parent-menulist"/>
-				<menulist id="treestyletab-parent-menulist"
-					flex="1"
-					oncommand="TreeStyleTabBookmarksServiceEditable.onParentChange();">
-					<menupopup id="treestyletab-parent-popup">
-						<menuseparator id="treestyletab-parent-blank-item-separator"/>
-						<menuitem id="treestyletab-parent-blank-item"
-							value=""/>
-					</menupopup>
-				</menulist>
-			</row>
-		]]>.toString().replace(/^\s*|\s*$/g, '').replace(/>\s+</g, '><')));
+		range.insertNode(range.createContextualFragment(
+			('<row align="center" id="treestyletab-parent-row">' +
+			'  <label id="treestyletab-parent-label"' +
+			'    control="treestyletab-parent-menulist"/>' +
+			'  <menulist id="treestyletab-parent-menulist"' +
+			'    flex="1"' +
+			'    oncommand="TreeStyleTabBookmarksServiceEditable.onParentChange();">' +
+			'    <menupopup id="treestyletab-parent-popup">' +
+			'      <menuseparator id="treestyletab-parent-blank-item-separator"/>' +
+			'      <menuitem id="treestyletab-parent-blank-item"' +
+			'        value=""/>' +
+			'    </menupopup>' +
+			'  </menulist>' +
+			'</row>').replace(/^\s*|\s*$/g, '').replace(/>\s+</g, '><')));
 		range.detach();
 		document.getElementById('treestyletab-parent-label').setAttribute('value', this.treeBundle.getString('bookmarkProperty.parent.label'));
 		this.blankItem.setAttribute('label', this.treeBundle.getString('bookmarkProperty.parent.blank.label'));
@@ -116,9 +115,8 @@ var TreeStyleTabBookmarksServiceEditable = {
 
 		eval('gEditItemOverlay._showHideRows = '+gEditItemOverlay._showHideRows.toSource().replace(
 			/(\}\)?)$/,
-			<![CDATA[
-				TreeStyleTabBookmarksServiceEditable.parentRow.collapsed = this._element('keywordRow').collapsed && this._element('folderRow').collapsed;
-			$1]]>
+			'  TreeStyleTabBookmarksServiceEditable.parentRow.collapsed = this._element("keywordRow").collapsed && this._element("folderRow").collapsed;' +
+			'$1'
 		));
 
 		eval('gEditItemOverlay.initPanel = '+gEditItemOverlay.initPanel.toSource().replace(

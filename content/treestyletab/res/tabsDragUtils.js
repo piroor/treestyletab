@@ -62,15 +62,13 @@
 						'$1 tabsDataTransferProxy = dt = new window["piro.sakura.ne.jp"].tabsDragUtils.DOMDataTransferProxy(dt, insertionPoint); $&'
 					).replace( // for Tree Style Tab (save tree structure to bookmarks)
 						/(PlacesUIUtils\.ptm|PlacesUtils\.transactionManager)\.doTransaction\(txn\);/,
-						<![CDATA[
-							if (tabsDataTransferProxy && '_tabs' in tabsDataTransferProxy &&
-								'TreeStyleTabBookmarksService' in window)
-								TreeStyleTabBookmarksService.beginAddBookmarksFromTabs(tabsDataTransferProxy._tabs);
-							$&
-							if (tabsDataTransferProxy && '_tabs' in tabsDataTransferProxy &&
-								'TreeStyleTabBookmarksService' in window)
-								TreeStyleTabBookmarksService.endAddBookmarksFromTabs();
-						]]>
+						'if (tabsDataTransferProxy && "_tabs" in tabsDataTransferProxy &&' +
+						'  "TreeStyleTabBookmarksService" in window)' +
+						'  TreeStyleTabBookmarksService.beginAddBookmarksFromTabs(tabsDataTransferProxy._tabs);' +
+						'$&' +
+						'if (tabsDataTransferProxy && "_tabs" in tabsDataTransferProxy &&' +
+						'  "TreeStyleTabBookmarksService" in window)' +
+						'  TreeStyleTabBookmarksService.endAddBookmarksFromTabs();'
 					)
 				);
 			}
