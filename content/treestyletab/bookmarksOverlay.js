@@ -259,7 +259,7 @@ var TreeStyleTabBookmarksService = {
 					).replace(
 						/(\}\)?)$/,
 						'  if (TSTTreeStructure && TSTPreviousTabs) {' +
-						'    let tabs = browserWindow.TreeStyleTabService.getNewTabsFromPreviousTabsInfo(browserWindow.gBrowser, TSTPreviousTabs)' +
+						'    let tabs = browserWindow.TreeStyleTabService.getNewTabsFromPreviousTabsInfo(browserWindow.gBrowser, TSTPreviousTabs);' +
 						'    browserWindow.TreeStyleTabService.applyTreeStructureToTabs(tabs, TSTTreeStructure, TSTOpenGroupBookmarkBehavior & browserWindow.TreeStyleTabBookmarksService.kGROUP_BOOKMARK_EXPAND_ALL_TREE);' +
 						'  }' +
 						'$1'
