@@ -263,6 +263,31 @@ catch(e) {
 				event        : aEvent
 			};
 
+		/**
+		 * Even if a dragover tab is moved by CSS "transform",
+		 * the event is fired based on its original position.
+		 * Following tabs can be transformed, and we'll see far
+		 * tab (visually it is far but logically it is below the
+		 * pointer!) as the drop target.
+		 * "animDropIndex" is calculated based on their visual
+		 * positions, and we can use it to calculate the drop target
+		 * which is visually below the pointer.
+		 */
+		let draggedTab = aEvent.dataTransfer && aEvent.dataTransfer.mozGetDataAt(TAB_DROP_TYPE, 0);
+		if (draggedTab && draggedTab._dragData && 'animDropIndex' in draggedTab._dragData) {
+			let newIndex = draggedTab._dragData.animDropIndex;
+			/**
+			 * Preceding tabs won't be transformed. We have to
+			 * handle only following tabs.
+			 */
+			if (newIndex > draggedTab._tPos) {
+				newIndex--;
+				let tabs = sv.getAllTabs(b);
+				if (newIndex < tabs.length)
+					tab = tabs[newIndex];
+			}
+		}
+
 		var isTabMoveFromOtherWindow = aSourceTab && aSourceTab.ownerDocument != d;
 		var isNewTabAction = !aSourceTab || aSourceTab.ownerDocument != d;
 
@@ -839,7 +864,8 @@ try{
 
 		sv.autoScroll.processAutoScroll(aEvent);
 
-		var dragOverTab = sv.getTabFromEvent(aEvent) || sv.getTabFromTabbarEvent(aEvent) || aEvent.target;
+		let draggedTab = aEvent.dataTransfer && aEvent.dataTransfer.mozGetDataAt(TAB_DROP_TYPE, 0);
+		let dragOverTab = sv.getTabFromEvent(aEvent) || sv.getTabFromTabbarEvent(aEvent) || aEvent.target;
 		b.ownerDocument.defaultView['piro.sakura.ne.jp'].tabsDragUtils
 			.processTabsDragging(aEvent, !dragOverTab || !dragOverTab.pinned);
 
@@ -897,7 +923,6 @@ try{
 		let dropPosition = info.position == sv.kDROP_BEFORE ? 'before' :
 							info.position == sv.kDROP_AFTER ? 'after' :
 							'self';
-		let draggedTab = aEvent.dataTransfer && aEvent.dataTransfer.mozGetDataAt(TAB_DROP_TYPE, 0);
 		if (indicatorTab != draggedTab &&
 			indicatorTab.getAttribute(sv.kDROP_POSITION) != dropPosition) {
 			this.clearDropPosition();
