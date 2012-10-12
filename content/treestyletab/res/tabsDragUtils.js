@@ -131,7 +131,9 @@
 						'if (!("animLastScreenX" in draggedTab._dragData))',
 						'let tabsWidth = 0;\n' +
 						'draggedTabs.forEach(function(draggedTab) {\n' +
-						'  tabsWidth += draggedTab.boxObject[size];\n' +
+						'  let style = window.getComputedStyle(draggedTab, null);\n' +
+						'  if (style.visibility != "collapse" && style.display != "none")\n' +
+						'    tabsWidth += draggedTab.boxObject[size];\n' +
 						'  window["piro.sakura.ne.jp"].tabsDragUtils.fixDragData(draggedTab._dragData);\n' +
 						'  $&'
 					).replace(
@@ -219,7 +221,8 @@
 // 
 // let tabsWidth = 0;
 // draggedTabs.forEach(function(draggedTab) {
-// tabsWidth += draggedTab.boxObject[size]/*.width*/;
+// let style = window.getComputedStyle(draggedTab, null);
+// if (style.visibility != "collapse" && style.display != "none") tabsWidth += draggedTab.boxObject[size]/*.width*/;
 // window['piro.sakura.ne.jp'].tabsDragUtils.fixDragData(draggedTab._dragData);
 //           if (!("animLastScreenX" in draggedTab._dragData))
 //             draggedTab._dragData.animLastScreenX = draggedTab._dragData[position]/*.screenX*/;

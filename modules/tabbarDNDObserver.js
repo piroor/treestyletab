@@ -996,15 +996,13 @@ catch(e) {
 		if (tabbar._tabDropIndicator)
 			tabbar._tabDropIndicator.collapsed = true;
 
-		var draggedTab;
-		if (dt.dropEffect != 'link') {
-			draggedTab = dt.mozGetDataAt(TAB_DROP_TYPE, 0);
-			if (!draggedTab) {
-				aEvent.stopPropagation();
-				return;
-			}
-			draggedTab.style.opacity = '';
+		var draggedTab = dt.mozGetDataAt(TAB_DROP_TYPE, 0);
+		if (dt.dropEffect != 'link' && !draggedTab) {
+			aEvent.stopPropagation();
+			return;
 		}
+		if (draggedTab)
+			draggedTab.style.opacity = '';
 
 		var sourceBrowser = sv.getTabBrowserFromChild(draggedTab);
 		if (draggedTab && sourceBrowser != b)
