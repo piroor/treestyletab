@@ -15,14 +15,14 @@
    http://github.com/piroor/fxaddonlibs/blob/master/tabsDragUtils.js
 */
 (function() {
-	const currentRevision = 21;
+	const currentRevision = 22;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
 	var loadedRevision = 'tabsDragUtils' in window['piro.sakura.ne.jp'] ?
 			window['piro.sakura.ne.jp'].tabsDragUtils.revision :
 			0 ;
-	if (loadedRevision && loadedRevision > currentRevision) {
+	if (loadedRevision && loadedRevision >= currentRevision) {
 		return;
 	}
 
@@ -55,8 +55,10 @@
 				'onDrop' in PlacesControllerDragHelper &&
 				PlacesControllerDragHelper.onDrop.toSource().indexOf('tabsDragUtils.DOMDataTransferProxy') < 0
 				) {
+				let original = PlacesControllerDragHelper.onDrop;
+				PlacesControllerDragHelper.__TabsDragUtils_original__onDrop = original;
 				eval('PlacesControllerDragHelper.onDrop = '+
-					PlacesControllerDragHelper.onDrop.toSource().replace(
+					original.toSource().replace(
 						// for Firefox 3.5 or later
 						/(let|var) doCopy =/,
 						'$1 tabsDataTransferProxy = dt = new window["piro.sakura.ne.jp"].tabsDragUtils.DOMDataTransferProxy(dt, insertionPoint); $&'
@@ -71,6 +73,7 @@
 						'  TreeStyleTabBookmarksService.endAddBookmarksFromTabs();'
 					)
 				);
+				PlacesControllerDragHelper.__TabsDragUtils_updated__onDrop = PlacesControllerDragHelper.onDrop;
 			}
 
 			if ('TMP_tabDNDObserver' in window) // for Tab Mix Plus
@@ -82,6 +85,13 @@
 		{
 			if (this._delayedInit)
 				window.removeEventListener('load', this, false);
+
+			if (PlacesControllerDragHelper.onDrop == PlacesControllerDragHelper.__TabsDragUtils_updated__onDrop)
+				PlacesControllerDragHelper.onDrop = PlacesControllerDragHelper.__TabsDragUtils_original__onDrop;
+			delete PlacesControllerDragHelper.__TabsDragUtils_original__onDrop;
+			delete PlacesControllerDragHelper.__TabsDragUtils_updated__onDrop;
+
+			this.updatedTabDNDObservers.slice(0).forEach(this.destroyTabDNDObserver, this);
 		},
 
 		initTabBrowser : function TDU_initTabBrowser(aTabBrowser)
@@ -93,24 +103,36 @@
 		},
 		destroyTabBrowser : function TDU_destroyTabBrowser(aTabBrowser)
 		{
+			var tabDNDObserver = (aTabBrowser.tabContainer && aTabBrowser.tabContainer.tabbrowser == aTabBrowser) ?
+									aTabBrowser.tabContainer : // Firefox 4.0 or later
+									aTabBrowser ; // Firefox 3.5 - 3.6
+			this.destroyTabDNDObserver(tabDNDObserver);
 		},
 
+		updatedTabDNDObservers : [],
 		initTabDNDObserver : function TDU_initTabDNDObserver(aObserver)
 		{
+			this.updatedTabDNDObservers.push(aObserver);
+
 			if ('_setEffectAllowedForDataTransfer' in aObserver &&
 				aObserver._setEffectAllowedForDataTransfer.toSource().indexOf('tabsDragUtils') < 0) {
+				let original = aObserver._setEffectAllowedForDataTransfer;
+				aObserver.__TabsDragUtils_original__setEffectAllowedForDataTransfer = original;
 				eval('aObserver._setEffectAllowedForDataTransfer = '+
-					aObserver._setEffectAllowedForDataTransfer.toSource().replace(
+					original.toSource().replace(
 						'dt.mozItemCount > 1',
 						'$& && !window["piro.sakura.ne.jp"].tabsDragUtils.isTabsDragging(arguments[0])'
 					)
 				);
+				aObserver.__TabsDragUtils_updated__setEffectAllowedForDataTransfer = aObserver._setEffectAllowedForDataTransfer;
 			}
 
 			if ('_animateTabMove' in aObserver &&
 				aObserver._animateTabMove.toSource().indexOf('tabsDragUtils') < 0) {
+				let original = aObserver._animateTabMove;
+				aObserver.__TabsDragUtils_original__animateTabMove = original;
 				eval('aObserver._animateTabMove = '+
-					aObserver._animateTabMove.toSource().replace( // support vertical tab bar
+					original.toSource().replace( // support vertical tab bar
 						/\.screenX/g,
 						'[position]'
 					).replace( // support vertical tab bar
@@ -150,7 +172,6 @@
 						'}, this);'
 					).replace(
 						/(let tabWidth = [^;]+;)/,
-						'tabs = tabs.filter(function(tab) { return draggedTabs.indexOf(tab) < 0 });\n' +
 						'$1\n' +
 						'let tabCenterOffset = aCanDropOnSelf ? (tabWidth / 2) : 0 ;'
 					).replace(
@@ -174,6 +195,10 @@
 						'(screenX + boxObject[size] < tabCenter)',
 						'/* $& */ (screenX + boxObject[size] - tabCenterOffset < tabLeftCenter)'
 					).replace(
+						'draggedTab._dragData.animDropIndex = newIndex',
+						'tabs = tabs.filter(function(tab) { return draggedTabs.indexOf(tab) < 0 });\n' +
+						'$&'
+					).replace(
 						'-tabWidth : tabWidth',
 						'/* $& */ -tabsWidth : tabsWidth'
 					).replace(
@@ -194,6 +219,7 @@
 						'  var units = aCanDropOnSelf ? 3 : 2 ;'
 					)
 				);
+				aObserver.__TabsDragUtils_updated__animateTabMove = aObserver._animateTabMove;
 
 /**
  * Full version
@@ -245,7 +271,7 @@
 //                                            pinned ? numPinned : undefined);
 //           if (rtl)
 //             tabs.reverse();
-// tabs = tabs.filter(function(tab) { return draggedTabs.indexOf(tab) < 0 });
+// 
 //           let tabWidth = draggedTab.getBoundingClientRect()[size]/*.width*/;
 // let tabCenterOffset = aCanDropOnSelf ? (tabWidth / 2) : 0 ;
 // 
@@ -306,6 +332,7 @@
 //             newIndex++;
 //           if (newIndex < 0 || newIndex == oldIndex)
 //             return;
+// tabs = tabs.filter(function(tab) { return draggedTabs.indexOf(tab) < 0 });
 //           draggedTab._dragData.animDropIndex = newIndex;
 // 
 //           // Shift background tabs to leave a gap where the dragged tab
@@ -337,6 +364,25 @@
 				aData.screenY = aData.offsetY + window.screenY;
 			if (!('scrollY' in aData))
 				aData.scrollY = aData.scrollX;
+		},
+		destroyTabDNDObserver : function TDU_destroyTabDNDObserver(aObserver)
+		{
+			if (!aObserver)
+				return;
+
+			if (aObserver._setEffectAllowedForDataTransfer == aObserver.__TabsDragUtils_updated__setEffectAllowedForDataTransfer)
+				aObserver._setEffectAllowedForDataTransfer = aObserver.__TabsDragUtils_original__setEffectAllowedForDataTransfer;
+			delete aObserver.__TabsDragUtils_original__setEffectAllowedForDataTransfer;
+			delete aObserver.__TabsDragUtils_updated__setEffectAllowedForDataTransfer;
+
+			if (aObserver._animateTabMove == aObserver.__TabsDragUtils_updated__animateTabMove)
+				aObserver._animateTabMove = aObserver.__TabsDragUtils_original__animateTabMove;
+			delete aObserver.__TabsDragUtils_original__animateTabMove;
+			delete aObserver.__TabsDragUtils_updated__animateTabMove;
+
+			let index = this.updatedTabDNDObservers.indexOf(aObserver);
+			if (index > -1)
+				this.updatedTabDNDObservers = this.updatedTabDNDObservers.splice(index, 1);
 		},
 
 		startTabsDrag : function TDU_startTabsDrag(aEvent, aTabs)
