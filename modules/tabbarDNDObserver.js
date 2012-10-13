@@ -745,22 +745,24 @@ catch(e) {
 					if (tab &&
 						sv.shouldTabAutoExpanded(tab) &&
 						tab.getAttribute(sv.kDROP_POSITION) == 'self') {
-						let draggedTab = sv.getTabById(aDragged);
+						let draggedTab = aDragged && sv.getTabById(aDragged);
 						if (sv.getTreePref('autoExpand.intelligently')) {
 							sv.collapseExpandTreesIntelligentlyFor(tab);
-							aSelf.updateDragData(draggedTab);
+							if (draggedTab)
+								aSelf.updateDragData(draggedTab);
 						}
 						else {
 							if (aSelf.mAutoExpandedTabs.indexOf(aTarget) < 0)
 								aSelf.mAutoExpandedTabs.push(aTarget);
 							sv.collapseExpandSubtree(tab, false);
-							aSelf.updateDragData(draggedTab);
+							if (draggedTab)
+								aSelf.updateDragData(draggedTab);
 						}
 					}
 				},
 				sv.getTreePref('autoExpand.delay')
 			);
-		}, 0, this, tab.getAttribute(sv.kID), draggedTab.getAttribute(sv.kID));
+		}, 0, this, tab.getAttribute(sv.kID), draggedTab && draggedTab.getAttribute(sv.kID));
 
 		tab = null;
 	},
