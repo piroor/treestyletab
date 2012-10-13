@@ -13,7 +13,7 @@ License.
 
 The Original Code is the Tree Style Tab.
 
-The Initial Developer of the Original Code is SHIMODA Hiroshi.
+The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
 Portions created by the Initial Developer are Copyright (C) 2010
 the Initial Developer. All Rights Reserved.
 

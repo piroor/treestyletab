@@ -1,6 +1,6 @@
 /**
  * @fileOverview Popup Notification (Door Hanger) Based Confirmation Library for Firefox 4.0 or later
- * @author       SHIMODA "Piro" Hiroshi
+ * @author       YUKI "Piro" Hiroshi
  * @version      4
  * Basic usage:
  *
@@ -49,7 +49,7 @@
  *    });
  *
  * @license
- *   The MIT License, Copyright (c) 2011-2012 SHIMODA "Piro" Hiroshi
+ *   The MIT License, Copyright (c) 2011-2012 YUKI "Piro" Hiroshi
  *   http://github.com/piroor/fxaddonlibs/blob/master/license.txt
  * @url http://github.com/piroor/fxaddonlibs/blob/master/confirmWithPopup.js
  * @url http://github.com/piroor/fxaddonlibs

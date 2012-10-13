@@ -6,7 +6,7 @@
                    em:id="treestyletab@piro.sakura.ne.jp"
                    em:name="Tree Style Tab"
                    em:version="0.14.2012081101"
-                   em:creator="SHIMODA Hiroshi"
+                   em:creator="YUKI &quot;Piro&quot; Hiroshi"
                    em:description="Show tabs like a tree."
                    em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
                    em:iconURL="chrome://treestyletab/content/res/icon.png"
@@ -22,7 +22,7 @@
                        em:name="Tree Style Tab"
                        em:description="Show tabs like a tree."
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
-                       em:creator="SHIMODA Hiroshi">
+                       em:creator="YUKI &quot;Piro&quot; Hiroshi">
           <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
@@ -33,7 +33,7 @@
                        em:name="ツリー型タブ"
                        em:description="タブをツリー状に表示します。"
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html"
-                       em:creator="SHIMODA Hiroshi">
+                       em:creator="YUKI &quot;Piro&quot; Hiroshi">
           <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
@@ -44,7 +44,7 @@
                        em:name="Tree Style Tab"
                        em:description="Permette di visualizzare la barra delle schede in forma di albero"
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
-                       em:creator="SHIMODA Hiroshi">
+                       em:creator="YUKI &quot;Piro&quot; Hiroshi">
           <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
@@ -56,7 +56,7 @@
                        em:name="Tree Style Tab"
                        em:description="以树的形式显示标签。"
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
-                       em:creator="SHIMODA Hiroshi">
+                       em:creator="YUKI &quot;Piro&quot; Hiroshi">
           <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
@@ -69,7 +69,7 @@
                        em:name="Tree Style Tab (Pestañas estilo árbol)"
                        em:description="Muestra las pestañas en vista de árbol"
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
-                       em:creator="SHIMODA Hiroshi">
+                       em:creator="YUKI &quot;Piro&quot; Hiroshi">
           <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
@@ -81,7 +81,7 @@
                        em:name="Tree Style Tab"
                        em:description="Stellt Tabs in einer Baumstukur dar"
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
-                       em:creator="SHIMODA Hiroshi">
+                       em:creator="YUKI &quot;Piro&quot; Hiroshi">
           <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
@@ -93,7 +93,7 @@
                        em:name="Tree Style Tab"
                        em:description="樹狀分頁顯示。"
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
-                       em:creator="SHIMODA Hiroshi">
+                       em:creator="YUKI &quot;Piro&quot; Hiroshi">
           <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
@@ -107,7 +107,7 @@
                        em:name="Tree Style Tab (Древовидный стиль вкладок)"
                        em:description="Отображение вкладок в виде дерева"
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
-                       em:creator="SHIMODA Hiroshi">
+                       em:creator="YUKI &quot;Piro&quot; Hiroshi">
           <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
@@ -120,7 +120,7 @@
                        em:name="Tree Style Tab"
                        em:description="Wyświetla karty w układzie drzewa."
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
-                       em:creator="SHIMODA Hiroshi">
+                       em:creator="YUKI &quot;Piro&quot; Hiroshi">
           <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
@@ -132,7 +132,7 @@
                        em:name="Tree Style Tab"
                        em:description="Show tabs like a tree."
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
-                       em:creator="SHIMODA Hiroshi">
+                       em:creator="YUKI &quot;Piro&quot; Hiroshi">
           <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>

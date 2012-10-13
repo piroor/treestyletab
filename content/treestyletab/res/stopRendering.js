@@ -6,7 +6,7 @@
    // do something
    window['piro.sakura.ne.jp'].stopRendering.start();
 
- license: The MIT License, Copyright (c) 2009-2011 SHIMODA "Piro" Hiroshi
+ license: The MIT License, Copyright (c) 2009-2011 YUKI "Piro" Hiroshi
    http://github.com/piroor/fxaddonlibs/blob/master/license.txt
  original:
    http://github.com/piroor/fxaddonlibs/blob/master/stopRendering.js
