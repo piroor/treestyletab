@@ -1134,11 +1134,17 @@ catch(e) {
 		if (!normalizedURI)
 			return;
 		let sourceDoc = session.sourceDocument;
+		let sourceURI = sourceDoc ? sourceDoc.documentURI : 'file:///' ;
 		let principal = sourceDoc ?
-				sourceDoc.nodePrincipal :
-				SecMan.getSimpleCodebasePrincipal(Services.io.newURI('file:///', null, null)) ;
+					sourceDoc.nodePrincipal :
+				SecMan.getSimpleCodebasePrincipal ? // this method isn't there on Firefox 16 and olders!
+					SecMan.getSimpleCodebasePrincipal(Services.io.newURI(sourceURI, null, null)) :
+					null ;
 		try {
-			SecMan.checkLoadURIStrWithPrincipal(principal, normalizedURI.spec, Ci.nsIScriptSecurityManager.STANDARD);
+			if (principal)
+				SecMan.checkLoadURIStrWithPrincipal(principal, normalizedURI.spec, Ci.nsIScriptSecurityManager.STANDARD);
+			else
+				SecMan.checkLoadURIStr(sourceURI, normalizedURI.spec, Ci.nsIScriptSecurityManager.STANDARD);
 		}
 		catch(e) {
 			aEvent.stopPropagation();
