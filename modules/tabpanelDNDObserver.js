@@ -37,7 +37,16 @@ const EXPORTED_SYMBOLS = ['TabpanelDNDObserver'];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
- 
+
+Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
+
+XPCOMUtils.defineLazyGetter(this, 'TSTUtils', function() {
+	var ns = {};
+	Components.utils.import('resource://treestyletab-modules/utils.js', ns);
+	return ns.TreeStyleTabUtils;
+});
+
+
 function TabpanelDNDObserver(aTabBrowser) 
 {
 	this.init(aTabBrowser);
@@ -118,10 +127,10 @@ TabpanelDNDObserver.prototype = {
 		var position = this.getDropPosition(aEvent);
 		if (position != 'center' &&
 			position != sv.position) {
-			if (sv.getTreePref('tabbar.fixed.autoCancelOnDrop') &&
+			if (TSTUtils.getTreePref('tabbar.fixed.autoCancelOnDrop') &&
 				dt.getData(sv.kDRAG_TYPE_TABBAR) != sv.kTABBAR_MOVE_FORCE) {
 				let orient = (position == 'left' || position == 'right') ? 'vertical' : 'horizontal' ;
-				sv.setTreePref('tabbar.fixed.'+orient, false);
+				TSTUtils.setTreePref('tabbar.fixed.'+orient, false);
 			}
 			sv.setPrefForActiveWindow(function() {
 				sv.utils.position = position;
