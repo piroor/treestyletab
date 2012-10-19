@@ -37,7 +37,16 @@ const EXPORTED_SYMBOLS = ['AutoHideBrowser', 'AutoHideWindow'];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
- 
+
+Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
+
+XPCOMUtils.defineLazyGetter(this, 'TSTUtils', function() {
+	var ns = {};
+	Components.utils.import('resource://treestyletab-modules/utils.js', ns);
+	return ns.TreeStyleTabUtils;
+});
+
+
 function AutoHideBrowser(aTabBrowser) 
 {
 	this.init(aTabBrowser);
@@ -82,12 +91,12 @@ AutoHideBrowser.prototype = {
 	getModeForNormal : function AHB_getModeForNormal(aTabBrowser)
 	{
 		var b = aTabBrowser || this.browser;
-		return parseInt(b.getAttribute(this.kMODE+'-normal') || this.treeStyleTab.getTreePref('tabbar.autoHide.mode'));
+		return parseInt(b.getAttribute(this.kMODE+'-normal') || TSTUtils.getTreePref('tabbar.autoHide.mode'));
 	},
 	getModeForFullScreen : function AHB_getModeForFullScreen(aTabBrowser)
 	{
 		var b = aTabBrowser || this.browser;
-		return parseInt(b.getAttribute(this.kMODE+'-fullscreen') || this.treeStyleTab.getTreePref('tabbar.autoHide.mode.fullscreen'));
+		return parseInt(b.getAttribute(this.kMODE+'-fullscreen') || TSTUtils.getTreePref('tabbar.autoHide.mode.fullscreen'));
 	},
 
 	get state()
@@ -156,8 +165,8 @@ AutoHideBrowser.prototype = {
 
 			default:
 			case this.kMODE_SHRINK:
-				return sv.getTreePref('tabbar.width')
-						- sv.getTreePref('tabbar.shrunkenWidth');
+				return TSTUtils.getTreePref('tabbar.width')
+						- TSTUtils.getTreePref('tabbar.shrunkenWidth');
 		}
 	},
 	get YOffset()
@@ -281,7 +290,7 @@ AutoHideBrowser.prototype = {
 	{
 		this.mode = this.getModeForFullScreen();
 		this.end();
-		this.mode = this.treeStyleTab.getTreePref('tabbar.autoHide.mode');
+		this.mode = TSTUtils.getTreePref('tabbar.autoHide.mode');
 		this.treeStyleTab.checkTabsIndentOverflow();
 		if (this.mode != this.kMODE_DISABLED)
 			this.start();
@@ -313,13 +322,13 @@ AutoHideBrowser.prototype = {
  
 	get shouldListenMouseMove() 
 	{
-		return this.treeStyleTab.getTreePref('tabbar.autoShow.mousemove');
+		return TSTUtils.getTreePref('tabbar.autoShow.mousemove');
 	},
  
 	get shouldListenKeyEventsForAutoHide()
 	{
-		return this.treeStyleTab.getTreePref('tabbar.autoShow.accelKeyDown') ||
-				this.treeStyleTab.getTreePref('tabbar.autoShow.tabSwitch');
+		return TSTUtils.getTreePref('tabbar.autoShow.accelKeyDown') ||
+				TSTUtils.getTreePref('tabbar.autoShow.tabSwitch');
 	},
  
 	showHideOnMouseMove : function AHB_showHideOnMouseMove(aEvent) 
@@ -340,7 +349,7 @@ AutoHideBrowser.prototype = {
 			if (
 				shouldShow &&
 				this.showHideReason & this.kKEEP_SHOWN_ON_MOUSEOVER &&
-				sv.getTreePref('tabbar.autoShow.keepShownOnMouseover')
+				TSTUtils.getTreePref('tabbar.autoShow.keepShownOnMouseover')
 				) {
 				this.showHideReason = this.kSHOWN_BY_MOUSEMOVE;
 				this.cancelDelayedShowForShortcut();
@@ -348,7 +357,7 @@ AutoHideBrowser.prototype = {
 			}
 			else if (
 				!shouldShow &&
-				sv.getTreePref('tabbar.autoShow.mousemove')
+				TSTUtils.getTreePref('tabbar.autoShow.mousemove')
 				) {
 				this.showHideOnMouseMoveTimer = w.setTimeout(
 					function(aSelf) {
@@ -356,7 +365,7 @@ AutoHideBrowser.prototype = {
 						if (aSelf.showHideReason == aSelf.kSHOWN_BY_MOUSEMOVE)
 							aSelf.hide(aSelf.kSHOWN_BY_MOUSEMOVE);
 					},
-					sv.getTreePref('tabbar.autoHide.delay'),
+					TSTUtils.getTreePref('tabbar.autoHide.delay'),
 					this
 				);
 			}
@@ -368,7 +377,7 @@ AutoHideBrowser.prototype = {
 					aSelf.cancelHideForFeedback();
 					aSelf.show(aSelf.kSHOWN_BY_MOUSEMOVE);
 				},
-				sv.getTreePref('tabbar.autoHide.delay'),
+				TSTUtils.getTreePref('tabbar.autoHide.delay'),
 				this
 			);
 		}
@@ -516,7 +525,7 @@ AutoHideBrowser.prototype = {
 	showForFeedback : function AHB_showForFeedback() 
 	{
 		if (!this.enabled ||
-			!this.treeStyleTab.getTreePref('tabbar.autoShow.feedback'))
+			!TSTUtils.getTreePref('tabbar.autoShow.feedback'))
 			return;
 
 		var w = this.window;
@@ -545,7 +554,7 @@ AutoHideBrowser.prototype = {
 				if (aSelf.showHideReason == aSelf.kSHOWN_BY_FEEDBACK)
 					aSelf.hide();
 			},
-			this.treeStyleTab.getTreePref('tabbar.autoShow.feedback.delay'),
+			TSTUtils.getTreePref('tabbar.autoShow.feedback.delay'),
 			this
 		);
 	},
@@ -563,9 +572,9 @@ AutoHideBrowser.prototype = {
 		if (aForceExpanded ||
 			this.expanded ||
 			this.mode !=  this.kMODE_SHRINK)
-			this.treeStyleTab.setTreePref('tabbar.width', this.treeStyleTab.maxTabbarWidth(aWidth));
+			TSTUtils.setTreePref('tabbar.width', this.treeStyleTab.maxTabbarWidth(aWidth));
 		else
-			this.treeStyleTab.setTreePref('tabbar.shrunkenWidth', this.treeStyleTab.maxTabbarWidth(aWidth));
+			TSTUtils.setTreePref('tabbar.shrunkenWidth', this.treeStyleTab.maxTabbarWidth(aWidth));
 	},
  
 	updateMenuItem : function AHB_updateMenuItem(aNode) 
@@ -597,14 +606,14 @@ AutoHideBrowser.prototype = {
 	get widthFromMode() 
 	{
 		return (this.shrunken) ?
-					this.treeStyleTab.getTreePref('tabbar.shrunkenWidth') :
-					this.treeStyleTab.getTreePref('tabbar.width') ;
+					TSTUtils.getTreePref('tabbar.shrunkenWidth') :
+					TSTUtils.getTreePref('tabbar.width') ;
 	},
 	get placeHolderWidthFromMode()
 	{
 		return (this.mode == this.kMODE_SHRINK) ?
-					this.treeStyleTab.getTreePref('tabbar.shrunkenWidth') :
-					this.treeStyleTab.getTreePref('tabbar.width') ;
+					TSTUtils.getTreePref('tabbar.shrunkenWidth') :
+					TSTUtils.getTreePref('tabbar.width') ;
 	},
   
 	get height() 
@@ -728,7 +737,7 @@ AutoHideBrowser.prototype = {
 			default:
 			case this.kMODE_SHRINK:
 				if (pos == 'left' || pos == 'right') {
-					let width = sv.maxTabbarWidth(sv.getTreePref('tabbar.width'));
+					let width = sv.maxTabbarWidth(TSTUtils.getTreePref('tabbar.width'));
 					sv.updateFloatingTabbar(sv.kTABBAR_UPDATE_BY_AUTOHIDE);
 				}
 				break;
@@ -766,7 +775,7 @@ AutoHideBrowser.prototype = {
 				sv.setTabbrowserAttribute(this.kAUTOHIDE, 'show');
 				sv.setTabbrowserAttribute(this.kSTATE, this.kSTATE_SHRUNKEN);
 				if (pos == 'left' || pos == 'right')
-					sv.setTabStripAttribute('width', sv.getTreePref('tabbar.shrunkenWidth'));
+					sv.setTabStripAttribute('width', TSTUtils.getTreePref('tabbar.shrunkenWidth'));
 				sv.updateFloatingTabbar(sv.kTABBAR_UPDATE_BY_AUTOHIDE);
 				break;
 		}
@@ -947,7 +956,7 @@ AutoHideBrowser.prototype = {
 			case this.treeStyleTab.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START:
 				this.cancelDelayedShowForShortcut();
 				if (this.enabled &&
-					this.treeStyleTab.getTreePref('tabbar.autoShow.tabSwitch') &&
+					TSTUtils.getTreePref('tabbar.autoShow.tabSwitch') &&
 					(
 						aEvent.getData('scrollDown') ||
 						aEvent.getData('scrollUp') ||
@@ -1099,7 +1108,7 @@ AutoHideBrowser.prototype = {
 			w.TreeStyleTabService.accelKeyPressed
 			) {
 			if (this.enabled &&
-				sv.getTreePref('tabbar.autoShow.accelKeyDown') &&
+				TSTUtils.getTreePref('tabbar.autoShow.accelKeyDown') &&
 				!this.expanded &&
 				!this.delayedAutoShowTimer &&
 				!this.delayedShowForShortcutTimer) {
@@ -1110,7 +1119,7 @@ AutoHideBrowser.prototype = {
 						sv = null;
 						b = null;
 					},
-					sv.getTreePref('tabbar.autoShow.accelKeyDown.delay'),
+					TSTUtils.getTreePref('tabbar.autoShow.accelKeyDown.delay'),
 					this
 				);
 				this.delayedShowForShortcutDone = false;
@@ -1153,8 +1162,8 @@ AutoHideBrowser.prototype = {
 		this.showHideOnMouseMoveTimer = null;
 		this.delayedShowForFeedbackTimer = null;
 
-		b.setAttribute(this.kMODE+'-normal', sv.getTreePref('tabbar.autoHide.mode'));
-		b.setAttribute(this.kMODE+'-fullscreen', sv.getTreePref('tabbar.autoHide.mode.fullscreen'));
+		b.setAttribute(this.kMODE+'-normal', TSTUtils.getTreePref('tabbar.autoHide.mode'));
+		b.setAttribute(this.kMODE+'-fullscreen', TSTUtils.getTreePref('tabbar.autoHide.mode.fullscreen'));
 		sv.addPrefListener(this);
 		this.onPrefChange('browser.tabs.closeButtons');
 		this.onPrefChange('extensions.treestyletab.tabbar.autoHide.area');
@@ -1207,8 +1216,8 @@ AutoHideBrowser.prototype = {
 			};
 		for (var i in prefs)
 		{
-			if (this.treeStyleTab.getTreePref(i) != prefs[i])
-				this.treeStyleTab.setTreePref(i, prefs[i]);
+			if (TSTUtils.getTreePref(i) != prefs[i])
+				TSTUtils.setTreePref(i, prefs[i]);
 		}
 	}
  
@@ -1263,10 +1272,10 @@ AutoHideWindow.prototype = {
 		}
 
 		var mode = this.getMode(b) == AutoHideBrowser.prototype.kMODE_DISABLED ?
-				this.treeStyleTab.getTreePref(toggleKey) :
+				TSTUtils.getTreePref(toggleKey) :
 				AutoHideBrowser.prototype.kMODE_DISABLED ;
 
-		this.treeStyleTab.setTreePref(key, mode);
+		TSTUtils.setTreePref(key, mode);
 		b.setAttribute(AutoHideBrowser.prototype.kMODE+'-'+(w.fullScreen ? 'fullscreen' : 'normal' ), mode);
 		b.treeStyleTab.autoHide.updateMode();
 	},
@@ -1310,9 +1319,9 @@ AutoHideWindow.prototype = {
 	{
 		return !this.treeStyleTab.ctrlTabPreviewsEnabled &&
 				(
-					this.treeStyleTab.getTreePref('tabbar.autoShow.accelKeyDown') ||
-					this.treeStyleTab.getTreePref('tabbar.autoShow.tabSwitch') ||
-					this.treeStyleTab.getTreePref('tabbar.autoShow.feedback')
+					TSTUtils.getTreePref('tabbar.autoShow.accelKeyDown') ||
+					TSTUtils.getTreePref('tabbar.autoShow.tabSwitch') ||
+					TSTUtils.getTreePref('tabbar.autoShow.feedback')
 				);
 	},
    

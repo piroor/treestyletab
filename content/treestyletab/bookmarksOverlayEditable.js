@@ -1,3 +1,7 @@
+Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
+XPCOMUtils.defineLazyModuleGetter(this,
+  'TreeStyleTabUtils', 'resource://treestyletab-modules/utils.js');
+
 var TreeStyleTabBookmarksServiceEditable = {
 	__proto__ : TreeStyleTabBookmarksService,
 
@@ -235,7 +239,7 @@ var TreeStyleTabBookmarksServiceEditable = {
 
 		var parentIndex = items.indexOf(newParentId);
 		var newIndex;
-		if (this.getTreePref('insertNewChildAt') == this.kINSERT_FISRT) {
+		if (TreeStyleTabUtils.getTreePref('insertNewChildAt') == this.kINSERT_FISRT) {
 			newIndex = treeStructure.indexOf(parentIndex);
 		}
 		else {
