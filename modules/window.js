@@ -48,7 +48,13 @@ XPCOMUtils.defineLazyGetter(this, 'TreeStyleTabBrowser', function() {
 	Components.utils.import('resource://treestyletab-modules/browser.js', ns);
 	return ns.TreeStyleTabBrowser;
 });
- 
+XPCOMUtils.defineLazyGetter(this, 'TSTUtils', function() {
+	var ns = {};
+	Components.utils.import('resource://treestyletab-modules/utils.js', ns);
+	return ns.TreeStyleTabUtils;
+});
+
+
 function TreeStyleTabWindow(aWindow) 
 {
 	this.window = aWindow;
@@ -255,7 +261,7 @@ TreeStyleTabWindow.prototype = {
 	{
 		aTerm = aTerm.replace(/^\s+|\s+$/g, '');
 
-		var mode = this.getTreePref('autoAttach.searchResult');
+		var mode = TSTUtils.getTreePref('autoAttach.searchResult');
 		if (mode == this.kSEARCH_RESULT_ATTACH_ALWAYS) {
 			return true;
 		}
@@ -285,9 +291,9 @@ TreeStyleTabWindow.prototype = {
 		return this.window.fullScreen ?
 				(
 					this.getPref('browser.fullscreen.autohide') &&
-					this.getTreePref('tabbar.autoHide.mode.fullscreen')
+					TSTUtils.getTreePref('tabbar.autoHide.mode.fullscreen')
 				) :
-				this.getTreePref('tabbar.autoHide.mode');
+				TSTUtils.getTreePref('tabbar.autoHide.mode');
 	},
  
 	get autoHideWindow() 
@@ -454,7 +460,7 @@ TreeStyleTabWindow.prototype = {
 		aTabBrowser = aTabBrowser || this.browser;
 		var allTabsButton = d.getElementById('alltabs-button') ||
 				( // Tab Mix Plus
-					this.getTreePref('compatibility.TMP') &&
+					TSTUtils.getTreePref('compatibility.TMP') &&
 					d.getAnonymousElementByAttribute(aTabBrowser.mTabContainer, 'anonid', 'alltabs-button')
 				);
 
@@ -464,7 +470,7 @@ TreeStyleTabWindow.prototype = {
  
 	updateAllTabsPopup : function TSTWindow_updateAllTabsPopup(aEvent) 
 	{
-		if (!this.getTreePref('enableSubtreeIndent.allTabsPopup')) return;
+		if (!TSTUtils.getTreePref('enableSubtreeIndent.allTabsPopup')) return;
 
 		var items = Array.slice(aEvent.originalTarget.childNodes);
 		var firstItemIndex = 0;
@@ -826,8 +832,8 @@ TreeStyleTabWindow.prototype = {
 	{
 		return !this.ctrlTabPreviewsEnabled &&
 				(
-					this.getTreePref('autoExpandSubtreeOnSelect.whileFocusMovingByShortcut') ||
-					this.getTreePref('autoCollapseExpandSubtreeOnSelect')
+					TSTUtils.getTreePref('autoExpandSubtreeOnSelect.whileFocusMovingByShortcut') ||
+					TSTUtils.getTreePref('autoCollapseExpandSubtreeOnSelect')
 				);
 	},
  
@@ -900,15 +906,15 @@ TreeStyleTabWindow.prototype = {
 			width = this.maxTabbarWidth(width, b);
 			if (expanded || b.treeStyleTab.autoHide.expanded) {
 				this.setPrefForActiveWindow(function() {
-					this.setTreePref('tabbar.width', width);
+					TSTUtils.setTreePref('tabbar.width', width);
 				});
 				if (b.treeStyleTab.autoHide.mode == b.treeStyleTab.autoHide.kMODE_SHRINK &&
 					b.treeStyleTab.tabStripPlaceHolder)
-					b.treeStyleTab.tabStripPlaceHolder.setAttribute('width', this.getTreePref('tabbar.shrunkenWidth'));
+					b.treeStyleTab.tabStripPlaceHolder.setAttribute('width', TSTUtils.getTreePref('tabbar.shrunkenWidth'));
 			}
 			else {
 				this.setPrefForActiveWindow(function() {
-					this.setTreePref('tabbar.shrunkenWidth', width);
+					TSTUtils.setTreePref('tabbar.shrunkenWidth', width);
 				});
 			}
 		}
@@ -916,7 +922,7 @@ TreeStyleTabWindow.prototype = {
 			let delta = aEvent.screenY - this.tabbarResizeStartY;
 			height += (pos == 'top' ? delta : -delta );
 			this.setPrefForActiveWindow(function() {
-				this.setTreePref('tabbar.height', this.maxTabbarHeight(height, b));
+				TSTUtils.setTreePref('tabbar.height', this.maxTabbarHeight(height, b));
 			});
 		}
 		b.treeStyleTab.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_TABBAR_RESIZE);
@@ -980,7 +986,7 @@ TreeStyleTabWindow.prototype = {
 		if (
 			this.updateAeroPeekPreviewsTimer ||
 			!this.getPref('browser.taskbar.previews.enable') ||
-			!this.getTreePref('taskbarPreviews.hideCollapsedTabs') ||
+			!TSTUtils.getTreePref('taskbarPreviews.hideCollapsedTabs') ||
 			!('Win7Features' in w) ||
 			!w.Win7Features ||
 			!this.AeroPeek ||
@@ -1004,7 +1010,7 @@ TreeStyleTabWindow.prototype = {
 	{
 		if (
 			!this.getPref('browser.taskbar.previews.enable') ||
-			!this.getTreePref('taskbarPreviews.hideCollapsedTabs')
+			!TSTUtils.getTreePref('taskbarPreviews.hideCollapsedTabs')
 			)
 			return;
 
@@ -1041,12 +1047,12 @@ TreeStyleTabWindow.prototype = {
 
 		try {
 			var TabsOnTop = w.TabsOnTop;
-			var originalState = this.getTreePref('tabsOnTop.originalState');
+			var originalState = TSTUtils.getTreePref('tabsOnTop.originalState');
 			if (originalState === null) {
 				let current = this.getDefaultPref('browser.tabs.onTop') === null ?
 								TabsOnTop.enabled :
 								this.getPref('browser.tabs.onTop') ;
-				this.setTreePref('tabsOnTop.originalState', originalState = current);
+				TSTUtils.setTreePref('tabsOnTop.originalState', originalState = current);
 			}
 
 			if (this.browser.treeStyleTab.position != 'top' ||
@@ -1057,7 +1063,7 @@ TreeStyleTabWindow.prototype = {
 			else {
 				if (TabsOnTop.enabled != originalState)
 					TabsOnTop.enabled = originalState;
-				this.clearTreePref('tabsOnTop.originalState');
+				TSTUtils.clearTreePref('tabsOnTop.originalState');
 			}
 		}
 		finally {
@@ -1142,7 +1148,7 @@ TreeStyleTabWindow.prototype = {
 			return;
 
 		var b = aTabBrowser || this.browser;
-		this._handleNewTabCommand(b.selectedTab, this.getTreePref('autoAttach.newTabCommand'));
+		this._handleNewTabCommand(b.selectedTab, TSTUtils.getTreePref('autoAttach.newTabCommand'));
 	},
  
 	handleNewTabActionOnButton : function TSTWindow_handleNewTabActionOnButton(aEvent) 
@@ -1153,7 +1159,7 @@ TreeStyleTabWindow.prototype = {
 
 		var newTabButton = this.getNewTabButtonFromEvent(aEvent);
 		if (newTabButton) {
-			this._handleNewTabCommand(this.browser.selectedTab, this.getTreePref('autoAttach.newTabButton'));
+			this._handleNewTabCommand(this.browser.selectedTab, TSTUtils.getTreePref('autoAttach.newTabButton'));
 			let self = this.windowService || this;
 			self._clickEventOnNewTabButtonHandled = true;
 			this.Deferred.next(function() {
@@ -1161,7 +1167,7 @@ TreeStyleTabWindow.prototype = {
 			});
 		}
 		else if (aEvent.target.id == 'urlbar-go-button' || aEvent.target.id == 'go-button') {
-			this._handleNewTabCommand(this.browser.selectedTab, this.getTreePref('autoAttach.goButton'));
+			this._handleNewTabCommand(this.browser.selectedTab, TSTUtils.getTreePref('autoAttach.goButton'));
 		}
 	},
 	_clickEventOnNewTabButtonHandled : false,
@@ -1175,7 +1181,7 @@ TreeStyleTabWindow.prototype = {
 		var behaviorPref = !aDelta ? 'autoAttach.duplicateTabCommand' :
 							aDelta < 0 ? 'autoAttach.duplicateTabCommand.back' :
 										'autoAttach.duplicateTabCommand.forward'
-		var behavior = this.getTreePref(behaviorPref);
+		var behavior = TSTUtils.getTreePref(behaviorPref);
 		this._handleNewTabCommand(aTab || b.selectedTab, behavior);
 	},
  
@@ -1300,7 +1306,7 @@ TreeStyleTabWindow.prototype = {
 		this.setTabbrowserAttribute(this.kFIXED+'-'+orient, newFixed || null, b);
 		this.setPrefForActiveWindow(function() {
 			b.treeStyleTab.fixed = newFixed;
-			this.setTreePref('tabbar.fixed.'+orient, newFixed);
+			TSTUtils.setTreePref('tabbar.fixed.'+orient, newFixed);
 		});
 
 		b.treeStyleTab.updateTabbarState();
@@ -1429,7 +1435,7 @@ TreeStyleTabWindow.prototype = {
 			aTabs.indexOf(next) > -1
 		);
 
-		var root = this.getTreePref('createSubtree.underParent') ?
+		var root = TSTUtils.getTreePref('createSubtree.underParent') ?
 					b.addTab(this.getGroupTabURI()) :
 					aTabs.shift() ;
 		var self = this;
@@ -1538,7 +1544,7 @@ TreeStyleTabWindow.prototype = {
   
 	expandTreeAfterKeyReleased : function TSTWindow_expandTreeAfterKeyReleased(aTab) 
 	{
-		if (this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut')) return;
+		if (TSTUtils.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut')) return;
 		this._tabShouldBeExpandedAfterKeyReleased = aTab || null;
 	},
 	_tabShouldBeExpandedAfterKeyReleased : null,
@@ -1689,7 +1695,7 @@ TreeStyleTabWindow.prototype = {
 		{
 			case 'extensions.treestyletab.tabbar.autoHide.mode':
 				// don't set on this time, because appearance of all tabbrowsers are not updated yet.
-				// this.autoHide.mode = this.getTreePref('tabbar.autoHide.mode');
+				// this.autoHide.mode = TSTUtils.getTreePref('tabbar.autoHide.mode');
 			case 'extensions.treestyletab.tabbar.autoShow.accelKeyDown':
 			case 'extensions.treestyletab.tabbar.autoShow.tabSwitch':
 			case 'extensions.treestyletab.tabbar.autoShow.feedback':
