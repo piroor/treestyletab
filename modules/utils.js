@@ -76,6 +76,6 @@ let TreeStyleTabUtils = {
 	clearTreePref : function TSTUtils_clearTreePref(aPrefstring)
 	{
 		return prefs.clearPref(TST_PREF_PREFIX + aPrefstring);
-	},
+	}
 
 };
