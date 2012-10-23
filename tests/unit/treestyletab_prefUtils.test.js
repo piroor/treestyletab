@@ -1,8 +1,6 @@
-var namespace = { window : { addEventListener : function() {} } };
-utils.include('../../content/treestyletab/res/prefs.js', namespace, 'Shift_JIS');
-utils.include('../../content/treestyletab/treestyletab.js', namespace, 'Shift_JIS');
+utils.import('../../modules/utils.js');
+assert.isDefined(TreeStyleTabUtils);
 
-var sv;
 var random = parseInt(Math.random() * 65000);
 var root = 'extensions.treestyletab.';
 
@@ -21,8 +19,6 @@ function clearTestPrefs()
 
 function setUp()
 {
-	sv = {};
-	sv.__proto__ = namespace.TreeStyleTabService;
 	clearTestPrefs();
 }
 
@@ -33,41 +29,19 @@ function tearDown()
 
 function test_setAndGetPref()
 {
-	function assertSetAndGetPref(aPref, aValue)
-	{
-		assert.isNull(utils.getPref(aPref));
-		assert.isNull(sv.getPref(aPref));
-
-		sv.setPref(aPref, aValue);
-
-		assert.isNotNull(utils.getPref(aPref));
-		assert.equals(aValue, utils.getPref(aPref));
-
-		assert.isNotNull(sv.getPref(aPref));
-		assert.equals(aValue, sv.getPref(aPref));
-
-		sv.clearPref(aPref);
-		assert.isNull(utils.getPref(aPref));
-		assert.isNull(sv.getPref(aPref));
-	}
-
 	function assertSetAndGetTreePref(aPref, aValue)
 	{
 		assert.isNull(utils.getPref(root+aPref));
-		assert.isNull(sv.getTreePref(aPref));
+		assert.isNull(TreeStyleTabUtils.getTreePref(aPref));
 
-		sv.setTreePref(aPref, aValue);
+		TreeStyleTabUtils.setTreePref(aPref, aValue);
 
 		assert.isNotNull(utils.getPref(root+aPref));
 		assert.equals(aValue, utils.getPref(root+aPref));
 
-		assert.isNotNull(sv.getTreePref(aPref));
-		assert.equals(aValue, sv.getTreePref(aPref));
+		assert.isNotNull(TreeStyleTabUtils.getTreePref(aPref));
+		assert.equals(aValue, TreeStyleTabUtils.getTreePref(aPref));
 	}
-
-	assertSetAndGetPref(random+'.bool', true);
-	assertSetAndGetPref(random+'.int', 29);
-	assertSetAndGetPref(random+'.string', 'string');
 
 	assertSetAndGetTreePref(random+'.bool', true);
 	assertSetAndGetTreePref(random+'.int', 29);
@@ -97,7 +71,7 @@ function test_listeners()
 			messages : []
 		};
 
-	sv.addPrefListener(singleDomainListener);
+	TreeStyleTabUtils.prefs.addPrefListener(singleDomainListener);
 	utils.setPref(root+random+'.domain1.pref', true);
 	utils.setPref(root+random+'.domain1.pref', false);
 	assert.equals(
@@ -108,12 +82,12 @@ function test_listeners()
 		singleDomainListener.messages
 	);
 	singleDomainListener.messages = [];
-	sv.removePrefListener(singleDomainListener);
+	TreeStyleTabUtils.prefs.removePrefListener(singleDomainListener);
 	utils.setPref(root+random+'.domain1.pref', true);
 	utils.setPref(root+random+'.domain1.pref', false);
 	assert.equals([], singleDomainListener.messages);
 
-	sv.addPrefListener(multipleDomainsListener);
+	TreeStyleTabUtils.prefs.addPrefListener(multipleDomainsListener);
 	utils.setPref(root+random+'.domain2.pref', true);
 	utils.setPref(root+random+'.domain3.pref', true);
 	utils.setPref(root+random+'.domain2.pref', false);
@@ -128,7 +102,7 @@ function test_listeners()
 		multipleDomainsListener.messages
 	);
 	multipleDomainsListener.messages = [];
-	sv.removePrefListener(multipleDomainsListener);
+	TreeStyleTabUtils.prefs.removePrefListener(multipleDomainsListener);
 	utils.setPref(root+random+'.domain2.pref', true);
 	utils.setPref(root+random+'.domain3.pref', true);
 	utils.setPref(root+random+'.domain2.pref', false);

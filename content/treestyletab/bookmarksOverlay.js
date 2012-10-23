@@ -1,3 +1,7 @@
+Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
+XPCOMUtils.defineLazyModuleGetter(this,
+  'TreeStyleTabUtils', 'resource://treestyletab-modules/utils.js');
+
 var TreeStyleTabBookmarksService = {
 	__proto__ : TreeStyleTabService,
 
@@ -228,7 +232,7 @@ var TreeStyleTabBookmarksService = {
 			var sv = this;
 			with (ns) {
 
-			let (method = (sv.getTreePref('compatibility.TabUtilities') && PlacesUIUtils.TU__openTabset) ?
+			let (method = (TreeStyleTabUtils.getTreePref('compatibility.TabUtilities') && PlacesUIUtils.TU__openTabset) ?
 							'TU__openTabset' :
 							'_openTabset') {
 				eval('PlacesUIUtils.'+method+' = '+
@@ -265,11 +269,11 @@ var TreeStyleTabBookmarksService = {
 						'$1'
 					)
 				);
-				if (sv.getTreePref('compatibility.TabUtilities') && method.indexOf('TU_') > -1)
+				if (TreeStyleTabUtils.getTreePref('compatibility.TabUtilities') && method.indexOf('TU_') > -1)
 					window[method] = PlacesUIUtils[method];
 			}
 
-			let (method = (sv.getTreePref('compatibility.TabUtilities') && PlacesUIUtils.TU_openContainerNodeInTabs) ?
+			let (method = (TreeStyleTabUtils.getTreePref('compatibility.TabUtilities') && PlacesUIUtils.TU_openContainerNodeInTabs) ?
 							'TU_openContainerNodeInTabs' :
 							'openContainerNodeInTabs') {
 				eval('PlacesUIUtils.'+method+' = '+
@@ -288,11 +292,11 @@ var TreeStyleTabBookmarksService = {
 						'$1, aNode.title$2'
 					)
 				);
-				if (sv.getTreePref('compatibility.TabUtilities') && method.indexOf('TU_') > -1)
+				if (TreeStyleTabUtils.getTreePref('compatibility.TabUtilities') && method.indexOf('TU_') > -1)
 					window[method] = PlacesUIUtils[method];
 			}
 
-			let (method = (sv.getTreePref('compatibility.TabUtilities') && PlacesUIUtils.TU_openURINodesInTabs) ?
+			let (method = (TreeStyleTabUtils.getTreePref('compatibility.TabUtilities') && PlacesUIUtils.TU_openURINodesInTabs) ?
 							'TU_openURINodesInTabs' :
 							'openURINodesInTabs') {
 				eval('PlacesUIUtils.'+method+' = '+
@@ -324,7 +328,7 @@ var TreeStyleTabBookmarksService = {
 						'$2'
 					)
 				);
-				if (sv.getTreePref('compatibility.TabUtilities') && method.indexOf('TU_') > -1)
+				if (TreeStyleTabUtils.getTreePref('compatibility.TabUtilities') && method.indexOf('TU_') > -1)
 					window[method] = PlacesUIUtils[method];
 			}
 
@@ -415,7 +419,7 @@ var TreeStyleTabBookmarksService = {
 				}
 			}
 
-			if (sv.getTreePref('compatibility.TMP') &&
+			if (TreeStyleTabUtils.getTreePref('compatibility.TMP') &&
 				'TMP_Places' in aBrowserWindow &&
 				'openGroup' in aBrowserWindow.TMP_Places) {
 				result.treeStructure = treeStructure;

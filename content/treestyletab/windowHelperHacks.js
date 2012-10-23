@@ -1,4 +1,8 @@
-Components.utils.import('resource://gre/modules/Services.jsm');
+Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
+XPCOMUtils.defineLazyModuleGetter(this,
+  'Services', 'resource://gre/modules/Services.jsm');
+XPCOMUtils.defineLazyModuleGetter(this,
+  'TreeStyleTabUtils', 'resource://treestyletab-modules/utils.js');
 
 TreeStyleTabWindowHelper.extraProperties = [
 	TreeStyleTabService.kID,
@@ -17,7 +21,7 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 	// Highlander
 	// https://addons.mozilla.org/firefox/addon/4086
 	if ('Highlander' in window &&
-		sv.getTreePref('compatibility.Highlander')) {
+		TreeStyleTabUtils.getTreePref('compatibility.Highlander')) {
 		eval('Highlander.overrideHandleLinkClick = '+
 			Highlander.overrideHandleLinkClick.toSource().replace(
 				/(var )?origHandleLinkClick/g,
@@ -31,7 +35,7 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 	// PermaTabs Mod
 	// https://addons.mozilla.org/firefox/addon/7816
 	if ('permaTabs' in window &&
-		sv.getTreePref('compatibility.PermaTabs')) {
+		TreeStyleTabUtils.getTreePref('compatibility.PermaTabs')) {
 		if ('__init' in permaTabs) {
 			// without delay, Firefox crashes on startup.
 			eval('permaTabs.__init = '+
@@ -50,7 +54,7 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 					'  var TST = TreeStyleTabService;\n' +
 					'  if (this.TSTRestoredPermaTabsInfo === void(0)) {\n' +
 					'    try {\n' +
-					'      eval("this.TSTRestoredPermaTabsInfo = "+(TST.getTreePref("permaTabsInfo") || "null"));\n' +
+					'      eval("this.TSTRestoredPermaTabsInfo = "+(TreeStyleTabUtils.getTreePref("permaTabsInfo") || "null"));\n' +
 					'    }\n' +
 					'    catch(e) {\n' +
 					'    }\n' +
@@ -101,7 +105,7 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 					'    }\n' +
 					'    tabsInfo[this.permaTabs[index].id] = info;\n' +
 					'  }\n' +
-					'  TST.setTreePref("permaTabsInfo", tabsInfo.toSource());\n' +
+					'  TreeStyleTabUtils.setTreePref("permaTabsInfo", tabsInfo.toSource());\n' +
 					'}).call(this);'
 				)
 			);
@@ -109,12 +113,12 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 	}
 
 	// Tab Mix Plus
-	if (sv.getTreePref('compatibility.TMP')) {
+	if (TreeStyleTabUtils.getTreePref('compatibility.TMP')) {
 		document.documentElement.setAttribute('treestyletab-enable-compatibility-tmp', true);
 	}
 	// Tab Mix Plus, SessionStore API
 	if (
-		sv.getTreePref('compatibility.TMP') &&
+		TreeStyleTabUtils.getTreePref('compatibility.TMP') &&
 		('TabmixSessionData' in window || 'SessionData' in window)
 		) {
 		let sessionData = window.TabmixSessionData || window.SessionData;
@@ -187,7 +191,7 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 	// https://addons.mozilla.org/firefox/addon/2324
 	// We need to initialize TST before Session Manager restores the last session anyway!
 	if ('gSessionManager' in window &&
-		sv.getTreePref('compatibility.SessionManager')) {
+		TreeStyleTabUtils.getTreePref('compatibility.SessionManager')) {
 		if ('onLoad_proxy' in gSessionManager &&
 			'onLoad' in gSessionManager) {
 			eval('gSessionManager.onLoad = '+gSessionManager.onLoad.toSource().replace(
@@ -215,7 +219,7 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 	// FullerScreen
 	// https://addons.mozilla.org/firefox/addon/4650
 	if ('FS_onFullerScreen' in window &&
-		sv.getTreePref('compatibility.FullerScreen')) {
+		TreeStyleTabUtils.getTreePref('compatibility.FullerScreen')) {
 		let (functions = 'CheckIfFullScreen,FS_onFullerScreen,FS_onMouseMove'.split(',')) {
 			for (let i = 0, maxi = functions.length; i < maxi; i++)
 			{
@@ -232,7 +236,7 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 	// TooManyTabs
 	// https://addons.mozilla.org/firefox/addon/9429
 	if ('tooManyTabs' in window &&
-		sv.getTreePref('compatibility.TooManyTabs')) {
+		TreeStyleTabUtils.getTreePref('compatibility.TooManyTabs')) {
 		sv.registerExpandTwistyAreaBlocker('tooManyTabs');
 	}
 
@@ -240,7 +244,7 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 	// https://addons.mozilla.org/firefox/addon/dragndrop-toolbars/
 	if ('globDndtb' in window &&
 		globDndtb.setTheStuff &&
-		sv.getTreePref('compatibility.DragNDropToolbars')) {
+		TreeStyleTabUtils.getTreePref('compatibility.DragNDropToolbars')) {
 		let reinitTabbar = function() {
 				TreeStyleTabService.stopRendering();
 				gBrowser.treeStyleTab.syncDestroyTabbar();
@@ -278,7 +282,7 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 	if ('mtSidebarStartup' in window &&
 		'mtSidebarShutdown' in window &&
 		'mtPreventHiding' in window &&
-		sv.getTreePref('compatibility.OptimozTweaks')) {
+		TreeStyleTabUtils.getTreePref('compatibility.OptimozTweaks')) {
 		eval('window.mtSidebarStartup = '+window.mtSidebarStartup.toSource().replace(
 			'{',
 			'{\n' +
@@ -317,11 +321,11 @@ TreeStyleTabWindowHelper.overrideExtensionsBeforeBrowserInit = function TSTWH_ov
 	var sv = this.service;
 
 	// Tab Mix Plus
-	if (sv.getTreePref('compatibility.TMP') &&
+	if (TreeStyleTabUtils.getTreePref('compatibility.TMP') &&
 		'TMP_LastTab' in window) {
 		TMP_LastTab.TabBar = gBrowser.mTabContainer;
 	}
-	if (sv.getTreePref('compatibility.TMP') &&
+	if (TreeStyleTabUtils.getTreePref('compatibility.TMP') &&
 		'isTabVisible' in gBrowser.mTabContainer &&
 		'ensureTabIsVisible' in gBrowser.mTabContainer) {
 		function replaceHorizontalProps(aString)
@@ -357,7 +361,7 @@ TreeStyleTabWindowHelper.overrideExtensionsBeforeBrowserInit = function TSTWH_ov
 	// Tabberwocky
 	// https://addons.mozilla.org/firefox/addon/14439
 	if ('tabberwocky' in window &&
-		sv.getTreePref('compatibility.Tabberwocky')) {
+		TreeStyleTabUtils.getTreePref('compatibility.Tabberwocky')) {
 		let listener = {
 				handleEvent : function(aEvent)
 				{
@@ -402,7 +406,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// https://addons.mozilla.org/firefox/addon/8644
 	if ('selectionlinks' in window &&
 		'parseSelection' in selectionlinks &&
-		sv.getTreePref('compatibility.SelectionLinks')) {
+		TreeStyleTabUtils.getTreePref('compatibility.SelectionLinks')) {
 		eval('selectionlinks.parseSelection = '+
 			selectionlinks.parseSelection.toSource().replace(
 				/((?:[^\s:;]+.selectedTab\s*=\s*)?([^\s:;]+).addTab\()/g,
@@ -416,7 +420,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 
 	// Tab Mix Plus
 	if (
-		sv.getTreePref('compatibility.TMP') &&
+		TreeStyleTabUtils.getTreePref('compatibility.TMP') &&
 		'TabmixTabbar' in window
 		) {
 		let DNDObserver = 'TMP_tabDNDObserver' in window ? TMP_tabDNDObserver : TabDNDObserver ;
@@ -487,7 +491,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// Super DragAndGo
 	// https://addons.mozilla.org/firefox/addon/137
 	if ('superDrag' in window &&
-		sv.getTreePref('compatibility.SuperDragAndGo')) {
+		TreeStyleTabUtils.getTreePref('compatibility.SuperDragAndGo')) {
 		eval('superDrag.onDrop = '+
 			superDrag.onDrop.toSource().replace(
 				/(var newTab = getBrowser\(\).addTab\([^\)]+\);)/g,
@@ -502,7 +506,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// Drag de Go
 	// https://addons.mozilla.org/firefox/addon/2918
 	if ('ddg_ges' in window &&
-		sv.getTreePref('compatibility.DragDeGo')) {
+		TreeStyleTabUtils.getTreePref('compatibility.DragDeGo')) {
 		eval('ddg_ges.Open = '+
 			ddg_ges.Open.toSource().replace(
 				'if (mode[1] == "h" || mode[1] == "f") {',
@@ -523,7 +527,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// Colorful Tabs
 	// https://addons.mozilla.org/firefox/addon/1368
 	if ('colorfulTabs' in window &&
-		sv.getTreePref('compatibility.ColorfulTabs')) {
+		TreeStyleTabUtils.getTreePref('compatibility.ColorfulTabs')) {
 		let listener = {
 				handleEvent : function(aEvent)
 				{
@@ -575,7 +579,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// FLST (Focus Last Selected Tab)
 	// https://addons.mozilla.org/firefox/addon/32
 	if ('flst' in window &&
-		sv.getTreePref('compatibility.FLST')) {
+		TreeStyleTabUtils.getTreePref('compatibility.FLST')) {
 		TreeStyleTabService.registerTabFocusAllowance(function(aTabBrowser) {
 			return !aTabBrowser.treeStyleTab.getPref('extensions.flst.enabled');
 		});
@@ -583,7 +587,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 
 	// Focus Last Selected Tab 0.9.5.x
 	// http://www.gozer.org/mozilla/extensions/
-	if (sv.getTreePref('compatibility.FocusLastSelectedTab')) {
+	if (TreeStyleTabUtils.getTreePref('compatibility.FocusLastSelectedTab')) {
 		sv.extensions.isAvailable('focuslastselectedtab@gozer.org', { ok : function() {
 			TreeStyleTabService.registerTabFocusAllowance(function(aTabBrowser) {
 				return !aTabBrowser.selectedTab.hasAttribute('lastselected');
@@ -594,7 +598,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// LastTab
 	// https://addons.mozilla.org/firefox/addon/112
 	if ('LastTab' in window &&
-		sv.getTreePref('compatibility.LastTab')) {
+		TreeStyleTabUtils.getTreePref('compatibility.LastTab')) {
 		TreeStyleTabService.registerTabFocusAllowance(function(aTabBrowser) {
 			return !aTabBrowser.treeStyleTab.getPref('extensions.lasttab.focusLastTabOnClose');
 		});
@@ -603,7 +607,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// FireGestures
 	// https://addons.mozilla.org/firefox/addon/6366
 	if ('FireGestures' in window &&
-		sv.getTreePref('compatibility.FireGestures')) {
+		TreeStyleTabUtils.getTreePref('compatibility.FireGestures')) {
 		eval('FireGestures.onExtraGesture = '+
 			FireGestures.onExtraGesture.toSource().replace(
 				'case "keypress-stop":',
@@ -648,7 +652,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// http://www.mousegestures.org/
 	if ('mgBuiltInFunctions' in window &&
 		'mgLinkInTab' in mgBuiltInFunctions &&
-		sv.getTreePref('compatibility.MouseGesturesRedox')) {
+		TreeStyleTabUtils.getTreePref('compatibility.MouseGesturesRedox')) {
 		eval('mgBuiltInFunctions.mgLinkInTab = '+
 			mgBuiltInFunctions.mgLinkInTab.toSource().replace(
 				'var tab',
@@ -659,7 +663,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 
 	// Greasemonkey
 	// https://addons.mozilla.org/firefox/addon/748
-	if (sv.getTreePref('compatibility.Greasemonkey')) {
+	if (TreeStyleTabUtils.getTreePref('compatibility.Greasemonkey')) {
 		try {
 			let hitchModule = Components.utils.import('resource://greasemonkey/util/hitch.js', {});
 			let hitch = hitchModule.hitch;
@@ -715,7 +719,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// SBM Counter
 	// http://miniturbo.org/products/sbmcounter/
 	if ('SBMCounter' in window &&
-		sv.getTreePref('compatibility.SBMCounter')) {
+		TreeStyleTabUtils.getTreePref('compatibility.SBMCounter')) {
 		eval('SBMCounter.action = '+
 			SBMCounter.action.toSource().replace(
 				'gBrowser.selectedTab = gBrowser.addTab',
@@ -727,7 +731,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// Aging Tabs
 	// https://addons.mozilla.org/firefox/addon/3542
 	if ('agingTabs' in window &&
-		sv.getTreePref('compatibility.AgingTabs')) {
+		TreeStyleTabUtils.getTreePref('compatibility.AgingTabs')) {
 		eval('agingTabs.setColor = '+
 			agingTabs.setColor.toSource().replace(
 				'{',
@@ -740,7 +744,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// https://addons.mozilla.org/firefox/addon/4336
 	// Snap Links Plus
 	// http://snaplinks.mozdev.org/
-	if (sv.getTreePref('compatibility.SnapLinks')) {
+	if (TreeStyleTabUtils.getTreePref('compatibility.SnapLinks')) {
 		if ('executeAction' in window &&
 			'openTabs' in window) {
 			eval('window.openTabs = '+
@@ -765,7 +769,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// https://addons.mozilla.org/firefox/addon/879
 	if ('mouselessbrowsing' in window &&
 		'EventHandler' in mouselessbrowsing &&
-		sv.getTreePref('compatibility.MouselessBrowsing')) {
+		TreeStyleTabUtils.getTreePref('compatibility.MouselessBrowsing')) {
 		if ('execute' in mouselessbrowsing.EventHandler) {
 			eval('mouselessbrowsing.EventHandler.execute = '+
 				mouselessbrowsing.EventHandler.execute.toSource().replace(
@@ -800,7 +804,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// https://addons.mozilla.org/firefox/addon/425
 	if ('LinkyContext' in window &&
 		'prototype' in LinkyContext &&
-		sv.getTreePref('compatibility.Linky')) {
+		TreeStyleTabUtils.getTreePref('compatibility.Linky')) {
 		let (methods = 'doSelected,doSelectedText,doImages,doAll,doAllPics,doValidateAll,doValidateSelected'.split(',')) {
 			for (let i = 0, maxi = methods.length; i < maxi; i++)
 			{
@@ -823,7 +827,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// https://addons.mozilla.org/firefox/addon/6912
 	if ('QuickDrag' in window &&
 		'_loadTab' in QuickDrag &&
-		sv.getTreePref('compatibility.QuickDrag')) {
+		TreeStyleTabUtils.getTreePref('compatibility.QuickDrag')) {
 		eval('QuickDrag._loadTab = '+
 			QuickDrag._loadTab.toSource().replace(
 				/(gBrowser.loadOneTab\()/g,
@@ -835,7 +839,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// Autohide
 	// http://www.krickelkrackel.de/autohide/
 	if ('autoHIDE' in window &&
-		sv.getTreePref('compatibility.Autohide')) {
+		TreeStyleTabUtils.getTreePref('compatibility.Autohide')) {
 		let autoHideEventListener = {
 				handleEvent : function(aEvent)
 				{
@@ -924,7 +928,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		sidewikiWindowHandler.barsContainer_ &&
 		sidewikiWindowHandler.barsContainer_.geometry_ &&
 		sidewikiWindowHandler.barsContainer_.geometry_.__proto__.getWindowSizeForDrawers &&
-		sv.getTreePref('compatibility.GoogleToolbar.Sidewiki')) {
+		TreeStyleTabUtils.getTreePref('compatibility.GoogleToolbar.Sidewiki')) {
 		let func = sidewikiWindowHandler.barsContainer_.geometry_.__proto__.getWindowSizeForDrawers.toSource();
 		if (func.indexOf('treeStyleTab') < 0) {
 			eval('sidewikiWindowHandler.barsContainer_.geometry_.__proto__.getWindowSizeForDrawers = '+func.replace(
@@ -950,7 +954,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// Smoothly Close Tabs
 	// https://addons.mozilla.org/firefox/addon/71410
 	if ('SMOOTHLYCLOSETABS' in window &&
-		sv.getTreePref('compatibility.SmoothlyCloseTabs')) {
+		TreeStyleTabUtils.getTreePref('compatibility.SmoothlyCloseTabs')) {
 		let replaceScrollProps = function(aString) {
 			return aString.replace(
 					/\.scrollWidth/g,
@@ -980,7 +984,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// Super Tab Mode
 	// https://addons.mozilla.org/firefox/addon/13288
 	if ('stmM' in window &&
-		sv.getTreePref('compatibility.STM')) {
+		TreeStyleTabUtils.getTreePref('compatibility.STM')) {
 		var observer = {
 				domain : 'extensions.stm.',
 				observe : function(aSubject, aTopic, aData)
@@ -1046,7 +1050,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// Tab Utilities
 	// https://addons.mozilla.org/firefox/addon/59961
 	if ('tabutils' in window &&
-		sv.getTreePref('compatibility.TabUtilities')) {
+		TreeStyleTabUtils.getTreePref('compatibility.TabUtilities')) {
 		TreeStyleTabService.registerTabFocusAllowance(function(aTabBrowser) {
 			return aTabBrowser.treeStyleTab.getPref('extensions.tabutils.selectOnClose') == 0;
 		});
@@ -1054,7 +1058,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 
 	// Remove New Tab Button
 	// https://addons.mozilla.org/firefox/addon/10535
-	if (sv.getTreePref('compatibility.RemoveNewTabButton')) {
+	if (TreeStyleTabUtils.getTreePref('compatibility.RemoveNewTabButton')) {
 		sv.extensions.isAvailable('remove-new-tab-button@forerunnerdesigns.com', { ok : function() {
 			document.documentElement.setAttribute(TreeStyleTabService.kHIDE_NEWTAB, true);
 		}});
@@ -1064,7 +1068,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// https://addons.mozilla.org/firefox/addon/10909/
 	if ('IeTab' in window &&
 		IeTab.prototype &&
-		sv.getTreePref('compatibility.IETabPlus')) {
+		TreeStyleTabUtils.getTreePref('compatibility.IETabPlus')) {
 		if (IeTab.prototype.switchTabEngine)
 			eval('IeTab.prototype.switchTabEngine = '+
 				IeTab.prototype.switchTabEngine.toSource().replace(
@@ -1085,7 +1089,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// Locationbar2
 	// https://addons.mozilla.org/firefox/addon/locationbar²/
 	if ('lb2_alternateStyles' in window &&
-		sv.getTreePref('compatibility.Locationbar2')) {
+		TreeStyleTabUtils.getTreePref('compatibility.Locationbar2')) {
 		let listening = false;
 		let listener = function(aEvent) {
 				switch (aEvent.type)
@@ -1132,7 +1136,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// https://addons.mozilla.org/firefox/addon/instaclick/
 	if ('instaclick' in window &&
 		'contentAreaClick2' in window.instaclick &&
-		sv.getTreePref('compatibility.InstaClick')) {
+		TreeStyleTabUtils.getTreePref('compatibility.InstaClick')) {
 		eval('instaclick.contentAreaClick2 = '+
 			instaclick.contentAreaClick2.toSource().replace(
 				'gBrowser.loadOneTab(',
@@ -1145,7 +1149,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// https://addons.mozilla.org/firefox/addon/duplicate-this-tab/
 	if ('duplicatethistab' in window &&
 		'openLinkWithHistory' in window.duplicatethistab &&
-		sv.getTreePref('compatibility.DuplicateThisTab')) {
+		TreeStyleTabUtils.getTreePref('compatibility.DuplicateThisTab')) {
 		eval('duplicatethistab.openLinkWithHistory = '+
 			duplicatethistab.openLinkWithHistory.toSource().replace(
 				'var newTab = ',
@@ -1164,7 +1168,7 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 	var sv = this.service;
 
 	// Tab Mix Plus
-	if (sv.getTreePref('compatibility.TMP') &&
+	if (TreeStyleTabUtils.getTreePref('compatibility.TMP') &&
 		'TabmixTabbar' in window) {
 		// correct broken appearance of the first tab
 		var t = gBrowser.treeStyleTab.getFirstTab(gBrowser);
@@ -1205,7 +1209,7 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 	if ('MultiLinks_Wrapper' in window &&
 		'LinksManager' in MultiLinks_Wrapper &&
 		'OpenInNewTabs' in MultiLinks_Wrapper.LinksManager &&
-		sv.getTreePref('compatibility.MultiLinks')) {
+		TreeStyleTabUtils.getTreePref('compatibility.MultiLinks')) {
 		eval('MultiLinks_Wrapper.LinksManager.OpenInNewTabs = '+
 			MultiLinks_Wrapper.LinksManager.OpenInNewTabs.toSource().replace(
 				'{',
@@ -1225,7 +1229,7 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 	// https://addons.mozilla.org/firefox/addon/13906/
 	if ('domaintab' in window &&
 		'TMP_howToOpen' in domaintab &&
-		sv.getTreePref('compatibility.DomainTab')) {
+		TreeStyleTabUtils.getTreePref('compatibility.DomainTab')) {
 		eval('domaintab.TMP_howToOpen = '+
 			domaintab.TMP_howToOpen.toSource().replace(
 				/(domaintab.DT_openNewTabWith\()/g,
@@ -1237,7 +1241,7 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 	// Personal Titlebar
 	// https://addons.mozilla.org/irefox/addon/personal-titlebar/
 	if (document.getElementById('personal-titlebar') &&
-		sv.getTreePref('compatibility.PersonalTitlebar')) {
+		TreeStyleTabUtils.getTreePref('compatibility.PersonalTitlebar')) {
 		let titlebar = document.getElementById('titlebar');
 		let personalTitlebar = document.getElementById('personal-titlebar');
 		let listener = {
@@ -1287,7 +1291,7 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 	// TotalToolbar
 	// http://totaltoolbar.mozdev.org/
 	let (menu = document.getElementById('tt-toolbar-properties') &&
-		sv.getTreePref('compatibility.TotalToolbar')) {
+		TreeStyleTabUtils.getTreePref('compatibility.TotalToolbar')) {
 		if (menu) {
 			let tabbarToolboxes = ['tt-toolbox-tabright', 'tt-toolbox-tableft']
 									.map(document.getElementById, document)
@@ -1348,7 +1352,7 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 			'gFxWeaveGlue' in window || // addon
 			'gSyncUI' in window // Firefox 4 built-in
 		) &&
-		sv.getTreePref('compatibility.FirefoxSync')
+		TreeStyleTabUtils.getTreePref('compatibility.FirefoxSync')
 		) {
 		let ns = {};
 		try { // 1.4
