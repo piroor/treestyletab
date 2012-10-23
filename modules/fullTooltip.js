@@ -43,7 +43,7 @@ Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 Components.utils.import('resource://treestyletab-modules/base.js');
 Components.utils.import('resource://treestyletab-modules/pseudoTreeBuilder.js');
 
-XPCOMUtils.defineLazyGetter(this, 'TSTUtils', function() {
+XPCOMUtils.defineLazyGetter(this, 'utils', function() {
 	var ns = {};
 	Components.utils.import('resource://treestyletab-modules/utils.js', ns);
 	return ns.TreeStyleTabUtils;
@@ -285,7 +285,7 @@ FullTooltipManager.prototype = {
 
 		var label;
 		var collapsed = this.isSubtreeCollapsed(tab);
-		var mode = TSTUtils.getTreePref('tooltip.mode');
+		var mode = utils.getTreePref('tooltip.mode');
 
 		var base = parseInt(tab.getAttribute(this.kNEST) || 0);
 		var descendant = this.getDescendantTabs(tab);
@@ -295,7 +295,7 @@ FullTooltipManager.prototype = {
 		if (mode > this.kTOOLTIP_MODE_DEFAULT &&
 			descendant.length) {
 			let tabs = [tab].concat(descendant);
-			let tabsToBeListed = tabs.slice(0, Math.max(1, TSTUtils.getTreePref('tooltip.maxCount')));
+			let tabsToBeListed = tabs.slice(0, Math.max(1, utils.getTreePref('tooltip.maxCount')));
 			tree = tabsToBeListed
 					.map(function(aTab) {
 						let label = aTab.getAttribute('label');
@@ -316,7 +316,7 @@ FullTooltipManager.prototype = {
 		var shouldShowTree = mode != this.kTOOLTIP_MODE_DEFAULT && (collapsed || mode == this.kTOOLTIP_MODE_ALWAYS);
 		if ('mOverCloseButton' in tab && tab.mOverCloseButton) {
 			if (descendant.length &&
-				(collapsed || TSTUtils.getTreePref('closeParentBehavior') == this.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)) {
+				(collapsed || utils.getTreePref('closeParentBehavior') == this.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)) {
 				label = tree || tab.getAttribute('label');
 				label = label && shouldShowTree ?
 						this.treeBundle.getFormattedString('tooltip.closeTree.labeled', [label]) :
@@ -353,7 +353,7 @@ FullTooltipManager.prototype = {
 	{
 		this.cancel();
 
-		var delay = TSTUtils.getTreePref('tooltip.fullTooltipDelay');
+		var delay = utils.getTreePref('tooltip.fullTooltipDelay');
 		if (delay < 0)
 			return;
 

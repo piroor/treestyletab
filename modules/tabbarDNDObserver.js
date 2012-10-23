@@ -43,7 +43,7 @@ const Ci = Components.interfaces;
 Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 Components.utils.import('resource://gre/modules/Services.jsm');
 
-XPCOMUtils.defineLazyGetter(this, 'TSTUtils', function() {
+XPCOMUtils.defineLazyGetter(this, 'utils', function() {
 	var ns = {};
 	Components.utils.import('resource://treestyletab-modules/utils.js', ns);
 	return ns.TreeStyleTabUtils;
@@ -102,7 +102,7 @@ TabbarDNDObserver.prototype = {
 			);
 
 		if (canDrag && !aEvent.shiftKey) {
-			let insensitiveArea = TSTUtils.getTreePref('tabbar.fixed.insensitiveArea');
+			let insensitiveArea = utils.getTreePref('tabbar.fixed.insensitiveArea');
 			let box = tabbar.boxObject;
 			switch (sv.position)
 			{
@@ -365,7 +365,7 @@ catch(e) {
 				var visible = sv.getNextVisibleTab(tab);
 				info.action       = sv.kACTION_STAY | sv.kACTION_ATTACH;
 				info.parent       = tab;
-				info.insertBefore = TSTUtils.getTreePref('insertNewChildAt') == sv.kINSERT_FISRT ?
+				info.insertBefore = utils.getTreePref('insertNewChildAt') == sv.kINSERT_FISRT ?
 						(sv.getFirstChildTab(tab) || visible) :
 						(sv.getNextSiblingTab(tab) || sv.getNextTab(sv.getLastDescendantTab(tab) || tab));
 				if (DEBUG && info.insertBefore) dump('  insertBefore = '+info.insertBefore._tPos+'\n');
@@ -733,7 +733,7 @@ catch(e) {
 
 		var tab = aEvent.target;
 		if (tab.localName != 'tab' ||
-			!TSTUtils.getTreePref('autoExpand.enabled'))
+			!utils.getTreePref('autoExpand.enabled'))
 			return;
 
 		w.clearTimeout(this.mAutoExpandTimer);
@@ -753,7 +753,7 @@ catch(e) {
 						sv.shouldTabAutoExpanded(tab) &&
 						tab.getAttribute(sv.kDROP_POSITION) == 'self') {
 						let draggedTab = aDragged && sv.getTabById(aDragged);
-						if (TSTUtils.getTreePref('autoExpand.intelligently')) {
+						if (utils.getTreePref('autoExpand.intelligently')) {
 							sv.collapseExpandTreesIntelligentlyFor(tab);
 							if (draggedTab)
 								aSelf.updateDragData(draggedTab);
@@ -767,7 +767,7 @@ catch(e) {
 						}
 					}
 				},
-				TSTUtils.getTreePref('autoExpand.delay')
+				utils.getTreePref('autoExpand.delay')
 			);
 		}, 0, this, tab.getAttribute(sv.kID), draggedTab && draggedTab.getAttribute(sv.kID));
 
@@ -985,7 +985,7 @@ catch(e) {
 	{
 		var sv = this.treeStyleTab;
 		if (this.mAutoExpandedTabs.length) {
-			if (TSTUtils.getTreePref('autoExpand.collapseFinally')) {
+			if (utils.getTreePref('autoExpand.collapseFinally')) {
 				for (let i = 0, maxi = this.mAutoExpandedTabs.length; i < maxi; i++)
 				{
 					sv.collapseExpandSubtree(sv.getTabById(this.mAutoExpandedTabs[i]), true, true);
