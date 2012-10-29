@@ -133,8 +133,7 @@ TabpanelDNDObserver.prototype = {
 				utils.setTreePref('tabbar.fixed.'+orient, false);
 			}
 			sv.setPrefForActiveWindow(function() {
-				sv.utils.position = position;
-				sv.position = position;
+				sv.position = sv.base.position = position;
 			});
 		}
 

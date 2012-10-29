@@ -77,7 +77,7 @@ function TreeStyleTabWindow(aWindow)
 
 TreeStyleTabWindow.prototype = {
 	
-	utils : TreeStyleTabBase, 
+	base : TreeStyleTabBase, 
 	__proto__ : TreeStyleTabBase,
  
 	window : null, 
@@ -98,16 +98,16 @@ TreeStyleTabWindow.prototype = {
 	{
 		return this.preInitialized && this.browser.treeStyleTab ?
 					this.browser.treeStyleTab.position :
-					this.utils.position ;
+					this.base.position ;
 	},
 	set position(aValue)
 	{
 		if ('UndoTabService' in this.window && this.window.UndoTabService.isUndoable()) {
-			var current = this.utils.position;
+			var current = this.base.position;
 			var self = this;
 			this.window.UndoTabService.doOperation(
 				function() {
-					self.utils.position = aValue;
+					self.base.position = aValue;
 				},
 				{
 					label  : self.treeBundle.getString('undo_changeTabbarPosition_label'),
@@ -120,37 +120,37 @@ TreeStyleTabWindow.prototype = {
 			);
 		}
 		else {
-			this.utils.position = aValue;
+			this.base.position = aValue;
 		}
 		return aValue;
 	},
  
 	undoChangeTabbarPosition : function TSTWindow_undoChangeTabbarPosition() /* PUBLIC API */ 
 	{
-		return this.utils.undoChangeTabbarPosition();
+		return this.base.undoChangeTabbarPosition();
 	},
  
 	redoChangeTabbarPosition : function TSTWindow_redoChangeTabbarPosition() /* PUBLIC API */ 
 	{
-		return this.utils.redoChangeTabbarPosition();
+		return this.base.redoChangeTabbarPosition();
 	},
  
 	get treeViewEnabled() /* PUBLIC API */ 
 	{
-		return this.utils.treeViewEnabled;
+		return this.base.treeViewEnabled;
 	},
 	set treeViewEnabled(aValue)
 	{
-		return this.utils.treeViewEnabled = aValue;
+		return this.base.treeViewEnabled = aValue;
 	},
  
 	get useTMPSessionAPI() /* PUBLIC API */ 
 	{
-		return this.utils.useTMPSessionAPI;
+		return this.base.useTMPSessionAPI;
 	},
 	set useTMPSessionAPI(aValue)
 	{
-		return this.utils.useTMPSessionAPI = aValue;
+		return this.base.useTMPSessionAPI = aValue;
 	},
  
 	get browser() 
@@ -512,7 +512,7 @@ TreeStyleTabWindow.prototype = {
 	{
 		var w = this.window;
 		if (this.browser) {
-			this.utils.inWindowDestoructionProcess = true;
+			this.base.inWindowDestoructionProcess = true;
 			try {
 				w.removeEventListener('unload', this, false);
 
@@ -560,7 +560,7 @@ TreeStyleTabWindow.prototype = {
 				throw e;
 			}
 			finally {
-				this.utils.inWindowDestoructionProcess = false;
+				this.base.inWindowDestoructionProcess = false;
 			}
 		}
 

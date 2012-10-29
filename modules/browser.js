@@ -226,7 +226,7 @@ TreeStyleTabBrowser.prototype = {
 		return (
 			// Don't touch to the <tabbrowser/> element before it is initialized by XBL constructor.
 			(this.windowService.preInitialized && this.browser.getAttribute(this.kTABBAR_POSITION)) ||
-			this.utils.position
+			this.base.position
 		);
 	},
 	set position(aValue)
@@ -1809,7 +1809,7 @@ TreeStyleTabBrowser.prototype = {
 			strip.collapsed = tabContainerBox.collapsed = collapsed;
 
 			if (statusPanel && utils.getTreePref('repositionStatusPanel')) {
-				let offsetParentBox = this.utils.findOffsetParent(statusPanel).boxObject;
+				let offsetParentBox = this.base.findOffsetParent(statusPanel).boxObject;
 				let contentBox = this.mTabBrowser.mPanelContainer.boxObject;
 				let chromeMargins = (d.documentElement.getAttribute('chromemargin') || '0,0,0,0').split(',');
 				chromeMargins = chromeMargins.map(function(aMargin) { return parseInt(aMargin); });
