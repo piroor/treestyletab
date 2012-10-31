@@ -4189,7 +4189,7 @@ TreeStyleTabBrowser.prototype = {
 
 			if (aOptions.canExpandTree) {
 				if (aOptions.canCollapseTree &&
-					aSelf.getTreePref('autoExpand.intelligently'))
+					utils.getTreePref('autoExpand.intelligently'))
 					aSelf.collapseExpandTreesIntelligentlyFor(aTab);
 				else
 					aSelf.collapseExpandSubtree(aTab, false);
