@@ -4447,9 +4447,9 @@ TreeStyleTabBrowser.prototype = {
 		var resizedTopFrame = aEvent.originalTarget.top;
 		if (resizedTopFrame == this.mTabBrowser.contentWindow ||
 			resizedTopFrame == this.window) {
-			this.mTabBrowser.mTabContainer.adjustTabstrip();
-			this.updateInvertedTabContentsOrder(true);
 			this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
+			this.updateInvertedTabContentsOrder(true);
+			this.mTabBrowser.mTabContainer.adjustTabstrip();
 		}
 	},
  
