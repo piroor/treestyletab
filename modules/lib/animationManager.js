@@ -46,7 +46,7 @@ if (typeof window == 'undefined' ||
 }
 
 (function() {
-	const currentRevision = 15;
+	const currentRevision = 16;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -86,8 +86,7 @@ if (typeof window == 'undefined' ||
 				window    : aRelatedWindow
 			});
 
-			if (!this.running)
-				this.start();
+			this.start();
 		},
 
 		removeTask : function(aTask) 
@@ -109,37 +108,26 @@ if (typeof window == 'undefined' ||
 				this.tasks.splice(i, 1);
 			}
 			this._cleanUpWindows();
-			if (!this.tasks.length)
-				this.stop();
 		},
 
 		start : function()
 		{
-			this.stop();
-			if (this.running) return;
-			if (this._windows.length) {
-				this._windows.forEach(function(aWindow) {
-					var index = this._animatingWindows.indexOf(aWindow);
-					var callback;
-					if (index < 0) {
-						this._animatingWindows.push(aWindow);
-						let self = this;
-						aWindow.mozRequestAnimationFrame(function() {
-							self.processAnimationFrame(aWindow);
-						});
-					}
-				}, this);
-			}
-			this.running = true;
+			if (!this._windows.length)
+				return;
+			this._windows.forEach(function(aWindow) {
+				if (this._animatingWindows.indexOf(aWindow) > -1)
+					return;
+				this._animatingWindows.push(aWindow);
+				let self = this;
+				aWindow.mozRequestAnimationFrame(function() {
+					self.processAnimationFrame(aWindow);
+				});
+			}, this);
 		},
 
 		stop : function() 
 		{
-			if (!this.running) return;
-			if (this._animatingWindows.length) {
-				this._animatingWindows = [];
-			}
-			this.running = false;
+			this._animatingWindows = [];
 		},
 
 		removeAllTasks : function()
@@ -150,7 +138,6 @@ if (typeof window == 'undefined' ||
 		},
 
 		tasks    : tasks,
-
 		_windows : windows,
 		_animatingWindows : [],
 
@@ -168,20 +155,17 @@ if (typeof window == 'undefined' ||
 				if (index > -1)
 					this._animatingWindows.splice(index, 1);
 
-				index = this._windows.indexOf(w);
-				if (index > -1)
-					this._windows.splice(index, 1);
+				this._windows.splice(i, 1);
 			}
 		},
 
 		processAnimationFrame : function(aWindow)
 		{
-			var index = this._animatingWindows.indexOf(aWindow);
-			if (index > -1) {
-				this.onAnimation(this, aWindow);
+			if (this._animatingWindows.indexOf(aWindow) > -1) {
+				this.onAnimation(aWindow);
 			}
 			this._cleanUpWindows();
-			if (index > -1) {
+			if (this._animatingWindows.indexOf(aWindow) > -1) {
 				let self = this;
 				aWindow.mozRequestAnimationFrame(function() {
 					self.processAnimationFrame(aWindow);
@@ -189,13 +173,13 @@ if (typeof window == 'undefined' ||
 			}
 		},
 
-		onAnimation : function(aSelf, aWindow) 
+		onAnimation : function(aWindow) 
 		{
 			// task should return true if it finishes.
 			var now = Date.now();
-			for (let i = aSelf.tasks.length - 1; i > -1; i--)
+			for (let i = this.tasks.length - 1; i > -1; i--)
 			{
-				let task = aSelf.tasks[i];
+				let task = this.tasks[i];
 				try {
 					if (task) {
 						if (aWindow && task.window != aWindow)
@@ -214,10 +198,8 @@ if (typeof window == 'undefined' ||
 				catch(e) {
 					dump(e+'\n'+e.stack+'\n');
 				}
-				aSelf.tasks.splice(i, 1);
+				this.tasks.splice(i, 1);
 			}
-			if (!aSelf.tasks.length)
-				aSelf.stop();
 		}
 
 	};
