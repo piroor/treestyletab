@@ -124,7 +124,7 @@ function initAppearancePane()
 			}
 			return finished;
 		};
-		animationManager.addTask(task, 0, 0, 500);
+		animationManager.addTask(task, 0, 0, 500, window);
 	});
 }
 
