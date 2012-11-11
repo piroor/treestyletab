@@ -39,17 +39,13 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
  
 Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
-Components.utils.import('resource://gre/modules/Services.jsm');
+XPCOMUtils.defineLazyModuleGetter(this, 'Services', 'resource://gre/modules/Services.jsm');
 
 Components.utils.import('resource://treestyletab-modules/lib/prefs.js');
 Components.utils.import('resource://treestyletab-modules/lib/namespace.jsm');
 var window = getNamespaceFor('piro.sakura.ne.jp');
 
-XPCOMUtils.defineLazyGetter(this, 'Deferred', function() {
-	var ns = {};
-	Components.utils.import('resource://treestyletab-modules/lib/jsdeferred.js', ns);
-	return ns.Deferred;
-});
+XPCOMUtils.defineLazyModuleGetter(this, 'Deferred', 'resource://treestyletab-modules/lib/jsdeferred.js');
 XPCOMUtils.defineLazyGetter(this, 'jstimer', function() {
 	var jstimer = {};
 	Components.utils.import('resource://treestyletab-modules/lib/jstimer.jsm', jstimer);
@@ -75,16 +71,8 @@ XPCOMUtils.defineLazyGetter(this, 'autoScroll', function() {
 	Components.utils.import('resource://treestyletab-modules/lib/autoScroll.js', {});
 	return window['piro.sakura.ne.jp'].autoScroll;
 });
-XPCOMUtils.defineLazyGetter(this, 'confirmWithPopup', function() {
-	var ns = {};
-	Components.utils.import('resource://treestyletab-modules/lib/confirmWithPopup.js', ns);
-	return ns.confirmWithPopup;
-});
-XPCOMUtils.defineLazyGetter(this, 'utils', function() {
-	var ns = {};
-	Components.utils.import('resource://treestyletab-modules/utils.js', ns);
-	return ns.TreeStyleTabUtils;
-});
+XPCOMUtils.defineLazyModuleGetter(this, 'confirmWithPopup', 'resource://treestyletab-modules/lib/confirmWithPopup.js');
+XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
 
 var TreeStyleTabBase = { 

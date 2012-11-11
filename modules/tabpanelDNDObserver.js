@@ -40,11 +40,7 @@ const Ci = Components.interfaces;
 
 Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 
-XPCOMUtils.defineLazyGetter(this, 'utils', function() {
-	var ns = {};
-	Components.utils.import('resource://treestyletab-modules/utils.js', ns);
-	return ns.TreeStyleTabUtils;
-});
+XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
 
 function TabpanelDNDObserver(aTabBrowser) 

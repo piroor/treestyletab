@@ -43,16 +43,10 @@ Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 XPCOMUtils.defineLazyModuleGetter(this, "Services", "resource://gre/modules/Services.jsm");
 
 Components.utils.import('resource://treestyletab-modules/base.js');
-XPCOMUtils.defineLazyGetter(this, 'TreeStyleTabBrowser', function() {
-	var ns = {};
-	Components.utils.import('resource://treestyletab-modules/browser.js', ns);
-	return ns.TreeStyleTabBrowser;
-});
-XPCOMUtils.defineLazyGetter(this, 'utils', function() {
-	var ns = {};
-	Components.utils.import('resource://treestyletab-modules/utils.js', ns);
-	return ns.TreeStyleTabUtils;
-});
+XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabBrowser', 'resource://treestyletab-modules/browser.js');
+XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
+XPCOMUtils.defineLazyModuleGetter(this, 'AutoHideWindow', 'resource://treestyletab-modules/autoHide.js');
+XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabThemeManager', 'resource://treestyletab-modules/themeManager.js');
 
 
 function TreeStyleTabWindow(aWindow) 
@@ -68,11 +62,7 @@ function TreeStyleTabWindow(aWindow)
 	aWindow.addEventListener('load', this, false);
 	aWindow.TreeStyleTabService = this;
 
-	XPCOMUtils.defineLazyGetter(aWindow, 'TreeStyleTabBrowser', function() {
-		var ns = {};
-		Components.utils.import('resource://treestyletab-modules/browser.js', ns);
-		return ns.TreeStyleTabBrowser;
-	});
+	XPCOMUtils.defineLazyModuleGetter(aWindow, 'TreeStyleTabBrowser', 'resource://treestyletab-modules/browser.js');
 }
 
 TreeStyleTabWindow.prototype = {
@@ -174,12 +164,7 @@ TreeStyleTabWindow.prototype = {
 /* backward compatibility */ 
 	getTempTreeStyleTab : function TSTWindow_getTempTreeStyleTab(aTabBrowser)
 	{
-		var namespace = {};
-		Components.utils.import(
-			'resource://treestyletab-modules/browser.js',
-			namespace
-		);
-		return aTabBrowser.treeStyleTab || new namespace.TreeStyleTabBrowser(this, aTabBrowser);
+		return aTabBrowser.treeStyleTab || new TreeStyleTabBrowser(this, aTabBrowser);
 	},
 	
 	initTabAttributes : function TSTWindow_initTabAttributes(aTab, aTabBrowser) 
@@ -299,9 +284,7 @@ TreeStyleTabWindow.prototype = {
 	get autoHideWindow() 
 	{
 		if (!this._autoHideWindow) {
-			let ns = {};
-			Components.utils.import('resource://treestyletab-modules/autoHide.js', ns);
-			this._autoHideWindow = new ns.AutoHideWindow(this.window);
+			this._autoHideWindow = new AutoHideWindow(this.window);
 		}
 		return this._autoHideWindow;
 	},
@@ -309,9 +292,7 @@ TreeStyleTabWindow.prototype = {
 	get themeManager() 
 	{
 		if (!this._themeManager) {
-			let ns = {};
-			Components.utils.import('resource://treestyletab-modules/themeManager.js', ns);
-			this._themeManager = new ns.TreeStyleTabThemeManager(this.window);
+			this._themeManager = new TreeStyleTabThemeManager(this.window);
 		}
 		return this._themeManager;
 	},
@@ -446,12 +427,7 @@ TreeStyleTabWindow.prototype = {
 	initTabBrowser : function TSTWindow_initTabBrowser(aTabBrowser) 
 	{
 		if (aTabBrowser.localName != 'tabbrowser') return;
-		var namespace = {};
-		Components.utils.import(
-			'resource://treestyletab-modules/browser.js',
-			namespace
-		);
-		(new namespace.TreeStyleTabBrowser(this, aTabBrowser)).init();
+		(new TreeStyleTabBrowser(this, aTabBrowser)).init();
 	},
  
 	updateAllTabsButton : function TSTWindow_updateAllTabsButton(aTabBrowser) 

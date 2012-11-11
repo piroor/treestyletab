@@ -40,13 +40,12 @@ const Ci = Components.interfaces;
 
 Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 
-XPCOMUtils.defineLazyModuleGetter(this, "Services", "resource://gre/modules/Services.jsm");
-
-XPCOMUtils.defineLazyGetter(this, 'utils', function() {
-	var ns = {};
-	Components.utils.import('resource://treestyletab-modules/utils.js', ns);
-	return ns.TreeStyleTabUtils;
-});
+XPCOMUtils.defineLazyModuleGetter(this, 'Services', 'resource://gre/modules/Services.jsm');
+XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
+XPCOMUtils.defineLazyModuleGetter(this, 'FullTooltipManager', 'resource://treestyletab-modules/fullTooltip.js');
+XPCOMUtils.defineLazyModuleGetter(this, 'TabbarDNDObserver', 'resource://treestyletab-modules/tabbarDNDObserver.js');
+XPCOMUtils.defineLazyModuleGetter(this, 'TabpanelDNDObserver', 'resource://treestyletab-modules/tabpanelDNDObserver.js');
+XPCOMUtils.defineLazyModuleGetter(this, 'AutoHideBrowser', 'resource://treestyletab-modules/autoHide.js');
 
 Components.utils.import('resource://treestyletab-modules/window.js');
  
@@ -836,9 +835,7 @@ TreeStyleTabBrowser.prototype = {
 		if (this.tooltipManager)
 			return;
 
-		var ns = {};
-		Components.utils.import('resource://treestyletab-modules/fullTooltip.js', ns);
-		this.tooltipManager = new ns.FullTooltipManager(this);
+		this.tooltipManager = new FullTooltipManager(this);
 	},
  
 	_readyToInitDNDObservers : function TSTBrowser_readyToInitDNDObservers() 
@@ -6300,9 +6297,7 @@ TreeStyleTabBrowser.prototype = {
 	get tabbarDNDObserver() 
 	{
 		if (!this._tabbarDNDObserver) {
-			let ns = {};
-			Components.utils.import('resource://treestyletab-modules/tabbarDNDObserver.js', ns);
-			this._tabbarDNDObserver = new ns.TabbarDNDObserver(this.mTabBrowser);
+			this._tabbarDNDObserver = new TabbarDNDObserver(this.mTabBrowser);
 		}
 		return this._tabbarDNDObserver;
 	},
@@ -6310,9 +6305,7 @@ TreeStyleTabBrowser.prototype = {
 	get panelDNDObserver() 
 	{
 		if (!this._panelDNDObserver) {
-			let ns = {};
-			Components.utils.import('resource://treestyletab-modules/tabpanelDNDObserver.js', ns);
-			this._panelDNDObserver = new ns.TabpanelDNDObserver(this.mTabBrowser);
+			this._panelDNDObserver = new TabpanelDNDObserver(this.mTabBrowser);
 		}
 		return this._panelDNDObserver;
 	},
@@ -6332,9 +6325,7 @@ TreeStyleTabBrowser.prototype = {
 	get autoHide()
 	{
 		if (!this._autoHide) {
-			let ns = {};
-			Components.utils.import('resource://treestyletab-modules/autoHide.js', ns);
-			this._autoHide = new ns.AutoHideBrowser(this.mTabBrowser);
+			this._autoHide = new AutoHideBrowser(this.mTabBrowser);
 		}
 		return this._autoHide;
 	},

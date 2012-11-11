@@ -43,11 +43,7 @@ Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 Components.utils.import('resource://treestyletab-modules/base.js');
 Components.utils.import('resource://treestyletab-modules/pseudoTreeBuilder.js');
 
-XPCOMUtils.defineLazyGetter(this, 'utils', function() {
-	var ns = {};
-	Components.utils.import('resource://treestyletab-modules/utils.js', ns);
-	return ns.TreeStyleTabUtils;
-});
+XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
 function FullTooltipManager(aOwner)
 {
