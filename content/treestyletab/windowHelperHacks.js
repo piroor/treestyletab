@@ -1361,7 +1361,6 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 		catch(e) { // 1.3
 			Components.utils.import('resource://weave/service.js', ns);
 		}
-		let engine = ns.Weave.Engines.get('tabs');
 		let listener = {
 				handleEvent : function(aEvent)
 				{
@@ -1372,6 +1371,10 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 							let b = TreeStyleTabService.getTabBrowserFromChild(tab);
 							if (b.selectedTab.linkedBrowser.currentURI.spec != 'about:sync-tabs')
 								return;
+
+							let service = ns.Service || ns.Weave /* old name */;
+							let manager = service.engineManager || service.Engines /* old name */;
+							let engine = manager.get('tabs');
 
 							let uri = tab.getAttribute('label');
 							if (engine.locallyOpenTabMatchesURL(uri))
