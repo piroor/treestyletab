@@ -72,7 +72,10 @@ if (typeof window == 'undefined' ||
 
 		addTask : function(aTask, aBeginningValue, aTotalChange, aDuration, aRelatedWindow) 
 		{
-			if (!aTask) return;
+			if (!aRelatedWindow && window instanceof Ci.nsIDOMWindow)
+				aRelatedWindow = window;
+
+			if (!aTask || !aRelatedWindow) return;
 
 			if (this._windows.indexOf(aRelatedWindow) < 0)
 				this._windows.push(aRelatedWindow);
@@ -147,8 +150,8 @@ if (typeof window == 'undefined' ||
 			{
 				let w = this._windows[i];
 				if (this.tasks.some(function(aTask) {
-						return aTask && aTask.window && this._windows.indexOf(aTask.window) > -1;
-					}, this))
+						return aTask && aTask.window == w;
+					}))
 					continue;
 
 				let index = this._animatingWindows.indexOf(w);
@@ -181,8 +184,8 @@ if (typeof window == 'undefined' ||
 			{
 				let task = this.tasks[i];
 				try {
-					if (task) {
-						if (aWindow && task.window != aWindow)
+					if (task && !task.window.closed) {
+						if (task.window != aWindow)
 							continue;
 						let time = Math.min(task.duration, now - task.start);
 						let finished = task.task(
