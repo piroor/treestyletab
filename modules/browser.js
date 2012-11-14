@@ -5270,14 +5270,19 @@ TreeStyleTabBrowser.prototype = {
 			return;
 		}
 
-		var b    = this.mTabBrowser;
+		var b = this.mTabBrowser;
+		var tabbarSize = b.mTabContainer.boxObject[this.invertedSizeProp];
+		if (!tabbarSize) // don't update indent for collapsed tab bar
+			return;
+
 		var tabs = Array.slice(b.mTabContainer.querySelectorAll(
 				'tab['+this.kNEST+']:not(['+this.kNEST+'="0"]):not(['+this.kNEST+'=""])'+
 					':not(['+this.kCOLLAPSED+'="true"])'+
 					':not([hidden="true"])'+
 					':not([collapsed="true"])'
 			));
-		if (!tabs.length) return;
+		if (!tabs.length)
+			return;
 
 		var self = this;
 		tabs.sort(function(aA, aB) { return Number(aA.getAttribute(self.kNEST)) - Number(aB.getAttribute(self.kNEST)); });
@@ -5291,7 +5296,7 @@ TreeStyleTabBrowser.prototype = {
 		var indent    = (oldIndent < 0 ? this.baseIndent : oldIndent ) * nest;
 		var maxIndentBase = Math.min(
 					this.getFirstNormalTab(b).boxObject[this.invertedSizeProp],
-					b.mTabContainer.boxObject[this.invertedSizeProp]
+					tabbarSize
 				);
 		var isVertical = this.isVertical;
 		if (!isVertical) {
