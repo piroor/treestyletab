@@ -1748,7 +1748,7 @@ TreeStyleTabBrowser.prototype = {
 		if (splitter.collapsed || splitter.getAttribute('state') != 'collapsed') {
 			this._tabStripPlaceHolder.collapsed =
 				splitter.collapsed =
-					(this.getPref('browser.tabs.autoHide') && this.getTabs(this.mTabBrowser).length == 1);
+					(this.getPref('browser.tabs.autoHide') && this.getExistingTabsCount() == 1);
 		}
 
 		var strip = this.tabStrip;
@@ -1848,6 +1848,10 @@ TreeStyleTabBrowser.prototype = {
 			this.positionPinnedTabs(null, null, aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE);
 		else
 			this.positionPinnedTabsWithDelay(null, null, aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE);
+	},
+	getExistingTabsCount : function TSTBrowser_getTabsCount() 
+	{
+		return this.getAllTabs(this.mTabBrowser).length - this.mTabBrowser._removingTabs.length;
 	},
  
 	_updateFloatingTabbarResizer : function TSTBrowser_updateFloatingTabbarResizer(aSize) 
