@@ -2047,7 +2047,8 @@ TreeStyleTabBrowser.prototype = {
 			delete this.tabsHash[id];
 
 		if (aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave) {
-			aTab.removeEventListener('mouseleave', aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave, false);
+			this.document.removeEventListener('mouseover', aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave, true);
+			this.document.removeEventListener('mouseover', aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave, true);
 			delete aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave;
 		}
 
@@ -5669,17 +5670,41 @@ TreeStyleTabBrowser.prototype = {
 			this.cancelCheckTabsIndentOverflow();
 			if (!aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave) {
 				var self = this;
-				aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave = function(aEvent) {
+				var stillOver = false;
+				var id = this.getTabValue(aTab, this.kID);
+				aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave = function checkTabsIndentOverflowOnMouseLeave(aEvent, aDelayed) {
+					if (aEvent.type == 'mouseover') {
+						if (self.evaluateXPath(
+								'ancestor-or-self::*[@' + self.kID + '="' + id + '"]',
+								aEvent.originalTarget || aEvent.target,
+								Ci.nsIDOMXPathResult.BOOLEAN_TYPE
+							).booleanValue)
+							stillOver = true;
+						return;
+					}
+					else if (!aDelayed) {
+						if (stillOver) {
+							stillOver = false;
+						}
+						self.Deferred.next(function() {
+							checkTabsIndentOverflowOnMouseLeave.call(null, aEvent, true);
+						});
+						return;
+					} else if (stillOver) {
+						return;
+					}
 					var x = aEvent.clientX;
 					var y = aEvent.clientY;
 					var rect = aTab.getBoundingClientRect();
 					if (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom)
 						return;
-					aTab.removeEventListener(aEvent.type, aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave, false);
+					self.document.removeEventListener('mouseover', aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave, true);
+					self.document.removeEventListener('mouseout', aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave, true);
 					delete aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave;
 					self.checkTabsIndentOverflow();
 				};
-				aTab.addEventListener('mouseleave', aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave, false);
+				this.document.addEventListener('mouseover', aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave, true);
+				this.document.addEventListener('mouseout', aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave, true);
 			}
 		}
 	},
