@@ -2048,7 +2048,7 @@ TreeStyleTabBrowser.prototype = {
 
 		if (aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave) {
 			this.document.removeEventListener('mouseover', aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave, true);
-			this.document.removeEventListener('mouseover', aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave, true);
+			this.document.removeEventListener('mouseout', aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave, true);
 			delete aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave;
 		}
 
