@@ -831,7 +831,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		eval('QuickDrag._loadTab = '+
 			QuickDrag._loadTab.toSource().replace(
 				/(gBrowser.loadOneTab\()/g,
-				'TreeStyleTabService.readyToOpenChildTab(); $1'
+				'TreeStyleTabService.readyToOpenChildTab(), $1'
 			)
 		);
 	}
