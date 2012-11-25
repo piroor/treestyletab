@@ -1840,7 +1840,7 @@ var TreeStyleTabBase = {
 	 * opened or not (by the command called after TST's API), then use this.
 	 * This version automatically cancels the "ready" state with delay.
 	 */
-	readyToOpenChildTabNow : function utils_readyToOpenChildTabNow(aFrameOrTabBrowser) /* PUBLIC API */
+	readyToOpenChildTabNow : function utils_readyToOpenChildTabNow(aFrameOrTabBrowser, aMultiple) /* PUBLIC API */
 	{
 		if (this.readyToOpenChildTab.apply(this, arguments)) {
 			let self = this;
