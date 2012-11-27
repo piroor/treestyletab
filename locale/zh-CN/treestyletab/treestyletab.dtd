@@ -157,8 +157,6 @@
 
 <!ENTITY config.tabs.advanced "高级">
 
-<!ENTITY config.animation.enabled "使用动画效果">
-
 <!ENTITY config.tooltip.includeChildren        "在树节点按钮的工具提示中显示树的分支内容">
 
 <!ENTITY config.bookmarkDroppedTabs.caption "怎么响应拖放一夫标签到书签树中的动作？">

@@ -154,8 +154,6 @@
 
 <!ENTITY config.tabs.advanced "Avanzado">
 
-<!ENTITY config.animation.enabled "Activar los efectos de animación">
-
 <!ENTITY config.tooltip.includeChildren        "Mostrar el contenido del árbol en el tooltip de las pestañas">
 
 <!ENTITY config.bookmarkDroppedTabs.caption "Acción para arrastrar y soltar de la pestaña madre hacia el árbol de marcadores">

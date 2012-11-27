@@ -144,8 +144,6 @@
 
 <!ENTITY config.tabs.advanced "Advanced">
 
-<!ENTITY config.animation.enabled "Enable Animation Effects">
-
 <!ENTITY config.tooltip.includeChildren        "Show tree contents in tooltips on tabs">
 
 <!ENTITY config.bookmarkDroppedTabs.caption "Action for drag and drop of a parent tab to the bookmarks tree">

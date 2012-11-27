@@ -157,8 +157,6 @@
 
 <!ENTITY config.tabs.advanced "Avancerat">
 
-<!ENTITY config.animation.enabled "Aktivera animeringseffekter">
-
 <!ENTITY config.tooltip.includeChildren        "Visa trädinnehållet i verktygstips på flikar">
 
 <!ENTITY config.bookmarkDroppedTabs.caption "Åtgärd vid dra och släpp av en överordnad flik på bokmärkesträdet">

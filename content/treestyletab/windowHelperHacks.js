@@ -805,7 +805,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	if ('LinkyContext' in window &&
 		'prototype' in LinkyContext &&
 		TreeStyleTabUtils.getTreePref('compatibility.Linky')) {
-		let (methods = 'doSelected,doSelectedText,doImages,doAll,doAllPics,doValidateAll,doValidateSelected'.split(',')) {
+		let (methods = 'openLink,openLinks,generateDocument'.split(',')) {
 			for (let i = 0, maxi = methods.length; i < maxi; i++)
 			{
 				let method = methods[i];
@@ -813,10 +813,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 				eval('LinkyContext.prototype.'+method+' = '+
 					LinkyContext.prototype[method].toSource().replace(
 						'{',
-						'{ TreeStyleTabService.readyToOpenChildTab(null, true);'
-					).replace(
-						/(\}\)?)$/,
-						'TreeStyleTabService.stopToOpenChildTab(); $1'
+						'{ TreeStyleTabService.readyToOpenChildTabNow(null, true);'
 					)
 				);
 			}

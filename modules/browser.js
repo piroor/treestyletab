@@ -692,7 +692,7 @@ TreeStyleTabBrowser.prototype = {
 		this.onPrefChange('extensions.treestyletab.tabbar.autoShow.mousemove');
 		this.onPrefChange('extensions.treestyletab.tabbar.invertScrollbar');
 		this.onPrefChange('extensions.treestyletab.tabbar.narrowScrollbar');
-		this.onPrefChange('extensions.treestyletab.animation.enabled');
+		this.onPrefChange('browser.tabs.animate');
 
 		Services.obs.addObserver(this, this.kTOPIC_INDENT_MODIFIED, false);
 		Services.obs.addObserver(this, this.kTOPIC_COLLAPSE_EXPAND_ALL, false);
@@ -2408,12 +2408,9 @@ TreeStyleTabBrowser.prototype = {
 				return;
 
 			case 'browser.tabs.animate':
-			case 'extensions.treestyletab.animation.enabled':
 				this.setTabbrowserAttribute(this.kANIMATION_ENABLED,
-					(
-						this.getPref('extensions.treestyletab.animation.enabled') &&
-						(this.getPref('browser.tabs.animate') !== false)
-					) ? 'true' : null
+					this.getPref('browser.tabs.animate') !== false
+						? 'true' : null
 				);
 				return;
 

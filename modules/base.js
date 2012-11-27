@@ -318,7 +318,7 @@ var TreeStyleTabBase = {
 		this.onPrefChange('extensions.treestyletab.tabbar.scroll.duration');
 		this.onPrefChange('extensions.treestyletab.tabbar.scrollToNewTab.mode');
 		this.onPrefChange('extensions.treestyletab.tabbar.narrowScrollbar.size');
-		this.onPrefChange('extensions.treestyletab.animation.enabled');
+		this.onPrefChange('browser.tabs.animate');
 		this.onPrefChange('extensions.treestyletab.animation.indent.duration');
 		this.onPrefChange('extensions.treestyletab.animation.collapse.duration');
 		this.onPrefChange('extensions.treestyletab.twisty.expandSensitiveArea');
@@ -2613,6 +2613,7 @@ var TreeStyleTabBase = {
 	
 	domains : [ 
 		'extensions.treestyletab.',
+		'browser.tabs.animate',
 		'browser.tabs.loadFolderAndReplace',
 		'browser.tabs.insertRelatedAfterCurrent',
 		'extensions.stm.tabBarMultiRows' // Super Tab Mode
@@ -2676,7 +2677,7 @@ var TreeStyleTabBase = {
 			case 'extensions.treestyletab.tabbar.narrowScrollbar.size':
 				return this.updateNarrowScrollbarStyle();
 
-			case 'extensions.treestyletab.animation.enabled':
+			case 'browser.tabs.animate':
 				return this.animationEnabled = value;
 			case 'extensions.treestyletab.animation.indent.duration':
 				return this.indentDuration = value;

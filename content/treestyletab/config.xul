@@ -728,9 +728,6 @@
 <prefpane id="prefpane-advanced" label="&config.tabs.advanced;"
 	onpaneload="initAdvancedPane();">
 	<preferences>
-		<preference id="extensions.treestyletab.animation.enabled"
-			name="extensions.treestyletab.animation.enabled"
-			type="bool"/>
 		<preference id="extensions.treestyletab.tooltip.mode"
 			name="extensions.treestyletab.tooltip.mode"
 			type="int"/>
@@ -742,9 +739,6 @@
 			type="int"/>
 	</preferences>
 
-	<checkbox id="extensions.treestyletab.animation.enabled-check"
-		preference="extensions.treestyletab.animation.enabled"
-		label="&config.animation.enabled;"/>
 	<checkbox id="extensions.treestyletab.tooltip.mode-check"
 		preference="extensions.treestyletab.tooltip.mode"
 		label="&config.tooltip.includeChildren;"

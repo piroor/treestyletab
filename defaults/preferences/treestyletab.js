@@ -1,8 +1,4 @@
 /**
- * Activates animation effects for collapse/expand, indent/unindent.
- */
-pref("extensions.treestyletab.animation.enabled",           true);
-/**
  * Duration of animations.
  * DO NOT CHANGE THE PREFS, because actual duration of
  * animations are defined in CSS. (CSS Transitions)

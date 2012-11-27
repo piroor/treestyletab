@@ -149,8 +149,6 @@
 
 <!ENTITY config.tabs.advanced "Дополнительно">
 
-<!ENTITY config.animation.enabled "Включить эффекты анимации">
-
 <!ENTITY config.tooltip.includeChildren        "Показывать содержимое дерева во всплывающих подсказках вкладок">
 
 <!ENTITY config.bookmarkDroppedTabs.caption "Действие при перетаскивания родительской вкладки в закладки">

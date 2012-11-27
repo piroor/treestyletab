@@ -158,8 +158,6 @@
 
 <!ENTITY config.tabs.advanced "Avanceret">
 
-<!ENTITY config.animation.enabled "Aktiver animationseffekt">
-
 <!ENTITY config.tooltip.includeChildren "Vis indhold i værktøjstips">
 
 <!ENTITY config.bookmarkDroppedTabs.caption "Handling for træk af en hovedfane til bogmærker">

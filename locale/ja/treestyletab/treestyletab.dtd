@@ -145,8 +145,6 @@
 
 <!ENTITY config.tabs.advanced "詳細">
 
-<!ENTITY config.animation.enabled "アニメーション効果を有効にする">
-
 <!ENTITY config.tooltip.includeChildren        "タブのツールチップにツリーの内容を表示する">
 
 <!ENTITY config.bookmarkDroppedTabs.caption "子タブを持つタブをブックマークツリーにドラッグ＆ドロップした時">

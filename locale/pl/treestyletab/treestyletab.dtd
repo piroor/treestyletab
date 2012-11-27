@@ -151,8 +151,6 @@
 
 <!ENTITY config.tabs.advanced "Zaawansowane">
 
-<!ENTITY config.animation.enabled "Efekty animacji">
-
 <!ENTITY config.tooltip.includeChildren        "Wyświetlaj zawartość drzewa po umieszczeniu kursora nad jego folderem">
 
 <!ENTITY config.bookmarkDroppedTabs.caption "Action for drag and drop of a parent tab to the bookmarks tree">

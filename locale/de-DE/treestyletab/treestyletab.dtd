@@ -157,8 +157,6 @@
 
 <!ENTITY config.tabs.advanced "Erweitert">
 
-<!ENTITY config.animation.enabled "Animationseffekte aktivieren">
-
 <!ENTITY config.tooltip.includeChildren        "Titel der untergeordneten Tabs im Tooltip geschlossener Tabs anzeigen">
 
 <!ENTITY config.bookmarkDroppedTabs.caption "Verhalten für Drag &amp; Drop von Tab-Zweigen auf das Lesezeichenverzeichnis">

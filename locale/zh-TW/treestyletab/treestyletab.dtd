@@ -146,8 +146,6 @@
 
 <!ENTITY config.tabs.advanced "進階">
 
-<!ENTITY config.animation.enabled "啟用動畫效果">
-
 <!ENTITY config.tooltip.includeChildren        "於分頁提示方塊中顯示樹的內容">
 
 <!ENTITY config.bookmarkDroppedTabs.caption "拖曳父分頁到書籤時">
