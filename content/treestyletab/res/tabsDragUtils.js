@@ -15,7 +15,7 @@
    http://github.com/piroor/fxaddonlibs/blob/master/tabsDragUtils.js
 */
 (function() {
-	const currentRevision = 22;
+	const currentRevision = 23;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -173,7 +173,7 @@
 					).replace(
 						/(let tabWidth = [^;]+;)/,
 						'$1\n' +
-						'let tabCenterOffset = aCanDropOnSelf ? (tabWidth / 2) : 0 ;'
+						'let tabCenterOffset = aOptions.canDropOnSelf ? (tabWidth / 3) : 0 ;'
 					).replace(
 						'let tabCenter = ',
 						'draggedTabs.slice(1).forEach(function(tab) {\n' +
@@ -206,17 +206,19 @@
 						'/* $& */ tabsWidth : -tabsWidth'
 					).replace( // add a new argument
 						')',
-						', aCanDropOnSelf)'
+						', aOptions)'
 					).replace( // insert initialization processes
 						'{',
 						'{\n' +
-						'  var isVertical = window["piro.sakura.ne.jp"].tabsDragUtils.isVertical(this);\n' +
+						'  if (typeof aOptions == "boolean") aOptions = { canDropOnSelf: aOptions };\n' +
+						'  aOptions = aOptions || {};\n' +
+						'  var isVertical = "isVertical" in aOptions ? aOptions.isVertical : window["piro.sakura.ne.jp"].tabsDragUtils.isVertical(this) ;\n' +
 						'  var position = isVertical ? "screenY" : "screenX" ;\n' +
 						'  var size = isVertical ? "height" : "width" ;\n' +
 						'  var scroll = isVertical ? "scrollY" : "scrollX" ;\n' +
 						'  var translator = isVertical ? "translateY" : "translateX" ;\n' +
-						'  aCanDropOnSelf = aCanDropOnSelf || ("TreeStyleTabService" in window);\n' +
-						'  var units = aCanDropOnSelf ? 3 : 2 ;'
+						'  aOptions.canDropOnSelf = aOptions.canDropOnSelf || ("TreeStyleTabService" in window);\n' +
+						'  var units = aOptions.canDropOnSelf ? 3 : 2 ;'
 					)
 				);
 				aObserver.__TabsDragUtils_updated__animateTabMove = aObserver._animateTabMove;
@@ -228,13 +230,15 @@
  *  date        : 2012-10-09
  *  source      : http://mxr.mozilla.org/mozilla-central/source/browser/base/content/tabbrowser.xml
  */
-// function _animateTabMove(event, aCanDropOnSelf) {
-// var isVertical = window['piro.sakura.ne.jp'].tabsDragUtils.isVertical(this);
-// var position = isVertical ? 'screenY' : 'screenX' ;
-// var size = isVertical ? 'height' : 'width' ;
+// function _animateTabMove(event, aOptions) {
+// if (typeof aOptions == "boolean") aOptions = { canDropOnSelf: aOptions };
+// aOptions = aOptions || {};
+// var isVertical = "isVertical" in aOptions ? aOptions.isVertical : window["piro.sakura.ne.jp"].tabsDragUtils.isVertical(this) ;
+// var position = isVertical ? "screenY" : "screenX" ;
+// var size = isVertical ? "height" : "width" ;
 // var translator = isVertical ? "translateY" : "translateX" ;
-// aCanDropOnSelf = aCanDropOnSelf || ("TreeStyleTabService" in window);
-// var units = aCanDropOnSelf ? 3 : 2 ;
+// aOptions.canDropOnSelf = aOptions.canDropOnSelf || ("TreeStyleTabService" in window);
+// var units = aOptions.canDropOnSelf ? 3 : 2 ;
 // 
 //           let draggedTab = event.dataTransfer.mozGetDataAt(TAB_DROP_TYPE, 0);
 // var draggedTabs = window['piro.sakura.ne.jp'].tabsDragUtils.getDraggedTabs(event);
@@ -273,7 +277,7 @@
 //             tabs.reverse();
 // 
 //           let tabWidth = draggedTab.getBoundingClientRect()[size]/*.width*/;
-// let tabCenterOffset = aCanDropOnSelf ? (tabWidth / 2) : 0 ;
+// let tabCenterOffset = aOptions.canDropOnSelf ? (tabWidth / 3) : 0 ;
 // 
 //           // Move the dragged tab based on the mouse position.
 // 
@@ -541,7 +545,7 @@
 			return tabbar && '_animateTabMove' in tabbar;
 		},
 
-		processTabsDragging: function TDU_processTabsDragging(aEvent, aCanDropOnSelf)
+		processTabsDragging: function TDU_processTabsDragging(aEvent, aOptions)
 		{
 			// Firefox 17 and later
 			if (this.canAnimateDraggedTabs(aEvent)) {
@@ -551,7 +555,7 @@
 
 				if (!tabbar.hasAttribute('movingtab'))
 					tabbar.setAttribute('movingtab', 'true');
-				tabbar._animateTabMove(aEvent, aCanDropOnSelf);
+				tabbar._animateTabMove(aEvent, aOptions);
 				return true;
 			}
 			return false;

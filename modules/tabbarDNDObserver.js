@@ -888,7 +888,13 @@ try{
 		let draggedTab = aEvent.dataTransfer && aEvent.dataTransfer.mozGetDataAt(TAB_DROP_TYPE, 0);
 		let dragOverTab = sv.getTabFromEvent(aEvent) || sv.getTabFromTabbarEvent(aEvent) || aEvent.target;
 		b.ownerDocument.defaultView['piro.sakura.ne.jp'].tabsDragUtils
-			.processTabsDragging(aEvent, !dragOverTab || !dragOverTab.pinned);
+			.processTabsDragging(aEvent, {
+				canDropOnSelf : !dragOverTab || !dragOverTab.pinned,
+				isVertical : (
+					b.ownerDocument.defaultView['piro.sakura.ne.jp'].tabsDragUtils.isVertical(b.tabContainer) &&
+					!draggedTab.pinned
+				)
+			});
 
 		/**
 		 * We must calculate drop action after tabsDragUtils.processTabsDragging(),
