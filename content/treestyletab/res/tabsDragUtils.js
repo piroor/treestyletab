@@ -172,6 +172,7 @@
 						'TDUContext.tabScreenX = tabScreenX;\n' +
 						'TDUContext.translateX = translateX;\n' +
 						'TDUContext.utils.updateDraggedTabsTransform(TDUContext);\n' +
+						'tabs = TDUContext.utils.extractNotDraggedTabs(tabs, TDUContext);\n' +
 						'$&'
 					).replace(
 						'if (screenX > tabCenter)',
@@ -185,10 +186,6 @@
 					).replace(
 						'if (newIndex >= oldIndex)',
 						'if (TDUContext.utils.checkDontMove(TDUContext)) return;\n' +
-						'$&'
-					).replace(
-						'draggedTab._dragData.animDropIndex = newIndex',
-						'tabs = TDUContext.utils.extractNotDraggedTabs(tabs, TDUContext);\n' +
 						'$&'
 					).replace(
 						'-tabWidth : tabWidth',
@@ -274,6 +271,7 @@
 // TDUContext.tabScreenX = tabScreenX;
 // TDUContext.translateX = translateX;
 // TDUContext.utils.updateDraggedTabsTransform(TDUContext);
+// tabs = TDUContext.utils.extractNotDraggedTabs(tabs, TDUContext);
 //           let tabCenter = Math.round(tabScreenX + translateX + tabWidth / 2);
 //           let newIndex = -1;
 //           let oldIndex = "animDropIndex" in draggedTab._dragData ?
@@ -305,7 +303,6 @@
 //             newIndex++;
 //           if (newIndex < 0 || newIndex == oldIndex)
 //             return;
-// tabs = TDUContext.utils.extractNotDraggedTabs(tabs, TDUContext);
 //           draggedTab._dragData.animDropIndex = newIndex;
 // 
 //           // Shift background tabs to leave a gap where the dragged tab
@@ -328,7 +325,7 @@
 //             return 0;
 //           }
 // TDUContext.destroy();
-//         
+// 
 // }
 			}
 		},
