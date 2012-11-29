@@ -132,93 +132,73 @@
 				let original = aObserver._animateTabMove;
 				aObserver.__TabsDragUtils_original__animateTabMove = original;
 				eval('aObserver._animateTabMove = '+
-					original.toSource().replace( // support vertical tab bar
+					original.toSource().replace( // add a new argument
+						')',
+						', aOptions)'
+					).replace(
+						'{',
+						'{ var TDUContext = window["piro.sakura.ne.jp"].tabsDragUtils.setupContext(event, aOptions);'
+					).replace( // support vertical tab bar
 						/\.screenX/g,
-						'[position]'
+						'[TDUContext.position]'
 					).replace( // support vertical tab bar
 						/\.width/g,
-						'[size]'
+						'[TDUContext.size]'
 					).replace( // support vertical tab bar
 						/(['"])translateX\(/g,
-						'$1$1 + translator + $1('
+						'$1$1 + TDUContext.translator + $1('
 					).replace( // support vertical tab bar
 						/\.scrollX/g,
-						'[scroll]'
+						'[TDUContext.scroll]'
 					).replace(
 						/(let draggedTab = [^;]+;)/,
 						'$1\n' +
-						'let draggedTabs = window["piro.sakura.ne.jp"].tabsDragUtils.getDraggedTabs(event);\n' +
-						'draggedTab = draggedTabs[0];'
+						'draggedTab = TDUContext.draggedTab;\n'
 					).replace(
-						'if (!("animLastScreenX" in draggedTab._dragData))',
-						'let tabsWidth = 0;\n' +
-						'draggedTabs.forEach(function(draggedTab) {\n' +
-						'  let style = window.getComputedStyle(draggedTab, null);\n' +
-						'  if (style.visibility != "collapse" && style.display != "none")\n' +
-						'    tabsWidth += draggedTab.boxObject[size];\n' +
-						'  window["piro.sakura.ne.jp"].tabsDragUtils.fixDragData(draggedTab._dragData);\n' +
-						'  $&'
-					).replace(
-						'draggedTab._dragData.animLastScreenX = draggedTab._dragData[position];',
-						'  $&\n' +
-						'}, this);'
-					).replace(
-						'let draggingRight = ',
-						'draggedTabs.forEach(function(draggedTab) {\n' +
-						'  $&'
-					).replace(
-						'draggedTab._dragData.animLastScreenX = screenX;',
-						'  $&\n' +
-						'}, this);'
-					).replace(
-						/(let tabWidth = [^;]+;)/,
-						'$1\n' +
-						'let tabCenterOffset = aOptions.canDropOnSelf ? (tabWidth / 3) : 0 ;'
-					).replace(
-						'let tabCenter = ',
-						'draggedTabs.slice(1).forEach(function(tab) {\n' +
-						'  tab.style.transform = draggedTab.style.transform;\n' +
-						'}, this);\n' +
+						'let screenX = event',
+						'TDUContext.utils.setupDraggedTabs(TDUContext);\n' +
 						'$&'
 					).replace(
-						/(let tabCenter = )([^;]+)\/ 2;/,
-						'$1Math.round($2 / units/*2*/);\n' + // support drop on self
-						'let tabLeftCenter = tabCenter;\n' +
-						'let tabRightCenter = Math.round(tabScreenX + translateX + tabsWidth - tabWidth / units);'
+						'draggedTab._dragData.animLastScreenX = screenX;',
+						'$&\n' +
+						'TDUContext.utils.updateDraggedTabs(TDUContext);'
 					).replace(
-						'tabs[mid] == draggedTab',
-						'/* $& */ false'
+						'translateX = Math.max(',
+						'leftBound = TDUContext.utils.updateLeftBound(leftBound, TDUContext);\n' +
+						'rightBound = TDUContext.utils.updateRightBound(rightBound, TDUContext);\n' +
+						'$&'
 					).replace(
-						'(screenX > tabCenter)',
-						'/* $& */ (screenX + tabCenterOffset > tabRightCenter)'
+						'let tabCenter = ',
+						'TDUContext.tabScreenX = tabScreenX;\n' +
+						'TDUContext.translateX = translateX;\n' +
+						'TDUContext.utils.updateDraggedTabsTransform(TDUContext);\n' +
+						'$&'
 					).replace(
-						'(screenX + boxObject[size] < tabCenter)',
-						'/* $& */ (screenX + boxObject[size] - tabCenterOffset < tabLeftCenter)'
+						'if (screenX > tabCenter)',
+						'/* $& */ if (screenX > TDUContext.lastTabCenter)'
+					).replace(
+						'newIndex = tabs[mid]._tPos;',
+						'$&\n' +
+						'TDUContext.tabCenter = tabCenter;\n' +
+						'TDUContext.screenX = screenX;\n' +
+						'TDUContext.utils.updateDontMove(boxObject, TDUContext);\n'
+					).replace(
+						'if (newIndex >= oldIndex)',
+						'if (TDUContext.utils.checkDontMove(TDUContext)) return;\n' +
+						'$&'
 					).replace(
 						'draggedTab._dragData.animDropIndex = newIndex',
-						'tabs = tabs.filter(function(tab) { return draggedTabs.indexOf(tab) < 0 });\n' +
+						'tabs = TDUContext.utils.extractNotDraggedTabs(tabs, TDUContext);\n' +
 						'$&'
 					).replace(
 						'-tabWidth : tabWidth',
-						'/* $& */ -tabsWidth : tabsWidth'
+						'/* $& */ -TDUContext.tabsWidth : TDUContext.tabsWidth'
 					).replace(
 						'tabWidth : -tabWidth',
-						'/* $& */ tabsWidth : -tabsWidth'
-					).replace( // add a new argument
-						')',
-						', aOptions)'
-					).replace( // insert initialization processes
-						'{',
-						'{\n' +
-						'  if (typeof aOptions == "boolean") aOptions = { canDropOnSelf: aOptions };\n' +
-						'  aOptions = aOptions || {};\n' +
-						'  var isVertical = "isVertical" in aOptions ? aOptions.isVertical : window["piro.sakura.ne.jp"].tabsDragUtils.isVertical(this) ;\n' +
-						'  var position = isVertical ? "screenY" : "screenX" ;\n' +
-						'  var size = isVertical ? "height" : "width" ;\n' +
-						'  var scroll = isVertical ? "scrollY" : "scrollX" ;\n' +
-						'  var translator = isVertical ? "translateY" : "translateX" ;\n' +
-						'  aOptions.canDropOnSelf = aOptions.canDropOnSelf || ("TreeStyleTabService" in window);\n' +
-						'  var units = aOptions.canDropOnSelf ? 3 : 2 ;'
+						'/* $& */ TDUContext.tabsWidth : -TDUContext.tabsWidth'
+					).replace(
+						/(\}\)?)$/,
+						'TDUContext.destroy(); $1'
 					)
 				);
 				aObserver.__TabsDragUtils_updated__animateTabMove = aObserver._animateTabMove;
@@ -227,45 +207,32 @@
  * Full version
  *  base version: Firefox 17 beta
  *  revision    : http://hg.mozilla.org/releases/mozilla-beta/rev/20e73f5b19c3
- *  date        : 2012-10-09
+ *  date        : 2012-11-29
  *  source      : http://mxr.mozilla.org/mozilla-central/source/browser/base/content/tabbrowser.xml
  */
+// // function _animateTabMove(event) {
 // function _animateTabMove(event, aOptions) {
-// if (typeof aOptions == "boolean") aOptions = { canDropOnSelf: aOptions };
-// aOptions = aOptions || {};
-// var isVertical = "isVertical" in aOptions ? aOptions.isVertical : window["piro.sakura.ne.jp"].tabsDragUtils.isVertical(this) ;
-// var position = isVertical ? "screenY" : "screenX" ;
-// var size = isVertical ? "height" : "width" ;
-// var translator = isVertical ? "translateY" : "translateX" ;
-// aOptions.canDropOnSelf = aOptions.canDropOnSelf || ("TreeStyleTabService" in window);
-// var units = aOptions.canDropOnSelf ? 3 : 2 ;
+// var TDUContext = window["piro.sakura.ne.jp"].tabsDragUtils.setupContext(event, aOptions);
 // 
 //           let draggedTab = event.dataTransfer.mozGetDataAt(TAB_DROP_TYPE, 0);
-// var draggedTabs = window['piro.sakura.ne.jp'].tabsDragUtils.getDraggedTabs(event);
-// draggedTab = draggedTabs[0];
+// draggedTab = TDUContext.draggedTab;
 // 
 //           if (this.getAttribute("movingtab") != "true") {
 //             this.setAttribute("movingtab", "true");
 //             this.selectedItem = draggedTab;
 //           }
-// 
-// let tabsWidth = 0;
-// draggedTabs.forEach(function(draggedTab) {
-// let style = window.getComputedStyle(draggedTab, null);
-// if (style.visibility != "collapse" && style.display != "none") tabsWidth += draggedTab.boxObject[size]/*.width*/;
-// window['piro.sakura.ne.jp'].tabsDragUtils.fixDragData(draggedTab._dragData);
+//
 //           if (!("animLastScreenX" in draggedTab._dragData))
-//             draggedTab._dragData.animLastScreenX = draggedTab._dragData[position]/*.screenX*/;
-// }, this);
+//             draggedTab._dragData.animLastScreenX = draggedTab._dragData[TDUContext.position]/*.screenX*/;
 // 
-//           let screenX = event[position]/*.screenX*/;
+// TDUContext.utils.setupDraggedTabs(TDUContext);
+//           let screenX = event[TDUContext.position]/*.screenX*/;
 //           if (screenX == draggedTab._dragData.animLastScreenX)
 //             return;
 // 
-// draggedTabs.forEach(function(draggedTab) {
 //           let draggingRight = screenX > draggedTab._dragData.animLastScreenX;
 //           draggedTab._dragData.animLastScreenX = screenX;
-// }, this);
+// TDUContext.utils.updateDraggedTabs(TDUContext);
 // 
 //           let rtl = (window.getComputedStyle(this).direction == "rtl");
 //           let pinned = draggedTab.pinned;
@@ -276,24 +243,26 @@
 //           if (rtl)
 //             tabs.reverse();
 // 
-//           let tabWidth = draggedTab.getBoundingClientRect()[size]/*.width*/;
-// let tabCenterOffset = aOptions.canDropOnSelf ? (tabWidth / 3) : 0 ;
+//           let tabWidth = draggedTab.getBoundingClientRect()[TDUContext.size]/*.width*/;
 // 
 //           // Move the dragged tab based on the mouse position.
 // 
 //           let leftTab = tabs[0];
 //           let rightTab = tabs[tabs.length - 1];
 // 
-//           let tabScreenX = draggedTab.boxObject[position]/*.screenX*/;
+//           let tabScreenX = draggedTab.boxObject[TDUContext.position]/*.screenX*/;
 //           let translateX = screenX - draggedTab._dragData[offset]/*.offsetX*/;
 //           if (!pinned)
-//             translateX += this.mTabstrip.scrollPosition - draggedTab._dragData[scroll]/*.scrollX*/;
-//           let leftBound = leftTab.boxObject[position]/*.screenX*/ - tabScreenX;
-//           let rightBound = (rightTab.boxObject[position]/*.screenX*/ + rightTab.boxObject[size]/*.width*/) -
+//             translateX += this.mTabstrip.scrollPosition - draggedTab._dragData[TDUContext.scroll]/*.scrollX*/;
+//           let leftBound = leftTab.boxObject[TDUContext.position]/*.screenX*/ - tabScreenX;
+//           let rightBound = (rightTab.boxObject[TDUContext.position]/*.screenX*/ + rightTab.boxObject[TDUContext.size]/*.width*/) -
 //                            (tabScreenX + tabWidth);
+// leftBound = TDUContext.utils.updateLeftBound(leftBound, TDUContext);
+// rightBound = TDUContext.utils.updateRightBound(rightBound, TDUContext);
 //           translateX = Math.max(translateX, leftBound);
 //           translateX = Math.min(translateX, rightBound);
-//           draggedTab.style.transform = "translateX(" + translateX + "px)";
+// //          draggedTab.style.transform = "translateX(" + translateX + "px)";
+//           draggedTab.style.transform = "" + TDUContext.translator + "(" + translateX + "px)";
 // 
 //           // Determine what tab we're dragging over.
 //           // * Point of reference is the center of the dragged tab. If that
@@ -302,12 +271,10 @@
 //           // * We're doing a binary search in order to reduce the amount of
 //           //   tabs we need to check.
 // 
-// draggedTabs.slice(1).forEach(function(tab) {
-//   tab.style.transform = draggedTab.style.transform;
-// }, this);
-//           let tabCenter = Math.round(tabScreenX + translateX + tabWidth / units/*2*/);
-// let tabLeftCenter = tabCenter;
-// let tabRightCenter = Math.round(tabScreenX + translateX + tabsWidth - tabWidth / units);
+// TDUContext.tabScreenX = tabScreenX;
+// TDUContext.translateX = translateX;
+// TDUContext.utils.updateDraggedTabsTransform(TDUContext);
+//           let tabCenter = Math.round(tabScreenX + translateX + tabWidth / 2);
 //           let newIndex = -1;
 //           let oldIndex = "animDropIndex" in draggedTab._dragData ?
 //                          draggedTab._dragData.animDropIndex : draggedTab._tPos;
@@ -315,28 +282,30 @@
 //           let high = tabs.length - 1;
 //           while (low <= high) {
 //             let mid = Math.floor((low + high) / 2);
-// //            if (tabs[mid] == draggedTab &&
-//               if (false &&
+//             if (tabs[mid] == draggedTab &&
 //                 ++mid > high)
 //               break;
 //             let boxObject = tabs[mid].boxObject;
-//             let screenX = boxObject[position]/*.screenX*/ + getTabShift(tabs[mid], oldIndex);
+//             let screenX = boxObject[TDUContext.position]/*.screenX*/ + getTabShift(tabs[mid], oldIndex);
 // //            if (screenX > tabCenter) {
-//             if (screenX + tabCenterOffset > tabRightCenter) {
+//             if (screenX > TDUContext.lastTabCenter) {
 //               high = mid - 1;
-// //            } else if (screenX + boxObject.width < tabCenter) {
-//             } else if (screenX + boxObject[size]/*.width*/ - tabCenterOffset < tabLeftCenter) {
+//             } else if (screenX + boxObject.width < tabCenter) {
 //               low = mid + 1;
 //             } else {
 //               newIndex = tabs[mid]._tPos;
+// TDUContext.tabCenter = tabCenter;
+// TDUContext.screenX = screenX;
+// TDUContext.utils.updateDontMove(boxObject, TDUContext);
 //               break;
 //             }
 //           }
+// if (TDUContext.utils.checkDontMove(TDUContext)) return;
 //           if (newIndex >= oldIndex)
 //             newIndex++;
 //           if (newIndex < 0 || newIndex == oldIndex)
 //             return;
-// tabs = tabs.filter(function(tab) { return draggedTabs.indexOf(tab) < 0 });
+// tabs = TDUContext.utils.extractNotDraggedTabs(tabs, TDUContext);
 //           draggedTab._dragData.animDropIndex = newIndex;
 // 
 //           // Shift background tabs to leave a gap where the dragged tab
@@ -352,15 +321,64 @@
 //           function getTabShift(tab, dropIndex) {
 //             if (tab._tPos < draggedTab._tPos && tab._tPos >= dropIndex)
 // //              return rtl ? -tabWidth : tabWidth;
-//               return rtl ? -tabsWidth : tabsWidth;
+//               return rtl ? -TDUContext.tabsWidth : TDUContext.tabsWidth;
 //             if (tab._tPos > draggedTab._tPos && tab._tPos < dropIndex)
 // //              return rtl ? tabWidth : -tabWidth;
-//               return rtl ? tabsWidth : -tabsWidth;
+//               return rtl ? TDUContext.tabsWidth : -TDUContext.tabsWidth;
 //             return 0;
 //           }
+// TDUContext.destroy();
 //         
 // }
 			}
+		},
+		setupContext : function TDU_initTabBrowser(aEvent, aOptions)
+		{
+			var context = {};
+
+			if (typeof aOptions == 'boolean') aOptions = { canDropOnSelf: aOptions };
+			context.options = aOptions || {};
+			context.options.canDropOnSelf = context.options.canDropOnSelf || ('TreeStyleTabService' in window);
+
+			context.tabbar = this.getTabbarFromEvent(aEvent);
+			var isVertical = 'isVertical' in context.options ?
+								context.options.isVertical :
+								this.isVertical(context.tabbar) ;
+			context.position = isVertical ? 'screenY' : 'screenX' ;
+			context.currentX = aEvent[context.position];
+			context.size = isVertical ? 'height' : 'width' ;
+			context.scroll = isVertical ? 'scrollY' : 'scrollX';
+			context.translator = isVertical ? 'translateY' : 'translateX' ;
+
+			context.draggedTabs = this.getDraggedTabs(aEvent);
+			context.draggedTab = context.draggedTabs[0];
+
+			context.tabWidth = context.draggedTab.getBoundingClientRect()[context.size];
+			context.tabCenterOffset = context.tabWidth / (context.options.canDropOnSelf ? 3 : 2 );
+
+			context.utils = this;
+			context.destroy = function() {
+				Object.keys(context).forEach(function(key) {
+					delete context[key];
+				});
+			};
+
+			return context;
+		},
+		setupDraggedTabs : function TDU_setupDraggedTabs(context)
+		{
+			context.tabsWidth = 0;
+			context.draggedTabs.forEach(function(draggedTab) {
+				let style = window.getComputedStyle(draggedTab, null);
+				if (style.visibility != 'collapse' && style.display != 'none')
+					context.tabsWidth += draggedTab.boxObject[context.size];
+				this.fixDragData(draggedTab._dragData);
+
+				if (!('animLastScreenX' in draggedTab._dragData))
+					draggedTab._dragData.animLastScreenX = draggedTab._dragData[context.position];
+			}, this);
+			if (!('previousPosition' in context.draggedTab._dragData))
+				context.draggedTab._dragData.previousPosition = context.currentX;
 		},
 		fixDragData : function TDU_fixDragData(aData)
 		{
@@ -369,6 +387,56 @@
 			if (!('scrollY' in aData))
 				aData.scrollY = aData.scrollX;
 		},
+		updateDraggedTabs : function TDU_updateDraggedTabs(context)
+		{
+			context.draggedTabs.forEach(function(draggedTab) {
+				draggedTab._dragData.animLastScreenX = context.currentX;
+			}, this);
+		},
+		updateLeftBound : function TDU_updateLeftBound(leftBound, context)
+		{
+			if (context.options.canDropOnSelf)
+				leftBound -= context.tabCenterOffset;
+			return leftBound;
+		},
+		updateRightBound : function TDU_updateRightBound(rightBound, context)
+		{
+			if (context.options.canDropOnSelf)
+				rightBound += context.tabCenterOffset;
+			return rightBound;
+		},
+		updateDraggedTabsTransform : function TDU_updateDraggedTabsTransform(context)
+		{
+			context.draggedTabs.slice(1).forEach(function(tab) {
+				tab.style.transform = context.draggedTab.style.transform;
+			}, this);
+			context.dontMove = false;
+			context.lastTabCenter = Math.round(context.tabScreenX + context.translateX + context.tabsWidth - context.tabWidth / 2);
+		},
+		updateDontMove : function TDU_updateDontMove(boxObject, context)
+		{
+			context.dontMove = (
+				context.options.canDropOnSelf &&
+				(
+					(context.draggedTab._dragData.previousPosition > context.currentX &&
+					 context.screenX + context.tabCenterOffset < context.tabCenter) ||
+					(context.draggedTab._dragData.previousPosition < context.currentX &&
+					 context.screenX + boxObject[context.size] - context.tabCenterOffset > context.lastTabCenter)
+				)
+			);
+		},
+		checkDontMove : function TDU_checkDontMove(context)
+		{
+			context.draggedTab._dragData.previousPosition = context.currentX;
+			return context.dontMove;
+		},
+		extractNotDraggedTabs : function TDU_extractNotDraggedTabs(tabs, context)
+		{
+			return tabs.filter(function(tab) {
+				return context.draggedTabs.indexOf(tab) < 0
+			});
+		},
+
 		destroyTabDNDObserver : function TDU_destroyTabDNDObserver(aObserver)
 		{
 			if (!aObserver)
