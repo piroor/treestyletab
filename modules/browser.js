@@ -376,8 +376,30 @@ TreeStyleTabBrowser.prototype = {
 			return null;
 		return this.getTabFromCoordinate(aEvent[this.screenPositionProp]);
 	},
-	getTabFromCoordinate : function TSTBrowser_getTabFromCoordinate(aCoordinate)
+	getTabFromCoordinate : function TSTBrowser_getTabFromCoordinate(aCoordinate, aTabs)
 	{
+		var tabs = aTabs || this.getTabs(this.mTabBrowser);
+		if (this.getTabActualScreenPosition(tabs[0]) > aCoordinate ||
+			this.getTabActualScreenPosition(tabs[tabs.length-1]) < aCoordinate)
+			return null;
+
+		var low = 0;
+		var high = tabs.length - 1;
+		while (low <= high) {
+			let middle = Math.floor((low + high) / 2);
+			let position = this.getTabActualScreenPosition(tabs[middle]);
+			if (position > aCoordinate) {
+				high = middle - 1;
+			}
+			else if (position + tabs[middle].boxObject[this.sizeProp] < aCoordinate) {
+				low = middle + 1;
+			}
+			else {
+				return tabs[middle];
+			}
+		}
+		return null;
+/*
 		var tab = null;
 		this.getTabs(this.mTabBrowser).some(function(aTab) {
 			var box = aTab.boxObject;
@@ -389,6 +411,7 @@ TreeStyleTabBrowser.prototype = {
 			return true;
 		}, this);
 		return tab;
+*/
 	},
  
 	getNextFocusedTab : function TSTBrowser_getNextFocusedTab(aTab) 
