@@ -372,6 +372,9 @@
 				let style = window.getComputedStyle(draggedTab, null);
 				if (style.visibility != 'collapse' && style.display != 'none')
 					context.tabsWidth += draggedTab.boxObject[context.size];
+
+				if (!draggedTab._dragData)
+					draggedTab._dragData = {};
 				this.fixDragData(draggedTab._dragData);
 
 				if (!('animLastScreenX' in draggedTab._dragData))
@@ -401,6 +404,7 @@
 		},
 		updateRightBound : function TDU_updateRightBound(rightBound, context)
 		{
+			rightBound -= context.tabsWidth - context.tabWidth;
 			if (context.options.canDropOnSelf)
 				rightBound += context.tabCenterOffset;
 			return rightBound;
@@ -711,7 +715,7 @@
 			if (aTab.linkedBrowser.__SS_restoreState == 1) {
 				let data = aTab.linkedBrowser.__SS_data;
 				let entry = data.entries[Math.min(data.index, data.entries.length-1)];
-				return entry.url;
+				if (entry) return entry.url;
 			}
 			return aTab.linkedBrowser.currentURI.spec;
 		},

@@ -266,35 +266,19 @@ catch(e) {
 				event        : aEvent
 			};
 
-		/**
-		 * Even if a dragover tab is moved by CSS "transform",
-		 * the event is fired based on its original position.
-		 * Following tabs can be transformed, and we'll see far
-		 * tab (visually it is far but logically it is below the
-		 * pointer!) as the drop target.
-		 * "animDropIndex" is calculated based on their visual
-		 * positions, and we can use it to calculate the drop target
-		 * which is visually below the pointer.
-		 */
 		let draggedTab = aEvent.dataTransfer && aEvent.dataTransfer.mozGetDataAt(TAB_DROP_TYPE, 0);
-		if (draggedTab && draggedTab._dragData && 'animDropIndex' in draggedTab._dragData) {
-			let newIndex = draggedTab._dragData.animDropIndex;
-			/**
-			 * Preceding tabs won't be transformed. We have to
-			 * handle only following tabs.
-			 */
-			if (newIndex > draggedTab._tPos) {
-				newIndex--;
-				let tabs = sv.getAllTabs(b);
-				if (newIndex < tabs.length)
-					tab = tabs[newIndex];
-			}
+		let (draggedTabs = this.getDraggedTabsInfoFromOneTab(draggedTab).draggedTabs) {
+			let tabs = sv.getTabs(b).filter(function(aTab) { 
+					return draggedTabs.indexOf(aTab) < 0;
+				});
+			tab = sv.getTabFromCoordinate(aEvent[sv.screenPositionProp], tabs) ||
+					sv.getTabFromCoordinate(aEvent[sv.screenPositionProp]);
 		}
 
 		var isTabMoveFromOtherWindow = aSourceTab && aSourceTab.ownerDocument != d;
 		var isNewTabAction = !aSourceTab || aSourceTab.ownerDocument != d;
 
-		if (tab.localName != 'tab') {
+		if (!tab || tab.localName != 'tab') {
 			if (DEBUG) dump('  not on a tab\n');
 			let action = isTabMoveFromOtherWindow ? sv.kACTION_STAY : (sv.kACTION_MOVE | sv.kACTION_PART) ;
 			if (isNewTabAction) action |= sv.kACTION_NEWTAB;
@@ -317,7 +301,7 @@ catch(e) {
 								b.getNewIndex(aEvent) :
 								b.tabContainer._getDropIndex(aEvent) ;
 				if (DEBUG) dump('  on the tab '+index+'\n');
-				info.target = tabs[Math.min(index, lastTabIndex)];
+				info.target = tab = tabs[Math.min(index, lastTabIndex)];
 				if (DEBUG) dump('  info.target = '+info.target._tPos+'\n');
 			}
 		}
@@ -453,7 +437,7 @@ catch(e) {
 		var b  = this.browser;
 		var w  = this.window;
 
-		var tabsInfo = this.getDraggedTabsInfoFromOneTab(aInfo, aDraggedTab);
+		var tabsInfo = this.getDraggedTabsInfoFromOneTab(aDraggedTab, aInfo);
 		if (!tabsInfo.draggedTab) return false;
 
 		var sourceWindow = aDraggedTab.ownerDocument.defaultView;
@@ -534,8 +518,9 @@ catch(e) {
 		return true;
 	},
 	
-	getDraggedTabsInfoFromOneTab : function TabbarDND_getDraggedTabsInfoFromOneTab(aInfo, aTab) 
+	getDraggedTabsInfoFromOneTab : function TabbarDND_getDraggedTabsInfoFromOneTab(aTab, aInfo) 
 	{
+		aInfo = aInfo || {};
 		if (aInfo.draggedTabsInfo)
 			return aInfo.draggedTabsInfo;
 
@@ -635,7 +620,7 @@ catch(e) {
 		var actionInfo = {
 				action : sv.kACTIONS_FOR_DESTINATION | sv.kACTION_IMPORT
 			};
-		var tabsInfo = this.getDraggedTabsInfoFromOneTab(actionInfo, aTab);
+		var tabsInfo = this.getDraggedTabsInfoFromOneTab(aTab, actionInfo);
 		return tabsInfo.draggedTabs.length == (aTabs || sv.getAllTabs(b)).length;
 	},
  
@@ -679,7 +664,7 @@ catch(e) {
 				action : sv.kACTIONS_FOR_DESTINATION | sv.kACTION_MOVE,
 				event  : aEvent
 			};
-		var tabsInfo = this.getDraggedTabsInfoFromOneTab(actionInfo, aTab);
+		var tabsInfo = this.getDraggedTabsInfoFromOneTab(aTab, actionInfo);
 		if (
 			tabsInfo.draggedTabs.length <= 1 ||
 			Array.some(tabsInfo.draggedTabs, function(aTab) {
