@@ -340,15 +340,15 @@
 			context.options = aOptions || {};
 			context.options.canDropOnSelf = context.options.canDropOnSelf || ('TreeStyleTabService' in window);
 
-			context.tabbar = this.getTabbarFromEvent(aEvent);
+			var tabbar = this.getTabbarFromEvent(aEvent);
 			var isVertical = 'isVertical' in context.options ?
 								context.options.isVertical :
-								this.isVertical(context.tabbar) ;
+								this.isVertical(tabbar) ;
 			context.position = isVertical ? 'screenY' : 'screenX' ;
-			context.currentX = aEvent[context.position];
 			context.size = isVertical ? 'height' : 'width' ;
 			context.scroll = isVertical ? 'scrollY' : 'scrollX';
 			context.translator = isVertical ? 'translateY' : 'translateX' ;
+			context.currentX = aEvent[context.position];
 
 			context.draggedTabs = this.getDraggedTabs(aEvent);
 			context.draggedTab = context.draggedTabs[0];
