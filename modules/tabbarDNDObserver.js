@@ -267,9 +267,9 @@ catch(e) {
 			};
 
 		let draggedTab = aEvent.dataTransfer && aEvent.dataTransfer.mozGetDataAt(TAB_DROP_TYPE, 0);
-		let (draggedTabs = this.getDraggedTabsInfoFromOneTab(draggedTab).draggedTabs) {
+		if (draggedTab._dragData) {
 			let tabs = sv.getTabs(b).filter(function(aTab) { 
-					return draggedTabs.indexOf(aTab) < 0;
+					return !aTab._dragData;
 				});
 			tab = sv.getTabFromCoordinate(aEvent[sv.screenPositionProp], tabs) ||
 					sv.getTabFromCoordinate(aEvent[sv.screenPositionProp]);
