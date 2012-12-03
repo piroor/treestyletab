@@ -164,7 +164,7 @@
 						'TDUContext.utils.updateDraggedTabs(TDUContext);'
 					).replace(
 						'let leftTab =',
-						'tabs = TDUContext.utils.collectAlignedTabs(tabs, TDUContext);\n' +
+						'tabs = TDUContext.utils.collectAnimateTabs(tabs, TDUContext);\n' +
 						'$&'
 					).replace(
 						'translateX = Math.max(',
@@ -249,7 +249,7 @@
 // 
 //           // Move the dragged tab based on the mouse position.
 // 
-// tabs = TDUContext.utils.collectAlignedTabs(tabs, TDUContext);
+// tabs = TDUContext.utils.collectAnimateTabs(tabs, TDUContext);
 //           let leftTab = tabs[0];
 //           let rightTab = tabs[tabs.length - 1];
 // 
@@ -354,18 +354,28 @@
 			);
 
 			var tabbar = this.getTabbarFromEvent(aEvent);
+			var tabbarIsVertical = this.isVertical(tabbar);
 			var isVertical = 'isVertical' in context.options ?
 								context.options.isVertical :
-								this.isVertical(tabbar) ;
+								tabbarIsVertical ;
 			context.position = isVertical ? 'screenY' : 'screenX' ;
-			context.align = isVertical ? 'screenX' : 'screenY' ;
+			context.align = tabbarIsVertical ? 'screenY' : 'screenX' ;
 			context.size = isVertical ? 'height' : 'width' ;
+			context.sizeToAlign = tabbarIsVertical ? 'height' : 'width' ;
 			context.scroll = isVertical ? 'scrollY' : 'scrollX';
 			context.translator = isVertical ? 'translateY' : 'translateX' ;
-			context.currentX = aEvent[context.position];
+			context.currentPositionCoordinate = aEvent[context.position];
+			context.currentAlignCoordinate = aEvent[context.align];
+
+			var b = this.getTabBrowserFromChild(tabbar);
+			var firstNormalTab = b.visibleTabs[b._numPinnedTabs];
+			context.pinned = context.draggedTab.pinned;
+			context.onPinnedArea = context.currentAlignCoordinate < firstNormalTab.boxObject[context.align];
+			context.tabbarIsVertical = tabbarIsVertical;
 
 			context.tabWidth = context.draggedTab.getBoundingClientRect()[context.size];
 			context.tabCenterOffset = context.tabWidth / (context.options.canDropOnSelf ? 3 : 2 );
+
 
 			context.utils = this;
 			context.destroy = function() {
@@ -392,7 +402,7 @@
 					draggedTab._dragData.animLastScreenX = draggedTab._dragData[context.position];
 			}, this);
 			if (!('previousPosition' in context.draggedTab._dragData))
-				context.draggedTab._dragData.previousPosition = context.currentX;
+				context.draggedTab._dragData.previousPosition = context.currentPositionCoordinate;
 		},
 		fixDragData : function TDU_fixDragData(aData)
 		{
@@ -404,21 +414,22 @@
 		updateDraggedTabs : function TDU_updateDraggedTabs(context)
 		{
 			context.draggedTabs.forEach(function(draggedTab) {
-				draggedTab._dragData.animLastScreenX = context.currentX;
+				draggedTab._dragData.animLastScreenX = context.currentPositionCoordinate;
 			}, this);
 		},
-		collectAlignedTabs : function TDU_collectAlignedTabs(tabs, context)
+		collectAnimateTabs : function TDU_collectAnimateTabs(tabs, context)
 		{
 			context.allAnimatedTabs = tabs;
-			var baseTab = context.draggedTab;
-			if (!baseTab.pinned)
+			if (!context.pinned || !context.onPinnedArea || !context.isVertical)
 				return tabs;
 
 			// With Tree Style Tabs, pinned tabs are shown with multiple rows.
 			// We should animate only tabs in the same row.
-			var base = baseTab.boxObject[context.align];
 			return tabs.filter(function(aTab) {
-				return aTab.boxObject[context.align] == base;
+				var box = aTab.boxObject;
+				var min = box[context.align];
+				var max = min + box[context.sizeToAlign];
+				return context.currentAlignCoordinate >= min && context.currentAlignCoordinate <= max;
 			});
 		},
 		updateLeftBound : function TDU_updateLeftBound(leftBound, context)
@@ -447,16 +458,16 @@
 			context.dontMove = (
 				context.options.canDropOnSelf &&
 				(
-					(context.draggedTab._dragData.previousPosition > context.currentX &&
+					(context.draggedTab._dragData.previousPosition > context.currentPositionCoordinate &&
 					 context.screenX + context.tabCenterOffset < context.tabCenter) ||
-					(context.draggedTab._dragData.previousPosition < context.currentX &&
+					(context.draggedTab._dragData.previousPosition < context.currentPositionCoordinate &&
 					 context.screenX + boxObject[context.size] - context.tabCenterOffset > context.lastTabCenter)
 				)
 			);
 		},
 		checkDontMove : function TDU_checkDontMove(context)
 		{
-			context.draggedTab._dragData.previousPosition = context.currentX;
+			context.draggedTab._dragData.previousPosition = context.currentPositionCoordinate;
 			return context.dontMove;
 		},
 		extractNotDraggedTabs : function TDU_extractNotDraggedTabs(tabs, context)
