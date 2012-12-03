@@ -277,7 +277,7 @@ catch(e) {
 					tabs[draggedTab._dragData.animDropIndex] :
 					// otherwise, we have to find "drop target" tab from screen coordinates.
 					sv.getTabFromCoordinates(aEvent, sameTypeUndraggedTabs) ||
-						sv.getTabFromCoordinates(aEvent);
+						tabs[draggedTab._dragData.animDropIndex] ;
 		}
 
 		var isTabMoveFromOtherWindow = aSourceTab && aSourceTab.ownerDocument != d;
