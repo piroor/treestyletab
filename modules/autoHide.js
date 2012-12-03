@@ -454,7 +454,7 @@ AutoHideBrowser.prototype = {
 	getNearestClickableBox : function AHB_getNearestClickableBox(aEvent)
 	{
 		var sv = this.treeStyleTab;
-		var tab = sv.getTabFromCoordinate(aEvent[sv.screenPositionProp]);
+		var tab = sv.getTabFromCoordinates(aEvent);
 		if (!tab)
 			return null;
 

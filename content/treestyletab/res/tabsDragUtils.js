@@ -163,6 +163,10 @@
 						'$&\n' +
 						'TDUContext.utils.updateDraggedTabs(TDUContext);'
 					).replace(
+						'let leftTab =',
+						'tabs = TDUContext.utils.collectAlignedTabs(tabs, TDUContext);\n' +
+						'$&'
+					).replace(
 						'translateX = Math.max(',
 						'leftBound = TDUContext.utils.updateLeftBound(leftBound, TDUContext);\n' +
 						'rightBound = TDUContext.utils.updateRightBound(rightBound, TDUContext);\n' +
@@ -185,6 +189,7 @@
 						'TDUContext.utils.updateDontMove(boxObject, TDUContext);\n'
 					).replace(
 						'if (newIndex >= oldIndex)',
+						'tabs = TDUContext.allAnimatedTabs;\n' +
 						'if (TDUContext.utils.checkDontMove(TDUContext)) return;\n' +
 						'$&'
 					).replace(
@@ -244,6 +249,7 @@
 // 
 //           // Move the dragged tab based on the mouse position.
 // 
+// tabs = TDUContext.utils.collectAlignedTabs(tabs, TDUContext);
 //           let leftTab = tabs[0];
 //           let rightTab = tabs[tabs.length - 1];
 // 
@@ -298,6 +304,7 @@
 //               break;
 //             }
 //           }
+// tabs = TDUContext.allAnimatedTabs;
 // if (TDUContext.utils.checkDontMove(TDUContext)) return;
 //           if (newIndex >= oldIndex)
 //             newIndex++;
@@ -351,6 +358,7 @@
 								context.options.isVertical :
 								this.isVertical(tabbar) ;
 			context.position = isVertical ? 'screenY' : 'screenX' ;
+			context.align = isVertical ? 'screenX' : 'screenY' ;
 			context.size = isVertical ? 'height' : 'width' ;
 			context.scroll = isVertical ? 'scrollY' : 'scrollX';
 			context.translator = isVertical ? 'translateY' : 'translateX' ;
@@ -398,6 +406,14 @@
 			context.draggedTabs.forEach(function(draggedTab) {
 				draggedTab._dragData.animLastScreenX = context.currentX;
 			}, this);
+		},
+		collectAlignedTabs : function TDU_collectAlignedTabs(tabs, context)
+		{
+			context.allAnimatedTabs = tabs;
+			var base = context.draggedTab.boxObject[context.align];
+			return tabs.filter(function(aTab) {
+				return aTab.boxObject[context.align] == base;
+			});
 		},
 		updateLeftBound : function TDU_updateLeftBound(leftBound, context)
 		{

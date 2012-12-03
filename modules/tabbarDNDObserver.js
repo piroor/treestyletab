@@ -271,8 +271,8 @@ catch(e) {
 			let tabs = sv.getTabs(b).filter(function(aTab) { 
 					return !aTab._dragData;
 				});
-			tab = sv.getTabFromCoordinate(aEvent[sv.screenPositionProp], tabs) ||
-					sv.getTabFromCoordinate(aEvent[sv.screenPositionProp]);
+			tab = sv.getTabFromCoordinates(aEvent, tabs) ||
+					sv.getTabFromCoordinates(aEvent);
 		}
 
 		var isTabMoveFromOtherWindow = aSourceTab && aSourceTab.ownerDocument != d;

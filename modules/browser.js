@@ -374,13 +374,20 @@ TreeStyleTabBrowser.prototype = {
 			this.getSplitterFromEvent(aEvent)
 			)
 			return null;
-		return this.getTabFromCoordinate(aEvent[this.screenPositionProp]);
+		return this.getTabFromCoordinates(aEvent);
 	},
-	getTabFromCoordinate : function TSTBrowser_getTabFromCoordinate(aCoordinate, aTabs)
+	getTabFromCoordinates : function TSTBrowser_getTabFromCoordinates(aCoordinates, aTabs)
 	{
+		var tab = this.document.elementFromPoint(aCoordinates.clientX, aCoordinates.clientY);
+		if (tab && tab.localName == 'tab')
+			return (!aTabs || aTabs.indexOf(tab) > -1) ? tab : null ;
+
+		var positionCoordinate = aCoordinates[this.screenPositionProp];
+
 		var tabs = aTabs || this.getTabs(this.mTabBrowser);
-		if (this.getTabActualScreenPosition(tabs[0]) > aCoordinate ||
-			this.getTabActualScreenPosition(tabs[tabs.length-1]) < aCoordinate)
+		if (!tabs.length ||
+			this.getTabActualScreenPosition(tabs[0]) > positionCoordinate ||
+			this.getTabActualScreenPosition(tabs[tabs.length-1]) < positionCoordinate)
 			return null;
 
 		var low = 0;
@@ -388,10 +395,10 @@ TreeStyleTabBrowser.prototype = {
 		while (low <= high) {
 			let middle = Math.floor((low + high) / 2);
 			let position = this.getTabActualScreenPosition(tabs[middle]);
-			if (position > aCoordinate) {
+			if (position > positionCoordinate) {
 				high = middle - 1;
 			}
-			else if (position + tabs[middle].boxObject[this.sizeProp] < aCoordinate) {
+			else if (position + tabs[middle].boxObject[this.sizeProp] < positionCoordinate) {
 				low = middle + 1;
 			}
 			else {
@@ -403,8 +410,8 @@ TreeStyleTabBrowser.prototype = {
 		var tab = null;
 		this.getTabs(this.mTabBrowser).some(function(aTab) {
 			var box = aTab.boxObject;
-			if (box[this.screenPositionProp] > aCoordinate ||
-				box[this.screenPositionProp] + box[this.sizeProp] < aCoordinate) {
+			if (box[this.screenPositionProp] > positionCoordinate ||
+				box[this.screenPositionProp] + box[this.sizeProp] < positionCoordinate) {
 				return false;
 			}
 			tab = aTab;
