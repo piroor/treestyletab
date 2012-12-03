@@ -145,7 +145,8 @@
 	<tooltip id="treestyletab-full-tree-tooltip"/>
 	<panel id="treestyletab-autohide-content-area-screen"
 		onpopupshowing="if ('setConsumeRollupEvent' in this.popupBoxObject) this.popupBoxObject.setConsumeRollupEvent(Components.interfaces.nsIPopupBoxObject.ROLLUP_NO_CONSUME);"
-		onclick="this.hidePopup();"/>
+		onclick="this.hidePopup();"
+		onDOMMouseScroll="this.hidePopup()"/>
 </popupset>
 
 </overlay>
