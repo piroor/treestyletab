@@ -410,7 +410,13 @@
 		collectAlignedTabs : function TDU_collectAlignedTabs(tabs, context)
 		{
 			context.allAnimatedTabs = tabs;
-			var base = context.draggedTab.boxObject[context.align];
+			var baseTab = context.draggedTab;
+			if (!baseTab.pinned)
+				return tabs;
+
+			// With Tree Style Tabs, pinned tabs are shown with multiple rows.
+			// We should animate only tabs in the same row.
+			var base = baseTab.boxObject[context.align];
 			return tabs.filter(function(aTab) {
 				return aTab.boxObject[context.align] == base;
 			});

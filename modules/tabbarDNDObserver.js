@@ -268,11 +268,16 @@ catch(e) {
 
 		let draggedTab = aEvent.dataTransfer && aEvent.dataTransfer.mozGetDataAt(TAB_DROP_TYPE, 0);
 		if (draggedTab._dragData) {
-			let tabs = sv.getTabs(b).filter(function(aTab) { 
-					return !aTab._dragData;
+			let sameTypeUndraggedTabs = tabs.filter(function(aTab) { 
+					return !aTab._dragData && aTab.pinned == draggedTab.pinned;
 				});
-			tab = sv.getTabFromCoordinates(aEvent, tabs) ||
-					sv.getTabFromCoordinates(aEvent);
+			tab = draggedTab.pinned ?
+					// pinned tabs cannot be dropped to another pinned tab, so
+					// we can use the drop position calculated by "_animateTabMove()".
+					tabs[draggedTab._dragData.animDropIndex] :
+					// otherwise, we have to find "drop target" tab from screen coordinates.
+					sv.getTabFromCoordinates(aEvent, sameTypeUndraggedTabs) ||
+						sv.getTabFromCoordinates(aEvent);
 		}
 
 		var isTabMoveFromOtherWindow = aSourceTab && aSourceTab.ownerDocument != d;
