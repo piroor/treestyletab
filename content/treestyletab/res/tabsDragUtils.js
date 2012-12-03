@@ -15,7 +15,7 @@
    http://github.com/piroor/fxaddonlibs/blob/master/tabsDragUtils.js
 */
 (function() {
-	const currentRevision = 23;
+	const currentRevision = 24;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -333,9 +333,18 @@
 		{
 			var context = {};
 
+			context.draggedTabs = this.getDraggedTabs(aEvent);
+			context.draggedTab = context.draggedTabs[0];
+
 			if (typeof aOptions == 'boolean') aOptions = { canDropOnSelf: aOptions };
 			context.options = aOptions || {};
-			context.options.canDropOnSelf = context.options.canDropOnSelf || ('TreeStyleTabService' in window);
+			context.options.canDropOnSelf = (
+				context.options.canDropOnSelf ||
+				(
+					'TreeStyleTabService' in window &&
+					!context.draggedTab.pinned
+				)
+			);
 
 			var tabbar = this.getTabbarFromEvent(aEvent);
 			var isVertical = 'isVertical' in context.options ?
@@ -346,9 +355,6 @@
 			context.scroll = isVertical ? 'scrollY' : 'scrollX';
 			context.translator = isVertical ? 'translateY' : 'translateX' ;
 			context.currentX = aEvent[context.position];
-
-			context.draggedTabs = this.getDraggedTabs(aEvent);
-			context.draggedTab = context.draggedTabs[0];
 
 			context.tabWidth = context.draggedTab.getBoundingClientRect()[context.size];
 			context.tabCenterOffset = context.tabWidth / (context.options.canDropOnSelf ? 3 : 2 );

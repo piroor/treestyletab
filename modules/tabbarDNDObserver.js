@@ -877,7 +877,10 @@ try{
 				canDropOnSelf : !dragOverTab || !dragOverTab.pinned,
 				isVertical : (
 					b.ownerDocument.defaultView['piro.sakura.ne.jp'].tabsDragUtils.isVertical(b.tabContainer) &&
-					!draggedTab.pinned
+					(
+						!draggedTab.pinned ||
+						!utils.getTreePref('pinnedTab.faviconized')
+					)
 				)
 			});
 
