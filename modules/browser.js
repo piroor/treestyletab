@@ -610,7 +610,7 @@ TreeStyleTabBrowser.prototype = {
 			let key = this.autoHide.expanded ?
 						'tabbar.width' : 'tabbar.shrunkenWidth' ;
 			let width = utils.getTreePref(key);
-			let minWidth = this.scrollBox.boxObject.width
+			let minWidth = Math.max(this.MIN_TABBAR_WIDTH, this.scrollBox.boxObject.width);
 			if (minWidth > width) {
 				this.setPrefForActiveWindow(function() {
 					utils.setTreePref(key, minWidth);
@@ -620,7 +620,7 @@ TreeStyleTabBrowser.prototype = {
 		}
 		else {
 			let height = utils.getTreePref('tabbar.height');
-			let minHeight = this.scrollBox.boxObject.height
+			let minHeight = Math.max(this.MIN_TABBAR_HEIGHT, this.scrollBox.boxObject.height);
 			if (minHeight > height) {
 				this.setPrefForActiveWindow(function() {
 					utils.setTreePref('tabbar.height', minHeight);

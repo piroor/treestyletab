@@ -243,6 +243,8 @@ var TreeStyleTabBase = {
 
 	MAX_TABBAR_SIZE_RATIO        : 0.8,
 	DEFAULT_SHRUNKEN_WIDTH_RATIO : 0.67,
+	MIN_TABBAR_WIDTH : 24,
+	MIN_TABBAR_HEIGHT : 24,
  
 /* base variables */ 
 	baseIndentVertical   : 12,
