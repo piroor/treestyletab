@@ -379,8 +379,8 @@ TreeStyleTabBrowser.prototype = {
 	getTabFromCoordinates : function TSTBrowser_getTabFromCoordinates(aCoordinates, aTabs)
 	{
 		var tab = this.document.elementFromPoint(aCoordinates.clientX, aCoordinates.clientY);
-		if (tab && tab.localName == 'tab')
-			return (!aTabs || aTabs.indexOf(tab) > -1) ? tab : null ;
+		if (tab && tab.localName == 'tab' && (!aTabs || aTabs.indexOf(tab) > -1))
+			return tab;
 
 		var positionCoordinate = aCoordinates[this.screenPositionProp];
 
