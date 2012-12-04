@@ -189,7 +189,6 @@
 						'TDUContext.utils.updateDontMove(boxObject, TDUContext);\n'
 					).replace(
 						'if (newIndex >= oldIndex)',
-						'tabs = TDUContext.allAnimatedTabs;\n' +
 						'if (TDUContext.utils.checkDontMove(TDUContext)) return;\n' +
 						'$&'
 					).replace(
@@ -304,7 +303,6 @@
 //               break;
 //             }
 //           }
-// tabs = TDUContext.allAnimatedTabs;
 // if (TDUContext.utils.checkDontMove(TDUContext)) return;
 //           if (newIndex >= oldIndex)
 //             newIndex++;
@@ -359,19 +357,23 @@
 								context.options.isVertical :
 								tabbarIsVertical ;
 			context.position = isVertical ? 'screenY' : 'screenX' ;
-			context.align = tabbarIsVertical ? 'screenY' : 'screenX' ;
+			context.rowPosition = tabbarIsVertical ? 'screenY' : 'screenX' ;
 			context.size = isVertical ? 'height' : 'width' ;
-			context.sizeToAlign = tabbarIsVertical ? 'height' : 'width' ;
+			context.rowSize = tabbarIsVertical ? 'height' : 'width' ;
 			context.scroll = isVertical ? 'scrollY' : 'scrollX';
 			context.translator = isVertical ? 'translateY' : 'translateX' ;
 			context.currentPositionCoordinate = aEvent[context.position];
-			context.currentAlignCoordinate = aEvent[context.align];
+			context.currentRowPositionCoordinate = aEvent[context.rowPosition];
 
 			var b = this.getTabBrowserFromChild(tabbar);
 			var firstNormalTab = b.visibleTabs[b._numPinnedTabs];
 			context.pinned = context.draggedTab.pinned;
-			context.onPinnedArea = context.currentAlignCoordinate < firstNormalTab.boxObject[context.align];
+			context.onPinnedArea = context.currentRowPositionCoordinate < firstNormalTab.boxObject[context.rowPosition];
 			context.tabbarIsVertical = tabbarIsVertical;
+			context.multirowTabs = context.pinned &&
+									context.onPinnedArea &&
+									tabbarIsVertical &&
+									!isVertical;
 
 			context.tabSize = context.draggedTab.getBoundingClientRect()[context.size];
 			context.tabCenterOffset = context.tabSize / (context.options.canDropOnSelf ? 3 : 2 );
@@ -419,17 +421,25 @@
 		},
 		collectAnimateTabs : function TDU_collectAnimateTabs(tabs, context)
 		{
-			context.allAnimatedTabs = tabs;
-			if (!context.pinned || !context.onPinnedArea || !context.isVertical)
+			context.animateTabs = context.allAnimateTabs = tabs;
+			if (!context.multirowTabs)
 				return tabs;
 
 			// With Tree Style Tabs, pinned tabs are shown with multiple rows.
 			// We should animate only tabs in the same row.
-			return tabs.filter(function(aTab) {
+			return context.animateTabs = tabs.filter(function(aTab) {
 				var box = aTab.boxObject;
-				var min = box[context.align];
-				var max = min + box[context.sizeToAlign];
-				return context.currentAlignCoordinate >= min && context.currentAlignCoordinate <= max;
+				var min = box[context.rowPosition];
+				var max = min + box[context.rowSize];
+				var onSameRow = context.currentRowPositionCoordinate >= min &&
+								context.currentRowPositionCoordinate <= max;
+				if (onSameRow) {
+					return true;
+				}
+				else {
+					aTab.style.transform = ''; // reset old animation
+					return false;
+				}
 			});
 		},
 		updateLeftBound : function TDU_updateLeftBound(leftBound, context)
@@ -447,8 +457,29 @@
 		},
 		updateDraggedTabsTransform : function TDU_updateDraggedTabsTransform(context)
 		{
-			context.draggedTabs.slice(1).forEach(function(tab) {
-				tab.style.transform = context.draggedTab.style.transform;
+			var transform = context.draggedTab.style.transform;
+
+			var tabs = context.draggedTabs;
+			if (context.multirowTabs) { // for multirow pinned tabs
+				let translateX = /translateX\(([-0-9\.]+)(?:px)?\)/.test(transform) && RegExp.$1 || 0;
+				translateX = parseFloat(translateX);
+				let translateY = /translateY\(([-0-9\.]+)(?:px)?\)/.test(transform) && RegExp.$1 || 0;
+				translateY = parseFloat(translateY);
+
+				let rowDelta = context.animateTabs[0].boxObject[context.rowPosition] - context.draggedTab.boxObject[context.rowPosition];
+				if (context.rowPosition == 'screenY')
+					translateY += rowDelta;
+				else
+					translateX += rowDelta;
+
+				transform = 'translate(' + translateX + 'px, ' + translateY + 'px)';
+			}
+			else {
+				tabs = tabs.slice(1);
+			}
+
+			tabs.forEach(function(tab) {
+				tab.style.transform = transform;
 			}, this);
 			context.dontMove = false;
 			context.lastTabCenter = Math.round(context.tabScreenPosition + context.translateDelta + context.tabsSize - context.tabSize / 2);
