@@ -124,6 +124,7 @@ var TreeStyleTabBase = {
 	kNARROW_SCROLLBAR   : 'treestyletab-narrow-scrollbar',
 	kFAVICONIZED        : 'treestyletab-faviconized',
 	kBG_NOTIFY_PHASE    : 'treestyletab-notifybgtab-phase',
+	kIGNORE_POPUP_STATE : 'treestyletab-ignore-state',
 
 	kTAB_INVERTED          : 'treestyletab-tab-inverted',
 	kTAB_CONTENTS_INVERTED : 'treestyletab-tab-contents-inverted',
