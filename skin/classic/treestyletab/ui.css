@@ -291,6 +291,11 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
 
 
 /* pinned tabs */
+.tabbrowser-tabs[treestyletab-mode="vertical"][positionpinnedtabs="true"] {
+	padding-start: 0 !important;
+	-moz-padding-start: 0 !important;
+}
+
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"] {
 	height: 24px;
