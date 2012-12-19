@@ -346,11 +346,8 @@ TreeStyleTabWindow.prototype = {
 		d.addEventListener(this.kEVENT_TYPE_TABBAR_STATE_CHANGED,        this, false);
 		d.addEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB,              this, false);
 
-		if (this.MutationObserver) {
-			this.browserBottomBoxObserver = new this.MutationObserver(this);
-			this.browserBottomBoxObserver.observe(this.browserBottomBox, { childList : true });
-			this.initBrowserBottomBoxChildListeners();
-		}
+		if (this.MutationObserver)
+			this.initBrowserBottomBoxObserver();
 
 		var appcontent = d.getElementById('appcontent');
 		appcontent.addEventListener('SubBrowserAdded', this, false);
@@ -472,12 +469,25 @@ TreeStyleTabWindow.prototype = {
 		}
 	},
  
+	initBrowserBottomBoxObserver : function TSTWindow_initBrowserBottomBoxObserver() 
+	{
+		var self = this;
+		this.browserBottomBoxObserver = new this.MutationObserver(function(aMutations, aObserver) {
+			self.handleMutations(aMutations, aObserver);
+		});
+		this.browserBottomBoxObserver.observe(this.browserBottomBox, { childList : true });
+		this.initBrowserBottomBoxChildListeners();
+	},
+ 
 	initBrowserBottomBoxChildListeners : function TSTWindow_initBrowserBottomBoxChildListeners() 
 	{
 		Array.forEach(this.browserBottomBox.childNodes, function(aChild) {
 			var observer = aChild.__treestyletab__attributeObserver;
 			if (!observer) {
-				observer = new this.MutationObserver(this);
+				var self = this;
+				observer = new this.MutationObserver(function(aMutations, aObserver) {
+					self.handleMutations(aMutations, aObserver);
+				});
 				observer.observe(aChild, { attributes : true });
 				aChild.__treestyletab__attributeObserver = observer;
 			}
