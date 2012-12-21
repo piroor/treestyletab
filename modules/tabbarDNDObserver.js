@@ -267,7 +267,7 @@ catch(e) {
 			};
 
 		let draggedTab = aEvent.dataTransfer && aEvent.dataTransfer.mozGetDataAt(TAB_DROP_TYPE, 0);
-		if (draggedTab._dragData) {
+		if (draggedTab && draggedTab._dragData) {
 			let sameTypeUndraggedTabs = tabs.filter(function(aTab) { 
 					return !aTab._dragData && aTab.pinned == draggedTab.pinned;
 				});
