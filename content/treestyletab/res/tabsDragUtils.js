@@ -15,7 +15,7 @@
    http://github.com/piroor/fxaddonlibs/blob/master/tabsDragUtils.js
 */
 (function() {
-	const currentRevision = 24;
+	const currentRevision = 25;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -192,6 +192,10 @@
 						'if (TDUContext.utils.checkDontMove(TDUContext)) return;\n' +
 						'$&'
 					).replace(
+						'draggedTab._dragData.animDropIndex = newIndex;',
+						'TDUContext.utils.updateDropIndex(newIndex, TDUContext);\n' +
+						'$&'
+					).replace(
 						'-tabWidth : tabWidth',
 						'/* $& */ -TDUContext.tabsSize : TDUContext.tabsSize'
 					).replace(
@@ -308,6 +312,7 @@
 //             newIndex++;
 //           if (newIndex < 0 || newIndex == oldIndex)
 //             return;
+// TDUContext.utils.updateDropIndex(newIndex, TDUContext);
 //           draggedTab._dragData.animDropIndex = newIndex;
 // 
 //           // Shift background tabs to leave a gap where the dragged tab
@@ -339,7 +344,9 @@
 			var context = {};
 
 			context.draggedTabs = this.getDraggedTabs(aEvent);
-			context.draggedTab = context.draggedTabs[0];
+//			var originalDraggedTab = aEvent.dataTransfer.mozGetDataAt(TAB_DROP_TYPE, 0);
+			var firstDraggedTab = context.draggedTabs[0];
+			context.draggedTab = /* originalDraggedTab ||*/ firstDraggedTab;
 
 			if (typeof aOptions == 'boolean') aOptions = { canDropOnSelf: aOptions };
 			context.options = aOptions || {};
@@ -402,9 +409,9 @@
 
 				if (!('animLastScreenX' in draggedTab._dragData))
 					draggedTab._dragData.animLastScreenX = draggedTab._dragData[context.position];
+				if (!('previousPosition' in draggedTab._dragData))
+					draggedTab._dragData.previousPosition = context.currentPositionCoordinate;
 			}, this);
-			if (!('previousPosition' in context.draggedTab._dragData))
-				context.draggedTab._dragData.previousPosition = context.currentPositionCoordinate;
 		},
 		fixDragData : function TDU_fixDragData(aData)
 		{
@@ -498,13 +505,21 @@
 		},
 		checkDontMove : function TDU_checkDontMove(context)
 		{
-			context.draggedTab._dragData.previousPosition = context.currentPositionCoordinate;
+			context.draggedTabs.forEach(function(draggedTab) {
+				draggedTab._dragData.previousPosition = context.currentPositionCoordinate;
+			});
 			return context.dontMove;
 		},
 		extractNotDraggedTabs : function TDU_extractNotDraggedTabs(tabs, context)
 		{
 			return tabs.filter(function(tab) {
 				return context.draggedTabs.indexOf(tab) < 0
+			});
+		},
+		updateDropIndex : function TDU_updateDropIndex(newIndex, context)
+		{
+			context.draggedTabs.forEach(function(draggedTab) {
+				draggedTab._dragData.animDropIndex = newIndex;
 			});
 		},
 
