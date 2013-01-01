@@ -57,8 +57,7 @@ const TST_PREF_PREFIX = 'extensions.treestyletab.';
 let TreeStyleTabUtils = {
 
 	get prefs () {
-		delete this.prefs;
-		return this.prefs = prefs;
+		return prefs;
 	},
 
 /* Save/Load Prefs */
