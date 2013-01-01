@@ -410,7 +410,11 @@ TreeStyleTabWindow.prototype = {
 					let pref = restorePrefs[i];
 					let backup = prefs.getPref(pref+'.backup');
 					if (backup === null) continue;
-					prefs.setPref(pref+'.override', backup); // we have to set to ".override" pref, to avoid unexpectedly reset by the preference listener.
+					// we have to set to ".override" pref, to avoid unexpectedly reset by the preference listener.
+					prefs.setPref(pref+'.override', backup);
+					// restore user preference.
+					prefs.setPref(pref, backup);
+					// clear backup pref.
 					prefs.clearPref(pref+'.backup');
 				}
 			};
