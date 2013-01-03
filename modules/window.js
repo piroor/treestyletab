@@ -394,24 +394,6 @@ TreeStyleTabWindow.prototype = {
 					}
 					this.window.TabsOnTop.enabled = true;
 				}
-
-				let restorePrefs = [
-						'browser.tabs.loadFolderAndReplace',
-						'browser.tabs.insertRelatedAfterCurrent',
-						'extensions.stm.tabBarMultiRows' // Super Tab Mode
-					];
-				for (let i = 0, maxi = restorePrefs.length; i < maxi; i++)
-				{
-					let pref = restorePrefs[i];
-					let backup = prefs.getPref(pref+'.backup');
-					if (backup === null) continue;
-					// we have to set to ".override" pref, to avoid unexpectedly reset by the preference listener.
-					prefs.setPref(pref+'.override', backup);
-					// restore user preference.
-					prefs.setPref(pref, backup);
-					// clear backup pref.
-					prefs.clearPref(pref+'.backup');
-				}
 			}.bind(this);
 		new UninstallationListener({
 			id : 'treestyletab@piro.sakura.ne.jp',
