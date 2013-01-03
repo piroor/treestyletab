@@ -82,7 +82,7 @@ let TreeStyleTabUtils = {
 	clearTreePref : function TSTUtils_clearTreePref(aPrefstring)
 	{
 		return prefs.clearPref(TST_PREF_PREFIX + aPrefstring);
-	}
+	},
 
 /* string bundle */
 	get treeBundle () {
@@ -90,6 +90,6 @@ let TreeStyleTabUtils = {
 	},
 	get tabbrowserBundle () {
 		return stringBundle.get('chrome://browser/locale/tabbrowser.properties');
-	},
+	}
 
 };
