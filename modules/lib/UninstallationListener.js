@@ -13,6 +13,24 @@
  original:
    http://github.com/piroor/fxaddonlibs/blob/master/UninstallationListener.js
 */
+
+/* To work as a JS Code Module  */
+if (typeof window == 'undefined' ||
+	(window && typeof window.constructor == 'function')) {
+	this.EXPORTED_SYMBOLS = ['UninstallationListener'];
+
+	// If namespace.jsm is available, export symbols to the shared namespace.
+	// See: http://github.com/piroor/fxaddonlibs/blob/master/namespace.jsm
+	try {
+		let ns = {};
+		Components.utils.import('resource://my-modules/namespace.jsm', ns);
+		/* var */ window = ns.getNamespaceFor('piro.sakura.ne.jp');
+	}
+	catch(e) {
+		window = {};
+	}
+}
+
 (function() {
 	const currentRevision = 2;
 
@@ -165,3 +183,7 @@
 		}
 	};
 })();
+
+if (window != this) { // work as a JS Code Module
+	this.UninstallationListener = window['piro.sakura.ne.jp'].UninstallationListener;
+}

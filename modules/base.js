@@ -71,6 +71,8 @@ XPCOMUtils.defineLazyGetter(this, 'autoScroll', function() {
 	Components.utils.import('resource://treestyletab-modules/lib/autoScroll.js', {});
 	return window['piro.sakura.ne.jp'].autoScroll;
 });
+XPCOMUtils.defineLazyModuleGetter(this, 'UninstallationListener',
+  'resource://treestyletab-modules/lib/UninstallationListener.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'confirmWithPopup', 'resource://treestyletab-modules/lib/confirmWithPopup.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
@@ -311,6 +313,8 @@ var TreeStyleTabBase = {
 
 		this.addPrefListener(this);
 
+		this.initUninstallationListener();
+
 		this.onPrefChange('extensions.treestyletab.indent.vertical');
 		this.onPrefChange('extensions.treestyletab.indent.horizontal');
 		this.onPrefChange('extensions.treestyletab.clickOnIndentSpaces.enabled');
@@ -488,7 +492,38 @@ var TreeStyleTabBase = {
 		}
 		utils.setTreePref('prefsVersion', this.kPREF_VERSION);
 	},
-	
+
+	initUninstallationListener : function TSTWindow_initUninstallationListener() 
+	{
+		var restorePrefs = function() {
+			// Remove pref listener before restore backuped prefs.
+			prefs.removePrefListener(this);
+
+			let restorePrefs = [
+				'browser.tabs.loadFolderAndReplace',
+				'browser.tabs.insertRelatedAfterCurrent',
+				'extensions.stm.tabBarMultiRows' // Super Tab Mode
+			];
+			for (let i = 0, maxi = restorePrefs.length; i < maxi; i++)
+			{
+				let pref = restorePrefs[i];
+				let backup = prefs.getPref(pref+'.backup');
+				if (backup === null) continue;
+				// we have to set to ".override" pref, to avoid unexpectedly reset by the preference listener.
+				prefs.setPref(pref+'.override', backup);
+				// restore user preference.
+				prefs.setPref(pref, backup);
+				// clear backup pref.
+				prefs.clearPref(pref+'.backup');
+			}
+		}.bind(this);
+		new UninstallationListener({
+			id : 'treestyletab@piro.sakura.ne.jp',
+			onuninstalled : restorePrefs,
+			ondisabled : restorePrefs
+		});
+	},
+
 	updateAeroPeek : function utils_updateAeroPeek() 
 	{
 		var ns = {};

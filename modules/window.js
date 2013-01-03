@@ -40,6 +40,11 @@ const Ci = Components.interfaces;
 
 Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 
+XPCOMUtils.defineLazyModuleGetter(this, "prefs",
+  'resource://treestyletab-modules/lib/prefs.js');
+XPCOMUtils.defineLazyModuleGetter(this, 'UninstallationListener',
+  'resource://treestyletab-modules/lib/UninstallationListener.js');
+
 XPCOMUtils.defineLazyModuleGetter(this, "Services", "resource://gre/modules/Services.jsm");
 
 Components.utils.import('resource://treestyletab-modules/base.js');
@@ -379,46 +384,18 @@ TreeStyleTabWindow.prototype = {
 	
 	initUninstallationListener : function TSTWindow_initUninstallationListener() 
 	{
-		var namespace = {};
-		Components.utils.import(
-			'resource://treestyletab-modules/lib/prefs.js',
-			namespace
-		);
-		var prefs = namespace.prefs;
-		namespace = void(0);
-		var self = this;
 		var restorePrefs = function() {
 				if (prefs.getPref('extensions.treestyletab.tabsOnTop.originalState')) {
 					prefs.clearPref('extensions.treestyletab.tabsOnTop.originalState');
 					try {
-						self.browser.treeStyleTab.position = 'top';
+						this.browser.treeStyleTab.position = 'top';
 					}
 					catch(e) {
 					}
-					self.window.TabsOnTop.enabled = true;
+					this.window.TabsOnTop.enabled = true;
 				}
-
-				if (!prefs) return;
-
-				let restorePrefs = [
-						'browser.tabs.loadFolderAndReplace',
-						'browser.tabs.insertRelatedAfterCurrent',
-						'extensions.stm.tabBarMultiRows' // Super Tab Mode
-					];
-				for (let i = 0, maxi = restorePrefs.length; i < maxi; i++)
-				{
-					let pref = restorePrefs[i];
-					let backup = prefs.getPref(pref+'.backup');
-					if (backup === null) continue;
-					// we have to set to ".override" pref, to avoid unexpectedly reset by the preference listener.
-					prefs.setPref(pref+'.override', backup);
-					// restore user preference.
-					prefs.setPref(pref, backup);
-					// clear backup pref.
-					prefs.clearPref(pref+'.backup');
-				}
-			};
-		new this.window['piro.sakura.ne.jp'].UninstallationListener({
+			}.bind(this);
+		new UninstallationListener({
 			id : 'treestyletab@piro.sakura.ne.jp',
 			onuninstalled : restorePrefs,
 			ondisabled : restorePrefs
