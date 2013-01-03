@@ -16,7 +16,6 @@
 
 <script src="res/stopRendering.js" type="application/javascript"/>
 <script src="res/tabsDragUtils.js" type="application/javascript"/>
-<script src="res/UninstallationListener.js" type="application/javascript"/>
 <script src="treestyletab.js" type="application/javascript"/>
 <script src="windowHelper.js" type="application/javascript"/>
 <script src="windowHelperHacks.js" type="application/javascript"/>
