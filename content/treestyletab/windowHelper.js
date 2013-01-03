@@ -398,58 +398,74 @@ var TreeStyleTabWindowHelper = {
 	{
 		var b = aTabBrowser;
 
-		eval('b.moveTabForward = '+
-			b.moveTabForward.toSource().replace(
-				'{', '{ var nextTab;'
-			).replace(
-				'tabPos < this.browsers.length - 1',
-				'nextTab = this.treeStyleTab.getNextSiblingTab(this.mCurrentTab)'
-			).replace(
-				'tabPos + 1', 'nextTab._tPos'
-			).replace(
-				'this.moveTabTo(',
-				'var descendant = this.treeStyleTab.getDescendantTabs(nextTab);\n' +
-				'if (descendant.length) {\n' +
-				'  nextTab = descendant[descendant.length-1];\n' +
-				'}\n' +
-				'$&'
-			).replace(
-				'this.moveTabToStart();',
-				'this.treeStyleTab.internallyTabMovingCount++;\n' +
-				'var parentTab = this.treeStyleTab.getParentTab(this.mCurrentTab);\n' +
-				'if (parentTab) {\n' +
-				'  this.moveTabTo(this.mCurrentTab, this.treeStyleTab.getFirstChildTab(parentTab)._tPos);\n' +
-				'  this.mCurrentTab.focus();\n' +
-				'}\n' +
-				'else {\n' +
-				'  $&\n' +
-				'}\n' +
-				'this.treeStyleTab.internallyTabMovingCount--;'
-			)
-		);
+		let (source = b.moveTabForward.toSource()) {
+			if (source.indexOf('nextTab.hidden') < 0) { // Firefox 19 or olders
+				source = source.replace(
+					'{', '{ var nextTab;'
+				).replace(
+					'tabPos < this.browsers.length - 1',
+					'nextTab = this.treeStyleTab.getNextSiblingTab(this.mCurrentTab)'
+				).replace(
+					'tabPos + 1', 'nextTab._tPos'
+				);
+			}
+			eval('b.moveTabForward = '+
+				source.replace(
+					/(this.moveTabTo\([^;]+\);)/,
+					'(function() {\n' +
+					'  var descendant = this.treeStyleTab.getDescendantTabs(nextTab);\n' +
+					'  if (descendant.length) {\n' +
+					'    nextTab = descendant[descendant.length-1];\n' +
+					'  }\n' +
+					'  $1\n' +
+					'}).call(this);'
+				).replace(
+					'this.moveTabToStart();',
+					'(function() {\n' +
+					'  this.treeStyleTab.internallyTabMovingCount++;\n' +
+					'  var parentTab = this.treeStyleTab.getParentTab(this.mCurrentTab);\n' +
+					'  if (parentTab) {\n' +
+					'    this.moveTabTo(this.mCurrentTab, this.treeStyleTab.getFirstChildTab(parentTab)._tPos);\n' +
+					'    this.mCurrentTab.focus();\n' +
+					'  }\n' +
+					'  else {\n' +
+					'    $&\n' +
+					'  }\n' +
+					'  this.treeStyleTab.internallyTabMovingCount--;\n' +
+					'}).call(this);'
+				)
+			);
+		}
 
-		eval('b.moveTabBackward = '+
-			b.moveTabBackward.toSource().replace(
-				'{', '{ var prevTab;'
-			).replace(
-				'tabPos > 0',
-				'prevTab = this.treeStyleTab.getPreviousSiblingTab(this.mCurrentTab)'
-			).replace(
-				'tabPos - 1', 'prevTab._tPos'
-			).replace(
-				'this.moveTabToEnd();',
-				'this.treeStyleTab.internallyTabMovingCount++;\n' +
-				'var parentTab = this.treeStyleTab.getParentTab(this.mCurrentTab);\n' +
-				'if (parentTab) {\n' +
-				'  this.moveTabTo(this.mCurrentTab, this.treeStyleTab.getLastChildTab(parentTab)._tPos);\n' +
-				'  this.mCurrentTab.focus();\n' +
-				'}\n' +
-				'else {\n' +
-				'  $&\n' +
-				'}\n' +
-				'this.treeStyleTab.internallyTabMovingCount--;'
-			)
-		);
+		let (source = b.moveTabBackward.toSource()) {
+			if (source.indexOf('prevTab.hidden') < 0) { // Firefox 19 or olders
+				source = source.replace(
+					'{', '{ var prevTab;'
+				).replace(
+					'tabPos > 0',
+					'prevTab = this.treeStyleTab.getPreviousSiblingTab(this.mCurrentTab)'
+				).replace(
+					'tabPos - 1', 'prevTab._tPos'
+				);
+			}
+			eval('b.moveTabBackward = '+
+				source.replace(
+					'this.moveTabToEnd();',
+					'(function() {\n' +
+					'  this.treeStyleTab.internallyTabMovingCount++;\n' +
+					'  var parentTab = this.treeStyleTab.getParentTab(this.mCurrentTab);\n' +
+					'  if (parentTab) {\n' +
+					'    this.moveTabTo(this.mCurrentTab, this.treeStyleTab.getLastChildTab(parentTab)._tPos);\n' +
+					'    this.mCurrentTab.focus();\n' +
+					'  }\n' +
+					'  else {\n' +
+					'    $&\n' +
+					'  }\n' +
+					'  this.treeStyleTab.internallyTabMovingCount--;\n' +
+					'}).call(this);'
+				)
+			);
+		}
 
 		eval('b.loadTabs = '+
 			b.loadTabs.toSource().replace(
