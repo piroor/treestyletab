@@ -40,11 +40,8 @@ const Ci = Components.interfaces;
 
 Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 
-XPCOMUtils.defineLazyGetter(this, 'prefs', function() {
-	Components.utils.import('resource://treestyletab-modules/lib/prefs.js');
-	return window['piro.sakura.ne.jp'].prefs;
-});
-
+XPCOMUtils.defineLazyModuleGetter(this, "prefs",
+  'resource://treestyletab-modules/lib/prefs.js');
 XPCOMUtils.defineLazyModuleGetter(this, "Services", "resource://gre/modules/Services.jsm");
 
 Components.utils.import('resource://treestyletab-modules/base.js');
