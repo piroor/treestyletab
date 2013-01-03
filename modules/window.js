@@ -42,6 +42,9 @@ Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 
 XPCOMUtils.defineLazyModuleGetter(this, "prefs",
   'resource://treestyletab-modules/lib/prefs.js');
+XPCOMUtils.defineLazyModuleGetter(this, 'UninstallationListener',
+  'resource://treestyletab-modules/lib/UninstallationListener.js');
+
 XPCOMUtils.defineLazyModuleGetter(this, "Services", "resource://gre/modules/Services.jsm");
 
 Components.utils.import('resource://treestyletab-modules/base.js');
@@ -410,7 +413,7 @@ TreeStyleTabWindow.prototype = {
 					prefs.clearPref(pref+'.backup');
 				}
 			}.bind(this);
-		new this.window['piro.sakura.ne.jp'].UninstallationListener({
+		new UninstallationListener({
 			id : 'treestyletab@piro.sakura.ne.jp',
 			onuninstalled : restorePrefs,
 			ondisabled : restorePrefs
