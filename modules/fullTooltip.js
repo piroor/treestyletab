@@ -301,11 +301,11 @@ FullTooltipManager.prototype = {
 						{
 							indent += indentPart;
 						}
-						return this.treeBundle.getFormattedString('tooltip.item.label', [label, indent]);
+						return utils.treeBundle.getFormattedString('tooltip.item.label', [label, indent]);
 					}, this)
 					.join('\n');
 			if (tabs.length != tabsToBeListed.length) {
-				tree += '\n'+indentPart+this.treeBundle.getFormattedString('tooltip.more', [tabs.length-tabsToBeListed.length]);
+				tree += '\n'+indentPart+utils.treeBundle.getFormattedString('tooltip.more', [tabs.length-tabsToBeListed.length]);
 			}
 		}
 
@@ -315,9 +315,9 @@ FullTooltipManager.prototype = {
 				(collapsed || utils.getTreePref('closeParentBehavior') == this.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)) {
 				label = tree || tab.getAttribute('label');
 				label = label && shouldShowTree ?
-						this.treeBundle.getFormattedString('tooltip.closeTree.labeled', [label]) :
-						this.treeBundle.getString('tooltip.closeTree') ;
-				fullTooltipExtraLabel = this.treeBundle.getFormattedString('tooltip.closeTree.labeled', ['%TREE%']).split(/\s*%TREE%\s*/);
+						utils.treeBundle.getFormattedString('tooltip.closeTree.labeled', [label]) :
+						utils.treeBundle.getString('tooltip.closeTree') ;
+				fullTooltipExtraLabel = utils.treeBundle.getFormattedString('tooltip.closeTree.labeled', ['%TREE%']).split(/\s*%TREE%\s*/);
 			}
 		}
 		else if (tab.getAttribute(this.kTWISTY_HOVER) == 'true') {
@@ -326,9 +326,9 @@ FullTooltipManager.prototype = {
 						'tooltip.collapseSubtree' ;
 			label = tree || tab.getAttribute('label');
 			label = label && shouldShowTree ?
-					this.treeBundle.getFormattedString(key+'.labeled', [label]) :
-					this.treeBundle.getString(key) ;
-			fullTooltipExtraLabel = this.treeBundle.getFormattedString(key+'.labeled', ['%TREE%']).split(/\s*%TREE%\s*/);
+					utils.treeBundle.getFormattedString(key+'.labeled', [label]) :
+					utils.treeBundle.getString(key) ;
+			fullTooltipExtraLabel = utils.treeBundle.getFormattedString(key+'.labeled', ['%TREE%']).split(/\s*%TREE%\s*/);
 		}
 		else if (shouldShowTree) {
 			label = tree;

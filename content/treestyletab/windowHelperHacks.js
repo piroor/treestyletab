@@ -1023,14 +1023,14 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 			let checked = { value : false };
 			if (Services.prompt.confirmEx(
 					null,
-					sv.treeBundle.getString('compatibility_STM_warning_title'),
-					sv.treeBundle.getString('compatibility_STM_warning_text'),
+					TreeStyleTabUtils.treeBundle.getString('compatibility_STM_warning_title'),
+					TreeStyleTabUtils.treeBundle.getString('compatibility_STM_warning_text'),
 					(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_0) +
 					(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_1),
-					sv.treeBundle.getString('compatibility_STM_warning_use_TST'),
-					sv.treeBundle.getString('compatibility_STM_warning_use_STM'),
+					TreeStyleTabUtils.treeBundle.getString('compatibility_STM_warning_use_TST'),
+					TreeStyleTabUtils.treeBundle.getString('compatibility_STM_warning_use_STM'),
 					null,
-					sv.treeBundle.getString('compatibility_STM_warning_never'),
+					TreeStyleTabUtils.treeBundle.getString('compatibility_STM_warning_never'),
 					checked
 				) == 0) {
 				sv.setPref('extensions.stm.newTabPosition', 0);

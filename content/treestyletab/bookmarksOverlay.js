@@ -318,7 +318,7 @@ var TreeStyleTabBookmarksService = {
 					).replace(
 						/(this\._openTabset\([^\)]+)(\))/,
 						'$1,\n' +
-						'  TSTBS.treeBundle\n' +
+						'  TreeStyleTabUtils.treeBundle\n' +
 						'    .getFormattedString(\n' +
 						'      PlacesUtils.nodeIsBookmark(aNodes[0]) ?\n' +
 						'        "openSelectedPlaces.bookmarks" :\n' +
