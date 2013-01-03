@@ -409,11 +409,24 @@ var TreeStyleTabWindowHelper = {
 					'tabPos + 1', 'nextTab._tPos'
 				);
 			}
+			else {
+				source = source.replace(
+					'if (nextTab)',
+					'(function() {\n' +
+					'  if (this.treeStyleTab.hasChildTabs(this.mCurrentTab)) {\n' +
+					'    let descendant = this.treeStyleTab.getDescendantTabs(this.mCurrentTab);\n' +
+					'    if (descendant.length)\n' +
+					'      nextTab = this.treeStyleTab.getNextTab(descendant[descendant.length-1]);\n' +
+					'  }\n' +
+					'}).call(this);' +
+					'$&'
+				);
+			}
 			eval('b.moveTabForward = '+
 				source.replace(
 					/(this.moveTabTo\([^;]+\);)/,
 					'(function() {\n' +
-					'  var descendant = this.treeStyleTab.getDescendantTabs(nextTab);\n' +
+					'  let descendant = this.treeStyleTab.getDescendantTabs(nextTab);\n' +
 					'  if (descendant.length) {\n' +
 					'    nextTab = descendant[descendant.length-1];\n' +
 					'  }\n' +
@@ -423,7 +436,7 @@ var TreeStyleTabWindowHelper = {
 					'this.moveTabToStart();',
 					'(function() {\n' +
 					'  this.treeStyleTab.internallyTabMovingCount++;\n' +
-					'  var parentTab = this.treeStyleTab.getParentTab(this.mCurrentTab);\n' +
+					'  let parentTab = this.treeStyleTab.getParentTab(this.mCurrentTab);\n' +
 					'  if (parentTab) {\n' +
 					'    this.moveTabTo(this.mCurrentTab, this.treeStyleTab.getFirstChildTab(parentTab)._tPos);\n' +
 					'    this.mCurrentTab.focus();\n' +
@@ -453,7 +466,7 @@ var TreeStyleTabWindowHelper = {
 					'this.moveTabToEnd();',
 					'(function() {\n' +
 					'  this.treeStyleTab.internallyTabMovingCount++;\n' +
-					'  var parentTab = this.treeStyleTab.getParentTab(this.mCurrentTab);\n' +
+					'  let parentTab = this.treeStyleTab.getParentTab(this.mCurrentTab);\n' +
 					'  if (parentTab) {\n' +
 					'    this.moveTabTo(this.mCurrentTab, this.treeStyleTab.getLastChildTab(parentTab)._tPos);\n' +
 					'    this.mCurrentTab.focus();\n' +
