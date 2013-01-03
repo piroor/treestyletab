@@ -100,7 +100,7 @@ TreeStyleTabWindow.prototype = {
 					self.base.position = aValue;
 				},
 				{
-					label  : self.treeBundle.getString('undo_changeTabbarPosition_label'),
+					label  : utils.treeBundle.getString('undo_changeTabbarPosition_label'),
 					name   : 'treestyletab-changeTabbarPosition',
 					data   : {
 						oldPosition : current,
@@ -1391,13 +1391,13 @@ TreeStyleTabWindow.prototype = {
 		var w = this.window;
 		w.focus();
 		var shouldClose = Services.prompt.confirmEx(w,
-				this.tabbrowserBundle.getString('tabs.closeWarningTitle'),
-				this.tabbrowserBundle.getFormattedString('tabs.closeWarningMultipleTabs', [aTabsCount]),
+				utils.tabbrowserBundle.getString('tabs.closeWarningTitle'),
+				utils.tabbrowserBundle.getFormattedString('tabs.closeWarningMultipleTabs', [aTabsCount]),
 				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_0) +
 				(Services.prompt.BUTTON_TITLE_CANCEL * Services.prompt.BUTTON_POS_1),
-				this.tabbrowserBundle.getString('tabs.closeButtonMultiple'),
+				utils.tabbrowserBundle.getString('tabs.closeButtonMultiple'),
 				null, null,
-				this.tabbrowserBundle.getString('tabs.closeWarningPromptMe'),
+				utils.tabbrowserBundle.getString('tabs.closeWarningPromptMe'),
 				checked
 			) == 0;
 		if (shouldClose && !checked.value)

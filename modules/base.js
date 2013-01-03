@@ -55,10 +55,6 @@ XPCOMUtils.defineLazyGetter(this, 'boxObject', function() {
 	Components.utils.import('resource://treestyletab-modules/lib/boxObject.js', {});
 	return window['piro.sakura.ne.jp'].boxObject;
 });
-XPCOMUtils.defineLazyGetter(this, 'stringBundle', function() {
-	Components.utils.import('resource://treestyletab-modules/lib/stringBundle.js', {});
-	return window['piro.sakura.ne.jp'].stringBundle;
-});
 XPCOMUtils.defineLazyGetter(this, 'extensions', function() {
 	Components.utils.import('resource://treestyletab-modules/lib/extensions.js', {});
 	return window['piro.sakura.ne.jp'].extensions;
@@ -287,14 +283,7 @@ var TreeStyleTabBase = {
 	{
 		return Services.vc.compare(Services.appinfo.version, '10.0a') > 0;
 	},
- 
-	get treeBundle() { 
-		return stringBundle.get('chrome://treestyletab/locale/treestyletab.properties');
-	},
-	get tabbrowserBundle() {
-		return stringBundle.get('chrome://browser/locale/tabbrowser.properties');
-	},
- 
+
 	get extensions() { return extensions; }, 
 	get animationManager() { return animationManager; },
 	get autoScroll() { return autoScroll; },
@@ -664,14 +653,14 @@ var TreeStyleTabBase = {
 
 		var checked = { value : false };
 		var newChildTab = Services.prompt.confirmEx(this.browserWindow,
-				this.treeBundle.getString('dropLinkOnTab.title'),
-				this.treeBundle.getString('dropLinkOnTab.text'),
+				utils.treeBundle.getString('dropLinkOnTab.title'),
+				utils.treeBundle.getString('dropLinkOnTab.text'),
 				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_0) +
 				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_1),
-				this.treeBundle.getString('dropLinkOnTab.openNewChildTab'),
-				this.treeBundle.getString('dropLinkOnTab.loadInTheTab'),
+				utils.treeBundle.getString('dropLinkOnTab.openNewChildTab'),
+				utils.treeBundle.getString('dropLinkOnTab.loadInTheTab'),
 				null,
-				this.treeBundle.getString('dropLinkOnTab.never'),
+				utils.treeBundle.getString('dropLinkOnTab.never'),
 				checked
 			) == 0;
 
@@ -695,15 +684,15 @@ var TreeStyleTabBase = {
 
 		var checked = { value : false };
 		var button = Services.prompt.confirmEx(this.browserWindow,
-				this.treeBundle.getString('openGroupBookmarkBehavior.title'),
-				this.treeBundle.getString('openGroupBookmarkBehavior.text'),
+				utils.treeBundle.getString('openGroupBookmarkBehavior.title'),
+				utils.treeBundle.getString('openGroupBookmarkBehavior.text'),
 				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_0) +
 				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_1) +
 				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_2),
-				this.treeBundle.getString('openGroupBookmarkBehavior.subTree'),
-				this.treeBundle.getString('openGroupBookmarkBehavior.separate'),
-				this.treeBundle.getString('openGroupBookmarkBehavior.replace'),
-				this.treeBundle.getString('openGroupBookmarkBehavior.never'),
+				utils.treeBundle.getString('openGroupBookmarkBehavior.subTree'),
+				utils.treeBundle.getString('openGroupBookmarkBehavior.separate'),
+				utils.treeBundle.getString('openGroupBookmarkBehavior.replace'),
+				utils.treeBundle.getString('openGroupBookmarkBehavior.never'),
 				checked
 			);
 
@@ -738,14 +727,14 @@ var TreeStyleTabBase = {
 
 		var checked = { value : false };
 		var button = Services.prompt.confirmEx(this.browserWindow,
-				this.treeBundle.getString('bookmarkDroppedTabs.title'),
-				this.treeBundle.getString('bookmarkDroppedTabs.text'),
+				utils.treeBundle.getString('bookmarkDroppedTabs.title'),
+				utils.treeBundle.getString('bookmarkDroppedTabs.text'),
 				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_0) +
 				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_1),
-				this.treeBundle.getString('bookmarkDroppedTabs.bookmarkAll'),
-				this.treeBundle.getString('bookmarkDroppedTabs.bookmarkOnlyParent'),
+				utils.treeBundle.getString('bookmarkDroppedTabs.bookmarkAll'),
+				utils.treeBundle.getString('bookmarkDroppedTabs.bookmarkOnlyParent'),
 				null,
-				this.treeBundle.getString('bookmarkDroppedTabs.never'),
+				utils.treeBundle.getString('bookmarkDroppedTabs.never'),
 				checked
 			);
 
@@ -774,13 +763,13 @@ var TreeStyleTabBase = {
 		var self = this;
 		return confirmWithPopup({
 				browser  : aRestoredTab.linkedBrowser,
-				label    : this.treeBundle.getFormattedString('undoCloseTabSetBehavior.label', [aCount]),
+				label    : utils.treeBundle.getFormattedString('undoCloseTabSetBehavior.label', [aCount]),
 				value    : 'treestyletab-undo-close-tree',
 				image    : 'chrome://treestyletab/content/res/icon.png',
 				buttons  : [
-					this.treeBundle.getString('undoCloseTabSetBehavior.restoreOnce'),
-					this.treeBundle.getString('undoCloseTabSetBehavior.restoreForever'),
-					this.treeBundle.getString('undoCloseTabSetBehavior.ignoreForever')
+					utils.treeBundle.getString('undoCloseTabSetBehavior.restoreOnce'),
+					utils.treeBundle.getString('undoCloseTabSetBehavior.restoreForever'),
+					utils.treeBundle.getString('undoCloseTabSetBehavior.ignoreForever')
 				],
 				persistence : -1 // don't hide even if the tab is restored after the panel is shown.
 			})

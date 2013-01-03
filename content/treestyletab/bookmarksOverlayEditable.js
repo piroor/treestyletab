@@ -113,8 +113,8 @@ var TreeStyleTabBookmarksServiceEditable = {
 			'  </menulist>' +
 			'</row>').replace(/^\s*|\s*$/g, '').replace(/>\s+</g, '><')));
 		range.detach();
-		document.getElementById('treestyletab-parent-label').setAttribute('value', this.treeBundle.getString('bookmarkProperty.parent.label'));
-		this.blankItem.setAttribute('label', this.treeBundle.getString('bookmarkProperty.parent.blank.label'));
+		document.getElementById('treestyletab-parent-label').setAttribute('value', TreeStyleTabUtils.treeBundle.getString('bookmarkProperty.parent.label'));
+		this.blankItem.setAttribute('label', TreeStyleTabUtils.treeBundle.getString('bookmarkProperty.parent.blank.label'));
 
 
 		eval('gEditItemOverlay._showHideRows = '+gEditItemOverlay._showHideRows.toSource().replace(
@@ -192,7 +192,7 @@ var TreeStyleTabBookmarksServiceEditable = {
 			if (disabled || id == aCurrentItem) {
 				item.setAttribute('disabled', true);
 				if (id == aCurrentItem)
-					label = this.treeBundle.getFormattedString('bookmarkProperty.parent.current.label', [label]);
+					label = TreeStyleTabUtils.treeBundle.getFormattedString('bookmarkProperty.parent.current.label', [label]);
 			}
 			if (id == selected) item.setAttribute('selected', true);
 

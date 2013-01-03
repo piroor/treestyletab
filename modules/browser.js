@@ -245,7 +245,7 @@ TreeStyleTabBrowser.prototype = {
 					self._changeTabbarPosition(position);
 				},
 				{
-					label  : self.treeBundle.getString('undo_changeTabbarPosition_label'),
+					label  : utils.treeBundle.getString('undo_changeTabbarPosition_label'),
 					name   : 'treestyletab-changeTabbarPosition-private',
 					data   : {
 						oldPosition : current,
@@ -2254,7 +2254,7 @@ TreeStyleTabBrowser.prototype = {
 			panel.setAttribute('ondragover', 'this.hidePopup()');
 			panel.appendChild(d.createElement('label'));
 			let position = this._lastTabbarPositionBeforeDestroyed || this.position;
-			let label = this.treeBundle.getString('toolbarCustomizing_tabbar_'+(position == 'left' || position == 'right' ? 'vertical' : 'horizontal' ));
+			let label = utils.treeBundle.getString('toolbarCustomizing_tabbar_'+(position == 'left' || position == 'right' ? 'vertical' : 'horizontal' ));
 			panel.firstChild.appendChild(d.createTextNode(label));
 			d.getElementById('mainPopupSet').appendChild(panel);
 		}
