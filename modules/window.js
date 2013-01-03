@@ -40,6 +40,11 @@ const Ci = Components.interfaces;
 
 Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 
+XPCOMUtils.defineLazyGetter(this, 'prefs', function() {
+	Components.utils.import('resource://treestyletab-modules/lib/prefs.js');
+	return window['piro.sakura.ne.jp'].prefs;
+});
+
 XPCOMUtils.defineLazyModuleGetter(this, "Services", "resource://gre/modules/Services.jsm");
 
 Components.utils.import('resource://treestyletab-modules/base.js');
@@ -379,13 +384,6 @@ TreeStyleTabWindow.prototype = {
 	
 	initUninstallationListener : function TSTWindow_initUninstallationListener() 
 	{
-		var namespace = {};
-		Components.utils.import(
-			'resource://treestyletab-modules/lib/prefs.js',
-			namespace
-		);
-		var prefs = namespace.prefs;
-		namespace = void(0);
 		var self = this;
 		var restorePrefs = function() {
 				if (prefs.getPref('extensions.treestyletab.tabsOnTop.originalState')) {
@@ -397,8 +395,6 @@ TreeStyleTabWindow.prototype = {
 					}
 					self.window.TabsOnTop.enabled = true;
 				}
-
-				if (!prefs) return;
 
 				let restorePrefs = [
 						'browser.tabs.loadFolderAndReplace',
