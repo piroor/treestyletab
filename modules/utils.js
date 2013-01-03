@@ -52,6 +52,12 @@ XPCOMUtils.defineLazyGetter(this, 'prefs', function() {
 	return window['piro.sakura.ne.jp'].prefs;
 });
 
+XPCOMUtils.defineLazyGetter(this, 'stringBundle', function() {
+	Components.utils.import('resource://treestyletab-modules/lib/stringBundle.js', {});
+	return window['piro.sakura.ne.jp'].stringBundle;
+});
+
+
 const TST_PREF_PREFIX = 'extensions.treestyletab.';
 
 let TreeStyleTabUtils = {
@@ -77,5 +83,13 @@ let TreeStyleTabUtils = {
 	{
 		return prefs.clearPref(TST_PREF_PREFIX + aPrefstring);
 	}
+
+/* string bundle */
+	get treeBundle () {
+		return stringBundle.get('chrome://treestyletab/locale/treestyletab.properties');
+	},
+	get tabbrowserBundle () {
+		return stringBundle.get('chrome://browser/locale/tabbrowser.properties');
+	},
 
 };
