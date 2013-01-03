@@ -384,16 +384,15 @@ TreeStyleTabWindow.prototype = {
 	
 	initUninstallationListener : function TSTWindow_initUninstallationListener() 
 	{
-		var self = this;
 		var restorePrefs = function() {
 				if (prefs.getPref('extensions.treestyletab.tabsOnTop.originalState')) {
 					prefs.clearPref('extensions.treestyletab.tabsOnTop.originalState');
 					try {
-						self.browser.treeStyleTab.position = 'top';
+						this.browser.treeStyleTab.position = 'top';
 					}
 					catch(e) {
 					}
-					self.window.TabsOnTop.enabled = true;
+					this.window.TabsOnTop.enabled = true;
 				}
 
 				let restorePrefs = [
@@ -413,7 +412,7 @@ TreeStyleTabWindow.prototype = {
 					// clear backup pref.
 					prefs.clearPref(pref+'.backup');
 				}
-			};
+			}.bind(this);
 		new this.window['piro.sakura.ne.jp'].UninstallationListener({
 			id : 'treestyletab@piro.sakura.ne.jp',
 			onuninstalled : restorePrefs,
