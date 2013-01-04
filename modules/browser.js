@@ -3959,7 +3959,7 @@ TreeStyleTabBrowser.prototype = {
 			return;
 
 		var indexes = [];
-		var items = this.evalInSandbox('('+this.SessionStore.getClosedTabData(this.window)+')');
+		var items = utils.evalInSandbox('('+this.SessionStore.getClosedTabData(this.window)+')');
 		for (let i = 0, maxi = items.length; i < maxi; i++)
 		{
 			let item = items[i];

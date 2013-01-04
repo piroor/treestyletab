@@ -90,6 +90,17 @@ let TreeStyleTabUtils = {
 	},
 	get tabbrowserBundle () {
 		return stringBundle.get('chrome://browser/locale/tabbrowser.properties');
+	},
+
+	evalInSandbox : function utils_evalInSandbox(aCode, aOwner)
+	{
+		try {
+			var sandbox = new Cu.Sandbox(aOwner || 'about:blank');
+			return Cu.evalInSandbox(aCode, sandbox);
+		}
+		catch(e) {
+		}
+		return void(0);
 	}
 
 };
