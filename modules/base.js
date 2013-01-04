@@ -68,6 +68,11 @@ XPCOMUtils.defineLazyModuleGetter(this, 'UninstallationListener',
 XPCOMUtils.defineLazyModuleGetter(this, 'confirmWithPopup', 'resource://treestyletab-modules/lib/confirmWithPopup.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
+if (Services.appinfo.OS === 'WINNT') {
+	XPCOMUtils.defineLazyModuleGetter(this, 'AeroPeek',
+	  'resource://gre/modules/WindowsPreviewPerTab.jsm', 'AeroPeek');
+}
+
 
 var TreeStyleTabBase = { 
 	__proto__ : window['piro.sakura.ne.jp'].prefs,
@@ -286,7 +291,8 @@ var TreeStyleTabBase = {
 	get animationManager() { return animationManager; },
 	get autoScroll() { return autoScroll; },
 	get Deferred() { return Deferred; },
- 
+	get AeroPeek() { return AeroPeek; }, // for Windows
+
 	init : function utils_init() 
 	{
 		if (this._initialized) return;
@@ -316,14 +322,6 @@ var TreeStyleTabBase = {
 		this.onPrefChange('extensions.treestyletab.twisty.expandSensitiveArea');
 		this.onPrefChange('extensions.treestyletab.counter.role.horizontal');
 		this.onPrefChange('extensions.treestyletab.counter.role.vertical');
-
-		try {
-			if (Services.appinfo.OS == 'WINNT')
-				this.updateAeroPeek();
-		}
-		catch(e) {
-			dump(e+'\n');
-		}
 
 		try {
 			this.overrideExtensions();
@@ -507,13 +505,6 @@ var TreeStyleTabBase = {
 		});
 	},
 
-	updateAeroPeek : function utils_updateAeroPeek() 
-	{
-		var ns = {};
-		Components.utils.import('resource://gre/modules/WindowsPreviewPerTab.jsm', ns);
-		this.AeroPeek = ns.AeroPeek;
-	},
- 
 	overrideExtensions : function utils_overrideExtensions() 
 	{
 		// Scriptish
