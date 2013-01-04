@@ -39,21 +39,22 @@ let EXPORTED_SYMBOLS = ['TreeStyleTabUtils'];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
+const Cu = Components.utils;
 
-Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
+Cu.import('resource://gre/modules/XPCOMUtils.jsm');
 
 XPCOMUtils.defineLazyGetter(this, 'window', function() {
-	Components.utils.import('resource://treestyletab-modules/lib/namespace.jsm');
+	Cu.import('resource://treestyletab-modules/lib/namespace.jsm');
 	return getNamespaceFor('piro.sakura.ne.jp');
 });
 
 XPCOMUtils.defineLazyGetter(this, 'prefs', function() {
-	Components.utils.import('resource://treestyletab-modules/lib/prefs.js');
+	Cu.import('resource://treestyletab-modules/lib/prefs.js');
 	return window['piro.sakura.ne.jp'].prefs;
 });
 
 XPCOMUtils.defineLazyGetter(this, 'stringBundle', function() {
-	Components.utils.import('resource://treestyletab-modules/lib/stringBundle.js', {});
+	Cu.import('resource://treestyletab-modules/lib/stringBundle.js', {});
 	return window['piro.sakura.ne.jp'].stringBundle;
 });
 
