@@ -41,7 +41,6 @@ const Ci = Components.interfaces;
 Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 Components.utils.import('resource://gre/modules/Services.jsm');
 
-XPCOMUtils.defineLazyModuleGetter(this, 'Deferred', 'resource://treestyletab-modules/lib/jsdeferred.js');
 XPCOMUtils.defineLazyGetter(this, 'window', function() {
 	Cu.import('resource://treestyletab-modules/lib/namespace.jsm');
 	return getNamespaceFor('piro.sakura.ne.jp');
@@ -69,6 +68,8 @@ XPCOMUtils.defineLazyGetter(this, 'autoScroll', function() {
 });
 XPCOMUtils.defineLazyModuleGetter(this, 'UninstallationListener',
   'resource://treestyletab-modules/lib/UninstallationListener.js');
+XPCOMUtils.defineLazyModuleGetter(this, 'Deferred',
+  'resource://treestyletab-modules/lib/jsdeferred.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'confirmWithPopup', 'resource://treestyletab-modules/lib/confirmWithPopup.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
