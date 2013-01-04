@@ -51,10 +51,6 @@ XPCOMUtils.defineLazyGetter(this, 'jstimer', function() {
 	Components.utils.import('resource://treestyletab-modules/lib/jstimer.jsm', jstimer);
 	return jstimer;
 });
-XPCOMUtils.defineLazyGetter(this, 'boxObject', function() {
-	Components.utils.import('resource://treestyletab-modules/lib/boxObject.js', {});
-	return window['piro.sakura.ne.jp'].boxObject;
-});
 XPCOMUtils.defineLazyGetter(this, 'extensions', function() {
 	Components.utils.import('resource://treestyletab-modules/lib/extensions.js', {});
 	return window['piro.sakura.ne.jp'].extensions;
