@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2012
+ * Portions created by the Initial Developer are Copyright (C) 2010-2013
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -286,11 +286,6 @@ var TreeStyleTabBase = {
 		return this._FocusManager;
 	},
 	 _FocusManager : null,
-
-	get isGecko10OrLater() 
-	{
-		return Services.vc.compare(Services.appinfo.version, '10.0a') > 0;
-	},
 
 	get extensions() { return extensions; }, 
 	get animationManager() { return animationManager; },

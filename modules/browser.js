@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011-2012
+ * Portions created by the Initial Developer are Copyright (C) 2011-2013
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -494,9 +494,8 @@ TreeStyleTabBrowser.prototype = {
 		 * by margin-right, because the basic position becomes
 		 * "top-right" instead of "top-left".
 		 */
-		var needToInvertDirection = !this.isGecko10OrLater && this.position == 'left' && b.getAttribute(this.kINVERT_SCROLLBAR) == 'true';
 		var remainder = maxWidth - (maxCol * width);
-		var shrunkenOffset = ((needToInvertDirection || this.position == 'right') && tabbarPlaceHolderWidth) ?
+		var shrunkenOffset = (this.position == 'right' && tabbarPlaceHolderWidth) ?
 								tabbarWidth - tabbarPlaceHolderWidth :
 								0 ;
 
@@ -522,17 +521,10 @@ TreeStyleTabBrowser.prototype = {
 				item.className = className;
 
 			style.maxWidth = style.width = width+'px';
-			if (needToInvertDirection) {
-				let margin = (width * (maxCol - col - 1)) + remainder + shrunkenOffset;
-				style.setProperty('margin-right', margin+'px', 'important');
-				style.marginLeft = style.left = style.right = '';
-			}
-			else {
-				style.setProperty('margin-left', ((width * col) + shrunkenOffset)+'px', 'important');
-				style.left = baseX+'px';
-				style.right = 'auto';
-				style.marginRight = '';
-			}
+			style.setProperty('margin-left', ((width * col) + shrunkenOffset)+'px', 'important');
+			style.left = baseX+'px';
+			style.right = 'auto';
+			style.marginRight = '';
 
 			style.setProperty('margin-top', (- height * (maxRow - row))+'px', 'important');
 			style.top = style.bottom = '';
