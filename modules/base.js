@@ -37,9 +37,9 @@ const EXPORTED_SYMBOLS = ['TreeStyleTabBase'];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
- 
+
 Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
-XPCOMUtils.defineLazyModuleGetter(this, 'Services', 'resource://gre/modules/Services.jsm');
+Components.utils.import('resource://gre/modules/Services.jsm');
 
 Components.utils.import('resource://treestyletab-modules/lib/prefs.js');
 Components.utils.import('resource://treestyletab-modules/lib/namespace.jsm');
