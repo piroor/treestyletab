@@ -41,11 +41,15 @@ const Ci = Components.interfaces;
 Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 Components.utils.import('resource://gre/modules/Services.jsm');
 
-Components.utils.import('resource://treestyletab-modules/lib/prefs.js');
-Components.utils.import('resource://treestyletab-modules/lib/namespace.jsm');
-var window = getNamespaceFor('piro.sakura.ne.jp');
-
 XPCOMUtils.defineLazyModuleGetter(this, 'Deferred', 'resource://treestyletab-modules/lib/jsdeferred.js');
+XPCOMUtils.defineLazyGetter(this, 'window', function() {
+	Cu.import('resource://treestyletab-modules/lib/namespace.jsm');
+	return getNamespaceFor('piro.sakura.ne.jp');
+});
+XPCOMUtils.defineLazyGetter(this, 'prefs', function() {
+	Cu.import('resource://treestyletab-modules/lib/prefs.js');
+	return window['piro.sakura.ne.jp'].prefs;
+});
 XPCOMUtils.defineLazyGetter(this, 'jstimer', function() {
 	var jstimer = {};
 	Components.utils.import('resource://treestyletab-modules/lib/jstimer.jsm', jstimer);
