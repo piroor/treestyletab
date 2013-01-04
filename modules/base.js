@@ -611,11 +611,6 @@ var TreeStyleTabBase = {
 	},
  
 /* utilities */ 
-	
-	getBoxObjectFor : function utils_getBoxObjectFor(aNode) 
-	{
-		return boxObject.getBoxObjectFor(aNode);
-	},
 
 	get browserWindow() 
 	{
