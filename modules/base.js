@@ -77,13 +77,13 @@ if (Services.appinfo.OS === 'WINNT') {
 	XPCOMUtils.defineLazyModuleGetter(this, 'AeroPeek',
 	  'resource://gre/modules/WindowsPreviewPerTab.jsm', 'AeroPeek');
 }
-
-
+ 
 var TreeStyleTabBase = { 
 	__proto__ : window['piro.sakura.ne.jp'].prefs,
-	tabsHash : null,
-	inWindowDestoructionProcess : false,
 	
+	tabsHash : null, 
+	inWindowDestoructionProcess : false,
+ 
 /* attributes */ 
 	kID                 : 'treestyletab-id',
 	kCHILDREN           : 'treestyletab-children',
@@ -287,12 +287,12 @@ var TreeStyleTabBase = {
 	},
 	 _FocusManager : null,
 
-	get extensions() { return extensions; }, 
+	get extensions() { return extensions; },
 	get animationManager() { return animationManager; },
 	get autoScroll() { return autoScroll; },
 	get Deferred() { return Deferred; },
 	get AeroPeek() { return AeroPeek; }, // for Windows
-
+ 
 	init : function utils_init() 
 	{
 		if (this._initialized) return;
@@ -331,7 +331,8 @@ var TreeStyleTabBase = {
 		}
 	},
 	_initialized : false,
-	applyPlatformDefaultPrefs : function utils_applyPlatformDefaultPrefs()
+	
+	applyPlatformDefaultPrefs : function utils_applyPlatformDefaultPrefs() 
 	{
 		var OS = Services.appinfo.OS;
 		var processed = {};
@@ -352,8 +353,9 @@ var TreeStyleTabBase = {
 				this.setDefaultPref(key, this.getPref(originalKey));
 		}
 	},
-	kPREF_VERSION : 9,
-	migratePrefs : function utils_migratePrefs() 
+ 
+	kPREF_VERSION : 9, 
+	migratePrefs : function utils_migratePrefs()
 	{
 		// migrate old prefs
 		var orientalPrefs = [];
@@ -475,7 +477,7 @@ var TreeStyleTabBase = {
 		}
 		utils.setTreePref('prefsVersion', this.kPREF_VERSION);
 	},
-
+ 
 	initUninstallationListener : function TSTWindow_initUninstallationListener() 
 	{
 		var restorePrefs = function() {
@@ -504,7 +506,7 @@ var TreeStyleTabBase = {
 			ondisabled : restorePrefs
 		});
 	},
-
+ 
 	overrideExtensions : function utils_overrideExtensions() 
 	{
 		// Scriptish
@@ -587,18 +589,8 @@ var TreeStyleTabBase = {
 		'}',
 	lastAgentSheet : null,
   
-	observe : function utils_observe(aSubject, aTopic, aData) 
-	{
-		switch (aTopic)
-		{
-			case 'nsPref:changed':
-				this.onPrefChange(aData);
-				return;
-		}
-	},
- 
-/* utilities */ 
-
+/* references to the owner */ 
+	
 	get browserWindow() 
 	{
 		return this.topBrowserWindow;
@@ -642,7 +634,7 @@ var TreeStyleTabBase = {
 	{
 		return this.browser.ownerDocument.defaultView;
 	},
- 
+  
 	get currentDragSession() 
 	{
 		return Cc['@mozilla.org/widget/dragservice;1']
@@ -650,6 +642,8 @@ var TreeStyleTabBase = {
 				.getCurrentSession();
 	},
  
+/* calculated behaviors */ 
+	
 	dropLinksOnTabBehavior : function utils_dropLinksOnTabBehavior() 
 	{
 		var behavior = utils.getTreePref('dropLinksOnTab.behavior');
@@ -795,7 +789,9 @@ var TreeStyleTabBase = {
 	kUNDO_ASK            : 1,
 	kUNDO_CLOSE_SET      : 2,
 	kUNDO_CLOSE_FULL_SET : 256,
- 
+  
+/* utilities */ 
+	
 	doAndWaitDOMEvent : function utils_doAndWaitDOMEvent() 
 	{
 		var type, target, delay, task;
@@ -885,7 +881,7 @@ var TreeStyleTabBase = {
 		dump(message+'\n'+error.stack+'\n');
 		throw error;
 	},
- 
+  
 	defaultDeferredErrorHandler : function utils_defaultDeferredErrorHandler(aError) 
 	{
 		if (aError.stack)
@@ -1554,7 +1550,7 @@ var TreeStyleTabBase = {
 
 		return frame;
 	},
-   
+  
 /* get tab(s) */ 
 	
 	getTabById : function utils_getTabById(aId, aTabBrowserChildren) 
@@ -1767,7 +1763,7 @@ var TreeStyleTabBase = {
 		return this.getVisibleTabs(b).indexOf(aTab);
 	},
  
-	/**
+	/** 
 	 * Returns tabs which are newly opened in the given operation.
 	 */
 	getNewTabsWithOperation : function utils_getNewTabsWithOperation(aOperation, aTabBrowser)
@@ -2615,6 +2611,16 @@ var TreeStyleTabBase = {
 		'extensions.stm.tabBarMultiRows' // Super Tab Mode
 	],
  
+	observe : function utils_observe(aSubject, aTopic, aData) 
+	{
+		switch (aTopic)
+		{
+			case 'nsPref:changed':
+				this.onPrefChange(aData);
+				return;
+		}
+	},
+ 
 	onPrefChange : function utils_onPrefChange(aPrefName) 
 	{
 		var value = this.getPref(aPrefName);
@@ -2721,7 +2727,7 @@ var TreeStyleTabBase = {
 		}
 	},
 
-	get shouldApplyNewPref() 
+	get shouldApplyNewPref()
 	{
 		return (
 					!this.applyOnlyForActiveWindow ||
@@ -2740,8 +2746,8 @@ var TreeStyleTabBase = {
 			TreeStyleTabBase.applyOnlyForActiveWindow = false;
 		}
 	}
-  
+   
 }; 
- 
-TreeStyleTabBase.init(); 
   
+TreeStyleTabBase.init(); 
+ 
