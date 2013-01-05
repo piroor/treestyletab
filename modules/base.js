@@ -74,6 +74,9 @@ XPCOMUtils.defineLazyModuleGetter(this, 'Deferred',
 XPCOMUtils.defineLazyModuleGetter(this, 'confirmWithPopup', 'resource://treestyletab-modules/lib/confirmWithPopup.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
+XPCOMUtils.defineLazyServiceGetter(this, 'SessionStore',
+  '@mozilla.org/browser/sessionstore;1', 'nsISessionStore');
+
 if (Services.appinfo.OS === 'WINNT') {
 	XPCOMUtils.defineLazyModuleGetter(this, 'AeroPeek',
 	  'resource://gre/modules/WindowsPreviewPerTab.jsm', 'AeroPeek');
@@ -270,14 +273,10 @@ var TreeStyleTabBase = {
 
 	counterRoleHorizontal : -1,
 	counterRoleVertical : -1,
- 
-	get SessionStore() { 
-		if (!this._SessionStore) {
-			this._SessionStore = Cc['@mozilla.org/browser/sessionstore;1'].getService(Ci.nsISessionStore);
-		}
-		return this._SessionStore;
+
+	get SessionStore() {
+		return SessionStore;
 	},
-	_SessionStore : null,
 
 	get FocusManager()
 	{
@@ -1166,7 +1165,7 @@ var TreeStyleTabBase = {
 	{
 		var value = '';
 		try {
-			value = this.SessionStore.getTabValue(aTab, aKey);
+			value = SessionStore.getTabValue(aTab, aKey);
 		}
 		catch(e) {
 		}
@@ -1186,7 +1185,7 @@ var TreeStyleTabBase = {
 		aTab.setAttribute(aKey, aValue);
 		try {
 			this.checkCachedSessionDataExpiration(aTab);
-			this.SessionStore.setTabValue(aTab, aKey, aValue);
+			SessionStore.setTabValue(aTab, aKey, aValue);
 		}
 		catch(e) {
 		}
@@ -1202,8 +1201,8 @@ var TreeStyleTabBase = {
 		aTab.removeAttribute(aKey);
 		try {
 			this.checkCachedSessionDataExpiration(aTab);
-			this.SessionStore.setTabValue(aTab, aKey, '');
-			this.SessionStore.deleteTabValue(aTab, aKey);
+			SessionStore.setTabValue(aTab, aKey, '');
+			SessionStore.deleteTabValue(aTab, aKey);
 		}
 		catch(e) {
 		}
