@@ -37,9 +37,10 @@ const EXPORTED_SYMBOLS = ['TreeStyleTabBase'];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
+const Cu = Components.utils;
 
-Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
-Components.utils.import('resource://gre/modules/Services.jsm');
+Cu.import('resource://gre/modules/XPCOMUtils.jsm');
+Cu.import('resource://gre/modules/Services.jsm');
 
 XPCOMUtils.defineLazyGetter(this, 'window', function() {
 	Cu.import('resource://treestyletab-modules/lib/namespace.jsm');
@@ -51,19 +52,19 @@ XPCOMUtils.defineLazyGetter(this, 'prefs', function() {
 });
 XPCOMUtils.defineLazyGetter(this, 'jstimer', function() {
 	var jstimer = {};
-	Components.utils.import('resource://treestyletab-modules/lib/jstimer.jsm', jstimer);
+	Cu.import('resource://treestyletab-modules/lib/jstimer.jsm', jstimer);
 	return jstimer;
 });
 XPCOMUtils.defineLazyGetter(this, 'extensions', function() {
-	Components.utils.import('resource://treestyletab-modules/lib/extensions.js', {});
+	Cu.import('resource://treestyletab-modules/lib/extensions.js', {});
 	return window['piro.sakura.ne.jp'].extensions;
 });
 XPCOMUtils.defineLazyGetter(this, 'animationManager', function() {
-	Components.utils.import('resource://treestyletab-modules/lib/animationManager.js', {});
+	Cu.import('resource://treestyletab-modules/lib/animationManager.js', {});
 	return window['piro.sakura.ne.jp'].animationManager;
 });
 XPCOMUtils.defineLazyGetter(this, 'autoScroll', function() {
-	Components.utils.import('resource://treestyletab-modules/lib/autoScroll.js', {});
+	Cu.import('resource://treestyletab-modules/lib/autoScroll.js', {});
 	return window['piro.sakura.ne.jp'].autoScroll;
 });
 XPCOMUtils.defineLazyModuleGetter(this, 'UninstallationListener',
@@ -513,7 +514,7 @@ var TreeStyleTabBase = {
 		// https://addons.mozilla.org/firefox/addon/scriptish/
 		if (utils.getTreePref('compatibility.Scriptish')) {
 			try {
-				let tabModule = Components.utils.import('resource://scriptish/utils/Scriptish_openInTab.js', {});
+				let tabModule = Cu.import('resource://scriptish/utils/Scriptish_openInTab.js', {});
 				let Scriptish_openInTab = tabModule.Scriptish_openInTab;
 				tabModule.Scriptish_openInTab = function(aURL, aLoadInBackground, aReuse, aChromeWin) {
 					aChromeWin.TreeStyleTabService.readyToOpenChildTabNow(aChromeWin.gBrowser);
@@ -885,9 +886,9 @@ var TreeStyleTabBase = {
 	defaultDeferredErrorHandler : function utils_defaultDeferredErrorHandler(aError) 
 	{
 		if (aError.stack)
-			Components.utils.reportError(aError.message+'\n'+aError.stack);
+			Cu.reportError(aError.message+'\n'+aError.stack);
 		else
-			Components.utils.reportError(aError);
+			Cu.reportError(aError);
 	},
  
 // event 
