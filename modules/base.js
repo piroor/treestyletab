@@ -80,7 +80,7 @@ if (Services.appinfo.OS === 'WINNT') {
 }
  
 var TreeStyleTabBase = { 
-	__proto__ : window['piro.sakura.ne.jp'].prefs,
+	__proto__ : prefs,
 	
 	tabsHash : null, 
 	inWindowDestoructionProcess : false,
