@@ -42,6 +42,7 @@ const Ci = Components.interfaces;
 const Cu = Components.utils;
 
 Cu.import('resource://gre/modules/XPCOMUtils.jsm');
+Cu.import('resource://treestyletab-modules/constants.js');
 
 XPCOMUtils.defineLazyGetter(this, 'window', function() {
 	Cu.import('resource://treestyletab-modules/lib/namespace.jsm');
@@ -64,6 +65,7 @@ const TST_PREF_VERSION = 9;
 
 
 let TreeStyleTabUtils = {
+	__proto__ : TreeStyleTabConstants,
 
 	get prefs () {
 		return prefs;
@@ -113,10 +115,10 @@ let TreeStyleTabUtils = {
 				if (this.getTreePref('loadDroppedLinkToNewChildTab') !== null) {
 					this.setTreePref('dropLinksOnTab.behavior',
 						this.getTreePref('loadDroppedLinkToNewChildTab.confirm') ?
-							base.kDROPLINK_ASK :
+							this.kDROPLINK_ASK :
 						this.getTreePref('loadDroppedLinkToNewChildTab') ?
-							base.kDROPLINK_NEWTAB :
-							base.kDROPLINK_LOAD
+							this.kDROPLINK_NEWTAB :
+							this.kDROPLINK_LOAD
 					);
 					this.clearTreePref('loadDroppedLinkToNewChildTab.confirm');
 					this.clearTreePref('loadDroppedLinkToNewChildTab');
@@ -124,21 +126,21 @@ let TreeStyleTabUtils = {
 				if (this.getTreePref('openGroupBookmarkAsTabSubTree') !== null) {
 					let behavior = 0;
 					if (this.getTreePref('openGroupBookmarkAsTabSubTree.underParent'))
-						behavior += base.kGROUP_BOOKMARK_USE_DUMMY;
+						behavior += this.kGROUP_BOOKMARK_USE_DUMMY;
 					if (!this.getTreePref('openGroupBookmarkBehavior.confirm')) {
 						behavior += (
 							this.getTreePref('openGroupBookmarkAsTabSubTree') ?
-								base.kGROUP_BOOKMARK_SUBTREE :
+								this.kGROUP_BOOKMARK_SUBTREE :
 							this.getTreePref('browser.tabs.loadFolderAndReplace') ?
-								base.kGROUP_BOOKMARK_REPLACE :
-								base.kGROUP_BOOKMARK_SEPARATE
+								this.kGROUP_BOOKMARK_REPLACE :
+								this.kGROUP_BOOKMARK_SEPARATE
 						);
 					}
 					this.setTreePref('openGroupBookmark.behavior', behavior);
 					this.clearTreePref('openGroupBookmarkBehavior.confirm');
 					this.clearTreePref('openGroupBookmarkAsTabSubTree');
 					this.clearTreePref('openGroupBookmarkAsTabSubTree.underParent');
-					prefs.setPref('browser.tabs.loadFolderAndReplace', !!(behavior & base.kGROUP_BOOKMARK_REPLACE));
+					prefs.setPref('browser.tabs.loadFolderAndReplace', !!(behavior & this.kGROUP_BOOKMARK_REPLACE));
 				}
 			case 4:
 				let (prefs = [
