@@ -47,19 +47,17 @@ XPCOMUtils.defineLazyGetter(this, 'window', function() {
 	Cu.import('resource://treestyletab-modules/lib/namespace.jsm');
 	return getNamespaceFor('piro.sakura.ne.jp');
 });
-
 XPCOMUtils.defineLazyGetter(this, 'prefs', function() {
 	Cu.import('resource://treestyletab-modules/lib/prefs.js');
 	return window['piro.sakura.ne.jp'].prefs;
 });
-
 XPCOMUtils.defineLazyGetter(this, 'stringBundle', function() {
 	Cu.import('resource://treestyletab-modules/lib/stringBundle.js', {});
 	return window['piro.sakura.ne.jp'].stringBundle;
 });
 
-XPCOMUtils.defineLazyModuleGetter(this, 'base',
-  'resource://treestyletab-modules/base.js', 'TreeStyleTabBase');
+XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabConstants',
+  'resource://treestyletab-modules/constants.js', 'TreeStyleTabConstants');
 
 const TST_PREF_PREFIX = 'extensions.treestyletab.';
 const TST_PREF_VERSION = 9;

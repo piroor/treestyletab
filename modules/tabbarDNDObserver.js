@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2012
+ * Portions created by the Initial Developer are Copyright (C) 2010-2013
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -39,11 +39,21 @@ const DEBUG = false;
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
+const Cu = Components.utils;
 
-Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
-Components.utils.import('resource://gre/modules/Services.jsm');
+Cu.import('resource://gre/modules/XPCOMUtils.jsm');
+Cu.import('resource://gre/modules/Services.jsm');
 
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
+
+XPCOMUtils.defineLazyGetter(this, 'window', function() {
+	Cu.import('resource://treestyletab-modules/lib/namespace.jsm');
+	return getNamespaceFor('piro.sakura.ne.jp');
+});
+XPCOMUtils.defineLazyGetter(this, 'prefs', function() {
+	Cu.import('resource://treestyletab-modules/lib/prefs.js');
+	return window['piro.sakura.ne.jp'].prefs;
+});
 
 const TAB_DROP_TYPE = 'application/x-moz-tabbrowser-tab';
 
@@ -1064,7 +1074,7 @@ catch(e) {
 		var w  = this.window;
 		var self = this;
 
-		let bgLoad = sv.getPref('browser.tabs.loadInBackground');
+		let bgLoad = prefs.getPref('browser.tabs.loadInBackground');
 		if (aEvent.shiftKey) bgLoad = !bgLoad;
 
 		let tab = sv.getTabFromEvent(aEvent);

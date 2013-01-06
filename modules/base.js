@@ -83,7 +83,6 @@ if (Services.appinfo.OS === 'WINNT') {
 }
  
 var TreeStyleTabBase = { 
-	__proto__ : prefs,
 	
 	tabsHash : null, 
 	inWindowDestoructionProcess : false,
@@ -302,7 +301,7 @@ var TreeStyleTabBase = {
 		this.applyPlatformDefaultPrefs();
 		utils.migratePrefs();
 
-		this.addPrefListener(this);
+		prefs.addPrefListener(this);
 
 		this.initUninstallationListener();
 
@@ -341,7 +340,7 @@ var TreeStyleTabBase = {
 		{
 			let originalKey = originalKeys[i];
 			let key = originalKey.replace('platform.'+OS+'.', '');
-			this.setDefaultPref(key, this.getPref(originalKey));
+			prefs.setDefaultPref(key, prefs.getPref(originalKey));
 			processed[key] = true;
 		}
 		originalKeys = this.getDescendant('extensions.treestyletab.platform.default');
@@ -350,7 +349,7 @@ var TreeStyleTabBase = {
 			let originalKey = originalKeys[i];
 			let key = originalKey.replace('platform.default.', '');
 			if (!(key in processed))
-				this.setDefaultPref(key, this.getPref(originalKey));
+				prefs.setDefaultPref(key, prefs.getPref(originalKey));
 		}
 	},
 
@@ -580,7 +579,7 @@ var TreeStyleTabBase = {
 
 		if (checked.value) {
 			utils.setTreePref('openGroupBookmark.behavior', behavior);
-			this.setPref('browser.tabs.loadFolderAndReplace', !!(behavior & this.kGROUP_BOOKMARK_REPLACE));
+			prefs.setPref('browser.tabs.loadFolderAndReplace', !!(behavior & this.kGROUP_BOOKMARK_REPLACE));
 		}
 		return behavior;
 	},
@@ -2499,7 +2498,7 @@ var TreeStyleTabBase = {
  
 	onPrefChange : function utils_onPrefChange(aPrefName) 
 	{
-		var value = this.getPref(aPrefName);
+		var value = prefs.getPref(aPrefName);
 		switch (aPrefName)
 		{
 			case 'extensions.treestyletab.indent.vertical':
@@ -2520,29 +2519,29 @@ var TreeStyleTabBase = {
 			case 'extensions.stm.tabBarMultiRows': // Super Tab Mode
 				if (this.prefOverriding) return;
 				aPrefName += '.override';
-				this.setPref(aPrefName, value);
+				prefs.setPref(aPrefName, value);
 			case 'browser.tabs.insertRelatedAfterCurrent.override':
 			case 'browser.tabs.loadFolderAndReplace.override':
 			case 'extensions.stm.tabBarMultiRows.override': // Super Tab Mode
-				if (this.getPref(aPrefName+'.force')) {
-					let defaultValue = this.getDefaultPref(aPrefName);
+				if (prefs.getPref(aPrefName+'.force')) {
+					let defaultValue = prefs.getDefaultPref(aPrefName);
 					if (value != defaultValue) {
-						this.setPref(aPrefName, defaultValue);
+						prefs.setPref(aPrefName, defaultValue);
 						return;
 					}
 				}
 				this.prefOverriding = true;
 				let (target = aPrefName.replace('.override', '')) {
-					let originalValue = this.getPref(target);
+					let originalValue = prefs.getPref(target);
 					if (originalValue !== null && originalValue != value)
-						this.setPref(target+'.backup', originalValue);
-					this.setPref(target, this.getPref(aPrefName));
+						prefs.setPref(target+'.backup', originalValue);
+					prefs.setPref(target, prefs.getPref(aPrefName));
 				}
 				this.prefOverriding = false;
 				return;
 
 			case 'extensions.treestyletab.clickOnIndentSpaces.enabled':
-				return this.shouldDetectClickOnIndentSpaces = this.getPref(aPrefName);
+				return this.shouldDetectClickOnIndentSpaces = prefs.getPref(aPrefName);
 
 			case 'extensions.treestyletab.tabbar.scroll.smooth':
 				return this.smoothScrollEnabled = value;

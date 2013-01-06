@@ -370,7 +370,7 @@ TreeStyleTabWindowHelper.overrideExtensionsBeforeBrowserInit = function TSTWH_ov
 						case 'TreeStyleTabTabbarPositionChanged':
 							var b = aEvent.originalTarget;
 							if (b.treeStyleTab.isVertical)
-								b.treeStyleTab.setPref('tabberwocky.multirow', false);
+								TreeStyleTabUtils.prefs.setPref('tabberwocky.multirow', false);
 							break;
 
 						case 'unload':
@@ -467,7 +467,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 							break;
 
 						case sv.kEVENT_TYPE_FOCUS_NEXT_TAB:
-							let mode = sv.getPref('extensions.tabmix.focusTab');
+							let mode = TreeStyleTabUtils.prefs.getPref('extensions.tabmix.focusTab');
 							if (mode != 2 && mode != 5)
 								aEvent.preventDefault();
 							break;
@@ -581,7 +581,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	if ('flst' in window &&
 		TreeStyleTabUtils.getTreePref('compatibility.FLST')) {
 		TreeStyleTabService.registerTabFocusAllowance(function(aTabBrowser) {
-			return !aTabBrowser.treeStyleTab.getPref('extensions.flst.enabled');
+			return !TreeStyleTabUtils.prefs.getPref('extensions.flst.enabled');
 		});
 	}
 
@@ -600,7 +600,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	if ('LastTab' in window &&
 		TreeStyleTabUtils.getTreePref('compatibility.LastTab')) {
 		TreeStyleTabService.registerTabFocusAllowance(function(aTabBrowser) {
-			return !aTabBrowser.treeStyleTab.getPref('extensions.lasttab.focusLastTabOnClose');
+			return !TreeStyleTabUtils.prefs.getPref('extensions.lasttab.focusLastTabOnClose');
 		});
 	}
 
@@ -848,8 +848,8 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 								if (
 									autoHIDE.statBar &&
 									gBrowser.treeStyleTab.currentTabbarPosition == 'bottom' &&
-									!gBrowser.treeStyleTab.getPref('extensions.autohide.bars.statBar.always') &&
-									gBrowser.treeStyleTab.getPref('extensions.autohide.bars.statBar')
+									!TreeStyleTabUtils.prefs.getPref('extensions.autohide.bars.statBar.always') &&
+									TreeStyleTabUtils.prefs.getPref('extensions.autohide.bars.statBar')
 									) {
 									autoHIDE.statBar.setAttribute('ahHIDE', true);
 								}
@@ -859,8 +859,8 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 								if (
 									autoHIDE.statBar &&
 									aTabBrowser.treeStyleTab.currentTabbarPosition == 'bottom' &&
-									!aTabBrowser.treeStyleTab.getPref('extensions.autohide.bars.statBar.always') &&
-									aTabBrowser.treeStyleTab.getPref('extensions.autohide.bars.statBar')
+									!TreeStyleTabUtils.prefs.getPref('extensions.autohide.bars.statBar.always') &&
+									TreeStyleTabUtils.prefs.getPref('extensions.autohide.bars.statBar')
 									) {
 									autoHIDE.statBar.removeAttribute('ahHIDE');
 								}
@@ -991,15 +991,15 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 						case 'extensions.stm.tabBarMultiRows':
 						case 'extensions.stm.tabBarPosition':
 							if (
-								sv.getPref('extensions.stm.tabBarMultiRows') &&
-								sv.getPref('extensions.stm.tabBarPosition') == 0
+								TreeStyleTabUtils.prefs.getPref('extensions.stm.tabBarMultiRows') &&
+								TreeStyleTabUtils.prefs.getPref('extensions.stm.tabBarPosition') == 0
 								) {
-								sv.setPref('extensions.stm.tabBarMultiRows.override', false);
+								TreeStyleTabUtils.prefs.setPref('extensions.stm.tabBarMultiRows.override', false);
 							}
 							return;
 
 						case 'extensions.stm.newTabBtnPos':
-							if (TreeStyleTabService.getPref(aData) == 0)
+							if (TreeStyleTabUtils.prefs.getPref(aData) == 0)
 								document.documentElement.removeAttribute(TreeStyleTabService.kHIDE_NEWTAB);
 							else
 								document.documentElement.setAttribute(TreeStyleTabService.kHIDE_NEWTAB, true);
@@ -1009,16 +1009,16 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 			};
 		observer.observe(null, null, 'extensions.stm.tabBarMultiRows');
 		observer.observe(null, null, 'extensions.stm.newTabBtnPos');
-		sv.addPrefListener(observer);
+		TreeStyleTabUtils.prefs.addPrefListener(observer);
 		document.addEventListener('unload', function() {
 			document.removeEventListener('unload', arguments.callee, false);
-			sv.removePrefListener(observer);
+			TreeStyleTabUtils.prefs.removePrefListener(observer);
 		}, false);
 
 		let warnPref = 'extensions.treestyletab.compatibility.STM.warnForNewTabPosition';
 		if (
-			sv.getPref(warnPref) &&
-			sv.getPref('extensions.stm.newTabPosition') != 0
+			TreeStyleTabUtils.prefs.getPref(warnPref) &&
+			TreeStyleTabUtils.prefs.getPref('extensions.stm.newTabPosition') != 0
 			) {
 			let checked = { value : false };
 			if (Services.prompt.confirmEx(
@@ -1033,14 +1033,14 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 					TreeStyleTabUtils.treeBundle.getString('compatibility_STM_warning_never'),
 					checked
 				) == 0) {
-				sv.setPref('extensions.stm.newTabPosition', 0);
+				TreeStyleTabUtils.prefs.setPref('extensions.stm.newTabPosition', 0);
 			}
 			if (checked.value)
-				sv.setPref(warnPref, false);
+				TreeStyleTabUtils.prefs.setPref(warnPref, false);
 		}
 
 		sv.registerTabFocusAllowance(function(aTabBrowser) {
-			return aTabBrowser.treeStyleTab.getPref('extensions.stm.focusAfterCloseTab') == 0;
+			return TreeStyleTabUtils.prefs.getPref('extensions.stm.focusAfterCloseTab') == 0;
 		});
 	}
 
@@ -1049,7 +1049,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	if ('tabutils' in window &&
 		TreeStyleTabUtils.getTreePref('compatibility.TabUtilities')) {
 		TreeStyleTabService.registerTabFocusAllowance(function(aTabBrowser) {
-			return aTabBrowser.treeStyleTab.getPref('extensions.tabutils.selectOnClose') == 0;
+			return TreeStyleTabUtils.prefs.getPref('extensions.tabutils.selectOnClose') == 0;
 		});
 	}
 
@@ -1185,7 +1185,7 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 				'  (function() {\n' +
 				'    var tabs = this.treeStyleTab.getDescendantTabs(this.mCurrentTab);\n' +
 				'    if (tabs.length) {\n' +
-				'      var index = this.treeStyleTab.getPref("extensions.tabmix.openTabNextInverse") ?\n' +
+				'      var index = TreeStyleTabUtils.prefs.getPref("extensions.tabmix.openTabNextInverse") ?\n' +
 				'            tabs[tabs.length - 1]._tPos :\n' +
 				'            this.mCurrentTab._tPos ;\n' +
 				'      if (index < aTab._tPos) index++;\n' +

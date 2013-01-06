@@ -37,8 +37,9 @@ const EXPORTED_SYMBOLS = ['TreeStyleTabBrowser'];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
+const Cu = Components.utils;
 
-Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
+Cu.import('resource://gre/modules/XPCOMUtils.jsm');
 
 XPCOMUtils.defineLazyModuleGetter(this, 'Services', 'resource://gre/modules/Services.jsm');
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
@@ -47,7 +48,16 @@ XPCOMUtils.defineLazyModuleGetter(this, 'TabbarDNDObserver', 'resource://treesty
 XPCOMUtils.defineLazyModuleGetter(this, 'TabpanelDNDObserver', 'resource://treestyletab-modules/tabpanelDNDObserver.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'AutoHideBrowser', 'resource://treestyletab-modules/autoHide.js');
 
-Components.utils.import('resource://treestyletab-modules/window.js');
+XPCOMUtils.defineLazyGetter(this, 'window', function() {
+	Cu.import('resource://treestyletab-modules/lib/namespace.jsm');
+	return getNamespaceFor('piro.sakura.ne.jp');
+});
+XPCOMUtils.defineLazyGetter(this, 'prefs', function() {
+	Cu.import('resource://treestyletab-modules/lib/prefs.js');
+	return window['piro.sakura.ne.jp'].prefs;
+});
+
+Cu.import('resource://treestyletab-modules/window.js');
  
 function TreeStyleTabBrowser(aWindowService, aTabBrowser) 
 {
@@ -447,7 +457,7 @@ TreeStyleTabBrowser.prototype = {
 	{
 		var w = this.window;
 		return ('tabberwocky' in w && utils.getTreePref('compatibility.Tabberwocky')) ?
-				(this.getPref('tabberwocky.multirow') && !this.isVertical) :
+				(prefs.getPref('tabberwocky.multirow') && !this.isVertical) :
 			('TabmixTabbar' in w && utils.getTreePref('compatibility.TMP')) ?
 				w.TabmixTabbar.isMultiRow :
 				false ;
@@ -721,7 +731,7 @@ TreeStyleTabBrowser.prototype = {
 		Services.obs.addObserver(this, this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY, false);
 		Services.obs.addObserver(this, 'private-browsing-change-granted', false);
 		Services.obs.addObserver(this, 'lightweight-theme-styling-update', false);
-		this.addPrefListener(this);
+		prefs.addPrefListener(this);
 
 		// Don't init these ovservers on this point to avoid needless initializations.
 		//   this.tabbarDNDObserver;
@@ -1245,7 +1255,7 @@ TreeStyleTabBrowser.prototype = {
 			let newTabButton = d.getElementById('new-tab-button');
 			if (newTabButton && newTabButton.parentNode == b.tabContainer._container)
 				newTabBox = newTabButton;
-			tabBarMode = this.getPref('extensions.tabmix.tabBarMode');
+			tabBarMode = prefs.getPref('extensions.tabmix.tabBarMode');
 		}
 
 		// All-in-One Sidebar
@@ -1292,7 +1302,7 @@ TreeStyleTabBrowser.prototype = {
 				if (newTabBox)
 					newTabBox.orient = 'horizontal';
 				if (tabBarMode == 2)
-					this.setPref('extensions.tabmix.tabBarMode', 1);
+					prefs.setPref('extensions.tabmix.tabBarMode', 1);
 			}
 
 			if (toolboxContainer)
@@ -1770,7 +1780,7 @@ TreeStyleTabBrowser.prototype = {
 		if (splitter.collapsed || splitter.getAttribute('state') != 'collapsed') {
 			this._tabStripPlaceHolder.collapsed =
 				splitter.collapsed =
-					(this.getPref('browser.tabs.autoHide') && this.getExistingTabsCount() == 1);
+					(prefs.getPref('browser.tabs.autoHide') && this.getExistingTabsCount() == 1);
 		}
 
 		var strip = this.tabStrip;
@@ -2052,7 +2062,7 @@ TreeStyleTabBrowser.prototype = {
 		Services.obs.removeObserver(this, this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY);
 		Services.obs.removeObserver(this, 'private-browsing-change-granted');
 		Services.obs.removeObserver(this, 'lightweight-theme-styling-update');
-		this.removePrefListener(this);
+		prefs.removePrefListener(this);
 
 		delete this.windowService;
 		delete this.window;
@@ -2323,7 +2333,7 @@ TreeStyleTabBrowser.prototype = {
 			return;
 
 		var b = this.mTabBrowser;
-		var value = this.getPref(aPrefName);
+		var value = prefs.getPref(aPrefName);
 		var tabContainer = b.mTabContainer;
 		var tabs  = this.getAllTabs(b);
 		switch (aPrefName)
@@ -2431,7 +2441,7 @@ TreeStyleTabBrowser.prototype = {
 
 			case 'browser.tabs.animate':
 				this.setTabbrowserAttribute(this.kANIMATION_ENABLED,
-					this.getPref('browser.tabs.animate') !== false
+					prefs.getPref('browser.tabs.animate') !== false
 						? 'true' : null
 				);
 				return;
@@ -2524,8 +2534,8 @@ TreeStyleTabBrowser.prototype = {
 			aStyle = 'osx';
 		}
 		else if (
-			this.getPref('extensions.informationaltab.thumbnail.enabled') &&
-			this.getPref('extensions.informationaltab.thumbnail.position') < 100
+			prefs.getPref('extensions.informationaltab.thumbnail.enabled') &&
+			prefs.getPref('extensions.informationaltab.thumbnail.position') < 100
 			) {
 			let self = this;
 			this.extensions.isAvailable('informationaltab@piro.sakura.ne.jp', {
@@ -2844,7 +2854,7 @@ TreeStyleTabBrowser.prototype = {
 
 		this.updateInsertionPositionInfo(tab);
 
-		if (this.getPref('browser.tabs.autoHide'))
+		if (prefs.getPref('browser.tabs.autoHide'))
 			this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_SHOWHIDE_TABBAR);
 
 		if (this.canStackTabs)
@@ -3073,7 +3083,7 @@ TreeStyleTabBrowser.prototype = {
 		if (tab.getAttribute('pinned') == 'true')
 			this.positionPinnedTabsWithDelay();
 
-		if (this.getPref('browser.tabs.autoHide'))
+		if (prefs.getPref('browser.tabs.autoHide'))
 			this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_SHOWHIDE_TABBAR);
 
 		if (this.canStackTabs)
@@ -6251,7 +6261,7 @@ TreeStyleTabBrowser.prototype = {
 
 		this.needRestoreTree = false;
 
-		if (this.useTMPSessionAPI && this.getPref('extensions.tabmix.sessions.manager'))
+		if (this.useTMPSessionAPI && prefs.getPref('extensions.tabmix.sessions.manager'))
 			return;
 
 		var level = utils.getTreePref('restoreTree.level');

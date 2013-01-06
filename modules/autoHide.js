@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2012
+ * Portions created by the Initial Developer are Copyright (C) 2010-2013
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -37,10 +37,20 @@ const EXPORTED_SYMBOLS = ['AutoHideBrowser', 'AutoHideWindow'];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
+const Cu = Components.utils;
 
-Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
+Cu.import('resource://gre/modules/XPCOMUtils.jsm');
 
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
+
+XPCOMUtils.defineLazyGetter(this, 'window', function() {
+	Cu.import('resource://treestyletab-modules/lib/namespace.jsm');
+	return getNamespaceFor('piro.sakura.ne.jp');
+});
+XPCOMUtils.defineLazyGetter(this, 'prefs', function() {
+	Cu.import('resource://treestyletab-modules/lib/prefs.js');
+	return window['piro.sakura.ne.jp'].prefs;
+});
 
 
 function AutoHideBrowser(aTabBrowser) 
@@ -118,7 +128,7 @@ AutoHideBrowser.prototype = {
 		// update internal property after the appearance of the tab bar is updated.
 		var w = this.window;
 		w.setTimeout(function(aSelf) {
-			aSelf.mode = (w.fullScreen && aSelf.treeStyleTab.getPref('browser.fullscreen.autohide')) ?
+			aSelf.mode = (w.fullScreen && prefs.getPref('browser.fullscreen.autohide')) ?
 					aSelf.getModeForFullScreen() :
 					aSelf.getModeForNormal() ;
 			if (aSelf.mode != aSelf.kMODE_DISABLED)
@@ -273,7 +283,7 @@ AutoHideBrowser.prototype = {
 	{
 		this.mode = this.getMode();
 		this.end();
-		this.mode = this.treeStyleTab.getPref('browser.fullscreen.autohide') ?
+		this.mode = prefs.getPref('browser.fullscreen.autohide') ?
 				this.getModeForFullScreen() :
 				this.kMODE_DISABLED ;
 		if (this.mode != this.kMODE_DISABLED) {
@@ -841,7 +851,7 @@ AutoHideBrowser.prototype = {
 		if (!this.window || !this.window.TreeStyleTabService)
 			return;
 
-		var value = this.treeStyleTab.getPref(aPrefName);
+		var value = prefs.getPref(aPrefName);
 		switch (aPrefName)
 		{
 			case 'extensions.treestyletab.tabbar.autoHide.mode':
@@ -1160,7 +1170,7 @@ AutoHideBrowser.prototype = {
 
 		b.setAttribute(this.kMODE+'-normal', utils.getTreePref('tabbar.autoHide.mode'));
 		b.setAttribute(this.kMODE+'-fullscreen', utils.getTreePref('tabbar.autoHide.mode.fullscreen'));
-		sv.addPrefListener(this);
+		prefs.addPrefListener(this);
 		this.onPrefChange('browser.tabs.closeButtons');
 		this.onPrefChange('extensions.treestyletab.tabbar.autoHide.area');
 		this.onPrefChange('extensions.treestyletab.tabbar.togglerSize');
@@ -1183,7 +1193,7 @@ AutoHideBrowser.prototype = {
 	destroy : function AHB_destroy() 
 	{
 		this.end();
-		this.treeStyleTab.removePrefListener(this);
+		prefs.removePrefListener(this);
 
 		var sv = this.treeStyleTab;
 		var b  = this.browser;

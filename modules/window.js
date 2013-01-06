@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2012
+ * Portions created by the Initial Developer are Copyright (C) 2012-2013
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -37,17 +37,24 @@ const EXPORTED_SYMBOLS = ['TreeStyleTabWindow'];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
+const Cu = Components.utils;
 
-Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
+Cu.import('resource://gre/modules/XPCOMUtils.jsm');
 
-XPCOMUtils.defineLazyModuleGetter(this, "prefs",
-  'resource://treestyletab-modules/lib/prefs.js');
+XPCOMUtils.defineLazyGetter(this, 'window', function() {
+	Cu.import('resource://treestyletab-modules/lib/namespace.jsm');
+	return getNamespaceFor('piro.sakura.ne.jp');
+});
+XPCOMUtils.defineLazyGetter(this, 'prefs', function() {
+	Cu.import('resource://treestyletab-modules/lib/prefs.js');
+	return window['piro.sakura.ne.jp'].prefs;
+
 XPCOMUtils.defineLazyModuleGetter(this, 'UninstallationListener',
   'resource://treestyletab-modules/lib/UninstallationListener.js');
 
-XPCOMUtils.defineLazyModuleGetter(this, "Services", "resource://gre/modules/Services.jsm");
+XPCOMUtils.defineLazyModuleGetter(this, 'Services', 'resource://gre/modules/Services.jsm');
 
-Components.utils.import('resource://treestyletab-modules/base.js');
+Cu.import('resource://treestyletab-modules/base.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabBrowser', 'resource://treestyletab-modules/browser.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 XPCOMUtils.defineLazyModuleGetter(this, 'AutoHideWindow', 'resource://treestyletab-modules/autoHide.js');
@@ -280,7 +287,7 @@ TreeStyleTabWindow.prototype = {
 	{
 		return this.window.fullScreen ?
 				(
-					this.getPref('browser.fullscreen.autohide') &&
+					prefs.getPref('browser.fullscreen.autohide') &&
 					utils.getTreePref('tabbar.autoHide.mode.fullscreen')
 				) :
 				utils.getTreePref('tabbar.autoHide.mode');
@@ -361,7 +368,7 @@ TreeStyleTabWindow.prototype = {
 		w.addEventListener('UIOperationHistoryUndo:TabbarOperations', this, false);
 		w.addEventListener('UIOperationHistoryRedo:TabbarOperations', this, false);
 
-		this.addPrefListener(this);
+		prefs.addPrefListener(this);
 
 		this.initUninstallationListener();
 
@@ -521,7 +528,7 @@ TreeStyleTabWindow.prototype = {
 				w.removeEventListener('UIOperationHistoryUndo:TabbarOperations', this, false);
 				w.removeEventListener('UIOperationHistoryRedo:TabbarOperations', this, false);
 
-				this.removePrefListener(this);
+				prefs.removePrefListener(this);
 			}
 			catch(e) {
 				throw e;
@@ -807,7 +814,7 @@ TreeStyleTabWindow.prototype = {
 	get ctrlTabPreviewsEnabled() 
 	{
 		return 'allTabs' in this.window &&
-				this.getPref('browser.ctrlTab.previews');
+				prefs.getPref('browser.ctrlTab.previews');
 	},
    
 	onTabbarResizeStart : function TSTWindow_onTabbarResizeStart(aEvent) 
@@ -915,7 +922,7 @@ TreeStyleTabWindow.prototype = {
 		var tab = aEvent.originalTarget;
 		var b = this.getTabBrowserFromChild(tab);
 		if (
-			this.getPref('browser.tabs.selectOwnerOnClose') &&
+			prefs.getPref('browser.tabs.selectOwnerOnClose') &&
 			tab.owner &&
 			(
 				!b._removingTabs ||
@@ -952,7 +959,7 @@ TreeStyleTabWindow.prototype = {
 		var w = this.window;
 		if (
 			this.updateAeroPeekPreviewsTimer ||
-			!this.getPref('browser.taskbar.previews.enable') ||
+			!prefs.getPref('browser.taskbar.previews.enable') ||
 			!utils.getTreePref('taskbarPreviews.hideCollapsedTabs') ||
 			!('Win7Features' in w) ||
 			!w.Win7Features ||
@@ -976,7 +983,7 @@ TreeStyleTabWindow.prototype = {
 	updateAeroPeekPreviewsInternal : function TSTWindow_updateAeroPeekPreviewsInternal()
 	{
 		if (
-			!this.getPref('browser.taskbar.previews.enable') ||
+			!prefs.getPref('browser.taskbar.previews.enable') ||
 			!utils.getTreePref('taskbarPreviews.hideCollapsedTabs')
 			)
 			return;
@@ -1016,9 +1023,9 @@ TreeStyleTabWindow.prototype = {
 			var TabsOnTop = w.TabsOnTop;
 			var originalState = utils.getTreePref('tabsOnTop.originalState');
 			if (originalState === null) {
-				let current = this.getDefaultPref('browser.tabs.onTop') === null ?
+				let current = prefs.getDefaultPref('browser.tabs.onTop') === null ?
 								TabsOnTop.enabled :
-								this.getPref('browser.tabs.onTop') ;
+								prefs.getPref('browser.tabs.onTop') ;
 				utils.setTreePref('tabsOnTop.originalState', originalState = current);
 			}
 
@@ -1361,7 +1368,7 @@ TreeStyleTabWindow.prototype = {
 	{
 		if (
 			aTabsCount <= 1 ||
-			!this.getPref('browser.tabs.warnOnClose')
+			!prefs.getPref('browser.tabs.warnOnClose')
 			)
 			return true;
 		var checked = { value:true };
@@ -1378,7 +1385,7 @@ TreeStyleTabWindow.prototype = {
 				checked
 			) == 0;
 		if (shouldClose && !checked.value)
-			this.setPref('browser.tabs.warnOnClose', false);
+			prefs.setPref('browser.tabs.warnOnClose', false);
 		return shouldClose;
 	},
   
@@ -1663,7 +1670,7 @@ TreeStyleTabWindow.prototype = {
  
 	onPrefChange : function TSTWindow_onPrefChange(aPrefName) 
 	{
-		var value = this.getPref(aPrefName);
+		var value = prefs.getPref(aPrefName);
 		switch (aPrefName)
 		{
 			case 'extensions.treestyletab.tabbar.autoHide.mode':
@@ -1677,7 +1684,7 @@ TreeStyleTabWindow.prototype = {
 
 			case 'extensions.treestyletab.tabbar.style':
 			case 'extensions.treestyletab.tabbar.position':
-				this.themeManager.set(this.getPref('extensions.treestyletab.tabbar.style'), this.position);
+				this.themeManager.set(prefs.getPref('extensions.treestyletab.tabbar.style'), this.position);
 				break;
 
 			case 'browser.ctrlTab.previews':
