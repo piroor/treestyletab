@@ -170,7 +170,7 @@ var TreeStyleTabBase = {
 	{
 		var OS = Services.appinfo.OS;
 		var processed = {};
-		var originalKeys = this.getDescendant('extensions.treestyletab.platform.'+OS);
+		var originalKeys = prefs.getDescendant('extensions.treestyletab.platform.'+OS);
 		for (let i = 0, maxi = originalKeys.length; i < maxi; i++)
 		{
 			let originalKey = originalKeys[i];
@@ -178,7 +178,7 @@ var TreeStyleTabBase = {
 			prefs.setDefaultPref(key, prefs.getPref(originalKey));
 			processed[key] = true;
 		}
-		originalKeys = this.getDescendant('extensions.treestyletab.platform.default');
+		originalKeys = prefs.getDescendant('extensions.treestyletab.platform.default');
 		for (let i = 0, maxi = originalKeys.length; i < maxi; i++)
 		{
 			let originalKey = originalKeys[i];
