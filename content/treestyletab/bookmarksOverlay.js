@@ -303,13 +303,14 @@ var TreeStyleTabBookmarksService = {
 					PlacesUIUtils[method].toSource().replace(
 						'{',
 						'{\n' +
-						'  var TSTBS;\n' +
+						'  var TSTBS, TSTUtils;\n' +
 						'  let (w = "_getTopBrowserWin" in this ?\n' +
 						'        this._getTopBrowserWin() :\n' +
 						'      "_getCurrentActiveWin" in this ?\n' +
 						'        this._getCurrentActiveWin() :\n' +
 						'        window) {\n' +
 						'    TSTBS = w.TreeStyleTabBookmarksService;\n' +
+						'    TSTUtils = w.TreeStyleTabUtils;\n' +
 						'    PlacesUtils = w.PlacesUtils;\n' +
 						'  }'
 					).replace(
@@ -318,7 +319,7 @@ var TreeStyleTabBookmarksService = {
 					).replace(
 						/(this\._openTabset\([^\)]+)(\))/,
 						'$1,\n' +
-						'  TreeStyleTabUtils.treeBundle\n' +
+						'  TSTUtils.treeBundle\n' +
 						'    .getFormattedString(\n' +
 						'      PlacesUtils.nodeIsBookmark(aNodes[0]) ?\n' +
 						'        "openSelectedPlaces.bookmarks" :\n' +
