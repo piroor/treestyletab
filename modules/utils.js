@@ -142,7 +142,7 @@ let TreeStyleTabUtils = {
 					prefs.setPref('browser.tabs.loadFolderAndReplace', !!(behavior & TreeStyleTabConstants.kGROUP_BOOKMARK_REPLACE));
 				}
 			case 4:
-				let (prefs = [
+				let (subTreePrefs = [
 						'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect',
 						'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove',
 						'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut',
@@ -156,9 +156,9 @@ let TreeStyleTabUtils = {
 						'extensions.multipletab.show.multipletab-selection-item-removeTabSubTree',
 						'extensions.multipletab.show.multipletab-selection-item-createSubTree'
 					]) {
-					for (let i = 0, maxi = prefs.length; i < maxi; i++)
+					for (let i = 0, maxi = subTreePrefs.length; i < maxi; i++)
 					{
-						let pref = prefs[i];
+						let pref = subTreePrefs[i];
 						let value = prefs.getPref(pref);
 						if (value === null) {
 							continue;
