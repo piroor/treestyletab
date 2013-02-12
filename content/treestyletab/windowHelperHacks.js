@@ -328,7 +328,7 @@ TreeStyleTabWindowHelper.overrideExtensionsBeforeBrowserInit = function TSTWH_ov
 	if (TreeStyleTabUtils.getTreePref('compatibility.TMP') &&
 		'isTabVisible' in gBrowser.mTabContainer &&
 		'ensureTabIsVisible' in gBrowser.mTabContainer) {
-		function replaceHorizontalProps(aString)
+		let replaceHorizontalProps = function replaceHorizontalProps(aString)
 		{
 			return aString.replace(
 					/boxObject\.x/g,
