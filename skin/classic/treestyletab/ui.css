@@ -298,8 +298,8 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"] {
-	height: 24px;
-	max-height: 24px;
+	height: 27px;
+	max-height: 27px;
 }
 
 /* disable highlighting of pinned tabs whici is not faviconized */

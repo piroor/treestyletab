@@ -487,10 +487,11 @@ TreeStyleTabBrowser.prototype = {
 		var maxWidth = tabbarPlaceHolderWidth || tabbarWidth;
 
 		var faviconized = utils.getTreePref('pinnedTab.faviconized');
-		var faviconizedSize = tabbar.childNodes[0].boxObject.height;
+		var faviconizedWidth = 32;
+		var faviconizedHeight = 27;
 
-		var width  = faviconized ? faviconizedSize : maxWidth ;
-		var height = faviconizedSize;
+		var width  = faviconized ? faviconizedWidth : maxWidth ;
+		var height = faviconizedHeight;
 		var maxCol = Math.max(1, Math.floor(maxWidth / width));
 		var maxRow = Math.ceil(count / maxCol);
 		var col    = 0;
