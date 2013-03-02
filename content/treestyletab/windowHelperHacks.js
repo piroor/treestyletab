@@ -69,11 +69,11 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 					'    TST.SessionStore.setTabValue(tab, i, info[i]);\n' +
 					'  }\n' +
 					'  var count = 0;\n' +
-					'  window.setTimeout(function() {\n' +
+					'  window.setTimeout(function onTimeout() {\n' +
 					'    var b = TST.getTabBrowserFromChild(tab);\n' +
 					'    if (!b.treeStyleTab) {\n' +
 					'      if (++count < 50)\n' +
-					'        window.setTimeout(arguments.callee, 100);\n' +
+					'        window.setTimeout(onTimeout, 100);\n' +
 					'      return;\n' +
 					'    }\n' +
 					'    b.treeStyleTab.handleRestoredTab(tab);\n' +
@@ -1010,8 +1010,8 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		observer.observe(null, null, 'extensions.stm.tabBarMultiRows');
 		observer.observe(null, null, 'extensions.stm.newTabBtnPos');
 		TreeStyleTabUtils.prefs.addPrefListener(observer);
-		document.addEventListener('unload', function() {
-			document.removeEventListener('unload', arguments.callee, false);
+		document.addEventListener('unload', function onUnload() {
+			document.removeEventListener('unload', onUnload, false);
 			TreeStyleTabUtils.prefs.removePrefListener(observer);
 		}, false);
 

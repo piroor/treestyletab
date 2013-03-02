@@ -271,13 +271,13 @@ TreeStyleTabWindow.prototype = {
 		if (!w || w.top != this.browser.contentWindow)
 			w = this.browser.contentWindow;
 
-		return (function(aWindow) {
+		return (function checkWindow(aWindow) {
 			if (!aWindow || !(aWindow instanceof Ci.nsIDOMWindow))
 				return false;
 			var selection = aWindow.getSelection();
 			if (selection && selection.toString().replace(/^\s+|\s+$/g, '') == aTerm)
 				return true;
-			return aWindow.frames ? Array.slice(aWindow.frames).some(arguments.callee) : false ;
+			return aWindow.frames ? Array.slice(aWindow.frames).some(checkWindow) : false ;
 		})(w);
 	},
 	kSEARCH_RESULT_DO_NOT_ATTACH      : 0,

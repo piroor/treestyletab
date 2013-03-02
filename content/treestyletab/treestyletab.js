@@ -9,8 +9,8 @@
 			SSWindowStateBusyListener = undefined;
 		};
 	window.addEventListener('SSWindowStateBusy', SSWindowStateBusyListener, false);
-	window.addEventListener('DOMContentLoad', function(aEvent) {
-		window.removeEventListener(aEvent.type, arguments.callee, false);
+	window.addEventListener('DOMContentLoad', function onDOMContentLoad(aEvent) {
+		window.removeEventListener(aEvent.type, onDOMContentLoad, false);
 		if (SSWindowStateBusyListener) {
 			window.removeEventListener('SSWindowStateBusy', TSTSSWindowStateBusyListener, false);
 			SSWindowStateBusyListener = undefined;

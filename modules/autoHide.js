@@ -708,7 +708,7 @@ AutoHideBrowser.prototype = {
 	findPluginArea : function AHB_findPluginArea(aFrame)
 	{
 		return aFrame.document.querySelector('embed, object') ||
-				Array.some(aFrame.frames, arguments.callee);
+				Array.some(aFrame.frames, AHB_findPluginArea);
 	},
 	
 	show : function AHB_show(aReason) /* PUBLIC API */ 

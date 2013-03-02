@@ -2267,8 +2267,8 @@ TreeStyleTabBrowser.prototype = {
 		if (!aPopup)
 			return;
 		if (aPopup.state == 'open') {
-			aPopup.addEventListener('popuphidden', function(aEvent) {
-				aPopup.removeEventListener(aEvent.type, arguments.callee, false);
+			aPopup.addEventListener('popuphidden', function onPopuphidden(aEvent) {
+				aPopup.removeEventListener(aEvent.type, onPopuphidden, false);
 				aPopup.parentNode.removeChild(aPopup);
 			}, false);
 			aPopup.hidePopup();
@@ -3984,8 +3984,8 @@ TreeStyleTabBrowser.prototype = {
 
 		if (behavior & this.kUNDO_ASK) {
 			let self = this;
-			aRestoredTab.addEventListener('SSTabRestoring', function(aEvent) {
-				aRestoredTab.removeEventListener(aEvent.type, arguments.callee, false);
+			aRestoredTab.addEventListener('SSTabRestoring', function onSSTabRestoring(aEvent) {
+				aRestoredTab.removeEventListener(aEvent.type, onSSTabRestoring, false);
 				self.askUndoCloseTabSetBehavior(aRestoredTab, indexes.length)
 					.next(function(aBehavior) {
 						if (aBehavior & self.kUNDO_CLOSE_SET)
