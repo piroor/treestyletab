@@ -60,7 +60,7 @@ XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabBrowser', 'resource://trees
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 XPCOMUtils.defineLazyModuleGetter(this, 'AutoHideWindow', 'resource://treestyletab-modules/autoHide.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabThemeManager', 'resource://treestyletab-modules/themeManager.js');
-
+XPCOMUtils.defineLazyModuleGetter(this, 'BrowserUIShowHideObserver', 'resource://treestyletab-modules/browserUIShowHideObserver.js');
 
 function TreeStyleTabWindow(aWindow) 
 {
@@ -85,10 +85,6 @@ TreeStyleTabWindow.prototype = {
  
 	window : null, 
 	document : null,
-	get MutationObserver()
-	{
-		return this.window.MutationObserver || this.window.MozMutationObserver;
-	},
  
 /* API */ 
 	
@@ -164,6 +160,12 @@ TreeStyleTabWindow.prototype = {
 			w.gBrowser ;
 	},
  
+	get browserToolbox()
+	{
+		var w = this.window;
+		return w.gToolbox || w.gNavToolbox;
+	},
+ 
 	get browserBottomBox()
 	{
 		return this.document.getElementById('browser-bottombox');
@@ -219,8 +221,7 @@ TreeStyleTabWindow.prototype = {
  
 	get isToolbarCustomizing() 
 	{
-		var w = this.window;
-		var toolbox = w.gToolbox || w.gNavToolbox;
+		var toolbox = this.browserToolbox;
 		return toolbox && toolbox.customizing;
 	},
  
@@ -359,8 +360,7 @@ TreeStyleTabWindow.prototype = {
 		d.addEventListener(this.kEVENT_TYPE_TABBAR_STATE_CHANGED,        this, false);
 		d.addEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB,              this, false);
 
-		if (this.MutationObserver)
-			this.initBrowserBottomBoxObserver();
+		this.initUIShowHideObserver();
 
 		var appcontent = d.getElementById('appcontent');
 		appcontent.addEventListener('SubBrowserAdded', this, false);
@@ -458,29 +458,15 @@ TreeStyleTabWindow.prototype = {
 		}
 	},
  
-	initBrowserBottomBoxObserver : function TSTWindow_initBrowserBottomBoxObserver() 
+	initUIShowHideObserver : function TSTWindow_initUIShowHideObserver() 
 	{
-		var self = this;
-		this.browserBottomBoxObserver = new this.MutationObserver(function(aMutations, aObserver) {
-			self.handleMutations(aMutations, aObserver);
-		});
-		this.browserBottomBoxObserver.observe(this.browserBottomBox, { childList : true });
-		this.initBrowserBottomBoxChildListeners();
-	},
- 
-	initBrowserBottomBoxChildListeners : function TSTWindow_initBrowserBottomBoxChildListeners() 
-	{
-		Array.forEach(this.browserBottomBox.childNodes, function(aChild) {
-			var observer = aChild.__treestyletab__attributeObserver;
-			if (!observer) {
-				var self = this;
-				observer = new this.MutationObserver(function(aMutations, aObserver) {
-					self.handleMutations(aMutations, aObserver);
-				});
-				observer.observe(aChild, { attributes : true });
-				aChild.__treestyletab__attributeObserver = observer;
-			}
-		}, this)
+		var toolbox = this.browserToolbox;
+		if (toolbox)
+			this.browserToolboxObserver = new BrowserUIShowHideObserver(this, toolbox);
+
+		var bottomBox = this.browserBottomBox;
+		if (bottomBox)
+			this.browserBottomBoxObserver = new BrowserUIShowHideObserver(this, bottomBox);
 	},
   
 	destroy : function TSTWindow_destroy() 
@@ -511,9 +497,12 @@ TreeStyleTabWindow.prototype = {
 				d.removeEventListener(this.kEVENT_TYPE_TABBAR_STATE_CHANGED,        this, false);
 				d.removeEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB,              this, false);
 
+				if (this.browserToolboxObserver) {
+					this.browserToolboxObserver.destroy();
+					delete this.browserToolboxObserver;
+				}
 				if (this.browserBottomBoxObserver) {
-					this.destroyBrowserBottomBoxChildListeners();
-					this.browserBottomBoxObserver.disconnect();
+					this.browserBottomBoxObserver.destroy();
 					delete this.browserBottomBoxObserver;
 				}
 
@@ -549,17 +538,6 @@ TreeStyleTabWindow.prototype = {
 		if (aTabBrowser.localName != 'tabbrowser') return;
 		aTabBrowser.treeStyleTab.destroy();
 		delete aTabBrowser.treeStyleTab;
-	},
- 
-	destroyBrowserBottomBoxChildListeners : function TSTWindow_destroyBrowserBottomBoxChildListeners() 
-	{
-		Array.forEach(this.browserBottomBox.childNodes, function(aChild) {
-			var observer = aChild.__treestyletab__attributeObserver;
-			if (observer) {
-				observer.disconnect();
-				delete aChild.__treestyletab__attributeObserver;
-			}
-		}, this)
 	},
    
 /* Event Handling */ 
@@ -1224,25 +1202,6 @@ TreeStyleTabWindow.prototype = {
 			}
 		}
 		this._restoringTabs = [];
-	},
- 
-	handleMutations : function TSTWindow_handleMutations(aMutations, aObserver) 
-	{
-		aMutations.forEach(function(aMutation) {
-			switch (aMutation.type)
-			{
-				case 'childList':
-					this.destroyBrowserBottomBoxChildListeners();
-					this.initBrowserBottomBoxChildListeners();
-					break;
-
-				case 'attributes':
-					if (aMutation.attributeName == 'hidden' ||
-						aMutation.attributeName == 'collapsed')
-						this.browser.treeStyleTab.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
-					break;
-			}
-		}, this);
 	},
   
 /* Commands */ 
