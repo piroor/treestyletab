@@ -383,7 +383,7 @@
 									!isVertical;
 
 			context.tabSize = context.draggedTab.getBoundingClientRect()[context.size];
-			context.tabCenterOffset = context.tabSize / (context.options.canDropOnSelf ? 3 : 2 );
+			context.tabCenterOffset = context.tabSize * (context.options.canDropOnSelf ? 0.25 : 0.5 );
 
 
 			context.utils = this;
