@@ -278,6 +278,10 @@ catch(e) {
 
 		let draggedTab = aEvent.dataTransfer && aEvent.dataTransfer.mozGetDataAt(TAB_DROP_TYPE, 0);
 		if (draggedTab && draggedTab._dragData) {
+			// "draggedTab._dragData.animDropIndex" means the actual "_tPos"
+			// of the drop target, so we have to use the array of all
+			// (including hidden) tabs here.
+			let tabs = sv.getAllTabs(b);
 			let sameTypeUndraggedTabs = tabs.filter(function(aTab) { 
 					return !aTab._dragData && aTab.pinned == draggedTab.pinned;
 				});
