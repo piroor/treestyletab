@@ -959,7 +959,7 @@ try{
 			indicatorTab.setAttribute(sv.kDROP_POSITION, dropPosition);
 			if (b.ownerDocument.defaultView['piro.sakura.ne.jp'].tabsDragUtils
 					.canAnimateDraggedTabs(aEvent)) { // Firefox 17 and later
-				let newOpacity = dropPosition == 'self' ? 0.5 : '' ; // to prevent the dragged tab hides the drop target itself
+				let newOpacity = dropPosition == 'self' ? 0.35 : 0.75 ; // to prevent the dragged tab hides the drop target itself
 				this.window['piro.sakura.ne.jp'].tabsDragUtils.getDraggedTabs(aEvent).forEach(function(aTab) {
 					if (!('__treestyletab__opacityBeforeDragged' in aTab))
 						aTab.__treestyletab__opacityBeforeDragged = aTab.style.opacity || '';
