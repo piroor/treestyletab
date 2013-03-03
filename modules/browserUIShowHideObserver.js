@@ -87,14 +87,17 @@ BrowserUIShowHideObserver.prototype = {
 
 			var self = this;
 			observer = new this.MutationObserver(function(aMutations, aObserver) {
-				self.onAttributeModified(aMutations, aObserver);
+				self.onAttributeModified(aChild, aMutations, aObserver);
 			});
 			observer.observe(aChild, { attributes : true });
 			aChild.__treestyletab__attributeObserver = observer;
 		}, this)
 	},
-	onAttributeModified : function BrowserUIShowHideObserver_onAttributeModified(aMutations, aObserver) 
+	onAttributeModified : function BrowserUIShowHideObserver_onAttributeModified(aTargetElement, aMutations, aObserver) 
 	{
+		// ignore show/hide of the tab bar itself, to avoid infinity loop.
+		if (aTargetElement == this.owner.browser.treeStyleTab.ownerToolbar)
+			return;
 		aMutations.forEach(function(aMutation) {
 			if (aMutation.type != 'attributes')
 				return;
