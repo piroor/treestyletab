@@ -1079,7 +1079,7 @@ TreeStyleTabWindow.prototype = {
 			return;
 
 		var b = aTabBrowser || this.browser;
-		this.handleNewTabCommand(b.selectedTab, utils.getTreePref('autoAttach.newTabCommand'));
+		this.readyToOpenRelatedTabAs(b.selectedTab, utils.getTreePref('autoAttach.newTabCommand'));
 	},
  
 	handleNewTabActionOnButton : function TSTWindow_handleNewTabActionOnButton(aEvent) 
@@ -1090,7 +1090,7 @@ TreeStyleTabWindow.prototype = {
 
 		var newTabButton = this.getNewTabButtonFromEvent(aEvent);
 		if (newTabButton) {
-			this.handleNewTabCommand(this.browser.selectedTab, utils.getTreePref('autoAttach.newTabButton'));
+			this.readyToOpenRelatedTabAs(this.browser.selectedTab, utils.getTreePref('autoAttach.newTabButton'));
 			let self = this.windowService || this;
 			self._clickEventOnNewTabButtonHandled = true;
 			this.Deferred.next(function() {
@@ -1098,7 +1098,7 @@ TreeStyleTabWindow.prototype = {
 			});
 		}
 		else if (aEvent.target.id == 'urlbar-go-button' || aEvent.target.id == 'go-button') {
-			this.handleNewTabCommand(this.browser.selectedTab, utils.getTreePref('autoAttach.goButton'));
+			this.readyToOpenRelatedTabAs(this.browser.selectedTab, utils.getTreePref('autoAttach.goButton'));
 		}
 	},
 	_clickEventOnNewTabButtonHandled : false,
@@ -1113,7 +1113,7 @@ TreeStyleTabWindow.prototype = {
 							aDelta < 0 ? 'autoAttach.duplicateTabCommand.back' :
 										'autoAttach.duplicateTabCommand.forward'
 		var behavior = utils.getTreePref(behaviorPref);
-		this.handleNewTabCommand(aTab || b.selectedTab, behavior);
+		this.readyToOpenRelatedTabAs(aTab || b.selectedTab, behavior);
 	},
  
 	onBeforeOpenLink : function TSTWindow_onBeforeOpenLink(aWhere, aOwner) 

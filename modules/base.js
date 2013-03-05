@@ -1673,7 +1673,7 @@ var TreeStyleTabBase = {
 	kNEWTAB_OPEN_AS_CHILD        : 1,
 	kNEWTAB_OPEN_AS_SIBLING      : 2,
 	kNEWTAB_OPEN_AS_NEXT_SIBLING : 3,
-	handleNewTabCommand : function utils_handleNewTabCommand(aBaseTab, aBehavior) 
+	readyToOpenRelatedTabAs : function utils_readyToOpenRelatedTabAs(aBaseTab, aBehavior) 
 	{
 		var frame = this.getFrameFromTabBrowserElements(aBaseTab);
 		if (!frame)
@@ -1704,7 +1704,7 @@ var TreeStyleTabBase = {
  
 	handleNewTabFromCurrent : function utils_handleNewTabFromCurrent(aBaseTab) 
 	{
-		this.handleNewTabCommand(aBaseTab, utils.getTreePref('autoAttach.fromCurrent'));
+		this.readyToOpenRelatedTabAs(aBaseTab, utils.getTreePref('autoAttach.fromCurrent'));
 	},
   
 /* tree manipulations */ 
