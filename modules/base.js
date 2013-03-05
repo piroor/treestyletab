@@ -1675,6 +1675,12 @@ var TreeStyleTabBase = {
 	kNEWTAB_OPEN_AS_NEXT_SIBLING : 3,
 	handleNewTabCommand : function utils_handleNewTabCommand(aBaseTab, aBehavior) 
 	{
+		var frame = this.getFrameFromTabBrowserElements(aBaseTab);
+		if (!frame)
+			return;
+
+		aBaseTab = this.getTabFromFrame(frame, this.getTabBrowserFromFrame(frame));
+
 		switch (aBehavior)
 		{
 			case this.kNEWTAB_OPEN_AS_ORPHAN:
