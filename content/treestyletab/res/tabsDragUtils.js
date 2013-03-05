@@ -12,10 +12,10 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
  original:
-   http://github.com/piroor/fxaddonlibs/blob/master/tabsDragUtils.js
+   http://github.com/piroor/fxaddonlib-tabs-drag-utils
 */
 (function() {
-	const currentRevision = 25;
+	const currentRevision = 26;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
