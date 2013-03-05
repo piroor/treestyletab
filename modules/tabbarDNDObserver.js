@@ -321,18 +321,18 @@ catch(e) {
 								b.tabContainer._getDropIndex(aEvent) ;
 				if (DEBUG) dump('  on the tab '+index+'\n');
 				info.target = tab = tabs[Math.min(index, lastTabIndex)];
-				if (index == tab._tPos) {
+				if (index == tabs[lastTabIndex]._tPos) {
 					if (index > 0)
 						info.target = tab = tabs[index - 1];
 					info.position = sv.kDROP_AFTER;
 					if (DEBUG) dump('  => after the last tab\n');
 				} else if (index == firstTab._tPos) {
-					if (index < tabs.length-1)
+					if (index < lastTabIndex - 1)
 						info.target = tab = tabs[index + 1];
 					info.position = sv.kDROP_BEFORE;
 					if (DEBUG) dump('  => before the first tab\n');
 				}
-				if (DEBUG) dump('  info.target = '+info.target._tPos+'\n');
+				if (DEBUG) dump('  info.target = ' + info.target._tPos + '\n');
 			}
 		}
 		else {
