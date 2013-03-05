@@ -228,7 +228,7 @@ var TreeStyleTabBookmarksService = {
 		if (!('PlacesUIUtils' in window)) return;
 
 		if (!PlacesUIUtils.__treestyletab__done) {
-			var ns = Components.utils.import('resource://gre/modules/PlacesUIUtils.jsm', {});
+			var ns = Components.utils.import('resource:///modules/PlacesUIUtils.jsm', {});
 			var sv = this;
 			with (ns) {
 
