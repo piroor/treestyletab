@@ -908,7 +908,7 @@ try{
 				isVertical : (
 					b.ownerDocument.defaultView['piro.sakura.ne.jp'].tabsDragUtils.isVertical(b.tabContainer) &&
 					(
-						!draggedTab.pinned ||
+						(draggedTab && !draggedTab.pinned) ||
 						!utils.getTreePref('pinnedTab.faviconized')
 					)
 				)
