@@ -518,6 +518,11 @@ pref("extensions.treestyletab.autoAttach.duplicateTabCommand.forward", 1);
  *  Options are same to extensions.treestyletab.autoAttach.newTabCommand.
  */
 pref("extensions.treestyletab.autoAttach.goButton", 1);
+/**
+ * How to treat new tabs from the current tab (links, frames, media, etc.).
+ *  Options are same to extensions.treestyletab.autoAttach.newTabCommand.
+ */
+pref("extensions.treestyletab.autoAttach.fromCurrent", 1);
 
 /**
  * Focus targets for Ctrl-Tab/Ctrl-Shift-Tab.

@@ -155,14 +155,14 @@ var TreeStyleTabWindowHelper = {
 			nsContextMenu.prototype.openLinkInTab.toSource().replace(
 				'{',
 				'{\n' +
-				'  TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);'
+				'  TreeStyleTabService.handleNewTabFromCurrent(this.target.ownerDocument.defaultView);'
 			)
 		);
 		eval('nsContextMenu.prototype.openFrameInTab = '+
 			nsContextMenu.prototype.openFrameInTab.toSource().replace(
 				'{',
 				'{\n' +
-				'  TreeStyleTabService.readyToOpenChildTab(this.target.ownerDocument.defaultView);'
+				'  TreeStyleTabService.handleNewTabFromCurrent(this.target.ownerDocument.defaultView);'
 			)
 		);
 		var viewImageMethod = ('viewImage' in nsContextMenu.prototype) ? 'viewImage' : 'viewMedia' ;

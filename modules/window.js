@@ -1100,6 +1100,11 @@ TreeStyleTabWindow.prototype = {
 		}
 	},
  
+	handleNewTabFromCurrent : function TSTWindow_handleNewTabFromCurrent(aBaseTab) 
+	{
+		this._handleNewTabCommand(aBaseTab, utils.getTreePref('autoAttach.fromCurrent'));
+	},
+ 
 	onBeforeNewTabCommand : function TSTWindow_onBeforeNewTabCommand(aTabBrowser) 
 	{
 		var self = this.windowService || this;
@@ -1147,39 +1152,39 @@ TreeStyleTabWindow.prototype = {
 	onBeforeOpenLink : function TSTWindow_onBeforeOpenLink(aWhere, aOwner) 
 	{
 		if (aWhere == 'tab' || aWhere == 'tabshifted')
-			this.readyToOpenChildTab(aOwner);
+			this.handleNewTabFromCurrent(aOwner);
 	},
  
 	onBeforeOpenLinkWithParams : function TSTWindow_onBeforeOpenLinkWithParams(aParams) 
 	{
 		if (aParams.linkNode &&
 			!this.checkToOpenChildTab(aParams.linkNode.ownerDocument.defaultView))
-			this.readyToOpenChildTab(aParams.linkNode.ownerDocument.defaultView);
+			this.handleNewTabFromCurrent(aParams.linkNode.ownerDocument.defaultView);
 	},
  
 	onBeforeOpenNewTabByThirdParty : function TSTWindow_onBeforeOpenNewTabByThirdParty(aOwner) 
 	{
 		if (!this.checkToOpenChildTab(aOwner))
-			this.readyToOpenChildTab(aOwner);
+			this.handleNewTabFromCurrent(aOwner);
 	},
  
 	onBeforeBrowserAccessOpenURI : function TSTWindow_onBeforeBrowserAccessOpenURI(aOpener, aWhere) 
 	{
 		if (aOpener && aWhere == Ci.nsIBrowserDOMWindow.OPEN_NEWTAB)
-			this.readyToOpenChildTab(aOpener);
+			this.handleNewTabFromCurrent(aOpener);
 	},
  
 	onBeforeViewMedia : function TSTWindow_onBeforeViewMedia(aEvent, aOwner) 
 	{
 		if (String(this.window.whereToOpenLink(aEvent, false, true)).indexOf('tab') == 0)
-			this.readyToOpenChildTab(aOwner);
+			this.handleNewTabFromCurrent(aOwner);
 	},
  
 	onBeforeBrowserSearch : function TSTWindow_onBeforeBrowserSearch(aTerm, aForceNewTab) 
 	{
 		if ((arguments.length == 1 || aForceNewTab) &&
 			this.shouldOpenSearchResultAsChild(aTerm))
-			this.readyToOpenChildTab();
+			this.handleNewTabFromCurrent();
 	},
   
 /* Tree Style Tabの初期化が行われる前に復元されたセッションについてツリー構造を復元 */ 
