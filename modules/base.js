@@ -1667,6 +1667,39 @@ var TreeStyleTabBase = {
 		var ownerBrowser = this.getTabBrowserFromFrame(frame);
 		return !!(ownerBrowser.treeStyleTab.readiedToAttachNewTab || ownerBrowser.treeStyleTab.readiedToAttachNewTabGroup);
 	},
+ 
+	kNEWTAB_DO_NOTHING           : -1,
+	kNEWTAB_OPEN_AS_ORPHAN       : 0,
+	kNEWTAB_OPEN_AS_CHILD        : 1,
+	kNEWTAB_OPEN_AS_SIBLING      : 2,
+	kNEWTAB_OPEN_AS_NEXT_SIBLING : 3,
+	handleNewTabCommand : function utils_handleNewTabCommand(aBaseTab, aBehavior) 
+	{
+		switch (aBehavior)
+		{
+			case this.kNEWTAB_OPEN_AS_ORPHAN:
+			case this.kNEWTAB_DO_NOTHING:
+			default:
+				break;
+			case this.kNEWTAB_OPEN_AS_CHILD:
+				this.readyToOpenChildTabNow(aBaseTab);
+				break;
+			case this.kNEWTAB_OPEN_AS_SIBLING:
+				let (parentTab = this.getParentTab(aBaseTab)) {
+					if (parentTab)
+						this.readyToOpenChildTabNow(parentTab);
+				}
+				break;
+			case this.kNEWTAB_OPEN_AS_NEXT_SIBLING:
+				this.readyToOpenNextSiblingTabNow(aBaseTab);
+				break;
+		}
+	},
+ 
+	handleNewTabFromCurrent : function utils_handleNewTabFromCurrent(aBaseTab) 
+	{
+		this.handleNewTabCommand(aBaseTab, utils.getTreePref('autoAttach.fromCurrent'));
+	},
   
 /* tree manipulations */ 
 	

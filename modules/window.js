@@ -1072,39 +1072,6 @@ TreeStyleTabWindow.prototype = {
 		return this._shownPopups.length > 0;
 	},
  
-	kNEWTAB_DO_NOTHING           : -1,
-	kNEWTAB_OPEN_AS_ORPHAN       : 0,
-	kNEWTAB_OPEN_AS_CHILD        : 1,
-	kNEWTAB_OPEN_AS_SIBLING      : 2,
-	kNEWTAB_OPEN_AS_NEXT_SIBLING : 3,
-	_handleNewTabCommand : function TSTWindow_handleNewTabCommand(aBaseTab, aBehavior) 
-	{
-		switch (aBehavior)
-		{
-			case this.kNEWTAB_OPEN_AS_ORPHAN:
-			case this.kNEWTAB_DO_NOTHING:
-			default:
-				break;
-			case this.kNEWTAB_OPEN_AS_CHILD:
-				this.readyToOpenChildTabNow(aBaseTab);
-				break;
-			case this.kNEWTAB_OPEN_AS_SIBLING:
-				let (parentTab = this.getParentTab(aBaseTab)) {
-					if (parentTab)
-						this.readyToOpenChildTabNow(parentTab);
-				}
-				break;
-			case this.kNEWTAB_OPEN_AS_NEXT_SIBLING:
-				this.readyToOpenNextSiblingTabNow(aBaseTab);
-				break;
-		}
-	},
- 
-	handleNewTabFromCurrent : function TSTWindow_handleNewTabFromCurrent(aBaseTab) 
-	{
-		this._handleNewTabCommand(aBaseTab, utils.getTreePref('autoAttach.fromCurrent'));
-	},
- 
 	onBeforeNewTabCommand : function TSTWindow_onBeforeNewTabCommand(aTabBrowser) 
 	{
 		var self = this.windowService || this;
@@ -1112,7 +1079,7 @@ TreeStyleTabWindow.prototype = {
 			return;
 
 		var b = aTabBrowser || this.browser;
-		this._handleNewTabCommand(b.selectedTab, utils.getTreePref('autoAttach.newTabCommand'));
+		this.handleNewTabCommand(b.selectedTab, utils.getTreePref('autoAttach.newTabCommand'));
 	},
  
 	handleNewTabActionOnButton : function TSTWindow_handleNewTabActionOnButton(aEvent) 
@@ -1123,7 +1090,7 @@ TreeStyleTabWindow.prototype = {
 
 		var newTabButton = this.getNewTabButtonFromEvent(aEvent);
 		if (newTabButton) {
-			this._handleNewTabCommand(this.browser.selectedTab, utils.getTreePref('autoAttach.newTabButton'));
+			this.handleNewTabCommand(this.browser.selectedTab, utils.getTreePref('autoAttach.newTabButton'));
 			let self = this.windowService || this;
 			self._clickEventOnNewTabButtonHandled = true;
 			this.Deferred.next(function() {
@@ -1131,7 +1098,7 @@ TreeStyleTabWindow.prototype = {
 			});
 		}
 		else if (aEvent.target.id == 'urlbar-go-button' || aEvent.target.id == 'go-button') {
-			this._handleNewTabCommand(this.browser.selectedTab, utils.getTreePref('autoAttach.goButton'));
+			this.handleNewTabCommand(this.browser.selectedTab, utils.getTreePref('autoAttach.goButton'));
 		}
 	},
 	_clickEventOnNewTabButtonHandled : false,
@@ -1146,7 +1113,7 @@ TreeStyleTabWindow.prototype = {
 							aDelta < 0 ? 'autoAttach.duplicateTabCommand.back' :
 										'autoAttach.duplicateTabCommand.forward'
 		var behavior = utils.getTreePref(behaviorPref);
-		this._handleNewTabCommand(aTab || b.selectedTab, behavior);
+		this.handleNewTabCommand(aTab || b.selectedTab, behavior);
 	},
  
 	onBeforeOpenLink : function TSTWindow_onBeforeOpenLink(aWhere, aOwner) 
