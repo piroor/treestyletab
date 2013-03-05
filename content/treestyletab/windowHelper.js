@@ -9,14 +9,28 @@ var TreeStyleTabWindowHelper = {
 	{
 		var source;
 		var target;
-		if ('gBrowserInit' in window && 'onLoad' in gBrowserInit) { // Firefox 16 and later (after https://bugzilla.mozilla.org/show_bug.cgi?id=731926 )
-			source = gBrowserInit.onLoad.toSource();
-			target = 'gBrowserInit.onLoad';
+		if ('gBrowserInit' in window) {
+			if (
+				'_delayedStartup' in gBrowserInit &&
+				(source = gBrowserInit._delayedStartup.toSource()) &&
+				source.indexOf('swapBrowsersAndCloseOther') > -1
+				) {
+				target = 'gBrowserInit._delayedStartup';
+			}
+			else if ( // legacy code for Firefox 18 and olders
+				'onLoad' in gBrowserInit &&
+				(source = gBrowserInit.onLoad.toSource()) &&
+				source.indexOf('swapBrowsersAndCloseOther') > -1
+				) {
+				target = 'gBrowserInit.onLoad';
+			}
 		}
-		else if ('BrowserStartup' in window) { // legacy code for Firefox 15 and older
+		else if ('BrowserStartup' in window) { // legacy code for Firefox 15 and olders
 			source = window.BrowserStartup.toSource();
 			target = 'BrowserStartup';
 		}
+		if (!target)
+			dump('Tree Style Tab: failed to initialize startup function!');
 		if (source.indexOf('!MultipleTabService.tearOffSelectedTabsFromRemote()') > -1) {
 			eval(target+' = '+source.replace(
 				'!MultipleTabService.tearOffSelectedTabsFromRemote()',
