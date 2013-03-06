@@ -15,10 +15,8 @@
      window['piro.sakura.ne.jp'].bookmarkMultipleTabs.addBookmarkFor(tabsArray, folderName);
 
  license: The MIT License, Copyright (c) 2009-2012 YUKI "Piro" Hiroshi
-   http://github.com/piroor/fxaddonlibs/blob/master/license.txt
  original:
-   http://github.com/piroor/fxaddonlibs/blob/master/bookmarkMultipleTabs.xul
-   http://github.com/piroor/fxaddonlibs/blob/master/bookmarkMultipleTabs_bookmarkPropertiesOverlay.xul
+   http://github.com/piroor/fxaddonlib-bookmark-multiple-tabs
 -->
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 <script type="application/javascript"><![CDATA[
