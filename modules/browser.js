@@ -729,7 +729,7 @@ TreeStyleTabBrowser.prototype = {
 		Services.obs.addObserver(this, this.kTOPIC_INDENT_MODIFIED, false);
 		Services.obs.addObserver(this, this.kTOPIC_COLLAPSE_EXPAND_ALL, false);
 		Services.obs.addObserver(this, this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY, false);
-		Services.obs.addObserver(this, 'private-browsing-change-granted', false);
+		Services.obs.addObserver(this, 'private-browsing-change-granted', false); // only for Firefox 19 and olders
 		Services.obs.addObserver(this, 'lightweight-theme-styling-update', false);
 		prefs.addPrefListener(this);
 
@@ -2060,7 +2060,7 @@ TreeStyleTabBrowser.prototype = {
 		Services.obs.removeObserver(this, this.kTOPIC_INDENT_MODIFIED);
 		Services.obs.removeObserver(this, this.kTOPIC_COLLAPSE_EXPAND_ALL);
 		Services.obs.removeObserver(this, this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY);
-		Services.obs.removeObserver(this, 'private-browsing-change-granted');
+		Services.obs.removeObserver(this, 'private-browsing-change-granted'); // only for Firefox 19 and olders
 		Services.obs.removeObserver(this, 'lightweight-theme-styling-update');
 		prefs.removePrefListener(this);
 
@@ -2307,7 +2307,7 @@ TreeStyleTabBrowser.prototype = {
 				}
 				return;
 
-			case 'private-browsing-change-granted':
+			case 'private-browsing-change-granted': // only for Firefox 19 and olders
 				this.collapseExpandAllSubtree(false, true);
 				this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_PRIVATE_BROWSING);
 				return;
