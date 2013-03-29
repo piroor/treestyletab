@@ -1,5 +1,17 @@
 # History
 
+ - master/HEAD
+   * Improved: Add a new secret option "extensions.treestyletab.autoAttach.fromCurrent" to control new tab position from the current tab.
+   * Fixed: Move tab by moveTabForward/moveTabBackward on Firefox 20 correctly.
+   * Fixed: Don't set margin to indicate grouped tabs for parent tabs next to hidden tabs.
+   * Fixed: Don't insert needless margins between collapsed tabs. Negative margins for collapsed tabs were unexpectedly inverted for tabs which have its "cannot be collapsed" parent tab. However, such tabs still can be collapsed if its root parent tab can be collapse its sub tree.
+   * Fixed: Observe changes of UI shown/hidden not only the browser bottom box but also the toolbox
+   * Fixed: Restore the original user preference when this addon is disabled or removed. (by saneyuki_s)
+   * Fixed: Move dragged tab to the correct position, even if there are hidden tabs.
+   * Fixed: Move all tabs in the dragged tree to a newly opened window correctly on Firefox 19 and later.
+   * Modified: Make dragging tabs transparently always, to see the drop position marker.
+   * Modified: Expand the drop area to drop dragged tabs to a tab itself. By this change, you can drop a tab to another more easily.
+   * Modified: "jar" archive is no longer included.
  - 0.14.2012122901
    * Works on Nightly 20.0a1 again. (Updated for new MutationObserver spec.)
    * Fixed: Never raise error messages for dragging of non-tab objects onto the tab bar.
