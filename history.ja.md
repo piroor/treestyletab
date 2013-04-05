@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 0.14.2013040601
    * 現在のタブから開かれる子タブの位置を制御する隠し設定「extensions.treestyletab.autoAttach.fromCurrent」を追加
    * Firefox 20でmoveTabForward/moveTabBackwardでのタブの移動が正しく動作しなくなっていたのを修正
    * 他のグループのタブがある時に、変な位置でタブの間にマージンが適用されてしまう問題を修正

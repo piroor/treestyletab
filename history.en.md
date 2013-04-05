@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 0.14.2013040601
    * Improved: Add a new secret option "extensions.treestyletab.autoAttach.fromCurrent" to control new tab position from the current tab.
    * Fixed: Move tab by moveTabForward/moveTabBackward on Firefox 20 correctly.
    * Fixed: Don't set margin to indicate grouped tabs for parent tabs next to hidden tabs.
