@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Fixed: Update the tab bar correctly when contents in the browser bottom bar or the toolbar are modified. (Regression on 0.14.2013040601)
  - 0.14.2013040601
    * Improved: Add a new secret option "extensions.treestyletab.autoAttach.fromCurrent" to control new tab position from the current tab.
    * Fixed: Move tab by moveTabForward/moveTabBackward on Firefox 20 correctly.

@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+   * アドオンバーやツールバー等の表示・非表示が切り替わった際にタブバーの表示が更新されなくなっていたのを修正（0.14.2013040601での後退バグ）
  - 0.14.2013040601
    * 現在のタブから開かれる子タブの位置を制御する隠し設定「extensions.treestyletab.autoAttach.fromCurrent」を追加
    * Firefox 20でmoveTabForward/moveTabBackwardでのタブの移動が正しく動作しなくなっていたのを修正

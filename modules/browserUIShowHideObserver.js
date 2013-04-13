@@ -51,6 +51,7 @@ BrowserUIShowHideObserver.prototype = {
 	{
 		if (!this.MutationObserver)
 			return;
+		var self = this;
 		this.observer = new this.MutationObserver(function(aMutations, aObserver) {
 			self.onChildListModified(aMutations, aObserver);
 		});
