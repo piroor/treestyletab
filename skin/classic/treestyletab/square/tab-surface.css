@@ -19,6 +19,7 @@
 	                    rgba(0, 0, 0, 0.02) 0,
 	                    rgba(0, 0, 0, 0) 50%
 	                  ) !important;
+	display: none;
 }
 
 
