@@ -491,18 +491,30 @@ toolbar.treestyletab-tabbar-toolbar-ready:not([nowindowdrag="true"]),
 /* separating of groups */
 
 /* horizontal tab bar */
-.tabbrowser-tabs[treestyletab-mode="horizontal"]
-  .tabbrowser-tab:not([treestyletab-nest="0"]):not([hidden="true"]) + .tabbrowser-tab[treestyletab-nest="0"],
-.tabbrowser-tabs[treestyletab-mode="horizontal"]
-  .tabbrowser-tab[treestyletab-nest="0"]:not([hidden="true"]) + .tabbrowser-tab[treestyletab-nest="0"][treestyletab-children] {
+.tabbrowser-tabs[treestyletab-mode="horizontal"] .tabbrowser-tab:not([treestyletab-nest="0"]):not([hidden])
+  + .tabbrowser-tab[treestyletab-nest="0"],
+.tabbrowser-tabs[treestyletab-mode="horizontal"] .tabbrowser-tab:not([treestyletab-nest="0"]):not([hidden])
+  ~ .tabbrowser-tab[hidden]
+  + .tabbrowser-tab[treestyletab-nest="0"],
+.tabbrowser-tabs[treestyletab-mode="horizontal"] .tabbrowser-tab[treestyletab-nest="0"]:not([hidden])
+  + .tabbrowser-tab[treestyletab-nest="0"][treestyletab-children],
+.tabbrowser-tabs[treestyletab-mode="horizontal"] .tabbrowser-tab[treestyletab-nest="0"]:not([hidden])
+  ~ .tabbrowser-tab[hidden]
+  + .tabbrowser-tab[treestyletab-nest="0"][treestyletab-children] {
 	margin-left: 0.8em !important;
 }
 
 /* vertical tab bar */
-.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-max-tree-level="0"]
-  .tabbrowser-tab:not([treestyletab-nest="0"]):not([hidden="true"]) + .tabbrowser-tab[treestyletab-nest="0"],
-.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-max-tree-level="0"]
-  .tabbrowser-tab[treestyletab-nest="0"]:not([hidden="true"]) + .tabbrowser-tab[treestyletab-nest="0"][treestyletab-children] {
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-max-tree-level="0"] .tabbrowser-tab:not([treestyletab-nest="0"]):not([hidden])
+  + .tabbrowser-tab[treestyletab-nest="0"],
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-max-tree-level="0"] .tabbrowser-tab:not([treestyletab-nest="0"]):not([hidden])
+  ~ .tabbrowser-tab[hidden]
+  + .tabbrowser-tab[treestyletab-nest="0"],
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-max-tree-level="0"] .tabbrowser-tab[treestyletab-nest="0"]:not([hidden])
+  + .tabbrowser-tab[treestyletab-nest="0"][treestyletab-children],
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-max-tree-level="0"] .tabbrowser-tab[treestyletab-nest="0"]:not([hidden])
+  ~ .tabbrowser-tab[hidden]
+  + .tabbrowser-tab[treestyletab-nest="0"][treestyletab-children] {
 	margin-top: 0.8em !important;
 }
 
@@ -511,7 +523,7 @@ toolbar.treestyletab-tabbar-toolbar-ready:not([nowindowdrag="true"]),
 /* compatibility for Firefox features */
 
 /* hide all tabs button (by user's preference) */
-.tabbrowser-tabs[treestyletab-hide-alltabs-button="true"]
+.tabbrowser-tabs[treestyletab-hide-alltabs-button]
   .tabs-alltabs-stack {
 	visibility: collapse !important;
 }
@@ -522,7 +534,7 @@ toolbar.treestyletab-tabbar-toolbar-ready:not([nowindowdrag="true"]),
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"] {
+  .tabbrowser-tab[pinned] {
 	/* height: 24px; */
 	line-height: 0;
 	position: fixed !important;
@@ -531,7 +543,7 @@ toolbar.treestyletab-tabbar-toolbar-ready:not([nowindowdrag="true"]),
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned="true"]:not(.treestyletab-faviconized)
+  .tabbrowser-tab[pinned]:not(.treestyletab-faviconized)
   .tab-label[pinned] {
 	width: auto;
 }
