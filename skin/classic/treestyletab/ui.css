@@ -320,6 +320,7 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
 	-moz-box-align: center;
 	box-pack: center;
 	-moz-box-pack: center;
+	min-height: 0;
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
@@ -328,6 +329,7 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
 	-moz-box-align: stretch;
 	box-pack: justify;
 	-moz-box-pack: justify;
+	min-height: 0;
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
