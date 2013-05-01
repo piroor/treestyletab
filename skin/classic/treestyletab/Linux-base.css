@@ -27,3 +27,12 @@
   #navigator-toolbox:not([tabsontop="true"]) {
 	border-bottom: 1px solid ThreeDShadow;
 }
+
+
+/* pinned tabs on "Default" skin */
+
+.tabbrowser-tabs[treestyletab-mode="vertical"]:not([treestyletab-style])
+  .tab-content[pinned="true"] {
+	padding: 0;
+}
+

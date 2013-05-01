@@ -299,7 +299,48 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned="true"] {
 	height: 24px;
+	margin: 0;
 	max-height: 24px;
+	max-width: 24px;
+	padding: 0;
+	width: 24px;
+}
+
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned="true"] .tab-stack {
+	height: 100%;
+	width: 100%;
+}
+
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned="true"] .tab-stack,
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tab-content[pinned="true"] {
+	box-align: center;
+	-moz-box-align: center;
+	box-pack: center;
+	-moz-box-pack: center;
+}
+
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tab-background[pinned="true"] {
+	box-align: stretch;
+	-moz-box-align: stretch;
+	box-pack: justify;
+	-moz-box-pack: justify;
+}
+
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tab-content[pinned="true"] {
+	padding: 0 4px;
+}
+
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tab-content[pinned="true"] > image {
+	height: 16px;
+	margin: 0;
+	padding: 0;
+	width: 16px;
 }
 
 /* disable highlighting of pinned tabs whici is not faviconized */
