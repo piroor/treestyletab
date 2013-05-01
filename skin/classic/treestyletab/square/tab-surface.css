@@ -59,3 +59,10 @@
 	                  ) !important;
 }
 
+
+/* pinned  tabs */
+
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned]:not([treestyletab-drop-position]) {
+  -moz-border-right-colors: ThreeDShadow transparent !important;
+}
