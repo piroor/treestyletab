@@ -2932,31 +2932,29 @@ TreeStyleTabBrowser.prototype = {
 			this._closeChildTabs(tab);
 
 		var toBeClosedSibling = this._reserveCloseNeedlessGroupTabSibling(tab);
-
-		var firstChild     = this.getFirstChildTab(tab);
-		var parentTab      = this.getParentTab(tab);
 		var nextFocusedTab = null;
 
 		this._saveAndUpdateReferenceTabsInfo(tab);
 
-		var indentModifiedTabs = [];
-
+		var firstChild = this.getFirstChildTab(tab);
 		if (firstChild) {
 			let children = this.getChildTabs(tab);
-			indentModifiedTabs = indentModifiedTabs.concat(
-					closeParentBehavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD ?
-						[children[0]] :
-						children
-				);
 			this.detachAllChildren(tab, {
 				behavior         : closeParentBehavior,
 				dontUpdateIndent : true
 			});
+
+			if (closeParentBehavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD)
+				this.updateTabsIndentWithDelay(children.slice(0, 1));
+			else
+				this.updateTabsIndentWithDelay(children);
+
 			if (closeParentBehavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN ||
 				closeParentBehavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD)
 				nextFocusedTab = firstChild;
 		}
 
+		var parentTab = this.getParentTab(tab);
 		if (parentTab) {
 			let firstSibling = this.getFirstChildTab(parentTab);
 			let lastSibling  = this.getLastChildTab(parentTab);
@@ -2995,8 +2993,6 @@ TreeStyleTabBrowser.prototype = {
 			nextFocusedTab = this.getNextFocusedTab(tab);
 		}
 
-		if (indentModifiedTabs.length)
-			this.updateTabsIndentWithDelay(indentModifiedTabs);
 		this.checkTabsIndentOverflow();
 
 		this._restoreTabAttributes(tab, backupAttributes);
