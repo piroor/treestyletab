@@ -2937,7 +2937,6 @@ TreeStyleTabBrowser.prototype = {
 		var firstChild = this.getFirstChildTab(tab);
 		if (firstChild) {
 			let children = this.getChildTabs(tab);
-
 			if (closeParentBehavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD)
 				this.updateTabsIndentWithDelay(children.slice(0, 1));
 			else
@@ -2962,7 +2961,7 @@ TreeStyleTabBrowser.prototype = {
 					nextFocusedTab = this.getPreviousSiblingTab(tab);
 			}
 
-			let toBeClosedParent = this._reserveCloseNeedlessGroupTabParent(parentTab);
+			let toBeClosedParent = this._reserveCloseNeedlessGroupTabParent(tab);
 			if (toBeClosedParent && nextFocusedTab == toBeClosedParent)
 				nextFocusedTab = this.getNextFocusedTab(parentTab);
 		}
@@ -3070,22 +3069,30 @@ TreeStyleTabBrowser.prototype = {
 		return null;
 	},
  
-	_reserveCloseNeedlessGroupTabParent : function TSTBrowser_reserveCloseNeedlessGroupTabParent(aParentTab) 
+	_reserveCloseNeedlessGroupTabParent : function TSTBrowser_reserveCloseNeedlessGroupTabParent(aTab) 
 	{
+		if (!aTab)
+			return null;
+
+		var parentTab = this.getParentTab(aTab);
+		if (!parentTab)
+			return null;
+
 		var shouldCloseParentTab = (
-				this.isGroupTab(aParentTab) &&
-				this.getDescendantTabs(aParentTab).length == 1
+				this.isGroupTab(parentTab) &&
+				this.getDescendantTabs(parentTab).length == 1
 			);
 		if (shouldCloseParentTab) {
 			let key = 'onTabClose_'+parseInt(Math.random() * 65000);
 			let self = this;
 			(this.deferredTasks[key] = this.Deferred.next(function() {
-				if (aParentTab.parentNode)
-					self.mTabBrowser.removeTab(aParentTab, { animate : true });
-				aParentTab = null;
+				if (parentTab.parentNode)
+					self.mTabBrowser.removeTab(parentTab, { animate : true });
 			})).error(this.defaultDeferredErrorHandler).next(function() {
 				delete self.deferredTasks[key];
 			}).next(function() {
+				parentTab = null;
+				aTab = null;
 				self = null;
 				key = null;
 			});
