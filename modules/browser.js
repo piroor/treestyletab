@@ -2929,18 +2929,14 @@ TreeStyleTabBrowser.prototype = {
 			this.isSubtreeCollapsed(tab))
 			this._closeChildTabs(tab);
 
+		this._saveAndUpdateReferenceTabsInfo(tab);
+
 		var toBeClosedSibling = this._reserveCloseNeedlessGroupTabSibling(tab);
 		var nextFocusedTab = null;
-
-		this._saveAndUpdateReferenceTabsInfo(tab);
 
 		var firstChild = this.getFirstChildTab(tab);
 		if (firstChild) {
 			let children = this.getChildTabs(tab);
-			this.detachAllChildren(tab, {
-				behavior         : closeParentBehavior,
-				dontUpdateIndent : true
-			});
 
 			if (closeParentBehavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD)
 				this.updateTabsIndentWithDelay(children.slice(0, 1));
@@ -2951,6 +2947,11 @@ TreeStyleTabBrowser.prototype = {
 				closeParentBehavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD)
 				nextFocusedTab = firstChild;
 		}
+
+		this.detachAllChildren(tab, {
+			behavior         : closeParentBehavior,
+			dontUpdateIndent : true
+		});
 
 		var parentTab = this.getParentTab(tab);
 		if (parentTab) {
@@ -2964,8 +2965,6 @@ TreeStyleTabBrowser.prototype = {
 			let toBeClosedParent = this._reserveCloseNeedlessGroupTabParent(parentTab);
 			if (toBeClosedParent && nextFocusedTab == toBeClosedParent)
 				nextFocusedTab = this.getNextFocusedTab(parentTab);
-
-			this.detachTab(tab, { dontUpdateIndent : true });
 		}
 		else if (!nextFocusedTab) {
 			nextFocusedTab = this.getNextFocusedTab(tab);
@@ -2973,6 +2972,8 @@ TreeStyleTabBrowser.prototype = {
 
 		if (toBeClosedSibling && nextFocusedTab == toBeClosedSibling)
 			nextFocusedTab = this.getFirstChildTab(nextFocusedTab);
+
+		this.detachTab(tab, { dontUpdateIndent : true });
 
 		this.checkTabsIndentOverflow();
 
@@ -5035,7 +5036,12 @@ TreeStyleTabBrowser.prototype = {
 	
 	detachAllChildren : function TSTBrowser_detachAllChildren(aTab, aInfo) 
 	{
-		if (!aTab.parentNode) return; // do nothing for closed tab!
+		if (!aTab.parentNode) // do nothing for closed tab!
+			return;
+
+		var children = this.getChildTabs(aTab);
+		if (!children.length)
+			return;
 
 		aInfo = aInfo || {};
 		if (!('behavior' in aInfo))
@@ -5045,7 +5051,6 @@ TreeStyleTabBrowser.prototype = {
 
 		var b = this.mTabBrowser;
 		var parentTab = this.getParentTab(aTab);
-		var children = this.getChildTabs(aTab);
 
 		if (
 			this.isGroupTab(aTab) &&
