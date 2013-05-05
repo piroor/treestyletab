@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * Fixed: Pinned tabs are shown with more stylized appearance.
+   * Fixed: Don't set margin to indicate grouped tabs for parent tabs next to hidden tabs in more cases. (by Drugoy. Thanks!)
    * Fixed: Update the tab bar correctly when contents in the browser bottom bar or the toolbar are modified. (Regression on 0.14.2013040601)
  - 0.14.2013040601
    * Improved: Add a new secret option "extensions.treestyletab.autoAttach.fromCurrent" to control new tab position from the current tab.
