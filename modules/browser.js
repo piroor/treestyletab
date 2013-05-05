@@ -2923,62 +2923,21 @@ TreeStyleTabBrowser.prototype = {
 		if (collapsed)
 			this.stopRendering();
 
-		var backupAttributes = {};
-		if (this.hasChildTabs(tab)) {
-			backupAttributes[this.kCHILDREN] = this.getTabValue(tab, this.kCHILDREN);
-			backupAttributes[this.kSUBTREE_COLLAPSED] = this.getTabValue(tab, this.kSUBTREE_COLLAPSED);
-		}
+		var backupAttributes = this._collectBackupAttributes(tab);
 
-		var subtreeCollapsed = this.isSubtreeCollapsed(tab);
 		if (
 			closeParentBehavior == this.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN ||
-			subtreeCollapsed
-			) {
-			let tabs = this.getDescendantTabs(tab);
-			if (this.fireTabSubtreeClosingEvent(tab, tabs)) {
-				if (subtreeCollapsed)
-					this.stopRendering();
+			this.isSubtreeCollapsed(tab)
+			)
+			this._closeChildTabs(tab);
 
-				this.markAsClosedSet([tab].concat(tabs));
-
-				tabs.reverse();
-				for (let i = 0, maxi = tabs.length; i < maxi; i++)
-				{
-					b.removeTab(tabs[i], { animate : true });
-				}
-
-				this.fireTabSubtreeClosedEvent(b, tab, tabs);
-
-				if (subtreeCollapsed)
-					this.startRendering();
-			}
-		}
-
-		var toBeClosedSibling = !this.hasChildTabs(tab) ?
-								this._reserveCloseNeedlessGroupTabSibling(tab) : null ;
+		var toBeClosedSibling = this._reserveCloseNeedlessGroupTabSibling(tab);
 
 		var firstChild     = this.getFirstChildTab(tab);
 		var parentTab      = this.getParentTab(tab);
 		var nextFocusedTab = null;
 
-		var prev = this.getPreviousSiblingTab(tab);
-		var next = this.getNextSiblingTab(tab);
-		if (prev) {
-			this.setTabValue(tab, this.kINSERT_AFTER, prev.getAttribute(this.kID));
-
-			if (next)
-				this.setTabValue(prev, this.kINSERT_BEFORE, next.getAttribute(this.kID));
-			else
-				this.deleteTabValue(prev, this.kINSERT_BEFORE);
-		}
-		if (next) {
-			this.setTabValue(tab, this.kINSERT_BEFORE, next.getAttribute(this.kID));
-
-			if (prev)
-				this.setTabValue(next, this.kINSERT_AFTER, prev.getAttribute(this.kID));
-			else
-				this.deleteTabValue(next, this.kINSERT_AFTER);
-		}
+		this._saveAndUpdateReferenceTabsInfo(tab);
 
 		var indentModifiedTabs = [];
 
@@ -3010,14 +2969,6 @@ TreeStyleTabBrowser.prototype = {
 				}
 			}
 
-			let ancestors = this.getAncestorTabs(tab);
-			ancestors = ancestors.map(function(aAncestor) {
-				if (!next && (next = this.getNextSiblingTab(aAncestor)))
-					backupAttributes[this.kINSERT_BEFORE] = next.getAttribute(this.kID);
-				return aAncestor.getAttribute(this.kID);
-			}, this);
-			backupAttributes[this.kANCESTOR] = ancestors.join('|');
-
 			let shouldCloseParentTab = (
 					this.isGroupTab(parentTab) &&
 					this.getDescendantTabs(parentTab).length == 1
@@ -3048,32 +2999,12 @@ TreeStyleTabBrowser.prototype = {
 			this.updateTabsIndentWithDelay(indentModifiedTabs);
 		this.checkTabsIndentOverflow();
 
-		for (var i in backupAttributes)
-		{
-			this.setTabValue(tab, i, backupAttributes[i]);
-		}
+		this._restoreTabAttributes(tab, backupAttributes);
 
 		if (b.selectedTab == tab) {
 			if (nextFocusedTab && nextFocusedTab == toBeClosedSibling)
 				nextFocusedTab = this.getFirstChildTab(nextFocusedTab);
-			if (
-				nextFocusedTab &&
-				!nextFocusedTab.hidden
-				) {
-				let event = d.createEvent('Events');
-				event.initEvent(this.kEVENT_TYPE_FOCUS_NEXT_TAB, true, true);
-				let canFocus = tab.dispatchEvent(event);
-
-				// for backward compatibility
-				event = d.createEvent('Events');
-				event.initEvent(this.kEVENT_TYPE_FOCUS_NEXT_TAB.replace(/^nsDOM/, ''), true, true);
-				canFocus = canFocus && tab.dispatchEvent(event);
-
-				if (canFocus) {
-					this._focusChangedByCurrentTabRemove = true;
-					b.selectedTab = nextFocusedTab;
-				}
-			}
+			this._tryMoveFocusFromClosingCurrentTab(nextFocusedTab);
 		}
 
 		this.updateLastScrollPosition();
@@ -3093,9 +3024,56 @@ TreeStyleTabBrowser.prototype = {
 			this.startRendering();
 	},
 	
+	_collectBackupAttributes : function TSTBrowser_collectBackupAttributes(aTab) 
+	{
+		var attributes = {};
+		if (!this.hasChildTabs(aTab))
+			return attributes;
+
+		attributes[this.kCHILDREN] = this.getTabValue(aTab, this.kCHILDREN);
+		attributes[this.kSUBTREE_COLLAPSED] = this.getTabValue(aTab, this.kSUBTREE_COLLAPSED);
+
+		var ancestors = this.getAncestorTabs(aTab);
+		if (ancestors.length) {
+			let next = this.getNextSiblingTab(aTab);
+			ancestors = ancestors.map(function(aAncestor) {
+				if (!next && (next = this.getNextSiblingTab(aAncestor)))
+					attributes[this.kINSERT_BEFORE] = next.getAttribute(this.kID);
+				return aAncestor.getAttribute(this.kID);
+			}, this);
+			attributes[this.kANCESTOR] = ancestors.join('|');
+		}
+
+		return attributes;
+	},
+ 
+	_closeChildTabs : function TSTBrowser_closeChildTabs(aTab) 
+	{
+		var tabs = this.getDescendantTabs(aTab);
+		if (!this.fireTabSubtreeClosingEvent(aTab, tabs))
+			return;
+
+		var subtreeCollapsed = this.isSubtreeCollapsed(aTab);
+		if (subtreeCollapsed)
+			this.stopRendering();
+
+		this.markAsClosedSet([aTab].concat(tabs));
+
+		tabs.reverse();
+		for (let i = 0, maxi = tabs.length; i < maxi; i++)
+		{
+			this.mTabBrowser.removeTab(tabs[i], { animate : true });
+		}
+
+		this.fireTabSubtreeClosedEvent(this.mTabBrowser, aTab, tabs);
+
+		if (subtreeCollapsed)
+			this.startRendering();
+	},
+ 
 	_reserveCloseNeedlessGroupTabSibling : function TSTBrowser_reserveCloseNeedlessGroupTabSibling(aTab) 
 	{
-		if (!aTab || !aTab.parentNode)
+		if (!aTab || !aTab.parentNode || !this.hasChildTabs(aTab))
 			return null;
 
 		var parent = this.getParentTab(aTab);
@@ -3115,6 +3093,59 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		return null;
+	},
+ 
+	_saveAndUpdateReferenceTabsInfo : function TSTBrowser_saveAndUpdateReferenceTabsInfo(aTab) 
+	{
+		var prev = this.getPreviousSiblingTab(aTab);
+		var next = this.getNextSiblingTab(aTab);
+		if (prev) {
+			this.setTabValue(aTab, this.kINSERT_AFTER, prev.getAttribute(this.kID));
+
+			if (next)
+				this.setTabValue(prev, this.kINSERT_BEFORE, next.getAttribute(this.kID));
+			else
+				this.deleteTabValue(prev, this.kINSERT_BEFORE);
+		}
+		if (next) {
+			this.setTabValue(aTab, this.kINSERT_BEFORE, next.getAttribute(this.kID));
+
+			if (prev)
+				this.setTabValue(next, this.kINSERT_AFTER, prev.getAttribute(this.kID));
+			else
+				this.deleteTabValue(next, this.kINSERT_AFTER);
+		}
+	},
+ 
+	_restoreTabAttributes : function TSTBrowser_restoreTabAttributes(aTab, aAttributes) 
+	{
+		for (var i in aAttributes)
+		{
+			this.setTabValue(aTab, i, aAttributes[i]);
+		}
+	},
+ 
+	_tryMoveFocusFromClosingCurrentTab : function TSTBrowser_tryMoveFocusFromClosingCurrentTab(aNextFocusedTab) 
+	{
+		if (!aNextFocusedTab || aNextFocusedTab.hidden)
+			return;
+
+		var currentTab = this.mTabBrowser.selectedTab;
+		var d = this.document;
+
+		var event = d.createEvent('Events');
+		event.initEvent(this.kEVENT_TYPE_FOCUS_NEXT_TAB, true, true);
+		var canFocus = currentTab.dispatchEvent(event);
+
+		// for backward compatibility
+		event = d.createEvent('Events');
+		event.initEvent(this.kEVENT_TYPE_FOCUS_NEXT_TAB.replace(/^nsDOM/, ''), true, true);
+		canFocus = canFocus && currentTab.dispatchEvent(event);
+
+		if (canFocus) {
+			this._focusChangedByCurrentTabRemove = true;
+			this.mTabBrowser.selectedTab = aNextFocusedTab;
+		}
 	},
   
 	onTabsClosing : function TSTBrowser_onTabsClosing(aEvent) 
