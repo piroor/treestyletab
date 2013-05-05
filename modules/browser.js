@@ -2931,26 +2931,19 @@ TreeStyleTabBrowser.prototype = {
 
 		this._saveAndUpdateReferenceTabsInfo(tab);
 
-		var toBeClosedSibling = this._reserveCloseNeedlessGroupTabSibling(tab);
-		var nextFocusedTab = null;
-
 		var firstChild = this.getFirstChildTab(tab);
-		if (firstChild) {
-			let children = this.getChildTabs(tab);
-			if (closeParentBehavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD)
-				this.updateTabsIndentWithDelay(children.slice(0, 1));
-			else
-				this.updateTabsIndentWithDelay(children);
-
-			if (closeParentBehavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN ||
-				closeParentBehavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD)
-				nextFocusedTab = firstChild;
-		}
 
 		this.detachAllChildren(tab, {
-			behavior         : closeParentBehavior,
-			dontUpdateIndent : true
+			behavior : closeParentBehavior
 		});
+
+		var nextFocusedTab = null;
+		if (firstChild &&
+			(closeParentBehavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN ||
+			closeParentBehavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD))
+			nextFocusedTab = firstChild;
+
+		var toBeClosedTabs = this._collectNeedlessGroupTabs(tab);
 
 		var parentTab = this.getParentTab(tab);
 		if (parentTab) {
@@ -2961,20 +2954,19 @@ TreeStyleTabBrowser.prototype = {
 					nextFocusedTab = this.getPreviousSiblingTab(tab);
 			}
 
-			let toBeClosedParent = this._reserveCloseNeedlessGroupTabParent(tab);
-			if (toBeClosedParent && nextFocusedTab == toBeClosedParent)
+			if (nextFocusedTab && toBeClosedTabs.indexOf(nextFocusedTab) > -1)
 				nextFocusedTab = this.getNextFocusedTab(parentTab);
 		}
 		else if (!nextFocusedTab) {
 			nextFocusedTab = this.getNextFocusedTab(tab);
 		}
 
-		if (toBeClosedSibling && nextFocusedTab == toBeClosedSibling)
-			nextFocusedTab = this.getFirstChildTab(nextFocusedTab);
+		if (nextFocusedTab && toBeClosedTabs.indexOf(nextFocusedTab) > -1)
+			nextFocusedTab = this.getNextFocusedTab(nextFocusedTab);
+
+		this._reserveCloseRelatedTabs(toBeClosedTabs);
 
 		this.detachTab(tab, { dontUpdateIndent : true });
-
-		this.checkTabsIndentOverflow();
 
 		this._restoreTabAttributes(tab, backupAttributes);
 
@@ -3045,10 +3037,11 @@ TreeStyleTabBrowser.prototype = {
 			this.startRendering();
 	},
  
-	_reserveCloseNeedlessGroupTabSibling : function TSTBrowser_reserveCloseNeedlessGroupTabSibling(aTab) 
+	_collectNeedlessGroupTabs : function TSTBrowser_collectNeedlessGroupTabs(aTab) 
 	{
-		if (!aTab || !aTab.parentNode || !this.hasChildTabs(aTab))
-			return null;
+		var tabs = [];
+		if (!aTab || !aTab.parentNode)
+			return tabs;
 
 		var parent = this.getParentTab(aTab);
 		var siblings = this.getSiblingTabs(aTab);
@@ -3058,49 +3051,39 @@ TreeStyleTabBrowser.prototype = {
 				siblings.length == 1 &&
 				this.hasChildTabs(groupTabs[0])
 				) ? groupTabs[0] : null ;
-
-		if (groupTab) {
-			this.window.setTimeout(function(aSelf, aGroupTab) {
-				aSelf.getTabBrowserFromChild(aGroupTab).removeTab(aGroupTab, { animate : true });
-			}, 0, this, groupTab);
-			return groupTab;
-		}
-
-		return null;
-	},
- 
-	_reserveCloseNeedlessGroupTabParent : function TSTBrowser_reserveCloseNeedlessGroupTabParent(aTab) 
-	{
-		if (!aTab)
-			return null;
-
-		var parentTab = this.getParentTab(aTab);
-		if (!parentTab)
-			return null;
+		if (groupTab)
+			tabs.push(groupTab);
 
 		var shouldCloseParentTab = (
-				this.isGroupTab(parentTab) &&
-				this.getDescendantTabs(parentTab).length == 1
+				parent &&
+				this.isGroupTab(parent) &&
+				this.getDescendantTabs(parent).length == 1
 			);
-		if (shouldCloseParentTab) {
-			let key = 'onTabClose_'+parseInt(Math.random() * 65000);
-			let self = this;
-			(this.deferredTasks[key] = this.Deferred.next(function() {
-				if (parentTab.parentNode)
-					self.mTabBrowser.removeTab(parentTab, { animate : true });
-			})).error(this.defaultDeferredErrorHandler).next(function() {
-				delete self.deferredTasks[key];
-			}).next(function() {
-				parentTab = null;
-				aTab = null;
-				self = null;
-				key = null;
+		if (shouldCloseParentTab)
+			tabs.push(parent);
+
+		return tabs;
+	},
+ 
+	_reserveCloseRelatedTabs : function TSTBrowser_reserveCloseRelatedTabs(aTabs) 
+	{
+		if (!aTabs.length)
+			return;
+
+		var key = 'onTabClose_'+parseInt(Math.random() * 65000);
+		var self = this;
+		(this.deferredTasks[key] = this.Deferred.next(function() {
+			aTabs.forEach(function(aTab) {
+				if (aTab.parentNode)
+					self.mTabBrowser.removeTab(aTab, { animate : true });
 			});
-			return parentTab;
-		}
-		else {
-			return null;
-		}
+		})).error(this.defaultDeferredErrorHandler).next(function() {
+			delete self.deferredTasks[key];
+		}).next(function() {
+			aTabs = null;
+			self = null;
+			key = null;
+		});
 	},
  
 	_saveAndUpdateReferenceTabsInfo : function TSTBrowser_saveAndUpdateReferenceTabsInfo(aTab) 
