@@ -809,7 +809,7 @@
 			if (aTab.linkedBrowser.__SS_restoreState == 1) {
 				let data = aTab.linkedBrowser.__SS_data;
 				if (!data && this.SessionStoreNS.RestoringTabsData) // Firefox 23-
-					data = this.SessionStoreNS.RestoringTabsData.get(aTab);
+					data = this.SessionStoreNS.RestoringTabsData.get(aTab.linkedBrowser);
 				let entry = data.entries[Math.min(data.index, data.entries.length-1)];
 				if (entry) return entry.url;
 			}
