@@ -15,7 +15,7 @@
    http://github.com/piroor/fxaddonlib-tabs-drag-utils
 */
 (function() {
-	const currentRevision = 26;
+	const currentRevision = 27;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -40,6 +40,18 @@
 		// "nsDOM" prefix is required!
 		// https://developer.mozilla.org/en/Creating_Custom_Events_That_Can_Pass_Data
 		EVENT_TYPE_TABS_DROP : 'nsDOMMultipleTabsDrop',
+
+		get SessionStoreNS() {
+			delete this.SessionStoreNS;
+			try {
+				// resource://app/modules/sessionstore/SessionStore.jsm ?
+				this.SessionStoreNS = Components.utils.import('resource:///modules/sessionstore/SessionStore.jsm', {});
+			}
+			catch(e) {
+				this.SessionStoreNS = {};
+			}
+			return this.SessionStoreNS;
+		},
 
 		init : function TDU_init()
 		{
@@ -796,6 +808,8 @@
 			// Firefox 4.0-
 			if (aTab.linkedBrowser.__SS_restoreState == 1) {
 				let data = aTab.linkedBrowser.__SS_data;
+				if (!data && this.SessionStoreNS.RestoringTabsData) // Firefox 23-
+					data = this.SessionStoreNS.RestoringTabsData.get(aTab);
 				let entry = data.entries[Math.min(data.index, data.entries.length-1)];
 				if (entry) return entry.url;
 			}
