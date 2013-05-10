@@ -1137,7 +1137,9 @@ TreeStyleTabWindow.prototype = {
  
 	onBeforeBrowserAccessOpenURI : function TSTWindow_onBeforeBrowserAccessOpenURI(aOpener, aWhere) 
 	{
-		if (aOpener && aWhere == Ci.nsIBrowserDOMWindow.OPEN_NEWTAB)
+		if (aOpener &&
+			aOpener.top == this.browser.contentWindow &&
+			aWhere == Ci.nsIBrowserDOMWindow.OPEN_NEWTAB)
 			this.handleNewTabFromCurrent(aOpener);
 	},
  
