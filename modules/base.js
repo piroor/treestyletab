@@ -922,6 +922,7 @@ var TreeStyleTabBase = {
 	},
  
 	// workaround for http://piro.sakura.ne.jp/latest/blosxom/mozilla/extension/treestyletab/2009-09-29_debug.htm
+	// This is obsolete for lately Firefox and no need to be updated. See: https://github.com/piroor/treestyletab/issues/508#issuecomment-17526429
 	checkCachedSessionDataExpiration : function TSTBase_checkCachedSessionDataExpiration(aTab) 
 	{
 		var data = aTab.linkedBrowser.__SS_data;
