@@ -936,7 +936,7 @@ TreeStyleTabBrowser.prototype = {
 		 * XXX dirty hack!!! there is no way to know when the tab is readied to be restored...
 		 */
 		if (!aTab.linkedBrowser.__treestyletab__toBeRestored)
-			aTab.linkedBrowser.__treestyletab__toBeRestored = !!aTab.linkedBrowser.__SS_restoreState;
+			aTab.linkedBrowser.__treestyletab__toBeRestored = utils.isTabNotRestoredYet(aTab);
 		var b = aTab.linkedBrowser;
 		if (!b.__treestyletab__stop) {
 			b.__treestyletab__stop = b.stop;
@@ -6305,7 +6305,7 @@ TreeStyleTabBrowser.prototype = {
 		var tabs = this.getAllTabs(this.mTabBrowser);
 		tabs = tabs.filter(function(aTab) {
 			return (
-				aTab.linkedBrowser.__SS_restoreState &&
+				utils.isTabNotRestoredYet(aTab) &&
 				aTab.linkedBrowser.__treestyletab__toBeRestored &&
 				(!onlyVisible || !aTab.hidden)
 			);

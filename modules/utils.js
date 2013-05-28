@@ -233,6 +233,45 @@ let TreeStyleTabUtils = {
 		catch(e) {
 		}
 		return void(0);
-	}
+	},
 
+
+	isTabNotRestoredYet: function(aTab)
+	{
+		var browser = aTab.linkedBrowser;
+		// Firefox 25 and later. See: https://bugzilla.mozilla.org/show_bug.cgi?id=867142
+		if (this.TabRestoreStates &&
+			this.TabRestoreStates.has(browser))
+			return (
+				this.TabRestoreStates.isNeedsRestore(browser) ||
+				this.TabRestoreStates.isRestoring(browser)
+			);
+
+		return !!browser.__SS_restoreState;
+	},
+	isTabRestoring: function(aTab)
+	{
+		var browser = aTab.linkedBrowser;
+		// Firefox 25 and later. See: https://bugzilla.mozilla.org/show_bug.cgi?id=867142
+		if (this.TabRestoreStates &&
+			this.TabRestoreStates.has(browser))
+			return this.TabRestoreStates.isRestoring(browser);
+
+		return browser.__SS_restoreState == 1;
+	},
+	get TabRestoreStates() {
+		return this.SessionStoreNS.TabRestoreStates;
+	},
+	get SessionStoreNS() {
+		if (!this._SessionStoreNS)
+			try {
+				// resource://app/modules/sessionstore/SessionStore.jsm ?
+				this._SessionStoreNS = Components.utils.import('resource:///modules/sessionstore/SessionStore.jsm', {});
+			}
+			catch(e) {
+				this._SessionStoreNS = {};
+			}
+		}
+		return this._SessionStoreNS;
+	}
 };
