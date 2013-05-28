@@ -15,7 +15,7 @@
    http://github.com/piroor/fxaddonlib-tabs-drag-utils
 */
 (function() {
-	const currentRevision = 27;
+	const currentRevision = 28;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -41,6 +41,26 @@
 		// https://developer.mozilla.org/en/Creating_Custom_Events_That_Can_Pass_Data
 		EVENT_TYPE_TABS_DROP : 'nsDOMMultipleTabsDrop',
 
+		isTabNeedToBeRestored: function(aTab)
+		{
+			var browser = aTab.linkedBrowser;
+			// Firefox 25 and later. See: https://bugzilla.mozilla.org/show_bug.cgi?id=867142
+			if (this.TabRestoreStates &&
+				this.TabRestoreStates.has(browser))
+				return this.TabRestoreStates.isNeedsRestore(browser);
+
+			return browser.__SS_restoreState == 1;
+		},
+		getRestoringData: function(aTab)
+		{
+			var data = aTab.linkedBrowser.__SS_data;
+			if (!data && this.RestoringTabsData) // Firefox 23-
+				data = this.RestoringTabsData.get(aTab.linkedBrowser);
+			return data;
+		},
+		get TabRestoreStates() {
+			return this.SessionStoreNS.TabRestoreStates;
+		},
 		get SessionStoreNS() {
 			delete this.SessionStoreNS;
 			try {
@@ -806,10 +826,8 @@
 	 	getCurrentURIOfTab : function TDU_getCurrentURIOfTab(aTab) 
 		{
 			// Firefox 4.0-
-			if (aTab.linkedBrowser.__SS_restoreState == 1) {
-				let data = aTab.linkedBrowser.__SS_data;
-				if (!data && this.SessionStoreNS.RestoringTabsData) // Firefox 23-
-					data = this.SessionStoreNS.RestoringTabsData.get(aTab.linkedBrowser);
+			if (this.isTabNeedToBeRestored(aTab)) {
+				let data = this.getRestoringData(aTab);
 				let entry = data.entries[Math.min(data.index, data.entries.length-1)];
 				if (entry) return entry.url;
 			}
