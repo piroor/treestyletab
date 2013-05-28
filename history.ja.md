@@ -5,6 +5,7 @@
    * 他のグループのタブがある時に、変な位置でタブの間にマージンが適用されてしまう問題について、まだ問題が修正されていなかったケースがあったのを改善（by Drugoy. Thanks!）
    * アドオンバーやツールバー等の表示・非表示が切り替わった際にタブバーの表示が更新されなくなっていたのを修正（0.14.2013040601での後退バグ）
    * [Gmail Panel](https://addons.mozilla.org/firefox/addon/gmail-panel/)などから開かれたタブが意図せず現在のタブの子タブになってしまう問題を修正
+   * [セッション保存APIの仕様変更](http://dutherenverseauborddelatable.wordpress.com/2013/05/23/add-on-breakage-continued-list-of-add-ons-that-will-probably-be-affected/)に追従
  - 0.14.2013040601
    * 現在のタブから開かれる子タブの位置を制御する隠し設定「extensions.treestyletab.autoAttach.fromCurrent」を追加
    * Firefox 20でmoveTabForward/moveTabBackwardでのタブの移動が正しく動作しなくなっていたのを修正

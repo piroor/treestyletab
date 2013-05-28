@@ -5,6 +5,7 @@
    * Fixed: Don't set margin to indicate grouped tabs for parent tabs next to hidden tabs in more cases. (by Drugoy. Thanks!)
    * Fixed: Update the tab bar correctly when contents in the browser bottom bar or the toolbar are modified. (Regression on 0.14.2013040601)
    * Fixed: Don't make new tabs children of the current tab, if they are opened by [Gmail Panel](https://addons.mozilla.org/firefox/addon/gmail-panel/) or someone.
+   * Modified: Update codes around [session store API](http://dutherenverseauborddelatable.wordpress.com/2013/05/23/add-on-breakage-continued-list-of-add-ons-that-will-probably-be-affected/).
  - 0.14.2013040601
    * Improved: Add a new secret option "extensions.treestyletab.autoAttach.fromCurrent" to control new tab position from the current tab.
    * Fixed: Move tab by moveTabForward/moveTabBackward on Firefox 20 correctly.
