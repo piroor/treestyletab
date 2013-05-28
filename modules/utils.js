@@ -249,13 +249,13 @@ let TreeStyleTabUtils = {
 
 		return !!browser.__SS_restoreState;
 	},
-	isTabRestoring: function(aTab)
+	isTabNeedToBeRestored: function(aTab)
 	{
 		var browser = aTab.linkedBrowser;
 		// Firefox 25 and later. See: https://bugzilla.mozilla.org/show_bug.cgi?id=867142
 		if (this.TabRestoreStates &&
 			this.TabRestoreStates.has(browser))
-			return this.TabRestoreStates.isRestoring(browser);
+			return this.TabRestoreStates.isNeedsRestore(browser);
 
 		return browser.__SS_restoreState == 1;
 	},

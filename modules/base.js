@@ -929,7 +929,7 @@ var TreeStyleTabBase = {
 		if (data &&
 			data._tabStillLoading &&
 			aTab.getAttribute('busy') != 'true' &&
-			!utils.isTabRestoring(aTab))
+			!utils.isTabNeedToBeRestored(aTab))
 			data._tabStillLoading = false;
 	},
  
