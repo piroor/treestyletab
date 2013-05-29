@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 0.14.2013052901
    * Fixed: Pinned tabs are shown with more stylized appearance.
    * Fixed: Don't set margin to indicate grouped tabs for parent tabs next to hidden tabs in more cases. (by Drugoy. Thanks!)
    * Fixed: Update the tab bar correctly when contents in the browser bottom bar or the toolbar are modified. (Regression on 0.14.2013040601)
