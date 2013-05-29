@@ -19,11 +19,9 @@
    window['piro.sakura.ne.jp'].prefs.addPrefListener(listener);
    window['piro.sakura.ne.jp'].prefs.removePrefListener(listener);
 
- license: The MIT License, Copyright (c) 2009-2010 YUKI "Piro" Hiroshi
-   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/license.txt
+ license: The MIT License, Copyright (c) 2009-2013 YUKI "Piro" Hiroshi
  original:
-   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/prefs.js
-   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/prefs.test.js
+   http://github.com/piroor/fxaddonlib-prefs
 */
 
 /* To work as a JS Code Module  */
@@ -32,10 +30,10 @@ if (typeof window == 'undefined' ||
 	this.EXPORTED_SYMBOLS = ['prefs'];
 
 	// If namespace.jsm is available, export symbols to the shared namespace.
-	// See: http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/namespace.jsm
+	// See: http://github.com/piroor/fxaddonlibs/blob/master/namespace.jsm
 	try {
 		let ns = {};
-		Components.utils.import('resource://treestyletab-modules/lib/namespace.jsm', ns);
+		Components.utils.import('resource://my-modulestreestyletab-modules/lib/namespace.jsm', ns);
 		/* var */ window = ns.getNamespaceFor('piro.sakura.ne.jp');
 	}
 	catch(e) {
@@ -44,7 +42,7 @@ if (typeof window == 'undefined' ||
 }
 
 (function() {
-	const currentRevision = 7;
+	const currentRevision = 9;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -76,12 +74,14 @@ if (typeof window == 'undefined' ||
 
 			aBranch = aBranch || this.Prefs;
 
-			if (aInterface)
-				return (aBranch.getPrefType(aPrefstring) == aBranch.PREF_INVALID) ?
-						null :
-						aBranch.getComplexValue(aPrefstring, aInterface);
+			var type = aBranch.getPrefType(aPrefstring);
+			if (type == aBranch.PREF_INVALID)
+				return null;
 
-			switch (aBranch.getPrefType(aPrefstring))
+			if (aInterface)
+				return aBranch.getComplexValue(aPrefstring, aInterface);
+
+			switch (type)
 			{
 				case aBranch.PREF_STRING:
 					return decodeURIComponent(escape(aBranch.getCharPref(aPrefstring)));
@@ -138,13 +138,28 @@ if (typeof window == 'undefined' ||
 	 
 		getChildren : function(aRoot, aBranch) 
 		{
-			return this.getDescendant(aRoot, aBranch)
-					.filter(function(aPrefstring) {
+			var foundChildren = {};
+			var possibleChildren = [];
+			var actualChildren = this.getDescendant(aRoot, aBranch)
+					.forEach(function(aPrefstring) {
 						var name = aPrefstring.replace(aRoot, '');
 						if (name.charAt(0) == '.')
 							name = name.substring(1);
-						return name.indexOf('.') < 0;
+						if (name.indexOf('.') < 0) {
+							if (!(aPrefstring in foundChildren)) {
+								actualChildren.push(aPrefstring);
+								foundChildren[aPrefstring] = true;
+							}
+						}
+						else {
+							let possibleChildKey = aRoot + name.split('.')[0];
+							if (possibleChildKey && !(possibleChildKey in foundChildren)) {
+								possibleChildren.push(possibleChildKey);
+								foundChildren[possibleChildKey] = true;
+							}
+						}
 					});
+			return possibleChildren.concat(actualChildren).sort();
 		},
 	 
 		addPrefListener : function(aObserver) 
