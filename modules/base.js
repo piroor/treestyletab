@@ -2193,7 +2193,7 @@ var TreeStyleTabBase = {
 	{
 		return (
 			(aLazyCheck || aTab.linkedBrowser.sessionHistory.count == 1) &&
-			aTab.linkedBrowser.currentURI.spec.indexOf('about:treestyletab-group') > -1
+			aTab.linkedBrowser.currentURI.spec.indexOf('about:treestyletab-group') == 0
 		);
 	},
  
