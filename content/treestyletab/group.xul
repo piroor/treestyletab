@@ -1,5 +1,5 @@
 <?xml-stylesheet type="text/css" href="chrome://global/skin/"?>
-<?xml-stylesheet type="text/css" href="chrome://treestyletab/skin/group/group.css"?>
+<?xml-stylesheet type="text/css" href="chrome://treestyletab/skin/group.css"?>
 <?xml-stylesheet type="text/css" href="chrome://treestyletab/skin/pseudo-tree.css"?>
 <!DOCTYPE page SYSTEM "chrome://treestyletab/locale/treestyletab.dtd">
 <page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -36,7 +36,7 @@
 	</vbox>
 </stack>
 <link xmlns="http://www.w3.org/1999/xhtml" rel="icon"
-	href="chrome://treestyletab/skin/group/group-icon"/>
+	href="chrome://treestyletab-group/skin/group.png"/>
 <script type="application/javascript"><![CDATA[
 
 Components.utils.import('resource://treestyletab-modules/groupTab.js');

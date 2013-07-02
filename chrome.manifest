@@ -30,8 +30,8 @@ locale	treestyletab	da-DK	locale/da-DK/treestyletab/
 
 skin	treestyletab	classic/1.0	skin/classic/treestyletab/
 
-override chrome://treestyletab/skin/group/group-icon	chrome://treestyletab/skin/group/group-fx3.png
-override chrome://treestyletab/skin/group/group-icon	chrome://treestyletab/skin/group/group-fx3-aero.png	os=WINNT osversion>=6
+skin	treestyletab-group	classic/1.0	skin/classic/treestyletab-group-basic/
+skin	treestyletab-group	classic/1.0	skin/classic/treestyletab-group-aero/	os=WINNT osversion>=6
 
 override chrome://treestyletab/skin/platform-base.css	chrome://treestyletab/skin/dummy.css	os=Darwin
 override chrome://treestyletab/skin/platform-base.css	chrome://treestyletab/skin/Linux-base.css	os=Linux
