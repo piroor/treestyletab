@@ -35,7 +35,7 @@
  
 const EXPORTED_SYMBOLS = ['TabbarDNDObserver']; 
 
-const DEBUG = true;
+const DEBUG = false;
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
