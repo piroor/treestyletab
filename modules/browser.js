@@ -35,6 +35,8 @@
  
 const EXPORTED_SYMBOLS = ['TreeStyleTabBrowser']; 
 
+const DEBUG = false;
+
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cu = Components.utils;
@@ -1780,6 +1782,22 @@ TreeStyleTabBrowser.prototype = {
 	{
 		aReason = aReason || this.kTABBAR_UPDATE_BY_UNKNOWN_REASON;
 
+		if (DEBUG) {
+			let humanReadableReason =
+				(aReason & this.kTABBAR_UPDATE_BY_RESET ? 'reset ' : '' ) +
+				(aReason & this.kTABBAR_UPDATE_BY_PREF_CHANGE ? 'prefchange ' : '' ) +
+				(aReason & this.kTABBAR_UPDATE_BY_APPEARANCE_CHANGE ? 'appearance-change ' : '' ) +
+				(aReason & this.kTABBAR_UPDATE_BY_SHOWHIDE_TABBAR ? 'showhide ' : '' ) +
+				(aReason & this.kTABBAR_UPDATE_BY_TABBAR_RESIZE ? 'tabbar-resize ' : '' ) +
+				(aReason & this.kTABBAR_UPDATE_BY_WINDOW_RESIZE ? 'window-resize ' : '' ) +
+				(aReason & this.kTABBAR_UPDATE_BY_FULLSCREEN ? 'fullscreen ' : '' ) +
+				(aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE ? 'autohide ' : '' ) +
+				(aReason & this.kTABBAR_UPDATE_BY_INITIALIZE ? 'initialize ' : '' ) +
+				(aReason & this.kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR ? 'toggle-sidebar ' : '' ) +
+				(aReason & this.kTABBAR_UPDATE_BY_PRIVATE_BROWSING ? 'private-browsing ' : '' );
+			dump('TSTBrowser_updateFloatingTabbarInternal: ' + humanReadableReason + '\n');
+		}
+
 		var d = this.document;
 
 		var splitter = this.splitter;
@@ -1808,7 +1826,7 @@ TreeStyleTabBrowser.prototype = {
 				(aReason & this.kTABBAR_UPDATE_SYNC_TO_PLACEHOLDER) &&
 				this.autoHide.mode == this.autoHide.kMODE_SHRINK
 				)
-				this.autoHide.hide();
+				this.autoHide.hide(this.autoHide.kSHOWHIDE_BY_RESIZE);
 
 			let box = this._tabStripPlaceHolder.boxObject;
 			let root = d.documentElement.boxObject;

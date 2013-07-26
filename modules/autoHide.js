@@ -35,6 +35,8 @@
  
 const EXPORTED_SYMBOLS = ['AutoHideBrowser', 'AutoHideWindow'];
 
+const DEBUG = false;
+
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cu = Components.utils;
@@ -75,6 +77,11 @@ AutoHideBrowser.prototype = {
 	kSHOWN_BY_SHORTCUT  : 1 << 0,
 	kSHOWN_BY_MOUSEMOVE : 1 << 1,
 	kSHOWN_BY_FEEDBACK  : 1 << 2,
+	kSHOWHIDE_BY_START  : 1 << 3,
+	kSHOWHIDE_BY_END    : 1 << 4,
+	kSHOWHIDE_BY_POSITION_CHANGE : 1 << 5,
+	kSHOWHIDE_BY_RESIZE : 1 << 6,
+	kHIDDEN_BY_CLICK    : 1 << 7,
 	kKEEP_SHOWN_ON_MOUSEOVER : (1 << 0) | (1 << 1) | (1 << 2),
  
 	get mode() /* PUBLIC API */ 
@@ -238,7 +245,7 @@ AutoHideBrowser.prototype = {
 
 		this.updateTransparency();
 
-		this.showHideInternal();
+		this.showHideInternal(this.kSHOWHIDE_BY_START);
 
 		b.treeStyleTab.fixTooNarrowTabbar();
 	},
@@ -252,7 +259,7 @@ AutoHideBrowser.prototype = {
 		var b  = this.browser;
 		var w  = this.window;
 
-		this.show();
+		this.show(this.kSHOWHIDE_BY_END);
 
 		this.screen.hidePopup();
 
@@ -558,7 +565,7 @@ AutoHideBrowser.prototype = {
 			function(aSelf) {
 				aSelf.delayedHideTabbarForFeedbackTimer = null;
 				if (aSelf.showHideReason == aSelf.kSHOWN_BY_FEEDBACK)
-					aSelf.hide();
+					aSelf.hide(aSelf.kSHOWN_BY_FEEDBACK);
 			},
 			utils.getTreePref('tabbar.autoShow.feedback.delay'),
 			this
@@ -664,6 +671,22 @@ AutoHideBrowser.prototype = {
 		else { // to be shown or expanded
 			this.onShowing();
 			this.showHideReason = aReason || this.kSHOWN_BY_UNKNOWN;
+		}
+
+		if (DEBUG) {
+			let humanReadableReason =
+				(aReason & this.kSHOWN_BY_SHORTCUT ? 'shortcut ' : '' ) +
+				(aReason & this.kSHOWN_BY_MOUSEMOVE ? 'mousemove ' : '' ) +
+				(aReason & this.kSHOWN_BY_FEEDBACK ? 'feedback ' : '' ) +
+				(aReason & this.kSHOWHIDE_BY_START ? 'start ' : '' ) +
+				(aReason & this.kSHOWHIDE_BY_END ? 'end ' : '' ) +
+				(aReason & this.kSHOWHIDE_BY_POSITION_CHANGE ? 'positionchange ' : '' ) +
+				(aReason & this.kSHOWHIDE_BY_RESIZE ? 'resize ' : '' ) +
+				(aReason & this.kHIDDEN_BY_CLICK ? 'click ' : '' );
+			if (this.expanded)
+				dump('autoHide: hide by ' + humanReadableReason + '\n');
+			else
+				dump('autoHide: show by ' + humanReadableReason + '\n');
 		}
 
 		this.fireStateChangingEvent();
@@ -950,8 +973,8 @@ AutoHideBrowser.prototype = {
 			case this.treeStyleTab.kEVENT_TYPE_TABBAR_POSITION_CHANGED:
 				if (this.enabled)
 					this.window.setTimeout(function(aSelf) {
-						aSelf.show();
-						aSelf.hide();
+						aSelf.show(this.kSHOWHIDE_BY_POSITION_CHANGE);
+						aSelf.hide(this.kSHOWHIDE_BY_POSITION_CHANGE);
 					}, 0, this);
 				this.updateTransparency();
 				return;
@@ -979,11 +1002,11 @@ AutoHideBrowser.prototype = {
 				this.cancelDelayedShowForShortcut();
 				if (this.enabled &&
 					this.showHideReason == this.kSHOWN_BY_SHORTCUT)
-					this.hide();
+					this.hide(this.kSHOWN_BY_SHORTCUT);
 				return;
 
 			case this.treeStyleTab.kEVENT_TYPE_PRINT_PREVIEW_ENTERED:
-				this.hide();
+				this.hide(this.kSHOWHIDE_BY_END);
 				this.endListenMouseMove();
 				return;
 
@@ -1018,7 +1041,7 @@ AutoHideBrowser.prototype = {
 				!sv.getTabBrowserFromChild(aEvent.originalTarget)
 			)
 			)
-			this.hide();
+			this.hide(this.kHIDDEN_BY_CLICK);
 		this.lastMouseDownTarget = aEvent.originalTarget.localName;
 	},
  
@@ -1134,7 +1157,7 @@ AutoHideBrowser.prototype = {
 		else {
 			if (this.enabled &&
 				this.showHideReason == this.kSHOWN_BY_SHORTCUT)
-				this.hide();
+				this.hide(this.kSHOWN_BY_SHORTCUT);
 		}
 	},
 	
