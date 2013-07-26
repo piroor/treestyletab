@@ -1,6 +1,11 @@
 # History
 
  - master/HEAD
+   * Improved: Update label of Firefox's "Close Tabs to the Right" menu item to "Close Tabs to the Bottom" in the vertical tab bar.
+   * Fixed: Don't break tree structure by drag and drop of a child tab to move it to the upper level.
+   * Fixed: Detect new tabs opened from content scripts more correctly.
+   * Fixed: Show favicon for dummy (group) tabs correctly on Firefox 22.
+   * Fixed: Detect dummy (group) tabs correctly. ([Fixed by Infocatcher. thanks!](this.kMENUITEM_CLOSE_TABS_TO_END))
  - 0.14.2013052901
    * Fixed: Pinned tabs are shown with more stylized appearance.
    * Fixed: Don't set margin to indicate grouped tabs for parent tabs next to hidden tabs in more cases. (by Drugoy. Thanks!)
