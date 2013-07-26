@@ -1828,20 +1828,19 @@ TreeStyleTabBrowser.prototype = {
 				)
 				this.autoHide.hide(this.autoHide.kSHOWHIDE_BY_RESIZE);
 
-			let box = this._tabStripPlaceHolder.boxObject;
+			let box  = this._tabStripPlaceHolder.boxObject;
 			let root = d.documentElement.boxObject;
+			let realSize = this.getTabbarPlaceholderSize();
 
-			let realWidth = parseInt(this._tabStripPlaceHolder.getAttribute('width') || box.width);
-			let realHeight = parseInt(this._tabStripPlaceHolder.getAttribute('height') || box.height);
 			let width = (this.autoHide.expanded && this.isVertical && (aReason & this.kTABBAR_UPDATE_SYNC_TO_TABBAR) ?
 							this.maxTabbarWidth(utils.getTreePref('tabbar.width')) :
 							0
-						) || realWidth;
+						) || realSize.width;
 			let height = (this.autoHide.expanded && !this.isVertical && (aReason & this.kTABBAR_UPDATE_SYNC_TO_TABBAR) ?
 							this.maxTabbarHeight(utils.getTreePref('tabbar.height')) :
 							0
-						) || realHeight;
-			let yOffset = pos == 'bottom' ? height - realHeight : 0 ;
+						) || realSize.height;
+			let yOffset = pos == 'bottom' ? height - realSize.height : 0 ;
 
 			stripStyle.top = (box.screenY - root.screenY + root.y - yOffset)+'px';
 			stripStyle.left = pos == 'right' ? '' :
@@ -1854,10 +1853,12 @@ TreeStyleTabBrowser.prototype = {
 
 			this._updateFloatingTabbarResizer({
 				width      : width,
-				realWidth  : realWidth,
+				realWidth  : realSize.width,
 				height     : height,
-				realHeight : realHeight
+				realHeight : realSize.height
 			});
+
+			this._lastTabbarPlaceholderSize = realSize;
 
 			strip.collapsed = tabContainerBox.collapsed = collapsed;
 
@@ -1904,6 +1905,14 @@ TreeStyleTabBrowser.prototype = {
 			this.positionPinnedTabs(null, null, aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE);
 		else
 			this.positionPinnedTabsWithDelay(null, null, aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE);
+	},
+	getTabbarPlaceholderSize: function TSTBrowser_getTabbarPlaceholderSize()
+	{
+		var box = this._tabStripPlaceHolder.boxObject;
+		return {
+			width:  parseInt(this._tabStripPlaceHolder.getAttribute('width') || box.width),
+			height: parseInt(this._tabStripPlaceHolder.getAttribute('height') || box.height)
+		};
 	},
 	getExistingTabsCount : function TSTBrowser_getTabsCount() 
 	{
@@ -4522,8 +4531,18 @@ TreeStyleTabBrowser.prototype = {
 			return;
 
 		var resizedTopFrame = aEvent.originalTarget.top;
-		if (resizedTopFrame == this.mTabBrowser.contentWindow ||
-			resizedTopFrame == this.window) {
+		var isContentResize = resizedTopFrame == this.mTabBrowser.contentWindow;
+		var isChromeResize = resizedTopFrame == this.window;
+
+		// Ignore events when a background tab raises to the foreground.
+		if (isContentResize && this._lastTabbarPlaceholderSize) {
+			let newSize = this.getTabbarPlaceholderSize();
+			isContentResize =
+				newSize.width != this._lastTabbarPlaceholderSize.width ||
+				newSize.height != this._lastTabbarPlaceholderSize.height;
+		}
+
+		if (isContentResize || isChromeResize) {
 			this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
 			this.updateInvertedTabContentsOrder(true);
 			this.mTabBrowser.mTabContainer.adjustTabstrip();
