@@ -524,6 +524,20 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		);
 	}
 
+	// DragIt
+	// https://addons.mozilla.org/firefox/addon/dragit-formerly-drag-de-go/
+	if ('DragIt' in window &&
+		DragIt.tab &&
+		DragIt.tab.open &&
+		TreeStyleTabUtils.getTreePref('compatibility.DragIt')) {
+		eval('DragIt.tab.open = '+
+			DragIt.tab.open.toSource().replace(
+				'try {',
+				'try { TreeStyleTabService.readyToOpenChildTabNow(gBrowser);'
+			)
+		);
+	}
+
 	// Colorful Tabs
 	// https://addons.mozilla.org/firefox/addon/1368
 	if ('colorfulTabs' in window &&

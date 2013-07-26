@@ -637,6 +637,7 @@ pref("extensions.treestyletab.compatibility.Autohide", true);
 pref("extensions.treestyletab.compatibility.ColorfulTabs", true);
 pref("extensions.treestyletab.compatibility.DomainTab", true);
 pref("extensions.treestyletab.compatibility.DragDeGo", true);
+pref("extensions.treestyletab.compatibility.DragIt", true);
 pref("extensions.treestyletab.compatibility.DragNDropToolbars", true);
 pref("extensions.treestyletab.compatibility.DuplicateThisTab", true);
 pref("extensions.treestyletab.compatibility.FirefoxSync", true);
