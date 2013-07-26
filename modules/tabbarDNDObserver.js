@@ -35,7 +35,7 @@
  
 const EXPORTED_SYMBOLS = ['TabbarDNDObserver']; 
 
-const DEBUG = false;
+const DEBUG = true;
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
@@ -320,7 +320,8 @@ catch(e) {
 								b.getNewIndex(aEvent) :
 								b.tabContainer._getDropIndex(aEvent) ;
 				if (DEBUG) dump('  on the tab '+index+'\n');
-				info.target = tab = tabs[Math.min(index, lastTabIndex)];
+				index = Math.min(index, lastTabIndex);
+				info.target = tab = tabs[index];
 				if (index == tabs[lastTabIndex]._tPos) {
 					if (index > 0)
 						info.target = tab = tabs[index - 1];
