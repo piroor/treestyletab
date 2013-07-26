@@ -97,6 +97,8 @@ TreeStyleTabBrowser.prototype = {
 	kMENUITEM_AUTOHIDE                 : 'context-item-toggleAutoHide',
 	kMENUITEM_FIXED                    : 'context-item-toggleFixed',
 	kMENUITEM_BOOKMARKSUBTREE          : 'context-item-bookmarkTabSubtree',
+
+	kMENUITEM_CLOSE_TABS_TO_END        : 'context_closeTabsToTheEnd',
  
 	mTabBrowser : null, 
 
@@ -848,6 +850,10 @@ TreeStyleTabBrowser.prototype = {
 				}
 				tabContextMenu = null;
 			}, 0, this, b, tabContextMenu);
+
+			let closeTabsToEnd = d.getElementById(this.kMENUITEM_CLOSE_TABS_TO_END);
+			if (closeTabsToEnd)
+				this._closeTabsToEnd_horizontalLabel = closeTabsToEnd.getAttribute('label');
 		}
 
 		var removeTabItem = d.getAnonymousElementByAttribute(b, 'id', 'context_closeTab');
@@ -4638,6 +4644,14 @@ TreeStyleTabBrowser.prototype = {
 			else {
 				sep.setAttribute('hidden', true);
 			}
+		}
+
+		let closeTabsToEnd = aEvent.currentTarget.querySelector('*[id^="'+this.kMENUITEM_CLOSE_TABS_TO_END+'"]');
+		if (closeTabsToEnd) { // https://bugzilla.mozilla.org/show_bug.cgi?id=866880
+			let label = this.isVertical ?
+				utils.treeBundle.getString('closeTabsToTheEnd_vertical') :
+				this._closeTabsToEnd_horizontalLabel ;
+			closeTabsToEnd.setAttribute('label', label);
 		}
 	},
   
