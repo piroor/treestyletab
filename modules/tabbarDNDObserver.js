@@ -1120,7 +1120,7 @@ catch(e) {
 					this.performDrop(aDropActionInfo, newTabs[0]);
 				}
 				else {
-					aURI = w.getShortcutOrURI(aURI);
+					aURI = utils.getShortcutOrURI(w, aURI);
 					this.performDrop(aDropActionInfo, b.loadOneTab(aURI, { inBackground: bgLoad }));
 				}
 			}, this);
@@ -1136,7 +1136,7 @@ catch(e) {
 				loadDroppedLinkToNewChildTab = sv.dropLinksOnTabBehavior() == sv.kDROPLINK_NEWTAB;
 
 			try {
-				let uri = w.getShortcutOrURI(uris[0]);
+				let uri = utils.getShortcutOrURI(w, uris[0]);
 				if (loadDroppedLinkToNewChildTab || locked) {
 					this.performDrop(aDropActionInfo, b.loadOneTab(uri, { inBackground: bgLoad }));
 				}

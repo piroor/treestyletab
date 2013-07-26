@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Works on Firefox 25 and later.
    * Fixed: Don't shrink tab bar automatically, when the user selects a background tab.
    * Improved: Update label of Firefox's "Close Tabs to the Right" menu item to "Close Tabs to the Bottom" in the vertical tab bar.
    * Fixed: Don't break tree structure by drag and drop of a child tab to move it to the upper level.

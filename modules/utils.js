@@ -57,6 +57,8 @@ XPCOMUtils.defineLazyGetter(this, 'stringBundle', function() {
 	return window['piro.sakura.ne.jp'].stringBundle;
 });
 
+XPCOMUtils.defineLazyModuleGetter(this, 'Task',
+	'resource://gre/modules/Task.jsm');
 XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabConstants',
   'resource://treestyletab-modules/constants.js', 'TreeStyleTabConstants');
 
@@ -273,5 +275,29 @@ let TreeStyleTabUtils = {
 			}
 		}
 		return this._SessionStoreNS;
+	},
+
+	getShortcutOrURI : function utils_getShortcutOrURI(aBrowserWindow, aURI)
+	{
+		if (aBrowserWindow.getShortcutOrURI) // Firefox 24 and older
+			return aBrowserWindow.getShortcutOrURI(aURI);
+
+		// Firefox 25 and later
+		var getShortcutOrURIAndPostData = aBrowserWindow.getShortcutOrURIAndPostData;
+		var done = false;
+		Task.spawn(function() {
+			var data = yield getShortcutOrURIAndPostData(aURI);
+			aURI = data.url;
+			done = true;
+		});
+
+		// this should be rewritten in asynchronous style...
+		var thread = Cc['@mozilla.org/thread-manager;1'].getService().mainThread;
+		while (!done)
+		{
+			thread.processNextEvent(true);
+		}
+
+		return aURI;
 	}
 };
