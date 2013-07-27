@@ -2957,6 +2957,8 @@ TreeStyleTabBrowser.prototype = {
 			this.stopRendering();
 
 		var backupAttributes = this._collectBackupAttributes(tab);
+		if (DEBUG)
+			dump('onTabClose: backupAttributes = '+JSON.stringify(backupAttributes)+'\n');
 
 		if (closeParentBehavior == this.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN ||
 			this.isSubtreeCollapsed(tab))
@@ -3846,6 +3848,8 @@ TreeStyleTabBrowser.prototype = {
 		var restoringMultipleTabs = this.windowService.restoringTree;
 		var position = this._prepareInsertionPosition(aTab, aMayBeDuplicated);
 		var parent = position.parent;
+		if (DEBUG)
+			dump('handleRestoredTab: found parent = ' + parent+'\n');
 		if (parent) {
 			aTab.removeAttribute(this.kPARENT);
 			parent = this.getTabById(parent);
@@ -3889,6 +3893,8 @@ TreeStyleTabBrowser.prototype = {
 		}
 
 		var ancestors = (this.getTabValue(aTab, this.kANCESTOR) || this.getTabValue(aTab, this.kPARENT)).split('|');
+		if (DEBUG)
+			dump('handleRestoredTab: ancestors = ' + ancestors+'\n');
 		var parent = null;
 		for (let i in ancestors)
 		{
@@ -3909,6 +3915,8 @@ TreeStyleTabBrowser.prototype = {
 		 */
 		if (!parent) {
 			parent = aTab.getAttribute(this.kPARENT);
+			if (DEBUG)
+				dump('handleRestoredTab: parent = ' + parent+'\n');
 			if (parent && !next)
 				next = this.getNextSiblingTab(aTab);
 		}
