@@ -852,12 +852,12 @@ TreeStyleTabBrowser.prototype = {
 				}
 				tabContextMenu = null;
 			}, 0, this, b, tabContextMenu);
+		}
 
-			let closeTabsToEnd = d.getElementById(this.kMENUITEM_CLOSE_TABS_TO_END);
-			if (closeTabsToEnd) {
-				this._closeTabsToEnd_horizontalLabel = closeTabsToEnd.getAttribute('label');
-				this._closeTabsToEnd_horizontalAccesskey = closeTabsToEnd.getAttribute('accesskey');
-			}
+		let closeTabsToEnd = d.getElementById(this.kMENUITEM_CLOSE_TABS_TO_END);
+		if (closeTabsToEnd) {
+			this._closeTabsToEnd_horizontalLabel = closeTabsToEnd.getAttribute('label');
+			this._closeTabsToEnd_horizontalAccesskey = closeTabsToEnd.getAttribute('accesskey');
 		}
 
 		var removeTabItem = d.getAnonymousElementByAttribute(b, 'id', 'context_closeTab');
