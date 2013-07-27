@@ -2,6 +2,7 @@
 
  - master/HEAD
    * Works on Firefox 25 and later.
+   * Fixed: Restore tree structure correctly for "undo close tab" feature, even if the tab had no child. (It was a regression on the version 0.14.2013052901.)
    * Improved: New tab from [DragIt](https://addons.mozilla.org/firefox/addon/dragit-formerly-drag-de-go/) is opened as a child of the current tab.
    * Fixed: Don't shrink tab bar automatically, when the user selects a background tab.
    * Improved: Update label of Firefox's "Close Tabs to the Right" menu item to "Close Tabs to the Bottom" in the vertical tab bar.
