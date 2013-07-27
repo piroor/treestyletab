@@ -9,7 +9,8 @@
    * 子タブをドラッグしてひとつ上のレベルに移動する操作でツリー構造が壊れる場合があったのを修正
    * Webページ中のスクリプトから開かれたタブを子タブとして開く機能について、より正しく動作するようにした
    * Firefox 22でグループ化用のダミーのタブのアイコンが正しく表示されなくなっていたのを修正
-   * グループ化用のダミーのタブでない物をダミーのタブと誤認する場合があったのを修正（[by Infocatcher. thanks!](https://github.com/piroor/treestyletab/issues/518)）
+   * グループ化用のダミーのタブでない物をダミーのタブと誤認する場合があったのを修正（[by Infocatcher. Thanks!](https://github.com/piroor/treestyletab/pull/518)）
+   * ロシア語ロケール更新（[by Infocatcher. Thanks!](https://github.com/piroor/treestyletab/pull/534)）
  - 0.14.2013052901
    * ピン留めされたタブの外観をより綺麗に調整するようにした
    * 他のグループのタブがある時に、変な位置でタブの間にマージンが適用されてしまう問題について、まだ問題が修正されていなかったケースがあったのを改善（by Drugoy. Thanks!）

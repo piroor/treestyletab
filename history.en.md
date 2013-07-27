@@ -9,7 +9,8 @@
    * Fixed: Don't break tree structure by drag and drop of a child tab to move it to the upper level.
    * Fixed: Detect new tabs opened from content scripts more correctly.
    * Fixed: Show favicon for dummy (group) tabs correctly on Firefox 22.
-   * Fixed: Detect dummy (group) tabs correctly. ([Fixed by Infocatcher. thanks!](https://github.com/piroor/treestyletab/issues/518))
+   * Fixed: Detect dummy (group) tabs correctly. ([Fixed by Infocatcher. Thanks!](https://github.com/piroor/treestyletab/pull/518))
+   * [ru locale is updated by Infocatcher. Thanks!](https://github.com/piroor/treestyletab/pull/534)
  - 0.14.2013052901
    * Fixed: Pinned tabs are shown with more stylized appearance.
    * Fixed: Don't set margin to indicate grouped tabs for parent tabs next to hidden tabs in more cases. (by Drugoy. Thanks!)
