@@ -854,8 +854,10 @@ TreeStyleTabBrowser.prototype = {
 			}, 0, this, b, tabContextMenu);
 
 			let closeTabsToEnd = d.getElementById(this.kMENUITEM_CLOSE_TABS_TO_END);
-			if (closeTabsToEnd)
+			if (closeTabsToEnd) {
 				this._closeTabsToEnd_horizontalLabel = closeTabsToEnd.getAttribute('label');
+				this._closeTabsToEnd_horizontalAccesskey = closeTabsToEnd.getAttribute('accesskey');
+			}
 		}
 
 		var removeTabItem = d.getAnonymousElementByAttribute(b, 'id', 'context_closeTab');
@@ -4693,10 +4695,17 @@ TreeStyleTabBrowser.prototype = {
 
 		let closeTabsToEnd = aEvent.currentTarget.querySelector('*[id^="'+this.kMENUITEM_CLOSE_TABS_TO_END+'"]');
 		if (closeTabsToEnd) { // https://bugzilla.mozilla.org/show_bug.cgi?id=866880
-			let label = this.isVertical ?
-				utils.treeBundle.getString('closeTabsToTheEnd_vertical') :
-				this._closeTabsToEnd_horizontalLabel ;
+			let label, accesskey;
+			if (this.isVertical) {
+				label = utils.treeBundle.getString('closeTabsToTheEnd_vertical_label');
+				accesskey = utils.treeBundle.getString('closeTabsToTheEnd_vertical_accesskey');
+			}
+			else {
+				label = this._closeTabsToEnd_horizontalLabel;
+				accesskey = this._closeTabsToEnd_horizontalAccesskey;
+			}
 			closeTabsToEnd.setAttribute('label', label);
+			closeTabsToEnd.setAttribute('accesskey', accesskey);
 		}
 	},
   
