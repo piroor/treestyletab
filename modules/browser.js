@@ -3028,11 +3028,11 @@ TreeStyleTabBrowser.prototype = {
 	_collectBackupAttributes : function TSTBrowser_collectBackupAttributes(aTab) 
 	{
 		var attributes = {};
-		if (!this.hasChildTabs(aTab))
-			return attributes;
 
-		attributes[this.kCHILDREN] = this.getTabValue(aTab, this.kCHILDREN);
-		attributes[this.kSUBTREE_COLLAPSED] = this.getTabValue(aTab, this.kSUBTREE_COLLAPSED);
+		if (this.hasChildTabs(aTab)) {
+			attributes[this.kCHILDREN] = this.getTabValue(aTab, this.kCHILDREN);
+			attributes[this.kSUBTREE_COLLAPSED] = this.getTabValue(aTab, this.kSUBTREE_COLLAPSED);
+		}
 
 		var ancestors = this.getAncestorTabs(aTab);
 		if (ancestors.length) {
