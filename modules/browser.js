@@ -1804,9 +1804,20 @@ TreeStyleTabBrowser.prototype = {
 
 		var splitter = this.splitter;
 		if (splitter.collapsed || splitter.getAttribute('state') != 'collapsed') {
+			let shouldAutoHideForSingleTab = (
+				// "autohide for single tab" feature is removed on Firefox 23.
+				// https://bugzilla.mozilla.org/show_bug.cgi?id=855370
+				(
+					prefs.getDefaultPref('browser.tabs.autoHide') !== null ||
+					// but "Hide Tab Bar With One Tab" provides it.
+					// https://addons.mozilla.org/firefox/addon/hide-tab-bar-with-one-tab/
+					'hideTabBar' in this.window
+				) &&
+				prefs.getPref('browser.tabs.autoHide')
+			);
 			this._tabStripPlaceHolder.collapsed =
 				splitter.collapsed =
-					(prefs.getPref('browser.tabs.autoHide') && this.getExistingTabsCount() == 1);
+					(shouldAutoHideForSingleTab && this.getExistingTabsCount() == 1);
 		}
 
 		var strip = this.tabStrip;
