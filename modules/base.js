@@ -1310,6 +1310,16 @@ var TreeStyleTabBase = {
 		return Array.slice(b.mTabContainer.querySelectorAll('tab:not([hidden="true"])'));
 	},
  
+	/**
+	 * Returns all hidden tabs in background groups as an array.
+	 */
+	getHiddenTabs : function TSTBase_getHiddenTabs(aTabBrowserChild) 
+	{
+		var b = this.getTabBrowserFromChild(aTabBrowserChild || this.browser);
+		this.assertBeforeDestruction(b && b.mTabContainer);
+		return Array.slice(b.mTabContainer.querySelectorAll('tab[hidden="true"]'));
+	},
+ 
 	getAllTabsArray : function TSTBase_getAllTabsArray(aTabBrowserChild) /* for backward compatibility */ 
 	{
 		return this.getAllTabs(aTabBrowserChild);

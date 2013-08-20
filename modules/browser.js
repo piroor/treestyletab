@@ -3105,12 +3105,21 @@ TreeStyleTabBrowser.prototype = {
 		var shouldCloseParentTab = (
 				parent &&
 				this.isGroupTab(parent) &&
-				this.getDescendantTabs(parent).length == 1
+				this.getDescendantTabs(parent).length == 1 &&
+				this._canCloseLastGroupTab(parent)
 			);
 		if (shouldCloseParentTab)
 			tabs.push(parent);
 
 		return tabs;
+	},
+ 
+	_canCloseLastGroupTab : function TSTBrowser_canCloseLastGroupTab(aGroupTab) 
+	{
+		return (
+			utils.getTreePref('autoRemoveNeedlessGroupTab.lastTab') ||
+			this.getSiblingTabs(aGroupTab).length > 0
+		);
 	},
  
 	_reserveCloseRelatedTabs : function TSTBrowser_reserveCloseRelatedTabs(aTabs) 
@@ -5092,7 +5101,8 @@ TreeStyleTabBrowser.prototype = {
 
 		if (this.isGroupTab(parentTab) && !this.hasChildTabs(parentTab)) {
 			this.window.setTimeout(function(aTabBrowser) {
-				if (parentTab.parentNode)
+				if (parentTab.parentNode &&
+					aTabBrowser.treeStyleTab._canCloseLastGroupTab(parentTab))
 					aTabBrowser.removeTab(parentTab, { animate : true });
 				parentTab = null;
 			}, 0, this.getTabBrowserFromChild(parentTab));
