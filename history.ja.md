@@ -10,6 +10,7 @@
    * Webページ中のスクリプトから開かれたタブを子タブとして開く機能について、より正しく動作するようにした
    * Firefox 22でグループ化用のダミーのタブのアイコンが正しく表示されなくなっていたのを修正
    * グループ化用のダミーのタブでない物をダミーのタブと誤認する場合があったのを修正（[by Infocatcher. Thanks!](https://github.com/piroor/treestyletab/pull/518)）
+   * Firefox 23以降で、Firefox 22以前でのみ有効だった「タブが1つだけの時にタブバーを隠す設定」を挙動に反映しないようにした
    * ロシア語ロケール更新（[by Infocatcher. Thanks!](https://github.com/piroor/treestyletab/pull/534)）
  - 0.14.2013052901
    * ピン留めされたタブの外観をより綺麗に調整するようにした

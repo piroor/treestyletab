@@ -10,6 +10,7 @@
    * Fixed: Detect new tabs opened from content scripts more correctly.
    * Fixed: Show favicon for dummy (group) tabs correctly on Firefox 22.
    * Fixed: Detect dummy (group) tabs correctly. ([Fixed by Infocatcher. Thanks!](https://github.com/piroor/treestyletab/pull/518))
+   * Fixed: On Firefox 23 and later, ignore the preference "hide the tab bar when there is only one tab" because it was available on Firefox 22 or older versions.
    * [ru locale is updated by Infocatcher. Thanks!](https://github.com/piroor/treestyletab/pull/534)
  - 0.14.2013052901
    * Fixed: Pinned tabs are shown with more stylized appearance.
