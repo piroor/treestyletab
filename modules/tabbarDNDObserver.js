@@ -868,6 +868,12 @@ catch(e) {
 		if (this.isDraggingAllCurrentTabs(draggedTab))
 			return;
 
+		// Respect the behaviour of "Disable detach and tear off tab"
+		// https://addons.mozilla.org/firefox/addon/bug489729-disable-detach-and-t/
+		if ('bug489729' in this.window &&
+			prefs.getPref('extensions.bug489729.disable_detach_tab'))
+			return;
+
 		if (aEvent.ctrlKey || aEvent.metaKey)
 			draggedTab.__treestyletab__toBeDuplicated = true;
 
