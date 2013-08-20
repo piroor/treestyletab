@@ -49,6 +49,7 @@ XPCOMUtils.defineLazyModuleGetter(this, 'FullTooltipManager', 'resource://treest
 XPCOMUtils.defineLazyModuleGetter(this, 'TabbarDNDObserver', 'resource://treestyletab-modules/tabbarDNDObserver.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'TabpanelDNDObserver', 'resource://treestyletab-modules/tabpanelDNDObserver.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'AutoHideBrowser', 'resource://treestyletab-modules/autoHide.js');
+XPCOMUtils.defineLazyModuleGetter(this, 'BrowserUIShowHideObserver', 'resource://treestyletab-modules/browserUIShowHideObserver.js');
 
 XPCOMUtils.defineLazyGetter(this, 'window', function() {
 	Cu.import('resource://treestyletab-modules/lib/namespace.jsm');
@@ -797,6 +798,9 @@ TreeStyleTabBrowser.prototype = {
 			b.mTabBox.insertBefore(placeHolder, toggler.nextSibling);
 		}
 		this.tabStripPlaceHolder = (placeHolder != this.tabStrip) ? placeHolder : null ;
+
+		if (this.tabStripPlaceHolder)
+			this.tabStripPlaceHolderBoxObserver = new BrowserUIShowHideObserver(this, this.tabStripPlaceHolder.parentNode);
 	},
  
 	_initTabbrowserContextMenu : function TSTBrowser_initTabbrowserContextMenu() 
@@ -2062,6 +2066,11 @@ TreeStyleTabBrowser.prototype = {
 		if (this.tooltipManager) {
 			this.tooltipManager.destroy();
 			delete this.tooltipManager;
+		}
+
+		if (this.tabStripPlaceHolderBoxObserver) {
+			this.tabStripPlaceHolderBoxObserver.destroy();
+			delete this.tabStripPlaceHolderBoxObserver;
 		}
 
 		var w = this.window;
