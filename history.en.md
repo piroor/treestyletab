@@ -11,6 +11,8 @@
    * Fixed: Show favicon for dummy (group) tabs correctly on Firefox 22.
    * Fixed: Detect dummy (group) tabs correctly. ([Fixed by Infocatcher. Thanks!](https://github.com/piroor/treestyletab/pull/518))
    * Fixed: On Firefox 23 and later, ignore the preference "hide the tab bar when there is only one tab" because it was available on Firefox 22 or older versions.
+   * Fixed: Resolve visual glitch of the tab bar after showing/hiding a toolbar.
+   * Fixed: Works with [bug489729 (Disable detach and tear off tab)](https://addons.mozilla.org/firefox/addon/bug489729-disable-detach-and-t/).
    * [ru locale is updated by Infocatcher. Thanks!](https://github.com/piroor/treestyletab/pull/534)
  - 0.14.2013052901
    * Fixed: Pinned tabs are shown with more stylized appearance.

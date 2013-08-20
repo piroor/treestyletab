@@ -11,6 +11,8 @@
    * Firefox 22でグループ化用のダミーのタブのアイコンが正しく表示されなくなっていたのを修正
    * グループ化用のダミーのタブでない物をダミーのタブと誤認する場合があったのを修正（[by Infocatcher. Thanks!](https://github.com/piroor/treestyletab/pull/518)）
    * Firefox 23以降で、Firefox 22以前でのみ有効だった「タブが1つだけの時にタブバーを隠す設定」を挙動に反映しないようにした
+   * ツールバーの表示・非表示を切り替えた後などにタブバーの見た目が壊れることがあったのを修正
+   * [bug489729 (Disable detach and tear off tab)](https://addons.mozilla.org/firefox/addon/bug489729-disable-detach-and-t/)と併用できるようにした
    * ロシア語ロケール更新（[by Infocatcher. Thanks!](https://github.com/piroor/treestyletab/pull/534)）
  - 0.14.2013052901
    * ピン留めされたタブの外観をより綺麗に調整するようにした
