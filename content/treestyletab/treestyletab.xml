@@ -19,6 +19,14 @@
 		                   anonid="toolbar-innerbox"
 		                   class="treestyletab-toolbar-inner-box"><xbl:children/></xul:hbox></content>
 		<implementation>
+			<constructor><![CDATA[
+				// If the binding is unexpectedly re-assigned, then
+				// the size of the inner box is lost.
+				// So we have to update it immediately.
+				// See: https://github.com/piroor/treestyletab/issues/538
+				if (gBrowser.treeStyleTab)
+					gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_APPEARANCE_CHANGE);
+			]]></constructor>
 			<field name="treeStyleTabToolbarInnerBox" readonly="true">
 				document.getAnonymousElementByAttribute(this, 'anonid', 'toolbar-innerbox')
 			</field>
@@ -32,6 +40,14 @@
 		                   anonid="toolbar-innerbox"
 		                   class="treestyletab-toolbar-inner-box"><xbl:children/></xul:hbox></content>
 		<implementation>
+			<constructor><![CDATA[
+				// If the binding is unexpectedly re-assigned, then
+				// the size of the inner box is lost.
+				// So we have to update it immediately.
+				// See: https://github.com/piroor/treestyletab/issues/538
+				if (gBrowser.treeStyleTab)
+					gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_APPEARANCE_CHANGE);
+			]]></constructor>
 			<field name="treeStyleTabToolbarInnerBox" readonly="true">
 				document.getAnonymousElementByAttribute(this, 'anonid', 'toolbar-innerbox')
 			</field>
