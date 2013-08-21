@@ -3102,7 +3102,9 @@ TreeStyleTabBrowser.prototype = {
 
 		var parent = this.getParentTab(aTab);
 		var siblings = this.getSiblingTabs(aTab);
-		var groupTabs = siblings.filter(this.isGroupTab, this);
+		var groupTabs = siblings.filter(function(aTab) {
+			return this.isTemporaryGroupTab(aTab);
+		}, this);
 		var groupTab = (
 				groupTabs.length == 1 &&
 				siblings.length == 1 &&
@@ -3113,7 +3115,7 @@ TreeStyleTabBrowser.prototype = {
 
 		var shouldCloseParentTab = (
 				parent &&
-				this.isGroupTab(parent) &&
+				this.isTemporaryGroupTab(parent) &&
 				this.getDescendantTabs(parent).length == 1
 			);
 		if (shouldCloseParentTab)
@@ -5099,7 +5101,7 @@ TreeStyleTabBrowser.prototype = {
 		// for backward compatibility
 		this.fireDataContainerEvent(this.kEVENT_TYPE_DETACHED.replace(/^nsDOM/, ''), aChild, true, false, data);
 
-		if (this.isGroupTab(parentTab) && !this.hasChildTabs(parentTab)) {
+		if (this.isTemporaryGroupTab(parentTab) && !this.hasChildTabs(parentTab)) {
 			this.window.setTimeout(function(aTabBrowser) {
 				if (parentTab.parentNode)
 					aTabBrowser.removeTab(parentTab, { animate : true });

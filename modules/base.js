@@ -2197,6 +2197,14 @@ var TreeStyleTabBase = {
 		);
 	},
  
+	isTemporaryGroupTab : function TSTBase_isTemporaryGroupTab(aTab, aLazyCheck) 
+	{
+		return (
+			this.isGroupTab(aTab, aLazyCheck) &&
+			!/.*[\?&;]temporary=(?:1|yes|true)/i.test(aTab.linkedBrowser.currentURI.spec)
+		);
+	},
+ 
 	get pinnedTabsCount() 
 	{
 		return this.browser.mTabContainer.querySelectorAll('tab[pinned="true"]').length;
