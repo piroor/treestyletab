@@ -62,6 +62,10 @@ GroupTab.prototype = {
 	{
 		return this.window && this.window.location;
 	},
+	get locationSearch()
+	{
+		return this.location.href.replace(/^[^\?]+/, '');
+	},
 
 	get label()
 	{
@@ -79,12 +83,13 @@ GroupTab.prototype = {
 	get title()
 	{
 		if (this._title === null) {
-			let title = this.location.search.match(/(?:^|[\?&;])title=([^&;]*)/i);
+			let locationSearch = this.locationSearch;
+			let title = locationSearch.match(/(?:^|[\?&;])title=([^&;]*)/i);
 			if (title)
 				title = title[1];
 			// for old style URIs
-			if (!title && !/(?:^|[\?&;])temporary=/i.test(this.location.search))
-				title = this.location.search.replace(/^\?/, '');
+			if (!title && !/(?:^|[\?&;])temporary=/i.test(locationSearch))
+				title = locationSearch.replace(/^\?/, '');
 			this._title = (title) ?
 							this.trim(decodeURIComponent(title)) :
 							'' ;
@@ -99,7 +104,7 @@ GroupTab.prototype = {
 	_title : null,
 
 	get temporary() {
-		return /(?:^|[\?&;])temporary=(?:1|yes|true)/i.test(this.location.search);
+		return /(?:^|[\?&;])temporary=(?:1|yes|true)/i.test(this.locationSearch);
 	},
 	set temporary(aValue) {
 		this._updateURI({ temporary: !!aValue });
