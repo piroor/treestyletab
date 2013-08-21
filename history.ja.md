@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 0.14.2013082201
    * Firefox 25に対応
    * 閉じたタブを開き直した時に、そのタブが親タブでなかった場合はツリー構造が復元されなくなっていたのを修正（0.14.2013052901での後退バグ）
    * [DragIt](https://addons.mozilla.org/firefox/addon/dragit-formerly-drag-de-go/)から開いたタブを現在のタブの子にするようにした
