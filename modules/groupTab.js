@@ -91,10 +91,31 @@ GroupTab.prototype = {
 		}
 		return this._title;
 	},
+	set title(aValue) {
+		this._title = aValue;
+		this._updateURI();
+		return aValue;
+	},
 	_title : null,
 
 	get temporary() {
 		return /(?:^|[\?&;])temporary=(?:1|ues|true)/i.test(this.location.search);
+	},
+	set temporary(aValue) {
+		this._updateURI({ temporary: !!aValue });
+		return aValue;
+	},
+
+	_updateURI : function GT_updateURI(aOptions) {
+		aOptions = aOptions || {};
+		var temporary = this.temporary;
+		if ('temporary' in aOptions)
+			temporary = aOptions.temporary;
+		this.location.replace(
+			this.location.href.split('?')[0] + '?' +
+			'title=' + encodeURIComponent(this.title) + ';' +
+			'temporary=' + temporary
+		);
 	},
 
 	get browser()
@@ -175,13 +196,8 @@ GroupTab.prototype = {
 		this.label.setAttribute('tooltiptext', value);
 		this.document.documentElement.setAttribute('title', value);
 
-		if (value != old) {
-			this.location.replace(
-				this.location.href.split('?')[0] + '?' +
-				'title=' + encodeURIComponent(value) + ';' +
-				'temporary=' + this.temporary
-			);
-		}
+		if (value != old)
+			this.title = value;
 
 		this.editor.blur();
 		this.deck.selectedIndex = 0;
