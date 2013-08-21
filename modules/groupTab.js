@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2011
+ * Portions created by the Initial Developer are Copyright (C) 2010-2013
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -79,8 +79,8 @@ GroupTab.prototype = {
 	get title()
 	{
 		if (this._title === null) {
-			let title = this.location.href.split('?')[1];
-			this._title = (this.location.href.indexOf('?') > -1 && title) ?
+			let title = this.location.search.replace(/^\?/, '');
+			this._title = (title) ?
 							this.trim(decodeURIComponent(title)) :
 							'' ;
 		}
