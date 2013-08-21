@@ -98,6 +98,9 @@ GroupTab.prototype = {
 	},
 	set title(aValue) {
 		this._title = aValue;
+		this.document.title = this.label.value = aValue;
+		this.label.setAttribute('tooltiptext', aValue);
+		this.document.documentElement.setAttribute('title', aValue);
 		this._updateURI();
 		return aValue;
 	},
@@ -197,9 +200,6 @@ GroupTab.prototype = {
 
 		var old = this.trim(this.label.value);
 		var value = this.trim(this.editor.value);
-		this.document.title = this.label.value = value;
-		this.label.setAttribute('tooltiptext', value);
-		this.document.documentElement.setAttribute('title', value);
 
 		if (value != old)
 			this.title = value;
