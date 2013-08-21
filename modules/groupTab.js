@@ -99,7 +99,7 @@ GroupTab.prototype = {
 	_title : null,
 
 	get temporary() {
-		return /(?:^|[\?&;])temporary=(?:1|ues|true)/i.test(this.location.search);
+		return /(?:^|[\?&;])temporary=(?:1|yes|true)/i.test(this.location.search);
 	},
 	set temporary(aValue) {
 		this._updateURI({ temporary: !!aValue });
