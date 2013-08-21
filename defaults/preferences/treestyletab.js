@@ -626,18 +626,6 @@ pref("extensions.treestyletab.createSubtree.underParent", true);
 pref("extensions.treestyletab.pinnedTab.faviconized", true);
 
 /**
- * Behaviour when the last child tab of the last group tab is closed.
- * By default TST closes needless group tabs when they have no child anymore.
- * However, if it is the last tab of an window or a group, then TST closes
- * the window (or enters to the tab groups view).
- * By changing these preferences, you can allow/disallow to close the window
- * (or enter to the groups view).
- * true:  allow to close the last group tab automatically.
- * false: disallow to close the last group tab automatically.
- */
-pref("extensions.treestyletab.autoRemoveNeedlessGroupTab.lastTab", false);
-
-/**
  * Compatibility hack flags for other addons. They can be disabled by each
  * addon, when the addon become working with TST without dirty hacks.
  * In other words, add-on authros can disable TST's dirty hack if it is
