@@ -395,6 +395,7 @@ pref("extensions.treestyletab.dropLinksOnTab.behavior", 0);
  *  1 | 512        = Open as a new tree, as a flat group.
  */
 pref("extensions.treestyletab.openGroupBookmark.behavior", 2304); /* 0 | 256 | 2048 */
+pref("extensions.treestyletab.openGroupBookmark.temporaryGroup", true);
 /**
  * How to treat tabs dropped to the Bookmarks menu or Bookmarks toolbar.
  *  0 = Always ask how bookmark the tree.
@@ -617,6 +618,7 @@ pref("extensions.multipletab.show.multipletab-selection-item-createSubtree", tru
  * the first selected tab becomes the parent.
  */
 pref("extensions.treestyletab.createSubtree.underParent", true);
+pref("extensions.treestyletab.createSubtree.underParent.temporaryGroup", true);
 
 /**
  * Size of pinned tabs in the vertical tab bar.

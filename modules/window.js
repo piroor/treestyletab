@@ -1350,7 +1350,9 @@ TreeStyleTabWindow.prototype = {
 		);
 
 		var root = utils.getTreePref('createSubtree.underParent') ?
-					b.addTab(this.getGroupTabURI({ temporary: true })) :
+					b.addTab(this.getGroupTabURI({
+						temporary: utils.getTreePref('createSubtree.underParent.temporaryGroup')
+					})) :
 					aTabs.shift() ;
 		var self = this;
 		this.Deferred.next(function(self) {

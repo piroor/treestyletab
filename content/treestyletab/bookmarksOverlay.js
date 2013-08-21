@@ -418,7 +418,7 @@ var TreeStyleTabBookmarksService = {
 					treeStructure = sv.getTreeStructureFromItems(aIDs, 0);
 					aURLs.unshift(sv.getGroupTabURI({
 						title:     aFolderTitle,
-						temporary: true
+						temporary: TreeStyleTabUtils.getTreePref('openGroupBookmark.temporaryGroup')
 					}));
 				}
 			}
