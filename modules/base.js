@@ -2197,10 +2197,10 @@ var TreeStyleTabBase = {
 		);
 	},
  
-	isTemporaryGroupTab : function TSTBase_isTemporaryGroupTab(aTab, aLazyCheck) 
+	isTemporaryGroupTab : function TSTBase_isTemporaryGroupTab(aTab) 
 	{
 		return (
-			this.isGroupTab(aTab, aLazyCheck) &&
+			this.isGroupTab(aTab, true) &&
 			/.*[\?&;]temporary=(?:1|yes|true)/i.test(aTab.linkedBrowser.currentURI.spec)
 		);
 	},
