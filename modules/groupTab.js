@@ -79,7 +79,12 @@ GroupTab.prototype = {
 	get title()
 	{
 		if (this._title === null) {
-			let title = this.location.search.replace(/^\?/, '');
+			let title = this.location.search.match(/(?:^|[\?&;])title=([^&;]*)/i);
+			if (title)
+				title = title[1];
+			// for old style URIs
+			if (!title && !/(?:^|[\?&;])temporary=/i.test(this.location.search))
+				title = this.location.search.replace(/^\?/, '');
 			this._title = (title) ?
 							this.trim(decodeURIComponent(title)) :
 							'' ;
@@ -87,6 +92,10 @@ GroupTab.prototype = {
 		return this._title;
 	},
 	_title : null,
+
+	get temporary() {
+		return /(?:^|[\?&;])temporary=(?:1|ues|true)/i.test(this.location.search);
+	},
 
 	get browser()
 	{
@@ -166,8 +175,13 @@ GroupTab.prototype = {
 		this.label.setAttribute('tooltiptext', value);
 		this.document.documentElement.setAttribute('title', value);
 
-		if (value != old)
-			this.location.replace(this.location.href.split('?')[0]+'?'+encodeURIComponent(value));
+		if (value != old) {
+			this.location.replace(
+				this.location.href.split('?')[0] + '?' +
+				'title=' + encodeURIComponent(value) + ';' +
+				'temporary=' + this.temporary
+			);
+		}
 
 		this.editor.blur();
 		this.deck.selectedIndex = 0;
