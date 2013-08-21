@@ -189,3 +189,4 @@
 <!ENTITY context.bookmarkTabSubtree.accesskey "з">
 
 <!ENTITY group.default "Новая группа">
+<!ENTITY group.temporary "Temporary Group">

@@ -15,22 +15,26 @@
 		<image class="icon background-image"/>
 	</box>
 	<vbox class="label-container" flex="1">
-		<deck id="deck">
-			<hbox align="center">
-				<image class="icon"/>
-				<label id="label"
-					flex="1"
-					crop="end"
-					value="&group.default;"
-					tooltiptext="&group.default;"/>
-			</hbox>
-			<hbox align="center">
-				<image class="icon"/>
-				<textbox id="editor"
-					flex="1"
-					value="&group.default;"/>
-			</hbox>
-		</deck>
+		<hbox align="center">
+			<deck id="deck" flex="1">
+				<hbox align="center">
+					<image class="icon"/>
+					<label id="label"
+						flex="1"
+						crop="end"
+						value="&group.default;"
+						tooltiptext="&group.default;"/>
+				</hbox>
+				<hbox align="center">
+					<image class="icon"/>
+					<textbox id="editor"
+						flex="1"
+						value="&group.default;"/>
+				</hbox>
+			</deck>
+			<checkbox id="temporary" label="&group.temporary;"
+				oncommand="groupTab.temporary = this.checked;"/>
+		</hbox>
 		<vbox id="tree"
 			flex="1"/>
 	</vbox>

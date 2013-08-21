@@ -183,3 +183,4 @@
 <!ENTITY context.bookmarkTabSubtree.accesskey   "t">
 
 <!ENTITY group.default "新しいグループ">
+<!ENTITY group.temporary "一時的なグループ">

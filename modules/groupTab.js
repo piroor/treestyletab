@@ -79,6 +79,10 @@ GroupTab.prototype = {
 	{
 		return this.document.getElementById('deck');
 	},
+	get temporaryCheck()
+	{
+		return this.document.getElementById('temporary');
+	},
 
 	get title()
 	{
@@ -110,7 +114,9 @@ GroupTab.prototype = {
 		return /(?:^|[\?&;])temporary=(?:1|yes|true)/i.test(this.locationSearch);
 	},
 	set temporary(aValue) {
-		this._updateURI({ temporary: !!aValue });
+		aValue = !!aValue;
+		this._updateURI({ temporary: aValue });
+		this.temporaryCheck.checked = aValue;
 		return aValue;
 	},
 
@@ -163,6 +169,8 @@ GroupTab.prototype = {
 			this.label.setAttribute('tooltiptext', title);
 			this.editor.value = title;
 		}
+
+		this.temporaryCheck.checked = this.temporary;
 
 		this.window.addEventListener('load', this, false);
 

@@ -193,3 +193,4 @@
 <!ENTITY context.bookmarkTabSubtree.accesskey "l">
 
 <!ENTITY group.default "New Group">
+<!ENTITY group.temporary "Temporary Group">

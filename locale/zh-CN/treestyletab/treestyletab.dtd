@@ -196,3 +196,4 @@
 <!ENTITY context.bookmarkTabSubtree.accesskey   "t">
 
 <!ENTITY group.default "新建组">
+<!ENTITY group.temporary "Temporary Group">
