@@ -127,7 +127,7 @@ GroupTab.prototype = {
 			temporary = aOptions.temporary;
 		this.location.replace(
 			this.location.href.split('?')[0] + '?' +
-			'title=' + encodeURIComponent(this.title) + ';' +
+			'title=' + encodeURIComponent(this.title) + '&' +
 			'temporary=' + temporary
 		);
 	},

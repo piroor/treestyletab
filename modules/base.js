@@ -812,7 +812,7 @@ var TreeStyleTabBase = {
 		var parameters = [];
 		parameters.push('title=' + encodeURIComponent(aOptions.title || ''));
 		parameters.push('temporary=' + !!aOptions.temporary);
-		return 'about:treestyletab-group?' + parameters.join(';');
+		return 'about:treestyletab-group?' + parameters.join('&');
 	},
   
 // xpath 
