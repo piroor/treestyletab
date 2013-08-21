@@ -23,7 +23,7 @@
    * Fixed: Don't make new tabs children of the current tab, if they are opened by [Gmail Panel](https://addons.mozilla.org/firefox/addon/gmail-panel/) or someone.
    * Modified: Update codes around [session store API](http://dutherenverseauborddelatable.wordpress.com/2013/05/23/add-on-breakage-continued-list-of-add-ons-that-will-probably-be-affected/).
  - 0.14.2013040601
-   * Improved: Add a new secret option "extensions.treestyletab.autoAttach.fromCurrent" to control new tab position from the current tab.
+   * Improved: Add a new secret option `extensions.treestyletab.autoAttach.fromCurrent` to control new tab position from the current tab.
    * Fixed: Move tab by moveTabForward/moveTabBackward on Firefox 20 correctly.
    * Fixed: Don't set margin to indicate grouped tabs for parent tabs next to hidden tabs.
    * Fixed: Don't insert needless margins between collapsed tabs. Negative margins for collapsed tabs were unexpectedly inverted for tabs which have its "cannot be collapsed" parent tab. However, such tabs still can be collapsed if its root parent tab can be collapse its sub tree.
@@ -47,16 +47,16 @@
    * Fixed: Fix dynamic patch for [QuickDrag](https://addons.mozilla.org/firefox/addon/6912).
    * Modified: Don't change indent of tabs for collapsed tab bar.
    * Modified: Don't listen "mouseleave" event anymore (because it increases CPU usage.)
-   * Modifeid: Unify the preference item "extensions.treestyletab.animation.enabled" to "browser.tabs.animate".
+   * Modifeid: Unify the preference item `extensions.treestyletab.animation.enabled` to `browser.tabs.animate`.
  - 0.14.2012111201
    * Fixed: Tabs from other computers are correctly opened as child tabs of the "about:sync" tab, on lately Nightly.
    * Fixed: All animation effects were unexpectedly stopped after the configuration dialog is opened.
  - 0.14.2012111001
    * Improved: Dragged tabs in vertical tab bar are now animated (on Firefox 17 beta and later.)
-   * Improved: Update indent of tabs automatically when too deeply nested tabs are collapsed/expanded and the mouse cursor goes away from the operated tab. This behavior can be disabled by the secret preference "extensions.treestyletab.indent.autoShrink.onlyForVisible".
+   * Improved: Update indent of tabs automatically when too deeply nested tabs are collapsed/expanded and the mouse cursor goes away from the operated tab. This behavior can be disabled by the secret preference `extensions.treestyletab.indent.autoShrink.onlyForVisible`.
    * Fixed: Update indent of tabs automatically when tab groups are modified or switched.
-   * Improved: Different indent of tabs can be applied for horizontal and vertical tab bar. Secret preferences "extensions.treestyletab.indent.horizontal", "extensions.treestyletab.indent.vertical", "extensions.treestyletab.indent.min.horizontal" and "extensions.treestyletab.indent.min.vertical" are available.
-   * Improved: The default size of the tab bar (it is used to reset the tab bar when the splitter is double-clicked) is now customizable by secret preferences "extensions.treestyletab.tabbar.width.default", "extensions.treestyletab.tabbar.height.default" and "extensions.treestyletab.tabbar.shrunkenWidth.default".
+   * Improved: Different indent of tabs can be applied for horizontal and vertical tab bar. Secret preferences `extensions.treestyletab.indent.horizontal`, `extensions.treestyletab.indent.vertical`, `extensions.treestyletab.indent.min.horizontal` and `extensions.treestyletab.indent.min.vertical` are available.
+   * Improved: The default size of the tab bar (it is used to reset the tab bar when the splitter is double-clicked) is now customizable by secret preferences `extensions.treestyletab.tabbar.width.default`, `extensions.treestyletab.tabbar.height.default` and `extensions.treestyletab.tabbar.shrunkenWidth.default`.
    * Fixed: Drop position markers in vertical tab bar were accidentaly disappeared while dragging.
    * Fixed: Don't duplicate the current tab accidentaly when simple left click on the reload button.
    * Improved: Duplicate tabs as children of the current tab, from items of back/forward button's menu.
@@ -73,7 +73,7 @@
    * Fixed: Better handling of recursive/broken tree when collecting descendant tabs.
  - 0.14.2012080601
    * Updated for Firefox 16
-   * Fixed: "extensions.treestyletab.autoExpand.intelligently" works correctly. If you set the preference to  `false` , not-focused trees are never collapsed by expansion of the newly focused tree.
+   * Fixed: `extensions.treestyletab.autoExpand.intelligently` works correctly. If you set the preference to  `false` , not-focused trees are never collapsed by expansion of the newly focused tree.
    * Fixed: Don't forget collapsed state of trees while toolbar customizing.
    * Fixed: Create tree of nested bookmark folders, from dragged tree correctly.
    * Fixed: Open tabs as a tree on the dropped position in the tab bar, from dragged bookmark tree.
@@ -111,7 +111,7 @@
    * Fixed: Preferences migration on the startup failed in some cases.
    * Russian locale is updated by Infocatcher.
  - 0.14.2012021001
-   * Improved: A collapsed tree is expanded automatically if you press the Ctrl key for a while on it, even if the checkbox "When a tab gets focus, expand its tree and collapse others automatically" is unchecked. You can disable this behavior by the secret preference "extensions.treestyletab.autoExpandSubtreeOnSelect.whileFocusMovingByShortcut".
+   * Improved: A collapsed tree is expanded automatically if you press the Ctrl key for a while on it, even if the checkbox "When a tab gets focus, expand its tree and collapse others automatically" is unchecked. You can disable this behavior by the secret preference `extensions.treestyletab.autoExpandSubtreeOnSelect.whileFocusMovingByShortcut`.
    * Fixed: Tree twisties couldn't be hidden by user preference. (regression)
    * Fixed: With Tab Mix Plus, failed to save session data on exit. (regression)
    * Fixed: Icons of collapsed tabs in the horizontal tree were not hidden. (regression)
@@ -151,17 +151,17 @@
    * Fixed: TST could be broken by API calls on window destruction.
    * Fixed: When the system was too slow on TabOpen event (by Informational Tab or some addons), the tab bar failed to be scrolled to the newly opened tab.
    * Fixed: Tree of tabs in group tabs had too narrow height.
-   * Modified: The role of the counter in tabs is now switched for vertical and horizontal tab bar automatically. In the horizontal tab bar, it reports the number of all tabs in the tree (including the tab itself). In the vertical tab bar, it reports the number of collapsed children in the tree (excluding the tab itself). Secret preferences "extensions.treestyletab.counter.role.horizontal" and "extensions.treestyletab.counter.role.vertical" are available to control this behavior. [See discussions in #197.](https://github.com/piroor/treestyletab/issues/197)
+   * Modified: The role of the counter in tabs is now switched for vertical and horizontal tab bar automatically. In the horizontal tab bar, it reports the number of all tabs in the tree (including the tab itself). In the vertical tab bar, it reports the number of collapsed children in the tree (excluding the tab itself). Secret preferences `extensions.treestyletab.counter.role.horizontal` and `extensions.treestyletab.counter.role.vertical` are available to control this behavior. [See discussions in #197.](https://github.com/piroor/treestyletab/issues/197)
    * Updated for Nightly 12.0a1.
    * Drop support for Firefox 3.6.
  - 0.13.2011121501
    * Fixed: "Fast restore" didn't work if Tab Mix Plus is installed without its custom session management.
    * Fixed: Tabs moved into existing tree didn't become member tabs of the tree. (Regression on 0.13.2011121401. If you use Tab Mix Plus or other addons to control new tab position, tree could be broken.)
  - 0.13.2011121401
-   * Improved: "Fast restore" has landed. Last tree structure of tabs is restored on the startup quickly. If you see any trouble from this feature, disable it by following processes: go to "about:config" and set "extensions.treestyletab.restoreTree.level" to "0".
+   * Improved: "Fast restore" has landed. Last tree structure of tabs is restored on the startup quickly. If you see any trouble from this feature, disable it by following processes: go to "about:config" and set `extensions.treestyletab.restoreTree.level` to `0`.
    * Improved: "about:treestyletab-group" tabs (dummy tabs for grouping) now contains list of member tabs as links. You can click it to select the tab, and you can close tabs by middle-click on links.
    * Improved: When the current tab has focus, arrow keys should work like in the folder pane on Windows Explorer. Right arrow expands a collapsed tree or focuses to the first child tab. Left arrow focuses to the parent tab or collapses the tree. (*Note: if you want to focus to the tab by mouse click, you have to add a CSS rule  `.tabbrowser-tab { -moz-user-focus: normal !important; }`  to your userChrome.css.)
-   * Improved: Now, "auto hide tab bar" feature correctly hides the tab bar even if plugins (ex. PDF, Flash, and so on) cover the content area. (On old versions, the tab bar was kept shown unexpectedly on such cases.) This hack is based on an invisible popup covering the content area, so, if you see any trouble from this hack, disable it by following processes: go to "about:config" and set "extensions.treestyletab.tabbar.autoHide.contentAreaScreen.enabled" to "false".
+   * Improved: Now, "auto hide tab bar" feature correctly hides the tab bar even if plugins (ex. PDF, Flash, and so on) cover the content area. (On old versions, the tab bar was kept shown unexpectedly on such cases.) This hack is based on an invisible popup covering the content area, so, if you see any trouble from this hack, disable it by following processes: go to "about:config" and set `extensions.treestyletab.tabbar.autoHide.contentAreaScreen.enabled` to `false`.
    * Improved: "Undo Close Tree" confirmation UI is now shown immediately when a tab member of closed tree is restored by "Undo Close Tab".
    * Improved: Now you can close tabs by middle click on the rich tooltip on tree.
    * Fixed: The width of the tab bar was wrongly shrunken to 105px when you started Firefox with fullscreen or maximized state.
@@ -174,15 +174,15 @@
    * Fixed: On Linux + GNOME3, "narrow scroll bar" was not narrow.
    * Modified: The API  `partTab()`  is renamed to  `detachTab()` . For backward compatibility, the old name is still available.
  - 0.12.2011120101
-   * Improved: While you are browsing tabs by Ctrl-Tab/Ctrl-Shift-Tab, now collapsed tree is automatically expanded, if you stay there with pressed Ctrl key. (You can change the delay via a secret preference "extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut.delay".)
+   * Improved: While you are browsing tabs by Ctrl-Tab/Ctrl-Shift-Tab, now collapsed tree is automatically expanded, if you stay there with pressed Ctrl key. (You can change the delay via a secret preference `extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut.delay`.)
    * Improved: Title of "dummy" tabs can be changed by F2 key.
-   * Improved: Tooltip on a tree now reports only top 10 tabs at first, and it is expanded to scrollable tooltip automatically after a delay. (You can change the delay via a secret preference "extensions.treestyletab.tooltip.fullTooltipDelay".)
+   * Improved: Tooltip on a tree now reports only top 10 tabs at first, and it is expanded to scrollable tooltip automatically after a delay. (You can change the delay via a secret preference `extensions.treestyletab.tooltip.fullTooltipDelay`.)
    * Improved: Members of the tree is shown in the tooltip on the closebox in tabs.
-   * Improved: Calculation about size of pinned tabs is simplified. A new boolean preference "extensions.treestyletab.pinnedTab.faviconized" is available to change pinned tabs in a vertical tab bar from "faviconized" to "regular tab".
-   * Fixed: Works on Nightly 11 at 2011-11-30(PST). Now the animation management module never uses "MozBeforePaint" event.
+   * Improved: Calculation about size of pinned tabs is simplified. A new boolean preference `extensions.treestyletab.pinnedTab.faviconized` is available to change pinned tabs in a vertical tab bar from "faviconized" to "regular tab".
+   * Fixed: Works on Nightly 11 at 2011-11-30(PST). Now the animation management module never uses `MozBeforePaint` event.
    * Fixed: Dropped tabs were broken if they are dropped on "indent" areas.
    * Fixed: Shrunken vertical tab bar couldn't be resized by drag and drop because the tab bar was unexpectedly expanded anyway.
-   * Modified: Tooltip on tree always show tree. If you like the old behavior (tooltip with tree only for collapsed tree), you can set a secret preference "extensions.treestyletab.tooltip.mode" to "1". ("0" means "never", "2" means "always").
+   * Modified: Tooltip on tree always show tree. If you like the old behavior (tooltip with tree only for collapsed tree), you can set a secret preference `extensions.treestyletab.tooltip.mode` to `1`. (`0` means "never", `2` means "always").
    * Modified: The counter in a parent tab now reports the number of all tabs in the tree including itself.
  - 0.12.2011110101
    * Fixed: "Open in tabs" feature for bookmark folder didn't work. (regression on 0.12.2011102901)
@@ -196,14 +196,14 @@
    * Fixed: Pinned tabs were mispositioned on Nightly.
    * Fixed: New tabs opened by Greasemonkey scripts are correctly become children of the tab.
    * Fixed: Tabs opened from bookmark folders in secondary (or others) window, their tree structure weren't restored if Tab Utilities is installed.
-   * Fixed: When "TreeStyleTabService.treeViewEnabled" was set to false twice, twisties in tabs were lost unexpectedly.
+   * Fixed: When `TreeStyleTabService.treeViewEnabled` was set to false twice, twisties in tabs were lost unexpectedly.
    * Fixed: Hacks for [Colorful Tabs](https://addons.mozilla.org/firefox/addon/1368) didn't work. Now all tabs in a tree are shown with same background color.
    * Fixed: New tabs from "new blank tab" button on the tab bar didn't become first child of the current tab (by the user preference) automatically when it is opened. Now it works.
    * zh-TW locale is updated by bootleq.
  - 0.12.2011082901
    * Note: This version (and older versions) is incompatible to Firefox 8 or later due to the [bug 455694](https://bugzilla.mozilla.org/show_bug.cgi?id=455694) and [674925](https://bugzilla.mozilla.org/show_bug.cgi?id=674925).
    * Improved: A dummy tab for grouping tabs is automatically closed when it has no sibling tab.
-   * Improved: The size of pinned tabs can be customized by secret prefs "extensions.treestyletab.pinnedTab.width" and "extensions.treestyletab.pinnedTab.height". If you set the width to "-1", then pinned tabs will be expanded to the width of the vertical tab bar.
+   * Improved: The size of pinned tabs can be customized by secret prefs `extensions.treestyletab.pinnedTab.width` and `extensions.treestyletab.pinnedTab.height`. If you set the width to `-1`, then pinned tabs will be expanded to the width of the vertical tab bar.
    * Improved: Needless spaces around favicons in horizontal tabs disappeared.
    * Fixed: The parent tab was unexpectedly focused when a child tab was closed even if still there were any other child.
    * Fixed: Browser windows are not resized automatically if it is maximized.
@@ -235,14 +235,14 @@
    * Improved: With [Locationbar²](https://addons.mozilla.org/ja/firefox/addon/locationbar%C2%B2/), new tabs from path segments are now opened as child tabs of the current tab.
    * Improved: New APIs for addons are available :  `TreeStyleTabService.readyToOpenChildTabNow()` ,  `TreeStyleTabService.readyToOpenNextSiblingTabNow()` , and  `TreeStyleTabService.readyToOpenNewTabGroupNow()` . They are useful for reservation of new child tab, if the new tab is possibly canceled by some reason. Reservations made by these new API are automatically canceled with delay, so you don't have to call  `TreeStyleTabService.stopToOpenChildTab()`  manually.
    * Fixed: Contents of textbox in toolbar items inserted into vertical tab bar were unexpectedly hidden.
-   * Fixed: Vertical tab bar in popup windows should be hidden by "chromehidden" attribute.
+   * Fixed: Vertical tab bar in popup windows should be hidden by `chromehidden` attribute.
    * Fixed: Drop position indicator in vertical tab bar was missing wrongly for the last tab, if there was any collapsed tab.
    * Fixed: When a root tab with collapsed children was moved by drag and drop, its children were unexpectedly expanded.
    * Fixed: The feature "hide tab bar when there is only one tab" (one of Firefox's options) didn't work correctly on Firefox 4.
    * Fixed: Horizontal tab bar was wrongly shown on the top alwasy.
    * Fixed: Clicking on the grippy in the splitter of the vertical tab bar didn't expand the collapsed tab bar.
    * Fixed: On-screen tabs on vertical tab bar were not highlighted correctly in the "list all tabs" popup. (It is a new feature introduced by the [bug 626903](https://bugzilla.mozilla.org/show_bug.cgi?id=626903).)
-   * Fixed: An internal preference "extensions.treestyletab.tabbar.scrollToNewTab.mode" didn't work for new tabs opened in the background.
+   * Fixed: An internal preference `extensions.treestyletab.tabbar.scrollToNewTab.mode` didn't work for new tabs opened in the background.
    * Fixed: With [All-in-One Sidebar](https://addons.mozilla.org/firefox/addon/1027) the tab bar was wrongly left on the content area after the sidebar was hidden automatically by AiOS.
    * Fixed: On Nightly, background color of the vertical tab bar was unexpectedly fixed to "white" by [these patches](http://hg.mozilla.org/mozilla-central/rev/e90bdd97d168) introduced by the [bug 558585](https://bugzilla.mozilla.org/show_bug.cgi?id=558585).
    * da-DK locale is updated by Regmos.
@@ -265,7 +265,7 @@
    * Fixed: Confirmation with info bar didn't work correctly.
    * Fixed: Pinned tabs should not be closed by the command "close other tabs except this tree".
    * Fixed: The splitter for the tab bar wrongly handled dragging with right or middle mouse button.
-   * Fixed: When a parent tab is closed, child tabs were wrongly controlled. The pref "extensions.treestyletab.closeRootBehavior" should work only if "extensions.treestyletab.closeParentBehavior" is "0". (regression)
+   * Fixed: When a parent tab is closed, child tabs were wrongly controlled. The pref `extensions.treestyletab.closeRootBehavior` should work only if `extensions.treestyletab.closeParentBehavior` is `0`. (regression)
    * Fixed: The status popup was shown in wrong position if there is any sidebar or vertical toolbar.
    * Fixed: Broken tree made by middle click on "back" and "forward" button is fixed.
    * Fixed: With [Hide Caption Titlebar Plus](https://addons.mozilla.org/firefox/addon/hide-caption-titlebar-plus-sma/), vertical tab bar didn't work correctly.
@@ -273,20 +273,20 @@
  - 0.11.2011040804
    * Fixed: Pinned tabs in the right tab bar were wrongly positioned. (regression on 0.11.2011040802)
  - 0.11.2011040803
-   * Modified: Only selected tabs (which have "multiselected" attribute) are moved by drag and drop, even if selected tabs have any not-selected child.
+   * Modified: Only selected tabs (which have `multiselected` attribute) are moved by drag and drop, even if selected tabs have any not-selected child.
  - 0.11.2011040802
    * Fixed: Unpinned tabs were shown with wrong margin in the left tab bar. (regression on 0.11.2011040801)
    * Fixed: When a tab which have both parent and children becomes pinned, tree structure was broken unexpectedly.
-   * Modified: When the dragged tab is selected by "multiselected" attribute, drag and drop of a parent tab to a bookmark tree is handled by Firefox or other addons, not by Tree Style Tab itself.
+   * Modified: When the dragged tab is selected by `multiselected` attribute, drag and drop of a parent tab to a bookmark tree is handled by Firefox or other addons, not by Tree Style Tab itself.
  - 0.11.2011040801
    * Fixed: Pinned tabs were mis-positioned in the left tab bar. (regression on 0.11.2011040701)
  - 0.11.2011040701
-   * Improved: The scrollbar in the leftside tab bar is shown leftside on Firefox 4. This can be disabled by "extensions.treestyletab.tabbar.invertScrollbar".
+   * Improved: The scrollbar in the leftside tab bar is shown leftside on Firefox 4. This can be disabled by `extensions.treestyletab.tabbar.invertScrollbar`.
    * Improved: The scrollbar in the vertical tab bar is shown with narrow width.
-   * Improved: The minimum indent of tabs can be customized by a secret pref "extensions.treestyletab.indent.min". Default value is "3".
-   * Improved: Dynamic changing of indent can be disabled by a secret pref "extensions.treestyletab.indent.autoShrink".
-   * Improved: Dynamic repositioning of status panels on Firefox 4 becomes better. You can disable this behvior by a secret pref "extensions.treestyletab.repositionStatusPanel".
-   * Improved: Dirty hacks for other addons can be disabled by secret prefs. See "extensions.treestyletab.compatibility.*" items in the about:config.
+   * Improved: The minimum indent of tabs can be customized by a secret pref `extensions.treestyletab.indent.min`. Default value is `3`.
+   * Improved: Dynamic changing of indent can be disabled by a secret pref `extensions.treestyletab.indent.autoShrink`.
+   * Improved: Dynamic repositioning of status panels on Firefox 4 becomes better. You can disable this behvior by a secret pref `extensions.treestyletab.repositionStatusPanel`.
+   * Improved: Dirty hacks for other addons can be disabled by secret prefs. See `extensions.treestyletab.compatibility.*` items in the about:config.
    * Modified: When you change some tab bar prefs (size, position and fixed) via configuration dialog or about:config, then new setting is applied to all existing windows.
    * Fixed: Dragging of the tab bar itself from a browser window to another window broke the secondary window.
    * Fixed: Unexpected too narrow tab bar is now automatically expanded.
@@ -320,7 +320,7 @@ ions/) correctly.
    * Fixed: Tree view was unexpectedly disabled by [Personal Titlebar](https://addons.mozilla.org/ja/firefox/addon/personal-titlebar/).
    * Fixed: Broken appearance of pinned tabs with Tab Mix Plus gone.
    * Fixed: Misplaced favicons in pinned tabs with Tab Mix Plus gone.
-   * Improved: A new secret preference to control collapsed/expanded state of restored tabs, "extensions.treestyletab.collapseExpandSubtree.sessionRestore". -1 restores the last state, 0 collapses all of restored trees, 1 expands all of them.
+   * Improved: A new secret preference to control collapsed/expanded state of restored tabs, `extensions.treestyletab.collapseExpandSubtree.sessionRestore`. -1 restores the last state, 0 collapses all of restored trees, 1 expands all of them.
    * German locale was updated by Andy Pillip.
  - 0.11.2011021901
    * Fixed: TST wrongly handled drag and drop actions on the tab bar even if it is fired in the toolbar customization.
@@ -329,7 +329,7 @@ ions/) correctly.
  - 0.11.2011021601
    * Improved: Buttons in the information bar to confirm how restore other closed tabs in the tree (it is shown when you do "undo close tab" for a tab which was in a tree) now have their suitable accesskey.
    * Improved: Focusring is shown in tabs if tabs are focusable by userChrome.css.
-   * Improved: On Firefox 3.6 or olders, the background of the transparent tab bar is no longer drawn if the secret pref "extensions.treestyletab.tabbar.transparent.partialTransparency" has a value equals to or larger than "1".
+   * Improved: On Firefox 3.6 or olders, the background of the transparent tab bar is no longer drawn if the secret pref `extensions.treestyletab.tabbar.transparent.partialTransparency` has a value equals to or larger than `1`.
    * Improved: An alternative drop-marker for drag and drop onto the vertical tab bar is available, for the "Default" skin.
    * Fixed: On Minefield, closing of the current tab didn't back the focus to the owner tab.
    * Fixed: Tearing off of multiple tabs was failed unexpectedly when [Multiple Tab Handler](http://piro.sakura.ne.jp/xul/_multipletab.html.en) is installed.
@@ -344,7 +344,7 @@ ions/) correctly.
    * Fixed: An error in the initialization process disappeared.
  - 0.11.2011020401
    * Modified: The status panel on Minefield is shown in the another side by default, for vertical tab bar.
-   * Fixed: The API "TreeStyleTabService.position" didn't work.
+   * Fixed: The API `TreeStyleTabService.position` didn't work.
  - 0.11.2011020301
    * Improved: Now you can open a new blank tab in existing tree.
    * Improved: Tabs restored from about:sessionrestore become children of the tab.
@@ -362,7 +362,7 @@ ions/) correctly.
    * Fixed: Tooltip on tabs were not updated after it was shown on a twisty of a tab.
    * Fixed: Icons of tabs were unexpectedly stretched if Tab Mix Plus is installed.
    * Fixed: The drop position indicator for horizontal tab bar was unexpectedly shown even if the tab bar was vertical.
-   * Fixed: When  `TreeStyleTabService.treeViewEnabled`  becomes "false", then stacked tabs in horizontal tab bar are correctly unstacked.
+   * Fixed: When  `TreeStyleTabService.treeViewEnabled`  becomes `false`, then stacked tabs in horizontal tab bar are correctly unstacked.
  - 0.11.2011011301
    * Fixed: After rearranging of tabs in the Panorama view, the order of actual tabs were not synchronized to the order of thumbnails in the Panorama view.
    * Fixed: On Minefield, the tab bar became too wide/too narrow when you toggled the "auto hide" feature of the tab bar.
@@ -388,7 +388,7 @@ ions/) correctly.
    * Fixed: On Minefield, previewing of Personas (lightweight themes) broke the appearance of the tab bar.
    * Fixed: On Minefieod, the expanded tab bar couldn't be resized by drag-and-drop on Linux.
    * Fixed: On Minefield, there was useless border on the tab bar on Linux.
-   * Fixed: New tabs from the web search bar didn't become children of the current tab if "extensions.treestyletab.autoAttachSearchResultAsChildren" was set to "2".
+   * Fixed: New tabs from the web search bar didn't become children of the current tab if `extensions.treestyletab.autoAttachSearchResultAsChildren` was set to `2`.
    * Fixed: Clicking on twisties in tabs were ignored on Mac OS X.
    * Fixed: With Tab Mix Plus, trees of tabs were not draggable.
    * Modified: API changing. API based on DOM Events are now sent as DataContainerEvent as new event types with "nsDOM" prefix, due to security restrictions on Minefield. (You can still use old API based on property access, but it doesn't work on Firefox 4 (and later) in some cases. Instead, you should use  `aEvent.getData(property name)`  to get the value from the event object.)
@@ -398,7 +398,7 @@ ions/) correctly.
    * Fixed: Tab overflow and other operations were wrongly blocked by TST's internal error.
  - 0.11.2010120901
    * Improved: A new context menu item for tabs: "Close Other Tabs except this Tree".
-   * Improved: Search result tab from the web search bar become child of the current tab, when you search a term selected in the current tab. (This behavior can be customized by a new secret preference "extensions.treestyletab.autoAttachSearchResultAsChildren". 1 = default, 2 = always open result tabs as children, 0 = disable this behavior.)
+   * Improved: Search result tab from the web search bar become child of the current tab, when you search a term selected in the current tab. (This behavior can be customized by a new secret preference `extensions.treestyletab.autoAttachSearchResultAsChildren`. 1 = default, 2 = always open result tabs as children, 0 = disable this behavior.)
    * Improved: New tabs opened by [DomainTab](https://addons.mozilla.org/firefox/addon/13906/) become children of the current tab.
    * Fixed: The configuration dialog was broken.
  - 0.11.2010120802
@@ -415,7 +415,7 @@ ions/) correctly.
    * Fixed: In the print preview mode, the auto hide of the tab bar should be disabled temporally.
    * Fixed: When you exit from the print preview mode, the tab bar possibly stayed hidden wrongly if All-in-One Sidebar or other addons there.
    * Fixed: Incorrect width of the tab bar disappeared for multiple windows.
-   * Fixed: "TreeStyleTabFocusNextTab" event didn't fired and controlling of tab focus didn't work.
+   * Fixed: `TreeStyleTabFocusNextTab` event didn't fired and controlling of tab focus didn't work.
  - 0.11.2010120202
    * Improved: When a tree is dropped into a bookmarks tree, all tabs in the tree are bookmarked.
  - 0.11.2010120201
@@ -426,7 +426,7 @@ ions/) correctly.
    * Improved: Now Tree Style Tab uses HTML5 drag and drop events for dragging of multiple tabs. Dragging of tabs by Tab Utilities and other addons can be handled correctly.
    * Improved: Maximum level of trees can be limited. (default = 999)
    * Improved: Groups of tabs in the vertical tab bar are shown with separator margins if tree indentation is disabled.
-   * Improved: New APIs:  `getAncestorTabs()`  and "TreeStyleTabFocusNextTab" event. You can cancel focus handling of Tree Style Tab when the current tab is closed, by canceling of "TreeStyleTabFocusNextTab" events.
+   * Improved: New APIs:  `getAncestorTabs()`  and `TreeStyleTabFocusNextTab` event. You can cancel focus handling of Tree Style Tab when the current tab is closed, by canceling of `TreeStyleTabFocusNextTab` events.
    * Fixed: On Minefield, expanding tabs unexpectedly have no transparency.
    * Fixed: Always apply animation effects for collapsing/expanding tabs, if it is allowed.
  - 0.11.2010112601
@@ -442,7 +442,7 @@ ions/) correctly.
    * Fixed: On Minefield, bookmarks are opened correctly.
    * Fixed: On Minefield, tabs from links become children of the current tab correctly.
    * Modified: about: uris (about:config, about:plugins, etc.) are recognized as different domains, to open new tabs from the location bar.
-   * Modified: By default, Alt-Enter in the location bar always open new tab. (If you want Alt key inverts the default behavior "new tab" vs "current tab", set "extensions.treestyletab.urlbar.invertDefaultBehavior" to "true".)
+   * Modified: By default, Alt-Enter in the location bar always open new tab. (If you want Alt key inverts the default behavior "new tab" vs "current tab", set `extensions.treestyletab.urlbar.invertDefaultBehavior` to `true`.)
  - 0.10.2010102501
    * Updated for [Bug 586234](https://bugzilla.mozilla.org/show_bug.cgi?id=586234): Tabs opened from links become children of the current tab correctly.
    * Updated for [Bug 568691](https://bugzilla.mozilla.org/show_bug.cgi?id=568691): Platform-specific default preferences are loaded correctly.
@@ -502,7 +502,7 @@ ions/) correctly.
    * fr-FR locale is updated by Laurent Haas.
  - 0.10.2010073001
    * Fixed: Appearance of twisty in tabs is applied on the startup correctly.
-   * Fixed: Tree of tabs opened from bookmark folders are always expanded. (You can disable if by a secret preference "extensions.treestyletab.openGroupBookmark.behavior". If you dislike this behavior, set a value: current value minus 2048)
+   * Fixed: Tree of tabs opened from bookmark folders are always expanded. (You can disable if by a secret preference `extensions.treestyletab.openGroupBookmark.behavior`. If you dislike this behavior, set a value: current value minus 2048)
    * fr-FR locale is updated by Laurent Haas.
  - 0.10.2010072901
    * Fixed: Context menu on tabs is available on Minefield 4.0b3pre.
@@ -511,7 +511,7 @@ ions/) correctly.
    * Fixed: Blank tab bar was wrongly shown when the last tab was hidden by browser.tabs.autoHide.
    * Fixed: [A problem on turning onto private browsing mode](http://piro.sakura.ne.jp/cgi-bin/bbs.cgi?2736) disappeared.
    * Fixed: Updated for [Bug 574654](https://bugzilla.mozilla.org/show_bug.cgi?id=574654).
-   * Improved: The tab bar is automatically scrolled to newly opened tabs even if they are opened in the background, only when the current tab will be not scrolled out. You can change this behavior by "extensions.treestyletab.tabbar.scrollToNewTab.mode" (default=1), 0 will disable this change, and 2 will scroll to new tabs anyway.
+   * Improved: The tab bar is automatically scrolled to newly opened tabs even if they are opened in the background, only when the current tab will be not scrolled out. You can change this behavior by `extensions.treestyletab.tabbar.scrollToNewTab.mode` (default=1), 0 will disable this change, and 2 will scroll to new tabs anyway.
    * French locale is available, translated by Laurent Haas.
  - 0.10.2010070301
    * Fixed: Startup problem on Minefield 4.0b2pre disappeared.
@@ -616,7 +616,7 @@ ions/) correctly.
    * Improved: Works with [Tabberwocky](https://addons.mozilla.org/firefox/addon/14439).
    * Fixed: The height of transparent tab bar is automatically updated when the window is resized.
    * Fixed: Broken behavior of the splitter for the tab bar (after the tab bar is moved) disappeared (maybe). The splitter is always re-created when the position of the tab bar is changed.
-   * Fixed: Moving of newly created tabs before "TabOpen" event is dispatched don't break tree structure anymore.
+   * Fixed: Moving of newly created tabs before `TabOpen` event is dispatched don't break tree structure anymore.
    * Modified: Functions, IDs, and preferences are renamed from "SubTree" to "Subtree". Following secret preferences also renamed.
      *  `extensions.treestyletab.autoExpandSubtreeOnCollapsedChildFocused` 
      *  `extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut` 
@@ -640,11 +640,11 @@ ions/) correctly.
    * Fixed: Needless "*" mark disappeared from the tooltip on tabs which has no child.
    * Fixed: Warning for multiple tabs closing correctly appears when all children will be closed by clicking on close box in tabs.
    * Fixed: Window state is correcly saved when the window is closed by closing a tree.
-   * Improved: If there are multiple "parent" tabs in a bookmark folder, dummy tab will not appear when you open all of bookmark items in the folder as tabs. (You can get back the old behavior. Add 1024 to the integer preference "extensions.treestyletab.openGroupBookmark.behavior".)
+   * Improved: If there are multiple "parent" tabs in a bookmark folder, dummy tab will not appear when you open all of bookmark items in the folder as tabs. (You can get back the old behavior. Add 1024 to the integer preference `extensions.treestyletab.openGroupBookmark.behavior`.)
    * Fixed: Window size is correctly restored even if you use startup prompt of [Session Manager](https://addons.mozilla.org/firefox/addon/2324) 0.6.7. ([patched by Alice0775](http://piro.sakura.ne.jp/cgi-bin/bbs.cgi?2565)）
    * Fixed: "Collapsed" state of tree is correctly restored by [Session Manager](https://addons.mozilla.org/firefox/addon/2324).
    * Fixed: Sessions are correctly restored by [Session Manager](https://addons.mozilla.org/firefox/addon/2324), even if there is any collapsed tree.
-   * Modified: You can disable all codes for compatibility with Tab Mix Plus, by a boolean preference "extensions.treestyletab.compatibility.TMP".
+   * Modified: You can disable all codes for compatibility with Tab Mix Plus, by a boolean preference `extensions.treestyletab.compatibility.TMP`.
    * Fixed: Drag and drop of tabs works correctly for the tab bar placed on the top of the window, even if there is Tab Mix Plus.
    * Fixed: Tree structure is correctly restored by the session management feature of Tab Mix Plus.
    * Improved: New APIs for other addons;     *  `gBrowser.treeStyleTab.partAllChildren(aTab)` 
@@ -675,13 +675,13 @@ ions/) correctly.
  - 0.8.2009093001
    * Improved: Other trees keep themselves expanded if tabs are inserted to an expanded tree.
    * Fixed: Better restoration of tree structure on restarting.
-   * Fixed: "browser.tabs.loadInBackground" works correctly for Ctrl/Command-click on links. ("browser.tabs.loadDivertedInBackground" was wrongly applied.)
+   * Fixed: `browser.tabs.loadInBackground` works correctly for Ctrl/Command-click on links. (`browser.tabs.loadDivertedInBackground` was wrongly applied.)
    * Fixed: Works with Google Toolbar Sidewiki.
  - 0.8.2009090901
    * Fixed: Duplidated blank tabs, opened after closing of the last tab, disappeared on Firefox 3.5 or later.
    * Fixed: Clicking on the grippy in the splitter of tab bar works correctly, on Firefox 3.5 or later.
-   * Fixed: Too high CPU load disappeared for webpages which dispatche "scroll" event frequently.
-   * Improved: "browser.tabs.loadDivertedInBackground" works for new tabs automatically opened from links.
+   * Fixed: Too high CPU load disappeared for webpages which dispatche `scroll` event frequently.
+   * Improved: `browser.tabs.loadDivertedInBackground` works for new tabs automatically opened from links.
    * Improved: After uninstallation, original values of secret preferences of Firefox itself modified by Tree Style Tab are restored.
  - 0.8.2009090403
    * Improved: Dragging of the tab bar becomes silent. No feed back image, and no drop position marker while the position of the tab bar is possibly not changed.
@@ -717,7 +717,7 @@ ions/) correctly.
    * Fixed: Auto-hide behavior of the tab bar is correctly disabled when you disable auto-hide of toolbars in the fullscreen mode.
    * Fixed: Broken order of tabs after restoring sessions disappeared. (regression on 0.8.2009073101)
    * Fixed: Initializing operations of bookmark properties are correctly disabled for each page-loading.
-   * Fixed: You can prevent to restore tree strucutre from bookmarks. To do it, append 512 to the value of "extensions.treestyletab.openGroupBookmark.behavior".
+   * Fixed: You can prevent to restore tree strucutre from bookmarks. To do it, append 512 to the value of `extensions.treestyletab.openGroupBookmark.behavior`.
    * de-DE locale is updated by Andy Pillip.
    * zh-CN locale is updated by hzhbest
  - 0.8.2009073102
@@ -751,7 +751,7 @@ ions/) correctly.
    * Improved: Now you can rename dummy tabs from bookmark folders.
    * Improved: When you create bookmark folder from tab sub trees, the parent tab will be ignored if it is a dummy tab.
    * Improved: A new preference to prevent expanding of focused tree on tabs are closed is available.
-   * Improved: A new secret preference, to prevent expanding of tree including focused tab in his collapsed children, is available. It is "extensions.treestyletab.autoExpandSubTreeOnCollapsedChildFocused".
+   * Improved: A new secret preference, to prevent expanding of tree including focused tab in his collapsed children, is available. It is `extensions.treestyletab.autoExpandSubTreeOnCollapsedChildFocused`.
    * Fixed: Indent of tabs are correctly updated when the tab bar position is changed.
    * Fixed: Broken order of restored tabs disappeared, even if the focused tab is in a tree.
    * Fixed: Missing items of the context menu on tabs are back.
@@ -775,7 +775,7 @@ ions/) correctly.
    * Improved: Tabs from bookmark folder are grouped under a dummy tab.
    * Fixed: The number of closed tabs is shown correctly.
    * Fixed: With horizontal tab bar, invisible "clickable" area leftside of tabs disapepared. You can click closeboxes of tabs correctly.
-   * New custom events for developers: "TreeStyleTabParted" (for detaching of a tab from a tree) and "TreeStyleTabAutoHideStateChanging" (for auto-show/hide of the tab bar)
+   * New custom events for developers: `TreeStyleTabParted` (for detaching of a tab from a tree) and `TreeStyleTabAutoHideStateChanging` (for auto-show/hide of the tab bar)
    * Fixed: Throbber in tabs is correctly shown with Firefox 3.5 on Mac OS X.
    * it-IT locale is updated by Godai71.
    * de-DE locale is updated by Andy Pillip.
@@ -789,7 +789,7 @@ ions/) correctly.
    * Improved: Appearance of indented tabs on the top of windows is customized for each platform.
    * Modified: Auto-hide of tab bar is temporally disabled while any popup menu is shown.
    * Modified: Collapse/expand operations of tabs in horizontal tab bar are shown with animation effect.
-   * Modified: "extensions.treestyletab.tabbar.invertClosebox" becomes a secret preference (checkbox for the option will not be shown in the configuration dialog). And, on Mac OS X, the default value becomes same to other platforms.
+   * Modified: `extensions.treestyletab.tabbar.invertClosebox` becomes a secret preference (checkbox for the option will not be shown in the configuration dialog). And, on Mac OS X, the default value becomes same to other platforms.
    * Modified: Clicking on favicons are ignored by Tree Style Tab if [TooManyTabs](https://addons.mozilla.org/firefox/addon/9429) is installed.
    * Modified: Maximum indent of top/bottom tab bar is fixed in a range.
    * Fixed: Broken indent disappeared, after closing of multiple tabs.
@@ -813,7 +813,7 @@ ions/) correctly.
    * Fixed: New tabs become chldren of the current tab correctly even if [Highlander](https://addons.mozilla.org/firefox/addon/4086) is installed.
    * Fixed: "Open All in Tabs" command for bookmark folders opens tabs as a sub tree correctly.
    * Fixed: The label of default behavior about bookmark folders is updated for Firefox 3.
-   * Fixed: Tabs moved by "moveTabTo()" method are correctly indented.
+   * Fixed: Tabs moved by `moveTabTo()` method are correctly indented.
    * Works with [Chromifox Basic](https://addons.mozilla.org/firefox/addon/8782).
    * Works with [FullerScreen 2.4](https://addons.mozilla.org/firefox/addon/4650).
    * Works with [AutoHide 1.5.4](http://www.krickelkrackel.de/autohide/).
@@ -872,7 +872,7 @@ ions/) correctly.
    * Fixed: Odd appearance on Linux and Mac OS X disappearef.
    * Fixed: It disappeared that infinity redrawing on auto-collapse with some theme.
    * Fixed: Dropped tabs from another window keep their tree structure correctly.
-   * Improved: A custom event "TreeStyleTabCollapsedStateChange" is available for developers. 
+   * Improved: A custom event `TreeStyleTabCollapsedStateChange` is available for developers. 
    * de-DE locale is updated by Andy Pillip.
  - 0.7.2009031701
    * Improved: New tabs from [QuickDrag](https://addons.mozilla.org/firefox/addon/6912), [Linky](https://addons.mozilla.org/firefox/addon/425), [Mouseless Browsing](https://addons.mozilla.org/firefox/addon/879), and [Snap Links](https://addons.mozilla.org/firefox/addon/4336) become child tabs of the current tab.
@@ -901,7 +901,7 @@ ions/) correctly.
    * Fixed: Possibly works with [Tab History](https://addons.mozilla.org/firefox/addon/1859).
    * Fixed: Works with [Aging Tabs](https://addons.mozilla.org/firefox/addon/3542).
    * Fixed: On Shiretoko 3.1b3pre, dropping of files, links, etc. to the tab bar is correctly performed.
-   * Improved: Clicks on spaces of indented tabs work as clicks on tabs. Thus, you can switch tabs by clicking screen edges in the full screen mode. If you disable this change, change the value of a secret preference "extensions.treestyletab.clickOnIndentSpaces.enabled" to " `false` ".
+   * Improved: Clicks on spaces of indented tabs work as clicks on tabs. Thus, you can switch tabs by clicking screen edges in the full screen mode. If you disable this change, change the value of a secret preference `extensions.treestyletab.clickOnIndentSpaces.enabled` to `false`.
  - 0.7.2008120201
    * Fixed: Drag and drop of tabs works correctly on Minefield 3.1b3pre.
    * Fixed: Drag and drop of links works correctly on Minefield 3.1b3pre.
@@ -942,7 +942,7 @@ ions/) correctly.
    * Updated: Italian locale is updated.
  - 0.7.2008062001
    * Improved: Session Management of Tab Mix Plus is supported.
-   * Fixed: Tab Mix Plus can know a tab in vertical tab bar is visible or not. (If you like, you can take the old behavior back by changing "extensions.treestyletab.TMP.doNotUpdate.isTabVisible" to " `true` ".)
+   * Fixed: Tab Mix Plus can know a tab in vertical tab bar is visible or not. (If you like, you can take the old behavior back by changing `extensions.treestyletab.TMP.doNotUpdate.isTabVisible` to `true`.)
    * Fixed: Scroll position is correctly restored when a tab is closed in vertical tab bar.
  - 0.7.2008061901
    * Improved: Tab appearance specified by the current theme is available for vertical/bottom tab bar.
@@ -990,7 +990,7 @@ ions/) correctly.
    * Fixed: Some preferences are saved its user value correctly after the addon is re-installed.
    * Fixed: Position of closeboxes in inverted rightside tabs are corrected.
  - 0.5.2008030302
-   * Improved: Toolbars beside the tab bar, provided by [All-in-One Sidebar](https://addons.mozilla.org/firefox/addon/1027) with a secret preference "extensions.aios.tbx.tabbar", are available on vertical tab bar. If you turn it to " `true` ", customizable toolbars are shown on/below the vertical tab bar.
+   * Improved: Toolbars beside the tab bar, provided by [All-in-One Sidebar](https://addons.mozilla.org/firefox/addon/1027) with a secret preference `extensions.aios.tbx.tabbar`, are available on vertical tab bar. If you turn it to `true`, customizable toolbars are shown on/below the vertical tab bar.
  - 0.5.2008030301
    * Improved: "Auto" is available for the style of tree twisties.
    * Fixed: Works with Tab Mix Plus 0.3.6.1.
@@ -1002,7 +1002,7 @@ ions/) correctly.
  - 0.5.2008022801
    * Improved: Children tabs inherits the color of the parent tab if [ColorfulTabs](https://addons.mozilla.org/firefox/addon/1368) is available.
    * Improved: New tabs opened by drag and drop in web pages with [Super DragAndGo](https://addons.mozilla.org/firefox/addon/137) or [Drag de Go](https://addons.mozilla.org/firefox/addon/2918) become children of the current tab automatically.
-   * Improved: Auto-tree feature (like above) can be disabled completely by a secret preference "extensions.treestyletab.autoAttachNewTabsAsChildren". If you don't want any tabs to be children automatically, you should turn it to " `false` ".
+   * Improved: Auto-tree feature (like above) can be disabled completely by a secret preference `extensions.treestyletab.autoAttachNewTabsAsChildren`. If you don't want any tabs to be children automatically, you should turn it to `false`.
  - 0.5.2008022702
    * Fixed: Bookmark groups are loaded by your preference correctly on Firefox 3.
    * Fixed: New tabs from the location bar or other cases opened correctly. (it was a regression in 0.5.2008022701)
@@ -1054,7 +1054,7 @@ ions/) correctly.
    * Updated: Italian locale is updated.
  - 0.5.2007111502
    * Fixed: Focus of tabs can be moved by keyboard shortcuts and so on correctly.
-   * Fixed: Problem about links with "target" attribute which were wrongly loaded to both of new tab and the current tab, is corrected.
+   * Fixed: Problem about links with `target` attribute which were wrongly loaded to both of new tab and the current tab, is corrected.
    * Fixed: Broken indent of restored tab is corrected.
    * Fixed: Broken counter of collapsed descendant tabs is corrected for reopened tabs.
  - 0.5.2007111501

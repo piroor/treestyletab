@@ -23,7 +23,7 @@
    * [Gmail Panel](https://addons.mozilla.org/firefox/addon/gmail-panel/)などから開かれたタブが意図せず現在のタブの子タブになってしまう問題を修正
    * [セッション保存APIの仕様変更](http://dutherenverseauborddelatable.wordpress.com/2013/05/23/add-on-breakage-continued-list-of-add-ons-that-will-probably-be-affected/)に追従
  - 0.14.2013040601
-   * 現在のタブから開かれる子タブの位置を制御する隠し設定「extensions.treestyletab.autoAttach.fromCurrent」を追加
+   * 現在のタブから開かれる子タブの位置を制御する隠し設定 `extensions.treestyletab.autoAttach.fromCurrent` を追加
    * Firefox 20でmoveTabForward/moveTabBackwardでのタブの移動が正しく動作しなくなっていたのを修正
    * 他のグループのタブがある時に、変な位置でタブの間にマージンが適用されてしまう問題を修正
    * ツリーを折り畳む操作をしても孫階層のツリーが折り畳まれない問題を修正
@@ -47,7 +47,7 @@
    * [QuickDrag](https://addons.mozilla.org/firefox/addon/6912)用の動的パッチを修正
    * タブバーが自動的にで隠された時は、タブのインデント幅を0にしないようにした
    * CPU使用率が高くならないよう、mouseleaveイベントを監視しないようにした
-   * 設定「extensions.treestyletab.animation.enabled」の役割を「browser.tabs.animate」に統合
+   * 設定 `extensions.treestyletab.animation.enabled` の役割を `browser.tabs.animate` に統合
  - 0.14.2012111201
    * 他のコンピュータのタブを「about:sync」タブの子タブとして開く処理が最近のNightlyで機能しなくなっていたのを修正
    * 設定ダイアログを開くとすべてのアニメーション効果が意図せず停止してしまう問題を修正
@@ -73,7 +73,7 @@
    * 子孫のタブを収集する時についても、ツリーの循環参照のチェックを行うようにした
  - 0.14.2012080601
    * Firefox 16対応
-   * 隠し設定「extensions.treestyletab.autoExpand.intelligently」が機能しない問題を修正（当該設定を  `false`  にしていた場合は、ツリーにフォーカスしてそれが自動展開される際に、他のツリーを自動的には折り畳まなくなります。）
+   * 隠し設定 `extensions.treestyletab.autoExpand.intelligently` が機能しない問題を修正（当該設定を  `false`  にしていた場合は、ツリーにフォーカスしてそれが自動展開される際に、他のツリーを自動的には折り畳まなくなります。）
    * ツールバーカスタマイズの前後でツリーの開閉の状態が失われるようになってしまっていたのを修正
    * タブのツリーをブックマークへドラッグ＆ドロップした時に、入れ子になったブックマークフォルダのツリーを自動的に作成するようにした
    * ブックマークフォルダをタブバーの任意の位置にドロップした際に、その位置にタブのツリーを開くようにした
@@ -151,17 +151,17 @@
    * ウィンドウが閉じられる間にAPIが呼ばれた場合にツリー型タブ全体の動作がおかしくなる問題について改善
    * 新しいタブを開いた瞬間に（情報化タブなどのアドオンを併用していて）多数の処理が走った場合に、新しく開かれたタブの位置までタブバーがスクロールされない問題を修正
    * グループ化用のタブに表示されるツリー全体の高さが小さすぎたのを修正
-   * タブに表示されるカウンターの役割をタブバーの横置き・縦置きの状態の変化に応じて自動的に切り替えるようにした（横置きタブバーではそのタブ自身を含むツリー内のすべてのタブの数を表示し、縦置きタブバーではそのタブ自身を含まないツリー内の折り畳まれた子孫タブの数だけを表示）。この挙動は隠し設定「extensions.treestyletab.counter.role.horizontal」および「extensions.treestyletab.counter.role.vertical」で変更できます。[詳細は#197での議論を参照して下さい。](https://github.com/piroor/treestyletab/issues/197)
+   * タブに表示されるカウンターの役割をタブバーの横置き・縦置きの状態の変化に応じて自動的に切り替えるようにした（横置きタブバーではそのタブ自身を含むツリー内のすべてのタブの数を表示し、縦置きタブバーではそのタブ自身を含まないツリー内の折り畳まれた子孫タブの数だけを表示）。この挙動は隠し設定 `extensions.treestyletab.counter.role.horizontal` および `extensions.treestyletab.counter.role.vertical` で変更できます。[詳細は#197での議論を参照して下さい。](https://github.com/piroor/treestyletab/issues/197)
    * Nightly 12.0a1へ対応
    * Firefox 3.6への対応を終了
  - 0.13.2011121501
    * Tab Mix Plusがインストールされていると、TMP独自のセッション復元機能が無効化されている場合であっても高速なツリーの復元が機能しなくなっていたのを修正
    * 既存のツリーの中に移動されたタブがツリーに自動的に組み込まれなくなっていたのを修正（0.13.2011121401でのリグレッション。TMP等で新しいタブを開く位置を変更していた場合に、ツリーが壊れる恐れがあった.）
  - 0.13.2011121401
-   * Firefoxの起動時に前回終了時のツリー構造を高速に復元できるようになった。（正しく動作しない場合は、about:configを開いて「extensions.treestyletab.restoreTree.level」を「0」に設定すると従来通りの動作に戻ります）
+   * Firefoxの起動時に前回終了時のツリー構造を高速に復元できるようになった。（正しく動作しない場合は、about:configを開いて `extensions.treestyletab.restoreTree.level` を `0` に設定すると従来通りの動作に戻ります）
    * グループ化のためのダミーのタブの内容として、そのツリーに属しているタブをリンク状に表示するようにした（左クリックでそのタブに切り替え、中クリックでそのタブを閉じる）
    * タブ自体がフォーカスされている時、矢印キーの動作をWindows Explorerのフォルダペインでの挙動に合わせた（「→」キーでツリーを開くか最初の子タブにフォーカス、「←」キーで親タブにフォーカスするかツリーを畳む）（※注意：マウスでのクリック操作でタブにフォーカスしたい場合、userChrome.cssに  `.tabbrowser-tab { -moz-user-focus: normal !important; }`  という風な記述を追加する必要があります)
-   * 「タブバーを自動的に隠す」機能について、コンテンツ領域がPDFやFlashなどのプラグインによって秒がされている場合であってもタブバーが自動的に隠れるようにした（従来は、このような場面ではタブバーが表示されたままになってしまっていた）。（この機能は不可視のポップアップを開く事により実現しているため、副作用として何らかのトラブルが起こり得ます。正しく動作しない場合は、about:configを開いて「extensions.treestyletab.tabbar.autoHide.contentAreaScreen.enabled」を「false」に設定すると従来通りの動作に戻ります。）
+   * 「タブバーを自動的に隠す」機能について、コンテンツ領域がPDFやFlashなどのプラグインによって秒がされている場合であってもタブバーが自動的に隠れるようにした（従来は、このような場面ではタブバーが表示されたままになってしまっていた）。（この機能は不可視のポップアップを開く事により実現しているため、副作用として何らかのトラブルが起こり得ます。正しく動作しない場合は、about:configを開いて `extensions.treestyletab.tabbar.autoHide.contentAreaScreen.enabled` を `false` に設定すると従来通りの動作に戻ります。）
    * ツリーをまとめて閉じた後にその中のタブを1つ復元した場合に、タブの復元完了を待たずにすぐにツリーの他のタブを復元するかどうか確認するようにした
    * ツリーの高機能なツールチップにおいて、中クリックでタブを閉じられるようにした
    * Firefoxのウィンドウをフルスクリーン表示または最大化した状態で終了した時に、次回起動時にタブバーの幅が105ピクセル程度の細い幅になってしまう問題を修正
@@ -174,15 +174,15 @@
    * GNOME3環境で、タブバーのスクロールバーが細い幅にならない問題に対処
    * APIの  `partTab()`  を  `detachTab()`  に名称変更した（後方互換性のため、従来の名称でも依然利用可能
  - 0.12.2011120101
-   * Ctrl-Tab/Ctrl-Shift-Tabでタブのフォーカスを切り替えている時に、折り畳まれたツリーの上でCtrlキーを押したまましばらく待つとツリーを自動的に展開するようにした（待ち時間は隠し設定の「extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut.delay」で変更可能）
+   * Ctrl-Tab/Ctrl-Shift-Tabでタブのフォーカスを切り替えている時に、折り畳まれたツリーの上でCtrlキーを押したまましばらく待つとツリーを自動的に展開するようにした（待ち時間は隠し設定の `extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut.delay` で変更可能）
    * グループ化用のダミーのタブにおいて、F2キーでタイトルの編集を開始できるようにした
-   * ツリーの上でのツールチップにおいて、最初は先頭のタブ10個だけについて情報を表示し、そのまましばらく待つとツリーのすべてのタブを表示するスクロール可能なツールチップに自動的に表示を切り替えるようにした（待ち時間は隠し設定の「extensions.treestyletab.tooltip.fullTooltipDelay」で変更可能）
+   * ツリーの上でのツールチップにおいて、最初は先頭のタブ10個だけについて情報を表示し、そのまましばらく待つとツリーのすべてのタブを表示するスクロール可能なツールチップに自動的に表示を切り替えるようにした（待ち時間は隠し設定の `extensions.treestyletab.tooltip.fullTooltipDelay` で変更可能）
    * タブのクローズボックスの上でのツールチップにおいて、ツリーに含まれるタブの情報も表示するようにした
-   * ピン留めされたタブの計算処理を簡素化した（新しい真偽値の設定「extensions.treestyletab.pinnedTab.faviconized」によって、ピン留めされたタブを通常のタブの大きさで表示するかアイコンだけの表示にするかを切り替えられるようにした）
+   * ピン留めされたタブの計算処理を簡素化した（新しい真偽値の設定 `extensions.treestyletab.pinnedTab.faviconized` によって、ピン留めされたタブを通常のタブの大きさで表示するかアイコンだけの表示にするかを切り替えられるようにした）
    * 2011年11月30日付けのNightly 11で動かなくなっていたのを修正（「MozBeforePaint」イベントの使用をやめた）
    * ツリーのインデントの部分にタブがドロップされた時におかしな結果になっていたのを修正
    * 「自動で隠す」機能によって幅が縮められた状態のタブバーの幅をドラッグ操作で変えられなくなってしまっていたのを修正（スプリッタの上にポインタが到達する前にタブバーが展開されてしまっていた）
-   * ツリーの上でのツールチップにおいて、常にツリーの内容を表示するようにした（折り畳まれたツリーでのみツリーの内容を表示する従来の挙動に戻したい場合は、隠し設定「extensions.treestyletab.tooltip.mode」を「1」に設定する。0はツリーの内容を全く表示しない、2は常にツリーの内容を表示する。）
+   * ツリーの上でのツールチップにおいて、常にツリーの内容を表示するようにした（折り畳まれたツリーでのみツリーの内容を表示する従来の挙動に戻したい場合は、隠し設定 `extensions.treestyletab.tooltip.mode` を `1` に設定する。0はツリーの内容を全く表示しない、2は常にツリーの内容を表示する。）
    * 折り畳まれたツリーに表示されるタブの数のカウンターについて、そのタブ自身も含めたそのツリーのすべてのタブの数を表示するようにした
  - 0.12.2011110101
    * ブックマークフォルダからタブを開けなくなっていたのを修正（0.12.2011102901でのリグレッション）
@@ -203,7 +203,7 @@
  - 0.12.2011082901
    * 註：このバージョンおよびこれ以前のバージョンは、[bug 455694](https://bugzilla.mozilla.org/show_bug.cgi?id=455694)および[bug 674925](https://bugzilla.mozilla.org/show_bug.cgi?id=674925)の影響によりFirefox 8以降には非対応です
    * タブのグループ化のためのダミーのタブについて、同階層の他のタブが無くなった時はダミーのタブを自動的に閉じるようにした
-   * ピン留めされたタブのサイズを制御する隠し設定 "extensions.treestyletab.pinnedTab.width" と "extensions.treestyletab.pinnedTab.height" を追加した（幅を「-1」に設定するとピン留めされたタブがタブバーの幅一杯に広がります）
+   * ピン留めされたタブのサイズを制御する隠し設定 "extensions.treestyletab.pinnedTab.width" と "extensions.treestyletab.pinnedTab.height" を追加した（幅を `-1` に設定するとピン留めされたタブがタブバーの幅一杯に広がります）
    * 上および下に置かれたタブバーのアイコンについて、折り畳み用のつまみを表示する必要が無い時は左にスペースを空けないようにした
    * 子タブを閉じた時、他にまだ子タブがあるにもかかわらず親のタブにフォーカスが移ってしまう事があったのを修正
    * ウィンドウが最大化されている時は自動的にウィンドウの大きさを変えないようにした
@@ -320,7 +320,7 @@ ions/)と併用できなくなっていたのを修正
    * [Personal Titlebar](https://addons.mozilla.org/ja/firefox/addon/personal-titlebar/)との併用時にツリー表示が無効化されたままになる問題を修正
    * Tab Mix Plusとの併用時にピン留めされたタブの表示がおかしくなる問題を修正
    * Tab Mix Plusとの併用時に「Default」テーマにおけるピン留めされたタブの表示の崩れを少し修正
-   * セッション復元時のツリーの開閉状態を制御する隠し設定「extensions.treestyletab.collapseExpandSubtree.sessionRestore」を追加（-1＝元の状態を復元、0＝ツリーを畳んだ状態で復元、1＝ツリーを展開した状態で復元）
+   * セッション復元時のツリーの開閉状態を制御する隠し設定 `extensions.treestyletab.collapseExpandSubtree.sessionRestore` を追加（-1＝元の状態を復元、0＝ツリーを畳んだ状態で復元、1＝ツリーを展開した状態で復元）
    * ドイツ語ロケール更新（by Andy Pillip）
  - 0.11.2011021901
    * ツールバーのカスタマイズ時にツリー型タブによるタブのドラッグ＆ドロップ処理が働いてしまう場合があったのを修正
@@ -398,7 +398,7 @@ ions/)と併用できなくなっていたのを修正
    * 内部エラーによってタブのオーバーフローなどの処理がブロックされていたのを修正
  - 0.11.2010120901
    * タブのコンテキストメニューに「このツリー以外の他のタブをすべて閉じる」を追加
-   * FirefoxのWeb検索バーからタブが開かれる場合に、現在のタブで選択されている語句が検索された時は現在のタブの子にするようにした（隠し設定「extensions.treestyletab.autoAttachSearchResultAsChildren」を2に変更すると検索結果のタブを常に現在のタブの子として開き、0に変更すると子タブにしない）
+   * FirefoxのWeb検索バーからタブが開かれる場合に、現在のタブで選択されている語句が検索された時は現在のタブの子にするようにした（隠し設定 `extensions.treestyletab.autoAttachSearchResultAsChildren` を2に変更すると検索結果のタブを常に現在のタブの子として開き、0に変更すると子タブにしない）
    * [DomainTab](https://addons.mozilla.org/firefox/addon/13906/)によって開かれたタブを現在のタブの子にするようにした
    * 設定ダイアログが正常に機能しなくなっていたのを修正
  - 0.11.2010120802
@@ -645,11 +645,11 @@ ions/)と併用できなくなっていたのを修正
    * タブのツールチップで、子孫タブが無い時にまで頭に「*」が付いていたのを修正
    * タブのクローズボックスなどでタブを閉じる時にツリー全体が閉じられようとしている場合、複数のタブを閉じてよいかどうかの確認を表示するようにした
    * ツリー全体を閉じることでウィンドウも同時に閉じられる場合に、最後に表示していたセッションが保存されていなかったのを修正
-   * 1つのブックマークフォルダの中に2つ以上の親タブが存在しており、すべての親タブが1つ以上の子を持っている場合、ダミーの親タブを開かないようにした（「extensions.treestyletab.openGroupBookmark.behavior」の値に1024を足すことで以前の挙動に戻すことも可能）
+   * 1つのブックマークフォルダの中に2つ以上の親タブが存在しており、すべての親タブが1つ以上の子を持っている場合、ダミーの親タブを開かないようにした（ `extensions.treestyletab.openGroupBookmark.behavior` の値に1024を足すことで以前の挙動に戻すことも可能）
    * [Session Manager](https://addons.mozilla.org/firefox/addon/2324) 0.6.7でセッションプロンプトを表示する設定にして、セッションリストアをキャンセルした場合に、ウインドウサイズがタイトルバーだけになる不具合を修正（[patched by Alice0775](http://piro.sakura.ne.jp/cgi-bin/bbs.cgi?2565)）
    * [Session Manager](https://addons.mozilla.org/firefox/addon/2324)でのセッション復元時に、すべてのツリーが常に展開された状態になっていたのを修正
    * [Session Manager](https://addons.mozilla.org/firefox/addon/2324)でのセッション復元時に、折り畳まれたツリーがあるとセッション復元に失敗する場合があったのを修正
-   * 隠し設定「extensions.treestyletab.compatibility.TMP」で、ツリー型タブ側のTab Mix Plus用コードを全面的に無効化できるようにした
+   * 隠し設定 `extensions.treestyletab.compatibility.TMP` で、ツリー型タブ側のTab Mix Plus用コードを全面的に無効化できるようにした
    * Tab Mix Plusが入っていると、タブバーを上に置いていた場合にタブをドラッグ＆ドロップできない問題を修正
    * Tab Mix Plus内臓のセッションマネージャを使っているとツリー構造が復元されない問題に対処
    * 他のアドオンから利用できる新しいAPIを追加した：     *  `gBrowser.treeStyleTab.partAllChildren(aTab)` 
@@ -756,7 +756,7 @@ ions/)と併用できなくなっていたのを修正
    * ブックマークのフォルダからサブツリーを開く際のダミーのタブについて、自由に名前を変えられるようにした
    * タブのツリーをまとめてブックマークする時、親にあたるダミーのタブを保存対象から除外するようにした
    * タブのフォーカス移動によるツリーの自動展開機能について、現在のタブを閉じた後のフォーカス移動では自動展開を行わないようにする設定を追加
-   * 折りたたまれたタブにフォーカスした時に、ツリーを展開するか親のタブにフォーカスを移すかを、隠し設定「extensions.treestyletab.autoExpandSubTreeOnCollapsedChildFocused」で制御できるようにした
+   * 折りたたまれたタブにフォーカスした時に、ツリーを展開するか親のタブにフォーカスを移すかを、隠し設定 `extensions.treestyletab.autoExpandSubTreeOnCollapsedChildFocused` で制御できるようにした
    * タブバーの縦横切り替え時にインデントが正しく更新されない場合があったのを修正
    * ツリーの子にあたるタブを選択した状態でセッションを保存した場合に、選択されたタブの位置がセッション復元時におかしくなる問題を修正
    * タブのコンテキストメニューのうちいくつかの項目が表示されなくなってしまっていたのを修正
@@ -995,7 +995,7 @@ ions/)と併用できなくなっていたのを修正
    * アップデートする度に一部の設定が初期化されてしまう問題を修正
    * ウィンドウ右側に置いて表示を左右反転したタブのクローズボックスの位置がおかしくなる問題を修正
  - 0.5.2008030302
-   * [All-in-One Sidebar](https://addons.mozilla.org/firefox/addon/1027)で隠し設定「extensions.aios.tbx.tabbar」によって利用できるタブバー左右のツールバーに対応（タブバーを縦置きした場合、タブバーの上下にこれらのツールバーが表示されるようにした）
+   * [All-in-One Sidebar](https://addons.mozilla.org/firefox/addon/1027)で隠し設定 `extensions.aios.tbx.tabbar` によって利用できるタブバー左右のツールバーに対応（タブバーを縦置きした場合、タブバーの上下にこれらのツールバーが表示されるようにした）
  - 0.5.2008030301
    * ツリーのつまみの表示スタイルに「自動」を追加し、デフォルト設定とした
    * Tab Mix Plus 0.3.6.1の変更に追従
@@ -1007,7 +1007,7 @@ ions/)と併用できなくなっていたのを修正
  - 0.5.2008022801
    * [ColorfulTabs](https://addons.mozilla.org/firefox/addon/1368)を導入している場合、子供のタブは親のタブの色を継承するようにした
    * [Super DragAndGo](https://addons.mozilla.org/firefox/addon/137)、[Drag de Go](https://addons.mozilla.org/firefox/addon/2918)でページ内のドラッグ＆ドロップにより開かれる新規タブを現在のタブの子にするようにした
-   * リンクから開かれたタブなどを自動的に子タブにする機能をすべて無効化する隠し設定「extensions.treestyletab.autoAttachNewTabsAsChildren」を追加（それらの操作を無効化したい場合は `false` に値を変更する）
+   * リンクから開かれたタブなどを自動的に子タブにする機能をすべて無効化する隠し設定 `extensions.treestyletab.autoAttachNewTabsAsChildren` を追加（それらの操作を無効化したい場合は `false` に値を変更する）
  - 0.5.2008022702
    * Firefox 3でブックマークグループを開くときの挙動を制御できていなかったのを修正
    * ロケーションバーからの入力でタブを開く機能などが動かなくなっていたのを修正（0.5.2008022701での後退バグの修正）
