@@ -15,6 +15,7 @@
    * [bug489729 (Disable detach and tear off tab)](https://addons.mozilla.org/firefox/addon/bug489729-disable-detach-and-t/)と併用できるようにした
    * グループ化用のダミーのタブについて一時的か永続的かの設定を持たせるようにし、不要になった一時的なダミーのタブのみを自動的に閉じるようにした（自動的に開かれた場合は一時的、手動で開かれた場合は永続的として扱います。ブックマークから開かれた物を永続的なタブにする場合は `extensions.treestyletab.openGroupBookmark.temporaryGroup` を、選択されたタブから新しくツリーを作成する場面で開かれた物を永続的なタブにする場合は `extensions.treestyletab.createSubtree.underParent.temporaryGroup` をそれぞれ `false` に変更して下さい）
    * タブバーのスプリッタ上のつまみをクリックした時に、タブバーの表示・非表示が更新されていなかったのを修正
+   * 1つのフォルダの中に非常に多くのブックマークがある時に、ブックマークの編集画面がフリーズしてしまう問題に対処
    * ロシア語ロケール更新（[by Infocatcher. Thanks!](https://github.com/piroor/treestyletab/pull/534)）
  - 0.14.2013052901
    * ピン留めされたタブの外観をより綺麗に調整するようにした

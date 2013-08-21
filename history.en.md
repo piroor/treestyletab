@@ -15,6 +15,7 @@
    * Fixed: Works with [bug489729 (Disable detach and tear off tab)](https://addons.mozilla.org/firefox/addon/bug489729-disable-detach-and-t/).
    * Improved: Introduce the concept "temporary group tab" and "permanent group tab". And close needless group tabs automatically only when it is marked as temporary. Automatically opened group (dummy) tabs are temporary, and manually opened tabs are permanently by default. You can make group tabs always permanent by these preferences `extensions.treestyletab.openGroupBookmark.temporaryGroup` (for bookmark groups) and `extensions.treestyletab.createSubtree.underParent.temporaryGroup` (for "create new tree from selected tabs" feature) with the value `false`.
    * Fixed: Show/hide tab bar correctly after the grippy is clicked.
+   * Fixed: Don't freeze on the interface to edit bookmarks, even if there are too many bookmarks in the same folder.
    * [ru locale is updated by Infocatcher. Thanks!](https://github.com/piroor/treestyletab/pull/534)
  - 0.14.2013052901
    * Fixed: Pinned tabs are shown with more stylized appearance.
