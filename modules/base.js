@@ -2201,7 +2201,7 @@ var TreeStyleTabBase = {
 	{
 		return (
 			this.isGroupTab(aTab, aLazyCheck) &&
-			!/.*[\?&;]temporary=(?:1|yes|true)/i.test(aTab.linkedBrowser.currentURI.spec)
+			/.*[\?&;]temporary=(?:1|yes|true)/i.test(aTab.linkedBrowser.currentURI.spec)
 		);
 	},
  
