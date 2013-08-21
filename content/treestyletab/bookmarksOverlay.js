@@ -416,7 +416,10 @@ var TreeStyleTabBookmarksService = {
 					) {
 					aIDs.unshift(-1);
 					treeStructure = sv.getTreeStructureFromItems(aIDs, 0);
-					aURLs.unshift(sv.getGroupTabURI(aFolderTitle));
+					aURLs.unshift(sv.getGroupTabURI({
+						title:     aFolderTitle,
+						temporary: true
+					}));
 				}
 			}
 

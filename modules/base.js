@@ -806,9 +806,13 @@ var TreeStyleTabBase = {
 		return newURI;
 	},
  
-	getGroupTabURI : function TSTBase_getGroupTabURI(aTitle) 
+	getGroupTabURI : function TSTBase_getGroupTabURI(aOptions) 
 	{
-		return 'about:treestyletab-group'+(aTitle === void(0) ? '' : '?'+encodeURIComponent(aTitle) );
+		aOptions = aOptions || {};
+		var parameters = [];
+		parameters.push('title=' + encodeURIComponent(aOptions.title || ''));
+		parameters.push('temporary=' + !!aOptions.temporary);
+		return 'about:treestyletab-group?' + parameters.join(';');
 	},
   
 // xpath 
