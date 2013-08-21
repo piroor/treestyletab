@@ -141,39 +141,79 @@ var TreeStyleTabBookmarksServiceEditable = {
 	{
 		var id = gEditItemOverlay.itemId;
 
+		this.menulist.disabled = true;
+		this.menulist.setAttribute('label', '...');
+
 		var popup = this.popup;
 		var range = document.createRange();
 		range.selectNodeContents(popup);
 		range.setEndBefore(this.separator);
 		range.deleteContents();
-		var fragment = this._createSiblingsFragment(id);
-		var siblings = Array.slice(fragment.childNodes)
-						.map(function(aItem) {
-							return parseInt(aItem.getAttribute('value'));
-						});
-		range.insertNode(fragment);
 		range.detach();
 
-		var selected = popup.getElementsByAttribute('selected', 'true')[0];
-		this.menulist.value = (selected || this.blankItem).getAttribute('value');
-
 		this.canceled = false;
-	},
-	_createSiblingsFragment : function TSTBMEditable__createSiblingsFragment(aCurrentItem)
-	{
-		var items = this._getSiblingItems(aCurrentItem);
-		var treeStructure = this.getTreeStructureFromItems(items);
 
-		var currentIndex = items.indexOf(aCurrentItem);
+		this._createSiblingsFragment(id, (function(aFragment) {
+			var siblings = Array.slice(aFragment.childNodes)
+							.map(function(aItem) {
+								return parseInt(aItem.getAttribute('value'));
+							});
+			var range = document.createRange();
+			range.selectNodeContents(popup);
+			range.setEndBefore(this.separator);
+			range.insertNode(aFragment);
+			range.detach();
+
+			var selected = popup.getElementsByAttribute('selected', 'true')[0];
+			this.menulist.disabled = false;
+			this.menulist.value = (selected || this.blankItem).getAttribute('value');
+		}).bind(this))
+	},
+	_createSiblingsFragment : function TSTBMEditable__createSiblingsFragment(aCurrentItem, aCallback)
+	{
+		var itemsIterator = this._getSiblingItemsIterator(aCurrentItem);
+		var items = [];
+
+		if (this._createSiblingsFragmentTimer)
+			window.clearTimeout(this._createSiblingsFragmentTimer);
+
+		var interval = 100;
+		var step = 10;
+		var progressiveIteration = (function() {
+			try {
+				for (let i = 0; i < step; i++)
+				{
+					items.push(itemsIterator.next());
+				}
+				this._createSiblingsFragmentTimer = window.setTimeout(progressiveIteration, interval);
+			}
+			catch(e if e instanceof StopIteration) {
+				var fragment = this._createSiblingsFragmentInternal(aCurrentItem, items);
+				aCallback(fragment);
+			}
+			catch(e) {
+			}
+			finally {
+				this._createSiblingsFragmentTimer = null;
+			}
+		}).bind(this);
+		this._createSiblingsFragmentTimer = window.setTimeout(progressiveIteration, interval);
+	},
+	_createSiblingsFragmentTimer : null,
+	_createSiblingsFragmentInternal : function TSTBMEditable_createSiblingsFragmentInternal(aCurrentItem, aItems)
+	{
+		var treeStructure = this.getTreeStructureFromItems(aItems);
+
+		var currentIndex = aItems.indexOf(aCurrentItem);
 		var selected = treeStructure[currentIndex];
 		if (selected > -1) {
 			let offset = treeStructure.lastIndexOf(-1, currentIndex);
 			let subStructure = treeStructure.slice(offset);
-			selected = items[selected + offset];
+			selected = aItems[selected + offset];
 		}
 
 		var fragment = document.createDocumentFragment();
-		for (let [i, id] in Iterator(items))
+		for (let [i, id] in Iterator(aItems))
 		{
 			let label = PlacesUtils.bookmarks.getItemTitle(id);
 			let item = document.createElement('menuitem');
@@ -202,10 +242,9 @@ var TreeStyleTabBookmarksServiceEditable = {
 		}
 		return fragment;
 	},
-	_getItemsInFolder : function TSTBMEditable__getItemsInFolder(aId)
+	_getItemsInFolderIterator : function TSTBMEditable_getItemsInFolderIterator(aId)
 	{
 		var count = 0;
-		var items = [];
 		var item;
 		try {
 			while((item = PlacesUtils.bookmarks.getIdForItemAt(aId, count++)) != -1)
@@ -213,7 +252,7 @@ var TreeStyleTabBookmarksServiceEditable = {
 				try {
 					let uri = PlacesUtils.bookmarks.getBookmarkURI(item);
 					if (uri.spec.indexOf('place:') != 0)
-						items.push(item);
+						yield item;
 				}
 				catch(e) {
 					// this is not a normal bookmark.
@@ -222,11 +261,10 @@ var TreeStyleTabBookmarksServiceEditable = {
 		}
 		catch(e) {
 		}
-		return items;
 	},
-	_getSiblingItems : function TSTBMEditable__getSiblingItems(aId)
+	_getSiblingItemsIterator : function TSTBMEditable_getSiblingItemsIterator(aId)
 	{
-		return this._getItemsInFolder(PlacesUtils.bookmarks.getFolderIdForItem(aId));
+		return this._getItemsInFolderIterator(PlacesUtils.bookmarks.getFolderIdForItem(aId));
 	},
 
 	saveParentFor : function TSTBMEditable_saveParentFor(aId)
@@ -234,10 +272,32 @@ var TreeStyleTabBookmarksServiceEditable = {
 		var newParentId = parseInt(this.menulist.value || -1);
 		if (this.canceled || newParentId == this.getParentItem(aId)) return;
 
-		var items = this._getSiblingItems(aId);
-		var treeStructure = this.getTreeStructureFromItems(items);
+		var itemsIterator = this._getSiblingItemsIterator(aId);
+		var items = [];
 
-		var parentIndex = items.indexOf(newParentId);
+		var interval = 100;
+		var step = 10;
+		var progressiveIteration = (function() {
+			try {
+				for (let i = 0; i < step; i++)
+				{
+					items.push(itemsIterator.next());
+				}
+				window.setTimeout(progressiveIteration, interval);
+			}
+			catch(e if e instanceof StopIteration) {
+				this._saveParentForInternal(aId, newParentId, items);
+			}
+			catch(e) {
+			}
+		}).bind(this);
+		window.setTimeout(progressiveIteration, interval);
+	},
+	_saveParentForInternal : function TSTBMEditable_saveParentForInternal(aId, aNewParentId, aItems)
+	{
+		var treeStructure = this.getTreeStructureFromItems(aItems);
+
+		var parentIndex = aItems.indexOf(aNewParentId);
 		var newIndex;
 		if (TreeStyleTabUtils.getTreePref('insertNewChildAt') == this.kINSERT_FISRT) {
 			newIndex = treeStructure.indexOf(parentIndex);
@@ -253,7 +313,7 @@ var TreeStyleTabBookmarksServiceEditable = {
 
 		PlacesUtils.setAnnotationsForItem(aId, [{
 			name    : this.kPARENT,
-			value   : newParentId,
+			value   : aNewParentId,
 			expires : PlacesUtils.annotations.EXPIRE_NEVER
 		}]);
 
