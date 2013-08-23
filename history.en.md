@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+ - 0.14.2013082301
+   * Fixed: Failed to initialize on Firefox 23 and later. (regression on the previous release)
+   * [ru locale is updated by Infocatcher. Thanks!](https://github.com/piroor/treestyletab/pull/542)
  - 0.14.2013082201
    * Works on Firefox 25 and later.
    * Fixed: Restore tree structure correctly for "undo close tab" feature, even if the tab had no child. (It was a regression on the version 0.14.2013052901.)
