@@ -42,7 +42,7 @@ if (typeof window == 'undefined' ||
 }
 
 (function() {
-	const currentRevision = 9;
+	const currentRevision = 10;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -81,20 +81,25 @@ if (typeof window == 'undefined' ||
 			if (aInterface)
 				return aBranch.getComplexValue(aPrefstring, aInterface);
 
-			switch (type)
-			{
-				case aBranch.PREF_STRING:
-					return decodeURIComponent(escape(aBranch.getCharPref(aPrefstring)));
+			try {
+				switch (type)
+				{
+					case aBranch.PREF_STRING:
+						return decodeURIComponent(escape(aBranch.getCharPref(aPrefstring)));
 
-				case aBranch.PREF_INT:
-					return aBranch.getIntPref(aPrefstring);
+					case aBranch.PREF_INT:
+						return aBranch.getIntPref(aPrefstring);
 
-				case aBranch.PREF_BOOL:
-					return aBranch.getBoolPref(aPrefstring);
+					case aBranch.PREF_BOOL:
+						return aBranch.getBoolPref(aPrefstring);
 
-				case aBranch.PREF_INVALID:
-				default:
-					return null;
+					case aBranch.PREF_INVALID:
+					default:
+						return null;
+				}
+			} catch(e) {
+				// getXXXPref can raise an error if it is the default branch.
+				return null;
 			}
 		},
 
