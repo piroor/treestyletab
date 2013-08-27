@@ -1865,8 +1865,8 @@ TreeStyleTabBrowser.prototype = {
 			stripStyle.right = pos != 'right' ? '' :
 							((root.screenX + root.width) - (box.screenX + box.width))+'px';
 
-			stripStyle.width = (tabContainerBox.width = width)+'px';
-			stripStyle.height = (tabContainerBox.height = height)+'px';
+			stripStyle.width = (strip.width = tabContainerBox.width = width)+'px';
+			stripStyle.height = (strip.height = tabContainerBox.height = height)+'px';
 
 			this._updateFloatingTabbarResizer({
 				width      : width,

@@ -12,21 +12,26 @@
 		</content>
 	</binding>
 
+	<!--
+		If these bindings are unexpectedly re-assigned, then all attributes
+		(including sizes) are lost and the appearance becomes broken.
+		To prevent this problem, the inner box should inherit all attributes
+		given via setTabbrowserAttribute() method, from the parent element.
+		See also: https://github.com/piroor/treestyletab/issues/538
+
+		On some versions, these inheritence are done by xbl:constructor.
+		However, it causes infinitely loop on some environments, so
+		now I use xbl:inherits.
+		See also: https://github.com/piroor/treestyletab/issues/550
+	-->
+
 	<binding id="toolbar"
 		extends="chrome://global/content/bindings/toolbar.xml#toolbar">
 		<content><xul:hbox flex="1"
-		                   xbl:inherits="orient"
+		                   xbl:inherits="orient,width,height,treestyletab-allow-subtree-collapse,treestyletab-animation-enabled,treestyletab-closebox-inverted,treestyletab-firsttab-border,treestyletab-invert-scrollbar,treestyletab-max-tree-level,treestyletab-mode,treestyletab-narrow-scrollbar,treestyletab-print-preview,treestyletab-stack-collapsed-tabs,treestyletab-style,treestyletab-tab-contents-inverted,treestyletab-tab-inverted,treestyletab-tabbar-autohide,treestyletab-tabbar-autohide-state,treestyletab-tabbar-fixed,treestyletab-tabbar-fixed-horizontal,treestyletab-tabbar-fixed-vertical,treestyletab-tabbar-position,treestyletab-tabbar-resizing,treestyletab-tabs-indented,treestyletab-twisty-style"
 		                   anonid="toolbar-innerbox"
 		                   class="treestyletab-toolbar-inner-box"><xbl:children/></xul:hbox></content>
 		<implementation>
-			<constructor><![CDATA[
-				// If the binding is unexpectedly re-assigned, then
-				// the size of the inner box is lost.
-				// So we have to update it immediately.
-				// See: https://github.com/piroor/treestyletab/issues/538
-				if (gBrowser.treeStyleTab)
-					gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_APPEARANCE_CHANGE);
-			]]></constructor>
 			<field name="treeStyleTabToolbarInnerBox" readonly="true">
 				document.getAnonymousElementByAttribute(this, 'anonid', 'toolbar-innerbox')
 			</field>
@@ -36,18 +41,10 @@
 	<binding id="toolbar-drag"
 		extends="chrome://global/content/bindings/toolbar.xml#toolbar-drag">
 		<content><xul:hbox flex="1"
-		                   xbl:inherits="orient"
+		                   xbl:inherits="orient,width,height,treestyletab-allow-subtree-collapse,treestyletab-animation-enabled,treestyletab-closebox-inverted,treestyletab-firsttab-border,treestyletab-invert-scrollbar,treestyletab-max-tree-level,treestyletab-mode,treestyletab-narrow-scrollbar,treestyletab-print-preview,treestyletab-stack-collapsed-tabs,treestyletab-style,treestyletab-tab-contents-inverted,treestyletab-tab-inverted,treestyletab-tabbar-autohide,treestyletab-tabbar-autohide-state,treestyletab-tabbar-fixed,treestyletab-tabbar-fixed-horizontal,treestyletab-tabbar-fixed-vertical,treestyletab-tabbar-position,treestyletab-tabbar-resizing,treestyletab-tabs-indented,treestyletab-twisty-style"
 		                   anonid="toolbar-innerbox"
 		                   class="treestyletab-toolbar-inner-box"><xbl:children/></xul:hbox></content>
 		<implementation>
-			<constructor><![CDATA[
-				// If the binding is unexpectedly re-assigned, then
-				// the size of the inner box is lost.
-				// So we have to update it immediately.
-				// See: https://github.com/piroor/treestyletab/issues/538
-				if (gBrowser.treeStyleTab)
-					gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_APPEARANCE_CHANGE);
-			]]></constructor>
 			<field name="treeStyleTabToolbarInnerBox" readonly="true">
 				document.getAnonymousElementByAttribute(this, 'anonid', 'toolbar-innerbox')
 			</field>
