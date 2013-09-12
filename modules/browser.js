@@ -1082,7 +1082,7 @@ TreeStyleTabBrowser.prototype = {
 			let containerFinder = d.createRange();
 			containerFinder.selectNode(namedNodes.closeAnchor);
 			containerFinder.setEndAfter(namedNodes.close);
-			let container = containerFinder.getCommonAncestor();
+			let container = containerFinder.commonAncestorContainer;
 			while (namedNodes.closeAnchor.parentNode != container)
 			{
 				namedNodes.closeAnchor = namedNodes.closeAnchor.parentNode;
