@@ -6,6 +6,7 @@
  */
 pref("extensions.treestyletab.animation.indent.duration",   200);
 pref("extensions.treestyletab.animation.collapse.duration", 150);
+pref("extensions.treestyletab.animation.drag.enabled", true);
 
 /**
  * Size of resizable tab bar. They are completely ignored if "Tabs on Top"

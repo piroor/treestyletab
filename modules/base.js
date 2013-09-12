@@ -153,6 +153,7 @@ var TreeStyleTabBase = {
 		this.onPrefChange('browser.tabs.animate');
 		this.onPrefChange('extensions.treestyletab.animation.indent.duration');
 		this.onPrefChange('extensions.treestyletab.animation.collapse.duration');
+		this.onPrefChange('extensions.treestyletab.animation.drag.enabled');
 		this.onPrefChange('extensions.treestyletab.twisty.expandSensitiveArea');
 		this.onPrefChange('extensions.treestyletab.counter.role.horizontal');
 		this.onPrefChange('extensions.treestyletab.counter.role.vertical');
@@ -2447,6 +2448,8 @@ var TreeStyleTabBase = {
 				return this.indentDuration = value;
 			case 'extensions.treestyletab.animation.collapse.duration':
 				return this.collapseDuration = value;
+			case 'extensions.treestyletab.animation.drag.enabled':
+				return this.dragAnimation = value;
 
 			case 'extensions.treestyletab.twisty.expandSensitiveArea':
 				return this.shouldExpandTwistyArea = value;
