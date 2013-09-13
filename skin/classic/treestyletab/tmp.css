@@ -49,3 +49,8 @@
   .tabbrowser-tabs[treestyletab-mode="vertical"] .tab-progress {
 	margin-top: -2px;
 }
+
+:root[treestyletab-enable-compatibility-tmp="true"]
+  #tabbrowser-tabs .tabbrowser-tab:not([selected="true"]) {
+	background-image: none !important;
+}
