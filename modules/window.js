@@ -460,6 +460,8 @@ TreeStyleTabWindow.prototype = {
  
 	initUIShowHideObserver : function TSTWindow_initUIShowHideObserver() 
 	{
+		this.rootElementObserver = new BrowserUIShowHideObserver(this, this.document.documentElement);
+
 		var toolbox = this.browserToolbox;
 		if (toolbox)
 			this.browserToolboxObserver = new BrowserUIShowHideObserver(this, toolbox);
@@ -496,6 +498,9 @@ TreeStyleTabWindow.prototype = {
 				d.removeEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGED,     this, false);
 				d.removeEventListener(this.kEVENT_TYPE_TABBAR_STATE_CHANGED,        this, false);
 				d.removeEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB,              this, false);
+
+				this.rootElementObserver.destroy();
+				delete this.rootElementObserver;
 
 				if (this.browserToolboxObserver) {
 					this.browserToolboxObserver.destroy();

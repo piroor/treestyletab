@@ -55,7 +55,7 @@ BrowserUIShowHideObserver.prototype = {
 		this.observer = new this.MutationObserver(function(aMutations, aObserver) {
 			self.onChildListModified(aMutations, aObserver);
 		});
-		this.observer.observe(this.box, { childList : true });
+		this.observer.observe(this.box, { childList : true, attributes : true });
 		this.initChildrenObserver();
 	},
 	onChildListModified : function BrowserUIShowHideObserver_onChildListModified(aMutations, aObserver) 
@@ -103,7 +103,8 @@ BrowserUIShowHideObserver.prototype = {
 			if (aMutation.type != 'attributes')
 				return;
 			if (aMutation.attributeName == 'hidden' ||
-				aMutation.attributeName == 'collapsed')
+				aMutation.attributeName == 'collapsed' ||
+				aMutation.attributeName == 'disablechrome')
 				this.owner.browser.treeStyleTab.updateFloatingTabbar(this.owner.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
 		}, this);
 	},
