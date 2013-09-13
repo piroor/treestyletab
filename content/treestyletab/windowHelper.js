@@ -74,6 +74,16 @@ var TreeStyleTabWindowHelper = {
 			);
 		}
 
+		if ('XULBrowserWindow' in window &&
+			'hideChromeForLocation' in window.XULBrowserWindow) {
+			eval('XULBrowserWindow.hideChromeForLocation = '+
+				XULBrowserWindow.hideChromeForLocation.toSource().replace(
+					'{',
+					'{ if (gBrowser.treeStyleTab.isVertical) return false;\n'
+				)
+			);
+		}
+
 		this.overrideExtensionsPreInit(); // windowHelperHacks.js
 	},
  
