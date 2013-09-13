@@ -27,6 +27,7 @@
           <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
+          <em:contributor>wanabe (some bug fixes)</em:contributor>
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -38,6 +39,7 @@
           <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
+          <em:contributor>wanabe (some bug fixes)</em:contributor>
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -49,6 +51,7 @@
           <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
+          <em:contributor>wanabe (some bug fixes)</em:contributor>
           <em:translator>Godai71.Extenzilla (it-IT locale)</em:translator>
       </RDF:Description>
     </em:localized>
@@ -61,6 +64,7 @@
           <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
+          <em:contributor>wanabe (some bug fixes)</em:contributor>
           <em:translator>Fatiaomao (zh-CN locale)</em:translator>
           <em:translator>hzhbest (zh-CN locale)</em:translator>
       </RDF:Description>
@@ -74,6 +78,7 @@
           <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
+          <em:contributor>wanabe (some bug fixes)</em:contributor>
           <em:translator>tito (es-ES locale)</em:translator>
       </RDF:Description>
     </em:localized>
@@ -86,6 +91,7 @@
           <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
+          <em:contributor>wanabe (some bug fixes)</em:contributor>
           <em:translator>Andy Pillip (de-DE locale)</em:translator>
       </RDF:Description>
     </em:localized>
@@ -98,6 +104,7 @@
           <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
+          <em:contributor>wanabe (some bug fixes)</em:contributor>
           <em:translator>HkYtrewq (zh-TW locale)</em:translator>
           <em:translator>Tsprajna (zh-TW locale)</em:translator>
           <em:translator>bootleq (zh-TW locale)</em:translator>
@@ -112,6 +119,7 @@
           <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
+          <em:contributor>wanabe (some bug fixes)</em:contributor>
           <em:translator>L'Autour (ru locale)</em:translator>
           <em:translator>Infocatcher (ru locale)</em:translator>
       </RDF:Description>
@@ -125,6 +133,7 @@
           <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
+          <em:contributor>wanabe (some bug fixes)</em:contributor>
           <em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
       </RDF:Description>
     </em:localized>
@@ -137,6 +146,7 @@
           <em:contributor>Zusukar (auto-shrink mode)</em:contributor>
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
+          <em:contributor>wanabe (some bug fixes)</em:contributor>
           <em:translator>Laurent Haas (fr-FR locale)</em:translator>
       </RDF:Description>
     </em:localized>
@@ -149,6 +159,7 @@
           <em:contributor>Zusukar (krymp automatiskt-läget)</em:contributor>
           <em:contributor>Alice0775 (kompatibilitetsproblem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (sidopanelens utseende)</em:contributor>
+          <em:contributor>wanabe (some bug fixes)</em:contributor>
           <em:translator>Mikael Hiort af Ornäs (sv-SE)</em:translator>
       </RDF:Description>
     </em:localized>
@@ -161,6 +172,7 @@
           <em:contributor>Zusukar (auto minimering)</em:contributor>
           <em:contributor>Alice0775 (kompatibilitetsproblem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (sidebjælkens stil)</em:contributor>
+          <em:contributor>wanabe (some bug fixes)</em:contributor>
           <em:translator>Regmos (da-DK)</em:translator>
       </RDF:Description>
     </em:localized>
