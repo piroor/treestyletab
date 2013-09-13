@@ -53,18 +53,25 @@ BrowserUIShowHideObserver.prototype = {
 			return;
 		var self = this;
 		this.observer = new this.MutationObserver(function(aMutations, aObserver) {
-			self.onChildListModified(aMutations, aObserver);
+			self.onMutationOnParent(aMutations, aObserver);
 		});
 		this.observer.observe(this.box, { childList : true, attributes : true });
 		this.initChildrenObserver();
 	},
-	onChildListModified : function BrowserUIShowHideObserver_onChildListModified(aMutations, aObserver) 
+	onMutationOnParent : function BrowserUIShowHideObserver_onMutationOnParent(aMutations, aObserver) 
 	{
 		aMutations.forEach(function(aMutation) {
-			if (aMutation.type != 'childList')
-				return;
-			this.destroyChildrenObserver();
-			this.initChildrenObserver();
+			switch (aMutation.type)
+			{
+				case 'childList':
+					this.destroyChildrenObserver();
+					this.initChildrenObserver();
+					return;
+
+				case 'attributes':
+					this.onAttributeModified(this.box, aMutations, aObserver);
+					return;
+			}
 		}, this);
 	},
 
