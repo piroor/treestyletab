@@ -136,13 +136,6 @@ pref("extensions.treestyletab.tabbar.autoShow.tabSwitch", true);
 pref("extensions.treestyletab.tabbar.autoShow.feedback", false);
 pref("extensions.treestyletab.tabbar.autoShow.feedback.delay", 3000);
 /**
- * When the tab bar is automatically shown by keyboard shortcuts or other
- * reasons, the tab bar will be hidden again automatically. If you set
- * this pref to "true", TST cancels to hide the tab bar if the cursor is on the
- * expanded tab bar, even if it is shown by other triggers not mousemove.
- */
-pref("extensions.treestyletab.tabbar.autoShow.keepShownOnMouseover", true);
-/**
  * Size of the placeholder for "hidden tab bar".
  * When "tabbar.autoHide.mode"==1, the tab bar will be hidden completely.
  * Then, if the contents area is completely covered by a plugin process

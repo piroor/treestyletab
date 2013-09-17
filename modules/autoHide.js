@@ -77,12 +77,12 @@ AutoHideBrowser.prototype = {
 	kSHOWN_BY_SHORTCUT  : 1 << 0,
 	kSHOWN_BY_MOUSEMOVE : 1 << 1,
 	kSHOWN_BY_FEEDBACK  : 1 << 2,
+	kSHOWN_BY_SOME_REASON : (1 << 0) | (1 << 1) | (1 << 2),
 	kSHOWHIDE_BY_START  : 1 << 3,
 	kSHOWHIDE_BY_END    : 1 << 4,
 	kSHOWHIDE_BY_POSITION_CHANGE : 1 << 5,
 	kSHOWHIDE_BY_RESIZE : 1 << 6,
 	kHIDDEN_BY_CLICK    : 1 << 7,
-	kKEEP_SHOWN_ON_MOUSEOVER : (1 << 0) | (1 << 1) | (1 << 2),
  
 	get mode() /* PUBLIC API */ 
 	{
@@ -358,13 +358,9 @@ AutoHideBrowser.prototype = {
 		var w  = this.window;
 
 		var shouldShow = position & this.MOUSE_POSITION_SENSITIVE;
-		if (this.expanded) {
-			if (
-				shouldShow &&
-				this.showHideReason & this.kKEEP_SHOWN_ON_MOUSEOVER &&
-				utils.getTreePref('tabbar.autoShow.keepShownOnMouseover')
-				) {
-				this.showHideReason = this.kSHOWN_BY_MOUSEMOVE;
+		if (this.expanded) { // currently shown, let's hide it.
+			if (shouldShow) {
+				this.show(this.kSHOWN_BY_MOUSEMOVE);
 				this.cancelDelayedShowForShortcut();
 				this.cancelHideForFeedback();
 			}
@@ -375,15 +371,14 @@ AutoHideBrowser.prototype = {
 				this.showHideOnMouseMoveTimer = w.setTimeout(
 					function(aSelf) {
 						aSelf.cancelDelayedShowForShortcut();
-						if (aSelf.showHideReason == aSelf.kSHOWN_BY_MOUSEMOVE)
-							aSelf.hide(aSelf.kSHOWN_BY_MOUSEMOVE);
+						aSelf.hide(aSelf.kSHOWN_BY_MOUSEMOVE);
 					},
 					utils.getTreePref('tabbar.autoHide.delay'),
 					this
 				);
 			}
 		}
-		else if (shouldShow) {
+		else if (shouldShow) { // currently shown, let's show it.
 			this.showHideOnMouseMoveTimer = w.setTimeout(
 				function(aSelf) {
 					aSelf.cancelDelayedShowForShortcut();
@@ -564,8 +559,7 @@ AutoHideBrowser.prototype = {
 		this.delayedHideTabbarForFeedbackTimer = this.window.setTimeout(
 			function(aSelf) {
 				aSelf.delayedHideTabbarForFeedbackTimer = null;
-				if (aSelf.showHideReason == aSelf.kSHOWN_BY_FEEDBACK)
-					aSelf.hide(aSelf.kSHOWN_BY_FEEDBACK);
+				aSelf.hide(aSelf.kSHOWN_BY_FEEDBACK);
 			},
 			utils.getTreePref('tabbar.autoShow.feedback.delay'),
 			this
@@ -666,11 +660,11 @@ AutoHideBrowser.prototype = {
 
 		if (this.expanded) { // to be hidden or shrunken
 			this.onHiding();
-			this.showHideReason = aReason || this.kSHOWN_BY_UNKNOWN;
+			this.showHideReason = this.kSHOWN_BY_UNKNOWN;
 		}
 		else { // to be shown or expanded
 			this.onShowing();
-			this.showHideReason = aReason || this.kSHOWN_BY_UNKNOWN;
+			this.showHideReason = aReason || this.showHideReason || this.kSHOWN_BY_UNKNOWN;
 		}
 
 		if (DEBUG) {
@@ -736,14 +730,23 @@ AutoHideBrowser.prototype = {
 	
 	show : function AHB_show(aReason) /* PUBLIC API */ 
 	{
+		if (aReason) {
+			this.showHideReason |= aReason;
+		}
 		if (!this.expanded)
-			this.showHideInternal(aReason);
+			this.showHideInternal();
 	},
  
 	hide : function AHB_hide(aReason) /* PUBLIC API */ 
 	{
+		if (aReason) {
+			if (this.showHideReason & aReason)
+				this.showHideReason ^= aReason;
+			if (this.showHideReason & this.kSHOWN_BY_SOME_REASON)
+				return;
+		}
 		if (this.expanded)
-			this.showHideInternal(aReason);
+			this.showHideInternal();
 	},
  
 	onShowing : function AHB_onShowing() 
@@ -1000,8 +1003,7 @@ AutoHideBrowser.prototype = {
 
 			case this.treeStyleTab.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END:
 				this.cancelDelayedShowForShortcut();
-				if (this.enabled &&
-					this.showHideReason == this.kSHOWN_BY_SHORTCUT)
+				if (this.enabled)
 					this.hide(this.kSHOWN_BY_SHORTCUT);
 				return;
 
@@ -1073,7 +1075,7 @@ AutoHideBrowser.prototype = {
 			!sv.isPopupShown() &&
 			(
 				!this.expanded ||
-				this.showHideReason & this.kKEEP_SHOWN_ON_MOUSEOVER
+				this.showHideReason & this.kSHOWN_BY_SOME_REASON
 			) &&
 			!this.lastMouseDownTarget
 			)
@@ -1138,7 +1140,6 @@ AutoHideBrowser.prototype = {
 			) {
 			if (this.enabled &&
 				utils.getTreePref('tabbar.autoShow.accelKeyDown') &&
-				!this.expanded &&
 				!this.delayedAutoShowTimer &&
 				!this.delayedShowForShortcutTimer) {
 				this.delayedShowForShortcutTimer = w.setTimeout(
@@ -1155,8 +1156,7 @@ AutoHideBrowser.prototype = {
 			}
 		}
 		else {
-			if (this.enabled &&
-				this.showHideReason == this.kSHOWN_BY_SHORTCUT)
+			if (this.enabled)
 				this.hide(this.kSHOWN_BY_SHORTCUT);
 		}
 	},
@@ -1184,7 +1184,7 @@ AutoHideBrowser.prototype = {
 
 		this.enabled = false;
 		this.mouseMoveListening = false;
-		this.showHideReason = 0;
+		this.showHideReason = this.kSHOWN_BY_UNKNOWN;
 		this.lastMouseDownTarget = null;
 		this.isResizing = false;
 
