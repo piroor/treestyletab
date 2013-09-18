@@ -1830,9 +1830,10 @@ TreeStyleTabBrowser.prototype = {
 						'hideTabBar' in this.window
 					) &&
 					prefs.getPref('browser.tabs.autoHide')
-				) ||
-				// Tab Mix Plus also provides it.
-				'TabmixTabbar' in this.window && this.window.TabmixTabbar.hideMode > 0
+				)
+//				) ||
+//				// Tab Mix Plus also provides it.
+//				'TabmixTabbar' in this.window && this.window.TabmixTabbar.hideMode > 0
 			);
 			this._tabStripPlaceHolder.collapsed =
 				splitter.collapsed =
