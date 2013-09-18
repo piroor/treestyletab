@@ -1826,7 +1826,9 @@ TreeStyleTabBrowser.prototype = {
 					prefs.getDefaultPref('browser.tabs.autoHide') !== null ||
 					// but "Hide Tab Bar With One Tab" provides it.
 					// https://addons.mozilla.org/firefox/addon/hide-tab-bar-with-one-tab/
-					'hideTabBar' in this.window
+					'hideTabBar' in this.window ||
+					// Tab Mix Plus also provides it.
+					'TabmixTabbar' in this.window && this.window.TabmixTabbar.hideMode > 0
 				) &&
 				prefs.getPref('browser.tabs.autoHide')
 			);
