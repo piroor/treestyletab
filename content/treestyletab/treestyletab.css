@@ -75,6 +75,21 @@
 }
 
 
+/* tab bar in the DOM-fullscreen mode */
+
+.tabbrowser-tabs[treestyletab-dom-fullscreen-activated="true"],
+.tabbrowser-strip[treestyletab-dom-fullscreen-activated="true"],
+.tabbrowser-strip[treestyletab-dom-fullscreen-activated="true"]+splitter,
+.treestyletab-tabbar-toolbar[treestyletab-dom-fullscreen-activated="true"],
+.treestyletab-tabbar-toolbar[treestyletab-dom-fullscreen-activated="true"] > *,
+tabbrowser[treestyletab-dom-fullscreen-activated-mode="true"][tabcontainer]
+  .tabbrowser-strip.treestyletab-tabbar-placeholder,
+tabbrowser[treestyletab-dom-fullscreen-activated-mode="true"][tabcontainer]
+  .tabbrowser-strip.treestyletab-tabbar-placeholder+splitter {
+	visibility: collapse;
+}
+
+
 /* auto hide tab bar */
 
 .tabbrowser-tabs[treestyletab-tabbar-autohide="hidden"],

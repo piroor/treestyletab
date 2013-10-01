@@ -81,6 +81,7 @@ const TreeStyleTabConstants = Object.freeze({
 	kFAVICONIZED        : 'treestyletab-faviconized',
 	kBG_NOTIFY_PHASE    : 'treestyletab-notifybgtab-phase',
 	kIGNORE_POPUP_STATE : 'treestyletab-ignore-state',
+	kDOM_FULLSCREEN_ACTIVATED : 'treestyletab-dom-fullscreen-activated',
 
 	kTAB_INVERTED          : 'treestyletab-tab-inverted',
 	kTAB_CONTENTS_INVERTED : 'treestyletab-tab-contents-inverted',
