@@ -3049,6 +3049,9 @@ TreeStyleTabBrowser.prototype = {
 		if (nextFocusedTab && toBeClosedTabs.indexOf(nextFocusedTab) > -1)
 			nextFocusedTab = this.getNextFocusedTab(nextFocusedTab);
 
+		if (nextFocusedTab && nextFocusedTab.hasAttribute(this.kREMOVED))
+			nextFocusedTab = null;
+
 		this._reserveCloseRelatedTabs(toBeClosedTabs);
 
 		this.detachTab(tab, { dontUpdateIndent : true });
