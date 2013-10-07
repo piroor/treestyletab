@@ -1,6 +1,8 @@
 # 更新履歴
 
  - master/HEAD
+   * 閉じられようとしているタブにフォーカスしないようにした（[issue #569](https://github.com/piroor/treestyletab/issues/569)などの、閉じられようとしているタブからのTabSelectイベントに起因する問題を解消）
+   * DOMフルスクリーンモード（YouTubeなどで使われる）において、Firefox本体の機能と同様に、タブバーの自動表示機能を無効化するようにした
    * 縦型タブバーを使用しているときはブラウザのツールバーを隠さないようにした（Webアプリケーションなどのタブに対して明示的にツールバーを隠す場面を除く）
    * Tab Mix Plusとの併用時にタブの下に余計な線が描画される問題を修正（[by wanabe. Thanks!](https://github.com/piroor/treestyletab/pull/556)）
    * 「何回戻れる？」との互換性を向上（[by wanabe. Thanks!](https://github.com/piroor/treestyletab/pull/554)）
