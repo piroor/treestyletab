@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 0.14.2013100901
    * Improved: Position and size of the tab bar is updated automatically when any element is inserted to the browser box.
    * Fixed: Show the full tooltip near the original tooltip correctly, even if there are multiple screens.
    * Fixed: Don't shrink/hide the tab bar for keyboard shortcuts Ctrl-T, Ctrl-R, etc, if the tab bar is shown by a long-press of the Ctrl key.
