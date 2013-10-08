@@ -10,7 +10,7 @@
    * 縦型タブバーを使用しているときはブラウザのツールバーを隠さないようにした（Webアプリケーションなどのタブに対して明示的にツールバーを隠す場面を除く）
    * Tab Mix Plusとの併用時にタブの下に余計な線が描画される問題を修正（[by wanabe. Thanks!](https://github.com/piroor/treestyletab/pull/556)）
    * 「何回戻れる？」との互換性を向上（[by wanabe. Thanks!](https://github.com/piroor/treestyletab/pull/554)）
-   * [Sidebars List](https://addons.mozilla.org/firefox/addon/sidebars-list/)との互換性を向上（[by Infocatcher. Thanks!](https://github.com/piroor/treestyletab/pull/542)）
+   * [Sidebars List](https://addons.mozilla.org/firefox/addon/sidebars-list/)との互換性を向上（[by Infocatcher. Thanks!](https://github.com/piroor/treestyletab/pull/571)）
  - 0.14.2013082301
    * Firefox 23以降で初期化に失敗する問題を修正（前バージョンでの後退バグ）
    * ロシア語ロケール更新（[by Infocatcher. Thanks!](https://github.com/piroor/treestyletab/pull/542)）
