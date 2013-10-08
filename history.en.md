@@ -10,7 +10,7 @@
    * Fixed: Don't hide browser's toolbars when the tab bar is vertical, except cases to hide them for special tabs (for example, web application).
    * Fixed: Erase odd border in each tab appearing with Tab Mix Plus. ([by wanabe. Thanks!](https://github.com/piroor/treestyletab/pull/556))
    * Fixed: Better compatibility with "How Many Times Can I Back?". ([by wanabe. Thanks!](https://github.com/piroor/treestyletab/pull/554))
-   * Fixed: Better compatibility with [Sidebar List](https://addons.mozilla.org/firefox/addon/sidebars-list/). ([by Infocatcher. Thanks!](https://github.com/piroor/treestyletab/pull/542))
+   * Fixed: Better compatibility with [Sidebars List](https://addons.mozilla.org/firefox/addon/sidebars-list/). ([by Infocatcher. Thanks!](https://github.com/piroor/treestyletab/pull/542))
  - 0.14.2013082301
    * Fixed: Failed to initialize on Firefox 23 and later. (regression on the previous release)
    * [ru locale is updated by Infocatcher. Thanks!](https://github.com/piroor/treestyletab/pull/542)
