@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * Improved: Position and size of the tab bar is updated automatically when any element is inserted to the browser box.
+   * Fixed: Show the full tooltip near the original tooltip correctly, even if there are multiple screens.
+   * Fixed: Don't shrink/hide the tab bar for keyboard shortcuts Ctrl-T, Ctrl-R, etc, if the tab bar is shown by a long-press of the Ctrl key.
    * Fixed: Don't focus to the tab which is going to be closed. This also fixes some breakages (including [issue #569](https://github.com/piroor/treestyletab/issues/569)) caused by TabSelect events from disappearing tabs.
    * Fixed: Don't activate auto-hide feature of the tab bar for DOM-fullscreen mode (ex. YouTube). This is based on the behavior of Firefox's auto-hide feature in DOM-fullscreen mode.
    * Fixed: Don't hide browser's toolbars when the tab bar is vertical, except cases to hide them for special tabs (for example, web application).
