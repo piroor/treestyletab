@@ -773,6 +773,14 @@ TreeStyleTabWindow.prototype = {
 			return;
 		}
 
+		if (aEvent.type == 'keypress' ?
+				// ignore keypress on Ctrl-R, Ctrl-T, etc.
+				aEvent.charCode != 0 :
+				// ignore keyup not on the Ctrl key
+				aEvent.keyCode != Ci.nsIDOMKeyEvent.DOM_VK_CONTROL
+			)
+			return;
+
 		// when you just release accel key...
 
 		/* PUBLIC API */
