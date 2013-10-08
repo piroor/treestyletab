@@ -112,6 +112,7 @@ BrowserUIShowHideObserver.prototype = {
 				return;
 			if (aMutation.attributeName == 'hidden' ||
 				aMutation.attributeName == 'collapsed' ||
+				aMutation.attributeName == 'moz-collapsed' || // Used in full screen mode
 				aMutation.attributeName == 'disablechrome')
 				this.owner.browser.treeStyleTab.updateFloatingTabbar(this.owner.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
 		}, this);
