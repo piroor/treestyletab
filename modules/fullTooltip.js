@@ -45,6 +45,9 @@ Components.utils.import('resource://treestyletab-modules/pseudoTreeBuilder.js');
 
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
+XPCOMUtils.defineLazyServiceGetter(this, 'ScreenManager',
+  '@mozilla.org/gfx/screenmanager;1', 'nsIScreenManager');
+
 function FullTooltipManager(aOwner)
 {
 	this.init(aOwner);
@@ -345,6 +348,36 @@ FullTooltipManager.prototype = {
 	},
 
 
+	/**
+	 * If the window is maximized, screenX and screenY can be out of
+	 * visible screen rect. On the other hand,
+	 * nsIPopupBoxObject#openPopupAtScreen() automatically reposition
+	 * the popup if it is going to be shown out of the visible screen
+	 * rect. As the result, the popup will be repositioned unexpectedly
+	 * if I use the raw screenX and screenY.
+	 * https://github.com/piroor/treestyletab/issues/302
+	 * To prevent such a result, I have to calculate valid base position
+	 * for the popup.
+	 */
+	get windowBasePosition() {
+		var screen = ScreenManager.screenForRect(
+				this.window.screenX,
+				this.window.screenY,
+				this.window.outerWidth,
+				this.window.outerHeight
+			);
+		var screenMinX = {},
+			screenMinY = {},
+			screenMaxX = {},
+			screenMaxY = {};
+		screen.GetAvailRect(screenMinX, screenMinY, screenMaxX, screenMaxY);
+
+		return {
+			x: Math.max(this.window.screenX, screenMinX.value),
+			y: Math.max(this.window.screenY, screenMinY.value)
+		};
+	},
+
 	setup : function FTM_setup(aBaseTooltip, aTab, aExtraLabels) 
 	{
 		this.cancel();
@@ -354,9 +387,10 @@ FullTooltipManager.prototype = {
 			return;
 
 		this._fullTooltipTimer = this.window.setTimeout(function(aSelf) {
+			var basePosition = aSelf.windowBasePosition;
 			var box = aBaseTooltip.boxObject;
-			var x = box.screenX - this.window.screenX;
-			var y = box.screenY - this.window.screenY;
+			var x = box.screenX - basePosition.x;
+			var y = box.screenY - basePosition.y;
 			var w = box.width;
 			var h = box.height;
 			aBaseTooltip.hidePopup();
@@ -370,7 +404,7 @@ FullTooltipManager.prototype = {
 				style.maxWidth = style.minWidth = w+'px';
 				style.maxHeight = style.minHeight = h+'px';
 			}
-			tooltip.openPopupAtScreen(this.window.screenX, this.window.screenY, false);
+			tooltip.openPopupAtScreen(basePosition.x, basePosition.y, false);
 		}, Math.max(delay, 0), this);
 	},
 
