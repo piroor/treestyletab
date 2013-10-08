@@ -66,6 +66,7 @@ BrowserUIShowHideObserver.prototype = {
 				case 'childList':
 					this.destroyChildrenObserver();
 					this.initChildrenObserver();
+					this.owner.browser.treeStyleTab.updateFloatingTabbar(this.owner.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
 					return;
 
 				case 'attributes':

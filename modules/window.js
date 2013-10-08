@@ -166,6 +166,11 @@ TreeStyleTabWindow.prototype = {
 		return w.gToolbox || w.gNavToolbox;
 	},
  
+	get browserBox()
+	{
+		return this.document.getElementById('browser');
+	},
+ 
 	get browserBottomBox()
 	{
 		return this.document.getElementById('browser-bottombox');
@@ -470,6 +475,10 @@ TreeStyleTabWindow.prototype = {
 		if (toolbox)
 			this.browserToolboxObserver = new BrowserUIShowHideObserver(this, toolbox);
 
+		var browserBox = this.browserBox;
+		if (browserBox)
+			this.browserBoxObserver = new BrowserUIShowHideObserver(this, browserBox);
+
 		var bottomBox = this.browserBottomBox;
 		if (bottomBox)
 			this.browserBottomBoxObserver = new BrowserUIShowHideObserver(this, bottomBox);
@@ -509,6 +518,10 @@ TreeStyleTabWindow.prototype = {
 				if (this.browserToolboxObserver) {
 					this.browserToolboxObserver.destroy();
 					delete this.browserToolboxObserver;
+				}
+				if (this.browserBoxObserver) {
+					this.browserBoxObserver.destroy();
+					delete this.browserBoxObserver;
 				}
 				if (this.browserBottomBoxObserver) {
 					this.browserBottomBoxObserver.destroy();
