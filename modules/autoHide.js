@@ -406,13 +406,15 @@ AutoHideBrowser.prototype = {
 		var sensitiveArea = this.sensitiveArea;
 		if (this.shrunken) {
 			let clickable;
-			if (this.widthFromMode > 24 &&
+			let resizable = !sv.fixed;
+			if (resizable &
+				this.widthFromMode > 24 &&
 				(clickable = this.getNearestClickableBox(aEvent))) {
 				/* For resizing of shrunken tab bar and clicking closeboxes,
 				   we have to shrink sensitive area. */
 				sensitiveArea = -(clickable.width + clickable.padding);
 			}
-			else if (this.resizer)
+			else if (resizable && this.resizer)
 				sensitiveArea = -this.resizer.boxObject.width;
 			else
 				sensitiveArea = 0;
