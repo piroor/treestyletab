@@ -87,6 +87,7 @@
 }
 
 :root[treestyletab-enable-compatibility-tmp="true"]
-  #tabbrowser-tabs .tabbrowser-tab:not([selected="true"]):not([pinned="true"]) {
+  #tabbrowser-tabs[treestyletab-style]
+    .tabbrowser-tab:not([selected="true"]):not([pinned="true"]) {
 	background-image: none !important;
 }
