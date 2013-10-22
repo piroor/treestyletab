@@ -4813,16 +4813,17 @@ TreeStyleTabBrowser.prototype = {
 	onBeforeFullScreenToggle : function TSTBrowser_onBeforeFullScreenToggle() 
 	{
 		if (this.position != 'top') {
+			var isEnteringFullScreenMode = !this.window.fullScreen;
 			// entering to the DOM-fullscreen (ex. YouTube Player)
-			if (this.document.mozFullScreen) {
+			if (this.document.mozFullScreen && isEnteringFullScreenMode) {
 				this.setTabbrowserAttribute(this.kDOM_FULLSCREEN_ACTIVATED, true);
 			}
 			else {
 				if (this.document.documentElement.getAttribute(this.kDOM_FULLSCREEN_ACTIVATED) != 'true') {
-					if (this.window.fullScreen)
-						this.autoHide.endForFullScreen();
-					else
+					if (isEnteringFullScreenMode)
 						this.autoHide.startForFullScreen();
+					else
+						this.autoHide.endForFullScreen();
 				}
 				this.removeTabbrowserAttribute(this.kDOM_FULLSCREEN_ACTIVATED);
 			}
