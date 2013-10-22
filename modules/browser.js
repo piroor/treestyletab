@@ -1854,7 +1854,7 @@ TreeStyleTabBrowser.prototype = {
 				(aReason & this.kTABBAR_UPDATE_SYNC_TO_PLACEHOLDER) &&
 				this.autoHide.mode == this.autoHide.kMODE_SHRINK
 				)
-				this.autoHide.hide(this.autoHide.kSHOWHIDE_BY_RESIZE);
+				this.autoHide.hide(this.autoHide.kSHOWN_BY_ANY_REASON);
 
 			let box  = this._tabStripPlaceHolder.boxObject;
 			let root = d.documentElement.boxObject;

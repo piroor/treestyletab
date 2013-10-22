@@ -73,11 +73,12 @@ AutoHideBrowser.prototype = {
 	kSTATE_EXPANDED : 'expanded',
 	kSTATE_SHRUNKEN : 'shrunken',
 
+	kNOT_SHOWN          : 0,
 	kSHOWN_BY_UNKNOWN   : 0,
 	kSHOWN_BY_SHORTCUT  : 1 << 0,
 	kSHOWN_BY_MOUSEMOVE : 1 << 1,
 	kSHOWN_BY_FEEDBACK  : 1 << 2,
-	kSHOWN_BY_SOME_REASON : (1 << 0) | (1 << 1) | (1 << 2),
+	kSHOWN_BY_ANY_REASON : (1 << 0) | (1 << 1) | (1 << 2),
 	kSHOWHIDE_BY_START  : 1 << 3,
 	kSHOWHIDE_BY_END    : 1 << 4,
 	kSHOWHIDE_BY_POSITION_CHANGE : 1 << 5,
@@ -742,9 +743,12 @@ AutoHideBrowser.prototype = {
 	hide : function AHB_hide(aReason) /* PUBLIC API */ 
 	{
 		if (aReason) {
-			if (this.showHideReason & aReason)
+			if (aReason == this.kSHOWN_BY_ANY_REASON)
+				this.showHideReason = this.kNOT_SHOWN;
+			else if (this.showHideReason & aReason)
 				this.showHideReason ^= aReason;
-			if (this.showHideReason & this.kSHOWN_BY_SOME_REASON)
+
+			if (this.showHideReason & this.kSHOWN_BY_ANY_REASON)
 				return;
 		}
 		if (this.expanded)
@@ -1077,7 +1081,7 @@ AutoHideBrowser.prototype = {
 			!sv.isPopupShown() &&
 			(
 				!this.expanded ||
-				this.showHideReason & this.kSHOWN_BY_SOME_REASON
+				this.showHideReason & this.kSHOWN_BY_ANY_REASON
 			) &&
 			!this.lastMouseDownTarget
 			)
