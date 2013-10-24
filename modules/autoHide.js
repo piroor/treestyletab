@@ -73,7 +73,6 @@ AutoHideBrowser.prototype = {
 	kSTATE_EXPANDED : 'expanded',
 	kSTATE_SHRUNKEN : 'shrunken',
 
-	kNOT_SHOWN          : 0,
 	kSHOWN_BY_UNKNOWN   : 0,
 	kSHOWN_BY_SHORTCUT  : 1 << 0,
 	kSHOWN_BY_MOUSEMOVE : 1 << 1,
@@ -744,7 +743,7 @@ AutoHideBrowser.prototype = {
 	{
 		if (aReason) {
 			if (aReason == this.kSHOWN_BY_ANY_REASON)
-				this.showHideReason = this.kNOT_SHOWN;
+				this.showHideReason &= ~this.kSHOWN_BY_ANY_REASON;
 			else if (this.showHideReason & aReason)
 				this.showHideReason ^= aReason;
 
