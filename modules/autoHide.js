@@ -362,7 +362,6 @@ AutoHideBrowser.prototype = {
 			if (shouldShow) {
 				this.show(this.kSHOWN_BY_MOUSEMOVE);
 				this.cancelDelayedShowForShortcut();
-				this.cancelHideForFeedback();
 			}
 			else if (
 				!shouldShow &&
@@ -382,7 +381,6 @@ AutoHideBrowser.prototype = {
 			this.showHideOnMouseMoveTimer = w.setTimeout(
 				function(aSelf) {
 					aSelf.cancelDelayedShowForShortcut();
-					aSelf.cancelHideForFeedback();
 					aSelf.show(aSelf.kSHOWN_BY_MOUSEMOVE);
 				},
 				utils.getTreePref('tabbar.autoHide.delay'),
