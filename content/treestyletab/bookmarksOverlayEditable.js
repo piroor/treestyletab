@@ -153,6 +153,12 @@ var TreeStyleTabBookmarksServiceEditable = {
 
 		this.canceled = false;
 
+		// Ignore bookmark in the "unsorted bookmarks" folder, because
+		// there can be very large number of bookmarks and they won't be
+		// opened as a tree.
+		if (PlacesUtils.bookmarks.getFolderIdForItem(id) == PlacesUtils.unfiledBookmarksFolderId)
+			return;
+
 		this._createSiblingsFragment(id, (function(aFragment) {
 			var siblings = Array.slice(aFragment.childNodes)
 							.map(function(aItem) {
