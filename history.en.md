@@ -1,6 +1,14 @@
 # History
 
  - master/HEAD
+   * Improved: Better compatibility with someone who change visibility of the tab bar, like "auto hide tab bar for last single tab" feature of Tab Mix Plus, Pale Moon, and [Hide Tab Bar With One Tab](https://addons.mozilla.org/firefox/addon/hide-tab-bar-with-one-tab/).
+   * Modified: Expand the shrunken tab bar immediately when the mouse pointer moves onto the tab bar, if the size of teh tab bar is fixed.
+   * Modified: Keep the UI to modify relations of bookmarks disabled, for bookmark items in the "Unsorted Bookmarks" folder. (Because people won't open all items in the folder as a tree of tabs by middle-click on the folder.)
+   * Fixed: Hide (or collapse) the tab bar correctly with delay, when a tab is opened or closed in the "auto hide" mode.
+   * Fixed: Better responsibility for bookmark management UI when there are very large number of sibling bookmarks in a folder.
+   * Fixed: Save and restore both sizes of expanded and shrunken tab bar correctly, on the next startup.
+   * Fixed: Re-show the tab bar correctly when the F11 key is pressed to exit from the DOM full-screen mode.
+   * Fixed: Don't disable background color of tabs when Tab Mix Plus is installed.
  - 0.14.2013100901
    * Improved: Position and size of the tab bar is updated automatically when any element is inserted to the browser box.
    * Fixed: Show the full tooltip near the original tooltip correctly, even if there are multiple screens.
