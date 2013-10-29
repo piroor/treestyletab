@@ -159,15 +159,11 @@ var TreeStyleTabBookmarksServiceEditable = {
 		if (PlacesUtils.bookmarks.getFolderIdForItem(id) == PlacesUtils.unfiledBookmarksFolderId)
 			return;
 
-		this._createSiblingsFragment(id, (function(aFragment) {
-			var siblings = Array.slice(aFragment.childNodes)
-							.map(function(aItem) {
-								return parseInt(aItem.getAttribute('value'));
-							});
+		this._createSiblingsFragment(id, (function(aSiblingsFragment) {
 			var range = document.createRange();
 			range.selectNodeContents(popup);
 			range.setEndBefore(this.separator);
-			range.insertNode(aFragment);
+			range.insertNode(aSiblingsFragment);
 			range.detach();
 
 			var selected = popup.getElementsByAttribute('selected', 'true')[0];
@@ -194,8 +190,9 @@ var TreeStyleTabBookmarksServiceEditable = {
 				this._createSiblingsFragmentTimer = window.setTimeout(progressiveIteration, interval);
 			}
 			catch(e if e instanceof StopIteration) {
-				var fragment = this._createSiblingsFragmentInternal(aCurrentItem, items);
-				aCallback(fragment);
+				this._createSiblingsFragmentInternal(aCurrentItem, items, function(aSiblingsFragment) {
+					aCallback(aSiblingsFragment);
+				});
 			}
 			catch(e) {
 			}
@@ -206,7 +203,7 @@ var TreeStyleTabBookmarksServiceEditable = {
 		this._createSiblingsFragmentTimer = window.setTimeout(progressiveIteration, interval);
 	},
 	_createSiblingsFragmentTimer : null,
-	_createSiblingsFragmentInternal : function TSTBMEditable_createSiblingsFragmentInternal(aCurrentItem, aItems)
+	_createSiblingsFragmentInternal : function TSTBMEditable_createSiblingsFragmentInternal(aCurrentItem, aItems, aCallback)
 	{
 		var treeStructure = this.getTreeStructureFromItems(aItems);
 
@@ -219,35 +216,58 @@ var TreeStyleTabBookmarksServiceEditable = {
 		}
 
 		var fragment = document.createDocumentFragment();
-		for (let [i, id] in Iterator(aItems))
-		{
-			let label = PlacesUtils.bookmarks.getItemTitle(id);
-			let item = document.createElement('menuitem');
-			item.setAttribute('value', id);
 
-			let parent = i;
-			let nest = 0;
-			let disabled = false;
-			while ((parent = treeStructure[parent]) != -1)
+		if (this._createSiblingsFragmentInternalTimer)
+			window.clearTimeout(this._createSiblingsFragmentInternalTimer);
+
+		var interval = 100;
+		var step = 10;
+		var current = 0;
+		var progressiveIteration = (function() {
+			let id;
+			for (let i = 0; i < step; i++)
 			{
-				nest++;
-				if (parent == currentIndex) disabled = true;
+				id = aItems[current++];
+				if (!id)
+					break;
+
+				let label = PlacesUtils.bookmarks.getItemTitle(id);
+				let menuitem = document.createElement('menuitem');
+				menuitem.setAttribute('value', id);
+
+				let parent = i;
+				let nest = 0;
+				let disabled = false;
+				while ((parent = treeStructure[parent]) != -1)
+				{
+					nest++;
+					if (parent == currentIndex) disabled = true;
+				}
+				if (nest)
+					menuitem.setAttribute('style', 'padding-left:'+nest+'em');
+
+				if (disabled || id == aCurrentItem) {
+					menuitem.setAttribute('disabled', true);
+					if (id == aCurrentItem)
+						label = TreeStyleTabUtils.treeBundle.getFormattedString('bookmarkProperty.parent.current.label', [label]);
+				}
+				if (id == selected)
+					menuitem.setAttribute('selected', true);
+
+				menuitem.setAttribute('label', label);
+
+				fragment.appendChild(menuitem);
 			}
-			if (nest) item.setAttribute('style', 'padding-left:'+nest+'em');
-
-			if (disabled || id == aCurrentItem) {
-				item.setAttribute('disabled', true);
-				if (id == aCurrentItem)
-					label = TreeStyleTabUtils.treeBundle.getFormattedString('bookmarkProperty.parent.current.label', [label]);
+			if (id) {
+				this._createSiblingsFragmentInternalTimer = window.setTimeout(progressiveIteration, interval);
+				return;
 			}
-			if (id == selected) item.setAttribute('selected', true);
-
-			item.setAttribute('label', label);
-
-			fragment.appendChild(item);
-		}
-		return fragment;
+			this._createSiblingsFragmentInternalTimer = null;
+			aCallback(fragment);
+		}).bind(this);
+		this._createSiblingsFragmentInternalTimer = window.setTimeout(progressiveIteration, interval);
 	},
+	_createSiblingsFragmentInternalTimer : null,
 	_getItemsInFolderIterator : function TSTBMEditable_getItemsInFolderIterator(aId)
 	{
 		var count = 0;
