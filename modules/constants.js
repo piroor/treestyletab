@@ -96,6 +96,8 @@ const TreeStyleTabConstants = Object.freeze({
 	kTABBAR_MOVE_FORCE  : 'force',
 	kTABBAR_MOVE_NORMAL : 'normal',
 
+	kTAB_STRIP_ELEMENT  : 'treestyletab-tabstrip-element',
+
 /* classes */
 	kTWISTY                     : 'treestyletab-twisty',
 	kCOUNTER                    : 'treestyletab-counter',

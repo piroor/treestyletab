@@ -35,6 +35,8 @@
 
 const EXPORTED_SYMBOLS = ['BrowserUIShowHideObserver']; 
 
+Components.utils.import('resource://treestyletab-modules/constants.js');
+
 function BrowserUIShowHideObserver(aOwner, aBox) {
 	this.owner = aOwner;
 	this.box = aBox;
@@ -105,7 +107,7 @@ BrowserUIShowHideObserver.prototype = {
 	onAttributeModified : function BrowserUIShowHideObserver_onAttributeModified(aTargetElement, aMutations, aObserver) 
 	{
 		// ignore show/hide of the tab bar itself, to avoid infinity loop.
-		if (aTargetElement == this.owner.browser.treeStyleTab.ownerToolbar)
+		if (aTargetElement.hasAttribute(TreeStyleTabConstants.kTAB_STRIP_ELEMENT))
 			return;
 		aMutations.forEach(function(aMutation) {
 			if (aMutation.type != 'attributes')

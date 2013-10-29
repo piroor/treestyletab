@@ -678,6 +678,7 @@ TreeStyleTabBrowser.prototype = {
 
 		this.setTabbrowserAttribute(this.kFIXED+'-horizontal', utils.getTreePref('tabbar.fixed.horizontal') ? 'true' : null, b);
 		this.setTabbrowserAttribute(this.kFIXED+'-vertical', utils.getTreePref('tabbar.fixed.vertical') ? 'true' : null, b);
+		this.setTabStripAttribute(this.kTAB_STRIP_ELEMENT, true);
 
 		/**
 		 * <tabbrowser> has its custom background color for itself, but it
@@ -786,6 +787,7 @@ TreeStyleTabBrowser.prototype = {
 		var toggler = d.getAnonymousElementByAttribute(b, 'class', this.kTABBAR_TOGGLER);
 		if (!toggler) {
 			toggler = d.createElement('spacer');
+			toggler.setAttribute(this.kTAB_STRIP_ELEMENT, true);
 			toggler.setAttribute('class', this.kTABBAR_TOGGLER);
 			toggler.setAttribute('layer', true); // https://bugzilla.mozilla.org/show_bug.cgi?id=590468
 			b.mTabBox.insertBefore(toggler, b.mTabBox.firstChild);
@@ -796,6 +798,7 @@ TreeStyleTabBrowser.prototype = {
 		var placeHolder = d.getAnonymousElementByAttribute(b, 'anonid', 'strip');
 		if (!placeHolder) {
 			placeHolder = d.createElement('hbox');
+			placeHolder.setAttribute(this.kTAB_STRIP_ELEMENT, true);
 			placeHolder.setAttribute('anonid', 'strip');
 			placeHolder.setAttribute('class', 'tabbrowser-strip '+this.kTABBAR_PLACEHOLDER);
 			placeHolder.setAttribute('layer', true); // https://bugzilla.mozilla.org/show_bug.cgi?id=590468
@@ -1568,9 +1571,12 @@ TreeStyleTabBrowser.prototype = {
 		}
 		else {
 			splitter = d.createElement('splitter');
+			splitter.setAttribute(this.kTAB_STRIP_ELEMENT, true);
 			splitter.setAttribute('state', 'open');
 			splitter.setAttribute('layer', true); // https://bugzilla.mozilla.org/show_bug.cgi?id=590468
-			splitter.appendChild(d.createElement('grippy'));
+			let grippy = d.createElement('grippy')
+			grippy.setAttribute(this.kTAB_STRIP_ELEMENT, true);
+			splitter.appendChild(grippy);
 		}
 
 		var splitterClass = splitter.getAttribute('class') || '';
@@ -1962,7 +1968,9 @@ TreeStyleTabBrowser.prototype = {
 		if (!splitter) {
 			let box = d.createElement('box');
 			box.setAttribute('id', 'treestyletab-tabbar-resizer-box');
+			box.setAttribute(this.kTAB_STRIP_ELEMENT, true);
 			splitter = d.createElement('splitter');
+			splitter.setAttribute(this.kTAB_STRIP_ELEMENT, true);
 			splitter.setAttribute('id', 'treestyletab-tabbar-resizer-splitter');
 			splitter.setAttribute('class', this.kSPLITTER);
 			splitter.setAttribute('onmousedown', 'TreeStyleTabService.handleEvent(event);');
