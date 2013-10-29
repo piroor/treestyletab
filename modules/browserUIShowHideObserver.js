@@ -68,7 +68,7 @@ BrowserUIShowHideObserver.prototype = {
 				case 'childList':
 					this.destroyChildrenObserver();
 					this.initChildrenObserver();
-					this.owner.browser.treeStyleTab.updateFloatingTabbar(this.owner.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
+					this.owner.browser.treeStyleTab.updateFloatingTabbar(TreeStyleTabConstants.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
 					return;
 
 				case 'attributes':
@@ -106,9 +106,20 @@ BrowserUIShowHideObserver.prototype = {
 	},
 	onAttributeModified : function BrowserUIShowHideObserver_onAttributeModified(aTargetElement, aMutations, aObserver) 
 	{
-		// ignore show/hide of the tab bar itself, to avoid infinity loop.
-		if (aTargetElement.hasAttribute(TreeStyleTabConstants.kTAB_STRIP_ELEMENT))
+		var TST = this.owner.browser.treeStyleTab;
+		if (
+			// I must ignore show/hide of elements managed by TST,
+			// to avoid infinity loop.
+			aTargetElement.hasAttribute(TreeStyleTabConstants.kTAB_STRIP_ELEMENT) &&
+			// However, I have to synchronize visibility of the real
+			// tab bar and the placeholder's one. If they have
+			// different visibility, then the tab bar is shown or
+			// hidden by "auto hide tab bar" feature of someone
+			// (Pale Moon, Tab Mix Plus, etc.)
+			this.owner.browser.tabContainer.visible != TST.tabStripPlaceHolder.collapsed
+			)
 			return;
+
 		aMutations.forEach(function(aMutation) {
 			if (aMutation.type != 'attributes')
 				return;
@@ -116,7 +127,7 @@ BrowserUIShowHideObserver.prototype = {
 				aMutation.attributeName == 'collapsed' ||
 				aMutation.attributeName == 'moz-collapsed' || // Used in full screen mode
 				aMutation.attributeName == 'disablechrome')
-				this.owner.browser.treeStyleTab.updateFloatingTabbar(this.owner.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
+				TST.updateFloatingTabbar(TreeStyleTabConstants.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
 		}, this);
 	},
  

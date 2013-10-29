@@ -1826,6 +1826,7 @@ TreeStyleTabBrowser.prototype = {
 		var splitter = this.splitter;
 		if (splitter.collapsed || splitter.getAttribute('state') != 'collapsed') {
 			let shouldAutoHideForSingleTab = (
+				(
 					// "autohide for single tab" feature is removed on Firefox 23.
 					// https://bugzilla.mozilla.org/show_bug.cgi?id=855370
 					(
@@ -1835,7 +1836,10 @@ TreeStyleTabBrowser.prototype = {
 						'hideTabBar' in this.window
 					) &&
 					prefs.getPref('browser.tabs.autoHide')
-				);
+				) ||
+				// Tab Mix Plus also provides it.
+				'TabmixTabbar' in this.window && this.window.TabmixTabbar.hideMode > 0
+			);
 			this._tabStripPlaceHolder.collapsed =
 				splitter.collapsed =
 					(shouldAutoHideForSingleTab && this.getExistingTabsCount() == 1);
