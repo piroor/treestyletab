@@ -41,6 +41,7 @@ const Cu = Components.utils;
 
 Cu.import('resource://gre/modules/XPCOMUtils.jsm');
 Cu.import('resource://gre/modules/Services.jsm');
+Cu.import("resource://gre/modules/Timer.jsm");
 Cu.import('resource://treestyletab-modules/constants.js');
 
 XPCOMUtils.defineLazyGetter(this, 'window', function() {
@@ -50,11 +51,6 @@ XPCOMUtils.defineLazyGetter(this, 'window', function() {
 XPCOMUtils.defineLazyGetter(this, 'prefs', function() {
 	Cu.import('resource://treestyletab-modules/lib/prefs.js');
 	return window['piro.sakura.ne.jp'].prefs;
-});
-XPCOMUtils.defineLazyGetter(this, 'jstimer', function() {
-	var jstimer = {};
-	Cu.import('resource://treestyletab-modules/lib/jstimer.jsm', jstimer);
-	return jstimer;
 });
 XPCOMUtils.defineLazyGetter(this, 'extensions', function() {
 	Cu.import('resource://treestyletab-modules/lib/extensions.js', {});
@@ -535,7 +531,7 @@ var TreeStyleTabBase = {
 
 		var done = false;
 		var listener = function(aEvent) {
-				jstimer.setTimeout(function() {
+				setTimeout(function() {
 					done = true;
 				}, delay || 0);
 				target.removeEventListener(type, listener, false);
