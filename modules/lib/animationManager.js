@@ -25,8 +25,6 @@
    http://github.com/piroor/fxaddonlibs/blob/master/animationManager.js
 */
 
-/* To work as a JS Code Module (*require jstimer.jsm)
-   http://github.com/piroor/fxaddonlibs/blob/master/jstimer.jsm */
 if (typeof window == 'undefined' ||
 	(window && typeof window.constructor == 'function')) {
 	this.EXPORTED_SYMBOLS = ['animationManager'];
@@ -41,8 +39,6 @@ if (typeof window == 'undefined' ||
 	catch(e) {
 		window = {};
 	}
-	if (!('setInterval' in window))
-		Components.utils.import('resource://treestyletab-modules/lib/jstimer.jsm', window);
 }
 
 (function() {
