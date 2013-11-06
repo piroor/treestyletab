@@ -108,15 +108,6 @@ var TreeStyleTabBase = {
 		return SessionStore;
 	},
 
-	get FocusManager()
-	{
-		if (!this._FocusManager) {
-			this._FocusManager = Cc['@mozilla.org/focus-manager;1'].getService(Ci.nsIFocusManager);
-		}
-		return this._FocusManager;
-	},
-	 _FocusManager : null,
-
 	get extensions() { return extensions; },
 	get animationManager() { return animationManager; },
 	get autoScroll() { return autoScroll; },
