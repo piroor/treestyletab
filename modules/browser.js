@@ -564,18 +564,17 @@ TreeStyleTabBrowser.prototype = {
 			}
 		}
 	},
-	positionPinnedTabsWithDelay : function TSTBrowser_positionPinnedTabsWithDelay()
+	positionPinnedTabsWithDelay : function TSTBrowser_positionPinnedTabsWithDelay(...aArgs)
 	{
 		if (this.deferredTasks['positionPinnedTabsWithDelay'])
 			return;
 
-		var args = Array.slice(arguments);
 		var lastArgs = this.deferredTasks['positionPinnedTabsWithDelay'] ?
 						this.deferredTasks['positionPinnedTabsWithDelay'].__treestyletab__args :
 						[null, null, false] ;
-		lastArgs[0] = lastArgs[0] || args[0];
-		lastArgs[1] = lastArgs[1] || args[1];
-		lastArgs[2] = lastArgs[2] || args[2];
+		lastArgs[0] = lastArgs[0] || aArgs[0];
+		lastArgs[1] = lastArgs[1] || aArgs[1];
+		lastArgs[2] = lastArgs[2] || aArgs[2];
 
 		var self = this;
 		(this.deferredTasks['positionPinnedTabsWithDelay'] = this.Deferred.wait(0).next(function() {
@@ -5652,7 +5651,9 @@ TreeStyleTabBrowser.prototype = {
 
 		this.subTreeMovingCount--;
 	},
-	moveTabSubTreeTo : function() { return this.moveTabSubtreeTo.apply(this, arguments); }, // obsolete, for backward compatibility
+	moveTabSubTreeTo : function(...aArgs) {
+		return this.moveTabSubtreeTo.apply(this, aArgs);
+	}, // obsolete, for backward compatibility
  
 	moveTabLevel : function TSTBrowser_moveTabLevel(aEvent) 
 	{
@@ -6589,11 +6590,21 @@ TreeStyleTabBrowser.prototype = {
 	{
 		return this.windowService[aName].apply(this.windowService, aArgs);
 	},
-	isPopupShown : function TSTBrowser_isPopupShown() { return this._callWindowServiceMethod('isPopupShown', arguments); },
-	updateTabsOnTop : function TSTBrowser_updateTabsOnTop() { return this._callWindowServiceMethod('updateTabsOnTop', arguments); },
-	registerTabFocusAllowance : function TSTBrowser_registerTabFocusAllowance() { return this._callWindowServiceMethod('registerTabFocusAllowance', arguments); },
-	isPopupShown : function TSTBrowser_isPopupShown() { return this._callWindowServiceMethod('isPopupShown', arguments); },
-	toggleAutoHide : function TSTBrowser_toggleAutoHide() { return this._callWindowServiceMethod('toggleAutoHide', arguments); },
+	isPopupShown : function TSTBrowser_isPopupShown(...aArgs) {
+		return this._callWindowServiceMethod('isPopupShown', aArgs);
+	},
+	updateTabsOnTop : function TSTBrowser_updateTabsOnTop(...aArgs) {
+		return this._callWindowServiceMethod('updateTabsOnTop', aArgs);
+	},
+	registerTabFocusAllowance : function TSTBrowser_registerTabFocusAllowance(...aArgs) {
+		return this._callWindowServiceMethod('registerTabFocusAllowance', aArgs);
+	},
+	isPopupShown : function TSTBrowser_isPopupShown(...aArgs) {
+		return this._callWindowServiceMethod('isPopupShown', aArgs);
+	},
+	toggleAutoHide : function TSTBrowser_toggleAutoHide(...aArgs) {
+		return this._callWindowServiceMethod('toggleAutoHide', aArgs);
+	},
  
 /* show/hide tab bar */ 
 	get autoHide()

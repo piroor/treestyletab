@@ -965,7 +965,9 @@ TreeStyleTabWindow.prototype = {
 		else
 			aMenuItem.setAttribute('hidden', true);
 	},
-	showHideSubTreeMenuItem : function() { return this.showHideSubtreeMenuItem.apply(this, arguments); }, // obsolete, for backward compatibility
+	showHideSubTreeMenuItem : function(...aArgs) {
+		return this.showHideSubtreeMenuItem.apply(this, aArgs);
+	}, // obsolete, for backward compatibility
  
 	updateAeroPeekPreviews : function TSTWindow_updateAeroPeekPreviews() 
 	{
@@ -1292,7 +1294,9 @@ TreeStyleTabWindow.prototype = {
 			this.fireTabSubtreeClosedEvent(b, subtreeTabs[0], subtreeTabs)
 		}
 	},
-	removeTabSubTree : function() { return this.removeTabSubtree.apply(this, arguments); }, // obsolete, for backward compatibility
+	removeTabSubTree : function(...aArgs) {
+		return this.removeTabSubtree.apply(this, aArgs);
+	}, // obsolete, for backward compatibility
 	
 	fireTabSubtreeClosingEvent : function TSTWindow_fireTabSubtreeClosingEvent(aParentTab, aClosedTabs) 
 	{
@@ -1332,7 +1336,9 @@ TreeStyleTabWindow.prototype = {
 		var tabs = [aTab].concat(this.getDescendantTabs(aTab));
 		return this.warnAboutClosingTabs(tabs.length);
 	},
-	warnAboutClosingTabSubTreeOf : function() { return this.warnAboutClosingTabSubtreeOf.apply(this, arguments); }, // obsolete, for backward compatibility
+	warnAboutClosingTabSubTreeOf : function(...aArgs) {
+		return this.warnAboutClosingTabSubtreeOf.apply(this, aArgs);
+	}, // obsolete, for backward compatibility
  
 	warnAboutClosingTabs : function TSTWindow_warnAboutClosingTabs(aTabsCount) 
 	{
@@ -1368,7 +1374,9 @@ TreeStyleTabWindow.prototype = {
 			b.reloadTab(tabs[i]);
 		}
 	},
-	reloadTabSubTree : function() { return this.reloadTabSubtree.apply(this, arguments); }, // obsolete, for backward compatibility
+	reloadTabSubTree : function(...aArgs) {
+		return this.reloadTabSubtree.apply(this, aArgs);
+	}, // obsolete, for backward compatibility
  
 	createSubtree : function TSTWindow_createSubtree(aTabs) 
 	{
@@ -1430,7 +1438,9 @@ TreeStyleTabWindow.prototype = {
 			}
 		}).error(this.defaultDeferredErrorHandler);
 	},
-	createSubTree : function() { return this.createSubtree.apply(this, arguments); }, // obsolete, for backward compatibility
+	createSubTree : function(...aArgs) {
+		return this.createSubtree.apply(this, aArgs);
+	}, // obsolete, for backward compatibility
 	
 	canCreateSubtree : function TSTWindow_canCreateSubtree(aTabs) 
 	{
@@ -1445,7 +1455,9 @@ TreeStyleTabWindow.prototype = {
 		}
 		return true;
 	},
-	canCreateSubTree : function() { return this.canCreateSubtree.apply(this, arguments); }, // obsolete, for backward compatibility
+	canCreateSubTree : function(...aArgs) {
+		return this.canCreateSubtree.apply(this, aArgs);
+	}, // obsolete, for backward compatibility
  
 	getRootTabs : function TSTWindow_getRootTabs(aTabs) 
 	{
@@ -1605,7 +1617,9 @@ TreeStyleTabWindow.prototype = {
 		}
 		return false;
 	},
-	tearOffSubTreeFromRemote : function() { return this.tearOffSubtreeFromRemote.apply(this, arguments); }, // obsolete, for backward compatibility
+	tearOffSubTreeFromRemote : function(...aArgs) {
+		return this.tearOffSubtreeFromRemote.apply(this, aArgs);
+	}, // obsolete, for backward compatibility
  
 	onPrintPreviewEnter : function TSTWindow_onPrintPreviewEnter() 
 	{
