@@ -1570,7 +1570,7 @@ var TreeStyleTabBase = {
 	 */
 	readyToOpenChildTabNow : function TSTBase_readyToOpenChildTabNow(aFrameOrTabBrowser, aMultiple) /* PUBLIC API */
 	{
-		if (this.readyToOpenChildTab.apply(this, arguments)) {
+		if (this.readyToOpenChildTab(aFrameOrTabBrowser, aMultiple, false)) {
 			let self = this;
 			this.Deferred.next(function() {
 				self.stopToOpenChildTab(aFrameOrTabBrowser);
@@ -1622,7 +1622,7 @@ var TreeStyleTabBase = {
 	 */
 	readyToOpenNextSiblingTabNow : function TSTBase_readyToOpenNextSiblingTabNow(aFrameOrTabBrowser) /* PUBLIC API */
 	{
-		if (this.readyToOpenNextSiblingTab.apply(this, arguments)) {
+		if (this.readyToOpenNextSiblingTab(aFrameOrTabBrowser)) {
 			let self = this;
 			this.Deferred.next(function() {
 				self.stopToOpenChildTab(aFrameOrTabBrowser);
@@ -1660,7 +1660,7 @@ var TreeStyleTabBase = {
 	readyToOpenNewTabGroupNow : function TSTBase_readyToOpenNewTabGroupNow(aFrameOrTabBrowser) /* PUBLIC API */
 	{
 
-		if (this.readyToOpenNewTabGroup.apply(this, arguments)) {
+		if (this.readyToOpenNewTabGroup(aFrameOrTabBrowser, null, null)) {
 			let self = this;
 			this.Deferred.next(function() {
 				self.stopToOpenChildTab(aFrameOrTabBrowser);
