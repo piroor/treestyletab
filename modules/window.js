@@ -703,8 +703,7 @@ TreeStyleTabWindow.prototype = {
 		var up    = aEvent.keyCode == Ci.nsIDOMKeyEvent.DOM_VK_UP;
 		var down  = aEvent.keyCode == Ci.nsIDOMKeyEvent.DOM_VK_DOWN;
 		if (
-			this.FocusManager &&
-			this.FocusManager.focusedElement == this.browser.selectedTab &&
+			Services.focus.focusedElement == this.browser.selectedTab &&
 			(up || down || left || right)
 			)
 			this.arrowKeyEventOnTab = {

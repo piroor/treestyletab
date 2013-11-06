@@ -71,8 +71,8 @@ XPCOMUtils.defineLazyModuleGetter(this, 'Deferred',
 XPCOMUtils.defineLazyModuleGetter(this, 'confirmWithPopup', 'resource://treestyletab-modules/lib/confirmWithPopup.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
-XPCOMUtils.defineLazyServiceGetter(this, 'SessionStore',
-  '@mozilla.org/browser/sessionstore;1', 'nsISessionStore');
+XPCOMUtils.defineLazyModuleGetter(this, 'SessionStore',
+	'resource:///modules/sessionstore/SessionStore.jsm');
 
 if (Services.appinfo.OS === 'WINNT') {
 	XPCOMUtils.defineLazyModuleGetter(this, 'AeroPeek',
@@ -107,15 +107,6 @@ var TreeStyleTabBase = {
 	get SessionStore() {
 		return SessionStore;
 	},
-
-	get FocusManager()
-	{
-		if (!this._FocusManager) {
-			this._FocusManager = Cc['@mozilla.org/focus-manager;1'].getService(Ci.nsIFocusManager);
-		}
-		return this._FocusManager;
-	},
-	 _FocusManager : null,
 
 	get extensions() { return extensions; },
 	get animationManager() { return animationManager; },

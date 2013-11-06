@@ -42,6 +42,7 @@ const Ci = Components.interfaces;
 const Cu = Components.utils;
 
 Cu.import('resource://gre/modules/XPCOMUtils.jsm');
+Cu.import('resource://gre/modules/Services.jsm');
 
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
@@ -700,8 +701,8 @@ AutoHideBrowser.prototype = {
 		if (
 			this.expanded &&
 			this.contentAreaScreenEnabled &&
-			this.treeStyleTab.FocusManager.activeWindow &&
-			this.treeStyleTab.FocusManager.activeWindow.top == this.window &&
+			Services.focus.activeWindow &&
+			Services.focus.activeWindow.top == this.window &&
 			this.findPluginArea(this.browser.contentWindow)
 			) {
 			let box = this.getContentsAreaBox();
