@@ -71,8 +71,8 @@ XPCOMUtils.defineLazyModuleGetter(this, 'Deferred',
 XPCOMUtils.defineLazyModuleGetter(this, 'confirmWithPopup', 'resource://treestyletab-modules/lib/confirmWithPopup.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
-XPCOMUtils.defineLazyServiceGetter(this, 'SessionStore',
-  '@mozilla.org/browser/sessionstore;1', 'nsISessionStore');
+XPCOMUtils.defineLazyModuleGetter(this, 'SessionStore',
+	'resource:///modules/sessionstore/SessionStore.jsm');
 
 if (Services.appinfo.OS === 'WINNT') {
 	XPCOMUtils.defineLazyModuleGetter(this, 'AeroPeek',
