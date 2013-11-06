@@ -1,5 +1,5 @@
 /*
- Multiple Tabs Drag and Drop Utilities for Firefox 3.5 or later
+ Multiple Tabs Drag and Drop Utilities for Firefox 24 or later
 
  Usage:
    window['piro.sakura.ne.jp'].tabsDragUtils.initTabBrowser(gBrowser);
@@ -15,7 +15,7 @@
    http://github.com/piroor/fxaddonlib-tabs-drag-utils
 */
 (function() {
-	const currentRevision = 28;
+	const currentRevision = 29;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
