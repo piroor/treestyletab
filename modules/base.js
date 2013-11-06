@@ -206,7 +206,7 @@ var TreeStyleTabBase = {
 		});
 	},
  
-	overrideExtensions : function TSTBase_overrideExtensions() 
+	overrideExtensions : function TSTBase_overrideExtensions(...aArgs) 
 	{
 		// Scriptish
 		// https://addons.mozilla.org/firefox/addon/scriptish/
@@ -216,7 +216,7 @@ var TreeStyleTabBase = {
 				let Scriptish_openInTab = tabModule.Scriptish_openInTab;
 				tabModule.Scriptish_openInTab = function(aURL, aLoadInBackground, aReuse, aChromeWin) {
 					aChromeWin.TreeStyleTabService.readyToOpenChildTabNow(aChromeWin.gBrowser);
-					return Scriptish_openInTab.apply(this, arguments);
+					return Scriptish_openInTab.apply(this, aArgs);
 				};
 			}
 			catch(e) {
@@ -497,12 +497,12 @@ var TreeStyleTabBase = {
   
 /* utilities */ 
 	
-	doAndWaitDOMEvent : function TSTBase_doAndWaitDOMEvent() 
+	doAndWaitDOMEvent : function TSTBase_doAndWaitDOMEvent(...aArgs) 
 	{
 		var type, target, delay, task;
-		for (let i = 0, maxi = arguments.length; i < maxi; i++)
+		for (let i = 0, maxi = aArgs.length; i < maxi; i++)
 		{
-			let arg = arguments[i];
+			let arg = aArgs[i];
 			switch(typeof arg)
 			{
 				case 'string':
@@ -722,12 +722,12 @@ var TreeStyleTabBase = {
 	},
 	
 	// called with target(nsIDOMEventTarget), document(nsIDOMDocument), type(string) and data(object) 
-	fireDataContainerEvent : function TSTBase_fireDataContainerEvent()
+	fireDataContainerEvent : function TSTBase_fireDataContainerEvent(...aArgs)
 	{
 		var target, document, type, data, canBubble, cancellable;
-		for (let i = 0, maxi = arguments.length; i < maxi; i++)
+		for (let i = 0, maxi = aArgs.length; i < maxi; i++)
 		{
-			let arg = arguments[i];
+			let arg = aArgs[i];
 			if (typeof arg == 'boolean') {
 				if (canBubble === void(0))
 					canBubble = arg;
@@ -1811,7 +1811,9 @@ var TreeStyleTabBase = {
 			)
 		);
 	},
-	shouldCloseTabSubTreeOf : function TSTBase_shouldCloseTabSubTreeOf() { return this.shouldCloseTabSubtreeOf.apply(this, arguments); }, // obsolete, for backward compatibility
+	shouldCloseTabSubTreeOf : function TSTBase_shouldCloseTabSubTreeOf(...aArgs) {
+		return this.shouldCloseTabSubtreeOf.apply(this, aArgs);
+	}, // obsolete, for backward compatibility
  
 	shouldCloseLastTabSubtreeOf : function TSTBase_shouldCloseLastTabSubtreeOf(aTab) 
 	{
@@ -1822,7 +1824,9 @@ var TreeStyleTabBase = {
 			this.getDescendantTabs(aTab).length + 1 == this.getAllTabs(b).length
 		);
 	},
-	shouldCloseLastTabSubTreeOf : function TSTBase_shouldCloseLastTabSubTreeOf() { return this.shouldCloseLastTabSubtreeOf.apply(this, arguments); }, // obsolete, for backward compatibility
+	shouldCloseLastTabSubTreeOf : function TSTBase_shouldCloseLastTabSubTreeOf(...aArgs) {
+		return this.shouldCloseLastTabSubtreeOf.apply(this, aArgs);
+	}, // obsolete, for backward compatibility
  
 	getParentTab : function TSTBase_getParentTab(aTab) /* PUBLIC API */ 
 	{
