@@ -9,6 +9,7 @@
    * Fixed: Save and restore both sizes of expanded and shrunken tab bar correctly, on the next startup.
    * Fixed: Re-show the tab bar correctly when the F11 key is pressed to exit from the DOM full-screen mode.
    * Fixed: Don't disable background color of tabs when Tab Mix Plus is installed.
+   * [fr-FR locale is updated by AxlMun. Thanks!](https://github.com/piroor/treestyletab/pull/595)
  - 0.14.2013100901
    * Improved: Position and size of the tab bar is updated automatically when any element is inserted to the browser box.
    * Fixed: Show the full tooltip near the original tooltip correctly, even if there are multiple screens.
