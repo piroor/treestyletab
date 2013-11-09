@@ -1569,12 +1569,12 @@ var TreeStyleTabBase = {
 	 * opened or not (by the command called after TST's API), then use this.
 	 * This version automatically cancels the "ready" state with delay.
 	 */
-	readyToOpenChildTabNow : function TSTBase_readyToOpenChildTabNow(aFrameOrTabBrowser, aMultiple) /* PUBLIC API */
+	readyToOpenChildTabNow : function TSTBase_readyToOpenChildTabNow(...aArgs) /* PUBLIC API */
 	{
-		if (this.readyToOpenChildTab(aFrameOrTabBrowser, aMultiple, false)) {
+		if (this.readyToOpenChildTab.apply(this, aArgs)) {
 			let self = this;
 			this.Deferred.next(function() {
-				self.stopToOpenChildTab(aFrameOrTabBrowser);
+				self.stopToOpenChildTab(aArgs[0]);
 			}).error(this.defaultDeferredErrorHandler);
 			return true;
 		}
@@ -1621,12 +1621,12 @@ var TreeStyleTabBase = {
 	 * opened or not (by the command called after TST's API), then use this.
 	 * This version automatically cancels the "ready" state with delay.
 	 */
-	readyToOpenNextSiblingTabNow : function TSTBase_readyToOpenNextSiblingTabNow(aFrameOrTabBrowser) /* PUBLIC API */
+	readyToOpenNextSiblingTabNow : function TSTBase_readyToOpenNextSiblingTabNow(...aArgs) /* PUBLIC API */
 	{
-		if (this.readyToOpenNextSiblingTab(aFrameOrTabBrowser)) {
+		if (this.readyToOpenNextSiblingTab.apply(this, aArgs)) {
 			let self = this;
 			this.Deferred.next(function() {
-				self.stopToOpenChildTab(aFrameOrTabBrowser);
+				self.stopToOpenChildTab(aArgs[0]);
 			}).error(this.defaultDeferredErrorHandler);
 			return true;
 		}
@@ -1658,13 +1658,13 @@ var TreeStyleTabBase = {
 	 * opened or not (by the command called after TST's API), then use this.
 	 * This version automatically cancels the "ready" state with delay.
 	 */
-	readyToOpenNewTabGroupNow : function TSTBase_readyToOpenNewTabGroupNow(aFrameOrTabBrowser) /* PUBLIC API */
+	readyToOpenNewTabGroupNow : function TSTBase_readyToOpenNewTabGroupNow(...aArgs) /* PUBLIC API */
 	{
 
-		if (this.readyToOpenNewTabGroup(aFrameOrTabBrowser, null, null)) {
+		if (this.readyToOpenNewTabGroup.apply(this, aArgs)) {
 			let self = this;
 			this.Deferred.next(function() {
-				self.stopToOpenChildTab(aFrameOrTabBrowser);
+				self.stopToOpenChildTab(aArgs[0]);
 			}).error(this.defaultDeferredErrorHandler);
 			return true;
 		}
