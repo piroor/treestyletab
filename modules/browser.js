@@ -961,7 +961,7 @@ TreeStyleTabBrowser.prototype = {
 		var b = aTab.linkedBrowser;
 		if (!b.__treestyletab__stop) {
 			b.__treestyletab__stop = b.stop;
-			b.stop = function TSTBrowser_stopHook() {
+			b.stop = function TSTBrowser_stopHook(...aArgs) {
 				try {
 					var stack = Components.stack;
 					while (stack)
@@ -977,7 +977,7 @@ TreeStyleTabBrowser.prototype = {
 				catch(e) {
 					dump(e+'\n'+e.stack+'\n');
 				}
-				return this.__treestyletab__stop.apply(this, aTab);
+				return this.__treestyletab__stop.apply(this, aArgs);
 			};
 		}
 
