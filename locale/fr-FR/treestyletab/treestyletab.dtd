@@ -15,10 +15,10 @@
 <!ENTITY config.tabbar.invertClosebox.right "Case de fermeture sur le côté droit de chaque onglet">
 <!ENTITY config.tabbar.invertTab            "Inverser l'apparence des onglets">
 <!ENTITY config.tabbar.invertTabContents    "Inverser le contenu des onglets">
-<!ENTITY config.tabbar.narrowScrollbar      "Narrow scrollbar">
+<!ENTITY config.tabbar.narrowScrollbar      "Barre de défilement étroite">
 <!ENTITY config.enableSubtreeIndent         "Indenter les onglets">
-<!ENTITY config.maxTreeLevel.before "until">
-<!ENTITY config.maxTreeLevel.after  "level(s)">
+<!ENTITY config.maxTreeLevel.before "jusqu'à">
+<!ENTITY config.maxTreeLevel.after  "niveau(x)">
 <!ENTITY config.allowSubtreeCollapseExpand  "Autoriser le repliage/dépliage des arborescences d'onglets">
 
 
@@ -146,10 +146,10 @@
 
 <!ENTITY config.tooltip.includeChildren        "Afficher le contenu de l'arborescence dans les info-bulles des onglets">
 
-<!ENTITY config.bookmarkDroppedTabs.caption "Action for drag and drop of a parent tab to the bookmarks tree">
-<!ENTITY config.bookmarkDroppedTabs.ask     "Ask me always">
-<!ENTITY config.bookmarkDroppedTabs.all     "Bookmark all tabs in the tree">
-<!ENTITY config.bookmarkDroppedTabs.parent  "Bookmark only the dragged one tab">
+<!ENTITY config.bookmarkDroppedTabs.caption "Action lors du glisser déposer d'un onglet parent vers les favoris">
+<!ENTITY config.bookmarkDroppedTabs.ask     "Toujours me demander">
+<!ENTITY config.bookmarkDroppedTabs.all     "Ajouter l'onglet et tous ses enfants">
+<!ENTITY config.bookmarkDroppedTabs.parent  "Ajouter uniquement l'onglet glissé">
 
 
 
@@ -167,7 +167,7 @@
 <!ENTITY context.removeTabSubtree.accesskey     "s">
 <!ENTITY context.removeDescendantTabs.label     "Fermer les enfants">
 <!ENTITY context.removeDescendantTabs.accesskey "d">
-<!ENTITY context.removeAllTabsBut.label         "Close Other Tabs except this Tree">
+<!ENTITY context.removeAllTabsBut.label         "Fermer tous les onglets excepté cette arborescence">
 <!ENTITY context.removeAllTabsBut.accesskey     "a">
 <!ENTITY context.collapseAllSubtree.label       "Replier toutes les arborescences">
 <!ENTITY context.collapseAllSubtree.accesskey   "c">
