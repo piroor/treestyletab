@@ -206,7 +206,7 @@ var TreeStyleTabBase = {
 		});
 	},
  
-	overrideExtensions : function TSTBase_overrideExtensions(...aArgs) 
+	overrideExtensions : function TSTBase_overrideExtensions() 
 	{
 		// Scriptish
 		// https://addons.mozilla.org/firefox/addon/scriptish/
@@ -214,9 +214,10 @@ var TreeStyleTabBase = {
 			try {
 				let tabModule = Cu.import('resource://scriptish/utils/Scriptish_openInTab.js', {});
 				let Scriptish_openInTab = tabModule.Scriptish_openInTab;
-				tabModule.Scriptish_openInTab = function(aURL, aLoadInBackground, aReuse, aChromeWin) {
+				tabModule.Scriptish_openInTab = function(aURL, aLoadInBackground, aReuse, aChromeWin, ...aExtraArgs) {
 					aChromeWin.TreeStyleTabService.readyToOpenChildTabNow(aChromeWin.gBrowser);
-					return Scriptish_openInTab.apply(this, aArgs);
+					var allArgs = [aURL, aLoadInBackground, aReuse, aChromeWin].concat(aExtraArgs);
+					return Scriptish_openInTab.apply(this, allArgs);
 				};
 			}
 			catch(e) {
