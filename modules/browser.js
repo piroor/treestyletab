@@ -1576,6 +1576,28 @@ TreeStyleTabBrowser.prototype = {
 			splitter.setAttribute('layer', true); // https://bugzilla.mozilla.org/show_bug.cgi?id=590468
 			let grippy = d.createElement('grippy')
 			grippy.setAttribute(this.kTAB_STRIP_ELEMENT, true);
+			// Workaround for https://github.com/piroor/treestyletab/issues/593
+			// When you click the grippy...
+			//  1. The grippy changes "state" of the splitter from "collapsed"
+			//     to "open".
+			//  2. The splitter changes visibility of the place holder.
+			//  3. BrowserUIShowHideObserver detects the change of place
+			//     holder's visibility and triggers updateFloatingTabbar().
+			//  4. updateFloatingTabbar() copies the visibility of the
+			//     actual tab bar to the place holder. However, the tab bar
+			//     is still collapsed.
+			//  5. As the result, the place holder becomes collapsed and
+			//     the splitter disappear.
+			// So, we have to turn the actual tab bar visible manually
+			// when the grippy is clicked.
+			let tabContainer = this.mTabBrowser.tabContainer;
+			grippy.addEventListener('click', function() {
+				tabContainer.ownerDocument.defaultView.setTimeout(function() {
+					var visible = grippy.getAttribute('state') != 'collapsed';
+					if (visible != tabContainer.visible)
+						tabContainer.visible = visible;
+				}, 0);
+			}, false);
 			splitter.appendChild(grippy);
 		}
 
