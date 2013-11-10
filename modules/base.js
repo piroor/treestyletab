@@ -216,7 +216,12 @@ var TreeStyleTabBase = {
 				let tabModule = Cu.import('resource://scriptish/utils/Scriptish_openInTab.js', {});
 				let Scriptish_openInTab = tabModule.Scriptish_openInTab;
 				tabModule.Scriptish_openInTab = function(aURL, aLoadInBackground, aReuse, aChromeWin, ...aExtraArgs) {
-					aChromeWin.TreeStyleTabService.readyToOpenChildTabNow(aChromeWin.gBrowser);
+					try {
+						aChromeWin.TreeStyleTabService.readyToOpenChildTabNow(aChromeWin.gBrowser);
+					}
+					catch(e) {
+						Cu.reportError(e);
+					}
 					var allArgs = [aURL, aLoadInBackground, aReuse, aChromeWin].concat(aExtraArgs);
 					return Scriptish_openInTab.apply(this, allArgs);
 				};
