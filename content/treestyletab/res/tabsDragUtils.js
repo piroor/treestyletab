@@ -32,10 +32,7 @@
 
 	const Cc = Components.classes;
 	const Ci = Components.interfaces;
-	const Cu = Components.utils;
 	const TAB_DROP_TYPE = 'application/x-moz-tabbrowser-tab';
-
-	Cu.import('resource:///modules/sessionstore/SessionStore.jsm');
 
 	var tabsDragUtils = {
 		revision : currentRevision,
@@ -62,7 +59,18 @@
 			return data;
 		},
 		get TabRestoreStates() {
-			return SessionStore.TabRestoreStates;
+			return this.SessionStoreNS.TabRestoreStates;
+		},
+		get SessionStoreNS() {
+			delete this.SessionStoreNS;
+			try {
+				// resource://app/modules/sessionstore/SessionStore.jsm ?
+				this.SessionStoreNS = Components.utils.import('resource:///modules/sessionstore/SessionStore.jsm', {});
+			}
+			catch(e) {
+				this.SessionStoreNS = {};
+			}
+			return this.SessionStoreNS;
 		},
 
 		init : function TDU_init()

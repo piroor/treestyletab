@@ -60,8 +60,6 @@ XPCOMUtils.defineLazyGetter(this, 'stringBundle', function() {
 
 XPCOMUtils.defineLazyModuleGetter(this, 'Task',
 	'resource://gre/modules/Task.jsm');
-XPCOMUtils.defineLazyModuleGetter(this, 'SessionStore',
-	'resource:///modules/sessionstore/SessionStore.jsm');
 XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabConstants',
   'resource://treestyletab-modules/constants.js', 'TreeStyleTabConstants');
 
@@ -265,7 +263,19 @@ let TreeStyleTabUtils = {
 		return browser.__SS_restoreState == 1;
 	},
 	get TabRestoreStates() {
-		return SessionStore.TabRestoreStates;
+		return this.SessionStoreNS.TabRestoreStates;
+	},
+	get SessionStoreNS() {
+		if (!this._SessionStoreNS) {
+			try {
+				// resource://app/modules/sessionstore/SessionStore.jsm ?
+				this._SessionStoreNS = Components.utils.import('resource:///modules/sessionstore/SessionStore.jsm', {});
+			}
+			catch(e) {
+				this._SessionStoreNS = {};
+			}
+		}
+		return this._SessionStoreNS;
 	},
 
 	getShortcutOrURI : function utils_getShortcutOrURI(aBrowserWindow, aURI)
