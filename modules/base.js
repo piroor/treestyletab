@@ -79,6 +79,9 @@ if (Services.appinfo.OS === 'WINNT') {
 	XPCOMUtils.defineLazyModuleGetter(this, 'AeroPeek',
 	  'resource://gre/modules/WindowsPreviewPerTab.jsm', 'AeroPeek');
 }
+else {
+	this.AeroPeek = null;
+}
  
 var TreeStyleTabBase = { 
 	__proto__ : TreeStyleTabConstants,
