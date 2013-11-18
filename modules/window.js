@@ -444,28 +444,10 @@ TreeStyleTabWindow.prototype = {
 		if (!utils.getTreePref('enableSubtreeIndent.allTabsPopup'))
 			return;
 
-		var items = Array.slice(aEvent.originalTarget.childNodes);
-		var firstItemIndex = 0;
-		// ignore menu items inserted by Weave (Firefox Sync), Tab Utilities, and others.
-		for (let i = 0, maxi = items.length; i < maxi; i++)
-		{
-			let item = items[i];
-			if (
-				item.getAttribute('anonid') ||
-				item.id ||
-				item.hidden ||
-				item.localName != 'menuitem'
-				)
-				firstItemIndex = i + 1;
-		}
-		items = items.slice(firstItemIndex);
-
-		var b = this.getTabBrowserFromChild(aEvent.originalTarget) || this.browser;
-		var tabs = this.getTabs(b);
-		for (let i = 0, maxi = tabs.length; i < maxi; i++)
-		{
-			items[i].style.marginLeft = tabs[i].getAttribute(this.kNEST)+'em';
-		}
+		Array.forEach(aEvent.originalTarget.childNodes, function(aItem) {
+			if (aItem.classList.contains('alltabs-item') && 'tab' in aItem)
+				aItem.style.marginLeft = aItem.tab.getAttribute(this.kNEST) + 'em';
+		}, this);
 	},
  
 	initUIShowHideObserver : function TSTWindow_initUIShowHideObserver() 
