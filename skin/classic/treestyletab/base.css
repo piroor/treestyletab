@@ -38,6 +38,14 @@
 	padding: 0 !important;
 }
 
+#main-window:not([treestyletab-tabbar-position="top"]) #titlebar-buttonbox {
+  -moz-appearance: none;
+}
+
+#main-window:not([treestyletab-tabbar-position="top"]) #titlebar-fullscreen-button {
+  -moz-appearance: none;
+}
+
 /* Support customizable tab bar */
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > toolbarpaletteitem > toolbarbutton {
 	box-flex: 1;
