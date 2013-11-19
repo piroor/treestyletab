@@ -50,6 +50,18 @@
 	display: none !important;
 }
 
+/* Disable pseudo elements introduced by Australis */
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tab-background-start::before,
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tab-background-start::after,
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tab-background-end::before,
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tab-background-end::after {
+	display: none !important;
+}
+
 /* Use the splitter to display the border of .tabbrowser-strip */
 tabbrowser[treestyletab-mode="vertical"]
   .treestyletab-splitter,
