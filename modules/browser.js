@@ -365,13 +365,7 @@ TreeStyleTabBrowser.prototype = {
  
 	getTabClosebox : function TSTBrowser_getTabClosebox(aTab) 
 	{
-		var d = this.document;
-		var close = ( // Tab Mix Plus
-						utils.getTreePref('compatibility.TMP') &&
-						d.getAnonymousElementByAttribute(aTab, 'class', 'tab-close-button always-right')
-					) ||
-					d.getAnonymousElementByAttribute(aTab, 'class', 'tab-close-button');
-		return close;
+		return this.document.getAnonymousElementByAttribute(aTab, 'anonid', 'close-button');
 	},
  
 	getTabTwisty : function TSTBrowser_getTabTwisty(aTab) 
