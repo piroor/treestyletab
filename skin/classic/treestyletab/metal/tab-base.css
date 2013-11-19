@@ -51,6 +51,12 @@
   .tab-background-end::after {
 	display: none !important;
 }
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  :-moz-any(.tab-background-start,
+            .tab-background-end) {
+  min-height: 0;
+  width: 0;
+}
 
 /* for Mac OS X */
 .tabbrowser-tabs[treestyletab-mode="vertical"]

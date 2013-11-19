@@ -61,6 +61,12 @@
   .tab-background-end::after {
 	display: none !important;
 }
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  :-moz-any(.tab-background-start,
+            .tab-background-end) {
+  min-height: 0;
+  width: 0;
+}
 
 /* Use the splitter to display the border of .tabbrowser-strip */
 tabbrowser[treestyletab-mode="vertical"]
