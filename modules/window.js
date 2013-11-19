@@ -1006,38 +1006,41 @@ TreeStyleTabWindow.prototype = {
  
 	updateTabsOnTop : function TSTWindow_updateTabsOnTop() 
 	{
-		var w = this.window;
 		if (
 			this.isPopupWindow ||
 			this.tabsOnTopChangingByUI ||
-			this.tabsOnTopChangingByTST ||
-			!('TabsOnTop' in w) ||
-			!('enabled' in w.TabsOnTop)
+			this.tabsOnTopChangingByTST
 			)
 			return;
+
+		var TabsOnTop = this.window.TabsOnTop;
+		var TabsInTitlebar = this.window.TabsInTitlebar;
+		var isTopTabbar = this.browser.treeStyleTab.position == 'top';
 
 		this.tabsOnTopChangingByTST = true;
 
 		try {
-			var TabsOnTop = w.TabsOnTop;
-			var originalState = utils.getTreePref('tabsOnTop.originalState');
-			if (originalState === null) {
-				let current = prefs.getDefaultPref('browser.tabs.onTop') === null ?
-								TabsOnTop.enabled :
-								prefs.getPref('browser.tabs.onTop') ;
-				utils.setTreePref('tabsOnTop.originalState', originalState = current);
-			}
+			if (TabsOnTop) {
+				let originalState = utils.getTreePref('tabsOnTop.originalState');
+				if (originalState === null) {
+					let current = prefs.getDefaultPref('browser.tabs.onTop') === null ?
+									TabsOnTop.enabled :
+									prefs.getPref('browser.tabs.onTop') ;
+					utils.setTreePref('tabsOnTop.originalState', originalState = current);
+				}
 
-			if (this.browser.treeStyleTab.position != 'top' ||
-				!this.browser.treeStyleTab.fixed) {
-				if (TabsOnTop.enabled)
-					TabsOnTop.enabled = false;
+				if (!isTopTabbar || !this.browser.treeStyleTab.fixed) {
+					if (TabsOnTop.enabled)
+						TabsOnTop.enabled = false;
+				}
+				else {
+					if (TabsOnTop.enabled != originalState)
+						TabsOnTop.enabled = originalState;
+					utils.clearTreePref('tabsOnTop.originalState');
+				}
 			}
-			else {
-				if (TabsOnTop.enabled != originalState)
-					TabsOnTop.enabled = originalState;
-				utils.clearTreePref('tabsOnTop.originalState');
-			}
+			if (TabsInTitlebar)
+				TabsInTitlebar.allowedBy('TreeStyleTab', isTopTabbar);
 		}
 		finally {
 			this.tabsOnTopChangingByTST = false;
