@@ -370,7 +370,7 @@ TreeStyleTabBrowser.prototype = {
 						utils.getTreePref('compatibility.TMP') &&
 						d.getAnonymousElementByAttribute(aTab, 'class', 'tab-close-button always-right')
 					) ||
-					d.getAnonymousElementByAttribute(aTab, 'anonid', 'close-button') ||
+					d.getAnonymousElementByAttribute(aTab, 'anonid', 'close-button') || // with Australis
 					d.getAnonymousElementByAttribute(aTab, 'class', 'tab-close-button');
 		return close;
 	},
