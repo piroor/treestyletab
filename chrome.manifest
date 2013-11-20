@@ -34,6 +34,7 @@ skin	treestyletab-group	classic/1.0	skin/classic/treestyletab-group-basic/
 skin	treestyletab-group	classic/1.0	skin/classic/treestyletab-group-aero/	os=WINNT osversion>=6
 
 override chrome://treestyletab/skin/platform-base.css	chrome://treestyletab/skin/dummy.css	os=Darwin
+override chrome://treestyletab/skin/platform-base.css	chrome://treestyletab/skin/Darwin-base.css	os=Darwin appversion>=28.0a1
 override chrome://treestyletab/skin/platform-base.css	chrome://treestyletab/skin/Linux-base.css	os=Linux
 override chrome://treestyletab/skin/platform-base.css	chrome://treestyletab/skin/dummy.css	os=WINNT
 override chrome://treestyletab/skin/platform-styled.css	chrome://treestyletab/skin/Darwin-styled.css	os=Darwin
