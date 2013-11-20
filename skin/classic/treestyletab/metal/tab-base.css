@@ -49,13 +49,17 @@
   .tab-background-end::before,
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tab-background-end::after {
-	content: none;
+	display: none !important;
 }
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   :-moz-any(.tab-background-start,
             .tab-background-end) {
-  min-height: 0;
-  width: 0;
+	min-height: 0;
+	width: 0;
+}
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:hover .tab-background:not([selected="true"]) {
+	background-image: none;
 }
 
 /* for Mac OS X */
