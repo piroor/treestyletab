@@ -272,7 +272,7 @@ GroupTab.prototype = {
 
 			case 'TabSelect':
 				return this.onTabSelect(aEvent);
-			case 'TabMove':
+
 			case this.kEVENT_TYPE_ATTACHED:
 				return this.onTabAttached(aEvent);
 			case this.kEVENT_TYPE_DETACHED:
@@ -300,7 +300,6 @@ GroupTab.prototype = {
 
 		tab.addEventListener('TabSelect', this, false);
 		tab.addEventListener('TabClose', this, false);
-		tab.parentNode.addEventListener('TabMove', this, false);
 		tab.parentNode.addEventListener(this.kEVENT_TYPE_ATTACHED, this, false);
 		tab.parentNode.addEventListener(this.kEVENT_TYPE_DETACHED, this, false);
 
@@ -328,7 +327,6 @@ GroupTab.prototype = {
 
 		tab.removeEventListener('TabSelect', this, false);
 		tab.removeEventListener('TabClose', this, false);
-		tab.parentNode.removeEventListener('TabMove', this, false);
 		tab.parentNode.removeEventListener(this.kEVENT_TYPE_ATTACHED, this, false);
 		tab.parentNode.removeEventListener(this.kEVENT_TYPE_DETACHED, this, false);
 
