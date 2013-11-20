@@ -122,14 +122,14 @@
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned][titlechanged]:not([selected="true"]) {
 	background-image: radial-gradient(circle farthest-corner at 50% 3px,
-	                                  Highlight 3%,
-	                                  rgba(255, 255, 255, 0) 80%);
+	                                  ThreeDHighlight 3%,
+	                                  Highlight 80%);
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned][titlechanged]:not([selected="true"]):hover {
 	background-image: radial-gradient(circle farthest-corner at 50% 3px,
-	                                  Highlight 3%,
-	                                  rgba(255, 255, 255, 0) 100%);
+	                                  ThreeDHighlight 3%,
+	                                  Highlight 100%);
 }
 
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])

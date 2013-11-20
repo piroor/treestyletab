@@ -91,14 +91,14 @@
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned][titlechanged]:not([selected="true"]) .tab-background {
 	background-image: radial-gradient(circle farthest-corner at 50% 3px,
-	                                  ThreeDHighlight 3%,
-	                                  Highlight 80%);
+	                                  Highlight 3%,
+	                                  rgba(255, 255, 255, 0) 80%);
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned][titlechanged]:not([selected="true"]):hover .tab-background {
 	background-image: radial-gradient(circle farthest-corner at 50% 3px,
-	                                  ThreeDHighlight 3%,
-	                                  Highlight 100%);
+	                                  Highlight 3%,
+	                                  rgba(255, 255, 255, 0) 100%);
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   :-moz-any(.tab-background-start[pinned][titlechanged],
