@@ -393,6 +393,7 @@ TreeStyleTabWindow.prototype = {
 			this.onPrefChange('extensions.treestyletab.tabbar.autoHide.mode');
 
 		this.onPrefChange('extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut');
+		this.onPrefChange('extensions.treestyletab.toolbox.allowShowInTitlebar');
 
 		this.initialized = true;
 	},
@@ -1039,8 +1040,10 @@ TreeStyleTabWindow.prototype = {
 					utils.clearTreePref('tabsOnTop.originalState');
 				}
 			}
-			if (TabsInTitlebar)
-				TabsInTitlebar.allowedBy('TreeStyleTab', isTopTabbar);
+			if (TabsInTitlebar) {
+				let allowed = isTopTabbar || utils.getTreePref('toolbox.allowShowInTitlebar');
+				TabsInTitlebar.allowedBy('TreeStyleTab', allowed);
+			}
 		}
 		finally {
 			this.tabsOnTopChangingByTST = false;
@@ -1683,6 +1686,10 @@ TreeStyleTabWindow.prototype = {
 			case 'extensions.treestyletab.tabbar.style':
 			case 'extensions.treestyletab.tabbar.position':
 				this.themeManager.set(prefs.getPref('extensions.treestyletab.tabbar.style'), this.position);
+				break;
+
+			case 'extensions.treestyletab.toolbox.allowShowInTitlebar':
+				this.setTabbrowserAttribute(this.kALLOW_TOOLBOX_IN_TITLEBAR, value);
 				break;
 
 			case 'browser.ctrlTab.previews':

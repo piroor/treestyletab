@@ -2,7 +2,6 @@
 
 /**
  * Cancel "tabs on top" appearance on Australis.
- * This is possibly moved to /skin/base.css for all platforms.
  */
 :root:not([treestyletab-tabbar-position="top"])
   #nav-bar:not(:-moz-lwtheme),
@@ -13,16 +12,10 @@
 	border-left: none;
 	border-right: none;
 	box-shadow: none;
-}
-
-/**
- * With Australis, the "back" button in the navigation toolbar is
- * unexpectedly overwrapped on the border of the expanded titlebar.
- * This negative margin solves the overwrapping.
- */
-:root:not([treestyletab-tabbar-position="top"])
-  #nav-bar:not(:-moz-lwtheme),
-:root:not([treestyletab-tabbar-position="top"])
-  #nav-bar:not(:-moz-lwtheme):-moz-window-inactive {
+	/**
+	 * With Australis, the "back" button in the navigation toolbar is
+	 * unexpectedly overwrapped on the border of the expanded titlebar.
+	 * This negative margin solves the overwrapping.
+	 */
 	margin-top: -4px;
 }
