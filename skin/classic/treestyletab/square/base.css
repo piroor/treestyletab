@@ -105,6 +105,7 @@
 	box-align: stretch !important;
 	-moz-box-align: stretch !important;
 }
+/* override "-moz-menutext" color defined by the default theme, because it is too bright on Ubuntu */
 #TabsToolbar:not(:-moz-lwtheme):not([treestyletab-tabbar-position="top"])
   #tabbrowser-tabs
   .tabbrowser-tab:not([selected]) {
