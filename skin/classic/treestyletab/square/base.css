@@ -117,6 +117,21 @@
   .tabbrowser-tab:not([pinned]):not([selected="true"]) {
 	background: -moz-dialog repeat-x !important;
 }
+
+/* highlighted pinned tabs */
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned][titlechanged]:not([selected="true"]) {
+	background-image: radial-gradient(circle farthest-corner at 50% 3px,
+	                                  Highlight 3%,
+	                                  rgba(255, 255, 255, 0) 80%);
+}
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned][titlechanged]:not([selected="true"]):hover {
+	background-image: radial-gradient(circle farthest-corner at 50% 3px,
+	                                  Highlight 3%,
+	                                  rgba(255, 255, 255, 0) 100%);
+}
+
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   :-moz-any(.tabbrowser-tab[pinned]:not([titlechanged]),
             .tabbrowser-tab[pinned]:not([titlechanged]):not([selected="true"]),
@@ -136,8 +151,8 @@
 
 /* for Mac OS X */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  :-moz-any(.tab-content:not([selected="true"]),
-            .tab-content[selected="true"]) {
+  :-moz-any(.tab-content:not([pinned="true"]):not([selected="true"]),
+            .tab-content:not([pinned="true"])[selected="true"]) {
 	border: 0 none !important;
 	background: transparent !important;
 }
@@ -166,7 +181,9 @@
 	visibility: collapse !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tab-background {
+  .tab-background,
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tab-background-middle {
 	margin: 0 !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]

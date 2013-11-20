@@ -87,13 +87,28 @@
             .tab-background-end[selected="true"]) {
 	mask: none !important;
 }
+/* highlighted pinned tabs */
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned][titlechanged]:not([selected="true"]) .tab-background {
+	background-image: radial-gradient(circle farthest-corner at 50% 3px,
+	                                  ThreeDHighlight 3%,
+	                                  Highlight 80%);
+}
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned][titlechanged]:not([selected="true"]):hover .tab-background {
+	background-image: radial-gradient(circle farthest-corner at 50% 3px,
+	                                  ThreeDHighlight 3%,
+	                                  Highlight 100%);
+}
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   :-moz-any(.tab-background-start[pinned][titlechanged],
             .tab-background-end[pinned][titlechanged]) {
 	visibility: collapse !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tab-background {
+  .tab-background,
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tab-background-middle {
 	margin: 0 !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
