@@ -105,6 +105,11 @@
 	box-align: stretch !important;
 	-moz-box-align: stretch !important;
 }
+#TabsToolbar:not(:-moz-lwtheme):not([treestyletab-tabbar-position="top"])
+  #tabbrowser-tabs
+  .tabbrowser-tab:not([selected]) {
+	color: -moz-dialogtext;
+}
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:not([pinned]),
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
