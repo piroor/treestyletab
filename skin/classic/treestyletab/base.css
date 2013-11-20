@@ -113,6 +113,6 @@
 
 /* Show tab favicon in vertical tab bar always */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tab-icon-image:not([src]):not([pinned]) {
+  .tab-icon-image:not(busy):not([src]):not([pinned]) {
 	display: -moz-box;
 }
