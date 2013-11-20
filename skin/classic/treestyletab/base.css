@@ -110,3 +110,9 @@
 	display: none;
 	visibility: collapse;
 }
+
+/* Show tab favicon in vertical tab bar always */
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tab-icon-image:not([src]):not([pinned]) {
+	display: -moz-box;
+}
