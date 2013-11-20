@@ -67,7 +67,7 @@
   .tab-background-end::before,
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tab-background-end::after {
-	display: none !important;
+	content: none;
 }
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   :-moz-any(.tab-background-start,
