@@ -139,7 +139,8 @@ tabbrowser[treestyletab-mode="vertical"]
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   :-moz-any(.tab-throbber[pinned],
-            .tab-icon-image[pinned]) {
+            .tab-icon-image[pinned],
+            .tab-background[pinned]) {
 	margin: 0 !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
