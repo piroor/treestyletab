@@ -27,11 +27,11 @@
 }
 
 /* show in titlebar mode */
-#main-window[sizemode="normal"][treestyletab-allow-toolbox-in-titlebar="true"]:not([treestyletab-tabbar-position="top"])
+#main-window[sizemode="normal"][tabsintitlebar="true"][treestyletab-allow-toolbox-in-titlebar="true"]:not([treestyletab-tabbar-position="top"])
   #browser-panel
   > #navigator-toolbox
   > #nav-bar:not(:-moz-lwtheme),
-#main-window[sizemode="normal"][treestyletab-allow-toolbox-in-titlebar="true"]:not([treestyletab-tabbar-position="top"])
+#main-window[sizemode="normal"][tabsintitlebar="true"][treestyletab-allow-toolbox-in-titlebar="true"]:not([treestyletab-tabbar-position="top"])
   #browser-panel
   > #navigator-toolbox
   > #nav-bar:not(:-moz-lwtheme):-moz-window-inactive {
