@@ -387,6 +387,7 @@ TreeStyleTabWindow.prototype = {
 
 		this.processRestoredTabs();
 		this.updateTabsOnTop();
+		this.updateTabsInTitlebarForMenubar();
 
 		// Init autohide service only if it have to be activated.
 		if (this.isAutoHide)
@@ -449,6 +450,16 @@ TreeStyleTabWindow.prototype = {
 			if (aItem.classList.contains('alltabs-item') && 'tab' in aItem)
 				aItem.style.marginLeft = aItem.tab.getAttribute(this.kNEST) + 'em';
 		}, this);
+	},
+ 
+	updateTabsInTitlebarForMenubar : function TSTWindow_updateTabsInTitlebarForMenubar() 
+	{
+		if (!this.window.TabsInTitlebar)
+			return;
+
+		var menubar = this.document.querySelector('#toolbar-menubar');
+		var menubarHidden = menubar && menubar.getAttribute('autohide') == 'true';
+		this.window.TabsInTitlebar.allowedBy('TreeStyleTab-menubar', menubarHidden);
 	},
  
 	initUIShowHideObserver : function TSTWindow_initUIShowHideObserver() 
@@ -1042,7 +1053,7 @@ TreeStyleTabWindow.prototype = {
 			}
 			if (TabsInTitlebar) {
 				let allowed = isTopTabbar || utils.getTreePref('toolbox.allowShowInTitlebar');
-				TabsInTitlebar.allowedBy('TreeStyleTab', allowed);
+				TabsInTitlebar.allowedBy('TreeStyleTab-tabsOnTop', allowed);
 			}
 		}
 		finally {
