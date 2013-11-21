@@ -117,3 +117,10 @@
   .tab-icon-image:not([src]):not([pinned]) {
 	display: -moz-box;
 }
+
+/* indicator for private window */
+#main-window[privatebrowsingmode="temporary"]:not([treestyletab-tabbar-position="top"])
+  #TabsToolbar::before {
+	height: 30px;
+}
+
