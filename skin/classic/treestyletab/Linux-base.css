@@ -36,3 +36,9 @@
 	padding: 0;
 }
 
+
+/* indicator for private window on Australis */
+#main-window[privatebrowsingmode="temporary"]:not([treestyletab-tabbar-position="top"])
+  #TabsToolbar::before {
+	height: 30px;
+}
