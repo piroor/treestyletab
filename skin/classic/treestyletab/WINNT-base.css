@@ -39,3 +39,18 @@
 }
 
 }
+
+
+/* indicator for private window on Australis */
+#main-window[privatebrowsingmode="temporary"]:not([treestyletab-tabbar-position="top"])
+  #TabsToolbar::after {
+	content: none;
+}
+#main-window[privatebrowsingmode="temporary"]:not([treestyletab-tabbar-position="top"]) {
+	background-image: url("chrome://browser/skin/privatebrowsing-indicator.png");
+	background-repeat: no-repeat;
+	background-position: top right;
+}
+#main-window[privatebrowsingmode="temporary"][tabsintitlebar="true"]:not([treestyletab-tabbar-position="top"]) {
+	background-position: top left;
+}
