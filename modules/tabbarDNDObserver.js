@@ -354,7 +354,8 @@ catch(e) {
 		var dropAreasCount = (aSourceTab && pinned) ? 2 : 3 ;
 		var screenPositionProp = sv.isVertical && pinned ? sv.invertedScreenPositionProp : sv.screenPositionProp ;
 		var sizeProp = sv.isVertical && pinned ? sv.invertedSizeProp : sv.sizeProp ;
-		var boxPos  = sv.getTabActualScreenPosition(tab);
+		var orient = pinned ? 'horizontal' : null ;
+		var boxPos  = sv.getTabActualScreenPosition(tab, orient);
 		var boxUnit = Math.round(tab.boxObject[sizeProp] / dropAreasCount);
 		var eventPosition = aEvent[screenPositionProp];
 //		if (this.window['piro.sakura.ne.jp'].tabsDragUtils

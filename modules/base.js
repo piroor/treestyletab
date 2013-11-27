@@ -2221,9 +2221,10 @@ var TreeStyleTabBase = {
 			screenY   : tabBox.screenY + yOffset
 		};
 	},
-	getTabActualScreenPosition : function TSTBase_getTabActualScreenPosition(aTab)
+	getTabActualScreenPosition : function TSTBase_getTabActualScreenPosition(aTab, aOrient)
 	{
-		return aTab.parentNode.orient == 'vertical' ?
+		aOrient = aOrient || aTab.parentNode.orient;
+		return aOrient == 'vertical' ?
 				this.getTabActualScreenY(aTab) :
 				this.getTabActualScreenX(aTab) ;
 	},
