@@ -481,12 +481,16 @@ catch(e) {
   
 	performDrop : function TabbarDND_performDrop(aInfo, aDraggedTab) 
 	{
+		if (DEBUG) dump('performDrop: start\n');
 		var sv = this.treeStyleTab;
 		var b  = this.browser;
 		var w  = this.window;
 
 		var tabsInfo = this.getDraggedTabsInfoFromOneTab(aDraggedTab, aInfo);
-		if (!tabsInfo.draggedTab) return false;
+		if (!tabsInfo.draggedTab) {
+			if (DEBUG) dump(' => no dragged tab\n');
+			return false;
+		}
 
 		var sourceWindow = aDraggedTab.ownerDocument.defaultView;
 		var sourceBrowser = sourceWindow.TreeStyleTabService.getTabBrowserFromChild(aDraggedTab);
@@ -535,14 +539,13 @@ catch(e) {
 			else if (aInfo.action & sv.kACTION_ATTACH) {
 				this.attachTabsOnDrop(draggedRoots, aInfo.parent);
 			}
-			else {
-				return false;
-			}
+			// otherwise, just moved.
 
 			if ( // if this move will cause no change...
 				sourceBrowser == targetBrowser &&
 				sourceService.getNextVisibleTab(draggedTabs[draggedTabs.length-1]) == aInfo.insertBefore
 				) {
+				if (DEBUG) dump(' => no change\n');
 				// then, do nothing
 				return true;
 			}
