@@ -48,13 +48,12 @@
   #TabsToolbar::after {
 	content: none;
 }
-#main-window[privatebrowsingmode="temporary"]:not([treestyletab-tabbar-position="top"]),
-#main-window[privatebrowsingmode="temporary"][treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
-	background-image: url("chrome://browser/skin/privatebrowsing-indicator.png");
-	background-repeat: no-repeat;
-	background-position: top right;
-}
-#main-window[privatebrowsingmode="temporary"][tabsintitlebar="true"]:not([treestyletab-tabbar-position="top"]),
-#main-window[privatebrowsingmode="temporary"][tabsintitlebar="true"][treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
-	background-position: top left;
+#main-window[privatebrowsingmode=temporary]:not([treestyletab-tabbar-position="top"])
+  #nav-bar::after,
+#main-window[privatebrowsingmode="temporary"][treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"])
+  #nav-bar::after {
+	display: -moz-box;
+	content: "";
+	background: url("chrome://browser/skin/privatebrowsing-indicator.png") center no-repeat;
+	width: 30px;
 }
