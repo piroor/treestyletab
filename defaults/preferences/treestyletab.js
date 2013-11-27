@@ -644,6 +644,7 @@ pref("extensions.treestyletab.compatibility.AgingTabs", true);
 pref("extensions.treestyletab.compatibility.AIOS", true); // All-in-One Sidebar
 pref("extensions.treestyletab.compatibility.Autohide", true);
 pref("extensions.treestyletab.compatibility.ColorfulTabs", true);
+pref("extensions.treestyletab.compatibility.ContextSearch", true);
 pref("extensions.treestyletab.compatibility.DomainTab", true);
 pref("extensions.treestyletab.compatibility.DragDeGo", true);
 pref("extensions.treestyletab.compatibility.DragIt", true);

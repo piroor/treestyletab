@@ -1169,6 +1169,19 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		);
 	}
 
+	// Context Search
+	// http://www.cusser.net/extensions/contextsearch/
+	if ('contextsearch' in window &&
+		'search' in window.contextsearch &&
+		TreeStyleTabUtils.getTreePref('compatibility.ContextSearch')) {
+		eval('contextsearch.search = '+
+			contextsearch.search.toSource().replace(
+				'var newTab = ',
+				'TreeStyleTabService.readyToOpenChildTab(); $&'
+			)
+		);
+	}
+
 	window.setTimeout(function(aSelf) {
 		aSelf.overrideExtensionsDelayed();
 	}, 0, this);
