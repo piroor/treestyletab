@@ -1846,6 +1846,13 @@ TreeStyleTabBrowser.prototype = {
 
 		var d = this.document;
 
+		// When the tab bar is invisible even if the tab bar is resizing, then
+		// now I'm trying to expand the tab bar from collapsed state.
+		// Then the tab bar must be shown.
+		if (aReason & this.kTABBAR_UPDATE_BY_TABBAR_RESIZE &&
+			!this.browser.tabContainer.visible)
+			this.browser.tabContainer.visible = true;
+
 		var splitter = this.splitter;
 		if (splitter.collapsed || splitter.getAttribute('state') != 'collapsed') {
 			// Synchronize visibility of the tab bar to the placeholder,
