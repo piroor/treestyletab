@@ -1052,7 +1052,11 @@ TreeStyleTabWindow.prototype = {
 				}
 			}
 			if (TabsInTitlebar) {
-				let allowed = isTopTabbar || utils.getTreePref('toolbox.allowShowInTitlebar');
+				let allowed = false;
+				if (isTopTabbar)
+					allowed = this.browser.treeStyleTab.fixed;
+				else
+					allowed = utils.getTreePref('toolbox.allowShowInTitlebar');
 				TabsInTitlebar.allowedBy('TreeStyleTab-tabsOnTop', allowed);
 			}
 		}
