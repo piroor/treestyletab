@@ -26,7 +26,7 @@
 	-->
 
 	<binding id="toolbar"
-		extends="chrome://global/content/bindings/toolbar.xml#toolbar">
+		extends="chrome://treestyletab/content/base-toolbar-binding.xml#toolbar">
 		<content><xul:hbox flex="1"
 		                   xbl:inherits="orient,width,height,treestyletab-allow-subtree-collapse,treestyletab-animation-enabled,treestyletab-closebox-inverted,treestyletab-firsttab-border,treestyletab-invert-scrollbar,treestyletab-max-tree-level,treestyletab-mode,treestyletab-narrow-scrollbar,treestyletab-print-preview,treestyletab-stack-collapsed-tabs,treestyletab-style,treestyletab-tab-contents-inverted,treestyletab-tab-inverted,treestyletab-tabbar-autohide,treestyletab-tabbar-autohide-state,treestyletab-tabbar-fixed,treestyletab-tabbar-fixed-horizontal,treestyletab-tabbar-fixed-vertical,treestyletab-tabbar-position,treestyletab-tabbar-resizing,treestyletab-tabs-indented,treestyletab-twisty-style"
 		                   anonid="toolbar-innerbox"
@@ -39,7 +39,7 @@
 	</binding>
 
 	<binding id="toolbar-drag"
-		extends="chrome://global/content/bindings/toolbar.xml#toolbar-drag">
+		extends="chrome://treestyletab/content/base-toolbar-binding.xml#toolbar-drag">
 		<content><xul:hbox flex="1"
 		                   xbl:inherits="orient,width,height,treestyletab-allow-subtree-collapse,treestyletab-animation-enabled,treestyletab-closebox-inverted,treestyletab-firsttab-border,treestyletab-invert-scrollbar,treestyletab-max-tree-level,treestyletab-mode,treestyletab-narrow-scrollbar,treestyletab-print-preview,treestyletab-stack-collapsed-tabs,treestyletab-style,treestyletab-tab-contents-inverted,treestyletab-tab-inverted,treestyletab-tabbar-autohide,treestyletab-tabbar-autohide-state,treestyletab-tabbar-fixed,treestyletab-tabbar-fixed-horizontal,treestyletab-tabbar-fixed-vertical,treestyletab-tabbar-position,treestyletab-tabbar-resizing,treestyletab-tabs-indented,treestyletab-twisty-style"
 		                   anonid="toolbar-innerbox"
