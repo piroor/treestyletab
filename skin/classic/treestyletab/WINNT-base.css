@@ -5,11 +5,11 @@
 /**
  * Cancel "tabs on top" appearance on Australis.
  */
-#main-window[sizemode="normal"]:not([treestyletab-tabbar-position="top"])
+#main-window:not([treestyletab-tabbar-position="top"])
   #browser-panel
   > #navigator-toolbox
   > #nav-bar:not(:-moz-lwtheme),
-#main-window[sizemode="normal"]:not([treestyletab-tabbar-position="top"])
+#main-window:not([treestyletab-tabbar-position="top"])
   #browser-panel
   > #navigator-toolbox
   > #nav-bar:not(:-moz-lwtheme):-moz-window-inactive {
@@ -18,12 +18,21 @@
 	border-left: none;
 	border-right: none;
 	box-shadow: none;
-	position: relative;
-	margin-top: -5px;
 	padding-top: 0;
 	padding-left: 0;
 	padding-right: 0;
 	-moz-binding: url("chrome://browser/content/customizableui/toolbar.xml#toolbar-drag");
+}
+#main-window:not([sizemode="fullscreen"]):not([treestyletab-tabbar-position="top"])
+  #browser-panel
+  > #navigator-toolbox
+  > #nav-bar:not(:-moz-lwtheme),
+#main-window:not([sizemode="fullscreen"]):not([treestyletab-tabbar-position="top"])
+  #browser-panel
+  > #navigator-toolbox
+  > #nav-bar:not(:-moz-lwtheme):-moz-window-inactive {
+	position: relative;
+	margin-top: -5px;
 }
 
 }
