@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 0.14.2013112901
    * 「タブが1つだけの時にタブバーを隠す」機能を提供するアドオン（Tab Mix Plus、[Hide Tab Bar With One Tab](https://addons.mozilla.org/firefox/addon/hide-tab-bar-with-one-tab/)など）や環境（Pale Moonなど）との互換性を向上
    * [Context Search](http://www.cusser.net/extensions/contextsearch/)との互換性を向上（検索結果を子タブとして開くようにした）
    * タブバーの幅・位置が固定されている時は、ポインタがタブバー上に乗ったらすぐにタブバーを展開するようにした。
