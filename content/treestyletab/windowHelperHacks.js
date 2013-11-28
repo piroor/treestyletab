@@ -1107,15 +1107,15 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 				{
 					case 'unload':
 						document.removeEventListener('unload', listener, false);
-						document.removeEventListener(sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION, listener, false);
-						document.removeEventListener(sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION, listener, false);
-					case sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION:
+						document.removeEventListener('beforecustomization', listener, true);
+						document.removeEventListener('aftercustomization', listener, false);
+					case 'beforecustomization':
 						if (gURLBar && listening)
 							gURLBar.removeEventListener('click', listener, true);
 						listening = false;
 						return;
 
-					case sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION:
+					case 'aftercustomization':
 						if (gURLBar && !listening) {
 							gURLBar.addEventListener('click', listener, true);
 							listening = true;
@@ -1135,8 +1135,8 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 				}
 			};
 		document.addEventListener('unload', listener, false);
-		document.addEventListener(sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION, listener, false);
-		document.addEventListener(sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION, listener, false);
+		document.addEventListener('beforecustomization', listener, true);
+		document.addEventListener('aftercustomization', listener, false);
 		if (gURLBar && !listening) {
 			gURLBar.addEventListener('click', listener, true);
 			listening = true;
@@ -1330,14 +1330,14 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 								gBrowser.treeStyleTab.updateFloatingTabbar(sv.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
 								break;
 
-							case sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION:
+							case 'beforecustomization':
 								for (let i = 0, maxi = tabbarToolboxes.length; i < maxi; i++)
 								{
 									tabbarToolboxes[i].removeAttribute('collapsed');
 								}
 								break;
 
-							case sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION:
+							case 'aftercustomization':
 								for (let i = 0, maxi = tabbarToolboxes.length; i < maxi; i++)
 								{
 									let toolbox = tabbarToolboxes[i];
@@ -1348,8 +1348,8 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 
 							case 'unload':
 								menu.removeEventListener('command', this, true);
-								document.removeEventListener(sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION, listener, false);
-								document.removeEventListener(sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION, listener, false);
+								document.removeEventListener('beforecustomization', listener, true);
+								document.removeEventListener('aftercustomization', listener, false);
 								document.removeEventListener('unload', this, false);
 								menu = null;
 								break;
@@ -1357,8 +1357,8 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 					}
 				};
 			menu.addEventListener('command', listener, false);
-			document.addEventListener(sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION, listener, false);
-			document.addEventListener(sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION, listener, false);
+			document.addEventListener('beforecustomization', listener, true);
+			document.addEventListener('aftercustomization', listener, false);
 			document.addEventListener('unload', listener, false);
 			for (let i = 0, maxi = tabbarToolboxes.length; i < maxi; i++)
 			{

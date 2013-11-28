@@ -134,32 +134,7 @@ var TreeStyleTabWindowHelper = {
  
 	overrideGlobalFunctions : function TSTWH_overrideGlobalFunctions() 
 	{
-		window.__treestyletab__BrowserCustomizeToolbar = window.BrowserCustomizeToolbar;
-		window.BrowserCustomizeToolbar = function() {
-			TreeStyleTabWindowHelper.destroyToolbarItems();
-			window.__treestyletab__BrowserCustomizeToolbar.call(window);
-		};
-
-		let (toolbox) {
-			toolbox = document.getElementById('navigator-toolbox');
-			if (toolbox.customizeDone) {
-				toolbox.__treestyletab__customizeDone = toolbox.customizeDone;
-				toolbox.customizeDone = function(aChanged) {
-					this.__treestyletab__customizeDone(aChanged);
-					TreeStyleTabWindowHelper.initToolbarItems();
-				};
-			}
-			if ('BrowserToolboxCustomizeDone' in window) {
-				window.__treestyletab__BrowserToolboxCustomizeDone = window.BrowserToolboxCustomizeDone;
-				window.BrowserToolboxCustomizeDone = function(aChanged) {
-					window.__treestyletab__BrowserToolboxCustomizeDone.apply(window, arguments);
-					TreeStyleTabWindowHelper.initToolbarItems();
-				};
-			}
-			this.initToolbarItems();
-			toolbox = null;
-		}
-
+		this.initToolbarItems();
 
 		eval('nsContextMenu.prototype.openLinkInTab = '+
 			nsContextMenu.prototype.openLinkInTab.toSource().replace(
@@ -395,10 +370,6 @@ var TreeStyleTabWindowHelper = {
 			newTabButton.parentNode.addEventListener('click', this.service, true);
 
 		this.service.updateAllTabsButton(gBrowser);
-
-		var event = document.createEvent('Events');
-		event.initEvent(this.service.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION, true, false);
-		document.documentElement.dispatchEvent(event);
 	},
  
 	destroyToolbarItems : function TSTWH_destroyToolbarItems() 
@@ -419,10 +390,6 @@ var TreeStyleTabWindowHelper = {
 		var allTabsButton = document.getElementById('alltabs-button');
 		if (allTabsButton && allTabsButton.hasChildNodes())
 			allTabsButton.firstChild.setAttribute('position', 'after_end');
-
-		var event = document.createEvent('Events');
-		event.initEvent(this.service.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION, true, false);
-		document.documentElement.dispatchEvent(event);
 	},
   
 	initTabbrowserMethods : function TSTWH_initTabbrowserMethods(aTabBrowser) 

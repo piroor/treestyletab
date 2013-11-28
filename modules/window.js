@@ -367,6 +367,8 @@ TreeStyleTabWindow.prototype = {
 		d.addEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGED,     this, false);
 		d.addEventListener(this.kEVENT_TYPE_TABBAR_STATE_CHANGED,        this, false);
 		d.addEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB,              this, false);
+		w.addEventListener('beforecustomization', this, true);
+		w.addEventListener('aftercustomization', this, false);
 
 		this.initUIShowHideObserver();
 
@@ -494,6 +496,8 @@ TreeStyleTabWindow.prototype = {
 				d.removeEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGED,     this, false);
 				d.removeEventListener(this.kEVENT_TYPE_TABBAR_STATE_CHANGED,        this, false);
 				d.removeEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB,              this, false);
+				w.removeEventListener('beforecustomization', this, true);
+				w.removeEventListener('aftercustomization', this, false);
 
 				this.rootElementObserver.destroy();
 				delete this.rootElementObserver;
@@ -604,6 +608,16 @@ TreeStyleTabWindow.prototype = {
 
 			case 'click':
 				return this.handleNewTabActionOnButton(aEvent);
+
+
+			case 'beforecustomization':
+				this.window.TreeStyleTabWindowHelper.destroyToolbarItems();
+				return;
+
+			case 'aftercustomization':
+				this.window.TreeStyleTabWindowHelper.initToolbarItems();
+				return;
+
 
 			case 'SubBrowserAdded':
 				return this.initTabBrowser(aEvent.originalTarget.browser);
