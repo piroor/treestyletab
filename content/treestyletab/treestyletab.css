@@ -326,7 +326,10 @@ tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-sc
 	  + #TabsToolbar[tabsontop="false"]:last-child,
 	#navigator-toolbox
 	  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"]
-	  + #TabsToolbar[tabsontop="false"]:not(:last-child) {
+	  + #TabsToolbar[tabsontop="false"]:not(:last-child),
+
+	#navigator-toolbox
+	  > toolbar:not(#toolbar-menubar):not(#addon-bar):-moz-lwtheme {
 		-moz-binding: url(treestyletab.xml#toolbar-drag);
 	}
 }
