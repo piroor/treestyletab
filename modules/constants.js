@@ -59,7 +59,6 @@ const TreeStyleTabConstants = Object.freeze({
 	kCOLLAPSING_PHASE_TO_BE_COLLAPSED : 'collapse',
 	kCOLLAPSING_PHASE_TO_BE_EXPANDED : 'expand',
 	kALLOW_COLLAPSE     : 'treestyletab-allow-subtree-collapse',
-	kALLOW_TOOLBOX_IN_TITLEBAR : 'treestyletab-allow-toolbox-in-titlebar',
 	kALLOW_STACK        : 'treestyletab-stack-collapsed-tabs',
 	kREMOVED            : 'treestyletab-removed',
 

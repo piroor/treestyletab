@@ -387,14 +387,12 @@ TreeStyleTabWindow.prototype = {
 
 		this.processRestoredTabs();
 		this.updateTabsOnTop();
-		this.updateTabsInTitlebarForMenubar();
 
 		// Init autohide service only if it have to be activated.
 		if (this.isAutoHide)
 			this.onPrefChange('extensions.treestyletab.tabbar.autoHide.mode');
 
 		this.onPrefChange('extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut');
-		this.onPrefChange('extensions.treestyletab.toolbox.allowShowInTitlebar');
 
 		this.initialized = true;
 	},
@@ -450,16 +448,6 @@ TreeStyleTabWindow.prototype = {
 			if (aItem.classList.contains('alltabs-item') && 'tab' in aItem)
 				aItem.style.marginLeft = aItem.tab.getAttribute(this.kNEST) + 'em';
 		}, this);
-	},
- 
-	updateTabsInTitlebarForMenubar : function TSTWindow_updateTabsInTitlebarForMenubar() 
-	{
-		if (!this.window.TabsInTitlebar)
-			return;
-
-		var menubar = this.document.querySelector('#toolbar-menubar');
-		var menubarHidden = menubar && menubar.getAttribute('autohide') == 'true';
-		this.window.TabsInTitlebar.allowedBy('TreeStyleTab-menubar', menubarHidden);
 	},
  
 	initUIShowHideObserver : function TSTWindow_initUIShowHideObserver() 
@@ -1052,11 +1040,7 @@ TreeStyleTabWindow.prototype = {
 				}
 			}
 			if (TabsInTitlebar) {
-				let allowed = false;
-				if (isTopTabbar)
-					allowed = this.browser.treeStyleTab.fixed;
-				else
-					allowed = utils.getTreePref('toolbox.allowShowInTitlebar');
+				let allowed = isTopTabbar && this.browser.treeStyleTab.fixed;
 				TabsInTitlebar.allowedBy('TreeStyleTab-tabsOnTop', allowed);
 			}
 		}
@@ -1701,10 +1685,6 @@ TreeStyleTabWindow.prototype = {
 			case 'extensions.treestyletab.tabbar.style':
 			case 'extensions.treestyletab.tabbar.position':
 				this.themeManager.set(prefs.getPref('extensions.treestyletab.tabbar.style'), this.position);
-				break;
-
-			case 'extensions.treestyletab.toolbox.allowShowInTitlebar':
-				this.setTabbrowserAttribute(this.kALLOW_TOOLBOX_IN_TITLEBAR, value);
 				break;
 
 			case 'browser.ctrlTab.previews':

@@ -94,10 +94,6 @@ pref("extensions.treestyletab.platform.Linux.tabbar.style", "plain");
  * Aero Glass will be applied for the vertical tab bar, if you set this to "true".
  */
 pref("extensions.treestyletab.tabbar.style.aero", false);
-/**
- * Allow/disallow to show toolbox in the titlebar, for Australis.
- */
-pref("extensions.treestyletab.toolbox.allowShowInTitlebar", true);
 
 /**
  * AutoHide style for the vertical tab bar.
