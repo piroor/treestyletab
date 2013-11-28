@@ -15,6 +15,7 @@
    * Fixed: Correctly update "list all tabs" menu if there is pinned tabs ([by Infocatcher.](https://github.com/piroor/treestyletab/pull/606) Thanks!)
    * Fixed: Better compatibility with "Australis".
    * Fixed: Don't disable background color of tabs when Tab Mix Plus is installed.
+   * Fixed: Open tabs from user scripts with [Greasemonkey](https://addons.mozilla.org/firefox/addon/greasemonkey/) 1.11 correctly.
    * [fr-FR locale is updated by AxlMun. Thanks!](https://github.com/piroor/treestyletab/pull/595)
  - 0.14.2013100901
    * Improved: Position and size of the tab bar is updated automatically when any element is inserted to the browser box.

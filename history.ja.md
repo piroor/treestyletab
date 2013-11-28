@@ -15,6 +15,7 @@
    * Tab Mix Plusがある時のタブの背景色が意図せず無効化されてしまっていたのを修正
    * ピン留めされたタブがある時に「すべてのタブの一覧」メニューの内容が正しく表示されるよう修正 ([by Infocatcher.](https://github.com/piroor/treestyletab/pull/606) Thanks!)
    * Australisとの互換性を向上
+   * [Greasemonkey](https://addons.mozilla.org/firefox/addon/greasemonkey/) 1.11以降でスクリプトから開かれたタブが子タブにならなくなっていたのを修正
    * フランス語ロケール更新（[by AxlMun. Thanks!](https://github.com/piroor/treestyletab/pull/595)）
  - 0.14.2013100901
    * ブラウズ領域周辺にUI要素が追加された時に、自動的にタブバーの位置やサイズを更新するようにした
