@@ -81,7 +81,7 @@ FullscreenObserver.prototype = {
 
 	onSizeModeChange : function FullscreenObserver_onSizeModeChange()
 	{
-		var w = this.window:
+		var w = this.window;
 		var d = w.document;
 		if (d.documentElement.getAttribute('sizemode') != 'fullscreen')
 			return;
