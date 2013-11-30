@@ -61,6 +61,7 @@ XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabBrowser', 'resource://trees
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 XPCOMUtils.defineLazyModuleGetter(this, 'AutoHideWindow', 'resource://treestyletab-modules/autoHide.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabThemeManager', 'resource://treestyletab-modules/themeManager.js');
+XPCOMUtils.defineLazyModuleGetter(this, 'FullscreenObserver', 'resource://treestyletab-modules/fullscreenObserver.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'BrowserUIShowHideObserver', 'resource://treestyletab-modules/browserUIShowHideObserver.js');
 
 function TreeStyleTabWindow(aWindow) 
@@ -370,6 +371,7 @@ TreeStyleTabWindow.prototype = {
 		w.addEventListener('beforecustomization', this, true);
 		w.addEventListener('aftercustomization', this, false);
 
+		this.fullscreenObserver = new FullscreenObserver(this.window);
 		this.initUIShowHideObserver();
 
 		var appcontent = d.getElementById('appcontent');
@@ -498,6 +500,9 @@ TreeStyleTabWindow.prototype = {
 				d.removeEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB,              this, false);
 				w.removeEventListener('beforecustomization', this, true);
 				w.removeEventListener('aftercustomization', this, false);
+
+				this.fullscreenObserver.destroy();
+				delete this.fullscreenObserver;
 
 				this.rootElementObserver.destroy();
 				delete this.rootElementObserver;

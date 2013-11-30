@@ -278,13 +278,6 @@ var TreeStyleTabWindowHelper = {
 				'{ gBrowser.treeStyleTab.onBeforeFullScreenToggle(); '
 			)
 		);
-		// for Firefox 28 (29) and later
-		eval('FullScreen.showXULChrome = '+
-			FullScreen.showXULChrome.toSource().replace(
-				'var ctlsOnTabbar = window.toolbar.visible;',
-				'var ctlsOnTabbar = window.toolbar.visible && gBrowser.treeStyleTab.position == "top" && gBrowser.treeStyleTab.fixed;'
-			)
-		);
 
 		if ('PrintUtils' in window) {
 			eval('PrintUtils.printPreview = '+PrintUtils.printPreview.toSource().replace(
