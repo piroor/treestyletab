@@ -8,11 +8,7 @@
 
 .label-container {
 	padding: 1em;
-	position: fixed;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
+	position: relative;
 }
 
 .label-container > * {
@@ -61,9 +57,7 @@
 
 
 #tree {
-	height: 80%;
 	margin-top: 1em;
-	max-height: 80%;
 	overflow: auto;
 	box-flex: 1;
 	-moz-box-flex: 1;
