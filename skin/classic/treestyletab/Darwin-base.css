@@ -1,7 +1,7 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
 /**
- * Cancel "tabs on top" appearance on Australis.
+ * Apply "tabs on bottom" appearance on Australis.
  */
 :root:not([treestyletab-tabbar-position="top"])
   #nav-bar:not(:-moz-lwtheme),

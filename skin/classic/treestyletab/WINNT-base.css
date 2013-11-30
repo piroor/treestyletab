@@ -3,7 +3,7 @@
 @media (-moz-windows-compositor) {
 
 /**
- * Cancel "tabs on top" appearance on Australis.
+ * Apply "tabs on bottom" appearance on Australis.
  */
 #main-window:not([treestyletab-tabbar-position="top"])
   #browser-panel
