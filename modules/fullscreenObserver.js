@@ -72,8 +72,7 @@ FullscreenObserver.prototype = {
 		aMutations.forEach(function(aMutation) {
 			if (aMutation.type != 'attributes')
 				return;
-			if (aMutation.attributeName == 'sizemode' &&
-				this.window.document.documentElement.getAttribute('sizemode') == 'fullscreen')
+			if (aMutation.attributeName == 'sizemode')
 				this.window.setTimeout((function() {
 					this.onSizeModeChange();
 				}).bind(this), 10);
@@ -84,6 +83,8 @@ FullscreenObserver.prototype = {
 	{
 		var w = this.window:
 		var d = w.document;
+		if (d.documentElement.getAttribute('sizemode') != 'fullscreen')
+			return;
 
 		var toolbox = w.gNavToolbox;
 		toolbox.style.marginTop = -toolbox.getBoundingClientRect().height + 'px';
