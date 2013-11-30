@@ -1,42 +1,5 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
-@media (-moz-windows-compositor) {
-
-/**
- * Apply "tabs on bottom" appearance on Australis.
- */
-#main-window:not([treestyletab-tabbar-position="top"])
-  #browser-panel
-  > #navigator-toolbox
-  > #nav-bar:not(:-moz-lwtheme),
-#main-window:not([treestyletab-tabbar-position="top"])
-  #browser-panel
-  > #navigator-toolbox
-  > #nav-bar:not(:-moz-lwtheme):-moz-window-inactive {
-	background: transparent;
-	border-top: none !important;
-	border-left: none;
-	border-right: none;
-	box-shadow: none;
-	padding-top: 0;
-	padding-left: 0;
-	padding-right: 0;
-	-moz-binding: url("chrome://browser/content/customizableui/toolbar.xml#toolbar-drag");
-}
-#main-window:not([sizemode="fullscreen"]):not([treestyletab-tabbar-position="top"])
-  #browser-panel
-  > #navigator-toolbox
-  > #nav-bar:not(:-moz-lwtheme),
-#main-window:not([sizemode="fullscreen"]):not([treestyletab-tabbar-position="top"])
-  #browser-panel
-  > #navigator-toolbox
-  > #nav-bar:not(:-moz-lwtheme):-moz-window-inactive {
-	position: relative;
-	margin-top: -5px;
-}
-
-}
-
 
 /* indicator for private window on Australis */
 #main-window[privatebrowsingmode="temporary"]:not([treestyletab-tabbar-position="top"])
