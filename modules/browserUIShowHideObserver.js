@@ -124,11 +124,6 @@ BrowserUIShowHideObserver.prototype = {
 		aMutations.forEach(function(aMutation) {
 			if (aMutation.type != 'attributes')
 				return;
-			if (aTargetElement.id == 'toolbar-menubar' &&
-				aMutation.attributeName == 'autohide') {
-				this.owner.updateTabsInTitlebarForMenubar();
-				return;
-			}
 			if (aMutation.attributeName == 'hidden' ||
 				aMutation.attributeName == 'collapsed' ||
 				aMutation.attributeName == 'moz-collapsed' || // Used in full screen mode
