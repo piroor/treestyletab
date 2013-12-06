@@ -1060,6 +1060,8 @@ TreeStyleTabWindow.prototype = {
 			}
 			if (TabsInTitlebar) {
 				let allowed = isTopTabbar && this.browser.treeStyleTab.fixed;
+				if ('navbarontop' in this.window && utils.getTreePref('compatibility.NavbarOnTitlebar'))
+					allowed = true;
 				TabsInTitlebar.allowedBy('TreeStyleTab-tabsOnTop', allowed);
 			}
 		}
