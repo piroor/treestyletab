@@ -84,6 +84,7 @@ AutoHideBrowser.prototype = {
 	kSHOWHIDE_BY_END    : 1 << 4,
 	kSHOWHIDE_BY_POSITION_CHANGE : 1 << 5,
 	kSHOWHIDE_BY_RESIZE : 1 << 6,
+	kSHOWHIDE_BY_API    : 1 << 8,
 	kHIDDEN_BY_CLICK    : 1 << 7,
  
 	get mode() /* PUBLIC API */ 
@@ -219,10 +220,11 @@ AutoHideBrowser.prototype = {
 		return this.document.getElementById('treestyletab-tabbar-resizer-splitter');
 	},
  
-	start : function AHB_start() 
+	start : function AHB_start(aReason) 
 	{
 		if (this.enabled) return;
 		this.enabled = true;
+		aReason = aReason || 0;
 
 		var sv = this.treeStyleTab;
 		var b  = this.browser;
@@ -232,22 +234,25 @@ AutoHideBrowser.prototype = {
 
 		sv.setTabbrowserAttribute(this.kSTATE, this.kSTATE_EXPANDED);
 
-		b.addEventListener('mousedown', this, true);
-		b.addEventListener('mouseup', this, true);
-		b.addEventListener('dragover', this, true);
-		b.addEventListener('dragleave', this, true);
-		sv.tabStrip.addEventListener('mousedown', this, true);
-		sv.tabStrip.addEventListener('mouseup', this, true);
+		if (!(aReason & this.kSHOWHIDE_BY_API)) {
+			b.addEventListener('mousedown', this, true);
+			b.addEventListener('mouseup', this, true);
+			b.addEventListener('dragover', this, true);
+			b.addEventListener('dragleave', this, true);
+			sv.tabStrip.addEventListener('mousedown', this, true);
+			sv.tabStrip.addEventListener('mouseup', this, true);
+			if (this.shouldListenMouseMove)
+				this.startListenMouseMove();
+			if (b == w.gBrowser && sv.shouldListenKeyEventsForAutoHide)
+				w.TreeStyleTabService.startListenKeyEventsFor(sv.LISTEN_FOR_AUTOHIDE);
+			this.userActionListening = true;
+		}
 		w.addEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
 		w.addEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_EXITED, this, false);
-		if (this.shouldListenMouseMove)
-			this.startListenMouseMove();
-		if (b == w.gBrowser && sv.shouldListenKeyEventsForAutoHide)
-			w.TreeStyleTabService.startListenKeyEventsFor(sv.LISTEN_FOR_AUTOHIDE);
 
 		this.updateTransparency();
 
-		this.showHideInternal(this.kSHOWHIDE_BY_START);
+		this.showHideInternal(this.kSHOWHIDE_BY_START | aReason);
 
 		b.treeStyleTab.fixTooNarrowTabbar();
 	},
@@ -265,17 +270,20 @@ AutoHideBrowser.prototype = {
 
 		this.screen.hidePopup();
 
-		b.removeEventListener('mousedown', this, true);
-		b.removeEventListener('mouseup', this, true);
-		b.removeEventListener('dragover', this, true);
-		b.removeEventListener('dragleave', this, true);
-		sv.tabStrip.removeEventListener('mousedown', this, true);
-		sv.tabStrip.removeEventListener('mouseup', this, true);
+		if (this.userActionListening) {
+			b.removeEventListener('mousedown', this, true);
+			b.removeEventListener('mouseup', this, true);
+			b.removeEventListener('dragover', this, true);
+			b.removeEventListener('dragleave', this, true);
+			sv.tabStrip.removeEventListener('mousedown', this, true);
+			sv.tabStrip.removeEventListener('mouseup', this, true);
+			this.endListenMouseMove();
+			if (b == w.gBrowser)
+				w.TreeStyleTabService.endListenKeyEventsFor(sv.LISTEN_FOR_AUTOHIDE);
+			this.userActionListening = false;
+		}
 		w.removeEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
 		w.removeEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_EXITED, this, false);
-		this.endListenMouseMove();
-		if (b == w.gBrowser)
-			w.TreeStyleTabService.endListenKeyEventsFor(sv.LISTEN_FOR_AUTOHIDE);
 
 		this.updateTransparency();
 
@@ -660,9 +668,14 @@ AutoHideBrowser.prototype = {
 		var b   = this.browser;
 		var pos = sv.position;
 
+		aReason = aReason || 0;
+
 		if (this.expanded) { // to be hidden or shrunken
+			let reason = this.kSHOWN_BY_UNKNOWN;
+			if (aReason & this.kSHOWHIDE_BY_API)
+				reason = aReason;
 			this.onHiding();
-			this.showHideReason = this.kSHOWN_BY_UNKNOWN;
+			this.showHideReason = reason;
 		}
 		else { // to be shown or expanded
 			this.onShowing();
@@ -680,9 +693,9 @@ AutoHideBrowser.prototype = {
 				(aReason & this.kSHOWHIDE_BY_RESIZE ? 'resize ' : '' ) +
 				(aReason & this.kHIDDEN_BY_CLICK ? 'click ' : '' );
 			if (this.expanded)
-				dump('autoHide: hide by ' + humanReadableReason + '\n');
-			else
 				dump('autoHide: show by ' + humanReadableReason + '\n');
+			else
+				dump('autoHide: hide by ' + humanReadableReason + '\n');
 		}
 
 		this.fireStateChangingEvent();
@@ -732,6 +745,11 @@ AutoHideBrowser.prototype = {
 	
 	show : function AHB_show(aReason) /* PUBLIC API */ 
 	{
+		if (this.showHideReason & this.kSHOWHIDE_BY_API) {
+			this.end();
+			return;
+		}
+
 		if (aReason) {
 			this.showHideReason |= aReason;
 		}
@@ -741,6 +759,11 @@ AutoHideBrowser.prototype = {
  
 	hide : function AHB_hide(aReason) /* PUBLIC API */ 
 	{
+		if (!this.enabled) {
+			this.start(aReason | this.kSHOWHIDE_BY_API);
+			return;
+		}
+
 		if (aReason) {
 			if (aReason == this.kSHOWN_BY_ANY_REASON)
 				this.showHideReason &= ~this.kSHOWN_BY_ANY_REASON;
