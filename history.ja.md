@@ -2,6 +2,10 @@
 
  - master/HEAD
    * [Nav Bar on Title Bar](https://addons.mozilla.org/firefox/addon/nav-bar-on-title-bar/)との互換性を改善
+   * [Tab Control](https://addons.mozilla.org/firefox/addon/tab-control/)との互換性を改善
+   * 「ブックマークグループを開く時に現在のタブを置き換える」機能に関するコードを削除（古いFirefoxで既に機能が無くなっていたため）
+   * タブバーの表示・非表示を切り替える公開APIが壊れていたのを修正
+   * グループ化用のタブ内でのタブのツリー表示について、スクロール可能な領域が無駄に狭かったのを修正
  - 0.14.2013112901
    * 「タブが1つだけの時にタブバーを隠す」機能を提供するアドオン（Tab Mix Plus、[Hide Tab Bar With One Tab](https://addons.mozilla.org/firefox/addon/hide-tab-bar-with-one-tab/)など）や環境（Pale Moonなど）との互換性を向上
    * [Context Search](http://www.cusser.net/extensions/contextsearch/)との互換性を向上（検索結果を子タブとして開くようにした）
