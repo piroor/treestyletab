@@ -373,9 +373,9 @@ var TreeStyleTabBookmarksService = {
 	handleTabsOpenProcess : function TSTBMService_handleTabsOpenProcess(aWhere, aEvent, aBrowserWindow, aIDs, aURLs, aFolderTitle)
 	{
 		var result = {
-				behavior          : undefined,
-				treeStructure     : undefined,
-				previousTabs      : undefined
+				behavior      : undefined,
+				treeStructure : undefined,
+				previousTabs  : undefined
 			};
 		if (
 			aEvent.type != 'drop' &&
