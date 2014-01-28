@@ -375,8 +375,7 @@ var TreeStyleTabBookmarksService = {
 		var result = {
 				behavior          : undefined,
 				treeStructure     : undefined,
-				previousTabs      : undefined,
-				replaceCurrentTab : undefined
+				previousTabs      : undefined
 			};
 		if (
 			aEvent.type != 'drop' &&
