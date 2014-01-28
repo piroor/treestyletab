@@ -97,7 +97,6 @@
 <!ENTITY config.openGroupBookmark.subtree.type.flat    "Ignorera">
 <!ENTITY config.openGroupBookmark.subtree.type.after   "trädstrukturen för flikar som sparats till bokmärken">
 <!ENTITY config.openGroupBookmark.flat        "Öppna som separata flikar (standard i Firefox)">
-<!ENTITY config.openGroupBookmark.replace     "Ersätt den aktuella fliken med sidorna i mappen">
 <!ENTITY config.openGroupBookmark.underParent "Placera flikar under en tillfällig flik för gruppering">
 
 <!ENTITY config.dropLinksOnTab.caption "När länk, URL, bokmärke eller fil släpps på befintlig flik">

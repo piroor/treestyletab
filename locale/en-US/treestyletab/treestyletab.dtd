@@ -84,7 +84,6 @@
 <!ENTITY config.openGroupBookmark.subtree.type.flat    "Ignore">
 <!ENTITY config.openGroupBookmark.subtree.type.after   "tree structure of tabs saved to bookmarks">
 <!ENTITY config.openGroupBookmark.flat        "Open as separate tabs (Firefox default)">
-<!ENTITY config.openGroupBookmark.replace     "Replace the current one tab with the pages in the folder">
 <!ENTITY config.openGroupBookmark.underParent "Put tabs under a dummy tab for grouping">
 
 <!ENTITY config.dropLinksOnTab.caption "Dropped link, URL, bookmark or file to existing tab">

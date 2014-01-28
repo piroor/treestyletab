@@ -87,7 +87,6 @@
 <!ENTITY config.openGroupBookmark.subtree.type.flat    "Ignorar">
 <!ENTITY config.openGroupBookmark.subtree.type.after   "Estructura del árbol guardado en marcadores">
 <!ENTITY config.openGroupBookmark.flat        "Abrir como pestañas separadas (Firefox Predeterminado)">
-<!ENTITY config.openGroupBookmark.replace     "Remplazar la pestaña actual con las páginas de la carpeta">
 <!ENTITY config.openGroupBookmark.underParent "Agrupar las pestañas bajo una carpeta">
 
 <!ENTITY config.dropLinksOnTab.caption "Dropped link, URL, bookmark or file to existing tab">

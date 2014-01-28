@@ -97,7 +97,6 @@
 <!ENTITY config.openGroupBookmark.subtree.type.flat    "忽略">
 <!ENTITY config.openGroupBookmark.subtree.type.after   "保存到书签时的树状结构">
 <!ENTITY config.openGroupBookmark.flat        "在单独标签中平行打开（Firefox 默认）">
-<!ENTITY config.openGroupBookmark.replace     "覆盖当前标签打开">
 <!ENTITY config.openGroupBookmark.underParent "将标签置于一伪标签下以便分组">
 
 <!ENTITY config.dropLinksOnTab.caption "如何打开拖拽到现有标签的链接、网址、书签或文件？">

@@ -85,7 +85,6 @@
 <!ENTITY config.openGroupBookmark.subtree.type.flat    "Ignorer">
 <!ENTITY config.openGroupBookmark.subtree.type.after   "l'arborescence des onglets sauvegardée dans les marque-pages">
 <!ENTITY config.openGroupBookmark.flat        "Ouvrir dans des onglets séparés (défaut Firefox)">
-<!ENTITY config.openGroupBookmark.replace     "Remplacer l'onglet actuel par les pages du dossier">
 <!ENTITY config.openGroupBookmark.underParent "Mettre les onglets sous un onglet fictif afin de les grouper">
 
 <!ENTITY config.dropLinksOnTab.caption "Action pour les glisser-déposer de liens, URL, marques-pages ou fichiers sur un onglet existant">

@@ -87,7 +87,6 @@
 <!ENTITY config.openGroupBookmark.subtree.type.flat    "Zignoruj">
 <!ENTITY config.openGroupBookmark.subtree.type.after   "strukturę drzewiastą kart zapisanych jako zakładki">
 <!ENTITY config.openGroupBookmark.flat        "Otwieraj jako osobne karty (domyślnie działanie Firefoksa)">
-<!ENTITY config.openGroupBookmark.replace     "Zastępuj aktywną kartę stronami z folderu">
 <!ENTITY config.openGroupBookmark.underParent "Umieszczaj karty pod pustą kartą dla lepszego grupowania">
 
 <!ENTITY config.dropLinksOnTab.caption "Dropped link, URL, bookmark or file to existing tab">

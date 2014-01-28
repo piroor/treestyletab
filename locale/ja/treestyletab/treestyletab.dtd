@@ -85,7 +85,6 @@
 <!ENTITY config.openGroupBookmark.subtree.type.flat    "無視する">
 <!ENTITY config.openGroupBookmark.subtree.type.after   "">
 <!ENTITY config.openGroupBookmark.flat        "ばらばらのタブとして開く（Firefox初期状態）">
-<!ENTITY config.openGroupBookmark.replace     "現在のタブ1つだけをブックマークの内容で置き換える">
 <!ENTITY config.openGroupBookmark.underParent "グループ化用のダミーのタブを親にする">
 
 <!ENTITY config.dropLinksOnTab.caption "タブにドラッグ＆ドロップされたリンク、URL、ブックマーク、ファイルなど">

@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2013
+ * Portions created by the Initial Developer are Copyright (C) 2010-2014
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -135,7 +135,6 @@ var TreeStyleTabBase = {
 		this.onPrefChange('extensions.treestyletab.indent.vertical');
 		this.onPrefChange('extensions.treestyletab.indent.horizontal');
 		this.onPrefChange('extensions.treestyletab.clickOnIndentSpaces.enabled');
-		this.onPrefChange('browser.tabs.loadFolderAndReplace.override');
 		this.onPrefChange('browser.tabs.insertRelatedAfterCurrent.override');
 		this.onPrefChange('extensions.stm.tabBarMultiRows.override'); // Super Tab Mode
 		this.onPrefChange('extensions.treestyletab.tabbar.scroll.smooth');
@@ -187,7 +186,6 @@ var TreeStyleTabBase = {
 			prefs.removePrefListener(this);
 
 			let restorePrefs = [
-				'browser.tabs.loadFolderAndReplace',
 				'browser.tabs.insertRelatedAfterCurrent',
 				'extensions.stm.tabBarMultiRows' // Super Tab Mode
 			];
@@ -396,11 +394,10 @@ var TreeStyleTabBase = {
 				utils.treeBundle.getString('openGroupBookmarkBehavior.title'),
 				utils.treeBundle.getString('openGroupBookmarkBehavior.text'),
 				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_0) +
-				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_1) +
-				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_2),
+				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_1),
 				utils.treeBundle.getString('openGroupBookmarkBehavior.subTree'),
 				utils.treeBundle.getString('openGroupBookmarkBehavior.separate'),
-				utils.treeBundle.getString('openGroupBookmarkBehavior.replace'),
+				null,
 				utils.treeBundle.getString('openGroupBookmarkBehavior.never'),
 				checked
 			);
@@ -409,14 +406,12 @@ var TreeStyleTabBase = {
 			button = 1;
 		var behaviors = [
 				this.kGROUP_BOOKMARK_SUBTREE | dummyTabFlag,
-				this.kGROUP_BOOKMARK_SEPARATE,
-				this.kGROUP_BOOKMARK_REPLACE
+				this.kGROUP_BOOKMARK_SEPARATE
 			];
 		behavior = behaviors[button];
 
 		if (checked.value) {
 			utils.setTreePref('openGroupBookmark.behavior', behavior);
-			prefs.setPref('browser.tabs.loadFolderAndReplace', !!(behavior & this.kGROUP_BOOKMARK_REPLACE));
 		}
 		return behavior;
 	},
@@ -424,7 +419,6 @@ var TreeStyleTabBase = {
 	kGROUP_BOOKMARK_FIXED     : 1 + 2 + 4,
 	kGROUP_BOOKMARK_SUBTREE   : 1,
 	kGROUP_BOOKMARK_SEPARATE  : 2,
-	kGROUP_BOOKMARK_REPLACE   : 4,
 	kGROUP_BOOKMARK_USE_DUMMY                   : 256,
 	kGROUP_BOOKMARK_USE_DUMMY_FORCE             : 1024,
 	kGROUP_BOOKMARK_DONT_RESTORE_TREE_STRUCTURE : 512,
@@ -2429,7 +2423,6 @@ var TreeStyleTabBase = {
 	domains : [ 
 		'extensions.treestyletab.',
 		'browser.tabs.animate',
-		'browser.tabs.loadFolderAndReplace',
 		'browser.tabs.insertRelatedAfterCurrent',
 		'extensions.stm.tabBarMultiRows' // Super Tab Mode
 	],
@@ -2463,14 +2456,12 @@ var TreeStyleTabBase = {
 				return this.updateTabWidthPrefs(aPrefName);
 
 			case 'browser.tabs.insertRelatedAfterCurrent':
-			case 'browser.tabs.loadFolderAndReplace':
 			case 'extensions.stm.tabBarMultiRows': // Super Tab Mode
 				if (this.prefOverriding)
 					return;
 				aPrefName += '.override';
 				prefs.setPref(aPrefName, value);
 			case 'browser.tabs.insertRelatedAfterCurrent.override':
-			case 'browser.tabs.loadFolderAndReplace.override':
 			case 'extensions.stm.tabBarMultiRows.override': // Super Tab Mode
 				if (prefs.getPref(aPrefName+'.force')) {
 					let defaultValue = prefs.getDefaultPref(aPrefName);

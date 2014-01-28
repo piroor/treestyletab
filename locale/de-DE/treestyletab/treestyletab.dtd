@@ -99,7 +99,6 @@
 <!ENTITY config.openGroupBookmark.subtree.type.flat    "Ignoriere">
 <!ENTITY config.openGroupBookmark.subtree.type.after   "Anordnung der Tabs im Zweig beim Speichern als Lesezeichen">
 <!ENTITY config.openGroupBookmark.flat        "Als eigenständige Tabs öffnen (Firefox Standard)">
-<!ENTITY config.openGroupBookmark.replace     "Aktuelles Tab durch die neuen Tabs ersetzen">
 <!ENTITY config.openGroupBookmark.underParent "Seiten zur Gruppierung einem Dummytab unterordnen">
 
 <!ENTITY config.dropLinksOnTab.caption "Verhalten für Drag &amp; Drop auf Tabs">

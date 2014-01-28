@@ -253,7 +253,7 @@ var TreeStyleTabBookmarksService = {
 						'if (item.uri) { $& }'
 					).replace(
 						/(browserWindow\.(?:getBrowser\(\)|gBrowser)\.loadTabs\([^;]+\);)/,
-						'var TSTResult = browserWindow.TreeStyleTabBookmarksService.handleTabsOpenProcess(where, aEvent, browserWindow, ids, urls, typeof replaceCurrentTab == "undefined" ? undefined : replaceCurrentTab, aFolderTitle);\n' +
+						'var TSTResult = browserWindow.TreeStyleTabBookmarksService.handleTabsOpenProcess(where, aEvent, browserWindow, ids, urls, aFolderTitle);\n' +
 						'TSTTreeStructure = TSTResult.treeStructure;\n' +
 						'TSTPreviousTabs = TSTResult.previousTabs;\n' +
 						'TSTOpenGroupBookmarkBehavior = TSTResult.behavior;\n' +
@@ -370,7 +370,7 @@ var TreeStyleTabBookmarksService = {
 			);
 		}
 	},
-	handleTabsOpenProcess : function TSTBMService_handleTabsOpenProcess(aWhere, aEvent, aBrowserWindow, aIDs, aURLs, aReplaceCurrentTab, aFolderTitle)
+	handleTabsOpenProcess : function TSTBMService_handleTabsOpenProcess(aWhere, aEvent, aBrowserWindow, aIDs, aURLs, aFolderTitle)
 	{
 		var result = {
 				behavior          : undefined,
@@ -432,14 +432,6 @@ var TreeStyleTabBookmarksService = {
 			else {
 				sv.readyToOpenNewTabGroup(null, treeStructure, result.behavior & sv.kGROUP_BOOKMARK_EXPAND_ALL_TREE);
 			}
-			// replaceCurrentTab works only on Firefox 7 or earlier
-			// See: https://bugzilla.mozilla.org/show_bug.cgi?id=440093
-			if (typeof aReplaceCurrentTab !== 'undefined')
-				result.replaceCurrentTab = false;
-		}
-		else {
-			if (typeof aReplaceCurrentTab !== 'undefined')
-				result.replaceCurrentTab = !!(result.behavior & sv.kGROUP_BOOKMARK_REPLACE);
 		}
 		return result;
 	},
