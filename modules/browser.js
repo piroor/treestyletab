@@ -2886,7 +2886,7 @@ TreeStyleTabBrowser.prototype = {
 			let parent = this.getTabById(this.parentTab);
 			if (parent) {
 				let tabs = [parent].concat(this.getDescendantTabs(parent));
-				parent = pareintIndexInTree < tabs.length ? tabs[pareintIndexInTree] : parent ;
+				parent = pareintIndexInTree > -1 && pareintIndexInTree < tabs.length ? tabs[pareintIndexInTree] : parent ;
 			}
 			if (parent) {
 				this.attachTabTo(tab, parent, {

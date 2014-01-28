@@ -393,10 +393,8 @@ var TreeStyleTabBookmarksService = {
 			let treeStructure = result.behavior & sv.kGROUP_BOOKMARK_DONT_RESTORE_TREE_STRUCTURE ?
 						null :
 						sv.getTreeStructureFromItems(aIDs) ;
-			if (
-				treeStructure &&
-				result.behavior & sv.kGROUP_BOOKMARK_USE_DUMMY
-				) {
+			if (treeStructure) {
+				if (result.behavior & sv.kGROUP_BOOKMARK_USE_DUMMY) {
 				let parentCount = 0;
 				let childCount = 0;
 				for (let i in treeStructure) {
@@ -419,6 +417,17 @@ var TreeStyleTabBookmarksService = {
 						title:     aFolderTitle,
 						temporary: TreeStyleTabUtils.getTreePref('openGroupBookmark.temporaryGroup')
 					}));
+				}
+				}
+				else {
+					// make the first item parent.
+					treeStructure = treeStructure.map(function(aParent, aIndex) {
+						if (aIndex == 0)
+							return aParent;
+						if (aParent < 0)
+							return 0;
+						return aParent;
+					});
 				}
 			}
 
