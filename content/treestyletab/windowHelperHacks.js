@@ -1353,6 +1353,32 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 		}
 	}
 
+	// Tab Control
+	// https://addons.mozilla.org/firefox/addon/tab-control/
+	if (
+		TreeStyleTabUtils.getTreePref('compatibility.TabControl') &&
+		'gTabControl' in window
+		) {
+		let listener = {
+				handleEvent : function(aEvent)
+				{
+					switch (aEvent.type)
+					{
+						case sv.kEVENT_TYPE_FOCUS_NEXT_TAB:
+							if (TreeStyleTabUtils.prefs.getPref('tabcontrol.focusLeftOnClose'))
+								aEvent.preventDefault();
+							break;
+
+						case 'unload':
+							document.removeEventListener(sv.kEVENT_TYPE_FOCUS_NEXT_TAB, this, false);
+							break;
+					}
+				}
+			};
+		document.addEventListener(sv.kEVENT_TYPE_FOCUS_NEXT_TAB, listener, false);
+		document.addEventListener('unload', listener, false);
+	}
+
 	// Firefox Sync (Weave)
 	// http://www.mozilla.com/en-US/firefox/sync/
 	if (

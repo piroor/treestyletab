@@ -677,6 +677,7 @@ pref("extensions.treestyletab.compatibility.STM.warnForNewTabPosition", true);
 pref("extensions.treestyletab.compatibility.STM", true); // Super Tab Mode
 pref("extensions.treestyletab.compatibility.SuperDragAndGo", true);
 pref("extensions.treestyletab.compatibility.Tabberwocky", true);
+pref("extensions.treestyletab.compatibility.TabControl", true);
 pref("extensions.treestyletab.compatibility.TabUtilities", true);
 pref("extensions.treestyletab.compatibility.TMP", true); // Tab Mix Plus
 pref("extensions.treestyletab.compatibility.TooManyTabs", true);
