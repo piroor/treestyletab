@@ -395,29 +395,29 @@ var TreeStyleTabBookmarksService = {
 						sv.getTreeStructureFromItems(aIDs) ;
 			if (treeStructure) {
 				if (result.behavior & sv.kGROUP_BOOKMARK_USE_DUMMY) {
-				let parentCount = 0;
-				let childCount = 0;
-				for (let i in treeStructure) {
-					if (treeStructure[i] == -1)
-						parentCount++;
-					else
-						childCount++;
-				}
-				if (
-					parentCount > 1 &&
-					(
-						result.behavior & sv.kGROUP_BOOKMARK_USE_DUMMY_FORCE ||
-						// when there is any orphan, then all of parents and orphans should be grouped under a dummy tab.
-						childCount < parentCount
-					)
-					) {
-					aIDs.unshift(-1);
-					treeStructure = sv.getTreeStructureFromItems(aIDs, 0);
-					aURLs.unshift(sv.getGroupTabURI({
-						title:     aFolderTitle,
-						temporary: TreeStyleTabUtils.getTreePref('openGroupBookmark.temporaryGroup')
-					}));
-				}
+					let parentCount = 0;
+					let childCount = 0;
+					for (let i in treeStructure) {
+						if (treeStructure[i] == -1)
+							parentCount++;
+						else
+							childCount++;
+					}
+					if (
+						parentCount > 1 &&
+						(
+							result.behavior & sv.kGROUP_BOOKMARK_USE_DUMMY_FORCE ||
+							// when there is any orphan, then all of parents and orphans should be grouped under a dummy tab.
+							childCount < parentCount
+						)
+						) {
+						aIDs.unshift(-1);
+						treeStructure = sv.getTreeStructureFromItems(aIDs, 0);
+						aURLs.unshift(sv.getGroupTabURI({
+							title:     aFolderTitle,
+							temporary: TreeStyleTabUtils.getTreePref('openGroupBookmark.temporaryGroup')
+						}));
+					}
 				}
 				else {
 					// make the first item parent.
