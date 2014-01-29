@@ -7,6 +7,7 @@
    * タブバーの表示・非表示を切り替える公開APIが壊れていたのを修正
    * グループ化用のタブ内でのタブのツリー表示について、スクロール可能な領域が無駄に狭かったのを修正
    * ユーザがグループ化用のタブを開かない設定を選択している場合に、ブックマークフォルダをタブのツリーとして開けていなかったのを修正
+   * 「Tabs on Top」機能が削除されて以降のバージョンのFirefoxでタブバーの表示が壊れていたのを修正
  - 0.14.2013112901
    * 「タブが1つだけの時にタブバーを隠す」機能を提供するアドオン（Tab Mix Plus、[Hide Tab Bar With One Tab](https://addons.mozilla.org/firefox/addon/hide-tab-bar-with-one-tab/)など）や環境（Pale Moonなど）との互換性を向上
    * [Context Search](http://www.cusser.net/extensions/contextsearch/)との互換性を向上（検索結果を子タブとして開くようにした）
