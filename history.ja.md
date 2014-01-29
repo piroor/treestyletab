@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 0.14.2014013001
    * [Nav Bar on Title Bar](https://addons.mozilla.org/firefox/addon/nav-bar-on-title-bar/)との互換性を改善
    * [Tab Control](https://addons.mozilla.org/firefox/addon/tab-control/)との互換性を改善
    * 「ブックマークグループを開く時に現在のタブを置き換える」機能に関するコードを削除（古いFirefoxで既に機能が無くなっていたため）
