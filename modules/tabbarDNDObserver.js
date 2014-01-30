@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2013
+ * Portions created by the Initial Developer are Copyright (C) 2010-2014
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -649,7 +649,6 @@ catch(e) {
 			if (aTab.hasAttribute(sv.kDROP_POSITION))
 				aTab.removeAttribute(sv.kDROP_POSITION)
 
-			// clear drop position preview on Firefox 17 and later
 			if (aOnFinish) {
 				aTab.style.transform = '';
 				if ('__treestyletab__opacityBeforeDragged' in aTab) {
@@ -1000,7 +999,7 @@ try{
 			this.clearDropPosition();
 			indicatorTab.setAttribute(sv.kDROP_POSITION, dropPosition);
 			if (b.ownerDocument.defaultView['piro.sakura.ne.jp'].tabsDragUtils
-					.canAnimateDraggedTabs(aEvent)) { // Firefox 17 and later
+					.canAnimateDraggedTabs(aEvent)) {
 				let newOpacity = dropPosition == 'self' ? 0.35 : 0.75 ; // to prevent the dragged tab hides the drop target itself
 				this.window['piro.sakura.ne.jp'].tabsDragUtils.getDraggedTabs(aEvent).forEach(function(aTab) {
 					if (!('__treestyletab__opacityBeforeDragged' in aTab))
@@ -1191,9 +1190,7 @@ catch(e) {
 		let sourceURI = sourceDoc ? sourceDoc.documentURI : 'file:///' ;
 		let principal = sourceDoc ?
 					sourceDoc.nodePrincipal :
-				SecMan.getSimpleCodebasePrincipal ? // this method isn't there on Firefox 16 and olders!
-					SecMan.getSimpleCodebasePrincipal(Services.io.newURI(sourceURI, null, null)) :
-					null ;
+					SecMan.getSimpleCodebasePrincipal(Services.io.newURI(sourceURI, null, null)) ;
 		try {
 			if (principal)
 				SecMan.checkLoadURIStrWithPrincipal(principal, normalizedURI.spec, Ci.nsIScriptSecurityManager.STANDARD);

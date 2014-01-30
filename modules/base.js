@@ -321,8 +321,6 @@ var TreeStyleTabBase = {
 		{
 			let target = targets.getNext()
 							.QueryInterface(Ci.nsIDOMWindow);
-			if ('nsIDOMWindowInternal' in Ci) // for Firefox 7 or olders
-				target = target.QueryInterface(Ci.nsIDOMWindowInternal);
 			windows.push(target);
 		}
 

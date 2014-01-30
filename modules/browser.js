@@ -740,7 +740,6 @@ TreeStyleTabBrowser.prototype = {
 		Services.obs.addObserver(this, this.kTOPIC_INDENT_MODIFIED, false);
 		Services.obs.addObserver(this, this.kTOPIC_COLLAPSE_EXPAND_ALL, false);
 		Services.obs.addObserver(this, this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY, false);
-		Services.obs.addObserver(this, 'private-browsing-change-granted', false); // only for Firefox 19 and olders
 		Services.obs.addObserver(this, 'lightweight-theme-styling-update', false);
 		prefs.addPrefListener(this);
 
@@ -765,8 +764,8 @@ TreeStyleTabBrowser.prototype = {
 
 		var self = this;
 		(this.deferredTasks['init'] = this.Deferred.next(function() {
-			// On Firefox 12 and later, this command is always enabled
-			// and the TabsOnTop can be enabled by <tabbrowser>.updateVisibility().
+			// This command is always enabled and the TabsOnTop can be enabled
+			// by <tabbrowser>.updateVisibility().
 			// So we have to reset TabsOnTop state on the startup.
 			var toggleTabsOnTop = d.getElementById('cmd_ToggleTabsOnTop');
 			var TabsOnTop = 'TabsOnTop' in w ? w.TabsOnTop : null ;
@@ -1839,8 +1838,7 @@ TreeStyleTabBrowser.prototype = {
 				(aReason & this.kTABBAR_UPDATE_BY_FULLSCREEN ? 'fullscreen ' : '' ) +
 				(aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE ? 'autohide ' : '' ) +
 				(aReason & this.kTABBAR_UPDATE_BY_INITIALIZE ? 'initialize ' : '' ) +
-				(aReason & this.kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR ? 'toggle-sidebar ' : '' ) +
-				(aReason & this.kTABBAR_UPDATE_BY_PRIVATE_BROWSING ? 'private-browsing ' : '' );
+				(aReason & this.kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR ? 'toggle-sidebar ' : '' );
 			dump('TSTBrowser_updateFloatingTabbarInternal: ' + humanReadableReason + '\n');
 		}
 
@@ -2157,7 +2155,6 @@ TreeStyleTabBrowser.prototype = {
 		Services.obs.removeObserver(this, this.kTOPIC_INDENT_MODIFIED);
 		Services.obs.removeObserver(this, this.kTOPIC_COLLAPSE_EXPAND_ALL);
 		Services.obs.removeObserver(this, this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY);
-		Services.obs.removeObserver(this, 'private-browsing-change-granted'); // only for Firefox 19 and olders
 		Services.obs.removeObserver(this, 'lightweight-theme-styling-update');
 		prefs.removePrefListener(this);
 
@@ -2402,11 +2399,6 @@ TreeStyleTabBrowser.prototype = {
 						aData.indexOf('now') > -1
 					);
 				}
-				return;
-
-			case 'private-browsing-change-granted': // only for Firefox 19 and olders
-				this.collapseExpandAllSubtree(false, true);
-				this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_PRIVATE_BROWSING);
 				return;
 
 			case 'lightweight-theme-styling-update':

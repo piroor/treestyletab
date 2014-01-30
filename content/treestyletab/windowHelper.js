@@ -17,17 +17,6 @@ var TreeStyleTabWindowHelper = {
 				) {
 				target = 'gBrowserInit._delayedStartup';
 			}
-			else if ( // legacy code for Firefox 18 and olders
-				'onLoad' in gBrowserInit &&
-				(source = gBrowserInit.onLoad.toSource()) &&
-				source.indexOf('swapBrowsersAndCloseOther') > -1
-				) {
-				target = 'gBrowserInit.onLoad';
-			}
-		}
-		else if ('BrowserStartup' in window) { // legacy code for Firefox 15 and olders
-			source = window.BrowserStartup.toSource();
-			target = 'BrowserStartup';
 		}
 		if (!target)
 			dump('Tree Style Tab: failed to initialize startup function!');
@@ -290,14 +279,8 @@ var TreeStyleTabWindowHelper = {
 			));
 		}
 
-		if ('TabsOnTop' in window && TabsOnTop.syncUI) { // Firefox 12 or later
+		if ('TabsOnTop' in window && TabsOnTop.syncUI) {
 			eval('TabsOnTop.syncUI = '+TabsOnTop.syncUI.toSource().replace(
-				/(\}\)?)$/,
-				'gBrowser.treeStyleTab.onTabsOnTopSyncCommand(enabled); $&'
-			));
-		}
-		if ('TabsOnTop' in window && TabsOnTop.syncCommand) { // Firefox 4-11
-			eval('TabsOnTop.syncCommand = '+TabsOnTop.syncCommand.toSource().replace(
 				/(\}\)?)$/,
 				'gBrowser.treeStyleTab.onTabsOnTopSyncCommand(enabled); $&'
 			));
@@ -357,7 +340,7 @@ var TreeStyleTabWindowHelper = {
 		tabbar.addEventListener('click', this.service, true);
 
 		var newTabButton = document.getElementById('new-tab-button');
-		const nsIDOMNode = Ci.nsIDOM3Node || Ci.nsIDOMNode; // on Firefox 7, nsIDOM3Node was merged to nsIDOMNode.
+		const nsIDOMNode = Ci.nsIDOMNode;
 		if (newTabButton &&
 			!(tabbar.compareDocumentPosition(newTabButton) & nsIDOMNode.DOCUMENT_POSITION_CONTAINED_BY))
 			newTabButton.parentNode.addEventListener('click', this.service, true);
@@ -375,7 +358,7 @@ var TreeStyleTabWindowHelper = {
 		tabbar.removeEventListener('click', this.service, true);
 
 		var newTabButton = document.getElementById('new-tab-button');
-		const nsIDOMNode = Ci.nsIDOM3Node || Ci.nsIDOMNode; // on Firefox 7, nsIDOM3Node was merged to nsIDOMNode.
+		const nsIDOMNode = Ci.nsIDOMNode;
 		if (newTabButton &&
 			!(tabbar.compareDocumentPosition(newTabButton) & Ci.nsIDOMNode.DOCUMENT_POSITION_CONTAINED_BY))
 			newTabButton.parentNode.removeEventListener('click', this.service, true);
@@ -390,18 +373,8 @@ var TreeStyleTabWindowHelper = {
 		var b = aTabBrowser;
 
 		let (source = b.moveTabForward.toSource()) {
-			if (source.indexOf('nextTab.hidden') < 0) { // Firefox 19 or olders
-				source = source.replace(
-					'{', '{ var nextTab;'
-				).replace(
-					'tabPos < this.browsers.length - 1',
-					'nextTab = this.treeStyleTab.getNextSiblingTab(this.mCurrentTab)'
-				).replace(
-					'tabPos + 1', 'nextTab._tPos'
-				);
-			}
-			else {
-				source = source.replace(
+			eval('b.moveTabForward = '+
+				source.replace(
 					'if (nextTab)',
 					'(function() {\n' +
 					'  if (this.treeStyleTab.hasChildTabs(this.mCurrentTab)) {\n' +
@@ -411,10 +384,7 @@ var TreeStyleTabWindowHelper = {
 					'  }\n' +
 					'}).call(this);' +
 					'$&'
-				);
-			}
-			eval('b.moveTabForward = '+
-				source.replace(
+				).replace(
 					/(this.moveTabTo\([^;]+\);)/,
 					'(function() {\n' +
 					'  let descendant = this.treeStyleTab.getDescendantTabs(nextTab);\n' +
@@ -442,16 +412,6 @@ var TreeStyleTabWindowHelper = {
 		}
 
 		let (source = b.moveTabBackward.toSource()) {
-			if (source.indexOf('prevTab.hidden') < 0) { // Firefox 19 or olders
-				source = source.replace(
-					'{', '{ var prevTab;'
-				).replace(
-					'tabPos > 0',
-					'prevTab = this.treeStyleTab.getPreviousSiblingTab(this.mCurrentTab)'
-				).replace(
-					'tabPos - 1', 'prevTab._tPos'
-				);
-			}
 			eval('b.moveTabBackward = '+
 				source.replace(
 					'this.moveTabToEnd();',
