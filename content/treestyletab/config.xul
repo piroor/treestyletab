@@ -339,9 +339,6 @@
 		<preference id="extensions.treestyletab.openGroupBookmark.behavior"
 			name="extensions.treestyletab.openGroupBookmark.behavior"
 			type="int"/>
-		<preference id="browser.tabs.loadFolderAndReplace"
-			name="browser.tabs.loadFolderAndReplace.override"
-			type="bool"/>
 		<preference id="extensions.treestyletab.dropLinksOnTab.behavior"
 			name="extensions.treestyletab.dropLinksOnTab.behavior"
 			type="int"/>
@@ -452,8 +449,6 @@
 					</vbox>
 				</hbox>
 				<radio value="2" label="&config.openGroupBookmark.flat;"/>
-				<radio id="openGroupBookmark.replace"
-					value="4" label="&config.openGroupBookmark.replace;"/>
 			</radiogroup>
 			</vbox>
 		</deck>

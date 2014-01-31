@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2013
+ * Portions created by the Initial Developer are Copyright (C) 2010-2014
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -135,8 +135,6 @@ const TreeStyleTabConstants = Object.freeze({
 	kEVENT_TYPE_PRINT_PREVIEW_EXITED         : 'nsDOMTreeStyleTabPrintPreviewExited',
 	kEVENT_TYPE_AUTO_HIDE_STATE_CHANGING     : 'nsDOMTreeStyleTabAutoHideStateChanging',
 	kEVENT_TYPE_AUTO_HIDE_STATE_CHANGE       : 'nsDOMTreeStyleTabAutoHideStateChange',
-	kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION : 'nsDOMTreeStyleTabBeforeToolbarCustomization',
-	kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION  : 'nsDOMTreeStyleTabAfterToolbarCustomization',
 
 	kTOPIC_INDENT_MODIFIED              : 'TreeStyleTab:indentModified',
 	kTOPIC_COLLAPSE_EXPAND_ALL          : 'TreeStyleTab:collapseExpandAllSubtree',
@@ -181,12 +179,11 @@ const TreeStyleTabConstants = Object.freeze({
 	kTABBAR_UPDATE_BY_TABBAR_RESIZE     : (1 << 5),
 	kTABBAR_UPDATE_BY_WINDOW_RESIZE     : (1 << 6),
 	kTABBAR_UPDATE_BY_FULLSCREEN        : (1 << 7),
-	kTABBAR_UPDATE_BY_PRIVATE_BROWSING  : (1 << 8),
 	kTABBAR_UPDATE_BY_AUTOHIDE          : (1 << 9),
 	kTABBAR_UPDATE_BY_INITIALIZE        : (1 << 10),
 	kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR    : (1 << 11),
 	kTABBAR_UPDATE_NOW                 : (1 << 5) | (1 << 6) | (1 << 9) | (1 << 10),
-	kTABBAR_UPDATE_SYNC_TO_TABBAR      : (1 << 0) | (1 << 1) | (1 << 2) | (1 << 5) | (1 << 8) | (1 << 9),
+	kTABBAR_UPDATE_SYNC_TO_TABBAR      : (1 << 0) | (1 << 1) | (1 << 2) | (1 << 5) | (1 << 9),
 	kTABBAR_UPDATE_SYNC_TO_PLACEHOLDER : (1 << 3) | (1 << 4) | (1 << 6) | (1 << 7) | (1 << 10) | (1 << 11),
 
 	kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD        : 3,

@@ -34,8 +34,10 @@ skin	treestyletab-group	classic/1.0	skin/classic/treestyletab-group-basic/
 skin	treestyletab-group	classic/1.0	skin/classic/treestyletab-group-aero/	os=WINNT osversion>=6
 
 override chrome://treestyletab/skin/platform-base.css	chrome://treestyletab/skin/dummy.css	os=Darwin
+override chrome://treestyletab/skin/platform-base.css	chrome://treestyletab/skin/Darwin-base.css	os=Darwin appversion>=29.0a1
 override chrome://treestyletab/skin/platform-base.css	chrome://treestyletab/skin/Linux-base.css	os=Linux
 override chrome://treestyletab/skin/platform-base.css	chrome://treestyletab/skin/dummy.css	os=WINNT
+override chrome://treestyletab/skin/platform-base.css	chrome://treestyletab/skin/WINNT-base.css	os=WINNT appversion>=29.0a1
 override chrome://treestyletab/skin/platform-styled.css	chrome://treestyletab/skin/Darwin-styled.css	os=Darwin
 override chrome://treestyletab/skin/platform-styled.css	chrome://treestyletab/skin/dummy.css	os=Linux
 override chrome://treestyletab/skin/platform-styled.css	chrome://treestyletab/skin/WINNT-styled.css	os=WINNT
@@ -47,15 +49,13 @@ override chrome://treestyletab/skin/square/platform.css	chrome://treestyletab/sk
 override chrome://treestyletab/skin/metal/platform.css	chrome://treestyletab/skin/metal/Darwin.css	os=Darwin
 override chrome://treestyletab/skin/metal/platform.css	chrome://treestyletab/skin/dummy.css	os=WINNT
 override chrome://treestyletab/skin/metal/platform.css	chrome://treestyletab/skin/dummy.css	os=Linux
-override chrome://treestyletab/skin/metal/tab.css	chrome://treestyletab/skin/metal/tab-legacy.css
-override chrome://treestyletab/skin/metal/tab.css	chrome://treestyletab/skin/metal/tab-base.css	appversion>=15.0a1
-
-override chrome://treestyletab/skin/sidebar/sidebar.css	chrome://treestyletab/skin/sidebar/sidebar-legacy.css
-override chrome://treestyletab/skin/sidebar/sidebar.css	chrome://treestyletab/skin/sidebar/sidebar-base.css	appversion>=12.0a1
 
 override chrome://treestyletab/skin/platform-config.css	chrome://treestyletab/skin/dummy.css	os=Darwin
 override chrome://treestyletab/skin/platform-config.css	chrome://treestyletab/skin/Linux-config.css	os=Linux
 override chrome://treestyletab/skin/platform-config.css	chrome://treestyletab/skin/dummy.css	os=WINNT
+
+override chrome://treestyletab/content/base-toolbar-binding.xml	chrome://global/content/bindings/toolbar.xml
+override chrome://treestyletab/content/base-toolbar-binding.xml	chrome://browser/content/customizableui/toolbar.xml	appversion>=29.0a1
 
 
 resource treestyletab-modules modules/

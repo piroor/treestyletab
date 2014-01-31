@@ -61,6 +61,7 @@ XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabBrowser', 'resource://trees
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 XPCOMUtils.defineLazyModuleGetter(this, 'AutoHideWindow', 'resource://treestyletab-modules/autoHide.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabThemeManager', 'resource://treestyletab-modules/themeManager.js');
+XPCOMUtils.defineLazyModuleGetter(this, 'FullscreenObserver', 'resource://treestyletab-modules/fullscreenObserver.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'BrowserUIShowHideObserver', 'resource://treestyletab-modules/browserUIShowHideObserver.js');
 
 function TreeStyleTabWindow(aWindow) 
@@ -179,7 +180,12 @@ TreeStyleTabWindow.prototype = {
  
 	get isPopupWindow() 
 	{
-		return this.document && this.document.documentElement.getAttribute('chromehidden') != '';
+		return (
+			this.document &&
+			this.document.documentElement.getAttribute('chromehidden') != '' &&
+			!this.window.gBrowser.treeStyleTab.ownerToolbar.boxObject.width &&
+			!this.window.gBrowser.treeStyleTab.ownerToolbar.boxObject.height
+		);
 	},
   
 /* backward compatibility */ 
@@ -367,7 +373,10 @@ TreeStyleTabWindow.prototype = {
 		d.addEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGED,     this, false);
 		d.addEventListener(this.kEVENT_TYPE_TABBAR_STATE_CHANGED,        this, false);
 		d.addEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB,              this, false);
+		w.addEventListener('beforecustomization', this, true);
+		w.addEventListener('aftercustomization', this, false);
 
+		this.fullscreenObserver = new FullscreenObserver(this.window);
 		this.initUIShowHideObserver();
 
 		var appcontent = d.getElementById('appcontent');
@@ -444,28 +453,10 @@ TreeStyleTabWindow.prototype = {
 		if (!utils.getTreePref('enableSubtreeIndent.allTabsPopup'))
 			return;
 
-		var items = Array.slice(aEvent.originalTarget.childNodes);
-		var firstItemIndex = 0;
-		// ignore menu items inserted by Weave (Firefox Sync), Tab Utilities, and others.
-		for (let i = 0, maxi = items.length; i < maxi; i++)
-		{
-			let item = items[i];
-			if (
-				item.getAttribute('anonid') ||
-				item.id ||
-				item.hidden ||
-				item.localName != 'menuitem'
-				)
-				firstItemIndex = i + 1;
-		}
-		items = items.slice(firstItemIndex);
-
-		var b = this.getTabBrowserFromChild(aEvent.originalTarget) || this.browser;
-		var tabs = this.getTabs(b);
-		for (let i = 0, maxi = tabs.length; i < maxi; i++)
-		{
-			items[i].style.marginLeft = tabs[i].getAttribute(this.kNEST)+'em';
-		}
+		Array.forEach(aEvent.originalTarget.childNodes, function(aItem) {
+			if (aItem.classList.contains('alltabs-item') && 'tab' in aItem)
+				aItem.style.marginLeft = aItem.tab.getAttribute(this.kNEST) + 'em';
+		}, this);
 	},
  
 	initUIShowHideObserver : function TSTWindow_initUIShowHideObserver() 
@@ -512,6 +503,11 @@ TreeStyleTabWindow.prototype = {
 				d.removeEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGED,     this, false);
 				d.removeEventListener(this.kEVENT_TYPE_TABBAR_STATE_CHANGED,        this, false);
 				d.removeEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB,              this, false);
+				w.removeEventListener('beforecustomization', this, true);
+				w.removeEventListener('aftercustomization', this, false);
+
+				this.fullscreenObserver.destroy();
+				delete this.fullscreenObserver;
 
 				this.rootElementObserver.destroy();
 				delete this.rootElementObserver;
@@ -622,6 +618,16 @@ TreeStyleTabWindow.prototype = {
 
 			case 'click':
 				return this.handleNewTabActionOnButton(aEvent);
+
+
+			case 'beforecustomization':
+				this.window.TreeStyleTabWindowHelper.destroyToolbarItems();
+				return;
+
+			case 'aftercustomization':
+				this.window.TreeStyleTabWindowHelper.initToolbarItems();
+				return;
+
 
 			case 'SubBrowserAdded':
 				return this.initTabBrowser(aEvent.originalTarget.browser);
@@ -1024,37 +1030,44 @@ TreeStyleTabWindow.prototype = {
  
 	updateTabsOnTop : function TSTWindow_updateTabsOnTop() 
 	{
-		var w = this.window;
 		if (
 			this.isPopupWindow ||
 			this.tabsOnTopChangingByUI ||
-			this.tabsOnTopChangingByTST ||
-			!('TabsOnTop' in w) ||
-			!('enabled' in w.TabsOnTop)
+			this.tabsOnTopChangingByTST
 			)
 			return;
+
+		var TabsOnTop = this.window.TabsOnTop;
+		var TabsInTitlebar = this.window.TabsInTitlebar;
+		var isTopTabbar = this.browser.treeStyleTab.position == 'top';
 
 		this.tabsOnTopChangingByTST = true;
 
 		try {
-			var TabsOnTop = w.TabsOnTop;
-			var originalState = utils.getTreePref('tabsOnTop.originalState');
-			if (originalState === null) {
-				let current = prefs.getDefaultPref('browser.tabs.onTop') === null ?
-								TabsOnTop.enabled :
-								prefs.getPref('browser.tabs.onTop') ;
-				utils.setTreePref('tabsOnTop.originalState', originalState = current);
-			}
+			if (TabsOnTop) {
+				let originalState = utils.getTreePref('tabsOnTop.originalState');
+				if (originalState === null) {
+					let current = prefs.getDefaultPref('browser.tabs.onTop') === null ?
+									TabsOnTop.enabled :
+									prefs.getPref('browser.tabs.onTop') ;
+					utils.setTreePref('tabsOnTop.originalState', originalState = current);
+				}
 
-			if (this.browser.treeStyleTab.position != 'top' ||
-				!this.browser.treeStyleTab.fixed) {
-				if (TabsOnTop.enabled)
-					TabsOnTop.enabled = false;
+				if (!isTopTabbar || !this.browser.treeStyleTab.fixed) {
+					if (TabsOnTop.enabled)
+						TabsOnTop.enabled = false;
+				}
+				else {
+					if (TabsOnTop.enabled != originalState)
+						TabsOnTop.enabled = originalState;
+					utils.clearTreePref('tabsOnTop.originalState');
+				}
 			}
-			else {
-				if (TabsOnTop.enabled != originalState)
-					TabsOnTop.enabled = originalState;
-				utils.clearTreePref('tabsOnTop.originalState');
+			if (TabsInTitlebar) {
+				let allowed = isTopTabbar && this.browser.treeStyleTab.fixed;
+				if ('navbarontop' in this.window && utils.getTreePref('compatibility.NavbarOnTitlebar'))
+					allowed = true;
+				TabsInTitlebar.allowedBy('TreeStyleTab-tabsOnTop', allowed);
 			}
 		}
 		finally {

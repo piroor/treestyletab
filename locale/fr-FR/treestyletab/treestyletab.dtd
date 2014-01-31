@@ -15,10 +15,10 @@
 <!ENTITY config.tabbar.invertClosebox.right "Case de fermeture sur le côté droit de chaque onglet">
 <!ENTITY config.tabbar.invertTab            "Inverser l'apparence des onglets">
 <!ENTITY config.tabbar.invertTabContents    "Inverser le contenu des onglets">
-<!ENTITY config.tabbar.narrowScrollbar      "Narrow scrollbar">
+<!ENTITY config.tabbar.narrowScrollbar      "Barre de défilement étroite">
 <!ENTITY config.enableSubtreeIndent         "Indenter les onglets">
-<!ENTITY config.maxTreeLevel.before "until">
-<!ENTITY config.maxTreeLevel.after  "level(s)">
+<!ENTITY config.maxTreeLevel.before "jusqu'à">
+<!ENTITY config.maxTreeLevel.after  "niveau(x)">
 <!ENTITY config.allowSubtreeCollapseExpand  "Autoriser le repliage/dépliage des arborescences d'onglets">
 
 
@@ -49,32 +49,32 @@
 
 <!ENTITY config.tabs.tab "Nouveaux onglets">
 
-<!ENTITY config.autoAttach.newTabCommand.label_before "Open new blank tab as">
-<!ENTITY config.autoAttach.newTabCommand.independent "an independent tab">
-<!ENTITY config.autoAttach.newTabCommand.child       "a child of the current tab">
-<!ENTITY config.autoAttach.newTabCommand.sibling     "a sibling of the current tab">
-<!ENTITY config.autoAttach.newTabCommand.nextSibling "the next sibling of the current tab">
+<!ENTITY config.autoAttach.newTabCommand.label_before "Ouvrir un nouvel onglet comme">
+<!ENTITY config.autoAttach.newTabCommand.independent "un onglet indépendant">
+<!ENTITY config.autoAttach.newTabCommand.child       "un enfant de l'onglet courant">
+<!ENTITY config.autoAttach.newTabCommand.sibling     "un onglet de même niveau que l'onglet courant">
+<!ENTITY config.autoAttach.newTabCommand.nextSibling "un onglet de même niveau après l'onglet courant">
 <!ENTITY config.autoAttach.newTabCommand.label_after "">
 
-<!ENTITY config.autoAttach.newTabButton.label_before "For middle click on the &quot;New Tab&quot; button, open new blank tab as">
-<!ENTITY config.autoAttach.newTabButton.independent "an independent tab">
-<!ENTITY config.autoAttach.newTabButton.child       "a child of the current tab">
-<!ENTITY config.autoAttach.newTabButton.sibling     "a sibling of the current tab">
-<!ENTITY config.autoAttach.newTabButton.nextSibling "the next sibling of the current tab">
+<!ENTITY config.autoAttach.newTabButton.label_before "Pour un click milieu sur le bouton &quot;Nouvel onglet&quot;, ouvrir un nouvel onglet comme">
+<!ENTITY config.autoAttach.newTabButton.independent "un onglet indépendant">
+<!ENTITY config.autoAttach.newTabButton.child       "un enfant de l'onglet courant">
+<!ENTITY config.autoAttach.newTabButton.sibling     "un onglet de même niveau que l'onglet courant">
+<!ENTITY config.autoAttach.newTabButton.nextSibling "un onglet de même niveau après l'onglet courant">
 <!ENTITY config.autoAttach.newTabButton.label_after "">
 
-<!ENTITY config.autoAttach.duplicateTabCommand.label_before "For middle click on the &quot;Reload&quot; button, duplicate the tab as">
-<!ENTITY config.autoAttach.duplicateTabCommand.independent "an independent tab">
-<!ENTITY config.autoAttach.duplicateTabCommand.child       "a child of the source tab">
-<!ENTITY config.autoAttach.duplicateTabCommand.sibling     "a sibling of the source tab">
-<!ENTITY config.autoAttach.duplicateTabCommand.nextSibling "the next sibling of the source tab">
+<!ENTITY config.autoAttach.duplicateTabCommand.label_before "Pour un click milieu sur le bouton &quot;Actualiser...&quot;, dupliquer l'onglet comme">
+<!ENTITY config.autoAttach.duplicateTabCommand.independent "un onglet indépendant">
+<!ENTITY config.autoAttach.duplicateTabCommand.child       "un enfant de l'onglet source">
+<!ENTITY config.autoAttach.duplicateTabCommand.sibling     "un onglet de même niveau que l'onglet source">
+<!ENTITY config.autoAttach.duplicateTabCommand.nextSibling "un onglet de même niveau après l'onglet source">
 <!ENTITY config.autoAttach.duplicateTabCommand.label_after "">
 
-<!ENTITY config.autoAttach.goButton.label_before "For middle click on the &quot;Go&quot; button, open new tab as">
-<!ENTITY config.autoAttach.goButton.independent "an independent tab">
-<!ENTITY config.autoAttach.goButton.child       "a child of the current tab">
-<!ENTITY config.autoAttach.goButton.sibling     "a sibling of the current tab">
-<!ENTITY config.autoAttach.goButton.nextSibling "the next sibling of the current tab">
+<!ENTITY config.autoAttach.goButton.label_before "Pour un click milieu sur le bouton &quot;Se rendre à...&quot;, ouvrir un nouvel onglet comme">
+<!ENTITY config.autoAttach.goButton.independent "un onglet indépendant">
+<!ENTITY config.autoAttach.goButton.child       "un enfant de l'onglet courant">
+<!ENTITY config.autoAttach.goButton.sibling     "un onglet de même niveau que l'onglet courant">
+<!ENTITY config.autoAttach.goButton.nextSibling "un onglet de même niveau après l'onglet courant">
 <!ENTITY config.autoAttach.goButton.label_after "">
 
 <!ENTITY config.openGroupBookmark.caption     "Action pour &quot;Tout ouvrir dans des onglets&quot; pour les dossiers d'onglets">
@@ -85,25 +85,18 @@
 <!ENTITY config.openGroupBookmark.subtree.type.flat    "Ignorer">
 <!ENTITY config.openGroupBookmark.subtree.type.after   "l'arborescence des onglets sauvegardée dans les marque-pages">
 <!ENTITY config.openGroupBookmark.flat        "Ouvrir dans des onglets séparés (défaut Firefox)">
-<!ENTITY config.openGroupBookmark.replace     "Remplacer l'onglet actuel par les pages du dossier">
 <!ENTITY config.openGroupBookmark.underParent "Mettre les onglets sous un onglet fictif afin de les grouper">
 
-<!ENTITY config.dropLinksOnTab.caption "Dropped link, URL, bookmark or file to existing tab">
-<!ENTITY config.dropLinksOnTab.ask     "Always ask me how to load it">
-<!ENTITY config.dropLinksOnTab.load    "Load in the tab (Firefox default)">
-<!ENTITY config.dropLinksOnTab.newTab  "Open as a new child tab">
-<!--
 <!ENTITY config.dropLinksOnTab.caption "Action pour les glisser-déposer de liens, URL, marques-pages ou fichiers sur un onglet existant">
 <!ENTITY config.dropLinksOnTab.ask     "Toujours me demander">
-<!ENTITY config.dropLinksOnTab.load    "Charger le lien dans l'onglet (défaut Firefox)">
-<!ENTITY config.dropLinksOnTab.newTab  "Ouvrir le lien dans un onglet enfant de l'onglet">
--->
+<!ENTITY config.dropLinksOnTab.load    "Charger le lien dans l'onglet cible (défaut Firefox)">
+<!ENTITY config.dropLinksOnTab.newTab  "Ouvrir le lien dans un onglet enfant de l'onglet cible">
 
 
 <!ENTITY config.tabs.autohide "Masquage automatique">
 
-<!ENTITY config.autoHide.mode.normal.caption     "for Normal Window Mode">
-<!ENTITY config.autoHide.mode.fullscreen.caption "for Full Screen Mode">
+<!ENTITY config.autoHide.mode.normal.caption     "Pour l'affichage normal">
+<!ENTITY config.autoHide.mode.fullscreen.caption "Pour l'affichage plein écran">
 <!ENTITY config.autoHide.mode.0 "Toujours afficher le panneau des onglets">
 <!ENTITY config.autoHide.mode.1 "Masquer automatiquement le panneau des onglets">
 <!ENTITY config.autoHide.mode.2 "Rétrecir automatiquement le panneau des onglets">
@@ -152,10 +145,10 @@
 
 <!ENTITY config.tooltip.includeChildren        "Afficher le contenu de l'arborescence dans les info-bulles des onglets">
 
-<!ENTITY config.bookmarkDroppedTabs.caption "Action for drag and drop of a parent tab to the bookmarks tree">
-<!ENTITY config.bookmarkDroppedTabs.ask     "Ask me always">
-<!ENTITY config.bookmarkDroppedTabs.all     "Bookmark all tabs in the tree">
-<!ENTITY config.bookmarkDroppedTabs.parent  "Bookmark only the dragged one tab">
+<!ENTITY config.bookmarkDroppedTabs.caption "Action lors du glisser déposer d'un onglet parent vers les favoris">
+<!ENTITY config.bookmarkDroppedTabs.ask     "Toujours me demander">
+<!ENTITY config.bookmarkDroppedTabs.all     "Ajouter l'onglet et tous ses enfants">
+<!ENTITY config.bookmarkDroppedTabs.parent  "Ajouter uniquement l'onglet glissé">
 
 
 
@@ -173,7 +166,7 @@
 <!ENTITY context.removeTabSubtree.accesskey     "s">
 <!ENTITY context.removeDescendantTabs.label     "Fermer les enfants">
 <!ENTITY context.removeDescendantTabs.accesskey "d">
-<!ENTITY context.removeAllTabsBut.label         "Close Other Tabs except this Tree">
+<!ENTITY context.removeAllTabsBut.label         "Fermer tous les onglets excepté cette arborescence">
 <!ENTITY context.removeAllTabsBut.accesskey     "a">
 <!ENTITY context.collapseAllSubtree.label       "Replier toutes les arborescences">
 <!ENTITY context.collapseAllSubtree.accesskey   "c">

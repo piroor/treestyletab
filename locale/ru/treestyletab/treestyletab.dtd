@@ -85,7 +85,6 @@
 <!ENTITY config.openGroupBookmark.subtree.type.flat    "Игнорировать">
 <!ENTITY config.openGroupBookmark.subtree.type.after   "структуру дерева вкладок, сохраненную в закладках">
 <!ENTITY config.openGroupBookmark.flat        "Открывать как раздельные вкладки (по умолчанию в Firefox)">
-<!ENTITY config.openGroupBookmark.replace     "Открывать с заменой текущей вкладки">
 <!ENTITY config.openGroupBookmark.underParent "Поместить вкладки в «титульную» родительскую вкладку">
 
 <!ENTITY config.dropLinksOnTab.caption "При перетаскивании ссылки, закладки или файла на существующую вкладку">

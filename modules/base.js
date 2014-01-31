@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2013
+ * Portions created by the Initial Developer are Copyright (C) 2010-2014
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -42,7 +42,7 @@ const Cu = Components.utils;
 
 Cu.import('resource://gre/modules/XPCOMUtils.jsm');
 Cu.import('resource://gre/modules/Services.jsm');
-Cu.import("resource://gre/modules/Timer.jsm");
+Cu.import('resource://gre/modules/Timer.jsm');
 Cu.import('resource://treestyletab-modules/constants.js');
 
 XPCOMUtils.defineLazyGetter(this, 'window', function() {
@@ -72,12 +72,15 @@ XPCOMUtils.defineLazyModuleGetter(this, 'Deferred',
 XPCOMUtils.defineLazyModuleGetter(this, 'confirmWithPopup', 'resource://treestyletab-modules/lib/confirmWithPopup.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
-XPCOMUtils.defineLazyModuleGetter(this, 'SessionStore',
-	'resource:///modules/sessionstore/SessionStore.jsm');
+XPCOMUtils.defineLazyServiceGetter(this, 'SessionStore',
+  '@mozilla.org/browser/sessionstore;1', 'nsISessionStore');
 
 if (Services.appinfo.OS === 'WINNT') {
 	XPCOMUtils.defineLazyModuleGetter(this, 'AeroPeek',
-	  'resource://gre/modules/WindowsPreviewPerTab.jsm', 'AeroPeek');
+	  'resource:///modules/WindowsPreviewPerTab.jsm', 'AeroPeek');
+}
+else {
+	this.AeroPeek = null;
 }
  
 var TreeStyleTabBase = { 
@@ -132,7 +135,6 @@ var TreeStyleTabBase = {
 		this.onPrefChange('extensions.treestyletab.indent.vertical');
 		this.onPrefChange('extensions.treestyletab.indent.horizontal');
 		this.onPrefChange('extensions.treestyletab.clickOnIndentSpaces.enabled');
-		this.onPrefChange('browser.tabs.loadFolderAndReplace.override');
 		this.onPrefChange('browser.tabs.insertRelatedAfterCurrent.override');
 		this.onPrefChange('extensions.stm.tabBarMultiRows.override'); // Super Tab Mode
 		this.onPrefChange('extensions.treestyletab.tabbar.scroll.smooth');
@@ -184,7 +186,6 @@ var TreeStyleTabBase = {
 			prefs.removePrefListener(this);
 
 			let restorePrefs = [
-				'browser.tabs.loadFolderAndReplace',
 				'browser.tabs.insertRelatedAfterCurrent',
 				'extensions.stm.tabBarMultiRows' // Super Tab Mode
 			];
@@ -216,7 +217,12 @@ var TreeStyleTabBase = {
 				let tabModule = Cu.import('resource://scriptish/utils/Scriptish_openInTab.js', {});
 				let Scriptish_openInTab = tabModule.Scriptish_openInTab;
 				tabModule.Scriptish_openInTab = function(aURL, aLoadInBackground, aReuse, aChromeWin, ...aExtraArgs) {
-					aChromeWin.TreeStyleTabService.readyToOpenChildTabNow(aChromeWin.gBrowser);
+					try {
+						aChromeWin.TreeStyleTabService.readyToOpenChildTabNow(aChromeWin.gBrowser);
+					}
+					catch(e) {
+						Cu.reportError(e);
+					}
 					var allArgs = [aURL, aLoadInBackground, aReuse, aChromeWin].concat(aExtraArgs);
 					return Scriptish_openInTab.apply(this, allArgs);
 				};
@@ -315,8 +321,6 @@ var TreeStyleTabBase = {
 		{
 			let target = targets.getNext()
 							.QueryInterface(Ci.nsIDOMWindow);
-			if ('nsIDOMWindowInternal' in Ci) // for Firefox 7 or olders
-				target = target.QueryInterface(Ci.nsIDOMWindowInternal);
 			windows.push(target);
 		}
 
@@ -388,11 +392,10 @@ var TreeStyleTabBase = {
 				utils.treeBundle.getString('openGroupBookmarkBehavior.title'),
 				utils.treeBundle.getString('openGroupBookmarkBehavior.text'),
 				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_0) +
-				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_1) +
-				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_2),
+				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_1),
 				utils.treeBundle.getString('openGroupBookmarkBehavior.subTree'),
 				utils.treeBundle.getString('openGroupBookmarkBehavior.separate'),
-				utils.treeBundle.getString('openGroupBookmarkBehavior.replace'),
+				null,
 				utils.treeBundle.getString('openGroupBookmarkBehavior.never'),
 				checked
 			);
@@ -401,14 +404,12 @@ var TreeStyleTabBase = {
 			button = 1;
 		var behaviors = [
 				this.kGROUP_BOOKMARK_SUBTREE | dummyTabFlag,
-				this.kGROUP_BOOKMARK_SEPARATE,
-				this.kGROUP_BOOKMARK_REPLACE
+				this.kGROUP_BOOKMARK_SEPARATE
 			];
 		behavior = behaviors[button];
 
 		if (checked.value) {
 			utils.setTreePref('openGroupBookmark.behavior', behavior);
-			prefs.setPref('browser.tabs.loadFolderAndReplace', !!(behavior & this.kGROUP_BOOKMARK_REPLACE));
 		}
 		return behavior;
 	},
@@ -416,7 +417,6 @@ var TreeStyleTabBase = {
 	kGROUP_BOOKMARK_FIXED     : 1 + 2 + 4,
 	kGROUP_BOOKMARK_SUBTREE   : 1,
 	kGROUP_BOOKMARK_SEPARATE  : 2,
-	kGROUP_BOOKMARK_REPLACE   : 4,
 	kGROUP_BOOKMARK_USE_DUMMY                   : 256,
 	kGROUP_BOOKMARK_USE_DUMMY_FORCE             : 1024,
 	kGROUP_BOOKMARK_DONT_RESTORE_TREE_STRUCTURE : 512,
@@ -2213,9 +2213,10 @@ var TreeStyleTabBase = {
 			screenY   : tabBox.screenY + yOffset
 		};
 	},
-	getTabActualScreenPosition : function TSTBase_getTabActualScreenPosition(aTab)
+	getTabActualScreenPosition : function TSTBase_getTabActualScreenPosition(aTab, aOrient)
 	{
-		return aTab.parentNode.orient == 'vertical' ?
+		aOrient = aOrient || aTab.parentNode.orient;
+		return aOrient == 'vertical' ?
 				this.getTabActualScreenY(aTab) :
 				this.getTabActualScreenX(aTab) ;
 	},
@@ -2420,7 +2421,6 @@ var TreeStyleTabBase = {
 	domains : [ 
 		'extensions.treestyletab.',
 		'browser.tabs.animate',
-		'browser.tabs.loadFolderAndReplace',
 		'browser.tabs.insertRelatedAfterCurrent',
 		'extensions.stm.tabBarMultiRows' // Super Tab Mode
 	],
@@ -2454,14 +2454,12 @@ var TreeStyleTabBase = {
 				return this.updateTabWidthPrefs(aPrefName);
 
 			case 'browser.tabs.insertRelatedAfterCurrent':
-			case 'browser.tabs.loadFolderAndReplace':
 			case 'extensions.stm.tabBarMultiRows': // Super Tab Mode
 				if (this.prefOverriding)
 					return;
 				aPrefName += '.override';
 				prefs.setPref(aPrefName, value);
 			case 'browser.tabs.insertRelatedAfterCurrent.override':
-			case 'browser.tabs.loadFolderAndReplace.override':
 			case 'extensions.stm.tabBarMultiRows.override': // Super Tab Mode
 				if (prefs.getPref(aPrefName+'.force')) {
 					let defaultValue = prefs.getDefaultPref(aPrefName);

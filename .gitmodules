@@ -1,3 +1,3 @@
 [submodule "buildscript"]
 	path = buildscript
-	url = git://github.com/piroor/makexpi.git
+	url = https://github.com/piroor/makexpi.git

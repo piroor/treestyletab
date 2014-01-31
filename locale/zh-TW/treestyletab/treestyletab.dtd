@@ -85,7 +85,6 @@
 <!ENTITY config.openGroupBookmark.subtree.type.flat    "忽略">
 <!ENTITY config.openGroupBookmark.subtree.type.after   "樹狀結構">
 <!ENTITY config.openGroupBookmark.flat        "以各自的分頁開啟（Firefox 預設）">
-<!ENTITY config.openGroupBookmark.replace     "將目前瀏覽的分頁取代為書籤的內容">
 <!ENTITY config.openGroupBookmark.underParent "開啟於一個分組用的父分頁下">
 
 <!ENTITY config.dropLinksOnTab.caption "拖曳鏈結、URL 或書籤到現存分頁時">

@@ -58,6 +58,29 @@
 	display: none !important;
 }
 
+/* Disable pseudo elements introduced by Australis */
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tab-background-start::before,
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tab-background-start::after,
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tab-background-end::before,
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tab-background-end::after {
+	content: none;
+}
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  :-moz-any(.tab-background-start,
+            .tab-background-end) {
+	min-height: 0;
+	width: 0;
+}
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:hover .tab-background:not([selected="true"]) {
+	background-image: none;
+}
+
+
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab,
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
@@ -82,12 +105,33 @@
 	box-align: stretch !important;
 	-moz-box-align: stretch !important;
 }
+/* override "-moz-menutext" color defined by the default theme, because it is too bright on Ubuntu */
+#TabsToolbar:not(:-moz-lwtheme):not([treestyletab-tabbar-position="top"])
+  #tabbrowser-tabs
+  .tabbrowser-tab:not([selected]) {
+	color: -moz-dialogtext;
+}
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:not([pinned]),
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:not([pinned]):not([selected="true"]) {
 	background: -moz-dialog repeat-x !important;
 }
+
+/* highlighted pinned tabs */
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned][titlechanged]:not([selected="true"]) {
+	background-image: radial-gradient(circle farthest-corner at 50% 3px,
+	                                  ThreeDHighlight 3%,
+	                                  Highlight 80%);
+}
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned][titlechanged]:not([selected="true"]):hover {
+	background-image: radial-gradient(circle farthest-corner at 50% 3px,
+	                                  ThreeDHighlight 3%,
+	                                  Highlight 100%);
+}
+
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   :-moz-any(.tabbrowser-tab[pinned]:not([titlechanged]),
             .tabbrowser-tab[pinned]:not([titlechanged]):not([selected="true"]),
@@ -107,8 +151,8 @@
 
 /* for Mac OS X */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  :-moz-any(.tab-content:not([selected="true"]),
-            .tab-content[selected="true"]) {
+  :-moz-any(.tab-content:not([pinned="true"]):not([selected="true"]),
+            .tab-content:not([pinned="true"])[selected="true"]) {
 	border: 0 none !important;
 	background: transparent !important;
 }
@@ -137,7 +181,9 @@
 	visibility: collapse !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tab-background {
+  .tab-background,
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tab-background-middle {
 	margin: 0 !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]

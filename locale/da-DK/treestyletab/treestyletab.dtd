@@ -98,7 +98,6 @@
 <!ENTITY config.openGroupBookmark.subtree.type.flat "Ignorer">
 <!ENTITY config.openGroupBookmark.subtree.type.after "Faners træstruktur gemt i bogmærker">
 <!ENTITY config.openGroupBookmark.flat "Åben som faner (Firefox standard)">
-<!ENTITY config.openGroupBookmark.replace "Erstat aktuel fane med siderne i mappen">
 <!ENTITY config.openGroupBookmark.underParent "Arranger faner under ny gruppefane">
 
 <!ENTITY config.dropLinksOnTab.caption "Droppet link, URL, bogmærke eller fil til eksisterende fane">

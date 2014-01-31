@@ -36,3 +36,20 @@
 	padding: 0;
 }
 
+
+/* indicator for private window on Australis */
+#main-window[privatebrowsingmode=temporary]:not([treestyletab-tabbar-position="top"])
+  #TabsToolbar::before,
+#main-window[privatebrowsingmode="temporary"][treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"])
+  #TabsToolbar::before {
+	content: none;
+}
+#main-window[privatebrowsingmode=temporary]:not([treestyletab-tabbar-position="top"])
+  #nav-bar::after,
+#main-window[privatebrowsingmode="temporary"][treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"])
+  #nav-bar::after {
+	display: -moz-box;
+	content: "";
+	background: url("chrome://browser/skin/privatebrowsing-mask.png") center no-repeat;
+	width: 30px;
+}

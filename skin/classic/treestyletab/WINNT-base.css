@@ -1,0 +1,19 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+
+/* indicator for private window on Australis */
+#main-window[privatebrowsingmode="temporary"]:not([treestyletab-tabbar-position="top"])
+  #TabsToolbar::after,
+#main-window[privatebrowsingmode="temporary"][treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"])
+  #TabsToolbar::after {
+	content: none;
+}
+#main-window[privatebrowsingmode=temporary]:not([treestyletab-tabbar-position="top"])
+  #nav-bar::after,
+#main-window[privatebrowsingmode="temporary"][treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"])
+  #nav-bar::after {
+	display: -moz-box;
+	content: "";
+	background: url("chrome://browser/skin/privatebrowsing-indicator.png") center no-repeat;
+	width: 30px;
+}

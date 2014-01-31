@@ -5,7 +5,7 @@
   <RDF:Description RDF:about="urn:mozilla:install-manifest"
                    em:id="treestyletab@piro.sakura.ne.jp"
                    em:name="Tree Style Tab"
-                   em:version="0.14.2013100901"
+                   em:version="0.14.2014013001"
                    em:creator="YUKI &quot;Piro&quot; Hiroshi"
                    em:description="Show tabs like a tree."
                    em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
@@ -28,6 +28,7 @@
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
           <em:contributor>wanabe (some bug fixes)</em:contributor>
+          <em:contributor>Tetsuharu OHZEKI (code cleanup)</em:contributor>
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -40,6 +41,7 @@
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
           <em:contributor>wanabe (some bug fixes)</em:contributor>
+          <em:contributor>Tetsuharu OHZEKI (code cleanup)</em:contributor>
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -52,6 +54,7 @@
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
           <em:contributor>wanabe (some bug fixes)</em:contributor>
+          <em:contributor>Tetsuharu OHZEKI (code cleanup)</em:contributor>
           <em:translator>Godai71.Extenzilla (it-IT locale)</em:translator>
       </RDF:Description>
     </em:localized>
@@ -65,6 +68,7 @@
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
           <em:contributor>wanabe (some bug fixes)</em:contributor>
+          <em:contributor>Tetsuharu OHZEKI (code cleanup)</em:contributor>
           <em:translator>Fatiaomao (zh-CN locale)</em:translator>
           <em:translator>hzhbest (zh-CN locale)</em:translator>
       </RDF:Description>
@@ -79,6 +83,7 @@
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
           <em:contributor>wanabe (some bug fixes)</em:contributor>
+          <em:contributor>Tetsuharu OHZEKI (code cleanup)</em:contributor>
           <em:translator>tito (es-ES locale)</em:translator>
       </RDF:Description>
     </em:localized>
@@ -92,6 +97,7 @@
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
           <em:contributor>wanabe (some bug fixes)</em:contributor>
+          <em:contributor>Tetsuharu OHZEKI (code cleanup)</em:contributor>
           <em:translator>Andy Pillip (de-DE locale)</em:translator>
       </RDF:Description>
     </em:localized>
@@ -105,6 +111,7 @@
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
           <em:contributor>wanabe (some bug fixes)</em:contributor>
+          <em:contributor>Tetsuharu OHZEKI (code cleanup)</em:contributor>
           <em:translator>HkYtrewq (zh-TW locale)</em:translator>
           <em:translator>Tsprajna (zh-TW locale)</em:translator>
           <em:translator>bootleq (zh-TW locale)</em:translator>
@@ -120,6 +127,7 @@
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
           <em:contributor>wanabe (some bug fixes)</em:contributor>
+          <em:contributor>Tetsuharu OHZEKI (code cleanup)</em:contributor>
           <em:translator>L'Autour (ru locale)</em:translator>
           <em:translator>Infocatcher (ru locale)</em:translator>
       </RDF:Description>
@@ -134,6 +142,7 @@
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
           <em:contributor>wanabe (some bug fixes)</em:contributor>
+          <em:contributor>Tetsuharu OHZEKI (code cleanup)</em:contributor>
           <em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
       </RDF:Description>
     </em:localized>
@@ -147,7 +156,9 @@
           <em:contributor>Alice0775 (compatibility problem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (Sidebar style)</em:contributor>
           <em:contributor>wanabe (some bug fixes)</em:contributor>
+          <em:contributor>Tetsuharu OHZEKI (code cleanup)</em:contributor>
           <em:translator>Laurent Haas (fr-FR locale)</em:translator>
+          <em:translator>AxlMun (fr-FR locale)</em:translator>
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -160,6 +171,7 @@
           <em:contributor>Alice0775 (kompatibilitetsproblem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (sidopanelens utseende)</em:contributor>
           <em:contributor>wanabe (some bug fixes)</em:contributor>
+          <em:contributor>Tetsuharu OHZEKI (code cleanup)</em:contributor>
           <em:translator>Mikael Hiort af Ornäs (sv-SE)</em:translator>
       </RDF:Description>
     </em:localized>
@@ -173,6 +185,7 @@
           <em:contributor>Alice0775 (kompatibilitetsproblem)</em:contributor>
           <em:contributor>Philipp von Weitershausen (sidebjælkens stil)</em:contributor>
           <em:contributor>wanabe (some bug fixes)</em:contributor>
+          <em:contributor>Tetsuharu OHZEKI (code cleanup)</em:contributor>
           <em:translator>Regmos (da-DK)</em:translator>
       </RDF:Description>
     </em:localized>
@@ -180,8 +193,8 @@
 
     <em:targetApplication>
       <RDF:Description em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
-                       em:minVersion="28.0a1"
-                       em:maxVersion="28.0a1" />
+                       em:minVersion="29.0a1"
+                       em:maxVersion="29.0a1" />
     </em:targetApplication>
   </RDF:Description>
 </RDF:RDF>

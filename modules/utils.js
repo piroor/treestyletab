@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2013
+ * Portions created by the Initial Developer are Copyright (C) 2010-2014
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -60,13 +60,11 @@ XPCOMUtils.defineLazyGetter(this, 'stringBundle', function() {
 
 XPCOMUtils.defineLazyModuleGetter(this, 'Task',
 	'resource://gre/modules/Task.jsm');
-XPCOMUtils.defineLazyModuleGetter(this, 'SessionStore',
-	'resource:///modules/sessionstore/SessionStore.jsm');
 XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabConstants',
   'resource://treestyletab-modules/constants.js', 'TreeStyleTabConstants');
 
 const TST_PREF_PREFIX = 'extensions.treestyletab.';
-const TST_PREF_VERSION = 9;
+const TST_PREF_VERSION = 10;
 
 
 let TreeStyleTabUtils = {
@@ -135,8 +133,6 @@ let TreeStyleTabUtils = {
 						behavior += (
 							this.getTreePref('openGroupBookmarkAsTabSubTree') ?
 								TreeStyleTabConstants.kGROUP_BOOKMARK_SUBTREE :
-							this.getTreePref('browser.tabs.loadFolderAndReplace') ?
-								TreeStyleTabConstants.kGROUP_BOOKMARK_REPLACE :
 								TreeStyleTabConstants.kGROUP_BOOKMARK_SEPARATE
 						);
 					}
@@ -144,7 +140,6 @@ let TreeStyleTabUtils = {
 					this.clearTreePref('openGroupBookmarkBehavior.confirm');
 					this.clearTreePref('openGroupBookmarkAsTabSubTree');
 					this.clearTreePref('openGroupBookmarkAsTabSubTree.underParent');
-					prefs.setPref('browser.tabs.loadFolderAndReplace', !!(behavior & TreeStyleTabConstants.kGROUP_BOOKMARK_REPLACE));
 				}
 			case 4:
 				let (subTreePrefs = [
@@ -204,6 +199,14 @@ let TreeStyleTabUtils = {
 					'extensions.treestyletab.indent',
 					'extensions.treestyletab.indent.min'
 				]);
+			case 9:
+				let (behavior = this.getTreePref('openGroupBookmark.behavior')) {
+					if (behavior & 4) {
+						behavior ^= 4;
+						behavior |= 1;
+						this.setTreePref('openGroupBookmark.behavior', behavior);
+					}
+				}
 			default:
 				for (let i = 0, maxi = orientalPrefs.length; i < maxi; i++)
 				{
@@ -265,7 +268,19 @@ let TreeStyleTabUtils = {
 		return browser.__SS_restoreState == 1;
 	},
 	get TabRestoreStates() {
-		return SessionStore.TabRestoreStates;
+		return this.SessionStoreNS.TabRestoreStates;
+	},
+	get SessionStoreNS() {
+		if (!this._SessionStoreNS) {
+			try {
+				// resource://app/modules/sessionstore/SessionStore.jsm ?
+				this._SessionStoreNS = Components.utils.import('resource:///modules/sessionstore/SessionStore.jsm', {});
+			}
+			catch(e) {
+				this._SessionStoreNS = {};
+			}
+		}
+		return this._SessionStoreNS;
 	},
 
 	getShortcutOrURI : function utils_getShortcutOrURI(aBrowserWindow, aURI)

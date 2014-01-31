@@ -50,6 +50,28 @@
 	display: none !important;
 }
 
+/* Disable pseudo elements introduced by Australis */
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tab-background-start::before,
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tab-background-start::after,
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tab-background-end::before,
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tab-background-end::after {
+	content: none;
+}
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  :-moz-any(.tab-background-start,
+            .tab-background-end) {
+	min-height: 0;
+	width: 0;
+}
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:hover .tab-background:not([selected="true"]) {
+	background-image: none;
+}
+
 /* Use the splitter to display the border of .tabbrowser-strip */
 tabbrowser[treestyletab-mode="vertical"]
   .treestyletab-splitter,
@@ -117,7 +139,8 @@ tabbrowser[treestyletab-mode="vertical"]
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   :-moz-any(.tab-throbber[pinned],
-            .tab-icon-image[pinned]) {
+            .tab-icon-image[pinned],
+            .tab-background[pinned]) {
 	margin: 0 !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
@@ -190,6 +213,7 @@ tabbrowser[treestyletab-mode="vertical"]
 	font-size: 11px;
 	font-weight: normal !important;
 	color: #000000 !important;
+	text-align: start;
 	text-shadow: none !important;
 	margin-bottom: 1px;
 }
@@ -415,6 +439,10 @@ tabbrowser[treestyletab-mode="vertical"]
 	background: transparent !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tab-background-middle {
+	margin: 0 !important;
+}
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   :-moz-any(.tab-background-start[pinned][titlechanged],
             .tab-background-end[pinned][titlechanged]) {
 	visibility: collapse !important;
@@ -430,6 +458,20 @@ tabbrowser[treestyletab-mode="vertical"]
   .tabbrowser-tab:not([treestyletab-drop-position])
   .tab-content {
 	border: 0 none !important;
+}
+
+/* highlighted pinned tabs */
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned][titlechanged]:not([selected="true"]) {
+	background-image: radial-gradient(circle farthest-corner at 50% 3px,
+	                                  Highlight 3%,
+	                                  rgba(255, 255, 255, 0) 80%);
+}
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned][titlechanged]:not([selected="true"]):hover {
+	background-image: radial-gradient(circle farthest-corner at 50% 3px,
+	                                  Highlight 3%,
+	                                  rgba(255, 255, 255, 0) 100%);
 }
 
 

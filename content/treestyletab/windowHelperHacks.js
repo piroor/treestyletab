@@ -315,6 +315,45 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 			'    gBrowser.treeStyleTab.isVertical) {'
 		));
 	}
+
+	// Greasemonkey
+	// https://addons.mozilla.org/firefox/addon/748
+	if (TreeStyleTabUtils.getTreePref('compatibility.Greasemonkey')) {
+		try {
+			let hitchModule = Components.utils.import('resource://greasemonkey/util/hitch.js', {});
+			let hitch = hitchModule.hitch;
+			if (hitch.toSource().indexOf('TreeStyleTabService') < 0) {
+				let ns = {};
+				Components.utils.import('resource://greasemonkey/third-party/getChromeWinForContentWin.js', ns);
+				let getChromeWinForContentWin = ns.getChromeWinForContentWin;
+				hitchModule.hitch = function(aObject, aMethod) {
+					if (typeof aMethod == 'function' &&
+						aMethod.toSource().indexOf('function openInTab') > -1) {
+						let originalOpenInTab = aMethod;
+						/**
+						 * This function must be replaced on scripts in "chrome:" URL, like this.
+						 * Otherwise the original openInTab() will raise violation error.
+						 * Don't move this hack into JS code modules with "resource:" URL.
+						 */
+						aMethod = function openInTab(aSafeContentWindow, aURL, aLoadInBackgtound) {
+							let chrome = getChromeWinForContentWin(aSafeContentWindow);
+							if (chrome && chrome.TreeStyleTabService)
+								chrome.TreeStyleTabService.readyToOpenChildTabNow(aSafeContentWindow);
+							return originalOpenInTab.apply(this, arguments);
+						};
+					}
+					return hitch.apply(this, arguments);
+				};
+				Components.utils.import('resource://greasemonkey/util.js', ns);
+				if (ns.GM_util)
+					ns.GM_util.hitch = hitchModule.hitch;
+			}
+		}
+		catch(e) {
+			dump('Tree Style Tab: failed to patch to Greasemonkey.\n');
+			dump(e+'\n');
+		}
+	}
 };
 
 TreeStyleTabWindowHelper.overrideExtensionsBeforeBrowserInit = function TSTWH_overrideExtensionsBeforeBrowserInit() {
@@ -673,61 +712,6 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 				'TreeStyleTabService.readyToOpenChildTab(gBrowser); $&'
 			)
 		);
-	}
-
-	// Greasemonkey
-	// https://addons.mozilla.org/firefox/addon/748
-	if (TreeStyleTabUtils.getTreePref('compatibility.Greasemonkey')) {
-		try {
-			let hitchModule = Components.utils.import('resource://greasemonkey/util/hitch.js', {});
-			let hitch = hitchModule.hitch;
-			if (hitch.toSource().indexOf('TreeStyleTabService') < 0) {
-				hitchModule.hitch = function(aObject, aMethod) {
-					if (typeof aMethod == 'function' &&
-						aMethod.toSource().indexOf('function openInTab') > -1) {
-						let originalOpenInTab = aMethod;
-						/**
-						 * This function must be replaced on scripts in "chrome:" URL, like this.
-						 * Otherwise the original openInTab() will raise violation error.
-						 * Don't move this hack into JS code modules with "resource:" URL.
-						 */
-						aMethod = function openInTab(aSafeContentWindow, aChromeWindow, aURL, aLoadInBackgtound) {
-							if (aChromeWindow.TreeStyleTabService)
-								aChromeWindow.TreeStyleTabService.readyToOpenChildTabNow(aSafeContentWindow);
-							return originalOpenInTab.apply(this, arguments);
-						};
-					}
-					return hitch.apply(this, arguments);
-				};
-			}
-		}
-		catch(e) {
-			dump(e+'\n');
-
-			// hacks for old versions
-			if ('GM_BrowserUI' in window && 'openInTab' in GM_BrowserUI) {
-				eval('GM_BrowserUI.openInTab = '+
-					GM_BrowserUI.openInTab.toSource().replace(
-						/(if\s*\(this\.isMyWindow\([^\)]+\)\)\s*\{\s*)(this\.tabBrowser)/,
-						'$1 TreeStyleTabService.readyToOpenChildTab($2); $2'
-					)
-				);
-			}
-			else if ('@greasemonkey.mozdev.org/greasemonkey-service;1' in Components.classes) {
-				let service = Components.classes['@greasemonkey.mozdev.org/greasemonkey-service;1'].getService().wrappedJSObject;
-				if (service && service.__proto__._openInTab) {
-					let _openInTab = service.__proto__._openInTab;
-					if (_openInTab.toSource().indexOf('TreeStyleTabService') < 0) {
-						service.__proto__._openInTab = function() {
-							let contentWindow = arguments[0];
-							let chromeWindow = arguments[1];
-							chromeWindow.TreeStyleTabService.readyToOpenChildTabNow(contentWindow);
-							return _openInTab.apply(this, arguments);
-						};
-					}
-				}
-			}
-		}
 	}
 
 	// SBM Counter
@@ -1107,15 +1091,15 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 				{
 					case 'unload':
 						document.removeEventListener('unload', listener, false);
-						document.removeEventListener(sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION, listener, false);
-						document.removeEventListener(sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION, listener, false);
-					case sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION:
+						document.removeEventListener('beforecustomization', listener, true);
+						document.removeEventListener('aftercustomization', listener, false);
+					case 'beforecustomization':
 						if (gURLBar && listening)
 							gURLBar.removeEventListener('click', listener, true);
 						listening = false;
 						return;
 
-					case sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION:
+					case 'aftercustomization':
 						if (gURLBar && !listening) {
 							gURLBar.addEventListener('click', listener, true);
 							listening = true;
@@ -1135,8 +1119,8 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 				}
 			};
 		document.addEventListener('unload', listener, false);
-		document.addEventListener(sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION, listener, false);
-		document.addEventListener(sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION, listener, false);
+		document.addEventListener('beforecustomization', listener, true);
+		document.addEventListener('aftercustomization', listener, false);
 		if (gURLBar && !listening) {
 			gURLBar.addEventListener('click', listener, true);
 			listening = true;
@@ -1163,6 +1147,19 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		TreeStyleTabUtils.getTreePref('compatibility.DuplicateThisTab')) {
 		eval('duplicatethistab.openLinkWithHistory = '+
 			duplicatethistab.openLinkWithHistory.toSource().replace(
+				'var newTab = ',
+				'TreeStyleTabService.readyToOpenChildTab(); $&'
+			)
+		);
+	}
+
+	// Context Search
+	// http://www.cusser.net/extensions/contextsearch/
+	if ('contextsearch' in window &&
+		'search' in window.contextsearch &&
+		TreeStyleTabUtils.getTreePref('compatibility.ContextSearch')) {
+		eval('contextsearch.search = '+
+			contextsearch.search.toSource().replace(
 				'var newTab = ',
 				'TreeStyleTabService.readyToOpenChildTab(); $&'
 			)
@@ -1317,14 +1314,14 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 								gBrowser.treeStyleTab.updateFloatingTabbar(sv.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
 								break;
 
-							case sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION:
+							case 'beforecustomization':
 								for (let i = 0, maxi = tabbarToolboxes.length; i < maxi; i++)
 								{
 									tabbarToolboxes[i].removeAttribute('collapsed');
 								}
 								break;
 
-							case sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION:
+							case 'aftercustomization':
 								for (let i = 0, maxi = tabbarToolboxes.length; i < maxi; i++)
 								{
 									let toolbox = tabbarToolboxes[i];
@@ -1335,8 +1332,8 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 
 							case 'unload':
 								menu.removeEventListener('command', this, true);
-								document.removeEventListener(sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION, listener, false);
-								document.removeEventListener(sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION, listener, false);
+								document.removeEventListener('beforecustomization', listener, true);
+								document.removeEventListener('aftercustomization', listener, false);
 								document.removeEventListener('unload', this, false);
 								menu = null;
 								break;
@@ -1344,8 +1341,8 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 					}
 				};
 			menu.addEventListener('command', listener, false);
-			document.addEventListener(sv.kEVENT_TYPE_BEFORE_TOOLBAR_CUSTOMIZATION, listener, false);
-			document.addEventListener(sv.kEVENT_TYPE_AFTER_TOOLBAR_CUSTOMIZATION, listener, false);
+			document.addEventListener('beforecustomization', listener, true);
+			document.addEventListener('aftercustomization', listener, false);
 			document.addEventListener('unload', listener, false);
 			for (let i = 0, maxi = tabbarToolboxes.length; i < maxi; i++)
 			{
@@ -1354,6 +1351,32 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 					toolbox.setAttribute('collapsed', true);
 			}
 		}
+	}
+
+	// Tab Control
+	// https://addons.mozilla.org/firefox/addon/tab-control/
+	if (
+		TreeStyleTabUtils.getTreePref('compatibility.TabControl') &&
+		'gTabControl' in window
+		) {
+		let listener = {
+				handleEvent : function(aEvent)
+				{
+					switch (aEvent.type)
+					{
+						case sv.kEVENT_TYPE_FOCUS_NEXT_TAB:
+							if (TreeStyleTabUtils.prefs.getPref('tabcontrol.focusLeftOnClose'))
+								aEvent.preventDefault();
+							break;
+
+						case 'unload':
+							document.removeEventListener(sv.kEVENT_TYPE_FOCUS_NEXT_TAB, this, false);
+							break;
+					}
+				}
+			};
+		document.addEventListener(sv.kEVENT_TYPE_FOCUS_NEXT_TAB, listener, false);
+		document.addEventListener('unload', listener, false);
 	}
 
 	// Firefox Sync (Weave)

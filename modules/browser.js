@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011-2013
+ * Portions created by the Initial Developer are Copyright (C) 2011-2014
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -370,6 +370,7 @@ TreeStyleTabBrowser.prototype = {
 						utils.getTreePref('compatibility.TMP') &&
 						d.getAnonymousElementByAttribute(aTab, 'class', 'tab-close-button always-right')
 					) ||
+					d.getAnonymousElementByAttribute(aTab, 'anonid', 'close-button') || // with Australis
 					d.getAnonymousElementByAttribute(aTab, 'class', 'tab-close-button');
 		return close;
 	},
@@ -739,7 +740,6 @@ TreeStyleTabBrowser.prototype = {
 		Services.obs.addObserver(this, this.kTOPIC_INDENT_MODIFIED, false);
 		Services.obs.addObserver(this, this.kTOPIC_COLLAPSE_EXPAND_ALL, false);
 		Services.obs.addObserver(this, this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY, false);
-		Services.obs.addObserver(this, 'private-browsing-change-granted', false); // only for Firefox 19 and olders
 		Services.obs.addObserver(this, 'lightweight-theme-styling-update', false);
 		prefs.addPrefListener(this);
 
@@ -764,8 +764,8 @@ TreeStyleTabBrowser.prototype = {
 
 		var self = this;
 		(this.deferredTasks['init'] = this.Deferred.next(function() {
-			// On Firefox 12 and later, this command is always enabled
-			// and the TabsOnTop can be enabled by <tabbrowser>.updateVisibility().
+			// This command is always enabled and the TabsOnTop can be enabled
+			// by <tabbrowser>.updateVisibility().
 			// So we have to reset TabsOnTop state on the startup.
 			var toggleTabsOnTop = d.getElementById('cmd_ToggleTabsOnTop');
 			var TabsOnTop = 'TabsOnTop' in w ? w.TabsOnTop : null ;
@@ -1576,6 +1576,28 @@ TreeStyleTabBrowser.prototype = {
 			splitter.setAttribute('layer', true); // https://bugzilla.mozilla.org/show_bug.cgi?id=590468
 			let grippy = d.createElement('grippy')
 			grippy.setAttribute(this.kTAB_STRIP_ELEMENT, true);
+			// Workaround for https://github.com/piroor/treestyletab/issues/593
+			// When you click the grippy...
+			//  1. The grippy changes "state" of the splitter from "collapsed"
+			//     to "open".
+			//  2. The splitter changes visibility of the place holder.
+			//  3. BrowserUIShowHideObserver detects the change of place
+			//     holder's visibility and triggers updateFloatingTabbar().
+			//  4. updateFloatingTabbar() copies the visibility of the
+			//     actual tab bar to the place holder. However, the tab bar
+			//     is still collapsed.
+			//  5. As the result, the place holder becomes collapsed and
+			//     the splitter disappear.
+			// So, we have to turn the actual tab bar visible manually
+			// when the grippy is clicked.
+			let tabContainer = this.mTabBrowser.tabContainer;
+			grippy.addEventListener('click', function() {
+				tabContainer.ownerDocument.defaultView.setTimeout(function() {
+					var visible = grippy.getAttribute('state') != 'collapsed';
+					if (visible != tabContainer.visible)
+						tabContainer.visible = visible;
+				}, 0);
+			}, false);
 			splitter.appendChild(grippy);
 		}
 
@@ -1816,12 +1838,18 @@ TreeStyleTabBrowser.prototype = {
 				(aReason & this.kTABBAR_UPDATE_BY_FULLSCREEN ? 'fullscreen ' : '' ) +
 				(aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE ? 'autohide ' : '' ) +
 				(aReason & this.kTABBAR_UPDATE_BY_INITIALIZE ? 'initialize ' : '' ) +
-				(aReason & this.kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR ? 'toggle-sidebar ' : '' ) +
-				(aReason & this.kTABBAR_UPDATE_BY_PRIVATE_BROWSING ? 'private-browsing ' : '' );
+				(aReason & this.kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR ? 'toggle-sidebar ' : '' );
 			dump('TSTBrowser_updateFloatingTabbarInternal: ' + humanReadableReason + '\n');
 		}
 
 		var d = this.document;
+
+		// When the tab bar is invisible even if the tab bar is resizing, then
+		// now I'm trying to expand the tab bar from collapsed state.
+		// Then the tab bar must be shown.
+		if (aReason & this.kTABBAR_UPDATE_BY_TABBAR_RESIZE &&
+			!this.browser.tabContainer.visible)
+			this.browser.tabContainer.visible = true;
 
 		var splitter = this.splitter;
 		if (splitter.collapsed || splitter.getAttribute('state') != 'collapsed') {
@@ -2127,7 +2155,6 @@ TreeStyleTabBrowser.prototype = {
 		Services.obs.removeObserver(this, this.kTOPIC_INDENT_MODIFIED);
 		Services.obs.removeObserver(this, this.kTOPIC_COLLAPSE_EXPAND_ALL);
 		Services.obs.removeObserver(this, this.kTOPIC_CHANGE_TREEVIEW_AVAILABILITY);
-		Services.obs.removeObserver(this, 'private-browsing-change-granted'); // only for Firefox 19 and olders
 		Services.obs.removeObserver(this, 'lightweight-theme-styling-update');
 		prefs.removePrefListener(this);
 
@@ -2372,11 +2399,6 @@ TreeStyleTabBrowser.prototype = {
 						aData.indexOf('now') > -1
 					);
 				}
-				return;
-
-			case 'private-browsing-change-granted': // only for Firefox 19 and olders
-				this.collapseExpandAllSubtree(false, true);
-				this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_PRIVATE_BROWSING);
 				return;
 
 			case 'lightweight-theme-styling-update':
@@ -2856,7 +2878,7 @@ TreeStyleTabBrowser.prototype = {
 			let parent = this.getTabById(this.parentTab);
 			if (parent) {
 				let tabs = [parent].concat(this.getDescendantTabs(parent));
-				parent = pareintIndexInTree < tabs.length ? tabs[pareintIndexInTree] : parent ;
+				parent = pareintIndexInTree > -1 && pareintIndexInTree < tabs.length ? tabs[pareintIndexInTree] : parent ;
 			}
 			if (parent) {
 				this.attachTabTo(tab, parent, {
