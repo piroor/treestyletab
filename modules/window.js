@@ -180,7 +180,12 @@ TreeStyleTabWindow.prototype = {
  
 	get isPopupWindow() 
 	{
-		return this.document && this.document.documentElement.getAttribute('chromehidden') != '';
+		return (
+			this.document &&
+			this.document.documentElement.getAttribute('chromehidden') != '' &&
+			!this.window.gBrowser.treeStyleTab.ownerToolbar.boxObject.width &&
+			!this.window.gBrowser.treeStyleTab.ownerToolbar.boxObject.height
+		);
 	},
   
 /* backward compatibility */ 
