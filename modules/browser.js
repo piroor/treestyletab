@@ -2825,7 +2825,7 @@ TreeStyleTabBrowser.prototype = {
  
 	updateLastScrollPosition : function TSTBrowser_updateLastScrollPosition() 
 	{
-		if (!this.isVertical)
+		if (!this.isVertical || !this.isVisible)
 			return;
 		var x = {}, y = {};
 		var scrollBoxObject = this.scrollBoxObject;
