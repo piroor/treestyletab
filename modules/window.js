@@ -183,8 +183,7 @@ TreeStyleTabWindow.prototype = {
 		return (
 			this.document &&
 			this.document.documentElement.getAttribute('chromehidden') != '' &&
-			!this.window.gBrowser.treeStyleTab.ownerToolbar.boxObject.width &&
-			!this.window.gBrowser.treeStyleTab.ownerToolbar.boxObject.height
+			!this.window.gBrowser.treeStyleTab.isVisible
 		);
 	},
   

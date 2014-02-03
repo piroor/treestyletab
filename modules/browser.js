@@ -317,6 +317,17 @@ TreeStyleTabBrowser.prototype = {
 		return (box.getAttribute('orient') || this.window.getComputedStyle(box, '').getPropertyValue('-moz-box-orient')) == 'vertical';
 	},
  
+	get isVisible()
+	{
+		var bar = this.ownerToolbar;
+		var style = this.window.getComputedStyle(bar, '');
+		if (style.visibility != 'visible' || style.display == 'none')
+			return false;
+
+		var box = bar.boxObject;
+		return !!(box.width || box.height);
+	},
+ 
 	isFloating : true, // for backward compatibility (but this should be removed) 
  
 	get ownerToolbar() 
