@@ -86,8 +86,10 @@ FullscreenObserver.prototype = {
 		if (d.documentElement.getAttribute('sizemode') != 'fullscreen')
 			return;
 
-		var toolbox = w.gNavToolbox;
-		toolbox.style.marginTop = -toolbox.getBoundingClientRect().height + 'px';
+		if (!w.FullScreen.useLionFullScreen) { // see https://github.com/piroor/treestyletab/issues/645
+			let toolbox = w.gNavToolbox;
+			toolbox.style.marginTop = -toolbox.getBoundingClientRect().height + 'px';
+		}
 
 		var windowControls = d.getElementById('window-controls');
 		var navigationToolbar = d.getElementById('nav-bar');
