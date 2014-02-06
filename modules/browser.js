@@ -1970,6 +1970,13 @@ TreeStyleTabBrowser.prototype = {
 			this.positionPinnedTabs(null, null, aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE);
 		else
 			this.positionPinnedTabsWithDelay(null, null, aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE);
+
+		if (!collapsed && aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE) {
+			let self = this;
+			this.Deferred.next(function() {
+				self.scrollToTab(self.browser.selectedTab);
+			});
+		}
 	},
 	getTabbarPlaceholderSize: function TSTBrowser_getTabbarPlaceholderSize()
 	{
