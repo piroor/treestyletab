@@ -603,6 +603,9 @@ TreeStyleTabWindow.prototype = {
 			case 'keypress':
 				return this.onKeyRelease(aEvent);
 
+			case 'blur':
+				return this.simulateKeyRelease();
+
 			case 'mousedown':
 				return this.onTabbarResizeStart(aEvent);
 
@@ -675,6 +678,7 @@ TreeStyleTabWindow.prototype = {
 			w.addEventListener('keydown',  this, true);
 			w.addEventListener('keyup',    this, true);
 			w.addEventListener('keypress', this, true);
+			w.addEventListener('blur',     this, true);
 			this.keyEventListening = true;
 		}
 		this.keyEventListeningFlags |= aReason;
@@ -690,6 +694,7 @@ TreeStyleTabWindow.prototype = {
 			w.removeEventListener('keydown',  this, true);
 			w.removeEventListener('keyup',    this, true);
 			w.removeEventListener('keypress', this, true);
+			w.removeEventListener('blur',     this, true);
 			this.keyEventListening = false;
 		}
 	},
@@ -818,6 +823,27 @@ TreeStyleTabWindow.prototype = {
 			}
 		}
 		this._tabShouldBeExpandedAfterKeyReleased = null;
+	},
+	// When the window lose its focus, we cannot detect any key-release events.
+	// So we have to simulate key-release event manually.
+	// See: https://github.com/piroor/treestyletab/issues/654
+	simulateKeyRelease : function TSTWindow_simulateKeyRelease()
+	{
+		if (!this.accelKeyPressed)
+			return;
+
+		this.accelKeyPressed = false;
+		var data = {
+			scrollDown   : false,
+			scrollUp     : false,
+			standBy      : false,
+			onlyShiftKey : false,
+			sourceEvent  : null
+		};
+		/* PUBLIC API */
+		this.fireDataContainerEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, this.browser, true, false, data);
+		// for backward compatibility
+		this.fireDataContainerEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END.replace(/^nsDOM/, ''), this.browser, true, false, data);
 	},
  
 	get shouldListenKeyEventsForAutoExpandByFocusChange() 
