@@ -2803,7 +2803,7 @@ TreeStyleTabBrowser.prototype = {
 	
 	restoreLastScrollPosition : function TSTBrowser_restoreLastScrollPosition() 
 	{
-		if (this.lastScrollX < 0 || this.lastScrollY < 0)
+		if (this.lastScrollX < 0 || this.lastScrollY < 0 || !this.isVisible)
 			return;
 		var lastX = this.lastScrollX;
 		var lastY = this.lastScrollY;
