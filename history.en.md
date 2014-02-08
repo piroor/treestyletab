@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 0.14.2014020901
    * Improved: On the "auto hide" mode, scroll to the current tab when the tab bar becomes shown.
    * Improved: Accept drag and drop of the tab bar itself, on the blank area around pinned tabs.
    * Fixed: Don't activate "draw in titlebar" feature for windows with vertical tab bar.
