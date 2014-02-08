@@ -159,14 +159,23 @@ var TreeStyleTabWindowHelper = {
 			)
 		);
 
-		if ('BrowserSearch' in window &&
-			'loadSearch' in BrowserSearch) {
-			eval('BrowserSearch.loadSearch = '+
-				BrowserSearch.loadSearch.toSource().replace(
-					'openLinkIn(',
-					'TreeStyleTabService.onBeforeBrowserSearch(arguments[0], useNewTab); $&'
-				)
-			);
+		if ('BrowserSearch' in window) {
+			if ('_loadSearch' in BrowserSearch) {
+				eval('BrowserSearch._loadSearch = '+
+					BrowserSearch._loadSearch.toSource().replace(
+						'openLinkIn(',
+						'TreeStyleTabService.onBeforeBrowserSearch(arguments[0], useNewTab); $&'
+					)
+				);
+			}
+			else if ('loadSearch' in BrowserSearch) { // Firefox 24 and olders
+				eval('BrowserSearch.loadSearch = '+
+					BrowserSearch.loadSearch.toSource().replace(
+						'openLinkIn(',
+						'TreeStyleTabService.onBeforeBrowserSearch(arguments[0], useNewTab); $&'
+					)
+				);
+			}
 		}
 
 		let (functions = [
