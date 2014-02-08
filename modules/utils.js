@@ -267,6 +267,9 @@ let TreeStyleTabUtils = {
 
 		return browser.__SS_restoreState == 1;
 	},
+	get SessionStoreInternal() {
+		return this.SessionStoreNS.SessionStoreInternal;
+	},
 	get TabRestoreStates() {
 		return this.SessionStoreNS.TabRestoreStates;
 	},

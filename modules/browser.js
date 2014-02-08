@@ -6517,18 +6517,34 @@ TreeStyleTabBrowser.prototype = {
 			return;
 
 		var level = utils.getTreePref('restoreTree.level');
+
+		var tabs = this.getAllTabs(this.mTabBrowser);
+		var tabsToRestore = 0;
+		if (utils.SessionStoreInternal &&
+			utils.SessionStoreInternal._browserEpochs) {
+			// for Firefox 29 and later
+			// (after https://bugzilla.mozilla.org/show_bug.cgi?id=942374)
+			var browserEpochs = utils.SessionStoreInternal._browserEpochs;
+			tabsToRestore = tabs.filter(function(aTab) {
+				return browserEpochs.has(aTab.linkedBrowser.permanentKey);
+			}).length;
+		}
+		else {
+			// for Firefox 24 and old versions
+			tabsToRestore = this.window.__SS_tabsToRestore;
+		}
+
 		dump('TSTBrowser::restoreTree\n');
 		dump('  level = '+level+'\n');
-		dump('  tabsToRestore = '+this.window.__SS_tabsToRestore+'\n');
+		dump('  tabsToRestore = '+tabsToRestore+'\n');
 		if (
 			level <= this.kRESTORE_TREE_LEVEL_NONE ||
-			!this.window.__SS_tabsToRestore ||
-			this.window.__SS_tabsToRestore <= 1
+			!tabsToRestore ||
+			tabsToRestore <= 1
 			)
 			return;
 
 		var onlyVisible = level <= this.kRESTORE_TREE_ONLY_VISIBLE;
-		var tabs = this.getAllTabs(this.mTabBrowser);
 		tabs = tabs.filter(function(aTab) {
 			return (
 				utils.isTabNotRestoredYet(aTab) &&
