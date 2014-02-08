@@ -91,7 +91,10 @@ TabbarDNDObserver.prototype = {
 
 		if (
 			sv.evaluateXPath(
-				'ancestor-or-self::*[contains(" scrollbar popup menupopup panel tooltip ", concat(" ", local-name(), " "))]',
+				'ancestor-or-self::*[' +
+					'contains(" scrollbar popup menupopup panel tooltip ", concat(" ", local-name(), " ")) or' +
+					'(local-name()="toolbarbutton" and @type="menu")' +
+				']',
 				aEvent.originalTarget,
 				Ci.nsIDOMXPathResult.BOOLEAN_TYPE
 			).booleanValue ||

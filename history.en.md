@@ -8,6 +8,7 @@
    * Fixed: In the fullscreen mode, don't hide the navigation toolbar on OS X Lion.
    * Fixed: Collapse the tab bar automatically, if it is expanded by long-press of the Ctrl key and a new window is opened while the key is pressed.
    * Fixed: Open tabs as children, from the "search by" in the context menu.
+   * Fixed: Don't start dragging operation of the tab bar itself from a button which have its own popup menu.
  - 0.14.2014013001
    * Improved: Better compatibility with [Nav Bar on Title Bar](https://addons.mozilla.org/firefox/addon/nav-bar-on-title-bar/).
    * Improved: Better compatibility with [Tab Control](https://addons.mozilla.org/firefox/addon/tab-control/).

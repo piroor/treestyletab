@@ -8,6 +8,7 @@
    * OS X Lionでのフルスクリーン表示において、ナビゲーションツールバーを隠さないようにした
    * タブバーがCtrlキーの長押しで自動的に表示されている間に新しいウィンドウが開かれた場合に、タブバーが自動的に隠れないでそのままになってしまっていたのを修正
    * コンテキストメニューの「～検索」機能から開いたタブが現在のタブの子にならなくなっていたのを修正
+   * メニューを持つツールバーボタン上ではタブバー自体のドラッグ操作を開始しないようにした
  - 0.14.2014013001
    * [Nav Bar on Title Bar](https://addons.mozilla.org/firefox/addon/nav-bar-on-title-bar/)との互換性を改善
    * [Tab Control](https://addons.mozilla.org/firefox/addon/tab-control/)との互換性を改善
