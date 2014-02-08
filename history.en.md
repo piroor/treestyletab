@@ -1,6 +1,12 @@
 # History
 
  - master/HEAD
+   * Improved: On the "auto hide" mode, scroll to the current tab when the tab bar becomes shown.
+   * Fixed: Don't activate "draw in titlebar" feature for windows with vertical tab bar.
+   * Fixed: On the "auto hide" mode, keep scroll position of the tab bar correctly when the bar is shown and hidden.
+   * Fixed: In the fullscreen mode, don't hide the navigation toolbar on OS X Lion.
+   * Fixed: Collapse the tab bar automatically, if it is expanded by long-press of the Ctrl key and a new window is opened while the key is pressed.
+   * Fixed: Open tabs as children, from the "search by" in the context menu.
  - 0.14.2014013001
    * Improved: Better compatibility with [Nav Bar on Title Bar](https://addons.mozilla.org/firefox/addon/nav-bar-on-title-bar/).
    * Improved: Better compatibility with [Tab Control](https://addons.mozilla.org/firefox/addon/tab-control/).
