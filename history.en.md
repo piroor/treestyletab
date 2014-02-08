@@ -2,6 +2,7 @@
 
  - master/HEAD
    * Improved: On the "auto hide" mode, scroll to the current tab when the tab bar becomes shown.
+   * Improved: Accept drag and drop of the tab bar itself, on the blank area around pinned tabs.
    * Fixed: Don't activate "draw in titlebar" feature for windows with vertical tab bar.
    * Fixed: On the "auto hide" mode, keep scroll position of the tab bar correctly when the bar is shown and hidden.
    * Fixed: In the fullscreen mode, don't hide the navigation toolbar on OS X Lion.

@@ -1287,13 +1287,13 @@ catch(e) {
 	
 	startListenEvents : function TabbarDND_startListenEvents() 
 	{
-		var strip = this.treeStyleTab.tabStrip;
-		strip.addEventListener('dragstart', this, true);
-		strip.addEventListener('dragover',  this, true);
-		strip.addEventListener('dragenter', this, false);
-		strip.addEventListener('dragleave', this, false);
-		strip.addEventListener('dragend',   this, true);
-		strip.addEventListener('drop',      this, true);
+		var target = this.treeStyleTab.ownerToolbar || this.treeStyleTab.tabStrip;
+		target.addEventListener('dragstart', this, true);
+		target.addEventListener('dragover',  this, true);
+		target.addEventListener('dragenter', this, false);
+		target.addEventListener('dragleave', this, false);
+		target.addEventListener('dragend',   this, true);
+		target.addEventListener('drop',      this, true);
 	},
   
 	destroy : function TabbarDND_destroy() 
@@ -1308,13 +1308,13 @@ catch(e) {
 	
 	endListenEvents : function TabbarDND_endListenEvents() 
 	{
-		var strip = this.treeStyleTab.tabStrip;
-		strip.removeEventListener('dragstart', this, true);
-		strip.removeEventListener('dragover',  this, true);
-		strip.removeEventListener('dragenter', this, false);
-		strip.removeEventListener('dragleave', this, false);
-		strip.removeEventListener('dragend',   this, true);
-		strip.removeEventListener('drop',      this, true);
+		var target = this.treeStyleTab.ownerToolbar || this.treeStyleTab.tabStrip;
+		target.removeEventListener('dragstart', this, true);
+		target.removeEventListener('dragover',  this, true);
+		target.removeEventListener('dragenter', this, false);
+		target.removeEventListener('dragleave', this, false);
+		target.removeEventListener('dragend',   this, true);
+		target.removeEventListener('drop',      this, true);
 	}
   
 }; 
