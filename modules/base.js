@@ -750,7 +750,7 @@ var TreeStyleTabBase = {
 		if (!document)
 			document = target.ownerDocument || target;
 
-		var event = new CustomEvent(type, {
+		var event = new this.window.CustomEvent(type, {
 			bubbles    : canBubble,
 			cancelable : cancelable,
 			detail     : data

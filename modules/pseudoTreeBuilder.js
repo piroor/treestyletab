@@ -76,7 +76,7 @@ var PseudoTreeBuilder = {
 			'    null\n' +
 			'  ).singleNodeValue;\n' +
 			'if (label) {\n' +
-			'  var customEvent = new CustomEvent(%EVENT_TYPE%, {\n' +
+			'  var customEvent = new doc.defaultView.CustomEvent(%EVENT_TYPE%, {\n' +
 			'      bubbles    : true,\n' +
 			'      cancelable : true,\n' +
 			'      detail     : {\n' +
