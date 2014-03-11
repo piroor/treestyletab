@@ -674,7 +674,6 @@
 		preference="extensions.treestyletab.autoCollapseExpandSubtreeOnAttach"
 		label="&config.autoCollapseExpandSubtreeOnAttach;"/>
 	<checkbox id="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect-check"
-
 		preference="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect"
 		label="&config.autoCollapseExpandSubtreeOnSelect;"/>
 	<hbox align="center">
