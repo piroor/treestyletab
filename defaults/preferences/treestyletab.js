@@ -425,6 +425,13 @@ pref("extensions.treestyletab.autoCollapseExpandSubtreeOnSelect",      true);
  */
 pref("extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove", true);
 /**
+ * When a new child tab is opened (or attached) under an existing tab,
+ * other existing expanded trees can counteract that you find out where the new
+ * attached tab is. If you set this to "true", TST automatically collapses other
+ * expanded trees at the time.
+ */
+pref("extensions.treestyletab.autoCollapseExpandSubtreeOnAttach", true);
+/**
  * When you press Ctrl-Tab/Shift-Ctrl-Tab, Firefox advances focus of tabs.
  * If this is "true", TST expands focused tree after a delay specified
  * by another preference "autoExpandSubtreeOnSelect.whileFocusMovingByShortcut.delay".
