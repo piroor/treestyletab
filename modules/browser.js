@@ -5113,9 +5113,11 @@ TreeStyleTabBrowser.prototype = {
 			this.collapseExpandSubtree(aParent, false, aInfo.dontAnimate);
 		}
 		else if (!aInfo.dontExpand) {
-			if (utils.getTreePref('autoCollapseExpandSubtreeOnAttach')) {
-				if (this.shouldTabAutoExpanded(aParent))
-					this.collapseExpandTreesIntelligentlyFor(aParent);
+			if (utils.getTreePref('autoCollapseExpandSubtreeOnAttach') &&
+				this.shouldTabAutoExpanded(aParent))
+				this.collapseExpandTreesIntelligentlyFor(aParent);
+
+			if (utils.getTreePref('autoCollapseExpandSubtreeOnSelect')) {
 				newAncestors.forEach(function(aAncestor) {
 					if (this.shouldTabAutoExpanded(aAncestor))
 						this.collapseExpandSubtree(aAncestor, false, aInfo.dontAnimate);
