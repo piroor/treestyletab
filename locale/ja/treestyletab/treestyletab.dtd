@@ -117,6 +117,7 @@
 
 <!ENTITY config.tabs.tree "ツリー">
 
+<!ENTITY config.autoCollapseExpandSubtreeOnAttach "新しいツリーが作られた時は、自動的に他のツリーを折り畳む">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect "タブを切り替えた時は、フォーカスされたタブのツリーを自動的に展開して、他のツリーを折り畳む">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "現在のタブを閉じてタブのフォーカスが切り替わった場合は何もしない">
 

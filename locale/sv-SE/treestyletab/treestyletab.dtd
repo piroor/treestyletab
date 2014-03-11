@@ -129,6 +129,7 @@
 
 <!ENTITY config.tabs.tree "Träd">
 
+<!ENTITY config.autoCollapseExpandSubtreeOnAttach "When a new tree appears, collapse others automatically">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect "När en flik får fokus, expandera dess träd och minimera andra träd automatiskt">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "Inaktivera flytt av fokus orsakad av att aktuell flik stängs">
 <!ENTITY config.collapseExpandSubtree.dblclick "Dubbelklicka på en flik för att minimera/expandera trädet">

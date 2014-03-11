@@ -125,6 +125,7 @@
 
 <!ENTITY config.tabs.tree "Arbol">
 
+<!ENTITY config.autoCollapseExpandSubtreeOnAttach "When a new tree appears, collapse others automatically">
 <!--ENTITY config.autoCollapseExpandSubtreeOnSelect "Colapsar otros árboles automáticamente cuando una pestaña es abierta o seleccionada"-->
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect "Cuando una pestaña obtiene foco, expandir su árbol y colapsar los otros automáticamente">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "Excluir movimiento de foco causado por el cierre de la pestaña en foco">

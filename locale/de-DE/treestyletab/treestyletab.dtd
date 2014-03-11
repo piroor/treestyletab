@@ -130,6 +130,7 @@
 
 <!ENTITY config.tabs.tree "Verhalten">
 
+<!ENTITY config.autoCollapseExpandSubtreeOnAttach "When a new tree appears, collapse others automatically">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect "Nicht aktive Zweige zuklappen">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "Keine Fokusänderung beim Schließen des aktiven Tabs">
 <!ENTITY config.collapseExpandSubtree.dblclick "Bei Doppelklick auf Tab untergeordneten Zweig auf- oder zuklappen">

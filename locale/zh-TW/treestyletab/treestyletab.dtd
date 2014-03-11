@@ -117,6 +117,7 @@
 
 <!ENTITY config.tabs.tree "樹狀結構">
 
+<!ENTITY config.autoCollapseExpandSubtreeOnAttach "When a new tree appears, collapse others automatically">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect "切換分頁時，自動展開該子樹，並摺疊無關的分頁">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "不包括關閉當前分頁造成的切換">
 

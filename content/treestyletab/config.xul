@@ -640,6 +640,9 @@
 <prefpane id="prefpane-tree" label="&config.tabs.tree;"
 	onpaneload="initTreePane();">
 	<preferences>
+		<preference id="extensions.treestyletab.autoCollapseExpandSubtreeOnAttach"
+			name="extensions.treestyletab.autoCollapseExpandSubtreeOnAttach"
+			type="bool"/>
 		<preference id="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect"
 			name="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect"
 			type="bool"/>
@@ -667,7 +670,11 @@
 			type="int"/>
 	</preferences>
 
+	<checkbox id="extensions.treestyletab.autoCollapseExpandSubtreeOnAttach-check"
+		preference="extensions.treestyletab.autoCollapseExpandSubtreeOnAttach"
+		label="&config.autoCollapseExpandSubtreeOnAttach;"/>
 	<checkbox id="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect-check"
+
 		preference="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect"
 		label="&config.autoCollapseExpandSubtreeOnSelect;"/>
 	<hbox align="center">

@@ -125,6 +125,7 @@
 
 <!ENTITY config.tabs.tree "Drzewo">
 
+<!ENTITY config.autoCollapseExpandSubtreeOnAttach "When a new tree appears, collapse others automatically">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect "Rozwijaj drzewo wybranej karty i zwijaj pozostałe">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "Z wyjątkiem, gdy wybór się zmieni na skutek zamknięcia aktywnej karty">
 <!ENTITY config.collapseExpandSubtree.dblclick "Zwijaj/rozwijaj drzewo po dwukrotnym kliknięciu etykiety karty">

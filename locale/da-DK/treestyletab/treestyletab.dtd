@@ -130,6 +130,7 @@
 
 <!ENTITY config.tabs.tree "Træet">
 
+<!ENTITY config.autoCollapseExpandSubtreeOnAttach "When a new tree appears, collapse others automatically">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect "Udvid tilhørende træ når en fane vælges, og sammenfold automatisk de andre">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "Ekskluder fokusflytning forårsaget af af aktuel fanes lukning">
 <!ENTITY config.collapseExpandSubtree.dblclick "Dobbeltklik på en fane for at sammenfolde/udvide træ">

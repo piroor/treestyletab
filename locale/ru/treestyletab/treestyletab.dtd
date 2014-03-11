@@ -123,6 +123,7 @@
 
 <!ENTITY config.tabs.tree "Дерево">
 
+<!ENTITY config.autoCollapseExpandSubtreeOnAttach "When a new tree appears, collapse others automatically">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect "При выборе вкладки развернуть её дерево и автоматически свернуть остальные">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "Исключая выбор вкладки после закрытия текущей вкладки">
 <!ENTITY config.collapseExpandSubtree.dblclick "Сворачивать/разворачивать дерево вкладок по двойному клику">

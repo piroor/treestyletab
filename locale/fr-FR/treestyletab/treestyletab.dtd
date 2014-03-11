@@ -117,6 +117,7 @@
 
 <!ENTITY config.tabs.tree "Arborescence">
 
+<!ENTITY config.autoCollapseExpandSubtreeOnAttach "When a new tree appears, collapse others automatically">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect "Lorsqu'un onglet devient actif, déplier son arborescence et replier les autres automatiquement">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "Exclure le changement d'activation par la fermeture de l'onglet actuel">
 <!ENTITY config.collapseExpandSubtree.dblclick "Double-cliquer sur un onglet pour replier/déplier l'arborescence">

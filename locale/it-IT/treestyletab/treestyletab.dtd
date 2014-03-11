@@ -125,6 +125,7 @@
 
 <!ENTITY config.tabs.tree "Tree">
 
+<!ENTITY config.autoCollapseExpandSubtreeOnAttach "When a new tree appears, collapse others automatically">
 <!--ENTITY config.autoCollapseExpandSubtreeOnSelect "Contrai automaticamente gli altri sottoalberi quando viene aperta o selezionata una scheda"-->
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
