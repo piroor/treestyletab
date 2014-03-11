@@ -735,9 +735,9 @@ TreeStyleTabWindow.prototype = {
 			};
 
 		/* PUBLIC API */
-		this.fireDataContainerEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN, b, true, false, data);
+		this.fireCustomEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN, b, true, false, data);
 		// for backward compatibility
-		this.fireDataContainerEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN.replace(/^nsDOM/, ''), b, true, false, data);
+		this.fireCustomEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN.replace(/^nsDOM/, ''), b, true, false, data);
 	},
 	accelKeyPressed : false,
 	arrowKeyEventOnTab : null,
@@ -790,9 +790,9 @@ TreeStyleTabWindow.prototype = {
 			)
 			) {
 			/* PUBLIC API */
-			this.fireDataContainerEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START, b, true, false, data);
+			this.fireCustomEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START, b, true, false, data);
 			// for backward compatibility
-			this.fireDataContainerEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START.replace(/^nsDOM/, ''), b, true, false, data);
+			this.fireCustomEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START.replace(/^nsDOM/, ''), b, true, false, data);
 			return;
 		}
 
@@ -808,9 +808,9 @@ TreeStyleTabWindow.prototype = {
 
 		/* PUBLIC API */
 		let (event) {
-			this.fireDataContainerEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, b, true, false, data);
+			this.fireCustomEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, b, true, false, data);
 			// for backward compatibility
-			this.fireDataContainerEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END.replace(/^nsDOM/, ''), b, true, false, data);
+			this.fireCustomEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END.replace(/^nsDOM/, ''), b, true, false, data);
 		}
 
 		if (this._tabShouldBeExpandedAfterKeyReleased) {
@@ -841,9 +841,9 @@ TreeStyleTabWindow.prototype = {
 			sourceEvent  : null
 		};
 		/* PUBLIC API */
-		this.fireDataContainerEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, this.browser, true, false, data);
+		this.fireCustomEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, this.browser, true, false, data);
 		// for backward compatibility
-		this.fireDataContainerEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END.replace(/^nsDOM/, ''), this.browser, true, false, data);
+		this.fireCustomEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END.replace(/^nsDOM/, ''), this.browser, true, false, data);
 	},
  
 	get shouldListenKeyEventsForAutoExpandByFocusChange() 
@@ -1346,9 +1346,9 @@ TreeStyleTabWindow.prototype = {
 			};
 		var canClose = (
 			/* PUBLIC API */
-			this.fireDataContainerEvent(this.kEVENT_TYPE_SUBTREE_CLOSING, b, true, true, data) &&
+			this.fireCustomEvent(this.kEVENT_TYPE_SUBTREE_CLOSING, b, true, true, data) &&
 			// for backward compatibility
-			this.fireDataContainerEvent(this.kEVENT_TYPE_SUBTREE_CLOSING.replace(/^nsDOM/, ''), b, true, true, data)
+			this.fireCustomEvent(this.kEVENT_TYPE_SUBTREE_CLOSING.replace(/^nsDOM/, ''), b, true, true, data)
 		);
 		return canClose;
 	},
@@ -1362,9 +1362,9 @@ TreeStyleTabWindow.prototype = {
 			};
 
 		/* PUBLIC API */
-		this.fireDataContainerEvent(this.kEVENT_TYPE_SUBTREE_CLOSED, aTabBrowser, true, false, data);
+		this.fireCustomEvent(this.kEVENT_TYPE_SUBTREE_CLOSED, aTabBrowser, true, false, data);
 		// for backward compatibility
-		this.fireDataContainerEvent(this.kEVENT_TYPE_SUBTREE_CLOSED.replace(/^nsDOM/, ''), aTabBrowser, true, false, data);
+		this.fireCustomEvent(this.kEVENT_TYPE_SUBTREE_CLOSED.replace(/^nsDOM/, ''), aTabBrowser, true, false, data);
 	},
  
 	warnAboutClosingTabSubtreeOf : function TSTWindow_warnAboutClosingTabSubtreeOf(aTab) 

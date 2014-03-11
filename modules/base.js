@@ -724,9 +724,9 @@ var TreeStyleTabBase = {
 	},
 	
 	// called with target(nsIDOMEventTarget), document(nsIDOMDocument), type(string) and data(object) 
-	fireDataContainerEvent : function TSTBase_fireDataContainerEvent(...aArgs)
+	fireCustomEvent : function TSTBase_fireCustomEvent(...aArgs)
 	{
-		var target, document, type, data, canBubble, cancellable;
+		var target, document, type, data, canBubble, cancelable;
 		for (let i = 0, maxi = aArgs.length; i < maxi; i++)
 		{
 			let arg = aArgs[i];
@@ -734,7 +734,7 @@ var TreeStyleTabBase = {
 				if (canBubble === void(0))
 					canBubble = arg;
 				else
-					cancellable = arg;
+					cancelable = arg;
 			}
 			else if (typeof arg == 'string')
 				type = arg;
@@ -750,17 +750,11 @@ var TreeStyleTabBase = {
 		if (!document)
 			document = target.ownerDocument || target;
 
-		var event = document.createEvent('DataContainerEvent');
-		event.initEvent(type, canBubble, cancellable);
-		var properties = Object.keys(data);
-		for (let i = 0, maxi = properties.length; i < maxi; i++)
-		{
-			let property = properties[i];
-			let value = data[property];
-			event.setData(property, value);
-			event[property] = value; // for backward compatibility
-		}
-
+		var event = new CustomEvent(type, {
+			bubbles    : canBubble,
+			cancelable : cancelable,
+			detail     : data
+		});
 		return target.dispatchEvent(event);
 	},
  

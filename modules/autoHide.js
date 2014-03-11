@@ -850,9 +850,9 @@ AutoHideBrowser.prototype = {
 			};
 
 		/* PUBLIC API */
-		this.treeStyleTab.fireDataContainerEvent(this.treeStyleTab.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGING, this.browser, true, false, data);
+		this.treeStyleTab.fireCustomEvent(this.treeStyleTab.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGING, this.browser, true, false, data);
 		// for backward compatibility
-		this.treeStyleTab.fireDataContainerEvent(this.treeStyleTab.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGING.replace(/^nsDOM/, ''), this.browser, true, false, data);
+		this.treeStyleTab.fireCustomEvent(this.treeStyleTab.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGING.replace(/^nsDOM/, ''), this.browser, true, false, data);
 	},
  
 	fireStateChangeEvent : function AHB_fireStateChangeEvent() 
@@ -865,9 +865,9 @@ AutoHideBrowser.prototype = {
 			};
 
 		/* PUBLIC API */
-		this.treeStyleTab.fireDataContainerEvent(this.treeStyleTab.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGE, this.browser, true, false, data);
+		this.treeStyleTab.fireCustomEvent(this.treeStyleTab.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGE, this.browser, true, false, data);
 		// for backward compatibility
-		this.treeStyleTab.fireDataContainerEvent(this.treeStyleTab.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGE.replace(/^nsDOM/, ''), this.browser, true, false, data);
+		this.treeStyleTab.fireCustomEvent(this.treeStyleTab.kEVENT_TYPE_AUTO_HIDE_STATE_CHANGE.replace(/^nsDOM/, ''), this.browser, true, false, data);
 	},
   
 	
@@ -1012,19 +1012,19 @@ AutoHideBrowser.prototype = {
 				return;
 
 			case this.treeStyleTab.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN:
-				return this.onKeyDown(aEvent.getData('sourceEvent'));
+				return this.onKeyDown(aEvent.detail.sourceEvent);
 
 			case this.treeStyleTab.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START:
 				this.cancelDelayedShowForShortcut();
 				if (this.enabled &&
 					utils.getTreePref('tabbar.autoShow.tabSwitch') &&
 					(
-						aEvent.getData('scrollDown') ||
-						aEvent.getData('scrollUp') ||
+						aEvent.detail.scrollDown ||
+						aEvent.detail.scrollUp ||
 						( // when you release "shift" key
 							this.expanded &&
-							aEvent.getData('standBy') &&
-							aEvent.getData('onlyShiftKey')
+							aEvent.detail.standBy &&
+							aEvent.detail.onlyShiftKey
 						)
 					))
 					this.show(this.kSHOWN_BY_SHORTCUT);

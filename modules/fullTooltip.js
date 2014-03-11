@@ -162,11 +162,11 @@ FullTooltipManager.prototype = {
 
 	onItemClick : function FTM_onItemClick(aEvent)
 	{
-		var id = aEvent.getData('id');
+		var id = aEvent.detail.id;
 		if (id) {
 			let tab = this.getTabById(id, this.owner.browser);
 			if (tab) {
-				let event = aEvent.getData('sourceEvent');
+				let event = aEvent.detail.sourceEvent;
 				if (event.button == 1 ||
 					(event.button == 0 && this.isAccelKeyPressed(event)))
 					this.owner.browser.removeTab(tab);

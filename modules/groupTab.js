@@ -375,11 +375,11 @@ GroupTab.prototype = {
 		if (!b)
 			return;
 
-		var tab = this.getTabById(aEvent.getData('id'));
+		var tab = this.getTabById(aEvent.detail.id);
 		if (!tab)
 			return;
 
-		var event = aEvent.getData('sourceEvent');
+		var event = aEvent.detail.sourceEvent;
 		if (event.button == 1 ||
 			(event.button == 0 && this.isAccelKeyPressed(event)))
 			b.removeTab(tab);
@@ -397,7 +397,7 @@ GroupTab.prototype = {
 
 	onTabAttached : function GT_onTabAttached(aEvent)
 	{
-		var tab = aEvent.getData('parentTab');
+		var tab = aEvent.detail.parentTab;
 		var id = tab.getAttribute(this.kID);
 		if (tab == this.getOwnerTab() ||
 			this.document.getElementsByAttribute('tab-id', id).length)

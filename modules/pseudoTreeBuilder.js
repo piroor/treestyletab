@@ -76,10 +76,14 @@ var PseudoTreeBuilder = {
 			'    null\n' +
 			'  ).singleNodeValue;\n' +
 			'if (label) {\n' +
-			'  var customEvent = doc.createEvent("DataContainerEvent");\n' +
-			'  customEvent.initEvent(%EVENT_TYPE%, true, true);\n' +
-			'  customEvent.setData("id", label.getAttribute("tab-id"));\n' +
-			'  customEvent.setData("sourceEvent", event);\n' +
+			'  var customEvent = new CustomEvent(%EVENT_TYPE%, {\n' +
+			'      bubbles    : true,\n' +
+			'      cancelable : true,\n' +
+			'      detail     : {\n' +
+			'        id          : label.getAttribute("tab-id")),\n' +
+			'        sourceEvent : event\n' +
+			'      }\n' +
+			'    });\n' +
 			'  event.target.dispatchEvent(customEvent);\n' +
 			'}').replace('%EVENT_TYPE%', this.kTAB_LINK_CLICK.quote()));
 

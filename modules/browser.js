@@ -1639,9 +1639,9 @@ TreeStyleTabBrowser.prototype = {
 			};
 
 		/* PUBLIC API */
-		this.fireDataContainerEvent(type, this.mTabBrowser, true, false, data);
+		this.fireCustomEvent(type, this.mTabBrowser, true, false, data);
 		// for backward compatibility
-		this.fireDataContainerEvent(type.replace(/^nsDOM/, ''), this.mTabBrowser, true, false, data);
+		this.fireCustomEvent(type.replace(/^nsDOM/, ''), this.mTabBrowser, true, false, data);
 
 		return true;
 	},
@@ -1782,9 +1782,9 @@ TreeStyleTabBrowser.prototype = {
 			};
 
 		/* PUBLIC API */
-		this.fireDataContainerEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGING, this.mTabBrowser, true, false, data);
+		this.fireCustomEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGING, this.mTabBrowser, true, false, data);
 		// for backward compatibility
-		this.fireDataContainerEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGING.replace(/^nsDOM/, ''), this.mTabBrowser, true, false, data);
+		this.fireCustomEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGING.replace(/^nsDOM/, ''), this.mTabBrowser, true, false, data);
 
 		return true;
 	},
@@ -1804,9 +1804,9 @@ TreeStyleTabBrowser.prototype = {
 			};
 
 		/* PUBLIC API */
-		this.fireDataContainerEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGED, this.mTabBrowser, true, false, data);
+		this.fireCustomEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGED, this.mTabBrowser, true, false, data);
 		// for backward compatibility
-		this.fireDataContainerEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGED.replace(/^nsDOM/, ''), this.mTabBrowser, true, false, data);
+		this.fireCustomEvent(this.kEVENT_TYPE_TABBAR_STATE_CHANGED.replace(/^nsDOM/, ''), this.mTabBrowser, true, false, data);
 
 		return true;
 	},
@@ -3266,7 +3266,8 @@ TreeStyleTabBrowser.prototype = {
   
 	onTabsClosing : function TSTBrowser_onTabsClosing(aEvent) 
 	{
-		var tabs = aEvent.tabs || aEvent.getData('tabs');
+		var tabs = aEvent.detail && aEvent.detail.tabs ||
+					aEvent.getData('tabs') // for backward compatibility;
 		var b = this.getTabBrowserFromChild(tabs[0]);
 
 		var trees = this.splitTabsToSubtrees(tabs);
@@ -5158,9 +5159,9 @@ TreeStyleTabBrowser.prototype = {
 			};
 
 		/* PUBLIC API */
-		this.fireDataContainerEvent(this.kEVENT_TYPE_ATTACHED, aChild, true, false, data);
+		this.fireCustomEvent(this.kEVENT_TYPE_ATTACHED, aChild, true, false, data);
 		// for backward compatibility
-		this.fireDataContainerEvent(this.kEVENT_TYPE_ATTACHED.replace(/^nsDOM/, ''), aChild, true, false, data);
+		this.fireCustomEvent(this.kEVENT_TYPE_ATTACHED.replace(/^nsDOM/, ''), aChild, true, false, data);
 	},
 	
 	shouldTabAutoExpanded : function TSTBrowser_shouldTabAutoExpanded(aTab) 
@@ -5208,9 +5209,9 @@ TreeStyleTabBrowser.prototype = {
 			};
 
 		/* PUBLIC API */
-		this.fireDataContainerEvent(this.kEVENT_TYPE_DETACHED, aChild, true, false, data);
+		this.fireCustomEvent(this.kEVENT_TYPE_DETACHED, aChild, true, false, data);
 		// for backward compatibility
-		this.fireDataContainerEvent(this.kEVENT_TYPE_DETACHED.replace(/^nsDOM/, ''), aChild, true, false, data);
+		this.fireCustomEvent(this.kEVENT_TYPE_DETACHED.replace(/^nsDOM/, ''), aChild, true, false, data);
 
 		if (this.isTemporaryGroupTab(parentTab) && !this.hasChildTabs(parentTab)) {
 			this.window.setTimeout(function(aTabBrowser) {
@@ -5997,9 +5998,9 @@ TreeStyleTabBrowser.prototype = {
 			};
 
 		/* PUBLIC API */
-		this.fireDataContainerEvent(this.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, aTab, true, false, data);
+		this.fireCustomEvent(this.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, aTab, true, false, data);
 		// for backward compatibility
-		this.fireDataContainerEvent(this.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED.replace(/^nsDOM/, ''), aTab, true, false, data);
+		this.fireCustomEvent(this.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED.replace(/^nsDOM/, ''), aTab, true, false, data);
 
 		var b = this.mTabBrowser;
 		var parent;
