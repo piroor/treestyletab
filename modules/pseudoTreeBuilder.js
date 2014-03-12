@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011-2013
+ * Portions created by the Initial Developer are Copyright (C) 2011-2014
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -76,7 +76,7 @@ var PseudoTreeBuilder = {
 			'    null\n' +
 			'  ).singleNodeValue;\n' +
 			'if (label) {\n' +
-			'  var customEvent = new CustomEvent(%EVENT_TYPE%, {\n' +
+			'  var customEvent = new doc.defaultView.CustomEvent(%EVENT_TYPE%, {\n' +
 			'      bubbles    : true,\n' +
 			'      cancelable : true,\n' +
 			'      detail     : {\n' +
