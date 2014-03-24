@@ -279,18 +279,8 @@ TreeStyleTabWindow.prototype = {
 			return false;
 		}
 
-		var w = this.document.commandDispatcher.focusedWindow;
-		if (!w || w.top != this.browser.contentWindow)
-			w = this.browser.contentWindow;
-
-		return (function checkWindow(aWindow) {
-			if (!aWindow || !(aWindow instanceof Ci.nsIDOMWindow))
-				return false;
-			var selection = aWindow.getSelection();
-			if (selection && selection.toString().replace(/^\s+|\s+$/g, '') == aTerm)
-				return true;
-			return aWindow.frames ? Array.slice(aWindow.frames).some(checkWindow) : false ;
-		})(w);
+		var selection = this.window.getBrowserSelection();
+		return selection.replace(/^\s+|\s+$/g, '') == aTerm;
 	},
 	kSEARCH_RESULT_DO_NOT_ATTACH      : 0,
 	kSEARCH_RESULT_ATTACH_IF_SELECTED : 1,
