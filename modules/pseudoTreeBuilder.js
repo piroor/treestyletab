@@ -80,7 +80,7 @@ var PseudoTreeBuilder = {
 			'      bubbles    : true,\n' +
 			'      cancelable : true,\n' +
 			'      detail     : {\n' +
-			'        id          : label.getAttribute("tab-id")),\n' +
+			'        id          : label.getAttribute("tab-id"),\n' +
 			'        sourceEvent : event\n' +
 			'      }\n' +
 			'    });\n' +
