@@ -73,7 +73,7 @@ BrowserUIShowHideObserver.prototype = {
 					return;
 
 				case 'attributes':
-					this.onAttributeModified(this.box, aMutations, aObserver);
+					this.onAttributeModified(this.box, aMutation, aObserver);
 					return;
 			}
 		}, this);
@@ -99,13 +99,15 @@ BrowserUIShowHideObserver.prototype = {
 
 			var self = this;
 			observer = new this.MutationObserver(function(aMutations, aObserver) {
-				self.onAttributeModified(aChild, aMutations, aObserver);
+				aMutations.forEach(function(aMutation) {
+					self.onAttributeModified(aChild, aMutation, aObserver);
+				});
 			});
 			observer.observe(aChild, { attributes : true });
 			aChild.__treestyletab__attributeObserver = observer;
 		}, this)
 	},
-	onAttributeModified : function BrowserUIShowHideObserver_onAttributeModified(aTargetElement, aMutations, aObserver) 
+	onAttributeModified : function BrowserUIShowHideObserver_onAttributeModified(aTargetElement, aMutation, aObserver) 
 	{
 		var TST = this.owner.browser.treeStyleTab;
 		if (
@@ -121,16 +123,12 @@ BrowserUIShowHideObserver.prototype = {
 			)
 			return;
 
-		aMutations.forEach(function(aMutation) {
-			if (aMutation.type != 'attributes')
-				return;
 			if (aMutation.attributeName == 'hidden' ||
 				aMutation.attributeName == 'collapsed' ||
 				aMutation.attributeName == 'moz-collapsed' || // Used in full screen mode
 				aMutation.attributeName == 'disablechrome') {
 				TST.updateFloatingTabbar(TreeStyleTabConstants.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
 			}
-		}, this);
 	},
  
 	destroyChildrenObserver : function BrowserUIShowHideObserver_destroyChildrenObserver(aParent) 
