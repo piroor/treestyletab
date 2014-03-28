@@ -123,12 +123,12 @@ BrowserUIShowHideObserver.prototype = {
 			)
 			return;
 
-			if (aMutation.attributeName == 'hidden' ||
-				aMutation.attributeName == 'collapsed' ||
-				aMutation.attributeName == 'moz-collapsed' || // Used in full screen mode
-				aMutation.attributeName == 'disablechrome') {
-				TST.updateFloatingTabbar(TreeStyleTabConstants.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
-			}
+		if (aMutation.attributeName == 'hidden' ||
+			aMutation.attributeName == 'collapsed' ||
+			aMutation.attributeName == 'moz-collapsed' || // Used in full screen mode
+			aMutation.attributeName == 'disablechrome') {
+			TST.updateFloatingTabbar(TreeStyleTabConstants.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
+		}
 	},
  
 	destroyChildrenObserver : function BrowserUIShowHideObserver_destroyChildrenObserver(aParent) 
