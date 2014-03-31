@@ -365,6 +365,10 @@ TreeStyleTabWindow.prototype = {
 		w.addEventListener('beforecustomization', this, true);
 		w.addEventListener('aftercustomization', this, false);
 
+		// for Firefox 29 and later, after https://bugzilla.mozilla.org/show_bug.cgi?id=942374
+		if (w.messageManager && utils.shouldUseMessageManager)
+			w.messageManager.addMessageListener('SessionStore:restoreTabContentStarted', this);
+
 		this.fullscreenObserver = new FullscreenObserver(this.window);
 		this.initUIShowHideObserver();
 
@@ -494,6 +498,10 @@ TreeStyleTabWindow.prototype = {
 				d.removeEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB,              this, false);
 				w.removeEventListener('beforecustomization', this, true);
 				w.removeEventListener('aftercustomization', this, false);
+
+				// for Firefox 29 and later, after https://bugzilla.mozilla.org/show_bug.cgi?id=942374
+				if (w.messageManager && utils.shouldUseMessageManager)
+					w.messageManager.removeMessageListener('SessionStore:restoreTabContentStarted', this);
 
 				this.fullscreenObserver.destroy();
 				delete this.fullscreenObserver;
@@ -851,6 +859,24 @@ TreeStyleTabWindow.prototype = {
 				prefs.getPref('browser.ctrlTab.previews');
 	},
    
+	// for Firefox 29 and later, after https://bugzilla.mozilla.org/show_bug.cgi?id=942374
+	receiveMessage : function TSTWindow_receiveMessage(aMessage) 
+	{
+		var browser = aMessage.target;
+		var tabbrowser = this.getTabBrowserFromChild(browser);
+		if (!tabbrowser)
+			return;
+		var tab = tabbrowser.treeStyleTab.getTabFromBrowser(browser);
+		if (!tab)
+			return;
+
+		switch (aMessage.name)
+		{
+			case 'SessionStore:restoreTabContentStarted':
+				return tabbrowser.treeStyleTab.onRestoreTabContentStarted(tab);
+		}
+	},
+ 
 	onTabbarResizeStart : function TSTWindow_onTabbarResizeStart(aEvent) 
 	{
 		if (aEvent.button != 0)

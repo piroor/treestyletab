@@ -1098,6 +1098,19 @@ var TreeStyleTabBase = {
 			).booleanValue;
 	},
  
+	getTabFromBrowser : function TSTBase_getTabFromBrowser(aBrowser, aTabBrowser) 
+	{
+		var b = aTabBrowser || this.browser;
+		var tabs = this.getAllTabs(b);
+		for (let i = 0, maxi = tabs.length; i < maxi; i++)
+		{
+			let tab = tabs[i];
+			if (tab.linkedBrowser == aBrowser)
+				return tab;
+		}
+		return null;
+	},
+ 
 	getTabFromFrame : function TSTBase_getTabFromFrame(aFrame, aTabBrowser) 
 	{
 		var b = aTabBrowser || this.browser;

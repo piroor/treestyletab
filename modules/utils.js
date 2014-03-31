@@ -244,7 +244,23 @@ let TreeStyleTabUtils = {
 	},
 
 
-	isTabNotRestoredYet: function(aTab)
+	get shouldUseMessageManager()
+	{
+		if (this._shouldUseMessageManager !== null)
+			return this._shouldUseMessageManager;
+
+		try { // detect Firefox 29 and later
+			Cu.import('resource:///modules/sessionstore/ContentRestore.jsm', {});
+			this._shouldUseMessageManager = true;
+		}
+		catch(e) {
+			this._shouldUseMessageManager = false;
+		}
+		return this._shouldUseMessageManager;
+	},
+	_shouldUseMessageManager: undefined,
+
+	isTabNotRestoredYet : function utils_isTabNotRestoredYet(aTab)
 	{
 		var browser = aTab.linkedBrowser;
 		// Firefox 25 and later. See: https://bugzilla.mozilla.org/show_bug.cgi?id=867142
