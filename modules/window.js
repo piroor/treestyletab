@@ -64,7 +64,7 @@ XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabThemeManager', 'resource://
 XPCOMUtils.defineLazyModuleGetter(this, 'FullscreenObserver', 'resource://treestyletab-modules/fullscreenObserver.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'BrowserUIShowHideObserver', 'resource://treestyletab-modules/browserUIShowHideObserver.js');
 
-function TreeStyleTabWindow(aWindow) 
+function TreeStyleTabWindow(aWindow)
 {
 	this.window = aWindow;
 	this.document = aWindow.document;
@@ -162,18 +162,18 @@ TreeStyleTabWindow.prototype = {
 			w.gBrowser ;
 	},
  
-	get browserToolbox()
+	get browserToolbox() 
 	{
 		var w = this.window;
 		return w.gToolbox || w.gNavToolbox;
 	},
  
-	get browserBox()
+	get browserBox() 
 	{
 		return this.document.getElementById('browser');
 	},
  
-	get browserBottomBox()
+	get browserBottomBox() 
 	{
 		return this.document.getElementById('browser-bottombox');
 	},
