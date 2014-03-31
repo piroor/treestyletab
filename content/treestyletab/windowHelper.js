@@ -312,7 +312,7 @@ var TreeStyleTabWindowHelper = {
 					return aString
 							.replace(/\/\*.*\*\//g, '')
 							.replace(/\/\/.+$/, '')
-							.replace(/^\s+|\s+$/g, '');
+							.trim();
 				});
 	},
 	_getFunctionSource : function TSTWH__getFunctionSource(aFunc)

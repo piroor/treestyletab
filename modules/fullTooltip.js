@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011-2013
+ * Portions created by the Initial Developer are Copyright (C) 2011-2014
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -457,7 +457,7 @@ FullTooltipManager.prototype = {
 			for (let i = 0, maxi = aExtraLabels.length; i < maxi; i++)
 			{
 				let label = aExtraLabels[i];
-				label = label.replace(/^\s+|\s+$/g, '');
+				label = label.trim();
 				if (!label)
 					continue;
 				root.appendChild(this.document.createElement('description'))

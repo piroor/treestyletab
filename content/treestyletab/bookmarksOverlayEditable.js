@@ -111,7 +111,7 @@ var TreeStyleTabBookmarksServiceEditable = {
 			'        value=""/>' +
 			'    </menupopup>' +
 			'  </menulist>' +
-			'</row>').replace(/^\s*|\s*$/g, '').replace(/>\s+</g, '><')));
+			'</row>').trim().replace(/>\s+</g, '><')));
 		range.detach();
 		document.getElementById('treestyletab-parent-label').setAttribute('value', TreeStyleTabUtils.treeBundle.getString('bookmarkProperty.parent.label'));
 		this.blankItem.setAttribute('label', TreeStyleTabUtils.treeBundle.getString('bookmarkProperty.parent.blank.label'));

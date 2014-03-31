@@ -1261,7 +1261,7 @@ catch(e) {
 			case 'text/unicode':
 			case 'text/plain':
 			case 'text/x-moz-text-internal':
-				return [aData.replace(/^\s+|\s+$/g, '')];
+				return [aData.trim()];
 
 			case 'text/x-moz-url':
 				return [((aData instanceof Ci.nsISupportsString) ? aData.toString() : aData)

@@ -269,7 +269,7 @@ TreeStyleTabWindow.prototype = {
  
 	shouldOpenSearchResultAsChild : function TSTWindow_shouldOpenSearchResultAsChild(aTerm) 
 	{
-		aTerm = aTerm.replace(/^\s+|\s+$/g, '');
+		aTerm = aTerm.trim();
 
 		var mode = utils.getTreePref('autoAttach.searchResult');
 		if (mode == this.kSEARCH_RESULT_ATTACH_ALWAYS) {
@@ -280,7 +280,7 @@ TreeStyleTabWindow.prototype = {
 		}
 
 		var selection = this.window.getBrowserSelection();
-		return selection.replace(/^\s+|\s+$/g, '') == aTerm;
+		return selection.trim() == aTerm;
 	},
 	kSEARCH_RESULT_DO_NOT_ATTACH      : 0,
 	kSEARCH_RESULT_ATTACH_IF_SELECTED : 1,
