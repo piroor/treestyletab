@@ -169,6 +169,7 @@ tabbrowser[treestyletab-mode="vertical"]
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-close-button {
 	margin-left: 3px;
+	background: none;
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
