@@ -965,13 +965,16 @@ TreeStyleTabBrowser.prototype = {
 
 		aTab.__treestyletab__linkedTabBrowser = this.mTabBrowser;
 
-		/**
-		 * XXX dirty hack!!! there is no way to know when the tab is readied to be restored...
-		 */
 		if (!aTab.linkedBrowser.__treestyletab__toBeRestored)
 			aTab.linkedBrowser.__treestyletab__toBeRestored = utils.isTabNotRestoredYet(aTab);
+
+		/**
+		 * XXX Dirty hack for Firefox 28 and older, because
+		 * there is no way to know when the tab is readied to be restored...
+		 */
 		var b = aTab.linkedBrowser;
-		if (!b.__treestyletab__stop) {
+		if (!utils.shouldUseMessageManager && !b.__treestyletab__stop) {
+			let self = this;
 			b.__treestyletab__stop = b.stop;
 			b.stop = function TSTBrowser_stopHook(...aArgs) {
 				try {
