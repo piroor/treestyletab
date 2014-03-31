@@ -45,6 +45,7 @@ override chrome://treestyletab/skin/platform-styled.css	chrome://treestyletab/sk
 override chrome://treestyletab/skin/square/platform.css	chrome://treestyletab/skin/square/Darwin.css	os=Darwin
 override chrome://treestyletab/skin/square/platform.css	chrome://treestyletab/skin/square/Linux.css	os=Linux
 override chrome://treestyletab/skin/square/platform.css	chrome://treestyletab/skin/dummy.css	os=WINNT
+override chrome://treestyletab/skin/square/disable-closebox-bg.css	chrome://treestyletab/skin/dummy.css	os=Linux appversion>=31.0a1
 
 override chrome://treestyletab/skin/metal/platform.css	chrome://treestyletab/skin/metal/Darwin.css	os=Darwin
 override chrome://treestyletab/skin/metal/platform.css	chrome://treestyletab/skin/dummy.css	os=WINNT

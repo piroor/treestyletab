@@ -1,3 +1,5 @@
+@import url("./disable-closebox-bg.css");
+
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
 /* Default style */
@@ -218,15 +220,8 @@
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab
   .tab-close-button {
-	height: auto;
 	margin: 0 !important;
 	padding: 0 !important;
-	background: transparent;
-}
-.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab[selected="true"]
-  .tab-close-button {
-	background: transparent;
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
