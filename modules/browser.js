@@ -979,8 +979,9 @@ TreeStyleTabBrowser.prototype = {
 					while (stack)
 					{
 						if (stack.name == 'sss_restoreHistoryPrecursor' ||
-							stack.name == 'ssi_restoreHistoryPrecursor') {
-							this.__treestyletab__toBeRestored = true;
+							stack.name == 'ssi_restoreHistoryPrecursor' ||
+							stack.filename == 'resource:///modules/sessionstore/SessionStore.jsm') {
+							self.onRestoreTabContentStarted(aTab);
 							break;
 						}
 						stack = stack.caller;
@@ -3674,6 +3675,11 @@ TreeStyleTabBrowser.prototype = {
 		return group.id;
 	},
   
+	onRestoreTabContentStarted : function TSTBrowser_onRestoreTabContentStarted(aTab)
+	{
+		aTab.linkedBrowser.__treestyletab__toBeRestored = true;
+	},
+ 
 	onTabRestoring : function TSTBrowser_onTabRestoring(aEvent) 
 	{
 		this.restoreTree();
