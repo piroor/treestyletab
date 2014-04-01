@@ -49,6 +49,7 @@
 }
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > *:first-child,
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > *:first-child[hidden="true"] + *:not(toolbarpaletteitem),
+.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > #private-browsing-indicator:first-child + *:not(toolbarpaletteitem), /* for Linux */
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > .treestyletab-toolbar-inner-box {
 	-moz-border-top-colors: none !important;
 	border-top: 0 none !important;
