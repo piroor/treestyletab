@@ -49,3 +49,9 @@
 	background: url("chrome://browser/skin/privatebrowsing-mask.png") center no-repeat;
 	width: 30px;
 }
+
+/* disable bottom border of the tab bar */
+#main-window:not([treestyletab-tabbar-position="top"])
+  #TabsToolbar::after {
+	display: none;
+}
