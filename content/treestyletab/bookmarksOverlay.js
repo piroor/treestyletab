@@ -2,8 +2,9 @@ Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 XPCOMUtils.defineLazyModuleGetter(this,
   'TreeStyleTabUtils', 'resource://treestyletab-modules/utils.js');
 
-var TreeStyleTabBookmarksService = {
-	__proto__ : TreeStyleTabService,
+(function() {
+let { inherit } = Components.utils.import('resource://treestyletab-modules/lib/inherit.jsm', {});
+var TreeStyleTabBookmarksService = inherit(TreeStyleTabService, {
 
 	get BookmarksService() {
 		if (!this._BookmarksService) {
@@ -500,6 +501,9 @@ var TreeStyleTabBookmarksService = {
 		}
 	}
 
-};
+});
 
 TreeStyleTabBookmarksService.preInit();
+
+window.TreeStyleTabBookmarksService = TreeStyleTabBookmarksService;
+)();

@@ -44,6 +44,7 @@ const Ci = Components.interfaces;
 const Cu = Components.utils;
 
 Cu.import('resource://gre/modules/XPCOMUtils.jsm');
+Cu.import('resource://treestyletab-modules/lib/inherit.jsm');
 
 XPCOMUtils.defineLazyModuleGetter(this, 'Services', 'resource://gre/modules/Services.jsm');
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
@@ -87,8 +88,7 @@ function TreeStyleTabBrowser(aWindowService, aTabBrowser)
 	this._treeViewEnabled = true;
 }
  
-TreeStyleTabBrowser.prototype = { 
-	__proto__ : TreeStyleTabWindow.prototype,
+TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, { 
 	
 	kMENUITEM_RELOADSUBTREE            : 'context-item-reloadTabSubtree', 
 	kMENUITEM_RELOADCHILDREN           : 'context-item-reloadDescendantTabs',
@@ -5279,29 +5279,26 @@ TreeStyleTabBrowser.prototype = {
 				this.detachTab(tab, aInfo);
 				if (i == 0) {
 					if (parentTab) {
-						this.attachTabTo(tab, parentTab, {
-							__proto__  : aInfo,
+						this.attachTabTo(tab, parentTab, inherit(aInfo, {
 							dontExpand : true,
 							dontMove   : true
-						});
+						}));
 					}
 					this.collapseExpandSubtree(tab, false);
 					this.deleteTabValue(tab, this.kSUBTREE_COLLAPSED);
 				}
 				else {
-					this.attachTabTo(tab, children[0], {
-						__proto__  : aInfo,
+					this.attachTabTo(tab, children[0], inherit(aInfo, {
 						dontExpand : true,
 						dontMove   : true
-					});
+					}));
 				}
 			}
 			else if (aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN && parentTab) {
-				this.attachTabTo(tab, parentTab, {
-					__proto__  : aInfo,
+				this.attachTabTo(tab, parentTab, inherit(aInfo, {
 					dontExpand : true,
 					dontMove   : true
-				});
+				}));
 			}
 			else { // aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
 				this.detachTab(tab, aInfo);
@@ -6737,5 +6734,5 @@ TreeStyleTabBrowser.prototype = {
 	delayedShowTabbarForFeedback : function TSTBrowser_delayedShowTabbarForFeedback() { this.autoHide.delayedShowForFeedback(); },
 	cancelHideTabbarForFeedback : function TSTBrowser_cancelHideTabbarForFeedback() { this.autoHide.cancelHideForFeedback(); }
   
-}; 
+}); 
  

@@ -41,6 +41,7 @@ const Ci = Components.interfaces;
 
 Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 
+Components.utils.import('resource://treestyletab-modules/lib/inherit.jsm');
 Components.utils.import('resource://treestyletab-modules/base.js');
 Components.utils.import('resource://treestyletab-modules/pseudoTreeBuilder.js');
 
@@ -53,8 +54,7 @@ function FullTooltipManager(aOwner)
 {
 	this.init(aOwner);
 }
-FullTooltipManager.prototype = {
-	__proto__ : TreeStyleTabBase,
+FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 
 	kTOOLTIP_MODE_DEFAULT   : 0,
 	kTOOLTIP_MODE_COLLAPSED : 1,
@@ -477,4 +477,4 @@ FullTooltipManager.prototype = {
 		range.deleteContents();
 		range.detach();
 	}
-};
+});

@@ -2,8 +2,9 @@ Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 XPCOMUtils.defineLazyModuleGetter(this,
   'TreeStyleTabUtils', 'resource://treestyletab-modules/utils.js');
 
-var TreeStyleTabBookmarksServiceEditable = {
-	__proto__ : TreeStyleTabBookmarksService,
+(function() {
+let { inherit } = Components.utils.import('resource://treestyletab-modules/lib/inherit.jsm', {});
+var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksService, {
 
 	instantApply : false,
 	canceled : false,
@@ -356,6 +357,9 @@ var TreeStyleTabBookmarksServiceEditable = {
 		}
 	}
 
-};
+});
 
 window.addEventListener('DOMContentLoaded', TreeStyleTabBookmarksServiceEditable, false);
+
+window.TreeStyleTabBookmarksServiceEditable = TreeStyleTabBookmarksServiceEditable;
+})();

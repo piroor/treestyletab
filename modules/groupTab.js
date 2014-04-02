@@ -39,6 +39,7 @@ const EXPORTED_SYMBOLS = ['GroupTab'];
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
+Components.utils.import('resource://treestyletab-modules/lib/inherit.jsm');
 Components.utils.import('resource://treestyletab-modules/base.js');
 Components.utils.import('resource://treestyletab-modules/pseudoTreeBuilder.js');
 
@@ -48,8 +49,7 @@ function GroupTab(aWindow)
 	this.init();
 }
 
-GroupTab.prototype = {
-	__proto__ : TreeStyleTabBase,
+GroupTab.prototype = inherit(TreeStyleTabBase, {
 
 	initialized : false,
 	shouldUpdate : false,
@@ -427,4 +427,4 @@ GroupTab.prototype = {
 
 		this.checkUpdateTreeNow();
 	}
-};
+});

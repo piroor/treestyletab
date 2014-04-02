@@ -43,6 +43,7 @@ const Cu = Components.utils;
 Cu.import('resource://gre/modules/XPCOMUtils.jsm');
 Cu.import('resource://gre/modules/Services.jsm');
 Cu.import('resource://gre/modules/Timer.jsm');
+Cu.import('resource://treestyletab-modules/lib/inherit.jsm');
 Cu.import('resource://treestyletab-modules/constants.js');
 
 XPCOMUtils.defineLazyGetter(this, 'window', function() {
@@ -83,8 +84,7 @@ else {
 	this.AeroPeek = null;
 }
  
-var TreeStyleTabBase = { 
-	__proto__ : TreeStyleTabConstants,
+var TreeStyleTabBase = inherit(TreeStyleTabConstants, { 
 	
 	tabsHash : null, 
 	inWindowDestoructionProcess : false,
@@ -2567,7 +2567,7 @@ var TreeStyleTabBase = {
 		}
 	}
    
-}; 
+}); 
   
 TreeStyleTabBase.init(); 
  

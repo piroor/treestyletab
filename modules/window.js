@@ -41,6 +41,7 @@ const Ci = Components.interfaces;
 const Cu = Components.utils;
 
 Cu.import('resource://gre/modules/XPCOMUtils.jsm');
+Cu.import('resource://treestyletab-modules/lib/inherit.jsm');
 
 XPCOMUtils.defineLazyGetter(this, 'window', function() {
 	Cu.import('resource://treestyletab-modules/lib/namespace.jsm');
@@ -80,10 +81,9 @@ function TreeStyleTabWindow(aWindow)
 	XPCOMUtils.defineLazyModuleGetter(aWindow, 'TreeStyleTabBrowser', 'resource://treestyletab-modules/browser.js');
 }
 
-TreeStyleTabWindow.prototype = {
+TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 	
 	base : TreeStyleTabBase, 
-	__proto__ : TreeStyleTabBase,
  
 	window : null, 
 	document : null,
@@ -1772,5 +1772,5 @@ TreeStyleTabWindow.prototype = {
 		}
 	}
   
-}; 
+}); 
   
