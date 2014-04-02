@@ -15,7 +15,7 @@
    http://github.com/piroor/fxaddonlib-tabs-drag-utils
 */
 (function() {
-	const currentRevision = 30;
+	const currentRevision = 31;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -970,17 +970,14 @@
 
 	function StringList(aTypes) 
 	{
-		return {
-			__proto__ : aTypes,
-			item : function(aIndex)
-			{
+		return Object.create(aTypes, {
+			item : { value : function(aIndex) {
 				return this[aIndex];
-			},
-			contains : function(aType)
-			{
+			} },
+			contains : { value : function(aType) {
 				return this.indexOf(aType) > -1;
-			}
-		};
+			} }
+		});
 	}
 
 	tabsDragUtils.DOMDataTransferProxy = DOMDataTransferProxy;
