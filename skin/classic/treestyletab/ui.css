@@ -394,3 +394,8 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
   > .scrollbutton-down > * {
 	display: none;
 }
+
+/* don't show the dummy titlebar, even if chromemargin is applied by Fox Splitter or someone */
+#main-window:not([treestyletab-tabbar-position="top"])[chromemargin]:not([tabsintitlebar]) > #titlebar {
+	display: none;
+}
