@@ -3,6 +3,7 @@
  - master/HEAD
    * Nightly 31.0a1に対応
    * チェックボックス「新しいツリーが作られた時は、自動的に他のツリーを折り畳む」を「タブを切り替えた時は、フォーカスされたタブのツリーを自動的に展開して、他のツリーを折り畳む」から独立させた（設定の意味的に、その挙動まで一緒に変わってしまうこは意図されないため）
+   * [Classic Theme Restorer](https://addons.mozilla.org/firefox/addon/classicthemerestorer/)との互換性を改善（タイトルバーへのUI要素の描画を有効化するようにした）
    * Firefox 28以降で起動時にツリーの状態を正しく復元するようにした（後退バグ）
    * コンテキストメニューの「……を検索」からタブを開いたとき、選択範囲に改行が含まれていたり選択範囲が長すぎたりすると、タブが現在のタブの子になっていなかったのを修正
    * ロシア語ロケール更新（[by Infocatcher. Thanks!](https://github.com/piroor/treestyletab/pull/672)）
