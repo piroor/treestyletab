@@ -506,4 +506,4 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabService, {
 TreeStyleTabBookmarksService.preInit();
 
 window.TreeStyleTabBookmarksService = TreeStyleTabBookmarksService;
-)();
+})();
