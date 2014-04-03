@@ -1,7 +1,7 @@
 /**
  * @fileOverview inherit, an alternative for __proto__
  * @author       YUKI "Piro" Hiroshi
- * @version      1
+ * @version      2
  *
  * @license
  *   The MIT License, Copyright (c) 2014 YUKI "Piro" Hiroshi.
@@ -22,6 +22,7 @@ function toPropertyDescriptors(aProperties) {
 
 function inherit(aParent, aExtraProperties) {
 	if (!Object.create) {
+		aExtraProperties = aExtraProperties || {};
 		aExtraProperties.__proto__ = aParent;
 		return aExtraProperties;
 	}
