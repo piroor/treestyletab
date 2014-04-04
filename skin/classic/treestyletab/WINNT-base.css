@@ -14,6 +14,6 @@
   #nav-bar::after {
 	display: -moz-box;
 	content: "";
-	background: url("chrome://browser/skin/privatebrowsing-indicator.png") center no-repeat;
+	background: url("chrome://browser/skin/privatebrowsing-mask-titlebar.png") center no-repeat;
 	width: 30px;
 }
