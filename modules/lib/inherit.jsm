@@ -1,7 +1,8 @@
 /**
  * @fileOverview inherit, an alternative for __proto__
  * @author       YUKI "Piro" Hiroshi
- * @version      2
+ * @contributor  Infocatcher
+ * @version      3
  *
  * @license
  *   The MIT License, Copyright (c) 2014 YUKI "Piro" Hiroshi.
@@ -21,13 +22,22 @@ function toPropertyDescriptors(aProperties) {
 }
 
 function inherit(aParent, aExtraProperties) {
-	if (!Object.create) {
-		aExtraProperties = aExtraProperties || {};
+	var global;
+	if (Components.utils.getGlobalForObject)
+		global = Components.utils.getGlobalForObject(aParent);
+	else
+		global = aParent.valueOf.call();
+	global = global || this;
+
+	var ObjectClass = global.Object || Object;
+
+	if (!ObjectClass.create) {
+		aExtraProperties = aExtraProperties || new ObjectClass;
 		aExtraProperties.__proto__ = aParent;
 		return aExtraProperties;
 	}
 	if (aExtraProperties)
-		return Object.create(aParent, toPropertyDescriptors(aExtraProperties));
+		return ObjectClass.create(aParent, toPropertyDescriptors(aExtraProperties));
 	else
-		return Object.create(aParent);
+		return ObjectClass.create(aParent);
 }
