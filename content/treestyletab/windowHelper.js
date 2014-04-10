@@ -155,7 +155,7 @@ var TreeStyleTabWindowHelper = {
 		eval('nsContextMenu.prototype.addDictionaries = '+
 			nsContextMenu.prototype.addDictionaries.toSource().replace(
 				'openUILinkIn(',
-				'TreeStyleTabService.onBeforeOpenLink(aWhere, this.target.ownerDocument.defaultView); $&'
+				'TreeStyleTabService.onBeforeOpenLink(where, this.target.ownerDocument.defaultView); $&'
 			)
 		);
 
