@@ -1410,10 +1410,10 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		w.focus();
 		var message;
 		try { // Firefox 29 and older
-			message = this.tabbrowserBundle.getFormattedString('tabs.closeWarningMultipleTabs', [aTabsCount]);
+			message = utils.tabbrowserBundle.getFormattedString('tabs.closeWarningMultipleTabs', [aTabsCount]);
 		}
 		catch (ex) { // Firefox 30 and later
-			message = w.PluralForm.get(aTabsCount, this.tabbrowserBundle.getString('tabs.closeWarningMultiple')).replace('#1', aTabsCount);
+			message = w.PluralForm.get(aTabsCount, utils.tabbrowserBundle.getString('tabs.closeWarningMultiple')).replace('#1', aTabsCount);
 		}
 		var shouldClose = Services.prompt.confirmEx(w,
 				utils.tabbrowserBundle.getString('tabs.closeWarningTitle'),
