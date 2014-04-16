@@ -4136,7 +4136,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			this._clearRedirectbTabRelationsTimer = null;
 		}
 		this._clearRedirectbTabRelationsTimer = this.window.setTimeout(function(aSelf) {
-			aSelf.clearRedirectbTabRelations();
+			aSelf.clearRedirectbTabRelations(aTab);
 		}, 1000, this);
 	},
 	clearRedirectbTabRelations : function TSTBrowser_clearRedirectbTabRelations(aTab) 
