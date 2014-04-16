@@ -4138,20 +4138,16 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		aTab._clearRedirectbTabRelationsTimer = this.window.setTimeout(function(aSelf) {
 			aSelf.clearRedirectbTabRelations(aTab);
 			delete aTab._clearRedirectbTabRelationsTimer;
-		}, 1500, this);
+		}, 1200, this);
 	},
 	clearRedirectbTabRelations : function TSTBrowser_clearRedirectbTabRelations(aTab) 
 	{
 		if (!aTab || !aTab.parentNode)
 			return;
 
-		var redirectingIds = Object.keys(this._redirectionTable).map(function(aId) {
-			return this._redirectionTable[aId];
-		}, this);
-		var existingIds = this.getAllTabs(this.mTabBrowser).map(function(aTab) {
+		var validIds = this.getAllTabs(this.mTabBrowser).map(function(aTab) {
 			return this.getTabValue(aTab, this.kID);
 		}, this);
-		var validIds = redirectingIds.concat(existingIds);
 		validIds = validIds.filter(function(aId) {
 			return !!aId;
 		});
