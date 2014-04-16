@@ -3805,7 +3805,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 
 		if (mayBeDuplicated)
-			this.clearRedirectionTable();
+			this.clearRedirectionTableWithDelay();
 
 		delete aTab.__treestyletab__restoreState;
 	},
@@ -4115,7 +4115,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	},
 	_redirectionTable : {},
  
-	clearRedirectionTable : function TSTBrowser_clearRedirectionTable() 
+	clearRedirectionTableWithDelay : function TSTBrowser_clearRedirectionTableWithDelay() 
 	{
 		if (this._clearRedirectionTableTimer) {
 			this.window.clearTimeout(this._clearRedirectionTableTimer);
