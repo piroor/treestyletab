@@ -3925,10 +3925,12 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		aTab.removeAttribute(this.kCHILDREN);
 
 		aChildrenList = aChildrenList.split('|');
-		if (aMayBeDuplicated)
+		if (aMayBeDuplicated) {
 			aChildrenList = aChildrenList.map(function(aChild) {
 				return this.redirectId(aChild);
 			}, this);
+			this.clearRedirectbTabRelationsWithDelay(aTab);
+		}
 
 		for (let i = 0, maxi = aChildrenList.length; i < maxi; i++)
 		{
@@ -4126,6 +4128,50 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}, 1000, this);
 	},
 	_clearRedirectionTableTimer : null,
+ 
+	clearRedirectbTabRelationsWithDelay : function TSTBrowser_clearRedirectbTabRelationsWithDelay(aTab) 
+	{
+		if (this._clearRedirectbTabRelationsTimer) {
+			this.window.clearTimeout(this._clearRedirectbTabRelationsTimer);
+			this._clearRedirectbTabRelationsTimer = null;
+		}
+		this._clearRedirectbTabRelationsTimer = this.window.setTimeout(function(aSelf) {
+			aSelf.clearRedirectbTabRelations();
+		}, 1000, this);
+	},
+	clearRedirectbTabRelations : function TSTBrowser_clearRedirectbTabRelations(aTab) 
+	{
+		var redirectedIds = Object.keys(this._redirectionTable).map(function(aId) {
+			return this._redirectionTable[aId];
+		}, this);
+		redirectedIds = redirectedIds.filter(function(aId) {
+			return !!aId;
+		});
+
+		var children = aTab.getAttribute(this.kCHILDREN);
+		if (children) {
+			children = children.split('|');
+			children = children.filter(function(aChild) {
+				return redirectedIds.indexOf(aChild) > -1;
+			}, this);
+			if (children.length)
+				this.setTabValue(aTab, this.kCHILDREN, children.join('|'));
+			else
+				this.deleteTabValue(aTab, this.kCHILDREN);
+		}
+
+		var restoringChildren = aTab.getAttribute(this.kCHILDREN_RESTORING);
+		if (restoringChildren) {
+			restoringChildren = restoringChildren.split('|');
+			restoringChildren = restoringChildren.filter(function(aChild) {
+				return redirectedIds.indexOf(aChild) > -1;
+			}, this);
+			if (restoringChildren.length)
+				aTab.setAttribute(this.kCHILDREN_RESTORING, restoringChildren.join('|'));
+			else
+				aTab.removeAttribute(this.kCHILDREN_RESTORING;
+		}
+	},
  
 	restoreClosedSet : function TSTBrowser_restoreClosedSet(aId, aRestoredTab) 
 	{
