@@ -4141,6 +4141,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	},
 	clearRedirectbTabRelations : function TSTBrowser_clearRedirectbTabRelations(aTab) 
 	{
+		if (!aTab || !aTab.parentNode)
+			return;
+
 		var redirectedIds = Object.keys(this._redirectionTable).map(function(aId) {
 			return this._redirectionTable[aId];
 		}, this);
