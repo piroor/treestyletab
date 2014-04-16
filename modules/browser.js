@@ -4145,10 +4145,14 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (!aTab || !aTab.parentNode)
 			return;
 
-		var redirectedIds = Object.keys(this._redirectionTable).map(function(aId) {
+		var redirectingIds = Object.keys(this._redirectionTable).map(function(aId) {
 			return this._redirectionTable[aId];
 		}, this);
-		redirectedIds = redirectedIds.filter(function(aId) {
+		var existingIds = this.getAllTabs(this.mTabBrowser).map(function(aTab) {
+			return this.getTabValue(aTab, this.kID);
+		}, this);
+		var validIds = redirectingIds.concat(existingIds);
+		validIds = validIds.filter(function(aId) {
 			return !!aId;
 		});
 
@@ -4156,7 +4160,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (ancestors) {
 			ancestors = ancestors.split('|');
 			ancestors = ancestors.filter(function(aAncestor) {
-				return redirectedIds.indexOf(aAncestor) > -1;
+				return validIds.indexOf(aAncestor) > -1;
 			}, this);
 			if (ancestors.length)
 				this.setTabValue(aTab, this.kANCESTORS, ancestors.join('|'));
@@ -4168,7 +4172,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (children) {
 			children = children.split('|');
 			children = children.filter(function(aChild) {
-				return redirectedIds.indexOf(aChild) > -1;
+				return validIds.indexOf(aChild) > -1;
 			}, this);
 			if (children.length)
 				this.setTabValue(aTab, this.kCHILDREN, children.join('|'));
@@ -4180,7 +4184,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (restoringChildren) {
 			restoringChildren = restoringChildren.split('|');
 			restoringChildren = restoringChildren.filter(function(aChild) {
-				return redirectedIds.indexOf(aChild) > -1;
+				return validIds.indexOf(aChild) > -1;
 			}, this);
 			if (restoringChildren.length)
 				aTab.setAttribute(this.kCHILDREN_RESTORING, restoringChildren.join('|'));
