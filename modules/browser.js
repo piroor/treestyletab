@@ -4159,8 +4159,14 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var ancestors = this.getTabValue(aTab, this.kANCESTORS);
 		if (ancestors) {
 			ancestors = ancestors.split('|');
+			let actualAncestors = this.getAncestorTabs(aTab).map(function(aTab) {
+				return aTab.getAttribute(this.kID);
+			}, this);
 			ancestors = ancestors.filter(function(aAncestor) {
-				return validIds.indexOf(aAncestor) > -1;
+				if (actualAncestors.indexOf(aAncestor) < 0)
+					return false;
+				else
+					return validIds.indexOf(aAncestor) > -1;
 			}, this);
 			if (ancestors.length)
 				this.setTabValue(aTab, this.kANCESTORS, ancestors.join('|'));
@@ -4172,7 +4178,10 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (children) {
 			children = children.split('|');
 			children = children.filter(function(aChild) {
-				return validIds.indexOf(aChild) > -1;
+				if (this.getParentTab(this.getTabById(aChild)) != aTab)
+					return false;
+				else
+					return validIds.indexOf(aChild) > -1;
 			}, this);
 			if (children.length)
 				this.setTabValue(aTab, this.kCHILDREN, children.join('|'));
