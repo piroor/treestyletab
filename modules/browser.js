@@ -4169,7 +4169,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			if (restoringChildren.length)
 				aTab.setAttribute(this.kCHILDREN_RESTORING, restoringChildren.join('|'));
 			else
-				aTab.removeAttribute(this.kCHILDREN_RESTORING;
+				aTab.removeAttribute(this.kCHILDREN_RESTORING);
 		}
 	},
  
