@@ -3804,8 +3804,10 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				this.collapseExpandSubtree(aTab, isSubtreeCollapsed);
 		}
 
-		if (mayBeDuplicated)
+		if (mayBeDuplicated) {
 			this.clearRedirectionTableWithDelay();
+			this.clearRedirectbTabRelationsWithDelay(aTab);
+		}
 
 		delete aTab.__treestyletab__restoreState;
 	},
@@ -3925,12 +3927,10 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		aTab.removeAttribute(this.kCHILDREN);
 
 		aChildrenList = aChildrenList.split('|');
-		if (aMayBeDuplicated) {
+		if (aMayBeDuplicated)
 			aChildrenList = aChildrenList.map(function(aChild) {
 				return this.redirectId(aChild);
 			}, this);
-			this.clearRedirectbTabRelationsWithDelay(aTab);
-		}
 
 		for (let i = 0, maxi = aChildrenList.length; i < maxi; i++)
 		{
@@ -4131,13 +4131,14 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
  
 	clearRedirectbTabRelationsWithDelay : function TSTBrowser_clearRedirectbTabRelationsWithDelay(aTab) 
 	{
-		if (this._clearRedirectbTabRelationsTimer) {
-			this.window.clearTimeout(this._clearRedirectbTabRelationsTimer);
-			this._clearRedirectbTabRelationsTimer = null;
+		if (aTab._clearRedirectbTabRelationsTimer) {
+			this.window.clearTimeout(aTab._clearRedirectbTabRelationsTimer);
+			aTab._clearRedirectbTabRelationsTimer = null;
 		}
-		this._clearRedirectbTabRelationsTimer = this.window.setTimeout(function(aSelf) {
+		aTab._clearRedirectbTabRelationsTimer = this.window.setTimeout(function(aSelf) {
 			aSelf.clearRedirectbTabRelations(aTab);
-		}, 1000, this);
+			delete aTab._clearRedirectbTabRelationsTimer;
+		}, 1500, this);
 	},
 	clearRedirectbTabRelations : function TSTBrowser_clearRedirectbTabRelations(aTab) 
 	{
@@ -4151,7 +4152,19 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			return !!aId;
 		});
 
-		var children = aTab.getAttribute(this.kCHILDREN);
+		var ancestors = this.getTabValue(aTab, this.kANCESTORS);
+		if (ancestors) {
+			ancestors = ancestors.split('|');
+			ancestors = ancestors.filter(function(aAncestor) {
+				return redirectedIds.indexOf(aAncestor) > -1;
+			}, this);
+			if (ancestors.length)
+				this.setTabValue(aTab, this.kANCESTORS, ancestors.join('|'));
+			else
+				this.deleteTabValue(aTab, this.kANCESTORS);
+		}
+
+		var children = this.getTabValue(aTab, this.kCHILDREN);
 		if (children) {
 			children = children.split('|');
 			children = children.filter(function(aChild) {
