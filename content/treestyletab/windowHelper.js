@@ -512,6 +512,17 @@ var TreeStyleTabWindowHelper = {
 					/\.left/g, '[treeStyleTab.startProp]'
 				).replace(
 					/\.right/g, '[treeStyleTab.endProp]'
+
+				// replace such codes:
+				//   tab = {left: tab.left, right: tab.right};
+				).replace(
+					/left\s*:/g, 'start:'
+				).replace(
+					/right\s*:/g, 'end:'
+				).replace(
+					/((tab|selected)\s*=\s*\{\s*start:[^\}]+\})/g,
+					'$1; $2[treeStyleTab.startProp] = $2.start; $2[treeStyleTab.endProp] = $2.end;'
+
 				).replace(
 					'!selected ||',
 					'$& treeStyleTab.scrollToNewTabMode == 1 && '
