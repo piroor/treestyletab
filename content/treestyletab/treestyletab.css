@@ -122,8 +122,12 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 /* put resizer under tabs, and raise up tabs */
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"][treestyletab-tabbar-autohide]
   > *,
+.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"][treestyletab-tabbar-autohide]
+  > #tabbrowser-tabs,
 .treestyletab-toolbar-inner-box[treestyletab-tabbar-autohide]:not([treestyletab-tabbar-fixed="true"])
-  > * {
+  > *,
+.treestyletab-toolbar-inner-box[treestyletab-tabbar-autohide]:not([treestyletab-tabbar-fixed="true"])
+  > #tabbrowser-tabs {
 	position: relative;
 	z-index: 2;
 }
