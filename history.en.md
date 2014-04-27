@@ -1,11 +1,14 @@
 # History
 
  - master/HEAD
+ - 0.14.2014042701
    * Works on Nightly 31.0a1 again.
    * Improved: Introduce a new checkbox "When a new tree appears, collapse others automatically" in the configuration dialog. It has been split from "When a tab gets focus, expand its tree and collapse others automatically" because the behavior was not related to the existing checkbox.
    * Improved: Better compatibility with [Classic Theme Restorer](https://addons.mozilla.org/firefox/addon/classicthemerestorer/) about "tabs in titlebar" appearance.
    * Fixed: Restore tree structure on the startup correctly, with Firefox 28 and later.
    * Fixed: Open new tabs from "search by" in the context menu correctly, even if the selection includes line breaks or it is too long.
+   * Fixed: Broken trees around duplicated tabs after restarting, are gone.
+   * 
    * [ru locale is updated by Infocatcher. Thanks!](https://github.com/piroor/treestyletab/pull/672)
  - 0.14.2014020901
    * Improved: On the "auto hide" mode, scroll to the current tab when the tab bar becomes shown.
