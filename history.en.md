@@ -8,7 +8,6 @@
    * Fixed: Restore tree structure on the startup correctly, with Firefox 28 and later.
    * Fixed: Open new tabs from "search by" in the context menu correctly, even if the selection includes line breaks or it is too long.
    * Fixed: Broken trees around duplicated tabs after restarting, are gone.
-   * 
    * [ru locale is updated by Infocatcher. Thanks!](https://github.com/piroor/treestyletab/pull/672)
  - 0.14.2014020901
    * Improved: On the "auto hide" mode, scroll to the current tab when the tab bar becomes shown.
