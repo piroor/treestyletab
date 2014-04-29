@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Better compatibility with No Script 2.6.8.20.
  - 0.14.2014042701
    * Works on Nightly 31.0a1 again.
    * Improved: Introduce a new checkbox "When a new tree appears, collapse others automatically" in the configuration dialog. It has been split from "When a tab gets focus, expand its tree and collapse others automatically" because the behavior was not related to the existing checkbox.
