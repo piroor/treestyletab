@@ -73,6 +73,28 @@ var TreeStyleTabWindowHelper = {
 			);
 		}
 
+		let (functions = [
+				'window.duplicateTab.handleLinkClick',
+				'window.duplicatethistab.handleLinkClick',
+				'window.__treestyletab__highlander__origHandleLinkClick',
+				'window.__splitbrowser__handleLinkClick',
+				'window.__ctxextensions__handleLinkClick',
+				'window.handleLinkClick'
+			]) {
+			for (let i = 0, maxi = functions.length; i < maxi; i++)
+			{
+				let func = functions[i];
+				let source = this._getFunctionSource(func);
+				if (!source || !/^\(?function handleLinkClick/.test(source))
+					continue;
+				eval(func+' = '+source.replace(
+					/(charset\s*:\s*doc\.characterSet\s*)/,
+					'$1, event : event, linkNode : linkNode'
+				));
+				break;
+			}
+		}
+
 		this.overrideExtensionsPreInit(); // windowHelperHacks.js
 	},
  
@@ -175,28 +197,6 @@ var TreeStyleTabWindowHelper = {
 						'TreeStyleTabService.onBeforeBrowserSearch(arguments[0], useNewTab); $&'
 					)
 				);
-			}
-		}
-
-		let (functions = [
-				'window.duplicateTab.handleLinkClick',
-				'window.duplicatethistab.handleLinkClick',
-				'window.__treestyletab__highlander__origHandleLinkClick',
-				'window.__splitbrowser__handleLinkClick',
-				'window.__ctxextensions__handleLinkClick',
-				'window.handleLinkClick'
-			]) {
-			for (let i = 0, maxi = functions.length; i < maxi; i++)
-			{
-				let func = functions[i];
-				let source = this._getFunctionSource(func);
-				if (!source || !/^\(?function handleLinkClick/.test(source))
-					continue;
-				eval(func+' = '+source.replace(
-					/(charset\s*:\s*doc\.characterSet\s*)/,
-					'$1, event : event, linkNode : linkNode'
-				));
-				break;
 			}
 		}
 
