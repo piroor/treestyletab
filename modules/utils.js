@@ -307,14 +307,23 @@ let TreeStyleTabUtils = {
 		if (aBrowserWindow.getShortcutOrURI) // Firefox 24 and older
 			return aBrowserWindow.getShortcutOrURI(aURI);
 
-		// Firefox 25 and later
 		var getShortcutOrURIAndPostData = aBrowserWindow.getShortcutOrURIAndPostData;
 		var done = false;
-		Task.spawn(function() {
-			var data = yield getShortcutOrURIAndPostData(aURI);
-			aURI = data.url;
-			done = true;
-		});
+		if (getShortcutOrURIAndPostData.length == 2) {
+			// Firefox 31 and later, after https://bugzilla.mozilla.org/show_bug.cgi?id=989984
+			getShortcutOrURIAndPostData(aURI, function(aData) {
+				aURI = aData.url;
+				done = true;
+			});
+		}
+		else {
+			// Firefox 25-30
+			Task.spawn(function() {
+				var data = yield getShortcutOrURIAndPostData(aURI);
+				aURI = data.url;
+				done = true;
+			});
+		}
 
 		// this should be rewritten in asynchronous style...
 		var thread = Cc['@mozilla.org/thread-manager;1'].getService().mainThread;
