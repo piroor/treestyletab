@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 0.14.2014050101
    * Works on Nightly 32.0a1 again.
    * Hide pinned tabs completely on DOM full-screen mode.
  - 0.14.2014043001
