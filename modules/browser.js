@@ -4738,6 +4738,27 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var isContentResize = resizedTopFrame == this.mTabBrowser.contentWindow;
 		var isChromeResize = resizedTopFrame == this.window;
 
+		if (isChromeResize && aEvent.originalTarget != resizedTopFrame) {
+			// ignore resizing of sub frames in "position:fixed" box
+			let target = aEvent.target;
+			try {
+				let node = target.QueryInterface(Ci.nsIInterfaceRequestor)
+								.getInterface(Ci.nsIWebNavigation)
+								.QueryInterface(Ci.nsIDocShell)
+								.chromeEventHandler;
+				let root = node.ownerDocument.documentElement;
+				while (node && node != root) {
+					if (node.boxObject && !node.boxObject.parentBox) {
+						isChromeResize = false;
+						break;
+					}
+					node = node.parentNode;
+				}
+			}
+			catch(e) {
+			}
+		}
+
 		// Ignore events when a background tab raises to the foreground.
 		if (isContentResize && this._lastTabbarPlaceholderSize) {
 			let newSize = this.getTabbarPlaceholderSize();
