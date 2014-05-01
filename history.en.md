@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 0.14.2014050102
    * Works with Unified Sidebar correctly, in the "auto shrink" mode. (regression)
  - 0.14.2014050101
    * Works on Nightly 32.0a1 again.
