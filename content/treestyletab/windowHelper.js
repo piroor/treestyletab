@@ -40,6 +40,16 @@ var TreeStyleTabWindowHelper = {
 			)
 		);
 
+		if ('TabsInTitlebar' in window &&
+			TabsInTitlebar._update) {
+			eval('window.TabsInTitlebar._update = '+
+				window.TabsInTitlebar._update.toSource().replace(
+					/let fullTabsHeight = /,
+					'$& gBrowser.treeStyleTab.position != "top" ? 0 : $1'
+				)
+			);
+		}
+
 		if ('BrowserOpenTab' in window) {
 			eval('window.BrowserOpenTab = '+
 				window.BrowserOpenTab.toSource().replace(
