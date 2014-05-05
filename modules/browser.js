@@ -5547,7 +5547,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 
 		var self = this;
-		var CSSTransitionEnabled = ('Transition' in aTab.style || 'MozTransition' in aTab.style);
+		var CSSTransitionEnabled = ('transition' in aTab.style || 'MozTransition' in aTab.style);
 		if (CSSTransitionEnabled) {
 			aTab.__treestyletab__updateTabIndentTask = function(aTime, aBeginning, aChange, aDuration) {
 				delete aTab.__treestyletab__updateTabIndentTask;
@@ -6141,7 +6141,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		aTab.setAttribute(this.kCOLLAPSING_PHASE, aCollapsed ? this.kCOLLAPSING_PHASE_TO_BE_COLLAPSED : this.kCOLLAPSING_PHASE_TO_BE_EXPANDED );
 
-		var CSSTransitionEnabled = ('Transition' in aTab.style || 'MozTransition' in aTab.style);
+		var CSSTransitionEnabled = ('transition' in aTab.style || 'MozTransition' in aTab.style);
 
 		var maxMargin;
 		var offsetAttr;
