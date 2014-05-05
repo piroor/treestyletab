@@ -688,6 +688,7 @@ pref("extensions.treestyletab.compatibility.Tabberwocky", true);
 pref("extensions.treestyletab.compatibility.TabControl", true);
 pref("extensions.treestyletab.compatibility.TabsOnBottom", true);
 pref("extensions.treestyletab.compatibility.TabUtilities", true);
+pref("extensions.treestyletab.compatibility.TileTabs", true);
 pref("extensions.treestyletab.compatibility.TMP", true); // Tab Mix Plus
 pref("extensions.treestyletab.compatibility.TooManyTabs", true);
 pref("extensions.treestyletab.compatibility.TotalToolbar", true);

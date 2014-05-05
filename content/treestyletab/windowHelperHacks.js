@@ -1166,6 +1166,19 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		);
 	}
 
+	// Tile Tabs
+	// https://addons.mozilla.org/firefox/addon/tile-tabs/
+	if ('tileTabs' in window &&
+		'allocateTab' in window.tileTabs &&
+		TreeStyleTabUtils.getTreePref('compatibility.TileTabs')) {
+		eval('tileTabs.allocateTab = '+
+			tileTabs.allocateTab.toSource().replace(
+				'tab = gBrowser.addTab',
+				'TreeStyleTabService.readyToOpenChildTabNow(); $&'
+			)
+		);
+	}
+
 	window.setTimeout(function(aSelf) {
 		aSelf.overrideExtensionsDelayed();
 	}, 0, this);
