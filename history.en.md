@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Allow to hide the title bar if Tabs on Bottom addon is installed.
  - 0.14.2014050102
    * Works with Unified Sidebar correctly, in the "auto shrink" mode. (regression)
  - 0.14.2014050101
