@@ -2,6 +2,7 @@
 
  - master/HEAD
    * Tabs on Bottomがインストールされている場合はタイトルバーを非表示にできるようにした
+   * [Tile Tabs](https://addons.mozilla.org/firefox/addon/tile-tabs/)から開くタブを現在のタブと同階層で開くようにした
  - 0.14.2014050102
    * タブを自動的に縮めるモードにおいて、Unified Sidebarと協調して動作するようにした（後退バグの修正）
  - 0.14.2014050101
