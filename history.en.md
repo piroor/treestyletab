@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 0.14.2014050601
    * Allow to hide the title bar if Tabs on Bottom addon is installed.
    * Open new tabs by [Tile Tabs](https://addons.mozilla.org/firefox/addon/tile-tabs/) as next sibling tab.
  - 0.14.2014050102

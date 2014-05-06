@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 0.14.2014050601
    * Tabs on Bottomがインストールされている場合はタイトルバーを非表示にできるようにした
    * [Tile Tabs](https://addons.mozilla.org/firefox/addon/tile-tabs/)から開くタブを現在のタブと同階層で開くようにした
  - 0.14.2014050102
