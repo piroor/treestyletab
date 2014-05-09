@@ -162,7 +162,7 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 	 * Don't make this panel completely transparent, because
 	 * mousemove event never fire on 100% transparent panel.
 	 */
-	background: rgba(0, 0, 0, 0.01);
+	background: rgba(255, 255, 255, 0.01);
 	line-height: 0;
 	margin: 0;
 	padding: 0;
