@@ -3,6 +3,6 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
 /* don't show the dummy titlebar, even if chromemargin is applied by Fox Splitter or someone */
-#main-window:not([treestyletab-tabbar-position="top"])[chromemargin]:not([tabsintitlebar]) > #titlebar {
+#main-window:not([treestyletab-tabbar-position="top"])[chromemargin]:not([tabsintitlebar]):not([chromemargin^="0,"]) > #titlebar {
 	display: none;
 }
