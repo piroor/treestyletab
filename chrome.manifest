@@ -27,6 +27,7 @@ locale	treestyletab	pl	locale/pl/treestyletab/
 locale	treestyletab	fr-FR	locale/fr-FR/treestyletab/
 locale	treestyletab	sv-SE	locale/sv-SE/treestyletab/
 locale	treestyletab	da-DK	locale/da-DK/treestyletab/
+locale	treestyletab	cs	locale/cs/treestyletab/
 
 skin	treestyletab	classic/1.0	skin/classic/treestyletab/
 
