@@ -1,6 +1,9 @@
 # 更新履歴
 
  - master/HEAD
+   * OS Xにおいて、ナビゲーションツールバーと、タイトルバー内のプライベートブラウジングアイコンを正しく表示するようにした（後退バグの修正）
+   * タブバーを自動的に隠すモードにおいて、白い背景のWebサイトで背景色の変化が目立たないようにした
+   * チェコ語ロケール追加（[by Vlastimil Ovčáčík. Thanks!](https://github.com/piroor/treestyletab/pull/714)）
  - 0.14.2014050601
    * Tabs on Bottomがインストールされている場合はタイトルバーを非表示にできるようにした
    * [Tile Tabs](https://addons.mozilla.org/firefox/addon/tile-tabs/)から開くタブを現在のタブと同階層で開くようにした

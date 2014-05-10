@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * Show the navigation toolbar and the "private browsing" indicator in the titlebar correctly, on OS X. (regression)
+   * Don't darken colors of websites with white background, in "auto hide tab bar" mode.
+   * [Czech locale is added by Vlastimil Ovčáčík. Thanks!](https://github.com/piroor/treestyletab/pull/714)
  - 0.14.2014050601
    * Allow to hide the title bar if Tabs on Bottom addon is installed.
    * Open new tabs by [Tile Tabs](https://addons.mozilla.org/firefox/addon/tile-tabs/) as next sibling tab.
