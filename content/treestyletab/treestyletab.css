@@ -161,6 +161,9 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 	/**
 	 * Don't make this panel completely transparent, because
 	 * mousemove event never fire on 100% transparent panel.
+	 * The color should be a pale white, instead of a pale black,
+	 * because many websites use white background. Black screen
+	 * is too glaring for white background websites.
 	 */
 	background: rgba(255, 255, 255, 0.01);
 	line-height: 0;
