@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Don't hide the toolbar in the full screen mode, if `browser.fullscreen.autohide` is `false`.
  - 0.14.2014051001
    * Show the navigation toolbar and the "private browsing" indicator in the titlebar correctly, on OS X. (regression)
    * Don't darken colors of websites with white background, in "auto hide tab bar" mode.
