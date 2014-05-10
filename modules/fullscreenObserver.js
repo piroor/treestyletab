@@ -35,6 +35,8 @@
 
 const EXPORTED_SYMBOLS = ['FullscreenObserver']; 
 
+Components.utils.import('resource://treestyletab-modules/utils.js');
+
 function FullscreenObserver(aWindow) {
 	this.window = aWindow;
 	this.init();
@@ -86,7 +88,10 @@ FullscreenObserver.prototype = {
 		if (d.documentElement.getAttribute('sizemode') != 'fullscreen')
 			return;
 
-		if (!w.FullScreen.useLionFullScreen) { // see https://github.com/piroor/treestyletab/issues/645
+		if (
+			!w.FullScreen.useLionFullScreen && // see https://github.com/piroor/treestyletab/issues/645
+			TreeStyleTabUtils.prefs.getPref('browser.fullscreen.autohide') // see https://github.com/piroor/treestyletab/issues/717
+			) {
 			let toolbox = w.gNavToolbox;
 			toolbox.style.marginTop = -toolbox.getBoundingClientRect().height + 'px';
 		}
