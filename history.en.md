@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 0.14.2014051001
    * Show the navigation toolbar and the "private browsing" indicator in the titlebar correctly, on OS X. (regression)
    * Don't darken colors of websites with white background, in "auto hide tab bar" mode.
    * [Czech locale is added by Vlastimil Ovčáčík. Thanks!](https://github.com/piroor/treestyletab/pull/714)
