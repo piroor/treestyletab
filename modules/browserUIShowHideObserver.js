@@ -58,7 +58,16 @@ BrowserUIShowHideObserver.prototype = {
 		this.observer = new this.MutationObserver(function(aMutations, aObserver) {
 			self.onMutationOnParent(aMutations, aObserver);
 		});
-		this.observer.observe(this.box, { childList : true, attributes : true });
+		this.observer.observe(this.box, {
+			childList       : true,
+			attributes      : true,
+			attributeFilter : [
+				'hidden',
+				'collapsed',
+				'moz-collapsed', // Used in full screen mode
+				'disablechrome'
+			]
+		});
 		this.initChildrenObserver();
 	},
 	onMutationOnParent : function BrowserUIShowHideObserver_onMutationOnParent(aMutations, aObserver) 
@@ -103,7 +112,9 @@ BrowserUIShowHideObserver.prototype = {
 					self.onAttributeModified(aChild, aMutation, aObserver);
 				});
 			});
-			observer.observe(aChild, { attributes : true });
+			observer.observe(aChild, {
+				attributes : true
+			});
 			aChild.__treestyletab__attributeObserver = observer;
 		}, this)
 	},
@@ -123,12 +134,7 @@ BrowserUIShowHideObserver.prototype = {
 			)
 			return;
 
-		if (aMutation.attributeName == 'hidden' ||
-			aMutation.attributeName == 'collapsed' ||
-			aMutation.attributeName == 'moz-collapsed' || // Used in full screen mode
-			aMutation.attributeName == 'disablechrome') {
-			TST.updateFloatingTabbar(TreeStyleTabConstants.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
-		}
+		TST.updateFloatingTabbar(TreeStyleTabConstants.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
 	},
  
 	destroyChildrenObserver : function BrowserUIShowHideObserver_destroyChildrenObserver(aParent) 
