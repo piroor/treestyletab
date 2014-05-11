@@ -74,13 +74,9 @@ FullscreenObserver.prototype = {
 
 	onMutation : function FullscreenObserver_onMutation(aMutations, aObserver) 
 	{
-		aMutations.forEach(function(aMutation) {
-			if (aMutation.type != 'attributes')
-				return;
-			this.window.setTimeout((function() {
-				this.onSizeModeChange();
-			}).bind(this), 10);
-		}, this);
+		this.window.setTimeout((function() {
+			this.onSizeModeChange();
+		}).bind(this), 10);
 	},
 
 	onSizeModeChange : function FullscreenObserver_onSizeModeChange()

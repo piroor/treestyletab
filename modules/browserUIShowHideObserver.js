@@ -54,13 +54,13 @@ BrowserUIShowHideObserver.prototype = {
 	{
 		if (!this.MutationObserver)
 			return;
-		var self = this;
-		this.observer = new this.MutationObserver(function(aMutations, aObserver) {
-			self.onMutationOnParent(aMutations, aObserver);
-		});
+		this.observer = new this.MutationObserver((function(aMutations, aObserver) {
+			this.onMutation(aMutations, aObserver);
+		}).bind(this));
 		this.observer.observe(this.box, {
 			childList       : true,
 			attributes      : true,
+			subtree         : true,
 			attributeFilter : [
 				'hidden',
 				'collapsed',
@@ -68,21 +68,19 @@ BrowserUIShowHideObserver.prototype = {
 				'disablechrome'
 			]
 		});
-		this.initChildrenObserver();
 	},
-	onMutationOnParent : function BrowserUIShowHideObserver_onMutationOnParent(aMutations, aObserver) 
+	onMutation : function BrowserUIShowHideObserver_onMutation(aMutations, aObserver) 
 	{
 		aMutations.forEach(function(aMutation) {
 			switch (aMutation.type)
 			{
 				case 'childList':
-					this.destroyChildrenObserver();
-					this.initChildrenObserver();
-					this.owner.browser.treeStyleTab.updateFloatingTabbar(TreeStyleTabConstants.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
+					if (aMutation.target == this.box)
+						this.owner.browser.treeStyleTab.updateFloatingTabbar(TreeStyleTabConstants.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
 					return;
 
 				case 'attributes':
-					this.onAttributeModified(this.box, aMutation, aObserver);
+					this.onAttributeModified(aMutation, aObserver);
 					return;
 			}
 		}, this);
@@ -91,7 +89,6 @@ BrowserUIShowHideObserver.prototype = {
 	destroy : function BrowserUIShowHideObserver_destroy()
 	{
 		if (this.observer) {
-			this.destroyChildrenObserver();
 			this.observer.disconnect();
 			delete this.observer;
 		}
@@ -99,32 +96,16 @@ BrowserUIShowHideObserver.prototype = {
 		delete this.owner;
 	},
 
-	initChildrenObserver : function BrowserUIShowHideObserver_initChildrenObserver(aParent) 
+	onAttributeModified : function BrowserUIShowHideObserver_onAttributeModified(aMutation, aObserver) 
 	{
-		Array.forEach(this.box.childNodes, function(aChild) {
-			var observer = aChild.__treestyletab__attributeObserver;
-			if (observer)
-				return;
+		if (this.handlingAttrChange)
+			return;
 
-			var self = this;
-			observer = new this.MutationObserver(function(aMutations, aObserver) {
-				aMutations.forEach(function(aMutation) {
-					self.onAttributeModified(aChild, aMutation, aObserver);
-				});
-			});
-			observer.observe(aChild, {
-				attributes : true
-			});
-			aChild.__treestyletab__attributeObserver = observer;
-		}, this)
-	},
-	onAttributeModified : function BrowserUIShowHideObserver_onAttributeModified(aTargetElement, aMutation, aObserver) 
-	{
 		var TST = this.owner.browser.treeStyleTab;
 		if (
 			// I must ignore show/hide of elements managed by TST,
 			// to avoid infinity loop.
-			aTargetElement.hasAttribute(TreeStyleTabConstants.kTAB_STRIP_ELEMENT) &&
+			aMutation.target.hasAttribute(TreeStyleTabConstants.kTAB_STRIP_ELEMENT) &&
 			// However, I have to synchronize visibility of the real
 			// tab bar and the placeholder's one. If they have
 			// different visibility, then the tab bar is shown or
@@ -134,18 +115,13 @@ BrowserUIShowHideObserver.prototype = {
 			)
 			return;
 
-		TST.updateFloatingTabbar(TreeStyleTabConstants.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
-	},
- 
-	destroyChildrenObserver : function BrowserUIShowHideObserver_destroyChildrenObserver(aParent) 
-	{
-		Array.forEach(this.box.childNodes, function(aChild) {
-			var observer = aChild.__treestyletab__attributeObserver;
-			if (!observer)
-				return;
+		this.handlingAttrChange = true;
 
-			observer.disconnect();
-			delete aChild.__treestyletab__attributeObserver;
-		}, this)
+		TST.updateFloatingTabbar(TreeStyleTabConstants.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
+
+		var w = this.box.ownerDocument.defaultView;
+		w.setTimeout((function() {
+			this.handlingAttrChange = false;
+		}).bind(this), 10);
 	}
 };
