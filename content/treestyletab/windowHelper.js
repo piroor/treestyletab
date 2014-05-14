@@ -45,7 +45,7 @@ var TreeStyleTabWindowHelper = {
 			eval('window.TabsInTitlebar._update = '+
 				window.TabsInTitlebar._update.toSource().replace(
 					/let fullTabsHeight = /,
-					'$& gBrowser.treeStyleTab.position != "top" ? 0 : $1'
+					'$& gBrowser.treeStyleTab.position != "top" ? 0 : '
 				)
 			);
 		}
