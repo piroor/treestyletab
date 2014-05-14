@@ -36,8 +36,7 @@ function syncEnabledState(aElement, aEnabled)
 var gGroupBookmarkRadio,
 	gGroupBookmarkUnderParent,
 	gGroupBookmarkType,
-	gGroupBookmarkBehaviorPref,
-	gGroupBookmarkReplacePref;
+	gGroupBookmarkBehaviorPref;
 
 function ensureGroupBookmarkItems()
 {
@@ -47,14 +46,6 @@ function ensureGroupBookmarkItems()
 	gGroupBookmarkUnderParent  = document.getElementById('openGroupBookmark.underParent-check');
 	gGroupBookmarkType         = document.getElementById('openGroupBookmark.subtreeType-menulist');
 	gGroupBookmarkBehaviorPref = document.getElementById('extensions.treestyletab.openGroupBookmark.behavior');
-	var bookmarkReplaceKey = 'browser.tabs.loadFolderAndReplace';
-	gGroupBookmarkReplacePref = document.getElementById(bookmarkReplaceKey);
-	try {
-		gGroupBookmarkReplacePref.value = prefs.getPref(bookmarkReplaceKey);
-	}
-	catch(e) {
-		prefs.setPref(bookmarkReplaceKey, gGroupBookmarkReplacePref.value != 'false');
-	}
 }
 
 function init()
@@ -142,12 +133,6 @@ function initTabPane()
 
 	var newTabPref = document.getElementById('extensions.treestyletab.autoAttach.newTabButton-box');
 	newTabPref.removeAttribute('hidden');
-
-	var bookmarkGroupReplacePref = document.getElementById('openGroupBookmark.replace');
-	if (bookmarkGroupReplacePref.selected) {
-		document.getElementById('openGroupBookmark.subtree').selected = true;
-	}
-	bookmarkGroupReplacePref.setAttribute('hidden', true);
 }
 
 function onSyncGroupBookmarkUIToPref()

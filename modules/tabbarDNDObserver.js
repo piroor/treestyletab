@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2013
+ * Portions created by the Initial Developer are Copyright (C) 2010-2014
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -91,7 +91,10 @@ TabbarDNDObserver.prototype = {
 
 		if (
 			sv.evaluateXPath(
-				'ancestor-or-self::*[contains(" scrollbar popup menupopup panel tooltip ", concat(" ", local-name(), " "))]',
+				'ancestor-or-self::*[' +
+					'contains(" scrollbar popup menupopup panel tooltip ", concat(" ", local-name(), " ")) or' +
+					'(local-name()="toolbarbutton" and @type="menu")' +
+				']',
 				aEvent.originalTarget,
 				Ci.nsIDOMXPathResult.BOOLEAN_TYPE
 			).booleanValue ||
@@ -354,7 +357,8 @@ catch(e) {
 		var dropAreasCount = (aSourceTab && pinned) ? 2 : 3 ;
 		var screenPositionProp = sv.isVertical && pinned ? sv.invertedScreenPositionProp : sv.screenPositionProp ;
 		var sizeProp = sv.isVertical && pinned ? sv.invertedSizeProp : sv.sizeProp ;
-		var boxPos  = sv.getTabActualScreenPosition(tab);
+		var orient = pinned ? 'horizontal' : null ;
+		var boxPos  = sv.getTabActualScreenPosition(tab, orient);
 		var boxUnit = Math.round(tab.boxObject[sizeProp] / dropAreasCount);
 		var eventPosition = aEvent[screenPositionProp];
 //		if (this.window['piro.sakura.ne.jp'].tabsDragUtils
@@ -387,16 +391,20 @@ catch(e) {
 			case sv.kDROP_BEFORE:
 				if (DEBUG) dump('  position = before the tab\n');
 /*
-	[TARGET  ] ↑detach from parent, and move
+	     <= detach from parent, and move
+	[TARGET  ]
 
 	  [      ]
-	[TARGET  ] ↑attach to the parent of the target, and move
+	     <= attach to the parent of the target, and move
+	[TARGET  ]
 
 	[        ]
-	[TARGET  ] ↑attach to the parent of the target, and move
+	     <= attach to the parent of the target, and move
+	[TARGET  ]
 
 	[        ]
-	  [TARGET] ↑attach to the parent of the target (previous tab), and move
+	     <= attach to the parent of the target (previous tab), and move
+	  [TARGET]
 */
 				var prevTab = sv.getPreviousVisibleTab(tab);
 				if (!prevTab) {
@@ -423,15 +431,19 @@ catch(e) {
 			case sv.kDROP_AFTER:
 				if (DEBUG) dump('  position = after the tab\n');
 /*
-	[TARGET  ] ↓if the target has a parent, attach to it and and move
+	[TARGET  ]
+	     <= if the target has a parent, attach to it and and move
 
-	  [TARGET] ↓attach to the parent of the target, and move
+	  [TARGET]
+	     <= attach to the parent of the target, and move
 	[        ]
 
-	[TARGET  ] ↓attach to the parent of the target, and move
+	[TARGET  ]
+	     <= attach to the parent of the target, and move
 	[        ]
 
-	[TARGET  ] ↓attach to the target, and move
+	[TARGET  ]
+	     <= attach to the target, and move
 	  [      ]
 */
 				var nextTab = sv.getNextVisibleTab(tab);
@@ -446,7 +458,8 @@ catch(e) {
 					info.action       = sv.kACTION_MOVE | (info.parent ? sv.kACTION_ATTACH : sv.kACTION_PART );
 					info.insertBefore = nextTab;
 /*
-	[TARGET   ] ↓attach dragged tab to the parent of the target as its next sibling
+	[TARGET   ]
+	     <= attach dragged tab to the parent of the target as its next sibling
 	  [DRAGGED]
 */
 					if (aSourceTab == nextTab) {
@@ -471,12 +484,16 @@ catch(e) {
   
 	performDrop : function TabbarDND_performDrop(aInfo, aDraggedTab) 
 	{
+		if (DEBUG) dump('performDrop: start\n');
 		var sv = this.treeStyleTab;
 		var b  = this.browser;
 		var w  = this.window;
 
 		var tabsInfo = this.getDraggedTabsInfoFromOneTab(aDraggedTab, aInfo);
-		if (!tabsInfo.draggedTab) return false;
+		if (!tabsInfo.draggedTab) {
+			if (DEBUG) dump(' => no dragged tab\n');
+			return false;
+		}
 
 		var sourceWindow = aDraggedTab.ownerDocument.defaultView;
 		var sourceBrowser = sourceWindow.TreeStyleTabService.getTabBrowserFromChild(aDraggedTab);
@@ -525,14 +542,13 @@ catch(e) {
 			else if (aInfo.action & sv.kACTION_ATTACH) {
 				this.attachTabsOnDrop(draggedRoots, aInfo.parent);
 			}
-			else {
-				return false;
-			}
+			// otherwise, just moved.
 
 			if ( // if this move will cause no change...
 				sourceBrowser == targetBrowser &&
 				sourceService.getNextVisibleTab(draggedTabs[draggedTabs.length-1]) == aInfo.insertBefore
 				) {
+				if (DEBUG) dump(' => no change\n');
 				// then, do nothing
 				return true;
 			}
@@ -636,7 +652,6 @@ catch(e) {
 			if (aTab.hasAttribute(sv.kDROP_POSITION))
 				aTab.removeAttribute(sv.kDROP_POSITION)
 
-			// clear drop position preview on Firefox 17 and later
 			if (aOnFinish) {
 				aTab.style.transform = '';
 				if ('__treestyletab__opacityBeforeDragged' in aTab) {
@@ -987,7 +1002,7 @@ try{
 			this.clearDropPosition();
 			indicatorTab.setAttribute(sv.kDROP_POSITION, dropPosition);
 			if (b.ownerDocument.defaultView['piro.sakura.ne.jp'].tabsDragUtils
-					.canAnimateDraggedTabs(aEvent)) { // Firefox 17 and later
+					.canAnimateDraggedTabs(aEvent)) {
 				let newOpacity = dropPosition == 'self' ? 0.35 : 0.75 ; // to prevent the dragged tab hides the drop target itself
 				this.window['piro.sakura.ne.jp'].tabsDragUtils.getDraggedTabs(aEvent).forEach(function(aTab) {
 					if (!('__treestyletab__opacityBeforeDragged' in aTab))
@@ -1178,9 +1193,7 @@ catch(e) {
 		let sourceURI = sourceDoc ? sourceDoc.documentURI : 'file:///' ;
 		let principal = sourceDoc ?
 					sourceDoc.nodePrincipal :
-				SecMan.getSimpleCodebasePrincipal ? // this method isn't there on Firefox 16 and olders!
-					SecMan.getSimpleCodebasePrincipal(Services.io.newURI(sourceURI, null, null)) :
-					null ;
+					SecMan.getSimpleCodebasePrincipal(Services.io.newURI(sourceURI, null, null)) ;
 		try {
 			if (principal)
 				SecMan.checkLoadURIStrWithPrincipal(principal, normalizedURI.spec, Ci.nsIScriptSecurityManager.STANDARD);
@@ -1248,7 +1261,7 @@ catch(e) {
 			case 'text/unicode':
 			case 'text/plain':
 			case 'text/x-moz-text-internal':
-				return [aData.replace(/^\s+|\s+$/g, '')];
+				return [aData.trim()];
 
 			case 'text/x-moz-url':
 				return [((aData instanceof Ci.nsISupportsString) ? aData.toString() : aData)
@@ -1277,13 +1290,13 @@ catch(e) {
 	
 	startListenEvents : function TabbarDND_startListenEvents() 
 	{
-		var strip = this.treeStyleTab.tabStrip;
-		strip.addEventListener('dragstart', this, true);
-		strip.addEventListener('dragover',  this, true);
-		strip.addEventListener('dragenter', this, false);
-		strip.addEventListener('dragleave', this, false);
-		strip.addEventListener('dragend',   this, true);
-		strip.addEventListener('drop',      this, true);
+		var target = this.treeStyleTab.ownerToolbar || this.treeStyleTab.tabStrip;
+		target.addEventListener('dragstart', this, true);
+		target.addEventListener('dragover',  this, true);
+		target.addEventListener('dragenter', this, false);
+		target.addEventListener('dragleave', this, false);
+		target.addEventListener('dragend',   this, true);
+		target.addEventListener('drop',      this, true);
 	},
   
 	destroy : function TabbarDND_destroy() 
@@ -1298,13 +1311,13 @@ catch(e) {
 	
 	endListenEvents : function TabbarDND_endListenEvents() 
 	{
-		var strip = this.treeStyleTab.tabStrip;
-		strip.removeEventListener('dragstart', this, true);
-		strip.removeEventListener('dragover',  this, true);
-		strip.removeEventListener('dragenter', this, false);
-		strip.removeEventListener('dragleave', this, false);
-		strip.removeEventListener('dragend',   this, true);
-		strip.removeEventListener('drop',      this, true);
+		var target = this.treeStyleTab.ownerToolbar || this.treeStyleTab.tabStrip;
+		target.removeEventListener('dragstart', this, true);
+		target.removeEventListener('dragover',  this, true);
+		target.removeEventListener('dragenter', this, false);
+		target.removeEventListener('dragleave', this, false);
+		target.removeEventListener('dragend',   this, true);
+		target.removeEventListener('drop',      this, true);
 	}
   
 }; 

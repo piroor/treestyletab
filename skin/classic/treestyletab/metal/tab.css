@@ -40,6 +40,28 @@
 	background: none transparent !important;
 }
 
+/* Disable pseudo elements introduced by Australis */
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tab-background-start::before,
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tab-background-start::after,
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tab-background-end::before,
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tab-background-end::after {
+	display: none !important;
+}
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  :-moz-any(.tab-background-start,
+            .tab-background-end) {
+	min-height: 0;
+	width: 0;
+}
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:hover .tab-background:not([selected="true"]) {
+	background-image: none;
+}
+
 /* for Mac OS X */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   :-moz-any(.tab-content:not([pinned]):not([selected="true"]),
@@ -65,13 +87,28 @@
             .tab-background-end[selected="true"]) {
 	mask: none !important;
 }
+/* highlighted pinned tabs */
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned][titlechanged]:not([selected="true"]) .tab-background {
+	background-image: radial-gradient(circle farthest-corner at 50% 3px,
+	                                  Highlight 3%,
+	                                  rgba(255, 255, 255, 0) 80%);
+}
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned][titlechanged]:not([selected="true"]):hover .tab-background {
+	background-image: radial-gradient(circle farthest-corner at 50% 3px,
+	                                  Highlight 3%,
+	                                  rgba(255, 255, 255, 0) 100%);
+}
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   :-moz-any(.tab-background-start[pinned][titlechanged],
             .tab-background-end[pinned][titlechanged]) {
 	visibility: collapse !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tab-background {
+  .tab-background,
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tab-background-middle {
 	margin: 0 !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]

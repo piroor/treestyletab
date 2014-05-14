@@ -1,14 +1,63 @@
 # History
 
  - master/HEAD
+ - 0.14.2014051101
+   * Don't hide the toolbar in the full screen mode, if `browser.fullscreen.autohide` is `false`.
+ - 0.14.2014051001
+   * Show the navigation toolbar and the "private browsing" indicator in the titlebar correctly, on OS X. (regression)
+   * Don't darken colors of websites with white background, in "auto hide tab bar" mode.
+   * [Czech locale is added by Vlastimil Ovčáčík. Thanks!](https://github.com/piroor/treestyletab/pull/714)
+ - 0.14.2014050601
+   * Allow to hide the title bar if Tabs on Bottom addon is installed.
+   * Open new tabs by [Tile Tabs](https://addons.mozilla.org/firefox/addon/tile-tabs/) as next sibling tab.
+ - 0.14.2014050102
+   * Works with Unified Sidebar correctly, in the "auto shrink" mode. (regression)
+ - 0.14.2014050101
+   * Works on Nightly 32.0a1 again.
+   * Hide pinned tabs completely on DOM full-screen mode.
+ - 0.14.2014043001
+   * Better compatibility with No Script 2.6.8.20.
+ - 0.14.2014042701
+   * Works on Nightly 31.0a1 again.
+   * Improved: Introduce a new checkbox "When a new tree appears, collapse others automatically" in the configuration dialog. It has been split from "When a tab gets focus, expand its tree and collapse others automatically" because the behavior was not related to the existing checkbox.
+   * Improved: Better compatibility with [Classic Theme Restorer](https://addons.mozilla.org/firefox/addon/classicthemerestorer/) about "tabs in titlebar" appearance.
+   * Fixed: Restore tree structure on the startup correctly, with Firefox 28 and later.
+   * Fixed: Open new tabs from "search by" in the context menu correctly, even if the selection includes line breaks or it is too long.
+   * Fixed: Broken trees around duplicated tabs after restarting, are gone.
+   * [ru locale is updated by Infocatcher. Thanks!](https://github.com/piroor/treestyletab/pull/672)
+ - 0.14.2014020901
+   * Improved: On the "auto hide" mode, scroll to the current tab when the tab bar becomes shown.
+   * Improved: Accept drag and drop of the tab bar itself, on the blank area around pinned tabs.
+   * Fixed: Don't activate "draw in titlebar" feature for windows with vertical tab bar.
+   * Fixed: On the "auto hide" mode, keep scroll position of the tab bar correctly when the bar is shown and hidden.
+   * Fixed: In the fullscreen mode, don't hide the navigation toolbar on OS X Lion.
+   * Fixed: Collapse the tab bar automatically, if it is expanded by long-press of the Ctrl key and a new window is opened while the key is pressed.
+   * Fixed: Open tabs as children, from the "search by" in the context menu.
+   * Fixed: Don't start dragging operation of the tab bar itself from a button which have its own popup menu.
+ - 0.14.2014013001
+   * Improved: Better compatibility with [Nav Bar on Title Bar](https://addons.mozilla.org/firefox/addon/nav-bar-on-title-bar/).
+   * Improved: Better compatibility with [Tab Control](https://addons.mozilla.org/firefox/addon/tab-control/).
+   * Modified: Remove codes for an extinct feature "replace the current tab when opening a bookmark group". The feature was already removed in old Firefox.
+   * Fixed: Public APIs to show/hide the tab bar works correctly.
+   * Fixed: Maximize scrollable area of tree-like view in a about:treestyletab-group tab.
+   * Fixed: Open bookmark folder as a tree correctly, even if the user don't want to open a dummy grouping tab.
+   * Fixed: Fix broken appearance of the tab bar on Firefox versions without the "Tabs on Top" feature.
+ - 0.14.2013112901
    * Improved: Better compatibility with someone who change visibility of the tab bar, like "auto hide tab bar for last single tab" feature of Tab Mix Plus, Pale Moon, and [Hide Tab Bar With One Tab](https://addons.mozilla.org/firefox/addon/hide-tab-bar-with-one-tab/).
+   * Improved: Better compatibility with [Context Search](http://www.cusser.net/extensions/contextsearch/). Now search result tabs are opened as children of the current tab.
    * Modified: Expand the shrunken tab bar immediately when the mouse pointer moves onto the tab bar, if the size of teh tab bar is fixed.
    * Modified: Keep the UI to modify relations of bookmarks disabled, for bookmark items in the "Unsorted Bookmarks" folder. (Because people won't open all items in the folder as a tree of tabs by middle-click on the folder.)
+   * Modified: Updated pinned tabs are highlighted by TST itself.
    * Fixed: Hide (or collapse) the tab bar correctly with delay, when a tab is opened or closed in the "auto hide" mode.
    * Fixed: Better responsibility for bookmark management UI when there are very large number of sibling bookmarks in a folder.
    * Fixed: Save and restore both sizes of expanded and shrunken tab bar correctly, on the next startup.
    * Fixed: Re-show the tab bar correctly when the F11 key is pressed to exit from the DOM full-screen mode.
+   * Fixed: Show the tab bar again correctly when I click the grippy in the splitter.
+   * Fixed: Show the tab bar again correctly when I drag the splitter.
+   * Fixed: Correctly update "list all tabs" menu if there is pinned tabs ([by Infocatcher.](https://github.com/piroor/treestyletab/pull/606) Thanks!)
+   * Fixed: Better compatibility with "Australis".
    * Fixed: Don't disable background color of tabs when Tab Mix Plus is installed.
+   * Fixed: Open tabs from user scripts with [Greasemonkey](https://addons.mozilla.org/firefox/addon/greasemonkey/) 1.11 correctly.
    * [fr-FR locale is updated by AxlMun. Thanks!](https://github.com/piroor/treestyletab/pull/595)
  - 0.14.2013100901
    * Improved: Position and size of the tab bar is updated automatically when any element is inserted to the browser box.

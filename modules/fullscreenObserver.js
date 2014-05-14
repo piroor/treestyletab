@@ -18,7 +18,6 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
- *                 Infocatcher <https://github.com/Infocatcher>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -34,94 +33,77 @@
  *
  * ***** END LICENSE BLOCK ******/
 
-const EXPORTED_SYMBOLS = ['BrowserUIShowHideObserver']; 
+const EXPORTED_SYMBOLS = ['FullscreenObserver']; 
 
-Components.utils.import('resource://treestyletab-modules/constants.js');
+Components.utils.import('resource://treestyletab-modules/utils.js');
 
-function BrowserUIShowHideObserver(aOwner, aBox) {
-	this.owner = aOwner;
-	this.box = aBox;
+function FullscreenObserver(aWindow) {
+	this.window = aWindow;
 	this.init();
 }
-BrowserUIShowHideObserver.prototype = {
+FullscreenObserver.prototype = {
 	get MutationObserver()
 	{
-		var w = this.box.ownerDocument.defaultView;
+		var w = this.window;
 		return w.MutationObserver || w.MozMutationObserver;
 	},
 
-	init : function BrowserUIShowHideObserver_onInit() 
+	init : function FullscreenObserver_onInit() 
 	{
 		if (!this.MutationObserver)
 			return;
 		this.observer = new this.MutationObserver((function(aMutations, aObserver) {
 			this.onMutation(aMutations, aObserver);
 		}).bind(this));
-		this.observer.observe(this.box, {
-			childList       : true,
+		this.observer.observe(this.window.document.documentElement, {
 			attributes      : true,
-			subtree         : true,
-			attributeFilter : [
-				'hidden',
-				'collapsed',
-				'moz-collapsed', // Used in full screen mode
-				'disablechrome'
-			]
+			attributeFilter : ['sizemode']
 		});
-	},
-	onMutation : function BrowserUIShowHideObserver_onMutation(aMutations, aObserver) 
-	{
-		aMutations.forEach(function(aMutation) {
-			switch (aMutation.type)
-			{
-				case 'childList':
-					if (aMutation.target == this.box)
-						this.owner.browser.treeStyleTab.updateFloatingTabbar(TreeStyleTabConstants.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
-					return;
 
-				case 'attributes':
-					this.onAttributeModified(aMutation, aObserver);
-					return;
-			}
-		}, this);
+		this.onSizeModeChange();
 	},
 
-	destroy : function BrowserUIShowHideObserver_destroy()
+	destroy : function FullscreenObserver_destroy()
 	{
 		if (this.observer) {
 			this.observer.disconnect();
 			delete this.observer;
 		}
-		delete this.box;
-		delete this.owner;
+		delete this.window;
 	},
 
-	onAttributeModified : function BrowserUIShowHideObserver_onAttributeModified(aMutation, aObserver) 
+	onMutation : function FullscreenObserver_onMutation(aMutations, aObserver) 
 	{
-		if (this.handlingAttrChange)
-			return;
-
-		var TST = this.owner.browser.treeStyleTab;
-		if (
-			// I must ignore show/hide of elements managed by TST,
-			// to avoid infinity loop.
-			aMutation.target.hasAttribute(TreeStyleTabConstants.kTAB_STRIP_ELEMENT) &&
-			// However, I have to synchronize visibility of the real
-			// tab bar and the placeholder's one. If they have
-			// different visibility, then the tab bar is shown or
-			// hidden by "auto hide tab bar" feature of someone
-			// (Pale Moon, Tab Mix Plus, etc.)
-			this.owner.browser.tabContainer.visible != TST.tabStripPlaceHolder.collapsed
-			)
-			return;
-
-		this.handlingAttrChange = true;
-
-		TST.updateFloatingTabbar(TreeStyleTabConstants.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
-
-		var w = this.box.ownerDocument.defaultView;
-		w.setTimeout((function() {
-			this.handlingAttrChange = false;
+		this.window.setTimeout((function() {
+			this.onSizeModeChange();
 		}).bind(this), 10);
+	},
+
+	onSizeModeChange : function FullscreenObserver_onSizeModeChange()
+	{
+		var w = this.window;
+		var d = w.document;
+		if (d.documentElement.getAttribute('sizemode') != 'fullscreen')
+			return;
+
+		if (
+			!w.FullScreen.useLionFullScreen && // see https://github.com/piroor/treestyletab/issues/645
+			TreeStyleTabUtils.prefs.getPref('browser.fullscreen.autohide') // see https://github.com/piroor/treestyletab/issues/717
+			) {
+			let toolbox = w.gNavToolbox;
+			toolbox.style.marginTop = -toolbox.getBoundingClientRect().height + 'px';
+		}
+
+		var windowControls = d.getElementById('window-controls');
+		var navigationToolbar = d.getElementById('nav-bar');
+		if (!windowControls ||
+			!navigationToolbar ||
+			windowControls.parentNode == navigationToolbar ||
+			(w.gBrowser.treeStyleTab.position == 'top' && w.gBrowser.treeStyleTab.fixed))
+			return;
+
+		// the location bar is flex=1, so we should not apply it.
+		// windowControls.setAttribute('flex', '1');
+		navigationToolbar.appendChild(windowControls);
 	}
 };

@@ -15,7 +15,7 @@
    http://github.com/piroor/fxaddonlib-tabs-drag-utils
 */
 (function() {
-	const currentRevision = 29;
+	const currentRevision = 31;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -128,17 +128,11 @@
 
 		initTabBrowser : function TDU_initTabBrowser(aTabBrowser)
 		{
-			var tabDNDObserver = (aTabBrowser.tabContainer && aTabBrowser.tabContainer.tabbrowser == aTabBrowser) ?
-									aTabBrowser.tabContainer : // Firefox 4.0 or later
-									aTabBrowser ; // Firefox 3.5 - 3.6
-			this.initTabDNDObserver(tabDNDObserver);
+			this.initTabDNDObserver(aTabBrowser.tabContainer);
 		},
 		destroyTabBrowser : function TDU_destroyTabBrowser(aTabBrowser)
 		{
-			var tabDNDObserver = (aTabBrowser.tabContainer && aTabBrowser.tabContainer.tabbrowser == aTabBrowser) ?
-									aTabBrowser.tabContainer : // Firefox 4.0 or later
-									aTabBrowser ; // Firefox 3.5 - 3.6
-			this.destroyTabDNDObserver(tabDNDObserver);
+			this.destroyTabDNDObserver(aTabBrowser.tabContainer);
 		},
 
 		updatedTabDNDObservers : [],
@@ -708,10 +702,10 @@
 			if (aTabBrowserChild.localName == 'tabbrowser') // itself
 				return aTabBrowserChild;
 
-			if (aTabBrowserChild.tabbrowser) // tabs, Firefox 4.0 or later
+			if (aTabBrowserChild.tabbrowser) // tabs
 				return aTabBrowserChild.tabbrowser;
 
-			if (aTabBrowserChild.localName == 'toolbar') // tabs toolbar, Firefox 4.0 or later
+			if (aTabBrowserChild.localName == 'toolbar') // tabs toolbar
 				return aTabBrowserChild.getElementsByTagName('tabs')[0].tabbrowser;
 
 			var b = aTabBrowserChild.ownerDocument.evaluate(
@@ -733,7 +727,6 @@
 
 		processTabsDragging: function TDU_processTabsDragging(aEvent, aOptions)
 		{
-			// Firefox 17 and later
 			if (this.canAnimateDraggedTabs(aEvent)) {
 				let tabbar = this.getTabbarFromEvent(aEvent);
 				let draggedTab = aEvent.dataTransfer && aEvent.dataTransfer.mozGetDataAt(TAB_DROP_TYPE, 0);
@@ -777,7 +770,7 @@
 
 			var selectedTabs;
 			var isMultipleDrag = (
-					( // Firefox 4.x (https://bugzilla.mozilla.org/show_bug.cgi?id=566510)
+					( // Firefox itself (https://bugzilla.mozilla.org/show_bug.cgi?id=566510)
 						'visibleTabs' in b &&
 						(selectedTabs = b.visibleTabs.filter(function(aTab) {
 							return aTab.getAttribute('multiselected') == 'true';
@@ -825,7 +818,6 @@
  
 	 	getCurrentURIOfTab : function TDU_getCurrentURIOfTab(aTab) 
 		{
-			// Firefox 4.0-
 			if (this.isTabNeedToBeRestored(aTab)) {
 				let data = this.getRestoringData(aTab);
 				let entry = data.entries[Math.min(data.index, data.entries.length-1)];
@@ -859,11 +851,13 @@
 
 		_fireTabsDropEvent : function TDU_fireTabsDropEvent(aTabs) 
 		{
-			var event = document.createEvent('DataContainerEvents');
-			event.initEvent(this.EVENT_TYPE_TABS_DROP, true, true);
-			event.setData('tabs', aTabs);
-			// for backward compatibility
-			event.tabs = aTabs;
+			var event = new CustomEvent(this.EVENT_TYPE_TABS_DROP, {
+					bubbles    : true,
+					cancelable : true,
+					detail     : {
+						tabs : aTabs
+					}
+				});
 			return this._dropTarget.dispatchEvent(event);
 		},
 		get _dropTarget()
@@ -976,17 +970,14 @@
 
 	function StringList(aTypes) 
 	{
-		return {
-			__proto__ : aTypes,
-			item : function(aIndex)
-			{
+		return Object.create(aTypes, {
+			item : { value : function(aIndex) {
 				return this[aIndex];
-			},
-			contains : function(aType)
-			{
+			} },
+			contains : { value : function(aType) {
 				return this.indexOf(aType) > -1;
-			}
-		};
+			} }
+		});
 	}
 
 	tabsDragUtils.DOMDataTransferProxy = DOMDataTransferProxy;

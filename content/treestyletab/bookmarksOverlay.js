@@ -2,8 +2,9 @@ Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 XPCOMUtils.defineLazyModuleGetter(this,
   'TreeStyleTabUtils', 'resource://treestyletab-modules/utils.js');
 
-var TreeStyleTabBookmarksService = {
-	__proto__ : TreeStyleTabService,
+(function() {
+let { inherit } = Components.utils.import('resource://treestyletab-modules/lib/inherit.jsm', {});
+var TreeStyleTabBookmarksService = inherit(TreeStyleTabService, {
 
 	get BookmarksService() {
 		if (!this._BookmarksService) {
@@ -253,7 +254,7 @@ var TreeStyleTabBookmarksService = {
 						'if (item.uri) { $& }'
 					).replace(
 						/(browserWindow\.(?:getBrowser\(\)|gBrowser)\.loadTabs\([^;]+\);)/,
-						'var TSTResult = browserWindow.TreeStyleTabBookmarksService.handleTabsOpenProcess(where, aEvent, browserWindow, ids, urls, typeof replaceCurrentTab == "undefined" ? undefined : replaceCurrentTab, aFolderTitle);\n' +
+						'var TSTResult = browserWindow.TreeStyleTabBookmarksService.handleTabsOpenProcess(where, aEvent, browserWindow, ids, urls, aFolderTitle);\n' +
 						'TSTTreeStructure = TSTResult.treeStructure;\n' +
 						'TSTPreviousTabs = TSTResult.previousTabs;\n' +
 						'TSTOpenGroupBookmarkBehavior = TSTResult.behavior;\n' +
@@ -370,13 +371,12 @@ var TreeStyleTabBookmarksService = {
 			);
 		}
 	},
-	handleTabsOpenProcess : function TSTBMService_handleTabsOpenProcess(aWhere, aEvent, aBrowserWindow, aIDs, aURLs, aReplaceCurrentTab, aFolderTitle)
+	handleTabsOpenProcess : function TSTBMService_handleTabsOpenProcess(aWhere, aEvent, aBrowserWindow, aIDs, aURLs, aFolderTitle)
 	{
 		var result = {
-				behavior          : undefined,
-				treeStructure     : undefined,
-				previousTabs      : undefined,
-				replaceCurrentTab : undefined
+				behavior      : undefined,
+				treeStructure : undefined,
+				previousTabs  : undefined
 			};
 		if (
 			aEvent.type != 'drop' &&
@@ -394,32 +394,41 @@ var TreeStyleTabBookmarksService = {
 			let treeStructure = result.behavior & sv.kGROUP_BOOKMARK_DONT_RESTORE_TREE_STRUCTURE ?
 						null :
 						sv.getTreeStructureFromItems(aIDs) ;
-			if (
-				treeStructure &&
-				result.behavior & sv.kGROUP_BOOKMARK_USE_DUMMY
-				) {
-				let parentCount = 0;
-				let childCount = 0;
-				for (let i in treeStructure) {
-					if (treeStructure[i] == -1)
-						parentCount++;
-					else
-						childCount++;
+			if (treeStructure) {
+				if (result.behavior & sv.kGROUP_BOOKMARK_USE_DUMMY) {
+					let parentCount = 0;
+					let childCount = 0;
+					for (let i in treeStructure) {
+						if (treeStructure[i] == -1)
+							parentCount++;
+						else
+							childCount++;
+					}
+					if (
+						parentCount > 1 &&
+						(
+							result.behavior & sv.kGROUP_BOOKMARK_USE_DUMMY_FORCE ||
+							// when there is any orphan, then all of parents and orphans should be grouped under a dummy tab.
+							childCount < parentCount
+						)
+						) {
+						aIDs.unshift(-1);
+						treeStructure = sv.getTreeStructureFromItems(aIDs, 0);
+						aURLs.unshift(sv.getGroupTabURI({
+							title:     aFolderTitle,
+							temporary: TreeStyleTabUtils.getTreePref('openGroupBookmark.temporaryGroup')
+						}));
+					}
 				}
-				if (
-					parentCount > 1 &&
-					(
-						result.behavior & sv.kGROUP_BOOKMARK_USE_DUMMY_FORCE ||
-						// when there is any orphan, then all of parents and orphans should be grouped under a dummy tab.
-						childCount < parentCount
-					)
-					) {
-					aIDs.unshift(-1);
-					treeStructure = sv.getTreeStructureFromItems(aIDs, 0);
-					aURLs.unshift(sv.getGroupTabURI({
-						title:     aFolderTitle,
-						temporary: TreeStyleTabUtils.getTreePref('openGroupBookmark.temporaryGroup')
-					}));
+				else {
+					// make the first item parent.
+					treeStructure = treeStructure.map(function(aParent, aIndex) {
+						if (aIndex == 0)
+							return aParent;
+						if (aParent < 0)
+							return 0;
+						return aParent;
+					});
 				}
 			}
 
@@ -432,14 +441,6 @@ var TreeStyleTabBookmarksService = {
 			else {
 				sv.readyToOpenNewTabGroup(null, treeStructure, result.behavior & sv.kGROUP_BOOKMARK_EXPAND_ALL_TREE);
 			}
-			// replaceCurrentTab works only on Firefox 7 or earlier
-			// See: https://bugzilla.mozilla.org/show_bug.cgi?id=440093
-			if (typeof aReplaceCurrentTab !== 'undefined')
-				result.replaceCurrentTab = false;
-		}
-		else {
-			if (typeof aReplaceCurrentTab !== 'undefined')
-				result.replaceCurrentTab = !!(result.behavior & sv.kGROUP_BOOKMARK_REPLACE);
 		}
 		return result;
 	},
@@ -470,7 +471,7 @@ var TreeStyleTabBookmarksService = {
 
 	_onTabsDrop : function TSTBMService_onTabsDrop(aEvent)
 	{
-		var tabs = aEvent.getData('tabs') || [];
+		var tabs = aEvent.detail.tabs;
 		var groups = this.splitTabsToSubtrees(tabs);
 		if (
 			groups.length == 1 &&
@@ -500,6 +501,9 @@ var TreeStyleTabBookmarksService = {
 		}
 	}
 
-};
+});
 
 TreeStyleTabBookmarksService.preInit();
+
+window.TreeStyleTabBookmarksService = TreeStyleTabBookmarksService;
+})();

@@ -49,6 +49,7 @@
 }
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > *:first-child,
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > *:first-child[hidden="true"] + *:not(toolbarpaletteitem),
+.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > #private-browsing-indicator:first-child + *:not(toolbarpaletteitem), /* for Linux */
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > .treestyletab-toolbar-inner-box {
 	-moz-border-top-colors: none !important;
 	border-top: 0 none !important;
@@ -79,4 +80,41 @@
 .tabbrowser-tabs[treestyletab-style~="vertigo"][treestyletab-mode="vertical"]
   .tabbrowser-arrowscrollbox .tabs-newtab-button {
 	border-style: none !important;
+}
+
+
+/* Make tab itself clickable */
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab {
+	pointer-events: auto;
+}
+
+
+/* Disable background tab separator introduced by Australis */
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab[beforeselected]::after,
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab[beforehovered]::after,
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab[afterselected]::before,
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab[afterhovered]::before,
+/* http://mxr.mozilla.org/mozilla-central/source/browser/themes/shared/tabs.inc.css#262 */
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])[movingtab]
+  .tabbrowser-tab[beforeselected]:not([last-visible-tab])::after,
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:not([selected]):not([afterselected-visible]):not([afterhovered]):not([first-visible-tab]):not(:hover)::before,
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"]):not([overflow])
+  .tabbrowser-tab[last-visible-tab]:not([selected]):not([beforehovered]):not(:hover)::after {
+	/* hide it anyway!! */
+	content: none;
+	display: none;
+	visibility: collapse;
+}
+
+/* Show tab favicon in vertical tab bar always */
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab:not([busy])
+  .tab-icon-image:not([src]):not([pinned]) {
+	display: -moz-box;
 }

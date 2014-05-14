@@ -87,7 +87,6 @@
 <!ENTITY config.openGroupBookmark.subtree.type.flat    "Ignore">
 <!ENTITY config.openGroupBookmark.subtree.type.after   "tree structure of tabs saved to bookmarks">
 <!ENTITY config.openGroupBookmark.flat        "apre i segnalibri in schede separate (comportamento predefinito di Firefox)">
-<!ENTITY config.openGroupBookmark.replace     "sostituisce la scheda in uso con i segnalibri contenuti nella cartella selezionata">
 <!ENTITY config.openGroupBookmark.underParent "Put tabs under a dummy tab for grouping">
 
 <!ENTITY config.dropLinksOnTab.caption "Dropped link, URL, bookmark or file to existing tab">
@@ -126,6 +125,7 @@
 
 <!ENTITY config.tabs.tree "Tree">
 
+<!ENTITY config.autoCollapseExpandSubtreeOnAttach "When a new tree appears, collapse others automatically">
 <!--ENTITY config.autoCollapseExpandSubtreeOnSelect "Contrai automaticamente gli altri sottoalberi quando viene aperta o selezionata una scheda"-->
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect "When a tab gets focus, expand his tree and collapse others automatically">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">

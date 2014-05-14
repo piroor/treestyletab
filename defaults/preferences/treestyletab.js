@@ -425,6 +425,13 @@ pref("extensions.treestyletab.autoCollapseExpandSubtreeOnSelect",      true);
  */
 pref("extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove", true);
 /**
+ * When a new child tab is opened (or attached) under an existing tab,
+ * other existing expanded trees can counteract that you find out where the new
+ * attached tab is. If you set this to "true", TST automatically collapses other
+ * expanded trees at the time.
+ */
+pref("extensions.treestyletab.autoCollapseExpandSubtreeOnAttach", true);
+/**
  * When you press Ctrl-Tab/Shift-Ctrl-Tab, Firefox advances focus of tabs.
  * If this is "true", TST expands focused tree after a delay specified
  * by another preference "autoExpandSubtreeOnSelect.whileFocusMovingByShortcut.delay".
@@ -601,7 +608,6 @@ pref("extensions.treestyletab.restoreTree.level", 1);
  * conflict with TST features. They will be rolled back when TST is uninstalled.
  */
 pref("browser.link.open_newwindow.restriction.override", 0);
-pref("browser.tabs.loadFolderAndReplace.override", false);
 pref("browser.tabs.insertRelatedAfterCurrent.override", false);
 pref("browser.tabs.insertRelatedAfterCurrent.override.force", true);
 
@@ -639,7 +645,9 @@ pref("extensions.treestyletab.pinnedTab.faviconized", true);
 pref("extensions.treestyletab.compatibility.AgingTabs", true);
 pref("extensions.treestyletab.compatibility.AIOS", true); // All-in-One Sidebar
 pref("extensions.treestyletab.compatibility.Autohide", true);
+pref("extensions.treestyletab.compatibility.ClassicThemeRestorer", true);
 pref("extensions.treestyletab.compatibility.ColorfulTabs", true);
+pref("extensions.treestyletab.compatibility.ContextSearch", true);
 pref("extensions.treestyletab.compatibility.DomainTab", true);
 pref("extensions.treestyletab.compatibility.DragDeGo", true);
 pref("extensions.treestyletab.compatibility.DragIt", true);
@@ -661,6 +669,7 @@ pref("extensions.treestyletab.compatibility.Locationbar2", true);
 pref("extensions.treestyletab.compatibility.MouseGesturesRedox", true);
 pref("extensions.treestyletab.compatibility.MouselessBrowsing", true);
 pref("extensions.treestyletab.compatibility.MultiLinks", true);
+pref("extensions.treestyletab.compatibility.NavbarOnTitlebar", true);
 pref("extensions.treestyletab.compatibility.OptimozTweaks", true);
 pref("extensions.treestyletab.compatibility.PermaTabs", true);
 pref("extensions.treestyletab.compatibility.PersonalTitlebar", true);
@@ -676,7 +685,10 @@ pref("extensions.treestyletab.compatibility.STM.warnForNewTabPosition", true);
 pref("extensions.treestyletab.compatibility.STM", true); // Super Tab Mode
 pref("extensions.treestyletab.compatibility.SuperDragAndGo", true);
 pref("extensions.treestyletab.compatibility.Tabberwocky", true);
+pref("extensions.treestyletab.compatibility.TabControl", true);
+pref("extensions.treestyletab.compatibility.TabsOnBottom", true);
 pref("extensions.treestyletab.compatibility.TabUtilities", true);
+pref("extensions.treestyletab.compatibility.TileTabs", true);
 pref("extensions.treestyletab.compatibility.TMP", true); // Tab Mix Plus
 pref("extensions.treestyletab.compatibility.TooManyTabs", true);
 pref("extensions.treestyletab.compatibility.TotalToolbar", true);

@@ -122,8 +122,12 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 /* put resizer under tabs, and raise up tabs */
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"][treestyletab-tabbar-autohide]
   > *,
+.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"][treestyletab-tabbar-autohide]
+  > #tabbrowser-tabs,
 .treestyletab-toolbar-inner-box[treestyletab-tabbar-autohide]:not([treestyletab-tabbar-fixed="true"])
-  > * {
+  > *,
+.treestyletab-toolbar-inner-box[treestyletab-tabbar-autohide]:not([treestyletab-tabbar-fixed="true"])
+  > #tabbrowser-tabs {
 	position: relative;
 	z-index: 2;
 }
@@ -157,8 +161,11 @@ tabbrowser[treestyletab-tabbar-autohide-mode="1"][treestyletab-tabbar-autohide="
 	/**
 	 * Don't make this panel completely transparent, because
 	 * mousemove event never fire on 100% transparent panel.
+	 * The color should be a pale white, instead of a pale black,
+	 * because many websites use white background. Black screen
+	 * is too glaring for white background websites.
 	 */
-	background: rgba(0, 0, 0, 0.01);
+	background: rgba(255, 255, 255, 0.01);
 	line-height: 0;
 	margin: 0;
 	padding: 0;
@@ -276,6 +283,14 @@ tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-sc
  * it includes #TabsToolbar in its subqueries.
  */
 @media all and (-moz-windows-compositor) { /* for winstripe */
+	#navigator-toolbox
+	  > .treestyletab-tabbar-toolbar:not(#toolbar-menubar),
+	#navigator-toolbox
+	  > .treestyletab-tabbar-toolbar:not(#toolbar-menubar):-moz-lwtheme,
+	#navigator-toolbox
+	  > .treestyletab-tabbar-toolbar-ready:not(#toolbar-menubar),
+	#navigator-toolbox
+	  > .treestyletab-tabbar-toolbar-ready:not(#toolbar-menubar):-moz-lwtheme,
 	#navigator-toolbox[tabsontop="true"]
 	  > .treestyletab-tabbar-toolbar:not(#toolbar-menubar),
 	#navigator-toolbox[tabsontop="true"]
@@ -285,6 +300,12 @@ tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-sc
 	#navigator-toolbox[tabsontop="true"]
 	  > .treestyletab-tabbar-toolbar-ready:not(#toolbar-menubar):-moz-lwtheme,
 
+	#navigator-toolbox
+	  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"]
+	  + .treestyletab-tabbar-toolbar:last-child,
+	#navigator-toolbox
+	  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"]
+	  + .treestyletab-tabbar-toolbar:not(:last-child),
 	#navigator-toolbox
 	  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"]
 	  + .treestyletab-tabbar-toolbar[tabsontop="true"]:last-child,
@@ -297,6 +318,12 @@ tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-sc
 	#navigator-toolbox
 	  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"]
 	  + .treestyletab-tabbar-toolbar[tabsontop="false"]:not(:last-child),
+	#navigator-toolbox
+	  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"]
+	  + .treestyletab-tabbar-toolbar-ready:last-child,
+	#navigator-toolbox
+	  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"]
+	  + .treestyletab-tabbar-toolbar-ready:not(:last-child),
 	#navigator-toolbox
 	  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"]
 	  + .treestyletab-tabbar-toolbar-ready[tabsontop="true"]:last-child,
@@ -317,6 +344,12 @@ tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-sc
 
 	#navigator-toolbox
 	  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"]
+	  + #TabsToolbar:last-child,
+	#navigator-toolbox
+	  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"]
+	  + #TabsToolbar:not(:last-child),heme,
+	#navigator-toolbox
+	  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"]
 	  + #TabsToolbar[tabsontop="true"]:last-child,
 	#navigator-toolbox
 	  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"]
@@ -326,15 +359,19 @@ tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-sc
 	  + #TabsToolbar[tabsontop="false"]:last-child,
 	#navigator-toolbox
 	  > #nav-bar + #customToolbars + #PersonalToolbar[collapsed="true"]
-	  + #TabsToolbar[tabsontop="false"]:not(:last-child) {
+	  + #TabsToolbar[tabsontop="false"]:not(:last-child),
+
+	#navigator-toolbox
+	  > toolbar:not(#toolbar-menubar):not(#addon-bar):-moz-lwtheme {
 		-moz-binding: url(treestyletab.xml#toolbar-drag);
 	}
 }
 @media not all and (-moz-windows-compositor) { /* for winstripe */
-	#TabsToolbar[tabsontop=true]:not(:-moz-lwtheme):-moz-system-metric(windows-default-theme),
-	#navigator-toolbox[tabsontop=false]
+	#TabsToolbar:not(:-moz-lwtheme):-moz-system-metric(windows-default-theme),
+	#TabsToolbar[tabsontop="true"]:not(:-moz-lwtheme):-moz-system-metric(windows-default-theme),
+	#navigator-toolbox[tabsontop="false"]
 	  > toolbar.treestyletab-tabbar-toolbar:not(#toolbar-menubar):not(:-moz-lwtheme):-moz-system-metric(windows-default-theme),
-	#navigator-toolbox[tabsontop=false]
+	#navigator-toolbox[tabsontop="false"]
 	  > toolbar.treestyletab-tabbar-toolbar-ready:not(#toolbar-menubar):not(:-moz-lwtheme):-moz-system-metric(windows-default-theme) {
 		-moz-binding: url(treestyletab.xml#toolbar-drag);
 	}
@@ -342,8 +379,10 @@ tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-sc
 .treestyletab-tabbar-toolbar,
 .treestyletab-tabbar-toolbar-ready,
 /* for gnomestripe */
-#TabsToolbar.treestyletab-tabbar-toolbar[tabsontop="true"]:not(:-moz-lwtheme):-moz-system-metric(menubar-drag),
-#TabsToolbar.treestyletab-tabbar-toolbar-ready[tabsontop="true"]:not(:-moz-lwtheme):-moz-system-metric(menubar-drag),
+#TabsToolbar.treestyletab-tabbar-toolbar:not([autohide="true"]):not(:-moz-lwtheme):-moz-system-metric(menubar-drag),
+#TabsToolbar.treestyletab-tabbar-toolbar:not([autohide="true"])[tabsontop="true"]:not(:-moz-lwtheme):-moz-system-metric(menubar-drag),
+#TabsToolbar.treestyletab-tabbar-toolbar-ready:not([autohide="true"]):not(:-moz-lwtheme):-moz-system-metric(menubar-drag),
+#TabsToolbar.treestyletab-tabbar-toolbar-ready:not([autohide="true"])[tabsontop="true"]:not(:-moz-lwtheme):-moz-system-metric(menubar-drag),
 /* for pinstripe */
 toolbar.treestyletab-tabbar-toolbar:not([nowindowdrag="true"]),
 toolbar.treestyletab-tabbar-toolbar-ready:not([nowindowdrag="true"]),
@@ -555,6 +594,10 @@ toolbar.treestyletab-tabbar-toolbar-ready:not([nowindowdrag="true"]),
 	position: fixed !important;
 	/* width: 24px; */
 	z-index: 100;
+}
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-dom-fullscreen-activated="true"]
+  .tabbrowser-tab[pinned] {
+	z-index: -100;
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]

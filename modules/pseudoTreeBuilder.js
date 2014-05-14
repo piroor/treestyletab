@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011-2013
+ * Portions created by the Initial Developer are Copyright (C) 2011-2014
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -76,10 +76,14 @@ var PseudoTreeBuilder = {
 			'    null\n' +
 			'  ).singleNodeValue;\n' +
 			'if (label) {\n' +
-			'  var customEvent = doc.createEvent("DataContainerEvent");\n' +
-			'  customEvent.initEvent(%EVENT_TYPE%, true, true);\n' +
-			'  customEvent.setData("id", label.getAttribute("tab-id"));\n' +
-			'  customEvent.setData("sourceEvent", event);\n' +
+			'  var customEvent = new doc.defaultView.CustomEvent(%EVENT_TYPE%, {\n' +
+			'      bubbles    : true,\n' +
+			'      cancelable : true,\n' +
+			'      detail     : {\n' +
+			'        id          : label.getAttribute("tab-id"),\n' +
+			'        sourceEvent : event\n' +
+			'      }\n' +
+			'    });\n' +
 			'  event.target.dispatchEvent(customEvent);\n' +
 			'}').replace('%EVENT_TYPE%', this.kTAB_LINK_CLICK.quote()));
 

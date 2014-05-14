@@ -339,9 +339,6 @@
 		<preference id="extensions.treestyletab.openGroupBookmark.behavior"
 			name="extensions.treestyletab.openGroupBookmark.behavior"
 			type="int"/>
-		<preference id="browser.tabs.loadFolderAndReplace"
-			name="browser.tabs.loadFolderAndReplace.override"
-			type="bool"/>
 		<preference id="extensions.treestyletab.dropLinksOnTab.behavior"
 			name="extensions.treestyletab.dropLinksOnTab.behavior"
 			type="int"/>
@@ -452,8 +449,6 @@
 					</vbox>
 				</hbox>
 				<radio value="2" label="&config.openGroupBookmark.flat;"/>
-				<radio id="openGroupBookmark.replace"
-					value="4" label="&config.openGroupBookmark.replace;"/>
 			</radiogroup>
 			</vbox>
 		</deck>
@@ -645,6 +640,9 @@
 <prefpane id="prefpane-tree" label="&config.tabs.tree;"
 	onpaneload="initTreePane();">
 	<preferences>
+		<preference id="extensions.treestyletab.autoCollapseExpandSubtreeOnAttach"
+			name="extensions.treestyletab.autoCollapseExpandSubtreeOnAttach"
+			type="bool"/>
 		<preference id="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect"
 			name="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect"
 			type="bool"/>
@@ -672,6 +670,9 @@
 			type="int"/>
 	</preferences>
 
+	<checkbox id="extensions.treestyletab.autoCollapseExpandSubtreeOnAttach-check"
+		preference="extensions.treestyletab.autoCollapseExpandSubtreeOnAttach"
+		label="&config.autoCollapseExpandSubtreeOnAttach;"/>
 	<checkbox id="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect-check"
 		preference="extensions.treestyletab.autoCollapseExpandSubtreeOnSelect"
 		label="&config.autoCollapseExpandSubtreeOnSelect;"/>

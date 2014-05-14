@@ -2,8 +2,9 @@ Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 XPCOMUtils.defineLazyModuleGetter(this,
   'TreeStyleTabUtils', 'resource://treestyletab-modules/utils.js');
 
-var TreeStyleTabBookmarksServiceEditable = {
-	__proto__ : TreeStyleTabBookmarksService,
+(function() {
+let { inherit } = Components.utils.import('resource://treestyletab-modules/lib/inherit.jsm', {});
+var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksService, {
 
 	instantApply : false,
 	canceled : false,
@@ -111,7 +112,7 @@ var TreeStyleTabBookmarksServiceEditable = {
 			'        value=""/>' +
 			'    </menupopup>' +
 			'  </menulist>' +
-			'</row>').replace(/^\s*|\s*$/g, '').replace(/>\s+</g, '><')));
+			'</row>').trim().replace(/>\s+</g, '><')));
 		range.detach();
 		document.getElementById('treestyletab-parent-label').setAttribute('value', TreeStyleTabUtils.treeBundle.getString('bookmarkProperty.parent.label'));
 		this.blankItem.setAttribute('label', TreeStyleTabUtils.treeBundle.getString('bookmarkProperty.parent.blank.label'));
@@ -356,6 +357,9 @@ var TreeStyleTabBookmarksServiceEditable = {
 		}
 	}
 
-};
+});
 
 window.addEventListener('DOMContentLoaded', TreeStyleTabBookmarksServiceEditable, false);
+
+window.TreeStyleTabBookmarksServiceEditable = TreeStyleTabBookmarksServiceEditable;
+})();

@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011-2013
+ * Portions created by the Initial Developer are Copyright (C) 2011-2014
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -41,6 +41,7 @@ const Ci = Components.interfaces;
 
 Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 
+Components.utils.import('resource://treestyletab-modules/lib/inherit.jsm');
 Components.utils.import('resource://treestyletab-modules/base.js');
 Components.utils.import('resource://treestyletab-modules/pseudoTreeBuilder.js');
 
@@ -53,8 +54,7 @@ function FullTooltipManager(aOwner)
 {
 	this.init(aOwner);
 }
-FullTooltipManager.prototype = {
-	__proto__ : TreeStyleTabBase,
+FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 
 	kTOOLTIP_MODE_DEFAULT   : 0,
 	kTOOLTIP_MODE_COLLAPSED : 1,
@@ -162,11 +162,11 @@ FullTooltipManager.prototype = {
 
 	onItemClick : function FTM_onItemClick(aEvent)
 	{
-		var id = aEvent.getData('id');
+		var id = aEvent.detail.id;
 		if (id) {
 			let tab = this.getTabById(id, this.owner.browser);
 			if (tab) {
-				let event = aEvent.getData('sourceEvent');
+				let event = aEvent.detail.sourceEvent;
 				if (event.button == 1 ||
 					(event.button == 0 && this.isAccelKeyPressed(event)))
 					this.owner.browser.removeTab(tab);
@@ -457,7 +457,7 @@ FullTooltipManager.prototype = {
 			for (let i = 0, maxi = aExtraLabels.length; i < maxi; i++)
 			{
 				let label = aExtraLabels[i];
-				label = label.replace(/^\s+|\s+$/g, '');
+				label = label.trim();
 				if (!label)
 					continue;
 				root.appendChild(this.document.createElement('description'))
@@ -477,4 +477,4 @@ FullTooltipManager.prototype = {
 		range.deleteContents();
 		range.detach();
 	}
-};
+});

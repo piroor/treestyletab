@@ -1,7 +1,7 @@
 /**
  * @fileOverview Popup Notification (Door Hanger) Based Confirmation Library for Firefox 4.0 or later
  * @author       YUKI "Piro" Hiroshi
- * @version      4
+ * @version      6
  * Basic usage:
  *
  * @example
@@ -50,9 +50,7 @@
  *
  * @license
  *   The MIT License, Copyright (c) 2011-2012 YUKI "Piro" Hiroshi
- *   http://github.com/piroor/fxaddonlibs/blob/master/license.txt
- * @url http://github.com/piroor/fxaddonlibs/blob/master/confirmWithPopup.js
- * @url http://github.com/piroor/fxaddonlibs
+ * @url http://github.com/piroor/fxaddonlib-confirm-popup
  */
 
 if (typeof window == 'undefined')
@@ -90,8 +88,8 @@ catch(e) {
 }
 
 var confirmWithPopup;
-(function() {
-	const currentRevision = 4;
+(function(global) {
+	const currentRevision = 6;
 
 	var loadedRevision = 'confirmWithPopup' in namespace ?
 			namespace.confirmWithPopup.revision :
@@ -102,7 +100,7 @@ var confirmWithPopup;
 	}
 
 	if (!available)
-		return confirmWithPopup = undefined;
+		return global.confirmWithPopup = undefined;
 
 	const Cc = Components.classes;
 	const Ci = Components.interfaces;
@@ -130,7 +128,13 @@ var confirmWithPopup;
 				)+
 				'#notification-popup-box[anchorid="'+aOptions.anchor+'"] > #'+aOptions.anchor+' {'+
 				'	display: -moz-box;'+
-				'}'
+				'}' +
+				(aOptions.label.indexOf('\n') > -1 ?
+					'popupnotification[id="'+aOptions.id+'-notification"] .popup-notification-description {' +
+					'	white-space: pre-wrap;' +
+					'}' :
+					''
+				)
 			);
 
 		var styleSheets = aDocument.styleSheets;
@@ -195,17 +199,24 @@ var confirmWithPopup;
 					});
 		}
 
-		if (!options.browser)
+		var b = options.browser;
+		if (!b && options.window)
+			b = options.window.gBrowser;
+
+		if (!b)
 			return deferred
 					.next(function() {
 						throw new Error('confirmWithPopup requires a <xul:browser/>!');
 					});
 
-		var doc = options.browser.ownerDocument;
+		if (b.localName == 'tabbrowser')
+			b = b.selectedBrowser;
+
+		var doc = b.ownerDocument;
 		var style;
 		var done = false;
 		var postProcess = function() {
-				if (doc && style) {
+				if (doc && style && style.parentNode) {
 					doc.removeChild(style);
 					style = null;
 				}
@@ -266,6 +277,7 @@ var confirmWithPopup;
 			var secondaryActions = buttons.length > 1 ? buttons.slice(1) : null ;
 
 			options.id = options.value || 'confirmWithPopup-'+encodeURIComponent(options.label);
+			options.label = options.label.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
 
 			style = addStyleSheet(doc, options);
 
@@ -276,16 +288,20 @@ var confirmWithPopup;
 				 *          by PopupNotifications.show().
 				 */
 				doc.defaultView.PopupNotifications.show(
-					options.browser,
+					b,
 					options.id,
 					options.label,
 					options.anchor,
 					primaryAction,
 					secondaryActions,
-					{
-						__proto__ : nativeOptions,
-						dismissed : true
-					}
+					Object.create(nativeOptions, {
+						dismissed : {
+							writable     : true,
+							configurable : true,
+							enumerable   : true,
+							value        : true
+						}
+					})
 				);
 				if (!options.dismissed) {
 					/**
@@ -293,27 +309,31 @@ var confirmWithPopup;
 					 */
 					let secondTry = function() {
 						doc.defaultView.PopupNotifications.show(
-							options.browser,
+							b,
 							options.id,
 							options.label,
 							options.anchor,
 							primaryAction,
 							secondaryActions,
-							{
-								__proto__     : nativeOptions,
-								eventCallback : function(aEventType) {
-									try {
-										if (!done && (aEventType == 'removed' || aEventType == 'dismissed'))
-											deferred.fail(aEventType);
-										if (options.eventCallback)
-											options.eventCallback.call(aOptions.options || aOptions, aEventType);
-									}
-									finally {
-										if (aEventType == 'removed')
-											postProcess();
+							Object.create(nativeOptions, {
+								eventCallback : {
+									writable     : true,
+									configurable : true,
+									enumerable   : true,
+									value        : function(aEventType) {
+										try {
+											if (!done && (aEventType == 'removed' || aEventType == 'dismissed'))
+												deferred.fail(aEventType);
+											if (options.eventCallback)
+												options.eventCallback.call(aOptions.options || aOptions, aEventType);
+										}
+										finally {
+											if (aEventType == 'removed')
+												postProcess();
+										}
 									}
 								}
-							}
+							})
 						);
 					};
 					if (namespace.Deferred)
@@ -370,6 +390,10 @@ var confirmWithPopup;
 			};
 		}
 	};
+	confirmWithPopup.version = currentRevision;
 
-	namespace.confirmWithPopup = confirmWithPopup;
-})();
+	global.confirmWithPopup = namespace.confirmWithPopup = confirmWithPopup;
+})(this);
+
+if (typeof exports == 'object')
+	exports.confirmWithPopup = confirmWithPopup;

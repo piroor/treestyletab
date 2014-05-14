@@ -1,0 +1,187 @@
+<!ENTITY config.title        "Možnosti Tree Style Tab">
+
+<!ENTITY config.scale.min "min">
+<!ENTITY config.scale.max "max">
+
+
+<!ENTITY config.tabs.appearance "Vzhled">
+
+<!ENTITY config.tabbar.position.caption "Umístění lišty panelů">
+<!ENTITY config.tabbar.position.left    "Vlevo">
+<!ENTITY config.tabbar.position.right   "Vpravo">
+<!ENTITY config.tabbar.position.top     "Nahoře (Výchozí)">
+<!ENTITY config.tabbar.position.bottom  "Dole">
+<!ENTITY config.tabbar.invertClosebox.left  "Zobrazit zavírací tlačítko panelu vlevo">
+<!ENTITY config.tabbar.invertClosebox.right "Zobrazit zavírací tlačítko panelu vpravo">
+<!ENTITY config.tabbar.invertTab            "Nořit panely nalevo">
+<!ENTITY config.tabbar.invertTabContents    "Převrátit prvky panelu">
+<!ENTITY config.tabbar.narrowScrollbar      "Zúžit posuvník">
+<!ENTITY config.enableSubtreeIndent "Odsazovat panely">
+<!ENTITY config.maxTreeLevel.before "až do">
+<!ENTITY config.maxTreeLevel.after  "úrovní">
+<!ENTITY config.allowSubtreeCollapseExpand  "Umožnit sbalení/rozbalení stromu panelů">
+
+
+<!ENTITY config.tabs.style "Styl">
+
+<!ENTITY config.tabbar.style.caption "Styl lišty panelů">
+<!ENTITY config.tabbar.style.plain   "Prostý">
+<!ENTITY config.tabbar.style.flat    "Plochý">
+<!ENTITY config.tabbar.style.mixed   "Mix">
+<!ENTITY config.tabbar.style.vertigo "Vertigo">
+<!ENTITY config.tabbar.style.metal   "Metal">
+<!ENTITY config.tabbar.style.sidebar "Sidebar">
+<!ENTITY config.tabbar.style.none    "Výchozí (dle motivu vzhledu)">
+
+<!ENTITY config.twisty.style.caption "Styl roletky">
+<!ENTITY config.twisty.style.auto    "Automatický">
+<!ENTITY config.twisty.style.none    "Žádný">
+<!ENTITY config.twisty.style.retro   "Retro">
+<!ENTITY config.twisty.style.modern.black "Black Modern">
+<!ENTITY config.twisty.style.modern.white "White Modern">
+<!ENTITY config.twisty.style.osx     "OS X">
+
+
+<!ENTITY config.tabs.menu "Nabídka">
+
+<!ENTITY config.show.tabContextMenu.caption "Přidat následující položky do kontextové nabídky panelů">
+
+<!ENTITY config.tabs.tab "Přidávání panelů">
+
+<!ENTITY config.autoAttach.newTabCommand.label_before "Otevřít nový prázdný panel jako">
+<!ENTITY config.autoAttach.newTabCommand.independent "nezávislý panel">
+<!ENTITY config.autoAttach.newTabCommand.child       "potomka současného panelu">
+<!ENTITY config.autoAttach.newTabCommand.sibling     "sourozence současného panelu">
+<!ENTITY config.autoAttach.newTabCommand.nextSibling "blízkého sourozence současného panelu">
+<!ENTITY config.autoAttach.newTabCommand.label_after "">
+
+<!ENTITY config.autoAttach.newTabButton.label_before "Prostřední tlačítko myši na tlačítku &quot;Otevřít nový panel&quot; otevře panel jako">
+<!ENTITY config.autoAttach.newTabButton.independent "nezávislý panel">
+<!ENTITY config.autoAttach.newTabButton.child       "potomka současného panelu">
+<!ENTITY config.autoAttach.newTabButton.sibling     "sourozence současného panelu">
+<!ENTITY config.autoAttach.newTabButton.nextSibling "blízkého sourozence současného panelu">
+<!ENTITY config.autoAttach.newTabButton.label_after "">
+
+<!ENTITY config.autoAttach.duplicateTabCommand.label_before "Prostřední tlačítko myši na tlačítku &quot;Aktualizovat&quot; vytvoří kopii panelu jako">
+<!ENTITY config.autoAttach.duplicateTabCommand.independent "nezávislý panel">
+<!ENTITY config.autoAttach.duplicateTabCommand.child       "potomka původního panelu">
+<!ENTITY config.autoAttach.duplicateTabCommand.sibling     "sourozence původního panelu">
+<!ENTITY config.autoAttach.duplicateTabCommand.nextSibling "blízkého sourozence původního panelu">
+<!ENTITY config.autoAttach.duplicateTabCommand.label_after "">
+
+<!ENTITY config.autoAttach.goButton.label_before "Prostřední tlačítko myši na tlačítku &quot;Přejít na adresu&quot; otevře nový panel jako">
+<!ENTITY config.autoAttach.goButton.independent "nezávislý panel">
+<!ENTITY config.autoAttach.goButton.child       "potomka současného panelu">
+<!ENTITY config.autoAttach.goButton.sibling     "sourozence současného panelu">
+<!ENTITY config.autoAttach.goButton.nextSibling "blízkého sourozence současného panelu">
+<!ENTITY config.autoAttach.goButton.label_after "">
+
+<!ENTITY config.openGroupBookmark.caption     "Chování tlačítka &quot;Otevřít vše v panelech&quot; pro složky záložek">
+<!ENTITY config.openGroupBookmark.ask         "Vždy se dotázat, jak otevřít záložky">
+<!ENTITY config.openGroupBookmark.subtree     "Otevřít jako strom (Doporučené)">
+<!ENTITY config.openGroupBookmark.subtree.type.before  "">
+<!ENTITY config.openGroupBookmark.subtree.type.restore "Obnovit">
+<!ENTITY config.openGroupBookmark.subtree.type.flat    "Ignorovat">
+<!ENTITY config.openGroupBookmark.subtree.type.after   "stromové uspořádání panelů uložené v záložkách">
+<!ENTITY config.openGroupBookmark.flat        "Otevřít v nezávislých panelech (Výchozí)">
+<!ENTITY config.openGroupBookmark.underParent "Uspořádat panely pod skupinový panel (představující složku záložek)">
+
+<!ENTITY config.dropLinksOnTab.caption "Upuštění odkazu, URL adresy, záložky nebo souboru na existující panel">
+<!ENTITY config.dropLinksOnTab.ask     "Vždy se dotázat, jak objekt otevřít">
+<!ENTITY config.dropLinksOnTab.load    "Otevřít v daném panelu (Výchozí)">
+<!ENTITY config.dropLinksOnTab.newTab  "Otevřít jako potomka daného panelu">
+
+
+<!ENTITY config.tabs.autohide "Schování lišty">
+
+<!ENTITY config.autoHide.mode.normal.caption     "v režimu okna">
+<!ENTITY config.autoHide.mode.fullscreen.caption "v režimu celé obrazovky">
+<!ENTITY config.autoHide.mode.0 "Vždy zobrazit lištu panelů">
+<!ENTITY config.autoHide.mode.1 "Automaticky schovat lištu panelů">
+<!ENTITY config.autoHide.mode.2 "Automaticky zmenšit lištu panelů">
+<!ENTITY config.autoShow.caption "Automaticky zobrazit lištu panelů pokud">
+<!ENTITY config.autoShow.mousemove "Kurzor myši je blízko okraje okna nebo lišty panelů">
+<!ENTITY config.autoHide.area.before "Oblast aktivace:">
+<!ENTITY config.autoHide.area.after "pixelů od okraje okna nebo lišty panelů">
+<!ENTITY config.autoHide.delay.before "Zpoždění:">
+<!ENTITY config.autoHide.delay.after "ms">
+<!ENTITY config.autoShow.accelKeyDown "Klávesa Ctrl je stisknuta po určitou dobu">
+<!ENTITY config.autoShow.accelKeyDown.delay.before "Zobrazit lištu po">
+<!ENTITY config.autoShow.accelKeyDown.delay.after  "ms">
+<!ENTITY config.autoShow.tabSwitch   "Panel je přepnut kombinací kláves Ctrl-Tab">
+<!ENTITY config.autoShow.feedback    "Panel je otevřen nebo zavřen">
+<!ENTITY config.autoShow.feedback.delay.before "Opět zmenšit nebo schovat lištu po">
+<!ENTITY config.autoShow.feedback.delay.after  "ms">
+
+
+<!ENTITY config.tabs.tree "Strom">
+
+<!ENTITY config.autoCollapseExpandSubtreeOnAttach "Při vytvoření nového stromu sbal ostatní stromy automaticky">
+<!ENTITY config.autoCollapseExpandSubtreeOnSelect "Při přepnutí panelu rozbal jeho strom a sbal ostatní stromy automaticky">
+<!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "Kromě přepnutí panelu způsobeném zavřením současného panelu">
+<!ENTITY config.collapseExpandSubtree.dblclick "Sbalit/rozbalit strom dvojklikem">
+<!ENTITY config.autoExpandSubtreeOnAppendChild "Automaticky rozbalit strom, pokud je do něj vložen panel">
+
+<!ENTITY config.closeParentBehavior.caption      "Pokud je rodičovský panel zavřen">
+<!ENTITY config.closeParentBehavior.close        "Zavřít také potomky">
+<!ENTITY config.closeParentBehavior.promoteFirst "Povýšit prvního potomka na rodičovský panel">
+<!ENTITY config.closeParentBehavior.promoteAll   "Povýšit všechny potomky na úroveň rodičovského panelu">
+<!ENTITY config.closeParentBehavior.detach       "Osvobodit potomky z celého stromu">
+<!ENTITY config.closeRootBehavior.promoteFirst   "Povýšit prvního potomka na rodičovský panel, pokud původní rodič sám neměl rodiče">
+
+<!ENTITY config.focusMode "Přepnout na následující/předchozí panel pomocí Ctrl-Tab i přesto, že není vidět">
+
+<!ENTITY config.insertNewChildAt.caption "Umístění nového potomka">
+<!ENTITY config.insertNewChildAt.first "Vložit ho na začátek stromu jako prvního potomka">
+<!ENTITY config.insertNewChildAt.last "Připojit ho za posledním potomkem ve stromě">
+
+<!ENTITY config.undoCloseTabSet.caption  "Pokud je zavřený panel ze stromu obnoven">
+<!ENTITY config.undoCloseTabSet.ask      "Vždy se dotázat">
+<!ENTITY config.undoCloseTabSet.set      "Obnovit celý strom">
+<!ENTITY config.undoCloseTabSet.separate "Obnovit pouze daný panel (Výchozí)">
+
+
+
+<!ENTITY config.tabs.advanced "Pokročilé">
+
+<!ENTITY config.tooltip.includeChildren        "Zobrazit strukturu stromu v bublině nad panely">
+
+<!ENTITY config.bookmarkDroppedTabs.caption "Akce po upuštění rodičovského panelu do záložek">
+<!ENTITY config.bookmarkDroppedTabs.ask     "Vždy se dotázat">
+<!ENTITY config.bookmarkDroppedTabs.all     "Přidat do záložek všechny panely ve stromě">
+<!ENTITY config.bookmarkDroppedTabs.parent  "Přidat do záložek pouze daný panel">
+
+
+
+
+
+<!ENTITY selection.createSubtree.label          "Uspořádat do nového stromu">
+<!ENTITY selection.createSubtree.accesskey      "u">
+
+<!ENTITY selection.removeTabSubtree.label       "Zavřít vybrané stromy">
+<!ENTITY selection.removeTabSubtree.accesskey   "z">
+<!ENTITY context.reloadTabSubtree.label         "Obnovit strom">
+<!ENTITY context.reloadTabSubtree.accesskey     "n">
+<!ENTITY context.reloadDescendantTabs.label     "Obnovit potomky">
+<!ENTITY context.reloadDescendantTabs.accesskey "v">
+<!ENTITY context.removeTabSubtree.label         "Zavřít strom">
+<!ENTITY context.removeTabSubtree.accesskey     "v">
+<!ENTITY context.removeDescendantTabs.label     "Zavřít potomky">
+<!ENTITY context.removeDescendantTabs.accesskey "t">
+<!ENTITY context.removeAllTabsBut.label         "Zavřít ostatní panely mimo tento strom">
+<!ENTITY context.removeAllTabsBut.accesskey     "o">
+<!ENTITY context.collapseAllSubtree.label       "Sbalit všechny stromy">
+<!ENTITY context.collapseAllSubtree.accesskey   "S">
+<!ENTITY context.expandAllSubtree.label         "Rozbalit všechny stromy">
+<!ENTITY context.expandAllSubtree.accesskey     "R">
+<!ENTITY context.toggleAutoHide.label           "Schovávat lištu panelů">
+<!ENTITY context.toggleAutoHide.accesskey       "l">
+<!ENTITY context.toggleFixed.label              "Ustálit umístění a šířku/výšku lišty panelů">
+<!ENTITY context.toggleFixed.label.horizontal   "Ustálit umístění a výšku lišty panelů">
+<!ENTITY context.toggleFixed.label.vertical     "Ustálit umístění a šířku lišty panelů">
+<!ENTITY context.toggleFixed.accesskey          "U">
+<!ENTITY context.bookmarkTabSubtree.label       "Přidat strom do záložek...">
+<!ENTITY context.bookmarkTabSubtree.accesskey   "P">
+
+<!ENTITY group.default "Nová skupina">
+<!ENTITY group.temporary "Dočasná skupina">

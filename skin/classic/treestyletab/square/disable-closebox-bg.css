@@ -1,0 +1,20 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+/**
+ * Disable background images for closebox in tabs.
+ * This must be activated on:
+ *  - WINNT, any version
+ *  - OS X, any version
+ *  - Linux, Firefox 30 or older
+ * See: https://bugzilla.mozilla.org/show_bug.cgi?id=879921
+ */
+
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab
+  .tab-close-button,
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab[selected="true"]
+  .tab-close-button {
+	height: auto;
+	background: transparent;
+}

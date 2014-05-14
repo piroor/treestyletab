@@ -84,7 +84,6 @@
 <!ENTITY config.openGroupBookmark.subtree.type.flat    "Ignore">
 <!ENTITY config.openGroupBookmark.subtree.type.after   "tree structure of tabs saved to bookmarks">
 <!ENTITY config.openGroupBookmark.flat        "Open as separate tabs (Firefox default)">
-<!ENTITY config.openGroupBookmark.replace     "Replace the current one tab with the pages in the folder">
 <!ENTITY config.openGroupBookmark.underParent "Put tabs under a dummy tab for grouping">
 
 <!ENTITY config.dropLinksOnTab.caption "Dropped link, URL, bookmark or file to existing tab">
@@ -117,6 +116,7 @@
 
 <!ENTITY config.tabs.tree "Tree">
 
+<!ENTITY config.autoCollapseExpandSubtreeOnAttach "When a new tree appears, collapse others automatically">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect "When a tab gets focus, expand its tree and collapse others automatically">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "Exclude focus moving caused by current tab closing">
 <!ENTITY config.collapseExpandSubtree.dblclick "Double-click on a tab to collapse/expand tree">
