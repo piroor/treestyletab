@@ -117,7 +117,7 @@
 
 <!ENTITY config.tabs.tree "Arborescence">
 
-<!ENTITY config.autoCollapseExpandSubtreeOnAttach "When a new tree appears, collapse others automatically">
+<!ENTITY config.autoCollapseExpandSubtreeOnAttach "Lorsqu'une nouvelle arborescence apparaît, replier les autres automatiquement">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect "Lorsqu'un onglet devient actif, déplier son arborescence et replier les autres automatiquement">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "Exclure le changement d'activation par la fermeture de l'onglet actuel">
 <!ENTITY config.collapseExpandSubtree.dblclick "Double-cliquer sur un onglet pour replier/déplier l'arborescence">
@@ -183,4 +183,4 @@
 <!ENTITY context.bookmarkTabSubtree.accesskey   "t">
 
 <!ENTITY group.default "Nouveau groupe">
-<!ENTITY group.temporary "Temporary Group">
+<!ENTITY group.temporary "Groupe temporaire">
