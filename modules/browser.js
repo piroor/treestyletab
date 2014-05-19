@@ -2342,6 +2342,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		this.treeViewEnabled = this._lastTreeViewEnabledBeforeDestroyed;
 		delete this._lastTreeViewEnabledBeforeDestroyed;
 
+		this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_RESET);
+
 		this.startRendering();
 	},
  
