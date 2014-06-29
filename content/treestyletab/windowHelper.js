@@ -30,6 +30,13 @@ var TreeStyleTabWindowHelper = {
 			eval(target+' = '+source.replace(
 				'gBrowser.swapBrowsersAndCloseOther(gBrowser.selectedTab, uriToLoad);',
 				'if (!TreeStyleTabService.tearOffSubtreeFromRemote()) { $& }'
+			).replace(
+				// Workaround for https://github.com/piroor/treestyletab/issues/741
+				// After the function is updated by TST, reassignment of a global variable raises an error like:
+				// > System JS : ERROR chrome://treestyletab/content/windowHelper.js line 30 > eval:130 - TypeError: can't redefine non-configurable property 'gBidiUI'
+				// If I access it as a property of the global object, the error doesn't appear.
+				/([^\.])\bgBidiUI =/,
+				'$1window.gBidiUI ='
 			));
 		}
 
