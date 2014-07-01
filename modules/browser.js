@@ -6626,12 +6626,12 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var level = utils.getTreePref('restoreTree.level');
 
 		var tabs = this.getAllTabs(this.mTabBrowser);
-		var tabsToRestore = 0;
+		var tabsToRestore = 0; // it is the number of pending tabs.
 		if (utils.SessionStoreInternal &&
 			utils.SessionStoreInternal._browserEpochs) {
 			// for Firefox 29 and later
 			// (after https://bugzilla.mozilla.org/show_bug.cgi?id=942374)
-			var browserEpochs = utils.SessionStoreInternal._browserEpochs;
+			let browserEpochs = utils.SessionStoreInternal._browserEpochs;
 			tabsToRestore = tabs.filter(function(aTab) {
 				return browserEpochs.has(aTab.linkedBrowser.permanentKey);
 			}).length;
@@ -6646,7 +6646,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		dump('  tabsToRestore = '+tabsToRestore+'\n');
 		if (
 			level <= this.kRESTORE_TREE_LEVEL_NONE ||
-			!tabsToRestore ||
 			tabsToRestore <= 1
 			)
 			return;
