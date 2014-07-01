@@ -419,8 +419,8 @@ catch(e) {
 					}
 				}
 				else {
-					var prevLevel   = Number(sv.getTabAttribute(prevTab, sv.kNEST));
-					var targetNest = Number(sv.getTabAttribute(tab, sv.kNEST));
+					var prevLevel   = Number(prevTab.getAttribute(sv.kNEST));
+					var targetNest = Number(tab.getAttribute(sv.kNEST));
 					info.parent       = (prevLevel < targetNest) ? prevTab : sv.getParentTab(tab) ;
 					info.action       = sv.kACTION_MOVE | (info.parent ? sv.kACTION_ATTACH : sv.kACTION_PART );
 					info.insertBefore = tab;
@@ -452,8 +452,8 @@ catch(e) {
 					info.parent = sv.getParentTab(tab);
 				}
 				else {
-					var targetNest = Number(sv.getTabAttribute(tab, sv.kNEST));
-					var nextLevel   = Number(sv.getTabAttribute(nextTab, sv.kNEST));
+					var targetNest = Number(tab.getAttribute(sv.kNEST));
+					var nextLevel   = Number(nextTab.getAttribute(sv.kNEST));
 					info.parent       = (targetNest < nextLevel) ? tab : sv.getParentTab(tab) ;
 					info.action       = sv.kACTION_MOVE | (info.parent ? sv.kACTION_ATTACH : sv.kACTION_PART );
 					info.insertBefore = nextTab;
@@ -785,7 +785,7 @@ catch(e) {
 					let tab = sv.getTabById(aTarget);
 					if (tab &&
 						sv.shouldTabAutoExpanded(tab) &&
-						sv.getTabAttribute(tab, sv.kDROP_POSITION) == 'self') {
+						tab.getAttribute(sv.kDROP_POSITION) == 'self') {
 						let draggedTab = aDragged && sv.getTabById(aDragged);
 						if (utils.getTreePref('autoExpand.intelligently')) {
 							sv.collapseExpandTreesIntelligentlyFor(tab);
@@ -803,7 +803,7 @@ catch(e) {
 				},
 				utils.getTreePref('autoExpand.delay')
 			);
-		}, 0, this, sv.getTabAttribute(tab, sv.kID), draggedTab && sv.getTabAttribute(draggedTab, sv.kID));
+		}, 0, this, tab.getAttribute(sv.kID), draggedTab && draggedTab.getAttribute(sv.kID));
 
 		tab = null;
 	},
@@ -998,7 +998,7 @@ try{
 							info.position == sv.kDROP_AFTER ? 'after' :
 							'self';
 		if (indicatorTab != draggedTab &&
-			sv.getTabAttribute(indicatorTab, sv.kDROP_POSITION) != dropPosition) {
+			indicatorTab.getAttribute(sv.kDROP_POSITION) != dropPosition) {
 			this.clearDropPosition();
 			indicatorTab.setAttribute(sv.kDROP_POSITION, dropPosition);
 			if (b.ownerDocument.defaultView['piro.sakura.ne.jp'].tabsDragUtils
