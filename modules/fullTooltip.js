@@ -287,7 +287,7 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 		var collapsed = this.isSubtreeCollapsed(tab);
 		var mode = utils.getTreePref('tooltip.mode');
 
-		var base = parseInt(tab.getAttribute(this.kNEST) || 0);
+		var base = parseInt(this.getTabAttribute(tab, this.kNEST) || 0);
 		var descendant = this.getDescendantTabs(tab);
 		var indentPart = '  ';
 		var tree = null;
@@ -300,7 +300,7 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 					.map(function(aTab) {
 						let label = aTab.getAttribute('label');
 						let indent = '';
-						let nest = parseInt(aTab.getAttribute(this.kNEST) || 0) - base;
+						let nest = parseInt(this.getTabAttribute(aTab, this.kNEST) || 0) - base;
 						for (let i = 0; i < nest; i++)
 						{
 							indent += indentPart;
@@ -324,7 +324,7 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 				fullTooltipExtraLabel = utils.treeBundle.getFormattedString('tooltip.closeTree.labeled', ['%TREE%']).split(/\s*%TREE%\s*/);
 			}
 		}
-		else if (tab.getAttribute(this.kTWISTY_HOVER) == 'true') {
+		else if (this.getTabAttribute(tab, this.kTWISTY_HOVER) == 'true') {
 			let key = collapsed ?
 						'tooltip.expandSubtree' :
 						'tooltip.collapseSubtree' ;

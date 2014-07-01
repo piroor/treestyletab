@@ -398,7 +398,7 @@ GroupTab.prototype = inherit(TreeStyleTabBase, {
 	onTabAttached : function GT_onTabAttached(aEvent)
 	{
 		var tab = aEvent.detail.parentTab;
-		var id = tab.getAttribute(this.kID);
+		var id = this.getTabAttribute(tab, this.kID);
 		if (tab == this.getOwnerTab() ||
 			this.document.getElementsByAttribute('tab-id', id).length)
 			this.shouldUpdate = true;
@@ -409,7 +409,7 @@ GroupTab.prototype = inherit(TreeStyleTabBase, {
 	onTabDetached : function GT_onTabDetached(aEvent)
 	{
 		var tab = aEvent.originalTarget;
-		var id = tab.getAttribute(this.kID);
+		var id = this.getTabAttribute(tab, this.kID);
 		if (this.document.getElementsByAttribute('tab-id', id).length)
 			this.shouldUpdate = true;
 
@@ -420,7 +420,7 @@ GroupTab.prototype = inherit(TreeStyleTabBase, {
 	{
 		var tab = this.getOwnerTab(aEvent.target.defaultView.top);
 		if (tab) {
-			let id = tab.getAttribute(this.kID);
+			let id = this.getTabAttribute(tab, this.kID);
 			if (this.document.getElementsByAttribute('tab-id', id).length)
 				this.shouldUpdate = true;
 		}

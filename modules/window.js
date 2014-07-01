@@ -448,7 +448,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 
 		Array.forEach(aEvent.originalTarget.childNodes, function(aItem) {
 			if (aItem.classList.contains('alltabs-item') && 'tab' in aItem)
-				aItem.style.marginLeft = aItem.tab.getAttribute(this.kNEST) + 'em';
+				aItem.style.marginLeft = this.getTabAttribute(aItem.tab, this.kNEST) + 'em';
 		}, this);
 	},
  

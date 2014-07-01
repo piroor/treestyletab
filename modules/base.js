@@ -870,8 +870,20 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
   
 /* Session Store API */ 
 	
+	getTabAttribute : function TSTBase_getTabAttribute(aTab, aAttribute)
+	{
+		if (aTab.__SS_extdata &&
+			aTab.__SS_extdata[aAttribute])
+			return aTab.__SS_extdata[aAttribute];
+		return aTab.getAttribute(aAttribute);
+	},
+ 
 	getTabValue : function TSTBase_getTabValue(aTab, aKey) 
 	{
+		if (aTab.__SS_extdata &&
+			aTab.__SS_extdata[aKey])
+			return aTab.__SS_extdata[aKey];
+
 		var value = '';
 		try {
 			value = SessionStore.getTabValue(aTab, aKey);
@@ -1532,7 +1544,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	{
 		var tabs = this.getTabs(aTabBrowser);
 		return tabs.map(function(aTab) {
-				return aTab.getAttribute(this.kID)+'\n'+
+				return this.getTabAttribute(aTab, this.kID)+'\n'+
 						aTab.getAttribute('busy')+'\n'+
 						aTab.linkedBrowser.currentURI.spec;
 			}, this);
@@ -1556,12 +1568,12 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			return false;
 
 		ownerBrowser.treeStyleTab.ensureTabInitialized(parentTab);
-		var parentId = parentTab.getAttribute(this.kID);
+		var parentId = this.getTabAttribute(parentTab, this.kID);
 
 		var refId = null;
 		if (aInsertBefore) {
 			ownerBrowser.treeStyleTab.ensureTabInitialized(parentTab);
-			refId = aInsertBefore.getAttribute(this.kID);
+			refId = this.getTabAttribute(aInsertBefore, this.kID);
 		}
 
 		ownerBrowser.treeStyleTab.readiedToAttachNewTab   = true;
@@ -1620,7 +1632,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 				return;
 			ownerBrowser.treeStyleTab.readiedToAttachNewTab = true;
 			ownerBrowser.treeStyleTab.parentTab             = null;
-			ownerBrowser.treeStyleTab.insertBefore          = nextTab.getAttribute(this.kID);
+			ownerBrowser.treeStyleTab.insertBefore          = this.getTabAttribute(nextTab, this.kID);
 			return true;
 		}
 	},
@@ -1799,7 +1811,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			!this.canCollapseSubtree(this.getRootTab(aTab)))
 			return false;
 
-		return aTab.getAttribute(this.kCOLLAPSED) == 'true';
+		return this.getTabAttribute(aTab, this.kCOLLAPSED) == 'true';
 	},
  
 	isSubtreeCollapsed : function TSTBase_isSubtreeCollapsed(aTab) /* PUBLIC API */ 
@@ -1807,7 +1819,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		if (!aTab || !this.canCollapseSubtree(aTab) || !this.hasChildTabs(aTab))
 			return false;
 
-		return aTab.getAttribute(this.kSUBTREE_COLLAPSED) == 'true';
+		return this.getTabAttribute(aTab, this.kSUBTREE_COLLAPSED) == 'true';
 	},
  
 	shouldCloseTabSubtreeOf : function TSTBase_shouldCloseTabSubtreeOf(aTab) 
@@ -1843,7 +1855,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			return null;
 
 		var parent;
-		var id = aTab.getAttribute(this.kPARENT);
+		var id = this.getTabAttribute(aTab, this.kPARENT);
 		if (this.tabsHash) { // XPath-less implementation
 			parent = this.getTabById(id);
 			if (parent && !parent.parentNode && this.tabsHash) {
@@ -1873,7 +1885,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 					.reverse().map(function(aTab) {
 						return '  '+aTab._tPos+' : '+
 								aTab.label+'\n     '+
-								aTab.getAttribute(this.kID);
+								this.getTabAttribute(aTab, this.kID);
 					}, this).join('\n');
 				dump(message+'\n');
 				break;
@@ -1885,7 +1897,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 					.reverse().map(function(aTab) {
 						return '  '+aTab._tPos+' : '+
 								aTab.label+'\n     '+
-								aTab.getAttribute(this.kID);
+								this.getTabAttribute(aTab, this.kID);
 					}, this).join('\n');
 				dump(message+'\n');
 			}
@@ -1932,9 +1944,9 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 				return next;
 			}
 
-			let children = parentTab.getAttribute(this.kCHILDREN);
+			let children = this.getTabAttribute(parentTab, this.kCHILDREN);
 			if (children) {
-				let list = ('|'+children).split('|'+aTab.getAttribute(this.kID));
+				let list = ('|'+children).split('|'+this.getTabAttribute(aTab, this.kID));
 				list = list.length > 1 ? list[1].split('|') : [] ;
 				for (let i = 0, maxi = list.length; i < maxi; i++)
 				{
@@ -1946,7 +1958,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			return null;
 		}
 
-		var parent = aTab.getAttribute(this.kPARENT);
+		var parent = this.getTabAttribute(aTab, this.kPARENT);
 		return this.evaluateXPath(
 			'following-sibling::xul:tab['+
 				(parent ? '@'+this.kPARENT+'="'+parent+'"' : 'not(@'+this.kPARENT+')' )+
@@ -1975,9 +1987,9 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 				return prev;
 			}
 
-			let children = parentTab.getAttribute(this.kCHILDREN);
+			let children = this.getTabAttribute(parentTab, this.kCHILDREN);
 			if (children) {
-				let list = ('|'+children).split('|'+aTab.getAttribute(this.kID))[0].split('|');
+				let list = ('|'+children).split('|'+this.getTabAttribute(aTab, this.kID))[0].split('|');
 				for (let i = list.length-1; i > -1; i--)
 				{
 					let lastChild = this.getTabById(list[i], aTab);
@@ -1988,7 +2000,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			return null;
 		}
 
-		var parent = aTab.getAttribute(this.kPARENT);
+		var parent = this.getTabAttribute(aTab, this.kPARENT);
 		return this.evaluateXPath(
 			'preceding-sibling::xul:tab['+
 				(parent ? '@'+this.kPARENT+'="'+parent+'"' : 'not(@'+this.kPARENT+')' )+
@@ -2014,7 +2026,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		if (!aTab)
 			return tabs;
 
-		var children = aTab.getAttribute(this.kCHILDREN);
+		var children = this.getTabAttribute(aTab, this.kCHILDREN);
 		if (!children)
 			return tabs;
 
@@ -2032,7 +2044,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 					tabs.map(function(aTab) {
 						return '  '+aTab._tPos+' : '+
 								aTab.label+'\n     '+
-								aTab.getAttribute(this.kID);
+								this.getTabAttribute(aTab, this.kID);
 					}, this).join('\n');
 				dump(message+'\n');
 				continue;
@@ -2065,7 +2077,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			return null;
 
 		if (this.tabsHash) { // XPath-less implementation
-			let children   = aTab.getAttribute(this.kCHILDREN);
+			let children   = this.getTabAttribute(aTab, this.kCHILDREN);
 			let firstChild = null;
 			if (children) {
 				let list = children.split('|');
@@ -2080,7 +2092,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		}
 
 		return this.evaluateXPath(
-			'following-sibling::xul:tab[@'+this.kPARENT+'="'+aTab.getAttribute(this.kID)+'"][1]',
+			'following-sibling::xul:tab[@'+this.kPARENT+'="'+this.getTabAttribute(aTab, this.kID)+'"][1]',
 			aTab,
 			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 		).singleNodeValue;
@@ -2092,7 +2104,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			return null;
 
 		if (this.tabsHash) { // XPath-less implementation
-			let children  = aTab.getAttribute(this.kCHILDREN);
+			let children  = this.getTabAttribute(aTab, this.kCHILDREN);
 			let lastChild = null;
 			if (children) {
 				let list = children.split('|');
@@ -2107,7 +2119,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		}
 
 		return this.evaluateXPath(
-			'following-sibling::xul:tab[@'+this.kPARENT+'="'+aTab.getAttribute(this.kID)+'"][last()]',
+			'following-sibling::xul:tab[@'+this.kPARENT+'="'+this.getTabAttribute(aTab, this.kID)+'"][last()]',
 			aTab,
 			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 		).singleNodeValue;
@@ -2123,11 +2135,11 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			return tabs.length ? tabs[tabs.length-1] : null ;
 		}
 
-		var parent = aTab.getAttribute(this.kPARENT);
+		var parent = this.getTabAttribute(aTab, this.kPARENT);
 		return this.evaluateXPath(
 			'following-sibling::xul:tab['+
 				(parent ? '@'+this.kPARENT+'="'+parent+'"' : 'not(@'+this.kPARENT+')' )+
-			'][1]/preceding-sibling::xul:tab[1][not(@'+this.kID+'="'+aTab.getAttribute(this.kID)+'")]',
+			'][1]/preceding-sibling::xul:tab[1][not(@'+this.kID+'="'+this.getTabAttribute(aTab, this.kID)+'")]',
 			aTab,
 			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 		).singleNodeValue;
@@ -2159,9 +2171,9 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		}
 
 		if (aParent) {
-			let children = aParent.getAttribute(this.kCHILDREN);
+			let children = this.getTabAttribute(aParent, this.kCHILDREN);
 			let list = children.split('|');
-			let id = aTab.getAttribute(this.kID);
+			let id = this.getTabAttribute(aTab, this.kID);
 			for (let i = 0, maxi = list.length; i < maxi; i++)
 			{
 				if (list[i] == id)
@@ -2356,7 +2368,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 
 			let parentIndexInTree = aTreeStructure[i];
 			if (parentIndexInTree < 0) // there is no parent, so this is a new parent!
-				parentTab = tab.getAttribute(sv.kID);
+				parentTab = sv.getTabAttribute(tab, sv.kID);
 
 			let parent = sv.getTabById(parentTab);
 			if (parent) {
