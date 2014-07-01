@@ -4049,7 +4049,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var newPos = -1;
 		if (parentOfNext) {
 			let descendants = this.getDescendantTabs(parentOfNext);
-			newPos = descendants[descendants.length-1]._tPos;
+			if (descendants.length)
+				newPos = descendants[descendants.length-1]._tPos;
 		}
 		else if (aNextTab) {
 			newPos = aNextTab._tPos;
