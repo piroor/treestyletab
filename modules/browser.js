@@ -3319,7 +3319,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		// event here.
 		// See: https://github.com/piroor/treestyletab/issues/676#issuecomment-47700158
 		if (tab.__SS_extdata) {
-			let storedId = tab__SS_extdata[this.kID]; // getTabValue() doesn't get the value!
+			let storedId = tab.__SS_extdata[this.kID]; // getTabValue() doesn't get the value!
 			if (storedId && tab.getAttribute(this.kID) != storedId)
 				this.onTabRestoring(aEvent);
 		}
