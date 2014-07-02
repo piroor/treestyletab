@@ -3312,6 +3312,15 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		// twisty vanished after the tab is moved!!
 		this.initTabContents(tab);
 
+		// On Firefox 29, 30 and laters, reopened (restored) tab can be
+		// placed in wrong place, because "TabMove" event fires before
+		// "SSTabRestoring" event and "kINSERT_BEFORE" information is
+		// unexpectedly cleared. So now I simulate the "SSTabRestoring"
+		// event here.
+		// See: https://github.com/piroor/treestyletab/issues/676#issuecomment-47700158
+		if (tab.getAttribute(this.kID) != this.getTabValue(tab, this.kID))
+			this.onTabRestoring(aEvent);
+
 		if (this.hasChildTabs(tab) && !this.subTreeMovingCount) {
 			this.moveTabSubtreeTo(tab, tab._tPos);
 		}
