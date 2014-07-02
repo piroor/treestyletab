@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+   * Restore tab position for "Undo Close Tab" command correctly on Firefox 29 and newer versions.
+   * Works on Nightly 33.0a1 with the preference `dom.compartment_per_addon`=`true`.
+   * Update tabbar appearance correctly, after toolbar customization.
+   * Update fr-FR locale, by AxlMun. Thanks!
  - 0.14.2014051101
    * Don't hide the toolbar in the full screen mode, if `browser.fullscreen.autohide` is `false`.
  - 0.14.2014051001
