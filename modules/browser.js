@@ -3318,8 +3318,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		// unexpectedly cleared. So now I simulate the "SSTabRestoring"
 		// event here.
 		// See: https://github.com/piroor/treestyletab/issues/676#issuecomment-47700158
-		if (tab.getAttribute(this.kID) != this.getTabValue(tab, this.kID))
-			this.onTabRestoring(aEvent);
+		if (tab.__SS_extdata) {
+			let storedId = tab__SS_extdata[this.kID]; // getTabValue() doesn't get the value!
+			if (storedId && tab.getAttribute(this.kID) != storedId)
+				this.onTabRestoring(aEvent);
+		}
 
 		if (this.hasChildTabs(tab) && !this.subTreeMovingCount) {
 			this.moveTabSubtreeTo(tab, tab._tPos);
