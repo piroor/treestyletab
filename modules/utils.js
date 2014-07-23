@@ -58,6 +58,7 @@ XPCOMUtils.defineLazyGetter(this, 'stringBundle', function() {
 	return window['piro.sakura.ne.jp'].stringBundle;
 });
 
+XPCOMUtils.defineLazyModuleGetter(this, 'Services', 'resource://gre/modules/Services.jsm');
 XPCOMUtils.defineLazyModuleGetter(this, 'Task',
 	'resource://gre/modules/Task.jsm');
 XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabConstants',
@@ -309,7 +310,7 @@ let TreeStyleTabUtils = {
 
 		var getShortcutOrURIAndPostData = aBrowserWindow.getShortcutOrURIAndPostData;
 		var done = false;
-		if (getShortcutOrURIAndPostData.length == 2) {
+		if (parseFloat(Services.appinfo.platformVersion) >= 31) {
 			// Firefox 31 and later, after https://bugzilla.mozilla.org/show_bug.cgi?id=989984
 			getShortcutOrURIAndPostData(aURI, function(aData) {
 				aURI = aData.url;
