@@ -365,9 +365,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		w.addEventListener('beforecustomization', this, true);
 		w.addEventListener('aftercustomization', this, false);
 
-		// for Firefox 29 and later, after https://bugzilla.mozilla.org/show_bug.cgi?id=942374
-		if (w.messageManager && utils.shouldUseMessageManager)
-			w.messageManager.addMessageListener('SessionStore:restoreTabContentStarted', this);
+		w.messageManager.addMessageListener('SessionStore:restoreTabContentStarted', this);
 
 		this.fullscreenObserver = new FullscreenObserver(this.window);
 		this.initUIShowHideObserver();
@@ -499,9 +497,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 				w.removeEventListener('beforecustomization', this, true);
 				w.removeEventListener('aftercustomization', this, false);
 
-				// for Firefox 29 and later, after https://bugzilla.mozilla.org/show_bug.cgi?id=942374
-				if (w.messageManager && utils.shouldUseMessageManager)
-					w.messageManager.removeMessageListener('SessionStore:restoreTabContentStarted', this);
+				w.messageManager.removeMessageListener('SessionStore:restoreTabContentStarted', this);
 
 				this.fullscreenObserver.destroy();
 				delete this.fullscreenObserver;
@@ -859,7 +855,6 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 				prefs.getPref('browser.ctrlTab.previews');
 	},
    
-	// for Firefox 29 and later, after https://bugzilla.mozilla.org/show_bug.cgi?id=942374
 	receiveMessage : function TSTWindow_receiveMessage(aMessage) 
 	{
 		var browser = aMessage.target;
@@ -1409,8 +1404,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		var checked = { value:true };
 		var w = this.window;
 		w.focus();
-		var message = utils.tabbrowserBundle.getFormattedString('tabs.closeWarningMultipleTabs', [aTabsCount]) || // Firefox 28 and older
-						w.PluralForm.get(aTabsCount, utils.tabbrowserBundle.getString('tabs.closeWarningMultiple')).replace('#1', aTabsCount) ; // Firefox 29 and later
+		var message = w.PluralForm.get(aTabsCount, utils.tabbrowserBundle.getString('tabs.closeWarningMultiple')).replace('#1', aTabsCount);
 		var shouldClose = Services.prompt.confirmEx(w,
 				utils.tabbrowserBundle.getString('tabs.closeWarningTitle'),
 				message,

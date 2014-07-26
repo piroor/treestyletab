@@ -1,7 +1,8 @@
 # History
 
  - master/HEAD
-   * Restore tab position for "Undo Close Tab" command correctly on Firefox 29 and newer versions.
+   * Drop support for Firefox 30 and older versions
+   * Restore tab position for "Undo Close Tab" command correctly.
    * Works on Nightly 33.0a1 with the preference `dom.compartment_per_addon`=`true`.
    * Update tabbar appearance correctly, after toolbar customization.
    * Update fr-FR locale, by AxlMun. Thanks!

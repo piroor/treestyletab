@@ -1,7 +1,0 @@
-@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
-
-/* bottom border of the "Tabs on Bottom" toolbox */
-#main-window[treestyletab-mode="vertical"]:not([disablechrome])
-  #navigator-toolbox:not([tabsontop="true"]) {
-	border-bottom: 1px solid ThreeDShadow;
-}

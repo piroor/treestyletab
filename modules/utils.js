@@ -244,22 +244,6 @@ let TreeStyleTabUtils = {
 	},
 
 
-	get shouldUseMessageManager()
-	{
-		if (this._shouldUseMessageManager !== null)
-			return this._shouldUseMessageManager;
-
-		try { // detect Firefox 29 and later
-			Cu.import('resource:///modules/sessionstore/ContentRestore.jsm', {});
-			this._shouldUseMessageManager = true;
-		}
-		catch(e) {
-			this._shouldUseMessageManager = false;
-		}
-		return this._shouldUseMessageManager;
-	},
-	_shouldUseMessageManager: undefined,
-
 	isTabNotRestoredYet : function utils_isTabNotRestoredYet(aTab)
 	{
 		var browser = aTab.linkedBrowser;
@@ -304,26 +288,11 @@ let TreeStyleTabUtils = {
 
 	getShortcutOrURI : function utils_getShortcutOrURI(aBrowserWindow, aURI)
 	{
-		if (aBrowserWindow.getShortcutOrURI) // Firefox 24 and older
-			return aBrowserWindow.getShortcutOrURI(aURI);
-
-		var getShortcutOrURIAndPostData = aBrowserWindow.getShortcutOrURIAndPostData;
 		var done = false;
-		if (getShortcutOrURIAndPostData.length == 2) {
-			// Firefox 31 and later, after https://bugzilla.mozilla.org/show_bug.cgi?id=989984
-			getShortcutOrURIAndPostData(aURI, function(aData) {
-				aURI = aData.url;
-				done = true;
-			});
-		}
-		else {
-			// Firefox 25-30
-			Task.spawn(function() {
-				var data = yield getShortcutOrURIAndPostData(aURI);
-				aURI = data.url;
-				done = true;
-			});
-		}
+		aBrowserWindow.getShortcutOrURIAndPostData(aURI, function(aData) {
+			aURI = aData.url;
+			done = true;
+		});
 
 		// this should be rewritten in asynchronous style...
 		var thread = Cc['@mozilla.org/thread-manager;1'].getService().mainThread;
