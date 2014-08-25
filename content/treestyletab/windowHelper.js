@@ -209,7 +209,7 @@ var TreeStyleTabWindowHelper = {
 		if ('openLinkIn' in window) {
 			eval('window.openLinkIn = '+
 				window.openLinkIn.toSource().replace(
-					'browser.loadOneTab(',
+					'newTab = w.gBrowser.loadOneTab(',
 					'TreeStyleTabService.onBeforeOpenLinkWithParams(params); $&'
 				)
 			);
