@@ -66,7 +66,7 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 
 					'  for (var i in info)\n' +
 					'  {\n' +
-					'    TST.SessionStore.setTabValue(tab, i, info[i]);\n' +
+					'    TST.SessionStore.setTabValue(tab, i, String(info[i]));\n' +
 					'  }\n' +
 					'  var count = 0;\n' +
 					'  window.setTimeout(function onTimeout() {\n' +
