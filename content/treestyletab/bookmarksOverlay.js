@@ -395,6 +395,10 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabService, {
 						null :
 						sv.getTreeStructureFromItems(aIDs) ;
 			if (treeStructure) {
+				let parentTabs = treeStructure.filter(function(aParent) {
+						return aParent < 0;
+					});
+				let haveMultipleTrees = parentTabs.length != treeStructure.length;
 				if (result.behavior & sv.kGROUP_BOOKMARK_USE_DUMMY) {
 					let parentCount = 0;
 					let childCount = 0;
@@ -420,7 +424,7 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabService, {
 						}));
 					}
 				}
-				else {
+				else if (!haveMultipleTrees) {
 					// make the first item parent.
 					treeStructure = treeStructure.map(function(aParent, aIndex) {
 						if (aIndex == 0)
