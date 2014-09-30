@@ -1,5 +1,5 @@
 /*
- Multiple Tabs Drag and Drop Utilities for Firefox 24 or later
+ Multiple Tabs Drag and Drop Utilities for Firefox 31 or later
 
  Usage:
    window['piro.sakura.ne.jp'].tabsDragUtils.initTabBrowser(gBrowser);
@@ -15,7 +15,7 @@
    http://github.com/piroor/fxaddonlib-tabs-drag-utils
 */
 (function() {
-	const currentRevision = 31;
+	const currentRevision = 32;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -757,13 +757,13 @@
 
 		getSelectedTabs : function TDU_getSelectedTabs(aEventOrTabOrTabBrowser)
 		{
-			var event = aEventOrTabOrTabBrowser instanceof Components.interfaces.nsIDOMEvent ? aEventOrTabOrTabBrowser : null ;
+			var event = aEventOrTabOrTabBrowser instanceof Event ? aEventOrTabOrTabBrowser : null ;
 			var b = this.getTabBrowserFromChild(event ? event.target : aEventOrTabOrTabBrowser );
 			if (!b)
 				return [];
 
 			var w = b.ownerDocument.defaultView;
-			var tab = (aEventOrTabOrTabBrowser instanceof Components.interfaces.nsIDOMElement &&
+			var tab = (aEventOrTabOrTabBrowser instanceof Element &&
 						aEventOrTabOrTabBrowser.localName == 'tab') ?
 						aEventOrTabOrTabBrowser :
 						(event && this.getTabFromEvent(event)) ;
