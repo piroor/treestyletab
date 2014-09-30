@@ -6628,7 +6628,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		tabs = tabs.filter(function(aTab) {
 			return (
 				utils.isTabNotRestoredYet(aTab) &&
-				aTab.linkedBrowser.__treestyletab__toBeRestored &&
 				(!onlyVisible || !aTab.hidden)
 			);
 		});
