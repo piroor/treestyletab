@@ -1213,11 +1213,10 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			this.handleNewTabFromCurrent(aOwner);
 	},
  
-	onBeforeOpenLinkWithParams : function TSTWindow_onBeforeOpenLinkWithParams(aParams) 
+	onBeforeOpenLinkWithTab : function TSTWindow_onBeforeOpenLinkWithParams(aTab) 
 	{
-		if (aParams.linkNode &&
-			!this.checkToOpenChildTab(aParams.linkNode.ownerDocument.defaultView))
-			this.handleNewTabFromCurrent(aParams.linkNode.ownerDocument.defaultView);
+		if (aTab && !this.checkToOpenChildTab(aTab))
+			this.handleNewTabFromCurrent(aTab);
 	},
  
 	onBeforeOpenNewTabByThirdParty : function TSTWindow_onBeforeOpenNewTabByThirdParty(aOwner) 

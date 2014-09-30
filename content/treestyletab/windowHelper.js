@@ -207,10 +207,12 @@ var TreeStyleTabWindowHelper = {
 		}
 
 		if ('openLinkIn' in window) {
+			// Bug 1050447 changed this line in Fx 34 to
+			// newTab = w.gBrowser.loadOneTab(
 			eval('window.openLinkIn = '+
 				window.openLinkIn.toSource().replace(
-					'browser.loadOneTab(',
-					'TreeStyleTabService.onBeforeOpenLinkWithParams(params); $&'
+					/((b|newTab = w\.gB)rowser.loadOneTab\()/g,
+					'TreeStyleTabService.onBeforeOpenLinkWithTab(gBrowser.selectedTab); $1'
 				)
 			);
 		}

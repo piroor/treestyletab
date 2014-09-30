@@ -712,12 +712,15 @@ AutoHideBrowser.prototype = {
 	},
 	showHideContentsAreaScreen : function AHB_showHideContentsAreaScreen()
 	{
+		// this.browser.contentWindow doesn't currently work in e10s
+		// mode, use this.browser.mCurrentBrowser.contentWindow as a
+		// workaround until bug 1042680 is fixed
 		if (
 			this.expanded &&
 			this.contentAreaScreenEnabled &&
 			Services.focus.activeWindow &&
 			Services.focus.activeWindow.top == this.window &&
-			this.findPluginArea(this.browser.contentWindow)
+			this.findPluginArea(this.browser.mCurrentBrowser.contentWindow)
 			) {
 			let box = this.getContentsAreaBox();
 			let style = this.screen.style;
