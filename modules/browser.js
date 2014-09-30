@@ -1195,7 +1195,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			var b = self.mTabBrowser;
 			var tabs = !aTarget ?
 						[b.selectedTab] :
-					(aTarget instanceof Ci.nsIDOMElement) ?
+					(aTarget instanceof self.window.Element) ?
 						[aTarget] :
 					(typeof aTarget == 'object' && 'length' in aTarget) ?
 						Array.slice(aTarget) :
@@ -4709,7 +4709,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	{
 		if (
 			!aEvent.originalTarget ||
-			!(aEvent.originalTarget instanceof Ci.nsIDOMWindow)
+			!(aEvent.originalTarget instanceof this.window.Window)
 			)
 			return;
 

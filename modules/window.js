@@ -224,7 +224,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
  
 	getPropertyPixelValue : function TSTWindow_getPropertyPixelValue(aElementOrStyle, aProp) 
 	{
-		var style = aElementOrStyle instanceof Ci.nsIDOMCSSStyleDeclaration ?
+		var style = aElementOrStyle instanceof this.window.CSSStyleDeclaration ?
 					aElementOrStyle :
 					this.window.getComputedStyle(aElementOrStyle, null) ;
 		return Number(style.getPropertyValue(aProp).replace(/px$/, ''));

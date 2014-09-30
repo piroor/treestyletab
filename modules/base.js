@@ -569,7 +569,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		var parent = aNode.parentNode;
 		var doc = aNode.ownerDocument || aNode;
 		var view = doc.defaultView;
-		while (parent && parent instanceof Ci.nsIDOMElement)
+		while (parent && parent instanceof wiew.Element)
 		{
 			let position = view.getComputedStyle(parent, null).getPropertyValue('position');
 			if (position != 'static')
@@ -738,9 +738,9 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			}
 			else if (typeof arg == 'string')
 				type = arg;
-			else if (arg instanceof Ci.nsIDOMDocument)
+			else if (arg instanceof this.window.Document)
 				document = arg;
-			else if (arg instanceof Ci.nsIDOMEventTarget)
+			else if (arg instanceof this.window.EventTarget)
 				target = arg;
 			else
 				data = arg;
@@ -963,11 +963,11 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	
 	getTabStrip : function TSTBase_getTabStrip(aTabBrowser) 
 	{
-		if (!(aTabBrowser instanceof Ci.nsIDOMElement))
+		if (!(aTabBrowser instanceof this.window.Element))
 			return null;
 
 		var strip = aTabBrowser.mStrip;
-		return (strip && strip instanceof Ci.nsIDOMElement) ?
+		return (strip && strip instanceof this.window.Element) ?
 				strip :
 				this.evaluateXPath(
 					'ancestor::xul:toolbar[1]',
@@ -982,7 +982,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
  
 	getTabContainerBox : function TSTBase_getTabContainerBox(aTabBrowser) 
 	{
-		if (!(aTabBrowser instanceof Ci.nsIDOMElement))
+		if (!(aTabBrowser instanceof this.window.Element))
 			return null;
 
 		var strip = this.getTabStrip(aTabBrowser);
@@ -1291,7 +1291,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		if (!aId)
 			return null;
 
-		if (aTabBrowserChildren && !(aTabBrowserChildren instanceof Ci.nsIDOMNode))
+		if (aTabBrowserChildren && !(aTabBrowserChildren instanceof this.window.Node))
 			aTabBrowserChildren = null;
 
 		var b = this.getTabBrowserFromChild(aTabBrowserChildren) || this.browser;
