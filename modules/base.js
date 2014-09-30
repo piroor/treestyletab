@@ -1564,6 +1564,8 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			refId = aInsertBefore.getAttribute(this.kID);
 		}
 
+		dump('Tree Style Tab: new child tab is requested.\n'+new Error().stack+'\n');
+
 		ownerBrowser.treeStyleTab.readiedToAttachNewTab   = true;
 		ownerBrowser.treeStyleTab.readiedToAttachMultiple = aMultiple || false ;
 		ownerBrowser.treeStyleTab.multipleCount           = aMultiple ? 0 : -1 ;
