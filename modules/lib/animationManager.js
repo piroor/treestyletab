@@ -67,7 +67,10 @@ if (typeof window == 'undefined' ||
 
 		addTask : function(aTask, aBeginningValue, aTotalChange, aDuration, aRelatedWindow) 
 		{
-			if (!aRelatedWindow && window && window instanceof window.Window)
+			if (!aRelatedWindow &&
+				window &&
+				typeof window.Window == 'function' &&
+				window instanceof window.Window)
 				aRelatedWindow = window;
 
 			if (!aTask || !aRelatedWindow) return;
