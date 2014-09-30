@@ -139,7 +139,7 @@ var TreeStyleTabWindowHelper = {
 			eval('aObserver._setEffectAllowedForDataTransfer = '+
 				aObserver._setEffectAllowedForDataTransfer.toSource().replace(
 					'{',
-					'{ var TSTTabBrowser = this instanceof Ci.nsIDOMElement ? (this.tabbrowser || this) : gBrowser ; var TST = TSTTabBrowser.treeStyleTab;'
+					'{ var TSTTabBrowser = this instanceof Element ? (this.tabbrowser || this) : gBrowser ; var TST = TSTTabBrowser.treeStyleTab;'
 				).replace(
 					/\.screenX/g, '[TST.screenPositionProp]'
 				).replace(
