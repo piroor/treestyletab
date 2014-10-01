@@ -3759,7 +3759,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		this.setTabValue(aTab, this.kID, id);
 		this.tabsHash[id] = aTab;
 
-		if (structureRestored) {
+		if (structureRestored &&
+			!aTab.__treestyletab__restoredByUndoCloseTab) {
 			this._fixMissingAttributesFromSessionData(aTab);
 		}
 		else {
@@ -3771,7 +3772,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 					dontUpdateIndent : true,
 					dontAnimate      : restoringMultipleTabs
 				};
-			let childTabs = this._restoreChildTabsRelation(aTab, children, mayBeDuplicated, options);
+			let childTabs = structureRestored ?
+				[] :
+				this._restoreChildTabsRelation(aTab, children, mayBeDuplicated, options);
 
 			this._restoreTabPositionAndIndent(aTab, childTabs, mayBeDuplicated);
 
