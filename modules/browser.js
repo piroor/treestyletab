@@ -958,8 +958,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		aTab.__treestyletab__linkedTabBrowser = this.mTabBrowser;
 
-		if (!aTab.linkedBrowser.__treestyletab__toBeRestored)
-			aTab.linkedBrowser.__treestyletab__toBeRestored = utils.isTabNotRestoredYet(aTab);
+		if (utils.isTabNotRestoredYet(aTab))
+			aTab.linkedBrowser.__treestyletab__toBeRestored = true;
 
 		this.initTabAttributes(aTab);
 		this.initTabContents(aTab);
@@ -6626,12 +6626,15 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		var onlyVisible = level <= this.kRESTORE_TREE_ONLY_VISIBLE;
 		tabs = tabs.filter(function(aTab) {
-			var toBeRestored = utils.isTabNotRestoredYet(aTab);
-			// This cache can be set to false by initTab(), but now we not the correct status.
-			// Because this cached status is used by other methods, we must update it now.
-			aTab.linkedBrowser.__treestyletab__toBeRestored = toBeRestored;
+			// The "to be restored" state can be still undetermined.
+			// If the previous state is "undetermined" ("undefined")
+			// and now it has became certain, then we should save the state
+			// for now and the next time..
+			if (typeof aTab.linkedBrowser.__treestyletab__toBeRestored == 'undefined' &&
+				utils.isTabNotRestoredYet(aTab))
+				aTab.linkedBrowser.__treestyletab__toBeRestored = true;
 			return (
-				toBeRestored &&
+				aTab.linkedBrowser.__treestyletab__toBeRestored &&
 				(!onlyVisible || !aTab.hidden)
 			);
 		});
