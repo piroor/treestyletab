@@ -1225,10 +1225,14 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			this.handleNewTabFromCurrent(aOwner);
 	},
  
-	onBeforeBrowserAccessOpenURI : function TSTWindow_onBeforeBrowserAccessOpenURI(aOpener, aWhere) 
+	onBeforeBrowserAccessOpenURI : function TSTWindow_onBeforeBrowserAccessOpenURI(aOpener, aWhere, aContext) 
 	{
-		if (aOpener &&
-			this.getTabFromFrame(aOpener.top) &&
+		var hasOwnerTab = (
+				aOpener &&
+				this.getTabFromFrame(aOpener.top)
+			);
+		var internalOpen = aContext != Ci.nsIBrowserDOMWindow.OPEN_EXTERNAL;
+		if ((hasOwnerTab || internalOpen) &&
 			aWhere == Ci.nsIBrowserDOMWindow.OPEN_NEWTAB)
 			this.handleNewTabFromCurrent(aOpener);
 	},

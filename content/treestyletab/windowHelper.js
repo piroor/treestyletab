@@ -43,9 +43,17 @@ var TreeStyleTabWindowHelper = {
 		eval('nsBrowserAccess.prototype.openURI = '+
 			nsBrowserAccess.prototype.openURI.toSource().replace(
 				/(switch\s*\(aWhere\))/,
-				'TreeStyleTabService.onBeforeBrowserAccessOpenURI(aOpener, aWhere); $1'
+				'TreeStyleTabService.onBeforeBrowserAccessOpenURI(aOpener, aWhere, aContext); $1'
 			)
 		);
+		if (nsBrowserAccess.prototype.openURIInFrame) {
+			eval('nsBrowserAccess.prototype.openURIInFrame = '+
+				nsBrowserAccess.prototype.openURIInFrame.toSource().replace(
+					'let browser = ',
+					'TreeStyleTabService.onBeforeBrowserAccessOpenURI(aOpener, aWhere, aContext); $&'
+				)
+			);
+		}
 
 		if ('TabsInTitlebar' in window &&
 			TabsInTitlebar._update) {
