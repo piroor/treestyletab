@@ -3658,7 +3658,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
   
 	onRestoreTabContentStarted : function TSTBrowser_onRestoreTabContentStarted(aTab)
 	{
-		aTab.linkedBrowser.__treestyletab__toBeRestored = true;
+		// don't override "false" value (means "already restored")!
+		if (typeof aTab.linkedBrowser.__treestyletab__toBeRestored == 'undefined')
+			aTab.linkedBrowser.__treestyletab__toBeRestored = true;
 	},
  
 	onTabRestoring : function TSTBrowser_onTabRestoring(aEvent) 
