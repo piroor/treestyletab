@@ -6643,7 +6643,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				(!onlyVisible || !aTab.hidden)
 			);
 		});
-		dump('  restoring member tabs = '+tabs.length+'\n');
+		dump('  restoring member tabs = '+tabs.length+' ('+tabs.map(function(aTab) { return aTab._tPos; })+')\n');
 		if (tabs.length <= 1)
 			return;
 
