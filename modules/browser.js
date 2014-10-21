@@ -6494,9 +6494,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 						catch(e) {
 							self.defaultErrorHandler(e);
 						}
+						delete self.timers[key];
 						scrollBoxObject = null;
 						self = null;
-						delete self.timers[key];
 					}, 0);
 				}
 
