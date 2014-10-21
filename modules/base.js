@@ -68,8 +68,6 @@ XPCOMUtils.defineLazyGetter(this, 'autoScroll', function() {
 });
 XPCOMUtils.defineLazyModuleGetter(this, 'UninstallationListener',
   'resource://treestyletab-modules/lib/UninstallationListener.js');
-XPCOMUtils.defineLazyModuleGetter(this, 'Deferred',
-  'resource://treestyletab-modules/lib/jsdeferred.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'confirmWithPopup', 'resource://treestyletab-modules/lib/confirmWithPopup.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
@@ -115,7 +113,6 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	get extensions() { return extensions; },
 	get animationManager() { return animationManager; },
 	get autoScroll() { return autoScroll; },
-	get Deferred() { return Deferred; },
 	get AeroPeek() { return AeroPeek; }, // for Windows
  
 	init : function TSTBase_init() 
@@ -478,7 +475,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 				],
 				persistence : -1 // don't hide even if the tab is restored after the panel is shown.
 			})
-			.next(function(aButtonIndex) {
+			.then(function(aButtonIndex) {
 				if (aButtonIndex < 2) {
 					behavior |= self.kUNDO_CLOSE_SET;
 				}
@@ -540,7 +537,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			};
 
 		if (task)
-			Deferred.next(function() {
+			setTimeout((function() {
 				try {
 					task();
 				}
@@ -548,8 +545,9 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 					dump(e+'\n');
 					target.removeEventListener(type, listener, false);
 					done = true;
+					this.defaultErrorHandler(e);
 				}
-			}).error(this.defaultDeferredErrorHandler);
+			}).bind(this), 0);
 
 		target.addEventListener(type, listener, false);
 
@@ -590,7 +588,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		throw error;
 	},
   
-	defaultDeferredErrorHandler : function TSTBase_defaultDeferredErrorHandler(aError) 
+	defaultErrorHandler : function TSTBase_defaultErrorHandler(aError) 
 	{
 		if (aError.stack)
 			Cu.reportError(aError.message+'\n'+aError.stack);
@@ -1582,10 +1580,14 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	readyToOpenChildTabNow : function TSTBase_readyToOpenChildTabNow(...aArgs) /* PUBLIC API */
 	{
 		if (this.readyToOpenChildTab.apply(this, aArgs)) {
-			let self = this;
-			this.Deferred.next(function() {
-				self.stopToOpenChildTab(aArgs[0]);
-			}).error(this.defaultDeferredErrorHandler);
+			setTimeout((function() {
+				try {
+					this.stopToOpenChildTab(aArgs[0]);
+				}
+				catch(e) {
+					this.defaultErrorHandler(e);
+				}
+			}).bind(this), 0);
 			return true;
 		}
 		return false;
@@ -1634,10 +1636,14 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	readyToOpenNextSiblingTabNow : function TSTBase_readyToOpenNextSiblingTabNow(...aArgs) /* PUBLIC API */
 	{
 		if (this.readyToOpenNextSiblingTab.apply(this, aArgs)) {
-			let self = this;
-			this.Deferred.next(function() {
-				self.stopToOpenChildTab(aArgs[0]);
-			}).error(this.defaultDeferredErrorHandler);
+			setTimeout((function() {
+				try {
+					this.stopToOpenChildTab(aArgs[0]);
+				}
+				catch(e) {
+					this.defaultErrorHandler(e);
+				}
+			}).bind(this), 0);
 			return true;
 		}
 		return false;
@@ -1672,10 +1678,14 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	{
 
 		if (this.readyToOpenNewTabGroup.apply(this, aArgs)) {
-			let self = this;
-			this.Deferred.next(function() {
-				self.stopToOpenChildTab(aArgs[0]);
-			}).error(this.defaultDeferredErrorHandler);
+			setTimeout((function() {
+				try {
+					this.stopToOpenChildTab(aArgs[0]);
+				}
+				catch(e) {
+					this.defaultErrorHandler(e);
+				}
+			}).bind(this), 0);
 			return true;
 		}
 		return false;

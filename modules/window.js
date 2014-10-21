@@ -41,6 +41,7 @@ const Ci = Components.interfaces;
 const Cu = Components.utils;
 
 Cu.import('resource://gre/modules/XPCOMUtils.jsm');
+Cu.import('resource://gre/modules/Timer.jsm');
 Cu.import('resource://treestyletab-modules/lib/inherit.jsm');
 
 XPCOMUtils.defineLazyGetter(this, 'window', function() {
@@ -913,9 +914,14 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		this.tabbarResizeStartX = -1;
 		this.tabbarResizeStartY = -1;
 
-		this.Deferred.next(function() {
-			b.treeStyleTab.fixTooNarrowTabbar();
-		}).error(this.defaultDeferredErrorHandler);
+		setTimeout((function() {
+			try {
+				b.treeStyleTab.fixTooNarrowTabbar();
+			}
+			catch(e) {
+				this.defaultErrorHandler(e);
+			}
+		}).bind(this), 0);
 	},
 	onTabbarResizing : function TSTWindow_onTabbarResizing(aEvent)
 	{
@@ -1184,9 +1190,9 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			this.readyToOpenRelatedTabAs(this.browser.selectedTab, utils.getTreePref('autoAttach.newTabButton'));
 			let self = this.windowService || this;
 			self._clickEventOnNewTabButtonHandled = true;
-			this.Deferred.next(function() {
+			setTimeout(function() {
 				self._clickEventOnNewTabButtonHandled = false;
-			});
+			}, 0);
 		}
 		else if (aEvent.target.id == 'urlbar-go-button' || aEvent.target.id == 'go-button') {
 			this.readyToOpenRelatedTabAs(this.browser.selectedTab, utils.getTreePref('autoAttach.goButton'));
@@ -1476,25 +1482,29 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 						temporary: utils.getTreePref('createSubtree.underParent.temporaryGroup')
 					})) :
 					aTabs.shift() ;
-		var self = this;
-		this.Deferred.next(function(self) {
-			if (shouldCreateGroup) {
-				for (let i = 0, maxi = aTabs.length; i < maxi; i++)
-				{
-					let tab = aTabs[i];
-					b.treeStyleTab.attachTabTo(tab, root);
-					b.treeStyleTab.collapseExpandTab(tab, false);
+		setTimeout((function() {
+			try {
+				if (shouldCreateGroup) {
+					for (let i = 0, maxi = aTabs.length; i < maxi; i++)
+					{
+						let tab = aTabs[i];
+						b.treeStyleTab.attachTabTo(tab, root);
+						b.treeStyleTab.collapseExpandTab(tab, false);
+					}
+				}
+				if (parent) {
+					b.treeStyleTab.attachTabTo(root, parent, {
+						insertBefore : next
+					});
+				}
+				else if (next) {
+					b.treeStyleTab.moveTabSubtreeTo(root, next._tPos);
 				}
 			}
-			if (parent) {
-				b.treeStyleTab.attachTabTo(root, parent, {
-					insertBefore : next
-				});
+			catch(e) {
+				this.defaultErrorHandler(e);
 			}
-			else if (next) {
-				b.treeStyleTab.moveTabSubtreeTo(root, next._tPos);
-			}
-		}).error(this.defaultDeferredErrorHandler);
+		}).bind(this), 0);
 	},
 	createSubTree : function(...aArgs) {
 		return this.createSubtree.apply(this, aArgs);
@@ -1654,22 +1664,28 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 					};
 
 				let b = this.browser;
-				let blankTab;
-				this.Deferred
-					.next(function() {
+				setTimeout((function() {
+					try {
 						var blankTab = b.selectedTab;
 						b.treeStyleTab.tabbarDNDObserver.performDrop(actionInfo, remoteTab);
-						return blankTab;
-					})
-					.next(function(aBlankTab) {
-						b.removeTab(aBlankTab);
-						remoteTab = null;
-						remoteBrowser = null;
-						remoteWindow = null
-						remoteService = null;
-						remoteMultipleTabService = null;
-					})
-					.error(this.defaultDeferredErrorHandler);
+						setTimeout((function() {
+							try {
+								b.removeTab(blankTab);
+								remoteTab = null;
+								remoteBrowser = null;
+								remoteWindow = null
+								remoteService = null;
+								remoteMultipleTabService = null;
+							}
+							catch(e) {
+								this.defaultErrorHandler(e);
+							}
+						}).bind(this), 0);
+					}
+					catch(e) {
+						this.defaultErrorHandler(e);
+					}
+				}).bind(this), 0);
 			}
 			return true;
 		}
