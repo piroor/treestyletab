@@ -4981,27 +4981,20 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (this.timers['onTabsOnTopSyncCommand'])
 			clearTimeout(this.timers['onTabsOnTopSyncCommand']);
 		this.timers['onTabsOnTopSyncCommand'] = setTimeout((function() {
-			var cleanup = (function() {
-				this.windowService.tabsOnTopChangingByUI = false;
-				delete this.timers['onTabsOnTopSyncCommand'];
-			}).bind(this);
-			try {
-				this.windowService.toggleFixed(this.mTabBrowser);
-				setTimeout((function() {
-					try {
-						if (this.window.TabsOnTop.enabled != aEnabled)
-							this.window.TabsOnTop.enabled = aEnabled;
-					}
-					catch(e) {
-						this.defaultErrorHandler(e);
-					}
-					cleanup();
-				}).bind(this), 0);
-			}
-			catch(e) {
-				this.defaultErrorHandler(e);
-				cleanup();
-			}
+			Deferred.resolve()
+				.then((function() {
+					this.windowService.toggleFixed(this.mTabBrowser);
+					return wait(0);
+				}).bind(this))
+				.then((function() {
+					if (this.window.TabsOnTop.enabled != aEnabled)
+						this.window.TabsOnTop.enabled = aEnabled;
+				}).bind(this))
+				.catch(this.defaultErrorHandler.bind(this))
+				.then((function() {
+					this.windowService.tabsOnTopChangingByUI = false;
+					delete this.timers['onTabsOnTopSyncCommand'];
+				}).bind(this));
 		}).bind(this), 0);
 	},
  
