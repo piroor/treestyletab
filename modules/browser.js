@@ -48,6 +48,7 @@ Cu.import('resource://gre/modules/Timer.jsm');
 Cu.import('resource://treestyletab-modules/lib/inherit.jsm');
 
 XPCOMUtils.defineLazyModuleGetter(this, 'Services', 'resource://gre/modules/Services.jsm');
+XPCOMUtils.defineLazyModuleGetter(this, 'Promise', 'resource://gre/modules/Promise.jsm');
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 XPCOMUtils.defineLazyModuleGetter(this, 'FullTooltipManager', 'resource://treestyletab-modules/fullTooltip.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'TabbarDNDObserver', 'resource://treestyletab-modules/tabbarDNDObserver.js');
@@ -63,6 +64,14 @@ XPCOMUtils.defineLazyGetter(this, 'prefs', function() {
 	Cu.import('resource://treestyletab-modules/lib/prefs.js');
 	return window['piro.sakura.ne.jp'].prefs;
 });
+
+function wait(aMilliSeconds) {
+	return new Promise(function(aResolve, aReject) {
+		setTimeout(function() {
+			aResolve();
+		}, aMilliSeconds);
+	});
+}
 
 Cu.import('resource://treestyletab-modules/window.js');
  
@@ -6637,34 +6646,22 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			animateElement.setAttribute(attrName, 'ready');
 
 		this.timers['notifyBackgroundTab'] = setTimeout((function() {
-			var cleanup = (function() {
-				delete this.timers['notifyBackgroundTab'];
-			}).bind(this);
-			try {
-				animateElement.setAttribute(attrName, 'notifying');
-				setTimeout((function() {
-					try {
-						animateElement.setAttribute(attrName, 'finish');
-						setTimeout((function() {
-							try {
-								animateElement.removeAttribute(attrName);
-							}
-							catch(e) {
-								this.defaultErrorHandler(e);
-							}
-							cleanup();
-						}).bind(this), 1000);
-					}
-					catch(e) {
-						this.defaultErrorHandler(e);
-						cleanup();
-					}
-				}).bind(this), 150);
-			}
-			catch(e) {
-				this.defaultErrorHandler(e);
-				cleanup();
-			}
+			Promise.resolve()
+				.then(function() {
+					animateElement.setAttribute(attrName, 'notifying');
+					return wait(150);
+				})
+				.then(function() {
+					animateElement.setAttribute(attrName, 'finish');
+					return wait(1000);
+				})
+				.then(function() {
+					animateElement.removeAttribute(attrName);
+				})
+				.catch(this.defaultErrorHandler.bind(this))
+				.then((function() {
+					delete this.timers['notifyBackgroundTab'];
+				}).bind(this));
 		}).bind(this), 0);
 	},
  
