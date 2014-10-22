@@ -15,7 +15,7 @@
    http://github.com/piroor/fxaddonlib-tabs-drag-utils
 */
 (function() {
-	const currentRevision = 32;
+	const currentRevision = 33;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -85,26 +85,45 @@
 			if (
 				'PlacesControllerDragHelper' in window &&
 				'onDrop' in PlacesControllerDragHelper &&
-				PlacesControllerDragHelper.onDrop.toSource().indexOf('tabsDragUtils.DOMDataTransferProxy') < 0
+				!PlacesControllerDragHelper.__TabsDragUtils_original__onDrop
 				) {
 				let original = PlacesControllerDragHelper.onDrop;
 				PlacesControllerDragHelper.__TabsDragUtils_original__onDrop = original;
-				eval('PlacesControllerDragHelper.onDrop = '+
-					original.toSource().replace(
-						// for Firefox 3.5 or later
-						/(let|var) doCopy =/,
-						'$1 tabsDataTransferProxy = dt = new window["piro.sakura.ne.jp"].tabsDragUtils.DOMDataTransferProxy(dt, insertionPoint); $&'
-					).replace( // for Tree Style Tab (save tree structure to bookmarks)
-						/(PlacesUIUtils\.ptm|PlacesUtils\.transactionManager)\.doTransaction\(txn\);/,
-						'if (tabsDataTransferProxy && "_tabs" in tabsDataTransferProxy &&' +
-						'  "TreeStyleTabBookmarksService" in window)' +
-						'  TreeStyleTabBookmarksService.beginAddBookmarksFromTabs(tabsDataTransferProxy._tabs);' +
-						'$&' +
-						'if (tabsDataTransferProxy && "_tabs" in tabsDataTransferProxy &&' +
-						'  "TreeStyleTabBookmarksService" in window)' +
-						'  TreeStyleTabBookmarksService.endAddBookmarksFromTabs();'
-					)
-				);
+				if (PlacesControllerDragHelper.onDrop.isAsyncFunction) { // Firefox 35 or later
+					PlacesControllerDragHelper.onDrop = Task.async(function(insertionPoint, dt) {
+						dt = new window["piro.sakura.ne.jp"].tabsDragUtils.DOMDataTransferProxy(dt, insertionPoint);
+						// for Tree Style Tab (save tree structure to bookmarks)
+						if (dt &&
+							'_tabs' in dt &&
+							'TreeStyleTabBookmarksService' in window)
+							TreeStyleTabBookmarksService.beginAddBookmarksFromTabs(dt._tabs);
+						yield PlacesControllerDragHelper.__TabsDragUtils_original__onDrop.call(this, insertionPoint, dt)
+								.then(function(aResult) {
+									if (dt &&
+										'_tabs' in dt &&
+										'TreeStyleTabBookmarksService' in window)
+										TreeStyleTabBookmarksService.endAddBookmarksFromTabs(dt._tabs);
+								});
+					});
+				}
+				else { // Firefox 34 or older
+					eval('PlacesControllerDragHelper.onDrop = '+
+						original.toSource().replace(
+							// for Firefox 3.5 or later
+							/(let|var) doCopy =/,
+							'$1 tabsDataTransferProxy = dt = new window["piro.sakura.ne.jp"].tabsDragUtils.DOMDataTransferProxy(dt, insertionPoint); $&'
+						).replace( // for Tree Style Tab (save tree structure to bookmarks)
+							/(PlacesUIUtils\.ptm|PlacesUtils\.transactionManager)\.doTransaction\(txn\);/,
+							'if (tabsDataTransferProxy && "_tabs" in tabsDataTransferProxy &&' +
+							'  "TreeStyleTabBookmarksService" in window)' +
+							'  TreeStyleTabBookmarksService.beginAddBookmarksFromTabs(tabsDataTransferProxy._tabs);' +
+							'$&' +
+							'if (tabsDataTransferProxy && "_tabs" in tabsDataTransferProxy &&' +
+							'  "TreeStyleTabBookmarksService" in window)' +
+							'  TreeStyleTabBookmarksService.endAddBookmarksFromTabs();'
+						)
+					);
+				}
 				PlacesControllerDragHelper.__TabsDragUtils_updated__onDrop = PlacesControllerDragHelper.onDrop;
 			}
 
