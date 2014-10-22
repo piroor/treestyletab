@@ -164,8 +164,11 @@ if (typeof window == 'undefined' ||
 		getScrollBoxObject : function(aTabBrowser) 
 		{
 			var box = this.getScrollBox(aTabBrowser);
-			return (box.scrollBoxObject || box.boxObject)
-					.QueryInterface(Ci.nsIScrollBoxObject); // Tab Mix Plus
+			var boxObject = (box.scrollBoxObject || box.boxObject);
+			try {
+				boxObject = boxObject.QueryInterface(Ci.nsIScrollBoxObject); // for Tab Mix Plus (ensure scrollbox-ed)
+			} catch (ex) { /* May not implement this interface e.g. after bug 979835 */ }
+			return boxObject;
 		},
 
 		getUpButton : function(aTabBrowser)
