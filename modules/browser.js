@@ -4782,6 +4782,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			return;
 
 		var resizedTopFrame = aEvent.originalTarget.top;
+		// for E10S tabs, isContentResize is always false.
 		var isContentResize = resizedTopFrame == this.mTabBrowser.contentWindow;
 		var isChromeResize = resizedTopFrame == this.window;
 
