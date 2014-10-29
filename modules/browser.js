@@ -3764,6 +3764,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		if (!tab.selected &&
 			this.mTabBrowser.currentURI.spec == 'about:sessionrestore') {
+			// because this is a chrome document, E10S is not applied.
 			let frame = this.mTabBrowser.contentWindow;
 			frame = frame.wrappedJSObject || frame;
 			let tree = frame.document.getElementById('tabList');

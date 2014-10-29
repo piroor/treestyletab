@@ -1109,6 +1109,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		return null;
 	},
  
+	// this is used only for obsolete API call on non-E10S windows
 	getTabFromFrame : function TSTBase_getTabFromFrame(aFrame, aTabBrowser) 
 	{
 		var b = aTabBrowser || this.browser;
@@ -1259,27 +1260,27 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			this.browser ;
 	},
  
-	getFrameFromTabBrowserElements : function TSTBase_getFrameFromTabBrowserElements(aFrameOrTabBrowser) 
+	getBrowserFromTabBrowserElements : function TSTBase_getBrowserFromTabBrowserElements(aTarget) 
 	{
-		var frame = aFrameOrTabBrowser;
-		if (frame == '[object XULElement]') {
-			if (frame.localName == 'tab') {
-				frame = frame.linkedBrowser.contentWindow;
-			}
-			else if (frame.localName == 'browser') {
-				frame = frame.contentWindow;
-			}
-			else {
-				frame = this.getTabBrowserFromChild(frame);
-				if (!frame)
-					return null;
-				frame = frame.contentWindow;
-			}
-		}
-		if (!frame)
-			frame = this.browser.contentWindow;
+		if (aTarget == '[object XULElement]') {
+			if (aTarget.localName == 'tab')
+				return aTarget.linkedBrowser;
 
-		return frame;
+			if (aTarget.localName == 'browser')
+				return aTarget;
+
+			aTarget = this.getTabBrowserFromChild(aTarget);
+			if (aTarget)
+				return aTarget.selectedTab.linkedBrowser;
+			else
+				return null;
+		}
+		if (aTarget == '[object Window]' || aTarget == '[object ChromeWindow]') {
+			let tab = this.getTabFromFrame(aTarget, this.getTabBrowserFromFrame(aTarget));
+			if (tab)
+				return tab.linkedBrowser;
+		}
+		return this.browser.selectedTab.linkedBrowser;
 	},
   
 /* get tab(s) */ 
@@ -1538,18 +1539,18 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
   
 /* notify "ready to open child tab(s)" */ 
 	
-	readyToOpenChildTab : function TSTBase_readyToOpenChildTab(aFrameOrTabBrowser, aMultiple, aInsertBefore) /* PUBLIC API */ 
+	readyToOpenChildTab : function TSTBase_readyToOpenChildTab(aTabOrSomething, aMultiple, aInsertBefore) /* PUBLIC API */ 
 	{
 		if (!utils.getTreePref('autoAttach'))
 			return false;
 
-		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
-		if (!frame)
+		var browser = this.getBrowserFromTabBrowserElements(aTabOrSomething);
+		if (!browser)
 			return false;
 
-		var ownerBrowser = this.getTabBrowserFromFrame(frame);
+		var ownerBrowser = this.getTabBrowserFromFrame(browser);
 
-		var parentTab = this.getTabFromFrame(frame, ownerBrowser);
+		var parentTab = this.getTabFromBrowser(browser, ownerBrowser);
 		if (!parentTab || parentTab.getAttribute('pinned') == 'true')
 			return false;
 
@@ -1593,15 +1594,15 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		return false;
 	},
  
-	readyToOpenNextSiblingTab : function TSTBase_readyToOpenNextSiblingTab(aFrameOrTabBrowser) /* PUBLIC API */ 
+	readyToOpenNextSiblingTab : function TSTBase_readyToOpenNextSiblingTab(aTabOrSomething) /* PUBLIC API */ 
 	{
-		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
-		if (!frame)
+		var browser = this.getBrowserFromTabBrowserElements(aTabOrSomething);
+		if (!browser)
 			return false;
 
-		var ownerBrowser = this.getTabBrowserFromFrame(frame);
+		var ownerBrowser = this.getTabBrowserFromChild(browser);
 
-		var tab = this.getTabFromFrame(frame, ownerBrowser);
+		var tab = this.getTabFromBrowser(browser, ownerBrowser);
 		if (!tab || tab.getAttribute('pinned') == 'true')
 			return false;
 
@@ -1654,13 +1655,13 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		if (!utils.getTreePref('autoAttach'))
 			return false;
 
-		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
-		if (!frame)
+		var browser = this.getBrowserFromTabBrowserElements(aTabOrSomething);
+		if (!browser)
 			return false;
 
-		this.stopToOpenChildTab(frame);
+		this.stopToOpenChildTab(browser);
 
-		var ownerBrowser = this.getTabBrowserFromFrame(frame);
+		var ownerBrowser = this.getTabBrowserFromFrame(browser);
 		ownerBrowser.treeStyleTab.readiedToAttachNewTabGroup = true;
 		ownerBrowser.treeStyleTab.readiedToAttachMultiple    = true;
 		ownerBrowser.treeStyleTab.multipleCount              = 0;
@@ -1691,13 +1692,13 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		return false;
 	},
  
-	stopToOpenChildTab : function TSTBase_stopToOpenChildTab(aFrameOrTabBrowser) /* PUBLIC API */ 
+	stopToOpenChildTab : function TSTBase_stopToOpenChildTab(aTabOrSomething) /* PUBLIC API */ 
 	{
-		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
-		if (!frame)
+		var browser = this.getBrowserFromTabBrowserElements(aTabOrSomething);
+		if (!browser)
 			return false;
 
-		var ownerBrowser = this.getTabBrowserFromFrame(frame);
+		var ownerBrowser = this.getTabBrowserFromChild(browser);
 		ownerBrowser.treeStyleTab.readiedToAttachNewTab      = false;
 		ownerBrowser.treeStyleTab.readiedToAttachNewTabGroup = false;
 		ownerBrowser.treeStyleTab.readiedToAttachMultiple    = false;
@@ -1710,13 +1711,13 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		return true;
 	},
  
-	checkToOpenChildTab : function TSTBase_checkToOpenChildTab(aFrameOrTabBrowser) /* PUBLIC API */ 
+	checkToOpenChildTab : function TSTBase_checkToOpenChildTab(aTabOrSomething) /* PUBLIC API */ 
 	{
-		var frame = this.getFrameFromTabBrowserElements(aFrameOrTabBrowser);
-		if (!frame)
+		var browser = this.getBrowserFromTabBrowserElements(aTabOrSomething);
+		if (!browser)
 			return false;
 
-		var ownerBrowser = this.getTabBrowserFromFrame(frame);
+		var ownerBrowser = this.getTabBrowserFromChild(browser);
 		return !!(ownerBrowser.treeStyleTab.readiedToAttachNewTab || ownerBrowser.treeStyleTab.readiedToAttachNewTabGroup);
 	},
  
@@ -1727,11 +1728,11 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	kNEWTAB_OPEN_AS_NEXT_SIBLING : 3,
 	readyToOpenRelatedTabAs : function TSTBase_readyToOpenRelatedTabAs(aBaseTab, aBehavior) 
 	{
-		var frame = this.getFrameFromTabBrowserElements(aBaseTab);
-		if (!frame)
+		var browser = this.getBrowserFromTabBrowserElements(aBaseTab);
+		if (!browser)
 			return;
 
-		aBaseTab = this.getTabFromFrame(frame, this.getTabBrowserFromFrame(frame));
+		aBaseTab = this.getTabFromBrowser(browser, this.getTabBrowserFromChild(browser));
 
 		switch (aBehavior)
 		{

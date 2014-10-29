@@ -79,33 +79,27 @@ function test_getTabBrowserFromFrame()
 	assertTabBrowserFrame(gBrowser, null);
 }
 
-function test_getFrameFromTabBrowserElements()
+function test_getBrowserFromTabBrowserElements()
 {
-	function assertFrameTabBrowser(aExpected, aArgument)
+	function assertBrowser(aExpected, aArgument)
 	{
-		assert.equals(aExpected, sv.getFrameFromTabBrowserElements(aArgument));
+		assert.equals(aExpected, sv.getBrowserFromTabBrowserElements(aArgument));
 	}
 
-	var tab, frame;
+	var tab, browser;
 
 	tab = gBrowser.selectedTab;
-	frame = gBrowser.contentWindow;
-	assertFrameTabBrowser(frame, frame);
-	assertFrameTabBrowser(frame, tab);
-	assertFrameTabBrowser(frame, tab.linkedBrowser);
-	assertFrameTabBrowser(frame, tab.ownerDocument.getAnonymousNodes(tab)[0]);
+	browser = tab.linkedBrowser;
+	assertBrowser(browser, browser);
+	assertBrowser(browser, tab);
+	assertBrowser(browser, tab.linkedBrowser);
+	assertBrowser(browser, tab.ownerDocument.getAnonymousNodes(tab)[0]);
 
-	assertFrameTabBrowser(tabs[2].linkedBrowser.contentWindow, tabs[2]);
-	frame = tabs[2].linkedBrowser.contentWindow.frames[1];
-	assertFrameTabBrowser(frame, frame);
+	assertBrowser(tabs[2].linkedBrowser, tabs[2]);
 
-	assertFrameTabBrowser(tabs[3].linkedBrowser.contentWindow, tabs[3]);
-	frame = tabs[3].linkedBrowser.contentWindow.frames[0];
-	assertFrameTabBrowser(frame, frame);
-
-	assertFrameTabBrowser(gBrowser.contentWindow, null);
-	assertFrameTabBrowser(gBrowser.contentWindow, gBrowser);
-	assert.isNull(sv.getFrameFromTabBrowserElements(gBrowser.parentNode));
+	assertBrowser(browser, null);
+	assertBrowser(browser, gBrowser);
+	assert.isNull(sv.getBrowserFromTabBrowserElements(gBrowser.parentNode));
 }
 
 function test_tabID()
