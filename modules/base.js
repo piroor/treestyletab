@@ -1548,7 +1548,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		if (!browser)
 			return false;
 
-		var ownerBrowser = this.getTabBrowserFromFrame(browser);
+		var ownerBrowser = this.getTabBrowserFromChild(browser);
 
 		var parentTab = this.getTabFromBrowser(browser, ownerBrowser);
 		if (!parentTab || parentTab.getAttribute('pinned') == 'true')
@@ -1661,7 +1661,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 
 		this.stopToOpenChildTab(browser);
 
-		var ownerBrowser = this.getTabBrowserFromFrame(browser);
+		var ownerBrowser = this.getTabBrowserFromChild(browser);
 		ownerBrowser.treeStyleTab.readiedToAttachNewTabGroup = true;
 		ownerBrowser.treeStyleTab.readiedToAttachMultiple    = true;
 		ownerBrowser.treeStyleTab.multipleCount              = 0;
