@@ -1650,7 +1650,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		return false;
 	},
  
-	readyToOpenNewTabGroup : function TSTBase_readyToOpenNewTabGroup(aFrameOrTabBrowser, aTreeStructure, aExpandAllTree) /* PUBLIC API */ 
+	readyToOpenNewTabGroup : function TSTBase_readyToOpenNewTabGroup(aTabOrSomething, aTreeStructure, aExpandAllTree) /* PUBLIC API */ 
 	{
 		if (!utils.getTreePref('autoAttach'))
 			return false;
