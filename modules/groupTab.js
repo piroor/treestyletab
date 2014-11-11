@@ -42,6 +42,7 @@ const Ci = Components.interfaces;
 Components.utils.import('resource://treestyletab-modules/lib/inherit.jsm');
 Components.utils.import('resource://treestyletab-modules/base.js');
 Components.utils.import('resource://treestyletab-modules/pseudoTreeBuilder.js');
+Components.utils.import('resource://treestyletab-modules/tabAttributesObserver.js');
 
 function GroupTab(aWindow)
 {
@@ -252,8 +253,6 @@ GroupTab.prototype = inherit(TreeStyleTabBase, {
 			case 'load':
 				if (aEvent.currentTarget == this.window)
 					this.onLoad(aEvent);
-				else
-					this.onDocumentModified(aEvent);
 				return;
 
 			case 'unload':
@@ -277,9 +276,6 @@ GroupTab.prototype = inherit(TreeStyleTabBase, {
 				return this.onTabAttached(aEvent);
 			case this.kEVENT_TYPE_DETACHED:
 				return this.onTabDetached(aEvent);
-
-			case 'DOMTitleChanged':
-				return this.onDocumentModified(aEvent);
 		}
 	},
 
@@ -303,9 +299,9 @@ GroupTab.prototype = inherit(TreeStyleTabBase, {
 		tab.parentNode.addEventListener(this.kEVENT_TYPE_ATTACHED, this, false);
 		tab.parentNode.addEventListener(this.kEVENT_TYPE_DETACHED, this, false);
 
-		var b = this.browser;
-		b.addEventListener('load', this, true);
-		b.addEventListener('DOMTitleChanged', this, true);
+		this.tabsObserver = new TabAttributesObserver(this.browser.tabContainer, (function(aTab) {
+			this.onTabModified(aTab);
+		}).bind(this));
 
 		this.editor.addEventListener('keypress', this, false);
 
@@ -330,9 +326,8 @@ GroupTab.prototype = inherit(TreeStyleTabBase, {
 		tab.parentNode.removeEventListener(this.kEVENT_TYPE_ATTACHED, this, false);
 		tab.parentNode.removeEventListener(this.kEVENT_TYPE_DETACHED, this, false);
 
-		var b = this.browser;
-		b.removeEventListener('load', this, true);
-		b.removeEventListener('DOMTitleChanged', this, true);
+		this.tabsObserver.destroy();
+		delete this.tabsObserver;
 
 		this.editor.removeEventListener('keypress', this, false);
 
@@ -416,11 +411,10 @@ GroupTab.prototype = inherit(TreeStyleTabBase, {
 		this.checkUpdateTreeNow();
 	},
 
-	onDocumentModified : function GT_onDocumentModified(aEvent)
+	onTabModified : function GT_onTabModified(aTab)
 	{
-		var tab = this.getOwnerTab(aEvent.target.defaultView.top);
-		if (tab) {
-			let id = tab.getAttribute(this.kID);
+		if (aTab) {
+			let id = aTab.getAttribute(this.kID);
 			if (this.document.getElementsByAttribute('tab-id', id).length)
 				this.shouldUpdate = true;
 		}
