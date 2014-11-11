@@ -740,37 +740,46 @@ AutoHideBrowser.prototype = inherit(TreeStyleTabConstants, {
 			this.expanded &&
 			this.contentAreaScreenEnabled &&
 			Services.focus.activeWindow &&
-			Services.focus.activeWindow.top == this.window &&
-			this.hasPluginArea(this.browser.mCurrentBrowser.contentWindow)
+			Services.focus.activeWindow.top == this.window
 			) {
-			let box = this.getContentsAreaBox();
-			let style = this.screen.style;
-			let width = Math.min(box.width, this.window.screen.availWidth - box.screenX);
-			let height = Math.min(box.height, this.window.screen.availHeight - box.screenY);
-			style.width = width+'px';
-			style.height = height+'px';
-			if (this.screen.state == 'open')
-				this.screen.moveTo(box.screenX, box.screenY);
-			else
-				this.screen.openPopupAtScreen(box.screenX, box.screenY, false);
-			this.screen.setAttribute('popup-shown', true);
+			this.browser.selectedTab.__treestyletab__contentBridge.checkPluginAreaExistence()
+				.then((function(aExistence) {
+					if (aExistence)
+						this.showContentsAreaScreen();
+					else
+						this.hideContentsAreaScreen();
+				}).bind(this))
+				.catch((function(aError) {
+					this.hideContentsAreaScreen();
+					Components.utils.reportError(aError);
+				}).bind(this));
+
 		}
 		else {
-			this.screen.removeAttribute('popup-shown');
-			if (this.screen.state != 'close')
-				this.screen.hidePopup();
+			this.hideContentsAreaScreen();
 		}
 	},
-	hasPluginArea : function AHB_hasPluginArea(aFrame)
+	showContentsAreaScreen : function AHB_showContentsAreaScreen()
 	{
-		return (
-			aFrame && // Workaround. I have to make this work with e10s...
-			(
-				aFrame.document.querySelector('embed, object') ||
-				Array.some(aFrame.frames, AHB_hasPluginArea)
-			)
-		);
+		let box = this.getContentsAreaBox();
+		let style = this.screen.style;
+		let width = Math.min(box.width, this.window.screen.availWidth - box.screenX);
+		let height = Math.min(box.height, this.window.screen.availHeight - box.screenY);
+		style.width = width+'px';
+		style.height = height+'px';
+		if (this.screen.state == 'open')
+			this.screen.moveTo(box.screenX, box.screenY);
+		else
+			this.screen.openPopupAtScreen(box.screenX, box.screenY, false);
+		this.screen.setAttribute('popup-shown', true);
 	},
+	hideContentsAreaScreen : function AHB_hideContentsAreaScreen()
+	{
+		this.screen.removeAttribute('popup-shown');
+		if (this.screen.state != 'close')
+			this.screen.hidePopup();
+	},
+	
 	
 	show : function AHB_show(aReason) /* PUBLIC API */ 
 	{

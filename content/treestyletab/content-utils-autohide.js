@@ -17,6 +17,7 @@
 		cleanup =
 			Cc = Ci = Cu = Cr =
 			TreeStyleTabConstants =
+			hasPluginArea =
 			messageListener =
 			serializeMouseEvent =
 			handleEvent =
@@ -24,6 +25,16 @@
 			advanceListening =
 			mydump =
 				undefined;
+	}
+
+	function hasPluginArea(aFrame) {
+		return Boolean(
+			aFrame &&
+			(
+				aFrame.document.querySelector('embed, object') ||
+				Array.some(aFrame.frames, hasPluginArea)
+			)
+		);
 	}
 
 	var messageListener = function(aMessage) {
@@ -62,6 +73,14 @@
 					advanceListening = false;
 					global.removeEventListener('mousemove', handleEvent, true);
 				}
+				return;
+
+			case TreeStyleTabConstants.COMMAND_REQUEST_PLUGIN_AREA_EXISTENCE:
+				global.sendAsyncMessage(TreeStyleTabConstants.MESSAGE_TYPE, {
+					command   : TreeStyleTabConstants.COMMAND_REPORT_PLUGIN_AREA_EXISTENCE,
+					id        : aMessage.json.params.id,
+					existence : hasPluginArea(content)
+				});
 				return;
 		}
 	};

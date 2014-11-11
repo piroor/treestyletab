@@ -44,6 +44,7 @@ const Cu = Components.utils;
 Cu.import('resource://gre/modules/XPCOMUtils.jsm');
 Cu.import('resource://treestyletab-modules/lib/inherit.jsm');
 Cu.import('resource://treestyletab-modules/constants.js');
+Cu.import('resource://gre/modules/Promise.jsm');
 
 function ContentBridge(aTab, aTabBrowser) 
 {
@@ -59,6 +60,7 @@ ContentBridge.prototype = inherit(TreeStyleTabConstants, {
 		this.mTab = aTab;
 		this.mTabBrowser = aTabBrowser;
 		this.handleMessage = this.handleMessage.bind(this);
+		this.checkPluginAreaExistenceResolvers = {};
 
 		var manager = this.mTab.linkedBrowser.messageManager;
 		// manager.loadFrameScript(this.CONTENT_SCRIPT, true);
@@ -73,6 +75,7 @@ ContentBridge.prototype = inherit(TreeStyleTabConstants, {
 
 		delete this.mTab;
 		delete this.mTabBrowser;
+		delete this.checkPluginAreaExistenceResolvers;
 	},
 	sendAsyncCommand : function CB_sendAsyncCommand(aCommandType, aCommandParams)
 	{
@@ -81,6 +84,16 @@ ContentBridge.prototype = inherit(TreeStyleTabConstants, {
 			command : aCommandType,
 			params  : aCommandParams || {}
 		});
+	},
+	checkPluginAreaExistence : function CB_checkPluginAreaExistence()
+	{
+		return new Promise((function(aResolve, aReject) {
+			var id = Date.now() + '-' + Math.floor(Math.random() * 65000);
+			this.sendAsyncCommand(this.COMMAND_REQUEST_PLUGIN_AREA_EXISTENCE, {
+				id : id
+			});
+			return this.checkPluginAreaExistenceResolvers[id] = aResolve;
+		}).bind(this));
 	},
 	handleMessage : function CB_handleMessage(aMessage)
 	{
@@ -102,6 +115,15 @@ ContentBridge.prototype = inherit(TreeStyleTabConstants, {
 			case this.COMMAND_REPORT_MOUSEMOVE:
 				let (fakeEvent = this.fixupEventCoordinates(aMessage.json.event)) {
 					this.mTabBrowser.treeStyleTab.autoHide.handleMouseMove(fakeEvent);
+				}
+				return;
+
+			case this.COMMAND_REPORT_PLUGIN_AREA_EXISTENCE:
+				var id = aMessage.json.id;
+				if (id in this.checkPluginAreaExistenceResolvers) {
+					let resolver = this.checkPluginAreaExistenceResolvers[id];
+					delete this.checkPluginAreaExistenceResolvers[id];
+					resolver(aMessage.json.existence);
 				}
 				return;
 		}

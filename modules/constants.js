@@ -213,5 +213,7 @@ const TreeStyleTabConstants = Object.freeze({
 	COMMAND_REPORT_MOUSEDOWN        : 'report-mousedown',
 	COMMAND_REPORT_MOUSEUP          : 'report-mouseup',
 	COMMAND_REPORT_MOUSEMOVE        : 'report-mousemove',
-	COMMAND_NOTIFY_AUTOHIDE_STATUS  : 'notify-autohide-status'
+	COMMAND_NOTIFY_AUTOHIDE_STATUS  : 'notify-autohide-status',
+	COMMAND_REQUEST_PLUGIN_AREA_EXISTENCE : 'request-plugin-area-existence',
+	COMMAND_REPORT_PLUGIN_AREA_EXISTENCE  : 'report-plugin-area-existence'
 });
