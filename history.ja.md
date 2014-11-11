@@ -2,9 +2,9 @@
 
  - master/HEAD
    * Firefox 30およびそれ以前のバージョンへの対応を終了
-   * マルチプロセスのウィンドウでリンクから子タブを正しく開けるようにした[(by Nephyrin. Thanks a lot!)](https://github.com/piroor/treestyletab/pull/760)
+   * マルチプロセスモード（E10S）に対応
+     * マルチプロセスのウィンドウでリンクから子タブを正しく開けるようにした[(by Nephyrin. Thanks a lot!)](https://github.com/piroor/treestyletab/pull/760)
    * ダミーのタブを開かない設定の時に、複数のツリーを含むブックマークフォルダをタブで開いた場合にツリー構造を正しく復元するようにした
-   * マルチプロセスのウィンドウにおいて、開き直されたタブのツリー構造を正しく復元するようにした
    * 閉じたタブを開き直したときの位置がおかしくなる問題を修正
    * Nightly 33.0a1において `dom.compartment_per_addon`=`true` に設定した場合でも動作するように暫定的に対処
    * ツールバーカスタマイズを終えた後にタブバーの外観が壊れていたのを修正

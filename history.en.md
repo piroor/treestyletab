@@ -2,9 +2,9 @@
 
  - master/HEAD
    * Drop support for Firefox 30 and older versions
-   * Open child tabs from links correctly, in e10s windows. [(by Nephyrin. Thanks a lot!)](https://github.com/piroor/treestyletab/pull/760)
+   * Works correctly on the multi-process mode (E10S).
+     * Open child tabs from links correctly, in e10s windows. [(by Nephyrin. Thanks a lot!)](https://github.com/piroor/treestyletab/pull/760)
    * Restore tree structure with multiple trees from bookmarks correctly, even if the dummy tab is disabled.
-   * Restore tree structure of restored tabs correctly, in e10s windows.
    * Restore tab position for "Undo Close Tab" command correctly.
    * Works on Nightly 33.0a1 with the preference `dom.compartment_per_addon`=`true`.
    * Update tabbar appearance correctly, after toolbar customization.
