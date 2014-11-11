@@ -733,9 +733,6 @@ AutoHideBrowser.prototype = inherit(TreeStyleTabConstants, {
 	},
 	showHideContentsAreaScreen : function AHB_showHideContentsAreaScreen()
 	{
-		// this.browser.contentWindow doesn't currently work in e10s
-		// mode, use this.browser.mCurrentBrowser.contentWindow as a
-		// workaround until bug 1042680 is fixed
 		if (
 			this.expanded &&
 			this.contentAreaScreenEnabled &&
