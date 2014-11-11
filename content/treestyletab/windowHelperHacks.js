@@ -246,11 +246,9 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 		globDndtb.setTheStuff &&
 		TreeStyleTabUtils.getTreePref('compatibility.DragNDropToolbars')) {
 		let reinitTabbar = function() {
-				TreeStyleTabService.stopRendering();
 				gBrowser.treeStyleTab.syncDestroyTabbar();
 				window.setTimeout(function() {
 					gBrowser.treeStyleTab.syncReinitTabbar();
-					TreeStyleTabService.startRendering();
 				}, 100);
 			};
 		globDndtb.__treestyletab__setOrder = globDndtb.setOrder;
@@ -1312,11 +1310,9 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 								aEvent.attrName == 'hidden' &&
 								gBrowser.tabContainer.parentNode.id == (aEvent.newValue == 'true' ? 'toolbar-menubar' : 'personal-titlebar' )
 								) {
-								TreeStyleTabService.stopRendering();
 								gBrowser.treeStyleTab.syncDestroyTabbar();
 								window.setTimeout(function() {
 									gBrowser.treeStyleTab.syncReinitTabbar();
-									TreeStyleTabService.startRendering();
 								}, 0);
 							}
 							break;

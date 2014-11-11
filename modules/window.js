@@ -214,15 +214,6 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
   
 /* Utilities */ 
 	
-	stopRendering : function TSTWindow_stopRendering() 
-	{
-		this.window['piro.sakura.ne.jp'].stopRendering.stop();
-	},
-	startRendering : function TSTWindow_startRendering()
-	{
-		this.window['piro.sakura.ne.jp'].stopRendering.start();
-	},
- 
 	getPropertyPixelValue : function TSTWindow_getPropertyPixelValue(aElementOrStyle, aProp) 
 	{
 		var style = aElementOrStyle instanceof this.window.CSSStyleDeclaration ?
@@ -1347,13 +1338,11 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 				subtreeTabs = subtreeTabs.slice(1);
 			if (!subtreeTabs.length)
 				continue;
-			this.stopRendering();
 			this.markAsClosedSet(subtreeTabs);
 			for (let i = subtreeTabs.length-1; i > -1; i--)
 			{
 				b.removeTab(subtreeTabs[i], { animate : true });
 			}
-			this.startRendering();
 			this.fireTabSubtreeClosedEvent(b, subtreeTabs[0], subtreeTabs)
 		}
 	},
@@ -1618,14 +1607,12 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		if (!this.warnAboutClosingTabs(closeTabs.length))
 			return;
 
-		this.stopRendering();
 		this.markAsClosedSet(closeTabs);
 		var tabs = closeTabs.reverse();
 		for (let i = 0, maxi = tabs.length; i < maxi; i++)
 		{
 			b.removeTab(tabs[i]);
 		}
-		this.startRendering();
 	},
  
 	// For backward compatibility. You should use DOM event to block TST's focus handling.

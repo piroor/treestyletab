@@ -688,8 +688,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	
 	init : function TSTBrowser_init() 
 	{
-		this.stopRendering();
-
 		var w = this.window;
 		var d = this.document;
 		var b = this.mTabBrowser;
@@ -791,8 +789,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		this.fixTooNarrowTabbar();
 
 		this.fireTabbarPositionEvent(false, 'top', position); /* PUBLIC API */
-
-		this.startRendering();
 
 		if (this.timers['init'])
 			clearTimeout(this.timers['init']);
@@ -1267,8 +1263,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		this._startListenTabbarEvents();
 		this.window.TreeStyleTabWindowHelper.initTabbarMethods(b);
 
-		this.stopRendering();
-
 		var pos = aNewPosition || this.getPositionFlag(this.position);
 		if (b.getAttribute('id') != 'content' &&
 			!utils.getTreePref('tabbar.position.subbrowser.enabled')) {
@@ -1276,20 +1270,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 
 		aOldPosition = aOldPosition || pos;
-
-		// We have to use CSS property hack instead, because the stopRendering()
-		// doesn't effect on the first time of startup.
-		//  * This hack works in a "stop"-"start" pair, so, people never see the side effect.
-		//  * This hack works only when "ordinal" properties are modified.
-		// So, this is just for the case: "right" or "bottom" tab bar on the startup.
-		if (
-			pos != aOldPosition &&
-			(
-				((pos & this.kTABBAR_REGULAR) && (aOldPosition & this.kTABBAR_INVERTED)) ||
-				((pos & this.kTABBAR_INVERTED) && (aOldPosition & this.kTABBAR_REGULAR))
-			)
-			)
-			b.style.visibility = 'hidden';
 
 		var strip = this.tabStrip;
 		var placeHolder = this.tabStripPlaceHolder || strip;
@@ -1529,8 +1509,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				var event = d.createEvent('Events');
 				event.initEvent(this.kEVENT_TYPE_TABBAR_INITIALIZED, true, false);
 				this.mTabBrowser.dispatchEvent(event);
-
-				this.startRendering();
 			}
 			catch(e) {
 				this.defaultErrorHandler(e);
@@ -1667,8 +1645,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (!this._fireTabbarStateChangingEvent() && aCancelable)
 			return;
 
-		this.stopRendering();
-
 		var w = this.window;
 		var d = this.document;
 		var b = this.mTabBrowser;
@@ -1751,7 +1727,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			try {
 				this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_APPEARANCE_CHANGE);
 				this._fireTabbarStateChangedEvent();
-				this.startRendering();
 			}
 			catch(e) {
 				this.defaultErrorHandler(e);
@@ -2284,8 +2259,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	
 	syncDestroyTabbar : function TSTBrowser_syncDestroyTabbar() 
 	{
-		this.stopRendering();
-
 		this._lastTreeViewEnabledBeforeDestroyed = this.treeViewEnabled;
 		this.treeViewEnabled = false;
 		this.maxTreeLevel = 0;
@@ -2326,8 +2299,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		this.window.setTimeout(function(aSelf) {
 			aSelf.updateCustomizedTabsToolbar();
 		}, 100, this);
-
-		this.startRendering();
 	},
 	destroyTabStrip : function TSTBrowser_destroyTabStrip(aTabStrip)
 	{
@@ -2341,8 +2312,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
  
 	syncReinitTabbar : function TSTBrowser_syncReinitTabbar() 
 	{
-		this.stopRendering();
-
 		this.ownerToolbar.classList.add(this.kTABBAR_TOOLBAR);
 		this.ownerToolbar.classList.remove(this.kTABBAR_TOOLBAR_READY);
 		Array.slice(this.document.querySelectorAll('.'+this.kTABBAR_TOOLBAR_READY_POPUP))
@@ -2368,8 +2337,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		delete this._lastTreeViewEnabledBeforeDestroyed;
 
 		this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_RESET);
-
-		this.startRendering();
 	},
  
 	updateCustomizedTabsToolbar : function TSTBrowser_updateCustomizedTabsToolbar() 
@@ -3072,10 +3039,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		var closeParentBehavior = this.getCloseParentBehaviorForTab(tab);
 
-		var collapsed = this.isCollapsed(tab);
-		if (collapsed)
-			this.stopRendering();
-
 		var backupAttributes = this._collectBackupAttributes(tab);
 		if (DEBUG)
 			dump('onTabClose: backupAttributes = '+JSON.stringify(backupAttributes)+'\n');
@@ -3143,9 +3106,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		if (this.canStackTabs)
 			this.updateTabsZIndex(true);
-
-		if (collapsed)
-			this.startRendering();
 	},
 	
 	_collectBackupAttributes : function TSTBrowser_collectBackupAttributes(aTab) 
@@ -3177,10 +3137,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (!this.fireTabSubtreeClosingEvent(aTab, tabs))
 			return;
 
-		var subtreeCollapsed = this.isSubtreeCollapsed(aTab);
-		if (subtreeCollapsed)
-			this.stopRendering();
-
 		this.markAsClosedSet([aTab].concat(tabs));
 
 		tabs.reverse();
@@ -3190,9 +3146,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 
 		this.fireTabSubtreeClosedEvent(this.mTabBrowser, aTab, tabs);
-
-		if (subtreeCollapsed)
-			this.startRendering();
 	},
  
 	_collectNeedlessGroupTabs : function TSTBrowser_collectNeedlessGroupTabs(aTab) 
@@ -4315,7 +4268,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			return;
 
 		this._restoringClosedSet = true;
-		this.stopRendering();
 
 		this.windowService.restoringTree = true;
 
@@ -4330,7 +4282,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			aSelf.mTabBrowser.selectedTab = aNextFocused;
 		}, 0, this, aRestoredTab || aSelf.mTabBrowser.selectedTab);
 
-		this.startRendering();
 		this._restoringClosedSet = false;
 	},
 	_restoringClosedSet : false,
