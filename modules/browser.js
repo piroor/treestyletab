@@ -54,6 +54,7 @@ XPCOMUtils.defineLazyModuleGetter(this, 'FullTooltipManager', 'resource://treest
 XPCOMUtils.defineLazyModuleGetter(this, 'TabbarDNDObserver', 'resource://treestyletab-modules/tabbarDNDObserver.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'TabpanelDNDObserver', 'resource://treestyletab-modules/tabpanelDNDObserver.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'AutoHideBrowser', 'resource://treestyletab-modules/autoHide.js');
+XPCOMUtils.defineLazyModuleGetter(this, 'ContentBridge', 'resource://treestyletab-modules/contentBridge.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'BrowserUIShowHideObserver', 'resource://treestyletab-modules/browserUIShowHideObserver.js');
 
 XPCOMUtils.defineLazyGetter(this, 'window', function() {
@@ -1000,6 +1001,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		if (!aTab.hasAttribute(this.kNEST))
 			aTab.setAttribute(this.kNEST, 0);
+
+		aTab.__treestyletab__contentBridge = new ContentBridge(aTab, this.mTabBrowser);
+		this.autoHide.notifyStatusToTab(aTab);
 	},
 	
 	isTabInitialized : function TSTBrowser_isTabInitialized(aTab) 
@@ -1991,7 +1995,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		if (!collapsed && aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE)
 			setTimeout((function() {
-				this.scrollToTab(this.browser.selectedTab);
+				if (this.browser) // ignore calling after destroyed...
+					this.scrollToTab(this.browser.selectedTab);
 			}).bind(this), 0);
 	},
 	getTabbarPlaceholderSize: function TSTBrowser_getTabbarPlaceholderSize()
@@ -2214,6 +2219,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			this.document.removeEventListener('mouseout', aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave, true);
 			delete aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave;
 		}
+
+		this.autoHide.notifyStatusToTab(aTab);
+
+		aTab.__treestyletab__contentBridge.destroy();
+		delete aTab.__treestyletab__contentBridge;
 
 		delete aTab.__treestyletab__linkedTabBrowser;
 	},

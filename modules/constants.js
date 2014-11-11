@@ -202,5 +202,16 @@ const TreeStyleTabConstants = Object.freeze({
 	MAX_TABBAR_SIZE_RATIO        : 0.8,
 	DEFAULT_SHRUNKEN_WIDTH_RATIO : 0.67,
 	MIN_TABBAR_WIDTH : 24,
-	MIN_TABBAR_HEIGHT : 24
+	MIN_TABBAR_HEIGHT : 24,
+
+
+//	CONTENT_SCRIPT          : 'chrome://treestyletab/content/content-utils.js',
+	CONTENT_SCRIPT_AUTOHIDE : 'chrome://treestyletab/content/content-utils-autohide.js',
+	MESSAGE_TYPE            : 'treestyletab',
+
+	COMMAND_SHUTDOWN                : 'shutdown',
+	COMMAND_REPORT_MOUSEDOWN        : 'report-mousedown',
+	COMMAND_REPORT_MOUSEUP          : 'report-mouseup',
+	COMMAND_REPORT_MOUSEMOVE        : 'report-mousemove',
+	COMMAND_NOTIFY_AUTOHIDE_STATUS  : 'notify-autohide-status'
 });

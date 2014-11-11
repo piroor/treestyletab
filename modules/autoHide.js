@@ -44,6 +44,8 @@ const Cu = Components.utils;
 
 Cu.import('resource://gre/modules/XPCOMUtils.jsm');
 Cu.import('resource://gre/modules/Services.jsm');
+Cu.import('resource://treestyletab-modules/lib/inherit.jsm');
+Cu.import('resource://treestyletab-modules/constants.js');
 
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
@@ -61,7 +63,7 @@ function AutoHideBrowser(aTabBrowser)
 {
 	this.init(aTabBrowser);
 }
-AutoHideBrowser.prototype = {
+AutoHideBrowser.prototype = inherit(TreeStyleTabConstants, {
 	
 	kMODE : 'treestyletab-tabbar-autohide-mode', 
 	kMODE_DISABLED : 0,
@@ -235,10 +237,10 @@ AutoHideBrowser.prototype = {
 		sv.setTabbrowserAttribute(this.kSTATE, this.kSTATE_EXPANDED);
 
 		if (!(aReason & this.kSHOWHIDE_BY_API)) {
-			b.addEventListener('mousedown', this, true);
-			b.addEventListener('mouseup', this, true);
 			b.addEventListener('dragover', this, true);
 			b.addEventListener('dragleave', this, true);
+			sv.tabStripPlaceHolder.addEventListener('mousedown', this, true);
+			sv.tabStripPlaceHolder.addEventListener('mouseup', this, true);
 			sv.tabStrip.addEventListener('mousedown', this, true);
 			sv.tabStrip.addEventListener('mouseup', this, true);
 			if (this.shouldListenMouseMove)
@@ -246,6 +248,7 @@ AutoHideBrowser.prototype = {
 			if (b == w.gBrowser && sv.shouldListenKeyEventsForAutoHide)
 				w.TreeStyleTabService.startListenKeyEventsFor(sv.LISTEN_FOR_AUTOHIDE);
 			this.userActionListening = true;
+			this.notifyStatusToAllTabs();
 		}
 		w.addEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
 		w.addEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_EXITED, this, false);
@@ -271,16 +274,17 @@ AutoHideBrowser.prototype = {
 		this.screen.hidePopup();
 
 		if (this.userActionListening) {
-			b.removeEventListener('mousedown', this, true);
-			b.removeEventListener('mouseup', this, true);
 			b.removeEventListener('dragover', this, true);
 			b.removeEventListener('dragleave', this, true);
+			sv.tabStripPlaceHolder.removeEventListener('mousedown', this, true);
+			sv.tabStripPlaceHolder.removeEventListener('mouseup', this, true);
 			sv.tabStrip.removeEventListener('mousedown', this, true);
 			sv.tabStrip.removeEventListener('mouseup', this, true);
 			this.endListenMouseMove();
 			if (b == w.gBrowser)
 				w.TreeStyleTabService.endListenKeyEventsFor(sv.LISTEN_FOR_AUTOHIDE);
 			this.userActionListening = false;
+			this.notifyStatusToAllTabs();
 		}
 		w.removeEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
 		w.removeEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_EXITED, this, false);
@@ -292,6 +296,19 @@ AutoHideBrowser.prototype = {
 
 		if (sv.isVertical)
 			sv.setTabStripAttribute('width', this.widthFromMode);
+	},
+
+	notifyStatusToAllTabs : function AHB_notifyStatusToAllTabs()
+	{
+		let tabs = this.treeStyleTab.getTabs(this.browser);
+		tabs.forEach(this.notifyStatusToTab, this);
+	},
+	notifyStatusToTab : function AHB_notifyStatusToTab(aTab)
+	{
+		aTab.__treestyletab__contentBridge.sendAsyncCommand(this.COMMAND_NOTIFY_AUTOHIDE_STATUS, {
+			basicListening   : this.mouseMoveListening || this.userActionListening,
+			advanceListening : this.mouseMoveListening
+		});
 	},
  
 	// fullscreen 
@@ -325,22 +342,26 @@ AutoHideBrowser.prototype = {
 	{
 		if (this.mouseMoveListening) return;
 
-		this.browser.addEventListener('mousemove', this, true);
 		this.screen.addEventListener('mousemove', this, true);
+		this.treeStyleTab.tabStripPlaceHolder.addEventListener('mousemove', this, true);
 		this.treeStyleTab.tabStrip.addEventListener('mousemove', this, true);
 
 		this.mouseMoveListening = true;
+
+		this.notifyStatusToAllTabs();
 	},
  
 	endListenMouseMove : function AHB_endListenMouseMove() 
 	{
 		if (!this.mouseMoveListening) return;
 
-		this.browser.removeEventListener('mousemove', this, true);
 		this.screen.removeEventListener('mousemove', this, true);
+		this.treeStyleTab.tabStripPlaceHolder.removeEventListener('mousemove', this, true);
 		this.treeStyleTab.tabStrip.removeEventListener('mousemove', this, true);
 
 		this.mouseMoveListening = false;
+
+		this.notifyStatusToAllTabs();
 	},
  
 	get shouldListenMouseMove() 
@@ -354,9 +375,9 @@ AutoHideBrowser.prototype = {
 				utils.getTreePref('tabbar.autoShow.tabSwitch');
 	},
  
-	showHideOnMouseMove : function AHB_showHideOnMouseMove(aEvent) 
+	showHideOnMouseMove : function AHB_showHideOnMouseMove(aCoordinates) 
 	{
-		var position = this.getMousePosition(aEvent);
+		var position = this.getMousePosition(aCoordinates);
 		if (position == this.MOUSE_POSITION_UNKNOWN)
 			return;
 
@@ -400,7 +421,7 @@ AutoHideBrowser.prototype = {
 
 		b = null;
 	},
-	getMousePosition : function AHB_getMousePosition(aEvent) 
+	getMousePosition : function AHB_getMousePosition(aCoordinates) 
 	{
 		var w = this.window;
 		if ('gestureInProgress' in w && w.gestureInProgress)
@@ -417,7 +438,7 @@ AutoHideBrowser.prototype = {
 			let resizable = !sv.fixed;
 			if (resizable &
 				this.widthFromMode > 24 &&
-				(clickable = this.getNearestClickableBox(aEvent))) {
+				(clickable = this.getNearestClickableBox(aCoordinates))) {
 				/* For resizing of shrunken tab bar and clicking closeboxes,
 				   we have to shrink sensitive area. */
 				sensitiveArea = -(clickable.width + clickable.padding);
@@ -430,24 +451,24 @@ AutoHideBrowser.prototype = {
 
 		if (
 			pos == 'left' ?
-				(aEvent.screenX > box.screenX + sensitiveArea) :
+				(aCoordinates.screenX > box.screenX + sensitiveArea) :
 			pos == 'right' ?
-				(aEvent.screenX < box.screenX + box.width - sensitiveArea) :
+				(aCoordinates.screenX < box.screenX + box.width - sensitiveArea) :
 			pos == 'bottom' ?
-				(aEvent.screenY < box.screenY + box.height - sensitiveArea) :
-				(aEvent.screenY > box.screenY + sensitiveArea)
+				(aCoordinates.screenY < box.screenY + box.height - sensitiveArea) :
+				(aCoordinates.screenY > box.screenY + sensitiveArea)
 			) {
 			return this.MOUSE_POSITION_OUTSIDE;
 		}
 
 		if (
 			pos == 'left' ?
-				(aEvent.screenX <= box.screenX - sensitiveArea) :
+				(aCoordinates.screenX <= box.screenX - sensitiveArea) :
 			pos == 'right' ?
-				(aEvent.screenX >= box.screenX + box.width + sensitiveArea) :
+				(aCoordinates.screenX >= box.screenX + box.width + sensitiveArea) :
 			pos == 'bottom' ?
-				(aEvent.screenY >= box.screenY + box.height + sensitiveArea) :
-				(aEvent.screenY <= box.screenY - sensitiveArea)
+				(aCoordinates.screenY >= box.screenY + box.height + sensitiveArea) :
+				(aCoordinates.screenY <= box.screenY - sensitiveArea)
 			) {
 			return this.MOUSE_POSITION_INSIDE;
 		}
@@ -473,16 +494,16 @@ AutoHideBrowser.prototype = {
 	MOUSE_POSITION_INSIDE  : (1 << 1),
 	MOUSE_POSITION_NEAR    : (1 << 2),
 	MOUSE_POSITION_SENSITIVE : (1 << 1) | (1 << 2),
-	getNearestClickableBox : function AHB_getNearestClickableBox(aEvent)
+	getNearestClickableBox : function AHB_getNearestClickableBox(aCoordinates)
 	{
 		var sv = this.treeStyleTab;
-		var tab = sv.getTabFromCoordinates(aEvent);
+		var tab = sv.getTabFromCoordinates(aCoordinates);
 		if (!tab)
 			return null;
 
 		var position = sv.invertedScreenPositionProp;
 		var size = sv.invertedSizeProp;
-		var coordinate = aEvent[sv.invertedScreenPositionProp];
+		var coordinate = aCoordinates[sv.invertedScreenPositionProp];
 		var tabbox = tab.boxObject;
 
 		var closebox;
@@ -720,7 +741,7 @@ AutoHideBrowser.prototype = {
 			this.contentAreaScreenEnabled &&
 			Services.focus.activeWindow &&
 			Services.focus.activeWindow.top == this.window &&
-			this.findPluginArea(this.browser.mCurrentBrowser.contentWindow)
+			this.hasPluginArea(this.browser.mCurrentBrowser.contentWindow)
 			) {
 			let box = this.getContentsAreaBox();
 			let style = this.screen.style;
@@ -740,10 +761,15 @@ AutoHideBrowser.prototype = {
 				this.screen.hidePopup();
 		}
 	},
-	findPluginArea : function AHB_findPluginArea(aFrame)
+	hasPluginArea : function AHB_hasPluginArea(aFrame)
 	{
-		return aFrame.document.querySelector('embed, object') ||
-				Array.some(aFrame.frames, AHB_findPluginArea);
+		return (
+			aFrame && // Workaround. I have to make this work with e10s...
+			(
+				aFrame.document.querySelector('embed, object') ||
+				Array.some(aFrame.frames, AHB_hasPluginArea)
+			)
+		);
 	},
 	
 	show : function AHB_show(aReason) /* PUBLIC API */ 
@@ -1056,6 +1082,7 @@ AutoHideBrowser.prototype = {
 		var sv = this.treeStyleTab;
 		var w = this.window;
 		if (
+			aEvent.target &&
 			!this.isResizing &&
 			sv.evaluateXPath(
 				'ancestor-or-self::*[@class="'+sv.kSPLITTER+'"]',
@@ -1071,12 +1098,17 @@ AutoHideBrowser.prototype = {
 			this.enabled &&
 			this.expanded &&
 			(
+				!aEvent.originalTarget ||
 				aEvent.originalTarget.ownerDocument != this.document ||
 				!sv.getTabBrowserFromChild(aEvent.originalTarget)
 			)
 			)
 			this.hide(this.kHIDDEN_BY_CLICK);
-		this.lastMouseDownTarget = aEvent.originalTarget.localName;
+		this.lastMouseDownTarget = (
+			aEvent.originalTargetLocalName ||
+			(aEvent.originalTarget && aEvent.originalTarget.localName) ||
+			''
+		);
 	},
  
 	onMouseUp : function AHB_onMouseUp(aEvent) 
@@ -1099,7 +1131,7 @@ AutoHideBrowser.prototype = {
 	{
 		var sv = this.treeStyleTab;
 		if (this.isResizing &&
-			/^(scrollbar|thumb|slider|scrollbarbutton)$/i.test(this.lastMouseDownTarget))
+			/^(scrollbar|thumb|slider|scrollbarbutton)$/i.test(this.lastMouseDownTarget || ''))
 			return true;
 
 		if (
@@ -1282,7 +1314,7 @@ AutoHideBrowser.prototype = {
 		}
 	}
  
-}; 
+}); 
   
 function AutoHideWindow(aWindow) 
 {
