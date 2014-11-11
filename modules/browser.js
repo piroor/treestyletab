@@ -3787,8 +3787,14 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		this.setTabValue(aTab, this.kID, id);
 		this.tabsHash[id] = aTab;
 
-		if (structureRestored &&
-			!aTab.__treestyletab__restoredByUndoCloseTab) {
+		var undoing = (
+			// on e10s window, SSTabRestoring event can fire while undoCloseTab() is executing.
+			this.browser.__treestyletab__doingUndoCloseTab ||
+			// on non-e10s window, SSTabRestoring event is fired after the undoCloseTab() is executing.
+			aTab.__treestyletab__restoredByUndoCloseTab
+		);
+
+		if (structureRestored && !undoing) {
 			this._fixMissingAttributesFromSessionData(aTab);
 		}
 		else {
@@ -3806,7 +3812,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 			this._restoreTabPositionAndIndent(aTab, childTabs, mayBeDuplicated);
 
-			if (closeSetId)
+			if (closeSetId && undoing)
 				this.restoreClosedSet(closeSetId, aTab);
 
 			if (isSubtreeCollapsed)
@@ -4216,8 +4222,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	{
 		var behavior = this.undoCloseTabSetBehavior;
 		if (
-			aRestoredTab.__treestyletab__restoredByUndoCloseTab ||
-			!this.browser.__treestyletab__readyToUndoCloseTab ||
 			this.useTMPSessionAPI ||
 			this._restoringClosedSet ||
 			!(behavior & this.kUNDO_CLOSE_SET || behavior & this.kUNDO_ASK)
@@ -4280,7 +4284,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			this.window.undoCloseTab(aIndexes[i] - (offset++));
 		}
 
-		var nextFocusedTab = aRestoredTab || this.mTabBrowser.selectedTab;
+		var nextFocusedTab = aRestoredTab;
 		this.window.setTimeout((function() {
 			this.windowService.restoringTree = false;
 			this.mTabBrowser.selectedTab = nextFocusedTab;

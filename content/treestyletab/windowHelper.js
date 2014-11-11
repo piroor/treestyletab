@@ -78,10 +78,10 @@ var TreeStyleTabWindowHelper = {
 			eval('window.undoCloseTab = '+
 				window.undoCloseTab.toSource().replace(
 					/(\btab\s*=\s*[^\.]+\.undoCloseTab\([^;]+\);)/,
-					'gBrowser.__treestyletab__readyToUndoCloseTab = true;\n' +
+					'gBrowser.__treestyletab__doingUndoCloseTab = true;\n' +
 					'$1\n' +
 					'tab.__treestyletab__restoredByUndoCloseTab = true;\n' +
-					'delete gBrowser.__treestyletab__readyToUndoCloseTab;'
+					'setTimeout(function() { delete gBrowser.__treestyletab__doingUndoCloseTab; }, 0);'
 				)
 			);
 		}
