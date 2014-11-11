@@ -1,7 +1,7 @@
 /**
  * @fileOverview Popup Notification (Door Hanger) Based Confirmation Library for Firefox 31 or later
  * @author       YUKI "Piro" Hiroshi
- * @version      7
+ * @version      8
  * Basic usage:
  *
  * @example
@@ -80,7 +80,7 @@ catch(e) {
 
 var confirmWithPopup;
 (function(global) {
-	const currentRevision = 6;
+	const currentRevision = 8;
 
 	var loadedRevision = 'confirmWithPopup' in namespace ?
 			namespace.confirmWithPopup.revision :
@@ -263,11 +263,6 @@ var confirmWithPopup;
 			style = addStyleSheet(doc, options);
 
 			try {
-				/**
-				 * 1st try: Prepare the anchor icon. If the icon isn't shown,
-				 *          the popup is wrongly positioned to the current tab
-				 *          by PopupNotifications.show().
-				 */
 				doc.defaultView.PopupNotifications.show(
 					b,
 					options.id,
@@ -276,49 +271,25 @@ var confirmWithPopup;
 					primaryAction,
 					secondaryActions,
 					Object.create(nativeOptions, {
-						dismissed : {
+						eventCallback : {
 							writable     : true,
 							configurable : true,
 							enumerable   : true,
-							value        : true
+							value        : function(aEventType) {
+								try {
+									if (!done && (aEventType == 'removed' || aEventType == 'dismissed'))
+										aReject(aEventType);
+									if (options.eventCallback)
+										options.eventCallback.call(aOptions.options || aOptions, aEventType);
+								}
+								finally {
+									if (aEventType == 'removed')
+										postProcess();
+								}
+							}
 						}
 					})
 				);
-				if (!options.dismissed) {
-					/**
-					 * 2nd try: Show the popup.
-					 */
-					let secondTry = function() {
-						doc.defaultView.PopupNotifications.show(
-							b,
-							options.id,
-							options.label,
-							options.anchor,
-							primaryAction,
-							secondaryActions,
-							Object.create(nativeOptions, {
-								eventCallback : {
-									writable     : true,
-									configurable : true,
-									enumerable   : true,
-									value        : function(aEventType) {
-										try {
-											if (!done && (aEventType == 'removed' || aEventType == 'dismissed'))
-												aReject(aEventType);
-											if (options.eventCallback)
-												options.eventCallback.call(aOptions.options || aOptions, aEventType);
-										}
-										finally {
-											if (aEventType == 'removed')
-												postProcess();
-										}
-									}
-								}
-							})
-						);
-					};
-					setTimeout(secondTry, 0);
-				}
 			}
 			catch(e) {
 				aReject(e);
@@ -337,7 +308,9 @@ var confirmWithPopup;
 				showPopup();
 			};
 		}
-		setTimeout(showPopup, 0);
+		else {
+			setTimeout(showPopup, 0);
+		}
 
 		}).bind(this));
 	};
