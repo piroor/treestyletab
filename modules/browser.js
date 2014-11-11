@@ -3189,7 +3189,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				aTabs.forEach(function(aTab) {
 					if (aTab.parentNode)
 						this.mTabBrowser.removeTab(aTab, { animate : true });
-				});
+				}, this);
 			}
 			catch(e) {
 				this.defaultErrorHandler(e);
