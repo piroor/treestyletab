@@ -65,7 +65,9 @@ BrowserUIShowHideObserver.prototype = {
 				'hidden',
 				'collapsed',
 				'moz-collapsed', // Used in full screen mode
-				'disablechrome'
+				'disablechrome',
+				'width',
+				'height'
 			]
 		});
 	},
