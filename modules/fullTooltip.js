@@ -352,7 +352,7 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 	/**
 	 * If the window is maximized, screenX and screenY can be out of
 	 * visible screen rect. On the other hand,
-	 * nsIPopupBoxObject#openPopupAtScreen() automatically reposition
+	 * PopupBoxObject#openPopupAtScreen() automatically reposition
 	 * the popup if it is going to be shown out of the visible screen
 	 * rect. As the result, the popup will be repositioned unexpectedly
 	 * if I use the raw screenX and screenY.
