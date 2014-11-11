@@ -4280,12 +4280,12 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			this.window.undoCloseTab(aIndexes[i] - (offset++));
 		}
 
-		this.window.setTimeout(function(aSelf, aNextFocused) {
-			aSelf.windowService.restoringTree = false;
-			aSelf.mTabBrowser.selectedTab = aNextFocused;
-		}, 0, this, aRestoredTab || aSelf.mTabBrowser.selectedTab);
-
-		this._restoringClosedSet = false;
+		var nextFocusedTab = aRestoredTab || this.mTabBrowser.selectedTab;
+		this.window.setTimeout((function() {
+			this.windowService.restoringTree = false;
+			this.mTabBrowser.selectedTab = nextFocusedTab;
+			this._restoringClosedSet = false;
+		}).bind(this), 0);
 	},
 	_restoringClosedSet : false,
    
