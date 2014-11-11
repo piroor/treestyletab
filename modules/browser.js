@@ -4254,6 +4254,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 					.then(function(aBehavior) {
 						if (aBehavior & self.kUNDO_CLOSE_SET)
 							self.doRestoreClosedSet(aRestoredTab, indexes);
+					})
+					.catch(function(aError) {
+						Components.utils.reportError(aError);
 					});
 			}, false);
 		}
