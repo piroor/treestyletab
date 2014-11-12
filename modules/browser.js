@@ -3296,6 +3296,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		// When the tab was moved before TabOpen event is fired, we have to update manually.
 		var newlyOpened = !this.isTabInitialized(tab) && this.onTabOpen(null, tab);
 
+		var restored = false;
+
 		// twisty vanished after the tab is moved!!
 		this.initTabContents(tab);
 
@@ -3308,7 +3310,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (tab.__SS_extdata) {
 			let storedId = tab.__SS_extdata[this.kID]; // getTabValue() doesn't get the value!
 			if (storedId && tab.getAttribute(this.kID) != storedId)
-				this.onTabRestoring(aEvent);
+				restored = this.onTabRestoring(aEvent);
 		}
 
 		if (this.hasChildTabs(tab) && !this.subTreeMovingCount) {
@@ -3376,7 +3378,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			)
 			return;
 
-		this.attachTabFromPosition(tab, aEvent.detail);
+		if (!restored)
+			this.attachTabFromPosition(tab, aEvent.detail);
+
 		this.rearrangeTabViewItems(tab);
 	},
 	
@@ -3693,7 +3697,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var tab = aEvent.originalTarget;
 
 		tab.linkedBrowser.__treestyletab__toBeRestored = false;
-		this.handleRestoredTab(tab);
+		var restored = this.handleRestoredTab(tab);
 
 		/**
 		 * Updating of the counter which is used to know how many tabs were
@@ -3741,6 +3745,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				}, 0, this, tab, item.label, this.mTabBrowser.selectedTab);
 			}
 		}
+
+		return restored;
 	},
 	
 	handleRestoredTab : function TSTBrowser_handleRestoredTab(aTab) 
@@ -3748,14 +3754,14 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (aTab.__treestyletab__restoreState === undefined) {
 			if (DEBUG)
 				dump('handleRestoredTab: ' + aTab._tPos + ' is already restored!\n');
-			return;
+			return false;
 		}
 
 		if (aTab.__treestyletab__restoreState == this.RESTORE_STATE_READY_TO_RESTORE) {
 			// this is a hidden tab in the background group, and
 			// have to be restored by restoreOneTab() on "TabShown" event.
 			this.deleteTabValue(aTab, this.kCLOSED_SET_ID);
-			return;
+			return false;
 		}
 
 		var [id, mayBeDuplicated] = this._restoreTabId(aTab);
@@ -3826,6 +3832,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 
 		delete aTab.__treestyletab__restoreState;
+
+		return true;
 	},
 	
 	_restoreTabId : function TSTBrowser_restoreTabId(aTab) 
