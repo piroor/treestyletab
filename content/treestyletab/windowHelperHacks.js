@@ -10,7 +10,7 @@ TreeStyleTabWindowHelper.extraProperties = [
 	TreeStyleTabService.kSUBTREE_COLLAPSED,
 	TreeStyleTabService.kCHILDREN,
 	TreeStyleTabService.kPARENT,
-	TreeStyleTabService.kANCESTOR,
+	TreeStyleTabService.kANCESTORS,
 	TreeStyleTabService.kINSERT_BEFORE,
 	TreeStyleTabService.kINSERT_AFTER
 ];
