@@ -988,6 +988,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 
 		aTab.__treestyletab__linkedTabBrowser = this.mTabBrowser;
+		aTab.__treestyletab__restoreState = this.RESTORE_STATE_INITIAL;
 
 		if (utils.isTabNotRestoredYet(aTab))
 			aTab.linkedBrowser.__treestyletab__toBeRestored = true;
@@ -3742,14 +3743,14 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 	},
 	
-	RESTORED_TREE_COLLAPSED_STATE_LAST_STATE : -1,
-	RESTORED_TREE_COLLAPSED_STATE_COLLAPSED  : 0,
-	RESTORED_TREE_COLLAPSED_STATE_EXPANDED   : 1,
-	RESTORE_STATE_INITIAL             : 0,
-	RESTORE_STATE_READY_TO_RESTORE    : 1,
-	RESTORE_STATE_STRUCTURE_RESTORED  : 2,
 	handleRestoredTab : function TSTBrowser_handleRestoredTab(aTab) 
 	{
+		if (aTab.__treestyletab__restoreState === undefined) {
+			if (DEBUG)
+				dump('handleRestoredTab: ' + aTab._tPos + ' is already restored!\n');
+			return;
+		}
+
 		if (aTab.__treestyletab__restoreState == this.RESTORE_STATE_READY_TO_RESTORE) {
 			// this is a hidden tab in the background group, and
 			// have to be restored by restoreOneTab() on "TabShown" event.

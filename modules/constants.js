@@ -205,6 +205,14 @@ const TreeStyleTabConstants = Object.freeze({
 	MIN_TABBAR_HEIGHT : 24,
 
 
+	RESTORED_TREE_COLLAPSED_STATE_LAST_STATE : -1,
+	RESTORED_TREE_COLLAPSED_STATE_COLLAPSED  : 0,
+	RESTORED_TREE_COLLAPSED_STATE_EXPANDED   : 1,
+	RESTORE_STATE_INITIAL             : 0,
+	RESTORE_STATE_READY_TO_RESTORE    : 1,
+	RESTORE_STATE_STRUCTURE_RESTORED  : 2,
+
+
 //	CONTENT_SCRIPT          : 'chrome://treestyletab/content/content-utils.js',
 	CONTENT_SCRIPT_AUTOHIDE : 'chrome://treestyletab/content/content-utils-autohide.js',
 	MESSAGE_TYPE            : 'treestyletab',
