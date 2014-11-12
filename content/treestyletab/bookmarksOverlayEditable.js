@@ -47,32 +47,36 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksService,
 
 		// main browser window
 		if ('StarUI' in window) {
-			if ('_doShowEditBookmarkPanel' in StarUI) {
-				eval('StarUI._doShowEditBookmarkPanel = '+StarUI._doShowEditBookmarkPanel.toSource().replace(
+			TreeStyleTabUtils.doPatching(StarUI._doShowEditBookmarkPanel, 'StarUI._doShowEditBookmarkPanel', function(aName, aSource) {
+				return eval(aName+' = '+aSource.replace(
 					'{',
 					'{ TreeStyleTabBookmarksServiceEditable.initEditUI();'
 				));
-			}
-			if ('quitEditMode' in StarUI) {
-				eval('StarUI.quitEditMode = '+StarUI.quitEditMode.toSource().replace(
+			}, 'TreeStyleTab');
+
+			TreeStyleTabUtils.doPatching(StarUI.quitEditMode, 'StarUI.quitEditMode', function(aName, aSource) {
+				return eval(aName+' = '+aSource.replace(
 					'{',
 					'{ TreeStyleTabBookmarksServiceEditable.saveParentFor(this._itemId);'
 				));
-			}
-			if ('cancelButtonOnCommand' in StarUI) {
-				eval('StarUI.cancelButtonOnCommand = '+StarUI.cancelButtonOnCommand.toSource().replace(
+			}, 'TreeStyleTab');
+
+			TreeStyleTabUtils.doPatching(StarUI.cancelButtonOnCommand, 'StarUI.cancelButtonOnCommand', function(aName, aSource) {
+				return eval(aName+' = '+aSource.replace(
 					'{',
 					'{ TreeStyleTabBookmarksServiceEditable.canceled = true;'
 				));
-			}
+			}, 'TreeStyleTab');
 		}
 
 		// Bookmarks Property dialog
 		if ('BookmarkPropertiesPanel' in window) {
-			eval('BookmarkPropertiesPanel._endBatch = '+BookmarkPropertiesPanel._endBatch.toSource().replace(
-				/(PlacesUIUtils\.transactionManager\.endBatch\([^\)]+\);)/,
-				'$1 TreeStyleTabBookmarksServiceEditable.saveParentFor(this._itemId);'
-			));
+			TreeStyleTabUtils.doPatching(BookmarkPropertiesPanel._endBatch, 'BookmarkPropertiesPanel._endBatch', function(aName, aSource) {
+				return eval(aName+' = '+aSource.replace(
+					/(PlacesUtils\.transactionManager\.endBatch\([^)]*\);)/,
+					'$1 TreeStyleTabBookmarksServiceEditable.saveParentFor(this._itemId);'
+				));
+			}, 'TreeStyleTab');
 		}
 
 		// Places Organizer (Library)
@@ -118,21 +122,27 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksService,
 		this.blankItem.setAttribute('label', TreeStyleTabUtils.treeBundle.getString('bookmarkProperty.parent.blank.label'));
 
 
-		eval('gEditItemOverlay._showHideRows = '+gEditItemOverlay._showHideRows.toSource().replace(
-			/(\}\)?)$/,
-			'  TreeStyleTabBookmarksServiceEditable.parentRow.collapsed = this._element("keywordRow").collapsed && this._element("folderRow").collapsed;\n' +
-			'$1'
-		));
+		TreeStyleTabUtils.doPatching(gEditItemOverlay._showHideRows, 'gEditItemOverlay._showHideRows', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
+				/(\}\)?)$/,
+				'  TreeStyleTabBookmarksServiceEditable.parentRow.collapsed = this._element("keywordRow").collapsed && this._element("folderRow").collapsed;\n' +
+				'$1'
+			));
+		}, 'TreeStyleTab');
 
-		eval('gEditItemOverlay.initPanel = '+gEditItemOverlay.initPanel.toSource().replace(
-			'if (this._itemType == Ci.nsINavBookmarksService.TYPE_BOOKMARK) {',
-			'$& TreeStyleTabBookmarksServiceEditable.initParentMenuList();'
-		));
+		TreeStyleTabUtils.doPatching(gEditItemOverlay.initPanel, 'gEditItemOverlay.initPanel', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
+				'if (this._itemType == Ci.nsINavBookmarksService.TYPE_BOOKMARK) {',
+				'$& TreeStyleTabBookmarksServiceEditable.initParentMenuList();'
+			));
+		}, 'TreeStyleTab');
 
-		eval('gEditItemOverlay.onItemMoved = '+gEditItemOverlay.onItemMoved.toSource().replace(
-			'{',
-			'$& if (aNewParent == this._getFolderIdFromMenuList()) TreeStyleTabBookmarksServiceEditable.initParentMenuList();'
-		));
+		TreeStyleTabUtils.doPatching(gEditItemOverlay.onItemMoved, 'gEditItemOverlay.onItemMoved', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
+				'{',
+				'$& if (aNewParent == this._getFolderIdFromMenuList()) TreeStyleTabBookmarksServiceEditable.initParentMenuList();'
+			));
+		}, 'TreeStyleTab');
 
 		this.editUIInitialized = true;
 	},

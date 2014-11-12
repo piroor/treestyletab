@@ -236,8 +236,8 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabService, {
 			let (method = (TreeStyleTabUtils.getTreePref('compatibility.TabUtilities') && PlacesUIUtils.TU__openTabset) ?
 							'TU__openTabset' :
 							'_openTabset') {
-				eval('PlacesUIUtils.'+method+' = '+
-					PlacesUIUtils[method].toSource().replace(
+				TreeStyleTabUtils.doPatching(PlacesUIUtils[method], 'PlacesUIUtils.'+method, function(aName, aSource) {
+					var patched = eval(aName+' = '+aSource.replace(
 						/(function[^\(]*\([^\)]+)(\))/,
 						'$1, aFolderTitle$2'
 					).replace(
@@ -268,17 +268,18 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabService, {
 						'    browserWindow.TreeStyleTabService.applyTreeStructureToTabs(tabs, TSTTreeStructure, TSTOpenGroupBookmarkBehavior & browserWindow.TreeStyleTabBookmarksService.kGROUP_BOOKMARK_EXPAND_ALL_TREE);\n' +
 						'  }\n' +
 						'$1'
-					)
-				);
-				if (TreeStyleTabUtils.getTreePref('compatibility.TabUtilities') && method.indexOf('TU_') > -1)
-					window[method] = PlacesUIUtils[method];
+					));
+					if (TreeStyleTabUtils.getTreePref('compatibility.TabUtilities') && method.indexOf('TU_') > -1)
+						window[method] = patched;
+					return patched;
+				}, 'TreeStyleTab');
 			}
 
 			let (method = (TreeStyleTabUtils.getTreePref('compatibility.TabUtilities') && PlacesUIUtils.TU_openContainerNodeInTabs) ?
 							'TU_openContainerNodeInTabs' :
 							'openContainerNodeInTabs') {
-				eval('PlacesUIUtils.'+method+' = '+
-					PlacesUIUtils[method].toSource().replace(
+				TreeStyleTabUtils.doPatching(PlacesUIUtils[method], 'PlacesUIUtils.'+method, function(aName, aSource) {
+					var patched = eval(aName+' = '+aSource.replace(
 						/(this\._openTabset\([^\)]+)(\))/,
 						'let (w = "_getTopBrowserWin" in this ?\n' +
 						'      this._getTopBrowserWin() :\n' +
@@ -291,17 +292,18 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabService, {
 						'  }\n' +
 						'}\n' +
 						'$1, aNode.title$2'
-					)
-				);
-				if (TreeStyleTabUtils.getTreePref('compatibility.TabUtilities') && method.indexOf('TU_') > -1)
-					window[method] = PlacesUIUtils[method];
+					));
+					if (TreeStyleTabUtils.getTreePref('compatibility.TabUtilities') && method.indexOf('TU_') > -1)
+						window[method] = patched;
+					return patched;
+				}, 'TreeStyleTab');
 			}
 
 			let (method = (TreeStyleTabUtils.getTreePref('compatibility.TabUtilities') && PlacesUIUtils.TU_openURINodesInTabs) ?
 							'TU_openURINodesInTabs' :
 							'openURINodesInTabs') {
-				eval('PlacesUIUtils.'+method+' = '+
-					PlacesUIUtils[method].toSource().replace(
+				TreeStyleTabUtils.doPatching(PlacesUIUtils[method], 'PlacesUIUtils.'+method, function(aName, aSource) {
+					var patched = eval(aName+' = '+aSource.replace(
 						'{',
 						'{\n' +
 						'  var TSTBS, TSTUtils;\n' +
@@ -328,10 +330,11 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabService, {
 						'      [aNodes[0].title, aNodes.length]\n' +
 						'    )\n' +
 						'$2'
-					)
-				);
-				if (TreeStyleTabUtils.getTreePref('compatibility.TabUtilities') && method.indexOf('TU_') > -1)
-					window[method] = PlacesUIUtils[method];
+					));
+					if (TreeStyleTabUtils.getTreePref('compatibility.TabUtilities') && method.indexOf('TU_') > -1)
+						window[method] = patched;
+					return patched;
+				}, 'TreeStyleTab');
 			}
 
 			PlacesUIUtils.__treestyletab__done = true;
@@ -341,8 +344,8 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabService, {
 
 		if ('PlacesCommandHook' in window && 'bookmarkCurrentPages' in PlacesCommandHook) {
 			// Bookmark All Tabs
-			eval('PlacesCommandHook.bookmarkCurrentPages = '+
-				PlacesCommandHook.bookmarkCurrentPages.toSource().replace(
+			TreeStyleTabUtils.doPatching(PlacesCommandHook.bookmarkCurrentPages, 'PlacesCommandHook.bookmarkCurrentPages', function(aName, aSource) {
+				return eval(aName+' = '+aSource.replace(
 					'{',
 					'{\n' +
 					'  TreeStyleTabBookmarksService.beginAddBookmarksFromTabs((function() {\n' +
@@ -367,8 +370,8 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabService, {
 					'  }\n' +
 					'  TreeStyleTabBookmarksService.endAddBookmarksFromTabs();\n' +
 					'$1'
-				)
-			);
+				));
+			}, 'TreeStyleTab');
 		}
 	},
 	handleTabsOpenProcess : function TSTBMService_handleTabsOpenProcess(aWhere, aEvent, aBrowserWindow, aIDs, aURLs, aFolderTitle)

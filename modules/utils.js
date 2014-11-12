@@ -302,5 +302,34 @@ let TreeStyleTabUtils = {
 		}
 
 		return aURI;
+	},
+
+
+	doPatching : function utils_assertFunctionExists(aFunction, aName, aPatchingTask, aMatcher)
+	{
+		if (typeof aFunction == 'function') {
+			if (aMatcher && this.functionIsMatched(aFunction, aMatcher)) // already patched
+				return;
+			let patched = aPatchingTask(aName, aFunction.toSource());
+			if (patched && aMatcher)
+				this.assertFunctionIsPatched(patched, aName, aMatcher);
+		}
+		else
+			Components.utils.reportError(new Error('treestyletab: doPatching: ' + aName + ' is missing!'));
+	},
+
+	assertFunctionIsPatched : function utils_assertFunctionIsPatched(aFunction, aName, aMatcher)
+	{
+		if (!this.functionIsMatched(aFunction, aMatcher))
+			Components.utils.reportError(new Error('treestyletab: Failed to patch to ' + aName + ': ' + aFunction.toString()));
+	},
+
+	functionIsMatched : function utils_functionIsMatched(aFunction, aMatcher)
+	{
+		var source = aFunction.toString();
+		if (typeof aMatcher == 'string')
+			return source.indexOf(aMatcher) > -1;
+		else
+			return aMatcher.test(source);
 	}
 };

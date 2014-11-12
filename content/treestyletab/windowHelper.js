@@ -1,3 +1,7 @@
+Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
+XPCOMUtils.defineLazyModuleGetter(this,
+  'TreeStyleTabUtils', 'resource://treestyletab-modules/utils.js');
+
 var TreeStyleTabWindowHelper = { 
 	
 	get service() 
@@ -7,116 +11,94 @@ var TreeStyleTabWindowHelper = {
  
 	preInit : function TSTWH_preInit() 
 	{
-		var source;
-		var target;
-		if ('gBrowserInit' in window) {
-			if (
-				'_delayedStartup' in gBrowserInit &&
-				(source = gBrowserInit._delayedStartup.toSource()) &&
-				source.indexOf('swapBrowsersAndCloseOther') > -1
-				) {
-				target = 'gBrowserInit._delayedStartup';
+		TreeStyleTabUtils.doPatching(gBrowserInit._delayedStartup, 'gBrowserInit._delayedStartup', function(aName, aSource) {
+			if (aSource.indexOf('!MultipleTabService.tearOffSelectedTabsFromRemote()') > -1) {
+				return eval(aName+' = '+aSource.replace(
+					'!MultipleTabService.tearOffSelectedTabsFromRemote()',
+					'!TreeStyleTabService.tearOffSubtreeFromRemote() && $&'
+				));
 			}
-		}
-		if (!target)
-			dump('Tree Style Tab: failed to initialize startup function!');
-		if (source.indexOf('!MultipleTabService.tearOffSelectedTabsFromRemote()') > -1) {
-			eval(target+' = '+source.replace(
-				'!MultipleTabService.tearOffSelectedTabsFromRemote()',
-				'!TreeStyleTabService.tearOffSubtreeFromRemote() && $&'
-			));
-		}
-		else if (source.indexOf('gBrowser.swapBrowsersAndCloseOther') > -1) {
-			eval(target+' = '+source.replace(
-				'gBrowser.swapBrowsersAndCloseOther(gBrowser.selectedTab, uriToLoad);',
-				'if (!TreeStyleTabService.tearOffSubtreeFromRemote()) { $& }'
-			).replace(
-				// Workaround for https://github.com/piroor/treestyletab/issues/741
-				// After the function is updated by TST, reassignment of a global variable raises an error like:
-				// > System JS : ERROR chrome://treestyletab/content/windowHelper.js line 30 > eval:130 - TypeError: can't redefine non-configurable property 'gBidiUI'
-				// If I access it as a property of the global object, the error doesn't appear.
-				/([^\.])\bgBidiUI =/,
-				'$1window.gBidiUI ='
-			));
-		}
+			else if (aSource.indexOf('gBrowser.swapBrowsersAndCloseOther') > -1) {
+				return eval(aName+' = '+aSource.replace(
+					'gBrowser.swapBrowsersAndCloseOther(gBrowser.selectedTab, uriToLoad);',
+					'if (!TreeStyleTabService.tearOffSubtreeFromRemote()) { $& }'
+				).replace(
+					// Workaround for https://github.com/piroor/treestyletab/issues/741
+					// After the function is updated by TST, reassignment of a global variable raises an error like:
+					// > System JS : ERROR chrome://treestyletab/content/windowHelper.js line 30 > eval:130 - TypeError: can't redefine non-configurable property 'gBidiUI'
+					// If I access it as a property of the global object, the error doesn't appear.
+					/([^\.])\bgBidiUI =/,
+					'$1window.gBidiUI ='
+				));
+			}
+		}, 'TreeStyleTab');
 
-		eval('nsBrowserAccess.prototype.openURI = '+
-			nsBrowserAccess.prototype.openURI.toSource().replace(
+		TreeStyleTabUtils.doPatching(nsBrowserAccess.prototype.openURI, 'nsBrowserAccess.prototype.openURI', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
 				/(switch\s*\(aWhere\))/,
 				'TreeStyleTabService.onBeforeBrowserAccessOpenURI(aOpener, aWhere, aContext); $1'
-			)
-		);
-		if (nsBrowserAccess.prototype.openURIInFrame) {
-			eval('nsBrowserAccess.prototype.openURIInFrame = '+
-				nsBrowserAccess.prototype.openURIInFrame.toSource().replace(
-					'let browser = ',
-					'TreeStyleTabService.onBeforeBrowserAccessOpenURI(aOpener, aWhere, aContext); $&'
-				)
-			);
-		}
+			));
+		}, 'TreeStyleTab');
 
-		if ('TabsInTitlebar' in window &&
-			TabsInTitlebar._update) {
-			eval('window.TabsInTitlebar._update = '+
-				window.TabsInTitlebar._update.toSource().replace(
+		TreeStyleTabUtils.doPatching(nsBrowserAccess.prototype.openURIInFrame, 'nsBrowserAccess.prototype.openURIInFrame', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
+				'let browser = ',
+				'TreeStyleTabService.onBeforeBrowserAccessOpenURI(aOpener, aWhere, aContext); $&'
+			));
+		}, 'TreeStyleTab');
+
+		if ('TabsInTitlebar' in window) {
+			TreeStyleTabUtils.doPatching(TabsInTitlebar._update, 'TabsInTitlebar._update', function(aName, aSource) {
+				return eval(aName+' = '+aSource.replace(
 					/let fullTabsHeight = /,
 					'$& gBrowser.treeStyleTab.position != "top" ? 0 : '
-				)
-			);
+				));
+			}, 'treeStyleTab');
 		}
 
-		if ('BrowserOpenTab' in window) {
-			eval('window.BrowserOpenTab = '+
-				window.BrowserOpenTab.toSource().replace(
-					'openUILinkIn(',
-					'gBrowser.treeStyleTab.onBeforeNewTabCommand(); $&'
-				)
-			);
-		}
+		TreeStyleTabUtils.doPatching(window.BrowserOpenTab, 'window.BrowserOpenTab', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
+				'openUILinkIn(',
+				'gBrowser.treeStyleTab.onBeforeNewTabCommand(); $&'
+			));
+		}, 'treeStyleTab');
 
-		if ('undoCloseTab' in window) {
-			eval('window.undoCloseTab = '+
-				window.undoCloseTab.toSource().replace(
-					/(\btab\s*=\s*[^\.]+\.undoCloseTab\([^;]+\);)/,
-					'gBrowser.__treestyletab__doingUndoCloseTab = true;\n' +
-					'$1\n' +
-					'tab.__treestyletab__restoredByUndoCloseTab = true;\n' +
-					'setTimeout(function() { delete gBrowser.__treestyletab__doingUndoCloseTab; }, 0);'
-				)
-			);
-		}
+		TreeStyleTabUtils.doPatching(window.undoCloseTab, 'window.undoCloseTab', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
+				/(\btab\s*=\s*[^\.]+\.undoCloseTab\([^;]+\);)/,
+				'gBrowser.__treestyletab__doingUndoCloseTab = true;\n' +
+				'$1\n' +
+				'tab.__treestyletab__restoredByUndoCloseTab = true;\n' +
+				'setTimeout(function() { delete gBrowser.__treestyletab__doingUndoCloseTab; }, 0);'
+			));
+		}, 'treestyletab');
 
-		if ('XULBrowserWindow' in window &&
-			'hideChromeForLocation' in window.XULBrowserWindow) {
-			eval('XULBrowserWindow.hideChromeForLocation = '+
-				XULBrowserWindow.hideChromeForLocation.toSource().replace(
-					'{',
-					'{ if (gBrowser.treeStyleTab.isVertical) return false;\n'
-				)
-			);
-		}
+		TreeStyleTabUtils.doPatching(window.XULBrowserWindow.hideChromeForLocation, 'XULBrowserWindow.hideChromeForLocation', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
+				'{',
+				'{ if (gBrowser.treeStyleTab.isVertical) return false;\n'
+			));
+		}, 'treeStyleTab');
 
-		let (functions = [
-				'window.duplicateTab.handleLinkClick',
-				'window.duplicatethistab.handleLinkClick',
-				'window.__treestyletab__highlander__origHandleLinkClick',
-				'window.__splitbrowser__handleLinkClick',
-				'window.__ctxextensions__handleLinkClick',
-				'window.handleLinkClick'
-			]) {
-			for (let i = 0, maxi = functions.length; i < maxi; i++)
-			{
-				let func = functions[i];
-				let source = this._getFunctionSource(func);
-				if (!source || !/^\(?function handleLinkClick/.test(source))
-					continue;
-				eval(func+' = '+source.replace(
+		[
+			'window.duplicateTab.handleLinkClick',
+			'window.duplicatethistab.handleLinkClick',
+			'window.__treestyletab__highlander__origHandleLinkClick',
+			'window.__splitbrowser__handleLinkClick',
+			'window.__ctxextensions__handleLinkClick',
+			'window.handleLinkClick'
+		].some(function(aName) {
+			let func = this._getFunction(aName);
+			if (!func || !/^\(?function handleLinkClick/.test(func.toString()))
+				return false;
+			TreeStyleTabUtils.doPatching(func, aName, function(aName, aSource) {
+				return eval(aName+' = '+aSource.replace(
 					/(charset\s*:\s*doc\.characterSet\s*)/,
 					'$1, event : event, linkNode : linkNode'
 				));
-				break;
-			}
-		}
+			}, 'event : event, linkNode : linkNode');
+			return true;
+		}, this);
 
 		this.overrideExtensionsPreInit(); // windowHelperHacks.js
 	},
@@ -143,182 +125,179 @@ var TreeStyleTabWindowHelper = {
 			)
 			aObserver = aObserver.tabContainer;
 
-		if ('_setEffectAllowedForDataTransfer' in aObserver) {
-			eval('aObserver._setEffectAllowedForDataTransfer = '+
-				aObserver._setEffectAllowedForDataTransfer.toSource().replace(
-					'{',
-					'{ var TSTTabBrowser = this instanceof Element ? (this.tabbrowser || this) : gBrowser ; var TST = TSTTabBrowser.treeStyleTab;'
-				).replace(
-					/\.screenX/g, '[TST.screenPositionProp]'
-				).replace(
-					/\.width/g, '[TST.sizeProp]'
-				).replace(
-					/(return (?:true|dt.effectAllowed = "copyMove");)/,
-					'if (!TST.tabbarDNDObserver.canDropTab(arguments[0])) {\n' +
-					'  return dt.effectAllowed = "none";\n' +
-					'}\n' +
-					'$1'
-				).replace(
-					'sourceNode.parentNode == this &&',
-					'$& TST.getTabFromEvent(event) == sourceNode &&'
-				)
-			);
-		}
+		TreeStyleTabUtils.doPatching(aObserver._setEffectAllowedForDataTransfer, aObserver+'._setEffectAllowedForDataTransfer', function(aName, aSource) {
+			return eval('aObserver._setEffectAllowedForDataTransfer = '+aSource.replace(
+				'{',
+				'{ var TSTTabBrowser = this instanceof Element ? (this.tabbrowser || this) : gBrowser ; var TST = TSTTabBrowser.treeStyleTab;'
+			).replace(
+				/\.screenX/g, '[TST.screenPositionProp]'
+			).replace(
+				/\.width/g, '[TST.sizeProp]'
+			).replace(
+				/(return (?:true|dt.effectAllowed = "copyMove");)/,
+				'if (!TST.tabbarDNDObserver.canDropTab(arguments[0])) {\n' +
+				'  return dt.effectAllowed = "none";\n' +
+				'}\n' +
+				'$1'
+			).replace(
+				'sourceNode.parentNode == this &&',
+				'$& TST.getTabFromEvent(event) == sourceNode &&'
+			));
+		}, 'TST');
 	},
  
 	overrideGlobalFunctions : function TSTWH_overrideGlobalFunctions() 
 	{
 		this.initToolbarItems();
 
-		eval('nsContextMenu.prototype.openLinkInTab = '+
-			nsContextMenu.prototype.openLinkInTab.toSource().replace(
+		TreeStyleTabUtils.doPatching(nsContextMenu.prototype.openLinkInTab, 'nsContextMenu.prototype.openLinkInTab', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
 				'{',
 				'{\n' +
 				'  TreeStyleTabService.handleNewTabFromCurrent(this.target.ownerDocument.defaultView);'
-			)
-		);
-		eval('nsContextMenu.prototype.openFrameInTab = '+
-			nsContextMenu.prototype.openFrameInTab.toSource().replace(
+			));
+		}, 'TreeStyleTab');
+
+		TreeStyleTabUtils.doPatching(nsContextMenu.prototype.openFrameInTab, 'nsContextMenu.prototype.openFrameInTab', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
 				'{',
 				'{\n' +
 				'  TreeStyleTabService.handleNewTabFromCurrent(this.target.ownerDocument.defaultView);'
-			)
-		);
+			));
+		}, 'TreeStyleTab');
+
 		var viewImageMethod = ('viewImage' in nsContextMenu.prototype) ? 'viewImage' : 'viewMedia' ;
-		eval('nsContextMenu.prototype.'+viewImageMethod+' = '+
-			nsContextMenu.prototype[viewImageMethod].toSource().replace(
+		TreeStyleTabUtils.doPatching(nsContextMenu.prototype[viewImageMethod], 'nsContextMenu.prototype.'+viewImageMethod, function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
 				'openUILink(',
 				'TreeStyleTabService.onBeforeViewMedia(e, this.target.ownerDocument.defaultView); $&'
-			)
-		);
-		eval('nsContextMenu.prototype.viewBGImage = '+
-			nsContextMenu.prototype.viewBGImage.toSource().replace(
+			));
+		}, 'TreeStyleTab');
+
+		TreeStyleTabUtils.doPatching(nsContextMenu.prototype.viewBGImage, 'nsContextMenu.prototype.viewBGImage', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
 				'openUILink(',
 				'TreeStyleTabService.onBeforeViewMedia(e, this.target.ownerDocument.defaultView); $&'
-			)
-		);
-		eval('nsContextMenu.prototype.addDictionaries = '+
-			nsContextMenu.prototype.addDictionaries.toSource().replace(
+			));
+		}, 'TreeStyleTab');
+
+		TreeStyleTabUtils.doPatching(nsContextMenu.prototype.addDictionaries, 'nsContextMenu.prototype.addDictionaries', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
 				'openUILinkIn(',
 				'TreeStyleTabService.onBeforeOpenLink(where, this.target.ownerDocument.defaultView); $&'
-			)
-		);
+			));
+		}, 'TreeStyleTab');
 
-		if ('BrowserSearch' in window &&
-			'_loadSearch' in BrowserSearch) {
-			eval('BrowserSearch._loadSearch = '+
-				BrowserSearch._loadSearch.toSource().replace(
-					'openLinkIn(',
-					'TreeStyleTabService.onBeforeBrowserSearch(arguments[0], useNewTab); $&'
-				)
-			);
-		}
+		TreeStyleTabUtils.doPatching(BrowserSearch._loadSearch, 'BrowserSearch._loadSearch', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
+				'openLinkIn(',
+				'TreeStyleTabService.onBeforeBrowserSearch(arguments[0], useNewTab); $&'
+			));
+		}, 'TreeStyleTab');
 
-		if ('openLinkIn' in window) {
+		TreeStyleTabUtils.doPatching(window.openLinkIn, 'window.openLinkIn', function(aName, aSource) {
 			// Bug 1050447 changed this line in Fx 34 to
 			// newTab = w.gBrowser.loadOneTab(
-			eval('window.openLinkIn = '+
-				window.openLinkIn.toSource().replace(
-					/((b|newTab = w\.gB)rowser.loadOneTab\()/g,
-					'TreeStyleTabService.onBeforeOpenLinkWithTab(gBrowser.selectedTab, aFromChrome); $1'
-				)
-			);
-		}
+			return eval(aName+' = '+aSource.replace(
+				/((b|newTab = w\.gB)rowser.loadOneTab\()/g,
+				'TreeStyleTabService.onBeforeOpenLinkWithTab(gBrowser.selectedTab, aFromChrome); $1'
+			));
+		}, 'TreeStyleTab');
 
-		let (functions = [
-				'window.permaTabs.utils.wrappedFunctions["window.contentAreaClick"]',
-				'window.__contentAreaClick',
-				'window.__ctxextensions__contentAreaClick',
-				'window.contentAreaClick'
-			]) {
-			for (let i = 0, maxi = functions.length; i < maxi; i++)
-			{
-				let func = functions[i];
-				let source = this._getFunctionSource(func);
-				if (!source || !/^\(?function contentAreaClick/.test(source))
-					continue;
-				eval(func+' = '+source.replace(
-					// for Tab Utilities, etc. Some addons insert openNewTabWith() to the function.
-					// (calls for the function is not included by Firefox default.)
+		[
+			'window.permaTabs.utils.wrappedFunctions["window.contentAreaClick"]',
+			'window.__contentAreaClick',
+			'window.__ctxextensions__contentAreaClick',
+			'window.contentAreaClick'
+		].forEach(function(aName) {
+			var func = this._getFunction(aName);
+			var source = func && func.toString();
+			if (!func ||
+				!/^\(?function contentAreaClick/.test(source) ||
+				// for Tab Utilities, etc. Some addons insert openNewTabWith() to the function.
+				// (calls for the function is not included by Firefox default.)
+				!/(openNewTabWith\()/.test(source))
+				return;
+			TreeStyleTabUtils.doPatching(func, aName, function(aName, aSource) {
+				return eval(aName+' = '+aSource.replace(
 					/(openNewTabWith\()/g,
 					'TreeStyleTabService.onBeforeOpenNewTabByThirdParty(event.target.ownerDocument.defaultView); $1'
 				));
-			}
-		}
+			}, 'TreeStyleTab');
+		}, this);
 
-		if (window.duplicateTabIn) {
-			eval('window.duplicateTabIn = '+
-				window.duplicateTabIn.toSource().replace(
-					'{',
-					'{ gBrowser.treeStyleTab.onBeforeTabDuplicate(aTab, where, delta); '
-				)
-			);
-		}
+		TreeStyleTabUtils.doPatching(window.duplicateTabIn, 'window.duplicateTabIn', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
+				'{',
+				'{ gBrowser.treeStyleTab.onBeforeTabDuplicate(aTab, where, delta); '
+			));
+		}, 'treeStyleTab');
 
-		let (functions = [
-				'permaTabs.utils.wrappedFunctions["window.BrowserHomeClick"]',
-				'window.BrowserHomeClick',
-				'window.BrowserGoHome'
-			]) {
-			for (let i = 0, maxi = functions.length; i < maxi; i++)
-			{
-				let func = functions[i];
-				let source = this._getFunctionSource(func);
-				if (!source || !/^\(?function (BrowserHomeClick|BrowserGoHome)/.test(source))
-					continue;
-				eval(func+' = '+source.replace(
+		[
+			'permaTabs.utils.wrappedFunctions["window.BrowserHomeClick"]',
+			'window.BrowserHomeClick',
+			'window.BrowserGoHome'
+		].forEach(function(aName) {
+			let func = this._getFunction(aName);
+			if (!func || !/^\(?function (BrowserHomeClick|BrowserGoHome)/.test(func.toString()))
+				return;
+			TreeStyleTabUtils.doPatching(func, aName, function(aName, aSource) {
+				return eval(aName+' = '+aSource.replace(
 					'gBrowser.loadTabs(',
 					'TreeStyleTabService.readyToOpenNewTabGroup(gBrowser); $&'
 				));
-			}
-		}
+			}, 'TreeStyleTab');
+		}, this);
 
-		eval('FeedHandler.loadFeed = '+
-			FeedHandler.loadFeed.toSource().replace(
+		TreeStyleTabUtils.doPatching(FeedHandler.loadFeed, 'FeedHandler.loadFeed', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
 				'openUILink(',
 				'TreeStyleTabService.onBeforeViewMedia(event, gBrowser); $&'
-			)
-		);
+			));
+		}, 'TreeStyleTab');
 
-		eval('FullScreen.mouseoverToggle = '+
-			FullScreen.mouseoverToggle.toSource().replace(
+		TreeStyleTabUtils.doPatching(FullScreen.mouseoverToggle, 'FullScreen.mouseoverToggle', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
 				'this._isChromeCollapsed = !aShow;',
 				'gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_FULLSCREEN); $&'
-			)
-		);
-		eval('FullScreen.toggle = '+
-			FullScreen.toggle.toSource().replace(
+			));
+		}, 'treeStyleTab');
+
+		TreeStyleTabUtils.doPatching(FullScreen.toggle, 'FullScreen.toggle', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
 				'{',
 				'{ gBrowser.treeStyleTab.onBeforeFullScreenToggle(); '
-			)
-		);
+			));
+		}, 'treeStyleTab');
 
-		if ('PrintUtils' in window) {
-			eval('PrintUtils.printPreview = '+PrintUtils.printPreview.toSource().replace(
+		TreeStyleTabUtils.doPatching(PrintUtils.printPreview, 'PrintUtils.printPreview', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
 				'{',
 				'{ TreeStyleTabService.onPrintPreviewEnter();'
 			));
-			eval('PrintUtils.exitPrintPreview = '+PrintUtils.exitPrintPreview.toSource().replace(
+		}, 'TreeStyleTab');
+		TreeStyleTabUtils.doPatching(PrintUtils.exitPrintPreview, 'PrintUtils.exitPrintPreview', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
 				'{',
 				'{ TreeStyleTabService.onPrintPreviewExit();'
 			));
+		}, 'TreeStyleTab');
+
+		if ('TabsOnTop' in window) {
+			TreeStyleTabUtils.doPatching(TabsOnTop.syncUI, 'TabsOnTop.syncUI', function(aName, aSource) {
+				return eval(aName+' = '+aSource.replace(
+					/(\}\)?)$/,
+					'gBrowser.treeStyleTab.onTabsOnTopSyncCommand(enabled); $&'
+				));
+			}, 'treeStyleTab');
 		}
 
-		if ('TabsOnTop' in window && TabsOnTop.syncUI) {
-			eval('TabsOnTop.syncUI = '+TabsOnTop.syncUI.toSource().replace(
-				/(\}\)?)$/,
-				'gBrowser.treeStyleTab.onTabsOnTopSyncCommand(enabled); $&'
+		TreeStyleTabUtils.doPatching(window.toggleSidebar, 'window.toggleSidebar', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
+				'{',
+				'{ gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR);'
 			));
-		}
-
-		if ('toggleSidebar' in window) {
-			eval('window.toggleSidebar = '+
-				window.toggleSidebar.toSource().replace(
-					'{',
-					'{ gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR);'
-				)
-			);
-		}
+		}, 'treeStyleTab');
 	},
 	_splitFunctionNames : function TSTWH__splitFunctionNames(aString)
 	{
@@ -331,7 +310,7 @@ var TreeStyleTabWindowHelper = {
 							.trim();
 				});
 	},
-	_getFunctionSource : function TSTWH__getFunctionSource(aFunc)
+	_getFunction : function TSTWH__getFunction(aFunc)
 	{
 		var func;
 		try {
@@ -340,7 +319,7 @@ var TreeStyleTabWindowHelper = {
 		catch(e) {
 			return null;
 		}
-		return func ? func.toSource() : null ;
+		return func;
 	},
  
 	initToolbarItems : function TSTWH_initToolbarItems() 
@@ -349,12 +328,14 @@ var TreeStyleTabWindowHelper = {
 		if (searchbar &&
 			searchbar.doSearch &&
 			searchbar.doSearch.toSource().toSource().indexOf('TreeStyleTabService') < 0) {
-			eval('searchbar.doSearch = '+searchbar.doSearch.toSource().replace(
-				/(openUILinkIn\(.+?\);)/,
-				'TreeStyleTabService.onBeforeBrowserSearch(arguments[0]);\n' +
-				'$1\n' +
-				'TreeStyleTabService.stopToOpenChildTab();'
-			));
+			TreeStyleTabUtils.doPatching(searchbar.doSearch, 'searchbar.doSearch', function(aName, aSource) {
+				return eval(aName+' = '+aSource.replace(
+					/(openUILinkIn\(.+?\);)/,
+					'TreeStyleTabService.onBeforeBrowserSearch(arguments[0]);\n' +
+					'$1\n' +
+					'TreeStyleTabService.stopToOpenChildTab();'
+				));
+			}, 'TreeStyleTab');
 		}
 
 		var goButton = document.getElementById('urlbar-go-button');
@@ -397,67 +378,63 @@ var TreeStyleTabWindowHelper = {
 	{
 		var b = aTabBrowser;
 
-		let (source = b.moveTabForward.toSource()) {
-			eval('b.moveTabForward = '+
-				source.replace(
-					'if (nextTab)',
-					'(function() {\n' +
-					'  if (this.treeStyleTab.hasChildTabs(this.mCurrentTab)) {\n' +
-					'    let descendant = this.treeStyleTab.getDescendantTabs(this.mCurrentTab);\n' +
-					'    if (descendant.length)\n' +
-					'      nextTab = this.treeStyleTab.getNextTab(descendant[descendant.length-1]);\n' +
-					'  }\n' +
-					'}).call(this);' +
-					'$&'
-				).replace(
-					/(this.moveTabTo\([^;]+\);)/,
-					'(function() {\n' +
-					'  let descendant = this.treeStyleTab.getDescendantTabs(nextTab);\n' +
-					'  if (descendant.length) {\n' +
-					'    nextTab = descendant[descendant.length-1];\n' +
-					'  }\n' +
-					'  $1\n' +
-					'}).call(this);'
-				).replace(
-					'this.moveTabToStart();',
-					'(function() {\n' +
-					'  this.treeStyleTab.internallyTabMovingCount++;\n' +
-					'  let parentTab = this.treeStyleTab.getParentTab(this.mCurrentTab);\n' +
-					'  if (parentTab) {\n' +
-					'    this.moveTabTo(this.mCurrentTab, this.treeStyleTab.getFirstChildTab(parentTab)._tPos);\n' +
-					'    this.mCurrentTab.focus();\n' +
-					'  }\n' +
-					'  else {\n' +
-					'    $&\n' +
-					'  }\n' +
-					'  this.treeStyleTab.internallyTabMovingCount--;\n' +
-					'}).call(this);'
-				)
-			);
-		}
+		TreeStyleTabUtils.doPatching(b.moveTabForward, 'b.moveTabForward', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
+				'if (nextTab)',
+				'(function() {\n' +
+				'  if (this.treeStyleTab.hasChildTabs(this.mCurrentTab)) {\n' +
+				'    let descendant = this.treeStyleTab.getDescendantTabs(this.mCurrentTab);\n' +
+				'    if (descendant.length)\n' +
+				'      nextTab = this.treeStyleTab.getNextTab(descendant[descendant.length-1]);\n' +
+				'  }\n' +
+				'}).call(this);' +
+				'$&'
+			).replace(
+				/(this.moveTabTo\([^;]+\);)/,
+				'(function() {\n' +
+				'  let descendant = this.treeStyleTab.getDescendantTabs(nextTab);\n' +
+				'  if (descendant.length) {\n' +
+				'    nextTab = descendant[descendant.length-1];\n' +
+				'  }\n' +
+				'  $1\n' +
+				'}).call(this);'
+			).replace(
+				'this.moveTabToStart();',
+				'(function() {\n' +
+				'  this.treeStyleTab.internallyTabMovingCount++;\n' +
+				'  let parentTab = this.treeStyleTab.getParentTab(this.mCurrentTab);\n' +
+				'  if (parentTab) {\n' +
+				'    this.moveTabTo(this.mCurrentTab, this.treeStyleTab.getFirstChildTab(parentTab)._tPos);\n' +
+				'    this.mCurrentTab.focus();\n' +
+				'  }\n' +
+				'  else {\n' +
+				'    $&\n' +
+				'  }\n' +
+				'  this.treeStyleTab.internallyTabMovingCount--;\n' +
+				'}).call(this);'
+			));
+		}, 'treeStyleTab');
 
-		let (source = b.moveTabBackward.toSource()) {
-			eval('b.moveTabBackward = '+
-				source.replace(
-					'this.moveTabToEnd();',
-					'(function() {\n' +
-					'  this.treeStyleTab.internallyTabMovingCount++;\n' +
-					'  let parentTab = this.treeStyleTab.getParentTab(this.mCurrentTab);\n' +
-					'  if (parentTab) {\n' +
-					'    this.moveTabTo(this.mCurrentTab, this.treeStyleTab.getLastChildTab(parentTab)._tPos);\n' +
-					'    this.mCurrentTab.focus();\n' +
-					'  }\n' +
-					'  else {\n' +
-					'    $&\n' +
-					'  }\n' +
-					'  this.treeStyleTab.internallyTabMovingCount--;\n' +
-					'}).call(this);'
-				)
-			);
-		}
+		TreeStyleTabUtils.doPatching(b.moveTabBackward, 'b.moveTabBackward', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
+				'this.moveTabToEnd();',
+				'(function() {\n' +
+				'  this.treeStyleTab.internallyTabMovingCount++;\n' +
+				'  let parentTab = this.treeStyleTab.getParentTab(this.mCurrentTab);\n' +
+				'  if (parentTab) {\n' +
+				'    this.moveTabTo(this.mCurrentTab, this.treeStyleTab.getLastChildTab(parentTab)._tPos);\n' +
+				'    this.mCurrentTab.focus();\n' +
+				'  }\n' +
+				'  else {\n' +
+				'    $&\n' +
+				'  }\n' +
+				'  this.treeStyleTab.internallyTabMovingCount--;\n' +
+				'}).call(this);'
+			));
+		}, 'treeStyleTab');
 
-		eval('b.loadTabs = '+
-			b.loadTabs.toSource().replace(
+		TreeStyleTabUtils.doPatching(b.loadTabs, 'b.loadTabs', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
 				'var tabNum = ',
 				'if (this.treeStyleTab.readiedToAttachNewTabGroup)\n' +
 				'  TreeStyleTabService.readyToOpenChildTab(firstTabAdded || this.selectedTab, true);\n' +
@@ -472,133 +449,117 @@ var TreeStyleTabWindowHelper = {
 				'this.selectedTab = aURIs[0].indexOf("about:treestyletab-group") < 0 ? \n' +
 				'  firstTabAdded :\n' +
 				'  TreeStyleTabService.getNextTab(firstTabAdded) ;'
-			)
-		);
+			));
+		}, 'TreeStyleTab');
 
-		if ('_beginRemoveTab' in b) {
-			eval('b._beginRemoveTab = '+
-				b._beginRemoveTab.toSource().replace(
-					'if (this.tabs.length - this._removingTabs.length == 1) {',
-					'if (this.tabs.length - this._removingTabs.length == 1 || this.treeStyleTab.shouldCloseLastTabSubtreeOf(aTab)) {'
-				).replace(
-					'this._removingTabs.length == 0',
-					'(this.treeStyleTab.shouldCloseLastTabSubtreeOf(aTab) || $&)'
-				)
-			);
-		}
+		TreeStyleTabUtils.doPatching(b._beginRemoveTab, 'b._beginRemoveTab', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
+				'if (this.tabs.length - this._removingTabs.length == 1) {',
+				'if (this.tabs.length - this._removingTabs.length == 1 || this.treeStyleTab.shouldCloseLastTabSubtreeOf(aTab)) {'
+			).replace(
+				'this._removingTabs.length == 0',
+				'(this.treeStyleTab.shouldCloseLastTabSubtreeOf(aTab) || $&)'
+			));
+		}, 'treeStyleTab');
 
-		eval('b.removeCurrentTab = '+b.removeCurrentTab.toSource().replace(
-			'{',
-			'{ if (!this.treeStyleTab.warnAboutClosingTabSubtreeOf(this.selectedTab)) return;'
-		));
+		TreeStyleTabUtils.doPatching(b.removeCurrentTab, 'b.removeCurrentTab', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
+				'{',
+				'{ if (!this.treeStyleTab.warnAboutClosingTabSubtreeOf(this.selectedTab)) return;'
+			));
+		}, 'treeStyleTab');
 	},
  
 	initTabbarMethods : function TSTWH_initTabbarMethods(aTabBrowser) 
 	{
 		var b = aTabBrowser;
 
-		var source = b.mTabContainer.advanceSelectedTab.toSource();
-		if (source.indexOf('treeStyleTab.handleAdvanceSelectedTab') < 0) {
-			eval('b.mTabContainer.advanceSelectedTab = '+
-				source.replace(
-					'{',
-					'{\n' +
-					'  var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;\n' +
-					'  if (treeStyleTab.handleAdvanceSelectedTab(arguments[0], arguments[1]))\n' +
-					'    return;'
-				)
-			);
-		}
+		TreeStyleTabUtils.doPatching(b.mTabContainer.advanceSelectedTab, 'b.mTabContainer.advanceSelectedTab', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
+				'{',
+				'{\n' +
+				'  var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;\n' +
+				'  if (treeStyleTab.handleAdvanceSelectedTab(arguments[0], arguments[1]))\n' +
+				'    return;'
+			));
+		}, 'treeStyleTab.handleAdvanceSelectedTab');
 
-		source = b.mTabContainer._notifyBackgroundTab.toSource();
-		if (source.indexOf('TreeStyleTabService.getTabBrowserFromChild') < 0) {
-			eval('b.mTabContainer._notifyBackgroundTab = '+
-				source.replace(
-					'{',
-					'{\n' +
-					'  var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;\n' +
-					'  if (treeStyleTab.scrollToNewTabMode == 0 ||\n' +
-					'      treeStyleTab.shouldCancelEnsureElementIsVisible())\n' +
-					'    return;'
-				).replace(
-					/\.screenX/g, '[treeStyleTab.screenPositionProp]'
-				).replace(
-					/\.width/g, '[treeStyleTab.sizeProp]'
-				).replace(
-					/\.left/g, '[treeStyleTab.startProp]'
-				).replace(
-					/\.right/g, '[treeStyleTab.endProp]'
+		TreeStyleTabUtils.doPatching(b.mTabContainer._notifyBackgroundTab, 'b.mTabContainer._notifyBackgroundTab', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
+				'{',
+				'{\n' +
+				'  var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;\n' +
+				'  if (treeStyleTab.scrollToNewTabMode == 0 ||\n' +
+				'      treeStyleTab.shouldCancelEnsureElementIsVisible())\n' +
+				'    return;'
+			).replace(
+				/\.screenX/g, '[treeStyleTab.screenPositionProp]'
+			).replace(
+				/\.width/g, '[treeStyleTab.sizeProp]'
+			).replace(
+				/\.left/g, '[treeStyleTab.startProp]'
+			).replace(
+				/\.right/g, '[treeStyleTab.endProp]'
 
-				// replace such codes:
-				//   tab = {left: tab.left, right: tab.right};
-				).replace(
-					/left\s*:/g, 'start:'
-				).replace(
-					/right\s*:/g, 'end:'
-				).replace(
-					/((tab|selected)\s*=\s*\{\s*start:[^\}]+\})/g,
-					'$1; $2[treeStyleTab.startProp] = $2.start; $2[treeStyleTab.endProp] = $2.end;'
+			// replace such codes:
+			//   tab = {left: tab.left, right: tab.right};
+			).replace(
+				/left\s*:/g, 'start:'
+			).replace(
+				/right\s*:/g, 'end:'
+			).replace(
+				/((tab|selected)\s*=\s*\{\s*start:[^\}]+\})/g,
+				'$1; $2[treeStyleTab.startProp] = $2.start; $2[treeStyleTab.endProp] = $2.end;'
 
-				).replace(
-					'!selected ||',
-					'$& treeStyleTab.scrollToNewTabMode == 1 && '
-				).replace(
-					/(\}\)?)$/,
-					'treeStyleTab.notifyBackgroundTab(); $1'
-				)
-			);
-		}
+			).replace(
+				'!selected ||',
+				'$& treeStyleTab.scrollToNewTabMode == 1 && '
+			).replace(
+				/(\}\)?)$/,
+				'treeStyleTab.notifyBackgroundTab(); $1'
+			));
+		}, 'TreeStyleTabService.getTabBrowserFromChild');
 
-		if (b.tabContainer && '_getDropIndex' in b.tabContainer) {
-			eval('b.tabContainer._getDropIndex = '+
-				b.tabContainer._getDropIndex.toSource().replace(
-					/\.screenX/g, '[this.treeStyleTab.screenPositionProp]'
-				).replace(
-					/\.width/g, '[this.treeStyleTab.sizeProp]'
-				)
-			);
-		}
+		TreeStyleTabUtils.doPatching(b.tabContainer._getDropIndex, 'b.tabContainer._getDropIndex', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
+				/\.screenX/g, '[this.treeStyleTab.screenPositionProp]'
+			).replace(
+				/\.width/g, '[this.treeStyleTab.sizeProp]'
+			));
+		}, 'treeStyleTab');
 
 		/**
 		 * The default implementation fails to scroll to tab if it is expanding.
 		 * So we have to inject codes to override its effect.
 		 */
 		let (scrollbox = aTabBrowser.treeStyleTab.scrollBox) {
-			let source = scrollbox.ensureElementIsVisible.toSource();
-			if (
-				source.indexOf('treeStyleTab') < 0 && // not updated yet
-				source.indexOf('ensureTabIsVisible') < 0 // not replaced by Tab Mix Plus
-				) {
-				eval('scrollbox.ensureElementIsVisible = '+
-					source.replace(
-						'{',
-						'{\n' +
-						'  var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;\n' +
-						'  if (treeStyleTab && treeStyleTab.shouldCancelEnsureElementIsVisible())\n' +
-						'    return;\n' +
-						'  if (\n' +
-						'      treeStyleTab &&\n' +
-						'      (arguments.length == 1 || arguments[1])\n' +
-						'    )\n' +
-						'    return treeStyleTab.scrollToTab(arguments[0]);'
-					)
-				);
-			}
+			TreeStyleTabUtils.doPatching(scrollbox.ensureElementIsVisible, 'scrollbox.ensureElementIsVisible', function(aName, aSource) {
+				return eval(aName+' = '+aSource.replace(
+					'{',
+					'{\n' +
+					'  var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;\n' +
+					'  if (treeStyleTab && treeStyleTab.shouldCancelEnsureElementIsVisible())\n' +
+					'    return;\n' +
+					'  if (\n' +
+					'      treeStyleTab &&\n' +
+					'      (arguments.length == 1 || arguments[1])\n' +
+					'    )\n' +
+					'    return treeStyleTab.scrollToTab(arguments[0]);'
+				));
+			}, /treeStyleTab|ensureTabIsVisible/); // if there is a string "ensureTabIsVisible", it is replaced by Tab Mix Plus!
 		}
 
 		let (popup = document.getElementById('alltabs-popup')) {
-			if (popup && '_updateTabsVisibilityStatus' in popup) {
-				eval('popup._updateTabsVisibilityStatus = '+
-					popup._updateTabsVisibilityStatus.toSource().replace(
-						'{',
-						'{ var treeStyleTab = gBrowser.treeStyleTab;'
-					).replace(
-						/\.screenX/g, '[treeStyleTab.screenPositionProp]'
-					).replace(
-						/\.width/g, '[treeStyleTab.sizeProp]'
-					)
-				);
-			}
+			TreeStyleTabUtils.doPatching(popup._updateTabsVisibilityStatus, 'popup._updateTabsVisibilityStatus', function(aName, aSource) {
+				return eval(aName+' = '+aSource.replace(
+					'{',
+					'{ var treeStyleTab = gBrowser.treeStyleTab;'
+				).replace(
+					/\.screenX/g, '[treeStyleTab.screenPositionProp]'
+				).replace(
+					/\.width/g, '[treeStyleTab.sizeProp]'
+				));
+			}, 'treeStyleTab');
 		}
 	
 	}
