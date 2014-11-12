@@ -70,8 +70,8 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksService,
 		// Bookmarks Property dialog
 		if ('BookmarkPropertiesPanel' in window) {
 			eval('BookmarkPropertiesPanel._endBatch = '+BookmarkPropertiesPanel._endBatch.toSource().replace(
-				'PlacesUIUtils.ptm.endBatch();',
-				'$& TreeStyleTabBookmarksServiceEditable.saveParentFor(this._itemId);'
+				/(PlacesUIUtils\.transactionManager\.endBatch\([^\)]+\);)/,
+				'$1 TreeStyleTabBookmarksServiceEditable.saveParentFor(this._itemId);'
 			));
 		}
 
