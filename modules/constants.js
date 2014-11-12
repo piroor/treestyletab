@@ -41,7 +41,7 @@ const TreeStyleTabConstants = Object.freeze({
 	kID                 : 'treestyletab-id',
 	kCHILDREN           : 'treestyletab-children',
 	kPARENT             : 'treestyletab-parent',
-	kANCESTOR           : 'treestyletab-ancestors',
+	kANCESTORS          : 'treestyletab-ancestors',
 	kNEST               : 'treestyletab-nest',
 	kINSERT_BEFORE      : 'treestyletab-insert-before',
 	kINSERT_AFTER       : 'treestyletab-insert-after',

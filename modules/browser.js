@@ -3125,7 +3125,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 					attributes[this.kINSERT_BEFORE] = next.getAttribute(this.kID);
 				return aAncestor.getAttribute(this.kID);
 			}, this);
-			attributes[this.kANCESTOR] = ancestors.join('|');
+			attributes[this.kANCESTORS] = ancestors.join('|');
 		}
 
 		return attributes;
@@ -4018,7 +4018,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			next = this.getNextSiblingTab(prev);
 		}
 
-		var ancestors = (this.getTabValue(aTab, this.kANCESTOR) || this.getTabValue(aTab, this.kPARENT)).split('|');
+		var ancestors = (this.getTabValue(aTab, this.kANCESTORS) || this.getTabValue(aTab, this.kPARENT)).split('|');
 		if (DEBUG)
 			dump('handleRestoredTab: ancestors = ' + ancestors+'\n');
 		var parent = null;
@@ -4032,7 +4032,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				break;
 			}
 		}
-		this.deleteTabValue(aTab, this.kANCESTOR);
+		this.deleteTabValue(aTab, this.kANCESTORS);
 
 		/**
 		 * If the tab is a duplicated and the tab has already been
