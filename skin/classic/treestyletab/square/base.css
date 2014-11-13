@@ -94,7 +94,7 @@
 	min-height: 2em;
 	margin: 0 !important;
 	/*padding: 0 0.2em !important;*/
-	color: -moz-dialogtext;
+	color: -moz-dialogtext !important;
 	-moz-background-origin: border !important;
 	background-origin: border-box !important;
 	background-position: 0 0 !important;
@@ -113,7 +113,7 @@
 #TabsToolbar:not(:-moz-lwtheme):not([treestyletab-tabbar-position="top"])
   #tabbrowser-tabs
   .tabbrowser-tab:not([selected]) {
-	color: -moz-dialogtext;
+	color: -moz-dialogtext !important;
 }
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:not([pinned]),
