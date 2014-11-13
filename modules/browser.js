@@ -1582,7 +1582,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			splitter.setAttribute('layer', true); // https://bugzilla.mozilla.org/show_bug.cgi?id=590468
 			let grippy = d.createElement('grippy')
 			grippy.setAttribute(this.kTAB_STRIP_ELEMENT, true);
-			// Workaround for https://github.com/piroor/treestyletab/issues/593
+			// Workaround for bugs:
+			//  * https://github.com/piroor/treestyletab/issues/593
+			//  * https://github.com/piroor/treestyletab/issues/783
 			// When you click the grippy...
 			//  1. The grippy changes "state" of the splitter from "collapsed"
 			//     to "open".
@@ -1603,7 +1605,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 					if (visible != tabContainer.visible)
 						tabContainer.visible = visible;
 				}, 0);
-			}, false);
+			}, true);
 			splitter.appendChild(grippy);
 		}
 
