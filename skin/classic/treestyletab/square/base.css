@@ -86,6 +86,8 @@
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab,
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab[selected="true"],
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:not([selected="true"]) {
 	appearance: none !important;
 	-moz-appearance: none !important;
@@ -116,6 +118,8 @@
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:not([pinned]),
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:not([pinned])[selected="true"],
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:not([pinned]):not([selected="true"]) {
 	background: -moz-dialog repeat-x !important;
 }
@@ -136,8 +140,10 @@
 
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   :-moz-any(.tabbrowser-tab[pinned]:not([titlechanged]),
+            .tabbrowser-tab[pinned]:not([titlechanged])[selected="true"],
             .tabbrowser-tab[pinned]:not([titlechanged]):not([selected="true"]),
             .tabbrowser-tab[pinned][titlechanged]:not(.treestyletab-faviconized),
+            .tabbrowser-tab[pinned][titlechanged]:not(.treestyletab-faviconized)[selected="true"],
             .tabbrowser-tab[pinned][titlechanged]:not(.treestyletab-faviconized):not([selected="true"])),
 :root[tabFx2Compatible-flags~="mac"]
   .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
@@ -227,6 +233,8 @@
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab,
 .tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[selected="true"],
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:not([selected="true"]) {
 	border-left: 2px solid !important;
 	-moz-border-left-colors: ThreeDLightShadow transparent !important;
@@ -247,6 +255,8 @@
 
 .tabbrowser-tabs[treestyletab-tabbar-position="bottom"]
   .tabbrowser-tab,
+.tabbrowser-tabs[treestyletab-tabbar-position="bottom"]
+  .tabbrowser-tab[selected="true"],
 .tabbrowser-tabs[treestyletab-tabbar-position="bottom"]
   .tabbrowser-tab:not([selected="true"]) {
 	border-right: 2px solid !important;
