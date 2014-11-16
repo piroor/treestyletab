@@ -567,7 +567,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		var parent = aNode.parentNode;
 		var doc = aNode.ownerDocument || aNode;
 		var view = doc.defaultView;
-		while (parent && parent instanceof wiew.Element)
+		while (parent && parent instanceof view.Element)
 		{
 			let position = view.getComputedStyle(parent, null).getPropertyValue('position');
 			if (position != 'static')
