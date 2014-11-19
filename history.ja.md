@@ -1,6 +1,10 @@
 # 更新履歴
 
  - master/HEAD
+   * マルチプロセスモード（E10S）において、`target="_blank"`の指定があるリンクを子タブとして正しく開けるようにした
+     （[bugzilla.mozilla.orgの関連バグ](https://bugzilla.mozilla.org/show_bug.cgi?id=1098688)）
+   * フルスクリーンモードを終了した後にタブバーが再表示されない問題を修正
+     [(by Xinkai. Thanks!)](https://github.com/piroor/treestyletab/pull/790)
  - 0.15.2014111301
    * Firefox 30およびそれ以前のバージョンへの対応を終了
    * マルチプロセスモード（E10S）に対応
