@@ -43,7 +43,9 @@ var TreeStyleTabWindowHelper = {
 		TreeStyleTabUtils.doPatching(nsBrowserAccess.prototype.openURIInFrame, 'nsBrowserAccess.prototype.openURIInFrame', function(aName, aSource) {
 			return eval(aName+' = '+aSource.replace(
 				'let browser = ',
-				'TreeStyleTabService.onBeforeBrowserAccessOpenURI(aOpener, aWhere, aContext); $&'
+				// Use "arguments[1]" instead of "aOwner" or "aParams".
+				// The argument name is changed from "aOwner" to "aParams" by https://bugzilla.mozilla.org/show_bug.cgi?id=1058116
+				'TreeStyleTabService.onBeforeBrowserAccessOpenURI(arguments[1], aWhere, aContext); $&'
 			));
 		}, 'TreeStyleTab');
 
