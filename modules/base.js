@@ -1262,6 +1262,9 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
  
 	getBrowserFromTabBrowserElements : function TSTBase_getBrowserFromTabBrowserElements(aTarget) 
 	{
+		var currentBrowser = this.browser.selectedTab.linkedBrowser;
+		if (!aTarget)
+			return currentBrowser;
 		if (aTarget == '[object XULElement]') {
 			if (aTarget.localName == 'tab')
 				return aTarget.linkedBrowser;
@@ -1280,7 +1283,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			if (tab)
 				return tab.linkedBrowser;
 		}
-		return this.browser.selectedTab.linkedBrowser;
+		return currentBrowser;
 	},
   
 /* get tab(s) */ 
