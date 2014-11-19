@@ -1112,6 +1112,8 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	// this is used only for obsolete API call on non-E10S windows
 	getTabFromFrame : function TSTBase_getTabFromFrame(aFrame, aTabBrowser) 
 	{
+		if (!aFrame)
+			return null;
 		var b = aTabBrowser || this.browser;
 		var top = aFrame.top;
 		var tabs = this.getAllTabs(b);
