@@ -378,6 +378,20 @@ AutoHideBrowser.prototype = inherit(TreeStyleTabConstants, {
 	showHideOnMouseMove : function AHB_showHideOnMouseMove(aCoordinates) 
 	{
 		var position = this.getMousePosition(aCoordinates);
+		if (DEBUG) {
+			let humanReadablePosition = [];
+			if (position & this.MOUSE_POSITION_OUTSIDE)
+				humanReadablePosition.push('outside');
+			if (position & this.MOUSE_POSITION_INSIDE)
+				humanReadablePosition.push('inside');
+			if (position & this.MOUSE_POSITION_NEAR)
+				humanReadablePosition.push('near');
+			if (position & this.MOUSE_POSITION_SENSITIVE)
+				humanReadablePosition.push('sensitive');
+			dump('showHideOnMouseMove: ' +
+			       '('+aCoordinates.screenX + ', ' + aCoordinates.screenY + ') => ' +
+			       humanReadablePosition.join(', ') + '\n');
+		}
 		if (position == this.MOUSE_POSITION_UNKNOWN)
 			return;
 
