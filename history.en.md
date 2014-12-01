@@ -5,6 +5,7 @@
      (See also [the related bug on the bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=1098688))
    * Re-show the tab bar correctly after exiting from the fullscreen mode.
      [(by Xinkai. Thanks!)](https://github.com/piroor/treestyletab/pull/790)
+   * "Auto hide tab bar" feature works correctly on Firefox 35 and older versions.
  - 0.15.2014111301
    * Drop support for Firefox 30 and older versions
    * Works correctly on the multi-process mode (E10S).

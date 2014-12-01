@@ -5,6 +5,7 @@
      （[bugzilla.mozilla.orgの関連バグ](https://bugzilla.mozilla.org/show_bug.cgi?id=1098688)）
    * フルスクリーンモードを終了した後にタブバーが再表示されない問題を修正
      [(by Xinkai. Thanks!)](https://github.com/piroor/treestyletab/pull/790)
+   * Firefox 35以前のバージョンにおいて、タブバーの表示・非表示をマウスポインタの位置に応じて自動的に変更する機能が正しく動作しなくなっていたのを修正
  - 0.15.2014111301
    * Firefox 30およびそれ以前のバージョンへの対応を終了
    * マルチプロセスモード（E10S）に対応
