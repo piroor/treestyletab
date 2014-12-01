@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 0.15.2014120101
    * マルチプロセスモード（E10S）において、`target="_blank"`の指定があるリンクを子タブとして正しく開けるようにした
      （[bugzilla.mozilla.orgの関連バグ](https://bugzilla.mozilla.org/show_bug.cgi?id=1098688)）
    * フルスクリーンモードを終了した後にタブバーが再表示されない問題を修正

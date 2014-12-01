@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 0.15.2014120101
    * Open clicked link as a new child tab correctly, from links with `target="_blank"` in e10s mode.
      (See also [the related bug on the bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=1098688))
    * Re-show the tab bar correctly after exiting from the fullscreen mode.
