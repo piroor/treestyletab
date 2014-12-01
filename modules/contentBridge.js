@@ -135,6 +135,9 @@ ContentBridge.prototype = inherit(TreeStyleTabConstants, {
 		// is wrong (the position (0,0) is not the screen edge, but the
 		// edge of the frame itself), so we have to calculate correct
 		// screen coordinates manually.
+		// This hack should be removed after the bug
+		// https://bugzilla.mozilla.org/show_bug.cgi?id=1075670
+		// is fixed.
 		aCoordinates.screenX = box.screenX + aCoordinates.clientX;
 		aCoordinates.screenY = box.screenY + aCoordinates.clientY;
 		return aCoordinates;
