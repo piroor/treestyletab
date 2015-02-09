@@ -200,8 +200,9 @@ var TreeStyleTabWindowHelper = {
 		TreeStyleTabUtils.doPatching(window.openLinkIn, 'window.openLinkIn', function(aName, aSource) {
 			// Bug 1050447 changed this line in Fx 34 to
 			// newTab = w.gBrowser.loadOneTab(
+			// Bug 1108555 removed newTab assignment
 			return eval(aName+' = '+aSource.replace(
-				/((b|newTab = w\.gB)rowser.loadOneTab\()/g,
+				/((b|(newTab = )?w\.gB)rowser.loadOneTab\()/g,
 				'TreeStyleTabService.onBeforeOpenLinkWithTab(gBrowser.selectedTab, aFromChrome); $1'
 			));
 		}, 'TreeStyleTab');
