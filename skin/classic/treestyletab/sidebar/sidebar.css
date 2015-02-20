@@ -482,3 +482,9 @@ tabbrowser[treestyletab-mode="vertical"]
   .tab-close-button {
 	visibility: visible !important;
 }
+
+/* don't show tabs above other browser elements */
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[selected="true"] {
+	z-index: auto;
+}
