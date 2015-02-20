@@ -118,3 +118,16 @@
   .tab-icon-image:not([src]):not([pinned]) {
 	display: -moz-box;
 }
+
+
+/* Don't show vertical tabs above other browser elements.
+   See also:
+    https://github.com/piroor/treestyletab/issues/586
+    https://github.com/piroor/treestyletab/pull/843
+ */
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab:not([selected="true"]),
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[selected="true"] {
+	z-index: auto;
+}
