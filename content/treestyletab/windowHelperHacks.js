@@ -222,15 +222,15 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 	if ('FS_onFullerScreen' in window &&
 		TreeStyleTabUtils.getTreePref('compatibility.FullerScreen')) {
 		let functions = 'CheckIfFullScreen,FS_onFullerScreen,FS_onMouseMove'.split(',');
-			for (let i = 0, maxi = functions.length; i < maxi; i++)
-			{
-				let func = functions[i];
-				if (!(func in window)) continue;
-				eval('window.'+func+' = '+window[func].toSource().replace(
-					/FS_data.mTabs.(removeAttribute\("moz-collapsed"\)|setAttribute\("moz-collapsed", "true"\));/g,
-					'if (gBrowser.treeStyleTab.currentTabbarPosition == "top") { $& }'
-				));
-			}
+		for (let i = 0, maxi = functions.length; i < maxi; i++)
+		{
+			let func = functions[i];
+			if (!(func in window)) continue;
+			eval('window.'+func+' = '+window[func].toSource().replace(
+				/FS_data.mTabs.(removeAttribute\("moz-collapsed"\)|setAttribute\("moz-collapsed", "true"\));/g,
+				'if (gBrowser.treeStyleTab.currentTabbarPosition == "top") { $& }'
+			));
+		}
 	}
 
 	// TooManyTabs
@@ -802,17 +802,17 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		'prototype' in LinkyContext &&
 		TreeStyleTabUtils.getTreePref('compatibility.Linky')) {
 		let methods = 'openLink,openLinks,generateDocument'.split(',');
-			for (let i = 0, maxi = methods.length; i < maxi; i++)
-			{
-				let method = methods[i];
-				if (!(method in LinkyContext.prototype)) continue;
-				eval('LinkyContext.prototype.'+method+' = '+
-					LinkyContext.prototype[method].toSource().replace(
-						'{',
-						'{ TreeStyleTabService.readyToOpenChildTabNow(null, true);'
-					)
-				);
-			}
+		for (let i = 0, maxi = methods.length; i < maxi; i++)
+		{
+			let method = methods[i];
+			if (!(method in LinkyContext.prototype)) continue;
+			eval('LinkyContext.prototype.'+method+' = '+
+				LinkyContext.prototype[method].toSource().replace(
+					'{',
+					'{ TreeStyleTabService.readyToOpenChildTabNow(null, true);'
+				)
+			);
+		}
 	}
 
 	// QuickDrag
