@@ -233,9 +233,10 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabService, {
 			var sv = this;
 			with (ns) {
 
-			let (method = (TreeStyleTabUtils.getTreePref('compatibility.TabUtilities') && PlacesUIUtils.TU__openTabset) ?
+			{
+				let method = (TreeStyleTabUtils.getTreePref('compatibility.TabUtilities') && PlacesUIUtils.TU__openTabset) ?
 							'TU__openTabset' :
-							'_openTabset') {
+							'_openTabset';
 				TreeStyleTabUtils.doPatching(PlacesUIUtils[method], 'PlacesUIUtils.'+method, function(aName, aSource) {
 					var patched = eval(aName+' = '+aSource.replace(
 						/(function[^\(]*\([^\)]+)(\))/,
@@ -275,17 +276,19 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabService, {
 				}, 'TreeStyleTab');
 			}
 
-			let (method = (TreeStyleTabUtils.getTreePref('compatibility.TabUtilities') && PlacesUIUtils.TU_openContainerNodeInTabs) ?
+			{
+				let method = (TreeStyleTabUtils.getTreePref('compatibility.TabUtilities') && PlacesUIUtils.TU_openContainerNodeInTabs) ?
 							'TU_openContainerNodeInTabs' :
-							'openContainerNodeInTabs') {
+							'openContainerNodeInTabs';
 				TreeStyleTabUtils.doPatching(PlacesUIUtils[method], 'PlacesUIUtils.'+method, function(aName, aSource) {
 					var patched = eval(aName+' = '+aSource.replace(
 						/(this\._openTabset\([^\)]+)(\))/,
-						'let (w = "_getTopBrowserWin" in this ?\n' +
+						'{\n' +
+						'  let w = "_getTopBrowserWin" in this ?\n' +
 						'      this._getTopBrowserWin() :\n' +
 						'    "_getCurrentActiveWin" in this ?\n' +
 						'      this._getCurrentActiveWin() :\n' +
-						'      window) {\n' +
+						'      window;\n' +
 						'  let nodes = w.TreeStyleTabBookmarksService.getItemIdsForContainerNode(aNode);\n' +
 						'  for (let i in nodes) {\n' +
 						'    urlsToOpen[i].id = nodes[i];\n' +
@@ -299,19 +302,21 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabService, {
 				}, 'TreeStyleTab');
 			}
 
-			let (method = (TreeStyleTabUtils.getTreePref('compatibility.TabUtilities') && PlacesUIUtils.TU_openURINodesInTabs) ?
+			{
+				let method = (TreeStyleTabUtils.getTreePref('compatibility.TabUtilities') && PlacesUIUtils.TU_openURINodesInTabs) ?
 							'TU_openURINodesInTabs' :
-							'openURINodesInTabs') {
+							'openURINodesInTabs';
 				TreeStyleTabUtils.doPatching(PlacesUIUtils[method], 'PlacesUIUtils.'+method, function(aName, aSource) {
 					var patched = eval(aName+' = '+aSource.replace(
 						'{',
 						'{\n' +
 						'  var TSTBS, TSTUtils;\n' +
-						'  let (w = "_getTopBrowserWin" in this ?\n' +
+						'  {\n'+
+						'    let w = "_getTopBrowserWin" in this ?\n' +
 						'        this._getTopBrowserWin() :\n' +
 						'      "_getCurrentActiveWin" in this ?\n' +
 						'        this._getCurrentActiveWin() :\n' +
-						'        window) {\n' +
+						'        window;\n' +
 						'    TSTBS = w.TreeStyleTabBookmarksService;\n' +
 						'    TSTUtils = w.TreeStyleTabUtils;\n' +
 						'    PlacesUtils = w.PlacesUtils;\n' +

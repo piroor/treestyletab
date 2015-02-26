@@ -535,7 +535,8 @@ var TreeStyleTabWindowHelper = {
 		 * The default implementation fails to scroll to tab if it is expanding.
 		 * So we have to inject codes to override its effect.
 		 */
-		let (scrollbox = aTabBrowser.treeStyleTab.scrollBox) {
+		{
+			let scrollbox = aTabBrowser.treeStyleTab.scrollBox;
 			TreeStyleTabUtils.doPatching(scrollbox.ensureElementIsVisible, 'scrollbox.ensureElementIsVisible', function(aName, aSource) {
 				return eval(aName+' = '+aSource.replace(
 					'{',
@@ -552,7 +553,8 @@ var TreeStyleTabWindowHelper = {
 			}, /treeStyleTab|ensureTabIsVisible/); // if there is a string "ensureTabIsVisible", it is replaced by Tab Mix Plus!
 		}
 
-		let (popup = document.getElementById('alltabs-popup')) {
+		{
+			let popup = document.getElementById('alltabs-popup');
 			TreeStyleTabUtils.doPatching(popup._updateTabsVisibilityStatus, 'popup._updateTabsVisibilityStatus', function(aName, aSource) {
 				return eval(aName+' = '+aSource.replace(
 					'{',
