@@ -143,7 +143,7 @@
 	<tooltip id="treestyletab-full-tree-tooltip"/>
 	<panel id="treestyletab-autohide-content-area-screen"
 		treestyletab-ignore-state="true"
-		onpopupshown="if ('setConsumeRollupEvent' in this.popupBoxObject) this.popupBoxObject.setConsumeRollupEvent(this.popupBoxObject.ROLLUP_NO_CONSUME);"
+		onpopupshown="if ('setConsumeRollupEvent' in this.popupBoxObject) this.popupBoxObject.setConsumeRollupEvent(this.popupBoxObject.ROLLUP_NO_CONSUME || PopupBoxObject.ROLLUP_NO_CONSUME);"
 		onclick="this.hidePopup();"
 		onDOMMouseScroll="this.hidePopup()"/>
 </popupset>
