@@ -1245,7 +1245,8 @@ catch(e) {
 		switch (aType)
 		{
 			case 'text/x-moz-place':
-				let (uri = JSON.parse(aData).uri) {
+				{
+					let uri = JSON.parse(aData).uri;
 					if (uri)
 						return uri;
 					else

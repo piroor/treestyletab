@@ -101,19 +101,22 @@ ContentBridge.prototype = inherit(TreeStyleTabConstants, {
 		switch (aMessage.json.command)
 		{
 			case this.COMMAND_REPORT_MOUSEDOWN:
-				let (fakeEvent = this.fixupEventCoordinates(aMessage.json.event)) {
+				{
+					let fakeEvent = this.fixupEventCoordinates(aMessage.json.event);
 					this.mTabBrowser.treeStyleTab.autoHide.onMouseDown(fakeEvent);
 				}
 				return;
 
 			case this.COMMAND_REPORT_MOUSEUP:
-				let (fakeEvent = this.fixupEventCoordinates(aMessage.json.event)) {
+				{
+					let fakeEvent = this.fixupEventCoordinates(aMessage.json.event);
 					this.mTabBrowser.treeStyleTab.autoHide.onMouseUp(fakeEvent);
 				}
 				return;
 
 			case this.COMMAND_REPORT_MOUSEMOVE:
-				let (fakeEvent = this.fixupEventCoordinates(aMessage.json.event)) {
+				{
+					let fakeEvent = this.fixupEventCoordinates(aMessage.json.event);
 					this.mTabBrowser.treeStyleTab.autoHide.handleMouseMove(fakeEvent);
 				}
 				return;

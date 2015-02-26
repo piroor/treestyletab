@@ -399,7 +399,8 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 			aSelf.fill(aTab, aExtraLabels);
 
 			var tooltip = aSelf.tabFullTooltip;
-			let (style = tooltip.style) {
+			{
+				let style = tooltip.style;
 				style.marginLeft = x+'px';
 				style.marginTop = y+'px';
 				style.maxWidth = style.minWidth = w+'px';

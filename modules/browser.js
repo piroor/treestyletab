@@ -1488,7 +1488,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		// for updateTabbarOverflow(), we should reset the "overflow" now.
 		b.mTabContainer.removeAttribute('overflow');
-		let (container = this.document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-container')) {
+		{
+			let container = this.document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-container');
 			if (container)
 				container.removeAttribute('overflow');
 		}
@@ -2528,7 +2529,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				return;
 
 			case 'extensions.treestyletab.tabbar.autoShow.mousemove':
-				let (toggler = this.document.getAnonymousElementByAttribute(b, 'class', this.kTABBAR_TOGGLER)) {
+				{
+					let toggler = this.document.getAnonymousElementByAttribute(b, 'class', this.kTABBAR_TOGGLER);
 					if (toggler) {
 						if (value)
 							toggler.removeAttribute('hidden');
@@ -2734,7 +2736,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 					this._initTooltipManager();
 				if (!this._DNDObserversInitialized)
 					this._initDNDObservers();
-				let (tab = aEvent.target) {
+				{
+					let tab = aEvent.target;
 					if (tab.__treestyletab__twistyHoverTimer)
 						this.window.clearTimeout(tab.__treestyletab__twistyHoverTimer);
 					if (this.isEventFiredOnTwisty(aEvent)) {
@@ -2748,7 +2751,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				return;
 
 			case 'mouseout':
-				let (tab = aEvent.target) {
+				{
+					let tab = aEvent.target;
 					if (tab.__treestyletab__twistyHoverTimer) {
 						this.window.clearTimeout(tab.__treestyletab__twistyHoverTimer);
 						delete tab.__treestyletab__twistyHoverTimer;
@@ -6175,7 +6179,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var maxMargin;
 		var offsetAttr;
 		var collapseProp = 'margin-'+this.collapseTarget;
-		let (firstTab = this.getFirstNormalTab(this.mTabBrowser)) {
+		{
+			let firstTab = this.getFirstNormalTab(this.mTabBrowser);
 			if (this.isVertical) {
 				maxMargin = firstTab.boxObject.height;
 				offsetAttr = this.kY_OFFSET;

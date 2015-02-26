@@ -1749,7 +1749,8 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 				this.readyToOpenChildTabNow(aBaseTab);
 				break;
 			case this.kNEWTAB_OPEN_AS_SIBLING:
-				let (parentTab = this.getParentTab(aBaseTab)) {
+				{
+					let parentTab = this.getParentTab(aBaseTab);
 					if (parentTab)
 						this.readyToOpenChildTabNow(parentTab);
 				}
@@ -2494,7 +2495,8 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 					}
 				}
 				this.prefOverriding = true;
-				let (target = aPrefName.replace('.override', '')) {
+				{
+					let target = aPrefName.replace('.override', '');
 					let originalValue = prefs.getPref(target);
 					if (originalValue !== null && originalValue != value)
 						prefs.setPref(target+'.backup', originalValue);
