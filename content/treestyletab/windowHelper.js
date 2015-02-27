@@ -295,7 +295,23 @@ var TreeStyleTabWindowHelper = {
 			}, 'treeStyleTab');
 		}
 
-		if ('toggleSidebar' in window) {
+		if ('SidebarUI' in window) { // for Firefox 39 or later
+			SidebarUI.__treestyletab__show = SidebarUI.show;
+			SidebarUI.show = function() {
+				return this.__treestyletab__show.apply(this, arguments)
+						.then(function(aResult) {
+							gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR);
+							return aResult;
+						});
+			};
+			SidebarUI.__treestyletab__hide = SidebarUI.hide;
+			SidebarUI.hide = function() {
+				var retVal = this.__treestyletab__hide.apply(this, arguments);
+				gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR);
+				return retVal;
+			};
+		}
+		else if ('toggleSidebar' in window) { // for Firefox 38 or older
 			TreeStyleTabUtils.doPatching(window.toggleSidebar, 'window.toggleSidebar', function(aName, aSource) {
 				return eval(aName+' = '+aSource.replace(
 					'{',
