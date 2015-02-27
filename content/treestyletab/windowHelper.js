@@ -295,12 +295,14 @@ var TreeStyleTabWindowHelper = {
 			}, 'treeStyleTab');
 		}
 
-		TreeStyleTabUtils.doPatching(window.toggleSidebar, 'window.toggleSidebar', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				'{',
-				'{ gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR);'
-			));
-		}, 'treeStyleTab');
+		if ('toggleSidebar' in window) {
+			TreeStyleTabUtils.doPatching(window.toggleSidebar, 'window.toggleSidebar', function(aName, aSource) {
+				return eval(aName+' = '+aSource.replace(
+					'{',
+					'{ gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR);'
+				));
+			}, 'treeStyleTab');
+		}
 	},
 	_splitFunctionNames : function TSTWH__splitFunctionNames(aString)
 	{
