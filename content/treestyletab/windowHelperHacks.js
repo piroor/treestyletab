@@ -352,6 +352,20 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 			dump(e+'\n');
 		}
 	}
+
+	// Duplicate in Tab Context Menu
+	// https://addons.mozilla.org/firefox/duplicate-in-tab-context-menu/
+	if (TreeStyleTabUtils.getTreePref('compatibility.DuplicateInTabContext') &&
+		'SchuzakJp' in window &&
+		'DuplicateInTabContext' in SchuzakJp &&
+		typeof SchuzakJp.DuplicateInTabContext.Duplicate == 'function') {
+		TreeStyleTabUtils.doPatching(SchuzakJp.DuplicateInTabContext.Duplicate, 'SchuzakJp.DuplicateInTabContext.Duplicate', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
+				'{',
+				'{ gBrowser.treeStyleTab.onBeforeTabDuplicate(oriTab); '
+			));
+		}, 'treeStyleTab');
+	}
 };
 
 TreeStyleTabWindowHelper.overrideExtensionsBeforeBrowserInit = function TSTWH_overrideExtensionsBeforeBrowserInit() {
