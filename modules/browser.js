@@ -483,16 +483,23 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	{
 		if (!this.windowService.preInitialized || !aTab)
 			return false;
+
 		if (aTab.getAttribute('pinned') == 'true')
 			return true;
+
 		var tabBox = this.getFutureBoxObject(aTab);
 		var barBox = this.scrollBox.boxObject;
-		return (
-			tabBox.screenX >= barBox.screenX &&
-			tabBox.screenX + tabBox.width <= barBox.screenX + barBox.width &&
-			tabBox.screenY >= barBox.screenY &&
-			tabBox.screenY + tabBox.height <= barBox.screenY + barBox.height
-		);
+
+		if (this.isVertical)
+			return (
+				tabBox.screenY >= barBox.screenY &&
+				tabBox.screenY + tabBox.height <= barBox.screenY + barBox.height
+			);
+		else
+			return (
+				tabBox.screenX >= barBox.screenX &&
+				tabBox.screenX + tabBox.width <= barBox.screenX + barBox.width
+			);
 	},
  
 	isMultiRow : function TSTBrowser_isMultiRow() 
