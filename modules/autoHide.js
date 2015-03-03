@@ -1425,9 +1425,11 @@ AutoHideWindow.prototype = inherit(AutoHideConstants, {
 				utils.getTreePref(toggleKey) :
 				AutoHideBrowser.prototype.kMODE_DISABLED ;
 
-		utils.setTreePref(key, mode);
-		b.setAttribute(AutoHideBrowser.prototype.kMODE+'-'+(w.fullScreen ? 'fullscreen' : 'normal' ), mode);
-		b.treeStyleTab.autoHide.updateMode();
+		this.treeStyleTab.setPrefForActiveWindow(function() {
+			utils.setTreePref(key, mode);
+			b.setAttribute(AutoHideBrowser.prototype.kMODE+'-'+(w.fullScreen ? 'fullscreen' : 'normal' ), mode);
+			b.treeStyleTab.autoHide.updateMode();
+		});
 	},
  
 	restoreLastState: function AHW_restoreLastState()
