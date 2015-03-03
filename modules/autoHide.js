@@ -224,7 +224,9 @@ AutoHideBrowser.prototype = inherit(TreeStyleTabConstants, {
  
 	start : function AHB_start(aReason) 
 	{
-		if (this.enabled) return;
+		if (this.enabled)
+			return;
+
 		this.enabled = true;
 		aReason = aReason || 0;
 
@@ -262,7 +264,9 @@ AutoHideBrowser.prototype = inherit(TreeStyleTabConstants, {
  
 	end : function AHB_end() 
 	{
-		if (!this.enabled) return;
+		if (!this.enabled)
+			return;
+
 		this.enabled = false;
 
 		var sv = this.treeStyleTab;
@@ -340,7 +344,8 @@ AutoHideBrowser.prototype = inherit(TreeStyleTabConstants, {
 	
 	startListenMouseMove : function AHB_startListenMouseMove() 
 	{
-		if (this.mouseMoveListening) return;
+		if (this.mouseMoveListening)
+			return;
 
 		this.screen.addEventListener('mousemove', this, true);
 		this.treeStyleTab.tabStripPlaceHolder.addEventListener('mousemove', this, true);
@@ -353,7 +358,8 @@ AutoHideBrowser.prototype = inherit(TreeStyleTabConstants, {
  
 	endListenMouseMove : function AHB_endListenMouseMove() 
 	{
-		if (!this.mouseMoveListening) return;
+		if (!this.mouseMoveListening)
+			return;
 
 		this.screen.removeEventListener('mousemove', this, true);
 		this.treeStyleTab.tabStripPlaceHolder.removeEventListener('mousemove', this, true);
@@ -631,7 +637,8 @@ AutoHideBrowser.prototype = inherit(TreeStyleTabConstants, {
  
 	updateMenuItem : function AHB_updateMenuItem(aNode) 
 	{
-		if (!aNode) return;
+		if (!aNode)
+			return;
 
 		if (this.mode != this.kMODE_DISABLED)
 			aNode.setAttribute('checked', true);
@@ -959,13 +966,15 @@ AutoHideBrowser.prototype = inherit(TreeStyleTabConstants, {
 		switch (aPrefName)
 		{
 			case 'extensions.treestyletab.tabbar.autoHide.mode':
-				if (!this.window.TreeStyleTabService.shouldApplyNewPref) return;
+				if (!this.window.TreeStyleTabService.shouldApplyNewPref)
+					return;
 				this.browser.setAttribute(this.kMODE+'-normal', value);
 				this.updateMode();
 				return;
 
 			case 'extensions.treestyletab.tabbar.autoHide.mode.fullscreen':
-				if (!this.window.TreeStyleTabService.shouldApplyNewPref) return;
+				if (!this.window.TreeStyleTabService.shouldApplyNewPref)
+					return;
 				this.browser.setAttribute(this.kMODE+'-fullscreen', value);
 				this.updateMode();
 				return;
@@ -997,7 +1006,8 @@ AutoHideBrowser.prototype = inherit(TreeStyleTabConstants, {
 				return this.contentAreaScreenEnabled = value;
 
 			case 'browser.fullscreen.autohide':
-				if (!this.window.fullScreen) return;
+				if (!this.window.fullScreen)
+					return;
 				this.end();
 				this.mode = value ?
 						this.getModeForFullScreen() :

@@ -4112,7 +4112,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			return;
 
 		var restoringChildren = aTab.getAttribute(this.kCHILDREN_RESTORING);
-		if (!restoringChildren) return;
+		if (!restoringChildren)
+			return;
 
 		var children = aTab.getAttribute(this.kCHILDREN);
 		if (restoringChildren != children) {
