@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2014
+ * Portions created by the Initial Developer are Copyright (C) 2010-2015
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -96,6 +96,11 @@ const TreeStyleTabConstants = Object.freeze({
 	kDROP_POSITION_UNKNOWN : 'unknown',
 	kTABBAR_MOVE_FORCE  : 'force',
 	kTABBAR_MOVE_NORMAL : 'normal',
+
+	kTABBAR_WIDTH          : 'treestyletab-tabbar-width',
+	kTABBAR_EXPANDED_WIDTH : 'treestyletab-tabbar-width',
+	kTABBAR_SHRUNKEN_WIDTH : 'treestyletab-tabbar-shrunken-width',
+	kTABBAR_HEIGHT         : 'treestyletab-tabbar-height',
 
 	kTAB_STRIP_ELEMENT  : 'treestyletab-tabstrip-element',
 

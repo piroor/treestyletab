@@ -966,25 +966,20 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			width += (pos == 'left' ? delta : -delta );
 			width = this.maxTabbarWidth(width, b);
 			if (expanded || b.treeStyleTab.autoHide.expanded) {
-				this.setPrefForActiveWindow(function() {
-					utils.setTreePref('tabbar.width', width);
-				});
+				b.treeStyleTab.tabbarWidth = width;
 				if (b.treeStyleTab.autoHide.mode == b.treeStyleTab.autoHide.kMODE_SHRINK &&
 					b.treeStyleTab.tabStripPlaceHolder)
-					b.treeStyleTab.tabStripPlaceHolder.setAttribute('width', utils.getTreePref('tabbar.shrunkenWidth'));
+					b.treeStyleTab.tabStripPlaceHolder.setAttribute('width', b.treeStyleTab.autoHide.shrunkenWidth);
 			}
 			else {
-				this.setPrefForActiveWindow(function() {
-					utils.setTreePref('tabbar.shrunkenWidth', width);
-				});
+				b.treeStyleTab.autoHide.shrunkenWidth = width;
 			}
 		}
 		else {
 			let delta = aEvent.screenY - this.tabbarResizeStartY;
 			height += (pos == 'top' ? delta : -delta );
-			this.setPrefForActiveWindow(function() {
-				utils.setTreePref('tabbar.height', this.maxTabbarHeight(height, b));
-			});
+			height = this.maxTabbarHeight(height, b);
+			b.treeStyleTab.tabbarHeight = height;
 		}
 		b.treeStyleTab.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_TABBAR_RESIZE);
 	},

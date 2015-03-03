@@ -205,8 +205,7 @@ AutoHideBrowser.prototype = inherit(AutoHideConstants, {
 
 			default:
 			case this.kMODE_SHRINK:
-				return utils.getTreePref('tabbar.width')
-						- utils.getTreePref('tabbar.shrunkenWidth');
+				return this.expandedWidth - this.shrunkenWidth;
 		}
 	},
 	get YOffset()
@@ -233,6 +232,54 @@ AutoHideBrowser.prototype = inherit(AutoHideConstants, {
 				this.mode != this.kMODE_DISABLED &&
 				this.expanded
 			) ? this.YOffset : 0 ;
+	},
+ 
+	get tabbarWidth()
+	{
+		return this.expanded ? this.expandedWidth : this.shrunkenWidth ;
+	},
+	set tabbarWidth(aValue)
+	{
+		if (this.expanded)
+			return this.expandedWidth = aValue;
+		else
+			return this.shrunkenWidth = aValue;
+	},
+	get expandedWidth()
+	{
+		var lastWidth = this.treeStyleTab.getWindowValue(this.kTABBAR_EXPANDED_WIDTH);
+		return lastWidth === '' ?
+				utils.getTreePref('tabbar.width') :
+				parseInt(lastWidth);
+	},
+	set expandedWidth(aValue)
+	{
+		this.treeStyleTab.setWindowValue(this.kTABBAR_EXPANDED_WIDTH, aValue);
+		this.treeStyleTab.setPrefForActiveWindow(function() {
+			utils.setTreePref('tabbar.width', aValue);
+		});
+		return aValue;
+	},
+	get shrunkenWidth()
+	{
+		var lastWidth = this.treeStyleTab.getWindowValue(this.kTABBAR_SHRUNKEN_WIDTH);
+		return lastWidth === '' ?
+				utils.getTreePref('tabbar.shrunkenWidth') :
+				parseInt(lastWidth);
+	},
+	set shrunkenWidth(aValue)
+	{
+		this.treeStyleTab.setWindowValue(this.kTABBAR_SHRUNKEN_WIDTH, aValue);
+		this.treeStyleTab.setPrefForActiveWindow(function() {
+			utils.setTreePref('tabbar.shrunkenWidth', aValue);
+		});
+		return aValue;
+	},
+
+	resetWidth : function AHB_resetWidth()
+	{
+		this.expandedWidth = utils.getTreePref('tabbar.width.default');
+		this.shrunkenWidth = utils.getTreePref('tabbar.shrunkenWidth.default');
 	},
  
 	get screen()
@@ -644,12 +691,13 @@ AutoHideBrowser.prototype = inherit(AutoHideConstants, {
   
 	setWidth : function AHB_setWidth(aWidth, aForceExpanded) 
 	{
+		aWidth = this.treeStyleTab.maxTabbarWidth(aWidth);
 		if (aForceExpanded ||
 			this.expanded ||
 			this.mode !=  this.kMODE_SHRINK)
-			utils.setTreePref('tabbar.width', this.treeStyleTab.maxTabbarWidth(aWidth));
+			this.expandedWidth = aWidth;
 		else
-			utils.setTreePref('tabbar.shrunkenWidth', this.treeStyleTab.maxTabbarWidth(aWidth));
+			this.shrunkenWidth = aWidth;
 	},
  
 	updateMenuItem : function AHB_updateMenuItem(aNode) 
@@ -681,15 +729,15 @@ AutoHideBrowser.prototype = inherit(AutoHideConstants, {
 	
 	get widthFromMode() 
 	{
-		return (this.shrunken) ?
-					utils.getTreePref('tabbar.shrunkenWidth') :
-					utils.getTreePref('tabbar.width') ;
+		return this.shrunken ?
+					this.shrunkenWidth :
+					this.expandedWidth ;
 	},
 	get placeHolderWidthFromMode()
 	{
 		return (this.mode == this.kMODE_SHRINK) ?
-					utils.getTreePref('tabbar.shrunkenWidth') :
-					utils.getTreePref('tabbar.width') ;
+					this.shrunkenWidth :
+					this.expandedWidth ;
 	},
   
 	get height() 
@@ -870,7 +918,7 @@ AutoHideBrowser.prototype = inherit(AutoHideConstants, {
 			default:
 			case this.kMODE_SHRINK:
 				if (pos == 'left' || pos == 'right') {
-					let width = sv.maxTabbarWidth(utils.getTreePref('tabbar.width'));
+					let width = sv.maxTabbarWidth(this.expandedWidth);
 					sv.updateFloatingTabbar(sv.kTABBAR_UPDATE_BY_AUTOHIDE);
 				}
 				break;
@@ -909,7 +957,7 @@ AutoHideBrowser.prototype = inherit(AutoHideConstants, {
 				sv.setTabbrowserAttribute(this.kAUTOHIDE, 'show');
 				sv.setTabbrowserAttribute(this.kSTATE, this.kSTATE_SHRUNKEN);
 				if (pos == 'left' || pos == 'right')
-					sv.setTabStripAttribute('width', utils.getTreePref('tabbar.shrunkenWidth'));
+					sv.setTabStripAttribute('width', this.shrunkenWidth);
 				sv.updateFloatingTabbar(sv.kTABBAR_UPDATE_BY_AUTOHIDE);
 				break;
 		}
