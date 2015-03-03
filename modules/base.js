@@ -2492,7 +2492,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 
 			case 'extensions.treestyletab.tabbar.width':
 			case 'extensions.treestyletab.tabbar.shrunkenWidth':
-				return this.updateTabWidthPrefs(aPrefName);
+				return this.correctMismatchedTabWidthPrefs(aPrefName);
 
 			case 'browser.tabs.insertRelatedAfterCurrent':
 			case 'extensions.stm.tabBarMultiRows': // Super Tab Mode
@@ -2555,31 +2555,47 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		}
 	},
 	
-	updateTabWidthPrefs : function TSTBase_updateTabWidthPrefs(aPrefName) 
+	correctMismatchedTabWidthPrefs : function TSTBase_correctMismatchedTabWidthPrefs(aPrefName) 
 	{
-		var expanded = utils.getTreePref('tabbar.width');
-		var shrunken = utils.getTreePref('tabbar.shrunkenWidth');
-		var originalExpanded = expanded;
-		var originalShrunken = shrunken;
-		if (aPrefName == 'extensions.treestyletab.tabbar.shrunkenWidth') {
-			if (expanded <= shrunken)
-				expanded = parseInt(shrunken / this.DEFAULT_SHRUNKEN_WIDTH_RATIO)
+		var newWidth = this.calculateCorrectExpandedAndShrunkenWidth({
+			expanded : utils.getTreePref('tabbar.width'),
+			shrunken : utils.getTreePref('tabbar.shrunkenWidth')
+		}, aPrefName.toLowerCase());
+		if (newWidth.corrected) {
+			utils.setTreePref('tabbar.width', newWidth.expanded);
+			utils.setTreePref('tabbar.shrunkenWidth', newWidth.shrunken);
+		}
+	},
+	calculateCorrectExpandedAndShrunkenWidth : function TSTBase_calculateCorrectExpandedAndShrunkenWidth(aSource, aModifiedTarget)
+	{
+		var size = {
+			expanded  : aSource.expanded,
+			shrunken  : aSource.shrunken,
+			corrected : false
+		};
+		var originalExpanded = size.expanded;
+		var originalShrunken = size.shrunken;
+		if (aModifiedTarget.indexOf('shrunken') > -1) {
+			if (size.expanded <= size.shrunken)
+				size.expanded = parseInt(size.shrunken / this.DEFAULT_SHRUNKEN_WIDTH_RATIO)
 			let w = this.browserWindow;
-			if (w && expanded > w.gBrowser.boxObject.width) {
-				expanded = w.gBrowser.boxObject.width * this.MAX_TABBAR_SIZE_RATIO;
-				if (expanded <= shrunken)
-					shrunken = parseInt(expanded * this.DEFAULT_SHRUNKEN_WIDTH_RATIO)
+			if (w && size.expanded > w.gBrowser.boxObject.width) {
+				size.expanded = w.gBrowser.boxObject.width * this.MAX_TABBAR_SIZE_RATIO;
+				if (size.expanded <= size.shrunken)
+					size.shrunken = parseInt(size.expanded * this.DEFAULT_SHRUNKEN_WIDTH_RATIO)
 			}
 		}
 		else {
-			if (expanded <= shrunken)
-				shrunken = parseInt(expanded * this.DEFAULT_SHRUNKEN_WIDTH_RATIO);
+			if (size.expanded <= size.shrunken)
+				size.shrunken = parseInt(size.expanded * this.DEFAULT_SHRUNKEN_WIDTH_RATIO);
 		}
-		if (expanded != originalExpanded ||
-			shrunken != originalShrunken) {
-			utils.setTreePref('tabbar.width', Math.max(0, expanded));
-			utils.setTreePref('tabbar.shrunkenWidth', Math.max(0, shrunken));
-		}
+		size.expanded = Math.max(0, size.expanded);
+		size.shrunken = Math.max(0, size.shrunken);
+		size.corrected = (
+			size.expanded != originalExpanded ||
+			size.shrunken != originalShrunken
+		);
+		return size;
 	},
 
 	get shouldApplyNewPref()

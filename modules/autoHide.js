@@ -254,6 +254,14 @@ AutoHideBrowser.prototype = inherit(AutoHideConstants, {
 	},
 	set expandedWidth(aValue)
 	{
+		var newWidth = this.treeStyleTab.calculateCorrectExpandedAndShrunkenWidth({
+			expanded : aValue,
+			shrunken : this.shrunkenWidth
+		}, 'expanded');
+		if (newWidth.corrected) {
+			this.shrunkenWidth = newWidth.shrunken;
+			aValue = newWidth.expanded;
+		}
 		this.treeStyleTab.setWindowValue(this.kTABBAR_EXPANDED_WIDTH, aValue);
 		this.treeStyleTab.setPrefForActiveWindow(function() {
 			utils.setTreePref('tabbar.width', aValue);
@@ -269,6 +277,14 @@ AutoHideBrowser.prototype = inherit(AutoHideConstants, {
 	},
 	set shrunkenWidth(aValue)
 	{
+		var newWidth = this.treeStyleTab.calculateCorrectExpandedAndShrunkenWidth({
+			expanded : this.expandedWidth,
+			shrunken : aValue
+		}, 'shrunken');
+		if (newWidth.corrected) {
+			this.expandedWidth = newWidth.expanded;
+			aValue = newWidth.shrunken;
+		}
 		this.treeStyleTab.setWindowValue(this.kTABBAR_SHRUNKEN_WIDTH, aValue);
 		this.treeStyleTab.setPrefForActiveWindow(function() {
 			utils.setTreePref('tabbar.shrunkenWidth', aValue);
