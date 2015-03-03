@@ -157,15 +157,18 @@ AutoHideBrowser.prototype = inherit(AutoHideConstants, {
 		return this.state == this.kSTATE_HIDDEN;
 	},
 	
-	updateMode : function AHB_updateMode() 
+	updateMode : function AHB_updateMode(aNewMode) 
 	{
+		if (aNewMode === undefined)
+			aNewMode = this.mode;
+
+		this.treeStyleTab.setWindowValue(this.kMODE, aNewMode);
+
 		this.end();
 		// update internal property after the appearance of the tab bar is updated.
 		var w = this.window;
 		w.setTimeout(function(aSelf) {
-			aSelf.mode = (w.fullScreen && prefs.getPref('browser.fullscreen.autohide')) ?
-					aSelf.getModeForFullScreen() :
-					aSelf.getModeForNormal() ;
+			aSelf.mode = aNewMode;
 			if (aSelf.mode != aSelf.kMODE_DISABLED)
 				aSelf.start();
 		}, 0, this);
@@ -279,11 +282,9 @@ AutoHideBrowser.prototype = inherit(AutoHideConstants, {
 		this.showHideInternal(this.kSHOWHIDE_BY_START | aReason);
 
 		b.treeStyleTab.fixTooNarrowTabbar();
-
-		sv.setWindowValue(this.kMODE, this.mode);
 	},
  
-	end : function AHB_end(aIsTemporary) 
+	end : function AHB_end() 
 	{
 		if (!this.enabled)
 			return;
@@ -321,9 +322,6 @@ AutoHideBrowser.prototype = inherit(AutoHideConstants, {
 
 		if (sv.isVertical)
 			sv.setTabStripAttribute('width', this.widthFromMode);
-
-		if (!aIsTemporary)
-			sv.setWindowValue(this.kMODE, this.kMODE_DISABLED);
 	},
 
 	notifyStatusToAllTabs : function AHB_notifyStatusToAllTabs()
@@ -988,14 +986,14 @@ AutoHideBrowser.prototype = inherit(AutoHideConstants, {
 				if (!this.window.TreeStyleTabService.shouldApplyNewPref)
 					return;
 				this.browser.setAttribute(this.kMODE+'-normal', value);
-				this.updateMode();
+				this.updateMode(value);
 				return;
 
 			case 'extensions.treestyletab.tabbar.autoHide.mode.fullscreen':
 				if (!this.window.TreeStyleTabService.shouldApplyNewPref)
 					return;
 				this.browser.setAttribute(this.kMODE+'-fullscreen', value);
-				this.updateMode();
+				this.updateMode(value);
 				return;
 
 			case 'extensions.treestyletab.tabbar.autoShow.mousemove':
@@ -1328,7 +1326,7 @@ AutoHideBrowser.prototype = inherit(AutoHideConstants, {
  
 	destroy : function AHB_destroy() 
 	{
-		this.end(true);
+		this.end();
 		prefs.removePrefListener(this);
 
 		var sv = this.treeStyleTab;
@@ -1428,7 +1426,7 @@ AutoHideWindow.prototype = inherit(AutoHideConstants, {
 		this.treeStyleTab.setPrefForActiveWindow(function() {
 			utils.setTreePref(key, mode);
 			b.setAttribute(AutoHideBrowser.prototype.kMODE+'-'+(w.fullScreen ? 'fullscreen' : 'normal' ), mode);
-			b.treeStyleTab.autoHide.updateMode();
+			b.treeStyleTab.autoHide.updateMode(mode);
 		});
 	},
  
