@@ -59,12 +59,7 @@ XPCOMUtils.defineLazyGetter(this, 'prefs', function() {
 });
 
 
-function AutoHideBrowser(aTabBrowser) 
-{
-	this.init(aTabBrowser);
-}
-AutoHideBrowser.prototype = inherit(TreeStyleTabConstants, {
-	
+const AutoHideConstants = Object.freeze(inherit(TreeStyleTabConstants, {
 	kMODE : 'treestyletab-tabbar-autohide-mode', 
 	kMODE_DISABLED : 0,
 	kMODE_HIDE     : 1,
@@ -88,7 +83,26 @@ AutoHideBrowser.prototype = inherit(TreeStyleTabConstants, {
 	kSHOWHIDE_BY_RESIZE : 1 << 6,
 	kSHOWHIDE_BY_API    : 1 << 8,
 	kHIDDEN_BY_CLICK    : 1 << 7,
- 
+
+	CLOSE_BUTTONS_ONLY_ON_CURRENT_TAB : 0,
+	CLOSE_BUTTONS_ON_ALL_TABS         : 1,
+	CLOSE_BUTTONS_DISABLED            : 2,
+	CLOSE_BUTTONS_ON_TABBAR           : 3,
+
+	MOUSE_POSITION_UNKNOWN : 0,
+	MOUSE_POSITION_OUTSIDE : (1 << 0),
+	MOUSE_POSITION_INSIDE  : (1 << 1),
+	MOUSE_POSITION_NEAR    : (1 << 2),
+	MOUSE_POSITION_SENSITIVE : (1 << 1) | (1 << 2)
+}));
+
+
+function AutoHideBrowser(aTabBrowser) 
+{
+	this.init(aTabBrowser);
+}
+AutoHideBrowser.prototype = inherit(AutoHideConstants, {
+	
 	get mode() /* PUBLIC API */ 
 	{
 		var mode = this.browser.getAttribute(this.kMODE);
@@ -153,10 +167,6 @@ AutoHideBrowser.prototype = inherit(TreeStyleTabConstants, {
 	contentAreaScreenEnabled : true,
 
 	closeButtonsMode : -1,
-	CLOSE_BUTTONS_ONLY_ON_CURRENT_TAB : 0,
-	CLOSE_BUTTONS_ON_ALL_TABS         : 1,
-	CLOSE_BUTTONS_DISABLED            : 2,
-	CLOSE_BUTTONS_ON_TABBAR           : 3,
  
 	get XOffset() 
 	{
@@ -514,11 +524,6 @@ AutoHideBrowser.prototype = inherit(TreeStyleTabConstants, {
 		};
 		return box;
 	},
-	MOUSE_POSITION_UNKNOWN : 0,
-	MOUSE_POSITION_OUTSIDE : (1 << 0),
-	MOUSE_POSITION_INSIDE  : (1 << 1),
-	MOUSE_POSITION_NEAR    : (1 << 2),
-	MOUSE_POSITION_SENSITIVE : (1 << 1) | (1 << 2),
 	getNearestClickableBox : function AHB_getNearestClickableBox(aCoordinates)
 	{
 		var sv = this.treeStyleTab;
@@ -1357,7 +1362,7 @@ function AutoHideWindow(aWindow)
 {
 	this.init(aWindow);
 }
-AutoHideWindow.prototype = {
+AutoHideWindow.prototype = inherit(AutoHideConstants, {
 	get browser()
 	{
 		return this.treeStyleTab.browser;
@@ -1468,5 +1473,5 @@ AutoHideWindow.prototype = {
 		delete this.window;
 	}
  
-}; 
+}); 
   

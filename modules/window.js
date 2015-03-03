@@ -289,7 +289,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 				utils.getTreePref('tabbar.autoHide.mode.fullscreen')
 			);
 
-		return utils.getTreePref('tabbar.autoHide.mode') != this.autoHide.kMODE_DISABLED;
+		return utils.getTreePref('tabbar.autoHide.mode') != AutoHideWindow.prototype.kMODE_DISABLED;
 	},
  
 	get autoHideWindow() 
