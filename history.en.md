@@ -1,6 +1,15 @@
 # History
 
  - master/HEAD
+   * Width of the tab bar, position of the tab bar, and status of the "auto hide" feature are saved and restored for each window.
+   * Better compatibility with [Duplicate in Tab Context Menu addon](https://addons.mozilla.org/firefox/duplicate-in-tab-context-menu/).
+   * Better compatibility with ColorfulTabs. Annoyingly horizontal scroll of the tab bar (happend by clicking on any tab) has been solved.
+   * Isolated from obsolete `String.prototype.quote()`.
+   * Isolated from deprecated JavaScript 1.7's let blocks.
+   * Isolated from obsolete nsIPopupBoxObject interface on Firefox 36 and later.
+   * Update appearance of the tab bar correctly, after the sidebar is shown/hidden at Firefxo 39 and later.
+   * Reset z-index of vertical tabs always to prevent tabs are shown above other browser elements.
+   * Open child tabs from links correctly on Firefox 36 and later.
  - 0.15.2014120101
    * Open clicked link as a new child tab correctly, from links with `target="_blank"` in e10s mode.
      (See also [the related bug on the bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=1098688))

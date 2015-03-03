@@ -1,6 +1,15 @@
 # 更新履歴
 
  - master/HEAD
+   * タブバーの幅、位置、「自動で隠す」の状態をウィンドウごとに保存するようにした
+   * [Duplicate in Tab Context Menu addon](https://addons.mozilla.org/firefox/duplicate-in-tab-context-menu/)との互換性を向上
+   * ColorfulTabsとの互換性を向上（タブをクリックした時に必ずタブバーがスクロールしてしまう不具合を修正）
+   * `String.prototype.quote()`を使わないようにした
+   * JavaScript 1.7のletブロックを使わないようにした
+   * Firefox 36以降で廃止されたnsIPopupBoxObjectインターフェースを使わないようにした
+   * Firefox 39以降で、サイドバーの表示状態が変わったあとにタブバーの表示位置を更新するようにした
+   * 他のブラウザ用その上に被さらないように、縦置きタブバーにおけるタブのz-indexをリセットするようにした
+   * Firefox 36以降においてリンクから子タブを開く操作が正しく動作するように修正
  - 0.15.2014120101
    * マルチプロセスモード（E10S）において、`target="_blank"`の指定があるリンクを子タブとして正しく開けるようにした
      （[bugzilla.mozilla.orgの関連バグ](https://bugzilla.mozilla.org/show_bug.cgi?id=1098688)）
