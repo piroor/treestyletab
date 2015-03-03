@@ -1435,6 +1435,9 @@ AutoHideWindow.prototype = inherit(AutoHideConstants, {
 		var mode = this.treeStyleTab.isFullscreenAutoHide ?
 					utils.getTreePref('tabbar.autoHide.mode.fullscreen') :
 					this.lastMode;
+		if (mode == this.mode)
+			return;
+
 		this.mode = mode;
 		if (mode != this.kMODE_DISABLED)
 			this.updateKeyListeners(this.window);
