@@ -1346,18 +1346,18 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		this._startListenTabbarEvents();
 		this.window.TreeStyleTabWindowHelper.initTabbarMethods(b);
 
-		if (!aIsTemporaryChange) {
-			let positionName = this.normalizeTabbarPosition(aNewPosition);
-			this.setWindowValue(this.kTABBAR_POSITION, positionName);
-			this.setPrefForActiveWindow(function() {
-				utils.setTreePref('tabbar.position', positionName);
-			});
-		}
-
 		var pos = aNewPosition || this.getPositionFlag(this.position);
 		if (b.getAttribute('id') != 'content' &&
 			!utils.getTreePref('tabbar.position.subbrowser.enabled')) {
 			pos = this.kTABBAR_TOP;
+		}
+
+		if (!aIsTemporaryChange) {
+			let positionName = this.normalizeTabbarPosition(pos);
+			this.setWindowValue(this.kTABBAR_POSITION, positionName);
+			this.setPrefForActiveWindow(function() {
+				utils.setTreePref('tabbar.position', positionName);
+			});
 		}
 
 		aOldPosition = aOldPosition || pos;
