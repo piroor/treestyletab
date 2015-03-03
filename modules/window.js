@@ -419,8 +419,9 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		this.processRestoredTabs();
 		this.updateTabsOnTop();
 
-		// Init autohide service only if it have to be activated.
-		this.autoHideWindow.restoreLastState();
+		w.setTimeout(function(aSelf) {
+			aSelf.autoHideWindow.restoreLastState();
+		}, 0, this);
 
 		this.onPrefChange('extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut');
 
