@@ -260,6 +260,8 @@ AutoHideBrowser.prototype = inherit(TreeStyleTabConstants, {
 		this.showHideInternal(this.kSHOWHIDE_BY_START | aReason);
 
 		b.treeStyleTab.fixTooNarrowTabbar();
+
+		sv.setWindowValue(this.kAUTOHIDE, true);
 	},
  
 	end : function AHB_end() 
@@ -300,6 +302,9 @@ AutoHideBrowser.prototype = inherit(TreeStyleTabConstants, {
 
 		if (sv.isVertical)
 			sv.setTabStripAttribute('width', this.widthFromMode);
+
+		if (!this.destroying)
+			sv.setWindowValue(this.kAUTOHIDE, false);
 	},
 
 	notifyStatusToAllTabs : function AHB_notifyStatusToAllTabs()
@@ -1309,6 +1314,8 @@ AutoHideBrowser.prototype = inherit(TreeStyleTabConstants, {
  
 	destroy : function AHB_destroy() 
 	{
+		this.destroying = true;
+
 		this.end();
 		prefs.removePrefListener(this);
 
