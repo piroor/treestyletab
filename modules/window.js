@@ -281,15 +281,13 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 	kSEARCH_RESULT_ATTACH_IF_SELECTED : 1,
 	kSEARCH_RESULT_ATTACH_ALWAYS      : 2,
  
-	get isAutoHide() 
+	get isFullscreenAutoHide()
 	{
-		if (this.window.fullScreen)
-			return Boolean(
-				prefs.getPref('browser.fullscreen.autohide') &&
-				utils.getTreePref('tabbar.autoHide.mode.fullscreen')
-			);
-
-		return utils.getTreePref('tabbar.autoHide.mode') != AutoHideWindow.prototype.kMODE_DISABLED;
+		return Boolean(
+			this.window.fullScreen &&
+			prefs.getPref('browser.fullscreen.autohide') &&
+			utils.getTreePref('tabbar.autoHide.mode.fullscreen') != AutoHideWindow.prototype.kMODE_DISABLED
+		);
 	},
  
 	get autoHideWindow() 
@@ -422,8 +420,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		this.updateTabsOnTop();
 
 		// Init autohide service only if it have to be activated.
-		if (this.isAutoHide)
-			this.onPrefChange('extensions.treestyletab.tabbar.autoHide.mode');
+		this.autoHideWindow.restoreLastState();
 
 		this.onPrefChange('extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut');
 

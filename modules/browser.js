@@ -788,10 +788,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		//   this.panelDNDObserver;
 		this._readyToInitDNDObservers();
 
-		// Init autohide service only if it have to be activated.
-		if (this.isAutoHide)
-			this.autoHide;
-
 		this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_INITIALIZE);
 		this.fixTooNarrowTabbar();
 
