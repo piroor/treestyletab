@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2014
+ * Portions created by the Initial Developer are Copyright (C) 2010-2015
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -1412,12 +1412,14 @@ AutoHideWindow.prototype = inherit(AutoHideConstants, {
 		});
 	},
  
-	restoreLastState: function AHW_restoreLastState()
+	restoreLastMode : function AHW_restoreLastMode()
 	{
 		var mode = this.treeStyleTab.isFullscreenAutoHide ?
 					utils.getTreePref('tabbar.autoHide.mode.fullscreen') :
 					this.lastMode;
 
+dump('\n\n\nrestoreLastMode\n\n');
+dump(mode +' <=> '+this.mode+'\n\n\n');
 		if (mode == this.mode)
 			return;
 
@@ -1481,14 +1483,26 @@ AutoHideWindow.prototype = inherit(AutoHideConstants, {
 		this.document     = aWindow.document;
 		this.treeStyleTab = aWindow.TreeStyleTabService;
 		prefs.addPrefListener(this);
+		aWindow.addEventListener('SSWindowStateReady', this, false);
 	},
  
 	destroy : function AHW_destroy() 
 	{
+		this.window.removeEventListener('SSWindowStateReady', this, false);
 		prefs.removePrefListener(this);
 		delete this.treeStyleTab;
 		delete this.document;
 		delete this.window;
+	},
+ 
+	handleEvent : function AHW_handleEvent(aEvent) 
+	{
+		switch (aEvent.type)
+		{
+			case 'SSWindowStateReady':
+				this.restoreLastMode();
+				return;
+		}
 	},
  
 	domains : [ 

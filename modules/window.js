@@ -419,9 +419,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		this.processRestoredTabs();
 		this.updateTabsOnTop();
 
-		w.setTimeout(function(aSelf) {
-			aSelf.autoHideWindow.restoreLastState();
-		}, 0, this);
+		this.autoHideWindow; // initialize
 
 		this.onPrefChange('extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut');
 
