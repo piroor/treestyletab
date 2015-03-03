@@ -283,12 +283,13 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
  
 	get isAutoHide() 
 	{
-		return this.window.fullScreen ?
-				(
-					prefs.getPref('browser.fullscreen.autohide') &&
-					utils.getTreePref('tabbar.autoHide.mode.fullscreen')
-				) :
-				utils.getTreePref('tabbar.autoHide.mode');
+		if (this.window.fullScreen)
+			return Boolean(
+				prefs.getPref('browser.fullscreen.autohide') &&
+				utils.getTreePref('tabbar.autoHide.mode.fullscreen')
+			);
+
+		return utils.getTreePref('tabbar.autoHide.mode') != this.autoHide.kMODE_DISABLED;
 	},
  
 	get autoHideWindow() 
