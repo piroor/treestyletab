@@ -1369,8 +1369,7 @@ AutoHideWindow.prototype = {
 	{
 		var mode = this.getMode();
 		if (mode == AutoHideBrowser.prototype.kMODE_SHRINK &&
-			this.treeStyleTab.position != 'left' &&
-			this.treeStyleTab.position != 'right')
+			!this.treeStyleTab.isVertical)
 			return AutoHideBrowser.prototype.kMODE_HIDE;
 		return mode;
 	},
