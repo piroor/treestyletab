@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2012-2014
+ * Portions created by the Initial Developer are Copyright (C) 2012-2015
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -65,6 +65,9 @@ XPCOMUtils.defineLazyModuleGetter(this, 'AutoHideWindow', 'resource://treestylet
 XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabThemeManager', 'resource://treestyletab-modules/themeManager.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'FullscreenObserver', 'resource://treestyletab-modules/fullscreenObserver.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'BrowserUIShowHideObserver', 'resource://treestyletab-modules/browserUIShowHideObserver.js');
+
+XPCOMUtils.defineLazyServiceGetter(this, 'SessionStore',
+  '@mozilla.org/browser/sessionstore;1', 'nsISessionStore');
 
 function TreeStyleTabWindow(aWindow)
 {
@@ -302,6 +305,43 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			this._themeManager = new TreeStyleTabThemeManager(this.window);
 		}
 		return this._themeManager;
+	},
+ 
+	getWindowValue : function TSTWindow_getWindowValue(aKey) 
+	{
+		var value = '';
+		try {
+			value = SessionStore.getWindowValue(this.window, aKey);
+		}
+		catch(e) {
+		}
+
+		return value;
+	},
+ 
+	setWindowValue : function TSTWindow_setWindowValue(aKey, aValue) 
+	{
+		if (!aValue)
+			return this.deleteWindowValue(this.window, aKey);
+
+		try {
+			SessionStore.setWindowValue(this.window, aKey, String(aValue));
+		}
+		catch(e) {
+		}
+
+		return aValue;
+	},
+ 
+	deleteWindowValue : function TSTWindow_deleteWindowValue(aKey) 
+	{
+		aTab.removeAttribute(aKey);
+		try {
+			SessionStore.setWindowValue(this.window, aKey, '');
+			SessionStore.deleteWindowValue(this.window, aKey);
+		}
+		catch(e) {
+		}
 	},
   
 /* Initializing */ 
