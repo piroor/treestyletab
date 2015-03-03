@@ -298,8 +298,48 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		return this.fixed;
 	},
  
+	set temporaryPosition(aValue)
+	{
+		var position = this.normalizeTabbarPosition(aValue);
+		if (position == this.position)
+			return position;
+
+		this._temporaryPosition = aValue;
+
+		if ('UndoTabService' in this.window && this.window.UndoTabService.isUndoable()) {
+			var current = this.position;
+			var self = this;
+			this.window.UndoTabService.doOperation(
+				function() {
+					self._changeTabbarPosition(position, true);
+				},
+				{
+					label  : utils.treeBundle.getString('undo_changeTabbarPosition_label'),
+					name   : 'treestyletab-changeTabbarPosition-private',
+					data   : {
+						oldPosition : current,
+						newPosition : position,
+						target      : self.mTabBrowser.id
+					}
+				}
+			);
+		}
+		else {
+			this._changeTabbarPosition(position, true);
+		}
+		return position;
+	},
+	_temporaryPosition : null,
+ 
 	get position() /* PUBLIC API */ 
 	{
+		if (this._temporaryPosition)
+			return this._temporaryPosition;
+
+		var lastPosition = this.getWindowValue(this.kTABBAR_POSITION);
+		if (lastPosition !== '')
+			return lastPosition;
+
 		return (
 			// Don't touch to the <tabbrowser/> element before it is initialized by XBL constructor.
 			(this.windowService.preInitialized && this.browser.getAttribute(this.kTABBAR_POSITION)) ||
@@ -308,10 +348,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	},
 	set position(aValue)
 	{
-		var position = String(aValue).toLowerCase();
-		if (!position || !/^(top|bottom|left|right)$/.test(position))
-			position = 'top';
+		delete this._temporaryPosition;
 
+		var position = this.normalizeTabbarPosition(aValue);
 		if (position == this.position)
 			return position;
 
@@ -338,7 +377,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 		return position;
 	},
-	_changeTabbarPosition : function TSTBrowser_changeTabbarPosition(aNewPosition)
+	_changeTabbarPosition : function TSTBrowser_changeTabbarPosition(aNewPosition, aIsTemporaryChange)
 	{
 		if (this.timers['_changeTabbarPosition'])
 			clearTimeout(this.timers['_changeTabbarPosition']);
@@ -346,7 +385,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var oldPosition = this.position;
 		this.fireTabbarPositionEvent(true, oldPosition, aNewPosition);
 
-		this.initTabbar(aNewPosition, oldPosition);
+		this.initTabbar(aNewPosition, oldPosition, aIsTemporaryChange);
 		this.reinitAllTabs();
 
 		this.timers['_changeTabbarPosition'] = setTimeout((function() {
@@ -784,7 +823,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			b.style.backgroundColor = '';
 		}
 
-		this.initTabbar(null, this.kTABBAR_TOP);
+		this.initTabbar(null, this.kTABBAR_TOP, true);
 
 		w.addEventListener('resize', this, true);
 		w.addEventListener('beforecustomization', this, true);
@@ -1294,7 +1333,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}).bind(this), 0);
 	},
   
-	initTabbar : function TSTBrowser_initTabbar(aNewPosition, aOldPosition) 
+	initTabbar : function TSTBrowser_initTabbar(aNewPosition, aOldPosition, aIsTemporaryChange) 
 	{
 		var d = this.document;
 		var b = this.mTabBrowser;
@@ -1306,6 +1345,14 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		this._startListenTabbarEvents();
 		this.window.TreeStyleTabWindowHelper.initTabbarMethods(b);
+
+		if (!aIsTemporaryChange) {
+			let positionName = this.normalizeTabbarPosition(aNewPosition);
+			this.setWindowValue(this.kTABBAR_POSITION, positionName);
+			this.setPrefForActiveWindow(function() {
+				utils.setTreePref('tabbar.position', positionName);
+			});
+		}
 
 		var pos = aNewPosition || this.getPositionFlag(this.position);
 		if (b.getAttribute('id') != 'content' &&
@@ -2294,7 +2341,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			if (prefs[i] !== void(0) && utils.getTreePref(i) != prefs[i])
 				utils.setTreePref(i, prefs[i]);
 		}
-		this.position = this.position;
 	},
    
 /* toolbar customization */ 
@@ -2313,7 +2359,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				this.window,
 				100,
 				function() {
-					self.position = 'top';
+					self.temporaryPosition = 'top';
 				}
 			);
 		}

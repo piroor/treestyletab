@@ -107,13 +107,20 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 	},
 	set position(aValue)
 	{
+		var setPosition = (function() {
+			this.setPrefForActiveWindow((function() {
+				if (this.preInitialized && this.browser.treeStyleTab)
+					this.browser.treeStyleTab.position = aValue;
+				else
+					this.base.position = aValue;
+			}).bind(this));
+		}).bind(this);
+
 		if ('UndoTabService' in this.window && this.window.UndoTabService.isUndoable()) {
-			var current = this.base.position;
+			var current = this.position;
 			var self = this;
 			this.window.UndoTabService.doOperation(
-				function() {
-					self.base.position = aValue;
-				},
+				setPosition,
 				{
 					label  : utils.treeBundle.getString('undo_changeTabbarPosition_label'),
 					name   : 'treestyletab-changeTabbarPosition',
@@ -125,7 +132,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			);
 		}
 		else {
-			this.base.position = aValue;
+			setPosition();
 		}
 		return aValue;
 	},

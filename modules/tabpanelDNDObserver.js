@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2013
+ * Portions created by the Initial Developer are Copyright (C) 2010-2015
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -129,9 +129,7 @@ TabpanelDNDObserver.prototype = {
 				let orient = (position == 'left' || position == 'right') ? 'vertical' : 'horizontal' ;
 				utils.setTreePref('tabbar.fixed.'+orient, false);
 			}
-			sv.setPrefForActiveWindow(function() {
-				sv.position = sv.base.position = position;
-			});
+			sv.position = position;
 		}
 
 		aEvent.preventDefault();

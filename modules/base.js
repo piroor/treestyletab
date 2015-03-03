@@ -2415,10 +2415,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	},
 	set position(aValue)
 	{
-		var position = String(aValue).toLowerCase();
-		if (!position || !/^(top|bottom|left|right)$/.test(position))
-			position = 'top';
-
+		var position = this.normalizeTabbarPosition(aValue);
 		if (position != utils.getTreePref('tabbar.position'))
 			utils.setTreePref('tabbar.position', position);
 
@@ -2431,6 +2428,24 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	set currentTabbarPosition(aValue)
 	{
 		return this.position = aValue;
+	},
+	normalizeTabbarPosition : function TSTBase_normalizeTabbarPosition(aPosition)
+	{
+		switch (aPosition)
+		{
+			case this.kTABBAR_TOP:    return 'top';
+			case this.kTABBAR_RIGHT:  return 'right';
+			case this.kTABBAR_BOTTOM: return 'bottom';
+			case this.kTABBAR_LEFT:   return 'left';
+			default:
+				break;
+		}
+
+		var position = String(aPosition).toLowerCase();
+		if (!position || !/^(top|bottom|left|right)$/.test(position))
+			position = 'top';
+
+		return position;
 	},
  
 	getPositionFlag : function TSTBase_getPositionFlag(aPosition) 
