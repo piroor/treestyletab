@@ -1782,22 +1782,12 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		var value = prefs.getPref(aPrefName);
 		switch (aPrefName)
 		{
-			case 'extensions.treestyletab.tabbar.autoHide.mode':
-				// don't set on this time, because appearance of all tabbrowsers are not updated yet.
-				// this.autoHide.mode = utils.getTreePref('tabbar.autoHide.mode');
-			case 'extensions.treestyletab.tabbar.autoShow.accelKeyDown':
-			case 'extensions.treestyletab.tabbar.autoShow.tabSwitch':
-			case 'extensions.treestyletab.tabbar.autoShow.feedback':
-				this.autoHideWindow.updateKeyListeners(this.window);
-				break;
-
 			case 'extensions.treestyletab.tabbar.style':
 			case 'extensions.treestyletab.tabbar.position':
 				this.themeManager.set(prefs.getPref('extensions.treestyletab.tabbar.style'), this.position);
 				break;
 
 			case 'browser.ctrlTab.previews':
-				this.autoHideWindow.updateKeyListeners(this.window);
 			case 'extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut':
 			case 'extensions.treestyletab.autoCollapseExpandSubtreeOnSelect':
 				if (this.shouldListenKeyEventsForAutoExpandByFocusChange)

@@ -1487,18 +1487,42 @@ AutoHideWindow.prototype = inherit(AutoHideConstants, {
 				);
 	},
    
-	init : function AHB_init(aWindow) 
+	init : function AHW_init(aWindow) 
 	{
 		this.window       = aWindow;
 		this.document     = aWindow.document;
 		this.treeStyleTab = aWindow.TreeStyleTabService;
+		prefs.addPrefListener(this);
 	},
  
-	destroy : function AHB_destroy() 
+	destroy : function AHW_destroy() 
 	{
+		prefs.removePrefListener(this);
 		delete this.treeStyleTab;
 		delete this.document;
 		delete this.window;
+	},
+ 
+	domains : [ 
+		'extensions.treestyletab.',
+		'browser.ctrlTab.previews'
+	],
+
+	onPrefChange : function AHW_onPrefChange(aPrefName) 
+	{
+		var value = prefs.getPref(aPrefName);
+		switch (aPrefName)
+		{
+			case 'extensions.treestyletab.tabbar.autoHide.mode':
+			case 'extensions.treestyletab.tabbar.autoShow.accelKeyDown':
+			case 'extensions.treestyletab.tabbar.autoShow.tabSwitch':
+			case 'extensions.treestyletab.tabbar.autoShow.feedback':
+			case 'browser.ctrlTab.previews':
+				this.updateKeyListeners(this.window);
+
+			default:
+				return;
+		}
 	}
  
 }); 
