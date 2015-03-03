@@ -1309,9 +1309,6 @@ AutoHideBrowser.prototype = inherit(AutoHideConstants, {
 		this.onPrefChange('extensions.treestyletab.tabbar.autoHide.area');
 		this.onPrefChange('extensions.treestyletab.tabbar.togglerSize');
 		this.onPrefChange('extensions.treestyletab.tabbar.autoHide.contentAreaScreen.enabled');
-		this.window.setTimeout(function(aSelf) {
-			aSelf.updateMode();
-		}, 0, this);
 
 		b.mTabContainer.addEventListener('TabOpen', this, false);
 		b.mTabContainer.addEventListener('TabClose', this, false);
@@ -1441,6 +1438,10 @@ AutoHideWindow.prototype = inherit(AutoHideConstants, {
 		this.mode = mode;
 		if (mode != this.kMODE_DISABLED)
 			this.updateKeyListeners(this.window);
+
+		this.window.setTimeout(function(aSelf) {
+			aSelf.treeStyleTab.autoHide.updateMode(mode);
+		}, 0, this);
 	},
  
 // for shortcuts 
