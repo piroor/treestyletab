@@ -1432,7 +1432,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 			this.setTabbrowserAttribute(this.kMODE, 'vertical');
 
-			let width = this.maxTabbarWidth(this.tabbarWidth, b);
+			//let width = this.maxTabbarWidth(this.tabbarWidth, b);
+			let width = this.maxTabbarWidth(this.autoHide.expandedWidth, b);
 			this.setTabStripAttribute('width', width);
 			this.removeTabStripAttribute('height');
 			b.mPanelContainer.removeAttribute('height');
@@ -1989,7 +1990,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			let realSize = this.getTabbarPlaceholderSize();
 
 			let width = (this.autoHide.expanded && this.isVertical && (aReason & this.kTABBAR_UPDATE_SYNC_TO_TABBAR) ?
-							this.maxTabbarWidth(this.tabbarWidth) :
+//							this.maxTabbarWidth(this.tabbarWidth) :
+							this.maxTabbarWidth(this.autoHide.expandedWidth) :
 							0
 						) || realSize.width;
 			let height = (this.autoHide.expanded && !this.isVertical && (aReason & this.kTABBAR_UPDATE_SYNC_TO_TABBAR) ?
@@ -5157,7 +5159,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	resetTabbarSize : function TSTBrowser_resetTabbarSize() 
 	{
 		if (this.isVertical) {
-			this.tabbarWidth = utils.getTreePref('tabbar.width.default');
+			//this.tabbarWidth = utils.getTreePref('tabbar.width.default');
 			this.autoHide.resetWidth();
 		}
 		else {

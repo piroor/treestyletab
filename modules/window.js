@@ -973,7 +973,8 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			width += (pos == 'left' ? delta : -delta );
 			width = this.maxTabbarWidth(width, b);
 			if (expanded || b.treeStyleTab.autoHide.expanded) {
-				b.treeStyleTab.tabbarWidth = width;
+				// b.treeStyleTab.tabbarWidth = width;
+				b.treeStyleTab.autoHide.expandedWidth = width;
 				if (b.treeStyleTab.autoHide.mode == b.treeStyleTab.autoHide.kMODE_SHRINK &&
 					b.treeStyleTab.tabStripPlaceHolder)
 					b.treeStyleTab.tabStripPlaceHolder.setAttribute('width', b.treeStyleTab.autoHide.shrunkenWidth);
