@@ -321,7 +321,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
  
 	setWindowValue : function TSTWindow_setWindowValue(aKey, aValue) 
 	{
-		if (!aValue)
+		if (aValue === null || aValue === undefined || aValue === '')
 			return this.deleteWindowValue(this.window, aKey);
 
 		try {

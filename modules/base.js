@@ -888,7 +888,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
  
 	setTabValue : function TSTBase_setTabValue(aTab, aKey, aValue) 
 	{
-		if (!aValue)
+		if (aValue === null || aValue === undefined || aValue === '')
 			return this.deleteTabValue(aTab, aKey);
 
 		aTab.setAttribute(aKey, aValue);
