@@ -159,7 +159,7 @@ AutoHideBrowser.prototype = inherit(AutoHideConstants, {
 	
 	updateMode : function AHB_updateMode() 
 	{
-		this.end(true);
+		this.end();
 		// update internal property after the appearance of the tab bar is updated.
 		var w = this.window;
 		w.setTimeout(function(aSelf) {
