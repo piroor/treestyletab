@@ -1342,20 +1342,6 @@ AutoHideBrowser.prototype = inherit(AutoHideConstants, {
 		delete this.browser;
 		delete this.document;
 		delete this.window;
-	},
- 
-	saveCurrentState : function AHB_saveCurrentState() 
-	{
-		var b = this.browser;
-		var prefs = {
-				'tabbar.autoHide.mode' : this.getModeForNormal(b),
-				'tabbar.autoHide.mode.fullscreen' : this.getModeForFullScreen(b),
-			};
-		for (var i in prefs)
-		{
-			if (utils.getTreePref(i) != prefs[i])
-				utils.setTreePref(i, prefs[i]);
-		}
 	}
  
 }); 

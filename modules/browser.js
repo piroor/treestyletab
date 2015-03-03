@@ -2242,8 +2242,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
  
 	saveCurrentState : function TSTBrowser_saveCurrentState() 
 	{
-		this.autoHide.saveCurrentState();
-
 		var b = this.mTabBrowser;
 		var floatingBox = this.getTabStrip(b).boxObject;
 		var fixedBox = (this.tabStripPlaceHolder || this.getTabStrip(b)).boxObject;
