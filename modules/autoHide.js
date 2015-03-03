@@ -1400,7 +1400,7 @@ AutoHideWindow.prototype = inherit(AutoHideConstants, {
  
 	get lastMode()
 	{
-		var lastMode = this.treeStyleTab.getWindowValue(this.kMODE)
+		var lastMode = this.treeStyleTab.getWindowValue(this.kMODE);
 		if (lastMode !== '')
 			return parseInt(lastMode);
 
