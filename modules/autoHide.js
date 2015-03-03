@@ -1376,8 +1376,7 @@ AutoHideWindow.prototype = inherit(AutoHideConstants, {
  
 	set mode(aValue) 
 	{
-		var b = aTabBrowser || this.browser;
-		b.setAttribute(AutoHideBrowser.prototype.kMODE, aValue);
+		this.browser.setAttribute(AutoHideBrowser.prototype.kMODE, aValue);
 		return aValue;
 	},
  
@@ -1426,7 +1425,7 @@ AutoHideWindow.prototype = inherit(AutoHideConstants, {
 			this.updateKeyListeners(this.window);
 
 		this.window.setTimeout(function(aSelf) {
-			aSelf.treeStyleTab.autoHide.updateMode(mode);
+			aSelf.window.gBrowser.treeStyleTab.autoHide.updateMode(mode);
 		}, 0, this);
 	},
  
