@@ -348,15 +348,14 @@ var TreeStyleTabWindowHelper = {
 		var searchbar = document.getElementById('searchbar');
 		if (searchbar &&
 			searchbar.doSearch &&
-			searchbar.doSearch.toSource().toSource().indexOf('TreeStyleTabService') < 0) {
-			TreeStyleTabUtils.doPatching(searchbar.doSearch, 'searchbar.doSearch', function(aName, aSource) {
-				return eval(aName+' = '+aSource.replace(
-					/(openUILinkIn\(.+?\);)/,
-					'TreeStyleTabService.onBeforeBrowserSearch(arguments[0]);\n' +
-					'$1\n' +
-					'TreeStyleTabService.stopToOpenChildTab();'
-				));
-			}, 'TreeStyleTab');
+			!searchbar.__treestyletab__original_doSearch) {
+			searchbar.__treestyletab__original_doSearch = searchbar.doSearch;
+			searchbar.doSearch = function(...aArgs) {
+				TreeStyleTabService.onBeforeBrowserSearch(aArgs[0]);
+				var retVal = this.__treestyletab__original_doSearch.apply(this, aArgs);
+				TreeStyleTabService.stopToOpenChildTab();
+				return retVal;
+			};
 		}
 
 		var goButton = document.getElementById('urlbar-go-button');
