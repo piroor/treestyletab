@@ -271,7 +271,7 @@ AutoHideBrowser.prototype = inherit(AutoHideConstants, {
 
 		b.treeStyleTab.fixTooNarrowTabbar();
 
-		sv.setWindowValue(this.kAUTOHIDE, true);
+		sv.setWindowValue(this.kMODE, this.mode);
 	},
  
 	end : function AHB_end() 
@@ -314,7 +314,7 @@ AutoHideBrowser.prototype = inherit(AutoHideConstants, {
 			sv.setTabStripAttribute('width', this.widthFromMode);
 
 		if (!this.destroying)
-			sv.setWindowValue(this.kAUTOHIDE, false);
+			sv.setWindowValue(this.kMODE, this.kMODE_DISABLED);
 	},
 
 	notifyStatusToAllTabs : function AHB_notifyStatusToAllTabs()
