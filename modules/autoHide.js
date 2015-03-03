@@ -1418,8 +1418,6 @@ AutoHideWindow.prototype = inherit(AutoHideConstants, {
 					utils.getTreePref('tabbar.autoHide.mode.fullscreen') :
 					this.lastMode;
 
-dump('\n\n\nrestoreLastMode\n\n');
-dump(mode +' <=> '+this.mode+'\n\n\n');
 		if (mode == this.mode)
 			return;
 
