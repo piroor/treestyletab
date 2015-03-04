@@ -133,7 +133,6 @@ ContentBridge.prototype = inherit(TreeStyleTabConstants, {
 	},
 	fixupEventCoordinates : function CB_fixupEventCoordinates(aCoordinates)
 	{
-		var box = this.mTab.linkedBrowser.boxObject;
 		// On Firefox 36 and later, screenX/screenY from content frame
 		// is wrong (the position (0,0) is not the screen edge, but the
 		// edge of the frame itself), so we have to calculate correct
@@ -141,8 +140,9 @@ ContentBridge.prototype = inherit(TreeStyleTabConstants, {
 		// This hack should be removed after the bug
 		// https://bugzilla.mozilla.org/show_bug.cgi?id=1075670
 		// is fixed.
-		aCoordinates.screenX = box.screenX + aCoordinates.clientX;
-		aCoordinates.screenY = box.screenY + aCoordinates.clientY;
+		var fixedCoordinates = this.mTab.linkedBrowser.mapScreenCoordinatesFromContent(aCoordinates.screenX, aCoordinates.screenY);
+		aCoordinates.screenX = fixedCoordinates.x;
+		aCoordinates.screenY = fixedCoordinates.y;
 		return aCoordinates;
 	}
 }); 
