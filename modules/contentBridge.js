@@ -140,9 +140,9 @@ ContentBridge.prototype = inherit(TreeStyleTabConstants, {
 		// https://bugzilla.mozilla.org/show_bug.cgi?id=1075670
 		// is fixed.
 		if (typeof this.mTab.linkedBrowser.mapScreenCoordinatesFromContent == 'function') {
-		let fixedCoordinates = this.mTab.linkedBrowser.mapScreenCoordinatesFromContent(aCoordinates.screenX, aCoordinates.screenY);
-		aCoordinates.screenX = fixedCoordinates.x;
-		aCoordinates.screenY = fixedCoordinates.y;
+			let fixedCoordinates = this.mTab.linkedBrowser.mapScreenCoordinatesFromContent(aCoordinates.screenX, aCoordinates.screenY);
+			aCoordinates.screenX = fixedCoordinates.x;
+			aCoordinates.screenY = fixedCoordinates.y;
 		}
 		return aCoordinates;
 	}
