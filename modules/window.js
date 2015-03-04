@@ -1262,14 +1262,35 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
  
 	onBeforeBrowserAccessOpenURI : function TSTWindow_onBeforeBrowserAccessOpenURI(aOpener, aWhere, aContext) 
 	{
-		var hasOwnerTab = (
-				aOpener &&
-				this.getTabFromFrame(aOpener.top)
-			);
+		var hasOwnerTab = false;
+		var opener = null;
+		if (aOpener) {
+			if (aOpener instanceof Ci.nsIDOMWindow) {
+				opener = aOpener;
+				hasOwnerTab = this.getTabFromFrame(opener.top);
+			}
+			else if (Ci.nsIOpenURIInFrameParams &&
+					aOpener instanceof Ci.nsIOpenURIInFrameParams) {
+				// from remote contents, we have to detect its opener from the URI.
+				let referrer = aOpener.referrer;
+				if (referrer) {
+					let activeTab = this.browser.selectedTab;
+					let possibleOwners = [activeTab].concat(this.getAncestorTabs(activeTab));
+					for (let i = 0, maxi = possibleOwners.length; i < maxi; i++) {
+						let possibleOwner = possibleOwners[i];
+						if (possibleOwner.linkedBrowser.currentURI.spec != referrer)
+							continue;
+						hasOwnerTab = true;
+						opener = possibleOwner.linkedBrowser;
+						break;
+					}
+				}
+			}
+		}
 		var internalOpen = aContext != Ci.nsIBrowserDOMWindow.OPEN_EXTERNAL;
 		if ((hasOwnerTab || internalOpen) &&
 			aWhere == Ci.nsIBrowserDOMWindow.OPEN_NEWTAB)
-			this.handleNewTabFromCurrent(aOpener);
+			this.handleNewTabFromCurrent(opener);
 	},
  
 	onBeforeViewMedia : function TSTWindow_onBeforeViewMedia(aEvent, aOwner) 
