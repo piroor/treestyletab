@@ -304,14 +304,13 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (position == this.position)
 			return position;
 
-		this._temporaryPosition = aValue;
-
 		if ('UndoTabService' in this.window && this.window.UndoTabService.isUndoable()) {
 			var current = this.position;
 			var self = this;
 			this.window.UndoTabService.doOperation(
 				function() {
 					self._changeTabbarPosition(position, true);
+					self._temporaryPosition = aValue;
 				},
 				{
 					label  : utils.treeBundle.getString('undo_changeTabbarPosition_label'),
@@ -326,6 +325,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 		else {
 			this._changeTabbarPosition(position, true);
+			this._temporaryPosition = aValue;
 		}
 		return position;
 	},
@@ -348,8 +348,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	},
 	set position(aValue)
 	{
-		delete this._temporaryPosition;
-
 		var position = this.normalizeTabbarPosition(aValue);
 		if (position == this.position)
 			return position;
@@ -360,6 +358,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			this.window.UndoTabService.doOperation(
 				function() {
 					self._changeTabbarPosition(position);
+					delete self._temporaryPosition;
 				},
 				{
 					label  : utils.treeBundle.getString('undo_changeTabbarPosition_label'),
@@ -374,6 +373,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 		else {
 			this._changeTabbarPosition(position);
+			delete this._temporaryPosition;
 		}
 		return position;
 	},
