@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 0.15.2015030601
    * タブバーの幅、位置、「自動で隠す」の状態をウィンドウごとに保存するようにした
    * [Duplicate in Tab Context Menu addon](https://addons.mozilla.org/firefox/duplicate-in-tab-context-menu/)との互換性を向上
    * ColorfulTabsとの互換性を向上（タブをクリックした時に必ずタブバーがスクロールしてしまう不具合を修正）

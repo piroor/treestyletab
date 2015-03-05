@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 0.15.2015030601
    * Width of the tab bar, position of the tab bar, and status of the "auto hide" feature are saved and restored for each window.
    * Better compatibility with [Duplicate in Tab Context Menu addon](https://addons.mozilla.org/firefox/duplicate-in-tab-context-menu/).
    * Better compatibility with ColorfulTabs. Annoyingly horizontal scroll of the tab bar (happend by clicking on any tab) has been solved.
