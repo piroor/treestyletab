@@ -20,7 +20,7 @@ var TreeStyleTabWindowHelper = {
 			}
 			else if (aSource.indexOf('gBrowser.swapBrowsersAndCloseOther') > -1) {
 				return eval(aName+' = '+aSource.replace(
-					'gBrowser.swapBrowsersAndCloseOther(gBrowser.selectedTab, uriToLoad);',
+					/gBrowser\.swapBrowsersAndCloseOther\([^)]+\);/g,
 					'if (!TreeStyleTabService.tearOffSubtreeFromRemote()) { $& }'
 				).replace(
 					// Workaround for https://github.com/piroor/treestyletab/issues/741
