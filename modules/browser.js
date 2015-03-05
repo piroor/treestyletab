@@ -2037,6 +2037,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			}
 
 			this.mTabBrowser.tabContainer.setAttribute('context', this.mTabBrowser.tabContextMenu.id);
+			this._updateChatbar();
 		}
 		else {
 			strip.collapsed = tabContainerBox.collapsed = collapsed;
@@ -2057,6 +2058,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			strip.removeAttribute('layer'); // https://bugzilla.mozilla.org/show_bug.cgi?id=590468
 
 			this.mTabBrowser.tabContainer.removeAttribute('context');
+			this._resetChatbar();
 		}
 
 		if (tabContainerBox.boxObject.width)
@@ -2146,6 +2148,49 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		splitterStyle.marginBottom = pos == 'top' ? (-splitterHeight)+'px' :
 									vertical ? '0' :
 									box.height+'px' ;
+	},
+ 
+	get _chatbarBox()
+	{
+		var chatbar = this.document.getElementById('pinnedchats');
+		return chatbar && chatbar.innerbox;
+	},
+	_updateChatbar : function TSTBrowser_updateChatbar() 
+	{
+		var box = this._chatbarBox;
+		if (!box)
+			return;
+
+		this._resetChatbar();
+
+		var tabbarSize = this.getTabbarPlaceholderSize();
+		var splitterBox = this.splitter.boxObject;
+
+		switch (this.position)
+		{
+			case 'left':
+				box.style.marginLeft = (tabbarSize.width + splitterBox.width) + 'px';
+				break;
+
+			case 'right':
+				box.style.marginRight = (tabbarSize.width + splitterBox.width) + 'px';
+				break;
+
+			case 'bottom':
+				box.style.marginBottom = (tabbarSize.height + splitterBox.height) + 'px';
+				break;
+		}
+	},
+	_resetChatbar : function TSTBrowser_resetChatbar() 
+	{
+		var box = this._chatbarBox;
+		if (!box)
+			return;
+
+		var style = box.style;
+		style.marginLeft =
+			style.marginRight =
+			style.marginBottom = '';
 	},
   
 	updateTabbarOverflow : function TSTBrowser_updateTabbarOverflow() 
