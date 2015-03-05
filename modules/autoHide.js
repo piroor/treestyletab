@@ -114,13 +114,21 @@ AutoHideBrowser.prototype = inherit(AutoHideConstants, {
 		return aValue;
 	},
  
-	get lastMode()
+	get lastNormalMode()
 	{
-		var lastMode = this.treeStyleTab.getWindowValue(this.kMODE)
+		var lastMode = this.treeStyleTab.getWindowValue(this.kMODE + '-normal')
 		if (lastMode !== '')
 			return parseInt(lastMode);
 
 		return utils.getTreePref('tabbar.autoHide.mode');
+	},
+	get lastFullscreenMode()
+	{
+		var lastMode = this.treeStyleTab.getWindowValue(this.kMODE + '-fullscreen')
+		if (lastMode !== '')
+			return parseInt(lastMode);
+
+		return utils.getTreePref('tabbar.autoHide.mode.fullscreen');
 	},
 
 	getMode : function AHB_getMode(aTabBrowser)
@@ -132,12 +140,12 @@ AutoHideBrowser.prototype = inherit(AutoHideConstants, {
 	getModeForNormal : function AHB_getModeForNormal(aTabBrowser)
 	{
 		var b = aTabBrowser || this.browser;
-		return parseInt(b.getAttribute(this.kMODE+'-normal') || this.lastMode);
+		return parseInt(b.getAttribute(this.kMODE+'-normal') || this.lastNormalMode);
 	},
 	getModeForFullScreen : function AHB_getModeForFullScreen(aTabBrowser)
 	{
 		var b = aTabBrowser || this.browser;
-		return parseInt(b.getAttribute(this.kMODE+'-fullscreen') || utils.getTreePref('tabbar.autoHide.mode.fullscreen'));
+		return parseInt(b.getAttribute(this.kMODE+'-fullscreen') || this.lastFullscreenMode);
 	},
 
 	get state()
@@ -162,7 +170,8 @@ AutoHideBrowser.prototype = inherit(AutoHideConstants, {
 		if (aNewMode === undefined)
 			aNewMode = this.mode;
 
-		this.treeStyleTab.setWindowValue(this.kMODE, aNewMode);
+		var suffix = this.treeStyleTab.isFullscreenAutoHide ? 'fullscreen' : 'normal' ;
+		this.treeStyleTab.setWindowValue(this.kMODE + '-suffix', aNewMode);
 
 		this.end();
 		// update internal property after the appearance of the tab bar is updated.
@@ -1366,8 +1375,8 @@ AutoHideBrowser.prototype = inherit(AutoHideConstants, {
 		this.showHideOnMouseMoveTimer = null;
 		this.delayedShowForFeedbackTimer = null;
 
-		b.setAttribute(this.kMODE+'-normal', this.lastMode);
-		b.setAttribute(this.kMODE+'-fullscreen', utils.getTreePref('tabbar.autoHide.mode.fullscreen'));
+		b.setAttribute(this.kMODE+'-normal', this.lastNormalMode);
+		b.setAttribute(this.kMODE+'-fullscreen', this.lastFullscreenMode);
 		prefs.addPrefListener(this);
 		this.onPrefChange('browser.tabs.closeButtons');
 		this.onPrefChange('extensions.treestyletab.tabbar.autoHide.area');
@@ -1444,13 +1453,21 @@ AutoHideWindow.prototype = inherit(AutoHideConstants, {
 		return aValue;
 	},
  
-	get lastMode()
+	get lastNormalMode()
 	{
-		var lastMode = this.treeStyleTab.getWindowValue(this.kMODE);
+		var lastMode = this.treeStyleTab.getWindowValue(this.kMODE + '-normal')
 		if (lastMode !== '')
 			return parseInt(lastMode);
 
 		return utils.getTreePref('tabbar.autoHide.mode');
+	},
+	get lastFullscreenMode()
+	{
+		var lastMode = this.treeStyleTab.getWindowValue(this.kMODE + '-fullscreen')
+		if (lastMode !== '')
+			return parseInt(lastMode);
+
+		return utils.getTreePref('tabbar.autoHide.mode.fullscreen');
 	},
   
 	toggleMode : function AHW_toggleMode(aTabBrowser) /* PUBLIC API */ 
@@ -1479,8 +1496,8 @@ AutoHideWindow.prototype = inherit(AutoHideConstants, {
 	restoreLastMode : function AHW_restoreLastMode()
 	{
 		var mode = this.treeStyleTab.isFullscreenAutoHide ?
-					utils.getTreePref('tabbar.autoHide.mode.fullscreen') :
-					this.lastMode;
+					this.lastFullscreenMode :
+					this.lastNormalMode;
 
 		if (mode == this.mode)
 			return;
