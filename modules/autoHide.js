@@ -97,39 +97,13 @@ const AutoHideConstants = Object.freeze(inherit(TreeStyleTabConstants, {
 }));
 
 
-function AutoHideBrowser(aTabBrowser) 
+function AutoHideBase(aTabBrowser) 
 {
-	this.init(aTabBrowser);
 }
-AutoHideBrowser.prototype = inherit(AutoHideConstants, {
-	
-	get mode() /* PUBLIC API */ 
-	{
-		var mode = this.browser.getAttribute(this.kMODE);
-		return mode ? parseInt(mode) : this.kMODE_DISABLED ;
-	},
-	set mode(aValue)
-	{
-		this.browser.setAttribute(this.kMODE, aValue);
-		return aValue;
-	},
- 
-	get lastNormalMode()
-	{
-		var lastMode = this.treeStyleTab.getWindowValue(this.kMODE + '-normal')
-		if (lastMode !== '')
-			return parseInt(lastMode);
-
-		return utils.getTreePref('tabbar.autoHide.mode');
-	},
-	get lastFullscreenMode()
-	{
-		var lastMode = this.treeStyleTab.getWindowValue(this.kMODE + '-fullscreen')
-		if (lastMode !== '')
-			return parseInt(lastMode);
-
-		return utils.getTreePref('tabbar.autoHide.mode.fullscreen');
-	},
+AutoHideBase.prototype = inherit(AutoHideConstants, {
+	window       : null,
+	browser      : null,
+	treeStyleTab : null,
 
 	getMode : function AHB_getMode(aTabBrowser)
 	{
@@ -148,6 +122,52 @@ AutoHideBrowser.prototype = inherit(AutoHideConstants, {
 		return parseInt(b.getAttribute(this.kMODE+'-fullscreen') || this.lastFullscreenMode);
 	},
 
+	get mode() /* PUBLIC API */ 
+	{
+		return this.getMode(this.browser);
+	},
+	set mode(aValue)
+	{
+		this.browser.setAttribute(this.kMODE, aValue);
+		return aValue;
+	},
+
+	get lastNormalMode()
+	{
+		var lastMode = this.treeStyleTab.getWindowValue(this.kMODE + '-normal');
+		if (lastMode !== '')
+			return parseInt(lastMode);
+
+		return utils.getTreePref('tabbar.autoHide.mode');
+	},
+	set lastNormalMode(aValue)
+	{
+		this.treeStyleTab.setWindowValue(this.kMODE + '-normal', aValue);
+		return aValue;
+	},
+ 
+	get lastFullscreenMode() 
+	{
+		var lastMode = this.treeStyleTab.getWindowValue(this.kMODE + '-fullscreen');
+		if (lastMode !== '')
+			return parseInt(lastMode);
+
+		return utils.getTreePref('tabbar.autoHide.mode.fullscreen');
+	},
+	set lastFullscreenMode(aValue)
+	{
+		this.treeStyleTab.setWindowValue(this.kMODE + '-fullscreen', aValue);
+		return aValue;
+	}
+});
+
+
+function AutoHideBrowser(aTabBrowser) 
+{
+	this.init(aTabBrowser);
+}
+AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
+	
 	get state()
 	{
 		return this.browser.getAttribute(this.kSTATE) || this.kSTATE_EXPANDED;
@@ -171,7 +191,7 @@ AutoHideBrowser.prototype = inherit(AutoHideConstants, {
 			aNewMode = this.mode;
 
 		var suffix = this.treeStyleTab.isFullscreenAutoHide ? 'fullscreen' : 'normal' ;
-		this.treeStyleTab.setWindowValue(this.kMODE + '-suffix', aNewMode);
+		this.treeStyleTab.setWindowValue(this.kMODE + '-' + suffix, aNewMode);
 
 		this.end();
 		// update internal property after the appearance of the tab bar is updated.
@@ -1423,7 +1443,7 @@ function AutoHideWindow(aWindow)
 {
 	this.init(aWindow);
 }
-AutoHideWindow.prototype = inherit(AutoHideConstants, {
+AutoHideWindow.prototype = inherit(AutoHideBase.prototype, {
 	get browser()
 	{
 		return this.treeStyleTab.browser;
@@ -1431,43 +1451,12 @@ AutoHideWindow.prototype = inherit(AutoHideConstants, {
 	
 // mode 
 	
-	getMode : function AHW_getMode(aTabBrowser) 
-	{
-		var b = aTabBrowser || this.browser;
-		var mode = b.getAttribute(AutoHideBrowser.prototype.kMODE);
-		return mode ? parseInt(mode) : AutoHideBrowser.prototype.kMODE_DISABLED ;
-	},
- 
-	get mode() /* PUBLIC API */ 
+	get mode() /* PUBLIC API, overrides base class's one */ 
 	{
 		var mode = this.getMode();
-		if (mode == AutoHideBrowser.prototype.kMODE_SHRINK &&
-			!this.treeStyleTab.isVertical)
-			return AutoHideBrowser.prototype.kMODE_HIDE;
+		if (mode == this.kMODE_SHRINK && !this.treeStyleTab.isVertical)
+			return this.kMODE_HIDE;
 		return mode;
-	},
- 
-	set mode(aValue) 
-	{
-		this.browser.setAttribute(AutoHideBrowser.prototype.kMODE, aValue);
-		return aValue;
-	},
- 
-	get lastNormalMode()
-	{
-		var lastMode = this.treeStyleTab.getWindowValue(this.kMODE + '-normal')
-		if (lastMode !== '')
-			return parseInt(lastMode);
-
-		return utils.getTreePref('tabbar.autoHide.mode');
-	},
-	get lastFullscreenMode()
-	{
-		var lastMode = this.treeStyleTab.getWindowValue(this.kMODE + '-fullscreen')
-		if (lastMode !== '')
-			return parseInt(lastMode);
-
-		return utils.getTreePref('tabbar.autoHide.mode.fullscreen');
 	},
   
 	toggleMode : function AHW_toggleMode(aTabBrowser) /* PUBLIC API */ 
@@ -1493,8 +1482,12 @@ AutoHideWindow.prototype = inherit(AutoHideConstants, {
 		});
 	},
  
-	restoreLastMode : function AHW_restoreLastMode()
+	initMode : function AHW_initMode()
 	{
+		// save current state for this window's last state for new (clean) window
+		this.lastNormalMode     = this.lastNormalMode;
+		this.lastFullscreenMode = this.lastFullscreenMode;
+
 		var mode = this.treeStyleTab.isFullscreenAutoHide ?
 					this.lastFullscreenMode :
 					this.lastNormalMode;
@@ -1562,16 +1555,37 @@ AutoHideWindow.prototype = inherit(AutoHideConstants, {
 		this.document     = aWindow.document;
 		this.treeStyleTab = aWindow.TreeStyleTabService;
 		prefs.addPrefListener(this);
-		aWindow.addEventListener('SSWindowStateReady', this, false);
+		this.waitForWindowReady();
+
 	},
  
 	destroy : function AHW_destroy() 
 	{
-		this.window.removeEventListener('SSWindowStateReady', this, false);
+		this.endWaitForWindowReady();
 		prefs.removePrefListener(this);
 		delete this.treeStyleTab;
 		delete this.document;
 		delete this.window;
+	},
+ 
+	waitForWindowReady : function AHW_waitForWindowReady() 
+	{
+		if (this.waitingForWindowReady)
+			return;
+
+		this.waitingForWindowReady = true;
+		this.window.addEventListener('SSWindowStateReady', this, false);
+		Services.obs.addObserver(this, 'browser-delayed-startup-finished', false);
+	},
+ 
+	endWaitForWindowReady : function AHW_endWaitForWindowReady() 
+	{
+		if (!this.waitingForWindowReady)
+			return;
+
+		this.waitingForWindowReady = false;
+		this.window.removeEventListener('SSWindowStateReady', this, false);
+		Services.obs.removeObserver(this, 'browser-delayed-startup-finished');
 	},
  
 	handleEvent : function AHW_handleEvent(aEvent) 
@@ -1579,9 +1593,19 @@ AutoHideWindow.prototype = inherit(AutoHideConstants, {
 		switch (aEvent.type)
 		{
 			case 'SSWindowStateReady':
-				this.restoreLastMode();
+				this.endWaitForWindowReady();
+				this.initMode();
 				return;
 		}
+	},
+ 
+	observe : function AHW_observe(aSubject, aTopic, aData) 
+	{
+		if (aSubject != this.window)
+			return;
+
+		this.endWaitForWindowReady();
+		this.window.setTimeout(this.initMode.bind(this), 0);
 	},
  
 	domains : [ 
