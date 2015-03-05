@@ -184,6 +184,11 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 	{
 		return this.state == this.kSTATE_HIDDEN;
 	},
+ 
+	get toggler()
+	{
+		return this.document.getAnonymousElementByAttribute(this.browser, 'class', this.treeStyleTab.kTABBAR_TOGGLER);
+	},
 	
 	updateMode : function AHB_updateMode(aNewMode) 
 	{
@@ -464,6 +469,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 		this.screen.addEventListener('mousemove', this, true);
 		this.treeStyleTab.tabStripPlaceHolder.addEventListener('mousemove', this, true);
 		this.treeStyleTab.tabStrip.addEventListener('mousemove', this, true);
+		this.toggler.addEventListener('mousemove', this, true);
 
 		this.mouseMoveListening = true;
 
@@ -478,6 +484,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 		this.screen.removeEventListener('mousemove', this, true);
 		this.treeStyleTab.tabStripPlaceHolder.removeEventListener('mousemove', this, true);
 		this.treeStyleTab.tabStrip.removeEventListener('mousemove', this, true);
+		this.toggler.removeEventListener('mousemove', this, true);
 
 		this.mouseMoveListening = false;
 
@@ -1104,12 +1111,14 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 
 			case 'extensions.treestyletab.tabbar.togglerSize':
 				this.togglerSize = value;
-				var toggler = this.document.getAnonymousElementByAttribute(this.browser, 'class', this.treeStyleTab.kTABBAR_TOGGLER);
-				toggler.style.minWidth = toggler.style.minHeight = value+'px';
-				if (this.togglerSize <= 0)
-					toggler.setAttribute('collapsed', true);
-				else
-					toggler.removeAttribute('collapsed');
+				{
+					let toggler = this.toggler;
+					toggler.style.minWidth = toggler.style.minHeight = value+'px';
+					if (this.togglerSize <= 0)
+						toggler.setAttribute('collapsed', true);
+					else
+						toggler.removeAttribute('collapsed');
+				}
 				return;
 
 			case 'extensions.treestyletab.tabbar.autoHide.contentAreaScreen.enabled':
