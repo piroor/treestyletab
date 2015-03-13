@@ -50,6 +50,14 @@ function ContentBridge(aTab, aTabBrowser)
 {
 	this.init(aTab, aTabBrowser);
 }
+
+ContentBridge.install = function CB_installScript(aWindow) {
+	aWindow.messageManager.loadFrameScript(TreeStyleTabConstants.CONTENT_SCRIPT_AUTOHIDE, true);
+};
+
+ContentBridge.uninstall = function CB_installScript(aWindow) {
+	aWindow.messageManager.sendAsyncCommand(TreeStyleTabConstants.COMMAND_SHUTDOWN);
+};
  
 ContentBridge.prototype = inherit(TreeStyleTabConstants, { 
 	mTab : null,
@@ -62,16 +70,13 @@ ContentBridge.prototype = inherit(TreeStyleTabConstants, {
 		this.handleMessage = this.handleMessage.bind(this);
 		this.checkPluginAreaExistenceResolvers = {};
 
-		var manager = this.mTab.linkedBrowser.messageManager;
-		// manager.loadFrameScript(this.CONTENT_SCRIPT, true);
-		manager.loadFrameScript(this.CONTENT_SCRIPT_AUTOHIDE, true);
+		var manager = this.mTab.ownerDocument.defaultView.messageManager;
 		manager.addMessageListener(this.MESSAGE_TYPE, this.handleMessage);
 	},
 	destroy : function CB_destroy()
 	{
-		var manager = this.mTab.linkedBrowser.messageManager;
+		var manager = this.mTab.ownerDocument.defaultView.messageManager;
 		manager.removeMessageListener(this.MESSAGE_TYPE, this.handleMessage);
-		this.sendAsyncCommand(this.COMMAND_SHUTDOWN);
 
 		delete this.mTab;
 		delete this.mTabBrowser;
@@ -97,7 +102,13 @@ ContentBridge.prototype = inherit(TreeStyleTabConstants, {
 	},
 	handleMessage : function CB_handleMessage(aMessage)
 	{
-		// dump(JSON.stringify(aMessage.json)+'\n');
+//		dump('*********************handleMessage*******************\n');
+//		dump('TARGET IS: '+aMessage.target.localName+'\n');
+//		dump(JSON.stringify(aMessage.json)+'\n');
+
+		if (aMessage.target != this.mTab.linkedBrowser)
+		  return;
+
 		switch (aMessage.json.command)
 		{
 			case this.COMMAND_REPORT_MOUSEDOWN:

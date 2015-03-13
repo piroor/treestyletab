@@ -65,6 +65,7 @@ XPCOMUtils.defineLazyModuleGetter(this, 'AutoHideWindow', 'resource://treestylet
 XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabThemeManager', 'resource://treestyletab-modules/themeManager.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'FullscreenObserver', 'resource://treestyletab-modules/fullscreenObserver.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'BrowserUIShowHideObserver', 'resource://treestyletab-modules/browserUIShowHideObserver.js');
+XPCOMUtils.defineLazyModuleGetter(this, 'ContentBridge', 'resource://treestyletab-modules/contentBridge.js');
 
 XPCOMUtils.defineLazyServiceGetter(this, 'SessionStore',
   '@mozilla.org/browser/sessionstore;1', 'nsISessionStore');
@@ -419,6 +420,8 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 
 		this.initUninstallationListener();
 
+		ContentBridge.install(w);
+
 		w.TreeStyleTabWindowHelper.onBeforeBrowserInit();
 		this.initTabBrowser(this.browser);
 		w.TreeStyleTabWindowHelper.onAfterBrowserInit();
@@ -534,6 +537,8 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 				w.removeEventListener('aftercustomization', this, false);
 
 				w.messageManager.removeMessageListener('SessionStore:restoreTabContentStarted', this);
+
+				ContentBridge.uninstall(w);
 
 				this.fullscreenObserver.destroy();
 				delete this.fullscreenObserver;
