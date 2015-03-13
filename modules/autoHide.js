@@ -470,6 +470,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 		this.treeStyleTab.tabStripPlaceHolder.addEventListener('mousemove', this, true);
 		this.treeStyleTab.tabStrip.addEventListener('mousemove', this, true);
 		this.toggler.addEventListener('mousemove', this, true);
+		this.window.addEventListener('TabRemotenessChange', this, false);
 
 		this.mouseMoveListening = true;
 
@@ -485,6 +486,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 		this.treeStyleTab.tabStripPlaceHolder.removeEventListener('mousemove', this, true);
 		this.treeStyleTab.tabStrip.removeEventListener('mousemove', this, true);
 		this.toggler.removeEventListener('mousemove', this, true);
+		this.window.removeEventListener('TabRemotenessChange', this, false);
 
 		this.mouseMoveListening = false;
 
@@ -1155,6 +1157,9 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 
 			case 'mousemove':
 				return this.handleMouseMove(aEvent);
+
+            case 'TabRemotenessChange':
+				return this.notifyStatusToAllTabs();
 
 			case 'TabOpen':
 			case 'TabClose':
