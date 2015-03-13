@@ -1159,7 +1159,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 				return this.handleMouseMove(aEvent);
 
             case 'TabRemotenessChange':
-				return this.notifyStatusToAllTabs();
+				return this.notifyStatusToAllTabs(aEvent.target);
 
 			case 'TabOpen':
 			case 'TabClose':
