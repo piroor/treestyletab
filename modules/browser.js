@@ -3868,7 +3868,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}).bind(this), 0);
 
 		if (!tab.selected &&
-			this.mTabBrowser.currentURI.spec == 'about:sessionrestore') {
+			this.mTabBrowser.currentURI.spec == 'about:sessionrestore' &&
+			this.mTabBrowser.selectedBrowser.getAttribute('remote') != 'true') {
 			// because this is a chrome document, E10S is not applied.
 			let frame = this.mTabBrowser.contentWindow;
 			frame = frame.wrappedJSObject || frame;
@@ -4898,7 +4899,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		var resizedTopFrame = aEvent.originalTarget.top;
 		// for E10S tabs, isContentResize is always false.
-		var isContentResize = resizedTopFrame == this.mTabBrowser.contentWindow;
+		var isInProcessTab = this.mTabBrowser.selectedBrowser.getAttribute('remote') != 'true';
+		var isContentResize = isInProcessTab && resizedTopFrame == this.mTabBrowser.contentWindow;
 		var isChromeResize = resizedTopFrame == this.window;
 
 		if (isChromeResize && aEvent.originalTarget != resizedTopFrame) {

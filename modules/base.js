@@ -1120,7 +1120,8 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		for (let i = 0, maxi = tabs.length; i < maxi; i++)
 		{
 			let tab = tabs[i];
-			if (tab.linkedBrowser.contentWindow == top)
+			let isInProcessTab = tab.linkedBrowser.getAttribute('remote') != 'true';
+			if (isInProcessTab && tab.linkedBrowser.contentWindow == top)
 				return tab;
 		}
 		return null;
