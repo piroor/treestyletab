@@ -2,6 +2,7 @@
 
  - master/HEAD
    * "Plain"スキンが選択されているときに現在のタブの色が強調されなくなっていたのを修正
+   * タブバーを自動で隠す機能について、タブのプロセス分離の状態が変更された後もマウス関連のイベントを正しく拾うように修正
  - 0.15.2015030601
    * タブバーの幅、位置、「自動で隠す」の状態をウィンドウごとに保存するようにした
    * [Duplicate in Tab Context Menu addon](https://addons.mozilla.org/firefox/duplicate-in-tab-context-menu/)との互換性を向上

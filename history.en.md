@@ -2,6 +2,7 @@
 
  - master/HEAD
    * Current tab is shown with highlighted color correctly at the "Plain" skin.
+   * Mouse events are correctly handled for the "auto hide" feature for tabs even if their remoteness is dynamically changed.
  - 0.15.2015030601
    * Width of the tab bar, position of the tab bar, and status of the "auto hide" feature are saved and restored for each window.
    * Better compatibility with [Duplicate in Tab Context Menu addon](https://addons.mozilla.org/firefox/duplicate-in-tab-context-menu/).
