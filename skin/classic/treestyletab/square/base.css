@@ -218,7 +218,9 @@
 	padding: 0 0.2em !important;
 }
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab[selected="true"] {
+  .tabbrowser-tab:not([pinned])[selected="true"],
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab[pinned][selected="true"] {
 	background-color: ThreeDHighlight !important;
 }
 
