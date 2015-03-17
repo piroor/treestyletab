@@ -561,7 +561,8 @@ var TreeStyleTabWindowHelper = {
 					if (treeStyleTab) {
 						if (treeStyleTab.shouldCancelEnsureElementIsVisible())
 							return;
-						else if (treeStyleTab.animationEnabled)
+						let shouldScrollNow = aArgs[1] === false;
+						if (treeStyleTab.animationEnabled && !shouldScrollNow)
 							return treeStyleTab.scrollToTab(aArgs[0]);
 					}
 					this.__treestyletab__ensureElementIsVisible.apply(this, aArgs);
