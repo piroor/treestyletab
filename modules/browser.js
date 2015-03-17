@@ -2239,7 +2239,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
   
 	destroy : function TSTBrowser_destroy() 
 	{
-		this.animationManager.removeTask(this.smoothScrollTask);
+		this.stopSmoothScroll();
 
 		Object.keys(this.timers).forEach(function(key) {
 			if (!this.timers[key])
@@ -2952,14 +2952,16 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var lastX = this.lastScrollX;
 		var lastY = this.lastScrollY;
 		this.clearLastScrollPosition();
-		if (!this.smoothScrollTask &&
-			!this.scrollBox._smoothScrollTimer) { // don't restore scroll position if another scroll is already running.
+
+		// don't restore scroll position if another scroll is already running.
+		if (this.isSmoothScrolling())
+			return;
+
 			let x = {}, y = {};
 			let scrollBoxObject = this.scrollBoxObject;
 			scrollBoxObject.getPosition(x, y);
 			if (x.value != lastX || y.value != lastY)
 				scrollBoxObject.scrollTo(lastX, lastY);
-		}
 	},
  
 	clearLastScrollPosition : function TSTBrowser_clearLastScrollPosition() 
@@ -2982,10 +2984,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
  
 	cancelPerformingAutoScroll : function TSTBrowser_cancelPerformingAutoScroll(aOnlyCancel) 
 	{
-		if (this.smoothScrollTask) {
-			this.animationManager.removeTask(this.smoothScrollTask);
-			this.smoothScrollTask = null;
-		}
+		this.stopSmoothScroll();
 		this.clearLastScrollPosition();
 
 		if (this.timers['cancelPerformingAutoScroll']) {
@@ -6651,6 +6650,22 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		return [maxX, maxY];
 	},
 	smoothScrollTask : null,
+ 
+	isSmoothScrolling : function TSTBrowser_isSmoothScrolling() 
+	{
+		return Boolean(
+			this.smoothScrollTask ||
+			this.scrollBox._smoothScrollTimer
+		);
+	},
+ 
+	stopSmoothScroll : function TSTBrowser_stopSmoothScroll() 
+	{
+		if (this.smoothScrollTask) {
+			this.animationManager.removeTask(this.smoothScrollTask);
+			this.smoothScrollTask = null;
+		}
+	},
   
 	scrollToTab : function TSTBrowser_scrollToTab(aTab, aOnlyWhenCurrentTabIsInViewport) 
 	{
