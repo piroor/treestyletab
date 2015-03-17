@@ -550,24 +550,24 @@ var TreeStyleTabWindowHelper = {
 
 		/**
 		 * The default implementation fails to scroll to tab if it is expanding.
-		 * So we have to inject codes to override its effect.
+		 * So we have to override its effect.
 		 */
 		{
 			let scrollbox = aTabBrowser.treeStyleTab.scrollBox;
-			TreeStyleTabUtils.doPatching(scrollbox.ensureElementIsVisible, 'scrollbox.ensureElementIsVisible', function(aName, aSource) {
-				return eval(aName+' = '+aSource.replace(
-					'{',
-					'{\n' +
-					'  var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;\n' +
-					'  if (treeStyleTab && treeStyleTab.shouldCancelEnsureElementIsVisible())\n' +
-					'    return;\n' +
-					'  if (\n' +
-					'      treeStyleTab &&\n' +
-					'      (arguments.length == 1 || arguments[1])\n' +
-					'    )\n' +
-					'    return treeStyleTab.scrollToTab(arguments[0]);'
-				));
-			}, /treeStyleTab|ensureTabIsVisible/); // if there is a string "ensureTabIsVisible", it is replaced by Tab Mix Plus!
+			scrollbox.__treestyletab__ensureElementIsVisible = scrollbox.ensureElementIsVisible;
+			scrollbox.ensureElementIsVisible = function(...aArgs) {
+				var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;
+				if (treeStyleTab && treeStyleTab.shouldCancelEnsureElementIsVisible())
+					return;
+
+				if (
+					treeStyleTab &&
+					(aArgs.length == 1 || aArgs[1])
+					)
+					return treeStyleTab.scrollToTab(aArgs[0]);
+
+				this.__treestyletab__ensureElementIsVisible.apply(this, aArgs);
+			};
 		}
 
 		{
