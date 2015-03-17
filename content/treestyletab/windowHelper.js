@@ -554,21 +554,21 @@ var TreeStyleTabWindowHelper = {
 		 */
 		{
 			let scrollbox = aTabBrowser.treeStyleTab.scrollBox;
-			if (!scrollbox.__treestyletab__ensureElementIsVisible) {
-			scrollbox.__treestyletab__ensureElementIsVisible = scrollbox.ensureElementIsVisible;
-			scrollbox.ensureElementIsVisible = function(...aArgs) {
-				var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;
-				if (treeStyleTab && treeStyleTab.shouldCancelEnsureElementIsVisible())
-					return;
+				if (!scrollbox.__treestyletab__ensureElementIsVisible) {
+				scrollbox.__treestyletab__ensureElementIsVisible = scrollbox.ensureElementIsVisible;
+				scrollbox.ensureElementIsVisible = function(...aArgs) {
+					var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;
+					if (treeStyleTab && treeStyleTab.shouldCancelEnsureElementIsVisible())
+						return;
 
-				if (
-					treeStyleTab &&
-					(aArgs.length == 1 || aArgs[1])
-					)
-					return treeStyleTab.scrollToTab(aArgs[0]);
+					if (
+						treeStyleTab &&
+						(aArgs.length == 1 || aArgs[1])
+						)
+						return treeStyleTab.scrollToTab(aArgs[0]);
 
-				this.__treestyletab__ensureElementIsVisible.apply(this, aArgs);
-			};
+					this.__treestyletab__ensureElementIsVisible.apply(this, aArgs);
+				};
 			}
 		}
 
