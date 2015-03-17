@@ -6654,7 +6654,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
   
 	scrollToTab : function TSTBrowser_scrollToTab(aTab, aOnlyWhenCurrentTabIsInViewport) 
 	{
-		if (!aTab || !aTab.parentNode || this.isTabInViewport(aTab))
+		if (!aTab || !aTab.parentNode)
+			return;
+
+		this.cancelPerformingAutoScroll(true);
+		if (this.isTabInViewport(aTab))
 			return;
 
 		var b = this.mTabBrowser;
