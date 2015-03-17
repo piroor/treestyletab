@@ -6689,6 +6689,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		this.cancelPerformingAutoScroll(true);
 
+		if (this.isTabInViewport(aTab))
+			return;
+
 		var b = this.mTabBrowser;
 
 		var scrollBoxObject = this.scrollBoxObject;
