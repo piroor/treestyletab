@@ -6540,13 +6540,13 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
   
 /* scroll */ 
 	
-	scrollTo : function TSTBrowser_scrollTo(aEndX, aEndY) 
+	scrollTo : function TSTBrowser_scrollTo(aEndX, aEndY, aTargetElement) 
 	{
 		if (this.timers['cancelPerformingAutoScroll'])
 			return;
 
 		if (this.animationEnabled || this.smoothScrollEnabled) {
-			this.smoothScrollTo(aEndX, aEndY);
+			this.smoothScrollTo(aEndX, aEndY, null, aTargetElement);
 		}
 		else {
 			try {
@@ -6558,7 +6558,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 	},
 	
-	smoothScrollTo : function TSTBrowser_smoothScrollTo(aEndX, aEndY, aDuration) 
+	smoothScrollTo : function TSTBrowser_smoothScrollTo(aEndX, aEndY, aDuration, aTargetElement) 
 	{
 		this.cancelPerformingAutoScroll(true);
 
@@ -6570,6 +6570,14 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var startY = y.value;
 		var deltaX = aEndX - startX;
 		var deltaY = aEndY - startY;
+
+		// Use Firefox's native smooth scroll if possible
+		// because it can be accelerated.
+		if (typeof this.scrollBox._smoothScrollByPixels == 'function') {
+			let amountToScroll = this.isVertical ? deltaY : deltaX ;
+			return this.scrollBox._smoothScrollByPixels(amountToScroll, aTargetElement);
+		}
+		// Otherwise fallback to TST's custom one.
 
 		var arrowscrollbox = scrollBoxObject.element.parentNode;
 		if (
@@ -6654,13 +6662,20 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	isSmoothScrolling : function TSTBrowser_isSmoothScrolling() 
 	{
 		return Boolean(
-			this.smoothScrollTask ||
-			this.scrollBox._smoothScrollTimer
+			// Firefox's native scroll
+			this.scrollBox._smoothScrollTimer ||
+			// TST's custom one
+			this.smoothScrollTask
 		);
 	},
  
 	stopSmoothScroll : function TSTBrowser_stopSmoothScroll() 
 	{
+		// Firefox's native scroll
+		if (typeof this.scrollBox._stopSmoothScroll == 'function')
+			this.scrollBox._stopSmoothScroll();
+
+		// TST's custom one
 		if (this.smoothScrollTask) {
 			this.animationManager.removeTask(this.smoothScrollTask);
 			this.smoothScrollTask = null;
@@ -6673,8 +6688,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			return;
 
 		this.cancelPerformingAutoScroll(true);
-		if (this.isTabInViewport(aTab))
-			return;
 
 		var b = this.mTabBrowser;
 
@@ -6705,7 +6718,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				return;
 		}
 
-		this.scrollTo(targetX, targetY);
+		this.scrollTo(targetX, targetY, aTab);
 	},
  
 	scrollToTabSubtree : function TSTBrowser_scrollToTabSubtree(aTab) 
