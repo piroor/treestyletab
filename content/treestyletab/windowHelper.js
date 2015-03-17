@@ -554,6 +554,7 @@ var TreeStyleTabWindowHelper = {
 		 */
 		{
 			let scrollbox = aTabBrowser.treeStyleTab.scrollBox;
+			if (!scrollbox.__treestyletab__ensureElementIsVisible) {
 			scrollbox.__treestyletab__ensureElementIsVisible = scrollbox.ensureElementIsVisible;
 			scrollbox.ensureElementIsVisible = function(...aArgs) {
 				var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;
@@ -568,6 +569,7 @@ var TreeStyleTabWindowHelper = {
 
 				this.__treestyletab__ensureElementIsVisible.apply(this, aArgs);
 			};
+			}
 		}
 
 		{
