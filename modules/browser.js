@@ -2957,11 +2957,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (this.isSmoothScrolling())
 			return;
 
-			let x = {}, y = {};
-			let scrollBoxObject = this.scrollBoxObject;
-			scrollBoxObject.getPosition(x, y);
-			if (x.value != lastX || y.value != lastY)
-				scrollBoxObject.scrollTo(lastX, lastY);
+		let x = {}, y = {};
+		let scrollBoxObject = this.scrollBoxObject;
+		scrollBoxObject.getPosition(x, y);
+		if (x.value != lastX || y.value != lastY)
+			scrollBoxObject.scrollTo(lastX, lastY);
 	},
  
 	clearLastScrollPosition : function TSTBrowser_clearLastScrollPosition() 
