@@ -6648,7 +6648,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		};
 		this.animationManager.addTask(
 			this.smoothScrollTask,
-			0, 0, this.smoothScrollDuration || aDuration, this.window
+			0, 0, aDuration || this.smoothScrollDuration, this.window
 		);
 	},
 	_getMaxScrollSize : function(aScrollBoxObject) {
