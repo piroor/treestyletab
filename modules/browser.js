@@ -1642,7 +1642,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		strip.addEventListener('MozMouseHittest', this, true); // to block default behaviors of the tab bar
 		strip.addEventListener('mousedown',       this, true);
 		strip.addEventListener('click',           this, true);
-		strip.addEventListener('DOMMouseScroll',  this, true);
 
 		this.scrollBox.addEventListener('overflow', this, true);
 		this.scrollBox.addEventListener('underflow', this, true);
@@ -2368,7 +2367,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		strip.removeEventListener('MozMouseHittest', this, true);
 		strip.removeEventListener('mousedown',       this, true);
 		strip.removeEventListener('click',           this, true);
-		strip.removeEventListener('DOMMouseScroll',  this, true);
 
 		this.scrollBox.removeEventListener('overflow', this, true);
 		this.scrollBox.removeEventListener('underflow', this, true);
@@ -2849,9 +2847,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 			case 'mousedown':
 				return this.onMouseDown(aEvent);
-
-			case 'DOMMouseScroll':
-				return this.onDOMMouseScroll(aEvent);
 
 			case 'scroll':
 				return this.onScroll(aEvent);
@@ -4849,11 +4844,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		else {
 			this.onMozMouseHittest(aEvent);
 		}
-	},
- 
-	onDOMMouseScroll : function TSTBrowser_onDOMMouseScroll(aEvent) 
-	{
-		this.cancelPerformingAutoScroll();
 	},
  
 	onScroll : function TSTBrowser_onScroll(aEvent) 
