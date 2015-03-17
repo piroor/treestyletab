@@ -6695,7 +6695,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			return;
 		var b          = this.mTabBrowser;
 		var descendant = this.getDescendantTabs(aTab);
-		var parentTabBox = aTab.boxObject;
+		var parentTabBox = this.getFutureBoxObject(aTab);
 
 		var containerPosition = this.tabStrip.boxObject[this.screenPositionProp];
 		var containerSize     = this.tabStrip.boxObject[this.sizeProp];
@@ -6719,10 +6719,13 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (this.isTabInViewport(aTab) && this.isTabInViewport(lastVisible))
 			return;
 
-		var lastPosition = lastVisible.boxObject[this.screenPositionProp];
-		var tabSize      = lastVisible.boxObject[this.sizeProp];
+		var lastVisibleBox = this.getFutureBoxObject(lastVisible);
+		var lastPosition = lastVisibleBox[this.screenPositionProp];
+		var tabSize      = lastVisibleBox[this.sizeProp];
 
-		if (lastPosition - parentPosition + tabSize > containerSize - tabSize) { // out of screen
+		var treeHeight = lastPosition - parentPosition + tabSize;
+		var treeIsLargerThanViewport = treeHeight > containerSize - tabSize;
+		if (treeIsLargerThanViewport) {
 			var endPos = parentPosition - this.getFirstNormalTab(b).boxObject[this.screenPositionProp] - tabSize * 0.5;
 			var endX = this.isVertical ? 0 : endPos ;
 			var endY = this.isVertical ? endPos : 0 ;
