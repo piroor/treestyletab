@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2014
+ * Portions created by the Initial Developer are Copyright (C) 2014-2015
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -103,21 +103,30 @@ BrowserUIShowHideObserver.prototype = {
 		if (this.handlingAttrChange)
 			return;
 
-		var size = this.serializeBoxSize();
-		if (this.lastSize == size)
+		var target = aMutation.target;
+		var state = this.serializeBoxState(target);
+		if (target.__treestyletab_mutationObserver_lastState == state)
 			return;
 
 		var TST = this.owner.browser.treeStyleTab;
+		var toolbarVisible     = !TST.ownerToolbar.collapsed;
+		var tabbarVisible      = this.owner.browser.tabContainer.visible;
+		var placeHolderVisible = !TST.tabStripPlaceHolder.collapsed;
+		var tabbarVisibilityMismatching = (
+			toolbarVisible != placeHolderVisible ||
+			tabbarVisible  != placeHolderVisible
+		);
+
 		if (
 			// I must ignore show/hide of elements managed by TST,
 			// to avoid infinity loop.
-			aMutation.target.hasAttribute(TreeStyleTabConstants.kTAB_STRIP_ELEMENT) &&
+			target.hasAttribute(TreeStyleTabConstants.kTAB_STRIP_ELEMENT) &&
 			// However, I have to synchronize visibility of the real
 			// tab bar and the placeholder's one. If they have
 			// different visibility, then the tab bar is shown or
 			// hidden by "auto hide tab bar" feature of someone
 			// (Pale Moon, Tab Mix Plus, etc.)
-			this.owner.browser.tabContainer.visible != TST.tabStripPlaceHolder.collapsed
+			!tabbarVisibilityMismatching
 			)
 			return;
 
@@ -127,17 +136,20 @@ BrowserUIShowHideObserver.prototype = {
 
 		var w = this.box.ownerDocument.defaultView;
 		w.setTimeout((function() {
-			this.lastSize = this.serializeBoxSize();
+			target.__treestyletab_mutationObserver_lastState = this.serializeBoxState(target);
 			this.handlingAttrChange = false;
 		}).bind(this), 10);
 	},
 
-	serializeBoxSize : function BrowserUIShowHideObserver_serializeBoxSize(aBox)
+	serializeBoxState : function BrowserUIShowHideObserver_serializeBoxState(aElement)
 	{
-		aBox = aBox || this.box.boxObject;
+		aElement = aElement || this.box;
+		var box = aElement.boxObject;
 		return JSON.stringify({
-			width  : aBox.width,
-			height : aBox.height
+			width  : box.width,
+			height : box.height,
+			hidden : Boolean(aElement.hidden),
+			collapsed : Boolean(aElement.collapsed)
 		});
 	}
 };
