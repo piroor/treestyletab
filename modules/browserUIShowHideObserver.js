@@ -144,10 +144,10 @@ BrowserUIShowHideObserver.prototype = {
 	serializeBoxState : function BrowserUIShowHideObserver_serializeBoxState(aElement)
 	{
 		aElement = aElement || this.box;
-		var box = aElement.boxObject;
+		var box = aElement.boxObject || {}; // Some times there is no boxObject (ex. HTML element)
 		return JSON.stringify({
-			width  : box.width,
-			height : box.height,
+			width  : box.width || 0,
+			height : box.height || 0,
 			hidden : Boolean(aElement.hidden),
 			collapsed : Boolean(aElement.collapsed)
 		});
