@@ -270,11 +270,9 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabService, {
 						'    if (!TSTTreeStructureApplied)\n' +
 						'      browserWindow.TreeStyleTabService.applyTreeStructureToTabs(tabs, TSTTreeStructure, TSTOpenGroupBookmarkBehavior & browserWindow.TreeStyleTabBookmarksService.kGROUP_BOOKMARK_EXPAND_ALL_TREE);\n' +
 						'    if (!loadInBackground) {\n' +
-						'      browserWindow.setTimeout(function() { // do after TabSelect\n' +
-						'        browserWindow.setTimeout(function() { // do after TabOpen handler\n' +
-						'          browserWindow.gBrowser.treeStyleTab.scrollToTabs(tabs);\n' +
-						'        }, 0);\n' +
-						'      }, 0);\n' +
+						'      browserWindow.setTimeout(function() {\n' +
+						'        browserWindow.gBrowser.treeStyleTab.scrollToTabs(tabs);\n' +
+						'      }, browserWindow.gBrowser.treeStyleTab.collapseDuration); // start scroll after expanding animation is finished\n' +
 						'    }\n' +
 						'  }\n' +
 						'$1'
