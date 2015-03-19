@@ -6728,18 +6728,27 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	{
 		if (!aTab.parentNode) // do nothing for closed tab!
 			return;
-		var b          = this.mTabBrowser;
-		var descendant = this.getDescendantTabs(aTab);
-		var parentTabBox = this.getFutureBoxObject(aTab);
+		var descendants = this.getDescendantTabs(firstTab);
+		return this.scrollToTabs([aTab].concat(descendants));
+	},
+ 
+	scrollToTabs : function TSTBrowser_scrollToTabs(aTabs) 
+	{
+		var firstTab = aTabs[0];
+		if (!firstTab.parentNode) // do nothing for closed tab!
+			return;
+
+		var b            = this.mTabBrowser;
+		var parentTabBox = this.getFutureBoxObject(firstTab);
 
 		var containerPosition = this.tabStrip.boxObject[this.screenPositionProp];
 		var containerSize     = this.tabStrip.boxObject[this.sizeProp];
 		var parentPosition    = parentTabBox[this.screenPositionProp];
 
-		var lastVisible = aTab;
-		for (let i = descendant.length-1; i > -1; i--)
+		var lastVisible = firstTab;
+		for (let i = aTabs.length-1; i > -1; i--)
 		{
-			let tab = descendant[i];
+			let tab = aTabs[i];
 			if (this.isCollapsed(tab))
 				continue;
 
@@ -6751,7 +6760,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			break;
 		}
 
-		if (this.isTabInViewport(aTab) && this.isTabInViewport(lastVisible))
+		if (this.isTabInViewport(firstTab) && this.isTabInViewport(lastVisible))
 			return;
 
 		var lastVisibleBox = this.getFutureBoxObject(lastVisible);
@@ -6766,14 +6775,14 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			var endY = this.isVertical ? endPos : 0 ;
 			this.scrollTo(endX, endY);
 		}
-		else if (!this.isTabInViewport(aTab) && this.isTabInViewport(lastVisible)) {
-			this.scrollToTab(aTab);
+		else if (!this.isTabInViewport(firstTab) && this.isTabInViewport(lastVisible)) {
+			this.scrollToTab(firstTab);
 		}
-		else if (this.isTabInViewport(aTab) && !this.isTabInViewport(lastVisible)) {
+		else if (this.isTabInViewport(firstTab) && !this.isTabInViewport(lastVisible)) {
 			this.scrollToTab(lastVisible);
 		}
 		else if (parentPosition < containerPosition) {
-			this.scrollToTab(aTab);
+			this.scrollToTab(firstTab);
 		}
 		else {
 			this.scrollToTab(lastVisible);
