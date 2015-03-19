@@ -6760,6 +6760,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			break;
 		}
 
+		this.cancelPerformingAutoScroll(true);
+
 		if (this.isTabInViewport(firstTab) && this.isTabInViewport(lastVisible))
 			return;
 
