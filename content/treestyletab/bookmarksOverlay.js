@@ -243,7 +243,7 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabService, {
 						'$1, aFolderTitle$2'
 					).replace(
 						'{',
-						'{ var TSTTreeStructure = null, TSTPreviousTabs, TSTOpenGroupBookmarkBehavior;'
+						'{ var TSTTreeStructure = null, TSTPreviousTabs, TSTTreeStructureApplied = true, TSTOpenGroupBookmarkBehavior;'
 					).replace(
 						'var urls = [];',
 						'$& var ids = [];'
@@ -258,6 +258,7 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabService, {
 						'var TSTResult = browserWindow.TreeStyleTabBookmarksService.handleTabsOpenProcess(where, aEvent, browserWindow, ids, urls, aFolderTitle);\n' +
 						'TSTTreeStructure = TSTResult.treeStructure;\n' +
 						'TSTPreviousTabs = TSTResult.previousTabs;\n' +
+						'TSTTreeStructureApplied = TSTResult.treeStructureApplied;\n' +
 						'TSTOpenGroupBookmarkBehavior = TSTResult.behavior;\n' +
 						'if (typeof replaceCurrentTab != "undefined")\n' +
 						'  replaceCurrentTab = TSTResult.replaceCurrentTab;\n' +
@@ -266,8 +267,9 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabService, {
 						/(\}\)?)$/,
 						'  if (TSTTreeStructure && TSTPreviousTabs) {\n' +
 						'    let tabs = browserWindow.TreeStyleTabService.getNewTabsFromPreviousTabsInfo(browserWindow.gBrowser, TSTPreviousTabs);\n' +
+						'    if (!TSTTreeStructureApplied)\n' +
+						'      browserWindow.TreeStyleTabService.applyTreeStructureToTabs(tabs, TSTTreeStructure, TSTOpenGroupBookmarkBehavior & browserWindow.TreeStyleTabBookmarksService.kGROUP_BOOKMARK_EXPAND_ALL_TREE);\n' +
 						'    browserWindow.gBrowser.treeStyleTab.scrollToTabs(tabs);\n' +
-						'    browserWindow.TreeStyleTabService.applyTreeStructureToTabs(tabs, TSTTreeStructure, TSTOpenGroupBookmarkBehavior & browserWindow.TreeStyleTabBookmarksService.kGROUP_BOOKMARK_EXPAND_ALL_TREE);\n' +
 						'  }\n' +
 						'$1'
 					));
@@ -385,7 +387,8 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabService, {
 		var result = {
 				behavior      : undefined,
 				treeStructure : undefined,
-				previousTabs  : undefined
+				previousTabs  : undefined,
+				treeStructureApplied : false
 			};
 		if (
 			aEvent.type != 'drop' &&
@@ -445,14 +448,17 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabService, {
 				}
 			}
 
+			result.treeStructure = treeStructure;
+			result.previousTabs = aBrowserWindow.TreeStyleTabService.getTabsInfo(aBrowserWindow.gBrowser);
+
 			if (TreeStyleTabUtils.getTreePref('compatibility.TMP') &&
 				'TMP_Places' in aBrowserWindow &&
 				'openGroup' in aBrowserWindow.TMP_Places) {
-				result.treeStructure = treeStructure;
-				result.previousTabs = aBrowserWindow.TreeStyleTabService.getTabsInfo(aBrowserWindow.gBrowser);
+				result.treeStructureApplied = false;
 			}
 			else {
 				sv.readyToOpenNewTabGroup(null, treeStructure, result.behavior & sv.kGROUP_BOOKMARK_EXPAND_ALL_TREE);
+				result.treeStructureApplied = true;
 			}
 		}
 		return result;
