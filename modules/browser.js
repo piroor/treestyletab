@@ -6728,7 +6728,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	{
 		if (!aTab.parentNode) // do nothing for closed tab!
 			return;
-		var descendants = this.getDescendantTabs(firstTab);
+		var descendants = this.getDescendantTabs(aTab);
 		return this.scrollToTabs([aTab].concat(descendants));
 	},
  
