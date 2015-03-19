@@ -269,7 +269,8 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabService, {
 						'    let tabs = browserWindow.TreeStyleTabService.getNewTabsFromPreviousTabsInfo(browserWindow.gBrowser, TSTPreviousTabs);\n' +
 						'    if (!TSTTreeStructureApplied)\n' +
 						'      browserWindow.TreeStyleTabService.applyTreeStructureToTabs(tabs, TSTTreeStructure, TSTOpenGroupBookmarkBehavior & browserWindow.TreeStyleTabBookmarksService.kGROUP_BOOKMARK_EXPAND_ALL_TREE);\n' +
-						'    browserWindow.gBrowser.treeStyleTab.scrollToTabs(tabs);\n' +
+						'    if (!loadInBackground)\n' +
+						'      browserWindow.gBrowser.treeStyleTab.scrollToTabs(tabs);\n' +
 						'  }\n' +
 						'$1'
 					));
