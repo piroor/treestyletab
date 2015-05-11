@@ -1,7 +1,7 @@
 (function() {
 	/**
 	 * On secondary (and later) window, SSWindowStateBusy event can be fired
-	 * before DOMContentLoad, on "domwindowopened".
+	 * before DOMContentLoaded, on "domwindowopened".
 	 */
 	var SSWindowStateBusyListener = function TSTSSWindowStateBusyListener(aEvent) {
 			window.removeEventListener(aEvent.type, TSTSSWindowStateBusyListener, false);
@@ -9,8 +9,8 @@
 			SSWindowStateBusyListener = undefined;
 		};
 	window.addEventListener('SSWindowStateBusy', SSWindowStateBusyListener, false);
-	window.addEventListener('DOMContentLoad', function onDOMContentLoad(aEvent) {
-		window.removeEventListener(aEvent.type, onDOMContentLoad, false);
+	window.addEventListener('DOMContentLoaded', function onDOMContentLoaded(aEvent) {
+		window.removeEventListener(aEvent.type, onDOMContentLoaded, false);
 		if (SSWindowStateBusyListener) {
 			window.removeEventListener('SSWindowStateBusy', TSTSSWindowStateBusyListener, false);
 			SSWindowStateBusyListener = undefined;
