@@ -12,7 +12,7 @@
 	window.addEventListener('DOMContentLoaded', function onDOMContentLoaded(aEvent) {
 		window.removeEventListener(aEvent.type, onDOMContentLoaded, false);
 		if (SSWindowStateBusyListener) {
-			window.removeEventListener('SSWindowStateBusy', TSTSSWindowStateBusyListener, false);
+			window.removeEventListener('SSWindowStateBusy', SSWindowStateBusyListener, false);
 			SSWindowStateBusyListener = undefined;
 		}
 	}, false);
