@@ -28,9 +28,9 @@
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:first-child:hover,
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab:first-child[selected="true"],
+  .tabbrowser-tab:first-child[visuallyselected="true"],
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab:first-child[selected="true"]:hover {
+  .tabbrowser-tab:first-child[visuallyselected="true"]:hover {
 	margin-top: 5px !important;
 }
 
@@ -146,7 +146,7 @@ tabbrowser[treestyletab-tabbar-position="right"]
   .tabbrowser-tab:hover
   .tab-icon,
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"]:hover
+  .tabbrowser-tab[visuallyselected="true"]:hover
   .tab-icon {
 	background: url("icon-bg.png") no-repeat right center !important;
 }
@@ -154,7 +154,7 @@ tabbrowser[treestyletab-tabbar-position="right"]
   .tabbrowser-tab:hover
   .tab-icon,
 .tabbrowser-tabs[treestyletab-tab-contents-inverted="true"]
-  .tabbrowser-tab[selected="true"]:hover
+  .tabbrowser-tab[visuallyselected="true"]:hover
   .tab-icon {
 	background-position: left center !important;
 }

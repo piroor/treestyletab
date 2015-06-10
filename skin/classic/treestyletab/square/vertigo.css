@@ -4,12 +4,12 @@
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:not([pinned]),
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([pinned]):not([selected="true"]),
+  .tabbrowser-tab:not([pinned]):not([visuallyselected="true"]),
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   :-moz-any(.tabbrowser-tab[pinned]:not([titlechanged]),
-            .tabbrowser-tab[pinned]:not([titlechanged]):not([selected="true"]),
+            .tabbrowser-tab[pinned]:not([titlechanged]):not([visuallyselected="true"]),
             .tabbrowser-tab[pinned][titlechanged]:not(.treestyletab-faviconized),
-            .tabbrowser-tab[pinned][titlechanged]:not(.treestyletab-faviconized):not([selected="true"])),
+            .tabbrowser-tab[pinned][titlechanged]:not(.treestyletab-faviconized):not([visuallyselected="true"])),
 :root[tabFx2Compatible-flags~="mac"]
   .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   :-moz-any(.tabbrowser-tab[pinned],
@@ -18,71 +18,71 @@
 }
 
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([selected="true"]) {
+  .tabbrowser-tab:not([visuallyselected="true"]) {
 	-moz-border-top-colors: transparent transparent !important;
 	-moz-border-bottom-colors: transparent transparent !important;
 }
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([selected="true"]):not([pinned]),
+  .tabbrowser-tab:not([visuallyselected="true"]):not([pinned]),
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([selected="true"])[pinned]:not([titlechanged])) {
+  .tabbrowser-tab:not([visuallyselected="true"])[pinned]:not([titlechanged])) {
 	background: transparent !important;
 }
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([selected="true"]):hover {
+  .tabbrowser-tab:not([visuallyselected="true"]):hover {
 	-moz-border-top-colors: #e0e8f6 #e0e8f6 !important;
 	-moz-border-bottom-colors: #e0e8f6 #e0e8f6 !important;
 }
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([selected="true"]):not([pinned]):hover,
+  .tabbrowser-tab:not([visuallyselected="true"]):not([pinned]):hover,
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([selected="true"])[pinned]:not([titlechanged]):hover {
+  .tabbrowser-tab:not([visuallyselected="true"])[pinned]:not([titlechanged]):hover {
 	background-color: #e0e8f6 !important;
 }
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab[selected="true"] {
+  .tabbrowser-tab[visuallyselected="true"] {
 	-moz-border-top-colors: #c1d2ee #c1d2ee !important;
 	-moz-border-bottom-colors: #c1d2ee #c1d2ee !important;
 }
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab[selected="true"] {
+  .tabbrowser-tab[visuallyselected="true"] {
 	background-color: #c1d2ee !important;
 }
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab[selected="true"]:hover {
+  .tabbrowser-tab[visuallyselected="true"]:hover {
 	-moz-border-top-colors: #d1e2fe #d1e2fe !important;
 	-moz-border-bottom-colors: #d1e2fe #d1e2fe !important;
 }
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab[selected="true"]:hover {
+  .tabbrowser-tab[visuallyselected="true"]:hover {
 	background-color: #d1e2fe !important;
 }
 
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([selected="true"]),
+  .tabbrowser-tab:not([visuallyselected="true"]),
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tabbrowser-tab:not([selected="true"]) {
+  .tabbrowser-tab:not([visuallyselected="true"]) {
 	-moz-border-left-colors: transparent transparent !important;
 	-moz-border-right-colors: transparent transparent !important;
 }
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([selected="true"]):hover,
+  .tabbrowser-tab:not([visuallyselected="true"]):hover,
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tabbrowser-tab:not([selected="true"]):hover {
+  .tabbrowser-tab:not([visuallyselected="true"]):hover {
 	-moz-border-left-colors: #e0e8f6 #e0e8f6 !important;
 	-moz-border-right-colors: #e0e8f6 #e0e8f6 !important;
 }
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab[selected="true"],
+  .tabbrowser-tab[visuallyselected="true"],
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tabbrowser-tab[selected="true"] {
+  .tabbrowser-tab[visuallyselected="true"] {
 	-moz-border-left-colors: #c1d2ee #c1d2ee !important;
 	-moz-border-right-colors: #c1d2ee #c1d2ee !important;
 }
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab[selected="true"]:hover,
+  .tabbrowser-tab[visuallyselected="true"]:hover,
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tabbrowser-tab[selected="true"]:hover {
+  .tabbrowser-tab[visuallyselected="true"]:hover {
 	-moz-border-left-colors: #d1e2fe #d1e2fe !important;
 	-moz-border-right-colors: #d1e2fe #d1e2fe !important;
 }

@@ -105,7 +105,7 @@
 .tabbrowser-tabs[treestyletab-twisty-style="osx"]
   .treestyletab-twisty:active,
 .tabbrowser-tabs[treestyletab-twisty-style="osx"]
-  .tabbrowser-tab[selected="true"] .treestyletab-twisty {
+  .tabbrowser-tab[visuallyselected="true"] .treestyletab-twisty {
 	opacity: 1;
 }
 
@@ -116,13 +116,13 @@
 .tabbrowser-tabs:not([treestyletab-twisty-style="osx"])
   .tabbrowser-tab[treestyletab-twisty-hover="true"] .treestyletab-twisty,
 .tabbrowser-tabs[treestyletab-twisty-style="osx"]
-  .tabbrowser-tab[selected="true"] .treestyletab-twisty {
+  .tabbrowser-tab[visuallyselected="true"] .treestyletab-twisty {
 	-moz-image-region: rect(16px, 32px, 32px, 16px);
 }
 .tabbrowser-tabs:not([treestyletab-twisty-style="osx"])
   .tabbrowser-tab[treestyletab-subtree-collapsed="true"][treestyletab-twisty-hover="true"] .treestyletab-twisty,
 .tabbrowser-tabs[treestyletab-twisty-style="osx"]
-  .tabbrowser-tab[treestyletab-subtree-collapsed="true"][selected="true"] .treestyletab-twisty {
+  .tabbrowser-tab[treestyletab-subtree-collapsed="true"][visuallyselected="true"] .treestyletab-twisty {
 	-moz-image-region: rect(16px, 16px, 32px, 0);
 }
 

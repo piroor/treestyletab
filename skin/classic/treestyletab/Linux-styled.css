@@ -4,9 +4,9 @@
 /* horizontal tree */
 
 .tabbrowser-tabs[treestyletab-tabbar-position="top"][treestyletab-tabs-indented="true"]
-  .tabbrowser-tab:not([selected="true"]),
+  .tabbrowser-tab:not([visuallyselected="true"]),
 .tabbrowser-tabs[treestyletab-tabbar-position="top"][treestyletab-tabs-indented="true"]
-  .tabbrowser-tab[selected="true"] {
+  .tabbrowser-tab[visuallyselected="true"] {
 	border-radius: 0 0 0 0;
 	-moz-border-radius: 0 0 0 0;
 	height: 1.5em;

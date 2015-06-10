@@ -78,7 +78,7 @@
 	width: 0;
 }
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:hover .tab-background:not([selected="true"]) {
+  .tabbrowser-tab:hover .tab-background:not([visuallyselected="true"]) {
 	background-image: none;
 }
 
@@ -86,9 +86,9 @@
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab,
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab[selected="true"],
+  .tabbrowser-tab[visuallyselected="true"],
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([selected="true"]) {
+  .tabbrowser-tab:not([visuallyselected="true"]) {
 	appearance: none !important;
 	-moz-appearance: none !important;
 	min-height: 2em;
@@ -112,27 +112,27 @@
 /* override "-moz-menutext" color defined by the default theme, because it is too bright on Ubuntu */
 #TabsToolbar:not(:-moz-lwtheme):not([treestyletab-tabbar-position="top"])
   #tabbrowser-tabs
-  .tabbrowser-tab:not([selected]) {
+  .tabbrowser-tab:not([visuallyselected]) {
 	color: -moz-dialogtext !important;
 }
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:not([pinned]),
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([pinned])[selected="true"],
+  .tabbrowser-tab:not([pinned])[visuallyselected="true"],
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([pinned]):not([selected="true"]) {
+  .tabbrowser-tab:not([pinned]):not([visuallyselected="true"]) {
 	background: -moz-dialog repeat-x !important;
 }
 
 /* highlighted pinned tabs */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned][titlechanged]:not([selected="true"]) {
+  .tabbrowser-tab[pinned][titlechanged]:not([visuallyselected="true"]) {
 	background-image: radial-gradient(circle farthest-corner at 50% 3px,
 	                                  ThreeDHighlight 3%,
 	                                  Highlight 80%);
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned][titlechanged]:not([selected="true"]):hover {
+  .tabbrowser-tab[pinned][titlechanged]:not([visuallyselected="true"]):hover {
 	background-image: radial-gradient(circle farthest-corner at 50% 3px,
 	                                  ThreeDHighlight 3%,
 	                                  Highlight 100%);
@@ -140,11 +140,11 @@
 
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   :-moz-any(.tabbrowser-tab[pinned]:not([titlechanged]),
-            .tabbrowser-tab[pinned]:not([titlechanged])[selected="true"],
-            .tabbrowser-tab[pinned]:not([titlechanged]):not([selected="true"]),
+            .tabbrowser-tab[pinned]:not([titlechanged])[visuallyselected="true"],
+            .tabbrowser-tab[pinned]:not([titlechanged]):not([visuallyselected="true"]),
             .tabbrowser-tab[pinned][titlechanged]:not(.treestyletab-faviconized),
-            .tabbrowser-tab[pinned][titlechanged]:not(.treestyletab-faviconized)[selected="true"],
-            .tabbrowser-tab[pinned][titlechanged]:not(.treestyletab-faviconized):not([selected="true"])),
+            .tabbrowser-tab[pinned][titlechanged]:not(.treestyletab-faviconized)[visuallyselected="true"],
+            .tabbrowser-tab[pinned][titlechanged]:not(.treestyletab-faviconized):not([visuallyselected="true"])),
 :root[tabFx2Compatible-flags~="mac"]
   .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   :-moz-any(.tabbrowser-tab[pinned],
@@ -152,35 +152,35 @@
 	background: -moz-dialog repeat-x !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-firsttab-border="true"]
-  .tabbrowser-tab:not([pinned="true"]):not([selected="true"]):first-child {
+  .tabbrowser-tab:not([pinned="true"]):not([visuallyselected="true"]):first-child {
 	-moz-border-top-colors: ThreeDShadow transparent !important;
 }
 
 
 /* for Mac OS X */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  :-moz-any(.tab-content:not([pinned="true"]):not([selected="true"]),
-            .tab-content:not([pinned="true"])[selected="true"]) {
+  :-moz-any(.tab-content:not([pinned="true"]):not([visuallyselected="true"]),
+            .tab-content:not([pinned="true"])[visuallyselected="true"]) {
 	border: 0 none !important;
 	background: transparent !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  :-moz-any(.tab-background-start:not([selected="true"]),
-            .tab-background-middle:not([selected="true"]),
-            .tab-background-end:not([selected="true"]),
-            .tab-background-start[selected="true"],
-            .tab-background-middle[selected="true"],
-            .tab-background-end[selected="true"]) {
+  :-moz-any(.tab-background-start:not([visuallyselected="true"]),
+            .tab-background-middle:not([visuallyselected="true"]),
+            .tab-background-end:not([visuallyselected="true"]),
+            .tab-background-start[visuallyselected="true"],
+            .tab-background-middle[visuallyselected="true"],
+            .tab-background-end[visuallyselected="true"]) {
 	mask: none !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  :-moz-any(.tab-background-start:not([selected="true"]),
-            .tab-background-middle:not([selected="true"]):not([pinned]),
-            .tab-background-middle:not([selected="true"])[pinned]:not([titlechanged]),
-            .tab-background-end:not([selected="true"]),
-            .tab-background-start[selected="true"],
-            .tab-background-middle[selected="true"],
-            .tab-background-end[selected="true"]) {
+  :-moz-any(.tab-background-start:not([visuallyselected="true"]),
+            .tab-background-middle:not([visuallyselected="true"]):not([pinned]),
+            .tab-background-middle:not([visuallyselected="true"])[pinned]:not([titlechanged]),
+            .tab-background-end:not([visuallyselected="true"]),
+            .tab-background-start[visuallyselected="true"],
+            .tab-background-middle[visuallyselected="true"],
+            .tab-background-end[visuallyselected="true"]) {
 	background: transparent !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
@@ -208,19 +208,19 @@
 }
 
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab[selected="true"] {
+  .tabbrowser-tab[visuallyselected="true"] {
 	margin: 0 !important;
 	-moz-border-top-colors: ThreeDHighlight transparent !important;
 	-moz-border-bottom-colors: ThreeDShadow transparent !important;
 }
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab[selected="true"]:not([pinned]) {
+  .tabbrowser-tab[visuallyselected="true"]:not([pinned]) {
 	padding: 0 0.2em !important;
 }
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([pinned])[selected="true"],
+  .tabbrowser-tab:not([pinned])[visuallyselected="true"],
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab[pinned][selected="true"] {
+  .tabbrowser-tab[pinned][visuallyselected="true"] {
 	background-color: ThreeDHighlight !important;
 }
 
@@ -235,16 +235,16 @@
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab,
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"],
+  .tabbrowser-tab[visuallyselected="true"],
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab:not([selected="true"]) {
+  .tabbrowser-tab:not([visuallyselected="true"]) {
 	border-left: 2px solid !important;
 	-moz-border-left-colors: ThreeDLightShadow transparent !important;
 	border-right: 2px solid !important;
 	-moz-border-right-colors: ThreeDLightShadow transparent !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"] {
+  .tabbrowser-tab[visuallyselected="true"] {
 	-moz-border-left-colors: ThreeDLightShadow transparent !important;
 	-moz-border-right-colors: ThreeDLightShadow transparent !important;
 }
@@ -258,9 +258,9 @@
 .tabbrowser-tabs[treestyletab-tabbar-position="bottom"]
   .tabbrowser-tab,
 .tabbrowser-tabs[treestyletab-tabbar-position="bottom"]
-  .tabbrowser-tab[selected="true"],
+  .tabbrowser-tab[visuallyselected="true"],
 .tabbrowser-tabs[treestyletab-tabbar-position="bottom"]
-  .tabbrowser-tab:not([selected="true"]) {
+  .tabbrowser-tab:not([visuallyselected="true"]) {
 	border-right: 2px solid !important;
 	-moz-border-right-colors: ThreeDShadow transparent !important;
 	border-left: 2px solid !important;
@@ -279,15 +279,15 @@
 /* padding */
 
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab[selected="true"]:not([pinned]),
+  .tabbrowser-tab[visuallyselected="true"]:not([pinned]),
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([selected="true"]):not([pinned]),
-.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab
-  .tab-content[selected="true"]:not([pinned]),
+  .tabbrowser-tab:not([visuallyselected="true"]):not([pinned]),
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab
-  .tab-content:not([selected="true"]):not([pinned]) {
+  .tab-content[visuallyselected="true"]:not([pinned]),
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab
+  .tab-content:not([visuallyselected="true"]):not([pinned]) {
 	padding: 0 0.2em !important;
 }
 

@@ -56,6 +56,7 @@ XPCOMUtils.defineLazyModuleGetter(this, 'TabpanelDNDObserver', 'resource://trees
 XPCOMUtils.defineLazyModuleGetter(this, 'AutoHideBrowser', 'resource://treestyletab-modules/autoHide.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'ContentBridge', 'resource://treestyletab-modules/contentBridge.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'BrowserUIShowHideObserver', 'resource://treestyletab-modules/browserUIShowHideObserver.js');
+XPCOMUtils.defineLazyModuleGetter(this, 'visuallyselectedTabs', 'resource://treestyletab-modules/lib/visuallyselectedTabs.jsm');
 
 XPCOMUtils.defineLazyGetter(this, 'window', function() {
 	Cu.import('resource://treestyletab-modules/lib/namespace.jsm');
@@ -778,6 +779,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var d = this.document;
 		var b = this.mTabBrowser;
 		b.tabContainer.treeStyleTab = this;
+
+		visuallyselectedTabs(b);
 
 		this.tabsHash = {};
 

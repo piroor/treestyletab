@@ -14,11 +14,11 @@
 
 #main-window
   .tabbrowser-tabs[treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
-  .tabbrowser-tab:not([selected="true"])
+  .tabbrowser-tab:not([visuallyselected="true"])
   .tab-close-button,
 #main-window
   .tabbrowser-tabs[treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
-  .tabbrowser-tab[selected="true"]
+  .tabbrowser-tab[visuallyselected="true"]
   .tab-close-button {
 	background-position: left bottom;
 	background-repeat: repeat-x;
@@ -26,15 +26,15 @@
 
 #main-window:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
-  .tabbrowser-tab:not([selected="true"])
+  .tabbrowser-tab:not([visuallyselected="true"])
   .tab-close-button,
 #main-window:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
-  .tabbrowser-tab[selected="true"]
+  .tabbrowser-tab[visuallyselected="true"]
   .tab-close-button,
 #main-window:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-mode="horizontal"][treestyletab-tabs-indented="true"]
-  .tabbrowser-tab[selected="true"]
+  .tabbrowser-tab[visuallyselected="true"]
   .tab-close-button {
 	background-position: left bottom;
 	background-repeat: repeat-x;

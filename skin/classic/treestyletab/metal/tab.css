@@ -5,9 +5,9 @@
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:hover,
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"],
+  .tabbrowser-tab[visuallyselected="true"],
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"]:hover {
+  .tabbrowser-tab[visuallyselected="true"]:hover {
 	appearance: none !important;
 	-moz-appearance: none !important;
 	border: 2px solid transparent !important;
@@ -34,9 +34,9 @@
   :-moz-any(.tabbrowser-tab:not([pinned]),
             .tabbrowser-tab[pinned]:not([titlechanged])):hover,
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"],
+  .tabbrowser-tab[visuallyselected="true"],
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"]:hover {
+  .tabbrowser-tab[visuallyselected="true"]:hover {
 	background: none transparent !important;
 }
 
@@ -58,44 +58,44 @@
 	width: 0;
 }
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:hover .tab-background:not([selected="true"]) {
+  .tabbrowser-tab:hover .tab-background:not([visuallyselected="true"]) {
 	background-image: none;
 }
 
 /* for Mac OS X */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  :-moz-any(.tab-content:not([pinned]):not([selected="true"]),
-            .tab-content[pinned]:not([titlechanged]):not([selected="true"]),
-            .tab-content:not([pinned])[selected="true"],
-            .tab-content[pinned]:not([titlechanged])[selected="true"],
-            .tab-background-start:not([selected="true"]),
-            .tab-background-middle:not([selected="true"]):not([pinned]),
-            .tab-background-middle:not([selected="true"])[pinned]:not([titlechanged]),
-            .tab-background-end:not([selected="true"]),
-            .tab-background-start[selected="true"],
-            .tab-background-middle[selected="true"],
-            .tab-background-end[selected="true"]) {
+  :-moz-any(.tab-content:not([pinned]):not([visuallyselected="true"]),
+            .tab-content[pinned]:not([titlechanged]):not([visuallyselected="true"]),
+            .tab-content:not([pinned])[visuallyselected="true"],
+            .tab-content[pinned]:not([titlechanged])[visuallyselected="true"],
+            .tab-background-start:not([visuallyselected="true"]),
+            .tab-background-middle:not([visuallyselected="true"]):not([pinned]),
+            .tab-background-middle:not([visuallyselected="true"])[pinned]:not([titlechanged]),
+            .tab-background-end:not([visuallyselected="true"]),
+            .tab-background-start[visuallyselected="true"],
+            .tab-background-middle[visuallyselected="true"],
+            .tab-background-end[visuallyselected="true"]) {
 	border: 0 none !important;
 	background: transparent !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  :-moz-any(.tab-background-start:not([selected="true"]),
-            .tab-background-middle:not([selected="true"]),
-            .tab-background-end:not([selected="true"]),
-            .tab-background-start[selected="true"],
-            .tab-background-middle[selected="true"],
-            .tab-background-end[selected="true"]) {
+  :-moz-any(.tab-background-start:not([visuallyselected="true"]),
+            .tab-background-middle:not([visuallyselected="true"]),
+            .tab-background-end:not([visuallyselected="true"]),
+            .tab-background-start[visuallyselected="true"],
+            .tab-background-middle[visuallyselected="true"],
+            .tab-background-end[visuallyselected="true"]) {
 	mask: none !important;
 }
 /* highlighted pinned tabs */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned][titlechanged]:not([selected="true"]) .tab-background {
+  .tabbrowser-tab[pinned][titlechanged]:not([visuallyselected="true"]) .tab-background {
 	background-image: radial-gradient(circle farthest-corner at 50% 3px,
 	                                  Highlight 3%,
 	                                  rgba(255, 255, 255, 0) 80%);
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned][titlechanged]:not([selected="true"]):hover .tab-background {
+  .tabbrowser-tab[pinned][titlechanged]:not([visuallyselected="true"]):hover .tab-background {
 	background-image: radial-gradient(circle farthest-corner at 50% 3px,
 	                                  Highlight 3%,
 	                                  rgba(255, 255, 255, 0) 100%);
@@ -165,7 +165,7 @@
 
 /* foreground, left */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"]:not([pinned])
+  .tabbrowser-tab[visuallyselected="true"]:not([pinned])
   .tab-stack {
 	-moz-border-image: url("tab-active-selected-l.png") 10 5 10 10 / 10px 5px 10px 10px !important;
 	-moz-border-image-slice: 10 5 10 10 fill !important;
@@ -174,7 +174,7 @@
 
 /* foreground, right */
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tabbrowser-tab[selected="true"]:not([pinned])
+  .tabbrowser-tab[visuallyselected="true"]:not([pinned])
   .tab-stack {
 	-moz-border-image: url("tab-active-selected-r.png") 10 10 10 5 / 10px 10px 10px 5px !important;
 	-moz-border-image-slice: 10 10 10 5 fill !important;
@@ -191,10 +191,10 @@
   .tabbrowser-tab:hover
   .tab-content[pinned],
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected]:not(:hover)
+  .tabbrowser-tab[visuallyselected]:not(:hover)
   .tab-content[pinned],
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected]:hover
+  .tabbrowser-tab[visuallyselected]:hover
   .tab-content[pinned] {
 	-moz-border-image: none !important;
 	border-image: none !important;
@@ -209,10 +209,10 @@
   .tab-content[pinned]:not([titlechanged]),
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:not(:hover)
-  .tab-content[pinned][selected],
+  .tab-content[pinned][visuallyselected],
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:hover
-  .tab-content[pinned][selected] {
+  .tab-content[pinned][visuallyselected] {
 	background: none !important;
 }
 
@@ -221,9 +221,9 @@
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned]:hover,
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned][selected="true"]:not(:hover),
+  .tabbrowser-tab[pinned][visuallyselected="true"]:not(:hover),
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned][selected="true"]:hover {
+  .tabbrowser-tab[pinned][visuallyselected="true"]:hover {
 	border: none !important;
 	border-radius: 0 !important;
 	-moz-border-radius: 0 !important;
@@ -234,9 +234,9 @@
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned]:not([titlechanged]):hover,
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned][selected="true"]:not(:hover),
+  .tabbrowser-tab[pinned][visuallyselected="true"]:not(:hover),
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[pinned][selected="true"]:hover {
+  .tabbrowser-tab[pinned][visuallyselected="true"]:hover {
 	background: none !important;
 }
 
@@ -256,10 +256,10 @@
   .tab-content[pinned],
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:not(:hover)
-  .tab-content[pinned][selected="true"],
+  .tab-content[pinned][visuallyselected="true"],
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:hover
-  .tab-content[pinned][selected="true"] {
+  .tab-content[pinned][visuallyselected="true"] {
 	line-height: 1 !important;
 	border: 1px solid #666666 !important;
 	border-radius: 4px !important;
@@ -275,19 +275,19 @@
   .tab-content[pinned]:not([titlechanged]),
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:not(:hover)
-  .tab-content[selected="true"][pinned],
+  .tab-content[visuallyselected="true"][pinned],
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:hover
-  .tab-content[selected="true"][pinned] {
+  .tab-content[visuallyselected="true"][pinned] {
 	background: #9d9d9d !important;
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:not(:hover)
-  .tab-content[selected="true"][pinned],
+  .tab-content[visuallyselected="true"][pinned],
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:hover
-  .tab-content[selected="true"][pinned] {
+  .tab-content[visuallyselected="true"][pinned] {
 	background-color: #b3b2b3 !important;
 }
 
@@ -319,7 +319,7 @@
 /* foreground, left */
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"]:not([pinned])
+  .tabbrowser-tab[visuallyselected="true"]:not([pinned])
   .tab-stack{
 	-moz-border-image: url("tab-inactive-selected-l.png") 10 5 10 10 / 10px 5px 10px 10px !important;
 	-moz-border-image-slice: 10 5 10 10 fill !important;
@@ -329,7 +329,7 @@
 /* foreground, right */
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
-  .tabbrowser-tab[selected="true"]:not([pinned])
+  .tabbrowser-tab[visuallyselected="true"]:not([pinned])
   .tab-stack{
 	-moz-border-image: url("tab-inactive-selected-r.png") 10 10 10 5 / 10px 10px 10px 5px !important;
 	-moz-border-image-slice: 10 10 10 5 fill !important;
@@ -353,11 +353,11 @@
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab
-  .tab-content[pinned][selected="true"],
+  .tab-content[pinned][visuallyselected="true"],
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:hover
-  .tab-content[pinned][selected="true"] {
+  .tab-content[pinned][visuallyselected="true"] {
 	background: #e4e4e4 !important;
 }
 

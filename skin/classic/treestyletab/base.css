@@ -103,9 +103,9 @@
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])[movingtab]
   .tabbrowser-tab[beforeselected]:not([last-visible-tab])::after,
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:not([selected]):not([afterselected-visible]):not([afterhovered]):not([first-visible-tab]):not(:hover)::before,
+  .tabbrowser-tab:not([visuallyselected]):not([afterselected-visible]):not([afterhovered]):not([first-visible-tab]):not(:hover)::before,
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"]):not([overflow])
-  .tabbrowser-tab[last-visible-tab]:not([selected]):not([beforehovered]):not(:hover)::after {
+  .tabbrowser-tab[last-visible-tab]:not([visuallyselected]):not([beforehovered]):not(:hover)::after {
 	/* hide it anyway!! */
 	content: none;
 	display: none;
@@ -126,8 +126,8 @@
     https://github.com/piroor/treestyletab/pull/843
  */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab:not([selected="true"]),
+  .tabbrowser-tab:not([visuallyselected="true"]),
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[selected="true"] {
+  .tabbrowser-tab[visuallyselected="true"] {
 	z-index: auto;
 }

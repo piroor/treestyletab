@@ -24,7 +24,7 @@
 
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab
-  .tab-background[selected="true"] {
+  .tab-background[visuallyselected="true"] {
 	background-color: #c1d2ee !important;
 	background-image: -moz-linear-gradient(
 	                    top,
@@ -50,7 +50,7 @@
 
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:hover
-  .tab-background[selected="true"] {
+  .tab-background[visuallyselected="true"] {
 	background-color: #d1e2fe !important;
 	background-image: -moz-linear-gradient(
 	                    top,
