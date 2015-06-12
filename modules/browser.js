@@ -359,7 +359,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			this.window.UndoTabService.doOperation(
 				function() {
 					self._changeTabbarPosition(position);
-					delete self._temporaryPosition;
 				},
 				{
 					label  : utils.treeBundle.getString('undo_changeTabbarPosition_label'),
@@ -374,7 +373,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 		else {
 			this._changeTabbarPosition(position);
-			delete this._temporaryPosition;
 		}
 		return position;
 	},
@@ -1623,6 +1621,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		return new Promise((function(aResolve, aReject) {
 			var onInitialized = (function() {
 				this.mTabBrowser.removeEventListener(this.kEVENT_TYPE_TABBAR_INITIALIZED, onInitialized, false);
+				if (!aIsTemporaryChange)
+					delete this._temporaryPosition;
 				aResolve();
 			}).bind(this);
 			this.mTabBrowser.addEventListener(this.kEVENT_TYPE_TABBAR_INITIALIZED, onInitialized, false);
