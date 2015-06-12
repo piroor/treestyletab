@@ -56,7 +56,9 @@ ContentBridge.install = function CB_installScript(aWindow) {
 };
 
 ContentBridge.uninstall = function CB_installScript(aWindow) {
-	aWindow.messageManager.broadcastAsyncCommand(TreeStyleTabConstants.COMMAND_SHUTDOWN);
+	aWindow.messageManager.broadcastAsyncMessage(TreeStyleTabConstants.MESSAGE_TYPE, {
+		command : TreeStyleTabConstants.COMMAND_SHUTDOWN
+	});
 };
  
 ContentBridge.prototype = inherit(TreeStyleTabConstants, { 
