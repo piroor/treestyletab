@@ -1619,6 +1619,14 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		toolboxContainer = null;
 		scrollInnerBox = null;
 		scrollInnerBox = null;
+
+		return new Promise((function(aResolve, aReject) {
+			var onInitialized = (function() {
+				this.mTabBrowser.removeEventListener(this.kEVENT_TYPE_TABBAR_INITIALIZED, onInitialized, false);
+				aResolve();
+			}).bind(this);
+			this.mTabBrowser.addEventListener(this.kEVENT_TYPE_TABBAR_INITIALIZED, onInitialized, false);
+		}).bind(this));
 	},
 	
 	_startListenTabbarEvents : function TSTBrowser_startListenTabbarEvents() 
@@ -2393,25 +2401,33 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
    
 /* toolbar customization */ 
 	
-	syncDestroyTabbar : function TSTBrowser_syncDestroyTabbar() 
+	destroyTabbar : function TSTBrowser_destroyTabbar() 
 	{
+		this._endListenTabbarEvents();
+		this.tabbarDNDObserver.endListenEvents();
+
 		this._lastTreeViewEnabledBeforeDestroyed = this.treeViewEnabled;
 		this.treeViewEnabled = false;
 		this.maxTreeLevel = 0;
 
 		this._lastTabbarPositionBeforeDestroyed = this.position;
 		if (this.position != 'top') {
-			let self = this;
-			this.doAndWaitDOMEvent(
-				this.kEVENT_TYPE_TABBAR_POSITION_CHANGED,
-				this.window,
-				100,
-				function() {
-					self.temporaryPosition = 'top';
-				}
-			);
+			new Promise((function(aResolve, aReject) {
+				var onRestored = (function() {
+					this.mTabBrowser.removeEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGED, onRestored, false);
+					aResolve();
+				}).bind(this);
+				this.mTabBrowser.addEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGED, onRestored, false);
+			}).bind(this))
+				.then(this.destroyTabbarPostProcess.bind(this));
+			this.temporaryPosition = 'top';
 		}
-
+		else {
+			this.destroyTabbarPostProcess();
+		}
+	},
+	destroyTabbarPostProcess : function TSTBrowser_destroyTabbarPostProcess()
+	{
 		this.fixed = true;
 
 		var tabbar = this.mTabBrowser.tabContainer;
@@ -2428,10 +2444,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		this.destroyTabStrip(toolbar);
 		toolbar.classList.add(this.kTABBAR_TOOLBAR_READY);
 
-		this._endListenTabbarEvents();
-
-		this.tabbarDNDObserver.endListenEvents();
-
 		this.window.setTimeout(function(aSelf) {
 			aSelf.updateCustomizedTabsToolbar();
 		}, 100, this);
@@ -2446,7 +2458,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		aTabStrip.removeAttribute('orient');
 	},
  
-	syncReinitTabbar : function TSTBrowser_syncReinitTabbar() 
+	reinitTabbar : function TSTBrowser_reinitTabbar() 
 	{
 		this.ownerToolbar.classList.add(this.kTABBAR_TOOLBAR);
 		this.ownerToolbar.classList.remove(this.kTABBAR_TOOLBAR_READY);
@@ -2456,23 +2468,16 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var position = this._lastTabbarPositionBeforeDestroyed || this.position;
 		delete this._lastTabbarPositionBeforeDestroyed;
 
-		var self = this;
-		this.doAndWaitDOMEvent(
-			this.kEVENT_TYPE_TABBAR_INITIALIZED,
-			this.window,
-			100,
-			function() {
-				self.initTabbar(position, 'top');
-			}
-		);
-		this.reinitAllTabs(true);
+		this.initTabbar(position, 'top').then((function() {
+			this.reinitAllTabs(true);
 
-		this.tabbarDNDObserver.startListenEvents();
+			this.tabbarDNDObserver.startListenEvents();
 
-		this.treeViewEnabled = this._lastTreeViewEnabledBeforeDestroyed;
-		delete this._lastTreeViewEnabledBeforeDestroyed;
+			this.treeViewEnabled = this._lastTreeViewEnabledBeforeDestroyed;
+			delete this._lastTreeViewEnabledBeforeDestroyed;
 
-		this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_RESET);
+			this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_RESET);
+		}).bind(this));
 	},
  
 	updateCustomizedTabsToolbar : function TSTBrowser_updateCustomizedTabsToolbar() 
@@ -2908,7 +2913,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			// toolbar customizing
 			case 'beforecustomization':
 				this.toolbarCustomizing = true;
-				return this.syncDestroyTabbar();
+				return this.destroyTabbar();
 			case 'aftercustomization':
 				// Ignore it, because 'aftercustomization' fired not
 				// following to 'beforecustomization' is invalid.
@@ -2917,7 +2922,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				if (!this.toolbarCustomizing)
 					return;
 				this.toolbarCustomizing = false;
-				return this.syncReinitTabbar();
+				return this.reinitTabbar();
 			case 'customizationchange':
 				return this.updateCustomizedTabsToolbar();
 
