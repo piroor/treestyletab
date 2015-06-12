@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2014
+ * Portions created by the Initial Developer are Copyright (C) 2014-2015
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -56,7 +56,7 @@ ContentBridge.install = function CB_installScript(aWindow) {
 };
 
 ContentBridge.uninstall = function CB_installScript(aWindow) {
-	aWindow.messageManager.sendAsyncCommand(TreeStyleTabConstants.COMMAND_SHUTDOWN);
+	aWindow.messageManager.broadcastAsyncCommand(TreeStyleTabConstants.COMMAND_SHUTDOWN);
 };
  
 ContentBridge.prototype = inherit(TreeStyleTabConstants, { 
