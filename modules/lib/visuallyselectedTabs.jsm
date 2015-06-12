@@ -46,8 +46,6 @@ function visuallyselectedTabs(aTabBrowser) {
 
   aTabBrowser.__visuallyselectedTabsInstalled = true;
 
-  var document = aTabBrowser.ownerDocument;
-
   function onTabSelect(aEvent) {
     var prevTab = aEvent.detail && aEvent.detail.previousTab;
     if (prevTab)
@@ -58,6 +56,10 @@ function visuallyselectedTabs(aTabBrowser) {
 
   var tabsContainer = aTabBrowser.tabContainer;
   tabsContainer.addEventListener('TabSelect', onTabSelect, false);
+
+  setVisuallySelected(aTabBrowser.selectedTab, true);
+
+  var document = aTabBrowser.ownerDocument;
   document.addEventListener('unload', function onUnload(aEvent) {
     document.removeEventListener('unload', onUnload, false);
     tabsContainer.removeEventListener('TabSelect', onTabSelect, false);
