@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * Toolbar customization works correctly even if the tab bar is placed not on the top.
+     In old versions, only the first time worked.
    * Current tab is shown with highlighted color correctly at the "Plain" skin.
    * Mouse events are correctly handled for the "auto hide" feature for tabs even if their remoteness is dynamically changed.
  - 0.15.2015030601
