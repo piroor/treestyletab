@@ -118,7 +118,7 @@ tabbrowser[treestyletab-mode="vertical"]
 	-moz-box-align: stretch !important;
 	height: 21px !important;     /* height including border! */
 	margin: 0 !important;
-	padding: 1px 3px 2px 10px !important;
+	padding: 1px 3px 2px 0 !important;
 	text-align: left !important;
 	-moz-border-top-colors: none !important;
 	-moz-border-bottom-colors: none !important;
