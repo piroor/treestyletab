@@ -120,7 +120,7 @@ if (typeof window == 'undefined' ||
 					return;
 				this._animatingWindows.push(aWindow);
 				let self = this;
-				aWindow.mozRequestAnimationFrame(function() {
+				aWindow.requestAnimationFrame(function() {
 					self.processAnimationFrame(aWindow);
 				});
 			}, this);
@@ -168,7 +168,7 @@ if (typeof window == 'undefined' ||
 			this._cleanUpWindows();
 			if (this._animatingWindows.indexOf(aWindow) > -1) {
 				let self = this;
-				aWindow.mozRequestAnimationFrame(function() {
+				aWindow.requestAnimationFrame(function() {
 					self.processAnimationFrame(aWindow);
 				});
 			}
