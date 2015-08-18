@@ -127,12 +127,24 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksService,
 			));
 		}, 'TreeStyleTab');
 
+		// for Firefox 40 and later, after Bug 951651
+		if (Services.vc.compare(Services.appinfo.platformVersion, '40') >= 0) {
+		TreeStyleTabUtils.doPatching(gEditItemOverlay.initPanel, 'gEditItemOverlay.initPanel', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
+				'let showOrCollapse =',
+				'TreeStyleTabBookmarksServiceEditable.initParentMenuList(); $&'
+			));
+		}, 'TreeStyleTab');
+		}
+		else {
+		// for Firefox 39 and olders
 		TreeStyleTabUtils.doPatching(gEditItemOverlay.initPanel, 'gEditItemOverlay.initPanel', function(aName, aSource) {
 			return eval(aName+' = '+aSource.replace(
 				'if (this._itemType == Ci.nsINavBookmarksService.TYPE_BOOKMARK) {',
 				'$& TreeStyleTabBookmarksServiceEditable.initParentMenuList();'
 			));
 		}, 'TreeStyleTab');
+		}
 
 		TreeStyleTabUtils.doPatching(gEditItemOverlay.onItemMoved, 'gEditItemOverlay.onItemMoved', function(aName, aSource) {
 			return eval(aName+' = '+aSource.replace(
