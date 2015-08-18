@@ -259,17 +259,33 @@ var TreeStyleTabWindowHelper = {
 			));
 		}, 'TreeStyleTab');
 
-		TreeStyleTabUtils.doPatching(FullScreen.mouseoverToggle, 'FullScreen.mouseoverToggle', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				'this._isChromeCollapsed = !aShow;',
-				'gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_FULLSCREEN); $&'
-			));
-		}, 'treeStyleTab');
+		if ('showNavToolbox' in FullScreen) { // for Firefox 40 or later
+			TreeStyleTabUtils.doPatching(FullScreen.showNavToolbox, 'FullScreen.showNavToolbox', function(aName, aSource) {
+				return eval(aName+' = '+aSource.replace(
+					'this._isChromeCollapsed = false;',
+					'gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_FULLSCREEN); $&'
+				));
+			}, 'treeStyleTab');
+			TreeStyleTabUtils.doPatching(FullScreen.hideNavToolbox, 'FullScreen.hideNavToolbox', function(aName, aSource) {
+				return eval(aName+' = '+aSource.replace(
+					'this._isChromeCollapsed = true;',
+					'gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_FULLSCREEN); $&'
+				));
+			}, 'treeStyleTab');
+		}
+		else if ('mouseoverToggle' in FullScreen) { // for Firefox 39 or older
+			TreeStyleTabUtils.doPatching(FullScreen.mouseoverToggle, 'FullScreen.mouseoverToggle', function(aName, aSource) {
+				return eval(aName+' = '+aSource.replace(
+					'this._isChromeCollapsed = !aShow;',
+					'gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_FULLSCREEN); $&'
+				));
+			}, 'treeStyleTab');
+		}
 
 		TreeStyleTabUtils.doPatching(FullScreen.toggle, 'FullScreen.toggle', function(aName, aSource) {
 			return eval(aName+' = '+aSource.replace(
-				'{',
-				'{ gBrowser.treeStyleTab.onBeforeFullScreenToggle(); '
+				'if (enterFS) {',
+				'gBrowser.treeStyleTab.onBeforeFullScreenToggle(enterFS); $&'
 			));
 		}, 'treeStyleTab');
 
