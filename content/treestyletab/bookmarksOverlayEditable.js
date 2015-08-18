@@ -55,7 +55,7 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksService,
 
 			StarUI.__treestyletab__quitEditMode = StarUI.__treestyletab__quitEditMode || StarUI.quitEditMode;
 			StarUI.quitEditMode = function(...args) {
-				TreeStyleTabBookmarksServiceEditable.initEditUI();
+				TreeStyleTabBookmarksServiceEditable.saveParentFor(this._itemId);
 				return this.__treestyletab__quitEditMode.apply(this, args);
 			};
 
