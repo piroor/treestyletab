@@ -47,26 +47,23 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksService,
 
 		// main browser window
 		if ('StarUI' in window) {
-			TreeStyleTabUtils.doPatching(StarUI._doShowEditBookmarkPanel, 'StarUI._doShowEditBookmarkPanel', function(aName, aSource) {
-				return eval(aName+' = '+aSource.replace(
-					'{',
-					'{ TreeStyleTabBookmarksServiceEditable.initEditUI();'
-				));
-			}, 'TreeStyleTab');
+			StarUI.__treestyletab___doShowEditBookmarkPanel = StarUI.__treestyletab___doShowEditBookmarkPanel || StarUI._doShowEditBookmarkPanel;
+			StarUI._doShowEditBookmarkPanel = function(...args) {
+				TreeStyleTabBookmarksServiceEditable.initEditUI();
+				return this.__treestyletab___doShowEditBookmarkPanel.apply(this, args);
+			};
 
-			TreeStyleTabUtils.doPatching(StarUI.quitEditMode, 'StarUI.quitEditMode', function(aName, aSource) {
-				return eval(aName+' = '+aSource.replace(
-					'{',
-					'{ TreeStyleTabBookmarksServiceEditable.saveParentFor(this._itemId);'
-				));
-			}, 'TreeStyleTab');
+			StarUI.__treestyletab__quitEditMode = StarUI.__treestyletab__quitEditMode || StarUI.quitEditMode;
+			StarUI.quitEditMode = function(...args) {
+				TreeStyleTabBookmarksServiceEditable.initEditUI();
+				return this.__treestyletab__quitEditMode.apply(this, args);
+			};
 
-			TreeStyleTabUtils.doPatching(StarUI.cancelButtonOnCommand, 'StarUI.cancelButtonOnCommand', function(aName, aSource) {
-				return eval(aName+' = '+aSource.replace(
-					'{',
-					'{ TreeStyleTabBookmarksServiceEditable.canceled = true;'
-				));
-			}, 'TreeStyleTab');
+			StarUI.__treestyletab__cancelButtonOnCommand = StarUI.__treestyletab__cancelButtonOnCommand || StarUI.cancelButtonOnCommand;
+			StarUI.cancelButtonOnCommand = function(...args) {
+				TreeStyleTabBookmarksServiceEditable.canceled = true;
+				return this.__treestyletab__cancelButtonOnCommand.apply(this, args);
+			};
 		}
 
 		// Bookmarks Property dialog
