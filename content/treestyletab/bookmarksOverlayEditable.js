@@ -118,21 +118,16 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksService,
 		document.getElementById('treestyletab-parent-label').setAttribute('value', TreeStyleTabUtils.treeBundle.getString('bookmarkProperty.parent.label'));
 		this.blankItem.setAttribute('label', TreeStyleTabUtils.treeBundle.getString('bookmarkProperty.parent.blank.label'));
 
-
-		TreeStyleTabUtils.doPatching(gEditItemOverlay._showHideRows, 'gEditItemOverlay._showHideRows', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				/(\}\)?)$/,
-				'  TreeStyleTabBookmarksServiceEditable.parentRow.collapsed = this._element("keywordRow").collapsed && this._element("folderRow").collapsed;\n' +
-				'$1'
-			));
-		}, 'TreeStyleTab');
-
 		if (Services.vc.compare(Services.appinfo.platformVersion, '40') >= 0) {
 			// for Firefox 40 and later, after Bug 951651
 			TreeStyleTabUtils.doPatching(gEditItemOverlay.initPanel, 'gEditItemOverlay.initPanel', function(aName, aSource) {
 				return eval(aName+' = '+aSource.replace(
 					'let showOrCollapse =',
 					'TreeStyleTabBookmarksServiceEditable.initParentMenuList(); $&'
+				).replace(
+					/(\}\)?)$/,
+					'  TreeStyleTabBookmarksServiceEditable.parentRow.collapsed = this._element("keywordRow").collapsed && this._element("folderRow").collapsed;\n' +
+					'$1'
 				));
 			}, 'TreeStyleTab');
 		}
@@ -142,6 +137,14 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksService,
 				return eval(aName+' = '+aSource.replace(
 					'if (this._itemType == Ci.nsINavBookmarksService.TYPE_BOOKMARK) {',
 					'$& TreeStyleTabBookmarksServiceEditable.initParentMenuList();'
+				));
+			}, 'TreeStyleTab');
+
+			TreeStyleTabUtils.doPatching(gEditItemOverlay._showHideRows, 'gEditItemOverlay._showHideRows', function(aName, aSource) {
+				return eval(aName+' = '+aSource.replace(
+					/(\}\)?)$/,
+					'  TreeStyleTabBookmarksServiceEditable.parentRow.collapsed = this._element("keywordRow").collapsed && this._element("folderRow").collapsed;\n' +
+					'$1'
 				));
 			}, 'TreeStyleTab');
 		}
