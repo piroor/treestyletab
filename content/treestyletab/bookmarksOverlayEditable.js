@@ -122,11 +122,10 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksService,
 			// for Firefox 40 and later, after Bug 951651
 			TreeStyleTabUtils.doPatching(gEditItemOverlay.initPanel, 'gEditItemOverlay.initPanel', function(aName, aSource) {
 				return eval(aName+' = '+aSource.replace(
-					'let showOrCollapse =',
-					'TreeStyleTabBookmarksServiceEditable.initParentMenuList(); $&'
-				).replace(
 					/(\}\)?)$/,
 					'  TreeStyleTabBookmarksServiceEditable.parentRow.collapsed = this._element("keywordRow").collapsed && this._element("folderRow").collapsed;\n' +
+					'  if (!TreeStyleTabBookmarksServiceEditable.parentRow.collapsed)\n' +
+					'    TreeStyleTabBookmarksServiceEditable.initParentMenuList();\n' +
 					'$1'
 				));
 			}, 'TreeStyleTab');
