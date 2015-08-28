@@ -1323,10 +1323,10 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 								aEvent.attrName == 'hidden' &&
 								gBrowser.tabContainer.parentNode.id == (aEvent.newValue == 'true' ? 'toolbar-menubar' : 'personal-titlebar' )
 								) {
-								gBrowser.treeStyleTab.syncDestroyTabbar();
-								window.setTimeout(function() {
-									gBrowser.treeStyleTab.syncReinitTabbar();
-								}, 0);
+								gBrowser.treeStyleTab.destroyTabbar()
+									.then(function() {
+										gBrowser.treeStyleTab.reinitTabbar();
+									});
 							}
 							break;
 
