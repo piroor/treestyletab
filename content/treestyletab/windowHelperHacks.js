@@ -1454,7 +1454,6 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 						case 'TabOpen':
 							let tab = aEvent.originalTarget
 							let b = TreeStyleTabService.getTabBrowserFromChild(tab);
-console.log('b.selectedTab.linkedBrowser.currentURI.spec '+b.selectedTab.linkedBrowser.currentURI.spec);
 							if (b.selectedTab.linkedBrowser.currentURI.spec != 'about:sync-tabs')
 								return;
 
