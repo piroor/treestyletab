@@ -1461,22 +1461,22 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 							let manager = service.engineManager || service.Engines /* old name */;
 							let engine = manager.get('tabs');
 
-								let parent = b.selectedTab;
-								window.setTimeout(function() {
-									let uri = tab.linkedBrowser.userTypedValue || tab.linkedBrowser.currentURI.spec;
-									for (let [guid, client] in Iterator(engine.getAllClients()))
-									{
-										if (client.tabs.some(function({ urlHistory }) {
-												return urlHistory[0] == uri;
-											})) {
-											if (parent.parentNode &&
-												tab.parentNode &&
-												!b.treeStyleTab.getParentTab(tab))
-												b.treeStyleTab.attachTabTo(tab, parent);
-											return;
-										}
+							let parent = b.selectedTab;
+							window.setTimeout(function() {
+								let uri = tab.linkedBrowser.userTypedValue || tab.linkedBrowser.currentURI.spec;
+								for (let [guid, client] in Iterator(engine.getAllClients()))
+								{
+									if (client.tabs.some(function({ urlHistory }) {
+											return urlHistory[0] == uri;
+										})) {
+										if (parent.parentNode &&
+											tab.parentNode &&
+											!b.treeStyleTab.getParentTab(tab))
+											b.treeStyleTab.attachTabTo(tab, parent);
+										return;
 									}
-								}, 0);
+								}
+							}, 0);
 							return;
 
 						case 'unload':
