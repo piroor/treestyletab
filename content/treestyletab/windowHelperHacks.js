@@ -1461,7 +1461,6 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 							let manager = service.engineManager || service.Engines /* old name */;
 							let engine = manager.get('tabs');
 
-							if ('getOpenURLs' in engine) {
 								let parent = b.selectedTab;
 								window.setTimeout(function() {
 									let uri = tab.linkedBrowser.userTypedValue || tab.linkedBrowser.currentURI.spec;
@@ -1478,26 +1477,6 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 										}
 									}
 								}, 0);
-							}
-							else if ('locallyOpenTabMatchesURL' in engine) {
-								let uri = tab.getAttribute('label');
-								if (engine.locallyOpenTabMatchesURL(uri))
-									return;
-
-								for (let [guid, client] in Iterator(engine.getAllClients()))
-								{
-									if (client.tabs.some(function({ urlHistory }) {
-											return urlHistory[0] == uri;
-										})) {
-										let parent = b.selectedTab;
-										window.setTimeout(function() {
-											if (tab.parentNode && !b.treeStyleTab.getParentTab(tab))
-												b.treeStyleTab.attachTabTo(tab, parent);
-										}, 0);
-										return;
-									}
-								}
-							}
 							return;
 
 						case 'unload':
