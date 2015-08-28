@@ -1454,6 +1454,7 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 						case 'TabOpen':
 							let tab = aEvent.originalTarget
 							let b = TreeStyleTabService.getTabBrowserFromChild(tab);
+console.log('b.selectedTab.linkedBrowser.currentURI.spec '+b.selectedTab.linkedBrowser.currentURI.spec);
 							if (b.selectedTab.linkedBrowser.currentURI.spec != 'about:sync-tabs')
 								return;
 
@@ -1480,23 +1481,23 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 								}, 0);
 							}
 							else if ('locallyOpenTabMatchesURL' in engine) {
-							let uri = tab.getAttribute('label');
-							if (engine.locallyOpenTabMatchesURL(uri))
-								return;
-
-							for (let [guid, client] in Iterator(engine.getAllClients()))
-							{
-								if (client.tabs.some(function({ urlHistory }) {
-										return urlHistory[0] == uri;
-									})) {
-									let parent = b.selectedTab;
-									window.setTimeout(function() {
-										if (tab.parentNode && !b.treeStyleTab.getParentTab(tab))
-											b.treeStyleTab.attachTabTo(tab, parent);
-									}, 0);
+								let uri = tab.getAttribute('label');
+								if (engine.locallyOpenTabMatchesURL(uri))
 									return;
+
+								for (let [guid, client] in Iterator(engine.getAllClients()))
+								{
+									if (client.tabs.some(function({ urlHistory }) {
+											return urlHistory[0] == uri;
+										})) {
+										let parent = b.selectedTab;
+										window.setTimeout(function() {
+											if (tab.parentNode && !b.treeStyleTab.getParentTab(tab))
+												b.treeStyleTab.attachTabTo(tab, parent);
+										}, 0);
+										return;
+									}
 								}
-							}
 							}
 							return;
 
