@@ -2412,7 +2412,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		this._lastTabbarPositionBeforeDestroyed = this.position;
 		if (this.position != 'top') {
-			new Promise((function(aResolve, aReject) {
+			this.temporaryPosition = 'top';
+			return new Promise((function(aResolve, aReject) {
 				var onRestored = (function() {
 					this.mTabBrowser.removeEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGED, onRestored, false);
 					aResolve();
@@ -2420,10 +2421,10 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				this.mTabBrowser.addEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGED, onRestored, false);
 			}).bind(this))
 				.then(this.destroyTabbarPostProcess.bind(this));
-			this.temporaryPosition = 'top';
 		}
 		else {
 			this.destroyTabbarPostProcess();
+			return Promise.resolve();
 		}
 	},
 	destroyTabbarPostProcess : function TSTBrowser_destroyTabbarPostProcess()

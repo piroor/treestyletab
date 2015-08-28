@@ -246,10 +246,10 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 		globDndtb.setTheStuff &&
 		TreeStyleTabUtils.getTreePref('compatibility.DragNDropToolbars')) {
 		let reinitTabbar = function() {
-				gBrowser.treeStyleTab.syncDestroyTabbar();
-				window.setTimeout(function() {
-					gBrowser.treeStyleTab.syncReinitTabbar();
-				}, 100);
+				gBrowser.treeStyleTab.destroyTabbar()
+					.then(function() {
+						gBrowser.treeStyleTab.reinitTabbar();
+					});
 			};
 		globDndtb.__treestyletab__setOrder = globDndtb.setOrder;
 		globDndtb.setOrder = function() {
