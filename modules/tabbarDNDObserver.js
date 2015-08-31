@@ -1246,7 +1246,16 @@ catch(e) {
 		{
 			case 'text/x-moz-place':
 				{
-					let uri = JSON.parse(aData).uri;
+					let item = JSON.parse(aData);
+					if (item.type == 'text/x-moz-place-container') {
+						// When a blank folder is dropped, just open a dummy tab with the folder name.
+						let children = item.children;
+						if (children && children.length == 0) {
+							let uri = this.treeStyleTab.getGroupTabURI({ title: item.title });
+							return [uri];
+						}
+					}
+					let uri = item.uri;
 					if (uri)
 						return uri;
 					else
