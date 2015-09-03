@@ -171,8 +171,8 @@ var TreeStyleTabWindowHelper = {
 		var viewImageMethod = ('viewImage' in nsContextMenu.prototype) ? 'viewImage' : 'viewMedia' ;
 		TreeStyleTabUtils.doPatching(nsContextMenu.prototype[viewImageMethod], 'nsContextMenu.prototype.'+viewImageMethod, function(aName, aSource) {
 			return eval(aName+' = '+aSource.replace(
-				'openUILink(',
-				'TreeStyleTabService.onBeforeViewMedia(e, this.target.ownerDocument.defaultView); $&'
+				/(openUILink\()/g,
+				'TreeStyleTabService.onBeforeViewMedia(e, this.target.ownerDocument.defaultView); $1'
 			));
 		}, 'TreeStyleTab');
 
