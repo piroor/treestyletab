@@ -854,9 +854,10 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 				(aReason & this.kSHOWHIDE_BY_RESIZE ? 'resize ' : '' ) +
 				(aReason & this.kHIDDEN_BY_CLICK ? 'click ' : '' );
 			if (this.expanded)
-				dump('autoHide: show by ' + humanReadableReason + '\n');
+				dump('autoHide: show by ' + aReason + '(' + humanReadableReason + ')\n');
 			else
-				dump('autoHide: hide by ' + humanReadableReason + '\n');
+				dump('autoHide: hide by ' + aReason + '(' + humanReadableReason + ')\n');
+//			dump((new Error()).stack + '\n');
 		}
 
 		this.fireStateChangingEvent();

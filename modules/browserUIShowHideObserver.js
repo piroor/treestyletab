@@ -36,6 +36,8 @@
 
 const EXPORTED_SYMBOLS = ['BrowserUIShowHideObserver']; 
 
+var DEBUG = false;
+
 Components.utils.import('resource://treestyletab-modules/constants.js');
 
 function BrowserUIShowHideObserver(aOwner, aBox) {
@@ -129,6 +131,14 @@ BrowserUIShowHideObserver.prototype = {
 			!tabbarVisibilityMismatching
 			)
 			return;
+
+		if (DEBUG) {
+			dump('BrowserUIShowHideObserver_onAttributeModified ' +
+			     target.localName + '#' + target.id + '.' + target.className + ', ' +
+			     aMutation.attributeName + ', ' +
+			     aMutation.oldValue + ' => ' +
+			     target.getAttribute(aMutation.attributeName) + '\n');
+		}
 
 		this.handlingAttrChange = true;
 
