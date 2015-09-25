@@ -63,6 +63,7 @@ BrowserUIShowHideObserver.prototype = {
 			childList       : true,
 			attributes      : true,
 			subtree         : true,
+			attributeOldValue: DEBUG,
 			attributeFilter : [
 				'hidden',
 				'collapsed',
