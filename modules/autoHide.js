@@ -930,7 +930,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 			this.showHideReason |= aReason;
 		}
 		if (!this.expanded)
-			this.showHideInternal();
+			this.showHideInternal(aReason);
 	},
  
 	hide : function AHB_hide(aReason) /* PUBLIC API */ 
@@ -950,7 +950,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 				return;
 		}
 		if (this.expanded)
-			this.showHideInternal();
+			this.showHideInternal(aReason);
 	},
  
 	onShowing : function AHB_onShowing() 
