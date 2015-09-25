@@ -41,7 +41,7 @@ if (typeof window == 'undefined' ||
 }
 
 (function() {
-	const currentRevision = 19;
+	const currentRevision = 20;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -78,9 +78,13 @@ if (typeof window == 'undefined' ||
 			if (this._windows.indexOf(aRelatedWindow) < 0)
 				this._windows.push(aRelatedWindow);
 
+			var startTime = aRelatedWindow ? aRelatedWindow.mozAnimationStartTime : undefined;
+			// mozAnimationStartTime is removed at Firefox 42.
+			// see: https://bugzilla.mozilla.org/show_bug.cgi?id=909154
+			startTime = startTime || Date.now();
 			this.tasks.push({
 				task      : aTask,
-				start     : aRelatedWindow ? aRelatedWindow.mozAnimationStartTime : Date.now(),
+				start     : startTime,
 				beginning : aBeginningValue,
 				change    : aTotalChange,
 				duration  : aDuration,
