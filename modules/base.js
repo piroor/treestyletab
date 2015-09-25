@@ -948,8 +948,13 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	setTabStripAttribute : function TSTBase_setTabStripAttribute(aAttr, aValue) 
 	{
 		var strip = this.tabStrip;
-		if (!strip)
+		if (!strip) {
+			if (DEBUG) {
+				dump('FAILED TO SET TABSTRIP ATTRIBUTE ' + aAttr + '=' + aValue + '\n');
+				dump((new Error()).stack + '\n');
+			}
 			return;
+		}
 		var isFeatureAttribute = aAttr.indexOf('treestyletab-') == 0;
 		if (aValue) {
 			if (this._tabStripPlaceHolder)
