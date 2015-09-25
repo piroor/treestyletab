@@ -1560,6 +1560,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			}
 		}
 
+		// init() can fail to set the tab-strip-element attribute for the internal box,
+		// because the custom binding can be not applied yet at the time.
+		// We have to set it certainly.
+		this.setTabStripAttribute(this.kTAB_STRIP_ELEMENT, true);
+
 		var tabs = this.getAllTabs(b);
 		for (let i = 0, maxi = tabs.length; i < maxi; i++)
 		{
