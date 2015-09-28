@@ -6,3 +6,9 @@
 #main-window:not([treestyletab-tabbar-position="top"])[chromemargin]:not([tabsintitlebar]):not([chromemargin^="0,"]) > #titlebar {
 	display: none;
 }
+
+@media(-moz-windows-glass) {
+	#TabsToolbar:not([treestyletab-tabbar-position="top"]):not(:-moz-lwtheme)::after {
+		display: none !important;
+	}
+}
