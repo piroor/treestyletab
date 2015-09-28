@@ -112,6 +112,18 @@ BrowserUIShowHideObserver.prototype = {
 			return;
 
 		var TST = this.owner.browser.treeStyleTab;
+		if (
+			// ignore modifications of each tab
+			TST.getTabFromChild(target) ||
+			// ignore modifications in the location bar (ex. identity icon)
+			this.evaluateXPath(
+				'ancestor-or-self::xul:textbox',
+				target,
+				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue
+			)
+			return;
+
 		var toolbarVisible     = !TST.ownerToolbar.collapsed;
 		var tabbarVisible      = this.owner.browser.tabContainer.visible;
 		var placeHolderVisible = !TST.tabStripPlaceHolder.collapsed;
