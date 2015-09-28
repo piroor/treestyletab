@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+   * Fix many compatibility issues around spec changes at Firefox 40 and later.
+   * Drop support for Firefox 31.
+   * Re-introduce configuration UIs for the size of the tab bar and its fixedness.
+     Now it works to reset size of the tab bar in all existing windows.
    * Toolbar customization works correctly even if the tab bar is placed not on the top.
      In old versions, only the first time worked.
    * Current tab is shown with highlighted color correctly at the "Plain" skin.
