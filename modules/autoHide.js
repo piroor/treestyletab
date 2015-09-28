@@ -844,20 +844,13 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 		}
 
 		if (DEBUG) {
-			let humanReadableReason =
-				(aReason & this.kSHOWN_BY_SHORTCUT ? 'shortcut ' : '' ) +
-				(aReason & this.kSHOWN_BY_MOUSEMOVE ? 'mousemove ' : '' ) +
-				(aReason & this.kSHOWN_BY_FEEDBACK ? 'feedback ' : '' ) +
-				(aReason & this.kSHOWHIDE_BY_START ? 'start ' : '' ) +
-				(aReason & this.kSHOWHIDE_BY_END ? 'end ' : '' ) +
-				(aReason & this.kSHOWHIDE_BY_POSITION_CHANGE ? 'positionchange ' : '' ) +
-				(aReason & this.kSHOWHIDE_BY_RESIZE ? 'resize ' : '' ) +
-				(aReason & this.kHIDDEN_BY_CLICK ? 'click ' : '' );
+			let givenReason = this._getHumanReadableReason(aReason);
+			let unifiedReason = this._getHumanReadableReason(this.showHideReason);
 			if (this.expanded)
-				dump('autoHide: show by ' + aReason + '(' + humanReadableReason + ')\n');
+				dump('autoHide: show by ' + aReason + '(' + givenReason + ' / ' + unifiedReason + ')\n');
 			else
-				dump('autoHide: hide by ' + aReason + '(' + humanReadableReason + ')\n');
-//			dump((new Error()).stack + '\n');
+				dump('autoHide: hide by ' + aReason + '(' + givenReason + ' / ' + unifiedReason + ')\n');
+			dump((new Error()).stack.replace(/^/gm, '  ').replace(/\s+$/, '') + '\n');
 		}
 
 		this.fireStateChangingEvent();
@@ -871,6 +864,19 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 			aSelf.fireStateChangeEvent();
 			aSelf.showHideContentsAreaScreen();
 		}, 0, this);
+	},
+	_getHumanReadableReason: function AHB_getHumanReadableReason(aReason)
+	{
+		let humanReadableReason =
+			(aReason & this.kSHOWN_BY_SHORTCUT ? 'shortcut ' : '' ) +
+			(aReason & this.kSHOWN_BY_MOUSEMOVE ? 'mousemove ' : '' ) +
+			(aReason & this.kSHOWN_BY_FEEDBACK ? 'feedback ' : '' ) +
+			(aReason & this.kSHOWHIDE_BY_START ? 'start ' : '' ) +
+			(aReason & this.kSHOWHIDE_BY_END ? 'end ' : '' ) +
+			(aReason & this.kSHOWHIDE_BY_POSITION_CHANGE ? 'positionchange ' : '' ) +
+			(aReason & this.kSHOWHIDE_BY_RESIZE ? 'resize ' : '' ) +
+			(aReason & this.kHIDDEN_BY_CLICK ? 'click ' : '' );
+		return humanReadableReason.replace(/\s+$/, '');
 	},
 	showHideContentsAreaScreen : function AHB_showHideContentsAreaScreen()
 	{
