@@ -116,10 +116,10 @@ BrowserUIShowHideObserver.prototype = {
 			// ignore modifications of each tab
 			TST.getTabFromChild(target) ||
 			// ignore modifications in the location bar (ex. identity icon)
-			this.evaluateXPath(
+			TST.evaluateXPath(
 				'ancestor-or-self::xul:textbox',
 				target,
-				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
+				Components.interfaces.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue
 			)
 			return;
