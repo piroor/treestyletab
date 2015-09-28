@@ -38,7 +38,7 @@
 	}
 
 	var messageListener = function(aMessage) {
-		mydump('CONTENT MESSAGE LISTENED <'+global.content.location+'>');
+		mydump('CONTENT MESSAGE LISTENED <'+(global.content && global.content.location)+'>');
 		mydump(JSON.stringify(aMessage.json));
 		switch (aMessage.json.command)
 		{
