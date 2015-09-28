@@ -20,6 +20,10 @@
 <!ENTITY config.maxTreeLevel.before "jusqu'à">
 <!ENTITY config.maxTreeLevel.after  "niveau(x)">
 <!ENTITY config.allowSubtreeCollapseExpand  "Autoriser le repliage/dépliage des arborescences d'onglets">
+<!ENTITY config.tabbarSize.before-horizontal ":">
+<!ENTITY config.tabbarSize.after-horizontal  "px height">
+<!ENTITY config.tabbarSize.before-vertical   ":">
+<!ENTITY config.tabbarSize.after-vertical    "px width">
 
 
 <!ENTITY config.tabs.style "Style">

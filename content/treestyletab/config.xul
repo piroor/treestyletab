@@ -21,6 +21,15 @@
 		<preference id="extensions.treestyletab.tabbar.fixed.horizontal"
 			name="extensions.treestyletab.tabbar.fixed.horizontal"
 			type="bool"/>
+		<preference id="extensions.treestyletab.tabbar.fixed.vertical"
+			name="extensions.treestyletab.tabbar.fixed.vertical"
+			type="bool"/>
+		<preference id="extensions.treestyletab.tabbar.height"
+			name="extensions.treestyletab.tabbar.height"
+			type="int"/>
+		<preference id="extensions.treestyletab.tabbar.width"
+			name="extensions.treestyletab.tabbar.width"
+			type="int"/>
 		<preference id="extensions.treestyletab.tabbar.syncRelatedPrefsForDynamicPosition"
 			name="extensions.treestyletab.tabbar.syncRelatedPrefsForDynamicPosition"
 			type="bool"/>
@@ -98,6 +107,36 @@
 			</grid>
 		</radiogroup>
 		<spacer flex="1"/>
+		</hbox>
+		<hbox id="fixedTabbar-horizontal" align="center">
+			<checkbox id="extensions.treestyletab.tabbar.fixed.horizontal-check"
+				preference="extensions.treestyletab.tabbar.fixed.horizontal"
+				label="&context.toggleFixed.label.horizontal;"/>
+			<label id="tabbarSize-before-horizontal"
+				control="tabbarSize-horizontal"
+				value="&config.tabbarSize.before-horizontal;"/>
+			<textbox id="tabbarSize-horizontal"
+				preference="extensions.treestyletab.tabbar.height"
+				type="number"
+				min="1" increment="1" style="width:6em;"/>
+			<label id="tabbarSize-after-horizontal"
+				control="tabbarSize-horizontal"
+				value="&config.tabbarSize.after-horizontal;"/>
+		</hbox>
+		<hbox id="fixedTabbar-vertical" align="center">
+			<checkbox id="extensions.treestyletab.tabbar.fixed.vertical-check"
+				preference="extensions.treestyletab.tabbar.fixed.vertical"
+				label="&context.toggleFixed.label.vertical;"/>
+			<label id="tabbarSize-before-vertical"
+				control="tabbarSize-vertical"
+				value="&config.tabbarSize.before-vertical;"/>
+			<textbox id="tabbarSize-vertical"
+				preference="extensions.treestyletab.tabbar.width"
+				type="number"
+				min="1" increment="1" style="width:6em;"/>
+			<label id="tabbarSize-after-vertical"
+				control="tabbarSize-vertical"
+				value="&config.tabbarSize.after-vertical;"/>
 		</hbox>
 		<hbox align="center">
 			<checkbox id="extensions.treestyletab.tabbar.invertTabContents-check"

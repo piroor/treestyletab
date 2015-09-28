@@ -20,6 +20,10 @@
 <!ENTITY config.maxTreeLevel.before "until">
 <!ENTITY config.maxTreeLevel.after  "level(s)">
 <!ENTITY config.allowSubtreeCollapseExpand  "Allow to collapse/expand tree of tabs">
+<!ENTITY config.tabbarSize.before-horizontal ":">
+<!ENTITY config.tabbarSize.after-horizontal  "px height">
+<!ENTITY config.tabbarSize.before-vertical   ":">
+<!ENTITY config.tabbarSize.after-vertical    "px width">
 
 
 <!ENTITY config.tabs.style "Style">

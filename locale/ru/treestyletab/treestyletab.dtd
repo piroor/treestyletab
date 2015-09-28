@@ -20,6 +20,10 @@
 <!ENTITY config.maxTreeLevel.before "пока уровней меньше">
 <!ENTITY config.maxTreeLevel.after  "">
 <!ENTITY config.allowSubtreeCollapseExpand  "Разрешить сворачивать/разворачивать поддеревья вкладок">
+<!ENTITY config.tabbarSize.before-horizontal ":">
+<!ENTITY config.tabbarSize.after-horizontal  "px height">
+<!ENTITY config.tabbarSize.before-vertical   ":">
+<!ENTITY config.tabbarSize.after-vertical    "px width">
 
 
 <!ENTITY config.tabs.style "Стиль">

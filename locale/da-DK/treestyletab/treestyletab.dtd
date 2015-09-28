@@ -20,6 +20,10 @@
 <!ENTITY config.maxTreeLevel.before "op til">
 <!ENTITY config.maxTreeLevel.after "niveauer">
 <!ENTITY config.allowSubtreeCollapseExpand "Tillad sammenfold/udvid fanetræ">
+<!ENTITY config.tabbarSize.before-horizontal ":">
+<!ENTITY config.tabbarSize.after-horizontal  "px height">
+<!ENTITY config.tabbarSize.before-vertical   ":">
+<!ENTITY config.tabbarSize.after-vertical    "px width">
 
 
 <!ENTITY config.tabs.style "Udseende">

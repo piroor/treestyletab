@@ -20,6 +20,10 @@
 <!ENTITY config.maxTreeLevel.before "（">
 <!ENTITY config.maxTreeLevel.after  "階層まで）">
 <!ENTITY config.allowSubtreeCollapseExpand  "ツリーを折りたためるようにする">
+<!ENTITY config.tabbarSize.before-horizontal "高さ:">
+<!ENTITY config.tabbarSize.after-horizontal  "ピクセル">
+<!ENTITY config.tabbarSize.before-vertical   "幅:">
+<!ENTITY config.tabbarSize.after-vertical    "ピクセル">
 
 
 <!ENTITY config.tabs.style "スタイル">

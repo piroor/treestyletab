@@ -202,22 +202,31 @@ function onChangeTabbarPosition()
 	else
 		invertClosebox.setAttribute('collapsed', true);
 
-	var maxTreeLevelH   = document.getElementById('maxTreeLevel-horizontal');
-	var maxTreeLevelV   = document.getElementById('maxTreeLevel-vertical');
-	var collapseCheckH = document.getElementById('extensions.treestyletab.allowSubtreeCollapseExpand.horizontal-check');
-	var collapseCheckV = document.getElementById('extensions.treestyletab.allowSubtreeCollapseExpand.vertical-check');
-
+	var horizontalElements = [
+		'maxTreeLevel-horizontal',
+		'extensions.treestyletab.allowSubtreeCollapseExpand.horizontal-check',
+		'fixedTabbar-horizontal'
+	];
+	var verticalElements = [
+		'maxTreeLevel-vertical',
+		'extensions.treestyletab.allowSubtreeCollapseExpand.vertical-check',
+		'fixedTabbar-vertical'
+	];
 	if (pos == 'left' || pos == 'right') {
-		maxTreeLevelH.setAttribute('collapsed', true);
-		maxTreeLevelV.removeAttribute('collapsed');
-		collapseCheckH.setAttribute('collapsed', true);
-		collapseCheckV.removeAttribute('collapsed');
+		horizontalElements.forEach(function(aId) {
+			document.getElementById(aId).setAttribute('collapsed', true);
+		});
+		verticalElements.forEach(function(aId) {
+			document.getElementById(aId).removeAttribute('collapsed');
+		});
 	}       
 	else {
-		maxTreeLevelH.removeAttribute('collapsed');
-		maxTreeLevelV.setAttribute('collapsed', true);
-		collapseCheckH.removeAttribute('collapsed');
-		collapseCheckV.setAttribute('collapsed', true);
+		horizontalElements.forEach(function(aId) {
+			document.getElementById(aId).removeAttribute('collapsed');
+		});
+		verticalElements.forEach(function(aId) {
+			document.getElementById(aId).setAttribute('collapsed', true);
+		});
 	}
 
 	gTabbarPlacePositionInitialized = true;

@@ -20,6 +20,10 @@
 <!ENTITY config.maxTreeLevel.before "hasta">
 <!ENTITY config.maxTreeLevel.after  "nivel(es)">
 <!ENTITY config.allowSubtreeCollapseExpand  "Permitir colapsar/expandir los sub-árboles de las pestañas">
+<!ENTITY config.tabbarSize.before-horizontal ":">
+<!ENTITY config.tabbarSize.after-horizontal  "px height">
+<!ENTITY config.tabbarSize.before-vertical   ":">
+<!ENTITY config.tabbarSize.after-vertical    "px width">
 
 
 <!ENTITY config.tabs.style "Estilo">
