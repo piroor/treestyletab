@@ -43,6 +43,7 @@ const Ci = Components.interfaces;
 const Cu = Components.utils;
 
 Cu.import('resource://gre/modules/XPCOMUtils.jsm');
+Cu.import('resource://gre/modules/Timer.jsm');
 Cu.import('resource://treestyletab-modules/constants.js');
 
 XPCOMUtils.defineLazyGetter(this, 'window', function() {
@@ -82,11 +83,15 @@ let TreeStyleTabUtils = {
 
 	setTreePref : function TSTUtils_setTreePref(aPrefstring, aNewValue)
 	{
+		if (this.isPrefChanging(aPrefstring))
+			return aNewValue;
 		return prefs.setPref(TST_PREF_PREFIX + aPrefstring, aNewValue);
 	},
 
 	clearTreePref : function TSTUtils_clearTreePref(aPrefstring)
 	{
+		if (this.isPrefChanging(aPrefstring))
+			return null;
 		return prefs.clearPref(TST_PREF_PREFIX + aPrefstring);
 	},
 
@@ -332,5 +337,41 @@ let TreeStyleTabUtils = {
 			return source.indexOf(aMatcher) > -1;
 		else
 			return aMatcher.test(source);
+	},
+
+	isPrefChanging : function utils_isPrefChanging(aKey) 
+	{
+		return aKey in this.changingPrefs;
+	},
+	isTreePrefChanging : function utils_isPrefChanging(aKey) 
+	{
+		return (TST_PREF_PREFIX + aKey) in this.changingPrefs ||
+				this.isPrefChanging(aKey);
+	},
+
+/* Pref Listener */ 
+	domains : [ 
+		'extensions.treestyletab.'
+	],
+
+	observe : function utils_observe(aSubject, aTopic, aData) 
+	{
+		switch (aTopic)
+		{
+			case 'nsPref:changed':
+				this.onPrefChange(aData);
+				return;
+		}
+	},
+
+	changingPrefs : {},
+	onPrefChange : function utils_onPrefChange(aPrefName) 
+	{
+		this.changingPrefs[aPrefName] = true;
+		setTimeout((function() {
+			delete this.changingPrefs[aPrefName];
+		}).bind(this));
 	}
 };
+
+prefs.addPrefListener(TreeStyleTabUtils);

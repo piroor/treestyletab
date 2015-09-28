@@ -109,12 +109,10 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 	set position(aValue)
 	{
 		var setPosition = (function() {
-			this.setPrefForActiveWindow((function() {
-				if (this.preInitialized && this.browser.treeStyleTab)
-					this.browser.treeStyleTab.position = aValue;
-				else
-					this.base.position = aValue;
-			}).bind(this));
+			if (this.preInitialized && this.browser.treeStyleTab)
+				this.browser.treeStyleTab.position = aValue;
+			else
+				this.base.position = aValue;
 		}).bind(this);
 
 		if ('UndoTabService' in this.window && this.window.UndoTabService.isUndoable()) {
@@ -1374,10 +1372,8 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 
 		var newFixed = b.getAttribute(this.kFIXED+'-'+orient) != 'true';
 		this.setTabbrowserAttribute(this.kFIXED+'-'+orient, newFixed || null, b);
-		this.setPrefForActiveWindow(function() {
-			b.treeStyleTab.fixed = newFixed;
-			utils.setTreePref('tabbar.fixed.'+orient, newFixed);
-		});
+		b.treeStyleTab.fixed = newFixed;
+		utils.setTreePref('tabbar.fixed.'+orient, newFixed);
 
 		b.treeStyleTab.updateTabbarState();
 	},

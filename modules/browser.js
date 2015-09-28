@@ -214,9 +214,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	set tabbarWidth(aValue)
 	{
 		this.setWindowValue(this.kTABBAR_WIDTH, aValue);
-		this.setPrefForActiveWindow(function() {
-			utils.setTreePref('tabbar.width', aValue);
-		});
+		utils.setTreePref('tabbar.width', aValue);
 		return aValue;
 	},
 */
@@ -231,9 +229,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	set tabbarHeight(aValue)
 	{
 		this.setWindowValue(this.kTABBAR_HEIGHT, aValue);
-		this.setPrefForActiveWindow(function() {
-			utils.setTreePref('tabbar.height', aValue);
-		});
+		utils.setTreePref('tabbar.height', aValue);
 		return aValue;
 	},
  
@@ -756,20 +752,16 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			let width = this.tabbarWidth;
 			let minWidth = Math.max(this.MIN_TABBAR_WIDTH, this.scrollBox.boxObject.width);
 			if (minWidth > width) {
-				this.setPrefForActiveWindow((function() {
-					this.tabbarWidth = minWidth;
-					this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_PREF_CHANGE);
-				}).bind(this));
+				this.tabbarWidth = minWidth;
+				this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_PREF_CHANGE);
 			}
 		}
 		else {
 			let height = this.tabbarHeight;
 			let minHeight = Math.max(this.MIN_TABBAR_HEIGHT, this.scrollBox.boxObject.height);
 			if (minHeight > height) {
-				this.setPrefForActiveWindow((function() {
-					this.tabbarHeight = minHeight;
-					this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_PREF_CHANGE);
-				}).bind(this));
+				this.tabbarHeight = minHeight;
+				this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_PREF_CHANGE);
 			}
 		}
 	},
@@ -1372,9 +1364,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (!aIsTemporaryChange) {
 			let positionName = this.normalizeTabbarPosition(pos);
 			this.setWindowValue(this.kTABBAR_POSITION, positionName);
-			this.setPrefForActiveWindow(function() {
-				utils.setTreePref('tabbar.position', positionName);
-			});
+			utils.setTreePref('tabbar.position', positionName);
 		}
 
 		aOldPosition = aOldPosition || pos;
@@ -2607,7 +2597,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		switch (aPrefName)
 		{
 			case 'extensions.treestyletab.tabbar.position':
-				if (this.shouldApplyNewPref)
+				if (this.shouldApplyNewPref('tabbar.position'))
 					this.position = value;
 				return;
 
@@ -2649,7 +2639,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				return this.setTabbrowserAttribute(this.kFIRSTTAB_BORDER, value);
 
 			case 'extensions.treestyletab.tabbar.fixed.horizontal':
-				if (!this.shouldApplyNewPref)
+				if (!this.shouldApplyNewPref('tabbar.fixed.horizontal'))
 					return;
 				this.setTabbrowserAttribute(this.kFIXED+'-horizontal', value ? 'true' : null, b);
 			case 'extensions.treestyletab.maxTreeLevel.horizontal':
@@ -2659,7 +2649,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				return;
 
 			case 'extensions.treestyletab.tabbar.fixed.vertical':
-				if (!this.shouldApplyNewPref)
+				if (!this.shouldApplyNewPref('tabbar.fixed.vertical'))
 					return;
 				this.setTabbrowserAttribute(this.kFIXED+'-vertical', value ? 'true' : null, b);
 			case 'extensions.treestyletab.maxTreeLevel.vertical':
@@ -2670,10 +2660,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 			case 'extensions.treestyletab.tabbar.width':
 			case 'extensions.treestyletab.tabbar.shrunkenWidth':
-				if (!this.shouldApplyNewPref)
+				if (!this.shouldApplyNewPref('tabbar.width'))
 					return;
 				if (!this.autoHide.isResizing && this.isVertical) {
 					this.removeTabStripAttribute('width');
+					this.tabbarWidth = value;
 					this.setTabStripAttribute('width', this.autoHide.placeHolderWidthFromMode);
 					this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_PREF_CHANGE);
 				}
@@ -2681,9 +2672,10 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				return;
 
 			case 'extensions.treestyletab.tabbar.height':
-				if (!this.shouldApplyNewPref)
+				if (!this.shouldApplyNewPref('tabbar.height'))
 					return;
 				this._horizontalTabMaxIndentBase = 0;
+				this.tabbarHeight = value;
 				this.checkTabsIndentOverflow();
 				return;
 

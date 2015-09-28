@@ -2538,24 +2538,13 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		return size;
 	},
 
-	get shouldApplyNewPref()
+	shouldApplyNewPref : function TSTBase_shouldApplyNewPref(aKey)
 	{
 		return (
-					!this.applyOnlyForActiveWindow ||
-					this.window == this.topBrowserWindow
-				) &&
-				!this.inWindowDestoructionProcess;
-	},
- 
-	applyOnlyForActiveWindow : false, 
-	setPrefForActiveWindow : function TSTBase_setPrefForActiveWindow(aTask) {
-		TreeStyleTabBase.applyOnlyForActiveWindow = true;
-		try {
-			aTask.call(this);
-		}
-		finally {
-			TreeStyleTabBase.applyOnlyForActiveWindow = false;
-		}
+			!utils.isTreePrefChanging(aKey) &&
+			this.window == this.topBrowserWindow &&
+			!this.inWindowDestoructionProcess
+		);
 	}
    
 }); 
