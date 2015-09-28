@@ -356,6 +356,13 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
 	background-image: none;
 }
 
+/* overlay icon */
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tab-content[pinned="true"] > image.tab-icon-overlay {
+  margin-top: -14px;
+  -moz-margin-start: -8px;
+}
+
 
 /* notification of newly opened tabs in background */
 
