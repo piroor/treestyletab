@@ -474,6 +474,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		return label;
 	},
  
+	getTabSoundButton : function TSTBrowser_getTabSoundButton(aTab) 
+	{
+		return this.document.getAnonymousElementByAttribute(aTab, 'anonid', 'soundplaying-icon');
+	},
+ 
 	getTabClosebox : function TSTBrowser_getTabClosebox(aTab) 
 	{
 		var d = this.document;
@@ -1180,6 +1185,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		var namedNodes = {
 				label        : this.getTabLabel(aTab),
+				sound        : this.getTabSoundButton(aTab),
 				close        : this.getTabClosebox(aTab),
 				twistyAnchor : this.getTabTwistyAnchorNode(aTab),
 				twisty       : this.getTabTwisty(aTab),
@@ -1245,6 +1251,16 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				nodes.splice(nodes.indexOf(aNamedNodes.closeAnchor), 0, aNamedNodes.close);
 			else
 				nodes.splice(nodes.indexOf(aNamedNodes.closeAnchor)+1, 0, aNamedNodes.close);
+		}
+
+		index = nodes.indexOf(aNamedNodes.sound);
+		if (index > -1) {
+			nodes.splice(index, 1);
+			let closeIndex = nodes.indexOf(aNamedNodes.close);
+			if (closeIndex < 0)
+				nodes.push(aNamedNodes.sound);
+			else
+				nodes.splice(closeIndex, 0, aNamedNodes.sound);
 		}
 
 		index = nodes.indexOf(aNamedNodes.twisty);
