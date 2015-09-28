@@ -359,8 +359,8 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
 /* overlay icon */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-content[pinned="true"] > image.tab-icon-overlay {
-  margin-top: -14px;
-  -moz-margin-start: -8px;
+  margin-top: -14px !important;
+  -moz-margin-start: -8px !important;
 }
 
 
