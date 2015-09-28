@@ -282,11 +282,9 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 	get expandedWidth()
 	{
 		var lastWidth = this.treeStyleTab.getWindowValue(this.kTABBAR_EXPANDED_WIDTH);
-		if (lastWidth === '') {
-			lastWidth = utils.getTreePref('tabbar.width');
-			this.treeStyleTab.setWindowValue(this.kTABBAR_EXPANDED_WIDTH, lastWidth);
-		}
-		return parseInt(lastWidth);
+		return lastWidth === '' ?
+				utils.getTreePref('tabbar.width') :
+				parseInt(lastWidth);
 	},
 	set expandedWidth(aValue)
 	{
@@ -305,11 +303,9 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 	get shrunkenWidth()
 	{
 		var lastWidth = this.treeStyleTab.getWindowValue(this.kTABBAR_SHRUNKEN_WIDTH);
-		if (lastWidth === '') {
-			lastWidth = utils.getTreePref('tabbar.shrunkenWidth');
-			this.treeStyleTab.setWindowValue(this.kTABBAR_SHRUNKEN_WIDTH, lastWidth);
-		}
-		return parseInt(lastWidth);
+		return lastWidth === '' ?
+				utils.getTreePref('tabbar.shrunkenWidth') :
+				parseInt(lastWidth);
 	},
 	set shrunkenWidth(aValue)
 	{
