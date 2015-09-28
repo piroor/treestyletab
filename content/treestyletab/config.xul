@@ -27,8 +27,14 @@
 		<preference id="extensions.treestyletab.tabbar.height"
 			name="extensions.treestyletab.tabbar.height"
 			type="int"/>
+		<preference id="extensions.treestyletab.tabbar.height.override"
+			name="extensions.treestyletab.tabbar.height.override"
+			type="int"/>
 		<preference id="extensions.treestyletab.tabbar.width"
 			name="extensions.treestyletab.tabbar.width"
+			type="int"/>
+		<preference id="extensions.treestyletab.tabbar.width.override"
+			name="extensions.treestyletab.tabbar.width.override"
 			type="int"/>
 		<preference id="extensions.treestyletab.tabbar.syncRelatedPrefsForDynamicPosition"
 			name="extensions.treestyletab.tabbar.syncRelatedPrefsForDynamicPosition"
@@ -116,7 +122,9 @@
 				control="tabbarSize-horizontal"
 				value="&config.tabbarSize.before-horizontal;"/>
 			<textbox id="tabbarSize-horizontal"
-				preference="extensions.treestyletab.tabbar.height"
+				preference="extensions.treestyletab.tabbar.height.override"
+				onsyncfrompreference="return readOverrideSize('tabbarSize-horizontal');"
+				onsynctopreference="return writeOverrideSize('tabbarSize-horizontal');"
 				type="number"
 				min="1" increment="1" style="width:6em;"/>
 			<label id="tabbarSize-after-horizontal"
@@ -131,7 +139,9 @@
 				control="tabbarSize-vertical"
 				value="&config.tabbarSize.before-vertical;"/>
 			<textbox id="tabbarSize-vertical"
-				preference="extensions.treestyletab.tabbar.width"
+				preference="extensions.treestyletab.tabbar.width.override"
+				onsyncfrompreference="return readOverrideSize('tabbarSize-vertical');"
+				onsynctopreference="return writeOverrideSize('tabbarSize-vertical');"
 				type="number"
 				min="1" increment="1" style="width:6em;"/>
 			<label id="tabbarSize-after-vertical"

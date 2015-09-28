@@ -18,6 +18,8 @@ pref("extensions.treestyletab.tabbar.height",                32);
 pref("extensions.treestyletab.tabbar.height.default",        32);
 pref("extensions.treestyletab.tabbar.shrunkenWidth",         80);
 pref("extensions.treestyletab.tabbar.shrunkenWidth.default", 80);
+pref("extensions.treestyletab.tabbar.width.override",        200);
+pref("extensions.treestyletab.tabbar.height.override",       200);
 
 /**
  * Position of the tab bar, possible values are:

@@ -2662,6 +2662,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			case 'extensions.treestyletab.tabbar.shrunkenWidth':
 				if (!this.shouldApplyNewPref('tabbar.width'))
 					return;
+			case 'extensions.treestyletab.tabbar.width.override':
 				if (!this.autoHide.isResizing && this.isVertical) {
 					this.removeTabStripAttribute('width');
 					this.tabbarWidth = value;
@@ -2674,6 +2675,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			case 'extensions.treestyletab.tabbar.height':
 				if (!this.shouldApplyNewPref('tabbar.height'))
 					return;
+			case 'extensions.treestyletab.tabbar.height.override':
 				this._horizontalTabMaxIndentBase = 0;
 				this.tabbarHeight = value;
 				this.checkTabsIndentOverflow();

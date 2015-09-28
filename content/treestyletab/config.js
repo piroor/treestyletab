@@ -110,6 +110,25 @@ function initAppearancePane()
 	});
 }
 
+function readOverrideSize(aFieldId)
+{
+	var field = document.getElementById(aFieldId);
+	var overrideKey = field.getAttribute('preference');
+	var regularKey = overrideKey.replace(/\.override$/, '');
+	var regularPref = document.getElementById(regularKey);
+	return regularPref.value;
+}
+
+function writeOverrideSize(aFieldId)
+{
+	var field = document.getElementById(aFieldId);
+	var overrideKey = field.getAttribute('preference');
+	var regularKey = overrideKey.replace(/\.override$/, '');
+	var regularPref = document.getElementById(regularKey);
+	regularPref.value = field.value;
+	return field.value;
+}
+
 
 var gDropLinksOnRadioSet,
 	gGroupBookmarkRadioSet,
