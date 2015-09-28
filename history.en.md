@@ -1,7 +1,9 @@
 # History
 
  - master/HEAD
+ - 0.15.20150902901
    * Fix many compatibility issues around spec changes at Firefox 40 and later.
+     (Including [patches by Xidorn Quan](https://github.com/piroor/treestyletab/pull/925). Thanks!)
    * Drop support for Firefox 31.
    * Re-introduce configuration UIs for the size of the tab bar and its fixedness.
      Now it works to reset size of the tab bar in all existing windows.
