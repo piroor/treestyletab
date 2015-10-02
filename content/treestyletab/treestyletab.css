@@ -596,8 +596,10 @@ toolbar.treestyletab-tabbar-toolbar-ready:not([nowindowdrag="true"]),
 	z-index: 100;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-dom-fullscreen-activated="true"]
-  .tabbrowser-tab[pinned] {
-	z-index: -100;
+  .tabbrowser-tab[pinned],
+.tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-dom-fullscreen-activated="true"]
+  .tabbrowser-tab[pinned] * /* this is required to hide unexpectedly shown gray rect (ex. .tab-background) */ {
+	visibility: collapse;
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
