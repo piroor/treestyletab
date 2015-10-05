@@ -3208,7 +3208,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			this.isSubtreeCollapsed(tab))
 			this._closeChildTabs(tab);
 
-		this._saveAndUpdateReferenceTabsInfo(tab);
+		this._closeUpInsertionPositionInfoAround(tab);
 
 		var firstChild = this.getFirstChildTab(tab);
 
@@ -3361,7 +3361,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}).bind(this), 0);
 	},
  
-	_saveAndUpdateReferenceTabsInfo : function TSTBrowser_saveAndUpdateReferenceTabsInfo(aTab) 
+	_closeUpInsertionPositionInfoAround : function TSTBrowser_closeUpInsertionPositionInfoAround(aTab) 
 	{
 		var prev = this.getPreviousSiblingTab(aTab);
 		var next = this.getNextSiblingTab(aTab);
