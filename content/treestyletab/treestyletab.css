@@ -598,6 +598,9 @@ toolbar.treestyletab-tabbar-toolbar-ready:not([nowindowdrag="true"]),
 *[collapsed="true"]
   .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned],
+*[collapsed="true"]
+  .tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned] * /* this is required to hide unexpectedly shown gray rect (ex. .tab-background) */,
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-dom-fullscreen-activated="true"]
   .tabbrowser-tab[pinned],
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-dom-fullscreen-activated="true"]
