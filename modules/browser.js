@@ -3174,12 +3174,16 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (prev) {
 			this.setTabValue(aTab, this.kINSERT_AFTER, prev.getAttribute(this.kID));
 			this.setTabValue(prev, this.kINSERT_BEFORE, aTab.getAttribute(this.kID));
+		} else {
+			this.deleteTabValue(aTab, this.kINSERT_AFTER);
 		}
 
 		var next = this.getNextSiblingTab(aTab);
 		if (next) {
 			this.setTabValue(aTab, this.kINSERT_BEFORE, next.getAttribute(this.kID));
 			this.setTabValue(next, this.kINSERT_AFTER, aTab.getAttribute(this.kID));
+		} else {
+			this.deleteTabValue(aTab, this.kINSERT_BEFORE);
 		}
 	},
   
