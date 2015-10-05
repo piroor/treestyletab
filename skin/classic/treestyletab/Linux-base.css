@@ -55,7 +55,7 @@
 }
 
 /* cancel too much padding for the icon in the vertical tab bar */
-#TabsToolbar[treestyletab-mode="vertical"]
+#main-window[treestyletab-mode="vertical"]
   #alltabs-button > .toolbarbutton-icon {
 	padding: 3px 7px;
 }
