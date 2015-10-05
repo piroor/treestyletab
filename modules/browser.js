@@ -5452,7 +5452,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			return;
 
 		if (!aInfo.dontUpdateInsertionPositionInfo)
-			this.closeUpInsertionPositionInfoAround(aTab);
+			this.closeUpInsertionPositionInfoAround(aChild);
 
 		var id = aChild.getAttribute(this.kID);
 
