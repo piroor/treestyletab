@@ -3484,22 +3484,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		this.updateTabsCount(tab, true);
 
-		var prev = this.getPreviousSiblingTab(tab);
-		var next = this.getNextSiblingTab(tab);
-
-		if (prev) {
-			this.setTabValue(prev, this.kINSERT_BEFORE, tab.getAttribute(this.kID));
-			this.setTabValue(tab, this.kINSERT_AFTER, prev.getAttribute(this.kID));
-		}
-		else
-			this.deleteTabValue(tab, this.kINSERT_AFTER);
-
-		if (next) {
-			this.setTabValue(next, this.kINSERT_AFTER, tab.getAttribute(this.kID));
-			this.setTabValue(tab, this.kINSERT_BEFORE, next.getAttribute(this.kID));
-		}
-		else
-			this.deleteTabValue(tab, this.kINSERT_BEFORE);
+		this.updateInsertionPositionInfo(tab);
 
 		var old = aEvent.detail;
 		if (old > tab._tPos)
@@ -3507,8 +3492,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var tabs = this.getAllTabs(b);
 		old = tabs[old];
 
-		prev = this.getPreviousSiblingTab(old);
-		next = this.getNextSiblingTab(old);
+		var prev = this.getPreviousSiblingTab(old);
+		var next = this.getNextSiblingTab(old);
 
 		if (prev) {
 			this.setTabValue(prev, this.kINSERT_BEFORE, old.getAttribute(this.kID));
