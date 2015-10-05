@@ -595,6 +595,9 @@ toolbar.treestyletab-tabbar-toolbar-ready:not([nowindowdrag="true"]),
 	/* width: 24px; */
 	z-index: 100;
 }
+*[collapsed="true"]
+  .tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned],
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-dom-fullscreen-activated="true"]
   .tabbrowser-tab[pinned],
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-dom-fullscreen-activated="true"]
