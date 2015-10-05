@@ -3235,8 +3235,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			this.isSubtreeCollapsed(tab))
 			this._closeChildTabs(tab);
 
-		this.closeUpInsertionPositionInfoAround(tab);
-
 		var firstChild = this.getFirstChildTab(tab);
 
 		this.detachAllChildren(tab, {
@@ -5453,6 +5451,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (!parentTab)
 			return;
 
+		if (!aInfo.dontUpdateInsertionPositionInfo)
+			this.closeUpInsertionPositionInfoAround(aTab);
+
 		var id = aChild.getAttribute(this.kID);
 
 		this.setTabValue(
@@ -5512,6 +5513,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			aInfo.behavior = this.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN;
 		if (aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
 			aInfo.behavior = this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
+
+		aInfo.dontUpdateInsertionPositionInfo = true;
 
 		var b = this.mTabBrowser;
 		var parentTab = this.getParentTab(aTab);
