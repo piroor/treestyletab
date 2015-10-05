@@ -7067,7 +7067,38 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	cancelShowHideTabbarOnMousemove : function TSTBrowser_cancelShowHideTabbarOnMousemove() { this.autoHide.cancelShowHideOnMousemove(); },
 	showTabbarForFeedback : function TSTBrowser_showTabbarForFeedback() { this.autoHide.showForFeedback(); },
 	delayedShowTabbarForFeedback : function TSTBrowser_delayedShowTabbarForFeedback() { this.autoHide.delayedShowForFeedback(); },
-	cancelHideTabbarForFeedback : function TSTBrowser_cancelHideTabbarForFeedback() { this.autoHide.cancelHideForFeedback(); }
+	cancelHideTabbarForFeedback : function TSTBrowser_cancelHideTabbarForFeedback() { this.autoHide.cancelHideForFeedback(); },
   
+	// DEBUGGING
+	dumpTreeInformation : function() {
+		var ids = [];
+		var extraAttributes = {
+			children: this.kCHILDREN,
+			restoringChildren: this.kCHILDREN_RESTORING,
+			parent: this.kPARENT,
+			insertBefore: this.kINSERT_BEFORE,
+			insertAfter: this.kINSERT_AFTER
+		};
+		var result = this.rootTabs.map(function scanTab(aTab) {
+			var id = this.getTabValue(aTab, this.kID);
+			ids.push(id);
+			var result = { id: id };
+			Object.keys(extraAttributes).forEach(function(aKey) {
+				var value = this.getTabValue(aTab, extraAttributes[aKey]);
+				if (value)
+					result[aKey] = value;
+			}, this);
+			var children = this.getChildTabs(aTab).map(scanTab, this);
+			if (children.length > 0)
+				result.actualChildren = children;
+			return result;
+		}, this);
+		var json = JSON.stringify(result);
+		ids.forEach(function(aId, aIndex) {
+			json = json.replace(new RegExp(aId, 'g'), 'TAB-' + aIndex);
+		});
+		return JSON.parse(json);
+	}
+ 
 }); 
  
