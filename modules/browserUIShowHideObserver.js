@@ -135,7 +135,11 @@ BrowserUIShowHideObserver.prototype = {
 		if (
 			// I must ignore show/hide of elements managed by TST,
 			// to avoid infinity loop.
-			target.hasAttribute(TreeStyleTabConstants.kTAB_STRIP_ELEMENT) &&
+			TST.evaluateXPath(
+				'ancestor-or-self::xul:*[@' + TreeStyleTabConstants.kTAB_STRIP_ELEMENT + '="true"]',
+				target,
+				Components.interfaces.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue &&
 			// However, I have to synchronize visibility of the real
 			// tab bar and the placeholder's one. If they have
 			// different visibility, then the tab bar is shown or
