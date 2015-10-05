@@ -3167,7 +3167,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
  
 	updateInsertionPositionInfo : function TSTBrowser_updateInsertionPositionInfo(aTab) 
 	{
-		if (!aTab.parentNode) // do nothing for closed tab!
+		if (!aTab ||
+			!aTab.parentNode) // do nothing for closed tab!
 			return;
 
 		var prev = this.getPreviousSiblingTab(aTab);
