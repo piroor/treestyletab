@@ -1,6 +1,12 @@
 # History
 
  - master/HEAD
+   * Restore order of rearranged tabs more correctly.
+   * Don't show gray rect of pinned tabs on full screen videos and collapsed tab bar.
+   * Don't update the size of the tab bar too frequently.
+     This change solves conflict with the [Unified Sidebar](https://addons.mozilla.org/firefox/addon/unified-sidebar/) addon.
+   * On Linux, show the icon of the "all tabs" button in the vertical tab bar correctly.
+   * Introduce an internal method `gBrowser.treeStyleTab.dumpTreeInformation()` to dump tree structure information stored in each tab, for debugging around unexpectedly broken tree.
  - 0.15.20150902901
    * Fix many compatibility issues around spec changes at Firefox 40 and later.
      (Including [patches by Xidorn Quan](https://github.com/piroor/treestyletab/pull/925). Thanks!)
