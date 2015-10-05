@@ -3187,6 +3187,32 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			this.deleteTabValue(aTab, this.kINSERT_BEFORE);
 		}
 	},
+ 
+	closeUpInsertionPositionInfoAround : function TSTBrowser_closeUpInsertionPositionInfoAround(aTab) 
+	{
+		if (!aTab ||
+			!aTab.parentNode) // do nothing for closed tab!
+			return;
+
+		var prev = this.getPreviousSiblingTab(aTab);
+		var next = this.getNextSiblingTab(aTab);
+		if (prev) {
+			this.setTabValue(aTab, this.kINSERT_AFTER, prev.getAttribute(this.kID));
+
+			if (next)
+				this.setTabValue(prev, this.kINSERT_BEFORE, next.getAttribute(this.kID));
+			else
+				this.deleteTabValue(prev, this.kINSERT_BEFORE);
+		}
+		if (next) {
+			this.setTabValue(aTab, this.kINSERT_BEFORE, next.getAttribute(this.kID));
+
+			if (prev)
+				this.setTabValue(next, this.kINSERT_AFTER, prev.getAttribute(this.kID));
+			else
+				this.deleteTabValue(next, this.kINSERT_AFTER);
+		}
+	},
   
 	onTabClose : function TSTBrowser_onTabClose(aEvent) 
 	{
@@ -3209,7 +3235,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			this.isSubtreeCollapsed(tab))
 			this._closeChildTabs(tab);
 
-		this._closeUpInsertionPositionInfoAround(tab);
+		this.closeUpInsertionPositionInfoAround(tab);
 
 		var firstChild = this.getFirstChildTab(tab);
 
@@ -3360,28 +3386,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			aTabs = null;
 			key = null;
 		}).bind(this), 0);
-	},
- 
-	_closeUpInsertionPositionInfoAround : function TSTBrowser_closeUpInsertionPositionInfoAround(aTab) 
-	{
-		var prev = this.getPreviousSiblingTab(aTab);
-		var next = this.getNextSiblingTab(aTab);
-		if (prev) {
-			this.setTabValue(aTab, this.kINSERT_AFTER, prev.getAttribute(this.kID));
-
-			if (next)
-				this.setTabValue(prev, this.kINSERT_BEFORE, next.getAttribute(this.kID));
-			else
-				this.deleteTabValue(prev, this.kINSERT_BEFORE);
-		}
-		if (next) {
-			this.setTabValue(aTab, this.kINSERT_BEFORE, next.getAttribute(this.kID));
-
-			if (prev)
-				this.setTabValue(next, this.kINSERT_AFTER, prev.getAttribute(this.kID));
-			else
-				this.deleteTabValue(next, this.kINSERT_AFTER);
-		}
 	},
  
 	_restoreTabAttributes : function TSTBrowser_restoreTabAttributes(aTab, aAttributes) 
