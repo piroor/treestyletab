@@ -6,7 +6,7 @@
    * タブバーの大きさが過度に頻繁に更新されないようにした
      （[Unified Sidebar](https://addons.mozilla.org/firefox/addon/unified-sidebar/)との併用時の動作を改善）
    * Linuxにおいて、縦置きされたタブバー内の「すべてのタブ」ボタンのアイコンを正しく表示するようにした
-   * 意図せずツリー構造が壊れてしまう問題のデバッグ用に、各他部に保存されたツリー構造の情報を出力する内部的なメソッド `gBrowser.treeStyleTab.dumpTreeInformation()` を導入した
+   * 意図せずツリー構造が壊れてしまう問題のデバッグ用に、各タブに保存されたツリー構造の情報を出力する内部的なメソッド `gBrowser.treeStyleTab.dumpTreeInformation()` を導入した
  - 0.15.20150902901
    * Firefox 40以降での仕様変更に伴う多数の不具合を修正
      ([Xidorn Quan氏のパッチ](https://github.com/piroor/treestyletab/pull/925)を含む。多謝！)
