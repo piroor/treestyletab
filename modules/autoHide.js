@@ -59,7 +59,7 @@ XPCOMUtils.defineLazyGetter(this, 'prefs', function() {
 });
 
 
-const AutoHideConstants = Object.freeze(inherit(TreeStyleTabConstants, {
+var AutoHideConstants = Object.freeze(inherit(TreeStyleTabConstants, {
 	kMODE : 'treestyletab-tabbar-autohide-mode', 
 	kMODE_DISABLED : 0,
 	kMODE_HIDE     : 1,

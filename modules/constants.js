@@ -36,7 +36,7 @@
  
 const EXPORTED_SYMBOLS = ['TreeStyleTabConstants']; 
 
-const TreeStyleTabConstants = Object.freeze({
+var TreeStyleTabConstants = Object.freeze({
 /* attributes */
 	kID                 : 'treestyletab-id',
 	kCHILDREN           : 'treestyletab-children',

@@ -68,7 +68,7 @@ const TST_PREF_PREFIX = 'extensions.treestyletab.';
 const TST_PREF_VERSION = 10;
 
 
-let TreeStyleTabUtils = {
+var TreeStyleTabUtils = {
 
 	get prefs () {
 		return prefs;
