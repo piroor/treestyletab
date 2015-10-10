@@ -3,6 +3,7 @@ XPCOMUtils.defineLazyModuleGetter(this,
   'TreeStyleTabUtils', 'resource://treestyletab-modules/utils.js');
 
 var TreeStyleTabWindowHelper = { 
+	runningDelayedStartup : false,
 	
 	get service() 
 	{
@@ -12,25 +13,18 @@ var TreeStyleTabWindowHelper = {
 	preInit : function TSTWH_preInit() 
 	{
 		TreeStyleTabUtils.doPatching(gBrowserInit._delayedStartup, 'gBrowserInit._delayedStartup', function(aName, aSource) {
-			if (aSource.indexOf('!MultipleTabService.tearOffSelectedTabsFromRemote()') > -1) {
-				return eval(aName+' = '+aSource.replace(
-					'!MultipleTabService.tearOffSelectedTabsFromRemote()',
-					'!TreeStyleTabService.tearOffSubtreeFromRemote() && $&'
-				));
-			}
-			else if (aSource.indexOf('gBrowser.swapBrowsersAndCloseOther') > -1) {
-				return eval(aName+' = '+aSource.replace(
-					/gBrowser\.swapBrowsersAndCloseOther\([^)]+\);/g,
-					'if (!TreeStyleTabService.tearOffSubtreeFromRemote()) { $& }'
-				).replace(
-					// Workaround for https://github.com/piroor/treestyletab/issues/741
-					// After the function is updated by TST, reassignment of a global variable raises an error like:
-					// > System JS : ERROR chrome://treestyletab/content/windowHelper.js line 30 > eval:130 - TypeError: can't redefine non-configurable property 'gBidiUI'
-					// If I access it as a property of the global object, the error doesn't appear.
-					/([^\.])\bgBidiUI =/,
-					'$1window.gBidiUI ='
-				));
-			}
+			// Replacing of gBrowserInit._delayedStartup() with eval()
+			// breaks the variable scope of the function and break its
+			// functionality completely.
+			// Instead, I use a flag to detect a method is called at the
+			// startup process or not.
+			gBrowserInit.__treestyletab___delayedStartup = gBrowserInit._delayedStartup;
+			gBrowserInit._delayedStartup = function(...args) {
+				TreeStyleTabWindowHelper.runningDelayedStartup = true;
+				var retVal = this.__treestyletab___delayedStartup.apply(this, args);
+				TreeStyleTabWindowHelper.runningDelayedStartup = false;
+				return retVal;
+			};
 		}, 'TreeStyleTab');
 
 		TreeStyleTabUtils.doPatching(nsBrowserAccess.prototype.openURI, 'nsBrowserAccess.prototype.openURI', function(aName, aSource) {
@@ -109,6 +103,19 @@ var TreeStyleTabWindowHelper = {
 	{
 		this.overrideExtensionsBeforeBrowserInit(); // windowHelperHacks.js
 		this.overrideGlobalFunctions();
+
+		// Replacing of gBrowserInit._delayedStartup() with eval()
+		// breaks the variable scope of the function and break its
+		// functionality completely.
+		// Instead, I change the behavior of the method only at the
+		// startup process.
+		gBrowser.__treestyletab__swapBrowsersAndCloseOther = gBrowser.swapBrowsersAndCloseOther;
+		gBrowser.swapBrowsersAndCloseOther = function(...args) {
+			if (TreeStyleTabWindowHelper.runningDelayedStartup &&
+				TreeStyleTabService.tearOffSubtreeFromRemote())
+				return;
+			return this.__treestyletab__swapBrowsersAndCloseOther.apply(this, args);
+		};
 	},
  
 	onAfterBrowserInit : function TSTWH_onAfterBrowserInit() 
@@ -382,7 +389,7 @@ var TreeStyleTabWindowHelper = {
 		tabbar.addEventListener('click', this.service, true);
 
 		var newTabButton = document.getElementById('new-tab-button');
-		const nsIDOMNode = Ci.nsIDOMNode;
+		var nsIDOMNode = Ci.nsIDOMNode;
 		if (newTabButton &&
 			!(tabbar.compareDocumentPosition(newTabButton) & nsIDOMNode.DOCUMENT_POSITION_CONTAINED_BY))
 			newTabButton.parentNode.addEventListener('click', this.service, true);
@@ -400,7 +407,7 @@ var TreeStyleTabWindowHelper = {
 		tabbar.removeEventListener('click', this.service, true);
 
 		var newTabButton = document.getElementById('new-tab-button');
-		const nsIDOMNode = Ci.nsIDOMNode;
+		var nsIDOMNode = Ci.nsIDOMNode;
 		if (newTabButton &&
 			!(tabbar.compareDocumentPosition(newTabButton) & Ci.nsIDOMNode.DOCUMENT_POSITION_CONTAINED_BY))
 			newTabButton.parentNode.removeEventListener('click', this.service, true);
