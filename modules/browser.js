@@ -36,7 +36,7 @@
  *
  * ***** END LICENSE BLOCK ******/
  
-const EXPORTED_SYMBOLS = ['TreeStyleTabBrowser']; 
+var EXPORTED_SYMBOLS = ['TreeStyleTabBrowser']; 
 
 const DEBUG = false;
 

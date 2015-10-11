@@ -34,7 +34,7 @@
  *
  * ***** END LICENSE BLOCK ******/
  
-const EXPORTED_SYMBOLS = ['AutoHideBrowser', 'AutoHideWindow'];
+var EXPORTED_SYMBOLS = ['AutoHideBrowser', 'AutoHideWindow'];
 
 const DEBUG = false;
 

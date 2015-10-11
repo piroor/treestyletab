@@ -33,7 +33,7 @@
  *
  * ***** END LICENSE BLOCK ******/
 
-const EXPORTED_SYMBOLS = ['TabAttributesObserver']; 
+var EXPORTED_SYMBOLS = ['TabAttributesObserver']; 
 
 Components.utils.import('resource://treestyletab-modules/constants.js');
 

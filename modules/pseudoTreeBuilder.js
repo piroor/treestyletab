@@ -34,7 +34,7 @@
  *
  * ***** END LICENSE BLOCK ******/
 
-const EXPORTED_SYMBOLS = ['PseudoTreeBuilder'];
+var EXPORTED_SYMBOLS = ['PseudoTreeBuilder'];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;

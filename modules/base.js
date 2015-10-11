@@ -34,7 +34,7 @@
  *
  * ***** END LICENSE BLOCK ******/
  
-const EXPORTED_SYMBOLS = ['TreeStyleTabBase']; 
+var EXPORTED_SYMBOLS = ['TreeStyleTabBase']; 
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;

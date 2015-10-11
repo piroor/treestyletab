@@ -33,7 +33,7 @@
  *
  * ***** END LICENSE BLOCK ******/
  
-const EXPORTED_SYMBOLS = ['ContentBridge']; 
+var EXPORTED_SYMBOLS = ['ContentBridge']; 
 
 const DEBUG = false;
 

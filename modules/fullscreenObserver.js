@@ -33,7 +33,7 @@
  *
  * ***** END LICENSE BLOCK ******/
 
-const EXPORTED_SYMBOLS = ['FullscreenObserver']; 
+var EXPORTED_SYMBOLS = ['FullscreenObserver']; 
 
 Components.utils.import('resource://treestyletab-modules/utils.js');
 

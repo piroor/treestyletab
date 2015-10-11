@@ -34,7 +34,7 @@
  *
  * ***** END LICENSE BLOCK ******/
  
-const EXPORTED_SYMBOLS = ['TreeStyleTabThemeManager']; 
+var EXPORTED_SYMBOLS = ['TreeStyleTabThemeManager']; 
 
 const BASE = 'chrome://treestyletab/skin/';
 

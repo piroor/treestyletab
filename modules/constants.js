@@ -34,7 +34,7 @@
  *
  * ***** END LICENSE BLOCK ******/
  
-const EXPORTED_SYMBOLS = ['TreeStyleTabConstants']; 
+var EXPORTED_SYMBOLS = ['TreeStyleTabConstants']; 
 
 var TreeStyleTabConstants = Object.freeze({
 /* attributes */

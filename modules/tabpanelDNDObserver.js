@@ -34,7 +34,7 @@
  *
  * ***** END LICENSE BLOCK ******/
  
-const EXPORTED_SYMBOLS = ['TabpanelDNDObserver'];
+var EXPORTED_SYMBOLS = ['TabpanelDNDObserver'];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;

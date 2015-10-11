@@ -10,7 +10,7 @@
  * @url http://github.com/piroor/fxaddonlib-inherit
  */
 
-const EXPORTED_SYMBOLS = ['inherit'];
+var EXPORTED_SYMBOLS = ['inherit'];
 
 function toPropertyDescriptors(aProperties) {
 	var descriptors = {};

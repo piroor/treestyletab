@@ -35,7 +35,7 @@
  *
  * ***** END LICENSE BLOCK ******/
  
-const EXPORTED_SYMBOLS = ['TabbarDNDObserver']; 
+var EXPORTED_SYMBOLS = ['TabbarDNDObserver']; 
 
 const DEBUG = false;
 

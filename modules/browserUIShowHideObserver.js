@@ -34,7 +34,7 @@
  *
  * ***** END LICENSE BLOCK ******/
 
-const EXPORTED_SYMBOLS = ['BrowserUIShowHideObserver']; 
+var EXPORTED_SYMBOLS = ['BrowserUIShowHideObserver']; 
 
 var DEBUG = false;
 

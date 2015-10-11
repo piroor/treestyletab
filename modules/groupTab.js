@@ -34,7 +34,7 @@
  *
  * ***** END LICENSE BLOCK ******/
 
-const EXPORTED_SYMBOLS = ['GroupTab']; 
+var EXPORTED_SYMBOLS = ['GroupTab']; 
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
