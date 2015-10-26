@@ -9,13 +9,13 @@
 
 function init()
 {
-    $("div#res.med").prepend('<div><img id="use_GM_openInTab" src="http://i.imgur.com/cQkJVZY.png" title="Open All Links">Use GM_openInTab<br/><br/><br/></div>');
+    $("div#res.med").prepend('<div><a id="use_GM_openInTab"><img src="http://i.imgur.com/cQkJVZY.png" alt="">Open All Links with GM_openInTab</a></div>');
     $('#use_GM_openInTab').click(function()
     {
         useGMopenIn();
     });
 
-    $("div#res.med").prepend('<div><img id="use_windowOpen" src="http://i.imgur.com/cQkJVZY.png" title="Open All Links">Use window.open<br/></div>');
+    $("div#res.med").prepend('<div><a id="use_windowOpen"><img src="http://i.imgur.com/cQkJVZY.png" alt="">Open All Links window.open</a></div>');
     $('#use_windowOpen').click(function()
     {
         useWinOpen();
