@@ -338,7 +338,7 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tab-content[pinned="true"] > image {
+  .tab-content[pinned="true"] > image:not(.tab-icon-overlay) {
 	height: 16px;
 	margin: 0;
 	padding: 0;
@@ -354,13 +354,6 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned][titlechanged]:not([visuallyselected="true"]):not(.treestyletab-faviconized):hover {
 	background-image: none;
-}
-
-/* overlay icon */
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tab-content[pinned="true"] > image.tab-icon-overlay {
-  margin-top: -14px !important;
-  -moz-margin-start: -8px !important;
 }
 
 
