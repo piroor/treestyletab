@@ -318,11 +318,11 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 	// https://addons.mozilla.org/firefox/addon/748
 	if (TreeStyleTabUtils.getTreePref('compatibility.Greasemonkey')) {
 		try {
-			let hitchModule = Components.utils.import('resource://greasemonkey/util/hitch.js', {});
+			let hitchModule = Components.utils.import('resource://greasemonkey-modules/util/hitch.js', {});
 			let hitch = hitchModule.hitch;
 			if (hitch.toSource().indexOf('TreeStyleTabService') < 0) {
 				let ns = {};
-				Components.utils.import('resource://greasemonkey/third-party/getChromeWinForContentWin.js', ns);
+				Components.utils.import('resource://greasemonkey-modules/third-party/getChromeWinForContentWin.js', ns);
 				let getChromeWinForContentWin = ns.getChromeWinForContentWin;
 				hitchModule.hitch = function(aObject, aMethod) {
 					if (typeof aMethod == 'function' &&
@@ -342,7 +342,7 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 					}
 					return hitch.apply(this, arguments);
 				};
-				Components.utils.import('resource://greasemonkey/util.js', ns);
+				Components.utils.import('resource://greasemonkey-modules/util.js', ns);
 				if (ns.GM_util)
 					ns.GM_util.hitch = hitchModule.hitch;
 			}
