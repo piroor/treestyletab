@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name           test
+// @name           Open Google's search results in tabs
 // @namespace      google_GM_openInTab.user.js
 // @include        http*://www.google.*/search?q=*
 // @require        http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js
