@@ -186,7 +186,8 @@ try{
 		return info.canDrop;
 }
 catch(e) {
-		dump('TabbarDND::canDrop\n'+e+'\n');
+		if (utils.isDebugging('tabbarDNDObserver'))
+			dump('TabbarDND::canDrop\n'+e+'\n');
 		return false;
 }
 	},
@@ -1037,7 +1038,8 @@ try{
 		return (info.position == sv.kDROP_ON || sv.position != 'top')
 }
 catch(e) {
-	dump('TabbarDND::onDragOver\n'+e+'\n');
+		if (utils.isDebugging('tabbarDNDObserver'))
+			dump('TabbarDND::onDragOver\n'+e+'\n');
 }
 	},
   

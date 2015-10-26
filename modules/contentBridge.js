@@ -102,9 +102,11 @@ ContentBridge.prototype = inherit(TreeStyleTabConstants, {
 	},
 	handleMessage : function CB_handleMessage(aMessage)
 	{
-//		dump('*********************handleMessage*******************\n');
-//		dump('TARGET IS: '+aMessage.target.localName+'\n');
-//		dump(JSON.stringify(aMessage.json)+'\n');
+		if (utils.isDebugging('contentBridge')) {
+			dump('*********************handleMessage*******************\n');
+			dump('TARGET IS: '+aMessage.target.localName+'\n');
+			dump(JSON.stringify(aMessage.json)+'\n');
+		}
 
 		if (aMessage.target != this.mTab.linkedBrowser)
 		  return;

@@ -149,7 +149,8 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			this.overrideExtensions();
 		}
 		catch(e) {
-			dump(e+'\n');
+			if (utils.isDebugging('base'))
+				dump(e+'\n');
 		}
 	},
 	_initialized : false,
@@ -518,7 +519,8 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 
 		var message = 'ERROR: accessed after destruction!';
 		var error = new Error(message);
-		dump(message+'\n'+error.stack+'\n');
+		if (utils.isDebugging('base'))
+			dump(message+'\n'+error.stack+'\n');
 		throw error;
 	},
   
@@ -949,7 +951,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	{
 		var strip = this.tabStrip;
 		if (!strip) {
-			if (DEBUG) {
+			if (utils.isDebugging('base')) {
 				dump('FAILED TO SET TABSTRIP ATTRIBUTE ' + aAttr + '=' + aValue + '\n');
 				dump((new Error()).stack + '\n');
 			}
@@ -1508,7 +1510,8 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			refId = aInsertBefore.getAttribute(this.kID);
 		}
 
-		dump('Tree Style Tab: new child tab is requested.\n'+new Error().stack+'\n');
+		if (utils.isDebugging('base'))
+			dump('Tree Style Tab: new child tab is requested.\n'+new Error().stack+'\n');
 
 		ownerBrowser.treeStyleTab.readiedToAttachNewTab   = true;
 		ownerBrowser.treeStyleTab.readiedToAttachMultiple = aMultiple || false ;
@@ -1834,7 +1837,8 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 								aTab.label+'\n     '+
 								aTab.getAttribute(this.kID);
 					}, this).join('\n');
-				dump(message+'\n');
+				if (utils.isDebugging('base'))
+					dump(message+'\n');
 				break;
 			}
 
@@ -1846,7 +1850,8 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 								aTab.label+'\n     '+
 								aTab.getAttribute(this.kID);
 					}, this).join('\n');
-				dump(message+'\n');
+				if (utils.isDebugging('base'))
+					dump(message+'\n');
 			}
 
 			tabs.push(parentTab);
@@ -1993,7 +1998,8 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 								aTab.label+'\n     '+
 								aTab.getAttribute(this.kID);
 					}, this).join('\n');
-				dump(message+'\n');
+				if (utils.isDebugging('base'))
+					dump(message+'\n');
 				continue;
 			}
 			tabs.push(tab);

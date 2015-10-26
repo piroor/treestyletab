@@ -6860,9 +6860,12 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			Components.utils.reportError(new Error('There is no property named "_browserEpochs"!!'));
 		}
 
-		dump('TSTBrowser::restoreTree\n');
-		dump('  level = '+level+'\n');
-		dump('  tabsToRestore = '+tabsToRestore+'\n');
+		if (utils.isDebugging('browser')) {
+			dump('TSTBrowser::restoreTree\n');
+			dump('  level = '+level+'\n');
+			dump('  tabsToRestore = '+tabsToRestore+'\n');
+		}
+
 		if (
 			level <= this.kRESTORE_TREE_LEVEL_NONE ||
 			tabsToRestore <= 1
@@ -6883,7 +6886,10 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				(!onlyVisible || !aTab.hidden)
 			);
 		});
-		dump('  restoring member tabs = '+tabs.length+' ('+tabs.map(function(aTab) { return aTab._tPos; })+')\n');
+
+		if (utils.isDebugging('browser'))
+			dump('  restoring member tabs = '+tabs.length+' ('+tabs.map(function(aTab) { return aTab._tPos; })+')\n');
+
 		if (tabs.length <= 1)
 			return;
 
