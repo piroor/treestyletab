@@ -36,7 +36,11 @@
 
 var EXPORTED_SYMBOLS = ['BrowserUIShowHideObserver']; 
 
+Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
+
 Components.utils.import('resource://treestyletab-modules/constants.js');
+
+XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
 function BrowserUIShowHideObserver(aOwner, aBox) {
 	this.owner = aOwner;
