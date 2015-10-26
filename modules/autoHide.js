@@ -36,8 +36,6 @@
  
 var EXPORTED_SYMBOLS = ['AutoHideBrowser', 'AutoHideWindow'];
 
-const DEBUG = false;
-
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cu = Components.utils;
@@ -503,7 +501,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 	showHideOnMouseMove : function AHB_showHideOnMouseMove(aCoordinates) 
 	{
 		var position = this.getMousePosition(aCoordinates);
-		if (DEBUG) {
+		if (utils.isDebugging('autoHide')) {
 			let humanReadablePosition = [];
 			if (position & this.MOUSE_POSITION_OUTSIDE)
 				humanReadablePosition.push('outside');
@@ -839,7 +837,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 			this.showHideReason = aReason || this.showHideReason || this.kSHOWN_BY_UNKNOWN;
 		}
 
-		if (DEBUG) {
+		if (utils.isDebugging('autoHide')) {
 			let givenReason = this._getHumanReadableReason(aReason);
 			let unifiedReason = this._getHumanReadableReason(this.showHideReason);
 			if (this.expanded)

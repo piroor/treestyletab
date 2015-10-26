@@ -38,8 +38,6 @@
  
 var EXPORTED_SYMBOLS = ['TreeStyleTabBrowser']; 
 
-const DEBUG = false;
-
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cu = Components.utils;
@@ -1952,7 +1950,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	{
 		aReason = aReason || this.kTABBAR_UPDATE_BY_UNKNOWN_REASON;
 
-		if (DEBUG) {
+		if (utils.isDebugging('browser')) {
 			let humanReadableReason =
 				(aReason & this.kTABBAR_UPDATE_BY_RESET ? 'reset ' : '' ) +
 				(aReason & this.kTABBAR_UPDATE_BY_PREF_CHANGE ? 'prefchange ' : '' ) +
@@ -3228,7 +3226,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var closeParentBehavior = this.getCloseParentBehaviorForTab(tab);
 
 		var backupAttributes = this._collectBackupAttributes(tab);
-		if (DEBUG)
+		if (utils.isDebugging('browser'))
 			dump('onTabClose: backupAttributes = '+JSON.stringify(backupAttributes)+'\n');
 
 		if (closeParentBehavior == this.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN ||
@@ -3893,7 +3891,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	handleRestoredTab : function TSTBrowser_handleRestoredTab(aTab) 
 	{
 		if (aTab.__treestyletab__restoreState === undefined) {
-			if (DEBUG)
+			if (utils.isDebugging('browser'))
 				dump('handleRestoredTab: ' + aTab._tPos + ' is already restored!\n');
 			return false;
 		}
@@ -4122,7 +4120,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var restoringMultipleTabs = this.windowService.restoringTree;
 		var position = this._prepareInsertionPosition(aTab, aMayBeDuplicated);
 		var parent = position.parent;
-		if (DEBUG)
+		if (utils.isDebugging('browser'))
 			dump('handleRestoredTab: found parent = ' + parent+'\n');
 		if (parent) {
 			aTab.removeAttribute(this.kPARENT);
@@ -4169,7 +4167,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 
 		var ancestors = (this.getTabValue(aTab, this.kANCESTORS) || this.getTabValue(aTab, this.kPARENT)).split('|');
-		if (DEBUG)
+		if (utils.isDebugging('browser'))
 			dump('handleRestoredTab: ancestors = ' + ancestors+'\n');
 		var parent = null;
 		for (let i in ancestors)
@@ -4192,7 +4190,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		 */
 		if (!parent) {
 			parent = aTab.getAttribute(this.kPARENT);
-			if (DEBUG)
+			if (utils.isDebugging('browser'))
 				dump('handleRestoredTab: parent = ' + parent+'\n');
 			if (parent && !next)
 				next = this.getNextSiblingTab(aTab);

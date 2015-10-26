@@ -35,8 +35,6 @@
  
 var EXPORTED_SYMBOLS = ['ContentBridge']; 
 
-const DEBUG = false;
-
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cu = Components.utils;

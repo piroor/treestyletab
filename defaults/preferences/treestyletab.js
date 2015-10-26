@@ -703,3 +703,11 @@ pref("extensions.treestyletab.compatibility.TotalToolbar", true);
  */
 pref("extensions.treestyletab.prefsVersion", 0);
 
+/**
+ * Flags to activate debug dumps for each module.
+ */
+pref("extensions.treestyletab.debug.all", false);
+pref("extensions.treestyletab.debug.autoHide", false);
+pref("extensions.treestyletab.debug.browser", false);
+pref("extensions.treestyletab.debug.browserUIShowHideObserver", false);
+pref("extensions.treestyletab.debug.tabbarDNDObserver", false);

@@ -229,6 +229,11 @@ var TreeStyleTabUtils = {
 		}
 		this.setTreePref('prefsVersion', TST_PREF_VERSION);
 	},
+ 
+	isDebugging : function utils_isDebugging(aModule)
+	{
+		return this.getTreePref('debug.' + aModule) || this.getTreePref('debug.all');
+	},
 
 /* string bundle */
 	get treeBundle () {

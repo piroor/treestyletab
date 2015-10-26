@@ -36,8 +36,6 @@
 
 var EXPORTED_SYMBOLS = ['BrowserUIShowHideObserver']; 
 
-var DEBUG = false;
-
 Components.utils.import('resource://treestyletab-modules/constants.js');
 
 function BrowserUIShowHideObserver(aOwner, aBox) {
@@ -63,7 +61,7 @@ BrowserUIShowHideObserver.prototype = {
 			childList       : true,
 			attributes      : true,
 			subtree         : true,
-			attributeOldValue: DEBUG,
+			attributeOldValue: utils.isDebugging('browserUIShowHideObserver'),
 			attributeFilter : [
 				'hidden',
 				'collapsed',
@@ -149,7 +147,7 @@ BrowserUIShowHideObserver.prototype = {
 			)
 			return;
 
-		if (DEBUG) {
+		if (utils.isDebugging('browserUIShowHideObserver')) {
 			dump('BrowserUIShowHideObserver_onAttributeModified ' +
 			     target.localName + '#' + target.id + '.' + target.className + ', ' +
 			     aMutation.attributeName + ', ' +
