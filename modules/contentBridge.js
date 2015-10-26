@@ -44,6 +44,8 @@ Cu.import('resource://treestyletab-modules/lib/inherit.jsm');
 Cu.import('resource://treestyletab-modules/constants.js');
 Cu.import('resource://gre/modules/Promise.jsm');
 
+XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
+
 function ContentBridge(aTab, aTabBrowser) 
 {
 	this.init(aTab, aTabBrowser);
