@@ -82,9 +82,9 @@
 .tabbrowser-strip[treestyletab-dom-fullscreen-activated="true"]+splitter,
 .treestyletab-tabbar-toolbar[treestyletab-dom-fullscreen-activated="true"],
 .treestyletab-tabbar-toolbar[treestyletab-dom-fullscreen-activated="true"] > *,
-tabbrowser[treestyletab-dom-fullscreen-activated-mode="true"][tabcontainer]
+tabbrowser[treestyletab-dom-fullscreen-activated="true"][tabcontainer]
   .tabbrowser-strip.treestyletab-tabbar-placeholder,
-tabbrowser[treestyletab-dom-fullscreen-activated-mode="true"][tabcontainer]
+tabbrowser[treestyletab-dom-fullscreen-activated="true"][tabcontainer]
   .tabbrowser-strip.treestyletab-tabbar-placeholder+splitter {
 	visibility: collapse;
 }
