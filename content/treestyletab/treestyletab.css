@@ -77,16 +77,25 @@
 
 /* tab bar in the DOM-fullscreen mode */
 
-.tabbrowser-tabs[treestyletab-dom-fullscreen-activated="true"],
-.tabbrowser-strip[treestyletab-dom-fullscreen-activated="true"],
-.tabbrowser-strip[treestyletab-dom-fullscreen-activated="true"]+splitter,
-.treestyletab-tabbar-toolbar[treestyletab-dom-fullscreen-activated="true"],
-.treestyletab-tabbar-toolbar[treestyletab-dom-fullscreen-activated="true"] > *,
-tabbrowser[treestyletab-dom-fullscreen-activated="true"][tabcontainer]
+:root[inDOMFullscreen="true"]
+  .tabbrowser-tabs,
+:root[inDOMFullscreen="true"]
+  .tabbrowser-strip,
+:root[inDOMFullscreen="true"]
+  .tabbrowser-strip+splitter,
+:root[inDOMFullscreen="true"]
+  .treestyletab-tabbar-toolbar,
+:root[inDOMFullscreen="true"]
+  .treestyletab-tabbar-toolbar > *,
+:root[inDOMFullscreen="true"]
+  tabbrowser[tabcontainer]
   .tabbrowser-strip.treestyletab-tabbar-placeholder,
-tabbrowser[treestyletab-dom-fullscreen-activated="true"][tabcontainer]
-  .tabbrowser-strip.treestyletab-tabbar-placeholder+splitter {
-	visibility: collapse;
+:root[inDOMFullscreen="true"]
+  tabbrowser[tabcontainer]
+  .tabbrowser-strip.treestyletab-tabbar-placeholder+splitter,
+:root[inDOMFullscreen="true"]
+  .treestyletab-tabbar-toggler {
+	visibility: collapse !important;
 }
 
 

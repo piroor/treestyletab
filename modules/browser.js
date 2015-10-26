@@ -5136,18 +5136,12 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	onBeforeFullScreenToggle : function TSTBrowser_onBeforeFullScreenToggle(aEnterFS)
 	{
 		if (this.position != 'top') {
-			// entering to the DOM-fullscreen (ex. YouTube Player)
-			if (this.document.mozFullScreen) {
-				this.setTabbrowserAttribute(this.kDOM_FULLSCREEN_ACTIVATED, true);
-			}
-			else {
-				if (this.document.documentElement.getAttribute(this.kDOM_FULLSCREEN_ACTIVATED) != 'true') {
-					if (aEnterFS)
-						this.autoHide.startForFullScreen();
-					else
-						this.autoHide.endForFullScreen();
-				}
-				this.removeTabbrowserAttribute(this.kDOM_FULLSCREEN_ACTIVATED);
+			// ignore entering to the DOM-fullscreen (ex. YouTube Player)
+			if (!this.document.mozFullScreen) {
+				if (aEnterFS)
+					this.autoHide.startForFullScreen();
+				else
+					this.autoHide.endForFullScreen();
 			}
 		}
 	},
