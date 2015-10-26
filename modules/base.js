@@ -520,14 +520,14 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		var message = 'ERROR: accessed after destruction!';
 		var error = new Error(message);
 		if (utils.isDebugging('base'))
-			dump(message+'\n'+error.stack+'\n');
+			dump(message+'\n'+error.stack.replace(/^/gm, '  ')+'\n');
 		throw error;
 	},
   
 	defaultErrorHandler : function TSTBase_defaultErrorHandler(aError) 
 	{
 		if (aError.stack)
-			Cu.reportError(aError.message+'\n'+aError.stack);
+			Cu.reportError(aError.message+'\n'+aError.stack.replace(/^/gm, '  '));
 		else
 			Cu.reportError(aError);
 	},
@@ -953,7 +953,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		if (!strip) {
 			if (utils.isDebugging('base')) {
 				dump('FAILED TO SET TABSTRIP ATTRIBUTE ' + aAttr + '=' + aValue + '\n');
-				dump((new Error()).stack + '\n');
+				dump((new Error()).stack.replace(/^/gm, '  ') + '\n');
 			}
 			return;
 		}
@@ -1511,7 +1511,8 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		}
 
 		if (utils.isDebugging('base'))
-			dump('Tree Style Tab: new child tab is requested.\n'+new Error().stack+'\n');
+			dump('Tree Style Tab: new child tab is requested.\n'+
+			     new Error().stack.replace(/^/gm, '  ')+'\n');
 
 		ownerBrowser.treeStyleTab.readiedToAttachNewTab   = true;
 		ownerBrowser.treeStyleTab.readiedToAttachMultiple = aMultiple || false ;
@@ -1647,6 +1648,11 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			return false;
 
 		var ownerBrowser = this.getTabBrowserFromChild(browser);
+
+		if (ownerBrowser.treeStyleTab.readiedToAttachNewTab && utils.isDebugging('base'))
+			dump('Tree Style Tab: new child tab is canceled.\n'+
+			     new Error().stack.replace(/^/gm, '  ')+'\n');
+
 		ownerBrowser.treeStyleTab.readiedToAttachNewTab      = false;
 		ownerBrowser.treeStyleTab.readiedToAttachNewTabGroup = false;
 		ownerBrowser.treeStyleTab.readiedToAttachMultiple    = false;
