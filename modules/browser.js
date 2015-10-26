@@ -3045,6 +3045,15 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var pareintIndexInTree = hasStructure ? this.treeStructure.shift() : 0 ;
 		var lastRelatedTab = b._lastRelatedTab;
 
+		if (utils.isDebugging('browser')) {
+			dump('TSTBrowser_onTabOpen\n  ' + [
+			  'readiedToAttachNewTab: '+this.readiedToAttachNewTab,
+			  'parentTab: '+this.parentTab + ' (' + this.getTabById(this.parentTab) + ')',
+			  'insertBefore: '+this.insertBefore,
+			  'treeStructure: '+this.treeStructure
+			].join('\n  ') + '\n');
+		}
+
 		if (this.readiedToAttachNewTab) {
 			if (pareintIndexInTree < 0) { // there is no parent, so this is a new parent!
 				this.parentTab = tab.getAttribute(this.kID);
@@ -3540,6 +3549,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 		else {
 			delta = Math.abs(pos - oldPos);
+		}
+
+		if (utils.isDebugging('browser')) {
+			dump('attachTabFromPosition '+aTab._tPos+' / '+aOldPosition+'\n');
+			dump((new Error()).stack.replace(/^/gm, '  ')+'\n');
 		}
 
 		var prevTab = this.getPreviousTab(aTab);
