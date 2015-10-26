@@ -318,33 +318,22 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 	// https://addons.mozilla.org/firefox/addon/748
 	if (TreeStyleTabUtils.getTreePref('compatibility.Greasemonkey')) {
 		try {
-			let hitchModule = Components.utils.import('chrome://greasemonkey-modules/content/util/hitch.js', {});
-			let hitch = hitchModule.hitch;
-			if (hitch.toSource().indexOf('TreeStyleTabService') < 0) {
-				let ns = {};
-				Components.utils.import('chrome://greasemonkey-modules/content/third-party/getChromeWinForContentWin.js', ns);
-				let getChromeWinForContentWin = ns.getChromeWinForContentWin;
-				hitchModule.hitch = function(aObject, aMethod) {
-					if (typeof aMethod == 'function' &&
-						aMethod.toSource().indexOf('function openInTab') > -1) {
-						let originalOpenInTab = aMethod;
-						/**
-						 * This function must be replaced on scripts in "chrome:" URL, like this.
-						 * Otherwise the original openInTab() will raise violation error.
-						 * Don't move this hack into JS code modules with "resource:" URL.
-						 */
-						aMethod = function openInTab(aSafeContentWindow, aURL, aLoadInBackgtound) {
-							let chrome = getChromeWinForContentWin(aSafeContentWindow);
-							if (chrome && chrome.TreeStyleTabService)
-								chrome.TreeStyleTabService.readyToOpenChildTabNow(aSafeContentWindow);
-							return originalOpenInTab.apply(this, arguments);
-						};
-					}
-					return hitch.apply(this, arguments);
+			if ('GM_BrowserUI' in window &&
+				typeof GM_BrowserUI.openInTab == 'function') {
+				window.messageManager.removeMessageListener('greasemonkey:open-in-tab', GM_BrowserUI.openInTab);
+				let originalOpenInTab = GM_BrowserUI.openInTab;
+				GM_BrowserUI.openInTab = function(aMessage, ...aArgs) {
+					var owner = aMessage.target;
+					TreeStyleTabService.readyToOpenChildTab(owner, true);
+					var retVal = originalOpenInTab.apply(this, [aMessage].concat(aArgs));
+					window.setTimeout(function() {
+						window.setTimeout(function() {
+							TreeStyleTabService.stopToOpenChildTab(owner);
+						}, 0);
+					}, 0);
+					return retVal;
 				};
-				Components.utils.import('chrome://greasemonkey-modules/content/util.js', ns);
-				if (ns.GM_util)
-					ns.GM_util.hitch = hitchModule.hitch;
+				window.messageManager.addMessageListener('greasemonkey:open-in-tab', GM_BrowserUI.openInTab);
 			}
 		}
 		catch(e) {
