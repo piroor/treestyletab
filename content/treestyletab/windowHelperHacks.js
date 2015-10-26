@@ -322,13 +322,24 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 				typeof GM_BrowserUI.openInTab == 'function') {
 				window.messageManager.removeMessageListener('greasemonkey:open-in-tab', GM_BrowserUI.openInTab);
 				let originalOpenInTab = GM_BrowserUI.openInTab;
+				let originalTabs = [];
 				GM_BrowserUI.openInTab = function(aMessage, ...aArgs) {
+					if (originalTabs.length === 0)
+						originalTabs = Array.slice(gBrowser.tabContainer.childNodes, 0);
 					var owner = aMessage.target;
-					TreeStyleTabService.readyToOpenChildTab(owner, true);
 					var retVal = originalOpenInTab.apply(this, [aMessage].concat(aArgs));
 					window.setTimeout(function() {
+					TreeStyleTabService.readyToOpenChildTab(owner, true);
 						window.setTimeout(function() {
-							TreeStyleTabService.stopToOpenChildTab(owner);
+							if (originalTabs.length === 0)
+								return;
+							var currentTabs = Array.slice(gBrowser.tabContainer.childNodes, 0);
+							var parent = gBrowser.treeStyleTab.getTabFromBrowser(owner);
+							currentTabs.forEach(function(aTab) {
+								if (originalTabs.indexOf(aTab) < 0)
+									gBrowser.treeStyleTab.attachTabTo(aTab, parent);
+							});
+							originalTabs = [];
 						}, 0);
 					}, 0);
 					return retVal;
