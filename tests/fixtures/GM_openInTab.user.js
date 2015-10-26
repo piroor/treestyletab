@@ -2,6 +2,7 @@
 // @name           Open Google's search results in tabs
 // @namespace      google_GM_openInTab.user.js
 // @include        http*://www.google.*/search?q=*
+// @grant          GM_openInTab
 // @require        http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js
 // @run-at         document-idle
 // see: https://github.com/piroor/treestyletab/issues/517
