@@ -345,6 +345,15 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
 	width: 16px;
 }
 
+/* overlay icon: because TST applies "min-height:2em" for tabs, overlay icons also should be rendered based on the "em" scale. */
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tab-content[pinned="true"] > image.tab-icon-overlay {
+	height: 1em;
+	width: 1em;
+	margin-top: -0.7em !important;
+	-moz-margin-start: -1em !important;
+}
+
 /* disable highlighting of pinned tabs whici is not faviconized */
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
