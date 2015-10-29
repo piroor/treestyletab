@@ -280,7 +280,14 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			return false;
 		}
 
-		var selection = this.window.getBrowserSelection();
+		var selection = '';
+		var contextMenuContentData = this.window.gContextMenuContentData;
+		if (contextMenuContentData && contextMenuContentData.selectionInfo) {
+			selection = contextMenuContentData.selectionInfo.text;
+		}
+		else {
+			selection = this.window.getBrowserSelection();
+		}
 		return selection.trim() == aTerm;
 	},
 	kSEARCH_RESULT_DO_NOT_ATTACH      : 0,
