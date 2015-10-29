@@ -329,7 +329,6 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 					var owner = aMessage.target;
 					var retVal = originalOpenInTab.apply(this, [aMessage].concat(aArgs));
 					window.setTimeout(function() {
-					TreeStyleTabService.readyToOpenChildTab(owner, true);
 						window.setTimeout(function() {
 							if (originalTabs.length === 0)
 								return;
