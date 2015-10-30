@@ -41,7 +41,8 @@
 		switch (aEvent.type)
 		{
 			case 'selectionchange':
-				if (!aEvent.target)
+				if (!aEvent.target ||
+					!aEvent.target.getSelection)
 					return;
 				global.sendAsyncMessage(TreeStyleTabConstants.MESSAGE_TYPE, {
 					command : TreeStyleTabConstants.COMMAND_REPORT_SELECTION_CHANGE,
