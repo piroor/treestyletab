@@ -217,11 +217,12 @@ var TreeStyleTabConstants = Object.freeze({
 	RESTORE_STATE_STRUCTURE_RESTORED  : 2,
 
 
-//	CONTENT_SCRIPT          : 'chrome://treestyletab/content/content-utils.js',
+	CONTENT_SCRIPT          : 'chrome://treestyletab/content/content-utils.js',
 	CONTENT_SCRIPT_AUTOHIDE : 'chrome://treestyletab/content/content-utils-autohide.js',
 	MESSAGE_TYPE            : 'treestyletab',
 
 	COMMAND_SHUTDOWN                : 'shutdown',
+	COMMAND_REPORT_SELECTION_CHANGE : 'report-selection-change',
 	COMMAND_REPORT_MOUSEDOWN        : 'report-mousedown',
 	COMMAND_REPORT_MOUSEUP          : 'report-mouseup',
 	COMMAND_REPORT_MOUSEMOVE        : 'report-mousemove',

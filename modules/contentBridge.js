@@ -52,6 +52,7 @@ function ContentBridge(aTab, aTabBrowser)
 }
 
 ContentBridge.install = function CB_installScript(aWindow) {
+	aWindow.messageManager.loadFrameScript(TreeStyleTabConstants.CONTENT_SCRIPT, true);
 	aWindow.messageManager.loadFrameScript(TreeStyleTabConstants.CONTENT_SCRIPT_AUTOHIDE, true);
 };
 
@@ -59,6 +60,8 @@ ContentBridge.uninstall = function CB_installScript(aWindow) {
 	aWindow.messageManager.broadcastAsyncMessage(TreeStyleTabConstants.MESSAGE_TYPE, {
 		command : TreeStyleTabConstants.COMMAND_SHUTDOWN
 	});
+	aWindow.messageManager.removeDelayedFrameScript(TreeStyleTabConstants.CONTENT_SCRIPT);
+	aWindow.messageManager.removeDelayedFrameScript(TreeStyleTabConstants.CONTENT_SCRIPT_AUTOHIDE);
 };
  
 ContentBridge.prototype = inherit(TreeStyleTabConstants, { 
@@ -115,6 +118,10 @@ ContentBridge.prototype = inherit(TreeStyleTabConstants, {
 
 		switch (aMessage.json.command)
 		{
+			case this.COMMAND_REPORT_SELECTION_CHANGE:
+				this.mTab.__treestyletab__lastContentSelectionText = aMessage.json.text;
+				return;
+
 			case this.COMMAND_REPORT_MOUSEDOWN:
 				{
 					let fakeEvent = this.fixupEventCoordinates(aMessage.json.event);

@@ -286,7 +286,13 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			selection = contextMenuContentData.selectionInfo.text;
 		}
 		else {
-			selection = this.window.getBrowserSelection();
+			let tab = this.window.gBrowser.selectedTab;
+			selection = tab.__treestyletab__lastContentSelectionText || '';
+			// for old Firefox without selectionchange event
+			if (selection === '' &&
+				typeof this.window.getBrowserSelection === 'function' &&
+				tab.linkedBrowser.getAttribute('remote') !== 'true')
+				selection = this.window.getBrowserSelection();
 		}
 		return selection.trim() == aTerm;
 	},
