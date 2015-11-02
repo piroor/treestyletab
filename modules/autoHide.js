@@ -358,6 +358,8 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 			sv.tabStripPlaceHolder.addEventListener('mouseup', this, true);
 			sv.tabStrip.addEventListener('mousedown', this, true);
 			sv.tabStrip.addEventListener('mouseup', this, true);
+			sv.tabStrip.addEventListener('dragend', this, true);
+			sv.tabStrip.addEventListener('drop', this, true);
 			if (this.shouldListenMouseMove)
 				this.startListenMouseMove();
 			if (b == w.gBrowser && sv.shouldListenKeyEventsForAutoHide)
@@ -397,6 +399,8 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 			sv.tabStripPlaceHolder.removeEventListener('mouseup', this, true);
 			sv.tabStrip.removeEventListener('mousedown', this, true);
 			sv.tabStrip.removeEventListener('mouseup', this, true);
+			sv.tabStrip.removeEventListener('dragend', this, true);
+			sv.tabStrip.removeEventListener('drop', this, true);
 			this.endListenMouseMove();
 			if (b == w.gBrowser)
 				w.TreeStyleTabService.endListenKeyEventsFor(sv.LISTEN_FOR_AUTOHIDE);
@@ -1174,6 +1178,11 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 				return this.onMouseDown(aEvent);
 
 			case 'mouseup':
+			// Note, we must handle "drop" event also to handle the end
+			// of drag-and-drop of a tab due to the bug:
+			// https://bugzilla.mozilla.org/show_bug.cgi?id=460801
+			case 'dragend':
+			case 'drop':
 				return this.onMouseUp(aEvent);
 
 			case 'mousemove':
