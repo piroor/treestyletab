@@ -357,9 +357,9 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 			sv.tabStripPlaceHolder.addEventListener('mousedown', this, true);
 			sv.tabStripPlaceHolder.addEventListener('mouseup', this, true);
 			sv.tabStrip.addEventListener('mousedown', this, true);
-			sv.tabStrip.addEventListener('mouseup', this, true);
-			sv.tabStrip.addEventListener('dragend', this, true);
-			sv.tabStrip.addEventListener('drop', this, true);
+			w.addEventListener('mouseup', this, true);
+			w.addEventListener('dragend', this, true);
+			w.addEventListener('drop', this, true);
 			if (this.shouldListenMouseMove)
 				this.startListenMouseMove();
 			if (b == w.gBrowser && sv.shouldListenKeyEventsForAutoHide)
@@ -398,9 +398,9 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 			sv.tabStripPlaceHolder.removeEventListener('mousedown', this, true);
 			sv.tabStripPlaceHolder.removeEventListener('mouseup', this, true);
 			sv.tabStrip.removeEventListener('mousedown', this, true);
-			sv.tabStrip.removeEventListener('mouseup', this, true);
-			sv.tabStrip.removeEventListener('dragend', this, true);
-			sv.tabStrip.removeEventListener('drop', this, true);
+			w.removeEventListener('mouseup', this, true);
+			w.removeEventListener('dragend', this, true);
+			w.removeEventListener('drop', this, true);
 			this.endListenMouseMove();
 			if (b == w.gBrowser)
 				w.TreeStyleTabService.endListenKeyEventsFor(sv.LISTEN_FOR_AUTOHIDE);
@@ -1298,7 +1298,8 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 	onMouseUp : function AHB_onMouseUp(aEvent) 
 	{
 		var sv = this.treeStyleTab;
-		if (aEvent.originalTarget &&
+		if (this.isResizing &&
+			aEvent.originalTarget &&
 			sv.evaluateXPath(
 				'ancestor-or-self::*[@class="'+sv.kSPLITTER+'"]',
 				aEvent.originalTarget,
