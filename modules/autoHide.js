@@ -500,7 +500,16 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
  
 	showHideOnMouseMove : function AHB_showHideOnMouseMove(aCoordinates) 
 	{
+		var sv = this.treeStyleTab;
+		var b  = this.browser;
+		var w  = this.window;
+
+		var exapndedByUnknownReason = (
+				this.expanded &&
+				!(this.showHideReason & this.kSHOWN_BY_ANY_REASON)
+			);
 		var position = this.getMousePosition(aCoordinates);
+
 		if (utils.isDebugging('autoHide')) {
 			let humanReadablePosition = [];
 			if (position & this.MOUSE_POSITION_OUTSIDE)
@@ -511,19 +520,28 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 				humanReadablePosition.push('near');
 			if (position & this.MOUSE_POSITION_SENSITIVE)
 				humanReadablePosition.push('sensitive');
+			let extraInfo = [];
+			if (sv.isPopupShown())
+				extraInfo.push('popupshown');
+			if (exapndedByUnknownReason)
+				extraInfo.push('expanded-by-unknown');
+			if (this.lastMouseDownTarget)
+				extraInfo.push('mousedown');
 			dump('showHideOnMouseMove: ' +
 			       '('+aCoordinates.screenX + ', ' + aCoordinates.screenY + ') => ' +
-			       humanReadablePosition.join(', ') + '\n');
+			       humanReadablePosition.join(', ') +
+			       (extraInfo.length ? ('[' + extraInfo.join(', ') + ']') : '') +
+			       '\n');
 		}
-		if (position == this.MOUSE_POSITION_UNKNOWN)
+
+		if (sv.isPopupShown() ||
+			exapndedByUnknownReason ||
+			this.lastMouseDownTarget ||
+			position == this.MOUSE_POSITION_UNKNOWN)
 			return;
 
 		this.cancelShowHideOnMouseMove();
 		this.showHideContentsAreaScreen();
-
-		var sv = this.treeStyleTab;
-		var b  = this.browser;
-		var w  = this.window;
 
 		var shouldShow = position & this.MOUSE_POSITION_SENSITIVE;
 		if (this.expanded) { // currently shown, let's hide it.
@@ -1291,15 +1309,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 			/^(scrollbar|thumb|slider|scrollbarbutton)$/i.test(this.lastMouseDownTarget || ''))
 			return true;
 
-		if (
-			!aEvent.shiftKey &&
-			!sv.isPopupShown() &&
-			(
-				!this.expanded ||
-				this.showHideReason & this.kSHOWN_BY_ANY_REASON
-			) &&
-			!this.lastMouseDownTarget
-			)
+		if (!aEvent.shiftKey)
 			this.showHideOnMouseMove(aEvent);
 		return true;
 	},
