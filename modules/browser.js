@@ -2086,15 +2086,19 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		else
 			this.positionPinnedTabsWithDelay(null, null, aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE);
 
+		this.notifyingRenderedEvent = true;
 		var event = d.createEvent('Events');
 		event.initEvent(this.kEVENT_TYPE_TABBAR_RENDERED, true, false);
 		this.mTabBrowser.tabContainer.dispatchEvent(event);
 
-		if (!collapsed && aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE)
-			setTimeout((function() {
-				if (this.browser) // ignore calling after destroyed...
+		setTimeout((function() {
+			this.notifyingRenderedEvent = false;
+
+			if (!collapsed &&
+				aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE &&
+				this.browser) // ignore calling after destroyed...
 					this.scrollToTab(this.browser.selectedTab);
-			}).bind(this), 0);
+		}).bind(this), 0);
 	},
 	getTabbarPlaceholderSize: function TSTBrowser_getTabbarPlaceholderSize()
 	{

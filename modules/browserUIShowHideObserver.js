@@ -105,7 +105,9 @@ BrowserUIShowHideObserver.prototype = {
 
 	onAttributeModified : function BrowserUIShowHideObserver_onAttributeModified(aMutation, aObserver) 
 	{
-		if (this.handlingAttrChange)
+		var TST = this.owner.browser.treeStyleTab;
+		if (this.handlingAttrChange ||
+			TST.notifyingRenderedEvent)
 			return;
 
 		var target = aMutation.target;
@@ -113,7 +115,6 @@ BrowserUIShowHideObserver.prototype = {
 		if (target.__treestyletab_mutationObserver_lastState == state)
 			return;
 
-		var TST = this.owner.browser.treeStyleTab;
 		if (
 			// ignore modifications of each tab
 			TST.getTabFromChild(target) ||
