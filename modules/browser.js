@@ -2097,7 +2097,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			if (!collapsed &&
 				aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE &&
 				this.browser) // ignore calling after destroyed...
-					this.scrollToTab(this.browser.selectedTab);
+				this.scrollToTab(this.browser.selectedTab);
 		}).bind(this), 0);
 	},
 	getTabbarPlaceholderSize: function TSTBrowser_getTabbarPlaceholderSize()
