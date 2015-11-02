@@ -1089,14 +1089,16 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 				if (!this.window.TreeStyleTabService.shouldApplyNewPref('tabbar.autoHide.mode'))
 					return;
 				this.browser.setAttribute(this.kMODE+'-normal', value);
-				this.updateMode(value);
+				if (!this.window.fullScreen)
+					this.updateMode(value);
 				return;
 
 			case 'extensions.treestyletab.tabbar.autoHide.mode.fullscreen':
 				if (!this.window.TreeStyleTabService.shouldApplyNewPref('tabbar.autoHide.mode.fullscreen'))
 					return;
 				this.browser.setAttribute(this.kMODE+'-fullscreen', value);
-				this.updateMode(value);
+				if (this.window.fullScreen)
+					this.updateMode(value);
 				return;
 
 			case 'extensions.treestyletab.tabbar.autoShow.mousemove':
