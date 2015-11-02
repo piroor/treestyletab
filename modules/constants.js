@@ -131,6 +131,7 @@ var TreeStyleTabConstants = Object.freeze({
 	kEVENT_TYPE_TABBAR_POSITION_CHANGED      : 'nsDOMTreeStyleTabTabbarPositionChanged',
 	kEVENT_TYPE_TABBAR_STATE_CHANGING        : 'nsDOMTreeStyleTabTabbarStateChanging',
 	kEVENT_TYPE_TABBAR_STATE_CHANGED         : 'nsDOMTreeStyleTabTabbarStateChanged',
+	kEVENT_TYPE_TABBAR_RENDERED              : 'nsDOMTreeStyleTabTabbarRendered',
 	kEVENT_TYPE_FOCUS_NEXT_TAB               : 'nsDOMTreeStyleTabFocusNextTab',
 	kEVENT_TYPE_ATTACHED                     : 'nsDOMTreeStyleTabAttached',
 	kEVENT_TYPE_DETACHED                     : 'nsDOMTreeStyleTabParted',

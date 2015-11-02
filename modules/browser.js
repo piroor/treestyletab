@@ -2086,6 +2086,10 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		else
 			this.positionPinnedTabsWithDelay(null, null, aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE);
 
+		var event = d.createEvent('Events');
+		event.initEvent(this.kEVENT_TYPE_TABBAR_RENDERED, true, false);
+		this.mTabBrowser.tabContainer.dispatchEvent(event);
+
 		if (!collapsed && aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE)
 			setTimeout((function() {
 				if (this.browser) // ignore calling after destroyed...
