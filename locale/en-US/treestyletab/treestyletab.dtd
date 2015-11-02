@@ -7,8 +7,8 @@
 <!ENTITY config.tabs.appearance "Appearance">
 
 <!ENTITY config.tabbar.position.caption "Tab bar position">
-<!ENTITY config.tabbar.position.left    "Leftside">
-<!ENTITY config.tabbar.position.right   "Rightside">
+<!ENTITY config.tabbar.position.left    "Left">
+<!ENTITY config.tabbar.position.right   "Right">
 <!ENTITY config.tabbar.position.top     "Top (Firefox default)">
 <!ENTITY config.tabbar.position.bottom  "Bottom">
 <!ENTITY config.tabbar.invertClosebox.left  "Show closebox at leftside in each tab">
