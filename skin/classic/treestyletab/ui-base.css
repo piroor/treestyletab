@@ -233,6 +233,15 @@ tabbrowser[treestyletab-drop-position="left"]:not([treestyletab-tabbar-position=
 	min-height: 22px;
 }
 
+.treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
+  .toolbarbutton-icon {
+	/**
+	 * This is required to block the tab bar to be shrunken.
+	 * See: https://github.com/piroor/treestyletab/issues/964#issuecomment-153781248
+	 */
+	max-width: none;
+}
+
 /* transaprent tab bar */
 
 .tabbrowser-tabs[treestyletab-tabbar-autohide]
