@@ -1,6 +1,18 @@
 # History
 
  - master/HEAD
+   * Don't hide the title bar unexpectedly, after toolbar customizations.
+   * Introduce new custom DOM event `nsDOMTreeStyleTabTabbarRendered` for addons who need to modify appearance of the tab bar, like Unified Sidebar.
+   * Hide (shrink) the tab bar correctly after a tab is dragged and dropped or any FireGestures's gesture is performed.
+   * The configuration dialog applies new "auto hide" preference only for the correct mode: normal or full screen.
+   * Fix misspelling of `Leftside` and `Rightside` - they simply became `Left` and `Right`.
+   * Perform searches from the web search bar and the context menu correctly, when e10s is activated.
+   * Show the tab bar at correct position, after the DOM fullscreen mode.
+   * Hide tab bar related elements completely in the DOM fullscreen mode.
+   * Tabs opened via `GM_openInTabs()` from Greasmeonkey scripts become children of the current tab again.
+   * Introduce new internal preferences to control debug prints. You can activate/deactivate debug print per module via preferences like `extensions.treestyletab.debug.*`.
+   * Fix broken appearance of overlay icons on pinned tabs.
+   * Reduce `eval()` hack to avoid errors around invalid references to objects defined with [ECMAScript 6's `const`](https://bugzilla.mozilla.org/show_bug.cgi?id=1202902) in separate scopes for Firefox sources.
    * Restore order of rearranged tabs more correctly.
    * Don't show gray rect of pinned tabs on full screen videos and collapsed tab bar.
    * Don't update the size of the tab bar too frequently.
