@@ -578,6 +578,14 @@ var TreeStyleTabWindowHelper = {
 			));
 		}, 'TreeStyleTabService.getTabBrowserFromChild');
 
+		TreeStyleTabUtils.doPatching(b.tabContainer._getDragTargetTab, 'b.tabContainer._getDragTargetTab', function(aName, aSource) {
+			return eval(aName+' = '+aSource.replace(
+				/\.screenX/g, '[this.treeStyleTab.screenPositionProp]'
+			).replace(
+				/\.width/g, '[this.treeStyleTab.sizeProp]'
+			));
+		}, 'treeStyleTab');
+
 		TreeStyleTabUtils.doPatching(b.tabContainer._getDropIndex, 'b.tabContainer._getDropIndex', function(aName, aSource) {
 			return eval(aName+' = '+aSource.replace(
 				/\.screenX/g, '[this.treeStyleTab.screenPositionProp]'
