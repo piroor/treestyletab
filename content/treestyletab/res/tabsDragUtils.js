@@ -15,7 +15,7 @@
    http://github.com/piroor/fxaddonlib-tabs-drag-utils
 */
 (function() {
-	const currentRevision = 33;
+	const currentRevision = 34;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -159,17 +159,32 @@
 		{
 			this.updatedTabDNDObservers.push(aObserver);
 
-			if ('_setEffectAllowedForDataTransfer' in aObserver &&
-				aObserver._setEffectAllowedForDataTransfer.toSource().indexOf('tabsDragUtils') < 0) {
-				let original = aObserver._setEffectAllowedForDataTransfer;
-				aObserver.__TabsDragUtils_original__setEffectAllowedForDataTransfer = original;
-				eval('aObserver._setEffectAllowedForDataTransfer = '+
-					original.toSource().replace(
-						'dt.mozItemCount > 1',
-						'$& && !window["piro.sakura.ne.jp"].tabsDragUtils.isTabsDragging(arguments[0])'
-					)
-				);
-				aObserver.__TabsDragUtils_updated__setEffectAllowedForDataTransfer = aObserver._setEffectAllowedForDataTransfer;
+			if (typeof aObserver._setEffectAllowedForDataTransfer === 'function') { // Firefox 43 and older
+				if (aObserver._setEffectAllowedForDataTransfer.toSource().indexOf('tabsDragUtils') < 0) {
+					let original = aObserver._setEffectAllowedForDataTransfer;
+					aObserver.__TabsDragUtils_original__setEffectAllowedForDataTransfer = original;
+					eval('aObserver._setEffectAllowedForDataTransfer = '+
+						original.toSource().replace(
+							'dt.mozItemCount > 1',
+							'$& && !window["piro.sakura.ne.jp"].tabsDragUtils.isTabsDragging(arguments[0])'
+						)
+					);
+					aObserver.__TabsDragUtils_updated__setEffectAllowedForDataTransfer = aObserver._setEffectAllowedForDataTransfer;
+				}
+			}
+			else { // Firefox 44 and later
+				if (typeof aObserver._getDropEffectForTabDrag === 'function' &&
+					aObserver._getDropEffectForTabDrag.toSource().indexOf('tabsDragUtils') < 0) {
+					let original = aObserver._getDropEffectForTabDrag;
+					aObserver.__TabsDragUtils_original__getDropEffectForTabDrag = original;
+					eval('aObserver._getDropEffectForTabDrag = '+
+						original.toSource().replace(
+							'dt.mozItemCount > 1',
+							'$& && !window["piro.sakura.ne.jp"].tabsDragUtils.isTabsDragging(arguments[0])'
+						)
+					);
+					aObserver.__TabsDragUtils_updated__getDropEffectForTabDrag = aObserver._getDropEffectForTabDrag;
+				}
 			}
 
 			if ('_animateTabMove' in aObserver &&
@@ -572,6 +587,11 @@
 		{
 			if (!aObserver)
 				return;
+
+			if (aObserver._getDropEffectForTabDrag == aObserver.__TabsDragUtils_updated__getDropEffectForTabDrag)
+				aObserver._getDropEffectForTabDrag = aObserver.__TabsDragUtils_original__getDropEffectForTabDrag;
+			delete aObserver.__TabsDragUtils_original__getDropEffectForTabDrag;
+			delete aObserver.__TabsDragUtils_updated__getDropEffectForTabDrag;
 
 			if (aObserver._setEffectAllowedForDataTransfer == aObserver.__TabsDragUtils_updated__setEffectAllowedForDataTransfer)
 				aObserver._setEffectAllowedForDataTransfer = aObserver.__TabsDragUtils_original__setEffectAllowedForDataTransfer;
