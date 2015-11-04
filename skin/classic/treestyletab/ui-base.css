@@ -239,7 +239,7 @@ tabbrowser[treestyletab-drop-position="left"]:not([treestyletab-tabbar-position=
 	 * This is required to block the tab bar to be shrunken.
 	 * See: https://github.com/piroor/treestyletab/issues/964#issuecomment-153781248
 	 */
-	max-width: none;
+	max-width: none !important;
 }
 
 /* transaprent tab bar */
