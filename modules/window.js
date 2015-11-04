@@ -1124,11 +1124,16 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			)
 			return;
 
+		this.tabsOnTopChangingByTST = true;
+		// We have to do this with delay, because the tab bar is always on top
+		// for the toolbar customizing and returned to left or right after a delay.
+		this.window.setTimeout(this.updateTabsOnTopInternal.bind(this), 0);
+	},
+	updateTabsOnTopInternal : function TSTWindow_updateTabsOnTopInternal()
+	{
 		var TabsOnTop = this.window.TabsOnTop;
 		var TabsInTitlebar = this.window.TabsInTitlebar;
 		var isTopTabbar = this.browser.treeStyleTab.position == 'top';
-
-		this.tabsOnTopChangingByTST = true;
 
 		try {
 			if (TabsOnTop) {
