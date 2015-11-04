@@ -968,7 +968,13 @@ try{
 		var info = this.getDropAction(aEvent, session);
 
 		var observer = b;
-		if (b.tabContainer && b.tabContainer._setEffectAllowedForDataTransfer)
+		if (
+			b.tabContainer &&
+			(
+				b.tabContainer._getDropEffectForTabDrag || // Firefox 44 and later
+				b.tabContainer._setEffectAllowedForDataTransfer // Firefox 43 and older
+			)
+			)
 			observer = b.tabContainer;
 
 		// auto-switch for staying on tabs
@@ -980,7 +986,9 @@ try{
 			) {
 			let time = observer.mDragTime || observer._dragTime || 0;
 			let delay = observer.mDragOverDelay || observer._dragOverDelay || 0;
-			let effects = observer._setEffectAllowedForDataTransfer(aEvent);
+			let effects = '_setEffectAllowedForDataTransfer' in observer ?
+							observer._setEffectAllowedForDataTransfer(aEvent) :
+							observer._getDropEffectForTabDrag(aEvent) ;
 			if (effects == 'link') {
 				let now = Date.now();
 				if (!time) {
@@ -995,13 +1003,19 @@ try{
 			}
 		}
 
+		{
+			let effects = '_setEffectAllowedForDataTransfer' in observer ?
+							observer._setEffectAllowedForDataTransfer(aEvent) :
+							observer._getDropEffectForTabDrag(aEvent) ;
+
 		if (
 			!info.canDrop ||
-			observer._setEffectAllowedForDataTransfer(aEvent) == 'none'
+			effects == 'none'
 			) {
 			aEvent.dataTransfer.effectAllowed = "none";
 			this.clearDropPosition();
 			return true;
+		}
 		}
 
 		let indicatorTab = info.target;

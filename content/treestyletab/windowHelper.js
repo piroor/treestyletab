@@ -134,6 +134,7 @@ var TreeStyleTabWindowHelper = {
 			)
 			aObserver = aObserver.tabContainer;
 
+		if (typeof aObserver._setEffectAllowedForDataTransfer === 'function') { // Firefox 43 and older
 		TreeStyleTabUtils.doPatching(aObserver._setEffectAllowedForDataTransfer, aObserver+'._setEffectAllowedForDataTransfer', function(aName, aSource) {
 			return eval('aObserver._setEffectAllowedForDataTransfer = '+aSource.replace(
 				'{',
@@ -153,6 +154,20 @@ var TreeStyleTabWindowHelper = {
 				'$& TST.getTabFromEvent(event) == sourceNode &&'
 			));
 		}, 'TST');
+		}
+		else { // Firefox 44 and later
+			aObserver.__treestyletab__getDropEffectForTabDrag = aObserver._getDropEffectForTabDrag;
+			aObserver._getDropEffectForTabDrag = function(...aArgs) {
+				var effects = this.__treestyletab__getDropEffectForTabDrag.apply(this, aArgs);
+				if (effects === 'copy' || effects === 'move') {
+					let TSTTabBrowser = this instanceof Element ? (this.tabbrowser || this) : gBrowser ;
+					var TST = TSTTabBrowser.treeStyleTab
+					if (!TST.tabbarDNDObserver.canDropTab(aArgs[0]))
+						effects = 'none';
+				}
+				return effects;
+			};
+		}
 	},
  
 	overrideGlobalFunctions : function TSTWH_overrideGlobalFunctions() 
