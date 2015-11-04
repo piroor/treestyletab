@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Don't shrink the width of the tab bar with a scrollbar for too many tabs, on OS X.
    * Don't hide the title bar unexpectedly, after toolbar customizations.
    * Introduce new custom DOM event `nsDOMTreeStyleTabTabbarRendered` for addons who need to modify appearance of the tab bar, like Unified Sidebar.
    * Hide (shrink) the tab bar correctly after a tab is dragged and dropped or any FireGestures's gesture is performed.
