@@ -210,15 +210,11 @@ var TreeStyleTabWindowHelper = {
 			return this.__treestyletab__loadSearch.call(this, aEvent);
 		};
 
-		TreeStyleTabUtils.doPatching(window.openLinkIn, 'window.openLinkIn', function(aName, aSource) {
-			// Bug 1050447 changed this line in Fx 34 to
-			// newTab = w.gBrowser.loadOneTab(
-			// Bug 1108555 removed newTab assignment
-			return eval(aName+' = '+aSource.replace(
-				/((b|(newTab = )?w\.gB)rowser.loadOneTab\()/g,
-				'TreeStyleTabService.onBeforeOpenLinkWithTab(gBrowser.selectedTab, aFromChrome); $1'
-			));
-		}, 'TreeStyleTab');
+		window.__treestyletab__openLinkIn = window.openLinkIn;
+		window.openLinkIn = function(aUrl, aWhere, aParams) {
+			TreeStyleTabService.onBeforeOpenLinkWithTab(gBrowser.selectedTab, aParams.fromChrome);
+			return this.__treestyletab__openLinkIn.call(this, aUrl, aWhere, aParams);
+		};
 
 		[
 			{ owner: window.permaTabs && window.permaTabs.utils && window.permaTabs.utils.wrappedFunctions,
