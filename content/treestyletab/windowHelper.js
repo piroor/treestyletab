@@ -46,7 +46,7 @@ var TreeStyleTabWindowHelper = {
 		nsBrowserAccess.prototype.openURIInFrame = function(aURI, aParams, aWhere, aContext) {
 			if (aWhere === Ci.nsIBrowserDOMWindow.OPEN_NEWTAB)
 				TreeStyleTabService.onBeforeBrowserAccessOpenURI(aParams, aWhere, aContext);
-			return this.__treesytletab__openURIInFrame.call(aURI, aParams, aWhere, aContext);
+			return this.__treesytletab__openURIInFrame.call(this, aURI, aParams, aWhere, aContext);
 		};
 
 		if ('TabsInTitlebar' in window) {
