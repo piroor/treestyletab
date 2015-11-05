@@ -4951,6 +4951,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 
 		if (isContentResize || isChromeResize) {
+			if (utils.isDebugging('browser')) {
+				dump('TSTBrowser_onResize\n');
+				dump('  isContentResize = '+isContentResize+'\n');
+				dump('  isChromeResize = '+isChromeResize+'\n');
+			}
 			this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
 			this.updateInvertedTabContentsOrder(true);
 			this.mTabBrowser.mTabContainer.adjustTabstrip();
