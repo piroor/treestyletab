@@ -554,9 +554,10 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 				this.fullscreenObserver.destroy();
 				delete this.fullscreenObserver;
 
-				this.rootElementObserver.destroy();
-				delete this.rootElementObserver;
-
+				if (this.rootElementObserver) {
+					this.rootElementObserver.destroy();
+					delete this.rootElementObserver;
+				}
 				if (this.browserToolboxObserver) {
 					this.browserToolboxObserver.destroy();
 					delete this.browserToolboxObserver;
