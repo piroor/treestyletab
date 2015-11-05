@@ -438,7 +438,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		w.TreeStyleTabWindowHelper.onAfterBrowserInit();
 
 		this.processRestoredTabs();
-		this.updateTabsOnTop();
+		this.updateTabsInTitlebar();
 
 		this.autoHideWindow; // initialize
 
@@ -632,7 +632,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 
 			case this.kEVENT_TYPE_TABBAR_POSITION_CHANGED:
 			case this.kEVENT_TYPE_TABBAR_STATE_CHANGED:
-				return this.updateTabsOnTop();
+				return this.updateTabsInTitlebar();
 
 			case this.kEVENT_TYPE_FOCUS_NEXT_TAB:
 				return this.onFocusNextTab(aEvent);
@@ -1110,20 +1110,20 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		}, this);
 	},
  
-	updateTabsOnTop : function TSTWindow_updateTabsOnTop() 
+	updateTabsInTitlebar : function TSTWindow_updateTabsInTitlebar() 
 	{
 		if (
 			this.isPopupWindow ||
-			this.tabsOnTopChangingByTST
+			this.tabsInTitlebarChanging
 			)
 			return;
 
-		this.tabsOnTopChangingByTST = true;
+		this.tabsInTitlebarChanging = true;
 		// We have to do this with delay, because the tab bar is always on top
 		// for the toolbar customizing and returned to left or right after a delay.
-		setTimeout(this.updateTabsOnTopInternal.bind(this), 0);
+		setTimeout(this.updateTabsInTitlebarInternal.bind(this), 0);
 	},
-	updateTabsOnTopInternal : function TSTWindow_updateTabsOnTopInternal()
+	updateTabsInTitlebarInternal : function TSTWindow_updateTabsInTitlebarInternal()
 	{
 		var TabsInTitlebar = this.window.TabsInTitlebar;
 		var isTopTabbar = this.browser.treeStyleTab.position == 'top';
@@ -1137,11 +1137,11 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 					('classicthemerestorerjs' in this.window && utils.getTreePref('compatibility.ClassicThemeRestorer'))
 					)
 					allowed = true;
-				TabsInTitlebar.allowedBy('TreeStyleTab-tabsOnTop', allowed);
+				TabsInTitlebar.allowedBy('TreeStyleTab-tabsInTitlebar', allowed);
 			}
 		}
 		finally {
-			this.tabsOnTopChangingByTST = false;
+			this.tabsInTitlebarChanging = false;
 		}
 	},
  
