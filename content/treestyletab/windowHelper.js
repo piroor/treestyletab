@@ -12,13 +12,13 @@ var TreeStyleTabWindowHelper = {
  
 	preInit : function TSTWH_preInit() 
 	{
-			gBrowserInit.__treestyletab___delayedStartup = gBrowserInit._delayedStartup;
-			gBrowserInit._delayedStartup = function(...args) {
-				TreeStyleTabWindowHelper.runningDelayedStartup = true;
-				var retVal = this.__treestyletab___delayedStartup.apply(this, args);
-				TreeStyleTabWindowHelper.runningDelayedStartup = false;
-				return retVal;
-			};
+		gBrowserInit.__treestyletab___delayedStartup = gBrowserInit._delayedStartup;
+		gBrowserInit._delayedStartup = function(...args) {
+			TreeStyleTabWindowHelper.runningDelayedStartup = true;
+			var retVal = this.__treestyletab___delayedStartup.apply(this, args);
+			TreeStyleTabWindowHelper.runningDelayedStartup = false;
+			return retVal;
+		};
 
 		nsBrowserAccess.prototype.__treesytletab__openURI = nsBrowserAccess.prototype.openURI;
 		nsBrowserAccess.prototype.openURI = function(aURI, aOpener, aWhere, aContext) {
