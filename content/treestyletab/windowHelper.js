@@ -495,27 +495,25 @@ var TreeStyleTabWindowHelper = {
 			));
 		}, 'treeStyleTab');
 
-		TreeStyleTabUtils.doPatching(b.removeCurrentTab, 'b.removeCurrentTab', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				'{',
-				'{ if (!this.treeStyleTab.warnAboutClosingTabSubtreeOf(this.selectedTab)) return;'
-			));
-		}, 'treeStyleTab');
+		b.__treestyletab__removeCurrentTab = b.removeCurrentTab;
+		b.removeCurrentTab = function(...aArgs) {
+			if (!this.treeStyleTab.warnAboutClosingTabSubtreeOf(this.selectedTab))
+				return;
+			return this.__treestyletab__removeCurrentTab.apply(this, aArgs);
+		};
 	},
  
 	initTabbarMethods : function TSTWH_initTabbarMethods(aTabBrowser) 
 	{
 		var b = aTabBrowser;
 
-		TreeStyleTabUtils.doPatching(b.mTabContainer.advanceSelectedTab, 'b.mTabContainer.advanceSelectedTab', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				'{',
-				'{\n' +
-				'  var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;\n' +
-				'  if (treeStyleTab.handleAdvanceSelectedTab(arguments[0], arguments[1]))\n' +
-				'    return;'
-			));
-		}, 'treeStyleTab.handleAdvanceSelectedTab');
+		b.mTabContainer.__treestyletab__advanceSelectedTab = b.mTabContainer.advanceSelectedTab;
+		b.mTabContainer.advanceSelectedTab = function(...aArgs) {
+			var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;
+			if (treeStyleTab.handleAdvanceSelectedTab(aArgs[0], aArgs[1]))
+				return;
+			return this.__treestyletab__advanceSelectedTab.apply(this, aArgs);
+		};
 
 		TreeStyleTabUtils.doPatching(b.mTabContainer._notifyBackgroundTab, 'b.mTabContainer._notifyBackgroundTab', function(aName, aSource) {
 			return eval(aName+' = '+aSource.replace(
