@@ -80,17 +80,17 @@ BrowserUIShowHideObserver.prototype = {
 	{
 		aMutations.forEach(function(aMutation) {
 			try {
-			switch (aMutation.type)
-			{
-				case 'childList':
-					if (aMutation.target == this.box)
-						this.owner.browser.treeStyleTab.updateFloatingTabbar(TreeStyleTabConstants.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
-					return;
+				switch (aMutation.type)
+				{
+					case 'childList':
+						if (aMutation.target == this.box)
+							this.owner.browser.treeStyleTab.updateFloatingTabbar(TreeStyleTabConstants.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
+						return;
 
-				case 'attributes':
-					this.onAttributeModified(aMutation, aObserver);
-					return;
-			}
+					case 'attributes':
+						this.onAttributeModified(aMutation, aObserver);
+						return;
+				}
 			}
 			catch(error) {
 				this.dumpMutation(aMutation, 'BrowserUIShowHideObserver_onMutation(error)');
@@ -119,9 +119,9 @@ BrowserUIShowHideObserver.prototype = {
 		var attributeInformation = '';
 		if (aMutation.attributeName)
 			 attributeInformation = ' / ' +
-				aMutation.attributeName + ', ' +
-				aMutation.oldValue + ' => ' +
-				target.getAttribute(aMutation.attributeName);
+					aMutation.attributeName + ', ' +
+					aMutation.oldValue + ' => ' +
+					target.getAttribute(aMutation.attributeName);
 		dump(aDescription + ' ' + targetInformation + attributeInformation + '\n');
 	},
 
