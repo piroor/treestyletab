@@ -115,6 +115,7 @@ BrowserUIShowHideObserver.prototype = {
 			return;
 
 		var target = aMutation.target;
+		var ownerInformation = this.box.localName + '#' + this.box.id + '.' + this.box.className;
 		var targetInformation = target.localName + '#' + target.id + '.' + target.className;
 		var attributeInformation = '';
 		if (aMutation.attributeName)
@@ -122,7 +123,10 @@ BrowserUIShowHideObserver.prototype = {
 					aMutation.attributeName + ', ' +
 					aMutation.oldValue + ' => ' +
 					target.getAttribute(aMutation.attributeName);
-		dump(aDescription + ' ' + targetInformation + attributeInformation + '\n');
+		dump(aDescription + ' ' +
+			ownerInformation + ' / ' +
+			targetInformation +
+			attributeInformation + '\n');
 	},
 
 	onAttributeModified : function BrowserUIShowHideObserver_onAttributeModified(aMutation, aObserver) 
