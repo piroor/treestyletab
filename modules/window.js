@@ -187,15 +187,6 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 	{
 		return this.document.getElementById('browser-bottombox');
 	},
- 
-	get isPopupWindow() 
-	{
-		return (
-			this.document &&
-			this.document.documentElement.getAttribute('chromehidden') != '' &&
-			!this.window.gBrowser.treeStyleTab.isVisible
-		);
-	},
   
 /* backward compatibility */ 
 	getTempTreeStyleTab : function TSTWindow_getTempTreeStyleTab(aTabBrowser)
