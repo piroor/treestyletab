@@ -333,28 +333,28 @@ var TreeStyleTabWindowHelper = {
 			}, 'treeStyleTab');
 		}
 
-			SidebarUI.__treestyletab__show = SidebarUI.show;
-			SidebarUI.show = function(...aArgs) {
-				var opened = this.isOpen;
-				var width = this.browser.boxObject.width;
-				return this.__treestyletab__show.apply(this, aArgs)
-						.then((function(aResult) {
-							if (opened !== this.isOpen ||
-								width !== this.browser.boxObject.width)
-								gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR);
-							return aResult;
-						}).bind(this));
-			};
-			SidebarUI.__treestyletab__hide = SidebarUI.hide;
-			SidebarUI.hide = function(...aArgs) {
-				var opened = this.isOpen;
-				var width = this.browser.boxObject.width;
-				var retVal = this.__treestyletab__hide.apply(this, aArgs);
-				if (opened !== this.isOpen ||
-					width !== this.browser.boxObject.width)
-					gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR);
-				return retVal;
-			};
+		SidebarUI.__treestyletab__show = SidebarUI.show;
+		SidebarUI.show = function(...aArgs) {
+			var opened = this.isOpen;
+			var width = this.browser.boxObject.width;
+			return this.__treestyletab__show.apply(this, aArgs)
+					.then((function(aResult) {
+						if (opened !== this.isOpen ||
+							width !== this.browser.boxObject.width)
+							gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR);
+						return aResult;
+					}).bind(this));
+		};
+		SidebarUI.__treestyletab__hide = SidebarUI.hide;
+		SidebarUI.hide = function(...aArgs) {
+			var opened = this.isOpen;
+			var width = this.browser.boxObject.width;
+			var retVal = this.__treestyletab__hide.apply(this, aArgs);
+			if (opened !== this.isOpen ||
+				width !== this.browser.boxObject.width)
+				gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR);
+			return retVal;
+		};
 	},
 	_splitFunctionNames : function TSTWH__splitFunctionNames(aString)
 	{
