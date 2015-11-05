@@ -12,7 +12,6 @@ var TreeStyleTabWindowHelper = {
  
 	preInit : function TSTWH_preInit() 
 	{
-		TreeStyleTabUtils.doPatching(gBrowserInit._delayedStartup, 'gBrowserInit._delayedStartup', function(aName, aSource) {
 			// Replacing of gBrowserInit._delayedStartup() with eval()
 			// breaks the variable scope of the function and break its
 			// functionality completely.
@@ -25,7 +24,6 @@ var TreeStyleTabWindowHelper = {
 				TreeStyleTabWindowHelper.runningDelayedStartup = false;
 				return retVal;
 			};
-		}, 'TreeStyleTab');
 
 		nsBrowserAccess.prototype.__treesytletab__openURI = nsBrowserAccess.prototype.openURI;
 		nsBrowserAccess.prototype.openURI = function(aURI, aOpener, aWhere, aContext) {
