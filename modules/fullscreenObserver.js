@@ -59,6 +59,7 @@ FullscreenObserver.prototype = {
 		}).bind(this));
 		this.observer.observe(this.window.document.documentElement, {
 			attributes      : true,
+			attributeOldValue: true,
 			attributeFilter : ['sizemode']
 		});
 
@@ -76,6 +77,12 @@ FullscreenObserver.prototype = {
 
 	onMutation : function FullscreenObserver_onMutation(aMutations, aObserver) 
 	{
+		var anyChanged = aMutations.some(function(aMutation) {
+			var newValue = aMutation.target.getAttribute(aMutation.attributeName);
+			return aMutation.oldValue !== newValue;
+		}, this);
+		if (!anyChanged)
+			return;
 		this.window.setTimeout((function() {
 			this.onSizeModeChange();
 		}).bind(this), 10);
