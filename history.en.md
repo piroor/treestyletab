@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Don't reposition/update the tab bar when the window regains focus or the sidebar is switched between different panels.
    * Don't shrink the width of the tab bar with a scrollbar for too many tabs, on OS X.
    * Don't hide the title bar unexpectedly, after toolbar customizations.
    * Introduce new custom DOM event `nsDOMTreeStyleTabTabbarRendered` for addons who need to modify appearance of the tab bar, like Unified Sidebar.
