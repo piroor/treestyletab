@@ -187,6 +187,15 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 	{
 		return this.document.getElementById('browser-bottombox');
 	},
+ 
+	get isPopupWindow() 
+	{
+		return (
+			this.document &&
+			this.document.documentElement.getAttribute('chromehidden') != '' &&
+			!this.window.gBrowser.treeStyleTab.isVisible
+		);
+	},
   
 /* backward compatibility */ 
 	getTempTreeStyleTab : function TSTWindow_getTempTreeStyleTab(aTabBrowser)
@@ -400,6 +409,8 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		d.addEventListener('popupshowing', this, false);
 		d.addEventListener('popuphiding', this, true);
 		d.addEventListener(this.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, this, false);
+		d.addEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGED,     this, false);
+		d.addEventListener(this.kEVENT_TYPE_TABBAR_STATE_CHANGED,        this, false);
 		d.addEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB,              this, false);
 		w.addEventListener('beforecustomization', this, true);
 		w.addEventListener('aftercustomization', this, false);
@@ -427,6 +438,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		w.TreeStyleTabWindowHelper.onAfterBrowserInit();
 
 		this.processRestoredTabs();
+		this.updateTabsOnTop();
 
 		this.autoHideWindow; // initialize
 
@@ -523,6 +535,8 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 				d.removeEventListener('popupshowing', this, false);
 				d.removeEventListener('popuphiding', this, true);
 				d.removeEventListener(this.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, this, false);
+				d.removeEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGED,     this, false);
+				d.removeEventListener(this.kEVENT_TYPE_TABBAR_STATE_CHANGED,        this, false);
 				d.removeEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB,              this, false);
 				w.removeEventListener('beforecustomization', this, true);
 				w.removeEventListener('aftercustomization', this, false);
@@ -615,6 +629,10 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 
 			case this.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED:
 				return this.updateAeroPeekPreviews();
+
+			case this.kEVENT_TYPE_TABBAR_POSITION_CHANGED:
+			case this.kEVENT_TYPE_TABBAR_STATE_CHANGED:
+				return this.updateTabsOnTop();
 
 			case this.kEVENT_TYPE_FOCUS_NEXT_TAB:
 				return this.onFocusNextTab(aEvent);
@@ -1090,6 +1108,41 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			}
 			return false;
 		}, this);
+	},
+ 
+	updateTabsOnTop : function TSTWindow_updateTabsOnTop() 
+	{
+		if (
+			this.isPopupWindow ||
+			this.tabsOnTopChangingByTST
+			)
+			return;
+
+		this.tabsOnTopChangingByTST = true;
+		// We have to do this with delay, because the tab bar is always on top
+		// for the toolbar customizing and returned to left or right after a delay.
+		setTimeout(this.updateTabsOnTopInternal.bind(this), 0);
+	},
+	updateTabsOnTopInternal : function TSTWindow_updateTabsOnTopInternal()
+	{
+		var TabsInTitlebar = this.window.TabsInTitlebar;
+		var isTopTabbar = this.browser.treeStyleTab.position == 'top';
+
+		try {
+			if (TabsInTitlebar) {
+				let allowed = isTopTabbar && this.browser.treeStyleTab.fixed;
+				if (
+					(this.window.TabsOnBottom && utils.getTreePref('compatibility.TabsOnBottom')) ||
+					('navbarontop' in this.window && utils.getTreePref('compatibility.NavbarOnTitlebar')) ||
+					('classicthemerestorerjs' in this.window && utils.getTreePref('compatibility.ClassicThemeRestorer'))
+					)
+					allowed = true;
+				TabsInTitlebar.allowedBy('TreeStyleTab-tabsOnTop', allowed);
+			}
+		}
+		finally {
+			this.tabsOnTopChangingByTST = false;
+		}
 	},
  
 	onPopupShown : function TSTWindow_onPopupShown(aPopup) 
