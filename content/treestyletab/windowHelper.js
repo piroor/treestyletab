@@ -34,14 +34,12 @@ var TreeStyleTabWindowHelper = {
 			));
 		}, 'TreeStyleTab');
 
-		TreeStyleTabUtils.doPatching(nsBrowserAccess.prototype.openURIInFrame, 'nsBrowserAccess.prototype.openURIInFrame', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				'let browser = ',
-				// Use "arguments[1]" instead of "aOwner" or "aParams".
-				// The argument name is changed from "aOwner" to "aParams" by https://bugzilla.mozilla.org/show_bug.cgi?id=1058116
-				'TreeStyleTabService.onBeforeBrowserAccessOpenURI(arguments[1], aWhere, aContext); $&'
-			));
-		}, 'TreeStyleTab');
+		nsBrowserAccess.prototype.__treesytletab__openURIInFrame = nsBrowserAccess.prototype.openURIInFrame;
+		nsBrowserAccess.prototype.openURIInFrame = function(aURI, aParams, aWhere, aContext) {
+			if (aWhere === Ci.nsIBrowserDOMWindow.OPEN_NEWTAB)
+				TreeStyleTabService.onBeforeBrowserAccessOpenURI(aParams, aWhere, aContext);
+			return this.__treesytletab__openURIInFrame.call(aURI, aParams, aWhere, aContext);
+		};
 
 		if ('TabsInTitlebar' in window) {
 			TreeStyleTabUtils.doPatching(TabsInTitlebar._update, 'TabsInTitlebar._update', function(aName, aSource) {
@@ -179,20 +177,17 @@ var TreeStyleTabWindowHelper = {
 			return this.__treestyletab__openFrameInTab.apply(this, aArgs);
 		};
 
-		var viewImageMethod = ('viewImage' in nsContextMenu.prototype) ? 'viewImage' : 'viewMedia' ;
-		TreeStyleTabUtils.doPatching(nsContextMenu.prototype[viewImageMethod], 'nsContextMenu.prototype.'+viewImageMethod, function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				/(openUILink\()/g,
-				'TreeStyleTabService.onBeforeViewMedia(e, this.target.ownerDocument.defaultView); $1'
-			));
-		}, 'TreeStyleTab');
+		nsContextMenu.prototype.__treestyletab__viewMedia = nsContextMenu.prototype.viewMedia;
+		nsContextMenu.prototype.viewMedia = function(aEvent) {
+			TreeStyleTabService.onBeforeViewMedia(aEvent, this.target.ownerDocument.defaultView);
+			return this.__treestyletab__viewMedia.call(this, aEvent);
+		};
 
-		TreeStyleTabUtils.doPatching(nsContextMenu.prototype.viewBGImage, 'nsContextMenu.prototype.viewBGImage', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				'openUILink(',
-				'TreeStyleTabService.onBeforeViewMedia(e, this.target.ownerDocument.defaultView); $&'
-			));
-		}, 'TreeStyleTab');
+		nsContextMenu.prototype.__treestyletab__viewBGImage = nsContextMenu.prototype.viewBGImage;
+		nsContextMenu.prototype.viewBGImage = function(aEvent) {
+			TreeStyleTabService.onBeforeViewMedia(aEvent, this.target.ownerDocument.defaultView);
+			return this.__treestyletab__viewBGImage.call(this, aEvent);
+		};
 
 		TreeStyleTabUtils.doPatching(nsContextMenu.prototype.addDictionaries, 'nsContextMenu.prototype.addDictionaries', function(aName, aSource) {
 			return eval(aName+' = '+aSource.replace(
