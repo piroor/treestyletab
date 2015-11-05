@@ -333,7 +333,6 @@ var TreeStyleTabWindowHelper = {
 			}, 'treeStyleTab');
 		}
 
-		if ('SidebarUI' in window) { // for Firefox 39 or later
 			SidebarUI.__treestyletab__show = SidebarUI.show;
 			SidebarUI.show = function(...aArgs) {
 				var opened = this.isOpen;
@@ -356,15 +355,6 @@ var TreeStyleTabWindowHelper = {
 					gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR);
 				return retVal;
 			};
-		}
-		else if ('toggleSidebar' in window) { // for Firefox 38 or older
-			TreeStyleTabUtils.doPatching(window.toggleSidebar, 'window.toggleSidebar', function(aName, aSource) {
-				return eval(aName+' = '+aSource.replace(
-					'{',
-					'{ gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR);'
-				));
-			}, 'treeStyleTab');
-		}
 	},
 	_splitFunctionNames : function TSTWH__splitFunctionNames(aString)
 	{
