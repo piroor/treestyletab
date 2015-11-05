@@ -25,11 +25,11 @@ var TreeStyleTabWindowHelper = {
 			var where = aWhere;
 			if (where === Ci.nsIBrowserDOMWindow.OPEN_DEFAULTWINDOW) {
 				let isExternal = aContext === Ci.nsIBrowserDOMWindow.OPEN_EXTERNAL;
-				let overridePref = TreeStyleTabService.utils.getPref('browser.link.open_newwindow.override.external');
+				let overridePref = TreeStyleTabUtils.getPref('browser.link.open_newwindow.override.external');
 				if (isExternal && overridePref !== null)
 					where = overridePref;
 				else
-					where = TreeStyleTabService.utils.getPref('browser.link.open_newwindow');
+					where = TreeStyleTabUtils.getPref('browser.link.open_newwindow');
 			}
 			TreeStyleTabService.onBeforeBrowserAccessOpenURI(aOpener, where, aContext);
 			return this.__treestyletab__openURI.call(this, aURI, aOpener, aWhere, aContext);
@@ -193,7 +193,7 @@ var TreeStyleTabWindowHelper = {
 
 		nsContextMenu.prototype.__treestyletab__addDictionaries = nsContextMenu.prototype.addDictionaries;
 		nsContextMenu.prototype.addDictionaries = function() {
-			var newWindowPref = TreeStyleTabService.utils.getPref('browser.link.open_newwindow');
+			var newWindowPref = TreeStyleTabUtils.getPref('browser.link.open_newwindow');
 			var where = newWindowPref === 3 ? 'tab' : 'window' ;
 			TreeStyleTabService.onBeforeOpenLink(where, this.target.ownerDocument.defaultView);
 			return this.__treestyletab__addDictionaries.call(this, aEvent);
