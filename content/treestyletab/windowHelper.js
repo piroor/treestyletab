@@ -310,15 +310,6 @@ var TreeStyleTabWindowHelper = {
 			return PrintUtils.__treestyletab__exitPrintPreview.apply(this, aArgs);
 		};
 
-		if ('TabsOnTop' in window) {
-			TreeStyleTabUtils.doPatching(TabsOnTop.syncUI, 'TabsOnTop.syncUI', function(aName, aSource) {
-				return eval(aName+' = '+aSource.replace(
-					/(\}\)?)$/,
-					'gBrowser.treeStyleTab.onTabsOnTopSyncCommand(enabled); $&'
-				));
-			}, 'treeStyleTab');
-		}
-
 		SidebarUI.__treestyletab__show = SidebarUI.show;
 		SidebarUI.show = function(...aArgs) {
 			var opened = this.isOpen;

@@ -868,28 +868,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		this.fixTooNarrowTabbar();
 
 		this.fireTabbarPositionEvent(false, 'top', position); /* PUBLIC API */
-
-		if (this.timers['init'])
-			clearTimeout(this.timers['init']);
-
-		this.timers['init'] = setTimeout((function() {
-			try {
-				// This command is always enabled and the TabsOnTop can be enabled
-				// by <tabbrowser>.updateVisibility().
-				// So we have to reset TabsOnTop state on the startup.
-				var toggleTabsOnTop = d.getElementById('cmd_ToggleTabsOnTop');
-				var TabsOnTop = 'TabsOnTop' in w ? w.TabsOnTop : null ;
-				if (TabsOnTop && TabsOnTop.syncUI && toggleTabsOnTop && this.isVertical) {
-					toggleTabsOnTop.setAttribute('disabled', true);
-					if (TabsOnTop.enabled && TabsOnTop.toggle)
-						TabsOnTop.toggle();
-				}
-			}
-			catch(e) {
-				this.defaultErrorHandler(e);
-			}
-			delete this.timers['init'];
-		}).bind(this), 0);
 	},
 	
 	_initTabbrowserExtraContents : function TSTBrowser_initTabbrowserExtraContents() 
@@ -1764,13 +1742,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var d = this.document;
 		var b = this.mTabBrowser;
 		var orient;
-		var toggleTabsOnTop = d.getElementById('cmd_ToggleTabsOnTop');
-		var TabsOnTop = 'TabsOnTop' in w ? w.TabsOnTop : null ;
 		if (this.isVertical) {
 			orient = 'vertical';
 			this.fixed = this.fixed; // ensure set to the current orient
-			if (toggleTabsOnTop)
-				toggleTabsOnTop.setAttribute('disabled', true);
 		}
 		else {
 			orient = 'horizontal';
@@ -1783,57 +1757,12 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				// remove ordinal for "tabs on top" https://bugzilla.mozilla.org/show_bug.cgi?id=544815
 				if (this.position == 'top') {
 					this.removeTabStripAttribute('ordinal');
-					if (TabsOnTop && !this.windowService.isPopupWindow &&
-						this.windowService.initialized) {
-						let currentState = TabsOnTop.enabled;
-						let originalState = utils.getTreePref('tabsOnTop.originalState');
-						if (originalState !== null &&
-							currentState != originalState &&
-							this.windowService.tabsOnTopChangingByUI &&
-							!this.windowService.changingTabsOnTop)
-							utils.setTreePref('tabsOnTop.originalState', currentState);
-						// Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=555987
-						// This should be done when the value of the "ordinal" attribute
-						// is modified dynamically. So, we don' have to do it before
-						// the browser window is completely initialized.
-						TabsOnTop.enabled = !currentState;
-						if (this.timers['updateTabbarState_TabsOnTop'])
-							clearTimeout(this.timers['updateTabbarState_TabsOnTop']);
-						this.timers['updateTabbarState_TabsOnTop'] = setTimeout((function() {
-							try {
-								TabsOnTop.enabled = currentState;
-							}
-							catch(e) {
-								this.defaultErrorHandler(e);
-							}
-							delete this.timers['updateTabbarState_TabsOnTop'];
-						}).bind(this), 0);
-					}
 				}
 			}
 			else {
 				this.fixed = false; // ensure set to the current orient
 				this.setTabStripAttribute('height', this.maxTabbarHeight(this.tabbarHeight, b));
 			}
-			if (toggleTabsOnTop) {
-				if (this.position == 'top')
-					toggleTabsOnTop.removeAttribute('disabled');
-				else
-					toggleTabsOnTop.setAttribute('disabled', true);
-			}
-		}
-
-		if (TabsOnTop && !this.windowService.isPopupWindow) {
-			let updateTabsOnTop = (function() {
-					this.windowService.updateTabsOnTop();
-				}).bind(this);
-			// TabsOnTop.enabled is always "false" before the browser window is
-			// completely initialized. So, we have to check it with delay only
-			// on the Startup.
-			if (this.initialized)
-				updateTabsOnTop();
-			else
-				setTimeout(updateTabsOnTop, 0);
 		}
 
 		if (this.timers['updateTabbarState'])
@@ -5115,37 +5044,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 	},
   
-	onTabsOnTopSyncCommand : function TSTBrowser_onTabsOnTopSyncCommand(aEnabled) 
-	{
-		if (
-			this.windowService.tabsOnTopChangingByUI ||
-			!aEnabled ||
-			this.position != 'top' ||
-			this.fixed ||
-			this.windowService.isPopupWindow
-			)
-			return;
-		this.windowService.tabsOnTopChangingByUI = true;
-		if (this.timers['onTabsOnTopSyncCommand'])
-			clearTimeout(this.timers['onTabsOnTopSyncCommand']);
-		this.timers['onTabsOnTopSyncCommand'] = setTimeout((function() {
-			Deferred.resolve()
-				.then((function() {
-					this.windowService.toggleFixed(this.mTabBrowser);
-					return wait(0);
-				}).bind(this))
-				.then((function() {
-					if (this.window.TabsOnTop.enabled != aEnabled)
-						this.window.TabsOnTop.enabled = aEnabled;
-				}).bind(this))
-				.catch(this.defaultErrorHandler.bind(this))
-				.then((function() {
-					this.windowService.tabsOnTopChangingByUI = false;
-					delete this.timers['onTabsOnTopSyncCommand'];
-				}).bind(this));
-		}).bind(this), 0);
-	},
- 
 	onBeforeFullScreenToggle : function TSTBrowser_onBeforeFullScreenToggle(aEnterFS)
 	{
 		if (this.position != 'top') {
@@ -7007,9 +6905,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	},
 	isPopupShown : function TSTBrowser_isPopupShown(...aArgs) {
 		return this._callWindowServiceMethod('isPopupShown', aArgs);
-	},
-	updateTabsOnTop : function TSTBrowser_updateTabsOnTop(...aArgs) {
-		return this._callWindowServiceMethod('updateTabsOnTop', aArgs);
 	},
 	registerTabFocusAllowance : function TSTBrowser_registerTabFocusAllowance(...aArgs) {
 		return this._callWindowServiceMethod('registerTabFocusAllowance', aArgs);
