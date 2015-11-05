@@ -62,15 +62,17 @@ var TreeStyleTabWindowHelper = {
 			return this.__treesytletab__BrowserOpenTab.apply(this, aArgs);
 		};
 
-		TreeStyleTabUtils.doPatching(window.undoCloseTab, 'window.undoCloseTab', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				/(\btab\s*=\s*[^\.]+\.undoCloseTab\([^;]+\);)/,
-				'gBrowser.__treestyletab__doingUndoCloseTab = true;\n' +
-				'$1\n' +
-				'tab.__treestyletab__restoredByUndoCloseTab = true;\n' +
-				'setTimeout(function() { delete gBrowser.__treestyletab__doingUndoCloseTab; }, 0);'
-			));
-		}, 'treestyletab');
+		window.__treesytletab__undoCloseTab = window.undoCloseTab;
+		window.undoCloseTab = function(...aArgs) {
+			gBrowser.__treestyletab__doingUndoCloseTab = true;
+			var tab = this.__treesytletab__undoCloseTab.apply(this, aArgs);
+			if (tab)
+				tab.__treestyletab__restoredByUndoCloseTab = true;
+			setTimeout(function() {
+				delete gBrowser.__treestyletab__doingUndoCloseTab;
+			}, 0);
+			return tab;
+		};
 
 		[
 			'window.duplicateTab.handleLinkClick',
