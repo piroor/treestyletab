@@ -221,12 +221,18 @@ var TreeStyleTabWindowHelper = {
 		}, 'TreeStyleTab');
 
 		[
-			'window.permaTabs.utils.wrappedFunctions["window.contentAreaClick"]',
-			'window.__contentAreaClick',
-			'window.__ctxextensions__contentAreaClick',
-			'window.contentAreaClick'
-		].forEach(function(aName) {
-			var func = this._getFunction(aName);
+			{ owner: window.permaTabs && window.permaTabs.utils && window.permaTabs.utils.wrappedFunctions,
+			  name:  'window.contentAreaClick' },
+			{ owner: window,
+			  name:  '__contentAreaClick' },
+			{ owner: window,
+			  name:  '__ctxextensions__contentAreaClick' },
+			{ owner: window.
+			  name:  'contentAreaClick' }
+		].forEach(function(aTarget) {
+			var name = aTarget.name;
+			var owner = aTarget.owner;
+			var func = owner && owner[name];
 			var source = func && func.toString();
 			if (!func ||
 				!/^\(?function contentAreaClick/.test(source) ||
@@ -234,12 +240,12 @@ var TreeStyleTabWindowHelper = {
 				// (calls for the function is not included by Firefox default.)
 				!/(openNewTabWith\()/.test(source))
 				return;
-			TreeStyleTabUtils.doPatching(func, aName, function(aName, aSource) {
-				return eval(aName+' = '+aSource.replace(
-					/(openNewTabWith\()/g,
-					'TreeStyleTabService.onBeforeOpenNewTabByThirdParty(event.target.ownerDocument.defaultView); $1'
-				));
-			}, 'TreeStyleTab');
+			let original = '__treestyletab__' + name;
+			owner[original] = owner[name];
+			owner[name] = function(aEvent, aIsPanelClick, ...aArgs) {
+				TreeStyleTabService.onBeforeOpenNewTabByThirdParty(aEvent.target.ownerDocument.defaultView);
+				return this[original].apply(this, [aEvent, aIsPanelClick].concat(aArgs));
+			};
 		}, this);
 
 		window.__treestyletab__duplicateTabIn = window.duplicateTabIn;
@@ -264,12 +270,11 @@ var TreeStyleTabWindowHelper = {
 			}, 'TreeStyleTab');
 		}, this);
 
-		TreeStyleTabUtils.doPatching(FeedHandler.loadFeed, 'FeedHandler.loadFeed', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				'openUILink(',
-				'TreeStyleTabService.onBeforeViewMedia(event, gBrowser); $&'
-			));
-		}, 'TreeStyleTab');
+		FeedHandler.__treestyletab__loadFeed = FeedHandler.loadFeed;
+		FeedHandler.loadFeed = function(aHref, aEvent) {
+			TreeStyleTabService.onBeforeViewMedia(aEvent, gBrowser);
+			return this.__treestyletab__loadFeed.call(this, aHref, aEvent);
+		};
 
 		if ('showNavToolbox' in FullScreen) { // for Firefox 40 or later
 			TreeStyleTabUtils.doPatching(FullScreen.showNavToolbox, 'FullScreen.showNavToolbox', function(aName, aSource) {
