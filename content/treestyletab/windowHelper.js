@@ -27,12 +27,20 @@ var TreeStyleTabWindowHelper = {
 			};
 		}, 'TreeStyleTab');
 
-		TreeStyleTabUtils.doPatching(nsBrowserAccess.prototype.openURI, 'nsBrowserAccess.prototype.openURI', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				/(switch\s*\(aWhere\))/,
-				'TreeStyleTabService.onBeforeBrowserAccessOpenURI(aOpener, aWhere, aContext); $1'
-			));
-		}, 'TreeStyleTab');
+		nsBrowserAccess.prototype.__treesytletab__openURI = nsBrowserAccess.prototype.openURI;
+		nsBrowserAccess.prototype.openURI = function(aURI, aOpener, aWhere, aContext) {
+			var where = aWhere;
+			if (where === Ci.nsIBrowserDOMWindow.OPEN_DEFAULTWINDOW) {
+				let isExternal = aContext === Ci.nsIBrowserDOMWindow.OPEN_EXTERNAL;
+				let overridePref = TreeStyleTabService.utils.getPref('browser.link.open_newwindow.override.external');
+				if (isExternal && overridePref !== null)
+					where = overridePref;
+				else
+					where = TreeStyleTabService.utils.getPref('browser.link.open_newwindow');
+			}
+			TreeStyleTabService.onBeforeBrowserAccessOpenURI(aOpener, where, aContext);
+			return this.__treesytletab__openURI.call(this, aURI, aOpener, aWhere, aContext);
+		};
 
 		nsBrowserAccess.prototype.__treesytletab__openURIInFrame = nsBrowserAccess.prototype.openURIInFrame;
 		nsBrowserAccess.prototype.openURIInFrame = function(aURI, aParams, aWhere, aContext) {
@@ -50,12 +58,11 @@ var TreeStyleTabWindowHelper = {
 			}, 'treeStyleTab');
 		}
 
-		TreeStyleTabUtils.doPatching(window.BrowserOpenTab, 'window.BrowserOpenTab', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				'openUILinkIn(',
-				'gBrowser.treeStyleTab.onBeforeNewTabCommand(); $&'
-			));
-		}, 'treeStyleTab');
+		window.__treesytletab__BrowserOpenTab = window.BrowserOpenTab;
+		window.BrowserOpenTab = function(...aArgs) {
+			gBrowser.treeStyleTab.onBeforeNewTabCommand();
+			return this.__treesytletab__BrowserOpenTab.apply(this, aArgs);
+		};
 
 		TreeStyleTabUtils.doPatching(window.undoCloseTab, 'window.undoCloseTab', function(aName, aSource) {
 			return eval(aName+' = '+aSource.replace(
@@ -189,19 +196,19 @@ var TreeStyleTabWindowHelper = {
 			return this.__treestyletab__viewBGImage.call(this, aEvent);
 		};
 
-		TreeStyleTabUtils.doPatching(nsContextMenu.prototype.addDictionaries, 'nsContextMenu.prototype.addDictionaries', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				'openUILinkIn(',
-				'TreeStyleTabService.onBeforeOpenLink(where, this.target.ownerDocument.defaultView); $&'
-			));
-		}, 'TreeStyleTab');
+		nsContextMenu.prototype.__treestyletab__addDictionaries = nsContextMenu.prototype.addDictionaries;
+		nsContextMenu.prototype.addDictionaries = function() {
+			var newWindowPref = TreeStyleTabService.utils.getPref('browser.link.open_newwindow');
+			var where = newWindowPref === 3 ? 'tab' : 'window' ;
+			TreeStyleTabService.onBeforeOpenLink(where, this.target.ownerDocument.defaultView);
+			return this.__treestyletab__addDictionaries.call(this, aEvent);
+		};
 
-		TreeStyleTabUtils.doPatching(BrowserSearch._loadSearch, 'BrowserSearch._loadSearch', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				'openLinkIn(',
-				'TreeStyleTabService.onBeforeBrowserSearch(arguments[0], useNewTab); $&'
-			));
-		}, 'TreeStyleTab');
+		BrowserSearch.__treestyletab__loadSearch = BrowserSearch._loadSearch;
+		BrowserSearch._loadSearch = function(aSearchText, aUseNewTab, aPurpose) {
+			TreeStyleTabService.onBeforeBrowserSearch(aSearchText, aUseNewTab);
+			return this.__treestyletab__loadSearch.call(this, aEvent);
+		};
 
 		TreeStyleTabUtils.doPatching(window.openLinkIn, 'window.openLinkIn', function(aName, aSource) {
 			// Bug 1050447 changed this line in Fx 34 to
