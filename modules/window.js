@@ -800,9 +800,9 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 
 		// this.accelKeyPressed = this.isAccelKeyPressed(aEvent);
 		this.accelKeyPressed = aEvent.ctrlKey || aEvent.keyCode == Ci.nsIDOMKeyEvent.DOM_VK_CONTROL;
-		this.window.setTimeout(function(aSelf) {
-			aSelf.arrowKeyEventOnTab = null;
-		}, 10, this);
+		setTimeout((function() {
+			this.arrowKeyEventOnTab = null;
+		}).bind(this), 10);
 
 		var standBy = scrollDown = scrollUp = (!aEvent.altKey && this.accelKeyPressed);
 
@@ -1077,16 +1077,16 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			)
 			return;
 
-		this.updateAeroPeekPreviewsTimer = w.setTimeout(function(aSelf) {
-			aSelf.updateAeroPeekPreviewsTimer = null;
+		this.updateAeroPeekPreviewsTimer = w.setTimeout((function() {
+			this.updateAeroPeekPreviewsTimer = null;
 			try {
-				aSelf.updateAeroPeekPreviewsInternal();
+				this.updateAeroPeekPreviewsInternal();
 			}
 			catch(e) {
 				dump(e+'\n');
-				aSelf.updateAeroPeekPreviews();
+				this.updateAeroPeekPreviews();
 			}
-		}, 250, this);
+		}).bind(this), 250);
 	},
 	updateAeroPeekPreviewsTimer : null,
 	updateAeroPeekPreviewsInternal : function TSTWindow_updateAeroPeekPreviewsInternal()
@@ -1127,7 +1127,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		this.tabsOnTopChangingByTST = true;
 		// We have to do this with delay, because the tab bar is always on top
 		// for the toolbar customizing and returned to left or right after a delay.
-		this.window.setTimeout(this.updateTabsOnTopInternal.bind(this), 0);
+		setTimeout(this.updateTabsOnTopInternal.bind(this), 0);
 	},
 	updateTabsOnTopInternal : function TSTWindow_updateTabsOnTopInternal()
 	{
@@ -1181,17 +1181,17 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			).booleanValue)
 			return;
 
-		this.window.setTimeout(function(aSelf) {
+		setTimeout((function() {
 			if ((!aPopup.boxObject.width && !aPopup.boxObject.height) ||
 				aPopup.boxObject.popupState == 'closed')
 				return;
 
 			var id = aPopup.id;
-			var item = id && aSelf.document.getElementById(id) ? id : aPopup ;
-			var index = aSelf._shownPopups.indexOf(item);
+			var item = id && this.document.getElementById(id) ? id : aPopup ;
+			var index = this._shownPopups.indexOf(item);
 			if (index < 0)
-				aSelf._shownPopups.push(item);
-		}, 10, this);
+				this._shownPopups.push(item);
+		}).bind(this), 10);
 	},
  
 	onPopupHidden : function TSTWindow_onPopupHidden(aPopup) 
