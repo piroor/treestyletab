@@ -336,15 +336,19 @@ var TreeStyleTabWindowHelper = {
 		if ('SidebarUI' in window) { // for Firefox 39 or later
 			SidebarUI.__treestyletab__show = SidebarUI.show;
 			SidebarUI.show = function(...aArgs) {
+				var opened = this.isOpen;
 				return this.__treestyletab__show.apply(this, aArgs)
-						.then(function(aResult) {
+						.then((function(aResult) {
+							if (opened !== this.isOpen)
 							gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR);
 							return aResult;
-						});
+						}).bind(this));
 			};
 			SidebarUI.__treestyletab__hide = SidebarUI.hide;
 			SidebarUI.hide = function(...aArgs) {
+				var opened = this.isOpen;
 				var retVal = this.__treestyletab__hide.apply(this, aArgs);
+				if (opened !== this.isOpen)
 				gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR);
 				return retVal;
 			};
