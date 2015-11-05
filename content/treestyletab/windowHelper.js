@@ -69,13 +69,6 @@ var TreeStyleTabWindowHelper = {
 			));
 		}, 'treestyletab');
 
-		TreeStyleTabUtils.doPatching(window.XULBrowserWindow.hideChromeForLocation, 'XULBrowserWindow.hideChromeForLocation', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				'{',
-				'{ if (gBrowser.treeStyleTab.isVertical) return false;\n'
-			));
-		}, 'treeStyleTab');
-
 		[
 			'window.duplicateTab.handleLinkClick',
 			'window.duplicatethistab.handleLinkClick',
