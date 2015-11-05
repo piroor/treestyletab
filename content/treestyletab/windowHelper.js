@@ -299,12 +299,12 @@ var TreeStyleTabWindowHelper = {
 			}, 'treeStyleTab');
 		}
 
-		TreeStyleTabUtils.doPatching(FullScreen.toggle, 'FullScreen.toggle', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				'if (enterFS) {',
-				'gBrowser.treeStyleTab.onBeforeFullScreenToggle(enterFS); $&'
-			));
-		}, 'treeStyleTab');
+		FullScreen.__treestyletab__toggle = FullScreen.toggle;
+		FullScreen.toggle = function(...aArgs) {
+			var enterFS = window.fullScreen;
+			gBrowser.treeStyleTab.onBeforeFullScreenToggle(enterFS);
+			return this.__treestyletab__toggle.apply(this, aArgs);
+		};
 
 		PrintUtils.__treestyletab__printPreview = PrintUtils.printPreview;
 		PrintUtils.printPreview = function(...aArgs) {
