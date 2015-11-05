@@ -273,26 +273,33 @@ var TreeStyleTabWindowHelper = {
 		};
 
 		if ('showNavToolbox' in FullScreen) { // for Firefox 40 or later
-			TreeStyleTabUtils.doPatching(FullScreen.showNavToolbox, 'FullScreen.showNavToolbox', function(aName, aSource) {
-				return eval(aName+' = '+aSource.replace(
-					'this._isChromeCollapsed = false;',
-					'gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_FULLSCREEN); $&'
-				));
-			}, 'treeStyleTab');
-			TreeStyleTabUtils.doPatching(FullScreen.hideNavToolbox, 'FullScreen.hideNavToolbox', function(aName, aSource) {
-				return eval(aName+' = '+aSource.replace(
-					'this._isChromeCollapsed = true;',
-					'gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_FULLSCREEN); $&'
-				));
-			}, 'treeStyleTab');
+			FullScreen.__treestyletab__showNavToolbox = FullScreen.showNavToolbox;
+			FullScreen.showNavToolbox = function(...aArgs) {
+				var beforeCollapsed = this._isChromeCollapsed;
+				var retVal = this.__treestyletab__showNavToolbox.apply(this, aArgs);
+				if (beforeCollapsed !== this._isChromeCollapsed)
+					gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_FULLSCREEN);
+				return retVal;
+			};
+
+			FullScreen.__treestyletab__hideNavToolbox = FullScreen.hideNavToolbox;
+			FullScreen.hideNavToolbox = function(...aArgs) {
+				var beforeCollapsed = this._isChromeCollapsed;
+				var retVal = this.__treestyletab__hideNavToolbox.apply(this, aArgs);
+				if (beforeCollapsed !== this._isChromeCollapsed)
+					gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_FULLSCREEN);
+				return retVal;
+			};
 		}
 		else if ('mouseoverToggle' in FullScreen) { // for Firefox 39 or older
-			TreeStyleTabUtils.doPatching(FullScreen.mouseoverToggle, 'FullScreen.mouseoverToggle', function(aName, aSource) {
-				return eval(aName+' = '+aSource.replace(
-					'this._isChromeCollapsed = !aShow;',
-					'gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_FULLSCREEN); $&'
-				));
-			}, 'treeStyleTab');
+			FullScreen.__treestyletab__mouseoverToggle = FullScreen.mouseoverToggle;
+			FullScreen.mouseoverToggle = function(...aArgs) {
+				var beforeCollapsed = this._isChromeCollapsed;
+				var retVal = this.__treestyletab__mouseoverToggle.apply(this, aArgs);
+				if (beforeCollapsed !== this._isChromeCollapsed)
+					gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_FULLSCREEN);
+				return retVal;
+			};
 		}
 
 		FullScreen.__treestyletab__toggle = FullScreen.toggle;
