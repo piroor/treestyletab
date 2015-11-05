@@ -167,21 +167,17 @@ var TreeStyleTabWindowHelper = {
 	{
 		this.initToolbarItems();
 
-		TreeStyleTabUtils.doPatching(nsContextMenu.prototype.openLinkInTab, 'nsContextMenu.prototype.openLinkInTab', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				'{',
-				'{\n' +
-				'  TreeStyleTabService.handleNewTabFromCurrent(this.target.ownerDocument.defaultView);'
-			));
-		}, 'TreeStyleTab');
+		nsContextMenu.prototype.__treestyletab__openLinkInTab = nsContextMenu.prototype.openLinkInTab;
+		nsContextMenu.prototype.openLinkInTab = function(...aArgs) {
+			TreeStyleTabService.handleNewTabFromCurrent(this.target.ownerDocument.defaultView);
+			return this.__treestyletab__openLinkInTab.apply(this, aArgs);
+		};
 
-		TreeStyleTabUtils.doPatching(nsContextMenu.prototype.openFrameInTab, 'nsContextMenu.prototype.openFrameInTab', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				'{',
-				'{\n' +
-				'  TreeStyleTabService.handleNewTabFromCurrent(this.target.ownerDocument.defaultView);'
-			));
-		}, 'TreeStyleTab');
+		nsContextMenu.prototype.__treestyletab__openFrameInTab = nsContextMenu.prototype.openFrameInTab;
+		nsContextMenu.prototype.openFrameInTab = function(...aArgs) {
+			TreeStyleTabService.handleNewTabFromCurrent(this.target.ownerDocument.defaultView);
+			return this.__treestyletab__openFrameInTab.apply(this, aArgs);
+		};
 
 		var viewImageMethod = ('viewImage' in nsContextMenu.prototype) ? 'viewImage' : 'viewMedia' ;
 		TreeStyleTabUtils.doPatching(nsContextMenu.prototype[viewImageMethod], 'nsContextMenu.prototype.'+viewImageMethod, function(aName, aSource) {
@@ -244,12 +240,11 @@ var TreeStyleTabWindowHelper = {
 			}, 'TreeStyleTab');
 		}, this);
 
-		TreeStyleTabUtils.doPatching(window.duplicateTabIn, 'window.duplicateTabIn', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				'{',
-				'{ gBrowser.treeStyleTab.onBeforeTabDuplicate(aTab, where, delta); '
-			));
-		}, 'treeStyleTab');
+		window.__treestyletab__duplicateTabIn = window.duplicateTabIn;
+		window.duplicateTabIn = function(aTab, where, delta) {
+			gBrowser.treeStyleTab.onBeforeTabDuplicate(aTab, where, delta);
+			return window.__treestyletab__duplicateTabIn.call(this, aTab, where, delta);
+		};
 
 		[
 			'permaTabs.utils.wrappedFunctions["window.BrowserHomeClick"]',
@@ -304,18 +299,16 @@ var TreeStyleTabWindowHelper = {
 			));
 		}, 'treeStyleTab');
 
-		TreeStyleTabUtils.doPatching(PrintUtils.printPreview, 'PrintUtils.printPreview', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				'{',
-				'{ TreeStyleTabService.onPrintPreviewEnter();'
-			));
-		}, 'TreeStyleTab');
-		TreeStyleTabUtils.doPatching(PrintUtils.exitPrintPreview, 'PrintUtils.exitPrintPreview', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				'{',
-				'{ TreeStyleTabService.onPrintPreviewExit();'
-			));
-		}, 'TreeStyleTab');
+		PrintUtils.__treestyletab__printPreview = PrintUtils.printPreview;
+		PrintUtils.printPreview = function(...aArgs) {
+			TreeStyleTabService.onPrintPreviewEnter();
+			return PrintUtils.__treestyletab__printPreview.apply(this, aArgs);
+		};
+		PrintUtils.__treestyletab__exitPrintPreview = PrintUtils.exitPrintPreview;
+		PrintUtils.exitPrintPreview = function(...aArgs) {
+			TreeStyleTabService.onPrintPreviewExit();
+			return PrintUtils.__treestyletab__exitPrintPreview.apply(this, aArgs);
+		};
 
 		if ('TabsOnTop' in window) {
 			TreeStyleTabUtils.doPatching(TabsOnTop.syncUI, 'TabsOnTop.syncUI', function(aName, aSource) {
