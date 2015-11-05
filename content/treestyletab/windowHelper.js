@@ -309,12 +309,12 @@ var TreeStyleTabWindowHelper = {
 		PrintUtils.__treestyletab__printPreview = PrintUtils.printPreview;
 		PrintUtils.printPreview = function(...aArgs) {
 			TreeStyleTabService.onPrintPreviewEnter();
-			return PrintUtils.__treestyletab__printPreview.apply(this, aArgs);
+			return this.__treestyletab__printPreview.apply(this, aArgs);
 		};
 		PrintUtils.__treestyletab__exitPrintPreview = PrintUtils.exitPrintPreview;
 		PrintUtils.exitPrintPreview = function(...aArgs) {
 			TreeStyleTabService.onPrintPreviewExit();
-			return PrintUtils.__treestyletab__exitPrintPreview.apply(this, aArgs);
+			return this.__treestyletab__exitPrintPreview.apply(this, aArgs);
 		};
 
 		SidebarUI.__treestyletab__show = SidebarUI.show;
