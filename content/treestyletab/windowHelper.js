@@ -12,11 +12,6 @@ var TreeStyleTabWindowHelper = {
  
 	preInit : function TSTWH_preInit() 
 	{
-			// Replacing of gBrowserInit._delayedStartup() with eval()
-			// breaks the variable scope of the function and break its
-			// functionality completely.
-			// Instead, I use a flag to detect a method is called at the
-			// startup process or not.
 			gBrowserInit.__treestyletab___delayedStartup = gBrowserInit._delayedStartup;
 			gBrowserInit._delayedStartup = function(...args) {
 				TreeStyleTabWindowHelper.runningDelayedStartup = true;
