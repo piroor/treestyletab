@@ -79,6 +79,7 @@ BrowserUIShowHideObserver.prototype = {
 	onMutation : function BrowserUIShowHideObserver_onMutation(aMutations, aObserver) 
 	{
 		aMutations.forEach(function(aMutation) {
+			try {
 			switch (aMutation.type)
 			{
 				case 'childList':
@@ -89,6 +90,11 @@ BrowserUIShowHideObserver.prototype = {
 				case 'attributes':
 					this.onAttributeModified(aMutation, aObserver);
 					return;
+			}
+			}
+			catch(error) {
+				this.dumpMutation(aMutation, 'BrowserUIShowHideObserver_onMutation(error)');
+				Components.utils.reportError(error);
 			}
 		}, this);
 	},
@@ -101,6 +107,22 @@ BrowserUIShowHideObserver.prototype = {
 		}
 		delete this.box;
 		delete this.owner;
+	},
+
+	dumpMutation : function BrowserUIShowHideObserver_dumpMutation(aMutation, aDescription)
+	{
+		if (!utils.isDebugging('browserUIShowHideObserver'))
+			return;
+
+		var target = aMutation.target;
+		var targetInformation = target.localName + '#' + target.id + '.' + target.className;
+		var attributeInformation = '';
+		if (aMutation.attributeName)
+			 attributeInformation = ' / ' +
+				aMutation.attributeName + ', ' +
+				aMutation.oldValue + ' => ' +
+				target.getAttribute(aMutation.attributeName);
+		dump(aDescription + ' ' + targetInformation + attributeInformation + '\n');
 	},
 
 	onAttributeModified : function BrowserUIShowHideObserver_onAttributeModified(aMutation, aObserver) 
@@ -152,13 +174,7 @@ BrowserUIShowHideObserver.prototype = {
 			)
 			return;
 
-		if (utils.isDebugging('browserUIShowHideObserver')) {
-			dump('BrowserUIShowHideObserver_onAttributeModified ' +
-			     target.localName + '#' + target.id + '.' + target.className + ', ' +
-			     aMutation.attributeName + ', ' +
-			     aMutation.oldValue + ' => ' +
-			     target.getAttribute(aMutation.attributeName) + '\n');
-		}
+		this.dumpMutation(aMutation, 'BrowserUIShowHideObserver_onAttributeModified');
 
 		this.handlingAttrChange = true;
 
