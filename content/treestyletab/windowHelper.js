@@ -223,7 +223,7 @@ var TreeStyleTabWindowHelper = {
 			  name:  '__contentAreaClick' },
 			{ owner: window,
 			  name:  '__ctxextensions__contentAreaClick' },
-			{ owner: window.
+			{ owner: window,
 			  name:  'contentAreaClick' }
 		].forEach(function(aTarget) {
 			var name = aTarget.name;
