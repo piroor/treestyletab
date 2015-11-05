@@ -42,10 +42,10 @@ Components.utils.import('resource://treestyletab-modules/constants.js');
 
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
-function BrowserUIShowHideObserver(aOwner, aBox) {
+function BrowserUIShowHideObserver(aOwner, aBox, aOptions) {
 	this.owner = aOwner;
 	this.box = aBox;
-	this.init();
+	this.init(aOptions);
 }
 BrowserUIShowHideObserver.prototype = {
 	get MutationObserver()
@@ -54,14 +54,14 @@ BrowserUIShowHideObserver.prototype = {
 		return w.MutationObserver || w.MozMutationObserver;
 	},
 
-	init : function BrowserUIShowHideObserver_onInit() 
+	init : function BrowserUIShowHideObserver_onInit(aOptions) 
 	{
 		if (!this.MutationObserver)
 			return;
 		this.observer = new this.MutationObserver((function(aMutations, aObserver) {
 			this.onMutation(aMutations, aObserver);
 		}).bind(this));
-		this.observer.observe(this.box, {
+		var options = {
 			childList       : true,
 			attributes      : true,
 			subtree         : true,
@@ -74,7 +74,14 @@ BrowserUIShowHideObserver.prototype = {
 				'width',
 				'height'
 			]
-		});
+		};
+		if (aOptions) {
+			Object.keys(options).forEach(function(aKey) {
+				if (aKey in aOptions)
+					options[aKey] = aOptions[aKey];
+			});
+		}
+		this.observer.observe(this.box, options);
 	},
 	onMutation : function BrowserUIShowHideObserver_onMutation(aMutations, aObserver) 
 	{

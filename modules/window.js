@@ -502,7 +502,10 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
  
 	initUIShowHideObserver : function TSTWindow_initUIShowHideObserver() 
 	{
-		this.rootElementObserver = new BrowserUIShowHideObserver(this, this.document.documentElement);
+		this.rootElementObserver = new BrowserUIShowHideObserver(this, this.document.documentElement, {
+			childList : false,
+			subtree   : false
+		});
 
 		var toolbox = this.browserToolbox;
 		if (toolbox)
