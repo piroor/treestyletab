@@ -20,7 +20,7 @@ var TreeStyleTabWindowHelper = {
 			return retVal;
 		};
 
-		nsBrowserAccess.prototype.__treesytletab__openURI = nsBrowserAccess.prototype.openURI;
+		nsBrowserAccess.prototype.__treestyletab__openURI = nsBrowserAccess.prototype.openURI;
 		nsBrowserAccess.prototype.openURI = function(aURI, aOpener, aWhere, aContext) {
 			var where = aWhere;
 			if (where === Ci.nsIBrowserDOMWindow.OPEN_DEFAULTWINDOW) {
@@ -32,14 +32,14 @@ var TreeStyleTabWindowHelper = {
 					where = TreeStyleTabService.utils.getPref('browser.link.open_newwindow');
 			}
 			TreeStyleTabService.onBeforeBrowserAccessOpenURI(aOpener, where, aContext);
-			return this.__treesytletab__openURI.call(this, aURI, aOpener, aWhere, aContext);
+			return this.__treestyletab__openURI.call(this, aURI, aOpener, aWhere, aContext);
 		};
 
-		nsBrowserAccess.prototype.__treesytletab__openURIInFrame = nsBrowserAccess.prototype.openURIInFrame;
+		nsBrowserAccess.prototype.__treestyletab__openURIInFrame = nsBrowserAccess.prototype.openURIInFrame;
 		nsBrowserAccess.prototype.openURIInFrame = function(aURI, aParams, aWhere, aContext) {
 			if (aWhere === Ci.nsIBrowserDOMWindow.OPEN_NEWTAB)
 				TreeStyleTabService.onBeforeBrowserAccessOpenURI(aParams, aWhere, aContext);
-			return this.__treesytletab__openURIInFrame.call(this, aURI, aParams, aWhere, aContext);
+			return this.__treestyletab__openURIInFrame.call(this, aURI, aParams, aWhere, aContext);
 		};
 
 		if ('TabsInTitlebar' in window) {
@@ -51,16 +51,16 @@ var TreeStyleTabWindowHelper = {
 			}, 'treeStyleTab');
 		}
 
-		window.__treesytletab__BrowserOpenTab = window.BrowserOpenTab;
+		window.__treestyletab__BrowserOpenTab = window.BrowserOpenTab;
 		window.BrowserOpenTab = function(...aArgs) {
 			gBrowser.treeStyleTab.onBeforeNewTabCommand();
-			return this.__treesytletab__BrowserOpenTab.apply(this, aArgs);
+			return this.__treestyletab__BrowserOpenTab.apply(this, aArgs);
 		};
 
-		window.__treesytletab__undoCloseTab = window.undoCloseTab;
+		window.__treestyletab__undoCloseTab = window.undoCloseTab;
 		window.undoCloseTab = function(...aArgs) {
 			gBrowser.__treestyletab__doingUndoCloseTab = true;
-			var tab = this.__treesytletab__undoCloseTab.apply(this, aArgs);
+			var tab = this.__treestyletab__undoCloseTab.apply(this, aArgs);
 			if (tab)
 				tab.__treestyletab__restoredByUndoCloseTab = true;
 			setTimeout(function() {
