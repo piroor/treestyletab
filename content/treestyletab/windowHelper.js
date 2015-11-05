@@ -340,7 +340,7 @@ var TreeStyleTabWindowHelper = {
 				return this.__treestyletab__show.apply(this, aArgs)
 						.then((function(aResult) {
 							if (opened !== this.isOpen)
-							gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR);
+								gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR);
 							return aResult;
 						}).bind(this));
 			};
@@ -349,7 +349,7 @@ var TreeStyleTabWindowHelper = {
 				var opened = this.isOpen;
 				var retVal = this.__treestyletab__hide.apply(this, aArgs);
 				if (opened !== this.isOpen)
-				gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR);
+					gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR);
 				return retVal;
 			};
 		}
