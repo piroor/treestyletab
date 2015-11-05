@@ -240,6 +240,12 @@ tabbrowser[treestyletab-drop-position="left"]:not([treestyletab-tabbar-position=
 	 * See: https://github.com/piroor/treestyletab/issues/964#issuecomment-153781248
 	 */
 	max-width: none !important;
+	/**
+	 * But we still have to set maximum size of the icon
+	 * to shrink the size of high-res icons.
+	 * See: https://github.com/piroor/treestyletab/issues/964#issuecomment-153801249
+	 */
+	max-height: 16px;
 }
 
 /* transaprent tab bar */
