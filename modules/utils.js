@@ -65,7 +65,7 @@ XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabConstants',
   'resource://treestyletab-modules/constants.js', 'TreeStyleTabConstants');
 
 const TST_PREF_PREFIX = 'extensions.treestyletab.';
-const TST_PREF_VERSION = 10;
+const TST_PREF_VERSION = 11;
 
 
 var TreeStyleTabUtils = {
@@ -212,6 +212,12 @@ var TreeStyleTabUtils = {
 						behavior |= 1;
 						this.setTreePref('openGroupBookmark.behavior', behavior);
 					}
+				}
+			case 10:
+				{
+					let physical = this.getTreePref('maxTreeLevel.phisical');
+					this.setTreePref('maxTreeLevel.physical', physical);
+					this.clearTreePref('maxTreeLevel.phisical');
 				}
 			default:
 				for (let i = 0, maxi = orientalPrefs.length; i < maxi; i++)
