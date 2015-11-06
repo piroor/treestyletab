@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Open "View Source" result as a child of the current tab.
    * Follow the position of the tab bar to changes around the social sidebar.
    * Don't reposition/update the tab bar when the window regains focus or the sidebar is switched between different panels.
    * Don't shrink the width of the tab bar with a scrollbar for too many tabs, on OS X.
