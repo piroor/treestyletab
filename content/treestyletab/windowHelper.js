@@ -199,6 +199,24 @@ var TreeStyleTabWindowHelper = {
 			return this.__treestyletab__addDictionaries.apply(this, aArgs);
 		};
 
+		nsContextMenu.prototype.__treestyletab__viewPartialSource = nsContextMenu.prototype.viewPartialSource;
+		nsContextMenu.prototype.viewPartialSource = function(...aArgs) {
+			TreeStyleTabService.handleNewTabFromCurrent(this.target.ownerDocument.defaultView);
+			return this.__treestyletab__viewPartialSource.apply(this, aArgs);
+		};
+
+		nsContextMenu.prototype.__treestyletab__viewFrameSource = nsContextMenu.prototype.viewFrameSource;
+		nsContextMenu.prototype.viewFrameSource = function(...aArgs) {
+			TreeStyleTabService.handleNewTabFromCurrent(this.target.ownerDocument.defaultView);
+			return this.__treestyletab__viewFrameSource.apply(this, aArgs);
+		};
+
+		window.__treestyletab__BrowserViewSource = window.BrowserViewSource;
+		window.BrowserViewSource = function(...aArgs) {
+			TreeStyleTabService.handleNewTabFromCurrent(aArgs[0]);
+			return this.__treestyletab__BrowserViewSource.apply(this, aArgs);
+		};
+
 		BrowserSearch.__treestyletab__loadSearch = BrowserSearch._loadSearch;
 		BrowserSearch._loadSearch = function(aSearchText, aUseNewTab, aPurpose) {
 			TreeStyleTabService.onBeforeBrowserSearch(aSearchText, aUseNewTab);
