@@ -162,13 +162,38 @@ BrowserUIShowHideObserver.prototype = {
 			)
 			return;
 
-		var toolbarVisible     = !TST.ownerToolbar.collapsed;
-		var tabbarVisible      = this.owner.browser.tabContainer.visible;
-		var placeHolderVisible = !TST.tabStripPlaceHolder.collapsed;
-		var tabbarVisibilityMismatching = (
-			toolbarVisible != placeHolderVisible ||
-			tabbarVisible  != placeHolderVisible
-		);
+		var tabbar = this.owner.browser.tabContainer;
+		var placeHolder = TST.tabStripPlaceHolder;
+
+		var tabbarVisibilityMismatching = false;
+		{
+			let toolbarVisible     = !TST.ownerToolbar.collapsed;
+			let tabbarVisible      = tabbar.visible;
+			let placeHolderVisible = !placeHolder.collapsed;
+			tabbarVisibilityMismatching = (
+				toolbarVisible != placeHolderVisible ||
+				tabbarVisible  != placeHolderVisible
+			);
+		}
+
+		var tabbarMatrixMismatching = false;
+		{
+			let tabbarBox         = tabbar.boxObject;
+			let tabbarMatrix      = JSON.stringify({
+				x: tabbarBox.screenX,
+				y: tabbarBox.screenY,
+				w: tabbarBox.width,
+				h: tabbarBox.height
+			});
+			let placeHolderBox    = placeHolder.boxObject;
+			let placeHolderMatrix = JSON.stringify({
+				x: placeHolderBox.screenX,
+				y: placeHolderBox.screenY,
+				w: placeHolderBox.width,
+				h: placeHolderBox.height
+			});
+			tabbarMatrixMismatching = tabbarMatrix != placeHolderMatrix;
+		}
 
 		if (
 			// I must ignore show/hide of elements managed by TST,
@@ -183,7 +208,8 @@ BrowserUIShowHideObserver.prototype = {
 			// different visibility, then the tab bar is shown or
 			// hidden by "auto hide tab bar" feature of someone
 			// (Pale Moon, Tab Mix Plus, etc.)
-			!tabbarVisibilityMismatching
+			!tabbarVisibilityMismatching &&
+			!tabbarMatrixMismatching
 			)
 			return;
 
