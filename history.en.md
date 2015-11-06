@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * The API `TreeStyleTabService.getLastDescendantTab()` now returns correct value always.
    * Open "View Source" result as a child of the current tab.
    * Follow the position of the tab bar to changes around the social sidebar.
    * Don't reposition/update the tab bar when the window regains focus or the sidebar is switched between different panels.
