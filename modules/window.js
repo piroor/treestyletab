@@ -188,6 +188,11 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		return this.document.getElementById('browser-bottombox');
 	},
  
+	get socialBox() 
+	{
+		return this.document.getElementById('social-sidebar-box');
+	},
+ 
 	get isPopupWindow() 
 	{
 		return (
@@ -509,6 +514,10 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		var bottomBox = this.browserBottomBox;
 		if (bottomBox)
 			this.browserBottomBoxObserver = new BrowserUIShowHideObserver(this, bottomBox);
+
+		var socialBox = this.socialBox;
+		if (socialBox)
+			this.socialBoxObserver = new BrowserUIShowHideObserver(this, socialBox);
 	},
   
 	destroy : function TSTWindow_destroy() 
@@ -563,6 +572,10 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 				if (this.browserBottomBoxObserver) {
 					this.browserBottomBoxObserver.destroy();
 					delete this.browserBottomBoxObserver;
+				}
+				if (this.socialBoxObserver) {
+					this.socialBoxObserver.destroy();
+					delete this.socialBoxObserver;
 				}
 
 				for (let i = 0, maxi = this._tabFocusAllowance.length; i < maxi; i++)
