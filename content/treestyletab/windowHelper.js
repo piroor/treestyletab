@@ -396,7 +396,7 @@ var TreeStyleTabWindowHelper = {
 	{
 		var goButton = document.getElementById('urlbar-go-button');
 		if (goButton)
-			goButton.parentNode.removeEventListener('click', this, true);
+			goButton.parentNode.removeEventListener('click', this.service, true);
 
 		var tabbar = this.service.getTabStrip(this.service.browser);
 		tabbar.removeEventListener('click', this.service, true);
