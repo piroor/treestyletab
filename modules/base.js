@@ -2089,19 +2089,8 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		if (!aTab)
 			return null;
 
-		if (this.tabsHash) { // XPath-less implementation
 			let tabs = this.getDescendantTabs(aTab);
 			return tabs.length ? tabs[tabs.length-1] : null ;
-		}
-
-		var parent = aTab.getAttribute(this.kPARENT);
-		return this.evaluateXPath(
-			'following-sibling::xul:tab['+
-				(parent ? '@'+this.kPARENT+'="'+parent+'"' : 'not(@'+this.kPARENT+')' )+
-			'][1]/preceding-sibling::xul:tab[1][not(@'+this.kID+'="'+aTab.getAttribute(this.kID)+'")]',
-			aTab,
-			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
-		).singleNodeValue;
 	},
  
 	collectRootTabs : function TSTBase_collectRootTabs(aTabs) /* PUBLIC API */ 
