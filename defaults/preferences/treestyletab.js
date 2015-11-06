@@ -250,7 +250,7 @@ pref("extensions.treestyletab.maxTreeLevel.vertical",   999);
  * So, even if you enlarge "maxTreeLevel" prefs, you won't see tabs with new
  * indentation.
  */
-pref("extensions.treestyletab.maxTreeLevel.phisical", false);
+pref("extensions.treestyletab.maxTreeLevel.physical", false);
 
 /**
  * Indentation size for one tree level, in pixels. 

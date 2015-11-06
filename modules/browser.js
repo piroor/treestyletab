@@ -133,7 +133,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	startProp                  : 'top',
 	endProp                    : 'bottom',
 
-	maxTreeLevelPhisical : false,
+	maxTreeLevelPhysical : false,
 
 	needRestoreTree : false,
  
@@ -1788,7 +1788,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		this.setTabbrowserAttribute(this.kALLOW_STACK, this.canStackTabs ? 'true' : null);
 		this.updateTabsZIndex(this.canStackTabs);
 
-		if (this.maxTreeLevelPhisical)
+		if (this.maxTreeLevelPhysical)
 			this.promoteTooDeepLevelTabs();
 
 		this.updateAllTabsIndent();
@@ -2637,8 +2637,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			case 'extensions.treestyletab.tabbar.narrowScrollbar':
 				return this.setTabbrowserAttribute(this.kNARROW_SCROLLBAR, value);
 
-			case 'extensions.treestyletab.maxTreeLevel.phisical':
-				if (this.maxTreeLevelPhisical = value)
+			case 'extensions.treestyletab.maxTreeLevel.physical':
+				if (this.maxTreeLevelPhysical = value)
 					this.promoteTooDeepLevelTabs();
 				return;
 
@@ -5193,7 +5193,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		if (aParent) {
 			newAncestors = [aParent].concat(this.getAncestorTabs(aParent));
-			if (this.maxTreeLevelPhisical && this.maxTreeLevel > -1) {
+			if (this.maxTreeLevelPhysical && this.maxTreeLevel > -1) {
 				let level = parseInt(aParent.getAttribute(this.kNEST) || 0) + 1;
 				newAncestors.some(function(aAncestor) {
 					if (level <= this.maxTreeLevel)
@@ -5832,7 +5832,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
  
 	promoteTooDeepLevelTabs : function TSTBrowser_promoteTooDeepLevelTabs(aParent) 
 	{
-		if (this.maxTreeLevel < 0 || !this.maxTreeLevelPhisical)
+		if (this.maxTreeLevel < 0 || !this.maxTreeLevelPhysical)
 			return;
 
 		var tabs = aParent ? this.getDescendantTabs(aParent) : this.getAllTabs(this.mTabBrowser) ;
