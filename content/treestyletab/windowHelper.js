@@ -516,8 +516,7 @@ var TreeStyleTabWindowHelper = {
 			b.mTabContainer.__treestyletab__advanceSelectedTab = b.mTabContainer.advanceSelectedTab;
 		if (b.mTabContainer.advanceSelectedTab.toString() === b.mTabContainer.__treestyletab__advanceSelectedTab.toString())
 			b.mTabContainer.advanceSelectedTab = function(...aArgs) {
-				var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;
-				if (treeStyleTab.handleAdvanceSelectedTab(aArgs[0], aArgs[1]))
+				if (b.treeStyleTab.handleAdvanceSelectedTab(aArgs[0], aArgs[1]))
 					return;
 				return this.__treestyletab__advanceSelectedTab.apply(this, aArgs);
 			};
@@ -583,14 +582,11 @@ var TreeStyleTabWindowHelper = {
 				if (!scrollbox.__treestyletab__ensureElementIsVisible) {
 				scrollbox.__treestyletab__ensureElementIsVisible = scrollbox.ensureElementIsVisible;
 				scrollbox.ensureElementIsVisible = function(...aArgs) {
-					var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;
-					if (treeStyleTab) {
-						if (treeStyleTab.shouldCancelEnsureElementIsVisible())
+						if (b.treeStyleTab.shouldCancelEnsureElementIsVisible())
 							return;
 						let shouldScrollNow = aArgs[1] === false;
-						if (treeStyleTab.animationEnabled && !shouldScrollNow)
-							return treeStyleTab.scrollToTab(aArgs[0]);
-					}
+						if (b.treeStyleTab.animationEnabled && !shouldScrollNow)
+							return b.treeStyleTab.scrollToTab(aArgs[0]);
 					this.__treestyletab__ensureElementIsVisible.apply(this, aArgs);
 				};
 			}
