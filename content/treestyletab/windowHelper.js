@@ -582,11 +582,11 @@ var TreeStyleTabWindowHelper = {
 				if (!scrollbox.__treestyletab__ensureElementIsVisible) {
 				scrollbox.__treestyletab__ensureElementIsVisible = scrollbox.ensureElementIsVisible;
 				scrollbox.ensureElementIsVisible = function(...aArgs) {
-						if (b.treeStyleTab.shouldCancelEnsureElementIsVisible())
-							return;
-						let shouldScrollNow = aArgs[1] === false;
-						if (b.treeStyleTab.animationEnabled && !shouldScrollNow)
-							return b.treeStyleTab.scrollToTab(aArgs[0]);
+					if (b.treeStyleTab.shouldCancelEnsureElementIsVisible())
+						return;
+					let shouldScrollNow = aArgs[1] === false;
+					if (b.treeStyleTab.animationEnabled && !shouldScrollNow)
+						return b.treeStyleTab.scrollToTab(aArgs[0]);
 					this.__treestyletab__ensureElementIsVisible.apply(this, aArgs);
 				};
 			}
