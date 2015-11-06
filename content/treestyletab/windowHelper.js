@@ -512,7 +512,9 @@ var TreeStyleTabWindowHelper = {
 	{
 		var b = aTabBrowser;
 
+		if (!b.mTabContainer.__treestyletab__advanceSelectedTab)
 		b.mTabContainer.__treestyletab__advanceSelectedTab = b.mTabContainer.advanceSelectedTab;
+		if (b.mTabContainer.advanceSelectedTab.toString() === b.mTabContainer.__treestyletab__advanceSelectedTab.toString())
 		b.mTabContainer.advanceSelectedTab = function(...aArgs) {
 			var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;
 			if (treeStyleTab.handleAdvanceSelectedTab(aArgs[0], aArgs[1]))
