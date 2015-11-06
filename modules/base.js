@@ -2089,8 +2089,8 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		if (!aTab)
 			return null;
 
-			let tabs = this.getDescendantTabs(aTab);
-			return tabs.length ? tabs[tabs.length-1] : null ;
+		let tabs = this.getDescendantTabs(aTab);
+		return tabs.length ? tabs[tabs.length-1] : null ;
 	},
  
 	collectRootTabs : function TSTBase_collectRootTabs(aTabs) /* PUBLIC API */ 
