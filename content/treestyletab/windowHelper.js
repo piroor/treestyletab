@@ -192,11 +192,11 @@ var TreeStyleTabWindowHelper = {
 		};
 
 		nsContextMenu.prototype.__treestyletab__addDictionaries = nsContextMenu.prototype.addDictionaries;
-		nsContextMenu.prototype.addDictionaries = function() {
+		nsContextMenu.prototype.addDictionaries = function(...aArgs) {
 			var newWindowPref = TreeStyleTabUtils.prefs.getPref('browser.link.open_newwindow');
 			var where = newWindowPref === 3 ? 'tab' : 'window' ;
 			TreeStyleTabService.onBeforeOpenLink(where, this.target.ownerDocument.defaultView);
-			return this.__treestyletab__addDictionaries.call(this, aEvent);
+			return this.__treestyletab__addDictionaries.apply(this, aArgs);
 		};
 
 		BrowserSearch.__treestyletab__loadSearch = BrowserSearch._loadSearch;
