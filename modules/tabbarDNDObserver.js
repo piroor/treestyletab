@@ -1172,6 +1172,9 @@ catch(e) {
 				if (aURI.indexOf(this.BOOKMARK_FOLDER) == 0) {
 					let newTabs = sv.getNewTabsWithOperation(function() {
 									var data = aURI.replace(self.BOOKMARK_FOLDER, '');
+									if (utils.isDebugging('tabbarDNDObserver'))
+										dump('TabbarDND::handleLinksOrBookmarks\n' +
+											'  bookmark folder data: ' + data + '\n');
 									data = JSON.parse(data);
 									w.PlacesUIUtils._openTabset(data.children, { type : 'drop' }, w, data.title);
 								}, b);
@@ -1292,8 +1295,12 @@ catch(e) {
 				{
 					let item = JSON.parse(aData);
 					if (item.type == 'text/x-moz-place-container') {
-						// When a blank folder is dropped, just open a dummy tab with the folder name.
 						let children = item.children;
+						if (!children) {
+							children = item.children = this.retrieveBookmarksInFolder(item.id);
+							aData = JSON.stringify(item);
+						}
+						// When a blank folder is dropped, just open a dummy tab with the folder name.
 						if (children && children.length == 0) {
 							let uri = this.treeStyleTab.getGroupTabURI({ title: item.title });
 							return [uri];
@@ -1327,6 +1334,20 @@ catch(e) {
 				return [fileHandler.getURLSpecFromFile(aData)];
 		}
 		return [];
+	},
+	retrieveBookmarksInFolder : function TabbarDND_retrieveBookmarksInFolder(aId)
+	{
+		var PlacesUtils = this.window.PlacesUtils;
+		var folder = PlacesUtils.getFolderContents(aId, false, true).root;
+		var children = [];
+		for (let i = 0; i < folder.childCount; i++) {
+			let child = folder.getChild(i);
+			if (PlacesUtils.nodeIsURI(child)) {
+				let item = PlacesUtils.wrapNode(child, 'text/x-moz-place');
+				children.push(JSON.parse(item));
+			}
+		}
+		return children;
 	},
     
 	init : function TabbarDND_init(aTabBrowser) 
