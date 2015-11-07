@@ -1184,8 +1184,8 @@ catch(e) {
 				}
 				else {
 					w.getShortcutOrURIAndPostData(aURI, (function(aData) {
-					var uri = aData.url;
-					this.performDrop(aDropActionInfo, b.loadOneTab(uri, { inBackground: bgLoad }));
+						var uri = aData.url;
+						this.performDrop(aDropActionInfo, b.loadOneTab(uri, { inBackground: bgLoad }));
 					}).bind(this));
 				}
 			}, this);
