@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2014
+ * Portions created by the Initial Developer are Copyright (C) 2010-2015
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -1098,7 +1098,15 @@ catch(e) {
 			tabbar._tabDropIndicator.collapsed = true;
 
 		var draggedTab = dt.mozGetDataAt(TAB_DROP_TYPE, 0);
-		if (dt.dropEffect != 'link' && !draggedTab) {
+
+		if (utils.isDebugging('tabbarDNDObserver'))
+			dump('TabbarDND::onDrop\n' +
+				'  dt.dropEffect: ' + dt.dropEffect + '\n' +
+				'  draggedTab:    ' + draggedTab + '\n');
+
+		if (dt.dropEffect != 'link' &&
+			dt.dropEffect != 'move' &&
+			!draggedTab) {
 			aEvent.stopPropagation();
 			return;
 		}
