@@ -1183,8 +1183,10 @@ catch(e) {
 					this.performDrop(aDropActionInfo, newTabs[0]);
 				}
 				else {
-					aURI = utils.getShortcutOrURI(w, aURI);
-					this.performDrop(aDropActionInfo, b.loadOneTab(aURI, { inBackground: bgLoad }));
+					w.getShortcutOrURIAndPostData(aURI, (function(aData) {
+					var uri = aData.url;
+					this.performDrop(aDropActionInfo, b.loadOneTab(uri, { inBackground: bgLoad }));
+					}).bind(this));
 				}
 			}, this);
 		}
@@ -1198,8 +1200,8 @@ catch(e) {
 				aDropActionInfo.position == sv.kDROP_ON)
 				loadDroppedLinkToNewChildTab = sv.dropLinksOnTabBehavior() == sv.kDROPLINK_NEWTAB;
 
-			try {
-				let uri = utils.getShortcutOrURI(w, uris[0]);
+			w.getShortcutOrURIAndPostData(uris[0], (function(aData) {
+				var uri = aData.url;
 				if (loadDroppedLinkToNewChildTab || locked) {
 					this.performDrop(aDropActionInfo, b.loadOneTab(uri, { inBackground: bgLoad }));
 				}
@@ -1208,9 +1210,7 @@ catch(e) {
 					if (!bgLoad)
 						b.selectedTab = tab;
 				}
-			}
-			catch(e) {
-			}
+			}).bind(this));
 		}
 	},
 	securityCheck : function TabbarDND_securityCheck(aURI, aEvent)

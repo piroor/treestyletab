@@ -61,6 +61,8 @@ XPCOMUtils.defineLazyGetter(this, 'stringBundle', function() {
 
 XPCOMUtils.defineLazyModuleGetter(this, 'Task',
 	'resource://gre/modules/Task.jsm');
+XPCOMUtils.defineLazyModuleGetter(this, 'Promise',
+	'resource://gre/modules/Promise.jsm');
 XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabConstants',
   'resource://treestyletab-modules/constants.js', 'TreeStyleTabConstants');
 
@@ -301,24 +303,6 @@ var TreeStyleTabUtils = {
 			}
 		}
 		return this._SessionStoreNS;
-	},
-
-	getShortcutOrURI : function utils_getShortcutOrURI(aBrowserWindow, aURI)
-	{
-		var done = false;
-		aBrowserWindow.getShortcutOrURIAndPostData(aURI, function(aData) {
-			aURI = aData.url;
-			done = true;
-		});
-
-		// this should be rewritten in asynchronous style...
-		var thread = Cc['@mozilla.org/thread-manager;1'].getService().mainThread;
-		while (!done)
-		{
-			thread.processNextEvent(true);
-		}
-
-		return aURI;
 	},
 
 
