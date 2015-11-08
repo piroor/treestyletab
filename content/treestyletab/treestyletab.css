@@ -291,7 +291,7 @@ tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-sc
  * Normal selectors in default theme is stronger than :-moz-any() even if
  * it includes #TabsToolbar in its subqueries.
  */
-@media all and (-moz-windows-compositor) { /* for winstripe */
+@media all and (-moz-windows-compositor) { /* for winstripe: Windows */
 	#navigator-toolbox
 	  > .treestyletab-tabbar-toolbar:not(#toolbar-menubar),
 	#navigator-toolbox
@@ -387,12 +387,12 @@ tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-sc
 }
 .treestyletab-tabbar-toolbar,
 .treestyletab-tabbar-toolbar-ready,
-/* for gnomestripe */
+/* for gnomestripe: Linux */
 #TabsToolbar.treestyletab-tabbar-toolbar:not([autohide="true"]):not(:-moz-lwtheme):-moz-system-metric(menubar-drag),
 #TabsToolbar.treestyletab-tabbar-toolbar:not([autohide="true"])[tabsontop="true"]:not(:-moz-lwtheme):-moz-system-metric(menubar-drag),
 #TabsToolbar.treestyletab-tabbar-toolbar-ready:not([autohide="true"]):not(:-moz-lwtheme):-moz-system-metric(menubar-drag),
 #TabsToolbar.treestyletab-tabbar-toolbar-ready:not([autohide="true"])[tabsontop="true"]:not(:-moz-lwtheme):-moz-system-metric(menubar-drag),
-/* for pinstripe */
+/* for pinstripe: OS X */
 toolbar.treestyletab-tabbar-toolbar:not([nowindowdrag="true"]),
 toolbar.treestyletab-tabbar-toolbar-ready:not([nowindowdrag="true"]),
 /* Hide Caption Titlebar Plus (Smart)
