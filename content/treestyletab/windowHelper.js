@@ -220,7 +220,7 @@ var TreeStyleTabWindowHelper = {
 		BrowserSearch.__treestyletab__loadSearch = BrowserSearch._loadSearch;
 		BrowserSearch._loadSearch = function(aSearchText, aUseNewTab, aPurpose) {
 			TreeStyleTabService.onBeforeBrowserSearch(aSearchText, aUseNewTab);
-			return this.__treestyletab__loadSearch.call(this, aEvent);
+			return this.__treestyletab__loadSearch.call(this, aSearchText, aUseNewTab, aPurpose);
 		};
 
 		window.__treestyletab__openLinkIn = window.openLinkIn;
