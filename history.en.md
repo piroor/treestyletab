@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 0.16.2015110801
    * The title bar is now hidden for permanently shown menu bar. (Otherwise the menu bar is not draggable to move the window itself.)
    * Regression: Tabs opened via `GM_openInTab()` are placed at the top of existing child tabs of the current tab, if it is the default position of newly opened children.
    * Regression: "Search with..." in the context menu works correctly.
