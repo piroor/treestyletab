@@ -334,9 +334,14 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 								return;
 							var currentTabs = Array.slice(gBrowser.tabContainer.childNodes, 0);
 							var parent = gBrowser.treeStyleTab.getTabFromBrowser(owner);
+							var insertAtFirst = TreeStyleTabUtils.getTreePref('insertNewChildAt') == sv.kINSERT_FISRT;
+							var firstChild = gBrowser.treeStyleTab.getFirstChildTab(parent);
 							currentTabs.forEach(function(aTab) {
-								if (originalTabs.indexOf(aTab) < 0)
-									gBrowser.treeStyleTab.attachTabTo(aTab, parent);
+								if (originalTabs.indexOf(aTab) >= 0)
+									return;
+								gBrowser.treeStyleTab.attachTabTo(aTab, parent, {
+									insertBefore : insertAtFirst ? firstChild : null
+								});
 							});
 							originalTabs = [];
 						}, 0);
