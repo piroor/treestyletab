@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * The title bar is now hidden for permanently shown menu bar. (Otherwise the menu bar is not draggable to move the window itself.)
+   * Regression: Tabs opened via `GM_openInTab()` are placed at the top of existing child tabs of the current tab, if it is the default position of newly opened children.
    * Regression: "Search with..." in the context menu works correctly.
  - 0.16.2015110701
    * The API `TreeStyleTabService.getLastDescendantTab()` now returns correct value always.
