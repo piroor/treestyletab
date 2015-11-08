@@ -424,6 +424,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 
 		this.fullscreenObserver = new FullscreenObserver(this.window);
 		this.initUIShowHideObserver();
+		this.initMenubarShowHideObserver();
 
 		var appcontent = d.getElementById('appcontent');
 		appcontent.addEventListener('SubBrowserAdded', this, false);
@@ -519,6 +520,19 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		if (socialBox)
 			this.socialBoxObserver = new BrowserUIShowHideObserver(this, socialBox);
 	},
+ 
+	initMenubarShowHideObserver : function TSTWindow_initMenubarShowHideObserver() 
+	{
+		var w = this.window;
+		var MutationObserver = w.MutationObserver || w.MozMutationObserver;
+		this.menubarShowHideObserver = new MutationObserver((function(aMutations, aObserver) {
+			this.updateTabsInTitlebar();
+		}).bind(this));
+		this.menubarShowHideObserver.observe(w.document.getElementById('toolbar-menubar'), {
+			attributes      : true,
+			attributeFilter : ['autohide']
+		});
+	},
   
 	destroy : function TSTWindow_destroy() 
 	{
@@ -576,6 +590,11 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 				if (this.socialBoxObserver) {
 					this.socialBoxObserver.destroy();
 					delete this.socialBoxObserver;
+				}
+
+				if (this.menubarShowHideObserver) {
+					this.menubarShowHideObserver.disconnect();
+					delete this.menubarShowHideObserver;
 				}
 
 				for (let i = 0, maxi = this._tabFocusAllowance.length; i < maxi; i++)
@@ -1143,7 +1162,11 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 
 		try {
 			if (TabsInTitlebar) {
-				let allowed = isTopTabbar && this.browser.treeStyleTab.fixed;
+				let menubar = this.window.document.getElementById('toolbar-menubar');
+				let allowed = (
+					(isTopTabbar && this.browser.treeStyleTab.fixed) ||
+					menubar.getAttribute('autohide') !== 'true'
+				);
 				if (
 					(this.window.TabsOnBottom && utils.getTreePref('compatibility.TabsOnBottom')) ||
 					('navbarontop' in this.window && utils.getTreePref('compatibility.NavbarOnTitlebar')) ||
