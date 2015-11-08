@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Regression: "Search with..." in hte context menu works correctly.
  - 0.16.2015110701
    * The API `TreeStyleTabService.getLastDescendantTab()` now returns correct value always.
    * Open "View Source" result as a child of the current tab.
