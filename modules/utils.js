@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2014
+ * Portions created by the Initial Developer are Copyright (C) 2010-2015
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -370,3 +370,18 @@ var TreeStyleTabUtils = {
 };
 
 prefs.addPrefListener(TreeStyleTabUtils);
+
+{
+	// Never save TST specific attributes! (because it causes many problems)
+	let { TabAttributesInternal } = Cu.import('resource:///modules/sessionstore/TabAttributes.jsm', {});
+	if (TabAttributesInternal && TabAttributesInternal._skipAttrs) {
+		Object.keys(TreeStyleTabConstants).forEach(function(aKey) {
+			if (!/^k[A-Z_]+$/.test(aKey))
+				return;
+			var name = TreeStyleTabConstants[aKey];
+			if (!/^treestyletab-/.test(String(name)))
+				return;
+			TabAttributesInternal._skipAttrs.add(name);
+		});
+	}
+}
