@@ -543,6 +543,8 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			try {
 				w.removeEventListener('unload', this, false);
 
+				w.TreeStyleTabWindowHelper.destroyToolbarItems();
+
 				this.autoHideWindow.destroy();
 				this._autoHideWindow = undefined;
 
