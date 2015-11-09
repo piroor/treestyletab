@@ -36,7 +36,7 @@
 
 "use strict";
 
-let EXPORTED_SYMBOLS = ['TreeStyleTabUtils'];
+var EXPORTED_SYMBOLS = ['TreeStyleTabUtils'];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
