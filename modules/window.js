@@ -424,6 +424,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 
 		this.fullscreenObserver = new FullscreenObserver(this.window);
 		this.initUIShowHideObserver();
+		if (!this.isMac)
 		this.initMenubarShowHideObserver();
 
 		var appcontent = d.getElementById('appcontent');
@@ -1165,7 +1166,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 				let menubar = this.window.document.getElementById('toolbar-menubar');
 				let allowed = (
 					(isTopTabbar && this.browser.treeStyleTab.fixed) ||
-					menubar.getAttribute('autohide') !== 'true'
+					(!this.isMac && menubar.getAttribute('autohide') !== 'true')
 				);
 				if (
 					(this.window.TabsOnBottom && utils.getTreePref('compatibility.TabsOnBottom')) ||
