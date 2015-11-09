@@ -316,7 +316,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
  
 	get autoHideWindow() 
 	{
-		if (!this._autoHideWindow) {
+		if (!('_autoHideWindow' in this)) {
 			this._autoHideWindow = new AutoHideWindow(this.window);
 		}
 		return this._autoHideWindow;
@@ -324,7 +324,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
  
 	get themeManager() 
 	{
-		if (!this._themeManager) {
+		if (!('_themeManager' in this)) {
 			this._themeManager = new TreeStyleTabThemeManager(this.window);
 		}
 		return this._themeManager;
@@ -544,10 +544,10 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 				w.removeEventListener('unload', this, false);
 
 				this.autoHideWindow.destroy();
-				delete this._autoHideWindow;
+				this._autoHideWindow = undefined;
 
 				this.themeManager.destroy();
-				delete this._themeManager;
+				this._themeManager = undefined;
 
 				this.browser.treeStyleTab.saveCurrentState();
 				this.destroyTabBrowser(this.browser);

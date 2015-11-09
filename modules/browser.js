@@ -1654,13 +1654,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		// We always have to re-create splitter, because its "collapse"
 		// behavior becomes broken by repositioning of the tab bar.
 		if (splitter) {
-			try {
-				splitter.removeEventListener('mousedown', this.windowService, false);
-				splitter.removeEventListener('mouseup', this.windowService, false);
-				splitter.removeEventListener('dblclick', this.windowService, false);
-			}
-			catch(e) {
-			}
+			this._destroyOldSplitter();
 			let oldSplitter = splitter;
 			splitter = oldSplitter.cloneNode(true);
 			oldSplitter.parentNode.removeChild(oldSplitter);
@@ -1689,13 +1683,14 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			// So, we have to turn the actual tab bar visible manually
 			// when the grippy is clicked.
 			let tabContainer = this.mTabBrowser.tabContainer;
-			grippy.addEventListener('click', function() {
+			let grippyOnClick = function() {
 				tabContainer.ownerDocument.defaultView.setTimeout(function() {
 					var visible = grippy.getAttribute('state') != 'collapsed';
 					if (visible != tabContainer.visible)
 						tabContainer.visible = visible;
 				}, 0);
-			}, true);
+			};
+			grippy.addEventListener('click', grippy.grippyOnClick, true);
 			splitter.appendChild(grippy);
 		}
 
@@ -1711,7 +1706,24 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var ref = this.mTabBrowser.mPanelContainer;
 		ref.parentNode.insertBefore(splitter, ref);
 
+		this.splitter = splitter;
 		return splitter;
+	},
+ 
+	_destroyOldSplitter : function TSTBrowser_destroyOldSplitter(aChanging, aOldPosition, aNewPosition) 
+	{
+		var d = this.document;
+		var splitter = this.splitter;
+		try {
+			splitter.removeEventListener('mousedown', this.windowService, false);
+			splitter.removeEventListener('mouseup', this.windowService, false);
+			splitter.removeEventListener('dblclick', this.windowService, false);
+			var grippy = splitter.firstChild;
+			grippy.removeEventListener('click', grippy.grippyOnClick, true);
+			delete grippy.grippyOnClick;
+		}
+		catch(e) {
+		}
 	},
  
 	fireTabbarPositionEvent : function TSTBrowser_fireTabbarPositionEvent(aChanging, aOldPosition, aNewPosition) 
@@ -2209,9 +2221,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			delete this.timers[key];
 		}, this);
 
-		this.autoHide.destroy();
-		delete this._autoHide;
-
 		this._initDNDObservers(); // ensure initialized
 		this.tabbarDNDObserver.destroy();
 		delete this._tabbarDNDObserver;
@@ -2228,6 +2237,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			delete this.tabStripPlaceHolderBoxObserver;
 		}
 
+		this._destroyOldSplitter();
+
 		var w = this.window;
 		var d = this.document;
 		var b = this.mTabBrowser;
@@ -2243,6 +2254,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 
 		this._endListenTabbarEvents();
+
+		this.autoHide.destroy();
+		this._autoHide = undefined; // block to be re-initialized by property accesses
 
 		w.removeEventListener('resize', this, true);
 		w.removeEventListener('beforecustomization', this, true);
@@ -6922,7 +6936,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 /* show/hide tab bar */ 
 	get autoHide()
 	{
-		if (!this._autoHide) {
+		if (!('_autoHide' in this)) {
 			this._autoHide = new AutoHideBrowser(this.mTabBrowser);
 		}
 		return this._autoHide;
