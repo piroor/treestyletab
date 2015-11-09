@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * The feature "Bookmark this tree" and the property dialog of bookmark folders now work correctly.
+   * The height of the closebox in each tab is never changed anymore.
+   * The navigation toolbar is shown correctly below window buttons on OS X.
  - 0.16.2015110801
    * The title bar is now hidden for permanently shown menu bar. (Otherwise the menu bar is not draggable to move the window itself.)
    * Regression: Tabs opened via `GM_openInTab()` are placed at the top of existing child tabs of the current tab, if it is the default position of newly opened children.
