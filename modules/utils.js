@@ -266,31 +266,15 @@ var TreeStyleTabUtils = {
 	isTabNotRestoredYet : function utils_isTabNotRestoredYet(aTab)
 	{
 		var browser = aTab.linkedBrowser;
-		// Firefox 25 and later. See: https://bugzilla.mozilla.org/show_bug.cgi?id=867142
-		if (this.TabRestoreStates &&
-			this.TabRestoreStates.has(browser))
-			return (
-				this.TabRestoreStates.isNeedsRestore(browser) ||
-				this.TabRestoreStates.isRestoring(browser)
-			);
-
 		return !!browser.__SS_restoreState;
 	},
 	isTabNeedToBeRestored : function utils_isTabNeedToBeRestored(aTab)
 	{
 		var browser = aTab.linkedBrowser;
-		// Firefox 25 and later. See: https://bugzilla.mozilla.org/show_bug.cgi?id=867142
-		if (this.TabRestoreStates &&
-			this.TabRestoreStates.has(browser))
-			return this.TabRestoreStates.isNeedsRestore(browser);
-
 		return browser.__SS_restoreState == 1;
 	},
 	get SessionStoreInternal() {
 		return this.SessionStoreNS.SessionStoreInternal;
-	},
-	get TabRestoreStates() {
-		return this.SessionStoreNS.TabRestoreStates;
 	},
 	get SessionStoreNS() {
 		if (!this._SessionStoreNS) {
