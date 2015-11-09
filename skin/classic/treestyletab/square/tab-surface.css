@@ -10,9 +10,9 @@
 }
 
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab
+  .tabbrowser-tab:not([titlechanged])
   :-moz-any(.tab-background:not([pinned]),
-            .tab-background:not([titlechanged])[pinned]) {
+            .tab-background[pinned]) {
 	background-color: -moz-dialog !important;
 	background-image: -moz-linear-gradient(
 	                    top, 
