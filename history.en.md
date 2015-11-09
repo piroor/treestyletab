@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 0.16.2015111001
    * Free memory for closed windows correctly (it was grabbed by living-dead event listeners.)
    * Highlighted color of updated pinned tabs is shown correctly.
    * The feature "Bookmark this tree" and the property dialog of bookmark folders now work correctly.
