@@ -234,7 +234,8 @@ tabbrowser[treestyletab-drop-position="left"]:not([treestyletab-tabbar-position=
 }
 
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
-  .toolbarbutton-icon {
+  toolbarbutton:not(.tab-close-button)
+  > .toolbarbutton-icon {
 	/**
 	 * This is required to block the tab bar to be shrunken.
 	 * See: https://github.com/piroor/treestyletab/issues/964#issuecomment-153781248
