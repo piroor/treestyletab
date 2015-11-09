@@ -425,7 +425,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		this.fullscreenObserver = new FullscreenObserver(this.window);
 		this.initUIShowHideObserver();
 		if (!this.isMac)
-		this.initMenubarShowHideObserver();
+			this.initMenubarShowHideObserver();
 
 		var appcontent = d.getElementById('appcontent');
 		appcontent.addEventListener('SubBrowserAdded', this, false);
