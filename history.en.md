@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Free memory for closed windows correctly (it was grabbed by living-dead event listeners.)
    * Highlighted color of updated pinned tabs is shown correctly.
    * The feature "Bookmark this tree" and the property dialog of bookmark folders now work correctly.
    * The height of the closebox in each tab is never changed anymore.
