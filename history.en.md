@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Highlighted color of updated pinned tabs is shown correctly.
    * The feature "Bookmark this tree" and the property dialog of bookmark folders now work correctly.
    * The height of the closebox in each tab is never changed anymore.
    * The navigation toolbar is shown correctly below window buttons on OS X.
