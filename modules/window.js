@@ -43,6 +43,7 @@ const Cu = Components.utils;
 Cu.import('resource://gre/modules/XPCOMUtils.jsm');
 Cu.import('resource://gre/modules/Timer.jsm');
 Cu.import('resource://treestyletab-modules/lib/inherit.jsm');
+Cu.import('resource://treestyletab-modules/ReferenceCounter.js');
 
 XPCOMUtils.defineLazyGetter(this, 'window', function() {
 	Cu.import('resource://treestyletab-modules/lib/namespace.jsm');
@@ -80,7 +81,9 @@ function TreeStyleTabWindow(aWindow)
 	this.restoringCount = 0;
 
 	aWindow.addEventListener('DOMContentLoaded', this, true);
+	ReferenceCounter.add('w,DOMContentLoaded,TSTWindow,true');
 	aWindow.addEventListener('load', this, false);
+	ReferenceCounter.add('w,load,TSTWindow,false');
 	aWindow.TreeStyleTabService = this;
 
 	XPCOMUtils.defineLazyModuleGetter(aWindow, 'TreeStyleTabBrowser', 'resource://treestyletab-modules/browser.js');
@@ -377,10 +380,12 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 
 		var w = this.window;
 		w.removeEventListener('DOMContentLoaded', this, true);
+		ReferenceCounter.remove('w,DOMContentLoaded,TSTWindow,true');
 		if (w.location.href.indexOf('chrome://browser/content/browser.xul') != 0)
 			return;
 
 		w.addEventListener('SSTabRestoring', this, true);
+		ReferenceCounter.add('w,SSTabRestoring,TSTWindow,true');
 
 		w.TreeStyleTabWindowHelper.preInit();
 
@@ -393,8 +398,10 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 	{
 		var w = this.window;
 		w.removeEventListener('load', this, false);
+		ReferenceCounter.remove('w,load,TSTWindow,false');
 
 		w.addEventListener('unload', this, false);
+		ReferenceCounter.add('w,unload,TSTWindow,false');
 
 		if (
 			w.location.href.indexOf('chrome://browser/content/browser.xul') != 0 ||
@@ -409,16 +416,25 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			this.preInit();
 		}
 		w.removeEventListener('SSTabRestoring', this, true);
+		ReferenceCounter.remove('w,SSTabRestoring,TSTWindow,true');
 
 		var d = this.document;
 		d.addEventListener('popupshowing', this, false);
+		ReferenceCounter.add('d,popupshowing,TSTWindow,false');
 		d.addEventListener('popuphiding', this, true);
+		ReferenceCounter.add('d,popuphiding,TSTWindow,true');
 		d.addEventListener(this.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, this, false);
+		ReferenceCounter.add('d,kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED,TSTWindow,false');
 		d.addEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGED,     this, false);
+		ReferenceCounter.add('d,kEVENT_TYPE_TABBAR_POSITION_CHANGED,TSTWindow,false');
 		d.addEventListener(this.kEVENT_TYPE_TABBAR_STATE_CHANGED,        this, false);
+		ReferenceCounter.add('d,kEVENT_TYPE_TABBAR_STATE_CHANGED,TSTWindow,false');
 		d.addEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB,              this, false);
+		ReferenceCounter.add('d,kEVENT_TYPE_FOCUS_NEXT_TAB,TSTWindow,false');
 		w.addEventListener('beforecustomization', this, true);
+		ReferenceCounter.add('w,beforecustomization,TSTWindow,true');
 		w.addEventListener('aftercustomization', this, false);
+		ReferenceCounter.add('w,aftercustomization,TSTWindow,false');
 
 		w.messageManager.addMessageListener('SessionStore:restoreTabContentStarted', this);
 
@@ -429,10 +445,14 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 
 		var appcontent = d.getElementById('appcontent');
 		appcontent.addEventListener('SubBrowserAdded', this, false);
+		ReferenceCounter.add('appcontent,SubBrowserAdded,TSTWindow,false');
 		appcontent.addEventListener('SubBrowserRemoveRequest', this, false);
+		ReferenceCounter.add('appcontent,SubBrowserRemoveRequest,TSTWindow,false');
 
 		w.addEventListener('UIOperationHistoryUndo:TabbarOperations', this, false);
+		ReferenceCounter.add('w,UIOperationHistoryUndo:TabbarOperations,TSTWindow,false');
 		w.addEventListener('UIOperationHistoryRedo:TabbarOperations', this, false);
+		ReferenceCounter.add('w,UIOperationHistoryRedo:TabbarOperations,TSTWindow,false');
 
 		prefs.addPrefListener(this);
 
@@ -542,6 +562,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			this.base.inWindowDestoructionProcess = true;
 			try {
 				w.removeEventListener('unload', this, false);
+				ReferenceCounter.remove('w,unload,TSTWindow,false');
 
 				w.TreeStyleTabWindowHelper.destroyToolbarItems();
 
@@ -559,13 +580,21 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 
 				let d = this.document;
 				d.removeEventListener('popupshowing', this, false);
+				ReferenceCounter.remove('d,popupshowing,TSTWindow,false');
 				d.removeEventListener('popuphiding', this, true);
+				ReferenceCounter.remove('d,popuphiding,TSTWindow,true');
 				d.removeEventListener(this.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, this, false);
+				ReferenceCounter.remove('d,kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED,TSTWindow,false');
 				d.removeEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGED,     this, false);
+				ReferenceCounter.remove('d,kEVENT_TYPE_TABBAR_POSITION_CHANGED,TSTWindow,false');
 				d.removeEventListener(this.kEVENT_TYPE_TABBAR_STATE_CHANGED,        this, false);
+				ReferenceCounter.remove('d,kEVENT_TYPE_TABBAR_STATE_CHANGED,TSTWindow,false');
 				d.removeEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB,              this, false);
+				ReferenceCounter.remove('d,kEVENT_TYPE_FOCUS_NEXT_TAB,TSTWindow,false');
 				w.removeEventListener('beforecustomization', this, true);
+				ReferenceCounter.remove('w,beforecustomization,TSTWindow,true');
 				w.removeEventListener('aftercustomization', this, false);
+				ReferenceCounter.remove('w,aftercustomization,TSTWindow,false');
 
 				w.messageManager.removeMessageListener('SessionStore:restoreTabContentStarted', this);
 
@@ -603,14 +632,19 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 				for (let i = 0, maxi = this._tabFocusAllowance.length; i < maxi; i++)
 				{
 					w.removeEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB, this._tabFocusAllowance[i], false);
+					ReferenceCounter.remove('w,kEVENT_TYPE_FOCUS_NEXT_TAB,_tabFocusAllowance['+i+'],false');
 				}
 
 				var appcontent = d.getElementById('appcontent');
 				appcontent.removeEventListener('SubBrowserAdded', this, false);
+				ReferenceCounter.remove('appcontent,SubBrowserAdded,TSTWindow,false');
 				appcontent.removeEventListener('SubBrowserRemoveRequest', this, false);
+				ReferenceCounter.remove('appcontent,SubBrowserRemoveRequest,TSTWindow,false');
 
 				w.removeEventListener('UIOperationHistoryUndo:TabbarOperations', this, false);
+				ReferenceCounter.remove('w,UIOperationHistoryUndo:TabbarOperations,TSTWindow,false');
 				w.removeEventListener('UIOperationHistoryRedo:TabbarOperations', this, false);
+				ReferenceCounter.remove('w,UIOperationHistoryRedo:TabbarOperations,TSTWindow,false');
 
 				prefs.removePrefListener(this);
 			}
@@ -752,9 +786,13 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		if (!this.keyEventListening) {
 			let w = this.window;
 			w.addEventListener('keydown',  this, true);
+			ReferenceCounter.add('w,keydown,TSTWindow,true');
 			w.addEventListener('keyup',    this, true);
+			ReferenceCounter.add('w,keyup,TSTWindow,true');
 			w.addEventListener('keypress', this, true);
+			ReferenceCounter.add('w,keypress,TSTWindow,true');
 			w.addEventListener('blur',     this, true);
+			ReferenceCounter.add('w,blur,TSTWindow,true');
 			this.keyEventListening = true;
 		}
 		this.keyEventListeningFlags |= aReason;
@@ -768,9 +806,13 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		if (!this.keyEventListeningFlags && this.keyEventListening) {
 			let w = this.window;
 			w.removeEventListener('keydown',  this, true);
+			ReferenceCounter.remove('w,keydown,TSTWindow,true');
 			w.removeEventListener('keyup',    this, true);
+			ReferenceCounter.remove('w,keyup,TSTWindow,true');
 			w.removeEventListener('keypress', this, true);
+			ReferenceCounter.remove('w,keypress,TSTWindow,true');
 			w.removeEventListener('blur',     this, true);
+			ReferenceCounter.remove('w,blur,TSTWindow,true');
 			this.keyEventListening = false;
 		}
 	},
@@ -964,6 +1006,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			aEvent.currentTarget.setCapture(true);
 
 		aEvent.currentTarget.addEventListener('mousemove', this, false);
+		ReferenceCounter.add('currentTarget,mousemove,TSTWindow,false');
 
 		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
 		var box = aEvent.currentTarget.id == 'treestyletab-tabbar-resizer-splitter' ?
@@ -987,6 +1030,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			target.releaseCapture();
 
 		target.removeEventListener('mousemove', this, false);
+		ReferenceCounter.remove('currentTarget,mousemove,TSTWindow,false');
 
 		this.tabbarResizeStartWidth  = -1;
 		this.tabbarResizeStartHeight = -1;
@@ -1719,6 +1763,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 				}
 			};
 		this.window.addEventListener(this.kEVENT_TYPE_FOCUS_NEXT_TAB, listener, false);
+		ReferenceCounter.add('window,kEVENT_TYPE_FOCUS_NEXT_TAB,listener,false');
 		this._tabFocusAllowance.push(listener);
 	},
 	_tabFocusAllowance : [],

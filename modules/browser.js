@@ -45,6 +45,7 @@ const Cu = Components.utils;
 Cu.import('resource://gre/modules/XPCOMUtils.jsm');
 Cu.import('resource://gre/modules/Timer.jsm');
 Cu.import('resource://treestyletab-modules/lib/inherit.jsm');
+Cu.import('resource://treestyletab-modules/ReferenceCounter.js');
 
 XPCOMUtils.defineLazyModuleGetter(this, 'Services', 'resource://gre/modules/Services.jsm');
 XPCOMUtils.defineLazyModuleGetter(this, 'Promise', 'resource://gre/modules/Promise.jsm');
@@ -823,16 +824,26 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		this.initTabbar(null, this.kTABBAR_TOP, true);
 
 		w.addEventListener('resize', this, true);
+		ReferenceCounter.add('w,resize,TSTBrowser,true');
 		w.addEventListener('beforecustomization', this, true);
+		ReferenceCounter.add('w,beforecustomization,TSTBrowser,true');
 		w.addEventListener('aftercustomization', this, false);
+		ReferenceCounter.add('w,aftercustomization,TSTBrowser,false');
 		w.addEventListener('customizationchange', this, false);
+		ReferenceCounter.add('w,customizationchange,TSTBrowser,false');
 		w.addEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
+		ReferenceCounter.add('w,kEVENT_TYPE_PRINT_PREVIEW_ENTERED,TSTBrowser,false');
 		w.addEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED,  this, false);
+		ReferenceCounter.add('w,kEVENT_TYPE_PRINT_PREVIEW_EXITED,TSTBrowser,false');
 		w.addEventListener('tabviewframeinitialized', this, false);
+		ReferenceCounter.add('w,tabviewframeinitialized,TSTBrowser,false');
 		w.addEventListener(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, this, false);
+		ReferenceCounter.add('w,kEVENT_TYPE_TAB_FOCUS_SWITCHING_END,TSTBrowser,false');
 		w.addEventListener('SSWindowStateBusy', this, false);
+		ReferenceCounter.add('w,SSWindowStateBusy,TSTBrowser,false');
 
 		b.addEventListener('nsDOMMultipleTabHandlerTabsClosing', this, false);
+		ReferenceCounter.add('b,nsDOMMultipleTabHandlerTabsClosing,TSTBrowser,false');
 
 		w['piro.sakura.ne.jp'].tabsDragUtils.initTabBrowser(b);
 
@@ -910,6 +921,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var tabContextMenu = b.tabContextMenu ||
 							d.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu');
 		tabContextMenu.addEventListener('popupshowing', this, false);
+		ReferenceCounter.add('tabContextMenu,popupshowing,TSTBrowser,false');
 		if (!('MultipleTabService' in w)) {
 			w.setTimeout(function(aSelf, aTabBrowser, aPopup) {
 				let suffix = '-tabbrowser-'+(aTabBrowser.id || 'instance-'+parseInt(Math.random() * 65000));
@@ -987,7 +999,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var w = this.window;
 		this._DNDObserversInitialized = false;
 		w.addEventListener('mouseover', this, true);
+		ReferenceCounter.add('w,mouseover,TSTBrowser,true');
 		w.addEventListener('dragover', this, true);
+		ReferenceCounter.add('w,dragover,TSTBrowser,true');
 	},
 	
 	_initDNDObservers : function TSTBrowser_initDNDObservers() 
@@ -1000,7 +1014,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		var w = this.window;
 		w.removeEventListener('mouseover', this, true);
+		ReferenceCounter.remove('w,mouseover,TSTBrowser,true');
 		w.removeEventListener('dragover', this, true);
+		ReferenceCounter.remove('w,dragover,TSTBrowser,true');
 		this._DNDObserversInitialized = true;
 	},
   
@@ -1609,11 +1625,13 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		return new Promise((function(aResolve, aReject) {
 			var onInitialized = (function() {
 				this.mTabBrowser.removeEventListener(this.kEVENT_TYPE_TABBAR_INITIALIZED, onInitialized, false);
+				ReferenceCounter.remove('mTabBrowser,kEVENT_TYPE_TABBAR_INITIALIZED,onInitialized,false');
 				if (!aIsTemporaryChange)
 					delete this._temporaryPosition;
 				aResolve();
 			}).bind(this);
 			this.mTabBrowser.addEventListener(this.kEVENT_TYPE_TABBAR_INITIALIZED, onInitialized, false);
+			ReferenceCounter.add('mTabBrowser,kEVENT_TYPE_TABBAR_INITIALIZED,onInitialized,false');
 		}).bind(this));
 	},
 	
@@ -1623,27 +1641,46 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		var tabContainer = b.mTabContainer;
 		tabContainer.addEventListener('TabOpen',        this, true);
+		ReferenceCounter.add('tabContainer,TabOpen,TSTBrowser,true');
 		tabContainer.addEventListener('TabClose',       this, true);
+		ReferenceCounter.add('tabContainer,TabClose,TSTBrowser,true');
 		tabContainer.addEventListener('TabMove',        this, true);
+		ReferenceCounter.add('tabContainer,TabMove,TSTBrowser,true');
 		tabContainer.addEventListener('TabShow',        this, true);
+		ReferenceCounter.add('tabContainer,TabShow,TSTBrowser,true');
 		tabContainer.addEventListener('TabHide',        this, true);
+		ReferenceCounter.add('tabContainer,TabHide,TSTBrowser,true');
 		tabContainer.addEventListener('SSTabRestoring', this, true);
+		ReferenceCounter.add('tabContainer,SSTabRestoring,TSTBrowser,true');
 		tabContainer.addEventListener('SSTabRestored',  this, true);
+		ReferenceCounter.add('tabContainer,SSTabRestored,TSTBrowser,true');
 		tabContainer.addEventListener('TabPinned',      this, true);
+		ReferenceCounter.add('tabContainer,TabPinned,TSTBrowser,true');
 		tabContainer.addEventListener('TabUnpinned',    this, true);
+		ReferenceCounter.add('tabContainer,TabUnpinned,TSTBrowser,true');
 		tabContainer.addEventListener('mouseover', this, true);
+		ReferenceCounter.add('tabContainer,mouseover,TSTBrowser,true');
 		tabContainer.addEventListener('mouseout', this, true);
+		ReferenceCounter.add('tabContainer,mouseout,TSTBrowser,true');
 		tabContainer.addEventListener('dblclick',  this, true);
+		ReferenceCounter.add('tabContainer,dblclick,TSTBrowser,true');
 		tabContainer.addEventListener('select', this, true);
+		ReferenceCounter.add('tabContainer,select,TSTBrowser,true');
 		tabContainer.addEventListener('scroll', this, true);
+		ReferenceCounter.add('tabContainer,scroll,TSTBrowser,true');
 
 		var strip = this.tabStrip;
 		strip.addEventListener('MozMouseHittest', this, true); // to block default behaviors of the tab bar
+		ReferenceCounter.add('strip,MozMouseHittest,TSTBrowser,true');
 		strip.addEventListener('mousedown',       this, true);
+		ReferenceCounter.add('strip,mousedown,TSTBrowser,true');
 		strip.addEventListener('click',           this, true);
+		ReferenceCounter.add('strip,click,TSTBrowser,true');
 
 		this.scrollBox.addEventListener('overflow', this, true);
+		ReferenceCounter.add('scrollBox,overflow,TSTBrowser,true');
 		this.scrollBox.addEventListener('underflow', this, true);
+		ReferenceCounter.add('scrollBox,underflow,TSTBrowser,true');
 	},
  
 	_ensureNewSplitter : function TSTBrowser__ensureNewSplitter() 
@@ -1691,6 +1728,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				}, 0);
 			};
 			grippy.addEventListener('click', grippy.grippyOnClick, true);
+			ReferenceCounter.add('grippy,click,grippy.grippyOnClick,true');
 			splitter.appendChild(grippy);
 		}
 
@@ -1700,8 +1738,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		splitter.setAttribute('class', splitterClass);
 
 		splitter.addEventListener('mousedown', this.windowService, false);
+		ReferenceCounter.add('splitter,mousedown,windowService,false');
 		splitter.addEventListener('mouseup', this.windowService, false);
+		ReferenceCounter.add('splitter,mouseup,windowService,false');
 		splitter.addEventListener('dblclick', this.windowService, false);
+		ReferenceCounter.add('splitter,dblclick,windowService,false');
 
 		var ref = this.mTabBrowser.mPanelContainer;
 		ref.parentNode.insertBefore(splitter, ref);
@@ -1716,10 +1757,14 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var splitter = this.splitter;
 		try {
 			splitter.removeEventListener('mousedown', this.windowService, false);
+			ReferenceCounter.remove('splitter,mousedown,windowService,false');
 			splitter.removeEventListener('mouseup', this.windowService, false);
+			ReferenceCounter.remove('splitter,mouseup,windowService,false');
 			splitter.removeEventListener('dblclick', this.windowService, false);
+			ReferenceCounter.remove('splitter,dblclick,windowService,false');
 			var grippy = splitter.firstChild;
 			grippy.removeEventListener('click', grippy.grippyOnClick, true);
+			ReferenceCounter.remove('grippy,click,grippy.grippyOnClick,true');
 			delete grippy.grippyOnClick;
 		}
 		catch(e) {
@@ -2259,22 +2304,33 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		this._autoHide = undefined; // block to be re-initialized by property accesses
 
 		w.removeEventListener('resize', this, true);
+		ReferenceCounter.remove('w,resize,TSTBrowser,true');
 		w.removeEventListener('beforecustomization', this, true);
+		ReferenceCounter.remove('w,beforecustomization,TSTBrowser,true');
 		w.removeEventListener('aftercustomization', this, false);
+		ReferenceCounter.remove('w,aftercustomization,TSTBrowser,false');
 		w.removeEventListener('customizationchange', this, false);
+		ReferenceCounter.remove('w,customizationchange,TSTBrowser,false');
 		w.removeEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
+		ReferenceCounter.remove('w,kEVENT_TYPE_PRINT_PREVIEW_ENTERED,TSTBrowser,false');
 		w.removeEventListener(this.kEVENT_TYPE_PRINT_PREVIEW_EXITED,  this, false);
+		ReferenceCounter.remove('w,kEVENT_TYPE_PRINT_PREVIEW_EXITED,TSTBrowser,false');
 		w.removeEventListener('tabviewframeinitialized', this, false);
+		ReferenceCounter.remove('w,tabviewframeinitialized,TSTBrowser,false');
 		w.removeEventListener(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, this, false);
+		ReferenceCounter.remove('w,kEVENT_TYPE_TAB_FOCUS_SWITCHING_END,TSTBrowser,false');
 		w.removeEventListener('SSWindowStateBusy', this, false);
+		ReferenceCounter.remove('w,SSWindowStateBusy,TSTBrowser,false');
 
 		b.removeEventListener('nsDOMMultipleTabHandlerTabsClosing', this, false);
+		ReferenceCounter.remove('b,nsDOMMultipleTabHandlerTabsClosing,TSTBrowser,false');
 
 		w['piro.sakura.ne.jp'].tabsDragUtils.destroyTabBrowser(b);
 
 		var tabContextMenu = b.tabContextMenu ||
 							d.getAnonymousElementByAttribute(b, 'anonid', 'tabContextMenu');
 		tabContextMenu.removeEventListener('popupshowing', this, false);
+		ReferenceCounter.remove('tabContextMenu,popupshowing,TSTBrowser,false');
 
 		if (this.tabbarCanvas) {
 			this.tabbarCanvas.parentNode.removeChild(this.tabbarCanvas);
@@ -2303,7 +2359,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		if (aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave) {
 			this.document.removeEventListener('mouseover', aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave, true);
+			ReferenceCounter.remove('document,mouseover,aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave,true');
 			this.document.removeEventListener('mouseout', aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave, true);
+			ReferenceCounter.remove('document,mouseout,aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave,true');
 			delete aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave;
 		}
 
@@ -2321,27 +2379,46 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		var tabContainer = b.mTabContainer;
 		tabContainer.removeEventListener('TabOpen',        this, true);
+		ReferenceCounter.remove('tabContainer,TabOpen,TSTBrowser,true');
 		tabContainer.removeEventListener('TabClose',       this, true);
+		ReferenceCounter.remove('tabContainer,TabClose,TSTBrowser,true');
 		tabContainer.removeEventListener('TabMove',        this, true);
+		ReferenceCounter.remove('tabContainer,TabMove,TSTBrowser,true');
 		tabContainer.removeEventListener('TabShow',        this, true);
+		ReferenceCounter.remove('tabContainer,TabShow,TSTBrowser,true');
 		tabContainer.removeEventListener('TabHide',        this, true);
+		ReferenceCounter.remove('tabContainer,TabHide,TSTBrowser,true');
 		tabContainer.removeEventListener('SSTabRestoring', this, true);
+		ReferenceCounter.remove('tabContainer,SSTabRestoring,TSTBrowser,true');
 		tabContainer.removeEventListener('SSTabRestored',  this, true);
+		ReferenceCounter.remove('tabContainer,SSTabRestored,TSTBrowser,true');
 		tabContainer.removeEventListener('TabPinned',      this, true);
+		ReferenceCounter.remove('tabContainer,TabPinned,TSTBrowser,true');
 		tabContainer.removeEventListener('TabUnpinned',    this, true);
+		ReferenceCounter.remove('tabContainer,TabUnpinned,TSTBrowser,true');
 		tabContainer.removeEventListener('mouseover', this, true);
+		ReferenceCounter.remove('tabContainer,mouseover,TSTBrowser,true');
 		tabContainer.removeEventListener('mouseout', this, true);
+		ReferenceCounter.remove('tabContainer,mouseout,TSTBrowser,true');
 		tabContainer.removeEventListener('dblclick',  this, true);
+		ReferenceCounter.remove('tabContainer,dblclick,TSTBrowser,true');
 		tabContainer.removeEventListener('select', this, true);
+		ReferenceCounter.remove('tabContainer,select,TSTBrowser,true');
 		tabContainer.removeEventListener('scroll', this, true);
+		ReferenceCounter.remove('tabContainer,scroll,TSTBrowser,true');
 
 		var strip = this.tabStrip;
 		strip.removeEventListener('MozMouseHittest', this, true);
+		ReferenceCounter.remove('strip,MozMouseHittest,TSTBrowser,true');
 		strip.removeEventListener('mousedown',       this, true);
+		ReferenceCounter.remove('strip,mousedown,TSTBrowser,true');
 		strip.removeEventListener('click',           this, true);
+		ReferenceCounter.remove('strip,click,TSTBrowser,true');
 
 		this.scrollBox.removeEventListener('overflow', this, true);
+		ReferenceCounter.remove('scrollBox,overflow,TSTBrowser,true');
 		this.scrollBox.removeEventListener('underflow', this, true);
+		ReferenceCounter.remove('scrollBox,underflow,TSTBrowser,true');
 	},
  
 	saveCurrentState : function TSTBrowser_saveCurrentState() 
@@ -2377,9 +2454,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			return new Promise((function(aResolve, aReject) {
 				var onRestored = (function() {
 					this.mTabBrowser.removeEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGED, onRestored, false);
+					ReferenceCounter.remove('mTabBrowser,kEVENT_TYPE_TABBAR_POSITION_CHANGED,onRestored,false');
 					aResolve();
 				}).bind(this);
 				this.mTabBrowser.addEventListener(this.kEVENT_TYPE_TABBAR_POSITION_CHANGED, onRestored, false);
+				ReferenceCounter.add('mTabBrowser,kEVENT_TYPE_TABBAR_POSITION_CHANGED,onRestored,false');
 			}).bind(this))
 				.then(this.destroyTabbarPostProcess.bind(this));
 		}
@@ -2482,8 +2561,10 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (aPopup.state == 'open') {
 			aPopup.addEventListener('popuphidden', function onPopuphidden(aEvent) {
 				aPopup.removeEventListener(aEvent.type, onPopuphidden, false);
+				ReferenceCounter.remove('aPopup,popuphidden,onPopuphidden,false');
 				aPopup.parentNode.removeChild(aPopup);
 			}, false);
+			ReferenceCounter.add('aPopup,popuphidden,onPopuphidden,false');
 			aPopup.hidePopup();
 		}
 		else {
@@ -4368,6 +4449,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			let self = this;
 			aRestoredTab.addEventListener('SSTabRestoring', function onSSTabRestoring(aEvent) {
 				aRestoredTab.removeEventListener(aEvent.type, onSSTabRestoring, false);
+				ReferenceCounter.remove('aRestoredTab,SSTabRestoring,onSSTabRestoring,false');
 				self.askUndoCloseTabSetBehavior(aRestoredTab, indexes.length)
 					.then(function(aBehavior) {
 						if (aBehavior & self.kUNDO_CLOSE_SET)
@@ -4377,6 +4459,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 						Components.utils.reportError(aError);
 					});
 			}, false);
+			ReferenceCounter.add('aRestoredTab,SSTabRestoring,onSSTabRestoring,false');
 		}
 		else if (behavior & this.kUNDO_CLOSE_SET) {
 			this.doRestoreClosedSet(aRestoredTab, indexes);
@@ -6178,12 +6261,16 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 					if (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom)
 						return;
 					self.document.removeEventListener('mouseover', aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave, true);
+					ReferenceCounter.remove('document,mouseover,aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave,true');
 					self.document.removeEventListener('mouseout', aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave, true);
+					ReferenceCounter.remove('document,mouseout,aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave,true');
 					delete aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave;
 					self.checkTabsIndentOverflow();
 				};
 				this.document.addEventListener('mouseover', aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave, true);
+				ReferenceCounter.add('document,mouseover,aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave,true');
 				this.document.addEventListener('mouseout', aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave, true);
+				ReferenceCounter.add('document,mouseout,aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave,true');
 			}
 		}
 	},

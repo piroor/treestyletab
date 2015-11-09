@@ -381,6 +381,8 @@ var TreeStyleTabWindowHelper = {
  
 	initToolbarItems : function TSTWH_initToolbarItems() 
 	{
+		let { ReferenceCounter } = Components.utils.import('resource://treestyletab-modules/ReferenceCounter.js', {});
+
 		var searchbar = document.getElementById('searchbar');
 		if (searchbar &&
 			searchbar.doSearch &&
@@ -395,35 +397,47 @@ var TreeStyleTabWindowHelper = {
 		}
 
 		var goButton = document.getElementById('urlbar-go-button');
-		if (goButton)
+		if (goButton) {
 			goButton.parentNode.addEventListener('click', this.service, true);
+			ReferenceCounter.add('goButton.parentNode,click,this.service,true');
+		}
 
 		var tabbar = this.service.getTabStrip(this.service.browser);
 		tabbar.addEventListener('click', this.service, true);
+		ReferenceCounter.add('tabbar,click,this.service,true');
 
 		var newTabButton = document.getElementById('new-tab-button');
 		var nsIDOMNode = Ci.nsIDOMNode;
 		if (newTabButton &&
-			!(tabbar.compareDocumentPosition(newTabButton) & nsIDOMNode.DOCUMENT_POSITION_CONTAINED_BY))
+			!(tabbar.compareDocumentPosition(newTabButton) & nsIDOMNode.DOCUMENT_POSITION_CONTAINED_BY)) {
 			newTabButton.parentNode.addEventListener('click', this.service, true);
+			ReferenceCounter.add('newTabButton.parentNode,click,this.service,true');
+		}
 
 		this.service.updateAllTabsButton(gBrowser);
 	},
  
 	destroyToolbarItems : function TSTWH_destroyToolbarItems() 
 	{
+		let { ReferenceCounter } = Components.utils.import('resource://treestyletab-modules/ReferenceCounter.js', {});
+
 		var goButton = document.getElementById('urlbar-go-button');
-		if (goButton)
+		if (goButton) {
 			goButton.parentNode.removeEventListener('click', this.service, true);
+			ReferenceCounter.remove('goButton.parentNode,click,this.service,true');
+		}
 
 		var tabbar = this.service.getTabStrip(this.service.browser);
 		tabbar.removeEventListener('click', this.service, true);
+		ReferenceCounter.remove('tabbar,click,this.service,true');
 
 		var newTabButton = document.getElementById('new-tab-button');
 		var nsIDOMNode = Ci.nsIDOMNode;
 		if (newTabButton &&
-			!(tabbar.compareDocumentPosition(newTabButton) & Ci.nsIDOMNode.DOCUMENT_POSITION_CONTAINED_BY))
+			!(tabbar.compareDocumentPosition(newTabButton) & Ci.nsIDOMNode.DOCUMENT_POSITION_CONTAINED_BY)) {
 			newTabButton.parentNode.removeEventListener('click', this.service, true);
+			ReferenceCounter.remove('newTabButton.parentNode,click,this.service,true');
+		}
 
 		var allTabsButton = document.getElementById('alltabs-button');
 		if (allTabsButton && allTabsButton.hasChildNodes())

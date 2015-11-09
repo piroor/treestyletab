@@ -44,6 +44,7 @@ Cu.import('resource://gre/modules/XPCOMUtils.jsm');
 Cu.import('resource://gre/modules/Services.jsm');
 Cu.import('resource://treestyletab-modules/lib/inherit.jsm');
 Cu.import('resource://treestyletab-modules/constants.js');
+Cu.import('resource://treestyletab-modules/ReferenceCounter.js');
 
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
@@ -353,13 +354,21 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 
 		if (!(aReason & this.kSHOWHIDE_BY_API)) {
 			b.addEventListener('dragover', this, true);
+			ReferenceCounter.add('b,dragover,AHW,true');
 			b.addEventListener('dragleave', this, true);
+			ReferenceCounter.add('b,dragleave,AHW,true');
 			sv.tabStripPlaceHolder.addEventListener('mousedown', this, true);
+			ReferenceCounter.add('tabStripPlaceHolder,mousedown,AHW,true');
 			sv.tabStripPlaceHolder.addEventListener('mouseup', this, true);
+			ReferenceCounter.add('tabStripPlaceHolder,mouseup,AHW,true');
 			sv.tabStrip.addEventListener('mousedown', this, true);
+			ReferenceCounter.add('tabStrip,mousedown,AHW,true');
 			w.addEventListener('mouseup', this, true);
+			ReferenceCounter.add('w,mouseup,AHW,true');
 			w.addEventListener('dragend', this, true);
+			ReferenceCounter.add('w,dragend,AHW,true');
 			w.addEventListener('drop', this, true);
+			ReferenceCounter.add('w,drop,AHW,true');
 			if (this.shouldListenMouseMove)
 				this.startListenMouseMove();
 			if (b == w.gBrowser && sv.shouldListenKeyEventsForAutoHide)
@@ -368,7 +377,9 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 			this.notifyStatusToAllTabs();
 		}
 		w.addEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
+		ReferenceCounter.add('w,kEVENT_TYPE_PRINT_PREVIEW_ENTERED,AHW,false');
 		w.addEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_EXITED, this, false);
+		ReferenceCounter.add('w,kEVENT_TYPE_PRINT_PREVIEW_EXITED,AHW,false');
 
 		this.updateTransparency();
 
@@ -394,13 +405,21 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 
 		if (this.userActionListening) {
 			b.removeEventListener('dragover', this, true);
+			ReferenceCounter.remove('b,dragover,AHW,true');
 			b.removeEventListener('dragleave', this, true);
+			ReferenceCounter.remove('b,dragleave,AHW,true');
 			sv.tabStripPlaceHolder.removeEventListener('mousedown', this, true);
+			ReferenceCounter.remove('tabStripPlaceHolder,mousedown,AHW,true');
 			sv.tabStripPlaceHolder.removeEventListener('mouseup', this, true);
+			ReferenceCounter.remove('tabStripPlaceHolder,mouseup,AHW,true');
 			sv.tabStrip.removeEventListener('mousedown', this, true);
+			ReferenceCounter.remove('tabStrip,mousedown,AHW,true');
 			w.removeEventListener('mouseup', this, true);
+			ReferenceCounter.remove('w,mouseup,AHW,true');
 			w.removeEventListener('dragend', this, true);
+			ReferenceCounter.remove('w,dragend,AHW,true');
 			w.removeEventListener('drop', this, true);
+			ReferenceCounter.remove('w,drop,AHW,true');
 			this.endListenMouseMove();
 			if (b == w.gBrowser)
 				w.TreeStyleTabService.endListenKeyEventsFor(sv.LISTEN_FOR_AUTOHIDE);
@@ -408,7 +427,9 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 			this.notifyStatusToAllTabs();
 		}
 		w.removeEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_ENTERED, this, false);
+		ReferenceCounter.remove('w,kEVENT_TYPE_PRINT_PREVIEW_ENTERED,AHW,false');
 		w.removeEventListener(sv.kEVENT_TYPE_PRINT_PREVIEW_EXITED, this, false);
+		ReferenceCounter.remove('w,kEVENT_TYPE_PRINT_PREVIEW_EXITED,AHW,false');
 
 		this.updateTransparency();
 
@@ -465,10 +486,15 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 			return;
 
 		this.screen.addEventListener('mousemove', this, true);
+		ReferenceCounter.add('screen,mousemove,AHW,true');
 		this.treeStyleTab.tabStripPlaceHolder.addEventListener('mousemove', this, true);
+		ReferenceCounter.add('tabStripPlaceHolder,mousemove,AHW,true');
 		this.treeStyleTab.tabStrip.addEventListener('mousemove', this, true);
+		ReferenceCounter.add('tabStrip,mousemove,AHW,true');
 		this.toggler.addEventListener('mousemove', this, true);
+		ReferenceCounter.add('toggler,mousemove,AHW,true');
 		this.window.addEventListener('TabRemotenessChange', this, false);
+		ReferenceCounter.add('window,TabRemotenessChange,AHW,false');
 
 		this.mouseMoveListening = true;
 
@@ -481,10 +507,15 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 			return;
 
 		this.screen.removeEventListener('mousemove', this, true);
+		ReferenceCounter.remove('screen,mousemove,AHW,true');
 		this.treeStyleTab.tabStripPlaceHolder.removeEventListener('mousemove', this, true);
+		ReferenceCounter.remove('tabStripPlaceHolder,mousemove,AHW,true');
 		this.treeStyleTab.tabStrip.removeEventListener('mousemove', this, true);
+		ReferenceCounter.remove('tabStrip,mousemove,AHW,true');
 		this.toggler.removeEventListener('mousemove', this, true);
+		ReferenceCounter.remove('toggler,mousemove,AHW,true');
 		this.window.removeEventListener('TabRemotenessChange', this, false);
+		ReferenceCounter.remove('window,TabRemotenessChange,AHW,false');
 
 		this.mouseMoveListening = false;
 
@@ -1441,14 +1472,23 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 		this.onPrefChange('extensions.treestyletab.tabbar.autoHide.contentAreaScreen.enabled');
 
 		b.mTabContainer.addEventListener('TabOpen', this, false);
+		ReferenceCounter.add('mTabContainer,TabOpen,AHW,false');
 		b.mTabContainer.addEventListener('TabClose', this, false);
+		ReferenceCounter.add('mTabContainer,TabClose,AHW,false');
 		b.mTabContainer.addEventListener('TabMove', this, false);
+		ReferenceCounter.add('mTabContainer,TabMove,AHW,false');
 		b.mTabContainer.addEventListener('select', this, false);
+		ReferenceCounter.add('mTabContainer,select,AHW,false');
 		b.addEventListener(sv.kEVENT_TYPE_TABBAR_POSITION_CHANGING, this, false);
+		ReferenceCounter.add('b,kEVENT_TYPE_TABBAR_POSITION_CHANGING,AHW,false');
 		b.addEventListener(sv.kEVENT_TYPE_TABBAR_POSITION_CHANGED, this, false);
+		ReferenceCounter.add('b,kEVENT_TYPE_TABBAR_POSITION_CHANGED,AHW,false');
 		b.addEventListener(sv.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN, this, false);
+		ReferenceCounter.add('b,kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN,AHW,false');
 		b.addEventListener(sv.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START, this, false);
+		ReferenceCounter.add('b,kEVENT_TYPE_TAB_FOCUS_SWITCHING_START,AHW,false');
 		b.addEventListener(sv.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, this, false);
+		ReferenceCounter.add('b,kEVENT_TYPE_TAB_FOCUS_SWITCHING_END,AHW,false');
 	},
  
 	destroy : function AHB_destroy() 
@@ -1459,14 +1499,23 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 		var sv = this.treeStyleTab;
 		var b  = this.browser;
 		b.mTabContainer.removeEventListener('TabOpen', this, false);
+		ReferenceCounter.remove('mTabContainer,TabOpen,AHW,false');
 		b.mTabContainer.removeEventListener('TabClose', this, false);
+		ReferenceCounter.remove('mTabContainer,TabClose,AHW,false');
 		b.mTabContainer.removeEventListener('TabMove', this, false);
+		ReferenceCounter.remove('mTabContainer,TabMove,AHW,false');
 		b.mTabContainer.removeEventListener('select', this, false);
+		ReferenceCounter.remove('mTabContainer,select,AHW,false');
 		b.removeEventListener(sv.kEVENT_TYPE_TABBAR_POSITION_CHANGING, this, false);
+		ReferenceCounter.remove('b,kEVENT_TYPE_TABBAR_POSITION_CHANGING,AHW,false');
 		b.removeEventListener(sv.kEVENT_TYPE_TABBAR_POSITION_CHANGED, this, false);
+		ReferenceCounter.remove('b,kEVENT_TYPE_TABBAR_POSITION_CHANGED,AHW,false');
 		b.removeEventListener(sv.kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN, this, false);
+		ReferenceCounter.remove('b,kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN,AHW,false');
 		b.removeEventListener(sv.kEVENT_TYPE_TAB_FOCUS_SWITCHING_START, this, false);
+		ReferenceCounter.remove('b,kEVENT_TYPE_TAB_FOCUS_SWITCHING_START,AHW,false');
 		b.removeEventListener(sv.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, this, false);
+		ReferenceCounter.remove('b,kEVENT_TYPE_TAB_FOCUS_SWITCHING_END,AHW,false');
 
 		delete this.treeStyleTab;
 		delete this.browser;
@@ -1610,6 +1659,7 @@ AutoHideWindow.prototype = inherit(AutoHideBase.prototype, {
 
 		this.waitingForWindowReady = true;
 		this.window.addEventListener('SSWindowStateReady', this, false);
+		ReferenceCounter.add('window,SSWindowStateReady,AHW,false');
 		Services.obs.addObserver(this, 'browser-delayed-startup-finished', false);
 	},
  
@@ -1620,6 +1670,7 @@ AutoHideWindow.prototype = inherit(AutoHideBase.prototype, {
 
 		this.waitingForWindowReady = false;
 		this.window.removeEventListener('SSWindowStateReady', this, false);
+		ReferenceCounter.remove('window,SSWindowStateReady,AHW,false');
 		Services.obs.removeObserver(this, 'browser-delayed-startup-finished');
 	},
  

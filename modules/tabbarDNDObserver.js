@@ -43,6 +43,7 @@ const Cu = Components.utils;
 
 Cu.import('resource://gre/modules/XPCOMUtils.jsm');
 Cu.import('resource://gre/modules/Services.jsm');
+Cu.import('resource://treestyletab-modules/ReferenceCounter.js');
 
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
@@ -1367,11 +1368,17 @@ catch(e) {
 	{
 		var target = this.treeStyleTab.ownerToolbar || this.treeStyleTab.tabStrip;
 		target.addEventListener('dragstart', this, true);
+		ReferenceCounter.add('target,dragstart,TabbarDND,true');
 		target.addEventListener('dragover',  this, true);
+		ReferenceCounter.add('target,dragover,TabbarDND,true');
 		target.addEventListener('dragenter', this, false);
+		ReferenceCounter.add('target,dragenter,TabbarDND,false');
 		target.addEventListener('dragleave', this, false);
+		ReferenceCounter.add('target,dragleave,TabbarDND,false');
 		target.addEventListener('dragend',   this, true);
+		ReferenceCounter.add('target,dragend,TabbarDND,true');
 		target.addEventListener('drop',      this, true);
+		ReferenceCounter.add('target,drop,TabbarDND,true');
 	},
   
 	destroy : function TabbarDND_destroy() 
@@ -1388,11 +1395,17 @@ catch(e) {
 	{
 		var target = this.treeStyleTab.ownerToolbar || this.treeStyleTab.tabStrip;
 		target.removeEventListener('dragstart', this, true);
+		ReferenceCounter.remove('target,dragstart,TabbarDND,true');
 		target.removeEventListener('dragover',  this, true);
+		ReferenceCounter.remove('target,dragover,TabbarDND,true');
 		target.removeEventListener('dragenter', this, false);
+		ReferenceCounter.remove('target,dragenter,TabbarDND,false');
 		target.removeEventListener('dragleave', this, false);
+		ReferenceCounter.remove('target,dragleave,TabbarDND,false');
 		target.removeEventListener('dragend',   this, true);
+		ReferenceCounter.remove('target,dragend,TabbarDND,true');
 		target.removeEventListener('drop',      this, true);
+		ReferenceCounter.remove('target,drop,TabbarDND,true');
 	}
   
 }; 

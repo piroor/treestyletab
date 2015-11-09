@@ -40,6 +40,7 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 
 Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
+Components.utils.import('resource://treestyletab-modules/ReferenceCounter.js');
 
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
@@ -145,16 +146,22 @@ TabpanelDNDObserver.prototype = {
 
 		var b = this.treeStyleTab.mTabBrowser;
 		b.mPanelContainer.addEventListener('dragover',  this, true);
+		ReferenceCounter.add('b.mPanelContainer,dragover,this,true');
 		b.mPanelContainer.addEventListener('dragleave', this, true);
+		ReferenceCounter.add('b.mPanelContainer,dragleave,this,true');
 		b.mPanelContainer.addEventListener('drop',      this, true);
+		ReferenceCounter.add('b.mPanelContainer,drop,this,true');
 	},
  
 	destroy : function TabpanelDND_destroy() 
 	{
 		var b = this.treeStyleTab.mTabBrowser;
 		b.mPanelContainer.removeEventListener('dragover',  this, true);
+		ReferenceCounter.remove('b.mPanelContainer,dragover,this,true');
 		b.mPanelContainer.removeEventListener('dragleave', this, true);
+		ReferenceCounter.remove('b.mPanelContainer,dragleave,this,true');
 		b.mPanelContainer.removeEventListener('drop',      this, true);
+		ReferenceCounter.remove('b.mPanelContainer,drop,this,true');
 
 		delete this.treeStyleTab;
 		delete this.browser;

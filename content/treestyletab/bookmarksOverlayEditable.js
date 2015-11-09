@@ -3,6 +3,7 @@ XPCOMUtils.defineLazyModuleGetter(this,
   'TreeStyleTabUtils', 'resource://treestyletab-modules/utils.js');
 
 (function() {
+let { ReferenceCounter } = Components.utils.import('resource://treestyletab-modules/ReferenceCounter.js', {});
 let { inherit } = Components.utils.import('resource://treestyletab-modules/lib/inherit.jsm', {});
 var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksService, {
 
@@ -386,6 +387,7 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksService,
 		{
 			case 'DOMContentLoaded':
 				window.removeEventListener('DOMContentLoaded', this, false);
+				ReferenceCounter.remove('window,DOMContentLoaded,TreeStyleTabBookmarksServiceEditable,false');
 				this.init();
 				break;
 		}
@@ -394,6 +396,7 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksService,
 });
 
 window.addEventListener('DOMContentLoaded', TreeStyleTabBookmarksServiceEditable, false);
+ReferenceCounter.add('window,DOMContentLoaded,TreeStyleTabBookmarksServiceEditable,false');
 
 window.TreeStyleTabBookmarksServiceEditable = TreeStyleTabBookmarksServiceEditable;
 })();

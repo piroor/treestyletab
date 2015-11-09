@@ -3,6 +3,7 @@ XPCOMUtils.defineLazyModuleGetter(this,
   'TreeStyleTabUtils', 'resource://treestyletab-modules/utils.js');
 
 (function() {
+let { ReferenceCounter } = Components.utils.import('resource://treestyletab-modules/ReferenceCounter.js', {});
 let { inherit } = Components.utils.import('resource://treestyletab-modules/lib/inherit.jsm', {});
 var TreeStyleTabBookmarksService = inherit(TreeStyleTabService, {
 
@@ -218,13 +219,17 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabService, {
 	preInit : function TSTBMService_preInit()
 	{
 		window.addEventListener('load', this, false);
+		ReferenceCounter.add('window,load,TSTBMService,false');
 		window.addEventListener(window['piro.sakura.ne.jp'].tabsDragUtils.EVENT_TYPE_TABS_DROP, this, false);
+		ReferenceCounter.add('window,EVENT_TYPE_TABS_DROP,TSTBMService,false');
 	},
 
 	init : function TSTBMService_init()
 	{
 		window.removeEventListener('load', this, false);
+		ReferenceCounter.remove('window,load,TSTBMService,false');
 		window.addEventListener('unload', this, false);
+		ReferenceCounter.add('window,unload,TSTBMService,false');
 
 		if (!('PlacesUIUtils' in window)) return;
 
@@ -473,7 +478,9 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabService, {
 	destroy : function TSTBMService_destroy()
 	{
 		window.removeEventListener('unload', this, false);
+		ReferenceCounter.remove('window,unload,TSTBMService,false');
 		window.removeEventListener(window['piro.sakura.ne.jp'].tabsDragUtils.EVENT_TYPE_TABS_DROP, this, false);
+		ReferenceCounter.remove('window,EVENT_TYPE_TABS_DROP,TSTBMService,false');
 	},
 
 	// observer for nsINavBookmarksService 
