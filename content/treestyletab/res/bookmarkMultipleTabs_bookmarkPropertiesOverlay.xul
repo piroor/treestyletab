@@ -14,7 +14,7 @@
    in JS files:
      window['piro.sakura.ne.jp'].bookmarkMultipleTabs.addBookmarkFor(tabsArray, folderName);
 
- license: The MIT License, Copyright (c) 2009-2012 YUKI "Piro" Hiroshi
+ license: The MIT License, Copyright (c) 2009-2015 YUKI "Piro" Hiroshi
    http://github.com/piroor/fxaddonlibs/blob/master/license.txt
  original:
    http://github.com/piroor/fxaddonlibs/blob/master/bookmarkMultipleTabs.xul
@@ -28,23 +28,32 @@
 		BookmarkPropertiesPanel._determineItemInfo.toSource().indexOf('__folderNameOverride') > -1)
 		return;
 
-	eval('BookmarkPropertiesPanel._determineItemInfo = '+BookmarkPropertiesPanel._determineItemInfo.toSource().replace(
-		'{',
-		['{',
-			'var __folderNameOverride = null;',
-			'try {',
-			'	__folderNameOverride = Components.classes["@mozilla.org/preferences;1"]',
-			'		.getService(Components.interfaces.nsIPrefBranch)',
-			'		.getCharPref("temp.showMinimalAddMultiBookmarkUI.folderName");',
-			'	__folderNameOverride = decodeURIComponent(escape(__folderNameOverride));',
-			'}',
-			'catch(e) {',
-			'}'
-		].join('')
-	).replace(
-		'this._strings.getString("bookmarkAllTabsDefault")',
-		'__folderNameOverride || $&'
-	));
+	// Defined at http://mxr.mozilla.org/mozilla-central/source/browser/components/places/content/bookmarkProperties.js#73
+	const ACTION_ADD = 1;
+
+	BookmarkPropertiesPanel.__treestyletab__determineItemInfo = BookmarkPropertiesPanel._determineItemInfo;
+	BookmarkPropertiesPanel._determineItemInfo = function(...aArgs) {
+		var folderNameOverride = null;
+		try {
+			folderNameOverride = Components.classes['@mozilla.org/preferences;1']
+				.getService(Components.interfaces.nsIPrefBranch)
+				.getCharPref('temp.showMinimalAddMultiBookmarkUI.folderName');
+			folderNameOverride = decodeURIComponent(escape(folderNameOverride));
+		}
+		catch(e) {
+		}
+		var retVal = this.__treestyletab__determineItemInfo.apply(this, aArgs);
+		if (folderNameOverride &&
+			this._action == ACTION_ADD) {
+			let dialogInfo = window.arguments[0];
+			if (dialogInfo.type === 'folder' &&
+				!('title' in dialogInfo) &&
+				'URIList' in dialogInfo) {
+				this._title = folderNameOverride;
+			}
+		}
+		return retVal;
+	};
 })();
 ]]></script>
 </overlay>
