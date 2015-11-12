@@ -25,7 +25,7 @@
 (function() {
 	if (!('BookmarkPropertiesPanel' in window) ||
 		!BookmarkPropertiesPanel._determineItemInfo ||
-		BookmarkPropertiesPanel._determineItemInfo.toSource().indexOf('__folderNameOverride') > -1)
+		BookmarkPropertiesPanel.__treestyletab__determineItemInfo)
 		return;
 
 	// Defined at http://mxr.mozilla.org/mozilla-central/source/browser/components/places/content/bookmarkProperties.js#73
