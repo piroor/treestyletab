@@ -25,13 +25,13 @@
 (function() {
 	if (!('BookmarkPropertiesPanel' in window) ||
 		!BookmarkPropertiesPanel._determineItemInfo ||
-		BookmarkPropertiesPanel.__treestyletab__determineItemInfo)
+		BookmarkPropertiesPanel.__bookmarkMultipleTabs__determineItemInfo)
 		return;
 
 	// Defined at http://mxr.mozilla.org/mozilla-central/source/browser/components/places/content/bookmarkProperties.js#73
 	const ACTION_ADD = 1;
 
-	BookmarkPropertiesPanel.__treestyletab__determineItemInfo = BookmarkPropertiesPanel._determineItemInfo;
+	BookmarkPropertiesPanel.__bookmarkMultipleTabs__determineItemInfo = BookmarkPropertiesPanel._determineItemInfo;
 	BookmarkPropertiesPanel._determineItemInfo = function(...aArgs) {
 		var folderNameOverride = null;
 		try {
@@ -42,7 +42,7 @@
 		}
 		catch(e) {
 		}
-		var retVal = this.__treestyletab__determineItemInfo.apply(this, aArgs);
+		var retVal = this.__bookmarkMultipleTabs__determineItemInfo.apply(this, aArgs);
 		if (folderNameOverride &&
 			this._action == ACTION_ADD) {
 			let dialogInfo = window.arguments[0];
