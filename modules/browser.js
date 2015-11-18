@@ -5621,6 +5621,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 						(!parentTab && closeParentBehavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN) ?
 							closeRootBehavior :
 							closeParentBehavior ;
+		// Promote all children to upper level, if this is the last child of the parent.
+		// This is similar to "taking by representation".
 		if (behavior == this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD &&
 			parentTab &&
 			this.getChildTabs(parentTab).length == 1)
