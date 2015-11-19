@@ -3006,11 +3006,19 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 
 			case 'DOMAudioPlaybackStarted':
-				this.setTabValue(this.getTabFromBrowser(aEvent.target), this.kREALLY_SOUND_PLAYING, true);
+				{
+					let tab = this.getTabFromBrowser(aEvent.originalTarget);
+					this.setTabValue(tab, this.kREALLY_SOUND_PLAYING, true);
+					this.updateTabAsParent(this.getParentTab(tab));
+				}
 				return;
 
 			case 'DOMAudioPlaybackStopped':
-				this.deleteTabValue(this.getTabFromBrowser(aEvent.target), this.kREALLY_SOUND_PLAYING);
+				{
+					let tab = this.getTabFromBrowser(aEvent.originalTarget);
+					this.deleteTabValue(tab, this.kREALLY_SOUND_PLAYING);
+					this.updateTabAsParent(this.getParentTab(tab));
+				}
 				return;
 
 
@@ -5929,8 +5937,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			 return;
 
 		var descendants = this.getDescendantTabs(aTab);
-
 		this.updateTabsCount(aTab, descendants);
+		this.updateTabSoundIndicator(aTab, descendants);
 
 		if (!aDontUpdateAncestor) {
 			let parent = this.getParentTab(aTab);
@@ -5947,6 +5955,17 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				value += 1;
 			count.setAttribute('value', value);
 		}
+	},
+	updateTabSoundIndicator : function TSTBrowser_updateTabSoundIndicator(aTab, aDescendants)
+	{
+		var hasSoundPlayingDescendant = aDescendants.some(function(aDescendant) {
+				return this.getTabValue(aDescendant, this.kREALLY_SOUND_PLAYING) == 'true';
+			}, this);
+		if (hasSoundPlayingDescendant ||
+			this.getTabValue(aTab, this.kREALLY_SOUND_PLAYING) == 'true')
+			aTab.setAttribute('soundplaying', true);
+		else
+			aTab.removeAttribute('soundplaying', true);
 	},
  
 	updateAllTabsCount : function TSTBrowser_updateAllTabsCount() 
