@@ -1687,6 +1687,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	{
 		var d = this.document;
 		var splitter = this.splitter;
+		var grippy;
 
 		// We always have to re-create splitter, because its "collapse"
 		// behavior becomes broken by repositioning of the tab bar.
@@ -1694,6 +1695,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			this._destroyOldSplitter();
 			let oldSplitter = splitter;
 			splitter = oldSplitter.cloneNode(true);
+			grippy = splitter.firstChild;
 			oldSplitter.parentNode.removeChild(oldSplitter);
 		}
 		else {
@@ -1701,8 +1703,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			splitter.setAttribute(this.kTAB_STRIP_ELEMENT, true);
 			splitter.setAttribute('state', 'open');
 			splitter.setAttribute('layer', true); // https://bugzilla.mozilla.org/show_bug.cgi?id=590468
-			let grippy = d.createElement('grippy')
+			grippy = d.createElement('grippy')
 			grippy.setAttribute(this.kTAB_STRIP_ELEMENT, true);
+			splitter.appendChild(grippy);
+		}
+		{
 			// Workaround for bugs:
 			//  * https://github.com/piroor/treestyletab/issues/593
 			//  * https://github.com/piroor/treestyletab/issues/783
@@ -1720,7 +1725,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			// So, we have to turn the actual tab bar visible manually
 			// when the grippy is clicked.
 			let tabContainer = this.mTabBrowser.tabContainer;
-			let grippyOnClick = function() {
+			grippy.grippyOnClick = function() {
 				tabContainer.ownerDocument.defaultView.setTimeout(function() {
 					var visible = grippy.getAttribute('state') != 'collapsed';
 					if (visible != tabContainer.visible)
@@ -1729,7 +1734,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			};
 			grippy.addEventListener('click', grippy.grippyOnClick, true);
 			ReferenceCounter.add('grippy,click,grippy.grippyOnClick,true');
-			splitter.appendChild(grippy);
 		}
 
 		var splitterClass = splitter.getAttribute('class') || '';
