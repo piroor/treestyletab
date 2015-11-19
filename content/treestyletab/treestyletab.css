@@ -643,6 +643,13 @@ window[chromehidden~="toolbar"]
 	visibility: collapse;
 }
 
+/* hide virtual sound indicator icon in subtree-expanded parent tabs */
+.tabbrowser-tab[soundplaying="true"]:not([treestyletab-really-sound-playing="true"]):not([treestyletab-subtree-collapsed="true"])
+  :-moz-any(.tab-icon-sound,
+            .tab-icon-overlay[soundplaying]) {
+	display: none;
+}
+
 
 /* full tooltip */
 
