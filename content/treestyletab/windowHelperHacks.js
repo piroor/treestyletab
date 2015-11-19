@@ -254,11 +254,11 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 		globDndtb.__treestyletab__setOrder = globDndtb.setOrder;
 		globDndtb.setOrder = function() {
 			reinitTabbar();
-			return this.__treestyletab__setOrder.apply(this, arguments);
+			return globDndtb.__treestyletab__setOrder.apply(this, arguments);
 		};
 		globDndtb.__treestyletab__setTheStuff = globDndtb.setTheStuff;
 		globDndtb.setTheStuff = function() {
-			var result = this.__treestyletab__setTheStuff.apply(this, arguments);
+			var result = globDndtb.__treestyletab__setTheStuff.apply(this, arguments);
 			if (this.dndObserver &&
 				this.dndObserver.onDrop &&
 				!this.dndObserver.__treestyletab__onDrop) {
