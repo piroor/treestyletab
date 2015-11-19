@@ -842,6 +842,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		w.addEventListener('SSWindowStateBusy', this, false);
 		ReferenceCounter.add('w,SSWindowStateBusy,TSTBrowser,false');
 
+		// we have to handle these events to observe dynamic changs of the "soundplaying" status
 		b.addEventListener('DOMAudioPlaybackStarted', this, false);
 		ReferenceCounter.add('b,DOMAudioPlaybackStarted,TSTBrowser,false');
 		b.addEventListener('DOMAudioPlaybackStopped', this, false);
@@ -2899,11 +2900,19 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 					let tab = aEvent.originalTarget;
 					switch (aEvent.detail.changed)
 					{
-						case 'soundplaying': // for restored tab
+						case 'soundplaying': // mainly for restored tab
 							if (tab.getAttribute('soundplaying') == 'true')
 								this.setTabValue(tab, this.kREALLY_SOUND_PLAYING, true);
 							else
 								this.deleteTabValue(tab, this.kREALLY_SOUND_PLAYING);
+							this.updateTabAsParent(tab);
+							return;
+
+						case 'muted':
+							if (tab.getAttribute('muted') == 'true')
+								this.setTabValue(tab, this.kREALLY_MUTED, true);
+							else
+								this.deleteTabValue(tab, this.kREALLY_MUTED);
 							this.updateTabAsParent(tab);
 							return;
 					}
@@ -5954,7 +5963,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
  
 	updateTabAsParent : function TSTBrowser_updateTabAsParent(aTab, aDontUpdateAncestor) 
 	{
-		if (!aTab.parentNode) // do nothing for closed tab!
+		if (!aTab ||
+			!aTab.parentNode) // do nothing for closed tab!
 			 return;
 
 		var descendants = this.getDescendantTabs(aTab);
@@ -5986,7 +5996,16 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			this.getTabValue(aTab, this.kREALLY_SOUND_PLAYING) == 'true')
 			aTab.setAttribute('soundplaying', true);
 		else
-			aTab.removeAttribute('soundplaying', true);
+			aTab.removeAttribute('soundplaying');
+
+		var allDescendantsMuted = aDescendants.length > 0 && aDescendants.every(function(aDescendant) {
+				return this.getTabValue(aDescendant, this.kREALLY_MUTED) == 'true';
+			}, this);
+		if (allDescendantsMuted ||
+			this.getTabValue(aTab, this.kREALLY_MUTED) == 'true')
+			aTab.setAttribute('muted', true);
+		else
+			aTab.removeAttribute('muted');
 	},
  
 	updateAllTabsAsParent : function TSTBrowser_updateAllTabsAsParent() 
