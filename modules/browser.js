@@ -842,12 +842,10 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		w.addEventListener('SSWindowStateBusy', this, false);
 		ReferenceCounter.add('w,SSWindowStateBusy,TSTBrowser,false');
 
-/* Currently we don't have to handle these events because the actual status is tracked by TabAttrModified events for the "soundplaying" attribute. However, in the future we possibly need to track the status from these raw events...
 		b.addEventListener('DOMAudioPlaybackStarted', this, false);
 		ReferenceCounter.add('b,DOMAudioPlaybackStarted,TSTBrowser,false');
 		b.addEventListener('DOMAudioPlaybackStopped', this, false);
 		ReferenceCounter.add('b,DOMAudioPlaybackStopped,TSTBrowser,false');
-*/
 
 		b.addEventListener('nsDOMMultipleTabHandlerTabsClosing', this, false);
 		ReferenceCounter.add('b,nsDOMMultipleTabHandlerTabsClosing,TSTBrowser,false');
@@ -1075,6 +1073,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		this.initTabAttributes(aTab);
 		this.initTabContents(aTab);
+		this.window.TreeStyleTabWindowHelper.initTabMethods(aTab, this.mTabBrowser);
 
 		if (!aTab.hasAttribute(this.kNEST))
 			aTab.setAttribute(this.kNEST, 0);
@@ -2261,7 +2260,10 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			this.initTabAttributes(tab);
 			this.initTabContents(tab);
 			if (aSouldUpdateAsParent)
-				this.updateTabAsParent(tab, true);
+				this.updateTabAsParent(tab, {
+					dontUpdateAncestor : true
+				});
+			this.window.TreeStyleTabWindowHelper.initTabMethods(tab, this.mTabBrowser);
 		}
 	},
   
@@ -2335,12 +2337,10 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		w.removeEventListener('SSWindowStateBusy', this, false);
 		ReferenceCounter.remove('w,SSWindowStateBusy,TSTBrowser,false');
 
-/*
 		b.removeEventListener('DOMAudioPlaybackStarted', this, false);
 		ReferenceCounter.remove('b,DOMAudioPlaybackStarted,TSTBrowser,false');
 		b.removeEventListener('DOMAudioPlaybackStopped', this, false);
 		ReferenceCounter.remove('b,DOMAudioPlaybackStopped,TSTBrowser,false');
-*/
 
 		b.removeEventListener('nsDOMMultipleTabHandlerTabsClosing', this, false);
 		ReferenceCounter.remove('b,nsDOMMultipleTabHandlerTabsClosing,TSTBrowser,false');
@@ -2909,7 +2909,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 									this.setTabValue(tab, this.kREALLY_SOUND_PLAYING, true);
 								else
 									this.deleteTabValue(tab, this.kREALLY_SOUND_PLAYING);
-								this.updateTabAsParent(tab);
+								this.updateTabAsParent(tab, {
+									dontUpdateCount : true
+								});
 								return;
 
 							case 'muted':
@@ -2917,7 +2919,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 									this.setTabValue(tab, this.kREALLY_MUTED, true);
 								else
 									this.deleteTabValue(tab, this.kREALLY_MUTED);
-								this.updateTabAsParent(tab);
+								this.updateTabAsParent(tab, {
+									dontUpdateCount : true
+								});
 								return;
 						}
 					}, this);
@@ -3039,12 +3043,13 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				return this.needRestoreTree = true;
 
 
-/*
 			case 'DOMAudioPlaybackStarted':
 				{
 					let tab = this.getTabFromBrowser(aEvent.originalTarget);
 					this.setTabValue(tab, this.kREALLY_SOUND_PLAYING, true);
-					this.updateTabAsParent(tab);
+					this.updateTabAsParent(tab, {
+						dontUpdateCount : true
+					});
 				}
 				return;
 
@@ -3052,10 +3057,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				{
 					let tab = this.getTabFromBrowser(aEvent.originalTarget);
 					this.deleteTabValue(tab, this.kREALLY_SOUND_PLAYING);
-					this.updateTabAsParent(tab);
+					this.updateTabAsParent(tab, {
+						dontUpdateCount : true
+					});
 				}
 				return;
-*/
 
 
 			case 'nsDOMMultipleTabHandlerTabsClosing':
@@ -3569,6 +3575,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		// twisty vanished after the tab is moved!!
 		this.initTabContents(tab);
+
+		this.window.TreeStyleTabWindowHelper.initTabMethods(tab, b);
 
 		// On Firefox 29, 30 and laters, reopened (restored) tab can be
 		// placed in wrong place, because "TabMove" event fires before
@@ -4335,6 +4343,19 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			this.mTabBrowser.moveTabTo(aTab, newPos);
 	},
   
+	handleTabToggleMuteAudio : function TSTBrowser_handleTabToggleMuteAudio(aTab) 
+	{
+		if (this.isCollapsed(aTab) || this.isSubtreeCollapsed(aTab)) {
+			let children = this.getChildTabs(aTab);
+			let parentStatus = aTab.getAttribute('muted');
+			children.forEach(function(aChild) {
+				if (aChild.getAttribute('muted') == parentStatus)
+					aChild.toggleMuteAudio();
+			}, this);
+		}
+		return this.getTabValue(aTab, this.kREALLY_SOUND_PLAYING) != 'true';
+	},
+ 
 	correctChildTabsOrderWithDelay : function TSTBrowser_correctChildTabsOrderWithDelay(aTab) 
 	{
 		if (aTab.correctChildTabsOrderWithDelayTimer)
@@ -4559,7 +4580,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
    
 	onTabRestored : function TSTBrowser_onTabRestored(aEvent) 
 	{
-		this.updateTabAsParent(aEvent.originalTarget, true);
+		this.updateTabAsParent(aEvent.originalTarget, {
+			dontUpdateCount : true
+		});
 		delete aEvent.originalTarget.__treestyletab__restoredByUndoCloseTab;
 	},
  
@@ -5968,47 +5991,54 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 	},
  
-	updateTabAsParent : function TSTBrowser_updateTabAsParent(aTab, aDontUpdateAncestor) 
+	updateTabAsParent : function TSTBrowser_updateTabAsParent(aTab, aOptions) 
 	{
 		if (!aTab ||
 			!aTab.parentNode) // do nothing for closed tab!
 			 return;
 
-		var descendants = this.getDescendantTabs(aTab);
-		this.updateTabsCount(aTab, descendants);
-		this.updateTabSoundIndicator(aTab, descendants);
+		aOptions = aOptions || {};
 
-		if (!aDontUpdateAncestor) {
+		if (!aOptions.dontUpdateCount)
+			this.updateTabsCount(aTab);
+
+		this.updateTabSoundIndicator(aTab);
+
+		if (!aOptions.dontUpdateAncestor) {
 			let parent = this.getParentTab(aTab);
 			if (parent)
-				this.updateTabAsParent(parent);
+				this.updateTabAsParent(parent, aOptions);
 		}
 	},
-	updateTabsCount : function TSTBrowser_updateTabsCount(aTab, aDescendants) 
+	updateTabsCount : function TSTBrowser_updateTabsCount(aTab) 
 	{
+		var descendants = this.getDescendantTabs(aTab);
 		var count = this.document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER);
 		if (count) {
-			let value = aDescendants.length;
+			let value = descendants.length;
 			if (this.counterRole == this.kCOUNTER_ROLE_ALL_TABS)
 				value += 1;
 			count.setAttribute('value', value);
 		}
 	},
-	updateTabSoundIndicator : function TSTBrowser_updateTabSoundIndicator(aTab, aDescendants)
+	updateTabSoundIndicator : function TSTBrowser_updateTabSoundIndicator(aTab)
 	{
-		var hasSoundPlayingDescendant = aDescendants.some(function(aDescendant) {
-				return this.getTabValue(aDescendant, this.kREALLY_SOUND_PLAYING) == 'true';
+		var children = this.getChildTabs(aTab);
+
+		var hasSoundPlayingChild = children.some(function(aChild) {
+				return aChild.getAttribute('soundplaying') == 'true';
 			}, this);
-		if (hasSoundPlayingDescendant ||
-			this.getTabValue(aTab, this.kREALLY_SOUND_PLAYING) == 'true')
+		var reallySoundPlaying = this.getTabValue(aTab, this.kREALLY_SOUND_PLAYING) == 'true';
+		if (hasSoundPlayingChild ||
+			reallySoundPlaying)
 			aTab.setAttribute('soundplaying', true);
 		else
 			aTab.removeAttribute('soundplaying');
 
-		var allDescendantsMuted = aDescendants.length > 0 && aDescendants.every(function(aDescendant) {
-				return this.getTabValue(aDescendant, this.kREALLY_MUTED) == 'true';
+		var allChildrenMuted = children.length > 0 && children.every(function(aChild) {
+				return aChild.getAttribute('muted') == 'true';
 			}, this);
-		if (allDescendantsMuted ||
+		if ((allChildrenMuted && !reallySoundPlaying) ||
 			this.getTabValue(aTab, this.kREALLY_MUTED) == 'true')
 			aTab.setAttribute('muted', true);
 		else
@@ -6021,7 +6051,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		for (let i = 0, maxi = tabs.length; i < maxi; i++)
 		{
 			let tab = tabs[i];
-			this.updateTabAsParent(tab, true);
+			this.updateTabAsParent(tab, {
+				dontUpdateAncestor : true
+			});
 		}
 	},
  

@@ -638,6 +638,20 @@ var TreeStyleTabWindowHelper = {
 			}, 'treeStyleTab');
 		}
 	
+	},
+ 
+	initTabMethods : function TSTWH_initTabMethods(aTab, aTabBrowser) 
+	{
+		if (aTab.__treestyletab__toggleMuteAudio &&
+			aTab.__treestyletab__toggleMuteAudio.toString() != aTab.toggleMuteAudio.toString())
+			return;
+
+		aTab.__treestyletab__toggleMuteAudio = aTab.toggleMuteAudio;
+		aTab.toggleMuteAudio = function(...aArgs) {
+			if (aTabBrowser.treeStyleTab.handleTabToggleMuteAudio(aTab))
+				return;
+			return aTab.__treestyletab__toggleMuteAudio.apply(this, aArgs);
+		};
 	}
  
 }; 
