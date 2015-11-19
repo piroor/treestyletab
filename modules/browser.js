@@ -2243,7 +2243,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 	},
  
-	reinitAllTabs : function TSTBrowser_reinitAllTabs(aSouldUpdateCount) 
+	reinitAllTabs : function TSTBrowser_reinitAllTabs(aSouldUpdateAsParent) 
 	{
 		var tabs = this.getAllTabs(this.mTabBrowser);
 		for (let i = 0, maxi = tabs.length; i < maxi; i++)
@@ -2251,8 +2251,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			let tab = tabs[i];
 			this.initTabAttributes(tab);
 			this.initTabContents(tab);
-			if (aSouldUpdateCount)
-				this.updateTabsCount(tab);
+			if (aSouldUpdateAsParent)
+				this.updateTabAsParent(tab);
 		}
 	},
   
@@ -3523,7 +3523,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			this.moveTabSubtreeTo(tab, tab._tPos);
 		}
 
-		this.updateTabsCount(tab, true);
+		this.updateTabAsParent(tab, true);
 
 		var tabsToBeUpdated = [tab];
 
@@ -5388,7 +5388,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		this.setTabValue(aParent, this.kCHILDREN, children.join('|'));
 		this.setTabValue(aChild, this.kPARENT, aParent.getAttribute(this.kID));
 
-		this.updateTabsCount(aParent);
+		this.updateTabAsParent(aParent);
 		if (shouldInheritIndent && !aInfo.dontUpdateIndent)
 			this.inheritTabIndent(aChild, aParent);
 
@@ -5488,7 +5488,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (!this.hasChildTabs(parentTab))
 			this.setTabValue(parentTab, this.kSUBTREE_COLLAPSED, true);
 
-		this.updateTabsCount(parentTab);
+		this.updateTabAsParent(parentTab);
 
 		if (!aInfo.dontUpdateIndent) {
 			this.updateTabsIndent([aChild], undefined, aInfo.dontAnimate);
@@ -5904,22 +5904,29 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 	},
  
-	updateTabsCount : function TSTBrowser_updateTabsCount(aTab, aDontUpdateAncestor) 
+	updateTabAsParent : function TSTBrowser_updateTabAsParent(aTab, aDontUpdateAncestor) 
 	{
 		if (!aTab.parentNode) // do nothing for closed tab!
 			 return;
 
-		var count = this.document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER);
-		if (count) {
-			let value = this.getDescendantTabs(aTab).length;
-			if (this.counterRole == this.kCOUNTER_ROLE_ALL_TABS)
-				value += 1;
-			count.setAttribute('value', value);
-		}
+		var descendants = this.getDescendantTabs(aTab);
+
+		this.updateTabsCount(aTab, descendants);
+
 		if (!aDontUpdateAncestor) {
 			let parent = this.getParentTab(aTab);
 			if (parent)
-				this.updateTabsCount(parent);
+				this.updateTabAsParent(parent);
+		}
+	},
+	updateTabsCount : function TSTBrowser_updateTabsCount(aTab, aDescendants) 
+	{
+		var count = this.document.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER);
+		if (count) {
+			let value = aDescendants.length;
+			if (this.counterRole == this.kCOUNTER_ROLE_ALL_TABS)
+				value += 1;
+			count.setAttribute('value', value);
 		}
 	},
  
@@ -5929,7 +5936,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		for (let i = 0, maxi = tabs.length; i < maxi; i++)
 		{
 			let tab = tabs[i];
-			this.updateTabsCount(tab, this);
+			this.updateTabAsParent(tab, this);
 		}
 	},
  
