@@ -1605,7 +1605,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				delayedPostProcess(this, b, splitter, toggler);
 				this.updateTabbarOverflow();
 				this.updateAllTabsButton(b);
-				this.updateAllTabsCount();
+				this.updateAllTabsAsParent();
 				delayedPostProcess = null;
 				this.mTabBrowser.style.visibility = '';
 
@@ -2780,7 +2780,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 						clearTimeout(this.timers[aPrefName]);
 					this.timers[aPrefName] = setTimeout((function() {
 						try {
-							this.updateAllTabsCount();
+							this.updateAllTabsAsParent();
 						}
 						catch(e) {
 							this.defaultErrorHandler(e);
@@ -2795,7 +2795,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 						clearTimeout(this.timers[aPrefName]);
 					this.timers[aPrefName] = setTimeout((function() {
 						try {
-							this.updateAllTabsCount();
+							this.updateAllTabsAsParent();
 						}
 						catch(e) {
 							this.defaultErrorHandler(e);
@@ -5968,7 +5968,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			aTab.removeAttribute('soundplaying', true);
 	},
  
-	updateAllTabsCount : function TSTBrowser_updateAllTabsCount() 
+	updateAllTabsAsParent : function TSTBrowser_updateAllTabsAsParent() 
 	{
 		var tabs = this.rootTabs;
 		for (let i = 0, maxi = tabs.length; i < maxi; i++)
