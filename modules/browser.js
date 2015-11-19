@@ -2902,24 +2902,24 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				{
 					let tab = aEvent.originalTarget;
 					aEvent.detail.changed.forEach(function(aAttrName) {
-					switch (aAttrName)
-					{
-						case 'soundplaying': // mainly for restored tab
-							if (tab.getAttribute('soundplaying') == 'true')
-								this.setTabValue(tab, this.kREALLY_SOUND_PLAYING, true);
-							else
-								this.deleteTabValue(tab, this.kREALLY_SOUND_PLAYING);
-							this.updateTabAsParent(tab);
-							return;
+						switch (aAttrName)
+						{
+							case 'soundplaying': // mainly for restored tab
+								if (tab.getAttribute('soundplaying') == 'true')
+									this.setTabValue(tab, this.kREALLY_SOUND_PLAYING, true);
+								else
+									this.deleteTabValue(tab, this.kREALLY_SOUND_PLAYING);
+								this.updateTabAsParent(tab);
+								return;
 
-						case 'muted':
-							if (tab.getAttribute('muted') == 'true')
-								this.setTabValue(tab, this.kREALLY_MUTED, true);
-							else
-								this.deleteTabValue(tab, this.kREALLY_MUTED);
-							this.updateTabAsParent(tab);
-							return;
-					}
+							case 'muted':
+								if (tab.getAttribute('muted') == 'true')
+									this.setTabValue(tab, this.kREALLY_MUTED, true);
+								else
+									this.deleteTabValue(tab, this.kREALLY_MUTED);
+								this.updateTabAsParent(tab);
+								return;
+						}
 					}, this);
 				}
 				return;
