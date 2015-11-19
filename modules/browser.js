@@ -842,11 +842,12 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		w.addEventListener('SSWindowStateBusy', this, false);
 		ReferenceCounter.add('w,SSWindowStateBusy,TSTBrowser,false');
 
-		// we have to handle these events to observe dynamic changs of the "soundplaying" status
+/* Currently we don't have to handle these events because the actual status is tracked by TabAttrModified events for the "soundplaying" attribute. However, in the future we possibly need to track the status from these raw events...
 		b.addEventListener('DOMAudioPlaybackStarted', this, false);
 		ReferenceCounter.add('b,DOMAudioPlaybackStarted,TSTBrowser,false');
 		b.addEventListener('DOMAudioPlaybackStopped', this, false);
 		ReferenceCounter.add('b,DOMAudioPlaybackStopped,TSTBrowser,false');
+*/
 
 		b.addEventListener('nsDOMMultipleTabHandlerTabsClosing', this, false);
 		ReferenceCounter.add('b,nsDOMMultipleTabHandlerTabsClosing,TSTBrowser,false');
@@ -2334,10 +2335,12 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		w.removeEventListener('SSWindowStateBusy', this, false);
 		ReferenceCounter.remove('w,SSWindowStateBusy,TSTBrowser,false');
 
+/*
 		b.removeEventListener('DOMAudioPlaybackStarted', this, false);
 		ReferenceCounter.remove('b,DOMAudioPlaybackStarted,TSTBrowser,false');
 		b.removeEventListener('DOMAudioPlaybackStopped', this, false);
 		ReferenceCounter.remove('b,DOMAudioPlaybackStopped,TSTBrowser,false');
+*/
 
 		b.removeEventListener('nsDOMMultipleTabHandlerTabsClosing', this, false);
 		ReferenceCounter.remove('b,nsDOMMultipleTabHandlerTabsClosing,TSTBrowser,false');
@@ -2898,7 +2901,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			case 'TabAttrModified':
 				{
 					let tab = aEvent.originalTarget;
-					switch (aEvent.detail.changed)
+					aEvent.detail.changed.forEach(function(aAttrName) {
+					switch (aAttrName)
 					{
 						case 'soundplaying': // mainly for restored tab
 							if (tab.getAttribute('soundplaying') == 'true')
@@ -2916,6 +2920,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 							this.updateTabAsParent(tab);
 							return;
 					}
+					}, this);
 				}
 				return;
 
@@ -3034,6 +3039,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				return this.needRestoreTree = true;
 
 
+/*
 			case 'DOMAudioPlaybackStarted':
 				{
 					let tab = this.getTabFromBrowser(aEvent.originalTarget);
@@ -3049,6 +3055,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 					this.updateTabAsParent(tab);
 				}
 				return;
+*/
 
 
 			case 'nsDOMMultipleTabHandlerTabsClosing':
