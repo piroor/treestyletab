@@ -842,6 +842,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		w.addEventListener('SSWindowStateBusy', this, false);
 		ReferenceCounter.add('w,SSWindowStateBusy,TSTBrowser,false');
 
+		b.addEventListener('DOMAudioPlaybackStarted', this, false);
+		ReferenceCounter.add('b,DOMAudioPlaybackStarted,TSTBrowser,false');
+		b.addEventListener('DOMAudioPlaybackStopped', this, false);
+		ReferenceCounter.add('b,DOMAudioPlaybackStopped,TSTBrowser,false');
+
 		b.addEventListener('nsDOMMultipleTabHandlerTabsClosing', this, false);
 		ReferenceCounter.add('b,nsDOMMultipleTabHandlerTabsClosing,TSTBrowser,false');
 
@@ -2326,6 +2331,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		w.removeEventListener('SSWindowStateBusy', this, false);
 		ReferenceCounter.remove('w,SSWindowStateBusy,TSTBrowser,false');
 
+		b.removeEventListener('DOMAudioPlaybackStarted', this, false);
+		ReferenceCounter.remove('b,DOMAudioPlaybackStarted,TSTBrowser,false');
+		b.removeEventListener('DOMAudioPlaybackStopped', this, false);
+		ReferenceCounter.remove('b,DOMAudioPlaybackStopped,TSTBrowser,false');
+
 		b.removeEventListener('nsDOMMultipleTabHandlerTabsClosing', this, false);
 		ReferenceCounter.remove('b,nsDOMMultipleTabHandlerTabsClosing,TSTBrowser,false');
 
@@ -2993,6 +3003,15 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 			case 'SSWindowStateBusy':
 				return this.needRestoreTree = true;
+
+
+			case 'DOMAudioPlaybackStarted':
+				this.setTabValue(this.getTabFromBrowser(aEvent.target), this.kREALLY_SOUND_PLAYING, true);
+				return;
+
+			case 'DOMAudioPlaybackStopped':
+				this.deleteTabValue(this.getTabFromBrowser(aEvent.target), this.kREALLY_SOUND_PLAYING);
+				return;
 
 
 			case 'nsDOMMultipleTabHandlerTabsClosing':

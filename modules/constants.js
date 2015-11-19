@@ -61,6 +61,7 @@ var TreeStyleTabConstants = Object.freeze({
 	kALLOW_COLLAPSE     : 'treestyletab-allow-subtree-collapse',
 	kALLOW_STACK        : 'treestyletab-stack-collapsed-tabs',
 	kREMOVED            : 'treestyletab-removed',
+	kREALLY_SOUND_PLAYING : 'treestyletab-really-sound-playing',
 
 	kX_OFFSET           : 'treestyletab-x-offset',
 	kY_OFFSET           : 'treestyletab-y-offset',
