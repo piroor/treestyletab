@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * New tabs can be opened even if Speed Dial or some addons are activated.
+   * Clicking at the grippy in the tab bar splitter expands collapsed tab bar correctly. (regression)
+   * "New Folder" and "Bookmark Properties" works again. (regression)
  - 0.16.2015111001
    * Free memory for closed windows correctly (it was grabbed by living-dead event listeners.)
    * Highlighted color of updated pinned tabs is shown correctly.
