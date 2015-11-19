@@ -1655,6 +1655,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		ReferenceCounter.add('tabContainer,TabShow,TSTBrowser,true');
 		tabContainer.addEventListener('TabHide',        this, true);
 		ReferenceCounter.add('tabContainer,TabHide,TSTBrowser,true');
+		tabContainer.addEventListener('TabAttrModified', this, true);
+		ReferenceCounter.add('tabContainer,TabAttrModified,TSTBrowser,true');
 		tabContainer.addEventListener('SSTabRestoring', this, true);
 		ReferenceCounter.add('tabContainer,SSTabRestoring,TSTBrowser,true');
 		tabContainer.addEventListener('SSTabRestored',  this, true);
@@ -2257,7 +2259,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			this.initTabAttributes(tab);
 			this.initTabContents(tab);
 			if (aSouldUpdateAsParent)
-				this.updateTabAsParent(tab);
+				this.updateTabAsParent(tab, true);
 		}
 	},
   
@@ -2402,6 +2404,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		ReferenceCounter.remove('tabContainer,TabShow,TSTBrowser,true');
 		tabContainer.removeEventListener('TabHide',        this, true);
 		ReferenceCounter.remove('tabContainer,TabHide,TSTBrowser,true');
+		tabContainer.removeEventListener('TabAttrModified', this, true);
+		ReferenceCounter.remove('tabContainer,TabAttrModified,TSTBrowser,true');
 		tabContainer.removeEventListener('SSTabRestoring', this, true);
 		ReferenceCounter.remove('tabContainer,SSTabRestoring,TSTBrowser,true');
 		tabContainer.removeEventListener('SSTabRestored',  this, true);
@@ -2890,6 +2894,22 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			case 'TabHide':
 				return this.onTabVisibilityChanged(aEvent);
 
+			case 'TabAttrModified':
+				{
+					let tab = aEvent.originalTarget;
+					switch (aEvent.detail.changed)
+					{
+						case 'soundplaying': // for restored tab
+							if (tab.getAttribute('soundplaying') == 'true')
+								this.setTabValue(tab, this.kREALLY_SOUND_PLAYING, true);
+							else
+								this.deleteTabValue(tab, this.kREALLY_SOUND_PLAYING);
+							this.updateTabAsParent(tab);
+							return;
+					}
+				}
+				return;
+
 			case 'SSTabRestoring':
 				return this.onTabRestoring(aEvent);
 
@@ -3009,7 +3029,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				{
 					let tab = this.getTabFromBrowser(aEvent.originalTarget);
 					this.setTabValue(tab, this.kREALLY_SOUND_PLAYING, true);
-					this.updateTabAsParent(this.getParentTab(tab));
+					this.updateTabAsParent(tab);
 				}
 				return;
 
@@ -3017,7 +3037,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				{
 					let tab = this.getTabFromBrowser(aEvent.originalTarget);
 					this.deleteTabValue(tab, this.kREALLY_SOUND_PLAYING);
-					this.updateTabAsParent(this.getParentTab(tab));
+					this.updateTabAsParent(tab);
 				}
 				return;
 
@@ -3550,7 +3570,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			this.moveTabSubtreeTo(tab, tab._tPos);
 		}
 
-		this.updateTabAsParent(tab, true);
+		this.updateTabAsParent(tab);
 
 		var tabsToBeUpdated = [tab];
 
@@ -4523,6 +4543,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
    
 	onTabRestored : function TSTBrowser_onTabRestored(aEvent) 
 	{
+		this.updateTabAsParent(aEvent.originalTarget, true);
 		delete aEvent.originalTarget.__treestyletab__restoredByUndoCloseTab;
 	},
  
@@ -5970,11 +5991,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
  
 	updateAllTabsAsParent : function TSTBrowser_updateAllTabsAsParent() 
 	{
-		var tabs = this.rootTabs;
+		var tabs = this.getAllTabs(this.mTabBrowser);
 		for (let i = 0, maxi = tabs.length; i < maxi; i++)
 		{
 			let tab = tabs[i];
-			this.updateTabAsParent(tab, this);
+			this.updateTabAsParent(tab, true);
 		}
 	},
  
