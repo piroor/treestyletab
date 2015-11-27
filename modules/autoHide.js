@@ -487,8 +487,8 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 
 		this.screen.addEventListener('mousemove', this, true);
 		ReferenceCounter.add('screen,mousemove,AHW,true');
-		this.treeStyleTab.tabStripPlaceHolder.addEventListener('mousemove', this, true);
-		ReferenceCounter.add('tabStripPlaceHolder,mousemove,AHW,true');
+		this.treeStyleTab.browser.addEventListener('mousemove', this, true);
+		ReferenceCounter.add('browser,mousemove,AHW,true');
 		this.treeStyleTab.tabStrip.addEventListener('mousemove', this, true);
 		ReferenceCounter.add('tabStrip,mousemove,AHW,true');
 		this.toggler.addEventListener('mousemove', this, true);
@@ -508,8 +508,8 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 
 		this.screen.removeEventListener('mousemove', this, true);
 		ReferenceCounter.remove('screen,mousemove,AHW,true');
-		this.treeStyleTab.tabStripPlaceHolder.removeEventListener('mousemove', this, true);
-		ReferenceCounter.remove('tabStripPlaceHolder,mousemove,AHW,true');
+		this.treeStyleTab.browser.removeEventListener('mousemove', this, true);
+		ReferenceCounter.remove('browser,mousemove,AHW,true');
 		this.treeStyleTab.tabStrip.removeEventListener('mousemove', this, true);
 		ReferenceCounter.remove('tabStrip,mousemove,AHW,true');
 		this.toggler.removeEventListener('mousemove', this, true);
