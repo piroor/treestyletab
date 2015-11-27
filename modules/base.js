@@ -2516,17 +2516,19 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		};
 		var originalExpanded = size.expanded;
 		var originalShrunken = size.shrunken;
+		var maxSize = this.browserWindow.gBrowser.boxObject.width * this.MAX_TABBAR_SIZE_RATIO;
 		if (aModifiedTarget.indexOf('shrunken') > -1) {
 			if (size.expanded <= size.shrunken)
-				size.expanded = parseInt(size.shrunken / this.DEFAULT_SHRUNKEN_WIDTH_RATIO)
-			let w = this.browserWindow;
-			if (w && size.expanded > w.gBrowser.boxObject.width) {
-				size.expanded = w.gBrowser.boxObject.width * this.MAX_TABBAR_SIZE_RATIO;
+				size.expanded = parseInt(size.shrunken / this.DEFAULT_SHRUNKEN_WIDTH_RATIO);
+			if (size.expanded > maxSize) {
+				size.expanded = maxSize;
 				if (size.expanded <= size.shrunken)
 					size.shrunken = parseInt(size.expanded * this.DEFAULT_SHRUNKEN_WIDTH_RATIO)
 			}
 		}
 		else {
+			if (size.expanded > maxSize)
+				size.expanded = maxSize;
 			if (size.expanded <= size.shrunken)
 				size.shrunken = parseInt(size.expanded * this.DEFAULT_SHRUNKEN_WIDTH_RATIO);
 		}
