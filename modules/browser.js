@@ -3705,7 +3705,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 		else if (prevLevel < nextLevel) {
 			mydump(' => moved to first child position of existing tree\n');
-			newParent = parent || nextParent;
+			newParent = prevTab || parent || nextParent;
 		}
 
 		if (newParent != parent) {
