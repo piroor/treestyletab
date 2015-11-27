@@ -354,7 +354,7 @@
 		<hbox align="center">
 			<checkbox id="extensions.treestyletab.show.context-item-toggleAutoHide-check"
 				preference="extensions.treestyletab.show.context-item-toggleAutoHide"
-				label="&context.toggleAutoHide.label;"/>
+				label="&context.toggleAutoHide.label.hide;"/>
 			<checkbox id="extensions.treestyletab.show.context-item-toggleFixed-check"
 				preference="extensions.treestyletab.show.context-item-toggleFixed"
 				label="&context.toggleFixed.label;"/>
