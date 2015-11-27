@@ -6,6 +6,7 @@
    * "New Folder" and "Bookmark Properties" works again. (regression)
    * Don't shake the tab bar when it is scrolled by spacers in the arrowscrollbox.
    * Show the tab bar automatically by mousemove on developer tools.
+   * Show preferred label "auto hide" or "auto shrink" for the menuitem to toggle "auto hide" feature from the tab context menu.
  - 0.16.2015111001
    * Free memory for closed windows correctly (it was grabbed by living-dead event listeners.)
    * Highlighted color of updated pinned tabs is shown correctly.
