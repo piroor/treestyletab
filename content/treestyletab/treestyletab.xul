@@ -126,7 +126,9 @@
 
 		<menuseparator id="context-separator-toggleAutoHide"/>
 		<menuitem id="context-item-toggleAutoHide"
-			label="&context.toggleAutoHide.label;"
+			label="&context.toggleAutoHide.label.hide;"
+			label-hide="&context.toggleAutoHide.label.hide;"
+			label-shrink="&context.toggleAutoHide.label.shrink;"
 			accesskey="&context.toggleAutoHide.accesskey;"
 			type="checkbox"
 			autocheck="false"

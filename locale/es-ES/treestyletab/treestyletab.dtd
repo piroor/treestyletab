@@ -189,7 +189,8 @@
 <!ENTITY context.collapseAllSubtree.accesskey "c">
 <!ENTITY context.expandAllSubtree.label     "Expandir todos los árboles">
 <!ENTITY context.expandAllSubtree.accesskey "e">
-<!ENTITY context.toggleAutoHide.label     "Auto-ocultar la barra de pestañas">
+<!ENTITY context.toggleAutoHide.label.hide     "Auto-ocultar la barra de pestañas">
+<!ENTITY context.toggleAutoHide.label.shrink   "Auto encoger la barra de pestañas">
 <!ENTITY context.toggleAutoHide.accesskey "h">
 <!ENTITY context.toggleFixed.label            "Anclar posición, altura y ancho de la barra de pestañas">
 <!ENTITY context.toggleFixed.label.horizontal "Anclar posición y altura de la barra de pestañas">

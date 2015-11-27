@@ -182,7 +182,8 @@
 <!ENTITY context.collapseAllSubtree.accesskey "T">
 <!ENTITY context.expandAllSubtree.label     "Rozwiń wszystkie drzewa">
 <!ENTITY context.expandAllSubtree.accesskey "Y">
-<!ENTITY context.toggleAutoHide.label     "Ukryj pasek kart">
+<!ENTITY context.toggleAutoHide.label.hide   "Ukryj pasek kart">
+<!ENTITY context.toggleAutoHide.label.shrink "Auto shrink tab bar">
 <!ENTITY context.toggleAutoHide.accesskey "U">
 <!ENTITY context.toggleFixed.label            "Stała pozycja i szerokość/wysokość paska kart">
 <!ENTITY context.toggleFixed.label.horizontal "Stała pozycja i wysokość paska kart">

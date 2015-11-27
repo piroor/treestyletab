@@ -177,7 +177,8 @@
 <!ENTITY context.collapseAllSubtree.accesskey   "c">
 <!ENTITY context.expandAllSubtree.label         "ツリーをすべて展開する">
 <!ENTITY context.expandAllSubtree.accesskey     "e">
-<!ENTITY context.toggleAutoHide.label           "タブバーを自動的に隠す">
+<!ENTITY context.toggleAutoHide.label.hide      "タブバーを自動的に隠す">
+<!ENTITY context.toggleAutoHide.label.shrink    "タブバーを自動的に縮める">
 <!ENTITY context.toggleAutoHide.accesskey       "h">
 <!ENTITY context.toggleFixed.label              "タブバーの位置と幅/高さを固定">
 <!ENTITY context.toggleFixed.label.horizontal   "タブバーの位置と高さを固定">

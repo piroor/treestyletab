@@ -178,7 +178,8 @@
 <!ENTITY context.collapseAllSubtree.accesskey "c">
 <!ENTITY context.expandAllSubtree.label     "展開全部樹目錄">
 <!ENTITY context.expandAllSubtree.accesskey "e">
-<!ENTITY context.toggleAutoHide.label     "自動隱藏分頁工具列">
+<!ENTITY context.toggleAutoHide.label.hide   "自動隱藏分頁工具列">
+<!ENTITY context.toggleAutoHide.label.shrink "自動縮小分頁工具列">
 <!ENTITY context.toggleAutoHide.accesskey "h">
 <!ENTITY context.toggleFixed.label            "固定分頁工具列的位置、寬高">
 <!ENTITY context.toggleFixed.label.horizontal "固定分頁工具列的位置和高度">

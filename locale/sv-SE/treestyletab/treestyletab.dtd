@@ -191,7 +191,8 @@
 <!ENTITY context.collapseAllSubtree.accesskey   "M">
 <!ENTITY context.expandAllSubtree.label         "Expandera alla träd">
 <!ENTITY context.expandAllSubtree.accesskey     "E">
-<!ENTITY context.toggleAutoHide.label           "Dölj flikfältet automatiskt">
+<!ENTITY context.toggleAutoHide.label.hide      "Dölj flikfältet automatiskt">
+<!ENTITY context.toggleAutoHide.label.shrink    "Krymp flikfältet automatiskt">
 <!ENTITY context.toggleAutoHide.accesskey       "D">
 <!ENTITY context.toggleFixed.label              "Lås position och bredd/höjd för flikfältet">
 <!ENTITY context.toggleFixed.label.horizontal   "Lås position och höjd för flikfältet">

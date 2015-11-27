@@ -190,7 +190,8 @@
 <!ENTITY context.collapseAllSubtree.accesskey   "c">
 <!ENTITY context.expandAllSubtree.label         "展开所有树">
 <!ENTITY context.expandAllSubtree.accesskey     "e">
-<!ENTITY context.toggleAutoHide.label           "自动隐藏标签栏">
+<!ENTITY context.toggleAutoHide.label.hide      "自动隐藏标签栏">
+<!ENTITY context.toggleAutoHide.label.shrink    "自动缩小标签栏">
 <!ENTITY context.toggleAutoHide.accesskey       "h">
 <!ENTITY context.toggleFixed.label              "固定标签栏位置／高／宽度">
 <!ENTITY context.toggleFixed.label.horizontal   "固定标签栏位置／高度">

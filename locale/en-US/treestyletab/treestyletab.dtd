@@ -178,7 +178,8 @@
 <!ENTITY context.collapseAllSubtree.accesskey   "c">
 <!ENTITY context.expandAllSubtree.label         "Expand All Trees">
 <!ENTITY context.expandAllSubtree.accesskey     "e">
-<!ENTITY context.toggleAutoHide.label           "Auto hide tab bar">
+<!ENTITY context.toggleAutoHide.label.hide      "Auto hide tab bar">
+<!ENTITY context.toggleAutoHide.label.shrink    "Auto shrink tab bar">
 <!ENTITY context.toggleAutoHide.accesskey       "h">
 <!ENTITY context.toggleFixed.label              "Fix position and width/height of tab bar">
 <!ENTITY context.toggleFixed.label.horizontal   "Fix position and height of tab bar">

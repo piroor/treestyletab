@@ -190,7 +190,8 @@
 <!ENTITY context.collapseAllSubtree.accesskey "c">
 <!ENTITY context.expandAllSubtree.label     "Alle Zweige aufklappen">
 <!ENTITY context.expandAllSubtree.accesskey "e">
-<!ENTITY context.toggleAutoHide.label     "Tableiste verstecken">
+<!ENTITY context.toggleAutoHide.label.hide      "Tableiste verstecken">
+<!ENTITY context.toggleAutoHide.label.shrink    "Tableiste verkleinert anzeigen">
 <!ENTITY context.toggleAutoHide.accesskey "h">
 <!ENTITY context.toggleFixed.label            "Feste Position und Größe der Tableiste">
 <!ENTITY context.toggleFixed.label.horizontal "Feste Position und Höhe der Tableiste">

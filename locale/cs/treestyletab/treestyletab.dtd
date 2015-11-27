@@ -178,7 +178,8 @@
 <!ENTITY context.collapseAllSubtree.accesskey   "S">
 <!ENTITY context.expandAllSubtree.label         "Rozbalit všechny stromy">
 <!ENTITY context.expandAllSubtree.accesskey     "R">
-<!ENTITY context.toggleAutoHide.label           "Schovávat lištu panelů">
+<!ENTITY context.toggleAutoHide.label.hide      "Schovávat lištu panelů">
+<!ENTITY context.toggleAutoHide.label.shrink    "Zmenšit lištu panelů">
 <!ENTITY context.toggleAutoHide.accesskey       "l">
 <!ENTITY context.toggleFixed.label              "Ustálit umístění a šířku/výšku lišty panelů">
 <!ENTITY context.toggleFixed.label.horizontal   "Ustálit umístění a výšku lišty panelů">

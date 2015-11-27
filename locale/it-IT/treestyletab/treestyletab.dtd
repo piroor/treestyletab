@@ -187,7 +187,8 @@
 <!ENTITY context.collapseAllSubtree.accesskey "o">
 <!ENTITY context.expandAllSubtree.label     "Espandi tutti i sottoalberi">
 <!ENTITY context.expandAllSubtree.accesskey "E">
-<!ENTITY context.toggleAutoHide.label     "Nascondi automaticamente la barra delle schede">
+<!ENTITY context.toggleAutoHide.label.hide   "Nascondi automaticamente la barra delle schede">
+<!ENTITY context.toggleAutoHide.label.shrink "Riduci automaticamente la barra delle schede">
 <!ENTITY context.toggleAutoHide.accesskey "b">
 <!ENTITY context.toggleFixed.label            "Fix position and width/height of tab bar">
 <!ENTITY context.toggleFixed.label.horizontal "Fix position and height of tab bar">

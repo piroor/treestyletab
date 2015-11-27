@@ -183,7 +183,8 @@
 <!ENTITY context.collapseAllSubtree.accesskey "С">
 <!ENTITY context.expandAllSubtree.label     "Развернуть все деревья">
 <!ENTITY context.expandAllSubtree.accesskey "Р">
-<!ENTITY context.toggleAutoHide.label     "Автоскрытие панели вкладок">
+<!ENTITY context.toggleAutoHide.label.hide   "Автоскрытие панели вкладок">
+<!ENTITY context.toggleAutoHide.label.shrink "Автосжатие панели вкладок">
 <!ENTITY context.toggleAutoHide.accesskey "А">
 <!ENTITY context.toggleFixed.label            "Зафиксировать положение и ширину/высоту панели вкладок">
 <!ENTITY context.toggleFixed.label.horizontal "Зафиксировать положение и высоту панели вкладок">

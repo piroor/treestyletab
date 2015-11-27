@@ -177,7 +177,8 @@
 <!ENTITY context.collapseAllSubtree.accesskey   "c">
 <!ENTITY context.expandAllSubtree.label         "Déplier toutes les arborescences">
 <!ENTITY context.expandAllSubtree.accesskey     "e">
-<!ENTITY context.toggleAutoHide.label           "Masquage automatique du panneau des onglets">
+<!ENTITY context.toggleAutoHide.label.hide      "Masquage automatique du panneau des onglets">
+<!ENTITY context.toggleAutoHide.label.shrink    "Auto shrink tab bar">
 <!ENTITY context.toggleAutoHide.accesskey       "h">
 <!ENTITY context.toggleFixed.label              "Fixer la position et la largeur/hauteur du panneau des onglets">
 <!ENTITY context.toggleFixed.label.horizontal   "Fixer la position et la hauteur du panneau des onglets">

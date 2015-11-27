@@ -131,6 +131,14 @@ AutoHideBase.prototype = inherit(AutoHideConstants, {
 		return aValue;
 	},
 
+	get shouldShrink()
+	{
+		var toggleKey = 'tabbar.autoHide.mode.toggle';
+		if (this.window.fullScreen)
+			toggleKey += '.fullscreen';
+		return utils.getTreePref(toggleKey) == this.kMODE_SHRINK;
+	},
+
 	get lastNormalMode()
 	{
 		var lastMode = this.treeStyleTab.getWindowValue(this.kMODE + '-normal');
@@ -810,6 +818,9 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 			aNode.setAttribute('checked', true);
 		else
 			aNode.removeAttribute('checked');
+
+		var labelAttribute = this.shouldShrink ? 'label-shrink' : 'label-hide' ;
+		aNode.setAttribute('label', aNode.getAttribute(labelAttribute));
 	},
  
 	// show/hide tabbar 
