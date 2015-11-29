@@ -7,6 +7,10 @@
    * Don't shake the tab bar when it is scrolled by spacers in the arrowscrollbox.
    * Show the tab bar automatically by mousemove on developer tools.
    * Show preferred label "auto hide" or "auto shrink" for the menuitem to toggle "auto hide" feature from the tab context menu.
+   * A new secret preference `extensions.treestyletab.closeParentBehavior.promoteAllChildrenWhenParentIsLastChild` is instoruced to disable a safeguard for the edge case: promoting all children to the upper level when a parent tab which has no sibling is closed.
+   * Restore order of rearranged tabs more correctly.
+   * Don't break tree structre for tab rearrangings triggered by Ctrl-Shift-PageUp/PageDown.
+   * Don't enlarge the width of the tab bar over a harf of a window, by dragging of the splitter.
  - 0.16.2015111001
    * Free memory for closed windows correctly (it was grabbed by living-dead event listeners.)
    * Highlighted color of updated pinned tabs is shown correctly.
