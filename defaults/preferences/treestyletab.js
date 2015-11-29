@@ -566,6 +566,25 @@ pref("extensions.treestyletab.closeParentBehavior", 3);
  */
 pref("extensions.treestyletab.closeParentBehavior.moveDetachedTabsToBottom", false);
 /**
+ * When closeParentBehavior = 3, you'll see infinity promoting for all children like:
+ *  +[A]
+ *   +[A-1]
+ *    +[A-1-1]
+ *    +[A-1-2]
+ *    +[A-1-3]
+ * (close A-1)=>
+ *  +[A]
+ *   +[A-1-1]
+ *    +[A-1-2]
+ *    +[A-1-3]
+ * (close A-1-1)=>
+ *  +[A]
+ *   +[A-1-2]
+ *    +[A-1-3]
+ * This preference prevents such an annoying behavior. However, you can disable this safeguard if you don't want.
+ */
+pref("extensions.treestyletab.closeParentBehavior.promoteAllChildrenWhenParentIsLastChild", true);
+/**
  * How to treat children of a closed root tab (which has no parent).
  *  3 = Promote the first child tab to the new root.
  *  1 = Detach all children from the tree. Children become new root tabs.
