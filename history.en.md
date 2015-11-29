@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 0.16.2015113001
    * New tabs can be opened even if Speed Dial or some addons are activated.
    * Clicking at the grippy in the tab bar splitter expands collapsed tab bar correctly. (regression)
    * "New Folder" and "Bookmark Properties" works again. (regression)
@@ -10,7 +11,7 @@
    * A new secret preference `extensions.treestyletab.closeParentBehavior.promoteAllChildrenWhenParentIsLastChild` is instoruced to disable a safeguard for the edge case: promoting all children to the upper level when a parent tab which has no sibling is closed.
    * Restore order of rearranged tabs more correctly.
    * Don't break tree structre for tab rearrangings triggered by Ctrl-Shift-PageUp/PageDown.
-   * Don't enlarge the width of the tab bar over a harf of a window, by dragging of the splitter.
+   * Disallow to enlarge the width of the tab bar over a harf of a window, by dragging of the splitter.
  - 0.16.2015111001
    * Free memory for closed windows correctly (it was grabbed by living-dead event listeners.)
    * Highlighted color of updated pinned tabs is shown correctly.
