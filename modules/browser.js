@@ -3568,7 +3568,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	{
 		var tab = aEvent.originalTarget;
 		var b   = this.mTabBrowser;
-		tab.__treestyletab__previousPosition = aEvent.detail;
+
+		var prevPosition = aEvent.detail;
+		tab.__treestyletab__previousPosition = prevPosition;
 
 		// When the tab was moved before TabOpen event is fired, we have to update manually.
 		var newlyOpened = !this.isTabInitialized(tab) && this.onTabOpen(null, tab);
@@ -3600,6 +3602,17 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		var tabsToBeUpdated = [tab];
 
+		var allTabs = this.getAllTabs(this.mTabBrowser);
+		tabsToBeUpdated.push(allTabs[prevPosition]);
+		if (prevPosition > tab._tPos) { // from bottom to top
+			if (prevPosition < allTabs.length - 1)
+				tabsToBeUpdated.push(allTabs[prevPosition + 1]);
+		}
+		else { // from top to bottom
+			if (prevPosition > 0)
+				tabsToBeUpdated.push(allTabs[prevPosition - 1]);
+		}
+
 		var parentTab = this.getParentTab(tab);
 		if (parentTab) {
 			let children = this.getChildTabs(parentTab);
@@ -3618,7 +3631,14 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				this.updateChildrenArray(parentTab);
 		}
 
-		tabsToBeUpdated.forEach(this.updateInsertionPositionInfo, this);
+		var updatedTabs = new WeakMap();
+		tabsToBeUpdated.forEach(function(aTab) {
+			if (updatedTabs.has(aTab))
+				return;
+			updatedTabs.set(aTab, true);
+			this.updateInsertionPositionInfo(aTab);
+		}, this);
+		updatedTabs = undefined;
 
 		this.positionPinnedTabsWithDelay();
 
