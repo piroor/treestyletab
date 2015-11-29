@@ -1009,9 +1009,15 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		ReferenceCounter.add('currentTarget,mousemove,TSTWindow,false');
 
 		var b = this.getTabBrowserFromChild(aEvent.currentTarget);
-		var box = aEvent.currentTarget.id == 'treestyletab-tabbar-resizer-splitter' ?
-					this.getTabStrip(b) :
-					b.treeStyleTab.tabStripPlaceHolder || b.tabContainer ;
+		var box;
+		if (aEvent.currentTarget.id == 'treestyletab-tabbar-resizer-splitter') {
+			box = this.getTabStrip(b);
+		}
+		else {
+			box = b.treeStyleTab.tabStripPlaceHolder || b.tabContainer;
+		}
+		b.treeStyleTab.tabStripPlaceHolder.setAttribute('maxwidth', b.boxObject.width * this.MAX_TABBAR_SIZE_RATIO);
+
 		this.tabbarResizeStartWidth  = box.boxObject.width;
 		this.tabbarResizeStartHeight = box.boxObject.height;
 		this.tabbarResizeStartX = aEvent.screenX;
@@ -1044,6 +1050,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			catch(e) {
 				this.defaultErrorHandler(e);
 			}
+			b.treeStyleTab.tabStripPlaceHolder.removeAttribute('maxwidth');
 		}).bind(this), 0);
 	},
 	onTabbarResizing : function TSTWindow_onTabbarResizing(aEvent)
