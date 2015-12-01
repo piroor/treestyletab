@@ -218,11 +218,13 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksService,
 					this._doProgressivelyTimers[name] = window.setTimeout(progressiveIteration, interval);
 				}
 			}
-			catch(e if e instanceof StopIteration) {
-				aParams.onComplete();
-			}
 			catch(e) {
-				Components.utils.reportError(e);
+				if (e instanceof StopIteration) {
+					aParams.onComplete();
+				}
+				else {
+					Components.utils.reportError(e);
+				}
 			}
 			finally {
 				this._doProgressivelyTimers[name] = null;
