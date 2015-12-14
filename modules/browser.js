@@ -2906,6 +2906,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			case 'TabAttrModified':
 				{
 					let tab = aEvent.originalTarget;
+					// on Fireofx 38 the event has no "detail" information.
+					if (!aEvent.detail)
+						return;
 					aEvent.detail.changed.forEach(function(aAttrName) {
 						switch (aAttrName)
 						{
