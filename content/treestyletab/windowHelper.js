@@ -318,6 +318,9 @@ var TreeStyleTabWindowHelper = {
 		FullScreen.__treestyletab__toggle = FullScreen.toggle;
 		FullScreen.toggle = function(...aArgs) {
 			var enterFS = window.fullScreen;
+			var event = aArgs[0];
+			if (event && event.type == 'fullscreen')
+				enterFS = !enterFS;
 			gBrowser.treeStyleTab.onBeforeFullScreenToggle(enterFS);
 			return FullScreen.__treestyletab__toggle.apply(this, aArgs);
 		};
