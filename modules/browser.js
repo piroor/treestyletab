@@ -2098,6 +2098,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			this.notifyingRenderedEvent = false;
 
 			if (!collapsed &&
+				this.autoHide.mode == this.autoHide.kMODE_HIDE &&
 				aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE &&
 				this.browser) // ignore calling after destroyed...
 				this.scrollToTab(this.browser.selectedTab);
