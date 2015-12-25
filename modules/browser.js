@@ -5258,7 +5258,10 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
   
 	onBeforeFullScreenToggle : function TSTBrowser_onBeforeFullScreenToggle(aEnterFS)
 	{
+		mydump('onBeforeFullScreenToggle / ' + this.position + '\n');
 		if (this.position != 'top') {
+			mydump('  this.document.mozFullScreen => ' + this.document.mozFullScreen + '\n');
+			mydump('  aEnterFS => ' + aEnterFS + '\n');
 			// ignore entering to the DOM-fullscreen (ex. YouTube Player)
 			if (!this.document.mozFullScreen) {
 				if (aEnterFS)
