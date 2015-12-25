@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+   * Initialize itself correctly on Firefox 38. (regression)
+   * Don't show thin glay bar for pinned tabs on fullscreen HTML5 video.
+   * Activate/deactivate auto hide feature for fullscreen mode correctly, on Firefox 38.
+   * Don't change the scroll position of the tab bar, when it is expanded from shrunken.
  - 0.16.2015113001
    * New tabs can be opened even if Speed Dial or some addons are activated.
    * Clicking at the grippy in the tab bar splitter expands collapsed tab bar correctly. (regression)
