@@ -160,10 +160,7 @@ BrowserUIShowHideObserver.prototype = {
 				'ancestor-or-self::xul:spacer[' +
 					'contains(@class, "arrowscrollbox-overflow-start-indicator") or ' +
 					'contains(@class, "arrowscrollbox-overflow-end-indicator")' +
-				'][ancestor::xul:tabs[' +
-					'@' + TreeStyleTabConstants.kMODE + ' = "left" or ' +
-					'@' + TreeStyleTabConstants.kMODE + ' = "right"' +
-				']]',
+				'][ancestor::xul:tabs[@' + TreeStyleTabConstants.kMODE + ' = "vertical"]]',
 				target,
 				Components.interfaces.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue
