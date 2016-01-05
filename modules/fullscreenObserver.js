@@ -39,6 +39,11 @@ Components.utils.import('resource://treestyletab-modules/constants.js');
 
 Components.utils.import('resource://treestyletab-modules/utils.js');
 
+function mydump(aString) {
+	if (utils.isDebugging('fullscreenObserver'))
+		dump(aString);
+}
+
 function FullscreenObserver(aWindow) {
 	this.window = aWindow;
 	this.init();
@@ -90,6 +95,7 @@ FullscreenObserver.prototype = {
 
 	onSizeModeChange : function FullscreenObserver_onSizeModeChange()
 	{
+		mydump('onSizeModeChange: '+d.documentElement.getAttribute('sizemode')+'\n');
 		this.updateToolboxPosition();
 		if (!this.window.gBrowser.treeStyleTab.notifyingRenderedEvent)
 			this.window.gBrowser.treeStyleTab.updateFloatingTabbar(TreeStyleTabConstants.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
