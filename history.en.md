@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Never shrink the tab bar when it is scrolled.
  - 0.16.2015122501
    * Initialize itself correctly on Firefox 38. (regression)
    * Don't show thin glay bar for pinned tabs on fullscreen HTML5 video.
