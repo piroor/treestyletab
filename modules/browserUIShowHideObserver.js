@@ -153,9 +153,17 @@ BrowserUIShowHideObserver.prototype = {
 		if (
 			// ignore modifications of each tab
 			TST.getTabFromChild(target) ||
-			// ignore modifications in the location bar (ex. identity icon)
 			TST.evaluateXPath(
-				'ancestor-or-self::xul:textbox',
+				// ignore modifications in the location bar (ex. identity icon)
+				'ancestor-or-self::xul:textbox |' +
+				// or scrollable indicator in the vertical tab bar
+				'ancestor-or-self::xul:spacer[' +
+					'contains(@class, "arrowscrollbox-overflow-start-indicator") or ' +
+					'contains(@class, "arrowscrollbox-overflow-end-indicator")' +
+				'][ancestor::xul:tabs[' +
+					'@' + TreeStyleTabConstants.kMODE + ' = "left" or ' +
+					'@' + TreeStyleTabConstants.kMODE + ' = "right"' +
+				']]',
 				target,
 				Components.interfaces.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
 			).singleNodeValue
