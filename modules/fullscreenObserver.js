@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2013-2015
+ * Portions created by the Initial Developer are Copyright (C) 2013-2016
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -95,7 +95,7 @@ FullscreenObserver.prototype = {
 
 	onSizeModeChange : function FullscreenObserver_onSizeModeChange()
 	{
-		mydump('onSizeModeChange: '+d.documentElement.getAttribute('sizemode')+'\n');
+		mydump('onSizeModeChange: '+this.document.documentElement.getAttribute('sizemode')+'\n');
 		this.updateToolboxPosition();
 		if (!this.window.gBrowser.treeStyleTab.notifyingRenderedEvent)
 			this.window.gBrowser.treeStyleTab.updateFloatingTabbar(TreeStyleTabConstants.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
