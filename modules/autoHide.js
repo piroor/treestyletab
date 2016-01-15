@@ -1636,8 +1636,7 @@ AutoHideWindow.prototype = inherit(AutoHideBase.prototype, {
 	
 	get shouldListenKeyEvents() 
 	{
-		return !this.treeStyleTab.ctrlTabPreviewsEnabled &&
-				(
+		return (
 					utils.getTreePref('tabbar.autoShow.accelKeyDown') ||
 					utils.getTreePref('tabbar.autoShow.tabSwitch') ||
 					utils.getTreePref('tabbar.autoShow.feedback')
@@ -1706,8 +1705,7 @@ AutoHideWindow.prototype = inherit(AutoHideBase.prototype, {
 	},
  
 	domains : [ 
-		'extensions.treestyletab.',
-		'browser.ctrlTab.previews'
+		'extensions.treestyletab.'
 	],
 
 	onPrefChange : function AHW_onPrefChange(aPrefName) 
@@ -1719,7 +1717,6 @@ AutoHideWindow.prototype = inherit(AutoHideBase.prototype, {
 			case 'extensions.treestyletab.tabbar.autoShow.accelKeyDown':
 			case 'extensions.treestyletab.tabbar.autoShow.tabSwitch':
 			case 'extensions.treestyletab.tabbar.autoShow.feedback':
-			case 'browser.ctrlTab.previews':
 				this.updateKeyListeners(this.window);
 
 			default:

@@ -969,17 +969,10 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
  
 	get shouldListenKeyEventsForAutoExpandByFocusChange() 
 	{
-		return !this.ctrlTabPreviewsEnabled &&
-				(
+		return (
 					utils.getTreePref('autoExpandSubtreeOnSelect.whileFocusMovingByShortcut') ||
 					utils.getTreePref('autoCollapseExpandSubtreeOnSelect')
 				);
-	},
- 
-	get ctrlTabPreviewsEnabled() 
-	{
-		return 'allTabs' in this.window &&
-				prefs.getPref('browser.ctrlTab.previews');
 	},
    
 	receiveMessage : function TSTWindow_receiveMessage(aMessage) 
@@ -1885,8 +1878,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 /* Pref Listener */ 
 	
 	domains : [ 
-		'extensions.treestyletab',
-		'browser.ctrlTab.previews'
+		'extensions.treestyletab'
 	],
  
 	onPrefChange : function TSTWindow_onPrefChange(aPrefName) 
@@ -1899,7 +1891,6 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 				this.themeManager.set(prefs.getPref('extensions.treestyletab.tabbar.style'), this.position);
 				break;
 
-			case 'browser.ctrlTab.previews':
 			case 'extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut':
 			case 'extensions.treestyletab.autoCollapseExpandSubtreeOnSelect':
 				if (this.shouldListenKeyEventsForAutoExpandByFocusChange)
