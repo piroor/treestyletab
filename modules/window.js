@@ -714,7 +714,12 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 				return this.onKeyRelease(aEvent);
 
 			case 'blur':
-				return this.simulateKeyRelease();
+				let activeWindow = Cc['@mozilla.org/focus-manager;1']
+									.getService(Ci.nsIFocusManager)
+									.activeWindow;
+				if (!activeWindow || activeWindow != this.window)
+					this.simulateKeyRelease();
+				return;
 
 			case 'mousedown':
 				return this.onTabbarResizeStart(aEvent);
