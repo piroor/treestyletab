@@ -40,7 +40,7 @@ Components.utils.import('resource://treestyletab-modules/constants.js');
 Components.utils.import('resource://treestyletab-modules/utils.js');
 
 function mydump(aString) {
-	if (utils.isDebugging('fullscreenObserver'))
+	if (TreeStyleTabUtils.isDebugging('fullscreenObserver'))
 		dump(aString);
 }
 
