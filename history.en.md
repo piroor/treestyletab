@@ -2,6 +2,8 @@
 
  - master/HEAD
    * Never shrink the tab bar when it is scrolled.
+   * No more flashing issue of the tab bar in the "auto hide" mode, while moving focus on tabs by Ctrl-Tab.
+   * Handle long press of the Ctrl key even when `browser.ctrlTab.previews` is `true`.
  - 0.16.2015122501
    * Initialize itself correctly on Firefox 38. (regression)
    * Don't show thin glay bar for pinned tabs on fullscreen HTML5 video.
