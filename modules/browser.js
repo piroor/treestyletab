@@ -3678,9 +3678,10 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			aOldPosition = aTab._tPos;
 
 		var pos = this.getChildIndex(aTab, parent);
-		var oldPos = this.getChildIndex(this.getAllTabs(this.mTabBrowser)[aOldPosition], parent);
+		var oldPositionTab = this.getAllTabs(this.mTabBrowser)[aOldPosition];
+		var oldPos = this.getChildIndex(oldPositionTab, parent);
 		var delta;
-		if (pos == oldPos) { // no move?
+		if (oldPositionTab == aTab && pos == oldPos) { // no move?
 			mydump('  => no move\n');
 			return;
 		}
@@ -3693,8 +3694,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		mydump((new Error()).stack.replace(/^/gm, '  ')+'\n');
 
-		var prevTab = this.getPreviousTab(aTab);
-		var nextTab = this.getNextTab(aTab);
+		var prevTab = this.getPreviousVisibleTab(aTab);
+		var nextTab = this.getNextVisibleTab(aTab);
 
 		var tabs = this.getDescendantTabs(aTab);
 		if (tabs.length) {

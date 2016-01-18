@@ -455,22 +455,16 @@ var TreeStyleTabWindowHelper = {
 			return eval(aName+' = '+aSource.replace(
 				'if (nextTab)',
 				'(function() {\n' +
-				'  if (this.treeStyleTab.hasChildTabs(this.mCurrentTab)) {\n' +
-				'    let descendant = this.treeStyleTab.getDescendantTabs(this.mCurrentTab);\n' +
-				'    if (descendant.length)\n' +
-				'      nextTab = this.treeStyleTab.getNextTab(descendant[descendant.length-1]);\n' +
+				'  let descendants = this.treeStyleTab.getDescendantTabs(this.mCurrentTab);\n' +
+				'  if (descendants.indexOf(nextTab) > -1) {\n' +
+				'    let lastDescendant = this.treeStyleTab.getLastDescendantTab(this.mCurrentTab);\n' +
+				'    nextTab = this.treeStyleTab.getNextVisibleTab(lastDescendant || this.mCurrentTab);\n' +
+				'  }\n' +
+				'  if (this.treeStyleTab.hasChildTabs(nextTab) && this.treeStyleTab.isSubtreeCollapsed(nextTab)) {\n' +
+				'    nextTab = this.treeStyleTab.getLastDescendantTab(nextTab);\n' +
 				'  }\n' +
 				'}).call(this);' +
 				'$&'
-			).replace(
-				/(this.moveTabTo\([^;]+\);)/,
-				'(function() {\n' +
-				'  let descendant = this.treeStyleTab.getDescendantTabs(nextTab);\n' +
-				'  if (descendant.length) {\n' +
-				'    nextTab = descendant[descendant.length-1];\n' +
-				'  }\n' +
-				'  $1\n' +
-				'}).call(this);'
 			).replace(
 				'this.moveTabToStart();',
 				'(function() {\n' +
@@ -490,6 +484,12 @@ var TreeStyleTabWindowHelper = {
 
 		TreeStyleTabUtils.doPatching(b.moveTabBackward, 'b.moveTabBackward', function(aName, aSource) {
 			return eval(aName+' = '+aSource.replace(
+				'if (previousTab)',
+				'(function() {\n' +
+				'  previousTab = this.treeStyleTab.getPreviousVisibleTab(this.mCurrentTab);\n' +
+				'}).call(this);' +
+				'$&'
+			).replace(
 				'this.moveTabToEnd();',
 				'(function() {\n' +
 				'  this.treeStyleTab.internallyTabMovingCount++;\n' +
