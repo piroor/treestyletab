@@ -156,6 +156,8 @@ BrowserUIShowHideObserver.prototype = {
 			TST.evaluateXPath(
 				// ignore modifications in the location bar (ex. identity icon)
 				'ancestor-or-self::xul:textbox |' +
+				// or menu items
+				'ancestor-or-self::xul:menupopup |' +
 				// or scrollable indicator in the vertical tab bar
 				'ancestor-or-self::xul:spacer[' +
 					'contains(@class, "arrowscrollbox-overflow-start-indicator") or ' +
