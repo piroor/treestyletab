@@ -3575,6 +3575,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		var prevPosition = aEvent.detail;
 		tab.__treestyletab__previousPosition = prevPosition;
+		mydump('onTabMove '+prevPosition+' => '+tab._tPos+'\n');
 
 		// When the tab was moved before TabOpen event is fired, we have to update manually.
 		var newlyOpened = !this.isTabInitialized(tab) && this.onTabOpen(null, tab);
@@ -3597,8 +3598,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			if (storedId && tab.getAttribute(this.kID) != storedId)
 				restored = this.onTabRestoring(aEvent);
 		}
+		mydump('  newlyOpened: '+newlyOpened+'\n');
+		mydump('  restored:    '+restored+'\n');
 
 		if (this.hasChildTabs(tab) && !this.subTreeMovingCount) {
+			mydump('  => move sub tree\n');
 			this.moveTabSubtreeTo(tab, tab._tPos);
 		}
 
@@ -3634,6 +3638,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			if (!this.subTreeChildrenMovingCount)
 				this.updateChildrenArray(parentTab);
 		}
+		mydump('  tabsToBeUpdated: '+tabsToBeUpdated.map(function(aTab) { return aTab._tPos; })+'\n');
 
 		var updatedTabs = new WeakMap();
 		tabsToBeUpdated.forEach(function(aTab) {
@@ -3666,6 +3671,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	
 	attachTabFromPosition : function TSTBrowser_attachTabFromPosition(aTab, aOldPosition) 
 	{
+		mydump('attachTabFromPosition '+aOldPosition+' => '+aTab._tPos+'\n');
 		var parent = this.getParentTab(aTab);
 
 		if (aOldPosition === void(0))
@@ -3675,6 +3681,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var oldPos = this.getChildIndex(this.getAllTabs(this.mTabBrowser)[aOldPosition], parent);
 		var delta;
 		if (pos == oldPos) { // no move?
+			mydump('  => no move\n');
 			return;
 		}
 		else if (pos < 0 || oldPos < 0) {
@@ -3684,7 +3691,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			delta = Math.abs(pos - oldPos);
 		}
 
-		mydump('attachTabFromPosition '+aTab._tPos+' / '+aOldPosition+'\n');
 		mydump((new Error()).stack.replace(/^/gm, '  ')+'\n');
 
 		var prevTab = this.getPreviousTab(aTab);
@@ -3694,12 +3700,16 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (tabs.length) {
 			nextTab = this.getNextTab(tabs[tabs.length-1]);
 		}
+		mydump('  prevTab: '+(prevTab&&(prevTab._tPos+'('+prevTab.linkedBrowser.currentURI.spec+')'))+'\n');
+		mydump('  nextTab: '+(nextTab&&(nextTab._tPos+'('+nextTab.linkedBrowser.currentURI.spec+')'))+'\n');
 
 		var prevParent = this.getParentTab(prevTab);
 		var nextParent = this.getParentTab(nextTab);
 
 		var prevLevel  = prevTab ? Number(prevTab.getAttribute(this.kNEST)) : -1 ;
 		var nextLevel  = nextTab ? Number(nextTab.getAttribute(this.kNEST)) : -1 ;
+		mydump('  prevLevel: '+prevLevel+'\n');
+		mydump('  nextLevel: '+nextLevel+'\n');
 
 		var newParent;
 
