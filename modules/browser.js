@@ -3166,6 +3166,15 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		  'treeStructure: '+this.treeStructure
 		].join('\n  ') + '\n');
 
+		if (!this.readiedToAttachNewTab) {
+			this.window.setTimeout((function() {
+				if (tab.owner && tab.owner != this.getParentTab(tab)) {
+					mydump('TSTBrowser_onTabOpen: new child tab opened by browser.tabs.insertRelatedAfterCurrent=true\n');
+					this.attachTabTo(tab, tab.owner);
+				}
+			}).bind(this), 0);
+		}
+
 		if (this.readiedToAttachNewTab) {
 			if (pareintIndexInTree < 0) { // there is no parent, so this is a new parent!
 				this.parentTab = tab.getAttribute(this.kID);
