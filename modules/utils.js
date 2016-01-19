@@ -225,7 +225,7 @@ var TreeStyleTabUtils = {
 				{
 					prefs.clearPref('browser.tabs.insertRelatedAfterCurrent');
 					let backupValue = prefs.getPref('browser.tabs.insertRelatedAfterCurrent.backup');
-					if (backupValue === null)
+					if (backupValue !== null)
 						prefs.setPref('browser.tabs.insertRelatedAfterCurrent', backupValue);
 				}
 			default:
