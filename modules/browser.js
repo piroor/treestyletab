@@ -3166,7 +3166,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		  'treeStructure: '+this.treeStructure
 		].join('\n  ') + '\n');
 
-		if (!this.readiedToAttachNewTab) {
+		if (typeof this.readiedToAttachNewTab !== 'boolean') {
 			this.window.setTimeout((function() {
 				if (tab.owner && tab.owner != this.getParentTab(tab)) {
 					mydump('TSTBrowser_onTabOpen: new child tab opened by browser.tabs.insertRelatedAfterCurrent=true\n');

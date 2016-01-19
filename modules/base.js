@@ -1541,6 +1541,43 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		return false;
 	},
  
+	readyToOpenOrphanTab : function TSTBase_readyToOpenOrphanTab(aTabOrSomething) /* PUBLIC API */ 
+	{
+		var browser = this.getBrowserFromTabBrowserElements(aTabOrSomething);
+		if (!browser)
+			return false;
+
+		var ownerBrowser = this.getTabBrowserFromChild(browser);
+
+		if (utils.isDebugging('base'))
+			dump('Tree Style Tab: new rophan tab is requested.\n'+
+			     new Error().stack.replace(/^/gm, '  ')+'\n');
+
+		ownerBrowser.treeStyleTab.readiedToAttachNewTab   = false;
+
+		return true;
+	},
+	/**
+	 * Extended version. If you don't know whether a new tab will be actually
+	 * opened or not (by the command called after TST's API), then use this.
+	 * This version automatically cancels the "ready" state with delay.
+	 */
+	readyToOpenOrphanTabNow : function TSTBase_readyToOpenOrphanTabNow(...aArgs) /* PUBLIC API */
+	{
+		if (this.readyToOpenOrphanTab.apply(this, aArgs)) {
+			setTimeout((function() {
+				try {
+					this.stopToOpenChildTab(aArgs[0]);
+				}
+				catch(e) {
+					this.defaultErrorHandler(e);
+				}
+			}).bind(this), 0);
+			return true;
+		}
+		return false;
+	},
+ 
 	readyToOpenNextSiblingTab : function TSTBase_readyToOpenNextSiblingTab(aTabOrSomething) /* PUBLIC API */ 
 	{
 		var browser = this.getBrowserFromTabBrowserElements(aTabOrSomething);
@@ -1688,9 +1725,11 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 
 		switch (aBehavior)
 		{
-			case this.kNEWTAB_OPEN_AS_ORPHAN:
 			case this.kNEWTAB_DO_NOTHING:
 			default:
+				break;
+			case this.kNEWTAB_OPEN_AS_ORPHAN:
+				this.readyToOpenOrphanTabNow(aBaseTab);
 				break;
 			case this.kNEWTAB_OPEN_AS_CHILD:
 				this.readyToOpenChildTabNow(aBaseTab);
