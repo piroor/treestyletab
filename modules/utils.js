@@ -67,7 +67,7 @@ XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabConstants',
   'resource://treestyletab-modules/constants.js', 'TreeStyleTabConstants');
 
 const TST_PREF_PREFIX = 'extensions.treestyletab.';
-const TST_PREF_VERSION = 11;
+const TST_PREF_VERSION = 12;
 
 
 var TreeStyleTabUtils = {
@@ -220,6 +220,13 @@ var TreeStyleTabUtils = {
 					let physical = this.getTreePref('maxTreeLevel.phisical');
 					this.setTreePref('maxTreeLevel.physical', physical);
 					this.clearTreePref('maxTreeLevel.phisical');
+				}
+			case 11:
+				{
+					prefs.clearPref('browser.tabs.insertRelatedAfterCurrent');
+					let backupValue = prefs.getPref('browser.tabs.insertRelatedAfterCurrent.backup');
+					if (backupValue === null)
+						prefs.setPref('browser.tabs.insertRelatedAfterCurrent', backupValue);
 				}
 			default:
 				for (let i = 0, maxi = orientalPrefs.length; i < maxi; i++)

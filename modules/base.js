@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2014
+ * Portions created by the Initial Developer are Copyright (C) 2010-2016
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -132,7 +132,6 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		this.onPrefChange('extensions.treestyletab.indent.vertical');
 		this.onPrefChange('extensions.treestyletab.indent.horizontal');
 		this.onPrefChange('extensions.treestyletab.clickOnIndentSpaces.enabled');
-		this.onPrefChange('browser.tabs.insertRelatedAfterCurrent.override');
 		this.onPrefChange('extensions.stm.tabBarMultiRows.override'); // Super Tab Mode
 		this.onPrefChange('extensions.treestyletab.tabbar.scroll.smooth');
 		this.onPrefChange('extensions.treestyletab.tabbar.scroll.duration');
@@ -184,7 +183,6 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			prefs.removePrefListener(this);
 
 			let restorePrefs = [
-				'browser.tabs.insertRelatedAfterCurrent',
 				'extensions.stm.tabBarMultiRows' // Super Tab Mode
 			];
 			for (let i = 0, maxi = restorePrefs.length; i < maxi; i++)
@@ -2403,7 +2401,6 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	domains : [ 
 		'extensions.treestyletab.',
 		'browser.tabs.animate',
-		'browser.tabs.insertRelatedAfterCurrent',
 		'extensions.stm.tabBarMultiRows' // Super Tab Mode
 	],
  
@@ -2435,13 +2432,11 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			case 'extensions.treestyletab.tabbar.shrunkenWidth':
 				return this.correctMismatchedTabWidthPrefs(aPrefName);
 
-			case 'browser.tabs.insertRelatedAfterCurrent':
 			case 'extensions.stm.tabBarMultiRows': // Super Tab Mode
 				if (this.prefOverriding)
 					return;
 				aPrefName += '.override';
 				prefs.setPref(aPrefName, value);
-			case 'browser.tabs.insertRelatedAfterCurrent.override':
 			case 'extensions.stm.tabBarMultiRows.override': // Super Tab Mode
 				if (prefs.getPref(aPrefName+'.force')) {
 					let defaultValue = prefs.getDefaultPref(aPrefName);
