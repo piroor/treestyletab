@@ -3168,10 +3168,14 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		if (typeof this.readiedToAttachNewTab !== 'boolean') {
 			this.window.setTimeout((function() {
-				if (tab.owner && tab.owner != this.getParentTab(tab)) {
-					mydump('TSTBrowser_onTabOpen: new child tab opened by browser.tabs.insertRelatedAfterCurrent=true\n');
-					this.attachTabTo(tab, tab.owner);
-				}
+				if (!tab.owner)
+					return;
+				mydump('TSTBrowser_onTabOpen: new child tab opened by browser.tabs.insertRelatedAfterCurrent=true\n');
+				var nextTab = this.findNextTabForNewChild(tab, tab.owner);
+				mydump('  next tab: '+(nextTab && nextTab._tPos)+'\n');
+				this.attachTabTo(tab, tab.owner, {
+					insertBefore: nextTab
+				});
 			}).bind(this), 0);
 		}
 
@@ -3210,6 +3214,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				newIndex = parent._tPos + 1;
 				if (refTab = this.getFirstChildTab(parent))
 					this.insertBefore = refTab.getAttribute(this.kID);
+			}
+			else {
+				refTab = this.findNextTabForNewChild(tab, parent);
+				if (refTab)
+					nextIndex = refTab._tPos;
 			}
 
 			if (newIndex > -1) {
@@ -3284,6 +3293,23 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	_addedCountClearTimer : null,
 	_checkRestoringWindowTimerOnTabAdded : null,
 	
+	findNextTabForNewChild : function TSTBrowser_findNextTabForNewChild(aTab, aParent) 
+	{
+		if (!aParent)
+			return this.getNextTab(aTab);
+
+		var nextTab;
+		if (utils.getTreePref('insertNewChildAt') === this.kINSERT_FISRT)
+			nextTab = this.getFirstChildTab(aParent);
+		else
+			nextTab = this.getNextSiblingTab(aParent) || this.getNextTab(this.getLastDescendantTab(aParent));
+
+		if (nextTab == aTab)
+			nextTab = this.getNextTab(nextTab);
+
+		return nextTab;
+	},
+ 
 	scrollToNewTab : function TSTBrowser_scrollToNewTab(aTab) 
 	{
 		if (!aTab.parentNode) // do nothing for closed tab!
@@ -3583,6 +3609,14 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var b   = this.mTabBrowser;
 
 		var prevPosition = aEvent.detail;
+		if (tab.owner && this.internallyTabMovingCount <= 0) {
+			mydump('onTabMove for new child tab: move back '+tab._tPos+' => '+prevPosition+'\n');
+			this.internallyTabMovingCount++;
+			b.moveTabTo(tab, prevPosition);
+			this.internallyTabMovingCount--;
+			return;
+		}
+
 		tab.__treestyletab__previousPosition = prevPosition;
 		mydump('onTabMove '+prevPosition+' => '+tab._tPos+'\n');
 
