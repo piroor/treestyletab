@@ -1725,10 +1725,9 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 
 		switch (aBehavior)
 		{
+			case this.kNEWTAB_OPEN_AS_ORPHAN:
 			case this.kNEWTAB_DO_NOTHING:
 			default:
-				break;
-			case this.kNEWTAB_OPEN_AS_ORPHAN:
 				this.readyToOpenOrphanTabNow(aBaseTab);
 				break;
 			case this.kNEWTAB_OPEN_AS_CHILD:
