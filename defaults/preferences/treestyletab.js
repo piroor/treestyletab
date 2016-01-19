@@ -629,8 +629,6 @@ pref("extensions.treestyletab.restoreTree.level", 1);
  * conflict with TST features. They will be rolled back when TST is uninstalled.
  */
 pref("browser.link.open_newwindow.restriction.override", 0);
-pref("browser.tabs.insertRelatedAfterCurrent.override", false);
-pref("browser.tabs.insertRelatedAfterCurrent.override.force", true);
 
 /**
  * Extra commands for selected tabs (Multiple Tab Handler)
