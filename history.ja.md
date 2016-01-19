@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+   * `browser.tabs.insertRelatedAfterCurrent`の設定を強制的に無効化しないようにして、リンクなどから開かれるタブについては既定の挙動を尊重するようにした
    * `gBrowser.addTab()`メソッドに`relatedToCurrent:true`オプションを指定して開かれた新しいタブを、基本的に現在のタブの子として開くようにした
      （この変更により、特別な対応無しの状態でも他のアドオンが開くタブも現在のタブの子タブになるようになった）
    * 独立したタブを明示的に開くための新しいAPIを追加: `gBrowser.treeStyleTab.readyToOpenOrphanTab()` および `gBrowser.treeStyleTab.readyToOpenOrphanTabNow()`

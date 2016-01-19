@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * Gave up to disable the preference `browser.tabs.insertRelatedAfterCurrent`.
+     Now TST respects the default behavior for the preference, about new tabs opened from links.
    * All new tabs opened via the `gBrowser.addTab()` method with the option `relatedToCurrent:true` are now basically opened as children of the current tab.
      By this change, new tabs from various other addons will be opened as children of the current tab without any hack.
    * A new APIs to open new orphan tab is added: `gBrowser.treeStyleTab.readyToOpenOrphanTab()` and `gBrowser.treeStyleTab.readyToOpenOrphanTabNow()`.
