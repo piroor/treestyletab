@@ -1651,14 +1651,14 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			dump('Tree Style Tab: new child tab is canceled.\n'+
 			     new Error().stack.replace(/^/gm, '  ')+'\n');
 
-		ownerBrowser.treeStyleTab.readiedToAttachNewTab      = false;
-		ownerBrowser.treeStyleTab.readiedToAttachNewTabGroup = false;
-		ownerBrowser.treeStyleTab.readiedToAttachMultiple    = false;
-		ownerBrowser.treeStyleTab.multipleCount              = -1;
-		ownerBrowser.treeStyleTab.parentTab                  = null;
-		ownerBrowser.treeStyleTab.insertBefore               = null;
-		ownerBrowser.treeStyleTab.treeStructure              = null;
-		ownerBrowser.treeStyleTab.shouldExpandAllTree        = false;
+		delete ownerBrowser.treeStyleTab.readiedToAttachNewTab;
+		delete ownerBrowser.treeStyleTab.readiedToAttachNewTabGroup;
+		delete ownerBrowser.treeStyleTab.readiedToAttachMultiple;
+		delete ownerBrowser.treeStyleTab.multipleCount;
+		delete ownerBrowser.treeStyleTab.parentTab;
+		delete ownerBrowser.treeStyleTab.insertBefore;
+		delete ownerBrowser.treeStyleTab.treeStructure;
+		delete ownerBrowser.treeStyleTab.shouldExpandAllTree;
 
 		return true;
 	},

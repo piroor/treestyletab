@@ -3202,7 +3202,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			else if (
 				parent &&
 				utils.getTreePref('insertNewChildAt') == this.kINSERT_FISRT &&
-				(this.multipleCount <= 0 || this._addedCountInThisLoop <= 0)
+				(typeof this.multipleCount !== 'number' || this._addedCountInThisLoop <= 0)
 				) {
 				/* 複数の子タブを一気に開く場合、最初に開いたタブだけを
 				   子タブの最初の位置に挿入し、続くタブは「最初の開いたタブ」と
