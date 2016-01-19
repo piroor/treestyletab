@@ -1,6 +1,10 @@
 # 更新履歴
 
  - master/HEAD
+   * `gBrowser.addTab()`メソッドに`relatedToCurrent:true`オプションを指定して開かれた新しいタブを、基本的に現在のタブの子として開くようにした
+     （この変更により、特別な対応無しの状態でも他のアドオンが開くタブも現在のタブの子タブになるようになった）
+   * 独立したタブを明示的に開くための新しいAPIを追加: `gBrowser.treeStyleTab.readyToOpenOrphanTab()` および `gBrowser.treeStyleTab.readyToOpenOrphanTabNow()`
+     （タブを閉じた後で元のタブに自動的にフォーカスを戻すために`relatedToCurrent:true`オプションを指定しつつ独立したタブを開きたい場面向け）
    * 「タブバーを自動的に縮める」設定の時にタブバーをスクロールするとタブバーが勝手に縮んでしまっていたのを修正
    * タブバーを自動で隠す状態の時、Ctrl-Tabでのタブ切り替え時にタブバーが頻繁に出たり消えたりする問題を解消
    * `browser.ctrlTab.previews`が`true`の時でもCtrlキーの長押しなどの操作を受け付けるようにした

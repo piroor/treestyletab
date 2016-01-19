@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+   * All new tabs opened via the `gBrowser.addTab()` method with the option `relatedToCurrent:true` are now basically opened as children of the current tab.
+     By this change, new tabs from various other addons will be opened as children of the current tab without any hack.
+   * A new APIs to open new orphan tab is added: `gBrowser.treeStyleTab.readyToOpenOrphanTab()` and `gBrowser.treeStyleTab.readyToOpenOrphanTabNow()`.
+     They are useful to open new independent tab with `relatedToCurrent:true` (to go back to the previous "current" tab after the new tab closed immediately).
    * Never shrink the tab bar when it is scrolled.
    * No more flashing issue of the tab bar in the "auto hide" mode, while moving focus on tabs by Ctrl-Tab.
    * Handle long press of the Ctrl key even when `browser.ctrlTab.previews` is `true`.
