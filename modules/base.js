@@ -1550,7 +1550,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		var ownerBrowser = this.getTabBrowserFromChild(browser);
 
 		if (utils.isDebugging('base'))
-			dump('Tree Style Tab: new rophan tab is requested.\n'+
+			dump('Tree Style Tab: new orphan tab is requested.\n'+
 			     new Error().stack.replace(/^/gm, '  ')+'\n');
 
 		ownerBrowser.treeStyleTab.readiedToAttachNewTab   = false;
