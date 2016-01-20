@@ -1331,17 +1331,17 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			this.handleNewTabFromCurrent(aOwner);
 	},
  
-	onBeforeOpenLinkWithTab : function TSTWindow_onBeforeOpenLinkWithTab(aTab, aFromChrome) 
+	onBeforeOpenLinkWithTab : function TSTWindow_onBeforeOpenLinkWithTab(aTab, aParams) 
 	{
 		if (!aTab)
 			return;
 
 		if (utils.isDebugging('window'))
-			dump('TSTWindow_onBeforeOpenLinkWithTab '+[aTab, aFromChrome, this.checkToOpenChildTab(aTab)]+'\n');
+			dump('TSTWindow_onBeforeOpenLinkWithTab '+[aTab, JSON.stringify(aParams), this.checkToOpenChildTab(aTab)]+'\n');
 
-		if (!aFromChrome && !this.checkToOpenChildTab(aTab))
+		if (!aParams.fromChrome && !this.checkToOpenChildTab(aTab))
 			this.handleNewTabFromCurrent(aTab);
-		else
+		else if (!aParams.relatedToCurrent && !aParams.referrerURI)
 			this.readyToOpenOrphanTabNow(aTab);
 	},
  

@@ -225,7 +225,7 @@ var TreeStyleTabWindowHelper = {
 
 		window.__treestyletab__openLinkIn = window.openLinkIn;
 		window.openLinkIn = function(aUrl, aWhere, aParams) {
-			TreeStyleTabService.onBeforeOpenLinkWithTab(gBrowser.selectedTab, aParams.fromChrome);
+			TreeStyleTabService.onBeforeOpenLinkWithTab(gBrowser.selectedTab, aParams);
 			return window.__treestyletab__openLinkIn.call(this, aUrl, aWhere, aParams);
 		};
 
