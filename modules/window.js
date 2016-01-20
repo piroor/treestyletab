@@ -1341,6 +1341,8 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 
 		if (!aFromChrome && !this.checkToOpenChildTab(aTab))
 			this.handleNewTabFromCurrent(aTab);
+		else
+			this.readyToOpenOrphanTabNow(aTab);
 	},
  
 	onBeforeOpenNewTabByThirdParty : function TSTWindow_onBeforeOpenNewTabByThirdParty(aOwner) 
@@ -1350,6 +1352,8 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 
 		if (!this.checkToOpenChildTab(aOwner))
 			this.handleNewTabFromCurrent(aOwner);
+		else
+			this.readyToOpenOrphanTabNow(aOwner);
 	},
  
 	onBeforeBrowserAccessOpenURI : function TSTWindow_onBeforeBrowserAccessOpenURI(aOpener, aWhere, aContext) 
@@ -1383,6 +1387,8 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		if ((hasOwnerTab || internalOpen) &&
 			aWhere == Ci.nsIBrowserDOMWindow.OPEN_NEWTAB)
 			this.handleNewTabFromCurrent(opener);
+		else
+			this.readyToOpenOrphanTabNow(opener);
 	},
  
 	onBeforeViewMedia : function TSTWindow_onBeforeViewMedia(aEvent, aOwner) 
@@ -1394,6 +1400,8 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 
 		if (where.indexOf('tab') == 0)
 			this.handleNewTabFromCurrent(aOwner);
+		else
+			this.readyToOpenOrphanTabNow(aOwner);
 	},
  
 	onBeforeBrowserSearch : function TSTWindow_onBeforeBrowserSearch(aTerm, aForceNewTab) 
@@ -1404,6 +1412,8 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		if ((arguments.length == 1 || aForceNewTab) &&
 			this.shouldOpenSearchResultAsChild(aTerm))
 			this.handleNewTabFromCurrent();
+		else
+			this.readyToOpenOrphanTabNow();
 	},
   
 /* Tree Style Tabの初期化が行われる前に復元されたセッションについてツリー構造を復元 */ 
