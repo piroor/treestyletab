@@ -1608,6 +1608,11 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
  
 	createSubtree : function TSTWindow_createSubtree(aTabs) 
 	{
+		if (utils.isDebugging('window'))
+			dump('TSTWindow_createSubtree\n'+aTabs.map(function(aTab) {
+				return '  '+aTab._tPos+': '+aTab.linkedBrowser.currentURI.spec;
+			}).join('\n')+'\n');
+
 		var rootTabs = this.getRootTabs(aTabs);
 
 		var parent = this.getParentTab(aTabs[0]);
@@ -1627,6 +1632,8 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 				var parentInTargets = aTabs.indexOf(this.getParentTab(aDescendantTab)) > -1;
 				if (inTargets || (inTargets == parentInTargets))
 					return;
+				if (utils.isDebugging('window'))
+					dump('  detaching unselected descendant: '+aDescendantTab._tPos+': '+aDescendantTab.linkedBrowser.currentURI.spec+'\n');
 				if (parentTab)
 					b.treeStyleTab.attachTabTo(aDescendantTab, parentTab, {
 						dontExpand   : true,
