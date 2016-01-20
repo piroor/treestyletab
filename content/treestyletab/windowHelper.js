@@ -31,7 +31,7 @@ var TreeStyleTabWindowHelper = {
 				else
 					where = TreeStyleTabUtils.prefs.getPref('browser.link.open_newwindow');
 			}
-			TreeStyleTabService.onBeforeBrowserAccessOpenURI(aOpener, where, aContext);
+			TreeStyleTabService.onBeforeBrowserAccessOpenURI(aOpener, where);
 			return nsBrowserAccess.prototype.__treestyletab__openURI.call(this, aURI, aOpener, aWhere, aContext);
 		};
 

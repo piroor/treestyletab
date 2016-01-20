@@ -1356,17 +1356,23 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			this.readyToOpenOrphanTabNow(aOwner);
 	},
  
-	onBeforeBrowserAccessOpenURI : function TSTWindow_onBeforeBrowserAccessOpenURI(aOpener, aWhere, aContext) 
+	onBeforeBrowserAccessOpenURI : function TSTWindow_onBeforeBrowserAccessOpenURI(aOpener, aWhere) 
 	{
 		var hasOwnerTab = false;
 		var opener = null;
 		if (aOpener) {
 			if (aOpener instanceof Ci.nsIDOMWindow) {
+				if (utils.isDebugging('window'))
+					dump('TSTWindow_onBeforeBrowserAccessOpenURI: opener is DOMWindow\n');
 				opener = aOpener;
 				hasOwnerTab = this.getTabFromFrame(opener.top);
+				if (utils.isDebugging('window'))
+					dump('  opener =>'+[opener,hasOwnerTab]+'\n');
 			}
 			else if (Ci.nsIOpenURIInFrameParams &&
 					aOpener instanceof Ci.nsIOpenURIInFrameParams) {
+				if (utils.isDebugging('window'))
+					dump('TSTWindow_onBeforeBrowserAccessOpenURI: opener is nsIOpenURIInFrameParams\n');
 				// from remote contents, we have to detect its opener from the URI.
 				let referrer = aOpener.referrer;
 				if (referrer) {
@@ -1381,10 +1387,12 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 						break;
 					}
 				}
+				if (utils.isDebugging('window'))
+					dump('  opener =>'+[opener,hasOwnerTab]+'\n');
 			}
 		}
-		var internalOpen = aContext != Ci.nsIBrowserDOMWindow.OPEN_EXTERNAL;
-		if ((hasOwnerTab || internalOpen) &&
+		if (aOpener &&
+			hasOwnerTab &&
 			aWhere == Ci.nsIBrowserDOMWindow.OPEN_NEWTAB)
 			this.handleNewTabFromCurrent(opener);
 		else
