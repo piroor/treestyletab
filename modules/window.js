@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2012-2015
+ * Portions created by the Initial Developer are Copyright (C) 2012-2016
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -1333,12 +1333,21 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
  
 	onBeforeOpenLinkWithTab : function TSTWindow_onBeforeOpenLinkWithTab(aTab, aFromChrome) 
 	{
-		if (!aFromChrome && aTab && !this.checkToOpenChildTab(aTab))
+		if (!aTab)
+			return;
+
+		if (utils.isDebugging('window'))
+			dump('TSTWindow_onBeforeOpenLinkWithTab '+[aTab, aFromChrome, this.checkToOpenChildTab(aTab)]+'\n');
+
+		if (!aFromChrome && !this.checkToOpenChildTab(aTab))
 			this.handleNewTabFromCurrent(aTab);
 	},
  
 	onBeforeOpenNewTabByThirdParty : function TSTWindow_onBeforeOpenNewTabByThirdParty(aOwner) 
 	{
+		if (utils.isDebugging('window'))
+			dump('TSTWindow_onBeforeOpenNewTabByThirdParty '+[aOwner, this.checkToOpenChildTab(aTab)]+'\n');
+
 		if (!this.checkToOpenChildTab(aOwner))
 			this.handleNewTabFromCurrent(aOwner);
 	},
@@ -1378,12 +1387,20 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
  
 	onBeforeViewMedia : function TSTWindow_onBeforeViewMedia(aEvent, aOwner) 
 	{
-		if (String(this.window.whereToOpenLink(aEvent, false, true)).indexOf('tab') == 0)
+		var where = String(this.window.whereToOpenLink(aEvent, false, true));
+
+		if (utils.isDebugging('window'))
+			dump('TSTWindow_onBeforeViewMedia '+[aEvent, aOwner, where]+'\n');
+
+		if (where.indexOf('tab') == 0)
 			this.handleNewTabFromCurrent(aOwner);
 	},
  
 	onBeforeBrowserSearch : function TSTWindow_onBeforeBrowserSearch(aTerm, aForceNewTab) 
 	{
+		if (utils.isDebugging('window'))
+			dump('TSTWindow_onBeforeBrowserSearch '+[aTerm, aForceNewTab, this.shouldOpenSearchResultAsChild(aTerm)]+'\n');
+
 		if ((arguments.length == 1 || aForceNewTab) &&
 			this.shouldOpenSearchResultAsChild(aTerm))
 			this.handleNewTabFromCurrent();
