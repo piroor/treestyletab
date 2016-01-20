@@ -2,8 +2,9 @@
 
  - master/HEAD
    * `browser.tabs.insertRelatedAfterCurrent`の設定を強制的に無効化しないようにして、リンクなどから開かれるタブについては既定の挙動を尊重するようにした
-   * `gBrowser.addTab()`メソッドに`relatedToCurrent:true`オプションを指定して開かれた新しいタブを、基本的に現在のタブの子として開くようにした
+   * `gBrowser.addTab()`メソッドに`relatedToCurrent:true`オプションもしくは参照元ページの情報を伴って開かれた新しいタブを、基本的に現在のタブの子として開くようにした
      （この変更により、特別な対応無しの状態でも他のアドオンが開くタブも現在のタブの子タブになるようになった）
+   * `window.open()`で開かれたタブについて、参照元ページの情報から親らしきタブが見つからなかった場合は常に独立したタブとして開くようにした
    * 独立したタブを明示的に開くための新しいAPIを追加: `gBrowser.treeStyleTab.readyToOpenOrphanTab()` および `gBrowser.treeStyleTab.readyToOpenOrphanTabNow()`
      （タブを閉じた後で元のタブに自動的にフォーカスを戻すために`relatedToCurrent:true`オプションを指定しつつ独立したタブを開きたい場面向け）
    * 「タブバーを自動的に縮める」設定の時にタブバーをスクロールするとタブバーが勝手に縮んでしまっていたのを修正
