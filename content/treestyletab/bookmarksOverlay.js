@@ -1,8 +1,7 @@
 Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
+Components.utils.import('resource://treestyletab-modules/bookmark.js', {});
 XPCOMUtils.defineLazyModuleGetter(this,
   'TreeStyleTabUtils', 'resource://treestyletab-modules/utils.js');
-XPCOMUtils.defineLazyModuleGetter(this,
-  'TreeStyleTabBookmarksService', 'resource://treestyletab-modules/bookmark.js');
 
 (function() {
 let { ReferenceCounter } = Components.utils.import('resource://treestyletab-modules/ReferenceCounter.js', {});
