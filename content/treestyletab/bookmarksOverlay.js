@@ -242,6 +242,8 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabService, {
 				let method = (TreeStyleTabUtils.getTreePref('compatibility.TabUtilities') && PlacesUIUtils.TU__openTabset) ?
 							'TU__openTabset' :
 							'_openTabset';
+				if (PlacesUIUtils.__openbookmarkintab__openTabset)
+					method = '__openbookmarkintab__openTabset';
 				TreeStyleTabUtils.doPatching(PlacesUIUtils[method], 'PlacesUIUtils.'+method, function(aName, aSource) {
 					var patched = eval(aName+' = '+aSource.replace(
 						/(function[^\(]*\([^\)]+)(\))/,
