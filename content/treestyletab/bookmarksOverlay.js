@@ -267,8 +267,6 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabService, {
 						'TSTPreviousTabs = TSTResult.previousTabs;\n' +
 						'TSTTreeStructureApplied = TSTResult.treeStructureApplied;\n' +
 						'TSTOpenGroupBookmarkBehavior = TSTResult.behavior;\n' +
-						'if (typeof replaceCurrentTab != "undefined")\n' +
-						'  replaceCurrentTab = TSTResult.replaceCurrentTab;\n' +
 						'$1'
 					).replace(
 						/(\}\)?)$/,
