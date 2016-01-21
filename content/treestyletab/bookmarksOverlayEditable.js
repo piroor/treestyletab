@@ -1,11 +1,19 @@
 Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 XPCOMUtils.defineLazyModuleGetter(this,
   'TreeStyleTabUtils', 'resource://treestyletab-modules/utils.js');
+XPCOMUtils.defineLazyModuleGetter(this,
+  'TreeStyleTabBookmarksService', 'resource://treestyletab-modules/bookmark.js');
 
 (function() {
 let { ReferenceCounter } = Components.utils.import('resource://treestyletab-modules/ReferenceCounter.js', {});
 let { inherit } = Components.utils.import('resource://treestyletab-modules/lib/inherit.jsm', {});
-var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksService, {
+
+function mydump(aString) {
+	if (TreeStyleTabUtils.isDebugging('bookmark'))
+		dump(aString);
+}
+
+var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksUIService, {
 
 	instantApply : false,
 	canceled : false,
@@ -44,7 +52,8 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksService,
 
 	init : function TSTBMEditable_init()
 	{
-		if (this.isCreatingMultipleBookmarksInFolder) return;
+		if (this.isCreatingMultipleBookmarksInFolder)
+			return;
 
 		// main browser window
 		if ('StarUI' in window) {
@@ -56,7 +65,7 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksService,
 
 			StarUI.__treestyletab__quitEditMode = StarUI.__treestyletab__quitEditMode || StarUI.quitEditMode;
 			StarUI.quitEditMode = function(...args) {
-				TreeStyleTabBookmarksServiceEditable.saveParentFor(this._itemId);
+				TreeStyleTabBookmarksServiceEditable.saveParentFor(gEditItemOverlay.itemId);
 				return this.__treestyletab__quitEditMode.apply(this, args);
 			};
 
@@ -69,12 +78,31 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksService,
 
 		// Bookmarks Property dialog
 		if ('BookmarkPropertiesPanel' in window) {
-			TreeStyleTabUtils.doPatching(BookmarkPropertiesPanel._endBatch, 'BookmarkPropertiesPanel._endBatch', function(aName, aSource) {
-				return eval(aName+' = '+aSource.replace(
-					/(PlacesUtils\.transactionManager\.endBatch\([^)]*\);)/,
-					'$1 TreeStyleTabBookmarksServiceEditable.saveParentFor(this._itemId, true);'
-				));
-			}, 'TreeStyleTab');
+			BookmarkPropertiesPanel.__treestyletab__onDialogAccept = BookmarkPropertiesPanel.onDialogAccept;
+			BookmarkPropertiesPanel.onDialogAccept = function(...aArgs) {
+				this.__treestyletab__itemId = gEditItemOverlay.itemId;
+				return this.__treestyletab__onDialogAccept.apply(this, aArgs);
+			};
+			BookmarkPropertiesPanel.__treestyletab__endBatch = BookmarkPropertiesPanel._endBatch;
+			BookmarkPropertiesPanel._endBatch = function(...aArgs) {
+				var id = this.__treestyletab__itemId || gEditItemOverlay.itemId;
+				mydump('BookmarkPropertiesPanel._endBatch for '+id+'\n');
+				var batching = this._batching;
+				var result = this.__treestyletab__endBatch.apply(this, aArgs);
+				if (id >= 0 && !batching && !this._batching) {
+					this._batching = true;
+					try {
+						TreeStyleTabBookmarksServiceEditable.saveParentFor(id, true);
+					}
+					catch(e) {
+						mydump(e+'\n');
+					}
+					finally {
+						this._batching = false;
+					}
+				}
+				return result;
+			};
 		}
 
 		// Places Organizer (Library)
@@ -119,42 +147,24 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksService,
 		document.getElementById('treestyletab-parent-label').setAttribute('value', TreeStyleTabUtils.treeBundle.getString('bookmarkProperty.parent.label'));
 		this.blankItem.setAttribute('label', TreeStyleTabUtils.treeBundle.getString('bookmarkProperty.parent.blank.label'));
 
-		if (Services.vc.compare(Services.appinfo.platformVersion, '40') >= 0) {
-			// for Firefox 40 and later, after Bug 951651
-			TreeStyleTabUtils.doPatching(gEditItemOverlay.initPanel, 'gEditItemOverlay.initPanel', function(aName, aSource) {
-				return eval(aName+' = '+aSource.replace(
-					/(\}\)?)$/,
-					'  TreeStyleTabBookmarksServiceEditable.parentRow.collapsed = this._element("keywordRow").collapsed && this._element("folderRow").collapsed;\n' +
-					'  if (!TreeStyleTabBookmarksServiceEditable.parentRow.collapsed)\n' +
-					'    TreeStyleTabBookmarksServiceEditable.initParentMenuList();\n' +
-					'$1'
-				));
-			}, 'TreeStyleTab');
-		}
-		else {
-			// for Firefox 39 and olders
-			TreeStyleTabUtils.doPatching(gEditItemOverlay.initPanel, 'gEditItemOverlay.initPanel', function(aName, aSource) {
-				return eval(aName+' = '+aSource.replace(
-					'if (this._itemType == Ci.nsINavBookmarksService.TYPE_BOOKMARK) {',
-					'$& TreeStyleTabBookmarksServiceEditable.initParentMenuList();'
-				));
-			}, 'TreeStyleTab');
+		gEditItemOverlay.__treestyletab__initPanel = gEditItemOverlay.initPanel;
+		gEditItemOverlay.initPanel = function(...aArgs) {
+			var result = this.__treestyletab__initPanel.apply(this, aArgs);
+			TreeStyleTabBookmarksServiceEditable.parentRow.collapsed = (
+				this._element('keywordRow').collapsed &&
+				this._element('folderRow').collapsed
+			);
+			if (!TreeStyleTabBookmarksServiceEditable.parentRow.collapsed)
+				TreeStyleTabBookmarksServiceEditable.initParentMenuList();
+			return result;
+		};
 
-			TreeStyleTabUtils.doPatching(gEditItemOverlay._showHideRows, 'gEditItemOverlay._showHideRows', function(aName, aSource) {
-				return eval(aName+' = '+aSource.replace(
-					/(\}\)?)$/,
-					'  TreeStyleTabBookmarksServiceEditable.parentRow.collapsed = this._element("keywordRow").collapsed && this._element("folderRow").collapsed;\n' +
-					'$1'
-				));
-			}, 'TreeStyleTab');
-		}
-
-		TreeStyleTabUtils.doPatching(gEditItemOverlay.onItemMoved, 'gEditItemOverlay.onItemMoved', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				'{',
-				'$& if (aNewParent == this._getFolderIdFromMenuList()) TreeStyleTabBookmarksServiceEditable.initParentMenuList();'
-			));
-		}, 'TreeStyleTab');
+		gEditItemOverlay.__treestyletab__onItemMoved = gEditItemOverlay.onItemMoved;
+		gEditItemOverlay.onItemMoved = function(...aArgs) {
+			if (aNewParent == this._getFolderIdFromMenuList())
+				TreeStyleTabBookmarksServiceEditable.initParentMenuList();
+			return this.__treestyletab__onItemMoved.apply(this, aArgs);
+		};
 
 		this.editUIInitialized = true;
 	},
@@ -255,7 +265,7 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksService,
 	},
 	_createSiblingsFragmentInternal : function TSTBMEditable_createSiblingsFragmentInternal(aCurrentItem, aItems, aCallback)
 	{
-		var treeStructure = this.getTreeStructureFromItems(aItems);
+		var treeStructure = TreeStyleTabBookmarksService.getTreeStructureFromItems(aItems);
 
 		var currentIndex = aItems.indexOf(aCurrentItem);
 		var selected = treeStructure[currentIndex];
@@ -327,21 +337,19 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksService,
 	},
 	_getSiblingItemsIterator : function TSTBMEditable_getSiblingItemsIterator(aId)
 	{
+		var folderId = -1;
 		try {
-			var folderId = PlacesUtils.bookmarks.getFolderIdForItem(aId);
-			return this._getItemsInFolderIterator(folderId);
+			folderId = PlacesUtils.bookmarks.getFolderIdForItem(aId);
 		}
 		catch(e) {
-			dump('TSTBMEditable_getSiblingItemsIterator('+aId+') failed.\n');
-			dump(e+'\n');
-			dump(new Error().stack+'\n');
 		}
+		return this._getItemsInFolderIterator(folderId);
 	},
 
 	saveParentFor : function TSTBMEditable_saveParentFor(aId, aJustNow)
 	{
 		var newParentId = parseInt(this.menulist.value || -1);
-		if (this.canceled || newParentId == this.getParentItem(aId))
+		if (this.canceled || newParentId == TreeStyleTabBookmarksService.getParentItem(aId))
 			return;
 
 		var itemsIterator = this._getSiblingItemsIterator(aId);
@@ -359,7 +367,7 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksService,
 	},
 	_saveParentForInternal : function TSTBMEditable_saveParentForInternal(aId, aNewParentId, aItems)
 	{
-		var treeStructure = this.getTreeStructureFromItems(aItems);
+		var treeStructure = TreeStyleTabBookmarksService.getTreeStructureFromItems(aItems);
 
 		var parentIndex = aItems.indexOf(aNewParentId);
 		var newIndex;
