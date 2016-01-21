@@ -69,25 +69,33 @@ var TreeStyleTabWindowHelper = {
 			return tab;
 		};
 
-		[
-			'window.duplicateTab.handleLinkClick',
-			'window.duplicatethistab.handleLinkClick',
-			'window.__treestyletab__highlander__origHandleLinkClick',
-			'window.__splitbrowser__handleLinkClick',
-			'window.__ctxextensions__handleLinkClick',
-			'window.handleLinkClick'
-		].some(function(aName) {
-			let func = this._getFunction(aName);
-			if (!func || !/^\(?function handleLinkClick/.test(func.toString()))
-				return false;
-			TreeStyleTabUtils.doPatching(func, aName, function(aName, aSource) {
-				return eval(aName+' = '+aSource.replace(
-					/(charset\s*:\s*doc\.characterSet\s*)/,
-					'$1, event : event, linkNode : linkNode'
-				));
-			}, 'event : event, linkNode : linkNode');
-			return true;
-		}, this);
+		window.__treestyletab__openLinkIn = window.openLinkIn;
+		window.openLinkIn = function(aUrl, aWhere, aParams, ...aArgs) {
+			if (window.__treestyletab__openLinkIn_extraParams)
+				Object.keys(window.__treestyletab__openLinkIn_extraParams).forEach(function(aKey) {
+					aParams[aKey] = window.__treestyletab__openLinkIn_extraParams[aKey];
+				});
+			try {
+				return window.__treestyletab__openLinkIn.apply(this, [aUrl, aWhere, aParams].concat(aArgs));
+			}
+			finally {
+				delete window.__treestyletab__openLinkIn_extraParams;
+			}
+		};
+
+		window.__treestyletab__handleLinkClick = window.handleLinkClick;
+		window.handleLinkClick = function(aEvent, aHref, aLinkNode, ...aArgs) {
+			window.__treestyletab__openLinkIn_extraParams = {
+				event    : aEvent,
+				linkNode : aLinkNode
+			};
+			try {
+				return window.__treestyletab__handleLinkClick.apply(this, [aEvent, aHref, aLinkNode].concat(aArgs));
+			}
+			finally {
+				delete window.__treestyletab__openLinkIn_extraParams;
+			}
+		};
 
 		this.overrideExtensionsPreInit(); // windowHelperHacks.js
 	},
@@ -263,21 +271,17 @@ var TreeStyleTabWindowHelper = {
 			return window.__treestyletab__duplicateTabIn.call(this, aTab, where, delta);
 		};
 
-		[
-			'permaTabs.utils.wrappedFunctions["window.BrowserHomeClick"]',
-			'window.BrowserHomeClick',
-			'window.BrowserGoHome'
-		].forEach(function(aName) {
-			let func = this._getFunction(aName);
-			if (!func || !/^\(?function (BrowserHomeClick|BrowserGoHome)/.test(func.toString()))
-				return;
-			TreeStyleTabUtils.doPatching(func, aName, function(aName, aSource) {
-				return eval(aName+' = '+aSource.replace(
-					'gBrowser.loadTabs(',
-					'TreeStyleTabService.readyToOpenNewTabGroup(gBrowser); $&'
-				));
-			}, 'TreeStyleTab');
-		}, this);
+		window.__treestyletab__BrowserGoHome = window.BrowserGoHome;
+		window.BrowserGoHome = function(aEvent) {
+			var where = whereToOpenLink(aEvent, false, true);
+			if (where == 'current' && gBrowser && gBrowser.selectedTab.pinned)
+				where = 'tab';
+			if (aEvent &&
+				aEvent.button !== 2 &&
+				where.indexOf('tab') === 0)
+				TreeStyleTabService.readyToOpenNewTabGroup(gBrowser);
+			return window.__treestyletab__BrowserGoHome.call(this, aEvent);
+		};
 
 		FeedHandler.__treestyletab__loadFeed = FeedHandler.loadFeed;
 		FeedHandler.loadFeed = function(aHref, aEvent) {
