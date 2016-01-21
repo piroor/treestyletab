@@ -505,24 +505,34 @@ var TreeStyleTabWindowHelper = {
 			));
 		}, 'treeStyleTab');
 
-		TreeStyleTabUtils.doPatching(b.loadTabs, 'b.loadTabs', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				'var tabNum = ',
-				'if (this.treeStyleTab.readiedToAttachNewTabGroup)\n' +
-				'  TreeStyleTabService.readyToOpenChildTab(firstTabAdded || this.selectedTab, true);\n' +
-				'$&'
-			).replace(
-				'if (!aLoadInBackground)',
-				'if (TreeStyleTabService.checkToOpenChildTab(this))\n' +
-				'  TreeStyleTabService.stopToOpenChildTab(this);\n' +
-				'$&'
-			).replace(
-				'this.selectedTab = firstTabAdded;',
-				'this.selectedTab = aURIs[0].indexOf("about:treestyletab-group") < 0 ? \n' +
-				'  firstTabAdded :\n' +
-				'  TreeStyleTabService.getNextTab(firstTabAdded) ;'
-			));
-		}, 'TreeStyleTab');
+		b.__treestyletab__loadTabs = b.loadTabs;
+		b.loadTabs = function(aURIs, aLoadInBackground, aReplace, ...aArgs) {
+			if (aReplace)
+				this.treeStyleTab.readyToOpenChildTab(this.selectedTab, true);
+			else
+				this.treeStyleTab.nextOpenedTabToBeParent = true;
+
+			var result;
+			var tabs = [];
+			var firstTabAdded;
+			try {
+				tabs = this.treeStyleTab.doAndGetNewTabs((function() {
+						result = this.__treestyletab__loadTabs.apply(this, [aURIs, aLoadInBackground, aReplace].concat(aArgs));
+					}).bind(this));
+				firstTabAdded = tabs[0];
+			}
+			finally {
+				if (!aReplace && firstTabAdded) {
+					this.selectedTab = aURIs[0].indexOf('about:treestyletab-group') == 0 ?
+						TreeStyleTabService.getNextTab(firstTabAdded) :
+						firstTabAdded;
+				}
+				if (this.treeStyleTab.checkToOpenChildTab(this))
+					this.treeStyleTab.stopToOpenChildTab(this);
+				delete this.treeStyleTab.nextOpenedTabToBeParent;
+			}
+			return result;
+		};
 
 		TreeStyleTabUtils.doPatching(b._beginRemoveTab, 'b._beginRemoveTab', function(aName, aSource) {
 			return eval(aName+' = '+aSource.replace(

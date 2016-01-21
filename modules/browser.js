@@ -3287,8 +3287,15 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		 */
 		b._lastRelatedTab = lastRelatedTab;
 
+		// this is the first tab of loading group.
+		if (this.nextOpenedTabToBeParent) {
+			this.readyToOpenChildTab(tab, true);
+			delete this.nextOpenedTabToBeParent;
+		}
+
 		return true;
 	},
+	loadingMultipleTabs : false,
 	_addedCountInThisLoop : 0,
 	_addedCountClearTimer : null,
 	_checkRestoringWindowTimerOnTabAdded : null,
