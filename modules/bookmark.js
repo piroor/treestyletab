@@ -280,7 +280,6 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabConstants, {
 		var result = {
 				behavior      : undefined,
 				treeStructure : undefined,
-				previousTabs  : undefined,
 				treeStructureApplied : false
 			};
 		if (
@@ -355,7 +354,6 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabConstants, {
 			}
 
 			result.treeStructure = treeStructure;
-			result.previousTabs = TST.getTabsInfo(aBrowserWindow.gBrowser);
 
 			if (utils.getTreePref('compatibility.TMP') &&
 				'TMP_Places' in aBrowserWindow &&
@@ -425,13 +423,15 @@ PlacesUIUtils._openTabset = function(aItemsToOpen, aEvent, aWindow, ...aArgs) {
 		return this.__treestyletab__openTabset.apply(this, allArgs);
 
 	var result = BS.handleTabsOpenProcess(where, aEvent, w, ids, uris, aItemsToOpen, this.__treestyletab__folderName);
-
 	mydump('  result: '+JSON.stringify(result)+'\n');
-	this.__treestyletab__openTabset.apply(this, allArgs);
 
-	var tabs = [];
-	if (result.treeStructure && result.previousTabs)
-		tabs = TST.getNewTabsFromPreviousTabsInfo(w.gBrowser, result.previousTabs);
+	var tabs = TST.doAndGetNewTabs((function() {
+			this.__treestyletab__openTabset.apply(this, allArgs);
+		}).bind(this), w.gBrowser);
+	mydump('  tabs: '+tabs.length+'\n');
+
+	if (!result.treeStructure)
+		tabs = [];
 
 	if (!result.treeStructureApplied)
 		TST.applyTreeStructureToTabs(

@@ -1450,6 +1450,20 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	},
  
 	/**
+	 * Returns tabs which are newly opened from the given task.
+	 */
+	doAndGetNewTabs : function TSTBase_doAndGetNewTabs(aTask, aTabBrowser) 
+	{
+		var previousTabs = this.getTabsInfo(aTabBrowser);
+		try {
+			aTask();
+		}
+		catch(e) {
+			Components.utils.reportError(e);
+		}
+		return this.getNewTabsFromPreviousTabsInfo(aTabBrowser, previousTabs);
+	},
+	/**
 	 * Returns tabs which are newly opened. This requires the "previous state".
 	 */
 	getNewTabsFromPreviousTabsInfo : function TSTBase_getNewTabsFromPreviousTabsInfo(aTabBrowser, aTabsInfo) 
