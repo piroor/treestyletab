@@ -75,16 +75,13 @@ var TreeStyleTabWindowHelper = {
 				Object.keys(window.__treestyletab__openLinkIn_extraParams).forEach(function(aKey) {
 					aParams[aKey] = window.__treestyletab__openLinkIn_extraParams[aKey];
 				});
-			var result;
 			try {
-				result = window.__treestyletab__openLinkIn.apply(this, [aUrl, aWhere, aParams].concat(aArgs));
+				TreeStyleTabService.onBeforeOpenLinkWithTab(gBrowser.selectedTab, aParams);
+				return window.__treestyletab__openLinkIn.apply(this, [aUrl, aWhere, aParams].concat(aArgs));
 			}
-			catch(e) {
-				dump(e+'\n');
-			}
-			if (window.__treestyletab__openLinkIn_extraParams)
+			finally {
 				delete window.__treestyletab__openLinkIn_extraParams;
-			return result;
+			}
 		};
 
 		window.__treestyletab__handleLinkClick = window.handleLinkClick;
@@ -93,16 +90,12 @@ var TreeStyleTabWindowHelper = {
 				event    : aEvent,
 				linkNode : aLinkNode
 			};
-			var result;
 			try {
-				result = window.__treestyletab__handleLinkClick.apply(this, [aEvent, aHref, aLinkNode].concat(aArgs));
+				return window.__treestyletab__handleLinkClick.apply(this, [aEvent, aHref, aLinkNode].concat(aArgs));
 			}
-			catch(e) {
-				dump(e+'\n');
-			}
-			if (window.__treestyletab__openLinkIn_extraParams)
+			finally {
 				delete window.__treestyletab__openLinkIn_extraParams;
-			return result;
+			}
 		};
 
 		this.overrideExtensionsPreInit(); // windowHelperHacks.js
@@ -237,12 +230,6 @@ var TreeStyleTabWindowHelper = {
 		BrowserSearch._loadSearch = function(aSearchText, aUseNewTab, aPurpose) {
 			TreeStyleTabService.onBeforeBrowserSearch(aSearchText, aUseNewTab);
 			return BrowserSearch.__treestyletab__loadSearch.call(this, aSearchText, aUseNewTab, aPurpose);
-		};
-
-		window.__treestyletab__openLinkIn = window.openLinkIn;
-		window.openLinkIn = function(aUrl, aWhere, aParams) {
-			TreeStyleTabService.onBeforeOpenLinkWithTab(gBrowser.selectedTab, aParams);
-			return window.__treestyletab__openLinkIn.call(this, aUrl, aWhere, aParams);
 		};
 
 		[
