@@ -327,13 +327,22 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksService,
 	},
 	_getSiblingItemsIterator : function TSTBMEditable_getSiblingItemsIterator(aId)
 	{
-		return this._getItemsInFolderIterator(PlacesUtils.bookmarks.getFolderIdForItem(aId));
+		try {
+			var folderId = PlacesUtils.bookmarks.getFolderIdForItem(aId);
+			return this._getItemsInFolderIterator(folderId);
+		}
+		catch(e) {
+			dump('TSTBMEditable_getSiblingItemsIterator('+aId+') failed.\n');
+			dump(e+'\n');
+			dump(new Error().stack+'\n');
+		}
 	},
 
 	saveParentFor : function TSTBMEditable_saveParentFor(aId, aJustNow)
 	{
 		var newParentId = parseInt(this.menulist.value || -1);
-		if (this.canceled || newParentId == this.getParentItem(aId)) return;
+		if (this.canceled || newParentId == this.getParentItem(aId))
+			return;
 
 		var itemsIterator = this._getSiblingItemsIterator(aId);
 		var items = [];

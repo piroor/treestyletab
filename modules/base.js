@@ -370,10 +370,6 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 
 		return behavior
 	},
-	kDROPLINK_ASK    : 0,
-	kDROPLINK_FIXED  : 1 + 2,
-	kDROPLINK_LOAD   : 1,
-	kDROPLINK_NEWTAB : 2,
  
 	openGroupBookmarkBehavior : function TSTBase_openGroupBookmarkBehavior() 
 	{
@@ -409,14 +405,6 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		}
 		return behavior;
 	},
-	kGROUP_BOOKMARK_ASK       : 0,
-	kGROUP_BOOKMARK_FIXED     : 1 + 2 + 4,
-	kGROUP_BOOKMARK_SUBTREE   : 1,
-	kGROUP_BOOKMARK_SEPARATE  : 2,
-	kGROUP_BOOKMARK_USE_DUMMY                   : 256,
-	kGROUP_BOOKMARK_USE_DUMMY_FORCE             : 1024,
-	kGROUP_BOOKMARK_DONT_RESTORE_TREE_STRUCTURE : 512,
-	kGROUP_BOOKMARK_EXPAND_ALL_TREE             : 2048,
  
 	bookmarkDroppedTabsBehavior : function TSTBase_bookmarkDroppedTabsBehavior() 
 	{
@@ -2282,48 +2270,6 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		return collapsedStates;
 	},
  
-	getTreeStructureFromTabs : function TSTBase_getTreeStructureFromTabs(aTabs) 
-	{
-		/* this returns...
-		  [A]     => -1 (parent is not in this tree)
-		    [B]   => 0 (parent is 1st item in this tree)
-		    [C]   => 0 (parent is 1st item in this tree)
-		      [D] => 2 (parent is 2nd in this tree)
-		  [E]     => -1 (parent is not in this tree, and this creates another tree)
-		    [F]   => 0 (parent is 1st item in this another tree)
-		*/
-		return this.cleanUpTreeStructureArray(
-				aTabs.map(function(aTab, aIndex) {
-					let tab = this.getParentTab(aTab);
-					let index = tab ? aTabs.indexOf(tab) : -1 ;
-					return index >= aIndex ? -1 : index ;
-				}, this),
-				-1
-			);
-	},
-	cleanUpTreeStructureArray : function TSTBase_cleanUpTreeStructureArray(aTreeStructure, aDefaultParent)
-	{
-		var offset = 0;
-		aTreeStructure = aTreeStructure
-			.map(function(aPosition, aIndex) {
-				return (aPosition == aIndex) ? -1 : aPosition ;
-			})
-			.map(function(aPosition, aIndex) {
-				if (aPosition == -1) {
-					offset = aIndex;
-					return aPosition;
-				}
-				return aPosition - offset;
-			});
-
-		/* The final step, this validates all of values.
-		   Smaller than -1 is invalid, so it becomes to -1. */
-		aTreeStructure = aTreeStructure.map(function(aIndex) {
-				return aIndex < -1 ? aDefaultParent : aIndex ;
-			}, this);
-		return aTreeStructure;
-	},
- 
 	applyTreeStructureToTabs : function TSTBase_applyTreeStructureToTabs(aTabs, aTreeStructure, aExpandStates) 
 	{
 		var b = this.getTabBrowserFromChild(aTabs[0]);
@@ -2375,7 +2321,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
  
 	getTreeStructureFromTabBrowser : function TSTBase_getTreeStructureFromTabBrowser(aTabBrowser) 
 	{
-		return this.getTreeStructureFromTabs(this.getAllTabs(aTabBrowser));
+		return utils.getTreeStructureFromTabs(this.getAllTabs(aTabBrowser));
 	},
  
 	applyTreeStructureToTabBrowser : function TSTBase_applyTreeStructureToTabBrowser(aTabBrowser, aTreeStructure, aExpandAllTree) 

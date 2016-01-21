@@ -6274,7 +6274,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				sourceService.getAllTabs(sourceBrowser).length == aTabs.length
 			);
 		var newTabs = [];
-		var treeStructure = sourceService.getTreeStructureFromTabs(aTabs);
+		var treeStructure = utils.getTreeStructureFromTabs(aTabs);
 
 		// Firefox fails to "move" collapsed tabs. So, expand them first
 		// and collapse them after they are moved.
@@ -6979,7 +6979,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	scrollToTabs : function TSTBrowser_scrollToTabs(aTabs) 
 	{
 		var firstTab = aTabs[0];
-		if (!firstTab.parentNode) // do nothing for closed tab!
+		if (!firstTab ||
+			!firstTab.parentNode) // do nothing for closed tab!
 			return;
 
 		var b            = this.mTabBrowser;

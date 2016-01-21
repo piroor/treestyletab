@@ -335,6 +335,50 @@ var TreeStyleTabUtils = {
 				this.isPrefChanging(aKey);
 	},
 
+
+ 
+	getTreeStructureFromTabs : function TSTUtils_getTreeStructureFromTabs(aTabs) 
+	{
+		/* this returns...
+		  [A]     => -1 (parent is not in this tree)
+		    [B]   => 0 (parent is 1st item in this tree)
+		    [C]   => 0 (parent is 1st item in this tree)
+		      [D] => 2 (parent is 2nd in this tree)
+		  [E]     => -1 (parent is not in this tree, and this creates another tree)
+		    [F]   => 0 (parent is 1st item in this another tree)
+		*/
+		return this.cleanUpTreeStructureArray(
+				aTabs.map(function(aTab, aIndex) {
+					let tab = this.getParentTab(aTab);
+					let index = tab ? aTabs.indexOf(tab) : -1 ;
+					return index >= aIndex ? -1 : index ;
+				}, this),
+				-1
+			);
+	},
+	cleanUpTreeStructureArray : function TSTUtils_cleanUpTreeStructureArray(aTreeStructure, aDefaultParent)
+	{
+		var offset = 0;
+		aTreeStructure = aTreeStructure
+			.map(function(aPosition, aIndex) {
+				return (aPosition == aIndex) ? -1 : aPosition ;
+			})
+			.map(function(aPosition, aIndex) {
+				if (aPosition == -1) {
+					offset = aIndex;
+					return aPosition;
+				}
+				return aPosition - offset;
+			});
+
+		/* The final step, this validates all of values.
+		   Smaller than -1 is invalid, so it becomes to -1. */
+		aTreeStructure = aTreeStructure.map(function(aIndex) {
+				return aIndex < -1 ? aDefaultParent : aIndex ;
+			}, this);
+		return aTreeStructure;
+	},
+
 /* Pref Listener */ 
 	domains : [ 
 		'extensions.treestyletab.'

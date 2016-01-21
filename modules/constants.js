@@ -220,6 +220,22 @@ var TreeStyleTabConstants = Object.freeze({
 	RESTORE_STATE_STRUCTURE_RESTORED  : 2,
 
 
+	kDROPLINK_ASK    : 0,
+	kDROPLINK_FIXED  : 1 + 2,
+	kDROPLINK_LOAD   : 1,
+	kDROPLINK_NEWTAB : 2,
+
+
+	kGROUP_BOOKMARK_ASK       : 0,
+	kGROUP_BOOKMARK_FIXED     : 1 + 2 + 4,
+	kGROUP_BOOKMARK_SUBTREE   : 1,
+	kGROUP_BOOKMARK_SEPARATE  : 2,
+	kGROUP_BOOKMARK_USE_DUMMY                   : 256,
+	kGROUP_BOOKMARK_USE_DUMMY_FORCE             : 1024,
+	kGROUP_BOOKMARK_DONT_RESTORE_TREE_STRUCTURE : 512,
+	kGROUP_BOOKMARK_EXPAND_ALL_TREE             : 2048,
+
+
 	CONTENT_SCRIPT          : 'chrome://treestyletab/content/content-utils.js',
 	CONTENT_SCRIPT_AUTOHIDE : 'chrome://treestyletab/content/content-utils-autohide.js',
 	MESSAGE_TYPE            : 'treestyletab',
