@@ -80,9 +80,15 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksUIServic
 		if ('BookmarkPropertiesPanel' in window) {
 			BookmarkPropertiesPanel.__treestyletab__onDialogAccept = BookmarkPropertiesPanel.onDialogAccept;
 			BookmarkPropertiesPanel.onDialogAccept = function(...aArgs) {
-				this.__treestyletab__itemId = gEditItemOverlay.itemId;
+				try {
+					TreeStyleTabBookmarksServiceEditable.saveParentFor(gEditItemOverlay.itemId, true);
+				}
+				catch(e) {
+					mydump(e+'\n');
+				}
 				return this.__treestyletab__onDialogAccept.apply(this, aArgs);
 			};
+
 			BookmarkPropertiesPanel.__treestyletab__endBatch = BookmarkPropertiesPanel._endBatch;
 			BookmarkPropertiesPanel._endBatch = function(...aArgs) {
 				var id = this.__treestyletab__itemId || gEditItemOverlay.itemId;
@@ -160,10 +166,10 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksUIServic
 		};
 
 		gEditItemOverlay.__treestyletab__onItemMoved = gEditItemOverlay.onItemMoved;
-		gEditItemOverlay.onItemMoved = function(...aArgs) {
+		gEditItemOverlay.onItemMoved = function(aItemId, aOldParent, aOldIndex, aNewParent, aNewIndex, aItemType, ...aArgs) {
 			if (aNewParent == this._getFolderIdFromMenuList())
 				TreeStyleTabBookmarksServiceEditable.initParentMenuList();
-			return this.__treestyletab__onItemMoved.apply(this, aArgs);
+			return this.__treestyletab__onItemMoved.apply(this, [aItemId, aOldParent, aOldIndex, aNewParent, aNewIndex, aItemType].concat(aArgs));
 		};
 
 		this.editUIInitialized = true;
