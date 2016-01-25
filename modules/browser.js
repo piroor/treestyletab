@@ -588,6 +588,14 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			);
 	},
  
+	isTabInternallyMoving : function TSTBrowser_isTabInternallyMoving(aTab)
+	{
+		if (aTab &&
+			aTab.__treestyletab__internallyTabMovingCount)
+			return true;
+		return Boolean(this.internallyTabMovingCount);
+	},
+ 
 	isMultiRow : function TSTBrowser_isMultiRow() 
 	{
 		var w = this.window;
@@ -1072,6 +1080,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		aTab.__treestyletab__linkedTabBrowser = this.mTabBrowser;
 		aTab.__treestyletab__restoreState = this.RESTORE_STATE_INITIAL;
+		aTab.__treestyletab__internallyTabMovingCount = 0;
 
 		if (utils.isTabNotRestoredYet(aTab))
 			aTab.linkedBrowser.__treestyletab__toBeRestored = true;
@@ -3224,9 +3233,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			if (newIndex > -1) {
 				if (newIndex > tab._tPos)
 					newIndex--;
-				this.internallyTabMovingCount++;
+				tab.__treestyletab__internallyTabMovingCount++;
 				b.moveTabTo(tab, newIndex);
-				this.internallyTabMovingCount--;
+				tab.__treestyletab__internallyTabMovingCount--;
 			}
 
 			if (this.shouldExpandAllTree)
@@ -3616,11 +3625,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var b   = this.mTabBrowser;
 
 		var prevPosition = aEvent.detail;
-		if (tab.owner && this.internallyTabMovingCount <= 0) {
+		if (tab.owner && !tab.__treestyletab__internallyTabMovingCount) {
 			mydump('onTabMove for new child tab: move back '+tab._tPos+' => '+prevPosition+'\n');
-			this.internallyTabMovingCount++;
+			tab.__treestyletab__internallyTabMovingCount++;
 			b.moveTabTo(tab, prevPosition);
-			this.internallyTabMovingCount--;
+			tab.__treestyletab__internallyTabMovingCount--;
 			return;
 		}
 
@@ -3706,7 +3715,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		if (
 			this.subTreeMovingCount ||
-			this.internallyTabMovingCount ||
+			this.isTabInternallyMoving(tab) ||
 			// We don't have to fixup tree structure for a NEW TAB
 			// which has already been structured.
 			(newlyOpened && this.getParentTab(tab))

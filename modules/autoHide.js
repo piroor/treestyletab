@@ -1238,7 +1238,8 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 				return this.showForFeedback();
 
 			case 'TabMove':
-				if (!this.treeStyleTab.subTreeMovingCount && !this.treeStyleTab.internallyTabMovingCount)
+				if (!this.treeStyleTab.subTreeMovingCount &&
+					!this.treeStyleTab.isTabInternallyMoving(aEvent.originalTarget))
 					this.showForFeedback();
 				return;
 
