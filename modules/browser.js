@@ -3639,7 +3639,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 
 		tab.__treestyletab__previousPosition = prevPosition;
-		mydump('onTabMove '+prevPosition+' => '+tab._tPos+'\n');
+		mydump('onTabMove '+prevPosition+' => '+tab._tPos+' (internal moving count='+tab.__treestyletab__internallyTabMovingCount+', owner='+String(tab.owner)+')\n');
+		mydump((new Error()).stack.replace(/^/gm, '  ')+'\n');
 
 		// When the tab was moved before TabOpen event is fired, we have to update manually.
 		var newlyOpened = !this.isTabInitialized(tab) && this.onTabOpen(null, tab);
