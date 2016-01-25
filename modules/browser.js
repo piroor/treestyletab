@@ -3244,10 +3244,10 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		this._addedCountInThisLoop++;
 		if (!this._addedCountClearTimer) {
-			this._addedCountClearTimer = this.window.setTimeout(function(aSelf) {
-				aSelf._addedCountInThisLoop = 0;
-				aSelf._addedCountClearTimer = null;
-			}, 0, this);
+			this._addedCountClearTimer = this.window.setTimeout((function() {
+				this._addedCountInThisLoop = 0;
+				this._addedCountClearTimer = null;
+			}).bind(this), 0);
 		}
 
 		if (!this.readiedToAttachMultiple) {
