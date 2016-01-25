@@ -3302,6 +3302,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			delete this.nextOpenedTabToBeParent;
 		}
 
+		tab.__treestyletab__isOpening = true;
+		this.window.setTimeout((function() {
+			tab.__treestyletab__isOpening = false;
+		}).bind(this), 0);
+
 		return true;
 	},
 	loadingMultipleTabs : false,
@@ -3625,7 +3630,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var b   = this.mTabBrowser;
 
 		var prevPosition = aEvent.detail;
-		if (tab.owner && !tab.__treestyletab__internallyTabMovingCount) {
+		if (tab.__treestyletab__isOpening && !this.isTabInternallyMoving(tab)) {
 			mydump('onTabMove for new child tab: move back '+tab._tPos+' => '+prevPosition+'\n');
 			tab.__treestyletab__internallyTabMovingCount++;
 			b.moveTabTo(tab, prevPosition);
