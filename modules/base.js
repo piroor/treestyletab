@@ -2251,16 +2251,13 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
  
 	isGroupTab : function TSTBase_isGroupTab(aTab, aLazyCheck) 
 	{
-		return (
-			(aLazyCheck || aTab.linkedBrowser.sessionHistory.count == 1) &&
-			aTab.linkedBrowser.currentURI.spec.indexOf('about:treestyletab-group') == 0
-		);
+		return aTab.linkedBrowser.currentURI.spec.indexOf('about:treestyletab-group') == 0;
 	},
  
 	isTemporaryGroupTab : function TSTBase_isTemporaryGroupTab(aTab) 
 	{
 		return (
-			this.isGroupTab(aTab, true) &&
+			this.isGroupTab(aTab) &&
 			/.*[\?&;]temporary=(?:1|yes|true)/i.test(aTab.linkedBrowser.currentURI.spec)
 		);
 	},

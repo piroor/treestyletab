@@ -165,7 +165,7 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabConstants, {
 		var window = tabs[0].ownerDocument.defaultView;
 		var TST = window.TreeStyleTabService;
 
-		var folderName = (TST.isGroupTab(tabs[0], true) || tabs.length == 1) ?
+		var folderName = (TST.isGroupTab(tabs[0]) || tabs.length == 1) ?
 						tabs[0].label :
 						null ;
 
@@ -174,7 +174,7 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabConstants, {
 		for (let i = 0, maxi = tabs.length; i < maxi; i++)
 		{
 			let tab = tabs[i];
-			if (!TST.isGroupTab(tab, i == 0))
+			if (!TST.isGroupTab(tab))
 				bookmarkedTabs.push(tab);
 			bookmarkedTabs = bookmarkedTabs.concat(b.treeStyleTab.getDescendantTabs(tab));
 		}
