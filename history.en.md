@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * Never touch session history of remote tabs (on e10s activated). It raised exception and broke tree structure when a parent tab is closed and the next parent is a remote tab.
+   * Reduce `eval()` hack.
    * Gave up to disable the preference `browser.tabs.insertRelatedAfterCurrent`.
      Now TST respects the default behavior for the preference, about new tabs opened from links.
    * All new tabs opened via the `gBrowser.addTab()` method with the option `relatedToCurrent:true` or a referrer information are now basically opened as children of the current tab.
