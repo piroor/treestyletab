@@ -1340,10 +1340,10 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			dump('TSTWindow_onBeforeOpenLinkWithTab '+[aTab, JSON.stringify(aParams), this.checkToOpenChildTab(aTab)]+'\n');
 
 		if (!this.checkToOpenChildTab(aTab)) {
-		if (!aParams.fromChrome)
-			this.handleNewTabFromCurrent(aTab);
-		else if (!aParams.relatedToCurrent && !aParams.referrerURI)
-			this.readyToOpenOrphanTabNow(aTab);
+			if (!aParams.fromChrome)
+				this.handleNewTabFromCurrent(aTab);
+			else if (!aParams.relatedToCurrent && !aParams.referrerURI)
+				this.readyToOpenOrphanTabNow(aTab);
 		}
 	},
  
