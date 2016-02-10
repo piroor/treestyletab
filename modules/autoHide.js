@@ -1311,7 +1311,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 		if (
 			aEvent.target &&
 			!this.isResizing &&
-			sv.evaluateXPath(
+			utils.evaluateXPath(
 				'ancestor-or-self::*[@class="'+sv.kSPLITTER+'"]',
 				aEvent.originalTarget || aEvent.target,
 				Ci.nsIDOMXPathResult.BOOLEAN_TYPE
@@ -1343,7 +1343,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 		var sv = this.treeStyleTab;
 		if (this.isResizing &&
 			aEvent.originalTarget &&
-			sv.evaluateXPath(
+			utils.evaluateXPath(
 				'ancestor-or-self::*[@class="'+sv.kSPLITTER+'"]',
 				aEvent.originalTarget,
 				Ci.nsIDOMXPathResult.BOOLEAN_TYPE

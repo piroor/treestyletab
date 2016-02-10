@@ -1236,7 +1236,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 	onPopupShown : function TSTWindow_onPopupShown(aPopup) 
 	{
 		if (!aPopup.boxObject ||
-			this.evaluateXPath(
+			utils.evaluateXPath(
 				'parent::*/ancestor-or-self::*[local-name()="tooltip" or local-name()="panel" or local-name()="popup" or local-name()="menupopup"]',
 				aPopup,
 				Ci.nsIDOMXPathResult.BOOLEAN_TYPE

@@ -153,7 +153,7 @@ BrowserUIShowHideObserver.prototype = {
 		if (
 			// ignore modifications of each tab
 			TST.getTabFromChild(target) ||
-			TST.evaluateXPath(
+			utils.evaluateXPath(
 				// ignore modifications in the location bar (ex. identity icon)
 				'ancestor-or-self::xul:textbox |' +
 				// or menu items
@@ -205,7 +205,7 @@ BrowserUIShowHideObserver.prototype = {
 		if (
 			// I must ignore show/hide of elements managed by TST,
 			// to avoid infinity loop.
-			TST.evaluateXPath(
+			utils.evaluateXPath(
 				'ancestor-or-self::xul:*[@' + TreeStyleTabConstants.kTAB_STRIP_ELEMENT + '="true"]',
 				target,
 				Components.interfaces.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE

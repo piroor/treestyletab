@@ -336,6 +336,66 @@ var TreeStyleTabUtils = {
 	},
 
 
+// xpath 
+	
+	NSResolver : { 
+		lookupNamespaceURI : function(aPrefix)
+		{
+			switch (aPrefix)
+			{
+				case 'xul':
+					return 'http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul';
+				case 'html':
+				case 'xhtml':
+					return 'http://www.w3.org/1999/xhtml';
+				case 'xlink':
+					return 'http://www.w3.org/1999/xlink';
+				default:
+					return '';
+			}
+		}
+	},
+ 
+	evaluateXPath : function utils_evaluateXPath(aExpression, aContext, aType) 
+	{
+		if (!aType)
+			aType = Ci.nsIDOMXPathResult.ORDERED_NODE_SNAPSHOT_TYPE;
+		try {
+			var XPathResult = (aContext.ownerDocument || aContext).evaluate(
+					aExpression,
+					(aContext || document),
+					this.NSResolver,
+					aType,
+					null
+				);
+		}
+		catch(e) {
+			return {
+				singleNodeValue : null,
+				snapshotLength  : 0,
+				snapshotItem    : function() {
+					return null
+				}
+			};
+		}
+		return XPathResult;
+	},
+ 
+	getArrayFromXPathResult : function utils_getArrayFromXPathResult(aXPathResult) 
+	{
+		var max = aXPathResult.snapshotLength;
+		var array = new Array(max);
+		if (!max)
+			return array;
+
+		for (var i = 0; i < max; i++)
+		{
+			array[i] = aXPathResult.snapshotItem(i);
+		}
+
+		return array;
+	},
+
  
 	getTreeStructureFromTabs : function TSTUtils_getTreeStructureFromTabs(aTabs) 
 	{

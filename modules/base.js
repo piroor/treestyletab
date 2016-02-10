@@ -546,7 +546,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
  
 	isEventFiredOnClosebox : function TSTBase_isEventFiredOnClosebox(aEvent) 
 	{
-		return this.evaluateXPath(
+		return utils.evaluateXPath(
 				'ancestor-or-self::*[contains(concat(" ", normalize-space(@class), " "), " tab-close-button ")]',
 				aEvent.originalTarget || aEvent.target,
 				Ci.nsIDOMXPathResult.BOOLEAN_TYPE
@@ -555,7 +555,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
  
 	isEventFiredOnClickable : function TSTBase_isEventFiredOnClickable(aEvent) 
 	{
-		return this.evaluateXPath(
+		return utils.evaluateXPath(
 				'ancestor-or-self::*[contains(" button toolbarbutton scrollbar nativescrollbar popup menupopup panel tooltip splitter textbox ", concat(" ", local-name(), " "))]',
 				aEvent.originalTarget,
 				Ci.nsIDOMXPathResult.BOOLEAN_TYPE
@@ -564,7 +564,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
  
 	isEventFiredOnScrollbar : function TSTBase_isEventFiredOnScrollbar(aEvent) 
 	{
-		return this.evaluateXPath(
+		return utils.evaluateXPath(
 				'ancestor-or-self::*[local-name()="scrollbar" or local-name()="nativescrollbar"]',
 				aEvent.originalTarget,
 				Ci.nsIDOMXPathResult.BOOLEAN_TYPE
@@ -728,66 +728,6 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		return 'about:treestyletab-group?' + parameters.join('&');
 	},
   
-// xpath 
-	
-	NSResolver : { 
-		lookupNamespaceURI : function(aPrefix)
-		{
-			switch (aPrefix)
-			{
-				case 'xul':
-					return 'http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul';
-				case 'html':
-				case 'xhtml':
-					return 'http://www.w3.org/1999/xhtml';
-				case 'xlink':
-					return 'http://www.w3.org/1999/xlink';
-				default:
-					return '';
-			}
-		}
-	},
- 
-	evaluateXPath : function TSTBase_evaluateXPath(aExpression, aContext, aType) 
-	{
-		if (!aType)
-			aType = Ci.nsIDOMXPathResult.ORDERED_NODE_SNAPSHOT_TYPE;
-		try {
-			var XPathResult = (aContext.ownerDocument || aContext).evaluate(
-					aExpression,
-					(aContext || document),
-					this.NSResolver,
-					aType,
-					null
-				);
-		}
-		catch(e) {
-			return {
-				singleNodeValue : null,
-				snapshotLength  : 0,
-				snapshotItem    : function() {
-					return null
-				}
-			};
-		}
-		return XPathResult;
-	},
- 
-	getArrayFromXPathResult : function TSTBase_getArrayFromXPathResult(aXPathResult) 
-	{
-		var max = aXPathResult.snapshotLength;
-		var array = new Array(max);
-		if (!max)
-			return array;
-
-		for (var i = 0; i < max; i++)
-		{
-			array[i] = aXPathResult.snapshotItem(i);
-		}
-
-		return array;
-	},
-  
 /* Session Store API */ 
 	
 	getTabValue : function TSTBase_getTabValue(aTab, aKey) 
@@ -889,7 +829,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		var strip = aTabBrowser.mStrip;
 		return (strip && strip instanceof this.window.Element) ?
 				strip :
-				this.evaluateXPath(
+				utils.evaluateXPath(
 					'ancestor::xul:toolbar[1]',
 					aTabBrowser.tabContainer,
 					Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
@@ -981,7 +921,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
  
 	getTabFromChild : function TSTBase_getTabFromChild(aTab) 
 	{
-		return this.evaluateXPath(
+		return utils.evaluateXPath(
 				'ancestor-or-self::xul:tab',
 				aTab,
 				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
@@ -995,7 +935,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
  
 	getNewTabButtonFromEvent : function TSTBase_getNewTabButtonFromEvent(aEvent) 
 	{
-		return this.evaluateXPath(
+		return utils.evaluateXPath(
 				'ancestor-or-self::*['
 					+'@id="new-tab-button" or '
 					+'contains(concat(" ", normalize-space(@class), " "), " tabs-newtab-button ")'
@@ -1007,7 +947,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
  
 	getSplitterFromEvent : function TSTBase_getSplitterFromEvent(aEvent) 
 	{
-		return this.evaluateXPath(
+		return utils.evaluateXPath(
 				'ancestor-or-self::xul:splitter[contains(concat(" ", normalize-space(@class), " "), " '+this.kSPLITTER+' ")]',
 				aEvent.originalTarget,
 				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
@@ -1016,7 +956,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
  
 	isEventFiredOnGrippy : function TSTBase_isEventFiredOnGrippy(aEvent) 
 	{
-		return this.evaluateXPath(
+		return utils.evaluateXPath(
 				'ancestor-or-self::xul:grippy',
 				aEvent.originalTarget,
 				Ci.nsIDOMXPathResult.BOOLEAN_TYPE
@@ -1056,7 +996,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
  
 	getTabbarFromChild : function TSTBase_getTabbarFromChild(aNode) 
 	{
-		return this.evaluateXPath(
+		return utils.evaluateXPath(
 				'ancestor-or-self::*[contains(concat(" ", normalize-space(@class), " "), " tabbrowser-strip ")] | ' +
 				'ancestor-or-self::xul:tabs[@tabbrowser] | ' +
 				'ancestor-or-self::xul:toolbar/child::xul:tabs[@tabbrowser]',
@@ -1066,7 +1006,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	},
 	getAncestorTabbarFromChild : function TSTBase_getAncestorTabbarFromChild(aNode)
 	{
-		return this.evaluateXPath(
+		return utils.evaluateXPath(
 				'ancestor-or-self::*[contains(concat(" ", normalize-space(@class), " "), " tabbrowser-strip ")] | ' +
 				'ancestor-or-self::xul:tabs[@tabbrowser]',
 				aNode,
@@ -1164,7 +1104,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			return aTabBrowserChild.getElementsByTagName('tabs')[0].tabbrowser;
 
 		// tab context menu
-		var popup = this.evaluateXPath(
+		var popup = utils.evaluateXPath(
 				'ancestor-or-self::xul:menupopup[@id="tabContextMenu"]',
 				aTabBrowserChild,
 				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
@@ -1172,7 +1112,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		if (popup && 'TabContextMenu' in aTabBrowserChild.ownerDocument.defaultView)
 			return this.getTabBrowserFromChild(aTabBrowserChild.ownerDocument.defaultView.TabContextMenu.contextTab);
 
-		var b = this.evaluateXPath(
+		var b = utils.evaluateXPath(
 				'ancestor::xul:tabbrowser | '+
 				'ancestor::xul:tabs[@tabbrowser] |'+
 				'ancestor::xul:toolbar/descendant::xul:tabs',
@@ -1858,7 +1798,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			}
 		}
 		else {
-			parent =  this.evaluateXPath(
+			parent = utils.evaluateXPath(
 				'preceding-sibling::xul:tab[@'+this.kID+'="'+id+'"][1]',
 				aTab,
 				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
@@ -1914,7 +1854,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			return ancestors.length ? ancestors[ancestors.length-1] : aTab ;
 		}
 
-		return this.evaluateXPath(
+		return utils.evaluateXPath(
 			'(self::*[not(@'+this.kPARENT+')] | preceding-sibling::xul:tab[not(@'+this.kPARENT+')])[last()]',
 			aTab,
 			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
@@ -1955,7 +1895,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		}
 
 		var parent = aTab.getAttribute(this.kPARENT);
-		return this.evaluateXPath(
+		return utils.evaluateXPath(
 			'following-sibling::xul:tab['+
 				(parent ? '@'+this.kPARENT+'="'+parent+'"' : 'not(@'+this.kPARENT+')' )+
 			'][1]',
@@ -1997,7 +1937,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		}
 
 		var parent = aTab.getAttribute(this.kPARENT);
-		return this.evaluateXPath(
+		return utils.evaluateXPath(
 			'preceding-sibling::xul:tab['+
 				(parent ? '@'+this.kPARENT+'="'+parent+'"' : 'not(@'+this.kPARENT+')' )+
 			'][1]',
@@ -2088,7 +2028,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			return firstChild;
 		}
 
-		return this.evaluateXPath(
+		return utils.evaluateXPath(
 			'following-sibling::xul:tab[@'+this.kPARENT+'="'+aTab.getAttribute(this.kID)+'"][1]',
 			aTab,
 			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
@@ -2115,7 +2055,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			return lastChild;
 		}
 
-		return this.evaluateXPath(
+		return utils.evaluateXPath(
 			'following-sibling::xul:tab[@'+this.kPARENT+'="'+aTab.getAttribute(this.kID)+'"][last()]',
 			aTab,
 			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
@@ -2184,7 +2124,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 								'[not(@'+this.kCOLLAPSED+'="true")]' :
 								'' ;
 
-		return this.evaluateXPath(
+		return utils.evaluateXPath(
 			'sum((self::* | preceding-sibling::xul:tab[not(@hidden="true")]'+extraCondition+')'+
 				'/attribute::'+this.kX_OFFSET+')',
 			aTab,
@@ -2197,7 +2137,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 								'[not(@'+this.kCOLLAPSED+'="true")]' :
 								'';
 
-		return this.evaluateXPath(
+		return utils.evaluateXPath(
 			'sum((self::* | preceding-sibling::xul:tab[not(@hidden="true")]'+extraCondition+')'+
 				'/attribute::'+this.kY_OFFSET+')',
 			aTab,

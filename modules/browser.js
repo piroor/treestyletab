@@ -433,7 +433,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
  
 	get ownerToolbar() 
 	{
-		return this.evaluateXPath(
+		return utils.evaluateXPath(
 				'ancestor-or-self::xul:toolbar[1]',
 				this.mTabBrowser.tabContainer,
 				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
@@ -6471,7 +6471,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				var id = this.getTabValue(aTab, this.kID);
 				aTab.__treestyletab__checkTabsIndentOverflowOnMouseLeave = function checkTabsIndentOverflowOnMouseLeave(aEvent, aDelayed) {
 					if (aEvent.type == 'mouseover') {
-						if (self.evaluateXPath(
+						if (utils.evaluateXPath(
 								'ancestor-or-self::*[@' + self.kID + '="' + id + '"]',
 								aEvent.originalTarget || aEvent.target,
 								Ci.nsIDOMXPathResult.BOOLEAN_TYPE
@@ -6758,7 +6758,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				}, this)
 				.join('|');
 
-		var xpathResult = this.evaluateXPath(
+		var xpathResult = utils.evaluateXPath(
 				'child::xul:tab[@'+this.kCHILDREN+' and not(@'+this.kCOLLAPSED+'="true") and not(@'+this.kSUBTREE_COLLAPSED+'="true") and @'+this.kID+' and not(contains("'+expandedAncestors+'", @'+this.kID+')) and not(@hidden="true")]',
 				b.mTabContainer
 			);

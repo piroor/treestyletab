@@ -148,7 +148,7 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 
 	getFullTooltipFromEvent : function FTM_getFullTooltipFromEvent(aEvent)
 	{
-		return this.evaluateXPath(
+		return utils.evaluateXPath(
 				'ancestor-or-self::xul:tooltip[@id="'+this.tabFullTooltip.id+'"]',
 				aEvent.target,
 				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE

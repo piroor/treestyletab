@@ -1122,7 +1122,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 						return;
 
 					case 'click':
-						if (sv.evaluateXPath(
+						if (TreeStyleTabUtils.evaluateXPath(
 								'ancestor-or-self::*['
 									+'contains(concat(" ", normalize-space(@class), " "), " textbox-presentation-segment ")'
 								+']',

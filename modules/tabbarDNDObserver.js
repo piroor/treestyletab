@@ -89,7 +89,7 @@ TabbarDNDObserver.prototype = {
 		var sv = this.treeStyleTab;
 
 		if (
-			sv.evaluateXPath(
+			utils.evaluateXPath(
 				'ancestor-or-self::*[' +
 					'contains(" scrollbar popup menupopup panel tooltip ", concat(" ", local-name(), " ")) or' +
 					'(local-name()="toolbarbutton" and @type="menu")' +

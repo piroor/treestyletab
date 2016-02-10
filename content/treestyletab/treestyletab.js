@@ -23,7 +23,9 @@
 	}, false);
 	ReferenceCounter.add('window,aEvent.type,onDOMContentLoaded,false');
 
-	var ns = {};
-	Components.utils.import('resource://treestyletab-modules/window.js', ns);
-	new ns.TreeStyleTabWindow(window);
+	var { TreeStyleTabUtils } = Components.utils.import('resource://treestyletab-modules/utils.js', {});
+	window.TreeStyleTabUtils = TreeStyleTabUtils;
+
+	var { TreeStyleTabWindow } = Components.utils.import('resource://treestyletab-modules/window.js', {});
+	new TreeStyleTabWindow(window);
 })();
