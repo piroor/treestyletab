@@ -396,6 +396,44 @@ var TreeStyleTabUtils = {
 		return array;
 	},
 
+
+	getTabBrowserFromChild : function utils_getTabBrowserFromChild(aTabBrowserChild) 
+	{
+		if (!aTabBrowserChild)
+			return null;
+
+		if (aTabBrowserChild.__treestyletab__linkedTabBrowser) // tab
+			return aTabBrowserChild.__treestyletab__linkedTabBrowser;
+
+		if (aTabBrowserChild.localName == 'tabbrowser') // itself
+			return aTabBrowserChild;
+
+		if (aTabBrowserChild.tabbrowser) // tabs
+			return aTabBrowserChild.tabbrowser;
+
+		if (aTabBrowserChild.localName == 'toolbar') // tabs toolbar
+			return aTabBrowserChild.getElementsByTagName('tabs')[0].tabbrowser;
+
+		// tab context menu
+		var popup = this.evaluateXPath(
+				'ancestor-or-self::xul:menupopup[@id="tabContextMenu"]',
+				aTabBrowserChild,
+				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue;
+		if (popup && 'TabContextMenu' in aTabBrowserChild.ownerDocument.defaultView)
+			return this.getTabBrowserFromChild(aTabBrowserChild.ownerDocument.defaultView.TabContextMenu.contextTab);
+
+		var b = this.evaluateXPath(
+				'ancestor::xul:tabbrowser | '+
+				'ancestor::xul:tabs[@tabbrowser] |'+
+				'ancestor::xul:toolbar/descendant::xul:tabs',
+				aTabBrowserChild,
+				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
+			).singleNodeValue;
+		return (b && b.tabbrowser) || b;
+	},
+
+
  
 	getTreeStructureFromTabs : function TSTUtils_getTreeStructureFromTabs(aTabs) 
 	{
