@@ -71,6 +71,13 @@ XPCOMUtils.defineLazyModuleGetter(this, 'ContentBridge', 'resource://treestyleta
 XPCOMUtils.defineLazyServiceGetter(this, 'SessionStore',
   '@mozilla.org/browser/sessionstore;1', 'nsISessionStore');
 
+function log(...aArgs) {
+	utils.log.apply(utils, ['window'].concat(aArgs));
+}
+function logWithStackTrace(...aArgs) {
+	utils.logWithStackTrace.apply(utils, ['window'].concat(aArgs));
+}
+
 function TreeStyleTabWindow(aWindow)
 {
 	this.window = aWindow;
@@ -1336,8 +1343,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		if (!aTab)
 			return;
 
-		if (utils.isDebugging('window'))
-			dump('TSTWindow_onBeforeOpenLinkWithTab '+[aTab, JSON.stringify(aParams), this.checkToOpenChildTab(aTab)]+'\n');
+		log('onBeforeOpenLinkWithTab '+[aTab, JSON.stringify(aParams), this.checkToOpenChildTab(aTab)]);
 
 		if (!this.checkToOpenChildTab(aTab)) {
 			if (!aParams.fromChrome)
@@ -1349,8 +1355,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
  
 	onBeforeOpenNewTabByThirdParty : function TSTWindow_onBeforeOpenNewTabByThirdParty(aOwner) 
 	{
-		if (utils.isDebugging('window'))
-			dump('TSTWindow_onBeforeOpenNewTabByThirdParty '+[aOwner, this.checkToOpenChildTab(aTab)]+'\n');
+		log('onBeforeOpenNewTabByThirdParty '+[aOwner, this.checkToOpenChildTab(aTab)]);
 
 		if (!this.checkToOpenChildTab(aOwner)) {
 			this.handleNewTabFromCurrent(aOwner);
@@ -1363,17 +1368,14 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		var opener = null;
 		if (aOpener) {
 			if (aOpener instanceof Ci.nsIDOMWindow) {
-				if (utils.isDebugging('window'))
-					dump('TSTWindow_onBeforeBrowserAccessOpenURI: opener is DOMWindow\n');
+				log('onBeforeBrowserAccessOpenURI: opener is DOMWindow');
 				opener = aOpener;
 				hasOwnerTab = this.getTabFromFrame(opener.top);
-				if (utils.isDebugging('window'))
-					dump('  opener =>'+[opener,hasOwnerTab]+'\n');
+				log('  opener =>'+[opener,hasOwnerTab]);
 			}
 			else if (Ci.nsIOpenURIInFrameParams &&
 					aOpener instanceof Ci.nsIOpenURIInFrameParams) {
-				if (utils.isDebugging('window'))
-					dump('TSTWindow_onBeforeBrowserAccessOpenURI: opener is nsIOpenURIInFrameParams\n');
+				log('TSTWindow_onBeforeBrowserAccessOpenURI: opener is nsIOpenURIInFrameParams');
 				// from remote contents, we have to detect its opener from the URI.
 				let referrer = aOpener.referrer;
 				if (referrer) {
@@ -1388,8 +1390,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 						break;
 					}
 				}
-				if (utils.isDebugging('window'))
-					dump('  opener =>'+[opener,hasOwnerTab]+'\n');
+				log('  opener =>'+[opener,hasOwnerTab]);
 			}
 		}
 		if (aOpener &&
@@ -1404,8 +1405,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 	{
 		var where = String(this.window.whereToOpenLink(aEvent, false, true));
 
-		if (utils.isDebugging('window'))
-			dump('TSTWindow_onBeforeViewMedia '+[aEvent, aOwner, where]+'\n');
+		log('onBeforeViewMedia '+[aEvent, aOwner, where]);
 
 		if (where.indexOf('tab') == 0)
 			this.handleNewTabFromCurrent(aOwner);
@@ -1415,8 +1415,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
  
 	onBeforeBrowserSearch : function TSTWindow_onBeforeBrowserSearch(aTerm, aForceNewTab) 
 	{
-		if (utils.isDebugging('window'))
-			dump('TSTWindow_onBeforeBrowserSearch '+[aTerm, aForceNewTab, this.shouldOpenSearchResultAsChild(aTerm)]+'\n');
+		log('onBeforeBrowserSearch '+[aTerm, aForceNewTab, this.shouldOpenSearchResultAsChild(aTerm)]);
 
 		if ((arguments.length == 1 || aForceNewTab) &&
 			this.shouldOpenSearchResultAsChild(aTerm))
@@ -1609,10 +1608,9 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
  
 	createSubtree : function TSTWindow_createSubtree(aTabs) 
 	{
-		if (utils.isDebugging('window'))
-			dump('TSTWindow_createSubtree\n'+aTabs.map(function(aTab) {
-				return '  '+aTab._tPos+': '+aTab.linkedBrowser.currentURI.spec;
-			}).join('\n')+'\n');
+		log('TSTWindow_createSubtree\n'+aTabs.map(function(aTab) {
+			return '  '+aTab._tPos+': '+aTab.linkedBrowser.currentURI.spec;
+		}).join('\n'));
 
 		var rootTabs = this.getRootTabs(aTabs);
 
@@ -1633,8 +1631,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 				var parentInTargets = aTabs.indexOf(this.getParentTab(aDescendantTab)) > -1;
 				if (inTargets || (inTargets == parentInTargets))
 					return;
-				if (utils.isDebugging('window'))
-					dump('  detaching unselected descendant: '+aDescendantTab._tPos+': '+aDescendantTab.linkedBrowser.currentURI.spec+'\n');
+				log('  detaching unselected descendant: '+aDescendantTab._tPos+': '+aDescendantTab.linkedBrowser.currentURI.spec);
 				if (parentTab)
 					b.treeStyleTab.attachTabTo(aDescendantTab, parentTab, {
 						dontExpand   : true,

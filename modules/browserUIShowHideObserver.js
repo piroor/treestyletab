@@ -42,6 +42,13 @@ Components.utils.import('resource://treestyletab-modules/constants.js');
 
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
+function log(...aArgs) {
+	utils.log.apply(utils, ['browserUIShowHideObserver'].concat(aArgs));
+}
+function logWithStackTrace(...aArgs) {
+	utils.logWithStackTrace.apply(utils, ['browserUIShowHideObserver'].concat(aArgs));
+}
+
 function BrowserUIShowHideObserver(aOwner, aBox, aOptions) {
 	this.owner = aOwner;
 	this.box = aBox;
@@ -91,7 +98,7 @@ BrowserUIShowHideObserver.prototype = {
 				{
 					case 'childList':
 						if (aMutation.target == this.box) {
-							this.dumpMutation(aMutation, 'BrowserUIShowHideObserver_onMutation/childList');
+							this.logMutation(aMutation, 'BrowserUIShowHideObserver_onMutation/childList');
 							this.owner.browser.treeStyleTab.updateFloatingTabbar(TreeStyleTabConstants.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
 						}
 						return;
@@ -102,7 +109,7 @@ BrowserUIShowHideObserver.prototype = {
 				}
 			}
 			catch(error) {
-				this.dumpMutation(aMutation, 'BrowserUIShowHideObserver_onMutation(error)');
+				this.logMutation(aMutation, 'BrowserUIShowHideObserver_onMutation(error)');
 				Components.utils.reportError(error);
 			}
 		}, this);
@@ -118,7 +125,7 @@ BrowserUIShowHideObserver.prototype = {
 		delete this.owner;
 	},
 
-	dumpMutation : function BrowserUIShowHideObserver_dumpMutation(aMutation, aDescription)
+	logMutation : function BrowserUIShowHideObserver_logMutation(aMutation, aDescription)
 	{
 		if (!utils.isDebugging('browserUIShowHideObserver'))
 			return;
@@ -132,10 +139,10 @@ BrowserUIShowHideObserver.prototype = {
 					aMutation.attributeName + ', ' +
 					aMutation.oldValue + ' => ' +
 					target.getAttribute(aMutation.attributeName);
-		dump(aDescription + ' ' +
+		log(aDescription + ' ' +
 			ownerInformation + ' / ' +
 			targetInformation +
-			attributeInformation + '\n');
+			attributeInformation);
 	},
 
 	onAttributeModified : function BrowserUIShowHideObserver_onAttributeModified(aMutation, aObserver) 
@@ -220,7 +227,7 @@ BrowserUIShowHideObserver.prototype = {
 			)
 			return;
 
-		this.dumpMutation(aMutation, 'BrowserUIShowHideObserver_onAttributeModified');
+		this.logMutation(aMutation, 'BrowserUIShowHideObserver_onAttributeModified');
 
 		this.handlingAttrChange = true;
 

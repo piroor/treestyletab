@@ -57,6 +57,12 @@ XPCOMUtils.defineLazyGetter(this, 'prefs', function() {
 	return window['piro.sakura.ne.jp'].prefs;
 });
 
+function log(...aArgs) {
+	utils.log.apply(utils, ['autoHide'].concat(aArgs));
+}
+function logWithStackTrace(...aArgs) {
+	utils.logWithStackTrace.apply(utils, ['autoHide'].concat(aArgs));
+}
 
 var AutoHideConstants = Object.freeze(inherit(TreeStyleTabConstants, {
 	kMODE : 'treestyletab-tabbar-autohide-mode', 
@@ -570,11 +576,10 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 				extraInfo.push('expanded-by-unknown');
 			if (this.lastMouseDownTarget)
 				extraInfo.push('mousedown');
-			dump('showHideOnMouseMove: ' +
+			log('showHideOnMouseMove: ' +
 			       '('+aCoordinates.screenX + ', ' + aCoordinates.screenY + ') => ' +
 			       humanReadablePosition.join(', ') +
-			       (extraInfo.length ? ('[' + extraInfo.join(', ') + ']') : '') +
-			       '\n');
+			       (extraInfo.length ? ('[' + extraInfo.join(', ') + ']') : ''));
 		}
 
 		if (sv.isPopupShown() ||
@@ -905,10 +910,9 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 			let givenReason = this._getHumanReadableReason(aReason);
 			let unifiedReason = this._getHumanReadableReason(this.showHideReason);
 			if (this.expanded)
-				dump('autoHide: show by ' + aReason + '(' + givenReason + ' / ' + unifiedReason + ')\n');
+				logWithStackTrace('autoHide: show by ' + aReason + '(' + givenReason + ' / ' + unifiedReason + ')');
 			else
-				dump('autoHide: hide by ' + aReason + '(' + givenReason + ' / ' + unifiedReason + ')\n');
-			dump((new Error()).stack.replace(/^/gm, '  ').replace(/\s+$/, '') + '\n');
+				logWithStackTrace('autoHide: hide by ' + aReason + '(' + givenReason + ' / ' + unifiedReason + ')');
 		}
 
 		this.fireStateChangingEvent();

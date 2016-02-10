@@ -63,6 +63,8 @@ XPCOMUtils.defineLazyModuleGetter(this, 'Task',
 	'resource://gre/modules/Task.jsm');
 XPCOMUtils.defineLazyModuleGetter(this, 'Promise',
 	'resource://gre/modules/Promise.jsm');
+XPCOMUtils.defineLazyModuleGetter(this, 'Services',
+	'resource://gre/modules/Services.jsm');
 XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabConstants',
   'resource://treestyletab-modules/constants.js', 'TreeStyleTabConstants');
 
@@ -248,6 +250,21 @@ var TreeStyleTabUtils = {
 	isDebugging : function utils_isDebugging(aModule)
 	{
 		return this.getTreePref('debug.' + aModule) || this.getTreePref('debug.all');
+	},
+
+	log : function utils_log(aModule, ...aArgs)
+	{
+		if (!this.isDebugging(aModule))
+			return;
+
+		var logString = '[treestyletab:' + aModule+'] '+ aArgs.join(', ');
+		Serivces.console.logStringMessage(logString);
+		dump(logString+'\n');
+	},
+	logWithStackTrace : function utils_logWithStackTrace(aModule, ...aArgs)
+	{
+		var stack = (new Error()).stack.replace(/^/gm, '  '));
+		return this.log.apply(this, [aModule].concat(aArgs).concat([stack]));
 	},
 
 /* string bundle */

@@ -8,9 +8,11 @@ XPCOMUtils.defineLazyModuleGetter(this,
 let { ReferenceCounter } = Components.utils.import('resource://treestyletab-modules/ReferenceCounter.js', {});
 let { inherit } = Components.utils.import('resource://treestyletab-modules/lib/inherit.jsm', {});
 
-function mydump(aString) {
-	if (TreeStyleTabUtils.isDebugging('bookmark'))
-		dump(aString);
+function log(...aArgs) {
+	TreeStyleTabUtils.log.apply(utils, ['bookmark'].concat(aArgs));
+}
+function logWithStackTrace(...aArgs) {
+	TreeStyleTabUtils.logWithStackTrace.apply(utils, ['bookmark'].concat(aArgs));
 }
 
 var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksUIService, {
@@ -84,7 +86,7 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksUIServic
 					TreeStyleTabBookmarksServiceEditable.saveParentFor(gEditItemOverlay.itemId, true);
 				}
 				catch(e) {
-					mydump(e+'\n');
+					log(e);
 				}
 				return this.__treestyletab__onDialogAccept.apply(this, aArgs);
 			};
@@ -92,7 +94,7 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksUIServic
 			BookmarkPropertiesPanel.__treestyletab__endBatch = BookmarkPropertiesPanel._endBatch;
 			BookmarkPropertiesPanel._endBatch = function(...aArgs) {
 				var id = this.__treestyletab__itemId || gEditItemOverlay.itemId;
-				mydump('BookmarkPropertiesPanel._endBatch for '+id+'\n');
+				log('BookmarkPropertiesPanel._endBatch for '+id);
 				var batching = this._batching;
 				var result = this.__treestyletab__endBatch.apply(this, aArgs);
 				if (id >= 0 && !batching && !this._batching) {
@@ -101,7 +103,7 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksUIServic
 						TreeStyleTabBookmarksServiceEditable.saveParentFor(id, true);
 					}
 					catch(e) {
-						mydump(e+'\n');
+						log(e);
 					}
 					finally {
 						this._batching = false;

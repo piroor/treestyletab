@@ -63,6 +63,13 @@ const SSS = Cc['@mozilla.org/content/style-sheet-service;1']
 const SecMan = Cc['@mozilla.org/scriptsecuritymanager;1']
 				.getService(Ci.nsIScriptSecurityManager);
 
+function log(...aArgs) {
+	utils.log.apply(utils, ['tabbarDNDObserver'].concat(aArgs));
+}
+function logWithStackTrace(...aArgs) {
+	utils.logWithStackTrace.apply(utils, ['tabbarDNDObserver'].concat(aArgs));
+}
+
 function TabbarDNDObserver(aTabBrowser) 
 {
 	this.init(aTabBrowser);
@@ -187,8 +194,7 @@ try{
 		return info.canDrop;
 }
 catch(e) {
-		if (utils.isDebugging('tabbarDNDObserver'))
-			dump('TabbarDND::canDrop\n'+e+'\n');
+		log('canDrop', e);
 		return false;
 }
 	},
@@ -262,8 +268,7 @@ catch(e) {
 	
 	getDropActionInternal : function TabbarDND_getDropActionInternal(aEvent, aSourceTab) 
 	{
-		if (utils.isDebugging('tabbarDNDObserver'))
-			dump('getDropActionInternal: start\n');
+		log('getDropActionInternal: start');
 		var sv = this.treeStyleTab;
 		var b  = this.browser;
 		var d  = this.document;
@@ -304,21 +309,18 @@ catch(e) {
 		var isNewTabAction = !aSourceTab || aSourceTab.ownerDocument != d;
 
 		if (!tab || tab.localName != 'tab') {
-			if (utils.isDebugging('tabbarDNDObserver'))
-				dump('  not on a tab\n');
+			log('  not on a tab');
 			let action = isTabMoveFromOtherWindow ? sv.kACTION_STAY : (sv.kACTION_MOVE | sv.kACTION_PART) ;
 			if (isNewTabAction) action |= sv.kACTION_NEWTAB;
 			if (aEvent[sv.screenPositionProp] < sv.getTabActualScreenPosition(firstTab)) {
-				if (utils.isDebugging('tabbarDNDObserver'))
-					dump('  above the first tab\n');
+				log('  above the first tab');
 				info.target   = info.parent = info.insertBefore = firstTab;
 				info.position = isInverted ? sv.kDROP_AFTER : sv.kDROP_BEFORE ;
 				info.action   = action;
 				return info;
 			}
 			else if (aEvent[sv.screenPositionProp] > sv.getTabActualScreenPosition(tabs[lastTabIndex]) + tabs[lastTabIndex].boxObject[sv.sizeProp]) {
-				if (utils.isDebugging('tabbarDNDObserver'))
-					dump('  below the last tab\n');
+				log('  below the last tab');
 				info.target   = info.parent = tabs[lastTabIndex];
 				info.position = isInverted ? sv.kDROP_BEFORE : sv.kDROP_AFTER ;
 				info.action   = action;
@@ -328,30 +330,25 @@ catch(e) {
 				let index = b.getNewIndex ?
 								b.getNewIndex(aEvent) :
 								b.tabContainer._getDropIndex(aEvent) ;
-				if (utils.isDebugging('tabbarDNDObserver'))
-					dump('  on the tab '+index+'\n');
+				log('  on the tab '+index);
 				index = Math.min(index, lastTabIndex);
 				info.target = tab = tabs[index];
 				if (index == tabs[lastTabIndex]._tPos) {
 					if (index > 0)
 						info.target = tab = tabs[index - 1];
 					info.position = sv.kDROP_AFTER;
-					if (utils.isDebugging('tabbarDNDObserver'))
-						dump('  => after the last tab\n');
+					log('  => after the last tab');
 				} else if (index == firstTab._tPos) {
 					if (index < lastTabIndex - 1)
 						info.target = tab = tabs[index + 1];
 					info.position = sv.kDROP_BEFORE;
-					if (utils.isDebugging('tabbarDNDObserver'))
-						dump('  => before the first tab\n');
+					log('  => before the first tab');
 				}
-				if (utils.isDebugging('tabbarDNDObserver'))
-					dump('  info.target = ' + info.target._tPos + '\n');
+				log('  info.target = ' + info.target._tPos);
 			}
 		}
 		else {
-			if (utils.isDebugging('tabbarDNDObserver'))
-				dump('  on the tab '+tab._tPos+'\n');
+			log('  on the tab '+tab._tPos);
 			sv.ensureTabInitialized(tab);
 			info.target = tab;
 		}
@@ -387,21 +384,19 @@ catch(e) {
 		switch (info.position)
 		{
 			case sv.kDROP_ON:
-				if (utils.isDebugging('tabbarDNDObserver'))
-					dump('  position = on the tab\n');
+				log('  position = on the tab');
 				var visible = sv.getNextVisibleTab(tab);
 				info.action       = sv.kACTION_STAY | sv.kACTION_ATTACH;
 				info.parent       = tab;
 				info.insertBefore = utils.getTreePref('insertNewChildAt') == sv.kINSERT_FISRT ?
 						(sv.getFirstChildTab(tab) || visible) :
 						(sv.getNextSiblingTab(tab) || sv.getNextTab(sv.getLastDescendantTab(tab) || tab));
-				if (utils.isDebugging('tabbarDNDObserver') && info.insertBefore)
-					dump('  insertBefore = '+info.insertBefore._tPos+'\n');
+				if (info.insertBefore)
+					log('  insertBefore = '+info.insertBefore._tPos);
 				break;
 
 			case sv.kDROP_BEFORE:
-				if (utils.isDebugging('tabbarDNDObserver'))
-					dump('  position = before the tab\n');
+				log('  position = before the tab');
 /*
 	     <= detach from parent, and move
 	[TARGET  ]
@@ -437,13 +432,12 @@ catch(e) {
 					info.action       = sv.kACTION_MOVE | (info.parent ? sv.kACTION_ATTACH : sv.kACTION_PART );
 					info.insertBefore = tab;
 				}
-				if (utils.isDebugging('tabbarDNDObserver') && info.insertBefore)
-					dump('  insertBefore = '+info.insertBefore._tPos+'\n');
+				if (info.insertBefore)
+					log('  insertBefore = '+info.insertBefore._tPos);
 				break;
 
 			case sv.kDROP_AFTER:
-				if (utils.isDebugging('tabbarDNDObserver'))
-					dump('  position = after the tab\n');
+				log('  position = after the tab');
 /*
 	[TARGET  ]
 	     <= if the target has a parent, attach to it and and move
@@ -487,8 +481,8 @@ catch(e) {
 						}
 					}
 				}
-				if (utils.isDebugging('tabbarDNDObserver') && info.insertBefore)
-					dump('  insertBefore = '+info.insertBefore._tPos+'\n');
+				if (info.insertBefore)
+					log('  insertBefore = '+info.insertBefore._tPos);
 				break;
 		}
 
@@ -499,16 +493,14 @@ catch(e) {
   
 	performDrop : function TabbarDND_performDrop(aInfo, aDraggedTab) 
 	{
-		if (utils.isDebugging('tabbarDNDObserver'))
-			dump('performDrop: start\n');
+		log('performDrop: start');
 		var sv = this.treeStyleTab;
 		var b  = this.browser;
 		var w  = this.window;
 
 		var tabsInfo = this.getDraggedTabsInfoFromOneTab(aDraggedTab, aInfo);
 		if (!tabsInfo.draggedTab) {
-			if (utils.isDebugging('tabbarDNDObserver'))
-				dump(' => no dragged tab\n');
+			log(' => no dragged tab');
 			return false;
 		}
 
@@ -565,8 +557,7 @@ catch(e) {
 				sourceBrowser == targetBrowser &&
 				sourceService.getNextVisibleTab(draggedTabs[draggedTabs.length-1]) == aInfo.insertBefore
 				) {
-				if (utils.isDebugging('tabbarDNDObserver'))
-					dump(' => no change\n');
+				log(' => no change');
 				// then, do nothing
 				return true;
 			}
@@ -1053,8 +1044,7 @@ try{
 		return (info.position == sv.kDROP_ON || sv.position != 'top')
 }
 catch(e) {
-		if (utils.isDebugging('tabbarDNDObserver'))
-			dump('TabbarDND::onDragOver\n'+e+'\n');
+		log('onDragOver', e);
 }
 	},
   
@@ -1100,10 +1090,9 @@ catch(e) {
 
 		var draggedTab = dt.mozGetDataAt(TAB_DROP_TYPE, 0);
 
-		if (utils.isDebugging('tabbarDNDObserver'))
-			dump('TabbarDND::onDrop\n' +
-				'  dt.dropEffect: ' + dt.dropEffect + '\n' +
-				'  draggedTab:    ' + draggedTab + '\n');
+		log('TabbarDND::onDrop',
+			'  dt.dropEffect: ' + dt.dropEffect,
+			'  draggedTab:    ' + draggedTab);
 
 		if (dt.dropEffect != 'link' &&
 			dt.dropEffect != 'move' &&
@@ -1173,9 +1162,8 @@ catch(e) {
 				if (aURI.indexOf(this.BOOKMARK_FOLDER) == 0) {
 					let newTabs = sv.getNewTabsWithOperation(function() {
 									var data = aURI.replace(self.BOOKMARK_FOLDER, '');
-									if (utils.isDebugging('tabbarDNDObserver'))
-										dump('TabbarDND::handleLinksOrBookmarks\n' +
-											'  bookmark folder data: ' + data + '\n');
+									log('TabbarDND::handleLinksOrBookmarks' +
+										'  bookmark folder data: ' + data);
 									data = JSON.parse(data);
 									w.PlacesUIUtils._openTabset(data.children, { type : 'drop' }, w, data.title);
 								}, b);

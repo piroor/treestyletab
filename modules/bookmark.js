@@ -49,9 +49,11 @@ Cu.import('resource://treestyletab-modules/constants.js');
 
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
-function mydump(aString) {
-	if (utils.isDebugging('bookmark'))
-		dump(aString);
+function log(...aArgs) {
+	utils.log.apply(utils, ['bookmark'].concat(aArgs));
+}
+function logWithStackTrace(...aArgs) {
+	utils.logWithStackTrace.apply(utils, ['bookmark'].concat(aArgs));
 }
 
 var TreeStyleTabBookmarksService = inherit(TreeStyleTabConstants, {
@@ -296,18 +298,18 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabConstants, {
 
 		result.behavior = TST.openGroupBookmarkBehavior();
 		if (result.behavior & this.kGROUP_BOOKMARK_SUBTREE) {
-			mydump('TSTBMService_handleTabsOpenProcess: open as a group\n');
+			log('handleTabsOpenProcess: open as a group');
 			let treeStructure = result.behavior & this.kGROUP_BOOKMARK_DONT_RESTORE_TREE_STRUCTURE ?
 						null :
 						this.getTreeStructureFromItems(aIDs) ;
-			mydump('  treeStructure => '+JSON.stringify(treeStructure)+'\n');
+			log('  treeStructure => '+JSON.stringify(treeStructure));
 			if (treeStructure) {
 				let parentTabs = treeStructure.filter(function(aParent) {
 						return aParent < 0;
 					});
 				let haveMultipleTrees = parentTabs.length != treeStructure.length;
 				if (result.behavior & this.kGROUP_BOOKMARK_USE_DUMMY) {
-					mydump('  trying to use dummy group tab\n');
+					log('  trying to use dummy group tab');
 					let parentCount = 0;
 					let childCount = 0;
 					for (let i in treeStructure) {
@@ -316,8 +318,8 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabConstants, {
 						else
 							childCount++;
 					}
-					mydump('  parentCount: '+parentCount+'\n');
-					mydump('  childCount: '+childCount+'\n');
+					log('  parentCount: '+parentCount);
+					log('  childCount: '+childCount);
 					if (
 						parentCount > 1 &&
 						(
@@ -338,7 +340,7 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabConstants, {
 							title:  aFolderTitle,
 							uri:    uri
 						})
-						mydump('  updated treeStructure => '+JSON.stringify(treeStructure)+'\n');
+						log('  updated treeStructure => '+JSON.stringify(treeStructure));
 					}
 				}
 				else if (!haveMultipleTrees) {
@@ -388,7 +390,7 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabConstants, {
 
 PlacesUIUtils.__treestyletab__openTabset = PlacesUIUtils._openTabset;
 PlacesUIUtils._openTabset = function(aItemsToOpen, aEvent, aWindow, ...aArgs) {
-	mydump('TSTBookmarks_openTabset\n');
+	log('TSTBookmarks_openTabset');
 
 	var uris = [];
 	var ids = [];
@@ -400,12 +402,12 @@ PlacesUIUtils._openTabset = function(aItemsToOpen, aEvent, aWindow, ...aArgs) {
 			if (!id && aIndex in nodes)
 				id = nodes[aIndex].itemId;
 			ids.push(id);
-			mydump('  '+aIndex+': '+id+' / '+aItem.uri+'\n');
+			log('  '+aIndex+': '+id+' / '+aItem.uri);
 			return true;
 		}
 		return false;
 	});
-	mydump('  items => '+aItemsToOpen.length+'\n');
+	log('  items => '+aItemsToOpen.length);
 
 	var allArgs = [aItemsToOpen, aEvent, aWindow].concat(aArgs);
 	if (aItemsToOpen.length <= 0)
@@ -418,17 +420,17 @@ PlacesUIUtils._openTabset = function(aItemsToOpen, aEvent, aWindow, ...aArgs) {
 	var BS = TreeStyleTabBookmarksService;
 
 	var where = w && w.whereToOpenLink(aEvent, false, true) || 'window';
-	mydump('  where: '+where+'\n');
+	log('  where: '+where);
 	if (where === 'window')
 		return this.__treestyletab__openTabset.apply(this, allArgs);
 
 	var result = BS.handleTabsOpenProcess(where, aEvent, w, ids, uris, aItemsToOpen, this.__treestyletab__folderName);
-	mydump('  result: '+JSON.stringify(result)+'\n');
+	log('  result: '+JSON.stringify(result));
 
 	var tabs = TST.doAndGetNewTabs((function() {
 			this.__treestyletab__openTabset.apply(this, allArgs);
 		}).bind(this), w.gBrowser);
-	mydump('  tabs: '+tabs.length+'\n');
+	log('  tabs: '+tabs.length);
 
 	if (!result.treeStructure)
 		tabs = [];

@@ -46,6 +46,13 @@ Cu.import('resource://gre/modules/Promise.jsm');
 
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
+function log(...aArgs) {
+	utils.log.apply(utils, ['contentBridge'].concat(aArgs));
+}
+function logWithStackTrace(...aArgs) {
+	utils.logWithStackTrace.apply(utils, ['contentBridge'].concat(aArgs));
+}
+
 function ContentBridge(aTab, aTabBrowser) 
 {
 	this.init(aTab, aTabBrowser);
@@ -107,11 +114,9 @@ ContentBridge.prototype = inherit(TreeStyleTabConstants, {
 	},
 	handleMessage : function CB_handleMessage(aMessage)
 	{
-		if (utils.isDebugging('contentBridge')) {
-			dump('*********************handleMessage*******************\n');
-			dump('TARGET IS: '+aMessage.target.localName+'\n');
-			dump(JSON.stringify(aMessage.json)+'\n');
-		}
+		log('*********************handleMessage*******************');
+		log('TARGET IS: '+aMessage.target.localName);
+		log(JSON.stringify(aMessage.json));
 
 		if (aMessage.target != this.mTab.linkedBrowser)
 		  return;

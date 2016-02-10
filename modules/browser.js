@@ -75,9 +75,11 @@ function wait(aMilliSeconds) {
 	});
 }
 
-function mydump(aString) {
-	if (utils.isDebugging('browser'))
-		dump(aString);
+function log(...aArgs) {
+	utils.log.apply(utils, ['browser'].concat(aArgs));
+}
+function logWithStackTrace(...aArgs) {
+	utils.logWithStackTrace.apply(utils, ['browser'].concat(aArgs));
 }
 
 Cu.import('resource://treestyletab-modules/window.js');
@@ -1974,7 +1976,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				(aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE ? 'autohide ' : '' ) +
 				(aReason & this.kTABBAR_UPDATE_BY_INITIALIZE ? 'initialize ' : '' ) +
 				(aReason & this.kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR ? 'toggle-sidebar ' : '' );
-			mydump('TSTBrowser_updateFloatingTabbarInternal: ' + humanReadableReason + '\n');
+			log('updateFloatingTabbarInternal: ' + humanReadableReason);
 		}
 
 		var d = this.document;
@@ -3168,20 +3170,20 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var pareintIndexInTree = hasStructure ? this.treeStructure.shift() : 0 ;
 		var lastRelatedTab = b._lastRelatedTab;
 
-		mydump('TSTBrowser_onTabOpen\n  ' + [
+		log('onTabOpen\n  ' + [
 		  'readiedToAttachNewTab: '+this.readiedToAttachNewTab,
 		  'parentTab: '+this.parentTab + ' (' + this.getTabById(this.parentTab) + ')',
 		  'insertBefore: '+this.insertBefore,
 		  'treeStructure: '+this.treeStructure
-		].join('\n  ') + '\n');
+		].join('\n  '));
 
 		if (typeof this.readiedToAttachNewTab !== 'boolean') {
 			this.window.setTimeout((function() {
 				if (!tab.owner)
 					return;
-				mydump('TSTBrowser_onTabOpen: new child tab opened by browser.tabs.insertRelatedAfterCurrent=true\n');
+				log('onTabOpen: new child tab opened by browser.tabs.insertRelatedAfterCurrent=true');
 				var nextTab = this.findNextTabForNewChild(tab, tab.owner);
-				mydump('  next tab: '+(nextTab && nextTab._tPos)+'\n');
+				log('  next tab: '+(nextTab && nextTab._tPos));
 				this.attachTabTo(tab, tab.owner, {
 					insertBefore: nextTab
 				});
@@ -3403,7 +3405,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var closeParentBehavior = this.getCloseParentBehaviorForTab(tab);
 
 		var backupAttributes = this._collectBackupAttributes(tab);
-		mydump('onTabClose: backupAttributes = '+JSON.stringify(backupAttributes)+'\n');
+		log('onTabClose: backupAttributes = '+JSON.stringify(backupAttributes));
 
 		if (closeParentBehavior == this.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN ||
 			this.isSubtreeCollapsed(tab))
@@ -3631,7 +3633,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		var prevPosition = aEvent.detail;
 		if (tab.__treestyletab__isOpening && !this.isTabInternallyMoving(tab)) {
-			mydump('onTabMove for new child tab: move back '+tab._tPos+' => '+prevPosition+'\n');
+			log('onTabMove for new child tab: move back '+tab._tPos+' => '+prevPosition);
 			tab.__treestyletab__internallyTabMovingCount++;
 			b.moveTabTo(tab, prevPosition);
 			tab.__treestyletab__internallyTabMovingCount--;
@@ -3639,8 +3641,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 
 		tab.__treestyletab__previousPosition = prevPosition;
-		mydump('onTabMove '+prevPosition+' => '+tab._tPos+' (internal moving count='+tab.__treestyletab__internallyTabMovingCount+', owner='+String(tab.owner)+')\n');
-		mydump((new Error()).stack.replace(/^/gm, '  ')+'\n');
+		logWithStackTrace('onTabMove '+prevPosition+' => '+tab._tPos+' (internal moving count='+tab.__treestyletab__internallyTabMovingCount+', owner='+String(tab.owner)+')');
 
 		// When the tab was moved before TabOpen event is fired, we have to update manually.
 		var newlyOpened = !this.isTabInitialized(tab) && this.onTabOpen(null, tab);
@@ -3663,11 +3664,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			if (storedId && tab.getAttribute(this.kID) != storedId)
 				restored = this.onTabRestoring(aEvent);
 		}
-		mydump('  newlyOpened: '+newlyOpened+'\n');
-		mydump('  restored:    '+restored+'\n');
+		log('  newlyOpened: '+newlyOpened);
+		log('  restored:    '+restored);
 
 		if (this.hasChildTabs(tab) && !this.subTreeMovingCount) {
-			mydump('  => move sub tree\n');
+			log('  => move sub tree');
 			this.moveTabSubtreeTo(tab, tab._tPos);
 		}
 
@@ -3703,7 +3704,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			if (!this.subTreeChildrenMovingCount)
 				this.updateChildrenArray(parentTab);
 		}
-		mydump('  tabsToBeUpdated: '+tabsToBeUpdated.map(function(aTab) { return aTab._tPos; })+'\n');
+		log('  tabsToBeUpdated: '+tabsToBeUpdated.map(function(aTab) { return aTab._tPos; }));
 
 		var updatedTabs = new WeakMap();
 		tabsToBeUpdated.forEach(function(aTab) {
@@ -3736,7 +3737,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	
 	attachTabFromPosition : function TSTBrowser_attachTabFromPosition(aTab, aOldPosition) 
 	{
-		mydump('attachTabFromPosition '+aOldPosition+' => '+aTab._tPos+'\n');
+		log('attachTabFromPosition '+aOldPosition+' => '+aTab._tPos);
 		var parent = this.getParentTab(aTab);
 
 		if (aOldPosition === void(0))
@@ -3747,7 +3748,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var oldPos = this.getChildIndex(oldPositionTab, parent);
 		var delta;
 		if (oldPositionTab == aTab && pos == oldPos) { // no move?
-			mydump('  => no move\n');
+			log('  => no move');
 			return;
 		}
 		else if (pos < 0 || oldPos < 0) {
@@ -3757,7 +3758,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			delta = Math.abs(pos - oldPos);
 		}
 
-		mydump((new Error()).stack.replace(/^/gm, '  ')+'\n');
+		logWithStackTrace('  moving');
 
 		var prevTab = this.getPreviousVisibleTab(aTab);
 		var nextTab = this.getNextVisibleTab(aTab);
@@ -3766,45 +3767,45 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (tabs.length) {
 			nextTab = this.getNextTab(tabs[tabs.length-1]);
 		}
-		mydump('  prevTab: '+(prevTab&&(prevTab._tPos+'('+prevTab.linkedBrowser.currentURI.spec+')'))+'\n');
-		mydump('  nextTab: '+(nextTab&&(nextTab._tPos+'('+nextTab.linkedBrowser.currentURI.spec+')'))+'\n');
+		log('  prevTab: '+(prevTab&&(prevTab._tPos+'('+prevTab.linkedBrowser.currentURI.spec+')')));
+		log('  nextTab: '+(nextTab&&(nextTab._tPos+'('+nextTab.linkedBrowser.currentURI.spec+')')));
 
 		var prevParent = this.getParentTab(prevTab);
 		var nextParent = this.getParentTab(nextTab);
 
 		var prevLevel  = prevTab ? Number(prevTab.getAttribute(this.kNEST)) : -1 ;
 		var nextLevel  = nextTab ? Number(nextTab.getAttribute(this.kNEST)) : -1 ;
-		mydump('  prevLevel: '+prevLevel+'\n');
-		mydump('  nextLevel: '+nextLevel+'\n');
+		log('  prevLevel: '+prevLevel);
+		log('  nextLevel: '+nextLevel);
 
 		var newParent;
 
 		if (!prevTab) {
-			mydump(' => moved to topmost position\n');
+			log(' => moved to topmost position');
 			newParent = null;
 		}
 		else if (!nextTab) {
-			mydump(' => movedmoved to last position\n');
+			log(' => movedmoved to last position');
 			newParent = (delta > 1) ? prevParent : parent ;
 		}
 		else if (prevParent == nextParent) {
-			mydump(' => moved into existing tree\n');
+			log(' => moved into existing tree');
 			newParent = prevParent;
 		}
 		else if (prevLevel > nextLevel) {
-			mydump(' => moved to end of existing tree\n');
+			log(' => moved to end of existing tree');
 			if (this.mTabBrowser.selectedTab != aTab) { 
-				mydump('    => maybe newly opened tab\n');
+				log('    => maybe newly opened tab');
 				newParent = prevParent;
 			}
 			else {
-				mydump('    => maybe drag and drop\n');
+				log('    => maybe drag and drop');
 				var realDelta = Math.abs(aTab._tPos - aOldPosition);
 				newParent = realDelta < 2 ? prevParent : (parent || nextParent) ;
 			}
 		}
 		else if (prevLevel < nextLevel) {
-			mydump(' => moved to first child position of existing tree\n');
+			log(' => moved to first child position of existing tree');
 			newParent = prevTab || parent || nextParent;
 		}
 
@@ -4119,7 +4120,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	handleRestoredTab : function TSTBrowser_handleRestoredTab(aTab) 
 	{
 		if (aTab.__treestyletab__restoreState === undefined) {
-			mydump('handleRestoredTab: ' + aTab._tPos + ' is already restored!\n');
+			log('handleRestoredTab: ' + aTab._tPos + ' is already restored!');
 			return false;
 		}
 
@@ -4347,7 +4348,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var restoringMultipleTabs = this.windowService.restoringTree;
 		var position = this._prepareInsertionPosition(aTab, aMayBeDuplicated);
 		var parent = position.parent;
-		mydump('handleRestoredTab: found parent = ' + parent+'\n');
+		log('handleRestoredTab: found parent = ' + parent);
 		if (parent) {
 			aTab.removeAttribute(this.kPARENT);
 			parent = this.getTabById(parent);
@@ -4393,7 +4394,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 
 		var ancestors = (this.getTabValue(aTab, this.kANCESTORS) || this.getTabValue(aTab, this.kPARENT)).split('|');
-		mydump('handleRestoredTab: ancestors = ' + ancestors+'\n');
+		log('handleRestoredTab: ancestors = ' + ancestors);
 		var parent = null;
 		for (let i in ancestors)
 		{
@@ -4415,7 +4416,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		 */
 		if (!parent) {
 			parent = aTab.getAttribute(this.kPARENT);
-			mydump('handleRestoredTab: parent = ' + parent+'\n');
+			log('handleRestoredTab: parent = ' + parent);
 			if (parent && !next)
 				next = this.getNextSiblingTab(aTab);
 		}
@@ -5171,9 +5172,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 
 		if (isContentResize || isChromeResize) {
-			mydump('TSTBrowser_onResize\n');
-			mydump('  isContentResize = '+isContentResize+'\n');
-			mydump('  isChromeResize = '+isChromeResize+'\n');
+			log('TSTBrowser_onResize');
+			log('  isContentResize = '+isContentResize);
+			log('  isChromeResize = '+isChromeResize);
 			this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
 			this.updateInvertedTabContentsOrder(true);
 			this.mTabBrowser.mTabContainer.adjustTabstrip();
@@ -5335,10 +5336,10 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
   
 	onBeforeFullScreenToggle : function TSTBrowser_onBeforeFullScreenToggle(aEnterFS)
 	{
-		mydump('onBeforeFullScreenToggle / ' + this.position + '\n');
+		log('onBeforeFullScreenToggle / ' + this.position);
 		if (this.position != 'top') {
-			mydump('  this.document.mozFullScreen => ' + this.document.mozFullScreen + '\n');
-			mydump('  aEnterFS => ' + aEnterFS + '\n');
+			log('  this.document.mozFullScreen => ' + this.document.mozFullScreen);
+			log('  aEnterFS => ' + aEnterFS);
 			// ignore entering to the DOM-fullscreen (ex. YouTube Player)
 			if (!this.document.mozFullScreen) {
 				if (aEnterFS)
@@ -7116,9 +7117,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			Components.utils.reportError(new Error('There is no property named "_browserEpochs"!!'));
 		}
 
-		mydump('TSTBrowser::restoreTree\n');
-		mydump('  level = '+level+'\n');
-		mydump('  tabsToRestore = '+tabsToRestore+'\n');
+		log('TSTBrowser::restoreTree');
+		log('  level = '+level);
+		log('  tabsToRestore = '+tabsToRestore);
 
 		if (
 			level <= this.kRESTORE_TREE_LEVEL_NONE ||
@@ -7141,7 +7142,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			);
 		});
 
-		mydump('  restoring member tabs = '+tabs.length+' ('+tabs.map(function(aTab) { return aTab._tPos; })+')\n');
+		log('  restoring member tabs = '+tabs.length+' ('+tabs.map(function(aTab) { return aTab._tPos; })+')');
 
 		if (tabs.length <= 1)
 			return;
