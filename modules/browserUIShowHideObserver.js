@@ -168,7 +168,9 @@ BrowserUIShowHideObserver.prototype = {
 				'][ancestor::xul:tabs[@' + TreeStyleTabConstants.kMODE + ' = "vertical"]]',
 				target,
 				Components.interfaces.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
-			).singleNodeValue
+			).singleNodeValue ||
+			// value is not changed
+			aMutation.oldValue == target.getAttribute(aMutation.attributeName)
 			)
 			return;
 
