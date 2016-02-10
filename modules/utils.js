@@ -258,7 +258,7 @@ var TreeStyleTabUtils = {
 			return;
 
 		var logString = '[treestyletab:' + aModule+'] '+ aArgs.join(', ');
-		Serivces.console.logStringMessage(logString);
+		Services.console.logStringMessage(logString);
 		dump(logString+'\n');
 	},
 	logWithStackTrace : function utils_logWithStackTrace(aModule, ...aArgs)
