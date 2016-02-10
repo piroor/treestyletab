@@ -263,7 +263,7 @@ var TreeStyleTabUtils = {
 	},
 	logWithStackTrace : function utils_logWithStackTrace(aModule, ...aArgs)
 	{
-		var stack = (new Error()).stack.replace(/^/gm, '  '));
+		var stack = (new Error()).stack.replace(/^/gm, '  ');
 		return this.log.apply(this, [aModule].concat(aArgs).concat([stack]));
 	},
 
