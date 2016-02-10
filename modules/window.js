@@ -1339,10 +1339,12 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		if (utils.isDebugging('window'))
 			dump('TSTWindow_onBeforeOpenLinkWithTab '+[aTab, JSON.stringify(aParams), this.checkToOpenChildTab(aTab)]+'\n');
 
-		if (!aParams.fromChrome && !this.checkToOpenChildTab(aTab))
+		if (!this.checkToOpenChildTab(aTab)) {
+		if (!aParams.fromChrome)
 			this.handleNewTabFromCurrent(aTab);
 		else if (!aParams.relatedToCurrent && !aParams.referrerURI)
 			this.readyToOpenOrphanTabNow(aTab);
+		}
 	},
  
 	onBeforeOpenNewTabByThirdParty : function TSTWindow_onBeforeOpenNewTabByThirdParty(aOwner) 
@@ -1350,10 +1352,9 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		if (utils.isDebugging('window'))
 			dump('TSTWindow_onBeforeOpenNewTabByThirdParty '+[aOwner, this.checkToOpenChildTab(aTab)]+'\n');
 
-		if (!this.checkToOpenChildTab(aOwner))
+		if (!this.checkToOpenChildTab(aOwner)) {
 			this.handleNewTabFromCurrent(aOwner);
-		else
-			this.readyToOpenOrphanTabNow(aOwner);
+		}
 	},
  
 	onBeforeBrowserAccessOpenURI : function TSTWindow_onBeforeBrowserAccessOpenURI(aOpener, aWhere) 
