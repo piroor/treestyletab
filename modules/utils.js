@@ -437,6 +437,9 @@ var TreeStyleTabUtils = {
  
 	getTreeStructureFromTabs : function TSTUtils_getTreeStructureFromTabs(aTabs) 
 	{
+		if (!aTabs || !aTabs.length)
+			return [];
+
 		/* this returns...
 		  [A]     => -1 (parent is not in this tree)
 		    [B]   => 0 (parent is 1st item in this tree)
@@ -445,9 +448,10 @@ var TreeStyleTabUtils = {
 		  [E]     => -1 (parent is not in this tree, and this creates another tree)
 		    [F]   => 0 (parent is 1st item in this another tree)
 		*/
+		var browser = this.getTabBrowserFromChild(aTabs[0]);
 		return this.cleanUpTreeStructureArray(
 				aTabs.map(function(aTab, aIndex) {
-					let tab = this.getParentTab(aTab);
+					let tab = browser.treeStyleTab.getParentTab(aTab);
 					let index = tab ? aTabs.indexOf(tab) : -1 ;
 					return index >= aIndex ? -1 : index ;
 				}, this),
