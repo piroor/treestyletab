@@ -98,7 +98,7 @@ BrowserUIShowHideObserver.prototype = {
 				{
 					case 'childList':
 						if (aMutation.target == this.box) {
-							this.logMutation(aMutation, 'BrowserUIShowHideObserver_onMutation/childList');
+							this.logMutation(aMutation, 'onMutation/childList');
 							this.owner.browser.treeStyleTab.updateFloatingTabbar(TreeStyleTabConstants.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
 						}
 						return;
@@ -109,7 +109,7 @@ BrowserUIShowHideObserver.prototype = {
 				}
 			}
 			catch(error) {
-				this.logMutation(aMutation, 'BrowserUIShowHideObserver_onMutation(error)');
+				this.logMutation(aMutation, 'onMutation(error)');
 				Components.utils.reportError(error);
 			}
 		}, this);
@@ -153,10 +153,6 @@ BrowserUIShowHideObserver.prototype = {
 			return;
 
 		var target = aMutation.target;
-		var state = this.serializeBoxState(target);
-		if (target.__treestyletab_mutationObserver_lastState == state)
-			return;
-
 		if (
 			// ignore modifications of each tab
 			TST.getTabFromChild(target) ||
@@ -175,6 +171,14 @@ BrowserUIShowHideObserver.prototype = {
 			).singleNodeValue
 			)
 			return;
+
+		this.logMutation(aMutation, 'onAttributeModified');
+
+		var state = this.serializeBoxState(target);
+		if (target.__treestyletab_mutationObserver_lastState == state) {
+			log(' => skip modification with no state change');
+			return;
+		}
 
 		var tabbar = this.owner.browser.tabContainer;
 		var placeHolder = TST.tabStripPlaceHolder;
@@ -224,13 +228,14 @@ BrowserUIShowHideObserver.prototype = {
 			// (Pale Moon, Tab Mix Plus, etc.)
 			!tabbarVisibilityMismatching &&
 			!tabbarMatrixMismatching
-			)
+			) {
+			log(' => skip modifications around controlled element');
 			return;
-
-		this.logMutation(aMutation, 'BrowserUIShowHideObserver_onAttributeModified');
+		}
 
 		this.handlingAttrChange = true;
 
+		log(' => update floating tab bar');
 		TST.updateFloatingTabbar(TreeStyleTabConstants.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
 
 		var w = this.box.ownerDocument.defaultView;
