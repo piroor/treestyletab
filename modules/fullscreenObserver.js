@@ -40,10 +40,10 @@ Components.utils.import('resource://treestyletab-modules/constants.js');
 Components.utils.import('resource://treestyletab-modules/utils.js');
 
 function log(...aArgs) {
-	TreeStyleTabUtils.log.apply(utils, ['fullscreenObserver'].concat(aArgs));
+	TreeStyleTabUtils.log.apply(TreeStyleTabUtils, ['fullscreenObserver'].concat(aArgs));
 }
 function logWithStackTrace(...aArgs) {
-	TreeStyleTabUtils.logWithStackTrace.apply(utils, ['fullscreenObserver'].concat(aArgs));
+	TreeStyleTabUtils.logWithStackTrace.apply(TreeStyleTabUtils, ['fullscreenObserver'].concat(aArgs));
 }
 
 function FullscreenObserver(aWindow) {

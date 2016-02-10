@@ -9,10 +9,10 @@ let { ReferenceCounter } = Components.utils.import('resource://treestyletab-modu
 let { inherit } = Components.utils.import('resource://treestyletab-modules/lib/inherit.jsm', {});
 
 function log(...aArgs) {
-	TreeStyleTabUtils.log.apply(utils, ['bookmark'].concat(aArgs));
+	TreeStyleTabUtils.log.apply(TreeStyleTabUtils, ['bookmark'].concat(aArgs));
 }
 function logWithStackTrace(...aArgs) {
-	TreeStyleTabUtils.logWithStackTrace.apply(utils, ['bookmark'].concat(aArgs));
+	TreeStyleTabUtils.logWithStackTrace.apply(TreeStyleTabUtils, ['bookmark'].concat(aArgs));
 }
 
 var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksUIService, {
