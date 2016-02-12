@@ -17,6 +17,23 @@
 	-moz-appearance: none;
 	background: darkgray !important;
 }
+/* these styles are required to cover narrow scrollbars. */
+.tabbrowser-tabs[treestyletab-style~="border"][treestyletab-mode="vertical"]
+  .scrollbox-innerbox {
+	background: linear-gradient(to left,
+	                            rgba(169,169,169,1) 0%,
+	                            rgba(169,169,169,1) 10%,
+	                            rgba(169,169,169,0) 11%,
+	                            rgba(169,169,169,0) 100%) !important;
+}
+.tabbrowser-tabs[treestyletab-style~="border"][treestyletab-tabbar-position="left"][treestyletab-invert-scrollbar="true"]
+  .scrollbox-innerbox {
+	background: linear-gradient(to right,
+	                            rgba(169,169,169,1) 0%,
+	                            rgba(169,169,169,1) 10%,
+	                            rgba(169,169,169,0) 11%,
+	                            rgba(169,169,169,0) 100%) !important;
+}
 
 .tabbrowser-strip[treestyletab-mode="vertical"],
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"],
