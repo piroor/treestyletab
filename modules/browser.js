@@ -7152,7 +7152,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		wait(0)
 			.then((function() {
 				aTab.setAttribute(this.kHIGHLIGHTED, 'notifying');
-				return wait(150);
+				return wait(500);
 			}).bind(this))
 			.then((function() {
 				aTab.setAttribute(this.kHIGHLIGHTED, 'finish');
