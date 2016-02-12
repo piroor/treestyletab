@@ -135,6 +135,7 @@
 <!ENTITY config.closeParentBehavior.promoteFirst "提升第一個子分頁到父分頁所在階層">
 <!ENTITY config.closeParentBehavior.promoteAll   "所有子分頁都提升到父分頁所在階層">
 <!ENTITY config.closeParentBehavior.detach  "從該樹釋放所屬子分頁">
+<!ENTITY config.closeParentBehavior.replaceWithGroupTab "Replace closed parent with a dummy tab and keep the tree">
 <!ENTITY config.closeRootBehavior.promoteFirst   "只有關閉最頂層的父分頁時，才提升第一子分頁為父分頁">
 
 

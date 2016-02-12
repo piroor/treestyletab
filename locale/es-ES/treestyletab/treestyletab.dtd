@@ -141,6 +141,7 @@
 <!ENTITY config.closeParentBehavior.promoteFirst "Promover la primer pestañas como madre">
 <!ENTITY config.closeParentBehavior.promoteAll   "Promover todas las pestañas hijas al nivel de la pestaña cerrada">
 <!ENTITY config.closeParentBehavior.detach        "Liberar las hijas del árbol">
+<!ENTITY config.closeParentBehavior.replaceWithGroupTab "Replace closed parent with a dummy tab and keep the tree">
 <!ENTITY config.closeRootBehavior.promoteFirst   "Promover la primer hija como la nueva madre, si la madre cerrada no tiene madres">
 <!--ENTITY config.attachChildrenToGrandParentOnRemoveTab "Liberar las pestañas hijas del árbol cuando el árbol es cerrado"-->
 

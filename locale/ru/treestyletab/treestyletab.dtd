@@ -138,6 +138,7 @@
 <!ENTITY config.closeParentBehavior.promoteFirst "Сделать первую дочернюю вкладку новой родительской">
 <!ENTITY config.closeParentBehavior.promoteAll   "Переместить все дочерние вкладки на уровень закрытой родительской вкладки">
 <!ENTITY config.closeParentBehavior.detach        "Переместить дочерние вкладки из дерева">
+<!ENTITY config.closeParentBehavior.replaceWithGroupTab "Replace closed parent with a dummy tab and keep the tree">
 <!ENTITY config.closeRootBehavior.promoteFirst   "Сделать первую дочернюю вкладку новой родительской, если закрытая родительская вкладка не имела родителя">
 
 <!ENTITY config.focusMode "Переходить по Ctrl+Tab на следующую/предыдущую вкладку даже если она скрыта">

@@ -145,6 +145,7 @@
 <!ENTITY config.closeParentBehavior.promoteFirst "Das geschlossene Tab durch das erste untergeordnete ersetzen">
 <!ENTITY config.closeParentBehavior.promoteAll   "Untergeordnete Tabs auf die Ebene des geschlossenen Tabs verschieben">
 <!ENTITY config.closeParentBehavior.detach        "Untergeordnete Tabs ganz aus dem Zweig ausgliedern">
+<!ENTITY config.closeParentBehavior.replaceWithGroupTab "Replace closed parent with a dummy tab and keep the tree">
 <!ENTITY config.closeRootBehavior.promoteFirst   "Das geschlossene Tab durch das erste untergeordnete ersetzen, wenn das geschlossene Tab kein übergordnetes hatte">
 
 <!ENTITY config.focusMode "Strg+Tab selektiert auch nicht sichtbare Tabs">

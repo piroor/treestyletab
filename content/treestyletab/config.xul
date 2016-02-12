@@ -750,6 +750,7 @@
 			oncommand="syncEnabledState(this, this.value == 0);"
 			sync-enabled-state-targets="extensions.treestyletab.closeRootBehavior-check">
 			<radio value="2" label="&config.closeParentBehavior.close;"/>
+			<radio value="5" label="&config.closeParentBehavior.replaceWithGroupTab;"/>
 			<radio value="3" label="&config.closeParentBehavior.promoteFirst;"/>
 			<radio value="0" label="&config.closeParentBehavior.promoteAll;"/>
 			<hbox align="center">

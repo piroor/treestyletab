@@ -135,6 +135,7 @@
 <!ENTITY config.closeParentBehavior.promoteFirst "最初の子タブを新しい親にする">
 <!ENTITY config.closeParentBehavior.promoteAll   "閉じた親タブの階層に子孫のタブを移動する">
 <!ENTITY config.closeParentBehavior.detach       "子孫のタブをツリーから解放する">
+<!ENTITY config.closeParentBehavior.replaceWithGroupTab "代わりにグループ化用のダミーのタブを開いてツリーを維持する">
 <!ENTITY config.closeRootBehavior.promoteFirst   "最上位の親タブを閉じた時だけは、最初の子タブを新しい親にする">
 
 <!ENTITY config.insertNewChildAt.caption "新しい子タブを開く位置">

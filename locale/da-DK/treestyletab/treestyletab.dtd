@@ -145,6 +145,7 @@
 <!ENTITY config.closeParentBehavior.promoteFirst "Gør første underfane til hovedfane">
 <!ENTITY config.closeParentBehavior.promoteAll "Gør alle underfaner til hovedfaner">
 <!ENTITY config.closeParentBehavior.detach "Frigør underfaner fra træet">
+<!ENTITY config.closeParentBehavior.replaceWithGroupTab "Replace closed parent with a dummy tab and keep the tree">
 <!ENTITY config.closeRootBehavior.promoteFirst "Gør første underfane til hovedfane, hvis den lukkede fane er den første">
 
 <!ENTITY config.focusMode "Flyt fokus til næste/forrige fane, selv om den ikke er synlig, med Ctrl-Tab">
