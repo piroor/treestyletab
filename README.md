@@ -2,7 +2,7 @@
 
 This is an addon for Firefox providing tree-like appearance for the tab bar.
 
-## Frequently **REJECTED** proposals
+## Frequently **REJECTED** requests/proposals
 
 I'm very sorry but this addon is strongly concentrated about "tree of tabs". In other words, features not related to "tree of tabs" are out of its purpose. Such features won't be added, even if many people love it. For example...
 
@@ -44,7 +44,11 @@ Too high customizability for such rare usecases will just make you happy, but ot
 
 The feature is included in TST mainly to simulate Firefox's default behavior in the fullscreen mode (started by the `F11` key). Is there any keyboard shortcut to show/hide the navigation toolbar?
 
-### [Sort child tabs](https://github.com/piroor/treestyletab/issues/94)
+### High-power management of tree, like [sorting child tabs](https://github.com/piroor/treestyletab/issues/94), [auto-modification of tree](https://github.com/piroor/treestyletab/issues/509), and so on
+
+I believe that generally "tree of tabs should be a visualized history of web browsing", because they are built on relations where you came from. Possibly such a tree is facially chaotic, but it just mirrors your actual footmarks, so you'll easily find out where is the target tab based on a map in your mind. Moreover, those relations themselves may let you recall forgotten idea you thought while you were browsing those tabs.
+
+On the other hand, sorted tabs based on URLs or something will be beautiful - but that's all. Such sorted tabs won't help me - I'm very forgetful. In other words, I just need something which memorizes my chaotic mind as-is.
 
 ### Configuration UI to change appearance of tabs in the vertical tab bar, for example, [color](https://github.com/piroor/treestyletab/issues/539), [height](https://github.com/piroor/treestyletab/issues/236), and so on
 
@@ -53,3 +57,7 @@ Instead please use the `userChrome.css`. TST should have configuration UIs only 
 ### Keyboard shortcuts for TST's custom functions, for example, [close a tree](https://github.com/piroor/treestyletab/issues/274)
 
 Firefox already have [very large number of keyboard shortcuts](https://support.mozilla.org/kb/keyboard-shortcuts-perform-firefox-tasks-quickly), and other addons also provide their own keyboard shortcuts, I cannot find out safe combinations for my features. So I gave up and decided to provide only [APIs for other addons](http://piro.sakura.ne.jp/xul/_treestyletab.html.en#api). Please use generic addons to customize keyboard shortcuts which can define custom actions based on scripts. Sorry.
+
+### [Ability to disable animation effects around tabs](https://github.com/piroor/treestyletab/issues/499)
+
+[If Firefox introduces new preference to disable tab animations](https://bugzilla.mozilla.org/show_bug.cgi?id=556717), I'll apply it for TST too. Otherwise I have no plan to implement such a "no animation mode", because it will make TST more far from Firefox's plain codes. Now I have only a few resources to maintain TST, so I don't want to increase the risk that I give up to update TST for future versions of Firefox which will be continuously modified.
