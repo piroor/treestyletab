@@ -2798,7 +2798,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			case 'extensions.treestyletab.tabbar.narrowScrollbar.width':
 				if (this.isVertical &&
 					this.mTabBrowser.mTabContainer.getAttribute('overflow') == 'true')
-					utils.updateNarrowScrollbarStyle();
+					utils.updateNarrowScrollbarStyle(this.browser);
 				return;
 
 			case 'extensions.treestyletab.maxTreeLevel.physical':
@@ -5151,7 +5151,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			if (aEvent.type == 'overflow') {
 				tabs.setAttribute('overflow', 'true');
 				this.scrollBoxObject.ensureElementIsVisible(tabs.selectedItem);
-				utils.updateNarrowScrollbarStyle();
+				utils.updateNarrowScrollbarStyle(this.browser);
 			}
 			else {
 				tabs.removeAttribute('overflow');

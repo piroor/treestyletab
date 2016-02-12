@@ -499,7 +499,7 @@ var TreeStyleTabUtils = {
 	},
 
 
-	updateNarrowScrollbarStyle : function utils_updateNarrowScrollbarStyle() 
+	updateNarrowScrollbarStyle : function utils_updateNarrowScrollbarStyle(aTabBrowser) 
 	{
 		if (this.updatingNarrowScrollbarStyle)
 			return;
@@ -516,9 +516,43 @@ var TreeStyleTabUtils = {
 			SSS.sheetRegistered(this.lastAgentSheetForNarrowScrollbar, SSS.AGENT_SHEET))
 			SSS.unregisterSheet(this.lastAgentSheetForNarrowScrollbar, SSS.AGENT_SHEET);
 
+		var scrollbox = aTabBrowser.tabContainer.mTabstrip._scrollbox;
+		var d = scrollbox.ownerDocument;
+
+		var scrollbarSize = this.lastOriginalScrollbarSize;
+		if (scrollbarSize == 0) {
+			let nodes = d.getAnonymousNodes(scrollbox);
+			if (nodes) {
+				for (let i = 0, maxi = nodes.length; i < maxi; i++)
+				{
+					if (nodes[i].localName != 'box')
+						continue;
+					scrollbarSize = scrollbox.boxObject.width - nodes[i].boxObject.width;
+					break;
+				}
+			}
+		}
+
+		var size = this.getTreePref('tabbar.narrowScrollbar.width');
+		var rulesToSizeScrollbar;
+		var rulesToSizeScrollbarContents;
+		if (scrollbarSize) {
+			let overWidth = size - scrollbarSize;
+			let leftMargin = Math.floor(overWidth / 2);
+			let rightMargin = overWidth - leftMargin;
+			rulesToSizeScrollbar = 'margin-left: '+leftMargin+'px;' +
+									'margin-right: '+rightMargin+'px;';
+		}
+		else {
+			rulesToSizeScrollbar = 'font-size: '+size+'px;';
+			rulesToSizeScrollbarContents = 'max-width: '+size+'px;' +
+											'min-width: '+size+'px;';
+		}
+
 		const style = 'data:text/css,'+encodeURIComponent(
 			('@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");' +
 
+			(rulesToSizeScrollbarContents ?
 			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
 			'  .tabbrowser-arrowscrollbox' +
 			'  > scrollbox' +
@@ -526,17 +560,12 @@ var TreeStyleTabUtils = {
 			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
 			'  .tabbrowser-arrowscrollbox' +
 			'  > scrollbox' +
-			'  > scrollbar[orient="vertical"] * {' +
-			'  max-width: %SIZE%px;' +
-			'  min-width: %SIZE%px;' +
-			'}' +
+			'  > scrollbar[orient="vertical"] * {' + rulesToSizeScrollbarContents + '}' : '' ) +
 
 			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
 			'  .tabbrowser-arrowscrollbox' +
 			'  > scrollbox' +
-			'  > scrollbar[orient="vertical"] {' +
-			'  font-size: %SIZE%px;' +
-			'}' +
+			'  > scrollbar[orient="vertical"] {' + rulesToSizeScrollbar + '}' +
 
 			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
 			'  .tabbrowser-arrowscrollbox' +
@@ -554,7 +583,7 @@ var TreeStyleTabUtils = {
 						TreeStyleTabConstants.kOVERRIDE_SYSTEM_SCROLLBAR_APPEARANCE : '' )
 				.replace(/%MODE%/g, TreeStyleTabConstants.kMODE)
 				.replace(/%NARROW%/g, TreeStyleTabConstants.kNARROW_SCROLLBAR)
-				.replace(/%SIZE%/g, this.getTreePref('tabbar.narrowScrollbar.width'))
+				.replace(/%SIZE%/g, size)
 			);
 		this.lastAgentSheetForNarrowScrollbar = this.makeURIFromSpec(style);
 		SSS.loadAndRegisterSheet(this.lastAgentSheetForNarrowScrollbar, SSS.AGENT_SHEET);
@@ -570,6 +599,7 @@ var TreeStyleTabUtils = {
 		'  border: 1px solid ThreeDShadow;' +
 		'}',
 	lastAgentSheetForNarrowScrollbar : null,
+	lastOriginalScrollbarSize : 0,
 
 
 
