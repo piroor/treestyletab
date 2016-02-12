@@ -2276,7 +2276,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			case 'extensions.treestyletab.tabbar.scrollToNewTab.mode':
 				return this.scrollToNewTabMode = value;
 
-			case 'extensions.treestyletab.tabbar.narrowScrollbar.size':
+			case 'extensions.treestyletab.tabbar.narrowScrollbar.width':
 				return utils.updateNarrowScrollbarStyle();
 
 			case 'browser.tabs.animate':

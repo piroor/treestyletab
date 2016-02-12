@@ -519,15 +519,15 @@ var TreeStyleTabUtils = {
 			'  .tabbrowser-arrowscrollbox' +
 			'  > scrollbox' +
 			'  > scrollbar[orient="vertical"] * {' +
-			'  max-width: %SIZE%;' +
-			'  min-width: %SIZE%;' +
+			'  max-width: %SIZE%px;' +
+			'  min-width: %SIZE%px;' +
 			'}' +
 
 			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
 			'  .tabbrowser-arrowscrollbox' +
 			'  > scrollbox' +
 			'  > scrollbar[orient="vertical"] {' +
-			'  font-size: %SIZE%;' +
+			'  font-size: %SIZE%px;' +
 			'}' +
 
 			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
@@ -546,7 +546,7 @@ var TreeStyleTabUtils = {
 						this.kOVERRIDE_SYSTEM_SCROLLBAR_APPEARANCE : '' )
 				.replace(/%MODE%/g, this.kMODE)
 				.replace(/%NARROW%/g, this.kNARROW_SCROLLBAR)
-				.replace(/%SIZE%/g, utils.getTreePref('tabbar.narrowScrollbar.size'))
+				.replace(/%SIZE%/g, utils.getTreePref('tabbar.narrowScrollbar.width'))
 			);
 		this.lastAgentSheetForNarrowScrollbar = this.makeURIFromSpec(style);
 		SSS.loadAndRegisterSheet(this.lastAgentSheetForNarrowScrollbar, SSS.AGENT_SHEET);

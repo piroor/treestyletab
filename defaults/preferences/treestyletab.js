@@ -68,7 +68,7 @@ pref("extensions.treestyletab.tabbar.invertScrollbar", true);
  * This option works only for vertical tab bar.
  */
 pref("extensions.treestyletab.tabbar.narrowScrollbar", true);
-pref("extensions.treestyletab.tabbar.narrowScrollbar.size", "10px");
+pref("extensions.treestyletab.tabbar.narrowScrollbar.width", 10);
 
 /**
  * On some environments (ex. GNOME3 on Linux), "narrow scrollbar" cannot get
