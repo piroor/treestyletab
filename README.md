@@ -49,3 +49,7 @@ The feature is included in TST mainly to simulate Firefox's default behavior in 
 ### Configuration UI to change appearance of tabs in the vertical tab bar, for example, [color](https://github.com/piroor/treestyletab/issues/539), [height](https://github.com/piroor/treestyletab/issues/236), and so on
 
 Instead please use the `userChrome.css`. TST should have configuration UIs only for something it can't be done by any other existing customization feature.
+
+### Keyboard shortcuts for TST's custom functions, for example, [close a tree](https://github.com/piroor/treestyletab/issues/274)
+
+Firefox already have [very large number of keyboard shortcuts](https://support.mozilla.org/kb/keyboard-shortcuts-perform-firefox-tasks-quickly), and other addons also provide their own keyboard shortcuts, I cannot find out safe combinations for my features. So I gave up and decided to provide only [APIs for other addons](http://piro.sakura.ne.jp/xul/_treestyletab.html.en#api). Please use generic addons to customize keyboard shortcuts which can define custom actions based on scripts. Sorry.
