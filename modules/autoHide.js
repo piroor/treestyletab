@@ -760,7 +760,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
   
 	// feedback 
 	
-	showForFeedback : function AHB_showForFeedback() 
+	showForFeedback : function AHB_showForFeedback(aTab) 
 	{
 		if (!this.enabled ||
 			!utils.getTreePref('tabbar.autoShow.feedback'))
@@ -775,14 +775,14 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 		this.delayedShowForFeedbackTimer = w.setTimeout(
 			function(aSelf) {
 				aSelf.delayedShowForFeedbackTimer = null;
-				aSelf.delayedShowForFeedback();
+				aSelf.delayedShowForFeedback(aTab);
 			},
 			100,
 			this
 		);
 	},
  
-	delayedShowForFeedback : function AHB_delayedShowForFeedback() 
+	delayedShowForFeedback : function AHB_delayedShowForFeedback(aTab) 
 	{
 		this.show(this.kSHOWN_BY_FEEDBACK);
 		this.cancelHideForFeedback();
@@ -1240,17 +1240,17 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 
 			case 'TabOpen':
 			case 'TabClose':
-				return this.showForFeedback();
+				return this.showForFeedback(aEvent.originalTarget);
 
 			case 'TabMove':
 				if (!this.treeStyleTab.subTreeMovingCount &&
 					!this.treeStyleTab.isTabInternallyMoving(aEvent.originalTarget))
-					this.showForFeedback();
+					this.showForFeedback(aEvent.originalTarget);
 				return;
 
 			case 'select':
 				if (!this.window.TreeStyleTabService.accelKeyPressed)
-					this.showForFeedback();
+					this.showForFeedback(aEvent.originalTarget);
 				return;
 
 			case 'dragover':
