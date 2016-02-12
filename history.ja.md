@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+   * [Tab Badge](https://addons.mozilla.org/firefox/addon/tab-badge/)との互換性を向上
    * e10sが有効な時に別プロセスのタブのセッションヒストリに触らないようにした（親のタブを閉じた時、次に親になるタブが別プロセスのタブだと、例外が発生してツリー構造が壊れていた）
    * `eval()`を使った関数の書き換えを減らした
    * `browser.tabs.insertRelatedAfterCurrent`の設定を強制的に無効化しないようにして、リンクなどから開かれるタブについては既定の挙動を尊重するようにした

@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Better compatibility with [Tab Badge](https://addons.mozilla.org/firefox/addon/tab-badge/) addon.
    * Never touch session history of remote tabs (on e10s activated). It raised exception and broke tree structure when a parent tab is closed and the next parent is a remote tab.
    * Reduce `eval()` hack.
    * Gave up to disable the preference `browser.tabs.insertRelatedAfterCurrent`.
