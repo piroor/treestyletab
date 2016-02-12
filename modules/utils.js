@@ -542,11 +542,11 @@ var TreeStyleTabUtils = {
 
 			'%FORCE_NARROW_SCROLLBAR%')
 				.replace(/%FORCE_NARROW_SCROLLBAR%/g,
-					utils.getTreePref('tabbar.narrowScrollbar.overrideSystemAppearance') ?
-						this.kOVERRIDE_SYSTEM_SCROLLBAR_APPEARANCE : '' )
-				.replace(/%MODE%/g, this.kMODE)
-				.replace(/%NARROW%/g, this.kNARROW_SCROLLBAR)
-				.replace(/%SIZE%/g, utils.getTreePref('tabbar.narrowScrollbar.width'))
+					this.getTreePref('tabbar.narrowScrollbar.overrideSystemAppearance') ?
+						TreeStyleTabConstants.kOVERRIDE_SYSTEM_SCROLLBAR_APPEARANCE : '' )
+				.replace(/%MODE%/g, TreeStyleTabConstants.kMODE)
+				.replace(/%NARROW%/g, TreeStyleTabConstants.kNARROW_SCROLLBAR)
+				.replace(/%SIZE%/g, this.getTreePref('tabbar.narrowScrollbar.width'))
 			);
 		this.lastAgentSheetForNarrowScrollbar = this.makeURIFromSpec(style);
 		SSS.loadAndRegisterSheet(this.lastAgentSheetForNarrowScrollbar, SSS.AGENT_SHEET);
