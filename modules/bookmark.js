@@ -330,7 +330,7 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabConstants, {
 						) {
 						aIDs.unshift(-1);
 						treeStructure = this.getTreeStructureFromItems(aIDs, 0);
-						let uri = TST.getGroupTabURI({
+						let uri = utils.getGroupTabURI({
 							title:     aFolderTitle,
 							temporary: utils.getTreePref('openGroupBookmark.temporaryGroup')
 						});

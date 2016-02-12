@@ -5770,7 +5770,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 
 		if (aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB) {
-			let uri = this.getGroupTabURI({
+			let uri = utils.getGroupTabURI({
 				title:     aTab.label,
 				temporary: true
 			});

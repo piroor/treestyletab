@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2015
+ * Portions created by the Initial Developer are Copyright (C) 2010-2016
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -79,14 +79,14 @@ TabbarDNDObserver.prototype = {
 	
 	readyToStartTabbarDrag : function TabbarDND_readyToStartTabbarDrag() 
 	{
-		var sheet = this.treeStyleTab.makeURIFromSpec('chrome://treestyletab/content/hide-embed.css');
+		var sheet = utils.makeURIFromSpec('chrome://treestyletab/content/hide-embed.css');
 		if (!SSS.sheetRegistered(sheet, SSS.AGENT_SHEET))
 			SSS.loadAndRegisterSheet(sheet, SSS.AGENT_SHEET);
 	},
  
 	readyToEndTabbarDrag : function TabbarDND_readyToEndTabbarDrag() 
 	{
-		var sheet = this.treeStyleTab.makeURIFromSpec('chrome://treestyletab/content/hide-embed.css');
+		var sheet = utils.makeURIFromSpec('chrome://treestyletab/content/hide-embed.css');
 		if (SSS.sheetRegistered(sheet, SSS.AGENT_SHEET))
 			SSS.unregisterSheet(sheet, SSS.AGENT_SHEET);
 	},
@@ -1219,7 +1219,7 @@ catch(e) {
 		}
 		let normalizedURI;
 		try {
-			normalizedURI = this.treeStyleTab.makeURIFromSpec(aURI);
+			normalizedURI = utils.makeURIFromSpec(aURI);
 		}
 		catch(e) {
 		}
@@ -1291,7 +1291,7 @@ catch(e) {
 						}
 						// When a blank folder is dropped, just open a dummy tab with the folder name.
 						if (children && children.length == 0) {
-							let uri = this.treeStyleTab.getGroupTabURI({ title: item.title });
+							let uri = utils.getGroupTabURI({ title: item.title });
 							return [uri];
 						}
 					}

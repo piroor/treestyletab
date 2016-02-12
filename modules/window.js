@@ -1689,7 +1689,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 
 		var shouldCreateGroup = aTabs.length > 1 && utils.getTreePref('createSubtree.underParent');
 		var root = shouldCreateGroup ?
-					b.addTab(this.getGroupTabURI({
+					b.addTab(utils.getGroupTabURI({
 						temporary: utils.getTreePref('createSubtree.underParent.temporaryGroup')
 					})) :
 					aTabs.shift() ;

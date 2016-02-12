@@ -234,69 +234,6 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		}
 	},
  
-	updateNarrowScrollbarStyle : function TSTBase_updateNarrowScrollbarStyle() 
-	{
-		const SSS = Cc['@mozilla.org/content/style-sheet-service;1']
-					.getService(Ci.nsIStyleSheetService);
-
-		if (this.lastAgentSheet &&
-			SSS.sheetRegistered(this.lastAgentSheet, SSS.AGENT_SHEET))
-			SSS.unregisterSheet(this.lastAgentSheet, SSS.AGENT_SHEET);
-
-		const style = 'data:text/css,'+encodeURIComponent(
-			('@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");' +
-
-			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
-			'  .tabbrowser-arrowscrollbox' +
-			'  > scrollbox' +
-			'  > scrollbar[orient="vertical"],' +
-			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
-			'  .tabbrowser-arrowscrollbox' +
-			'  > scrollbox' +
-			'  > scrollbar[orient="vertical"] * {' +
-			'  max-width: %SIZE%;' +
-			'  min-width: %SIZE%;' +
-			'}' +
-
-			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
-			'  .tabbrowser-arrowscrollbox' +
-			'  > scrollbox' +
-			'  > scrollbar[orient="vertical"] {' +
-			'  font-size: %SIZE%;' +
-			'}' +
-
-			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
-			'  .tabbrowser-arrowscrollbox' +
-			'  > scrollbox' +
-			'  > scrollbar[orient="vertical"] * {' +
-			'  padding-left: 0;' +
-			'  padding-right: 0;' +
-			'  margin-left: 0;' +
-			'  margin-right: 0;' +
-			'}' +
-
-			'%FORCE_NARROW_SCROLLBAR%')
-				.replace(/%FORCE_NARROW_SCROLLBAR%/g,
-					utils.getTreePref('tabbar.narrowScrollbar.overrideSystemAppearance') ?
-						this.kOVERRIDE_SYSTEM_SCROLLBAR_APPEARANCE : '' )
-				.replace(/%MODE%/g, this.kMODE)
-				.replace(/%NARROW%/g, this.kNARROW_SCROLLBAR)
-				.replace(/%SIZE%/g, utils.getTreePref('tabbar.narrowScrollbar.size'))
-			);
-		this.lastAgentSheet = this.makeURIFromSpec(style);
-		SSS.loadAndRegisterSheet(this.lastAgentSheet, SSS.AGENT_SHEET);
-	},
-	kOVERRIDE_SYSTEM_SCROLLBAR_APPEARANCE :
-		'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
-		'  .tabbrowser-arrowscrollbox' +
-		'  > scrollbox' +
-		'  > scrollbar[orient="vertical"] {' +
-		'  appearance: none;' +
-		'  -moz-appearance: none;' +
-		'  background: ThreeDFace;' +
-		'  border: 1px solid ThreeDShadow;' +
-		'}',
-	lastAgentSheet : null,
   
 /* references to the owner */ 
 	
@@ -705,32 +642,6 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	makeNewClosedSetId : function TSTBase_makeNewId() 
 	{
 		return 'tabs-closed-set-<'+Date.now()+'-'+parseInt(Math.random() * 65000)+'>';
-	},
- 
-	makeURIFromSpec : function TSTBase_makeURIFromSpec(aURI) 
-	{
-		var newURI;
-		aURI = aURI || '';
-		if (aURI && String(aURI).indexOf('file:') == 0) {
-			var fileHandler = Services.io.getProtocolHandler('file').QueryInterface(Ci.nsIFileProtocolHandler);
-			var tempLocalFile = fileHandler.getFileFromURLSpec(aURI);
-			newURI = Services.io.newFileURI(tempLocalFile);
-		}
-		else {
-			if (!/^\w+\:/.test(aURI))
-				aURI = 'http://'+aURI;
-			newURI = Services.io.newURI(aURI, null, null);
-		}
-		return newURI;
-	},
- 
-	getGroupTabURI : function TSTBase_getGroupTabURI(aOptions) 
-	{
-		aOptions = aOptions || {};
-		var parameters = [];
-		parameters.push('title=' + encodeURIComponent(aOptions.title || ''));
-		parameters.push('temporary=' + !!aOptions.temporary);
-		return 'about:treestyletab-group?' + parameters.join('&');
 	},
   
 /* Session Store API */ 
@@ -2366,7 +2277,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 				return this.scrollToNewTabMode = value;
 
 			case 'extensions.treestyletab.tabbar.narrowScrollbar.size':
-				return this.updateNarrowScrollbarStyle();
+				return utils.updateNarrowScrollbarStyle();
 
 			case 'browser.tabs.animate':
 				return this.animationEnabled = value;

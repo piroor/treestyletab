@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2015
+ * Portions created by the Initial Developer are Copyright (C) 2010-2016
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -497,6 +497,101 @@ var TreeStyleTabUtils = {
 			}, this);
 		return aTreeStructure;
 	},
+
+
+	updateNarrowScrollbarStyle : function utils_updateNarrowScrollbarStyle() 
+	{
+		const SSS = Cc['@mozilla.org/content/style-sheet-service;1']
+					.getService(Ci.nsIStyleSheetService);
+
+		if (this.lastAgentSheetForNarrowScrollbar &&
+			SSS.sheetRegistered(this.lastAgentSheetForNarrowScrollbar, SSS.AGENT_SHEET))
+			SSS.unregisterSheet(this.lastAgentSheetForNarrowScrollbar, SSS.AGENT_SHEET);
+
+		const style = 'data:text/css,'+encodeURIComponent(
+			('@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");' +
+
+			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
+			'  .tabbrowser-arrowscrollbox' +
+			'  > scrollbox' +
+			'  > scrollbar[orient="vertical"],' +
+			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
+			'  .tabbrowser-arrowscrollbox' +
+			'  > scrollbox' +
+			'  > scrollbar[orient="vertical"] * {' +
+			'  max-width: %SIZE%;' +
+			'  min-width: %SIZE%;' +
+			'}' +
+
+			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
+			'  .tabbrowser-arrowscrollbox' +
+			'  > scrollbox' +
+			'  > scrollbar[orient="vertical"] {' +
+			'  font-size: %SIZE%;' +
+			'}' +
+
+			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
+			'  .tabbrowser-arrowscrollbox' +
+			'  > scrollbox' +
+			'  > scrollbar[orient="vertical"] * {' +
+			'  padding-left: 0;' +
+			'  padding-right: 0;' +
+			'  margin-left: 0;' +
+			'  margin-right: 0;' +
+			'}' +
+
+			'%FORCE_NARROW_SCROLLBAR%')
+				.replace(/%FORCE_NARROW_SCROLLBAR%/g,
+					utils.getTreePref('tabbar.narrowScrollbar.overrideSystemAppearance') ?
+						this.kOVERRIDE_SYSTEM_SCROLLBAR_APPEARANCE : '' )
+				.replace(/%MODE%/g, this.kMODE)
+				.replace(/%NARROW%/g, this.kNARROW_SCROLLBAR)
+				.replace(/%SIZE%/g, utils.getTreePref('tabbar.narrowScrollbar.size'))
+			);
+		this.lastAgentSheetForNarrowScrollbar = this.makeURIFromSpec(style);
+		SSS.loadAndRegisterSheet(this.lastAgentSheetForNarrowScrollbar, SSS.AGENT_SHEET);
+	},
+	kOVERRIDE_SYSTEM_SCROLLBAR_APPEARANCE :
+		'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
+		'  .tabbrowser-arrowscrollbox' +
+		'  > scrollbox' +
+		'  > scrollbar[orient="vertical"] {' +
+		'  appearance: none;' +
+		'  -moz-appearance: none;' +
+		'  background: ThreeDFace;' +
+		'  border: 1px solid ThreeDShadow;' +
+		'}',
+	lastAgentSheetForNarrowScrollbar : null,
+
+
+
+
+	makeURIFromSpec : function utils_makeURIFromSpec(aURI) 
+	{
+		var newURI;
+		aURI = aURI || '';
+		if (aURI && String(aURI).indexOf('file:') == 0) {
+			var fileHandler = Services.io.getProtocolHandler('file').QueryInterface(Ci.nsIFileProtocolHandler);
+			var tempLocalFile = fileHandler.getFileFromURLSpec(aURI);
+			newURI = Services.io.newFileURI(tempLocalFile);
+		}
+		else {
+			if (!/^\w+\:/.test(aURI))
+				aURI = 'http://'+aURI;
+			newURI = Services.io.newURI(aURI, null, null);
+		}
+		return newURI;
+	},
+ 
+	getGroupTabURI : function utils_getGroupTabURI(aOptions) 
+	{
+		aOptions = aOptions || {};
+		var parameters = [];
+		parameters.push('title=' + encodeURIComponent(aOptions.title || ''));
+		parameters.push('temporary=' + !!aOptions.temporary);
+		return 'about:treestyletab-group?' + parameters.join('&');
+	},
+
 
 /* Pref Listener */ 
 	domains : [ 
