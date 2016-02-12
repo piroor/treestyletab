@@ -7135,7 +7135,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	highlightTab : function TSTBrowser_highlightTab(aTab)
 	{
 		aTab.setAttribute(this.kHIGHLIGHTED, 'true');
-		wait(250)
+		wait(500)
 			.then((function() {
 				aTab.removeAttribute(this.kHIGHLIGHTED);
 			}).bind(this));
