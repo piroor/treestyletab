@@ -56,6 +56,7 @@ XPCOMUtils.defineLazyModuleGetter(this, 'TabpanelDNDObserver', 'resource://trees
 XPCOMUtils.defineLazyModuleGetter(this, 'AutoHideBrowser', 'resource://treestyletab-modules/autoHide.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'ContentBridge', 'resource://treestyletab-modules/contentBridge.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'BrowserUIShowHideObserver', 'resource://treestyletab-modules/browserUIShowHideObserver.js');
+XPCOMUtils.defineLazyModuleGetter(this, 'TabContentsObserver', 'resource://treestyletab-modules/tabContentsObserver.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'visuallyselectedTabs', 'resource://treestyletab-modules/lib/visuallyselectedTabs.jsm');
 
 XPCOMUtils.defineLazyGetter(this, 'window', function() {
@@ -930,6 +931,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		if (this.tabStripPlaceHolder)
 			this.tabStripPlaceHolderBoxObserver = new BrowserUIShowHideObserver(this, this.tabStripPlaceHolder.parentNode);
+
+		this.tabContentsObserver = new TabContentsObserver(this, this.tabStrip);
 	},
  
 	_initTabbrowserContextMenu : function TSTBrowser_initTabbrowserContextMenu() 
@@ -2312,6 +2315,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (this.tabStripPlaceHolderBoxObserver) {
 			this.tabStripPlaceHolderBoxObserver.destroy();
 			delete this.tabStripPlaceHolderBoxObserver;
+		}
+
+		if (this.tabContentsObserver) {
+			this.tabContentsObserver.destroy();
+			delete this.tabContentsObserver;
 		}
 
 		this._destroyOldSplitter();
