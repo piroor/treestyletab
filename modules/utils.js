@@ -519,6 +519,9 @@ var TreeStyleTabUtils = {
 		var scrollbox = aTabBrowser.tabContainer.mTabstrip._scrollbox;
 		var d = scrollbox.ownerDocument;
 
+		// We have to calculate the width of the scroll bar indirectly
+		// based on the width of the container and the scrollable contents,
+		// because the scrollbar is not accessible via public APIs.
 		var scrollbarSize = this.lastOriginalScrollbarSize;
 		if (scrollbarSize == 0) {
 			let nodes = d.getAnonymousNodes(scrollbox);
