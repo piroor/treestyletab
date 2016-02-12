@@ -1260,7 +1260,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			if (this.mTabBrowser.getAttribute(this.kCLOSEBOX_INVERTED) == 'true')
 				nodes.splice(nodes.indexOf(aNamedNodes.closeAnchor), 0, aNamedNodes.close);
 			else
-				nodes.splice(nodes.indexOf(aNamedNodes.closeAnchor)+1, 0, aNamedNodes.close);
+				nodes.push(aNamedNodes.close);
 		}
 
 		index = nodes.indexOf(aNamedNodes.sound);
