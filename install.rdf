@@ -112,6 +112,7 @@
           <em:contributor>mnoorenberghe (Firefox 36 support)</em:contributor>
           <em:contributor>Xidorn Quan (Firefox 40+ support)</em:contributor>
           <em:translator>Andy Pillip (de-DE locale)</em:translator>
+          <em:translator>Björn Kautler (de-DE locale)</em:translator>
       </RDF:Description>
     </em:localized>
     <em:localized>
