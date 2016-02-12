@@ -82,6 +82,7 @@ var TreeStyleTabConstants = Object.freeze({
 	kINVERT_SCROLLBAR   : 'treestyletab-invert-scrollbar',
 	kNARROW_SCROLLBAR   : 'treestyletab-narrow-scrollbar',
 	kFAVICONIZED        : 'treestyletab-faviconized',
+	kHIGHLIGHTED        : 'treestyletab-highlighted',
 	kBG_NOTIFY_PHASE    : 'treestyletab-notifybgtab-phase',
 	kIGNORE_POPUP_STATE : 'treestyletab-ignore-state',
 

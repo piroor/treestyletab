@@ -419,3 +419,7 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
   > .scrollbutton-down > * {
 	display: none;
 }
+
+.tabbrowser-tab[treestyletab-highlighted='true'] {
+	outline: Highlight solid medium;
+}

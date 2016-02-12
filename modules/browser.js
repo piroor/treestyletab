@@ -7131,6 +7131,15 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				}).bind(this));
 		}).bind(this), 0);
 	},
+
+	highlightTab : function TSTBrowser_highlightTab(aTab)
+	{
+		aTab.setAttribute(this.kHIGHLIGHTED, 'true');
+		wait(250)
+			.then((function() {
+				aTab.removeAttribute(this.kHIGHLIGHTED);
+			}).bind(this));
+	},
  
 	restoreTree : function TSTBrowser_restoreTree() 
 	{
