@@ -5768,11 +5768,14 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				temporary: true
 			});
 			let groupTab = b.addTab(uri);
-			if(parentTab) {
+			if (parentTab) {
 				this.attachTabTo(groupTab, parentTab, {
 					insertBefore : aTab,
 					dontAnimate  : true
 				});
+			}
+			else {
+				b.moveTabTo(groupTab, aTab._tPos);
 			}
 			this.attachTabTo(aTab, groupTab, {
 				dontAnimate : true
