@@ -5770,10 +5770,13 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			let groupTab = b.addTab(uri);
 			if(parentTab) {
 				this.attachTabTo(groupTab, parentTab, {
-					insertBefore : aTab
+					insertBefore : aTab,
+					dontAnimate  : true
 				});
 			}
-			this.attachTabTo(aTab, groupTab);
+			this.attachTabTo(aTab, groupTab, {
+				dontAnimate : true
+			});
 			parentTab = groupTab;
 			aInfo.behavior = this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
 		}
