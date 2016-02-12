@@ -1188,11 +1188,16 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
  
 	initTabContentsOrder : function TSTBrowser_initTabContentsOrder(aTab, aForce) 
 	{
-		if (!aTab.parentNode) // do nothing for closed tab!
+		if (
+			!aTab.parentNode || // do nothing for closed tab!
+			aTab.__treestyletab__initializingContentsOrder
+			)
 			return;
 
-		var d = this.document;
+		aTab.__treestyletab__initializingContentsOrder = true;
 
+		try {
+		var d = this.document;
 		var namedNodes = {
 				label        : this.getTabLabel(aTab),
 				sound        : this.getTabSoundButton(aTab),
@@ -1234,6 +1239,10 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				continue;
 			this.initTabContentsOrderInternal(container, namedNodes, aForce);
 			foundContainers.push(container);
+		}
+		}
+		finally {
+			delete aTab.__treestyletab__initializingContentsOrder;
 		}
 	},
 	initTabContentsOrderInternal : function TSTBrowser_initTabContentsOrderInternal(aContainer, aNamedNodes, aForce) 
