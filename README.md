@@ -2,7 +2,7 @@
 
 This is an addon for Firefox providing tree-like appearance for the tab bar.
 
-## Frequently **rejected** proposals
+## Frequently **REJECTED** proposals
 
 I'm very sorry but this addon is strongly concentrated about "tree of tabs". In other words, features not related to "tree of tabs" are out of its purpose. Such features won't be added, even if many people love it. For example...
 
