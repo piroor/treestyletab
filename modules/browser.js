@@ -5761,6 +5761,23 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			!utils.getTreePref('closeParentBehavior.moveDetachedTabsToBottom')) {
 			insertBefore = this.getNextSiblingTab(this.getRootTab(aTab));
 		}
+
+		if (aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB) {
+			let uri = this.getGroupTabURI({
+				title:     aTab.label,
+				temporary: true
+			});
+			let groupTab = b.addTab(uri);
+			if(parentTab) {
+				this.attachTabTo(groupTab, parentTab, {
+					insertBefore : aTab
+				});
+			}
+			this.attachTabTo(aTab, groupTab);
+			parentTab = groupTab;
+			aInfo.behavior = this.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
+		}
+
 		for (let i = 0, maxi = children.length; i < maxi; i++)
 		{
 			let tab = children[i];
