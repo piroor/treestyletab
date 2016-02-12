@@ -1,6 +1,12 @@
 # History
 
  - master/HEAD
+   * Fix regression: open bookmarks as separate tabs for user preference.
+   * de-DE locale is updated by Björn Kautler. Thanks!
+   * Better appearance for narrow scrollbar in the tab bar.
+   * Add ability to collapse/expand the tab bar by middle click on the splitter.
+   * Expand the tab bar to feedback what's happen, when a tab has new title, in the "auto hide" mode.
+   * Add a new choice when a parent tab is closed: now you can replace the closed parent tab with a new group tab.
  - 0.16.2016021201
    * Better compatibility with [Tab Badge](https://addons.mozilla.org/firefox/addon/tab-badge/) addon.
    * Never touch session history of remote tabs (on e10s activated). It raised exception and broke tree structure when a parent tab is closed and the next parent is a remote tab.
