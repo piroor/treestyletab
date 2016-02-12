@@ -509,7 +509,7 @@ var TreeStyleTabWindowHelper = {
 		b.loadTabs = function(aURIs, aLoadInBackground, aReplace, ...aArgs) {
 			if (aReplace)
 				this.treeStyleTab.readyToOpenChildTab(this.selectedTab, true);
-			else
+			else if (typeof this.treeStyleTab.nextOpenedTabToBeParent == 'undefined')
 				this.treeStyleTab.nextOpenedTabToBeParent = true;
 
 			var result;

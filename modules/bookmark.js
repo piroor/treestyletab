@@ -367,6 +367,9 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabConstants, {
 				result.treeStructureApplied = true;
 			}
 		}
+		else {
+			TST.browser.treeStyleTab.nextOpenedTabToBeParent = false;
+		}
 		return result;
 	},
 

@@ -3331,8 +3331,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		// this is the first tab of loading group.
 		if (this.nextOpenedTabToBeParent) {
 			this.readyToOpenChildTab(tab, true);
-			delete this.nextOpenedTabToBeParent;
 		}
+		delete this.nextOpenedTabToBeParent;
 
 		tab.__treestyletab__isOpening = true;
 		this.window.setTimeout((function() {
