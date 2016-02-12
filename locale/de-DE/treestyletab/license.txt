@@ -14,10 +14,11 @@ License.
 The Original Code is the Tree Style Tab.
 
 The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
-Portions created by the Initial Developer are Copyright (C) 2007-2009
+Portions created by the Initial Developer are Copyright (C) 2007-2016
 the Initial Developer. All Rights Reserved.
 
 Contributor(s): Andy Pillip <andy@pillip.eu>
+                Björn Kautler <https://github.com/Vampire>
                 YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
 
 Alternatively, the contents of these files may be used under the terms of
