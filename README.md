@@ -4,7 +4,11 @@ This is an addon for Firefox providing tree-like appearance for the tab bar.
 
 ## Frequently **REJECTED** requests/proposals
 
-I'm very sorry but this addon is strongly concentrated about "tree of tabs". In other words, features not related to "tree of tabs" are out of its purpose. Such features won't be added, even if many people love it. For example...
+I'm very sorry but this addon is strongly concentrated about "tree of tabs", so features not related to "tree of tabs" are out of its purpose. Such features won't be added, even if many people love it.
+
+Moreover, basically this is my private project and the prime user is me. Of course I'm ready to merge pull requests by any contributor, but I possibly stay it unmerged when it can break my private usecase. Then I strongly recommend you to fork this project for your usecase freely.
+
+There are some major requests which are reported multiple times but I marked them "won't filx". For example...
 
 ### Full support for the horizontal tab bar or non-indented vertical tabs
 
