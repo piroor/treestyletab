@@ -143,7 +143,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		this.onPrefChange('extensions.treestyletab.tabbar.scroll.smooth');
 		this.onPrefChange('extensions.treestyletab.tabbar.scroll.duration');
 		this.onPrefChange('extensions.treestyletab.tabbar.scrollToNewTab.mode');
-		this.onPrefChange('extensions.treestyletab.tabbar.narrowScrollbar.size');
+		this.onPrefChange('extensions.treestyletab.tabbar.narrowScrollbar.width');
 		this.onPrefChange('browser.tabs.animate');
 		this.onPrefChange('extensions.treestyletab.animation.indent.duration');
 		this.onPrefChange('extensions.treestyletab.animation.collapse.duration');
