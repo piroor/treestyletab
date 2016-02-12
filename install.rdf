@@ -84,7 +84,7 @@
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="es-ES"
-                       em:name="Tree Style Tab (Pestañas estilo árbol)"
+                       em:name="Pestañas estilo árbol"
                        em:description="Muestra las pestañas en vista de árbol"
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
                        em:creator="YUKI &quot;Piro&quot; Hiroshi">
@@ -134,7 +134,7 @@
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="ru"
-                       em:name="Tree Style Tab (Древовидный стиль вкладок)"
+                       em:name="Древовидный стиль вкладок"
                        em:description="Отображение вкладок в виде дерева"
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_treestyletab.html.en"
                        em:creator="YUKI &quot;Piro&quot; Hiroshi">
