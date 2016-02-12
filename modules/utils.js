@@ -501,6 +501,14 @@ var TreeStyleTabUtils = {
 
 	updateNarrowScrollbarStyle : function utils_updateNarrowScrollbarStyle() 
 	{
+		if (this.updatingNarrowScrollbarStyle)
+			return;
+
+		this.updatingNarrowScrollbarStyle = true;
+		setTimeout((function() {
+			this.updatingNarrowScrollbarStyle = false;
+		}).bind(this), 100);
+
 		const SSS = Cc['@mozilla.org/content/style-sheet-service;1']
 					.getService(Ci.nsIStyleSheetService);
 
