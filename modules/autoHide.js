@@ -47,6 +47,7 @@ Cu.import('resource://treestyletab-modules/constants.js');
 Cu.import('resource://treestyletab-modules/ReferenceCounter.js');
 
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
+XPCOMUtils.defineLazyModuleGetter(this, 'TabAttributesObserver', 'resource://treestyletab-modules/tabAttributesObserver.js');
 
 XPCOMUtils.defineLazyGetter(this, 'window', function() {
 	Cu.import('resource://treestyletab-modules/lib/namespace.jsm');
@@ -1459,6 +1460,11 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
  
 	delayedShowForShortcutTimer : null, 
 	delayedShowForShortcutDone : true,
+ 
+	onTabTitleChanged : function AHB_onTabTitleChanged(aTab)
+	{
+		this.showForFeedback(aTab);
+	},
     
 	init : function AHB_init(aTabBrowser) 
 	{
@@ -1505,12 +1511,24 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 		ReferenceCounter.add('b,kEVENT_TYPE_TAB_FOCUS_SWITCHING_START,AHW,false');
 		b.addEventListener(sv.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, this, false);
 		ReferenceCounter.add('b,kEVENT_TYPE_TAB_FOCUS_SWITCHING_END,AHW,false');
+
+		this.tabsAttributeObserver = new TabAttributesObserver({
+			container  : b.mTabContainer,
+			attributes : 'titlechanged',
+			callback   : (function(aTab) {
+				if (aTab.getAttribute('titlechanged') == 'true')
+					this.onTabTitleChanged(aTab);
+			}).bind(this)
+		});
 	},
  
 	destroy : function AHB_destroy() 
 	{
 		this.end();
 		prefs.removePrefListener(this);
+
+		this.tabsAttributeObserver.destroy();
+		delete this.tabsAttributeObserver;
 
 		var sv = this.treeStyleTab;
 		var b  = this.browser;
