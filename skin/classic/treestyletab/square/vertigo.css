@@ -1,5 +1,23 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
+/* these styles are required to cover narrow scrollbars. */
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .scrollbox-innerbox {
+	background: linear-gradient(to left,
+	                            -moz-dialog 0%,
+	                            -moz-dialog 10%,
+	                            transparent 11%,
+	                            transparent 100%) !important;
+}
+.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-scrollbar="true"]
+  .scrollbox-innerbox {
+	background: linear-gradient(to right,
+	                            -moz-dialog 0%,
+	                            -moz-dialog 10%,
+	                            transparent 11%,
+	                            transparent 100%) !important;
+}
+
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"]),
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:not([pinned]),
