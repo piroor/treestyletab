@@ -5762,7 +5762,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			insertBefore = this.getNextSiblingTab(this.getRootTab(aTab));
 		}
 
-		if (aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB) {
+		if (aInfo.behavior == this.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB &&
+			!this.isGroupTab(aTab)) {
 			let uri = this.getGroupTabURI({
 				title:     aTab.label,
 				temporary: true
