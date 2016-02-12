@@ -1197,49 +1197,49 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		aTab.__treestyletab__initializingContentsOrder = true;
 
 		try {
-		var d = this.document;
-		var namedNodes = {
-				label        : this.getTabLabel(aTab),
-				sound        : this.getTabSoundButton(aTab),
-				close        : this.getTabClosebox(aTab),
-				twistyAnchor : this.getTabTwistyAnchorNode(aTab),
-				twisty       : this.getTabTwisty(aTab),
-				counter      : d.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER_CONTAINER)
-			};
+			var d = this.document;
+			var namedNodes = {
+					label        : this.getTabLabel(aTab),
+					sound        : this.getTabSoundButton(aTab),
+					close        : this.getTabClosebox(aTab),
+					twistyAnchor : this.getTabTwistyAnchorNode(aTab),
+					twisty       : this.getTabTwisty(aTab),
+					counter      : d.getAnonymousElementByAttribute(aTab, 'class', this.kCOUNTER_CONTAINER)
+				};
 
-		namedNodes.closeAnchor = namedNodes.label;
-		if (namedNodes.closeAnchor.parentNode != namedNodes.close.parentNode) {
-			let containerFinder = d.createRange();
-			containerFinder.selectNode(namedNodes.closeAnchor);
-			containerFinder.setEndAfter(namedNodes.close);
-			let container = containerFinder.commonAncestorContainer;
-			while (namedNodes.closeAnchor.parentNode != container)
-			{
-				namedNodes.closeAnchor = namedNodes.closeAnchor.parentNode;
+			namedNodes.closeAnchor = namedNodes.label;
+			if (namedNodes.closeAnchor.parentNode != namedNodes.close.parentNode) {
+				let containerFinder = d.createRange();
+				containerFinder.selectNode(namedNodes.closeAnchor);
+				containerFinder.setEndAfter(namedNodes.close);
+				let container = containerFinder.commonAncestorContainer;
+				while (namedNodes.closeAnchor.parentNode != container)
+				{
+					namedNodes.closeAnchor = namedNodes.closeAnchor.parentNode;
+				}
+				while (namedNodes.close.parentNode != container)
+				{
+					namedNodes.close = namedNodes.close.parentNode;
+				}
 			}
-			while (namedNodes.close.parentNode != container)
+
+			namedNodes.counterAnchor = namedNodes.label;
+
+			var foundContainers = [];
+			var containers = [
+					namedNodes.twistyAnchor.parentNode,
+					namedNodes.label.parentNode,
+					namedNodes.counter.parentNode,
+					namedNodes.closeAnchor.parentNode
+				];
+			for (let i = 0, maxi = containers.length; i < maxi; i++)
 			{
-				namedNodes.close = namedNodes.close.parentNode;
+				let container = containers[i];
+				if (foundContainers.indexOf(container) > -1)
+					continue;
+				this.initTabContentsOrderInternal(container, namedNodes, aForce);
+				foundContainers.push(container);
 			}
-		}
-
-		namedNodes.counterAnchor = namedNodes.label;
-
-		var foundContainers = [];
-		var containers = [
-				namedNodes.twistyAnchor.parentNode,
-				namedNodes.label.parentNode,
-				namedNodes.counter.parentNode,
-				namedNodes.closeAnchor.parentNode
-			];
-		for (let i = 0, maxi = containers.length; i < maxi; i++)
-		{
-			let container = containers[i];
-			if (foundContainers.indexOf(container) > -1)
-				continue;
-			this.initTabContentsOrderInternal(container, namedNodes, aForce);
-			foundContainers.push(container);
-		}
 		}
 		finally {
 			delete aTab.__treestyletab__initializingContentsOrder;
