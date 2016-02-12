@@ -1761,7 +1761,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			// So, we have to turn the actual tab bar visible manually
 			// when the grippy is clicked.
 			let tabContainer = this.mTabBrowser.tabContainer;
-			grippy.grippyOnClick = function() {
+			grippy.grippyOnClick = function(aEvent) {
+				if (aEvent.button != 0)
+					return;
 				tabContainer.ownerDocument.defaultView.setTimeout(function() {
 					var visible = grippy.getAttribute('state') != 'collapsed';
 					if (visible != tabContainer.visible)
@@ -1783,6 +1785,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		ReferenceCounter.add('splitter,mouseup,windowService,false');
 		splitter.addEventListener('dblclick', this.windowService, false);
 		ReferenceCounter.add('splitter,dblclick,windowService,false');
+		splitter.addEventListener('click', this.windowService, false);
+		ReferenceCounter.add('splitter,click,windowService,false');
 
 		var ref = this.mTabBrowser.mPanelContainer;
 		ref.parentNode.insertBefore(splitter, ref);
@@ -1802,6 +1806,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			ReferenceCounter.remove('splitter,mouseup,windowService,false');
 			splitter.removeEventListener('dblclick', this.windowService, false);
 			ReferenceCounter.remove('splitter,dblclick,windowService,false');
+			splitter.removeEventListener('click', this.windowService, false);
+			ReferenceCounter.remove('splitter,click,windowService,false');
 			var grippy = splitter.firstChild;
 			grippy.removeEventListener('click', grippy.grippyOnClick, true);
 			ReferenceCounter.remove('grippy,click,grippy.grippyOnClick,true');
@@ -2163,6 +2169,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			splitter.setAttribute('onmousedown', 'TreeStyleTabService.handleEvent(event);');
 			splitter.setAttribute('onmouseup', 'TreeStyleTabService.handleEvent(event);');
 			splitter.setAttribute('ondblclick', 'TreeStyleTabService.handleEvent(event);');
+			splitter.setAttribute('onclick', 'TreeStyleTabService.handleEvent(event);');
 			box.appendChild(splitter);
 			this.tabStrip.appendChild(box);
 		}

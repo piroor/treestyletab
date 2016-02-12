@@ -741,7 +741,11 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 				return this.onTabbarReset(aEvent);
 
 			case 'click':
-				return this.handleNewTabActionOnButton(aEvent);
+				if (aEvent.currentTarget.localName == 'splitter')
+					this.onTabbarSplitterClick(aEvent);
+				else
+					this.handleNewTabActionOnButton(aEvent);
+				return;
 
 
 			case 'beforecustomization':
@@ -1107,6 +1111,44 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			b.treeStyleTab.resetTabbarSize();
 			aEvent.stopPropagation();
 		}
+	},
+ 
+	onTabbarSplitterClick : function TSTWindow_onTabbarSplitterClick(aEvent) 
+	{
+		if (
+			aEvent.button != 1 ||
+			(aEvent.button == 0 && !isAccelKeyPressed(aEvent))
+			)
+			return;
+
+		var grippy = utils.evaluateXPath(
+			'ancestor-or-self::*[local-name()="grippy"]',
+			aEvent.originalTarget || aEvent.target,
+			Ci.nsIDOMXPathResult.BOOLEAN_TYPE
+		).booleanValue;
+		if (grippy && aEvent.button == 0)
+			return;
+
+		this.onTabbarToggleCollapsed(aEvent.currentTarget);
+	},
+	onTabbarToggleCollapsed : function TSTWindow_onTabbarToggleCollapsed(aTarget) 
+	{
+		var b = this.getTabBrowserFromChild(aTarget);
+		var splitter = b.treeStyleTab.splitter;
+
+		var state = splitter.getAttribute('state');
+		var newState = state == 'collapsed' ? 'open' : 'collapsed';
+		splitter.setAttribute('state', newState);
+
+		// Workaround for bugs:
+		//  * https://github.com/piroor/treestyletab/issues/593
+		//  * https://github.com/piroor/treestyletab/issues/783
+		b.ownerDocument.defaultView.setTimeout(function() {
+			var visible = splitter.getAttribute('state') != 'collapsed';
+			var tabContainer = b.tabContainer;
+			if (visible != tabContainer.visible)
+				tabContainer.visible = visible;
+		}, 0);
 	},
  
 	onFocusNextTab : function TSTWindow_onFocusNextTab(aEvent) 
