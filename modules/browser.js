@@ -5775,7 +5775,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				});
 			}
 			else {
-				b.moveTabTo(groupTab, aTab._tPos);
+				this.moveTabSubtreeTo(groupTab, aTab._tPos);
 			}
 			this.attachTabTo(aTab, groupTab, {
 				dontAnimate : true
