@@ -6,165 +6,152 @@
 
 <!ENTITY config.tabs.appearance "Darstellung">
 
-<!ENTITY config.tabbar.position.caption "Position der Tableiste">
-<!ENTITY config.tabbar.position.left    "Links">
-<!ENTITY config.tabbar.position.right   "Rechts">
-<!ENTITY config.tabbar.position.top     "Oben (Firefox Standard)">
-<!ENTITY config.tabbar.position.bottom  "Unten">
-<!ENTITY config.tabbar.invertClosebox.left  "Schließen-Button in jedem Tab links anzeigen">
-<!ENTITY config.tabbar.invertClosebox.right "Schließen-Button in jedem Tab rechts anzeigen">
-<!ENTITY config.tabbar.invertTab            "Tabs von rechts einrücken">
-<!ENTITY config.tabbar.invertTabContents    "Symbol und Text in den Tabs vertauschen">
-<!ENTITY config.tabbar.narrowScrollbar      "Narrow scrollbar">
-<!ENTITY config.enableSubtreeIndent         "Tabs einrücken">
-<!ENTITY config.maxTreeLevel.before "bis">
-<!ENTITY config.maxTreeLevel.after  "Level">
-<!ENTITY config.allowSubtreeCollapseExpand  "Auf- und Einklappen von Zweigen erlauben">
+<!ENTITY config.tabbar.position.caption      "Position der Tableiste">
+<!ENTITY config.tabbar.position.left         "Links">
+<!ENTITY config.tabbar.position.right        "Rechts">
+<!ENTITY config.tabbar.position.top          "Oben (Firefox Standard)">
+<!ENTITY config.tabbar.position.bottom       "Unten">
+<!ENTITY config.tabbar.invertClosebox.left   "Schließen-Knopf in jedem Tab links anzeigen">
+<!ENTITY config.tabbar.invertClosebox.right  "Schließen-Knopf in jedem Tab rechts anzeigen">
+<!ENTITY config.tabbar.invertTab             "Tabs von rechts einrücken">
+<!ENTITY config.tabbar.invertTabContents     "Symbol und Text in den Tabs vertauschen">
+<!ENTITY config.tabbar.narrowScrollbar       "Schmale Bildlaufleiste">
+<!ENTITY config.enableSubtreeIndent          "Tabs einrücken">
+<!ENTITY config.maxTreeLevel.before          "bis">
+<!ENTITY config.maxTreeLevel.after           "Level">
+<!ENTITY config.allowSubtreeCollapseExpand   "Auf- und Einklappen von Zweigen erlauben">
 <!ENTITY config.tabbarSize.before-horizontal ":">
-<!ENTITY config.tabbarSize.after-horizontal  "px height">
+<!ENTITY config.tabbarSize.after-horizontal  "px Höhe">
 <!ENTITY config.tabbarSize.before-vertical   ":">
-<!ENTITY config.tabbarSize.after-vertical    "px width">
+<!ENTITY config.tabbarSize.after-vertical    "px Breite">
 
 
-<!ENTITY config.tabs.style "Style">
+<!ENTITY config.tabs.style "Aussehen">
 
 <!ENTITY config.tabbar.style.caption "Aussehen der Tableiste">
-<!ENTITY config.tabbar.style.plain   "Plain">
-<!ENTITY config.tabbar.style.flat    "Flat">
+<!ENTITY config.tabbar.style.plain   "Pur">
+<!ENTITY config.tabbar.style.flat    "Flach">
 <!ENTITY config.tabbar.style.mixed   "Gemischt">
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
 <!ENTITY config.tabbar.style.metal   "Metal">
-<!ENTITY config.tabbar.style.sidebar "Sidebar">
+<!ENTITY config.tabbar.style.sidebar "Seitenleiste">
 <!ENTITY config.tabbar.style.none    "Standard (durch Theme festgelegt)">
 
-<!ENTITY config.twisty.style.caption "Aufklappsymbole">
-<!ENTITY config.twisty.style.auto    "Auto">
-<!ENTITY config.twisty.style.none    "Keine">
-<!ENTITY config.twisty.style.retro   "Retro">
+<!ENTITY config.twisty.style.caption      "Aufklappsymbole">
+<!ENTITY config.twisty.style.auto         "Auto">
+<!ENTITY config.twisty.style.none         "Keine">
+<!ENTITY config.twisty.style.retro        "Retro">
 <!ENTITY config.twisty.style.modern.black "Schwarz Modern">
 <!ENTITY config.twisty.style.modern.white "Weiß Modern">
-<!ENTITY config.twisty.style.osx     "OS X">
+<!ENTITY config.twisty.style.osx          "OS X">
 
 
 <!ENTITY config.tabs.menu "Menü">
 
 <!ENTITY config.show.tabContextMenu.caption "Folgende Zeilen im Kontextmenü der Tabs anzeigen">
-<!ENTITY config.show.openSelectionLinks "&quot;Links im markierten Webseitentext in Tabs öffnen&quot; im Kontextmenü der Markierung anbieten">
-
 
 <!ENTITY config.tabs.tab "Tabs Öffnen">
 
-<!--
-<!ENTITY config.autoAttach.newTabCommand.caption     "Neuen Tab öffnen:">
-<!ENTITY config.autoAttach.newTabCommand.independent "Auf oberster Ebene">
-<!ENTITY config.autoAttach.newTabCommand.child       "Dem aktuellen Tab unterordnen">
-<!ENTITY config.autoAttach.newTabCommand.sibling     "Auf Ebene des aktuellen Tabs öffnen">
-<!ENTITY config.autoAttach.newTabCommand.nextSibling "Open as the next sibling of the current tab">
+<!ENTITY config.autoAttach.newTabCommand.label_before "Neuen leeren Tab als">
+<!ENTITY config.autoAttach.newTabCommand.independent  "eigenständigen Tab">
+<!ENTITY config.autoAttach.newTabCommand.child        "untergeordneten Tab des aktiven Tab">
+<!ENTITY config.autoAttach.newTabCommand.sibling      "Tab auf der Ebene des aktiven Tab">
+<!ENTITY config.autoAttach.newTabCommand.nextSibling  "direkten Nachbar auf der Ebene des aktiven Tab">
+<!ENTITY config.autoAttach.newTabCommand.label_after  "öffnen">
 
-<!ENTITY config.autoAttach.duplicateTabCommand.caption     "When a tab is duplicated by middle click on the &quot;Reload&quot; button:">
-<!ENTITY config.autoAttach.duplicateTabCommand.independent "Auf oberster Ebene">
-<!ENTITY config.autoAttach.duplicateTabCommand.child       "Dem aktuellen Tab unterordnen">
-<!ENTITY config.autoAttach.duplicateTabCommand.sibling     "Auf Ebene des aktuellen Tabs öffnen">
-<!ENTITY config.autoAttach.duplicateTabCommand.nextSibling "Open as the next sibling of the source tab">
--->
-<!ENTITY config.autoAttach.newTabCommand.label_before "Open new blank tab as">
-<!ENTITY config.autoAttach.newTabCommand.independent "an independent tab">
-<!ENTITY config.autoAttach.newTabCommand.child       "a child of the current tab">
-<!ENTITY config.autoAttach.newTabCommand.sibling     "a sibling of the current tab">
-<!ENTITY config.autoAttach.newTabCommand.nextSibling "the next sibling of the current tab">
-<!ENTITY config.autoAttach.newTabCommand.label_after "">
+<!ENTITY config.autoAttach.newTabButton.label_before "Bei Mittelklick auf den &quot;Neuer Tab&quot; Knopf, neuen leeren Tab als">
+<!ENTITY config.autoAttach.newTabButton.independent  "eigenständigen Tab">
+<!ENTITY config.autoAttach.newTabButton.child        "untergeordneten Tab des aktiven Tab">
+<!ENTITY config.autoAttach.newTabButton.sibling      "Tab auf der Ebene des aktiven Tab">
+<!ENTITY config.autoAttach.newTabButton.nextSibling  "direkten Nachbar auf der Ebene des aktiven Tab">
+<!ENTITY config.autoAttach.newTabButton.label_after  "öffnen">
 
-<!ENTITY config.autoAttach.newTabButton.label_before "For middle click on the &quot;New Tab&quot; button, open new blank tab as">
-<!ENTITY config.autoAttach.newTabButton.independent "an independent tab">
-<!ENTITY config.autoAttach.newTabButton.child       "a child of the current tab">
-<!ENTITY config.autoAttach.newTabButton.sibling     "a sibling of the current tab">
-<!ENTITY config.autoAttach.newTabButton.nextSibling "the next sibling of the current tab">
-<!ENTITY config.autoAttach.newTabButton.label_after "">
+<!ENTITY config.autoAttach.duplicateTabCommand.label_before "Bei Mittelklick auf den &quot;Neu Laden&quot; Knopf, den aktiven Tab als">
+<!ENTITY config.autoAttach.duplicateTabCommand.independent  "eigenständigen Tab">
+<!ENTITY config.autoAttach.duplicateTabCommand.child        "untergeordneten Tab des aktiven Tab">
+<!ENTITY config.autoAttach.duplicateTabCommand.sibling      "Tab auf der Ebene des aktiven Tab">
+<!ENTITY config.autoAttach.duplicateTabCommand.nextSibling  "direkten Nachbar auf der Ebene des aktiven Tab">
+<!ENTITY config.autoAttach.duplicateTabCommand.label_after  "kopieren">
 
-<!ENTITY config.autoAttach.duplicateTabCommand.label_before "For middle click on the &quot;Reload&quot; button, duplicate the tab as">
-<!ENTITY config.autoAttach.duplicateTabCommand.independent "an independent tab">
-<!ENTITY config.autoAttach.duplicateTabCommand.child       "a child of the source tab">
-<!ENTITY config.autoAttach.duplicateTabCommand.sibling     "a sibling of the source tab">
-<!ENTITY config.autoAttach.duplicateTabCommand.nextSibling "the next sibling of the source tab">
-<!ENTITY config.autoAttach.duplicateTabCommand.label_after "">
+<!ENTITY config.autoAttach.goButton.label_before "Bei Mittelklick auf den &quot;Laden&quot; Knopf, neuen Tab als">
+<!ENTITY config.autoAttach.goButton.independent  "eigenständigen Tab">
+<!ENTITY config.autoAttach.goButton.child        "untergeordneten Tab des aktiven Tab">
+<!ENTITY config.autoAttach.goButton.sibling      "Tab auf der Ebene des aktiven Tab">
+<!ENTITY config.autoAttach.goButton.nextSibling  "direkten Nachbar auf der Ebene des aktiven Tab">
+<!ENTITY config.autoAttach.goButton.label_after  "öffnen">
 
-<!ENTITY config.autoAttach.goButton.label_before "For middle click on the &quot;Go&quot; button, open new tab as">
-<!ENTITY config.autoAttach.goButton.independent "an independent tab">
-<!ENTITY config.autoAttach.goButton.child       "a child of the current tab">
-<!ENTITY config.autoAttach.goButton.sibling     "a sibling of the current tab">
-<!ENTITY config.autoAttach.goButton.nextSibling "the next sibling of the current tab">
-<!ENTITY config.autoAttach.goButton.label_after "">
+<!ENTITY config.openGroupBookmark.caption              "Verhalten von &quot;Alle in Tabs öffnen&quot; in einem Lesezeichenordner">
+<!ENTITY config.openGroupBookmark.ask                  "Jedes Mal nachfragen">
+<!ENTITY config.openGroupBookmark.subtree              "Als Zweig öffnen (Empfohlen)">
+<!ENTITY config.openGroupBookmark.subtree.type.before  "Die Zweigstruktur von als Tabs gespeicherten Lesezeichen">
+<!ENTITY config.openGroupBookmark.subtree.type.restore "wiederherstellen">
+<!ENTITY config.openGroupBookmark.subtree.type.flat    "ignorieren">
+<!ENTITY config.openGroupBookmark.subtree.type.after   "">
+<!ENTITY config.openGroupBookmark.flat                 "Als eigenständige Tabs öffnen (Firefox Standard)">
+<!ENTITY config.openGroupBookmark.underParent          "Seiten zur Gruppierung einem Pseudotab unterordnen">
 
-<!ENTITY config.openGroupBookmark.caption     "Verhalten von &quot;Alle in Tabs öffnen&quot; für Seiten in einem Lesezeichenordner">
-<!ENTITY config.openGroupBookmark.ask         "Jedes Mal nachfragen">
-<!ENTITY config.openGroupBookmark.subtree     "Als Zweig öffnen (Empfohlen)">
-<!ENTITY config.openGroupBookmark.subtree.type.before  "">
-<!ENTITY config.openGroupBookmark.subtree.type.restore "Speichere">
-<!ENTITY config.openGroupBookmark.subtree.type.flat    "Ignoriere">
-<!ENTITY config.openGroupBookmark.subtree.type.after   "Anordnung der Tabs im Zweig beim Speichern als Lesezeichen">
-<!ENTITY config.openGroupBookmark.flat        "Als eigenständige Tabs öffnen (Firefox Standard)">
-<!ENTITY config.openGroupBookmark.underParent "Seiten zur Gruppierung einem Dummytab unterordnen">
-
-<!ENTITY config.dropLinksOnTab.caption "Verhalten für Drag &amp; Drop auf Tabs">
+<!ENTITY config.dropLinksOnTab.caption "Verhalten für Drag &amp; Drop von Link, URL, Bookmark oder Datei auf existierenden Tab">
 <!ENTITY config.dropLinksOnTab.ask     "Immer nachfragen">
 <!ENTITY config.dropLinksOnTab.load    "Seite im Tab laden (Firefox default)">
 <!ENTITY config.dropLinksOnTab.newTab  "Seite in einem neuen untergeordneten Tab laden">
 
-<!ENTITY config.tabs.autohide "Platz sparen">
 
-<!ENTITY config.autoHide.mode.normal.caption     "Bei normaler Fenstergröße">
-<!ENTITY config.autoHide.mode.fullscreen.caption "Im Vollbildmodus">
-<!ENTITY config.autoHide.mode.0 "Tableiste immer voll anzeigen">
-<!ENTITY config.autoHide.mode.1 "Inaktive Tableiste verstecken">
-<!ENTITY config.autoHide.mode.2 "Inaktive Tableiste verkleinert anzeigen">
-<!ENTITY config.autoShow.caption      "Tableiste aktivieren">
-<!ENTITY config.autoShow.mousemove    "Wenn der Mauszeiger die Fensterecken berührt">
-<!ENTITY config.autoHide.area.before "Empfindlicher Bereich:">
-<!ENTITY config.autoHide.area.after "Pixel rund um die Fensterecken / Kante der Tableiste">
-<!ENTITY config.autoHide.delay.before "Verzögerung:">
-<!ENTITY config.autoHide.delay.after "msec.">
-<!ENTITY config.autoShow.accelKeyDown "Wenn die Strg-Taste eine Zeit lang gedrückt wird">
+<!ENTITY config.tabs.autohide "Automatisches Ausblenden">
+
+<!ENTITY config.autoHide.mode.normal.caption       "Im Normalmodus">
+<!ENTITY config.autoHide.mode.fullscreen.caption   "Im Vollbildmodus">
+<!ENTITY config.autoHide.mode.0                    "Tableiste immer anzeigen">
+<!ENTITY config.autoHide.mode.1                    "Tableiste automatisch verstecken">
+<!ENTITY config.autoHide.mode.2                    "Tableiste automatisch verkleinern">
+<!ENTITY config.autoShow.caption                   "Tableiste anzeigen">
+<!ENTITY config.autoShow.mousemove                 "Wenn sich der Mauszeiger der Fenster- oder Tableistenkante annähert">
+<!ENTITY config.autoHide.area.before               "Empfindlicher Bereich:">
+<!ENTITY config.autoHide.area.after                "Pixel rund um die Fenster- oder Tableistenkante">
+<!ENTITY config.autoHide.delay.before              "Verzögerung:">
+<!ENTITY config.autoHide.delay.after               "Millisekunden">
+<!ENTITY config.autoShow.accelKeyDown              "Wenn die Strg-Taste eine Zeit lang gedrückt wird">
 <!ENTITY config.autoShow.accelKeyDown.delay.before "Nach">
-<!ENTITY config.autoShow.accelKeyDown.delay.after  "msec. aktivieren">
-<!ENTITY config.autoShow.tabSwitch    "Wenn Strg+Tab (wechselt zwischen Tabs) gedrückt wird">
-<!ENTITY config.autoShow.feedback     "Wenn neue Tabs geöffnet oder alte geschlossen werden">
-<!ENTITY config.autoShow.feedback.delay.before "Nach">
-<!ENTITY config.autoShow.feedback.delay.after  "msec. wieder deaktivieren">
+<!ENTITY config.autoShow.accelKeyDown.delay.after  "Millisekunden anzeigen">
+<!ENTITY config.autoShow.tabSwitch                 "Wenn Strg+Tab gedrückt wird um zwischen Tabs zu wechseln">
+<!ENTITY config.autoShow.feedback                  "Wenn Tabs geöffnet oder geschlossen werden">
+<!ENTITY config.autoShow.feedback.delay.before     "Nach">
+<!ENTITY config.autoShow.feedback.delay.after      "Millisekunden wieder ausblenden">
 
 
-<!ENTITY config.tabs.tree "Verhalten">
+<!ENTITY config.tabs.tree "Zweig">
 
-<!ENTITY config.autoCollapseExpandSubtreeOnAttach "When a new tree appears, collapse others automatically">
-<!ENTITY config.autoCollapseExpandSubtreeOnSelect "Nicht aktive Zweige zuklappen">
-<!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "Keine Fokusänderung beim Schließen des aktiven Tabs">
-<!ENTITY config.collapseExpandSubtree.dblclick "Bei Doppelklick auf Tab untergeordneten Zweig auf- oder zuklappen">
-<!ENTITY config.autoExpandSubtreeOnAppendChild "Zweig automatisch aufklappen, wenn ein Tab in den Zweig eingefügt wird">
+<!ENTITY config.autoCollapseExpandSubtreeOnAttach                    "Wenn ein neuer Zweig erscheint, andere Zweige automatisch zuklappen">
+<!ENTITY config.autoCollapseExpandSubtreeOnSelect                    "Wenn ein Tab ausgewählt wird, untergeordneten Zweig automatisch auf- und andere Zweige zuklappen">
+<!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "Nicht durch Schließen des aktiven Tabs auslösen">
+<!ENTITY config.collapseExpandSubtree.dblclick                       "Bei Doppelklick auf Tab untergeordneten Zweig auf- oder zuklappen">
+<!ENTITY config.autoExpandSubtreeOnAppendChild                       "Zweig automatisch aufklappen, wenn ein Tab in den Zweig eingefügt wird">
 
-<!ENTITY config.closeParentBehavior.caption "Wenn ein Tab geschlossen wird">
-<!ENTITY config.closeParentBehavior.close   "Untergeordnete Tabs auch schließen">
-<!ENTITY config.closeParentBehavior.promoteFirst "Das geschlossene Tab durch das erste untergeordnete ersetzen">
-<!ENTITY config.closeParentBehavior.promoteAll   "Untergeordnete Tabs auf die Ebene des geschlossenen Tabs verschieben">
-<!ENTITY config.closeParentBehavior.detach        "Untergeordnete Tabs ganz aus dem Zweig ausgliedern">
-<!ENTITY config.closeParentBehavior.replaceWithGroupTab "Replace closed parent with a dummy tab and keep the tree">
-<!ENTITY config.closeRootBehavior.promoteFirst   "Das geschlossene Tab durch das erste untergeordnete ersetzen, wenn das geschlossene Tab kein übergordnetes hatte">
+<!ENTITY config.closeParentBehavior.caption             "Wenn ein Tab geschlossen wird">
+<!ENTITY config.closeParentBehavior.close               "Untergeordnete Tabs auch schließen">
+<!ENTITY config.closeParentBehavior.promoteFirst        "Das geschlossene Tab durch das erste untergeordnete ersetzen">
+<!ENTITY config.closeParentBehavior.promoteAll          "Untergeordnete Tabs auf die Ebene des geschlossenen Tabs verschieben">
+<!ENTITY config.closeParentBehavior.detach              "Untergeordnete Tabs ganz aus dem Zweig ausgliedern">
+<!ENTITY config.closeParentBehavior.replaceWithGroupTab "Das geschlossene Tab durch ein Pseudotab ersetzen">
+<!ENTITY config.closeRootBehavior.promoteFirst          "Das geschlossene Tab durch das erste untergeordnete ersetzen, wenn das geschlossene Tab kein übergeordnetes hatte">
 
-<!ENTITY config.focusMode "Strg+Tab selektiert auch nicht sichtbare Tabs">
+<!ENTITY config.focusMode "Bei Strg+Tab auch zu nicht sichtbaren Tabs wechseln">
 
 <!ENTITY config.insertNewChildAt.caption "Einfügeposition neuer untergeordneter Tabs">
-<!ENTITY config.insertNewChildAt.first "Oben im Zweig einfügen">
-<!ENTITY config.insertNewChildAt.last "Unten im Zweig einfügen">
+<!ENTITY config.insertNewChildAt.first   "Als erstes Tab einfügen">
+<!ENTITY config.insertNewChildAt.last    "Als letztes Tab anfügen">
 
-<!ENTITY config.undoCloseTabSet.caption  "Wenn ein Element eines Zweiges durch &quot;Tab wieder öffnen&quot; wiederhergestellt wird.">
+<!ENTITY config.undoCloseTabSet.caption  "Wenn ein Element eines Zweiges durch &quot;Tab wiederherstellen&quot; geöffnet wird">
 <!ENTITY config.undoCloseTabSet.ask      "Immer nachfragen">
-<!ENTITY config.undoCloseTabSet.set      "Den ganzen Zweig wieder herstellen">
-<!ENTITY config.undoCloseTabSet.separate "Nur das eine Tab wieder herstellen (Firefox Standard)">
+<!ENTITY config.undoCloseTabSet.set      "Den ganzen Zweig wiederherstellen">
+<!ENTITY config.undoCloseTabSet.separate "Nur das eine Tab wiederherstellen (Firefox Standard)">
+
 
 
 <!ENTITY config.tabs.advanced "Erweitert">
 
-<!ENTITY config.tooltip.includeChildren        "Titel der untergeordneten Tabs im Tooltip geschlossener Tabs anzeigen">
+<!ENTITY config.tooltip.includeChildren     "Titel der untergeordneten Tabs im Tooltip des Tabs anzeigen">
 
-<!ENTITY config.bookmarkDroppedTabs.caption "Verhalten für Drag &amp; Drop von Tab-Zweigen auf das Lesezeichenverzeichnis">
+<!ENTITY config.bookmarkDroppedTabs.caption "Verhalten für Drag &amp; Drop von Tab-Zweigen auf den Lesezeichenbaum">
 <!ENTITY config.bookmarkDroppedTabs.ask     "Immer nachfragen">
 <!ENTITY config.bookmarkDroppedTabs.all     "Alle Tabs im Zweig als Lesezeichen speichern">
 <!ENTITY config.bookmarkDroppedTabs.parent  "Nur das gezogene Tab als Lesezeichen speichern">
@@ -172,34 +159,35 @@
 
 
 
-<!ENTITY selection.removeTabSubtree.label     "Ausgewählte Zweige schließen">
-<!ENTITY selection.removeTabSubtree.accesskey "s">
-<!ENTITY selection.createSubtree.label          "Zweig auf oberste Ebene verschieben">
+
+<!ENTITY selection.createSubtree.label          "Zu neuem Zweig zusammenfügen">
 <!ENTITY selection.createSubtree.accesskey      "g">
 
-<!ENTITY context.reloadTabSubtree.label     "Diesen Zweig neu laden">
-<!ENTITY context.reloadTabSubtree.accesskey "r">
+<!ENTITY selection.removeTabSubtree.label       "Ausgewählte Zweige schließen">
+<!ENTITY selection.removeTabSubtree.accesskey   "s">
+<!ENTITY context.reloadTabSubtree.label         "Diesen Zweig neu laden">
+<!ENTITY context.reloadTabSubtree.accesskey     "r">
 <!ENTITY context.reloadDescendantTabs.label     "Untergeordnete Tabs neu laden">
 <!ENTITY context.reloadDescendantTabs.accesskey "r">
-<!ENTITY context.removeTabSubtree.label     "Diesen Zweig schließen">
-<!ENTITY context.removeTabSubtree.accesskey "s">
+<!ENTITY context.removeTabSubtree.label         "Diesen Zweig schließen">
+<!ENTITY context.removeTabSubtree.accesskey     "s">
 <!ENTITY context.removeDescendantTabs.label     "Untergeordnete Tabs schließen">
 <!ENTITY context.removeDescendantTabs.accesskey "d">
-<!ENTITY context.removeAllTabsBut.label         "Andere Zweige schließen">
+<!ENTITY context.removeAllTabsBut.label         "Andere Tabs außer diesem Zweig schließen">
 <!ENTITY context.removeAllTabsBut.accesskey     "a">
-<!ENTITY context.collapseAllSubtree.label     "Alle Zweige zuklappen">
-<!ENTITY context.collapseAllSubtree.accesskey "c">
-<!ENTITY context.expandAllSubtree.label     "Alle Zweige aufklappen">
-<!ENTITY context.expandAllSubtree.accesskey "e">
-<!ENTITY context.toggleAutoHide.label.hide      "Tableiste verstecken">
-<!ENTITY context.toggleAutoHide.label.shrink    "Tableiste verkleinert anzeigen">
-<!ENTITY context.toggleAutoHide.accesskey "h">
-<!ENTITY context.toggleFixed.label            "Feste Position und Größe der Tableiste">
-<!ENTITY context.toggleFixed.label.horizontal "Feste Position und Höhe der Tableiste">
-<!ENTITY context.toggleFixed.label.vertical   "Feste Position und Breite der Tableiste">
-<!ENTITY context.toggleFixed.accesskey "f">
-<!ENTITY context.bookmarkTabSubtree.label     "Zweig als Lesezeichen speichern">
-<!ENTITY context.bookmarkTabSubtree.accesskey "t">
+<!ENTITY context.collapseAllSubtree.label       "Alle Zweige zuklappen">
+<!ENTITY context.collapseAllSubtree.accesskey   "c">
+<!ENTITY context.expandAllSubtree.label         "Alle Zweige aufklappen">
+<!ENTITY context.expandAllSubtree.accesskey     "e">
+<!ENTITY context.toggleAutoHide.label.hide      "Tableiste automatisch verstecken">
+<!ENTITY context.toggleAutoHide.label.shrink    "Tableiste automatisch verkleinern">
+<!ENTITY context.toggleAutoHide.accesskey       "h">
+<!ENTITY context.toggleFixed.label              "Feste Position und Größe der Tableiste">
+<!ENTITY context.toggleFixed.label.horizontal   "Feste Position und Höhe der Tableiste">
+<!ENTITY context.toggleFixed.label.vertical     "Feste Position und Breite der Tableiste">
+<!ENTITY context.toggleFixed.accesskey          "f">
+<!ENTITY context.bookmarkTabSubtree.label       "Zweig als Lesezeichen speichern">
+<!ENTITY context.bookmarkTabSubtree.accesskey   "t">
 
-<!ENTITY group.default "Neue Gruppe">
-<!ENTITY group.temporary "Temporary Group">
+<!ENTITY group.default   "Neue Gruppe">
+<!ENTITY group.temporary "Temporäre Gruppe">
