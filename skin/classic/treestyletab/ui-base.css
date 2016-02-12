@@ -423,4 +423,6 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
 .tabbrowser-tab[treestyletab-highlighted='true'] {
 	outline: Highlight solid 0.2em;
 	outline-offset: -0.2em;
+	-moz-outline-radius: 0.25em;
+	outline-radius: 0.25em;
 }
