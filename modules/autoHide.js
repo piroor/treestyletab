@@ -788,6 +788,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 		this.cancelHideForFeedback();
 		this.delayedHideTabbarForFeedbackTimer = this.window.setTimeout(
 			function(aSelf) {
+				// TODO: we do something to highlight the given tab.
 				aSelf.delayedHideTabbarForFeedbackTimer = null;
 				aSelf.hide(aSelf.kSHOWN_BY_FEEDBACK);
 			},
