@@ -299,9 +299,13 @@ GroupTab.prototype = inherit(TreeStyleTabBase, {
 		tab.parentNode.addEventListener(this.kEVENT_TYPE_ATTACHED, this, false);
 		tab.parentNode.addEventListener(this.kEVENT_TYPE_DETACHED, this, false);
 
-		this.tabsObserver = new TabAttributesObserver(this.browser.tabContainer, (function(aTab) {
-			this.onTabModified(aTab);
-		}).bind(this));
+		this.tabsObserver = new TabAttributesObserver({
+			container  : this.browser.tabContainer,
+			attributes : 'label,visibleLabel,image',
+			callback   : (function(aTab) {
+				this.onTabModified(aTab);
+			}).bind(this)
+		});
 
 		this.editor.addEventListener('keypress', this, false);
 

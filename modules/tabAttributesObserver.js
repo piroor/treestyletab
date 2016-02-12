@@ -37,9 +37,12 @@ var EXPORTED_SYMBOLS = ['TabAttributesObserver'];
 
 Components.utils.import('resource://treestyletab-modules/constants.js');
 
-function TabAttributesObserver(aContainer, aCallback) {
-	this.container = aContainer;
-	this.callback = aCallback;
+function TabAttributesObserver(aParams) {
+	this.container = aParams.container;
+	this.attributes = aParams.attributes;
+	if (typeof this.attributes == 'string')
+		this.attributes = this.attributes.split(',');
+	this.callback = aParams.callback;
 	this.init();
 }
 TabAttributesObserver.prototype = {
