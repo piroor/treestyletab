@@ -5,8 +5,9 @@
    * de-DEロケール更新（by Björn Kautler. Thanks!）
    * タブバー内のスクロールバーを細く表示する機能について、より自然に表示するように改善
    * タブバーのスプリッターをミドルクリックした時に、grippyのクリック時と同様にタブバーを開閉するようにした
-   * タブバーを自動で隠す機能について、通知対象になったタブをハイライト表示するようにした
    * タブバーを自動で隠す機能について、タブのタイトルが更新されたときにフィードバックの一環としてタブバーを自動的に展開するようにした
+   * タブバーを自動で隠す機能について、フィードバックとしてタブバーを自動的に展開する場合を細かく制御する隠し設定を追加した（`extensions.treestyletab.tabbar.autoShow.feedback.opened`, `extensions.treestyletab.tabbar.autoShow.feedback.closed`, `extensions.treestyletab.tabbar.autoShow.feedback.moved`, `extensions.treestyletab.tabbar.autoShow.feedback.selected`, `extensions.treestyletab.tabbar.autoShow.feedback.titleChanged`）e
+   * タブバーを自動で隠す機能について、フィードバックの通知対象になったタブをハイライト表示するようにした
    * ツリーの親のタブを閉じたときの挙動について「閉じられた親のタブの位置に代わりにダミーのグループ化用のタブを開く」という選択肢を追加した
  - 0.16.2016021201
    * [Tab Badge](https://addons.mozilla.org/firefox/addon/tab-badge/)との互換性を向上
