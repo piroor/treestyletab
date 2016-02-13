@@ -1241,17 +1241,25 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 				return this.notifyStatusToAllTabs(aEvent.target);
 
 			case 'TabOpen':
+				if (utils.getTreePref('tabbar.autoShow.feedback.opened'))
+					this.showForFeedback(aEvent.originalTarget);
+				return;
+
 			case 'TabClose':
-				return this.showForFeedback(aEvent.originalTarget);
+				if (utils.getTreePref('tabbar.autoShow.feedback.closed'))
+					this.showForFeedback(aEvent.originalTarget);
+				return;
 
 			case 'TabMove':
-				if (!this.treeStyleTab.subTreeMovingCount &&
+				if (utils.getTreePref('tabbar.autoShow.feedback.moved')
+					!this.treeStyleTab.subTreeMovingCount &&
 					!this.treeStyleTab.isTabInternallyMoving(aEvent.originalTarget))
 					this.showForFeedback(aEvent.originalTarget);
 				return;
 
 			case 'select':
-				if (!this.window.TreeStyleTabService.accelKeyPressed)
+				if (utils.getTreePref('tabbar.autoShow.feedback.selected') &&
+					!this.window.TreeStyleTabService.accelKeyPressed)
 					this.showForFeedback(aEvent.originalTarget);
 				return;
 
@@ -1465,6 +1473,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
  
 	onTabTitleChanged : function AHB_onTabTitleChanged(aTab)
 	{
+		if (utils.getTreePref('tabbar.autoShow.feedback.titleChanged'))
 		this.showForFeedback(aTab);
 	},
     

@@ -136,6 +136,11 @@ pref("extensions.treestyletab.tabbar.autoShow.accelKeyDown", true);
 pref("extensions.treestyletab.tabbar.autoShow.accelKeyDown.delay", 800);
 pref("extensions.treestyletab.tabbar.autoShow.tabSwitch", true);
 pref("extensions.treestyletab.tabbar.autoShow.feedback", false);
+pref("extensions.treestyletab.tabbar.autoShow.feedback.opened", true);
+pref("extensions.treestyletab.tabbar.autoShow.feedback.closed", true);
+pref("extensions.treestyletab.tabbar.autoShow.feedback.moved", true);
+pref("extensions.treestyletab.tabbar.autoShow.feedback.selected", true);
+pref("extensions.treestyletab.tabbar.autoShow.feedback.titleChanged", true);
 pref("extensions.treestyletab.tabbar.autoShow.feedback.delay", 3000);
 /**
  * Size of the placeholder for "hidden tab bar".
