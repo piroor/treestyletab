@@ -114,7 +114,8 @@
 <!ENTITY config.autoShow.accelKeyDown.delay.before "">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "毫秒以上才顯示">
 <!ENTITY config.autoShow.tabSwitch   "用 Ctrl-Tab 切換分頁時">
-<!ENTITY config.autoShow.feedback    "開新分頁或關閉分頁時">
+<!ENTITY config.autoShow.feedback    "Something happen on tabs (new tab, closed tab, focus changing, title changing)">
+<!--ENTITY config.autoShow.feedback    "開新分頁或關閉分頁時"-->
 <!ENTITY config.autoShow.feedback.delay.before "">
 <!ENTITY config.autoShow.feedback.delay.after  "毫秒後自動隱藏">
 

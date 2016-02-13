@@ -114,7 +114,7 @@
 <!ENTITY config.autoShow.accelKeyDown.delay.before "">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "ミリ秒以上で反応">
 <!ENTITY config.autoShow.tabSwitch   "Control-Tabでタブを切り替える時">
-<!ENTITY config.autoShow.feedback    "新しいタブが開かれたりタブが閉じられたりした時">
+<!ENTITY config.autoShow.feedback    "タブに何かが起こった時（開く、閉じる、フォーカス移動、タイトルの変化）">
 <!ENTITY config.autoShow.feedback.delay.before "">
 <!ENTITY config.autoShow.feedback.delay.after  "ミリ秒後に自動で隠す">
 

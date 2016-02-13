@@ -122,7 +122,8 @@
 <!ENTITY config.autoShow.accelKeyDown.delay.before "Mostrar después">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "mseg.">
 <!ENTITY config.autoShow.tabSwitch   "Control-Tab para cambiar pestañas">
-<!ENTITY config.autoShow.feedback    "Nuevas pestañas son abiertas o algunas pestañas son cerradas">
+<!ENTITY config.autoShow.feedback    "Something happen on tabs (new tab, closed tab, focus changing, title changing)">
+<!--ENTITY config.autoShow.feedback    "Nuevas pestañas son abiertas o algunas pestañas son cerradas"-->
 <!ENTITY config.autoShow.feedback.delay.before "Ocultar después">
 <!ENTITY config.autoShow.feedback.delay.after  "mseg.">
 
