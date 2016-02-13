@@ -1474,7 +1474,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 	onTabTitleChanged : function AHB_onTabTitleChanged(aTab)
 	{
 		if (utils.getTreePref('tabbar.autoShow.feedback.titleChanged'))
-		this.showForFeedback(aTab);
+			this.showForFeedback(aTab);
 	},
     
 	init : function AHB_init(aTabBrowser) 
