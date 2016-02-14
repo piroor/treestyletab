@@ -48,7 +48,7 @@ Too high customizability for such rare usecases will just make you happy, but ot
 
 The feature is included in TST mainly to simulate Firefox's default behavior in the fullscreen mode (started by the `F11` key). Is there any keyboard shortcut to show/hide the navigation toolbar?
 
-### High-power management of tree, like [sorting child tabs](https://github.com/piroor/treestyletab/issues/94), [auto-modification of tree](https://github.com/piroor/treestyletab/issues/509), and so on
+### High-power management of tree, like [sorting child tabs](https://github.com/piroor/treestyletab/issues/94), [auto-modification of tree](https://github.com/piroor/treestyletab/issues/509), [renaming of tabs](https://github.com/piroor/treestyletab/issues/794), and so on
 
 I believe that generally "tree of tabs should be a visualized history of web browsing", because they are built on relations where you came from. Possibly such a tree is facially chaotic, but it just mirrors your actual footmarks, so you'll easily find out where is the target tab based on a map in your mind. Moreover, those relations themselves may let you recall forgotten idea you thought while you were browsing those tabs.
 
