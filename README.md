@@ -44,7 +44,7 @@ In most cases - subjectively 99%, new tabs from links may be related to the sour
 
 Too high customizability for such rare usecases will just make you happy, but others including me won't - they are just confused that "why such too much choices are here?"
 
-### [Keyboard shortcut to toggle show/hide of the tab bar](https://github.com/piroor/treestyletab/issues/156)
+### Keyboard shortcuts, for example, [toggle show/hide of the tab bar](https://github.com/piroor/treestyletab/issues/156), [operations to modify tree](https://github.com/piroor/treestyletab/issues/772), [moving focus](https://github.com/piroor/treestyletab/issues/836), and so on
 
 The feature is included in TST mainly to simulate Firefox's default behavior in the fullscreen mode (started by the `F11` key). Is there any keyboard shortcut to show/hide the navigation toolbar?
 
@@ -71,3 +71,13 @@ Firefox already have [very large number of keyboard shortcuts](https://support.m
 Thanks, but sorry, I have no plan about any donation because I hope to keep me as the prime user of this project. I hope to keep having a privilege to say "no" about requests not matched to my vision. My hand is already full to maintain this addon for my usecase.
 
 If you fixed a bug you met, please send a pull request - I'll merge it. If you have different plan about TST, please fork this project freely for your purpose, if needed.
+
+### [Fully-reviewed on Mozilla Add-ons](https://github.com/piroor/treestyletab/issues/793)
+
+I think TST never been published as a "full-reviewed" addon on AMO, because there is one unavoidable issue: TST doesn't match to the policy of AMO.
+
+In 2010, AMO editors decided to reject Tree Style Tab and some my other addons as "bad" addons, because they were against AMO policies - mainly, they used many `eval()` to inject custom codes into functions defined by Firefox itself. Because there are less APIs for addons like TST, I still have to use `eval()` to do it. [I wrote an objection for this topic, in years ago.](http://piro.sakura.ne.jp/latest/blosxom/mozilla/xul/2010-02-08_eval-en.htm)
+
+If the review policy was changed or relaxed, I'm ready to request full review again. Otherwise, my request won't be accepted...
+
+To be honest, I agree that TST possibly should not be published as a full-reviewed addon, by AMO policy. TST is too fragile from many tricky hacks. Moreover, actually, too many `eval()` make my addon hard to be reviewed. So, I even think it is better that my addon is kept in sandbox with quick updates, than slow updates from every full-review processes taking much time.
