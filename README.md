@@ -44,9 +44,11 @@ In most cases - subjectively 99%, new tabs from links may be related to the sour
 
 Too high customizability for such rare usecases will just make you happy, but others including me won't - they are just confused that "why such too much choices are here?"
 
-### Keyboard shortcuts, for example, [toggle show/hide of the tab bar](https://github.com/piroor/treestyletab/issues/156), [operations to modify tree](https://github.com/piroor/treestyletab/issues/772), [moving focus](https://github.com/piroor/treestyletab/issues/836), and so on
+### Keyboard shortcuts for TST's custom functions, for example, [toggle show/hide of the tab bar](https://github.com/piroor/treestyletab/issues/156), [close a tree](https://github.com/piroor/treestyletab/issues/274), [operations to modify tree](https://github.com/piroor/treestyletab/issues/772), [moving focus](https://github.com/piroor/treestyletab/issues/836), and so on
 
-The feature is included in TST mainly to simulate Firefox's default behavior in the fullscreen mode (started by the `F11` key). Is there any keyboard shortcut to show/hide the navigation toolbar?
+Firefox already have [very large number of keyboard shortcuts](https://support.mozilla.org/kb/keyboard-shortcuts-perform-firefox-tasks-quickly), and other addons also provide their own keyboard shortcuts, I cannot find out safe combinations for my features. So I gave up and decided to provide only [APIs for other addons](http://piro.sakura.ne.jp/xul/_treestyletab.html.en#api). Please use generic addons to customize keyboard shortcuts which can define custom actions based on scripts. Sorry.
+
+By the way, "auto hide tab bar" feature doesn't provide any its own keyboard shortcut to toggle it because the feature is included in TST mainly to simulate Firefox's default behavior in the fullscreen mode (started by the `F11` key). Is there any keyboard shortcut to show/hide the navigation toolbar?
 
 ### High-power management of tree, like [sorting child tabs](https://github.com/piroor/treestyletab/issues/94), [auto-modification of tree](https://github.com/piroor/treestyletab/issues/509), [renaming of tabs](https://github.com/piroor/treestyletab/issues/794), and so on
 
@@ -57,10 +59,6 @@ On the other hand, sorted tabs based on URLs or something will be beautiful - bu
 ### Configuration UI to change appearance of tabs in the vertical tab bar, for example, [color](https://github.com/piroor/treestyletab/issues/539), [height](https://github.com/piroor/treestyletab/issues/236), [visibility of the scrollbar](https://github.com/piroor/treestyletab/issues/514), [transparency of tabs](https://github.com/piroor/treestyletab/issues/651), and so on
 
 Instead please use the `userChrome.css`. TST should have configuration UIs only for something it can't be done by any other existing customization feature.
-
-### Keyboard shortcuts for TST's custom functions, for example, [close a tree](https://github.com/piroor/treestyletab/issues/274)
-
-Firefox already have [very large number of keyboard shortcuts](https://support.mozilla.org/kb/keyboard-shortcuts-perform-firefox-tasks-quickly), and other addons also provide their own keyboard shortcuts, I cannot find out safe combinations for my features. So I gave up and decided to provide only [APIs for other addons](http://piro.sakura.ne.jp/xul/_treestyletab.html.en#api). Please use generic addons to customize keyboard shortcuts which can define custom actions based on scripts. Sorry.
 
 ### [Ability to disable animation effects around tabs](https://github.com/piroor/treestyletab/issues/499)
 
