@@ -21,9 +21,9 @@
 <!ENTITY config.maxTreeLevel.after  "">
 <!ENTITY config.allowSubtreeCollapseExpand  "Разрешить сворачивать/разворачивать поддеревья вкладок">
 <!ENTITY config.tabbarSize.before-horizontal ":">
-<!ENTITY config.tabbarSize.after-horizontal  "px height">
+<!ENTITY config.tabbarSize.after-horizontal  "пикселей в высоту">
 <!ENTITY config.tabbarSize.before-vertical   ":">
-<!ENTITY config.tabbarSize.after-vertical    "px width">
+<!ENTITY config.tabbarSize.after-vertical    "пикселей в ширину">
 
 
 <!ENTITY config.tabs.style "Стиль">
@@ -120,7 +120,7 @@
 <!ENTITY config.autoShow.accelKeyDown.delay.before "Показывать после">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "мсек.">
 <!ENTITY config.autoShow.tabSwitch   "Переключении вкладок через Ctrl+Tab">
-<!ENTITY config.autoShow.feedback    "Something happen on tabs (new tab, closed tab, focus changing, title changing)">
+<!ENTITY config.autoShow.feedback    "Изменении вкладок (новая вкладка, закрытие вкладки, изменение фокуса, изменение заголовка)">
 <!--ENTITY config.autoShow.feedback    "Закрытии вкладок или открытии новых"-->
 <!ENTITY config.autoShow.feedback.delay.before "Скрыть после">
 <!ENTITY config.autoShow.feedback.delay.after  "мсек.">
@@ -139,7 +139,7 @@
 <!ENTITY config.closeParentBehavior.promoteFirst "Сделать первую дочернюю вкладку новой родительской">
 <!ENTITY config.closeParentBehavior.promoteAll   "Переместить все дочерние вкладки на уровень закрытой родительской вкладки">
 <!ENTITY config.closeParentBehavior.detach        "Переместить дочерние вкладки из дерева">
-<!ENTITY config.closeParentBehavior.replaceWithGroupTab "Replace closed parent with a dummy tab and keep the tree">
+<!ENTITY config.closeParentBehavior.replaceWithGroupTab "Заменить закрытую родительскую вкладку пустышкой и сохранить дерево">
 <!ENTITY config.closeRootBehavior.promoteFirst   "Сделать первую дочернюю вкладку новой родительской, если закрытая родительская вкладка не имела родителя">
 
 <!ENTITY config.focusMode "Переходить по Ctrl+Tab на следующую/предыдущую вкладку даже если она скрыта">
