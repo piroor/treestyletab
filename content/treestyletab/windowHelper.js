@@ -268,13 +268,7 @@ var TreeStyleTabWindowHelper = {
 
 		window.__treestyletab__BrowserGoHome = window.BrowserGoHome;
 		window.BrowserGoHome = function(aEvent) {
-			var where = whereToOpenLink(aEvent, false, true);
-			if (where == 'current' && gBrowser && gBrowser.selectedTab.pinned)
-				where = 'tab';
-			if (aEvent &&
-				aEvent.button !== 2 &&
-				where.indexOf('tab') === 0)
-				TreeStyleTabService.readyToOpenNewTabGroup(gBrowser);
+			TreeStyleTabService.onBeforeGoHome(aEvent, gBrowser);
 			return window.__treestyletab__BrowserGoHome.call(this, aEvent);
 		};
 

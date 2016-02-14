@@ -1443,6 +1443,21 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			this.readyToOpenOrphanTabNow(opener);
 	},
  
+	onBeforeGoHome : function TSTWindow_onBeforeGoHome(aEvent, aTabBrowser) 
+	{
+		if (!aEvent || aEvent.button === 2 || !aTabBrowser)
+			return;
+
+		var where = this.window.whereToOpenLink(aEvent, false, true);
+		if (where == 'current' && aTabBrowser.selectedTab.pinned)
+			where = 'tab';
+
+		if (where.indexOf('tab') === 0)
+			this.readyToOpenNewTabGroupNow(aTabBrowser);
+		else
+			this.readyToOpenOrphanTabNow(aTabBrowser);
+	},
+ 
 	onBeforeViewMedia : function TSTWindow_onBeforeViewMedia(aEvent, aOwner) 
 	{
 		var where = String(this.window.whereToOpenLink(aEvent, false, true));

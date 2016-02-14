@@ -1465,6 +1465,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		this.stopToOpenChildTab(browser);
 
 		var ownerBrowser = this.getTabBrowserFromChild(browser);
+		ownerBrowser.treeStyleTab.readiedToAttachNewTab      = false;
 		ownerBrowser.treeStyleTab.readiedToAttachNewTabGroup = true;
 		ownerBrowser.treeStyleTab.readiedToAttachMultiple    = true;
 		ownerBrowser.treeStyleTab.multipleCount              = 0;
