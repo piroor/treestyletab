@@ -13,7 +13,7 @@
    * [Tab Badge](https://addons.mozilla.org/firefox/addon/tab-badge/)との互換性を向上
    * e10sが有効な時に別プロセスのタブのセッションヒストリに触らないようにした（親のタブを閉じた時、次に親になるタブが別プロセスのタブだと、例外が発生してツリー構造が壊れていた）
    * `eval()`を使った関数の書き換えを減らした
-   * `browser.tabs.insertRelatedAfterCurrent`の設定を強制的に無効化しないようにして、リンクなどから開かれるタブについては既定の挙動を尊重するようにした
+   * [`browser.tabs.insertRelatedAfterCurrent`の設定を強制的に無効化しないようにして、リンクなどから開かれるタブについては既定の挙動を尊重するようにした](https://github.com/piroor/treestyletab/issues/874#issuecomment-183914331)（次項も併せて参照のこと）
    * `gBrowser.addTab()`メソッドに`relatedToCurrent:true`オプションもしくは参照元ページの情報を伴って開かれた新しいタブを、基本的に現在のタブの子として開くようにした
      （この変更により、特別な対応無しの状態でも他のアドオンが開くタブも現在のタブの子タブになるようになった）
    * `window.open()`で開かれたタブについて、参照元ページの情報から親らしきタブが見つからなかった場合は常に独立したタブとして開くようにした

@@ -13,8 +13,9 @@
    * Better compatibility with [Tab Badge](https://addons.mozilla.org/firefox/addon/tab-badge/) addon.
    * Never touch session history of remote tabs (on e10s activated). It raised exception and broke tree structure when a parent tab is closed and the next parent is a remote tab.
    * Reduce `eval()` hack.
-   * Gave up to disable the preference `browser.tabs.insertRelatedAfterCurrent`.
+   * [Gave up to disable the preference `browser.tabs.insertRelatedAfterCurrent`.](https://github.com/piroor/treestyletab/issues/874#issuecomment-183914331)
      Now TST respects the default behavior for the preference, about new tabs opened from links.
+     See also the next topic.
    * All new tabs opened via the `gBrowser.addTab()` method with the option `relatedToCurrent:true` or a referrer information are now basically opened as children of the current tab.
      By this change, new tabs from various other addons will be opened as children of the current tab without any hack.
    * New tabs from `window.open()` are now opened as orphan tabs, when TST cannot find the possible parent tab from the referrer information.
