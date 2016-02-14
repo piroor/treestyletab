@@ -3207,7 +3207,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		  'treeStructure: '+this.treeStructure
 		].join('\n  '));
 
-		if (typeof this.readiedToAttachNewTab !== 'boolean') {
+		if (utils.getTreePref('autoAttach') &&
+			typeof this.readiedToAttachNewTab !== 'boolean') {
 			this.window.setTimeout((function() {
 				if (!tab.owner)
 					return;
