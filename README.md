@@ -54,7 +54,7 @@ I believe that generally "tree of tabs should be a visualized history of web bro
 
 On the other hand, sorted tabs based on URLs or something will be beautiful - but that's all. Such sorted tabs won't help me - I'm very forgetful. In other words, I just need something which memorizes my chaotic mind as-is.
 
-### Configuration UI to change appearance of tabs in the vertical tab bar, for example, [color](https://github.com/piroor/treestyletab/issues/539), [height](https://github.com/piroor/treestyletab/issues/236), and so on
+### Configuration UI to change appearance of tabs in the vertical tab bar, for example, [color](https://github.com/piroor/treestyletab/issues/539), [height](https://github.com/piroor/treestyletab/issues/236), [visibility of the scrollbar](https://github.com/piroor/treestyletab/issues/514), and so on
 
 Instead please use the `userChrome.css`. TST should have configuration UIs only for something it can't be done by any other existing customization feature.
 
