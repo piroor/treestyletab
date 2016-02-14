@@ -58,7 +58,9 @@ On the other hand, sorted tabs based on URLs or something will be beautiful - bu
 
 ### Configuration UI to change appearance of tabs in the vertical tab bar, for example, [color](https://github.com/piroor/treestyletab/issues/539), [height](https://github.com/piroor/treestyletab/issues/236), [visibility of the scrollbar](https://github.com/piroor/treestyletab/issues/514), [transparency of tabs](https://github.com/piroor/treestyletab/issues/651), and so on
 
-Instead please use the `userChrome.css`. TST should have configuration UIs only for something it can't be done by any other existing customization feature.
+Instead please use the `userChrome.css` or `about:config`. TST should have configuration UIs only for something it can't be done by any other existing customization feature.
+
+[The list of all TST's preferences including secret items is available.](https://github.com/piroor/treestyletab/blob/master/defaults/preferences/treestyletab.js)
 
 ### [Ability to disable animation effects around tabs](https://github.com/piroor/treestyletab/issues/499)
 
