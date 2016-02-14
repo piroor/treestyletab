@@ -28,7 +28,7 @@
 
 <!ENTITY config.tabs.style "Стиль">
 
-<!ENTITY config.tabbar.style.caption "Стиль вкладок на панели">
+<!ENTITY config.tabbar.style.caption "Стиль панели вкладок">
 <!ENTITY config.tabbar.style.plain   "Plain">
 <!ENTITY config.tabbar.style.flat    "Flat">
 <!ENTITY config.tabbar.style.mixed   "Mixed">
@@ -113,7 +113,7 @@
 <!ENTITY config.autoShow.caption "Автоматически показывать панель вкладок при">
 <!ENTITY config.autoShow.mousemove "Перемещении мышки к краю окна или панели вкладок">
 <!ENTITY config.autoHide.area.before "Область срабатывания:">
-<!ENTITY config.autoHide.area.after "пикселов от края окна или панели вкладок">
+<!ENTITY config.autoHide.area.after "пикселей от края окна или панели вкладок">
 <!ENTITY config.autoHide.delay.before "Задержка:">
 <!ENTITY config.autoHide.delay.after "мсек.">
 <!ENTITY config.autoShow.accelKeyDown "При удерживании клавиши Ctrl">
