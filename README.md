@@ -54,7 +54,7 @@ I believe that generally "tree of tabs should be a visualized history of web bro
 
 On the other hand, sorted tabs based on URLs or something will be beautiful - but that's all. Such sorted tabs won't help me - I'm very forgetful. In other words, I just need something which memorizes my chaotic mind as-is.
 
-### Configuration UI to change appearance of tabs in the vertical tab bar, for example, [color](https://github.com/piroor/treestyletab/issues/539), [height](https://github.com/piroor/treestyletab/issues/236), [visibility of the scrollbar](https://github.com/piroor/treestyletab/issues/514), and so on
+### Configuration UI to change appearance of tabs in the vertical tab bar, for example, [color](https://github.com/piroor/treestyletab/issues/539), [height](https://github.com/piroor/treestyletab/issues/236), [visibility of the scrollbar](https://github.com/piroor/treestyletab/issues/514), [transparency of tabs](https://github.com/piroor/treestyletab/issues/651), and so on
 
 Instead please use the `userChrome.css`. TST should have configuration UIs only for something it can't be done by any other existing customization feature.
 
@@ -65,3 +65,9 @@ Firefox already have [very large number of keyboard shortcuts](https://support.m
 ### [Ability to disable animation effects around tabs](https://github.com/piroor/treestyletab/issues/499)
 
 [If Firefox introduces new preference to disable tab animations](https://bugzilla.mozilla.org/show_bug.cgi?id=556717), I'll apply it for TST too. Otherwise I have no plan to implement such a "no animation mode", because it will make TST more far from Firefox's plain codes. Now I have only a few resources to maintain TST, so I don't want to increase the risk that I give up to update TST for future versions of Firefox which will be continuously modified.
+
+### [Donation](https://github.com/piroor/treestyletab/issues/761)
+
+Thanks, but sorry, I have no plan about any donation because I hope to keep me as the prime user of this project. I hope to keep having a privilege to say "no" about requests not matched to my vision. My hand is already full to maintain this addon for my usecase.
+
+If you fixed a bug you met, please send a pull request - I'll merge it. If you have different plan about TST, please fork this project freely for your purpose, if needed.
