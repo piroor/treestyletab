@@ -82,6 +82,7 @@ var AutoHideConstants = Object.freeze(inherit(TreeStyleTabConstants, {
 	kSHOWN_BY_SHORTCUT  : 1 << 0,
 	kSHOWN_BY_MOUSEMOVE : 1 << 1,
 	kSHOWN_BY_FEEDBACK  : 1 << 2,
+	kSHOWN_AUTOMATICALLY : (1 << 0) | (1 << 1),
 	kSHOWN_BY_ANY_REASON : (1 << 0) | (1 << 1) | (1 << 2),
 	kSHOWHIDE_BY_START  : 1 << 3,
 	kSHOWHIDE_BY_END    : 1 << 4,
@@ -368,6 +369,8 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 		sv.setTabbrowserAttribute(this.kSTATE, this.kSTATE_EXPANDED);
 
 		if (!(aReason & this.kSHOWHIDE_BY_API)) {
+			w.addEventListener('blur', this, true);
+			ReferenceCounter.add('w,blur,AHW,true');
 			b.addEventListener('dragover', this, true);
 			ReferenceCounter.add('b,dragover,AHW,true');
 			b.addEventListener('dragleave', this, true);
@@ -419,6 +422,8 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 		this.screen.hidePopup();
 
 		if (this.userActionListening) {
+			w.removeEventListener('blur', this, true);
+			ReferenceCounter.remove('w,blur,AHW,true');
 			b.removeEventListener('dragover', this, true);
 			ReferenceCounter.remove('b,dragover,AHW,true');
 			b.removeEventListener('dragleave', this, true);
@@ -1223,6 +1228,16 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 	{
 		switch (aEvent.type)
 		{
+			case 'blur':
+				let activeWindow = Cc['@mozilla.org/focus-manager;1']
+									.getService(Ci.nsIFocusManager)
+									.activeWindow;
+				var inactive = !activeWindow || activeWindow != this.window;
+				if (inactive &&
+					this.showHideReason & this.kSHOWN_AUTOMATICALLY)
+					this.hide(this.kSHOWN_BY_ANY_REASON);
+				return;
+
 			case 'mousedown':
 				return this.onMouseDown(aEvent);
 
