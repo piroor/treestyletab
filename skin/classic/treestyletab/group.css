@@ -60,7 +60,7 @@
 
 
 #tree {
-	margin-top: 1em;
+	margin: 1em 0 0 0.5em;
 	overflow: auto;
 	box-flex: 1;
 	-moz-box-flex: 1;
@@ -69,7 +69,7 @@
 *|*.treestyletab-pseudo-tree-root-item {
 	display: none !important;
 }
-
-*|*.treestyletab-pseudo-tree-item {
-	overflow: hidden;
+*|*.treestyletab-pseudo-tree-root-item +
+  *|*.treestyletab-pseudo-tree-children > *|* {
+	margin-left: 0 !important;
 }

@@ -47,6 +47,7 @@ var PseudoTreeBuilder = {
 	XHTMLNS : 'http://www.w3.org/1999/xhtml',
 
 	kFAVICON      : 'treestyletab-pseudo-tree-favicon',
+	kROOT         : 'treestyletab-pseudo-tree-root',
 	kROOTITEM     : 'treestyletab-pseudo-tree-root-item',
 	kTREEITEM     : 'treestyletab-pseudo-tree-item',
 	kTREEROW      : 'treestyletab-pseudo-tree-row',
@@ -60,6 +61,7 @@ var PseudoTreeBuilder = {
 			return null;
 
 		var tree = this.createTabItem(aTab);
+		tree.className = this.kROOT;
 
 		var row = tree.querySelector("*|*."+this.kTREEROW);
 		if (!row)

@@ -403,6 +403,24 @@ GroupTab.prototype = inherit(TreeStyleTabBase, {
 
 	onResize : function GT_onResize()
 	{
+		var container = this.document.getElementById('tree');
+		var tree = container.firstChild;
+
+		var style = tree.style;
+		var height = tree.clientHeight * (tree.columnCount || 1);
+		if (height > container.boxObject.height) {
+			tree.columnCount = style.columnCount = style.MozColumnCount = 2;
+			var maxWidth = container.boxObject.width;
+			style.columnWidth = style.MozColumnWidth = Math.floor(maxWidth * 0.45)+'px';
+			style.columnGap = style.MozColumnGap = Math.floor(maxWidth * 0.05)+'px';
+		}
+		else {
+			tree.columnCount = 1;
+			style.columnCount = style.MozColumnCount =
+				style.columnWidth = style.MozColumnWidth =
+				style.columnGap = style.MozColumnGap = '';
+		}
+
 		var items = this.document.querySelectorAll('*|*.' + PseudoTreeBuilder.kTREEITEM);
 		Array.forEach(items, function(aItem) {
 			aItem.style.minHeight = (aItem.lastChild.boxObject.height + 1) + 'px';
