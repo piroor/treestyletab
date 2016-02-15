@@ -161,7 +161,7 @@ var PseudoTreeBuilder = {
 			let count = Math.ceil(
 				(aTree.clientWidth * aTree.clientHeight) /
 				(aTree.columnWidth * aTree.clientHeight)
-			) + 1;
+			);
 			aTree.columnCount = style.columnCount = style.MozColumnCount = count;
 			style.columnWidth = style.MozColumnWidth = aTree.columnWidth+'px';
 			style.columnGap = style.MozColumnGap = '0';
