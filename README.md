@@ -56,6 +56,8 @@ I believe that generally "tree of tabs should be a visualized history of web bro
 
 On the other hand, sorted tabs based on URLs or something will be beautiful - but that's all. Such sorted tabs won't help me - I'm very forgetful. In other words, I just need something which memorizes my chaotic mind as-is.
 
+By the way, my another addon [Multiple Tab Handler](https://addons.mozilla.org/firefox/addon/multiple-tab-handler/) will help you if you frequently modify tree by drag and drop. It provides ability to select multiple tabs by Ctrl-Click or Shift-Click and you can drag selected tabs at once.
+
 ### Configuration UI to change appearance of tabs in the vertical tab bar, for example, [color](https://github.com/piroor/treestyletab/issues/539), [height](https://github.com/piroor/treestyletab/issues/236), [visibility of the scrollbar](https://github.com/piroor/treestyletab/issues/514), [transparency of tabs](https://github.com/piroor/treestyletab/issues/651), and so on
 
 Instead please use the `userChrome.css` or `about:config`. TST should have configuration UIs only for something it can't be done by any other existing customization feature.
