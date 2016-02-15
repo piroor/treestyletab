@@ -5,11 +5,14 @@
 	height: 16px;
 	max-width: 16px;
 	max-height: 16px;
+	position: relative;
+	top: 0.25em;
 	width: 16px;
 }
 
 *|*.treestyletab-pseudo-tree-item {
 	display: block;
+	line-height: 1.5;
 	margin-bottom: 0.15em;
 	white-space: pre;
 }
@@ -19,10 +22,9 @@
 }
 
 *|*.treestyletab-pseudo-tree-row label.text-link {
-	box-crop: end;
-	-moz-box-crop: end;
+	display: inline-block;
 	margin: 0;
-	padding: 0 0 0 0.2em;
+	padding: 0 0 0 0.25em;
 	vertical-align: text-top;
 	white-space: pre-wrap;
 }
