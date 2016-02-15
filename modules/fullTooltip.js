@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011-2014
+ * Portions created by the Initial Developer are Copyright (C) 2011-2016
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -214,15 +214,18 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 			screenHeight = {};
 		currentScreen.GetRect(screenLeft, screenTop, screenWidth, screenHeight);
 
+		var maxWidth = Math.ceil(screenWidth.value * 0.6);
+		var maxHeight = Math.ceil(screenHeight.value * 0.6);
+
 		var style = tooltip.style;
-		style.maxWidth = screenWidth.value+'px';
-		style.maxHeight = screenHeight.value+'px';
+		style.maxWidth = maxWidth+'px';
+		style.maxHeight = maxHeight+'px';
 		style.minWidth = 0;
 		style.minHeight = 0;
-		if (currentX + currentW + screenLeft.value >= screenWidth.value)
-			style.marginLeft = (Math.max(screenLeft.value, screenWidth.value - currentW) - this.window.screenX)+'px';
-		if (currentY + currentH + screenTop.value >= screenHeight.value)
-			style.marginTop = (Math.max(screenTop.value, screenHeight.value - currentH) - this.window.screenY)+'px';
+		if (currentX + currentW + screenLeft.value >= maxWidth)
+			style.marginLeft = (Math.max(screenLeft.value, maxWidth - currentW) - this.window.screenX)+'px';
+		if (currentY + currentH + screenTop.value >= maxHeight)
+			style.marginTop = (Math.max(screenTop.value, maxHeight - currentH) - this.window.screenY)+'px';
 	},
 
 	onHidden : function FTM_onHidden(aEvent) 
