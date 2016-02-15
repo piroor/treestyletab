@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011-2015
+ * Portions created by the Initial Developer are Copyright (C) 2011-2016
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -146,5 +146,31 @@ var PseudoTreeBuilder = {
 			container.appendChild(this.createTabItem(children[i]));
 		}
 		return container;
+	},
+
+	layoutTree : function TB_layoutTree(aTree, aContainer)
+	{
+		aContainer = aContainer || aTree.parentNode;
+
+		var style = aTree.style;
+		var height = aTree.clientHeight * (aTree.columnCount || 1);
+		if (height > aContainer.boxObject.height &&
+			aContainer.boxObject.height < aContainer.boxObject.width) {
+			aTree.columnCount = style.columnCount = style.MozColumnCount = 2;
+			var maxWidth = aContainer.boxObject.width;
+			style.columnWidth = style.MozColumnWidth = Math.floor(maxWidth * 0.45)+'px';
+			style.columnGap = style.MozColumnGap = Math.floor(maxWidth * 0.05)+'px';
+		}
+		else {
+			aTree.columnCount = 1;
+			style.columnCount = style.MozColumnCount =
+				style.columnWidth = style.MozColumnWidth =
+				style.columnGap = style.MozColumnGap = '';
+		}
+
+		var items = aTree.querySelectorAll('*|*.' + this.kTREEITEM);
+		Array.forEach(items, function(aItem) {
+			aItem.style.minHeight = (aItem.lastChild.boxObject.height + 1) + 'px';
+		}, this);
 	}
 };

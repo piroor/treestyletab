@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2014
+ * Portions created by the Initial Developer are Copyright (C) 2010-2016
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -404,27 +404,7 @@ GroupTab.prototype = inherit(TreeStyleTabBase, {
 	onResize : function GT_onResize()
 	{
 		var container = this.document.getElementById('tree');
-		var tree = container.firstChild;
-
-		var style = tree.style;
-		var height = tree.clientHeight * (tree.columnCount || 1);
-		if (height > container.boxObject.height) {
-			tree.columnCount = style.columnCount = style.MozColumnCount = 2;
-			var maxWidth = container.boxObject.width;
-			style.columnWidth = style.MozColumnWidth = Math.floor(maxWidth * 0.45)+'px';
-			style.columnGap = style.MozColumnGap = Math.floor(maxWidth * 0.05)+'px';
-		}
-		else {
-			tree.columnCount = 1;
-			style.columnCount = style.MozColumnCount =
-				style.columnWidth = style.MozColumnWidth =
-				style.columnGap = style.MozColumnGap = '';
-		}
-
-		var items = this.document.querySelectorAll('*|*.' + PseudoTreeBuilder.kTREEITEM);
-		Array.forEach(items, function(aItem) {
-			aItem.style.minHeight = (aItem.lastChild.boxObject.height + 1) + 'px';
-		}, this);
+		PseudoTreeBuilder.layoutTree(container.firstChild);
 	},
 
 	onTabAttached : function GT_onTabAttached(aEvent)
