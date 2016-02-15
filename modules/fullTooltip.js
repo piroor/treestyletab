@@ -188,10 +188,41 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 		this.cancel();
 	},
 
+	getCurrentScreen : function FTM_getCurrentScreen(aBox)
+	{
+		var currentScreen = Cc['@mozilla.org/gfx/screenmanager;1']
+							.getService(Ci.nsIScreenManager)
+							.screenForRect(aBox.screenX, aBox.screenY, aBox.width, aBox.height);
+		var screenLeft   = {},
+			screenTop    = {},
+			screenWidth  = {},
+			screenHeight = {};
+		currentScreen.GetRect(screenLeft, screenTop, screenWidth, screenHeight);
+		return {
+			left   : screenLeft.value,
+			top    : screenTop.value,
+			width  : screenWidth.value,
+			height : screenHeight.value,
+			allowedWidth  : Math.ceil(screenWidth.value * 0.8),
+			allowedHeight : Math.ceil(screenHeight.value * 0.7)
+		};
+	},
+
 	onShown : function FTM_onShown(aEvent) 
 	{
 		this.startListenTooltipEvents();
 
+		var tooltip = this.tabFullTooltip;
+		var currentScreen = this.getCurrentScreen(tooltip.boxObject);
+		var tree = tooltip.lastChild.lastChild.lastChild;
+		PseudoTreeBuilder.columnizeTree(tree, {
+			width  : currentScreen.allowedWidth,
+			height : currentScreen.allowedHeight
+		});
+		this.window.setTimeout(this.resizeTooltip.bind(this), 0);
+	},
+	resizeTooltip : function FTM_resizeTooltip() 
+	{
 		var tooltip = this.tabFullTooltip;
 		tooltip.setAttribute('popup-shown', true);
 
@@ -205,27 +236,17 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 		var currentX = box.screenX;
 		var currentY = box.screenY;
 
-		var currentScreen = Cc['@mozilla.org/gfx/screenmanager;1']
-							.getService(Ci.nsIScreenManager)
-							.screenForRect(box.screenX, box.screenY, box.width, box.height);
-		var screenLeft   = {},
-			screenTop    = {},
-			screenWidth  = {},
-			screenHeight = {};
-		currentScreen.GetRect(screenLeft, screenTop, screenWidth, screenHeight);
-
-		var maxWidth = Math.ceil(screenWidth.value * 0.6);
-		var maxHeight = Math.ceil(screenHeight.value * 0.6);
+		var currentScreen = this.getCurrentScreen(box);
 
 		var style = tooltip.style;
-		style.maxWidth = maxWidth+'px';
-		style.maxHeight = maxHeight+'px';
+		style.maxWidth = currentScreen.allowedWidth+'px';
+		style.maxHeight = currentScreen.allowedHeight+'px';
 		style.minWidth = 0;
 		style.minHeight = 0;
-		if (currentX + currentW + screenLeft.value >= maxWidth)
-			style.marginLeft = (Math.max(screenLeft.value, maxWidth - currentW) - this.window.screenX)+'px';
-		if (currentY + currentH + screenTop.value >= maxHeight)
-			style.marginTop = (Math.max(screenTop.value, maxHeight - currentH) - this.window.screenY)+'px';
+		if (currentX + currentW + currentScreen.left >= currentScreen.allowedWidth)
+			style.marginLeft = (Math.max(currentScreen.left, currentScreen.allowedWidth - currentW) - this.window.screenX)+'px';
+		if (currentY + currentH + currentScreen.top >= currentScreen.allowedHeight)
+			style.marginTop = (Math.max(currentScreen.top, currentScreen.allowedHeight - currentH) - this.window.screenY)+'px';
 	},
 
 	onHidden : function FTM_onHidden(aEvent) 
@@ -452,8 +473,10 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 
 		var tree = PseudoTreeBuilder.build(aTab);
 		var root = this.document.createElement('arrowscrollbox');
-		root.setAttribute('orient', 'vertical');
+		root.setAttribute('orient', 'horizontal');
 		root.setAttribute('flex', 1);
+
+		var container = root.appendChild(this.document.createElement('vbox'));
 
 		if (aExtraLabels) {
 			if (typeof aExtraLabels == 'string')
@@ -464,12 +487,13 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 				label = label.trim();
 				if (!label)
 					continue;
-				root.appendChild(this.document.createElement('description'))
+				container.appendChild(this.document.createElement('description'))
 					.appendChild(this.document.createTextNode(label));
 			}
 		}
 
-		root.insertBefore(tree, root.firstChild && root.firstChild.nextSibling);
+		container.insertBefore(tree, container.firstChild && container.firstChild.nextSibling);
+		root.appendChild(container);
 
 		this.tabFullTooltip.appendChild(root);
 	},

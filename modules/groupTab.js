@@ -404,7 +404,8 @@ GroupTab.prototype = inherit(TreeStyleTabBase, {
 	onResize : function GT_onResize()
 	{
 		var container = this.document.getElementById('tree');
-		PseudoTreeBuilder.layoutTree(container.firstChild);
+		var tree = container.firstChild;
+		PseudoTreeBuilder.columnizeTree(tree);
 	},
 
 	onTabAttached : function GT_onTabAttached(aEvent)

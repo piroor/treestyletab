@@ -148,18 +148,23 @@ var PseudoTreeBuilder = {
 		return container;
 	},
 
-	layoutTree : function TB_layoutTree(aTree, aContainer)
+	columnizeTree : function TB_columnizeTree(aTree, aContainerBox)
 	{
-		aContainer = aContainer || aTree.parentNode;
+		aContainerBox = aContainerBox || aTree.parentNode.boxObject;
 
 		var style = aTree.style;
 		var height = aTree.clientHeight * (aTree.columnCount || 1);
-		if (height > aContainer.boxObject.height &&
-			aContainer.boxObject.height < aContainer.boxObject.width) {
-			aTree.columnCount = style.columnCount = style.MozColumnCount = 2;
-			var maxWidth = aContainer.boxObject.width;
-			style.columnWidth = style.MozColumnWidth = Math.floor(maxWidth * 0.45)+'px';
-			style.columnGap = style.MozColumnGap = Math.floor(maxWidth * 0.05)+'px';
+		if (height > aContainerBox.height &&
+			aContainerBox.height < aContainerBox.width) {
+			let maxWidth = aContainerBox.width;
+			aTree.columnWidth = Math.floor(maxWidth * 0.9 / 2.5);
+			let count = Math.ceil(
+				(aTree.clientWidth * aTree.clientHeight) /
+				(aTree.columnWidth * aTree.clientHeight)
+			) + 1;
+			aTree.columnCount = style.columnCount = style.MozColumnCount = count;
+			style.columnWidth = style.MozColumnWidth = aTree.columnWidth+'px';
+			style.columnGap = style.MozColumnGap = '0';
 		}
 		else {
 			aTree.columnCount = 1;
@@ -168,9 +173,12 @@ var PseudoTreeBuilder = {
 				style.columnGap = style.MozColumnGap = '';
 		}
 
-		var items = aTree.querySelectorAll('*|*.' + this.kTREEITEM);
-		Array.forEach(items, function(aItem) {
-			aItem.style.minHeight = (aItem.lastChild.boxObject.height + 1) + 'px';
-		}, this);
+		if (aTree.columnCount > 1) {
+			style.height = style.maxHeight =
+				Math.floor(aContainerBox.height * 0.9) + 'px';
+		}
+		else {
+			style.height = style.maxHeight = '';
+		}
 	}
 };
