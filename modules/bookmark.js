@@ -302,7 +302,7 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabConstants, {
 			let treeStructure = result.behavior & this.kGROUP_BOOKMARK_DONT_RESTORE_TREE_STRUCTURE ?
 						null :
 						this.getTreeStructureFromItems(aIDs) ;
-			log('  treeStructure => '+JSON.stringify(treeStructure));
+			log('  treeStructure => ', treeStructure);
 			if (treeStructure) {
 				let parentTabs = treeStructure.filter(function(aParent) {
 						return aParent < 0;
@@ -340,7 +340,7 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabConstants, {
 							title:  aFolderTitle,
 							uri:    uri
 						})
-						log('  updated treeStructure => '+JSON.stringify(treeStructure));
+						log('  updated treeStructure => ', treeStructure);
 					}
 				}
 				else if (!haveMultipleTrees) {
@@ -428,7 +428,7 @@ PlacesUIUtils._openTabset = function(aItemsToOpen, aEvent, aWindow, ...aArgs) {
 		return this.__treestyletab__openTabset.apply(this, allArgs);
 
 	var result = BS.handleTabsOpenProcess(where, aEvent, w, ids, uris, aItemsToOpen, this.__treestyletab__folderName);
-	log('  result: '+JSON.stringify(result));
+	log('  result: ', result);
 
 	var tabs = TST.doAndGetNewTabs((function() {
 			this.__treestyletab__openTabset.apply(this, allArgs);

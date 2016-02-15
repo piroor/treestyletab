@@ -1385,7 +1385,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		if (!aTab)
 			return;
 
-		log('onBeforeOpenLinkWithTab '+[aTab, JSON.stringify(aParams), this.checkToOpenChildTab(aTab)]);
+		log('onBeforeOpenLinkWithTab: ', [aTab, aParams, this.checkToOpenChildTab(aTab)]);
 
 		if (!this.checkToOpenChildTab(aTab)) {
 			if (!aParams.fromChrome)
@@ -1397,7 +1397,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
  
 	onBeforeOpenNewTabByThirdParty : function TSTWindow_onBeforeOpenNewTabByThirdParty(aOwner) 
 	{
-		log('onBeforeOpenNewTabByThirdParty '+[aOwner, this.checkToOpenChildTab(aTab)]);
+		log('onBeforeOpenNewTabByThirdParty: ', [aOwner, this.checkToOpenChildTab(aTab)]);
 
 		if (!this.checkToOpenChildTab(aOwner)) {
 			this.handleNewTabFromCurrent(aOwner);
@@ -1413,7 +1413,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 				log('onBeforeBrowserAccessOpenURI: opener is DOMWindow');
 				opener = aOpener;
 				hasOwnerTab = this.getTabFromFrame(opener.top);
-				log('  opener =>'+[opener,hasOwnerTab]);
+				log('  opener =>', [opener, hasOwnerTab]);
 			}
 			else if (Ci.nsIOpenURIInFrameParams &&
 					aOpener instanceof Ci.nsIOpenURIInFrameParams) {
@@ -1432,7 +1432,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 						break;
 					}
 				}
-				log('  opener =>'+[opener,hasOwnerTab]);
+				log('  opener =>', [opener, hasOwnerTab]);
 			}
 		}
 		if (aOpener &&
@@ -1462,7 +1462,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 	{
 		var where = String(this.window.whereToOpenLink(aEvent, false, true));
 
-		log('onBeforeViewMedia '+[aEvent, aOwner, where]);
+		log('onBeforeViewMedia: ', [aEvent, aOwner, where]);
 
 		if (where.indexOf('tab') == 0)
 			this.handleNewTabFromCurrent(aOwner);
@@ -1472,7 +1472,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
  
 	onBeforeBrowserSearch : function TSTWindow_onBeforeBrowserSearch(aTerm, aForceNewTab) 
 	{
-		log('onBeforeBrowserSearch '+[aTerm, aForceNewTab, this.shouldOpenSearchResultAsChild(aTerm)]);
+		log('onBeforeBrowserSearch: ', [aTerm, aForceNewTab, this.shouldOpenSearchResultAsChild(aTerm)]);
 
 		if ((arguments.length == 1 || aForceNewTab) &&
 			this.shouldOpenSearchResultAsChild(aTerm))

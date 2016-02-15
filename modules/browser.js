@@ -3436,7 +3436,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var closeParentBehavior = this.getCloseParentBehaviorForTab(tab);
 
 		var backupAttributes = this._collectBackupAttributes(tab);
-		log('onTabClose: backupAttributes = '+JSON.stringify(backupAttributes));
+		log('onTabClose: backupAttributes = ', backupAttributes);
 
 		if (closeParentBehavior == this.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN ||
 			this.isSubtreeCollapsed(tab))

@@ -97,7 +97,7 @@ FullscreenObserver.prototype = {
 
 	onSizeModeChange : function FullscreenObserver_onSizeModeChange()
 	{
-		log('onSizeModeChange: '+this.window.document.documentElement.getAttribute('sizemode'));
+		log('onSizeModeChange: ', this.window.document.documentElement.getAttribute('sizemode'));
 		this.updateToolboxPosition();
 		if (!this.window.gBrowser.treeStyleTab.notifyingRenderedEvent)
 			this.window.gBrowser.treeStyleTab.updateFloatingTabbar(TreeStyleTabConstants.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
