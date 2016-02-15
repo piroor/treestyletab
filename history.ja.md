@@ -1,6 +1,8 @@
 # 更新履歴
 
  - master/HEAD
+   * グループ化用のダミーのタブに表示するツリーをマルチカラム表示するようにした（`extensions.treestyletab.groupTab.columnize`を`false`にすると従来の挙動に戻ります）
+   * ツールチップ内に表示するツリーをマルチカラム表示するようにした（`extensions.treestyletab.tooltip.columnize`を`false`にすると従来の挙動に戻ります）
    * ブックマークからタブを開くときにバラバラのタブで開く機能が動作しなくなっていたのを修正
    * de-DEロケール更新（by Björn Kautler. Thanks!）
    * タブバー内のスクロールバーを細く表示する機能について、より自然に表示するように改善

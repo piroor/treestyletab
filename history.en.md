@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * Tree in group (dummy) tabs is now shown with multiple columns. (You can disable the feautre by `extensions.treestyletab.groupTab.columnize`=`false`.)
+   * Tree in tooltip is now shown with multiple columns. (You can disable the feautre by `extensions.treestyletab.tooltip.columnize`=`false`.)
    * Fix regression: open bookmarks as separate tabs for user preference.
    * de-DE locale is updated by Björn Kautler. Thanks!
    * Better appearance for narrow scrollbar in the tab bar.
