@@ -216,11 +216,11 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 			let tooltip = this.tabFullTooltip;
 			let currentScreen = this.getCurrentScreen(tooltip.boxObject);
 			let tree = tooltip.lastChild.lastChild.lastChild;
-		PseudoTreeBuilder.columnizeTree(tree, {
-			width  : currentScreen.allowedWidth,
-			height : currentScreen.allowedHeight
-		});
-		this.window.setTimeout(this.resizeTooltip.bind(this), 0);
+			PseudoTreeBuilder.columnizeTree(tree, {
+				width  : currentScreen.allowedWidth,
+				height : currentScreen.allowedHeight
+			});
+			this.window.setTimeout(this.resizeTooltip.bind(this), 0);
 		}
 		else {
 			this.resizeTooltip();
