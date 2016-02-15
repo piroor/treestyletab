@@ -212,14 +212,19 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 	{
 		this.startListenTooltipEvents();
 
-		var tooltip = this.tabFullTooltip;
-		var currentScreen = this.getCurrentScreen(tooltip.boxObject);
-		var tree = tooltip.lastChild.lastChild.lastChild;
+		if (utils.getTreePref('tooltip.columnize')) {
+			let tooltip = this.tabFullTooltip;
+			let currentScreen = this.getCurrentScreen(tooltip.boxObject);
+			let tree = tooltip.lastChild.lastChild.lastChild;
 		PseudoTreeBuilder.columnizeTree(tree, {
 			width  : currentScreen.allowedWidth,
 			height : currentScreen.allowedHeight
 		});
 		this.window.setTimeout(this.resizeTooltip.bind(this), 0);
+		}
+		else {
+			this.resizeTooltip();
+		}
 	},
 	resizeTooltip : function FTM_resizeTooltip() 
 	{
@@ -473,7 +478,8 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 
 		var tree = PseudoTreeBuilder.build(aTab);
 		var root = this.document.createElement('arrowscrollbox');
-		root.setAttribute('orient', 'horizontal');
+		var orient = utils.getTreePref('tooltip.columnize') ? 'horizontal' : 'vertical' ;
+		root.setAttribute('orient', orient);
 		root.setAttribute('flex', 1);
 
 		var container = root.appendChild(this.document.createElement('vbox'));

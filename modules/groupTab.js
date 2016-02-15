@@ -39,10 +39,14 @@ var EXPORTED_SYMBOLS = ['GroupTab'];
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
+Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
+
 Components.utils.import('resource://treestyletab-modules/lib/inherit.jsm');
 Components.utils.import('resource://treestyletab-modules/base.js');
 Components.utils.import('resource://treestyletab-modules/pseudoTreeBuilder.js');
 Components.utils.import('resource://treestyletab-modules/tabAttributesObserver.js');
+
+XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
 function GroupTab(aWindow)
 {
@@ -403,6 +407,8 @@ GroupTab.prototype = inherit(TreeStyleTabBase, {
 
 	onResize : function GT_onResize()
 	{
+		if (!utils.getTreePref('groupTab.columnize'))
+			return;
 		var container = this.document.getElementById('tree');
 		var tree = container.firstChild;
 		PseudoTreeBuilder.columnizeTree(tree);
