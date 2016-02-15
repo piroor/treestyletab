@@ -1,3 +1,6 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+@namespace xhtml url("http://www.w3.org/1999/xhtml");
+
 :root {
 	appearance: window;
 	-moz-appearance: window;
@@ -63,10 +66,10 @@
 	-moz-box-flex: 1;
 }
 
-.treestyletab-pseudo-tree-root-item {
-	display: none;
+*|*.treestyletab-pseudo-tree-root-item {
+	display: none !important;
 }
 
-.treestyletab-pseudo-tree-item {
+*|*.treestyletab-pseudo-tree-item {
 	overflow: hidden;
 }

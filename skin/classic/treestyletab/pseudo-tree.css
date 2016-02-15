@@ -1,25 +1,33 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+@namespace xhtml url("http://www.w3.org/1999/xhtml");
 
-.treestyletab-pseudo-tree-favicon {
+*|*.treestyletab-pseudo-tree-favicon {
 	height: 16px;
 	max-width: 16px;
 	max-height: 16px;
 	width: 16px;
 }
 
-.treestyletab-pseudo-tree-row {
-	box-align: center;
-	-moz-box-align: center;
+*|*.treestyletab-pseudo-tree-item {
+	display: block;
+	margin-bottom: 0.15em;
+	white-space: pre;
 }
 
-.treestyletab-pseudo-tree-row label.text-link {
+*|*.treestyletab-pseudo-tree-row {
+	display: block;
+}
+
+*|*.treestyletab-pseudo-tree-row label.text-link {
 	box-crop: end;
 	-moz-box-crop: end;
+	margin: 0;
+	padding: 0 0 0 0.2em;
+	vertical-align: text-top;
+	white-space: pre-wrap;
 }
 
-.treestyletab-pseudo-tree-children {
+*|*.treestyletab-pseudo-tree-children > *|* {
 	margin-left: 1.5em;
-	box-align: stretch;
-	-moz-box-align: stretch;
 }
 

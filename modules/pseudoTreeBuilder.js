@@ -44,6 +44,7 @@ Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabBase', 'resource://treestyletab-modules/base.js');
 
 var PseudoTreeBuilder = {
+	XHTMLNS : 'http://www.w3.org/1999/xhtml',
 
 	kFAVICON      : 'treestyletab-pseudo-tree-favicon',
 	kROOTITEM     : 'treestyletab-pseudo-tree-root-item',
@@ -60,7 +61,7 @@ var PseudoTreeBuilder = {
 
 		var tree = this.createTabItem(aTab);
 
-		var row = tree.querySelector("."+this.kTREEROW);
+		var row = tree.querySelector("*|*."+this.kTREEROW);
 		if (!row)
 			return;
 
@@ -95,11 +96,10 @@ var PseudoTreeBuilder = {
 		var doc = aTab.ownerDocument;
 		var w = doc.defaultView;
 
-		var item = doc.createElement('hbox');
+		var item = doc.createElementNS(this.XHTMLNS, 'div');
 		item.setAttribute('class', this.kTREEITEM);
-		item.setAttribute('flex', 1);
 
-		var favicon = item.appendChild(doc.createElement('image'));
+		var favicon = item.appendChild(doc.createElementNS(this.XHTMLNS, 'img'));
 		favicon.setAttribute('src', aTab.getAttribute('image') || 'chrome://mozapps/skin/places/defaultFavicon.png');
 		favicon.setAttribute('class', this.kFAVICON);
 
@@ -113,14 +113,13 @@ var PseudoTreeBuilder = {
 		label.setAttribute('class', 'text-link');
 		label.setAttribute('tab-id', TreeStyleTabBase.getTabValue(aTab, TreeStyleTabBase.kID));
 
-		var row = doc.createElement('hbox');
+		var row = doc.createElementNS(this.XHTMLNS, 'div');
 		row.setAttribute('class', this.kTREEROW);
-		row.setAttribute('flex', 1);
 		row.appendChild(item);
 
 		var children = this.createTabChildren(aTab);
 		if (children) {
-			let container = doc.createElement('vbox');
+			let container = doc.createElementNS(this.XHTMLNS, 'div');
 			container.appendChild(row);
 			container.appendChild(children);
 			return container;
@@ -138,7 +137,7 @@ var PseudoTreeBuilder = {
 		if (!children.length)
 			return null;
 
-		var container = doc.createElement('vbox');
+		var container = doc.createElementNS(this.XHTMLNS, 'div');
 		container.setAttribute('class', this.kTREECHILDREN);
 		for (let i = 0, maxi = children.length; i < maxi; i++)
 		{

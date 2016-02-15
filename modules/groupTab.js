@@ -234,6 +234,8 @@ GroupTab.prototype = inherit(TreeStyleTabBase, {
 		var contents = PseudoTreeBuilder.build(this.getOwnerTab());
 		if (contents)
 			tree.appendChild(contents);
+
+		this.onResize();
 	},
 
 	checkUpdateTreeNow : function GT_checkUpdateTreeNow()
@@ -272,10 +274,8 @@ GroupTab.prototype = inherit(TreeStyleTabBase, {
 			case 'TabSelect':
 				return this.onTabSelect(aEvent);
 
-			case 'overflow':
-				return this.onOverflow(aEvent);
-			case 'underflow':
-				return this.onUnderflow(aEvent);
+			case 'resize':
+				return this.onResize();
 
 			case this.kEVENT_TYPE_ATTACHED:
 				return this.onTabAttached(aEvent);
@@ -298,8 +298,7 @@ GroupTab.prototype = inherit(TreeStyleTabBase, {
 		this.window.addEventListener('unload', this, false);
 		this.window.addEventListener('click', this, false);
 		this.window.addEventListener('dblclick', this, false);
-		this.window.addEventListener('overflow', this, false);
-		this.window.addEventListener('underflow', this, false);
+		this.window.addEventListener('resize', this, false);
 
 		tab.addEventListener('TabSelect', this, false);
 		tab.addEventListener('TabClose', this, false);
@@ -331,8 +330,7 @@ GroupTab.prototype = inherit(TreeStyleTabBase, {
 		this.window.removeEventListener('unload', this, false);
 		this.window.removeEventListener('click', this, false);
 		this.window.removeEventListener('dblclick', this, false);
-		this.window.removeEventListener('overflow', this, false);
-		this.window.removeEventListener('underflow', this, false);
+		this.window.removeEventListener('resize', this, false);
 
 		tab.removeEventListener('TabSelect', this, false);
 		tab.removeEventListener('TabClose', this, false);
@@ -403,20 +401,12 @@ GroupTab.prototype = inherit(TreeStyleTabBase, {
 		this.shouldUpdate = false;
 	},
 
-	onOverflow : function GT_onOverflow(aEvent)
+	onResize : function GT_onResize()
 	{
-		var target = aEvent.originalTarget;
-		if (target.className != PseudoTreeBuilder.kTREEITEM)
-			return;
-		target.style.minHeight = target.lastChild.boxObject.height + 'px';
-	},
-
-	onUnderflow : function GT_onUnderflow(aEvent)
-	{
-		var target = aEvent.originalTarget;
-		if (target.className != PseudoTreeBuilder.kTREEITEM)
-			return;
-		target.style.minHeight = '';
+		var items = this.document.querySelectorAll('*|*.' + PseudoTreeBuilder.kTREEITEM);
+		Array.forEach(items, function(aItem) {
+			aItem.style.minHeight = (aItem.lastChild.boxObject.height + 1) + 'px';
+		}, this);
 	},
 
 	onTabAttached : function GT_onTabAttached(aEvent)
