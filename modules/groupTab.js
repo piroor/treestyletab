@@ -272,6 +272,11 @@ GroupTab.prototype = inherit(TreeStyleTabBase, {
 			case 'TabSelect':
 				return this.onTabSelect(aEvent);
 
+			case 'overflow':
+				return this.onOverflow(aEvent);
+			case 'underflow':
+				return this.onUnderflow(aEvent);
+
 			case this.kEVENT_TYPE_ATTACHED:
 				return this.onTabAttached(aEvent);
 			case this.kEVENT_TYPE_DETACHED:
@@ -293,6 +298,8 @@ GroupTab.prototype = inherit(TreeStyleTabBase, {
 		this.window.addEventListener('unload', this, false);
 		this.window.addEventListener('click', this, false);
 		this.window.addEventListener('dblclick', this, false);
+		this.window.addEventListener('overflow', this, false);
+		this.window.addEventListener('underflow', this, false);
 
 		tab.addEventListener('TabSelect', this, false);
 		tab.addEventListener('TabClose', this, false);
@@ -324,6 +331,8 @@ GroupTab.prototype = inherit(TreeStyleTabBase, {
 		this.window.removeEventListener('unload', this, false);
 		this.window.removeEventListener('click', this, false);
 		this.window.removeEventListener('dblclick', this, false);
+		this.window.removeEventListener('overflow', this, false);
+		this.window.removeEventListener('underflow', this, false);
 
 		tab.removeEventListener('TabSelect', this, false);
 		tab.removeEventListener('TabClose', this, false);
@@ -392,6 +401,22 @@ GroupTab.prototype = inherit(TreeStyleTabBase, {
 			this.updateTree();
 
 		this.shouldUpdate = false;
+	},
+
+	onOverflow : function GT_onOverflow(aEvent)
+	{
+		var target = aEvent.originalTarget;
+		if (target.className != PseudoTreeBuilder.kTREEITEM)
+			return;
+		target.style.minHeight = target.lastChild.boxObject.height + 'px';
+	},
+
+	onUnderflow : function GT_onUnderflow(aEvent)
+	{
+		var target = aEvent.originalTarget;
+		if (target.className != PseudoTreeBuilder.kTREEITEM)
+			return;
+		target.style.minHeight = '';
 	},
 
 	onTabAttached : function GT_onTabAttached(aEvent)

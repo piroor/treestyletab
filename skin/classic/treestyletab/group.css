@@ -66,3 +66,7 @@
 .treestyletab-pseudo-tree-root-item {
 	display: none;
 }
+
+.treestyletab-pseudo-tree-item {
+	overflow: hidden;
+}

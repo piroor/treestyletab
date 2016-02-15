@@ -96,30 +96,37 @@ var PseudoTreeBuilder = {
 		var w = doc.defaultView;
 
 		var item = doc.createElement('hbox');
-		item.setAttribute('class', this.kTREEROW);
+		item.setAttribute('class', this.kTREEITEM);
+		item.setAttribute('flex', 1);
 
 		var favicon = item.appendChild(doc.createElement('image'));
 		favicon.setAttribute('src', aTab.getAttribute('image') || 'chrome://mozapps/skin/places/defaultFavicon.png');
 		favicon.setAttribute('class', this.kFAVICON);
 
 		var label = item.appendChild(doc.createElement('label'));
-		label.setAttribute('value', aTab.label);
+		label.setAttribute('flex', 1);
+		label.textContent = aTab.label;
 		var tooltip = aTab.label;
 		var uri = aTab.linkedBrowser.currentURI.spec;
 		if (w.isBlankPageURL ? !w.isBlankPageURL(uri) : (uri != 'about:blank')) tooltip += '\n' + uri;
 		label.setAttribute('tooltiptext', tooltip);
-		label.setAttribute('class', 'text-link '+this.kTREEITEM);
+		label.setAttribute('class', 'text-link');
 		label.setAttribute('tab-id', TreeStyleTabBase.getTabValue(aTab, TreeStyleTabBase.kID));
+
+		var row = doc.createElement('hbox');
+		row.setAttribute('class', this.kTREEROW);
+		row.setAttribute('flex', 1);
+		row.appendChild(item);
 
 		var children = this.createTabChildren(aTab);
 		if (children) {
 			let container = doc.createElement('vbox');
-			container.appendChild(item);
+			container.appendChild(row);
 			container.appendChild(children);
 			return container;
 		}
 		else {
-			return item;
+			return row;
 		}
 	},
 
@@ -132,11 +139,11 @@ var PseudoTreeBuilder = {
 			return null;
 
 		var container = doc.createElement('vbox');
+		container.setAttribute('class', this.kTREECHILDREN);
 		for (let i = 0, maxi = children.length; i < maxi; i++)
 		{
 			container.appendChild(this.createTabItem(children[i]));
 		}
-		container.setAttribute('class', this.kTREECHILDREN);
 		return container;
 	}
 };
