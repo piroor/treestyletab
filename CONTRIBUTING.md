@@ -1,6 +1,8 @@
-# Tree Style Tab contribution guide
+# Tree Style Tab Contribution Guideline
 
 If you are planning to open a new issue for a bug report or a feature request, or having additional information for an existing issue, or hoping to translate the language resource for your language, then please see this document before posting.
+
+This is possibly a generic guideline for contributing any Firefox addon project or a public OSS/free software project.
 
 ## Good, helpful bug reports
 
@@ -27,7 +29,7 @@ Then, please report the bug with these information:
 
  * **Detailed steps to reproduce the problem.** For example:
    1. Prepare Firefox version XX with plain profile.
-   2. Install TST version XXXX.
+   2. Install Tree Style Tab version XXXX.
    3. Install another addon XXXX version XXXX from "http://....".
    4. Click a button on the toolbar.
    5. ...
@@ -37,6 +39,14 @@ Then, please report the bug with these information:
    If you have any screenshot or screencast, it will help me more.
  * **Platform information.**
    If the problem appear on your multiple platforms, please list them.
+
+## Please don't join to an existing discussion if your problem is different from the originally reported one
+
+Even if the result is quite similar, they may be different problem if the reproduction steps for yours are different from the one originally reported.
+Then, you should create a new issue for yours, instead of adding comment to the existing issue.
+Otherwise, I'll be confused if the original reporter said "the issue is a compatibility issue with another addon" but another reporter said "I saw this problem without any other addon".
+
+To avoid such a confusion, please post your report with detailed reproduction steps always.
 
 ## Feature requests can be tagged as "out of purpose"
 
