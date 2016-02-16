@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Attach new tabs only actually opened with `relatedToCurrent`=`true` option (or referrer) to the current tab, as the default behavior for compatibility with other addons.
  - 0.16.2016021601
    * Tree in group (dummy) tabs is now shown with multiple columns. (You can disable the feautre by `extensions.treestyletab.groupTab.columnize`=`false`.)
    * Tree in tooltip is now shown with multiple columns. (You can disable the feautre by `extensions.treestyletab.tooltip.columnize`=`false`.)
