@@ -1,12 +1,14 @@
 # Tree Style Tab contribution guide
 
+If you are pllanning to open a new issue for a bug report or a feature request, please see this document before posting.
+
 ## Good, helpful bug reports
 
 A good report is the fastest way to solve a problem.
 Even if the problem is very clear for you, possibly unclear for me.
 Unclear report can be left unfixed for long time.
 
-Before you open a new issue to report a bug, please see following checklist.
+Here is a list of typical questions I asked to existing reports:
 
  * Does the problem appear with the [latest develpment build](http://piro.sakura.ne.jp/xul/xpi/nightly/)?
    Possibly, problems you met has been resolved already.
@@ -41,7 +43,8 @@ Instead, please tell me other addon which provide the feature and report a new i
 
 ## Translations, pull requests
 
-If you've fixed a problem you met by your hand, then please send the difference as a pull request.
+If you've fixed a problem you met by your hand, then please send a pull request to me.
 
-And, if you translated TST for your language, please feedback it for me as a pull request.
-You'll be able to do it without any local application - you can do it on the GitHub.
+Translations also.
+Pull requests are easy to merge, than sending ZIP files.
+You'll do it without any local application - you can do it on the GitHub.
