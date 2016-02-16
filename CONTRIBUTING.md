@@ -10,7 +10,7 @@ Before you open a new issue to report a bug, please see following checklist.
 
  * Does the problem appear with the [latest develpment build](http://piro.sakura.ne.jp/xul/xpi/nightly/)?
    Possibly, problems you met has been resolved already.
-   On Firefox 43 and later you need to set `xpinstall.signatures.required` to `false` via `about:config`.
+   On Firefox 43 and later you need to set `xpinstall.signatures.required` to `false` via `about:config`, to try such unsigned packages of development builds.
    For Firefox 46 and later, you'll have to try an unbranded Firefox (including Beta, Aurora, and Nightly) to try development builds because the option will be removed on official Firefox 46 and later.
  * Does the problem appear without Tab Mix Plus or something other tab related addon?
    If a compatibility issue with other addons is reported without such information, it is very hard to be resolved.
