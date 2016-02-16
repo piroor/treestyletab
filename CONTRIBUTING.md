@@ -1,6 +1,6 @@
 # Tree Style Tab contribution guide
 
-If you are planning to open a new issue for a bug report or a feature request, please see this document before posting.
+If you are planning to open a new issue for a bug report or a feature request, or having additional information for an existing issue, or hoping to translate the language resource for your language, then please see this document before posting.
 
 ## Good, helpful bug reports
 
@@ -19,6 +19,9 @@ Here is a list of typical questions I asked to existing reports:
    See also the next.
  * **Does the problem appear with a clean profile?**
    You can start Firefox with temporary clean profile by a command line `-profile`, like: `"C:\Program Filex (x86)\Mozilla Firefox\firefox.exe" -no-remote -profile "%Temp%\FirefoxTemporaryProfile"`
+ * **Is the main topic single and clear?**
+   Sometimes I got an issue including multiple topics, but such an issue is hard to be closed, then it often stays opened for long time and confuses me.
+   If you have multiple topics, please report them as separate issues for each.
 
 Then, please report the bug with these information:
 
