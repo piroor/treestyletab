@@ -8,27 +8,27 @@ Unclear report can be left unfixed for long time.
 
 Before you open a new issue to report a bug, please see following checklist.
 
- * [ ] Does the problem appear with the [latest develpment build](http://piro.sakura.ne.jp/xul/xpi/nightly/)?
+ * Does the problem appear with the [latest develpment build](http://piro.sakura.ne.jp/xul/xpi/nightly/)?
    Possibly, problems you met has been resolved already.
- * [ ] Does the problem appear without Tab Mix Plus or something other tab related addon?
+ * Does the problem appear without Tab Mix Plus or something other tab related addon?
    If a compatibility issue with other addons is reported without such information, it is very hard to be resolved.
    See also the next.
- * [ ] Does the problem appear with a clean profile?
+ * Does the problem appear with a clean profile?
    You can start Firefox with temporary clean profile by a command line `-profile`, like: `"C:\Program Filex (x86)\Mozilla Firefox\firefox.exe" -no-remote -profile "%Temp%\FirefoxTemporaryProfile"`
 
 Then, please report the bug with these information:
 
- * [ ] Detailed steps to reproduce the problem. For example:
+ * Detailed steps to reproduce the problem. For example:
    1. Prepare Firefox version XX with plain profile.
    2. Install TST version XXXX.
    3. Install another addon XXXX version XXXX from "http://....".
    4. Click a button on the toolbar.
    5. ...
- * [ ] Expected result.
- * [ ] Actual result.
- * [ ] Platform information.
+ * Expected result.
+ * Actual result.
+ * Platform information.
    If the problem appear on your multiple platforms, please list them.
- * [ ] Screenshot images or screencast, if possible.
+ * Screenshot images or screencast, if possible.
 
 ## Feature requests can be tagged as "out of purpose"
 
