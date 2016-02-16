@@ -5,13 +5,14 @@
    * Tree in group (dummy) tabs is now shown with multiple columns. (You can disable the feautre by `extensions.treestyletab.groupTab.columnize`=`false`.)
    * Tree in tooltip is now shown with multiple columns. (You can disable the feautre by `extensions.treestyletab.tooltip.columnize`=`false`.)
    * Fix regression: open bookmarks as separate tabs for user preference.
-   * de-DE locale is updated by Björn Kautler. Thanks!
    * Better appearance for narrow scrollbar in the tab bar.
    * Add ability to collapse/expand the tab bar by middle click on the splitter.
    * Expand the tab bar to feedback what's happen, when a tab has new title, in the "auto hide" mode.
    * Add secret preferences to disable expanding of the tab bar to feedback what's happen for each case: `extensions.treestyletab.tabbar.autoShow.feedback.opened`, `extensions.treestyletab.tabbar.autoShow.feedback.closed`, `extensions.treestyletab.tabbar.autoShow.feedback.moved`, `extensions.treestyletab.tabbar.autoShow.feedback.selected` and `extensions.treestyletab.tabbar.autoShow.feedback.titleChanged`.
    * When the tab bar is expanded for a feedback, the subject tab is now highlighted.
    * Add a new choice when a parent tab is closed: now you can replace the closed parent tab with a new group tab.
+   * de-DE locale is updated by Björn Kautler. Thanks!
+   * ru locale is updated by Infocatcher. Thanks!
  - 0.16.2016021201
    * Better compatibility with [Tab Badge](https://addons.mozilla.org/firefox/addon/tab-badge/) addon.
    * Never touch session history of remote tabs (on e10s activated). It raised exception and broke tree structure when a parent tab is closed and the next parent is a remote tab.
