@@ -3210,7 +3210,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (utils.getTreePref('autoAttach') &&
 			typeof this.readiedToAttachNewTab !== 'boolean') {
 			this.window.setTimeout((function() {
-				if (!tab.owner)
+				if (!tab.owner || tab != b._lastRelatedTab)
 					return;
 				log('onTabOpen: new child tab opened by browser.tabs.insertRelatedAfterCurrent=true');
 				var nextTab = this.findNextTabForNewChild(tab, tab.owner);
