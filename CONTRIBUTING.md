@@ -1,6 +1,6 @@
 # Tree Style Tab contribution guide
 
-If you are pllanning to open a new issue for a bug report or a feature request, please see this document before posting.
+If you are planning to open a new issue for a bug report or a feature request, please see this document before posting.
 
 ## Good, helpful bug reports
 
@@ -50,3 +50,5 @@ If you've fixed a problem you met by your hand, then please send a pull request 
 Translations also.
 Pull requests are easy to merge, than sending ZIP files.
 You'll do it without any local application - you can do it on the GitHub.
+For example, if you hope to fix an exsiting typo in a locale, you just have to click the pencil button (with a tooltip "Edit this file") for a language resource file.
+
