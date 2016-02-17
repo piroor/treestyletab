@@ -874,6 +874,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		this.getAllTabs(b).forEach(this.initTab, this);
 
+		this.allowSubtreeCollapseExpand = true; // reset attribute
+
 		this.onPrefChange('extensions.treestyletab.maxTreeLevel');
 		this.onPrefChange('extensions.treestyletab.tabbar.style');
 		this.onPrefChange('extensions.treestyletab.twisty.style');
