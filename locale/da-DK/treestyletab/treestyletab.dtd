@@ -19,7 +19,6 @@
 <!ENTITY config.enableSubtreeIndent "Indryk faner">
 <!ENTITY config.maxTreeLevel.before "op til">
 <!ENTITY config.maxTreeLevel.after "niveauer">
-<!ENTITY config.allowSubtreeCollapseExpand "Tillad sammenfold/udvid fanetræ">
 <!ENTITY config.tabbarSize.before-horizontal ":">
 <!ENTITY config.tabbarSize.after-horizontal  "px height">
 <!ENTITY config.tabbarSize.before-vertical   ":">

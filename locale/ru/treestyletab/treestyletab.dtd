@@ -19,7 +19,6 @@
 <!ENTITY config.enableSubtreeIndent         "Отступы вкладок">
 <!ENTITY config.maxTreeLevel.before "пока уровней меньше">
 <!ENTITY config.maxTreeLevel.after  "">
-<!ENTITY config.allowSubtreeCollapseExpand  "Разрешить сворачивать/разворачивать поддеревья вкладок">
 <!ENTITY config.tabbarSize.before-horizontal ":">
 <!ENTITY config.tabbarSize.after-horizontal  "пикселей в высоту">
 <!ENTITY config.tabbarSize.before-vertical   ":">

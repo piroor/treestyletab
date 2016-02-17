@@ -184,13 +184,6 @@ pref("extensions.treestyletab.tabbar.fixed.autoCancelOnDrop", true);
 pref("extensions.treestyletab.enableSubtreeIndent.allTabsPopup", true);
 
 /**
- * These prefs activate "collaable tree" feature for horizontal and
- * vertical tab bar.
- */
-pref("extensions.treestyletab.allowSubtreeCollapseExpand.horizontal", false);
-pref("extensions.treestyletab.allowSubtreeCollapseExpand.vertical",   true);
-
-/**
  * Activates "stacked tabs" in the horizontal tab bar.
  * It is very hard to know how many tabs are collapsed in a horizontal tab bar.
  * If "stacked tabs" is activated, collapsed tabs will be shown as a tab behind

@@ -223,12 +223,10 @@ function onChangeTabbarPosition()
 
 	var horizontalElements = [
 		'maxTreeLevel-horizontal',
-		'extensions.treestyletab.allowSubtreeCollapseExpand.horizontal-check',
 		'fixedTabbar-horizontal'
 	];
 	var verticalElements = [
 		'maxTreeLevel-vertical',
-		'extensions.treestyletab.allowSubtreeCollapseExpand.vertical-check',
 		'fixedTabbar-vertical'
 	];
 	if (pos == 'left' || pos == 'right') {

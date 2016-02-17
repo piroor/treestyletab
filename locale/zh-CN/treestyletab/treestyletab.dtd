@@ -19,7 +19,6 @@
 <!ENTITY config.enableSubtreeIndent         "缩进标签">
 <!ENTITY config.maxTreeLevel.before "最多">
 <!ENTITY config.maxTreeLevel.after  "层">
-<!ENTITY config.allowSubtreeCollapseExpand  "允许折叠/展开标签子树">
 <!ENTITY config.tabbarSize.before-horizontal ":">
 <!ENTITY config.tabbarSize.after-horizontal  "px height">
 <!ENTITY config.tabbarSize.before-vertical   ":">

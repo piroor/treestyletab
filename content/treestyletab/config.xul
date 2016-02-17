@@ -45,12 +45,6 @@
 		<preference id="extensions.treestyletab.maxTreeLevel.vertical"
 			name="extensions.treestyletab.maxTreeLevel.vertical"
 			type="int"/>
-		<preference id="extensions.treestyletab.allowSubtreeCollapseExpand.horizontal"
-			name="extensions.treestyletab.allowSubtreeCollapseExpand.horizontal"
-			type="bool"/>
-		<preference id="extensions.treestyletab.allowSubtreeCollapseExpand.vertical"
-			name="extensions.treestyletab.allowSubtreeCollapseExpand.vertical"
-			type="bool"/>
 		<preference id="extensions.treestyletab.tabbar.invertClosebox"
 			name="extensions.treestyletab.tabbar.invertClosebox"
 			type="bool"/>
@@ -160,14 +154,6 @@
 			<checkbox id="extensions.treestyletab.tabbar.narrowScrollbar-check"
 				preference="extensions.treestyletab.tabbar.narrowScrollbar"
 				label="&config.tabbar.narrowScrollbar;"/>
-		</hbox>
-		<hbox align="center">
-			<checkbox id="extensions.treestyletab.allowSubtreeCollapseExpand.horizontal-check"
-				preference="extensions.treestyletab.allowSubtreeCollapseExpand.horizontal"
-				label="&config.allowSubtreeCollapseExpand;"/>
-			<checkbox id="extensions.treestyletab.allowSubtreeCollapseExpand.vertical-check"
-				preference="extensions.treestyletab.allowSubtreeCollapseExpand.vertical"
-				label="&config.allowSubtreeCollapseExpand;"/>
 		</hbox>
 		<hbox id="maxTreeLevel-horizontal"
 			align="center">

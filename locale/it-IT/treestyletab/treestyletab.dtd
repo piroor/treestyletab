@@ -19,7 +19,6 @@
 <!ENTITY config.enableSubtreeIndent         "Indenta sottoschede">
 <!ENTITY config.maxTreeLevel.before "until">
 <!ENTITY config.maxTreeLevel.after  "level(s)">
-<!ENTITY config.allowSubtreeCollapseExpand  "Permetti di contrarre/espandere sottoalberi delle schede">
 <!ENTITY config.tabbarSize.before-horizontal ":">
 <!ENTITY config.tabbarSize.after-horizontal  "px height">
 <!ENTITY config.tabbarSize.before-vertical   ":">

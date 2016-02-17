@@ -19,7 +19,6 @@
 <!ENTITY config.enableSubtreeIndent "Odsazovat panely">
 <!ENTITY config.maxTreeLevel.before "až do">
 <!ENTITY config.maxTreeLevel.after  "úrovní">
-<!ENTITY config.allowSubtreeCollapseExpand  "Umožnit sbalení/rozbalení stromu panelů">
 <!ENTITY config.tabbarSize.before-horizontal ":">
 <!ENTITY config.tabbarSize.after-horizontal  "px height">
 <!ENTITY config.tabbarSize.before-vertical   ":">

@@ -19,7 +19,6 @@
 <!ENTITY config.enableSubtreeIndent "Gör indrag av flikar">
 <!ENTITY config.maxTreeLevel.before "t.o.m. den">
 <!ENTITY config.maxTreeLevel.after  "nivån">
-<!ENTITY config.allowSubtreeCollapseExpand  "Tillåt att flikträd kan minimeras/expanderas">
 <!ENTITY config.tabbarSize.before-horizontal ":">
 <!ENTITY config.tabbarSize.after-horizontal  "px height">
 <!ENTITY config.tabbarSize.before-vertical   ":">

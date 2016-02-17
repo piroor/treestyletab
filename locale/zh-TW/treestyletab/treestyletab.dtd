@@ -19,7 +19,6 @@
 <!ENTITY config.enableSubtreeIndent         "縮進分頁">
 <!ENTITY config.maxTreeLevel.before "（最多">
 <!ENTITY config.maxTreeLevel.after  "層）">
-<!ENTITY config.allowSubtreeCollapseExpand  "允許摺疊 / 展開樹狀子目錄">
 <!ENTITY config.tabbarSize.before-horizontal ":">
 <!ENTITY config.tabbarSize.after-horizontal  "px height">
 <!ENTITY config.tabbarSize.before-vertical   ":">
