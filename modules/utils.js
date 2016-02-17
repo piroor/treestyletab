@@ -84,6 +84,10 @@ var TreeStyleTabUtils = {
 	{
 		return prefs.getPref(TST_PREF_PREFIX + aPrefstring);
 	},
+	getDefaultTreePref : function TSTUtils_getTreePref(aPrefstring)
+	{
+		return prefs.getDefaultPref(TST_PREF_PREFIX + aPrefstring);
+	},
 
 	setTreePref : function TSTUtils_setTreePref(aPrefstring, aNewValue)
 	{
