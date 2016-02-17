@@ -21,6 +21,7 @@ Here is a list of typical questions I asked to existing reports:
    See also the next.
  * **Does the problem appear with a clean profile?**
    You can start Firefox with temporary clean profile by a command line `-profile`, like: `"C:\Program Filex (x86)\Mozilla Firefox\firefox.exe" -no-remote -profile "%Temp%\FirefoxTemporaryProfile"`
+   If the problem doesn't appear with a clean profile, please find complete reproduction steps out.
  * **Is the main topic single and clear?**
    Sometimes I got an issue including multiple topics, but such an issue is hard to be closed, then it often stays opened for long time and confuses me.
    If you have multiple topics, please report them as separate issues for each.
