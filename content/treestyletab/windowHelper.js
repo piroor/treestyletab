@@ -13,9 +13,9 @@ var TreeStyleTabWindowHelper = {
 	preInit : function TSTWH_preInit() 
 	{
 		gBrowserInit.__treestyletab___delayedStartup = gBrowserInit._delayedStartup;
-		gBrowserInit._delayedStartup = function(...args) {
+		gBrowserInit._delayedStartup = function(...aArgs) {
 			TreeStyleTabWindowHelper.runningDelayedStartup = true;
-			var retVal = gBrowserInit.__treestyletab___delayedStartup.apply(this, args);
+			var retVal = gBrowserInit.__treestyletab___delayedStartup.apply(this, aArgs);
 			TreeStyleTabWindowHelper.runningDelayedStartup = false;
 			return retVal;
 		};
