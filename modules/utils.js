@@ -240,6 +240,12 @@ var TreeStyleTabUtils = {
 					let disabledCollapseExpand = this.getTreePref('allowSubtreeCollapseExpand.' + orient) === false;
 					let disabledIndent = this.getTreePref('indent.' + orient) == 0 ||
 										this.getTreePref('indent.min.' + orient) == 0;
+
+					if (disabledCollapseExpand) {
+						this.setTreePref('autoCollapseExpandSubtreeOnAttach', false);
+						this.setTreePref('autoCollapseExpandSubtreeOnSelect', false);
+					}
+
 					let treeWasRevoked = disabledCollapseExpand || (disabledIndent && orient == 'vertical');
 					if (treeWasRevoked) {
 						Services.prompt.alert(this.browserWindow,
