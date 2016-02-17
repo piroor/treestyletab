@@ -12,7 +12,12 @@ There are some major requests which are reported multiple times but I marked the
 
 ### Full support for the horizontal tab bar or non-indented vertical tabs
 
-Basically this is designed to provide vertical indented, deeply nested tree of tabs. Other forms are just bonus, so there is only a few motivation and support for those forms.
+Basically this is designed to provide vertical indented, deeply nested tree of tabs. There is only limited support for non-tree mode.
+If you just require the vertical tab bar and you never use "tree of tabs", then please try other alternative addons:
+
+ * [Vertical Tabs](https://addons.mozilla.org/firefox/addon/vertical-tabs/)
+ * [Vertical Tabs (Simplified)](https://addons.mozilla.org/firefox/addon/vertical-tabs-simplified/)
+ * [Side Tabs](https://addons.mozilla.org/firefox/addon/side-tabs/)
 
 If you are a heavy user of such forms, bugs appearing only on those forms possibly won't fixed by me. Instead please fix it by your hand and send pull requests to me.
 
