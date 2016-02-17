@@ -19,7 +19,7 @@ If you just require the vertical tab bar and you never use "tree of tabs", then 
  * [Vertical Tabs (Simplified)](https://addons.mozilla.org/firefox/addon/vertical-tabs-simplified/)
  * [Side Tabs](https://addons.mozilla.org/firefox/addon/side-tabs/)
 
-If you are a heavy user of such forms, bugs appearing only on those forms possibly won't fixed by me. Instead please fix it by your hand and send pull requests to me.
+And, horizontal tab bar is just a bonus. If you are a heavy user of the horizontal tab bar, then bugs appearing only on it won't be fixed by me. Instead please fix it by your hand and send pull requests to me.
 
 ### High compatibility with [Tab Mix Plus](https://addons.mozilla.org/firefox/addon/tab-mix-plus/), especially its own session management feature
 
