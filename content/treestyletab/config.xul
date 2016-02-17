@@ -181,24 +181,12 @@
 		</hbox>
 		<hbox id="maxTreeLevel-vertical"
 			align="center">
-			<checkbox id="maxTreeLevel-checkbox-vertical"
-				preference="extensions.treestyletab.maxTreeLevel.vertical"
-				label="&config.enableSubtreeIndent;"
-				onsynctopreference="return onSyncMaxTreeLevelUIToPref('maxTreeLevel-checkbox-vertical');"
-				onsyncfrompreference="return onSyncMaxTreeLevelPrefToUI('maxTreeLevel-checkbox-vertical');"
-				sync-enabled-state-targets="
-					maxTreeLevel-textbox-vertical-before
-					maxTreeLevel-textbox-vertical
-					maxTreeLevel-textbox-vertical-after
-				"/>
 			<label id="maxTreeLevel-textbox-vertical-before"
 				control="maxTreeLevel-textbox-vertical"
-				value="&config.maxTreeLevel.before;"/>
+				value="&config.enableSubtreeIndent;&config.maxTreeLevel.before;"/>
 			<textbox id="maxTreeLevel-textbox-vertical"
 				type="number"
-				min="1" increment="1" style="width:4em;"
-				oninput="onSyncMaxTreeLevelUIToPref('maxTreeLevel-checkbox-vertical', true);"
-				onchange="onSyncMaxTreeLevelUIToPref('maxTreeLevel-checkbox-vertical', true);"/>
+				min="1" increment="1" style="width:4em;"/>
 			<label id="maxTreeLevel-textbox-vertical-after"
 				control="maxTreeLevel-textbox-vertical"
 				value="&config.maxTreeLevel.after;"/>
