@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * Tree of tabs are now always collapsable for both horizontal and vertical. Moreover, indentation of tabs also activated for the vertical tab bar always.
+     There is no way to revoke those tree features.
+     If you just require vertical tab bar without tree features, please try other alternative addons: [Vertical Tabs](https://addons.mozilla.org/firefox/addon/vertical-tabs/), [Vertical Tabs (Simplified)](https://addons.mozilla.org/firefox/addon/vertical-tabs-simplified/), [Side Tabs](https://addons.mozilla.org/firefox/addon/side-tabs/), or others.
  - 0.16.2016021602
    * Attach new tabs only actually opened with `relatedToCurrent`=`true` option (or referrer) to the current tab, as the default behavior for compatibility with other addons.
  - 0.16.2016021601

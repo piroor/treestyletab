@@ -1,6 +1,9 @@
 # 更新履歴
 
  - master/HEAD
+   * 縦横どちらの状態でもタブのツリーは常に折り畳み可能になり、縦置きタブバーではタブのインデント表示も常に有効にするようになりました。
+     これらの機能を無効化する設定はありません。
+     ツリー表示機能が不要で単に縦置きのタブバーのみを使用したい場合は、[Vertical Tabs](https://addons.mozilla.org/firefox/addon/vertical-tabs/), [Vertical Tabs (Simplified)](https://addons.mozilla.org/firefox/addon/vertical-tabs-simplified/), [Side Tabs](https://addons.mozilla.org/firefox/addon/side-tabs/)などの代替アドオンを使用して下さい。
  - 0.16.2016021602
    * 他のアドオンなどによってタブが開かれた際の既定の挙動として、より確実に`relatedToCurrent`=`true`オプション（またはリファラ）を伴って開かれたタブのみを現在のタブの子にするようにした
  - 0.16.2016021601
