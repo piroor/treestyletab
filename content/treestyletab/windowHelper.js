@@ -112,11 +112,11 @@ var TreeStyleTabWindowHelper = {
 		// Instead, I change the behavior of the method only at the
 		// startup process.
 		gBrowser.__treestyletab__swapBrowsersAndCloseOther = gBrowser.swapBrowsersAndCloseOther;
-		gBrowser.swapBrowsersAndCloseOther = function(...args) {
+		gBrowser.swapBrowsersAndCloseOther = function(aOurTab, aRemoteTab, ...aArgs) {
 			if (TreeStyleTabWindowHelper.runningDelayedStartup &&
-				TreeStyleTabService.tearOffSubtreeFromRemote(...args))
+				TreeStyleTabService.tearOffSubtreeFromRemote(aRemoteTab))
 				return;
-			return gBrowser.__treestyletab__swapBrowsersAndCloseOther.apply(this, args);
+			return gBrowser.__treestyletab__swapBrowsersAndCloseOther.apply(this, [aOurTab, aRemoteTab].concat(aArgs));
 		};
 	},
  

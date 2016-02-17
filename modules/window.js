@@ -1870,32 +1870,32 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 	},
 	_tabFocusAllowance : [],
  
-	tearOffSubtreeFromRemote : function TSTWindow_tearOffSubtreeFromRemote(ourTab, remoteTab)
+	tearOffSubtreeFromRemote : function TSTWindow_tearOffSubtreeFromRemote(aRemoteTab)
 	{
 		var w = this.window;
-		var remoteWindow  = remoteTab.ownerDocument.defaultView;
+		var remoteWindow  = aRemoteTab.ownerDocument.defaultView;
 		var remoteService = remoteWindow.TreeStyleTabService;
 		var remoteMultipleTabService = remoteWindow.MultipleTabService;
-		if (remoteService.hasChildTabs(remoteTab) ||
-			(remoteMultipleTabService && remoteMultipleTabService.isSelected(remoteTab))) {
-			let remoteBrowser = remoteService.getTabBrowserFromChild(remoteTab);
-			if (remoteBrowser.treeStyleTab.tabbarDNDObserver.isDraggingAllTabs(remoteTab)) {
+		if (remoteService.hasChildTabs(aRemoteTab) ||
+			(remoteMultipleTabService && remoteMultipleTabService.isSelected(aRemoteTab))) {
+			let remoteBrowser = remoteService.getTabBrowserFromChild(aRemoteTab);
+			if (remoteBrowser.treeStyleTab.tabbarDNDObserver.isDraggingAllTabs(aRemoteTab)) {
 				w.close();
 			}
 			else {
 				let actionInfo = {
-						action : remoteTab.__treestyletab__toBeDuplicated ? this.kACTION_DUPLICATE : this.kACTION_IMPORT
+						action : aRemoteTab.__treestyletab__toBeDuplicated ? this.kACTION_DUPLICATE : this.kACTION_IMPORT
 					};
 
 				let b = this.browser;
 				setTimeout((function() {
 					try {
 						var blankTab = b.selectedTab;
-						b.treeStyleTab.tabbarDNDObserver.performDrop(actionInfo, remoteTab);
+						b.treeStyleTab.tabbarDNDObserver.performDrop(actionInfo, aRemoteTab);
 						setTimeout((function() {
 							try {
 								b.removeTab(blankTab);
-								remoteTab = null;
+								aRemoteTab = null;
 								remoteBrowser = null;
 								remoteWindow = null
 								remoteService = null;
