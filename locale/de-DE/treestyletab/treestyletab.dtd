@@ -112,8 +112,7 @@
 <!ENTITY config.autoShow.accelKeyDown.delay.before "Nach">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "Millisekunden anzeigen">
 <!ENTITY config.autoShow.tabSwitch                 "Wenn Strg+Tab gedrückt wird um zwischen Tabs zu wechseln">
-<!ENTITY config.autoShow.feedback    "Something happen on tabs (new tab, closed tab, focus changing, title changing)">
-<!--ENTITY config.autoShow.feedback                  "Wenn Tabs geöffnet oder geschlossen werden"-->
+<!ENTITY config.autoShow.feedback                  "Wenn sich Tabs ändern (Tab geöffnet, Tab geschlossen, anderer Tab ausgewählt, Titel hat sich verändert)">
 <!ENTITY config.autoShow.feedback.delay.before     "Nach">
 <!ENTITY config.autoShow.feedback.delay.after      "Millisekunden wieder ausblenden">
 
@@ -122,39 +121,39 @@
 
 <!ENTITY config.autoCollapseExpandSubtreeOnAttach                    "Wenn ein neuer Zweig erscheint, andere Zweige automatisch zuklappen">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect                    "Wenn ein Tab ausgewählt wird, untergeordneten Zweig automatisch auf- und andere Zweige zuklappen">
-<!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "Nicht durch Schließen des aktiven Tabs auslösen">
+<!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "Nicht durch Schließen des aktiven Tab auslösen">
 <!ENTITY config.collapseExpandSubtree.dblclick                       "Bei Doppelklick auf Tab untergeordneten Zweig auf- oder zuklappen">
 <!ENTITY config.autoExpandSubtreeOnAppendChild                       "Zweig automatisch aufklappen, wenn ein Tab in den Zweig eingefügt wird">
 
 <!ENTITY config.closeParentBehavior.caption             "Wenn ein Tab geschlossen wird">
 <!ENTITY config.closeParentBehavior.close               "Untergeordnete Tabs auch schließen">
-<!ENTITY config.closeParentBehavior.promoteFirst        "Das geschlossene Tab durch das erste untergeordnete ersetzen">
-<!ENTITY config.closeParentBehavior.promoteAll          "Untergeordnete Tabs auf die Ebene des geschlossenen Tabs verschieben">
+<!ENTITY config.closeParentBehavior.promoteFirst        "Den geschlossenen Tab durch den ersten untergeordneten ersetzen">
+<!ENTITY config.closeParentBehavior.promoteAll          "Untergeordnete Tabs auf die Ebene des geschlossenen Tab verschieben">
 <!ENTITY config.closeParentBehavior.detach              "Untergeordnete Tabs ganz aus dem Zweig ausgliedern">
-<!ENTITY config.closeParentBehavior.replaceWithGroupTab "Das geschlossene Tab durch ein Pseudotab ersetzen">
-<!ENTITY config.closeRootBehavior.promoteFirst          "Das geschlossene Tab durch das erste untergeordnete ersetzen, wenn das geschlossene Tab kein übergeordnetes hatte">
+<!ENTITY config.closeParentBehavior.replaceWithGroupTab "Den geschlossenen Tab durch ein Pseudotab ersetzen">
+<!ENTITY config.closeRootBehavior.promoteFirst          "Den geschlossenen Tab durch den ersten untergeordneten ersetzen, wenn der geschlossene Tab keinen übergeordneten hatte">
 
 <!ENTITY config.focusMode "Bei Strg+Tab auch zu nicht sichtbaren Tabs wechseln">
 
 <!ENTITY config.insertNewChildAt.caption "Einfügeposition neuer untergeordneter Tabs">
-<!ENTITY config.insertNewChildAt.first   "Als erstes Tab einfügen">
-<!ENTITY config.insertNewChildAt.last    "Als letztes Tab anfügen">
+<!ENTITY config.insertNewChildAt.first   "Als ersten Tab einfügen">
+<!ENTITY config.insertNewChildAt.last    "Als letzten Tab anfügen">
 
 <!ENTITY config.undoCloseTabSet.caption  "Wenn ein Element eines Zweiges durch &quot;Tab wiederherstellen&quot; geöffnet wird">
 <!ENTITY config.undoCloseTabSet.ask      "Immer nachfragen">
 <!ENTITY config.undoCloseTabSet.set      "Den ganzen Zweig wiederherstellen">
-<!ENTITY config.undoCloseTabSet.separate "Nur das eine Tab wiederherstellen (Firefox Standard)">
+<!ENTITY config.undoCloseTabSet.separate "Nur den einen Tab wiederherstellen (Firefox Standard)">
 
 
 
 <!ENTITY config.tabs.advanced "Erweitert">
 
-<!ENTITY config.tooltip.includeChildren     "Titel der untergeordneten Tabs im Tooltip des Tabs anzeigen">
+<!ENTITY config.tooltip.includeChildren     "Titel der untergeordneten Tabs im Tooltip des Tab anzeigen">
 
 <!ENTITY config.bookmarkDroppedTabs.caption "Verhalten für Drag &amp; Drop von Tab-Zweigen auf den Lesezeichenbaum">
 <!ENTITY config.bookmarkDroppedTabs.ask     "Immer nachfragen">
 <!ENTITY config.bookmarkDroppedTabs.all     "Alle Tabs im Zweig als Lesezeichen speichern">
-<!ENTITY config.bookmarkDroppedTabs.parent  "Nur das gezogene Tab als Lesezeichen speichern">
+<!ENTITY config.bookmarkDroppedTabs.parent  "Nur dem gezogenen Tab als Lesezeichen speichern">
 
 
 
