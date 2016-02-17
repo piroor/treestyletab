@@ -32,6 +32,7 @@
           <em:contributor>Tetsuharu OHZEKI (code cleanup)</em:contributor>
           <em:contributor>mnoorenberghe (Firefox 36 support)</em:contributor>
           <em:contributor>Xidorn Quan (Firefox 40+ support)</em:contributor>
+          <em:contributor>J. Ryan Stinnett (bug fix around tearing off of multiple tabs)</em:contributor>
       </RDF:Description>
     </em:localized>
     <em:localized>

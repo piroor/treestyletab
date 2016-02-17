@@ -20,6 +20,7 @@ the Initial Developer. All Rights Reserved.
 Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
                 Alice0775 (fixes some compatibility problems)
                 Xidorn Quan <https://github.com/upsuper> (Firefox 40+ support)
+                J. Ryan Stinnett <https://github.com/jryans> (bug fix around tearing off of multiple tabs)
 
 Alternatively, the contents of these files may be used under the terms of
 either the GNU General Public License Version 2 or later (the "GPL"), or
