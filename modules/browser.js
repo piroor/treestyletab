@@ -6102,7 +6102,13 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 		var maxIndent = maxIndentBase * (isVertical ? 0.33 : 0.5 );
 
-		var indentMin = utils.getTreePref(isVertical ? 'indent.min.vertical' : 'indent.min.horizontal');
+		var indentMin;
+		{
+			let indentKey = isVertical ? 'indent.min.vertical' : 'indent.min.horizontal';
+			let defaultIndent = utils.getDefaultTreePref(indentKey);
+			let currentIndent = utils.getTreePref(indentKey);
+			indentMin = Math.max(defaultIndent, currentIndent);
+		}
 		var indentUnit = Math.max(Math.floor(maxIndent / nest), indentMin);
 		if (indent > maxIndent) {
 			this.indent = indentUnit;
