@@ -6180,9 +6180,12 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	{
 		var children = this.getChildTabs(aTab);
 
-		var hasSoundPlayingChild = children.some(function(aChild) {
+		var hasSoundPlayingChild = (
+			this.allowSubtreeCollapseExpand &&
+			children.some(function(aChild) {
 				return aChild.getAttribute('soundplaying') == 'true';
-			}, this);
+			}, this)
+		);
 		var reallySoundPlaying = this.getTabValue(aTab, this.kREALLY_SOUND_PLAYING) == 'true';
 		if (hasSoundPlayingChild ||
 			reallySoundPlaying)
@@ -6190,9 +6193,12 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		else
 			aTab.removeAttribute('soundplaying');
 
-		var allChildrenMuted = children.length > 0 && children.every(function(aChild) {
+		var allChildrenMuted = (
+			this.allowSubtreeCollapseExpand &&
+			children.length > 0 && children.every(function(aChild) {
 				return aChild.getAttribute('muted') == 'true';
-			}, this);
+			}, this)
+		);
 		if ((allChildrenMuted && !reallySoundPlaying) ||
 			this.getTabValue(aTab, this.kREALLY_MUTED) == 'true')
 			aTab.setAttribute('muted', true);
