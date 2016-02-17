@@ -69,7 +69,7 @@ XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabConstants',
   'resource://treestyletab-modules/constants.js', 'TreeStyleTabConstants');
 
 const TST_PREF_PREFIX = 'extensions.treestyletab.';
-const TST_PREF_VERSION = 12;
+const TST_PREF_VERSION = 13;
 
 
 var TreeStyleTabUtils = {
@@ -233,6 +233,20 @@ var TreeStyleTabUtils = {
 					let backupValue = prefs.getPref('browser.tabs.insertRelatedAfterCurrent.backup');
 					if (backupValue !== null)
 						prefs.setPref('browser.tabs.insertRelatedAfterCurrent', backupValue);
+				}
+			case 12:
+				{
+					let orient = /^(left|right)$/.test(this.getTreePref('tabbar.position')) ? 'vertical' : 'horizontal' ;
+					let disabledCollapseExpand = this.getTreePref('allowSubtreeCollapseExpand.' + orient) === false;
+					let disabledIndent = this.getTreePref('indent.' + orient) == 0 ||
+										this.getTreePref('indent.min.' + orient) == 0;
+					let treeWasRevoked = disabledCollapseExpand || (disabledIndent && orient == 'vertical');
+					if (treeWasRevoked) {
+						Services.prompt.alert(this.browserWindow,
+							this.treeBundle.getString('migration.treeNeverRevoked.title'),
+							this.treeBundle.getString('migration.treeNeverRevoked.text')
+						);
+					}
 				}
 			default:
 				for (let i = 0, maxi = orientalPrefs.length; i < maxi; i++)
