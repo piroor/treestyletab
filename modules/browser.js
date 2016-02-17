@@ -1881,11 +1881,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			delete this.timers['updateTabbarState'];
 		}).bind(this), 0);
 
-		var allowToCollapse = utils.getTreePref('allowSubtreeCollapseExpand.'+orient);
-		if (this.allowSubtreeCollapseExpand != allowToCollapse)
-			this.collapseExpandAllSubtree(false, false);
-		this.allowSubtreeCollapseExpand = allowToCollapse;
-
 		this.maxTreeLevel = utils.getTreePref('maxTreeLevel.'+orient);
 
 		this.setTabbrowserAttribute(this.kALLOW_STACK, this.canStackTabs ? 'true' : null);
@@ -1904,20 +1899,17 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var oldState = {
 				fixed         : this.fixed,
 				maxTreeLevel  : this.maxTreeLevel,
-				indented      : this.maxTreeLevel != 0,
-				canCollapse   : b.getAttribute(this.kALLOW_COLLAPSE) == 'true'
+				indented      : this.maxTreeLevel != 0
 			};
 		var newState = {
 				fixed         : utils.getTreePref('tabbar.fixed.'+orient),
 				maxTreeLevel  : utils.getTreePref('maxTreeLevel.'+orient),
-				indented      : utils.getTreePref('maxTreeLevel.'+orient) != 0,
-				canCollapse   : utils.getTreePref('allowSubtreeCollapseExpand.'+orient)
+				indented      : utils.getTreePref('maxTreeLevel.'+orient) != 0
 			};
 
 		if (oldState.fixed == newState.fixed &&
 			oldState.maxTreeLevel == newState.maxTreeLevel &&
-			oldState.indented == newState.indented &&
-			oldState.canCollapse == newState.canCollapse)
+			oldState.indented == newState.indented)
 			return false;
 
 		var data = {
@@ -1939,8 +1931,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var state = {
 				fixed         : this.fixed,
 				maxTreeLevel  : this.maxTreeLevel,
-				indented      : this.maxTreeLevel != 0,
-				canCollapse   : b.getAttribute(this.kALLOW_COLLAPSE) == 'true'
+				indented      : this.maxTreeLevel != 0
 			};
 
 		var data = {
@@ -2737,7 +2728,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 					return;
 				this.setTabbrowserAttribute(this.kFIXED+'-horizontal', value ? 'true' : null, b);
 			case 'extensions.treestyletab.maxTreeLevel.horizontal':
-			case 'extensions.treestyletab.allowSubtreeCollapseExpand.horizontal':
 				if (!this.isVertical)
 					this.updateTabbarState(true);
 				return;
@@ -2747,7 +2737,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 					return;
 				this.setTabbrowserAttribute(this.kFIXED+'-vertical', value ? 'true' : null, b);
 			case 'extensions.treestyletab.maxTreeLevel.vertical':
-			case 'extensions.treestyletab.allowSubtreeCollapseExpand.vertical':
 				if (this.isVertical)
 					this.updateTabbarState(true);
 				return;
@@ -5470,9 +5459,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		this._treeViewEnabled = newValue;
 		if (this._treeViewEnabled) {
-			if (this._lastAllowSubtreeCollapseExpand)
-				this.allowSubtreeCollapseExpand = true;
-			delete this._lastAllowSubtreeCollapseExpand;
+			this.allowSubtreeCollapseExpand = true;
 
 			let tabs = this.getAllTabs(this.browser);
 			for (let i = 0, maxi = tabs.length; i < maxi; i++)
@@ -5499,7 +5486,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				this.collapseExpandSubtree(tab, false, true);
 			}
 
-			this._lastAllowSubtreeCollapseExpand = this.allowSubtreeCollapseExpand;
 			this.allowSubtreeCollapseExpand = false;
 		}
 		return aValue;
