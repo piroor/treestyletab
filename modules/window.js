@@ -1475,10 +1475,10 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			aTabBrowser.treeStyleTab.nextOpenedTabToBeParent = false;
 		}
 		else {
-		if (where.indexOf('tab') === 0)
-			this.readyToOpenNewTabGroupNow(aTabBrowser);
-		else
-			this.readyToOpenOrphanTabNow(aTabBrowser);
+			if (where.indexOf('tab') === 0)
+				this.readyToOpenNewTabGroupNow(aTabBrowser);
+			else
+				this.readyToOpenOrphanTabNow(aTabBrowser);
 		}
 
 		return aEvent;
