@@ -673,15 +673,11 @@ window[chromehidden~="toolbar"]
 	-moz-transition: margin-left 0.2s ease-out,
 	                 margin-top 0.2s ease-out,
 	                 max-height 0.2s ease-out,
-	                 max-width 0.2s ease-out,
-	                 height 0.2s ease-out,
-	                 width 0.2s ease-out;
+	                 max-width 0.2s ease-out;
 	transition: margin-left 0.2s ease-out,
 	            margin-top 0.2s ease-out,
 	            max-height 0.2s ease-out,
-	            max-width 0.2s ease-out,
-	            height 0.2s ease-out,
-	            width 0.2s ease-out;
+	            max-width 0.2s ease-out;
 }
 
 #treestyletab-full-tree-tooltip > arrowscrollbox {
