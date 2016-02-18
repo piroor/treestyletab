@@ -611,35 +611,35 @@ var TreeStyleTabUtils = {
 				let scrollbox = aTabBrowser.tabContainer.mTabstrip._scrollbox;
 				let d = scrollbox.ownerDocument;
 
-		// We have to calculate the width of the scroll bar indirectly
-		// based on the width of the container and the scrollable contents,
-		// because the scrollbar is not accessible via public APIs.
+				// We have to calculate the width of the scroll bar indirectly
+				// based on the width of the container and the scrollable contents,
+				// because the scrollbar is not accessible via public APIs.
 				scrollbarSize = this.lastOriginalScrollbarSize;
-		if (scrollbarSize == 0) {
-			let nodes = d.getAnonymousNodes(scrollbox);
-			if (nodes) {
-				for (let i = 0, maxi = nodes.length; i < maxi; i++)
-				{
-					if (nodes[i].localName != 'box')
-						continue;
-					scrollbarSize = scrollbox.boxObject.width - nodes[i].boxObject.width;
-					break;
+				if (scrollbarSize == 0) {
+					let nodes = d.getAnonymousNodes(scrollbox);
+					if (nodes) {
+						for (let i = 0, maxi = nodes.length; i < maxi; i++)
+						{
+							if (nodes[i].localName != 'box')
+								continue;
+							scrollbarSize = scrollbox.boxObject.width - nodes[i].boxObject.width;
+							break;
+						}
+					}
 				}
 			}
-		}
-			}
 			if (!shouldResize && scrollbarSize > 0) {
-			let overWidth = size - scrollbarSize;
-			let leftMargin = Math.floor(overWidth / 2);
-			let rightMargin = overWidth - leftMargin;
-			rulesToSizeScrollbar = 'margin-left: '+leftMargin+'px;' +
-									'margin-right: '+rightMargin+'px;';
-		}
-		else {
-			rulesToSizeScrollbar = 'font-size: '+size+'px;';
-			rulesToSizeScrollbarContents = 'max-width: '+size+'px;' +
-											'min-width: '+size+'px;';
-		}
+				let overWidth = size - scrollbarSize;
+				let leftMargin = Math.floor(overWidth / 2);
+				let rightMargin = overWidth - leftMargin;
+				rulesToSizeScrollbar = 'margin-left: '+leftMargin+'px;' +
+										'margin-right: '+rightMargin+'px;';
+			}
+			else {
+				rulesToSizeScrollbar = 'font-size: '+size+'px;';
+				rulesToSizeScrollbarContents = 'max-width: '+size+'px;' +
+												'min-width: '+size+'px;';
+			}
 		}
 
 		const style = 'data:text/css,'+encodeURIComponent(
