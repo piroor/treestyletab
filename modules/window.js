@@ -1873,6 +1873,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
  
 	tearOffSubtreeFromRemote : function TSTWindow_tearOffSubtreeFromRemote(aRemoteTab)
 	{
+		log('tearOffSubtreeFromRemote');
 		var w = this.window;
 		var remoteWindow  = aRemoteTab.ownerDocument.defaultView;
 		var remoteService = remoteWindow.TreeStyleTabService;

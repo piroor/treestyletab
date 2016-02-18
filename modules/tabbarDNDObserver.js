@@ -619,6 +619,7 @@ catch(e) {
  
 	attachTabsOnDrop : function TabbarDND_attachTabsOnDrop(aTabs, aParent) 
 	{
+		log('attachTabsOnDrop: start');
 		var b  = aTabs[0].ownerDocument.defaultView.TreeStyleTabService.getTabBrowserFromChild(aTabs[0]);
 		var sv = b.treeStyleTab;
 
@@ -638,6 +639,7 @@ catch(e) {
  
 	detachTabsOnDrop : function TabbarDND_detachTabsOnDrop(aTabs) 
 	{
+		log('detachTabsOnDrop: start');
 		var b  = aTabs[0].ownerDocument.defaultView.TreeStyleTabService.getTabBrowserFromChild(aTabs[0]);
 		var sv = b.treeStyleTab;
 
