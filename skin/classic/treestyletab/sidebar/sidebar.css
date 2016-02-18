@@ -20,52 +20,10 @@
 .tabbrowser-strip[treestyletab-mode="vertical"] {
 	background: #d4dde5 !important;
 }
-/* these styles are required to cover narrow scrollbars. */
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .scrollbox-innerbox {
-	background: linear-gradient(to left,
-	                            rgba(212,221,229,1) 0%,
-	                            rgba(212,221,229,1) 10%,
-	                            rgba(212,221,229,0) 11%,
-	                            rgba(212,221,229,0) 100%) !important;
-}
-.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-scrollbar="true"]
-  .scrollbox-innerbox {
-	background: linear-gradient(to right,
-	                            rgba(212,221,229,1) 0%,
-	                            rgba(212,221,229,1) 10%,
-	                            rgba(212,221,229,0) 11%,
-	                            rgba(212,221,229,0) 100%) !important;
-}
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .scrollbox-innerbox {
-	background: linear-gradient(to left,
-	                            rgba(212,221,229,1) 0%,
-	                            rgba(212,221,229,1) 10%,
-	                            rgba(212,221,229,0) 11%,
-	                            rgba(212,221,229,0) 100%) !important;
-}
-.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-scrollbar="true"]
-  .scrollbox-innerbox {
-	background: linear-gradient(to right,
-	                            rgba(212,221,229,1) 0%,
-	                            rgba(212,221,229,1) 10%,
-	                            rgba(212,221,229,0) 11%,
-	                            rgba(212,221,229,0) 100%) !important;
-}
 
 #main-window:-moz-window-inactive
   .tabbrowser-strip:not([treestyletab-style~="aero"])[treestyletab-mode="vertical"] {
 	background: #e8e8e8 !important;
-}
-#main-window:-moz-window-inactive
-  .tabbrowser-tabs:not([treestyletab-style~="aero"])[treestyletab-mode="vertical"]
-  .scrollbox-innerbox {
-	background: linear-gradient(to right,
-	                            rgba(232,232,232,1) 0%,
-	                            rgba(232,232,232,1) 10%,
-	                            rgba(232,232,232,0) 11%,
-	                            rgba(232,232,232,0) 100%) !important;
 }
 /* autohide */
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-autohide][treestyletab-mode="vertical"]

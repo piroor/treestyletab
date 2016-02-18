@@ -12,7 +12,8 @@
 
 <!DOCTYPE overlay SYSTEM "chrome://treestyletab/locale/treestyletab.dtd">
 <overlay id="treestyletab-overlay"
-         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+         xmlns:svg="http://www.w3.org/2000/svg">
 
 <script src="res/tabsDragUtils.js" type="application/javascript"/>
 <script src="treestyletab.js" type="application/javascript"/>
@@ -148,6 +149,18 @@
 		onpopupshown="if ('setConsumeRollupEvent' in this.popupBoxObject) this.popupBoxObject.setConsumeRollupEvent(this.popupBoxObject.ROLLUP_NO_CONSUME || PopupBoxObject.ROLLUP_NO_CONSUME);"
 		onclick="this.hidePopup();"
 		onDOMMouseScroll="this.hidePopup()"/>
+
+	<svg:svg height="0">
+		<!--
+		This is used to clip overflowed boxes. For example, scrollbar
+		elements with "-moz-appearance" sometimes become larger than
+		the parent box. This mask clips such a overflowed contents.
+		-->
+		<svg:clipPath id="treestyletab-box-clip-path"
+			clipPathUnits="objectBoundingBox">
+			<svg:path d="m0,0 V1 H1 V-1 H-1 z"/>
+		</svg:clipPath>
+	</svg:svg>
 </popupset>
 
 </overlay>

@@ -40,23 +40,6 @@
 	border-width: 1px 0 0 !important;
 	padding: 0 !important;
 }
-/* these styles are required to cover narrow scrollbars. */
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .scrollbox-innerbox {
-	background: linear-gradient(to left,
-	                            rgba(121,121,121,1) 0%,
-	                            rgba(121,121,121,1) 10%,
-	                            rgba(121,121,121,0) 11%,
-	                            rgba(121,121,121,0) 100%) !important;
-}
-.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-scrollbar="true"]
-  .scrollbox-innerbox {
-	background: linear-gradient(to right,
-	                            rgba(121,121,121,1) 0%,
-	                            rgba(121,121,121,1) 10%,
-	                            rgba(121,121,121,0) 11%,
-	                            rgba(121,121,121,0) 100%) !important;
-}
 
 .tabbrowser-tabs[treestyletab-mode="vertical"] {
 	appearance: none !important;
@@ -122,25 +105,6 @@ tabbrowser[treestyletab-tabbar-position="right"]
   .tabbrowser-strip[treestyletab-mode="vertical"] {
 	background: #acacac !important;
 	border-color: #797979 !important;
-}
-/* these styles are required to cover narrow scrollbars. */
-:root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .scrollbox-innerbox {
-	background: linear-gradient(to left,
-	                            rgba(172,172,172,1) 0%,
-	                            rgba(172,172,172,1) 10%,
-	                            rgba(172,172,172,0) 11%,
-	                            rgba(172,172,172,0) 100%) !important;
-}
-:root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-scrollbar="true"]
-  .scrollbox-innerbox {
-	background: linear-gradient(to right,
-	                            rgba(172,172,172,1) 0%,
-	                            rgba(172,172,172,1) 10%,
-	                            rgba(172,172,172,0) 11%,
-	                            rgba(172,172,172,0) 100%) !important;
 }
 :root:-moz-window-inactive
   .tabbrowser-strip[treestyletab-mode="vertical"][treestyletab-style~="aero"],

@@ -601,15 +601,9 @@ var TreeStyleTabUtils = {
 			SSS.unregisterSheet(this.lastAgentSheetForNarrowScrollbar, SSS.AGENT_SHEET);
 
 		var size = this.getTreePref('tabbar.narrowScrollbar.width');
-		var rulesToSizeScrollbar = '';
-		var rulesToSizeScrollbarContents = '';
+		var negativeMarginRules = '';
 		{
-			let OS = Services.appinfo.OS;
-			let shouldResize = this.getTreePref('tabbar.narrowScrollbar.resize.'+OS);
-			if (shouldResize === null)
-				shouldResize = this.getTreePref('tabbar.narrowScrollbar.resize.default');
 			let scrollbarSize = 0;
-			if (!shouldResize) {
 				let scrollbox = aTabBrowser.tabContainer.mTabstrip._scrollbox;
 				let d = scrollbox.ownerDocument;
 
@@ -629,39 +623,44 @@ var TreeStyleTabUtils = {
 						}
 					}
 				}
-			}
-			if (!shouldResize && scrollbarSize > 0) {
+			if (scrollbarSize > 0) {
 				let overWidth = size - scrollbarSize;
 				let leftMargin = Math.floor(overWidth / 2);
 				let rightMargin = overWidth - leftMargin;
-				rulesToSizeScrollbar = 'margin-left: '+leftMargin+'px;' +
+				negativeMarginRules = 'margin-left: '+leftMargin+'px;' +
 										'margin-right: '+rightMargin+'px;';
-			}
-			else {
-				rulesToSizeScrollbarContents = 'max-width: '+size+'px;' +
-												'min-width: '+size+'px;';
 			}
 		}
 
 		const style = 'data:text/css,'+encodeURIComponent(
 			('@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");' +
 
-			(rulesToSizeScrollbarContents ?
-			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
-			'  .tabbrowser-arrowscrollbox' +
-			'  > scrollbox' +
-			'  > scrollbar[orient="vertical"],' +
-			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
-			'  .tabbrowser-arrowscrollbox' +
-			'  > scrollbox' +
-			'  > scrollbar[orient="vertical"] * {' + rulesToSizeScrollbarContents + '}' : '' ) +
-
 			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
 			'  .tabbrowser-arrowscrollbox' +
 			'  > scrollbox' +
 			'  > scrollbar[orient="vertical"] {' +
 			'  font-size: %SIZE%px;' +
-			  rulesToSizeScrollbar +
+			'  max-width: %SIZE%px;' +
+			'  min-width: %SIZE%px;' +
+			// This "clip-path" is required to clip overflowed elements.
+			// Elements with "-moz-appearance" can be larger than its given
+			// maximum size.
+			'  clip-path: url(#treestyletab-box-clip-path);' +
+			'}' +
+			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
+			'  .tabbrowser-arrowscrollbox' +
+			'  > scrollbox' +
+			'  > scrollbar[orient="vertical"] * {' +
+			'  font-size: %SIZE%px;' +
+			'  max-width: 100%;' +
+			'  min-width: %SIZE%px;' +
+			'}' +
+			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
+			'  .tabbrowser-arrowscrollbox' +
+			'  > scrollbox' +
+			'  > scrollbar[orient="vertical"] scrollbarbutton {' +
+			'  font-size: %SIZE%px;' +
+			  negativeMarginRules +
 			'}' +
 			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
 			'  .tabbrowser-arrowscrollbox' +
