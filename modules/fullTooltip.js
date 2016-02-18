@@ -317,8 +317,8 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 			// it becomes scrollable by arrowscrollbox.
 			let tree  = this.tree;
 			let style = this.container.style;
-			style.minWidth  = tree.clientWidth+'px';
-			style.minHeight = tree.clientHeight+'px';
+			style.width  = tree.clientWidth+'px';
+			style.height = tree.clientHeight+'px';
 			log(' => tree: ', {
 				width  : tree.clientWidth,
 				height : tree.clientHeight
