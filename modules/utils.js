@@ -600,13 +600,21 @@ var TreeStyleTabUtils = {
 			SSS.sheetRegistered(this.lastAgentSheetForNarrowScrollbar, SSS.AGENT_SHEET))
 			SSS.unregisterSheet(this.lastAgentSheetForNarrowScrollbar, SSS.AGENT_SHEET);
 
-		var scrollbox = aTabBrowser.tabContainer.mTabstrip._scrollbox;
-		var d = scrollbox.ownerDocument;
+		var size = this.getTreePref('tabbar.narrowScrollbar.width');
+		var rulesToSizeScrollbar;
+		var rulesToSizeScrollbarContents;
+		{
+			let OS = Services.appinfo.OS;
+			let shouldResize = this.getTreePref('tabbar.narrowScrollbar.resize.'+OS) || this.getTreePref('tabbar.narrowScrollbar.resize.default');
+			let scrollbarSize = 0;
+			if (!shouldResize) {
+				let scrollbox = aTabBrowser.tabContainer.mTabstrip._scrollbox;
+				let d = scrollbox.ownerDocument;
 
 		// We have to calculate the width of the scroll bar indirectly
 		// based on the width of the container and the scrollable contents,
 		// because the scrollbar is not accessible via public APIs.
-		var scrollbarSize = this.lastOriginalScrollbarSize;
+				scrollbarSize = this.lastOriginalScrollbarSize;
 		if (scrollbarSize == 0) {
 			let nodes = d.getAnonymousNodes(scrollbox);
 			if (nodes) {
@@ -619,11 +627,8 @@ var TreeStyleTabUtils = {
 				}
 			}
 		}
-
-		var size = this.getTreePref('tabbar.narrowScrollbar.width');
-		var rulesToSizeScrollbar;
-		var rulesToSizeScrollbarContents;
-		if (scrollbarSize) {
+			}
+			if (!shouldResize && scrollbarSize > 0) {
 			let overWidth = size - scrollbarSize;
 			let leftMargin = Math.floor(overWidth / 2);
 			let rightMargin = overWidth - leftMargin;
@@ -634,6 +639,7 @@ var TreeStyleTabUtils = {
 			rulesToSizeScrollbar = 'font-size: '+size+'px;';
 			rulesToSizeScrollbarContents = 'max-width: '+size+'px;' +
 											'min-width: '+size+'px;';
+		}
 		}
 
 		const style = 'data:text/css,'+encodeURIComponent(
