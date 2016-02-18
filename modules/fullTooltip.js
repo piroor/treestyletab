@@ -330,7 +330,7 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 	{
 		this.tabFullTooltip.removeAttribute('popup-shown');
 		this.stopListenTooltipEvents();
-//		this.clear();
+		this.clear();
 	},
 
 	onTooltipMouseMove : function FTM_onTooltipMouseMove(aEvent)
