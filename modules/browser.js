@@ -106,6 +106,8 @@ function TreeStyleTabBrowser(aWindowService, aTabBrowser)
 	this.subTreeMovingCount = 0;
 	this.subTreeChildrenMovingCount = 0;
 	this._treeViewEnabled = true;
+
+	this.nextOpenedTabToBeParent = false;
 }
  
 TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, { 
