@@ -86,6 +86,14 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 	{
 		return this.document.getElementById('treestyletab-full-tree-tooltip');
 	},
+	get container()
+	{
+		return this.tabFullTooltip.lastChild._scrollbox;
+	},
+	get tree()
+	{
+		return this.tabFullTooltip.lastChild.lastChild.lastChild;
+	},
 
 
 	init : function FTM_init(aOwner)
@@ -99,6 +107,7 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 		this.tabFullTooltip.addEventListener(PseudoTreeBuilder.kTAB_LINK_CLICK, this, true);
 		this.tabFullTooltip.addEventListener('popupshown', this, true);
 		this.tabFullTooltip.addEventListener('popuphidden', this, true);
+		this.tabFullTooltip.addEventListener('transitionend', this, true);
 	},
 
 	destroy : function FTM_destroy()
@@ -113,6 +122,7 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 		this.tabFullTooltip.removeEventListener(PseudoTreeBuilder.kTAB_LINK_CLICK, this, true);
 		this.tabFullTooltip.removeEventListener('popupshown', this, true);
 		this.tabFullTooltip.removeEventListener('popuphidden', this, true);
+		this.tabFullTooltip.removeEventListener('transitionend', this, true);
 
 		delete this.owner;
 	},
@@ -147,6 +157,27 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 
 			case 'mouseout':
 				return this.hideWithDelay();
+
+			case 'transitionend':
+				{
+					let tooltipBox = this.tabFullTooltip.boxObject;
+					let tree = this.tree;
+					log('transitionend: ', {
+						target   : aEvent.target,
+						property : aEvent.propertyName,
+						value    : this.window.getComputedStyle(aEvent.target, null)
+									.getPropertyValue(aEvent.propertyName),
+						tooltipSize : {
+							width  : tooltipBox.width,
+							height : tooltipBox.height
+						},
+						treeSize : {
+							width  : tree.clientWidth,
+							height : tree.clientHeight
+						}
+					});
+				}
+				return;
 
 			default:
 				return this.onTooltipEvent(aEvent);
@@ -220,10 +251,21 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 		log('onShown');
 		this.startListenTooltipEvents();
 
+		var tooltip = this.tabFullTooltip;
+		var tree = this.tree;
+		log(' => tooltip: ', {
+			x      : tooltip.boxObject.screenX,
+			y      : tooltip.boxObject.screenY,
+			width  : tooltip.boxObject.width,
+			height : tooltip.boxObject.height
+		});
+		log(' => tree: ', {
+			width  : tree.clientWidth,
+			height : tree.clientHeight
+		});
+
 		if (utils.getTreePref('tooltip.columnize')) {
-			let tooltip = this.tabFullTooltip;
 			let currentScreen = this.getCurrentScreen(tooltip.boxObject);
-			let tree = tooltip.lastChild.lastChild.lastChild;
 			PseudoTreeBuilder.columnizeTree(tree, {
 				width  : currentScreen.allowedWidth,
 				height : currentScreen.allowedHeight
@@ -251,23 +293,44 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 		var currentY = box.screenY;
 
 		var currentScreen = this.getCurrentScreen(box);
+		log(' => currentScreen: ', currentScreen);
 
 		var style = tooltip.style;
-		style.maxWidth = currentScreen.allowedWidth+'px';
+		style.maxWidth  = currentScreen.allowedWidth+'px';
 		style.maxHeight = currentScreen.allowedHeight+'px';
-		style.minWidth = 0;
+		style.minWidth  = 0;
 		style.minHeight = 0;
 		if (currentX + currentW + currentScreen.left >= currentScreen.allowedWidth)
 			style.marginLeft = (Math.max(currentScreen.left, currentScreen.allowedWidth - currentW) - this.window.screenX)+'px';
 		if (currentY + currentH + currentScreen.top >= currentScreen.allowedHeight)
 			style.marginTop = (Math.max(currentScreen.top, currentScreen.allowedHeight - currentH) - this.window.screenY)+'px';
+		log(' => tooltip: ', {
+			left   : style.marginLeft,
+			top    : style.marginTop,
+			width  : style.width,
+			height : style.height
+		});
+
+		{
+			// Let's maximize the container box enough to show the tree.
+			// If the tree is larger thant the tooltip,
+			// it becomes scrollable by arrowscrollbox.
+			let tree  = this.tree;
+			let style = this.container.style;
+			style.minWidth  = tree.clientWidth+'px';
+			style.minHeight = tree.clientHeight+'px';
+			log(' => tree: ', {
+				width  : tree.clientWidth,
+				height : tree.clientHeight
+			});
+		}
 	},
 
 	onHidden : function FTM_onHidden(aEvent) 
 	{
 		this.tabFullTooltip.removeAttribute('popup-shown');
 		this.stopListenTooltipEvents();
-		this.clear();
+//		this.clear();
 	},
 
 	onTooltipMouseMove : function FTM_onTooltipMouseMove(aEvent)
@@ -427,27 +490,37 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 		if (delay < 0)
 			return;
 
-		this._fullTooltipTimer = this.window.setTimeout(function(aSelf) {
-			var basePosition = aSelf.windowBasePosition;
+		this._fullTooltipTimer = this.window.setTimeout((function() {
+			log('setup:delayed');
+			var basePosition = this.windowBasePosition;
 			var box = aBaseTooltip.boxObject;
 			var x = box.screenX - basePosition.x;
 			var y = box.screenY - basePosition.y;
 			var w = box.width;
 			var h = box.height;
 			aBaseTooltip.hidePopup();
+			log(' => base tooltip: ', {
+				screenX : box.screenX,
+				screenY : box.screenY,
+				x       : x,
+				y       : y,
+				width   : w,
+				height  : h
+			});
+			log(' => basePosition: ', basePosition);
 
-			aSelf.fill(aTab, aExtraLabels);
+			this.fill(aTab, aExtraLabels);
 
-			var tooltip = aSelf.tabFullTooltip;
+			var tooltip = this.tabFullTooltip;
 			{
 				let style = tooltip.style;
 				style.marginLeft = x+'px';
-				style.marginTop = y+'px';
-				style.maxWidth = style.minWidth = w+'px';
+				style.marginTop  = y+'px';
+				style.maxWidth  = style.minWidth  = w+'px';
 				style.maxHeight = style.minHeight = h+'px';
 			}
 			tooltip.openPopupAtScreen(basePosition.x, basePosition.y, false);
-		}, Math.max(delay, 0), this);
+		}).bind(this), Math.max(delay, 0), this);
 	},
 
 	cancel : function FTM_destroyFullTooltip()
@@ -514,6 +587,11 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 		root.appendChild(container);
 
 		this.tabFullTooltip.appendChild(root);
+
+		log(' => tree size: ', {
+			width  : tree.clientWidth,
+			height : tree.clientHeight
+		});
 	},
 
 	clear : function FTM_clear()
