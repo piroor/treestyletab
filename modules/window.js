@@ -1453,6 +1453,8 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		if (where == 'current' && aTabBrowser.selectedTab.pinned)
 			where = 'tab';
 
+		var openAsFlatTabs = where === 'current';
+
 		// Loading home pages into the current tab will replaces the current
 		// tab with the first home page and others are opened as child tabs.
 		// To avoid such odd behavior, we always open multiple home pages as
@@ -1465,12 +1467,19 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			homePages.length > 1) {
 			where = 'tab';
 			aEvent = utils.wrapEventAsNewTabAction(aEvent);
+			openAsFlatTabs = true;
 		}
 
+		if (openAsFlatTabs) {
+			this.readyToOpenOrphanTabNow(aTabBrowser);
+			aTabBrowser.treeStyleTab.nextOpenedTabToBeParent = false;
+		}
+		else {
 		if (where.indexOf('tab') === 0)
 			this.readyToOpenNewTabGroupNow(aTabBrowser);
 		else
 			this.readyToOpenOrphanTabNow(aTabBrowser);
+		}
 
 		return aEvent;
 	},
