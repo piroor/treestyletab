@@ -660,7 +660,7 @@ var TreeStyleTabUtils = {
 			'  .tabbrowser-arrowscrollbox' +
 			'  > scrollbox' +
 			'  > scrollbar[orient="vertical"] {' +
-			  'font-size: %SIZE%px;' +
+			'  font-size: %SIZE%px;' +
 			  rulesToSizeScrollbar +
 			'}' +
 			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
