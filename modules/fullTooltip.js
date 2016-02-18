@@ -50,6 +50,13 @@ XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-module
 XPCOMUtils.defineLazyServiceGetter(this, 'ScreenManager',
   '@mozilla.org/gfx/screenmanager;1', 'nsIScreenManager');
 
+function log(...aArgs) {
+	utils.log.apply(utils, ['fullTooltip'].concat(aArgs));
+}
+function logWithStackTrace(...aArgs) {
+	utils.logWithStackTrace.apply(utils, ['fullTooltip'].concat(aArgs));
+}
+
 function FullTooltipManager(aOwner)
 {
 	this.init(aOwner);
@@ -210,6 +217,7 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 
 	onShown : function FTM_onShown(aEvent) 
 	{
+		log('onShown');
 		this.startListenTooltipEvents();
 
 		if (utils.getTreePref('tooltip.columnize')) {
@@ -228,6 +236,7 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 	},
 	resizeTooltip : function FTM_resizeTooltip() 
 	{
+		log('resizeTooltip');
 		var tooltip = this.tabFullTooltip;
 		tooltip.setAttribute('popup-shown', true);
 
@@ -308,6 +317,7 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 
 	handleDefaultTooltip : function FTM_handleDefaultTooltip(aEvent) 
 	{
+		log('handleDefaultTooltip');
 		var tab = this.getTabFromChild(this.document.tooltipNode);
 		if (!tab || tab.localName != 'tab')
 			return;
@@ -410,6 +420,7 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 
 	setup : function FTM_setup(aBaseTooltip, aTab, aExtraLabels) 
 	{
+		log('setup');
 		this.cancel();
 
 		var delay = utils.getTreePref('tooltip.fullTooltipDelay');
@@ -474,9 +485,9 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 
 	fill : function FTM_fill(aTab, aExtraLabels)
 	{
+		log('fill');
 		this.clear();
 
-		var tree = PseudoTreeBuilder.build(aTab);
 		var root = this.document.createElement('arrowscrollbox');
 		var orient = utils.getTreePref('tooltip.columnize') ? 'horizontal' : 'vertical' ;
 		root.setAttribute('orient', orient);
@@ -498,6 +509,7 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 			}
 		}
 
+		var tree = PseudoTreeBuilder.build(aTab);
 		container.insertBefore(tree, container.firstChild && container.firstChild.nextSibling);
 		root.appendChild(container);
 
