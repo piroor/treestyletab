@@ -528,12 +528,14 @@ catch(e) {
 					draggedWholeTree.push(tab);
 			}
 		}
+		log(' => draggedTabs: ', draggedTabs);
 
 		var selectedTabs = draggedTabs.filter(function(aTab) {
 				return aTab.getAttribute('multiselected') == 'true';
 			});
 		if (draggedWholeTree.length != selectedTabs.length &&
 			selectedTabs.length) {
+			log(' => partially dragged');
 			draggedTabs = draggedRoots = selectedTabs;
 			if (aInfo.action & sv.kACTIONS_FOR_SOURCE)
 				sourceService.detachTabs(selectedTabs);
