@@ -502,10 +502,10 @@ var TreeStyleTabWindowHelper = {
 		b.__treestyletab__loadTabs = b.loadTabs;
 		b.loadTabs = function(aURIs, aLoadInBackground, aReplace, ...aArgs) {
 			if (!TreeStyleTabWindowHelper.runningDelayedStartup) { // don't open home tabs as a tree!
-			if (aReplace)
-				this.treeStyleTab.readyToOpenChildTab(this.selectedTab, true);
-			else if (typeof this.treeStyleTab.nextOpenedTabToBeParent == 'undefined')
-				this.treeStyleTab.nextOpenedTabToBeParent = true;
+				if (aReplace)
+					this.treeStyleTab.readyToOpenChildTab(this.selectedTab, true);
+				else if (typeof this.treeStyleTab.nextOpenedTabToBeParent == 'undefined')
+					this.treeStyleTab.nextOpenedTabToBeParent = true;
 			}
 
 			var result;
