@@ -571,10 +571,25 @@ catch(e) {
 
 		var treeStructure = utils.getTreeStructureFromTabs(draggedTabs);
 
-		var newTabs = sv.moveTabsInternal(draggedTabs, {
+		log(' => moving dragged tabs');
+		var newTabs;
+		var replacedGroupTabs = sourceService.doAndGetNewTabs((function() {
+			newTabs = sv.moveTabsInternal(draggedTabs, {
 				duplicate    : aInfo.action & sv.kACTION_DUPLICATE,
 				insertBefore : aInfo.insertBefore
 			});
+		}).bind(this));
+
+		log(' => opened group tabs: ', replacedGroupTabs);
+		sourceWindow.setTimeout((function() {
+			log('closing needless group tabs');
+			replacedGroupTabs.reverse().forEach(function(aTab) {
+				log(' check: ', aTab.label+'('+aTab._tPos+') '+sourceService.getLoadingURI(aTab));
+				if (sourceService.isGroupTab(aTab) &&
+					!sourceService.hasChildTabs(aTab))
+					sourceBrowser.removeTab(aTab);
+			}, this);
+		}).bind(this), 0);
 
 		if (newTabs.length && aInfo.action & sv.kACTION_ATTACH) {
 			log('   => attach (last)');
