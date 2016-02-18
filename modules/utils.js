@@ -605,7 +605,9 @@ var TreeStyleTabUtils = {
 		var rulesToSizeScrollbarContents = '';
 		{
 			let OS = Services.appinfo.OS;
-			let shouldResize = this.getTreePref('tabbar.narrowScrollbar.resize.'+OS) || this.getTreePref('tabbar.narrowScrollbar.resize.default');
+			let shouldResize = this.getTreePref('tabbar.narrowScrollbar.resize.'+OS);
+			if (shouldResize === null)
+				shouldResize = this.getTreePref('tabbar.narrowScrollbar.resize.default');
 			let scrollbarSize = 0;
 			if (!shouldResize) {
 				let scrollbox = aTabBrowser.tabContainer.mTabstrip._scrollbox;
