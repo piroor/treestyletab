@@ -725,6 +725,34 @@ var TreeStyleTabUtils = {
 	},
 
 
+
+	isMac : Cc['@mozilla.org/xre/app-info;1']
+			.getService(Ci.nsIXULAppInfo)
+			.QueryInterface(Ci.nsIXULRuntime).OS == 'Darwin',
+
+	wrapEventAsNewTabAction : function(aOriginalEvent, aParams)
+	{
+		var ctrlKey = !this.isMac;
+		var metaKey = this.isMac;
+		return new Proxy(aOriginalEvent, {
+			get: function(aTarget, aName) {
+				switch (aName)
+				{
+					case 'ctrlKey':
+						return ctrlKey;
+					case 'metaKey':
+						return metaKey;
+					default:
+						var object = aTarget[aName];
+						if (typeof object == 'function')
+							return object.bind(aTarget);
+						return object;
+				}
+			}
+		});
+	},
+
+
 /* Pref Listener */ 
 	domains : [ 
 		'extensions.treestyletab.'

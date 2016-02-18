@@ -268,7 +268,7 @@ var TreeStyleTabWindowHelper = {
 
 		window.__treestyletab__BrowserGoHome = window.BrowserGoHome;
 		window.BrowserGoHome = function(aEvent) {
-			TreeStyleTabService.onBeforeGoHome(aEvent, gBrowser);
+			aEvent = TreeStyleTabService.onBeforeGoHome(aEvent, gBrowser);
 			return window.__treestyletab__BrowserGoHome.call(this, aEvent);
 		};
 

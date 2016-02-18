@@ -1447,16 +1447,32 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 	onBeforeGoHome : function TSTWindow_onBeforeGoHome(aEvent, aTabBrowser) 
 	{
 		if (!aEvent || aEvent.button === 2 || !aTabBrowser)
-			return;
+			return aEvent;
 
 		var where = this.window.whereToOpenLink(aEvent, false, true);
 		if (where == 'current' && aTabBrowser.selectedTab.pinned)
 			where = 'tab';
 
+		// Loading home pages into the current tab will replaces the current
+		// tab with the first home page and others are opened as child tabs.
+		// To avoid such odd behavior, we always open multiple home pages as
+		// a new group.
+		// See also: https://github.com/piroor/treestyletab/issues/1063
+		var homePages = this.window.gHomeButton.getHomePage().split('|').filter(function(aURI) {
+				return aURI;
+			});
+		if (where.indexOf('tab') !== 0 &&
+			homePages.length > 1) {
+			where = 'tab';
+			aEvent = utils.wrapEventAsNewTabAction(aEvent);
+		}
+
 		if (where.indexOf('tab') === 0)
 			this.readyToOpenNewTabGroupNow(aTabBrowser);
 		else
 			this.readyToOpenOrphanTabNow(aTabBrowser);
+
+		return aEvent;
 	},
  
 	onBeforeViewMedia : function TSTWindow_onBeforeViewMedia(aEvent, aOwner) 
