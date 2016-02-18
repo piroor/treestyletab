@@ -601,8 +601,8 @@ var TreeStyleTabUtils = {
 			SSS.unregisterSheet(this.lastAgentSheetForNarrowScrollbar, SSS.AGENT_SHEET);
 
 		var size = this.getTreePref('tabbar.narrowScrollbar.width');
-		var rulesToSizeScrollbar;
-		var rulesToSizeScrollbarContents;
+		var rulesToSizeScrollbar = '';
+		var rulesToSizeScrollbarContents = '';
 		{
 			let OS = Services.appinfo.OS;
 			let shouldResize = this.getTreePref('tabbar.narrowScrollbar.resize.'+OS) || this.getTreePref('tabbar.narrowScrollbar.resize.default');
@@ -636,7 +636,6 @@ var TreeStyleTabUtils = {
 										'margin-right: '+rightMargin+'px;';
 			}
 			else {
-				rulesToSizeScrollbar = 'font-size: '+size+'px;';
 				rulesToSizeScrollbarContents = 'max-width: '+size+'px;' +
 												'min-width: '+size+'px;';
 			}
@@ -658,8 +657,10 @@ var TreeStyleTabUtils = {
 			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
 			'  .tabbrowser-arrowscrollbox' +
 			'  > scrollbox' +
-			'  > scrollbar[orient="vertical"] {' + rulesToSizeScrollbar + '}' +
-
+			'  > scrollbar[orient="vertical"] {' +
+			  'font-size: %SIZE%px;' +
+			  rulesToSizeScrollbar +
+			'}' +
 			'tabs.tabbrowser-tabs[%MODE%="vertical"][%NARROW%="true"]' +
 			'  .tabbrowser-arrowscrollbox' +
 			'  > scrollbox' +
