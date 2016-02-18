@@ -547,20 +547,24 @@ catch(e) {
 		}
 
 		if (aInfo.action & sv.kACTIONS_FOR_SOURCE) {
+			log(' => action for source tabs');
 			if (aInfo.action & sv.kACTION_PART) {
+				log('   => detach');
 				this.detachTabsOnDrop(draggedRoots);
 			}
 			else if (aInfo.action & sv.kACTION_ATTACH) {
+				log('   => attach');
 				this.attachTabsOnDrop(draggedRoots, aInfo.parent);
 			}
-			// otherwise, just moved.
+			else {
+				log('   => just moved');
+			}
 
 			if ( // if this move will cause no change...
 				sourceBrowser == targetBrowser &&
 				sourceService.getNextVisibleTab(draggedTabs[draggedTabs.length-1]) == aInfo.insertBefore
 				) {
-				log(' => no change');
-				// then, do nothing
+				log(' => no change: do nothing');
 				return true;
 			}
 		}
@@ -572,14 +576,17 @@ catch(e) {
 				insertBefore : aInfo.insertBefore
 			});
 
-		if (newTabs.length && aInfo.action & sv.kACTION_ATTACH)
+		if (newTabs.length && aInfo.action & sv.kACTION_ATTACH) {
+			log('   => attach (last)');
 			this.attachTabsOnDrop(
 				newTabs.filter(function(aTab, aIndex) {
 					return treeStructure[aIndex] == -1;
 				}),
 				aInfo.parent
 			);
+		}
 
+		log(' => finished');
 		return true;
 	},
 	
