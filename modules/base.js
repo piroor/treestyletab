@@ -2065,15 +2065,24 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
  
 	isGroupTab : function TSTBase_isGroupTab(aTab, aLazyCheck) 
 	{
-		return aTab.linkedBrowser.currentURI.spec.indexOf('about:treestyletab-group') == 0;
+		return this.getLoadingURI(aTab).indexOf('about:treestyletab-group') == 0;
 	},
  
 	isTemporaryGroupTab : function TSTBase_isTemporaryGroupTab(aTab) 
 	{
 		return (
 			this.isGroupTab(aTab) &&
-			/.*[\?&;]temporary=(?:1|yes|true)/i.test(aTab.linkedBrowser.currentURI.spec)
+			/.*[\?&;]temporary=(?:1|yes|true)/i.test(this.getLoadingURI(aTab))
 		);
+	},
+ 
+	getLoadingURI : function TSTBase_getLoadingURI(aTab)
+	{
+		var uri = aTab.linkedBrowser.currentURI;
+		if (uri.spec == 'about:blank' &&
+			aTab.linkedBrowser.userTypedValue)
+			return aTab.linkedBrowser.userTypedValue;
+		return uri.spec;
 	},
  
 	get pinnedTabsCount() 
