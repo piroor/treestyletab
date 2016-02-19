@@ -572,35 +572,6 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 		var tooltip = this.tabFullTooltip;
 		tooltip.setAttribute('popup-shown', true);
 
-		var w = {},
-			h = {};
-		var box = tooltip.boxObject;
-		var scrollBoxObject = tooltip.firstChild.scrollBoxObject;
-		scrollBoxObject.getScrolledSize(w, h);
-		var currentW = box.width - scrollBoxObject.width + w.value;
-		var currentH = box.height - scrollBoxObject.height + h.value;
-		var currentX = box.screenX;
-		var currentY = box.screenY;
-
-		var currentScreen = this.getCurrentScreen(box);
-		log(' => currentScreen: ', currentScreen);
-
-		var style = tooltip.style;
-		style.maxWidth  = currentScreen.allowedWidth+'px';
-		style.maxHeight = currentScreen.allowedHeight+'px';
-		style.minWidth  = 0;
-		style.minHeight = 0;
-		if (currentX + currentW + currentScreen.left >= currentScreen.allowedWidth)
-			style.marginLeft = (Math.max(currentScreen.left, currentScreen.allowedWidth - currentW) - this.window.screenX)+'px';
-		if (currentY + currentH + currentScreen.top >= currentScreen.allowedHeight)
-			style.marginTop = (Math.max(currentScreen.top, currentScreen.allowedHeight - currentH) - this.window.screenY)+'px';
-		log(' => expanded dimensions: ', {
-			left      : style.marginLeft,
-			top       : style.marginTop,
-			maxWidth  : style.maxWidth,
-			maxHeight : style.maxHeight
-		});
-
 		{
 			// Let's maximize the container box enough to show the tree.
 			// If the tree is larger thant the tooltip,
@@ -614,5 +585,51 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 				height : tree.clientHeight
 			});
 		}
+
+		var w = {},
+			h = {};
+		var box = tooltip.boxObject;
+		var scrollBoxObject = tooltip.lastChild.scrollBoxObject;
+		scrollBoxObject.getScrolledSize(w, h);
+		var basePosition = this.windowBasePosition;
+		var currentW = box.width - scrollBoxObject.width + w.value;
+		var currentH = box.height - scrollBoxObject.height + h.value;
+		var currentX = box.screenX - basePosition.x;
+		var currentY = box.screenY - basePosition.y;
+
+		var currentScreen = this.getCurrentScreen(box);
+		log(' => currentScreen: ', currentScreen);
+		log(' => current dimensions: ', {
+			x      : currentX,
+			y      : currentY,
+			width  : currentW,
+			height : currentH
+		});
+
+		var style = tooltip.style;
+		style.maxWidth  = currentScreen.allowedWidth+'px';
+		style.maxHeight = currentScreen.allowedHeight+'px';
+		style.minWidth  = 0;
+		style.minHeight = 0;
+		var tooltipLeftEdge = currentX + currentScreen.left;
+		var tooltipTopEdge = currentY + currentScreen.top;
+		log(' => checking positions: ', {
+			tooltipLeftEdge : tooltipLeftEdge,
+			tooltipTopEdge  : tooltipTopEdge
+		});
+
+		var updatedX = currentX;
+		var updatedY = currentY;
+		if (tooltipLeftEdge >= currentScreen.allowedWidth)
+			updatedX = (Math.max(currentScreen.left, currentScreen.allowedWidth - currentW) - basePosition.x)+'px';
+		if (tooltipTopEdge >= currentScreen.allowedHeight)
+			updatedY = (Math.max(currentScreen.top, currentScreen.allowedHeight - currentH) - basePosition.y)+'px';
+
+		style.marginLeft = updatedX;
+		style.marginTop  = updatedY;
+		log(' => expanded dimensions: ', {
+			x : updatedX,
+			y : updatedY
+		});
 	}
 });
