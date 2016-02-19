@@ -579,11 +579,6 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 				width  : tree.clientWidth,
 				height : tree.clientHeight
 			});
-
-			let columnCount = PseudoTreeBuilder.getActualColumnCount(tree);
-			tree.columnCount = tree.style.columnCount =
-				tree.style.MozColumnCount = columnCount;
-			log(' => final column count: ', columnCount);
 		}
 
 		var w = {},

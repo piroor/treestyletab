@@ -166,6 +166,12 @@ var PseudoTreeBuilder = {
 			style.columnWidth = style.MozColumnWidth = aTree.columnWidth+'px';
 			style.columnGap = style.MozColumnGap = '0';
 			style.columnFill = style.MozColumnFill = 'auto';
+
+			aTree.ownerDocument.defaultView.setTimeout((function() {
+				let columnCount = this.getActualColumnCount(aTree);
+				aTree.columnCount = style.columnCount =
+					style.MozColumnCount = columnCount;
+			}).bind(this), 0);
 		}
 		else {
 			aTree.columnCount = 1;
