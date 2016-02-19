@@ -432,14 +432,22 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 
 			var tooltip = this.tabFullTooltip;
 			{
+				this.setTooltipPosition(x, y);
 				let style = tooltip.style;
-				style.marginLeft = x+'px';
-				style.marginTop  = y+'px';
 				style.maxWidth  = style.minWidth  = w+'px';
 				style.maxHeight = style.minHeight = h+'px';
 			}
 			tooltip.openPopupAtScreen(basePosition.x, basePosition.y, false);
 		}).bind(this), Math.max(delay, 0), this);
+	},
+	setTooltipPosition : function FTM_setTooltipPosition(aX, aY, aScreen)
+	{
+		var tooltip = this.tabFullTooltip;
+		var style = tooltip.style;
+		var box   = tooltip.boxObject;
+		var aScreen = aScreen || this.getCurrentScreen(box);
+		style.marginLeft = aX+'px';
+		style.marginTop  = aY+'px';
 	},
 
 	cancel : function FTM_cancel()
@@ -622,8 +630,7 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 		if (tooltipTopEdge >= currentScreen.allowedHeight)
 			updatedY = (Math.max(currentScreen.top, currentScreen.allowedHeight - currentH) - basePosition.y)+'px';
 
-		style.marginLeft = updatedX;
-		style.marginTop  = updatedY;
+		this.setTooltipPosition(updatedX, updatedY, currentScreen);
 		log(' => expanded dimensions: ', {
 			x : updatedX,
 			y : updatedY
