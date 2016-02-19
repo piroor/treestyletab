@@ -227,7 +227,9 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 				return this.onExpanded(aEvent);
 
 			default:
-				return this.onTooltipEvent(aEvent);
+				if (this.changingPropertiesCount === 0)
+					this.onTooltipEvent(aEvent);
+				return;
 		}
 	},
 
