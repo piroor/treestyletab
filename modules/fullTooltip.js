@@ -209,41 +209,22 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 				return this.onHidden(aEvent);
 
 			case 'mousemove':
-				if (!this.tooltipExpanding)
+				if (this.changingPropertiesCount === 0)
 					this.onTooltipMouseMove(aEvent);
 				return;
 
 			case 'mouseover':
-				if (!this.tooltipExpanding)
+				if (this.changingPropertiesCount === 0)
 					this.cancelDelayedHide();
 				return;
 
 			case 'mouseout':
-				if (!this.tooltipExpanding)
+				if (this.changingPropertiesCount === 0)
 					this.hideWithDelay();
 				return;
 
 			case 'transitionend':
-				this.tooltipExpanding = false;
-				{
-					let tooltipBox = this.tabFullTooltip.boxObject;
-					let tree = this.tree;
-					log('transitionend: ', {
-						target   : aEvent.target,
-						property : aEvent.propertyName,
-						value    : this.window.getComputedStyle(aEvent.target, null)
-									.getPropertyValue(aEvent.propertyName),
-						tooltipSize : {
-							width  : tooltipBox.width,
-							height : tooltipBox.height
-						},
-						treeSize : {
-							width  : tree.clientWidth,
-							height : tree.clientHeight
-						}
-					});
-				}
-				return;
+				return this.onExpanded(aEvent);
 
 			default:
 				return this.onTooltipEvent(aEvent);
@@ -474,7 +455,7 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 		log('hide');
 		this.cancelDelayedHide();
 		this.tabFullTooltip.hidePopup();
-		this.tooltipExpanding = false;
+		this.changingPropertiesCount = 0;
 	},
 
 
@@ -581,7 +562,7 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 	expandTooltipInternal : function FTM_expandTooltipInternal()
 	{
 		log('expandTooltipInternal');
-		this.tooltipExpanding = true;
+		this.changingPropertiesCount = 2;
 
 		var tooltip = this.tabFullTooltip;
 		tooltip.setAttribute('popup-shown', true);
@@ -645,5 +626,28 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 			x : updatedX,
 			y : updatedY
 		});
+	},
+	onExpanded : function FTM_onExpanded(aEvent)
+	{
+		let tooltipBox = this.tabFullTooltip.boxObject;
+		let tree = this.tree;
+		log('transitionend: ', {
+			target   : aEvent.target,
+			property : aEvent.propertyName,
+			value    : this.window.getComputedStyle(aEvent.target, null)
+						.getPropertyValue(aEvent.propertyName),
+			tooltipSize : {
+				width  : tooltipBox.width,
+				height : tooltipBox.height
+			},
+			treeSize : {
+				width  : tree.clientWidth,
+				height : tree.clientHeight
+			}
+		});
+
+		if (this.changingPropertiesCount > 0 &&
+			/width|height/.test(aEvent.propertyName))
+			this.changingPropertiesCount--;
 	}
 });
