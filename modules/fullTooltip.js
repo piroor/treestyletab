@@ -418,13 +418,15 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 
 		this._fullTooltipTimer = this.window.setTimeout((function() {
 			log('setup:delayed');
+
 			var basePosition = this.windowBasePosition;
+			log(' => window position: ', basePosition);
+
 			var box = aBaseTooltip.boxObject;
 			var x = box.screenX - basePosition.x;
 			var y = box.screenY - basePosition.y;
 			var w = box.width;
 			var h = box.height;
-			aBaseTooltip.hidePopup();
 			log(' => base tooltip: ', {
 				screenX : box.screenX,
 				screenY : box.screenY,
@@ -433,7 +435,8 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 				width   : w,
 				height  : h
 			});
-			log(' => basePosition: ', basePosition);
+
+			aBaseTooltip.hidePopup();
 
 			this.fill(aTab, aExtraLabels);
 
@@ -534,12 +537,18 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 		log('expandTooltip');
 		var tooltip = this.tabFullTooltip;
 		var tree = this.tree;
-		log(' => tooltip: ', {
-			x      : tooltip.boxObject.screenX,
-			y      : tooltip.boxObject.screenY,
-			width  : tooltip.boxObject.width,
-			height : tooltip.boxObject.height
-		});
+		{
+			let basePosition = this.windowBasePosition;
+			let tooltipBox = tooltip.boxObject;
+			log(' => current tooltip position: ', {
+				screenX : tooltipBox.screenX,
+				screenY : tooltipBox.screenY,
+				x       : tooltipBox.screenX - basePosition.x,
+				y       : tooltipBox.screenY - basePosition.y,
+				width   : tooltipBox.width,
+				height  : tooltipBox.height
+			});
+		}
 		log(' => tree: ', {
 			width  : tree.clientWidth,
 			height : tree.clientHeight
