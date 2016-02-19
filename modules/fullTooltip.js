@@ -209,15 +209,22 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 				return this.onHidden(aEvent);
 
 			case 'mousemove':
-				return this.onTooltipMouseMove(aEvent);
+				if (!this.tooltipExpanding)
+					this.onTooltipMouseMove(aEvent);
+				return;
 
 			case 'mouseover':
-				return this.cancelDelayedHide();
+				if (!this.tooltipExpanding)
+					this.cancelDelayedHide();
+				return;
 
 			case 'mouseout':
-				return this.hideWithDelay();
+				if (!this.tooltipExpanding)
+					this.hideWithDelay();
+				return;
 
 			case 'transitionend':
+				this.tooltipExpanding = false;
 				{
 					let tooltipBox = this.tabFullTooltip.boxObject;
 					let tree = this.tree;
@@ -467,6 +474,7 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 		log('hide');
 		this.cancelDelayedHide();
 		this.tabFullTooltip.hidePopup();
+		this.tooltipExpanding = false;
 	},
 
 
@@ -573,6 +581,8 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 	expandTooltipInternal : function FTM_expandTooltipInternal()
 	{
 		log('expandTooltipInternal');
+		this.tooltipExpanding = true;
+
 		var tooltip = this.tabFullTooltip;
 		tooltip.setAttribute('popup-shown', true);
 
