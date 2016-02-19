@@ -454,6 +454,7 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 
 	cancel : function FTM_cancel()
 	{
+		log('cancel');
 		if (this._fullTooltipTimer) {
 			this.window.clearTimeout(this._fullTooltipTimer);
 			this._fullTooltipTimer = null;
@@ -463,6 +464,7 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 
 	hide : function FTM_hide()
 	{
+		log('hide');
 		this.cancelDelayedHide();
 		this.tabFullTooltip.hidePopup();
 	},
@@ -470,6 +472,7 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 
 	hideWithDelay : function FTM_hideWithDelay()
 	{
+		log('hideWithDelay');
 		this.cancelDelayedHide();
 		this._delayedHideTimer = this.window.setTimeout(function(aSelf) {
 			aSelf.hide();
@@ -478,6 +481,7 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 
 	cancelDelayedHide : function FTM_cancelDelayedHide()
 	{
+		log('cancelDelayedHide');
 		if (this._delayedHideTimer) {
 			this.window.clearTimeout(this._delayedHideTimer);
 			this._delayedHideTimer = null;
