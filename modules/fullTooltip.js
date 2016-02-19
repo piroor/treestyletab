@@ -461,7 +461,7 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 
 	hide : function FTM_hide()
 	{
-		log('hide');
+		logWithStackTrace('hide');
 		this.cancelDelayedHide();
 		this.tabFullTooltip.hidePopup();
 		this.changingPropertiesCount = 0;
