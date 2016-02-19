@@ -572,13 +572,18 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 			// If the tree is larger thant the tooltip,
 			// it becomes scrollable by arrowscrollbox.
 			let tree  = this.tree;
-			let style = this.container.style;
-			style.width  = tree.clientWidth+'px';
-			style.height = tree.clientHeight+'px';
-			log(' => final tree size: ', {
+			let containerStyle = this.container.style;
+			containerStyle.width  = tree.clientWidth+'px';
+			containerStyle.height = tree.clientHeight+'px';
+			log(' => expanding tree size: ', {
 				width  : tree.clientWidth,
 				height : tree.clientHeight
 			});
+
+			let columnCount = PseudoTreeBuilder.getActualColumnCount(tree);
+			tree.columnCount = tree.style.columnCount =
+				tree.style.MozColumnCount = columnCount;
+			log(' => final column count: ', columnCount);
 		}
 
 		var w = {},
