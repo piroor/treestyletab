@@ -506,8 +506,9 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 				label = label.trim();
 				if (!label)
 					continue;
-				container.appendChild(this.document.createElement('description'))
-					.appendChild(this.document.createTextNode(label));
+				let caption = this.document.createElement('description');
+				caption.appendChild(this.document.createTextNode(label));
+				container.appendChild(caption)
 			}
 		}
 
@@ -581,10 +582,13 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 			let tree  = this.tree;
 			let containerStyle = this.container.style;
 			containerStyle.width  = tree.clientWidth+'px';
-			containerStyle.height = tree.clientHeight+'px';
+			let totalHeight = tree.clientHeight;
+			if (tree.previousSibling)
+				totalHeight += tree.previousSibling.boxObject.height;
+			containerStyle.height = totalHeight+'px';
 			log(' => expanding tree size: ', {
 				width  : tree.clientWidth,
-				height : tree.clientHeight
+				height : totalHeight
 			});
 		}
 
