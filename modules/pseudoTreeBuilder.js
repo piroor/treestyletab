@@ -63,11 +63,11 @@ var PseudoTreeBuilder = {
 		var tree = this.createTabItem(aTab);
 		tree.className = this.kROOT;
 
-		var row = tree.querySelector("*|*."+this.kTREEROW);
+		var row = tree.querySelector('*|*.' + this.kTREEROW);
 		if (!row)
 			return;
 
-		row.className += " "+this.kROOTITEM;
+		row.className += ' ' + this.kROOTITEM;
 
 		tree.setAttribute('onclick', 
 			('var doc = event.target.ownerDocument;\n' +
