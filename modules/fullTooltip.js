@@ -594,11 +594,11 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 			style.marginLeft = (Math.max(currentScreen.left, currentScreen.allowedWidth - currentW) - this.window.screenX)+'px';
 		if (currentY + currentH + currentScreen.top >= currentScreen.allowedHeight)
 			style.marginTop = (Math.max(currentScreen.top, currentScreen.allowedHeight - currentH) - this.window.screenY)+'px';
-		log(' => tooltip: ', {
-			left   : style.marginLeft,
-			top    : style.marginTop,
-			width  : style.width,
-			height : style.height
+		log(' => expanded dimensions: ', {
+			left      : style.marginLeft,
+			top       : style.marginTop,
+			maxWidth  : style.maxWidth,
+			maxHeight : style.maxHeight
 		});
 
 		{
@@ -609,7 +609,7 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 			let style = this.container.style;
 			style.width  = tree.clientWidth+'px';
 			style.height = tree.clientHeight+'px';
-			log(' => tree: ', {
+			log(' => final tree size: ', {
 				width  : tree.clientWidth,
 				height : tree.clientHeight
 			});
