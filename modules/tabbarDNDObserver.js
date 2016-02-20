@@ -1278,6 +1278,7 @@ catch(e) {
 	
 	retrieveURLsFromDataTransfer : function TSTService_retrieveURLsFromDataTransfer(aDataTransfer) 
 	{
+		log('retrieveURLsFromDataTransfer');
 		var urls = [];
 		var types = [
 				'text/x-moz-place',
@@ -1299,19 +1300,20 @@ catch(e) {
 			if (urls.length)
 				break;
 		}
-		return urls.filter(function(aURI) {
+		log(' => retrieved: ', urls);
+		urls = urls.filter(function(aURI) {
 				return aURI &&
 						aURI.length &&
 						aURI.indexOf(this.BOOKMARK_FOLDER) == 0 ||
-						(
-							aURI.indexOf(' ', 0) == -1 &&
-							!/^\s*(javascript|data):/.test(aURI)
-						);
+						!/^\s*(javascript|data):/.test(aURI);
 			}, this);
+		log('  => filtered: ', urls);
+		return urls;
 	},
 	BOOKMARK_FOLDER: 'x-moz-place:',
 	retrieveURLsFromData : function TSTService_retrieveURLsFromData(aData, aType)
 	{
+		log('retrieveURLsFromData: ', aType, aData);
 		switch (aType)
 		{
 			case 'text/x-moz-place':
