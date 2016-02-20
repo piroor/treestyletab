@@ -1307,8 +1307,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		for (let i = 0, maxi = nodes.length; i < maxi; i++)
 		{
 			let node = nodes[i];
-			if (node.getAttribute('class') == 'informationaltab-thumbnail-container')
-				continue;
 			node.setAttribute('ordinal', (count - i + 1) * 100);
 		}
 
@@ -1346,6 +1344,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				delete this.timers[key];
 			}).bind(this), 100);
 		}
+		log('rearranged tab contents: ', nodes);
 	},
  
 	updateInvertedTabContentsOrder : function TSTBrowser_updateInvertedTabContentsOrder(aTarget) 
