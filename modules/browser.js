@@ -1152,7 +1152,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		var twisty = this.getTabTwisty(aTab);
 		var anchor = this.getTabTwistyAnchorNode(aTab);
-		if (anchor  && !twisty) {
+		if (anchor && !twisty) {
 			twisty = d.createElement('image');
 			twisty.setAttribute('class', this.kTWISTY);
 			anchor.parentNode.appendChild(twisty);
@@ -1177,7 +1177,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			endParen.setAttribute('value', ')');
 
 			/** XXX
-			 *  Insertion before an anonymous element breaks its "xbl:inherits".
+			 * Insertion before an anonymous element breaks its "xbl:inherits".
 			 * For example, "xbl:inherits" of the closebox in a tab (Tab Mix Plus
 			 * defines it) doesn't work. So, I don't use insertBefore().
 			 * Instead, the counter will be rearranged by "ordinal" attribute
