@@ -183,7 +183,6 @@ var TreeStyleTabConstants = Object.freeze({
 	kTABBAR_UPDATE_BY_RESET             : (1 << 1),
 	kTABBAR_UPDATE_BY_PREF_CHANGE       : (1 << 2),
 	kTABBAR_UPDATE_BY_APPEARANCE_CHANGE : (1 << 3),
-	kTABBAR_UPDATE_BY_SHOWHIDE_TABBAR   : (1 << 4),
 	kTABBAR_UPDATE_BY_TABBAR_RESIZE     : (1 << 5),
 	kTABBAR_UPDATE_BY_WINDOW_RESIZE     : (1 << 6),
 	kTABBAR_UPDATE_BY_FULLSCREEN        : (1 << 7),
@@ -192,7 +191,7 @@ var TreeStyleTabConstants = Object.freeze({
 	kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR    : (1 << 11),
 	kTABBAR_UPDATE_NOW                 : (1 << 5) | (1 << 6) | (1 << 9) | (1 << 10),
 	kTABBAR_UPDATE_SYNC_TO_TABBAR      : (1 << 0) | (1 << 1) | (1 << 2) | (1 << 5) | (1 << 9),
-	kTABBAR_UPDATE_SYNC_TO_PLACEHOLDER : (1 << 3) | (1 << 4) | (1 << 6) | (1 << 7) | (1 << 10) | (1 << 11),
+	kTABBAR_UPDATE_SYNC_TO_PLACEHOLDER : (1 << 3) | (1 << 6) | (1 << 7) | (1 << 10) | (1 << 11),
 
 	kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD        : 3,
 	kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN       : 0,

@@ -1982,7 +1982,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				(aReason & this.kTABBAR_UPDATE_BY_RESET ? 'reset ' : '' ) +
 				(aReason & this.kTABBAR_UPDATE_BY_PREF_CHANGE ? 'prefchange ' : '' ) +
 				(aReason & this.kTABBAR_UPDATE_BY_APPEARANCE_CHANGE ? 'appearance-change ' : '' ) +
-				(aReason & this.kTABBAR_UPDATE_BY_SHOWHIDE_TABBAR ? 'showhide ' : '' ) +
 				(aReason & this.kTABBAR_UPDATE_BY_TABBAR_RESIZE ? 'tabbar-resize ' : '' ) +
 				(aReason & this.kTABBAR_UPDATE_BY_WINDOW_RESIZE ? 'window-resize ' : '' ) +
 				(aReason & this.kTABBAR_UPDATE_BY_FULLSCREEN ? 'fullscreen ' : '' ) +
@@ -2636,7 +2635,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		'extensions.treestyletab.',
 		'browser.tabs.closeButtons',
 		'browser.tabs.closeWindowWithLastTab',
-		'browser.tabs.autoHide',
 		'browser.tabs.animate'
 	],
  
@@ -2809,11 +2807,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			case 'browser.tabs.closeButtons':
 			case 'browser.tabs.closeWindowWithLastTab':
 				return this.updateInvertedTabContentsOrder(true);
-
-			case 'browser.tabs.autoHide':
-				if (this.getTabs(this.mTabBrowser).length == 1)
-					this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_SHOWHIDE_TABBAR);
-				return;
 
 			case 'extensions.treestyletab.tabbar.autoHide.mode':
 			case 'extensions.treestyletab.tabbar.autoHide.mode.fullscreen':
@@ -3301,9 +3294,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		this.updateInsertionPositionInfo(tab);
 
-		if (prefs.getPref('browser.tabs.autoHide'))
-			this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_SHOWHIDE_TABBAR);
-
 		if (this.canStackTabs)
 			this.updateTabsZIndex(true);
 
@@ -3486,9 +3476,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		if (tab.getAttribute('pinned') == 'true')
 			this.positionPinnedTabsWithDelay();
-
-		if (prefs.getPref('browser.tabs.autoHide'))
-			this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_SHOWHIDE_TABBAR);
 
 		if (this.canStackTabs)
 			this.updateTabsZIndex(true);
