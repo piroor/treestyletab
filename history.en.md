@@ -1,9 +1,20 @@
 # History
 
  - master/HEAD
+   * Dropped non-URI text (maybe including whitespaces) onto the tab bar is opened with a search result tab. The behavior is same to Firefox's default.
+   * Show Informational Tab's thumbnail after the number of collapsed tabs, when it is configured to be placed before a closebox.
+   * Better layout for fake tree in multiple columns (at tooltip of tabs and dummy group tabs).
+   * Behaviors around multiple home pages are improved.
+     * On the startup, they are opened as flat tabs and not grouped.
+     * For left click of the home button, flat new tabs are opened instead of loading the first home page into the current tab.
+     * For middle click of the button, home tabs are opened as a tree.
+   * Don't leave needless group tab after a tree is detached, when a closed parent tab is configured to be replaced with a dummy group tab.
+   * Narrow scroll bar in the tab bar is now more compatible with other customizations.
    * Tree of tabs are now always collapsable for both horizontal and vertical. Moreover, indentation of tabs also activated for the vertical tab bar always.
      There is no way to revoke those tree features.
      If you just require vertical tab bar without tree features, please try other alternative addons: [Vertical Tabs](https://addons.mozilla.org/firefox/addon/vertical-tabs/), [Vertical Tabs (Simplified)](https://addons.mozilla.org/firefox/addon/vertical-tabs-simplified/), [Side Tabs](https://addons.mozilla.org/firefox/addon/side-tabs/), or others.
+   * de-DE locale is updated by Björn Kautler. Thanks!
+   * ru locale is updated by Infocatcher. Thanks!
  - 0.16.2016021602
    * Attach new tabs only actually opened with `relatedToCurrent`=`true` option (or referrer) to the current tab, as the default behavior for compatibility with other addons.
  - 0.16.2016021601
