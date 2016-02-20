@@ -1168,6 +1168,7 @@ catch(e) {
 			if (aURI.indexOf(this.BOOKMARK_FOLDER) != 0)
 				this.securityCheck(aURI, aEvent);
 		}, this);
+		log('handleLinksOrBookmarks: ', uris);
 
 		var sv = this.treeStyleTab;
 		var b  = this.browser;
@@ -1175,7 +1176,8 @@ catch(e) {
 		var self = this;
 
 		let bgLoad = prefs.getPref('browser.tabs.loadInBackground');
-		if (aEvent.shiftKey) bgLoad = !bgLoad;
+		if (aEvent.shiftKey)
+			bgLoad = !bgLoad;
 
 		let tab = sv.getTabFromEvent(aEvent);
 		if (
@@ -1205,7 +1207,10 @@ catch(e) {
 					// migrated to a Promise (Firefox 39 and later).
 					w.getShortcutOrURIAndPostData(aURI, (function(aData) {
 						var uri = aData.url;
-						this.performDrop(aDropActionInfo, b.loadOneTab(uri, { inBackground: bgLoad }));
+						this.performDrop(aDropActionInfo, b.loadOneTab(uri, {
+							inBackground         : bgLoad,
+							allowThirdPartyFixup : true
+						}));
 					}).bind(this));
 				}
 			}, this);
@@ -1225,7 +1230,10 @@ catch(e) {
 			w.getShortcutOrURIAndPostData(uris[0], (function(aData) {
 				var uri = aData.url;
 				if (loadDroppedLinkToNewChildTab || locked) {
-					this.performDrop(aDropActionInfo, b.loadOneTab(uri, { inBackground: bgLoad }));
+					this.performDrop(aDropActionInfo, b.loadOneTab(uri, {
+						inBackground         : bgLoad,
+						allowThirdPartyFixup : true
+					}));
 				}
 				else {
 					tab.linkedBrowser.loadURI(uri);
