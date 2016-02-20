@@ -1231,15 +1231,16 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 			var foundContainers = [];
 			var containers = [
-					namedNodes.twistyAnchor.parentNode,
-					namedNodes.label.parentNode,
-					namedNodes.counter.parentNode,
-					namedNodes.closeAnchor.parentNode
+					namedNodes.twistyAnchor && namedNodes.twistyAnchor.parentNode,
+					namedNodes.label && namedNodes.label.parentNode,
+					namedNodes.counter && namedNodes.counter.parentNode,
+					namedNodes.closeAnchor && namedNodes.closeAnchor.parentNode
 				];
 			for (let i = 0, maxi = containers.length; i < maxi; i++)
 			{
 				let container = containers[i];
-				if (foundContainers.indexOf(container) > -1)
+				if (!container ||
+					foundContainers.indexOf(container) > -1)
 					continue;
 				this.initTabContentsOrderInternal(container, namedNodes, aForce);
 				foundContainers.push(container);
