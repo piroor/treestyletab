@@ -2,7 +2,6 @@
 
  - master/HEAD
    * Dropped non-URI text (maybe including whitespaces) onto the tab bar is opened with a search result tab. The behavior is same to Firefox's default.
-   * Show Informational Tab's thumbnail after the number of collapsed tabs, when it is configured to be placed before a closebox.
    * Better layout for fake tree in multiple columns (at tooltip of tabs and dummy group tabs).
    * Behaviors around multiple home pages are improved.
      * On the startup, they are opened as flat tabs and not grouped.
