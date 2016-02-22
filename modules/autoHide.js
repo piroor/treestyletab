@@ -773,7 +773,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 			this.delayedShowForFeedbackTimer = null;
 		}
 		this.cancelHideForFeedback();
-		this.delayedShowForFeedbackTimer = w.setTimeout((function(this) {
+		this.delayedShowForFeedbackTimer = w.setTimeout((function() {
 			this.delayedShowForFeedbackTimer = null;
 			this.delayedShowForFeedback(aTab);
 		}).bind(this), 100);
