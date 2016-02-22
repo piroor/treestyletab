@@ -3350,7 +3350,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
  
 	scrollToNewTab : function TSTBrowser_scrollToNewTab(aTab) 
 	{
-		if (!aTab.parentNode || aTab.getAttribute('hidden') == 'true')
+		if (!this.canScrollToTab(aTab))
 			return;
 
 		if (this.scrollToNewTabMode > 0)
@@ -6996,7 +6996,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
   
 	scrollToTab : function TSTBrowser_scrollToTab(aTab, aOnlyWhenCurrentTabIsInViewport) 
 	{
-		if (!aTab || !aTab.parentNode)
+		if (!this.canScrollToTab(aTab))
 			return;
 
 		this.cancelPerformingAutoScroll(true);
@@ -7036,9 +7036,18 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		this.scrollTo(targetX, targetY, aTab);
 	},
  
+	canScrollToTab : function TSTBrowser_canScrollToTab(aTab)
+	{
+		return (
+			aTab &&
+			aTab.parentNode &&
+			aTab.getAttribute('hidden') != 'true'
+		);
+	},
+ 
 	scrollToTabSubtree : function TSTBrowser_scrollToTabSubtree(aTab) 
 	{
-		if (!aTab.parentNode) // do nothing for closed tab!
+		if (!this.canScrollToTab(aTab))
 			return;
 		var descendants = this.getDescendantTabs(aTab);
 		return this.scrollToTabs([aTab].concat(descendants));
@@ -7047,8 +7056,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	scrollToTabs : function TSTBrowser_scrollToTabs(aTabs) 
 	{
 		var firstTab = aTabs[0];
-		if (!firstTab ||
-			!firstTab.parentNode) // do nothing for closed tab!
+		if (!this.canScrollToTab(firstTab))
 			return;
 
 		var b            = this.mTabBrowser;
