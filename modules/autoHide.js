@@ -598,6 +598,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 		this.showHideContentsAreaScreen();
 
 		var shouldShow = position & this.MOUSE_POSITION_SENSITIVE;
+		var delayToShow = utils.getTreePref('tabbar.autoHide.delay.show');
 		if (this.expanded) { // currently shown, let's hide it.
 			if (shouldShow) {
 				this.show(this.kSHOWN_BY_MOUSEMOVE);
@@ -607,12 +608,15 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 				!shouldShow &&
 				utils.getTreePref('tabbar.autoShow.mousemove')
 				) {
+				let delayToHide = utils.getTreePref('tabbar.autoHide.delay.hide');
+				if (delayToHide < 0)
+					delayToHide = delayToShow;
 				this.showHideOnMouseMoveTimer = w.setTimeout(
 					function(aSelf) {
 						aSelf.cancelDelayedShowForShortcut();
 						aSelf.hide(aSelf.kSHOWN_BY_MOUSEMOVE);
 					},
-					utils.getTreePref('tabbar.autoHide.delay'),
+					delayToHide,
 					this
 				);
 			}
@@ -623,7 +627,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 					aSelf.cancelDelayedShowForShortcut();
 					aSelf.show(aSelf.kSHOWN_BY_MOUSEMOVE);
 				},
-				utils.getTreePref('tabbar.autoHide.delay'),
+				delayToShow,
 				this
 			);
 		}

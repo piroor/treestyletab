@@ -129,7 +129,8 @@ pref("extensions.treestyletab.tabbar.autoHide.contentAreaScreen.enabled", true);
  * Triggers for the "Auto Hide" feature. They can be controlled via the
  * configuration dialog.
  */
-pref("extensions.treestyletab.tabbar.autoHide.delay",      50);
+pref("extensions.treestyletab.tabbar.autoHide.delay.show", 50);
+pref("extensions.treestyletab.tabbar.autoHide.delay.hide", -1); // same to "show"
 pref("extensions.treestyletab.tabbar.autoHide.area",       7);
 pref("extensions.treestyletab.tabbar.autoShow.mousemove", true);
 pref("extensions.treestyletab.tabbar.autoShow.accelKeyDown", true);
