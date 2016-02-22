@@ -216,11 +216,11 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 		this.end();
 		// update internal property after the appearance of the tab bar is updated.
 		var w = this.window;
-		w.setTimeout(function(aSelf) {
-			aSelf.mode = aNewMode;
-			if (aSelf.mode != aSelf.kMODE_DISABLED)
-				aSelf.start();
-		}, 0, this);
+		w.setTimeout((function() {
+			this.mode = aNewMode;
+			if (this.mode != this.kMODE_DISABLED)
+				this.start();
+		}).bind(this), 0);
 	},
   
 	togglerSize : 0, 
@@ -611,25 +611,17 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 				let delayToHide = utils.getTreePref('tabbar.autoHide.delay.hide');
 				if (delayToHide < 0)
 					delayToHide = delayToShow;
-				this.showHideOnMouseMoveTimer = w.setTimeout(
-					function(aSelf) {
-						aSelf.cancelDelayedShowForShortcut();
-						aSelf.hide(aSelf.kSHOWN_BY_MOUSEMOVE);
-					},
-					delayToHide,
-					this
-				);
+				this.showHideOnMouseMoveTimer = w.setTimeout((function() {
+					this.cancelDelayedShowForShortcut();
+					this.hide(this.kSHOWN_BY_MOUSEMOVE);
+				}).bind(this), delayToHide);
 			}
 		}
 		else if (shouldShow) { // currently shown, let's show it.
-			this.showHideOnMouseMoveTimer = w.setTimeout(
-				function(aSelf) {
-					aSelf.cancelDelayedShowForShortcut();
-					aSelf.show(aSelf.kSHOWN_BY_MOUSEMOVE);
-				},
-				delayToShow,
-				this
-			);
+			this.showHideOnMouseMoveTimer = w.setTimeout((function() {
+				this.cancelDelayedShowForShortcut();
+				this.show(this.kSHOWN_BY_MOUSEMOVE);
+			}).bind(this), delayToShow);
 		}
 
 		b = null;
@@ -781,14 +773,10 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 			this.delayedShowForFeedbackTimer = null;
 		}
 		this.cancelHideForFeedback();
-		this.delayedShowForFeedbackTimer = w.setTimeout(
-			function(aSelf) {
-				aSelf.delayedShowForFeedbackTimer = null;
-				aSelf.delayedShowForFeedback(aTab);
-			},
-			100,
-			this
-		);
+		this.delayedShowForFeedbackTimer = w.setTimeout((function(this) {
+			this.delayedShowForFeedbackTimer = null;
+			this.delayedShowForFeedback(aTab);
+		}).bind(this), 100);
 	},
  
 	delayedShowForFeedback : function AHB_delayedShowForFeedback(aTab) 
@@ -796,15 +784,11 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 		this.treeStyleTab.highlightTab(aTab);
 		this.show(this.kSHOWN_BY_FEEDBACK);
 		this.cancelHideForFeedback();
-		this.delayedHideTabbarForFeedbackTimer = this.window.setTimeout(
-			function(aSelf) {
-				// TODO: we do something to highlight the given tab.
-				aSelf.delayedHideTabbarForFeedbackTimer = null;
-				aSelf.hide(aSelf.kSHOWN_BY_FEEDBACK);
-			},
-			utils.getTreePref('tabbar.autoShow.feedback.delay'),
-			this
-		);
+		this.delayedHideTabbarForFeedbackTimer = this.window.setTimeout((function() {
+			// TODO: we do something to highlight the given tab.
+			this.delayedHideTabbarForFeedbackTimer = null;
+			this.hide(this.kSHOWN_BY_FEEDBACK);
+		}).bind(this), utils.getTreePref('tabbar.autoShow.feedback.delay'));
 	},
  
 	cancelHideForFeedback : function AHB_cancelHideForFeedback() 
@@ -934,10 +918,10 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 		b.mTabContainer.adjustTabstrip();
 		sv.checkTabsIndentOverflow();
 
-		this.window.setTimeout(function(aSelf) {
-			aSelf.fireStateChangeEvent();
-			aSelf.showHideContentsAreaScreen();
-		}, 0, this);
+		this.window.setTimeout((function() {
+			this.fireStateChangeEvent();
+			this.showHideContentsAreaScreen();
+		}).bind(this), 0);
 	},
 	_getHumanReadableReason: function AHB_getHumanReadableReason(aReason)
 	{
@@ -1294,10 +1278,10 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 
 			case this.treeStyleTab.kEVENT_TYPE_TABBAR_POSITION_CHANGED:
 				if (this.enabled)
-					this.window.setTimeout(function(aSelf) {
-						aSelf.show(this.kSHOWHIDE_BY_POSITION_CHANGE);
-						aSelf.hide(this.kSHOWHIDE_BY_POSITION_CHANGE);
-					}, 0, this);
+					this.window.setTimeout((function() {
+						this.show(this.kSHOWHIDE_BY_POSITION_CHANGE);
+						this.hide(this.kSHOWHIDE_BY_POSITION_CHANGE);
+					}).bind(this), 0);
 				this.updateTransparency();
 				return;
 
@@ -1436,10 +1420,10 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 		if (position & this.MOUSE_POSITION_SENSITIVE)
 			return;
 
-		this._autoHideOnDragLeaveTimer = this.window.setTimeout(function(aSelf) {
-			delete aSelf._autoHideOnDragLeaveTimer;
-			aSelf.hide(aSelf.kSHOWN_BY_MOUSEMOVE);
-		}, 100, this);
+		this._autoHideOnDragLeaveTimer = this.window.setTimeout((function() {
+			delete this._autoHideOnDragLeaveTimer;
+			this.hide(this.kSHOWN_BY_MOUSEMOVE);
+		}).bind(this), 100);
 	},
  
 	onKeyDown : function AHB_onKeyDown(aEvent) 
@@ -1460,16 +1444,12 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 				utils.getTreePref('tabbar.autoShow.accelKeyDown') &&
 				!this.delayedAutoShowTimer &&
 				!this.delayedShowForShortcutTimer) {
-				this.delayedShowForShortcutTimer = w.setTimeout(
-					function(aSelf) {
-						aSelf.delayedShowForShortcutDone = true;
-						aSelf.show(aSelf.kSHOWN_BY_SHORTCUT);
-						sv = null;
-						b = null;
-					},
-					utils.getTreePref('tabbar.autoShow.accelKeyDown.delay'),
-					this
-				);
+				this.delayedShowForShortcutTimer = w.setTimeout((function() {
+					this.delayedShowForShortcutDone = true;
+					this.show(this.kSHOWN_BY_SHORTCUT);
+					sv = null;
+					b = null;
+				}).bind(this), utils.getTreePref('tabbar.autoShow.accelKeyDown.delay'));
 				this.delayedShowForShortcutDone = false;
 			}
 		}
@@ -1647,9 +1627,9 @@ AutoHideWindow.prototype = inherit(AutoHideBase.prototype, {
 		if (mode != this.kMODE_DISABLED)
 			this.updateKeyListeners(this.window);
 
-		this.window.setTimeout(function(aSelf) {
-			aSelf.window.gBrowser.treeStyleTab.autoHide.updateMode(mode);
-		}, 0, this);
+		this.window.setTimeout((function() {
+			this.window.gBrowser.treeStyleTab.autoHide.updateMode(mode);
+		}).bind(this), 0);
 	},
  
 // for shortcuts 
