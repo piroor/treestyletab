@@ -1960,6 +1960,10 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 
 		this._updateFloatingTabbarReason |= aReason;
+		this._currentTabWasVisible = (
+			this._currentTabWasVisible ||
+			this.isTabInViewport(this.browser.selectedTab)
+		);
 
 		if (this._updateFloatingTabbarReason & this.kTABBAR_UPDATE_NOW) {
 			this._updateFloatingTabbarInternal(this._updateFloatingTabbarReason);
@@ -1984,7 +1988,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				(aReason & this.kTABBAR_UPDATE_BY_PREF_CHANGE ? 'prefchange ' : '' ) +
 				(aReason & this.kTABBAR_UPDATE_BY_APPEARANCE_CHANGE ? 'appearance-change ' : '' ) +
 				(aReason & this.kTABBAR_UPDATE_BY_TABBAR_RESIZE ? 'tabbar-resize ' : '' ) +
-				(aReason & this.kTABBAR_UPDATE_BY_WINDOW_RESIZE ? 'window-resize ' : '' ) +
+				(aReason & this.kTABBAR_UPDATE_BY_WINDOW_RESIZE ?
+					'window-resize(currentTabWasVisible='+this._currentTabWasVisible+') ' : '' ) +
 				(aReason & this.kTABBAR_UPDATE_BY_FULLSCREEN ? 'fullscreen ' : '' ) +
 				(aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE ? 'autohide ' : '' ) +
 				(aReason & this.kTABBAR_UPDATE_BY_INITIALIZE ? 'initialize ' : '' ) +
@@ -2121,11 +2126,34 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		setTimeout((function() {
 			this.notifyingRenderedEvent = false;
 
-			if (!collapsed &&
+			var shownAutomatically = (
+				!collapsed &&
 				this.autoHide.mode == this.autoHide.kMODE_HIDE &&
-				aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE &&
-				this.browser) // ignore calling after destroyed...
-				this.scrollToTab(this.browser.selectedTab);
+				aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE
+			);
+			var scrollToCurrentAfterResize = (
+				this._currentTabWasVisible &&
+				aReason & this.kTABBAR_UPDATE_BY_WINDOW_RESIZE
+			);
+			log('after floating tab is updated: ', {
+				shownAutomatically         : shownAutomatically,
+				scrollToCurrentAfterResize : scrollToCurrentAfterResize
+			});
+
+			if (this.browser) { // ignore calling after destroyed...
+				if (shownAutomatically) {
+					this.scrollToTab(this.browser.selectedTab);
+				}
+				else if (scrollToCurrentAfterResize) {
+					// Make the tab visible immediately!
+					// If we use scrollToTab with animation, the current tab
+					// can be invisible sometimes.
+					this.scrollBoxObject.ensureElementIsVisible(this.browser.selectedTab);
+				}
+			}
+
+			if (!this._updateFloatingTabbarTimer)
+				delete this._currentTabWasVisible;
 		}).bind(this), 0);
 	},
 	getTabbarPlaceholderSize: function TSTBrowser_getTabbarPlaceholderSize()
