@@ -3350,7 +3350,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
  
 	scrollToNewTab : function TSTBrowser_scrollToNewTab(aTab) 
 	{
-		if (!aTab.parentNode) // do nothing for closed tab!
+		if (!aTab.parentNode || aTab.getAttribute('hidden') == 'true')
 			return;
 
 		if (this.scrollToNewTabMode > 0)
