@@ -69,7 +69,7 @@ XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabConstants',
   'resource://treestyletab-modules/constants.js', 'TreeStyleTabConstants');
 
 const TST_PREF_PREFIX = 'extensions.treestyletab.';
-const TST_PREF_VERSION = 13;
+const TST_PREF_VERSION = 14;
 
 
 var TreeStyleTabUtils = {
@@ -253,6 +253,12 @@ var TreeStyleTabUtils = {
 							this.treeBundle.getString('migration.treeNeverRevoked.text')
 						);
 					}
+				}
+			case 13:
+				{
+					let delay = this.getTreePref('tabbar.autoHide.delay');
+					if (delay !== null)
+						this.setTreePref('tabbar.autoHide.delay.show', delay);
 				}
 			default:
 				for (let i = 0, maxi = orientalPrefs.length; i < maxi; i++)
