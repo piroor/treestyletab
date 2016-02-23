@@ -41,7 +41,9 @@ If you really want to show both horizontal and vertical tab bar, then please uni
 
 ### [Quick access to the configuration dialog](https://github.com/piroor/treestyletab/issues/1020), Adding new minor (trivial) options, and so on
 
-High customizability for details of features is out of TST's purpose. I hope to provide only very required options which are truly un-omitable. Too many optional features will kill this project, because they will cloud the important concept of TST and will bring together people who don't like my core vision about TST. Instead, sorry but please fork this project and modify it for your usecase.
+I have no plan to add a custom menu item to go to TST's configuration dialog - sorry but you have to go to the dialog via Firefox's Addons Manager always. If the configuration dialog is frequently required in your daily use, there is something implicit problem which must be solved in another way. Instead, please describe why you need such a fast pass to the configuration dialog. After the actual problem is solved, you won't need such a menu anymore. In other words, adding such a menu can disguise fatal problems which really should be solved.
+
+And, high customizability for details of features is out of TST's purpose. I hope to provide only very required options which are truly un-omitable. Too many optional features will kill this project, because they will cloud the important concept of TST and will bring together people who don't like my core vision about TST. Instead, sorry but please fork this project and modify it for your usecase.
 
 ### Adding new options to control where new tabs are opened from [links](https://github.com/piroor/treestyletab/issues/1052) or [bookmarks](https://github.com/piroor/treestyletab/issues/263)
 
