@@ -187,6 +187,8 @@
 <!ENTITY context.toggleFixed.accesskey          "f">
 <!ENTITY context.bookmarkTabSubtree.label       "Bookmark this Tree...">
 <!ENTITY context.bookmarkTabSubtree.accesskey   "t">
+<!ENTITY context.preferences.label              "Preferences...">
+<!ENTITY context.preferences.accesskey          "e">
 
 <!ENTITY group.default "New Group">
 <!ENTITY group.temporary "Temporary Group">

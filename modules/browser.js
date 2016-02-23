@@ -123,6 +123,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	kMENUITEM_AUTOHIDE_SEPARATOR       : 'context-separator-toggleAutoHide',
 	kMENUITEM_AUTOHIDE                 : 'context-item-toggleAutoHide',
 	kMENUITEM_FIXED                    : 'context-item-toggleFixed',
+	kMENUITEM_PREFS_SEPARATOR          : 'context-separator-preferences',
+	kMENUITEM_PREFS                    : 'context-item-preferences',
 	kMENUITEM_BOOKMARKSUBTREE          : 'context-item-bookmarkTabSubtree',
 
 	kMENUITEM_CLOSE_TABS_TO_END        : 'context_closeTabsToTheEnd',
@@ -964,6 +966,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 						aSelf.kMENUITEM_AUTOHIDE_SEPARATOR,
 						aSelf.kMENUITEM_AUTOHIDE,
 						aSelf.kMENUITEM_FIXED,
+						aSelf.kMENUITEM_PREFS_SEPARATOR,
+						aSelf.kMENUITEM_PREFS,
 						aSelf.kMENUITEM_BOOKMARKSUBTREE
 					];
 				for (let i = 0, maxi = ids.length; i < maxi; i++)
@@ -5243,6 +5247,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				this.kMENUITEM_EXPAND,
 				this.kMENUITEM_AUTOHIDE,
 				this.kMENUITEM_FIXED,
+				this.kMENUITEM_PREFS,
 				this.kMENUITEM_BOOKMARKSUBTREE
 			];
 		for (let i = 0, maxi = ids.length; i < maxi; i++)

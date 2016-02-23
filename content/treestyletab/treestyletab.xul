@@ -142,6 +142,11 @@
 			type="checkbox"
 			autocheck="false"
 			oncommand="TreeStyleTabService.toggleFixed(TreeStyleTabService.getTabBrowserFromChild(this));"/>
+		<menuseparator id="context-separator-preferences"/>
+		<menuitem id="context-item-preferences"
+			label="&context.preferences.label;"
+			accesskey="&context.preferences.accesskey;"
+			oncommand="TreeStyleTabService.showPreferences();"/>
 	</menupopup>
 	<tooltip id="treestyletab-full-tree-tooltip"/>
 	<panel id="treestyletab-autohide-content-area-screen"

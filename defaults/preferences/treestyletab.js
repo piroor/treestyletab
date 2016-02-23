@@ -359,6 +359,7 @@ pref("extensions.treestyletab.show.context-item-collapseAllSubtree", true);
 pref("extensions.treestyletab.show.context-item-expandAllSubtree", true);
 pref("extensions.treestyletab.show.context-item-toggleAutoHide", true);
 pref("extensions.treestyletab.show.context-item-toggleFixed", true);
+pref("extensions.treestyletab.show.context-item-preferences", true);
 pref("extensions.treestyletab.show.context-item-bookmarkTabSubtree", true);
 
 /**

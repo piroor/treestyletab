@@ -1562,6 +1562,17 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 	{
 		this.autoHideWindow.toggleMode(aTabBrowser || this.browser);
 	},
+
+  showPreferences: function TSTWindow_showPreferences()
+  {
+		var window = this.window;
+		var instantApply = prefs.getPref("browser.preferences.instantApply");
+		window.openDialog(
+				'chrome://treestyletab/content/config.xul',
+				'____xyz',
+				'chrome,titlebar,toolbar,resizable,centerscreen'+ (instantApply ? ',dialog=no' : '')
+		);
+  },
  
 	toggleFixed : function TSTWindow_toggleFixed(aTabBrowser) /* PUBLIC API */ 
 	{
