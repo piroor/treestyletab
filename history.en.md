@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 0.17.2016030401
    * Dropped non-URI text (maybe including whitespaces) onto the tab bar is opened with a search result tab. The behavior is same to Firefox's default.
    * Better layout for fake tree in multiple columns (at tooltip of tabs and dummy group tabs).
    * Behaviors around multiple home pages are improved.
