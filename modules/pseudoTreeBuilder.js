@@ -150,6 +150,9 @@ var PseudoTreeBuilder = {
 
 	columnizeTree : function TB_columnizeTree(aTree, aContainerBox)
 	{
+		if (!aTree)
+			return;
+
 		aContainerBox = aContainerBox || aTree.parentNode.boxObject;
 
 		var style = aTree.style;
