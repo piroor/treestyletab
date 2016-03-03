@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+ - 0.17.2016030402
+   * Show rich tooltip with multiple columns even if there are only short title tabs.
+   * Avoid initialization error on newly opened group tabs.
  - 0.17.2016030401
    * Allow to specify different delay for autoshow/hide on mousemove, via secret preferences `extensions.treestyletab.tabbar.autoHide.delay.show` and `extensions.treestyletab.tabbar.autoHide.delay.hide`.
    * Keep current tab visible after the window is resized, even if there are too many tabs with a scrollbar.
