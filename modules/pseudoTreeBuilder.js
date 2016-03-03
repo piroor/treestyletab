@@ -195,14 +195,18 @@ var PseudoTreeBuilder = {
 		if (rows.length <= 1)
 			return 0;
 
-		var firstWidth = rows[0].clientWidth;
-		var lastWidth  = rows[rows.length - 1].clientWidth;
+		var firstRow = rows[0];
+		if (rows[0].clientWidth === 0) // ignore hidden item!
+			firstRow = rows[1];
+		var lastRow = rows[rows.length - 1];
+
+		var firstWidth = firstRow.clientWidth;
+		var lastWidth  = lastRow.clientWidth;
 
 		// We have to see XUL box object's x instead of HTML element's clientLeft
 		// to get actual position of elements in a multi-column box.
-		var labels = aTree.querySelectorAll('label');
-		var firstX = labels[0].boxObject.x;
-		var lastX  = labels[labels.length - 1].boxObject.x;
+		var firstX = firstRow.querySelector('label').boxObject.x;
+		var lastX  = lastRow.querySelector('label').boxObject.x;
 
 		var totalWidth = lastX + lastWidth - firstX;
 		return Math.floor(totalWidth / firstWidth);
