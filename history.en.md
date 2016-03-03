@@ -2,6 +2,9 @@
 
  - master/HEAD
  - 0.17.2016030401
+   * Allow to specify different delay for autoshow/hide on mousemove, via secret preferences `extensions.treestyletab.tabbar.autoHide.delay.show` and `extensions.treestyletab.tabbar.autoHide.delay.hide`.
+   * Keep current tab visible after the window is resized, even if there are too many tabs with a scrollbar.
+   * Don't scroll to a hidden tab when it is newly opened.
    * Dropped non-URI text (maybe including whitespaces) onto the tab bar is opened with a search result tab. The behavior is same to Firefox's default.
    * Better layout for fake tree in multiple columns (at tooltip of tabs and dummy group tabs).
    * Behaviors around multiple home pages are improved.
