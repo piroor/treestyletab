@@ -162,7 +162,7 @@ var PseudoTreeBuilder = {
 			let maxWidth = aContainerBox.width;
 			aTree.columnWidth = Math.floor(maxWidth * 0.9 / 2.5);
 			let count = Math.ceil(
-				(aTree.clientWidth * aTree.clientHeight) /
+				(Math.max(aTree.clientWidth, maxWidth) * aTree.clientHeight) /
 				(aTree.columnWidth * aTree.clientHeight)
 			);
 			aTree.columnCount = style.columnCount = style.MozColumnCount = count;
