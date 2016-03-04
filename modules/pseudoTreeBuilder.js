@@ -164,11 +164,11 @@ var PseudoTreeBuilder = {
 			style.columnGap = style.MozColumnGap = '0';
 			style.columnFill = style.MozColumnFill = 'auto';
 			if (aOptions.calculateCount) {
-			let count = Math.ceil(
-				(Math.max(aTree.clientWidth, maxWidth) * aTree.clientHeight) /
-				(aTree.columnWidth * aTree.clientHeight)
-			);
-			aTree.columnCount = style.columnCount = style.MozColumnCount = count;
+				let count = Math.ceil(
+					(Math.max(aTree.clientWidth, maxWidth) * aTree.clientHeight) /
+					(aTree.columnWidth * aTree.clientHeight)
+				);
+				aTree.columnCount = style.columnCount = style.MozColumnCount = count;
 			}
 			else {
 				aTree.columnCount = 2;
