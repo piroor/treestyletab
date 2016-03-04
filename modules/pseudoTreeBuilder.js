@@ -44,8 +44,6 @@ Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
 XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabBase', 'resource://treestyletab-modules/base.js');
 
 var PseudoTreeBuilder = {
-	XHTMLNS : 'http://www.w3.org/1999/xhtml',
-
 	kFAVICON      : 'treestyletab-pseudo-tree-favicon',
 	kROOT         : 'treestyletab-pseudo-tree-root',
 	kROOTITEM     : 'treestyletab-pseudo-tree-root-item',
@@ -98,10 +96,10 @@ var PseudoTreeBuilder = {
 		var doc = aTab.ownerDocument;
 		var w = doc.defaultView;
 
-		var item = doc.createElementNS(this.XHTMLNS, 'div');
+		var item = doc.createElement('vbox');
 		item.setAttribute('class', this.kTREEITEM);
 
-		var favicon = item.appendChild(doc.createElementNS(this.XHTMLNS, 'img'));
+		var favicon = item.appendChild(doc.createElement('image'));
 		favicon.setAttribute('src', aTab.getAttribute('image') || 'chrome://mozapps/skin/places/defaultFavicon.png');
 		favicon.setAttribute('class', this.kFAVICON);
 
@@ -115,13 +113,13 @@ var PseudoTreeBuilder = {
 		label.setAttribute('class', 'text-link');
 		label.setAttribute('tab-id', TreeStyleTabBase.getTabValue(aTab, TreeStyleTabBase.kID));
 
-		var row = doc.createElementNS(this.XHTMLNS, 'div');
+		var row = doc.createElement('vbox');
 		row.setAttribute('class', this.kTREEROW);
 		row.appendChild(item);
 
 		var children = this.createTabChildren(aTab);
 		if (children) {
-			let container = doc.createElementNS(this.XHTMLNS, 'div');
+			let container = doc.createElement('vbox');
 			container.appendChild(row);
 			container.appendChild(children);
 			return container;
@@ -139,7 +137,7 @@ var PseudoTreeBuilder = {
 		if (!children.length)
 			return null;
 
-		var container = doc.createElementNS(this.XHTMLNS, 'div');
+		var container = doc.createElement('vbox');
 		container.setAttribute('class', this.kTREECHILDREN);
 		for (let i = 0, maxi = children.length; i < maxi; i++)
 		{

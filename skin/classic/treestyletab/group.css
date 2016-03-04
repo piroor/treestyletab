@@ -1,5 +1,4 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
-@namespace xhtml url("http://www.w3.org/1999/xhtml");
 
 :root {
 	appearance: window;
@@ -66,10 +65,16 @@
 	-moz-box-flex: 1;
 }
 
-*|*.treestyletab-pseudo-tree-root-item {
+/* required to apply CSS multi columns */
+.treestyletab-pseudo-tree-root,
+.treestyletab-pseudo-tree-root vbox {
+	display: block;
+}
+
+.treestyletab-pseudo-tree-root-item {
 	display: none !important;
 }
-*|*.treestyletab-pseudo-tree-root-item +
-  *|*.treestyletab-pseudo-tree-children > *|* {
+.treestyletab-pseudo-tree-root-item +
+  .treestyletab-pseudo-tree-children > * {
 	margin-left: 0 !important;
 }

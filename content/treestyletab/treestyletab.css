@@ -690,6 +690,12 @@ window[chromehidden~="toolbar"]
 	opacity: 1;
 }
 
+/* required to apply CSS multi columns */
+#treestyletab-full-tree-tooltip .treestyletab-pseudo-tree-root,
+#treestyletab-full-tree-tooltip .treestyletab-pseudo-tree-root vbox {
+	display: block;
+}
+
 
 /* addon compatibility */
 
