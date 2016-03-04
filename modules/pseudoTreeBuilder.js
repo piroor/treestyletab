@@ -146,32 +146,42 @@ var PseudoTreeBuilder = {
 		return container;
 	},
 
-	columnizeTree : function TB_columnizeTree(aTree, aContainerBox)
+	columnizeTree : function TB_columnizeTree(aTree, aOptions)
 	{
 		if (!aTree)
 			return;
 
-		aContainerBox = aContainerBox || aTree.parentNode.boxObject;
+		aOptions = aOptions || {};
+		var containerBox = aOptions.containerBox || aTree.parentNode.boxObject;
 
 		var style = aTree.style;
 		var height = aTree.clientHeight * (aTree.columnCount || 1);
-		if (height > aContainerBox.height &&
-			aContainerBox.height < aContainerBox.width) {
-			let maxWidth = aContainerBox.width;
+		if (height > containerBox.height &&
+			containerBox.height < containerBox.width) {
+			let maxWidth = containerBox.width;
 			aTree.columnWidth = Math.floor(maxWidth * 0.9 / 2.5);
+			style.columnWidth = style.MozColumnWidth = aTree.columnWidth+'px';
+			style.columnGap = style.MozColumnGap = '0';
+			style.columnFill = style.MozColumnFill = 'auto';
+			if (aOptions.calculateCount) {
 			let count = Math.ceil(
 				(Math.max(aTree.clientWidth, maxWidth) * aTree.clientHeight) /
 				(aTree.columnWidth * aTree.clientHeight)
 			);
 			aTree.columnCount = style.columnCount = style.MozColumnCount = count;
-			style.columnWidth = style.MozColumnWidth = aTree.columnWidth+'px';
-			style.columnGap = style.MozColumnGap = '0';
-			style.columnFill = style.MozColumnFill = 'auto';
+			}
+			else {
+				aTree.columnCount = 2;
+				style.columnCount = style.MozColumnCount = 'auto';
+			}
 
 			aTree.ownerDocument.defaultView.setTimeout((function() {
-				let columnCount = this.getActualColumnCount(aTree);
-				aTree.columnCount = style.columnCount =
-					style.MozColumnCount = columnCount;
+				aTree.columnCount = this.getActualColumnCount(aTree);
+				if (aOptions.calculateCount) {
+					style.columnCount =
+						style.MozColumnCount =
+							aTree.columnCount;
+				}
 			}).bind(this), 0);
 		}
 		else {
@@ -179,12 +189,12 @@ var PseudoTreeBuilder = {
 			style.columnCount = style.MozColumnCount =
 				style.columnWidth = style.MozColumnWidth =
 				style.columnGap = style.MozColumnGap =
-				style.columnFill = style.MozColumnFill;
+				style.columnFill = style.MozColumnFill = '';
 		}
 
 		if (aTree.columnCount > 1) {
 			style.height = style.maxHeight =
-				Math.floor(aContainerBox.height * 0.9) + 'px';
+				Math.floor(containerBox.height * 0.9) + 'px';
 		}
 		else {
 			style.height = style.maxHeight = '';
