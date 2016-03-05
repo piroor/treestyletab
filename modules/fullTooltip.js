@@ -574,6 +574,7 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 		var columnize = utils.getTreePref('tooltip.columnize');
 		if (columnize) {
 			PseudoTreeBuilder.columnizeTree(tree, {
+				columnWidth : utils.getTreePref('tooltip.columnize.width'),
 				containerBox : {
 					width  : this.lastScreen.allowedWidth,
 					height : this.lastScreen.allowedHeight

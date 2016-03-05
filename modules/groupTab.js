@@ -411,7 +411,9 @@ GroupTab.prototype = inherit(TreeStyleTabBase, {
 			return;
 		var container = this.document.getElementById('tree');
 		var tree = container.firstChild;
-		PseudoTreeBuilder.columnizeTree(tree);
+		PseudoTreeBuilder.columnizeTree(tree, {
+			columnWidth : utils.getTreePref('groupTab.columnize.width')
+		});
 	},
 
 	onTabAttached : function GT_onTabAttached(aEvent)

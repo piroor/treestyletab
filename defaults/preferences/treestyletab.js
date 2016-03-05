@@ -346,6 +346,7 @@ pref("extensions.treestyletab.tooltip.fullTooltipDelay", 2000);
  * If true, too many items are shown in multiple columns.
  */
 pref("extensions.treestyletab.tooltip.columnize", true);
+pref("extensions.treestyletab.tooltip.columnize.width", "20em");
 
 /**
  * Visibility of extra menu items for the context menu on tabs, inserted by TST.
@@ -662,6 +663,7 @@ pref("extensions.treestyletab.pinnedTab.faviconized", true);
  * If true, too many items are shown in multiple columns in a dummy (group) tab.
  */
 pref("extensions.treestyletab.groupTab.columnize", true);
+pref("extensions.treestyletab.groupTab.columnize.width", "20em");
 
 /**
  * Compatibility hack flags for other addons. They can be disabled by each

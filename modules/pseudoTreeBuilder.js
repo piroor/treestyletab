@@ -152,9 +152,11 @@ var PseudoTreeBuilder = {
 			return;
 
 		aOptions = aOptions || {};
+		aOptions.width = aOptions.width || '20em';
+
 		var style = aTree.style;
 
-		style.columnWidth = style.MozColumnWidth = 'calc(20em)';
+		style.columnWidth = style.MozColumnWidth = 'calc(' + aOptions.width + ')';
 		{
 			let computedStyle = aTree.ownerDocument.defaultView.getComputedStyle(aTree, null)
 			aTree.columnWidth = Number((computedStyle.MozColumnWidth || computedStyle.columnWidth).replace(/px/, ''));
