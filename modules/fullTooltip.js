@@ -588,8 +588,12 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 
 			var container      = this.container;
 			var containerStyle = container.style;
-			containerStyle.width  = (container.width = treeBox.width)+'px';
+			var arrowScrollBox = container.parentNode;
+			var scrollButtonsMargin = (arrowScrollBox.boxObject.width - arrowScrollBox._scrollbox.boxObject.width);
+			scrollButtonsMargin *= 2; // enough width to deactivate scroll buttons.
+			containerStyle.width  = (container.width = treeBox.width + scrollButtonsMargin)+'px';
 			containerStyle.height = (container.height = (treeBox.height + extraHeight))+'px';
+
 
 			this.expandTooltipInternal();
 		}).bind(this), 0);
