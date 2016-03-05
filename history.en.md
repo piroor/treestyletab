@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Activate multi-column layout only when it is required, at tooltip of tabs and dummy group tabs.
  - 0.17.2016030402
    * Show rich tooltip with multiple columns even if there are only short title tabs.
    * Avoid initialization error on newly opened group tabs.
