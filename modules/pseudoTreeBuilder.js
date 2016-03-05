@@ -152,11 +152,11 @@ var PseudoTreeBuilder = {
 			return;
 
 		aOptions = aOptions || {};
-		aOptions.width = aOptions.width || '20em';
+		aOptions.columnWidth = aOptions.columnWidth || '20em';
 
 		var style = aTree.style;
 
-		style.columnWidth = style.MozColumnWidth = 'calc(' + aOptions.width + ')';
+		style.columnWidth = style.MozColumnWidth = 'calc(' + aOptions.columnWidth + ')';
 		{
 			let computedStyle = aTree.ownerDocument.defaultView.getComputedStyle(aTree, null)
 			aTree.columnWidth = Number((computedStyle.MozColumnWidth || computedStyle.columnWidth).replace(/px/, ''));
