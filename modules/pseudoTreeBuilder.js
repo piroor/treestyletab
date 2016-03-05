@@ -172,22 +172,12 @@ var PseudoTreeBuilder = {
 			style.height = style.maxHeight =
 				Math.floor(containerBox.height * 0.9) + 'px';
 
-			aTree.columnCount = 0;
-			aTree.ownerDocument.defaultView.setTimeout((function() {
-				aTree.columnCount = this.getActualColumnCount(aTree);
-				if (aTree.columnCount == 1)
-					style.columnWidth = style.MozColumnWidth = '';
-				if (aOptions.calculateCount) {
-					// This is required to expand the size of the box.
-					style.columnCount =
-						style.MozColumnCount =
-							aTree.columnCount;
-				}
-			}).bind(this), 0);
+			aTree.columnCount = this.getActualColumnCount(aTree);
+			if (aTree.columnCount == 1)
+				style.columnWidth = style.MozColumnWidth = '';
 		}
 		else {
 			style.height = style.maxHeight = '';
-			aTree.columnCount = 1;
 		}
 	},
 	getActualColumnCount : function TB_getActualColumnCount(aTree)

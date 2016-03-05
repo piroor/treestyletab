@@ -543,8 +543,8 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 	{
 		log('expandTooltip');
 		var tooltip = this.tabFullTooltip;
-		var tree = this.tree;
 		{
+			let tree = this.tree;
 			let basePosition = this.windowBasePosition;
 			let tooltipBox = tooltip.boxObject;
 			log(' => initial dimension: ', {
@@ -563,13 +563,12 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 
 		this.lastScreen = this.getCurrentScreen(tooltip.boxObject);
 
-		var header = this.tree.previousSibling;
-		var extraHeight = header && header.boxObject.height || 0;
-
-		var treeBox = {
-			width  : tree.clientWidth,
-			height : tree.clientHeight
-		};
+		this.determineTreeSize();
+		this.expandTooltipInternal();
+	},
+	determineTreeSize : function FTM_determineTreeSize()
+	{
+		var tree = this.tree;
 
 		var columnize = utils.getTreePref('tooltip.columnize');
 		if (columnize) {
@@ -583,20 +582,22 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 			});
 		}
 
-		this.window.setTimeout((function() {
-			if (!columnize || tree.columnCount != 1)
-				treeBox = tree.boxObject;
+		var range = this.document.createRange();
+		range.selectNodeContents(tree);
+		if (tree.previousSibling)
+			range.setStartBefore(tree.previousSibling);
+		var rect = range.getBoundingClientRect();
+		range.detach();
 
-			var container      = this.container;
-			var containerStyle = container.style;
-			var arrowScrollBox = container.parentNode;
-			var scrollButtonsMargin = (arrowScrollBox.boxObject.width - arrowScrollBox._scrollbox.boxObject.width);
-			scrollButtonsMargin *= 2; // enough width to deactivate scroll buttons.
-			containerStyle.width  = (container.width = treeBox.width + scrollButtonsMargin)+'px';
-			containerStyle.height = (container.height = (treeBox.height + extraHeight))+'px';
+		var container = this.container;
 
-			this.expandTooltipInternal();
-		}).bind(this), 0);
+		var arrowScrollBox = container.parentNode;
+		var scrollButtonsMargin = (arrowScrollBox.boxObject.width - arrowScrollBox._scrollbox.boxObject.width);
+		scrollButtonsMargin *= 2; // enough width to deactivate scroll buttons.
+
+		var containerStyle = container.style;
+		containerStyle.width  = (container.width = rect.width + scrollButtonsMargin)+'px';
+		containerStyle.height = (container.height = rect.height)+'px';
 	},
 	expandTooltipInternal : function FTM_expandTooltipInternal()
 	{
