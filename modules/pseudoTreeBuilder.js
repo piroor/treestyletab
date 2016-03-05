@@ -163,20 +163,10 @@ var PseudoTreeBuilder = {
 		}
 		style.columnGap = style.MozColumnGap = '0';
 		style.columnFill = style.MozColumnFill = 'auto';
+		style.columnCount = style.MozColumnCount = 'auto';
 
 		var containerBox = aOptions.containerBox || aTree.parentNode.boxObject;
 		var maxWidth = containerBox.width;
-		if (aOptions.calculateCount) {
-			let count = Math.ceil(
-				(Math.max(aTree.clientWidth, maxWidth) * aTree.clientHeight) /
-				(aTree.columnWidth * aTree.clientHeight)
-			);
-			style.columnCount = style.MozColumnCount = count;
-		}
-		else {
-			style.columnCount = style.MozColumnCount = 'auto';
-		}
-
 		if (aTree.columnWidth * 2 <= maxWidth ||
 			aOptions.calculateCount) {
 			style.height = style.maxHeight =
@@ -188,6 +178,7 @@ var PseudoTreeBuilder = {
 				if (aTree.columnCount == 1)
 					style.columnWidth = style.MozColumnWidth = '';
 				if (aOptions.calculateCount) {
+					// This is required to expand the size of the box.
 					style.columnCount =
 						style.MozColumnCount =
 							aTree.columnCount;
