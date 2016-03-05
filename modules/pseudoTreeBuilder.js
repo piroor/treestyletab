@@ -152,31 +152,39 @@ var PseudoTreeBuilder = {
 			return;
 
 		aOptions = aOptions || {};
-		var containerBox = aOptions.containerBox || aTree.parentNode.boxObject;
-
 		var style = aTree.style;
-		var height = aTree.clientHeight * (aTree.columnCount || 1);
-		if (height > containerBox.height &&
-			containerBox.height < containerBox.width) {
-			let maxWidth = containerBox.width;
-			aTree.columnWidth = Math.floor(maxWidth * 0.9 / 2.5);
-			style.columnWidth = style.MozColumnWidth = aTree.columnWidth+'px';
-			style.columnGap = style.MozColumnGap = '0';
-			style.columnFill = style.MozColumnFill = 'auto';
-			if (aOptions.calculateCount) {
-				let count = Math.ceil(
-					(Math.max(aTree.clientWidth, maxWidth) * aTree.clientHeight) /
-					(aTree.columnWidth * aTree.clientHeight)
-				);
-				aTree.columnCount = style.columnCount = style.MozColumnCount = count;
-			}
-			else {
-				aTree.columnCount = 2;
-				style.columnCount = style.MozColumnCount = 'auto';
-			}
 
+		style.columnWidth = style.MozColumnWidth = 'calc(20em)';
+		{
+			let computedStyle = aTree.ownerDocument.defaultView.getComputedStyle(aTree, null)
+			aTree.columnWidth = Number((computedStyle.MozColumnWidth || computedStyle.columnWidth).replace(/px/, ''));
+		}
+		style.columnGap = style.MozColumnGap = '0';
+		style.columnFill = style.MozColumnFill = 'auto';
+
+		var containerBox = aOptions.containerBox || aTree.parentNode.boxObject;
+		var maxWidth = containerBox.width;
+		if (aOptions.calculateCount) {
+			let count = Math.ceil(
+				(Math.max(aTree.clientWidth, maxWidth) * aTree.clientHeight) /
+				(aTree.columnWidth * aTree.clientHeight)
+			);
+			style.columnCount = style.MozColumnCount = count;
+		}
+		else {
+			style.columnCount = style.MozColumnCount = 'auto';
+		}
+
+		if (aTree.columnWidth * 2 <= maxWidth ||
+			aOptions.calculateCount) {
+			style.height = style.maxHeight =
+				Math.floor(containerBox.height * 0.9) + 'px';
+
+			aTree.columnCount = 0;
 			aTree.ownerDocument.defaultView.setTimeout((function() {
 				aTree.columnCount = this.getActualColumnCount(aTree);
+				if (aTree.columnCount == 1)
+					style.columnWidth = style.MozColumnWidth = '';
 				if (aOptions.calculateCount) {
 					style.columnCount =
 						style.MozColumnCount =
@@ -185,19 +193,8 @@ var PseudoTreeBuilder = {
 			}).bind(this), 0);
 		}
 		else {
-			aTree.columnCount = 1;
-			style.columnCount = style.MozColumnCount =
-				style.columnWidth = style.MozColumnWidth =
-				style.columnGap = style.MozColumnGap =
-				style.columnFill = style.MozColumnFill = '';
-		}
-
-		if (aTree.columnCount > 1) {
-			style.height = style.maxHeight =
-				Math.floor(containerBox.height * 0.9) + 'px';
-		}
-		else {
 			style.height = style.maxHeight = '';
+			aTree.columnCount = 1;
 		}
 	},
 	getActualColumnCount : function TB_getActualColumnCount(aTree)
