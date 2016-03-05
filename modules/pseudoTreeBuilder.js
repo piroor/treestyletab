@@ -172,8 +172,7 @@ var PseudoTreeBuilder = {
 			style.height = style.maxHeight =
 				Math.floor(containerBox.height * 0.9) + 'px';
 
-			aTree.columnCount = this.getActualColumnCount(aTree);
-			if (aTree.columnCount == 1)
+			if (this.getActualColumnCount(aTree) == 1)
 				style.columnWidth = style.MozColumnWidth = '';
 		}
 		else {
@@ -182,24 +181,10 @@ var PseudoTreeBuilder = {
 	},
 	getActualColumnCount : function TB_getActualColumnCount(aTree)
 	{
-		var rows = aTree.querySelectorAll('*|*.' + this.kTREEROW);
-		if (rows.length <= 1)
-			return 0;
-
-		var firstRow = rows[0];
-		if (rows[0].clientWidth === 0) // ignore hidden item!
-			firstRow = rows[1];
-		var lastRow = rows[rows.length - 1];
-
-		var firstWidth = firstRow.clientWidth;
-		var lastWidth  = lastRow.clientWidth;
-
-		// We have to see XUL box object's x instead of HTML element's clientLeft
-		// to get actual position of elements in a multi-column box.
-		var firstX = firstRow.querySelector('label').boxObject.x;
-		var lastX  = lastRow.querySelector('label').boxObject.x;
-
-		var totalWidth = lastX + lastWidth - firstX;
-		return Math.floor(totalWidth / firstWidth);
+		var range = aTree.ownerDocument.createRange();
+		range.selectNodeContents(aTree);
+		var rect = range.getBoundingClientRect();
+		range.detach();
+		return Math.floor(rect.width / aTree.columnWidth);
 	}
 };
