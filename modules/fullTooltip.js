@@ -594,7 +594,6 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 			containerStyle.width  = (container.width = treeBox.width + scrollButtonsMargin)+'px';
 			containerStyle.height = (container.height = (treeBox.height + extraHeight))+'px';
 
-
 			this.expandTooltipInternal();
 		}).bind(this), 0);
 	},
