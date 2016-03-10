@@ -107,7 +107,10 @@ function TreeStyleTabBrowser(aWindowService, aTabBrowser)
 	this.subTreeChildrenMovingCount = 0;
 	this._treeViewEnabled = true;
 
-	if (prefs.getPref('browser.startup.page') === 1) // prevent to group home page tabs
+	// This prevents to group home page tabs.
+	// Because home tabs are restored for every new windows,
+	// we always do this for every startup.
+	if (prefs.getPref('browser.startup.page') === 1)
 		this.nextOpenedTabToBeParent = false;
 }
  
