@@ -4498,7 +4498,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			}, this);
 		}
 		return (
-			this.getTabValue(aTab, this.kREALLY_SOUND_PLAYING) != 'true' ||
+			this.getTabValue(aTab, this.kREALLY_SOUND_PLAYING) != 'true' &&
 			aTab.getAttribute('muted') != 'true' // allow to unmute tab always, even if the sound is not played
 		);
 	},
