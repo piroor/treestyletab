@@ -185,6 +185,7 @@
 				control="maxTreeLevel-textbox-vertical"
 				value="&config.enableSubtreeIndent;&config.maxTreeLevel.before;"/>
 			<textbox id="maxTreeLevel-textbox-vertical"
+				preference="extensions.treestyletab.maxTreeLevel.vertical"
 				type="number"
 				min="1" increment="1" style="width:4em;"/>
 			<label id="maxTreeLevel-textbox-vertical-after"
