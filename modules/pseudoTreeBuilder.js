@@ -146,45 +146,34 @@ var PseudoTreeBuilder = {
 		return container;
 	},
 
-	columnizeTree : function TB_columnizeTree(aTree, aContainerBox)
+	columnizeTree : function TB_columnizeTree(aTree, aOptions)
 	{
 		if (!aTree)
 			return;
 
-		aContainerBox = aContainerBox || aTree.parentNode.boxObject;
+		aOptions = aOptions || {};
+		aOptions.columnWidth = aOptions.columnWidth || '20em';
 
 		var style = aTree.style;
-		var height = aTree.clientHeight * (aTree.columnCount || 1);
-		if (height > aContainerBox.height &&
-			aContainerBox.height < aContainerBox.width) {
-			let maxWidth = aContainerBox.width;
-			aTree.columnWidth = Math.floor(maxWidth * 0.9 / 2.5);
-			let count = Math.ceil(
-				(Math.max(aTree.clientWidth, maxWidth) * aTree.clientHeight) /
-				(aTree.columnWidth * aTree.clientHeight)
-			);
-			aTree.columnCount = style.columnCount = style.MozColumnCount = count;
-			style.columnWidth = style.MozColumnWidth = aTree.columnWidth+'px';
-			style.columnGap = style.MozColumnGap = '0';
-			style.columnFill = style.MozColumnFill = 'auto';
 
-			aTree.ownerDocument.defaultView.setTimeout((function() {
-				let columnCount = this.getActualColumnCount(aTree);
-				aTree.columnCount = style.columnCount =
-					style.MozColumnCount = columnCount;
-			}).bind(this), 0);
+		style.columnWidth = style.MozColumnWidth = 'calc(' + aOptions.columnWidth + ')';
+		{
+			let computedStyle = aTree.ownerDocument.defaultView.getComputedStyle(aTree, null)
+			aTree.columnWidth = Number((computedStyle.MozColumnWidth || computedStyle.columnWidth).replace(/px/, ''));
 		}
-		else {
-			aTree.columnCount = 1;
-			style.columnCount = style.MozColumnCount =
-				style.columnWidth = style.MozColumnWidth =
-				style.columnGap = style.MozColumnGap =
-				style.columnFill = style.MozColumnFill;
-		}
+		style.columnGap = style.MozColumnGap = '0';
+		style.columnFill = style.MozColumnFill = 'auto';
+		style.columnCount = style.MozColumnCount = 'auto';
 
-		if (aTree.columnCount > 1) {
+		var containerBox = aOptions.containerBox || aTree.parentNode.boxObject;
+		var maxWidth = containerBox.width;
+		if (aTree.columnWidth * 2 <= maxWidth ||
+			aOptions.calculateCount) {
 			style.height = style.maxHeight =
-				Math.floor(aContainerBox.height * 0.9) + 'px';
+				Math.floor(containerBox.height * 0.9) + 'px';
+
+			if (this.getActualColumnCount(aTree) == 1)
+				style.columnWidth = style.MozColumnWidth = '';
 		}
 		else {
 			style.height = style.maxHeight = '';
@@ -192,24 +181,10 @@ var PseudoTreeBuilder = {
 	},
 	getActualColumnCount : function TB_getActualColumnCount(aTree)
 	{
-		var rows = aTree.querySelectorAll('*|*.' + this.kTREEROW);
-		if (rows.length <= 1)
-			return 0;
-
-		var firstRow = rows[0];
-		if (rows[0].clientWidth === 0) // ignore hidden item!
-			firstRow = rows[1];
-		var lastRow = rows[rows.length - 1];
-
-		var firstWidth = firstRow.clientWidth;
-		var lastWidth  = lastRow.clientWidth;
-
-		// We have to see XUL box object's x instead of HTML element's clientLeft
-		// to get actual position of elements in a multi-column box.
-		var firstX = firstRow.querySelector('label').boxObject.x;
-		var lastX  = lastRow.querySelector('label').boxObject.x;
-
-		var totalWidth = lastX + lastWidth - firstX;
-		return Math.floor(totalWidth / firstWidth);
+		var range = aTree.ownerDocument.createRange();
+		range.selectNodeContents(aTree);
+		var rect = range.getBoundingClientRect();
+		range.detach();
+		return Math.floor(rect.width / aTree.columnWidth);
 	}
 };
