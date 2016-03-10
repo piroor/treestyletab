@@ -107,6 +107,7 @@ function TreeStyleTabBrowser(aWindowService, aTabBrowser)
 	this.subTreeChildrenMovingCount = 0;
 	this._treeViewEnabled = true;
 
+	if (prefs.getPref('browser.startup.page') === 1) // prevent to group home page tabs
 	this.nextOpenedTabToBeParent = false;
 }
  
