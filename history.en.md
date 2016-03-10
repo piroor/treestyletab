@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Implement pseudo tree in `about:treestyletab-group` tabs and the rich tooltip without XHTML. (We don't need to mix XHTML and XUL to apply multi-column properties of CSS.)
  - 0.17.2016030402
    * Show rich tooltip with multiple columns even if there are only short title tabs.
    * Avoid initialization error on newly opened group tabs.
