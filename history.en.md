@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 0.17.2016031101
    * Open bookmark groups as a tree correctly, even if it is the first time for an window. (regression)
    * Apply configured max indent level for vertical tab bar correctly. (regression)
    * Allow to unmute tab always, even if the sound is not played. (regression)
