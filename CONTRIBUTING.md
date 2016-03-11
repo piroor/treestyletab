@@ -4,7 +4,7 @@ If you are planning to open a new issue for a bug report or a feature request, o
 
 This is possibly a generic guideline for contributing any Firefox addon project or a public OSS/free software project.
 
-## Good, helpful bug reports
+## Good, helpful bug reports including feature requests
 
 A good report is the fastest way to solve a problem.
 Even if the problem is very clear for you, possibly unclear for me.
@@ -25,6 +25,13 @@ Here is a list of typical questions I asked to existing reports:
  * **Is the main topic single and clear?**
    Sometimes I got an issue including multiple topics, but such an issue is hard to be closed, then it often stays opened for long time and confuses me.
    If you have multiple topics, please report them as separate issues for each.
+
+For future requests, some more important information:
+
+ * **Did you find other addon which provide the feature you are going to request?**
+   If there is any other addon for the purpose, then TST should become compatible to it instead of merging the feature into TST itself.
+ * **Please add `[feature request]` tag into the summary.**
+   Sometimes a feature request can be misunderstood as a simple bug report.
 
 Then, please report the bug with these information:
 
