@@ -1,8 +1,8 @@
 # History
 
  - master/HEAD
-   * Open bookmark groups as a tree correctly, even if it is the initial time after the startup. (regression)
-   * Apply configured max indent level for vertical tab bar. (regression)
+   * Open bookmark groups as a tree correctly, even if it is the first time for an window. (regression)
+   * Apply configured max indent level for vertical tab bar correctly. (regression)
    * Allow to unmute tab always, even if the sound is not played. (regression)
    * Implement pseudo tree in `about:treestyletab-group` tabs and the rich tooltip without XHTML. (We don't need to mix XHTML and XUL to apply multi-column properties of CSS.)
    * Activate multi-column layout only when it is required, at tooltip of tabs and dummy group tabs.
