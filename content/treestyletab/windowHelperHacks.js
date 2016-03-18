@@ -327,7 +327,7 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 					if (originalTabs.length === 0)
 						originalTabs = Array.slice(gBrowser.tabContainer.childNodes, 0);
 					var owner = aMessage.target;
-					var retVal = originalOpenInTab.apply(this, [aMessage].concat(aArgs));
+					var retVal = originalOpenInTab.call(this, aMessage, ...aArgs);
 					window.setTimeout(function() {
 						window.setTimeout(function() {
 							if (originalTabs.length === 0)

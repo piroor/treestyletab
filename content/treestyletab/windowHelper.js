@@ -15,7 +15,7 @@ var TreeStyleTabWindowHelper = {
 		gBrowserInit.__treestyletab___delayedStartup = gBrowserInit._delayedStartup;
 		gBrowserInit._delayedStartup = function(...aArgs) {
 			TreeStyleTabWindowHelper.runningDelayedStartup = true;
-			var retVal = gBrowserInit.__treestyletab___delayedStartup.apply(this, aArgs);
+			var retVal = gBrowserInit.__treestyletab___delayedStartup.call(this, ...aArgs);
 			TreeStyleTabWindowHelper.runningDelayedStartup = false;
 			return retVal;
 		};
@@ -54,13 +54,13 @@ var TreeStyleTabWindowHelper = {
 		window.__treestyletab__BrowserOpenTab = window.BrowserOpenTab;
 		window.BrowserOpenTab = function(...aArgs) {
 			gBrowser.treeStyleTab.onBeforeNewTabCommand();
-			return window.__treestyletab__BrowserOpenTab.apply(this, aArgs);
+			return window.__treestyletab__BrowserOpenTab.call(this, ...aArgs);
 		};
 
 		window.__treestyletab__undoCloseTab = window.undoCloseTab;
 		window.undoCloseTab = function(...aArgs) {
 			gBrowser.__treestyletab__doingUndoCloseTab = true;
-			var tab = window.__treestyletab__undoCloseTab.apply(this, aArgs);
+			var tab = window.__treestyletab__undoCloseTab.call(this, ...aArgs);
 			if (tab)
 				tab.__treestyletab__restoredByUndoCloseTab = true;
 			setTimeout(function() {
@@ -77,7 +77,7 @@ var TreeStyleTabWindowHelper = {
 				});
 			try {
 				TreeStyleTabService.onBeforeOpenLinkWithTab(gBrowser.selectedTab, aParams);
-				return window.__treestyletab__openLinkIn.apply(this, [aUrl, aWhere, aParams].concat(aArgs));
+				return window.__treestyletab__openLinkIn.call(this, aUrl, aWhere, aParams, ...aArgs);
 			}
 			finally {
 				delete window.__treestyletab__openLinkIn_extraParams;
@@ -91,7 +91,7 @@ var TreeStyleTabWindowHelper = {
 				linkNode : aLinkNode
 			};
 			try {
-				return window.__treestyletab__handleLinkClick.apply(this, [aEvent, aHref, aLinkNode].concat(aArgs));
+				return window.__treestyletab__handleLinkClick.call(this, aEvent, aHref, aLinkNode, ...aArgs);
 			}
 			finally {
 				delete window.__treestyletab__openLinkIn_extraParams;
@@ -116,7 +116,7 @@ var TreeStyleTabWindowHelper = {
 			if (TreeStyleTabWindowHelper.runningDelayedStartup &&
 				TreeStyleTabService.tearOffSubtreeFromRemote(aRemoteTab))
 				return;
-			return gBrowser.__treestyletab__swapBrowsersAndCloseOther.apply(this, [aOurTab, aRemoteTab].concat(aArgs));
+			return gBrowser.__treestyletab__swapBrowsersAndCloseOther.call(this, aOurTab, aRemoteTab, ...aArgs);
 		};
 	},
  
@@ -160,7 +160,7 @@ var TreeStyleTabWindowHelper = {
 		else { // Firefox 44 and later
 			aObserver.__treestyletab__getDropEffectForTabDrag = aObserver._getDropEffectForTabDrag;
 			aObserver._getDropEffectForTabDrag = function(...aArgs) {
-				var effects = aObserver.__treestyletab__getDropEffectForTabDrag.apply(this, aArgs);
+				var effects = aObserver.__treestyletab__getDropEffectForTabDrag.call(this, ...aArgs);
 				if (effects === 'copy' || effects === 'move') {
 					let TSTTabBrowser = this instanceof Element ? (this.tabbrowser || this) : gBrowser ;
 					var TST = TSTTabBrowser.treeStyleTab
@@ -179,13 +179,13 @@ var TreeStyleTabWindowHelper = {
 		nsContextMenu.prototype.__treestyletab__openLinkInTab = nsContextMenu.prototype.openLinkInTab;
 		nsContextMenu.prototype.openLinkInTab = function(...aArgs) {
 			TreeStyleTabService.handleNewTabFromCurrent(this.target.ownerDocument.defaultView);
-			return nsContextMenu.prototype.__treestyletab__openLinkInTab.apply(this, aArgs);
+			return nsContextMenu.prototype.__treestyletab__openLinkInTab.call(this, ...aArgs);
 		};
 
 		nsContextMenu.prototype.__treestyletab__openFrameInTab = nsContextMenu.prototype.openFrameInTab;
 		nsContextMenu.prototype.openFrameInTab = function(...aArgs) {
 			TreeStyleTabService.handleNewTabFromCurrent(this.target.ownerDocument.defaultView);
-			return nsContextMenu.prototype.__treestyletab__openFrameInTab.apply(this, aArgs);
+			return nsContextMenu.prototype.__treestyletab__openFrameInTab.call(this, ...aArgs);
 		};
 
 		nsContextMenu.prototype.__treestyletab__viewMedia = nsContextMenu.prototype.viewMedia;
@@ -205,25 +205,25 @@ var TreeStyleTabWindowHelper = {
 			var newWindowPref = TreeStyleTabUtils.prefs.getPref('browser.link.open_newwindow');
 			var where = newWindowPref === 3 ? 'tab' : 'window' ;
 			TreeStyleTabService.onBeforeOpenLink(where, this.target.ownerDocument.defaultView);
-			return nsContextMenu.prototype.__treestyletab__addDictionaries.apply(this, aArgs);
+			return nsContextMenu.prototype.__treestyletab__addDictionaries.call(this, ...aArgs);
 		};
 
 		nsContextMenu.prototype.__treestyletab__viewPartialSource = nsContextMenu.prototype.viewPartialSource;
 		nsContextMenu.prototype.viewPartialSource = function(...aArgs) {
 			TreeStyleTabService.handleNewTabFromCurrent(this.target.ownerDocument.defaultView);
-			return nsContextMenu.prototype.__treestyletab__viewPartialSource.apply(this, aArgs);
+			return nsContextMenu.prototype.__treestyletab__viewPartialSource.call(this, ...aArgs);
 		};
 
 		nsContextMenu.prototype.__treestyletab__viewFrameSource = nsContextMenu.prototype.viewFrameSource;
 		nsContextMenu.prototype.viewFrameSource = function(...aArgs) {
 			TreeStyleTabService.handleNewTabFromCurrent(this.target.ownerDocument.defaultView);
-			return nsContextMenu.prototype.__treestyletab__viewFrameSource.apply(this, aArgs);
+			return nsContextMenu.prototype.__treestyletab__viewFrameSource.call(this, ...aArgs);
 		};
 
 		window.__treestyletab__BrowserViewSource = window.BrowserViewSource;
 		window.BrowserViewSource = function(...aArgs) {
 			TreeStyleTabService.handleNewTabFromCurrent(aArgs[0]);
-			return window.__treestyletab__BrowserViewSource.apply(this, aArgs);
+			return window.__treestyletab__BrowserViewSource.call(this, ...aArgs);
 		};
 
 		BrowserSearch.__treestyletab__loadSearch = BrowserSearch._loadSearch;
@@ -256,7 +256,7 @@ var TreeStyleTabWindowHelper = {
 			owner[original] = owner[name];
 			owner[name] = function(aEvent, aIsPanelClick, ...aArgs) {
 				TreeStyleTabService.onBeforeOpenNewTabByThirdParty(aEvent.target.ownerDocument.defaultView);
-				return owner[original].apply(this, [aEvent, aIsPanelClick].concat(aArgs));
+				return owner[original].call(this, aEvent, aIsPanelClick, ...aArgs);
 			};
 		}, this);
 
@@ -282,7 +282,7 @@ var TreeStyleTabWindowHelper = {
 			FullScreen.__treestyletab__showNavToolbox = FullScreen.showNavToolbox;
 			FullScreen.showNavToolbox = function(...aArgs) {
 				var beforeCollapsed = this._isChromeCollapsed;
-				var retVal = FullScreen.__treestyletab__showNavToolbox.apply(this, aArgs);
+				var retVal = FullScreen.__treestyletab__showNavToolbox.call(this, ...aArgs);
 				if (beforeCollapsed !== this._isChromeCollapsed)
 					gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_FULLSCREEN);
 				return retVal;
@@ -291,7 +291,7 @@ var TreeStyleTabWindowHelper = {
 			FullScreen.__treestyletab__hideNavToolbox = FullScreen.hideNavToolbox;
 			FullScreen.hideNavToolbox = function(...aArgs) {
 				var beforeCollapsed = this._isChromeCollapsed;
-				var retVal = FullScreen.__treestyletab__hideNavToolbox.apply(this, aArgs);
+				var retVal = FullScreen.__treestyletab__hideNavToolbox.call(this, ...aArgs);
 				if (beforeCollapsed !== this._isChromeCollapsed)
 					gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_FULLSCREEN);
 				return retVal;
@@ -301,7 +301,7 @@ var TreeStyleTabWindowHelper = {
 			FullScreen.__treestyletab__mouseoverToggle = FullScreen.mouseoverToggle;
 			FullScreen.mouseoverToggle = function(...aArgs) {
 				var beforeCollapsed = this._isChromeCollapsed;
-				var retVal = FullScreen.__treestyletab__mouseoverToggle.apply(this, aArgs);
+				var retVal = FullScreen.__treestyletab__mouseoverToggle.call(this, ...aArgs);
 				if (beforeCollapsed !== this._isChromeCollapsed)
 					gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_FULLSCREEN);
 				return retVal;
@@ -315,25 +315,25 @@ var TreeStyleTabWindowHelper = {
 			if (event && event.type == 'fullscreen')
 				enterFS = !enterFS;
 			gBrowser.treeStyleTab.onBeforeFullScreenToggle(enterFS);
-			return FullScreen.__treestyletab__toggle.apply(this, aArgs);
+			return FullScreen.__treestyletab__toggle.call(this, ...aArgs);
 		};
 
 		PrintUtils.__treestyletab__printPreview = PrintUtils.printPreview;
 		PrintUtils.printPreview = function(...aArgs) {
 			TreeStyleTabService.onPrintPreviewEnter();
-			return PrintUtils.__treestyletab__printPreview.apply(this, aArgs);
+			return PrintUtils.__treestyletab__printPreview.call(this, ...aArgs);
 		};
 		PrintUtils.__treestyletab__exitPrintPreview = PrintUtils.exitPrintPreview;
 		PrintUtils.exitPrintPreview = function(...aArgs) {
 			TreeStyleTabService.onPrintPreviewExit();
-			return PrintUtils.__treestyletab__exitPrintPreview.apply(this, aArgs);
+			return PrintUtils.__treestyletab__exitPrintPreview.call(this, ...aArgs);
 		};
 
 		SidebarUI.__treestyletab__show = SidebarUI.show;
 		SidebarUI.show = function(...aArgs) {
 			var opened = this.isOpen;
 			var width = this.browser.boxObject.width;
-			return SidebarUI.__treestyletab__show.apply(this, aArgs)
+			return SidebarUI.__treestyletab__show.call(this, ...aArgs)
 					.then((function(aResult) {
 						if (opened !== this.isOpen ||
 							width !== this.browser.boxObject.width)
@@ -345,7 +345,7 @@ var TreeStyleTabWindowHelper = {
 		SidebarUI.hide = function(...aArgs) {
 			var opened = this.isOpen;
 			var width = this.browser.boxObject.width;
-			var retVal = SidebarUI.__treestyletab__hide.apply(this, aArgs);
+			var retVal = SidebarUI.__treestyletab__hide.call(this, ...aArgs);
 			if (opened !== this.isOpen ||
 				width !== this.browser.boxObject.width)
 				gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_TOGGLE_SIDEBAR);
@@ -386,7 +386,7 @@ var TreeStyleTabWindowHelper = {
 			searchbar.__treestyletab__original_doSearch = searchbar.doSearch;
 			searchbar.doSearch = function(...aArgs) {
 				TreeStyleTabService.onBeforeBrowserSearch(aArgs[0]);
-				var retVal = searchbar.__treestyletab__original_doSearch.apply(this, aArgs);
+				var retVal = searchbar.__treestyletab__original_doSearch.call(this, ...aArgs);
 				TreeStyleTabService.stopToOpenChildTab();
 				return retVal;
 			};
@@ -513,7 +513,7 @@ var TreeStyleTabWindowHelper = {
 			var firstTabAdded;
 			try {
 				tabs = this.treeStyleTab.doAndGetNewTabs((function() {
-						result = this.__treestyletab__loadTabs.apply(this, [aURIs, aLoadInBackground, aReplace].concat(aArgs));
+						result = this.__treestyletab__loadTabs.call(this, aURIs, aLoadInBackground, aReplace, ...aArgs);
 					}).bind(this));
 				firstTabAdded = tabs[0];
 			}
@@ -544,7 +544,7 @@ var TreeStyleTabWindowHelper = {
 		b.removeCurrentTab = function(...aArgs) {
 			if (!b.treeStyleTab.warnAboutClosingTabSubtreeOf(this.selectedTab))
 				return;
-			return b.__treestyletab__removeCurrentTab.apply(this, aArgs);
+			return b.__treestyletab__removeCurrentTab.call(this, ...aArgs);
 		};
 	},
  
@@ -558,7 +558,7 @@ var TreeStyleTabWindowHelper = {
 			b.mTabContainer.advanceSelectedTab = function(...aArgs) {
 				if (b.treeStyleTab.handleAdvanceSelectedTab(aArgs[0], aArgs[1]))
 					return;
-				return b.mTabContainer.__treestyletab__advanceSelectedTab.apply(this, aArgs);
+				return b.mTabContainer.__treestyletab__advanceSelectedTab.call(this, ...aArgs);
 			};
 
 		TreeStyleTabUtils.doPatching(b.mTabContainer._notifyBackgroundTab, 'b.mTabContainer._notifyBackgroundTab', function(aName, aSource) {
@@ -627,7 +627,7 @@ var TreeStyleTabWindowHelper = {
 					let shouldScrollNow = aArgs[1] === false;
 					if (b.treeStyleTab.animationEnabled && !shouldScrollNow)
 						return b.treeStyleTab.scrollToTab(aArgs[0]);
-					scrollbox.__treestyletab__ensureElementIsVisible.apply(this, aArgs);
+					scrollbox.__treestyletab__ensureElementIsVisible.call(this, ...aArgs);
 				};
 			}
 		}
@@ -658,7 +658,7 @@ var TreeStyleTabWindowHelper = {
 		aTab.toggleMuteAudio = function(...aArgs) {
 			if (aTabBrowser.treeStyleTab.handleTabToggleMuteAudio(aTab))
 				return;
-			return aTab.__treestyletab__toggleMuteAudio.apply(this, aArgs);
+			return aTab.__treestyletab__toggleMuteAudio.call(this, ...aArgs);
 		};
 	}
  
