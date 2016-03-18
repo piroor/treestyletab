@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Better compatibility with FireGestures.
    * Introduce a new secret preference `extensions.treestyletab.controlNewTabPosition` to disable new tab position control by TST itself. When you use any other addon like Tab Mix Plus which provides ability to control new tab position for bookmarks or others, you possibly get better experience with turning it to `false`.
  - 0.17.2016031101
    * Open bookmark groups as a tree correctly, even if it is the first time for an window. (regression)
