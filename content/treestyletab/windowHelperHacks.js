@@ -677,44 +677,36 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// https://addons.mozilla.org/firefox/addon/6366
 	if ('FireGestures' in window &&
 		TreeStyleTabUtils.getTreePref('compatibility.FireGestures')) {
-		eval('FireGestures.onExtraGesture = '+
-			FireGestures.onExtraGesture.toSource().replace(
-				'case "keypress-stop":',
-				'$&\n' +
-				'  TreeStyleTabService.readyToOpenChildTab(gBrowser, true);'
-			).replace(
-				'break;case "gesture-timeout":',
-				'  TreeStyleTabService.stopToOpenChildTab(gBrowser);\n' +
-				'$&'
-			)
-		);
-		eval('FireGestures._performAction = '+
-			FireGestures._performAction.toSource().replace(
-				'gBrowser.loadOneTab(',
-				'  TreeStyleTabService.readyToOpenChildTab(gBrowser);\n' +
-				'$&'
-			)
-		);
-		eval('FireGestures.openURLsInSelection = '+
-			FireGestures.openURLsInSelection.toSource().replace(
-				'var tab =',
-				'  if (!TreeStyleTabService.checkToOpenChildTab(gBrowser))\n' +
-				'    TreeStyleTabService.readyToOpenChildTab(gBrowser, true);\n' +
-				'$&'
-			).replace(
-				'if (!flag)',
-				'  if (TreeStyleTabService.checkToOpenChildTab(gBrowser))\n' +
-				'    TreeStyleTabService.stopToOpenChildTab(gBrowser);\n' +
-				'$&'
-			)
-		);
-		eval('FireGestures.handleEvent = '+
-			FireGestures.handleEvent.toSource().replace(
-				'gBrowser.loadOneTab(',
-				'  TreeStyleTabService.readyToOpenChildTab(gBrowser);\n' +
-				'$&'
-			)
-		);
+		FireGestures.__treestyletab__onExtraGesture = FireGestures.onExtraGesture;
+		FireGestures.onExtraGesture = function(aEvent, aGesture, ...aArgs) {
+			switch (aGesture)
+			{
+				case 'keypress-stop':
+					TreeStyleTabService.readyToOpenChildTab(gBrowser, true);
+					break;
+				case 'gesture-timeout':
+					TreeStyleTabService.stopToOpenChildTab(gBrowser);
+					break;
+			}
+			return FireGestures.__treestyletab__onExtraGesture.call(this, aEvent, aGesture, ...aArgs);
+		};
+		FireGestures.__treestyletab__performAction = FireGestures._performAction;
+		FireGestures._performAction = function(aEvent, aCommand, ...aArgs) {
+			switch (aCommand)
+			{
+				case 'FireGestures:OpenLinkInBgTab':
+				case 'FireGestures:OpenLinkInFgTab':
+					TreeStyleTabService.readyToOpenChildTabNow(gBrowser);;
+					break;
+			}
+			return FireGestures.__treestyletab__performAction.call(this, aEvent, aCommand, ...aArgs);
+		};
+		FireGestures.__treestyletab__handleEvent = FireGestures.handleEvent;
+		FireGestures.handleEvent = function(aEvent, ...aArgs) {
+			if (aEvent.type == 'command')
+				TreeStyleTabService.readyToOpenChildTabNow(gBrowser);
+			return FireGestures.__treestyletab__handleEvent.call(this, aEvent, ...aArgs);
+		};
 	}
 
 	// Mouse Gestures Redox
