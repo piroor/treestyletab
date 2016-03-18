@@ -3676,7 +3676,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var b   = this.mTabBrowser;
 
 		var prevPosition = aEvent.detail;
-		if (tab.__treestyletab__isOpening && !this.isTabInternallyMoving(tab)) {
+		if (tab.__treestyletab__isOpening &&
+			!this.isTabInternallyMoving(tab) &&
+			utils.getTreePref('controlNewTabPosition')) {
 			log('onTabMove for new child tab: move back '+tab._tPos+' => '+prevPosition);
 			tab.__treestyletab__internallyTabMovingCount++;
 			b.moveTabTo(tab, prevPosition);

@@ -537,6 +537,12 @@ pref("extensions.treestyletab.autoAttach.goButton", 1);
 pref("extensions.treestyletab.autoAttach.fromCurrent", 1);
 
 /**
+ * If true, TST controls position of a newly opened tab by self.
+ * You should turn this false if you want to use any other addon which controls new tab positions.
+ */
+pref("extensions.treestyletab.controlNewTabPosition", true);
+
+/**
  * Focus targets for Ctrl-Tab/Ctrl-Shift-Tab.
  *  0 = Focus to both visible and collapsed tabs. (If a collapsed tab is
  *      focused, the tree will be expanded by another pref "autoExpandSubtreeOnCollapsedChildFocused".
