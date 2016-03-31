@@ -15,8 +15,8 @@ There are some major requests which are reported multiple times but I marked the
 Basically this is designed to provide vertical indented, deeply nested tree of tabs. There is only limited support for non-tree mode.
 If you just require the vertical tab bar and you never use "tree of tabs", then please try other alternative addons:
 
- * [Vertical Tabs](https://addons.mozilla.org/firefox/addon/vertical-tabs/)
  * [Vertical Tabs (Simplified)](https://addons.mozilla.org/firefox/addon/vertical-tabs-simplified/)
+ * [Vertical Tabs Reloaded](https://addons.mozilla.org/firefox/addon/vertical-tabs-reloaded/)
  * [Side Tabs](https://addons.mozilla.org/firefox/addon/side-tabs/)
 
 And, horizontal tab bar is just a bonus. If you are a heavy user of the horizontal tab bar, then bugs appearing only on it won't be fixed by me. Instead please fix it by your hand and send pull requests to me.
