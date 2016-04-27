@@ -39,6 +39,9 @@ var EXPORTED_SYMBOLS = ['TreeStyleTabThemeManager'];
 const BASE = 'chrome://treestyletab/skin/';
 
 Components.utils.import('resource://treestyletab-modules/base.js');
+Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
+XPCOMUtils.defineLazyModuleGetter(this,
+  'TreeStyleTabUtils', 'resource://treestyletab-modules/utils.js');
 
 function TreeStyleTabThemeManager(aWindow)
 {
@@ -104,6 +107,9 @@ TreeStyleTabThemeManager.prototype = {
 				styles.push(BASE+'platform-styled.css');
 				break;
 		}
+
+		if(aStyle == '' && this.window.TreeStyleTabUtils.prefs.getPref('devtools.theme') == 'dark')
+			styles.push(BASE+'newtab-dark.css');
 
 		if (styles.length) {
 			this._lastStyles = styles.map(function(aStyle) {
