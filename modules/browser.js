@@ -980,7 +980,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 					let insertAfter = item.getAttribute('multipletab-insertafter');
 					if (insertAfter) {
 						try {
-							eval('refNode = ('+insertAfter+').nextSibling');
+							(new Function('return refNode = ('+insertAfter+').nextSibling'))();
 						}
 						catch(e) {
 						}
@@ -988,7 +988,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 					let insertBefore = item.getAttribute('multipletab-insertbefore');
 					if (refNode === void(0) && insertBefore) {
 						try {
-							eval('refNode = '+insertBefore);
+							(new Function('return refNode = '+insertBefore))();
 						}
 						catch(e) {
 						}
