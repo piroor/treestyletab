@@ -64,6 +64,16 @@ TreeStyleTabThemeManager.prototype = {
 		this._lastStyles = null;
 
 		var styles = [];
+
+		styles.push(BASE+'base-colors.css');
+
+		styles.push('chrome://treestyletab/skin/base.css');
+		styles.push('chrome://treestyletab/skin/twisty/twisty.css');
+		styles.push('chrome://treestyletab/skin/ui.css');
+		styles.push('chrome://treestyletab/skin/tmp.css');
+		styles.push('chrome://treestyletab/skin/platform-base.css');
+		styles.push('chrome://treestyletab/skin/pseudo-tree.css');
+		
 		switch (aStyle)
 		{
 			default:
