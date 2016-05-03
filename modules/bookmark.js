@@ -476,7 +476,7 @@ PlacesUIUtils.openContainerNodeInTabs = function(aNode, ...aArgs) {
 };
 
 PlacesUIUtils.__treestyletab__openURINodesInTabs = PlacesUIUtils.openURINodesInTabs;
-PlacesUIUtils.openURINodesInTabs = function(aNode, ...aArgs) {
+PlacesUIUtils.openURINodesInTabs = function(aNodes, ...aArgs) {
 	try {
 		this.__treestyletab__openTabset_rawNodes = aNodes;
 		this.__treestyletab__folderName = utils.treeBundle.getFormattedString(
@@ -485,7 +485,7 @@ PlacesUIUtils.openURINodesInTabs = function(aNode, ...aArgs) {
 				'openSelectedPlaces.history',
 			[aNodes[0].title, aNodes.length]
 		);
-		return this.__treestyletab__openURINodesInTabs.apply(this, [aNode].concat(aArgs));
+		return this.__treestyletab__openURINodesInTabs.apply(this, [aNodes].concat(aArgs));
 	}
 	finally {
 		delete this.__treestyletab__openTabset_rawNodes;
