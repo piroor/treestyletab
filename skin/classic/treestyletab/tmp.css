@@ -51,7 +51,7 @@
 
 :root[treestyletab-enable-compatibility-tmp="true"]
   .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton:hover {
-	background: ThreeDHighlight !important;
+	background: var(--tst-tab-surface-hover) !important;
 }
 
 :root[treestyletab-enable-compatibility-tmp="true"]
