@@ -37,11 +37,11 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
 :root[devtoolstheme="light"] {
-	--tabs-newtab-button-background: -moz-dialog;
-	--tabs-newtab-button-background-hover: ThreeDHighlight;
+	--tab-surface: -moz-dialog;
+	--tab-surface-hover: ThreeDHighlight;
 }
 
 :root[devtoolstheme="dark"] {
-	--tabs-newtab-button-background: #39424D;
-	--tabs-newtab-button-background-hover: #49525D;
+	--tab-surface: #39424D;
+	--tab-surface-hover: #49525D;
 }
