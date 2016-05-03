@@ -3,6 +3,15 @@
 <?xml-stylesheet href="treestyletab.css" type="text/css"?>
 <?xml-stylesheet href="treestyletab-tmp.css" type="text/css"?><!-- hacks for Tab Mix Plus -->
 
+<?xml-stylesheet href="chrome://treestyletab/skin/base-colors.css" type="text/css"?>
+
+<?xml-stylesheet href="chrome://treestyletab/skin/base.css" type="text/css"?>
+<?xml-stylesheet href="chrome://treestyletab/skin/twisty/twisty.css" type="text/css"?>
+<?xml-stylesheet href="chrome://treestyletab/skin/ui.css" type="text/css"?>
+<?xml-stylesheet href="chrome://treestyletab/skin/tmp.css" type="text/css"?><!-- hacks for Tab Mix Plus -->
+<?xml-stylesheet href="chrome://treestyletab/skin/platform-base.css" type="text/css"?>
+<?xml-stylesheet href="chrome://treestyletab/skin/pseudo-tree.css" type="text/css"?>
+
 <!DOCTYPE overlay SYSTEM "chrome://treestyletab/locale/treestyletab.dtd">
 <overlay id="treestyletab-overlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
