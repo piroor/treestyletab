@@ -4,13 +4,13 @@
 
 tabbrowser[treestyletab-tabbar-position="left"]:not([treestyletab-tabbar-fixed="true"])
   .treestyletab-splitter {
-	border-right: 1px solid ThreeDShadow !important;
-	-moz-border-right-colors: ThreeDShadow !important;
+	border-right: 1px solid var(--tst-tab-border) !important;
+	-moz-border-right-colors: var(--tst-tab-border) !important;
 }
 tabbrowser[treestyletab-tabbar-position="right"]:not([treestyletab-tabbar-fixed="true"])
   .treestyletab-splitter {
-	border-left: 1px solid ThreeDShadow !important;
-	-moz-border-left-colors: ThreeDShadow !important;
+	border-left: 1px solid var(--tst-tab-border) !important;
+	-moz-border-left-colors: var(--tst-tab-border) !important;
 }
 
 tabbrowser:not([treestyletab-style="vertigo"])[treestyletab-mode="vertical"]

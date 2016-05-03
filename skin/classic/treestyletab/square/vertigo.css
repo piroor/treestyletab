@@ -90,6 +90,6 @@
 /* autohide */
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-autohide][treestyletab-mode="vertical"]
   #treestyletab-tabbar-resizer-box {
-	background: -moz-dialog;
+	background: var(--tst-tab-surface);
 	opacity: 0.75;
 }

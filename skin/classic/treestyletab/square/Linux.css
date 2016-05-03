@@ -4,11 +4,11 @@
 
 .tabbrowser-strip[treestyletab-tabbar-position="left"]:not([treestyletab-tabbar-transparent="full"]),
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-position="left"]:not([treestyletab-tabbar-transparent="full"]) {
-	border-right: 1px solid ThreeDShadow !important;
+	border-right: 1px solid var(--tst-tab-border) !important;
 	-moz-border-right-colors: none !important;
 }
 .tabbrowser-strip[treestyletab-tabbar-position="right"]:not([treestyletab-tabbar-transparent="full"]),
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-position="right"]:not([treestyletab-tabbar-transparent="full"]) {
-	border-left: 1px solid ThreeDShadow !important;
+	border-left: 1px solid var(--tst-tab-border) !important;
 	-moz-border-right-colors: none !important;
 }

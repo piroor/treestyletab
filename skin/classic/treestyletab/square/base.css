@@ -2,6 +2,20 @@
 
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
+/* color scheme: see also ../base-colors.css */
+
+:root {
+	--tst-tab-highlighted-base: ThreeDHighlight;
+	--tst-tab-highlighted-highlight: Highlight;
+	--tst-tab-side-border: ThreeDLightShadow;
+	--tst-tab-surface-hover: #e0e8f6;
+	--tst-tab-surface-selected: #c1d2ee;
+	--tst-tab-surface-selected-hover: #d1e2fe;
+
+	--tst-tabbar-bg: darkgray;
+}
+
+
 /* Default style */
 
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"]),
@@ -15,7 +29,7 @@
 .tabbrowser-strip[treestyletab-style~="border"]:not([treestyletab-tabbar-position="top"]) {
 	appearance: none;
 	-moz-appearance: none;
-	background: darkgray !important;
+	background: var(--tst-tabbar-bg) !important;
 }
 
 .tabbrowser-strip[treestyletab-mode="vertical"],
@@ -42,12 +56,12 @@
 
 .tabbrowser-strip[treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"],
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"] {
-	border-right: 1px solid ThreeDShadow !important;
+	border-right: 1px solid var(--tst-tab-border) !important;
 	-moz-border-right-colors: none !important;
 }
 .tabbrowser-strip[treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"],
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-position="right"][treestyletab-tabbar-fixed="true"] {
-	border-left: 1px solid ThreeDShadow !important;
+	border-left: 1px solid var(--tst-tab-border) !important;
 	-moz-border-left-colors: none !important;
 }
 
@@ -94,14 +108,14 @@
 	min-height: 2em;
 	margin: 0 !important;
 	/*padding: 0 0.2em !important;*/
-	color: -moz-dialogtext !important;
+	color: var(--tst-tab-text) !important;
 	-moz-background-origin: border !important;
 	background-origin: border-box !important;
 	background-position: 0 0 !important;
 	border-top: 2px solid !important;
 	-moz-border-top-colors: transparent transparent !important;
 	border-bottom: 2px solid !important;
-	-moz-border-bottom-colors: ThreeDShadow transparent !important;
+	-moz-border-bottom-colors: var(--tst-tab-border) transparent !important;
 	border-radius: 0 !important;
 	-moz-border-radius: 0 !important;
 	-moz-border-image: none !important;
@@ -113,7 +127,7 @@
 #TabsToolbar:not(:-moz-lwtheme):not([treestyletab-tabbar-position="top"])
   #tabbrowser-tabs
   .tabbrowser-tab:not([visuallyselected]) {
-	color: -moz-dialogtext !important;
+	color: var(--tst-tab-text) !important;
 }
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:not([pinned]),
@@ -121,21 +135,22 @@
   .tabbrowser-tab:not([pinned])[visuallyselected="true"],
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:not([pinned]):not([visuallyselected="true"]) {
-	background: -moz-dialog repeat-x !important;
+	background: noone repeat-x !important;
+	background-color: var(--tst-tab-surface) !important;
 }
 
 /* highlighted pinned tabs */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned][titlechanged]:not([visuallyselected="true"]) {
 	background-image: radial-gradient(circle farthest-corner at 50% 3px,
-	                                  ThreeDHighlight 3%,
-	                                  Highlight 80%);
+	                                  var(--tst-tab-highlighted-base) 3%,
+	                                  var(--tst-tab-highlighted-highlight) 80%);
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned][titlechanged]:not([visuallyselected="true"]):hover {
 	background-image: radial-gradient(circle farthest-corner at 50% 3px,
-	                                  ThreeDHighlight 3%,
-	                                  Highlight 100%);
+	                                  var(--tst-tab-highlighted-base) 3%,
+	                                  var(--tst-tab-highlighted-highlight) 100%);
 }
 
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
@@ -149,11 +164,12 @@
   .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   :-moz-any(.tabbrowser-tab[pinned],
             .tabbrowser-tab[pinned][titlechanged]) {
-	background: -moz-dialog repeat-x !important;
+	background: none repeat-x !important;
+	background-color: var(--tst-tab-surface) !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-firsttab-border="true"]
   .tabbrowser-tab:not([pinned="true"]):not([visuallyselected="true"]):first-child {
-	-moz-border-top-colors: ThreeDShadow transparent !important;
+	-moz-border-top-colors: var(--tst-tab-border) transparent !important;
 }
 
 
@@ -210,8 +226,8 @@
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab[visuallyselected="true"] {
 	margin: 0 !important;
-	-moz-border-top-colors: ThreeDHighlight transparent !important;
-	-moz-border-bottom-colors: ThreeDShadow transparent !important;
+	-moz-border-top-colors: var(--tst-tab-surface-hover) transparent !important;
+	-moz-border-bottom-colors: var(--tst-tab-border) transparent !important;
 }
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab[visuallyselected="true"]:not([pinned]) {
@@ -221,7 +237,7 @@
   .tabbrowser-tab:not([pinned])[visuallyselected="true"],
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab[pinned][visuallyselected="true"] {
-	background-color: ThreeDHighlight !important;
+	background-color: var(--tst-tab-surface-hover) !important;
 }
 
 
@@ -239,14 +255,14 @@
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:not([visuallyselected="true"]) {
 	border-left: 2px solid !important;
-	-moz-border-left-colors: ThreeDLightShadow transparent !important;
+	-moz-border-left-colors: var(--tst-tab-side-border) transparent !important;
 	border-right: 2px solid !important;
-	-moz-border-right-colors: ThreeDLightShadow transparent !important;
+	-moz-border-right-colors: var(--tst-tab-side-border) transparent !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[visuallyselected="true"] {
-	-moz-border-left-colors: ThreeDLightShadow transparent !important;
-	-moz-border-right-colors: ThreeDLightShadow transparent !important;
+	-moz-border-left-colors: var(--tst-tab-side-border) transparent !important;
+	-moz-border-right-colors: var(--tst-tab-side-border) transparent !important;
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
@@ -262,9 +278,9 @@
 .tabbrowser-tabs[treestyletab-tabbar-position="bottom"]
   .tabbrowser-tab:not([visuallyselected="true"]) {
 	border-right: 2px solid !important;
-	-moz-border-right-colors: ThreeDShadow transparent !important;
+	-moz-border-right-colors: var(--tst-tab-border) transparent !important;
 	border-left: 2px solid !important;
-	-moz-border-left-colors: ThreeDShadow transparent !important;
+	-moz-border-left-colors: var(--tst-tab-border) transparent !important;
 }
 
 /* Mac OS X */

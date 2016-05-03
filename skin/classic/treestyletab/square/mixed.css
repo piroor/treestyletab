@@ -8,56 +8,56 @@
 
 .tabbrowser-tabs[treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:not([visuallyselected="true"]):hover {
-	-moz-border-top-colors: #e0e8f6 transparent !important;
-	-moz-border-left-colors: #e0e8f6 transparent !important;
+	-moz-border-top-colors: var(--tst-tab-surface-hover) transparent !important;
+	-moz-border-left-colors: var(--tst-tab-surface-hover) transparent !important;
 }
 .tabbrowser-tabs[treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:not([visuallyselected="true"]):not([pinned]):hover,
 .tabbrowser-tabs[treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:not([visuallyselected="true"])[pinned]:not([titlechanged]):hover {
-	background-color: #e0e8f6 !important;
+	background-color: var(--tst-tab-surface-hover) !important;
 }
 .tabbrowser-tabs[treestyletab-style~="color"][treestyletab-mode="vertical"][treestyletab-firsttab-border="true"]
   .tabbrowser-tab:first-child:not([visuallyselected="true"]):hover {
-	-moz-border-top-colors: ThreeDShadow #e0e8f6 !important;
+	-moz-border-top-colors: var(--tst-tab-border) var(--tst-tab-surface-hover) !important;
 }
 .tabbrowser-tabs[treestyletab-style~="color"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tabbrowser-tab:not([visuallyselected="true"]):hover {
-	-moz-border-right-colors: #e0e8f6 transparent !important;
+	-moz-border-right-colors: var(--tst-tab-surface-hover) transparent !important;
 }
 
 .tabbrowser-tabs[treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab[visuallyselected="true"] {
-	-moz-border-top-colors: #c1d2ee transparent !important;
-	-moz-border-left-colors: #c1d2ee transparent !important;
+	-moz-border-top-colors: var(--tst-tab-surface-selected) transparent !important;
+	-moz-border-left-colors: var(--tst-tab-surface-selected) transparent !important;
 }
 .tabbrowser-tabs[treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab[visuallyselected="true"] {
-	background-color: #c1d2ee !important;
+	background-color: var(--tst-tab-surface-selected) !important;
 }
 .tabbrowser-tabs[treestyletab-style~="color"][treestyletab-mode="vertical"][treestyletab-firsttab-border="true"]
   .tabbrowser-tab:first-child[visuallyselected="true"] {
-	-moz-border-top-colors: ThreeDShadow #c1d2ee !important;
+	-moz-border-top-colors: var(--tst-tab-border) var(--tst-tab-surface-selected) !important;
 }
 .tabbrowser-tabs[treestyletab-style~="color"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tabbrowser-tab[visuallyselected="true"] {
-	-moz-border-right-colors: #c1d2ee transparent !important;
+	-moz-border-right-colors: var(--tst-tab-surface-selected) transparent !important;
 }
 
 .tabbrowser-tabs[treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab[visuallyselected="true"]:hover {
-	-moz-border-top-colors: #d1e2fe transparent !important;
-	-moz-border-left-colors: #d1e2fe transparent !important;
+	-moz-border-top-colors: var(--tst-tab-surface-selected-hover) transparent !important;
+	-moz-border-left-colors: var(--tst-tab-surface-selected-hover) transparent !important;
 }
 .tabbrowser-tabs[treestyletab-style~="color"]:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab[visuallyselected="true"]:hover {
-	background-color: #d1e2fe !important;
+	background-color: var(--tst-tab-surface-selected-hover) !important;
 }
 .tabbrowser-tabs[treestyletab-style~="color"][treestyletab-mode="vertical"][treestyletab-firsttab-border="true"]
   .tabbrowser-tab:first-child[visuallyselected="true"]:hover {
-	-moz-border-top-colors: ThreeDShadow #d1e2fe !important;
+	-moz-border-top-colors: var(--tst-tab-border) var(--tst-tab-surface-selected-hover) !important;
 }
 .tabbrowser-tabs[treestyletab-style~="color"][treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tabbrowser-tab[visuallyselected="true"]:hover {
-	-moz-border-right-colors: #d1e2fe transparent !important;
+	-moz-border-right-colors: var(--tst-tab-surface-selected-hover) transparent !important;
 }

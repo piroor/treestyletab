@@ -13,7 +13,7 @@
   .tabbrowser-tab:not([titlechanged])
   :-moz-any(.tab-background:not([pinned]),
             .tab-background[pinned]) {
-	background-color: -moz-dialog !important;
+	background-color: var(--tst-tab-surface) !important;
 	background-image: -moz-linear-gradient(
 	                    top, 
 	                    rgba(0, 0, 0, 0.02) 0,
@@ -25,7 +25,7 @@
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab
   .tab-background[visuallyselected="true"] {
-	background-color: #c1d2ee !important;
+	background-color: var(--tst-tab-surface-selected) !important;
 	background-image: -moz-linear-gradient(
 	                    top,
 	                    rgba(4, 83, 227, 0.04) 0,
@@ -40,7 +40,7 @@
   .tabbrowser-tab:hover
   :-moz-any(.tab-background:not([pinned]),
             .tab-background[pinned]:not([titlechanged])) {
-	background-color: #e0e8f6 !important;
+	background-color: var(--tst-tab-surface-hover) !important;
 	background-image: -moz-linear-gradient(
 	                    top,
 	                    rgba(213, 224, 245, 1) 0,
@@ -51,7 +51,7 @@
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:hover
   .tab-background[visuallyselected="true"] {
-	background-color: #d1e2fe !important;
+	background-color: var(--tst-tab-surface-selected-hover) !important;
 	background-image: -moz-linear-gradient(
 	                    top,
 	                    rgba(199, 219, 252, 1) 0,
@@ -64,5 +64,5 @@
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[pinned]:not([treestyletab-drop-position]) {
-  -moz-border-right-colors: ThreeDShadow transparent !important;
+  -moz-border-right-colors: var(--tst-tab-border) transparent !important;
 }
