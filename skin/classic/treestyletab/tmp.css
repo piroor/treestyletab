@@ -45,7 +45,7 @@
 	-moz-border-right-colors: none !important;
 	-moz-border-bottom-colors: none !important;
 	-moz-border-left-colors: none !important;
-	border-top: 1px solid ThreeDShadow !important;
+	border-top: 1px solid var(--tst-tab-border) !important;
 	background: -moz-dialog !important;
 }
 

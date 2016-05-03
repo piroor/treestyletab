@@ -18,8 +18,8 @@
   #treestyletab-autohide-content-area-screen,
 :root[treestyletab-tabbar-position="right"]
   #treestyletab-autohide-content-area-screen  {
-	border-right: 1px solid ThreeDShadow;
-	border-left: 1px solid ThreeDShadow;
+	border-right: 1px solid var(--tst-tab-border);
+	border-left: 1px solid var(--tst-tab-border);
 }
 
 

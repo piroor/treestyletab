@@ -51,12 +51,12 @@
 	-moz-border-left-colors: none !important;
 	border-radius: 0;
 	-moz-border-radius: 0;
-	border-top: 1px solid ThreeDShadow !important;
-	background: var(--tab-surface) !important;
+	border-top: 1px solid var(--tst-tab-border) !important;
+	background: var(--tst-tab-surface) !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-newtab-button:hover,
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > toolbarbutton:hover {
-	background: var(--tab-surface-hover) !important;
+	background: var(--tst-tab-surface-hover) !important;
 }
 
 /* for Mac OS X */
@@ -81,7 +81,7 @@
 }
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > *:not(toolbarpaletteitem) {
 	-moz-border-top-colors: none !important;
-	border-top: 1px solid ThreeDShadow !important;
+	border-top: 1px solid var(--tst-tab-border) !important;
 }
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > *:first-child,
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > *:first-child[hidden="true"] + *:not(toolbarpaletteitem),
@@ -109,7 +109,7 @@
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-arrowscrollbox .tabs-newtab-button {
 	border: 0 none !important;
-	border-bottom: 1px solid ThreeDShadow !important;
+	border-bottom: 1px solid var(--tst-tab-border) !important;
 	border-radius: 0 0 3px 3px;
 	-moz-border-radius: 0 0 3px 3px;
 }

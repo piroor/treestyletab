@@ -37,15 +37,17 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
 :root {
-	--tab-surface: -moz-dialog;
-	--tab-text: -moz-dialogtext;
-	--tab-surface-hover: ThreeDHighlight;
-	--tab-dropmarker: -moz-dialogtext;
+	--tst-tab-surface: -moz-dialog;
+	--tst-tab-text: -moz-dialogtext;
+	--tst-tab-border: ThreeDShadow;
+	--tst-tab-surface-hover: ThreeDHighlight;
+	--tst-tab-dropmarker: -moz-dialogtext;
 }
 
 :root[devtoolstheme="dark"] {
-	--tab-surface: #39424D;
-	--tab-text: white;
-	--tab-surface-hover: #49525D;
-	--tab-dropmarker: white;
+	--tst-tab-surface: #39424D;
+	--tst-tab-text: white;
+	--tst-tab-border: #5f6670;
+	--tst-tab-surface-hover: #49525D;
+	--tst-tab-dropmarker: white;
 }
