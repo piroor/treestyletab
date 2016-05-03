@@ -15,6 +15,17 @@
 	--tst-tabbar-bg: darkgray;
 }
 
+:root[devtoolstheme="dark"] {
+	--tst-tab-highlighted-base: ThreeDHighlight;
+	--tst-tab-highlighted-highlight: Highlight;
+	--tst-tab-side-border: #39424D;
+	--tst-tab-surface-hover: #49525D;
+	--tst-tab-surface-selected: #1a4666;
+	--tst-tab-surface-selected-hover: #1f5981;
+
+	--tst-tabbar-bg: #1c2126;
+}
+
 
 /* Default style */
 
