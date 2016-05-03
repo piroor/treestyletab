@@ -21,6 +21,7 @@
  *                 wanabe <https://github.com/wanabe>
  *                 Tetsuharu OHZEKI <https://github.com/saneyuki>
  *                 Xidorn Quan <https://github.com/upsuper> (Firefox 40+ support)
+ *                 lv7777 (https://github.com/lv7777)
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
