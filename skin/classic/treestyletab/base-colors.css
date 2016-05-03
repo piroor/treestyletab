@@ -36,7 +36,7 @@
 
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
-:root[devtoolstheme="light"] {
+:root {
 	--tab-surface: -moz-dialog;
 	--tab-surface-hover: ThreeDHighlight;
 }
