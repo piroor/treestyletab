@@ -1,9 +1,9 @@
 :root[devtoolstheme="light"]{
-    --tabs-newtab-button-background:-moz-dialog;
-    --tabs-newtab-button-background-hover:ThreeDHighlight;
+	--tabs-newtab-button-background:-moz-dialog;
+	--tabs-newtab-button-background-hover:ThreeDHighlight;
 }
 
 :root[devtoolstheme="dark"]{
-    --tabs-newtab-button-background:#39424D;
-    --tabs-newtab-button-background-hover:#49525D;
+	--tabs-newtab-button-background:#39424D;
+	--tabs-newtab-button-background-hover:#49525D;
 }
