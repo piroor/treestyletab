@@ -441,131 +441,61 @@ toolbar.treestyletab-tabbar-toolbar-ready:not([nowindowdrag="true"]),
 
 /* animation effects */
 
+:root {
+	--tst-tab-animation-base: opacity 0.15s ease-out,
+	                          outline-color 0.5s ease-out,
+	                          min-height 0.15s ease-out,
+	                          max-height 0.15s ease-out;
+	--tst-tab-animation-firefox-system: min-width 0.15s ease-out,
+	                                    max-width 0.15s ease-out,
+	                                    transform 0.2s ease-out;
+
+	--tst-tab-animation-vertical: margin-left 0.2s ease-out,
+	                              margin-right 0.2s ease-out,
+	                              margin-top 0.15s ease-out,
+	                              var(--tst-tab-animation-base),
+	                              var(--tst-tab-animation-firefox-system);
+	--tst-tab-animation-top: margin-left 0.15s ease-out,
+	                         margin-top 0.2s ease-out,
+	                         var(--tst-tab-animation-base),
+	                         var(--tst-tab-animation-firefox-system);
+	--tst-tab-animation-bottom: margin-left 0.15s ease-out,
+	                            margin-bottom 0.2s ease-out,
+	                            var(--tst-tab-animation-base),
+	                            var(--tst-tab-animation-firefox-system);
+}
+
 .tabbrowser-tabs[treestyletab-animation-enabled="true"][treestyletab-mode="vertical"]
   .tabbrowser-tab:not([treestyletab-collapsed-done="true"]) {
-	-moz-transition: margin-left 0.2s ease-out,
-	                 margin-right 0.2s ease-out,
-	                 margin-top 0.15s ease-out,
-	                 opacity 0.15s ease-out,
-	                 outline-color 0.5s ease-out,
-	                 min-height 0.15s ease-out,
-	                 max-height 0.15s ease-out,
-	                 min-width 0.15s ease-out /* for Firefox itself */,
-	                 max-width 0.15s ease-out /* for Firefox itself */;
-	transition: margin-left 0.2s ease-out,
-	            margin-right 0.2s ease-out,
-	            margin-top 0.15s ease-out,
-	            opacity 0.15s ease-out,
-                outline-color 0.5s ease-out,
-	            min-height 0.15s ease-out,
-	            max-height 0.15s ease-out,
-	            min-width 0.15s ease-out /* for Firefox itself */,
-	            max-width 0.15s ease-out /* for Firefox itself */;
+	-moz-transition: var(--tst-tab-animation-vertical);
+	transition: var(--tst-tab-animation-vertical);
 }
 .tabbrowser-tabs[movingtab][treestyletab-animation-enabled="true"][treestyletab-mode="vertical"]
   .tabbrowser-tab:not([treestyletab-collapsed-done="true"]) {
-	-moz-transition: margin-left 0.2s ease-out,
-	                 margin-right 0.2s ease-out,
-	                 margin-top 0.15s ease-out,
-	                 opacity 0.15s ease-out,
-	                 outline-color 0.5s ease-out,
-	                 min-height 0.15s ease-out,
-	                 max-height 0.15s ease-out,
-	                 min-width 0.15s ease-out /* for Firefox itself */,
-	                 max-width 0.15s ease-out /* for Firefox itself */,
-	                 transform 0.2s ease-out /* for Firefox itself */;
-	transition: margin-left 0.2s ease-out,
-	            margin-right 0.2s ease-out,
-	            margin-top 0.15s ease-out,
-	            opacity 0.15s ease-out,
-	            outline-color 0.5s ease-out,
-	            min-height 0.15s ease-out,
-	            max-height 0.15s ease-out,
-	            min-width 0.15s ease-out /* for Firefox itself */,
-	            max-width 0.15s ease-out /* for Firefox itself */,
-	            transform 0.2s ease-out /* for Firefox itself */;
+	-moz-transition: var(--tst-tab-animation-vertical);
+	transition: var(--tst-tab-animation-vertical);
 }
 
 .tabbrowser-tabs[treestyletab-animation-enabled="true"]:not([treestyletab-mode="vertical"]):not([treestyletab-tab-inverted="true"])
   .tabbrowser-tab:not([treestyletab-collapsed-done="true"]) {
-	-moz-transition: margin-left 0.15s ease-out,
-	                 opacity 0.15s ease-out,
-	                 outline-color 0.5s ease-out,
-	                 margin-top 0.2s ease-out,
-	                 min-height 0.15s ease-out,
-	                 max-height 0.15s ease-out,
-	                 min-width 0.15s ease-out /* for Firefox itself */,
-	                 max-width 0.15s ease-out /* for Firefox itself */;
-	transition: margin-left 0.15s ease-out,
-	            opacity 0.15s ease-out,
-                outline-color 0.5s ease-out,
-	            margin-top 0.2s ease-out,
-	            min-height 0.15s ease-out,
-	            max-height 0.15s ease-out,
-	            min-width 0.15s ease-out /* for Firefox itself */,
-	            max-width 0.15s ease-out /* for Firefox itself */;
+	-moz-transition: var(--tst-tab-animation-top);
+	transition: var(--tst-tab-animation-top);
 }
 .tabbrowser-tabs[movingtab][treestyletab-animation-enabled="true"]:not([treestyletab-mode="vertical"]):not([treestyletab-tab-inverted="true"])
   .tabbrowser-tab:not([treestyletab-collapsed-done="true"]) {
-	-moz-transition: margin-left 0.15s ease-out,
-	                 opacity 0.15s ease-out,
-	                 outline-color 0.5s ease-out,
-	                 margin-top 0.2s ease-out,
-	                 min-height 0.15s ease-out,
-	                 max-height 0.15s ease-out,
-	                 min-width 0.15s ease-out /* for Firefox itself */,
-	                 max-width 0.15s ease-out /* for Firefox itself */,
-	                 transform 0.2s ease-out /* for Firefox itself */;
-	transition: margin-left 0.15s ease-out,
-	            opacity 0.15s ease-out,
-                outline-color 0.5s ease-out,
-	            margin-top 0.2s ease-out,
-	            min-height 0.15s ease-out,
-	            max-height 0.15s ease-out,
-	            min-width 0.15s ease-out /* for Firefox itself */,
-	            max-width 0.15s ease-out /* for Firefox itself */,
-	            transform 0.2s ease-out /* for Firefox itself */;
+	-moz-transition: var(--tst-tab-animation-top);
+	transition: var(--tst-tab-animation-top);
 }
 
 .tabbrowser-tabs[treestyletab-animation-enabled="true"]:not([treestyletab-mode="vertical"])[treestyletab-tab-inverted="true"]
   .tabbrowser-tab:not([treestyletab-collapsed-done="true"]) {
-	-moz-transition: margin-left 0.15s ease-out,
-	                 opacity 0.15s ease-out,
-	                 outline-color 0.5s ease-out,
-	                 margin-bottom 0.2s ease-out,
-	                 min-height 0.15s ease-out,
-	                 max-height 0.15s ease-out,
-	                 min-width 0.15s ease-out /* for Firefox itself */,
-	                 max-width 0.15s ease-out /* for Firefox itself */;
-	transition: margin-left 0.15s ease-out,
-	            opacity 0.15s ease-out,
-                outline-color 0.5s ease-out,
-	            margin-bottom 0.2s ease-out,
-	            min-height 0.15s ease-out,
-	            max-height 0.15s ease-out,
-	            min-width 0.15s ease-out /* for Firefox itself */,
-	            max-width 0.15s ease-out /* for Firefox itself */;
+	-moz-transition: var(--tst-tab-animation-bottom);
+	transition: var(--tst-tab-animation-bottom);
 }
 .tabbrowser-tabs[movingtab][treestyletab-animation-enabled="true"]:not([treestyletab-mode="vertical"])[treestyletab-tab-inverted="true"]
   .tabbrowser-tab:not([treestyletab-collapsed-done="true"]) {
-	-moz-transition: margin-left 0.15s ease-out,
-	                 opacity 0.15s ease-out,
-	                 outline-color 0.5s ease-out,
-	                 margin-bottom 0.2s ease-out,
-	                 min-height 0.15s ease-out,
-	                 max-height 0.15s ease-out,
-	                 min-width 0.15s ease-out /* for Firefox itself */,
-	                 max-width 0.15s ease-out /* for Firefox itself */,
-	                 transform 0.2s ease-out /* for Firefox itself */;
-	transition: margin-left 0.15s ease-out,
-	            opacity 0.15s ease-out,
-                outline-color 0.5s ease-out,
-	            margin-bottom 0.2s ease-out,
-	            min-height 0.15s ease-out,
-	            max-height 0.15s ease-out,
-	            min-width 0.15s ease-out /* for Firefox itself */,
-	            max-width 0.15s ease-out /* for Firefox itself */,
-	            transform 0.2s ease-out /* for Firefox itself */;
+	-moz-transition: var(--tst-tab-animation-bottom);
+	transition: var(--tst-tab-animation-bottom);
 }
 
 
