@@ -16,11 +16,11 @@
 	border-radius: 0;
 	-moz-border-radius: 0;
 	border-top: 1px solid ThreeDShadow !important;
-	background: -moz-dialog !important;
+	background: var(--tabs-newtab-button-background) !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-newtab-button:hover,
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > toolbarbutton:hover {
-	background: ThreeDHighlight !important;
+	background: var(--tabs-newtab-button-background-hover) !important;
 }
 
 /* for Mac OS X */

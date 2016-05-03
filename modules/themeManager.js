@@ -64,6 +64,7 @@ TreeStyleTabThemeManager.prototype = {
 		this._lastStyles = null;
 
 		var styles = [];
+
 		switch (aStyle)
 		{
 			default:
