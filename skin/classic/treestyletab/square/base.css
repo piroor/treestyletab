@@ -135,7 +135,7 @@
   .tabbrowser-tab:not([pinned])[visuallyselected="true"],
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:not([pinned]):not([visuallyselected="true"]) {
-	background: noone repeat-x !important;
+	background: none repeat-x !important;
 	background-color: var(--tst-tab-surface) !important;
 }
 
