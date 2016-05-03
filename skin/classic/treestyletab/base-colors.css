@@ -38,10 +38,14 @@
 
 :root {
 	--tab-surface: -moz-dialog;
+	--tab-text: -moz-dialogtext;
 	--tab-surface-hover: ThreeDHighlight;
+	--tab-dropmarker: -moz-dialogtext;
 }
 
 :root[devtoolstheme="dark"] {
 	--tab-surface: #39424D;
+	--tab-text: white;
 	--tab-surface-hover: #49525D;
+	--tab-dropmarker: white;
 }

@@ -28,7 +28,7 @@
   .tabbrowser-tab[treestyletab-drop-position="before"]:not([visuallyselected="true"]),
 .tabbrowser-tabs[treestyletab-tabbar-position="bottom"]
   .tabbrowser-tab[treestyletab-drop-position="before"]:not([visuallyselected="true"]):hover {
-	-moz-border-left-colors: -moz-dialogtext -moz-dialogtext !important;
+	-moz-border-left-colors: var(--tab-dropmarker) var(--tab-dropmarker) !important;
 }
 
 .tabbrowser-tabs[treestyletab-tabbar-position="bottom"]
@@ -39,7 +39,7 @@
   .tabbrowser-tab[treestyletab-drop-position="after"]:not([visuallyselected="true"]),
 .tabbrowser-tabs[treestyletab-tabbar-position="bottom"]
   .tabbrowser-tab[treestyletab-drop-position="after"]:not([visuallyselected="true"]):hover {
-	-moz-border-right-colors: -moz-dialogtext -moz-dialogtext !important;
+	-moz-border-right-colors: var(--tab-dropmarker) var(--tab-dropmarker) !important;
 }
 
 
@@ -67,10 +67,10 @@
   .tabbrowser-tab[treestyletab-drop-position="self"]:not([visuallyselected="true"]),
 .tabbrowser-tabs[treestyletab-tabbar-position="bottom"][treestyletab-style]
   .tabbrowser-tab[treestyletab-drop-position="self"]:not([visuallyselected="true"]):hover {
-	-moz-border-top-colors: -moz-dialogtext -moz-dialogtext !important;
-	-moz-border-right-colors: -moz-dialogtext -moz-dialogtext !important;
-	-moz-border-bottom-colors: -moz-dialogtext -moz-dialogtext !important;
-	-moz-border-left-colors: -moz-dialogtext -moz-dialogtext !important;
+	-moz-border-top-colors: var(--tab-dropmarker) var(--tab-dropmarker) !important;
+	-moz-border-right-colors: var(--tab-dropmarker) var(--tab-dropmarker) !important;
+	-moz-border-bottom-colors: var(--tab-dropmarker) var(--tab-dropmarker) !important;
+	-moz-border-left-colors: var(--tab-dropmarker) var(--tab-dropmarker) !important;
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]:not([treestyletab-style])
@@ -108,7 +108,7 @@
   .tabbrowser-tab:first-child:not([pinned="true"])[treestyletab-drop-position="before"]:not([visuallyselected="true"]),
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-style][treestyletab-firsttab-border="true"]
   .tabbrowser-tab:first-child:not([pinned="true"])[treestyletab-drop-position="before"]:not([visuallyselected="true"]):hover {
-	-moz-border-top-colors: -moz-dialogtext -moz-dialogtext !important;
+	-moz-border-top-colors: var(--tab-dropmarker) var(--tab-dropmarker) !important;
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-style]
@@ -119,7 +119,7 @@
   .tabbrowser-tab:not([pinned="true"])[treestyletab-drop-position="after"]:not([visuallyselected="true"]),
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-style]
   .tabbrowser-tab:not([pinned="true"])[treestyletab-drop-position="after"]:not([visuallyselected="true"]):hover {
-	-moz-border-bottom-colors: -moz-dialogtext -moz-dialogtext !important;
+	-moz-border-bottom-colors: var(--tab-dropmarker) var(--tab-dropmarker) !important;
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-style]
@@ -130,7 +130,7 @@
   .tabbrowser-tab[pinned="true"][treestyletab-drop-position="before"]:not([visuallyselected="true"]),
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-style]
   .tabbrowser-tab[pinned="true"][treestyletab-drop-position="before"]:not([visuallyselected="true"]):hover {
-	-moz-border-left-colors: -moz-dialogtext -moz-dialogtext !important;
+	-moz-border-left-colors: var(--tab-dropmarker) var(--tab-dropmarker) !important;
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-style]
@@ -141,7 +141,7 @@
   .tabbrowser-tab[pinned="true"][treestyletab-drop-position="after"]:not([visuallyselected="true"]),
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-style]
   .tabbrowser-tab[pinned="true"][treestyletab-drop-position="after"]:not([visuallyselected="true"]):hover {
-	-moz-border-right-colors: -moz-dialogtext -moz-dialogtext !important;
+	-moz-border-right-colors: var(--tab-dropmarker) var(--tab-dropmarker) !important;
 }
 
 
@@ -159,7 +159,7 @@
 .tabbrowser-tabs[treestyletab-tabbar-position="top"]
   .tabbrowser-tab[treestyletab-drop-position="self"]:not([visuallyselected="true"]):hover
   .tab-content {
-	outline: 2px -moz-dialogtext solid !important;
+	outline: 2px var(--tab-dropmarker) solid !important;
 }
 
 
@@ -195,16 +195,16 @@ tabbrowser[treestyletab-drop-position] {
 	opacity: 0.5;
 }
 tabbrowser[treestyletab-drop-position="top"]:not([treestyletab-tabbar-position="top"]) {
-	border-top-color: -moz-dialogtext !important;
+	border-top-color: var(--tab-dropmarker) !important;
 }
 tabbrowser[treestyletab-drop-position="right"]:not([treestyletab-tabbar-position="right"]) {
-	border-right-color: -moz-dialogtext !important;
+	border-right-color: var(--tab-dropmarker) !important;
 }
 tabbrowser[treestyletab-drop-position="bottom"]:not([treestyletab-tabbar-position="bottom"]) {
-	border-bottom-color: -moz-dialogtext !important;
+	border-bottom-color: var(--tab-dropmarker) !important;
 }
 tabbrowser[treestyletab-drop-position="left"]:not([treestyletab-tabbar-position="left"]) {
-	border-left-color: -moz-dialogtext !important;
+	border-left-color: var(--tab-dropmarker) !important;
 }
 
 
