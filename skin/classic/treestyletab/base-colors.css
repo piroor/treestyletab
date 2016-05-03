@@ -1,3 +1,5 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
 :root[devtoolstheme="light"] {
 	--tabs-newtab-button-background:-moz-dialog;
 	--tabs-newtab-button-background-hover:ThreeDHighlight;
