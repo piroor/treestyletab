@@ -666,9 +666,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			let style = item.style;
 			style.MozMarginStart = '';
 
-			let transitionStyleBackup = style.transition || style.MozTransition || '';
+			let transitionStyleBackup = style.transition || '';
 			if (aJustNow)
-				style.MozTransition = style.transition = 'none';
+				style.transition = 'none';
 
 			let className = item.className.replace(removeFaviconizedClassPattern, '');
 			if (faviconized)
@@ -690,7 +690,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				// "transition" must be cleared after the reflow.
 				this.timers[key] = setTimeout((function() {
 					try {
-						style.MozTransition = style.transition = transitionStyleBackup;
+						style.transition = transitionStyleBackup;
 					}
 					catch(e) {
 						this.defaultErrorHandler(e);
@@ -6001,7 +6001,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 
 		var self = this;
-		var CSSTransitionEnabled = ('transition' in aTab.style || 'MozTransition' in aTab.style);
+		var CSSTransitionEnabled = ('transition' in aTab.style);
 		if (CSSTransitionEnabled) {
 			aTab.__treestyletab__updateTabIndentTask = function(aTime, aBeginning, aChange, aDuration) {
 				delete aTab.__treestyletab__updateTabIndentTask;
@@ -6648,7 +6648,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		aTab.setAttribute(this.kCOLLAPSING_PHASE, aCollapsed ? this.kCOLLAPSING_PHASE_TO_BE_COLLAPSED : this.kCOLLAPSING_PHASE_TO_BE_EXPANDED );
 
-		var CSSTransitionEnabled = ('transition' in aTab.style || 'MozTransition' in aTab.style);
+		var CSSTransitionEnabled = ('transition' in aTab.style);
 
 		var maxMargin;
 		var offsetAttr;

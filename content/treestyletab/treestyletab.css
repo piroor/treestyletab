@@ -467,34 +467,28 @@ toolbar.treestyletab-tabbar-toolbar-ready:not([nowindowdrag="true"]),
 
 .tabbrowser-tabs[treestyletab-animation-enabled="true"][treestyletab-mode="vertical"]
   .tabbrowser-tab:not([treestyletab-collapsed-done="true"]) {
-	-moz-transition: var(--tst-tab-animation-vertical);
 	transition: var(--tst-tab-animation-vertical);
 }
 .tabbrowser-tabs[movingtab][treestyletab-animation-enabled="true"][treestyletab-mode="vertical"]
   .tabbrowser-tab:not([treestyletab-collapsed-done="true"]) {
-	-moz-transition: var(--tst-tab-animation-vertical);
 	transition: var(--tst-tab-animation-vertical);
 }
 
 .tabbrowser-tabs[treestyletab-animation-enabled="true"]:not([treestyletab-mode="vertical"]):not([treestyletab-tab-inverted="true"])
   .tabbrowser-tab:not([treestyletab-collapsed-done="true"]) {
-	-moz-transition: var(--tst-tab-animation-top);
 	transition: var(--tst-tab-animation-top);
 }
 .tabbrowser-tabs[movingtab][treestyletab-animation-enabled="true"]:not([treestyletab-mode="vertical"]):not([treestyletab-tab-inverted="true"])
   .tabbrowser-tab:not([treestyletab-collapsed-done="true"]) {
-	-moz-transition: var(--tst-tab-animation-top);
 	transition: var(--tst-tab-animation-top);
 }
 
 .tabbrowser-tabs[treestyletab-animation-enabled="true"]:not([treestyletab-mode="vertical"])[treestyletab-tab-inverted="true"]
   .tabbrowser-tab:not([treestyletab-collapsed-done="true"]) {
-	-moz-transition: var(--tst-tab-animation-bottom);
 	transition: var(--tst-tab-animation-bottom);
 }
 .tabbrowser-tabs[movingtab][treestyletab-animation-enabled="true"]:not([treestyletab-mode="vertical"])[treestyletab-tab-inverted="true"]
   .tabbrowser-tab:not([treestyletab-collapsed-done="true"]) {
-	-moz-transition: var(--tst-tab-animation-bottom);
 	transition: var(--tst-tab-animation-bottom);
 }
 
@@ -600,10 +594,6 @@ window[chromehidden~="toolbar"]
 /* full tooltip */
 
 #treestyletab-full-tree-tooltip[popup-shown="true"] {
-	-moz-transition: margin-left 0.2s ease-out,
-	                 margin-top 0.2s ease-out,
-	                 max-height 0.2s ease-out,
-	                 max-width 0.2s ease-out;
 	transition: margin-left 0.2s ease-out,
 	            margin-top 0.2s ease-out,
 	            max-height 0.2s ease-out,
@@ -615,7 +605,6 @@ window[chromehidden~="toolbar"]
 }
 
 #treestyletab-full-tree-tooltip[popup-shown="true"] > arrowscrollbox {
-	-moz-transition: opacity 0.2s ease-out;
 	transition: opacity 0.2s ease-out;
 	opacity: 1;
 }
