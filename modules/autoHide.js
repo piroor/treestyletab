@@ -1431,6 +1431,29 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 		var sv = this.treeStyleTab;
 		var b  = this.browser;
 		var w  = this.window;
+		
+		// if( !(sv.lv7777 instanceof Array) ){
+		// 	sv.lv7777=[];
+		// }else{sv.lv7777.push(aEvent.key)}
+
+		// if( !(b.lv7777 instanceof Array) ){
+		// 	b.lv7777=[];
+		// }else{b.lv7777.push(aEvent.key)}
+
+		// if( !(w.lv7777 instanceof Array) ){
+		// 	w.lv7777=[];
+		// }else{w.lv7777.push(aEvent.key)}
+
+		if( !(this.lv7777 instanceof Array) ){
+			this.lv7777=[];
+		}else{
+			let obj={
+				key:aEvent.key,
+				keycode:aEvent.keycode,
+				time:new Date()
+			}
+			this.lv7777.push(obj)
+		}
 
 		if (this.delayedShowForShortcutDone)
 			this.cancelDelayedShowForShortcut();
@@ -1445,6 +1468,20 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 				!this.delayedAutoShowTimer &&
 				!this.delayedShowForShortcutTimer) {
 				this.delayedShowForShortcutTimer = w.setTimeout((function() {
+					const now=new Date();
+					for(var input of this.lv7777){
+						//key is object.
+						//key{time:date,key:string}
+					
+						if( (input.time.getTime()-now.getTime()) < 1000 &&
+							input.keycode >= 65 &&
+							input.keycode <= 90
+						){
+							
+							return;
+						}
+					}
+					
 					this.delayedShowForShortcutDone = true;
 					this.show(this.kSHOWN_BY_SHORTCUT);
 					sv = null;
