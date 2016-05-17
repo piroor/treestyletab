@@ -1431,28 +1431,16 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 		var sv = this.treeStyleTab;
 		var b  = this.browser;
 		var w  = this.window;
-		
-		// if( !(sv.lv7777 instanceof Array) ){
-		// 	sv.lv7777=[];
-		// }else{sv.lv7777.push(aEvent.key)}
 
-		// if( !(b.lv7777 instanceof Array) ){
-		// 	b.lv7777=[];
-		// }else{b.lv7777.push(aEvent.key)}
-
-		// if( !(w.lv7777 instanceof Array) ){
-		// 	w.lv7777=[];
-		// }else{w.lv7777.push(aEvent.key)}
-
-		if( !(this.lv7777 instanceof Array) ){
-			this.lv7777=[];
+		if( !(this.keyarr instanceof Array) ){
+			this.keyarr=[];
 		}else{
 			let obj={
 				key:aEvent.key,
 				keycode:aEvent.keycode,
 				time:new Date()
 			}
-			this.lv7777.push(obj)
+			this.keyarr.push(obj)
 		}
 
 		if (this.delayedShowForShortcutDone)
@@ -1469,7 +1457,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 				!this.delayedShowForShortcutTimer) {
 				this.delayedShowForShortcutTimer = w.setTimeout((function() {
 					const now=new Date();
-					for(var input of this.lv7777){
+					for(let input of this.keyarr){
 						//key is object.
 						//key{time:date,key:string}
 					
