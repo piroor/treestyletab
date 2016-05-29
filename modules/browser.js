@@ -7355,9 +7355,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	registerTabFocusAllowance : function TSTBrowser_registerTabFocusAllowance(...aArgs) {
 		return this._callWindowServiceMethod('registerTabFocusAllowance', aArgs);
 	},
-	isPopupShown : function TSTBrowser_isPopupShown(...aArgs) {
-		return this._callWindowServiceMethod('isPopupShown', aArgs);
-	},
 	toggleAutoHide : function TSTBrowser_toggleAutoHide(...aArgs) {
 		return this._callWindowServiceMethod('toggleAutoHide', aArgs);
 	},
