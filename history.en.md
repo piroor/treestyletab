@@ -3,6 +3,7 @@
  - master/HEAD
    * Better compatibility with the "Dark" theme of Firefox Developer Edition.
    * Better compatibility with FireGestures.
+   * The width of expanded tab bar isn't enlarged too much, when shrunken tab bar is going to be wider than expanded tab bar.
    * Introduce a new secret preference `extensions.treestyletab.controlNewTabPosition` to disable new tab position control by TST itself. When you use any other addon like Tab Mix Plus which provides ability to control new tab position for bookmarks or others, you possibly get better experience with turning it to `false`.
    * The hidden tab bar is never expanded for feedback around pinned tabs.
  - 0.17.2016031101
