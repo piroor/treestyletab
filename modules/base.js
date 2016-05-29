@@ -2246,10 +2246,6 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 				Services.obs.notifyObservers(null, this.kTOPIC_INDENT_MODIFIED, value);
 				return;
 
-			case 'extensions.treestyletab.tabbar.width':
-			case 'extensions.treestyletab.tabbar.shrunkenWidth':
-				return this.correctMismatchedTabWidthPrefs(aPrefName);
-
 			case 'extensions.stm.tabBarMultiRows': // Super Tab Mode
 				if (this.prefOverriding)
 					return;
@@ -2319,6 +2315,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	},
 	calculateCorrectExpandedAndShrunkenWidth : function TSTBase_calculateCorrectExpandedAndShrunkenWidth(aSource, aModifiedTarget)
 	{
+		log('calculateCorrectExpandedAndShrunkenWidth '+JSON.stringify(aSource)+' / '+aModifiedTarget);
 		var size = {
 			expanded  : aSource.expanded,
 			shrunken  : aSource.shrunken,
@@ -2328,6 +2325,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		var originalShrunken = size.shrunken;
 		var maxSize = this.browserWindow.gBrowser.boxObject.width * this.MAX_TABBAR_SIZE_RATIO;
 		if (aModifiedTarget.indexOf('shrunken') > -1) {
+			log('fixsing expanded size');
 			if (size.expanded <= size.shrunken)
 				size.expanded = parseInt(size.shrunken / this.DEFAULT_SHRUNKEN_WIDTH_RATIO);
 			if (size.expanded > maxSize) {
@@ -2337,6 +2335,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			}
 		}
 		else {
+			log('fixsing shrunken size');
 			if (size.expanded > maxSize)
 				size.expanded = maxSize;
 			if (size.expanded <= size.shrunken)
@@ -2348,6 +2347,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			size.expanded != originalExpanded ||
 			size.shrunken != originalShrunken
 		);
+		log(' => '+JSON.stringify(size));
 		return size;
 	},
 

@@ -1080,6 +1080,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			width += (pos == 'left' ? delta : -delta );
 			width = this.maxTabbarWidth(width, b);
 			if (expanded || b.treeStyleTab.autoHide.expanded) {
+				log('onTabbarResizing: setting expanded width to '+width);
 				// b.treeStyleTab.tabbarWidth = width;
 				b.treeStyleTab.autoHide.expandedWidth = width;
 				if (b.treeStyleTab.autoHide.mode == b.treeStyleTab.autoHide.kMODE_SHRINK &&
@@ -1087,6 +1088,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 					b.treeStyleTab.tabStripPlaceHolder.setAttribute('width', b.treeStyleTab.autoHide.shrunkenWidth);
 			}
 			else {
+				log('onTabbarResizing: setting shrunken width to '+width);
 				b.treeStyleTab.autoHide.shrunkenWidth = width;
 			}
 		}
@@ -1094,6 +1096,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			let delta = aEvent.screenY - this.tabbarResizeStartY;
 			height += (pos == 'top' ? delta : -delta );
 			height = this.maxTabbarHeight(height, b);
+			log('onTabbarResizing: setting height to '+height);
 			b.treeStyleTab.tabbarHeight = height;
 		}
 		b.treeStyleTab.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_TABBAR_RESIZE);

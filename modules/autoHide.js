@@ -42,6 +42,7 @@ const Cu = Components.utils;
 
 Cu.import('resource://gre/modules/XPCOMUtils.jsm');
 Cu.import('resource://gre/modules/Services.jsm');
+Cu.import('resource://gre/modules/Timer.jsm');
 Cu.import('resource://treestyletab-modules/lib/inherit.jsm');
 Cu.import('resource://treestyletab-modules/constants.js');
 Cu.import('resource://treestyletab-modules/ReferenceCounter.js');
@@ -289,6 +290,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 	},
 	set tabbarWidth(aValue)
 	{
+		log('setting "width" to '+aValue+' (expanded='+this.expanded+')');
 		if (this.expanded)
 			return this.expandedWidth = aValue;
 		else
@@ -303,16 +305,9 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 	},
 	set expandedWidth(aValue)
 	{
-		var newWidth = this.treeStyleTab.calculateCorrectExpandedAndShrunkenWidth({
-			expanded : aValue,
-			shrunken : this.shrunkenWidth
-		}, 'expanded');
-		if (newWidth.corrected) {
-			this.shrunkenWidth = newWidth.shrunken;
-			aValue = newWidth.expanded;
-		}
 		this.treeStyleTab.setWindowValue(this.kTABBAR_EXPANDED_WIDTH, aValue);
 		utils.setTreePref('tabbar.width', aValue);
+		this.reserveFixWidth('expanded');
 		return aValue;
 	},
 	get shrunkenWidth()
@@ -324,17 +319,28 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 	},
 	set shrunkenWidth(aValue)
 	{
-		var newWidth = this.treeStyleTab.calculateCorrectExpandedAndShrunkenWidth({
-			expanded : this.expandedWidth,
-			shrunken : aValue
-		}, 'shrunken');
-		if (newWidth.corrected) {
-			this.expandedWidth = newWidth.expanded;
-			aValue = newWidth.shrunken;
-		}
 		this.treeStyleTab.setWindowValue(this.kTABBAR_SHRUNKEN_WIDTH, aValue);
 		utils.setTreePref('tabbar.shrunkenWidth', aValue);
+		this.reserveFixWidth('shrunken');
 		return aValue;
+	},
+
+	reserveFixWidth : function(aTrigger)
+	{
+		if (this._collectingTabbarWidth)
+			clearTimeout(this._collectingTabbarWidth);
+		var stack = new Error().stack;
+		this._collectingTabbarWidth = setTimeout((function() {
+			log('reserveFixWidth: \n'+stack);
+			var newWidth = this.treeStyleTab.calculateCorrectExpandedAndShrunkenWidth({
+				expanded : this.expandedWidth,
+				shrunken : this.shrunkenWidth
+			}, aTrigger);
+			if (this.shrunkenWidth != newWidth.shrunken)
+				this.shrunkenWidth = newWidth.shrunken;
+			if (this.expandedWidth != newWidth.expanded)
+				this.expandedWidth = newWidth.expanded;
+		}).bind(this), 100);
 	},
 
 	resetWidth : function AHB_resetWidth()

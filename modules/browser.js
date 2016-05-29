@@ -2784,7 +2784,10 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			case 'extensions.treestyletab.tabbar.width.override':
 				if (!this.autoHide.isResizing && this.isVertical) {
 					this.removeTabStripAttribute('width');
-					this.tabbarWidth = value;
+					if (aPrefName.indexOf('shrunken') > -1)
+						this.shrunkenWidth = value;
+					else
+						this.expandedWidth = value;
 					this.setTabStripAttribute('width', this.autoHide.placeHolderWidthFromMode);
 					this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_PREF_CHANGE);
 				}
