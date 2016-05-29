@@ -767,6 +767,9 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 			!utils.getTreePref('tabbar.autoShow.feedback'))
 			return;
 
+		if (aTab.pinned || aTab.hidden)
+			return;
+
 		var w = this.window;
 		if (this.delayedShowForFeedbackTimer) {
 			w.clearTimeout(this.delayedShowForFeedbackTimer);
