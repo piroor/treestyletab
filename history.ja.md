@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+   * Firefox Developer EditionのDarkテーマとの互換性を向上
    * FireGesturesとの互換性を向上
    * ツリー型タブ自身で新規タブを開く位置を決定するかどうかを制御する隠し設定 `extensions.treestyletab.controlNewTabPosition` を追加した（Tab Mix Plusのように、ブックマーク等から新しく開くタブの位置を制御する機能を持ったアドオンと併用する場合、この設定の値を`false`にすることでより良い結果を得られるようになる可能性があります）
    * ピン留めされたタブに関する変更に対しては、折り畳まれたタブバーを自動展開しないようにした
