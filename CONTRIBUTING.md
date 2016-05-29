@@ -18,6 +18,10 @@ Here is a list of typical questions I asked to existing reports:
    For Firefox 46 and later, you'll have to try an unbranded Firefox (including Beta, Aurora, and Nightly) to try development builds because the option will be removed on official Firefox 46 and later.
  * **Does the problem appear without Tab Mix Plus or something other tab related addon?**
    If a compatibility issue with other addons is reported without such information, it is very hard to be resolved.
+   See also the next to next.
+ * **Is the "problem" really introduced by TST?**
+   If you use TST with other addons, please confirm which addon causes the problem you met - TST or one of others.
+   If the problem doesn't appear with no other addon, it can be introduced by others.
    See also the next.
  * **Does the problem appear with a clean profile?**
    You can start Firefox with temporary clean profile by a command line `-profile`, like: `"C:\Program Filex (x86)\Mozilla Firefox\firefox.exe" -no-remote -profile "%Temp%\FirefoxTemporaryProfile"`
