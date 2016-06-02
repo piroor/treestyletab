@@ -2123,6 +2123,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		else
 			this.positionPinnedTabsWithDelay(null, null, aReason & this.kTABBAR_UPDATE_BY_AUTOHIDE);
 
+		this.updateTabbarOverflow();
+
 		this.notifyingRenderedEvent = true;
 		var event = d.createEvent('Events');
 		event.initEvent(this.kEVENT_TYPE_TABBAR_RENDERED, true, false);
