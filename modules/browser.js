@@ -2285,6 +2285,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
   
 	updateTabbarOverflow : function TSTBrowser_updateTabbarOverflow() 
 	{
+		log('updateTabbarOverflow');
 		var d = this.document;
 		var b = this.mTabBrowser;
 		b.mTabContainer.removeAttribute('overflow');
@@ -2295,8 +2296,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		var scrollBox = this.scrollBox;
 		scrollBox = d.getAnonymousElementByAttribute(scrollBox, 'anonid', 'scrollbox');
-		if (scrollBox)
+		if (scrollBox) {
 			scrollBox = d.getAnonymousNodes(scrollBox)[0];
+			log('scrollBox.width='+scrollBox.boxObject.width+' > container.width='+container.boxObject.width);
+			log('scrollBox.height='+scrollBox.boxObject.height+' > container.height='+container.boxObject.height);
+		}
 		if (
 			scrollBox &&
 			(
@@ -2304,11 +2308,13 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				scrollBox.boxObject.height > container.boxObject.height
 			)
 			) {
+			log(' => overflow');
 			b.mTabContainer.setAttribute('overflow', true);
 			if (container != b.mTabContainer)
 				container.setAttribute('overflow', true);
 		}
 		else {
+			log(' => underflow');
 			b.mTabContainer.removeAttribute('overflow');
 			if (container != b.mTabContainer)
 				container.removeAttribute('overflow');
