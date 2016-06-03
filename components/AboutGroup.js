@@ -47,7 +47,17 @@ AboutGroup.prototype = {
 
 	newChannel : function(aURI)
 	{
-		return Services.io.newChannel('chrome://treestyletab/content/group.xul', null, null);
+		//return Services.io.newChannel('chrome://treestyletab/content/group.xul', null, null);
+		return Services.io.newChannel2(
+			'chrome://treestyletab/content/group.xul',
+			null,
+			null,
+			null,
+			Services.scriptSecurityManager.getSystemPrincipal(),
+			null,
+			Components.interfaces.nsILoadInfo.SEC_NORMAL,
+			Components.interfaces.nsIContentPolicy.TYPE_OTHER
+		);
 	},
 
 	getURIFlags : function(aURI)
