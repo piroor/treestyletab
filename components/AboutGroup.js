@@ -54,8 +54,8 @@ AboutGroup.prototype = {
 			null,
 			null,
 			Services.scriptSecurityManager.getSystemPrincipal(),
-			null,
-			Components.interfaces.nsILoadInfo.SEC_NORMAL,
+			Services.scriptSecurityManager.getSystemPrincipal(),
+			Components.interfaces.nsILoadInfo.SEC_REQUIRE_SAME_ORIGIN_DATA_IS_BLOCKED,
 			Components.interfaces.nsIContentPolicy.TYPE_OTHER
 		);
 	},
