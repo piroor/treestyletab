@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+   * Firefox 47で、Windowsにおいてメニューバーを表示するとタブバー内のスクロールバーをマウスで操作できなくなる問題を修正
    * Firefox Developer EditionのDarkテーマとの互換性を向上
    * FireGesturesとの互換性を向上
    * 縮められたタブバーの幅を変更するときに、展開されたタブバーの幅が異常に大きくなることがあったのを修正
