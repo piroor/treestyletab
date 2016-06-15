@@ -425,6 +425,7 @@ toolbar.treestyletab-tabbar-toolbar-ready:not([nowindowdrag="true"]),
 	-moz-appearance: none !important;
 	line-height: 0 !important; /* to avoid an useless space above the tab bar */
 	position: fixed !important;
+	-moz-window-dragging: default !important;
 }
 .treestyletab-tabbar-toolbar:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tabs,

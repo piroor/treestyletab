@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+ - 0.17.2016061501
+   * Scrollbar in the tab bar couldn't operated by mouse if you show the menu bar, at Firefox 47 on Windows.
+   * The tab bar was wrongly fixed to "overflowed" state after you shrink the tab bar too narrow.
    * Better compatibility with the "Dark" theme of Firefox Developer Edition.
    * Better compatibility with FireGestures.
    * The width of expanded tab bar isn't enlarged too much, when shrunken tab bar is going to be wider than expanded tab bar.
