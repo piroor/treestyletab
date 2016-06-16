@@ -47,13 +47,17 @@ AboutGroup.prototype = {
 
 	newChannel : function(aURI)
 	{
-		const version = Services.appinfo.platformVersion;
-		console.log("hello! this firefox version is"+version);
-		if(version){
-			console.log("hello! this firefox newChannel");
+		const versionString = Services.appinfo.platformVersion;
+		
+		//version(type:number)
+		const version=(versionString.split(".")[0])-0;
+		
+		dump("hello! this firefox version is"+version);
+		if( version < 48 ){
+			dump("hello! this firefox newChannel 48 < ");
 			return Services.io.newChannel('chrome://treestyletab/content/group.xul', null, null);
 		}else{
-			console.log("hello! this firefox newChannel");
+			dump("hello! this firefox newChannel2 48 >");
 			return Services.io.newChannel2(
 				'chrome://treestyletab/content/group.xul',
 				null,
