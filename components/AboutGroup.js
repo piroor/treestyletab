@@ -47,17 +47,24 @@ AboutGroup.prototype = {
 
 	newChannel : function(aURI)
 	{
-		//return Services.io.newChannel('chrome://treestyletab/content/group.xul', null, null);
-		return Services.io.newChannel2(
-			'chrome://treestyletab/content/group.xul',
-			null,
-			null,
-			null,
-			Services.scriptSecurityManager.getSystemPrincipal(),
-			Services.scriptSecurityManager.getSystemPrincipal(),
-			Components.interfaces.nsILoadInfo.SEC_REQUIRE_SAME_ORIGIN_DATA_IS_BLOCKED,
-			Components.interfaces.nsIContentPolicy.TYPE_OTHER
-		);
+		const version = Services.appinfo.platformVersion;
+		console.log("hello! this firefox version is"+version);
+		if(version){
+			console.log("hello! this firefox newChannel");
+			return Services.io.newChannel('chrome://treestyletab/content/group.xul', null, null);
+		}else{
+			console.log("hello! this firefox newChannel");
+			return Services.io.newChannel2(
+				'chrome://treestyletab/content/group.xul',
+				null,
+				null,
+				null,
+				Services.scriptSecurityManager.getSystemPrincipal(),
+				Services.scriptSecurityManager.getSystemPrincipal(),
+				Components.interfaces.nsILoadInfo.SEC_REQUIRE_SAME_ORIGIN_DATA_IS_BLOCKED,
+				Components.interfaces.nsIContentPolicy.TYPE_OTHER
+			);
+		}
 	},
 
 	getURIFlags : function(aURI)
