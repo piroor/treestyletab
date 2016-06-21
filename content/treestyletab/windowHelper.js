@@ -99,6 +99,18 @@ var TreeStyleTabWindowHelper = {
 		};
 
 		this.overrideExtensionsPreInit(); // windowHelperHacks.js
+
+
+		if ('MultipleTabService' in window &&
+			Array.isArray(MultipleTabService.showHideMenuItemsConditionsProviders)) {
+			MultipleTabService.showHideMenuItemsConditionsProviders.push(
+				function treeProvider(aContextTabs) {
+					return {
+						'can-create-subtree' : TreeStyleTabService.canCreateSubtree(aContextTabs)
+					};
+				}
+			);
+		}
 	},
  
 	onBeforeBrowserInit : function TSTWH_onBeforeBrowserInit() 
