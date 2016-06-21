@@ -981,7 +981,12 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 					let insertAfter = item.getAttribute('multipletab-insertafter');
 					if (insertAfter) {
 						try {
-							(new Function('return refNode = ('+insertAfter+').nextSibling'))();
+							refNode = utils.evaluateXPath(
+									insertAfter.replace(/^\s*xpath:\s*/i, ''),
+									tabContextMenu,
+									Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
+								).singleNodeValue;
+							if (refNode) refNode = refNode.nextSibling;
 						}
 						catch(e) {
 						}
@@ -989,7 +994,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 					let insertBefore = item.getAttribute('multipletab-insertbefore');
 					if (refNode === void(0) && insertBefore) {
 						try {
-							(new Function('return refNode = '+insertBefore))();
+							refNode = utils.evaluateXPath(
+									insertBefore.replace(/^\s*xpath:\s*/i, ''),
+									tabContextMenu,
+									Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
+								).singleNodeValue;
 						}
 						catch(e) {
 						}
