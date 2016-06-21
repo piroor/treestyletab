@@ -88,7 +88,7 @@
 				event.stopPropagation();
 				this.parentNode.hidePopup();
 			}"
-			multipletab-insertafter="tabContextMenu.querySelector(&quot;*[id^='context_reloadTab']&quot;)"/>
+			multipletab-insertafter="descendant::*[starts-with(@id, 'context_reloadTab')]"/>
 		<menuitem id="context-item-reloadDescendantTabs"
 			label="&context.reloadDescendantTabs.label;"
 			accesskey="&context.reloadDescendantTabs.accesskey;"
@@ -98,7 +98,7 @@
 				event.stopPropagation();
 				this.parentNode.hidePopup();
 			}"
-			multipletab-insertafter="tabContextMenu.querySelector(&quot;*[id^='context-item-reloadTabSubtree']&quot;)"/>
+			multipletab-insertafter="descendant::*[starts-with(@id, 'context-item-reloadTabSubtree']"/>
 
 		<menuitem id="context-item-removeTabSubtree"
 			label="&context.removeTabSubtree.label;"
@@ -109,9 +109,7 @@
 				event.stopPropagation();
 				this.parentNode.hidePopup();
 			}"
-			multipletab-insertbefore="TreeStyleTabUtils.evaluateXPath(
-				&quot;(descendant::*[starts-with(@id, 'multipletab-context-removeAll') | starts-with(@id, 'context_closeTab')][1] | child::xul:menuitem[last()])/preceding-sibling::xul:menuseparator[1]&quot;
-			, tabContextMenu, XPathResult.FIRST_ORDERED_NODE_TYPE).singleNodeValue"/>
+			multipletab-insertbefore="descendant::*[starts-with(@id, 'multipletab-context-removeAll') | starts-with(@id, 'context_closeTab')][1] | child::xul:menuitem[last()])/preceding-sibling::xul:menuseparator[1]"/>
 		<menuitem id="context-item-removeDescendantTabs"
 			label="&context.removeDescendantTabs.label;"
 			accesskey="&context.removeDescendantTabs.accesskey;"
@@ -121,20 +119,18 @@
 				event.stopPropagation();
 				this.parentNode.hidePopup();
 			}"
-			multipletab-insertafter="tabContextMenu.querySelector(&quot;*[id^='context-item-removeTabSubtree']&quot;)"/>
+			multipletab-insertafter="descendant::*[starts-with(@id, 'context-item-removeTabSubtree']"/>
 		<menuitem id="context-item-removeAllTabsButThisTree"
 			label="&context.removeAllTabsBut.label;"
 			accesskey="&context.removeAllTabsBut.accesskey;"
 			oncommand="TreeStyleTabService.removeAllTabsBut(TreeStyleTabService.getTabBrowserFromChild(this).mContextTab);"
-			multipletab-insertafter="tabContextMenu.querySelector(&quot;*[id^='context_closeOtherTabs']&quot;)"/>
+			multipletab-insertafter="descendant::*[starts-with(@id, 'context_closeOtherTabs']"/>
 
 		<menuitem id="context-item-bookmarkTabSubtree"
 			label="&context.bookmarkTabSubtree.label;"
 			accesskey="&context.bookmarkTabSubtree.accesskey;"
 			oncommand="TreeStyleTabBookmarksService.bookmarkTabSubtree(TreeStyleTabService.getTabBrowserFromChild(this).mContextTab);"
-			multipletab-insertafter="TreeStyleTabUtils.evaluateXPath(
-				&quot;descendant::*[starts-with(@id, 'context_bookmarkTab')][1] | descendant::*[@command='Browser:BookmarkAllTabs']/preceding-sibling[1]&quot;
-			, tabContextMenu, XPathResult.FIRST_ORDERED_NODE_TYPE).singleNodeValue"/>
+			multipletab-insertafter="descendant::*[starts-with(@id, 'context_bookmarkTab')][1] | descendant::*[@command='Browser:BookmarkAllTabs']/preceding-sibling[1]"/>
 
 
 		<!-- simply appended items -->
