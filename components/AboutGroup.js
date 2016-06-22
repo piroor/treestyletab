@@ -49,14 +49,10 @@ AboutGroup.prototype = {
 	{
 		const version = Services.appinfo.platformVersion;
 		
-		//1なら48より高い。
 		const comp = Services.vc.compare('48.*',version);
-		dump(comp)
 		if( comp > 0 ){
-			dump("using 48 以下")
 			return Services.io.newChannel('chrome://treestyletab/content/group.xul', null, null);
 		}else{
-			dump("using 49 以上")
 			return Services.io.newChannel2(
 				'chrome://treestyletab/content/group.xul',
 				null,
