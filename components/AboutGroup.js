@@ -49,7 +49,6 @@ AboutGroup.prototype = {
 	newChannel : function(aURI)
 	{
 		const version = Services.appinfo.platformVersion;
-		
 		const comp = Services.vc.compare('48.*', version);
 		if (comp > 0) {
 			return Services.io.newChannel('chrome://treestyletab/content/group.xul', null, null);
