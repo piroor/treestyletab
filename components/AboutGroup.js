@@ -50,10 +50,11 @@ AboutGroup.prototype = {
 	{
 		const version = Services.appinfo.platformVersion;
 		
-		const comp = Services.vc.compare('48.*',version);
-		if( comp > 0 ){
+		const comp = Services.vc.compare('48.*', version);
+		if (comp > 0) {
 			return Services.io.newChannel('chrome://treestyletab/content/group.xul', null, null);
-		}else{
+		}
+		else {
 			return Services.io.newChannel2(
 				'chrome://treestyletab/content/group.xul',
 				null,
