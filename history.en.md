@@ -581,6 +581,7 @@ ions/) correctly.
    * Fixed: Tabs in a moved tree were expanded wrongly, if the tree was collapsed.
    * Fixed: Tabs can't be dragged if there is Tab Mix Plus.
    * Modified: The transparency of the tab bar (for auto-hide mode) is fixed. It is no longer customizable.
+   * A secret preference `extensions.treestyletab.autoAttachNewTabsAsChildren` is renamed to `extensions.treestyletab.autoAttach`.
  - 0.11.2011012302
    * Fixed: pl locale was broken.
  - 0.11.2011012301

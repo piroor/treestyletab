@@ -578,6 +578,7 @@ ions/)と併用できなくなっていたのを修正
    * タブバーを自動で隠す設定の時にタブバーの背景の透明度を固定するようにした
    * Tab Mix Plusがあるとタブをドラッグ＆ドロップできなくなる問題に対処
    * [DragNDrop Toolbars](https://addons.mozilla.org/firefox/addon/dragndrop-toolbars/)との併用を可能にした
+   * 隠し設定の `extensions.treestyletab.autoAttachNewTabsAsChildren` の名前を `extensions.treestyletab.autoAttach` に変更した
  - 0.11.2011012302
    * plロケールが壊れていたのを修正
  - 0.11.2011012301
