@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Better handling about positioning of new tabs duplicated by other addons.
    * Now you can drop tabs onto another tab more easily. (The drop area of each tab is enlarged.)
  - 0.17.2016061501
    * Scrollbar in the tab bar couldn't operated by mouse if you show the menu bar, at Firefox 47 on Windows.
