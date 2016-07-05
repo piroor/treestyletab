@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Now you can drop tabs onto another tab more easily. (The drop area of each tab is enlarged.)
  - 0.17.2016061501
    * Scrollbar in the tab bar couldn't operated by mouse if you show the menu bar, at Firefox 47 on Windows.
    * The tab bar was wrongly fixed to "overflowed" state after you shrink the tab bar too narrow.
