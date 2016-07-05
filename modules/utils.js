@@ -800,9 +800,9 @@ prefs.addPrefListener(TreeStyleTabUtils);
 		});
 	}
 
-	let { SessionStore } = Cu.import('resource:///modules/sessionstore/SessionStore.jsm', {});
-	SessionStore.__treestyletab__duplicateTab = SessionStore.duplicateTab;
-	SessionStore.duplicateTab = function(aWindow, aTab, aDelta = 0) {
+	let { SessionStoreInternal } = Cu.import('resource:///modules/sessionstore/SessionStore.jsm', {});
+	SessionStoreInternal.__treestyletab__duplicateTab = SessionStoreInternal.duplicateTab;
+	SessionStoreInternal.duplicateTab = function(aWindow, aTab, aDelta = 0) {
 		aWindow.gBrowser.treeStyleTab.onBeforeTabDuplicate(aWindow, aTab, aDelta);
 		return this.__treestyletab__duplicateTab.call(this, aWindow, aTab, aDelta);
 	};
