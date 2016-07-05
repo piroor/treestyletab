@@ -1365,11 +1365,8 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 	},
 	_clickEventOnNewTabButtonHandled : false,
  
-	onBeforeTabDuplicate : function TSTWindow_onBeforeTabDuplicate(aTab, aWhere, aDelta) 
+	onBeforeTabDuplicate : function TSTWindow_onBeforeTabDuplicate(aWindow, aTab, aDelta) 
 	{
-		if (aWhere && aWhere.indexOf('tab') != 0)
-			return;
-
 		var b = this.getTabBrowserFromChild(aTab) || this.browser;
 		var behaviorPref = !aDelta ? 'autoAttach.duplicateTabCommand' :
 							aDelta < 0 ? 'autoAttach.duplicateTabCommand.back' :

@@ -272,12 +272,6 @@ var TreeStyleTabWindowHelper = {
 			};
 		}, this);
 
-		window.__treestyletab__duplicateTabIn = window.duplicateTabIn;
-		window.duplicateTabIn = function(aTab, where, delta) {
-			gBrowser.treeStyleTab.onBeforeTabDuplicate(aTab, where, delta);
-			return window.__treestyletab__duplicateTabIn.call(this, aTab, where, delta);
-		};
-
 		window.__treestyletab__BrowserGoHome = window.BrowserGoHome;
 		window.BrowserGoHome = function(aEvent) {
 			aEvent = TreeStyleTabService.onBeforeGoHome(aEvent, gBrowser);
