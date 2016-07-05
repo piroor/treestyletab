@@ -365,16 +365,16 @@ catch(e) {
 		var sizeProp = sv.isVertical && pinned ? sv.invertedSizeProp : sv.sizeProp ;
 		var orient = pinned ? 'horizontal' : null ;
 		var boxPos  = sv.getTabActualScreenPosition(tab, orient);
-		var boxUnit = Math.round(tab.boxObject[sizeProp] / dropAreasCount);
+		var beforeOrAfterDropAreaSize = Math.round(tab.boxObject[sizeProp] / dropAreasCount);
 		var eventPosition = aEvent[screenPositionProp];
 //		if (this.window['piro.sakura.ne.jp'].tabsDragUtils
 //				.canAnimateDraggedTabs(aEvent)) {
 //			eventPosition = Math.round(sv.getTabActualScreenPosition(draggedTab) + (tab.boxObject[sizeProp] / 2))
 //		}
-		if (eventPosition < boxPos + boxUnit) {
+		if (eventPosition < boxPos + beforeOrAfterDropAreaSize) {
 			info.position = isInverted ? sv.kDROP_AFTER : sv.kDROP_BEFORE ;
 		}
-		else if (dropAreasCount == 2 || eventPosition > boxPos + boxUnit + boxUnit) {
+		else if (dropAreasCount == 2 || eventPosition > boxPos + beforeOrAfterDropAreaSize + beforeOrAfterDropAreaSize) {
 			info.position = isInverted ? sv.kDROP_BEFORE : sv.kDROP_AFTER ;
 		}
 		else {
