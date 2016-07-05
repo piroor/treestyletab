@@ -365,7 +365,13 @@ catch(e) {
 		var sizeProp = sv.isVertical && pinned ? sv.invertedSizeProp : sv.sizeProp ;
 		var orient = pinned ? 'horizontal' : null ;
 		var boxPos  = sv.getTabActualScreenPosition(tab, orient);
-		var beforeOrAfterDropAreaSize = Math.round(tab.boxObject[sizeProp] / dropAreasCount);
+		var beforeOrAfterDropAreaSize;
+		if (dropAreasCount == 2) {
+			beforeOrAfterDropAreaSize = Math.round(tab.boxObject[sizeProp] / dropAreasCount);
+		}
+		else { // enlarge the area to dop something on the tab itself
+			beforeOrAfterDropAreaSize = Math.round(tab.boxObject[sizeProp] / 4);
+		}
 		var eventPosition = aEvent[screenPositionProp];
 //		if (this.window['piro.sakura.ne.jp'].tabsDragUtils
 //				.canAnimateDraggedTabs(aEvent)) {
@@ -374,7 +380,7 @@ catch(e) {
 		if (eventPosition < boxPos + beforeOrAfterDropAreaSize) {
 			info.position = isInverted ? sv.kDROP_AFTER : sv.kDROP_BEFORE ;
 		}
-		else if (dropAreasCount == 2 || eventPosition > boxPos + beforeOrAfterDropAreaSize + beforeOrAfterDropAreaSize) {
+		else if (dropAreasCount == 2 || eventPosition > boxPos + tab.boxObject[sizeProp] - beforeOrAfterDropAreaSize) {
 			info.position = isInverted ? sv.kDROP_BEFORE : sv.kDROP_AFTER ;
 		}
 		else {
