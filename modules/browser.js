@@ -3280,10 +3280,12 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			let refTab;
 			let newIndex = -1;
 			if (hasStructure) {
+				log('  newIndex => -1 (has structure)');
 			}
 			else if (this.insertBefore &&
 				(refTab = this.getTabById(this.insertBefore))) {
 				newIndex = refTab._tPos;
+				log('  newIndex => '+newIndex+' (from "insertBefore")');
 			}
 			else if (
 				parent &&
@@ -3294,6 +3296,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				   子タブの最初の位置に挿入し、続くタブは「最初の開いたタブ」と
 				   「元々最初の子だったタブ」との間に挿入していく */
 				newIndex = parent._tPos + 1;
+				log('  newIndex => '+newIndex+' (from "parent")');
 				if (refTab = this.getFirstChildTab(parent))
 					this.insertBefore = refTab.getAttribute(this.kID);
 			}
