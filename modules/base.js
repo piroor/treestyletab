@@ -1410,7 +1410,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			return false;
 
 		var parentTab = this.getParentTab(tab);
-		var nextTab = this.getNextSiblingTab(tab);
+		var nextTab = this.getNextSiblingTab(tab) || this.getNextTab(tab);
 		if (parentTab) {
 			/**
 			 * If the base tab has a parent, open the new tab as a child of
