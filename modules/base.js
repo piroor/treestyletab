@@ -1420,7 +1420,6 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 
 		var parentTab = this.getParentTab(tab);
 		var nextTab = this.getNextSiblingTab(tab) || this.getNextTab(tab);
-		var previousTab = this.getPreviousTab(tab);
 		if (parentTab) {
 			/**
 			 * If the base tab has a parent, open the new tab as a child of
@@ -1428,7 +1427,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			 */
 			return this.readyToOpenChildTab(parentTab, false, {
 				insertBefore : nextTab,
-				insertAfter  : previousTab
+				insertAfter  : tab
 			});
 		}
 		else {
