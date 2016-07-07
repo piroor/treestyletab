@@ -1526,6 +1526,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		delete ownerBrowser.treeStyleTab.multipleCount;
 		delete ownerBrowser.treeStyleTab.parentTab;
 		delete ownerBrowser.treeStyleTab.insertBefore;
+		delete ownerBrowser.treeStyleTab.insertAfter;
 		delete ownerBrowser.treeStyleTab.treeStructure;
 		delete ownerBrowser.treeStyleTab.shouldExpandAllTree;
 
