@@ -3244,6 +3244,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		  'readiedToAttachNewTab: '+this.readiedToAttachNewTab,
 		  'parentTab: '+this.parentTab + ' (' + this.getTabById(this.parentTab) + ')',
 		  'insertBefore: '+this.insertBefore,
+		  'insertAfter: '+this.insertAfter,
 		  'treeStructure: '+this.treeStructure
 		].join('\n  '));
 
@@ -3286,6 +3287,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				(refTab = this.getTabById(this.insertBefore))) {
 				newIndex = refTab._tPos;
 				log('  newIndex => '+newIndex+' (from "insertBefore")');
+			}
+			else if (this.insertAfter &&
+				(refTab = this.getTabById(this.insertAfter))) {
+				newIndex = refTab._tPos + 1;
+				log('  newIndex => '+newIndex+' (from "insertAfter")');
 			}
 			else if (
 				parent &&

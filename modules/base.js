@@ -1307,10 +1307,13 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
   
 /* notify "ready to open child tab(s)" */ 
 	
-	readyToOpenChildTab : function TSTBase_readyToOpenChildTab(aTabOrSomething, aMultiple, aInsertBefore) /* PUBLIC API */ 
+	readyToOpenChildTab : function TSTBase_readyToOpenChildTab(aTabOrSomething, aMultiple, aOptions) /* PUBLIC API */ 
 	{
 		if (!utils.getTreePref('autoAttach'))
 			return false;
+
+		if (aOptions instanceof Ci.nsIDOMElement) // for backward compatibility
+			aOptions = { insertBefore : aOptions };
 
 		var browser = this.getBrowserFromTabBrowserElements(aTabOrSomething);
 		if (!browser)
@@ -1325,10 +1328,15 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		ownerBrowser.treeStyleTab.ensureTabInitialized(parentTab);
 		var parentId = parentTab.getAttribute(this.kID);
 
-		var refId = null;
-		if (aInsertBefore) {
+		var insertBefore = null;
+		if (aOptions.insertBefore) {
 			ownerBrowser.treeStyleTab.ensureTabInitialized(parentTab);
-			refId = aInsertBefore.getAttribute(this.kID);
+			insertBefore = aOptions.insertBefore.getAttribute(this.kID);
+		}
+		var insertAfter = null;
+		if (aOptions.insertAfter) {
+			ownerBrowser.treeStyleTab.ensureTabInitialized(parentTab);
+			insertAfter = aOptions.insertAfter.getAttribute(this.kID);
 		}
 
 		logWithStackTrace('new child tab is requested.');
@@ -1337,7 +1345,8 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		ownerBrowser.treeStyleTab.readiedToAttachMultiple = aMultiple || false ;
 		ownerBrowser.treeStyleTab.multipleCount           = aMultiple ? 0 : -1 ;
 		ownerBrowser.treeStyleTab.parentTab               = parentId;
-		ownerBrowser.treeStyleTab.insertBefore            = refId;
+		ownerBrowser.treeStyleTab.insertBefore            = insertBefore;
+		ownerBrowser.treeStyleTab.insertAfter             = insertAfter;
 
 		return true;
 	},
@@ -1411,12 +1420,16 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 
 		var parentTab = this.getParentTab(tab);
 		var nextTab = this.getNextSiblingTab(tab) || this.getNextTab(tab);
+		var previousTab = this.getPreviousTab(tab);
 		if (parentTab) {
 			/**
 			 * If the base tab has a parent, open the new tab as a child of
 			 * the parent tab.
 			 */
-			return this.readyToOpenChildTab(parentTab, false, nextTab);
+			return this.readyToOpenChildTab(parentTab, false, {
+				insertBefore : nextTab,
+				insertAfter  : previousTab
+			});
 		}
 		else {
 			/**
