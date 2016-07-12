@@ -1307,11 +1307,13 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
   
 /* notify "ready to open child tab(s)" */ 
 	
-	readyToOpenChildTab : function TSTBase_readyToOpenChildTab(aTabOrSomething, aMultiple, aOptions = {}) /* PUBLIC API */ 
+	readyToOpenChildTab : function TSTBase_readyToOpenChildTab(aTabOrSomething, aMultiple, aOptions) /* PUBLIC API */ 
 	{
 		if (!utils.getTreePref('autoAttach'))
 			return false;
 
+		if (!aOptions)
+			aOptions = {};
 		if (aOptions instanceof Ci.nsIDOMElement) // for backward compatibility
 			aOptions = { insertBefore : aOptions };
 
