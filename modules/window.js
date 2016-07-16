@@ -98,7 +98,7 @@ function TreeStyleTabWindow(aWindow)
 
 	var isDevEdition = this.window.AppConstants.MOZ_DEV_EDITION;
 	if (isDevEdition) {
-		var rootelem = this.document.documentElement;
+		let rootelem = this.document.documentElement;
 		rootelem.setAttribute('treestyletab-devedition', true);
 	}
 
