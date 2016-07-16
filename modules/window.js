@@ -96,8 +96,8 @@ function TreeStyleTabWindow(aWindow)
 
 	XPCOMUtils.defineLazyModuleGetter(aWindow, 'TreeStyleTabBrowser', 'resource://treestyletab-modules/browser.js');
 
-	var DevEdition = this.window.AppConstants.MOZ_DEV_EDITION;
-	if (DevEdition) {
+	var isDevEdition = this.window.AppConstants.MOZ_DEV_EDITION;
+	if (isDevEdition) {
 		var rootelem = this.document.documentElement;
 		rootelem.setAttribute('treestyletab-devedition', true);
 	}
