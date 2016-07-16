@@ -20,6 +20,7 @@
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
  *                 Tetsuharu OHZEKI <https://github.com/saneyuki>
  *                 J. Ryan Stinnett <https://github.com/jryans>
+ *                 Ohnuma <https://github.com/lv7777>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
