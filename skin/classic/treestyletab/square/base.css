@@ -15,7 +15,7 @@
 	--tst-tabbar-bg: darkgray;
 }
 
-:root[devtoolstheme="dark"] {
+:root[devtoolstheme="dark"][treestyletab-devedition="true"] {
 	--tst-tab-highlighted-base: ThreeDHighlight;
 	--tst-tab-highlighted-highlight: Highlight;
 	--tst-tab-side-border: #39424D;
