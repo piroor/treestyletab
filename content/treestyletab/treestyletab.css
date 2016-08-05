@@ -286,7 +286,7 @@ tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-sc
 	min-height: 1px !important;
 	opacity: 0 !important;
 	/**
-	 * Sometimes "transitionend" event for "max-width" doesn't fire so ghotst
+	 * Sometimes "transitionend" event for "max-width" doesn't fire so ghost
 	 * tabs are left. To do cleanup process forcedly, we have to re-define new
 	 * max-width to fire transitionend event.
 	 */
