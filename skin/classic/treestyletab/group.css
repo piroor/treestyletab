@@ -46,7 +46,6 @@
 	image-rendering: -moz-crisp-edges;
 	margin: 0 -0.3em -0.3em 0;
 	transform: rotate(8deg);
-	-moz-transform: rotate(8deg);
 }
 
 .background-image-container {

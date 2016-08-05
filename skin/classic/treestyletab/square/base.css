@@ -62,7 +62,6 @@
 	margin: 0 !important;
 	padding: 0 !important;
 	box-shadow: none !important;
-	-moz-box-shadow: none !important;
 }
 
 .tabbrowser-strip[treestyletab-tabbar-position="left"][treestyletab-tabbar-fixed="true"],
@@ -128,7 +127,6 @@
 	border-bottom: 2px solid !important;
 	-moz-border-bottom-colors: var(--tst-tab-border) transparent !important;
 	border-radius: 0 !important;
-	-moz-border-radius: 0 !important;
 	-moz-border-image: none !important;
 	border-image: none !important;
 	box-align: stretch !important;
