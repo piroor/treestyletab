@@ -403,7 +403,6 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
 	border: 0 none;
 	bottom: 0;
 	box-shadow: none;
-	-moz-box-shadow: none;
 	height: 2em;
 	left: 0;
 	margin-top: -2em;

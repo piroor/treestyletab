@@ -286,14 +286,13 @@ tabbrowser[treestyletab-tabbar-position="right"]
 	background: #9a9a9a url("shadow-active-l.png") repeat-y top right !important;
 	margin-left: 6px !important;
 	border-radius: 6px 0 0 6px;
-	-moz-border-radius: 6px 0 0 6px;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"][treestyletab-tab-inverted="true"]
   .tabbrowser-arrowscrollbox
   .tabs-newtab-button {
 	background: #9a9a9a url("shadow-active-r.png") repeat-y top left !important;
 	margin-right: 6px !important;
-	-moz-border-radius: 0 6px 6px 0;
+	border-radius: 0 6px 6px 0;
 }
 
 .tabbrowser-tabs[treestyletab-tabbar-position="left"]

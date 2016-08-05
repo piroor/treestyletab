@@ -112,7 +112,6 @@ tabbrowser[treestyletab-mode="vertical"]
 	-moz-appearance: none !important;
 	border: none;
 	border-radius: 0 !important;
-	-moz-border-radius: 0 !important;
 	border-top: 1px solid transparent !important;
 	box-align: stretch !important;
 	-moz-box-align: stretch !important;
@@ -231,7 +230,6 @@ tabbrowser[treestyletab-mode="vertical"]
   .treestyletab-counter-container {
 	background-color: #91a0c0 !important;
 	border-radius: 8px !important;
-	-moz-border-radius: 8px !important;
 	padding: 0 6px !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
@@ -295,7 +293,6 @@ tabbrowser[treestyletab-mode="vertical"]
 	background: #d0def5 !important;
 	border: 2px solid #577bf3 !important; /* not OSX's colour but Firefox's */
 	border-radius: 8px !important;
-	-moz-border-radius: 8px !important;
 	padding: 0 1px 0 8px !important;
 }
 
@@ -339,7 +336,6 @@ tabbrowser[treestyletab-mode="vertical"]
 	background: transparent !important;
 	border: 0 none !important;
 	box-shadow: none !important;
-	-moz-box-shadow: none !important;
 	margin: 0 !important;
 	padding: 0 !important;
 }
