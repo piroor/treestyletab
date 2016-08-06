@@ -108,7 +108,6 @@ tabbrowser[treestyletab-mode="vertical"]
 /* Style tabs themselves.  Get rid of most of the initial XUL styling */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab {
-	appearance: none !important;
 	-moz-appearance: none !important;
 	border: none;
 	border-radius: 0 !important;
