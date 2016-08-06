@@ -112,7 +112,6 @@ tabbrowser[treestyletab-mode="vertical"]
 	border: none;
 	border-radius: 0 !important;
 	border-top: 1px solid transparent !important;
-	box-align: stretch !important;
 	-moz-box-align: stretch !important;
 	height: 21px !important;     /* height including border! */
 	margin: 0 !important;
@@ -330,7 +329,6 @@ tabbrowser[treestyletab-mode="vertical"]
 
 .treestyletab-tabbar-toolbar:not([treestyletab-tabbar-position="top"]),
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
-	appearance: none !important;
 	-moz-appearance: none !important;
 	background: transparent !important;
 	border: 0 none !important;
@@ -358,7 +356,6 @@ tabbrowser[treestyletab-mode="vertical"]
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
   > toolbarpaletteitem
   > toolbarbutton:hover {
-	appearance: none !important;
 	-moz-appearance: none !important;
 	background: transparent !important;
 	border: 0 none !important;
@@ -394,7 +391,6 @@ tabbrowser[treestyletab-mode="vertical"]
 	-moz-image-region: auto !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"] {
-	appearance: none !important;
 	-moz-appearance: none !important;
 	background: transparent !important;
 	margin: 0;
@@ -403,7 +399,6 @@ tabbrowser[treestyletab-mode="vertical"]
 /* for Linux (Gnomestrip) */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-close-button {
-	appearance: none !important;
 	-moz-appearance: none !important;
 }
 
