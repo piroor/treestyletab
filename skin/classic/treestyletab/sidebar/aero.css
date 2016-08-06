@@ -5,7 +5,6 @@
 tabbrowser[treestyletab-style~="aero"]:not([treestyletab-tabbar-position="top"]),
 :root[treestyletab-style~="aero"]:not([treestyletab-tabbar-position="top"]) #appcontent,
 :root[treestyletab-style~="aero"]:not([treestyletab-tabbar-position="top"]) #browser {
-	appearance: none !important;
 	-moz-appearance: none !important;
 	background: transparent !important;
 }

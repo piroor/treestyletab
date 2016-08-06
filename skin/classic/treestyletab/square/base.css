@@ -31,14 +31,12 @@
 
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"]),
 .treestyletab-tabbar-toolbar:not([treestyletab-tabbar-position="top"]) {
-	appearance: none;
 	-moz-appearance: none;
 	background: transparent !important;
 	margin: 0 !important;
 	padding: 0 !important;
 }
 .tabbrowser-strip[treestyletab-style~="border"]:not([treestyletab-tabbar-position="top"]) {
-	appearance: none;
 	-moz-appearance: none;
 	background: var(--tst-tabbar-bg) !important;
 }
@@ -113,7 +111,6 @@
   .tabbrowser-tab[visuallyselected="true"],
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:not([visuallyselected="true"]) {
-	appearance: none !important;
 	-moz-appearance: none !important;
 	min-height: 2em;
 	margin: 0 !important;
@@ -129,7 +126,6 @@
 	border-radius: 0 !important;
 	-moz-border-image: none !important;
 	border-image: none !important;
-	box-align: stretch !important;
 	-moz-box-align: stretch !important;
 }
 /* override "-moz-menutext" color defined by the default theme, because it is too bright on Ubuntu */
@@ -295,7 +291,6 @@
 /* Mac OS X */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab {
-	box-pack: start !important;
 	-moz-box-pack: start !important;
 	text-align: start !important; 
 }
@@ -324,7 +319,6 @@
 tabbrowser[treestyletab-style~="aero"]:not([treestyletab-tabbar-position="top"]),
 :root[treestyletab-style~="aero"]:not([treestyletab-tabbar-position="top"]) #appcontent,
 :root[treestyletab-style~="aero"]:not([treestyletab-tabbar-position="top"]) #browser {
-	appearance: none !important;
 	-moz-appearance: none !important;
 	background: transparent !important;
 }

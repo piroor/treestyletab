@@ -8,7 +8,6 @@
   .tabbrowser-tab[visuallyselected="true"],
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[visuallyselected="true"]:hover {
-	appearance: none !important;
 	-moz-appearance: none !important;
 	border: 2px solid transparent !important;
 	border-radius: 0 !important;
@@ -112,7 +111,6 @@
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-content {
-	appearance: none !important;
 	-moz-appearance: none !important;
 	border: 10px solid transparent;
 	margin: 0 !important;

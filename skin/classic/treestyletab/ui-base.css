@@ -3,9 +3,7 @@
 /* tree UI */
 
 .treestyletab-counter-container {
-	box-align: center;
 	-moz-box-align: center;
-	box-pack: end;
 	-moz-box-pack: end;
 }
 
@@ -165,7 +163,6 @@
 
 
 tabbrowser[treestyletab-drop-position] {
-	appearance: none !important;
 	-moz-appearance: none !important;
 	border: 2px solid transparent !important;
 	-moz-border-top-colors: none !important;
@@ -306,7 +303,6 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
 /* toolbar customization */
 
 .treestyletab-tabbar-toolbar-ready-popup {
-	appearance: tooltip;
 	-moz-appearance: tooltip;
 	max-width: 15em;
 	opacity: 0.85;
@@ -343,18 +339,14 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
   .tabbrowser-tab[pinned="true"] .tab-stack,
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-content[pinned="true"] {
-	box-align: center;
 	-moz-box-align: center;
-	box-pack: center;
 	-moz-box-pack: center;
 	min-height: 0;
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-background[pinned="true"] {
-	box-align: stretch;
 	-moz-box-align: stretch;
-	box-pack: justify;
 	-moz-box-pack: justify;
 	min-height: 0;
 }

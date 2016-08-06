@@ -4,7 +4,6 @@
 
 .treestyletab-tabbar-toolbar:not([treestyletab-tabbar-position="top"]),
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
-	appearance: none !important;
 	-moz-appearance: none !important;
 	background: transparent !important;
 	border: 0 none !important;
@@ -41,7 +40,6 @@
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"] {
-	appearance: none !important;
 	-moz-appearance: none !important;
 	background: transparent !important;
 	margin: 0;
@@ -77,7 +75,6 @@ tabbrowser[treestyletab-mode="vertical"]
   .treestyletab-splitter,
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
   .treestyletab-splitter {
-	appearance: none !important;
 	-moz-appearance: none !important;
 	background: #b3b2b3 !important;
 	border: 0 solid #666666 !important;

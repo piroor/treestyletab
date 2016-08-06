@@ -42,7 +42,6 @@
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-newtab-button,
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > toolbarbutton,
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > toolbarpaletteitem > toolbarbutton {
-	appearance: none !important;
 	-moz-appearance: none !important;
 	border: 0 none !important;
 	-moz-border-top-colors: none !important;
@@ -75,7 +74,6 @@
 
 /* Support customizable tab bar */
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > toolbarpaletteitem > toolbarbutton {
-	box-flex: 1;
 	-moz-box-flex: 1;
 }
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > *:not(toolbarpaletteitem) {

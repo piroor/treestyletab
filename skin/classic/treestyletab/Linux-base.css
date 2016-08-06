@@ -2,7 +2,6 @@
 
 /* splitter for floating & autohide tab bar */
 .treestyletab-tabbar-toolbar .treestyletab-splitter {
-	appearance: none;
 	-moz-appearance: none;
 	width: 6px;
 }
