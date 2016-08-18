@@ -87,12 +87,12 @@
 		]),
 
 		collectLocations : function(aFrame, aLocations) {
-			aLocations = aLocations || [];
-			aLocations.push(this.getHashString(aFrame.location.href));
+			aLocations = aLocations || {};
+			aLocations[this.getHashString(aFrame.location.href)] = true;
 			Array.forEach(aFrame.frames, function(aSubFrame) {
 				this.collectLocations(aSubFrame, aLocations);
 			}, this);
-			return aLocations;
+			return Object.keys(aLocations);
 		},
 		getHashString : function(aString) {
 			let hasher = Cc['@mozilla.org/security/hash;1']
