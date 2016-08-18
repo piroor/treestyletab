@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2015
+ * Portions created by the Initial Developer are Copyright (C) 2010-2016
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -243,6 +243,7 @@ var TreeStyleTabConstants = Object.freeze({
 
 	COMMAND_SHUTDOWN                : 'shutdown',
 	COMMAND_REPORT_SELECTION_CHANGE : 'report-selection-change',
+	COMMAND_REPORT_LOCATION_CHANGE  : 'report-location-change',
 	COMMAND_REPORT_MOUSEDOWN        : 'report-mousedown',
 	COMMAND_REPORT_MOUSEUP          : 'report-mouseup',
 	COMMAND_REPORT_MOUSEMOVE        : 'report-mousemove',

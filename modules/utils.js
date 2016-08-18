@@ -730,6 +730,18 @@ var TreeStyleTabUtils = {
 		return 'about:treestyletab-group?' + parameters.join('&');
 	},
 
+	getHashString : function utils_getHashString(aString)
+	{
+		let hasher = Cc['@mozilla.org/security/hash;1']
+						.createInstance(Ci.nsICryptoHash);
+		hasher.init(Ci.nsICryptoHash.MD5);
+		let input = Cc['@mozilla.org/io/string-input-stream;1']
+						.createInstance(Ci.nsIStringInputStream);
+		input.data = aString;
+		hasher.updateFromStream(input, -1);
+		return hasher.finish(true);
+	},
+
 
 
 	isMac : Cc['@mozilla.org/xre/app-info;1']

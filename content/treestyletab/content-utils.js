@@ -12,13 +12,16 @@
 	var Cr = Components.results;
 
 	var { TreeStyleTabConstants } = Cu.import('resource://treestyletab-modules/constants.js', {});
+	var { XPCOMUtils } = Cu.import('resource://gre/modules/XPCOMUtils.jsm', {});
 
 	function free() {
 		cleanup =
 			Cc = Ci = Cu = Cr =
 			TreeStyleTabConstants =
+			XPCOMUtils =
 			messageListener =
 			handleEvent =
+			progressListener =
 			mydump =
 				undefined;
 	}
@@ -31,6 +34,11 @@
 			case TreeStyleTabConstants.COMMAND_SHUTDOWN:
 				global.removeMessageListener(TreeStyleTabConstants.MESSAGE_TYPE, messageListener);
 				global.removeEventListener('selectionchange', handleEvent, true);
+				global.removeEventListener('DOMContentLoaded', handleEvent, true);
+				global.docShell
+						.QueryInterface(Ci.nsIInterfaceRequestor)
+						.getInterface(Ci.nsIWebProgress)
+						.removeProgressListener(progressListener);
 				free();
 				return;
 		}
@@ -49,7 +57,56 @@
 					text    : aEvent.target.getSelection().toString()
 				});
 				return;
+
+			case 'DOMContentLoaded':
+				progressListener.onLocationChange();
+				return;
 		}
 	}
 	global.addEventListener('selectionchange', handleEvent, true);
+	global.addEventListener('DOMContentLoaded', handleEvent, true);
+
+	var progressListener = {
+		// nsIPorgressListener
+		onStateChange : function() {},
+		onProgressChange : function() {},
+		onLocationChange : function(aWebProgress, aRequest, aLocation, aFlags) {
+			global.sendAsyncMessage(TreeStyleTabConstants.MESSAGE_TYPE, {
+				command   : TreeStyleTabConstants.COMMAND_REPORT_LOCATION_CHANGE,
+				locations : this.collectLocations(global.content)
+			});
+		},
+		onStatusChange : function() {},
+		onSecurityChange : function() {},
+
+		// nsISupports
+		QueryInterface : XPCOMUtils.generateQI([
+			Ci.nsIWebPorgressListener,
+			Ci.nsISupportsWeakReference,
+			Ci.nsISupports
+		]),
+
+		collectLocations : function(aFrame, aLocations) {
+			aLocations = aLocations || [];
+			aLocations.push(this.getHashString(aFrame.location.href));
+			Array.forEach(aFrame.frames, function(aSubFrame) {
+				this.collectLocations(aSubFrame, aLocations);
+			}, this);
+			return aLocations;
+		},
+		getHashString : function(aString) {
+			let hasher = Cc['@mozilla.org/security/hash;1']
+							.createInstance(Ci.nsICryptoHash);
+			hasher.init(Ci.nsICryptoHash.MD5);
+			let input = Cc['@mozilla.org/io/string-input-stream;1']
+							.createInstance(Ci.nsIStringInputStream);
+			input.data = aString;
+			hasher.updateFromStream(input, -1);
+			return hasher.finish(true);
+		}
+	};
+	global.docShell
+			.QueryInterface(Ci.nsIInterfaceRequestor)
+			.getInterface(Ci.nsIWebProgress)
+			.addProgressListener(progressListener, Ci.nsIWebProgress.NOTIFY_LOCATION);
 })(this);

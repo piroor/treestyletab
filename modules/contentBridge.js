@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2014-2015
+ * Portions created by the Initial Developer are Copyright (C) 2014-2016
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -125,6 +125,10 @@ ContentBridge.prototype = inherit(TreeStyleTabConstants, {
 		{
 			case this.COMMAND_REPORT_SELECTION_CHANGE:
 				this.mTab.__treestyletab__lastContentSelectionText = aMessage.json.text;
+				return;
+
+			case this.COMMAND_REPORT_LOCATION_CHANGE:
+				this.mTab.__treestyletab__contentLocations = aMessage.json.locations;
 				return;
 
 			case this.COMMAND_REPORT_MOUSEDOWN:
