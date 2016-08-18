@@ -1266,15 +1266,18 @@ catch(e) {
 		if (!normalizedURI)
 			return;
 		let sourceDoc = session.sourceDocument;
-		let sourceURI = sourceDoc ? sourceDoc.documentURI : 'file:///' ;
+		let sourceURISpec = sourceDoc ? sourceDoc.documentURI : 'file:///' ;
+		let sourceURI = Services.io.newURI(sourceURISpec, null, null)
 		let principal = sourceDoc ?
 					sourceDoc.nodePrincipal :
-					SecMan.getSimpleCodebasePrincipal(Services.io.newURI(sourceURI, null, null)) ;
+				typeof SecMan.createCodebasePrincipal === 'function' ?
+					SecMan.createCodebasePrincipal(sourceURI, {}) : // after https://bugzilla.mozilla.org/show_bug.cgi?id=1259871
+					SecMan.getSimpleCodebasePrincipal(sourceURI) ;
 		try {
 			if (principal)
 				SecMan.checkLoadURIStrWithPrincipal(principal, normalizedURI.spec, Ci.nsIScriptSecurityManager.STANDARD);
 			else
-				SecMan.checkLoadURIStr(sourceURI, normalizedURI.spec, Ci.nsIScriptSecurityManager.STANDARD);
+				SecMan.checkLoadURIStr(sourceURISpec, normalizedURI.spec, Ci.nsIScriptSecurityManager.STANDARD);
 		}
 		catch(e) {
 			aEvent.stopPropagation();
