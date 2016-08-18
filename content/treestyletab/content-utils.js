@@ -73,7 +73,9 @@
 		onLocationChange : function(aWebProgress, aRequest, aLocation, aFlags) {
 			global.sendAsyncMessage(TreeStyleTabConstants.MESSAGE_TYPE, {
 				command   : TreeStyleTabConstants.COMMAND_REPORT_LOCATION_CHANGE,
-				locations : this.collectLocations(global.content)
+				locations : this.collectLocations(global.content).map(function(aURI) {
+					return this.getHashString(aURI);
+				}, this)
 			});
 		},
 		onStatusChange : function() {},
@@ -88,7 +90,7 @@
 
 		collectLocations : function(aFrame, aLocations) {
 			aLocations = aLocations || {};
-			aLocations[this.getHashString(aFrame.location.href)] = true;
+			aLocations[aFrame.location.href] = true;
 			Array.forEach(aFrame.frames, function(aSubFrame) {
 				this.collectLocations(aSubFrame, aLocations);
 			}, this);
