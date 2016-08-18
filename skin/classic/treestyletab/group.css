@@ -1,7 +1,6 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
 :root {
-	appearance: window;
 	-moz-appearance: window;
 	background: -moz-dialog;
 	margin: 0;
@@ -46,7 +45,6 @@
 	image-rendering: -moz-crisp-edges;
 	margin: 0 -0.3em -0.3em 0;
 	transform: rotate(8deg);
-	-moz-transform: rotate(8deg);
 }
 
 .background-image-container {
@@ -61,7 +59,6 @@
 #tree {
 	margin: 1em 0 0 0.5em;
 	overflow: auto;
-	box-flex: 1;
 	-moz-box-flex: 1;
 }
 

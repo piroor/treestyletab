@@ -38,7 +38,6 @@
 
 :root[treestyletab-enable-compatibility-tmp="true"]
   .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-closebutton-topbox > .tabs-closebutton {
-	appearance: none !important;
 	-moz-appearance: none !important;
 	border: 0 none !important;
 	-moz-border-top-colors: none !important;
@@ -66,13 +65,9 @@
 
 :root[treestyletab-enable-compatibility-tmp="true"]
   .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-newtab-topbox > .tabs-newtab-button {
-	box-flex: 1;
 	-moz-box-flex: 1;
-	box-align: center;
 	-moz-box-align: center;
-	box-pack: center;
 	-moz-box-pack: center;
-	box-orient: vertical;
 	-moz-box-orient: vertical;
 }
 

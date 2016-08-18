@@ -108,13 +108,10 @@ tabbrowser[treestyletab-mode="vertical"]
 /* Style tabs themselves.  Get rid of most of the initial XUL styling */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab {
-	appearance: none !important;
 	-moz-appearance: none !important;
 	border: none;
 	border-radius: 0 !important;
-	-moz-border-radius: 0 !important;
 	border-top: 1px solid transparent !important;
-	box-align: stretch !important;
 	-moz-box-align: stretch !important;
 	height: 21px !important;     /* height including border! */
 	margin: 0 !important;
@@ -231,7 +228,6 @@ tabbrowser[treestyletab-mode="vertical"]
   .treestyletab-counter-container {
 	background-color: #91a0c0 !important;
 	border-radius: 8px !important;
-	-moz-border-radius: 8px !important;
 	padding: 0 6px !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
@@ -295,7 +291,6 @@ tabbrowser[treestyletab-mode="vertical"]
 	background: #d0def5 !important;
 	border: 2px solid #577bf3 !important; /* not OSX's colour but Firefox's */
 	border-radius: 8px !important;
-	-moz-border-radius: 8px !important;
 	padding: 0 1px 0 8px !important;
 }
 
@@ -334,12 +329,10 @@ tabbrowser[treestyletab-mode="vertical"]
 
 .treestyletab-tabbar-toolbar:not([treestyletab-tabbar-position="top"]),
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-position="top"]:not([treestyletab-tabbar-fixed="true"]) {
-	appearance: none !important;
 	-moz-appearance: none !important;
 	background: transparent !important;
 	border: 0 none !important;
 	box-shadow: none !important;
-	-moz-box-shadow: none !important;
 	margin: 0 !important;
 	padding: 0 !important;
 }
@@ -363,7 +356,6 @@ tabbrowser[treestyletab-mode="vertical"]
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"]
   > toolbarpaletteitem
   > toolbarbutton:hover {
-	appearance: none !important;
 	-moz-appearance: none !important;
 	background: transparent !important;
 	border: 0 none !important;
@@ -399,7 +391,6 @@ tabbrowser[treestyletab-mode="vertical"]
 	-moz-image-region: auto !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"] {
-	appearance: none !important;
 	-moz-appearance: none !important;
 	background: transparent !important;
 	margin: 0;
@@ -408,7 +399,6 @@ tabbrowser[treestyletab-mode="vertical"]
 /* for Linux (Gnomestrip) */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-close-button {
-	appearance: none !important;
 	-moz-appearance: none !important;
 }
 

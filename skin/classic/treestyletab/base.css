@@ -42,7 +42,6 @@
 .tabbrowser-tabs[treestyletab-mode="vertical"] .tabs-newtab-button,
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > toolbarbutton,
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > toolbarpaletteitem > toolbarbutton {
-	appearance: none !important;
 	-moz-appearance: none !important;
 	border: 0 none !important;
 	-moz-border-top-colors: none !important;
@@ -50,7 +49,6 @@
 	-moz-border-bottom-colors: none !important;
 	-moz-border-left-colors: none !important;
 	border-radius: 0;
-	-moz-border-radius: 0;
 	border-top: 1px solid var(--tst-tab-border) !important;
 	background: var(--tst-tab-surface) !important;
 }
@@ -76,7 +74,6 @@
 
 /* Support customizable tab bar */
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > toolbarpaletteitem > toolbarbutton {
-	box-flex: 1;
 	-moz-box-flex: 1;
 }
 .treestyletab-tabbar-toolbar[treestyletab-mode="vertical"] > *:not(toolbarpaletteitem) {
@@ -111,7 +108,6 @@
 	border: 0 none !important;
 	border-bottom: 1px solid var(--tst-tab-border) !important;
 	border-radius: 0 0 3px 3px;
-	-moz-border-radius: 0 0 3px 3px;
 }
 .tabbrowser-tabs[treestyletab-style~="vertigo"][treestyletab-mode="vertical"]
   .tabbrowser-arrowscrollbox .tabs-newtab-button {

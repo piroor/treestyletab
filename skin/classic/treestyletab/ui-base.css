@@ -3,9 +3,7 @@
 /* tree UI */
 
 .treestyletab-counter-container {
-	box-align: center;
 	-moz-box-align: center;
-	box-pack: end;
 	-moz-box-pack: end;
 }
 
@@ -165,7 +163,6 @@
 
 
 tabbrowser[treestyletab-drop-position] {
-	appearance: none !important;
 	-moz-appearance: none !important;
 	border: 2px solid transparent !important;
 	-moz-border-top-colors: none !important;
@@ -306,7 +303,6 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
 /* toolbar customization */
 
 .treestyletab-tabbar-toolbar-ready-popup {
-	appearance: tooltip;
 	-moz-appearance: tooltip;
 	max-width: 15em;
 	opacity: 0.85;
@@ -320,7 +316,6 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
 
 /* pinned tabs */
 .tabbrowser-tabs[treestyletab-mode="vertical"][positionpinnedtabs="true"] {
-	padding-start: 0 !important;
 	-moz-padding-start: 0 !important;
 }
 
@@ -344,18 +339,14 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
   .tabbrowser-tab[pinned="true"] .tab-stack,
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-content[pinned="true"] {
-	box-align: center;
 	-moz-box-align: center;
-	box-pack: center;
 	-moz-box-pack: center;
 	min-height: 0;
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-background[pinned="true"] {
-	box-align: stretch;
 	-moz-box-align: stretch;
-	box-pack: justify;
 	-moz-box-pack: justify;
 	min-height: 0;
 }
@@ -403,7 +394,6 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
 	border: 0 none;
 	bottom: 0;
 	box-shadow: none;
-	-moz-box-shadow: none;
 	height: 2em;
 	left: 0;
 	margin-top: -2em;
@@ -414,8 +404,6 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
 	right: 0;
 	top: 0;
 	transition: 1s opacity ease-out;
-	transition: 1s opacity ease-out;
-	user-focus: ignore;
 	z-index: 99999;
 	-moz-user-focus: ignore;
 }
@@ -436,7 +424,6 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
 	outline: transparent solid 0.2em;
 	outline-offset: -0.2em;
 	-moz-outline-radius: 0.25em;
-	outline-radius: 0.25em;
 }
 .tabbrowser-tab[treestyletab-highlighted='notifying'] {
 	outline: Highlight solid 0.2em;
