@@ -1436,6 +1436,9 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 				log('  opener =>', [opener, hasOwnerTab]);
 			}
 		}
+		else {
+			log('onBeforeBrowserAccessOpenURI: no params is given');
+		}
 		if (aParamsOrOpener &&
 			hasOwnerTab &&
 			aWhere == Ci.nsIBrowserDOMWindow.OPEN_NEWTAB)
