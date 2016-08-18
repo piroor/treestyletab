@@ -1413,7 +1413,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		}
 	},
  
-	onBeforeBrowserAccessOpenURI : function TSTWindow_onBeforeBrowserAccessOpenURI(aParamsOrOpener, aWhere) 
+	onBeforeBrowserAccessOpenURI : function TSTWindow_onBeforeBrowserAccessOpenURI(aParamsOrOpener, aWhere, aContext) 
 	{
 		var hasOwnerTab = false;
 		var opener = null;
@@ -1431,11 +1431,14 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 				// from remote contents, we have to detect its opener from the URI.
 				let referrer = aParamsOrOpener.referrer;
 				if (referrer) {
+					let referrerHash = utils.getHashString(referrer);
 					let activeTab = this.browser.selectedTab;
 					let possibleOwners = [activeTab].concat(this.getAncestorTabs(activeTab));
 					for (let i = 0, maxi = possibleOwners.length; i < maxi; i++) {
 						let possibleOwner = possibleOwners[i];
-						if (possibleOwner.linkedBrowser.currentURI.spec != referrer)
+						let contentLocations = possibleOwner.__treestyletab__contentLocations ||
+												[utils.getHashString(possibleOwner.linkedBrowser.currentURI.spec)];
+						if (contentLocations.indexOf(referrerHash) < 0)
 							continue;
 						hasOwnerTab = true;
 						opener = possibleOwner.linkedBrowser;
