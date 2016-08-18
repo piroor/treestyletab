@@ -1427,6 +1427,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			else if (Ci.nsIOpenURIInFrameParams &&
 					aParamsOrOpener instanceof Ci.nsIOpenURIInFrameParams) {
 				log('TSTWindow_onBeforeBrowserAccessOpenURI: opener is nsIOpenURIInFrameParams');
+				log('  params => ', aParamsOrOpener);
 				// from remote contents, we have to detect its opener from the URI.
 				let referrer = aParamsOrOpener.referrer;
 				if (referrer) {
