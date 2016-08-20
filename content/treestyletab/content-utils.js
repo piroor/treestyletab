@@ -91,6 +91,9 @@
 		collectLocations : function(aFrame, aLocations) {
 			aLocations = aLocations || {};
 			aLocations[aFrame.location.href] = true;
+			Array.forEach(aFrame.document.getElementsByTagName('base'), function(aBase) {
+				aLocations[aBase.href] = true;
+			}, this);
 			Array.forEach(aFrame.frames, function(aSubFrame) {
 				this.collectLocations(aSubFrame, aLocations);
 			}, this);
