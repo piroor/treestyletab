@@ -310,9 +310,10 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		log('shouldOpenSearchResultAsChild: contextMenuContentData =', contextMenuContentData);
 		if (contextMenuContentData && contextMenuContentData.selectionInfo) {
 			selection = contextMenuContentData.selectionInfo.text;
-			log('selection (contextMenuContentData) => ', selection);
-			if (selection)
+			if (selection) {
 				selection = getHashString(selection.trim());
+				log('selection (contextMenuContentData) => ', selection);
+			}
 		}
 		else {
 			let tab = this.window.gBrowser.selectedTab;
