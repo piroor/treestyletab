@@ -12,12 +12,14 @@
 	var Cr = Components.results;
 
 	var { TreeStyleTabConstants } = Cu.import('resource://treestyletab-modules/constants.js', {});
+	var { getHashString } = Cu.import('resource://treestyletab-modules/getHashString.js', {});
 	var { XPCOMUtils } = Cu.import('resource://gre/modules/XPCOMUtils.jsm', {});
 
 	function free() {
 		cleanup =
 			Cc = Ci = Cu = Cr =
 			TreeStyleTabConstants =
+			getHashString =
 			XPCOMUtils =
 			messageListener =
 			handleEvent =
@@ -74,7 +76,7 @@
 			global.sendAsyncMessage(TreeStyleTabConstants.MESSAGE_TYPE, {
 				command   : TreeStyleTabConstants.COMMAND_REPORT_LOCATION_CHANGE,
 				locations : this.collectLocations(global.content).map(function(aURI) {
-					return this.getHashString(aURI);
+					return getHashString(aURI);
 				}, this)
 			});
 		},
@@ -98,16 +100,6 @@
 				this.collectLocations(aSubFrame, aLocations);
 			}, this);
 			return Object.keys(aLocations);
-		},
-		getHashString : function(aString) {
-			let hasher = Cc['@mozilla.org/security/hash;1']
-							.createInstance(Ci.nsICryptoHash);
-			hasher.init(Ci.nsICryptoHash.MD5);
-			let input = Cc['@mozilla.org/io/string-input-stream;1']
-							.createInstance(Ci.nsIStringInputStream);
-			input.data = aString;
-			hasher.updateFromStream(input, -1);
-			return hasher.finish(true);
 		}
 	};
 	global.docShell

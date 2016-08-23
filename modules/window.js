@@ -69,6 +69,7 @@ XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabThemeManager', 'resource://
 XPCOMUtils.defineLazyModuleGetter(this, 'FullscreenObserver', 'resource://treestyletab-modules/fullscreenObserver.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'BrowserUIShowHideObserver', 'resource://treestyletab-modules/browserUIShowHideObserver.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'ContentBridge', 'resource://treestyletab-modules/contentBridge.js');
+XPCOMUtils.defineLazyModuleGetter(this, 'getHashString', 'resource://treestyletab-modules/getHashString.js');
 
 XPCOMUtils.defineLazyServiceGetter(this, 'SessionStore',
   '@mozilla.org/browser/sessionstore;1', 'nsISessionStore');
@@ -1431,13 +1432,13 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 				// from remote contents, we have to detect its opener from the URI.
 				let referrer = aParamsOrOpener.referrer;
 				if (referrer) {
-					let referrerHash = utils.getHashString(referrer);
+					let referrerHash = getHashString(referrer);
 					let activeTab = this.browser.selectedTab;
 					let possibleOwners = [activeTab].concat(this.getAncestorTabs(activeTab));
 					for (let i = 0, maxi = possibleOwners.length; i < maxi; i++) {
 						let possibleOwner = possibleOwners[i];
 						let contentLocations = possibleOwner.__treestyletab__contentLocations ||
-												[utils.getHashString(possibleOwner.linkedBrowser.currentURI.spec)];
+												[getHashString(possibleOwner.linkedBrowser.currentURI.spec)];
 						if (contentLocations.indexOf(referrerHash) < 0)
 							continue;
 						hasOwnerTab = true;
