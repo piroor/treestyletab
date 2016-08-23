@@ -307,19 +307,26 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 
 		var selection = '';
 		var contextMenuContentData = this.window.gContextMenuContentData;
+		log('shouldOpenSearchResultAsChild: contextMenuContentData =', contextMenuContentData);
 		if (contextMenuContentData && contextMenuContentData.selectionInfo) {
 			selection = contextMenuContentData.selectionInfo.text;
+			log('selection (contextMenuContentData) => ', selection);
+			if (selection)
+				selection = getHashString(selection.trim());
 		}
 		else {
 			let tab = this.window.gBrowser.selectedTab;
 			selection = tab.__treestyletab__lastContentSelectionText || '';
+			log('selection (selectionchange) => ', selection);
 			// for old Firefox without selectionchange event
 			if (selection === '' &&
 				typeof this.window.getBrowserSelection === 'function' &&
-				tab.linkedBrowser.getAttribute('remote') !== 'true')
-				selection = this.window.getBrowserSelection();
+				tab.linkedBrowser.getAttribute('remote') !== 'true') {
+				selection = getHashString(this.window.getBrowserSelection().trim());
+				log('selection (getBrowserSelection) => ', selection);
+			}
 		}
-		return selection.trim() == aTerm;
+		return selection == aTerm;
 	},
 	kSEARCH_RESULT_DO_NOT_ATTACH      : 0,
 	kSEARCH_RESULT_ATTACH_IF_SELECTED : 1,
