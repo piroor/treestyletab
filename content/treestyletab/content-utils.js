@@ -56,7 +56,7 @@
 					return;
 				global.sendAsyncMessage(TreeStyleTabConstants.MESSAGE_TYPE, {
 					command : TreeStyleTabConstants.COMMAND_REPORT_SELECTION_CHANGE,
-					text    : aEvent.target.getSelection().toString()
+					text    : getHashString(aEvent.target.getSelection().toString().trim())
 				});
 				return;
 

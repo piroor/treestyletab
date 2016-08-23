@@ -295,7 +295,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
  
 	shouldOpenSearchResultAsChild : function TSTWindow_shouldOpenSearchResultAsChild(aTerm) 
 	{
-		aTerm = aTerm.trim();
+		aTerm = getHashString(aTerm.trim());
 
 		var mode = utils.getTreePref('autoAttach.searchResult');
 		if (mode == this.kSEARCH_RESULT_ATTACH_ALWAYS) {
