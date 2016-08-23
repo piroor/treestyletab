@@ -41,6 +41,8 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 
 function getHashString(aString) {
+	if (!aString)
+		return '';
 	const hasher = Cc['@mozilla.org/security/hash;1']
 					.createInstance(Ci.nsICryptoHash);
 	hasher.init(Ci.nsICryptoHash.MD5);
