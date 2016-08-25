@@ -8,6 +8,7 @@
    * Tabs opened from inline frames or webpages including `base` tag are attached to the current tab as new children correctly.
    * Reduce warnings from undefined CSS properties (by asamuzaK. Thanks!)
    * Supports [contextual tab coloring on Firefox 51 and later](https://blog.mozilla.org/tanvi/2016/06/16/contextual-identities-on-the-web/).
+   * Remove icons from the pane switcher in the configuration dialog (because Firefox 50 and later have no suitable icon for some categories).
  - 0.17.2016061501
    * Scrollbar in the tab bar couldn't operated by mouse if you show the menu bar, at Firefox 47 on Windows.
    * The tab bar was wrongly fixed to "overflowed" state after you shrink the tab bar too narrow.
