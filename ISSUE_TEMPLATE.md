@@ -7,7 +7,7 @@ https://github.com/piroor/treestyletab/blob/master/CONTRIBUTING.md
 
 ## Steps to reproduce
 
- 1. Start Filrefox with clean profile.
+ 1. Start Firefox with clean profile.
  2. Install TST.
  3. 
  4. 
