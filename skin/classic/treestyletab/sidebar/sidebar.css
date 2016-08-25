@@ -466,6 +466,14 @@ tabbrowser[treestyletab-mode="vertical"]
 }
 
 
+/* reduce negative margins to put contexual color indicator in the viewport */
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tab-background {
+	margin: 0 -5px;
+}
+
+
+
 /* for Multiple Tab Handler */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:not(:hover):not([visuallyselected="true"])[multipletab-ready-to-close="true"]
