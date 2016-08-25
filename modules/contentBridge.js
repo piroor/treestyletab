@@ -84,11 +84,13 @@ ContentBridge.prototype = inherit(TreeStyleTabConstants, {
 
 		var manager = this.mTab.ownerDocument.defaultView.messageManager;
 		manager.addMessageListener(this.MESSAGE_TYPE, this.handleMessage);
+		manager.addMessageListener('Browser:WindowCreated', this.handleMessage);
 	},
 	destroy : function CB_destroy()
 	{
 		var manager = this.mTab.ownerDocument.defaultView.messageManager;
 		manager.removeMessageListener(this.MESSAGE_TYPE, this.handleMessage);
+		manager.removeMessageListener('Browser:WindowCreated', this.handleMessage);
 
 		delete this.mTab;
 		delete this.mTabBrowser;
@@ -114,12 +116,25 @@ ContentBridge.prototype = inherit(TreeStyleTabConstants, {
 	},
 	handleMessage : function CB_handleMessage(aMessage)
 	{
+		if (aMessage.target != this.mTab.linkedBrowser)
+		  return;
+
+		switch (aMessage.name)
+		{
+			case this.MESSAGE_TYPE:
+				this.handleCommandMessage(aMessage);
+				return;
+
+			case 'Browser:WindowCreated':
+				this.mTabBrowser.treeStyleTab.onTabContextIdChanged(this.mTab);
+				return;
+		}
+	},
+	handleCommandMessage : function CB_handleCommandMessage(aMessage)
+	{
 		log('*********************handleMessage*******************');
 		log('TARGET IS: '+aMessage.target.localName);
 		log(JSON.stringify(aMessage.json));
-
-		if (aMessage.target != this.mTab.linkedBrowser)
-		  return;
 
 		switch (aMessage.json.command)
 		{

@@ -891,7 +891,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		this.tabsAttributeObserver = new TabAttributesObserver({
 			container  : b.mTabContainer,
-			attributes : 'usercontextid,style',
+			attributes : 'usercontextid',
 			callback   : (function(aTab) {
 				this.onTabContextIdChanged(aTab);
 			}).bind(this)
@@ -4209,8 +4209,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				}, 0, this, tab, item.label, this.mTabBrowser.selectedTab);
 			}
 		}
-
-		this.onTabContextIdChanged(tab);
 
 		return restored;
 	},
