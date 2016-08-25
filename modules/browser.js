@@ -3747,6 +3747,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		// twisty vanished after the tab is moved!!
 		this.initTabContents(tab);
 
+		this.onTabContextIdChanged(tab);
+
 		this.window.TreeStyleTabWindowHelper.initTabMethods(tab, b);
 
 		// On Firefox 29, 30 and laters, reopened (restored) tab can be
