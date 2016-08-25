@@ -57,6 +57,7 @@ XPCOMUtils.defineLazyModuleGetter(this, 'TabpanelDNDObserver', 'resource://trees
 XPCOMUtils.defineLazyModuleGetter(this, 'AutoHideBrowser', 'resource://treestyletab-modules/autoHide.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'ContentBridge', 'resource://treestyletab-modules/contentBridge.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'BrowserUIShowHideObserver', 'resource://treestyletab-modules/browserUIShowHideObserver.js');
+XPCOMUtils.defineLazyModuleGetter(this, 'TabAttributesObserver', 'resource://treestyletab-modules/tabAttributesObserver.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'TabContentsObserver', 'resource://treestyletab-modules/tabContentsObserver.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'visuallyselectedTabs', 'resource://treestyletab-modules/lib/visuallyselectedTabs.jsm');
 
@@ -67,6 +68,15 @@ XPCOMUtils.defineLazyGetter(this, 'window', function() {
 XPCOMUtils.defineLazyGetter(this, 'prefs', function() {
 	Cu.import('resource://treestyletab-modules/lib/prefs.js');
 	return window['piro.sakura.ne.jp'].prefs;
+});
+XPCOMUtils.defineLazyGetter(this, 'ContextualIdentityService', function() {
+	try {
+		Cu.import('resource://gre/modules/ContextualIdentityService.jsm');
+		return ContextualIdentityService;
+	}
+	catch(e) {
+		return null;
+	}
 });
 
 function wait(aMilliSeconds) {
@@ -879,6 +889,14 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		this._initTabbrowserContextMenu();
 		w.TreeStyleTabWindowHelper.updateTabDNDObserver(b);
 
+		this.tabsAttributeObserver = new TabAttributesObserver({
+			container  : b.mTabContainer,
+			attributes : 'usercontextid,style',
+			callback   : (function(aTab) {
+				this.onTabContextIdChanged(aTab);
+			}).bind(this)
+		});
+
 		this.getAllTabs(b).forEach(this.initTab, this);
 
 		this.allowSubtreeCollapseExpand = true; // reset attribute
@@ -1117,6 +1135,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		aTab.__treestyletab__contentBridge = new ContentBridge(aTab, this.mTabBrowser);
 		this.autoHide.notifyStatusToTab(aTab);
+
+		this.onTabContextIdChanged(aTab);
 	},
 	
 	isTabInitialized : function TSTBrowser_isTabInitialized(aTab) 
@@ -4190,6 +4210,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			}
 		}
 
+		this.onTabContextIdChanged(tab);
+
 		return restored;
 	},
 	
@@ -4763,10 +4785,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
    
 	onTabRestored : function TSTBrowser_onTabRestored(aEvent) 
 	{
-		this.updateTabAsParent(aEvent.originalTarget, {
+		var tab = aEvent.originalTarget;
+		this.updateTabAsParent(tab, {
 			dontUpdateCount : true
 		});
-		delete aEvent.originalTarget.__treestyletab__restoredByUndoCloseTab;
+		delete tab.__treestyletab__restoredByUndoCloseTab;
 	},
  
 	onTabPinned : function TSTBrowser_onTabPinned(aTab) 
@@ -5104,6 +5127,42 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				aEvent.stopPropagation();
 			}
 			return;
+		}
+	},
+
+	onTabContextIdChanged : function TSTBrowser_onTabContextIdChanged(aTab)
+	{
+		if (!ContextualIdentityService ||
+			aTab.__treestyletab__updatingContextualTabColor)
+			return;
+
+		aTab.__treestyletab__updatingContextualTabColor = true;
+		setTimeout(function() {
+			aTab.__treestyletab__updatingContextualTabColor = false;
+		}, 1);
+
+		var style = aTab.style;
+		if (!this.isVertical) {
+			style.backgroundImage = style.backgroundSize = style.backgroundRepeat = style.backgroundPosition = '';
+			ContextualIdentityService.setTabStyle(aTab);
+			return;
+		}
+
+		var color;
+		var userContextId = aTab.getAttribute('usercontextid');
+		if (userContextId) {
+			let identity = ContextualIdentityService.getIdentityFromId(userContextId);
+			color = identity ? identity.color : null ;
+		}
+		if (color) {
+			setTimeout(function() {
+				style.setProperty('background-image', 'linear-gradient(to bottom, transparent 0, ' + color + ' 5%, ' + color + ' 95%, transparent 100%)', 'important');
+	  			style.setProperty('background-size', '2px auto', 'important');
+	  			style.setProperty('background-repeat', 'no-repeat', 'important');
+	  			let shouldInvert = this.position == 'right' && utils.getTreePref('tabbar.invertTab');
+	  			let position = shouldInvert ? 'right' : 'left' ;
+	  			style.setProperty('background-position', position, 'important');
+	  		}, 0);
 		}
 	},
  
