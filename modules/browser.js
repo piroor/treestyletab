@@ -5139,9 +5139,23 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			aTab.__treestyletab__updatingContextualTabColor = false;
 		}, 1);
 
-		var style = aTab.style;
+		var tabStyle = aTab.style;
+		var tabBackground = aTab.ownerDocument.getAnonymousElementByAttribute(aTab, 'class', 'tab-background');
+		var backgroundStyle = tabBackground && tabBackground.style;
+		function clearOldStyles() {
+			tabStyle.backgroundImage =
+				tabStyle.backgroundSize =
+				tabStyle.backgroundRepeat =
+				tabStyle.backgroundPosition = '';
+			if (backgroundStyle)
+				backgroundStyle.backgroundImage =
+					backgroundStyle.backgroundSize =
+					backgroundStyle.backgroundRepeat =
+					backgroundStyle.backgroundPosition = '';
+		}
+
 		if (!this.isVertical) {
-			style.backgroundImage = style.backgroundSize = style.backgroundRepeat = style.backgroundPosition = '';
+			clearOldStyles();
 			ContextualIdentityService.setTabStyle(aTab);
 			return;
 		}
@@ -5154,6 +5168,12 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 		if (color) {
 			setTimeout(function() {
+				clearOldStyles();
+
+				var style = utils.getTreePref('tabbar.style') == 'sidebar' ? backgroundStyle : tabStyle ;
+				if (!style)
+					style = tabStyle;
+
 				style.setProperty('background-image', 'linear-gradient(to bottom, transparent 0, ' + color + ' 5%, ' + color + ' 95%, transparent 100%)', 'important');
 	  			style.setProperty('background-size', '2px auto', 'important');
 	  			style.setProperty('background-repeat', 'no-repeat', 'important');
