@@ -6,32 +6,6 @@ radio.image label.radio-label {
 }
 
 
-radio[pane] {
-	list-style-image: url("resource:///chrome/browser/skin/classic/browser/preferences/Options.png");
-}
-
-radio[pane="prefpane-appearance"] {
-	-moz-image-region: rect(0px, 32px, 32px, 0px);
-}
-radio[pane="prefpane-style"] {
-	-moz-image-region: rect(0px, 32px, 32px, 0px);
-}
-radio[pane="prefpane-menu"] {
-	-moz-image-region: rect(0px, 32px, 32px, 0px);
-}
-radio[pane="prefpane-tab"] {
-	-moz-image-region: rect(0px, 64px, 32px, 32px);
-}
-radio[pane="prefpane-autohide"] {
-	-moz-image-region: rect(0px, 64px, 32px, 32px);
-}
-radio[pane="prefpane-advanced"] {
-	-moz-image-region: rect(0px, 224px, 32px, 192px);
-}
-radio[pane="prefpane-tree"] {
-	list-style-image: url("chrome://treestyletab/content/res/icon.png");
-}
-
 label.scale-label {
 	min-width: 0;
 	margin: 0;
