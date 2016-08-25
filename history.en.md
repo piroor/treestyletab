@@ -3,6 +3,11 @@
  - master/HEAD
    * Better handling about positioning of new tabs duplicated by other addons.
    * Now you can drop tabs onto another tab more easily. (The drop area of each tab is enlarged.)
+   * The tab bar can be shrunken even if there is something wide toolbar item like the search bar.
+   * Better positioning of tabs opened from the last child tab.
+   * Tabs opened from inline frames or webpages including `base` tag are attached to the current tab as new children correctly.
+   * Reduce warnings from undefined CSS properties (by asamuzaK. Thanks!)
+   * Supports [contextual tab coloring on Firefox 51 and later](https://blog.mozilla.org/tanvi/2016/06/16/contextual-identities-on-the-web/).
  - 0.17.2016061501
    * Scrollbar in the tab bar couldn't operated by mouse if you show the menu bar, at Firefox 47 on Windows.
    * The tab bar was wrongly fixed to "overflowed" state after you shrink the tab bar too narrow.
