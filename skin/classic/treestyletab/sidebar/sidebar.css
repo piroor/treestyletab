@@ -471,6 +471,11 @@ tabbrowser[treestyletab-mode="vertical"]
   .tab-background {
 	margin: 0 -5px;
 }
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[pinned]
+  .tab-background {
+	margin: 0;
+}
 
 
 
