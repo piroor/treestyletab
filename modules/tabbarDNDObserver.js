@@ -600,14 +600,14 @@ catch(e) {
 		if (newTabs.length && aInfo.action & sv.kACTION_ATTACH) {
 			Promise.all(newTabs.map((aTab) => aTab.__treestyletab__promisedDuplicatedTab))
 				.then((function() {
-			log('   => attach (last)');
-			this.attachTabsOnDrop(
-				newTabs.filter(function(aTab, aIndex) {
-					return treeStructure[aIndex] == -1;
-				}),
-				aInfo.parent,
-				aInfo.insertBefore
-			);
+					log('   => attach (last)');
+					this.attachTabsOnDrop(
+						newTabs.filter(function(aTab, aIndex) {
+							return treeStructure[aIndex] == -1;
+						}),
+						aInfo.parent,
+						aInfo.insertBefore
+					);
 				}).bind(this));
 		}
 
