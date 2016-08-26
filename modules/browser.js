@@ -5637,7 +5637,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (!aChild.parentNode || (aParent && !aParent.parentNode)) // do nothing for closed tab!
 			return;
 
-		log('attachTabTo: attach ', aChild._tPos, ' to ', parentTab._tPos);
+		log('attachTabTo: attach ', aChild._tPos, ' to ', aParent._tPos);
 
 		aInfo = aInfo || {};
 		var newAncestors = [];
