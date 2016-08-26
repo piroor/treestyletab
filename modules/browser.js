@@ -6519,6 +6519,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		var tabs = this.getTabs(targetBrowser);
 		var lastTabIndex = tabs[tabs.length -1]._tPos;
+		var promisedDuplicatedTabs = [];
 		for (let i in aTabs)
 		{
 			let tab = aTabs[i];
@@ -6532,7 +6533,15 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 			if (aOptions.duplicate) {
 				tab = this.duplicateTabAsOrphan(tab);
+				let promise = new Promise(function(aResolve, aReject) {
+					let onTabRestoring = function() {
+						tab.removeEventListener('SSTabRestoring', onTabRestoring, false);
+						aResolve(tab);
+					};
+					tab.addEventListener('SSTabRestoring', onTabRestoring, false);
+				});
 				newTabs.push(tab);
+				promisedDuplicatedTabs.push(promise);
 			}
 			else if (sourceService != this) {
 				tab = this.importTab(tab);
@@ -6562,6 +6571,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			sourceService.closeOwner(sourceBrowser);
 
 		if (newTabs.length) {
+			Promise.all(promisedDuplicatedTabs).then((function() {
 			log('moveTabsInternal: applying tree structure for new ' + newTabs.length + ' tabs');
 			this.applyTreeStructureToTabs(
 				newTabs,
@@ -6570,6 +6580,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 					return !aCollapsed
 				})
 			);
+			}).bind(this));
 		}
 
 		for (let i = collapsedStates.length - 1; i > -1; i--)
