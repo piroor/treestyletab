@@ -6600,9 +6600,17 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (!aTab.parentNode) // do nothing for closed tab!
 			return null;
 
-		var newTab = this.mTabBrowser.duplicateTab(aTab);
+		var children = this.getTabValue(aTab, this.kCHILDREN);
+		var parent = this.getTabValue(aTab, this.kPARENT);
+
 		this.deleteTabValue(newTab, this.kCHILDREN);
 		this.deleteTabValue(newTab, this.kPARENT);
+
+		var newTab = this.mTabBrowser.duplicateTab(aTab);
+
+		this.setTabValue(aTab, this.kCHILDREN, children);
+		this.setTabValue(aTab, this.kPARENT, parent);
+
 		return newTab;
 	},
  
