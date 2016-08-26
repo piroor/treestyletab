@@ -6489,6 +6489,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			);
 		var newTabs = [];
 		var treeStructure = utils.getTreeStructureFromTabs(aTabs);
+		log('moveTabsInternal: treeStructure ', treeStructure);
 
 		// Firefox fails to "move" collapsed tabs. So, expand them first
 		// and collapse them after they are moved.
@@ -6545,7 +6546,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (shouldClose)
 			sourceService.closeOwner(sourceBrowser);
 
-		if (newTabs.length)
+		if (newTabs.length) {
+			log('moveTabsInternal: applying tree structure for new ' + newTabs.length + ' tabs');
 			this.applyTreeStructureToTabs(
 				newTabs,
 				treeStructure,
@@ -6553,6 +6555,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 					return !aCollapsed
 				})
 			);
+		}
 
 		for (let i = collapsedStates.length - 1; i > -1; i--)
 		{
