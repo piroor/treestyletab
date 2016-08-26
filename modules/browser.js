@@ -5673,8 +5673,10 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		// avoid recursive tree
 		var ancestors = [aParent].concat(this.getAncestorTabs(aChild));
-		if (ancestors.indexOf(aChild) > -1)
+		if (ancestors.indexOf(aChild) > -1) {
+			log('attachTabTo: canceled for recursive request');
 			return;
+		}
 
 		currentParent = ancestors[ancestors.length-1];
 		var shouldInheritIndent = (
