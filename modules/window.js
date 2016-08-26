@@ -1291,7 +1291,6 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 				);
 				if (
 					(this.window.TabsOnBottom && utils.getTreePref('compatibility.TabsOnBottom')) ||
-					('navbarontop' in this.window && utils.getTreePref('compatibility.NavbarOnTitlebar')) ||
 					('classicthemerestorerjs' in this.window && utils.getTreePref('compatibility.ClassicThemeRestorer'))
 					)
 					allowed = true;

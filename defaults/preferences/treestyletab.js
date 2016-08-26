@@ -705,7 +705,6 @@ pref("extensions.treestyletab.compatibility.Locationbar2", true);
 pref("extensions.treestyletab.compatibility.MouseGesturesRedox", true);
 pref("extensions.treestyletab.compatibility.MouselessBrowsing", true);
 pref("extensions.treestyletab.compatibility.MultiLinks", true);
-pref("extensions.treestyletab.compatibility.NavbarOnTitlebar", true);
 pref("extensions.treestyletab.compatibility.OptimozTweaks", true);
 pref("extensions.treestyletab.compatibility.PermaTabs", true);
 pref("extensions.treestyletab.compatibility.PersonalTitlebar", true);
