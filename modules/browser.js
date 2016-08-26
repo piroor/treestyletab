@@ -6531,15 +6531,16 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 			if (aOptions.duplicate) {
 				aTab = this.duplicateTabAsOrphan(aTab);
-				let promise = new Promise(function(aResolve, aReject) {
+				aTab.__treestyletab__promisedDuplicatedTab = new Promise(function(aResolve, aReject) {
 					let onTabRestoring = function() {
 						aTab.removeEventListener('SSTabRestoring', onTabRestoring, false);
+						delete aTab.__treestyletab__promisedDuplicatedTab;
 						aResolve(aTab);
 					};
 					aTab.addEventListener('SSTabRestoring', onTabRestoring, false);
 				});
 				newTabs.push(aTab);
-				promisedDuplicatedTabs.push(promise);
+				promisedDuplicatedTabs.push(aTab.__treestyletab__promisedDuplicatedTab);
 			}
 			else if (sourceService != this) {
 				aTab = this.importTab(aTab);

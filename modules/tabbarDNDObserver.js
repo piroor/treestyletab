@@ -598,13 +598,17 @@ catch(e) {
 		}).bind(this), 0);
 
 		if (newTabs.length && aInfo.action & sv.kACTION_ATTACH) {
+			Promise.all(newTabs.map((aTab) => aTab.__treestyletab__promisedDuplicatedTab))
+				.then((function() {
 			log('   => attach (last)');
 			this.attachTabsOnDrop(
 				newTabs.filter(function(aTab, aIndex) {
 					return treeStructure[aIndex] == -1;
 				}),
-				aInfo.parent
+				aInfo.parent,
+				aInfo.insertBefore
 			);
+				}).bind(this));
 		}
 
 		log(' => finished');
@@ -647,7 +651,7 @@ catch(e) {
 		};
 	},
  
-	attachTabsOnDrop : function TabbarDND_attachTabsOnDrop(aTabs, aParent) 
+	attachTabsOnDrop : function TabbarDND_attachTabsOnDrop(aTabs, aParent, aInsertBefore) 
 	{
 		log('attachTabsOnDrop: start');
 		var b  = aTabs[0].ownerDocument.defaultView.TreeStyleTabService.getTabBrowserFromChild(aTabs[0]);
@@ -659,7 +663,9 @@ catch(e) {
 			let tab = aTabs[i];
 			if (!tab.parentNode) continue; // ignore removed tabs
 			if (aParent)
-				sv.attachTabTo(tab, aParent);
+				sv.attachTabTo(tab, aParent, {
+					insertBefore : aInsertBefore
+				});
 			else
 				sv.detachTab(tab);
 			sv.collapseExpandTab(tab, false);
