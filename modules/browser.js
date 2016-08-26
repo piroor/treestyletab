@@ -6547,24 +6547,24 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			}
 
 			let postProcess = (function(aProcessedTabIndex) {
-			if (shouldResetSelection) {
-				if ('MultipleTabService' in sourceWindow)
-					sourceWindow.MultipleTabService.setSelection(aTab, true);
-				else
-					aTab.setAttribute('multiselected', true);
-			}
+				if (shouldResetSelection) {
+					if ('MultipleTabService' in sourceWindow)
+						sourceWindow.MultipleTabService.setSelection(aTab, true);
+					else
+						aTab.setAttribute('multiselected', true);
+				}
 
-			let newIndex = aOptions.insertBefore ?
-							 aOptions.insertBefore._tPos :
-							 lastExistingTab._tPos + aProcessedTabIndex + 1 ;
-			if (newIndex > aTab._tPos)
-				newIndex--;
+				let newIndex = aOptions.insertBefore ?
+								 aOptions.insertBefore._tPos :
+								 lastExistingTab._tPos + aProcessedTabIndex + 1 ;
+				if (newIndex > aTab._tPos)
+					newIndex--;
 
-			this.internallyTabMovingCount++;
-			if (newIndex != aTab._tPos)
-			targetBrowser.moveTabTo(aTab, newIndex);
-			this.collapseExpandTab(aTab, false, true);
-			this.internallyTabMovingCount--;
+				this.internallyTabMovingCount++;
+				if (newIndex != aTab._tPos)
+					targetBrowser.moveTabTo(aTab, newIndex);
+				this.collapseExpandTab(aTab, false, true);
+				this.internallyTabMovingCount--;
 			}).bind(this);
 
 			if (promisedDuplicatedTabs.length)
