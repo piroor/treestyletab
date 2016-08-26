@@ -4160,6 +4160,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		this.restoreTree();
 
 		var tab = aEvent.originalTarget;
+		log('onTabRestoring ', tab._tPos);
 
 		tab.linkedBrowser.__treestyletab__toBeRestored = false;
 		var restored = this.handleRestoredTab(tab);
@@ -4786,6 +4787,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	onTabRestored : function TSTBrowser_onTabRestored(aEvent) 
 	{
 		var tab = aEvent.originalTarget;
+		log('onTabRestored ', tab._tPos);
 		this.updateTabAsParent(tab, {
 			dontUpdateCount : true
 		});
