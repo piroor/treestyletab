@@ -5634,8 +5634,10 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	
 	attachTabTo : function TSTBrowser_attachTabTo(aChild, aParent, aInfo) /* PUBLIC API */ 
 	{
-		if (!aChild.parentNode || (aParent && !aParent.parentNode)) // do nothing for closed tab!
+		if (!aChild.parentNode || (aParent && !aParent.parentNode)) {
+			log('attachTabTo: canceled for already removed tab');
 			return;
+		}
 
 		log('attachTabTo: attach ', aChild._tPos, ' to ', aParent._tPos);
 
@@ -5664,6 +5666,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			aChild.getAttribute('pinned') == 'true' ||
 			aParent.getAttribute('pinned') == 'true'
 			) {
+			log('attachTabTo: already attached');
 			this.fireAttachedEvent(aChild, aParent);
 			return;
 		}
@@ -5810,14 +5813,18 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
   
 	detachTab : function TSTBrowser_detachTab(aChild, aInfo) /* PUBLIC API */ 
 	{
-		if (!aChild || !aChild.parentNode)
+		if (!aChild || !aChild.parentNode) {
+			log('detachTab: canceled for already removed tab');
 			return;
+		}
 		if (!aInfo)
 			aInfo = {};
 
 		var parentTab = this.getParentTab(aChild);
-		if (!parentTab)
+		if (!parentTab) {
+			log('detachTab: canceled for an orphan tab');
 			return;
+		}
 
 		log('detachTab: detach ', aChild._tPos, ' from ', parentTab._tPos);
 
