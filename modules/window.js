@@ -1286,6 +1286,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 			if (TabsInTitlebar) {
 				let menubar = this.window.document.getElementById('toolbar-menubar');
 				let allowed = (
+					!utils.getTreePref('blockTabsInTitlebar') ||
 					(isTopTabbar && this.browser.treeStyleTab.fixed) ||
 					(!this.isMac && menubar.getAttribute('autohide') !== 'true')
 				);

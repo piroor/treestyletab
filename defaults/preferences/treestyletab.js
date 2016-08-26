@@ -672,6 +672,12 @@ pref("extensions.treestyletab.groupTab.columnize", true);
 pref("extensions.treestyletab.groupTab.columnize.width", "20em");
 
 /**
+ * If true, TST automatically disables Tabs in Titlebar appearance to avoid
+ * broken appearance problems.
+ */
+pref("extensions.treestyletab.blockTabsInTitlebar", true);
+
+/**
  * Compatibility hack flags for other addons. They can be disabled by each
  * addon, when the addon become working with TST without dirty hacks.
  * In other words, add-on authros can disable TST's dirty hack if it is
