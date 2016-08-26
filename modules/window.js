@@ -2046,6 +2046,10 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 					this.endListenKeyEventsFor(this.LISTEN_FOR_AUTOEXPAND_BY_FOCUSCHANGE);
 				break;
 
+			case 'extensions.treestyletab.blockTabsInTitlebar':
+				this.updateTabsInTitlebar();
+				break;
+
 			default:
 				break;
 		}
