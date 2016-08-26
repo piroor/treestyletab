@@ -6518,54 +6518,60 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			);
 
 		var tabs = this.getTabs(targetBrowser);
-		var lastTabIndex = tabs[tabs.length -1]._tPos;
+		var lastExistingTab = tabs[tabs.length - 1];
 		var promisedDuplicatedTabs = [];
-		for (let i in aTabs)
-		{
-			let tab = aTabs[i];
-
+		var delayedPostProcesses = [];
+		aTabs.forEach(function(aTab, aIndex) {
 			if (shouldResetSelection) {
 				if ('MultipleTabService' in sourceWindow)
-					sourceWindow.MultipleTabService.setSelection(tab, false);
+					sourceWindow.MultipleTabService.setSelection(aTab, false);
 				else
-					tab.removeAttribute('multiselected');
+					aTab.removeAttribute('multiselected');
 			}
 
 			if (aOptions.duplicate) {
-				tab = this.duplicateTabAsOrphan(tab);
+				aTab = this.duplicateTabAsOrphan(aTab);
 				let promise = new Promise(function(aResolve, aReject) {
 					let onTabRestoring = function() {
-						tab.removeEventListener('SSTabRestoring', onTabRestoring, false);
-						aResolve(tab);
+						aTab.removeEventListener('SSTabRestoring', onTabRestoring, false);
+						aResolve(aTab);
 					};
-					tab.addEventListener('SSTabRestoring', onTabRestoring, false);
+					aTab.addEventListener('SSTabRestoring', onTabRestoring, false);
 				});
-				newTabs.push(tab);
+				newTabs.push(aTab);
 				promisedDuplicatedTabs.push(promise);
 			}
 			else if (sourceService != this) {
-				tab = this.importTab(tab);
-				newTabs.push(tab);
+				aTab = this.importTab(aTab);
+				newTabs.push(aTab);
 			}
 
+			let postProcess = (function(aProcessedTabIndex) {
 			if (shouldResetSelection) {
 				if ('MultipleTabService' in sourceWindow)
-					sourceWindow.MultipleTabService.setSelection(tab, true);
+					sourceWindow.MultipleTabService.setSelection(aTab, true);
 				else
-					tab.setAttribute('multiselected', true);
+					aTab.setAttribute('multiselected', true);
 			}
 
-			lastTabIndex++;
-
-			let newIndex = aOptions.insertBefore ? aOptions.insertBefore._tPos : lastTabIndex ;
-			if (aOptions.insertBefore && newIndex > tab._tPos)
+			let newIndex = aOptions.insertBefore ?
+							 aOptions.insertBefore._tPos :
+							 lastExistingTab._tPos + aProcessedTabIndex + 1 ;
+			if (newIndex > aTab._tPos)
 				newIndex--;
 
 			this.internallyTabMovingCount++;
-			targetBrowser.moveTabTo(tab, newIndex);
-			this.collapseExpandTab(tab, false, true);
+			if (newIndex != aTab._tPos)
+			targetBrowser.moveTabTo(aTab, newIndex);
+			this.collapseExpandTab(aTab, false, true);
 			this.internallyTabMovingCount--;
-		}
+			}).bind(this);
+
+			if (promisedDuplicatedTabs.length)
+				delayedPostProcesses.push(postProcess);
+			else
+				postProcess(aIndex);
+		}, this);
 
 		if (shouldClose)
 			sourceService.closeOwner(sourceBrowser);
@@ -6573,6 +6579,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (newTabs.length) {
 			Promise.all(promisedDuplicatedTabs).then((function() {
 				log('moveTabsInternal: applying tree structure for new ' + newTabs.length + ' tabs');
+				delayedPostProcesses.forEach(function(aPostProcess, aIndex) {
+					aPostProcess(aIndex);
+				});
 				this.applyTreeStructureToTabs(
 					newTabs,
 					treeStructure,
