@@ -9,6 +9,8 @@
    * 未定義のCSSプロパティによる警告を減らした（by asamuzaK. Thanks!）
    * [Firefox 51でのタブの文脈による色分け機能](https://blog.mozilla.org/tanvi/2016/06/16/contextual-identities-on-the-web/)に対応した
    * 設定ダイアログのペイン切り替えボタンからアイコンを削除（Firefox自体に最適なアイコンが含まれなくなるため）
+   * タイトルバーにタブを描画する状態でのuserChrome.cssによるカスタマイズを容易にするための隠し設定 `extensions.treestyletab.blockTabsInTitlebar` を導入した
+   * Ctrl-ドラッグ＆ドロップで複製されたタブのツリー構造が失われる問題を修正
  - 0.17.2016061501
    * Firefox 47で、Windowsにおいてメニューバーを表示するとタブバー内のスクロールバーをマウスで操作できなくなる問題を修正
    * タブバーの幅を極端に縮めた後、タブバーがoverflowの状態のままになることがあったのを修正
