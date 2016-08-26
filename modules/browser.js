@@ -6572,14 +6572,14 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		if (newTabs.length) {
 			Promise.all(promisedDuplicatedTabs).then((function() {
-			log('moveTabsInternal: applying tree structure for new ' + newTabs.length + ' tabs');
-			this.applyTreeStructureToTabs(
-				newTabs,
-				treeStructure,
-				collapsedStates.map(function(aCollapsed) {
-					return !aCollapsed
-				})
-			);
+				log('moveTabsInternal: applying tree structure for new ' + newTabs.length + ' tabs');
+				this.applyTreeStructureToTabs(
+					newTabs,
+					treeStructure,
+					collapsedStates.map(function(aCollapsed) {
+						return !aCollapsed
+					})
+				);
 			}).bind(this));
 		}
 
