@@ -6603,8 +6603,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var children = this.getTabValue(aTab, this.kCHILDREN);
 		var parent = this.getTabValue(aTab, this.kPARENT);
 
-		this.deleteTabValue(newTab, this.kCHILDREN);
-		this.deleteTabValue(newTab, this.kPARENT);
+		this.deleteTabValue(aTab, this.kCHILDREN);
+		this.deleteTabValue(aTab, this.kPARENT);
 
 		var newTab = this.mTabBrowser.duplicateTab(aTab);
 
