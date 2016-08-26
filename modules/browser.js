@@ -5637,7 +5637,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (!aChild.parentNode || (aParent && !aParent.parentNode)) // do nothing for closed tab!
 			return;
 
-		log('attachTabTo: attach ', aChild._tPos, ' to '. parentTab._tPos);
+		log('attachTabTo: attach ', aChild._tPos, ' to ', parentTab._tPos);
 
 		aInfo = aInfo || {};
 		var newAncestors = [];
@@ -5819,7 +5819,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (!parentTab)
 			return;
 
-		log('detachTab: detach ', aChild._tPos, ' from '. parentTab._tPos);
+		log('detachTab: detach ', aChild._tPos, ' from ', parentTab._tPos);
 
 		if (!aInfo.dontUpdateInsertionPositionInfo)
 			this.closeUpInsertionPositionInfoAround(aChild);
