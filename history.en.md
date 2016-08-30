@@ -11,6 +11,7 @@
    * Remove icons from the pane switcher in the configuration dialog (because Firefox 50 and later have no suitable icon for some categories).
    * A new secret preference `extensions.treestyletab.blockTabsInTitlebar` in introduced to allow customization with userChrome.css around "tabs in titlebar" style.
    * Tabs duplicated by ctrl-drag-and-drop of a tree are duplicated with correct tree structure.
+   * Reduce warnings about "unsafe CPOW usage" for the "view image" command.
  - 0.17.2016061501
    * Scrollbar in the tab bar couldn't operated by mouse if you show the menu bar, at Firefox 47 on Windows.
    * The tab bar was wrongly fixed to "overflowed" state after you shrink the tab bar too narrow.
