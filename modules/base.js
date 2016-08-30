@@ -1016,7 +1016,8 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		var currentBrowser = this.browser.selectedTab.linkedBrowser;
 		if (!aTarget)
 			return currentBrowser;
-		if (aTarget == '[object XULElement]') {
+		var stringifiedTarget = aTarget.toString();
+		if (stringifiedTarget == '[object XULElement]') {
 			if (aTarget.localName == 'tab')
 				return aTarget.linkedBrowser;
 
@@ -1029,7 +1030,8 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			else
 				return null;
 		}
-		if (aTarget == '[object Window]' || aTarget == '[object ChromeWindow]') {
+		if (stringifiedTarget == '[object Window]' ||
+			stringifiedTarget == '[object ChromeWindow]') {
 			let tab = this.getTabFromFrame(aTarget, this.getTabBrowserFromFrame(aTarget));
 			if (tab)
 				return tab.linkedBrowser;
