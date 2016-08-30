@@ -184,7 +184,7 @@
   :-moz-any(.tab-content:not([pinned="true"]):not([selected="true"]):not([visuallyselected="true"]),
             /* Firefox 51 and later */
             .tab-content:not([pinned="true"])[selected="true"],
-            /+ old Firefox */
+            /* Firefox 50 and older */
             .tab-content:not([pinned="true"])[visuallyselected="true"]) {
 	border: 0 none !important;
 	background: transparent !important;
@@ -197,7 +197,7 @@
             .tab-background-start[selected="true"],
             .tab-background-middle[selected="true"],
             .tab-background-end[selected="true"],
-            /* old Firefox */
+            /* Firefox 50 and older */
             .tab-background-start[visuallyselected="true"],
             .tab-background-middle[visuallyselected="true"],
             .tab-background-end[visuallyselected="true"]) {
@@ -212,7 +212,7 @@
             .tab-background-start[selected="true"],
             .tab-background-middle[selected="true"],
             .tab-background-end[selected="true"],
-            /* old Firefox */
+            /* Firefox 50 and older */
             .tab-background-start[visuallyselected="true"],
             .tab-background-middle[visuallyselected="true"],
             .tab-background-end[visuallyselected="true"]) {
@@ -320,7 +320,7 @@
   .tabbrowser-tab
   :-moz-any(/* Firefox 51 and later */
             .tab-content[selected="true"]:not([pinned]),
-            /* old Firefox */
+            /* Firefox 50 and older */
             .tab-content[visuallyselected="true"]:not([pinned])),
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab

@@ -409,7 +409,7 @@ tabbrowser[treestyletab-mode="vertical"]
             .tab-content:not([selected="true"]):not([visuallyselected="true"])[pinned]:not([titlechanged]),
             /* Firefox 51 and later */
             .tab-content[selected="true"],
-            /* old Firefox */
+            /* Firefox 50 and older */
             .tab-content[visuallyselected="true"]) {
 	border: 0 none !important;
 	background: transparent !important;
@@ -422,7 +422,7 @@ tabbrowser[treestyletab-mode="vertical"]
             .tab-background-start[selected="true"],
             .tab-background-middle[selected="true"],
             .tab-background-end[selected="true"],
-            /* old Firefox */
+            /* Firefox 50 and older */
             .tab-background-start[visuallyselected="true"],
             .tab-background-middle[visuallyselected="true"],
             .tab-background-end[visuallyselected="true"]) {
@@ -437,7 +437,7 @@ tabbrowser[treestyletab-mode="vertical"]
             .tab-background-start[selected="true"],
             .tab-background-middle[selected="true"],
             .tab-background-end[selected="true"],
-            /* old Firefox */
+            /* Firefox 50 and older */
             .tab-background-start[visuallyselected="true"],
             .tab-background-middle[visuallyselected="true"],
             .tab-background-end[visuallyselected="true"]) {

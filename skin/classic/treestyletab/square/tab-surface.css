@@ -25,7 +25,7 @@
   .tabbrowser-tab[visuallyselected="true"]
   :-moz-any(/* Firefox 51 and later */
             .tab-background[selected="true"],
-            /* old Firefox */
+            /* Firefox 50 and older */
             .tab-background[visuallyselected="true"]) {
 	background-color: var(--tst-tab-surface-selected) !important;
 	background-image: -moz-linear-gradient(
@@ -54,7 +54,7 @@
   .tabbrowser-tab:hover
   :-moz-any(/* Firefox 51 and later */
             .tab-background[selected="true"],
-            /* old Firefox */
+            /* Firefox 50 and older */
             .tab-background[visuallyselected="true"]) {
 	background-color: var(--tst-tab-surface-selected-hover) !important;
 	background-image: -moz-linear-gradient(

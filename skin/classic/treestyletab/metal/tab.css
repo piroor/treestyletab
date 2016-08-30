@@ -75,7 +75,7 @@
             .tab-background-start[selected="true"],
             .tab-background-middle[selected="true"],
             .tab-background-end[selected="true"],
-            /* old Firefox */
+            /* Firefox 50 and older */
             .tab-content:not([pinned])[visuallyselected="true"],
             .tab-content[pinned]:not([titlechanged])[visuallyselected="true"],
             .tab-background-start[visuallyselected="true"],
@@ -92,7 +92,7 @@
             .tab-background-start[selected="true"],
             .tab-background-middle[selected="true"],
             .tab-background-end[selected="true"],
-            /* old Firefox */
+            /* Firefox 50 and older */
             .tab-background-start[visuallyselected="true"],
             .tab-background-middle[visuallyselected="true"],
             .tab-background-end[visuallyselected="true"]) {
@@ -221,13 +221,13 @@
   .tabbrowser-tab[visuallyselected]:not(:hover)
   :-moz-any(/* Firefox 51 and later */
             .tab-content[pinned][selected],
-            /* old Firefox */
+            /* Firefox 50 and older */
             .tab-content[pinned][visuallyselected]),
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[visuallyselected]:hover
   :-moz-any(/* Firefox 51 and later */
             .tab-content[pinned][selected],
-            /* old Firefox */
+            /* Firefox 50 and older */
             .tab-content[pinned][visuallyselected]) {
 	background: none !important;
 }
@@ -273,13 +273,13 @@
   .tabbrowser-tab[visuallyselected="true"]:not(:hover)
   :-moz-any(/* Firefox 51 and later */
             .tab-content[pinned][selected="true"],
-            /* old Firefox */
+            /* Firefox 50 and older */
             .tab-content[pinned][visuallyselected="true"]),
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[visuallyselected="true"]:hover
   :-moz-any(/* Firefox 51 and later */
             .tab-content[pinned][selected="true"],
-            /* old Firefox */
+            /* Firefox 50 and older */
             .tab-content[pinned][visuallyselected="true"]) {
 	line-height: 1 !important;
 	border: 1px solid #666666 !important;
@@ -298,13 +298,13 @@
   .tab-content[selected="true"][pinned], /* Firefox 51 and later */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[visuallyselected="true"]:not(:hover)
-  .tab-content[visuallyselected="true"][pinned], /* old Firefox */
+  .tab-content[visuallyselected="true"][pinned], /* Firefox 50 and older */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[visuallyselected="true"]:hover
   .tab-content[selected="true"][pinned], /* Firefox 51 and later */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[visuallyselected="true"]:hover
-  .tab-content[visuallyselected="true"][pinned] /* old Firefox */ {
+  .tab-content[visuallyselected="true"][pinned] /* Firefox 50 and older */ {
 	background: #9d9d9d !important;
 }
 
@@ -313,13 +313,13 @@
   .tab-content[selected="true"][pinned], /* Firefox 51 and later */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[visuallyselected="true"]:not(:hover)
-  .tab-content[visuallyselected="true"][pinned], /* old Firefox */
+  .tab-content[visuallyselected="true"][pinned], /* Firefox 50 and older */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[visuallyselected="true"]:hover
   .tab-content[selected="true"][pinned], /* Firefox 51 and later */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[visuallyselected="true"]:hover
-  .tab-content[visuallyselected="true"][pinned] /* old Firefox */ {
+  .tab-content[visuallyselected="true"][pinned] /* Firefox 50 and older */ {
 	background-color: #b3b2b3 !important;
 }
 
@@ -389,7 +389,7 @@
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[visuallyselected="true"]
-  .tab-content[pinned][visuallyselected="true"], /* old Firefox */
+  .tab-content[pinned][visuallyselected="true"], /* Firefox 50 and older */
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[visuallyselected="true"]:hover
@@ -397,7 +397,7 @@
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[visuallyselected="true"]:hover
-  .tab-content[pinned][visuallyselected="true"] /* old Firefox */ {
+  .tab-content[pinned][visuallyselected="true"] /* Firefox 50 and older */ {
 	background: #e4e4e4 !important;
 }
 
