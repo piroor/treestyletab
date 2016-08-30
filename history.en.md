@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 0.17.2016083001
    * Better handling about positioning of new tabs duplicated by other addons.
    * Now you can drop tabs onto another tab more easily. (The drop area of each tab is enlarged.)
    * The tab bar can be shrunken even if there is something wide toolbar item like the search bar.
