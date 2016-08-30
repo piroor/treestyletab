@@ -56,20 +56,28 @@
 	width: 0;
 }
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab:hover .tab-background:not([visuallyselected="true"]) {
+  .tabbrowser-tab:hover
+  .tab-background:not([selected="true"]):not([visuallyselected="true"]) {
 	background-image: none;
 }
 
 /* for Mac OS X */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  :-moz-any(.tab-content:not([pinned]):not([visuallyselected="true"]),
-            .tab-content[pinned]:not([titlechanged]):not([visuallyselected="true"]),
+  :-moz-any(.tab-content:not([pinned]):not([selected="true"]):not([visuallyselected="true"]),
+            .tab-content[pinned]:not([titlechanged]):not([selected="true"]):not([visuallyselected="true"]),
+            .tab-background-start:not([selected="true"]):not([visuallyselected="true"]),
+            .tab-background-middle:not([selected="true"]):not([visuallyselected="true"]):not([pinned]),
+            .tab-background-middle:not([selected="true"]):not([visuallyselected="true"])[pinned]:not([titlechanged]),
+            .tab-background-end:not([selected="true"]):not([visuallyselected="true"]),
+            /* Firefox 51 and later */
+            .tab-content:not([pinned])[selected="true"],
+            .tab-content[pinned]:not([titlechanged])[selected="true"],
+            .tab-background-start[selected="true"],
+            .tab-background-middle[selected="true"],
+            .tab-background-end[selected="true"],
+            /* old Firefox */
             .tab-content:not([pinned])[visuallyselected="true"],
             .tab-content[pinned]:not([titlechanged])[visuallyselected="true"],
-            .tab-background-start:not([visuallyselected="true"]),
-            .tab-background-middle:not([visuallyselected="true"]):not([pinned]),
-            .tab-background-middle:not([visuallyselected="true"])[pinned]:not([titlechanged]),
-            .tab-background-end:not([visuallyselected="true"]),
             .tab-background-start[visuallyselected="true"],
             .tab-background-middle[visuallyselected="true"],
             .tab-background-end[visuallyselected="true"]) {
@@ -77,9 +85,14 @@
 	background: transparent !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  :-moz-any(.tab-background-start:not([visuallyselected="true"]),
-            .tab-background-middle:not([visuallyselected="true"]),
-            .tab-background-end:not([visuallyselected="true"]),
+  :-moz-any(.tab-background-start:not([selected="true"]):not([visuallyselected="true"]),
+            .tab-background-middle:not([selected="true"]):not([visuallyselected="true"]),
+            .tab-background-end:not([selected="true"]):not([visuallyselected="true"]),
+            /* Firefox 51 and later */
+            .tab-background-start[selected="true"],
+            .tab-background-middle[selected="true"],
+            .tab-background-end[selected="true"],
+            /* old Firefox */
             .tab-background-start[visuallyselected="true"],
             .tab-background-middle[visuallyselected="true"],
             .tab-background-end[visuallyselected="true"]) {
@@ -205,11 +218,17 @@
   .tabbrowser-tab:hover
   .tab-content[pinned]:not([titlechanged]),
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab:not(:hover)
-  .tab-content[pinned][visuallyselected],
+  .tabbrowser-tab[visuallyselected]:not(:hover)
+  :-moz-any(/* Firefox 51 and later */
+            .tab-content[pinned][selected],
+            /* old Firefox */
+            .tab-content[pinned][visuallyselected]),
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab:hover
-  .tab-content[pinned][visuallyselected] {
+  .tabbrowser-tab[visuallyselected]:hover
+  :-moz-any(/* Firefox 51 and later */
+            .tab-content[pinned][selected],
+            /* old Firefox */
+            .tab-content[pinned][visuallyselected]) {
 	background: none !important;
 }
 
@@ -251,11 +270,17 @@
   .tabbrowser-tab:hover
   .tab-content[pinned],
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab:not(:hover)
-  .tab-content[pinned][visuallyselected="true"],
+  .tabbrowser-tab[visuallyselected="true"]:not(:hover)
+  :-moz-any(/* Firefox 51 and later */
+            .tab-content[pinned][selected="true"],
+            /* old Firefox */
+            .tab-content[pinned][visuallyselected="true"]),
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab:hover
-  .tab-content[pinned][visuallyselected="true"] {
+  .tabbrowser-tab[visuallyselected="true"]:hover
+  :-moz-any(/* Firefox 51 and later */
+            .tab-content[pinned][selected="true"],
+            /* old Firefox */
+            .tab-content[pinned][visuallyselected="true"]) {
 	line-height: 1 !important;
 	border: 1px solid #666666 !important;
 	border-radius: 4px !important;
@@ -269,20 +294,32 @@
   .tabbrowser-tab:hover
   .tab-content[pinned]:not([titlechanged]),
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab:not(:hover)
-  .tab-content[visuallyselected="true"][pinned],
+  .tabbrowser-tab[visuallyselected="true"]:not(:hover)
+  .tab-content[selected="true"][pinned], /* Firefox 51 and later */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab:hover
-  .tab-content[visuallyselected="true"][pinned] {
+  .tabbrowser-tab[visuallyselected="true"]:not(:hover)
+  .tab-content[visuallyselected="true"][pinned], /* old Firefox */
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[visuallyselected="true"]:hover
+  .tab-content[selected="true"][pinned], /* Firefox 51 and later */
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[visuallyselected="true"]:hover
+  .tab-content[visuallyselected="true"][pinned] /* old Firefox */ {
 	background: #9d9d9d !important;
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab:not(:hover)
-  .tab-content[visuallyselected="true"][pinned],
+  .tabbrowser-tab[visuallyselected="true"]:not(:hover)
+  .tab-content[selected="true"][pinned], /* Firefox 51 and later */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab:hover
-  .tab-content[visuallyselected="true"][pinned] {
+  .tabbrowser-tab[visuallyselected="true"]:not(:hover)
+  .tab-content[visuallyselected="true"][pinned], /* old Firefox */
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[visuallyselected="true"]:hover
+  .tab-content[selected="true"][pinned], /* Firefox 51 and later */
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[visuallyselected="true"]:hover
+  .tab-content[visuallyselected="true"][pinned] /* old Firefox */ {
 	background-color: #b3b2b3 !important;
 }
 
@@ -347,12 +384,20 @@
 
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab
-  .tab-content[pinned][visuallyselected="true"],
+  .tabbrowser-tab[visuallyselected="true"]
+  .tab-content[pinned][selected="true"], /* Firefox 51 and later */
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab:hover
-  .tab-content[pinned][visuallyselected="true"] {
+  .tabbrowser-tab[visuallyselected="true"]
+  .tab-content[pinned][visuallyselected="true"], /* old Firefox */
+:root:-moz-window-inactive
+  .tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[visuallyselected="true"]:hover
+  .tab-content[pinned][selected="true"], /* Firefox 51 and later */
+:root:-moz-window-inactive
+  .tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab[visuallyselected="true"]:hover
+  .tab-content[pinned][visuallyselected="true"] /* old Firefox */ {
 	background: #e4e4e4 !important;
 }
 

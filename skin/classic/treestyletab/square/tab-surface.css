@@ -22,8 +22,11 @@
 
 
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
-  .tabbrowser-tab
-  .tab-background[visuallyselected="true"] {
+  .tabbrowser-tab[visuallyselected="true"]
+  :-moz-any(/* Firefox 51 and later */
+            .tab-background[selected="true"],
+            /* old Firefox */
+            .tab-background[visuallyselected="true"]) {
 	background-color: var(--tst-tab-surface-selected) !important;
 	background-image: -moz-linear-gradient(
 	                    top,
@@ -49,7 +52,10 @@
 
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab:hover
-  .tab-background[visuallyselected="true"] {
+  :-moz-any(/* Firefox 51 and later */
+            .tab-background[selected="true"],
+            /* old Firefox */
+            .tab-background[visuallyselected="true"]) {
 	background-color: var(--tst-tab-surface-selected-hover) !important;
 	background-image: -moz-linear-gradient(
 	                    top,
