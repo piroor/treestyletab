@@ -190,25 +190,25 @@ var TreeStyleTabWindowHelper = {
 
 		nsContextMenu.prototype.__treestyletab__openLinkInTab = nsContextMenu.prototype.openLinkInTab;
 		nsContextMenu.prototype.openLinkInTab = function(...aArgs) {
-			TreeStyleTabService.handleNewTabFromCurrent(this.target.ownerDocument.defaultView);
+			TreeStyleTabService.handleNewTabFromCurrent(gBrowser.selectedTab);
 			return nsContextMenu.prototype.__treestyletab__openLinkInTab.call(this, ...aArgs);
 		};
 
 		nsContextMenu.prototype.__treestyletab__openFrameInTab = nsContextMenu.prototype.openFrameInTab;
 		nsContextMenu.prototype.openFrameInTab = function(...aArgs) {
-			TreeStyleTabService.handleNewTabFromCurrent(this.target.ownerDocument.defaultView);
+			TreeStyleTabService.handleNewTabFromCurrent(gBrowser.selectedTab);
 			return nsContextMenu.prototype.__treestyletab__openFrameInTab.call(this, ...aArgs);
 		};
 
 		nsContextMenu.prototype.__treestyletab__viewMedia = nsContextMenu.prototype.viewMedia;
 		nsContextMenu.prototype.viewMedia = function(aEvent) {
-			TreeStyleTabService.onBeforeViewMedia(aEvent, this.target.ownerDocument.defaultView);
+			TreeStyleTabService.onBeforeViewMedia(aEvent, gBrowser.selectedTab);
 			return nsContextMenu.prototype.__treestyletab__viewMedia.call(this, aEvent);
 		};
 
 		nsContextMenu.prototype.__treestyletab__viewBGImage = nsContextMenu.prototype.viewBGImage;
 		nsContextMenu.prototype.viewBGImage = function(aEvent) {
-			TreeStyleTabService.onBeforeViewMedia(aEvent, this.target.ownerDocument.defaultView);
+			TreeStyleTabService.onBeforeViewMedia(aEvent, gBrowser.selectedTab);
 			return nsContextMenu.prototype.__treestyletab__viewBGImage.call(this, aEvent);
 		};
 
@@ -216,19 +216,19 @@ var TreeStyleTabWindowHelper = {
 		nsContextMenu.prototype.addDictionaries = function(...aArgs) {
 			var newWindowPref = TreeStyleTabUtils.prefs.getPref('browser.link.open_newwindow');
 			var where = newWindowPref === 3 ? 'tab' : 'window' ;
-			TreeStyleTabService.onBeforeOpenLink(where, this.target.ownerDocument.defaultView);
+			TreeStyleTabService.onBeforeOpenLink(where, gBrowser.selectedTab);
 			return nsContextMenu.prototype.__treestyletab__addDictionaries.call(this, ...aArgs);
 		};
 
 		nsContextMenu.prototype.__treestyletab__viewPartialSource = nsContextMenu.prototype.viewPartialSource;
 		nsContextMenu.prototype.viewPartialSource = function(...aArgs) {
-			TreeStyleTabService.handleNewTabFromCurrent(this.target.ownerDocument.defaultView);
+			TreeStyleTabService.handleNewTabFromCurrent(gBrowser.selectedTab);
 			return nsContextMenu.prototype.__treestyletab__viewPartialSource.call(this, ...aArgs);
 		};
 
 		nsContextMenu.prototype.__treestyletab__viewFrameSource = nsContextMenu.prototype.viewFrameSource;
 		nsContextMenu.prototype.viewFrameSource = function(...aArgs) {
-			TreeStyleTabService.handleNewTabFromCurrent(this.target.ownerDocument.defaultView);
+			TreeStyleTabService.handleNewTabFromCurrent(gBrowser.selectedTab);
 			return nsContextMenu.prototype.__treestyletab__viewFrameSource.call(this, ...aArgs);
 		};
 
