@@ -13,9 +13,12 @@
 
  original:
    http://github.com/piroor/fxaddonlib-tabs-drag-utils
+
+ depends on:
+   https://github.com/clear-code/js-extended-immutable
 */
 (function() {
-	const currentRevision = 36;
+	const currentRevision = 37;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -33,6 +36,9 @@
 	const Cc = Components.classes;
 	const Ci = Components.interfaces;
 	const TAB_DROP_TYPE = 'application/x-moz-tabbrowser-tab';
+
+	// fix path to extended-immutable.js
+	var { ExtendedImmutable } = Components.utils.import('resource://treestyletab-modules/lib/extended-immutable.js', {});
 
 	var tabsDragUtils = {
 		revision : currentRevision,
@@ -142,16 +148,26 @@
 			this.updatedTabDNDObservers.push(aObserver);
 
 			if (typeof aObserver._getDropEffectForTabDrag === 'function' &&
-				aObserver._getDropEffectForTabDrag.toSource().indexOf('tabsDragUtils') < 0) {
-				let original = aObserver._getDropEffectForTabDrag;
-				aObserver.__TabsDragUtils_original__getDropEffectForTabDrag = original;
-				eval('aObserver._getDropEffectForTabDrag = '+
-					original.toSource().replace(
-						'dt.mozItemCount > 1',
-						'$& && !window["piro.sakura.ne.jp"].tabsDragUtils.isTabsDragging(arguments[0])'
-					)
-				);
-				aObserver.__TabsDragUtils_updated__getDropEffectForTabDrag = aObserver._getDropEffectForTabDrag;
+				!aObserver.__tabsDragUtils__getDropEffectForTabDrag) {
+				aObserver.__tabsDragUtils__getDropEffectForTabDrag = aObserver._getDropEffectForTabDrag;
+				aObserver._getDropEffectForTabDrag = function(aEvent, ...aArgs) {
+					var fakeItemCount = window["piro.sakura.ne.jp"].tabsDragUtils.isTabsDragging(aEvent) ? 1 : null ;
+					var fakeDataTransfer = new ExtendedImmutable(aEvent.dataTransfer, {
+						get mozItemCount() {
+							if (fakeItemCount) {
+								fakeItemCount = null;
+								return fakeItemCount;
+							}
+							return aEvent.dataTransfer.mozItemCount;
+						}
+					});
+					var fakeEvent = new ExtendedImmutable(aEvent, {
+						get dataTransfer() {
+							return fakeDataTransfer;
+						}
+					});
+					return aObserver.__tabsDragUtils__getDropEffectForTabDrag(fakeEvent, ...aArgs);
+				};
 			}
 
 			if ('_animateTabMove' in aObserver &&
