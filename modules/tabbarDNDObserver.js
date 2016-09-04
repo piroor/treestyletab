@@ -1215,9 +1215,7 @@ catch(e) {
 					this.performDrop(aDropActionInfo, newTabs[0]);
 				}
 				else {
-					// TODO: The callback (for Firefox 38 and older) should be
-					// migrated to a Promise (Firefox 39 and later).
-					w.getShortcutOrURIAndPostData(aURI, (function(aData) {
+					w.getShortcutOrURIAndPostData(aURI).then((function(aData) {
 						var uri = aData.url;
 						this.performDrop(aDropActionInfo, b.loadOneTab(uri, {
 							inBackground         : bgLoad,
@@ -1237,9 +1235,7 @@ catch(e) {
 				aDropActionInfo.position == sv.kDROP_ON)
 				loadDroppedLinkToNewChildTab = sv.dropLinksOnTabBehavior() == sv.kDROPLINK_NEWTAB;
 
-			// TODO: The callback (for Firefox 38 and older) should be
-			// migrated to a Promise (Firefox 39 and later).
-			w.getShortcutOrURIAndPostData(uris[0], (function(aData) {
+			w.getShortcutOrURIAndPostData(uris[0]).then((function(aData) {
 				var uri = aData.url;
 				if (loadDroppedLinkToNewChildTab || locked) {
 					this.performDrop(aDropActionInfo, b.loadOneTab(uri, {
