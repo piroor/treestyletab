@@ -148,17 +148,17 @@ var TreeStyleTabWindowHelper = {
 			)
 			aObserver = aObserver.tabContainer;
 
-			aObserver.__treestyletab__getDropEffectForTabDrag = aObserver._getDropEffectForTabDrag;
-			aObserver._getDropEffectForTabDrag = function(...aArgs) {
-				var effects = aObserver.__treestyletab__getDropEffectForTabDrag.call(this, ...aArgs);
-				if (effects === 'copy' || effects === 'move') {
-					let TSTTabBrowser = this instanceof Element ? (this.tabbrowser || this) : gBrowser ;
-					var TST = TSTTabBrowser.treeStyleTab
-					if (!TST.tabbarDNDObserver.canDropTab(aArgs[0]))
-						effects = 'none';
-				}
-				return effects;
-			};
+		aObserver.__treestyletab__getDropEffectForTabDrag = aObserver._getDropEffectForTabDrag;
+		aObserver._getDropEffectForTabDrag = function(...aArgs) {
+			var effects = aObserver.__treestyletab__getDropEffectForTabDrag.call(this, ...aArgs);
+			if (effects === 'copy' || effects === 'move') {
+				let TSTTabBrowser = this instanceof Element ? (this.tabbrowser || this) : gBrowser ;
+				var TST = TSTTabBrowser.treeStyleTab
+				if (!TST.tabbarDNDObserver.canDropTab(aArgs[0]))
+					effects = 'none';
+			}
+			return effects;
+		};
 	},
  
 	overrideGlobalFunctions : function TSTWH_overrideGlobalFunctions() 
