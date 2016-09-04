@@ -2,7 +2,7 @@
 
  - master/HEAD
  - 0.17.2016083101
-   * Fix broken tab color of Firefox 51 and later（due to [bug 1297157](https://bugzilla.mozilla.org/show_bug.cgi?id=1297157).)
+   * Fix broken tab color of Firefox 51 and later (due to [bug 1297157](https://bugzilla.mozilla.org/show_bug.cgi?id=1297157).)
  - 0.17.2016083001
    * Better handling about positioning of new tabs duplicated by other addons.
    * Now you can drop tabs onto another tab more easily. (The drop area of each tab is enlarged.)
