@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+   * Firefox 44より古いバージョンのサポートを終了
  - 0.17.2016083101
    * Firefox 51以降でタブの色がおかしくなる問題を修正（[bug 1297157](https://bugzilla.mozilla.org/show_bug.cgi?id=1297157)への追従）
  - 0.17.2016083001

@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Drop support for Firefox 44 and older versions.
  - 0.17.2016083101
    * Fix broken tab color of Firefox 51 and later (due to [bug 1297157](https://bugzilla.mozilla.org/show_bug.cgi?id=1297157).)
  - 0.17.2016083001
