@@ -18,7 +18,7 @@
    https://github.com/clear-code/js-extended-immutable
 */
 (function() {
-	const currentRevision = 38;
+	const currentRevision = 39;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -151,7 +151,10 @@
 				!aObserver.__tabsDragUtils__getDropEffectForTabDrag) {
 				aObserver.__tabsDragUtils__getDropEffectForTabDrag = aObserver._getDropEffectForTabDrag;
 				aObserver._getDropEffectForTabDrag = function(aEvent, ...aArgs) {
-					var fakeItemCount = window["piro.sakura.ne.jp"].tabsDragUtils.isTabsDragging(aEvent) ? 1 : null ;
+					if (!window["piro.sakura.ne.jp"].tabsDragUtils.isTabsDragging(aEvent))
+						return aEvent;
+
+					var fakeItemCount = 1;
 					var fakeDataTransfer = new ExtendedImmutable(aEvent.dataTransfer, {
 						get mozItemCount() {
 							if (fakeItemCount) {
