@@ -18,7 +18,7 @@
    https://github.com/clear-code/js-extended-immutable
 */
 (function() {
-	const currentRevision = 37;
+	const currentRevision = 38;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -171,215 +171,163 @@
 			}
 
 			if ('_animateTabMove' in aObserver &&
-				aObserver._animateTabMove.toSource().indexOf('tabsDragUtils') < 0) {
+				!aObserver.__TabsDragUtils_original__animateTabMove) {
 				let original = aObserver._animateTabMove;
 				aObserver.__TabsDragUtils_original__animateTabMove = original;
-				eval('aObserver._animateTabMove = '+
-					original.toSource().replace( // add a new argument
-						')',
-						', aOptions)'
-					).replace(
-						'{',
-						'{ var TDUContext = window["piro.sakura.ne.jp"].tabsDragUtils.setupContext(event, aOptions);'
-					).replace( // support vertical tab bar
-						/\.screenX/g,
-						'[TDUContext.position]'
-					).replace( // support vertical tab bar
-						/\.width/g,
-						'[TDUContext.size]'
-					).replace( // support vertical tab bar
-						/(['"])translateX\(/g,
-						'$1$1 + TDUContext.translator + $1('
-					).replace( // support vertical tab bar
-						/\.scrollX/g,
-						'[TDUContext.scroll]'
-					).replace(
-						/(let draggedTab = [^;]+;)/,
-						'$1\n' +
-						'draggedTab = TDUContext.draggedTab;\n'
-					).replace(
-						'let screenX = event',
-						'TDUContext.utils.setupDraggedTabs(TDUContext);\n' +
-						'$&'
-					).replace(
-						'draggedTab._dragData.animLastScreenX = screenX;',
-						'$&\n' +
-						'TDUContext.utils.updateDraggedTabs(TDUContext);'
-					).replace(
-						'let leftTab =',
-						'tabs = TDUContext.utils.collectAnimateTabs(tabs, TDUContext);\n' +
-						'$&'
-					).replace(
-						'translateX = Math.max(',
-						'leftBound = TDUContext.utils.updateLeftBound(leftBound, TDUContext);\n' +
-						'rightBound = TDUContext.utils.updateRightBound(rightBound, TDUContext);\n' +
-						'$&'
-					).replace(
-						'let tabCenter = ',
-						'TDUContext.tabScreenPosition = tabScreenX;\n' +
-						'TDUContext.translateDelta = translateX;\n' +
-						'TDUContext.utils.updateDraggedTabsTransform(TDUContext);\n' +
-						'tabs = TDUContext.utils.extractNotDraggedTabs(tabs, TDUContext);\n' +
-						'$&'
-					).replace(
-						'if (screenX > tabCenter)',
-						'/* $& */ if (screenX > TDUContext.lastTabCenter)'
-					).replace(
-						'newIndex = tabs[mid]._tPos;',
-						'$&\n' +
-						'TDUContext.tabCenter = tabCenter;\n' +
-						'TDUContext.dropTargetTabScreenPosition = screenX;\n' +
-						'TDUContext.utils.updateDontMove(boxObject, TDUContext);\n'
-					).replace(
-						'if (newIndex >= oldIndex)',
-						'if (TDUContext.utils.checkDontMove(TDUContext)) return;\n' +
-						'$&'
-					).replace(
-						'draggedTab._dragData.animDropIndex = newIndex;',
-						'TDUContext.utils.updateDropIndex(newIndex, TDUContext);\n' +
-						'$&'
-					).replace(
-						'-tabWidth : tabWidth',
-						'/* $& */ -TDUContext.tabsSize : TDUContext.tabsSize'
-					).replace(
-						'tabWidth : -tabWidth',
-						'/* $& */ TDUContext.tabsSize : -TDUContext.tabsSize'
-					).replace(
-						/(\}\)?)$/,
-						'TDUContext.destroy(); $1'
-					)
-				);
-				aObserver.__TabsDragUtils_updated__animateTabMove = aObserver._animateTabMove;
-
+				aObserver._animateTabMove = function _animateTabMove(event, aOptions) {
 /**
- * Full version
- *  base version: Firefox 17 beta
- *  revision    : http://hg.mozilla.org/releases/mozilla-beta/rev/20e73f5b19c3
- *  date        : 2012-11-29
- *  source      : http://mxr.mozilla.org/mozilla-central/source/browser/base/content/tabbrowser.xml
+ * Original:
+ *  base version: Nightly 51.0a1
+ *  date        : 2016-09-04
+ *  source      : https://dxr.mozilla.org/mozilla-central/rev/1789229965bfc5e7b08dfcf1c054c366abe1267a/browser/base/content/tabbrowser.xml#5303
  */
-// // function _animateTabMove(event) {
-// function _animateTabMove(event, aOptions) {
-// var TDUContext = window["piro.sakura.ne.jp"].tabsDragUtils.setupContext(event, aOptions);
-// 
-//           let draggedTab = event.dataTransfer.mozGetDataAt(TAB_DROP_TYPE, 0);
-// draggedTab = TDUContext.draggedTab;
-// 
-//           if (this.getAttribute("movingtab") != "true") {
-//             this.setAttribute("movingtab", "true");
-//             this.selectedItem = draggedTab;
-//           }
-//
-//           if (!("animLastScreenX" in draggedTab._dragData))
-//             draggedTab._dragData.animLastScreenX = draggedTab._dragData[TDUContext.position]/*.screenX*/;
-// 
-// TDUContext.utils.setupDraggedTabs(TDUContext);
-//           let screenX = event[TDUContext.position]/*.screenX*/;
-//           if (screenX == draggedTab._dragData.animLastScreenX)
-//             return;
-// 
-//           let draggingRight = screenX > draggedTab._dragData.animLastScreenX;
-//           draggedTab._dragData.animLastScreenX = screenX;
-// TDUContext.utils.updateDraggedTabs(TDUContext);
-// 
-//           let rtl = (window.getComputedStyle(this).direction == "rtl");
-//           let pinned = draggedTab.pinned;
-//           let numPinned = this.tabbrowser._numPinnedTabs;
-//           let tabs = this.tabbrowser.visibleTabs
-//                                     .slice(pinned ? 0 : numPinned,
-//                                            pinned ? numPinned : undefined);
-//           if (rtl)
-//             tabs.reverse();
-// 
-//           let tabWidth = draggedTab.getBoundingClientRect()[TDUContext.size]/*.width*/;
-// 
-//           // Move the dragged tab based on the mouse position.
-// 
-// tabs = TDUContext.utils.collectAnimateTabs(tabs, TDUContext);
-//           let leftTab = tabs[0];
-//           let rightTab = tabs[tabs.length - 1];
-// 
-//           let tabScreenX = draggedTab.boxObject[TDUContext.position]/*.screenX*/;
-//           let translateX = screenX - draggedTab._dragData[offset]/*.offsetX*/;
-//           if (!pinned)
-//             translateX += this.mTabstrip.scrollPosition - draggedTab._dragData[TDUContext.scroll]/*.scrollX*/;
-//           let leftBound = leftTab.boxObject[TDUContext.position]/*.screenX*/ - tabScreenX;
-//           let rightBound = (rightTab.boxObject[TDUContext.position]/*.screenX*/ + rightTab.boxObject[TDUContext.size]/*.width*/) -
-//                            (tabScreenX + tabWidth);
-// leftBound = TDUContext.utils.updateLeftBound(leftBound, TDUContext);
-// rightBound = TDUContext.utils.updateRightBound(rightBound, TDUContext);
-//           translateX = Math.max(translateX, leftBound);
-//           translateX = Math.min(translateX, rightBound);
-// //          draggedTab.style.transform = "translateX(" + translateX + "px)";
-//           draggedTab.style.transform = "" + TDUContext.translator + "(" + translateX + "px)";
-// 
-//           // Determine what tab we're dragging over.
-//           // * Point of reference is the center of the dragged tab. If that
-//           //   point touches a background tab, the dragged tab would take that
-//           //   tab's position when dropped.
-//           // * We're doing a binary search in order to reduce the amount of
-//           //   tabs we need to check.
-// 
-// TDUContext.tabScreenPosition = tabScreenX;
-// TDUContext.translateDelta = translateX;
-// TDUContext.utils.updateDraggedTabsTransform(TDUContext);
-// tabs = TDUContext.utils.extractNotDraggedTabs(tabs, TDUContext);
-//           let tabCenter = Math.round(tabScreenX + translateX + tabWidth / 2);
-//           let newIndex = -1;
-//           let oldIndex = "animDropIndex" in draggedTab._dragData ?
-//                          draggedTab._dragData.animDropIndex : draggedTab._tPos;
-//           let low = 0;
-//           let high = tabs.length - 1;
-//           while (low <= high) {
-//             let mid = Math.floor((low + high) / 2);
-//             if (tabs[mid] == draggedTab &&
-//                 ++mid > high)
-//               break;
-//             let boxObject = tabs[mid].boxObject;
-//             let screenX = boxObject[TDUContext.position]/*.screenX*/ + getTabShift(tabs[mid], oldIndex);
-// //            if (screenX > tabCenter) {
-//             if (screenX > TDUContext.lastTabCenter) {
-//               high = mid - 1;
-//             } else if (screenX + boxObject.width < tabCenter) {
-//               low = mid + 1;
-//             } else {
-//               newIndex = tabs[mid]._tPos;
-// TDUContext.tabCenter = tabCenter;
-// TDUContext.dropTargetTabScreenPosition = screenX;
-// TDUContext.utils.updateDontMove(boxObject, TDUContext);
-//               break;
-//             }
-//           }
-// if (TDUContext.utils.checkDontMove(TDUContext)) return;
-//           if (newIndex >= oldIndex)
-//             newIndex++;
-//           if (newIndex < 0 || newIndex == oldIndex)
-//             return;
-// TDUContext.utils.updateDropIndex(newIndex, TDUContext);
-//           draggedTab._dragData.animDropIndex = newIndex;
-// 
-//           // Shift background tabs to leave a gap where the dragged tab
-//           // would currently be dropped.
-// 
-//           for (let tab of tabs) {
-//             if (tab != draggedTab) {
-//               let shift = getTabShift(tab, newIndex);
-//               tab.style.transform = shift ? "" + translator + "(" + shift + "px)" : "";
-//             }
-//           }
-// 
-//           function getTabShift(tab, dropIndex) {
-//             if (tab._tPos < draggedTab._tPos && tab._tPos >= dropIndex)
-// //              return rtl ? -tabWidth : tabWidth;
-//               return rtl ? -TDUContext.tabsSize : TDUContext.tabsSize;
-//             if (tab._tPos > draggedTab._tPos && tab._tPos < dropIndex)
-// //              return rtl ? tabWidth : -tabWidth;
-//               return rtl ? TDUContext.tabsSize : -TDUContext.tabsSize;
-//             return 0;
-//           }
-// TDUContext.destroy();
-// 
-// }
+//=====================================================================
+var TDUContext = window["piro.sakura.ne.jp"].tabsDragUtils.setupContext(event, aOptions);
+          let draggedTab = event.dataTransfer.mozGetDataAt(TAB_DROP_TYPE, 0);
+draggedTab = TDUContext.draggedTab;
+
+          if (this.getAttribute("movingtab") != "true") {
+            this.setAttribute("movingtab", "true");
+            this.selectedItem = draggedTab;
+          }
+
+          if (!("animLastScreenX" in draggedTab._dragData)) {
+//            draggedTab._dragData.animLastScreenX = draggedTab._dragData.screenX;
+            draggedTab._dragData.animLastScreenX = draggedTab._dragData[TDUContext.position];
+          }
+
+TDUContext.utils.setupDraggedTabs(TDUContext);
+
+//          let screenX = event.screenX;
+          let screenX = event[TDUContext.position];
+          if (screenX == draggedTab._dragData.animLastScreenX)
+            return;
+
+          let draggingRight = screenX > draggedTab._dragData.animLastScreenX;
+          draggedTab._dragData.animLastScreenX = screenX;
+
+TDUContext.utils.updateDraggedTabs(TDUContext);
+
+          let rtl = (window.getComputedStyle(this).direction == "rtl");
+          let pinned = draggedTab.pinned;
+          let numPinned = this.tabbrowser._numPinnedTabs;
+          let tabs = this.tabbrowser.visibleTabs
+                                    .slice(pinned ? 0 : numPinned,
+                                           pinned ? numPinned : undefined);
+          if (rtl)
+            tabs.reverse();
+//          let tabWidth = draggedTab.getBoundingClientRect().width;
+          let tabWidth = draggedTab.getBoundingClientRect()[TDUContext.size];
+
+          // Move the dragged tab based on the mouse position.
+
+tabs = TDUContext.utils.collectAnimateTabs(tabs, TDUContext);
+
+          let leftTab = tabs[0];
+          let rightTab = tabs[tabs.length - 1];
+//          let tabScreenX = draggedTab.boxObject.screenX;
+          let tabScreenX = draggedTab.boxObject[TDUContext.position];
+//          let translateX = screenX - draggedTab._dragData.screenX;
+          let translateX = screenX - draggedTab._dragData[TDUContext.position];
+          if (!pinned) {
+//            translateX += this.mTabstrip.scrollPosition - draggedTab._dragData.scrollX;
+            translateX += this.mTabstrip.scrollPosition - draggedTab._dragData[TDUContext.scroll];
+          }
+//          let leftBound = leftTab.boxObject.screenX - tabScreenX;
+          let leftBound = leftTab.boxObject[TDUContext.position] - tabScreenX;
+//          let rightBound = (rightTab.boxObject.screenX + rightTab.boxObject.width) -
+//                           (tabScreenX + tabWidth);
+          let rightBound = (rightTab.boxObject[TDUContext.position] + rightTab.boxObject[TDUContext.size]) -
+                           (tabScreenX + tabWidth);
+
+leftBound = TDUContext.utils.updateLeftBound(leftBound, TDUContext);
+rightBound = TDUContext.utils.updateRightBound(rightBound, TDUContext);
+
+          translateX = Math.max(translateX, leftBound);
+          translateX = Math.min(translateX, rightBound);
+//          draggedTab.style.transform = "translateX(" + translateX + "px)";
+          draggedTab.style.transform = TDUContext.translator + "(" + translateX + "px)";
+
+          // Determine what tab we're dragging over.
+          // * Point of reference is the center of the dragged tab. If that
+          //   point touches a background tab, the dragged tab would take that
+          //   tab's position when dropped.
+          // * We're doing a binary search in order to reduce the amount of
+          //   tabs we need to check.
+
+          let tabCenter = tabScreenX + translateX + tabWidth / 2;
+
+TDUContext.tabScreenPosition = tabScreenX;
+TDUContext.translateDelta = translateX;
+TDUContext.utils.updateDraggedTabsTransform(TDUContext);
+tabs = TDUContext.utils.extractNotDraggedTabs(tabs, TDUContext);
+
+          let newIndex = -1;
+          let oldIndex = "animDropIndex" in draggedTab._dragData ?
+                         draggedTab._dragData.animDropIndex : draggedTab._tPos;
+          let low = 0;
+          let high = tabs.length - 1;
+          while (low <= high) {
+            let mid = Math.floor((low + high) / 2);
+            if (tabs[mid] == draggedTab &&
+                ++mid > high)
+              break;
+            let boxObject = tabs[mid].boxObject;
+//            let screenX = boxObject.screenX + getTabShift(tabs[mid], oldIndex);
+            let screenX = boxObject[TDUContext.position] + getTabShift(tabs[mid], oldIndex);
+//            if (screenX > tabCenter) {
+if (screenX > TDUContext.lastTabCenter) {
+              high = mid - 1;
+//            } else if (screenX + boxObject.width < tabCenter) {
+            } else if (screenX + boxObject[TDUContext.size] < tabCenter) {
+              low = mid + 1;
+            } else {
+              newIndex = tabs[mid]._tPos;
+
+TDUContext.tabCenter = tabCenter;
+TDUContext.dropTargetTabScreenPosition = screenX;
+TDUContext.utils.updateDontMove(boxObject, TDUContext);
+
+              break;
+            }
+          }
+
+if (TDUContext.utils.checkDontMove(TDUContext)) return;
+
+          if (newIndex >= oldIndex)
+            newIndex++;
+          if (newIndex < 0 || newIndex == oldIndex)
+            return;
+
+TDUContext.utils.updateDropIndex(newIndex, TDUContext);
+
+          draggedTab._dragData.animDropIndex = newIndex;
+
+          // Shift background tabs to leave a gap where the dragged tab
+          // would currently be dropped.
+
+tabWidth = TDUContext.tabsSize;
+
+          for (let tab of tabs) {
+            if (tab != draggedTab) {
+              let shift = getTabShift(tab, newIndex);
+//              tab.style.transform = shift ? "translateX(" + shift + "px)" : "";
+              tab.style.transform = shift ? TDUContext.translator + "(" + shift + "px)" : "";
+            }
+          }
+
+          function getTabShift(tab, dropIndex) {
+            if (tab._tPos < draggedTab._tPos && tab._tPos >= dropIndex)
+              return rtl ? -tabWidth : tabWidth;
+            if (tab._tPos > draggedTab._tPos && tab._tPos < dropIndex)
+              return rtl ? tabWidth : -tabWidth;
+            return 0;
+          }
+
+TDUContext.destroy();
+//=====================================================================
+				};
+				aObserver.__TabsDragUtils_updated__animateTabMove = aObserver._animateTabMove;
 			}
 		},
 		setupContext : function TDU_initTabBrowser(aEvent, aOptions)
