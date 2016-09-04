@@ -1,5 +1,5 @@
 /*
- Multiple Tabs Drag and Drop Utilities for Firefox 31 or later
+ Multiple Tabs Drag and Drop Utilities for Firefox 45 or later
 
  Usage:
    window['piro.sakura.ne.jp'].tabsDragUtils.initTabBrowser(gBrowser);
@@ -15,7 +15,7 @@
    http://github.com/piroor/fxaddonlib-tabs-drag-utils
 */
 (function() {
-	const currentRevision = 35;
+	const currentRevision = 36;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -89,7 +89,7 @@
 				) {
 				let original = PlacesControllerDragHelper.onDrop;
 				PlacesControllerDragHelper.__TabsDragUtils_original__onDrop = original;
-				if (PlacesControllerDragHelper.onDrop.isAsyncFunction) { // Firefox 35 or later
+				if (PlacesControllerDragHelper.onDrop.isAsyncFunction) {
 					PlacesControllerDragHelper.onDrop = Task.async(function(insertionPoint, dt) {
 						dt = new window["piro.sakura.ne.jp"].tabsDragUtils.DOMDataTransferProxy(dt, insertionPoint);
 						// for Tree Style Tab (save tree structure to bookmarks)
@@ -105,24 +105,6 @@
 										TreeStyleTabBookmarksService.endAddBookmarksFromTabs(dt._tabs);
 								});
 					});
-				}
-				else { // Firefox 34 or older
-					eval('PlacesControllerDragHelper.onDrop = '+
-						original.toSource().replace(
-							// for Firefox 3.5 or later
-							/(let|var) doCopy =/,
-							'$1 tabsDataTransferProxy = dt = new window["piro.sakura.ne.jp"].tabsDragUtils.DOMDataTransferProxy(dt, insertionPoint); $&'
-						).replace( // for Tree Style Tab (save tree structure to bookmarks)
-							/(PlacesUIUtils\.ptm|PlacesUtils\.transactionManager)\.doTransaction\(txn\);/,
-							'if (tabsDataTransferProxy && "_tabs" in tabsDataTransferProxy &&' +
-							'  "TreeStyleTabBookmarksService" in window)' +
-							'  TreeStyleTabBookmarksService.beginAddBookmarksFromTabs(tabsDataTransferProxy._tabs);' +
-							'$&' +
-							'if (tabsDataTransferProxy && "_tabs" in tabsDataTransferProxy &&' +
-							'  "TreeStyleTabBookmarksService" in window)' +
-							'  TreeStyleTabBookmarksService.endAddBookmarksFromTabs();'
-						)
-					);
 				}
 				PlacesControllerDragHelper.__TabsDragUtils_updated__onDrop = PlacesControllerDragHelper.onDrop;
 			}
@@ -159,32 +141,17 @@
 		{
 			this.updatedTabDNDObservers.push(aObserver);
 
-			if (typeof aObserver._setEffectAllowedForDataTransfer === 'function') { // Firefox 43 and older
-				if (aObserver._setEffectAllowedForDataTransfer.toSource().indexOf('tabsDragUtils') < 0) {
-					let original = aObserver._setEffectAllowedForDataTransfer;
-					aObserver.__TabsDragUtils_original__setEffectAllowedForDataTransfer = original;
-					eval('aObserver._setEffectAllowedForDataTransfer = '+
-						original.toSource().replace(
-							'dt.mozItemCount > 1',
-							'$& && !window["piro.sakura.ne.jp"].tabsDragUtils.isTabsDragging(arguments[0])'
-						)
-					);
-					aObserver.__TabsDragUtils_updated__setEffectAllowedForDataTransfer = aObserver._setEffectAllowedForDataTransfer;
-				}
-			}
-			else { // Firefox 44 and later
-				if (typeof aObserver._getDropEffectForTabDrag === 'function' &&
-					aObserver._getDropEffectForTabDrag.toSource().indexOf('tabsDragUtils') < 0) {
-					let original = aObserver._getDropEffectForTabDrag;
-					aObserver.__TabsDragUtils_original__getDropEffectForTabDrag = original;
-					eval('aObserver._getDropEffectForTabDrag = '+
-						original.toSource().replace(
-							'dt.mozItemCount > 1',
-							'$& && !window["piro.sakura.ne.jp"].tabsDragUtils.isTabsDragging(arguments[0])'
-						)
-					);
-					aObserver.__TabsDragUtils_updated__getDropEffectForTabDrag = aObserver._getDropEffectForTabDrag;
-				}
+			if (typeof aObserver._getDropEffectForTabDrag === 'function' &&
+				aObserver._getDropEffectForTabDrag.toSource().indexOf('tabsDragUtils') < 0) {
+				let original = aObserver._getDropEffectForTabDrag;
+				aObserver.__TabsDragUtils_original__getDropEffectForTabDrag = original;
+				eval('aObserver._getDropEffectForTabDrag = '+
+					original.toSource().replace(
+						'dt.mozItemCount > 1',
+						'$& && !window["piro.sakura.ne.jp"].tabsDragUtils.isTabsDragging(arguments[0])'
+					)
+				);
+				aObserver.__TabsDragUtils_updated__getDropEffectForTabDrag = aObserver._getDropEffectForTabDrag;
 			}
 
 			if ('_animateTabMove' in aObserver &&
