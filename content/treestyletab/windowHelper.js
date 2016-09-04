@@ -149,12 +149,12 @@ var TreeStyleTabWindowHelper = {
 			aObserver = aObserver.tabContainer;
 
 		aObserver.__treestyletab__getDropEffectForTabDrag = aObserver._getDropEffectForTabDrag;
-		aObserver._getDropEffectForTabDrag = function(...aArgs) {
-			var effects = aObserver.__treestyletab__getDropEffectForTabDrag.call(this, ...aArgs);
+		aObserver._getDropEffectForTabDrag = function(aEvent, ...aArgs) {
+			var effects = aObserver.__treestyletab__getDropEffectForTabDrag(aEvent, ...aArgs);
 			if (effects === 'copy' || effects === 'move') {
 				let TSTTabBrowser = this instanceof Element ? (this.tabbrowser || this) : gBrowser ;
 				var TST = TSTTabBrowser.treeStyleTab
-				if (!TST.tabbarDNDObserver.canDropTab(aArgs[0]))
+				if (!TST.tabbarDNDObserver.canDropTab(aEvent))
 					effects = 'none';
 			}
 			return effects;
