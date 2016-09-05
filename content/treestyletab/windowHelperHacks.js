@@ -418,13 +418,13 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// SBM Counter
 	// http://miniturbo.org/products/sbmcounter/
 	if ('SBMCounter' in window &&
-		TreeStyleTabUtils.getTreePref('compatibility.SBMCounter')) {
-		eval('SBMCounter.action = '+
-			SBMCounter.action.toSource().replace(
-				'gBrowser.selectedTab = gBrowser.addTab',
-				'TreeStyleTabService.readyToOpenChildTab(gBrowser); $&'
-			)
-		);
+		TreeStyleTabUtils.getTreePref('compatibility.SBMCounter') &&
+		!SBMCounter.__treestyletab__action) {
+		SBMCounter.__treestyletab__action = SBMCounter.action;
+		SBMCounter.action = function(...aArgs) {
+			TreeStyleTabService.readyToOpenChildTabNow(gBrowser);
+			return this.__treestyletab__action(...aArgs);
+		};
 	}
 
 	// Snap Links Plus
