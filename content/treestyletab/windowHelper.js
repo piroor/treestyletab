@@ -517,9 +517,10 @@ var TreeStyleTabWindowHelper = {
 				return b.mTabContainer.__treestyletab__advanceSelectedTab.call(this, ...aArgs);
 			};
 
-		if (!b.tabContainer.__treestyletab__notifyBackgroundTab) {
-			// original: https://dxr.mozilla.org/mozilla-central/rev/dbe4b47941c7b3d6298a0ead5e40dd828096c808/browser/base/content/tabbrowser.xml#5459
+		if (!b.tabContainer.__treestyletab__notifyBackgroundTab)
 			b.tabContainer.__treestyletab__notifyBackgroundTab = b.tabContainer._notifyBackgroundTab;
+		// original: https://dxr.mozilla.org/mozilla-central/rev/dbe4b47941c7b3d6298a0ead5e40dd828096c808/browser/base/content/tabbrowser.xml#5459
+		if (b.mTabContainer._notifyBackgroundTab.toString() === b.mTabContainer.__treestyletab__notifyBackgroundTab.toString())
 			b.tabContainer._notifyBackgroundTab = function(aTab, ...aArgs) {
 				var treeStyleTab = gBrowser.treeStyleTab;
 				if (aTab.pinned ||
@@ -582,11 +583,11 @@ var TreeStyleTabWindowHelper = {
 
 				treeStyleTab.notifyBackgroundTab();
 			};
-		}
 
-		if (!b.tabContainer.__treestyletab__getDragTargetTab) {
-			// original: https://dxr.mozilla.org/mozilla-central/rev/dbe4b47941c7b3d6298a0ead5e40dd828096c808/browser/base/content/tabbrowser.xml#5511
+		if (!b.tabContainer.__treestyletab__getDragTargetTab)
 			b.tabContainer.__treestyletab__getDragTargetTab = b.tabContainer._getDragTargetTab;
+		// original: https://dxr.mozilla.org/mozilla-central/rev/dbe4b47941c7b3d6298a0ead5e40dd828096c808/browser/base/content/tabbrowser.xml#5511
+		if (b.mTabContainer._getDragTargetTab.toString() === b.mTabContainer.__treestyletab__getDragTargetTab.toString())
 			b.tabContainer._getDragTargetTab = function(aEvent, aIsLink, ...aArgs) {
 				var treeStyleTab = gBrowser.treeStyleTab;
 				if (!treeStyleTab.isVertical)
@@ -604,11 +605,11 @@ var TreeStyleTabWindowHelper = {
 				}
 				return draggedTab;
 			};
-		}
 
-		if (!b.tabContainer.__treestyletab__getDropIndex) {
-			// original: https://dxr.mozilla.org/mozilla-central/rev/dbe4b47941c7b3d6298a0ead5e40dd828096c808/browser/base/content/tabbrowser.xml#5526
+		if (!b.tabContainer.__treestyletab__getDropIndex)
 			b.tabContainer.__treestyletab__getDropIndex = b.tabContainer._getDropIndex;
+		// original: https://dxr.mozilla.org/mozilla-central/rev/dbe4b47941c7b3d6298a0ead5e40dd828096c808/browser/base/content/tabbrowser.xml#5526
+		if (b.mTabContainer._getDropIndex.toString() === b.mTabContainer.__treestyletab__getDropIndex.toString())
 			b.tabContainer._getDropIndex = function(aEvent, aIsLink, ...aArgs) {
 				var treeStyleTab = gBrowser.treeStyleTab;
 				if (!treeStyleTab.isVertical)
@@ -633,7 +634,6 @@ var TreeStyleTabWindowHelper = {
 				}
 				return tabs.length;
 			};
-		}
 
 		/**
 		 * The default implementation fails to scroll to tab if it is expanding.
@@ -657,9 +657,10 @@ var TreeStyleTabWindowHelper = {
 
 		{
 			let popup = document.getElementById('alltabs-popup');
-			if (!popup.__treestyletab__updateTabsVisibilityStatus) {
-				// original https://dxr.mozilla.org/mozilla-central/rev/dbe4b47941c7b3d6298a0ead5e40dd828096c808/browser/base/content/tabbrowser.xml#6588
+			if (!popup.__treestyletab__updateTabsVisibilityStatus)
 				popup.__treestyletab__updateTabsVisibilityStatus = popup._updateTabsVisibilityStatus;
+			// original https://dxr.mozilla.org/mozilla-central/rev/dbe4b47941c7b3d6298a0ead5e40dd828096c808/browser/base/content/tabbrowser.xml#6588
+			if (popup._updateTabsVisibilityStatus.toString() === popup.__treestyletab__updateTabsVisibilityStatus.toString())
 				popup._updateTabsVisibilityStatus = function(...aArgs) {
 					var treeStyleTab = gBrowser.treeStyleTab;
 					if (!treeStyleTab.isVertical)
@@ -683,7 +684,6 @@ var TreeStyleTabWindowHelper = {
 							aItem.removeAttribute('tabIsVisible');
 					}, this);
 				};
-			}
 		}
 	
 	},
