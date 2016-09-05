@@ -259,7 +259,7 @@ var TreeStyleTabWindowHelper = {
 			return FeedHandler.__treestyletab__loadFeed.call(this, aHref, aEvent);
 		};
 
-		if ('showNavToolbox' in FullScreen) { // for Firefox 40 or later
+		if ('showNavToolbox' in FullScreen) {
 			FullScreen.__treestyletab__showNavToolbox = FullScreen.showNavToolbox;
 			FullScreen.showNavToolbox = function(...aArgs) {
 				var beforeCollapsed = this._isChromeCollapsed;
@@ -273,16 +273,6 @@ var TreeStyleTabWindowHelper = {
 			FullScreen.hideNavToolbox = function(...aArgs) {
 				var beforeCollapsed = this._isChromeCollapsed;
 				var retVal = FullScreen.__treestyletab__hideNavToolbox.call(this, ...aArgs);
-				if (beforeCollapsed !== this._isChromeCollapsed)
-					gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_FULLSCREEN);
-				return retVal;
-			};
-		}
-		else if ('mouseoverToggle' in FullScreen) { // for Firefox 39 or older
-			FullScreen.__treestyletab__mouseoverToggle = FullScreen.mouseoverToggle;
-			FullScreen.mouseoverToggle = function(...aArgs) {
-				var beforeCollapsed = this._isChromeCollapsed;
-				var retVal = FullScreen.__treestyletab__mouseoverToggle.call(this, ...aArgs);
 				if (beforeCollapsed !== this._isChromeCollapsed)
 					gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_FULLSCREEN);
 				return retVal;
