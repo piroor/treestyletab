@@ -484,34 +484,6 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		};
 	}
 
-	// Google Toolbar Sidewiki
-	if ('sidewikiWindowHandler' in window &&
-		window.sidewikiWindowHandler &&
-		sidewikiWindowHandler.barsContainer_ &&
-		sidewikiWindowHandler.barsContainer_.geometry_ &&
-		sidewikiWindowHandler.barsContainer_.geometry_.__proto__.getWindowSizeForDrawers &&
-		TreeStyleTabUtils.getTreePref('compatibility.GoogleToolbar.Sidewiki')) {
-		let func = sidewikiWindowHandler.barsContainer_.geometry_.__proto__.getWindowSizeForDrawers.toSource();
-		if (func.indexOf('treeStyleTab') < 0) {
-			eval('sidewikiWindowHandler.barsContainer_.geometry_.__proto__.getWindowSizeForDrawers = '+func.replace(
-				'return {',
-				'  if ("treeStyleTab" in this.topLevelDocument_.getElementById("content")) {\n' +
-				'    let b = this.topLevelDocument_.getElementById("content");\n' +
-				'    let box = b.mPanelContainer.boxObject;\n' +
-				'    return {\n' +
-				'      height       : box.height,\n' +
-				'      width        : box.width,\n' +
-				'      top          : box.y,\n' +
-				'      left         : box.x,\n' +
-				'      right        : this.topLevelWindow_.innerWidth - box.x - box.width,\n' +
-				'      tabBoxHeight : 0\n' +
-				'    };\n' +
-				'  }\n' +
-				'$&'
-			));
-		}
-	}
-
 	// Super Tab Mode
 	// https://addons.mozilla.org/firefox/addon/super-tab-mode/
 	if ('stmM' in window &&

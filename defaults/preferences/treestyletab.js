@@ -693,7 +693,6 @@ pref("extensions.treestyletab.compatibility.DuplicateThisTab", true);
 pref("extensions.treestyletab.compatibility.FirefoxSync", true);
 pref("extensions.treestyletab.compatibility.FireGestures", true);
 pref("extensions.treestyletab.compatibility.FocusLastSelectedTab", true);
-pref("extensions.treestyletab.compatibility.GoogleToolbar.Sidewiki", true);
 pref("extensions.treestyletab.compatibility.Greasemonkey", true);
 pref("extensions.treestyletab.compatibility.InstaClick", true);
 pref("extensions.treestyletab.compatibility.LastTab", true);
