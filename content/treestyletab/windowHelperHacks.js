@@ -533,8 +533,11 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		for (let i = 0, maxi = methods.length; i < maxi; i++)
 		{
 			let method = methods[i];
-			if (!(method in LinkyContext.prototype)) continue;
+			if (!(method in LinkyContext.prototype) ||
+				LinkyContext.prototype['__treestyletab__' + method])
+				continue;
 			let orig = LinkyContext.prototype[method];
+			LinkyContext.prototype['__treestyletab__' + method] = orig;
 			LinkyContext.prototype[method] = function(...aArgs) {
 				TreeStyleTabService.readyToOpenChildTabNow(null, true);
 				return orig.call(this, ...aArgs);
