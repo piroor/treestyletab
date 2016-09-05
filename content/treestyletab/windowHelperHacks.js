@@ -588,12 +588,12 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		!duplicatethistab.__treestyletab__openLinkWithHistory) {
 		duplicatethistab.__treestyletab__openLinkWithHistory = duplicatethistab.openLinkWithHistory;
 		duplicatethistab.openLinkWithHistory = function(...aArgs) {
-			TreeStyleTabService.readyToOpenChildTabNow();
+			gBrowser.treeStyleTab.onBeforeTabDuplicate();
 			return this.__treestyletab__openLinkWithHistory(...aArgs);
 		};
 		duplicatethistab.__treestyletab__duplicateInTab = duplicatethistab.duplicateInTab;
 		duplicatethistab.duplicateInTab = function(...aArgs) {
-			TreeStyleTabService.readyToOpenChildTabNow();
+			gBrowser.treeStyleTab.onBeforeTabDuplicate();
 			return this.__treestyletab__duplicateInTab(...aArgs);
 		};
 	}
