@@ -43,56 +43,15 @@ var TreeStyleTabWindowHelper = {
 		};
 
 		if ('TabsInTitlebar' in window) {
-			TreeStyleTabUtils.doPatching(TabsInTitlebar._update, 'TabsInTitlebar._update', function(aName, aSource) {
-				return eval(aName+' = '+aSource.replace(
-					/let fullTabsHeight = /,
-					'$& gBrowser.treeStyleTab.position != "top" ? 0 : '
-				));
-			}, 'treeStyleTab');
-/*
 			TabsInTitlebar.__treestyletab__update = TabsInTitlebar._update;
 			TabsInTitlebar._update = function(...aArgs) {
 				// See: https://dxr.mozilla.org/mozilla-central/rev/dbe4b47941c7b3d6298a0ead5e40dd828096c808/browser/base/content/browser-tabsintitlebar.js#104
-				let isForce = aArgs[0];
-				let shouldFixMargin = (
-					gBrowser.treeStyleTab.position != 'top' &&
-					!window.fullScreen &&
-					this._initialized &&
-					(
-						isForce ||
-						(
-							this._lastSizeMode != document.documentElement.getAttribute('sizemode') &&
-							this._lastSizeMode != 'fullscreen'
-						)
-					) &&
-					Object.keys(this._disallowed).length === 0
-				);
-				if (!shouldFixMargin)
-					return this.__treestyletab__update(...aArgs);
-
-				// reset needless margins around the titlebar, from non-top tab bar
-
-				let titlebarContent = document.getElementById('titlebar-content');
-				let titlebarContentHeight = titlebarContent.getBoundingClientRect().height;
-
-				let fullTabsHeight = (function() {
-						let tabsToolbar = document.getElementById('TabsToolbar');
-						let tabsStyles = window.getComputedStyle(tabsToolbar);
-						let verticalMargins = parseFloat(tabsStyles.marginBottom) + parseFloat(tabsStyles.marginTop);
-						return tabsToolbar.getBoundingClientRect().height + verticalMargins;
-					})();
-
 				let result = this.__treestyletab__update(...aArgs);
-
-				let titlebar = document.getElementById('titlebar');
-				let currentMargin = parseFloat(titlebar.style.marginBottom.replace('px', ''));
-				if (-titlebarContentHeight != currentMargin) {
-					titlebar.style.marginBottom = (currentMargin + fullTabsHeight) + 'px';
-				}
-
+				if (gBrowser.treeStyleTab.position != 'top')
+					document.getElementById('titlebar').style.marginBottom =
+						document.getElementById('titlebar-content').style.marginBottom = '';
 				return result;
 			};
-*/
 		}
 
 		window.__treestyletab__BrowserOpenTab = window.BrowserOpenTab;
