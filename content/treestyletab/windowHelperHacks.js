@@ -205,6 +205,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 
 	// Selection Links
 	// https://addons.mozilla.org/firefox/addon/selection-links/
+	// open selection links as child tabs
 	if ('selectionlinks' in window &&
 		'parseSelection' in selectionlinks &&
 		TreeStyleTabUtils.getTreePref('compatibility.SelectionLinks') &&
