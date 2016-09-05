@@ -584,13 +584,18 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// https://addons.mozilla.org/firefox/addon/duplicate-this-tab/
 	if ('duplicatethistab' in window &&
 		'openLinkWithHistory' in window.duplicatethistab &&
-		TreeStyleTabUtils.getTreePref('compatibility.DuplicateThisTab')) {
-		eval('duplicatethistab.openLinkWithHistory = '+
-			duplicatethistab.openLinkWithHistory.toSource().replace(
-				'var newTab = ',
-				'TreeStyleTabService.readyToOpenChildTab(); $&'
-			)
-		);
+		TreeStyleTabUtils.getTreePref('compatibility.DuplicateThisTab') &&
+		!duplicatethistab.__treestyletab__openLinkWithHistory) {
+		duplicatethistab.__treestyletab__openLinkWithHistory = duplicatethistab.openLinkWithHistory;
+		duplicatethistab.openLinkWithHistory = function(...aArgs) {
+			TreeStyleTabService.readyToOpenChildTabNow();
+			return this.__treestyletab__openLinkWithHistory(...aArgs);
+		};
+		duplicatethistab.__treestyletab__duplicateInTab = duplicatethistab.duplicateInTab;
+		duplicatethistab.duplicateInTab = function(...aArgs) {
+			TreeStyleTabService.readyToOpenChildTabNow();
+			return this.__treestyletab__duplicateInTab(...aArgs);
+		};
 	}
 
 	// Context Search
