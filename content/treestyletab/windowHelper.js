@@ -491,8 +491,8 @@ var TreeStyleTabWindowHelper = {
 			return result;
 		};
 
-		if (!b._treestyletab__beginRemoveTab) {
-			b._treestyletab__beginRemoveTab = b._beginRemoveTab;
+		if (!b.__treestyletab__beginRemoveTab) {
+			b.__treestyletab__beginRemoveTab = b._beginRemoveTab;
 			b._beginRemoveTab = function(aTab, ...aArgs) {
 				var originalRemovingTabs = this._removingTabs;
 				var self = this;
@@ -510,7 +510,7 @@ var TreeStyleTabWindowHelper = {
 						}
 					});
 				}
-				var result = this._treestyletab__beginRemoveTab(aTab, ...aArgs);
+				var result = this.__treestyletab__beginRemoveTab(aTab, ...aArgs);
 				this._removingTabs = originalRemovingTabs;
 				return result;
 			};
