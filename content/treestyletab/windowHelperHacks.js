@@ -427,29 +427,6 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		};
 	}
 
-	// Snap Links Plus
-	// https://addons.mozilla.org/firefox/addon/snaplinksplus/
-	if (TreeStyleTabUtils.getTreePref('compatibility.SnapLinksPlus')) {
-		if ('executeAction' in window &&
-			'openTabs' in window) {
-			eval('window.openTabs = '+
-				window.openTabs.toSource().replace(
-					/((sContent|gBrowser|getBrowser\(\))\.addTab)/,
-					'TreeStyleTabService.readyToOpenChildTab($2); $1'
-				)
-			);
-		}
-		if ('SnapLinks' in window &&
-			'OpenTabs' in SnapLinks) {
-			eval('SnapLinks.OpenTabs = '+
-				SnapLinks.OpenTabs.toSource().replace(
-					/((sContent|gBrowser|getBrowser\(\))\.addTab)/,
-					'TreeStyleTabService.readyToOpenChildTab($2); $1'
-				)
-			);
-		}
-	}
-
 	// Mouseless Browsing
 	// https://addons.mozilla.org/firefox/addon/mouseless-browsing/
 	if ('mouselessbrowsing' in window &&
