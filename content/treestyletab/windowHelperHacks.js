@@ -99,11 +99,13 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 	if ('gSessionManager' in window &&
 		TreeStyleTabUtils.getTreePref('compatibility.SessionManager')) {
 		if ('onLoad_proxy' in gSessionManager &&
-			'onLoad' in gSessionManager) {
-			eval('gSessionManager.onLoad = '+gSessionManager.onLoad.toSource().replace(
-				'{',
-				'{ TreeStyleTabService.init();'
-			));
+			'onLoad' in gSessionManager &&
+			!gSessionManager.__treestyletab__onLoad) {
+			gSessionManager.__treestyletab__onLoad = gSessionManager.onLoad;
+			gSessionManager.onLoad = function(...aArgs) {
+				TreeStyleTabService.init();
+				return gSessionManager.__treestyletab__onLoad(...aArgs);
+			};
 		}
 		if ('load' in gSessionManager) {
 			eval('gSessionManager.load = '+gSessionManager.load.toSource().replace(
@@ -191,13 +193,13 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 	if (TreeStyleTabUtils.getTreePref('compatibility.DuplicateInTabContext') &&
 		'SchuzakJp' in window &&
 		'DuplicateInTabContext' in SchuzakJp &&
-		typeof SchuzakJp.DuplicateInTabContext.Duplicate == 'function') {
-		TreeStyleTabUtils.doPatching(SchuzakJp.DuplicateInTabContext.Duplicate, 'SchuzakJp.DuplicateInTabContext.Duplicate', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				'{',
-				'{ gBrowser.treeStyleTab.onBeforeTabDuplicate(oriTab); '
-			));
-		}, 'treeStyleTab');
+		typeof SchuzakJp.DuplicateInTabContext.Duplicate == 'function' &&
+		!SchuzakJp.DuplicateInTabContext.__treestyletab__Duplicate) {
+		SchuzakJp.DuplicateInTabContext.__treestyletab__Duplicate = SchuzakJp.DuplicateInTabContext.Duplicate;
+		SchuzakJp.DuplicateInTabContext.Duplicate = function(aOriginalTab, ...aArgs) {
+			gBrowser.treeStyleTab.onBeforeTabDuplicate(aOriginalTab);
+			return this.__treestyletab__Duplicate(aOriginalTab, ...aArgs);
+		};
 	}
 };
 
