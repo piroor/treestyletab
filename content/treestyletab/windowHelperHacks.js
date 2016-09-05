@@ -602,13 +602,13 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// https://addons.mozilla.org/firefox/addon/context-search/
 	if ('contextsearch' in window &&
 		'search' in window.contextsearch &&
-		TreeStyleTabUtils.getTreePref('compatibility.ContextSearch')) {
-		eval('contextsearch.search = '+
-			contextsearch.search.toSource().replace(
-				'var newTab = ',
-				'TreeStyleTabService.readyToOpenChildTab(); $&'
-			)
-		);
+		TreeStyleTabUtils.getTreePref('compatibility.ContextSearch') &&
+		!contextsearch.__treestyletab__search) {
+		contextsearch.__treestyletab__search = contextsearch.search;
+		contextsearch.search = function(...aArgs) {
+			TreeStyleTabService.readyToOpenChildTabNow();
+			return this.__treestyletab__search(...aArgs);
+		};
 	}
 
 	// Tile Tabs
