@@ -413,6 +413,7 @@ var TreeStyleTabWindowHelper = {
 	initTabbrowserMethods : function TSTWH_initTabbrowserMethods(aTabBrowser) 
 	{
 		var b = aTabBrowser;
+		var { ExtendedImmutable } = Components.utils.import('resource://treestyletab-modules/lib/extended-immutable.js', {});
 
 		TreeStyleTabUtils.doPatching(b.moveTabForward, 'b.moveTabForward', function(aName, aSource) {
 			return eval(aName+' = '+aSource.replace(
@@ -500,15 +501,30 @@ var TreeStyleTabWindowHelper = {
 			return result;
 		};
 
-		TreeStyleTabUtils.doPatching(b._beginRemoveTab, 'b._beginRemoveTab', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				'if (this.tabs.length - this._removingTabs.length == 1) {',
-				'if (this.tabs.length - this._removingTabs.length == 1 || this.treeStyleTab.shouldCloseLastTabSubtreeOf(aTab)) {'
-			).replace(
-				'this._removingTabs.length == 0',
-				'(this.treeStyleTab.shouldCloseLastTabSubtreeOf(aTab) || $&)'
-			));
-		}, 'treeStyleTab');
+		if (!b._treestyletab__beginRemoveTab) {
+			b._treestyletab__beginRemoveTab = b._beginRemoveTab;
+			b._beginRemoveTab = function(aTab, ...aArgs) {
+				var originalRemovingTabs = this._removingTabs;
+				var self = this;
+				if (this.treeStyleTab.shouldCloseLastTabSubtreeOf(aTab)) {
+					this._removingTabs = new ExtendedImmutable(originalRemovingTabs, {
+						get length() {
+							// hack for https://dxr.mozilla.org/mozilla-central/rev/dbe4b47941c7b3d6298a0ead5e40dd828096c808/browser/base/content/tabbrowser.xml#2371
+							if (aTab.closing) // do nothing after the removing process is started
+								return originalRemovingTabs.length;
+
+							if (window.skipNextCanClose) // the end section of the "close window with last tab" block
+								return 0;
+							else
+								return self.tabs.length - 1; // the beginning of the "close window with last tab" block
+						}
+					});
+				}
+				var result = this._treestyletab__beginRemoveTab(aTab, ...aArgs);
+				this._removingTabs = originalRemovingTabs;
+				return result;
+			};
+		}
 
 		b.__treestyletab__removeCurrentTab = b.removeCurrentTab;
 		b.removeCurrentTab = function(...aArgs) {
