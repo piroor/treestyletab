@@ -527,7 +527,6 @@ var TreeStyleTabWindowHelper = {
 					treeStyleTab.scrollToNewTabMode == 0 ||
 					treeStyleTab.shouldCancelEnsureElementIsVisible())
 					return;
-				}
 
 				let scrollRect = this.mTabstrip.scrollClientRect;
 				let tabRect = aTab.getBoundingClientRect();
