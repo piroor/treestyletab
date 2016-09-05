@@ -475,13 +475,13 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// https://addons.mozilla.org/firefox/addon/quickdrag/
 	if ('QuickDrag' in window &&
 		'_loadTab' in QuickDrag &&
-		TreeStyleTabUtils.getTreePref('compatibility.QuickDrag')) {
-		eval('QuickDrag._loadTab = '+
-			QuickDrag._loadTab.toSource().replace(
-				/(gBrowser.loadOneTab\()/g,
-				'TreeStyleTabService.readyToOpenChildTab(), $1'
-			)
-		);
+		TreeStyleTabUtils.getTreePref('compatibility.QuickDrag') &&
+		!QuickDrag.__treestyletab__loadTab) {
+		QuickDrag.__treestyletab__loadTab = QuickDrag._loadTab;
+		QuickDrag._loadTab = function(...aArgs) {
+			TreeStyleTabService.readyToOpenChildTabNow();
+			return this.__treestyletab__loadTab(...aArgs);
+		};
 	}
 
 	// Google Toolbar Sidewiki
