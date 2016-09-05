@@ -93,38 +93,6 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 		}
 	}
 
-	// Session Manager
-	// https://addons.mozilla.org/firefox/addon/session-manager/
-	// We need to initialize TST before Session Manager restores the last session anyway!
-	if ('gSessionManager' in window &&
-		TreeStyleTabUtils.getTreePref('compatibility.SessionManager')) {
-		if ('onLoad_proxy' in gSessionManager &&
-			'onLoad' in gSessionManager &&
-			!gSessionManager.__treestyletab__onLoad) {
-			gSessionManager.__treestyletab__onLoad = gSessionManager.onLoad;
-			gSessionManager.onLoad = function(...aArgs) {
-				TreeStyleTabService.init();
-				return gSessionManager.__treestyletab__onLoad(...aArgs);
-			};
-		}
-		if ('load' in gSessionManager) {
-			eval('gSessionManager.load = '+gSessionManager.load.toSource().replace(
-				'var tabcount = ',
-				'  gBrowser.treeStyleTab.collapseExpandAllSubtree(false, true);\n' +
-				'  {\n'+
-				'    let tabs = gBrowser.treeStyleTab.getTabs(gBrowser).slice(1).reverse();\n' +
-				'    for (let i = 0, maxi = tabs.length; i < maxi; i++)\n' +
-				'    {\n' +
-				'      let tab = tabs[i];\n' +
-				'      gBrowser.removeTab(tab);\n' +
-				'    }\n' +
-				'  }\n' +
-				'  TreeStyleTabService.restoringTree = true;\n' +
-				'$&'
-			));
-		}
-	}
-
 	// TooManyTabs
 	// https://addons.mozilla.org/firefox/addon/toomanytabs-saves-your-memory/
 	if ('tooManyTabs' in window &&
@@ -267,16 +235,18 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// Tab Mix Plus
 	if (
 		TreeStyleTabUtils.getTreePref('compatibility.TMP') &&
-		'TabmixTabbar' in window
+		'TabmixTabbar' in window &&
+		!DNDObserver.__treestyletab__clearDragmark
 		) {
 		let DNDObserver = 'TMP_tabDNDObserver' in window ? TMP_tabDNDObserver : TabDNDObserver ;
 		this.updateTabDNDObserver(DNDObserver);
-		eval('DNDObserver.clearDragmark = '+
-			DNDObserver.clearDragmark.toSource().replace(
-				/(\})(\))?$/,
-				'gBrowser.treeStyleTab.tabbarDNDObserver.clearDropPosition(); $1$2'
-			)
-		);
+		DNDObserver.__treestyletab__clearDragmark = DNDObserver.clearDragmark;
+		DNDObserver.clearDragmark = function(...aArgs) {
+			var result = this.__treestyletab__clearDragmark(...aArgs);
+			gBrowser.treeStyleTab.tabbarDNDObserver.clearDropPosition();
+			return result;
+		};
+
 		eval('DNDObserver.onDragStart = '+
 			DNDObserver.onDragStart.toSource().replace(
 				'event.target.localName != "tab"',

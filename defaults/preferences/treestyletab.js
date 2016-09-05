@@ -706,7 +706,6 @@ pref("extensions.treestyletab.compatibility.RemoveNewTabButton", true);
 pref("extensions.treestyletab.compatibility.SBMCounter", true);
 pref("extensions.treestyletab.compatibility.Scriptish", false);
 pref("extensions.treestyletab.compatibility.SelectionLinks", true);
-pref("extensions.treestyletab.compatibility.SessionManager", true);
 pref("extensions.treestyletab.compatibility.SnapLinksPlus", true);
 pref("extensions.treestyletab.compatibility.STM.warnForNewTabPosition", true);
 pref("extensions.treestyletab.compatibility.STM", true); // Super Tab Mode
