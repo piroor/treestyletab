@@ -355,6 +355,9 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 				return document.getElementById('colorfulTabsStack').style.setProperty('display', 'none', 'important');
 			return this.__treestyletab__show_ctStack(...aArgs);
 		};
+		setTimeout(function() {
+			colorfulTabs.show_ctStack();
+		}, 0);
 	}
 
 	// Focus Last Selected Tab 0.9.5.x
