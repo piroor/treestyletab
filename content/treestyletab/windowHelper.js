@@ -405,60 +405,42 @@ var TreeStyleTabWindowHelper = {
 		var b = aTabBrowser;
 		var { ExtendedImmutable } = Components.utils.import('resource://treestyletab-modules/lib/extended-immutable.js', {});
 
-		TreeStyleTabUtils.doPatching(b.moveTabForward, 'b.moveTabForward', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				'if (nextTab)',
-				'(function() {\n' +
-				'  let descendants = this.treeStyleTab.getDescendantTabs(this.mCurrentTab);\n' +
-				'  if (descendants.indexOf(nextTab) > -1) {\n' +
-				'    let lastDescendant = this.treeStyleTab.getLastDescendantTab(this.mCurrentTab);\n' +
-				'    nextTab = this.treeStyleTab.getNextVisibleTab(lastDescendant || this.mCurrentTab);\n' +
-				'  }\n' +
-				'  if (this.treeStyleTab.hasChildTabs(nextTab) && this.treeStyleTab.isSubtreeCollapsed(nextTab)) {\n' +
-				'    nextTab = this.treeStyleTab.getLastDescendantTab(nextTab);\n' +
-				'  }\n' +
-				'}).call(this);' +
-				'$&'
-			).replace(
-				'this.moveTabToStart();',
-				'(function() {\n' +
-				'  this.treeStyleTab.internallyTabMovingCount++;\n' +
-				'  let parentTab = this.treeStyleTab.getParentTab(this.mCurrentTab);\n' +
-				'  if (parentTab) {\n' +
-				'    this.moveTabTo(this.mCurrentTab, this.treeStyleTab.getFirstChildTab(parentTab)._tPos);\n' +
-				'    this.mCurrentTab.focus();\n' +
-				'  }\n' +
-				'  else {\n' +
-				'    $&\n' +
-				'  }\n' +
-				'  this.treeStyleTab.internallyTabMovingCount--;\n' +
-				'}).call(this);'
-			));
-		}, 'treeStyleTab');
+		b.__treestyletab__moveTabForward = b.moveTabForward;
+		b.moveTabForward = function(...aArgs) {
+			let originalNextTab = this.treeStyleTab.getNextTab(this.mCurrentTab);
+			let nextTab = originalNextTab;
 
-		TreeStyleTabUtils.doPatching(b.moveTabBackward, 'b.moveTabBackward', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				'if (previousTab)',
-				'(function() {\n' +
-				'  previousTab = this.treeStyleTab.getPreviousVisibleTab(this.mCurrentTab);\n' +
-				'}).call(this);' +
-				'$&'
-			).replace(
-				'this.moveTabToEnd();',
-				'(function() {\n' +
-				'  this.treeStyleTab.internallyTabMovingCount++;\n' +
-				'  let parentTab = this.treeStyleTab.getParentTab(this.mCurrentTab);\n' +
-				'  if (parentTab) {\n' +
-				'    this.moveTabTo(this.mCurrentTab, this.treeStyleTab.getLastChildTab(parentTab)._tPos);\n' +
-				'    this.mCurrentTab.focus();\n' +
-				'  }\n' +
-				'  else {\n' +
-				'    $&\n' +
-				'  }\n' +
-				'  this.treeStyleTab.internallyTabMovingCount--;\n' +
-				'}).call(this);'
-			));
-		}, 'treeStyleTab');
+			let descendants = this.treeStyleTab.getDescendantTabs(this.mCurrentTab);
+			if (descendants.indexOf(nextTab) > -1) {
+				let lastDescendant = this.treeStyleTab.getLastDescendantTab(this.mCurrentTab);
+				nextTab = this.treeStyleTab.getNextVisibleTab(lastDescendant || this.mCurrentTab);
+			}
+			if (this.treeStyleTab.hasChildTabs(nextTab) && this.treeStyleTab.isSubtreeCollapsed(nextTab)) {
+				nextTab = this.treeStyleTab.getLastDescendantTab(nextTab);
+			}
+
+			if (nextTab == originalNextTab)
+				return this.__treestyletab__moveTabForward(...aArgs);
+
+			if (nextTab)
+				this.moveTabTo(this.mCurrentTab, nextTab._tPos);
+			else if (this.arrowKeysShouldWrap)
+				this.moveTabToStart();
+		};
+
+		b.__treestyletab__moveTabBackward = b.moveTabBackward;
+		b.moveTabBackward = function(...aArgs) {
+			let originalPreviousTab = this.treeStyleTab.getPreviousTab(this.mCurrentTab);
+			let previousTab = this.treeStyleTab.getPreviousVisibleTab(this.mCurrentTab);
+
+			if (previousTab == originalPreviousTab)
+				return this.__treestyletab__moveTabBackward(...aArgs);
+
+			if (previousTab)
+				this.moveTabTo(this.mCurrentTab, previousTab._tPos);
+			else if (this.arrowKeysShouldWrap)
+				this.moveTabToStart();
+		};
 
 		b.__treestyletab__loadTabs = b.loadTabs;
 		b.loadTabs = function(aURIs, aLoadInBackground, aReplace, ...aArgs) {
