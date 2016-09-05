@@ -615,41 +615,46 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// https://addons.mozilla.org/firefox/addon/tile-tabs/
 	if ('tileTabs' in window &&
 		TreeStyleTabUtils.getTreePref('compatibility.TileTabs')) {
-		if ('allocateTab' in window.tileTabs)
-			eval('tileTabs.allocateTab = '+
-				tileTabs.allocateTab.toSource().replace(
-					/(tab = gBrowser.addTab)/g,
-					'TreeStyleTabService.readyToOpenNextSiblingTabNow(); $1'
-				)
-			);
-		if ('doClickBrowser' in window.tileTabs)
-			eval('tileTabs.doClickBrowser = '+
-				tileTabs.doClickBrowser.toSource().replace(
-					/(newTab = gBrowser.loadOneTab)/g,
-					'TreeStyleTabService.readyToOpenNextSiblingTabNow(); $1'
-				)
-			);
-		if ('doDropBrowserTile' in window.tileTabs)
-			eval('tileTabs.doDropBrowserTile = '+
-				tileTabs.doDropBrowserTile.toSource().replace(
-					/(tab = gBrowser.loadOneTab)/g,
-					'TreeStyleTabService.readyToOpenNextSiblingTabNow(), $1'
-				)
-			);
-		if ('menuActions' in window.tileTabs)
-			eval('tileTabs.menuActions = '+
-				tileTabs.menuActions.toSource().replace(
-					/(tab = gBrowser.loadOneTab)/g,
-					'TreeStyleTabService.readyToOpenNextSiblingTabNow(), $1'
-				)
-			);
-		if ('applyLayoutString' in window.tileTabs)
-			eval('tileTabs.applyLayoutString = '+
-				tileTabs.applyLayoutString.toSource().replace(
-					/(tab = gBrowser.loadOneTab)/g,
-					'TreeStyleTabService.readyToOpenNextSiblingTabNow(), $1'
-				)
-			);
+		if ('allocateTab' in window.tileTabs &&
+			!tileTabs.__treestyletab__allocateTab) {
+			tileTabs.__treestyletab__allocateTab = tileTabs.allocateTab;
+			tileTabs.allocateTab = function(...aArgs) {
+				TreeStyleTabService.readyToOpenNextSiblingTabNow();
+				return this.__treestyletab__allocateTab(...aArgs);
+			};
+		}
+		if ('doClickBrowser' in window.tileTabs &&
+			!tileTabs.__treestyletab__doClickBrowser) {
+			tileTabs.__treestyletab__doClickBrowser = tileTabs.doClickBrowser;
+			tileTabs.doClickBrowser = function(...aArgs) {
+				TreeStyleTabService.readyToOpenNextSiblingTabNow();
+				return this.__treestyletab__doClickBrowser(...aArgs);
+			};
+		}
+		if ('doDropBrowserTile' in window.tileTabs &&
+			!tileTabs.__treestyletab__doDropBrowserTile) {
+			tileTabs.__treestyletab__doDropBrowserTile = tileTabs.doDropBrowserTile;
+			tileTabs.doDropBrowserTile = function(...aArgs) {
+				TreeStyleTabService.readyToOpenNextSiblingTabNow();
+				return this.__treestyletab__doDropBrowserTile(...aArgs);
+			};
+		}
+		if ('menuActions' in window.tileTabs &&
+			!tileTabs.__treestyletab__menuActions) {
+			tileTabs.__treestyletab__menuActions = tileTabs.menuActions;
+			tileTabs.menuActions = function(...aArgs) {
+				TreeStyleTabService.readyToOpenNextSiblingTabNow();
+				return this.__treestyletab__menuActions(...aArgs);
+			};
+		}
+		if ('applyLayoutString' in window.tileTabs &&
+			!tileTabs.__treestyletab__applyLayoutString) {
+			tileTabs.__treestyletab__applyLayoutString = tileTabs.applyLayoutString;
+			tileTabs.applyLayoutString = function(...aArgs) {
+				TreeStyleTabService.readyToOpenNextSiblingTabNow();
+				return this.__treestyletab__applyLayoutString(...aArgs);
+			};
+		}
 	}
 
 	window.setTimeout(function(aSelf) {
