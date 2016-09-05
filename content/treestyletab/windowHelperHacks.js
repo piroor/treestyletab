@@ -534,12 +534,11 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		{
 			let method = methods[i];
 			if (!(method in LinkyContext.prototype)) continue;
-			eval('LinkyContext.prototype.'+method+' = '+
-				LinkyContext.prototype[method].toSource().replace(
-					'{',
-					'{ TreeStyleTabService.readyToOpenChildTabNow(null, true);'
-				)
-			);
+			let orig = LinkyContext.prototype[method];
+			LinkyContext.prototype[method] = function(...aArgs) {
+				TreeStyleTabService.readyToOpenChildTabNow(null, true);
+				return orig.call(this, ...aArgs);
+			};
 		}
 	}
 
@@ -798,20 +797,17 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 	if ('MultiLinks_Wrapper' in window &&
 		'LinksManager' in MultiLinks_Wrapper &&
 		'OpenInNewTabs' in MultiLinks_Wrapper.LinksManager &&
+		!MultiLinks_Wrapper.LinksManager.__treestyletab__OpenInNewTabs &&
 		TreeStyleTabUtils.getTreePref('compatibility.MultiLinksPlus')) {
-		eval('MultiLinks_Wrapper.LinksManager.OpenInNewTabs = '+
-			MultiLinks_Wrapper.LinksManager.OpenInNewTabs.toSource().replace(
-				'{',
-				'{\n' +
-				'  if (!TreeStyleTabService.checkToOpenChildTab(getBrowser()))\n' +
-				'    TreeStyleTabService.readyToOpenChildTab(getBrowser(), true);'
-			).replace(
-				/(\}\)?)$/,
-				'  if (TreeStyleTabService.checkToOpenChildTab(getBrowser()))\n' +
-				'    TreeStyleTabService.stopToOpenChildTab(getBrowser());\n' +
-				'$1'
-			)
-		);
+		MultiLinks_Wrapper.LinksManager.__treestyletab__OpenInNewTabs = MultiLinks_Wrapper.LinksManager.OpenInNewTabs;
+		MultiLinks_Wrapper.LinksManager.OpenInNewTabs = function(...aArgs) {
+			if (!TreeStyleTabService.checkToOpenChildTab(getBrowser()))
+				TreeStyleTabService.readyToOpenChildTab(getBrowser(), true);
+			var result = this.__treestyletab__OpenInNewTabs(...aArgs);
+			if (TreeStyleTabService.checkToOpenChildTab(getBrowser()))
+				TreeStyleTabService.stopToOpenChildTab(getBrowser());
+			return result;
+		};
 	}
 
 	// Personal Titlebar
