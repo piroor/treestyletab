@@ -100,19 +100,6 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 		sv.registerExpandTwistyAreaBlocker('tooManyTabs');
 	}
 
-	/**
-	 * Hide Caption Titlebar Plus (Smart)
-	 * https://addons.mozilla.org/firefox/addon/hide-caption-titlebar-plus-sma/
-	 */
-	if ('HideCaption' in window &&
-		'do_alter' in HideCaption) {
-		eval('HideCaption.do_alter = '+HideCaption.do_alter.toSource().replace(
-			'if (!theSettings) {',
-			'  if (!theSettings ||\n' +
-			'    gBrowser.treeStyleTab.isVertical) {'
-		));
-	}
-
 	// Greasemonkey
 	// https://addons.mozilla.org/firefox/addon/greasemonkey/
 	if (TreeStyleTabUtils.getTreePref('compatibility.Greasemonkey')) {
