@@ -473,7 +473,6 @@ var TreeStyleTabWindowHelper = {
 			return result;
 		};
 
-		if (!b.__treestyletab__beginRemoveTab) {
 			b.__treestyletab__beginRemoveTab = b._beginRemoveTab;
 			b._beginRemoveTab = function(aTab, ...aArgs) {
 				var originalRemovingTabs = this._removingTabs;
@@ -496,7 +495,6 @@ var TreeStyleTabWindowHelper = {
 				this._removingTabs = originalRemovingTabs;
 				return result;
 			};
-		}
 
 		b.__treestyletab__removeCurrentTab = b.removeCurrentTab;
 		b.removeCurrentTab = function(...aArgs) {
