@@ -118,11 +118,6 @@ var TreeStyleTabWindowHelper = {
 		this.overrideExtensionsBeforeBrowserInit(); // windowHelperHacks.js
 		this.overrideGlobalFunctions();
 
-		// Replacing of gBrowserInit._delayedStartup() with eval()
-		// breaks the variable scope of the function and break its
-		// functionality completely.
-		// Instead, I change the behavior of the method only at the
-		// startup process.
 		gBrowser.__treestyletab__swapBrowsersAndCloseOther = gBrowser.swapBrowsersAndCloseOther;
 		gBrowser.swapBrowsersAndCloseOther = function(aOurTab, aRemoteTab, ...aArgs) {
 			if (TreeStyleTabWindowHelper.runningDelayedStartup &&
