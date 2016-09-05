@@ -291,16 +291,17 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 
 	// DragIt
 	// https://addons.mozilla.org/firefox/addon/dragit-formerly-drag-de-go/
+	// open new tabs as children of the current tab, for links or search terms
 	if ('DragIt' in window &&
 		DragIt.tab &&
 		DragIt.tab.open &&
-		TreeStyleTabUtils.getTreePref('compatibility.DragIt')) {
-		eval('DragIt.tab.open = '+
-			DragIt.tab.open.toSource().replace(
-				'try {',
-				'try { TreeStyleTabService.readyToOpenChildTabNow(gBrowser);'
-			)
-		);
+		TreeStyleTabUtils.getTreePref('compatibility.DragIt') &&
+		!DragIt.tab.__treestyletab__open) {
+		DragIt.tab.__treestyletab__open = DragIt.tab.open;
+		DragIt.tab.open = function(...aArgs) {
+			TreeStyleTabService.readyToOpenChildTabNow(gBrowser);
+			return this.__treestyletab__open(...aArgs);
+		};
 	}
 
 	// Colorful Tabs
