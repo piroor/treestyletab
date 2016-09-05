@@ -699,7 +699,7 @@ pref("extensions.treestyletab.compatibility.InstaClick", true);
 pref("extensions.treestyletab.compatibility.LastTab", true);
 pref("extensions.treestyletab.compatibility.Linky", true);
 pref("extensions.treestyletab.compatibility.MouselessBrowsing", true);
-pref("extensions.treestyletab.compatibility.MultiLinks", true);
+pref("extensions.treestyletab.compatibility.MultiLinksPlus", true);
 pref("extensions.treestyletab.compatibility.PersonalTitlebar", true);
 pref("extensions.treestyletab.compatibility.QuickDrag", true);
 pref("extensions.treestyletab.compatibility.RemoveNewTabButton", true);
@@ -707,12 +707,12 @@ pref("extensions.treestyletab.compatibility.SBMCounter", true);
 pref("extensions.treestyletab.compatibility.Scriptish", false);
 pref("extensions.treestyletab.compatibility.SelectionLinks", true);
 pref("extensions.treestyletab.compatibility.SessionManager", true);
-pref("extensions.treestyletab.compatibility.SnapLinks", true);
+pref("extensions.treestyletab.compatibility.SnapLinksPlus", true);
 pref("extensions.treestyletab.compatibility.STM.warnForNewTabPosition", true);
 pref("extensions.treestyletab.compatibility.STM", true); // Super Tab Mode
 pref("extensions.treestyletab.compatibility.TabControl", true);
 pref("extensions.treestyletab.compatibility.TabsOnBottom", true);
-pref("extensions.treestyletab.compatibility.TabUtilities", true);
+pref("extensions.treestyletab.compatibility.TabUtilitiesFixed", true);
 pref("extensions.treestyletab.compatibility.TileTabs", true);
 pref("extensions.treestyletab.compatibility.TMP", true); // Tab Mix Plus
 pref("extensions.treestyletab.compatibility.TooManyTabs", true);
