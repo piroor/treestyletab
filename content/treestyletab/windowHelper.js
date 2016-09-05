@@ -517,43 +517,74 @@ var TreeStyleTabWindowHelper = {
 				return b.mTabContainer.__treestyletab__advanceSelectedTab.call(this, ...aArgs);
 			};
 
-		TreeStyleTabUtils.doPatching(b.mTabContainer._notifyBackgroundTab, 'b.mTabContainer._notifyBackgroundTab', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				'{',
-				'{\n' +
-				'  var treeStyleTab = TreeStyleTabService.getTabBrowserFromChild(this).treeStyleTab;\n' +
-				'  if (treeStyleTab.scrollToNewTabMode == 0 ||\n' +
-				'      treeStyleTab.shouldCancelEnsureElementIsVisible())\n' +
-				'    return;'
-			).replace(
-				/\.screenX/g, '[treeStyleTab.screenPositionProp]'
-			).replace(
-				/\.width/g, '[treeStyleTab.sizeProp]'
-			).replace(
-				/\.left/g, '[treeStyleTab.startProp]'
-			).replace(
-				/\.right/g, '[treeStyleTab.endProp]'
+		if (!b.tabContainer.__treestyletab__notifyBackgroundTab) {
+			// original: https://dxr.mozilla.org/mozilla-central/rev/dbe4b47941c7b3d6298a0ead5e40dd828096c808/browser/base/content/tabbrowser.xml#5459
+			b.tabContainer.__treestyletab__notifyBackgroundTab = b.tabContainer._notifyBackgroundTab;
+			b.tabContainer._notifyBackgroundTab = function(aTab, ...aArgs) {
+				var treeStyleTab = gBrowser.treeStyleTab;
+				if (aTab.pinned ||
+					treeStyleTab.scrollToNewTabMode == 0 ||
+					treeStyleTab.shouldCancelEnsureElementIsVisible())
+					return;
 
-			// replace such codes:
-			//   tab = {left: tab.left, right: tab.right};
-			).replace(
-				/left\s*:/g, 'start:'
-			).replace(
-				/right\s*:/g, 'end:'
-			).replace(
-				/((tab|selected)\s*=\s*\{\s*start:[^\}]+\})/g,
-				'$1; $2[treeStyleTab.startProp] = $2.start; $2[treeStyleTab.endProp] = $2.end;'
+				let scrollRect = this.mTabstrip.scrollClientRect;
+				let tabRect = aTab.getBoundingClientRect();
+				this.mTabstrip._calcTabMargins(aTab);
 
-			).replace(
-				'!selected ||',
-				'$& treeStyleTab.scrollToNewTabMode == 1 && '
-			).replace(
-				/(\}\)?)$/,
-				'treeStyleTab.notifyBackgroundTab(); $1'
-			));
-		}, 'TreeStyleTabService.getTabBrowserFromChild');
+				tabRect = {
+					start : tabRect[treeStyleTab.startProp],
+					end   : tabRect[treeStyleTab.endProp]
+				};
+				tabRect[treeStyleTab.startProp] = tabRect.start;
+				tabRect[treeStyleTab.endProp]   = tabRect.end;
+
+				if (tabRect[treeStyleTab.startProp] >= scrollRect[treeStyleTab.startProp] ||
+					tabRect[treeStyleTab.endProp]   <= scrollRect[treeStyleTab.endProp])
+					return;
+
+				if (this.mTabstrip.smoothScroll) {
+					let selectedRect = !this.selectedItem.pinned && this.selectedItem.getBoundingClientRect();
+					if (selectedRect) {
+						selectedRect = {
+							start : selectedRect[treeStyleTab.startProp],
+							end   : selectedRect[treeStyleTab.endProp]
+						};
+						selectedRect[treeStyleTab.startProp] = selectedRect.start + this.mTabstrip._tabMarginLeft;
+						selectedRect[treeStyleTab.endProp]   = selectedRect.end - this.mTabstrip._tabMarginRight;
+					}
+					tabRect[treeStyleTab.startProp] += this.mTabstrip._tabMarginLeft;
+					tabRect[treeStyleTab.endProp]   -= this.mTabstrip._tabMarginRight;
+
+					if (!selectedRect ||
+						treeStyleTab.scrollToNewTabMode == 1 &&
+						Math.max(
+							tabRect[treeStyleTab.endProp] - selectedRect[treeStyleTab.startProp],
+							selectedRect[treeStyleTab.endProp] - tabRect[treeStyleTab.startProp]
+						) <= scrollRect[treeStyleTab.sizeProp]) {
+						this.mTabstrip.ensureElementIsVisible(aTab);
+						return;
+					}
+
+					this.mTabstrip._smoothScrollByPixels(
+						this.mTabstrip._isRTLScrollbox ?
+							selectedRect[treeStyleTab.endProp] - scrollRect[treeStyleTab.endProp] :
+							selectedRect[treeStyleTab.startProp] - scrollRect[treeStyleTab.startProp]
+					);
+				}
+
+				if (!this._animateElement.hasAttribute('notifybgtab')) {
+					this._animateElement.setAttribute('notifybgtab', 'true');
+					setTimeout(function(aAnimateElement) {
+						aAnimateElement.removeAttribute('notifybgtab');
+					}, 150, this._animateElement);
+				}
+
+				treeStyleTab.notifyBackgroundTab();
+			};
+		}
 
 		if (!b.tabContainer.__treestyletab__getDragTargetTab) {
+			// original: https://dxr.mozilla.org/mozilla-central/rev/dbe4b47941c7b3d6298a0ead5e40dd828096c808/browser/base/content/tabbrowser.xml#5511
 			b.tabContainer.__treestyletab__getDragTargetTab = b.tabContainer._getDragTargetTab;
 			b.tabContainer._getDragTargetTab = function(aEvent, aIsLink, ...aArgs) {
 				var treeStyleTab = gBrowser.treeStyleTab;
@@ -575,6 +606,7 @@ var TreeStyleTabWindowHelper = {
 		}
 
 		if (!b.tabContainer.__treestyletab__getDropIndex) {
+			// original: https://dxr.mozilla.org/mozilla-central/rev/dbe4b47941c7b3d6298a0ead5e40dd828096c808/browser/base/content/tabbrowser.xml#5526
 			b.tabContainer.__treestyletab__getDropIndex = b.tabContainer._getDropIndex;
 			b.tabContainer._getDropIndex = function(aEvent, aIsLink, ...aArgs) {
 				var treeStyleTab = gBrowser.treeStyleTab;
@@ -624,6 +656,7 @@ var TreeStyleTabWindowHelper = {
 		{
 			let popup = document.getElementById('alltabs-popup');
 			if (!popup.__treestyletab__updateTabsVisibilityStatus) {
+				// original https://dxr.mozilla.org/mozilla-central/rev/dbe4b47941c7b3d6298a0ead5e40dd828096c808/browser/base/content/tabbrowser.xml#6588
 				popup.__treestyletab__updateTabsVisibilityStatus = popup._updateTabsVisibilityStatus;
 				popup._updateTabsVisibilityStatus = function(...aArgs) {
 					var treeStyleTab = gBrowser.treeStyleTab;
