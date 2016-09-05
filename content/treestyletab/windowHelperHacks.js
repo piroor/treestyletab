@@ -207,15 +207,13 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// https://addons.mozilla.org/firefox/addon/selection-links/
 	if ('selectionlinks' in window &&
 		'parseSelection' in selectionlinks &&
-		TreeStyleTabUtils.getTreePref('compatibility.SelectionLinks')) {
-		eval('selectionlinks.parseSelection = '+
-			selectionlinks.parseSelection.toSource().replace(
-				/((?:[^\s:;]+.selectedTab\s*=\s*)?([^\s:;]+).addTab\()/g,
-				'  if ($2.treeStyleTab)\n' +
-				'    $2.treeStyleTab.readyToOpenChildTab(focusedWindow);\n' +
-				'$1'
-			)
-		);
+		TreeStyleTabUtils.getTreePref('compatibility.SelectionLinks') &&
+		!selectionlinks.__treestyletab__parseSelection) {
+		selectionlinks.__treestyletab__parseSelection = selectionlinks.parseSelection;
+		selectionlinks.parseSelection = function(...aArgs) {
+			gBrowser.treeStyleTab.readyToOpenChildTabNow(gBrowser.selectedTab, true);
+			return selectionlinks.__treestyletab__parseSelection(...aArgs);
+		};
 	}
 
 
