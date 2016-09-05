@@ -432,33 +432,21 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	if ('mouselessbrowsing' in window &&
 		'EventHandler' in mouselessbrowsing &&
 		TreeStyleTabUtils.getTreePref('compatibility.MouselessBrowsing')) {
-		if ('execute' in mouselessbrowsing.EventHandler) {
-			eval('mouselessbrowsing.EventHandler.execute = '+
-				mouselessbrowsing.EventHandler.execute.toSource().replace(
-					'{',
-					'{ var Prefs = mlb_common.Prefs;'+
-					'  var Utils = mlb_common.Utils;'+
-					'  var MlbUtils = mouselessbrowsing.MlbUtils;'
-				).replace(
-					/((?:var [^=]+ = )?Utils.openUrlInNewTab\()/g,
-					'TreeStyleTabService.readyToOpenChildTab(); $1'
-				)
-			);
+		if ('execute' in mouselessbrowsing.EventHandler &&
+			!mouselessbrowsing.EventHandler.__treestyletab__execute) {
+			mouselessbrowsing.EventHandler.__treestyletab__execute = mouselessbrowsing.EventHandler.execute;
+			mouselessbrowsing.EventHandler.execute = function(...aArgs) {
+				TreeStyleTabService.readyToOpenChildTabNow();
+				return this.__treestyletab__execute(...aArgs);
+			};
 		}
-		if ('openLinkInOtherLocationViaPostfixKey' in mouselessbrowsing.EventHandler) {
-			eval('mouselessbrowsing.EventHandler.openLinkInOtherLocationViaPostfixKey = '+
-				mouselessbrowsing.EventHandler.openLinkInOtherLocationViaPostfixKey.toSource().replace(
-					'{',
-					'{ var Prefs = mlb_common.Prefs;'+
-					'  var Utils = mlb_common.Utils;'+
-					'  var MlbUtils = mouselessbrowsing.MlbUtils;'+
-					'  var MlbCommon = mouselessbrowsing.MlbCommon;'+
-					'  var ShortcutManager = mlb_common.ShortcutManager;'
-				).replace(
-					'Utils.openUrlInNewTab(',
-					'TreeStyleTabService.readyToOpenChildTab(); $&'
-				)
-			);
+		if ('openLinkInOtherLocationViaPostfixKey' in mouselessbrowsing.EventHandler &&
+			!mouselessbrowsing.EventHandler.__treestyletab__openLinkInOtherLocationViaPostfixKey) {
+			mouselessbrowsing.EventHandler.__treestyletab__openLinkInOtherLocationViaPostfixKey = mouselessbrowsing.EventHandler.openLinkInOtherLocationViaPostfixKey;
+			mouselessbrowsing.EventHandler.openLinkInOtherLocationViaPostfixKey = function(...aArgs) {
+				TreeStyleTabService.readyToOpenChildTabNow();
+				return this.__treestyletab__openLinkInOtherLocationViaPostfixKey(...aArgs);
+			};
 		}
 	}
 
