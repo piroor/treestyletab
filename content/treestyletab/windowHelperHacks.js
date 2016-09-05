@@ -18,100 +18,6 @@ TreeStyleTabWindowHelper.extraProperties = [
 TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExtensionsPreInit() {
 	var sv = this.service;
 
-	// Highlander
-	// https://addons.mozilla.org/firefox/addon/4086
-	if ('Highlander' in window &&
-		TreeStyleTabUtils.getTreePref('compatibility.Highlander')) {
-		eval('Highlander.overrideHandleLinkClick = '+
-			Highlander.overrideHandleLinkClick.toSource().replace(
-				/(var )?origHandleLinkClick/g,
-				'window.__treestyletab__highlander__origHandleLinkClick'
-			)
-		);
-	}
-
-	// PermaTabs
-	// https://addons.mozilla.org/firefox/addon/2558
-	// PermaTabs Mod
-	// https://addons.mozilla.org/firefox/addon/7816
-	if ('permaTabs' in window &&
-		TreeStyleTabUtils.getTreePref('compatibility.PermaTabs')) {
-		if ('__init' in permaTabs) {
-			// without delay, Firefox crashes on startup.
-			eval('permaTabs.__init = '+
-				permaTabs.__init.toSource().replace(
-					'aTab.setAttribute(\\"image\\", ',
-					'window.setTimeout(function(aTab, aImage) { aTab.setAttribute(\\"image\\", aImage); }, 100, aTab, '
-				)
-			);
-		}
-		if ('showPermaTab' in permaTabs) {
-			eval('permaTabs.showPermaTab = '+
-				permaTabs.showPermaTab.toSource().replace(
-					/(\}\)?)$/,
-					'(function(tab, id) {\n' +
-					'  if (this.ssWillRestore) return;\n' +
-					'  var TST = TreeStyleTabService;\n' +
-					'  if (this.TSTRestoredPermaTabsInfo === void(0)) {\n' +
-					'    try {\n' +
-					'      eval("this.TSTRestoredPermaTabsInfo = "+(TreeStyleTabUtils.getTreePref("permaTabsInfo") || "null"));\n' +
-					'    }\n' +
-					'    catch(e) {\n' +
-					'    }\n' +
-					'  }\n' +
-					'  if (!this.TSTRestoredPermaTabsInfo) return;\n' +
-
-					'  var info = this.TSTRestoredPermaTabsInfo[id];\n' +
-					'  if (!info) return;\n' +
-
-					'  for (var i in info)\n' +
-					'  {\n' +
-					'    TST.SessionStore.setTabValue(tab, i, String(info[i]));\n' +
-					'  }\n' +
-					'  var count = 0;\n' +
-					'  window.setTimeout(function onTimeout() {\n' +
-					'    var b = TST.getTabBrowserFromChild(tab);\n' +
-					'    if (!b.treeStyleTab) {\n' +
-					'      if (++count < 50)\n' +
-					'        window.setTimeout(onTimeout, 100);\n' +
-					'      return;\n' +
-					'    }\n' +
-					'    b.treeStyleTab.handleRestoredTab(tab);\n' +
-					'  }, 0);\n' +
-					'}).call(this, tab, id)\n' +
-					'$1'
-				)
-			);
-		}
-		if ('savePermaTabs' in permaTabs) {
-			eval('permaTabs.savePermaTabs = '+
-				permaTabs.savePermaTabs.toSource().replace(
-					'{',
-					'{\n' +
-					'(function() {\n' +
-					'  var tabsInfo = {};\n' +
-					'  var TST = TreeStyleTabService;\n' +
-					'  var allTabs = getBrowser().mTabContainer.childNodes;\n' +
-					'  for (let i = 0, maxi = allTabs.length; i < maxi; i++)\n' +
-					'  {\n' +
-					'    let tab = allTabs[i];\n' +
-					'    let index = this.getPermaTabLocalIndex(tab);\n' +
-					'    if (index < 0) continue;\n' +
-					'    let info = {};\n' +
-					'    for (let i = 0, maxi = TST.extraProperties.length; i < maxi; i++)\n' +
-					'    {\n' +
-					'      let property = TST.extraProperties[i];\n' +
-					'      info[property] = TST.getTabValue(tab, property);\n' +
-					'    }\n' +
-					'    tabsInfo[this.permaTabs[index].id] = info;\n' +
-					'  }\n' +
-					'  TreeStyleTabUtils.setTreePref("permaTabsInfo", tabsInfo.toSource());\n' +
-					'}).call(this);'
-				)
-			);
-		}
-	}
-
 	// Tab Mix Plus
 	if (TreeStyleTabUtils.getTreePref('compatibility.TMP')) {
 		document.documentElement.setAttribute('treestyletab-enable-compatibility-tmp', true);
@@ -217,88 +123,11 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 		}
 	}
 
-	// FullerScreen
-	// https://addons.mozilla.org/firefox/addon/4650
-	if ('FS_onFullerScreen' in window &&
-		TreeStyleTabUtils.getTreePref('compatibility.FullerScreen')) {
-		let functions = 'CheckIfFullScreen,FS_onFullerScreen,FS_onMouseMove'.split(',');
-		for (let i = 0, maxi = functions.length; i < maxi; i++)
-		{
-			let func = functions[i];
-			if (!(func in window)) continue;
-			eval('window.'+func+' = '+window[func].toSource().replace(
-				/FS_data.mTabs.(removeAttribute\("moz-collapsed"\)|setAttribute\("moz-collapsed", "true"\));/g,
-				'if (gBrowser.treeStyleTab.currentTabbarPosition == "top") { $& }'
-			));
-		}
-	}
-
 	// TooManyTabs
 	// https://addons.mozilla.org/firefox/addon/9429
 	if ('tooManyTabs' in window &&
 		TreeStyleTabUtils.getTreePref('compatibility.TooManyTabs')) {
 		sv.registerExpandTwistyAreaBlocker('tooManyTabs');
-	}
-
-	// DragNDrop Toolbars
-	// https://addons.mozilla.org/firefox/addon/dragndrop-toolbars/
-	if ('globDndtb' in window &&
-		globDndtb.setTheStuff &&
-		TreeStyleTabUtils.getTreePref('compatibility.DragNDropToolbars')) {
-		let reinitTabbar = function() {
-				gBrowser.treeStyleTab.destroyTabbar()
-					.then(function() {
-						gBrowser.treeStyleTab.reinitTabbar();
-					});
-			};
-		globDndtb.__treestyletab__setOrder = globDndtb.setOrder;
-		globDndtb.setOrder = function() {
-			reinitTabbar();
-			return globDndtb.__treestyletab__setOrder.apply(this, arguments);
-		};
-		globDndtb.__treestyletab__setTheStuff = globDndtb.setTheStuff;
-		globDndtb.setTheStuff = function() {
-			var result = globDndtb.__treestyletab__setTheStuff.apply(this, arguments);
-			if (this.dndObserver &&
-				this.dndObserver.onDrop &&
-				!this.dndObserver.__treestyletab__onDrop) {
-				this.dndObserver.__treestyletab__onDrop = this.dndObserver.onDrop;
-				this.dndObserver.onDrop = function(aEvent, aDropData, aSession) {
-					if (document.getElementById(aDropData.data) == gBrowser.treeStyleTab.tabStrip) {
-						reinitTabbar();
-					}
-					return this.__treestyletab__onDrop.apply(this, arguments);
-				};
-			}
-			return result;
-		};
-	}
-
-	// Optimoz Tweaks
-	// http://optimoz.mozdev.org/tweaks/
-	// https://addons.mozilla.org/firefox/addon/optimoz-tweaks-ja-version/
-	if ('mtSidebarStartup' in window &&
-		'mtSidebarShutdown' in window &&
-		'mtPreventHiding' in window &&
-		TreeStyleTabUtils.getTreePref('compatibility.OptimozTweaks')) {
-		eval('window.mtSidebarStartup = '+window.mtSidebarStartup.toSource().replace(
-			'{',
-			'{\n' +
-			'  document.getElementById("TabsToolbar")\n' +
-			'    .addEventListener("mousemove", mtMouseMoveListener, false);'
-		));
-		eval('window.mtSidebarShutdown = '+window.mtSidebarShutdown.toSource().replace(
-			'{',
-			'{\n' +
-			'  document.getElementById("TabsToolbar")\n' +
-			'    .removeEventListener("mousemove", mtMouseMoveListener, false);'
-		));
-		eval('window.mtPreventHiding = '+window.mtPreventHiding.toSource().replace(
-			'{',
-			'{\n' +
-			'  if (TreeStyleTabService.getTabbarFromEvent(arguments[0]))\n' +
-			'    return;'
-		));
 	}
 
 	/**
@@ -412,46 +241,6 @@ TreeStyleTabWindowHelper.overrideExtensionsBeforeBrowserInit = function TSTWH_ov
 			replaceHorizontalProps(gBrowser.mTabContainer.isTabVisible.toSource())
 		);
 	}
-
-	// Tabberwocky
-	// https://addons.mozilla.org/firefox/addon/14439
-	if ('tabberwocky' in window &&
-		TreeStyleTabUtils.getTreePref('compatibility.Tabberwocky')) {
-		let listener = {
-				handleEvent : function(aEvent)
-				{
-					switch (aEvent.type)
-					{
-						case 'TreeStyleTabTabbarPositionChanged':
-							var b = aEvent.originalTarget;
-							if (b.treeStyleTab.isVertical)
-								TreeStyleTabUtils.prefs.setPref('tabberwocky.multirow', false);
-							break;
-
-						case 'unload':
-							document.removeEventListener('TreeStyleTabTabbarPositionChanged', this, false);
-							document.removeEventListener('unload', this, false);
-							break;
-					}
-				}
-			};
-		document.addEventListener('TreeStyleTabTabbarPositionChanged', listener, false);
-		document.addEventListener('unload', listener, false);
-
-		if ('openSelectedLinks' in tabberwocky) {
-			eval('tabberwocky.openSelectedLinks = '+
-				tabberwocky.openSelectedLinks.toSource().replace(
-					'links.forEach(',
-					'  TreeStyleTabService.readyToOpenChildTab(aFrame, true)\n' +
-					'$&'
-				).replace(
-					/(\}\)?)$/,
-					'  TreeStyleTabService.stopToOpenChildTab(aFrame)\n' +
-					'$1'
-				)
-			);
-		}
-	}
 };
 
 TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_overrideExtensionsAfterBrowserInit() {
@@ -542,43 +331,6 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		gBrowser.treeStyleTab.internallyTabMovingCount++; // until "TMmoveTabTo" method is overwritten
 	}
 
-
-	// Super DragAndGo
-	// https://addons.mozilla.org/firefox/addon/137
-	if ('superDrag' in window &&
-		TreeStyleTabUtils.getTreePref('compatibility.SuperDragAndGo')) {
-		eval('superDrag.onDrop = '+
-			superDrag.onDrop.toSource().replace(
-				/(var newTab = getBrowser\(\).addTab\([^\)]+\);)/g,
-				'  if (aDragSession.sourceNode &&\n' +
-				'    aDragSession.sourceNode.ownerDocument.defaultView.top == getBrowser().contentWindow)\n' +
-				'    TreeStyleTabService.readyToOpenChildTab(getBrowser());\n' +
-				'  $1'
-			)
-		);
-	}
-
-	// Drag de Go
-	// https://addons.mozilla.org/firefox/addon/2918
-	if ('ddg_ges' in window &&
-		TreeStyleTabUtils.getTreePref('compatibility.DragDeGo')) {
-		eval('ddg_ges.Open = '+
-			ddg_ges.Open.toSource().replace(
-				'if (mode[1] == "h" || mode[1] == "f") {',
-				'$&\n' +
-				'  if ("sourceNode" in aData) // only for dragging from the content tarea.\n' +
-				'    TreeStyleTabService.readyToOpenChildTab(getBrowser());'
-			)
-		);
-		eval('ddg_ges.Search = '+
-			ddg_ges.Search.toSource().replace(
-				'if (mode[1] == "h" || mode[1] == "f") {',
-				'$&\n' +
-				'    TreeStyleTabService.readyToOpenChildTab(getBrowser());'
-			)
-		);
-	}
-
 	// DragIt
 	// https://addons.mozilla.org/firefox/addon/dragit-formerly-drag-de-go/
 	if ('DragIt' in window &&
@@ -645,15 +397,6 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		document.addEventListener('unload', listener, false);
 	}
 
-	// FLST (Focus Last Selected Tab)
-	// https://addons.mozilla.org/firefox/addon/32
-	if ('flst' in window &&
-		TreeStyleTabUtils.getTreePref('compatibility.FLST')) {
-		TreeStyleTabService.registerTabFocusAllowance(function(aTabBrowser) {
-			return !TreeStyleTabUtils.prefs.getPref('extensions.flst.enabled');
-		});
-	}
-
 	// Focus Last Selected Tab 0.9.5.x
 	// http://www.gozer.org/mozilla/extensions/
 	if (TreeStyleTabUtils.getTreePref('compatibility.FocusLastSelectedTab')) {
@@ -709,19 +452,6 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		};
 	}
 
-	// Mouse Gestures Redox
-	// http://www.mousegestures.org/
-	if ('mgBuiltInFunctions' in window &&
-		'mgLinkInTab' in mgBuiltInFunctions &&
-		TreeStyleTabUtils.getTreePref('compatibility.MouseGesturesRedox')) {
-		eval('mgBuiltInFunctions.mgLinkInTab = '+
-			mgBuiltInFunctions.mgLinkInTab.toSource().replace(
-				'var tab',
-				'TreeStyleTabService.readyToOpenChildTab(gBrowser); $&'
-			)
-		);
-	}
-
 	// SBM Counter
 	// http://miniturbo.org/products/sbmcounter/
 	if ('SBMCounter' in window &&
@@ -734,20 +464,6 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		);
 	}
 
-	// Aging Tabs
-	// https://addons.mozilla.org/firefox/addon/3542
-	if ('agingTabs' in window &&
-		TreeStyleTabUtils.getTreePref('compatibility.AgingTabs')) {
-		eval('agingTabs.setColor = '+
-			agingTabs.setColor.toSource().replace(
-				'{',
-				'{ important = true;'
-			)
-		);
-	}
-
-	// Snap Links
-	// https://addons.mozilla.org/firefox/addon/4336
 	// Snap Links Plus
 	// http://snaplinks.mozdev.org/
 	if (TreeStyleTabUtils.getTreePref('compatibility.SnapLinks')) {
@@ -838,92 +554,6 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		);
 	}
 
-	// Autohide
-	// http://www.krickelkrackel.de/autohide/
-	if ('autoHIDE' in window &&
-		TreeStyleTabUtils.getTreePref('compatibility.Autohide')) {
-		let autoHideEventListener = {
-				handleEvent : function(aEvent)
-				{
-					switch (aEvent.type)
-					{
-						case 'TreeStyleTabAutoHideStateChanging':
-							if (!window.fullScreen) return;
-							if (!aEvent.shown) {
-								if (
-									autoHIDE.statBar &&
-									gBrowser.treeStyleTab.currentTabbarPosition == 'bottom' &&
-									!TreeStyleTabUtils.prefs.getPref('extensions.autohide.bars.statBar.always') &&
-									TreeStyleTabUtils.prefs.getPref('extensions.autohide.bars.statBar')
-									) {
-									autoHIDE.statBar.setAttribute('ahHIDE', true);
-								}
-							}
-							else {
-								TreeStyleTabService.getTabStrip(gBrowser).removeAttribute('ahHIDE');
-								if (
-									autoHIDE.statBar &&
-									aTabBrowser.treeStyleTab.currentTabbarPosition == 'bottom' &&
-									!TreeStyleTabUtils.prefs.getPref('extensions.autohide.bars.statBar.always') &&
-									TreeStyleTabUtils.prefs.getPref('extensions.autohide.bars.statBar')
-									) {
-									autoHIDE.statBar.removeAttribute('ahHIDE');
-								}
-							}
-							break;
-
-						case 'fullscreen':
-							var treeStyleTab = gBrowser.treeStyleTab;
-							if (gBrowser.treeStyleTab.currentTabbarPosition != 'top') {
-								if (window.fullScreen)
-									treeStyleTab.autoHide.endForFullScreen();
-								else
-									treeStyleTab.autoHide.startForFullScreen();
-							}
-							break;
-
-						case 'unload':
-							document.removeEventListener('TreeStyleTabAutoHideStateChanging', this, false);
-							document.removeEventListener('unload', this, false);
-							document.removeEventListener('fullscreen', this, false);
-							break;
-					}
-				}
-			};
-		document.addEventListener('TreeStyleTabAutoHideStateChanging', autoHideEventListener, false);
-		document.addEventListener('fullscreen', autoHideEventListener, false);
-		document.addEventListener('unload', autoHideEventListener, false);
-
-		if ('MoveContent' in autoHIDE) {
-			eval('autoHIDE.MoveContent = '+autoHIDE.MoveContent.toSource().replace(
-				/(;)([^;]*\.setPosition\(0, -\s*ah\.delta\);)/,
-				'$1\n' +
-				'  if (autoHIDE.winUtil)\n' +
-				'    autoHIDE.winUtil.setRedraw(false, false);\n' +
-				'  $2\n' +
-				'  gBrowser.treeStyleTab.autoHide.extraYOffset = ah.delta;\n' +
-				'  window.setTimeout(function() {\n' +
-				'    gBrowser.treeStyleTab.autoHide.redrawContentArea();\n' +
-				'    if (autoHIDE.winUtil)\n' +
-				'      autoHIDE.winUtil.setRedraw(true, false);\n' +
-				'  }, 0);'
-			).replace(
-				/(;)([^;]*\.setPosition\(0, 0\);)/,
-				'$1\n' +
-				'  if (autoHIDE.winUtil)\n' +
-				'    autoHIDE.winUtil.setRedraw(false, false);\n' +
-				'  $2\n' +
-				'  gBrowser.treeStyleTab.autoHide.extraYOffset = 0;\n' +
-				'  window.setTimeout(function() {\n' +
-				'    gBrowser.treeStyleTab.autoHide.redrawContentArea();\n' +
-				'    if (autoHIDE.winUtil)\n' +
-				'      autoHIDE.winUtil.setRedraw(true, false);\n' +
-				'  }, 0);'
-			));
-		}
-	}
-
-
 	// Google Toolbar Sidewiki
 	if ('sidewikiWindowHandler' in window &&
 		window.sidewikiWindowHandler &&
@@ -950,37 +580,6 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 				'$&'
 			));
 		}
-	}
-
-
-	// Smoothly Close Tabs
-	// https://addons.mozilla.org/firefox/addon/71410
-	if ('SMOOTHLYCLOSETABS' in window &&
-		TreeStyleTabUtils.getTreePref('compatibility.SmoothlyCloseTabs')) {
-		let replaceScrollProps = function(aString) {
-			return aString.replace(
-					/\.scrollWidth/g,
-					'[scrollProp]'
-				).replace(
-					/"width"/g,
-					'sizeProp'
-				).replace(
-					/\.maxWidth/g,
-					'[maxSizeProp]'
-				).replace(
-					'{',
-					'{\n' +
-					'  var scrollProp = gBrowser.treeStyleTab.isVertical ? "scrollHeight" : "scrollWidth" ;\n' +
-					'  var sizeProp = gBrowser.treeStyleTab.isVertical ? "height" : "width" ;\n' +
-					'  var maxSizeProp = gBrowser.treeStyleTab.isVertical ? "maxHeight" : "maxWidth" ;'
-				)
-		}
-		eval('SMOOTHLYCLOSETABS.shrinkTab = '+
-			replaceScrollProps(SMOOTHLYCLOSETABS.shrinkTab.toSource())
-		);
-		eval('SMOOTHLYCLOSETABS.shrinkTabIcon = '+
-			replaceScrollProps(SMOOTHLYCLOSETABS.shrinkTabIcon.toSource())
-		);
 	}
 
 	// Super Tab Mode
@@ -1064,74 +663,6 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		sv.extensions.isAvailable('remove-new-tab-button@forerunnerdesigns.com', { ok : function() {
 			document.documentElement.setAttribute(TreeStyleTabService.kHIDE_NEWTAB, true);
 		}});
-	}
-
-	// IE Tab Plus
-	// https://addons.mozilla.org/firefox/addon/10909/
-	if ('IeTab' in window &&
-		IeTab.prototype &&
-		TreeStyleTabUtils.getTreePref('compatibility.IETabPlus')) {
-		if (IeTab.prototype.switchTabEngine)
-			eval('IeTab.prototype.switchTabEngine = '+
-				IeTab.prototype.switchTabEngine.toSource().replace(
-					'var newTab = ',
-					'TreeStyleTabService.readyToOpenChildTab(); $&'
-				)
-			);
-
-		if (IeTab.prototype.addIeTab)
-			eval('IeTab.prototype.addIeTab = '+
-				IeTab.prototype.addIeTab.toSource().replace(
-					'var newTab = ',
-					'TreeStyleTabService.readyToOpenChildTab(); $&'
-				)
-			);
-	}
-
-	// Locationbar2
-	// https://addons.mozilla.org/firefox/addon/locationbar²/
-	if ('lb2_alternateStyles' in window &&
-		TreeStyleTabUtils.getTreePref('compatibility.Locationbar2')) {
-		let listening = false;
-		let listener = function(aEvent) {
-				switch (aEvent.type)
-				{
-					case 'unload':
-						document.removeEventListener('unload', listener, false);
-						document.removeEventListener('beforecustomization', listener, true);
-						document.removeEventListener('aftercustomization', listener, false);
-					case 'beforecustomization':
-						if (gURLBar && listening)
-							gURLBar.removeEventListener('click', listener, true);
-						listening = false;
-						return;
-
-					case 'aftercustomization':
-						if (gURLBar && !listening) {
-							gURLBar.addEventListener('click', listener, true);
-							listening = true;
-						}
-						return;
-
-					case 'click':
-						if (TreeStyleTabUtils.evaluateXPath(
-								'ancestor-or-self::*['
-									+'contains(concat(" ", normalize-space(@class), " "), " textbox-presentation-segment ")'
-								+']',
-								aEvent.originalTarget,
-								Ci.nsIDOMXPathResult.BOOLEAN_TYPE
-							).booleanValue)
-							sv.readyToOpenChildTabNow(gBrowser.selectedTab);
-						return;
-				}
-			};
-		document.addEventListener('unload', listener, false);
-		document.addEventListener('beforecustomization', listener, true);
-		document.addEventListener('aftercustomization', listener, false);
-		if (gURLBar && !listening) {
-			gURLBar.addEventListener('click', listener, true);
-			listening = true;
-		}
 	}
 
 	// InstaClick
@@ -1281,19 +812,6 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 		);
 	}
 
-	// DomainTab
-	// https://addons.mozilla.org/firefox/addon/13906/
-	if ('domaintab' in window &&
-		'TMP_howToOpen' in domaintab &&
-		TreeStyleTabUtils.getTreePref('compatibility.DomainTab')) {
-		eval('domaintab.TMP_howToOpen = '+
-			domaintab.TMP_howToOpen.toSource().replace(
-				/(domaintab.DT_openNewTabWith\()/g,
-				'TreeStyleTabService.readyToOpenChildTab(); $1'
-			)
-		);
-	}
-
 	// Personal Titlebar
 	// https://addons.mozilla.org/irefox/addon/personal-titlebar/
 	if (document.getElementById('personal-titlebar') &&
@@ -1340,64 +858,6 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 		document.addEventListener('aftercustomization', listener, false);
 		document.addEventListener('unload', listener, false);
 		titlebar.addEventListener('DOMAttrModified', listener, true);
-	}
-
-	// TotalToolbar
-	// http://totaltoolbar.mozdev.org/
-	{
-		let menu = document.getElementById('tt-toolbar-properties') &&
-					TreeStyleTabUtils.getTreePref('compatibility.TotalToolbar');
-		if (menu) {
-			let tabbarToolboxes = ['tt-toolbox-tabright', 'tt-toolbox-tableft']
-									.map(document.getElementById, document)
-									.filter(function(aToolbox) { return aToolbox; });
-			let listener = {
-					handleEvent : function(aEvent)
-					{
-						var sv = TreeStyleTabService;
-						switch (aEvent.type)
-						{
-							case 'command':
-								gBrowser.treeStyleTab.updateFloatingTabbar(sv.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
-								break;
-
-							case 'beforecustomization':
-								for (let i = 0, maxi = tabbarToolboxes.length; i < maxi; i++)
-								{
-									tabbarToolboxes[i].removeAttribute('collapsed');
-								}
-								break;
-
-							case 'aftercustomization':
-								for (let i = 0, maxi = tabbarToolboxes.length; i < maxi; i++)
-								{
-									let toolbox = tabbarToolboxes[i];
-									if (!toolbox.firstChild.hasChildNodes())
-										toolbox.setAttribute('collapsed', true);
-								}
-								break;
-
-							case 'unload':
-								menu.removeEventListener('command', this, true);
-								document.removeEventListener('beforecustomization', listener, true);
-								document.removeEventListener('aftercustomization', listener, false);
-								document.removeEventListener('unload', this, false);
-								menu = null;
-								break;
-						}
-					}
-				};
-			menu.addEventListener('command', listener, false);
-			document.addEventListener('beforecustomization', listener, true);
-			document.addEventListener('aftercustomization', listener, false);
-			document.addEventListener('unload', listener, false);
-			for (let i = 0, maxi = tabbarToolboxes.length; i < maxi; i++)
-			{
-				let toolbox = tabbarToolboxes[i];
-				if (!toolbox.firstChild.hasChildNodes())
-					toolbox.setAttribute('collapsed', true);
-			}
-		}
 	}
 
 	// Tab Control

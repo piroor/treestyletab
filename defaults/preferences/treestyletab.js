@@ -683,36 +683,23 @@ pref("extensions.treestyletab.blockTabsInTitlebar", true);
  * In other words, add-on authros can disable TST's dirty hack if it is
  * obsolete.
  */
-pref("extensions.treestyletab.compatibility.AgingTabs", true);
 pref("extensions.treestyletab.compatibility.AIOS", true); // All-in-One Sidebar
-pref("extensions.treestyletab.compatibility.Autohide", true);
 pref("extensions.treestyletab.compatibility.ClassicThemeRestorer", true);
 pref("extensions.treestyletab.compatibility.ColorfulTabs", true);
 pref("extensions.treestyletab.compatibility.ContextSearch", true);
-pref("extensions.treestyletab.compatibility.DomainTab", true);
-pref("extensions.treestyletab.compatibility.DragDeGo", true);
 pref("extensions.treestyletab.compatibility.DragIt", true);
-pref("extensions.treestyletab.compatibility.DragNDropToolbars", true);
 pref("extensions.treestyletab.compatibility.DuplicateInTabContext", true);
 pref("extensions.treestyletab.compatibility.DuplicateThisTab", true);
 pref("extensions.treestyletab.compatibility.FirefoxSync", true);
 pref("extensions.treestyletab.compatibility.FireGestures", true);
-pref("extensions.treestyletab.compatibility.FLST", true);
 pref("extensions.treestyletab.compatibility.FocusLastSelectedTab", true);
-pref("extensions.treestyletab.compatibility.FullerScreen", true);
 pref("extensions.treestyletab.compatibility.GoogleToolbar.Sidewiki", true);
 pref("extensions.treestyletab.compatibility.Greasemonkey", true);
-pref("extensions.treestyletab.compatibility.Highlander", true);
-pref("extensions.treestyletab.compatibility.IETabPlus", true);
 pref("extensions.treestyletab.compatibility.InstaClick", true);
 pref("extensions.treestyletab.compatibility.LastTab", true);
 pref("extensions.treestyletab.compatibility.Linky", true);
-pref("extensions.treestyletab.compatibility.Locationbar2", true);
-pref("extensions.treestyletab.compatibility.MouseGesturesRedox", true);
 pref("extensions.treestyletab.compatibility.MouselessBrowsing", true);
 pref("extensions.treestyletab.compatibility.MultiLinks", true);
-pref("extensions.treestyletab.compatibility.OptimozTweaks", true);
-pref("extensions.treestyletab.compatibility.PermaTabs", true);
 pref("extensions.treestyletab.compatibility.PersonalTitlebar", true);
 pref("extensions.treestyletab.compatibility.QuickDrag", true);
 pref("extensions.treestyletab.compatibility.RemoveNewTabButton", true);
@@ -720,19 +707,15 @@ pref("extensions.treestyletab.compatibility.SBMCounter", true);
 pref("extensions.treestyletab.compatibility.Scriptish", false);
 pref("extensions.treestyletab.compatibility.SelectionLinks", true);
 pref("extensions.treestyletab.compatibility.SessionManager", true);
-pref("extensions.treestyletab.compatibility.SmoothlyCloseTabs", true);
 pref("extensions.treestyletab.compatibility.SnapLinks", true);
 pref("extensions.treestyletab.compatibility.STM.warnForNewTabPosition", true);
 pref("extensions.treestyletab.compatibility.STM", true); // Super Tab Mode
-pref("extensions.treestyletab.compatibility.SuperDragAndGo", true);
-pref("extensions.treestyletab.compatibility.Tabberwocky", true);
 pref("extensions.treestyletab.compatibility.TabControl", true);
 pref("extensions.treestyletab.compatibility.TabsOnBottom", true);
 pref("extensions.treestyletab.compatibility.TabUtilities", true);
 pref("extensions.treestyletab.compatibility.TileTabs", true);
 pref("extensions.treestyletab.compatibility.TMP", true); // Tab Mix Plus
 pref("extensions.treestyletab.compatibility.TooManyTabs", true);
-pref("extensions.treestyletab.compatibility.TotalToolbar", true);
 
 /**
  * The internal version of TST preferences. Don't change this by hand, because
