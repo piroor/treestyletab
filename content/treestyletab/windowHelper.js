@@ -643,11 +643,12 @@ var TreeStyleTabWindowHelper = {
 				if (!scrollbox.__treestyletab__ensureElementIsVisible) {
 				scrollbox.__treestyletab__ensureElementIsVisible = scrollbox.ensureElementIsVisible;
 				scrollbox.ensureElementIsVisible = function(...aArgs) {
-					if (b.treeStyleTab.shouldCancelEnsureElementIsVisible())
+					var treeStyleTab = gBrowser.treeStyleTab;
+					if (treeStyleTab.shouldCancelEnsureElementIsVisible())
 						return;
 					let shouldScrollNow = aArgs[1] === false;
-					if (b.treeStyleTab.animationEnabled && !shouldScrollNow)
-						return b.treeStyleTab.scrollToTab(aArgs[0]);
+					if (treeStyleTab.animationEnabled && !shouldScrollNow)
+						return treeStyleTab.scrollToTab(aArgs[0]);
 					scrollbox.__treestyletab__ensureElementIsVisible.call(this, ...aArgs);
 				};
 			}
