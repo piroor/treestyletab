@@ -344,17 +344,6 @@ var TreeStyleTabWindowHelper = {
 							.trim();
 				});
 	},
-	_getFunction : function TSTWH__getFunction(aFunc)
-	{
-		var func;
-		try {
-			eval('func = '+aFunc);
-		}
-		catch(e) {
-			return null;
-		}
-		return func;
-	},
  
 	initToolbarItems : function TSTWH_initToolbarItems() 
 	{
