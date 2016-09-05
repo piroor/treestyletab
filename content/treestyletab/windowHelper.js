@@ -473,28 +473,28 @@ var TreeStyleTabWindowHelper = {
 			return result;
 		};
 
-			b.__treestyletab__beginRemoveTab = b._beginRemoveTab;
-			b._beginRemoveTab = function(aTab, ...aArgs) {
-				var originalRemovingTabs = this._removingTabs;
-				var self = this;
-				if (this.treeStyleTab.shouldCloseLastTabSubtreeOf(aTab)) {
-					this._removingTabs = new ExtendedImmutable(originalRemovingTabs, {
-						get length() {
-							// hack for https://dxr.mozilla.org/mozilla-central/rev/dbe4b47941c7b3d6298a0ead5e40dd828096c808/browser/base/content/tabbrowser.xml#2371
-							if (aTab.closing) // do nothing after the removing process is started
-								return originalRemovingTabs.length;
+		b.__treestyletab__beginRemoveTab = b._beginRemoveTab;
+		b._beginRemoveTab = function(aTab, ...aArgs) {
+			var originalRemovingTabs = this._removingTabs;
+			var self = this;
+			if (this.treeStyleTab.shouldCloseLastTabSubtreeOf(aTab)) {
+				this._removingTabs = new ExtendedImmutable(originalRemovingTabs, {
+					get length() {
+						// hack for https://dxr.mozilla.org/mozilla-central/rev/dbe4b47941c7b3d6298a0ead5e40dd828096c808/browser/base/content/tabbrowser.xml#2371
+						if (aTab.closing) // do nothing after the removing process is started
+							return originalRemovingTabs.length;
 
-							if (window.skipNextCanClose) // the end section of the "close window with last tab" block
-								return 0;
-							else
-								return self.tabs.length - 1; // the beginning of the "close window with last tab" block
-						}
-					});
-				}
-				var result = this.__treestyletab__beginRemoveTab(aTab, ...aArgs);
-				this._removingTabs = originalRemovingTabs;
-				return result;
-			};
+						if (window.skipNextCanClose) // the end section of the "close window with last tab" block
+							return 0;
+						else
+							return self.tabs.length - 1; // the beginning of the "close window with last tab" block
+					}
+				});
+			}
+			var result = this.__treestyletab__beginRemoveTab(aTab, ...aArgs);
+			this._removingTabs = originalRemovingTabs;
+			return result;
+		};
 
 		b.__treestyletab__removeCurrentTab = b.removeCurrentTab;
 		b.removeCurrentTab = function(...aArgs) {
