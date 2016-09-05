@@ -344,16 +344,17 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 					}
 				}
 			};
-		eval('colorfulTabs.show_ctStack = '+
-			colorfulTabs.show_ctStack.toSource().replace(
-				'.setProperty("display", "-moz-stack", "important")',
-				'.display = ""'
-			)
-		);
 		document.addEventListener('TabOpen', listener, false);
 		document.addEventListener('TreeStyleTabAttached', listener, false);
 		document.addEventListener('TreeStyleTabParted', listener, false);
 		document.addEventListener('unload', listener, false);
+		// hide separater between the tab bar and the toolbox
+		colorfulTabs.__treestyletab__show_ctStack = colorfulTabs.show_ctStack;
+		colorfulTabs.show_ctStack = function(...aArgs) {
+			if (gBrowser.treeStyleTab.position != 'top')
+				return document.getElementById('colorfulTabsStack').style.display = 'none';
+			return this.__treestyletab__show_ctStack(...aArgs);
+		};
 	}
 
 	// Focus Last Selected Tab 0.9.5.x
