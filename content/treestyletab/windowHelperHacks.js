@@ -352,7 +352,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		colorfulTabs.__treestyletab__show_ctStack = colorfulTabs.show_ctStack;
 		colorfulTabs.show_ctStack = function(...aArgs) {
 			if (gBrowser.treeStyleTab.position != 'top')
-				return document.getElementById('colorfulTabsStack').style.display = 'none';
+				return document.getElementById('colorfulTabsStack').style.setProperty('display', 'none', 'important');
 			return this.__treestyletab__show_ctStack(...aArgs);
 		};
 	}
