@@ -553,21 +553,54 @@ var TreeStyleTabWindowHelper = {
 			));
 		}, 'TreeStyleTabService.getTabBrowserFromChild');
 
-		TreeStyleTabUtils.doPatching(b.tabContainer._getDragTargetTab, 'b.tabContainer._getDragTargetTab', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				/\.screenX/g, '[this.treeStyleTab.screenPositionProp]'
-			).replace(
-				/\.width/g, '[this.treeStyleTab.sizeProp]'
-			));
-		}, 'treeStyleTab');
+		if (!b.tabContainer.__treestyletab__getDragTargetTab) {
+			b.tabContainer.__treestyletab__getDragTargetTab = b.tabContainer._getDragTargetTab;
+			b.tabContainer._getDragTargetTab = function(aEvent, aIsLink, ...aArgs) {
+				var treeStyleTab = gBrowser.treeStyleTab;
+				if (!treeStyleTab.isVertical)
+					return this.__treestyletab__getDragTargetTab(aEvent, aIsLink, ...aArgs);
 
-		TreeStyleTabUtils.doPatching(b.tabContainer._getDropIndex, 'b.tabContainer._getDropIndex', function(aName, aSource) {
-			return eval(aName+' = '+aSource.replace(
-				/\.screenX/g, '[this.treeStyleTab.screenPositionProp]'
-			).replace(
-				/\.width/g, '[this.treeStyleTab.sizeProp]'
-			));
-		}, 'treeStyleTab');
+				var draggedTab = aEvent.target.localName == 'tab' ? aEvent.target : null;
+				if (draggedTab && aIsLink) {
+					let tabBox      = draggedTab.boxObject;
+					let tabPosition = tabBox[treeStyleTab.screenPositionProp];
+					let tabSize     = tabBox[treeStyleTab.sizeProp];
+					let currentPosition = aEvent[treeStyleTab.screenPositionProp];
+					if (currentPosition < tabPosition + tabSize * 0.25 ||
+						currentPosition > tabPosition + tabSize * 0.75)
+						return null;
+				}
+				return draggedTab;
+			};
+		}
+
+		if (!b.tabContainer.__treestyletab__getDropIndex) {
+			b.tabContainer.__treestyletab__getDropIndex = b.tabContainer._getDropIndex;
+			b.tabContainer._getDropIndex = function(aEvent, aIsLink, ...aArgs) {
+				var treeStyleTab = gBrowser.treeStyleTab;
+				if (!treeStyleTab.isVertical)
+					return this.__treestyletab__getDropIndex(aEvent, aIsLink, ...aArgs);
+
+				var tabs = this.childNodes;
+				var draggedTab = this._getDragTargetTab(aEvent, aIsLink);
+				var currentPosition = aEvent[treeStyleTab.screenPositionProp];
+				var isLTR = window.getComputedStyle(this, null).direction == 'ltr';
+				for (let i = draggedTab ? draggedTab._tPos : 0; i < tabs.length; i++)
+				{
+					let tabBox    = tabs[i].boxObject;
+					let tabCenter = tabBox[treeStyleTab.screenPositionProp] + tabBox[treeStyleTab.sizeProp] / 2;
+					if (isLTR) {
+						if (currentPosition < tabCenter)
+							return i;
+					}
+					else {
+						if (currentPosition > tabCenter)
+							return i;
+					}
+				}
+				return tabs.length;
+			};
+		}
 
 		/**
 		 * The default implementation fails to scroll to tab if it is expanding.
@@ -590,16 +623,32 @@ var TreeStyleTabWindowHelper = {
 
 		{
 			let popup = document.getElementById('alltabs-popup');
-			TreeStyleTabUtils.doPatching(popup._updateTabsVisibilityStatus, 'popup._updateTabsVisibilityStatus', function(aName, aSource) {
-				return eval(aName+' = '+aSource.replace(
-					'{',
-					'{ var treeStyleTab = gBrowser.treeStyleTab;'
-				).replace(
-					/\.screenX/g, '[treeStyleTab.screenPositionProp]'
-				).replace(
-					/\.width/g, '[treeStyleTab.sizeProp]'
-				));
-			}, 'treeStyleTab');
+			if (!popup.__treestyletab__updateTabsVisibilityStatus) {
+				popup.__treestyletab__updateTabsVisibilityStatus = popup._updateTabsVisibilityStatus;
+				popup._updateTabsVisibilityStatus = function(...aArgs) {
+					var treeStyleTab = gBrowser.treeStyleTab;
+					if (!treeStyleTab.isVertical)
+						return this.__treestyletab__updateTabsVisibilityStatus(...aArgs);
+
+					var tabContainer = gBrowser.tabContainer;
+					if (tabContainer.getAttribute('overflow') != 'true')
+						return;
+
+					var tabbarBox = tabContainer.mTabstrip.scrollBoxObject;
+					Array.forEach(this.childNodes, function(aItem) {
+						let tab = aItem.tab;
+						if (!tab) // not tab item
+							return;
+
+						let tabBox = tab.boxObject;
+						if (tabBox[treeStyleTab.screenPositionProp] >= tabbarBox[treeStyleTab.screenPositionProp] &&
+							tabBox[treeStyleTab.screenPositionProp] + tabBox[treeStyleTab.sizeProp] <= tabbarBox[treeStyleTab.screenPositionProp] + tabbarBox[treeStyleTab.sizeProp])
+							aItem.setAttribute('tabIsVisible', true);
+						else
+							aItem.removeAttribute('tabIsVisible');
+					}, this);
+				};
+			}
 		}
 	
 	},
