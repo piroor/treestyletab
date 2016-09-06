@@ -126,7 +126,7 @@ var TreeStyleTabWindowHelper = {
 			if (TreeStyleTabWindowHelper.runningDelayedStartup &&
 				TreeStyleTabService.tearOffSubtreeFromRemote(aRemoteTab))
 				return;
-			return gBrowser.__treestyletab__swapBrowsersAndCloseOther.call(this, aOurTab, aRemoteTab, ...aArgs);
+			return gBrowser.__treestyletab__swapBrowsersAndCloseOther(aOurTab, aRemoteTab, ...aArgs);
 		};
 	},
  
