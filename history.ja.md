@@ -1,7 +1,9 @@
 # 更新履歴
 
  - master/HEAD
+   * `eval()`を使った関数の書き換えを減らした
    * Firefox 44より古いバージョンのサポートを終了
+   * 既に更新が終了した/公開されなくなった古いアドオンとの互換性のためのコードを削除： Google Toolbar, Snap Links, Highlander, PermaTabs, FullerScreen, DragNDrop Toolbars, Optimoz Tweaks, Tabberwocky, Super DragAndGo, Drag de Go, FLST, Mouse Gestures Redox, Aging Tabs, Autohide, Smoothly Close Tabs, IE Tab Plus, Locationbar², DomainTab, TotalToolbar
  - 0.17.2016083101
    * Firefox 51以降でタブの色がおかしくなる問題を修正（[bug 1297157](https://bugzilla.mozilla.org/show_bug.cgi?id=1297157)への追従）
  - 0.17.2016083001
