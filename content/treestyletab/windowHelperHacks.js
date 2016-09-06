@@ -152,12 +152,11 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	if (
 		TreeStyleTabUtils.getTreePref('compatibility.TMP') &&
 		'TabmixTabbar' in window &&
-		!DNDObserver.__treestyletab__clearDragmark
+		!TMP_tabDNDObserver.__treestyletab__clearDragmark
 		) {
-		let DNDObserver = 'TMP_tabDNDObserver' in window ? TMP_tabDNDObserver : TabDNDObserver ;
-		this.updateTabDNDObserver(DNDObserver);
-		DNDObserver.__treestyletab__clearDragmark = DNDObserver.clearDragmark;
-		DNDObserver.clearDragmark = function(...aArgs) {
+		this.updateTabDNDObserver(TMP_tabDNDObserver);
+		TMP_tabDNDObserver.__treestyletab__clearDragmark = TMP_tabDNDObserver.clearDragmark;
+		TMP_tabDNDObserver.clearDragmark = function(...aArgs) {
 			var result = this.__treestyletab__clearDragmark(...aArgs);
 			gBrowser.treeStyleTab.tabbarDNDObserver.clearDropPosition();
 			return result;
