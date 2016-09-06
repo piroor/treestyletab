@@ -18,7 +18,7 @@
    https://github.com/clear-code/js-extended-immutable
 */
 (function() {
-	const currentRevision = 39;
+	const currentRevision = 40;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -258,13 +258,12 @@ rightBound = TDUContext.utils.updateRightBound(rightBound, TDUContext);
           // * We're doing a binary search in order to reduce the amount of
           //   tabs we need to check.
 
-          let tabCenter = tabScreenX + translateX + tabWidth / 2;
-
 TDUContext.tabScreenPosition = tabScreenX;
 TDUContext.translateDelta = translateX;
 TDUContext.utils.updateDraggedTabsTransform(TDUContext);
 tabs = TDUContext.utils.extractNotDraggedTabs(tabs, TDUContext);
 
+          let tabCenter = tabScreenX + translateX + tabWidth / 2;
           let newIndex = -1;
           let oldIndex = "animDropIndex" in draggedTab._dragData ?
                          draggedTab._dragData.animDropIndex : draggedTab._tPos;
