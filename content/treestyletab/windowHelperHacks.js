@@ -162,21 +162,6 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 			return result;
 		};
 
-		eval('DNDObserver.onDragStart = '+
-			DNDObserver.onDragStart.toSource().replace(
-				'event.target.localName != "tab"',
-				'  gBrowser.treeStyleTab.tabbarDNDObserver.canDragTabbar(event) ||\n' +
-				'  $&'
-			)
-		);
-
-		eval('window.TMP_howToOpen = '+
-			window.TMP_howToOpen.toSource().replace(
-				/(window.openNewTabWith\()/g,
-				'TreeStyleTabService.readyToOpenChildTab(event.target.ownerDocument.defaultView); $1'
-			)
-		);
-
 		if ('TabmixContext' in window &&
 			typeof TabmixContext.openMultipleLinks == 'function') {
 			eval('TabmixContext.openMultipleLinks = '+
