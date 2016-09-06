@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 0.18.2016090601
    * Isolate codes from `eval()` hack.
    * Drop support for Firefox 44 and older versions.
    * Remove compatibility codes for unsupported/unpublished/obsolete addons: Google Toolbar, Snap Links, Highlander, PermaTabs, FullerScreen, DragNDrop Toolbars, Optimoz Tweaks, Tabberwocky, Super DragAndGo, Drag de Go, FLST, Mouse Gestures Redox, Aging Tabs, Autohide, Smoothly Close Tabs, IE Tab Plus, Locationbar², DomainTab and TotalToolbar

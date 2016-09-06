@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 0.18.2016090601
    * `eval()`を使った関数の書き換えをなくした
    * Firefox 44より古いバージョンのサポートを終了
    * 既に更新が終了した/公開されなくなった古いアドオンとの互換性のためのコードを削除： Google Toolbar, Snap Links, Highlander, PermaTabs, FullerScreen, DragNDrop Toolbars, Optimoz Tweaks, Tabberwocky, Super DragAndGo, Drag de Go, FLST, Mouse Gestures Redox, Aging Tabs, Autohide, Smoothly Close Tabs, IE Tab Plus, Locationbar², DomainTab, TotalToolbar
