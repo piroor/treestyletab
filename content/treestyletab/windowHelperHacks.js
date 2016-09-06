@@ -96,38 +96,6 @@ TreeStyleTabWindowHelper.overrideExtensionsBeforeBrowserInit = function TSTWH_ov
 		'TMP_LastTab' in window) {
 		TMP_LastTab.TabBar = gBrowser.mTabContainer;
 	}
-	if (TreeStyleTabUtils.getTreePref('compatibility.TMP') &&
-		'isTabVisible' in gBrowser.mTabContainer &&
-		'ensureTabIsVisible' in gBrowser.mTabContainer) {
-		let replaceHorizontalProps = function replaceHorizontalProps(aString)
-		{
-			return aString.replace(
-					/boxObject\.x/g,
-					'boxObject[posProp]'
-				).replace(
-					/boxObject\.screenX/g,
-					'boxObject[screenPosProp]'
-				).replace(
-					/boxObject\.width/g,
-					'boxObject[sizeProp]'
-				).replace(
-					'{',
-					'{\n' +
-					'  var posProp = gBrowser.treeStyleTab.isVertical ? "y" : "x" ;\n' +
-					'  var screenPosProp = gBrowser.treeStyleTab.isVertical ? "screenY" : "screenX" ;\n' +
-					'  var sizeProp = gBrowser.treeStyleTab.isVertical ? "height" : "width" ;'
-				)
-		}
-		eval('gBrowser.mTabContainer.ensureTabIsVisible = '+
-			replaceHorizontalProps(gBrowser.mTabContainer.ensureTabIsVisible.toSource().replace(
-				'boxObject.width < 250',
-				'$& || gBrowser.treeStyleTab.isVertical'
-			))
-		);
-		eval('gBrowser.mTabContainer.isTabVisible = '+
-			replaceHorizontalProps(gBrowser.mTabContainer.isTabVisible.toSource())
-		);
-	}
 };
 
 TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_overrideExtensionsAfterBrowserInit() {
@@ -587,31 +555,11 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 		gBrowser.treeStyleTab.initTabAttributes(t);
 		gBrowser.treeStyleTab.initTabContentsOrder(t);
 
-		eval('gBrowser.openInverseLink = '+
-			gBrowser.openInverseLink.toSource().replace(
-				/(var newTab)/,
-				'TreeStyleTabService.readyToOpenChildTab(aTab); $1'
-			)
-		);
-
-		eval('gBrowser.TMP_openTabNext = '+
-			gBrowser.TMP_openTabNext.toSource().replace(
-				'this.mCurrentTab._tPos + this.tabContainer.nextTab',
-				'  (function() {\n' +
-				'    var tabs = this.treeStyleTab.getDescendantTabs(this.mCurrentTab);\n' +
-				'    if (tabs.length) {\n' +
-				'      var index = TreeStyleTabUtils.prefs.getPref("extensions.tabmix.openTabNextInverse") ?\n' +
-				'            tabs[tabs.length - 1]._tPos :\n' +
-				'            this.mCurrentTab._tPos ;\n' +
-				'      if (index < aTab._tPos) index++;\n' +
-				'      return index;\n' +
-				'    }\n' +
-				'    else {\n' +
-				'      return ($&);\n' +
-				'    }\n' +
-				'  }).call(this)'
-			)
-		);
+		gBrowser.__treestyletab__openInverseLink = gBrowser.openInverseLink;
+		gBrowser.openInverseLink = function(...aArgs) {
+			TreeStyleTabService.readyToOpenChildTabNow(gBrowser);
+			return this.__treestyletab__openInverseLink(...aArgs);
+		};
 
 		gBrowser.treeStyleTab.internallyTabMovingCount--;
 	}
