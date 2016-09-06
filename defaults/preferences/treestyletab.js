@@ -683,7 +683,6 @@ pref("extensions.treestyletab.blockTabsInTitlebar", true);
  * In other words, add-on authros can disable TST's dirty hack if it is
  * obsolete.
  */
-pref("extensions.treestyletab.compatibility.AIOS", true); // All-in-One Sidebar
 pref("extensions.treestyletab.compatibility.ClassicThemeRestorer", true);
 pref("extensions.treestyletab.compatibility.ColorfulTabs", true);
 pref("extensions.treestyletab.compatibility.ContextSearch", true);
