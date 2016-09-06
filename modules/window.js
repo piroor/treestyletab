@@ -175,15 +175,6 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		return this.base.treeViewEnabled = aValue;
 	},
  
-	get useTMPSessionAPI() /* PUBLIC API */ 
-	{
-		return this.base.useTMPSessionAPI;
-	},
-	set useTMPSessionAPI(aValue)
-	{
-		return this.base.useTMPSessionAPI = aValue;
-	},
- 
 	get browser() 
 	{
 		var w = this.window;

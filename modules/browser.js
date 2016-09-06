@@ -4711,7 +4711,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	{
 		var behavior = this.undoCloseTabSetBehavior;
 		if (
-			this.useTMPSessionAPI ||
 			this._restoringClosedSet ||
 			!(behavior & this.kUNDO_CLOSE_SET || behavior & this.kUNDO_ASK)
 			)
@@ -7357,12 +7356,12 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
  
 	restoreTree : function TSTBrowser_restoreTree() 
 	{
-		if (!this.needRestoreTree || this.useTMPSessionAPI)
+		if (!this.needRestoreTree)
 			return;
 
 		this.needRestoreTree = false;
 
-		if (this.useTMPSessionAPI && prefs.getPref('extensions.tabmix.sessions.manager'))
+		if (prefs.getPref('extensions.tabmix.sessions.manager'))
 			return;
 
 		var level = utils.getTreePref('restoreTree.level');

@@ -654,12 +654,6 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		catch(e) {
 		}
 
-		if (this.useTMPSessionAPI) {
-			let TMPValue = aTab.getAttribute(this.kTMP_SESSION_DATA_PREFIX+aKey);
-			if (TMPValue)
-				value = TMPValue;
-		}
-
 		return value;
 	},
  
@@ -676,9 +670,6 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		catch(e) {
 		}
 
-		if (this.useTMPSessionAPI)
-			aTab.setAttribute(this.kTMP_SESSION_DATA_PREFIX+aKey, aValue);
-
 		return aValue;
 	},
  
@@ -692,9 +683,6 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		}
 		catch(e) {
 		}
-
-		if (this.useTMPSessionAPI)
-			aTab.removeAttribute(this.kTMP_SESSION_DATA_PREFIX+aKey);
 	},
  
 	// workaround for http://piro.sakura.ne.jp/latest/blosxom/mozilla/extension/treestyletab/2009-09-29_debug.htm
@@ -729,10 +717,6 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			this.deleteTabValue(aTabs[i], this.kCLOSED_SET_ID);
 		}
 	},
- 
-	useTMPSessionAPI : false, 
- 
-	kTMP_SESSION_DATA_PREFIX : 'tmp-session-data-', 
   
 // tab 
 	
