@@ -164,14 +164,13 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 
 		if ('TabmixContext' in window &&
 			typeof TabmixContext.openMultipleLinks == 'function') {
-			eval('TabmixContext.openMultipleLinks = '+
-				TabmixContext.openMultipleLinks.toSource().replace(
-					/(TMP_loadTabs\([^\)]+\);)/g,
-					'TreeStyleTabService.readyToOpenChildTab(gBrowser, true); $1 TreeStyleTabService.stopToOpenChildTab(gBrowser);'
-				)
-			);
+			TabmixContext.__treestyletab__openMultipleLinks = TabmixContext.openMultipleLinks;
+			TabmixContext.openMultipleLinks = function(aCheck, ...aArgs) {
+				if (!aCheck)
+					TreeStyleTabService.readyToOpenChildTabNow(gBrowser, true);
+				return this.__treestyletab__openMultipleLinks(aCheck, ...aArgs);
+			};
 		}
-
 
 		let listener = {
 				handleEvent : function(aEvent)
