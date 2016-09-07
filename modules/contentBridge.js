@@ -192,5 +192,5 @@ ContentBridge.prototype = inherit(TreeStyleTabConstants, {
 		}
 		return aCoordinates;
 	}
-}); 
+}, Object); 
  

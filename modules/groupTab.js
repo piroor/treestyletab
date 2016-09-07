@@ -447,4 +447,4 @@ GroupTab.prototype = inherit(TreeStyleTabBase, {
 
 		this.checkUpdateTreeNow();
 	}
-});
+}, Object);

@@ -102,7 +102,7 @@ var AutoHideConstants = Object.freeze(inherit(TreeStyleTabConstants, {
 	MOUSE_POSITION_INSIDE  : (1 << 1),
 	MOUSE_POSITION_NEAR    : (1 << 2),
 	MOUSE_POSITION_SENSITIVE : (1 << 1) | (1 << 2)
-}));
+}, Object));
 
 
 function AutoHideBase(aTabBrowser) 
@@ -175,7 +175,7 @@ AutoHideBase.prototype = inherit(AutoHideConstants, {
 		this.treeStyleTab.setWindowValue(this.kMODE + '-fullscreen', aValue);
 		return aValue;
 	}
-});
+}, Object);
 
 
 function AutoHideBrowser(aTabBrowser) 
@@ -1576,7 +1576,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 		delete this.window;
 	}
  
-}); 
+}, Object); 
   
 function AutoHideWindow(aWindow) 
 {
@@ -1766,5 +1766,5 @@ AutoHideWindow.prototype = inherit(AutoHideBase.prototype, {
 		}
 	}
  
-}); 
+}, Object); 
   

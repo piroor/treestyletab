@@ -388,7 +388,7 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabConstants, {
 	onItemVisited : function TSTBMService_onItemVisited(aID, aHistoryID, aDate) {},
 	onBeginUpdateBatch : function TSTBMService_onBeginUpdateBatch() {},
 	onEndUpdateBatch : function TSTBMService_onEndUpdateBatch() {}
-});
+}, Object);
 
 
 PlacesUIUtils.__treestyletab__openTabset = PlacesUIUtils._openTabset;

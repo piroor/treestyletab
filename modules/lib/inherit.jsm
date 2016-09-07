@@ -2,10 +2,10 @@
  * @fileOverview inherit, an alternative for __proto__
  * @author       YUKI "Piro" Hiroshi
  * @contributor  Infocatcher
- * @version      3
+ * @version      4
  *
  * @license
- *   The MIT License, Copyright (c) 2014 YUKI "Piro" Hiroshi.
+ *   The MIT License, Copyright (c) 2014-2016 YUKI "Piro" Hiroshi.
  *   https://github.com/piroor/fxaddonlib-inherit/blob/master/LICENSE
  * @url http://github.com/piroor/fxaddonlib-inherit
  */
@@ -21,23 +21,11 @@ function toPropertyDescriptors(aProperties) {
 	return descriptors;
 }
 
-function inherit(aParent, aExtraProperties) {
-	var global;
-	if (Components.utils.getGlobalForObject)
-		global = Components.utils.getGlobalForObject(aParent);
-	else
-		global = aParent.valueOf.call();
-	global = global || this;
-
-	var ObjectClass = global.Object || Object;
-
-	if (!ObjectClass.create) {
-		aExtraProperties = aExtraProperties || new ObjectClass;
-		aExtraProperties.__proto__ = aParent;
-		return aExtraProperties;
-	}
+function inherit(aParent, aExtraProperties, aObjectClass) {
+	aObjectClass = aObjectClass || Object;
 	if (aExtraProperties)
-		return ObjectClass.create(aParent, toPropertyDescriptors(aExtraProperties));
+		return aObjectClass.create(aParent, toPropertyDescriptors(aExtraProperties));
 	else
-		return ObjectClass.create(aParent);
+		return aObjectClass.create(aParent);
 }
+

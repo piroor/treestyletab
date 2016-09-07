@@ -2361,7 +2361,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		);
 	}
    
-}); 
+}, Object); 
   
 TreeStyleTabBase.init(); 
  

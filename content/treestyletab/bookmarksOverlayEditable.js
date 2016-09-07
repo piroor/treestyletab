@@ -420,7 +420,7 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksUIServic
 		}
 	}
 
-});
+}, Object);
 
 window.addEventListener('DOMContentLoaded', TreeStyleTabBookmarksServiceEditable, false);
 ReferenceCounter.add('window,DOMContentLoaded,TreeStyleTabBookmarksServiceEditable,false');

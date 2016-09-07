@@ -93,7 +93,7 @@ var TreeStyleTabBookmarksUIService = inherit(TreeStyleTabService, {
 		}
 	}
 
-});
+}, Object);
 
 TreeStyleTabBookmarksUIService.preInit();
 

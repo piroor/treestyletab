@@ -2046,5 +2046,5 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		}
 	}
   
-}); 
+}, Object); 
   

@@ -7602,5 +7602,5 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		return JSON.parse(json);
 	}
  
-}); 
+}, Object); 
  

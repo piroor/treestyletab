@@ -671,4 +671,4 @@ FullTooltipManager.prototype = inherit(TreeStyleTabBase, {
 			/width|height/.test(aEvent.propertyName))
 			this.changingPropertiesCount--;
 	}
-});
+}, Object);
