@@ -40,6 +40,7 @@
          xmlns:svg="http://www.w3.org/2000/svg">
 
 <script src="res/tabsDragUtils.js" type="application/javascript"/>
+<script src="res/bookmarkMultipleTabs.js" type="application/javascript"/>
 <script src="treestyletab.js" type="application/javascript"/>
 <script src="windowHelper.js" type="application/javascript"/>
 <script src="windowHelperHacks.js" type="application/javascript"/>

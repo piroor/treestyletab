@@ -8,12 +8,10 @@ overlay	chrome://browser/content/places/places.xul	chrome://treestyletab/content
 overlay	chrome://browser/content/places/places.xul	chrome://treestyletab/content/bookmarksOverlayEditable.xul
 overlay	chrome://browser/content/places/bookmarkProperties.xul	chrome://treestyletab/content/bookmarksOverlay.xul
 overlay	chrome://browser/content/places/bookmarkProperties.xul	chrome://treestyletab/content/bookmarksOverlayEditable.xul
+overlay	chrome://browser/content/places/bookmarkProperties.xul	chrome://treestyletab/content/bookmarkPropertiesOverlay.xul
+overlay	chrome://browser/content/places/bookmarkProperties2.xul	chrome://treestyletab/content/bookmarkPropertiesOverlay.xul
 
 overlay	chrome://multipletab/content/config.xul	chrome://treestyletab/content/multipletabConfigOverlay.xul
-
-overlay	chrome://browser/content/browser.xul	chrome://treestyletab/content/res/bookmarkMultipleTabs.xul
-overlay	chrome://browser/content/places/bookmarkProperties.xul	chrome://treestyletab/content/res/bookmarkMultipleTabs_bookmarkPropertiesOverlay.xul
-overlay	chrome://browser/content/places/bookmarkProperties2.xul	chrome://treestyletab/content/res/bookmarkMultipleTabs_bookmarkPropertiesOverlay.xul
 
 locale	treestyletab	en-US	locale/en-US/treestyletab/
 locale	treestyletab	ja	locale/ja/treestyletab/
