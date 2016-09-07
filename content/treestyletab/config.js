@@ -15,8 +15,8 @@ function syncEnabledState(aElement, aEnabled)
 {
 	if (typeof aElement == 'string')
 		aElement = document.getElementById(aElement);
-	if (typeof aEnabled == 'string')
-		aEnabled = (new Function('return '+aEnabled)).call(aElement);
+	if (typeof aEnabled == 'function')
+		aEnabled = aEnabled.call(aElement);
 
 	aElement.getAttribute('sync-enabled-state-targets')
 		.replace(/$\s+|\s+$/g, '')
@@ -291,9 +291,9 @@ function onSyncMaxTreeLevelPrefToUI(aTarget)
 
 function initAutoHidePane()
 {
-	syncEnabledState('extensions.treestyletab.tabbar.autoShow.mousemove-check', 'this.checked');
-	syncEnabledState('extensions.treestyletab.tabbar.autoShow.accelKeyDown-check', 'this.checked');
-	syncEnabledState('extensions.treestyletab.tabbar.autoShow.feedback-check', 'this.checked');
+	syncEnabledState('extensions.treestyletab.tabbar.autoShow.mousemove-check', function() { return this.checked; });
+	syncEnabledState('extensions.treestyletab.tabbar.autoShow.accelKeyDown-check', function() { return this.checked; });
+	syncEnabledState('extensions.treestyletab.tabbar.autoShow.feedback-check', function() { return this.checked; });
 }
 
 function onChangeAutoHideMode(aRadioGroup, aTogglePref)
@@ -305,7 +305,7 @@ function onChangeAutoHideMode(aRadioGroup, aTogglePref)
 
 function initTreePane()
 {
-	syncEnabledState('extensions.treestyletab.closeParentBehavior-radiogroup', 'this.value == 0');
+	syncEnabledState('extensions.treestyletab.closeParentBehavior-radiogroup', function() { return this.value == 0; });
 
 	var focusMode = document.getElementById('extensions.treestyletab.focusMode-check');
 	var focusModePref = document.getElementById('extensions.treestyletab.focusMode');
