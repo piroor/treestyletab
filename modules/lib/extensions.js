@@ -140,7 +140,9 @@ if (typeof window == 'undefined' ||
 			}
 			var instantApply = false;
 			try {
-				instantApply = this._Prefs.getBoolPref('browser.preferences.instantApply');
+				instantApply = Cc['@mozilla.org/preferences;1']
+								.getService(Ci.nsIPrefBranch)
+								.getBoolPref('browser.preferences.instantApply');
 			}
 			catch(e) {
 			}
