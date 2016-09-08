@@ -412,9 +412,8 @@ PlacesUIUtils._openTabset = function(aItemsToOpen, aEvent, aWindow, ...aArgs) {
 	});
 	log('  items => '+aItemsToOpen.length);
 
-	var allArgs = [aItemsToOpen, aEvent, aWindow].concat(aArgs);
 	if (aItemsToOpen.length <= 0)
-		return this.__treestyletab__openTabset.apply(this, allArgs);
+		return this.__treestyletab__openTabset(aItemsToOpen, aEvent, aWindow, ...aArgs);
 
 	var w = aWindow && aWindow.document.documentElement.getAttribute('windowtype') == 'navigator:browser' ?
 			aWindow :
@@ -425,13 +424,13 @@ PlacesUIUtils._openTabset = function(aItemsToOpen, aEvent, aWindow, ...aArgs) {
 	var where = w && w.whereToOpenLink(aEvent, false, true) || 'window';
 	log('  where: '+where);
 	if (where === 'window')
-		return this.__treestyletab__openTabset.apply(this, allArgs);
+		return this.__treestyletab__openTabset(aItemsToOpen, aEvent, aWindow, ...aArgs);
 
 	var result = BS.handleTabsOpenProcess(where, aEvent, w, ids, uris, aItemsToOpen, this.__treestyletab__folderName);
 	log('  result: ', result);
 
 	var tabs = TST.doAndGetNewTabs((function() {
-			this.__treestyletab__openTabset.apply(this, allArgs);
+			this.__treestyletab__openTabset(aItemsToOpen, aEvent, aWindow, ...aArgs);
 		}).bind(this), w.gBrowser);
 	log('  tabs: '+tabs.length);
 
