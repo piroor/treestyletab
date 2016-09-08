@@ -47,7 +47,8 @@ var TreeStyleTabWindowHelper = {
 			TabsInTitlebar._update = function(...aArgs) {
 				// See: https://dxr.mozilla.org/mozilla-central/rev/dbe4b47941c7b3d6298a0ead5e40dd828096c808/browser/base/content/browser-tabsintitlebar.js#104
 				let result = this.__treestyletab__update(...aArgs);
-				if (gBrowser.treeStyleTab.position != 'top')
+				if (gBrowser.treeStyleTab && // possibly not available while the startup process
+					gBrowser.treeStyleTab.position != 'top')
 					document.getElementById('titlebar').style.marginBottom =
 						document.getElementById('titlebar-content').style.marginBottom = '';
 				return result;
