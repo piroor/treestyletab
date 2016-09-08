@@ -297,7 +297,8 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabConstants, {
 		var TST = aBrowserWindow.TreeStyleTabService;
 
 		result.behavior = TST.openGroupBookmarkBehavior();
-		if (result.behavior & this.kGROUP_BOOKMARK_SUBTREE) {
+		if (result.behavior != this.kGROUP_BOOKMARK_CANCEL &&
+			result.behavior & this.kGROUP_BOOKMARK_SUBTREE) {
 			log('handleTabsOpenProcess: open as a group');
 			let treeStructure = result.behavior & this.kGROUP_BOOKMARK_DONT_RESTORE_TREE_STRUCTURE ?
 						null :
@@ -428,6 +429,9 @@ PlacesUIUtils._openTabset = function(aItemsToOpen, aEvent, aWindow, ...aArgs) {
 
 	var result = BS.handleTabsOpenProcess(where, aEvent, w, ids, uris, aItemsToOpen, this.__treestyletab__folderName);
 	log('  result: ', result);
+
+	if (result.behavior == this.kGROUP_BOOKMARK_CANCEL)
+		return;
 
 	var tabs = TST.doAndGetNewTabs((function() {
 			this.__treestyletab__openTabset(aItemsToOpen, aEvent, aWindow, ...aArgs);

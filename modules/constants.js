@@ -235,6 +235,7 @@ var TreeStyleTabConstants = Object.freeze({
 	kGROUP_BOOKMARK_USE_DUMMY_FORCE             : 1024,
 	kGROUP_BOOKMARK_DONT_RESTORE_TREE_STRUCTURE : 512,
 	kGROUP_BOOKMARK_EXPAND_ALL_TREE             : 2048,
+	kGROUP_BOOKMARK_CANCEL    : -1,
 
 
 	CONTENT_SCRIPT          : 'chrome://treestyletab/content/content-utils.js',

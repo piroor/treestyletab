@@ -335,7 +335,8 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			);
 
 		if (button < 0)
-			button = 1;
+			return this.kGROUP_BOOKMARK_CANCEL;
+
 		var behaviors = [
 				this.kGROUP_BOOKMARK_SUBTREE | dummyTabFlag,
 				this.kGROUP_BOOKMARK_SEPARATE
