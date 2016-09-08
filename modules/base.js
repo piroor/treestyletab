@@ -326,11 +326,11 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 				utils.treeBundle.getString('openGroupBookmarkBehavior.title'),
 				utils.treeBundle.getString('openGroupBookmarkBehavior.text'),
 				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_0) |
-				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_1) |
-				(Services.prompt.BUTTON_TITLE_CANCEL * Services.prompt.BUTTON_POS_2),
+				(Services.prompt.BUTTON_TITLE_CANCEL * Services.prompt.BUTTON_POS_1) |
+				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_2),
 				utils.treeBundle.getString('openGroupBookmarkBehavior.subTree'),
-				utils.treeBundle.getString('openGroupBookmarkBehavior.separate'),
 				'',
+				utils.treeBundle.getString('openGroupBookmarkBehavior.separate'),
 				utils.treeBundle.getString('openGroupBookmarkBehavior.never'),
 				checked
 			);
@@ -340,8 +340,8 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 
 		var behaviors = [
 				this.kGROUP_BOOKMARK_SUBTREE | dummyTabFlag,
-				this.kGROUP_BOOKMARK_SEPARATE,
-				this.kGROUP_BOOKMARK_CANCEL
+				this.kGROUP_BOOKMARK_CANCEL,
+				this.kGROUP_BOOKMARK_SEPARATE
 			];
 		behavior = behaviors[button];
 
