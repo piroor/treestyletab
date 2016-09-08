@@ -325,6 +325,8 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		var button = Services.prompt.confirmEx(this.browserWindow,
 				utils.treeBundle.getString('openGroupBookmarkBehavior.title'),
 				utils.treeBundle.getString('openGroupBookmarkBehavior.text'),
+				// The "cancel" button must pe placed as the second button
+				// due to the bug: https://bugzilla.mozilla.org/show_bug.cgi?id=345067
 				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_0) |
 				(Services.prompt.BUTTON_TITLE_CANCEL * Services.prompt.BUTTON_POS_1) |
 				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_2),
