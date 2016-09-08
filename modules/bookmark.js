@@ -430,7 +430,7 @@ PlacesUIUtils._openTabset = function(aItemsToOpen, aEvent, aWindow, ...aArgs) {
 	var result = BS.handleTabsOpenProcess(where, aEvent, w, ids, uris, aItemsToOpen, this.__treestyletab__folderName);
 	log('  result: ', result);
 
-	if (result.behavior == this.kGROUP_BOOKMARK_CANCEL)
+	if (result.behavior == TST.kGROUP_BOOKMARK_CANCEL)
 		return;
 
 	var tabs = TST.doAndGetNewTabs((function() {
