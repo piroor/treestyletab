@@ -327,7 +327,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 				utils.treeBundle.getString('openGroupBookmarkBehavior.text'),
 				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_0) |
 				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_1) |
-				(Services.prompt.BUTTON_TITLE_CACNEL * Services.prompt.BUTTON_POS_2),
+				(Services.prompt.BUTTON_TITLE_CANCEL * Services.prompt.BUTTON_POS_2),
 				utils.treeBundle.getString('openGroupBookmarkBehavior.subTree'),
 				utils.treeBundle.getString('openGroupBookmarkBehavior.separate'),
 				'',
