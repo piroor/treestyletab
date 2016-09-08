@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Failed to initialize the browser window with a preference: `browser.tabs.drawInTitlebar`=`false` (regression on 0.18.2016090601.)
  - 0.18.2016090801
    * The dialog to choose how tabs to be opened from a bookmark folder is now cancelable.
      (If you choose the "Cancel" button, the operation will be totally canceled and no tab will be opened.)
