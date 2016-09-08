@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * The dialog to choose how tabs to be opened from a bookmark folder is now cancelable.
+     (If you choose the "Cancel" button, the operation will be totally canceled and no tab will be opened.)
+   * Isolate codes from `new Function()`.
  - 0.18.2016090601
    * Isolate codes from `eval()` hack.
    * Drop support for Firefox 44 and older versions.
