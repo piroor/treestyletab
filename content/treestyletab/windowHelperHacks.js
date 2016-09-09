@@ -584,46 +584,60 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 		TreeStyleTabUtils.getTreePref('compatibility.PersonalTitlebar')) {
 		let titlebar = document.getElementById('titlebar');
 		let personalTitlebar = document.getElementById('personal-titlebar');
+		let MutationObserver = window.MutationObserver || window.MozMutationObserver;
 		let listener = {
 				handleEvent : function(aEvent)
 				{
 					switch (aEvent.type)
 					{
 						case 'beforecustomization':
-							titlebar.removeEventListener('DOMAttrModified', this, true);
+							this.handleMutation = false;
 							gBrowser.treeStyleTab.destroyTabStrip(personalTitlebar);
 							break;
 
 						case 'aftercustomization':
-							titlebar.addEventListener('DOMAttrModified', this, true);
-							break;
-
-						case 'DOMAttrModified':
-							if (
-								aEvent.attrName == 'hidden' &&
-								gBrowser.tabContainer.parentNode.id == (aEvent.newValue == 'true' ? 'toolbar-menubar' : 'personal-titlebar' )
-								) {
-								gBrowser.treeStyleTab.destroyTabbar()
-									.then(function() {
-										gBrowser.treeStyleTab.reinitTabbar();
-									});
-							}
+							this.handleMutation = true;
 							break;
 
 						case 'unload':
-							titlebar.removeEventListener('DOMAttrModified', this, true);
+							observer.disconnect();
+							observer = null;
 							document.removeEventListener('beforecustomization', this, false);
 							document.removeEventListener('aftercustomization', this, false);
 							document.removeEventListener('unload', this, false);
 							personalTitlebar = null;
 							break;
 					}
+				},
+				handleMutation : true,
+				onMutation : function(aMutations, aObserver)
+				{
+					if (!this.handleMutation)
+						return;
+
+					aMutations.forEach(function(aMutation) {
+						var newValue = aMutation.target.getAttribute('hidden');
+						var expectedParent = newValue == 'true' ? 'toolbar-menubar' : 'personal-titlebar' ;
+						if (gBrowser.tabContainer.parentNode.id == expectedParent)
+							gBrowser.treeStyleTab.destroyTabbar()
+								.then(function() {
+									gBrowser.treeStyleTab.reinitTabbar();
+								});
+					}, this);
 				}
 			};
+		let observer = new MutationObserver((function(aMutations, aObserver) {
+			listener.onMutation(aMutations, aObserver);
+		}).bind(this));
+		observer.observe(titlebar, {
+			attributes      : true,
+			attributeFilter : [
+				'hidden'
+			]
+		});
 		document.addEventListener('beforecustomization', listener, false);
 		document.addEventListener('aftercustomization', listener, false);
 		document.addEventListener('unload', listener, false);
-		titlebar.addEventListener('DOMAttrModified', listener, true);
 	}
 
 	// Tab Control
