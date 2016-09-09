@@ -364,6 +364,12 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
 	width: 16px;
 }
 
+/* sharing overlay icon */
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tab-content[pinned="true"] > image.tab-sharing-icon-overlay {
+	margin-left: -16px;
+}
+
 /* overlay icon: because TST applies "min-height:2em" for tabs, overlay icons also should be rendered based on the "em" scale. */
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-content[pinned="true"] > image.tab-icon-overlay {
