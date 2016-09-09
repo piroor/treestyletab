@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Show microphone icon on Nightly 51.0a1 in pinned tabs are correctly shown.
  - 0.18.2016090802
    * Failed to initialize the browser window with a preference: `browser.tabs.drawInTitlebar`=`false` (regression on 0.18.2016090601.)
  - 0.18.2016090801
