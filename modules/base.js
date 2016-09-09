@@ -54,10 +54,6 @@ XPCOMUtils.defineLazyGetter(this, 'prefs', function() {
 	Cu.import('resource://treestyletab-modules/lib/prefs.js');
 	return window['piro.sakura.ne.jp'].prefs;
 });
-XPCOMUtils.defineLazyGetter(this, 'extensions', function() {
-	Cu.import('resource://treestyletab-modules/lib/extensions.js', {});
-	return window['piro.sakura.ne.jp'].extensions;
-});
 XPCOMUtils.defineLazyGetter(this, 'animationManager', function() {
 	Cu.import('resource://treestyletab-modules/lib/animationManager.js', {});
 	return window['piro.sakura.ne.jp'].animationManager;
@@ -117,7 +113,6 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		return SessionStore;
 	},
 
-	get extensions() { return extensions; },
 	get animationManager() { return animationManager; },
 	get autoScroll() { return autoScroll; },
 	get AeroPeek() { return AeroPeek; }, // for Windows

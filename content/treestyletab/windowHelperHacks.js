@@ -100,6 +100,7 @@ TreeStyleTabWindowHelper.overrideExtensionsBeforeBrowserInit = function TSTWH_ov
 
 TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_overrideExtensionsAfterBrowserInit() {
 	var sv = this.service;
+	var { AddonManager } = Component.utils.import('resource://gre/modules/AddonManager.jsm', {});
 
 	// Selection Links
 	// https://addons.mozilla.org/firefox/addon/selection-links/
@@ -244,11 +245,12 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// Focus Last Selected Tab 0.9.5.x
 	// http://www.gozer.org/mozilla/extensions/
 	if (TreeStyleTabUtils.getTreePref('compatibility.FocusLastSelectedTab')) {
-		sv.extensions.isAvailable('focuslastselectedtab@gozer.org', { ok : function() {
-			TreeStyleTabService.registerTabFocusAllowance(function(aTabBrowser) {
-				return !aTabBrowser.selectedTab.hasAttribute('lastselected');
-			});
-		}});
+		AddonManager.getAddonById('focuslastselectedtab@gozer.org', function(aAddon) {
+			if (aAddon && aAddon.isAvailable)
+				TreeStyleTabService.registerTabFocusAllowance(function(aTabBrowser) {
+					return !aTabBrowser.selectedTab.hasAttribute('lastselected');
+				});
+		});
 	}
 
 	// LastTab
@@ -443,9 +445,10 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// Remove New Tab Button
 	// https://addons.mozilla.org/firefox/addon/remove-new-tab-button/
 	if (TreeStyleTabUtils.getTreePref('compatibility.RemoveNewTabButton')) {
-		sv.extensions.isAvailable('remove-new-tab-button@forerunnerdesigns.com', { ok : function() {
-			document.documentElement.setAttribute(TreeStyleTabService.kHIDE_NEWTAB, true);
-		}});
+		AddonManager.getAddonById('remove-new-tab-button@forerunnerdesigns.com', function(aAddon) {
+			if (aAddon && aAddon.isAvailable)
+				document.documentElement.setAttribute(TreeStyleTabService.kHIDE_NEWTAB, true);
+		});
 	}
 
 	// InstaClick
@@ -554,13 +557,6 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 		var t = gBrowser.treeStyleTab.getFirstTab(gBrowser);
 		gBrowser.treeStyleTab.initTabAttributes(t);
 		gBrowser.treeStyleTab.initTabContentsOrder(t);
-
-		gBrowser.__treestyletab__openInverseLink = gBrowser.openInverseLink;
-		gBrowser.openInverseLink = function(...aArgs) {
-			TreeStyleTabService.readyToOpenChildTabNow(gBrowser);
-			return this.__treestyletab__openInverseLink(...aArgs);
-		};
-
 		gBrowser.treeStyleTab.internallyTabMovingCount--;
 	}
 

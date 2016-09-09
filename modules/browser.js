@@ -50,6 +50,7 @@ Cu.import('resource://treestyletab-modules/ReferenceCounter.js');
 
 XPCOMUtils.defineLazyModuleGetter(this, 'Services', 'resource://gre/modules/Services.jsm');
 XPCOMUtils.defineLazyModuleGetter(this, 'Promise', 'resource://gre/modules/Promise.jsm');
+XPCOMUtils.defineLazyModuleGetter(this, 'AddonManager', 'resource://gre/modules/AddonManager.jsm');
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 XPCOMUtils.defineLazyModuleGetter(this, 'FullTooltipManager', 'resource://treestyletab-modules/fullTooltip.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'TabbarDNDObserver', 'resource://treestyletab-modules/tabbarDNDObserver.js');
@@ -2970,16 +2971,15 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			prefs.getPref('extensions.informationaltab.thumbnail.enabled') &&
 			prefs.getPref('extensions.informationaltab.thumbnail.position') < 100
 			) {
-			let self = this;
-			this.extensions.isAvailable('informationaltab@piro.sakura.ne.jp', {
-				ok : function() {
+			AddonManager.getAddonByID('informationaltab@piro.sakura.ne.jp', (function(aAddon) {
+				if (aAddon) {
 					aStyle = 'retro';
-					self.setTabbrowserAttribute(self.kTWISTY_STYLE, aStyle);
-				},
-				ng : function() {
-					self.setTabbrowserAttribute(self.kTWISTY_STYLE, aStyle);
+					this.setTabbrowserAttribute(this.kTWISTY_STYLE, aStyle);
 				}
-			});
+				else {
+					this.setTabbrowserAttribute(this.kTWISTY_STYLE, aStyle);
+				}
+			}).bind(this));
 			return;
 		}
 
