@@ -1411,8 +1411,18 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		if (!tab || tab.getAttribute('pinned') == 'true')
 			return false;
 
+		var nextTab = (function findNextSiblingTab(aTab) {
+				if (!aTab)
+					return null;
+
+				var nextTab = this.getNextSiblingTab(aTab);
+				if (nextTab)
+					return nextTab;
+
+				return findNextSiblingTab.call(this, this.getParentTab(aTab));
+			}).call(this, tab);
+
 		var parentTab = this.getParentTab(tab);
-		var nextTab = this.getNextSiblingTab(tab) || this.getNextTab(tab);
 		if (parentTab) {
 			/**
 			 * If the base tab has a parent, open the new tab as a child of
