@@ -245,7 +245,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// Focus Last Selected Tab 0.9.5.x
 	// http://www.gozer.org/mozilla/extensions/
 	if (TreeStyleTabUtils.getTreePref('compatibility.FocusLastSelectedTab')) {
-		AddonManager.getAddonById('focuslastselectedtab@gozer.org', function(aAddon) {
+		AddonManager.getAddonByID('focuslastselectedtab@gozer.org', function(aAddon) {
 			if (aAddon && aAddon.isAvailable)
 				TreeStyleTabService.registerTabFocusAllowance(function(aTabBrowser) {
 					return !aTabBrowser.selectedTab.hasAttribute('lastselected');
@@ -445,7 +445,7 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	// Remove New Tab Button
 	// https://addons.mozilla.org/firefox/addon/remove-new-tab-button/
 	if (TreeStyleTabUtils.getTreePref('compatibility.RemoveNewTabButton')) {
-		AddonManager.getAddonById('remove-new-tab-button@forerunnerdesigns.com', function(aAddon) {
+		AddonManager.getAddonByID('remove-new-tab-button@forerunnerdesigns.com', function(aAddon) {
 			if (aAddon && aAddon.isAvailable)
 				document.documentElement.setAttribute(TreeStyleTabService.kHIDE_NEWTAB, true);
 		});
