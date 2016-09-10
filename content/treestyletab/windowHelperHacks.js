@@ -100,7 +100,7 @@ TreeStyleTabWindowHelper.overrideExtensionsBeforeBrowserInit = function TSTWH_ov
 
 TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_overrideExtensionsAfterBrowserInit() {
 	var sv = this.service;
-	var { AddonManager } = Component.utils.import('resource://gre/modules/AddonManager.jsm', {});
+	var { AddonManager } = Components.utils.import('resource://gre/modules/AddonManager.jsm', {});
 
 	// Selection Links
 	// https://addons.mozilla.org/firefox/addon/selection-links/
