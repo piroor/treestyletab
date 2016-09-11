@@ -48,9 +48,19 @@ var TreeStyleTabWindowHelper = {
 				// See: https://dxr.mozilla.org/mozilla-central/rev/dbe4b47941c7b3d6298a0ead5e40dd828096c808/browser/base/content/browser-tabsintitlebar.js#104
 				let result = this.__treestyletab__update(...aArgs);
 				if (gBrowser.treeStyleTab && // possibly not available while the startup process
-					gBrowser.treeStyleTab.position != 'top')
+					gBrowser.treeStyleTab.position == 'top') {
+					let heightOfItemsInTitlebar = 0;
+					if (AppConstants.platform != 'macosx') {
+						let menubar = document.getElementById('toolbar-menubar');
+						let style = window.getComputedStyle(menubar);
+						heightOfItemsInTitlebar = menubar.boxObject.height +
+													parseFloat(style.marginTop) +
+													parseFloat(style.marginBottom);
+					}
+					let marginBottom = heightOfItemsInTitlebar ? '-' + heightOfItemsInTitlebar + 'px' : '' ;
 					document.getElementById('titlebar').style.marginBottom =
-						document.getElementById('titlebar-content').style.marginBottom = '';
+						document.getElementById('titlebar-content').style.marginBottom = marginBottom;
+				}
 				return result;
 			};
 		}
