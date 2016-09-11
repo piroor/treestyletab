@@ -1,5 +1,5 @@
 <!--
-NOTE: Please read the guidline to open a new issue at first.
+NOTE: Please read the guideline to open a new issue at first.
 https://github.com/piroor/treestyletab/blob/master/CONTRIBUTING.md
 -->
 
