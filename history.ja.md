@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+   * Metalテーマでピン留めされていて且つ選択されたタブの見た目が崩れる問題を修正([Many thanks to Andrew Shu!](https://github.com/piroor/treestyletab/pull/1192#issuecomment-246750871))
    * Nightly 51.0a1において、ピン留めされたタブ内の録音ボタンの表示が崩れていたのを守勢
  - 0.18.2016090802
    * `browser.tabs.drawInTitlebar`=`false`の設定の時にブラウザウィンドウの初期化に失敗する問題を修正（0.18.2016090601以降での後退バグ）
