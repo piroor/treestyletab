@@ -635,8 +635,10 @@ TDUContext.destroy();
 			aEvent.stopPropagation();
 
 			if (aOptions.shrinkOthers) {
-			document.addEventListener('dragend', this, true);
-			document.addEventListener('drop', this, true);
+				document.addEventListener('dragend', this, true);
+				document.addEventListener('drop', this, true);
+				document.addEventListener('overflow', this, true);
+				document.addEventListener('underflow', this, true);
 			}
 		},
 		isVertical : function TDS_isVertical(aElement)
@@ -891,7 +893,17 @@ TDUContext.destroy();
 				case 'drop':
 					document.removeEventListener('dragend', this, true);
 					document.removeEventListener('drop', this, true);
+					document.removeEventListener('overflow', this, true);
+					document.removeEventListener('underflow', this, true);
 					return this.clearDraggingStyles(aEvent);
+
+				case 'overflow':
+				case 'underflow':
+					if (aEvent.target.localName == 'tab') {
+						// this must be canceled to prevent the "+" button in the tab bar turns its mode.
+						aEvent.stopPropagation();
+					}
+					return;
 			}
 		},
 
