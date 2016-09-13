@@ -196,23 +196,6 @@
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:not(:hover)
-  .tab-content[pinned],
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab:hover
-  .tab-content[pinned],
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[visuallyselected]:not(:hover)
-  .tab-content[pinned],
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[visuallyselected]:hover
-  .tab-content[pinned] {
-	-moz-border-image: none !important;
-	border-image: none !important;
-	margin: 0 !important;
-	padding: 0 !important;
-}
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab:not(:hover)
   .tab-content[pinned]:not([titlechanged]),
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab:hover
