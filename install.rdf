@@ -34,7 +34,7 @@
           <em:contributor>Xidorn Quan (Firefox 40+ support)</em:contributor>
           <em:contributor>J. Ryan Stinnett (bug fix around tearing off of multiple tabs)</em:contributor>
           <em:contributor>lv7777</em:contributor>
-          <em:contributor>Andrew Shu (fix for styling of pinned tabs at the "Metal" skin)</em:contributor>
+          <em:contributor>Andrew Shu (better styling of tabs with the "Metal" skin on macOS)</em:contributor>
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -52,7 +52,7 @@
           <em:contributor>Xidorn Quan (Firefox 40+ support)</em:contributor>
           <em:contributor>J. Ryan Stinnett (bug fix around tearing off of multiple tabs)</em:contributor>
           <em:contributor>lv7777</em:contributor>
-          <em:contributor>Andrew Shu (fix for styling of pinned tabs at the "Metal" skin)</em:contributor>
+          <em:contributor>Andrew Shu (better styling of tabs with the "Metal" skin on macOS)</em:contributor>
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -70,7 +70,7 @@
           <em:contributor>Xidorn Quan (Firefox 40+ support)</em:contributor>
           <em:contributor>J. Ryan Stinnett (bug fix around tearing off of multiple tabs)</em:contributor>
           <em:contributor>lv7777</em:contributor>
-          <em:contributor>Andrew Shu (fix for styling of pinned tabs at the "Metal" skin)</em:contributor>
+          <em:contributor>Andrew Shu (better styling of tabs with the "Metal" skin on macOS)</em:contributor>
           <em:translator>Godai71.Extenzilla (it-IT locale)</em:translator>
       </RDF:Description>
     </em:localized>
@@ -89,7 +89,7 @@
           <em:contributor>Xidorn Quan (Firefox 40+ support)</em:contributor>
           <em:contributor>J. Ryan Stinnett (bug fix around tearing off of multiple tabs)</em:contributor>
           <em:contributor>lv7777</em:contributor>
-          <em:contributor>Andrew Shu (fix for styling of pinned tabs at the "Metal" skin)</em:contributor>
+          <em:contributor>Andrew Shu (better styling of tabs with the "Metal" skin on macOS)</em:contributor>
           <em:translator>Fatiaomao (zh-CN locale)</em:translator>
           <em:translator>hzhbest (zh-CN locale)</em:translator>
       </RDF:Description>
@@ -109,7 +109,7 @@
           <em:contributor>Xidorn Quan (Firefox 40+ support)</em:contributor>
           <em:contributor>J. Ryan Stinnett (bug fix around tearing off of multiple tabs)</em:contributor>
           <em:contributor>lv7777</em:contributor>
-          <em:contributor>Andrew Shu (fix for styling of pinned tabs at the "Metal" skin)</em:contributor>
+          <em:contributor>Andrew Shu (better styling of tabs with the "Metal" skin on macOS)</em:contributor>
           <em:translator>tito (es-ES locale)</em:translator>
       </RDF:Description>
     </em:localized>
@@ -128,7 +128,7 @@
           <em:contributor>Xidorn Quan (Firefox 40+ support)</em:contributor>
           <em:contributor>J. Ryan Stinnett (bug fix around tearing off of multiple tabs)</em:contributor>
           <em:contributor>lv7777</em:contributor>
-          <em:contributor>Andrew Shu (fix for styling of pinned tabs at the "Metal" skin)</em:contributor>
+          <em:contributor>Andrew Shu (better styling of tabs with the "Metal" skin on macOS)</em:contributor>
           <em:translator>Andy Pillip (de-DE locale)</em:translator>
           <em:translator>Björn Kautler (de-DE locale)</em:translator>
       </RDF:Description>
@@ -148,7 +148,7 @@
           <em:contributor>Xidorn Quan (Firefox 40+ support)</em:contributor>
           <em:contributor>J. Ryan Stinnett (bug fix around tearing off of multiple tabs)</em:contributor>
           <em:contributor>lv7777</em:contributor>
-          <em:contributor>Andrew Shu (fix for styling of pinned tabs at the "Metal" skin)</em:contributor>
+          <em:contributor>Andrew Shu (better styling of tabs with the "Metal" skin on macOS)</em:contributor>
           <em:translator>HkYtrewq (zh-TW locale)</em:translator>
           <em:translator>Tsprajna (zh-TW locale)</em:translator>
           <em:translator>bootleq (zh-TW locale)</em:translator>
@@ -169,7 +169,7 @@
           <em:contributor>Xidorn Quan (Firefox 40+ support)</em:contributor>
           <em:contributor>J. Ryan Stinnett (bug fix around tearing off of multiple tabs)</em:contributor>
           <em:contributor>lv7777</em:contributor>
-          <em:contributor>Andrew Shu (fix for styling of pinned tabs at the "Metal" skin)</em:contributor>
+          <em:contributor>Andrew Shu (better styling of tabs with the "Metal" skin on macOS)</em:contributor>
           <em:translator>L'Autour (ru locale)</em:translator>
           <em:translator>Infocatcher (ru locale)</em:translator>
       </RDF:Description>
@@ -189,7 +189,7 @@
           <em:contributor>Xidorn Quan (Firefox 40+ support)</em:contributor>
           <em:contributor>J. Ryan Stinnett (bug fix around tearing off of multiple tabs)</em:contributor>
           <em:contributor>lv7777</em:contributor>
-          <em:contributor>Andrew Shu (fix for styling of pinned tabs at the "Metal" skin)</em:contributor>
+          <em:contributor>Andrew Shu (better styling of tabs with the "Metal" skin on macOS)</em:contributor>
           <em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
       </RDF:Description>
     </em:localized>
@@ -208,7 +208,7 @@
           <em:contributor>Xidorn Quan (Firefox 40+ support)</em:contributor>
           <em:contributor>J. Ryan Stinnett (bug fix around tearing off of multiple tabs)</em:contributor>
           <em:contributor>lv7777</em:contributor>
-          <em:contributor>Andrew Shu (fix for styling of pinned tabs at the "Metal" skin)</em:contributor>
+          <em:contributor>Andrew Shu (better styling of tabs with the "Metal" skin on macOS)</em:contributor>
           <em:translator>Laurent Haas (fr-FR locale)</em:translator>
           <em:translator>AxlMun (fr-FR locale)</em:translator>
       </RDF:Description>
@@ -228,7 +228,7 @@
           <em:contributor>Xidorn Quan (Firefox 40+ support)</em:contributor>
           <em:contributor>J. Ryan Stinnett (bug fix around tearing off of multiple tabs)</em:contributor>
           <em:contributor>lv7777</em:contributor>
-          <em:contributor>Andrew Shu (fix for styling of pinned tabs at the "Metal" skin)</em:contributor>
+          <em:contributor>Andrew Shu (better styling of tabs with the "Metal" skin on macOS)</em:contributor>
           <em:translator>Mikael Hiort af Ornäs (sv-SE)</em:translator>
       </RDF:Description>
     </em:localized>
@@ -247,7 +247,7 @@
           <em:contributor>Xidorn Quan (Firefox 40+ support)</em:contributor>
           <em:contributor>J. Ryan Stinnett (bug fix around tearing off of multiple tabs)</em:contributor>
           <em:contributor>lv7777</em:contributor>
-          <em:contributor>Andrew Shu (fix for styling of pinned tabs at the "Metal" skin)</em:contributor>
+          <em:contributor>Andrew Shu (better styling of tabs with the "Metal" skin on macOS)</em:contributor>
           <em:translator>Regmos (da-DK)</em:translator>
       </RDF:Description>
     </em:localized>
@@ -266,7 +266,7 @@
             <em:contributor>Xidorn Quan (Firefox 40+ support)</em:contributor>
             <em:contributor>J. Ryan Stinnett (bug fix around tearing off of multiple tabs)</em:contributor>
             <em:contributor>lv7777</em:contributor>
-          <em:contributor>Andrew Shu (fix for styling of pinned tabs at the "Metal" skin)</em:contributor>
+          <em:contributor>Andrew Shu (better styling of tabs with the "Metal" skin on macOS)</em:contributor>
             <em:translator>Vlastimil Ovčáčík (cs)</em:translator>
         </RDF:Description>
     </em:localized>
