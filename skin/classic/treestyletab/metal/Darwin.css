@@ -5,8 +5,8 @@
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab
   .tab-close-button {
-	padding-left: 0 !important;
-	padding-right: 0 !important;
+	padding: 0 !important;
+	margin-top: -1px !important;
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
