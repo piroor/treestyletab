@@ -15,7 +15,7 @@
    http://github.com/piroor/fxaddonlib-tabs-drag-utils
 */
 (function() {
-	const currentRevision = 41;
+	const currentRevision = 42;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -432,7 +432,31 @@ TDUContext.destroy();
 		},
 		updateDraggedTabs : function TDU_updateDraggedTabs(context)
 		{
-			context.draggedTabs.forEach(function(draggedTab) {
+			context.draggedTabs.forEach(function(draggedTab, aIndex) {
+				if (aIndex > 0) {
+					let style = draggedTab.style;
+					if (!draggedTab.__tabsDragUtils__backupStyle) {
+						let backup = {
+							overflow : {
+								value    : style.getPropertyValue('overflow'),
+								priority : style.getPropertyPriority('overflow')
+							}
+						};
+						backup['max-'+context.rowSize] = {
+							value    : style.getPropertyValue('max-'+context.rowSize),
+							priority : style.getPropertyPriority('max-'+context.rowSize)
+						};
+						backup['min-'+context.rowSize] = {
+							value    : style.getPropertyValue('min-'+context.rowSize),
+							priority : style.getPropertyPriority('min-'+context.rowSize)
+						};
+						draggedTab.__tabsDragUtils__backupStyle = backup;
+					}
+					let size = draggedTab.boxObject[context.rowSize] * 0.1;
+					style.setProperty('max-'+context.rowSize, size + 'px', 'important');
+					style.setProperty('min-'+context.rowSize, size + 'px', 'important');
+					style.setProperty('overflow', 'hidden', 'important');
+				}
 				draggedTab._dragData.animLastScreenX = context.currentPositionCoordinate;
 			}, this);
 		},
@@ -604,6 +628,9 @@ TDUContext.destroy();
 			}
 
 			aEvent.stopPropagation();
+
+			document.addEventListener('dragend', this, true);
+			document.addEventListener('drop', this, true);
 		},
 		isVertical : function TDS_isVertical(aElement)
 		{
@@ -729,6 +756,22 @@ TDUContext.destroy();
 			return false;
 		},
 
+		clearDraggingStyles : function TDU_clearDraggingStyles(aEvent)
+		{
+			var tabbar = this.getTabbarFromEvent(aEvent);
+			Array.forEach(tabbar.childNodes, function(aTab) {
+				let backup = aTab.__tabsDragUtils__backupStyle;
+				if (!backup)
+					return;
+
+				let style = aTab.style;
+				Object.keys(backup).forEach(function(aKey) {
+					style.setProperty(aKey, backup[aKey].value, backup[aKey].priority);
+				});
+				delete aTab.__tabsDragUtils__backupStyle;
+			}, this);
+		},
+
 		isTabsDragging : function TDU_isTabsDragging(aEvent) 
 		{
 			if (!aEvent)
@@ -836,6 +879,12 @@ TDUContext.destroy();
 			{
 				case 'load':
 					return this._delayedInit();
+
+				case 'dragend':
+				case 'drop':
+					document.removeEventListener('dragend', this, true);
+					document.removeEventListener('drop', this, true);
+					return this.clearDraggingStyles(aEvent);
 			}
 		},
 
