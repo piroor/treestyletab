@@ -672,6 +672,11 @@ pref("extensions.treestyletab.groupTab.columnize", true);
 pref("extensions.treestyletab.groupTab.columnize.width", "20em");
 
 /**
+ * If true, other dragged tabs are shrunken while dragging.
+ */
+pref("extensions.treestyletab.shrinkOtherDraggedTabs", true);
+
+/**
  * If true, TST automatically disables Tabs in Titlebar appearance to avoid
  * broken appearance problems.
  */

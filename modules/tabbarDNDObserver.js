@@ -773,7 +773,9 @@ catch(e) {
 			)
 			return;
 
-		w['piro.sakura.ne.jp'].tabsDragUtils.startTabsDrag(aEvent, tabsInfo.draggedTabs);
+		w['piro.sakura.ne.jp'].tabsDragUtils.startTabsDrag(aEvent, tabsInfo.draggedTabs, {
+			shrinkOthers : utils.getTreePref('shrinkOtherDraggedTabs')
+		});
 	},
  
 	onTabbarDragStart : function TabbarDND_onTabbarDragStart(aEvent) 

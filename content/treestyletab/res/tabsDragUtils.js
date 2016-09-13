@@ -5,7 +5,9 @@
    window['piro.sakura.ne.jp'].tabsDragUtils.initTabBrowser(gBrowser);
 
    // in dragstart event listener
-   window['piro.sakura.ne.jp'].tabsDragUtils.startTabsDrag(aEvent, aArrayOfTabs);
+   window['piro.sakura.ne.jp'].tabsDragUtils.startTabsDrag(aEvent, aArrayOfTabs, {
+     shrinkOthers : true // shrink other dragged tabs while dragging
+   });
 
  This Source Code Form is subject to the terms of the Mozilla Public
  License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -433,7 +435,7 @@ TDUContext.destroy();
 		updateDraggedTabs : function TDU_updateDraggedTabs(context)
 		{
 			context.draggedTabs.forEach(function(draggedTab, aIndex) {
-				if (aIndex > 0) {
+				if (draggedTab._dragData.canShrink && aIndex > 0) {
 					let style = draggedTab.style;
 					if (!draggedTab.__tabsDragUtils__backupStyle) {
 						let backup = {
@@ -582,8 +584,10 @@ TDUContext.destroy();
 				this.updatedTabDNDObservers = this.updatedTabDNDObservers.splice(index, 1);
 		},
 
-		startTabsDrag : function TDU_startTabsDrag(aEvent, aTabs)
+		startTabsDrag : function TDU_startTabsDrag(aEvent, aTabs, aOptions)
 		{
+			aOptions = aOptions || {};
+
 			var draggedTab = this.getTabFromEvent(aEvent);
 			var tabs = aTabs || [];
 			var index = tabs.indexOf(draggedTab);
@@ -622,15 +626,18 @@ TDUContext.destroy();
 						scrollX: isVertical ? 0 : tabbar.mTabstrip.scrollPosition ,
 						scrollY: isVertical ? tabbar.mTabstrip.scrollPosition : 0 ,
 						screenX: aEvent.screenX,
-						screenY: aEvent.screenY
+						screenY: aEvent.screenY,
+						canShrink : aOptions.shrinkOthers || false
 					};
 				}, this);
 			}
 
 			aEvent.stopPropagation();
 
+			if (aOptions.shrinkOthers) {
 			document.addEventListener('dragend', this, true);
 			document.addEventListener('drop', this, true);
+			}
 		},
 		isVertical : function TDS_isVertical(aElement)
 		{
