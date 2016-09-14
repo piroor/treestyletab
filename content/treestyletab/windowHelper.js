@@ -477,7 +477,7 @@ var TreeStyleTabWindowHelper = {
 				firstTabAdded = tabs[0];
 			}
 			finally {
-				if (!aReplace && firstTabAdded) {
+				if (!aLoadInBackground && !aReplace && firstTabAdded) {
 					this.selectedTab = aURIs[0].indexOf('about:treestyletab-group') == 0 ?
 						TreeStyleTabService.getNextTab(firstTabAdded) :
 						firstTabAdded;
