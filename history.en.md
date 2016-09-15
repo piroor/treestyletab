@@ -2,7 +2,7 @@
 
  - master/HEAD
    * Better styling of tabs with the "Metal" skin on macOS (OS X). (Many thanks to Andrew Shu! [patch 1](https://github.com/piroor/treestyletab/pull/1192), [patch 2](https://github.com/piroor/treestyletab/pull/1194))
-   * Show microphone icon on Nightly 51.0a1 in pinned tabs are correctly shown.
+   * Show microphone icon on Nightly 51.0a1 in pinned tabs correctly.
  - 0.18.2016090802
    * Failed to initialize the browser window with a preference: `browser.tabs.drawInTitlebar`=`false` (regression on 0.18.2016090601.)
  - 0.18.2016090801
