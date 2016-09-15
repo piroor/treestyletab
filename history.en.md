@@ -1,8 +1,13 @@
 # History
 
  - master/HEAD
+   * New background tabs are opened correctly. (The first opened tab was opened in the foreground unexpectedly.)
+   * Shrink other dragged tabs while dragging. (experimental feature)
+   * Better handling of "Tabs in Titlebar" feature of Firefox itself.
+   * Open new tab as a next sibling morecorrectly.
    * Better styling of tabs with the "Metal" skin on macOS (OS X). (Many thanks to Andrew Shu! [patch 1](https://github.com/piroor/treestyletab/pull/1192), [patch 2](https://github.com/piroor/treestyletab/pull/1194))
    * Show microphone icon on Nightly 51.0a1 in pinned tabs correctly.
+   * Isolate from old libraries and old unrecommended methods.
  - 0.18.2016090802
    * Failed to initialize the browser window with a preference: `browser.tabs.drawInTitlebar`=`false` (regression on 0.18.2016090601.)
  - 0.18.2016090801
