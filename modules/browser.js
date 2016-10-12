@@ -6123,8 +6123,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 
 		var self = this;
-		var CSSTransitionEnabled = ('transition' in aTab.style);
-		if (CSSTransitionEnabled) {
 			aTab.__treestyletab__updateTabIndentTask = function(aTime, aBeginning, aChange, aDuration) {
 				delete aTab.__treestyletab__updateTabIndentTask;
 				if (!self.isDestroying)
@@ -6135,39 +6133,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				aTab.__treestyletab__updateTabIndentTask,
 				0, 0, 1, this.window
 			);
-			return;
-		}
-
-		var startIndent = this.getPropertyPixelValue(aTab, this.indentCSSProp);
-		var delta       = aIndent - startIndent;
-		var radian      = 90 * Math.PI / 180;
-		aTab.__treestyletab__updateTabIndentTask = function(aTime, aBeginning, aChange, aDuration) {
-			if (self.isDestroying)
-				return true;
-			var indent, finished;
-			if (aTime >= aDuration) {
-				delete aTab.__treestyletab__updateTabIndentTask;
-				indent = aIndent;
-				finished = true;
-			}
-			else {
-				indent = startIndent + (delta * Math.sin(aTime / aDuration * radian));
-				finished = false;
-			}
-			aTab.style.setProperty(self.indentCSSProp, indent+'px', 'important');
-			if (finished) {
-				startIndent = null;
-				delta = null;
-				radian = null;
-				self = null;
-				aTab = null;
-			}
-			return finished;
-		};
-		this.animationManager.addTask(
-			aTab.__treestyletab__updateTabIndentTask,
-			0, 0, this.indentDuration, this.window
-		);
 	},
 	stopTabIndentAnimation : function TSTBrowser_stopTabIndentAnimation(aTab)
 	{
@@ -6802,8 +6767,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		aTab.setAttribute(this.kCOLLAPSING_PHASE, aCollapsed ? this.kCOLLAPSING_PHASE_TO_BE_COLLAPSED : this.kCOLLAPSING_PHASE_TO_BE_EXPANDED );
 
-		var CSSTransitionEnabled = ('transition' in aTab.style);
-
 		var maxMargin;
 		var offsetAttr;
 		var collapseProp = 'margin-'+this.collapseTarget;
@@ -6864,7 +6827,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			let pinned = aTab.getAttribute('pinned') == 'true';
 			let canExpand = !pinned || this.collapseCSSProp != 'margin-top';
 
-			if (CSSTransitionEnabled) {
 				if (canExpand)
 					aTab.style.setProperty(this.collapseCSSProp, endMargin ? '-'+endMargin+'px' : '', 'important');
 
@@ -6872,12 +6834,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 					aTab.style.setProperty('opacity', endOpacity == 1 ? '' : endOpacity, 'important');
 				else
 					aTab.style.removeProperty('opacity');
-			}
-			else {
-				if (canExpand)
-					aTab.style.removeProperty(this.collapseCSSProp);
-				aTab.style.removeProperty('opacity');
-			}
 
 			if (aCallbackToRunOnStartAnimation)
 				aCallbackToRunOnStartAnimation();
@@ -6905,10 +6861,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				// The callback must be started before offsetAttr is changed!
 				if (aCallbackToRunOnStartAnimation)
 					aCallbackToRunOnStartAnimation();
-				if (CSSTransitionEnabled) {
 					aTab.style.setProperty(self.collapseCSSProp, endMargin ? '-'+endMargin+'px' : '', 'important');
 					aTab.style.setProperty('opacity', endOpacity == 1 ? '' : endOpacity, 'important');
-				}
 			}
 			firstFrame = false;
 			// If this is the last tab, negative scroll happens.
@@ -6929,10 +6883,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				delete aTab.__treestyletab__updateTabCollapsedTask;
 				if (aCollapsed)
 					aTab.setAttribute(self.kCOLLAPSED_DONE, true);
-				if (!CSSTransitionEnabled) {
-					aTab.style.removeProperty(self.collapseCSSProp);
-					aTab.style.removeProperty('opacity');
-				}
 				aTab.removeAttribute(offsetAttr);
 				aTab.removeAttribute(self.kCOLLAPSING_PHASE);
 
@@ -6952,13 +6902,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				return true;
 			}
 			else {
-				if (!CSSTransitionEnabled) {
-					let power   = Math.sin(aTime / aDuration * radian);
-					let margin  = startMargin + (deltaMargin * power);
-					let opacity = startOpacity + (deltaOpacity  * power);
-					aTab.style.setProperty(self.collapseCSSProp, margin ? '-'+margin+'px' : '', 'important');
-					aTab.style.setProperty('opacity', opacity == 1 ? '' : opacity, 'important');
-				}
 				aTab.setAttribute(offsetAttr, maxMargin);
 				return false;
 			}
