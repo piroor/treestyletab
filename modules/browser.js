@@ -6786,11 +6786,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			}
 		}
 
-		var startMargin, endMargin, startOpacity, endOpacity;
+		var startMargin, endMargin, endOpacity;
+		var startOpacity = this.window.getComputedStyle(aTab).opacity;
 		if (aCollapsed) {
 			startMargin  = 0;
 			endMargin    = maxMargin;
-			startOpacity = 1;
 			endOpacity   = 0;
 			if (this.canStackTabs && this.getParentTab(aTab)) {
 				endOpacity = 1;
@@ -6800,7 +6800,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		else {
 			startMargin  = maxMargin;
 			endMargin    = 0;
-			startOpacity = 0;
+			startOpacoty = 0;
 			endOpacity   = 1;
 			if (this.canStackTabs && this.getParentTab(aTab)) {
 				startOpacity = 1;
@@ -6831,9 +6831,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				aTab.style.setProperty(this.collapseCSSProp, endMargin ? '-'+endMargin+'px' : '', 'important');
 
 			if (endOpacity == 0)
-				aTab.style.setProperty('opacity', 0, 'important');
-			else
-				aTab.style.removeProperty('opacity');
+				aTab.style.setProperty('opacity', endOpacity, 'important');
 
 			if (aCallbackToRunOnStartAnimation)
 				aCallbackToRunOnStartAnimation();
@@ -6844,7 +6842,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var deltaOpacity = endOpacity - startOpacity;
 
 		aTab.style.setProperty(this.collapseCSSProp, startMargin ? '-'+startMargin+'px' : '', 'important');
-		aTab.style.setProperty('opacity', startOpacity == 1 ? '' : startOpacity, 'important');
+		aTab.style.setProperty('opacity', startOpacity, 'important');
 
 		if (!aCollapsed) {
 			aTab.setAttribute(offsetAttr, maxMargin);
@@ -6862,7 +6860,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				if (aCallbackToRunOnStartAnimation)
 					aCallbackToRunOnStartAnimation();
 				aTab.style.setProperty(self.collapseCSSProp, endMargin ? '-'+endMargin+'px' : '', 'important');
-				aTab.style.setProperty('opacity', endOpacity == 1 ? '' : endOpacity, 'important');
+				aTab.style.setProperty('opacity', endOpacity, 'important');
 			}
 			firstFrame = false;
 			// If this is the last tab, negative scroll happens.
@@ -6886,6 +6884,25 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				aTab.removeAttribute(offsetAttr);
 				aTab.removeAttribute(self.kCOLLAPSING_PHASE);
 
+				if (endOpacity > 0) {
+					if (self.window.getComputedStyle(aTab).opacity > 0) {
+						aTab.style.opacity = '';
+						aTab = null;
+					}
+					else {
+						// If we clear its "opacity" before it becomes "1"
+						// by CSS transition, the calculated opacity will
+						// become 0 after we set an invalid value to clear it.
+						// So we have to clear it with delay.
+						// This is workaround for the issue:
+						//   https://github.com/piroor/treestyletab/issues/1202
+						setTimeout(function() {
+							aTab.style.opacity = '';
+							aTab = null;
+						}, 0);
+					}
+				}
+
 				maxMargin = null;
 				offsetAttr = null;
 				startMargin = null;
@@ -6897,7 +6914,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				collapseProp = null;
 				radian = null;
 				self = null;
-				aTab = null;
 
 				return true;
 			}
