@@ -6123,16 +6123,16 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 
 		var self = this;
-			aTab.__treestyletab__updateTabIndentTask = function(aTime, aBeginning, aChange, aDuration) {
-				delete aTab.__treestyletab__updateTabIndentTask;
-				if (!self.isDestroying)
-					aTab.style.setProperty(self.indentCSSProp, aIndent+'px', 'important');
-				return true;
-			};
-			this.animationManager.addTask(
-				aTab.__treestyletab__updateTabIndentTask,
-				0, 0, 1, this.window
-			);
+		aTab.__treestyletab__updateTabIndentTask = function(aTime, aBeginning, aChange, aDuration) {
+			delete aTab.__treestyletab__updateTabIndentTask;
+			if (!self.isDestroying)
+				aTab.style.setProperty(self.indentCSSProp, aIndent+'px', 'important');
+			return true;
+		};
+		this.animationManager.addTask(
+			aTab.__treestyletab__updateTabIndentTask,
+			0, 0, 1, this.window
+		);
 	},
 	stopTabIndentAnimation : function TSTBrowser_stopTabIndentAnimation(aTab)
 	{
@@ -6827,13 +6827,13 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			let pinned = aTab.getAttribute('pinned') == 'true';
 			let canExpand = !pinned || this.collapseCSSProp != 'margin-top';
 
-				if (canExpand)
-					aTab.style.setProperty(this.collapseCSSProp, endMargin ? '-'+endMargin+'px' : '', 'important');
+			if (canExpand)
+				aTab.style.setProperty(this.collapseCSSProp, endMargin ? '-'+endMargin+'px' : '', 'important');
 
-				if (endOpacity == 0)
-					aTab.style.setProperty('opacity', endOpacity == 1 ? '' : endOpacity, 'important');
-				else
-					aTab.style.removeProperty('opacity');
+			if (endOpacity == 0)
+				aTab.style.setProperty('opacity', endOpacity == 1 ? '' : endOpacity, 'important');
+			else
+				aTab.style.removeProperty('opacity');
 
 			if (aCallbackToRunOnStartAnimation)
 				aCallbackToRunOnStartAnimation();
@@ -6861,8 +6861,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				// The callback must be started before offsetAttr is changed!
 				if (aCallbackToRunOnStartAnimation)
 					aCallbackToRunOnStartAnimation();
-					aTab.style.setProperty(self.collapseCSSProp, endMargin ? '-'+endMargin+'px' : '', 'important');
-					aTab.style.setProperty('opacity', endOpacity == 1 ? '' : endOpacity, 'important');
+				aTab.style.setProperty(self.collapseCSSProp, endMargin ? '-'+endMargin+'px' : '', 'important');
+				aTab.style.setProperty('opacity', endOpacity == 1 ? '' : endOpacity, 'important');
 			}
 			firstFrame = false;
 			// If this is the last tab, negative scroll happens.
