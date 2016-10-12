@@ -6831,7 +6831,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				aTab.style.setProperty(this.collapseCSSProp, endMargin ? '-'+endMargin+'px' : '', 'important');
 
 			if (endOpacity == 0)
-				aTab.style.setProperty('opacity', endOpacity == 1 ? '' : endOpacity, 'important');
+				aTab.style.setProperty('opacity', 0, 'important');
 			else
 				aTab.style.removeProperty('opacity');
 
