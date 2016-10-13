@@ -6800,7 +6800,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		else {
 			startMargin  = maxMargin;
 			endMargin    = 0;
-			startOpacoty = 0;
+			startOpacity = 0;
 			endOpacity   = 1;
 			if (this.canStackTabs && this.getParentTab(aTab)) {
 				startOpacity = 1;
