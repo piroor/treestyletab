@@ -19,6 +19,15 @@
    window['piro.sakura.ne.jp'].prefs.addPrefListener(listener);
    window['piro.sakura.ne.jp'].prefs.removePrefListener(listener);
 
+   // utility
+   var store = window['piro.sakura.ne.jp'].prefs.createStore('extensions.someextension.');
+   // property name/key, default value
+   store.define('enabled', true);
+   // property name, default value, pref key (different to the name)
+   store.define('leftMargin', true, 'margin.left');
+   var enabled = store.enabled;
+   store.destroy(); // free the memory.
+
  license: The MIT License, Copyright (c) 2009-2013 YUKI "Piro" Hiroshi
  original:
    http://github.com/piroor/fxaddonlib-prefs
@@ -42,7 +51,7 @@ if (typeof window == 'undefined' ||
 }
 
 (function() {
-	const currentRevision = 13;
+	const currentRevision = 16;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -169,36 +178,26 @@ if (typeof window == 'undefined' ||
 	 
 		getChildren : function(aRoot, aBranch) 
 		{
+			aRoot = aRoot.replace(/\.$/, '');
 			var foundChildren = {};
 			var possibleChildren = [];
-			var actualChildren = [];
 			this.getDescendant(aRoot, aBranch)
 					.forEach(function(aPrefstring) {
-						var name = aPrefstring.replace(aRoot, '');
-						if (name.charAt(0) == '.')
-							name = name.substring(1);
-						if (name.indexOf('.') < 0) {
-							if (!(aPrefstring in foundChildren)) {
-								actualChildren.push(aPrefstring);
-								foundChildren[aPrefstring] = true;
-							}
-						}
-						else {
-							let possibleChildKey = aRoot + name.split('.')[0];
+						var name = aPrefstring.replace(aRoot + '.', '');
+							let possibleChildKey = aRoot + '.' + name.split('.')[0];
 							if (possibleChildKey && !(possibleChildKey in foundChildren)) {
 								possibleChildren.push(possibleChildKey);
 								foundChildren[possibleChildKey] = true;
 							}
-						}
 					});
-			return possibleChildren.concat(actualChildren).sort();
+			return possibleChildren.sort();
 		},
 	 
 		addPrefListener : function(aObserver) 
 		{
 			var domains = ('domains' in aObserver) ? aObserver.domains : [aObserver.domain] ;
 			try {
-				for each (var domain in domains)
+				for (var domain of domains)
 					this.Prefs.addObserver(domain, aObserver, false);
 			}
 			catch(e) {
@@ -209,11 +208,44 @@ if (typeof window == 'undefined' ||
 		{
 			var domains = ('domains' in aObserver) ? aObserver.domains : [aObserver.domain] ;
 			try {
-				for each (var domain in domains)
+				for (var domain of domains)
 					this.Prefs.removeObserver(domain, aObserver, false);
 			}
 			catch(e) {
 			}
+		},
+
+		createStore : function(aDomain)
+		{
+			var listener = {
+				domain : aDomain,
+				observe : function(aSubject, aTopic, aData) {
+					if (aTopic != 'nsPref:changed')
+						return;
+					var name = keyToName[aData];
+					store[name] = window['piro.sakura.ne.jp'].prefs.getPref(aData);
+				}
+			};
+			this.addPrefListener(listener);
+			var keyToName = {};
+			var base = aDomain.replace(/\.$/, '') + '.';
+			var store = {
+				define : function(aName, aValue, aKey) {
+					aKey = base + (aKey || aName);
+					window['piro.sakura.ne.jp'].prefs.setDefaultPref(aKey, aValue);
+					this[aName] = window['piro.sakura.ne.jp'].prefs.getPref(aKey);
+					keyToName[aKey] = aName;
+				},
+				destroy : function() {
+					window['piro.sakura.ne.jp'].prefs.removePrefListener(listener);
+					aDomain = undefined;
+					base = undefined;
+					listener = undefined;
+					keyToName = undefined;
+					store = undefined;
+				}
+			};
+			return store;
 		}
 	};
 })();
