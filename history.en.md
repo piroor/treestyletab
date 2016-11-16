@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 0.18.2016111701
    * New background tabs are opened correctly. (The first opened tab was opened in the foreground unexpectedly.)
    * Shrink other dragged tabs while dragging. (experimental feature)
    * Better handling of "Tabs in Titlebar" feature of Firefox itself.
