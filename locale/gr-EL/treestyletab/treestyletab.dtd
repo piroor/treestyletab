@@ -1,40 +1,40 @@
-<!ENTITY config.title        "Tree Style Tab Configuration">
+<!ENTITY config.title        "Tree Style Tab Διαμόρφωση">
 
 <!ENTITY config.scale.min "min">
 <!ENTITY config.scale.max "max">
 
 
-<!ENTITY config.tabs.appearance "Appearance">
+<!ENTITY config.tabs.appearance "Εμφάνιση">
 
-<!ENTITY config.tabbar.position.caption "Tab bar position">
-<!ENTITY config.tabbar.position.left    "Left">
-<!ENTITY config.tabbar.position.right   "Right">
-<!ENTITY config.tabbar.position.top     "Top (Firefox default)">
-<!ENTITY config.tabbar.position.bottom  "Bottom">
-<!ENTITY config.tabbar.invertClosebox.left  "Show closebox at leftside in each tab">
-<!ENTITY config.tabbar.invertClosebox.right "Show closebox at rightside in each tab">
-<!ENTITY config.tabbar.invertTab            "Invert tab appearance">
-<!ENTITY config.tabbar.invertTabContents    "Invert tab contents">
-<!ENTITY config.tabbar.narrowScrollbar      "Narrow scrollbar">
-<!ENTITY config.enableSubtreeIndent "Indent tabs">
-<!ENTITY config.maxTreeLevel.before "until">
-<!ENTITY config.maxTreeLevel.after  "level(s)">
+<!ENTITY config.tabbar.position.caption "Θέση λωρίδας καρτέλων">
+<!ENTITY config.tabbar.position.left    "Αριστερά">
+<!ENTITY config.tabbar.position.right   "Δεξιά">
+<!ENTITY config.tabbar.position.top     "Επάνω (προκαθορισμνο του Firefox)">
+<!ENTITY config.tabbar.position.bottom  "Κάτω">
+<!ENTITY config.tabbar.invertClosebox.left  "Εμφάνιση συμβόλου κλεισίματος στην αριστερή πλευρά κάθε καρτέλας">
+<!ENTITY config.tabbar.invertClosebox.right "Εμφάνιση συμβόλου κλεισίματος στην δεξιά πλευρά κάθε καρτέλας">
+<!ENTITY config.tabbar.invertTab            "Αναστροφή εμφάνισης καρτέλων">
+<!ENTITY config.tabbar.invertTabContents    "Αναστροφή περιεχομένων καρτέλων">
+<!ENTITY config.tabbar.narrowScrollbar      "Στενή γραμμή κύλισης">
+<!ENTITY config.enableSubtreeIndent "Χρήση εσοχών στις καρτέλες">
+<!ENTITY config.maxTreeLevel.before "μέχρι">
+<!ENTITY config.maxTreeLevel.after  "επίπεδο(α)">
 <!ENTITY config.tabbarSize.before-horizontal ":">
-<!ENTITY config.tabbarSize.after-horizontal  "px height">
+<!ENTITY config.tabbarSize.after-horizontal  "px ύψος">
 <!ENTITY config.tabbarSize.before-vertical   ":">
-<!ENTITY config.tabbarSize.after-vertical    "px width">
+<!ENTITY config.tabbarSize.after-vertical    "px πλάτος">
 
 
-<!ENTITY config.tabs.style "Style">
+<!ENTITY config.tabs.style "Στυλ">
 
-<!ENTITY config.tabbar.style.caption "Skin of the tab bar">
-<!ENTITY config.tabbar.style.plain   "Plain">
-<!ENTITY config.tabbar.style.flat    "Flat">
-<!ENTITY config.tabbar.style.mixed   "Mixed">
+<!ENTITY config.tabbar.style.caption "Στυλ της λωρίδας καρτέλων">
+<!ENTITY config.tabbar.style.plain   "Απλόή">
+<!ENTITY config.tabbar.style.flat    "Επίπεδο">
+<!ENTITY config.tabbar.style.mixed   "Ανάμικτο">
 <!ENTITY config.tabbar.style.vertigo "Vertigo">
-<!ENTITY config.tabbar.style.metal   "Metal">
+<!ENTITY config.tabbar.style.metal   "Μεταλικό">
 <!ENTITY config.tabbar.style.sidebar "Sidebar">
-<!ENTITY config.tabbar.style.none    "Default (specified by the Theme)">
+<!ENTITY config.tabbar.style.none    "Προκαθορισμένο (καθορίζεται απ το Θέμα)">
 
 <!ENTITY config.twisty.style.caption "Tree twisties">
 <!ENTITY config.twisty.style.auto    "Auto">
