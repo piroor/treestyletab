@@ -686,10 +686,11 @@ var TreeStyleTabWindowHelper = {
 						return;
 
 					var tabbarBox = tabContainer.mTabstrip.scrollBoxObject;
-					Array.forEach(this.childNodes, function(aItem) {
+					for (let aItem of this.childNodes)
+					{
 						let tab = aItem.tab;
 						if (!tab) // not tab item
-							return;
+							continue;
 
 						let tabBox = tab.boxObject;
 						if (tabBox[treeStyleTab.screenPositionProp] >= tabbarBox[treeStyleTab.screenPositionProp] &&
@@ -697,7 +698,7 @@ var TreeStyleTabWindowHelper = {
 							aItem.setAttribute('tabIsVisible', true);
 						else
 							aItem.removeAttribute('tabIsVisible');
-					}, this);
+					}
 				};
 		}
 	

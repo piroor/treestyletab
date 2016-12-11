@@ -767,7 +767,7 @@ catch(e) {
 		var tabsInfo = this.getDraggedTabsInfoFromOneTab(aTab, actionInfo);
 		if (
 			tabsInfo.draggedTabs.length <= 1 ||
-			Array.some(tabsInfo.draggedTabs, function(aTab) {
+			[...tabsInfo.draggedTabs].some(function(aTab) {
 				return aTab.getAttribute('multiselected') == 'true'; // if multiselected, it should be handled by other addons (like Multiple Tab Handler)
 			})
 			)
@@ -1159,9 +1159,9 @@ catch(e) {
 			) &&
 			dropActionInfo.position == sv.kDROP_ON
 			) {
-			var beforeTabs = Array.slice(b.mTabContainer.childNodes);
+			var beforeTabs = [...b.mTabContainer.childNodes];
 			w.setTimeout(function() {
-				var newTabs = Array.slice(b.mTabContainer.childNodes).filter(function(aTab) {
+				var newTabs = [...b.mTabContainer.childNodes].filter(function(aTab) {
 						return beforeTabs.indexOf(aTab) < 0;
 					});
 				if (newTabs.length)

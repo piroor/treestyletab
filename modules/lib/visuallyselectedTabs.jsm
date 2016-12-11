@@ -8,7 +8,7 @@
    Components.utils.import(".../path/to/visuallyselectedTabs.jsm");
    visuallyselectedTabs(gBrowser);
 
- license: The MIT License, Copyright (c) 2015 YUKI "Piro" Hiroshi
+ license: The MIT License, Copyright (c) 2015-2016 YUKI "Piro" Hiroshi
  original:
    http://github.com/piroor/fxaddonlib-visuallyselected-tabs
 */
@@ -26,15 +26,18 @@ function setVisuallySelected(aNode, aSelected) {
   else
     aNode.removeAttribute('visuallyselected');
 
-  Array.forEach(aNode.childNodes, function(aChild) {
+  for (let aChild of aNode.childNodes)
+  {
     setVisuallySelected(aChild, aSelected);
-  });
+  }
 
   var anonymousChildren = aNode.ownerDocument.getAnonymousNodes(aNode);
-  if (anonymousChildren && anonymousChildren.length > 0)
-    Array.forEach(anonymousChildren, function(aAnonymousChild) {
+  if (anonymousChildren && anonymousChildren.length > 0) {
+    for (let aAnonymousChild of anonymousChildren)
+    {
       setVisuallySelected(aAnonymousChild, aSelected);
-    });
+    }
+  }
 }
 
 function visuallyselectedTabs(aTabBrowser) {

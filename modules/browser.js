@@ -1287,7 +1287,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (this.window.getComputedStyle(aContainer, '').getPropertyValue('-moz-box-orient') == 'vertical')
 			return;
 
-		var nodes = Array.slice(this.document.getAnonymousNodes(aContainer) || aContainer.childNodes);
+		var nodes = [...(this.document.getAnonymousNodes(aContainer) || aContainer.childNodes)];
 
 		// reset order at first!
 		for (let i = 0, maxi = nodes.length; i < maxi; i++)
@@ -1392,7 +1392,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 						(aTarget instanceof this.window.Element) ?
 							[aTarget] :
 						(typeof aTarget == 'object' && 'length' in aTarget) ?
-							Array.slice(aTarget) :
+							[...aTarget] :
 							this.getAllTabs(b);
 				for (let i = 0, maxi = tabs.length; i < maxi; i++)
 				{
@@ -2629,7 +2629,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	{
 		this.ownerToolbar.classList.add(this.kTABBAR_TOOLBAR);
 		this.ownerToolbar.classList.remove(this.kTABBAR_TOOLBAR_READY);
-		Array.slice(this.document.querySelectorAll('.'+this.kTABBAR_TOOLBAR_READY_POPUP))
+		[...this.document.querySelectorAll('.'+this.kTABBAR_TOOLBAR_READY_POPUP)]
 			.forEach(this.safeRemovePopup, this);
 
 		var position = this._lastTabbarPositionBeforeDestroyed || this.position;
@@ -6188,12 +6188,12 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (!tabbarSize) // don't update indent for collapsed tab bar
 			return;
 
-		var tabs = Array.slice(b.mTabContainer.querySelectorAll(
+		var tabs = [...b.mTabContainer.querySelectorAll(
 				'tab['+this.kNEST+']:not(['+this.kNEST+'="0"]):not(['+this.kNEST+'=""])'+
 					':not(['+this.kCOLLAPSED+'="true"])'+
 					':not([hidden="true"])'+
 					':not([collapsed="true"])'
-			));
+			)];
 		if (!tabs.length)
 			return;
 

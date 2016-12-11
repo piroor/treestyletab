@@ -528,10 +528,11 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		if (!utils.getTreePref('enableSubtreeIndent.allTabsPopup'))
 			return;
 
-		Array.forEach(aEvent.originalTarget.childNodes, function(aItem) {
+		for (let aItem of aEvent.originalTarget.childNodes)
+		{
 			if (aItem.classList.contains('alltabs-item') && 'tab' in aItem)
 				aItem.style.marginLeft = aItem.tab.getAttribute(this.kNEST) + 'em';
-		}, this);
+		}
 	},
  
 	initUIShowHideObserver : function TSTWindow_initUIShowHideObserver() 

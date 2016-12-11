@@ -41,14 +41,14 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 				let originalTabs = [];
 				GM_BrowserUI.openInTab = function(aMessage, ...aArgs) {
 					if (originalTabs.length === 0)
-						originalTabs = Array.slice(gBrowser.tabContainer.childNodes, 0);
+						originalTabs = [...gBrowser.tabContainer.childNodes];
 					var owner = aMessage.target;
 					var retVal = originalOpenInTab.call(this, aMessage, ...aArgs);
 					window.setTimeout(function() {
 						window.setTimeout(function() {
 							if (originalTabs.length === 0)
 								return;
-							var currentTabs = Array.slice(gBrowser.tabContainer.childNodes, 0);
+							var currentTabs = [...gBrowser.tabContainer.childNodes];
 							var parent = gBrowser.treeStyleTab.getTabFromBrowser(owner);
 							var insertAtFirst = TreeStyleTabUtils.getTreePref('insertNewChildAt') == sv.kINSERT_FISRT;
 							var firstChild = gBrowser.treeStyleTab.getFirstChildTab(parent);

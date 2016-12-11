@@ -17,7 +17,7 @@
    http://github.com/piroor/fxaddonlib-tabs-drag-utils
 */
 (function() {
-	const currentRevision = 42;
+	const currentRevision = 43;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -768,17 +768,18 @@ TDUContext.destroy();
 		clearDraggingStyles : function TDU_clearDraggingStyles(aEvent)
 		{
 			var tabbar = this.getTabbarFromEvent(aEvent);
-			Array.forEach(tabbar.childNodes, function(aTab) {
+			for (let aTab of tabbar.childNodes)
+			{
 				let backup = aTab.__tabsDragUtils__backupStyle;
 				if (!backup)
-					return;
+					continue;
 
 				let style = aTab.style;
 				Object.keys(backup).forEach(function(aKey) {
 					style.setProperty(aKey, backup[aKey].value, backup[aKey].priority);
 				});
 				delete aTab.__tabsDragUtils__backupStyle;
-			}, this);
+			}
 		},
 
 		isTabsDragging : function TDU_isTabsDragging(aEvent) 

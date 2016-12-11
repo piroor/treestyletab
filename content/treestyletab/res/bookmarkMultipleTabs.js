@@ -16,7 +16,7 @@
  *   http://github.com/piroor/fxaddonlib-bookmark-multiple-tabs
  */
 (function() {
-	const currentRevision = 8;
+	const currentRevision = 9;
 
 	if (!('BookmarkPropertiesPanel' in window)) {
 		window.addEventListener('DOMContentLoaded', function() {
@@ -56,7 +56,7 @@
 					if ('PlacesUIUtils' in window || 'PlacesUtils' in window) { // Firefox 3 or later
 						try {
 							var utils = 'PlacesUIUtils' in window ? PlacesUIUtils : PlacesUtils ;
-							var tabs = Array.slice(aTabs).map(this.addBookmarkTabsFilter);
+							var tabs = [...aTabs].map(this.addBookmarkTabsFilter);
 							if (aFolderName)
 								this.Prefs.setCharPref('temp.showMinimalAddMultiBookmarkUI.folderName', unescape(encodeURIComponent(aFolderName)));
 							if ('showBookmarkDialog' in utils) { // Firefox 9 or later
@@ -82,7 +82,7 @@
 					}
 
 					var currentTabInfo;
-					var tabsInfo = Array.slice(aTabs).map(function(aTab) {
+					var tabsInfo = [...aTabs].map(function(aTab) {
 							var webNav = aTab.linkedBrowser.webNavigation;
 							var url    = webNav.currentURI.spec;
 							var name   = '';

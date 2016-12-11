@@ -942,7 +942,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	gatherSubtreeMemberTabs : function TSTBase_gatherSubtreeMemberTabs(aTabOrTabs, aOnlyChildren) 
 	{
 		var tabs = aTabOrTabs;
-		if (!(tabs instanceof Array)) {
+		if (!Array.isArray(tabs)) {
 			tabs = [aTabOrTabs];
 		}
 
@@ -1059,7 +1059,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild || this.browser);
 		this.assertBeforeDestruction(b && b.mTabContainer);
-		return Array.slice(b.mTabContainer.querySelectorAll('tab'));
+		return [...b.mTabContainer.querySelectorAll('tab')];
 	},
  
 	/**
@@ -1070,7 +1070,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild || this.browser);
 		this.assertBeforeDestruction(b && b.mTabContainer);
-		return Array.slice(b.mTabContainer.querySelectorAll('tab:not([hidden="true"])'));
+		return [...b.mTabContainer.querySelectorAll('tab:not([hidden="true"])')];
 	},
  
 	getAllTabsArray : function TSTBase_getAllTabsArray(aTabBrowserChild) /* for backward compatibility */ 
@@ -1226,7 +1226,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		var b = this.getTabBrowserFromChild(aTabBrowserChild || this.browser);
 		if (!this.canCollapseSubtree(b))
 			return this.getTabs(b);
-		return Array.slice(b.mTabContainer.querySelectorAll('tab:not(['+this.kCOLLAPSED+'="true"]):not([hidden="true"])'));
+		return [...b.mTabContainer.querySelectorAll('tab:not(['+this.kCOLLAPSED+'="true"]):not([hidden="true"])')];
 	},
  
 	getVisibleTabsArray : function TSTBase_getVisibleTabsArray(aTabBrowserChild) /* for backward compatibility */ 
@@ -1601,7 +1601,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
  
 	get rootTabs() /* PUBLIC API */ 
 	{
-		return Array.slice(this.browser.mTabContainer.querySelectorAll('tab:not(['+this.kNEST+']), tab['+this.kNEST+'=""], tab['+this.kNEST+'="0"]'));
+		return [...this.browser.mTabContainer.querySelectorAll('tab:not(['+this.kNEST+']), tab['+this.kNEST+'=""], tab['+this.kNEST+'="0"]')];
 	},
  
 	get allRootTabs() /* PUBLIC API */ 
@@ -1958,7 +1958,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
  
 	collectRootTabs : function TSTBase_collectRootTabs(aTabs) /* PUBLIC API */ 
 	{
-		aTabs = Array.slice(aTabs);
+		aTabs = [...aTabs];
 		return aTabs.filter(function(aTab) {
 			var parent = this.getParentTab(aTab);
 			return !parent || aTabs.indexOf(parent) < 0;

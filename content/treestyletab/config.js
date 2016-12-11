@@ -67,7 +67,7 @@ function initAppearancePane()
 			document.getElementById('extensions.treestyletab.tabbar.style-arrowscrollbox'),
 			document.getElementById('extensions.treestyletab.twisty.style-arrowscrollbox')
 		];
-	Array.slice(boxes[0].childNodes).concat(Array.slice(boxes[1].childNodes)).forEach(function(aItem) {
+	[...boxes[0].childNodes].concat([...boxes[1].childNodes]).forEach(function(aItem) {
 		let start       = 0;
 		let delta       = 200;
 		let radian      = 90 * Math.PI / 180;

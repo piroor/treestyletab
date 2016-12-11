@@ -93,12 +93,14 @@
 		collectLocations : function(aFrame, aLocations) {
 			aLocations = aLocations || {};
 			aLocations[aFrame.location.href] = true;
-			Array.forEach(aFrame.document.getElementsByTagName('base'), function(aBase) {
+			for (let aBase of aFrame.document.getElementsByTagName('base'))
+			{
 				aLocations[aBase.href] = true;
-			}, this);
-			Array.forEach(aFrame.frames, function(aSubFrame) {
+			}
+			for (let aSubFrame of aFrame.frames)
+			{
 				this.collectLocations(aSubFrame, aLocations);
-			}, this);
+			}
 			return Object.keys(aLocations);
 		}
 	};

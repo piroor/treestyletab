@@ -14,7 +14,7 @@ function setUp()
 	yield Do(utils.addTab('about:logo'));
 	yield Do(utils.addTab('../fixtures/frameTest.html'));
 	yield Do(utils.addTab('../fixtures/frameTestInline.html'));
-	tabs = Array.slice(gBrowser.mTabs);
+	tabs = [...gBrowser.mTabs];
 	assert.equals(4, tabs.length);
 }
 
@@ -331,7 +331,7 @@ function test_cleanUpTabsArray()
 			.map(function(aIndex) {
 				return tabs[aIndex]
 			});
-	assert.equals(tabs, Array.slice(sv.cleanUpTabsArray(array)));
+	assert.equals(tabs, [...sv.cleanUpTabsArray(array)]);
 }
 
 
