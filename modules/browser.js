@@ -487,11 +487,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	getTabLabel : function TSTBrowser_getTabLabel(aTab) 
 	{
 		var d = this.document;
-		var label = d.getAnonymousElementByAttribute(aTab, 'class', 'tab-text-stack') || // Mac OS X
-					( // Tab Mix Plus
-						utils.getTreePref('compatibility.TMP') &&
-						d.getAnonymousElementByAttribute(aTab, 'class', 'tab-text-container')
-					) ||
+		var label = d.getAnonymousElementByAttribute(aTab, 'class', 'tab-label-container') || // Firefox 53 and later (and Tab Mix Plus)
+					d.getAnonymousElementByAttribute(aTab, 'class', 'tab-text-stack') || // Mac OS X
 					d.getAnonymousElementByAttribute(aTab, 'class', 'tab-text tab-label');
 		return label;
 	},
@@ -5262,10 +5259,14 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
  
 	onTabbarOverflow : function TSTBrowser_onTabbarOverflow(aEvent) 
 	{
+		if (this.getTabFromEvent(aEvent))
+			return;
+
 		var tabs = this.mTabBrowser.mTabContainer;
 		var horizontal = tabs.orient == 'horizontal';
 		if (horizontal)
 			return;
+
 		aEvent.stopPropagation();
 		this.positionPinnedTabsWithDelay();
 		if (aEvent.detail == 1) {

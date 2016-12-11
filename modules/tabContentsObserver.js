@@ -120,6 +120,23 @@ TabContentsObserver.prototype = {
 		if (!tab)
 			return;
 
+		// ignore changes in <xul:label/>
+		if (
+			[...aMutation.addedNodes].every(function(aNode) {
+				return (
+					aNode.nodeType == aNode.TEXT_NODE &&
+					aNode.parentNode.localName == 'label'
+				);
+			}) ||
+			(
+				target.localName == 'label' &&
+				[...aMutation.removedNodes].every(function(aNode) {
+					return aNode.nodeType == aNode.TEXT_NODE;
+				})
+			)
+			)
+			return;
+
 		log('onTabContentsModified on the tab '+tab._tPos);
 
 		this.handlingChange = true;
