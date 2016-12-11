@@ -130,5 +130,26 @@ TabContentsObserver.prototype = {
 		w.setTimeout((function() {
 			this.handlingChange = false;
 		}).bind(this), 10);
+	},
+
+	logMutation : function TabContentsObserver_logMutation(aMutation, aDescription)
+	{
+		if (!utils.isDebugging('tabContentsObserver'))
+			return;
+
+		var target = aMutation.target;
+		var ownerInformation = this.box.localName + '#' + this.box.id + '.' + this.box.className;
+		var targetInformation = target ? target.localName + '#' + target.id + '.' + target.className : '(null)' ;
+		var addedInformation = '';
+		if (aMutation.addedNodes.length)
+			 addedInformation = ' added[' + [...aMutation.addedNodes] + ']';
+		var removedInformation = '';
+		if (aMutation.removedNodes.length)
+			 removedInformation = ' added[' + [...aMutation.removedNodes] + ']';
+		log(aDescription + ' ' +
+			ownerInformation + ' / ' +
+			targetInformation +
+			addedInformation +
+			removedInformation);
 	}
 };
