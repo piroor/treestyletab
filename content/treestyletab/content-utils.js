@@ -97,11 +97,9 @@
 			{
 				aLocations[aBase.href] = true;
 			}
-			var subFrames = Array.prototype.slice(aFrame.frames, 0);
-			for (let aSubFrame of subFrames)
-			{
+			Array.prototype.forEach.apply(aFrame.frames, function(aSubFrame) {
 				this.collectLocations(aSubFrame, aLocations);
-			}
+			}, this);
 			return Object.keys(aLocations);
 		}
 	};
