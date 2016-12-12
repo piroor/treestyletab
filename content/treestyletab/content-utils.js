@@ -97,7 +97,7 @@
 			{
 				aLocations[aBase.href] = true;
 			}
-			Array.prototype.forEach.apply(aFrame.frames, function(aSubFrame) {
+			Array.prototype.forEach.call(aFrame.frames, function(aSubFrame) {
 				this.collectLocations(aSubFrame, aLocations);
 			}, this);
 			return Object.keys(aLocations);
