@@ -97,7 +97,8 @@
 			{
 				aLocations[aBase.href] = true;
 			}
-			for (let aSubFrame of aFrame.frames)
+			var subFrames = Array.prototype.slice(aFrame.frames, 0);
+			for (let aSubFrame of subFrames)
 			{
 				this.collectLocations(aSubFrame, aLocations);
 			}
