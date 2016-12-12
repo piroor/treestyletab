@@ -32,7 +32,7 @@
 			aFrame &&
 			(
 				aFrame.document.querySelector('embed, object') ||
-				[...aFrame.frames].some(hasPluginArea)
+				Array.prototype.some.apply(aFrame.frames, hasPluginArea)
 			)
 		);
 	}
