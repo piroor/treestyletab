@@ -194,10 +194,19 @@ tabbrowser[treestyletab-tabbar-position="right"]
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab
-  .tab-text {
+  .tab-text,
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab
+  .tab-label-container {
 	margin: 0 !important;
 	padding: 3px 4px 4px !important;
 	text-align: center !important;
+}
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab
+  .tab-label-container
+  .tab-text {
+	padding: 0 !important;
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]

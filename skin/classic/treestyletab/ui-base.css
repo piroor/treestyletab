@@ -391,6 +391,19 @@ tabbrowser[treestyletab-tabbar-position="bottom"]
 }
 
 
+/* expand tab label container to avoid cropped label
+   See: https://github.com/piroor/treestyletab/issues/1228 */
+
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tabbrowser-tab:not([pinned])
+  .tab-label-container {
+	margin-top: -0.25em;
+	margin-bottom: -0.25em;
+	padding-bottom: 0.25em;
+	padding-top: 0.25em;
+}
+
+
 /* notification of newly opened tabs in background */
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
