@@ -203,7 +203,8 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 			eval('gSessionManager.load = '+gSessionManager.load.toSource().replace(
 				'var tabcount = ',
 				'  gBrowser.treeStyleTab.collapseExpandAllSubtree(false, true);\n' +
-				'  let (tabs = gBrowser.treeStyleTab.getTabs(gBrowser).slice(1).reverse()) {\n' +
+				'  {\n' +
+				'    let tabs = gBrowser.treeStyleTab.getTabs(gBrowser).slice(1).reverse();\n' +
 				'    for (let i = 0, maxi = tabs.length; i < maxi; i++)\n' +
 				'    {\n' +
 				'      let tab = tabs[i];\n' +
@@ -220,7 +221,8 @@ TreeStyleTabWindowHelper.overrideExtensionsPreInit = function TSTWH_overrideExte
 	// https://addons.mozilla.org/firefox/addon/4650
 	if ('FS_onFullerScreen' in window &&
 		TreeStyleTabUtils.getTreePref('compatibility.FullerScreen')) {
-		let (functions = 'CheckIfFullScreen,FS_onFullerScreen,FS_onMouseMove'.split(',')) {
+		{
+		  let functions = 'CheckIfFullScreen,FS_onFullerScreen,FS_onMouseMove'.split(',');
 			for (let i = 0, maxi = functions.length; i < maxi; i++)
 			{
 				let func = functions[i];
@@ -803,7 +805,8 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 	if ('LinkyContext' in window &&
 		'prototype' in LinkyContext &&
 		TreeStyleTabUtils.getTreePref('compatibility.Linky')) {
-		let (methods = 'openLink,openLinks,generateDocument'.split(',')) {
+	  {
+	    let methods = 'openLink,openLinks,generateDocument'.split(',');
 			for (let i = 0, maxi = methods.length; i < maxi; i++)
 			{
 				let method = methods[i];
@@ -1339,8 +1342,9 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 
 	// TotalToolbar
 	// http://totaltoolbar.mozdev.org/
-	let (menu = document.getElementById('tt-toolbar-properties') &&
-		TreeStyleTabUtils.getTreePref('compatibility.TotalToolbar')) {
+	{
+	  let menu = document.getElementById('tt-toolbar-properties') &&
+		TreeStyleTabUtils.getTreePref('compatibility.TotalToolbar');
 		if (menu) {
 			let tabbarToolboxes = ['tt-toolbox-tabright', 'tt-toolbox-tableft']
 									.map(document.getElementById, document)

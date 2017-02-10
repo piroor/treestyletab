@@ -805,7 +805,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		// when you just release accel key...
 
 		/* PUBLIC API */
-		let (event) {
+		{
 			this.fireCustomEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, b, true, false, data);
 			// for backward compatibility
 			this.fireCustomEvent(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END.replace(/^nsDOM/, ''), b, true, false, data);

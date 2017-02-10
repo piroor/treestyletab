@@ -121,14 +121,16 @@
 					return;
 
 				case 'popupshown':
-					let (index = this._popups.indexOf(aEvent.originalTarget)) {
+					{
+            let index = this._popups.indexOf(aEvent.originalTarget);
 						if (index < 0)
 							this._popups.push(aEvent.originalTarget);
 					}
 					return;
 
 				case 'popuphidden':
-					let (index = this._popups.indexOf(aEvent.originalTarget)) {
+				 {
+            let index = this._popups.indexOf(aEvent.originalTarget);
 						if (index > -1)
 							this._popups.splice(index, 1);
 					}

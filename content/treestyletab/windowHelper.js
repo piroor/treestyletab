@@ -83,14 +83,15 @@ var TreeStyleTabWindowHelper = {
 			);
 		}
 
-		let (functions = [
+		{
+		  let functions = [
 				'window.duplicateTab.handleLinkClick',
 				'window.duplicatethistab.handleLinkClick',
 				'window.__treestyletab__highlander__origHandleLinkClick',
 				'window.__splitbrowser__handleLinkClick',
 				'window.__ctxextensions__handleLinkClick',
 				'window.handleLinkClick'
-			]) {
+			];
 			for (let i = 0, maxi = functions.length; i < maxi; i++)
 			{
 				let func = functions[i];
@@ -219,12 +220,13 @@ var TreeStyleTabWindowHelper = {
 			);
 		}
 
-		let (functions = [
+    {
+      let functions = [
 				'window.permaTabs.utils.wrappedFunctions["window.contentAreaClick"]',
 				'window.__contentAreaClick',
 				'window.__ctxextensions__contentAreaClick',
 				'window.contentAreaClick'
-			]) {
+			];
 			for (let i = 0, maxi = functions.length; i < maxi; i++)
 			{
 				let func = functions[i];
@@ -249,11 +251,12 @@ var TreeStyleTabWindowHelper = {
 			);
 		}
 
-		let (functions = [
+    {
+      let functions = [
 				'permaTabs.utils.wrappedFunctions["window.BrowserHomeClick"]',
 				'window.BrowserHomeClick',
 				'window.BrowserGoHome'
-			]) {
+			];
 			for (let i = 0, maxi = functions.length; i < maxi; i++)
 			{
 				let func = functions[i];
@@ -391,7 +394,8 @@ var TreeStyleTabWindowHelper = {
 	{
 		var b = aTabBrowser;
 
-		let (source = b.moveTabForward.toSource()) {
+		{
+		  let source = b.moveTabForward.toSource();
 			eval('b.moveTabForward = '+
 				source.replace(
 					'if (nextTab)',
@@ -430,7 +434,8 @@ var TreeStyleTabWindowHelper = {
 			);
 		}
 
-		let (source = b.moveTabBackward.toSource()) {
+		{
+		  let source = b.moveTabBackward.toSource();
 			eval('b.moveTabBackward = '+
 				source.replace(
 					'this.moveTabToEnd();',
@@ -557,7 +562,8 @@ var TreeStyleTabWindowHelper = {
 		 * The default implementation fails to scroll to tab if it is expanding.
 		 * So we have to inject codes to override its effect.
 		 */
-		let (scrollbox = aTabBrowser.treeStyleTab.scrollBox) {
+		{
+		  let scrollbox = aTabBrowser.treeStyleTab.scrollBox;
 			let source = scrollbox.ensureElementIsVisible.toSource();
 			if (
 				source.indexOf('treeStyleTab') < 0 && // not updated yet
@@ -580,7 +586,8 @@ var TreeStyleTabWindowHelper = {
 			}
 		}
 
-		let (popup = document.getElementById('alltabs-popup')) {
+		{
+		  let popup = document.getElementById('alltabs-popup');
 			if (popup && '_updateTabsVisibilityStatus' in popup) {
 				eval('popup._updateTabsVisibilityStatus = '+
 					popup._updateTabsVisibilityStatus.toSource().replace(
