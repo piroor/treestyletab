@@ -279,18 +279,8 @@ tabbrowser[treestyletab-drop-position="left"]:not([treestyletab-tabbar-position=
 
 /* auto hide */
 
-tabbrowser[treestyletab-tabbar-position="left"]
-  .treestyletab-tabbar-toggler {
-	border-right: 1px solid black;
-}
-tabbrowser[treestyletab-tabbar-position="right"]
-  .treestyletab-tabbar-toggler {
-	border-left: 1px solid black;
-}
-tabbrowser[treestyletab-tabbar-position="bottom"]
-  .treestyletab-tabbar-toggler {
-	border-top: 1px solid black;
-}
+tabbrowser:not([treestyletab-tabbar-position="top"])
+  .treestyletab-tabbar-toggler,
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-autohide]
   #treestyletab-tabbar-resizer-box {
 	background: rgba(0, 0, 0, 0.25);
