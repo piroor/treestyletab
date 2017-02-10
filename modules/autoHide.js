@@ -1191,7 +1191,15 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 				this.togglerSize = value;
 				{
 					let toggler = this.toggler;
-					toggler.style.minWidth = toggler.style.minHeight = value+'px';
+					let style = toggler.style;
+					style.minWidth = style.minHeight = value+'px';
+					style.marginLeft = style.marginRight = style.marginTop = style.marginBottom = 0;
+					switch (this.treeStyleTab.position)
+					{
+						case 'left': style.marginRight = '-'+value+'px';
+						case 'right': style.marginLeft = '-'+value+'px';
+						default: style.marginTop = '-'+value+'px';
+					}
 					if (this.togglerSize <= 0)
 						toggler.setAttribute('collapsed', true);
 					else

@@ -103,6 +103,10 @@
 	visibility: collapse !important;
 }
 
+.treestyletab-tabbar-toggler {
+  opacity: 0.01;
+  position: relative;
+}
 
 /* auto hide tab bar */
 

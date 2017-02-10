@@ -281,18 +281,15 @@ tabbrowser[treestyletab-drop-position="left"]:not([treestyletab-tabbar-position=
 
 tabbrowser[treestyletab-tabbar-position="left"]
   .treestyletab-tabbar-toggler {
-	border-right: 1px solid;
-	border-right-color: var(--tst-tab-border);
+	border-right: 1px solid black;
 }
 tabbrowser[treestyletab-tabbar-position="right"]
   .treestyletab-tabbar-toggler {
-	border-left: 1px solid;
-	border-left-color: var(--tst-tab-border);
+	border-left: 1px solid black;
 }
 tabbrowser[treestyletab-tabbar-position="bottom"]
   .treestyletab-tabbar-toggler {
-	border-top: 1px solid;
-	border-top-color: var(--tst-tab-border);
+	border-top: 1px solid black;
 }
 .treestyletab-tabbar-toolbar[treestyletab-tabbar-autohide]
   #treestyletab-tabbar-resizer-box {
