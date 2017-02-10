@@ -155,11 +155,17 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var node = this.scrollBox;
 		if (node._scrollbox)
 			node = node._scrollbox;
-		return (node.scrollBoxObject || node.boxObject)
-				.QueryInterface(Ci.nsIScrollBoxObject); // for Tab Mix Plus (ensure scrollbox-ed)
+		var boxObject = (node.scrollBoxObject || node.boxObject);
+		try {
+			boxObject = boxObject.QueryInterface(Ci.nsIScrollBoxObject); // for Tab Mix Plus (ensure scrollbox-ed)
+		}
+		catch(e) {
+			// bug 979835, interface not implemented
+		}
+		return boxObject;
 	},
- 
-	get splitter() 
+
+	get splitter()
 	{
 		var d = this.document;
 		return d.getAnonymousElementByAttribute(this.mTabBrowser, 'class', this.kSPLITTER) ||
