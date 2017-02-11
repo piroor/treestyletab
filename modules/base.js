@@ -202,7 +202,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			}
 		}.bind(this);
 		new UninstallationListener({
-			id : 'treestyletab@piro.sakura.ne.jp',
+			id : 'treestyletabforpm@oinkoink',
 			onuninstalled : restorePrefs,
 			ondisabled : restorePrefs
 		});

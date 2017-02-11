@@ -414,7 +414,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 				}
 			}.bind(this);
 		new UninstallationListener({
-			id : 'treestyletab@piro.sakura.ne.jp',
+			id : 'treestyletabforpm@oinkoink',
 			onuninstalled : restorePrefs,
 			ondisabled : restorePrefs
 		});
