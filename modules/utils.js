@@ -142,8 +142,8 @@ let TreeStyleTabUtils = {
 					this.clearTreePref('openGroupBookmarkAsTabSubTree.underParent');
 				}
 			case 4:
-        {
-          let subTreePrefs = [
+				{
+					let subTreePrefs = [
 						'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect',
 						'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.onCurrentTabRemove',
 						'extensions.treestyletab.autoCollapseExpandSubTreeOnSelect.whileFocusMovingByShortcut',
@@ -170,14 +170,14 @@ let TreeStyleTabUtils = {
 				}
 			case 5:
 				{
-          let behavior = this.getTreePref('openGroupBookmark.behavior');
+					let behavior = this.getTreePref('openGroupBookmark.behavior');
 					behavior = behavior | 2048;
 					this.setTreePref('openGroupBookmark.behavior', behavior);
 				}
 			case 6:
 				{
-					general = this.getTreePref('autoAttachNewTabsAsChildren'),
-					search = this.getTreePref('autoAttachSearchResultAsChildren')
+					let general = this.getTreePref('autoAttachNewTabsAsChildren'),
+						search = this.getTreePref('autoAttachSearchResultAsChildren');
 					if (general !== null)
 						this.setTreePref('autoAttach', general);
 					if (search !== null)
@@ -185,8 +185,8 @@ let TreeStyleTabUtils = {
 				}
 			case 7:
 				{
-          enabled = this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut'),
-					delay = this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut.delay')
+					let enabled = this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut'),
+						delay = this.getTreePref('autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut.delay');
 					if (enabled !== null) {
 						this.setTreePref('autoExpandSubtreeOnSelect.whileFocusMovingByShortcut', enabled);
 						this.setTreePref('autoExpandSubtreeOnSelect.whileFocusMovingByShortcut.collapseOthers', enabled);
