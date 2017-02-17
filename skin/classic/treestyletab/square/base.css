@@ -233,6 +233,7 @@
   .tab-content {
 	margin-left: 0 !important;
 	margin-right: 0 !important;
+	padding-bottom: 7px !important;
 }
 
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
