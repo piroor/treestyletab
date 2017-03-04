@@ -225,6 +225,10 @@ tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-sc
   .tabbrowser-arrowscrollbox
   > scrollbox {
 	direction: rtl;
+	
+	/* Fix a padding bug while switching between tabs with default skin */
+	margin-left: -1px !important;
+	padding-left: 1px !important;
 }
 tabs.tabbrowser-tabs[treestyletab-tabbar-position="left"][treestyletab-invert-scrollbar="true"]
   .tabbrowser-arrowscrollbox
