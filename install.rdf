@@ -274,8 +274,8 @@
 
     <em:targetApplication>
       <RDF:Description em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
-                       em:minVersion="45.0"
-                       em:maxVersion="53.0a1" />
+                       em:minVersion="52.0"
+                       em:maxVersion="55.0a1" />
     </em:targetApplication>
   </RDF:Description>
 </RDF:RDF>
