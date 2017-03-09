@@ -109,6 +109,7 @@
 <!ENTITY config.autoHide.area.after "pixels des bords de la fenêtre / du panneau des onglets">
 <!ENTITY config.autoHide.delay.before "Délai :">
 <!ENTITY config.autoHide.delay.after "msec.">
+<!ENTITY config.autoShow.click "Click on the tab bar">
 <!ENTITY config.autoShow.accelKeyDown "La touche Control est appuyée pendant un moment">
 <!ENTITY config.autoShow.accelKeyDown.delay.before "Afficher après">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "msec.">

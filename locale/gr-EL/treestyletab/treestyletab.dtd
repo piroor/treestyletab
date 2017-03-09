@@ -108,6 +108,7 @@
 <!ENTITY config.autoHide.area.after "pixel από τις άκρες του παραθύρου ή της λωρίδας καρτέλων">
 <!ENTITY config.autoHide.delay.before "Καθυστέρηση:">
 <!ENTITY config.autoHide.delay.after "msec.">
+<!ENTITY config.autoShow.click "Click on the tab bar">
 <!ENTITY config.autoShow.accelKeyDown "Το πλήκτρο control πατήθηκε για λίγο">
 <!ENTITY config.autoShow.accelKeyDown.delay.before "Εμφάνιση μετά">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "msec.">

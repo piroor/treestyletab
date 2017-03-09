@@ -117,6 +117,7 @@
 <!ENTITY config.autoHide.area.after "píxeles del borde de la ventana / barra de pestañas">
 <!ENTITY config.autoHide.delay.before "Retraso:">
 <!ENTITY config.autoHide.delay.after "mseg.">
+<!ENTITY config.autoShow.click "Click on the tab bar">
 <!ENTITY config.autoShow.accelKeyDown "Mientras la tecla Control es presionada por un instante">
 <!ENTITY config.autoShow.accelKeyDown.delay.before "Mostrar después">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "mseg.">

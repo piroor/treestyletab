@@ -121,6 +121,7 @@
 <!ENTITY config.autoHide.area.after "pixlar från kanten av fönstret eller flikfältet">
 <!ENTITY config.autoHide.delay.before "Fördröjning:">
 <!ENTITY config.autoHide.delay.after "ms">
+<!ENTITY config.autoShow.click "Click on the tab bar">
 <!ENTITY config.autoShow.accelKeyDown "Ctrl-tangenten hålls nere">
 <!ENTITY config.autoShow.accelKeyDown.delay.before "Visa efter">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "ms">

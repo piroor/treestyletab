@@ -109,6 +109,7 @@
 <!ENTITY config.autoHide.area.after "ピクセルの範囲">
 <!ENTITY config.autoHide.delay.before "遅延：">
 <!ENTITY config.autoHide.delay.after "ミリ秒">
+<!ENTITY config.autoShow.click "タブバーでのクリック">
 <!ENTITY config.autoShow.accelKeyDown "Controlキーを長押しした時">
 <!ENTITY config.autoShow.accelKeyDown.delay.before "">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "ミリ秒以上で反応">

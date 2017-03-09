@@ -109,6 +109,7 @@
 <!ENTITY config.autoHide.area.after "個像素的範圍">
 <!ENTITY config.autoHide.delay.before "延遲：">
 <!ENTITY config.autoHide.delay.after "毫秒">
+<!ENTITY config.autoShow.click "Click on the tab bar">
 <!ENTITY config.autoShow.accelKeyDown "按下 Ctrl 一段時間後">
 <!ENTITY config.autoShow.accelKeyDown.delay.before "">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "毫秒以上才顯示">

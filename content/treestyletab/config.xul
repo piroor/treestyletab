@@ -525,6 +525,9 @@
 		<preference id="extensions.treestyletab.tabbar.autoHide.delay"
 			name="extensions.treestyletab.tabbar.autoHide.delay"
 			type="int"/>
+		<preference id="extensions.treestyletab.tabbar.autoShow.click"
+			name="extensions.treestyletab.tabbar.autoShow.click"
+			type="bool"/>
 		<preference id="extensions.treestyletab.tabbar.autoShow.accelKeyDown"
 			name="extensions.treestyletab.tabbar.autoShow.accelKeyDown"
 			type="bool"/>
@@ -607,6 +610,9 @@
 					value="&config.autoHide.delay.after;"
 					control="extensions.treestyletab.tabbar.autoHide.delay-textbox"/>
 			</hbox>
+			<checkbox id="extensions.treestyletab.tabbar.autoShow.click-check"
+				preference="extensions.treestyletab.tabbar.autoShow.click"
+				label="&config.autoShow.click;"/>
 			<checkbox id="extensions.treestyletab.tabbar.autoShow.accelKeyDown-check"
 				preference="extensions.treestyletab.tabbar.autoShow.accelKeyDown"
 				label="&config.autoShow.accelKeyDown;"

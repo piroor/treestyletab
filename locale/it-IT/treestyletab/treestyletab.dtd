@@ -117,6 +117,7 @@
 <!ENTITY config.autoHide.area.after "distanza dai bordi della finestra / barra delle schede (in pixel)">
 <!ENTITY config.autoHide.delay.before "Ritardo:">
 <!ENTITY config.autoHide.delay.after "msec.">
+<!ENTITY config.autoShow.click "Click on the tab bar">
 <!ENTITY config.autoShow.accelKeyDown "Viene tenuto premuto il tasto Control">
 <!ENTITY config.autoShow.accelKeyDown.delay.before "Visualizza dopo">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "msec.">

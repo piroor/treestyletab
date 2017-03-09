@@ -108,6 +108,7 @@
 <!ENTITY config.autoHide.area.after "pixels from edges of window or tab bar">
 <!ENTITY config.autoHide.delay.before "Delay:">
 <!ENTITY config.autoHide.delay.after "msec.">
+<!ENTITY config.autoShow.click "Click on the tab bar">
 <!ENTITY config.autoShow.accelKeyDown "Control key is pressed a while">
 <!ENTITY config.autoShow.accelKeyDown.delay.before "Show after">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "msec.">

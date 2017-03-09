@@ -122,6 +122,7 @@
 <!ENTITY config.autoHide.area.after "pixel fra vindueskant eller fanebjælke">
 <!ENTITY config.autoHide.delay.before "Forsinkelse:">
 <!ENTITY config.autoHide.delay.after "msec.">
+<!ENTITY config.autoShow.click "Click on the tab bar">
 <!ENTITY config.autoShow.accelKeyDown "Ved tryk på Ctrl tasten">
 <!ENTITY config.autoShow.accelKeyDown.delay.before "Vis efter">
 <!ENTITY config.autoShow.accelKeyDown.delay.after "msec.">

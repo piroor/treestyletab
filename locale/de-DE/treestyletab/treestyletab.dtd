@@ -108,6 +108,7 @@
 <!ENTITY config.autoHide.area.after                "Pixel rund um die Fenster- oder Tableistenkante">
 <!ENTITY config.autoHide.delay.before              "Verzögerung:">
 <!ENTITY config.autoHide.delay.after               "Millisekunden">
+<!ENTITY config.autoShow.click "Click on the tab bar">
 <!ENTITY config.autoShow.accelKeyDown              "Wenn die Strg-Taste eine Zeit lang gedrückt wird">
 <!ENTITY config.autoShow.accelKeyDown.delay.before "Nach">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "Millisekunden anzeigen">

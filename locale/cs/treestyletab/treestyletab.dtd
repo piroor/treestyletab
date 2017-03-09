@@ -108,6 +108,7 @@
 <!ENTITY config.autoHide.area.after "pixelů od okraje okna nebo lišty panelů">
 <!ENTITY config.autoHide.delay.before "Zpoždění:">
 <!ENTITY config.autoHide.delay.after "ms">
+<!ENTITY config.autoShow.click "Click on the tab bar">
 <!ENTITY config.autoShow.accelKeyDown "Klávesa Ctrl je stisknuta po určitou dobu">
 <!ENTITY config.autoShow.accelKeyDown.delay.before "Zobrazit lištu po">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "ms">

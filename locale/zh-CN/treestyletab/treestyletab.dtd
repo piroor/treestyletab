@@ -121,6 +121,7 @@
 <!ENTITY config.autoHide.area.after "像素（距离窗口边缘）">
 <!ENTITY config.autoHide.delay.before "延迟:">
 <!ENTITY config.autoHide.delay.after "毫秒">
+<!ENTITY config.autoShow.click "Click on the tab bar">
 <!ENTITY config.autoShow.accelKeyDown "按下Ctrl键之后">
 <!ENTITY config.autoShow.accelKeyDown.delay.before "等待">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "毫秒再显示">
