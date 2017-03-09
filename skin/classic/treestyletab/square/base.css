@@ -232,7 +232,13 @@
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab[visuallyselected="true"] {
 	margin: 0 !important;
-	-moz-border-top-colors: var(--tst-tab-surface-hover) transparent !important;
+	-moz-border-top-colors: var(--tst-tab-surface-selected) transparent !important;
+	-moz-border-bottom-colors: var(--tst-tab-border) transparent !important;
+}
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab[visuallyselected="true"]:hover {
+	margin: 0 !important;
+	-moz-border-top-colors: var(--tst-tab-surface-selected-hover) transparent !important;
 	-moz-border-bottom-colors: var(--tst-tab-border) transparent !important;
 }
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
@@ -243,7 +249,13 @@
   .tabbrowser-tab:not([pinned])[visuallyselected="true"],
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tabbrowser-tab[pinned][visuallyselected="true"] {
-	background-color: var(--tst-tab-surface-hover) !important;
+	background-color: var(--tst-tab-surface-selected) !important;
+}
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab:not([pinned])[visuallyselected="true"]:hover,
+.tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
+  .tabbrowser-tab[pinned][visuallyselected="true"]:hover {
+	background-color: var(--tst-tab-surface-selected-hover) !important;
 }
 
 
