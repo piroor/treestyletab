@@ -1002,10 +1002,7 @@ try{
 		var observer = b;
 		if (
 			b.tabContainer &&
-			(
-				b.tabContainer._getDropEffectForTabDrag || // Firefox 44 and later
-				b.tabContainer._setEffectAllowedForDataTransfer // Firefox 43 and older
-			)
+			b.tabContainer._getDropEffectForTabDrag
 			)
 			observer = b.tabContainer;
 

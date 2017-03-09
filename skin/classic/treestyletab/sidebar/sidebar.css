@@ -407,10 +407,7 @@ tabbrowser[treestyletab-mode="vertical"]
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   :-moz-any(.tab-content:not([selected="true"]):not([visuallyselected="true"]):not([pinned]),
             .tab-content:not([selected="true"]):not([visuallyselected="true"])[pinned]:not([titlechanged]),
-            /* Firefox 51 and later */
-            .tab-content[selected="true"],
-            /* Firefox 50 and older */
-            .tab-content[visuallyselected="true"]) {
+            .tab-content[selected="true"]) {
 	border: 0 none !important;
 	background: transparent !important;
 }
@@ -418,14 +415,9 @@ tabbrowser[treestyletab-mode="vertical"]
   :-moz-any(.tab-background-start:not([selected="true"]):not([visuallyselected="true"]),
             .tab-background-middle:not([selected="true"]):not([visuallyselected="true"]),
             .tab-background-end:not([selected="true"]):not([visuallyselected="true"]),
-            /* Firefox 51 and later */
             .tab-background-start[selected="true"],
             .tab-background-middle[selected="true"],
-            .tab-background-end[selected="true"],
-            /* Firefox 50 and older */
-            .tab-background-start[visuallyselected="true"],
-            .tab-background-middle[visuallyselected="true"],
-            .tab-background-end[visuallyselected="true"]) {
+            .tab-background-end[selected="true"]) {
 	mask: none !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
@@ -433,14 +425,9 @@ tabbrowser[treestyletab-mode="vertical"]
             .tab-background-middle:not([selected="true"]):not([visuallyselected="true"]):not([pinned]),
             .tab-background-middle:not([selected="true"]):not([visuallyselected="true"])[pinned]:not([titlechanged]),
             .tab-background-end:not([selected="true"]):not([visuallyselected="true"]),
-            /* Firefox 51 and later */
             .tab-background-start[selected="true"],
             .tab-background-middle[selected="true"],
-            .tab-background-end[selected="true"],
-            /* Firefox 50 and older */
-            .tab-background-start[visuallyselected="true"],
-            .tab-background-middle[visuallyselected="true"],
-            .tab-background-end[visuallyselected="true"]) {
+            .tab-background-end[selected="true"]) {
 	background: transparent !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]

@@ -69,18 +69,11 @@
             .tab-background-middle:not([selected="true"]):not([visuallyselected="true"]):not([pinned]),
             .tab-background-middle:not([selected="true"]):not([visuallyselected="true"])[pinned]:not([titlechanged]),
             .tab-background-end:not([selected="true"]):not([visuallyselected="true"]),
-            /* Firefox 51 and later */
             .tab-content:not([pinned])[selected="true"],
             .tab-content[pinned]:not([titlechanged])[selected="true"],
             .tab-background-start[selected="true"],
             .tab-background-middle[selected="true"],
-            .tab-background-end[selected="true"],
-            /* Firefox 50 and older */
-            .tab-content:not([pinned])[visuallyselected="true"],
-            .tab-content[pinned]:not([titlechanged])[visuallyselected="true"],
-            .tab-background-start[visuallyselected="true"],
-            .tab-background-middle[visuallyselected="true"],
-            .tab-background-end[visuallyselected="true"]) {
+            .tab-background-end[selected="true"]) {
 	border: 0 none !important;
 	background: transparent !important;
 }
@@ -88,14 +81,9 @@
   :-moz-any(.tab-background-start:not([selected="true"]):not([visuallyselected="true"]),
             .tab-background-middle:not([selected="true"]):not([visuallyselected="true"]),
             .tab-background-end:not([selected="true"]):not([visuallyselected="true"]),
-            /* Firefox 51 and later */
             .tab-background-start[selected="true"],
             .tab-background-middle[selected="true"],
-            .tab-background-end[selected="true"],
-            /* Firefox 50 and older */
-            .tab-background-start[visuallyselected="true"],
-            .tab-background-middle[visuallyselected="true"],
-            .tab-background-end[visuallyselected="true"]) {
+            .tab-background-end[selected="true"]) {
 	mask: none !important;
 }
 /* highlighted pinned tabs */
@@ -202,16 +190,10 @@
   .tab-content[pinned]:not([titlechanged]),
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[visuallyselected]:not(:hover)
-  :-moz-any(/* Firefox 51 and later */
-            .tab-content[pinned][selected],
-            /* Firefox 50 and older */
-            .tab-content[pinned][visuallyselected]),
+  .tab-content[pinned][selected],
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[visuallyselected]:hover
-  :-moz-any(/* Firefox 51 and later */
-            .tab-content[pinned][selected],
-            /* Firefox 50 and older */
-            .tab-content[pinned][visuallyselected]) {
+  .tab-content[pinned][selected] {
 	background: none !important;
 }
 
@@ -254,16 +236,10 @@
   .tab-content[pinned],
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[visuallyselected="true"]:not(:hover)
-  :-moz-any(/* Firefox 51 and later */
-            .tab-content[pinned][selected="true"],
-            /* Firefox 50 and older */
-            .tab-content[pinned][visuallyselected="true"]),
+  .tab-content[pinned][selected="true"],
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[visuallyselected="true"]:hover
-  :-moz-any(/* Firefox 51 and later */
-            .tab-content[pinned][selected="true"],
-            /* Firefox 50 and older */
-            .tab-content[pinned][visuallyselected="true"]) {
+  .tab-content[pinned][selected="true"] {
 	line-height: 1 !important;
 	border: 1px solid #666666 !important;
 	border-radius: 4px !important;
@@ -278,31 +254,19 @@
   .tab-content[pinned]:not([titlechanged]),
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[visuallyselected="true"]:not(:hover)
-  .tab-content[selected="true"][pinned], /* Firefox 51 and later */
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[visuallyselected="true"]:not(:hover)
-  .tab-content[visuallyselected="true"][pinned], /* Firefox 50 and older */
+  .tab-content[selected="true"][pinned],
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[visuallyselected="true"]:hover
-  .tab-content[selected="true"][pinned], /* Firefox 51 and later */
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[visuallyselected="true"]:hover
-  .tab-content[visuallyselected="true"][pinned] /* Firefox 50 and older */ {
+  .tab-content[selected="true"][pinned] {
 	background: #9d9d9d !important;
 }
 
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[visuallyselected="true"]:not(:hover)
-  .tab-content[selected="true"][pinned], /* Firefox 51 and later */
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[visuallyselected="true"]:not(:hover)
-  .tab-content[visuallyselected="true"][pinned], /* Firefox 50 and older */
+  .tab-content[selected="true"][pinned],
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[visuallyselected="true"]:hover
-  .tab-content[selected="true"][pinned], /* Firefox 51 and later */
-.tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[visuallyselected="true"]:hover
-  .tab-content[visuallyselected="true"][pinned] /* Firefox 50 and older */ {
+  .tab-content[selected="true"][pinned] {
 	background-color: #b3b2b3 !important;
 }
 
@@ -368,19 +332,11 @@
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[visuallyselected="true"]
-  .tab-content[pinned][selected="true"], /* Firefox 51 and later */
-:root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[visuallyselected="true"]
-  .tab-content[pinned][visuallyselected="true"], /* Firefox 50 and older */
+  .tab-content[pinned][selected="true"],
 :root:-moz-window-inactive
   .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-tab[visuallyselected="true"]:hover
-  .tab-content[pinned][selected="true"], /* Firefox 51 and later */
-:root:-moz-window-inactive
-  .tabbrowser-tabs[treestyletab-mode="vertical"]
-  .tabbrowser-tab[visuallyselected="true"]:hover
-  .tab-content[pinned][visuallyselected="true"] /* Firefox 50 and older */ {
+  .tab-content[pinned][selected="true"] {
 	background: #e4e4e4 !important;
 }
 
