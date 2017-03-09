@@ -14,7 +14,7 @@ License.
 The Original Code is the SidebarStyleTab.
 
 The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
-Portions created by the Initial Developer are Copyright (C) 2010-2012
+Portions created by the Initial Developer are Copyright (C) 2010-2017
 the Initial Developer. All Rights Reserved.
 
 Contributor(s): Philipp von Weitershausen <philipp@weitershausen.de>
