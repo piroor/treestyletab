@@ -5,9 +5,7 @@
    window['piro.sakura.ne.jp'].tabsDragUtils.initTabBrowser(gBrowser);
 
    // in dragstart event listener
-   window['piro.sakura.ne.jp'].tabsDragUtils.startTabsDrag(aEvent, aArrayOfTabs, {
-     shrinkOthers : true // shrink other dragged tabs while dragging
-   });
+   window['piro.sakura.ne.jp'].tabsDragUtils.startTabsDrag(aEvent, aArrayOfTabs);
 
  This Source Code Form is subject to the terms of the Mozilla Public
  License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -17,7 +15,7 @@
    http://github.com/piroor/fxaddonlib-tabs-drag-utils
 */
 (function() {
-	const currentRevision = 43;
+	const currentRevision = 44;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -435,30 +433,6 @@ TDUContext.destroy();
 		updateDraggedTabs : function TDU_updateDraggedTabs(context)
 		{
 			context.draggedTabs.forEach(function(draggedTab, aIndex) {
-				if (draggedTab._dragData.canShrink && aIndex > 0) {
-					let style = draggedTab.style;
-					if (!draggedTab.__tabsDragUtils__backupStyle) {
-						let backup = {
-							overflow : {
-								value    : style.getPropertyValue('overflow'),
-								priority : style.getPropertyPriority('overflow')
-							}
-						};
-						backup['max-'+context.rowSize] = {
-							value    : style.getPropertyValue('max-'+context.rowSize),
-							priority : style.getPropertyPriority('max-'+context.rowSize)
-						};
-						backup['min-'+context.rowSize] = {
-							value    : style.getPropertyValue('min-'+context.rowSize),
-							priority : style.getPropertyPriority('min-'+context.rowSize)
-						};
-						draggedTab.__tabsDragUtils__backupStyle = backup;
-					}
-					let size = draggedTab.boxObject[context.rowSize] * 0.1;
-					style.setProperty('max-'+context.rowSize, size + 'px', 'important');
-					style.setProperty('min-'+context.rowSize, size + 'px', 'important');
-					style.setProperty('overflow', 'hidden', 'important');
-				}
 				draggedTab._dragData.animLastScreenX = context.currentPositionCoordinate;
 			}, this);
 		},
@@ -626,20 +600,12 @@ TDUContext.destroy();
 						scrollX: isVertical ? 0 : tabbar.mTabstrip.scrollPosition ,
 						scrollY: isVertical ? tabbar.mTabstrip.scrollPosition : 0 ,
 						screenX: aEvent.screenX,
-						screenY: aEvent.screenY,
-						canShrink : aOptions.shrinkOthers || false
+						screenY: aEvent.screenY
 					};
 				}, this);
 			}
 
 			aEvent.stopPropagation();
-
-			if (aOptions.shrinkOthers) {
-				document.addEventListener('dragend', this, true);
-				document.addEventListener('drop', this, true);
-				document.addEventListener('overflow', this, true);
-				document.addEventListener('underflow', this, true);
-			}
 		},
 		isVertical : function TDS_isVertical(aElement)
 		{
@@ -765,23 +731,6 @@ TDUContext.destroy();
 			return false;
 		},
 
-		clearDraggingStyles : function TDU_clearDraggingStyles(aEvent)
-		{
-			var tabbar = this.getTabbarFromEvent(aEvent);
-			for (let aTab of tabbar.childNodes)
-			{
-				let backup = aTab.__tabsDragUtils__backupStyle;
-				if (!backup)
-					continue;
-
-				let style = aTab.style;
-				Object.keys(backup).forEach(function(aKey) {
-					style.setProperty(aKey, backup[aKey].value, backup[aKey].priority);
-				});
-				delete aTab.__tabsDragUtils__backupStyle;
-			}
-		},
-
 		isTabsDragging : function TDU_isTabsDragging(aEvent) 
 		{
 			if (!aEvent)
@@ -889,22 +838,6 @@ TDUContext.destroy();
 			{
 				case 'load':
 					return this._delayedInit();
-
-				case 'dragend':
-				case 'drop':
-					document.removeEventListener('dragend', this, true);
-					document.removeEventListener('drop', this, true);
-					document.removeEventListener('overflow', this, true);
-					document.removeEventListener('underflow', this, true);
-					return this.clearDraggingStyles(aEvent);
-
-				case 'overflow':
-				case 'underflow':
-					if (aEvent.target.localName == 'tab') {
-						// this must be canceled to prevent the "+" button in the tab bar turns its mode.
-						aEvent.stopPropagation();
-					}
-					return;
 			}
 		},
 
