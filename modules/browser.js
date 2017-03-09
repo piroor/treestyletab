@@ -3887,7 +3887,13 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		var newParent;
 
-		if (!prevTab) {
+		if (parent &&
+			prevTab &&
+			[prevTab].concat(this.getAncestorTabs(prevTab)).indexOf(parent) > -1) {
+			log(' => no need to fix case');
+			newParent = parent;
+		}
+		else if (!prevTab) {
 			log(' => moved to topmost position');
 			newParent = null;
 		}
