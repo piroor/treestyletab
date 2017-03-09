@@ -773,9 +773,12 @@ catch(e) {
 			)
 			return;
 
-		w['piro.sakura.ne.jp'].tabsDragUtils.startTabsDrag(aEvent, tabsInfo.draggedTabs, {
-			shrinkOthers : utils.getTreePref('shrinkOtherDraggedTabs')
-		});
+		if (!sv.isCollapsed(aTab) &&
+			utils.getTreePref('shrinkOtherDraggedTabs')) {
+			sv.collapseExpandSubtree(aTab, true);
+			aTab.__treestyletab__toBeEpandedAfterDrop = true;
+		}
+		w['piro.sakura.ne.jp'].tabsDragUtils.startTabsDrag(aEvent, tabsInfo.draggedTabs);
 	},
  
 	onTabbarDragStart : function TabbarDND_onTabbarDragStart(aEvent) 
@@ -931,6 +934,10 @@ catch(e) {
 			return;
 
 		var draggedTab = dt.mozGetDataAt(TAB_DROP_TYPE, 0);
+		if (draggedTab.__treestyletab__toBeEpandedAfterDrop) {
+			delete draggedTab.__treestyletab__toBeEpandedAfterDrop;
+			sv.collapseExpandSubtree(draggedTab, false);
+		}
 		if (this.isDraggingAllCurrentTabs(draggedTab))
 			return;
 
@@ -1141,6 +1148,11 @@ catch(e) {
 		var sourceBrowser = sv.getTabBrowserFromChild(draggedTab);
 		if (draggedTab && sourceBrowser != b)
 			sourceBrowser.treeStyleTab.tabbarDNDObserver.clearDropPosition(true);
+
+		if (draggedTab.__treestyletab__toBeEpandedAfterDrop) {
+			delete draggedTab.__treestyletab__toBeEpandedAfterDrop;
+			sourceBrowser.treeStyleTab.collapseExpandSubtree(draggedTab, false);
+		}
 
 		if (draggedTab && this.performDrop(dropActionInfo, draggedTab)) {
 			aEvent.stopPropagation();
