@@ -151,6 +151,7 @@
 <!ENTITY config.focusMode "Flyt fokus til næste/forrige fane, selv om den ikke er synlig, med Ctrl-Tab">
 
 <!ENTITY config.insertNewChildAt.caption "Placering af nye underfaner">
+<!ENTITY config.insertNewChildAt.noControl "No control (respect the decision by Firefox or other tab addons)">
 <!ENTITY config.insertNewChildAt.first "Indsæt øverst som første underfane">
 <!ENTITY config.insertNewChildAt.last "Indsæt i træets bund">
 

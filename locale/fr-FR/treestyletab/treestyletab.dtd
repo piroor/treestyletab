@@ -138,6 +138,7 @@
 <!ENTITY config.focusMode "Activer l'onglet suivant/précédent même s'il n'est pas visible par Control-Tab">
 
 <!ENTITY config.insertNewChildAt.caption "Endroit d'insertion des nouveaux onglets enfants">
+<!ENTITY config.insertNewChildAt.noControl "No control (respect the decision by Firefox or other tab addons)">
 <!ENTITY config.insertNewChildAt.first "Insérer au sommet de l'arborescence, en tant que premier enfant">
 <!ENTITY config.insertNewChildAt.last "Ajouter après le dernier de l'arborescence">
 

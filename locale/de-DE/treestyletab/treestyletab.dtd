@@ -136,6 +136,7 @@
 <!ENTITY config.focusMode "Bei Strg+Tab auch zu nicht sichtbaren Tabs wechseln">
 
 <!ENTITY config.insertNewChildAt.caption "Einfügeposition neuer untergeordneter Tabs">
+<!ENTITY config.insertNewChildAt.noControl "No control (respect the decision by Firefox or other tab addons)">
 <!ENTITY config.insertNewChildAt.first   "Als ersten Tab einfügen">
 <!ENTITY config.insertNewChildAt.last    "Als letzten Tab anfügen">
 

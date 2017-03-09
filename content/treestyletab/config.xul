@@ -744,6 +744,7 @@
 		<radiogroup id="extensions.treestyletab.insertNewChildAt-radiogroup"
 			preference="extensions.treestyletab.insertNewChildAt"
 			orient="vertical">
+			<radio value="-1" label="&config.insertNewChildAt.noControl;"/>
 			<radio value="0" label="&config.insertNewChildAt.first;"/>
 			<radio value="1" label="&config.insertNewChildAt.last;"/>
 		</radiogroup>

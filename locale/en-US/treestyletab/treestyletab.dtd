@@ -136,6 +136,7 @@
 <!ENTITY config.focusMode "Focus to the next/previous tab even if it is invisible, by Control-Tab">
 
 <!ENTITY config.insertNewChildAt.caption "Insertion position of new child tabs">
+<!ENTITY config.insertNewChildAt.noControl "No control (respect the decision by Firefox or other tab addons)">
 <!ENTITY config.insertNewChildAt.first "Insert to the top of the tree, as the first child">
 <!ENTITY config.insertNewChildAt.last "Append to the last of the tree">
 

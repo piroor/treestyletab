@@ -148,6 +148,7 @@
 <!ENTITY config.focusMode "Seleccionar la próxima/anterior pestaña aunque no este visible, cuando se presiona Control-Tab">
 
 <!ENTITY config.insertNewChildAt.caption "Posición de inserción de nuevas pestañas hijas">
+<!ENTITY config.insertNewChildAt.noControl "No control (respect the decision by Firefox or other tab addons)">
 <!ENTITY config.insertNewChildAt.first "Insertar arriba del todo en el árbol">
 <!ENTITY config.insertNewChildAt.last "Insertar abajo del todo en el árbol">
 

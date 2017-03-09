@@ -137,6 +137,7 @@
 <!ENTITY config.focusMode "Přepnout na následující/předchozí panel pomocí Ctrl-Tab i přesto, že není vidět">
 
 <!ENTITY config.insertNewChildAt.caption "Umístění nového potomka">
+<!ENTITY config.insertNewChildAt.noControl "No control (respect the decision by Firefox or other tab addons)">
 <!ENTITY config.insertNewChildAt.first "Vložit ho na začátek stromu jako prvního potomka">
 <!ENTITY config.insertNewChildAt.last "Připojit ho za posledním potomkem ve stromě">
 

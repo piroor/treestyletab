@@ -136,6 +136,7 @@
 <!ENTITY config.focusMode "Εστίαση στην επόμενη/προηγούμενη καρτέλα ακόμη κι αν είναι αόρατη, με Control-Tab">
 
 <!ENTITY config.insertNewChildAt.caption "Θέση εισαγωγής νέων καρτέλων-παιδιών">
+<!ENTITY config.insertNewChildAt.noControl "No control (respect the decision by Firefox or other tab addons)">
 <!ENTITY config.insertNewChildAt.first "Εισαγωγή στην κορυφή του δέντρου, ως το πρώτο παιδί">
 <!ENTITY config.insertNewChildAt.last "Προσθήκη στο τέλος του δέντρου">
 

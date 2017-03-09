@@ -146,6 +146,7 @@
 <!ENTITY config.focusMode "Skrót [Ctrl+Tab] uaktywnia następną/poprzednią kartę nawet jeśli jest niewidoczna">
 
 <!ENTITY config.insertNewChildAt.caption "Położenie wstawianych nowych potomnych kart">
+<!ENTITY config.insertNewChildAt.noControl "No control (respect the decision by Firefox or other tab addons)">
 <!ENTITY config.insertNewChildAt.first "Wstawiaj jako pierwszą potomną na górze drzewa">
 <!ENTITY config.insertNewChildAt.last "Wstawiaj na końcu drzewa">
 

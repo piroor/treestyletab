@@ -138,6 +138,7 @@
 <!ENTITY config.closeRootBehavior.promoteFirst   "最上位の親タブを閉じた時だけは、最初の子タブを新しい親にする">
 
 <!ENTITY config.insertNewChildAt.caption "新しい子タブを開く位置">
+<!ENTITY config.insertNewChildAt.noControl "制御しない（Firefoxや他のアドオンの判断に任せる）">
 <!ENTITY config.insertNewChildAt.first "ツリーの最初の位置に挿入する">
 <!ENTITY config.insertNewChildAt.last "ツリーの末尾に追加する">
 

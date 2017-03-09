@@ -150,6 +150,7 @@
 <!ENTITY config.focusMode "通过“Ctrl-Tab”切换标签时可切换到折叠起来的标签上。">
 
 <!ENTITY config.insertNewChildAt.caption "新子标签的位置">
+<!ENTITY config.insertNewChildAt.noControl "No control (respect the decision by Firefox or other tab addons)">
 <!ENTITY config.insertNewChildAt.first "插入到子树顶部，成为首个子标签">
 <!ENTITY config.insertNewChildAt.last "添加到子树的最后">
 

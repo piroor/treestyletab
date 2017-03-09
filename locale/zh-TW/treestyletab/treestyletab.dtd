@@ -140,6 +140,7 @@
 
 
 <!ENTITY config.insertNewChildAt.caption "開啟新子分頁的位置">
+<!ENTITY config.insertNewChildAt.noControl "No control (respect the decision by Firefox or other tab addons)">
 <!ENTITY config.insertNewChildAt.first "子樹的前端">
 <!ENTITY config.insertNewChildAt.last "子樹的末端">
 

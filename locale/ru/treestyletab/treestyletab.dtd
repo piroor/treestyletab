@@ -144,6 +144,7 @@
 <!ENTITY config.focusMode "Переходить по Ctrl+Tab на следующую/предыдущую вкладку даже если она скрыта">
 
 <!ENTITY config.insertNewChildAt.caption "Позиция добавления новых дочерних вкладок">
+<!ENTITY config.insertNewChildAt.noControl "No control (respect the decision by Firefox or other tab addons)">
 <!ENTITY config.insertNewChildAt.first "Добавлять в начало дерева">
 <!ENTITY config.insertNewChildAt.last "Добавлять в конец дерева">
 

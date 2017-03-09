@@ -150,6 +150,7 @@
 <!ENTITY config.focusMode "Fokusera på nästa/föregående flik även om den är osynlig, m.h.a. Ctrl+Tabb">
 
 <!ENTITY config.insertNewChildAt.caption "Infogningsposition för ny underordnad flik">
+<!ENTITY config.insertNewChildAt.noControl "No control (respect the decision by Firefox or other tab addons)">
 <!ENTITY config.insertNewChildAt.first "Infoga överst i trädet, som den första underordnade fliken">
 <!ENTITY config.insertNewChildAt.last "Lägg den sist i trädet">
 
