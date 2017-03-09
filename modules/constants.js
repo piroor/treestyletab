@@ -176,6 +176,7 @@ var TreeStyleTabConstants = Object.freeze({
 	kTABBAR_REGULAR    : (1 << 0) | (1 << 2),
 	kTABBAR_INVERTED   : (1 << 3) | (1 << 4),
 
+	kINSERT_NO_CONTROL : -1,
 	kINSERT_FISRT : 0,
 	kINSERT_LAST  : 1,
 

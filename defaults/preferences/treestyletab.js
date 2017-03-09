@@ -299,6 +299,8 @@ pref("extensions.treestyletab.platform.Darwin.indent.property.top", "margin-bott
  * (dropping a tab onto an existing tab, new child tab from link, etc.)
  *  0 = Insert as the first child.
  *  1 = Insert as the last child.
+ *  -1 = No control. You should use this option if you want to use any other
+ *       addon which controls new tab positions.
  */
 pref("extensions.treestyletab.insertNewChildAt", 1);
 
@@ -535,12 +537,6 @@ pref("extensions.treestyletab.autoAttach.goButton", 1);
  *  Options are same to extensions.treestyletab.autoAttach.newTabCommand.
  */
 pref("extensions.treestyletab.autoAttach.fromCurrent", 1);
-
-/**
- * If true, TST controls position of a newly opened tab by self.
- * You should turn this false if you want to use any other addon which controls new tab positions.
- */
-pref("extensions.treestyletab.controlNewTabPosition", true);
 
 /**
  * Focus targets for Ctrl-Tab/Ctrl-Shift-Tab.

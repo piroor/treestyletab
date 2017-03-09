@@ -3257,7 +3257,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var pareintIndexInTree = hasStructure ? this.treeStructure.shift() : 0 ;
 		var lastRelatedTab = b._lastRelatedTab;
 
-		log('onTabOpen\n  ' + [
+		log('onTabOpen at ' + tab._tPos + '\n  ' + [
 		  'readiedToAttachNewTab: '+this.readiedToAttachNewTab,
 		  'parentTab: '+this.parentTab + ' (' + this.getTabById(this.parentTab) + ')',
 		  'insertBefore: '+this.insertBefore,
@@ -3291,7 +3291,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			}
 			if (parent) {
 				this.attachTabTo(tab, parent, {
-					dontExpand : this.shouldExpandAllTree
+					dontExpand : this.shouldExpandAllTree,
+					dontMove   : utils.getTreePref('insertNewChildAt') == this.kINSERT_NO_CONTROL
 				});
 			}
 
@@ -3323,7 +3324,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				if (refTab = this.getFirstChildTab(parent))
 					this.insertBefore = refTab.getAttribute(this.kID);
 			}
-			else {
+			else if (utils.getTreePref('insertNewChildAt') == this.kINSERT_LAST) {
 				refTab = this.findNextTabForNewChild(tab, parent);
 				if (refTab)
 					nextIndex = refTab._tPos;
@@ -3723,9 +3724,10 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var b   = this.mTabBrowser;
 
 		var prevPosition = aEvent.detail;
+		var positionControlled = utils.getTreePref('insertNewChildAt') != this.kINSERT_NO_CONTROL;
 		if (tab.__treestyletab__isOpening &&
 			!this.isTabInternallyMoving(tab) &&
-			utils.getTreePref('controlNewTabPosition')) {
+			positionControlled) {
 			log('onTabMove for new child tab: move back '+tab._tPos+' => '+prevPosition);
 			tab.__treestyletab__internallyTabMovingCount++;
 			b.moveTabTo(tab, prevPosition);
@@ -3824,7 +3826,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			)
 			return;
 
-		if (!restored)
+		if (!restored &&
+			!positionControlled &&
+			!this.isTabInternallyMoving(tab))
 			this.attachTabFromPosition(tab, aEvent.detail);
 
 		this.rearrangeTabViewItems(tab);
