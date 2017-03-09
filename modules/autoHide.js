@@ -204,7 +204,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
  
 	get toggler()
 	{
-		return this.document.getAnonymousElementByAttribute(this.browser, 'class', this.treeStyleTab.kTABBAR_TOGGLER);
+		return this.treeStyleTab.toggler;
 	},
 	
 	updateMode : function AHB_updateMode(aNewMode) 
@@ -386,6 +386,10 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 			ReferenceCounter.add('tabStripPlaceHolder,mousedown,AHW,true');
 			sv.tabStripPlaceHolder.addEventListener('mouseup', this, true);
 			ReferenceCounter.add('tabStripPlaceHolder,mouseup,AHW,true');
+			this.toggler.addEventListener('mousedown', this, true);
+			ReferenceCounter.add('toggler,mousedown,AHW,true');
+			this.toggler.addEventListener('mouseup', this, true);
+			ReferenceCounter.add('toggler,mouseup,AHW,true');
 			sv.tabStrip.addEventListener('mousedown', this, true);
 			ReferenceCounter.add('tabStrip,mousedown,AHW,true');
 			w.addEventListener('mouseup', this, true);
@@ -439,6 +443,10 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 			ReferenceCounter.remove('tabStripPlaceHolder,mousedown,AHW,true');
 			sv.tabStripPlaceHolder.removeEventListener('mouseup', this, true);
 			ReferenceCounter.remove('tabStripPlaceHolder,mouseup,AHW,true');
+			this.toggler.removeEventListener('mousedown', this, true);
+			ReferenceCounter.remove('toggler,mousedown,AHW,true');
+			this.toggler.removeEventListener('mouseup', this, true);
+			ReferenceCounter.remove('toggler,mouseup,AHW,true');
 			sv.tabStrip.removeEventListener('mousedown', this, true);
 			ReferenceCounter.remove('tabStrip,mousedown,AHW,true');
 			w.removeEventListener('mouseup', this, true);
@@ -1396,7 +1404,10 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 			this.enabled &&
 			!this.expanded &&
 			aEvent.originalTarget &&
-			sv.getTabBrowserFromChild(aEvent.originalTarget)
+			(
+				sv.getTabBrowserFromChild(aEvent.originalTarget) ||
+				aEvent.originalTarget == this.toggler
+			)
 			) {
 			this.show(this.kSHOWN_BY_CLICK);
 		}

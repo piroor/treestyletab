@@ -210,6 +210,13 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				d.getAnonymousElementByAttribute(this.mTabBrowser, 'id', 'tabkit-splitter'); // Tab Kit
 	},
  
+	get toggler() 
+	{
+		var d = this.document;
+		var b = this.mTabBrowser;
+		return d.getAnonymousElementByAttribute(b, 'class', this.kTABBAR_TOGGLER);
+	},
+ 
 	get tabStripPlaceHolder() 
 	{
 		return this._tabStripPlaceHolder;
@@ -932,7 +939,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var d = this.document;
 		var b = this.mTabBrowser;
 
-		var toggler = d.getAnonymousElementByAttribute(b, 'class', this.kTABBAR_TOGGLER);
+		var toggler = this.toggler;
 		if (!toggler) {
 			toggler = d.createElement('spacer');
 			toggler.setAttribute(this.kTAB_STRIP_ELEMENT, true);
@@ -1436,7 +1443,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var strip = this.tabStrip;
 		var placeHolder = this.tabStripPlaceHolder || strip;
 		var splitter = this._ensureNewSplitter();
-		var toggler = d.getAnonymousElementByAttribute(b, 'class', this.kTABBAR_TOGGLER);
 
 		// Tab Mix Plus
 		var scrollFrame, newTabBox, tabBarMode;
@@ -1480,7 +1486,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			b.mTabBox.orient = splitter.orient = 'horizontal';
 			strip.orient =
 				placeHolder.orient =
-				toggler.orient =
+				this.toggler.orient =
 				b.mTabContainer.orient =
 				b.mTabContainer.mTabstrip.orient =
 				b.mTabContainer.mTabstrip.parentNode.orient = 'vertical';
@@ -1571,7 +1577,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			b.mTabBox.orient = splitter.orient = 'vertical';
 			strip.orient =
 				placeHolder.orient =
-				toggler.orient =
+				this.toggler.orient =
 				b.mTabContainer.orient =
 				b.mTabContainer.mTabstrip.orient =
 				b.mTabContainer.mTabstrip.parentNode.orient = 'horizontal';
@@ -1668,7 +1674,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		this.timers['initTabbar'] = setTimeout((function() {
 			try {
-				delayedPostProcess(this, b, splitter, toggler);
+				delayedPostProcess(this, b, splitter, this.toggler);
 				this.updateTabbarOverflow();
 				this.updateAllTabsButton(b);
 				this.updateAllTabsAsParent();
@@ -2839,10 +2845,12 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				return;
 
 			case 'extensions.treestyletab.tabbar.autoShow.mousemove':
+			case 'extensions.treestyletab.tabbar.autoShow.click':
 				{
-					let toggler = this.document.getAnonymousElementByAttribute(b, 'class', this.kTABBAR_TOGGLER);
+					let toggler = this.toggler;
 					if (toggler) {
-						if (value)
+						if (utils.getTreePref('tabbar.autoShow.mousemove') ||
+							utils.getTreePref('tabbar.autoShow.click'))
 							toggler.removeAttribute('hidden');
 						else
 							toggler.setAttribute('hidden', true);
