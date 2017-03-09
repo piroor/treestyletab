@@ -4758,7 +4758,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	
 	doRestoreClosedSet : function TSTBrowser_doRestoreClosedSet(aRestoredTab, aIndexes) 
 	{
-		if (!this.window.PlacesUIUtils._confirmOpenInTabs(aIndexes.length))
+		if (!this.window.PlacesUIUtils.confirmOpenInTabs(aIndexes.length, this.window))
 			return;
 
 		this._restoringClosedSet = true;
