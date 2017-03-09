@@ -143,6 +143,8 @@ pref("extensions.treestyletab.tabbar.autoShow.feedback.moved", true);
 pref("extensions.treestyletab.tabbar.autoShow.feedback.selected", true);
 pref("extensions.treestyletab.tabbar.autoShow.feedback.titleChanged", true);
 pref("extensions.treestyletab.tabbar.autoShow.feedback.delay", 3000);
+pref("extensions.treestyletab.tabbar.autoShow.click", false);
+pref("extensions.treestyletab.tabbar.autoHide.mousemoveAfterClick", true);
 /**
  * Size of the placeholder for "hidden tab bar".
  * When "tabbar.autoHide.mode"==1, the tab bar will be hidden completely.

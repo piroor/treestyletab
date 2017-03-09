@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2016
+ * Portions created by the Initial Developer are Copyright (C) 2010-2017
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -83,8 +83,9 @@ var AutoHideConstants = Object.freeze(inherit(TreeStyleTabConstants, {
 	kSHOWN_BY_SHORTCUT  : 1 << 0,
 	kSHOWN_BY_MOUSEMOVE : 1 << 1,
 	kSHOWN_BY_FEEDBACK  : 1 << 2,
+	kSHOWN_BY_CLICK     : 1 << 9,
 	kSHOWN_AUTOMATICALLY : (1 << 0) | (1 << 1),
-	kSHOWN_BY_ANY_REASON : (1 << 0) | (1 << 1) | (1 << 2),
+	kSHOWN_BY_ANY_REASON : (1 << 0) | (1 << 1) | (1 << 2) | (1 << 9),
 	kSHOWHIDE_BY_START  : 1 << 3,
 	kSHOWHIDE_BY_END    : 1 << 4,
 	kSHOWHIDE_BY_POSITION_CHANGE : 1 << 5,
@@ -550,7 +551,21 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
  
 	get shouldListenMouseMove() 
 	{
+		return this.shouldShowByMouseMove || this.shouldHideByMouseMove;
+	},
+	get shouldShowByMouseMove() 
+	{
 		return utils.getTreePref('tabbar.autoShow.mousemove');
+	},
+	get shouldHideByMouseMove() 
+	{
+		return (
+			utils.getTreePref('tabbar.autoShow.mousemove') ||
+			(
+				utils.getTreePref('tabbar.autoShow.click') &&
+				utils.getTreePref('tabbar.autoHide.mousemoveAfterClick')
+			)
+		);
 	},
  
 	get shouldListenKeyEventsForAutoHide()
@@ -606,24 +621,30 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 		var shouldShow = position & this.MOUSE_POSITION_SENSITIVE;
 		var delayToShow = utils.getTreePref('tabbar.autoHide.delay.show');
 		if (this.expanded) { // currently shown, let's hide it.
-			if (shouldShow) {
+			if (
+				shouldShow &&
+				this.shouldShowByMouseMove
+				) {
 				this.show(this.kSHOWN_BY_MOUSEMOVE);
 				this.cancelDelayedShowForShortcut();
 			}
 			else if (
 				!shouldShow &&
-				utils.getTreePref('tabbar.autoShow.mousemove')
+				this.shouldHideByMouseMove
 				) {
 				let delayToHide = utils.getTreePref('tabbar.autoHide.delay.hide');
 				if (delayToHide < 0)
 					delayToHide = delayToShow;
 				this.showHideOnMouseMoveTimer = w.setTimeout((function() {
 					this.cancelDelayedShowForShortcut();
-					this.hide(this.kSHOWN_BY_MOUSEMOVE);
+					this.hide(this.kSHOWN_BY_MOUSEMOVE) || this.hide(this.kSHOWN_BY_CLICK);
 				}).bind(this), delayToHide);
 			}
 		}
-		else if (shouldShow) { // currently shown, let's show it.
+		else if (
+			shouldShow &&
+			this.shouldShowByMouseMove
+			) { // currently shown, let's show it.
 			this.showHideOnMouseMoveTimer = w.setTimeout((function() {
 				this.cancelDelayedShowForShortcut();
 				this.show(this.kSHOWN_BY_MOUSEMOVE);
@@ -1010,7 +1031,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 	{
 		if (!this.enabled) {
 			this.start(aReason | this.kSHOWHIDE_BY_API);
-			return;
+			return true;
 		}
 
 		if (aReason) {
@@ -1020,10 +1041,12 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 				this.showHideReason ^= aReason;
 
 			if (this.showHideReason & this.kSHOWN_BY_ANY_REASON)
-				return;
+				return false;
 		}
 		if (this.expanded)
 			this.showHideInternal(aReason);
+
+		return true;
 	},
  
 	onShowing : function AHB_onShowing() 
@@ -1177,6 +1200,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 			case 'extensions.treestyletab.tabbar.autoShow.mousemove':
 			case 'extensions.treestyletab.tabbar.autoShow.accelKeyDown':
 			case 'extensions.treestyletab.tabbar.autoShow.feedback':
+			case 'extensions.treestyletab.tabbar.autoShow.click':
 				if (this.enabled && this.shouldListenMouseMove)
 					this.startListenMouseMove();
 				else
@@ -1364,8 +1388,18 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 				aEvent.originalTarget.ownerDocument != this.document ||
 				!sv.getTabBrowserFromChild(aEvent.originalTarget)
 			)
-			)
+			) {
 			this.hide(this.kHIDDEN_BY_CLICK);
+		}
+		else if (
+			utils.getTreePref('tabbar.autoShow.click') &&
+			this.enabled &&
+			!this.expanded &&
+			aEvent.originalTarget &&
+			sv.getTabBrowserFromChild(aEvent.originalTarget)
+			) {
+			this.show(this.kSHOWN_BY_CLICK);
+		}
 		this.lastMouseDownTarget = (
 			aEvent.originalTargetLocalName ||
 			(aEvent.originalTarget && aEvent.originalTarget.localName) ||
