@@ -522,8 +522,8 @@
 		<preference id="extensions.treestyletab.tabbar.autoHide.area"
 			name="extensions.treestyletab.tabbar.autoHide.area"
 			type="int"/>
-		<preference id="extensions.treestyletab.tabbar.autoHide.delay"
-			name="extensions.treestyletab.tabbar.autoHide.delay"
+		<preference id="extensions.treestyletab.tabbar.autoHide.delay.show"
+			name="extensions.treestyletab.tabbar.autoHide.delay.show"
 			type="int"/>
 		<preference id="extensions.treestyletab.tabbar.autoShow.click"
 			name="extensions.treestyletab.tabbar.autoShow.click"
@@ -580,9 +580,9 @@
 					extensions.treestyletab.tabbar.autoHide.area-before
 					extensions.treestyletab.tabbar.autoHide.area-textbox
 					extensions.treestyletab.tabbar.autoHide.area-after
-					extensions.treestyletab.tabbar.autoHide.delay-before
-					extensions.treestyletab.tabbar.autoHide.delay-textbox
-					extensions.treestyletab.tabbar.autoHide.delay-after
+					extensions.treestyletab.tabbar.autoHide.delay.show-before
+					extensions.treestyletab.tabbar.autoHide.delay.show-textbox
+					extensions.treestyletab.tabbar.autoHide.delay.show-after
 				"/>
 			<hbox align="center">
 				<spacer style="width:1em;"/>
@@ -599,16 +599,16 @@
 			</hbox>
 			<hbox align="center">
 				<spacer style="width:1em;"/>
-				<label id="extensions.treestyletab.tabbar.autoHide.delay-before"
+				<label id="extensions.treestyletab.tabbar.autoHide.delay.show-before"
 					value="&config.autoHide.delay.before;"
-					control="extensions.treestyletab.tabbar.autoHide.delay-textbox"/>
-				<textbox id="extensions.treestyletab.tabbar.autoHide.delay-textbox"
-					preference="extensions.treestyletab.tabbar.autoHide.delay"
+					control="extensions.treestyletab.tabbar.autoHide.delay.show-textbox"/>
+				<textbox id="extensions.treestyletab.tabbar.autoHide.delay.show-textbox"
+					preference="extensions.treestyletab.tabbar.autoHide.delay.show"
 					type="number"
 					min="0" increment="1" style="width:4em;"/>
-				<label id="extensions.treestyletab.tabbar.autoHide.delay-after"
+				<label id="extensions.treestyletab.tabbar.autoHide.delay.show-after"
 					value="&config.autoHide.delay.after;"
-					control="extensions.treestyletab.tabbar.autoHide.delay-textbox"/>
+					control="extensions.treestyletab.tabbar.autoHide.delay.show-textbox"/>
 			</hbox>
 			<checkbox id="extensions.treestyletab.tabbar.autoShow.click-check"
 				preference="extensions.treestyletab.tabbar.autoShow.click"
