@@ -205,6 +205,15 @@ tabbrowser[treestyletab-drop-position="left"]:not([treestyletab-tabbar-position=
 }
 
 
+.treestyletab-tabbar-drop-area {
+	-moz-appearance: none;
+	background: rgba(0, 0, 0, 0.01);
+	border: none;
+	box-shadow: none;
+	position: fixed;
+}
+
+
 
 /* vertical tab bar */
 

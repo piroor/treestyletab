@@ -79,16 +79,12 @@ TabbarDNDObserver.prototype = {
 	
 	readyToStartTabbarDrag : function TabbarDND_readyToStartTabbarDrag() 
 	{
-		var sheet = utils.makeURIFromSpec('chrome://treestyletab/content/hide-embed.css');
-		if (!SSS.sheetRegistered(sheet, SSS.AGENT_SHEET))
-			SSS.loadAndRegisterSheet(sheet, SSS.AGENT_SHEET);
+		this.treeStyleTab.panelDNDObserver.startWaitDrop();
 	},
  
 	readyToEndTabbarDrag : function TabbarDND_readyToEndTabbarDrag() 
 	{
-		var sheet = utils.makeURIFromSpec('chrome://treestyletab/content/hide-embed.css');
-		if (SSS.sheetRegistered(sheet, SSS.AGENT_SHEET))
-			SSS.unregisterSheet(sheet, SSS.AGENT_SHEET);
+		this.treeStyleTab.panelDNDObserver.endWaitDrop();
 	},
  
 	canDragTabbar : function TabbarDND_canDragTabbar(aEvent) 
@@ -792,6 +788,11 @@ catch(e) {
 				sv.kTABBAR_MOVE_NORMAL,
 			0
 		);
+		dt.mozSetDataAt(
+			sv.kDRAG_TYPE_TABBAR_NODE,
+			sv.browser.mTabContainer,
+			0
+		);
 		dt.mozCursor = 'move';
 //		var tabbar = sv.browser.mTabContainer;
 //		var box = tabbar.boxObject;
@@ -825,7 +826,7 @@ catch(e) {
 		w.clearTimeout(this.mAutoExpandTimer);
 		w.clearTimeout(this.mAutoExpandTimerNext);
 
-		var sourceNode = dt.getData(sv.kDRAG_TYPE_TABBAR+'-node');
+		var sourceNode = dt.getData(sv.kDRAG_TYPE_TABBAR_NODE);
 		if (aEvent.target == sourceNode)
 			return;
 

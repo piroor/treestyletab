@@ -737,4 +737,5 @@ pref("extensions.treestyletab.debug.fullscreenObserver", false);
 pref("extensions.treestyletab.debug.fullTooltip", false);
 pref("extensions.treestyletab.debug.tabbarDNDObserver", false);
 pref("extensions.treestyletab.debug.tabContentsObserver", false);
+pref("extensions.treestyletab.debug.tabpanelDNDObserver", false);
 pref("extensions.treestyletab.debug.window", false);

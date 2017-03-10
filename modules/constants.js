@@ -95,6 +95,7 @@ var TreeStyleTabConstants = Object.freeze({
 
 	kDROP_POSITION      : 'treestyletab-drop-position',
 	kDRAG_TYPE_TABBAR   : 'application/x-moz-treestyletab-tabbrowser-tabbar',
+	kDRAG_TYPE_TABBAR_NODE : 'application/x-moz-treestyletab-tabbrowser-tabbar-node',
 	kDROP_POSITION_UNKNOWN : 'unknown',
 	kTABBAR_MOVE_FORCE  : 'force',
 	kTABBAR_MOVE_NORMAL : 'normal',
@@ -117,6 +118,7 @@ var TreeStyleTabConstants = Object.freeze({
 	kTABBAR_TOOLBAR             : 'treestyletab-tabbar-toolbar',
 	kTABBAR_TOOLBAR_READY       : 'treestyletab-tabbar-toolbar-ready',
 	kTABBAR_TOOLBAR_READY_POPUP : 'treestyletab-tabbar-toolbar-ready-popup',
+	kTABBAR_DROP_AREA           : 'treestyletab-tabbar-drop-area',
 
 /* event types, topics */
 	kEVENT_TYPE_TAB_FOCUS_SWITCHING_KEY_DOWN : 'nsDOMTreeStyleTabFocusSwitchingKeyDown',

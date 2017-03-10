@@ -44,6 +44,13 @@ Components.utils.import('resource://treestyletab-modules/ReferenceCounter.js');
 
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
+function log(...aArgs) {
+	utils.log.apply(utils, ['tabpanelDNDObserver'].concat(aArgs));
+}
+function logWithStackTrace(...aArgs) {
+	utils.logWithStackTrace.apply(utils, ['tabpanelDNDObserver'].concat(aArgs));
+}
+
 
 function TabpanelDNDObserver(aTabBrowser) 
 {
@@ -78,13 +85,12 @@ TabpanelDNDObserver.prototype = {
  
 	canDrop : function TabpanelDND_canDrop(aEvent) 
 	{
-		var session = this.treeStyleTab.currentDragSession;
-		return !!(
-				session &&
-				session.isDataFlavorSupported(this.treeStyleTab.kDRAG_TYPE_TABBAR) &&
-				session.sourceNode &&
-				session.sourceNode.ownerDocument == this.document
-			);
+		var tabbar = aEvent.dataTransfer.mozGetDataAt(this.treeStyleTab.kDRAG_TYPE_TABBAR_NODE, 0);
+		log('canDrop: ', {
+			tabbar       : tabbar,
+			sameDocument : this.document == (tabbar && tabbar.ownerDocument)
+		});
+		return !!(tabbar && tabbar.ownerDocument == this.document);
 	},
  
 	handleEvent : function TabpanelDND_handleEvent(aEvent) 
@@ -119,7 +125,11 @@ TabpanelDNDObserver.prototype = {
  
 	onDrop : function TabpanelDND_onDrop(aEvent) 
 	{
-		if (!this.canDrop(aEvent)) return;
+		var canDrop = this.canDrop(aEvent);
+		this.endWaitDrop();
+		if (!canDrop)
+			return;
+
 		var sv = this.treeStyleTab;
 		var dt = aEvent.dataTransfer;
 		var position = this.getDropPosition(aEvent);
@@ -143,30 +153,60 @@ TabpanelDNDObserver.prototype = {
 		this.document     = aTabBrowser.ownerDocument;
 		this.window       = this.document.defaultView;
 		this.treeStyleTab = aTabBrowser.treeStyleTab;
-
-		var b = this.treeStyleTab.mTabBrowser;
-		b.mPanelContainer.addEventListener('dragover',  this, true);
-		ReferenceCounter.add('b.mPanelContainer,dragover,this,true');
-		b.mPanelContainer.addEventListener('dragleave', this, true);
-		ReferenceCounter.add('b.mPanelContainer,dragleave,this,true');
-		b.mPanelContainer.addEventListener('drop',      this, true);
-		ReferenceCounter.add('b.mPanelContainer,drop,this,true');
 	},
  
 	destroy : function TabpanelDND_destroy() 
 	{
-		var b = this.treeStyleTab.mTabBrowser;
-		b.mPanelContainer.removeEventListener('dragover',  this, true);
-		ReferenceCounter.remove('b.mPanelContainer,dragover,this,true');
-		b.mPanelContainer.removeEventListener('dragleave', this, true);
-		ReferenceCounter.remove('b.mPanelContainer,dragleave,this,true');
-		b.mPanelContainer.removeEventListener('drop',      this, true);
-		ReferenceCounter.remove('b.mPanelContainer,drop,this,true');
-
+		this.endWaitDrop();
 		delete this.treeStyleTab;
 		delete this.browser;
 		delete this.document;
 		delete this.window;
+	},
+
+	startWaitDrop : function TabpanelDND_startWaitDrop()
+	{
+		log('startWaitDrop');
+		if (this.waitingDrop)
+			return;
+
+		this.area = this.document.createElement('box');
+		this.area.setAttribute('class', this.treeStyleTab.kTABBAR_DROP_AREA);
+		this.document.documentElement.appendChild(this.area);
+		var style = this.area.style;
+		var box = this.browser.mPanelContainer.boxObject;
+		style.left = box.x + 'px';
+		style.top = box.y + 'px';
+		style.width = box.width + 'px';
+		style.height = box.height + 'px';
+
+		this.area.addEventListener('dragover',  this, true);
+		ReferenceCounter.add('this.area,dragover,this,true');
+		this.area.addEventListener('dragleave', this, true);
+		ReferenceCounter.add('this.area,dragleave,this,true');
+		this.area.addEventListener('drop',      this, true);
+		ReferenceCounter.add('this.area,drop,this,true');
+
+		this.waitingDrop = true;
+	},
+
+	endWaitDrop : function TabpanelDND_endWaitDrop()
+	{
+		log('endWaitDrop');
+		if (!this.waitingDrop)
+			return;
+
+		this.area.removeEventListener('dragover',  this, true);
+		ReferenceCounter.remove('this.area,dragover,this,true');
+		this.area.removeEventListener('dragleave', this, true);
+		ReferenceCounter.remove('this.area,dragleave,this,true');
+		this.area.removeEventListener('drop',      this, true);
+		ReferenceCounter.remove('this.area,drop,this,true');
+
+		this.area.parentNode.removeChild(this.area);
+		delete this.area;
+
+		this.waitingDrop = false;
 	}
  
 }; 
