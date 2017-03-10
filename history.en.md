@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 0.19.2017031101
    * Works on lately Firefox versions. (Tested on Nightly 55.0a1.)
    * Drop support for Firefox 51 and older versions.
    * Introduce a new choice "No control" as the position of new child tabs. If you choose the option, new child tabs from links will be opened like Firefox's default behavior.
