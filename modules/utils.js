@@ -262,7 +262,7 @@ var TreeStyleTabUtils = {
 				}
 			case 14:
 				{
-					if (!this.getTreePref('controlNewTabPosition')) {
+					if (this.getTreePref('controlNewTabPosition') !== null) {
 						this.setTreePref('insertNewChildAt', TreeStyleTabConstants.kINSERT_NO_CONTROL);
 						this.clearTreePref('controlNewTabPosition');
 					}
