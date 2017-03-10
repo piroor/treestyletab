@@ -3898,7 +3898,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			newParent = null;
 		}
 		else if (!nextTab) {
-			log(' => movedmoved to last position');
+			log(' => moved to last position');
 			newParent = (delta > 1) ? prevParent : parent ;
 		}
 		else if (prevParent == nextParent) {
