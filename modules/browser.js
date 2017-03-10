@@ -3846,6 +3846,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	{
 		log('attachTabFromPosition '+aOldPosition+' => '+aTab._tPos);
 		var parent = this.getParentTab(aTab);
+		log('  parent: '+(parent&&(parent._tPos+'('+parent.linkedBrowser.currentURI.spec+')') || 'null'));
 
 		if (aOldPosition === void(0))
 			aOldPosition = aTab._tPos;
