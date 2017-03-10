@@ -1,6 +1,19 @@
 # History
 
  - master/HEAD
+   * Works on lately Firefox versions. (Tested on Nightly 55.0a1.)
+   * Drop support for Firefox 51 and older versions.
+   * Introduce a new choice "No control" as the position of new child tabs. If you choose the option, new child tabs from links will be opened like Firefox's default behavior.
+   * Introduce a new choice "Click" as an action to show shrunken/collapsed tab bar.
+   * Treat child tabs opened by the preference `browser.tabs.insertRelatedAfterCurrent`=`true` more correctly.
+   * Fix broken configuration UI for the "auto hide delay".
+   * The position of the tab bar is now changable again by drag and drop.
+   * Collapse the dragged tree while dragging. The experimental "shrink" behavior in the previous release was removed.
+   * Open new blank tab as next sibling tab correctly, even if the current tab is in a last tree.
+   * Restore children tabs correctly when a parent tab is restored by "undo close tab" command.
+   * Fix visual erros in the "Vertigo" skin.
+   * Avoid fingerprinting by website authors.
+   * Added Greek translation by Vangelis Skarmoutsos. Thanks!
  - 0.18.2016111701
    * New background tabs are opened correctly. (The first opened tab was opened in the foreground unexpectedly.)
    * Shrink other dragged tabs while dragging. (experimental feature)
