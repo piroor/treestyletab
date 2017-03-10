@@ -863,12 +863,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		this.setTabbrowserAttribute(this.kFIXED+'-vertical', utils.getTreePref('tabbar.fixed.vertical') ? 'true' : null, b);
 		this.setTabStripAttribute(this.kTAB_STRIP_ELEMENT, true);
 
-		try {
-			Object.defineProperty(b, '_lastRelatedTab', this.tabbrowserLastRelateTabHookDescriptor);
-		}
-		catch(e) {
-			log(e);
-		}
+		Object.defineProperty(b, '_lastRelatedTab', this.tabbrowserLastRelateTabHookDescriptor);
 
 		/**
 		 * <tabbrowser> has its custom background color for itself, but it
@@ -3313,14 +3308,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			// We need to hook tab.owner to get last available owner.
 			if (tab.owner)
 				tab.__treestyletab__lastOwner = tab.owner.getAttribute(this.kID);
-			if (!('__treestyletab__owner' in tab)) {
-				try {
-					Object.defineProperty(tab, 'owner', this.tabOwnerHookDescriptor);
-				}
-				catch(e) {
-					log(e);
-				}
-			}
+			if (!('__treestyletab__owner' in tab))
+				Object.defineProperty(tab, 'owner', this.tabOwnerHookDescriptor);
 			this.window.setTimeout((function() {
 				var owner = this.getTabById(tab.__treestyletab__lastOwner);
 				delete tab.__treestyletab__lastOwner; // it is not needed anymore!
