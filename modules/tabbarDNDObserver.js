@@ -1145,8 +1145,13 @@ catch(e) {
 			return;
 		}
 
+		if (!draggedTab) {
+			this.handleLinksOrBookmarks(aEvent, dropActionInfo);
+			return;
+		}
+
 		var sourceBrowser = sv.getTabBrowserFromChild(draggedTab);
-		if (draggedTab && sourceBrowser != b)
+		if (sourceBrowser != b)
 			sourceBrowser.treeStyleTab.tabbarDNDObserver.clearDropPosition(true);
 
 		if (draggedTab.__treestyletab__toBeEpandedAfterDrop) {
@@ -1154,21 +1159,20 @@ catch(e) {
 			sourceBrowser.treeStyleTab.collapseExpandSubtree(draggedTab, false);
 		}
 
-		if (draggedTab && this.performDrop(dropActionInfo, draggedTab)) {
+		if (this.performDrop(dropActionInfo, draggedTab)) {
 			aEvent.stopPropagation();
 			return;
 		}
 
 		// duplicating of tabs
 		if (
-			draggedTab &&
 			(
 				dt.dropEffect == 'copy' ||
 				sourceBrowser != b
 			) &&
 			dropActionInfo.position == sv.kDROP_ON
 			) {
-			var beforeTabs = [...b.mTabContainer.childNodes];
+			let beforeTabs = [...b.mTabContainer.childNodes];
 			w.setTimeout(function() {
 				var newTabs = [...b.mTabContainer.childNodes].filter(function(aTab) {
 						return beforeTabs.indexOf(aTab) < 0;
@@ -1176,11 +1180,7 @@ catch(e) {
 				if (newTabs.length)
 					sv.attachTabTo(newTabs[0], dropActionInfo.target);
 			}, 0);
-			return;
 		}
-
-		if (!draggedTab)
-			this.handleLinksOrBookmarks(aEvent, dropActionInfo);
 	},
 	handleLinksOrBookmarks : function TabbarDND_handleLinksOrBookmarks(aEvent, aDropActionInfo)
 	{
