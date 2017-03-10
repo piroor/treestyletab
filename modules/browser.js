@@ -163,6 +163,33 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	maxTreeLevelPhysical : false,
 
 	needRestoreTree : false,
+
+	// Descriptors to cache "last owner" information for tabs.
+	// See the definition of TreeStyleTabBrowser.prototype.onTabOpen()
+	tabbrowserLastRelateTabHookDescriptor : {
+		get : function() {
+			return this.__treestyletab__lastRelateTab;
+		},
+		set : function(aNewRelateTab) {
+			if (aNewRelateTab)
+				aNewRelateTab.__treestyletab__lastOwner = this.selectedTab.getAttribute(TreeStyleTabBrowser.prototype.kID);
+			return this.__treestyletab__lastRelateTab = aNewRelateTab;
+		},
+		enumerable : true,
+		configurable : true
+	},
+	tabOwnerHookDescriptor : {
+		get : function() {
+			return this.__treestyletab__owner;
+		},
+		set : function(aNewOwner) {
+			if (aNewOwner)
+				this.__treestyletab__lastOwner = aNewOwner.getAttribute(TreeStyleTabBrowser.prototype.kID);
+			return this.__treestyletab__owner = aNewOwner;
+		},
+		enumerable : true,
+		configurable : true
+	},
  
 /* elements */ 
 	
@@ -835,6 +862,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		this.setTabbrowserAttribute(this.kFIXED+'-horizontal', utils.getTreePref('tabbar.fixed.horizontal') ? 'true' : null, b);
 		this.setTabbrowserAttribute(this.kFIXED+'-vertical', utils.getTreePref('tabbar.fixed.vertical') ? 'true' : null, b);
 		this.setTabStripAttribute(this.kTAB_STRIP_ELEMENT, true);
+
+		Object.defineProperty(b, '_lastRelatedTab', this.tabbrowserLastRelateTabHookDescriptor);
 
 		/**
 		 * <tabbrowser> has its custom background color for itself, but it
@@ -3275,13 +3304,27 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		if (utils.getTreePref('autoAttach') &&
 			typeof this.readiedToAttachNewTab !== 'boolean') {
+			// The "owner" may be updated after TabOpen multiple times.
+			// We need to hook tab.owner to get last available owner.
+			if (tab.owner)
+				tab.__treestyletab__lastOwner = tab.owner.getAttribute(this.kID);
+			if (!('__treestyletab__owner' in tab)) {
+				try {
+					Object.defineProperty(tab, 'owner', this.tabOwnerHookDescriptor);
+				}
+				catch(e) {
+					log(e);
+				}
+			}
 			this.window.setTimeout((function() {
-				if (!tab.owner || tab != b._lastRelatedTab)
+				var owner = this.getTabById(tab.__treestyletab__lastOwner);
+				delete tab.__treestyletab__lastOwner; // it is not needed anymore!
+				if (!owner)
 					return;
 				log('onTabOpen: new child tab opened by browser.tabs.insertRelatedAfterCurrent=true');
-				var nextTab = this.findNextTabForNewChild(tab, tab.owner);
+				var nextTab = this.findNextTabForNewChild(tab, owner);
 				log('  next tab: '+(nextTab && nextTab._tPos));
-				this.attachTabTo(tab, tab.owner, {
+				this.attachTabTo(tab, owner, {
 					insertBefore: nextTab
 				});
 			}).bind(this), 0);
