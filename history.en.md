@@ -15,6 +15,7 @@
    * Fix visual erros in the "Vertigo" skin.
    * Avoid fingerprinting by website authors.
    * Added Greek translation by Vangelis Skarmoutsos. Thanks!
+   * Known issue: opened or expanded tabs sometimes stay invisible until you move the mouse cursor on it, due to [Firefox 52's bug](https://github.com/piroor/treestyletab/issues/1202). This doesn't happen on Firefox 53 and later. Simple workaround is disabling of tab animations by `browser.tabs.animate`=`false` in `about:config`.
  - 0.18.2016111701
    * New background tabs are opened correctly. (The first opened tab was opened in the foreground unexpectedly.)
    * Shrink other dragged tabs while dragging. (experimental feature)
