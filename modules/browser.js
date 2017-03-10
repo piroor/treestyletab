@@ -863,7 +863,12 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		this.setTabbrowserAttribute(this.kFIXED+'-vertical', utils.getTreePref('tabbar.fixed.vertical') ? 'true' : null, b);
 		this.setTabStripAttribute(this.kTAB_STRIP_ELEMENT, true);
 
-		Object.defineProperty(b, '_lastRelatedTab', this.tabbrowserLastRelateTabHookDescriptor);
+		try {
+			Object.defineProperty(b, '_lastRelatedTab', this.tabbrowserLastRelateTabHookDescriptor);
+		}
+		catch(e) {
+			log(e);
+		}
 
 		/**
 		 * <tabbrowser> has its custom background color for itself, but it
