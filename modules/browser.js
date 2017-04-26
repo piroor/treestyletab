@@ -917,6 +917,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		ReferenceCounter.add('w,kEVENT_TYPE_TAB_FOCUS_SWITCHING_END,TSTBrowser,false');
 		w.addEventListener('SSWindowStateBusy', this, false);
 		ReferenceCounter.add('w,SSWindowStateBusy,TSTBrowser,false');
+		w.addEventListener('SSWindowStateReady', this, false);
+		ReferenceCounter.add('w,SSWindowStateReady,TSTBrowser,false');
 
 		b.addEventListener('DOMAudioPlaybackStarted', this, false);
 		ReferenceCounter.add('b,DOMAudioPlaybackStarted,TSTBrowser,false');
@@ -2485,6 +2487,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		ReferenceCounter.remove('w,kEVENT_TYPE_TAB_FOCUS_SWITCHING_END,TSTBrowser,false');
 		w.removeEventListener('SSWindowStateBusy', this, false);
 		ReferenceCounter.remove('w,SSWindowStateBusy,TSTBrowser,false');
+		w.removeEventListener('SSWindowStateReady', this, false);
+		ReferenceCounter.remove('w,SSWindowStateReady,TSTBrowser,false');
 
 		b.removeEventListener('DOMAudioPlaybackStarted', this, false);
 		ReferenceCounter.remove('b,DOMAudioPlaybackStarted,TSTBrowser,false');
@@ -3194,7 +3198,12 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 
 			case 'SSWindowStateBusy':
-				return this.needRestoreTree = true;
+				this.isWindowBusy = true;
+				this.needRestoreTree = true;
+				return;
+			case 'SSWindowStateReady':
+				this.isWindowBusy = false;
+				return;
 
 
 			case 'DOMAudioPlaybackStarted':
@@ -3777,6 +3786,10 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	{
 		var tab = aEvent.originalTarget;
 		var b   = this.mTabBrowser;
+		if (this.isWindowBusy) {
+			log('onTabMove: do nothing because now we are restoring a window');
+			return;
+		}
 
 		var prevPosition = aEvent.detail;
 		var positionControlled = utils.getTreePref('insertNewChildAt') != this.kINSERT_NO_CONTROL;
@@ -7447,7 +7460,14 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			);
 		});
 
-		log('  restoring member tabs = '+tabs.length+' ('+tabs.map(function(aTab) { return aTab._tPos; })+')');
+		log('  restoring member tabs = '+tabs.length,
+			tabs.map(function(aTab) {
+				return {
+					pos    : aTab._tPos,
+					pinned : aTab.pinned
+				};
+			})
+		);
 
 		if (tabs.length <= 1)
 			return;
