@@ -622,7 +622,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (!this.windowService.preInitialized || !aTab)
 			return false;
 
-		if (aTab.getAttribute('pinned') == 'true')
+		if (aTab.pinned)
 			return true;
 
 		var tabBox = this.getFutureBoxObject(aTab);
@@ -660,6 +660,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
  
 	positionPinnedTabs : function TSTBrowser_positionPinnedTabs(aWidth, aHeight, aJustNow) 
 	{
+		log('TSTBrowser:positionPinnedTabs');
 		var b = this.mTabBrowser;
 		var tabbar = b.tabContainer;
 		if (
@@ -727,6 +728,13 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			style.setProperty('margin-top', (- height * (maxRow - row))+'px', 'important');
 			style.top = style.bottom = '';
 
+			log('  tab ' + item._tPos, {
+				col : col,
+				width : width,
+				height : height,
+				shrunkenOffset : shrunkenOffset
+			});
+
 			if (aJustNow) {
 				let key = 'positionPinnedTabs_tab_'+parseInt(Math.random() * 65000);
 				// "transition" must be cleared after the reflow.
@@ -745,6 +753,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			if (col >= maxCol) {
 				col = 0;
 				row++;
+				log('  new row');
 			}
 		}
 	},
@@ -3601,7 +3610,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		this.destroyTab(tab);
 
-		if (tab.getAttribute('pinned') == 'true')
+		if (tab.pinned)
 			this.positionPinnedTabsWithDelay();
 
 		if (this.canStackTabs)
@@ -4093,7 +4102,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		var allTabs = this.getAllTabs(this.mTabBrowser);
 		var normalTabs = allTabs.filter(function(aTab) {
-							return !aTab.hasAttribute('pinned');
+							return !aTab.pinned;
 						});
 		aChangedTabs = aChangedTabs || normalTabs;
 
@@ -5722,8 +5731,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			!aParent ||
 			aChild == aParent ||
 			(currentParent = this.getParentTab(aChild)) == aParent ||
-			aChild.getAttribute('pinned') == 'true' ||
-			aParent.getAttribute('pinned') == 'true'
+			aChild.pinned ||
+			aParent.pinned
 			) {
 			log('attachTabTo: already attached');
 			this.fireAttachedEvent(aChild, aParent);
@@ -6138,7 +6147,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		this.stopTabIndentAnimation(aTab);
 
-		if (aTab.hasAttribute('pinned'))
+		if (aTab.pinned)
 			return;
 
 		if (!this.enableSubtreeIndent)
@@ -6812,6 +6821,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	},
 	updateTabCollapsed : function TSTBrowser_updateTabCollapsed(aTab, aCollapsed, aJustNow, aCallbackToRunOnStartAnimation)
 	{
+		log('TSTBrowser::updateTabCollapsed for ' + aTab._tPos);
 		if (!aTab.parentNode) // do nothing for closed tab!
 			return;
 
@@ -6865,6 +6875,12 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				startMargin = this.kSTACKED_TAB_MARGIN;
 			}
 		}
+		log('  animation params: ', {
+			startMargin  : startMargin,
+			endMargin    : endMargin,
+			startOpacity : startOpacity,
+			endOpacity   : endOpacity
+		});
 
 		if (
 			!this.animationEnabled ||
@@ -6873,6 +6889,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 //			!this.isVertical ||
 //			!this.canCollapseSubtree(this.getParentTab(aTab))
 			) {
+			log(' => skip animation');
 			if (aCollapsed)
 				aTab.setAttribute(this.kCOLLAPSED_DONE, true);
 			else
@@ -6882,8 +6899,14 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			// Pinned tabs are positioned by "margin-top", so
 			// we must not reset the property for pinned tabs.
 			// (However, we still must update "opacity".)
-			let pinned = aTab.getAttribute('pinned') == 'true';
+			let pinned = aTab.pinned;
 			let canExpand = !pinned || this.collapseCSSProp != 'margin-top';
+
+			log(' skipped animation params: ', {
+				pinned    : pinned,
+				canExpand : canExpand,
+				endMargin : endMargin
+			});
 
 			if (canExpand)
 				aTab.style.setProperty(this.collapseCSSProp, endMargin ? '-'+endMargin+'px' : '', 'important');
@@ -6938,6 +6961,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 				}
 			}
 			if (aTime >= aDuration || stopAnimation) {
+				log(' => finish animation for '+aTab._tPos);
 				delete aTab.__treestyletab__updateTabCollapsedTask;
 				if (aCollapsed)
 					aTab.setAttribute(self.kCOLLAPSED_DONE, true);
