@@ -98,7 +98,12 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	smoothScrollEnabled  : true,
 	smoothScrollDuration : 150,
 
-	animationEnabled : true,
+	get animationEnabled() {
+		var enabled = prefs.getPref('toolkit.cosmeticAnimations.enabled');
+		if (enabled === null)
+			enabled = prefs.getPref('browser.tabs.animate'); // Firefox 54 and olders
+		return enabled;
+	},
 	indentDuration   : 200,
 	collapseDuration : 150,
 
@@ -138,7 +143,6 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		this.onPrefChange('extensions.treestyletab.tabbar.scroll.smooth');
 		this.onPrefChange('extensions.treestyletab.tabbar.scroll.duration');
 		this.onPrefChange('extensions.treestyletab.tabbar.scrollToNewTab.mode');
-		this.onPrefChange('browser.tabs.animate');
 		this.onPrefChange('extensions.treestyletab.animation.indent.duration');
 		this.onPrefChange('extensions.treestyletab.animation.collapse.duration');
 		this.onPrefChange('extensions.treestyletab.twisty.expandSensitiveArea');
@@ -2229,7 +2233,6 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	
 	domains : [ 
 		'extensions.treestyletab.',
-		'browser.tabs.animate',
 		'extensions.stm.tabBarMultiRows' // Super Tab Mode
 	],
  
@@ -2292,8 +2295,6 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			case 'extensions.treestyletab.tabbar.scrollToNewTab.mode':
 				return this.scrollToNewTabMode = value;
 
-			case 'browser.tabs.animate':
-				return this.animationEnabled = value;
 			case 'extensions.treestyletab.animation.indent.duration':
 				return this.indentDuration = value;
 			case 'extensions.treestyletab.animation.collapse.duration':

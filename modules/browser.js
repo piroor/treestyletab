@@ -944,6 +944,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		this.onPrefChange('extensions.treestyletab.tabbar.autoShow.mousemove');
 		this.onPrefChange('extensions.treestyletab.tabbar.invertScrollbar');
 		this.onPrefChange('extensions.treestyletab.tabbar.narrowScrollbar');
+		this.onPrefChange('toolkit.cosmeticAnimations.enabled');
 		this.onPrefChange('browser.tabs.animate');
 
 		Services.obs.addObserver(this, this.kTOPIC_INDENT_MODIFIED, false);
@@ -2739,7 +2740,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		'extensions.treestyletab.',
 		'browser.tabs.closeButtons',
 		'browser.tabs.closeWindowWithLastTab',
-		'browser.tabs.animate'
+		'toolkit.cosmeticAnimations.enabled',
+		'browser.tabs.animate' // Firefox 54 and olders
 	],
  
 	observe : function TSTBrowser_observe(aSubject, aTopic, aData) 
@@ -2906,11 +2908,10 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 					this.promoteTooDeepLevelTabs();
 				return;
 
+			case 'toolkit.cosmeticAnimations.enabled':
 			case 'browser.tabs.animate':
 				this.setTabbrowserAttribute(this.kANIMATION_ENABLED,
-					prefs.getPref('browser.tabs.animate') !== false
-						? 'true' : null
-				);
+					this.animationEnabled ? 'true' : null);
 				return;
 
 			case 'browser.tabs.closeButtons':
