@@ -36,10 +36,10 @@ var TreeStyleTabWindowHelper = {
 		};
 
 		nsBrowserAccess.prototype.__treestyletab__openURIInFrame = nsBrowserAccess.prototype.openURIInFrame;
-		nsBrowserAccess.prototype.openURIInFrame = function(aURI, aParams, aWhere, aContext) {
+		nsBrowserAccess.prototype.openURIInFrame = function(aURI, aParams, aWhere, aContext, ...aArgs) {
 			if (aWhere === Ci.nsIBrowserDOMWindow.OPEN_NEWTAB)
 				TreeStyleTabService.onBeforeBrowserAccessOpenURI(aParams, aWhere, aContext);
-			return nsBrowserAccess.prototype.__treestyletab__openURIInFrame.call(this, aURI, aParams, aWhere, aContext);
+			return nsBrowserAccess.prototype.__treestyletab__openURIInFrame.call(this, aURI, aParams, aWhere, aContext, ...aArgs);
 		};
 
 		if ('TabsInTitlebar' in window) {
