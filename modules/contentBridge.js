@@ -81,10 +81,13 @@ ContentBridge.prototype = inherit(TreeStyleTabConstants, {
 		this.mTabBrowser = aTabBrowser;
 		this.handleMessage = this.handleMessage.bind(this);
 		this.checkPluginAreaExistenceResolvers = {};
+		this.commandQueue = [];
 
 		var manager = this.mTab.ownerDocument.defaultView.messageManager;
 		manager.addMessageListener(this.MESSAGE_TYPE, this.handleMessage);
 		manager.addMessageListener('Browser:WindowCreated', this.handleMessage);
+
+		this.mTab.addEventListener('TabBrowserInserted', this, false);
 	},
 	destroy : function CB_destroy()
 	{
@@ -92,17 +95,32 @@ ContentBridge.prototype = inherit(TreeStyleTabConstants, {
 		manager.removeMessageListener(this.MESSAGE_TYPE, this.handleMessage);
 		manager.removeMessageListener('Browser:WindowCreated', this.handleMessage);
 
+		this.mTab.removeEventListener('TabBrowserInserted', this, false);
+
 		delete this.mTab;
 		delete this.mTabBrowser;
 		delete this.checkPluginAreaExistenceResolvers;
 	},
 	sendAsyncCommand : function CB_sendAsyncCommand(aCommandType, aCommandParams)
 	{
-		var manager = this.mTab.linkedBrowser.messageManager;
-		manager.sendAsyncMessage(this.MESSAGE_TYPE, {
-			command : aCommandType,
-			params  : aCommandParams || {}
+		this.commandQueue.push({
+			type   : aCommandType,
+			params : aCommandParams
 		});
+		if (this.mTab.linkedPanel) // already  initialized
+			this.processQueuedAsyncCommands();
+	},
+	processQueuedAsyncCommands : function CB_processQueuedAsyncCommands()
+	{
+		var manager = this.mTab.linkedBrowser.messageManager;
+		for (let command of this.commandQueue)
+		{
+			manager.sendAsyncMessage(this.MESSAGE_TYPE, {
+				command : command.type,
+				params  : command.params || {}
+			});
+		}
+		this.commandQueue = [];
 	},
 	checkPluginAreaExistence : function CB_checkPluginAreaExistence()
 	{
@@ -191,6 +209,15 @@ ContentBridge.prototype = inherit(TreeStyleTabConstants, {
 			aCoordinates.screenY = fixedCoordinates.y;
 		}
 		return aCoordinates;
+	},
+
+	handleEvent : function CB_handleEvent(aEvent)
+	{
+		switch (aEvent.type)
+		{
+			case 'TabBrowserInserted':
+				return this.processQueuedAsyncCommands();
+		}
 	}
 }, Object); 
  

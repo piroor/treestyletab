@@ -541,9 +541,20 @@ TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInit = function TSTWH_ove
 		}
 	}
 
-	window.setTimeout(function(aSelf) {
-		aSelf.overrideExtensionsDelayed();
-	}, 0, this);
+	window.setTimeout((function() {
+		this.overrideExtensionsDelayed();
+		if (typeof gBrowser._insertBrowser != 'function') {
+			this.overrideExtensionsAfterBrowserInserted();
+		}
+	}).bind(this), 0);
+
+	if (typeof gBrowser._insertBrowser == 'function') {
+		let onTabBrowserInserted = (function() {
+			window.removeEventListener('TabBrowserInserted', onTabBrowserInserted, false);
+			this.overrideExtensionsAfterBrowserInserted();
+		}).bind(this);
+		window.addEventListener('TabBrowserInserted', onTabBrowserInserted, false);
+	}
 };
 
 
@@ -665,7 +676,10 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 		document.addEventListener(sv.kEVENT_TYPE_FOCUS_NEXT_TAB, listener, false);
 		document.addEventListener('unload', listener, false);
 	}
+};
 
+
+TreeStyleTabWindowHelper.overrideExtensionsAfterBrowserInserted = function TSTWH_overrideExtensionsAfterBrowserInserted() {
 	// Firefox Sync (Weave)
 	// http://www.mozilla.com/en-US/firefox/sync/
 	if (
@@ -677,6 +691,8 @@ TreeStyleTabWindowHelper.overrideExtensionsDelayed = function TSTWH_overrideExte
 		) {
 		let ns = {};
 		try { // 1.4
+			// This touches to tab.messageManager.
+			// To prevent warnings from the bug 1345098, we need to call this after TabBrowserInserted event.
 			Components.utils.import('resource://services-sync/service.js', ns);
 		}
 		catch(e) { // 1.3
