@@ -861,6 +861,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		 * before DOMContentLoad, on "domwindowopened".
 		 */
 		this.needRestoreTree = w.__treestyletab__WindowStateBusy || false;
+		this.isWindowBusy = w.__treestyletab__WindowStateBusy || false;
 		delete w.__treestyletab__WindowStateBusy;
 
 		this._initTabbrowserExtraContents();
