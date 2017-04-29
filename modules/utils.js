@@ -387,12 +387,12 @@ var TreeStyleTabUtils = {
 	isTabNotRestoredYet : function utils_isTabNotRestoredYet(aTab)
 	{
 		var browser = aTab.linkedBrowser;
-		return !!browser.__SS_restoreState;
+		return !!aTab.__SS_lazyData || !!browser.__SS_restoreState;
 	},
 	isTabNeedToBeRestored : function utils_isTabNeedToBeRestored(aTab)
 	{
 		var browser = aTab.linkedBrowser;
-		return browser.__SS_restoreState == 1;
+		return !!aTab.__SS_lazyData || browser.__SS_restoreState == 1;
 	},
 	get SessionStoreInternal() {
 		return this.SessionStoreNS.SessionStoreInternal;

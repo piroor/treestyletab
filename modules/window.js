@@ -2003,7 +2003,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 
 		var count = 0;
 		this.browser.visibleTabs.some(function(aTab) {
-			if (aTab.linkedBrowser.__treestyletab__toBeRestored)
+			if (aTab.__treestyletab__toBeRestored)
 				count++;
 			return count > 1;
 		});

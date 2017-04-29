@@ -1171,7 +1171,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		aTab.__treestyletab__internallyTabMovingCount = 0;
 
 		if (utils.isTabNotRestoredYet(aTab))
-			aTab.linkedBrowser.__treestyletab__toBeRestored = true;
+			aTab.__treestyletab__toBeRestored = true;
 
 		this.initTabAttributes(aTab);
 		this.initTabContents(aTab);
@@ -4228,8 +4228,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	onRestoreTabContentStarted : function TSTBrowser_onRestoreTabContentStarted(aTab)
 	{
 		// don't override "false" value (means "already restored")!
-		if (typeof aTab.linkedBrowser.__treestyletab__toBeRestored == 'undefined')
-			aTab.linkedBrowser.__treestyletab__toBeRestored = true;
+		if (typeof aTab.__treestyletab__toBeRestored == 'undefined')
+			aTab.__treestyletab__toBeRestored = true;
 	},
  
 	onTabRestoring : function TSTBrowser_onTabRestoring(aEvent) 
@@ -4239,7 +4239,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var tab = aEvent.originalTarget;
 		log('onTabRestoring ', tab._tPos);
 
-		tab.linkedBrowser.__treestyletab__toBeRestored = false;
+		tab.__treestyletab__toBeRestored = false;
 		var restored = this.handleRestoredTab(tab);
 
 		/**
@@ -7452,11 +7452,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			// If the previous state is "undetermined" ("undefined")
 			// and now it has became certain, then we should save the state
 			// for now and the next time..
-			if (typeof aTab.linkedBrowser.__treestyletab__toBeRestored == 'undefined' &&
+			if (typeof aTab.__treestyletab__toBeRestored == 'undefined' &&
 				utils.isTabNotRestoredYet(aTab))
-				aTab.linkedBrowser.__treestyletab__toBeRestored = true;
+				aTab.__treestyletab__toBeRestored = true;
 			return (
-				aTab.linkedBrowser.__treestyletab__toBeRestored &&
+				aTab.__treestyletab__toBeRestored &&
 				(!onlyVisible || !aTab.hidden)
 			);
 		});
