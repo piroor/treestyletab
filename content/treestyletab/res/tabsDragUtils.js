@@ -1,5 +1,5 @@
 /*
- Multiple Tabs Drag and Drop Utilities for Firefox 45 or later
+ Multiple Tabs Drag and Drop Utilities for Firefox 52 or later
 
  Usage:
    window['piro.sakura.ne.jp'].tabsDragUtils.initTabBrowser(gBrowser);
@@ -15,7 +15,7 @@
    http://github.com/piroor/fxaddonlib-tabs-drag-utils
 */
 (function() {
-	const currentRevision = 44;
+	const currentRevision = 45;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -147,37 +147,35 @@
 				aObserver._getDropEffectForTabDrag = function(event) {
 /**
  * Original:
- *  base version: Nightly 51.0a1
- *  date        : 2016-09-04
- *  source      : https://dxr.mozilla.org/mozilla-central/rev/1789229965bfc5e7b08dfcf1c054c366abe1267a/browser/base/content/tabbrowser.xml#5545
+ *  base version: Nightly 55.0a1
+ *  date        : 2017-05-08
+ *  source      : https://dxr.mozilla.org/mozilla-central/rev/17d8a1e278a9c54a6fdda9d390abce4077e55b20/browser/base/content/tabbrowser.xml#6410
  */
 //=====================================================================
           var dt = event.dataTransfer;
-          // Disallow dropping multiple items
-//          if (dt.mozItemCount > 1)
-          if (dt.mozItemCount > 1 && !window['piro.sakura.ne.jp'].tabsDragUtils.isTabsDragging(event))
-            return "none";
+//          if (dt.mozItemCount == 1) {
+          if (dt.mozItemCount == 1 || window['piro.sakura.ne.jp'].tabsDragUtils.isTabsDragging(event)) {
+            var types = dt.mozTypesAt(0);
+            // tabs are always added as the first type
+            if (types[0] == TAB_DROP_TYPE) {
+              let sourceNode = dt.mozGetDataAt(TAB_DROP_TYPE, 0);
+              if (sourceNode instanceof XULElement &&
+                  sourceNode.localName == "tab" &&
+                  sourceNode.ownerGlobal instanceof ChromeWindow &&
+                  sourceNode.ownerDocument.documentElement.getAttribute("windowtype") == "navigator:browser" &&
+                  sourceNode.ownerGlobal.gBrowser.tabContainer == sourceNode.parentNode) {
+                // Do not allow transfering a private tab to a non-private window
+                // and vice versa.
+                if (PrivateBrowsingUtils.isWindowPrivate(window) !=
+                    PrivateBrowsingUtils.isWindowPrivate(sourceNode.ownerGlobal))
+                  return "none";
 
-          var types = dt.mozTypesAt(0);
-          // tabs are always added as the first type
-          if (types[0] == TAB_DROP_TYPE) {
-            let sourceNode = dt.mozGetDataAt(TAB_DROP_TYPE, 0);
-            if (sourceNode instanceof XULElement &&
-                sourceNode.localName == "tab" &&
-                sourceNode.ownerDocument.defaultView instanceof ChromeWindow &&
-                sourceNode.ownerDocument.documentElement.getAttribute("windowtype") == "navigator:browser" &&
-                sourceNode.ownerDocument.defaultView.gBrowser.tabContainer == sourceNode.parentNode) {
-              // Do not allow transfering a private tab to a non-private window
-              // and vice versa.
-              if (PrivateBrowsingUtils.isWindowPrivate(window) !=
-                  PrivateBrowsingUtils.isWindowPrivate(sourceNode.ownerDocument.defaultView))
-                return "none";
+                if (window.gMultiProcessBrowser !=
+                    sourceNode.ownerGlobal.gMultiProcessBrowser)
+                  return "none";
 
-              if (window.gMultiProcessBrowser !=
-                  sourceNode.ownerDocument.defaultView.gMultiProcessBrowser)
-                return "none";
-
-              return dt.dropEffect == "copy" ? "copy" : "move";
+                return dt.dropEffect == "copy" ? "copy" : "move";
+              }
             }
           }
 
@@ -197,9 +195,9 @@
 				aObserver._animateTabMove = function _animateTabMove(event, aOptions) {
 /**
  * Original:
- *  base version: Nightly 51.0a1
- *  date        : 2016-09-04
- *  source      : https://dxr.mozilla.org/mozilla-central/rev/1789229965bfc5e7b08dfcf1c054c366abe1267a/browser/base/content/tabbrowser.xml#5303
+ *  base version: Nightly 55.0a1
+ *  date        : 2017-05-08
+ *  source      : https://dxr.mozilla.org/mozilla-central/rev/17d8a1e278a9c54a6fdda9d390abce4077e55b20/browser/base/content/tabbrowser.xml#6171
  */
 //=====================================================================
 var TDUContext = window["piro.sakura.ne.jp"].tabsDragUtils.setupContext(event, aOptions);
@@ -223,7 +221,6 @@ TDUContext.utils.setupDraggedTabs(TDUContext);
           if (screenX == draggedTab._dragData.animLastScreenX)
             return;
 
-          let draggingRight = screenX > draggedTab._dragData.animLastScreenX;
           draggedTab._dragData.animLastScreenX = screenX;
 
 TDUContext.utils.updateDraggedTabs(TDUContext);
