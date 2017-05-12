@@ -116,17 +116,5 @@ FullscreenObserver.prototype = {
 			let toolbox = w.gNavToolbox;
 			toolbox.style.marginTop = -toolbox.getBoundingClientRect().height + 'px';
 		}
-
-		var windowControls = d.getElementById('window-controls');
-		var navigationToolbar = d.getElementById('nav-bar');
-		if (!windowControls ||
-			!navigationToolbar ||
-			windowControls.parentNode == navigationToolbar ||
-			(w.gBrowser.treeStyleTab.position == 'top' && w.gBrowser.treeStyleTab.fixed))
-			return;
-
-		// the location bar is flex=1, so we should not apply it.
-		// windowControls.setAttribute('flex', '1');
-		navigationToolbar.appendChild(windowControls);
 	}
 };
