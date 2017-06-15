@@ -15,7 +15,9 @@
 	--tst-tabbar-bg: darkgray;
 }
 
-:root[devtoolstheme="dark"][treestyletab-devedition="true"] {
+:root[devtoolstheme="dark"][treestyletab-devedition="true"],
+/* "Compact Dark" theme on Firefox 53 and later */
+:root[style*="resource:///chrome/browser/content/browser/defaultthemes/compact.header.png"][lwthemetextcolor="bright"] {
 	--tst-tab-highlighted-base: ThreeDHighlight;
 	--tst-tab-highlighted-highlight: Highlight;
 	--tst-tab-side-border: #39424D;

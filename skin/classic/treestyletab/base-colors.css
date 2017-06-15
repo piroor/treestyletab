@@ -44,7 +44,9 @@
 	--tst-tab-dropmarker: -moz-dialogtext;
 }
 
-:root[devtoolstheme="dark"][treestyletab-devedition="true"] {
+:root[devtoolstheme="dark"][treestyletab-devedition="true"],
+/* "Compact Dark" theme on Firefox 53 and later */
+:root[style*="resource:///chrome/browser/content/browser/defaultthemes/compact.header.png"][lwthemetextcolor="bright"] {
 	--tst-tab-surface: #39424D;
 	--tst-tab-text: white;
 	--tst-tab-border: #5f6670;
