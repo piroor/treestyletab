@@ -459,7 +459,15 @@ var TreeStyleTabWindowHelper = {
 		};
 
 		b.__treestyletab__loadTabs = b.loadTabs;
-		b.loadTabs = function(aURIs, aLoadInBackground, aReplace, ...aArgs) {
+		b.loadTabs = function(aURIs, ...aArgs) {
+			var aLoadInBackground = aArgs[1];
+			var aReplace = aArgs[2];
+			if (typeof aLoadInBackground == 'object' && 
+				aLoadInBackground) {
+				aReplace = aLoadInBackground.replace;
+				aLoadInBackground = aLoadInBackground.inBackground;
+			}
+
 			if (!TreeStyleTabWindowHelper.runningDelayedStartup) { // don't open home tabs as a tree!
 				if (aReplace)
 					this.treeStyleTab.readyToOpenChildTab(this.selectedTab, true);
@@ -472,7 +480,7 @@ var TreeStyleTabWindowHelper = {
 			var firstTabAdded;
 			try {
 				tabs = this.treeStyleTab.doAndGetNewTabs((function() {
-						result = this.__treestyletab__loadTabs.call(this, aURIs, aLoadInBackground, aReplace, ...aArgs);
+						result = this.__treestyletab__loadTabs(aURIs, ...aArgs);
 					}).bind(this));
 				firstTabAdded = tabs[0];
 			}
