@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2016
+ * Portions created by the Initial Developer are Copyright (C) 2016-2017
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -50,10 +50,10 @@ Cu.import('resource://treestyletab-modules/constants.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
 function log(...aArgs) {
-	utils.log.apply(utils, ['bookmark'].concat(aArgs));
+	utils.log('bookmark', ...aArgs);
 }
 function logWithStackTrace(...aArgs) {
-	utils.logWithStackTrace.apply(utils, ['bookmark'].concat(aArgs));
+	utils.logWithStackTrace('bookmark', ...aArgs);
 }
 
 var TreeStyleTabBookmarksService = inherit(TreeStyleTabConstants, {
@@ -189,7 +189,7 @@ var TreeStyleTabBookmarksService = inherit(TreeStyleTabConstants, {
 		}
 		this.endAddBookmarksFromTabs();
 	},
-	bookmarkTabSubTree : function() { return this.bookmarkTabSubtree.apply(this, arguments); }, // obsolete, for backward compatibility
+	bookmarkTabSubTree : function(...aArgs) { return this.bookmarkTabSubtree(...aArgs); }, // obsolete, for backward compatibility
 
 	getParentItem : function TSTBMService_getParentItem(aId) 
 	{
@@ -471,7 +471,7 @@ PlacesUIUtils.__treestyletab__openContainerNodeInTabs = PlacesUIUtils.openContai
 PlacesUIUtils.openContainerNodeInTabs = function(aNode, ...aArgs) {
 	this.__treestyletab__folderName = aNode.title;
 	try {
-		return this.__treestyletab__openContainerNodeInTabs.apply(this, [aNode].concat(aArgs));
+		return this.__treestyletab__openContainerNodeInTabs(aNode, ...aArgs);
 	}
 	finally {
 		delete this.__treestyletab__folderName;
@@ -488,7 +488,7 @@ PlacesUIUtils.openURINodesInTabs = function(aNodes, ...aArgs) {
 				'openSelectedPlaces.history',
 			[aNodes[0].title, aNodes.length]
 		);
-		return this.__treestyletab__openURINodesInTabs.apply(this, [aNodes].concat(aArgs));
+		return this.__treestyletab__openURINodesInTabs(aNodes, ...aArgs);
 	}
 	finally {
 		delete this.__treestyletab__openTabset_rawNodes;
@@ -503,5 +503,5 @@ PlacesUIUtils.openNodeWithEvent = function(aNode, aEvent, aView, ...aArgs) {
 		window = PlacesUIUtils._getTopBrowserWin();
 	if (window && window.gBrowser)
 		window.gBrowser.treeStyleTab.readyToOpenOrphanTabNow();
-	return PlacesUIUtils.__treestyletab__openNodeWithEvent.apply(this, [aNode, aEvent, aView].concat(aArgs));
+	return PlacesUIUtils.__treestyletab__openNodeWithEvent(aNode, aEvent, aView, ...aArgs);
 };
