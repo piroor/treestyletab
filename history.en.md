@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 0.19.2017061601
    * Works on Nightly 56.0a1.
    * Allow to drop multiple local files to the tab bar, on Firefox 52 and later.
    * Scroll to a newly opened tab if possible.
