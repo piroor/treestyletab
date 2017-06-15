@@ -7137,7 +7137,17 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		// Use Firefox's native smooth scroll if possible
 		// because it can be accelerated.
-		if (typeof this.scrollBox._smoothScrollByPixels == 'function') {
+		if (
+			typeof this.scrollBox._smoothScrollByPixels == 'function' &&
+			( // We need to use it only when the tab is completely expanded...
+				!aTargetElement ||
+				(
+					!this.getXOffsetOfTab(aTargetElement) &&
+					!this.getYOffsetOfTab(aTargetElement)
+				)
+			)
+			) {
+			log('  => native smooth scroll');
 			let amountToScroll = this.isVertical ? deltaY : deltaX ;
 			return this.scrollBox._smoothScrollByPixels(amountToScroll, aTargetElement);
 		}
