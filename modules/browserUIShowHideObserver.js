@@ -43,10 +43,10 @@ Components.utils.import('resource://treestyletab-modules/constants.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
 function log(...aArgs) {
-	utils.log.apply(utils, ['browserUIShowHideObserver'].concat(aArgs));
+	utils.log('browserUIShowHideObserver', ...aArgs);
 }
 function logWithStackTrace(...aArgs) {
-	utils.logWithStackTrace.apply(utils, ['browserUIShowHideObserver'].concat(aArgs));
+	utils.logWithStackTrace('browserUIShowHideObserver', ...aArgs);
 }
 
 function BrowserUIShowHideObserver(aOwner, aBox, aOptions) {

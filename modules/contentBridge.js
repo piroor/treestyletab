@@ -47,10 +47,10 @@ Cu.import('resource://gre/modules/Promise.jsm');
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
 function log(...aArgs) {
-	utils.log.apply(utils, ['contentBridge'].concat(aArgs));
+	utils.log('contentBridge', ...aArgs);
 }
 function logWithStackTrace(...aArgs) {
-	utils.logWithStackTrace.apply(utils, ['contentBridge'].concat(aArgs));
+	utils.logWithStackTrace('contentBridge', ...aArgs);
 }
 
 function ContentBridge(aTab, aTabBrowser) 

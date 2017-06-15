@@ -79,10 +79,10 @@ else {
 }
 
 function log(...aArgs) {
-	utils.log.apply(utils, ['base'].concat(aArgs));
+	utils.log('base', ...aArgs);
 }
 function logWithStackTrace(...aArgs) {
-	utils.logWithStackTrace.apply(utils, ['base'].concat(aArgs));
+	utils.logWithStackTrace('base', ...aArgs);
 }
  
 var TreeStyleTabBase = inherit(TreeStyleTabConstants, { 

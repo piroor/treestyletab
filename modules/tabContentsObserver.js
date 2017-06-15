@@ -42,10 +42,10 @@ Components.utils.import('resource://treestyletab-modules/constants.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
 function log(...aArgs) {
-	utils.log.apply(utils, ['tabContentsObserver'].concat(aArgs));
+	utils.log('tabContentsObserver', ...aArgs);
 }
 function logWithStackTrace(...aArgs) {
-	utils.logWithStackTrace.apply(utils, ['tabContentsObserver'].concat(aArgs));
+	utils.logWithStackTrace('tabContentsObserver', ...aArgs);
 }
 
 function TabContentsObserver(aOwner, aBox, aOptions) {

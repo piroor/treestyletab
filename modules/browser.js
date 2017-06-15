@@ -89,10 +89,10 @@ function wait(aMilliSeconds) {
 }
 
 function log(...aArgs) {
-	utils.log.apply(utils, ['browser'].concat(aArgs));
+	utils.log('browser', ...aArgs);
 }
 function logWithStackTrace(...aArgs) {
-	utils.logWithStackTrace.apply(utils, ['browser'].concat(aArgs));
+	utils.logWithStackTrace('browser', ...aArgs);
 }
 
 Cu.import('resource://treestyletab-modules/window.js');

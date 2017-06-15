@@ -45,10 +45,10 @@ Components.utils.import('resource://treestyletab-modules/ReferenceCounter.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'utils', 'resource://treestyletab-modules/utils.js', 'TreeStyleTabUtils');
 
 function log(...aArgs) {
-	utils.log.apply(utils, ['tabpanelDNDObserver'].concat(aArgs));
+	utils.log('tabpanelDNDObserver', ...aArgs);
 }
 function logWithStackTrace(...aArgs) {
-	utils.logWithStackTrace.apply(utils, ['tabpanelDNDObserver'].concat(aArgs));
+	utils.logWithStackTrace('tabpanelDNDObserver', ...aArgs);
 }
 
 

@@ -64,10 +64,10 @@ const SecMan = Cc['@mozilla.org/scriptsecuritymanager;1']
 				.getService(Ci.nsIScriptSecurityManager);
 
 function log(...aArgs) {
-	utils.log.apply(utils, ['tabbarDNDObserver'].concat(aArgs));
+	utils.log('tabbarDNDObserver', ...aArgs);
 }
 function logWithStackTrace(...aArgs) {
-	utils.logWithStackTrace.apply(utils, ['tabbarDNDObserver'].concat(aArgs));
+	utils.logWithStackTrace('tabbarDNDObserver', ...aArgs);
 }
 
 function TabbarDNDObserver(aTabBrowser) 

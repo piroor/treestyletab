@@ -51,10 +51,10 @@ XPCOMUtils.defineLazyServiceGetter(this, 'ScreenManager',
   '@mozilla.org/gfx/screenmanager;1', 'nsIScreenManager');
 
 function log(...aArgs) {
-	utils.log.apply(utils, ['fullTooltip'].concat(aArgs));
+	utils.log('fullTooltip', ...aArgs);
 }
 function logWithStackTrace(...aArgs) {
-	utils.logWithStackTrace.apply(utils, ['fullTooltip'].concat(aArgs));
+	utils.logWithStackTrace('fullTooltip', ...aArgs);
 }
 
 function FullTooltipManager(aOwner)

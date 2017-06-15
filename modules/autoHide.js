@@ -60,10 +60,10 @@ XPCOMUtils.defineLazyGetter(this, 'prefs', function() {
 });
 
 function log(...aArgs) {
-	utils.log.apply(utils, ['autoHide'].concat(aArgs));
+	utils.log('autoHide', ...aArgs);
 }
 function logWithStackTrace(...aArgs) {
-	utils.logWithStackTrace.apply(utils, ['autoHide'].concat(aArgs));
+	utils.logWithStackTrace('autoHide', ...aArgs);
 }
 
 var AutoHideConstants = Object.freeze(inherit(TreeStyleTabConstants, {

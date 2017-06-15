@@ -459,7 +459,7 @@ PlacesUIUtils._openTabset = function(aItemsToOpen, aEvent, aWindow, ...aArgs) {
 
 PlacesUtils.__treestyletab__getURLsForContainerNode = PlacesUtils.getURLsForContainerNode;
 PlacesUtils.getURLsForContainerNode = function(aNode, ...aArgs) {
-	var uris = this.__treestyletab__getURLsForContainerNode.apply(this, [aNode].concat(aArgs));
+	var uris = this.__treestyletab__getURLsForContainerNode(aNode, ...aArgs);
 	var nodes = TreeStyleTabBookmarksService.getItemIdsForContainerNode(aNode);
 	for (let i in nodes) {
 		uris[i].id = nodes[i];

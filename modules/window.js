@@ -75,10 +75,10 @@ XPCOMUtils.defineLazyServiceGetter(this, 'SessionStore',
   '@mozilla.org/browser/sessionstore;1', 'nsISessionStore');
 
 function log(...aArgs) {
-	utils.log.apply(utils, ['window'].concat(aArgs));
+	utils.log('window', ...aArgs);
 }
 function logWithStackTrace(...aArgs) {
-	utils.logWithStackTrace.apply(utils, ['window'].concat(aArgs));
+	utils.logWithStackTrace('window', ...aArgs);
 }
 
 function TreeStyleTabWindow(aWindow)
