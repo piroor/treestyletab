@@ -1,6 +1,14 @@
 # History
 
  - master/HEAD
+   * Works on Nightly 56.0a1.
+   * Allow to drop multiple local files to the tab bar, on Firefox 52 and later.
+   * Scroll to a newly opened tab if possible.
+   * Load a URI in an existing tab when it is dropped into the content area. (New tabs were wrongly opened by such operations.)
+   * Refresh tab bar correctly when any new notification appears.
+   * Support "Compact Dark" theme on Firefox 53 and later.
+   * Open tabs from middle-clicked items in "Synced Tabs" sidebar as new root tabs.
+   * Support contextual tabs on Firefox 54 and later.
  - 0.19.2017031101
    * Works on lately Firefox versions. (Tested on Nightly 55.0a1.)
    * Drop support for Firefox 51 and older versions.
