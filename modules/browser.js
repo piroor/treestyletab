@@ -5293,7 +5293,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var color;
 		var userContextId = aTab.getAttribute('usercontextid');
 		if (userContextId) {
-			let identity = ContextualIdentityService.getIdentityFromId(userContextId);
+			let identity = ContextualIdentityService.getPublicIdentityFromId ?
+							ContextualIdentityService.getPublicIdentityFromId(userContextId) : // Firefox 54 and later
+							ContextualIdentityService.getIdentityFromId(userContextId) ; // Firefox 53 or older
 			color = identity ? identity.color : null ;
 		}
 		if (color) {
