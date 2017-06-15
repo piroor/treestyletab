@@ -252,6 +252,28 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	{
 		return (this._tabStripPlaceHolder = value);
 	},
+
+	get notificationBoxContainers()
+	{
+		var d = this.document;
+		return [
+			this.browser,
+			d.getElementById('global-notificationbox'),
+			d.getElementById('high-priority-global-notificationbox')
+		].map(function(aNode) {
+			if (aNode) {
+				return {
+					node : aNode,
+					id   : 'notificationBoxContainers(#' + aNode.id + ')'
+				};
+			}
+			else {
+				return null;
+			}
+		}).filter(function(aItem) {
+			return aItem;
+		});
+	},
   
 /* properties */ 
 	
@@ -920,6 +942,16 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		ReferenceCounter.add('w,SSWindowStateBusy,TSTBrowser,false');
 		w.addEventListener('SSWindowStateReady', this, false);
 		ReferenceCounter.add('w,SSWindowStateReady,TSTBrowser,false');
+
+		for (let container of this.notificationBoxContainers)
+		{
+			container.node.addEventListener('transitionend', this, false);
+			ReferenceCounter.add(container.id + ',transitionend,TSTBrowser,false');
+			container.node.addEventListener('transitioncancel', this, false);
+			ReferenceCounter.add(container.id + ',transitioncancel,TSTBrowser,false');
+			container.node.addEventListener('transitionrun', this, false);
+			ReferenceCounter.add(container.id + ',transitionrun,TSTBrowser,false');
+		}
 
 		b.addEventListener('DOMAudioPlaybackStarted', this, false);
 		ReferenceCounter.add('b,DOMAudioPlaybackStarted,TSTBrowser,false');
@@ -2491,6 +2523,16 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		w.removeEventListener('SSWindowStateReady', this, false);
 		ReferenceCounter.remove('w,SSWindowStateReady,TSTBrowser,false');
 
+		for (let container of this.notificationBoxContainers)
+		{
+			container.node.removeEventListener('transitionend', this, false);
+			ReferenceCounter.remove(container.id + ',transitionend,TSTBrowser,false');
+			container.node.removeEventListener('transitioncancel', this, false);
+			ReferenceCounter.remove(container.id + ',transitioncancel,TSTBrowser,false');
+			container.node.removeEventListener('transitionrun', this, false);
+			ReferenceCounter.remove(container.id + ',transitionrun,TSTBrowser,false');
+		}
+
 		b.removeEventListener('DOMAudioPlaybackStarted', this, false);
 		ReferenceCounter.remove('b,DOMAudioPlaybackStarted,TSTBrowser,false');
 		b.removeEventListener('DOMAudioPlaybackStopped', this, false);
@@ -3225,6 +3267,13 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 						dontUpdateCount : true
 					});
 				}
+				return;
+
+			case 'transitionend':
+			case 'transitioncancel':
+			case 'transitionrun':
+				if (aEvent.originalTarget.localName == 'notification')
+					this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
 				return;
 
 
