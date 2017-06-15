@@ -71,7 +71,6 @@ XPCOMUtils.defineLazyModuleGetter(this, 'TreeStyleTabConstants',
 const TST_PREF_PREFIX = 'extensions.treestyletab.';
 const TST_PREF_VERSION = 15;
 
-
 var TreeStyleTabUtils = {
 
 	get prefs () {
@@ -812,5 +811,12 @@ prefs.addPrefListener(TreeStyleTabUtils);
 	SessionStoreInternal.duplicateTab = function(aWindow, aTab, aDelta = 0) {
 		aWindow.gBrowser.treeStyleTab.onBeforeTabDuplicate(aWindow, aTab, aDelta);
 		return this.__treestyletab__duplicateTab.call(this, aWindow, aTab, aDelta);
+	};
+
+	let { TabListView } = Cu.import('resource:///modules/syncedtabs/TabListView.js', {});
+	TabListView.prototype.__treestyletab__onOpenSelected = TabListView.prototype.onOpenSelected;
+	TabListView.prototype.onOpenSelected = function(...aArgs) {
+		this._window.top.gBrowser.treeStyleTab.readyToOpenOrphanTabNow();
+		return this.__treestyletab__onOpenSelected(...aArgs);
 	};
 }
