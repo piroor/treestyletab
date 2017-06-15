@@ -4868,6 +4868,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			dontUpdateCount : true
 		});
 		delete tab.__treestyletab__restoredByUndoCloseTab;
+		this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_RESET);
 	},
  
 	onTabPinned : function TSTBrowser_onTabPinned(aTab) 
