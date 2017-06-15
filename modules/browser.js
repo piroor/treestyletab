@@ -7104,6 +7104,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	
 	scrollTo : function TSTBrowser_scrollTo(aEndX, aEndY, aTargetElement) 
 	{
+		log('scrollTo ' + aEndX + ', ' + aEndY);
 		if (this.timers['cancelPerformingAutoScroll'])
 			return;
 
@@ -7122,6 +7123,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	
 	smoothScrollTo : function TSTBrowser_smoothScrollTo(aEndX, aEndY, aDuration, aTargetElement) 
 	{
+		log('smoothScrollTo ' + aEndX + ', ' + aEndY);
 		this.cancelPerformingAutoScroll(true);
 
 		var b = this.mTabBrowser;
@@ -7140,6 +7142,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			return this.scrollBox._smoothScrollByPixels(amountToScroll, aTargetElement);
 		}
 		// Otherwise fallback to TST's custom one.
+		log('  => TST\'s smooth scroll');
 
 		var arrowscrollbox = scrollBoxObject.element.parentNode;
 		if (
@@ -7246,13 +7249,18 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
   
 	scrollToTab : function TSTBrowser_scrollToTab(aTab, aOnlyWhenCurrentTabIsInViewport) 
 	{
-		if (!this.canScrollToTab(aTab))
+		log('scrollToTab to ' + (aTab && aTab._tPos));
+		if (!this.canScrollToTab(aTab)) {
+			log('  => unscrollable');
 			return;
+		}
 
 		this.cancelPerformingAutoScroll(true);
 
-		if (this.isTabInViewport(aTab))
+		if (this.isTabInViewport(aTab)) {
+			log('  => already visible');
 			return;
+		}
 
 		var b = this.mTabBrowser;
 
