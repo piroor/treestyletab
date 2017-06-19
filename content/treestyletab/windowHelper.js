@@ -673,7 +673,7 @@ var TreeStyleTabWindowHelper = {
 					let shouldScrollNow = aArgs[1] === false;
 					if (treeStyleTab.animationEnabled && !shouldScrollNow)
 						return treeStyleTab.scrollToTab(aArgs[0]);
-					scrollbox.__treestyletab__ensureElementIsVisible.call(this, ...aArgs);
+					scrollbox.__treestyletab__ensureElementIsVisible(...aArgs);
 				};
 			}
 		}
@@ -722,7 +722,7 @@ var TreeStyleTabWindowHelper = {
 		aTab.toggleMuteAudio = function(...aArgs) {
 			if (aTabBrowser.treeStyleTab.handleTabToggleMuteAudio(aTab))
 				return;
-			return aTab.__treestyletab__toggleMuteAudio.call(this, ...aArgs);
+			return aTab.__treestyletab__toggleMuteAudio(...aArgs);
 		};
 	}
  
