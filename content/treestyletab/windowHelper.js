@@ -460,8 +460,8 @@ var TreeStyleTabWindowHelper = {
 
 		b.__treestyletab__loadTabs = b.loadTabs;
 		b.loadTabs = function(aURIs, ...aArgs) {
-			var aLoadInBackground = aArgs[1];
-			var aReplace = aArgs[2];
+			var aLoadInBackground = aArgs[0];
+			var aReplace = aArgs[1];
 			if (typeof aLoadInBackground == 'object' && 
 				aLoadInBackground) {
 				aReplace = aLoadInBackground.replace;
