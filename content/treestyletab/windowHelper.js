@@ -720,8 +720,7 @@ var TreeStyleTabWindowHelper = {
 
 		aTab.__treestyletab__toggleMuteAudio = aTab.toggleMuteAudio;
 		aTab.toggleMuteAudio = function(...aArgs) {
-			if (aTabBrowser.treeStyleTab.handleTabToggleMuteAudio(aTab))
-				return;
+			aTabBrowser.treeStyleTab.handleTabToggleMuteAudio(aTab);
 			return aTab.__treestyletab__toggleMuteAudio(...aArgs);
 		};
 	}

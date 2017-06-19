@@ -4682,10 +4682,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 					aChild.toggleMuteAudio();
 			}, this);
 		}
-		return (
-			this.getTabValue(aTab, this.kREALLY_SOUND_PLAYING) != 'true' &&
-			aTab.getAttribute('muted') != 'true' // allow to unmute tab always, even if the sound is not played
-		);
 	},
  
 	correctChildTabsOrderWithDelay : function TSTBrowser_correctChildTabsOrderWithDelay(aTab) 
