@@ -4674,14 +4674,14 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
   
 	handleTabToggleMuteAudio : function TSTBrowser_handleTabToggleMuteAudio(aTab) 
 	{
-		if (this.isCollapsed(aTab) || this.isSubtreeCollapsed(aTab)) {
-			let children = this.getChildTabs(aTab);
-			let parentStatus = aTab.getAttribute('muted');
-			children.forEach(function(aChild) {
-				if (aChild.getAttribute('muted') == parentStatus)
-					aChild.toggleMuteAudio();
-			}, this);
-		}
+		if (!this.isCollapsed(aTab) && !this.isSubtreeCollapsed(aTab))
+			return;
+		let children = this.getChildTabs(aTab);
+		let parentStatus = aTab.getAttribute('muted');
+		children.forEach(function(aChild) {
+			if (aChild.getAttribute('muted') == parentStatus)
+				aChild.toggleMuteAudio();
+		}, this);
 	},
  
 	correctChildTabsOrderWithDelay : function TSTBrowser_correctChildTabsOrderWithDelay(aTab) 
