@@ -15,7 +15,7 @@
    http://github.com/piroor/fxaddonlib-tabs-drag-utils
 */
 (function() {
-	const currentRevision = 45;
+	const currentRevision = 46;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -881,10 +881,11 @@ TDUContext.destroy();
 	}
 
 	DOMDataTransferProxy.prototype = {
+		__tabsDragUtils__onlyFirstItem : false, // set this to true on demand
 		
 		_apply : function DOMDTProxy__apply(aMethod, aArguments) 
 		{
-			return this._source[aMethod].apply(this._source, aArguments);
+			return this._source[aMethod](...aArguments);
 		},
 	 
 		// nsIDOMDataTransfer 
@@ -894,16 +895,16 @@ TDUContext.destroy();
 		set effectAllowed(aValue) { return this._source.effectAllowed = aValue; },
 		get files() { return this._source.files; },
 		get types() { return this._source.types; },
-		clearData : function DOMDTProxy_clearData() { return this._apply('clearData', arguments); },
-		setData : function DOMDTProxy_setData() { return this._apply('setData', arguments); },
-		getData : function DOMDTProxy_getData() { return this._apply('getData', arguments); },
-		setDragImage : function DOMDTProxy_setDragImage() { return this._apply('setDragImage', arguments); },
-		addElement : function DOMDTProxy_addElement() { return this._apply('addElement', arguments); },
+		clearData : function DOMDTProxy_clearData(...aArgs) { return this._apply('clearData', aArgs); },
+		setData : function DOMDTProxy_setData(...aArgs) { return this._apply('setData', aArgs); },
+		getData : function DOMDTProxy_getData(...aArgs) { return this._apply('getData', aArgs); },
+		setDragImage : function DOMDTProxy_setDragImage(...aArgs) { return this._apply('setDragImage', aArgs); },
+		addElement : function DOMDTProxy_addElement(...aArgs) { return this._apply('addElement', aArgs); },
 	 
 		// nsIDOMNSDataTransfer 
 		get mozItemCount()
 		{
-			return this._tabs.length;
+			return this.__tabsDragUtils__onlyFirstItem ? 1 : this._tabs.length;
 		},
 
 		get mozCursor() { return this._source.mozCursor; },
@@ -911,7 +912,7 @@ TDUContext.destroy();
 
 		mozTypesAt : function DOMDTProxy_mozTypesAt(aIndex)
 		{
-			if (aIndex >= this._tabs.length)
+			if (aIndex >= this.mozItemCount)
 				return new StringList([]);
 
 			// return this._apply('mozTypesAt', [0]);
@@ -933,7 +934,7 @@ TDUContext.destroy();
 
 		mozGetDataAt : function DOMDTProxy_mozGetDataAt(aFormat, aIndex)
 		{
-			if (aIndex >= this._tabs.length)
+			if (aIndex >= this.mozItemCount)
 				return null;
 
 			var tab = this._tabs[aIndex];
