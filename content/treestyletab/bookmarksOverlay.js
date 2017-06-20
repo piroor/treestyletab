@@ -72,6 +72,7 @@ var TreeStyleTabBookmarksUIService = inherit(TreeStyleTabService, {
 				return aTab.getAttribute('multiselected') == 'true';
 			})
 			) {
+			aEvent.detail.dataTransfer.__tabsDragUtils__onlyFirstItem = true;
 			aEvent.preventDefault();
 			aEvent.stopPropagation();
 		}
