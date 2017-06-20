@@ -15,7 +15,7 @@
    http://github.com/piroor/fxaddonlib-tabs-drag-utils
 */
 (function() {
-	const currentRevision = 46;
+	const currentRevision = 47;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -838,13 +838,14 @@ TDUContext.destroy();
 			}
 		},
 
-		_fireTabsDropEvent : function TDU_fireTabsDropEvent(aTabs) 
+		_fireTabsDropEvent : function TDU_fireTabsDropEvent(aTabs, aDataTransfer) 
 		{
 			var event = new CustomEvent(this.EVENT_TYPE_TABS_DROP, {
 					bubbles    : true,
 					cancelable : true,
 					detail     : {
-						tabs : aTabs
+						tabs : aTabs,
+						dataTransfer : aDataTransfer
 					}
 				});
 			return this._dropTarget.dispatchEvent(event);
@@ -873,7 +874,7 @@ TDUContext.destroy();
 		this._source = aDataTransfer;
 		this._tabs = tabs;
 
-		if (!tabsDragUtils._fireTabsDropEvent(tabs))
+		if (!tabsDragUtils._fireTabsDropEvent(tabs, this))
 			this._tabs = [tabs[0]];
 
 		if (tabsDragUtils.willBeInsertedBeforeExistingNode(aInsertionPoint))
