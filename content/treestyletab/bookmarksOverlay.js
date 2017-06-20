@@ -90,6 +90,8 @@ var TreeStyleTabBookmarksUIService = inherit(TreeStyleTabService, {
 				return this.destroy();
 
 			case window['piro.sakura.ne.jp'].tabsDragUtils.EVENT_TYPE_TABS_DROP:
+				if ((aEvent.originalTarget.ownerDocument || aEvent.originalTarget) != document)
+					return;
 				return this._onTabsDrop(aEvent);
 		}
 	}
