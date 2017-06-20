@@ -68,7 +68,7 @@ var TreeStyleTabBookmarksUIService = inherit(TreeStyleTabService, {
 		if (
 			groups.length == 1 &&
 			this.bookmarkDroppedTabsBehavior() != this.kBOOKMARK_DROPPED_TABS_ALL &&
-			![...aTabs].some(function(aTab) {
+			![...tabs].some(function(aTab) {
 				return aTab.getAttribute('multiselected') == 'true';
 			})
 			) {
