@@ -97,7 +97,7 @@
 							'_tabs' in dt &&
 							'TreeStyleTabBookmarksService' in window)
 							TreeStyleTabBookmarksService.beginAddBookmarksFromTabs(dt._tabs);
-						yield PlacesControllerDragHelper.__TabsDragUtils_original__onDrop.call(this, insertionPoint, dt)
+						yield this.__TabsDragUtils_original__onDrop(insertionPoint, dt)
 								.then(function(aResult) {
 									if (dt &&
 										'_tabs' in dt &&
