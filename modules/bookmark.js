@@ -497,11 +497,11 @@ PlacesUIUtils.openURINodesInTabs = function(aNodes, ...aArgs) {
 };
 
 PlacesUIUtils.__treestyletab__openNodeWithEvent = PlacesUIUtils.openNodeWithEvent;
-PlacesUIUtils.openNodeWithEvent = function(aNode, aEvent, aView, ...aArgs) {
-	var window = aView.ownerWindow;
+PlacesUIUtils.openNodeWithEvent = function(aNode, aEvent, ...aArgs) {
+	var window = aEvent.target.ownerGlobal;
 	if (!window.gBrowser)
 		window = PlacesUIUtils._getTopBrowserWin();
 	if (window && window.gBrowser)
 		window.gBrowser.treeStyleTab.readyToOpenOrphanTabNow();
-	return PlacesUIUtils.__treestyletab__openNodeWithEvent(aNode, aEvent, aView, ...aArgs);
+	return PlacesUIUtils.__treestyletab__openNodeWithEvent(aNode, aEvent, ...aArgs);
 };
