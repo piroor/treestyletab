@@ -115,7 +115,7 @@
 <!ENTITY config.autoHide.area.after "пикселей от края окна или панели вкладок">
 <!ENTITY config.autoHide.delay.before "Задержка:">
 <!ENTITY config.autoHide.delay.after "мсек.">
-<!ENTITY config.autoShow.click "Click on the tab bar">
+<!ENTITY config.autoShow.click "После клика по панели вкладок">
 <!ENTITY config.autoShow.accelKeyDown "При удерживании клавиши Ctrl">
 <!ENTITY config.autoShow.accelKeyDown.delay.before "Показывать после">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "мсек.">
