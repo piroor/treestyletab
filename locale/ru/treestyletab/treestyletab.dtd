@@ -109,20 +109,19 @@
 <!ENTITY config.autoHide.mode.0 "Показывать панель вкладок всегда">
 <!ENTITY config.autoHide.mode.1 "Автоскрытие панели вкладок">
 <!ENTITY config.autoHide.mode.2 "Автосжатие панели вкладок">
-<!ENTITY config.autoShow.caption "Автоматически показывать панель вкладок при">
-<!ENTITY config.autoShow.mousemove "Перемещении мышки к краю окна или панели вкладок">
+<!ENTITY config.autoShow.caption "Автоматически показывать панель вкладок:">
+<!ENTITY config.autoShow.mousemove "При перемещении мышки к краю окна или панели вкладок">
 <!ENTITY config.autoHide.area.before "Область срабатывания:">
 <!ENTITY config.autoHide.area.after "пикселей от края окна или панели вкладок">
 <!ENTITY config.autoHide.delay.before "Задержка:">
 <!ENTITY config.autoHide.delay.after "мсек.">
 <!ENTITY config.autoShow.click "После клика по панели вкладок">
 <!ENTITY config.autoShow.accelKeyDown "При удерживании клавиши Ctrl">
-<!ENTITY config.autoShow.accelKeyDown.delay.before "Показывать после">
+<!ENTITY config.autoShow.accelKeyDown.delay.before "Показывать через">
 <!ENTITY config.autoShow.accelKeyDown.delay.after  "мсек.">
-<!ENTITY config.autoShow.tabSwitch   "Переключении вкладок через Ctrl+Tab">
-<!ENTITY config.autoShow.feedback    "Изменении вкладок (новая вкладка, закрытие вкладки, изменение фокуса, изменение заголовка)">
-<!--ENTITY config.autoShow.feedback    "Закрытии вкладок или открытии новых"-->
-<!ENTITY config.autoShow.feedback.delay.before "Скрыть после">
+<!ENTITY config.autoShow.tabSwitch   "При переключении вкладок с помощью Ctrl+Tab">
+<!ENTITY config.autoShow.feedback    "При изменении вкладок (новая вкладка, закрытие вкладки, изменение фокуса, изменение заголовка)">
+<!ENTITY config.autoShow.feedback.delay.before "Скрывать через">
 <!ENTITY config.autoShow.feedback.delay.after  "мсек.">
 
 
