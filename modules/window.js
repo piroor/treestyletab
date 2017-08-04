@@ -516,7 +516,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		var allTabsButton = d.getElementById('alltabs-button') ||
 				( // Tab Mix Plus
 					utils.getTreePref('compatibility.TMP') &&
-					d.getAnonymousElementByAttribute(aTabBrowser.mTabContainer, 'anonid', 'alltabs-button')
+					d.getAnonymousElementByAttribute(aTabBrowser.tabContainer, 'anonid', 'alltabs-button')
 				);
 
 		if (allTabsButton && allTabsButton.hasChildNodes() && aTabBrowser.treeStyleTab)
@@ -1840,7 +1840,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		}
 		else {
 			sv.detachTab(aTab);
-			let index = nextSibling ? nextSibling._tPos : b.mTabContainer.childNodes.length ;
+			let index = nextSibling ? nextSibling._tPos : b.tabContainer.childNodes.length ;
 			if (index > aTab._tPos)
 				index--;
 			b.moveTabTo(aTab, index);

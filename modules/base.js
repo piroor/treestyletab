@@ -761,12 +761,12 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		aTabBrowser = aTabBrowser || this.mTabBrowser || this.browser;
 		if (aValue) {
 			aTabBrowser.setAttribute(aName, aValue);
-			aTabBrowser.mTabContainer.setAttribute(aName, aValue);
+			aTabBrowser.tabContainer.setAttribute(aName, aValue);
 			aTabBrowser.treeStyleTab.setTabStripAttribute(aName, aValue);
 		}
 		else {
 			aTabBrowser.removeAttribute(aName);
-			aTabBrowser.mTabContainer.removeAttribute(aName);
+			aTabBrowser.tabContainer.removeAttribute(aName);
 			aTabBrowser.treeStyleTab.removeTabStripAttribute(aName);
 		}
 	},
@@ -1042,7 +1042,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		if (this.tabsHash) // XPath-less implementation
 			return this.tabsHash[aId] || null;
 
-		return b.mTabContainer.querySelector('tab['+this.kID+'="'+aId+'"]');
+		return b.tabContainer.querySelector('tab['+this.kID+'="'+aId+'"]');
 	},
  
 	isTabDuplicated : function TSTBase_isTabDuplicated(aTab) 
@@ -1051,7 +1051,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			return false;
 		var id = this.getTabValue(aTab, this.kID);
 		var b = this.getTabBrowserFromChild(aTab) || this.browser;
-		var tabs = b.mTabContainer.querySelectorAll('tab['+this.kID+'="'+id+'"], tab['+this.kID_RESTORING+'="'+id+'"]');
+		var tabs = b.tabContainer.querySelectorAll('tab['+this.kID+'="'+id+'"], tab['+this.kID_RESTORING+'="'+id+'"]');
 		return tabs.length > 1;
 	},
  
@@ -1062,8 +1062,8 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	getAllTabs : function TSTBase_getTabs(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild || this.browser);
-		this.assertBeforeDestruction(b && b.mTabContainer);
-		return [...b.mTabContainer.querySelectorAll('tab')];
+		this.assertBeforeDestruction(b && b.tabContainer);
+		return [...b.tabContainer.querySelectorAll('tab')];
 	},
  
 	/**
@@ -1073,8 +1073,8 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	getTabs : function TSTBase_getTabs(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild || this.browser);
-		this.assertBeforeDestruction(b && b.mTabContainer);
-		return [...b.mTabContainer.querySelectorAll('tab:not([hidden="true"])')];
+		this.assertBeforeDestruction(b && b.tabContainer);
+		return [...b.tabContainer.querySelectorAll('tab:not([hidden="true"])')];
 	},
  
 	getAllTabsArray : function TSTBase_getAllTabsArray(aTabBrowserChild) /* for backward compatibility */ 
@@ -1093,9 +1093,9 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	getFirstTab : function TSTBase_getFirstTab(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild || this.browser);
-		this.assertBeforeDestruction(b && b.mTabContainer);
+		this.assertBeforeDestruction(b && b.tabContainer);
 		var tabs = b.visibleTabs;
-		return tabs ? tabs[0] : b.mTabContainer.firstChild;
+		return tabs ? tabs[0] : b.tabContainer.firstChild;
 	},
  
 	/**
@@ -1104,8 +1104,8 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	getFirstNormalTab : function TSTBase_getFirstNormalTab(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild || this.browser);
-		this.assertBeforeDestruction(b && b.mTabContainer);
-		return b.mTabContainer.querySelector('tab:not([pinned="true"]):not([hidden="true"])');
+		this.assertBeforeDestruction(b && b.tabContainer);
+		return b.tabContainer.querySelector('tab:not([pinned="true"]):not([hidden="true"])');
 	},
  
 	/**
@@ -1114,9 +1114,9 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 	getLastTab : function TSTBase_getLastTab(aTabBrowserChild) 
 	{
 		var b = this.getTabBrowserFromChild(aTabBrowserChild || this.browser);
-		this.assertBeforeDestruction(b && b.mTabContainer);
+		this.assertBeforeDestruction(b && b.tabContainer);
 		var tabs = b.visibleTabs;
-		return tabs ? tabs[tabs.length-1] : b.mTabContainer.lastChild ;
+		return tabs ? tabs[tabs.length-1] : b.tabContainer.lastChild ;
 	},
  
 	/**
@@ -1127,7 +1127,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		if (!aTab)
 			return null;
 		var b = this.getTabBrowserFromChild(aTab);
-		this.assertBeforeDestruction(b && b.mTabContainer);
+		this.assertBeforeDestruction(b && b.tabContainer);
 		var tabs = b.visibleTabs;
 		if (tabs) {
 			let index = tabs.indexOf(aTab);
@@ -1146,7 +1146,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		if (!aTab)
 			return null;
 		var b = this.getTabBrowserFromChild(aTab);
-		this.assertBeforeDestruction(b && b.mTabContainer);
+		this.assertBeforeDestruction(b && b.tabContainer);
 		var tabs = b.visibleTabs;
 		if (tabs) {
 			let index = tabs.indexOf(aTab);
@@ -1230,7 +1230,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 		var b = this.getTabBrowserFromChild(aTabBrowserChild || this.browser);
 		if (!this.canCollapseSubtree(b))
 			return this.getTabs(b);
-		return [...b.mTabContainer.querySelectorAll('tab:not(['+this.kCOLLAPSED+'="true"]):not([hidden="true"])')];
+		return [...b.tabContainer.querySelectorAll('tab:not(['+this.kCOLLAPSED+'="true"]):not([hidden="true"])')];
 	},
  
 	getVisibleTabsArray : function TSTBase_getVisibleTabsArray(aTabBrowserChild) /* for backward compatibility */ 
@@ -1605,7 +1605,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
  
 	get rootTabs() /* PUBLIC API */ 
 	{
-		return [...this.browser.mTabContainer.querySelectorAll('tab:not(['+this.kNEST+']), tab['+this.kNEST+'=""], tab['+this.kNEST+'="0"]')];
+		return [...this.browser.tabContainer.querySelectorAll('tab:not(['+this.kNEST+']), tab['+this.kNEST+'=""], tab['+this.kNEST+'="0"]')];
 	},
  
 	get allRootTabs() /* PUBLIC API */ 
@@ -2102,7 +2102,7 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
  
 	get pinnedTabsCount() 
 	{
-		return this.browser.mTabContainer.querySelectorAll('tab[pinned="true"]').length;
+		return this.browser.tabContainer.querySelectorAll('tab[pinned="true"]').length;
 	},
  
 	forceExpandTabs : function TSTBase_forceExpandTabs(aTabs) 

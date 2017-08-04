@@ -953,7 +953,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 
 		if (this.expanded)
 			sv.setTabbrowserAttribute(this.kAUTOHIDE, 'show');
-		b.mTabContainer.adjustTabstrip();
+		b.tabContainer.adjustTabstrip();
 		sv.checkTabsIndentOverflow();
 
 		this.window.setTimeout((function() {
@@ -1565,14 +1565,14 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 		this.onPrefChange('extensions.treestyletab.tabbar.togglerSize');
 		this.onPrefChange('extensions.treestyletab.tabbar.autoHide.contentAreaScreen.enabled');
 
-		b.mTabContainer.addEventListener('TabOpen', this, false);
-		ReferenceCounter.add('mTabContainer,TabOpen,AHW,false');
-		b.mTabContainer.addEventListener('TabClose', this, false);
-		ReferenceCounter.add('mTabContainer,TabClose,AHW,false');
-		b.mTabContainer.addEventListener('TabMove', this, false);
-		ReferenceCounter.add('mTabContainer,TabMove,AHW,false');
-		b.mTabContainer.addEventListener('select', this, false);
-		ReferenceCounter.add('mTabContainer,select,AHW,false');
+		b.tabContainer.addEventListener('TabOpen', this, false);
+		ReferenceCounter.add('tabContainer,TabOpen,AHW,false');
+		b.tabContainer.addEventListener('TabClose', this, false);
+		ReferenceCounter.add('tabContainer,TabClose,AHW,false');
+		b.tabContainer.addEventListener('TabMove', this, false);
+		ReferenceCounter.add('tabContainer,TabMove,AHW,false');
+		b.tabContainer.addEventListener('select', this, false);
+		ReferenceCounter.add('tabContainer,select,AHW,false');
 		b.addEventListener(sv.kEVENT_TYPE_TABBAR_POSITION_CHANGING, this, false);
 		ReferenceCounter.add('b,kEVENT_TYPE_TABBAR_POSITION_CHANGING,AHW,false');
 		b.addEventListener(sv.kEVENT_TYPE_TABBAR_POSITION_CHANGED, this, false);
@@ -1585,7 +1585,7 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 		ReferenceCounter.add('b,kEVENT_TYPE_TAB_FOCUS_SWITCHING_END,AHW,false');
 
 		this.tabsAttributeObserver = new TabAttributesObserver({
-			container  : b.mTabContainer,
+			container  : b.tabContainer,
 			attributes : 'titlechanged',
 			callback   : (function(aTab) {
 				if (aTab.getAttribute('titlechanged') == 'true')
@@ -1604,14 +1604,14 @@ AutoHideBrowser.prototype = inherit(AutoHideBase.prototype, {
 
 		var sv = this.treeStyleTab;
 		var b  = this.browser;
-		b.mTabContainer.removeEventListener('TabOpen', this, false);
-		ReferenceCounter.remove('mTabContainer,TabOpen,AHW,false');
-		b.mTabContainer.removeEventListener('TabClose', this, false);
-		ReferenceCounter.remove('mTabContainer,TabClose,AHW,false');
-		b.mTabContainer.removeEventListener('TabMove', this, false);
-		ReferenceCounter.remove('mTabContainer,TabMove,AHW,false');
-		b.mTabContainer.removeEventListener('select', this, false);
-		ReferenceCounter.remove('mTabContainer,select,AHW,false');
+		b.tabContainer.removeEventListener('TabOpen', this, false);
+		ReferenceCounter.remove('tabContainer,TabOpen,AHW,false');
+		b.tabContainer.removeEventListener('TabClose', this, false);
+		ReferenceCounter.remove('tabContainer,TabClose,AHW,false');
+		b.tabContainer.removeEventListener('TabMove', this, false);
+		ReferenceCounter.remove('tabContainer,TabMove,AHW,false');
+		b.tabContainer.removeEventListener('select', this, false);
+		ReferenceCounter.remove('tabContainer,select,AHW,false');
 		b.removeEventListener(sv.kEVENT_TYPE_TABBAR_POSITION_CHANGING, this, false);
 		ReferenceCounter.remove('b,kEVENT_TYPE_TABBAR_POSITION_CHANGING,AHW,false');
 		b.removeEventListener(sv.kEVENT_TYPE_TABBAR_POSITION_CHANGED, this, false);

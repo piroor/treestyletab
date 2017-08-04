@@ -532,19 +532,19 @@ var TreeStyleTabWindowHelper = {
 	{
 		var b = aTabBrowser;
 
-		if (!b.mTabContainer.__treestyletab__advanceSelectedTab)
-			b.mTabContainer.__treestyletab__advanceSelectedTab = b.mTabContainer.advanceSelectedTab;
-		if (b.mTabContainer.advanceSelectedTab.toString() === b.mTabContainer.__treestyletab__advanceSelectedTab.toString())
-			b.mTabContainer.advanceSelectedTab = function(...aArgs) {
+		if (!b.tabContainer.__treestyletab__advanceSelectedTab)
+			b.tabContainer.__treestyletab__advanceSelectedTab = b.tabContainer.advanceSelectedTab;
+		if (b.tabContainer.advanceSelectedTab.toString() === b.tabContainer.__treestyletab__advanceSelectedTab.toString())
+			b.tabContainer.advanceSelectedTab = function(...aArgs) {
 				if (b.treeStyleTab.handleAdvanceSelectedTab(aArgs[0], aArgs[1]))
 					return;
-				return b.mTabContainer.__treestyletab__advanceSelectedTab.call(this, ...aArgs);
+				return b.tabContainer.__treestyletab__advanceSelectedTab.call(this, ...aArgs);
 			};
 
 		if (!b.tabContainer.__treestyletab__notifyBackgroundTab)
 			b.tabContainer.__treestyletab__notifyBackgroundTab = b.tabContainer._notifyBackgroundTab;
 		// original: https://dxr.mozilla.org/mozilla-central/rev/dbe4b47941c7b3d6298a0ead5e40dd828096c808/browser/base/content/tabbrowser.xml#5459
-		if (b.mTabContainer._notifyBackgroundTab.toString() === b.mTabContainer.__treestyletab__notifyBackgroundTab.toString())
+		if (b.tabContainer._notifyBackgroundTab.toString() === b.tabContainer.__treestyletab__notifyBackgroundTab.toString())
 			b.tabContainer._notifyBackgroundTab = function(aTab, ...aArgs) {
 				var treeStyleTab = gBrowser.treeStyleTab;
 				if (aTab.pinned ||
@@ -610,7 +610,7 @@ var TreeStyleTabWindowHelper = {
 		if (!b.tabContainer.__treestyletab__getDragTargetTab)
 			b.tabContainer.__treestyletab__getDragTargetTab = b.tabContainer._getDragTargetTab;
 		// original: https://dxr.mozilla.org/mozilla-central/rev/dbe4b47941c7b3d6298a0ead5e40dd828096c808/browser/base/content/tabbrowser.xml#5511
-		if (b.mTabContainer._getDragTargetTab.toString() === b.mTabContainer.__treestyletab__getDragTargetTab.toString())
+		if (b.tabContainer._getDragTargetTab.toString() === b.tabContainer.__treestyletab__getDragTargetTab.toString())
 			b.tabContainer._getDragTargetTab = function(aEvent, aIsLink, ...aArgs) {
 				var treeStyleTab = gBrowser.treeStyleTab;
 				if (!treeStyleTab.isVertical)
@@ -632,7 +632,7 @@ var TreeStyleTabWindowHelper = {
 		if (!b.tabContainer.__treestyletab__getDropIndex)
 			b.tabContainer.__treestyletab__getDropIndex = b.tabContainer._getDropIndex;
 		// original: https://dxr.mozilla.org/mozilla-central/rev/dbe4b47941c7b3d6298a0ead5e40dd828096c808/browser/base/content/tabbrowser.xml#5526
-		if (b.mTabContainer._getDropIndex.toString() === b.mTabContainer.__treestyletab__getDropIndex.toString())
+		if (b.tabContainer._getDropIndex.toString() === b.tabContainer.__treestyletab__getDropIndex.toString())
 			b.tabContainer._getDropIndex = function(aEvent, aIsLink, ...aArgs) {
 				var treeStyleTab = gBrowser.treeStyleTab;
 				if (!treeStyleTab.isVertical)

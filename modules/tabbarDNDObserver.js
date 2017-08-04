@@ -179,7 +179,7 @@ try{
 		var tab = sv.getTabFromChild(node);
 		if (!node ||
 			!tab ||
-			tab.parentNode != b.mTabContainer)
+			tab.parentNode != b.tabContainer)
 			return true;
 
 		tab = sv.getTabFromEvent(aEvent) || sv.getTabFromTabbarEvent(aEvent);
@@ -705,7 +705,7 @@ catch(e) {
 		});
 
 		if (aOnFinish)
-			this.browser.mTabContainer.removeAttribute('movingtab')
+			this.browser.tabContainer.removeAttribute('movingtab')
 	},
  
 	isDraggingAllTabs : function TabbarDND_isDraggingAllTabs(aTab, aTabs) 
@@ -790,11 +790,11 @@ catch(e) {
 		);
 		dt.mozSetDataAt(
 			sv.kDRAG_TYPE_TABBAR_NODE,
-			sv.browser.mTabContainer,
+			sv.browser.tabContainer,
 			0
 		);
 		dt.mozCursor = 'move';
-//		var tabbar = sv.browser.mTabContainer;
+//		var tabbar = sv.browser.tabContainer;
 //		var box = tabbar.boxObject;
 //		dt.setDragImage(
 //			tabbar,
@@ -898,7 +898,7 @@ catch(e) {
 		var d  = this.document;
 		var w  = this.window;
 
-		var tabbar = b.mTabContainer;
+		var tabbar = b.tabContainer;
 		var strip = sv.tabStrip;
 		var dt = aEvent.dataTransfer;
 
@@ -978,7 +978,7 @@ catch(e) {
 try{
 		var sv = this.treeStyleTab;
 		var b  = this.browser;
-		var tabbar = b.mTabContainer;
+		var tabbar = b.tabContainer;
 
 		var session = sv.currentDragSession;
 		if (sv.isToolbarCustomizing)
@@ -1118,7 +1118,7 @@ catch(e) {
 		var b  = this.browser;
 		var w  = this.window;
 
-		var tabbar = b.mTabContainer;
+		var tabbar = b.tabContainer;
 		var dt = aEvent.dataTransfer;
 
 		/**
@@ -1173,9 +1173,9 @@ catch(e) {
 			) &&
 			dropActionInfo.position == sv.kDROP_ON
 			) {
-			let beforeTabs = [...b.mTabContainer.childNodes];
+			let beforeTabs = [...b.tabContainer.childNodes];
 			w.setTimeout(function() {
-				var newTabs = [...b.mTabContainer.childNodes].filter(function(aTab) {
+				var newTabs = [...b.tabContainer.childNodes].filter(function(aTab) {
 						return beforeTabs.indexOf(aTab) < 0;
 					});
 				if (newTabs.length)

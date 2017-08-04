@@ -211,9 +211,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	{
 		return ( // Tab Mix Plus
 				utils.getTreePref('compatibility.TMP') &&
-				this.document.getAnonymousElementByAttribute(this.mTabBrowser.mTabContainer, 'class', 'tabs-frame')
+				this.document.getAnonymousElementByAttribute(this.mTabBrowser.tabContainer, 'class', 'tabs-frame')
 			) ||
-			this.mTabBrowser.mTabContainer.mTabstrip;
+			this.mTabBrowser.tabContainer.mTabstrip;
 	},
 	get scrollBoxObject()
 	{
@@ -491,7 +491,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (b.hasAttribute(this.kMODE))
 			return b.getAttribute(this.kMODE) == 'vertical';
 
-		var box = this.scrollBox || b.mTabContainer ;
+		var box = this.scrollBox || b.tabContainer ;
 		return (box.getAttribute('orient') || this.window.getComputedStyle(box, '').getPropertyValue('-moz-box-orient')) == 'vertical';
 	},
  
@@ -533,7 +533,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
  
 	get isDestroying()
 	{
-		return !this.mTabBrowser || !this.mTabBrowser.mTabContainer;
+		return !this.mTabBrowser || !this.mTabBrowser.tabContainer;
 	},
   
 /* utils */ 
@@ -695,7 +695,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var count = this.pinnedTabsCount;
 		if (!this.isVertical || !count) {
 			this.resetPinnedTabs();
-			b.mTabContainer._positionPinnedTabs();
+			b.tabContainer._positionPinnedTabs();
 			return;
 		}
 
@@ -968,7 +968,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		w.TreeStyleTabWindowHelper.updateTabDNDObserver(b);
 
 		this.tabsAttributeObserver = new TabAttributesObserver({
-			container  : b.mTabContainer,
+			container  : b.tabContainer,
 			attributes : 'usercontextid',
 			callback   : (function(aTab) {
 				this.onTabContextIdChanged(aTab);
@@ -1521,9 +1521,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		// Tab Mix Plus
 		var scrollFrame, newTabBox, tabBarMode;
 		if (utils.getTreePref('compatibility.TMP')) {
-			scrollFrame = d.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-frame') ||
-							d.getAnonymousElementByAttribute(b.mTabContainer, 'anonid', 'scroll-tabs-frame');
-			newTabBox = d.getAnonymousElementByAttribute(b.mTabContainer, 'id', 'tabs-newbutton-box');
+			scrollFrame = d.getAnonymousElementByAttribute(b.tabContainer, 'class', 'tabs-frame') ||
+							d.getAnonymousElementByAttribute(b.tabContainer, 'anonid', 'scroll-tabs-frame');
+			newTabBox = d.getAnonymousElementByAttribute(b.tabContainer, 'id', 'tabs-newbutton-box');
 			let newTabButton = d.getElementById('new-tab-button');
 			if (newTabButton && newTabButton.parentNode == b.tabContainer._container)
 				newTabBox = newTabButton;
@@ -1535,8 +1535,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (toolboxContainer)
 			toolboxContainer = toolboxContainer.parentNode;
 
-		var scrollInnerBox = b.mTabContainer.mTabstrip._scrollbox ?
-				d.getAnonymousNodes(b.mTabContainer.mTabstrip._scrollbox)[0] :
+		var scrollInnerBox = b.tabContainer.mTabstrip._scrollbox ?
+				d.getAnonymousNodes(b.tabContainer.mTabstrip._scrollbox)[0] :
 				scrollFrame; // Tab Mix Plus
 
 		this.removeTabbrowserAttribute(this.kRESIZING, b);
@@ -1561,10 +1561,10 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			strip.orient =
 				placeHolder.orient =
 				this.toggler.orient =
-				b.mTabContainer.orient =
-				b.mTabContainer.mTabstrip.orient =
-				b.mTabContainer.mTabstrip.parentNode.orient = 'vertical';
-			b.mTabContainer.setAttribute('align', 'stretch'); // for Mac OS X
+				b.tabContainer.orient =
+				b.tabContainer.mTabstrip.orient =
+				b.tabContainer.mTabstrip.parentNode.orient = 'vertical';
+			b.tabContainer.setAttribute('align', 'stretch'); // for Mac OS X
 			if (scrollInnerBox)
 				scrollInnerBox.removeAttribute('flex');
 
@@ -1652,10 +1652,10 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			strip.orient =
 				placeHolder.orient =
 				this.toggler.orient =
-				b.mTabContainer.orient =
-				b.mTabContainer.mTabstrip.orient =
-				b.mTabContainer.mTabstrip.parentNode.orient = 'horizontal';
-			b.mTabContainer.removeAttribute('align'); // for Mac OS X
+				b.tabContainer.orient =
+				b.tabContainer.mTabstrip.orient =
+				b.tabContainer.mTabstrip.parentNode.orient = 'horizontal';
+			b.tabContainer.removeAttribute('align'); // for Mac OS X
 			if (scrollInnerBox)
 				scrollInnerBox.setAttribute('flex', 1);
 
@@ -1734,9 +1734,9 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 
 		// for updateTabbarOverflow(), we should reset the "overflow" now.
-		b.mTabContainer.removeAttribute('overflow');
+		b.tabContainer.removeAttribute('overflow');
 		{
-			let container = this.document.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-container');
+			let container = this.document.getAnonymousElementByAttribute(b.tabContainer, 'class', 'tabs-container');
 			if (container)
 				container.removeAttribute('overflow');
 		}
@@ -1790,7 +1790,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	{
 		var b = this.mTabBrowser;
 
-		var tabContainer = b.mTabContainer;
+		var tabContainer = b.tabContainer;
 		tabContainer.addEventListener('TabOpen',        this, true);
 		ReferenceCounter.add('tabContainer,TabOpen,TSTBrowser,true');
 		tabContainer.addEventListener('TabClose',       this, true);
@@ -2397,10 +2397,10 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		log('updateTabbarOverflow');
 		var d = this.document;
 		var b = this.mTabBrowser;
-		b.mTabContainer.removeAttribute('overflow');
-		var container = d.getAnonymousElementByAttribute(b.mTabContainer, 'class', 'tabs-container') || b.mTabContainer;
+		b.tabContainer.removeAttribute('overflow');
+		var container = d.getAnonymousElementByAttribute(b.tabContainer, 'class', 'tabs-container') || b.tabContainer;
 
-		if (container != b.mTabContainer)
+		if (container != b.tabContainer)
 			container.removeAttribute('overflow');
 
 		var scrollBox = this.scrollBox;
@@ -2418,14 +2418,14 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			)
 			) {
 			log(' => overflow');
-			b.mTabContainer.setAttribute('overflow', true);
-			if (container != b.mTabContainer)
+			b.tabContainer.setAttribute('overflow', true);
+			if (container != b.tabContainer)
 				container.setAttribute('overflow', true);
 		}
 		else {
 			log(' => underflow');
-			b.mTabContainer.removeAttribute('overflow');
-			if (container != b.mTabContainer)
+			b.tabContainer.removeAttribute('overflow');
+			if (container != b.tabContainer)
 				container.removeAttribute('overflow');
 		}
 	},
@@ -2593,7 +2593,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	{
 		var b = this.mTabBrowser;
 
-		var tabContainer = b.mTabContainer;
+		var tabContainer = b.tabContainer;
 		tabContainer.removeEventListener('TabOpen',        this, true);
 		ReferenceCounter.remove('tabContainer,TabOpen,TSTBrowser,true');
 		tabContainer.removeEventListener('TabClose',       this, true);
@@ -2841,7 +2841,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		var b = this.mTabBrowser;
 		var value = prefs.getPref(aPrefName);
-		var tabContainer = b.mTabContainer;
+		var tabContainer = b.tabContainer;
 		var tabs  = this.getAllTabs(b);
 		switch (aPrefName)
 		{
@@ -2955,7 +2955,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 			case 'extensions.treestyletab.tabbar.narrowScrollbar.width':
 				if (this.isVertical &&
-					this.mTabBrowser.mTabContainer.getAttribute('overflow') == 'true')
+					this.mTabBrowser.tabContainer.getAttribute('overflow') == 'true')
 					utils.updateNarrowScrollbarStyle(this.browser);
 				return;
 
@@ -5208,7 +5208,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	advanceSelectedTab : function TSTBrowser_advanceSelectedTab(aDir, aWrap) 
 	{
 		var tab = this.mTabBrowser.selectedTab;
-		var tabbar = this.mTabBrowser.mTabContainer;
+		var tabbar = this.mTabBrowser.tabContainer;
 
 		var nextTab = (aDir < 0) ? this.getPreviousVisibleTab(tab) : this.getNextVisibleTab(tab) ;
 		if (!nextTab && aWrap) {
@@ -5390,7 +5390,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		if (this.getTabFromEvent(aEvent))
 			return;
 
-		var tabs = this.mTabBrowser.mTabContainer;
+		var tabs = this.mTabBrowser.tabContainer;
 		var horizontal = tabs.orient == 'horizontal';
 		if (horizontal)
 			return;
@@ -5466,7 +5466,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			log('  isChromeResize = '+isChromeResize);
 			this.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
 			this.updateInvertedTabContentsOrder(true);
-			this.mTabBrowser.mTabContainer.adjustTabstrip();
+			this.mTabBrowser.tabContainer.adjustTabstrip();
 		}
 	},
  
@@ -5526,16 +5526,16 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		let collapseItem = items[this.kMENUITEM_COLLAPSE];
 		let expandItem = items[this.kMENUITEM_EXPAND];
 		if (this.canCollapseSubtree(b) &&
-			b.mTabContainer.querySelector('tab['+this.kCHILDREN+']')) {
+			b.tabContainer.querySelector('tab['+this.kCHILDREN+']')) {
 			if (collapseItem) {
-				if (b.mTabContainer.querySelector('tab['+this.kCHILDREN+']:not(['+this.kSUBTREE_COLLAPSED+'="true"])'))
+				if (b.tabContainer.querySelector('tab['+this.kCHILDREN+']:not(['+this.kSUBTREE_COLLAPSED+'="true"])'))
 					collapseItem.removeAttribute('disabled');
 				else
 					collapseItem.setAttribute('disabled', true);
 			}
 
 			if (expandItem) {
-				if (b.mTabContainer.querySelector('tab['+this.kCHILDREN+']['+this.kSUBTREE_COLLAPSED+'="true"]'))
+				if (b.tabContainer.querySelector('tab['+this.kCHILDREN+']['+this.kSUBTREE_COLLAPSED+'="true"]'))
 					expandItem.removeAttribute('disabled');
 				else
 					expandItem.setAttribute('disabled', true);
@@ -6312,11 +6312,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 
 		var b = this.mTabBrowser;
-		var tabbarSize = b.mTabContainer.boxObject[this.invertedSizeProp];
+		var tabbarSize = b.tabContainer.boxObject[this.invertedSizeProp];
 		if (!tabbarSize) // don't update indent for collapsed tab bar
 			return;
 
-		var tabs = [...b.mTabContainer.querySelectorAll(
+		var tabs = [...b.tabContainer.querySelectorAll(
 				'tab['+this.kNEST+']:not(['+this.kNEST+'="0"]):not(['+this.kNEST+'=""])'+
 					':not(['+this.kCOLLAPSED+'="true"])'+
 					':not([hidden="true"])'+
@@ -7103,7 +7103,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 
 		var xpathResult = utils.evaluateXPath(
 				'child::xul:tab[@'+this.kCHILDREN+' and not(@'+this.kCOLLAPSED+'="true") and not(@'+this.kSUBTREE_COLLAPSED+'="true") and @'+this.kID+' and not(contains("'+expandedAncestors+'", @'+this.kID+')) and not(@hidden="true")]',
-				b.mTabContainer
+				b.tabContainer
 			);
 		for (var i = 0, maxi = xpathResult.snapshotLength; i < maxi; i++)
 		{
@@ -7133,7 +7133,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
  
 	collapseExpandAllSubtree : function TSTBrowser_collapseExpandAllSubtree(aCollapse, aJustNow) 
 	{
-		var tabs = this.mTabBrowser.mTabContainer.querySelectorAll(
+		var tabs = this.mTabBrowser.tabContainer.querySelectorAll(
 				'tab['+this.kID+']['+this.kCHILDREN+']'+
 				(
 					aCollapse ?
@@ -7235,7 +7235,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 								oldSize[0] < newSize[0] || oldSize[1] < newSize[1] ||
 								// there are still animating tabs
 								self.getXOffsetOfTab(lastTab) || self.getYOffsetOfTab(lastTab) ||
-								self.mTabBrowser.mTabContainer.querySelector('tab['+self.kCOLLAPSING_PHASE+'="'+self.kCOLLAPSING_PHASE_TO_BE_EXPANDED+'"]')
+								self.mTabBrowser.tabContainer.querySelector('tab['+self.kCOLLAPSING_PHASE+'="'+self.kCOLLAPSING_PHASE_TO_BE_EXPANDED+'"]')
 								)
 								self.smoothScrollTo(aEndX, aEndY, parseInt(aDuration * 0.5));
 						}
@@ -7429,7 +7429,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
   
 	notifyBackgroundTab : function TSTBrowser_notifyBackgroundTab() 
 	{
-		var animateElement = this.mTabBrowser.mTabContainer._animateElement;
+		var animateElement = this.mTabBrowser.tabContainer._animateElement;
 		var attrName = this.kBG_NOTIFY_PHASE;
 		if (!animateElement)
 			return;

@@ -52,7 +52,7 @@ if (typeof window == 'undefined' ||
 			var b = this.getTabBrowserFromChild(target);
 			if (!b) return false;
 
-			var tabs = b.mTabContainer;
+			var tabs = b.tabContainer;
 			if (tabs.getAttribute('overflow') != 'true')
 				return false;
 
@@ -156,8 +156,8 @@ if (typeof window == 'undefined' ||
 
 		getScrollBox : function(aTabBrowser) 
 		{
-			return aTabBrowser.ownerDocument.getAnonymousElementByAttribute(aTabBrowser.mTabContainer, 'class', 'tabs-frame') || // Tab Mix Plus
-					aTabBrowser.mTabContainer.mTabstrip;
+			return aTabBrowser.ownerDocument.getAnonymousElementByAttribute(aTabBrowser.tabContainer, 'class', 'tabs-frame') || // Tab Mix Plus
+					aTabBrowser.tabContainer.mTabstrip;
 		},
 
 		getScrollBoxObject : function(aTabBrowser) 

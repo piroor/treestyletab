@@ -31,7 +31,7 @@ var TreeStyleTabBookmarksUIService = inherit(TreeStyleTabService, {
 				TreeStyleTabBookmarksService.beginAddBookmarksFromTabs((function() {
 					var tabs = [];
 					var seen = {};
-					var allTabs = gBrowser.mTabContainer.childNodes;
+					var allTabs = gBrowser.tabContainer.childNodes;
 					for (let i = 0, maxi = allTabs.length; i < maxi; i++)
 					{
 						let tab = allTabs[i];

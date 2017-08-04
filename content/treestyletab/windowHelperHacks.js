@@ -94,7 +94,7 @@ TreeStyleTabWindowHelper.overrideExtensionsBeforeBrowserInit = function TSTWH_ov
 	// Tab Mix Plus
 	if (TreeStyleTabUtils.getTreePref('compatibility.TMP') &&
 		'TMP_LastTab' in window) {
-		TMP_LastTab.TabBar = gBrowser.mTabContainer;
+		TMP_LastTab.TabBar = gBrowser.tabContainer;
 	}
 };
 
