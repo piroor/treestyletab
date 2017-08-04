@@ -4909,6 +4909,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 	{
 		var tab = aEvent.originalTarget;
 		log('onTabRestored ', tab._tPos);
+		this.initTabContents(tab); // the restored current tab can lost its contents on startup.
 		this.updateTabAsParent(tab, {
 			dontUpdateCount : true
 		});
