@@ -50,6 +50,18 @@
 	display: none !important;
 }
 
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tab-background:not([selected="true"]),
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tab-background[selected="true"] {
+	background: transparent;
+	border: none transparent 0;
+}
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tab-line {
+	visibility: collapse;
+}
+
 /* Disable pseudo elements introduced by Australis */
 .tabbrowser-tabs:not([treestyletab-tabbar-position="top"])
   .tab-background-start::before,

@@ -219,6 +219,16 @@
 	margin: 0 !important;
 }
 .tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tab-background:not([selected="true"]),
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tab-background[selected="true"] {
+	border: none transparent 0;
+}
+.tabbrowser-tabs[treestyletab-mode="vertical"]
+  .tab-line {
+	visibility: collapse;
+}
+.tabbrowser-tabs[treestyletab-mode="vertical"]
   .tab-content {
 	margin-left: 0 !important;
 	margin-right: 0 !important;
