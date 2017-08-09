@@ -28,7 +28,7 @@
    var enabled = store.enabled;
    store.destroy(); // free the memory.
 
- license: The MIT License, Copyright (c) 2009-2013 YUKI "Piro" Hiroshi
+ license: The MIT License, Copyright (c) 2009-2017 YUKI "Piro" Hiroshi
  original:
    http://github.com/piroor/fxaddonlib-prefs
 */
@@ -51,7 +51,7 @@ if (typeof window == 'undefined' ||
 }
 
 (function() {
-	const currentRevision = 16;
+	const currentRevision = 17;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -69,8 +69,7 @@ if (typeof window == 'undefined' ||
 		revision : currentRevision,
 
 		Prefs : Cc['@mozilla.org/preferences;1']
-					.getService(Ci.nsIPrefBranch)
-					.QueryInterface(Ci.nsIPrefBranch2),
+					.getService(Ci.nsIPrefBranch),
 
 		DefaultPrefs : Cc['@mozilla.org/preferences-service;1']
 					.getService(Ci.nsIPrefService)
