@@ -7496,7 +7496,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			utils.SessionStoreInternal._browserEpochs) {
 			let browserEpochs = utils.SessionStoreInternal._browserEpochs;
 			tabsToRestore = tabs.filter(function(aTab) {
-				return browserEpochs.has(aTab.linkedBrowser.permanentKey);
+				return aTab.__SS_lazyData ||
+						browserEpochs.has(aTab.linkedBrowser.permanentKey);
 			}).length;
 		}
 		else {
