@@ -14,7 +14,7 @@
  * The Original Code is the Tree Style Tab.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2014-2016
+ * Portions created by the Initial Developer are Copyright (C) 2014-2017
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -63,7 +63,7 @@ TabAttributesObserver.prototype = {
 			childList       : false,
 			attributes      : true,
 			subtree         : true,
-			attributeFilter : [
+			attributeFilter : this.attributes || [
 				'label',
 				'visibleLabel',
 				'image'
@@ -99,7 +99,7 @@ TabAttributesObserver.prototype = {
 
 		this.handlingAttrChange = true;
 
-		this.callback(aMutation.target);
+		this.callback(aMutation.target, aMutation.attributeName);
 
 		var w = this.container.ownerDocument.defaultView;
 		w.setTimeout((function() {
