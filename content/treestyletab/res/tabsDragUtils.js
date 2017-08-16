@@ -15,7 +15,7 @@
    http://github.com/piroor/fxaddonlib-tabs-drag-utils
 */
 (function() {
-	const currentRevision = 47;
+	const currentRevision = 48;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -54,8 +54,11 @@
 		getRestoringData: function(aTab)
 		{
 			var data = aTab.linkedBrowser.__SS_data;
-			if (!data && this.TabStateCache) // Firefox 23-
-				data = this.TabStateCache.get(aTab.linkedBrowser);
+			if (this.TabStateCache) { // Firefox 23-
+				let cachedData = this.TabStateCache.get(aTab.linkedBrowser);
+				if (cachedData && cachedData.history)
+					data = cachedData;
+			}
 			return data;
 		},
 		get TabStateCache() {
