@@ -38,19 +38,19 @@ function onUpdated(aTabId, aChangeInfo, aTab) {
 }
 
 function onCreated(aTab) {
-  log('created', aTab);
+  log('created, id: ', aTab.id);
   var newItem = gTabs.appendChild(buildTabItem(aTab));
 
   var openerItem = findTabItemFromId({ tab: aTab.openerTabId, window: aTab.windowId });
-  log('openerItem: ', openerItem);
   if (openerItem) {
+    log('openerItem, id: ', openerItem.id);
     attachTabItemTo(newItem, openerItem);
   }
 }
 
 function onRemoved(aTabId, aRemoveInfo) {
   var oldItem = findTabItemFromId({ tab: aTabId, window: aRemoveInfo.windowId });
-  log('onRemoved: ', oldItem);
+  log('onRemoved: ', oldItem.id);
   if (!oldItem)
     return;
 

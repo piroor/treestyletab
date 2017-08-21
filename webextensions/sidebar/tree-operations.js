@@ -6,17 +6,22 @@
 
 function attachTabItemTo(aChildItem, aParentItem, aInfo = {}) {
   if (!aParentItem || !aChildItem) {
-    log('missing information: ', aParentItem, aChildItem);
+    log('missing information: ', aParentItem.id, aChildItem.id);
     return;
   }
-  log('attachTabItemTo: ', { parent: aParentItem, child: aChildItem, info: aInfo });
+  log('attachTabItemTo: ', {
+    parent:   aParentItem.id,
+    children: aParentItem.getAttribute('data-child-ids'),
+    child:    aChildItem.id,
+    info:     aInfo
+  });
   if (aParentItem.getAttribute('data-child-ids').indexOf(`|${aChildItem.id}|`) > -1) {
-    log('already attached');
+    log('  => already attached');
     return;
   }
   var ancestorItems = [aParentItem].concat(getAncestorTabItems(aChildItem));
   if (ancestorItems.indexOf(aChildItem) > -1) {
-    log('  canceled for recursive request');
+    log('  => canceled for recursive request');
     return;
   }
 
@@ -24,11 +29,11 @@ function attachTabItemTo(aChildItem, aParentItem, aInfo = {}) {
 
   var newIndex = -1;
   var descendantItems = getDescendantTabItems(aParentItem);
-  log('  descendantItems: ', descendantItems);
+  log('  descendantItems: ', descendantItems.map((aItem) => aItem.id));
   if (aInfo.dontMove)
     aInfo.insertBeforeItem = aChildItem.nextSibling;
-  log('  insertBeforeItem: ', aInfo.insertBeforeItem);
   if (aInfo.insertBeforeItem) {
+    log('  insertBeforeItem: ', aInfo.insertBeforeItem.id);
     newIndex = getTabItemIndex(aInfo.insertBeforeItem);
   }
   if (newIndex > -1) {
@@ -77,7 +82,7 @@ function attachTabItemTo(aChildItem, aParentItem, aInfo = {}) {
 }
 
 function detachTabItem(aChildItem, aInfo = {}) {
-  log('detachTabItem: ', aChildItem, aInfo);
+  log('detachTabItem: ', aChildItem.id, aInfo);
   var parentItem = getParentTabItem(aChildItem);
   if (!parentItem) {
     log('  detachTabItem: canceled for an orphan tab');
