@@ -37,7 +37,7 @@ function attachTabTo(aChild, aParent, aInfo = {}) {
   var childIds = [];
   if (newIndex > -1) {
     log('  newIndex (from insertBefore): ', newIndex);
-    let expectedAllTabs = getAllTabs().filter((aTab) => aTab == aChild);
+    let expectedAllTabs = getAllTabs().filter((aTab) => aTab != aChild);
     let refIndex = expectedAllTabs.indexOf(aInfo.insertBefore);
     expectedAllTabs.splice(refIndex, 0, aChild);
     childIds = expectedAllTabs.filter((aTab) => {
