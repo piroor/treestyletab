@@ -28,8 +28,6 @@ function attachTabTo(aChild, aParent, aInfo = {}) {
   detachTab(aChild);
 
   var newIndex = -1;
-  var descendants = getDescendantTabs(aParent);
-  log('  descendants: ', descendants.map(dumpTab));
   if (aInfo.dontMove)
     aInfo.insertBefore = getNextTab(aChild);
   if (aInfo.insertBefore) {
@@ -38,9 +36,10 @@ function attachTabTo(aChild, aParent, aInfo = {}) {
   }
   if (newIndex > -1) {
     log('  newIndex (from insertBefore): ', newIndex);
-    let nextIndex = descendants.indexOf(aInfo.insertBefore.id);
-    descendants.splice(nextIndex, 0, aChild);
-    let childIds = descendants.filter((aTab) => {
+    let expectedAllTabs = getAllTabs().filter((aTab) => aTab == aChild);
+    let refIndex = expectedAllTabs.indexOf(aInfo.insertBefore);
+    expectedAllTabs.splice(refIndex, 0, aChild);
+    let childIds = expectedAllTabs.filter((aTab) => {
       return (aTab == aChild || aTab.getAttribute('data-parent-id') == aParent.id);
     }).map((aTab) => {
       return aTab.id;
@@ -51,6 +50,8 @@ function attachTabTo(aChild, aParent, aInfo = {}) {
       aParent.setAttribute('data-child-ids', `|${childIds.join('|')}|`);
   }
   else {
+    let descendants = getDescendantTabs(aParent);
+    log('  descendants: ', descendants.map(dumpTab));
     if (descendants.length) {
       newIndex = getTabIndex(descendants[descendants.length-1]) + 1;
     }
@@ -72,13 +73,19 @@ function attachTabTo(aChild, aParent, aInfo = {}) {
   updateTabsIndent(aChild, parentLevel + 1);
 
   gInternalMovingCount++;
-  let tab = aChild.tab;
-  chrome.tabs.move(tab.id, { windowId: tab.windowId, index: newIndex });
   var nextTab = getTabs()[newIndex];
   if (nextTab != aChild)
     gTabs.insertBefore(aChild, nextTab);
-  setTimeout(() => {
-    gInternalMovingCount--;
+  getApiTabIndex(aChild.tab.id, nextTab.tab.id).then((aActualIndexes) => {
+    log('  actual indexes: ', aActualIndexes);
+    var [actualChildIndex, actualNewIndex] = aActualIndexes;
+    if (actualChildIndex < actualNewIndex)
+      actualNewIndex--;
+    log('  actualNewIndex: ', actualNewIndex);
+    chrome.tabs.move(aChild.tab.id, { windowId: aChild.tab.windowId, index: actualNewIndex });
+    setTimeout(() => {
+      gInternalMovingCount--;
+    });
   });
 }
 
