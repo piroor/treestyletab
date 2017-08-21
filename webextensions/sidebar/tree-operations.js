@@ -24,20 +24,26 @@ function attachTabItemTo(aChildItem, aParentItem, aInfo = {}) {
 
   var newIndex = -1;
   var descendantItems = getDescendantTabItems(aParentItem);
-  log('descendantItems: ', descendantItems);
+  log('  descendantItems: ', descendantItems);
+  if (aInfo.dontMove)
+    aInfo.insertBeforeItem = aChildItem.nextSibling;
+  log('  insertBeforeItem: ', aInfo.insertBeforeItem);
   if (aInfo.insertBeforeItem) {
     newIndex = getTabItemIndex(aInfo.insertBeforeItem);
   }
   if (newIndex > -1) {
     log('  newIndex (from insertBeforeItem): ', newIndex);
     let nextItemIndex = descendantItems.indexOf(aInfo.insertBeforeItem.id);
-    descendantItems.splice(nextItemIndex, 0, aChildItem.id);
+    descendantItems.splice(nextItemIndex, 0, aChildItem);
     let childIds = descendantItems.filter((aItem) => {
       return (aItem == aChildItem || aItem.getAttribute('data-parent-id') == aParentItem.id);
     }).map((aItem) => {
       return aItem.id;
     });
-    aParentItem.setAttribute('data-child-ids', `|${childIds.join('|')}|`);
+    if (childIds.length == 0)
+      aParentItem.setAttribute('data-child-ids', '|');
+    else
+      aParentItem.setAttribute('data-child-ids', `|${childIds.join('|')}|`);
   }
   else {
     if (descendantItems.length) {
