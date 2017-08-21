@@ -146,8 +146,7 @@ function getLastTab() {
 }
 
 function getLastVisibleTab() { // visible, not-collapsed
-  var items = gTabs.childNodes;
-  return items[items.length-1];
+  return getLastTab();
 }
 
 function getNextTab(aTab) {
@@ -159,7 +158,7 @@ function getPreviousTab(aTab) {
 }
 
 function getTabIndex(aTab) {
-  return Array.prototype.indexOf.call(gTabs.childNodes, aTab);
+  return getTabs().indexOf(aTab);
 }
 
 function getNextVisibleTab(aTab) { // visible, not-collapsed

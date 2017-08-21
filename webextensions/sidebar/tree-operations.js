@@ -63,7 +63,7 @@ function attachTabTo(aChild, aParent, aInfo = {}) {
       childIds = '|';
     aParent.setAttribute('data-child-ids', `${childIds}${aChild.id}|`);
   }
-  if (getTabIndex(aChild) <= newIndex)
+  if (getTabIndex(aChild) < newIndex)
     newIndex--;
   log('  newIndex: ', newIndex);
 
