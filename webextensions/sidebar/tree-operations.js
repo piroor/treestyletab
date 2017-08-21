@@ -52,10 +52,10 @@ function attachTabItemTo(aChildItem, aParentItem, aInfo = {}) {
   }
   else {
     if (descendantItems.length) {
-      newIndex = getTabItemIndex(descendantItems[descendantItems.length-1]);
+      newIndex = getTabItemIndex(descendantItems[descendantItems.length-1]) + 1;
     }
     else {
-      newIndex = getTabItemIndex(aParentItem);
+      newIndex = getTabItemIndex(aParentItem) + 1;
     }
     log('  newIndex (from existing children): ', newIndex);
     let childIds = aParentItem.getAttribute('data-child-ids');
@@ -63,7 +63,8 @@ function attachTabItemTo(aChildItem, aParentItem, aInfo = {}) {
       childIds = '|';
     aParentItem.setAttribute('data-child-ids', `${childIds}${aChildItem.id}|`);
   }
-  newIndex++;
+  if (getTabItemIndex(aChildItem) <= newIndex)
+    newIndex--;
   log('  newIndex: ', newIndex);
 
   aChildItem.setAttribute('data-parent-id', aParentItem.id);
