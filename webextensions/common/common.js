@@ -19,5 +19,6 @@ function dumpTab(aTab) {
 }
 
 configs = new Configs({
+	animation: true,
 	debug : false
 });

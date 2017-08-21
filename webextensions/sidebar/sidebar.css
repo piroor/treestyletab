@@ -16,6 +16,7 @@
   --tst-tab-animation-vertical: margin-left 0.2s ease-out,
                                 margin-right 0.2s ease-out,
                                 margin-top 0.15s ease-out,
+                                margin-bottom 0.15s ease-out,
                                 var(--tst-tab-animation-base),
                                 var(--tst-tab-animation-firefox-system);
   --tst-tab-animation-top: margin-left 0.15s ease-out,

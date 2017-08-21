@@ -65,8 +65,20 @@ function onRemoved(aTabId, aRemoveInfo) {
     behavior : closeParentBehavior
   });
 
-  oldTab.classList.add('removing');
-  gTabs.removeChild(oldTab);
+  if (configs.animation) {
+    let listener = (aEvent) => {
+      if (aEvent.propertyName != 'opacity')
+        return;
+      oldTab.removeEventListener(aEvent.type, listener);
+      gTabs.removeChild(oldTab);
+    };
+    oldTab.addEventListener('transitionend', listener);
+    oldTab.classList.add('removing');
+    oldTab.style.marginBottom = `-${oldTab.getBoundingClientRect().height}px`;
+  }
+  else {
+    gTabs.removeChild(oldTab);
+  }
 }
 
 var kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD        = 3;
