@@ -12,6 +12,10 @@
       "common/common.js"
     ]
   },
+  "sidebar_action": {
+    "default_title": "__MSG_sidebar.title__",
+    "default_panel": "sidebar/sidebar.html"
+  },
   "options_ui": {
     "page": "options/options.html",
     "chrome_style": true
