@@ -11,6 +11,7 @@ function init() {
   gTabs = document.getElementById('tabs');
   gTabs.addEventListener('mousedown', omMouseDown);
   chrome.tabs.onActivated.addListener(onSelect);
+  chrome.tabs.onUpdated.addListener(onUpdated);
   chrome.tabs.onCreated.addListener(onCreated);
   chrome.tabs.onRemoved.addListener(onRemoved);
   chrome.tabs.onMoved.addListener(onMoved);
@@ -21,6 +22,12 @@ function init() {
 
 function destroy() {
   chrome.tabs.onActivated.removeListener(onSelect);
+  chrome.tabs.onUpdated.removeListener(onUpdated);
+  chrome.tabs.onCreated.removeListener(onCreated);
+  chrome.tabs.onRemoved.removeListener(onRemoved);
+  chrome.tabs.onMoved.removeListener(onMoved);
+  chrome.tabs.onAttached.removeListener(onAttached);
+  chrome.tabs.onDetached.removeListener(onDetached);
   gTabs.removeEventListener('mousedown', omMouseDown);
   gTabs = undefined;
 }
@@ -93,6 +100,15 @@ function onSelect(aActiveInfo) {
     oldItem.classList.remove('active');
   }
   newItem.classList.add('active');
+}
+
+function onUpdated(aTabId, aChangeInfo, aTab) {
+  var updatedItem = findTabItemFromId({ tab: aTabId, window: aTab.windowId });
+  if (!updatedItem)
+    return;
+  if (aTab.title != updatedItem.textContent)
+    updatedItem.textContent = aTab.title;
+  updatedItem.tab = aTab;
 }
 
 function onCreated(aTab) {
