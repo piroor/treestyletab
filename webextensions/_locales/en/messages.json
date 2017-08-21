@@ -2,7 +2,7 @@
   "extensionName": { "message": "Tree Style Tab (WE)" },
   "extensionDescription": { "message": "Show tabs like a tree." },
 
-  "sidebar.title": { "message": "Tree Style Tab" },
+  "sidebarTitle": { "message": "Tree Style Tab" },
 
   "config.debug.label": { "message": "Print debug log" }
 }

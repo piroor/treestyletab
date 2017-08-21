@@ -13,7 +13,7 @@
     ]
   },
   "sidebar_action": {
-    "default_title": "__MSG_sidebar.title__",
+    "default_title": "__MSG_sidebarTitle__",
     "default_panel": "sidebar/sidebar.html"
   },
   "options_ui": {
