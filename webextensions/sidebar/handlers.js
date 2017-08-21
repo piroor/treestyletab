@@ -90,7 +90,7 @@ function onMoved(aTabId, aMoveInfo) {
   var newNextIndex = aMoveInfo.toIndex;
   if (aMoveInfo.fromIndex < newNextIndex)
     newNextIndex++;
-  var nextItem = gTabs.childNodes[newNextIndex];
+  var nextItem = getTabItems()[newNextIndex];
   gTabs.insertBefore(movedItem, nextItem);
 }
 

@@ -31,7 +31,7 @@ function attachTabItemTo(aChildItem, aParentItem, aInfo = {}) {
   var descendantItems = getDescendantTabItems(aParentItem);
   log('  descendantItems: ', descendantItems.map((aItem) => aItem.id));
   if (aInfo.dontMove)
-    aInfo.insertBeforeItem = aChildItem.nextSibling;
+    aInfo.insertBeforeItem = getNextTabItem(aChildItem);
   if (aInfo.insertBeforeItem) {
     log('  insertBeforeItem: ', aInfo.insertBeforeItem.id);
     newIndex = getTabItemIndex(aInfo.insertBeforeItem);
@@ -74,7 +74,7 @@ function attachTabItemTo(aChildItem, aParentItem, aInfo = {}) {
   gInternalMovingCount++;
   let tab = aChildItem.tab;
   chrome.tabs.move(tab.id, { windowId: tab.windowId, index: newIndex });
-  var nextItem = gTabs.childNodes[newIndex];
+  var nextItem = getTabItems()[newIndex];
   if (nextItem != aChildItem)
     gTabs.insertBefore(aChildItem, nextItem);
   setTimeout(() => {
@@ -112,7 +112,7 @@ function detachAllChildItems(aTabItem, aInfo = {}) {
 
   var parentItem = getParentTabItem(aTabItem);
   if (isGroupTabItem(aTabItem) &&
-      gTabs.childNodes.filter((aItem) => aItem.removing).length == childItems.length) {
+      getTabItems().filter((aItem) => aItem.removing).length == childItems.length) {
     aInfo.behavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
     aInfo.dontUpdateIndent = false;
   }

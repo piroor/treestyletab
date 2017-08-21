@@ -25,9 +25,6 @@ function findTabItemFromId(aIdOrInfo) {
   return document.querySelector(aIdOrInfo);
 }
 
-function getTabItemIndex(aTabItem) {
-  return Array.prototype.indexOf.call(gTabs.childNodes, aTabItem);
-}
 
 // get tab items based on tree information
 
@@ -110,7 +107,7 @@ function getLastDescendantTab(aRootItem) {
 }
 
 function getRootTabItems() {
-  return Array.prototype.filter((aItem) => {
+  return getTabItems().filter((aItem) => {
     return !aItem.hasAttribute('data-parent-id');
   });
 }
@@ -118,5 +115,62 @@ function getRootTabItems() {
 function getChildTabItemIndex(aChildItem, aParentItem) {
   var childItems = getChildTabItems(aParentItem);
   return childItems.indexOf(aChildItem);
+}
+
+
+// get tabs safely (ignoring removing tabs)
+
+function getAllTabItemss() {
+  return Array.slice(gTabs.childNodes);
+}
+
+function getTabItems() { // only visible, including collapsed and pinned
+  return getAllTabs();
+}
+
+function getPinnedTabItems() { // visible, pinned
+  return getAllTabs();
+}
+
+function getFirstTabItem() {
+  return gTabs.childNodes[0];
+}
+
+function getFirstNormalTabItem() { // visible, not-collapsed, not-pinned
+  return getFirstTabItem();
+}
+
+function getLastTabItem() {
+  var items = gTabs.childNodes;
+  return items[items.length-1];
+}
+
+function getLastVisibleTabItem() { // visible, not-collapsed
+  var items = gTabs.childNodes;
+  return items[items.length-1];
+}
+
+function getNextTabItem(aItem) {
+  return aItem && aItem.nextSibling;
+}
+
+function getPreviousTabItem(aItem) {
+  return aItem && aItem.previousSibling;
+}
+
+function getTabItemIndex(aTabItem) {
+  return Array.prototype.indexOf.call(gTabs.childNodes, aTabItem);
+}
+
+function getNextVisibleTabItem(aItem) { // visible, not-collapsed
+  return getNextTabItem(aItem);
+}
+
+function getPreviousVisibleTabItem(aItem) { // visible, not-collapsed
+  return getPreviousTabItem(aItem);
+}
+
+function getVisibleTabItems() { // visible, not-collapsed
+  return getTabItems();
 }
 
