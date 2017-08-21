@@ -1,0 +1,26 @@
+{
+  "manifest_version": 2,
+  "name": "__MSG_extensionName__",
+  "version": "0.1",
+  "description": "__MSG_extensionDescription__",
+  "permissions": [
+    "storage"
+  ],
+  "background": {
+    "scripts": [
+      "common/Configs.js",
+      "common/common.js"
+    ]
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "chrome_style": true
+  },
+  "default_locale": "en",
+  "applications": {
+    "gecko": {
+      "id": "treestyletab-we@piro.sakura.ne.jp",
+      "strict_min_version": "57.0"
+    }
+  }
+}

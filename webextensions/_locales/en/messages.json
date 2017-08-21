@@ -1,0 +1,6 @@
+{
+  "extensionName": { "message": "Tree Style Tab (WE)" },
+  "extensionDescription": { "message": "Show tabs like a tree." },
+
+  "config.debug.label": { "message": "Print debug log" }
+}
