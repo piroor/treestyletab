@@ -120,7 +120,7 @@ function getChildTabIndex(aChild, aParent) {
 
 // get tabs safely (ignoring removing tabs)
 
-function getAllTabss() {
+function getAllTabs() {
   return Array.slice(gTabs.childNodes);
 }
 
