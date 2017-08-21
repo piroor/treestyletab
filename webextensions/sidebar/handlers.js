@@ -5,9 +5,7 @@
 */
 
 function omMouseDown(aEvent) {
-  log('omMouseDown: ', aEvent);
   var tabItem = findTabItemFromEvent(aEvent);
-  log('tabItem: ', tabItem);
   if (!tabItem)
     return;
   if (aEvent.button == 1 ||
@@ -46,12 +44,13 @@ function onCreated(aTab) {
   var openerItem = findTabItemFromId({ tab: aTab.openerTabId, window: aTab.windowId });
   log('openerItem: ', openerItem);
   if (openerItem) {
-    attachTabItemTo(openerItem, newItem);
+    attachTabItemTo(newItem, openerItem);
   }
 }
 
 function onRemoved(aTabId, aRemoveInfo) {
   var oldItem = findTabItemFromId({ tab: aTabId, window: aRemoveInfo.windowId });
+  log('onRemoved: ', oldItem);
   if (!oldItem)
     return;
 
@@ -80,7 +79,7 @@ function getCloseParentBehaviorForTabItem(aTabItem) {
 }
 
 function onMoved(aTabId, aMoveInfo) {
-  log('moved: ', aTabId, aMoveInfo);
+  log('onMoved: ', aTabId, aMoveInfo);
   var movedItem = findTabItemFromId({ tab: aTabId, window: aMoveInfo.windowId });
   if (!movedItem)
     return;

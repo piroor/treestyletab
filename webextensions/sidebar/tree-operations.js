@@ -4,16 +4,19 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-function attachTabItemTo(aParentItem, aChildItem, aInfo = {}) {
-  if (!aParentItem ||
-      !aChildItem ||
-      aParentItem.getAttribute('data-child-ids').indexOf(`|${aChildItem.id}|`) > -1)
+function attachTabItemTo(aChildItem, aParentItem, aInfo = {}) {
+  if (!aParentItem || !aChildItem) {
+    log('missing information: ', aParentItem, aChildItem);
     return;
-
-  // avoid recursive tree
+  }
+  log('attachTabItemTo: ', { parent: aParentItem, child: aChildItem, info: aInfo });
+  if (aParentItem.getAttribute('data-child-ids').indexOf(`|${aChildItem.id}|`) > -1) {
+    log('already attached');
+    return;
+  }
   var ancestorItems = [aParentItem].concat(getAncestorTabItems(aChildItem));
   if (ancestorItems.indexOf(aChildItem) > -1) {
-    log('attachTabItemTo: canceled for recursive request');
+    log('  canceled for recursive request');
     return;
   }
 
@@ -26,6 +29,7 @@ function attachTabItemTo(aParentItem, aChildItem, aInfo = {}) {
     newIndex = getTabItemIndex(aInfo.insertBeforeItem);
   }
   if (newIndex > -1) {
+    log('  newIndex (from insertBeforeItem): ', newIndex);
     let nextItemIndex = descendantItems.indexOf(aInfo.insertBeforeItem.id);
     descendantItems.splice(nextItemIndex, 0, aChildItem.id);
     let childIds = descendantItems.filter((aItem) => {
@@ -42,13 +46,14 @@ function attachTabItemTo(aParentItem, aChildItem, aInfo = {}) {
     else {
       newIndex = getTabItemIndex(aParentItem);
     }
+    log('  newIndex (from existing children): ', newIndex);
     let childIds = aParentItem.getAttribute('data-child-ids');
     if (!childIds)
       childIds = '|';
     aParentItem.setAttribute('data-child-ids', `${childIds}${aChildItem.id}|`);
   }
   newIndex++;
-  log('newIndex: ', newIndex);
+  log('  newIndex: ', newIndex);
 
   aChildItem.setAttribute('data-parent-id', aParentItem.id);
   var parentLevel = parseInt(aParentItem.getAttribute('data-nest') || 0);
@@ -66,16 +71,16 @@ function attachTabItemTo(aParentItem, aChildItem, aInfo = {}) {
 }
 
 function detachTabItem(aChildItem, aInfo = {}) {
+  log('detachTabItem: ', aChildItem, aInfo);
   var parentItem = getParentTabItem(aChildItem);
   if (!parentItem) {
-    log('detachTabItem: canceled for an orphan tab');
+    log('  detachTabItem: canceled for an orphan tab');
     return;
   }
 
-  log('detachTabItem: detach ', aChildItem.id, ' from ', parentItem.id);
-
   var childIds = parentItem.getAttribute('data-child-ids').split('|').filter((aId) => aId && aId != aChildItem.id);
   parentItem.setAttribute('data-child-ids', `|${childIds.join('|')}|`);
+  log('  child-ids => ', parentItem.getAttribute('data-child-ids'));
   aChildItem.removeAttribute('data-parent-id');
 
   updateTabItemsIndent(aChildItem);
