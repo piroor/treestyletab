@@ -4,6 +4,8 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
+// initialize
+
 var gTabs;
 var gInternalMovingCount = 0;
 
@@ -46,6 +48,7 @@ function buildTabItem(aTab) {
   let item = document.createElement('li');
   item.tab = aTab;
   item.setAttribute('id', `tab-${aTab.windowId}-${aTab.id}`);
+  item.setAttribute('data-child-ids', '|');
   item.appendChild(document.createTextNode(aTab.title));
   item.setAttribute('title', aTab.title);
   if (aTab.active)
@@ -61,6 +64,8 @@ function clear() {
 }
 
 
+// get tab items
+
 function findTabItemFromEvent(aEvent) {
   var node = aEvent.target;
   while (node.nodeType != node.ELEMENT_NODE ||
@@ -72,10 +77,299 @@ function findTabItemFromEvent(aEvent) {
   return node;
 }
 
-function findTabItemFromId(aInfo) {
-  return document.querySelector(`#tab-${aInfo.window}-${aInfo.tab}`);
+function findTabItemFromId(aIdOrInfo) {
+  if (!aIdOrInfo)
+    return null;
+  if (typeof aIdOrInfo == 'string')
+    aIdOrInfo = `#${aIdOrInfo}`;
+  else
+    aIdOrInfo = `#tab-${aIdOrInfo.window}-${aIdOrInfo.tab}`;
+  return document.querySelector(aIdOrInfo);
 }
 
+function getTabItemIndex(aTabItem) {
+  return Array.prototype.indexOf.call(gTabs.childNodes, aTabItem);
+}
+
+// get tab items based on tree information
+
+function getParentTabItem(aChildItem) {
+  var id = aChildItem.getAttribute('data-parent-id');
+  if (id)
+    return document.querySelector(`#${id}`);
+  return null;
+}
+
+function getAncestorTabItems(aDecendantItem) {
+  var ancestors = [];
+  var parent;
+  while (parent = getParentTabItem(aDecendantItem)) {
+    ancestors.push(parent);
+  }
+  return ancestors;
+}
+
+function getRootTabItem(aDecendantItem) {
+  var ancestors = getAncestorTabItems(aDecendantItem);
+  return ancestors.length > 0 ? ancestors[ancestors.length-1] : aDecendantItem ;
+}
+
+function getNextSiblingTabItem(aItem) {
+  var parentId = aItem.getAttribute('data-parent-id');
+  if (!parentId)
+    return document.querySelector(`#${aItem.id} ~ li:not([data-parent-id])`);
+  return document.querySelector(`#${aItem.id} ~ li[data-parent-id="${parentId}"]`);
+}
+
+function getPreviousSiblingTabItem(aItem) {
+  var siblingItems = getSiblingTabItems(aItem);
+  var index = siblingItems.indexOf(aItem) - 1;
+  if (index < 0)
+    return null;
+  return siblingItems[index];
+}
+
+function getSiblingTabItems(aItem) {
+  var parentItem = getParentTabItem(aItem);
+  return parentItem ? getChildTabItems(parentItem) : getRootTabItems() ;
+}
+
+function getChildTabItems(aParentItem) {
+  return aParentItem.getAttribute('data-child-ids').split('|').map(findTabItemFromId).filter((aValidItem) => aValidItem);
+}
+
+function hasChildTabItems(aParentItem) {
+  return aParentItem.getAttribute('data-child-ids') != '|';
+}
+
+function getDescendantTabItems(aRootItem) {
+  var descendants = [];
+  if (!aRootItem)
+    return descendants;
+  for (let childItem of getChildTabItems(aRootItem)) {
+    descendants.push(childItem);
+    descendants = descendants.concat(getDescendantTabItems(childItem));
+  }
+  return descendants;
+}
+
+function getFirstChildTabItem(aParentItem) {
+  var childItems = getChildTabItems(aTabItems);
+  return childItems[0];
+}
+
+function getLastChildTabItem(aParentItem) {
+  var childItems = getChildTabItems(aTabItems);
+  return childItems.length > 0 ? childItems[childItems.length - 1] : null ;
+}
+
+function getLastDescendantTab(aRootItem) {
+  var descendantItems = getDescendantTabItems(aRootItem);
+  return descendantItems.length ? descendantItems[descendantItems.length-1] : null ;
+}
+
+function getRootTabItems() {
+  return Array.prototype.filter((aItem) => {
+    return !aItem.hasAttribute('data-parent-id');
+  });
+}
+
+function getChildTabItemIndex(aChildItem, aParentItem) {
+  var childItems = getChildTabItems(aParentItem);
+  return childItems.indexOf(aChildItem);
+}
+
+
+// get tree state of tab items
+
+function isSubtreeCollapsed(aTabItem) {
+  return false;
+}
+
+function isGroupTabItem(aTabItem) {
+  return false;
+}
+
+
+// operate tree of tab items
+
+function attachTabItemTo(aParentItem, aChildItem, aInfo = {}) {
+  if (!aParentItem ||
+      !aChildItem ||
+      aParentItem.getAttribute('data-child-ids').indexOf(`|${aChildItem.id}|`) > -1)
+    return;
+
+  // avoid recursive tree
+  var ancestorItems = [aParentItem].concat(getAncestorTabItems(aChildItem));
+  if (ancestorItems.indexOf(aChildItem) > -1) {
+    log('attachTabItemTo: canceled for recursive request');
+    return;
+  }
+
+  detachTabItem(aChildItem);
+
+  var newIndex = -1;
+  var descendantItems = getDescendantTabItems(aParentItem);
+  log('descendantItems: ', descendantItems);
+  if (aInfo.insertBeforeItem) {
+    newIndex = getTabItemIndex(aInfo.insertBeforeItem);
+  }
+  if (newIndex > -1) {
+    let nextItemIndex = descendantItems.indexOf(aInfo.insertBeforeItem.id);
+    descendantItems.splice(nextItemIndex, 0, aChildItem.id);
+    let childIds = descendantItems.filter((aItem) => {
+      return (aItem == aChildItem || aItem.getAttribute('data-parent-id') == aParentItem.id);
+    }).map((aItem) => {
+      return aItem.id;
+    });
+    aParentItem.setAttribute('data-child-ids', `|${childIds.join('|')}|`);
+  }
+  else {
+    if (descendantItems.length) {
+      newIndex = getTabItemIndex(descendantItems[descendantItems.length-1]);
+    }
+    else {
+      newIndex = getTabItemIndex(aParentItem);
+    }
+    let childIds = aParentItem.getAttribute('data-child-ids');
+    if (!childIds)
+      childIds = '|';
+    aParentItem.setAttribute('data-child-ids', `${childIds}${aChildItem.id}|`);
+  }
+  newIndex++;
+  log('newIndex: ', newIndex);
+
+  aChildItem.setAttribute('data-parent-id', aParentItem.id);
+  var parentLevel = parseInt(aParentItem.getAttribute('data-nest') || 0);
+  updateTabItemsIndent(aChildItem, parentLevel + 1);
+
+  gInternalMovingCount++;
+  let tab = aChildItem.tab;
+  chrome.tabs.move(tab.id, { windowId: tab.windowId, index: newIndex });
+  var nextItem = gTabs.childNodes[newIndex];
+  if (nextItem != aChildItem)
+    gTabs.insertBefore(aChildItem, nextItem);
+  setTimeout(() => {
+    gInternalMovingCount--;
+  });
+}
+
+function detachTabItem(aChildItem, aInfo = {}) {
+  var parentItem = getParentTabItem(aChildItem);
+  if (!parentItem) {
+    log('detachTabItem: canceled for an orphan tab');
+    return;
+  }
+
+  log('detachTabItem: detach ', aChildItem.id, ' from ', parentItem.id);
+
+  var childIds = parentItem.getAttribute('data-child-ids').split('|').filter((aId) => aId && aId != aChildItem.id);
+  parentItem.setAttribute('data-child-ids', `|${childIds.join('|')}|`);
+  aChildItem.removeAttribute('data-parent-id');
+
+  updateTabItemsIndent(aChildItem);
+}
+
+function detachAllChildItems(aTabItem, aInfo = {}) {
+  var childItems = getChildTabItems(aTabItem);
+  if (!childItems.length)
+    return;
+
+  if (!('behavior' in aInfo))
+    aInfo.behavior = kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN;
+  if (aInfo.behavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
+    aInfo.behavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
+
+  aInfo.dontUpdateInsertionPositionInfo = true;
+
+  var parentItem = getParentTabItem(aTab);
+  if (isGroupTabItem(aTab) &&
+      gTabs.childNodes.filter((aItem) => aItem.removing).length == childItems.length) {
+    aInfo.behavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
+    aInfo.dontUpdateIndent = false;
+  }
+
+  var insertBefore = null;
+  if (aInfo.behavior == kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN/* &&
+    !utils.getTreePref('closeParentBehavior.moveDetachedTabsToBottom')*/) {
+    insertBefore = getNextSiblingTabItem(getRootTabItem(aTabItem));
+  }
+
+  if (aInfo.behavior == kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB) {
+    // open new group tab and replace the detaching tab with it.
+    aInfo.behavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
+  }
+
+  for (let i = 0, maxi = childItems.length; i < maxi; i++) {
+    let childItem = childItems[i];
+    if (aInfo.behavior == kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN) {
+      detachTabItem(childItem, aInfo);
+      //moveTabSubtreeTo(tab, insertBefore ? insertBefore._tPos - 1 : this.getLastTab(b)._tPos );
+    }
+    else if (aInfo.behavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD) {
+      detachTabItem(childItem, aInfo);
+      if (i == 0) {
+        if (parentItem) {
+          attachTabItemTo(childItem, parentItem, inherit(aInfo, {
+            dontExpand : true,
+            dontMove   : true
+          }));
+        }
+        //collapseExpandSubtree(childItem, false);
+        //deleteTabValue(childItem, kSUBTREE_COLLAPSED);
+      }
+      else {
+        attachTabItemTo(tab, childItems[0], inherit(aInfo, {
+          dontExpand : true,
+          dontMove   : true
+        }));
+      }
+    }
+    else if (aInfo.behavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN && parentItem) {
+      attachTabItemTo(childItem, parentItem, inherit(aInfo, {
+        dontExpand : true,
+        dontMove   : true
+      }));
+    }
+    else { // aInfo.behavior == kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
+      detachTabItem(childItem, aInfo);
+    }
+  }
+}
+
+function updateTabItemsIndent(aTabItems, aLevel = undefined) {
+  if (!aTabItems)
+    return;
+
+  if (!Array.isArray(aTabItems))
+    aTabItems = [aTabItems];
+
+  if (!aTabItems.length)
+    return;
+
+  if (aLevel === undefined)
+    aLevel = getAncestorTabItems(aTabItems[0]).length;
+
+  var margin = 16;
+  var indent = aLevel * margin;
+  for (let i = 0, maxi = aTabItems.length; i < maxi; i++) {
+    let item = aTabItems[i];
+    if (!item)
+      continue;
+    item.style.marginLeft = indent + 'px';
+    item.setAttribute('data-nest', aLevel);
+    updateTabItemsIndent(item.getAttribute('data-child-ids').split('|').map(findTabItemFromId), aLevel+1);
+  }
+}
+
+// operate tabs based on tree information
+
+function closeChildTabItems(aParentItem) {
+  var getDescendantTabItems
+}
+
+
+// event handling
 
 function omMouseDown(aEvent) {
   log('omMouseDown: ', aEvent);
@@ -119,25 +413,37 @@ function onCreated(aTab) {
   var openerItem = findTabItemFromId({ tab: aTab.openerTabId, window: aTab.windowId });
   log('openerItem: ', openerItem);
   if (openerItem) {
-    setTimeout(() => {
-      var parentIndex = Array.prototype.indexOf.call(gTabs.childNodes, openerItem);
-      log('parentIndex: ', parentIndex);
-      gInternalMovingCount++;
-      chrome.tabs.move(aTab.id, { windowId: aTab.windowId, index: parentIndex + 1 });
-      var nextItem = gTabs.childNodes[parentIndex + 1];
-      if (nextItem != newItem)
-        gTabs.insertBefore(newItem, nextItem);
-      setTimeout(() => {
-        gInternalMovingCount--;
-      });
-    });
+    attachTabItemTo(openerItem, newItem);
   }
 }
 
 function onRemoved(aTabId, aRemoveInfo) {
   var oldItem = findTabItemFromId({ tab: aTabId, window: aRemoveInfo.windowId });
-  if (oldItem)
-    gTabs.removeChild(oldItem);
+  if (!oldItem)
+    return;
+
+  var closeParentBehavior = getCloseParentBehaviorForTabItem(oldItem);
+  if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN ||
+      isSubtreeCollapsed(oldItem))
+    closeChildTabItems(tab);
+
+//  var firstChildItem = getFirstChildTabItem(oldItem);
+
+  detachAllChildItems(oldItem, {
+    behavior : closeParentBehavior
+  });
+
+  gTabs.removeChild(oldItem);
+}
+
+var kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD        = 3;
+var kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN       = 0;
+var kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN        = 1;
+var kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN = 4;
+var kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN         = 2; // onTabRemoved only
+var kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB     = 5;
+function getCloseParentBehaviorForTabItem(aTabItem) {
+  return kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
 }
 
 function onMoved(aTabId, aMoveInfo) {
