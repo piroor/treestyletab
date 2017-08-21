@@ -4,7 +4,9 @@
   "version": "0.1",
   "description": "__MSG_extensionDescription__",
   "permissions": [
-    "storage"
+    "activeTab",
+    "storage",
+    "tabs"
   ],
   "background": {
     "scripts": [
