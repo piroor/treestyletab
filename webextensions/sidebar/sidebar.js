@@ -11,7 +11,12 @@ function init() {
   gTabs = document.getElementById('tabs');
   gTabs.addEventListener('click', onClick);
   chrome.tabs.onActivated.addListener(onSelect);
-  rebuild();
+  chrome.tabs.onCreated.addListener(onCreated);
+  chrome.tabs.onRemoved.addListener(onRemoved);
+  chrome.tabs.onMoved.addListener(onMoved);
+  chrome.tabs.onAttached.addListener(onAttached);
+  chrome.tabs.onDetached.addListener(onDetached);
+  rebuildAll();
 }
 
 function destroy() {
@@ -20,20 +25,24 @@ function destroy() {
   gTabs = undefined;
 }
 
-function rebuild() {
+function rebuildAll() {
   chrome.tabs.query({ currentWindow: true }, (aTabs) => {
     clear();
     for (let tab of aTabs) {
-      let item = document.createElement('li')
-      item.tab = tab;
-      item.setAttribute('id', `tab-${tab.windowId}-${tab.id}`);
-      item.appendChild(document.createTextNode(tab.title));
-      item.setAttribute('title', tab.title);
-      if (tab.active)
-        item.classList.add('active');
-      gTabs.appendChild(item);
+      gTabs.appendChild(buildTabItem(tab));
     }
   });
+}
+
+function buildTabItem(aTab) {
+  let item = document.createElement('li');
+  item.tab = aTab;
+  item.setAttribute('id', `tab-${aTab.windowId}-${aTab.id}`);
+  item.appendChild(document.createTextNode(aTab.title));
+  item.setAttribute('title', aTab.title);
+  if (aTab.active)
+    item.classList.add('active');
+  return item;
 }
 
 function clear() {
@@ -55,8 +64,8 @@ function findTabItemFromEvent(aEvent) {
   return node;
 }
 
-function findTabItemFromInfo(aInfo) {
-  return document.querySelector(`#tab-${aInfo.windowId}-${aInfo.tabId || aInfo.id}`);
+function findTabItemFromId(aInfo) {
+  return document.querySelector(`#tab-${aInfo.window}-${aInfo.tab}`);
 }
 
 
@@ -70,12 +79,40 @@ function onClick(aEvent) {
 }
 
 function onSelect(aActiveInfo) {
-  var oldItem = document.querySelector('.active');
-  var newItem = findTabItemFromInfo(aActiveInfo);
-  if (oldItem && newItem)
+  var newItem = findTabItemFromId({ tab: aActiveInfo.id, window: aActiveInfo.windowId });
+  if (!newItem)
+    return;
+  var oldItems = document.querySelectorAll('.active');
+  for (let oldItem of oldItems) {
     oldItem.classList.remove('active');
-  if (newItem)
-    newItem.classList.add('active');
+  }
+  newItem.classList.add('active');
+}
+
+function onCreated(aTab) {
+  gTabs.appendChild(buildTabItem(aTab));
+}
+
+function onRemoved(aTabId, aRemoveInfo) {
+  var oldItem = findTabItemFromId({ tab: aTabId, window: aRemoveInfo.windowId });
+  if (oldItem)
+    gTabs.removeChild(oldItem);
+}
+
+function onMoved(aTabId, aMoveInfo) {
+  var movedItem = findTabItemFromId({ tab: aTabId, window: aMoveInfo.windowId });
+  if (!movedItem)
+    return;
+}
+
+function onAttached(aTabId, aAttachInfo) {
+  var newItem = findTabItemFromId({ tab: aTabId, window: aAttachInfo.newWindowId });
+}
+
+function onDetached(aTabId, aDetachInfo) {
+  var oldItem = findTabItemFromId({ tab: aTabId, window: aDetachInfo.oldWindowId });
+  if (oldItem)
+    gTabs.removeChild(oldItem);
 }
 
 window.addEventListener('DOMContentLoaded', init, { once: true });
