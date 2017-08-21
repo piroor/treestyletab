@@ -6,13 +6,13 @@
 
 function attachTabTo(aChild, aParent, aInfo = {}) {
   if (!aParent || !aChild) {
-    log('missing information: ', aParent.id, aChild.id);
+    log('missing information: ', dumpTab(aParent), dumpTab(aChild));
     return;
   }
   log('attachTabTo: ', {
-    parent:   aParent.id,
+    parent:   dumpTab(aParent),
     children: aParent.getAttribute('data-child-ids'),
-    child:    aChild.id,
+    child:    dumpTab(aChild),
     info:     aInfo
   });
   if (aParent.getAttribute('data-child-ids').indexOf(`|${aChild.id}|`) > -1) {
@@ -29,11 +29,11 @@ function attachTabTo(aChild, aParent, aInfo = {}) {
 
   var newIndex = -1;
   var descendants = getDescendantTabs(aParent);
-  log('  descendants: ', descendants.map((aTab) => aTab.id));
+  log('  descendants: ', descendants.map(dumpTab));
   if (aInfo.dontMove)
     aInfo.insertBefore = getNextTab(aChild);
   if (aInfo.insertBefore) {
-    log('  insertBefore: ', aInfo.insertBefore.id);
+    log('  insertBefore: ', dumpTab(aInfo.insertBefore));
     newIndex = getTabIndex(aInfo.insertBefore);
   }
   if (newIndex > -1) {
@@ -83,7 +83,7 @@ function attachTabTo(aChild, aParent, aInfo = {}) {
 }
 
 function detachTab(aChild, aInfo = {}) {
-  log('detachTab: ', aChild.id, aInfo);
+  log('detachTab: ', dumpTab(aChild), aInfo);
   var parent = getParentTab(aChild);
   if (!parent) {
     log('  detachTab: canceled for an orphan tab');

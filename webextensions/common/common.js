@@ -14,6 +14,10 @@ function log(aMessage, ...aArgs)
 	console.log('treestyletab: ' + aMessage, ...aArgs);
 }
 
+function dumpTab(aTab) {
+  return `${aTab.id}[title=${JSON.stringify(aTab.textContent)}, index=${getTabIndex(aTab)}]`;
+}
+
 configs = new Configs({
 	debug : false
 });

@@ -43,14 +43,14 @@ function onCreated(aTab) {
 
   var opener = findTabFromId({ tab: aTab.openerTabId, window: aTab.windowId });
   if (opener) {
-    log('opener, id: ', opener.id);
+    log('opener: ', dumpTab(opener));
     attachTabTo(newTab, opener);
   }
 }
 
 function onRemoved(aTabId, aRemoveInfo) {
   var oldTab = findTabFromId({ tab: aTabId, window: aRemoveInfo.windowId });
-  log('onRemoved: ', oldTab.id);
+  log('onRemoved: ', dumpTab(oldTab));
   if (!oldTab)
     return;
 
