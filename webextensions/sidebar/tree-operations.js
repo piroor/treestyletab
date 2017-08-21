@@ -187,6 +187,6 @@ function updateTabItemsIndent(aTabItems, aLevel = undefined) {
 // operate tabs based on tree information
 
 function closeChildTabItems(aParentItem) {
-  var getDescendantTabItems
+  var getDescendantTabItems;
 }
 
