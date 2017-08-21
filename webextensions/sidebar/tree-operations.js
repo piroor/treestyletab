@@ -34,20 +34,17 @@ function attachTabTo(aChild, aParent, aInfo = {}) {
     log('  insertBefore: ', dumpTab(aInfo.insertBefore));
     newIndex = getTabIndex(aInfo.insertBefore);
   }
+  var childIds = [];
   if (newIndex > -1) {
     log('  newIndex (from insertBefore): ', newIndex);
     let expectedAllTabs = getAllTabs().filter((aTab) => aTab == aChild);
     let refIndex = expectedAllTabs.indexOf(aInfo.insertBefore);
     expectedAllTabs.splice(refIndex, 0, aChild);
-    let childIds = expectedAllTabs.filter((aTab) => {
+    childIds = expectedAllTabs.filter((aTab) => {
       return (aTab == aChild || aTab.getAttribute('data-parent-id') == aParent.id);
     }).map((aTab) => {
       return aTab.id;
     });
-    if (childIds.length == 0)
-      aParent.setAttribute('data-child-ids', '|');
-    else
-      aParent.setAttribute('data-child-ids', `|${childIds.join('|')}|`);
   }
   else {
     let descendants = getDescendantTabs(aParent);
@@ -59,11 +56,17 @@ function attachTabTo(aChild, aParent, aInfo = {}) {
       newIndex = getTabIndex(aParent) + 1;
     }
     log('  newIndex (from existing children): ', newIndex);
-    let childIds = aParent.getAttribute('data-child-ids');
-    if (!childIds)
-      childIds = '|';
-    aParent.setAttribute('data-child-ids', `${childIds}${aChild.id}|`);
+    // update and cleanup
+    let children = getChildTabs(aParent);
+    children.push(aChild);
+    childIds = children.map((aTab) => aTab.id);
   }
+
+  if (childIds.length == 0)
+    aParent.setAttribute('data-child-ids', '|');
+  else
+    aParent.setAttribute('data-child-ids', `|${childIds.join('|')}|`);
+
   if (getTabIndex(aChild) < newIndex)
     newIndex--;
   log('  newIndex: ', newIndex);
