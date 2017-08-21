@@ -65,6 +65,7 @@ function onRemoved(aTabId, aRemoveInfo) {
     behavior : closeParentBehavior
   });
 
+  oldTab.classList.add('removing');
   gTabs.removeChild(oldTab);
 }
 

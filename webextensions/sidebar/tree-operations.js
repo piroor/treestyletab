@@ -192,14 +192,21 @@ function updateTabsIndent(aTabs, aLevel = undefined) {
     aLevel = getAncestorTabs(aTabs[0]).length;
 
   var margin = 16;
-  var indent = aLevel * margin;
   for (let i = 0, maxi = aTabs.length; i < maxi; i++) {
     let item = aTabs[i];
     if (!item)
       continue;
-    item.style.marginLeft = indent + 'px';
+    window.requestAnimationFrame(() => {
+      var level = parseInt(item.getAttribute('data-nest') || 0);
+      var indent = level * margin;
+      var expected = indent == 0 ? 0 : indent + 'px' ;
+      log ('setting indent: ', { tab: dumpTab(item), expected: expected, level: level });
+      if (item.style.marginLeft != expected) {
+        window.requestAnimationFrame(() => item.style.marginLeft = expected);
+      }
+    });
     item.setAttribute('data-nest', aLevel);
-    updateTabsIndent(item.getAttribute('data-child-ids').split('|').map(findTabFromId), aLevel+1);
+    updateTabsIndent(getChildTabs(item), aLevel + 1);
   }
 }
 

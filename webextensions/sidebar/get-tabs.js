@@ -19,9 +19,9 @@ function findTabFromId(aIdOrInfo) {
   if (!aIdOrInfo)
     return null;
   if (typeof aIdOrInfo == 'string')
-    aIdOrInfo = `#${aIdOrInfo}`;
+    aIdOrInfo = `#${aIdOrInfo}:not(.removing)`;
   else
-    aIdOrInfo = `#tab-${aIdOrInfo.window}-${aIdOrInfo.tab}`;
+    aIdOrInfo = `#tab-${aIdOrInfo.window}-${aIdOrInfo.tab}:not(.removing)`;
   return document.querySelector(aIdOrInfo);
 }
 
@@ -31,7 +31,7 @@ function findTabFromId(aIdOrInfo) {
 function getParentTab(aChild) {
   var id = aChild.getAttribute('data-parent-id');
   if (id)
-    return document.querySelector(`#${id}`);
+    return document.querySelector(`#${id}:not(.removing)`);
   return null;
 }
 
@@ -55,8 +55,8 @@ function getRootTab(aDecendant) {
 function getNextSiblingTab(aTab) {
   var parentId = aTab.getAttribute('data-parent-id');
   if (!parentId)
-    return document.querySelector(`#${aTab.id} ~ li:not([data-parent-id])`);
-  return document.querySelector(`#${aTab.id} ~ li[data-parent-id="${parentId}"]`);
+    return document.querySelector(`#${aTab.id} ~ li:not([data-parent-id]):not(.removing)`);
+  return document.querySelector(`#${aTab.id} ~ li[data-parent-id="${parentId}"]:not(.removing)`);
 }
 
 function getPreviousSiblingTab(aTab) {
@@ -73,7 +73,11 @@ function getSiblingTabs(aTab) {
 }
 
 function getChildTabs(aParent) {
-  return aParent.getAttribute('data-child-ids').split('|').map(findTabFromId).filter((aValidTab) => aValidTab);
+  var ids = aParent.getAttribute('data-child-ids').replace(/\|\|+|^\||\|$/g, '');
+  if (ids == '')
+    return [];
+  ids = ids.split('|').join(', #');
+  return Array.slice(document.querySelectorAll(`:-moz-any(#${ids}):not(.removing)`));
 }
 
 function hasChildTabs(aParent) {
@@ -125,7 +129,15 @@ function getAllTabs() {
 }
 
 function getTabs() { // only visible, including collapsed and pinned
-  return getAllTabs();
+  return Array.slice(document.querySelectorAll('li.tab:not(.removing):not(.hidden)'));
+}
+
+function getNormalTabs() { // only visible, including collapsed, not pinned
+  return Array.slice(document.querySelectorAll('li.tab:not(.removing):not(.hidden):not(.pinned)'));
+}
+
+function getVisibleTabs() { // visible, not-collapsed
+  return Array.slice(document.querySelectorAll('li.tab:not(.removing):not(.collapsed):not(.hidden)'));
 }
 
 function getPinnedTabs() { // visible, pinned
@@ -133,28 +145,31 @@ function getPinnedTabs() { // visible, pinned
 }
 
 function getFirstTab() {
-  return gTabs.childNodes[0];
+  return getAllTabs()[0];
 }
 
 function getFirstNormalTab() { // visible, not-collapsed, not-pinned
-  return getFirstTab();
+  return getNormalTabs()[0];
 }
 
 function getLastTab() {
-  var items = gTabs.childNodes;
+  var items = getAllTabs();
   return items[items.length-1];
 }
 
 function getLastVisibleTab() { // visible, not-collapsed
-  return getLastTab();
+  var items = getTabs();
+  return items[items.length-1];
 }
 
 function getNextTab(aTab) {
-  return aTab && aTab.nextSibling;
+  return document.querySelector(`#${aTab.id} ~ li.tab:not(.removing)`);
 }
 
 function getPreviousTab(aTab) {
-  return aTab && aTab.previousSibling;
+  var tabs = getAllTabs();
+  var index = tabs.indexOf(aTab);
+  return index > 0 ? tabs[index-1] : null ;
 }
 
 function getTabIndex(aTab) {
@@ -162,14 +177,12 @@ function getTabIndex(aTab) {
 }
 
 function getNextVisibleTab(aTab) { // visible, not-collapsed
-  return getNextTab(aTab);
+  return document.querySelector(`#${aTab.id} ~ li.tab:not(.removing):not(.collapsed):not(.hidden)`);
 }
 
 function getPreviousVisibleTab(aTab) { // visible, not-collapsed
-  return getPreviousTab(aTab);
-}
-
-function getVisibleTabs() { // visible, not-collapsed
-  return getTabs();
+  var tabs = getVisibleTabs();
+  var index = tabs.indexOf(aTab);
+  return index > 0 ? tabs[index-1] : null ;
 }
 
