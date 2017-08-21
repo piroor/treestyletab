@@ -15,7 +15,7 @@
    http://github.com/piroor/fxaddonlib-tabs-drag-utils
 */
 (function() {
-	const currentRevision = 48;
+	const currentRevision = 49;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -93,7 +93,7 @@
 				let original = PlacesControllerDragHelper.onDrop;
 				PlacesControllerDragHelper.__TabsDragUtils_original__onDrop = original;
 				if (PlacesControllerDragHelper.onDrop.isAsyncFunction) {
-					PlacesControllerDragHelper.onDrop = Task.async(function(insertionPoint, dt) {
+					PlacesControllerDragHelper.onDrop = Task.async(function*(insertionPoint, dt) {
 						dt = new window["piro.sakura.ne.jp"].tabsDragUtils.DOMDataTransferProxy(dt, insertionPoint);
 						// for Tree Style Tab (save tree structure to bookmarks)
 						if (dt &&

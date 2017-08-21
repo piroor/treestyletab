@@ -323,7 +323,7 @@ var TreeStyleTabBookmarksServiceEditable = inherit(TreeStyleTabBookmarksUIServic
 			}
 		});
 	},
-	_getItemsInFolderIterator : function TSTBMEditable_getItemsInFolderIterator(aId)
+	_getItemsInFolderIterator : function* TSTBMEditable_getItemsInFolderIterator(aId)
 	{
 		var count = 0;
 		var item;
