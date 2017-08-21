@@ -111,10 +111,10 @@ function detachAllChildItems(aTabItem, aInfo = {}) {
     aInfo.dontUpdateIndent = false;
   }
 
-  var insertBefore = null;
+  var nextItem = null;
   if (aInfo.behavior == kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN/* &&
     !utils.getTreePref('closeParentBehavior.moveDetachedTabsToBottom')*/) {
-    insertBefore = getNextSiblingTabItem(getRootTabItem(aTabItem));
+    nextItem = getNextSiblingTabItem(getRootTabItem(aTabItem));
   }
 
   if (aInfo.behavior == kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB) {
@@ -126,7 +126,7 @@ function detachAllChildItems(aTabItem, aInfo = {}) {
     let childItem = childItems[i];
     if (aInfo.behavior == kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN) {
       detachTabItem(childItem, aInfo);
-      //moveTabSubtreeTo(tab, insertBefore ? insertBefore._tPos - 1 : this.getLastTab(b)._tPos );
+      //moveTabSubtreeTo(tab, nextItem ? nextItem._tPos - 1 : this.getLastTab(b)._tPos );
     }
     else if (aInfo.behavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD) {
       detachTabItem(childItem, aInfo);
