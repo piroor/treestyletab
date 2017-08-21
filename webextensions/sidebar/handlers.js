@@ -12,6 +12,8 @@ function omMouseDown(aEvent) {
       (aEvent.button == 0 && (aEvent.ctrlKey || aEvent.metaKey))) {
     log('middle-click to close');
     chrome.tabs.remove(tab.tab.id);
+    aEvent.stopPropagation();
+    aEvent.preventDefault();
     return;
   }
   chrome.tabs.update(tab.tab.id, { active: true });
