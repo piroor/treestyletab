@@ -4,103 +4,103 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-function attachTabItemTo(aChildItem, aParentItem, aInfo = {}) {
-  if (!aParentItem || !aChildItem) {
-    log('missing information: ', aParentItem.id, aChildItem.id);
+function attachTabTo(aChild, aParent, aInfo = {}) {
+  if (!aParent || !aChild) {
+    log('missing information: ', aParent.id, aChild.id);
     return;
   }
-  log('attachTabItemTo: ', {
-    parent:   aParentItem.id,
-    children: aParentItem.getAttribute('data-child-ids'),
-    child:    aChildItem.id,
+  log('attachTabTo: ', {
+    parent:   aParent.id,
+    children: aParent.getAttribute('data-child-ids'),
+    child:    aChild.id,
     info:     aInfo
   });
-  if (aParentItem.getAttribute('data-child-ids').indexOf(`|${aChildItem.id}|`) > -1) {
+  if (aParent.getAttribute('data-child-ids').indexOf(`|${aChild.id}|`) > -1) {
     log('  => already attached');
     return;
   }
-  var ancestorItems = [aParentItem].concat(getAncestorTabItems(aChildItem));
-  if (ancestorItems.indexOf(aChildItem) > -1) {
+  var ancestors = [aParent].concat(getAncestorTabs(aChild));
+  if (ancestors.indexOf(aChild) > -1) {
     log('  => canceled for recursive request');
     return;
   }
 
-  detachTabItem(aChildItem);
+  detachTab(aChild);
 
   var newIndex = -1;
-  var descendantItems = getDescendantTabItems(aParentItem);
-  log('  descendantItems: ', descendantItems.map((aItem) => aItem.id));
+  var descendants = getDescendantTabs(aParent);
+  log('  descendants: ', descendants.map((aTab) => aTab.id));
   if (aInfo.dontMove)
-    aInfo.insertBeforeItem = getNextTabItem(aChildItem);
-  if (aInfo.insertBeforeItem) {
-    log('  insertBeforeItem: ', aInfo.insertBeforeItem.id);
-    newIndex = getTabItemIndex(aInfo.insertBeforeItem);
+    aInfo.insertBefore = getNextTab(aChild);
+  if (aInfo.insertBefore) {
+    log('  insertBefore: ', aInfo.insertBefore.id);
+    newIndex = getTabIndex(aInfo.insertBefore);
   }
   if (newIndex > -1) {
-    log('  newIndex (from insertBeforeItem): ', newIndex);
-    let nextItemIndex = descendantItems.indexOf(aInfo.insertBeforeItem.id);
-    descendantItems.splice(nextItemIndex, 0, aChildItem);
-    let childIds = descendantItems.filter((aItem) => {
-      return (aItem == aChildItem || aItem.getAttribute('data-parent-id') == aParentItem.id);
-    }).map((aItem) => {
-      return aItem.id;
+    log('  newIndex (from insertBefore): ', newIndex);
+    let nextIndex = descendants.indexOf(aInfo.insertBefore.id);
+    descendants.splice(nextIndex, 0, aChild);
+    let childIds = descendants.filter((aTab) => {
+      return (aTab == aChild || aTab.getAttribute('data-parent-id') == aParent.id);
+    }).map((aTab) => {
+      return aTab.id;
     });
     if (childIds.length == 0)
-      aParentItem.setAttribute('data-child-ids', '|');
+      aParent.setAttribute('data-child-ids', '|');
     else
-      aParentItem.setAttribute('data-child-ids', `|${childIds.join('|')}|`);
+      aParent.setAttribute('data-child-ids', `|${childIds.join('|')}|`);
   }
   else {
-    if (descendantItems.length) {
-      newIndex = getTabItemIndex(descendantItems[descendantItems.length-1]) + 1;
+    if (descendants.length) {
+      newIndex = getTabIndex(descendants[descendants.length-1]) + 1;
     }
     else {
-      newIndex = getTabItemIndex(aParentItem) + 1;
+      newIndex = getTabIndex(aParent) + 1;
     }
     log('  newIndex (from existing children): ', newIndex);
-    let childIds = aParentItem.getAttribute('data-child-ids');
+    let childIds = aParent.getAttribute('data-child-ids');
     if (!childIds)
       childIds = '|';
-    aParentItem.setAttribute('data-child-ids', `${childIds}${aChildItem.id}|`);
+    aParent.setAttribute('data-child-ids', `${childIds}${aChild.id}|`);
   }
-  if (getTabItemIndex(aChildItem) <= newIndex)
+  if (getTabIndex(aChild) <= newIndex)
     newIndex--;
   log('  newIndex: ', newIndex);
 
-  aChildItem.setAttribute('data-parent-id', aParentItem.id);
-  var parentLevel = parseInt(aParentItem.getAttribute('data-nest') || 0);
-  updateTabItemsIndent(aChildItem, parentLevel + 1);
+  aChild.setAttribute('data-parent-id', aParent.id);
+  var parentLevel = parseInt(aParent.getAttribute('data-nest') || 0);
+  updateTabsIndent(aChild, parentLevel + 1);
 
   gInternalMovingCount++;
-  let tab = aChildItem.tab;
+  let tab = aChild.tab;
   chrome.tabs.move(tab.id, { windowId: tab.windowId, index: newIndex });
-  var nextItem = getTabItems()[newIndex];
-  if (nextItem != aChildItem)
-    gTabs.insertBefore(aChildItem, nextItem);
+  var nextTab = getTabs()[newIndex];
+  if (nextTab != aChild)
+    gTabs.insertBefore(aChild, nextTab);
   setTimeout(() => {
     gInternalMovingCount--;
   });
 }
 
-function detachTabItem(aChildItem, aInfo = {}) {
-  log('detachTabItem: ', aChildItem.id, aInfo);
-  var parentItem = getParentTabItem(aChildItem);
-  if (!parentItem) {
-    log('  detachTabItem: canceled for an orphan tab');
+function detachTab(aChild, aInfo = {}) {
+  log('detachTab: ', aChild.id, aInfo);
+  var parent = getParentTab(aChild);
+  if (!parent) {
+    log('  detachTab: canceled for an orphan tab');
     return;
   }
 
-  var childIds = parentItem.getAttribute('data-child-ids').split('|').filter((aId) => aId && aId != aChildItem.id);
-  parentItem.setAttribute('data-child-ids', `|${childIds.join('|')}|`);
-  log('  child-ids => ', parentItem.getAttribute('data-child-ids'));
-  aChildItem.removeAttribute('data-parent-id');
+  var childIds = parent.getAttribute('data-child-ids').split('|').filter((aId) => aId && aId != aChild.id);
+  parent.setAttribute('data-child-ids', `|${childIds.join('|')}|`);
+  log('  child-ids => ', parent.getAttribute('data-child-ids'));
+  aChild.removeAttribute('data-parent-id');
 
-  updateTabItemsIndent(aChildItem);
+  updateTabsIndent(aChild);
 }
 
-function detachAllChildItems(aTabItem, aInfo = {}) {
-  var childItems = getChildTabItems(aTabItem);
-  if (!childItems.length)
+function detachAllChildren(aTab, aInfo = {}) {
+  var children = getChildTabs(aTab);
+  if (!children.length)
     return;
 
   if (!('behavior' in aInfo))
@@ -110,17 +110,17 @@ function detachAllChildItems(aTabItem, aInfo = {}) {
 
   aInfo.dontUpdateInsertionPositionInfo = true;
 
-  var parentItem = getParentTabItem(aTabItem);
-  if (isGroupTabItem(aTabItem) &&
-      getTabItems().filter((aItem) => aItem.removing).length == childItems.length) {
+  var parent = getParentTab(aTab);
+  if (isGroupTab(aTab) &&
+      getTabs().filter((aTab) => aTab.removing).length == children.length) {
     aInfo.behavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
     aInfo.dontUpdateIndent = false;
   }
 
-  var nextItem = null;
+  var nextTab = null;
   if (aInfo.behavior == kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN/* &&
     !utils.getTreePref('closeParentBehavior.moveDetachedTabsToBottom')*/) {
-    nextItem = getNextSiblingTabItem(getRootTabItem(aTabItem));
+    nextTab = getNextSiblingTab(getRootTab(aTab));
   }
 
   if (aInfo.behavior == kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB) {
@@ -128,71 +128,71 @@ function detachAllChildItems(aTabItem, aInfo = {}) {
     aInfo.behavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
   }
 
-  for (let i = 0, maxi = childItems.length; i < maxi; i++) {
-    let childItem = childItems[i];
+  for (let i = 0, maxi = children.length; i < maxi; i++) {
+    let child = children[i];
     if (aInfo.behavior == kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN) {
-      detachTabItem(childItem, aInfo);
-      //moveTabSubtreeTo(tab, nextItem ? nextItem._tPos - 1 : this.getLastTab(b)._tPos );
+      detachTab(child, aInfo);
+      //moveTabSubtreeTo(tab, nextTab ? nextTab._tPos - 1 : this.getLastTab(b)._tPos );
     }
     else if (aInfo.behavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD) {
-      detachTabItem(childItem, aInfo);
+      detachTab(child, aInfo);
       if (i == 0) {
-        if (parentItem) {
-          attachTabItemTo(childItem, parentItem, inherit(aInfo, {
+        if (parent) {
+          attachTabTo(child, parent, inherit(aInfo, {
             dontExpand : true,
             dontMove   : true
           }));
         }
-        //collapseExpandSubtree(childItem, false);
-        //deleteTabValue(childItem, kSUBTREE_COLLAPSED);
+        //collapseExpandSubtree(child, false);
+        //deleteTabValue(child, kSUBTREE_COLLAPSED);
       }
       else {
-        attachTabItemTo(childItem, childItems[0], inherit(aInfo, {
+        attachTabTo(child, children[0], inherit(aInfo, {
           dontExpand : true,
           dontMove   : true
         }));
       }
     }
-    else if (aInfo.behavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN && parentItem) {
-      attachTabItemTo(childItem, parentItem, inherit(aInfo, {
+    else if (aInfo.behavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN && parent) {
+      attachTabTo(child, parent, inherit(aInfo, {
         dontExpand : true,
         dontMove   : true
       }));
     }
     else { // aInfo.behavior == kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN
-      detachTabItem(childItem, aInfo);
+      detachTab(child, aInfo);
     }
   }
 }
 
-function updateTabItemsIndent(aTabItems, aLevel = undefined) {
-  if (!aTabItems)
+function updateTabsIndent(aTabs, aLevel = undefined) {
+  if (!aTabs)
     return;
 
-  if (!Array.isArray(aTabItems))
-    aTabItems = [aTabItems];
+  if (!Array.isArray(aTabs))
+    aTabs = [aTabs];
 
-  if (!aTabItems.length)
+  if (!aTabs.length)
     return;
 
   if (aLevel === undefined)
-    aLevel = getAncestorTabItems(aTabItems[0]).length;
+    aLevel = getAncestorTabs(aTabs[0]).length;
 
   var margin = 16;
   var indent = aLevel * margin;
-  for (let i = 0, maxi = aTabItems.length; i < maxi; i++) {
-    let item = aTabItems[i];
+  for (let i = 0, maxi = aTabs.length; i < maxi; i++) {
+    let item = aTabs[i];
     if (!item)
       continue;
     item.style.marginLeft = indent + 'px';
     item.setAttribute('data-nest', aLevel);
-    updateTabItemsIndent(item.getAttribute('data-child-ids').split('|').map(findTabItemFromId), aLevel+1);
+    updateTabsIndent(item.getAttribute('data-child-ids').split('|').map(findTabFromId), aLevel+1);
   }
 }
 
 // operate tabs based on tree information
 
-function closeChildTabItems(aParentItem) {
-  var getDescendantTabItems;
+function closeChildTabs(aParent) {
+  var getDescendantTabs;
 }
 

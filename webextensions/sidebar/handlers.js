@@ -5,67 +5,67 @@
 */
 
 function omMouseDown(aEvent) {
-  var tabItem = findTabItemFromEvent(aEvent);
-  if (!tabItem)
+  var tab = findTabFromEvent(aEvent);
+  if (!tab)
     return;
   if (aEvent.button == 1 ||
       (aEvent.button == 0 && (aEvent.ctrlKey || aEvent.metaKey))) {
     log('middle-click to close');
-    chrome.tabs.remove(tabItem.tab.id);
+    chrome.tabs.remove(tab.tab.id);
     return;
   }
-  chrome.tabs.update(tabItem.tab.id, { active: true });
+  chrome.tabs.update(tab.tab.id, { active: true });
 }
 
 function onSelect(aActiveInfo) {
-  var newItem = findTabItemFromId({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
-  if (!newItem)
+  var newTab = findTabFromId({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
+  if (!newTab)
     return;
-  var oldItems = document.querySelectorAll('.active');
-  for (let oldItem of oldItems) {
-    oldItem.classList.remove('active');
+  var oldTabs = document.querySelectorAll('.active');
+  for (let oldTab of oldTabs) {
+    oldTab.classList.remove('active');
   }
-  newItem.classList.add('active');
+  newTab.classList.add('active');
 }
 
 function onUpdated(aTabId, aChangeInfo, aTab) {
-  var updatedItem = findTabItemFromId({ tab: aTabId, window: aTab.windowId });
-  if (!updatedItem)
+  var updatedTab = findTabFromId({ tab: aTabId, window: aTab.windowId });
+  if (!updatedTab)
     return;
-  if (aTab.title != updatedItem.textContent)
-    updatedItem.textContent = aTab.title;
-  updatedItem.tab = aTab;
+  if (aTab.title != updatedTab.textContent)
+    updatedTab.textContent = aTab.title;
+  updatedTab.tab = aTab;
 }
 
 function onCreated(aTab) {
   log('created, id: ', aTab.id);
-  var newItem = gTabs.appendChild(buildTabItem(aTab));
+  var newTab = gTabs.appendChild(buildTab(aTab));
 
-  var openerItem = findTabItemFromId({ tab: aTab.openerTabId, window: aTab.windowId });
-  if (openerItem) {
-    log('openerItem, id: ', openerItem.id);
-    attachTabItemTo(newItem, openerItem);
+  var opener = findTabFromId({ tab: aTab.openerTabId, window: aTab.windowId });
+  if (opener) {
+    log('opener, id: ', opener.id);
+    attachTabTo(newTab, opener);
   }
 }
 
 function onRemoved(aTabId, aRemoveInfo) {
-  var oldItem = findTabItemFromId({ tab: aTabId, window: aRemoveInfo.windowId });
-  log('onRemoved: ', oldItem.id);
-  if (!oldItem)
+  var oldTab = findTabFromId({ tab: aTabId, window: aRemoveInfo.windowId });
+  log('onRemoved: ', oldTab.id);
+  if (!oldTab)
     return;
 
-  var closeParentBehavior = getCloseParentBehaviorForTabItem(oldItem);
+  var closeParentBehavior = getCloseParentBehaviorForTab(oldTab);
   if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN ||
-      isSubtreeCollapsed(oldItem))
-    closeChildTabItems(tab);
+      isSubtreeCollapsed(oldTab))
+    closeChildTabs(tab);
 
-//  var firstChildItem = getFirstChildTabItem(oldItem);
+//  var firstChild = getFirstChildTab(oldTab);
 
-  detachAllChildItems(oldItem, {
+  detachAllChildren(oldTab, {
     behavior : closeParentBehavior
   });
 
-  gTabs.removeChild(oldItem);
+  gTabs.removeChild(oldTab);
 }
 
 var kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD        = 3;
@@ -74,14 +74,14 @@ var kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN        = 1;
 var kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN = 4;
 var kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN         = 2; // onTabRemoved only
 var kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB     = 5;
-function getCloseParentBehaviorForTabItem(aTabItem) {
+function getCloseParentBehaviorForTab(aTab) {
   return kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
 }
 
 function onMoved(aTabId, aMoveInfo) {
   log('onMoved: ', aTabId, aMoveInfo);
-  var movedItem = findTabItemFromId({ tab: aTabId, window: aMoveInfo.windowId });
-  if (!movedItem)
+  var movedTab = findTabFromId({ tab: aTabId, window: aMoveInfo.windowId });
+  if (!movedTab)
     return;
   if (gInternalMovingCount > 0) {
     log('internal move');
@@ -90,18 +90,18 @@ function onMoved(aTabId, aMoveInfo) {
   var newNextIndex = aMoveInfo.toIndex;
   if (aMoveInfo.fromIndex < newNextIndex)
     newNextIndex++;
-  var nextItem = getTabItems()[newNextIndex];
-  gTabs.insertBefore(movedItem, nextItem);
+  var nextTab = getTabs()[newNextIndex];
+  gTabs.insertBefore(movedTab, nextTab);
 }
 
 function onAttached(aTabId, aAttachInfo) {
-  var newItem = findTabItemFromId({ tab: aTabId, window: aAttachInfo.newWindowId });
+  var newTab = findTabFromId({ tab: aTabId, window: aAttachInfo.newWindowId });
 }
 
 function onDetached(aTabId, aDetachInfo) {
-  var oldItem = findTabItemFromId({ tab: aTabId, window: aDetachInfo.oldWindowId });
-  if (oldItem)
-    gTabs.removeChild(oldItem);
+  var oldTab = findTabFromId({ tab: aTabId, window: aDetachInfo.oldWindowId });
+  if (oldTab)
+    gTabs.removeChild(oldTab);
 }
 
 window.addEventListener('DOMContentLoaded', init, { once: true });

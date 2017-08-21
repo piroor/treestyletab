@@ -37,18 +37,19 @@ function rebuildAll() {
   chrome.tabs.query({ currentWindow: true }, (aTabs) => {
     clear();
     for (let tab of aTabs) {
-      gTabs.appendChild(buildTabItem(tab));
+      gTabs.appendChild(buildTab(tab));
     }
   });
 }
 
-function buildTabItem(aTab) {
+function buildTab(aTab) {
   let item = document.createElement('li');
   item.tab = aTab;
   item.setAttribute('id', `tab-${aTab.windowId}-${aTab.id}`);
   item.setAttribute('data-child-ids', '|');
   item.appendChild(document.createTextNode(aTab.title));
   item.setAttribute('title', aTab.title);
+  item.classList.add('tab');
   if (aTab.active)
     item.classList.add('active');
   return item;

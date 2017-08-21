@@ -4,11 +4,11 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-function isSubtreeCollapsed(aTabItem) {
+function isSubtreeCollapsed(aTab) {
   return false;
 }
 
-function isGroupTabItem(aTabItem) {
+function isGroupTab(aTab) {
   return false;
 }
 

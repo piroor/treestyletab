@@ -4,7 +4,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-function findTabItemFromEvent(aEvent) {
+function findTabFromEvent(aEvent) {
   var node = aEvent.target;
   while (node.nodeType != node.ELEMENT_NODE ||
          !node.tab) {
@@ -15,7 +15,7 @@ function findTabItemFromEvent(aEvent) {
   return node;
 }
 
-function findTabItemFromId(aIdOrInfo) {
+function findTabFromId(aIdOrInfo) {
   if (!aIdOrInfo)
     return null;
   if (typeof aIdOrInfo == 'string')
@@ -28,17 +28,17 @@ function findTabItemFromId(aIdOrInfo) {
 
 // get tab items based on tree information
 
-function getParentTabItem(aChildItem) {
-  var id = aChildItem.getAttribute('data-parent-id');
+function getParentTab(aChild) {
+  var id = aChild.getAttribute('data-parent-id');
   if (id)
     return document.querySelector(`#${id}`);
   return null;
 }
 
-function getAncestorTabItems(aDecendantItem) {
+function getAncestorTabs(aDecendant) {
   var ancestors = [];
   while (true) {
-    let parent = getParentTabItem(aDecendantItem);
+    let parent = getParentTab(aDecendant);
     if (parent)
       ancestors.push(parent);
     else
@@ -47,130 +47,130 @@ function getAncestorTabItems(aDecendantItem) {
   return ancestors;
 }
 
-function getRootTabItem(aDecendantItem) {
-  var ancestors = getAncestorTabItems(aDecendantItem);
-  return ancestors.length > 0 ? ancestors[ancestors.length-1] : aDecendantItem ;
+function getRootTab(aDecendant) {
+  var ancestors = getAncestorTabs(aDecendant);
+  return ancestors.length > 0 ? ancestors[ancestors.length-1] : aDecendant ;
 }
 
-function getNextSiblingTabItem(aItem) {
-  var parentId = aItem.getAttribute('data-parent-id');
+function getNextSiblingTab(aTab) {
+  var parentId = aTab.getAttribute('data-parent-id');
   if (!parentId)
-    return document.querySelector(`#${aItem.id} ~ li:not([data-parent-id])`);
-  return document.querySelector(`#${aItem.id} ~ li[data-parent-id="${parentId}"]`);
+    return document.querySelector(`#${aTab.id} ~ li:not([data-parent-id])`);
+  return document.querySelector(`#${aTab.id} ~ li[data-parent-id="${parentId}"]`);
 }
 
-function getPreviousSiblingTabItem(aItem) {
-  var siblingItems = getSiblingTabItems(aItem);
-  var index = siblingItems.indexOf(aItem) - 1;
+function getPreviousSiblingTab(aTab) {
+  var siblings = getSiblingTabs(aTab);
+  var index = siblings.indexOf(aTab) - 1;
   if (index < 0)
     return null;
-  return siblingItems[index];
+  return siblings[index];
 }
 
-function getSiblingTabItems(aItem) {
-  var parentItem = getParentTabItem(aItem);
-  return parentItem ? getChildTabItems(parentItem) : getRootTabItems() ;
+function getSiblingTabs(aTab) {
+  var parent = getParentTab(aTab);
+  return parent ? getChildTabs(parent) : getRootTabs() ;
 }
 
-function getChildTabItems(aParentItem) {
-  return aParentItem.getAttribute('data-child-ids').split('|').map(findTabItemFromId).filter((aValidItem) => aValidItem);
+function getChildTabs(aParent) {
+  return aParent.getAttribute('data-child-ids').split('|').map(findTabFromId).filter((aValidTab) => aValidTab);
 }
 
-function hasChildTabItems(aParentItem) {
-  return aParentItem.getAttribute('data-child-ids') != '|';
+function hasChildTabs(aParent) {
+  return aParent.getAttribute('data-child-ids') != '|';
 }
 
-function getDescendantTabItems(aRootItem) {
+function getDescendantTabs(aRoot) {
   var descendants = [];
-  if (!aRootItem)
+  if (!aRoot)
     return descendants;
-  for (let childItem of getChildTabItems(aRootItem)) {
-    descendants.push(childItem);
-    descendants = descendants.concat(getDescendantTabItems(childItem));
+  for (let child of getChildTabs(aRoot)) {
+    descendants.push(child);
+    descendants = descendants.concat(getDescendantTabs(child));
   }
   return descendants;
 }
 
-function getFirstChildTabItem(aParentItem) {
-  var childItems = getChildTabItems(aTabItems);
-  return childItems[0];
+function getFirstChildTab(aParent) {
+  var children = getChildTabs(aTabs);
+  return children[0];
 }
 
-function getLastChildTabItem(aParentItem) {
-  var childItems = getChildTabItems(aTabItems);
-  return childItems.length > 0 ? childItems[childItems.length - 1] : null ;
+function getLastChildTab(aParent) {
+  var children = getChildTabs(aTabs);
+  return children.length > 0 ? children[children.length - 1] : null ;
 }
 
-function getLastDescendantTab(aRootItem) {
-  var descendantItems = getDescendantTabItems(aRootItem);
-  return descendantItems.length ? descendantItems[descendantItems.length-1] : null ;
+function getLastDescendantTab(aRoot) {
+  var descendants = getDescendantTabs(aRoot);
+  return descendants.length ? descendants[descendants.length-1] : null ;
 }
 
-function getRootTabItems() {
-  return getTabItems().filter((aItem) => {
-    return !aItem.hasAttribute('data-parent-id');
+function getRootTabs() {
+  return getTabs().filter((aTab) => {
+    return !aTab.hasAttribute('data-parent-id');
   });
 }
 
-function getChildTabItemIndex(aChildItem, aParentItem) {
-  var childItems = getChildTabItems(aParentItem);
-  return childItems.indexOf(aChildItem);
+function getChildTabIndex(aChild, aParent) {
+  var children = getChildTabs(aParent);
+  return children.indexOf(aChild);
 }
 
 
 // get tabs safely (ignoring removing tabs)
 
-function getAllTabItemss() {
+function getAllTabss() {
   return Array.slice(gTabs.childNodes);
 }
 
-function getTabItems() { // only visible, including collapsed and pinned
+function getTabs() { // only visible, including collapsed and pinned
   return getAllTabs();
 }
 
-function getPinnedTabItems() { // visible, pinned
+function getPinnedTabs() { // visible, pinned
   return getAllTabs();
 }
 
-function getFirstTabItem() {
+function getFirstTab() {
   return gTabs.childNodes[0];
 }
 
-function getFirstNormalTabItem() { // visible, not-collapsed, not-pinned
-  return getFirstTabItem();
+function getFirstNormalTab() { // visible, not-collapsed, not-pinned
+  return getFirstTab();
 }
 
-function getLastTabItem() {
+function getLastTab() {
   var items = gTabs.childNodes;
   return items[items.length-1];
 }
 
-function getLastVisibleTabItem() { // visible, not-collapsed
+function getLastVisibleTab() { // visible, not-collapsed
   var items = gTabs.childNodes;
   return items[items.length-1];
 }
 
-function getNextTabItem(aItem) {
-  return aItem && aItem.nextSibling;
+function getNextTab(aTab) {
+  return aTab && aTab.nextSibling;
 }
 
-function getPreviousTabItem(aItem) {
-  return aItem && aItem.previousSibling;
+function getPreviousTab(aTab) {
+  return aTab && aTab.previousSibling;
 }
 
-function getTabItemIndex(aTabItem) {
-  return Array.prototype.indexOf.call(gTabs.childNodes, aTabItem);
+function getTabIndex(aTab) {
+  return Array.prototype.indexOf.call(gTabs.childNodes, aTab);
 }
 
-function getNextVisibleTabItem(aItem) { // visible, not-collapsed
-  return getNextTabItem(aItem);
+function getNextVisibleTab(aTab) { // visible, not-collapsed
+  return getNextTab(aTab);
 }
 
-function getPreviousVisibleTabItem(aItem) { // visible, not-collapsed
-  return getPreviousTabItem(aItem);
+function getPreviousVisibleTab(aTab) { // visible, not-collapsed
+  return getPreviousTab(aTab);
 }
 
-function getVisibleTabItems() { // visible, not-collapsed
-  return getTabItems();
+function getVisibleTabs() { // visible, not-collapsed
+  return getTabs();
 }
 
