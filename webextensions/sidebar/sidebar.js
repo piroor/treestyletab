@@ -43,16 +43,8 @@ function clear() {
   range.detach();
 }
 
-function onClick(aEvent) {
-  log('onClick: ', aEvent);
-  var tabItem = findTabFromEvent(aEvent);
-  log('tabItem: ', tabItem);
-  if (!tabItem)
-    return;
-  chrome.tabs.update(tabItem.tab.id, { active: true });
-}
 
-function findTabFromEvent(aEvent) {
+function findTabItemFromEvent(aEvent) {
   var node = aEvent.target;
   while (node.nodeType != node.ELEMENT_NODE ||
          !node.tab) {
@@ -63,9 +55,23 @@ function findTabFromEvent(aEvent) {
   return node;
 }
 
+function findTabItemFromInfo(aInfo) {
+  return document.querySelector(`#tab-${aInfo.windowId}-${aInfo.tabId || aInfo.id}`);
+}
+
+
+function onClick(aEvent) {
+  log('onClick: ', aEvent);
+  var tabItem = findTabItemFromEvent(aEvent);
+  log('tabItem: ', tabItem);
+  if (!tabItem)
+    return;
+  chrome.tabs.update(tabItem.tab.id, { active: true });
+}
+
 function onSelect(aActiveInfo) {
   var oldItem = document.querySelector('.active');
-  var newItem = document.querySelector(`#tab-${aActiveInfo.windowId}-${aActiveInfo.tabId}`);
+  var newItem = findTabItemFromInfo(aActiveInfo);
   if (oldItem && newItem)
     oldItem.classList.remove('active');
   if (newItem)
