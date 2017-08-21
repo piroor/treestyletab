@@ -41,15 +41,18 @@ li.tab {
   margin-bottom: -1px;
   margin-left: 0;
   margin-right: 0;
-  margin-top: 0;
+  /* margin-top: 0; *//* don't set for animation */
   list-style: none;
   max-width: 100%;
   overflow: hidden;
   opacity: 1;
   padding: 0.5em;
   text-overflow: ellipsis;
-  transition: var(--tst-tab-animation-vertical);
   white-space: nowrap;
+}
+
+li.tab.animation-ready {
+  transition: var(--tst-tab-animation-vertical);
 }
 
 li.active {

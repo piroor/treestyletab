@@ -40,6 +40,19 @@ function onUpdated(aTabId, aChangeInfo, aTab) {
 function onCreated(aTab) {
   log('created, id: ', aTab.id);
   var newTab = gTabs.appendChild(buildTab(aTab));
+  if (configs.animation) {
+    let referenceTab = getFirstNormalTab() || getFirstTab();
+    newTab.style.marginTop = `-${referenceTab.getBoundingClientRect().height}px`;
+    window.requestAnimationFrame(() => {
+      newTab.classList.add('animation-ready');
+      window.requestAnimationFrame(() => {
+        newTab.style.marginTop = 0;
+      });
+    });
+  }
+  else {
+    newTab.classList.add('animation-ready');
+  }
 
   var opener = findTabFromId({ tab: aTab.openerTabId, window: aTab.windowId });
   if (opener) {
@@ -77,6 +90,7 @@ function onRemoved(aTabId, aRemoveInfo) {
     oldTab.style.marginBottom = `-${oldTab.getBoundingClientRect().height}px`;
   }
   else {
+    oldTab.classList.add('removing');
     gTabs.removeChild(oldTab);
   }
 }
