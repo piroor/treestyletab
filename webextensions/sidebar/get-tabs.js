@@ -40,9 +40,12 @@ function getParentTabItem(aChildItem) {
 
 function getAncestorTabItems(aDecendantItem) {
   var ancestors = [];
-  var parent;
-  while (parent = getParentTabItem(aDecendantItem)) {
-    ancestors.push(parent);
+  while (true) {
+    let parent = getParentTabItem(aDecendantItem);
+    if (parent)
+      ancestors.push(parent);
+    else
+      break;
   }
   return ancestors;
 }
