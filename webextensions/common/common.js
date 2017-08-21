@@ -15,7 +15,7 @@ function log(aMessage, ...aArgs)
 }
 
 function dumpTab(aTab) {
-  return `${aTab.id}[title=${JSON.stringify(aTab.textContent)}, index=${getTabIndex(aTab)}]`;
+  return `@${getTabIndex(aTab)}#${aTab.id}, title=${JSON.stringify(aTab.textContent)}`;
 }
 
 configs = new Configs({
