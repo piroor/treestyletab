@@ -5,6 +5,7 @@
 */
 
 var gTabs;
+var gInternalMovingCount = 0;
 
 function init() {
   window.addEventListener('unload', destroy, { once: true });
@@ -112,7 +113,25 @@ function onUpdated(aTabId, aChangeInfo, aTab) {
 }
 
 function onCreated(aTab) {
-  gTabs.appendChild(buildTabItem(aTab));
+  log('created', aTab);
+  var newItem = gTabs.appendChild(buildTabItem(aTab));
+
+  var openerItem = findTabItemFromId({ tab: aTab.openerTabId, window: aTab.windowId });
+  log('openerItem: ', openerItem);
+  if (openerItem) {
+    setTimeout(() => {
+      var parentIndex = Array.prototype.indexOf.call(gTabs.childNodes, openerItem);
+      log('parentIndex: ', parentIndex);
+      gInternalMovingCount++;
+      chrome.tabs.move(aTab.id, { windowId: aTab.windowId, index: parentIndex + 1 });
+      var nextItem = gTabs.childNodes[parentIndex + 1];
+      if (nextItem != newItem)
+        gTabs.insertBefore(newItem, nextItem);
+      setTimeout(() => {
+        gInternalMovingCount--;
+      });
+    });
+  }
 }
 
 function onRemoved(aTabId, aRemoveInfo) {
@@ -126,6 +145,10 @@ function onMoved(aTabId, aMoveInfo) {
   var movedItem = findTabItemFromId({ tab: aTabId, window: aMoveInfo.windowId });
   if (!movedItem)
     return;
+  if (gInternalMovingCount > 0) {
+    log('internal move');
+    return;
+  }
   var newNextIndex = aMoveInfo.toIndex;
   if (aMoveInfo.fromIndex < newNextIndex)
     newNextIndex++;
