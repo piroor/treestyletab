@@ -91,7 +91,10 @@ function detachTab(aChild, aInfo = {}) {
   }
 
   var childIds = parent.getAttribute('data-child-ids').split('|').filter((aId) => aId && aId != aChild.id);
-  parent.setAttribute('data-child-ids', `|${childIds.join('|')}|`);
+  if (childIds.length == 0)
+    parent.setAttribute('data-child-ids', '|');
+  else
+    parent.setAttribute('data-child-ids', `|${childIds.join('|')}|`);
   log('  child-ids => ', parent.getAttribute('data-child-ids'));
   aChild.removeAttribute('data-parent-id');
 
