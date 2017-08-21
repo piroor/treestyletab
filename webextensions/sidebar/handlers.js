@@ -6,7 +6,7 @@
 
 function omMouseDown(aEvent) {
   var tab = findTabFromEvent(aEvent);
-  if (!tab)
+  if (!tab || tab.classList.contains('removing'))
     return;
   if (aEvent.button == 1 ||
       (aEvent.button == 0 && (aEvent.ctrlKey || aEvent.metaKey))) {
@@ -19,7 +19,7 @@ function omMouseDown(aEvent) {
 
 function onSelect(aActiveInfo) {
   var newTab = findTabFromId({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
-  if (!newTab)
+  if (!newTab || newTab.classList.contains('removing'))
     return;
   var oldTabs = document.querySelectorAll('.active');
   for (let oldTab of oldTabs) {
@@ -30,7 +30,7 @@ function onSelect(aActiveInfo) {
 
 function onUpdated(aTabId, aChangeInfo, aTab) {
   var updatedTab = findTabFromId({ tab: aTabId, window: aTab.windowId });
-  if (!updatedTab)
+  if (!updatedTab || updatedTab.classList.contains('removing'))
     return;
   if (aTab.title != updatedTab.textContent)
     updatedTab.textContent = aTab.title;
@@ -63,9 +63,10 @@ function onCreated(aTab) {
 
 function onRemoved(aTabId, aRemoveInfo) {
   var oldTab = findTabFromId({ tab: aTabId, window: aRemoveInfo.windowId });
-  log('onRemoved: ', dumpTab(oldTab));
   if (!oldTab)
     return;
+
+  log('onRemoved: ', dumpTab(oldTab));
 
   var closeParentBehavior = getCloseParentBehaviorForTab(oldTab);
   if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN ||
@@ -79,13 +80,9 @@ function onRemoved(aTabId, aRemoveInfo) {
   });
 
   if (configs.animation) {
-    let listener = (aEvent) => {
-      if (aEvent.propertyName != 'opacity')
-        return;
-      oldTab.removeEventListener(aEvent.type, listener);
-      gTabs.removeChild(oldTab);
-    };
-    oldTab.addEventListener('transitionend', listener);
+    oldTab.addEventListener('transitionend', () => {
+      gTabs.removeChild(oldTab)
+    }, { once: true });
     oldTab.classList.add('removing');
     oldTab.style.marginBottom = `-${oldTab.getBoundingClientRect().height}px`;
   }
