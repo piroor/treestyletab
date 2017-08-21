@@ -106,9 +106,15 @@ function onRemoved(aTabId, aRemoveInfo) {
 }
 
 function onMoved(aTabId, aMoveInfo) {
+  log('moved: ', aTabId, aMoveInfo);
   var movedItem = findTabItemFromId({ tab: aTabId, window: aMoveInfo.windowId });
   if (!movedItem)
     return;
+  var newNextIndex = aMoveInfo.toIndex;
+  if (aMoveInfo.fromIndex < newNextIndex)
+    newNextIndex++;
+  var nextItem = gTabs.childNodes[newNextIndex];
+  gTabs.insertBefore(movedItem, nextItem);
 }
 
 function onAttached(aTabId, aAttachInfo) {
