@@ -4,12 +4,12 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-function init() {
+async function init() {
   gIsBackground = true;
   window.addEventListener('unload', destroy, { once: true });
   gAllTabs = document.getElementById('all-tabs');
   startObserveTabs();
-  rebuildAll();
+  await rebuildAll();
   browser.runtime.onMessage.addListener(onMessage);
 }
 
@@ -19,19 +19,18 @@ function destroy() {
   gAllTabs = undefined;
 }
 
-function rebuildAll() {
+async function rebuildAll() {
   clearAllTabsContainers();
-  browser.windows.getAll({
+  var windows = await browser.windows.getAll({
     populate: true,
     windowTypes: ['normal']
-  }).then(aWindows => {
-    aWindows.forEach((aWindow) => {
-      var container = buildTabsContainerFor(aWindow.id);
-      for (let tab of aWindow.tabs) {
-        container.appendChild(buildTab(tab));
-      }
-      gAllTabs.appendChild(container);
-    });
+  });
+  windows.forEach((aWindow) => {
+    var container = buildTabsContainerFor(aWindow.id);
+    for (let tab of aWindow.tabs) {
+      container.appendChild(buildTab(tab));
+    }
+    gAllTabs.appendChild(container);
   });
 }
 

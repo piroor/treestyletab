@@ -17,34 +17,32 @@ function destroy() {
   gAllTabs = undefined;
 }
 
-function rebuildAll() {
-  browser.tabs.query({ currentWindow: true }).then(aTabs => {
-    gTargetWindow = aTabs[0].windowId;
-    clearAllTabsContainers();
-    var container = buildTabsContainerFor(gTargetWindow);
-    for (let tab of aTabs) {
-      container.appendChild(buildTab(tab));
-    }
-    gAllTabs.appendChild(container);
-    inheritTreeStructure();
-    startObserveTabs();
-  });
+async function rebuildAll() {
+  var tabs = await browser.tabs.query({ currentWindow: true });
+  gTargetWindow = tabs[0].windowId;
+  clearAllTabsContainers();
+  var container = buildTabsContainerFor(gTargetWindow);
+  for (let tab of tabs) {
+    container.appendChild(buildTab(tab));
+  }
+  gAllTabs.appendChild(container);
+  await inheritTreeStructure();
+  startObserveTabs();
 }
 
-function inheritTreeStructure() {
-  browser.runtime.sendMessage({
+async function inheritTreeStructure() {
+  var response = await browser.runtime.sendMessage({
     type:     kCOMMAND_REQUEST_TREE_INFO,
     windowId: gTargetWindow
-  }).then(aResponse => {
-    log('response: ', aResponse);
-    for (let tabInfo of aResponse.tabs) {
-      let tab = findTabById(tabInfo.id);
-      if (tabInfo.parent)
-        tab.setAttribute(kPARENT, tabInfo.parent);
-      tab.setAttribute(kCHILDREN, tabInfo.children);
-    }
-    updateTabsIndent(getAllRootTabs(gTargetWindow), 0);
   });
+  log('response: ', response);
+  for (let tabInfo of response.tabs) {
+    let tab = findTabById(tabInfo.id);
+    if (tabInfo.parent)
+      tab.setAttribute(kPARENT, tabInfo.parent);
+    tab.setAttribute(kCHILDREN, tabInfo.children);
+  }
+  updateTabsIndent(getAllRootTabs(gTargetWindow), 0);
 }
 
 window.addEventListener('DOMContentLoaded', init, { once: true });
