@@ -4,7 +4,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-function attachTabTo(aChild, aParent, aInfo = {}) {
+async function attachTabTo(aChild, aParent, aInfo = {}) {
   if (!aParent || !aChild) {
     log('missing information: ', dumpTab(aParent), dumpTab(aChild));
     return;
@@ -79,16 +79,18 @@ function attachTabTo(aChild, aParent, aInfo = {}) {
   var nextTab = getTabs(aChild)[newIndex];
   if (nextTab != aChild)
     getTabsContainer(nextTab || aChild).insertBefore(aChild, nextTab);
-  getApiTabIndex(aChild.apiTab.id, nextTab.apiTab.id).then((aActualIndexes) => {
-    log('  actual indexes: ', aActualIndexes);
-    var [actualChildIndex, actualNewIndex] = aActualIndexes;
-    if (actualChildIndex < actualNewIndex)
-      actualNewIndex--;
-    log('  actualNewIndex: ', actualNewIndex);
-    browser.tabs.move(aChild.apiTab.id, { windowId: aChild.apiTab.windowId, index: actualNewIndex });
-    setTimeout(() => {
-      gInternalMovingCount--;
-    });
+
+  var [actualChildIndex, actualNewIndex] = await getApiTabIndex(aChild.apiTab.id, nextTab.apiTab.id);
+  if (actualChildIndex < actualNewIndex)
+    actualNewIndex--;
+
+  log('  actualNewIndex: ', actualNewIndex);
+  browser.tabs.move(aChild.apiTab.id, {
+    windowId: aChild.apiTab.windowId,
+    index:    actualNewIndex
+  });
+  setTimeout(() => {
+    gInternalMovingCount--;
   });
 }
 
