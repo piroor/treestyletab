@@ -4,5 +4,6 @@
 
   "sidebarTitle": { "message": "Tree Style Tab" },
 
+  "config.animation.label": { "message": "Enable animation effects" },
   "config.debug.label": { "message": "Print debug log" }
 }
