@@ -261,40 +261,28 @@ async function updateTabCollapsed(aTab, aParams = {}) {
   if (!aTab.parentNode) // do nothing for closed tab!
     return;
 
+  if (aTab.onEndCollapseExpandAnimation) {
+    aTab.removeEventListener('transitionend', aTab.onEndCollapseExpandAnimation, { once: true });
+    delete aTab.onEndCollapseExpandAnimation;
+  }
+
   aTab.setAttribute(kCOLLAPSING_PHASE, aParams.collapsed ? kCOLLAPSING_PHASE_TO_BE_COLLAPSED : kCOLLAPSING_PHASE_TO_BE_EXPANDED );
 
-  var firstTab = getFirstNormalTab(aTab) || getFirstTab(aTab);
-  var maxMargin = firstTab.getBoundingClientRect().height;
-  if (firstTab.style.height)
-    aTab.style.height = firstTab.style.height;
-
-  var startMargin, endMargin, endOpacity;
-  var startOpacity = window.getComputedStyle(aTab).opacity;
+  var endMargin, endOpacity;
   if (aParams.collapsed) {
-    startMargin  = 0;
-    endMargin    = maxMargin;
-    endOpacity   = 0;
+    let firstTab = getFirstNormalTab(aTab) || getFirstTab(aTab);
+    endMargin  = firstTab.getBoundingClientRect().height;
+    endOpacity = 0;
   }
   else {
-    startMargin  = maxMargin;
-    endMargin    = 0;
-    startOpacity = 0;
-    endOpacity   = 1;
+    endMargin  = 0;
+    endOpacity = 1;
   }
-  log('animation params: ', {
-    startMargin  : startMargin,
-    endMargin    : endMargin,
-    startOpacity : startOpacity,
-    endOpacity   : endOpacity
-  });
 
-  if (
-    !canAnimate() ||
-    aParams.justNow ||
-    configs.collapseDuration < 1 // ||
-//      !canCollapseSubtree(getParentTab(aTab))
-    ) {
-    log(' => skip animation');
+  if (!canAnimate() ||
+      aParams.justNow ||
+      configs.collapseDuration < 1) {
+    log('=> skip animation');
     if (aParams.collapsed)
       aTab.classList.add(kCOLLAPSED_DONE);
     else
@@ -304,17 +292,8 @@ async function updateTabCollapsed(aTab, aParams = {}) {
     // Pinned tabs are positioned by "margin-top", so
     // we must not reset the property for pinned tabs.
     // (However, we still must update "opacity".)
-    let pinned = aTab.classList.contains('pinned');
-    let canExpand = !pinned;
-
-    log(' skipped animation params: ', {
-      pinned    : pinned,
-      canExpand : canExpand,
-      endMargin : endMargin
-    });
-
-    if (canExpand)
-      aTab.style.marginTop = endMargin ? '-'+endMargin+'px' : '';
+    if (!aTab.classList.contains('pinned'))
+      aTab.style.marginTop = endMargin ? `-${endMargin}px` : '';
 
     if (endOpacity == 0)
       aTab.style.opacity = 0;
@@ -326,20 +305,20 @@ async function updateTabCollapsed(aTab, aParams = {}) {
     return;
   }
 
-  aTab.style.marginTop = startMargin ? '-'+startMargin+'px' : '';
-  aTab.style.opacity = startOpacity;
-
   if (!aParams.collapsed)
     aTab.classList.remove(kCOLLAPSED_DONE);
 
   return new Promise((aResolve, aReject) => {
     window.requestAnimationFrame(() => {
-      aTab.addEventListener('transitionend', () => {
-        log(' => finish animation for ', dumpTab(aTab));
+      if (typeof aParams.onStart == 'function')
+        aParams.onStart();
+
+      aTab.onEndCollapseExpandAnimation = (() => {
+        delete aTab.onEndCollapseExpandAnimation;
+        log('=> finish animation for ', dumpTab(aTab));
         if (aParams.collapsed)
           aTab.classList.add(kCOLLAPSED_DONE);
         aTab.removeAttribute(kCOLLAPSING_PHASE);
-
         if (endOpacity > 0) {
           if (window.getComputedStyle(aTab).opacity > 0) {
             aTab.style.opacity = '';
@@ -358,20 +337,12 @@ async function updateTabCollapsed(aTab, aParams = {}) {
             }, 0);
           }
         }
-
-        maxMargin = null;
-        startMargin = null;
-        endMargin = null;
-        startOpacity = null;
-        endOpacity = null;
-
         aResolve();
-      }, { once: true });
+      });
+      aTab.addEventListener('transitionend', aTab.onEndCollapseExpandAnimation, { once: true });
 
-      if (typeof aParams.onStart == 'function')
-        aParams.onStart();
-      aTab.style.marginTop = endMargin ? '-'+endMargin+'px' : '';
-      aTab.style.opacity = endOpacity;
+      aTab.style.marginTop = endMargin ? `-${endMargin}px` : '';
+      aTab.style.opacity   = endOpacity;
     });
   });
 }

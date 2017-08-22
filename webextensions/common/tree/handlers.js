@@ -116,7 +116,7 @@ function onCreated(aTab) {
   if (canAnimate()) {
     updateTabCollapsed(newTab, {
       collapsed: true,
-      justNow: true
+      justNow:   true
     });
     window.requestAnimationFrame(() => {
       newTab.classList.add('animation-ready');
