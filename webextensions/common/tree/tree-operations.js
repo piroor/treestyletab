@@ -92,6 +92,9 @@ async function attachTabTo(aChild, aParent, aInfo = {}) {
   setTimeout(() => {
     gInternalMovingCount--;
   });
+
+  if (gIsBackground)
+    reserveToSaveTreeStructure(aChild);
 }
 
 function detachTab(aChild, aInfo = {}) {
@@ -111,6 +114,9 @@ function detachTab(aChild, aInfo = {}) {
   aChild.removeAttribute(kPARENT);
 
   updateTabsIndent(aChild);
+
+  if (gIsBackground)
+    reserveToSaveTreeStructure(aChild);
 }
 
 function detachAllChildren(aTab, aInfo = {}) {
@@ -214,9 +220,96 @@ function updateTabsIndent(aTabs, aLevel = undefined) {
   }
 }
 
+
 // operate tabs based on tree information
 
 function closeChildTabs(aParent) {
   var getDescendantTabs;
 }
 
+
+// set/get tree structure
+
+function getTreeStructureFromTabs(aTabs) {
+  if (!aTabs || !aTabs.length)
+    return [];
+
+  /* this returns...
+    [A]     => -1 (parent is not in this tree)
+      [B]   => 0 (parent is 1st item in this tree)
+      [C]   => 0 (parent is 1st item in this tree)
+        [D] => 2 (parent is 2nd in this tree)
+    [E]     => -1 (parent is not in this tree, and this creates another tree)
+      [F]   => 0 (parent is 1st item in this another tree)
+  */
+  return this.cleanUpTreeStructureArray(
+      aTabs.map((aTab, aIndex) => {
+        let tab = getParentTab(aTab);
+        let index = tab ? aTabs.indexOf(tab) : -1 ;
+        return index >= aIndex ? -1 : index ;
+      }),
+      -1
+    );
+}
+function cleanUpTreeStructureArray(aTreeStructure, aDefaultParent) {
+  var offset = 0;
+  aTreeStructure = aTreeStructure
+    .map((aPosition, aIndex) => {
+      return (aPosition == aIndex) ? -1 : aPosition ;
+    })
+    .map((aPosition, aIndex) => {
+      if (aPosition == -1) {
+        offset = aIndex;
+        return aPosition;
+      }
+      return aPosition - offset;
+    });
+
+  /* The final step, this validates all of values.
+     Smaller than -1 is invalid, so it becomes to -1. */
+  aTreeStructure = aTreeStructure.map(aIndex => {
+      return aIndex < -1 ? aDefaultParent : aIndex ;
+    });
+  return aTreeStructure;
+}
+
+function applyTreeStructureToTabs(aTabs, aTreeStructure, aExpandStates) {
+  log('applyTreeStructureToTabs: ', aTreeStructure, aExpandStates);
+  aTabs = aTabs.slice(0, aTreeStructure.length);
+  aTreeStructure = aTreeStructure.slice(0, aTabs.length);
+
+  aExpandStates = (aExpandStates && typeof aExpandStates == 'object') ?
+            aExpandStates :
+            aTabs.map(aTab => !!aExpandStates);
+  aExpandStates = aExpandStates.slice(0, aTabs.length);
+  while (aExpandStates.length < aTabs.length)
+    aExpandStates.push(-1);
+
+  var parentTab = null;
+  for (let i = 0, maxi = aTabs.length; i < maxi; i++) {
+    let tab = aTabs[i];
+    //if (isCollapsed(tab))
+    //  collapseExpandTab(tab, false, true);
+    detachTab(tab);
+
+    let parentIndexInTree = aTreeStructure[i];
+    if (parentIndexInTree < 0) // there is no parent, so this is a new parent!
+      parentTab = tab.id;
+
+    let parent = findTabById(parentTab);
+    if (parent) {
+      let tabs = [parent].concat(getDescendantTabs(parent));
+      parent = parentIndexInTree < tabs.length ? tabs[parentIndexInTree] : parent ;
+    }
+    if (parent) {
+      attachTabTo(tab, parent, {
+        forceExpand : true,
+        dontMove    : true
+      });
+    }
+  }
+
+  //for (let i = aTabs.length-1; i > -1; i--) {
+  //  collapseExpandSubtree(aTabs[i], !hasChildTabs(aTabs[i]) || !aExpandStates[i], true);
+  //}
+}

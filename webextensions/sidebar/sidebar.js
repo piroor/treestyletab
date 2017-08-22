@@ -6,14 +6,16 @@
 
 window.addEventListener('DOMContentLoaded', init, { once: true });
 
-function init() {
+async function init() {
   window.addEventListener('unload', destroy, { once: true });
   gAllTabs = document.getElementById('all-tabs');
   gAllTabs.addEventListener('mousedown', omMouseDown);
-  rebuildAll();
+  await rebuildAll();
+  browser.runtime.onMessage.addListener(onMessage);
 }
 
 function destroy() {
+  browser.runtime.onMessage.removeListener(onMessage);
   endObserveTabs();
   gAllTabs.removeEventListener('mousedown', omMouseDown);
   gAllTabs = undefined;
@@ -45,4 +47,15 @@ async function inheritTreeStructure() {
     tab.setAttribute(kCHILDREN, tabInfo.children);
   }
   updateTabsIndent(getAllRootTabs(gTargetWindow), 0);
+}
+
+
+function onMessage(aMessage, aSender, aRespond) {
+  log('onMessage: ', aMessage, aSender);
+  switch (aMessage.type) {
+    case kCOMMAND_APPLY_TREE_STRUCTURE:
+      if (aMessage.windowId == gTargetWindow)
+        applyTreeStructureToTabs(getAllTabs(gTargetWindow), aMessage.structure);
+      break;
+  }
 }

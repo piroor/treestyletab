@@ -64,6 +64,9 @@ function onUpdated(aTabId, aChangeInfo, aTab) {
   if (aTab.title != updatedTab.textContent)
     updatedTab.textContent = aTab.title;
   updatedTab.apiTab = aTab;
+
+  if (gIsBackground)
+    reserveToSaveTreeStructure(updatedTab);
 }
 
 function onCreated(aTab) {
@@ -96,6 +99,9 @@ function onCreated(aTab) {
     log('opener: ', dumpTab(opener));
     attachTabTo(newTab, opener);
   }
+
+  if (gIsBackground)
+    reserveToSaveTreeStructure(newTab);
 }
 
 function onRemoved(aTabId, aRemoveInfo) {
@@ -118,6 +124,9 @@ function onRemoved(aTabId, aRemoveInfo) {
   detachAllChildren(oldTab, {
     behavior : closeParentBehavior
   });
+
+  if (gIsBackground)
+    reserveToSaveTreeStructure(oldTab);
 
   if (canAnimate()) {
     oldTab.addEventListener('transitionend', () => {
@@ -156,6 +165,10 @@ function onMoved(aTabId, aMoveInfo) {
   var movedTab = findTabById({ tab: aTabId, window: aMoveInfo.windowId });
   if (!movedTab)
     return;
+
+  if (gIsBackground)
+    reserveToSaveTreeStructure(movedTab);
+
   if (gInternalMovingCount > 0) {
     log('internal move');
     return;

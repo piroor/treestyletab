@@ -24,6 +24,8 @@ function dumpTab(aTab) {
 }
 
 configs = new Configs({
+  treeStructure: [],
+
   animation: true,
   debug:     false
 });

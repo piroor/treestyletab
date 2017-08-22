@@ -5,6 +5,7 @@
 */
 
 var kCOMMAND_REQUEST_TREE_INFO = 'treestyletab:request-tree-info';
+var kCOMMAND_APPLY_TREE_STRUCTURE = 'treestyletab:apply-tree-structure';
 
 var kPARENT   = 'data-parent-id';
 var kCHILDREN = 'data-child-ids';
@@ -30,6 +31,7 @@ function buildTab(aTab) {
 
 function buildTabsContainerFor(aWindowId) {
   var container = document.createElement('ul');
+  container.windowId = aWindowId;
   container.setAttribute('id', `window-${aWindowId}`);
   container.classList.add('tabs');
   return container;
