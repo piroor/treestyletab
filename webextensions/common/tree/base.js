@@ -137,7 +137,7 @@ function evaluateXPath(aExpression, aContext, aType) {
     };
   }
   return result;
-},
+}
 
 function getArrayFromXPathResult(aXPathResult) {
   var max = aXPathResult.snapshotLength;

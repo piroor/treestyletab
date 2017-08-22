@@ -128,4 +128,4 @@ function getFaviconRect(aTab) {
     top    : Math.min(throbberRect.top,    iconRect.top),
     bottom : Math.max(throbberRect.bottom, iconRect.bottom)
   };
-},
+}
