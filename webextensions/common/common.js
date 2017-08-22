@@ -28,7 +28,19 @@ function dumpTab(aTab) {
 configs = new Configs({
   treeStructure: [],
 
+  baseIndent: 12,
+  shouldDetectClickOnIndentSpaces: true,
+  
+  smoothScrollEnabled:  true,
+  smoothScrollDuration: 150,
+
+  indentDuration:   200,
   collapseDuration: 150,
+
+  shouldExpandTwistyArea: true,
+
+  scrollToNewTabMode: false,
+  counterRole: -1,
 
   animation: true,
   debug:     false
