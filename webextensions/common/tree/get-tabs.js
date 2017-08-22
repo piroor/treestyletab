@@ -5,14 +5,19 @@
 */
 
 function findTabFromEvent(aEvent) {
-  var node = aEvent.target;
-  while (node.nodeType != node.ELEMENT_NODE ||
-         !node.tab) {
-    if (!node.parentNode)
+  return findTabFromChild(aEvent.target);
+}
+
+function findTabFromChild(aNode) {
+  if (!aNode)
+    return null;
+  while (aNode.nodeType != aNode.ELEMENT_NODE ||
+         !aNode.apiTab) {
+    if (!aNode.parentNode)
       return null;
-    node = node.parentNode;
+    aNode = aNode.parentNode;
   }
-  return node;
+  return aNode;
 }
 
 function findTabFromId(aIdOrInfo) {
@@ -110,8 +115,8 @@ function getLastDescendantTab(aRoot) {
   return descendants.length ? descendants[descendants.length-1] : null ;
 }
 
-function getRootTabs() {
-  return getTabs().filter((aTab) => {
+function getRootTabs(aHint) {
+  return getTabs(aHint).filter((aTab) => {
     return !aTab.hasAttribute('data-parent-id');
   });
 }
@@ -124,41 +129,70 @@ function getChildTabIndex(aChild, aParent) {
 
 // get tabs safely (ignoring removing tabs)
 
-function getAllTabs() {
-  return Array.slice(gTabs.childNodes);
+function getTabsContainer(aHint) {
+  if (!aHint)
+    aHint = gAllTabs.firstChild.firstChild;
+
+  if (typeof aHint == 'number')
+    return document.querySelector(`#window-${aHint}`);
+
+  if (aHint && typeof aHint == 'object' && 'windowId' in aHint)
+    return document.querySelector(`#window-${aHint.windowId}`);
+
+  var tab = findTabFromChild(aHint);
+  if (tab)
+    return document.querySelector(`#window-${tab.apiTab.windowId}`);
+
+  return null;
 }
 
-function getTabs() { // only visible, including collapsed and pinned
-  return Array.slice(document.querySelectorAll('li.tab:not(.removing):not(.hidden)'));
+function getAllTabs(aHint) {
+  var container = getTabsContainer(aHint);
+  if (!container)
+    return [];
+  return Array.slice(container.childNodes);
 }
 
-function getNormalTabs() { // only visible, including collapsed, not pinned
-  return Array.slice(document.querySelectorAll('li.tab:not(.removing):not(.hidden):not(.pinned)'));
+function getTabs(aHint) { // only visible, including collapsed and pinned
+  var container = getTabsContainer(aHint);
+  if (!container)
+    return [];
+  return Array.slice(container.querySelectorAll('li.tab:not(.removing):not(.hidden)'));
 }
 
-function getVisibleTabs() { // visible, not-collapsed
-  return Array.slice(document.querySelectorAll('li.tab:not(.removing):not(.collapsed):not(.hidden)'));
+function getNormalTabs(aHint) { // only visible, including collapsed, not pinned
+  var container = getTabsContainer(aHint);
+  if (!container)
+    return [];
+  return Array.slice(container.querySelectorAll('li.tab:not(.removing):not(.hidden):not(.pinned)'));
 }
 
-function getPinnedTabs() { // visible, pinned
-  return getAllTabs();
+function getVisibleTabs(aHint) { // visible, not-collapsed
+  var container = getTabsContainer(aHint);
+  if (!container)
+    return [];
+  return Array.slice(container.querySelectorAll('li.tab:not(.removing):not(.collapsed):not(.hidden)'));
 }
 
-function getFirstTab() {
-  return getAllTabs()[0];
+function getPinnedTabs(aHint) { // visible, pinned
+  return getAllTabs(aHint);
 }
 
-function getFirstNormalTab() { // visible, not-collapsed, not-pinned
-  return getNormalTabs()[0];
+function getFirstTab(aHint) {
+  return getAllTabs(aHint)[0];
 }
 
-function getLastTab() {
-  var items = getAllTabs();
+function getFirstNormalTab(aHint) { // visible, not-collapsed, not-pinned
+  return getNormalTabs(aHint)[0];
+}
+
+function getLastTab(aHint) {
+  var items = getAllTabs(aHint);
   return items[items.length-1];
 }
 
-function getLastVisibleTab() { // visible, not-collapsed
-  var items = getTabs();
+function getLastVisibleTab(aHint) { // visible, not-collapsed
+  var items = getTabs(aHint);
   return items[items.length-1];
 }
 
@@ -167,13 +201,13 @@ function getNextTab(aTab) {
 }
 
 function getPreviousTab(aTab) {
-  var tabs = getAllTabs();
+  var tabs = getAllTabs(aTab);
   var index = tabs.indexOf(aTab);
   return index > 0 ? tabs[index-1] : null ;
 }
 
 function getTabIndex(aTab) {
-  return getTabs().indexOf(aTab);
+  return getTabs(aTab).indexOf(aTab);
 }
 
 function getNextVisibleTab(aTab) { // visible, not-collapsed
@@ -181,7 +215,7 @@ function getNextVisibleTab(aTab) { // visible, not-collapsed
 }
 
 function getPreviousVisibleTab(aTab) { // visible, not-collapsed
-  var tabs = getVisibleTabs();
+  var tabs = getVisibleTabs(aTab);
   var index = tabs.indexOf(aTab);
   return index > 0 ? tabs[index-1] : null ;
 }

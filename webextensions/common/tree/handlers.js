@@ -41,7 +41,8 @@ function onUpdated(aTabId, aChangeInfo, aTab) {
 
 function onCreated(aTab) {
   log('created, id: ', aTab.id);
-  var newTab = gTabs.appendChild(buildTab(aTab));
+  var container = getTabsContainer(aTab.windowId);
+  var newTab = container.appendChild(buildTab(aTab));
   if (configs.animation) {
     let referenceTab = getFirstNormalTab() || getFirstTab();
     newTab.style.marginTop = `-${referenceTab.getBoundingClientRect().height}px`;
@@ -83,14 +84,14 @@ function onRemoved(aTabId, aRemoveInfo) {
 
   if (configs.animation) {
     oldTab.addEventListener('transitionend', () => {
-      gTabs.removeChild(oldTab)
+      getTabsContainer(oldTab).removeChild(oldTab)
     }, { once: true });
     oldTab.classList.add('removing');
     oldTab.style.marginBottom = `-${oldTab.getBoundingClientRect().height}px`;
   }
   else {
     oldTab.classList.add('removing');
-    gTabs.removeChild(oldTab);
+    getTabsContainer(oldTab).removeChild(oldTab);
   }
 }
 
@@ -117,7 +118,7 @@ function onMoved(aTabId, aMoveInfo) {
   if (aMoveInfo.fromIndex < newNextIndex)
     newNextIndex++;
   var nextTab = getTabs()[newNextIndex];
-  gTabs.insertBefore(movedTab, nextTab);
+  getTabsContainer(nextTab || movedTab).insertBefore(movedTab, nextTab);
 }
 
 function onAttached(aTabId, aAttachInfo) {
@@ -127,6 +128,6 @@ function onAttached(aTabId, aAttachInfo) {
 function onDetached(aTabId, aDetachInfo) {
   var oldTab = findTabFromId({ tab: aTabId, window: aDetachInfo.oldWindowId });
   if (oldTab)
-    gTabs.removeChild(oldTab);
+    getTabsContainer(oldTab).removeChild(oldTab);
 }
 

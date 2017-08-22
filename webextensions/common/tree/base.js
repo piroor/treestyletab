@@ -4,11 +4,11 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-var gTabs;
+var gAllTabs;
 var gInternalMovingCount = 0;
 
 function buildTab(aTab) {
-  let item = document.createElement('li');
+  var item = document.createElement('li');
   item.apiTab = aTab;
   item.setAttribute('id', `tab-${aTab.windowId}-${aTab.id}`);
   item.setAttribute('data-child-ids', '|');
@@ -18,4 +18,11 @@ function buildTab(aTab) {
   if (aTab.active)
     item.classList.add('active');
   return item;
+}
+
+function buildTabsContainerFor(aWindowId) {
+  var container = document.createElement('ul');
+  container.setAttribute('id', `window-${aWindowId}`);
+  container.classList.add('tabs');
+  return container;
 }

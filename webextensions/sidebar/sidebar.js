@@ -6,8 +6,8 @@
 
 function init() {
   window.addEventListener('unload', destroy, { once: true });
-  gTabs = document.getElementById('tabs');
-  gTabs.addEventListener('mousedown', omMouseDown);
+  gAllTabs = document.getElementById('all-tabs');
+  gAllTabs.addEventListener('mousedown', omMouseDown);
   chrome.tabs.onActivated.addListener(onSelect);
   chrome.tabs.onUpdated.addListener(onUpdated);
   chrome.tabs.onCreated.addListener(onCreated);
@@ -26,22 +26,24 @@ function destroy() {
   chrome.tabs.onMoved.removeListener(onMoved);
   chrome.tabs.onAttached.removeListener(onAttached);
   chrome.tabs.onDetached.removeListener(onDetached);
-  gTabs.removeEventListener('mousedown', omMouseDown);
-  gTabs = undefined;
+  gAllTabs.removeEventListener('mousedown', omMouseDown);
+  gAllTabs = undefined;
 }
 
 function rebuildAll() {
   chrome.tabs.query({ currentWindow: true }, (aTabs) => {
     clear();
+    var container = buildTabsContainerFor(aTabs[0].windowId);
     for (let tab of aTabs) {
-      gTabs.appendChild(buildTab(tab));
+      container.appendChild(buildTab(tab));
     }
+    gAllTabs.appendChild(container);
   });
 }
 
 function clear() {
   var range = document.createRange();
-  range.selectNodeContents(gTabs);
+  range.selectNodeContents(gAllTabs);
   range.deleteContents();
   range.detach();
 }

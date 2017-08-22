@@ -78,7 +78,7 @@ function attachTabTo(aChild, aParent, aInfo = {}) {
   gInternalMovingCount++;
   var nextTab = getTabs()[newIndex];
   if (nextTab != aChild)
-    gTabs.insertBefore(aChild, nextTab);
+    getTabsContainer(nextTab || aChild).insertBefore(aChild, nextTab);
   getApiTabIndex(aChild.apiTab.id, nextTab.apiTab.id).then((aActualIndexes) => {
     log('  actual indexes: ', aActualIndexes);
     var [actualChildIndex, actualNewIndex] = aActualIndexes;
