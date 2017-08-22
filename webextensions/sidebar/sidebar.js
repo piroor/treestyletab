@@ -19,22 +19,22 @@ function destroy() {
 
 function rebuildAll() {
   browser.tabs.query({ currentWindow: true }).then(aTabs => {
-    clearAllTabsContainers();
     gTargetWindow = aTabs[0].windowId;
+    clearAllTabsContainers();
     var container = buildTabsContainerFor(gTargetWindow);
     for (let tab of aTabs) {
       container.appendChild(buildTab(tab));
     }
     gAllTabs.appendChild(container);
-    inheritTreeStructureFor(gTargetWindow);
+    inheritTreeStructure();
     startObserveTabs();
   });
 }
 
-function inheritTreeStructureFor(aWindowId) {
+function inheritTreeStructure() {
   browser.runtime.sendMessage({
     type:     kCOMMAND_REQUEST_TREE_INFO,
-    windowId: aWindowId
+    windowId: gTargetWindow
   }).then(aResponse => {
     log('response: ', aResponse);
     for (let tabInfo of aResponse.tabs) {
@@ -43,7 +43,7 @@ function inheritTreeStructureFor(aWindowId) {
         tab.setAttribute(kPARENT, tabInfo.parent);
       tab.setAttribute(kCHILDREN, tabInfo.children);
     }
-    updateTabsIndent(getRootTabs(aWindowId));
+    updateTabsIndent(getAllRootTabs(gTargetWindow), 0);
   });
 }
 

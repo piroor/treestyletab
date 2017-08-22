@@ -115,6 +115,12 @@ function getLastDescendantTab(aRoot) {
   return descendants.length ? descendants[descendants.length-1] : null ;
 }
 
+function getAllRootTabs(aHint) {
+  return getAllTabs(aHint).filter((aTab) => {
+    return !aTab.hasAttribute(kPARENT);
+  });
+}
+
 function getRootTabs(aHint) {
   return getTabs(aHint).filter((aTab) => {
     return !aTab.hasAttribute(kPARENT);
