@@ -197,15 +197,15 @@ function updateTabsIndent(aTabs, aLevel = undefined) {
     if (!item)
       continue;
     if (!gIsBackground) {
-    window.requestAnimationFrame(() => {
-      var level = parseInt(item.getAttribute(kNEST) || 0);
-      var indent = level * margin;
-      var expected = indent == 0 ? 0 : indent + 'px' ;
-      log ('setting indent: ', { tab: dumpTab(item), expected: expected, level: level });
-      if (item.style.marginLeft != expected) {
-        window.requestAnimationFrame(() => item.style.marginLeft = expected);
-      }
-    });
+      window.requestAnimationFrame(() => {
+        var level = parseInt(item.getAttribute(kNEST) || 0);
+        var indent = level * margin;
+        var expected = indent == 0 ? 0 : indent + 'px' ;
+        log ('setting indent: ', { tab: dumpTab(item), expected: expected, level: level });
+        if (item.style.marginLeft != expected) {
+          window.requestAnimationFrame(() => item.style.marginLeft = expected);
+        }
+      });
     }
     item.setAttribute(kNEST, aLevel);
     updateTabsIndent(getChildTabs(item), aLevel + 1);
