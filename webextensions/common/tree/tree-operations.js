@@ -196,6 +196,7 @@ function updateTabsIndent(aTabs, aLevel = undefined) {
     let item = aTabs[i];
     if (!item)
       continue;
+    if (!gIsBackground) {
     window.requestAnimationFrame(() => {
       var level = parseInt(item.getAttribute(kNEST) || 0);
       var indent = level * margin;
@@ -205,6 +206,7 @@ function updateTabsIndent(aTabs, aLevel = undefined) {
         window.requestAnimationFrame(() => item.style.marginLeft = expected);
       }
     });
+    }
     item.setAttribute(kNEST, aLevel);
     updateTabsIndent(getChildTabs(item), aLevel + 1);
   }
