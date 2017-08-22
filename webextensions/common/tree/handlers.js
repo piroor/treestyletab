@@ -4,6 +4,27 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
+function startObserveTabs() {
+  chrome.tabs.onActivated.addListener(onSelect);
+  chrome.tabs.onUpdated.addListener(onUpdated);
+  chrome.tabs.onCreated.addListener(onCreated);
+  chrome.tabs.onRemoved.addListener(onRemoved);
+  chrome.tabs.onMoved.addListener(onMoved);
+  chrome.tabs.onAttached.addListener(onAttached);
+  chrome.tabs.onDetached.addListener(onDetached);
+}
+
+function endObserveTabs() {
+  chrome.tabs.onActivated.removeListener(onSelect);
+  chrome.tabs.onUpdated.removeListener(onUpdated);
+  chrome.tabs.onCreated.removeListener(onCreated);
+  chrome.tabs.onRemoved.removeListener(onRemoved);
+  chrome.tabs.onMoved.removeListener(onMoved);
+  chrome.tabs.onAttached.removeListener(onAttached);
+  chrome.tabs.onDetached.removeListener(onDetached);
+}
+
+
 function omMouseDown(aEvent) {
   var tab = findTabFromEvent(aEvent);
   if (!tab || tab.classList.contains('removing'))
@@ -43,7 +64,7 @@ function onCreated(aTab) {
   log('created, id: ', aTab.id);
   var container = getTabsContainer(aTab.windowId);
   var newTab = container.appendChild(buildTab(aTab));
-  if (configs.animation) {
+  if (canAnimate()) {
     let referenceTab = getFirstNormalTab() || getFirstTab();
     newTab.style.marginTop = `-${referenceTab.getBoundingClientRect().height}px`;
     window.requestAnimationFrame(() => {
@@ -82,7 +103,7 @@ function onRemoved(aTabId, aRemoveInfo) {
     behavior : closeParentBehavior
   });
 
-  if (configs.animation) {
+  if (canAnimate()) {
     oldTab.addEventListener('transitionend', () => {
       getTabsContainer(oldTab).removeChild(oldTab)
     }, { once: true });

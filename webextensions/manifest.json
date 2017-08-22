@@ -10,10 +10,7 @@
     "tabs"
   ],
   "background": {
-    "scripts": [
-      "common/Configs.js",
-      "common/common.js"
-    ]
+    "page": "background/background.html"
   },
   "sidebar_action": {
     "default_title": "__MSG_sidebarTitle__",

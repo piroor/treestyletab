@@ -5,27 +5,31 @@
 */
 
 function init() {
+  gIsBackground = true;
   window.addEventListener('unload', destroy, { once: true });
   gAllTabs = document.getElementById('all-tabs');
-  gAllTabs.addEventListener('mousedown', omMouseDown);
   startObserveTabs();
   rebuildAll();
 }
 
 function destroy() {
   endObserveTabs();
-  gAllTabs.removeEventListener('mousedown', omMouseDown);
   gAllTabs = undefined;
 }
 
 function rebuildAll() {
-  chrome.tabs.query({ currentWindow: true }, (aTabs) => {
-    clearAllTabsContainers();
-    var container = buildTabsContainerFor(aTabs[0].windowId);
-    for (let tab of aTabs) {
-      container.appendChild(buildTab(tab));
-    }
-    gAllTabs.appendChild(container);
+  clearAllTabsContainers();
+  chrome.windows.getAll({
+    populate: true,
+    windowTypes: ['normal']
+  }).then((aWindows) => {
+    aWindows.forEach((aWindow) => {
+      var container = buildTabsContainerFor(aWindow.id);
+      for (let tab of aWindow.tabs) {
+        container.appendChild(buildTab(tab));
+      }
+      gAllTabs.appendChild(container);
+    });
   });
 }
 

@@ -6,6 +6,7 @@
 
 var gAllTabs;
 var gInternalMovingCount = 0;
+var gIsBackground = false;
 
 function buildTab(aTab) {
   var item = document.createElement('li');
@@ -25,4 +26,15 @@ function buildTabsContainerFor(aWindowId) {
   container.setAttribute('id', `window-${aWindowId}`);
   container.classList.add('tabs');
   return container;
+}
+
+function clearAllTabsContainers() {
+  var range = document.createRange();
+  range.selectNodeContents(gAllTabs);
+  range.deleteContents();
+  range.detach();
+}
+
+function canAnimate() {
+  return !gIsBackground && configs.animation;
 }
