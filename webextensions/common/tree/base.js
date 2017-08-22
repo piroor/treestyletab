@@ -19,7 +19,6 @@ var kCOLLAPSED_DONE   = 'collapsed-completely';
 var kCOLLAPSING_PHASE = 'data-collapsing-phase';
 var kCOLLAPSING_PHASE_TO_BE_COLLAPSED = 'collapse';
 var kCOLLAPSING_PHASE_TO_BE_EXPANDED  = 'expand';
-var kSTACKED_TAB_MARGIN = 15;
 
 
 var gAllTabs;
@@ -27,6 +26,7 @@ var gInternalMovingCount = 0;
 var gIsBackground = false;
 var gTargetWindow = null;
 var gRestoringTree = false;
+var gOpeningCount = 0;
 
 function buildTab(aTab) {
   var item = document.createElement('li');

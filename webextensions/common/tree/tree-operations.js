@@ -241,20 +241,12 @@ async function updateTabCollapsed(aTab, aParams = {}) {
     startMargin  = 0;
     endMargin    = maxMargin;
     endOpacity   = 0;
-    if (getParentTab(aTab)) {
-      endOpacity = 1;
-      endMargin = kSTACKED_TAB_MARGIN;
-    }
   }
   else {
     startMargin  = maxMargin;
     endMargin    = 0;
     startOpacity = 0;
     endOpacity   = 1;
-    if (getParentTab(aTab)) {
-      startOpacity = 1;
-      startMargin = kSTACKED_TAB_MARGIN;
-    }
   }
   log('animation params: ', {
     startMargin  : startMargin,
@@ -447,4 +439,7 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aExpandStates) {
 
 
 function scrollToNewTab(aTab) {
+}
+
+function updateInsertionPositionInfo(aTab) {
 }

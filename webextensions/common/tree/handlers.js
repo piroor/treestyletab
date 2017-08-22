@@ -101,6 +101,8 @@ function onCreated(aTab) {
   }
   else {
     newTab.classList.add('animation-ready');
+    if (!gIsBackground)
+      scrollToNewTab(newTab)
   }
 
   var opener = findTabById({ tab: aTab.openerTabId, window: aTab.windowId });
@@ -108,6 +110,11 @@ function onCreated(aTab) {
     log('opener: ', dumpTab(opener));
     attachTabTo(newTab, opener);
   }
+
+  updateInsertionPositionInfo(newTab);
+
+  gOpeningCount++;
+  setTimeout(() => gOpeningCount--, 0);
 
   if (gIsBackground)
     reserveToSaveTreeStructure(newTab);
