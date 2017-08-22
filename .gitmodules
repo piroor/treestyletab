@@ -13,3 +13,6 @@
 [submodule "extlib/fxaddonlib-inherit"]
 	path = extlib/fxaddonlib-inherit
 	url = https://github.com/piroor/fxaddonlib-inherit.git
+[submodule "extlib/JavaScript-MD5"]
+	path = extlib/JavaScript-MD5
+	url = https://github.com/blueimp/JavaScript-MD5.git
