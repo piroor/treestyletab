@@ -8,10 +8,10 @@ var configs;
 
 function log(aMessage, ...aArgs)
 {
-	if (!configs || !configs.debug)
-		return;
+  if (!configs || !configs.debug)
+    return;
 
-	console.log('treestyletab: ' + aMessage, ...aArgs);
+  console.log('treestyletab: ' + aMessage, ...aArgs);
 }
 
 function dumpTab(aTab) {
@@ -19,6 +19,6 @@ function dumpTab(aTab) {
 }
 
 configs = new Configs({
-	animation: true,
-	debug : false
+  animation: true,
+  debug:     false
 });
