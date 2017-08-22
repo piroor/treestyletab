@@ -20,11 +20,15 @@ function log(aMessage, ...aArgs)
 }
 
 function dumpTab(aTab) {
+  if (!configs || !configs.debug)
+    return '';
   return `@${getTabIndex(aTab)}#${aTab.id}, title=${JSON.stringify(aTab.textContent)}`;
 }
 
 configs = new Configs({
   treeStructure: [],
+
+  collapseDuration: 150,
 
   animation: true,
   debug:     false

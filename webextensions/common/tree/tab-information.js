@@ -8,6 +8,10 @@ function isSubtreeCollapsed(aTab) {
   return false;
 }
 
+function canCollapseSubtree(aParentTab) {
+  return false;
+}
+
 function isGroupTab(aTab) {
   return false;
 }

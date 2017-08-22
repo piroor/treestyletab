@@ -81,12 +81,21 @@ function onCreated(aTab) {
   }
   var newTab = container.appendChild(buildTab(aTab));
   if (canAnimate()) {
-    let referenceTab = getFirstNormalTab() || getFirstTab();
-    newTab.style.marginTop = `-${referenceTab.getBoundingClientRect().height}px`;
+    updateTabCollapsed(newTab, {
+      collapsed: true,
+      justNow: true
+    });
     window.requestAnimationFrame(() => {
       newTab.classList.add('animation-ready');
-      window.requestAnimationFrame(() => {
-        newTab.style.marginTop = 0;
+      updateTabCollapsed(newTab, {
+        collapsed: false,
+        justNow:   gRestoringTree,
+        /**
+         * When the system is too slow, the animation can start after
+         * smooth scrolling is finished. The smooth scrolling should be
+         * started together with the start of the animation effect.
+         */
+        onStart: () => scrollToNewTab(newTab)
       });
     });
   }

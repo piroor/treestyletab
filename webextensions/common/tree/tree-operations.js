@@ -221,6 +221,137 @@ function updateTabsIndent(aTabs, aLevel = undefined) {
 }
 
 
+// collapse/expand tabs
+
+async function updateTabCollapsed(aTab, aParams = {}) {
+  log('updateTabCollapsed ', dumpTab(aTab));
+  if (!aTab.parentNode) // do nothing for closed tab!
+    return;
+
+  aTab.setAttribute(kCOLLAPSING_PHASE, aParams.collapsed ? kCOLLAPSING_PHASE_TO_BE_COLLAPSED : kCOLLAPSING_PHASE_TO_BE_EXPANDED );
+
+  var firstTab = getFirstNormalTab(aTab) || getFirstTab(aTab);
+  var maxMargin = firstTab.getBoundingClientRect().height;
+  if (firstTab.style.height)
+    aTab.style.height = firstTab.style.height;
+
+  var startMargin, endMargin, endOpacity;
+  var startOpacity = window.getComputedStyle(aTab).opacity;
+  if (aParams.collapsed) {
+    startMargin  = 0;
+    endMargin    = maxMargin;
+    endOpacity   = 0;
+    if (getParentTab(aTab)) {
+      endOpacity = 1;
+      endMargin = kSTACKED_TAB_MARGIN;
+    }
+  }
+  else {
+    startMargin  = maxMargin;
+    endMargin    = 0;
+    startOpacity = 0;
+    endOpacity   = 1;
+    if (getParentTab(aTab)) {
+      startOpacity = 1;
+      startMargin = kSTACKED_TAB_MARGIN;
+    }
+  }
+  log('animation params: ', {
+    startMargin  : startMargin,
+    endMargin    : endMargin,
+    startOpacity : startOpacity,
+    endOpacity   : endOpacity
+  });
+
+  if (
+    !canAnimate() ||
+    aParams.justNow ||
+    configs.collapseDuration < 1 // ||
+//      !canCollapseSubtree(getParentTab(aTab))
+    ) {
+    log(' => skip animation');
+    if (aParams.collapsed)
+      aTab.classList.add(kCOLLAPSED_DONE);
+    else
+      aTab.classList.remove(kCOLLAPSED_DONE);
+    aTab.removeAttribute(kCOLLAPSING_PHASE);
+
+    // Pinned tabs are positioned by "margin-top", so
+    // we must not reset the property for pinned tabs.
+    // (However, we still must update "opacity".)
+    let pinned = aTab.classList.contains('pinned');
+    let canExpand = !pinned;
+
+    log(' skipped animation params: ', {
+      pinned    : pinned,
+      canExpand : canExpand,
+      endMargin : endMargin
+    });
+
+    if (canExpand)
+      aTab.style.marginTop = endMargin ? '-'+endMargin+'px' : '';
+
+    if (endOpacity == 0)
+      aTab.style.opacity = 0;
+    else
+      aTab.style.opacity = '';
+
+    if (typeof aParams.onStart == 'function')
+      aParams.onStart();
+    return;
+  }
+
+  aTab.style.marginTop = startMargin ? '-'+startMargin+'px' : '';
+  aTab.style.opacity = startOpacity;
+
+  if (!aParams.collapsed)
+    aTab.classList.remove(kCOLLAPSED_DONE);
+
+  return new Promise((aResolve, aReject) => {
+    window.requestAnimationFrame(() => {
+      aTab.addEventListener('transitionend', () => {
+        log(' => finish animation for ', dumpTab(aTab));
+        if (aParams.collapsed)
+          aTab.classList.add(kCOLLAPSED_DONE);
+        aTab.removeAttribute(kCOLLAPSING_PHASE);
+
+        if (endOpacity > 0) {
+          if (window.getComputedStyle(aTab).opacity > 0) {
+            aTab.style.opacity = '';
+            aTab = null;
+          }
+          else {
+            // If we clear its "opacity" before it becomes "1"
+            // by CSS transition, the calculated opacity will
+            // become 0 after we set an invalid value to clear it.
+            // So we have to clear it with delay.
+            // This is workaround for the issue:
+            //   https://github.com/piroor/treestyletab/issues/1202
+            setTimeout(function() {
+              aTab.style.opacity = '';
+              aTab = null;
+            }, 0);
+          }
+        }
+
+        maxMargin = null;
+        startMargin = null;
+        endMargin = null;
+        startOpacity = null;
+        endOpacity = null;
+
+        aResolve();
+      }, { once: true });
+
+      if (typeof aParams.onStart == 'function')
+        aParams.onStart();
+      aTab.style.marginTop = endMargin ? '-'+endMargin+'px' : '';
+      aTab.style.opacity = endOpacity;
+    });
+  });
+}
+
+
 // operate tabs based on tree information
 
 function closeChildTabs(aParent) {
@@ -312,4 +443,8 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aExpandStates) {
   //for (let i = aTabs.length-1; i > -1; i--) {
   //  collapseExpandSubtree(aTabs[i], !hasChildTabs(aTabs[i]) || !aExpandStates[i], true);
   //}
+}
+
+
+function scrollToNewTab(aTab) {
 }

@@ -9,12 +9,24 @@ var kCOMMAND_APPLY_TREE_STRUCTURE = 'treestyletab:apply-tree-structure';
 
 var kPARENT   = 'data-parent-id';
 var kCHILDREN = 'data-child-ids';
+var kANCESTORS = 'data-ancestor-ids';
 var kNEST     = 'data-nest';
+var kINSERT_BEFORE = 'data-insert-before-id';
+var kINSERT_AFTER  = 'data-insert-after-id';
+var kCLOSED_SET_ID = 'data-closed-set-id';
+
+var kCOLLAPSED_DONE   = 'collapsed-completely';
+var kCOLLAPSING_PHASE = 'data-collapsing-phase';
+var kCOLLAPSING_PHASE_TO_BE_COLLAPSED = 'collapse';
+var kCOLLAPSING_PHASE_TO_BE_EXPANDED  = 'expand';
+var kSTACKED_TAB_MARGIN = 15;
+
 
 var gAllTabs;
 var gInternalMovingCount = 0;
 var gIsBackground = false;
 var gTargetWindow = null;
+var gRestoringTree = false;
 
 function buildTab(aTab) {
   var item = document.createElement('li');
