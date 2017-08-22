@@ -41,7 +41,7 @@ function omMouseDown(aEvent) {
 }
 
 function onSelect(aActiveInfo) {
-  var newTab = findTabFromId({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
+  var newTab = findTabById({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
   if (!newTab || newTab.classList.contains('removing'))
     return;
   var oldTabs = document.querySelectorAll('.active');
@@ -52,7 +52,7 @@ function onSelect(aActiveInfo) {
 }
 
 function onUpdated(aTabId, aChangeInfo, aTab) {
-  var updatedTab = findTabFromId({ tab: aTabId, window: aTab.windowId });
+  var updatedTab = findTabById({ tab: aTabId, window: aTab.windowId });
   if (!updatedTab || updatedTab.classList.contains('removing'))
     return;
   if (aTab.title != updatedTab.textContent)
@@ -82,7 +82,7 @@ function onCreated(aTab) {
     newTab.classList.add('animation-ready');
   }
 
-  var opener = findTabFromId({ tab: aTab.openerTabId, window: aTab.windowId });
+  var opener = findTabById({ tab: aTab.openerTabId, window: aTab.windowId });
   if (opener) {
     log('opener: ', dumpTab(opener));
     attachTabTo(newTab, opener);
@@ -90,7 +90,7 @@ function onCreated(aTab) {
 }
 
 function onRemoved(aTabId, aRemoveInfo) {
-  var oldTab = findTabFromId({ tab: aTabId, window: aRemoveInfo.windowId });
+  var oldTab = findTabById({ tab: aTabId, window: aRemoveInfo.windowId });
   if (!oldTab)
     return;
 
@@ -138,7 +138,7 @@ function getCloseParentBehaviorForTab(aTab) {
 
 function onMoved(aTabId, aMoveInfo) {
   log('onMoved: ', aTabId, aMoveInfo);
-  var movedTab = findTabFromId({ tab: aTabId, window: aMoveInfo.windowId });
+  var movedTab = findTabById({ tab: aTabId, window: aMoveInfo.windowId });
   if (!movedTab)
     return;
   if (gInternalMovingCount > 0) {
@@ -153,11 +153,11 @@ function onMoved(aTabId, aMoveInfo) {
 }
 
 function onAttached(aTabId, aAttachInfo) {
-  var newTab = findTabFromId({ tab: aTabId, window: aAttachInfo.newWindowId });
+  var newTab = findTabById({ tab: aTabId, window: aAttachInfo.newWindowId });
 }
 
 function onDetached(aTabId, aDetachInfo) {
-  var oldTab = findTabFromId({ tab: aTabId, window: aDetachInfo.oldWindowId });
+  var oldTab = findTabById({ tab: aTabId, window: aDetachInfo.oldWindowId });
   if (oldTab)
     getTabsContainer(oldTab).removeChild(oldTab);
 }

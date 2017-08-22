@@ -20,7 +20,7 @@ function findTabFromChild(aNode) {
   return aNode;
 }
 
-function findTabFromId(aIdOrInfo) {
+function findTabById(aIdOrInfo) {
   if (!aIdOrInfo)
     return null;
   if (typeof aIdOrInfo == 'string')
