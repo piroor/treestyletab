@@ -8,7 +8,6 @@ function init() {
   window.addEventListener('unload', destroy, { once: true });
   gAllTabs = document.getElementById('all-tabs');
   gAllTabs.addEventListener('mousedown', omMouseDown);
-  startObserveTabs();
   rebuildAll();
 }
 
@@ -21,13 +20,14 @@ function destroy() {
 function rebuildAll() {
   browser.tabs.query({ currentWindow: true }).then(aTabs => {
     clearAllTabsContainers();
-    var windowId = aTabs[0].windowId;
-    var container = buildTabsContainerFor(windowId);
+    gTargetWindow = aTabs[0].windowId;
+    var container = buildTabsContainerFor(gTargetWindow);
     for (let tab of aTabs) {
       container.appendChild(buildTab(tab));
     }
     gAllTabs.appendChild(container);
-    inheritTreeStructureFor(windowId);
+    inheritTreeStructureFor(gTargetWindow);
+    startObserveTabs();
   });
 }
 

@@ -41,6 +41,9 @@ function omMouseDown(aEvent) {
 }
 
 function onSelect(aActiveInfo) {
+  if (gTargetWindow && aActiveInfo.windowId != gTargetWindow)
+    return;
+
   var newTab = findTabById({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
   if (!newTab || newTab.classList.contains('removing'))
     return;
@@ -52,6 +55,9 @@ function onSelect(aActiveInfo) {
 }
 
 function onUpdated(aTabId, aChangeInfo, aTab) {
+  if (gTargetWindow && aTab.windowId != gTargetWindow)
+    return;
+
   var updatedTab = findTabById({ tab: aTabId, window: aTab.windowId });
   if (!updatedTab || updatedTab.classList.contains('removing'))
     return;
@@ -61,6 +67,9 @@ function onUpdated(aTabId, aChangeInfo, aTab) {
 }
 
 function onCreated(aTab) {
+  if (gTargetWindow && aTab.windowId != gTargetWindow)
+    return;
+
   log('created, id: ', aTab.id);
   var container = getTabsContainer(aTab.windowId);
   if (!container) {
@@ -90,6 +99,9 @@ function onCreated(aTab) {
 }
 
 function onRemoved(aTabId, aRemoveInfo) {
+  if (gTargetWindow && aRemoveInfo.windowId != gTargetWindow)
+    return;
+
   var oldTab = findTabById({ tab: aTabId, window: aRemoveInfo.windowId });
   if (!oldTab)
     return;
@@ -137,6 +149,9 @@ function getCloseParentBehaviorForTab(aTab) {
 }
 
 function onMoved(aTabId, aMoveInfo) {
+  if (gTargetWindow && aMoveInfo.windowId != gTargetWindow)
+    return;
+
   log('onMoved: ', aTabId, aMoveInfo);
   var movedTab = findTabById({ tab: aTabId, window: aMoveInfo.windowId });
   if (!movedTab)
@@ -153,10 +168,18 @@ function onMoved(aTabId, aMoveInfo) {
 }
 
 function onAttached(aTabId, aAttachInfo) {
+  if (gTargetWindow &&
+      aAttachInfo.newWindowId != gTargetWindow)
+    return;
+
   var newTab = findTabById({ tab: aTabId, window: aAttachInfo.newWindowId });
 }
 
 function onDetached(aTabId, aDetachInfo) {
+  if (gTargetWindow &&
+      aAttachInfo.oldWindowId != gTargetWindow)
+    return;
+
   var oldTab = findTabById({ tab: aTabId, window: aDetachInfo.oldWindowId });
   if (oldTab)
     getTabsContainer(oldTab).removeChild(oldTab);

@@ -13,6 +13,7 @@ var kNEST     = 'data-nest';
 var gAllTabs;
 var gInternalMovingCount = 0;
 var gIsBackground = false;
+var gTargetWindow = null;
 
 function buildTab(aTab) {
   var item = document.createElement('li');
