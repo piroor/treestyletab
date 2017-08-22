@@ -53,6 +53,11 @@ var kCOLLAPSING_PHASE = 'data-collapsing-phase';
 var kCOLLAPSING_PHASE_TO_BE_COLLAPSED = 'collapse';
 var kCOLLAPSING_PHASE_TO_BE_EXPANDED  = 'expand';
 
+var kFAVICON  = 'favicon';
+var kTHROBBER = 'throbber';
+var kTWISTY   = 'twisty';
+var kCOUNTER  = 'counter';
+
 
 var gAllTabs;
 var gInternalMovingCount = 0;
@@ -91,4 +96,57 @@ function clearAllTabsContainers() {
 
 function canAnimate() {
   return !gIsBackground && configs.animation;
+}
+
+
+
+var NSResolver = {
+  lookupNamespaceURI : function(aPrefix) {
+    switch (aPrefix)
+    {
+      case 'html':
+      case 'xhtml':
+        return 'http://www.w3.org/1999/xhtml';
+      case 'xlink':
+        return 'http://www.w3.org/1999/xlink';
+      default:
+        return '';
+    }
+  }
+};
+
+function evaluateXPath(aExpression, aContext, aType) {
+  if (!aType)
+    aType = XPathResult.ORDERED_NODE_SNAPSHOT_TYPE;
+  try {
+    var result = (aContext.ownerDocument || aContext).evaluate(
+        aExpression,
+        (aContext || document),
+        NSResolver,
+        aType,
+        null
+      );
+  }
+  catch(e) {
+    return {
+      singleNodeValue: null,
+      snapshotLength:  0,
+      snapshotItem:    function() {
+        return null
+      }
+    };
+  }
+  return result;
+},
+
+function getArrayFromXPathResult(aXPathResult) {
+  var max = aXPathResult.snapshotLength;
+  var array = new Array(max);
+  if (!max)
+    return array;
+
+  for (var i = 0; i < max; i++) {
+    array[i] = aXPathResult.snapshotItem(i);
+  }
+  return array;
 }
