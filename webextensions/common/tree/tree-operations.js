@@ -11,11 +11,11 @@ function attachTabTo(aChild, aParent, aInfo = {}) {
   }
   log('attachTabTo: ', {
     parent:   dumpTab(aParent),
-    children: aParent.getAttribute('data-child-ids'),
+    children: aParent.getAttribute(kCHILDREN),
     child:    dumpTab(aChild),
     info:     aInfo
   });
-  if (aParent.getAttribute('data-child-ids').indexOf(`|${aChild.id}|`) > -1) {
+  if (aParent.getAttribute(kCHILDREN).indexOf(`|${aChild.id}|`) > -1) {
     log('  => already attached');
     return;
   }
@@ -41,7 +41,7 @@ function attachTabTo(aChild, aParent, aInfo = {}) {
     let refIndex = expectedAllTabs.indexOf(aInfo.insertBefore);
     expectedAllTabs.splice(refIndex, 0, aChild);
     childIds = expectedAllTabs.filter((aTab) => {
-      return (aTab == aChild || aTab.getAttribute('data-parent-id') == aParent.id);
+      return (aTab == aChild || aTab.getAttribute(kPARENT) == aParent.id);
     }).map((aTab) => {
       return aTab.id;
     });
@@ -63,16 +63,16 @@ function attachTabTo(aChild, aParent, aInfo = {}) {
   }
 
   if (childIds.length == 0)
-    aParent.setAttribute('data-child-ids', '|');
+    aParent.setAttribute(kCHILDREN, '|');
   else
-    aParent.setAttribute('data-child-ids', `|${childIds.join('|')}|`);
+    aParent.setAttribute(kCHILDREN, `|${childIds.join('|')}|`);
 
   if (getTabIndex(aChild) < newIndex)
     newIndex--;
   log('  newIndex: ', newIndex);
 
-  aChild.setAttribute('data-parent-id', aParent.id);
-  var parentLevel = parseInt(aParent.getAttribute('data-nest') || 0);
+  aChild.setAttribute(kPARENT, aParent.id);
+  var parentLevel = parseInt(aParent.getAttribute(kNEST) || 0);
   updateTabsIndent(aChild, parentLevel + 1);
 
   gInternalMovingCount++;
@@ -100,13 +100,13 @@ function detachTab(aChild, aInfo = {}) {
     return;
   }
 
-  var childIds = parent.getAttribute('data-child-ids').split('|').filter((aId) => aId && aId != aChild.id);
+  var childIds = parent.getAttribute(kCHILDREN).split('|').filter((aId) => aId && aId != aChild.id);
   if (childIds.length == 0)
-    parent.setAttribute('data-child-ids', '|');
+    parent.setAttribute(kCHILDREN, '|');
   else
-    parent.setAttribute('data-child-ids', `|${childIds.join('|')}|`);
-  log('  child-ids => ', parent.getAttribute('data-child-ids'));
-  aChild.removeAttribute('data-parent-id');
+    parent.setAttribute(kCHILDREN, `|${childIds.join('|')}|`);
+  log('  children => ', parent.getAttribute(kCHILDREN));
+  aChild.removeAttribute(kPARENT);
 
   updateTabsIndent(aChild);
 }
@@ -197,7 +197,7 @@ function updateTabsIndent(aTabs, aLevel = undefined) {
     if (!item)
       continue;
     window.requestAnimationFrame(() => {
-      var level = parseInt(item.getAttribute('data-nest') || 0);
+      var level = parseInt(item.getAttribute(kNEST) || 0);
       var indent = level * margin;
       var expected = indent == 0 ? 0 : indent + 'px' ;
       log ('setting indent: ', { tab: dumpTab(item), expected: expected, level: level });
@@ -205,7 +205,7 @@ function updateTabsIndent(aTabs, aLevel = undefined) {
         window.requestAnimationFrame(() => item.style.marginLeft = expected);
       }
     });
-    item.setAttribute('data-nest', aLevel);
+    item.setAttribute(kNEST, aLevel);
     updateTabsIndent(getChildTabs(item), aLevel + 1);
   }
 }

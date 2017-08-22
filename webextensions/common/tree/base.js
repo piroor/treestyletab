@@ -4,6 +4,10 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
+var kPARENT   = 'data-parent-id';
+var kCHILDREN = 'data-child-ids';
+var kNEST     = 'data-nest';
+
 var gAllTabs;
 var gInternalMovingCount = 0;
 var gIsBackground = false;
@@ -12,7 +16,7 @@ function buildTab(aTab) {
   var item = document.createElement('li');
   item.apiTab = aTab;
   item.setAttribute('id', `tab-${aTab.windowId}-${aTab.id}`);
-  item.setAttribute('data-child-ids', '|');
+  item.setAttribute(kCHILDREN, '|');
   item.appendChild(document.createTextNode(aTab.title));
   item.setAttribute('title', aTab.title);
   item.classList.add('tab');

@@ -34,7 +34,7 @@ function findTabFromId(aIdOrInfo) {
 // get tab items based on tree information
 
 function getParentTab(aChild) {
-  var id = aChild.getAttribute('data-parent-id');
+  var id = aChild.getAttribute(kPARENT);
   if (id)
     return document.querySelector(`#${id}:not(.removing)`);
   return null;
@@ -58,10 +58,10 @@ function getRootTab(aDecendant) {
 }
 
 function getNextSiblingTab(aTab) {
-  var parentId = aTab.getAttribute('data-parent-id');
+  var parentId = aTab.getAttribute(kPARENT);
   if (!parentId)
-    return document.querySelector(`#${aTab.id} ~ li:not([data-parent-id]):not(.removing)`);
-  return document.querySelector(`#${aTab.id} ~ li[data-parent-id="${parentId}"]:not(.removing)`);
+    return document.querySelector(`#${aTab.id} ~ li:not([${kPARENT}]):not(.removing)`);
+  return document.querySelector(`#${aTab.id} ~ li[${kPARENT}="${parentId}"]:not(.removing)`);
 }
 
 function getPreviousSiblingTab(aTab) {
@@ -78,7 +78,7 @@ function getSiblingTabs(aTab) {
 }
 
 function getChildTabs(aParent) {
-  var ids = aParent.getAttribute('data-child-ids').replace(/\|\|+|^\||\|$/g, '');
+  var ids = aParent.getAttribute(kCHILDREN).replace(/\|\|+|^\||\|$/g, '');
   if (ids == '')
     return [];
   ids = ids.split('|').join(', #');
@@ -86,7 +86,7 @@ function getChildTabs(aParent) {
 }
 
 function hasChildTabs(aParent) {
-  return aParent.getAttribute('data-child-ids') != '|';
+  return aParent.getAttribute(kCHILDREN) != '|';
 }
 
 function getDescendantTabs(aRoot) {
@@ -117,7 +117,7 @@ function getLastDescendantTab(aRoot) {
 
 function getRootTabs(aHint) {
   return getTabs(aHint).filter((aTab) => {
-    return !aTab.hasAttribute('data-parent-id');
+    return !aTab.hasAttribute(kPARENT);
   });
 }
 
