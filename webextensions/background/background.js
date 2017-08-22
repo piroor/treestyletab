@@ -10,9 +10,11 @@ function init() {
   gAllTabs = document.getElementById('all-tabs');
   startObserveTabs();
   rebuildAll();
+  browser.runtime.onMessage.addListener(onMessage);
 }
 
 function destroy() {
+  browser.runtime.onMessage.removeListener(onMessage);
   endObserveTabs();
   gAllTabs = undefined;
 }
@@ -31,6 +33,26 @@ function rebuildAll() {
       gAllTabs.appendChild(container);
     });
   });
+}
+
+function onMessage(aMessage, aSender, aRespond) {
+  log('onMessage: ', aMessage, aSender);
+  switch (aMessage.type) {
+    case kCOMMAND_REQUEST_TREE_INFO:
+      aRespond({
+        tabs: getAllTabs(aMessage.windowId).map(aTab => {
+          return {
+            id:       aTab.id,
+            parent:   aTab.getAttribute(kPARENT),
+            children: aTab.getAttribute(kCHILDREN)
+          }
+        })
+      });
+      break;
+
+    default:
+      break;
+  }
 }
 
 window.addEventListener('DOMContentLoaded', init, { once: true });

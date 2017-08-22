@@ -21,11 +21,29 @@ function destroy() {
 function rebuildAll() {
   browser.tabs.query({ currentWindow: true }).then(aTabs => {
     clearAllTabsContainers();
-    var container = buildTabsContainerFor(aTabs[0].windowId);
+    var windowId = aTabs[0].windowId;
+    var container = buildTabsContainerFor(windowId);
     for (let tab of aTabs) {
       container.appendChild(buildTab(tab));
     }
     gAllTabs.appendChild(container);
+    inheritTreeStructureFor(windowId);
+  });
+}
+
+function inheritTreeStructureFor(aWindowId) {
+  browser.runtime.sendMessage({
+    type:     kCOMMAND_REQUEST_TREE_INFO,
+    windowId: aWindowId
+  }).then(aResponse => {
+    log('response: ', aResponse);
+    for (let tabInfo of aResponse.tabs) {
+      let tab = findTabById(tabInfo.id);
+      if (tabInfo.parent)
+        tab.setAttribute(kPARENT, tabInfo.parent);
+      tab.setAttribute(kCHILDREN, tabInfo.children);
+    }
+    updateTabsIndent(getRootTabs(aWindowId));
   });
 }
 

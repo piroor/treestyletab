@@ -4,6 +4,8 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
+var kCOMMAND_REQUEST_TREE_INFO = 'treestyletab:request-tree-info';
+
 var kPARENT   = 'data-parent-id';
 var kCHILDREN = 'data-child-ids';
 var kNEST     = 'data-nest';
