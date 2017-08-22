@@ -37,7 +37,7 @@ function attachTabTo(aChild, aParent, aInfo = {}) {
   var childIds = [];
   if (newIndex > -1) {
     log('  newIndex (from insertBefore): ', newIndex);
-    let expectedAllTabs = getAllTabs().filter((aTab) => aTab != aChild);
+    let expectedAllTabs = getAllTabs(aChild).filter((aTab) => aTab != aChild);
     let refIndex = expectedAllTabs.indexOf(aInfo.insertBefore);
     expectedAllTabs.splice(refIndex, 0, aChild);
     childIds = expectedAllTabs.filter((aTab) => {
@@ -76,7 +76,7 @@ function attachTabTo(aChild, aParent, aInfo = {}) {
   updateTabsIndent(aChild, parentLevel + 1);
 
   gInternalMovingCount++;
-  var nextTab = getTabs()[newIndex];
+  var nextTab = getTabs(aChild)[newIndex];
   if (nextTab != aChild)
     getTabsContainer(nextTab || aChild).insertBefore(aChild, nextTab);
   getApiTabIndex(aChild.apiTab.id, nextTab.apiTab.id).then((aActualIndexes) => {
@@ -125,7 +125,7 @@ function detachAllChildren(aTab, aInfo = {}) {
 
   var parent = getParentTab(aTab);
   if (isGroupTab(aTab) &&
-      getTabs().filter((aTab) => aTab.removing).length == children.length) {
+      getTabs(aTab).filter((aTab) => aTab.removing).length == children.length) {
     aInfo.behavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
     aInfo.dontUpdateIndent = false;
   }

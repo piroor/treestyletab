@@ -163,7 +163,7 @@ function onMoved(aTabId, aMoveInfo) {
   var newNextIndex = aMoveInfo.toIndex;
   if (aMoveInfo.fromIndex < newNextIndex)
     newNextIndex++;
-  var nextTab = getTabs()[newNextIndex];
+  var nextTab = getTabs(movedTab)[newNextIndex];
   getTabsContainer(nextTab || movedTab).insertBefore(movedTab, nextTab);
 }
 
