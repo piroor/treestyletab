@@ -4,6 +4,8 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
+window.addEventListener('DOMContentLoaded', init, { once: true });
+
 function init() {
   window.addEventListener('unload', destroy, { once: true });
   gAllTabs = document.getElementById('all-tabs');
@@ -44,5 +46,3 @@ async function inheritTreeStructure() {
   }
   updateTabsIndent(getAllRootTabs(gTargetWindow), 0);
 }
-
-window.addEventListener('DOMContentLoaded', init, { once: true });

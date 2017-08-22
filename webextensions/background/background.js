@@ -4,6 +4,8 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
+window.addEventListener('DOMContentLoaded', init, { once: true });
+
 async function init() {
   gIsBackground = true;
   window.addEventListener('unload', destroy, { once: true });
@@ -53,5 +55,3 @@ function onMessage(aMessage, aSender, aRespond) {
       break;
   }
 }
-
-window.addEventListener('DOMContentLoaded', init, { once: true });
