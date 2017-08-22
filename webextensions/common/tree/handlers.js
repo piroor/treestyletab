@@ -63,6 +63,10 @@ function onUpdated(aTabId, aChangeInfo, aTab) {
 function onCreated(aTab) {
   log('created, id: ', aTab.id);
   var container = getTabsContainer(aTab.windowId);
+  if (!container) {
+    container = buildTabsContainerFor(aTab.windowId);
+    gAllTabs.appendChild(container);
+  }
   var newTab = container.appendChild(buildTab(aTab));
   if (canAnimate()) {
     let referenceTab = getFirstNormalTab() || getFirstTab();
@@ -105,15 +109,21 @@ function onRemoved(aTabId, aRemoveInfo) {
 
   if (canAnimate()) {
     oldTab.addEventListener('transitionend', () => {
-      getTabsContainer(oldTab).removeChild(oldTab)
+      onRemovedComplete(oldTab)
     }, { once: true });
     oldTab.classList.add('removing');
     oldTab.style.marginBottom = `-${oldTab.getBoundingClientRect().height}px`;
   }
   else {
     oldTab.classList.add('removing');
-    getTabsContainer(oldTab).removeChild(oldTab);
+    onRemovedComplete(oldTab);
   }
+}
+function onRemovedComplete(aTab) {
+  var container = getTabsContainer(aTab);
+  container.removeChild(aTab);
+  if (container.hasChildNodes())
+    container.parentNode.removeChild(container);
 }
 
 var kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD        = 3;
