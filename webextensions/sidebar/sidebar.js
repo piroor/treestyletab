@@ -41,7 +41,7 @@ async function inheritTreeStructure() {
   });
   log('response: ', response);
   for (let tabInfo of response.tabs) {
-    let tab = findTabById(tabInfo.id);
+    let tab = getTabById(tabInfo.id);
     if (tabInfo.parent)
       tab.setAttribute(kPARENT, tabInfo.parent);
     tab.setAttribute(kCHILDREN, tabInfo.children);

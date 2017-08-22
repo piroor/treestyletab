@@ -59,7 +59,7 @@ function endObserveTabs() {
 
 
 function omMouseDown(aEvent) {
-  var tab = findTabFromEvent(aEvent);
+  var tab = getTabFromEvent(aEvent);
   if (!tab || tab.classList.contains('removing'))
     return;
   if (aEvent.button == 1 ||
@@ -77,7 +77,7 @@ function onSelect(aActiveInfo) {
   if (gTargetWindow && aActiveInfo.windowId != gTargetWindow)
     return;
 
-  var newTab = findTabById({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
+  var newTab = getTabById({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
   if (!newTab || newTab.classList.contains('removing'))
     return;
   var oldTabs = document.querySelectorAll('.active');
@@ -91,7 +91,7 @@ function onUpdated(aTabId, aChangeInfo, aTab) {
   if (gTargetWindow && aTab.windowId != gTargetWindow)
     return;
 
-  var updatedTab = findTabById({ tab: aTabId, window: aTab.windowId });
+  var updatedTab = getTabById({ tab: aTabId, window: aTab.windowId });
   if (!updatedTab || updatedTab.classList.contains('removing'))
     return;
   if (aTab.title != updatedTab.textContent)
@@ -138,7 +138,7 @@ function onCreated(aTab) {
       scrollToNewTab(newTab)
   }
 
-  var opener = findTabById({ tab: aTab.openerTabId, window: aTab.windowId });
+  var opener = getTabById({ tab: aTab.openerTabId, window: aTab.windowId });
   if (opener) {
     log('opener: ', dumpTab(opener));
     attachTabTo(newTab, opener);
@@ -157,7 +157,7 @@ function onRemoved(aTabId, aRemoveInfo) {
   if (gTargetWindow && aRemoveInfo.windowId != gTargetWindow)
     return;
 
-  var oldTab = findTabById({ tab: aTabId, window: aRemoveInfo.windowId });
+  var oldTab = getTabById({ tab: aTabId, window: aRemoveInfo.windowId });
   if (!oldTab)
     return;
 
@@ -211,7 +211,7 @@ function onMoved(aTabId, aMoveInfo) {
     return;
 
   log('onMoved: ', aTabId, aMoveInfo);
-  var movedTab = findTabById({ tab: aTabId, window: aMoveInfo.windowId });
+  var movedTab = getTabById({ tab: aTabId, window: aMoveInfo.windowId });
   if (!movedTab)
     return;
 
@@ -234,7 +234,7 @@ function onAttached(aTabId, aAttachInfo) {
       aAttachInfo.newWindowId != gTargetWindow)
     return;
 
-  var newTab = findTabById({ tab: aTabId, window: aAttachInfo.newWindowId });
+  var newTab = getTabById({ tab: aTabId, window: aAttachInfo.newWindowId });
 }
 
 function onDetached(aTabId, aDetachInfo) {
@@ -242,7 +242,7 @@ function onDetached(aTabId, aDetachInfo) {
       aAttachInfo.oldWindowId != gTargetWindow)
     return;
 
-  var oldTab = findTabById({ tab: aTabId, window: aDetachInfo.oldWindowId });
+  var oldTab = getTabById({ tab: aTabId, window: aDetachInfo.oldWindowId });
   if (oldTab)
     getTabsContainer(oldTab).removeChild(oldTab);
 }

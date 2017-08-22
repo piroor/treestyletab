@@ -79,7 +79,7 @@ function isEventFiredOnScrollbar(aEvent) {
 }
 
 function isEventFiredOnTwisty(aEvent) {
-  var tab = findTabFromEvent(aEvent);
+  var tab = getTabFromEvent(aEvent);
   if (!tab || !hasChildTabs(tab))
     return false;
 

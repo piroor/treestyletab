@@ -329,7 +329,7 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aExpandStates) {
     if (parentIndexInTree < 0) // there is no parent, so this is a new parent!
       parentTab = tab.id;
 
-    let parent = findTabById(parentTab);
+    let parent = getTabById(parentTab);
     if (parent) {
       let tabs = [parent].concat(getDescendantTabs(parent));
       parent = parentIndexInTree < tabs.length ? tabs[parentIndexInTree] : parent ;

@@ -37,23 +37,30 @@
  *
  * ***** END LICENSE BLOCK ******/
 
-function findTabFromEvent(aEvent) {
-  return findTabFromChild(aEvent.target);
-}
 
-function findTabFromChild(aNode) {
+function getTabFromChild(aNode) {
   if (!aNode)
     return null;
-  while (aNode.nodeType != aNode.ELEMENT_NODE ||
-         !aNode.apiTab) {
-    if (!aNode.parentNode)
-      return null;
-    aNode = aNode.parentNode;
-  }
-  return aNode;
+  return evaluateXPath(
+    `ancestor-or-self::xhtml:li[${hasClass('tab')}]`,
+    aNode,
+    XPathResult.FIRST_ORDERED_NODE_TYPE
+  ).singleNodeValue;
 }
 
-function findTabById(aIdOrInfo) {
+function getTabFromEvent(aEvent) {
+  return getTabFromChild(aEvent.target);
+}
+
+function getNewTabButtonFromEvent(aEvent) {
+  return evaluateXPath(
+    `ancestor-or-self::*[${hasClass('newtab-button')}][1]`,
+    aEvent.originalTarget,
+    Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE
+  ).singleNodeValue;
+}
+
+function getTabById(aIdOrInfo) {
   if (!aIdOrInfo)
     return null;
   if (typeof aIdOrInfo == 'string')
@@ -178,7 +185,7 @@ function getTabsContainer(aHint) {
   if (aHint && typeof aHint == 'object' && 'windowId' in aHint)
     return document.querySelector(`#window-${aHint.windowId}`);
 
-  var tab = findTabFromChild(aHint);
+  var tab = getTabFromChild(aHint);
   if (tab)
     return document.querySelector(`#window-${tab.apiTab.windowId}`);
 
@@ -199,18 +206,21 @@ function getTabs(aHint) { // only visible, including collapsed and pinned
   return Array.slice(container.querySelectorAll('li.tab:not(.removing):not(.hidden)'));
 }
 
+kSELECTOR_NORMAL_TAB = 'li.tab:not(.removing):not(.hidden):not(.pinned)';
+kSELECTOR_VISIBLE_TAB = 'li.tab:not(.removing):not(.collapsed):not(.hidden)';
+
 function getNormalTabs(aHint) { // only visible, including collapsed, not pinned
   var container = getTabsContainer(aHint);
   if (!container)
     return [];
-  return Array.slice(container.querySelectorAll('li.tab:not(.removing):not(.hidden):not(.pinned)'));
+  return Array.slice(container.querySelectorAll(kSELECTOR_NORMAL_TAB));
 }
 
 function getVisibleTabs(aHint) { // visible, not-collapsed
   var container = getTabsContainer(aHint);
   if (!container)
     return [];
-  return Array.slice(container.querySelectorAll('li.tab:not(.removing):not(.collapsed):not(.hidden)'));
+  return Array.slice(container.querySelectorAll(kSELECTOR_VISIBLE_TAB));
 }
 
 function getPinnedTabs(aHint) { // visible, pinned
@@ -218,16 +228,20 @@ function getPinnedTabs(aHint) { // visible, pinned
 }
 
 function getFirstTab(aHint) {
-  return getAllTabs(aHint)[0];
+  var container = getTabsContainer(aHint);
+  return container && container.firstChild;
 }
 
 function getFirstNormalTab(aHint) { // visible, not-collapsed, not-pinned
-  return getNormalTabs(aHint)[0];
+  var container = getTabsContainer(aHint);
+  if (!container)
+    return null;
+  return container.querySelector(kSELECTOR_NORMAL_TAB)
 }
 
 function getLastTab(aHint) {
-  var items = getAllTabs(aHint);
-  return items[items.length-1];
+  var container = getTabsContainer(aHint);
+  return container && container.lastChild;
 }
 
 function getLastVisibleTab(aHint) { // visible, not-collapsed
@@ -240,9 +254,11 @@ function getNextTab(aTab) {
 }
 
 function getPreviousTab(aTab) {
-  var tabs = getAllTabs(aTab);
-  var index = tabs.indexOf(aTab);
-  return index > 0 ? tabs[index-1] : null ;
+  return evaluateXPath(
+    `preceding-sibling::xhtml:li[${hasClass('tab')}][not(${hasClass('removing')})]`,
+    aTab,
+    XPathResult.FIRST_ORDERED_NODE_TYPE
+  ).singleNodeValue;
 }
 
 function getTabIndex(aTab) {
