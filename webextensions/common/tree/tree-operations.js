@@ -79,13 +79,13 @@ function attachTabTo(aChild, aParent, aInfo = {}) {
   var nextTab = getTabs()[newIndex];
   if (nextTab != aChild)
     gTabs.insertBefore(aChild, nextTab);
-  getApiTabIndex(aChild.tab.id, nextTab.tab.id).then((aActualIndexes) => {
+  getApiTabIndex(aChild.apiTab.id, nextTab.apiTab.id).then((aActualIndexes) => {
     log('  actual indexes: ', aActualIndexes);
     var [actualChildIndex, actualNewIndex] = aActualIndexes;
     if (actualChildIndex < actualNewIndex)
       actualNewIndex--;
     log('  actualNewIndex: ', actualNewIndex);
-    chrome.tabs.move(aChild.tab.id, { windowId: aChild.tab.windowId, index: actualNewIndex });
+    chrome.tabs.move(aChild.apiTab.id, { windowId: aChild.apiTab.windowId, index: actualNewIndex });
     setTimeout(() => {
       gInternalMovingCount--;
     });

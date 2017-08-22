@@ -11,12 +11,12 @@ function omMouseDown(aEvent) {
   if (aEvent.button == 1 ||
       (aEvent.button == 0 && (aEvent.ctrlKey || aEvent.metaKey))) {
     log('middle-click to close');
-    chrome.tabs.remove(tab.tab.id);
+    chrome.tabs.remove(tab.apiTab.id);
     aEvent.stopPropagation();
     aEvent.preventDefault();
     return;
   }
-  chrome.tabs.update(tab.tab.id, { active: true });
+  chrome.tabs.update(tab.apiTab.id, { active: true });
 }
 
 function onSelect(aActiveInfo) {
@@ -36,7 +36,7 @@ function onUpdated(aTabId, aChangeInfo, aTab) {
     return;
   if (aTab.title != updatedTab.textContent)
     updatedTab.textContent = aTab.title;
-  updatedTab.tab = aTab;
+  updatedTab.apiTab = aTab;
 }
 
 function onCreated(aTab) {
