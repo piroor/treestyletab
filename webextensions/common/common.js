@@ -11,7 +11,12 @@ function log(aMessage, ...aArgs)
   if (!configs || !configs.debug)
     return;
 
-  console.log('treestyletab: ' + aMessage, ...aArgs);
+  var nest = (new Error()).stack.split('\n').length;
+  var indent = '';
+  for (let i = 0; i < nest; i++) {
+    indent += ' ';
+  }
+  console.log(`treestyletab: ${indent}${aMessage}`, ...aArgs);
 }
 
 function dumpTab(aTab) {

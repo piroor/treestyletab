@@ -16,12 +16,12 @@ async function attachTabTo(aChild, aParent, aInfo = {}) {
     info:     aInfo
   });
   if (aParent.getAttribute(kCHILDREN).indexOf(`|${aChild.id}|`) > -1) {
-    log('  => already attached');
+    log('=> already attached');
     return;
   }
   var ancestors = [aParent].concat(getAncestorTabs(aChild));
   if (ancestors.indexOf(aChild) > -1) {
-    log('  => canceled for recursive request');
+    log('=> canceled for recursive request');
     return;
   }
 
@@ -31,12 +31,12 @@ async function attachTabTo(aChild, aParent, aInfo = {}) {
   if (aInfo.dontMove)
     aInfo.insertBefore = getNextTab(aChild);
   if (aInfo.insertBefore) {
-    log('  insertBefore: ', dumpTab(aInfo.insertBefore));
+    log('insertBefore: ', dumpTab(aInfo.insertBefore));
     newIndex = getTabIndex(aInfo.insertBefore);
   }
   var childIds = [];
   if (newIndex > -1) {
-    log('  newIndex (from insertBefore): ', newIndex);
+    log('newIndex (from insertBefore): ', newIndex);
     let expectedAllTabs = getAllTabs(aChild).filter((aTab) => aTab != aChild);
     let refIndex = expectedAllTabs.indexOf(aInfo.insertBefore);
     expectedAllTabs.splice(refIndex, 0, aChild);
@@ -48,14 +48,14 @@ async function attachTabTo(aChild, aParent, aInfo = {}) {
   }
   else {
     let descendants = getDescendantTabs(aParent);
-    log('  descendants: ', descendants.map(dumpTab));
+    log('descendants: ', descendants.map(dumpTab));
     if (descendants.length) {
       newIndex = getTabIndex(descendants[descendants.length-1]) + 1;
     }
     else {
       newIndex = getTabIndex(aParent) + 1;
     }
-    log('  newIndex (from existing children): ', newIndex);
+    log('newIndex (from existing children): ', newIndex);
     // update and cleanup
     let children = getChildTabs(aParent);
     children.push(aChild);
@@ -69,7 +69,7 @@ async function attachTabTo(aChild, aParent, aInfo = {}) {
 
   if (getTabIndex(aChild) < newIndex)
     newIndex--;
-  log('  newIndex: ', newIndex);
+  log('newIndex: ', newIndex);
 
   aChild.setAttribute(kPARENT, aParent.id);
   var parentLevel = parseInt(aParent.getAttribute(kNEST) || 0);
@@ -84,7 +84,7 @@ async function attachTabTo(aChild, aParent, aInfo = {}) {
   if (actualChildIndex < actualNewIndex)
     actualNewIndex--;
 
-  log('  actualNewIndex: ', actualNewIndex);
+  log('actualNewIndex: ', actualNewIndex);
   browser.tabs.move(aChild.apiTab.id, {
     windowId: aChild.apiTab.windowId,
     index:    actualNewIndex
@@ -98,7 +98,7 @@ function detachTab(aChild, aInfo = {}) {
   log('detachTab: ', dumpTab(aChild), aInfo);
   var parent = getParentTab(aChild);
   if (!parent) {
-    log('  detachTab: canceled for an orphan tab');
+    log('canceled for an orphan tab');
     return;
   }
 
@@ -107,7 +107,7 @@ function detachTab(aChild, aInfo = {}) {
     parent.setAttribute(kCHILDREN, '|');
   else
     parent.setAttribute(kCHILDREN, `|${childIds.join('|')}|`);
-  log('  children => ', parent.getAttribute(kCHILDREN));
+  log('children => ', parent.getAttribute(kCHILDREN));
   aChild.removeAttribute(kPARENT);
 
   updateTabsIndent(aChild);
@@ -203,7 +203,7 @@ function updateTabsIndent(aTabs, aLevel = undefined) {
         var level = parseInt(item.getAttribute(kNEST) || 0);
         var indent = level * margin;
         var expected = indent == 0 ? 0 : indent + 'px' ;
-        log ('setting indent: ', { tab: dumpTab(item), expected: expected, level: level });
+        log('setting indent: ', { tab: dumpTab(item), expected: expected, level: level });
         if (item.style.marginLeft != expected) {
           window.requestAnimationFrame(() => item.style.marginLeft = expected);
         }
