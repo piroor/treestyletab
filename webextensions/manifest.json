@@ -1,0 +1,31 @@
+{
+  "manifest_version": 2,
+  "name": "__MSG_extensionName__",
+  "version": "0.1",
+  "author": "YUKI \"Piro\" Hiroshi, Sebastian Tschan (JavaScript-MD5)",
+  "description": "__MSG_extensionDescription__",
+  "permissions": [
+    "activeTab",
+    "sessions",
+    "storage",
+    "tabs"
+  ],
+  "background": {
+    "page": "background/background.html"
+  },
+  "sidebar_action": {
+    "default_title": "__MSG_sidebarTitle__",
+    "default_panel": "sidebar/sidebar.html"
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "chrome_style": true
+  },
+  "default_locale": "en",
+  "applications": {
+    "gecko": {
+      "id": "treestyletab-we@piro.sakura.ne.jp",
+      "strict_min_version": "57.0"
+    }
+  }
+}

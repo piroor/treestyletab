@@ -1,0 +1,9 @@
+{
+  "extensionName": { "message": "ツリー型タブ(WE)" },
+  "extensionDescription": { "message": "タブをツリー状に表示します。" },
+
+  "sidebarTitle": { "message": "ツリー型タブ" },
+
+  "config.animation.label": { "message": "アニメーション効果を有効にする" },
+  "config.debug.label": { "message": "デバッグログを出力" }
+}

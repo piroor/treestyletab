@@ -1,0 +1,66 @@
+/*
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+:root {
+  --tst-tab-animation-base: opacity 0.15s ease-out,
+                            outline-color 0.5s ease-out,
+                            min-height 0.15s ease-out,
+                            max-height 0.15s ease-out;
+  --tst-tab-animation-firefox-system: min-width 0.15s ease-out,
+                                      max-width 0.15s ease-out,
+                                      transform 0.2s ease-out;
+  
+  --tst-tab-animation-vertical: margin-left 0.2s ease-out,
+                                margin-right 0.2s ease-out,
+                                margin-top 0.15s ease-out,
+                                margin-bottom 0.15s ease-out,
+                                var(--tst-tab-animation-base),
+                                var(--tst-tab-animation-firefox-system);
+  --tst-tab-animation-top: margin-left 0.15s ease-out,
+                           margin-top 0.2s ease-out,
+                           var(--tst-tab-animation-base),
+                           var(--tst-tab-animation-firefox-system);
+  --tst-tab-animation-bottom: margin-left 0.15s ease-out,
+                              margin-bottom 0.2s ease-out,
+                              var(--tst-tab-animation-base),
+                              var(--tst-tab-animation-firefox-system);
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  max-width: 100%;
+  padding: 0;
+}
+
+li.tab {
+  border: 1px solid gray;
+  margin-bottom: -1px;
+  margin-left: 0;
+  margin-right: 0;
+  /* margin-top: 0; *//* don't set for animation */
+  list-style: none;
+  max-width: 100%;
+  overflow: hidden;
+  opacity: 1;
+  padding: 0.5em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+li.tab.animation-ready {
+  transition: var(--tst-tab-animation-vertical);
+}
+
+li.active {
+  font-weight: bold;
+}
+
+li.removing {
+  max-height: 1px;
+  opacity: 0;
+}
+

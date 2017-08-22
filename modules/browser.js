@@ -3360,7 +3360,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		this.initTab(tab);
 
 		var hasStructure = this.treeStructure && this.treeStructure.length;
-		var pareintIndexInTree = hasStructure ? this.treeStructure.shift() : 0 ;
+		var parentIndexInTree = hasStructure ? this.treeStructure.shift() : 0 ;
 		var lastRelatedTab = b._lastRelatedTab;
 
 		log('onTabOpen at ' + tab._tPos + '\n  ' + [
@@ -3394,14 +3394,14 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		}
 
 		if (this.readiedToAttachNewTab) {
-			if (pareintIndexInTree < 0) { // there is no parent, so this is a new parent!
+			if (parentIndexInTree < 0) { // there is no parent, so this is a new parent!
 				this.parentTab = tab.getAttribute(this.kID);
 			}
 
 			let parent = this.getTabById(this.parentTab);
 			if (parent) {
 				let tabs = [parent].concat(this.getDescendantTabs(parent));
-				parent = pareintIndexInTree > -1 && pareintIndexInTree < tabs.length ? tabs[pareintIndexInTree] : parent ;
+				parent = parentIndexInTree > -1 && parentIndexInTree < tabs.length ? tabs[parentIndexInTree] : parent ;
 			}
 			if (parent) {
 				this.attachTabTo(tab, parent, {
