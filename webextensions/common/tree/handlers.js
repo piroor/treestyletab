@@ -130,5 +130,3 @@ function onDetached(aTabId, aDetachInfo) {
     gTabs.removeChild(oldTab);
 }
 
-window.addEventListener('DOMContentLoaded', init, { once: true });
-

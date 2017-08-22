@@ -4,9 +4,6 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-var gTabs;
-var gInternalMovingCount = 0;
-
 function init() {
   window.addEventListener('unload', destroy, { once: true });
   gTabs = document.getElementById('tabs');
@@ -62,3 +59,4 @@ function clear() {
   range.detach();
 }
 
+window.addEventListener('DOMContentLoaded', init, { once: true });
