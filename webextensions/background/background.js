@@ -19,10 +19,10 @@ function destroy() {
 
 function rebuildAll() {
   clearAllTabsContainers();
-  chrome.windows.getAll({
+  browser.windows.getAll({
     populate: true,
     windowTypes: ['normal']
-  }).then((aWindows) => {
+  }).then(aWindows => {
     aWindows.forEach((aWindow) => {
       var container = buildTabsContainerFor(aWindow.id);
       for (let tab of aWindow.tabs) {

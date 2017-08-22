@@ -5,23 +5,23 @@
 */
 
 function startObserveTabs() {
-  chrome.tabs.onActivated.addListener(onSelect);
-  chrome.tabs.onUpdated.addListener(onUpdated);
-  chrome.tabs.onCreated.addListener(onCreated);
-  chrome.tabs.onRemoved.addListener(onRemoved);
-  chrome.tabs.onMoved.addListener(onMoved);
-  chrome.tabs.onAttached.addListener(onAttached);
-  chrome.tabs.onDetached.addListener(onDetached);
+  browser.tabs.onActivated.addListener(onSelect);
+  browser.tabs.onUpdated.addListener(onUpdated);
+  browser.tabs.onCreated.addListener(onCreated);
+  browser.tabs.onRemoved.addListener(onRemoved);
+  browser.tabs.onMoved.addListener(onMoved);
+  browser.tabs.onAttached.addListener(onAttached);
+  browser.tabs.onDetached.addListener(onDetached);
 }
 
 function endObserveTabs() {
-  chrome.tabs.onActivated.removeListener(onSelect);
-  chrome.tabs.onUpdated.removeListener(onUpdated);
-  chrome.tabs.onCreated.removeListener(onCreated);
-  chrome.tabs.onRemoved.removeListener(onRemoved);
-  chrome.tabs.onMoved.removeListener(onMoved);
-  chrome.tabs.onAttached.removeListener(onAttached);
-  chrome.tabs.onDetached.removeListener(onDetached);
+  browser.tabs.onActivated.removeListener(onSelect);
+  browser.tabs.onUpdated.removeListener(onUpdated);
+  browser.tabs.onCreated.removeListener(onCreated);
+  browser.tabs.onRemoved.removeListener(onRemoved);
+  browser.tabs.onMoved.removeListener(onMoved);
+  browser.tabs.onAttached.removeListener(onAttached);
+  browser.tabs.onDetached.removeListener(onDetached);
 }
 
 
@@ -32,12 +32,12 @@ function omMouseDown(aEvent) {
   if (aEvent.button == 1 ||
       (aEvent.button == 0 && (aEvent.ctrlKey || aEvent.metaKey))) {
     log('middle-click to close');
-    chrome.tabs.remove(tab.apiTab.id);
+    browser.tabs.remove(tab.apiTab.id);
     aEvent.stopPropagation();
     aEvent.preventDefault();
     return;
   }
-  chrome.tabs.update(tab.apiTab.id, { active: true });
+  browser.tabs.update(tab.apiTab.id, { active: true });
 }
 
 function onSelect(aActiveInfo) {

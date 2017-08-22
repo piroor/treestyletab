@@ -85,7 +85,7 @@ function attachTabTo(aChild, aParent, aInfo = {}) {
     if (actualChildIndex < actualNewIndex)
       actualNewIndex--;
     log('  actualNewIndex: ', actualNewIndex);
-    chrome.tabs.move(aChild.apiTab.id, { windowId: aChild.apiTab.windowId, index: actualNewIndex });
+    browser.tabs.move(aChild.apiTab.id, { windowId: aChild.apiTab.windowId, index: actualNewIndex });
     setTimeout(() => {
       gInternalMovingCount--;
     });

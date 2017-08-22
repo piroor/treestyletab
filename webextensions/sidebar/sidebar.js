@@ -19,7 +19,7 @@ function destroy() {
 }
 
 function rebuildAll() {
-  chrome.tabs.query({ currentWindow: true }, (aTabs) => {
+  browser.tabs.query({ currentWindow: true }).then(aTabs => {
     clearAllTabsContainers();
     var container = buildTabsContainerFor(aTabs[0].windowId);
     for (let tab of aTabs) {

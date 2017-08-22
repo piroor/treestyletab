@@ -6,7 +6,7 @@
 
 function getApiTabIndex(...aQueriedTabIds) {
   return new Promise((aResolve, aReject) => {
-    chrome.tabs.query({ currentWindow: true }, (aTabs) => {
+    browser.tabs.query({ currentWindow: true }).then(aTabs => {
       var tabIds = aTabs.map((aTab) => aTab.id);
       var indexes = aQueriedTabIds.map((aQueriedTabId) => tabIds.indexOf(aQueriedTabId));
       if (indexes.length == 1)
