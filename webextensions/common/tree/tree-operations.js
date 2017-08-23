@@ -698,7 +698,12 @@ function getTreeStructureFromTabs(aTabs) {
         return index >= aIndex ? -1 : index ;
       }),
       -1
-    );
+    ).map((aParentIndex, aIndex) => {
+      return {
+        parent:    aParentIndex,
+        collapsed: isSubtreeCollapsed(aTabs[aIndex])
+      };
+    });
 }
 function cleanUpTreeStructureArray(aTreeStructure, aDefaultParent) {
   var offset = 0;
@@ -722,7 +727,7 @@ function cleanUpTreeStructureArray(aTreeStructure, aDefaultParent) {
   return aTreeStructure;
 }
 
-function applyTreeStructureToTabs(aTabs, aTreeStructure, aExpandStates) {
+function applyTreeStructureToTabs(aTabs, aTreeStructure, aExpandStates = []) {
   log('applyTreeStructureToTabs: ', aTreeStructure, aExpandStates);
   aTabs = aTabs.slice(0, aTreeStructure.length);
   aTreeStructure = aTreeStructure.slice(0, aTabs.length);
@@ -741,7 +746,15 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aExpandStates) {
     //  collapseExpandTab(tab, false, true);
     detachTab(tab);
 
-    let parentIndexInTree = aTreeStructure[i];
+    let structureInfo = aTreeStructure[i];
+    let parentIndexInTree = -1;
+    if (typeof structureInfo == 'number') { // legacy format
+      parentIndexInTree = structureInfo;
+    }
+    else {
+      parentIndexInTree = structureInfo.parent;
+      aExpandStates[i]  = !structureInfo.collapsed;
+    }
     if (parentIndexInTree < 0) // there is no parent, so this is a new parent!
       parentTab = tab.id;
 
@@ -753,14 +766,19 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aExpandStates) {
     if (parent) {
       attachTabTo(tab, parent, {
         forceExpand : true,
-        dontMove    : true
+        dontMove    : true,
+        justNow     : true
       });
     }
   }
 
-  //for (let i = aTabs.length-1; i > -1; i--) {
-  //  collapseExpandSubtree(aTabs[i], !hasChildTabs(aTabs[i]) || !aExpandStates[i], true);
-  //}
+  for (let i = aTabs.length-1; i > -1; i--) {
+    let tab = aTabs[i];
+    collapseExpandSubtree(tab, {
+      collapsed: !hasChildTabs(tab) || !aExpandStates[i],
+      justNow:   true
+    });
+  }
 }
 
 
