@@ -95,6 +95,10 @@ function selectTabInternally(aTab) {
       tab:      aTab.id
     });
   }
+  /**
+   * Note: enough large delay is truly required to wait various
+   * tab-related operations are processed in background and sidebar.
+   */
   setTimeout(() => aTab.parentNode.internalFocusCount--, 50);
 }
 
