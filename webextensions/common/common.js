@@ -28,19 +28,19 @@ function dumpTab(aTab) {
 configs = new Configs({
   treeStructure: [],
 
-  baseIndent: 12,
-  shouldDetectClickOnIndentSpaces: true,
+  baseIndent: 12, // extensions.treestyletab.indent.vertical
+  shouldDetectClickOnIndentSpaces: true, // extensions.treestyletab.clickOnIndentSpaces.enabled
   
-  smoothScrollEnabled:  true,
-  smoothScrollDuration: 150,
+  smoothScrollEnabled:  true, // extensions.treestyletab.tabbar.scroll.smooth
+  smoothScrollDuration: 150, // extensions.treestyletab.tabbar.scroll.duration
 
-  indentDuration:   200,
-  collapseDuration: 150,
+  indentDuration:   200, // extensions.treestyletab.animation.indent.duration
+  collapseDuration: 150, // extensions.treestyletab.animation.collapse.duration
 
-  shouldExpandTwistyArea: true,
+  shouldExpandTwistyArea: true, // extensions.treestyletab.twisty.expandSensitiveArea
 
-  scrollToNewTabMode: false,
-  counterRole: -1,
+  scrollToNewTabMode: null, // extensions.treestyletab.tabbar.scrollToNewTab.mode
+  counterRole: -1, // extensions.treestyletab.counter.role.vertical
 
   animation: true,
   debug:     false
