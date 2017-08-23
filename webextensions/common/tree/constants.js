@@ -37,6 +37,7 @@ var kTAB_STATE_COLLAPSED = 'collapsed';
 var kTAB_STATE_SUBTREE_COLLAPSED = 'subtree-collapsed';
 var kTAB_STATE_FAVICONIZED = 'faviconized';
 var kTAB_STATE_HIGHLIGHTED = 'highlighted';
+var kTAB_STATE_POSSIBLE_CLOSING_CURRENT = 'possible-closing-current';
 
 var kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD        = 3;
 var kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN       = 0;

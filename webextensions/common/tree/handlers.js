@@ -65,11 +65,22 @@ function onSelect(aActiveInfo) {
   var newTab = getTabById({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
   if (!newTab)
     return;
+
   var oldTabs = document.querySelectorAll(`.${kTAB_STATE_ACTIVE}`);
   for (let oldTab of oldTabs) {
     oldTab.classList.remove(kTAB_STATE_ACTIVE);
   }
   newTab.classList.add(kTAB_STATE_ACTIVE);
+
+  if (gIsBackground && oldTabs.length > 0) {
+    oldTabs[0].classList.add(kTAB_STATE_POSSIBLE_CLOSING_CURRENT);
+    setTimeout(() => {
+      var possibleClosingCurrents = document.querySelectorAll(`.${kTAB_STATE_POSSIBLE_CLOSING_CURRENT}`);
+      for (let tab of possibleClosingCurrents) {
+        tab.classList.remove(kTAB_STATE_POSSIBLE_CLOSING_CURRENT);
+      }
+    }, 100);
+  }
 }
 
 function onUpdated(aTabId, aChangeInfo, aTab) {
@@ -158,7 +169,8 @@ function onRemoved(aTabId, aRemoveInfo) {
       isSubtreeCollapsed(oldTab))
     closeChildTabs(oldTab);
 
-  //tryMoveFocusFromClosingCurrentTab(oldTab);
+  if (oldTab.classList.contains(kTAB_STATE_POSSIBLE_CLOSING_CURRENT))
+    tryMoveFocusFromClosingCurrentTab(oldTab);
 
   detachAllChildren(oldTab, {
     behavior: closeParentBehavior
