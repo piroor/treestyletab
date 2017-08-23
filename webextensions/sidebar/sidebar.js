@@ -13,6 +13,7 @@ async function init() {
   window.addEventListener('unload', destroy, { once: true });
   gAllTabs = document.getElementById('all-tabs');
   gAllTabs.addEventListener('mousedown', onMouseDown);
+  gAllTabs.addEventListener('click', onClick);
   await rebuildAll();
   browser.runtime.onMessage.addListener(onMessage);
   document.documentElement.setAttribute(kTWISTY_STYLE, configs.twistyStyle);
@@ -22,6 +23,7 @@ function destroy() {
   browser.runtime.onMessage.removeListener(onMessage);
   endObserveTabs();
   gAllTabs.removeEventListener('mousedown', onMouseDown);
+  gAllTabs.removeEventListener('click', onClick);
   gAllTabs = undefined;
 }
 

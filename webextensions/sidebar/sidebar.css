@@ -37,18 +37,28 @@ ul {
 }
 
 li.tab {
+  align-items: center;
   border: 1px solid gray;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
   margin-bottom: -1px;
   margin-left: 0;
   margin-right: 0;
   /* margin-top: 0; *//* don't set for animation */
+  line-height: 1;
   list-style: none;
   max-width: 100%;
   overflow: hidden;
   opacity: 1;
-  padding: 0.5em;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  padding: 0.25em;
+}
+
+li.tab,
+li.tab * {
+  vertical-align: middle;
+  /*outline: 1px solid red;*/
 }
 
 li.tab.animation-ready {
@@ -69,3 +79,41 @@ li.collapsed-completely {
   visibility: collapse;
 }
 
+.favicon {
+  display: inline-box;
+  height: 16px;
+  max-height: 16px;
+  max-width: 16px;
+  min-height: 16px;
+  min-width: 16px;
+  width: 16px;
+  margin: 0;
+  padding: 0;
+}
+.favicon > img {
+  max-height: 16px;
+  max-width: 16px;
+}
+
+.tab .label {
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.closebox {
+  background: none transparent;
+  border: 1px solid transparent;
+  margin: 0;
+  opacity: 0.75;
+  padding: 0.1em;
+}
+
+.closebox:hover {
+  opacity: 1;
+}
+
+.closebox:active {
+  opacity: 0.5;
+}

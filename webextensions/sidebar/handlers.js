@@ -83,7 +83,7 @@ function isEventFiredOnTwisty(aEvent) {
 
 function isEventFiredOnClosebox(aEvent) {
   return evaluateXPath(
-      `ancestor-or-self::*[${hasClass('tab-close-button')}]`,
+      `ancestor-or-self::*[${hasClass(kCLOSEBOX)}]`,
       aEvent.originalTarget || aEvent.target,
       XPathResult.BOOLEAN_TYPE
     ).booleanValue;
@@ -157,25 +157,35 @@ function onMouseDown(aEvent) {
     return;
   }
 
-  if (isEventFiredOnClosebox(aEvent)) {
-    log('clicked on closebox');
-    aEvent.stopPropagation();
-    aEvent.preventDefault();
-    //if (!warnAboutClosingTabSubtreeOf(tab)) {
-    //  aEvent.stopPropagation();
-    //  aEvent.preventDefault();
-    //  return;
-    //}
-    browser.runtime.sendMessage({
-      type:      kCOMMAND_REMOVE_TAB,
-      windowId:  tab.parentNode.windowId,
-      tab:       tab.id
-    });
+  if (isEventFiredOnClosebox(aEvent) &&
+      aEvent.button == 1) {
+    log('mousedown on closebox');
     return;
   }
 
   browser.runtime.sendMessage({
     type:      kCOMMAND_SELECT_TAB,
+    windowId:  tab.parentNode.windowId,
+    tab:       tab.id
+  });
+}
+
+function onClick(aEvent) {
+  if (!isEventFiredOnClosebox(aEvent))
+    return;
+
+  aEvent.stopPropagation();
+  aEvent.preventDefault();
+
+  log('clicked on closebox');
+  var tab = getTabFromEvent(aEvent);
+  //if (!warnAboutClosingTabSubtreeOf(tab)) {
+  //  aEvent.stopPropagation();
+  //  aEvent.preventDefault();
+  //  return;
+  //}
+  browser.runtime.sendMessage({
+    type:      kCOMMAND_REMOVE_TAB,
     windowId:  tab.parentNode.windowId,
     tab:       tab.id
   });

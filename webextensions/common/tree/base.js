@@ -49,6 +49,8 @@ var gNeedRestoreTree = false;
 var gIsMac = /Darwin/.test(navigator.platform);
 
 function buildTab(aTab, aOptions = {}) {
+  log('build tab for ', aTab);
+
   var item = document.createElement('li');
   item.apiTab = aTab;
   item.setAttribute('id', `tab-${aTab.windowId}-${aTab.id}`);
@@ -68,6 +70,17 @@ function buildTab(aTab, aOptions = {}) {
     let twisty = document.createElement('span');
     twisty.classList.add(kTWISTY);
     item.insertBefore(twisty, label);
+
+    let favicon = document.createElement('span');
+    favicon.classList.add(kFAVICON);
+    favicon.appendChild(document.createElement('img'));
+    item.insertBefore(favicon, label);
+    favicon.firstChild.src = aTab.favIconUrl || kDEFAULT_FAVICON_URL;
+
+    let closebox = document.createElement('button');
+    closebox.appendChild(document.createTextNode('✖'));
+    closebox.classList.add(kCLOSEBOX);
+    item.appendChild(closebox);
   }
 
   if (aOptions.existing) {
@@ -80,6 +93,9 @@ function buildTab(aTab, aOptions = {}) {
 function updateTab(aTab, aParams = {}) {
   if ('label' in aParams)
     getTabLabel(aTab).textContent = aParams.label;
+
+  if ('favicon' in aParams)
+    getTabFavicon(aTab).firstChild.src = aParams.favicon;
 }
 
 async function selectTabInternally(aTab) {

@@ -158,7 +158,8 @@ function onUpdated(aTabId, aChangeInfo, aTab) {
     return;
 
   updateTab(updatedTab, {
-    label: aTab.title
+    label:   aTab.title,
+    favicon: aTab.favIconUrl
   });
   updatedTab.apiTab = aTab;
 

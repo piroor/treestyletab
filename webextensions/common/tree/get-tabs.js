@@ -91,6 +91,9 @@ function getTabById(aIdOrInfo) {
 function getTabTwisty(aTab) {
   return aTab.querySelector(`.${kTWISTY}`);
 }
+function getTabFavicon(aTab) {
+  return aTab.querySelector(`.${kFAVICON}`);
+}
 function getTabSoundButton(aTab) {
   return aTab.querySelector(`.${kSOUND_BUTTON}`);
 }
