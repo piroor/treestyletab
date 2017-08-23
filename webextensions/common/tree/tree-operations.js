@@ -490,7 +490,7 @@ function collapseExpandTab(aTab, aParams = {}) {
 }
 
 async function updateTabCollapsed(aTab, aParams = {}) {
-  log('updateTabCollapsed ', dumpTab(aTab));
+  //log('updateTabCollapsed ', dumpTab(aTab));
   if (!aTab.parentNode) // do nothing for closed tab!
     return;
 
@@ -515,7 +515,7 @@ async function updateTabCollapsed(aTab, aParams = {}) {
   if (!canAnimate() ||
       aParams.justNow ||
       configs.collapseDuration < 1) {
-    log('=> skip animation');
+    //log('=> skip animation');
     if (aParams.collapsed)
       aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
     else
@@ -543,7 +543,7 @@ async function updateTabCollapsed(aTab, aParams = {}) {
 
   return new Promise((aResolve, aReject) => {
     window.requestAnimationFrame(() => {
-      log('start animation for ', dumpTab(aTab));
+      //log('start animation for ', dumpTab(aTab));
       if (typeof aParams.onStart == 'function')
         aParams.onStart();
 
@@ -551,7 +551,7 @@ async function updateTabCollapsed(aTab, aParams = {}) {
         delete aTab.onEndCollapseExpandAnimation;
         if (backupTimer)
           clearTimeout(backupTimer);
-        log('=> finish animation for ', dumpTab(aTab));
+        //log('=> finish animation for ', dumpTab(aTab));
         if (aParams.collapsed)
           aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
         aTab.removeAttribute(kCOLLAPSING_PHASE);
