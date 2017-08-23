@@ -303,6 +303,10 @@ function updateTabsIndent(aTabs, aLevel = undefined) {
 
 // collapse/expand tabs
 
+function shouldTabAutoExpanded(aTab) {
+  return hasChildTabs(aTab) && isSubtreeCollapsed(aTab);
+}
+
 function collapseExpandSubtree(aTab, aParams = {}) {
   log('collapseExpandSubtree: ', dumpTab(aTab), aParams);
   if (!aTab ||
@@ -575,7 +579,7 @@ function collapseExpandTreesIntelligentlyFor(aTab, aParams = {}) {
       dontCollapse = true;
       if (!isSubtreeCollapsed(parentTab)) {
         for (let ancestor of getAncestorTabs(collapseTab)) {
-          if (expandedAncestors.indexOf(`<${aAncestor.id}>`) < 0)
+          if (expandedAncestors.indexOf(`<${ancestor.id}>`) < 0)
             continue;
           dontCollapse = false;
           break;
