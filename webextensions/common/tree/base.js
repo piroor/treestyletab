@@ -44,6 +44,8 @@ var gTargetWindow = null;
 var gRestoringTree = false;
 var gOpeningCount = 0;
 
+var gIsMac = /Darwin/.test(navigator.platform);
+
 function buildTab(aTab) {
   var item = document.createElement('li');
   item.apiTab = aTab;
