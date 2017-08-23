@@ -104,6 +104,9 @@ function onSelect(aActiveInfo) {
 
   newTab.parentNode.focusChangedByCurrentTabRemove = false;
 
+  //if (!isTabInViewport(newTab))
+  //  scrollToTab(newTab);
+
   if (gIsBackground &&
       !noMoreFocusChange &&
       oldTabs.length > 0) {
@@ -227,9 +230,8 @@ function onRemoved(aTabId, aRemoveInfo) {
   //var backupAttributes = collectBackupAttributes(oldTab);
   //log('onTabClose: backupAttributes = ', backupAttributes);
 
-  var closeParentBehavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD; //getCloseParentBehaviorForTab(oldTab);
-  if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN ||
-      isSubtreeCollapsed(oldTab))
+  var closeParentBehavior = getCloseParentBehaviorForTab(oldTab);
+  if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     closeChildTabs(oldTab);
 
   if (oldTab.classList.contains(kTAB_STATE_POSSIBLE_CLOSING_CURRENT))
@@ -246,7 +248,7 @@ function onRemoved(aTabId, aRemoveInfo) {
   if (gIsBackground)
     reserveToSaveTreeStructure(oldTab);
 
-  if (canAnimate()) {
+  if (canAnimate() && !isCollapsed(oldTab)) {
     oldTab.addEventListener('transitionend', () => {
       onRemovedComplete(oldTab)
     }, { once: true });

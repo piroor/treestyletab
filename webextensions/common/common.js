@@ -59,6 +59,11 @@ configs = new Configs({
   indentAutoShrink: true, // extensions.treestyletab.indent.autoShrink
   indentAutoShrinkOnlyForVisible: true, // extensions.treestyletab.indent.autoShrink.onlyForVisible
 
+  closeParentBehavior: kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD, // extensions.treestyletab.closeParentBehavior
+  closeParentBehaviorMoveDetachedTabsToBottom: false, // extensions.treestyletab.closeParentBehavior.moveDetachedTabsToBottom
+  closeParentBehaviorPromoteAllChildrenWhenParentIsLastChild: true, // extensions.treestyletab.closeParentBehavior.promoteAllChildrenWhenParentIsLastChild
+  closeRootBehavior: kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD, // extensions.treestyletab.closeRootBehavior
+
   acceptableDelayForInternalFocusMoving: 150,
 
   animation: true,

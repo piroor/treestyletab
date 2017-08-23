@@ -44,7 +44,8 @@ async function inheritTreeStructure() {
     windowId: gTargetWindow
   });
   log('response: ', response);
-  applyTreeStructureToTabs(getAllTabs(gTargetWindow), response.structure);
+  if (response)
+    applyTreeStructureToTabs(getAllTabs(gTargetWindow), response.structure);
 }
 
 

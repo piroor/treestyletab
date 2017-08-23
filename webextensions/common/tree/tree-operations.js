@@ -643,11 +643,11 @@ function closeChildTabs(aParent) {
   //fireTabSubtreeClosedEvent(aParent, tabs);
 }
 
-function tryMoveFocusFromClosingCurrentTab(aTab) {
+async function tryMoveFocusFromClosingCurrentTab(aTab) {
   log('tryMoveFocusFromClosingCurrentTab');
   var nextFocusedTab = null;
 
-  var closeParentBehavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD; //getCloseParentBehaviorForTab(aTab);
+  var closeParentBehavior = getCloseParentBehaviorForTab(aTab);
   var firstChild = getFirstChildTab(aTab);
   if (firstChild &&
       (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN ||
@@ -688,8 +688,33 @@ function tryMoveFocusFromClosingCurrentTab(aTab) {
   //  return;
 
   nextFocusedTab.parentNode.focusChangedByCurrentTabRemove = true;
-  selectTabInternally(nextFocusedTab);
+  await selectTabInternally(nextFocusedTab);
   return true;
+}
+
+function getCloseParentBehaviorForTab(aTab, aDefaultBehavior) {
+  if (isSubtreeCollapsed(aTab))
+    return kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN;
+
+  var closeParentBehavior = configs.closeParentBehavior;
+  var closeRootBehavior = configs.closeRootBehavior;
+
+  var parentTab = getParentTab(aTab);
+  var behavior = aDefaultBehavior ?
+                   aDefaultBehavior :
+                 (!parentTab &&
+                  closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN) ?
+                   closeRootBehavior :
+                   closeParentBehavior ;
+  // Promote all children to upper level, if this is the last child of the parent.
+  // This is similar to "taking by representation".
+  if (behavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD &&
+      parentTab &&
+      getChildTabs(parentTab).length == 1 &&
+      configs.closeParentBehaviorPromoteAllChildrenWhenParentIsLastChild)
+    behavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
+
+  return behavior;
 }
 
 

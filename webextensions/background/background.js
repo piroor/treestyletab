@@ -145,7 +145,7 @@ function getTabsSignature(aApiTabs) {
 }
 
 
-function onMessage(aMessage, aSender, aRespond) {
+async function onMessage(aMessage, aSender, aRespond) {
   //log('onMessage: ', aMessage, aSender);
   switch (aMessage.type) {
     case kCOMMAND_PULL_TREE_STRUCTURE:
@@ -170,7 +170,7 @@ function onMessage(aMessage, aSender, aRespond) {
 
     case kCOMMAND_REMOVE_TAB: {
       let tab = getTabById(aMessage.tab);
-      tryMoveFocusFromClosingCurrentTab(tab);
+      await tryMoveFocusFromClosingCurrentTab(tab);
       browser.tabs.remove(tab.apiTab.id);
     }; break;
 

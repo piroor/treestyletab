@@ -82,11 +82,12 @@ function updateTab(aTab, aParams = {}) {
     getTabLabel(aTab).textContent = aParams.label;
 }
 
-function selectTabInternally(aTab) {
+async function selectTabInternally(aTab) {
   log('selectTabInternally: ', dumpTab(aTab));
-  aTab.parentNode.internalFocusCount++;
+  var container = aTab.parentNode;
+  container.internalFocusCount++;
   if (gIsBackground) {
-    browser.tabs.update(aTab.apiTab.id, { active: true });
+    await browser.tabs.update(aTab.apiTab.id, { active: true });
   }
   else {
     browser.runtime.sendMessage({
@@ -99,7 +100,7 @@ function selectTabInternally(aTab) {
    * Note: enough large delay is truly required to wait various
    * tab-related operations are processed in background and sidebar.
    */
-  setTimeout(() => aTab.parentNode.internalFocusCount--,
+  setTimeout(() => container.internalFocusCount--,
     configs.acceptableDelayForInternalFocusMoving);
 }
 
