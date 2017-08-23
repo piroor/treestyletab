@@ -75,7 +75,7 @@ function buildTab(aTab) {
 }
 
 function updateTab(aTab, aParams = {}) {
-  if (aParams.label)
+  if ('label' in aParams)
     getTabLabel(aTab).textContent = aParams.label;
 }
 
