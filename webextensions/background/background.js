@@ -146,7 +146,7 @@ function getTabsSignature(aApiTabs) {
 
 
 function onMessage(aMessage, aSender, aRespond) {
-  log('onMessage: ', aMessage, aSender);
+  //log('onMessage: ', aMessage, aSender);
   switch (aMessage.type) {
     case kCOMMAND_PULL_TREE_STRUCTURE:
       aRespond({

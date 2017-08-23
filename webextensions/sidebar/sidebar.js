@@ -49,7 +49,7 @@ async function inheritTreeStructure() {
 
 
 function onMessage(aMessage, aSender, aRespond) {
-  log('onMessage: ', aMessage, aSender);
+  //log('onMessage: ', aMessage, aSender);
   switch (aMessage.type) {
     case kCOMMAND_PUSH_TREE_STRUCTURE:
       if (aMessage.windowId == gTargetWindow)
