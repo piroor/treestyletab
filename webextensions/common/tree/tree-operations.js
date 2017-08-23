@@ -42,6 +42,22 @@ async function attachTabTo(aChild, aParent, aInfo = {}) {
     log('missing information: ', dumpTab(aParent), dumpTab(aChild));
     return;
   }
+
+  try {
+    await Promise.all([
+      browser.tabs.get(aChild.apiTab.id),
+      browser.tabs.get(aParent.apiTab.id)
+    ]);
+  }
+  catch(e) {
+    log('alrady closed tabs cannot be attached! ', {
+      child:  dumpTab(aChild),
+      parent: dumpTab(aParent),
+      error:  String(e)
+    });
+    return;
+  }
+
   log('attachTabTo: ', {
     parent:   dumpTab(aParent),
     children: aParent.getAttribute(kCHILDREN),
@@ -125,6 +141,14 @@ async function attachTabTo(aChild, aParent, aInfo = {}) {
   var [actualChildIndex, actualNewIndex] = await getApiTabIndex(aChild.apiTab.id, nextTab.apiTab.id);
   if (actualChildIndex < actualNewIndex)
     actualNewIndex--;
+
+  if (actualChildIndex < 0 || actualNewIndex < 0) {
+    log('alrady closed tab cannot be moved! ', {
+      child: actualChildIndex,
+      next:  actualNewIndex
+    });
+    return;
+  }
 
   log('actualNewIndex: ', actualNewIndex);
   browser.tabs.move(aChild.apiTab.id, {
