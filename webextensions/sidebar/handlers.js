@@ -158,7 +158,7 @@ function onMouseDown(aEvent) {
   }
 
   if (isEventFiredOnClosebox(aEvent) &&
-      aEvent.button == 1) {
+      aEvent.button == 0) {
     log('mousedown on closebox');
     return;
   }
