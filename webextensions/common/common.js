@@ -49,13 +49,14 @@ configs = new Configs({
 
   autoCollapseExpandSubtreeOnAttach: true, // extensions.treestyletab.autoCollapseExpandSubtreeOnAttach
   autoCollapseExpandSubtreeOnSelect: true, // extensions.treestyletab.autoCollapseExpandSubtreeOnSelect
+  autoCollapseExpandSubtreeOnSelectWhileFocusMovingByShortcut: true, // extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut
+  autoCollapseExpandSubtreeOnSelectOnCurrentTabRemove: false, // extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove
   autoExpandSubtreeOnAppendChild: true, // extensions.treestyletab.autoExpandSubtreeOnAppendChild
+  autoExpandSubtreeOnCollapsedChildFocused : true, // extensions.treestyletab.autoExpandSubtreeOnCollapsedChildFocused
+  autoExpandIntelligently: true, // extensions.treestyletab.autoExpand.intelligently
 
   indentAutoShrink: true, // extensions.treestyletab.indent.autoShrink
   indentAutoShrinkOnlyForVisible: true, // extensions.treestyletab.indent.autoShrink.onlyForVisible
-
-  autoCollapseExpandSubtreeOnSelectWhileFocusMovingByShortcut: true, // extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut
-  autoCollapseExpandSubtreeOnSelect: true, // extensions.treestyletab.autoCollapseExpandSubtreeOnSelect
 
   animation: true,
   debug:     false

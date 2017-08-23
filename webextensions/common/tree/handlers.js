@@ -66,13 +66,49 @@ function onSelect(aActiveInfo) {
   if (!newTab)
     return;
 
+  //cancelDelayedExpandOnTabSelect(); // for Ctrl-Tab
+
   var oldTabs = document.querySelectorAll(`.${kTAB_STATE_ACTIVE}`);
   for (let oldTab of oldTabs) {
     oldTab.classList.remove(kTAB_STATE_ACTIVE);
   }
   newTab.classList.add(kTAB_STATE_ACTIVE);
 
-  if (gIsBackground && oldTabs.length > 0) {
+  var noMoreFocusChange = false;
+  var shouldCollapseExpandNow = configs.autoCollapseExpandSubtreeOnSelect;
+  var newActiveTabOptions = {
+    canCollapseTree : shouldCollapseExpandNow,
+    canExpandTree   : shouldCollapseExpandNow
+  };
+  if (isCollapsed(newTab)) {
+    if (configs.autoExpandSubtreeOnCollapsedChildFocused) {
+      for (let ancestor of getAncestorTabs(newTab)) {
+        collapseExpandSubtree(ancestor, { collapsed: false });
+      }
+      handleNewActiveTab(newTab, newActiveTabOptions);
+    }
+    else {
+      browser.tabs.update(getRootTab(newTab).apiTab.id, { active: true });
+      noMoreFocusChange = true;
+    }
+  }
+  else if (/**
+            * Focus movings by closing of the old current tab should be handled
+            * only when it is activated by user preference expressly.
+            */
+           newTab.parentNode.focusChangedByCurrentTabRemove &&
+           !configs.autoCollapseExpandSubtreeOnSelectOnCurrentTabRemove) {
+    noMoreFocusChange = true;
+  }
+  else if (hasChildTabs(newTab) && isSubtreeCollapsed(newTab)) {
+    handleNewActiveTab(newTab, newActiveTabOptions);
+  }
+
+  newTab.parentNode.focusChangedByCurrentTabRemove = false;
+
+  if (gIsBackground &&
+      !noMoreFocusChange &&
+      oldTabs.length > 0) {
     oldTabs[0].classList.add(kTAB_STATE_POSSIBLE_CLOSING_CURRENT);
     setTimeout(() => {
       var possibleClosingCurrents = document.querySelectorAll(`.${kTAB_STATE_POSSIBLE_CLOSING_CURRENT}`);
@@ -81,6 +117,28 @@ function onSelect(aActiveInfo) {
       }
     }, 100);
   }
+}
+function handleNewActiveTab(aTab, aOptions = {}) {
+  if (aTab.parentNode.doingCollapseExpand)
+    return;
+
+  if (handleNewActiveTab.timer)
+    clearTimeout(handleNewActiveTab.timer);
+
+  /**
+   * First, we wait until all event listeners for tabs.onSelect
+   * were processed.
+   */
+  handleNewActiveTab.timer = setTimeout(() => {
+    delete handleNewActiveTab.timer;
+    if (aOptions.canExpandTree) {
+      if (aOptions.canCollapseTree &&
+          configs.autoExpandIntelligently)
+        collapseExpandTreesIntelligentlyFor(aTab);
+      else
+        collapseExpandSubtree(aTab, { collapsed: false });
+    }
+  }, 0);
 }
 
 function onUpdated(aTabId, aChangeInfo, aTab) {

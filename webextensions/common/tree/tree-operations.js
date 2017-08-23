@@ -680,7 +680,7 @@ function tryMoveFocusFromClosingCurrentTab(aTab) {
   //if (!canFocus)
   //  return;
 
-  //focusChangedByCurrentTabRemove = true;
+  nextFocusedTab.parentNode.focusChangedByCurrentTabRemove = true;
   browser.tabs.update(nextFocusedTab.apiTab.id, { active: true });
   return true;
 }
