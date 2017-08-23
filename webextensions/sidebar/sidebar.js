@@ -60,6 +60,8 @@ function onMessage(aMessage, aSender, aRespond) {
     case kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE:
       if (aMessage.windowId == gTargetWindow) {
         let tab = getTabById(aMessage.tab);
+        if (!tab)
+          return;
         let params = {
           collapsed: aMessage.collapsed,
           justNow:   !aMessage.manualOperation,

@@ -23,6 +23,8 @@ function log(aMessage, ...aArgs)
 function dumpTab(aTab) {
   if (!configs || !configs.debug)
     return '';
+  if (!aTab)
+    return '<NULL>';
   return `${getTabIndex(aTab)} #${aTab.id}.${aTab.className} ${JSON.stringify(aTab.textContent)}`;
 }
 

@@ -156,6 +156,8 @@ async function onMessage(aMessage, aSender, aRespond) {
 
     case kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE: {
       let tab = getTabById(aMessage.tab);
+      if (!tab)
+        return;
       let params = {
         collapsed:      aMessage.collapsed,
         justNow:        true,
@@ -170,17 +172,24 @@ async function onMessage(aMessage, aSender, aRespond) {
 
     case kCOMMAND_REMOVE_TAB: {
       let tab = getTabById(aMessage.tab);
+      if (!tab)
+        return;
       await tryMoveFocusFromClosingCurrentTab(tab);
       browser.tabs.remove(tab.apiTab.id);
     }; break;
 
     case kCOMMAND_SELECT_TAB: {
       let tab = getTabById(aMessage.tab);
+      if (!tab)
+        return;
       browser.tabs.update(tab.apiTab.id, { active: true });
     }; break;
 
-    case kCOMMAND_SELECT_TAB_INTERNALLY:
-      selectTabInternally(getTabById(aMessage.tab));
-      break;
+    case kCOMMAND_SELECT_TAB_INTERNALLY: {
+      let tab = getTabById(aMessage.tab);
+      if (!tab)
+        return;
+      selectTabInternally(tab);
+    }; break;
   }
 }
