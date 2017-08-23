@@ -110,8 +110,10 @@ async function attachTabTo(aChild, aParent, aInfo = {}) {
 
   gInternalMovingCount++;
   var nextTab = getTabs(aChild)[newIndex];
-  if (nextTab != aChild)
+  if (nextTab != aChild) {
+    log('put tab before ', dumpTab(nextTab));
     getTabsContainer(nextTab || aChild).insertBefore(aChild, nextTab);
+  }
 
   var [actualChildIndex, actualNewIndex] = await getApiTabIndex(aChild.apiTab.id, nextTab.apiTab.id);
   if (actualChildIndex < actualNewIndex)

@@ -190,7 +190,7 @@ function onRemoved(aTabId, aRemoveInfo) {
   }
 }
 function onRemovedComplete(aTab) {
-  var container = getTabsContainer(aTab);
+  var container = aTab.parentNode;
   container.removeChild(aTab);
   if (!container.hasChildNodes())
     container.parentNode.removeChild(container);
