@@ -201,8 +201,8 @@ function getFirstChildTab(aParent) {
 
 function getLastChildTab(aParent) {
   return evaluateXPath(
-    `following-sibling::xhtml:li${kXPATH_LIVE_TAB}[@${kPARENT}="${parentId}"][last()]`,
-    aTab,
+    `following-sibling::xhtml:li${kXPATH_LIVE_TAB}[@${kPARENT}="${aParent.id}"][last()]`,
+    aParent,
     XPathResult.FIRST_ORDERED_NODE_TYPE
   ).singleNodeValue;
 }
