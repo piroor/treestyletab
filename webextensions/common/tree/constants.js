@@ -33,6 +33,8 @@ var kTAB_STATE_ANIMATION_READY = 'animation-ready';
 var kTAB_STATE_REMOVING = 'removing';
 var kTAB_STATE_COLLAPSED = 'collapsed';
 var kTAB_STATE_SUBTREE_COLLAPSED = 'subtree-collapsed';
+var kTAB_STATE_FAVICONIZED = 'faviconized';
+var kTAB_STATE_HIGHLIGHTED = 'highlighted';
 
 var kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD        = 3;
 var kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN       = 0;

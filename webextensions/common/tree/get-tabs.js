@@ -269,13 +269,6 @@ function getPinnedTabs(aHint) { // visible, pinned
   return Array.slice(container.querySelectorAll(kSELECTOR_PINNED_TAB));
 }
 
-function countPinnedTabs(aHint) {
-  var container = getTabsContainer(aHint);
-  if (!container)
-    return 0;
-  return container.querySelectorAll(kSELECTOR_PINNED_TAB).length;
-}
-
 function getAllRootTabs(aHint) {
   var container = getTabsContainer(aHint);
   return container.querySelector(`${kSELECTOR_LIVE_TAB}:not([${kPARENT}])`);

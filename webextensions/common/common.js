@@ -42,6 +42,13 @@ configs = new Configs({
   scrollToNewTabMode: null, // extensions.treestyletab.tabbar.scrollToNewTab.mode
   counterRole: -1, // extensions.treestyletab.counter.role.vertical
 
+  style: null, // extensions.treestyletab.tabbar.style
+
+  faviconizePinnedTabs: true, // extensions.treestyletab.pinnedTab.faviconized
+
+  autoCollapseExpandSubtreeOnSelectWhileFocusMovingByShortcut: true, // extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut
+  autoCollapseExpandSubtreeOnSelect: true, // extensions.treestyletab.autoCollapseExpandSubtreeOnSelect
+
   animation: true,
   debug:     false
 });

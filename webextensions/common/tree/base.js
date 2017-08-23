@@ -58,6 +58,7 @@ function buildTab(aTab) {
   item.classList.add('tab');
   if (aTab.active)
     item.classList.add('active');
+  item.classList.add(kSUBTREE_COLLAPSED);
 
   let label = document.createElement('span');
   label.classList.add(kLABEL);
