@@ -60,3 +60,15 @@ function onMessage(aMessage, aSender, aRespond) {
       break;
   }
 }
+
+
+function collapseExpandAllSubtree(aParams = {}) {
+  var container = getTabsContainer(gTargetWindow);
+  var subtreeCondition = aParams.collapsed ?
+        `:not(.${kTAB_STATE_SUBTREE_COLLAPSED})` :
+        `.${kTAB_STATE_SUBTREE_COLLAPSED}`
+  var tabs = container.querySelectorAll(`.tab:not([${kCHILDREN}="|"])${subtreeCondition}`);
+  for (let tab of tabs) {
+    collapseExpandSubtree(tab, aParams);
+  }
+}

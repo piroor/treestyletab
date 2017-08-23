@@ -106,12 +106,19 @@ async function attachTabTo(aChild, aParent, aInfo = {}) {
 
   aChild.setAttribute(kPARENT, aParent.id);
   var parentLevel = parseInt(aParent.getAttribute(kNEST) || 0);
-  updateTabsIndent(aChild, parentLevel + 1);
+  if (!aInfo.dontUpdateIndent) {
+    updateTabsIndent(aChild, parentLevel + 1);
+    //checkTabsIndentOverflow();
+  }
+  //updateTabAsParent(aParent);
+  //if (shouldInheritIndent && !aInfo.dontUpdateIndent)
+    //this.inheritTabIndent(aChild, aParent);
 
   gInternalMovingCount++;
   var nextTab = getTabs(aChild)[newIndex];
   if (nextTab != aChild) {
     log('put tab before ', dumpTab(nextTab));
+    //moveTabSubtreeTo(aChild, newIndex);
     getTabsContainer(nextTab || aChild).insertBefore(aChild, nextTab);
   }
 
@@ -127,6 +134,41 @@ async function attachTabTo(aChild, aParent, aInfo = {}) {
   setTimeout(() => {
     gInternalMovingCount--;
   });
+
+  if (aInfo.forceExpand) {
+    collapseExpandSubtree(aParent, { collapsed: false, justNow: aInfo.justNow });
+  }
+  else if (!aInfo.dontExpand) {
+    if (configs.autoCollapseExpandSubtreeOnAttach &&
+        shouldTabAutoExpanded(aParent))
+      collapseExpandTreesIntelligentlyFor(aParent);
+
+    let newAncestors = [aParent].concat(getAncestorTabs(aParent));
+    if (configs.autoCollapseExpandSubtreeOnSelect) {
+      newAncestors.forEach(aAncestor => {
+        if (shouldTabAutoExpanded(aAncestor))
+          collapseExpandSubtree(aAncestor, { collapsed: false, justNow: aInfo.justNow });
+      });
+    }
+    else if (shouldTabAutoExpanded(aParent)) {
+      if (configs.autoExpandSubtreeOnAppendChild) {
+        newAncestors.forEach(aAncestor => {
+          if (shouldTabAutoExpanded(aAncestor))
+            collapseExpandSubtree(aAncestor, { collapsed: false, justNow: aInfo.justNow });
+        });
+      }
+      else
+        collapseExpandTab(aChild, { collapsed: true, justNow: aInfo.justNow });
+    }
+    if (isCollapsed(aParent))
+      collapseExpandTab(aChild, { collapsed: true, justNow: aInfo.justNow });
+  }
+  else if (shouldTabAutoExpanded(aParent) ||
+           isCollapsed(aParent)) {
+    collapseExpandTab(aChild, { collapsed: true, justNow: aInfo.justNow });
+  }
+
+  //promoteTooDeepLevelTabs(aChild);
 
   if (gIsBackground)
     reserveToSaveTreeStructure(aChild);
@@ -199,8 +241,8 @@ function detachAllChildren(aTab, aInfo = {}) {
             dontMove   : true
           }));
         }
-        //collapseExpandSubtree(child, false);
-        //deleteTabValue(child, kSUBTREE_COLLAPSED);
+        collapseExpandSubtree(child, false);
+        //deleteTabValue(child, kTAB_STATE_SUBTREE_COLLAPSED);
       }
       else {
         attachTabTo(child, children[0], inherit(aInfo, {
@@ -256,6 +298,312 @@ function updateTabsIndent(aTabs, aLevel = undefined) {
     item.setAttribute(kNEST, aLevel);
     updateTabsIndent(getChildTabs(item), aLevel + 1);
   }
+}
+
+
+// collapse/expand tabs
+
+function collapseExpandSubtree(aTab, aParams = {}) {
+  log('collapseExpandSubtree: ', dumpTab(aTab), aParams);
+  if (!aTab ||
+      (isSubtreeCollapsed(aTab) == aParams.collapsed))
+    return;
+
+  var container = getTabsContainer(aTab);
+  container.doingCollapseExpand = true;
+
+  if (aParams.collapsed)
+    aTab.classList.add(kTAB_STATE_SUBTREE_COLLAPSED);
+  else
+    aTab.classList.remove(kTAB_STATE_SUBTREE_COLLAPSED);
+  //setTabValue(aTab, kTAB_STATE_SUBTREE_COLLAPSED, aParams.collapsed);
+
+  var childTabs = getChildTabs(aTab);
+  var lastExpandedTabIndex = childTabs.length - 1;
+  for (let i = 0, maxi = childTabs.length; i < maxi; i++) {
+    let childTab = childTabs[i];
+    if (!aParams.collapsed &&
+        !aParams.justNow &&
+        i == lastExpandedTabIndex) {
+      collapseExpandTab(childTab, {
+         collapsed: aParams.collapsed,
+         justNow:   aParams.justNow//,
+         //onStart:   () => scrollToTabSubtree(aTab)
+      });
+    }
+    else {
+      collapseExpandTab(childTab, {
+        collapsed: aParams.collapsed,
+        justNow:   aParams.justNow
+      });
+    }
+  }
+
+  if (aParams.collapsed) {
+    aTab.classList.remove(kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
+    //deleteTabValue(aTab, kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
+  }
+
+  //if (configs.indentAutoShrink &&
+  //    configs.indentAutoShrinkOnlyForVisible)
+  //  checkTabsIndentOverflow();
+
+  container.doingCollapseExpand = false;
+}
+
+function manualCollapseExpandSubtree(aTab, aParams = {}) {
+  collapseExpandSubtree(aTab, aParams);
+  if (!aParams.collapsed) {
+    aTab.classList.add(kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
+    //setTabValue(aTab, kTAB_STATE_SUBTREE_EXPANDED_MANUALLY, true);
+  }
+
+/*
+  if (!configs.indentAutoShrink ||
+      !configs.indentAutoShrinkOnlyForVisible)
+    return;
+
+  cancelCheckTabsIndentOverflow();
+  if (!aTab.checkTabsIndentOverflowOnMouseLeave) {
+    let stillOver = false;
+    let id = aTab.id
+    aTab.checkTabsIndentOverflowOnMouseLeave = function checkTabsIndentOverflowOnMouseLeave(aEvent, aDelayed) {
+      if (aEvent.type == 'mouseover') {
+        if (evaluateXPath(
+              `ancestor-or-self::*[#${id}]`,
+              aEvent.originalTarget || aEvent.target,
+              XPathResult.BOOLEAN_TYPE
+            ).booleanValue)
+            stillOver = true;
+          return;
+        }
+        else if (!aDelayed) {
+          if (stillOver) {
+            stillOver = false;
+          }
+          setTimeout(() => aTab.checkTabsIndentOverflowOnMouseLeave(aEvent, true), 0);
+          return;
+        } else if (stillOver) {
+          return;
+        }
+        var x = aEvent.clientX;
+        var y = aEvent.clientY;
+        var rect = aTab.getBoundingClientRect();
+        if (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom)
+          return;
+        document.removeEventListener('mouseover', aTab.checkTabsIndentOverflowOnMouseLeave, true);
+        document.removeEventListener('mouseout', aTab.checkTabsIndentOverflowOnMouseLeave, true);
+        delete aTab.checkTabsIndentOverflowOnMouseLeave;
+        checkTabsIndentOverflow();
+      };
+      document.addEventListener('mouseover', aTab.checkTabsIndentOverflowOnMouseLeave, true);
+      document.addEventListener('mouseout', aTab.checkTabsIndentOverflowOnMouseLeave, true);
+    }
+  }
+*/
+}
+
+function collapseExpandTab(aTab, aParams = {}) {
+  if (!aTab)
+    return;
+
+  var parent = getParentTab(aTab);
+  if (!parent)
+    return;
+
+  if (aParams.collapsed)
+    aTab.classList.add(kTAB_STATE_COLLAPSED);
+  else
+    aTab.classList.remove(kTAB_STATE_COLLAPSED);
+  //setTabValue(aTab, kTAB_STATE_COLLAPSED, aParams.collapsed);
+  updateTabCollapsed(aTab, aParams);
+
+  //var data = {
+  //  collapsed : aParams.collapsed
+  //};
+  ///* PUBLIC API */
+  //fireCustomEvent(kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, aTab, true, false, data);
+
+  if (aParams.collapsed && isActive(aTab)) {
+    let newSelection = parent;
+    for (let ancestor of getAncestorTabs(aTab)) {
+      if (isCollapsed(ancestor))
+        continue;
+      newSelection = ancestor;
+      break;
+    }
+    browser.tabs.update(newSelection.apiTab.id, { active: true });
+  }
+
+  if (!isSubtreeCollapsed(aTab)) {
+    for (let tab of getChildTabs(aTab)) {
+      collapseExpandTab(tab, {
+        collapsed: aParams.collapsed,
+        justNow:   aParams.justNow
+      });
+    }
+  }
+}
+
+async function updateTabCollapsed(aTab, aParams = {}) {
+  log('updateTabCollapsed ', dumpTab(aTab));
+  if (!aTab.parentNode) // do nothing for closed tab!
+    return;
+
+  if (aTab.onEndCollapseExpandAnimation) {
+    aTab.removeEventListener('transitionend', aTab.onEndCollapseExpandAnimation, { once: true });
+    delete aTab.onEndCollapseExpandAnimation;
+  }
+
+  aTab.setAttribute(kCOLLAPSING_PHASE, aParams.collapsed ? kCOLLAPSING_PHASE_TO_BE_COLLAPSED : kCOLLAPSING_PHASE_TO_BE_EXPANDED );
+
+  var endMargin, endOpacity;
+  if (aParams.collapsed) {
+    let firstTab = getFirstNormalTab(aTab) || getFirstTab(aTab);
+    endMargin  = firstTab.getBoundingClientRect().height;
+    endOpacity = 0;
+  }
+  else {
+    endMargin  = 0;
+    endOpacity = 1;
+  }
+
+  if (!canAnimate() ||
+      aParams.justNow ||
+      configs.collapseDuration < 1) {
+    log('=> skip animation');
+    if (aParams.collapsed)
+      aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
+    else
+      aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
+    aTab.removeAttribute(kCOLLAPSING_PHASE);
+
+    // Pinned tabs are positioned by "margin-top", so
+    // we must not reset the property for pinned tabs.
+    // (However, we still must update "opacity".)
+    if (!isPinned(aTab))
+      aTab.style.marginTop = endMargin ? `-${endMargin}px` : '';
+
+    if (endOpacity == 0)
+      aTab.style.opacity = 0;
+    else
+      aTab.style.opacity = '';
+
+    if (typeof aParams.onStart == 'function')
+      aParams.onStart();
+    return;
+  }
+
+  if (!aParams.collapsed)
+    aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
+
+  return new Promise((aResolve, aReject) => {
+    window.requestAnimationFrame(() => {
+      log('start animation for ', dumpTab(aTab));
+      if (typeof aParams.onStart == 'function')
+        aParams.onStart();
+
+      aTab.onEndCollapseExpandAnimation = (() => {
+        delete aTab.onEndCollapseExpandAnimation;
+        log('=> finish animation for ', dumpTab(aTab));
+        if (aParams.collapsed)
+          aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
+        aTab.removeAttribute(kCOLLAPSING_PHASE);
+        if (endOpacity > 0) {
+          if (window.getComputedStyle(aTab).opacity > 0) {
+            aTab.style.opacity = '';
+            aTab = null;
+          }
+          else {
+            // If we clear its "opacity" before it becomes "1"
+            // by CSS transition, the calculated opacity will
+            // become 0 after we set an invalid value to clear it.
+            // So we have to clear it with delay.
+            // This is workaround for the issue:
+            //   https://github.com/piroor/treestyletab/issues/1202
+            setTimeout(function() {
+              aTab.style.opacity = '';
+              aTab = null;
+            }, 0);
+          }
+        }
+        aResolve();
+      });
+      aTab.addEventListener('transitionend', aTab.onEndCollapseExpandAnimation, { once: true });
+      var backupTimer = setTimeout(() => {
+        if (!aTab.onEndCollapseExpandAnimation)
+          return;
+        backupTimer = null
+        aTab.removeEventListener('transitionend', aTab.onEndCollapseExpandAnimation, { once: true });
+        aTab.onEndCollapseExpandAnimation();
+      }, configs.collapseDuration);
+
+      aTab.style.marginTop = endMargin ? `-${endMargin}px` : '';
+      aTab.style.opacity   = endOpacity;
+    });
+  });
+}
+
+function collapseExpandTreesIntelligentlyFor(aTab, aParams = {}) {
+  if (!aTab)
+    return;
+
+  var container = getTabsContainer(aTab);
+  if (container.doingCollapseExpand)
+    return;
+
+  var sameParentTab = getParentTab(aTab);
+  var expandedAncestors = `<${[aTab].concat(getAncestorTabs(aTab))
+      .map(aAncestor => aAncestor.id)
+      .join('><')}>`;
+
+  var xpathResult = evaluateXPath(
+      `child::xhtml:li${kXPATH_LIVE_TAB}[
+        not(@${kCHILDREN}="|") and
+        not(${hasClass(kTAB_STATE_COLLAPSED)}) and
+        not(${hasClass(kTAB_STATE_SUBTREE_COLLAPSED)}) and
+        not(contains("${expandedAncestors}", concat("<", @id, ">"))) and
+        not(${hasClass(kTAB_STATE_HIDDEN)})
+      ]`,
+      container
+    );
+  for (let i = 0, maxi = xpathResult.snapshotLength; i < maxi; i++) {
+    let dontCollapse = false;
+    let collapseTab  = xpathResult.snapshotItem(i);
+    let parentTab = getParentTab(collapseTab);
+    if (parentTab) {
+      dontCollapse = true;
+      if (!isSubtreeCollapsed(parentTab)) {
+        for (let ancestor of getAncestorTabs(collapseTab)) {
+          if (expandedAncestors.indexOf(`<${aAncestor.id}>`) < 0)
+            continue;
+          dontCollapse = false;
+          break;
+        }
+      }
+    }
+
+    let manuallyExpanded = false;//getTabValue(collapseTab, kSUBTREE_EXPANDED_MANUALLY) == 'true';
+    if (!dontCollapse && !manuallyExpanded)
+      collapseExpandSubtree(collapseTab, {
+        collapsed: true,
+        justNow:   aParams.justNow
+      });
+  }
+
+  collapseExpandSubtree(aTab, {
+    collapsed: false,
+    justNow:   aParams.justNow
+  });
+}
+
+async function forceExpandTabs(aTabs) {
+  var collapsedStates = aTabs.map(isSubtreeCollapsed);
+  await Promise.all(aTabs.map(aTab => {
+    collapseExpandSubtree(aTab, { collapsed: false, justNow: true });
+	collapseExpandTab(aTab, { collapsed: false, justNow: true });
+  }));
+  return collapsedStates;
 }
 
 

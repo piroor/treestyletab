@@ -16,7 +16,6 @@ var kINSERT_AFTER  = 'data-insert-after-id';
 var kCLOSED_SET_ID = 'data-closed-set-id';
 var kTWISTY_STYLE = 'data-twisty-style';
 
-var kCOLLAPSED_DONE   = 'collapsed-completely';
 var kCOLLAPSING_PHASE = 'data-collapsing-phase';
 var kCOLLAPSING_PHASE_TO_BE_COLLAPSED = 'collapse';
 var kCOLLAPSING_PHASE_TO_BE_EXPANDED  = 'expand';
@@ -35,7 +34,9 @@ var kTAB_STATE_HIDDEN = 'hidden';
 var kTAB_STATE_ANIMATION_READY = 'animation-ready';
 var kTAB_STATE_REMOVING = 'removing';
 var kTAB_STATE_COLLAPSED = 'collapsed';
+var kTAB_STATE_COLLAPSED_DONE = 'collapsed-completely';
 var kTAB_STATE_SUBTREE_COLLAPSED = 'subtree-collapsed';
+var kTAB_STATE_SUBTREE_EXPANDED_MANUALLY = 'subtree-expanded-manually';
 var kTAB_STATE_FAVICONIZED = 'faviconized';
 var kTAB_STATE_HIGHLIGHTED = 'highlighted';
 var kTAB_STATE_POSSIBLE_CLOSING_CURRENT = 'possible-closing-current';

@@ -125,7 +125,7 @@ function onMouseDown(aEvent) {
   var tab = getTabFromEvent(aEvent);
   if (aEvent.button == 1 ||
       (aEvent.button == 0 && (aEvent.ctrlKey || aEvent.metaKey))) {
-    if (tab) {
+    if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/) {
       log('middle-click to close');
       tryMoveFocusFromClosingCurrentTab(tab);
       browser.tabs.remove(tab.apiTab.id);
@@ -134,8 +134,33 @@ function onMouseDown(aEvent) {
     }
     return;
   }
+
   tab = tab || getTabFromTabbarEvent(aEvent);
   if (!tab)
     return;
+
+  if (isEventFiredOnTwisty(aEvent)) {
+    log('clicked on twisty');
+    aEvent.stopPropagation();
+    aEvent.preventDefault();
+    if (hasChildTabs(tab))
+      manualCollapseExpandSubtree(tab, { collapsed: !isSubtreeCollapsed(tab) });
+    return;
+  }
+
+  if (isEventFiredOnClosebox(aEvent)) {
+    log('clicked on closebox');
+    aEvent.stopPropagation();
+    aEvent.preventDefault();
+    //if (!warnAboutClosingTabSubtreeOf(tab)) {
+    //  aEvent.stopPropagation();
+    //  aEvent.preventDefault();
+    //  return;
+    //}
+    tryMoveFocusFromClosingCurrentTab(tab);
+    browser.tabs.remove(tab.apiTab.id);
+    return;
+  }
+
   browser.tabs.update(tab.apiTab.id, { active: true });
 }

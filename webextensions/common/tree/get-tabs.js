@@ -151,10 +151,10 @@ function getAncestorTabs(aDecendant) {
   var ancestors = [];
   while (true) {
     let parent = getParentTab(aDecendant);
-    if (parent)
-      ancestors.push(parent);
-    else
+    if (!parent)
       break;
+    ancestors.push(parent);
+    aDecendant = parent;
   }
   return ancestors;
 }
