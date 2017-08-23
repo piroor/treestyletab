@@ -119,8 +119,11 @@ function updateTab(aTab, aParams = {}) {
   if ('label' in aParams)
     getTabLabel(aTab).textContent = aParams.label;
 
-  if ('favicon' in aParams)
-    loadImageTo(getTabFavicon(aTab).firstChild, aParams.favicon, kDEFAULT_FAVICON_URL);
+  if ('favicon' in aParams) {
+    let favicon = getTabFavicon(aTab);
+    if (favicon)
+      loadImageTo(favicon.firstChild, aParams.favicon, kDEFAULT_FAVICON_URL);
+  }
 }
 
 async function selectTabInternally(aTab) {
