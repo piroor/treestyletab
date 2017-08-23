@@ -83,6 +83,7 @@ function updateTab(aTab, aParams = {}) {
 }
 
 function selectTabInternally(aTab) {
+  log('selectTabInternally: ', dumpTab(aTab));
   aTab.parentNode.internalFocusCount++;
   if (gIsBackground) {
     browser.tabs.update(aTab.apiTab.id, { active: true });
@@ -94,7 +95,7 @@ function selectTabInternally(aTab) {
       tab:      aTab.id
     });
   }
-  setTimeout(() => aTab.parentNode.internalFocusCount--, 0);
+  setTimeout(() => aTab.parentNode.internalFocusCount--, 50);
 }
 
 function buildTabsContainerFor(aWindowId) {

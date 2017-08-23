@@ -75,18 +75,14 @@ function onSelect(aActiveInfo) {
   newTab.classList.add(kTAB_STATE_ACTIVE);
 
   var noMoreFocusChange = false;
-  var shouldCollapseExpandNow = configs.autoCollapseExpandSubtreeOnSelect;
-  var newActiveTabOptions = {
-    canCollapseTree : shouldCollapseExpandNow,
-    canExpandTree   : shouldCollapseExpandNow && newTab.parentNode.internalFocusCount == 0
-  };
-  log('onSelect: ', dumpTab(newTab), newActiveTabOptions);
+  log('onSelect: ', dumpTab(newTab));
+  if (gIsBackground) {
   if (isCollapsed(newTab)) {
     if (configs.autoExpandSubtreeOnCollapsedChildFocused) {
       for (let ancestor of getAncestorTabs(newTab)) {
         collapseExpandSubtree(ancestor, { collapsed: false });
       }
-      handleNewActiveTab(newTab, newActiveTabOptions);
+      handleNewActiveTab(newTab);
     }
     else {
       selectTabInternally(getRootTab(newTab));
@@ -102,7 +98,8 @@ function onSelect(aActiveInfo) {
     noMoreFocusChange = true;
   }
   else if (hasChildTabs(newTab) && isSubtreeCollapsed(newTab)) {
-    handleNewActiveTab(newTab, newActiveTabOptions);
+    handleNewActiveTab(newTab);
+  }
   }
 
   newTab.parentNode.focusChangedByCurrentTabRemove = false;
@@ -119,9 +116,11 @@ function onSelect(aActiveInfo) {
     }, 100);
   }
 }
-function handleNewActiveTab(aTab, aOptions = {}) {
+function handleNewActiveTab(aTab) {
   if (aTab.parentNode.doingCollapseExpand)
     return;
+
+  log('handleNewActiveTab: ', dumpTab(aTab));
 
   if (handleNewActiveTab.timer)
     clearTimeout(handleNewActiveTab.timer);
@@ -132,8 +131,13 @@ function handleNewActiveTab(aTab, aOptions = {}) {
    */
   handleNewActiveTab.timer = setTimeout(() => {
     delete handleNewActiveTab.timer;
-    if (aOptions.canExpandTree) {
-      if (aOptions.canCollapseTree &&
+    var shouldCollapseExpandNow = configs.autoCollapseExpandSubtreeOnSelect;
+    var canCollapseTree = shouldCollapseExpandNow;
+    var canExpandTree   = shouldCollapseExpandNow && aTab.parentNode.internalFocusCount == 0;
+    log('handleNewActiveTab[delayed]: ', dumpTab(aTab), {
+      canCollapseTree, canExpandTree, internalFocusCount: aTab.parentNode.internalFocusCount });
+    if (canExpandTree) {
+      if (canCollapseTree &&
           configs.autoExpandIntelligently)
         collapseExpandTreesIntelligentlyFor(aTab);
       else
