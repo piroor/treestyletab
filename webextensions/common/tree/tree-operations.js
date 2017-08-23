@@ -262,7 +262,15 @@ function updateTabsIndent(aTabs, aLevel = undefined) {
 // operate tabs based on tree information
 
 function closeChildTabs(aParent) {
-  var getDescendantTabs;
+  var tabs = getDescendantTabs(aParent);
+  //if (!fireTabSubtreeClosingEvent(aParent, tabs))
+  //  return;
+
+  //markAsClosedSet([aParent].concat(tabs));
+  tabs.reverse().forEach(aTab => {
+    browser.tabs.remove(aTab.apiTab.id);
+  });
+  //fireTabSubtreeClosedEvent(aParent, tabs);
 }
 
 

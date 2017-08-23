@@ -127,6 +127,7 @@ function onMouseDown(aEvent) {
       (aEvent.button == 0 && (aEvent.ctrlKey || aEvent.metaKey))) {
     if (tab) {
       log('middle-click to close');
+      tryMoveFocusFromClosingCurrentTab(tab);
       browser.tabs.remove(tab.apiTab.id);
       aEvent.stopPropagation();
       aEvent.preventDefault();

@@ -37,6 +37,58 @@
  *
  * ***** END LICENSE BLOCK ******/
 
+function tryMoveFocusFromClosingCurrentTab(aTab) {
+  log('tryMoveFocusFromClosingCurrentTab');
+  if (!isActive(aTab))
+    return;
+
+  var nextFocusedTab = null;
+
+  var closeParentBehavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD; //getCloseParentBehaviorForTab(aTab);
+  var firstChild = getFirstChildTab(aTab);
+  if (firstChild &&
+      (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN ||
+       closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD))
+    nextFocusedTab = firstChild;
+  log('focus to first child?: ', !!nextFocusedTab);
+
+  var toBeClosedTabs = []; // collectNeedlessGroupTabs(aTab);
+  var parentTab = getParentTab(aTab);
+  if (parentTab) {
+    if (!nextFocusedTab && aTab == getLastChildTab(parentTab)) {
+      if (aTab == getFirstChildTab(parentTab)) { // this is the really last child
+        nextFocusedTab = parentTab;
+        log('focus to parent?: ', !!nextFocusedTab);
+      }
+      else {
+        nextFocusedTab = getPreviousSiblingTab(aTab);
+        log('focus to previous sibling?: ', !!nextFocusedTab);
+      }
+    }
+    if (nextFocusedTab && toBeClosedTabs.indexOf(nextFocusedTab) > -1)
+      nextFocusedTab = getNextFocusedTab(parentTab);
+  }
+  else if (!nextFocusedTab) {
+    nextFocusedTab = getNextFocusedTab(aTab);
+    log('focus to getNextFocusedTab()?: ', !!nextFocusedTab);
+  }
+  if (nextFocusedTab && toBeClosedTabs.indexOf(nextFocusedTab) > -1)
+    nextFocusedTab = getNextFocusedTab(nextFocusedTab);
+
+  if (!nextFocusedTab || isHidden(nextFocusedTab))
+    return;
+
+  log('focus to: ', dumpTab(nextFocusedTab));
+
+  //XXX notify kEVENT_TYPE_FOCUS_NEXT_TAB for others
+  //if (!canFocus)
+  //  return;
+
+  //focusChangedByCurrentTabRemove = true;
+  browser.tabs.update(nextFocusedTab.apiTab.id, { active: true });
+}
+
+
 // collapse/expand tabs
 
 function collapseExpandSubtree() {

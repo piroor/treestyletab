@@ -65,11 +65,11 @@ function onSelect(aActiveInfo) {
   var newTab = getTabById({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
   if (!newTab)
     return;
-  var oldTabs = document.querySelectorAll('.active');
+  var oldTabs = document.querySelectorAll(`.${kTAB_STATE_ACTIVE}`);
   for (let oldTab of oldTabs) {
-    oldTab.classList.remove('active');
+    oldTab.classList.remove(kTAB_STATE_ACTIVE);
   }
-  newTab.classList.add('active');
+  newTab.classList.add(kTAB_STATE_ACTIVE);
 }
 
 function onUpdated(aTabId, aChangeInfo, aTab) {
@@ -150,16 +150,23 @@ function onRemoved(aTabId, aRemoveInfo) {
 
   log('onRemoved: ', dumpTab(oldTab));
 
-  var closeParentBehavior = getCloseParentBehaviorForTab(oldTab);
+  //var backupAttributes = collectBackupAttributes(oldTab);
+  //log('onTabClose: backupAttributes = ', backupAttributes);
+
+  var closeParentBehavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD; //getCloseParentBehaviorForTab(oldTab);
   if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN ||
       isSubtreeCollapsed(oldTab))
-    closeChildTabs(tab);
+    closeChildTabs(oldTab);
 
-//  var firstChild = getFirstChildTab(oldTab);
+  //tryMoveFocusFromClosingCurrentTab(oldTab);
 
   detachAllChildren(oldTab, {
-    behavior : closeParentBehavior
+    behavior: closeParentBehavior
   });
+  //reserveCloseRelatedTabs(toBeClosedTabs);
+  detachTab(oldTab, { dontUpdateIndent: true });
+  //restoreTabAttributes(oldTab, backupAttributes);
+  //updateLastScrollPosition();
 
   if (gIsBackground)
     reserveToSaveTreeStructure(oldTab);
@@ -175,16 +182,15 @@ function onRemoved(aTabId, aRemoveInfo) {
     oldTab.classList.add(kTAB_STATE_REMOVING);
     onRemovedComplete(oldTab);
   }
+
+  if (!gIsBackground && isPinned(oldTab))
+    positionPinnedTabsWithDelay();
 }
 function onRemovedComplete(aTab) {
   var container = aTab.parentNode;
   container.removeChild(aTab);
   if (!container.hasChildNodes())
     container.parentNode.removeChild(container);
-}
-
-function getCloseParentBehaviorForTab(aTab) {
-  return kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
 }
 
 function onMoved(aTabId, aMoveInfo) {

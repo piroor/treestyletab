@@ -37,8 +37,16 @@
  *
  * ***** END LICENSE BLOCK ******/
 
+function isActive(aTab) {
+  return aTab.classList.contains(kTAB_STATE_ACTIVE);
+}
+
 function isPinned(aTab) {
   return aTab.classList.contains(kTAB_STATE_PINNED);
+}
+
+function isHidden(aTab) {
+  return aTab.classList.contains(kTAB_STATE_HIDDEN);
 }
 
 function isCollapsed(aTab) {

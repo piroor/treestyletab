@@ -28,7 +28,9 @@ var kLABEL    = 'label';
 var kCOUNTER  = 'counter';
 var kCLOSEBOX = 'closebox';
 
+var kTAB_STATE_ACTIVE = 'active';
 var kTAB_STATE_PINNED = 'pinned';
+var kTAB_STATE_HIDDEN = 'hidden';
 var kTAB_STATE_ANIMATION_READY = 'animation-ready';
 var kTAB_STATE_REMOVING = 'removing';
 var kTAB_STATE_COLLAPSED = 'collapsed';
