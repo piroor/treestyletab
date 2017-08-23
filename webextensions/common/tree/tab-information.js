@@ -37,6 +37,10 @@
  *
  * ***** END LICENSE BLOCK ******/
 
+function isPinned(aTab) {
+  return aTab.classList.contains(kTAB_STATE_PINNED);
+}
+
 function isCollapsed(aTab) {
   return aTab.classList.contains(kTAB_STATE_COLLAPSED);
 }

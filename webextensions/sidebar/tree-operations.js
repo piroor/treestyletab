@@ -81,7 +81,7 @@ async function updateTabCollapsed(aTab, aParams = {}) {
     // Pinned tabs are positioned by "margin-top", so
     // we must not reset the property for pinned tabs.
     // (However, we still must update "opacity".)
-    if (!aTab.classList.contains('pinned'))
+    if (!isPinned(aTab))
       aTab.style.marginTop = endMargin ? `-${endMargin}px` : '';
 
     if (endOpacity == 0)

@@ -38,16 +38,16 @@
  * ***** END LICENSE BLOCK ******/
 
 var kSELECTOR_LIVE_TAB = `li.tab:not(.${kTAB_STATE_REMOVING})`;
-var kSELECTOR_NORMAL_TAB = `${kSELECTOR_LIVE_TAB}:not(.hidden):not(.pinned)`;
+var kSELECTOR_NORMAL_TAB = `${kSELECTOR_LIVE_TAB}:not(.hidden):not(.${kTAB_STATE_PINNED})`;
 var kSELECTOR_VISIBLE_TAB = `${kSELECTOR_LIVE_TAB}:not(.${kTAB_STATE_COLLAPSED}):not(.hidden)`;
 var kSELECTOR_CONTROLLABLE_TAB = `${kSELECTOR_LIVE_TAB}:not(.hidden)`;
-var kSELECTOR_PINNED_TAB = `${kSELECTOR_LIVE_TAB}.pinned`;
+var kSELECTOR_PINNED_TAB = `${kSELECTOR_LIVE_TAB}.${kTAB_STATE_PINNED}`;
 
 var kXPATH_LIVE_TAB = `[${hasClass('tab')}][not(${hasClass(kTAB_STATE_REMOVING)})]`;
-var kXPATH_NORMAL_TAB = `${kXPATH_LIVE_TAB}[not(${hasClass('hidden')})][not(${hasClass('pinned')})]`;
+var kXPATH_NORMAL_TAB = `${kXPATH_LIVE_TAB}[not(${hasClass('hidden')})][not(${hasClass(kTAB_STATE_PINNED)})]`;
 var kXPATH_VISIBLE_TAB = `${kXPATH_LIVE_TAB}[not(${hasClass(kTAB_STATE_COLLAPSED)})][not(${hasClass('hidden')})]`;
 var kXPATH_CONTROLLABLE_TAB = `${kXPATH_LIVE_TAB}[not(${hasClass('hidden')})]`;
-var kXPATH_PINNED_TAB = `${kXPATH_LIVE_TAB}[${hasClass('pinned')}]`;
+var kXPATH_PINNED_TAB = `${kXPATH_LIVE_TAB}[${hasClass(kTAB_STATE_PINNED)}]`;
 
 // basics
 
