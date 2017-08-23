@@ -304,3 +304,11 @@ function getPreviousVisibleTab(aTab) { // visible, not-collapsed
   ).singleNodeValue;
 }
 
+function getVisibleIndex(aTab) {
+  return evaluateXPath(
+    `count(preceding-sibling::xhtml:li${kXPATH_VISIBLE_TAB})`,
+    aTab,
+    XPathResult.NUMBER_TYPE
+  ).numberValue;
+}
+
