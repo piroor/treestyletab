@@ -43,6 +43,9 @@ var gIsBackground = false;
 var gTargetWindow = null;
 var gRestoringTree = false;
 var gOpeningCount = 0;
+var gIndent = -1;
+var gIndentProp = 'marginLeft';
+var gNeedRestoreTree = false;
 
 var gIsMac = /Darwin/.test(navigator.platform);
 
@@ -51,12 +54,22 @@ function buildTab(aTab) {
   item.apiTab = aTab;
   item.setAttribute('id', `tab-${aTab.windowId}-${aTab.id}`);
   item.setAttribute(kCHILDREN, '|');
-  item.appendChild(document.createTextNode(aTab.title));
   item.setAttribute('title', aTab.title);
   item.classList.add('tab');
   if (aTab.active)
     item.classList.add('active');
+
+  let label = document.createElement('span');
+  label.classList.add(kLABEL);
+  label.appendChild(document.createTextNode(aTab.title));
+  item.appendChild(label);
+
   return item;
+}
+
+function updateTab(aTab, aParams = {}) {
+  if (aParams.label)
+    getTabLabel(aTab).textConetnt = aParams.label;
 }
 
 function buildTabsContainerFor(aWindowId) {

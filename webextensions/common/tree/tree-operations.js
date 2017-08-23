@@ -234,7 +234,10 @@ function updateTabsIndent(aTabs, aLevel = undefined) {
   if (aLevel === undefined)
     aLevel = getAncestorTabs(aTabs[0]).length;
 
-  var margin = 16;
+  var baseIndent = gIndent;
+  if (gIndent < 0)
+    baseIndent = configs.baseIndent;
+
   for (let i = 0, maxi = aTabs.length; i < maxi; i++) {
     let item = aTabs[i];
     if (!item)
@@ -242,11 +245,11 @@ function updateTabsIndent(aTabs, aLevel = undefined) {
     if (!gIsBackground) {
       window.requestAnimationFrame(() => {
         var level = parseInt(item.getAttribute(kNEST) || 0);
-        var indent = level * margin;
+        var indent = level * baseIndent;
         var expected = indent == 0 ? 0 : indent + 'px' ;
         log('setting indent: ', { tab: dumpTab(item), expected: expected, level: level });
-        if (item.style.marginLeft != expected) {
-          window.requestAnimationFrame(() => item.style.marginLeft = expected);
+        if (item.style[gIndentProp] != expected) {
+          window.requestAnimationFrame(() => item.style[gIndentProp] = expected);
         }
       });
     }

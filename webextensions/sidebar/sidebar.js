@@ -9,7 +9,7 @@ window.addEventListener('DOMContentLoaded', init, { once: true });
 async function init() {
   window.addEventListener('unload', destroy, { once: true });
   gAllTabs = document.getElementById('all-tabs');
-  gAllTabs.addEventListener('mousedown', omMouseDown);
+  gAllTabs.addEventListener('mousedown', onMouseDown);
   await rebuildAll();
   browser.runtime.onMessage.addListener(onMessage);
 }
@@ -17,7 +17,7 @@ async function init() {
 function destroy() {
   browser.runtime.onMessage.removeListener(onMessage);
   endObserveTabs();
-  gAllTabs.removeEventListener('mousedown', omMouseDown);
+  gAllTabs.removeEventListener('mousedown', onMouseDown);
   gAllTabs = undefined;
 }
 

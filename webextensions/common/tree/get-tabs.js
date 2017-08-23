@@ -88,6 +88,19 @@ function getTabById(aIdOrInfo) {
   return document.querySelector(aIdOrInfo);
 }
 
+function getTabTwisty(aTab) {
+  return aTab.querySelector(`.${kTWISTY}`);
+}
+function getTabSoundButton(aTab) {
+  return aTab.querySelector(`.${kSOUND_BUTTON}`);
+}
+function getTabLabel(aTab) {
+  return aTab.querySelector(`.${kLABEL}`);
+}
+function getTabClosebox(aTab) {
+  return aTab.querySelector(`.${kCLOSEBOX}`);
+}
+
 function getNextTab(aTab) {
   return document.querySelector(`#${aTab.id} ~ ${kSELECTOR_LIVE_TAB}`);
 }
@@ -334,11 +347,48 @@ async function doAndGetNewTabs(aAsyncTask, aHint) {
   return addedTabs.map(aApiTab => getTabById({ tab: aApiTab.id, window: aApiTab.windowId }));
 }
 
+function getNextFocusedTab(aTab) { // if the current tab is closed...
+  return getNextSiblingTab(aTab) || getPreviousVisibleTab(aTab);
+}
+
 
 // from event
 
 function getTabFromEvent(aEvent) {
   return getTabFromChild(aEvent.target);
+}
+
+function getTabsContainerFromEvent(aEvent) {
+  return getTabsContainer(aEvent.target);
+}
+
+function getTabFromTabbarEvent(aEvent) {
+  if (!configs.shouldDetectClickOnIndentSpaces ||
+      isEventFiredOnClickable(aEvent))
+    return null;
+  return getTabFromCoordinates(aEvent);
+}
+
+function getTabFromCoordinates(aEvent) {
+  var tab = document.elementFromPoint(aEvent.clientX, aEvent.clientY);
+  tab = getTabFromChild(tab);
+  if (tab)
+    return tab;
+
+  var container = getTabsContainerFromEvent(aEvent);
+  if (!container)
+    return null;
+
+  var rect = container.getBoundingClientRect();
+  for (let x = 0, maxx = rect.width, step = Math.floor(rect.width / 10);
+       i < maxx; i += step) {
+    tab = document.elementFromPoint(x, aEvent.clientY);
+    tab = getTabFromChild(tab);
+    if (tab)
+      return tab;
+  }
+
+  return null;
 }
 
 function getNewTabButtonFromEvent(aEvent) {

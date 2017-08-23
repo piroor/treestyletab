@@ -22,11 +22,21 @@ var kCOLLAPSING_PHASE_TO_BE_EXPANDED  = 'expand';
 
 var kFAVICON  = 'favicon';
 var kTHROBBER = 'throbber';
+var kSOUND_BUTTON = 'sound-button';
 var kTWISTY   = 'twisty';
+var kLABEL    = 'label';
 var kCOUNTER  = 'counter';
+var kCLOSEBOX = 'closebox';
 
 var kTAB_STATE_ANIMATION_READY = 'animation-ready';
 var kTAB_STATE_REMOVING = 'removing';
 var kTAB_STATE_COLLAPSED = 'collapsed';
 var kTAB_STATE_SUBTREE_COLLAPSED = 'subtree-collapsed';
+
+var kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD        = 3;
+var kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN       = 0;
+var kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN        = 1;
+var kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN = 4;
+var kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN         = 2; // onTabRemoved only
+var kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB     = 5;
 

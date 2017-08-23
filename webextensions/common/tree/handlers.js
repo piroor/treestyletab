@@ -58,21 +58,6 @@ function endObserveTabs() {
 }
 
 
-function omMouseDown(aEvent) {
-  var tab = getTabFromEvent(aEvent);
-  if (!tab)
-    return;
-  if (aEvent.button == 1 ||
-      (aEvent.button == 0 && (aEvent.ctrlKey || aEvent.metaKey))) {
-    log('middle-click to close');
-    browser.tabs.remove(tab.apiTab.id);
-    aEvent.stopPropagation();
-    aEvent.preventDefault();
-    return;
-  }
-  browser.tabs.update(tab.apiTab.id, { active: true });
-}
-
 function onSelect(aActiveInfo) {
   if (gTargetWindow && aActiveInfo.windowId != gTargetWindow)
     return;
@@ -94,8 +79,10 @@ function onUpdated(aTabId, aChangeInfo, aTab) {
   var updatedTab = getTabById({ tab: aTabId, window: aTab.windowId });
   if (!updatedTab)
     return;
-  if (aTab.title != updatedTab.textContent)
-    updatedTab.textContent = aTab.title;
+
+  updateTab(updatedTab, {
+    label: aTab.title
+  });
   updatedTab.apiTab = aTab;
 
   if (gIsBackground)
@@ -196,12 +183,6 @@ function onRemovedComplete(aTab) {
     container.parentNode.removeChild(container);
 }
 
-var kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD        = 3;
-var kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN       = 0;
-var kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN        = 1;
-var kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN = 4;
-var kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN         = 2; // onTabRemoved only
-var kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB     = 5;
 function getCloseParentBehaviorForTab(aTab) {
   return kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
 }

@@ -54,9 +54,36 @@ function isCopyAction(aEvent) {
       (aEvent.dataTransfer && aEvent.dataTransfer.dropEffect == 'copy');
 }
 
+function isEventFiredOnTwisty(aEvent) {
+  var tab = getTabFromEvent(aEvent);
+  if (!tab || !hasChildTabs(tab))
+    return false;
+
+  var twisty = evaluateXPath(
+    `ancestor-or-self::*[${hasClass(kTWISTY)}]`,
+    aEvent.originalTarget || aEvent.target,
+    XPathResult.BOOLEAN_TYPE
+  ).booleanValue;
+  if (twisty)
+    return true;
+
+  if (!configs.shouldExpandTwistyArea)
+    return false;
+
+  var favicon = evaluateXPath(
+    `ancestor-or-self::*[${hasClass(kFAVICON)}]`,
+    aEvent.originalTarget || aEvent.target,
+    XPathResult.BOOLEAN_TYPE
+  ).booleanValue;
+  if (favicon)
+    return true;
+
+  return false;
+}
+
 function isEventFiredOnClosebox(aEvent) {
   return evaluateXPath(
-      'ancestor-or-self::*[contains(concat(" ", normalize-space(@class), " "), " tab-close-button ")]',
+      `ancestor-or-self::*[${hasClass('tab-close-button')}]`,
       aEvent.originalTarget || aEvent.target,
       XPathResult.BOOLEAN_TYPE
     ).booleanValue;
@@ -78,54 +105,21 @@ function isEventFiredOnScrollbar(aEvent) {
     ).booleanValue;
 }
 
-function isEventFiredOnTwisty(aEvent) {
+
+function onMouseDown(aEvent) {
   var tab = getTabFromEvent(aEvent);
-  if (!tab || !hasChildTabs(tab))
-    return false;
-
-  var twisty = tab.querySelector(`.${kTWISTY}`);
-  if (!twisty)
-    return false;
-
-  var twistyRect = twisty.getBoundingClientRect();
-  var left    = twistyRect.left;
-  var top     = twistyRect.top;
-  var right   = twistyRect.right;
-  var bottom  = twistyRect.bottom;
-  var favicon = getFaviconRect(tab);
-  if (!box.width || !box.height) {
-    left   = favicon.left;
-    top    = favicon.top;
-    right  = favicon.right;
-    bottom = favicon.bottom;
+  if (aEvent.button == 1 ||
+      (aEvent.button == 0 && (aEvent.ctrlKey || aEvent.metaKey))) {
+    if (tab) {
+      log('middle-click to close');
+      browser.tabs.remove(tab.apiTab.id);
+      aEvent.stopPropagation();
+      aEvent.preventDefault();
+    }
+    return;
   }
-  else if (configs.shouldExpandTwistyArea) {
-    left   = Math.min(left,   favicon.left);
-    top    = Math.min(top,    favicon.top);
-    right  = Math.max(right,  favicon.right);
-    bottom = Math.max(bottom, favicon.bottom);
-  }
-
-  var x = aEvent.clientX;
-  var y = aEvent.clientY;
-  return (x >= left && x <= right && y >= top && y <= bottom);
-}
-function getFaviconRect(aTab) {
-  var icon         = tab.querySelector(`.${kFAVICON}`);
-  var iconRect     = icon.getBoundingClientRect();
-  var throbber     = tab.querySelector(`.${kTHROBBER}`);
-  var throbberRect = throbber.getBoundingClientRect();
-
-  if (!iconRect.width && !iconRect.height)
-    return throbberRect;
-
-  if (!throbberRect.width && !throbberRect.height)
-    return iconRect;
-
-  return {
-    left   : Math.min(throbberRect.left,   iconRect.left),
-    right  : Math.max(throbberRect.right,  iconRect.right),
-    top    : Math.min(throbberRect.top,    iconRect.top),
-    bottom : Math.max(throbberRect.bottom, iconRect.bottom)
-  };
+  tab = tab || getTabFromTabbarEvent(aEvent);
+  if (!tab)
+    return;
+  browser.tabs.update(tab.apiTab.id, { active: true });
 }

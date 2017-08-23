@@ -37,7 +37,6 @@
  *
  * ***** END LICENSE BLOCK ******/
 
-
 // collapse/expand tabs
 
 function collapseExpandSubtree() {
