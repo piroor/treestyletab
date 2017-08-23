@@ -4,8 +4,9 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-var kCOMMAND_REQUEST_TREE_INFO = 'treestyletab:request-tree-info';
-var kCOMMAND_APPLY_TREE_STRUCTURE = 'treestyletab:apply-tree-structure';
+var kCOMMAND_PULL_TREE_STRUCTURE = 'treestyletab:pull-tree-structure';
+var kCOMMAND_PUSH_TREE_STRUCTURE = 'treestyletab:push-tree-structure';
+var kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE = 'treestyletab:push-subtree-collapsed-state';
 
 var kPARENT   = 'data-parent-id';
 var kCHILDREN = 'data-child-ids';

@@ -308,6 +308,7 @@ function shouldTabAutoExpanded(aTab) {
 }
 
 function collapseExpandSubtree(aTab, aParams = {}) {
+  aParams.collapsed = !!aParams.collapsed;
   log('collapseExpandSubtree: ', dumpTab(aTab), aParams);
   if (!aTab ||
       (isSubtreeCollapsed(aTab) == aParams.collapsed))
@@ -351,6 +352,14 @@ function collapseExpandSubtree(aTab, aParams = {}) {
   //if (configs.indentAutoShrink &&
   //    configs.indentAutoShrinkOnlyForVisible)
   //  checkTabsIndentOverflow();
+
+
+  browser.runtime.sendMessage({
+    type:      kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE,
+    windowId:  container.windowId,
+    tab:       aTab.id,
+    collapsed: aParams.collapsed
+  });
 
   container.doingCollapseExpand = false;
 }
@@ -607,7 +616,7 @@ async function forceExpandTabs(aTabs) {
   var collapsedStates = aTabs.map(isSubtreeCollapsed);
   await Promise.all(aTabs.map(aTab => {
     collapseExpandSubtree(aTab, { collapsed: false, justNow: true });
-	collapseExpandTab(aTab, { collapsed: false, justNow: true });
+    collapseExpandTab(aTab, { collapsed: false, justNow: true });
   }));
   return collapsedStates;
 }
@@ -765,13 +774,14 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aExpandStates = []) {
     }
     if (parent) {
       attachTabTo(tab, parent, {
-        forceExpand : true,
-        dontMove    : true,
-        justNow     : true
+        dontExpand : true,
+        dontMove   : true,
+        justNow    : true
       });
     }
   }
 
+  log('aExpandStates: ', aExpandStates);
   for (let i = aTabs.length-1; i > -1; i--) {
     let tab = aTabs[i];
     collapseExpandSubtree(tab, {

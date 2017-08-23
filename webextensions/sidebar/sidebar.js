@@ -37,24 +37,18 @@ async function rebuildAll() {
 
 async function inheritTreeStructure() {
   var response = await browser.runtime.sendMessage({
-    type:     kCOMMAND_REQUEST_TREE_INFO,
+    type:     kCOMMAND_PULL_TREE_STRUCTURE,
     windowId: gTargetWindow
   });
   log('response: ', response);
-  for (let tabInfo of response.tabs) {
-    let tab = getTabById(tabInfo.id);
-    if (tabInfo.parent)
-      tab.setAttribute(kPARENT, tabInfo.parent);
-    tab.setAttribute(kCHILDREN, tabInfo.children);
-  }
-  updateTabsIndent(getAllRootTabs(gTargetWindow), 0);
+  applyTreeStructureToTabs(getAllTabs(gTargetWindow), response.structure);
 }
 
 
 function onMessage(aMessage, aSender, aRespond) {
   log('onMessage: ', aMessage, aSender);
   switch (aMessage.type) {
-    case kCOMMAND_APPLY_TREE_STRUCTURE:
+    case kCOMMAND_PUSH_TREE_STRUCTURE:
       if (aMessage.windowId == gTargetWindow)
         applyTreeStructureToTabs(getAllTabs(gTargetWindow), aMessage.structure);
       break;

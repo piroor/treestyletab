@@ -115,7 +115,7 @@ async function loadTreeStructure() {
       log(`tree information for window ${window.id} is available.`);
       applyTreeStructureToTabs(getAllTabs(window.id), structure);
       browser.runtime.sendMessage({
-        type:      kCOMMAND_APPLY_TREE_STRUCTURE,
+        type:      kCOMMAND_PUSH_TREE_STRUCTURE,
         windowId:  window.id,
         structure: structure
       });
@@ -146,16 +146,16 @@ function getTabsSignature(aApiTabs) {
 function onMessage(aMessage, aSender, aRespond) {
   log('onMessage: ', aMessage, aSender);
   switch (aMessage.type) {
-    case kCOMMAND_REQUEST_TREE_INFO:
+    case kCOMMAND_PULL_TREE_STRUCTURE:
       aRespond({
-        tabs: getAllTabs(aMessage.windowId).map(aTab => {
-          return {
-            id:       aTab.id,
-            parent:   aTab.getAttribute(kPARENT),
-            children: aTab.getAttribute(kCHILDREN)
-          }
-        })
+        structure: getTreeStructureFromTabs(getAllTabs(aMessage.windowId))
       });
+      break;
+
+    case kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE:
+      let tab = getTabById(aMessage.tab);
+      collapseExpandSubtree(tab, { collapsed: aMessage.collapsed, justNow: true });
+      reserveToSaveTreeStructure(tab);
       break;
   }
 }
