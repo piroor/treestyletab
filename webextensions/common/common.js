@@ -25,7 +25,7 @@ function dumpTab(aTab) {
     return '';
   if (!aTab)
     return '<NULL>';
-  return `${getTabIndex(aTab)} #${aTab.id}.${aTab.className} ${JSON.stringify(aTab.textContent)}`;
+  return `${getTabIndex(aTab)} #${aTab.id}.${aTab.className} ${JSON.stringify(aTab.apiTab.title)}`;
 }
 
 configs = new Configs({
