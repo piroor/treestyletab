@@ -509,6 +509,8 @@ async function updateTabCollapsed(aTab, aParams = {}) {
 
       aTab.onEndCollapseExpandAnimation = (() => {
         delete aTab.onEndCollapseExpandAnimation;
+        if (backupTimer)
+          clearTimeout(backupTimer);
         log('=> finish animation for ', dumpTab(aTab));
         if (aParams.collapsed)
           aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
@@ -535,7 +537,7 @@ async function updateTabCollapsed(aTab, aParams = {}) {
       });
       aTab.addEventListener('transitionend', aTab.onEndCollapseExpandAnimation, { once: true });
       var backupTimer = setTimeout(() => {
-        if (!aTab.onEndCollapseExpandAnimation)
+        if (!aTab)
           return;
         backupTimer = null
         aTab.removeEventListener('transitionend', aTab.onEndCollapseExpandAnimation, { once: true });
