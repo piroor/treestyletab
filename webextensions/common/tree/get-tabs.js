@@ -37,6 +37,8 @@
  *
  * ***** END LICENSE BLOCK ******/
 
+var kSELECTOR_NORMAL_TAB = 'li.tab:not(.removing):not(.hidden):not(.pinned)';
+var kSELECTOR_VISIBLE_TAB = 'li.tab:not(.removing):not(.collapsed):not(.hidden)';
 
 function getTabFromChild(aNode) {
   if (!aNode)
@@ -205,9 +207,6 @@ function getTabs(aHint) { // only visible, including collapsed and pinned
     return [];
   return Array.slice(container.querySelectorAll('li.tab:not(.removing):not(.hidden)'));
 }
-
-kSELECTOR_NORMAL_TAB = 'li.tab:not(.removing):not(.hidden):not(.pinned)';
-kSELECTOR_VISIBLE_TAB = 'li.tab:not(.removing):not(.collapsed):not(.hidden)';
 
 function getNormalTabs(aHint) { // only visible, including collapsed, not pinned
   var container = getTabsContainer(aHint);
