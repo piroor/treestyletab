@@ -78,8 +78,9 @@ function onSelect(aActiveInfo) {
   var shouldCollapseExpandNow = configs.autoCollapseExpandSubtreeOnSelect;
   var newActiveTabOptions = {
     canCollapseTree : shouldCollapseExpandNow,
-    canExpandTree   : shouldCollapseExpandNow
+    canExpandTree   : shouldCollapseExpandNow && newTab.parentNode.internalFocusCount == 0
   };
+  log('onSelect: ', dumpTab(newTab), newActiveTabOptions);
   if (isCollapsed(newTab)) {
     if (configs.autoExpandSubtreeOnCollapsedChildFocused) {
       for (let ancestor of getAncestorTabs(newTab)) {
@@ -88,7 +89,7 @@ function onSelect(aActiveInfo) {
       handleNewActiveTab(newTab, newActiveTabOptions);
     }
     else {
-      browser.tabs.update(getRootTab(newTab).apiTab.id, { active: true });
+      selectTabInternally(getRootTab(newTab));
       noMoreFocusChange = true;
     }
   }
@@ -202,8 +203,8 @@ function onCreated(aTab) {
 
   updateInsertionPositionInfo(newTab);
 
-  gOpeningCount++;
-  setTimeout(() => gOpeningCount--, 0);
+  newTab.parentNode.openingCount++;
+  setTimeout(() => newTab.parentNode.openingCount--, 0);
 
   if (gIsBackground)
     reserveToSaveTreeStructure(newTab);

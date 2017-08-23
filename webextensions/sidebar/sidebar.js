@@ -55,6 +55,21 @@ function onMessage(aMessage, aSender, aRespond) {
       if (aMessage.windowId == gTargetWindow)
         applyTreeStructureToTabs(getAllTabs(gTargetWindow), aMessage.structure);
       break;
+
+    case kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE:
+      if (aMessage.windowId == gTargetWindow) {
+        let tab = getTabById(aMessage.tab);
+        let params = {
+          collapsed: aMessage.collapsed,
+          justNow:   !aMessage.manualOperation,
+          noPush:    true
+        };
+        if (aMessage.manualOperation)
+          manualCollapseExpandSubtree(tab, params);
+        else
+          collapseExpandSubtree(tab, params);
+      }
+      break;
   }
 }
 

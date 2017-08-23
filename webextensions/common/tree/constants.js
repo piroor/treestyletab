@@ -7,6 +7,9 @@
 var kCOMMAND_PULL_TREE_STRUCTURE = 'treestyletab:pull-tree-structure';
 var kCOMMAND_PUSH_TREE_STRUCTURE = 'treestyletab:push-tree-structure';
 var kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE = 'treestyletab:push-subtree-collapsed-state';
+var kCOMMAND_SELECT_TAB = 'treestyletab:request-select-tab';
+var kCOMMAND_SELECT_TAB_INTERNALLY = 'treestyletab:request-select-tab-internally';
+var kCOMMAND_REMOVE_TAB = 'treestyletab:request-remove-tab';
 
 var kPARENT   = 'data-parent-id';
 var kCHILDREN = 'data-child-ids';

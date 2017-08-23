@@ -154,10 +154,33 @@ function onMessage(aMessage, aSender, aRespond) {
       });
       break;
 
-    case kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE:
+    case kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE: {
       let tab = getTabById(aMessage.tab);
-      collapseExpandSubtree(tab, { collapsed: aMessage.collapsed, justNow: true });
+      let params = {
+        collapsed:      aMessage.collapsed,
+        justNow:        true,
+        fromBackground: true
+      };
+      if (aMessage.manualOperation)
+        manualCollapseExpandSubtree(tab, params);
+      else
+        collapseExpandSubtree(tab, params);
       reserveToSaveTreeStructure(tab);
+    }; break;
+
+    case kCOMMAND_REMOVE_TAB: {
+      let tab = getTabById(aMessage.tab);
+      tryMoveFocusFromClosingCurrentTab(tab);
+      browser.tabs.remove(tab.apiTab.id);
+    }; break;
+
+    case kCOMMAND_SELECT_TAB: {
+      let tab = getTabById(aMessage.tab);
+      browser.tabs.update(tab.apiTab.id, { active: true });
+    }; break;
+
+    case kCOMMAND_SELECT_TAB_INTERNALLY:
+      selectTabInternally(getTabById(aMessage.tab));
       break;
   }
 }

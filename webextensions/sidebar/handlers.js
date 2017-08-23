@@ -127,8 +127,11 @@ function onMouseDown(aEvent) {
       (aEvent.button == 0 && (aEvent.ctrlKey || aEvent.metaKey))) {
     if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/) {
       log('middle-click to close');
-      tryMoveFocusFromClosingCurrentTab(tab);
-      browser.tabs.remove(tab.apiTab.id);
+      browser.runtime.sendMessage({
+        type:      kCOMMAND_REMOVE_TAB,
+        windowId:  tab.parentNode.windowId,
+        tab:       tab.id
+      });
       aEvent.stopPropagation();
       aEvent.preventDefault();
     }
@@ -144,7 +147,13 @@ function onMouseDown(aEvent) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
     if (hasChildTabs(tab))
-      manualCollapseExpandSubtree(tab, { collapsed: !isSubtreeCollapsed(tab) });
+      browser.runtime.sendMessage({
+        type:      kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE,
+        windowId:  tab.parentNode.windowId,
+        tab:       tab.id,
+        collapsed: !isSubtreeCollapsed(tab),
+        manualOperation: true
+      });
     return;
   }
 
@@ -157,10 +166,17 @@ function onMouseDown(aEvent) {
     //  aEvent.preventDefault();
     //  return;
     //}
-    tryMoveFocusFromClosingCurrentTab(tab);
-    browser.tabs.remove(tab.apiTab.id);
+    browser.runtime.sendMessage({
+      type:      kCOMMAND_REMOVE_TAB,
+      windowId:  tab.parentNode.windowId,
+      tab:       tab.id
+    });
     return;
   }
 
-  browser.tabs.update(tab.apiTab.id, { active: true });
+  browser.runtime.sendMessage({
+    type:      kCOMMAND_SELECT_TAB,
+    windowId:  tab.parentNode.windowId,
+    tab:       tab.id
+  });
 }

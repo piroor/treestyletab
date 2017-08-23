@@ -354,25 +354,31 @@ function collapseExpandSubtree(aTab, aParams = {}) {
   //  checkTabsIndentOverflow();
 
 
-  browser.runtime.sendMessage({
-    type:      kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE,
-    windowId:  container.windowId,
-    tab:       aTab.id,
-    collapsed: aParams.collapsed
-  });
+  if (!aParams.noPush) {
+    browser.runtime.sendMessage({
+      type:      kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE,
+      windowId:  container.windowId,
+      tab:       aTab.id,
+      collapsed: aParams.collapsed,
+      manualOperation: !!aParams.manualOperation
+    });
+  }
 
   container.doingCollapseExpand = false;
 }
 
 function manualCollapseExpandSubtree(aTab, aParams = {}) {
+  aParams.manualOperation = true;
   collapseExpandSubtree(aTab, aParams);
+
   if (!aParams.collapsed) {
     aTab.classList.add(kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
     //setTabValue(aTab, kTAB_STATE_SUBTREE_EXPANDED_MANUALLY, true);
   }
 
 /*
-  if (!configs.indentAutoShrink ||
+  if (gIsBackground ||
+      !configs.indentAutoShrink ||
       !configs.indentAutoShrinkOnlyForVisible)
     return;
 
@@ -445,7 +451,8 @@ function collapseExpandTab(aTab, aParams = {}) {
       newSelection = ancestor;
       break;
     }
-    browser.tabs.update(newSelection.apiTab.id, { active: true });
+    log('current tab is going to be collapsed, switch to ', dumpTab(newSelection));
+    selectTabInternally(newSelection);
   }
 
   if (!isSubtreeCollapsed(aTab)) {
@@ -681,7 +688,7 @@ function tryMoveFocusFromClosingCurrentTab(aTab) {
   //  return;
 
   nextFocusedTab.parentNode.focusChangedByCurrentTabRemove = true;
-  browser.tabs.update(nextFocusedTab.apiTab.id, { active: true });
+  selectTabInternally(nextFocusedTab);
   return true;
 }
 

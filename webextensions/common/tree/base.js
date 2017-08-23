@@ -42,7 +42,6 @@ var gInternalMovingCount = 0;
 var gIsBackground;
 var gTargetWindow = null;
 var gRestoringTree = false;
-var gOpeningCount = 0;
 var gIndent = -1;
 var gIndentProp = 'marginLeft';
 var gNeedRestoreTree = false;
@@ -83,11 +82,28 @@ function updateTab(aTab, aParams = {}) {
     getTabLabel(aTab).textContent = aParams.label;
 }
 
+function selectTabInternally(aTab) {
+  aTab.parentNode.internalFocusCount++;
+  if (gIsBackground) {
+    browser.tabs.update(aTab.apiTab.id, { active: true });
+  }
+  else {
+    browser.runtime.sendMessage({
+      type:     kCOMMAND_SELECT_TAB_INTERNALLY,
+      windowId: aTab.apiTab.windowId,
+      tab:      aTab.id
+    });
+  }
+  setTimeout(() => aTab.parentNode.internalFocusCount--, 0);
+}
+
 function buildTabsContainerFor(aWindowId) {
   var container = document.createElement('ul');
   container.windowId = aWindowId;
   container.setAttribute('id', `window-${aWindowId}`);
   container.classList.add('tabs');
+  container.internalFocusCount = 0;
+  container.openingCoun = 0;
   return container;
 }
 
