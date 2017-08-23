@@ -12,6 +12,7 @@ async function init() {
   gAllTabs.addEventListener('mousedown', onMouseDown);
   await rebuildAll();
   browser.runtime.onMessage.addListener(onMessage);
+  document.documentElement.setAttribute(kTWISTY_STYLE, configs.twistyStyle);
 }
 
 function destroy() {

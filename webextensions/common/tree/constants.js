@@ -14,6 +14,7 @@ var kNEST     = 'data-nest';
 var kINSERT_BEFORE = 'data-insert-before-id';
 var kINSERT_AFTER  = 'data-insert-after-id';
 var kCLOSED_SET_ID = 'data-closed-set-id';
+var kTWISTY_STYLE = 'data-twisty-style';
 
 var kCOLLAPSED_DONE   = 'collapsed-completely';
 var kCOLLAPSING_PHASE = 'data-collapsing-phase';

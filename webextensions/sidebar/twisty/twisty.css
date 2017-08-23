@@ -1,0 +1,65 @@
+.tab .twisty {
+  display: inline-block;
+  height: 16px;
+  max-height: 16px;
+  max-width: 16px;
+  min-height: 16px;
+  min-width: 16px;
+  position: relative;
+  width: 16px;
+}
+
+.tab[data-child-ids="|"] .twisty,
+.tab.pinned .twisty {
+  background-image: none !important;
+}
+
+.twisty {
+  background-image: url("twisty-retro.png");
+  background-position: top right;
+}
+
+:root[data-twisty-style="modern-black"]
+  .twisty {
+  background-image: url("twisty-modern-b-l.png");
+}
+:root[data-twisty-style="modern-black"].tab-contents-inverted
+  .twisty {
+  background-image: url("twisty-modern-b-r.png");
+}
+:root[data-twisty-style="modern-white"]
+  .twisty {
+  background-image: url("twisty-modern-w-l.png");
+}
+:root[data-twisty-style="modern-white"].tab-contents-inverted
+  .twisty {
+  background-image: url("twisty-modern-w-r.png");
+}
+
+:root[data-twisty-style="osx"]
+  .twisty {
+  background-image: url("twisty-osx-l.png");
+  opacity: 0.38;
+}
+:root[data-twisty-style="osx"].tab-contents-inverted
+  .twisty {
+  background-image: url("twisty-osx-r.png");
+}
+:root[data-twisty-style="osx"]
+  .twisty:active,
+:root[data-twisty-style="osx"]
+  .tab.active .twisty {
+  opacity: 1;
+}
+
+.tab.subtree-collapsed .twisty {
+  background-position: top left;
+}
+.tab:hover  .twisty,
+.tab.active .twisty {
+  background-position: bottom right;
+}
+.tab.subtree-collapsed:hover .twisty,
+.tab.subtree-collapsed.active .twisty {
+  background-position: bottom left;
+}

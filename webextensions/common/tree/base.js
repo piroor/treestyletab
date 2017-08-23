@@ -65,6 +65,12 @@ function buildTab(aTab) {
   label.appendChild(document.createTextNode(aTab.title));
   item.appendChild(label);
 
+  if (!gIsBackground) {
+    let twisty = document.createElement('span');
+    twisty.classList.add(kTWISTY);
+    item.insertBefore(twisty, label);
+  }
+
   return item;
 }
 
