@@ -99,7 +99,8 @@ function selectTabInternally(aTab) {
    * Note: enough large delay is truly required to wait various
    * tab-related operations are processed in background and sidebar.
    */
-  setTimeout(() => aTab.parentNode.internalFocusCount--, 50);
+  setTimeout(() => aTab.parentNode.internalFocusCount--,
+    configs.acceptableDelayForInternalFocusMoving);
 }
 
 function buildTabsContainerFor(aWindowId) {

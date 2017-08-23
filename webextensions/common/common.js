@@ -59,6 +59,8 @@ configs = new Configs({
   indentAutoShrink: true, // extensions.treestyletab.indent.autoShrink
   indentAutoShrinkOnlyForVisible: true, // extensions.treestyletab.indent.autoShrink.onlyForVisible
 
+  acceptableDelayForInternalFocusMoving: 150,
+
   animation: true,
   debug:     false
 });
