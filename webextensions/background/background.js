@@ -52,7 +52,7 @@ async function rebuildAll() {
   windows.forEach((aWindow) => {
     var container = buildTabsContainerFor(aWindow.id);
     for (let tab of aWindow.tabs) {
-      container.appendChild(buildTab(tab));
+      container.appendChild(buildTab(tab, { existing: true }));
     }
     gAllTabs.appendChild(container);
   });

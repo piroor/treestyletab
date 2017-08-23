@@ -49,7 +49,7 @@ var gNeedRestoreTree = false;
 
 var gIsMac = /Darwin/.test(navigator.platform);
 
-function buildTab(aTab) {
+function buildTab(aTab, aOptions = {}) {
   var item = document.createElement('li');
   item.apiTab = aTab;
   item.setAttribute('id', `tab-${aTab.windowId}-${aTab.id}`);
@@ -57,7 +57,7 @@ function buildTab(aTab) {
   item.setAttribute('title', aTab.title);
   item.classList.add('tab');
   if (aTab.active)
-    item.classList.add('active');
+    item.classList.add(kTAB_STATE_ACTIVE);
   item.classList.add(kTAB_STATE_SUBTREE_COLLAPSED);
 
   let label = document.createElement('span');
@@ -69,6 +69,10 @@ function buildTab(aTab) {
     let twisty = document.createElement('span');
     twisty.classList.add(kTWISTY);
     item.insertBefore(twisty, label);
+  }
+
+  if (aOptions.existing) {
+    item.classList.add(kTAB_STATE_ANIMATION_READY);
   }
 
   return item;

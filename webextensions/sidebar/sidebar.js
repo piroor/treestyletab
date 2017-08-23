@@ -28,7 +28,7 @@ async function rebuildAll() {
   clearAllTabsContainers();
   var container = buildTabsContainerFor(gTargetWindow);
   for (let tab of tabs) {
-    container.appendChild(buildTab(tab));
+    container.appendChild(buildTab(tab, { existing: true }));
   }
   gAllTabs.appendChild(container);
   await inheritTreeStructure();
