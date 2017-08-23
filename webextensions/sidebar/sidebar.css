@@ -66,5 +66,6 @@ li.removing {
 
 li.collapsed-completely {
   pointer-events: none;
+  visibility: collapse;
 }
 
