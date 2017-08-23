@@ -39,7 +39,7 @@
 
 var gAllTabs;
 var gInternalMovingCount = 0;
-var gIsBackground = false;
+var gIsBackground;
 var gTargetWindow = null;
 var gRestoringTree = false;
 var gOpeningCount = 0;

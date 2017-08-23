@@ -4,10 +4,12 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
+gIsBackground = true;
+gLogContext = 'BG';
+
 window.addEventListener('DOMContentLoaded', init, { once: true });
 
 async function init() {
-  gIsBackground = true;
   window.addEventListener('unload', destroy, { once: true });
   gAllTabs = document.getElementById('all-tabs');
   startObserveTabs();

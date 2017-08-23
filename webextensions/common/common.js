@@ -5,6 +5,7 @@
 */
 
 var configs;
+var gLogContext = '?';
 
 function log(aMessage, ...aArgs)
 {
@@ -16,7 +17,7 @@ function log(aMessage, ...aArgs)
   for (let i = 0; i < nest; i++) {
     indent += ' ';
   }
-  console.log(`treestyletab: ${indent}${aMessage}`, ...aArgs);
+  console.log(`tst<${gLogContext}>: ${indent}${aMessage}`, ...aArgs);
 }
 
 function dumpTab(aTab) {

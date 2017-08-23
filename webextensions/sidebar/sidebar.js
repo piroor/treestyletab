@@ -4,6 +4,9 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
+gIsBackground = false;
+gLogContext = 'Sidebar';
+
 window.addEventListener('DOMContentLoaded', init, { once: true });
 
 async function init() {
