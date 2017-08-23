@@ -40,6 +40,12 @@
 
 // collapse/expand tabs
 
+function collapseExpandSubtree() {
+}
+
+function collapseExpandTab() {
+}
+
 async function updateTabCollapsed(aTab, aParams = {}) {
   log('updateTabCollapsed ', dumpTab(aTab));
   if (!aTab.parentNode) // do nothing for closed tab!
@@ -129,4 +135,13 @@ async function updateTabCollapsed(aTab, aParams = {}) {
       aTab.style.opacity   = endOpacity;
     });
   });
+}
+
+async function forceExpandTabs(aTabs) {
+  var collapsedStates = aTabs.map(isSubtreeCollapsed);
+  await Promise.all(aTabs.map(aTab => {
+    collapseExpandSubtree(aTab, { collapsed: false, justNow: true });
+	collapseExpandTab(aTab, { collapsed: false, justNow: true });
+  }));
+  return collapsedStates;
 }

@@ -37,15 +37,15 @@
  *
  * ***** END LICENSE BLOCK ******/
 
-var kSELECTOR_LIVE_TAB = 'li.tab:not(.removing)';
+var kSELECTOR_LIVE_TAB = `li.tab:not(.${kTAB_STATE_REMOVING})`;
 var kSELECTOR_NORMAL_TAB = `${kSELECTOR_LIVE_TAB}:not(.hidden):not(.pinned)`;
-var kSELECTOR_VISIBLE_TAB = `${kSELECTOR_LIVE_TAB}:not(.collapsed):not(.hidden)`;
+var kSELECTOR_VISIBLE_TAB = `${kSELECTOR_LIVE_TAB}:not(.${kTAB_STATE_COLLAPSED}):not(.hidden)`;
 var kSELECTOR_CONTROLLABLE_TAB = `${kSELECTOR_LIVE_TAB}:not(.hidden)`;
 var kSELECTOR_PINNED_TAB = `${kSELECTOR_LIVE_TAB}.pinned`;
 
-var kXPATH_LIVE_TAB = `[${hasClass('tab')}][not(${hasClass('removing')})]`;
+var kXPATH_LIVE_TAB = `[${hasClass('tab')}][not(${hasClass(kTAB_STATE_REMOVING)})]`;
 var kXPATH_NORMAL_TAB = `${kXPATH_LIVE_TAB}[not(${hasClass('hidden')})][not(${hasClass('pinned')})]`;
-var kXPATH_VISIBLE_TAB = `${kXPATH_LIVE_TAB}[not(${hasClass('collapsed')})][not(${hasClass('hidden')})]`;
+var kXPATH_VISIBLE_TAB = `${kXPATH_LIVE_TAB}[not(${hasClass(kTAB_STATE_COLLAPSED)})][not(${hasClass('hidden')})]`;
 var kXPATH_CONTROLLABLE_TAB = `${kXPATH_LIVE_TAB}[not(${hasClass('hidden')})]`;
 var kXPATH_PINNED_TAB = `${kXPATH_LIVE_TAB}[${hasClass('pinned')}]`;
 
@@ -256,6 +256,13 @@ function getPinnedTabs(aHint) { // visible, pinned
   return Array.slice(container.querySelectorAll(kSELECTOR_PINNED_TAB));
 }
 
+function countPinnedTabs(aHint) {
+  var container = getTabsContainer(aHint);
+  if (!container)
+    return 0;
+  return container.querySelectorAll(kSELECTOR_PINNED_TAB).length;
+}
+
 function getAllRootTabs(aHint) {
   var container = getTabsContainer(aHint);
   return container.querySelector(`${kSELECTOR_LIVE_TAB}:not([${kPARENT}])`);
@@ -264,6 +271,11 @@ function getAllRootTabs(aHint) {
 function getRootTabs(aHint) {
   var container = getTabsContainer(aHint);
   return container.querySelector(`${kSELECTOR_CONTROLLABLE_TAB}:not([${kPARENT}])`);
+}
+
+function getVisibleRootTabs(aHint) {
+  var container = getTabsContainer(aHint);
+  return container.querySelector(`${kSELECTOR_VISIBLE_TAB}:not([${kPARENT}])`);
 }
 
 
@@ -303,6 +315,23 @@ function getVisibleIndex(aTab) {
     aTab,
     XPathResult.NUMBER_TYPE
   ).numberValue;
+}
+
+async function doAndGetNewTabs(aAsyncTask, aHint) {
+  var tabsQueryOptions = {
+    windowType: ['normal']
+  };
+  if (aHint) {
+    let container = getTabsContainer(aHint);
+    if (container)
+      tabsQueryOptions.windowId = container.windowId;
+  }
+  var beforeTabs = await browser.tabs.query(tabsQueryOptions);
+  await aAsyncTask;
+  var afterTabs = await browser.tabs.query(tabsQueryOptions);
+  var beforeIds = beforeTabs.map(aApiTab => aApiTab.id);
+  var addedTabs = afterTabs.filter(aApiTab => beforeIds.indexOf(aApiTab.id) > -1);
+  return addedTabs.map(aApiTab => getTabById({ tab: aApiTab.id, window: aApiTab.windowId }));
 }
 
 

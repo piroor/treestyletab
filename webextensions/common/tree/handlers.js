@@ -60,7 +60,7 @@ function endObserveTabs() {
 
 function omMouseDown(aEvent) {
   var tab = getTabFromEvent(aEvent);
-  if (!tab || tab.classList.contains('removing'))
+  if (!tab)
     return;
   if (aEvent.button == 1 ||
       (aEvent.button == 0 && (aEvent.ctrlKey || aEvent.metaKey))) {
@@ -78,7 +78,7 @@ function onSelect(aActiveInfo) {
     return;
 
   var newTab = getTabById({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
-  if (!newTab || newTab.classList.contains('removing'))
+  if (!newTab)
     return;
   var oldTabs = document.querySelectorAll('.active');
   for (let oldTab of oldTabs) {
@@ -92,7 +92,7 @@ function onUpdated(aTabId, aChangeInfo, aTab) {
     return;
 
   var updatedTab = getTabById({ tab: aTabId, window: aTab.windowId });
-  if (!updatedTab || updatedTab.classList.contains('removing'))
+  if (!updatedTab)
     return;
   if (aTab.title != updatedTab.textContent)
     updatedTab.textContent = aTab.title;
@@ -119,7 +119,7 @@ function onCreated(aTab) {
       justNow:   true
     });
     window.requestAnimationFrame(() => {
-      newTab.classList.add('animation-ready');
+      newTab.classList.add(kTAB_STATE_ANIMATION_READY);
       updateTabCollapsed(newTab, {
         collapsed: false,
         justNow:   gRestoringTree,
@@ -133,7 +133,7 @@ function onCreated(aTab) {
     });
   }
   else {
-    newTab.classList.add('animation-ready');
+    newTab.classList.add(kTAB_STATE_ANIMATION_READY);
     if (!gIsBackground)
       scrollToNewTab(newTab)
   }
@@ -181,11 +181,11 @@ function onRemoved(aTabId, aRemoveInfo) {
     oldTab.addEventListener('transitionend', () => {
       onRemovedComplete(oldTab)
     }, { once: true });
-    oldTab.classList.add('removing');
+    oldTab.classList.add(kTAB_STATE_REMOVING);
     oldTab.style.marginBottom = `-${oldTab.getBoundingClientRect().height}px`;
   }
   else {
-    oldTab.classList.add('removing');
+    oldTab.classList.add(kTAB_STATE_REMOVING);
     onRemovedComplete(oldTab);
   }
 }

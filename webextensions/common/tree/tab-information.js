@@ -37,8 +37,24 @@
  *
  * ***** END LICENSE BLOCK ******/
 
+function isCollapsed(aTab) {
+  return aTab.classList.contains(kTAB_STATE_COLLAPSED);
+}
+
 function isSubtreeCollapsed(aTab) {
-  return false;
+  return aTab.classList.contains(kTAB_STATE_SUBTREE_COLLAPSED);
+}
+
+function shouldCloseTabSubtreeOf(aTab) {
+  return (hasChildTabs(aTab) &&
+          (configs.closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN ||
+           isSubtreeCollapsed(aTab)));
+}
+
+function shouldCloseLastTabSubtreeOf(aTab) {
+  return (aTab &&
+          shouldCloseTabSubtreeOf(aTab) &&
+          getDescendantTabs(aTab).length + 1 == getAllTabs(aTab).length);
 }
 
 function isGroupTab(aTab) {

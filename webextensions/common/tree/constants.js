@@ -25,3 +25,8 @@ var kTHROBBER = 'throbber';
 var kTWISTY   = 'twisty';
 var kCOUNTER  = 'counter';
 
+var kTAB_STATE_ANIMATION_READY = 'animation-ready';
+var kTAB_STATE_REMOVING = 'removing';
+var kTAB_STATE_COLLAPSED = 'collapsed';
+var kTAB_STATE_SUBTREE_COLLAPSED = 'subtree-collapsed';
+
