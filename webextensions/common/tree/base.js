@@ -76,7 +76,7 @@ function buildTab(aTab) {
 
 function updateTab(aTab, aParams = {}) {
   if (aParams.label)
-    getTabLabel(aTab).textConetnt = aParams.label;
+    getTabLabel(aTab).textContent = aParams.label;
 }
 
 function buildTabsContainerFor(aWindowId) {
