@@ -77,29 +77,29 @@ function onSelect(aActiveInfo) {
   var noMoreFocusChange = false;
   log('onSelect: ', dumpTab(newTab));
   if (gIsBackground) {
-  if (isCollapsed(newTab)) {
-    if (configs.autoExpandSubtreeOnCollapsedChildFocused) {
-      for (let ancestor of getAncestorTabs(newTab)) {
-        collapseExpandSubtree(ancestor, { collapsed: false });
+    if (isCollapsed(newTab)) {
+      if (configs.autoExpandSubtreeOnCollapsedChildFocused) {
+        for (let ancestor of getAncestorTabs(newTab)) {
+          collapseExpandSubtree(ancestor, { collapsed: false });
+        }
+        handleNewActiveTab(newTab);
       }
-      handleNewActiveTab(newTab);
+      else {
+        selectTabInternally(getRootTab(newTab));
+        noMoreFocusChange = true;
+      }
     }
-    else {
-      selectTabInternally(getRootTab(newTab));
+    else if (/**
+              * Focus movings by closing of the old current tab should be handled
+              * only when it is activated by user preference expressly.
+              */
+             newTab.parentNode.focusChangedByCurrentTabRemove &&
+             !configs.autoCollapseExpandSubtreeOnSelectOnCurrentTabRemove) {
       noMoreFocusChange = true;
     }
-  }
-  else if (/**
-            * Focus movings by closing of the old current tab should be handled
-            * only when it is activated by user preference expressly.
-            */
-           newTab.parentNode.focusChangedByCurrentTabRemove &&
-           !configs.autoCollapseExpandSubtreeOnSelectOnCurrentTabRemove) {
-    noMoreFocusChange = true;
-  }
-  else if (hasChildTabs(newTab) && isSubtreeCollapsed(newTab)) {
-    handleNewActiveTab(newTab);
-  }
+    else if (hasChildTabs(newTab) && isSubtreeCollapsed(newTab)) {
+      handleNewActiveTab(newTab);
+    }
   }
 
   newTab.parentNode.focusChangedByCurrentTabRemove = false;
