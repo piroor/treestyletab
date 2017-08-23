@@ -546,7 +546,7 @@ async function updateTabCollapsed(aTab, aParams = {}) {
       });
       aTab.addEventListener('transitionend', aTab.onEndCollapseExpandAnimation, { once: true });
       var backupTimer = setTimeout(() => {
-        if (!aTab)
+        if (!aTab || !aTab.onEndCollapseExpandAnimation)
           return;
         backupTimer = null
         aTab.removeEventListener('transitionend', aTab.onEndCollapseExpandAnimation, { once: true });
