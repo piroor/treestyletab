@@ -91,7 +91,7 @@ function positionPinnedTabs(aParams = {}) {
       height: height
     });
 
-    if (aParams.justNow && transitionStyleBackup) {
+    if (aParams.justNow && transitionStyleBackup)
       setTimeout(() => style.transition = transitionStyleBackup, 0);
 
     col++;

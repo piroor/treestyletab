@@ -109,7 +109,7 @@ function isTabInViewport(aTab) {
   if (!aTab)
     return false;
 
-  if (isPinned(aTab)
+  if (isPinned(aTab))
     return true;
 
   var tabRect = aTab.getBoundingClientRect();
@@ -119,7 +119,7 @@ function isTabInViewport(aTab) {
     containerRect.top >= barBox.top &&
     containerRect.bottom <= barBox.bottom
   );
-},
+}
 
 function onMouseDown(aEvent) {
   var tab = getTabFromEvent(aEvent);
