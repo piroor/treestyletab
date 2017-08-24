@@ -45,7 +45,7 @@ async function init() {
 
 function destroy() {
   browser.runtime.onMessage.removeListener(onMessage);
-  endObserveTabs();
+  endObserveApiTabs();
   window.removeEventListener('resize', onResize);
 
   gTabBar.removeEventListener('mousedown', onMouseDown);
@@ -73,7 +73,7 @@ async function rebuildAll() {
     container.appendChild(tab);
   }
   gAllTabs.appendChild(container);
-  startObserveTabs();
+  startObserveApiTabs();
 }
 
 function fixupTab(aTab) {

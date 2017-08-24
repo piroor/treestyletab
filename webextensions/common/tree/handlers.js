@@ -37,28 +37,28 @@
  *
  * ***** END LICENSE BLOCK ******/
 
-function startObserveTabs() {
-  browser.tabs.onActivated.addListener(onSelect);
-  browser.tabs.onUpdated.addListener(onUpdated);
-  browser.tabs.onCreated.addListener(onCreated);
-  browser.tabs.onRemoved.addListener(onRemoved);
-  browser.tabs.onMoved.addListener(onMoved);
-  browser.tabs.onAttached.addListener(onAttached);
-  browser.tabs.onDetached.addListener(onDetached);
+function startObserveApiTabs() {
+  browser.tabs.onActivated.addListener(onApiTabActivated);
+  browser.tabs.onUpdated.addListener(onApiTabUpdated);
+  browser.tabs.onCreated.addListener(onApiTabCreated);
+  browser.tabs.onRemoved.addListener(onApiTabRemoved);
+  browser.tabs.onMoved.addListener(onApiTabMoved);
+  browser.tabs.onAttached.addListener(onApiTabAttached);
+  browser.tabs.onDetached.addListener(onApiTabDetached);
 }
 
-function endObserveTabs() {
-  browser.tabs.onActivated.removeListener(onSelect);
-  browser.tabs.onUpdated.removeListener(onUpdated);
-  browser.tabs.onCreated.removeListener(onCreated);
-  browser.tabs.onRemoved.removeListener(onRemoved);
-  browser.tabs.onMoved.removeListener(onMoved);
-  browser.tabs.onAttached.removeListener(onAttached);
-  browser.tabs.onDetached.removeListener(onDetached);
+function endObserveApiTabs() {
+  browser.tabs.onActivated.removeListener(onApiTabActivated);
+  browser.tabs.onUpdated.removeListener(onApiTabUpdated);
+  browser.tabs.onCreated.removeListener(onApiTabCreated);
+  browser.tabs.onRemoved.removeListener(onApiTabRemoved);
+  browser.tabs.onMoved.removeListener(onApiTabMoved);
+  browser.tabs.onAttached.removeListener(onApiTabAttached);
+  browser.tabs.onDetached.removeListener(onApiTabDetached);
 }
 
 
-function onSelect(aActiveInfo) {
+function onApiTabActivated(aActiveInfo) {
   if (gTargetWindow && aActiveInfo.windowId != gTargetWindow)
     return;
 
@@ -97,7 +97,7 @@ function onSelect(aActiveInfo) {
   }
 }
 
-function onUpdated(aTabId, aChangeInfo, aTab) {
+function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
   if (gTargetWindow && aTab.windowId != gTargetWindow)
     return;
 
@@ -118,7 +118,7 @@ function onUpdated(aTabId, aChangeInfo, aTab) {
   }));
 }
 
-function onCreated(aTab) {
+function onApiTabCreated(aTab) {
   if (gTargetWindow && aTab.windowId != gTargetWindow)
     return;
 
@@ -183,7 +183,7 @@ function onCreated(aTab) {
   }));
 }
 
-function onRemoved(aTabId, aRemoveInfo) {
+function onApiTabRemoved(aTabId, aRemoveInfo) {
   if (gTargetWindow && aRemoveInfo.windowId != gTargetWindow)
     return;
 
@@ -218,24 +218,24 @@ function onRemoved(aTabId, aRemoveInfo) {
 
   if (canAnimate() && !isCollapsed(oldTab)) {
     oldTab.addEventListener('transitionend', () => {
-      onRemovedComplete(oldTab)
+      onApiTabRemovedComplete(oldTab)
     }, { once: true });
     oldTab.classList.add(kTAB_STATE_REMOVING);
     oldTab.style.marginBottom = `-${oldTab.getBoundingClientRect().height}px`;
   }
   else {
     oldTab.classList.add(kTAB_STATE_REMOVING);
-    onRemovedComplete(oldTab);
+    onApiTabRemovedComplete(oldTab);
   }
 }
-function onRemovedComplete(aTab) {
+function onApiTabRemovedComplete(aTab) {
   var container = aTab.parentNode;
   container.removeChild(aTab);
   if (!container.hasChildNodes())
     container.parentNode.removeChild(container);
 }
 
-function onMoved(aTabId, aMoveInfo) {
+function onApiTabMoved(aTabId, aMoveInfo) {
   if (gTargetWindow && aMoveInfo.windowId != gTargetWindow)
     return;
 
@@ -261,7 +261,7 @@ function onMoved(aTabId, aMoveInfo) {
   container.insertBefore(movedTab, nextTab);
 }
 
-function onAttached(aTabId, aAttachInfo) {
+function onApiTabAttached(aTabId, aAttachInfo) {
   if (gTargetWindow &&
       aAttachInfo.newWindowId != gTargetWindow)
     return;
@@ -269,7 +269,7 @@ function onAttached(aTabId, aAttachInfo) {
   var newTab = getTabById({ tab: aTabId, window: aAttachInfo.newWindowId });
 }
 
-function onDetached(aTabId, aDetachInfo) {
+function onApiTabDetached(aTabId, aDetachInfo) {
   if (gTargetWindow &&
       aAttachInfo.oldWindowId != gTargetWindow)
     return;

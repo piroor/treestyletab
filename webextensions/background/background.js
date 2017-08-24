@@ -22,7 +22,7 @@ async function init() {
   await configs.$loaded;
   await rebuildAll();
 
-  startObserveTabs();
+  startObserveApiTabs();
   browser.runtime.onMessage.addListener(onMessage);
 
   await waitUntilCompletelyRestored();
@@ -50,7 +50,7 @@ function waitUntilCompletelyRestored() {
 
 function destroy() {
   browser.runtime.onMessage.removeListener(onMessage);
-  endObserveTabs();
+  endObserveApiTabs();
 
   gAllTabs.removeEventListener(kEVENT_TAB_OPENED, onTabOpened);
   gAllTabs.removeEventListener(kEVENT_TAB_CLOSED, onTabClosed);
