@@ -47,11 +47,16 @@ button {
 
 #tabbar {
   bottom: 0;
+  direction: rtl;
   left: 0;
   overflow: auto;
   position: fixed;
   right: 0;
   top: 0;
+}
+
+#all-tabs {
+  direction: ltr;
 }
 
 ul {
