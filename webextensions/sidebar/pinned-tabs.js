@@ -48,11 +48,10 @@ function positionPinnedTabs(aParams = {}) {
     return;
   }
 
-  var container = getTabsContainer(aParams.hint);
-  var containerWidth = container.getBoundingClientRect().width;
+  var containerWidth = gTabBar.getBoundingClientRect().width;
   var maxWidth = containerWidth;
   var faviconized = configs.faviconizePinnedTabs;
-  var faviconizedSize = getFirstVisibleTab(container).getBoundingClientRect().height;
+  var faviconizedSize = getFirstVisibleTab(gTargetWindow).getBoundingClientRect().height;
 
   var width  = faviconized ? faviconizedSize : maxWidth ;
   var height = faviconizedSize;
@@ -61,7 +60,7 @@ function positionPinnedTabs(aParams = {}) {
   var col    = 0;
   var row    = 0;
 
-  container.style.marginTop = `${height * maxRow}px`;
+  gTabBar.style.top = `${height * maxRow}px`;
   for (let item of pinnedTabs) {
     let style = item.style;
     style.marginTop = '';
@@ -113,8 +112,7 @@ function positionPinnedTabsWithDelay(aParams) {
 }
 
 function resetPinnedTabs(aHint) {
-  var container = getTabsContainer(aHint);
-  container.style.marginTop = '';
+  gTabBar.style.top = '';
   var pinnedTabs = getPinnedTabs(aParams.hint);
   for (let pinnedTab of pinnedTabs) {
     let style = pinnedTab.style;
