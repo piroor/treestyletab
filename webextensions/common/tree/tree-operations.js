@@ -447,7 +447,7 @@ function collapseExpandTreesIntelligentlyFor(aTab, aParams = {}) {
 
   var xpathResult = evaluateXPath(
       `child::${kXPATH_LIVE_TAB}[
-        not(@${kCHILDREN}="|") and
+        @${kCHILDREN} and
         not(${hasClass(kTAB_STATE_COLLAPSED)}) and
         not(${hasClass(kTAB_STATE_SUBTREE_COLLAPSED)}) and
         not(contains("${expandedAncestors}", concat("<", @id, ">"))) and
