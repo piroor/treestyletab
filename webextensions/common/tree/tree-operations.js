@@ -202,7 +202,7 @@ async function attachTabTo(aChild, aParent, aInfo = {}) {
   aChild.dispatchEvent(new CustomEvent(kEVENT_TAB_ATTACHED, {
     detail: {
       parent: aParent
-    }
+    },
     bubbles: true,
     cancelable: false
   }));
@@ -229,7 +229,7 @@ function detachTab(aChild, aInfo = {}) {
   aChild.dispatchEvent(new CustomEvent(kEVENT_TAB_DETACHED, {
     detail: {
       oldParent: parent
-    }
+    },
     bubbles: true,
     cancelable: false
   }));
