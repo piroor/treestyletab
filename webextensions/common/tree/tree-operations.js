@@ -846,8 +846,9 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aExpandStates = []) {
   log('aExpandStates: ', aExpandStates);
   for (let i = aTabs.length-1; i > -1; i--) {
     let tab = aTabs[i];
+    let expanded = aExpandStates[i];
     collapseExpandSubtree(tab, {
-      collapsed: !hasChildTabs(tab) || !aExpandStates[i],
+      collapsed: expanded === undefined ? !hasChildTabs(tab) : !expanded ,
       justNow:   true
     });
   }
