@@ -250,6 +250,15 @@ function onTabMoved(aEvent) {
   reserveToUpdateTabbarLayout();
 }
 
+function onTabInternalFocusRequested(aEvent) {
+  var tab = aEvent.target;
+  browser.runtime.sendMessage({
+    type:     kCOMMAND_SELECT_TAB_INTERNALLY,
+    windowId: tab.apiTab.windowId,
+    tab:      tab.id
+  });
+}
+
 function onTabLevelChanged(aEvent) {
   var baseIndent = gIndent;
   if (gIndent < 0)

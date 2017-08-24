@@ -81,6 +81,19 @@ async function rebuildAll() {
   });
 }
 
+async function selectTabInternally(aTab) {
+  log('selectTabInternally: ', dumpTab(aTab));
+  var container = aTab.parentNode;
+  container.internalFocusCount++;
+  await browser.tabs.update(aTab.apiTab.id, { active: true });
+  /**
+   * Note: enough large delay is truly required to wait various
+   * tab-related operations are processed in background and sidebar.
+   */
+  setTimeout(() => container.internalFocusCount--,
+    configs.acceptableDelayForInternalFocusMoving);
+}
+
 
 // save/load tree structure
 

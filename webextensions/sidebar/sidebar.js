@@ -111,7 +111,6 @@ async function inheritTreeStructure() {
     applyTreeStructureToTabs(getAllTabs(gTargetWindow), response.structure);
 }
 
-
 function onMessage(aMessage, aSender, aRespond) {
   //log('onMessage: ', aMessage, aSender);
   switch (aMessage.type) {
@@ -139,6 +138,15 @@ function onMessage(aMessage, aSender, aRespond) {
   }
 }
 
+
+function selectTabInternally(aTab) {
+  log('selectTabInternally: ', dumpTab(aTab));
+  browser.runtime.sendMessage({
+    type:     kCOMMAND_SELECT_TAB_INTERNALLY,
+    windowId: aTab.apiTab.windowId,
+    tab:      aTab.id
+  });
+}
 
 function collapseExpandAllSubtree(aParams = {}) {
   var container = getTabsContainer(gTargetWindow);
