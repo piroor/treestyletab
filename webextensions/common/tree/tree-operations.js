@@ -433,9 +433,12 @@ function collapseExpandTreesIntelligentlyFor(aTab, aParams = {}) {
   if (!aTab)
     return;
 
+  log('collapseExpandTreesIntelligentlyFor');
   var container = getTabsContainer(aTab);
-  if (container.doingCollapseExpand)
+  if (container.doingCollapseExpandCount > 0) {
+    //log('=> done by others');
     return;
+  }
 
   var sameParentTab = getParentTab(aTab);
   var expandedAncestors = `<${[aTab].concat(getAncestorTabs(aTab))
@@ -443,7 +446,7 @@ function collapseExpandTreesIntelligentlyFor(aTab, aParams = {}) {
       .join('><')}>`;
 
   var xpathResult = evaluateXPath(
-      `child::xhtml:li${kXPATH_LIVE_TAB}[
+      `child::${kXPATH_LIVE_TAB}[
         not(@${kCHILDREN}="|") and
         not(${hasClass(kTAB_STATE_COLLAPSED)}) and
         not(${hasClass(kTAB_STATE_SUBTREE_COLLAPSED)}) and
@@ -452,6 +455,7 @@ function collapseExpandTreesIntelligentlyFor(aTab, aParams = {}) {
       ]`,
       container
     );
+  //log(`${xpathResult.snapshotLength} tabs can be collapsed`);
   for (let i = 0, maxi = xpathResult.snapshotLength; i < maxi; i++) {
     let dontCollapse = false;
     let collapseTab  = xpathResult.snapshotItem(i);
@@ -467,8 +471,9 @@ function collapseExpandTreesIntelligentlyFor(aTab, aParams = {}) {
         }
       }
     }
+    //log(`${dumpTab(collapseTab)}: dontCollapse = ${dontCollapse}`);
 
-    let manuallyExpanded = false;//getTabValue(collapseTab, kSUBTREE_EXPANDED_MANUALLY) == 'true';
+    let manuallyExpanded = collapseTab.classList.contains(kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
     if (!dontCollapse && !manuallyExpanded)
       collapseExpandSubtree(collapseTab, {
         collapsed: true,
