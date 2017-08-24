@@ -47,7 +47,6 @@ button {
 
 #tabbar {
   bottom: 0;
-  direction: rtl;
   left: 0;
   overflow: auto;
   position: fixed;
@@ -55,6 +54,10 @@ button {
   top: 0;
 }
 
+/* put scrollbar leftside */
+#tabbar {
+  direction: rtl;
+}
 #all-tabs {
   direction: ltr;
 }
@@ -63,7 +66,6 @@ button {
 #tabbar.overflow {
   margin-left: -8px;
 }
-
 
 ul {
   flex-grow: 1;
