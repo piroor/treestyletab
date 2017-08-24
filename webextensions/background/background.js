@@ -5,7 +5,6 @@
 */
 'use strict';
 
-gIsBackground = true;
 gLogContext = 'BG';
 
 window.addEventListener('DOMContentLoaded', init, { once: true });

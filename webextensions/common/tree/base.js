@@ -39,7 +39,6 @@
 'use strict';
 
 var gAllTabs;
-var gIsBackground;
 var gTargetWindow = null;
 var gRestoringTree = false;
 var gIndent = -1;
@@ -126,8 +125,4 @@ function clearAllTabsContainers() {
   range.selectNodeContents(gAllTabs);
   range.deleteContents();
   range.detach();
-}
-
-function canAnimate() {
-  return !gIsBackground && configs.animation;
 }

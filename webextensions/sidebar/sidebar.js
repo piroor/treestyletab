@@ -5,7 +5,6 @@
 */
 'use strict';
 
-gIsBackground = false;
 gLogContext = 'Sidebar';
 
 var gTabBar;

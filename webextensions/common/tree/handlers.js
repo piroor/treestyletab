@@ -136,7 +136,7 @@ function onApiTabCreated(aTab) {
   window.onTabOpened && onTabOpened(newTab);
 }
 
-function onApiTabRemoved(aTabId, aRemoveInfo) {
+async function onApiTabRemoved(aTabId, aRemoveInfo) {
   if (gTargetWindow && aRemoveInfo.windowId != gTargetWindow)
     return;
 
@@ -166,15 +166,14 @@ function onApiTabRemoved(aTabId, aRemoveInfo) {
 
   window.onTabClosed && onTabClosed(oldTab);
 
-  if (canAnimate() && !isCollapsed(oldTab)) {
-    oldTab.addEventListener('transitionend', () => {
-      onApiTabRemovedComplete(oldTab)
-    }, { once: true });
-    oldTab.classList.add(kTAB_STATE_REMOVING);
-    oldTab.style.marginBottom = `-${oldTab.getBoundingClientRect().height}px`;
+  oldTab.classList.add(kTAB_STATE_REMOVING);
+
+  if (!isCollapsed(oldTab) &&
+      window.onTabCompletelyClosed) {
+    await onTabCompletelyClosed(oldTab);
+    onApiTabRemovedComplete(oldTab);
   }
   else {
-    oldTab.classList.add(kTAB_STATE_REMOVING);
     onApiTabRemovedComplete(oldTab);
   }
 }

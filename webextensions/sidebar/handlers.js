@@ -338,6 +338,27 @@ function onTabClosed(aTab) {
   reserveToUpdateTabbarLayout();
 }
 
+async function onTabCompletelyClosed(aTab) {
+  if (!configs.animation)
+    return;
+
+  return new Promise((aResolve, aReject) => {
+    aTab.onEndRemoveAnimation = (() => {
+      delete aTab.onEndRemoveAnimation;
+      aResolve();
+    });
+    aTab.addEventListener('transitionend', aTab.onEndRemoveAnimation, { once: true });
+    aTab.style.marginTop = `-${aTab.getBoundingClientRect().height}px`;
+    let backupTimer = setTimeout(() => {
+      if (!aTab || !aTab.onEndRemoveAnimation)
+        return;
+      backupTimer = null
+      aTab.removeEventListener('transitionend', aTab.onEndRemoveAnimation, { once: true });
+      aTab.onEndRemoveAnimation();
+    }, configs.collapseDuration);
+  });
+}
+
 function onTabMoved(aTab) {
   reserveToUpdateTabbarLayout();
 }
