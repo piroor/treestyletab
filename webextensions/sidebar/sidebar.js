@@ -98,6 +98,24 @@ function onMessage(aMessage, aSender, aRespond) {
           collapseExpandSubtree(tab, params);
       }
       break;
+
+    case kCOMMAND_ATTACH_TAB: {
+      if (aMessage.windowId == gTargetWindow) {
+        let child = getTabById(aMessage.child);
+        let parent = getTabById(aMessage.parent);
+        let insertBefore = getTabById(aMessage.insertBefore);
+        if (child && parent)
+          attachTabTo(child, parent, { insertBefore });
+      }
+    }; break;
+
+    case kCOMMAND_DETACH_TAB: {
+      if (aMessage.windowId == gTargetWindow) {
+        let tab = getTabById(aMessage.tab);
+        if (tab)
+          detachTab(tab);
+      }
+    }; break;
   }
 }
 

@@ -188,197 +188,23 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
   if (gTargetWindow && aMoveInfo.windowId != gTargetWindow)
     return;
 
-  log('onMoved: ', aTabId, aMoveInfo);
   var movedTab = getTabById({ tab: aTabId, window: aMoveInfo.windowId });
   if (!movedTab)
     return;
 
-  var container = getTabsContainer(movedTab);
-  var positionControlled = configs.insertNewChildAt != kINSERT_NO_CONTROL;
-  if (container.openingCount > 0 &&
-      container.internalMovingCount == 0 &&
-      positionControlled) {
-    log('onTabMove for new child tab: move back '+aMoveInfo.toIndex+' => '+aMoveInfo.fromIndex);
-    container.internalMovingCount++;
-    await browser.tabs.move(aTabId, {
-      windowId: aMoveInfo.windowId,
-      index: aMoveInfo.fromIndex
-    });
-    container.internalMovingCount--;
-    return;
-  }
+  log('onMoved: ', dumpTab(movedTab), aMoveInfo);
 
-  window.onTabMoved && onTabMoved(movedTab);
-
-  if (container.internalMovingCount > 0) {
-    log('internal move');
+  var canceled = await window.onTabMoving && onTabMoving(movedTab, aMoveInfo);
+  if (canceled)
     return;
-  }
-  log('process moved tab');
-  try{
 
   var newNextIndex = aMoveInfo.toIndex;
   if (aMoveInfo.fromIndex < newNextIndex)
     newNextIndex++;
   var nextTab = getTabs(movedTab)[newNextIndex];
-  container.insertBefore(movedTab, nextTab);
-  log('actually moved');
+  movedTab.parentNode.insertBefore(movedTab, nextTab);
 
-  if (hasChildTabs(movedTab) &&
-      container.subTreeMovingCount == 0) {
-    log('=> move sub tree');
-    //moveTabSubtreeTo(movedTab, newNextIndex);
-  }
-  //updateTabAsParent(movedTab);
-
-  var tabsToBeUpdated = [movedTab];
-
-  var allTabs = getAllTabs(container);
-  tabsToBeUpdated.push(allTabs[aMoveInfo.fromIndex]);
-  if (aMoveInfo.fromIndex > newNextIndex) { // from bottom to top
-    if (aMoveInfo.fromIndex < allTabs.length - 1)
-      tabsToBeUpdated.push(allTabs[aMoveInfo.fromIndex + 1]);
-  }
-  else { // from top to bottom
-    if (aMoveInfo.fromIndex > 0)
-      tabsToBeUpdated.push(allTabs[aMoveInfo.fromIndex - 1]);
-  }
-
-  var parentTab = getParentTab(movedTab);
-  if (parentTab) {
-    let children = getChildTabs(parentTab);
-    let oldChildIndex = children.indexOf(movedTab);
-    if (oldChildIndex > -1) {
-      if (oldChildIndex > 0) {
-        let oldPrevTab = children[oldChildIndex - 1];
-        tabsToBeUpdated.push(oldPrevTab);
-      }
-      if (oldChildIndex < children.lenght - 1) {
-        let oldNextTab = children[oldChildIndex + 1];
-        tabsToBeUpdated.push(oldNextTab);
-      }
-    }
-    //if (container.subTreeChildrenMovingCount == 0)
-    //  updateChildrenArray(parentTab);
-  }
-  log('tabsToBeUpdated: '+tabsToBeUpdated.map(dumpTab));
-
-  var updatedTabs = new WeakMap();
-  for (let tab of tabsToBeUpdated) {
-    if (updatedTabs.has(tab))
-      continue;
-    updatedTabs.set(tab, true);
-    //updateInsertionPositionInfo(tab);
-  }
-  updatedTabs = undefined;
-
-  log('status of move: ', {
-    subTreeMovingCount: container.subTreeMovingCount,
-    internalMovingCount: container.internalMovingCount
-  });
-  if (container.subTreeMovingCount > 0 ||
-      container.internalMovingCount > 0 /*||
-      // We don't have to fixup tree structure for a NEW TAB
-      // which has already been structured.
-      (newlyOpened && getParentTab(movedTab))*/)
-    return;
-
-  if (/* !restored && */
-      //!positionControlled &&
-      container.internalMovingCount == 0)
-    attachTabFromPosition(movedTab, aMoveInfo);
-
-  }
-  catch(e) {
-    log('ERROR!!', String(e));
-  }
-}
-
-function attachTabFromPosition(aTab, aMoveInfo) {
-  log('attachTabFromPosition: ', dumpTab(aTab), aMoveInfo);
-  var toIndex = aMoveInfo.toIndex;
-  var fromIndex = aMoveInfo.fromIndex;
-  var delta;
-  if (toIndex == fromIndex) { // no move?
-    log('=> no move');
-    return;
-  }
-  else if (toIndex < 0 || fromIndex < 0) {
-    delta = 2;
-  }
-  else {
-    delta = Math.abs(toIndex - fromIndex);
-  }
-
-  var prevTab = getPreviousNormalTab(aTab);
-  var nextTab = getNextNormalTab(aTab);
-
-  var tabs = getDescendantTabs(aTab);
-  if (tabs.length) {
-    nextTab = getNextTab(tabs[tabs.length-1]);
-  }
-  log('prevTab: ', dumpTab(prevTab));
-  log('nextTab: ', dumpTab(nextTab));
-
-  var prevParent = getParentTab(prevTab);
-  var nextParent = getParentTab(nextTab);
-
-  var prevLevel  = prevTab ? Number(prevTab.getAttribute(kNEST)) : -1 ;
-  var nextLevel  = nextTab ? Number(nextTab.getAttribute(kNEST)) : -1 ;
-  log('prevLevel: '+prevLevel);
-  log('nextLevel: '+nextLevel);
-
-  var oldParent = getParentTab(aTab);
-  var newParent;
-
-  if (oldParent &&
-      prevTab &&
-      oldParent == prevTab) {
-    log('=> no need to fix case');
-    newParent = oldParent;
-  }
-  else if (!prevTab) {
-    log('=> moved to topmost position');
-    newParent = null;
-  }
-  else if (!nextTab) {
-    log('=> moved to last position');
-    newParent = prevParent;
-  }
-  else if (prevParent == nextParent) {
-    log('=> moved into existing tree');
-    newParent = prevParent;
-  }
-  else if (prevLevel > nextLevel) {
-    log('=> moved to end of existing tree');
-    if (!isActive(aTab)) {
-      log('=> maybe newly opened tab');
-      newParent = prevParent;
-    }
-    else {
-      log('=> maybe drag and drop');
-      let realDelta = Math.abs(toIndex - fromIndex);
-      newParent = realDelta < 2 ? prevParent : (oldParent || nextParent) ;
-    }
-  }
-  else if (prevLevel < nextLevel) {
-    log('=> moved to first child position of existing tree');
-    newParent = prevTab || oldParent || nextParent;
-  }
-
-  log('calculated parent: ', {
-    old: dumpTab(oldParent),
-    new: dumpTab(newParent)
-  });
-  if (newParent != oldParent) {
-    if (newParent) {
-      if (isHidden(newParent) == isHidden(aTab))
-        attachTabTo(aTab, newParent, { insertBefore : nextTab });
-    }
-    else {
-      detachTab(aTab);
-    }
-  }
+  await window.onTabMoved && onTabMoved(movedTab, aMoveInfo);
 }
 
 function onApiTabAttached(aTabId, aAttachInfo) {

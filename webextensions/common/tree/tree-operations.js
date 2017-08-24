@@ -129,15 +129,13 @@ async function attachTabTo(aChild, aParent, aInfo = {}) {
     container.insertBefore(aChild, nextTab);
   }
 
-  var [actualChildIndex, actualNewIndex] = await getApiTabIndex(aChild.apiTab.id, nextTab.apiTab.id);
-  if (actualChildIndex < actualNewIndex)
+  var [actualOldIndex, actualNewIndex] = await getApiTabIndex(aChild.apiTab.id, nextTab.apiTab.id);
+  if (actualOldIndex < actualNewIndex)
     actualNewIndex--;
 
-  if (actualChildIndex < 0 || actualNewIndex < 0) {
-    log('alrady closed tab cannot be moved! ', {
-      child: actualChildIndex,
-      next:  actualNewIndex
-    });
+  log('index of API tabs: ', { actualOldIndex, actualNewIndex });
+  if (actualOldIndex < 0 || actualNewIndex < 0) {
+    log('alrady closed tab cannot be moved!');
     return;
   }
 

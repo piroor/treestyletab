@@ -12,6 +12,8 @@ const kCOMMAND_SELECT_TAB = 'treestyletab:request-select-tab';
 const kCOMMAND_SELECT_TAB_INTERNALLY = 'treestyletab:request-select-tab-internally';
 const kCOMMAND_REMOVE_TAB = 'treestyletab:request-remove-tab';
 const kCOMMAND_NEW_TAB = 'treestyletab:request-new-tab';
+const kCOMMAND_ATTACH_TAB = 'treestyletab:request-attach-tab';
+const kCOMMAND_DETACH_TAB = 'treestyletab:request-detach-tab';
 
 const kPARENT   = 'data-parent-id';
 const kCHILDREN = 'data-child-ids';
