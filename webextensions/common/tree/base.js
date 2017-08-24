@@ -173,7 +173,7 @@ function buildTabsContainerFor(aWindowId) {
   container.classList.add('tabs');
   container.doingCollapseExpandCount = 0;
   container.internalFocusCount = 0;
-  container.openingCoun = 0;
+  container.openingCount = 0;
   return container;
 }
 
