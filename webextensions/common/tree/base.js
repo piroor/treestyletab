@@ -67,6 +67,8 @@ function buildTab(aTab, aOptions = {}) {
   label.appendChild(document.createTextNode(aTab.title));
   item.appendChild(label);
 
+  window.onTabBuilt && onTabBuilt(item);
+
   if (aOptions.existing) {
     item.classList.add(kTAB_STATE_ANIMATION_READY);
   }
@@ -113,21 +115,13 @@ function updateTab(aTab, aParams = {}) {
     let previousState = isPinned(aTab);
     if (aParams.pinned) {
       aTab.classList.add(kTAB_STATE_PINNED);
-      if (!previousState) {
-        aTab.dispatchEvent(new CustomEvent(kEVENT_TAB_PINNED, {
-          bubbles: true,
-          cancelable: false
-        }));
-      }
+      if (!previousState)
+        window.onTabPinned && onTabPinned(aTab);
     }
     else {
       aTab.classList.remove(kTAB_STATE_PINNED);
-      if (previousState) {
-        aTab.dispatchEvent(new CustomEvent(kEVENT_TAB_UNPINNED, {
-          bubbles: true,
-          cancelable: false
-        }));
-      }
+      if (previousState)
+        window.onTabUnpinned && onTabUnpinned(aTab);
     }
   }
 }

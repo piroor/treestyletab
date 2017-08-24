@@ -43,21 +43,6 @@ async function attachTabTo(aChild, aParent, aInfo = {}) {
     return;
   }
 
-  try {
-    await Promise.all([
-      browser.tabs.get(aChild.apiTab.id),
-      browser.tabs.get(aParent.apiTab.id)
-    ]);
-  }
-  catch(e) {
-    log('alrady closed tabs cannot be attached! ', {
-      child:  dumpTab(aChild),
-      parent: dumpTab(aParent),
-      error:  String(e)
-    });
-    return;
-  }
-
   log('attachTabTo: ', {
     parent:   dumpTab(aParent),
     children: aParent.getAttribute(kCHILDREN),
@@ -159,7 +144,7 @@ async function attachTabTo(aChild, aParent, aInfo = {}) {
   browser.tabs.move(aChild.apiTab.id, {
     windowId: aChild.apiTab.windowId,
     index:    actualNewIndex
-  });
+  }).catch(handleMissingTabError);
   setTimeout(() => {
     container.internalMovingCount--;
   });
@@ -199,13 +184,9 @@ async function attachTabTo(aChild, aParent, aInfo = {}) {
 
   //promoteTooDeepLevelTabs(aChild);
 
-  aChild.dispatchEvent(new CustomEvent(kEVENT_TAB_ATTACHED, {
-    detail: {
-      parent: aParent
-    },
-    bubbles: true,
-    cancelable: false
-  }));
+  window.onTabAttached && onTabAttached(aChild, {
+    parent: aParent
+  });
 }
 
 function detachTab(aChild, aInfo = {}) {
@@ -226,13 +207,9 @@ function detachTab(aChild, aInfo = {}) {
 
   updateTabsIndent(aChild);
 
-  aChild.dispatchEvent(new CustomEvent(kEVENT_TAB_DETACHED, {
-    detail: {
-      oldParent: parent
-    },
-    bubbles: true,
-    cancelable: false
-  }));
+  window.onTabDetached && onTabDetached(aChild, {
+    oldParent: parent
+  });
 }
 
 function detachAllChildren(aTab, aInfo = {}) {
@@ -320,13 +297,7 @@ function updateTabsIndent(aTabs, aLevel = undefined) {
     if (!item || isPinned(item))
       continue;
 
-    item.dispatchEvent(new CustomEvent(kEVENT_TAB_LEVEL_CHANGED, {
-      detail: {
-        level: aLevel || 0
-      },
-      bubbles: true,
-      cancelable: false
-    }));
+    window.onTabLevelChanged && onTabLevelChanged(item);
     item.setAttribute(kNEST, aLevel);
     updateTabsIndent(getChildTabs(item), aLevel + 1);
   }
@@ -424,14 +395,11 @@ function collapseExpandTab(aTab, aParams = {}) {
     aTab.classList.remove(kTAB_STATE_COLLAPSED);
   //setTabValue(aTab, kTAB_STATE_COLLAPSED, aParams.collapsed);
 
-  aTab.dispatchEvent(new CustomEvent(kEVENT_TAB_COLLAPSED_STATE_CHANGING, {
-    detail: {
+  window.onTabCollapsedStateChanging &&
+    window.onTabCollapsedStateChanging(aTab, {
       collapsed: aParams.collapsed,
       justNow: aParams.justNow
-    },
-    bubbles: true,
-    cancelable: false
-  }));
+    });
 
   //var data = {
   //  collapsed : aParams.collapsed
@@ -533,7 +501,8 @@ function closeChildTabs(aParent) {
 
   //markAsClosedSet([aParent].concat(tabs));
   tabs.reverse().forEach(aTab => {
-    browser.tabs.remove(aTab.apiTab.id);
+    browser.tabs.remove(aTab.apiTab.id)
+      .catch(handleMissingTabError);
   });
   //fireTabSubtreeClosedEvent(aParent, tabs);
 }

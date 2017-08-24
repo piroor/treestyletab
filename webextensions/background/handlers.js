@@ -4,43 +4,45 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-function onTabOpened(aEvent) {
-  reserveToSaveTreeStructure(aEvent.target);
+// raw event handlers
+
+function onTabOpened(aTab) {
+  reserveToSaveTreeStructure(aTab);
 }
 
-function onTabClosed(aEvent) {
-  reserveToSaveTreeStructure(aEvent.target);
+function onTabClosed(aTab) {
+  reserveToSaveTreeStructure(aTab);
 }
 
-function onTabMoved(aEvent) {
-  reserveToSaveTreeStructure(aEvent.target);
+function onTabMoved(aTab) {
+  reserveToSaveTreeStructure(aTab);
 }
 
-function onTabFocusing(aEvent) {
-  var tab = aEvent.target;
-  if (isCollapsed(tab)) {
+function onTabFocusing(aTab) {
+  if (isCollapsed(aTab)) {
     if (configs.autoExpandSubtreeOnCollapsedChildFocused) {
-      for (let ancestor of getAncestorTabs(tab)) {
+      for (let ancestor of getAncestorTabs(aTab)) {
         collapseExpandSubtree(ancestor, { collapsed: false });
       }
-      handleNewActiveTab(tab);
+      handleNewActiveTab(aTab);
     }
     else {
-      selectTabInternally(getRootTab(tab));
-      aEvent.preventDefault();
+      selectTabInternally(getRootTab(aTab));
+      return true;
     }
   }
   else if (/**
             * Focus movings by closing of the old current tab should be handled
             * only when it is activated by user preference expressly.
             */
-           tab.parentNode.focusChangedByCurrentTabRemove &&
+           aTab.parentNode.focusChangedByCurrentTabRemove &&
            !configs.autoCollapseExpandSubtreeOnSelectOnCurrentTabRemove) {
-    aEvent.preventDefault();
+    return true;
   }
-  else if (hasChildTabs(tab) && isSubtreeCollapsed(tab)) {
-    handleNewActiveTab(tab);
+  else if (hasChildTabs(aTab) && isSubtreeCollapsed(aTab)) {
+    handleNewActiveTab(aTab);
   }
+  return false;
 }
 function handleNewActiveTab(aTab) {
   if (aTab.parentNode.doingCollapseExpandCount != 0)
@@ -72,8 +74,8 @@ function handleNewActiveTab(aTab) {
   }, 0);
 }
 
-function onTabFocused(aEvent) {
-  var tab = aEvent.detail.previouslyFocusedTab;
+function onTabFocused(aTab, aInfo = {}) {
+  var tab = aInfo.previouslyFocusedTab;
   if (!tab)
     return;
   tab.classList.add(kTAB_STATE_POSSIBLE_CLOSING_CURRENT);
@@ -85,22 +87,21 @@ function onTabFocused(aEvent) {
   }, 100);
 }
 
-function onTabUpdated(aEvent) {
-  reserveToSaveTreeStructure(aEvent.target);
+function onTabUpdated(aTab) {
+  reserveToSaveTreeStructure(aTab);
 }
 
-function onTabCollapsedStateChanging(aEvent) {
-  var tab = aEvent.target;
-  if (aEvent.detail.collapsed)
-    tab.classList.add(kTAB_STATE_COLLAPSED_DONE);
+function onTabCollapsedStateChanging(aTab, aInfo = {}) {
+  if (aInfo.collapsed)
+    aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
   else
-    tab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
+    aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
 }
 
-function onTabAttached(aEvent) {
-  reserveToSaveTreeStructure(aEvent.target);
+function onTabAttached(aTab) {
+  reserveToSaveTreeStructure(aTab);
 }
 
-function onTabDetached(aEvent) {
-  reserveToSaveTreeStructure(aEvent.target);
+function onTabDetached(aTab) {
+  reserveToSaveTreeStructure(aTab);
 }

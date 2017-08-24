@@ -13,3 +13,12 @@ async function getApiTabIndex(...aQueriedTabIds) {
   else
     return indexes;
 }
+
+function handleMissingTabError(aError) {
+  if (!aError ||
+      !aError.message ||
+      aError.message.indexOf('Invalid tab ID:') != 0)
+    throw aError;
+  // otherwise, this error is caused from a tab already closed.
+  // we just ignore it.
+}

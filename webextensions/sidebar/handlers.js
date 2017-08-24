@@ -230,18 +230,37 @@ function onDblClick(aEvent) {
   handleNewTabAction(aEvent);
 }
 
-function onTabOpening(aEvent) {
-  var tab = aEvent.target;
-  fixupTab(tab);
 
+// raw event handlers
+
+function onTabBuilt(aTab) {
+  var label = getTabLabel(aTab);
+
+  var twisty = document.createElement('span');
+  twisty.classList.add(kTWISTY);
+  aTab.insertBefore(twisty, label);
+
+  var favicon = document.createElement('span');
+  favicon.classList.add(kFAVICON);
+  favicon.appendChild(document.createElement('img'));
+  aTab.insertBefore(favicon, label);
+  loadImageTo(favicon.firstChild, aTab.apiTab.favIconUrl, kDEFAULT_FAVICON_URL);
+
+  var closebox = document.createElement('button');
+  closebox.appendChild(document.createTextNode('✖'));
+  closebox.classList.add(kCLOSEBOX);
+  aTab.appendChild(closebox);
+}
+
+function onTabOpening(aTab) {
   if (configs.animation) {
-    updateTabCollapsed(tab, {
+    onTabCollapsedStateChanging(aTab, {
       collapsed: true,
       justNow:   true
     });
     window.requestAnimationFrame(() => {
-      tab.classList.add(kTAB_STATE_ANIMATION_READY);
-      updateTabCollapsed(tab, {
+      aTab.classList.add(kTAB_STATE_ANIMATION_READY);
+      onTabCollapsedStateChanging(aTab, {
         collapsed: false,
         justNow:   gRestoringTree,
         /**
@@ -249,71 +268,60 @@ function onTabOpening(aEvent) {
          * smooth scrolling is finished. The smooth scrolling should be
          * started together with the start of the animation effect.
          */
-        onStart: () => scrollToNewTab(tab)
+        last: true
       });
     });
   }
   else {
-    tab.classList.add(kTAB_STATE_ANIMATION_READY);
-    scrollToNewTab(tab);
+    aTab.classList.add(kTAB_STATE_ANIMATION_READY);
+    scrollToNewTab(aTab);
   }
 }
 
-function onTabOpened(aEvent) {
+function onTabOpened(aTab) {
   reserveToUpdateTabbarLayout();
 }
 
-function onTabClosed(aEvent) {
+function onTabClosed(aTab) {
   reserveToUpdateTabbarLayout();
 }
 
-function onTabMoved(aEvent) {
+function onTabMoved(aTab) {
   reserveToUpdateTabbarLayout();
 }
 
-function onTabInternalFocusRequested(aEvent) {
-  var tab = aEvent.target;
-  browser.runtime.sendMessage({
-    type:     kCOMMAND_SELECT_TAB_INTERNALLY,
-    windowId: tab.apiTab.windowId,
-    tab:      tab.id
-  });
-}
-
-function onTabLevelChanged(aEvent) {
+function onTabLevelChanged(aTab) {
   var baseIndent = gIndent;
   if (gIndent < 0)
     baseIndent = configs.baseIndent;
-  var tab = aEvent.target;
   window.requestAnimationFrame(() => {
-    var level = parseInt(tab.getAttribute(kNEST) || 0);
+    var level = parseInt(aTab.getAttribute(kNEST) || 0);
     var indent = level * baseIndent;
     var expected = indent == 0 ? 0 : indent + 'px' ;
-    log('setting indent: ', { tab: dumpTab(tab), expected: expected, level: level });
-    if (tab.style[gIndentProp] != expected) {
-      window.requestAnimationFrame(() => tab.style[gIndentProp] = expected);
+    log('setting indent: ', { tab: dumpTab(aTab), expected: expected, level: level });
+    if (aTab.style[gIndentProp] != expected) {
+      window.requestAnimationFrame(() => aTab.style[gIndentProp] = expected);
     }
   });
 }
 
-function onTabCollapsedStateChanging(aEvent) {
-  var tab = aEvent.target;
-  var collapsed = aEvent.detail.collapsed;
+function onTabCollapsedStateChanging(aTab, aInfo = {}) {
+  var collapsed = aInfo.collapsed;
 
-  //log('updateTabCollapsed ', dumpTab(tab));
-  if (!tab.parentNode) // do nothing for closed tab!
+  //log('updateTabCollapsed ', dumpTab(aTab));
+  if (!aTab.parentNode) // do nothing for closed tab!
     return;
 
-  if (tab.onEndCollapseExpandAnimation) {
-    tab.removeEventListener('transitionend', tab.onEndCollapseExpandAnimation, { once: true });
-    delete tab.onEndCollapseExpandAnimation;
+  if (aTab.onEndCollapseExpandAnimation) {
+    aTab.removeEventListener('transitionend', aTab.onEndCollapseExpandAnimation, { once: true });
+    delete aTab.onEndCollapseExpandAnimation;
   }
 
-  tab.setAttribute(kCOLLAPSING_PHASE, collapsed ? kCOLLAPSING_PHASE_TO_BE_COLLAPSED : kCOLLAPSING_PHASE_TO_BE_EXPANDED );
+  aTab.setAttribute(kCOLLAPSING_PHASE, collapsed ? kCOLLAPSING_PHASE_TO_BE_COLLAPSED : kCOLLAPSING_PHASE_TO_BE_EXPANDED );
 
   var endMargin, endOpacity;
   if (collapsed) {
-    let firstTab = getFirstNormalTab(tab) || getFirstTab(tab);
+    let firstTab = getFirstNormalTab(aTab) || getFirstTab(aTab);
     endMargin  = firstTab.getBoundingClientRect().height;
     endOpacity = 0;
   }
@@ -322,59 +330,52 @@ function onTabCollapsedStateChanging(aEvent) {
     endOpacity = 1;
   }
 
-  var readyToScroll = (() => {
-    tab.dispatchEvent(new CustomEvent(kEVENT_EXPANDED_TREE_READY_TO_SCROLL, {
-      bubbles: true,
-      cancelable: false
-    }));
-  });
-
   if (!configs.animation ||
-      aEvent.detail.justNow ||
+      aInfo.justNow ||
       configs.collapseDuration < 1) {
     //log('=> skip animation');
     if (collapsed)
-      tab.classList.add(kTAB_STATE_COLLAPSED_DONE);
+      aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
     else
-      tab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
-    tab.removeAttribute(kCOLLAPSING_PHASE);
+      aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
+    aTab.removeAttribute(kCOLLAPSING_PHASE);
 
     // Pinned tabs are positioned by "margin-top", so
     // we must not reset the property for pinned tabs.
     // (However, we still must update "opacity".)
-    if (!isPinned(tab))
-      tab.style.marginTop = endMargin ? `-${endMargin}px` : '';
+    if (!isPinned(aTab))
+      aTab.style.marginTop = endMargin ? `-${endMargin}px` : '';
 
     if (endOpacity == 0)
-      tab.style.opacity = 0;
+      aTab.style.opacity = 0;
     else
-      tab.style.opacity = '';
+      aTab.style.opacity = '';
 
-    if (aEvent.detail.last)
-      readyToScroll();
+    if (aInfo.last)
+      onExpandedTreeReadyToScroll(aTab);
     return;
   }
 
   if (!collapsed)
-    tab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
+    aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
 
   window.requestAnimationFrame(() => {
-    //log('start animation for ', dumpTab(tab));
-    if (aEvent.detail.last)
-      readyToScroll();
+    //log('start animation for ', dumpTab(aTab));
+    if (aInfo.last)
+      onExpandedTreeReadyToScroll(aTab);
 
-    tab.onEndCollapseExpandAnimation = (() => {
-      delete tab.onEndCollapseExpandAnimation;
+    aTab.onEndCollapseExpandAnimation = (() => {
+      delete aTab.onEndCollapseExpandAnimation;
       if (backupTimer)
         clearTimeout(backupTimer);
-      //log('=> finish animation for ', dumpTab(tab));
+      //log('=> finish animation for ', dumpTab(aTab));
       if (collapsed)
-        tab.classList.add(kTAB_STATE_COLLAPSED_DONE);
-      tab.removeAttribute(kCOLLAPSING_PHASE);
+        aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
+      aTab.removeAttribute(kCOLLAPSING_PHASE);
       if (endOpacity > 0) {
-        if (window.getComputedStyle(tab).opacity > 0) {
-          tab.style.opacity = '';
-          tab = null;
+        if (window.getComputedStyle(aTab).opacity > 0) {
+          aTab.style.opacity = '';
+          aTab = null;
         }
         else {
           // If we clear its "opacity" before it becomes "1"
@@ -384,24 +385,24 @@ function onTabCollapsedStateChanging(aEvent) {
           // This is workaround for the issue:
           //   https://github.com/piroor/treestyletab/issues/1202
           setTimeout(function() {
-            tab.style.opacity = '';
-            tab = null;
+            aTab.style.opacity = '';
+            aTab = null;
           }, 0);
         }
       }
       reserveToUpdateTabbarLayout();
     });
-    tab.addEventListener('transitionend', tab.onEndCollapseExpandAnimation, { once: true });
+    aTab.addEventListener('transitionend', aTab.onEndCollapseExpandAnimation, { once: true });
     var backupTimer = setTimeout(() => {
-      if (!tab || !tab.onEndCollapseExpandAnimation)
+      if (!aTab || !aTab.onEndCollapseExpandAnimation)
         return;
       backupTimer = null
-      tab.removeEventListener('transitionend', tab.onEndCollapseExpandAnimation, { once: true });
-      tab.onEndCollapseExpandAnimation();
+      aTab.removeEventListener('transitionend', aTab.onEndCollapseExpandAnimation, { once: true });
+      aTab.onEndCollapseExpandAnimation();
     }, configs.collapseDuration);
 
-    tab.style.marginTop = endMargin ? `-${endMargin}px` : '';
-    tab.style.opacity   = endOpacity;
+    aTab.style.marginTop = endMargin ? `-${endMargin}px` : '';
+    aTab.style.opacity   = endOpacity;
   });
 }
 
@@ -455,23 +456,21 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
 }
 */
 
-function onTabPinned(aEvent) {
-  var tab = aEvent.target;
-  collapseExpandSubtree(tab, { collapsed: false });
-  detachAllChildren(tab, {
+function onTabPinned(aTab) {
+  collapseExpandSubtree(aTab, { collapsed: false });
+  detachAllChildren(aTab, {
     behavior: getCloseParentBehaviorForTab(
-      tab,
+      aTab,
       kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
     )
   });
-  detachTab(tab);
-  collapseExpandTab(tab, { collapsed: false });
+  detachTab(aTab);
+  collapseExpandTab(aTab, { collapsed: false });
   reserveToPositionPinnedTabs();
 }
 
-function onTabUnpinned(aEvent) {
-  var tab = aEvent.target;
-  clearPinnedStyle(tab);
-  //updateInvertedTabContentsOrder(tab);
+function onTabUnpinned(aTab) {
+  clearPinnedStyle(aTab);
+  //updateInvertedTabContentsOrder(aTab);
   reserveToPositionPinnedTabs();
 }

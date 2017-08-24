@@ -12,15 +12,6 @@ window.addEventListener('DOMContentLoaded', init, { once: true });
 async function init() {
   window.addEventListener('unload', destroy, { once: true });
   gAllTabs = document.querySelector('#all-tabs');
-  gAllTabs.addEventListener(kEVENT_TAB_OPENED, onTabOpened);
-  gAllTabs.addEventListener(kEVENT_TAB_CLOSED, onTabClosed);
-  gAllTabs.addEventListener(kEVENT_TAB_MOVED, onTabMoved);
-  gAllTabs.addEventListener(kEVENT_TAB_FOCUSING, onTabFocusing);
-  gAllTabs.addEventListener(kEVENT_TAB_FOCUSED, onTabFocused);
-  gAllTabs.addEventListener(kEVENT_TAB_UPDATED, onTabUpdated);
-  gAllTabs.addEventListener(kEVENT_TAB_COLLAPSED_STATE_CHANGING, onTabCollapsedStateChanging);
-  gAllTabs.addEventListener(kEVENT_TAB_ATTACHED, onTabAttached);
-  gAllTabs.addEventListener(kEVENT_TAB_DETACHED, onTabDetached);
 
   await configs.$loaded;
   await rebuildAll();
@@ -54,17 +45,6 @@ function waitUntilCompletelyRestored() {
 function destroy() {
   browser.runtime.onMessage.removeListener(onMessage);
   endObserveApiTabs();
-
-  gAllTabs.removeEventListener(kEVENT_TAB_OPENED, onTabOpened);
-  gAllTabs.removeEventListener(kEVENT_TAB_CLOSED, onTabClosed);
-  gAllTabs.removeEventListener(kEVENT_TAB_MOVED, onTabMoved);
-  gAllTabs.removeEventListener(kEVENT_TAB_FOCUSING, onTabFocusing);
-  gAllTabs.removeEventListener(kEVENT_TAB_FOCUSED, onTabFocused);
-  gAllTabs.removeEventListener(kEVENT_TAB_UPDATED, onTabUpdated);
-  gAllTabs.removeEventListener(kEVENT_TAB_COLLAPSED_STATE_CHANGING, onTabCollapsedStateChanging);
-  gAllTabs.removeEventListener(kEVENT_TAB_ATTACHED, onTabAttached);
-  gAllTabs.removeEventListener(kEVENT_TAB_DETACHED, onTabDetached);
-
   gAllTabs = undefined;
 }
 
@@ -87,7 +67,8 @@ async function selectTabInternally(aTab) {
   log('selectTabInternally: ', dumpTab(aTab));
   var container = aTab.parentNode;
   container.internalFocusCount++;
-  await browser.tabs.update(aTab.apiTab.id, { active: true });
+  await browser.tabs.update(aTab.apiTab.id, { active: true })
+          .catch(handleMissingTabError);
   /**
    * Note: enough large delay is truly required to wait various
    * tab-related operations are processed in background and sidebar.
@@ -218,7 +199,8 @@ async function onMessage(aMessage, aSender, aRespond) {
       let params = { windowId: aMessage.windowId };
       // params.openerTabId = ?
       params.active = !aMessage.accel;
-      browser.tabs.create(params);
+      browser.tabs.create(params)
+        .catch(handleMissingTabError);
     }; break;
 
     case kCOMMAND_REMOVE_TAB: {
@@ -227,14 +209,16 @@ async function onMessage(aMessage, aSender, aRespond) {
         return;
       if (isActive(tab))
         await tryMoveFocusFromClosingCurrentTab(tab);
-      browser.tabs.remove(tab.apiTab.id);
+      browser.tabs.remove(tab.apiTab.id)
+        .catch(handleMissingTabError);
     }; break;
 
     case kCOMMAND_SELECT_TAB: {
       let tab = getTabById(aMessage.tab);
       if (!tab)
         return;
-      browser.tabs.update(tab.apiTab.id, { active: true });
+      browser.tabs.update(tab.apiTab.id, { active: true })
+        .catch(handleMissingTabError);
     }; break;
 
     case kCOMMAND_SELECT_TAB_INTERNALLY: {

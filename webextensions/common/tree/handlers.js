@@ -76,25 +76,17 @@ function onApiTabActivated(aActiveInfo) {
 
   log('onSelect: ', dumpTab(newTab));
 
-  var focusChanged = newTab.dispatchEvent(new CustomEvent(kEVENT_TAB_FOCUSING, {
-    bubbles: true,
-    cancelable: true
-  }));
+  var focusChanged = window.onTabFocusing && onTabFocusing(newTab);
 
   newTab.parentNode.focusChangedByCurrentTabRemove = false;
 
   //if (!isTabInViewport(newTab))
   //  scrollToTab(newTab);
 
-  if (focusChanged && oldTabs.length > 0) {
-    newTab.dispatchEvent(new CustomEvent(kEVENT_TAB_FOCUSED, {
-      detail: {
-        previouslyFocusedTab: oldTabs[0]
-      },
-      bubbles: true,
-      cancelable: false
-    }));
-  }
+  if (focusChanged && oldTabs.length > 0)
+    window.onTabFocused && onTabFocused(newTab, {
+      previouslyFocusedTab: oldTabs[0]
+    });
 }
 
 function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
@@ -112,10 +104,7 @@ function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
   });
   updatedTab.apiTab = aTab;
 
-  updatedTab.dispatchEvent(new CustomEvent(kEVENT_TAB_UPDATED, {
-    bubbles: true,
-    cancelable: false
-  }));
+  window.onTabUpdated && onTabUpdated(updatedTab);
 }
 
 function onApiTabCreated(aTab) {
@@ -129,10 +118,7 @@ function onApiTabCreated(aTab) {
     gAllTabs.appendChild(container);
   }
   var newTab = container.appendChild(buildTab(aTab));
-  newTab.dispatchEvent(new CustomEvent(kEVENT_TAB_OPENING, {
-    bubbles: true,
-    cancelable: false
-  }));
+  window.onTabOpening && onTabOpening(newTab);
 
   var opener = getTabById({ tab: aTab.openerTabId, window: aTab.windowId });
   if (opener) {
@@ -142,13 +128,10 @@ function onApiTabCreated(aTab) {
 
   updateInsertionPositionInfo(newTab);
 
-  newTab.parentNode.openingCount++;
-  setTimeout(() => newTab.parentNode.openingCount--, 0);
+  container.openingCount++;
+  setTimeout(() => container.openingCount--, 0);
 
-  newTab.dispatchEvent(new CustomEvent(kEVENT_TAB_OPENED, {
-    bubbles: true,
-    cancelable: false
-  }));
+  window.onTabOpened && onTabOpened(newTab);
 }
 
 function onApiTabRemoved(aTabId, aRemoveInfo) {
@@ -179,10 +162,7 @@ function onApiTabRemoved(aTabId, aRemoveInfo) {
   //restoreTabAttributes(oldTab, backupAttributes);
   //updateLastScrollPosition();
 
-  oldTab.dispatchEvent(new CustomEvent(kEVENT_TAB_CLOSED, {
-    bubbles: true,
-    cancelable: false
-  }));
+  window.onTabClosed && onTabClosed(oldTab);
 
   if (canAnimate() && !isCollapsed(oldTab)) {
     oldTab.addEventListener('transitionend', () => {
@@ -212,10 +192,7 @@ function onApiTabMoved(aTabId, aMoveInfo) {
   if (!movedTab)
     return;
 
-  movedTab.dispatchEvent(new CustomEvent(kEVENT_TAB_MOVED, {
-    bubbles: true,
-    cancelable: false
-  }));
+  window.onTabMoved && onTabMoved(movedTab);
 
   var container = getTabsContainer(movedTab);
   if (container.internalMovingCount > 0) {

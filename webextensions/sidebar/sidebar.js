@@ -24,16 +24,6 @@ async function init() {
   gTabBar.addEventListener('mousedown', onMouseDown);
   gTabBar.addEventListener('click', onClick);
   gTabBar.addEventListener('dblclick', onDblClick);
-  gTabBar.addEventListener(kEVENT_TAB_OPENING, onTabOpening);
-  gTabBar.addEventListener(kEVENT_TAB_OPENED, onTabOpened);
-  gTabBar.addEventListener(kEVENT_TAB_CLOSED, onTabClosed);
-  gTabBar.addEventListener(kEVENT_TAB_MOVED, onTabMoved);
-  gTabBar.addEventListener(kEVENT_TAB_LEVEL_CHANGED, onTabLevelChanged);
-  gTabBar.addEventListener(kEVENT_TAB_COLLAPSED_STATE_CHANGING, onTabCollapsedStateChanging);
-  gTabBar.addEventListener(kEVENT_EXPANDED_TREE_READY_TO_SCROLL, onExpandedTreeReadyToScroll);
-  //gTabBar.addEventListener(kEVENT_TAB_SUBTREE_COLLAPSED_STATE_CHANGED_MANUALLY, onTabSubtreeCollapsedStateChangedManually);
-  gTabBar.addEventListener(kEVENT_TAB_PINNED, onTabPinned);
-  gTabBar.addEventListener(kEVENT_TAB_UNPINNED, onTabUnpinned);
 
   await configs.$loaded;
   await rebuildAll();
@@ -54,16 +44,6 @@ function destroy() {
   gTabBar.removeEventListener('mousedown', onMouseDown);
   gTabBar.removeEventListener('click', onClick);
   gTabBar.removeEventListener('dblclick', onDblClick);
-  gTabBar.removeEventListener(kEVENT_TAB_OPENING, onTabOpening);
-  gTabBar.removeEventListener(kEVENT_TAB_OPENED, onTabOpened);
-  gTabBar.removeEventListener(kEVENT_TAB_CLOSED, onTabClosed);
-  gTabBar.removeEventListener(kEVENT_TAB_MOVED, onTabMoved);
-  gTabBar.removeEventListener(kEVENT_TAB_LEVEL_CHANGED, onTabLevelChanged);
-  gTabBar.removeEventListener(kEVENT_TAB_COLLAPSED_STATE_CHANGING, onTabCollapsedStateChanging);
-  gTabBar.removeEventListener(kEVENT_EXPANDED_TREE_READY_TO_SCROLL, onExpandedTreeReadyToScroll);
-  //gTabBar.removeEventListener(kEVENT_TAB_SUBTREE_COLLAPSED_STATE_CHANGED_MANUALLY, onTabSubtreeCollapsedStateChangedManually);
-  gTabBar.removeEventListener(kEVENT_TAB_PINNED, onTabPinned);
-  gTabBar.removeEventListener(kEVENT_TAB_UNPINNED, onTabUnpinned);
 
   gAllTabs = gTabBar = gAfterTabsForOverflowTabBar = undefined;
 }
@@ -75,30 +55,10 @@ async function rebuildAll() {
   var container = buildTabsContainerFor(gTargetWindow);
   for (let apiTab of apiTabs) {
     let tab = buildTab(apiTab, { existing: true });
-    fixupTab(tab);
     container.appendChild(tab);
   }
   gAllTabs.appendChild(container);
   startObserveApiTabs();
-}
-
-function fixupTab(aTab) {
-  var label = getTabLabel(aTab);
-
-  var twisty = document.createElement('span');
-  twisty.classList.add(kTWISTY);
-  aTab.insertBefore(twisty, label);
-
-  var favicon = document.createElement('span');
-  favicon.classList.add(kFAVICON);
-  favicon.appendChild(document.createElement('img'));
-  aTab.insertBefore(favicon, label);
-  loadImageTo(favicon.firstChild, aTab.apiTab.favIconUrl, kDEFAULT_FAVICON_URL);
-
-  var closebox = document.createElement('button');
-  closebox.appendChild(document.createTextNode('✖'));
-  closebox.classList.add(kCLOSEBOX);
-  aTab.appendChild(closebox);
 }
 
 async function inheritTreeStructure() {
