@@ -310,7 +310,7 @@ function updateTabsIndent(aTabs, aLevel = undefined) {
 
   for (let i = 0, maxi = aTabs.length; i < maxi; i++) {
     let item = aTabs[i];
-    if (!item)
+    if (!item || isPinned(item))
       continue;
     if (!gIsBackground) {
       window.requestAnimationFrame(() => {

@@ -128,10 +128,17 @@ function updateTab(aTab, aParams = {}) {
   }
 
   if ('pinned' in aParams) {
-    if (aParams.pinned)
+    let previousState = isPinned(aTab);
+    if (aParams.pinned) {
       aTab.classList.add(kTAB_STATE_PINNED);
-    else
+      if (!previousState && !gIsBackground)
+        onTabPinned(aTab);
+    }
+    else {
       aTab.classList.remove(kTAB_STATE_PINNED);
+      if (previousState && !gIsBackground)
+        onTabUnpinned(aTab);
+    }
     if (!gIsBackground)
       reserveToPositionPinnedTabs();
   }

@@ -229,3 +229,22 @@ function onDblClick(aEvent) {
   aEvent.preventDefault();
   handleNewTabAction(aEvent);
 }
+
+function onTabPinned(aTab) {
+  collapseExpandSubtree(aTab, { collapsed: false });
+  detachAllChildren(aTab, {
+    behavior: getCloseParentBehaviorForTab(
+      aTab,
+      kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+    )
+  });
+  detachTab(aTab);
+  collapseExpandTab(aTab, { collapsed: false });
+  reserveToPositionPinnedTabs();
+}
+
+function onTabUnpinned(aTab) {
+  clearPinnedStyle(aTab);
+  //updateInvertedTabContentsOrder(aTab);
+  reserveToPositionPinnedTabs();
+}

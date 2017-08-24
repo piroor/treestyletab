@@ -113,11 +113,13 @@ function reserveToPositionPinnedTabs(aParams) {
 function resetPinnedTabs(aHint) {
   gTabBar.style.marginTop = '';
   var pinnedTabs = getPinnedTabs(gTargetWindow);
-  for (let pinnedTab of pinnedTabs) {
-    let style = pinnedTab.style;
-    style.maxWidth = style.width =
-      style.maxHeight = style.height =
-      style.left = style.right =
-      style.marginLeft = style.marginRight = style.marginTop = '';
-  }
+  pinnedTabs.forEach(clearPinnedStyle);
+}
+
+function clearPinnedStyle(aTab) {
+  let style = aTab.style;
+  style.maxWidth = style.width =
+    style.maxHeight = style.height =
+    style.left = style.right =
+    style.marginLeft = style.marginRight = style.marginTop = '';
 }
