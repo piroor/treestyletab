@@ -708,8 +708,10 @@ async function tryMoveFocusFromClosingCurrentTab(aTab) {
     nextFocusedTab = getNextFocusedTab(aTab);
     log('focus to getNextFocusedTab()?: ', !!nextFocusedTab);
   }
-  if (nextFocusedTab && toBeClosedTabs.indexOf(nextFocusedTab) > -1)
+  if (nextFocusedTab && toBeClosedTabs.indexOf(nextFocusedTab) > -1) {
     nextFocusedTab = getNextFocusedTab(nextFocusedTab);
+    log('focus to getNextFocusedTab() again?: ', !!nextFocusedTab);
+  }
 
   if (!nextFocusedTab || isHidden(nextFocusedTab))
     return false;
