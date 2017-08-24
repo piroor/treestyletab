@@ -53,7 +53,7 @@ var kXPATH_PINNED_TAB = `${kXPATH_LIVE_TAB}[${hasClass(kTAB_STATE_PINNED)}]`;
 
 function getTabsContainer(aHint) {
   if (!aHint)
-    aHint = gAllTabs.firstChild;
+    aHint = gTargetWindow || gAllTabs.firstChild;
 
   if (typeof aHint == 'number')
     return document.querySelector(`#window-${aHint}`);
