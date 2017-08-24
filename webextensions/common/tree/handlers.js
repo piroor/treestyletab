@@ -36,6 +36,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ******/
+'use strict';
 
 function startObserveApiTabs() {
   browser.tabs.onActivated.addListener(onApiTabActivated);

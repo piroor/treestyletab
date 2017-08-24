@@ -32,6 +32,14 @@
   --favicon-size: 16px;
 }
 
+/*
+@keyframes throbber {
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(180deg); }
+  100% { transform: rotate(360deg); }
+}
+*/
+
 :root.debug * {
   outline: 1px dotted rgba(255, 0, 0, 0.5);
 }
@@ -175,6 +183,11 @@ li.tab.loading .favicon-default::before {
 li.tab:not(.loading) .throbber::before {
   display: none;
 }
+/*
+li.tab.loading .throbber {
+  animation: throbber 3s ease-in-out infinite;
+}
+*/
 
 .tab .label {
   flex-grow: 1;

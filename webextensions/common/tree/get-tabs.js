@@ -36,18 +36,19 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ******/
+'use strict';
 
-var kSELECTOR_LIVE_TAB = `li.tab:not(.${kTAB_STATE_REMOVING})`;
-var kSELECTOR_NORMAL_TAB = `${kSELECTOR_LIVE_TAB}:not(.${kTAB_STATE_HIDDEN}):not(.${kTAB_STATE_PINNED})`;
-var kSELECTOR_VISIBLE_TAB = `${kSELECTOR_LIVE_TAB}:not(.${kTAB_STATE_COLLAPSED}):not(.${kTAB_STATE_HIDDEN})`;
-var kSELECTOR_CONTROLLABLE_TAB = `${kSELECTOR_LIVE_TAB}:not(.${kTAB_STATE_HIDDEN})`;
-var kSELECTOR_PINNED_TAB = `${kSELECTOR_LIVE_TAB}.${kTAB_STATE_PINNED}`;
+const kSELECTOR_LIVE_TAB = `li.tab:not(.${kTAB_STATE_REMOVING})`;
+const kSELECTOR_NORMAL_TAB = `${kSELECTOR_LIVE_TAB}:not(.${kTAB_STATE_HIDDEN}):not(.${kTAB_STATE_PINNED})`;
+const kSELECTOR_VISIBLE_TAB = `${kSELECTOR_LIVE_TAB}:not(.${kTAB_STATE_COLLAPSED}):not(.${kTAB_STATE_HIDDEN})`;
+const kSELECTOR_CONTROLLABLE_TAB = `${kSELECTOR_LIVE_TAB}:not(.${kTAB_STATE_HIDDEN})`;
+const kSELECTOR_PINNED_TAB = `${kSELECTOR_LIVE_TAB}.${kTAB_STATE_PINNED}`;
 
-var kXPATH_LIVE_TAB = `xhtml:li[${hasClass('tab')}][not(${hasClass(kTAB_STATE_REMOVING)})]`;
-var kXPATH_NORMAL_TAB = `${kXPATH_LIVE_TAB}[not(${hasClass(kTAB_STATE_HIDDEN)})][not(${hasClass(kTAB_STATE_PINNED)})]`;
-var kXPATH_VISIBLE_TAB = `${kXPATH_LIVE_TAB}[not(${hasClass(kTAB_STATE_COLLAPSED)})][not(${hasClass(kTAB_STATE_HIDDEN)})]`;
-var kXPATH_CONTROLLABLE_TAB = `${kXPATH_LIVE_TAB}[not(${hasClass(kTAB_STATE_HIDDEN)})]`;
-var kXPATH_PINNED_TAB = `${kXPATH_LIVE_TAB}[${hasClass(kTAB_STATE_PINNED)}]`;
+const kXPATH_LIVE_TAB = `xhtml:li[${hasClass('tab')}][not(${hasClass(kTAB_STATE_REMOVING)})]`;
+const kXPATH_NORMAL_TAB = `${kXPATH_LIVE_TAB}[not(${hasClass(kTAB_STATE_HIDDEN)})][not(${hasClass(kTAB_STATE_PINNED)})]`;
+const kXPATH_VISIBLE_TAB = `${kXPATH_LIVE_TAB}[not(${hasClass(kTAB_STATE_COLLAPSED)})][not(${hasClass(kTAB_STATE_HIDDEN)})]`;
+const kXPATH_CONTROLLABLE_TAB = `${kXPATH_LIVE_TAB}[not(${hasClass(kTAB_STATE_HIDDEN)})]`;
+const kXPATH_PINNED_TAB = `${kXPATH_LIVE_TAB}[${hasClass(kTAB_STATE_PINNED)}]`;
 
 // basics
 

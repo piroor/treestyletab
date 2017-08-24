@@ -36,6 +36,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ******/
+'use strict';
 
 function isActive(aTab) {
   return aTab.classList.contains(kTAB_STATE_ACTIVE);

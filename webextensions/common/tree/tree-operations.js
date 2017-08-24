@@ -36,6 +36,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ******/
+'use strict';
 
 async function attachTabTo(aChild, aParent, aInfo = {}) {
   if (!aParent || !aChild) {
@@ -603,7 +604,7 @@ function getTreeStructureFromTabs(aTabs) {
     [E]     => -1 (parent is not in this tree, and this creates another tree)
       [F]   => 0 (parent is 1st item in this another tree)
   */
-  return this.cleanUpTreeStructureArray(
+  return cleanUpTreeStructureArray(
       aTabs.map((aTab, aIndex) => {
         let tab = getParentTab(aTab);
         let index = tab ? aTabs.indexOf(tab) : -1 ;

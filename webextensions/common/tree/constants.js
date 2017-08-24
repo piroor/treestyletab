@@ -3,59 +3,60 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
+'use strict';
 
-var kCOMMAND_PULL_TREE_STRUCTURE = 'treestyletab:pull-tree-structure';
-var kCOMMAND_PUSH_TREE_STRUCTURE = 'treestyletab:push-tree-structure';
-var kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE = 'treestyletab:push-subtree-collapsed-state';
-var kCOMMAND_SELECT_TAB = 'treestyletab:request-select-tab';
-var kCOMMAND_SELECT_TAB_INTERNALLY = 'treestyletab:request-select-tab-internally';
-var kCOMMAND_REMOVE_TAB = 'treestyletab:request-remove-tab';
-var kCOMMAND_NEW_TAB = 'treestyletab:request-new-tab';
+const kCOMMAND_PULL_TREE_STRUCTURE = 'treestyletab:pull-tree-structure';
+const kCOMMAND_PUSH_TREE_STRUCTURE = 'treestyletab:push-tree-structure';
+const kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE = 'treestyletab:push-subtree-collapsed-state';
+const kCOMMAND_SELECT_TAB = 'treestyletab:request-select-tab';
+const kCOMMAND_SELECT_TAB_INTERNALLY = 'treestyletab:request-select-tab-internally';
+const kCOMMAND_REMOVE_TAB = 'treestyletab:request-remove-tab';
+const kCOMMAND_NEW_TAB = 'treestyletab:request-new-tab';
 
-var kPARENT   = 'data-parent-id';
-var kCHILDREN = 'data-child-ids';
-var kANCESTORS = 'data-ancestor-ids';
-var kNEST     = 'data-nest';
-var kINSERT_BEFORE = 'data-insert-before-id';
-var kINSERT_AFTER  = 'data-insert-after-id';
-var kCLOSED_SET_ID = 'data-closed-set-id';
-var kTWISTY_STYLE = 'data-twisty-style';
+const kPARENT   = 'data-parent-id';
+const kCHILDREN = 'data-child-ids';
+const kANCESTORS = 'data-ancestor-ids';
+const kNEST     = 'data-nest';
+const kINSERT_BEFORE = 'data-insert-before-id';
+const kINSERT_AFTER  = 'data-insert-after-id';
+const kCLOSED_SET_ID = 'data-closed-set-id';
+const kTWISTY_STYLE = 'data-twisty-style';
 
-var kCOLLAPSING_PHASE = 'data-collapsing-phase';
-var kCOLLAPSING_PHASE_TO_BE_COLLAPSED = 'collapse';
-var kCOLLAPSING_PHASE_TO_BE_EXPANDED  = 'expand';
+const kCOLLAPSING_PHASE = 'data-collapsing-phase';
+const kCOLLAPSING_PHASE_TO_BE_COLLAPSED = 'collapse';
+const kCOLLAPSING_PHASE_TO_BE_EXPANDED  = 'expand';
 
-var kFAVICON  = 'favicon';
-var kFAVICON_IMAGE = 'favicon-image';
-var kFAVICON_DEFAULT = 'favicon-default';
-var kTHROBBER = 'throbber';
-var kSOUND_BUTTON = 'sound-button';
-var kTWISTY   = 'twisty';
-var kLABEL    = 'label';
-var kCOUNTER  = 'counter';
-var kCLOSEBOX = 'closebox';
-var kNEWTAB_BUTTON = 'newtab-button';
+const kFAVICON  = 'favicon';
+const kFAVICON_IMAGE = 'favicon-image';
+const kFAVICON_DEFAULT = 'favicon-default';
+const kTHROBBER = 'throbber';
+const kSOUND_BUTTON = 'sound-button';
+const kTWISTY   = 'twisty';
+const kLABEL    = 'label';
+const kCOUNTER  = 'counter';
+const kCLOSEBOX = 'closebox';
+const kNEWTAB_BUTTON = 'newtab-button';
 
-var kTAB_STATE_ACTIVE = 'active';
-var kTAB_STATE_PINNED = 'pinned';
-var kTAB_STATE_HIDDEN = 'hidden';
-var kTAB_STATE_ANIMATION_READY = 'animation-ready';
-var kTAB_STATE_REMOVING = 'removing';
-var kTAB_STATE_COLLAPSED = 'collapsed';
-var kTAB_STATE_COLLAPSED_DONE = 'collapsed-completely';
-var kTAB_STATE_SUBTREE_COLLAPSED = 'subtree-collapsed';
-var kTAB_STATE_SUBTREE_EXPANDED_MANUALLY = 'subtree-expanded-manually';
-var kTAB_STATE_FAVICONIZED = 'faviconized';
-var kTAB_STATE_HIGHLIGHTED = 'highlighted';
-var kTAB_STATE_POSSIBLE_CLOSING_CURRENT = 'possible-closing-current';
+const kTAB_STATE_ACTIVE = 'active';
+const kTAB_STATE_PINNED = 'pinned';
+const kTAB_STATE_HIDDEN = 'hidden';
+const kTAB_STATE_ANIMATION_READY = 'animation-ready';
+const kTAB_STATE_REMOVING = 'removing';
+const kTAB_STATE_COLLAPSED = 'collapsed';
+const kTAB_STATE_COLLAPSED_DONE = 'collapsed-completely';
+const kTAB_STATE_SUBTREE_COLLAPSED = 'subtree-collapsed';
+const kTAB_STATE_SUBTREE_EXPANDED_MANUALLY = 'subtree-expanded-manually';
+const kTAB_STATE_FAVICONIZED = 'faviconized';
+const kTAB_STATE_HIGHLIGHTED = 'highlighted';
+const kTAB_STATE_POSSIBLE_CLOSING_CURRENT = 'possible-closing-current';
 
-var kTABBAR_STATE_OVERFLOW = 'overflow';
+const kTABBAR_STATE_OVERFLOW = 'overflow';
 
-var kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD        = 3;
-var kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN       = 0;
-var kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN        = 1;
-var kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN = 4;
-var kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN         = 2; // onTabRemoved only
-var kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB     = 5;
+const kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD        = 3;
+const kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN       = 0;
+const kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN        = 1;
+const kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN = 4;
+const kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN         = 2; // onTabRemoved only
+const kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB     = 5;
 
-var kCLOSEBOX_EMOJI = '✖';
+const kCLOSEBOX_EMOJI = '✖';
