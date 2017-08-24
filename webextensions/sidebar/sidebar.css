@@ -111,6 +111,7 @@ li.tab.pinned {
   border-left: none;
   margin: 0;
   position: fixed;
+  z-index: 1; /* this is required to make pinned tabs clickable */
 }
 
 li.tab.pinned :-moz-any(.twisty, .label, .closebox) {
