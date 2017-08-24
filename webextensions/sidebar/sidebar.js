@@ -7,15 +7,22 @@
 gIsBackground = false;
 gLogContext = 'Sidebar';
 
+var gTabBar;
+var gAfterTabsForOverflowTabBar;
+
 window.addEventListener('DOMContentLoaded', init, { once: true });
 
 async function init() {
   window.addEventListener('unload', destroy, { once: true });
-  gAllTabs = document.getElementById('all-tabs');
-  gAllTabs.addEventListener('mousedown', onMouseDown);
-  gAllTabs.addEventListener('click', onClick);
+  window.addEventListener('resize', onResize);
+  gTabBar = document.querySelector('#tabbar');
+  gAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
+  gAllTabs = document.querySelector('#all-tabs');
+  gTabBar.addEventListener('mousedown', onMouseDown);
+  gTabBar.addEventListener('click', onClick);
   await configs.$loaded;
   await rebuildAll();
+  checkTabbarOverflow();
   browser.runtime.onMessage.addListener(onMessage);
   document.documentElement.setAttribute(kTWISTY_STYLE, configs.twistyStyle);
   if (configs.debug)
@@ -25,9 +32,10 @@ async function init() {
 function destroy() {
   browser.runtime.onMessage.removeListener(onMessage);
   endObserveTabs();
-  gAllTabs.removeEventListener('mousedown', onMouseDown);
-  gAllTabs.removeEventListener('click', onClick);
-  gAllTabs = undefined;
+  window.removeEventListener('resize', onResize);
+  gTabBar.removeEventListener('mousedown', onMouseDown);
+  gTabBar.removeEventListener('click', onClick);
+  gAllTabs = gTabBar = gAfterTabsForOverflowTabBar = undefined;
 }
 
 async function rebuildAll() {
@@ -90,5 +98,42 @@ function collapseExpandAllSubtree(aParams = {}) {
   var tabs = container.querySelectorAll(`.tab:not([${kCHILDREN}="|"])${subtreeCondition}`);
   for (let tab of tabs) {
     collapseExpandSubtree(tab, aParams);
+  }
+}
+
+function reserveToCheckTabbarOverflow() {
+  log('reserveToCheckTabbarOverflow');
+  if (reserveToCheckTabbarOverflow.waiting)
+    clearTimeout(reserveToCheckTabbarOverflow.waiting);
+  reserveToCheckTabbarOverflow.waiting = setTimeout(() => {
+    delete reserveToCheckTabbarOverflow.waiting;
+    checkTabbarOverflow();
+  }, 10);
+}
+
+function checkTabbarOverflow() {
+  log('checkTabbarOverflow');
+  var range = document.createRange();
+  range.selectNodeContents(gTabBar);
+  var containerHeight = gTabBar.getBoundingClientRect().height;
+  var contentHeight = range.getBoundingClientRect().height;
+  log('height: ', { container: containerHeight, content: contentHeight });
+  if (containerHeight < contentHeight) {
+    if (gTabBar.classList.contains(kTABBAR_STATE_OVERFLOW))
+      return;
+    log('overflow');
+    gTabBar.classList.add(kTABBAR_STATE_OVERFLOW);
+    let range = document.createRange();
+    range.selectNodeContents(gAfterTabsForOverflowTabBar);
+    let offset = range.getBoundingClientRect().height;
+    range.detach();
+    gTabBar.style.bottom = `${offset}px`;
+  }
+  else {
+    if (!gTabBar.classList.contains(kTABBAR_STATE_OVERFLOW))
+      return;
+    log('underflow');
+    gTabBar.classList.remove(kTABBAR_STATE_OVERFLOW);
+    gTabBar.style.bottom = '';
   }
 }

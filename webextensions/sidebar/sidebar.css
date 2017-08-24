@@ -29,10 +29,35 @@
                               var(--tst-tab-animation-firefox-system);
 }
 
+:root.debug * {
+  outline: 1px dotted rgba(255, 0, 0, 0.5);
+}
+
+button {
+  -moz-user-focus: ignore;
+}
+
+.vbox {
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+}
+
+#tabbar {
+  bottom: 0;
+  left: 0;
+  overflow: auto;
+  position: fixed;
+  right: 0;
+  top: 0;
+}
+
 ul {
+  flex-grow: 1;
   list-style: none;
   margin: 0;
-  max-width: 100%;
   padding: 0;
 }
 
@@ -43,7 +68,7 @@ li.tab {
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: flex-start;
-  margin-bottom: -1px;
+  margin-top: -1px;
   margin-left: 0;
   margin-right: 0;
   /* margin-top: 0; *//* don't set for animation */
@@ -54,15 +79,13 @@ li.tab {
   opacity: 1;
   padding: 0.25em;
 }
+li.tab::first-child {
+  margin-top: 0;
+}
 
 li.tab,
 li.tab * {
   vertical-align: middle;
-}
-
-:root.debug li.tab,
-:root.debug li.tab * {
-  outline: 1px dotted rgba(255, 0, 0, 0.5);
 }
 
 li.tab.animation-ready {
@@ -121,4 +144,27 @@ li.collapsed-completely {
 
 .closebox:active {
   opacity: 0.5;
+}
+
+
+#tabbar.overflow .after-tabs,
+#tabbar:not(.overflow) ~ .after-tabs {
+  display: none;
+}
+
+#tabbar ~ .after-tabs {
+  bottom: 0;
+  height: 0;
+  justify-content: flex-end;
+  left: 0;
+  overflow: visible;
+  position: fixed;
+  right: 0;
+}
+
+.newtab-button {
+  background: none transparent;
+  border: 1px solid;
+  margin: 0;
+  text-align: center;
 }

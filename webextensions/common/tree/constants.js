@@ -10,6 +10,7 @@ var kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE = 'treestyletab:push-subtree-collapsed
 var kCOMMAND_SELECT_TAB = 'treestyletab:request-select-tab';
 var kCOMMAND_SELECT_TAB_INTERNALLY = 'treestyletab:request-select-tab-internally';
 var kCOMMAND_REMOVE_TAB = 'treestyletab:request-remove-tab';
+var kCOMMAND_NEW_TAB = 'treestyletab:request-new-tab';
 
 var kPARENT   = 'data-parent-id';
 var kCHILDREN = 'data-child-ids';
@@ -31,6 +32,7 @@ var kTWISTY   = 'twisty';
 var kLABEL    = 'label';
 var kCOUNTER  = 'counter';
 var kCLOSEBOX = 'closebox';
+var kNEWTAB_BUTTON = 'newtab-button';
 
 var kTAB_STATE_ACTIVE = 'active';
 var kTAB_STATE_PINNED = 'pinned';
@@ -44,6 +46,8 @@ var kTAB_STATE_SUBTREE_EXPANDED_MANUALLY = 'subtree-expanded-manually';
 var kTAB_STATE_FAVICONIZED = 'faviconized';
 var kTAB_STATE_HIGHLIGHTED = 'highlighted';
 var kTAB_STATE_POSSIBLE_CLOSING_CURRENT = 'possible-closing-current';
+
+var kTABBAR_STATE_OVERFLOW = 'overflow';
 
 var kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD        = 3;
 var kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN       = 0;

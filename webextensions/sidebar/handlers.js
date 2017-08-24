@@ -37,16 +37,18 @@
  *
  * ***** END LICENSE BLOCK ******/
 
+function onResize(aEvent) {
+  reserveToCheckTabbarOverflow();
+}
 
-
-function isNewTabAction(aEvent) {
+function isAccelAction(aEvent) {
   return aEvent.button == 1 || (aEvent.button == 0 && isAccelKeyPressed(aEvent));
 }
 
 function isAccelKeyPressed(aEvent) {
   return gIsMac ?
-    (aEvent.metaKey || (aEvent.keyCode == aEvent.DOM_VK_META)) :
-    (aEvent.ctrlKey || (aEvent.keyCode == aEvent.DOM_VK_CONTROL)) ;
+    (aEvent.metaKey || ('keyCode' in aEvent && aEvent.keyCode == aEvent.DOM_VK_META)) :
+    (aEvent.ctrlKey || ('keyCode' in aEvent && aEvent.keyCode == aEvent.DOM_VK_CONTROL)) ;
 }
 
 function isCopyAction(aEvent) {
@@ -89,6 +91,14 @@ function isEventFiredOnClosebox(aEvent) {
     ).booleanValue;
 }
 
+function isEventFiredOnNewTabButton(aEvent) {
+  return evaluateXPath(
+      `ancestor-or-self::*[${hasClass(kNEWTAB_BUTTON)}]`,
+      aEvent.originalTarget || aEvent.target,
+      XPathResult.BOOLEAN_TYPE
+    ).booleanValue;
+}
+
 function isEventFiredOnClickable(aEvent) {
   return evaluateXPath(
       'ancestor-or-self::*[contains(" button scrollbar textbox ", concat(" ", local-name(), " "))]',
@@ -123,17 +133,21 @@ function isTabInViewport(aTab) {
 
 function onMouseDown(aEvent) {
   var tab = getTabFromEvent(aEvent);
-  if (aEvent.button == 1 ||
-      (aEvent.button == 0 && (aEvent.ctrlKey || aEvent.metaKey))) {
+  if (isAccelAction(aEvent)) {
     if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/) {
       log('middle-click to close');
       browser.runtime.sendMessage({
         type:      kCOMMAND_REMOVE_TAB,
-        windowId:  tab.parentNode.windowId,
+        windowId:  gTargetWindow,
         tab:       tab.id
       });
       aEvent.stopPropagation();
       aEvent.preventDefault();
+    }
+    else if (isEventFiredOnNewTabButton(aEvent)) {
+      aEvent.stopPropagation();
+      aEvent.preventDefault();
+      onNewTabButtonClick(aEvent);
     }
     return;
   }
@@ -149,7 +163,7 @@ function onMouseDown(aEvent) {
     if (hasChildTabs(tab))
       browser.runtime.sendMessage({
         type:      kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE,
-        windowId:  tab.parentNode.windowId,
+        windowId:  gTargetWindow,
         tab:       tab.id,
         collapsed: !isSubtreeCollapsed(tab),
         manualOperation: true
@@ -165,12 +179,19 @@ function onMouseDown(aEvent) {
 
   browser.runtime.sendMessage({
     type:      kCOMMAND_SELECT_TAB,
-    windowId:  tab.parentNode.windowId,
+    windowId:  gTargetWindow,
     tab:       tab.id
   });
 }
 
 function onClick(aEvent) {
+  if (isEventFiredOnNewTabButton(aEvent)) {
+    aEvent.stopPropagation();
+    aEvent.preventDefault();
+    onNewTabButtonClick(aEvent);
+    return;
+  }
+
   if (!isEventFiredOnClosebox(aEvent))
     return;
 
@@ -186,7 +207,15 @@ function onClick(aEvent) {
   //}
   browser.runtime.sendMessage({
     type:      kCOMMAND_REMOVE_TAB,
-    windowId:  tab.parentNode.windowId,
+    windowId:  gTargetWindow,
     tab:       tab.id
+  });
+}
+
+function onNewTabButtonClick(aEvent) {
+  browser.runtime.sendMessage({
+    type:      kCOMMAND_NEW_TAB,
+    windowId:  gTargetWindow,
+    accel:     isAccelAction(aEvent)
   });
 }

@@ -11,7 +11,7 @@ window.addEventListener('DOMContentLoaded', init, { once: true });
 
 async function init() {
   window.addEventListener('unload', destroy, { once: true });
-  gAllTabs = document.getElementById('all-tabs');
+  gAllTabs = document.querySelector('#all-tabs');
   await configs.$loaded;
   await rebuildAll();
   startObserveTabs();
@@ -169,6 +169,14 @@ async function onMessage(aMessage, aSender, aRespond) {
       else
         collapseExpandSubtree(tab, params);
       reserveToSaveTreeStructure(tab);
+    }; break;
+
+    case kCOMMAND_NEW_TAB: {
+      log('new tab requested: ', aMessage);
+      let params = { windowId: aMessage.windowId };
+      // params.openerTabId = ?
+      params.active = !aMessage.accel;
+      browser.tabs.create(params);
     }; break;
 
     case kCOMMAND_REMOVE_TAB: {
