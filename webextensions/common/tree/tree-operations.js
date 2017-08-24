@@ -64,7 +64,7 @@ async function attachTabTo(aChild, aParent, aInfo = {}) {
     child:    dumpTab(aChild),
     info:     aInfo
   });
-  if (aParent.getAttribute(kCHILDREN).indexOf(`|${aChild.id}|`) > -1) {
+  if ((aParent.getAttribute(kCHILDREN) || '').indexOf(`|${aChild.id}|`) > -1) {
     log('=> already attached');
     return;
   }
@@ -116,7 +116,7 @@ async function attachTabTo(aChild, aParent, aInfo = {}) {
   }
 
   if (childIds.length == 0)
-    aParent.setAttribute(kCHILDREN, '|');
+    aParent.removeAttribute(kCHILDREN);
   else
     aParent.setAttribute(kCHILDREN, `|${childIds.join('|')}|`);
 
@@ -211,9 +211,9 @@ function detachTab(aChild, aInfo = {}) {
     return;
   }
 
-  var childIds = parent.getAttribute(kCHILDREN).split('|').filter((aId) => aId && aId != aChild.id);
+  var childIds = (parent.getAttribute(kCHILDREN) || '').split('|').filter((aId) => aId && aId != aChild.id);
   if (childIds.length == 0)
-    parent.setAttribute(kCHILDREN, '|');
+    parent.removeAttribute(kCHILDREN);
   else
     parent.setAttribute(kCHILDREN, `|${childIds.join('|')}|`);
   log('children => ', parent.getAttribute(kCHILDREN));

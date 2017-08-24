@@ -9,7 +9,7 @@
   width: 16px;
 }
 
-.tab[data-child-ids="|"] .twisty,
+.tab:not([data-child-ids]) .twisty,
 .tab.pinned .twisty {
   background-image: none !important;
 }

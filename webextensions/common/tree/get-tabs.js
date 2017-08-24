@@ -191,7 +191,7 @@ function getPreviousSiblingTab(aTab) {
 }
 
 function hasChildTabs(aParent) {
-  return aParent.getAttribute(kCHILDREN) != '|';
+  return aParent.hasAttribute(kCHILDREN);
 }
 
 function getChildTabs(aParent) {
