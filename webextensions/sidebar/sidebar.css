@@ -124,6 +124,7 @@ li.active {
 li.removing {
   max-height: 1px;
   opacity: 0;
+  pointer-events: none;
 }
 
 li.collapsed-completely {
