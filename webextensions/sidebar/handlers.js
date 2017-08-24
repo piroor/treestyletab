@@ -37,10 +37,6 @@
  *
  * ***** END LICENSE BLOCK ******/
 
-function onResize(aEvent) {
-  reserveToUpdateTabbarLayout();
-}
-
 function isAccelAction(aEvent) {
   return aEvent.button == 1 || (aEvent.button == 0 && isAccelKeyPressed(aEvent));
 }
@@ -129,6 +125,10 @@ function isTabInViewport(aTab) {
     containerRect.top >= barBox.top &&
     containerRect.bottom <= barBox.bottom
   );
+}
+
+function onResize(aEvent) {
+  reserveToUpdateTabbarLayout();
 }
 
 function onMouseDown(aEvent) {
@@ -230,21 +230,43 @@ function onDblClick(aEvent) {
   handleNewTabAction(aEvent);
 }
 
-function onTabPinned(aTab) {
-  collapseExpandSubtree(aTab, { collapsed: false });
-  detachAllChildren(aTab, {
+function onTabOpening(aEvent) {
+  fixupTab(aEvent.target);
+}
+
+function onTabOpened(aEvent) {
+  reserveToUpdateTabbarLayout();
+}
+
+function onTabScrollReady(aEvent) {
+  scrollToNewTab(aEvent.target);
+}
+
+function onTabClosed(aEvent) {
+  reserveToUpdateTabbarLayout();
+}
+
+function onTabMoved(aEvent) {
+  reserveToUpdateTabbarLayout();
+}
+
+function onTabPinned(aEvent) {
+  var tab = aEvent.target;
+  collapseExpandSubtree(tab, { collapsed: false });
+  detachAllChildren(tab, {
     behavior: getCloseParentBehaviorForTab(
-      aTab,
+      tab,
       kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
     )
   });
-  detachTab(aTab);
-  collapseExpandTab(aTab, { collapsed: false });
+  detachTab(tab);
+  collapseExpandTab(tab, { collapsed: false });
   reserveToPositionPinnedTabs();
 }
 
-function onTabUnpinned(aTab) {
-  clearPinnedStyle(aTab);
-  //updateInvertedTabContentsOrder(aTab);
+function onTabUnpinned(aEvent) {
+  var tab = aEvent.target;
+  clearPinnedStyle(tab);
+  //updateInvertedTabContentsOrder(tab);
   reserveToPositionPinnedTabs();
 }

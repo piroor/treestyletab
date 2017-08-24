@@ -12,8 +12,16 @@ window.addEventListener('DOMContentLoaded', init, { once: true });
 async function init() {
   window.addEventListener('unload', destroy, { once: true });
   gAllTabs = document.querySelector('#all-tabs');
+  gAllTabs.addEventListener(kEVENT_TAB_OPENED, onTabOpened);
+  gAllTabs.addEventListener(kEVENT_TAB_CLOSED, onTabClosed);
+  gAllTabs.addEventListener(kEVENT_TAB_MOVED, onTabMoved);
+  gAllTabs.addEventListener(kEVENT_TAB_FOCUSING, onTabFocusing);
+  gAllTabs.addEventListener(kEVENT_TAB_FOCUSED, onTabFocused);
+  gAllTabs.addEventListener(kEVENT_TAB_UPDATED, onTabUpdated);
+
   await configs.$loaded;
   await rebuildAll();
+
   startObserveTabs();
   browser.runtime.onMessage.addListener(onMessage);
 
@@ -43,6 +51,14 @@ function waitUntilCompletelyRestored() {
 function destroy() {
   browser.runtime.onMessage.removeListener(onMessage);
   endObserveTabs();
+
+  gAllTabs.removeEventListener(kEVENT_TAB_OPENED, onTabOpened);
+  gAllTabs.removeEventListener(kEVENT_TAB_CLOSED, onTabClosed);
+  gAllTabs.removeEventListener(kEVENT_TAB_MOVED, onTabMoved);
+  gAllTabs.removeEventListener(kEVENT_TAB_FOCUSING, onTabFocusing);
+  gAllTabs.removeEventListener(kEVENT_TAB_FOCUSED, onTabFocused);
+  gAllTabs.removeEventListener(kEVENT_TAB_UPDATED, onTabUpdated);
+
   gAllTabs = undefined;
 }
 

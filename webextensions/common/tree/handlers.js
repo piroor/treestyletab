@@ -74,79 +74,27 @@ function onSelect(aActiveInfo) {
   }
   newTab.classList.add(kTAB_STATE_ACTIVE);
 
-  var noMoreFocusChange = false;
   log('onSelect: ', dumpTab(newTab));
-  if (gIsBackground) {
-    if (isCollapsed(newTab)) {
-      if (configs.autoExpandSubtreeOnCollapsedChildFocused) {
-        for (let ancestor of getAncestorTabs(newTab)) {
-          collapseExpandSubtree(ancestor, { collapsed: false });
-        }
-        handleNewActiveTab(newTab);
-      }
-      else {
-        selectTabInternally(getRootTab(newTab));
-        noMoreFocusChange = true;
-      }
-    }
-    else if (/**
-              * Focus movings by closing of the old current tab should be handled
-              * only when it is activated by user preference expressly.
-              */
-             newTab.parentNode.focusChangedByCurrentTabRemove &&
-             !configs.autoCollapseExpandSubtreeOnSelectOnCurrentTabRemove) {
-      noMoreFocusChange = true;
-    }
-    else if (hasChildTabs(newTab) && isSubtreeCollapsed(newTab)) {
-      handleNewActiveTab(newTab);
-    }
-  }
+
+  var focusChanged = newTab.dispatchEvent(new CustomEvent(kEVENT_TAB_FOCUSING, {
+    bubbles: true,
+    cancelable: true
+  }));
 
   newTab.parentNode.focusChangedByCurrentTabRemove = false;
 
   //if (!isTabInViewport(newTab))
   //  scrollToTab(newTab);
 
-  if (gIsBackground &&
-      !noMoreFocusChange &&
-      oldTabs.length > 0) {
-    oldTabs[0].classList.add(kTAB_STATE_POSSIBLE_CLOSING_CURRENT);
-    setTimeout(() => {
-      var possibleClosingCurrents = document.querySelectorAll(`.${kTAB_STATE_POSSIBLE_CLOSING_CURRENT}`);
-      for (let tab of possibleClosingCurrents) {
-        tab.classList.remove(kTAB_STATE_POSSIBLE_CLOSING_CURRENT);
-      }
-    }, 100);
+  if (focusChanged && oldTabs.length > 0) {
+    newTab.dispatchEvent(new CustomEvent(kEVENT_TAB_FOCUSED, {
+      detail: {
+        previouslyFocusedTab: oldTabs[0]
+      },
+      bubbles: true,
+      cancelable: false
+    }));
   }
-}
-function handleNewActiveTab(aTab) {
-  if (aTab.parentNode.doingCollapseExpandCount != 0)
-    return;
-
-  log('handleNewActiveTab: ', dumpTab(aTab));
-
-  if (handleNewActiveTab.timer)
-    clearTimeout(handleNewActiveTab.timer);
-
-  /**
-   * First, we wait until all event listeners for tabs.onSelect
-   * were processed.
-   */
-  handleNewActiveTab.timer = setTimeout(() => {
-    delete handleNewActiveTab.timer;
-    var shouldCollapseExpandNow = configs.autoCollapseExpandSubtreeOnSelect;
-    var canCollapseTree = shouldCollapseExpandNow;
-    var canExpandTree   = shouldCollapseExpandNow && aTab.parentNode.internalFocusCount == 0;
-    log('handleNewActiveTab[delayed]: ', dumpTab(aTab), {
-      canCollapseTree, canExpandTree, internalFocusCount: aTab.parentNode.internalFocusCount });
-    if (canExpandTree) {
-      if (canCollapseTree &&
-          configs.autoExpandIntelligently)
-        collapseExpandTreesIntelligentlyFor(aTab);
-      else
-        collapseExpandSubtree(aTab, { collapsed: false });
-    }
-  }, 0);
 }
 
 function onUpdated(aTabId, aChangeInfo, aTab) {
@@ -164,8 +112,10 @@ function onUpdated(aTabId, aChangeInfo, aTab) {
   });
   updatedTab.apiTab = aTab;
 
-  if (gIsBackground)
-    reserveToSaveTreeStructure(updatedTab);
+  updatedTab.dispatchEvent(new CustomEvent(kEVENT_TAB_UPDATED, {
+    bubbles: true,
+    cancelable: false
+  }));
 }
 
 function onCreated(aTab) {
@@ -179,6 +129,11 @@ function onCreated(aTab) {
     gAllTabs.appendChild(container);
   }
   var newTab = container.appendChild(buildTab(aTab));
+  newTab.dispatchEvent(new CustomEvent(kEVENT_TAB_OPENING, {
+    bubbles: true,
+    cancelable: false
+  }));
+
   if (canAnimate()) {
     updateTabCollapsed(newTab, {
       collapsed: true,
@@ -194,14 +149,21 @@ function onCreated(aTab) {
          * smooth scrolling is finished. The smooth scrolling should be
          * started together with the start of the animation effect.
          */
-        onStart: () => scrollToNewTab(newTab)
+        onStart: () => {
+          newTab.dispatchEvent(new CustomEvent(kEVENT_TAB_SCROLL_READY, {
+            bubbles: true,
+            cancelable: false
+          }));
+        }
       });
     });
   }
   else {
     newTab.classList.add(kTAB_STATE_ANIMATION_READY);
-    if (!gIsBackground)
-      scrollToNewTab(newTab)
+    newTab.dispatchEvent(new CustomEvent(kEVENT_TAB_SCROLL_READY, {
+      bubbles: true,
+      cancelable: false
+    }));
   }
 
   var opener = getTabById({ tab: aTab.openerTabId, window: aTab.windowId });
@@ -215,10 +177,10 @@ function onCreated(aTab) {
   newTab.parentNode.openingCount++;
   setTimeout(() => newTab.parentNode.openingCount--, 0);
 
-  if (gIsBackground)
-    reserveToSaveTreeStructure(newTab);
-  else
-    reserveToUpdateTabbarLayout();
+  newTab.dispatchEvent(new CustomEvent(kEVENT_TAB_OPENED, {
+    bubbles: true,
+    cancelable: false
+  }));
 }
 
 function onRemoved(aTabId, aRemoveInfo) {
@@ -249,10 +211,10 @@ function onRemoved(aTabId, aRemoveInfo) {
   //restoreTabAttributes(oldTab, backupAttributes);
   //updateLastScrollPosition();
 
-  if (gIsBackground)
-    reserveToSaveTreeStructure(oldTab);
-  else
-    reserveToUpdateTabbarLayout();
+  oldTab.dispatchEvent(new CustomEvent(kEVENT_TAB_CLOSED, {
+    bubbles: true,
+    cancelable: false
+  }));
 
   if (canAnimate() && !isCollapsed(oldTab)) {
     oldTab.addEventListener('transitionend', () => {
@@ -265,9 +227,6 @@ function onRemoved(aTabId, aRemoveInfo) {
     oldTab.classList.add(kTAB_STATE_REMOVING);
     onRemovedComplete(oldTab);
   }
-
-  if (!gIsBackground && isPinned(oldTab))
-    reserveToPositionPinnedTabs();
 }
 function onRemovedComplete(aTab) {
   var container = aTab.parentNode;
@@ -285,10 +244,10 @@ function onMoved(aTabId, aMoveInfo) {
   if (!movedTab)
     return;
 
-  if (gIsBackground)
-    reserveToSaveTreeStructure(movedTab);
-  else
-    reserveToUpdateTabbarLayout();
+  movedTab.dispatchEvent(new CustomEvent(kEVENT_TAB_MOVED, {
+    bubbles: true,
+    cancelable: false
+  }));
 
   var container = getTabsContainer(movedTab);
   if (container.internalMovingCount > 0) {

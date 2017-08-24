@@ -12,6 +12,17 @@ var kCOMMAND_SELECT_TAB_INTERNALLY = 'treestyletab:request-select-tab-internally
 var kCOMMAND_REMOVE_TAB = 'treestyletab:request-remove-tab';
 var kCOMMAND_NEW_TAB = 'treestyletab:request-new-tab';
 
+var kEVENT_TAB_OPENING = 'treestyletab:tab-opening';
+var kEVENT_TAB_OPENED = 'treestyletab:tab-opened';
+var kEVENT_TAB_SCROLL_READY = 'treestyletab:tab-scroll-ready';
+var kEVENT_TAB_CLOSED = 'treestyletab:tab-closed';
+var kEVENT_TAB_MOVED = 'treestyletab:tab-moved';
+var kEVENT_TAB_FOCUSING = 'treestyletab:tab-focusing';
+var kEVENT_TAB_FOCUSED = 'treestyletab:tab-focused';
+var kEVENT_TAB_UPDATED = 'treestyletab:tab-updated';
+var kEVENT_TAB_PINNED = 'treestyletab:tab-pinned';
+var kEVENT_TAB_UNPINNED = 'treestyletab:tab-unpinned';
+
 var kPARENT   = 'data-parent-id';
 var kCHILDREN = 'data-child-ids';
 var kANCESTORS = 'data-ancestor-ids';

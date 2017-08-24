@@ -67,23 +67,6 @@ function buildTab(aTab, aOptions = {}) {
   label.appendChild(document.createTextNode(aTab.title));
   item.appendChild(label);
 
-  if (!gIsBackground) {
-    let twisty = document.createElement('span');
-    twisty.classList.add(kTWISTY);
-    item.insertBefore(twisty, label);
-
-    let favicon = document.createElement('span');
-    favicon.classList.add(kFAVICON);
-    favicon.appendChild(document.createElement('img'));
-    item.insertBefore(favicon, label);
-    loadImageTo(favicon.firstChild, aTab.favIconUrl, kDEFAULT_FAVICON_URL);
-
-    let closebox = document.createElement('button');
-    closebox.appendChild(document.createTextNode('✖'));
-    closebox.classList.add(kCLOSEBOX);
-    item.appendChild(closebox);
-  }
-
   if (aOptions.existing) {
     item.classList.add(kTAB_STATE_ANIMATION_READY);
   }
@@ -130,16 +113,22 @@ function updateTab(aTab, aParams = {}) {
     let previousState = isPinned(aTab);
     if (aParams.pinned) {
       aTab.classList.add(kTAB_STATE_PINNED);
-      if (!previousState && !gIsBackground)
-        onTabPinned(aTab);
+      if (!previousState) {
+        aTab.dispatchEvent(new CustomEvent(kEVENT_TAB_PINNED, {
+          bubbles: true,
+          cancelable: false
+        }));
+      }
     }
     else {
       aTab.classList.remove(kTAB_STATE_PINNED);
-      if (previousState && !gIsBackground)
-        onTabUnpinned(aTab);
+      if (previousState) {
+        aTab.dispatchEvent(new CustomEvent(kEVENT_TAB_UNPINNED, {
+          bubbles: true,
+          cancelable: false
+        }));
+      }
     }
-    if (!gIsBackground)
-      reserveToPositionPinnedTabs();
   }
 }
 
