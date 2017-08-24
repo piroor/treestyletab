@@ -382,7 +382,7 @@ function getTabFromCoordinates(aEvent) {
 
   var rect = container.getBoundingClientRect();
   for (let x = 0, maxx = rect.width, step = Math.floor(rect.width / 10);
-       i < maxx; i += step) {
+       x < maxx; x += step) {
     tab = document.elementFromPoint(x, aEvent.clientY);
     tab = getTabFromChild(tab);
     if (tab)
