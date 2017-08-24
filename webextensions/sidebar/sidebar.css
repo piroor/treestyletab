@@ -59,6 +59,12 @@ button {
   direction: ltr;
 }
 
+/* for narrow scrollbar */
+#tabbar.overflow {
+  margin-left: -8px;
+}
+
+
 ul {
   flex-grow: 1;
   list-style: none;
