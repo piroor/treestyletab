@@ -183,7 +183,8 @@ async function onMessage(aMessage, aSender, aRespond) {
       let tab = getTabById(aMessage.tab);
       if (!tab)
         return;
-      await tryMoveFocusFromClosingCurrentTab(tab);
+      if (isActive(tab))
+        await tryMoveFocusFromClosingCurrentTab(tab);
       browser.tabs.remove(tab.apiTab.id);
     }; break;
 
