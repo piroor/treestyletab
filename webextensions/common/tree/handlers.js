@@ -120,7 +120,7 @@ function onSelect(aActiveInfo) {
   }
 }
 function handleNewActiveTab(aTab) {
-  if (aTab.parentNode.doingCollapseExpand)
+  if (aTab.parentNode.doingCollapseExpandCount != 0)
     return;
 
   log('handleNewActiveTab: ', dumpTab(aTab));

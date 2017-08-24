@@ -335,15 +335,30 @@ function shouldTabAutoExpanded(aTab) {
   return hasChildTabs(aTab) && isSubtreeCollapsed(aTab);
 }
 
-function collapseExpandSubtree(aTab, aParams = {}) {
+async function collapseExpandSubtree(aTab, aParams = {}) {
   aParams.collapsed = !!aParams.collapsed;
   log('collapseExpandSubtree: ', dumpTab(aTab), aParams);
-  if (!aTab ||
-      (isSubtreeCollapsed(aTab) == aParams.collapsed))
+  if (!aTab)
+    return;
+  var container = getTabsContainer(aTab);
+  container.doingCollapseExpandCount++;
+  await collapseExpandSubtreeInternal(aTab, aParams);
+  if (!aParams.noPush) {
+    browser.runtime.sendMessage({
+      type:      kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE,
+      windowId:  container.windowId,
+      tab:       aTab.id,
+      collapsed: aParams.collapsed,
+      manualOperation: !!aParams.manualOperation
+    });
+  }
+  container.doingCollapseExpandCount--;
+}
+function collapseExpandSubtreeInternal(aTab, aParams = {}) {
+  if ((isSubtreeCollapsed(aTab) == aParams.collapsed))
     return;
 
   var container = getTabsContainer(aTab);
-  container.doingCollapseExpand = true;
 
   if (aParams.collapsed)
     aTab.classList.add(kTAB_STATE_SUBTREE_COLLAPSED);
@@ -380,19 +395,6 @@ function collapseExpandSubtree(aTab, aParams = {}) {
   //if (configs.indentAutoShrink &&
   //    configs.indentAutoShrinkOnlyForVisible)
   //  checkTabsIndentOverflow();
-
-
-  if (!aParams.noPush) {
-    browser.runtime.sendMessage({
-      type:      kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE,
-      windowId:  container.windowId,
-      tab:       aTab.id,
-      collapsed: aParams.collapsed,
-      manualOperation: !!aParams.manualOperation
-    });
-  }
-
-  container.doingCollapseExpand = false;
 }
 
 function manualCollapseExpandSubtree(aTab, aParams = {}) {

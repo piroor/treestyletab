@@ -171,6 +171,7 @@ function buildTabsContainerFor(aWindowId) {
   container.windowId = aWindowId;
   container.setAttribute('id', `window-${aWindowId}`);
   container.classList.add('tabs');
+  container.doingCollapseExpandCount = 0;
   container.internalFocusCount = 0;
   container.openingCoun = 0;
   return container;
