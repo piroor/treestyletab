@@ -39,10 +39,7 @@
 
 function positionPinnedTabs(aParams = {}) {
   log('positionPinnedTabs');
-  var width = aParams.width;
-  var height = aParams.height;
-
-  var pinnedTabs = getPinnedTabs(aParams.hint);
+  var pinnedTabs = getPinnedTabs(gTargetWindow);
   if (!pinnedTabs.length) {
     resetPinnedTabs();
     return;
@@ -51,16 +48,17 @@ function positionPinnedTabs(aParams = {}) {
   var containerWidth = gTabBar.getBoundingClientRect().width;
   var maxWidth = containerWidth;
   var faviconized = configs.faviconizePinnedTabs;
-  var faviconizedSize = getFirstVisibleTab(gTargetWindow).getBoundingClientRect().height;
+  var referenceTab = getFirstNormalTab(gTargetWindow) || getFirstVisibleTab(gTargetWindow);
+  var faviconizedSize = Math.min(referenceTab.getBoundingClientRect().height, configs.maxFaviconizedSize);
 
   var width  = faviconized ? faviconizedSize : maxWidth ;
   var height = faviconizedSize;
   var maxCol = Math.max(1, Math.floor(maxWidth / width));
-  var maxRow = Math.ceil(count / maxCol);
+  var maxRow = Math.ceil(pinnedTabs.length / maxCol);
   var col    = 0;
   var row    = 0;
 
-  gTabBar.style.top = `${height * maxRow}px`;
+  gTabBar.style.marginTop = `${height * maxRow}px`;
   for (let item of pinnedTabs) {
     let style = item.style;
     style.marginTop = '';
@@ -75,6 +73,7 @@ function positionPinnedTabs(aParams = {}) {
       item.classList.remove(kTAB_STATE_FAVICONIZED);
 
     style.maxWidth = style.width = `${width}px`;
+    style.maxHeight = style.height = `${height}px`;
     style.marginLeft = `${width * col}px`;
     style.left = 0;
     style.right = 'auto';
@@ -102,21 +101,23 @@ function positionPinnedTabs(aParams = {}) {
   }
 }
 
-function positionPinnedTabsWithDelay(aParams) {
-  if (positionPinnedTabsWithDelay.waiting)
+function reserveToPositionPinnedTabs(aParams) {
+  if (reserveToPositionPinnedTabs.waiting)
     return;
-  positionPinnedTabsWithDelay.waiting = setTimeout(() => {
-    delete positionPinnedTabsWithDelay.waiting;
+  reserveToPositionPinnedTabs.waiting = setTimeout(() => {
+    delete reserveToPositionPinnedTabs.waiting;
     positionPinnedTabs(aParams);
   }, 0);
 }
 
 function resetPinnedTabs(aHint) {
-  gTabBar.style.top = '';
-  var pinnedTabs = getPinnedTabs(aParams.hint);
+  gTabBar.style.marginTop = '';
+  var pinnedTabs = getPinnedTabs(gTargetWindow);
   for (let pinnedTab of pinnedTabs) {
     let style = pinnedTab.style;
-    style.maxWidth = style.width = style.left = style.right =
+    style.maxWidth = style.width =
+      style.maxHeight = style.height =
+      style.left = style.right =
       style.marginLeft = style.marginRight = style.marginTop = '';
   }
 }

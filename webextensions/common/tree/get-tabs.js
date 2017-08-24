@@ -295,6 +295,11 @@ function getFirstNormalTab(aHint) { // visible, not-collapsed, not-pinned
   return container && container.querySelector(kSELECTOR_NORMAL_TAB);
 }
 
+function getFirstVisibleTab(aHint) { // visible, not-collapsed, not-hidden
+  var container = getTabsContainer(aHint);
+  return container && container.querySelector(kSELECTOR_VISIBLE_TAB);
+}
+
 function getLastVisibleTab(aHint) { // visible, not-collapsed, not-hidden
   var container = getTabsContainer(aHint);
   if (!container)

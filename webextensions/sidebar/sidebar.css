@@ -68,7 +68,7 @@ li.tab {
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: flex-start;
-  margin-top: -1px;
+  margin-bottom: -1px;
   margin-left: 0;
   margin-right: 0;
   /* margin-top: 0; *//* don't set for animation */
@@ -78,9 +78,6 @@ li.tab {
   overflow: hidden;
   opacity: 1;
   padding: 0.25em;
-}
-li.tab::first-child {
-  margin-top: 0;
 }
 
 li.tab,
@@ -94,6 +91,8 @@ li.tab.animation-ready {
 
 li.active {
   font-weight: bold;
+  background: Highlight;
+  color: HighlightText;
 }
 
 li.removing {
@@ -105,6 +104,19 @@ li.collapsed-completely {
   pointer-events: none;
   visibility: collapse;
 }
+
+
+li.tab.pinned {
+  border-top: none;
+  border-left: none;
+  margin: 0;
+  position: fixed;
+}
+
+li.tab.pinned :-moz-any(.twisty, .label, .closebox) {
+  display: none;
+}
+
 
 .favicon {
   display: inline-box;

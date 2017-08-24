@@ -59,6 +59,8 @@ function buildTab(aTab, aOptions = {}) {
   item.classList.add('tab');
   if (aTab.active)
     item.classList.add(kTAB_STATE_ACTIVE);
+  if (aTab.pinned)
+    item.classList.add(kTAB_STATE_PINNED);
   item.classList.add(kTAB_STATE_SUBTREE_COLLAPSED);
 
   let label = document.createElement('span');
@@ -123,6 +125,15 @@ function updateTab(aTab, aParams = {}) {
     let favicon = getTabFavicon(aTab);
     if (favicon)
       loadImageTo(favicon.firstChild, aParams.favicon, kDEFAULT_FAVICON_URL);
+  }
+
+  if ('pinned' in aParams) {
+    if (aParams.pinned)
+      aTab.classList.add(kTAB_STATE_PINNED);
+    else
+      aTab.classList.remove(kTAB_STATE_PINNED);
+    if (!gIsBackground)
+      reserveToPositionPinnedTabs();
   }
 }
 

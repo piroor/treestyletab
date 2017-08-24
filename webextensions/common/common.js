@@ -67,6 +67,7 @@ configs = new Configs({
   closeRootBehavior: kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD, // extensions.treestyletab.closeRootBehavior
 
   acceptableDelayForInternalFocusMoving: 150,
+  maxFaviconizedSize: 32,
 
   animation: true,
   debug:     false

@@ -23,7 +23,7 @@ async function init() {
   gTabBar.addEventListener('dblclick', onDblClick);
   await configs.$loaded;
   await rebuildAll();
-  updateTabbarLayout();
+  updateTabbarLayout({ justNow: true });
   browser.runtime.onMessage.addListener(onMessage);
   document.documentElement.setAttribute(kTWISTY_STYLE, configs.twistyStyle);
   if (configs.debug)
@@ -113,16 +113,15 @@ function reserveToUpdateTabbarLayout() {
   }, 10);
 }
 
-function updateTabbarLayout() {
+function updateTabbarLayout(aParams = {}) {
   log('updateTabbarLayout');
   var range = document.createRange();
   range.selectNodeContents(gTabBar);
   var containerHeight = gTabBar.getBoundingClientRect().height;
   var contentHeight = range.getBoundingClientRect().height;
   log('height: ', { container: containerHeight, content: contentHeight });
-  if (containerHeight < contentHeight) {
-    if (gTabBar.classList.contains(kTABBAR_STATE_OVERFLOW))
-      return;
+  var overflow = containerHeight < contentHeight;
+  if (overflow && !gTabBar.classList.contains(kTABBAR_STATE_OVERFLOW)) {
     log('overflow');
     gTabBar.classList.add(kTABBAR_STATE_OVERFLOW);
     let range = document.createRange();
@@ -131,11 +130,11 @@ function updateTabbarLayout() {
     range.detach();
     gTabBar.style.bottom = `${offset}px`;
   }
-  else {
-    if (!gTabBar.classList.contains(kTABBAR_STATE_OVERFLOW))
-      return;
+  else if (!overflow && gTabBar.classList.contains(kTABBAR_STATE_OVERFLOW)) {
     log('underflow');
     gTabBar.classList.remove(kTABBAR_STATE_OVERFLOW);
     gTabBar.style.bottom = '';
   }
+
+  positionPinnedTabs(aParams);
 }
