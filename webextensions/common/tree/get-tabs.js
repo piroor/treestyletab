@@ -43,7 +43,7 @@ var kSELECTOR_VISIBLE_TAB = `${kSELECTOR_LIVE_TAB}:not(.${kTAB_STATE_COLLAPSED})
 var kSELECTOR_CONTROLLABLE_TAB = `${kSELECTOR_LIVE_TAB}:not(.${kTAB_STATE_HIDDEN})`;
 var kSELECTOR_PINNED_TAB = `${kSELECTOR_LIVE_TAB}.${kTAB_STATE_PINNED}`;
 
-var kXPATH_LIVE_TAB = `[${hasClass('tab')}][not(${hasClass(kTAB_STATE_REMOVING)})]`;
+var kXPATH_LIVE_TAB = `xhtml:li[${hasClass('tab')}][not(${hasClass(kTAB_STATE_REMOVING)})]`;
 var kXPATH_NORMAL_TAB = `${kXPATH_LIVE_TAB}[not(${hasClass(kTAB_STATE_HIDDEN)})][not(${hasClass(kTAB_STATE_PINNED)})]`;
 var kXPATH_VISIBLE_TAB = `${kXPATH_LIVE_TAB}[not(${hasClass(kTAB_STATE_COLLAPSED)})][not(${hasClass(kTAB_STATE_HIDDEN)})]`;
 var kXPATH_CONTROLLABLE_TAB = `${kXPATH_LIVE_TAB}[not(${hasClass(kTAB_STATE_HIDDEN)})]`;
@@ -72,7 +72,7 @@ function getTabFromChild(aNode) {
   if (!aNode)
     return null;
   return evaluateXPath(
-    `ancestor-or-self::xhtml:li${kXPATH_LIVE_TAB}`,
+    `ancestor-or-self::${kXPATH_LIVE_TAB}`,
     aNode,
     XPathResult.FIRST_ORDERED_NODE_TYPE
   ).singleNodeValue;
@@ -110,7 +110,7 @@ function getNextTab(aTab) {
 
 function getPreviousTab(aTab) {
   return evaluateXPath(
-    `preceding-sibling::xhtml:li${kXPATH_LIVE_TAB}`,
+    `preceding-sibling::${kXPATH_LIVE_TAB}`,
     aTab,
     XPathResult.FIRST_ORDERED_NODE_TYPE
   ).singleNodeValue;
@@ -126,7 +126,7 @@ function getLastTab(aHint) {
   if (!container)
     return null;
   return evaluateXPath(
-    `child::xhtml:li${kXPATH_LIVE_TAB}[last()]`,
+    `child::${kXPATH_LIVE_TAB}[last()]`,
     container,
     XPathResult.FIRST_ORDERED_NODE_TYPE
   ).singleNodeValue;
@@ -134,7 +134,7 @@ function getLastTab(aHint) {
 
 function getTabIndex(aTab) {
   return evaluateXPath(
-    `count(preceding-sibling::xhtml:li${kXPATH_LIVE_TAB})`,
+    `count(preceding-sibling::${kXPATH_LIVE_TAB})`,
     aTab,
     XPathResult.NUMBER_TYPE
   ).numberValue;
@@ -184,7 +184,7 @@ function getPreviousSiblingTab(aTab) {
   var parentId = aTab.getAttribute(kPARENT);
   var parentCondition = parentId ? `[@${kPARENT}="${parentId}"]` : `[not(@${kPARENT})]` ;
   return evaluateXPath(
-    `preceding-sibling::xhtml:li${kXPATH_LIVE_TAB}${parentCondition}`,
+    `preceding-sibling::${kXPATH_LIVE_TAB}${parentCondition}`,
     aTab,
     XPathResult.FIRST_ORDERED_NODE_TYPE
   ).singleNodeValue;
@@ -204,7 +204,7 @@ function getFirstChildTab(aParent) {
 
 function getLastChildTab(aParent) {
   return evaluateXPath(
-    `following-sibling::xhtml:li${kXPATH_LIVE_TAB}[@${kPARENT}="${aParent.id}"][last()]`,
+    `following-sibling::${kXPATH_LIVE_TAB}[@${kPARENT}="${aParent.id}"][last()]`,
     aParent,
     XPathResult.FIRST_ORDERED_NODE_TYPE
   ).singleNodeValue;
@@ -212,7 +212,7 @@ function getLastChildTab(aParent) {
 
 function getChildTabIndex(aChild, aParent) {
   return evaluateXPath(
-    `count(preceding-sibling::xhtml:li${kXPATH_CONTROLLABLE_TAB}[@${kPARENT}="${aParent.id}"])`,
+    `count(preceding-sibling::${kXPATH_CONTROLLABLE_TAB}[@${kPARENT}="${aParent.id}"])`,
     aChild,
     XPathResult.NUMBER_TYPE
   ).numberValue;
@@ -305,7 +305,7 @@ function getLastVisibleTab(aHint) { // visible, not-collapsed, not-hidden
   if (!container)
     return null;
   return evaluateXPath(
-    `child::xhtml:li${kXPATH_VISIBLE_TAB}[last()]`,
+    `child::${kXPATH_VISIBLE_TAB}[last()]`,
     container,
     XPathResult.FIRST_ORDERED_NODE_TYPE
   ).singleNodeValue;
@@ -317,7 +317,7 @@ function getNextVisibleTab(aTab) { // visible, not-collapsed
 
 function getPreviousVisibleTab(aTab) { // visible, not-collapsed
   return evaluateXPath(
-    `preceding-sibling::xhtml:li${kXPATH_VISIBLE_TAB}`,
+    `preceding-sibling::${kXPATH_VISIBLE_TAB}`,
     aTab,
     XPathResult.FIRST_ORDERED_NODE_TYPE
   ).singleNodeValue;
@@ -325,7 +325,7 @@ function getPreviousVisibleTab(aTab) { // visible, not-collapsed
 
 function getVisibleIndex(aTab) {
   return evaluateXPath(
-    `count(preceding-sibling::xhtml:li${kXPATH_VISIBLE_TAB})`,
+    `count(preceding-sibling::${kXPATH_VISIBLE_TAB})`,
     aTab,
     XPathResult.NUMBER_TYPE
   ).numberValue;
