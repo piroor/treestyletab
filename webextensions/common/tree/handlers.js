@@ -267,7 +267,7 @@ function onRemoved(aTabId, aRemoveInfo) {
   }
 
   if (!gIsBackground && isPinned(oldTab))
-    positionPinnedTabsWithDelay();
+    reserveToPositionPinnedTabs();
 }
 function onRemovedComplete(aTab) {
   var container = aTab.parentNode;
