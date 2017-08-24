@@ -379,8 +379,8 @@ function collapseExpandSubtreeInternal(aTab, aParams = {}) {
         i == lastExpandedTabIndex) {
       collapseExpandTab(childTab, {
          collapsed: aParams.collapsed,
-         justNow:   aParams.justNow//,
-         //onStart:   () => scrollToTabSubtree(aTab)
+         justNow:   aParams.justNow,
+         last:      true
       });
     }
     else {
@@ -423,7 +423,15 @@ function collapseExpandTab(aTab, aParams = {}) {
   else
     aTab.classList.remove(kTAB_STATE_COLLAPSED);
   //setTabValue(aTab, kTAB_STATE_COLLAPSED, aParams.collapsed);
-  updateTabCollapsed(aTab, aParams);
+
+  aTab.dispatchEvent(new CustomEvent(kEVENT_TAB_COLLAPSED_STATE_CHANGING, {
+    detail: {
+      collapsed: aParams.collapsed,
+      justNow: aParams.justNow
+    },
+    bubbles: true,
+    cancelable: false
+  }));
 
   //var data = {
   //  collapsed : aParams.collapsed
@@ -451,111 +459,6 @@ function collapseExpandTab(aTab, aParams = {}) {
       });
     }
   }
-}
-
-async function updateTabCollapsed(aTab, aParams = {}) {
-  //log('updateTabCollapsed ', dumpTab(aTab));
-  if (!aTab.parentNode) // do nothing for closed tab!
-    return;
-
-  if (aTab.onEndCollapseExpandAnimation) {
-    aTab.removeEventListener('transitionend', aTab.onEndCollapseExpandAnimation, { once: true });
-    delete aTab.onEndCollapseExpandAnimation;
-  }
-
-  aTab.setAttribute(kCOLLAPSING_PHASE, aParams.collapsed ? kCOLLAPSING_PHASE_TO_BE_COLLAPSED : kCOLLAPSING_PHASE_TO_BE_EXPANDED );
-
-  var endMargin, endOpacity;
-  if (aParams.collapsed) {
-    let firstTab = getFirstNormalTab(aTab) || getFirstTab(aTab);
-    endMargin  = firstTab.getBoundingClientRect().height;
-    endOpacity = 0;
-  }
-  else {
-    endMargin  = 0;
-    endOpacity = 1;
-  }
-
-  if (!canAnimate() ||
-      aParams.justNow ||
-      configs.collapseDuration < 1) {
-    //log('=> skip animation');
-    if (aParams.collapsed)
-      aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
-    else
-      aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
-    aTab.removeAttribute(kCOLLAPSING_PHASE);
-
-    // Pinned tabs are positioned by "margin-top", so
-    // we must not reset the property for pinned tabs.
-    // (However, we still must update "opacity".)
-    if (!isPinned(aTab))
-      aTab.style.marginTop = endMargin ? `-${endMargin}px` : '';
-
-    if (endOpacity == 0)
-      aTab.style.opacity = 0;
-    else
-      aTab.style.opacity = '';
-
-    if (typeof aParams.onStart == 'function')
-      aParams.onStart();
-    return;
-  }
-
-  if (!aParams.collapsed)
-    aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
-
-  return new Promise((aResolve, aReject) => {
-    window.requestAnimationFrame(() => {
-      //log('start animation for ', dumpTab(aTab));
-      if (typeof aParams.onStart == 'function')
-        aParams.onStart();
-
-      aTab.onEndCollapseExpandAnimation = (() => {
-        delete aTab.onEndCollapseExpandAnimation;
-        if (backupTimer)
-          clearTimeout(backupTimer);
-        //log('=> finish animation for ', dumpTab(aTab));
-        if (aParams.collapsed)
-          aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
-        aTab.removeAttribute(kCOLLAPSING_PHASE);
-        aTab.dispatchEvent(new CustomEvent(kEVENT_TAB_COLLAPSED_STATE_CHANGING, {
-          bubbles: true,
-          cancelable: false
-        }));
-        if (endOpacity > 0) {
-          if (window.getComputedStyle(aTab).opacity > 0) {
-            aTab.style.opacity = '';
-            aTab = null;
-          }
-          else {
-            // If we clear its "opacity" before it becomes "1"
-            // by CSS transition, the calculated opacity will
-            // become 0 after we set an invalid value to clear it.
-            // So we have to clear it with delay.
-            // This is workaround for the issue:
-            //   https://github.com/piroor/treestyletab/issues/1202
-            setTimeout(function() {
-              aTab.style.opacity = '';
-              aTab = null;
-            }, 0);
-          }
-        }
-        aResolve();
-      });
-      aTab.addEventListener('transitionend', aTab.onEndCollapseExpandAnimation, { once: true });
-      var backupTimer = setTimeout(() => {
-        if (!aTab || !aTab.onEndCollapseExpandAnimation)
-          return;
-        backupTimer = null
-        aTab.removeEventListener('transitionend', aTab.onEndCollapseExpandAnimation, { once: true });
-        aTab.onEndCollapseExpandAnimation();
-      }, configs.collapseDuration);
-
-      aTab.style.marginTop = endMargin ? `-${endMargin}px` : '';
-      aTab.style.opacity   = endOpacity;
-    });
-  });
 }
 
 function collapseExpandTreesIntelligentlyFor(aTab, aParams = {}) {

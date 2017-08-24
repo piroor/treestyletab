@@ -134,38 +134,6 @@ function onApiTabCreated(aTab) {
     cancelable: false
   }));
 
-  if (canAnimate()) {
-    updateTabCollapsed(newTab, {
-      collapsed: true,
-      justNow:   true
-    });
-    window.requestAnimationFrame(() => {
-      newTab.classList.add(kTAB_STATE_ANIMATION_READY);
-      updateTabCollapsed(newTab, {
-        collapsed: false,
-        justNow:   gRestoringTree,
-        /**
-         * When the system is too slow, the animation can start after
-         * smooth scrolling is finished. The smooth scrolling should be
-         * started together with the start of the animation effect.
-         */
-        onStart: () => {
-          newTab.dispatchEvent(new CustomEvent(kEVENT_TAB_SCROLL_READY, {
-            bubbles: true,
-            cancelable: false
-          }));
-        }
-      });
-    });
-  }
-  else {
-    newTab.classList.add(kTAB_STATE_ANIMATION_READY);
-    newTab.dispatchEvent(new CustomEvent(kEVENT_TAB_SCROLL_READY, {
-      bubbles: true,
-      cancelable: false
-    }));
-  }
-
   var opener = getTabById({ tab: aTab.openerTabId, window: aTab.windowId });
   if (opener) {
     log('opener: ', dumpTab(opener));

@@ -231,15 +231,36 @@ function onDblClick(aEvent) {
 }
 
 function onTabOpening(aEvent) {
-  fixupTab(aEvent.target);
+  var tab = aEvent.target;
+  fixupTab(tab);
+
+  if (configs.animation) {
+    updateTabCollapsed(tab, {
+      collapsed: true,
+      justNow:   true
+    });
+    window.requestAnimationFrame(() => {
+      tab.classList.add(kTAB_STATE_ANIMATION_READY);
+      updateTabCollapsed(tab, {
+        collapsed: false,
+        justNow:   gRestoringTree,
+        /**
+         * When the system is too slow, the animation can start after
+         * smooth scrolling is finished. The smooth scrolling should be
+         * started together with the start of the animation effect.
+         */
+        onStart: () => scrollToNewTab(tab)
+      });
+    });
+  }
+  else {
+    tab.classList.add(kTAB_STATE_ANIMATION_READY);
+    scrollToNewTab(tab);
+  }
 }
 
 function onTabOpened(aEvent) {
   reserveToUpdateTabbarLayout();
-}
-
-function onTabScrollReady(aEvent) {
-  scrollToNewTab(aEvent.target);
 }
 
 function onTabClosed(aEvent) {
@@ -276,7 +297,117 @@ function onTabLevelChanged(aEvent) {
 }
 
 function onTabCollapsedStateChanging(aEvent) {
-  reserveToUpdateTabbarLayout();
+  var tab = aEvent.target;
+  var collapsed = aEvent.detail.collapsed;
+
+  //log('updateTabCollapsed ', dumpTab(tab));
+  if (!tab.parentNode) // do nothing for closed tab!
+    return;
+
+  if (tab.onEndCollapseExpandAnimation) {
+    tab.removeEventListener('transitionend', tab.onEndCollapseExpandAnimation, { once: true });
+    delete tab.onEndCollapseExpandAnimation;
+  }
+
+  tab.setAttribute(kCOLLAPSING_PHASE, collapsed ? kCOLLAPSING_PHASE_TO_BE_COLLAPSED : kCOLLAPSING_PHASE_TO_BE_EXPANDED );
+
+  var endMargin, endOpacity;
+  if (collapsed) {
+    let firstTab = getFirstNormalTab(tab) || getFirstTab(tab);
+    endMargin  = firstTab.getBoundingClientRect().height;
+    endOpacity = 0;
+  }
+  else {
+    endMargin  = 0;
+    endOpacity = 1;
+  }
+
+  var readyToScroll = (() => {
+    tab.dispatchEvent(new CustomEvent(kEVENT_EXPANDED_TREE_READY_TO_SCROLL, {
+      bubbles: true,
+      cancelable: false
+    }));
+  });
+
+  if (!configs.animation ||
+      aEvent.detail.justNow ||
+      configs.collapseDuration < 1) {
+    //log('=> skip animation');
+    if (collapsed)
+      tab.classList.add(kTAB_STATE_COLLAPSED_DONE);
+    else
+      tab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
+    tab.removeAttribute(kCOLLAPSING_PHASE);
+
+    // Pinned tabs are positioned by "margin-top", so
+    // we must not reset the property for pinned tabs.
+    // (However, we still must update "opacity".)
+    if (!isPinned(tab))
+      tab.style.marginTop = endMargin ? `-${endMargin}px` : '';
+
+    if (endOpacity == 0)
+      tab.style.opacity = 0;
+    else
+      tab.style.opacity = '';
+
+    if (aEvent.detail.last)
+      readyToScroll();
+    return;
+  }
+
+  if (!collapsed)
+    tab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
+
+  window.requestAnimationFrame(() => {
+    //log('start animation for ', dumpTab(tab));
+    if (aEvent.detail.last)
+      readyToScroll();
+
+    tab.onEndCollapseExpandAnimation = (() => {
+      delete tab.onEndCollapseExpandAnimation;
+      if (backupTimer)
+        clearTimeout(backupTimer);
+      //log('=> finish animation for ', dumpTab(tab));
+      if (collapsed)
+        tab.classList.add(kTAB_STATE_COLLAPSED_DONE);
+      tab.removeAttribute(kCOLLAPSING_PHASE);
+      if (endOpacity > 0) {
+        if (window.getComputedStyle(tab).opacity > 0) {
+          tab.style.opacity = '';
+          tab = null;
+        }
+        else {
+          // If we clear its "opacity" before it becomes "1"
+          // by CSS transition, the calculated opacity will
+          // become 0 after we set an invalid value to clear it.
+          // So we have to clear it with delay.
+          // This is workaround for the issue:
+          //   https://github.com/piroor/treestyletab/issues/1202
+          setTimeout(function() {
+            tab.style.opacity = '';
+            tab = null;
+          }, 0);
+        }
+      }
+      reserveToUpdateTabbarLayout();
+      aResolve();
+    });
+    tab.addEventListener('transitionend', tab.onEndCollapseExpandAnimation, { once: true });
+    var backupTimer = setTimeout(() => {
+      if (!tab || !tab.onEndCollapseExpandAnimation)
+        return;
+      backupTimer = null
+      tab.removeEventListener('transitionend', tab.onEndCollapseExpandAnimation, { once: true });
+      tab.onEndCollapseExpandAnimation();
+    }, configs.collapseDuration);
+
+    tab.style.marginTop = endMargin ? `-${endMargin}px` : '';
+    tab.style.opacity   = endOpacity;
+  });
+}
+
+function onExpandedTreeReadyToScroll(aEvent) {
+  //scrollToTabSubtree(aEvent.target);
 }
 
 /*

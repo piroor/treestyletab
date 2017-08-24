@@ -14,7 +14,6 @@ var kCOMMAND_NEW_TAB = 'treestyletab:request-new-tab';
 
 var kEVENT_TAB_OPENING = 'treestyletab:tab-opening';
 var kEVENT_TAB_OPENED = 'treestyletab:tab-opened';
-var kEVENT_TAB_SCROLL_READY = 'treestyletab:tab-scroll-ready';
 var kEVENT_TAB_CLOSED = 'treestyletab:tab-closed';
 var kEVENT_TAB_MOVED = 'treestyletab:tab-moved';
 var kEVENT_TAB_FOCUSING = 'treestyletab:tab-focusing';
@@ -27,6 +26,7 @@ var kEVENT_TAB_DETACHED = 'treestyletab:tab-detached';
 var kEVENT_TAB_LEVEL_CHANGED = 'treestyletab:tab-level-changed';
 var kEVENT_TAB_COLLAPSED_STATE_CHANGING = 'treestyletab:tab-collapsed-state-changing';
 var kEVENT_TAB_SUBTREE_COLLAPSED_STATE_CHANGED_MANUALLY = 'treestyletab:tab-subtree-collapsed-state-changed-manually';
+var kEVENT_EXPANDED_TREE_READY_TO_SCROLL = 'treestyletab:expanded-tree-ready-to-scroll';
 
 var kPARENT   = 'data-parent-id';
 var kCHILDREN = 'data-child-ids';

@@ -89,6 +89,14 @@ function onTabUpdated(aEvent) {
   reserveToSaveTreeStructure(aEvent.target);
 }
 
+function onTabCollapsedStateChanging(aEvent) {
+  var tab = aEvent.target;
+  if (aEvent.detail.collapsed)
+    tab.classList.add(kTAB_STATE_COLLAPSED_DONE);
+  else
+    tab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
+}
+
 function onTabAttached(aEvent) {
   reserveToSaveTreeStructure(aEvent.target);
 }
