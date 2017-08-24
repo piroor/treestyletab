@@ -110,7 +110,7 @@ function getNextTab(aTab) {
 
 function getPreviousTab(aTab) {
   return evaluateXPath(
-    `preceding-sibling::${kXPATH_LIVE_TAB}`,
+    `preceding-sibling::${kXPATH_LIVE_TAB}[1]`,
     aTab,
     XPathResult.FIRST_ORDERED_NODE_TYPE
   ).singleNodeValue;
@@ -184,7 +184,7 @@ function getPreviousSiblingTab(aTab) {
   var parentId = aTab.getAttribute(kPARENT);
   var parentCondition = parentId ? `[@${kPARENT}="${parentId}"]` : `[not(@${kPARENT})]` ;
   return evaluateXPath(
-    `preceding-sibling::${kXPATH_LIVE_TAB}${parentCondition}`,
+    `preceding-sibling::${kXPATH_LIVE_TAB}${parentCondition}[1]`,
     aTab,
     XPathResult.FIRST_ORDERED_NODE_TYPE
   ).singleNodeValue;
@@ -317,7 +317,7 @@ function getNextVisibleTab(aTab) { // visible, not-collapsed
 
 function getPreviousVisibleTab(aTab) { // visible, not-collapsed
   return evaluateXPath(
-    `preceding-sibling::${kXPATH_VISIBLE_TAB}`,
+    `preceding-sibling::${kXPATH_VISIBLE_TAB}[1]`,
     aTab,
     XPathResult.FIRST_ORDERED_NODE_TYPE
   ).singleNodeValue;
