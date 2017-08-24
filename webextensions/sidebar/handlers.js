@@ -38,7 +38,7 @@
  * ***** END LICENSE BLOCK ******/
 
 function onResize(aEvent) {
-  reserveToCheckTabbarOverflow();
+  reserveToUpdateTabbarLayout();
 }
 
 function isAccelAction(aEvent) {

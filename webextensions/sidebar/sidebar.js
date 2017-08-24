@@ -23,7 +23,7 @@ async function init() {
   gTabBar.addEventListener('dblclick', onDblClick);
   await configs.$loaded;
   await rebuildAll();
-  checkTabbarOverflow();
+  updateTabbarLayout();
   browser.runtime.onMessage.addListener(onMessage);
   document.documentElement.setAttribute(kTWISTY_STYLE, configs.twistyStyle);
   if (configs.debug)
@@ -103,18 +103,18 @@ function collapseExpandAllSubtree(aParams = {}) {
   }
 }
 
-function reserveToCheckTabbarOverflow() {
-  log('reserveToCheckTabbarOverflow');
-  if (reserveToCheckTabbarOverflow.waiting)
-    clearTimeout(reserveToCheckTabbarOverflow.waiting);
-  reserveToCheckTabbarOverflow.waiting = setTimeout(() => {
-    delete reserveToCheckTabbarOverflow.waiting;
-    checkTabbarOverflow();
+function reserveToUpdateTabbarLayout() {
+  log('reserveToUpdateTabbarLayout');
+  if (reserveToUpdateTabbarLayout.waiting)
+    clearTimeout(reserveToUpdateTabbarLayout.waiting);
+  reserveToUpdateTabbarLayout.waiting = setTimeout(() => {
+    delete reserveToUpdateTabbarLayout.waiting;
+    updateTabbarLayout();
   }, 10);
 }
 
-function checkTabbarOverflow() {
-  log('checkTabbarOverflow');
+function updateTabbarLayout() {
+  log('updateTabbarLayout');
   var range = document.createRange();
   range.selectNodeContents(gTabBar);
   var containerHeight = gTabBar.getBoundingClientRect().height;

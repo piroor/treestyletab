@@ -574,7 +574,7 @@ async function updateTabCollapsed(aTab, aParams = {}) {
           }
         }
         if (!gIsBackground)
-          reserveToCheckTabbarOverflow();
+          reserveToUpdateTabbarLayout();
         aResolve();
       });
       aTab.addEventListener('transitionend', aTab.onEndCollapseExpandAnimation, { once: true });

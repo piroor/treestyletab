@@ -217,7 +217,7 @@ function onCreated(aTab) {
   if (gIsBackground)
     reserveToSaveTreeStructure(newTab);
   else
-    reserveToCheckTabbarOverflow();
+    reserveToUpdateTabbarLayout();
 }
 
 function onRemoved(aTabId, aRemoveInfo) {
@@ -251,7 +251,7 @@ function onRemoved(aTabId, aRemoveInfo) {
   if (gIsBackground)
     reserveToSaveTreeStructure(oldTab);
   else
-    reserveToCheckTabbarOverflow();
+    reserveToUpdateTabbarLayout();
 
   if (canAnimate() && !isCollapsed(oldTab)) {
     oldTab.addEventListener('transitionend', () => {
@@ -287,7 +287,7 @@ function onMoved(aTabId, aMoveInfo) {
   if (gIsBackground)
     reserveToSaveTreeStructure(movedTab);
   else
-    reserveToCheckTabbarOverflow();
+    reserveToUpdateTabbarLayout();
 
   if (gInternalMovingCount > 0) {
     log('internal move');
