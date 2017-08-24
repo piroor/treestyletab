@@ -13,6 +13,7 @@ var gAfterTabsForOverflowTabBar;
 window.addEventListener('DOMContentLoaded', init, { once: true });
 
 async function init() {
+  log('initialize sidebar');
   window.addEventListener('unload', destroy, { once: true });
   window.addEventListener('resize', onResize);
   gTabBar = document.querySelector('#tabbar');
@@ -23,11 +24,13 @@ async function init() {
   gTabBar.addEventListener('dblclick', onDblClick);
   await configs.$loaded;
   await rebuildAll();
+  log('initialize sidebar: post process');
   updateTabbarLayout({ justNow: true });
   browser.runtime.onMessage.addListener(onMessage);
   document.documentElement.setAttribute(kTWISTY_STYLE, configs.twistyStyle);
   if (configs.debug)
     document.documentElement.classList.add('debug');
+  await inheritTreeStructure();
 }
 
 function destroy() {
@@ -49,7 +52,6 @@ async function rebuildAll() {
     container.appendChild(buildTab(tab, { existing: true }));
   }
   gAllTabs.appendChild(container);
-  await inheritTreeStructure();
   startObserveTabs();
 }
 
@@ -59,7 +61,7 @@ async function inheritTreeStructure() {
     windowId: gTargetWindow
   });
   log('response: ', response);
-  if (response)
+  if (response && response.structure)
     applyTreeStructureToTabs(getAllTabs(gTargetWindow), response.structure);
 }
 

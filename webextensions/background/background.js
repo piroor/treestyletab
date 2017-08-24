@@ -149,11 +149,18 @@ function getTabsSignature(aApiTabs) {
 async function onMessage(aMessage, aSender, aRespond) {
   //log('onMessage: ', aMessage, aSender);
   switch (aMessage.type) {
-    case kCOMMAND_PULL_TREE_STRUCTURE:
-      aRespond({
-        structure: getTreeStructureFromTabs(getAllTabs(aMessage.windowId))
+    case kCOMMAND_PULL_TREE_STRUCTURE: {
+      log(`tree structure is requested from ${aMessage.windowId}`);
+      let structure = getTreeStructureFromTabs(getAllTabs(aMessage.windowId));
+      // By some reason the requestor can receive "undefined" as the response...
+      // For safely we resend the information as a "PUSH" message.
+      browser.runtime.sendMessage({
+        type:      kCOMMAND_PUSH_TREE_STRUCTURE,
+        windowId:  aMessage.windowId,
+        structure: structure
       });
-      break;
+      aRespond({ structure: structure });
+    }; break;
 
     case kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE: {
       let tab = getTabById(aMessage.tab);
