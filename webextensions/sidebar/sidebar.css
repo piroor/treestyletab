@@ -58,7 +58,11 @@ li.tab {
 li.tab,
 li.tab * {
   vertical-align: middle;
-  /*outline: 1px solid red;*/
+}
+
+:root.debug li.tab,
+:root.debug li.tab * {
+  outline: 1px dotted rgba(255, 0, 0, 0.5);
 }
 
 li.tab.animation-ready {

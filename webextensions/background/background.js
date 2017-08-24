@@ -12,8 +12,9 @@ window.addEventListener('DOMContentLoaded', init, { once: true });
 async function init() {
   window.addEventListener('unload', destroy, { once: true });
   gAllTabs = document.getElementById('all-tabs');
-  startObserveTabs();
+  await configs.$loaded;
   await rebuildAll();
+  startObserveTabs();
   browser.runtime.onMessage.addListener(onMessage);
 
   await waitUntilCompletelyRestored();

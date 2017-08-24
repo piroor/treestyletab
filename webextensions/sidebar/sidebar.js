@@ -14,9 +14,12 @@ async function init() {
   gAllTabs = document.getElementById('all-tabs');
   gAllTabs.addEventListener('mousedown', onMouseDown);
   gAllTabs.addEventListener('click', onClick);
+  await configs.$loaded;
   await rebuildAll();
   browser.runtime.onMessage.addListener(onMessage);
   document.documentElement.setAttribute(kTWISTY_STYLE, configs.twistyStyle);
+  if (configs.debug)
+    document.documentElement.classList.add('debug');
 }
 
 function destroy() {
