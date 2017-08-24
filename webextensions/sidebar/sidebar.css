@@ -98,6 +98,7 @@ li.collapsed-completely {
 .tab .label {
   flex-grow: 1;
   overflow: hidden;
+  padding: 0.25em 0;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
