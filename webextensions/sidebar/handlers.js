@@ -147,7 +147,7 @@ function onMouseDown(aEvent) {
     else if (isEventFiredOnNewTabButton(aEvent)) {
       aEvent.stopPropagation();
       aEvent.preventDefault();
-      onNewTabButtonClick(aEvent);
+      handleNewTabAction(aEvent);
     }
     return;
   }
@@ -188,7 +188,7 @@ function onClick(aEvent) {
   if (isEventFiredOnNewTabButton(aEvent)) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
-    onNewTabButtonClick(aEvent);
+    handleNewTabAction(aEvent);
     return;
   }
 
@@ -212,10 +212,20 @@ function onClick(aEvent) {
   });
 }
 
-function onNewTabButtonClick(aEvent) {
+function handleNewTabAction(aEvent) {
   browser.runtime.sendMessage({
     type:      kCOMMAND_NEW_TAB,
     windowId:  gTargetWindow,
     accel:     isAccelAction(aEvent)
   });
+}
+
+function onDblClick(aEvent) {
+  if (isEventFiredOnNewTabButton(aEvent) ||
+      getTabFromEvent(aEvent))
+    return;
+
+  aEvent.stopPropagation();
+  aEvent.preventDefault();
+  handleNewTabAction(aEvent);
 }

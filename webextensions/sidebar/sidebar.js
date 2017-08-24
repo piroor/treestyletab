@@ -20,6 +20,7 @@ async function init() {
   gAllTabs = document.querySelector('#all-tabs');
   gTabBar.addEventListener('mousedown', onMouseDown);
   gTabBar.addEventListener('click', onClick);
+  gTabBar.addEventListener('dblclick', onDblClick);
   await configs.$loaded;
   await rebuildAll();
   checkTabbarOverflow();
@@ -35,6 +36,7 @@ function destroy() {
   window.removeEventListener('resize', onResize);
   gTabBar.removeEventListener('mousedown', onMouseDown);
   gTabBar.removeEventListener('click', onClick);
+  gTabBar.removeEventListener('dblclick', onDblClick);
   gAllTabs = gTabBar = gAfterTabsForOverflowTabBar = undefined;
 }
 
