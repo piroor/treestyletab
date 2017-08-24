@@ -89,3 +89,10 @@ function onTabUpdated(aEvent) {
   reserveToSaveTreeStructure(aEvent.target);
 }
 
+function onTabAttached(aEvent) {
+  reserveToSaveTreeStructure(aEvent.target);
+}
+
+function onTabDetached(aEvent) {
+  reserveToSaveTreeStructure(aEvent.target);
+}

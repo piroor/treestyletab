@@ -29,6 +29,9 @@ async function init() {
   gTabBar.addEventListener(kEVENT_TAB_SCROLL_READY, onTabScrollReady);
   gTabBar.addEventListener(kEVENT_TAB_CLOSED, onTabClosed);
   gTabBar.addEventListener(kEVENT_TAB_MOVED, onTabMoved);
+  gTabBar.addEventListener(kEVENT_TAB_LEVEL_CHANGED, onTabLevelChanged);
+  gTabBar.addEventListener(kEVENT_TAB_COLLAPSED_STATE_CHANGING, onTabCollapsedStateChanging);
+  //gTabBar.addEventListener(kEVENT_TAB_SUBTREE_COLLAPSED_STATE_CHANGED_MANUALLY, onTabSubtreeCollapsedStateChangedManually);
   gTabBar.addEventListener(kEVENT_TAB_PINNED, onTabPinned);
   gTabBar.addEventListener(kEVENT_TAB_UNPINNED, onTabUnpinned);
 
@@ -56,6 +59,9 @@ function destroy() {
   gTabBar.removeEventListener(kEVENT_TAB_SCROLL_READY, onTabScrollReady);
   gTabBar.removeEventListener(kEVENT_TAB_CLOSED, onTabClosed);
   gTabBar.removeEventListener(kEVENT_TAB_MOVED, onTabMoved);
+  gTabBar.removeEventListener(kEVENT_TAB_LEVEL_CHANGED, onTabLevelChanged);
+  gTabBar.removeEventListener(kEVENT_TAB_COLLAPSED_STATE_CHANGING, onTabCollapsedStateChanging);
+  //gTabBar.removeEventListener(kEVENT_TAB_SUBTREE_COLLAPSED_STATE_CHANGED_MANUALLY, onTabSubtreeCollapsedStateChangedManually);
   gTabBar.removeEventListener(kEVENT_TAB_PINNED, onTabPinned);
   gTabBar.removeEventListener(kEVENT_TAB_UNPINNED, onTabUnpinned);
 

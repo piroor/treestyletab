@@ -18,6 +18,8 @@ async function init() {
   gAllTabs.addEventListener(kEVENT_TAB_FOCUSING, onTabFocusing);
   gAllTabs.addEventListener(kEVENT_TAB_FOCUSED, onTabFocused);
   gAllTabs.addEventListener(kEVENT_TAB_UPDATED, onTabUpdated);
+  gAllTabs.addEventListener(kEVENT_TAB_ATTACHED, onTabAttached);
+  gAllTabs.addEventListener(kEVENT_TAB_DETACHED, onTabDetached);
 
   await configs.$loaded;
   await rebuildAll();
@@ -58,6 +60,8 @@ function destroy() {
   gAllTabs.removeEventListener(kEVENT_TAB_FOCUSING, onTabFocusing);
   gAllTabs.removeEventListener(kEVENT_TAB_FOCUSED, onTabFocused);
   gAllTabs.removeEventListener(kEVENT_TAB_UPDATED, onTabUpdated);
+  gAllTabs.removeEventListener(kEVENT_TAB_ATTACHED, onTabAttached);
+  gAllTabs.removeEventListener(kEVENT_TAB_DETACHED, onTabDetached);
 
   gAllTabs = undefined;
 }

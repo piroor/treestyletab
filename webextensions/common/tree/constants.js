@@ -22,6 +22,11 @@ var kEVENT_TAB_FOCUSED = 'treestyletab:tab-focused';
 var kEVENT_TAB_UPDATED = 'treestyletab:tab-updated';
 var kEVENT_TAB_PINNED = 'treestyletab:tab-pinned';
 var kEVENT_TAB_UNPINNED = 'treestyletab:tab-unpinned';
+var kEVENT_TAB_ATTACHED = 'treestyletab:tab-attached';
+var kEVENT_TAB_DETACHED = 'treestyletab:tab-detached';
+var kEVENT_TAB_LEVEL_CHANGED = 'treestyletab:tab-level-changed';
+var kEVENT_TAB_COLLAPSED_STATE_CHANGING = 'treestyletab:tab-collapsed-state-changing';
+var kEVENT_TAB_SUBTREE_COLLAPSED_STATE_CHANGED_MANUALLY = 'treestyletab:tab-subtree-collapsed-state-changed-manually';
 
 var kPARENT   = 'data-parent-id';
 var kCHILDREN = 'data-child-ids';

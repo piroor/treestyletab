@@ -199,8 +199,13 @@ async function attachTabTo(aChild, aParent, aInfo = {}) {
 
   //promoteTooDeepLevelTabs(aChild);
 
-  if (gIsBackground)
-    reserveToSaveTreeStructure(aChild);
+  aChild.dispatchEvent(new CustomEvent(kEVENT_TAB_ATTACHED, {
+    detail: {
+      parent: aParent
+    }
+    bubbles: true,
+    cancelable: false
+  }));
 }
 
 function detachTab(aChild, aInfo = {}) {
@@ -221,8 +226,13 @@ function detachTab(aChild, aInfo = {}) {
 
   updateTabsIndent(aChild);
 
-  if (gIsBackground)
-    reserveToSaveTreeStructure(aChild);
+  aChild.dispatchEvent(new CustomEvent(kEVENT_TAB_DETACHED, {
+    detail: {
+      oldParent: parent
+    }
+    bubbles: true,
+    cancelable: false
+  }));
 }
 
 function detachAllChildren(aTab, aInfo = {}) {
@@ -305,25 +315,18 @@ function updateTabsIndent(aTabs, aLevel = undefined) {
   if (aLevel === undefined)
     aLevel = getAncestorTabs(aTabs[0]).length;
 
-  var baseIndent = gIndent;
-  if (gIndent < 0)
-    baseIndent = configs.baseIndent;
-
   for (let i = 0, maxi = aTabs.length; i < maxi; i++) {
     let item = aTabs[i];
     if (!item || isPinned(item))
       continue;
-    if (!gIsBackground) {
-      window.requestAnimationFrame(() => {
-        var level = parseInt(item.getAttribute(kNEST) || 0);
-        var indent = level * baseIndent;
-        var expected = indent == 0 ? 0 : indent + 'px' ;
-        log('setting indent: ', { tab: dumpTab(item), expected: expected, level: level });
-        if (item.style[gIndentProp] != expected) {
-          window.requestAnimationFrame(() => item.style[gIndentProp] = expected);
-        }
-      });
-    }
+
+    item.dispatchEvent(new CustomEvent(kEVENT_TAB_LEVEL_CHANGED, {
+      detail: {
+        level: aLevel || 0
+      },
+      bubbles: true,
+      cancelable: false
+    }));
     item.setAttribute(kNEST, aLevel);
     updateTabsIndent(getChildTabs(item), aLevel + 1);
   }
@@ -401,56 +404,10 @@ function collapseExpandSubtreeInternal(aTab, aParams = {}) {
 function manualCollapseExpandSubtree(aTab, aParams = {}) {
   aParams.manualOperation = true;
   collapseExpandSubtree(aTab, aParams);
-
   if (!aParams.collapsed) {
     aTab.classList.add(kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
     //setTabValue(aTab, kTAB_STATE_SUBTREE_EXPANDED_MANUALLY, true);
   }
-
-/*
-  if (gIsBackground ||
-      !configs.indentAutoShrink ||
-      !configs.indentAutoShrinkOnlyForVisible)
-    return;
-
-  cancelCheckTabsIndentOverflow();
-  if (!aTab.checkTabsIndentOverflowOnMouseLeave) {
-    let stillOver = false;
-    let id = aTab.id
-    aTab.checkTabsIndentOverflowOnMouseLeave = function checkTabsIndentOverflowOnMouseLeave(aEvent, aDelayed) {
-      if (aEvent.type == 'mouseover') {
-        if (evaluateXPath(
-              `ancestor-or-self::*[#${id}]`,
-              aEvent.originalTarget || aEvent.target,
-              XPathResult.BOOLEAN_TYPE
-            ).booleanValue)
-            stillOver = true;
-          return;
-        }
-        else if (!aDelayed) {
-          if (stillOver) {
-            stillOver = false;
-          }
-          setTimeout(() => aTab.checkTabsIndentOverflowOnMouseLeave(aEvent, true), 0);
-          return;
-        } else if (stillOver) {
-          return;
-        }
-        var x = aEvent.clientX;
-        var y = aEvent.clientY;
-        var rect = aTab.getBoundingClientRect();
-        if (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom)
-          return;
-        document.removeEventListener('mouseover', aTab.checkTabsIndentOverflowOnMouseLeave, true);
-        document.removeEventListener('mouseout', aTab.checkTabsIndentOverflowOnMouseLeave, true);
-        delete aTab.checkTabsIndentOverflowOnMouseLeave;
-        checkTabsIndentOverflow();
-      };
-      document.addEventListener('mouseover', aTab.checkTabsIndentOverflowOnMouseLeave, true);
-      document.addEventListener('mouseout', aTab.checkTabsIndentOverflowOnMouseLeave, true);
-    }
-  }
-*/
 }
 
 function collapseExpandTab(aTab, aParams = {}) {
@@ -562,6 +519,10 @@ async function updateTabCollapsed(aTab, aParams = {}) {
         if (aParams.collapsed)
           aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
         aTab.removeAttribute(kCOLLAPSING_PHASE);
+        aTab.dispatchEvent(new CustomEvent(kEVENT_TAB_COLLAPSED_STATE_CHANGING, {
+          bubbles: true,
+          cancelable: false
+        }));
         if (endOpacity > 0) {
           if (window.getComputedStyle(aTab).opacity > 0) {
             aTab.style.opacity = '';
@@ -580,8 +541,6 @@ async function updateTabCollapsed(aTab, aParams = {}) {
             }, 0);
           }
         }
-        if (!gIsBackground)
-          reserveToUpdateTabbarLayout();
         aResolve();
       });
       aTab.addEventListener('transitionend', aTab.onEndCollapseExpandAnimation, { once: true });

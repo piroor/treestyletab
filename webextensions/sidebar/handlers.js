@@ -250,6 +250,72 @@ function onTabMoved(aEvent) {
   reserveToUpdateTabbarLayout();
 }
 
+function onTabLevelChanged(aEvent) {
+  var baseIndent = gIndent;
+  if (gIndent < 0)
+    baseIndent = configs.baseIndent;
+  var tab = aEvent.target;
+  window.requestAnimationFrame(() => {
+    var level = parseInt(tab.getAttribute(kNEST) || 0);
+    var indent = level * baseIndent;
+    var expected = indent == 0 ? 0 : indent + 'px' ;
+    log('setting indent: ', { tab: dumpTab(tab), expected: expected, level: level });
+    if (tab.style[gIndentProp] != expected) {
+      window.requestAnimationFrame(() => tab.style[gIndentProp] = expected);
+    }
+  });
+}
+
+function onTabCollapsedStateChanging(aEvent) {
+  reserveToUpdateTabbarLayout();
+}
+
+/*
+function onTabSubtreeCollapsedStateChangedManually(aEvent) {
+  if (!configs.indentAutoShrink ||
+      !configs.indentAutoShrinkOnlyForVisible)
+    return;
+
+  cancelCheckTabsIndentOverflow();
+  if (!aTab.checkTabsIndentOverflowOnMouseLeave) {
+    let stillOver = false;
+    let id = aTab.id
+    aTab.checkTabsIndentOverflowOnMouseLeave = function checkTabsIndentOverflowOnMouseLeave(aEvent, aDelayed) {
+      if (aEvent.type == 'mouseover') {
+        if (evaluateXPath(
+              `ancestor-or-self::*[#${id}]`,
+              aEvent.originalTarget || aEvent.target,
+              XPathResult.BOOLEAN_TYPE
+            ).booleanValue)
+            stillOver = true;
+          return;
+        }
+        else if (!aDelayed) {
+          if (stillOver) {
+            stillOver = false;
+          }
+          setTimeout(() => aTab.checkTabsIndentOverflowOnMouseLeave(aEvent, true), 0);
+          return;
+        } else if (stillOver) {
+          return;
+        }
+        var x = aEvent.clientX;
+        var y = aEvent.clientY;
+        var rect = aTab.getBoundingClientRect();
+        if (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom)
+          return;
+        document.removeEventListener('mouseover', aTab.checkTabsIndentOverflowOnMouseLeave, true);
+        document.removeEventListener('mouseout', aTab.checkTabsIndentOverflowOnMouseLeave, true);
+        delete aTab.checkTabsIndentOverflowOnMouseLeave;
+        checkTabsIndentOverflow();
+      };
+      document.addEventListener('mouseover', aTab.checkTabsIndentOverflowOnMouseLeave, true);
+      document.addEventListener('mouseout', aTab.checkTabsIndentOverflowOnMouseLeave, true);
+    }
+  }
+}
+*/
+
 function onTabPinned(aEvent) {
   var tab = aEvent.target;
   collapseExpandSubtree(tab, { collapsed: false });
