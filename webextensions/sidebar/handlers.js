@@ -390,7 +390,6 @@ function onTabCollapsedStateChanging(aEvent) {
         }
       }
       reserveToUpdateTabbarLayout();
-      aResolve();
     });
     tab.addEventListener('transitionend', tab.onEndCollapseExpandAnimation, { once: true });
     var backupTimer = setTimeout(() => {
