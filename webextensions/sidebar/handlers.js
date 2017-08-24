@@ -232,6 +232,16 @@ function onDblClick(aEvent) {
 }
 
 
+function onConfigChange(aChangedKey) {
+  switch (aChangedKey) {
+    case 'debug':
+      if (configs.debug)
+        document.documentElement.classList.add('debug');
+      else
+        document.documentElement.classList.remove('debug');
+  }
+}
+
 // raw event handlers
 
 function onTabBuilt(aTab) {

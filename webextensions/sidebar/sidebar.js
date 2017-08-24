@@ -32,12 +32,15 @@ async function init() {
   updateTabbarLayout({ justNow: true });
   browser.runtime.onMessage.addListener(onMessage);
   document.documentElement.setAttribute(kTWISTY_STYLE, configs.twistyStyle);
-  if (configs.debug)
-    document.documentElement.classList.add('debug');
+
+  configs.$addObserver(onConfigChange);
+  onConfigChange('debug');
+
   await inheritTreeStructure();
 }
 
 function destroy() {
+  configs.$removeObserver(onConfigChange);
   browser.runtime.onMessage.removeListener(onMessage);
   endObserveApiTabs();
   window.removeEventListener('resize', onResize);
