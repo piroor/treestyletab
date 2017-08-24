@@ -68,6 +68,10 @@ async function attachTabTo(aChild, aParent, aInfo = {}) {
     log('=> already attached');
     return;
   }
+  if (isPinned(aParent) || isPinned(aChild)) {
+    log('=> pinned tabs cannot be attached');
+    return;
+  }
   var ancestors = [aParent].concat(getAncestorTabs(aChild));
   if (ancestors.indexOf(aChild) > -1) {
     log('=> canceled for recursive request');
