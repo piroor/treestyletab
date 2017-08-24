@@ -116,9 +116,9 @@ li.tab.animation-ready {
 }
 
 li.active {
-  font-weight: bold;
   background: Highlight;
   color: HighlightText;
+  font-weight: bold;
 }
 
 li.removing {
