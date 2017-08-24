@@ -38,7 +38,6 @@
  * ***** END LICENSE BLOCK ******/
 
 var gAllTabs;
-var gInternalMovingCount = 0;
 var gIsBackground;
 var gTargetWindow = null;
 var gRestoringTree = false;
@@ -171,9 +170,12 @@ function buildTabsContainerFor(aWindowId) {
   container.windowId = aWindowId;
   container.setAttribute('id', `window-${aWindowId}`);
   container.classList.add('tabs');
+
+  container.internalMovingCount = 0;
   container.doingCollapseExpandCount = 0;
   container.internalFocusCount = 0;
   container.openingCount = 0;
+
   return container;
 }
 

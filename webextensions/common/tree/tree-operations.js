@@ -134,12 +134,13 @@ async function attachTabTo(aChild, aParent, aInfo = {}) {
   //if (shouldInheritIndent && !aInfo.dontUpdateIndent)
     //this.inheritTabIndent(aChild, aParent);
 
-  gInternalMovingCount++;
+  var container = getTabsContainer(aChild);
+  container.internalMovingCount++;
   var nextTab = getTabs(aChild)[newIndex];
   if (nextTab != aChild) {
     log('put tab before ', dumpTab(nextTab));
     //moveTabSubtreeTo(aChild, newIndex);
-    getTabsContainer(nextTab || aChild).insertBefore(aChild, nextTab);
+    container.insertBefore(aChild, nextTab);
   }
 
   var [actualChildIndex, actualNewIndex] = await getApiTabIndex(aChild.apiTab.id, nextTab.apiTab.id);
@@ -160,7 +161,7 @@ async function attachTabTo(aChild, aParent, aInfo = {}) {
     index:    actualNewIndex
   });
   setTimeout(() => {
-    gInternalMovingCount--;
+    container.internalMovingCount--;
   });
 
   if (aInfo.forceExpand) {

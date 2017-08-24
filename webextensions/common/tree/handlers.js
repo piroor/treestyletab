@@ -290,7 +290,8 @@ function onMoved(aTabId, aMoveInfo) {
   else
     reserveToUpdateTabbarLayout();
 
-  if (gInternalMovingCount > 0) {
+  var container = getTabsContainer(movedTab);
+  if (container.internalMovingCount > 0) {
     log('internal move');
     return;
   }
@@ -298,7 +299,7 @@ function onMoved(aTabId, aMoveInfo) {
   if (aMoveInfo.fromIndex < newNextIndex)
     newNextIndex++;
   var nextTab = getTabs(movedTab)[newNextIndex];
-  getTabsContainer(nextTab || movedTab).insertBefore(movedTab, nextTab);
+  container.insertBefore(movedTab, nextTab);
 }
 
 function onAttached(aTabId, aAttachInfo) {
