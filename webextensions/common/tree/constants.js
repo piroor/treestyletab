@@ -26,6 +26,8 @@ var kCOLLAPSING_PHASE_TO_BE_COLLAPSED = 'collapse';
 var kCOLLAPSING_PHASE_TO_BE_EXPANDED  = 'expand';
 
 var kFAVICON  = 'favicon';
+var kFAVICON_IMAGE = 'favicon-image';
+var kFAVICON_DEFAULT = 'favicon-default';
 var kTHROBBER = 'throbber';
 var kSOUND_BUTTON = 'sound-button';
 var kTWISTY   = 'twisty';
@@ -56,4 +58,6 @@ var kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN = 4;
 var kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN         = 2; // onTabRemoved only
 var kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB     = 5;
 
-var kDEFAULT_FAVICON_URL = '';
+var kDEFAULT_FAVICON_EMOJI = '🌐';
+var kLOADING_FAVICON_EMOJI = '⏳';
+var kCLOSEBOX_EMOJI = '✖';

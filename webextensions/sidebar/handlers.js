@@ -242,14 +242,55 @@ function onTabBuilt(aTab) {
 
   var favicon = document.createElement('span');
   favicon.classList.add(kFAVICON);
-  favicon.appendChild(document.createElement('img'));
+  var faviconImage = favicon.appendChild(document.createElement('img'));
+  faviconImage.classList.add(kFAVICON_IMAGE);
+  var defaultIcon = favicon.appendChild(document.createElement('span'));
+  defaultIcon.classList.add(kFAVICON_DEFAULT);
+  var throbber = favicon.appendChild(document.createElement('span'));
+  throbber.classList.add(kTHROBBER);
   aTab.insertBefore(favicon, label);
-  loadImageTo(favicon.firstChild, aTab.apiTab.favIconUrl, kDEFAULT_FAVICON_URL);
+  loadImageTo(faviconImage, aTab.apiTab.favIconUrl);
 
   var closebox = document.createElement('button');
-  closebox.appendChild(document.createTextNode('✖'));
+  closebox.appendChild(document.createTextNode(kCLOSEBOX_EMOJI));
   closebox.classList.add(kCLOSEBOX);
   aTab.appendChild(closebox);
+}
+
+function onTabFaviconUpdated(aTab, aURL) {
+  let favicon = getTabFavicon(aTab);
+  loadImageTo(favicon.firstChild, aURL);
+}
+
+async function loadImageTo(aImageElement, aURL) {
+  aImageElement.src = '';
+  aImageElement.classList.remove('error');
+  aImageElement.classList.add('loading');
+  if (!aURL) {
+    aImageElement.classList.remove('loading');
+    aImageElement.classList.add('error');
+    return;
+  }
+    var onLoad = (() => {
+      aImageElement.src = aURL;
+      aImageElement.classList.remove('loading');
+      clear();
+    });
+    var onError = ((aError) => {
+      aImageElement.removeAttribute('src');
+      aImageElement.classList.remove('loading');
+      aImageElement.classList.add('error');
+      clear();
+    });
+    var clear = (() => {
+      loader.removeEventListener('load', onLoad, { once: true });
+      loader.removeEventListener('error', onError, { once: true });
+      loader = onLoad = onError = undefined;
+    });
+    var loader = new Image();
+    loader.addEventListener('load', onLoad, { once: true });
+    loader.addEventListener('error', onError, { once: true });
+    loader.src = aURL;
 }
 
 function onTabOpening(aTab) {

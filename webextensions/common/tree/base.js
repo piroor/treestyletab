@@ -67,6 +67,8 @@ function buildTab(aTab, aOptions = {}) {
   label.appendChild(document.createTextNode(aTab.title));
   item.appendChild(label);
 
+  item.classList.add(aTab.status);
+
   window.onTabBuilt && onTabBuilt(item);
 
   if (aOptions.existing) {
@@ -76,39 +78,17 @@ function buildTab(aTab, aOptions = {}) {
   return item;
 }
 
-async function loadImageTo(aImageElement, aURL, aFallbackURL) {
-  aURL = aURL || aFallbackURL;
-  return new Promise((aResolve, aReject) => {
-    var onLoad = (() => {
-      aImageElement.src = aURL;
-      aResolve();
-      clear();
-    });
-    var onError = ((aError) => {
-      aImageElement.src = aFallbackURL;
-      aReject(aError);
-      clear();
-    });
-    var clear = (() => {
-      loader.removeEventListener('load', onLoad, { once: true });
-      loader.removeEventListener('error', onError, { once: true });
-      loader = onLoad = onError = undefined;
-    });
-    var loader = new Image();
-    loader.addEventListener('load', onLoad, { once: true });
-    loader.addEventListener('error', onError, { once: true });
-    loader.src = aURL;
-  });
-}
-
 function updateTab(aTab, aParams = {}) {
   if ('label' in aParams)
     getTabLabel(aTab).textContent = aParams.label;
 
-  if ('favicon' in aParams) {
-    let favicon = getTabFavicon(aTab);
-    if (favicon)
-      loadImageTo(favicon.firstChild, aParams.favicon, kDEFAULT_FAVICON_URL);
+  if ('favicon' in aParams)
+    window.onTabFaviconUpdated &&
+      onTabFaviconUpdated(aTab, aParams.favicon);
+
+  if ('status' in aParams) {
+    aTab.classList.remove(aParams.status == 'loading' ? 'complete' : 'loading');
+    aTab.classList.add(aParams.status);
   }
 
   if ('pinned' in aParams) {
