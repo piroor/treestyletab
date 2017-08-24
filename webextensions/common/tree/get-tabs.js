@@ -148,6 +148,23 @@ function getTabIndex(aTab) {
 }
 
 
+function getNextNormalTab(aTab) {
+  if (!aTab)
+    return null;
+  return document.querySelector(`#${aTab.id} ~ ${kSELECTOR_NORMAL_TAB}`);
+}
+
+function getPreviousNormalTab(aTab) {
+  if (!aTab)
+    return null;
+  return evaluateXPath(
+    `preceding-sibling::${kXPATH_NORMAL_TAB}[1]`,
+    aTab,
+    XPathResult.FIRST_ORDERED_NODE_TYPE
+  ).singleNodeValue;
+}
+
+
 // tree basics
 
 function getParentTab(aChild) {

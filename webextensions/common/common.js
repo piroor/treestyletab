@@ -67,6 +67,8 @@ configs = new Configs({
   closeParentBehaviorPromoteAllChildrenWhenParentIsLastChild: true, // extensions.treestyletab.closeParentBehavior.promoteAllChildrenWhenParentIsLastChild
   closeRootBehavior: kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD, // extensions.treestyletab.closeRootBehavior
 
+  insertNewChildAt: kINSERT_LAST, // extensions.treestyletab.insertNewChildAt
+
   acceptableDelayForInternalFocusMoving: 150,
   maxFaviconizedSize: 32,
 

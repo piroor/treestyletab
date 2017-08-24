@@ -60,3 +60,7 @@ const kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN         = 2; // onTabRemoved onl
 const kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB     = 5;
 
 const kCLOSEBOX_EMOJI = '✖';
+
+const kINSERT_NO_CONTROL = -1;
+const kINSERT_FISRT = 0;
+const kINSERT_LAST = 1;
