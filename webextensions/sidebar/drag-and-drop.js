@@ -41,7 +41,6 @@ const kTREE_DROP_TYPE = 'application/x-treestyletab-tree';
 var gAutoExpandedTabs = [];
 var gAutoExpandWhileDNDTimer;
 var gAutoExpandWhileDNDTimerNext;
-var gShouldOtherDraggedTabsToBeExpanded;
 
 function startListenDragEvents(aTarget) {
   aTarget.addEventListener('dragstart', onDragStart);
@@ -517,17 +516,6 @@ function onDragStart(aEvent) {
   }
   aEvent.dataTransfer.setData(kTREE_DROP_TYPE, JSON.stringify(dragData.transferable));
   getTabsContainer(tab).classList.add(kTABBAR_STATE_TAB_DRAGGING);
-
-  if (!isSubtreeCollapsed(tab) &&
-      configs.shrinkOtherDraggedTabs) {
-    gShouldOtherDraggedTabsToBeExpanded = true;
-    browser.runtime.sendMessage({
-      type:      kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE,
-      windowId:  gTargetWindow,
-      tab:       tab.id,
-      collapsed: true
-    });
-  }
 }
 
 function onDragOver(aEvent) {
@@ -687,15 +675,6 @@ async function onTabDrop(aEvent) {
     return;
   }
 
-  if (gShouldOtherDraggedTabsToBeExpanded) {
-    browser.runtime.sendMessage({
-      type:      kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE,
-      windowId:  gTargetWindow,
-      tab:       dropActionInfo.dragged.id,
-      collapsed: false
-    });
-  }
-
   if (await performDrop(dropActionInfo)) {
     log('dropped tab is performed.');
     aEvent.stopPropagation();
@@ -725,7 +704,6 @@ function onDragEnd(aEvent) {
 
   clearDropPosition();
   getTabsContainer(aEvent.target).classList.remove(kTABBAR_STATE_TAB_DRAGGING);
-  gShouldOtherDraggedTabsToBeExpanded = false;
   collapseAutoExpandedTabsWhileDragging();
 
   if (aEvent.dataTransfer.dropEffect != 'none')

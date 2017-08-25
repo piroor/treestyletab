@@ -76,7 +76,6 @@ configs = new Configs({
   autoExpandEnabled: true, // extensions.treestyletab.autoExpand.enabled
   autoExpandDelay: 500, // extensions.treestyletab.autoExpand.delay
   autoExpandCollapseFinally: true, // extensions.treestyletab.autoExpand.collapseFinally
-  shrinkOtherDraggedTabs: true, // extensions.treestyletab.shrinkOtherDraggedTabs
 
   indentAutoShrink: true, // extensions.treestyletab.indent.autoShrink
   indentAutoShrinkOnlyForVisible: true, // extensions.treestyletab.indent.autoShrink.onlyForVisible
