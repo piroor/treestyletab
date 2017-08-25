@@ -121,7 +121,6 @@ async function attachTabTo(aChild, aParent, aInfo = {}) {
     //this.inheritTabIndent(aChild, aParent);
 
   var container = getTabsContainer(aChild);
-  container.internalMovingCount++;
   var nextTab = getTabs(aChild)[newIndex];
   if (nextTab != aChild) {
     log('put tab before ', dumpTab(nextTab));
@@ -139,14 +138,18 @@ async function attachTabTo(aChild, aParent, aInfo = {}) {
     return;
   }
 
-  log('actualNewIndex: ', actualNewIndex);
+  if (actualOldIndex == actualNewIndex) {
+    log('attaching child is already moved');
+  }
+  else {
+    log(`attaching child is not moved to ${actualNewIndex} yet`);
+  container.internalMovingCount++;
   browser.tabs.move(aChild.apiTab.id, {
     windowId: aChild.apiTab.windowId,
     index:    actualNewIndex
-  }).catch(handleMissingTabError);
-  setTimeout(() => {
-    container.internalMovingCount--;
-  });
+  }).catch(handleMissingTabError)
+    .then(() => container.internalMovingCount--);
+  }
 
   if (aInfo.forceExpand) {
     collapseExpandSubtree(aParent, { collapsed: false, justNow: aInfo.justNow });
@@ -587,6 +590,55 @@ function getCloseParentBehaviorForTab(aTab, aDefaultBehavior) {
   return behavior;
 }
 
+
+async function moveTabSubtreeTo(aTab, aIndex) {
+  if (!aTab)
+    return;
+
+  var container = aTab.parentNode;
+  container.subTreeMovingCount++;
+  container.internalMovingCount++;
+  //moveTabTo(aTab, aIndex);
+  container.internalMovingCount--;
+  await followDescendantsToMovedRoot(aTab)
+  setTimeout(() => container.subTreeMovingCount--, 0);
+}
+
+async function followDescendantsToMovedRoot(aTab) {
+  if (!hasChildTabs(aTab))
+    return;
+
+  log('followDescendantsToMovedRoot: ', dumpTab(aTab));
+  var container = aTab.parentNode;
+  container.subTreeChildrenMovingCount++;
+  container.internalMovingCount++;
+  container.subTreeMovingCount++;
+  try {
+    var descendants = getDescendantTabs(aTab);
+    var lastMoved = aTab;
+    var count = 0;
+    for (let descendant of descendants) {
+      let [toIndex, fromIndex] = await getApiTabIndex(lastMoved.apiTab.id, descendant.apiTab.id);
+      if (fromIndex > toIndex)
+        toIndex++;
+      log(`moving descendant tab ${dumpTab(descendant)} to ${toIndex}`);
+      await browser.tabs.move(descendant.apiTab.id, {
+        windowId: container.windowId,
+        index: toIndex
+      });
+      lastMoved = descendant;
+      // descendant node will be moved by handling of API event
+    }
+  }
+  catch(e) {
+    log('followDescendantsToMovedRoot failed: ', String(e));
+  }
+  setTimeout(() => {
+    container.internalMovingCount--;
+    container.subTreeChildrenMovingCount--;
+    container.subTreeMovingCount--;
+  }, 50);
+}
 
 // set/get tree structure
 

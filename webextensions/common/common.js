@@ -29,6 +29,20 @@ function dumpTab(aTab) {
   return `${getTabIndex(aTab)} #${aTab.id}.${aTab.className} ${JSON.stringify(aTab.apiTab.title)}`;
 }
 
+async function wait(aTask = 0, aTimeout = 0) {
+  if (typeof aTask != 'function') {
+    aTimeout = aTask;
+    aTask = null;
+  }
+  return new Promise((aResolve, aReject) => {
+    setTimeout(async () => {
+      if (aTask)
+        await aTask();
+      aResolve();
+    }, aTimeout);
+  });
+}
+
 configs = new Configs({
   treeStructure: [],
 

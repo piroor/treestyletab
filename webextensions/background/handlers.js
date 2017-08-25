@@ -22,7 +22,7 @@ function onTabMoving(aTab, aMoveInfo) {
       container.internalMovingCount == 0 &&
       positionControlled) {
     log('onTabMove for new child tab: move back '+aMoveInfo.toIndex+' => '+aMoveInfo.fromIndex);
-    onTabMoveBack(aTab, aMoveInfo);
+    moveBack(aTab, aMoveInfo);
     return true;
   }
 }
@@ -35,15 +35,11 @@ async function onTabMoved(aTab, aMoveInfo) {
   }
   log('process moved tab');
 
-  reserveToSaveTreeStructure(aTab);
-
-  if (hasChildTabs(aTab) &&
-      container.subTreeMovingCount == 0) {
-    log('=> move sub tree');
-    //moveTabSubtreeTo(aTab, newNextIndex);
-  }
   //updateTabAsParent(aTab);
 
+  reserveToSaveTreeStructure(aTab);
+
+/*
   var tabsToBeUpdated = [aTab];
 
   var allTabs = getAllTabs(container);
@@ -84,6 +80,7 @@ async function onTabMoved(aTab, aMoveInfo) {
     //updateInsertionPositionInfo(tab);
   }
   updatedTabs = undefined;
+*/
 
   log('status of move: ', {
     subTreeMovingCount: container.subTreeMovingCount,
@@ -93,20 +90,59 @@ async function onTabMoved(aTab, aMoveInfo) {
       container.internalMovingCount > 0 /*||
       // We don't have to fixup tree structure for a NEW TAB
       // which has already been structured.
-      (newlyOpened && getParentTab(aTab))*/)
+      (newlyOpened && getParentTab(aTab))*/) {
+    log('=> ignore internal move');
     return;
+  }
 
   //var positionControlled = configs.insertNewChildAt != kINSERT_NO_CONTROL;
   if (/* !restored && */
       //!positionControlled &&
       container.internalMovingCount == 0) {
-    let shouldMoveBack = await attachTabFromPosition(aTab, aMoveInfo);
-    if (shouldMoveBack)
-      onTabMoveBack(aTab, aMoveInfo);
+try{
+    let action = await detectTabActionFromNewPosition(aTab, aMoveInfo);
+    if (action) {
+      log('action: ', action);
+      switch (action.action) {
+        case 'moveBack':
+          moveBack(aTab, aMoveInfo);
+          return;
+
+        case 'attach':
+          attachTabTo(aTab, getTabById(action.parent), {
+            insertBefore: getTabById(action.insertBefore)
+          });
+          browser.runtime.sendMessage({
+            type:      kCOMMAND_ATTACH_TAB,
+            windowId:  container.windowId,
+            child:     aTab.id,
+            parent:    action.parent,
+            insertBefore: action.insertBefore,
+            alreadyMoved: true
+          });
+          followDescendantsToMovedRoot(aTab);
+          break;
+
+        case 'detach':
+          detachTab(aTab);
+          browser.runtime.sendMessage({
+            type:      kCOMMAND_DETACH_TAB,
+            windowId:  container.windowId,
+            tab:       aTab.id
+          });
+          followDescendantsToMovedRoot(aTab);
+          break;
+
+        default:
+          followDescendantsToMovedRoot(aTab);
+          break;
+      }
+    }
+}catch(e){log(String(e));}
   }
 }
 
-async function onTabMoveBack(aTab, aMoveInfo) {
+async function moveBack(aTab, aMoveInfo) {
   var container = aTab.parentNode;
   container.internalMovingCount++;
   await browser.tabs.move(aTab.apiTab.id, {
@@ -116,14 +152,14 @@ async function onTabMoveBack(aTab, aMoveInfo) {
   container.internalMovingCount--;
 }
 
-async function attachTabFromPosition(aTab, aMoveInfo) {
+async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
   log('attachTabFromPosition: ', dumpTab(aTab), aMoveInfo);
   var toIndex = aMoveInfo.toIndex;
   var fromIndex = aMoveInfo.fromIndex;
   var delta;
   if (toIndex == fromIndex) { // no move?
     log('=> no move');
-    return;
+    return { action: null };
   }
   else if (toIndex < 0 || fromIndex < 0) {
     delta = 2;
@@ -135,10 +171,6 @@ async function attachTabFromPosition(aTab, aMoveInfo) {
   var prevTab = getPreviousNormalTab(aTab);
   var nextTab = getNextNormalTab(aTab);
 
-  var tabs = getDescendantTabs(aTab);
-  if (tabs.length) {
-    nextTab = getNextTab(tabs[tabs.length-1]);
-  }
   log('prevTab: ', dumpTab(prevTab));
   log('nextTab: ', dumpTab(nextTab));
 
@@ -196,31 +228,24 @@ async function attachTabFromPosition(aTab, aMoveInfo) {
   if (newParent == aTab ||
       getAncestorTabs(newParent).indexOf(aTab) > -1) {
     log('=> invalid move: a parent is moved inside its own tree, thus move back!');
-    return true;
+    return { action: 'moveBack' };
   }
 
   if (newParent != oldParent) {
     if (newParent) {
       if (isHidden(newParent) == isHidden(aTab)) {
-        attachTabTo(aTab, newParent, { insertBefore : nextTab });
-        browser.runtime.sendMessage({
-          type:      kCOMMAND_ATTACH_TAB,
-          windowId:  aTab.parentNode.windowId,
-          child:     aTab.id,
-          parent:    newParent.id,
+        return {
+          action: 'attach',
+          parent: newParent.id,
           insertBefore: nextTab && nextTab.id
-        });
+        };
       }
     }
     else {
-      detachTab(aTab);
-      browser.runtime.sendMessage({
-        type:      kCOMMAND_DETACH_TAB,
-        windowId:  aTab.parentNode.windowId,
-        tab:       aTab.id
-      });
+      return { action: 'detach' };
     }
   }
+  return { action: 'move' };
 }
 
 function onTabFocusing(aTab) {

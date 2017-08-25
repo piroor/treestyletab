@@ -66,3 +66,4 @@ const kCLOSEBOX_EMOJI = '✖';
 const kINSERT_NO_CONTROL = -1;
 const kINSERT_FISRT = 0;
 const kINSERT_LAST = 1;
+
