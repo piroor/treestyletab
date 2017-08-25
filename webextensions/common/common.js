@@ -24,7 +24,7 @@ function log(aMessage, ...aArgs)
 function dumpTab(aTab) {
   if (!configs || !configs.debug)
     return '';
-  if (!aTab)
+  if (!aTab || !aTab.apiTab)
     return '<NULL>';
   return `${getTabIndex(aTab)} #${aTab.id}.${aTab.className} ${JSON.stringify(aTab.apiTab.title)}`;
 }

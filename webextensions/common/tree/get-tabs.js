@@ -106,13 +106,13 @@ function getTabClosebox(aTab) {
 }
 
 function getNextTab(aTab) {
-  if (!aTab)
+  if (!aTab || !aTab.id)
     return null;
   return document.querySelector(`#${aTab.id} ~ ${kSELECTOR_LIVE_TAB}`);
 }
 
 function getPreviousTab(aTab) {
-  if (!aTab)
+  if (!aTab || !aTab.id)
     return null;
   return evaluateXPath(
     `preceding-sibling::${kXPATH_LIVE_TAB}[1]`,
@@ -138,7 +138,7 @@ function getLastTab(aHint) {
 }
 
 function getTabIndex(aTab) {
-  if (!aTab)
+  if (!aTab || !aTab.id)
     return -1;
   return evaluateXPath(
     `count(preceding-sibling::${kXPATH_LIVE_TAB})`,
@@ -149,13 +149,13 @@ function getTabIndex(aTab) {
 
 
 function getNextNormalTab(aTab) {
-  if (!aTab)
+  if (!aTab || !aTab.id)
     return null;
   return document.querySelector(`#${aTab.id} ~ ${kSELECTOR_NORMAL_TAB}`);
 }
 
 function getPreviousNormalTab(aTab) {
-  if (!aTab)
+  if (!aTab || !aTab.id)
     return null;
   return evaluateXPath(
     `preceding-sibling::${kXPATH_NORMAL_TAB}[1]`,
@@ -194,7 +194,7 @@ function getRootTab(aDecendant) {
 }
 
 function getSiblingTabs(aTab) {
-  if (!aTab)
+  if (!aTab || !aTab.id)
     return [];
   var parentId = aTab.getAttribute(kPARENT);
   if (!parentId)
@@ -203,7 +203,7 @@ function getSiblingTabs(aTab) {
 }
 
 function getNextSiblingTab(aTab) {
-  if (!aTab)
+  if (!aTab || !aTab.id)
     return null;
   var parentId = aTab.getAttribute(kPARENT);
   var parentCondition = parentId ? `[${kPARENT}="${parentId}"]` : `:not([${kPARENT}])` ;
@@ -211,7 +211,7 @@ function getNextSiblingTab(aTab) {
 }
 
 function getPreviousSiblingTab(aTab) {
-  if (!aTab)
+  if (!aTab || !aTab.id)
     return null;
   var parentId = aTab.getAttribute(kPARENT);
   var parentCondition = parentId ? `[@${kPARENT}="${parentId}"]` : `[not(@${kPARENT})]` ;
@@ -356,13 +356,13 @@ function getLastVisibleTab(aHint) { // visible, not-collapsed, not-hidden
 }
 
 function getNextVisibleTab(aTab) { // visible, not-collapsed
-  if (!aTab)
+  if (!aTab || !aTab.id)
     return null;
   return document.querySelector(`#${aTab.id} ~ ${kSELECTOR_VISIBLE_TAB}`);
 }
 
 function getPreviousVisibleTab(aTab) { // visible, not-collapsed
-  if (!aTab)
+  if (!aTab || !aTab.id)
     return null;
   return evaluateXPath(
     `preceding-sibling::${kXPATH_VISIBLE_TAB}[1]`,
@@ -372,7 +372,7 @@ function getPreviousVisibleTab(aTab) { // visible, not-collapsed
 }
 
 function getVisibleIndex(aTab) {
-  if (!aTab)
+  if (!aTab || !aTab.id)
     return -1;
   return evaluateXPath(
     `count(preceding-sibling::${kXPATH_VISIBLE_TAB})`,
