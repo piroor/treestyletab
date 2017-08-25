@@ -104,6 +104,7 @@ li.tab {
   overflow: hidden;
   opacity: 1;
   padding: 0.25em;
+  position: relative;
 }
 
 li.tab,
@@ -249,22 +250,41 @@ li.tab.dragging {
 }
 
 li.tab[data-drop-position="self"] {
-  border: 4px solid black !important;
+  outline: 3px solid black !important;
+  outline-offset: -3px;
 }
 
-li.tab:not(.pinned)[data-drop-position="before"] {
-  border-top: 4px solid black !important;
+li.tab[data-drop-position]:not([data-drop-position="self"])::before {
+  content: "";
+  display: box;
+  max-height: 4px;
+  min-height: 4px;
+  background: black !important;
+  overflow: hidden;
+  position: absolute;
 }
 
-li.tab:not(.pinned)[data-drop-position="after"] {
-  border-bottom: 4px solid black !important;
+li.tab:not(.pinned)[data-drop-position="before"]::before {
+  left: 0;
+  right: 0;
+  top: 0;
 }
 
-li.tab.pinned[data-drop-position="before"] {
-  border-left: 4px solid black !important;
+li.tab:not(.pinned)[data-drop-position="after"]::before {
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
-li.tab.pinned[data-drop-position="after"] {
-  border-right: 4px solid black !important;
+li.tab.pinned[data-drop-position="before"]::before {
+  bottom: 0;
+  left: 0;
+  top: 0;
+}
+
+li.tab.pinned[data-drop-position="after"]::before {
+  bottom: 0;
+  right: 0;
+  top: 0;
 }
 
