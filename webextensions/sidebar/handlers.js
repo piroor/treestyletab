@@ -265,6 +265,8 @@ function onTabBuilt(aTab) {
   var closebox = document.createElement('button');
   closebox.classList.add(kCLOSEBOX);
   aTab.appendChild(closebox);
+
+  aTab.setAttribute('draggable', true);
 }
 
 function onTabFaviconUpdated(aTab, aURL) {

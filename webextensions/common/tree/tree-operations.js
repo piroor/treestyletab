@@ -598,7 +598,14 @@ async function moveTabSubtreeTo(aTab, aIndex) {
   var container = aTab.parentNode;
   container.subTreeMovingCount++;
   container.internalMovingCount++;
-  //moveTabTo(aTab, aIndex);
+  try {
+    await browser.tabs.move(aTab.apiTab.id, {
+      windowId: container.windowId,
+      index: aIndex
+    });
+  }
+  catch(e) {
+  }
   container.internalMovingCount--;
   await followDescendantsToMovedRoot(aTab)
   setTimeout(() => container.subTreeMovingCount--, 0);

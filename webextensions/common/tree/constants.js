@@ -23,6 +23,7 @@ const kINSERT_BEFORE = 'data-insert-before-id';
 const kINSERT_AFTER  = 'data-insert-after-id';
 const kCLOSED_SET_ID = 'data-closed-set-id';
 const kTWISTY_STYLE = 'data-twisty-style';
+const kDROP_POSITION = 'data-drop-position';
 
 const kCOLLAPSING_PHASE = 'data-collapsing-phase';
 const kCOLLAPSING_PHASE_TO_BE_COLLAPSED = 'collapse';
@@ -51,8 +52,24 @@ const kTAB_STATE_SUBTREE_EXPANDED_MANUALLY = 'subtree-expanded-manually';
 const kTAB_STATE_FAVICONIZED = 'faviconized';
 const kTAB_STATE_HIGHLIGHTED = 'highlighted';
 const kTAB_STATE_POSSIBLE_CLOSING_CURRENT = 'possible-closing-current';
+const kTAB_STATE_DRAGGING = 'dragging';
 
 const kTABBAR_STATE_OVERFLOW = 'overflow';
+const kTABBAR_STATE_TAB_DRAGGING = 'tab-dragging';
+
+const kDROP_BEFORE = -1;
+const kDROP_ON = 0;
+const kDROP_AFTER = 1;
+
+const kACTION_MOVE = 1 << 0;
+const kACTION_STAY = 1 << 1;
+const kACTION_DUPLICATE = 1 << 2;
+const kACTION_IMPORT = 1 << 3;
+const kACTION_NEWTAB = 1 << 4;
+const kACTION_ATTACH = 1 << 10;
+const kACTION_DETACH = 1 << 11;
+const kACTIONS_FOR_SOURCE = (1 << 0) | (1 << 1);
+const kACTIONS_FOR_DESTINATION = (1 << 2) | (1 << 3);
 
 const kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD        = 3;
 const kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN       = 0;

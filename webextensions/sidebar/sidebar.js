@@ -35,12 +35,15 @@ async function init() {
   configs.$addObserver(onConfigChange);
   onConfigChange('debug');
 
+  startListenDragEvents(gTabBar);
+
   await inheritTreeStructure();
 }
 
 function destroy() {
   configs.$removeObserver(onConfigChange);
   browser.runtime.onMessage.removeListener(onMessage);
+  endListenDragEvents(gTabBar);
   endObserveApiTabs();
   window.removeEventListener('resize', onResize);
 

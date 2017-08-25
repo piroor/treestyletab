@@ -240,3 +240,31 @@ li.tab.loading .throbber {
   margin: 0;
   text-align: center;
 }
+
+
+/* drag and drop */
+
+li.tab.dragging {
+  opacity: 0.65 !important;
+}
+
+li.tab[data-drop-position="self"] {
+  border: 4px solid black !important;
+}
+
+li.tab:not(.pinned)[data-drop-position="before"] {
+  border-top: 4px solid black !important;
+}
+
+li.tab:not(.pinned)[data-drop-position="after"] {
+  border-bottom: 4px solid black !important;
+}
+
+li.tab.pinned[data-drop-position="before"] {
+  border-left: 4px solid black !important;
+}
+
+li.tab.pinned[data-drop-position="after"] {
+  border-right: 4px solid black !important;
+}
+
