@@ -68,8 +68,8 @@ const kACTION_IMPORT = 1 << 3;
 const kACTION_NEWTAB = 1 << 4;
 const kACTION_ATTACH = 1 << 10;
 const kACTION_DETACH = 1 << 11;
-const kACTIONS_FOR_SOURCE = (1 << 0) | (1 << 1);
-const kACTIONS_FOR_DESTINATION = (1 << 2) | (1 << 3);
+const kACTION_AFFECTS_TO_SOURCE = (1 << 0) | (1 << 1);
+const kACTION_AFFECTS_TO_DESTINATION = (1 << 2) | (1 << 3);
 
 const kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD        = 3;
 const kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN       = 0;

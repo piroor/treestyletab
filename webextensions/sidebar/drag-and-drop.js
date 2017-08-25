@@ -105,7 +105,7 @@ function getDropAction(aEvent) {
     if (!isCopy && info.dragged.ownerDocument != document)
       info.action |= kACTION_IMPORT;
 
-    if (info.action & kACTIONS_FOR_DESTINATION) {
+    if (info.action & kACTION_AFFECTS_TO_DESTINATION) {
       if (info.action & kACTION_MOVE)
         info.action ^= kACTION_MOVE;
       if (info.action & kACTION_STAY)
@@ -382,7 +382,7 @@ function collapseAutoExpandedTabsWhileDragging() {
   gAutoExpandedTabs = [];
 }
 
-function performDrop(aInfo) {
+async function performDrop(aInfo) {
   log('performDrop: start');
   if (!aInfo.dragged) {
     log('=> no dragged tab');
@@ -402,14 +402,14 @@ function performDrop(aInfo) {
         draggedWholeTree.push(descendant);
     }
   }
-  log('=> draggedTabs: ', draggedTabs);
+  log('=> draggedTabs: ', draggedTabs.map(dumpTab).join(' / '));
 
   var selectedTabs = draggedTabs.filter(isSelected);
   if (draggedWholeTree.length != selectedTabs.length &&
       selectedTabs.length > 0) {
     log('=> partially dragged');
     draggedTabs = draggedRoots = selectedTabs;
-    if (aInfo.action & kACTIONS_FOR_SOURCE)
+    if (aInfo.action & kACTION_AFFECTS_TO_SOURCE)
       detachTabs(selectedTabs);
   }
 
@@ -417,7 +417,14 @@ function performDrop(aInfo) {
     aInfo.insertBefore = getNextTab(aInfo.insertBefore);
   }
 
-  if (aInfo.action & kACTIONS_FOR_SOURCE) {
+  if (aInfo.action & kACTION_AFFECTS_TO_SOURCE) {
+    log('=> moving dragged tabs');
+    await moveTabInternallyBefore(aInfo.dragged, aInfo.insertBefore);
+    await moveTabsInternallyAfter(
+      draggedTabs.filter(aTab => aTab != aInfo.dragged),
+      aInfo.dragged
+    );
+
     log('=> action for source tabs');
     if (aInfo.action & kACTION_DETACH) {
       log('=> detach');
@@ -440,7 +447,6 @@ function performDrop(aInfo) {
 
   var treeStructure = getTreeStructureFromTabs(draggedTabs);
 
-  log('=> moving dragged tabs');
   var newTabs;
 /*
   var replacedGroupTabs = doAndGetNewTabs(() => {
@@ -479,6 +485,27 @@ function performDrop(aInfo) {
 
   log('=> finished');
   return true;
+}
+
+function attachTabsOnDrop(aTabs, aParent, aInsertBefore) {
+  log('attachTabsOnDrop: start');
+  for (let tab of aTabs) {
+    if (aParent)
+      attachTabTo(tab, aParent, {
+        insertBefore: aInsertBefore
+      });
+    else
+      detachTab(tab);
+    collapseExpandTab(tab, { collapsed: false });
+  }
+}
+
+function detachTabsOnDrop(aTabs) {
+  log('detachTabsOnDrop: start');
+  for (let tab of aTabs) {
+    detachTab(tab);
+    collapseExpandTab(tab, { collapsed: false });
+  }
 }
 
 
@@ -626,11 +653,11 @@ function onDragLeave(aEvent) {
   gAutoExpandWhileDNDTimer = null;
 }
 
-function onDrop(aEvent) {
-  onTabDrop(aEvent);
+async function onDrop(aEvent) {
+  await onTabDrop(aEvent);
   collapseAutoExpandedTabsWhileDragging();
 }
-function onTabDrop(aEvent) {
+async function onTabDrop(aEvent) {
   /**
    * We must calculate drop action before clearing "dragging"
    * state, because the drop position depends on tabs' actual
@@ -669,7 +696,7 @@ function onTabDrop(aEvent) {
     });
   }
 
-  if (performDrop(dropActionInfo)) {
+  if (await performDrop(dropActionInfo)) {
     log('dropped tab is performed.');
     aEvent.stopPropagation();
     return;

@@ -124,32 +124,10 @@ async function attachTabTo(aChild, aParent, aInfo = {}) {
   var nextTab = getTabs(aChild)[newIndex];
   if (nextTab != aChild) {
     log('put tab before ', dumpTab(nextTab));
-    //moveTabSubtreeTo(aChild, newIndex);
     container.insertBefore(aChild, nextTab);
   }
 
-  var [actualOldIndex, actualNewIndex] = await getApiTabIndex(aChild.apiTab.id, nextTab.apiTab.id);
-  if (actualOldIndex < actualNewIndex)
-    actualNewIndex--;
-
-  log('index of API tabs: ', { actualOldIndex, actualNewIndex });
-  if (actualOldIndex < 0 || actualNewIndex < 0) {
-    log('alrady closed tab cannot be moved!');
-    return;
-  }
-
-  if (actualOldIndex == actualNewIndex) {
-    log('attaching child is already moved');
-  }
-  else {
-    log(`attaching child is not moved to ${actualNewIndex} yet`);
-    container.internalMovingCount++;
-    browser.tabs.move(aChild.apiTab.id, {
-      windowId: aChild.apiTab.windowId,
-      index:    actualNewIndex
-    }).catch(handleMissingTabError)
-      .then(() => container.internalMovingCount--);
-  }
+  await moveTabSubtreeBefore(aChild, nextTab);
 
   if (aInfo.forceExpand) {
     collapseExpandSubtree(aParent, { collapsed: false, justNow: aInfo.justNow });
@@ -248,7 +226,7 @@ function detachAllChildren(aTab, aInfo = {}) {
 
   var nextTab = null;
   if (aInfo.behavior == kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN/* &&
-    !utils.getTreePref('closeParentBehavior.moveDetachedTabsToBottom')*/) {
+      !utils.getTreePref('closeParentBehavior.moveDetachedTabsToBottom')*/) {
     nextTab = getNextSiblingTab(getRootTab(aTab));
   }
 
@@ -261,7 +239,7 @@ function detachAllChildren(aTab, aInfo = {}) {
     let child = children[i];
     if (aInfo.behavior == kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN) {
       detachTab(child, aInfo);
-      //moveTabSubtreeTo(tab, nextTab ? nextTab._tPos - 1 : this.getLastTab(b)._tPos );
+      moveTabSubtreeBefore(child, nextTab);
     }
     else if (aInfo.behavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD) {
       detachTab(child, aInfo);
@@ -604,7 +582,7 @@ function getCloseParentBehaviorForTab(aTab, aDefaultBehavior) {
 }
 
 
-async function moveTabSubtreeTo(aTab, aIndex) {
+async function moveTabSubtreeBefore(aTab, aNextTab) {
   if (!aTab)
     return;
 
@@ -612,10 +590,7 @@ async function moveTabSubtreeTo(aTab, aIndex) {
   container.subTreeMovingCount++;
   container.internalMovingCount++;
   try {
-    await browser.tabs.move(aTab.apiTab.id, {
-      windowId: container.windowId,
-      index: aIndex
-    });
+    await moveTabInternallyBefore(aTab, aNextTab);
   }
   catch(e) {
   }
@@ -631,33 +606,10 @@ async function followDescendantsToMovedRoot(aTab) {
   log('followDescendantsToMovedRoot: ', dumpTab(aTab));
   var container = aTab.parentNode;
   container.subTreeChildrenMovingCount++;
-  container.internalMovingCount++;
   container.subTreeMovingCount++;
-  try {
-    var descendants = getDescendantTabs(aTab);
-    var lastMoved = aTab;
-    var count = 0;
-    for (let descendant of descendants) {
-      let [toIndex, fromIndex] = await getApiTabIndex(lastMoved.apiTab.id, descendant.apiTab.id);
-      if (fromIndex > toIndex)
-        toIndex++;
-      log(`moving descendant tab ${dumpTab(descendant)} to ${toIndex}`);
-      await browser.tabs.move(descendant.apiTab.id, {
-        windowId: container.windowId,
-        index: toIndex
-      });
-      lastMoved = descendant;
-      // descendant node will be moved by handling of API event
-    }
-  }
-  catch(e) {
-    log('followDescendantsToMovedRoot failed: ', String(e));
-  }
-  setTimeout(() => {
-    container.internalMovingCount--;
-    container.subTreeChildrenMovingCount--;
-    container.subTreeMovingCount--;
-  }, 50);
+  await moveTabsInternallyAfter(getDescendantTabs(aTab), aTab);
+  container.subTreeChildrenMovingCount--;
+  container.subTreeMovingCount--;
 }
 
 // set/get tree structure

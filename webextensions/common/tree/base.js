@@ -128,3 +128,64 @@ function clearAllTabsContainers() {
   range.deleteContents();
   range.detach();
 }
+
+async function moveTabInternallyBefore(aTab, aNextTab) {
+  var fromIndex, toIndex;
+  if (!aNextTab) {
+    [fromIndex, toIndex] = await getApiTabIndex(aTab.apiTab.id, getLastTab(aTab).apiTab.id);
+  }
+  else {
+    [fromIndex, toIndex] = await getApiTabIndex(aTab.apiTab.id, aNextTab.apiTab.id);
+    if (fromIndex < toIndex)
+      toIndex--;
+  }
+  log('index of API tabs: ', { fromIndex, toIndex });
+
+  if (fromIndex < 0 || toIndex < 0) {
+    log('alrady closed tab cannot be moved!');
+    return;
+  }
+
+  if (fromIndex == toIndex) {
+    log('tab is already placed expelcted place');
+  }
+  else {
+    log(`attaching child is not moved to ${toIndex} yet`);
+    let container = aTab.parentNode;
+    container.internalMovingCount++;
+    browser.tabs.move(aTab.apiTab.id, {
+      windowId: container.windowId,
+      index:    toIndex
+    }).catch(handleMissingTabError)
+      .then(() => container.internalMovingCount--);
+  }
+}
+
+async function moveTabsInternallyAfter(aTabs, aReferenceTab) {
+  if (!aTabs.length || !aReferenceTab)
+    return;
+
+  var container = aTabs[0].parentNode;
+  container.internalMovingCount++;
+  try {
+    var lastMoved = aReferenceTab;
+    var count = 0;
+    for (let tab of aTabs) {
+      let [toIndex, fromIndex] = await getApiTabIndex(lastMoved.apiTab.id, tab.apiTab.id);
+      if (fromIndex > toIndex)
+        toIndex++;
+      log(`moving tab ${dumpTab(tab)} to ${toIndex}`);
+      await browser.tabs.move(tab.apiTab.id, {
+        windowId: container.windowId,
+        index: toIndex
+      });
+      lastMoved = tab;
+      // tab will be moved by handling of API event
+    }
+  }
+  catch(e) {
+    log('moveTabsNextTo failed: ', String(e));
+  }
+  await wait(50);
+  container.internalMovingCount--;
+}
