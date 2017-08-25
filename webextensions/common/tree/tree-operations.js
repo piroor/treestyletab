@@ -143,12 +143,12 @@ async function attachTabTo(aChild, aParent, aInfo = {}) {
   }
   else {
     log(`attaching child is not moved to ${actualNewIndex} yet`);
-  container.internalMovingCount++;
-  browser.tabs.move(aChild.apiTab.id, {
-    windowId: aChild.apiTab.windowId,
-    index:    actualNewIndex
-  }).catch(handleMissingTabError)
-    .then(() => container.internalMovingCount--);
+    container.internalMovingCount++;
+    browser.tabs.move(aChild.apiTab.id, {
+      windowId: aChild.apiTab.windowId,
+      index:    actualNewIndex
+    }).catch(handleMissingTabError)
+      .then(() => container.internalMovingCount--);
   }
 
   if (aInfo.forceExpand) {
