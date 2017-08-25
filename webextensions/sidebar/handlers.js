@@ -263,7 +263,6 @@ function onTabBuilt(aTab) {
   loadImageTo(faviconImage, aTab.apiTab.favIconUrl);
 
   var closebox = document.createElement('button');
-  closebox.appendChild(document.createTextNode(kCLOSEBOX_EMOJI));
   closebox.classList.add(kCLOSEBOX);
   aTab.appendChild(closebox);
 }

@@ -206,6 +206,9 @@ li.tab.loading .throbber {
   opacity: 0.75;
   padding: 0.1em;
 }
+.closebox::before {
+  content: "✖";
+}
 
 .closebox:hover {
   opacity: 1;
