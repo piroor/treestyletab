@@ -99,7 +99,6 @@ async function onTabMoved(aTab, aMoveInfo) {
   if (/* !restored && */
       //!positionControlled &&
       container.internalMovingCount == 0) {
-try{
     let action = await detectTabActionFromNewPosition(aTab, aMoveInfo);
     if (action) {
       log('action: ', action);
@@ -138,7 +137,6 @@ try{
           break;
       }
     }
-}catch(e){log(String(e));}
   }
 }
 
