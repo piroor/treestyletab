@@ -640,6 +640,7 @@ function onTabDrop(aEvent) {
   var dt = aEvent.dataTransfer;
 
   clearDropPosition();
+  var container = dropActionInfo.target.parentNode;
   container.classList.remove(kTABBAR_STATE_TAB_DRAGGING);
   log('TabbarDND::onDrop',
     '  dt.dropEffect: ' + dt.dropEffect,
