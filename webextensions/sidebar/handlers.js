@@ -528,6 +528,16 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
 }
 */
 
+function onTabSubtreeCollapseExpandIntelligently(aTab, aParams = {}) {
+  browser.runtime.sendMessage({
+    type:      kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE,
+    windowId:  gTargetWindow,
+    tab:       aTab.id,
+    collapsed: !false,
+    justNow:   aParams.justNow
+  });
+}
+
 function onTabPinned(aTab) {
   collapseExpandSubtree(aTab, { collapsed: false });
   detachAllChildren(aTab, {

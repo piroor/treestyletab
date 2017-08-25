@@ -327,6 +327,13 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
     aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
 }
 
+function onTabSubtreeCollapseExpandIntelligently(aTab, aParams = {}) {
+  collapseExpandSubtree(aTab, {
+    collapsed: aParams.collapsed,
+    justNow:   aParams.justNow
+  });
+}
+
 function onTabAttached(aTab) {
   reserveToSaveTreeStructure(aTab);
 }
