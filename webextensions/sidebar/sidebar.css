@@ -250,15 +250,15 @@ li.tab.dragging {
 }
 
 li.tab[data-drop-position="self"] {
-  outline: 3px solid black !important;
-  outline-offset: -3px;
+  outline: 0.15em solid black !important;
+  outline-offset: -0.15em;
 }
 
 li.tab[data-drop-position]:not([data-drop-position="self"])::before {
   content: "";
   display: box;
-  max-height: 4px;
-  min-height: 4px;
+  max-height: 0.15em;
+  min-height: 0.15em;
   background: black !important;
   overflow: hidden;
   position: absolute;
