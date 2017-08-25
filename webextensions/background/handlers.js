@@ -99,6 +99,7 @@ async function onTabMoved(aTab, aMoveInfo) {
   if (/* !restored && */
       //!positionControlled &&
       container.internalMovingCount == 0) {
+    log('the tab is moved unexpectedly, so now we are trying to fixup tree.');
     let action = await detectTabActionFromNewPosition(aTab, aMoveInfo);
     if (action) {
       log('action: ', action);
