@@ -214,6 +214,19 @@ function detachTab(aChild, aInfo = {}) {
   });
 }
 
+function detachTabs(aTabs) {
+  for (let tab of aTabs) {
+    if (aTabs.indexOf(getParentTab(tab)) > -1)
+      continue;
+    detachAllChildren(tab, {
+      behavior : getCloseParentBehaviorForTab(
+        tab,
+        kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+      )
+    });
+  }
+}
+
 function detachAllChildren(aTab, aInfo = {}) {
   var children = getChildTabs(aTab);
   if (!children.length)

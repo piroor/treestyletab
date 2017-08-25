@@ -41,12 +41,14 @@ const kTREE_DROP_TYPE = 'application/x-treestyletab-tree';
 var gAutoExpandedTabs = [];
 var gAutoExpandWhileDNDTimer;
 var gAutoExpandWhileDNDTimerNext;
+var gShouldOtherDraggedTabsToBeExpanded;
 
 function startListenDragEvents(aTarget) {
   aTarget.addEventListener('dragstart', onDragStart);
   aTarget.addEventListener('dragover', onDragOver);
   aTarget.addEventListener('dragenter', onDragEnter);
   aTarget.addEventListener('dragleave', onDragLeave);
+  aTarget.addEventListener('drop', onDrop);
   aTarget.addEventListener('dragend', onDragEnd);
 }
 
@@ -55,6 +57,7 @@ function endListenDragEvents(aTarget) {
   aTarget.removeEventListener('dragover', onDragOver);
   aTarget.removeEventListener('dragenter', onDragEnter);
   aTarget.removeEventListener('dragleave', onDragLeave);
+  aTarget.removeEventListener('drop', onDrop);
   aTarget.removeEventListener('dragend', onDragEnd);
 }
 
@@ -379,6 +382,105 @@ function collapseAutoExpandedTabsWhileDragging() {
   gAutoExpandedTabs = [];
 }
 
+function performDrop(aInfo) {
+  log('performDrop: start');
+  if (!aInfo.dragged) {
+    log('=> no dragged tab');
+    return false;
+  }
+
+  var draggedTabs = getDragDataFromOneTab(aInfo.dragged).draggedTabs;
+  var draggedRoots = collectRootTabs(draggedTabs);
+
+  var targetTabs = getTabs(gTargetWindow);
+
+  var draggedWholeTree = [].concat(draggedRoots);
+  for (let draggedRoot of draggedRoots) {
+    let descendants = getDescendantTabs(draggedRoot);
+    for (let descendant of descendants) {
+      if (draggedWholeTree.indexOf(descendant) < 0)
+        draggedWholeTree.push(descendant);
+    }
+  }
+  log('=> draggedTabs: ', draggedTabs);
+
+  var selectedTabs = draggedTabs.filter(isSelected);
+  if (draggedWholeTree.length != selectedTabs.length &&
+      selectedTabs.length > 0) {
+    log('=> partially dragged');
+    draggedTabs = draggedRoots = selectedTabs;
+    if (aInfo.action & kACTIONS_FOR_SOURCE)
+      detachTabs(selectedTabs);
+  }
+
+  while (aInfo.insertBefore && draggedWholeTree.indexOf(aInfo.insertBefore) > -1) {
+    aInfo.insertBefore = getNextTab(aInfo.insertBefore);
+  }
+
+  if (aInfo.action & kACTIONS_FOR_SOURCE) {
+    log('=> action for source tabs');
+    if (aInfo.action & kACTION_DETACH) {
+      log('=> detach');
+      detachTabsOnDrop(draggedRoots);
+    }
+    else if (aInfo.action & kACTION_ATTACH) {
+      log('=> attach');
+      attachTabsOnDrop(draggedRoots, aInfo.parent);
+    }
+    else {
+      log('=> just moved');
+    }
+
+    // if this move will cause no change...
+    if (getNextVisibleTab(draggedTabs[draggedTabs.length-1]) == aInfo.insertBefore) {
+      log('=> no change: do nothing');
+      return true;
+    }
+  }
+
+  var treeStructure = getTreeStructureFromTabs(draggedTabs);
+
+  log('=> moving dragged tabs');
+  var newTabs;
+/*
+  var replacedGroupTabs = doAndGetNewTabs(() => {
+    newTabs = moveTabsInternal(draggedTabs, {
+      duplicate    : aInfo.action & kACTION_DUPLICATE,
+      insertBefore : aInfo.insertBefore
+    });
+  });
+  log('=> opened group tabs: ', replacedGroupTabs);
+  aInfo.dragged.ownerDocument.defaultView.setTimeout(() => {
+    log('closing needless group tabs');
+    replacedGroupTabs.reverse().forEach(function(aTab) {
+      log(' check: ', aTab.label+'('+aTab._tPos+') '+getLoadingURI(aTab));
+      if (isGroupTab(aTab) &&
+        !hasChildTabs(aTab))
+        removeTab(aTab);
+    }, this);
+  }, 0);
+*/
+
+/*
+  if (newTabs.length && aInfo.action & kACTION_ATTACH) {
+    Promise.all(newTabs.map((aTab) => aTab.__treestyletab__promisedDuplicatedTab))
+      .then((function() {
+        log('   => attach (last)');
+        this.attachTabsOnDrop(
+          newTabs.filter(function(aTab, aIndex) {
+            return treeStructure[aIndex] == -1;
+          }),
+          aInfo.parent,
+          aInfo.insertBefore
+        );
+      }).bind(this));
+  }
+*/
+
+  log('=> finished');
+  return true;
+}
+
 
 function onDragStart(aEvent) {
   var tab = aEvent.target;
@@ -387,6 +489,18 @@ function onDragStart(aEvent) {
     draggedTab.classList.add(kTAB_STATE_DRAGGING);
   }
   aEvent.dataTransfer.setData(kTREE_DROP_TYPE, JSON.stringify(dragData.transferable));
+  getTabsContainer(tab).classList.add(kTABBAR_STATE_TAB_DRAGGING);
+
+  if (!isSubtreeCollapsed(tab) &&
+      configs.shrinkOtherDraggedTabs) {
+    gShouldOtherDraggedTabsToBeExpanded = true;
+    browser.runtime.sendMessage({
+      type:      kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE,
+      windowId:  gTargetWindow,
+      tab:       tab.id,
+      collapsed: true
+    });
+  }
 }
 
 function onDragOver(aEvent) {
@@ -523,58 +637,50 @@ function onTabDrop(aEvent) {
    * positions (they are applied only while tab dragging.)
    */
   var dropActionInfo = getDropAction(aEvent);
-/*
+  var dt = aEvent.dataTransfer;
+
   clearDropPosition();
-  gTabsContainer(gTargetWindow).removeAttribute(kTABBAR_STATE_TAB_DRAGGING)
+  container.classList.remove(kTABBAR_STATE_TAB_DRAGGING);
   log('TabbarDND::onDrop',
     '  dt.dropEffect: ' + dt.dropEffect,
-    '  draggedTab:    ' + draggedTab);
+    '  draggedTab:    ' + dropActionInfo.dragged);
 
   if (dt.dropEffect != 'link' &&
-    dt.dropEffect != 'move' &&
-    !draggedTab) {
+      dt.dropEffect != 'move' &&
+      !dropActionInfo.dragged) {
+    log('invalid drop');
     aEvent.stopPropagation();
     return;
   }
 
-  if (!draggedTab) {
-    this.handleLinksOrBookmarks(aEvent, dropActionInfo);
+  if (!dropActionInfo.dragged) {
+    log('link or bookmark item is dropped');
+    //handleLinksOrBookmarks(aEvent, dropActionInfo);
     return;
   }
 
-  var sourceBrowser = sv.getTabBrowserFromChild(draggedTab);
-  if (sourceBrowser != b)
-    sourceBrowser.treeStyleTab.tabbarDNDObserver.clearDropPosition(true);
-    this.browser.tabContainer.removeAttribute(kTABBAR_STATE_TAB_DRAGGING)
-
-  if (draggedTab.__treestyletab__toBeEpandedAfterDrop) {
-    delete draggedTab.__treestyletab__toBeEpandedAfterDrop;
-    sourceBrowser.treeStyleTab.collapseExpandSubtree(draggedTab, false);
+  if (gShouldOtherDraggedTabsToBeExpanded) {
+    browser.runtime.sendMessage({
+      type:      kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE,
+      windowId:  gTargetWindow,
+      tab:       dropActionInfo.dragged.id,
+      collapsed: false
+    });
   }
 
-  if (this.performDrop(dropActionInfo, draggedTab)) {
+  if (performDrop(dropActionInfo)) {
+    log('dropped tab is performed.');
     aEvent.stopPropagation();
     return;
   }
 
   // duplicating of tabs
-  if (
-    (
-      dt.dropEffect == 'copy' ||
-      sourceBrowser != b
-    ) &&
-    dropActionInfo.position == sv.kDROP_ON
-    ) {
-    let beforeTabs = [...b.tabContainer.childNodes];
-    w.setTimeout(function() {
-      var newTabs = [...b.tabContainer.childNodes].filter(function(aTab) {
-          return beforeTabs.indexOf(aTab) < 0;
-        });
-      if (newTabs.length)
-        sv.attachTabTo(newTabs[0], dropActionInfo.target);
-    }, 0);
+  if ((dt.dropEffect == 'copy' ||
+       dropActionInfo.dragged.ownerDocument != document) &&
+      dropActionInfo.position == kDROP_ON) {
+    log('duplicate dropped tabs as children of the tab: ', dumpTab(dropActionInfo.target));
+    // sv.attachTabTo(newTabs[0], dropActionInfo.target);
   }
-*/
 }
 
 function onDragEnd(aEvent) {
@@ -591,6 +697,7 @@ function onDragEnd(aEvent) {
 
   clearDropPosition();
   getTabsContainer(aEvent.target).classList.remove(kTABBAR_STATE_TAB_DRAGGING);
+  gShouldOtherDraggedTabsToBeExpanded = false;
   collapseAutoExpandedTabsWhileDragging();
 
   if (aEvent.dataTransfer.dropEffect != 'none')

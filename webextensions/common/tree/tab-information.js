@@ -74,3 +74,7 @@ function isGroupTab(aTab) {
   return false;
 }
 
+function isSelected(aTab) {
+  return false;
+}
+
