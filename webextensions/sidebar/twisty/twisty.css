@@ -55,11 +55,9 @@
 .tab.subtree-collapsed .twisty {
   background-position: top left;
 }
-.tab:hover  .twisty,
-.tab.active .twisty {
+.tab .twisty:hover {
   background-position: bottom right;
 }
-.tab.subtree-collapsed:hover .twisty,
-.tab.subtree-collapsed.active .twisty {
+.tab.subtree-collapsed .twisty:hover {
   background-position: bottom left;
 }
