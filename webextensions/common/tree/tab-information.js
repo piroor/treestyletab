@@ -78,3 +78,14 @@ function isSelected(aTab) {
   return false;
 }
 
+// if all tabs are aldeardy placed at there, we don't need to move them.
+function isAllTabsPlacedBefore(aTabs, aNextTab) {
+  var previousTab = aTabs[0];
+  for (let tab of aTabs.slice(1)) {
+    if (tab.previousSibling != previousTab)
+      return true;
+    previousTab = tab;
+  }
+  return previousTab.nextSibling != aNextTab;
+}
+

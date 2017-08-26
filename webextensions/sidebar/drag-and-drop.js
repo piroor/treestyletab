@@ -416,21 +416,24 @@ async function performDrop(aInfo) {
 
   if (aInfo.action & kACTION_AFFECTS_TO_SOURCE) {
     log('=> moving dragged tabs');
-    let doMove = async () => {
-      await moveTabInternallyBefore(aInfo.dragged, aInfo.insertBefore, {
-        inRemote: true
-      });
-      await moveTabsInternallyAfter(
-        draggedTabs.filter(aTab => aTab != aInfo.dragged),
-        aInfo.dragged,
-        { inRemote: true }
-      );
-    };
+    let doMove = !isAllTabsPlacedBefore(draggedTabs, aInfo.insertBefore) ?
+      null :
+      async () => {
+        await moveTabInternallyBefore(aInfo.dragged, aInfo.insertBefore, {
+          inRemote: true
+        });
+        await moveTabsInternallyAfter(
+          draggedTabs.filter(aTab => aTab != aInfo.dragged),
+          aInfo.dragged,
+          { inRemote: true }
+        );
+      };
 
     log('=> action for source tabs');
     if (aInfo.action & kACTION_DETACH) {
       log('=> detach');
-      await doMove();
+      if (doMove)
+        await doMove();
       detachTabsOnDrop(draggedRoots);
     }
     else if (aInfo.action & kACTION_ATTACH) {
@@ -441,7 +444,8 @@ async function performDrop(aInfo) {
     }
     else {
       log('=> just moved');
-      await doMove();
+      if (doMove)
+        await doMove();
     }
 
     // if this move will cause no change...
