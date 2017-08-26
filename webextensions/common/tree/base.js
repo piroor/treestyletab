@@ -54,6 +54,7 @@ function buildTab(aTab, aOptions = {}) {
   item.apiTab = aTab;
   item.setAttribute('id', makeTabId(aTab));
   //item.setAttribute(kCHILDREN, '');
+  item.setAttribute(kCONTENT_LOCATION, aTab.url);
   item.classList.add('tab');
   if (aTab.active)
     item.classList.add(kTAB_STATE_ACTIVE);
@@ -93,6 +94,9 @@ function updateTab(aTab, aNewState) {
   else {
     aTab.classList.remove(kTAB_STATE_GROUP_TAB);
   }
+
+  if (oldState.url != aNewState.url)
+    aTab.setAttribute(kCONTENT_LOCATION, aNewState.url);
 
   if (label != oldState.title) {
     getTabLabel(aTab).textContent = label;

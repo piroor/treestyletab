@@ -18,6 +18,7 @@ const kCOMMAND_MOVE_TABS_INTERNALLY_BEFORE = 'treestyletab:request-move-tabs-int
 const kCOMMAND_MOVE_TABS_INTERNALLY_AFTER = 'treestyletab:request-move-tabs-internally-after';
 const kCOMMAND_LOAD_URI = 'treestyletab:request-load-uri';
 
+const kCONTENT_LOCATION = 'data-content-location';
 const kPARENT   = 'data-parent-id';
 const kCHILDREN = 'data-child-ids';
 const kANCESTORS = 'data-ancestor-ids';
