@@ -95,7 +95,7 @@ function clearOldActiveStateInWindow(aWindowId) {
   for (let oldTab of oldTabs) {
     oldTab.classList.remove(kTAB_STATE_ACTIVE);
   }
-  return oldTab;
+  return oldTabs;
 }
 
 function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
