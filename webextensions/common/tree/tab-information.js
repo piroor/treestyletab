@@ -71,7 +71,10 @@ function shouldCloseLastTabSubtreeOf(aTab) {
 }
 
 function isGroupTab(aTab) {
-  return false;
+  if (!aTab)
+    return false;
+  return aTab.classList.contains(kTAB_STATE_GROUP_TAB) ||
+         kGROUP_TAB_MATCHER.test(aTab.apiTab.url);
 }
 
 function isSelected(aTab) {

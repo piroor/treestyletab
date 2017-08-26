@@ -98,6 +98,11 @@ function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
   if (!updatedTab)
     return;
 
+  if (aTab.url && kGROUP_TAB_MATCHER.test(aTab.url))
+    updatedTab.classList.add(kTAB_STATE_GROUP_TAB);
+  else
+    updatedTab.classList.remove(kTAB_STATE_GROUP_TAB);
+
   updateTab(updatedTab, {
     label:   aTab.title,
     favicon: aTab.favIconUrl,

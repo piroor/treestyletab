@@ -67,6 +67,9 @@ function buildTab(aTab, aOptions = {}) {
   label.appendChild(document.createTextNode(aTab.title));
   item.appendChild(label);
 
+  if (aTab.url && kGROUP_TAB_MATCHER.test(aTab.url))
+    item.classList.add(kTAB_STATE_GROUP_TAB);
+
   item.classList.add(aTab.status);
 
   window.onTabBuilt && onTabBuilt(item);
@@ -315,4 +318,8 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
       }));
     }
   });
+}
+
+function makeGroupTabURI(aTitle) {
+  return `data:text/html,<!DOCTYPE html><title>${aTitle}</title><link ref="favicon" href="">#${kGROUP_TAB_SUFFIX}`
 }

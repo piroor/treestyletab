@@ -168,16 +168,21 @@ li.tab.pinned :-moz-any(.twisty, .label, .closebox) {
 .favicon-default::before {
   content: "🌐";
 }
+li.tab.group-tab:not(.subtree-collapsed) .favicon-default::before {
+  content: "📂";
+}
+li.tab.group-tab.subtree-collapsed .favicon-default::before,
+li.tab.group-tab.subtree-collapsed:not([data-child-ids]) .favicon-default::before {
+  content: "📁";
+}
 .throbber::before {
   content: "⏳";
 }
-.favicon-image:not(.error) ~ .favicon-default::before {
-  display: none;
-}
+.favicon-image.error,
+.favicon-image:not([src]),
+.favicon-image[src]:not(.error) ~ .favicon-default::before,
 li.tab.loading .favicon-image,
-li.tab.loading .favicon-default::before {
-  display: none;
-}
+li.tab.loading .favicon-default::before,
 li.tab:not(.loading) .throbber::before {
   display: none;
 }
