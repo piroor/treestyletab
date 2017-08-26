@@ -361,6 +361,22 @@ async function onTabCompletelyClosed(aTab) {
   });
 }
 
+function onTabMoving(aTab) {
+  if (configs.animation &&
+      !isCollapsed(aTab) &&
+      !isPinned(aTab)) {
+    onTabCollapsedStateChanging(aTab, {
+      collapsed: true,
+      justNow:   true
+    });
+    window.requestAnimationFrame(() => {
+      onTabCollapsedStateChanging(aTab, {
+        collapsed: false
+      });
+    });
+  }
+}
+
 function onTabMoved(aTab) {
   reserveToUpdateTabbarLayout();
 }
