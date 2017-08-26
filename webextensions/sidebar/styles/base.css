@@ -138,6 +138,11 @@ li.tab.pinned :-moz-any(.twisty, .label, .closebox) {
   white-space: nowrap;
 }
 
+.tab:not([data-child-ids]) .counter,
+.tab:not(.subtree-collapsed) .counter {
+  display: none;
+}
+
 .closebox {
   background: none transparent;
   border: 1px solid transparent;

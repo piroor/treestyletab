@@ -259,6 +259,10 @@ function onTabBuilt(aTab) {
   aTab.insertBefore(favicon, label);
   loadImageTo(faviconImage, aTab.apiTab.favIconUrl);
 
+  var counter = document.createElement('span');
+  counter.classList.add(kCOUNTER);
+  aTab.appendChild(counter);
+
   var closebox = document.createElement('button');
   closebox.classList.add(kCLOSEBOX);
   aTab.appendChild(closebox);
@@ -544,6 +548,34 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
   }
 }
 */
+
+function onTabAttached(aTab) {
+  var ancestors = [aTab].concat(getAncestorTabs(aTab));
+  for (let ancestor of ancestors) {
+    updateTabsCount(ancestor);
+  }
+}
+
+function onTabDetached(aTab, aDetachInfo = {}) {
+  var parent = aDetachInfo.oldParent;
+  if (!parent)
+    return;
+  var ancestors = [parent].concat(getAncestorTabs(parent));
+  for (let ancestor of ancestors) {
+    updateTabsCount(ancestor);
+  }
+}
+
+function updateTabsCount(aTab) {
+  var counter = getTabCounter(aTab);
+  if (!counter)
+    return;
+  var descendants = getDescendantTabs(aTab);
+  var count = descendants.length;
+  if (configs.counterRole == kCOUNTER_ROLE_ALL_TABS)
+    count += 1;
+  counter.textContent = `(${count})`;
+}
 
 function onTabPinned(aTab) {
   collapseExpandSubtree(aTab, { collapsed: false });

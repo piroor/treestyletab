@@ -59,7 +59,7 @@ configs = new Configs({
   shouldExpandTwistyArea: false, // extensions.treestyletab.twisty.expandSensitiveArea
 
   scrollToNewTabMode: null, // extensions.treestyletab.tabbar.scrollToNewTab.mode
-  counterRole: -1, // extensions.treestyletab.counter.role.vertical
+  counterRole: kCOUNTER_ROLE_CONTAINED_TABS, // extensions.treestyletab.counter.role.vertical
 
   style: null, // extensions.treestyletab.tabbar.style
 

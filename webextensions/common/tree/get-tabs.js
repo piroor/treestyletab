@@ -101,6 +101,9 @@ function getTabSoundButton(aTab) {
 function getTabLabel(aTab) {
   return aTab.querySelector(`.${kLABEL}`);
 }
+function getTabCounter(aTab) {
+  return aTab.querySelector(`.${kCOUNTER}`);
+}
 function getTabClosebox(aTab) {
   return aTab.querySelector(`.${kCLOSEBOX}`);
 }
