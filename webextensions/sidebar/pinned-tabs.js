@@ -38,7 +38,7 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
-function positionPinnedTabs(aParams = {}) {
+function positionPinnedTabs(aOptions = {}) {
   log('positionPinnedTabs');
   var pinnedTabs = getPinnedTabs(gTargetWindow);
   if (!pinnedTabs.length) {
@@ -62,11 +62,8 @@ function positionPinnedTabs(aParams = {}) {
   gTabBar.style.marginTop = `${height * maxRow}px`;
   for (let item of pinnedTabs) {
     let style = item.style;
-    style.marginTop = '';
-
-    let transitionStyleBackup = style.transition || '';
-    if (aParams.justNow)
-      style.transition = 'none';
+    if (aOptions.justNow)
+      item.classList.remove(kTAB_STATE_ANIMATION_READY);
 
     if (faviconized)
       item.classList.add(kTAB_STATE_FAVICONIZED);
@@ -75,13 +72,17 @@ function positionPinnedTabs(aParams = {}) {
 
     style.maxWidth = style.width = `${width}px`;
     style.maxHeight = style.height = `${height}px`;
-    style.marginLeft = `${width * col}px`;
-    style.left = 0;
+    style.bottom = 'auto';
+    style.left = `${width * col}px`;
     style.right = 'auto';
-    style.marginRight = '';
+    style.top = `${height * row}px`;
 
-    style.marginTop = `-${height * (maxRow - row)}px`;
-    style.top = style.bottom = '';
+    style.marginLeft = '';
+    style.marginRight = '';
+    style.marginTop = '';
+
+    if (aOptions.justNow)
+      item.classList.add(kTAB_STATE_ANIMATION_READY);
 
     log('pinned tab: ', {
       tab:    dumpTab(item),
@@ -89,9 +90,6 @@ function positionPinnedTabs(aParams = {}) {
       width:  width,
       height: height
     });
-
-    if (aParams.justNow && transitionStyleBackup)
-      setTimeout(() => style.transition = transitionStyleBackup, 0);
 
     col++;
     if (col >= maxCol) {
@@ -102,12 +100,12 @@ function positionPinnedTabs(aParams = {}) {
   }
 }
 
-function reserveToPositionPinnedTabs(aParams) {
+function reserveToPositionPinnedTabs(aOptions = {}) {
   if (reserveToPositionPinnedTabs.waiting)
     return;
   reserveToPositionPinnedTabs.waiting = setTimeout(() => {
     delete reserveToPositionPinnedTabs.waiting;
-    positionPinnedTabs(aParams);
+    positionPinnedTabs(aOptions);
   }, 0);
 }
 
@@ -121,6 +119,6 @@ function clearPinnedStyle(aTab) {
   let style = aTab.style;
   style.maxWidth = style.width =
     style.maxHeight = style.height =
-    style.left = style.right =
+    style.left = style.right = style.top = style.bottom =
     style.marginLeft = style.marginRight = style.marginTop = '';
 }
