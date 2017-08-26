@@ -74,7 +74,7 @@ function isGroupTab(aTab) {
   if (!aTab)
     return false;
   return aTab.classList.contains(kTAB_STATE_GROUP_TAB) ||
-         kGROUP_TAB_MATCHER.test(aTab.apiTab.url);
+         aTab.apiTab.url.indexOf(kGROUP_TAB_URI) == 0;
 }
 
 function isSelected(aTab) {
