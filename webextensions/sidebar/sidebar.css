@@ -23,6 +23,8 @@
                    top           var(--collapse-animation);
 
   --favicon-size: 16px;
+  --dropmarker-size: 0.15em;
+  --dropmarker-size-negative: -0.15em;
 }
 
 /*
@@ -243,18 +245,25 @@ li.tab.dragging {
 }
 
 li.tab[data-drop-position="self"] {
-  outline: 0.15em solid black !important;
-  outline-offset: -0.15em;
+  outline: var(--dropmarker-size) solid black !important;
+  outline-offset: var(--dropmarker-size-negative);
 }
 
 li.tab[data-drop-position]:not([data-drop-position="self"])::before {
   content: "";
-  display: box;
-  max-height: 0.15em;
-  min-height: 0.15em;
+  display: block;
+  max-height: var(--dropmarker-size);
+  min-height: var(--dropmarker-size);
   background: black !important;
   overflow: hidden;
   position: absolute;
+  z-index: 2;
+}
+li.tab[data-drop-position]:not([data-drop-position="self"]).pinned::before {
+  max-height: none;
+  max-width: var(--dropmarker-size);
+  min-height: 0;
+  min-width: var(--dropmarker-size);
 }
 
 li.tab:not(.pinned)[data-drop-position="before"]::before {
