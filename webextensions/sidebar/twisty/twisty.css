@@ -1,63 +1,91 @@
 .tab .twisty {
   display: inline-block;
+  line-height: 1;
   height: 16px;
   max-height: 16px;
   max-width: 16px;
   min-height: 16px;
   min-width: 16px;
   position: relative;
+  text-align: center;
+  transition: transform 0.2s ease-out,
+              opacity 0.15s ease-out,
+              text-shadow 0.15s ease-out;
+  vertical-align: middle;
   width: 16px;
 }
 
 .tab:not([data-child-ids]) .twisty,
 .tab.pinned .twisty {
-  background-image: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
-.twisty {
-  background-image: url("twisty-retro.png");
-  background-position: top right;
+:root[data-twisty-style^="modern"]
+  li.tab.subtree-collapsed
+  .twisty {
+  transform: rotatez(-90deg);
+  transform-origin: 50% 50%;
+}
+:root[data-twisty-style^="modern"].tab-contents-inverted
+  li.tab.subtree-collapsed
+  .twisty {
+  transform: rotatez(90deg);
+}
+:root[data-twisty-style^="modern"]
+  li.tab.subtree-collapsed
+  .twisty:hover {
+  text-shadow: -0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
+}
+:root[data-twisty-style^="modern"].tab-contents-inverted
+  li.tab.subtree-collapsed
+  .twisty:hover {
+  text-shadow: 0.1em -0.1em 0.1em rgba(0, 0, 0, 0.45);
 }
 
-:root[data-twisty-style="modern-black"]
-  .twisty {
-  background-image: url("twisty-modern-b-l.png");
+li.tab:not(.subtree-collapsed) .twisty:hover {
+  text-shadow: 0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
+  transform: rotatez(0);
 }
-:root[data-twisty-style="modern-black"].tab-contents-inverted
-  .twisty {
-  background-image: url("twisty-modern-b-r.png");
+
+:root[data-twisty-style^="modern"]
+  .twisty::before {
+  content: "▼";
+  font-size: 0.65em;
 }
-:root[data-twisty-style="modern-white"]
-  .twisty {
-  background-image: url("twisty-modern-w-l.png");
+
+:root[data-twisty-style*="-black"]
+  .twisty::before {
+  color: black;
 }
-:root[data-twisty-style="modern-white"].tab-contents-inverted
-  .twisty {
-  background-image: url("twisty-modern-w-r.png");
+:root[data-twisty-style*="-white"]
+  .twisty::before {
+  color: white;
 }
+
 
 :root[data-twisty-style="osx"]
+  li.tab.subtree-collapsed
   .twisty {
-  background-image: url("twisty-osx-l.png");
-  opacity: 0.38;
+  transform: rotatez(-90deg);
 }
 :root[data-twisty-style="osx"].tab-contents-inverted
+  li.tab.subtree-collapsed
   .twisty {
-  background-image: url("twisty-osx-r.png");
+  transform: rotatez(90deg);
+}
+:root[data-twisty-style="osx"]
+  .twisty::before {
+  content: "▼";
+  font-size: 0.8em;
+}
+:root[data-twisty-style="osx"]
+  .twisty {
+  opacity: 0.38;
 }
 :root[data-twisty-style="osx"]
   .twisty:active,
 :root[data-twisty-style="osx"]
   .tab.active .twisty {
   opacity: 1;
-}
-
-.tab.subtree-collapsed .twisty {
-  background-position: top left;
-}
-.tab .twisty:hover {
-  background-position: bottom right;
-}
-.tab.subtree-collapsed .twisty:hover {
-  background-position: bottom left;
 }
