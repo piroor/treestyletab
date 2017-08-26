@@ -180,13 +180,13 @@ async function onMessage(aMessage, aSender, aRespond) {
       reserveToSaveTreeStructure(tab);
     }; break;
 
-    case kCOMMAND_NEW_TAB: {
-      log('new tab requested: ', aMessage);
-      let params = { windowId: aMessage.windowId };
-      // params.openerTabId = ?
-      params.active = !aMessage.accel;
-      browser.tabs.create(params)
-        .catch(handleMissingTabError);
+    case kCOMMAND_NEW_TABS: {
+      log('new tabs requested: ', aMessage);
+      await openURIsInTabs(aMessage.uris, inherit(aMessage, {
+        parent:       getTabById(aMessage.parent),
+        insertBefore: getTabById(aMessage.insertBefore)
+      }));
+      aRespond();
     }; break;
 
     case kCOMMAND_REMOVE_TAB: {

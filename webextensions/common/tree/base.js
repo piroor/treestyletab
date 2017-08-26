@@ -242,3 +242,73 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
   await wait(50);
   container.internalMovingCount--;
 }
+
+async function loadURI(aURI, aOptions = {}) {
+  if (!aOptions.windowId && gTargetWindow)
+    aOptions.windowId = gTargetWindow;
+  if (aOptions.isRemote) {
+    await browser.runtime.sendMessage(inherit(aOptions, {
+      type: kCOMMAND_LOAD_URI,
+      tab:  aOptions.tab && aOptions.tab.id
+    }));
+  }
+  else {
+    let apiTabId;
+    if (aOptions.tab) {
+      apiTabId = aOptions.tab.apiTab.id;
+    }
+    else {
+      let apiTabs = await browser.tabs.query({
+        windowId: aOptions.windowId,
+        active: true
+      });
+      apiTabId = apiTabs[0].id;
+    }
+    await browser.tabs.update({
+      windowId: aOptions.windowId,
+      id:       apiTabId,
+      url:      aURI
+    });
+  }
+}
+
+async function openNewTab(aOptions = {}) {
+  return await openURIInTab(null, aOptions);
+}
+
+async function openURIInTab(aURI, aOptions = {}) {
+  var tabs = await openURIsInTabs([aURI], aOptions);
+  return tabs[0];
+}
+
+async function openURIsInTabs(aURIs, aOptions) {
+  if (!aOptions.windowId && gTargetWindow)
+    aOptions.windowId = gTargetWindow;
+
+  return await doAndGetNewTabs(async () => {
+    if (aOptions.inRemote) {
+      await browser.runtime.sendMessage(inherit(aOptions, {
+        type:         kCOMMAND_NEW_TABS,
+        parent:       aOptions.parent && aOptions.parent.id,
+        insertBefore: aOptions.insertBefore && aOptions.insertBefore.id
+      }));
+    }
+    else {
+      let startIndex = aOptions.insertBefore ?
+                         getTabIndex(aOptions.insertBefore) :
+                         -1 ;
+      await Promise.all(aURIs.map((aURI, aIndex) => {
+        var params = {};
+        if (aURI)
+          params.url = aURI;
+        if (aIndex == 0)
+          params.active = !aOptions.inBackground;
+        if (aOptions.parent)
+          params.openerTabId = aOptions.parent.apiTab.id;
+        if (startIndex > -1)
+          params.index = startIndex + aIndex;
+        return browser.tabs.create(params);
+      }));
+    }
+  });
+}

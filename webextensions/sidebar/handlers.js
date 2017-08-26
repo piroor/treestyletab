@@ -213,10 +213,10 @@ function onClick(aEvent) {
 }
 
 function handleNewTabAction(aEvent) {
-  browser.runtime.sendMessage({
+  openNewTab(null, {
     type:     kCOMMAND_NEW_TAB,
     windowId: gTargetWindow,
-    accel:    isAccelAction(aEvent)
+    inBackground: !isAccelAction(aEvent)
   });
 }
 
