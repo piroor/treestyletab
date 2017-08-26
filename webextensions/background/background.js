@@ -63,20 +63,6 @@ async function rebuildAll() {
   });
 }
 
-async function selectTabInternally(aTab) {
-  log('selectTabInternally: ', dumpTab(aTab));
-  var container = aTab.parentNode;
-  container.internalFocusCount++;
-  await browser.tabs.update(aTab.apiTab.id, { active: true })
-          .catch(handleMissingTabError);
-  /**
-   * Note: enough large delay is truly required to wait various
-   * tab-related operations are processed in background and sidebar.
-   */
-  setTimeout(() => container.internalFocusCount--,
-    configs.acceptableDelayForInternalFocusMoving);
-}
-
 
 // save/load tree structure
 
@@ -178,14 +164,14 @@ async function onMessage(aMessage, aSender, aRespond) {
       aRespond({ structure: structure });
     }; break;
 
-    case kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE: {
+    case kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE: {
       let tab = getTabById(aMessage.tab);
       if (!tab)
         return;
       let params = {
-        collapsed:      aMessage.collapsed,
-        justNow:        true,
-        fromBackground: true
+        collapsed: aMessage.collapsed,
+        justNow:   true,
+        broadcast: true
       };
       if (aMessage.manualOperation)
         manualCollapseExpandSubtree(tab, params);
@@ -226,6 +212,39 @@ async function onMessage(aMessage, aSender, aRespond) {
       if (!tab)
         return;
       selectTabInternally(tab);
+    }; break;
+
+    case kCOMMAND_MOVE_TAB_INTERNALLY_BEFORE: {
+      let tab = getTabById(aMessage.tab);
+      if (tab)
+        await moveTabInternallyBefore(tab, getTabById(aMessage.nextTab));
+      aRespond();
+    }; break;
+
+    case kCOMMAND_MOVE_TABS_INTERNALLY_AFTER: {
+      await moveTabsInternallyAfter(
+        aMessage.tabs.map(getTabById),
+        getTabById(aMessage.previousTab)
+      );
+      aRespond();
+    }; break;
+
+    case kCOMMAND_ATTACH_TAB_TO: {
+      let child = getTabById(aMessage.child);
+      let parent = getTabById(aMessage.parent);
+      let insertBefore = getTabById(aMessage.insertBefore);
+      if (child && parent)
+        await attachTabTo(child, parent, inherit(aMessage, {
+          insertBefore
+        }));
+      aRespond();
+    }; break;
+
+    case kCOMMAND_DETACH_TAB: {
+      let tab = getTabById(aMessage.tab);
+      if (tab)
+        await detachTab(tab, aMessage);
+      aRespond();
     }; break;
   }
 }

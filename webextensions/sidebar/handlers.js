@@ -138,9 +138,9 @@ function onMouseDown(aEvent) {
     if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/) {
       log('middle-click to close');
       browser.runtime.sendMessage({
-        type:      kCOMMAND_REMOVE_TAB,
-        windowId:  gTargetWindow,
-        tab:       tab.id
+        type:     kCOMMAND_REMOVE_TAB,
+        windowId: gTargetWindow,
+        tab:      tab.id
       });
       aEvent.stopPropagation();
       aEvent.preventDefault();
@@ -162,12 +162,11 @@ function onMouseDown(aEvent) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
     if (hasChildTabs(tab))
-      browser.runtime.sendMessage({
-        type:      kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE,
-        windowId:  gTargetWindow,
-        tab:       tab.id,
-        collapsed: !isSubtreeCollapsed(tab),
-        manualOperation: true
+      collapseExpandSubtree(tab, {
+        collapsed:       !isSubtreeCollapsed(tab),
+        justNow:         true,
+        manualOperation: true,
+        inRemote:        true
       });
     return;
   }
@@ -179,9 +178,9 @@ function onMouseDown(aEvent) {
   }
 
   browser.runtime.sendMessage({
-    type:      kCOMMAND_SELECT_TAB,
-    windowId:  gTargetWindow,
-    tab:       tab.id
+    type:     kCOMMAND_SELECT_TAB,
+    windowId: gTargetWindow,
+    tab:      tab.id
   });
 }
 
@@ -207,17 +206,17 @@ function onClick(aEvent) {
   //  return;
   //}
   browser.runtime.sendMessage({
-    type:      kCOMMAND_REMOVE_TAB,
-    windowId:  gTargetWindow,
-    tab:       tab.id
+    type:     kCOMMAND_REMOVE_TAB,
+    windowId: gTargetWindow,
+    tab:      tab.id
   });
 }
 
 function handleNewTabAction(aEvent) {
   browser.runtime.sendMessage({
-    type:      kCOMMAND_NEW_TAB,
-    windowId:  gTargetWindow,
-    accel:     isAccelAction(aEvent)
+    type:     kCOMMAND_NEW_TAB,
+    windowId: gTargetWindow,
+    accel:    isAccelAction(aEvent)
   });
 }
 
@@ -306,11 +305,15 @@ async function loadImageTo(aImageElement, aURL) {
 }
 
 function onTabOpening(aTab) {
-  if (configs.animation) {
+  if (configs.animation)
     onTabCollapsedStateChanging(aTab, {
       collapsed: true,
       justNow:   true
     });
+}
+
+function onTabOpened(aTab) {
+  if (configs.animation) {
     window.requestAnimationFrame(() => {
       aTab.classList.add(kTAB_STATE_ANIMATION_READY);
       onTabCollapsedStateChanging(aTab, {
@@ -329,9 +332,7 @@ function onTabOpening(aTab) {
     aTab.classList.add(kTAB_STATE_ANIMATION_READY);
     scrollToNewTab(aTab);
   }
-}
 
-function onTabOpened(aTab) {
   reserveToUpdateTabbarLayout();
 }
 
@@ -529,16 +530,6 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
   }
 }
 */
-
-function onTabSubtreeCollapseExpandIntelligently(aTab, aParams = {}) {
-  browser.runtime.sendMessage({
-    type:      kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE,
-    windowId:  gTargetWindow,
-    tab:       aTab.id,
-    collapsed: !false,
-    justNow:   aParams.justNow
-  });
-}
 
 function onTabPinned(aTab) {
   collapseExpandSubtree(aTab, { collapsed: false });

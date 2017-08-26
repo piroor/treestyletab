@@ -129,7 +129,48 @@ function clearAllTabsContainers() {
   range.detach();
 }
 
-async function moveTabInternallyBefore(aTab, aNextTab) {
+async function selectTabInternally(aTab, aOptions = {}) {
+  log('selectTabInternally: ', dumpTab(aTab));
+  var container = aTab.parentNode;
+  container.internalFocusCount++;
+  if (aOptions.inRemote) {
+    await browser.runtime.sendMessage({
+      type:     kCOMMAND_SELECT_TAB_INTERNALLY,
+      windowId: aTab.apiTab.windowId,
+      tab:      aTab.id
+    });
+    container.internalFocusCount--
+    return;
+  }
+
+  await browser.tabs.update(aTab.apiTab.id, { active: true })
+          .catch(handleMissingTabError);
+  /**
+   * Note: enough large delay is truly required to wait various
+   * tab-related operations are processed in background and sidebar.
+   */
+  setTimeout(() => container.internalFocusCount--,
+    configs.acceptableDelayForInternalFocusMoving);
+}
+
+async function moveTabInternallyBefore(aTab, aNextTab, aOptions = {}) {
+  if (!aTab)
+    return;
+
+  var container = aTab.parentNode;
+
+  if (aOptions.inRemote) {
+    container.internalMovingCount++;
+    await browser.runtime.sendMessage({
+      type:     kCOMMAND_MOVE_TAB_INTERNALLY_BEFORE,
+      windowId: gTargetWindow,
+      tab:      aTab.id,
+      nextTab:  aNextTab && aNextTab.id
+    });
+    container.internalMovingCount--
+    return;
+  }
+
   var fromIndex, toIndex;
   if (!aNextTab) {
     [fromIndex, toIndex] = await getApiTabIndex(aTab.apiTab.id, getLastTab(aTab).apiTab.id);
@@ -147,26 +188,37 @@ async function moveTabInternallyBefore(aTab, aNextTab) {
   }
 
   if (fromIndex == toIndex) {
-    log('tab is already placed expelcted place');
+    log('tab is already placed expected place');
+    return;
   }
-  else {
-    log(`attaching child is not moved to ${toIndex} yet`);
-    let container = aTab.parentNode;
-    container.internalMovingCount++;
-    browser.tabs.move(aTab.apiTab.id, {
-      windowId: container.windowId,
-      index:    toIndex
-    }).catch(handleMissingTabError)
-      .then(() => container.internalMovingCount--);
-  }
+
+  log(`tab is not placed at ${toIndex} yet`);
+  var container = aTab.parentNode;
+  container.internalMovingCount++;
+  browser.tabs.move(aTab.apiTab.id, {
+    windowId: container.windowId,
+    index:    toIndex
+  }).catch(handleMissingTabError)
+    .then(() => container.internalMovingCount--);
 }
 
-async function moveTabsInternallyAfter(aTabs, aReferenceTab) {
+async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
   if (!aTabs.length || !aReferenceTab)
     return;
 
   var container = aTabs[0].parentNode;
   container.internalMovingCount++;
+  if (aOptions.inRemote) {
+    await browser.runtime.sendMessage({
+      type:        kCOMMAND_MOVE_TABS_INTERNALLY_AFTER,
+      windowId:    gTargetWindow,
+      tabs:        aTabs.map(aTab => aTab.id),
+      previousTab: aReferenceTab.id
+    });
+    container.internalMovingCount--;
+    return;
+  }
+
   try {
     var lastMoved = aReferenceTab;
     var count = 0;
@@ -175,10 +227,11 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab) {
       if (fromIndex > toIndex)
         toIndex++;
       log(`moving tab ${dumpTab(tab)} to ${toIndex}`);
-      await browser.tabs.move(tab.apiTab.id, {
-        windowId: container.windowId,
-        index: toIndex
-      });
+      if (fromIndex != toIndex)
+        await browser.tabs.move(tab.apiTab.id, {
+          windowId: container.windowId,
+          index: toIndex
+        });
       lastMoved = tab;
       // tab will be moved by handling of API event
     }

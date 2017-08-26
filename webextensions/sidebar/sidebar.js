@@ -85,15 +85,14 @@ function onMessage(aMessage, aSender, aRespond) {
         applyTreeStructureToTabs(getAllTabs(gTargetWindow), aMessage.structure);
       break;
 
-    case kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE:
+    case kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:
       if (aMessage.windowId == gTargetWindow) {
         let tab = getTabById(aMessage.tab);
         if (!tab)
           return;
         let params = {
           collapsed: aMessage.collapsed,
-          justNow:   !aMessage.manualOperation,
-          noPush:    true
+          justNow:   !aMessage.manualOperation
         };
         if (aMessage.manualOperation)
           manualCollapseExpandSubtree(tab, params);
@@ -102,7 +101,7 @@ function onMessage(aMessage, aSender, aRespond) {
       }
       break;
 
-    case kCOMMAND_ATTACH_TAB: {
+    case kCOMMAND_ATTACH_TAB_TO: {
       if (aMessage.windowId == gTargetWindow) {
         let child = getTabById(aMessage.child);
         let parent = getTabById(aMessage.parent);
@@ -120,16 +119,6 @@ function onMessage(aMessage, aSender, aRespond) {
       }
     }; break;
   }
-}
-
-
-function selectTabInternally(aTab) {
-  log('selectTabInternally: ', dumpTab(aTab));
-  browser.runtime.sendMessage({
-    type:     kCOMMAND_SELECT_TAB_INTERNALLY,
-    windowId: aTab.apiTab.windowId,
-    tab:      aTab.id
-  });
 }
 
 function collapseExpandAllSubtree(aParams = {}) {

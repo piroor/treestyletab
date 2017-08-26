@@ -108,30 +108,18 @@ async function onTabMoved(aTab, aMoveInfo) {
           moveBack(aTab, aMoveInfo);
           return;
 
-        case 'attach':
+        case 'attach': {
           attachTabTo(aTab, getTabById(action.parent), {
-            insertBefore: getTabById(action.insertBefore)
-          });
-          browser.runtime.sendMessage({
-            type:      kCOMMAND_ATTACH_TAB,
-            windowId:  container.windowId,
-            child:     aTab.id,
-            parent:    action.parent,
-            insertBefore: action.insertBefore,
-            alreadyMoved: true
+            insertBefore: getTabById(action.insertBefore),
+            broadcast: true
           });
           followDescendantsToMovedRoot(aTab);
-          break;
+        }; break;
 
-        case 'detach':
-          detachTab(aTab);
-          browser.runtime.sendMessage({
-            type:      kCOMMAND_DETACH_TAB,
-            windowId:  container.windowId,
-            tab:       aTab.id
-          });
+        case 'detach': {
+          detachTab(aTab, { broadcast: true });
           followDescendantsToMovedRoot(aTab);
-          break;
+        }; break;
 
         default:
           followDescendantsToMovedRoot(aTab);
@@ -325,13 +313,6 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
     aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
   else
     aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
-}
-
-function onTabSubtreeCollapseExpandIntelligently(aTab, aParams = {}) {
-  collapseExpandSubtree(aTab, {
-    collapsed: aParams.collapsed,
-    justNow:   aParams.justNow
-  });
 }
 
 function onTabAttached(aTab) {

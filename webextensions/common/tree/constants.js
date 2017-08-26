@@ -7,13 +7,15 @@
 
 const kCOMMAND_PULL_TREE_STRUCTURE = 'treestyletab:pull-tree-structure';
 const kCOMMAND_PUSH_TREE_STRUCTURE = 'treestyletab:push-tree-structure';
-const kCOMMAND_PUSH_SUBTREE_COLLAPSED_STATE = 'treestyletab:push-subtree-collapsed-state';
+const kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE = 'treestyletab:change-subtree-collapsed-state';
 const kCOMMAND_SELECT_TAB = 'treestyletab:request-select-tab';
 const kCOMMAND_SELECT_TAB_INTERNALLY = 'treestyletab:request-select-tab-internally';
 const kCOMMAND_REMOVE_TAB = 'treestyletab:request-remove-tab';
 const kCOMMAND_NEW_TAB = 'treestyletab:request-new-tab';
-const kCOMMAND_ATTACH_TAB = 'treestyletab:request-attach-tab';
+const kCOMMAND_ATTACH_TAB_TO = 'treestyletab:request-attach-tab-to';
 const kCOMMAND_DETACH_TAB = 'treestyletab:request-detach-tab';
+const kCOMMAND_MOVE_TAB_INTERNALLY_BEFORE = 'treestyletab:request-move-tab-internally-before';
+const kCOMMAND_MOVE_TABS_INTERNALLY_AFTER = 'treestyletab:request-move-tabs-internally-after';
 
 const kPARENT   = 'data-parent-id';
 const kCHILDREN = 'data-child-ids';

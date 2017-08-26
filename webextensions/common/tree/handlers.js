@@ -109,7 +109,7 @@ function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
   window.onTabUpdated && onTabUpdated(updatedTab);
 }
 
-function onApiTabCreated(aTab) {
+async function onApiTabCreated(aTab) {
   if (gTargetWindow && aTab.windowId != gTargetWindow)
     return;
 
@@ -119,13 +119,15 @@ function onApiTabCreated(aTab) {
     container = buildTabsContainerFor(aTab.windowId);
     gAllTabs.appendChild(container);
   }
-  var newTab = container.appendChild(buildTab(aTab));
+  var newTab = buildTab(aTab);
+  container.insertBefore(newTab, getAllTabs(container)[aTab.index]);
+
   window.onTabOpening && onTabOpening(newTab);
 
   var opener = getTabById({ tab: aTab.openerTabId, window: aTab.windowId });
   if (opener) {
     log('opener: ', dumpTab(opener));
-    attachTabTo(newTab, opener);
+    await attachTabTo(newTab, opener);
   }
 
   updateInsertionPositionInfo(newTab);
