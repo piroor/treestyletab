@@ -81,19 +81,6 @@ function getDragDataFromOneTab(aTab) {
   };
 }
 
-function canDropTab(aEvent) {
-  var info = getDropAction(aEvent);
-  if (!info.dragged ||
-      (info.target &&
-       info.dragged.parentNpde != info.target.parentNode))
-    return true;
-
-  if (info.target && isCollapsed(info.target))
-    return false;
-
-  return info.canDrop;
-}
-
 function getDropAction(aEvent) {
   var info = getDropActionInternal(aEvent);
   info.canDrop = true;
@@ -111,7 +98,11 @@ function getDropAction(aEvent) {
         info.action ^= kACTION_STAY;
     }
 
-    if (info.action & kACTION_ATTACH) {
+    if (info.target &&
+        isPinned(info.dragged) != isPinned(info.target)) {
+      info.canDrop = false;
+    }
+    else if (info.action & kACTION_ATTACH) {
       if (info.parent == info.dragged) {
         info.canDrop = false;
       }
