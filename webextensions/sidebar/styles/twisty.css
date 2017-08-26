@@ -1,18 +1,18 @@
 .tab .twisty {
   display: inline-block;
   line-height: 1;
-  height: 16px;
-  max-height: 16px;
-  max-width: 16px;
-  min-height: 16px;
-  min-width: 16px;
+  height: var(--favicon-size);
+  max-height: var(--favicon-size);
+  max-width: var(--favicon-size);
+  min-height: var(--favicon-size);
+  min-width: var(--favicon-size);
   position: relative;
   text-align: center;
   transition: transform 0.2s ease-out,
               opacity 0.15s ease-out,
               text-shadow 0.15s ease-out;
-  vertical-align: middle;
-  width: 16px;
+  vertical-align: 50%;
+  width: var(--favicon-size);
 }
 
 .tab:not([data-child-ids]) .twisty,
@@ -25,7 +25,7 @@
   li.tab.subtree-collapsed
   .twisty {
   transform: rotatez(-90deg);
-  transform-origin: 50% 50%;
+  transform-origin: 50% 0.55em;
 }
 :root[data-twisty-style^="modern"].tab-contents-inverted
   li.tab.subtree-collapsed

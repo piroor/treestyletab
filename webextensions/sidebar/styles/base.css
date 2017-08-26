@@ -21,19 +21,7 @@
                    opacity       var(--collapse-animation),
                    right         var(--collapse-animation),
                    top           var(--collapse-animation);
-
-  --favicon-size: 16px;
-  --dropmarker-size: 0.15em;
-  --dropmarker-size-negative: -0.15em;
 }
-
-/*
-@keyframes throbber {
-  0% { transform: rotate(0deg); }
-  50% { transform: rotate(180deg); }
-  100% { transform: rotate(360deg); }
-}
-*/
 
 :root.debug * {
   outline: 1px dotted rgba(255, 0, 0, 0.5);
@@ -142,74 +130,6 @@ li.tab.pinned :-moz-any(.twisty, .label, .closebox) {
 }
 
 
-.favicon {
-  display: inline-box;
-  height: var(--favicon-size);
-  max-height: var(--favicon-size);
-  max-width: var(--favicon-size);
-  min-height: var(--favicon-size);
-  min-width: var(--favicon-size);
-  white-space: pre;
-  width: var(--favicon-size);
-  margin: 0;
-  padding: 0;
-}
-.favicon-image {
-  max-height: var(--favicon-size);
-  max-width: var(--favicon-size);
-}
-.favicon-default::before,
-.throbber::before {
-  display: inline-box;
-  line-height: 1;
-  max-height: var(--favicon-size);
-  max-width: var(--favicon-size);
-}
-.favicon-default::before {
-  content: "🌐";
-}
-li.tab[data-content-location^="about:"] .favicon-default::before,
-li.tab[data-content-location^="chrome:"] .favicon-default::before,
-li.tab[data-content-location^="resource:"] .favicon-default::before {
-  background-image: url("chrome://branding/content/icon32.png");
-  background-size: 100%;
-  content: "";
-  display: inline-block;
-  max-height: var(--favicon-size);
-  max-width: var(--favicon-size);
-  min-height: var(--favicon-size);
-  min-width: var(--favicon-size);
-}
-li.tab[data-content-location^="file:"] .favicon-default::before,
-li.tab[data-content-location^="moz-extension:"] .favicon-default::before {
-  content: "📄";
-}
-li.tab.group-tab:not(.subtree-collapsed) .favicon-default::before {
-  background: none;
-  content: "📂";
-}
-li.tab.group-tab.subtree-collapsed .favicon-default::before,
-li.tab.group-tab.subtree-collapsed:not([data-child-ids]) .favicon-default::before {
-  background: none;
-  content: "📁";
-}
-.throbber::before {
-  content: "⏳";
-}
-.favicon-image.error,
-.favicon-image:not([src]),
-.favicon-image[src]:not(.error) ~ .favicon-default::before,
-li.tab.loading .favicon-image,
-li.tab.loading .favicon-default::before,
-li.tab:not(.loading) .throbber::before {
-  display: none !important;
-}
-/*
-li.tab.loading .throbber {
-  animation: throbber 3s ease-in-out infinite;
-}
-*/
-
 .tab .label {
   flex-grow: 1;
   overflow: hidden;
@@ -259,57 +179,3 @@ li.tab.loading .throbber {
   margin: 0;
   text-align: center;
 }
-
-
-/* drag and drop */
-
-li.tab.dragging {
-  opacity: 0.5 !important;
-}
-
-li.tab[data-drop-position="self"] {
-  outline: var(--dropmarker-size) solid black !important;
-  outline-offset: var(--dropmarker-size-negative);
-}
-
-li.tab[data-drop-position]:not([data-drop-position="self"])::before {
-  content: "";
-  display: block;
-  max-height: var(--dropmarker-size);
-  min-height: var(--dropmarker-size);
-  background: black !important;
-  overflow: hidden;
-  position: absolute;
-  z-index: 2;
-}
-li.tab[data-drop-position]:not([data-drop-position="self"]).pinned::before {
-  max-height: none;
-  max-width: var(--dropmarker-size);
-  min-height: 0;
-  min-width: var(--dropmarker-size);
-}
-
-li.tab:not(.pinned)[data-drop-position="before"]::before {
-  left: 0;
-  right: 0;
-  top: 0;
-}
-
-li.tab:not(.pinned)[data-drop-position="after"]::before {
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
-
-li.tab.pinned[data-drop-position="before"]::before {
-  bottom: 0;
-  left: 0;
-  top: 0;
-}
-
-li.tab.pinned[data-drop-position="after"]::before {
-  bottom: 0;
-  right: 0;
-  top: 0;
-}
-

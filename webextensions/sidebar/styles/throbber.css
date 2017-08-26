@@ -1,0 +1,39 @@
+@charset "UTF-8";
+/*
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+@keyframes rotation {
+  0% { transform: rotatez(0deg); }
+  50% { transform: rotatez(180deg); }
+  100% { transform: rotatez(360deg); }
+}
+
+.throbber {
+  display: inline-block;
+  line-height: 1;
+  height: var(--favicon-size);
+  max-height: var(--favicon-size);
+  max-width: var(--favicon-size);
+  min-height: var(--favicon-size);
+  min-width: var(--favicon-size);
+  position: relative;
+  text-align: center;
+  transform-origin: 50% 0.55em;
+  vertical-align: 50%;
+  width: var(--favicon-size);
+}
+
+.throbber::before {
+  content: "⏳";
+}
+
+li.tab:not(.loading) .throbber::before {
+  display: none !important;
+}
+
+li.tab.loading .throbber {
+  animation: rotation 2s ease-in-out infinite;
+}
