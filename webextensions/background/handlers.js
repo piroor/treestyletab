@@ -239,7 +239,10 @@ function onTabFocusing(aTab) {
   if (isCollapsed(aTab)) {
     if (configs.autoExpandSubtreeOnCollapsedChildFocused) {
       for (let ancestor of getAncestorTabs(aTab)) {
-        collapseExpandSubtree(ancestor, { collapsed: false });
+        collapseExpandSubtree(ancestor, {
+          collapsed: false,
+          broadcast: true
+        });
       }
       handleNewActiveTab(aTab);
     }
@@ -284,9 +287,14 @@ function handleNewActiveTab(aTab) {
     if (canExpandTree) {
       if (canCollapseTree &&
           configs.autoExpandIntelligently)
-        collapseExpandTreesIntelligentlyFor(aTab);
+        collapseExpandTreesIntelligentlyFor(aTab, {
+          broadcast: true
+        });
       else
-        collapseExpandSubtree(aTab, { collapsed: false });
+        collapseExpandSubtree(aTab, {
+          collapsed: false,
+          broadcast: true
+        });
     }
   }, 0);
 }
