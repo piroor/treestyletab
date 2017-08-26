@@ -370,14 +370,14 @@ function collapseAutoExpandedTabsWhileDragging() {
   gAutoExpandedTabs = [];
 }
 
-async function performDrop(aInfo) {
+async function performDrop(aDropActionInfo) {
   log('performDrop: start');
-  if (!aInfo.dragged) {
+  if (!aDropActionInfo.dragged) {
     log('=> no dragged tab');
     return false;
   }
 
-  var draggedTabs = getDragDataFromOneTab(aInfo.dragged).draggedTabs;
+  var draggedTabs = getDragDataFromOneTab(aDropActionInfo.dragged).draggedTabs;
   var draggedRoots = collectRootTabs(draggedTabs);
 
   var targetTabs = getTabs(gTargetWindow);
@@ -397,40 +397,41 @@ async function performDrop(aInfo) {
       selectedTabs.length > 0) {
     log('=> partially dragged');
     draggedTabs = draggedRoots = selectedTabs;
-    if (aInfo.action & kACTION_AFFECTS_TO_SOURCE)
+    if (aDropActionInfo.action & kACTION_AFFECTS_TO_SOURCE)
       detachTabs(selectedTabs);
   }
 
-  while (aInfo.insertBefore && draggedWholeTree.indexOf(aInfo.insertBefore) > -1) {
-    aInfo.insertBefore = getNextTab(aInfo.insertBefore);
+  while (aDropActionInfo.insertBefore &&
+         draggedWholeTree.indexOf(aDropActionInfo.insertBefore) > -1) {
+    aDropActionInfo.insertBefore = getNextTab(aDropActionInfo.insertBefore);
   }
 
-  if (aInfo.action & kACTION_AFFECTS_TO_SOURCE) {
+  if (aDropActionInfo.action & kACTION_AFFECTS_TO_SOURCE) {
     log('=> moving dragged tabs');
-    let doMove = !isAllTabsPlacedBefore(draggedTabs, aInfo.insertBefore) ?
+    let doMove = !isAllTabsPlacedBefore(draggedTabs, aDropActionInfo.insertBefore) ?
       null :
       async () => {
-        await moveTabInternallyBefore(aInfo.dragged, aInfo.insertBefore, {
+        await moveTabInternallyBefore(aDropActionInfo.dragged, aDropActionInfo.insertBefore, {
           inRemote: true
         });
         await moveTabsInternallyAfter(
-          draggedTabs.filter(aTab => aTab != aInfo.dragged),
-          aInfo.dragged,
+          draggedTabs.filter(aTab => aTab != aDropActionInfo.dragged),
+          aDropActionInfo.dragged,
           { inRemote: true }
         );
       };
 
     log('=> action for source tabs');
-    if (aInfo.action & kACTION_DETACH) {
+    if (aDropActionInfo.action & kACTION_DETACH) {
       log('=> detach');
       if (doMove)
         await doMove();
       detachTabsOnDrop(draggedRoots);
     }
-    else if (aInfo.action & kACTION_ATTACH) {
+    else if (aDropActionInfo.action & kACTION_ATTACH) {
       log('=> attach');
-      attachTabsOnDrop(draggedRoots, aInfo.parent, {
-        insertBefore: aInfo.insertBefore
+      attachTabsOnDrop(draggedRoots, aDropActionInfo.parent, {
+        insertBefore: aDropActionInfo.insertBefore
       });
     }
     else {
@@ -440,7 +441,7 @@ async function performDrop(aInfo) {
     }
 
     // if this move will cause no change...
-    if (getNextVisibleTab(draggedTabs[draggedTabs.length-1]) == aInfo.insertBefore) {
+    if (getNextVisibleTab(draggedTabs[draggedTabs.length-1]) == aDropActionInfo.insertBefore) {
       log('=> no change: do nothing');
       return true;
     }
@@ -452,13 +453,13 @@ async function performDrop(aInfo) {
 /*
   var replacedGroupTabs = doAndGetNewTabs(() => {
     newTabs = moveTabsInternal(draggedTabs, {
-      duplicate    : aInfo.action & kACTION_DUPLICATE,
-      insertBefore : aInfo.insertBefore,
+      duplicate    : aDropActionInfo.action & kACTION_DUPLICATE,
+      insertBefore : aDropActionInfo.insertBefore,
       inRemote     : true
     });
   });
   log('=> opened group tabs: ', replacedGroupTabs);
-  aInfo.dragged.ownerDocument.defaultView.setTimeout(() => {
+  aDropActionInfo.dragged.ownerDocument.defaultView.setTimeout(() => {
     log('closing needless group tabs');
     replacedGroupTabs.reverse().forEach(function(aTab) {
       log(' check: ', aTab.label+'('+aTab._tPos+') '+getLoadingURI(aTab));
@@ -470,7 +471,7 @@ async function performDrop(aInfo) {
 */
 
 /*
-  if (newTabs.length && aInfo.action & kACTION_ATTACH) {
+  if (newTabs.length && aDropActionInfo.action & kACTION_ATTACH) {
     Promise.all(newTabs.map((aTab) => aTab.__treestyletab__promisedDuplicatedTab))
       .then((function() {
         log('   => attach (last)');
@@ -478,8 +479,8 @@ async function performDrop(aInfo) {
           newTabs.filter(function(aTab, aIndex) {
             return treeStructure[aIndex] == -1;
           }),
-          aInfo.parent,
-          { insertBefore: aInfo.insertBefore }
+          aDropActionInfo.parent,
+          { insertBefore: aDropActionInfo.insertBefore }
         );
       }).bind(this));
   }

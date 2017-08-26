@@ -470,7 +470,7 @@ function collapseExpandTab(aTab, aParams = {}) {
   }
 }
 
-function collapseExpandTreesIntelligentlyFor(aTab, aParams = {}) {
+function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {
   if (!aTab)
     return;
 
@@ -516,12 +516,12 @@ function collapseExpandTreesIntelligentlyFor(aTab, aParams = {}) {
 
     let manuallyExpanded = collapseTab.classList.contains(kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
     if (!dontCollapse && !manuallyExpanded)
-      collapseExpandSubtree(collapseTab, inherit(aParams, {
+      collapseExpandSubtree(collapseTab, inherit(aOptions, {
         collapsed: true
       }));
   }
 
-  collapseExpandSubtree(aTab, inherit(aParams, {
+  collapseExpandSubtree(aTab, inherit(aOptions, {
     collapsed: false
   }));
 }
