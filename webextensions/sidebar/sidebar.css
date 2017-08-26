@@ -168,6 +168,15 @@ li.tab.pinned :-moz-any(.twisty, .label, .closebox) {
 .favicon-default::before {
   content: "🌐";
 }
+li.tab[data-content-location^="about:"] .favicon-default::before,
+li.tab[data-content-location^="chrome:"] .favicon-default::before,
+li.tab[data-content-location^="resource:"] .favicon-default::before,
+li.tab[data-content-location^="moz-extension:"] .favicon-default::before {
+  content: "⚙";
+}
+li.tab[data-content-location^="file:"] .favicon-default::before {
+  content: "📄";
+}
 li.tab.group-tab:not(.subtree-collapsed) .favicon-default::before {
   content: "📂";
 }
@@ -184,7 +193,7 @@ li.tab.group-tab.subtree-collapsed:not([data-child-ids]) .favicon-default::befor
 li.tab.loading .favicon-image,
 li.tab.loading .favicon-default::before,
 li.tab:not(.loading) .throbber::before {
-  display: none;
+  display: none !important;
 }
 /*
 li.tab.loading .throbber {
