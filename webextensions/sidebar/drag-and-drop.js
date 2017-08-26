@@ -512,6 +512,114 @@ function detachTabsOnDrop(aTabs) {
   }
 }
 
+async function handleDroppedLinksOrBookmarks(aEvent, aDropActionInfo) {
+  aEvent.stopPropagation();
+
+  var uris = retrieveURIsFromDragEvent(aEvent);
+  // uris.forEach(aURI => {
+  //   if (aURI.indexOf(kURI_BOOKMARK_FOLDER) != 0)
+  //     securityCheck(aURI, aEvent);
+  // });
+  log('handleDroppedLinksOrBookmarks: ', uris);
+
+  var inBackground = false; // prefs.getPref('browser.tabs.loadInBackground');
+  if (aEvent.shiftKey)
+    inBackground = !inBackground;
+
+  var tab = aDropActionInfo.actualTarget;
+  if (tab &&
+      aDropActionInfo.position == kDROP_ON &&
+      (getDroppedLinksOnTabBehavior() & kDROPLINK_LOAD) &&
+      !isLocked(tab) &&
+      !isPinned(tab)) {
+    await loadURI(uris.shift(), {
+      tab:      tab,
+      inRemote: true
+    });
+  }
+  await openURIsInTabs(uris, {
+    parent:       aDropActionInfo.parent,
+    insertBefore: aDropActionInfo.insertBefore,
+    inRemote:     true
+  });
+}
+
+function retrieveURIsFromDragEvent(aEvent) {
+  log('retrieveURIsFromDragEvent');
+  var dt = aEvent.dataTransfer;
+  var urls = [];
+  var types = [
+      'text/x-moz-place',
+      'text/uri-list',
+      'text/x-moz-text-internal',
+      'text/x-moz-url',
+      'text/plain',
+      'application/x-moz-file'
+    ];
+  for (let i = 0; i < types.length; i++) {
+    let dataType = types[i];
+    for (let i = 0, maxi = dt.mozItemCount; i < maxi; i++) {
+      let urlData = dt.mozGetDataAt(dataType, i);
+      if (urlData) {
+        urls = urls.concat(retrieveURIsFromData(urlData, dataType));
+      }
+    }
+    if (urls.length)
+      break;
+  }
+  log(' => retrieved: ', urls);
+  urls = urls.filter(aURI =>
+    aURI &&
+      aURI.length &&
+      aURI.indexOf(kBOOKMARK_FOLDER) == 0 ||
+      !/^\s*(javascript|data):/.test(aURI)
+  );
+  log('  => filtered: ', urls);
+  return urls;
+}
+
+const kBOOKMARK_FOLDER = 'x-moz-place:';
+function retrieveURIsFromData(aData, aType) {
+  log('retrieveURIsFromData: ', aType, aData);
+  switch (aType) {
+    case 'text/x-moz-place': {
+      let item = JSON.parse(aData);
+      if (item.type == 'text/x-moz-place-container') {
+        let children = item.children;
+        if (!children) {
+          children = item.children = retrieveBookmarksInFolder(item.id);
+          aData = JSON.stringify(item);
+        }
+        // When a blank folder is dropped, just open a dummy tab with the folder name.
+        if (children && children.length == 0) {
+          let uri = getGroupTabURI({ title: item.title });
+          return [uri];
+        }
+      }
+      let uri = item.uri;
+      if (uri)
+        return uri;
+      else
+        return `${kBOOKMARK_FOLDER}${aData}`;
+    }; break;
+
+    case 'text/uri-list':
+      return aData.replace(/\r/g, '\n')
+            .replace(/^\#.+$/gim, '')
+            .replace(/\n\n+/g, '\n')
+            .split('\n');
+
+    case 'text/unicode':
+    case 'text/plain':
+    case 'text/x-moz-text-internal':
+      return [aData.trim()];
+
+    case 'application/x-moz-file':
+      return [getURLSpecFromFile(aData)];
+  }
+  return [];
+}
+
 
 function onDragStart(aEvent) {
   var tab = aEvent.target;
@@ -645,10 +753,8 @@ function onDragLeave(aEvent) {
 }
 
 async function onDrop(aEvent) {
-  await onTabDrop(aEvent);
-  collapseAutoExpandedTabsWhileDragging();
-}
-async function onTabDrop(aEvent) {
+  setTimeout(() => collapseAutoExpandedTabsWhileDragging(), 0);
+
   /**
    * We must calculate drop action before clearing "dragging"
    * state, because the drop position depends on tabs' actual
@@ -675,7 +781,7 @@ async function onTabDrop(aEvent) {
 
   if (!dropActionInfo.dragged) {
     log('link or bookmark item is dropped');
-    //handleLinksOrBookmarks(aEvent, dropActionInfo);
+    handleDroppedLinksOrBookmarks(aEvent, dropActionInfo);
     return;
   }
 
