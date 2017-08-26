@@ -98,8 +98,8 @@ function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
   if (!updatedTab)
     return;
 
+  updateTab(updatedTab, aTab);
   updatedTab.apiTab = aTab;
-  updateTab(updatedTab);
 
   window.onTabUpdated && onTabUpdated(updatedTab);
 }

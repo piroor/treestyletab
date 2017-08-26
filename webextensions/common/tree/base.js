@@ -83,36 +83,40 @@ function buildTab(aTab, aOptions = {}) {
   return item;
 }
 
-function updateTab(aTab) {
-  var apiTab = aTab.apiTab;
-  var label = apiTab.title;
-  if (apiTab.url && apiTab.url.indexOf(kGROUP_TAB_URI) == 0) {
+function updateTab(aTab, aNewState) {
+  var oldState = aTab.apiTab;
+  var label = aNewState.title;
+  if (aNewState.url && aNewState.url.indexOf(kGROUP_TAB_URI) == 0) {
     aTab.classList.add(kTAB_STATE_GROUP_TAB);
-    label = getTitleFromGroupTabURI(apiTab.url);
+    label = getTitleFromGroupTabURI(aNewState.url);
   }
   else {
     aTab.classList.remove(kTAB_STATE_GROUP_TAB);
   }
 
-  getTabLabel(aTab).textContent = label;
-  aTab.setAttribute('title', label);
-
-  window.onTabFaviconUpdated &&
-    onTabFaviconUpdated(aTab, aTab.favIconUrl);
-
-  aTab.classList.remove(aTab.status == 'loading' ? 'complete' : 'loading');
-  aTab.classList.add(aTab.status);
-
-  var previousState = isPinned(aTab);
-  if (aTab.pinned) {
-    aTab.classList.add(kTAB_STATE_PINNED);
-    if (!previousState)
-      window.onTabPinned && onTabPinned(aTab);
+  if (label != oldState.title) {
+    getTabLabel(aTab).textContent = label;
+    aTab.setAttribute('title', label);
   }
-  else {
-    aTab.classList.remove(kTAB_STATE_PINNED);
-    if (previousState)
+
+  if (aNewState.favIconUrl != oldState.favIconUrl)
+    window.onTabFaviconUpdated &&
+      onTabFaviconUpdated(aTab, aNewState.favIconUrl);
+
+  if (aNewState.status != oldState.status) {
+    aTab.classList.remove(oldState.status);
+    aTab.classList.add(aNewState.status);
+  }
+
+  if (aNewState.pinned != oldState.pinned) {
+    if (aNewState.pinned) {
+      aTab.classList.add(kTAB_STATE_PINNED);
+      window.onTabPinned && onTabPinned(aTab);
+    }
+    else {
+      aTab.classList.remove(kTAB_STATE_PINNED);
       window.onTabUnpinned && onTabUnpinned(aTab);
+    }
   }
 }
 
