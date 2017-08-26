@@ -837,34 +837,21 @@ function onDragEnd(aEvent) {
   if (aEvent.dataTransfer.dropEffect != 'none')
     return;
 
+  log('trying to detach tab from window');
   aEvent.stopPropagation();
   aEvent.preventDefault();
 
-  var eX = aEvent.clientX;
-  var eY = aEvent.clientY;
-  var x, y, w, h;
-
-  // ignore drop on the sidebar
-  var tabbarRect = document.body.getBoundingClientRect();
-  w = tabbarRect.width;
-  h = tabbarRect.height;
-  if (eX > 0 && eX < w && eY > 0 && eY < h)
-    return;
-
-  // ignore drop near the tab bar
-  var ignoreArea = Math.max(16, parseInt(getFirstNormalTab(gTargetWindow).getBoundingClientRect().height / 2));
-  x = -ignoreArea;
-  y = - ignoreArea;
-  w = tabbarRect.width + ignoreArea + ignoreArea;
-  h = tabbarRect.height + ignoreArea + ignoreArea;
-  if (eX > x && eX < x + w && eY > y && eY < y + h)
+  // ignore drop on the sidebar (both client coordinates
+  // are zero if the event is fired outside the sidebar.)
+  if (aEvent.clientX != 0 ||
+      aEvent.clientY != 0)
     return;
 
   if (isDraggingAllCurrentTabs(dragData.draggedTab))
     return;
 
-  //if (aEvent.ctrlKey || aEvent.metaKey)
-  //  draggedTab.__treestyletab__toBeDuplicated = true;
+  var shouldDuplicate = isAccelKeyPressed(aEvent);
+  log('ready to tear off or duplicate, duplicate = ', shouldDuplicate);
  
   //tearOff(draggedTab);
 }
