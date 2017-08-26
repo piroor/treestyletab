@@ -780,3 +780,74 @@ function scrollToNewTab(aTab) {
 
 function updateInsertionPositionInfo(aTab) {
 }
+
+
+function getDroppedLinksOnTabBehavior() {
+  return kDROPLINK_NEWTAB;
+/*
+  var behavior = utils.getTreePref('dropLinksOnTab.behavior');
+  if (behavior & this.kDROPLINK_FIXED)
+    return behavior;
+
+  var checked = { value : false };
+  var newChildTab = Services.prompt.confirmEx(this.browserWindow,
+      utils.treeBundle.getString('dropLinkOnTab.title'),
+      utils.treeBundle.getString('dropLinkOnTab.text'),
+      (Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_0) +
+      (Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_1),
+      utils.treeBundle.getString('dropLinkOnTab.openNewChildTab'),
+      utils.treeBundle.getString('dropLinkOnTab.loadInTheTab'),
+      null,
+      utils.treeBundle.getString('dropLinkOnTab.never'),
+      checked
+    ) == 0;
+
+  behavior = newChildTab ? this.kDROPLINK_NEWTAB : this.kDROPLINK_LOAD ;
+  if (checked.value)
+    utils.setTreePref('dropLinksOnTab.behavior', behavior);
+
+  return behavior
+*/
+}
+
+function openGroupBookmarkBehavior() {
+  return kGROUP_BOOKMARK_SUBTREE | kGROUP_BOOKMARK_USE_DUMMY | kGROUP_BOOKMARK_EXPAND_ALL_TREE;
+/*
+  var behavior = utils.getTreePref('openGroupBookmark.behavior');
+  if (behavior & this.kGROUP_BOOKMARK_FIXED)
+    return behavior;
+
+  var dummyTabFlag = behavior & this.kGROUP_BOOKMARK_USE_DUMMY;
+
+  var checked = { value : false };
+  var button = Services.prompt.confirmEx(this.browserWindow,
+      utils.treeBundle.getString('openGroupBookmarkBehavior.title'),
+      utils.treeBundle.getString('openGroupBookmarkBehavior.text'),
+      // The "cancel" button must pe placed as the second button
+      // due to the bug: https://bugzilla.mozilla.org/show_bug.cgi?id=345067
+      (Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_0) |
+      (Services.prompt.BUTTON_TITLE_CANCEL * Services.prompt.BUTTON_POS_1) |
+      (Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_2),
+      utils.treeBundle.getString('openGroupBookmarkBehavior.subTree'),
+      '',
+      utils.treeBundle.getString('openGroupBookmarkBehavior.separate'),
+      utils.treeBundle.getString('openGroupBookmarkBehavior.never'),
+      checked
+    );
+
+  if (button < 0)
+    return this.kGROUP_BOOKMARK_CANCEL;
+
+  var behaviors = [
+      this.kGROUP_BOOKMARK_SUBTREE | dummyTabFlag,
+      this.kGROUP_BOOKMARK_CANCEL,
+      this.kGROUP_BOOKMARK_SEPARATE
+    ];
+  behavior = behaviors[button];
+
+  if (checked.value && button != this.kGROUP_BOOKMARK_CANCEL) {
+    utils.setTreePref('openGroupBookmark.behavior', behavior);
+  }
+  return behavior;
+*/
+}

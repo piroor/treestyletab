@@ -78,6 +78,10 @@ function isSelected(aTab) {
   return false;
 }
 
+function isLocked(aTab) {
+  return false;
+}
+
 // if all tabs are aldeardy placed at there, we don't need to move them.
 function isAllTabsPlacedBefore(aTabs, aNextTab) {
   var previousTab = aTabs[0];
