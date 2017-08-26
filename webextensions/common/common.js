@@ -56,7 +56,7 @@ configs = new Configs({
   collapseDuration: 150, // extensions.treestyletab.animation.collapse.duration
 
   twistyStyle: 'modern-black', // extensions.treestyletab.twisty.style
-  shouldExpandTwistyArea: true, // extensions.treestyletab.twisty.expandSensitiveArea
+  shouldExpandTwistyArea: false, // extensions.treestyletab.twisty.expandSensitiveArea
 
   scrollToNewTabMode: null, // extensions.treestyletab.tabbar.scrollToNewTab.mode
   counterRole: -1, // extensions.treestyletab.counter.role.vertical
