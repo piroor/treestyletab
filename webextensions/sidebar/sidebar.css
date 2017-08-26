@@ -185,10 +185,12 @@ li.tab[data-content-location^="moz-extension:"] .favicon-default::before {
   content: "📄";
 }
 li.tab.group-tab:not(.subtree-collapsed) .favicon-default::before {
+  background: none;
   content: "📂";
 }
 li.tab.group-tab.subtree-collapsed .favicon-default::before,
 li.tab.group-tab.subtree-collapsed:not([data-child-ids]) .favicon-default::before {
+  background: none;
   content: "📁";
 }
 .throbber::before {
