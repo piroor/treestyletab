@@ -172,7 +172,14 @@ li.tab[data-content-location^="about:"] .favicon-default::before,
 li.tab[data-content-location^="chrome:"] .favicon-default::before,
 li.tab[data-content-location^="resource:"] .favicon-default::before,
 li.tab[data-content-location^="moz-extension:"] .favicon-default::before {
-  content: "⚙";
+  background-image: url("chrome://branding/content/icon32.png");
+  background-size: 100%;
+  content: "";
+  display: inline-block;
+  max-height: var(--favicon-size);
+  max-width: var(--favicon-size);
+  min-height: var(--favicon-size);
+  min-width: var(--favicon-size);
 }
 li.tab[data-content-location^="file:"] .favicon-default::before {
   content: "📄";
