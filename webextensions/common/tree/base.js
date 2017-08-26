@@ -315,6 +315,7 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
         type:         kCOMMAND_NEW_TABS,
         uris:         aURIs,
         parent:       aOptions.parent && aOptions.parent.id,
+        opener:       aOptions.opener && aOptions.opener.id,
         insertBefore: aOptions.insertBefore && aOptions.insertBefore.id,
         insertAfter:  aOptions.insertAfter && aOptions.insertAfter.id
       }));
@@ -327,17 +328,26 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
                          -1 ;
       let container = getTabsContainer(aOptions.windowId);
       container.toBeOpenedTabsWithPositionsCount += aURIs.length;
-      await Promise.all(aURIs.map((aURI, aIndex) => {
+      await Promise.all(aURIs.map(async (aURI, aIndex) => {
         var params = {};
         if (aURI)
           params.url = aURI;
         if (aIndex == 0)
           params.active = !aOptions.inBackground;
-        if (aOptions.parent)
-          params.openerTabId = aOptions.parent.apiTab.id;
+        if (aOptions.opener)
+          params.openerTabId = aOptions.opener.apiTab.id;
         if (startIndex > -1)
           params.index = startIndex + aIndex;
-        return browser.tabs.create(params);
+        var apiTab = await browser.tabs.create(params);
+        var tab = getTabById({ tab: apiTab.id, window: apiTab.windowId });
+        if (!aOptions.opener &&
+            aOptions.parent &&
+            tab)
+          await attachTabTo(tab, aOptions.parent, {
+            insertBefore: aOptions.insertBefore,
+            insertAfter:  aOptions.insertAfter,
+            broadcast:    true
+          });
       }));
     }
   });
