@@ -52,7 +52,7 @@ function buildTab(aTab, aOptions = {}) {
 
   var item = document.createElement('li');
   item.apiTab = aTab;
-  item.setAttribute('id', `tab-${aTab.windowId}-${aTab.id}`);
+  item.setAttribute('id', makeTabId(aTab));
   //item.setAttribute(kCHILDREN, '');
   item.classList.add('tab');
   if (aTab.active)

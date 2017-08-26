@@ -397,12 +397,13 @@ async function doAndGetNewTabs(aAsyncTask, aHint) {
     if (container)
       tabsQueryOptions.windowId = container.windowId;
   }
-  var beforeTabs = await browser.tabs.query(tabsQueryOptions);
+  var beforeApiTabs = await browser.tabs.query(tabsQueryOptions);
+  var beforeApiIds = beforeApiTabs.map(makeTabId);
   await aAsyncTask();
-  var afterTabs = await browser.tabs.query(tabsQueryOptions);
-  var beforeIds = beforeTabs.map(aApiTab => aApiTab.id);
-  var addedTabs = afterTabs.filter(aApiTab => beforeIds.indexOf(aApiTab.id) > -1);
-  return addedTabs.map(aApiTab => getTabById({ tab: aApiTab.id, window: aApiTab.windowId }));
+  var afterApiTabs = await browser.tabs.query(tabsQueryOptions);
+  var addedApiTabs = afterApiTabs.filter(aNewApiTab => beforeApiIds.indexOf(makeTabId(aNewApiTab)) < 0);
+  var addedTabs = addedApiTabs.map(aApiTab => getTabById({ tab: aApiTab.id, window: aApiTab.windowId }));
+  return addedTabs;
 }
 
 function getNextFocusedTab(aTab) { // if the current tab is closed...

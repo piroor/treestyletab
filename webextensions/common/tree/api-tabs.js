@@ -5,6 +5,10 @@
 */
 'use strict';
 
+function makeTabId(aApiTab) {
+  return `tab-${aApiTab.windowId}-${aApiTab.id}`;
+}
+
 async function getApiTabIndex(...aQueriedTabIds) {
   var tabs = await browser.tabs.query({ currentWindow: true });
   var tabIds = tabs.map((aTab) => aTab.id);
