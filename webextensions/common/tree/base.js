@@ -281,7 +281,7 @@ async function openURIInTab(aURI, aOptions = {}) {
   return tabs[0];
 }
 
-async function openURIsInTabs(aURIs, aOptions) {
+async function openURIsInTabs(aURIs, aOptions = {}) {
   if (!aOptions.windowId && gTargetWindow)
     aOptions.windowId = gTargetWindow;
 

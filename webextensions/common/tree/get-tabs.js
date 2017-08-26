@@ -390,7 +390,7 @@ function getVisibleIndex(aTab) {
 
 async function doAndGetNewTabs(aAsyncTask, aHint) {
   var tabsQueryOptions = {
-    windowType: ['normal']
+    windowType: 'normal'
   };
   if (aHint) {
     let container = getTabsContainer(aHint);
@@ -398,7 +398,7 @@ async function doAndGetNewTabs(aAsyncTask, aHint) {
       tabsQueryOptions.windowId = container.windowId;
   }
   var beforeTabs = await browser.tabs.query(tabsQueryOptions);
-  await aAsyncTask;
+  await aAsyncTask();
   var afterTabs = await browser.tabs.query(tabsQueryOptions);
   var beforeIds = beforeTabs.map(aApiTab => aApiTab.id);
   var addedTabs = afterTabs.filter(aApiTab => beforeIds.indexOf(aApiTab.id) > -1);

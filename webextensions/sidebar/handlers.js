@@ -213,9 +213,7 @@ function onClick(aEvent) {
 }
 
 function handleNewTabAction(aEvent) {
-  openNewTab(null, {
-    type:     kCOMMAND_NEW_TAB,
-    windowId: gTargetWindow,
+  openNewTab({
     inBackground: !isAccelAction(aEvent)
   });
 }
