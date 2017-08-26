@@ -12,7 +12,9 @@ function onTabOpening(aTab) {
   if (container.openedNewTabsTimeout)
     clearTimeout(container.openedNewTabsTimeout);
 
-  if (!configs.autoGroupNewTabs)
+  // ignore tabs opened from others
+  if (!configs.autoGroupNewTabs ||
+      aTab.apiTab.openerTabId)
     return;
 
   container.openedNewTabs.push(aTab.id);
