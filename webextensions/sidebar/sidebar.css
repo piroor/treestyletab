@@ -170,8 +170,7 @@ li.tab.pinned :-moz-any(.twisty, .label, .closebox) {
 }
 li.tab[data-content-location^="about:"] .favicon-default::before,
 li.tab[data-content-location^="chrome:"] .favicon-default::before,
-li.tab[data-content-location^="resource:"] .favicon-default::before,
-li.tab[data-content-location^="moz-extension:"] .favicon-default::before {
+li.tab[data-content-location^="resource:"] .favicon-default::before {
   background-image: url("chrome://branding/content/icon32.png");
   background-size: 100%;
   content: "";
@@ -181,7 +180,8 @@ li.tab[data-content-location^="moz-extension:"] .favicon-default::before {
   min-height: var(--favicon-size);
   min-width: var(--favicon-size);
 }
-li.tab[data-content-location^="file:"] .favicon-default::before {
+li.tab[data-content-location^="file:"] .favicon-default::before,
+li.tab[data-content-location^="moz-extension:"] .favicon-default::before {
   content: "📄";
 }
 li.tab.group-tab:not(.subtree-collapsed) .favicon-default::before {
