@@ -630,7 +630,7 @@ function getCloseParentBehaviorForTab(aTab, aDefaultBehavior) {
 
 async function moveTabSubtreeBefore(aTab, aNextTab, aOptions = {}) {
   if (!aTab ||
-      !isAllTabsPlacedBefore([aTab].concat(getDescendantTabs(aTab)), aNextTab))
+      isAllTabsPlacedBefore([aTab].concat(getDescendantTabs(aTab)), aNextTab))
     return;
 
   var container = aTab.parentNode;
