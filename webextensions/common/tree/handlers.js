@@ -69,10 +69,7 @@ function onApiTabActivated(aActiveInfo) {
 
   //cancelDelayedExpandOnTabSelect(); // for Ctrl-Tab
 
-  var oldTabs = document.querySelectorAll(`.${kTAB_STATE_ACTIVE}`);
-  for (let oldTab of oldTabs) {
-    oldTab.classList.remove(kTAB_STATE_ACTIVE);
-  }
+  var oldTabs = clearOldActiveStateInWindow(aActiveInfo.windowId)
   newTab.classList.add(kTAB_STATE_ACTIVE);
 
   log('onSelect: ', dumpTab(newTab));
@@ -88,6 +85,17 @@ function onApiTabActivated(aActiveInfo) {
     window.onTabFocused && onTabFocused(newTab, {
       previouslyFocusedTab: oldTabs[0]
     });
+}
+
+function clearOldActiveStateInWindow(aWindowId) {
+  var container = getTabsContainer(aWindowId);
+  if (!container)
+    return [];
+  var oldTabs = document.querySelectorAll(`.${kTAB_STATE_ACTIVE}`);
+  for (let oldTab of oldTabs) {
+    oldTab.classList.remove(kTAB_STATE_ACTIVE);
+  }
+  return oldTab;
 }
 
 function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
@@ -108,7 +116,15 @@ async function onApiTabCreated(aTab) {
   if (gTargetWindow && aTab.windowId != gTargetWindow)
     return;
 
-  log('created, id: ', aTab.id);
+  log('onApiTabCreated: ', aTab.id);
+  return onNewTabTracked(aTab);
+}
+
+async function onNewTabTracked(aTab) {
+  if (gTargetWindow && aTab.windowId != gTargetWindow)
+    return;
+
+  log('onNewTabTracked: ', aTab.id);
   var container = getTabsContainer(aTab.windowId);
   if (!container) {
     container = buildTabsContainerFor(aTab.windowId);
@@ -147,7 +163,7 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
   if (!oldTab)
     return;
 
-  log('onRemoved: ', dumpTab(oldTab));
+  log('onApiTabRemoved: ', dumpTab(oldTab));
 
   //var backupAttributes = collectBackupAttributes(oldTab);
   //log('onTabClose: backupAttributes = ', backupAttributes);
@@ -210,21 +226,51 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
   await window.onTabMoved && onTabMoved(movedTab, aMoveInfo);
 }
 
-function onApiTabAttached(aTabId, aAttachInfo) {
-  if (gTargetWindow &&
-      aAttachInfo.newWindowId != gTargetWindow)
+async function onApiTabAttached(aTabId, aAttachInfo) {
+  if (gTargetWindow && aAttachInfo.newWindowId != gTargetWindow)
     return;
 
-  var newTab = getTabById({ tab: aTabId, window: aAttachInfo.newWindowId });
+  log('onApiTabAttached, id: ', aTabId);
+  var apiTab = await browser.tabs.get(aTabId);
+  if (!apiTab)
+    return;
+
+  clearOldActiveStateInWindow(aAttachInfo.newWindowId);
+  onNewTabTracked(apiTab);
 }
 
 function onApiTabDetached(aTabId, aDetachInfo) {
-  if (gTargetWindow &&
-      aAttachInfo.oldWindowId != gTargetWindow)
+  if (gTargetWindow && aDetachInfo.oldWindowId != gTargetWindow)
     return;
 
+  log('onApiTabDetached, id: ', aTabId);
   var oldTab = getTabById({ tab: aTabId, window: aDetachInfo.oldWindowId });
-  if (oldTab)
-    getTabsContainer(oldTab).removeChild(oldTab);
+  if (!oldTab)
+    return;
+
+  //var backupAttributes = collectBackupAttributes(oldTab);
+  //log('onTabClose: backupAttributes = ', backupAttributes);
+
+  if (isActive(oldTab))
+    tryMoveFocusFromClosingCurrentTab(oldTab);
+
+  var closeParentBehavior = getCloseParentBehaviorForTab(oldTab);
+  if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
+    closeParentBehavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
+
+  detachAllChildren(oldTab, {
+    behavior: closeParentBehavior
+  });
+  //reserveCloseRelatedTabs(toBeClosedTabs);
+  detachTab(oldTab, { dontUpdateIndent: true });
+  //restoreTabAttributes(oldTab, backupAttributes);
+  //updateLastScrollPosition();
+
+  window.onTabClosed && onTabClosed(oldTab);
+
+  var container = oldTab.parentNode;
+  container.removeChild(oldTab);
+  if (!container.hasChildNodes())
+    container.parentNode.removeChild(container);
 }
 
