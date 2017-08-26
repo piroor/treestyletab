@@ -414,36 +414,9 @@ async function performDrop(aDropActionInfo) {
   }
 
   if (aDropActionInfo.action & kACTION_AFFECTS_TO_SOURCE) {
-    log('=> moving dragged tabs');
-    let alreadyPlaced = (
-       (aDropActionInfo.insertBefore &&
-        isAllTabsPlacedBefore(draggedTabs, aDropActionInfo.insertBefore)) ||
-       (aDropActionInfo.insertAfter &&
-        isAllTabsPlacedAfter(draggedTabs, aDropActionInfo.insertAfter))
-    );
-    let doMove = alreadyPlaced ?
-      null :
-      async () => {
-        if (aDropActionInfo.insertBefore)
-          await moveTabInternallyBefore(aDropActionInfo.dragged, aDropActionInfo.insertBefore, {
-            inRemote: true
-          });
-        else
-          await moveTabInternallyAfter(aDropActionInfo.dragged, aDropActionInfo.insertAfter, {
-            inRemote: true
-          });
-        await moveTabsInternallyAfter(
-          draggedTabs.filter(aTab => aTab != aDropActionInfo.dragged),
-          aDropActionInfo.dragged,
-          { inRemote: true }
-        );
-      };
-
     log('=> action for source tabs');
     if (aDropActionInfo.action & kACTION_DETACH) {
       log('=> detach');
-      if (doMove)
-        await doMove();
       detachTabsOnDrop(draggedRoots);
     }
     else if (aDropActionInfo.action & kACTION_ATTACH) {
@@ -455,8 +428,29 @@ async function performDrop(aDropActionInfo) {
     }
     else {
       log('=> just moved');
-      if (doMove)
-        await doMove();
+    }
+
+    if ((aDropActionInfo.insertBefore &&
+         isAllTabsPlacedBefore(draggedTabs, aDropActionInfo.insertBefore)) ||
+        (aDropActionInfo.insertAfter &&
+         isAllTabsPlacedAfter(draggedTabs, aDropActionInfo.insertAfter))) {
+      log('=> already placed at expected position');
+    }
+    else {
+      log('=> moving dragged tabs');
+      if (aDropActionInfo.insertBefore)
+        await moveTabInternallyBefore(aDropActionInfo.dragged, aDropActionInfo.insertBefore, {
+          inRemote: true
+        });
+      else
+        await moveTabInternallyAfter(aDropActionInfo.dragged, aDropActionInfo.insertAfter, {
+          inRemote: true
+        });
+      await moveTabsInternallyAfter(
+        draggedTabs.filter(aTab => aTab != aDropActionInfo.dragged),
+        aDropActionInfo.dragged,
+        { inRemote: true }
+      );
     }
 
     // if this move will cause no change...
