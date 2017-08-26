@@ -290,6 +290,7 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
     if (aOptions.inRemote) {
       await browser.runtime.sendMessage(inherit(aOptions, {
         type:         kCOMMAND_NEW_TABS,
+        uris:         aURIs,
         parent:       aOptions.parent && aOptions.parent.id,
         insertBefore: aOptions.insertBefore && aOptions.insertBefore.id
       }));
