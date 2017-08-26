@@ -239,7 +239,7 @@ li.tab.loading .throbber {
 /* drag and drop */
 
 li.tab.dragging {
-  opacity: 0.65 !important;
+  opacity: 0.5 !important;
 }
 
 li.tab[data-drop-position="self"] {
