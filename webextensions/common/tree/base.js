@@ -118,6 +118,7 @@ function buildTabsContainerFor(aWindowId) {
   container.doingCollapseExpandCount = 0;
   container.internalFocusCount = 0;
   container.openingCount = 0;
+  container.toBeOpenedTabsWithPositionsCount = 0;
 
   return container;
 }
@@ -297,6 +298,8 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
       let startIndex = aOptions.insertBefore ?
                          getTabIndex(aOptions.insertBefore) :
                          -1 ;
+      let container = getTabsContainer(aOptions.windowId);
+      container.toBeOpenedTabsWithPositionsCount += aURIs.length;
       await Promise.all(aURIs.map((aURI, aIndex) => {
         var params = {};
         if (aURI)

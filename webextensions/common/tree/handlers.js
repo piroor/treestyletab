@@ -126,9 +126,14 @@ async function onApiTabCreated(aTab) {
 
   var opener = getTabById({ tab: aTab.openerTabId, window: aTab.windowId });
   if (opener) {
-    log('opener: ', dumpTab(opener));
-    await attachTabTo(newTab, opener);
+    log('opener: ', dumpTab(opener), container.toBeOpenedTabsWithPositionsCount);
+    await attachTabTo(newTab, opener, {
+      dontMove: container.toBeOpenedTabsWithPositionsCount > 0
+    });
   }
+
+  if (container.toBeOpenedTabsWithPositionsCount > 0)
+    container.toBeOpenedTabsWithPositionsCount--;
 
   updateInsertionPositionInfo(newTab);
 
