@@ -4,6 +4,12 @@
 
   "sidebarTitle": { "message": "Tree Style Tab" },
 
+  "groupTab.label": { "message": "$TITLE$ and more",
+    "placeholders": {
+      "title": { "content": "$1", "example": "title" }
+    }},
+  "groupTab.label.default": { "message": "Group" },
+
   "config.animation.label": { "message": "Enable animation effects" },
   "config.debug.label": { "message": "Print debug log" }
 }

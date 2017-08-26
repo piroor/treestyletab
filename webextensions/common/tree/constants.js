@@ -104,5 +104,4 @@ const kINSERT_FISRT = 0;
 const kINSERT_LAST = 1;
 
 const kTAB_STATE_GROUP_TAB = 'group-tab';
-const kGROUP_TAB_SUFFIX = 'treestyletab-group-tab';
-const kGROUP_TAB_MATCHER = new RegExp(`^data:text\/html,.+#${kGROUP_TAB_SUFFIX}$`);
+const kGROUP_TAB_URI = browser.extension.getURL('resources/group-tab.html');

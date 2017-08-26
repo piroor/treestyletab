@@ -7,6 +7,42 @@
 
 // raw event handlers
 
+function onTabOpening(aTab) {
+  var container = aTab.parentNode;
+  if (container.openedNewTabsTimeout)
+    clearTimeout(container.openedNewTabsTimeout);
+
+  if (!configs.autoGroupNewTabs)
+    return;
+
+  container.openedNewTabs.push(aTab.id);
+  container.openedNewTabsTimeout = setTimeout(
+    onNewTabsTimeout,
+    configs.autoGroupNewTabsTimeout,
+    container
+  );
+}
+async function onNewTabsTimeout(aContainer) {
+  var newRootTabs = collectRootTabs(aContainer.openedNewTabs.map(getTabById));
+  aContainer.openedNewTabs = [];
+  if (newRootTabs.length <= 1)
+    return;
+
+  log(`onNewTabsTimeout: ${newRootTabs.length} root tabs are opened`);
+  var title = browser.i18n.getMessage('groupTab.label', newRootTabs[0].apiTab.title);
+  var uri = makeGroupTabURI(title);
+  var groupTab = await openURIInTab(uri, {
+    windowId: aContainer.windowId,
+    insertBefore: newRootTabs[0]
+  });
+  for (let tab of newRootTabs) {
+    await attachTabTo(tab, groupTab, {
+      dontMove: true,
+      broadcast: true
+    });
+  }
+}
+
 function onTabOpened(aTab) {
   reserveToSaveTreeStructure(aTab);
 }

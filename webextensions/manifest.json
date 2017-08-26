@@ -21,6 +21,9 @@
     "page": "options/options.html",
     "chrome_style": true
   },
+  "web_accessible_resources": [
+    "resources/group-tab.html*"
+  ],
   "default_locale": "en",
   "applications": {
     "gecko": {

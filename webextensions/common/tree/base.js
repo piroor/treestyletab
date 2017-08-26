@@ -54,7 +54,6 @@ function buildTab(aTab, aOptions = {}) {
   item.apiTab = aTab;
   item.setAttribute('id', `tab-${aTab.windowId}-${aTab.id}`);
   //item.setAttribute(kCHILDREN, '');
-  item.setAttribute('title', aTab.title);
   item.classList.add('tab');
   if (aTab.active)
     item.classList.add(kTAB_STATE_ACTIVE);
@@ -62,13 +61,16 @@ function buildTab(aTab, aOptions = {}) {
     item.classList.add(kTAB_STATE_PINNED);
   item.classList.add(kTAB_STATE_SUBTREE_COLLAPSED);
 
-  let label = document.createElement('span');
-  label.classList.add(kLABEL);
-  label.appendChild(document.createTextNode(aTab.title));
-  item.appendChild(label);
-
-  if (aTab.url && kGROUP_TAB_MATCHER.test(aTab.url))
+  var title = aTab.title;
+  if (aTab.url && aTab.url.indexOf(kGROUP_TAB_URI) == 0) {
     item.classList.add(kTAB_STATE_GROUP_TAB);
+    title = getTitleFromGroupTabURI(aTab.url);
+  }
+  var label = document.createElement('span');
+  label.classList.add(kLABEL);
+  label.appendChild(document.createTextNode(title));
+  item.appendChild(label);
+  item.setAttribute('title', title);
 
   item.classList.add(aTab.status);
 
@@ -81,32 +83,43 @@ function buildTab(aTab, aOptions = {}) {
   return item;
 }
 
-function updateTab(aTab, aParams = {}) {
-  if ('label' in aParams)
-    getTabLabel(aTab).textContent = aParams.label;
-
-  if ('favicon' in aParams)
-    window.onTabFaviconUpdated &&
-      onTabFaviconUpdated(aTab, aParams.favicon);
-
-  if ('status' in aParams) {
-    aTab.classList.remove(aParams.status == 'loading' ? 'complete' : 'loading');
-    aTab.classList.add(aParams.status);
+function updateTab(aTab) {
+  var apiTab = aTab.apiTab;
+  var label = apiTab.title;
+  if (apiTab.url && apiTab.url.indexOf(kGROUP_TAB_URI) == 0) {
+    aTab.classList.add(kTAB_STATE_GROUP_TAB);
+    label = getTitleFromGroupTabURI(apiTab.url);
+  }
+  else {
+    aTab.classList.remove(kTAB_STATE_GROUP_TAB);
   }
 
-  if ('pinned' in aParams) {
-    let previousState = isPinned(aTab);
-    if (aParams.pinned) {
-      aTab.classList.add(kTAB_STATE_PINNED);
-      if (!previousState)
-        window.onTabPinned && onTabPinned(aTab);
-    }
-    else {
-      aTab.classList.remove(kTAB_STATE_PINNED);
-      if (previousState)
-        window.onTabUnpinned && onTabUnpinned(aTab);
-    }
+  getTabLabel(aTab).textContent = label;
+  aTab.setAttribute('title', label);
+
+  window.onTabFaviconUpdated &&
+    onTabFaviconUpdated(aTab, aTab.favIconUrl);
+
+  aTab.classList.remove(aTab.status == 'loading' ? 'complete' : 'loading');
+  aTab.classList.add(aTab.status);
+
+  var previousState = isPinned(aTab);
+  if (aTab.pinned) {
+    aTab.classList.add(kTAB_STATE_PINNED);
+    if (!previousState)
+      window.onTabPinned && onTabPinned(aTab);
   }
+  else {
+    aTab.classList.remove(kTAB_STATE_PINNED);
+    if (previousState)
+      window.onTabUnpinned && onTabUnpinned(aTab);
+  }
+}
+
+function getTitleFromGroupTabURI(aURI) {
+  var title = aURI.match(/title=([^&;]*)/);
+  return title && decodeURIComponent(title[1]) ||
+           browser.i18n.getMessage('groupTab.label.default');
 }
 
 function buildTabsContainerFor(aWindowId) {
@@ -122,6 +135,8 @@ function buildTabsContainerFor(aWindowId) {
   container.internalFocusCount = 0;
   container.openingCount = 0;
   container.toBeOpenedTabsWithPositionsCount = 0;
+  container.openedNewTabs = [];
+  container.openedNewTabsTimeout = null;
 
   return container;
 }
@@ -321,5 +336,6 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
 }
 
 function makeGroupTabURI(aTitle) {
-  return `data:text/html,<!DOCTYPE html><title>${aTitle}</title><link ref="favicon" href="">#${kGROUP_TAB_SUFFIX}`
+  var base = kGROUP_TAB_URI;
+  return `${base}?title=${encodeURIComponent(aTitle)}`;
 }

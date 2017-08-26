@@ -90,6 +90,9 @@ configs = new Configs({
   acceptableDelayForInternalFocusMoving: 150,
   maxFaviconizedSize: 32,
 
+  autoGroupNewTabs: true,
+  autoGroupNewTabsTimeout: 100,
+
   animation: true,
   debug:     false
 });
