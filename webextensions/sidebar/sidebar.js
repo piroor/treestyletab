@@ -106,8 +106,11 @@ function onMessage(aMessage, aSender, aRespond) {
         let child = getTabById(aMessage.child);
         let parent = getTabById(aMessage.parent);
         let insertBefore = getTabById(aMessage.insertBefore);
+        let insertAfter  = getTabById(aMessage.insertAfter);
         if (child && parent)
-          attachTabTo(child, parent, { insertBefore });
+          attachTabTo(child, parent, {
+            insertBefore, insertAfter
+          });
       }
     }; break;
 

@@ -184,7 +184,8 @@ async function onMessage(aMessage, aSender, aRespond) {
       log('new tabs requested: ', aMessage);
       await openURIsInTabs(aMessage.uris, inherit(aMessage, {
         parent:       getTabById(aMessage.parent),
-        insertBefore: getTabById(aMessage.insertBefore)
+        insertBefore: getTabById(aMessage.insertBefore),
+        insertAfter:  getTabById(aMessage.insertAfter)
       }));
       aRespond();
     }; break;
@@ -214,10 +215,11 @@ async function onMessage(aMessage, aSender, aRespond) {
       selectTabInternally(tab);
     }; break;
 
-    case kCOMMAND_MOVE_TAB_INTERNALLY_BEFORE: {
-      let tab = getTabById(aMessage.tab);
-      if (tab)
-        await moveTabInternallyBefore(tab, getTabById(aMessage.nextTab));
+    case kCOMMAND_MOVE_TABS_INTERNALLY_BEFORE: {
+      await moveTabsInternallyBefore(
+        aMessage.tabs.map(getTabById),
+        getTabById(aMessage.nextTab)
+      );
       aRespond();
     }; break;
 
@@ -233,9 +235,10 @@ async function onMessage(aMessage, aSender, aRespond) {
       let child = getTabById(aMessage.child);
       let parent = getTabById(aMessage.parent);
       let insertBefore = getTabById(aMessage.insertBefore);
+      let insertAfter = getTabById(aMessage.insertAfter);
       if (child && parent)
         await attachTabTo(child, parent, inherit(aMessage, {
-          insertBefore
+          insertBefore, insertAfter
         }));
       aRespond();
     }; break;

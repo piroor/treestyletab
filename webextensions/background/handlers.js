@@ -33,7 +33,8 @@ async function onNewTabsTimeout(aContainer) {
   var uri = makeGroupTabURI(title);
   var groupTab = await openURIInTab(uri, {
     windowId: aContainer.windowId,
-    insertBefore: newRootTabs[0]
+    insertBefore: newRootTabs[0],
+    insertAfter: getPreviousTab(newRootTabs[0])
   });
   for (let tab of newRootTabs) {
     await attachTabTo(tab, groupTab, {
@@ -147,6 +148,7 @@ async function onTabMoved(aTab, aMoveInfo) {
         case 'attach': {
           attachTabTo(aTab, getTabById(action.parent), {
             insertBefore: getTabById(action.insertBefore),
+            insertAfter:  getTabById(action.insertAfter),
             broadcast: true
           });
           followDescendantsToMovedRoot(aTab);
@@ -260,7 +262,8 @@ async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
         return {
           action: 'attach',
           parent: newParent.id,
-          insertBefore: nextTab && nextTab.id
+          insertBefore: nextTab && nextTab.id,
+          insertAfter:  prevTab && prevTab.id
         };
       }
     }

@@ -135,7 +135,8 @@ function getDropActionInternal(aEvent) {
     position     : null,
     action       : null,
     parent       : null,
-    insertBefore : null
+    insertBefore : null,
+    insertAfter  : null
   };
 
   var dragData = aEvent.dataTransfer.getData(kTREE_DROP_TYPE);
@@ -312,6 +313,7 @@ function getDropActionInternal(aEvent) {
         info.parent       = (targetLevel < nextLevel) ? targetTab : getParentTab(targetTab) ;
         info.action       = kACTION_MOVE | (info.parent ? kACTION_ATTACH : kACTION_DETACH );
         info.insertBefore = nextTab;
+        info.insertAfter  = targetTab;
 /* strategy
   +-----------------------------------------------------
   |[TARGET   ]
@@ -323,6 +325,7 @@ function getDropActionInternal(aEvent) {
           info.action = kACTION_MOVE | kACTION_ATTACH;
           info.parent = getParentTab(targetTab);
           info.insertBefore = getNextSiblingTab(targetTab);
+          info.insertAfter  = targetTab;
           let ancestor = info.parent;
           while (ancestor && !info.insertBefore) {
             info.insertBefore = getNextSiblingTab(ancestor);
@@ -405,15 +408,30 @@ async function performDrop(aDropActionInfo) {
          draggedWholeTree.indexOf(aDropActionInfo.insertBefore) > -1) {
     aDropActionInfo.insertBefore = getNextTab(aDropActionInfo.insertBefore);
   }
+  while (aDropActionInfo.insertAfter &&
+         draggedWholeTree.indexOf(aDropActionInfo.insertAfter) > -1) {
+    aDropActionInfo.insertAfter = getPreviousTab(aDropActionInfo.insertAfter);
+  }
 
   if (aDropActionInfo.action & kACTION_AFFECTS_TO_SOURCE) {
     log('=> moving dragged tabs');
-    let doMove = !isAllTabsPlacedBefore(draggedTabs, aDropActionInfo.insertBefore) ?
+    let alreadyPlaced = (
+       (aDropActionInfo.insertBefore &&
+        isAllTabsPlacedBefore(draggedTabs, aDropActionInfo.insertBefore)) ||
+       (aDropActionInfo.insertAfter &&
+        isAllTabsPlacedAfter(draggedTabs, aDropActionInfo.insertAfter))
+    );
+    let doMove = alreadyPlaced ?
       null :
       async () => {
-        await moveTabInternallyBefore(aDropActionInfo.dragged, aDropActionInfo.insertBefore, {
-          inRemote: true
-        });
+        if (aDropActionInfo.insertBefore)
+          await moveTabInternallyBefore(aDropActionInfo.dragged, aDropActionInfo.insertBefore, {
+            inRemote: true
+          });
+        else
+          await moveTabInternallyAfter(aDropActionInfo.dragged, aDropActionInfo.insertAfter, {
+            inRemote: true
+          });
         await moveTabsInternallyAfter(
           draggedTabs.filter(aTab => aTab != aDropActionInfo.dragged),
           aDropActionInfo.dragged,
@@ -431,7 +449,8 @@ async function performDrop(aDropActionInfo) {
     else if (aDropActionInfo.action & kACTION_ATTACH) {
       log('=> attach');
       attachTabsOnDrop(draggedRoots, aDropActionInfo.parent, {
-        insertBefore: aDropActionInfo.insertBefore
+        insertBefore: aDropActionInfo.insertBefore,
+        insertAfter:  aDropActionInfo.insertAfter
       });
     }
     else {
@@ -441,7 +460,8 @@ async function performDrop(aDropActionInfo) {
     }
 
     // if this move will cause no change...
-    if (getNextVisibleTab(draggedTabs[draggedTabs.length-1]) == aDropActionInfo.insertBefore) {
+    if (getNextVisibleTab(draggedTabs[draggedTabs.length-1]) == aDropActionInfo.insertBefore ||
+        getPreviousVisibleTab(draggedTabs[0]) == aDropActionInfo.insertAfter) {
       log('=> no change: do nothing');
       return true;
     }
@@ -455,6 +475,7 @@ async function performDrop(aDropActionInfo) {
     newTabs = moveTabsInternal(draggedTabs, {
       duplicate    : aDropActionInfo.action & kACTION_DUPLICATE,
       insertBefore : aDropActionInfo.insertBefore,
+      insertAfter  : aDropActionInfo.insertAfter,
       inRemote     : true
     });
   });
@@ -480,7 +501,8 @@ async function performDrop(aDropActionInfo) {
             return treeStructure[aIndex] == -1;
           }),
           aDropActionInfo.parent,
-          { insertBefore: aDropActionInfo.insertBefore }
+          { insertBefore: aDropActionInfo.insertBefore,
+            insertAfter:  aDropActionInfo.insertAfter }
         );
       }).bind(this));
   }
@@ -496,6 +518,7 @@ function attachTabsOnDrop(aTabs, aParent, aOptions = {}) {
     if (aParent)
       attachTabTo(tab, aParent, {
         insertBefore: aOptions.insertBefore,
+        insertAfter:  aOptions.insertAfter,
         inRemote: true
       });
     else
@@ -540,6 +563,7 @@ async function handleDroppedLinksOrBookmarks(aEvent, aDropActionInfo) {
   await openURIsInTabs(uris, {
     parent:       aDropActionInfo.parent,
     insertBefore: aDropActionInfo.insertBefore,
+    insertAfter:  aDropActionInfo.insertAfter,
     inRemote:     true
   });
 }

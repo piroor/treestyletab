@@ -49,6 +49,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     parent:   dumpTab(aParent),
     children: aParent.getAttribute(kCHILDREN),
     insertBefore: dumpTab(aOptions.insertBefore),
+    insertAfter:  dumpTab(aOptions.insertAfter),
     dontMove: aOptions.dontMove,
     dontUpdateIndent: aOptions.dontUpdateIndent,
     forceExpand: aOptions.forceExpand,
@@ -73,18 +74,32 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   detachTab(aChild, aOptions);
 
   var newIndex = -1;
-  if (aOptions.dontMove)
+  if (aOptions.dontMove) {
     aOptions.insertBefore = getNextTab(aChild);
+    if (!aOptions.insertBefore)
+      aOptions.insertAfter = getPreviousTab(aChild);
+  }
   if (aOptions.insertBefore) {
     log('insertBefore: ', dumpTab(aOptions.insertBefore));
     newIndex = getTabIndex(aOptions.insertBefore);
   }
+  else if (aOptions.insertAfter) {
+    log('insertAfter: ', dumpTab(aOptions.insertAfter));
+    newIndex = getTabIndex(aOptions.insertAfter) + 1;
+  }
   var childIds = [];
   if (newIndex > -1) {
-    log('newIndex (from insertBefore): ', newIndex);
+    log('newIndex (from insertBefore/insertAfter): ', newIndex);
     let expectedAllTabs = getAllTabs(aChild).filter((aTab) => aTab != aChild);
-    let refIndex = expectedAllTabs.indexOf(aOptions.insertBefore);
-    expectedAllTabs.splice(refIndex, 0, aChild);
+
+    let refIndex = aOptions.insertBefore ?
+                     expectedAllTabs.indexOf(aOptions.insertBefore) :
+                     expectedAllTabs.indexOf(aOptions.insertAfter) + 1;
+    if (refIndex >= expectedAllTabs.length)
+      expectedAllTabs.push(aChild);
+    else
+      expectedAllTabs.splice(refIndex, 0, aChild);
+
     childIds = expectedAllTabs.filter((aTab) => {
       return (aTab == aChild || aTab.getAttribute(kPARENT) == aParent.id);
     }).map((aTab) => {
@@ -95,7 +110,15 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     let descendants = getDescendantTabs(aParent);
     log('descendants: ', descendants.map(dumpTab));
     if (descendants.length) {
-      newIndex = getTabIndex(descendants[descendants.length-1]) + 1;
+      switch (configs.insertNewChildAt) {
+        case kINSERT_LAST:
+        default:
+          newIndex = getTabIndex(descendants[descendants.length-1]) + 1;
+          break;
+        case kINSERT_FIRST:
+          newIndex = getTabIndex(descendants[descendants.length]);
+          break;
+      }
     }
     else {
       newIndex = getTabIndex(aParent) + 1;
@@ -129,9 +152,22 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   //if (shouldInheritIndent && !aOptions.dontUpdateIndent)
     //this.inheritTabIndent(aChild, aParent);
 
-  var nextTab = aOptions.insertBefore || getTabs(aChild)[newIndex];
-  log('move newly attached child: ', dumpTab(aChild), dumpTab(nextTab));
-  await moveTabSubtreeBefore(aChild, nextTab, aOptions);
+  var nextTab = aOptions.insertBefore;
+  var prevTab = aOptions.insertAfter;
+  if (!nextTab && !prevTab) {
+    let tabs = getTabs(aChild);
+    nextTab = tabs[newIndex];
+    if (!nextTab)
+      prevTab = tabs[newIndex - 1];
+  }
+  log('move newly attached child: ', dumpTab(aChild), {
+    next: dumpTab(nextTab),
+    prev: dumpTab(prevTab)
+  });
+  if (nextTab)
+    await moveTabSubtreeBefore(aChild, nextTab, aOptions);
+  else
+    await moveTabSubtreeAfter(aChild, prevTab, aOptions);
 
   if (aOptions.forceExpand) {
     collapseExpandSubtree(aParent, inherit(aOptions, {
@@ -197,6 +233,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
       child:       aChild.id,
       parent:      aParent.id,
       insertBefore:     aOptions.insertBefore && aOptions.insertBefore.id,
+      insertAfter:      aOptions.insertAfter && aOptions.insertAfter.id,
       dontMove:         !!aOptions.dontMove,
       dontUpdateIndent: !!aOptions.dontUpdateIndent,
       forceExpand:      !!aOptions.forceExpand,
@@ -640,6 +677,24 @@ async function moveTabSubtreeBefore(aTab, aNextTab, aOptions = {}) {
   container.subTreeMovingCount++;
   try {
     await moveTabInternallyBefore(aTab, aNextTab, aOptions);
+    await followDescendantsToMovedRoot(aTab, aOptions);
+  }
+  catch(e) {
+    log(`failed to move subtree: ${String(e)}`);
+  }
+  await wait(0);
+  container.subTreeMovingCount--;
+}
+
+async function moveTabSubtreeAfter(aTab, aPreviousTab, aOptions = {}) {
+  if (!aTab ||
+      isAllTabsPlacedAfter([aTab].concat(getDescendantTabs(aTab)), aPreviousTab))
+    return;
+
+  var container = aTab.parentNode;
+  container.subTreeMovingCount++;
+  try {
+    await moveTabInternallyAfter(aTab, aPreviousTab, aOptions);
     await followDescendantsToMovedRoot(aTab, aOptions);
   }
   catch(e) {

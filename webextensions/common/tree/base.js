@@ -172,53 +172,48 @@ async function selectTabInternally(aTab, aOptions = {}) {
     configs.acceptableDelayForInternalFocusMoving);
 }
 
-async function moveTabInternallyBefore(aTab, aNextTab, aOptions = {}) {
-  if (!aTab)
+async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
+  if (!aTabs.length || !aReferenceTab)
     return;
 
-  var container = aTab.parentNode;
-
-  if (aOptions.inRemote) {
-    container.internalMovingCount++;
-    await browser.runtime.sendMessage({
-      type:     kCOMMAND_MOVE_TAB_INTERNALLY_BEFORE,
-      windowId: gTargetWindow,
-      tab:      aTab.id,
-      nextTab:  aNextTab && aNextTab.id
-    });
-    container.internalMovingCount--
-    return;
-  }
-
-  var fromIndex, toIndex;
-  if (!aNextTab) {
-    [fromIndex, toIndex] = await getApiTabIndex(aTab.apiTab.id, getLastTab(aTab).apiTab.id);
-  }
-  else {
-    [fromIndex, toIndex] = await getApiTabIndex(aTab.apiTab.id, aNextTab.apiTab.id);
-    if (fromIndex < toIndex)
-      toIndex--;
-  }
-  log('index of API tabs: ', { fromIndex, toIndex });
-
-  if (fromIndex < 0 || toIndex < 0) {
-    log('alrady closed tab cannot be moved!');
-    return;
-  }
-
-  if (fromIndex == toIndex) {
-    log('tab is already placed expected place');
-    return;
-  }
-
-  log(`tab is not placed at ${toIndex} yet`);
-  var container = aTab.parentNode;
+  aTabs = aTabs.slice(0).reverse();
+  var container = aTabs[0].parentNode;
   container.internalMovingCount++;
-  browser.tabs.move(aTab.apiTab.id, {
-    windowId: container.windowId,
-    index:    toIndex
-  }).catch(handleMissingTabError)
-    .then(() => container.internalMovingCount--);
+  if (aOptions.inRemote) {
+    await browser.runtime.sendMessage({
+      type:     kCOMMAND_MOVE_TABS_INTERNALLY_BEFORE,
+      windowId: gTargetWindow,
+      tabs:     aTabs.map(aTab => aTab.id),
+      nextTab:  aReferenceTab.id
+    });
+    container.internalMovingCount--;
+    return;
+  }
+
+  try {
+    var lastMoved = aReferenceTab;
+    var count = 0;
+    for (let tab of aTabs) {
+      let [toIndex, fromIndex] = await getApiTabIndex(lastMoved.apiTab.id, tab.apiTab.id);
+      if (fromIndex < toIndex)
+        toIndex--;
+      log(`moving tab ${dumpTab(tab)} to ${toIndex}`);
+      if (fromIndex != toIndex)
+        await browser.tabs.move(tab.apiTab.id, {
+          windowId: container.windowId,
+          index: toIndex
+        });
+      lastMoved = tab;
+      // tab will be moved by handling of API event
+    }
+  }
+  catch(e) {
+    log('moveTabsInternallyBefore failed: ', String(e));
+  }
+  container.internalMovingCount--;
+}
+async function moveTabInternallyBefore(aTab, aReferenceTab, aOptions = {}) {
+  return moveTabsInternallyBefore([aTab], aReferenceTab, aOptions = {});
 }
 
 async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
@@ -256,10 +251,12 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
     }
   }
   catch(e) {
-    log('moveTabsNextTo failed: ', String(e));
+    log('moveTabsInternallyAfter failed: ', String(e));
   }
-  await wait(50);
   container.internalMovingCount--;
+}
+async function moveTabInternallyAfter(aTab, aReferenceTab, aOptions = {}) {
+  return moveTabsInternallyAfter([aTab], aReferenceTab, aOptions = {});
 }
 
 async function loadURI(aURI, aOptions = {}) {
@@ -310,12 +307,15 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
         type:         kCOMMAND_NEW_TABS,
         uris:         aURIs,
         parent:       aOptions.parent && aOptions.parent.id,
-        insertBefore: aOptions.insertBefore && aOptions.insertBefore.id
+        insertBefore: aOptions.insertBefore && aOptions.insertBefore.id,
+        insertAfter:  aOptions.insertAfter && aOptions.insertAfter.id
       }));
     }
     else {
       let startIndex = aOptions.insertBefore ?
                          getTabIndex(aOptions.insertBefore) :
+                       aOptions.insertAfter ?
+                         getTabIndex(aOptions.insertAfter) + 1 :
                          -1 ;
       let container = getTabsContainer(aOptions.windowId);
       container.toBeOpenedTabsWithPositionsCount += aURIs.length;

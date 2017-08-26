@@ -115,7 +115,8 @@ async function onApiTabCreated(aTab) {
     gAllTabs.appendChild(container);
   }
   var newTab = buildTab(aTab);
-  container.insertBefore(newTab, getAllTabs(container)[aTab.index]);
+  var nextTab = getAllTabs(container)[aTab.index];
+  container.insertBefore(newTab, nextTab);
 
   window.onTabOpening && onTabOpening(newTab);
 

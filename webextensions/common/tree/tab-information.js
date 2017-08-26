@@ -87,12 +87,24 @@ function isLocked(aTab) {
 
 // if all tabs are aldeardy placed at there, we don't need to move them.
 function isAllTabsPlacedBefore(aTabs, aNextTab) {
-  var previousTab = aTabs[0];
-  for (let tab of aTabs.slice(1)) {
+  aTabs = Array.slice(aTabs);
+  var previousTab = aTabs.shift();
+  for (let tab of aTabs) {
     if (tab.previousSibling != previousTab)
-      return true;
+      return false;
     previousTab = tab;
   }
-  return previousTab.nextSibling != aNextTab;
+  return !aNextTab || previousTab.nextSibling == aNextTab;
+}
+
+function isAllTabsPlacedAfter(aTabs, aPreviousTab) {
+  aTabs = Array.slice(aTabs).reverse();
+  var nextTab = aTabs.shift();
+  for (let tab of aTabs) {
+    if (tab.nextSibling != nextTab)
+      return false;
+    nextTab = tab;
+  }
+  return !aPreviousTab || nextTab.previousSibling == aPreviousTab;
 }
 
