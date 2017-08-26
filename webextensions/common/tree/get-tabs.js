@@ -333,6 +333,8 @@ function getVisibleRootTabs(aHint) {
 
 function collectRootTabs(aTabs) {
   return aTabs.filter(aTab => {
+    if (!aTab)
+      return false;
     var parent = getParentTab(aTab);
     return !parent || aTabs.indexOf(parent) < 0;
   });
