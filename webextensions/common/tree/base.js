@@ -47,41 +47,41 @@ var gNeedRestoreTree = false;
 
 var gIsMac = /Darwin/.test(navigator.platform);
 
-function buildTab(aTab, aOptions = {}) {
-  log('build tab for ', aTab);
+function buildTab(aApiTab, aOptions = {}) {
+  log('build tab for ', aApiTab);
 
-  var item = document.createElement('li');
-  item.apiTab = aTab;
-  item.setAttribute('id', makeTabId(aTab));
-  //item.setAttribute(kCHILDREN, '');
-  item.setAttribute(kCONTENT_LOCATION, aTab.url);
-  item.classList.add('tab');
-  if (aTab.active)
-    item.classList.add(kTAB_STATE_ACTIVE);
-  if (aTab.pinned)
-    item.classList.add(kTAB_STATE_PINNED);
-  item.classList.add(kTAB_STATE_SUBTREE_COLLAPSED);
+  var tab = document.createElement('li');
+  tab.apiTab = aApiTab;
+  tab.setAttribute('id', makeTabId(aApiTab));
+  //tab.setAttribute(kCHILDREN, '');
+  tab.setAttribute(kCONTENT_LOCATION, aApiTab.url);
+  tab.classList.add('tab');
+  if (aApiTab.active)
+    tab.classList.add(kTAB_STATE_ACTIVE);
+  if (aApiTab.pinned)
+    tab.classList.add(kTAB_STATE_PINNED);
+  tab.classList.add(kTAB_STATE_SUBTREE_COLLAPSED);
 
-  var title = aTab.title;
-  if (aTab.url && aTab.url.indexOf(kGROUP_TAB_URI) == 0) {
-    item.classList.add(kTAB_STATE_GROUP_TAB);
-    title = getTitleFromGroupTabURI(aTab.url);
+  var title = aApiTab.title;
+  if (aApiTab.url && aApiTab.url.indexOf(kGROUP_TAB_URI) == 0) {
+    tab.classList.add(kTAB_STATE_GROUP_TAB);
+    title = getTitleFromGroupTabURI(aApiTab.url);
   }
   var label = document.createElement('span');
   label.classList.add(kLABEL);
   label.appendChild(document.createTextNode(title));
-  item.appendChild(label);
-  item.setAttribute('title', title);
+  tab.appendChild(label);
+  tab.setAttribute('title', title);
 
-  item.classList.add(aTab.status);
+  tab.classList.add(aApiTab.status);
 
-  window.onTabBuilt && onTabBuilt(item);
+  window.onTabBuilt && onTabBuilt(tab);
 
   if (aOptions.existing) {
-    item.classList.add(kTAB_STATE_ANIMATION_READY);
+    tab.classList.add(kTAB_STATE_ANIMATION_READY);
   }
 
-  return item;
+  return tab;
 }
 
 function updateTab(aTab, aNewState) {
