@@ -27,6 +27,13 @@
   outline: 1px dotted rgba(255, 0, 0, 0.5);
 }
 
+/* This is required to prevent dragging of images (ex. favicon).
+   Otherwise they are unexpectedly dragged just as an image and
+   it is downloadable via dropping on the desktop or others. */
+img {
+  pointer-events: none;
+}
+
 button {
   -moz-user-focus: ignore;
 }
