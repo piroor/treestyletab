@@ -49,7 +49,10 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     parent:   dumpTab(aParent),
     children: aParent.getAttribute(kCHILDREN),
     insertBefore: dumpTab(aOptions.insertBefore),
-    options:  inherit(aOptions, { insertBefore: '' })
+    dontMove: aOptions.dontMove,
+    dontUpdateIndent: aOptions.dontUpdateIndent,
+    forceExpand: aOptions.forceExpand,
+    dontExpand: aOptions.forceExpand
   });
   if ((aParent.getAttribute(kCHILDREN) || '').indexOf(`|${aChild.id}|`) > -1) {
     log('=> already attached');
