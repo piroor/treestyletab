@@ -34,6 +34,6 @@ li.tab:not(.loading) .throbber::before {
   display: none !important;
 }
 
-li.tab.loading .throbber {
+li.tab.loading:not(.collapsed) .throbber {
   animation: rotation 2s ease-in-out infinite;
 }
