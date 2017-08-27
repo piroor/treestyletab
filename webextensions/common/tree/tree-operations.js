@@ -767,6 +767,7 @@ async function moveTabs(aTabs, aOptions = {}) {
     }
 
     log('preparing tabs');
+    let offset = getAllTabs(container).length;
     let movedApiTabs = await Promise.all(aTabs.map(async (aTab, aIndex) => {
       let tabId = aTab.apiTab.id;
       if (aOptions.duplicate) {
@@ -775,7 +776,7 @@ async function moveTabs(aTabs, aOptions = {}) {
       }
       let movedTabs = await browser.tabs.move(tabId, {
         windowId: destinationWindowId,
-        index:    aIndex + 1
+        index:    aIndex + offset
       });
       return movedTabs[0];
     }));
