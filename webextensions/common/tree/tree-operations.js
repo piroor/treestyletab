@@ -771,17 +771,20 @@ async function moveTabs(aTabs, aOptions = {}) {
     gAllTabs.appendChild(container);
   }
 
-  var inNewWindow = windowId != destinationWindowId;
-  if (inNewWindow || aOptions.duplicate) {
+  var isAcrossWindows = windowId != destinationWindowId;
+  if (isAcrossWindows || aOptions.duplicate) {
     blockUserOperationsIn(windowId);
 
-    container.toBeOpenedTabsWithPositionsCount += aTabs.length;
+    container.toBeOpenedTabsWithPositions += aTabs.length;
     container.toBeOpenedOrphanTabs += aTabs.length;
+
+    let sourceContainer = aTabs[0].parentNode;
     if (aOptions.duplicate) {
-      let sourceContainer = aTabs[0].parentNode;
-      sourceContainer.toBeOpenedTabsWithPositionsCount += aTabs.length;
+      sourceContainer.toBeOpenedTabsWithPositions += aTabs.length;
       sourceContainer.toBeOpenedOrphanTabs += aTabs.length;
     }
+    if (isAcrossWindows)
+      sourceContainer.toBeDetachedTabs += aTabs.length;
 
     log('preparing tabs');
     let offset = getAllTabs(container).length;

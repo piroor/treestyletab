@@ -260,16 +260,21 @@ function onApiTabDetached(aTabId, aDetachInfo) {
   if (isActive(oldTab))
     tryMoveFocusFromClosingCurrentTab(oldTab);
 
-  var closeParentBehavior = getCloseParentBehaviorForTab(oldTab);
-  if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
-    closeParentBehavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
+  if (oldTab.parentNode.toBeDetachedTabs > 0) {
+    oldTab.parentNode.toBeDetachedTabs--;
+  }
+  else {
+    let closeParentBehavior = getCloseParentBehaviorForTab(oldTab);
+    if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
+      closeParentBehavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
 
-  detachAllChildren(oldTab, {
-    behavior: closeParentBehavior
-  });
-  //reserveCloseRelatedTabs(toBeClosedTabs);
-  detachTab(oldTab, { dontUpdateIndent: true });
-  //restoreTabAttributes(oldTab, backupAttributes);
+    detachAllChildren(oldTab, {
+      behavior: closeParentBehavior
+    });
+    //reserveCloseRelatedTabs(toBeClosedTabs);
+    detachTab(oldTab, { dontUpdateIndent: true });
+    //restoreTabAttributes(oldTab, backupAttributes);
+  }
   //updateLastScrollPosition();
 
   window.onTabClosed && onTabClosed(oldTab);

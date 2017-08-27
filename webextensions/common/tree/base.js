@@ -141,11 +141,14 @@ function buildTabsContainerFor(aWindowId) {
   container.subTreeChildrenMovingCount = 0;
   container.doingCollapseExpandCount = 0;
   container.internalFocusCount = 0;
+
   container.openingCount = 0;
-  container.toBeOpenedTabsWithPositions = 0;
-  container.toBeOpenedOrphanTabs = 0;
   container.openedNewTabs = [];
   container.openedNewTabsTimeout = null;
+
+  container.toBeOpenedTabsWithPositions = 0;
+  container.toBeOpenedOrphanTabs = 0;
+  container.toBeDetachedTabs = 0;
 
   return container;
 }
