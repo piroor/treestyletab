@@ -756,6 +756,15 @@ async function moveTabs(aTabs, aOptions = {}) {
           String(e));
       throw e;
     });
+    if (!response) {
+      log('moveTabs:FATAL ERROR: failed to get response. Fallback to manual collection.');
+      response = {
+        movedTabs: aTabs.map(aTab => makeTabId({
+                     id:       aTab.apiTab.id,
+                     windowId: destinationWindowId
+                   }))
+      };
+    }
     let movedTabs = response.movedTabs || [];
     return movedTabs.map(getTabById).filter(aTab => !!aTab);
   }
@@ -832,14 +841,22 @@ async function moveTabs(aTabs, aOptions = {}) {
     movedTabs = newTabs;
   }
 
+
   if (aOptions.insertBefore &&
-      !isAllTabsPlacedBefore(movedTabs, aOptions.insertBefore))
+      !isAllTabsPlacedBefore(movedTabs, aOptions.insertBefore)) {
     await moveTabsInternallyAfter(movedTabs, aOptions.insertBefore, aOptions);
+  }
   else if (aOptions.insertAfter &&
-           !isAllTabsPlacedAfter(movedTabs, aOptions.insertAfter))
+           !isAllTabsPlacedAfter(movedTabs, aOptions.insertAfter)) {
     await moveTabsInternallyAfter(movedTabs, aOptions.insertAfter, aOptions);
-  else
+  }
+  else {
     log('no move: just duplicate or import');
+  }
+  // Tabs can be removed while waiting, so we need to
+  // refresh the array of tabs.
+  movedTabs = movedTabs.map(aTab => getTabById(aTab.id))
+                .filter(aTab => !!aTab);
 
   return movedTabs;
 }
@@ -866,6 +883,18 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
           String(e));
       throw e;
     });
+    if (!response) {
+      log('openNewWindowFromTabs:FATAL ERROR: failed to get response. Fallback to manual collection.');
+      let newWindowId = (await browser.windows.getLastFocused({
+                          windowTypes: ['normal' ]
+                        })).id;
+      response = {
+        movedTabs: aTabs.map(aTab => makeTabId({
+                     id:       aTab.apiTab.id,
+                     windowId: newWindowId
+                   }))
+      };
+    }
     let movedTabs = response.movedTabs || [];
     return movedTabs.map(getTabById).filter(aTab => !!aTab);
   }

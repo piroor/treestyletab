@@ -144,18 +144,25 @@ async function onNewTabTracked(aTab) {
     });
   }
 
-  if (container.toBeOpenedTabsWithPositions > 0)
-    container.toBeOpenedTabsWithPositions--;
+  if (container.parentNode) { // it can be removed while waiting
+    if (container.toBeOpenedTabsWithPositions > 0)
+      container.toBeOpenedTabsWithPositions--;
 
-  if (container.toBeOpenedOrphanTabs > 0)
-    container.toBeOpenedOrphanTabs--;
+    if (container.toBeOpenedOrphanTabs > 0)
+      container.toBeOpenedOrphanTabs--;
 
-  updateInsertionPositionInfo(newTab);
+    //updateInsertionPositionInfo(newTab);
 
-  container.openingCount++;
-  setTimeout(() => container.openingCount--, 0);
+    container.openingCount++;
+    setTimeout(() => {
+      if (!container.parentNode) // it was removed while waiting
+        return;
+      container.openingCount--;
+    }, 0);
+  }
 
-  window.onTabOpened && onTabOpened(newTab);
+  if (newTab.parentNode) // it can be removed while waiting
+    window.onTabOpened && onTabOpened(newTab);
 }
 
 async function onApiTabRemoved(aTabId, aRemoveInfo) {
