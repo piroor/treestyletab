@@ -717,6 +717,98 @@ async function followDescendantsToMovedRoot(aTab, aOptions = {}) {
   container.subTreeMovingCount--;
 }
 
+async function openNewWindowFromTabs(aTabs, aOptions = {}) {
+  if (aTabs.length == 0)
+    return;
+
+  log('openNewWindowFromTabs: ', aTabs.map(dumpTab), aOptions);
+
+  var windowId = aTabs[0].parentNode.windowId || gTargetWindow;
+
+  if (aOptions.inRemote) {
+    await browser.runtime.sendMessage(inherit(aOptions, {
+      type:         kCOMMAND_NEW_WINDOW_FROM_TABS,
+      windowId:     windowId,
+      tabs:         aTabs.map(aTab => aTab.id),
+      duplicate:    !!aOptions.duplicate,
+      left:         'left' in aOptions ? parseInt(aOptions.left) : null,
+      top:          'top' in aOptions ? parseInt(aOptions.top) : null
+    }));
+    return;
+  }
+
+  // blockUserOperationsIn(windowId);
+
+  var structure = getTreeStructureFromTabs(aTabs);
+  log('structure: ', structure);
+
+  log('opening new window');
+  var windowParams = {
+    //focused: true  // not supported in Firefox...
+  };
+  if ('left' in aOptions && aOptions.left !== null)
+    windowParams.left = aOptions.left;
+  if ('top' in aOptions && aOptions.top !== null)
+    windowParams.top = aOptions.top;
+  var newWindow = await browser.windows.create(windowParams);
+  log('new window: ', newWindow);
+
+  log('preparing container');
+  var container = getTabsContainer(newWindow.id);
+  if (!container) {
+    container = buildTabsContainerFor(newWindow.id);
+    gAllTabs.appendChild(container);
+  }
+
+  container.toBeOpenedTabsWithPositionsCount += aTabs.length;
+  container.toBeOpenedOrphanTabs += aTabs.length;
+  if (aOptions.duplicate) {
+    let sourceContainer = aTabs[0].parentNode;
+    sourceContainer.toBeOpenedTabsWithPositionsCount += aTabs.length;
+    sourceContainer.toBeOpenedOrphanTabs += aTabs.length;
+  }
+
+  log('moving tabs');
+  var movedApiTabs = await Promise.all(aTabs.map(async (aTab, aIndex) => {
+    let tabId = aTab.apiTab.id;
+    if (aOptions.duplicate) {
+      let tab = await browser.tabs.duplicate(tabId);
+      tabId = tab.id;
+    }
+    let movedTabs = await browser.tabs.move(tabId, {
+      windowId: newWindow.id,
+      index:    aIndex + 1
+    });
+    return movedTabs[0];
+  }));
+  log('moved: ', movedApiTabs);
+
+  log('closing needless tab');
+  browser.windows.get(newWindow.id, { populate: true })
+    .then(aApiWindow => {
+      browser.tabs.remove(aApiWindow.tabs[0].id);
+    });
+
+  log('applying tree structure');
+  // wait until tabs.onCreated are processed (for safety)
+  var retryUntil = 10;
+  while (retryUntil >= 0) {
+    let movedTabs = movedApiTabs.map(aApiTab => getTabById({ tab: aApiTab.id, window: newWindow.id }))
+                                .filter(aTab => !!aTab);
+    if (movedTabs.length < aTabs.length) {
+      log('retryling: ', movedTabs.length, aTabs.length);
+      retryUntil--;
+      await wait(100);
+      continue;
+    }
+    applyTreeStructureToTabs(movedTabs, structure);
+    break;
+  }
+
+  // unblockUserOperationsIn(windowId);
+}
+
+
 // set/get tree structure
 
 function getTreeStructureFromTabs(aTabs) {
@@ -768,7 +860,7 @@ function cleanUpTreeStructureArray(aTreeStructure, aDefaultParent) {
 }
 
 async function applyTreeStructureToTabs(aTabs, aTreeStructure, aExpandStates = []) {
-  log('applyTreeStructureToTabs: ', aTreeStructure, aExpandStates);
+  log('applyTreeStructureToTabs: ', aTabs.map(dumpTab), aTreeStructure, aExpandStates);
   aTabs = aTabs.slice(0, aTreeStructure.length);
   aTreeStructure = aTreeStructure.slice(0, aTabs.length);
 

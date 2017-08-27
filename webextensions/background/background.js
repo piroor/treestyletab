@@ -190,6 +190,12 @@ async function onMessage(aMessage, aSender, aRespond) {
       aRespond();
     }; break;
 
+    case kCOMMAND_NEW_WINDOW_FROM_TABS: {
+      log('new window requested: ', aMessage);
+      await openNewWindowFromTabs(aMessage.tabs.map(getTabById), aMessage);
+      aRespond();
+    }; break;
+
     case kCOMMAND_REMOVE_TAB: {
       let tab = getTabById(aMessage.tab);
       if (!tab)

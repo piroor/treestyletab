@@ -14,7 +14,8 @@ function onTabOpening(aTab) {
 
   // ignore tabs opened from others
   if (!configs.autoGroupNewTabs ||
-      aTab.apiTab.openerTabId)
+      aTab.apiTab.openerTabId ||
+      container.toBeOpenedOrphanTabs > 0)
     return;
 
   container.openedNewTabs.push(aTab.id);

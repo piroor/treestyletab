@@ -850,8 +850,10 @@ function onDragEnd(aEvent) {
   if (isDraggingAllCurrentTabs(dragData.draggedTab))
     return;
 
-  var shouldDuplicate = isAccelKeyPressed(aEvent);
-  log('ready to tear off or duplicate, duplicate = ', shouldDuplicate);
- 
-  //tearOff(draggedTab);
+  openNewWindowFromTabs(dragData.draggedTabs, {
+    duplicate: isAccelKeyPressed(aEvent),
+    left:      aEvent.screenX,
+    top:       aEvent.screenY,
+    inRemote:  true
+  });
 }

@@ -147,6 +147,9 @@ async function onNewTabTracked(aTab) {
   if (container.toBeOpenedTabsWithPositionsCount > 0)
     container.toBeOpenedTabsWithPositionsCount--;
 
+  if (container.toBeOpenedOrphanTabs > 0)
+    container.toBeOpenedOrphanTabs--;
+
   updateInsertionPositionInfo(newTab);
 
   container.openingCount++;

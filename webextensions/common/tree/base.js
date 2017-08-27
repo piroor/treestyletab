@@ -143,6 +143,7 @@ function buildTabsContainerFor(aWindowId) {
   container.internalFocusCount = 0;
   container.openingCount = 0;
   container.toBeOpenedTabsWithPositionsCount = 0;
+  container.toBeOpenedOrphanTabs = 0;
   container.openedNewTabs = [];
   container.openedNewTabsTimeout = null;
 

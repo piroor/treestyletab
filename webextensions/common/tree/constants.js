@@ -17,6 +17,7 @@ const kCOMMAND_DETACH_TAB = 'treestyletab:request-detach-tab';
 const kCOMMAND_MOVE_TABS_INTERNALLY_BEFORE = 'treestyletab:request-move-tabs-internally-before';
 const kCOMMAND_MOVE_TABS_INTERNALLY_AFTER = 'treestyletab:request-move-tabs-internally-after';
 const kCOMMAND_LOAD_URI = 'treestyletab:request-load-uri';
+const kCOMMAND_NEW_WINDOW_FROM_TABS = 'treestyletab:request-new-window-from-tabs';
 
 const kCONTENT_LOCATION = 'data-content-location';
 const kPARENT   = 'data-parent-id';
