@@ -240,7 +240,8 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
 }
 
 async function onApiTabAttached(aTabId, aAttachInfo) {
-  if (gTargetWindow && aAttachInfo.newWindowId != gTargetWindow)
+  if (gTargetWindow &&
+      aAttachInfo.newWindowId != gTargetWindow)
     return;
 
   log('onApiTabAttached, id: ', aTabId);
@@ -253,7 +254,8 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
 }
 
 function onApiTabDetached(aTabId, aDetachInfo) {
-  if (gTargetWindow && aDetachInfo.oldWindowId != gTargetWindow)
+  if (gTargetWindow &&
+      aDetachInfo.oldWindowId != gTargetWindow)
     return;
 
   log('onApiTabDetached, id: ', aTabId);
