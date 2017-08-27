@@ -733,8 +733,8 @@ async function moveTabs(aTabs, aOptions = {}) {
       type:         kCOMMAND_MOVE_TABS,
       windowId:     windowId,
       tabs:         aTabs.map(aTab => aTab.id),
-      insertBefore: aParams.insertBefore && aParams.insertBefore.id,
-      insertAfter:  aParams.insertAfter && aParams.insertAfter.id,
+      insertBefore: aOptions.insertBefore && aOptions.insertBefore.id,
+      insertAfter:  aOptions.insertAfter && aOptions.insertAfter.id,
       duplicate:    !!aOptions.duplicate,
       destinationWindowId: destinationWindowId,
       inRemote:     false
