@@ -138,14 +138,14 @@ async function onNewTabTracked(aTab) {
 
   var opener = getTabById({ tab: aTab.openerTabId, window: aTab.windowId });
   if (opener) {
-    log('opener: ', dumpTab(opener), container.toBeOpenedTabsWithPositionsCount);
+    log('opener: ', dumpTab(opener), container.toBeOpenedTabsWithPositions);
     await attachTabTo(newTab, opener, {
-      dontMove: container.toBeOpenedTabsWithPositionsCount > 0
+      dontMove: container.toBeOpenedTabsWithPositions > 0
     });
   }
 
-  if (container.toBeOpenedTabsWithPositionsCount > 0)
-    container.toBeOpenedTabsWithPositionsCount--;
+  if (container.toBeOpenedTabsWithPositions > 0)
+    container.toBeOpenedTabsWithPositions--;
 
   if (container.toBeOpenedOrphanTabs > 0)
     container.toBeOpenedOrphanTabs--;

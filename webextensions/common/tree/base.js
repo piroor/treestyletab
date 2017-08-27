@@ -142,7 +142,7 @@ function buildTabsContainerFor(aWindowId) {
   container.doingCollapseExpandCount = 0;
   container.internalFocusCount = 0;
   container.openingCount = 0;
-  container.toBeOpenedTabsWithPositionsCount = 0;
+  container.toBeOpenedTabsWithPositions = 0;
   container.toBeOpenedOrphanTabs = 0;
   container.openedNewTabs = [];
   container.openedNewTabsTimeout = null;
@@ -329,7 +329,7 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
                          getTabIndex(aOptions.insertAfter) + 1 :
                          -1 ;
       let container = getTabsContainer(aOptions.windowId);
-      container.toBeOpenedTabsWithPositionsCount += aURIs.length;
+      container.toBeOpenedTabsWithPositions += aURIs.length;
       await Promise.all(aURIs.map(async (aURI, aIndex) => {
         var params = {};
         if (aURI)
