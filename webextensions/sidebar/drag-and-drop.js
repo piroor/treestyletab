@@ -529,7 +529,7 @@ function detachTabsOnDrop(aTabs) {
   }
 }
 
-async function handleDroppedLinksOrBookmarks(aEvent, aDropActionInfo) {
+async function handleDroppedNonTabItems(aEvent, aDropActionInfo) {
   aEvent.stopPropagation();
 
   var uris = retrieveURIsFromDragEvent(aEvent);
@@ -537,7 +537,7 @@ async function handleDroppedLinksOrBookmarks(aEvent, aDropActionInfo) {
   //   if (aURI.indexOf(kURI_BOOKMARK_FOLDER) != 0)
   //     securityCheck(aURI, aEvent);
   // });
-  log('handleDroppedLinksOrBookmarks: ', uris);
+  log('handleDroppedNonTabItems: ', uris);
 
   var inBackground = false; // prefs.getPref('browser.tabs.loadInBackground');
   if (aEvent.shiftKey)
@@ -799,7 +799,7 @@ async function onDrop(aEvent) {
 
   if (!dropActionInfo.dragged) {
     log('link or bookmark item is dropped');
-    handleDroppedLinksOrBookmarks(aEvent, dropActionInfo);
+    handleDroppedNonTabItems(aEvent, dropActionInfo);
     return;
   }
 
