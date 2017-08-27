@@ -180,8 +180,11 @@ async function selectTabInternally(aTab, aOptions = {}) {
    * Note: enough large delay is truly required to wait various
    * tab-related operations are processed in background and sidebar.
    */
-  setTimeout(() => container.internalFocusCount--,
-    configs.acceptableDelayForInternalFocusMoving);
+  setTimeout(() => {
+    if (!container.parentNode) // it was removed while waiting
+      return;
+    container.internalFocusCount--;
+  }, configs.acceptableDelayForInternalFocusMoving);
 }
 
 async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
