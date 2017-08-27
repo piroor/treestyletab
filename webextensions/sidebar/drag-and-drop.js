@@ -65,19 +65,30 @@ function getDragDataFromOneTab(aTab) {
   aTab = getTabFromChild(aTab);
   if (!aTab)
     return {
-      draggedTab: null,
-      draggedTabs: [],
-      transferable: {}
+      tabNode:  null,
+      tabNodes: [],
+      tabId:    null,
+      tabIds:   [],
+      windowId: null
     };
 
   var draggedTabs = [aTab].concat(getDescendantTabs(aTab)); //tabsDragUtils.getSelectedTabs(aTab || aInfo.event);
   return {
-    draggedTab: aTab,
-    draggedTabs: draggedTabs,
-    transferable: {
-      draggedTab: aTab.id,
-      draggedTabs: draggedTabs.map(aDraggedTab => aDraggedTab.id)
-    }
+    tabNode:  aTab,
+    tabNodes: draggedTabs,
+    tabId:    aTab.apiTab.id,
+    tabIds:   draggedTabs.map(aDraggedTab => aDraggedTab.apiTab.id),
+    windowId: aTab.apiTab.windowId
+  };
+}
+
+function sanitizeDragData(aDragData) {
+  return {
+    tabNode:  null,
+    tabNodes: [],
+    tabId:    aDragData.tabId,
+    tabIds:   aDragData.tabIds,
+    windowId: aDragData.windowId
   };
 }
 
@@ -141,10 +152,20 @@ function getDropActionInternal(aEvent) {
   };
 
   var dragData = aEvent.dataTransfer.getData(kTREE_DROP_TYPE);
-  dragData = dragData && JSON.parse(dragData);
+  info.dragData = dragData = dragData && JSON.parse(dragData);
 
-  var draggedTab = info.draggedTab = getTabById(dragData && dragData.draggedTab);
-  var draggedTabs = info.draggedTabs = dragData.draggedTabs.map(getTabById).filter(aTab => !!aTab);
+  var draggedTab = getTabById(dragData && {
+                     tab:    dragData.tabId,
+                     window: dragData.windowId
+                   });
+  info.draggedTab = draggedTab;
+  var draggedTabs = (!dragData || !dragData.tabIds) ?
+                      [] :
+                      dragData.tabIds.map(aTabId => getTabById({
+                        tab:    aTabId,
+                        window: dragData.windowId
+                      })).filter(aTab => !!aTab);
+  info.draggedTabs = draggedTabs;
   var isRemoteTab = draggedTab && draggedTab.ownerDocument != document;
   var isNewTabAction = !draggedTab || draggedTab.ownerDocument != document;
 
@@ -354,7 +375,7 @@ function clearDropPosition() {
 
 function isDraggingAllTabs(aTab, aTabs) {
   var dragData = getDragDataFromOneTab(aTab);
-  return dragData.length == (aTabs || getAllTabs(aTab)).length;
+  return dragData.tabIds.length == (aTabs || getAllTabs(aTab)).length;
 }
  
 function isDraggingAllCurrentTabs(aTab) {
@@ -644,10 +665,11 @@ function retrieveURIsFromData(aData, aType) {
 function onDragStart(aEvent) {
   var tab = aEvent.target;
   var dragData = getDragDataFromOneTab(tab);
-  for (let draggedTab of dragData.draggedTabs) {
+  for (let draggedTab of dragData.tabNodes) {
     draggedTab.classList.add(kTAB_STATE_DRAGGING);
   }
-  aEvent.dataTransfer.setData(kTREE_DROP_TYPE, JSON.stringify(dragData.transferable));
+  aEvent.dataTransfer.setData(kTREE_DROP_TYPE,
+    JSON.stringify(sanitizeDragData(dragData)));
   getTabsContainer(tab).classList.add(kTABBAR_STATE_TAB_DRAGGING);
 }
 
@@ -825,9 +847,13 @@ function onDragEnd(aEvent) {
   var dragData = aEvent.dataTransfer.getData(kTREE_DROP_TYPE);
   dragData = JSON.parse(dragData);
 
-  if (Array.isArray(dragData.draggedTabs)) {
-    dragData.draggedTabs = dragData.draggedTabs.map(getTabById);
-    for (let draggedTab of dragData.draggedTabs) {
+log('dragData: ', dragData);
+  if (Array.isArray(dragData.tabIds)) {
+    dragData.tabNodes = dragData.tabIds.map(aTabId => getTabById({
+                          tab:    aTabId,
+                          window: dragData.windowId
+                        }));
+    for (let draggedTab of dragData.tabNodes) {
       draggedTab.classList.remove(kTAB_STATE_DRAGGING);
     }
   }
@@ -853,12 +879,12 @@ function onDragEnd(aEvent) {
     return;
   }
 
-  if (isDraggingAllCurrentTabs(dragData.draggedTab)) {
+  if (isDraggingAllCurrentTabs(dragData.tabNode)) {
     log('all tabs are dragged, so it is nonsence to tear off them from the window');
     return;
   }
 
-  openNewWindowFromTabs(dragData.draggedTabs, {
+  openNewWindowFromTabs(dragData.tabNodes, {
     duplicate: isAccelKeyPressed(aEvent),
     left:      aEvent.screenX,
     top:       aEvent.screenY,
