@@ -342,7 +342,9 @@ function detachAllChildren(aTab, aOptions = {}) {
             dontMove   : true
           }));
         }
-        collapseExpandSubtree(child, clone(aOptions, { collapsed: false }));
+        collapseExpandSubtree(child, clone(aOptions, {
+          collapsed: false
+        }));
         //deleteTabValue(child, kTAB_STATE_SUBTREE_COLLAPSED);
       }
       else {
