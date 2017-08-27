@@ -23,6 +23,20 @@ async function getApiTabIndex(...aQueriedTabIds) {
     return indexes;
 }
 
+// workaround: browser.tabs.move accepts multiple tabs as the input
+// but sometimes they are moved with mixed positions if they are
+// moved across windows...
+async function safeMoveApiTabsAcrossWindows(aTabIds, aMoveOptions) {
+  return await Promise.all(aTabIds.map(async (aTabId, aIndex) => {
+    var movedTab = await browser.tabs.move(aTabId, clone(aMoveOptions, {
+      index: aMoveOptions.index + aIndex
+    }));
+    if (Array.isArray(movedTab))
+      movedTab = movedTab[0];
+    return movedTab;
+  }));
+}
+
 function handleMissingTabError(aError) {
   if (!aError ||
       !aError.message ||
