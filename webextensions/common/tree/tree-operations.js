@@ -923,7 +923,9 @@ async function performTabsDragDrop(aParams = {}) {
     log('=> partially dragged');
     draggedTabs = draggedRoots = selectedTabs;
     if (!aParams.duplicate)
-      detachParent(selectedTabs);
+      detachParent(selectedTabs, {
+        bradcast: true
+      });
   }
 
   while (aParams.insertBefore &&
