@@ -788,8 +788,8 @@ async function moveTabs(aTabs, aOptions = {}) {
     let retryUntil = 10;
     while (retryUntil >= 0) {
       newTabs = movedApiTabs.map(aApiTab => getTabById({
-                 tab:    aApiTab.id,
-                 window: destinationWindowId
+                  tab:    aApiTab.id,
+                  window: destinationWindowId
                 })).filter(aTab => !!aTab);
       if (newTabs.length < aTabs.length) {
         log('retryling: ', newTabs.length, aTabs.length);
