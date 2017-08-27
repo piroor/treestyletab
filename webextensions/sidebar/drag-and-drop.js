@@ -135,7 +135,7 @@ function getDropAction(aEvent) {
 function getDropActionInternal(aEvent) {
   //log('getDropActionInternal: start');
   var targetTab = getTabFromEvent(aEvent) || getTabFromTabbarEvent(aEvent) || aEvent.target;
-  var targetTabs = getTabs(targetTab);
+  var targetTabs = getAllTabs(targetTab);
   var firstTargetTab = getFirstNormalTab(targetTab) || targetTabs[0];
   var lastTargetTabIndex = targetTabs.length - 1;
   var lastTargetTab      = targetTabs[lastTargetTabIndex];
@@ -240,10 +240,12 @@ function getDropActionInternal(aEvent) {
   //});
   if (eventCoordinate < targetTabCoordinate + beforeOrAfterDropAreaSize) {
     info.dropPosition = kDROP_BEFORE ;
+    info.insertBefore = firstTargetTab;
   }
   else if (dropAreasCount == 2 ||
            eventCoordinate > targetTabCoordinate + targetTabSize - beforeOrAfterDropAreaSize) {
     info.dropPosition = kDROP_AFTER ;
+    info.insertAfter = lastTargetTab;
   }
   else {
     info.dropPosition = kDROP_ON;
