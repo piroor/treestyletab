@@ -375,3 +375,20 @@ function onTabAttached(aTab) {
 function onTabDetached(aTab) {
   reserveToSaveTreeStructure(aTab);
 }
+
+function onTabDetachedFromWindow(aTab) {
+  var closeParentBehavior = getCloseParentBehaviorForTab(aTab);
+  if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
+    closeParentBehavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
+
+  detachAllChildren(aTab, {
+    behavior: closeParentBehavior,
+    broadcast: true
+  });
+  //reserveCloseRelatedTabs(toBeClosedTabs);
+  detachTab(aTab, {
+    dontUpdateIndent: true,
+    broadcast: true
+  });
+  //restoreTabAttributes(aTab, backupAttributes);
+}

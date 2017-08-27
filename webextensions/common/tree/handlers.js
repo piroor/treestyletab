@@ -273,16 +273,7 @@ function onApiTabDetached(aTabId, aDetachInfo) {
     oldTab.parentNode.toBeDetachedTabs--;
   }
   else {
-    let closeParentBehavior = getCloseParentBehaviorForTab(oldTab);
-    if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
-      closeParentBehavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
-
-    detachAllChildren(oldTab, {
-      behavior: closeParentBehavior
-    });
-    //reserveCloseRelatedTabs(toBeClosedTabs);
-    detachTab(oldTab, { dontUpdateIndent: true });
-    //restoreTabAttributes(oldTab, backupAttributes);
+    window.onTabDetachedFromWindow && onTabDetachedFromWindow(oldTab);
   }
   //updateLastScrollPosition();
 
