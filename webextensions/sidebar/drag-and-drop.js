@@ -680,7 +680,6 @@ function onDragEnd(aEvent) {
   var dragData = aEvent.dataTransfer.getData(kTREE_DROP_TYPE);
   dragData = JSON.parse(dragData);
 
-log('dragData: ', dragData);
   if (Array.isArray(dragData.tabIds)) {
     dragData.tabNodes = dragData.tabIds.map(aTabId => getTabById({
                           tab:    aTabId,
