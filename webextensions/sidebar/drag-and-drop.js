@@ -834,21 +834,27 @@ function onDragEnd(aEvent) {
   getTabsContainer(aEvent.target).classList.remove(kTABBAR_STATE_TAB_DRAGGING);
   collapseAutoExpandedTabsWhileDragging();
 
-  if (aEvent.dataTransfer.dropEffect != 'none')
+  if (aEvent.dataTransfer.dropEffect != 'none') {
+    log('dragged items are processed by someone: ', aEvent.dataTransfer.dropEffect);
     return;
+  }
 
   log('trying to detach tab from window');
   aEvent.stopPropagation();
   aEvent.preventDefault();
 
-  // ignore drop on the sidebar (both client coordinates
-  // are zero if the event is fired outside the sidebar.)
+  // Both client coordinates are zero if the event is
+  // fired outside the frame.
   if (aEvent.clientX != 0 ||
-      aEvent.clientY != 0)
+      aEvent.clientY != 0) {
+    log('dropped at tab bar: detaching is canceled');
     return;
+  }
 
-  if (isDraggingAllCurrentTabs(dragData.draggedTab))
+  if (isDraggingAllCurrentTabs(dragData.draggedTab)) {
+    log('all tabs are dragged, so it is nonsence to tear off them from the window');
     return;
+  }
 
   openNewWindowFromTabs(dragData.draggedTabs, {
     duplicate: isAccelKeyPressed(aEvent),
