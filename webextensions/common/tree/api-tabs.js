@@ -10,9 +10,13 @@ function makeTabId(aApiTab) {
 }
 
 async function getApiTabIndex(...aQueriedTabIds) {
-  var tabs = await browser.tabs.query({ currentWindow: true });
-  var tabIds = tabs.map((aTab) => aTab.id);
-  var indexes = aQueriedTabIds.map((aQueriedTabId) => tabIds.indexOf(aQueriedTabId));
+  if (aQueriedTabIds.length == 0)
+    return -1;
+
+  var indexes = await Promise.all(aQueriedTabIds.map((aTabId) => {
+    return browser.tabs.get(aTabId);
+  }));
+  indexes = indexes.map(aTab => aTab ? aTab.index : -1);
   if (indexes.length == 1)
     return indexes[0];
   else
