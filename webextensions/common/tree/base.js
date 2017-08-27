@@ -191,6 +191,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
   if (!aTabs.length || !aReferenceTab)
     return;
 
+  log('moveTabsInternallyBefore: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
   var container = aTabs[0].parentNode;
   container.internalMovingCount++;
   if (aOptions.inRemote) {
@@ -227,6 +228,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
   if (!aTabs.length || !aReferenceTab)
     return;
 
+  log('moveTabsInternallyAfter: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
   var container = aTabs[0].parentNode;
   container.internalMovingCount++;
   if (aOptions.inRemote) {
