@@ -35,7 +35,7 @@ async function init() {
   configs.$addObserver(onConfigChange);
   onConfigChange('debug');
 
-  startListenDragEvents(gTabBar);
+  startListenDragEvents(window);
 
   await inheritTreeStructure();
 }

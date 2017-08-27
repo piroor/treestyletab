@@ -105,6 +105,7 @@ configs = new Configs({
 
   autoGroupNewTabs: true,
   autoGroupNewTabsTimeout: 100,
+  preventTearOffTabsTimeout: 100,
 
   animation: true,
   debug:     false

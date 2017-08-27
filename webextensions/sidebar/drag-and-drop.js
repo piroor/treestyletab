@@ -518,7 +518,10 @@ function onDragStart(aEvent) {
   getTabsContainer(tab).classList.add(kTABBAR_STATE_TAB_DRAGGING);
 }
 
+var gLastDragOverTimestamp = null;
+
 function onDragOver(aEvent) {
+  gLastDragOverTimestamp = Date.now();
   aEvent.preventDefault(); // this is required to override default dragover actions!
 try{
   //autoScroll.processAutoScroll(aEvent);
@@ -701,10 +704,8 @@ log('dragData: ', dragData);
   aEvent.stopPropagation();
   aEvent.preventDefault();
 
-  // Both client coordinates are zero if the event is
-  // fired outside the frame.
-  if (aEvent.clientX != 0 ||
-      aEvent.clientY != 0) {
+  if (gLastDragOverTimestamp &&
+      Date.now() - gLastDragOverTimestamp < configs.preventTearOffTabsTimeout) {
     log('dropped at tab bar: detaching is canceled');
     return;
   }
