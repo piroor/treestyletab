@@ -7,23 +7,31 @@
 
 // raw event handlers
 
-function onTabOpening(aTab) {
+async function onTabOpening(aTab) {
   var container = aTab.parentNode;
   if (container.openedNewTabsTimeout)
     clearTimeout(container.openedNewTabsTimeout);
 
   // ignore tabs opened from others
-  if (!configs.autoGroupNewTabs ||
-      aTab.apiTab.openerTabId ||
-      container.toBeOpenedOrphanTabs > 0)
-    return;
+  if (configs.autoGroupNewTabs &&
+      !aTab.apiTab.openerTabId &&
+      container.toBeOpenedOrphanTabs == 0) {
+    container.openedNewTabs.push(aTab.id);
+    container.openedNewTabsTimeout = setTimeout(
+      onNewTabsTimeout,
+      configs.autoGroupNewTabsTimeout,
+      container
+    );
+  }
 
-  container.openedNewTabs.push(aTab.id);
-  container.openedNewTabsTimeout = setTimeout(
-    onNewTabsTimeout,
-    configs.autoGroupNewTabsTimeout,
-    container
-  );
+  var opener = getTabById({ tab: aTab.openerTabId, window: aTab.windowId });
+  if (opener) {
+    log('opener: ', dumpTab(opener), container.toBeOpenedTabsWithPositions);
+    await attachTabTo(newTab, opener, {
+      dontMove: container.toBeOpenedTabsWithPositions > 0,
+      broadcast: true
+    });
+  }
 }
 async function onNewTabsTimeout(aContainer) {
   var newRootTabs = collectRootTabs(aContainer.openedNewTabs.map(getTabById));
@@ -52,7 +60,38 @@ function onTabOpened(aTab) {
 }
 
 function onTabClosed(aTab) {
+  //var backupAttributes = collectBackupAttributes(aTab);
+  //log('onTabClose: backupAttributes = ', backupAttributes);
+
+  var closeParentBehavior = getCloseParentBehaviorForTab(aTab);
+  if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
+    closeChildTabs(aTab);
+
+  detachAllChildren(aTab, {
+    behavior: closeParentBehavior,
+    broadcast: true
+  });
+  //reserveCloseRelatedTabs(toBeClosedTabs);
+  detachTab(aTab, {
+    dontUpdateIndent: true,
+    broadcast: true
+  });
+  //restoreTabAttributes(oldTab, backupAttributes);
+
   reserveToSaveTreeStructure(aTab);
+}
+
+function closeChildTabs(aParent) {
+  var tabs = getDescendantTabs(aParent);
+  //if (!fireTabSubtreeClosingEvent(aParent, tabs))
+  //  return;
+
+  //markAsClosedSet([aParent].concat(tabs));
+  tabs.reverse().forEach(aTab => {
+    browser.tabs.remove(aTab.apiTab.id)
+      .catch(handleMissingTabError);
+  });
+  //fireTabSubtreeClosedEvent(aParent, tabs);
 }
 
 function onTabMoving(aTab, aMoveInfo) {

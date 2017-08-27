@@ -134,15 +134,7 @@ async function onNewTabTracked(aTab) {
   var nextTab = getAllTabs(container)[aTab.index];
   container.insertBefore(newTab, nextTab);
 
-  window.onTabOpening && onTabOpening(newTab);
-
-  var opener = getTabById({ tab: aTab.openerTabId, window: aTab.windowId });
-  if (opener) {
-    log('opener: ', dumpTab(opener), container.toBeOpenedTabsWithPositions);
-    await attachTabTo(newTab, opener, {
-      dontMove: container.toBeOpenedTabsWithPositions > 0
-    });
-  }
+  await window.onTabOpening && onTabOpening(newTab);
 
   if (container.parentNode) { // it can be removed while waiting
     if (container.toBeOpenedTabsWithPositions > 0)
@@ -175,22 +167,9 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
 
   log('onApiTabRemoved: ', dumpTab(oldTab));
 
-  //var backupAttributes = collectBackupAttributes(oldTab);
-  //log('onTabClose: backupAttributes = ', backupAttributes);
-
-  var closeParentBehavior = getCloseParentBehaviorForTab(oldTab);
-  if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
-    closeChildTabs(oldTab);
-
   if (oldTab.classList.contains(kTAB_STATE_POSSIBLE_CLOSING_CURRENT))
     tryMoveFocusFromClosingCurrentTab(oldTab);
 
-  detachAllChildren(oldTab, {
-    behavior: closeParentBehavior
-  });
-  //reserveCloseRelatedTabs(toBeClosedTabs);
-  detachTab(oldTab, { dontUpdateIndent: true });
-  //restoreTabAttributes(oldTab, backupAttributes);
   //updateLastScrollPosition();
 
   window.onTabClosed && onTabClosed(oldTab);

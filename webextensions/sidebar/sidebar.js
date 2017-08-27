@@ -112,12 +112,13 @@ function onMessage(aMessage, aSender, aRespond) {
       if (aMessage.windowId == gTargetWindow) {
         let child = getTabById(aMessage.child);
         let parent = getTabById(aMessage.parent);
-        let insertBefore = getTabById(aMessage.insertBefore);
-        let insertAfter  = getTabById(aMessage.insertAfter);
         if (child && parent)
-          attachTabTo(child, parent, {
-            insertBefore, insertAfter
-          });
+          attachTabTo(child, parent, clone(aMessage, {
+            insertBefore: getTabById(aMessage.insertBefore),
+            insertAfter: getTabById(aMessage.insertAfter),
+            inRemote: false,
+            broadcast: false
+          }));
       }
     }; break;
 

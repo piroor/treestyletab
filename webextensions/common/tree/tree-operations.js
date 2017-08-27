@@ -585,19 +585,6 @@ async function forceExpandTabs(aTabs) {
 
 // operate tabs based on tree information
 
-function closeChildTabs(aParent) {
-  var tabs = getDescendantTabs(aParent);
-  //if (!fireTabSubtreeClosingEvent(aParent, tabs))
-  //  return;
-
-  //markAsClosedSet([aParent].concat(tabs));
-  tabs.reverse().forEach(aTab => {
-    browser.tabs.remove(aTab.apiTab.id)
-      .catch(handleMissingTabError);
-  });
-  //fireTabSubtreeClosedEvent(aParent, tabs);
-}
-
 async function tryMoveFocusFromClosingCurrentTab(aTab) {
   log('tryMoveFocusFromClosingCurrentTab');
   var nextFocusedTab = null;
