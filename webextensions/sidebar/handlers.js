@@ -214,7 +214,7 @@ function onClick(aEvent) {
 
 function handleNewTabAction(aEvent) {
   openNewTab({
-    inBackground: !isAccelAction(aEvent)
+    inBackground: isAccelAction(aEvent)
   });
 }
 
