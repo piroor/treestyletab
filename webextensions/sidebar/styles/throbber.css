@@ -7,7 +7,10 @@
 
 @keyframes rotation {
   0% { transform: rotatez(0deg); }
-  50% { transform: rotatez(180deg); }
+  15% { transform: rotatez(0deg); }
+  35% { transform: rotatez(180deg); }
+  65% { transform: rotatez(180deg); }
+  85% { transform: rotatez(360deg); }
   100% { transform: rotatez(360deg); }
 }
 
@@ -35,5 +38,5 @@ li.tab:not(.loading) .throbber::before {
 }
 
 li.tab.loading:not(.collapsed) .throbber {
-  animation: rotation 2s ease-in-out infinite;
+  animation: rotation 3s ease-in-out infinite;
 }
